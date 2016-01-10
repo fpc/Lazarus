@@ -4693,15 +4693,17 @@ end;
 
 procedure TShadowMenu.AddOnClick(Sender: TObject);
 var
-  compEditor: TDefaultComponentEditor;
+  compEditor: TDefaultComponentEditor = nil;
 begin
   if (FSelectedMenuItem <> nil) then begin
-    compEditor:=TDefaultComponentEditor.Create(FSelectedMenuItem, FEditorDesigner);
+    MenuDesigner.BeginUpdate;
     try
+      compEditor:=TDefaultComponentEditor.Create(FSelectedMenuItem, FEditorDesigner);
       compEditor.Edit;
       UpdateSelectedItemInfo;
     finally
       compEditor.Free;
+      MenuDesigner.EndUpdate;
     end;
   end;
 end;
@@ -5698,6 +5700,9 @@ var
   si: TShadowItem;
   refreshNeeded: boolean = False;
 begin
+  if MenuDesigner.IsUpdate then
+    Exit;
+
   if (Sender is TPropertyEditor) then begin
     for i:=0 to TPropertyEditor(Sender).PropCount-1 do begin
       persistent:=TPropertyEditor(Sender).GetComponent(i);

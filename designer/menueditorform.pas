@@ -97,6 +97,7 @@ type
     procedure UpdateTemplatesCount;
     procedure BeginUpdate;
     procedure EndUpdate;
+    function IsUpdate: Boolean;
     property AcceleratorMenuItemsCount: integer read FAcceleratorMenuItemsCount;
     property EditedMenu: TMenu read FEditedMenu;
     property SavedTemplatesCount: integer read FSavedTemplatesCount;
@@ -589,6 +590,11 @@ begin
   Dec(FUpdateCount);
   if FUpdateCount = 0 then
     OnDesignerSetSelection(FormEditingHook.GetCurrentObjectInspector.Selection);
+end;
+
+function TMenuDesigner.IsUpdate: Boolean;
+begin
+  Result := FUpdateCount > 0;
 end;
 
 { TMainMenuComponentEditor}
