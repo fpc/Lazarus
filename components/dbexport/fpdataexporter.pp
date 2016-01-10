@@ -96,7 +96,7 @@ Var
 begin
   FI:=Nil;
   FProgress:=Nil;
-  With TSelectExportFormatForm.Create(Self) do
+  With TSelectExportFormatForm.Create(Application) do
     try
       Result:=(ShowModal=mrOK);
       If Result then
@@ -121,7 +121,7 @@ begin
         Dataset.First;
         If ShowProgress then
           begin
-          FProgress:=TExportProgressForm.Create(Self);
+          FProgress:=TExportProgressForm.Create(Application);
           FProgress.FreeNotification(Self);
           FProgress.OnCancel:=@self.DoCancel;
           FExporter.OnProgress:=@self.DoProgress;

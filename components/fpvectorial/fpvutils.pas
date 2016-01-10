@@ -42,6 +42,7 @@ type
 function FPColorToRGBHexString(AColor: TFPColor): string;
 function RGBToFPColor(AR, AG, AB: byte): TFPColor; inline;
 function MixColors(AColor1, AColor2: TFPColor; APos, AMax: Double): TFPColor;
+function GradientColor(AColors: TvGradientColors; AValue: Double): TFPColor;
 // Coordinate Conversion routines
 function CanvasCoordsToFPVectorial(AY: Integer; AHeight: Integer): Integer; inline;
 function CanvasTextPosToFPVectorial(AY: Integer; ACanvasHeight, ATextHeight: Integer): Integer;
@@ -49,6 +50,7 @@ function CoordToCanvasX(ACoord: Double; ADestX: Integer; AMulX: Double): Integer
 function CoordToCanvasY(ACoord: Double; ADestY: Integer; AMulY: Double): Integer; inline;
 // Other routines
 function SeparateString(AString: string; ASeparator: char): T10Strings;
+function Make2DPoint(AX, AY: Double): T2DPoint;
 function Make3DPoint(AX, AY, AZ: Double): T3DPoint;
 // Mathematical routines
 function LineEquation_GetPointAndTangentForLength(AStart, AEnd: T3DPoint; ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean;
@@ -115,12 +117,48 @@ begin
   Result.Alpha := $FFFF;
 end;
 
+{@@ Returns AColor1 if APos = 0, AColor2 if APos = AMax, or interpolates between }
 function MixColors(AColor1, AColor2: TFPColor; APos, AMax: Double): TFPColor;
+var
+  f1, f2: Double;
 begin
-  Result.Alpha := Round(AColor1.Alpha * APos / AMax + AColor2.Alpha * (AMax - APos) / AMax);
-  Result.Red := Round(AColor1.Red * APos / AMax + AColor2.Red * (AMax - APos) / AMax);
-  Result.Green := Round(AColor1.Green * APos / AMax + AColor2.Green * (AMax - APos) / AMax);
-  Result.Blue := Round(AColor1.Blue * APos / AMax + AColor2.Blue * (AMax - APos) / AMax);
+  f1 := (AMax - APos) / AMax;
+  f2 := APos / AMax;
+  Result.Alpha := Round(AColor1.Alpha * f1 + AColor2.Alpha * f2);
+  Result.Red := Round(AColor1.Red * f1 + AColor2.Red * f2);
+  Result.Green := Round(AColor1.Green * f1 + AColor2.Green * f2);
+  Result.Blue := Round(AColor1.Blue * f1 + AColor2.Blue * f2);
+end;
+
+{@@ Assigns a color to the specified value. The color is interpolated between
+    the colors defined in AColors.
+}
+function GradientColor(AColors: TvGradientColors; AValue: Double): TFPColor;
+var
+  i: Integer;
+  c1, c2: TFPColor;
+  p1, p2: Double;
+begin
+  // Return first color if AValue is below the first color position
+  if AValue <= AColors[0].Position then
+    Result := AColors[0].Color
+  else
+  // Return last color if AValue is above the last color position
+  if AValue >= AColors[High(AColors)].Position then
+    Result := AColors[High(AColors)].Color
+  else
+    // Find pair of colors positions which bracket the specified value and
+    // interpolate color
+    for i:= High(AColors)-1 downto 0 do
+      if AValue >= AColors[i].Position then
+      begin
+        c1 := AColors[i].Color;
+        c2 := AColors[i+1].Color;
+        p1 := AColors[i].Position;
+        p2 := AColors[i+1].Position;
+        Result := MixColors(c1, c2, AValue - p1, p2 - p1);
+        exit;
+      end;
 end;
 
 {@@ Converts the coordinate system from a TCanvas to FPVectorial
@@ -191,6 +229,12 @@ begin
     else
       Result[CurrentPart] := Result[CurrentPart] + Copy(AString, i, 1);
   end;
+end;
+
+function Make2DPoint(AX, AY: Double): T2DPoint;
+begin
+  Result.X := AX;
+  Result.Y := AY;
 end;
 
 function Make3DPoint(AX, AY, AZ: Double): T3DPoint;
@@ -616,10 +660,10 @@ begin
       CoordX3 := CoordToCanvasX(Cur2DBSegment.X3, ADestX, AMulX);
       CoordY3 := CoordToCanvasY(Cur2DBSegment.Y3, ADestY, AMulY);
       AddBezierToPoints(
-        Make2DPoint(CoordX, CoordY),
-        Make2DPoint(CoordX2, CoordY2),
-        Make2DPoint(CoordX3, CoordY3),
-        Make2DPoint(CoordX4, CoordY4),
+        Make3DPoint(CoordX, CoordY, 0),
+        Make3DPoint(CoordX2, CoordY2, 0),
+        Make3DPoint(CoordX3, CoordY3, 0),
+        Make3DPoint(CoordX4, CoordY4, 0),
         Points);
     end;
     else

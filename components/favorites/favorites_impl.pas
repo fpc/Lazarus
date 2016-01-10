@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, ToolBarIntf, IDEImagesIntf, Graphics, PackageIntf,
   Menus, LazIDEIntf, ProjectIntf, Laz2_XMLCfg, IDEOptionsIntf,
-  IDECommands, ComCtrls, favoritesstr;
+  IDECommands, ComCtrls, favoritesstr, ImgList;
 
 type
   TFavoritesHandler = class
@@ -63,12 +63,15 @@ type
   private
     FOrigButton: TIDEToolButton;
     FOrigOnPopup: TNotifyEvent;
+    FIndex: TStringList;
+    FAddImageIndex, FRemoveImageIndex: Integer;
 
     procedure RefreshMenu(Sender: TObject);
     procedure mnuFavoriteFile(Sender: TObject);
     procedure mnuAddRemoveActiveProject(Sender: TObject);
   public
     constructor Create(aOwner: TComponent); override;
+    destructor Destroy; override;
     procedure DoOnAdded; override;
   end;
 
@@ -91,13 +94,27 @@ constructor TOpenFileFavToolButton.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
 
+  FIndex := TStringList.Create;
+  FIndex.Sorted := True;
+  FIndex.Duplicates := dupIgnore;
+  FIndex.CaseSensitive := False;
+
   if FavHandler.FOldToolButtonClass<>nil then
     FOrigButton := FavHandler.FOldToolButtonClass.Create(Self)
   else
     FOrigButton := TIDEToolButton.Create(Self);
 end;
 
+destructor TOpenFileFavToolButton.Destroy;
+begin
+  FIndex.Free;
+
+  inherited Destroy;
+end;
+
 procedure TOpenFileFavToolButton.DoOnAdded;
+var
+  xImg: TCustomBitmap;
 begin
   inherited DoOnAdded;
 
@@ -107,6 +124,23 @@ begin
     DropdownMenu := FOrigButton.DropdownMenu
   else
     DropdownMenu := TPopupMenu.Create(Self);
+
+  if DropdownMenu.Images=nil then
+  begin
+    DropdownMenu.Images := TCustomImageList.Create(Self);
+    DropdownMenu.Images.Width := 16;
+    DropdownMenu.Images.Height := 16;
+  end;
+
+  xImg := TBitmap.Create;
+  try
+    IDEImages.Images_16.GetBitmap(IDEImages.LoadImage(16, 'laz_add'), xImg);
+    FAddImageIndex := DropdownMenu.Images.Add(xImg, nil);
+    IDEImages.Images_16.GetBitmap(IDEImages.LoadImage(16, 'laz_delete'), xImg);
+    FRemoveImageIndex := DropdownMenu.Images.Add(xImg, nil);
+  finally
+    xImg.Free;
+  end;
 
   FOrigOnPopup := DropdownMenu.OnPopup;
   DropdownMenu.OnPopup := @RefreshMenu;
@@ -141,12 +175,11 @@ var
   xMI, xAddToFav: TFileNameMenuItem;
   xProj: TLazProject;
   xMIndex: Integer;
+  xExt: RawByteString;
 begin
   if Assigned(FOrigOnPopup) then
     FOrigOnPopup(Sender);
 
-  if DropdownMenu.Images=nil then
-    DropdownMenu.Images := IDEImages.Images_16;
   xM := DropdownMenu.Items;
 
   xMIndex := 0;
@@ -156,6 +189,10 @@ begin
     xMI.FileName := xFavoriteFile;
     xMI.Caption := xFavoriteFile;
     xMI.OnClick := @mnuFavoriteFile;
+    xExt := ExtractFileExt(xFavoriteFile);
+    if SameFileName(xExt, '.lpi') or SameFileName(xExt, '.lpr') then
+      xMI.ImageIndex := LoadProjectIconIntoImages(xFavoriteFile, DropdownMenu.Images, FIndex);
+
     xM.Insert(xMIndex, xMI);
     Inc(xMIndex);
   end;
@@ -168,11 +205,11 @@ begin
     if not FavHandler.IsInFavoriteProjects(xProj.ProjectInfoFile) then
     begin
       xAddToFav.Caption := Format(sAddToFavoritesS, [xProj.ProjectInfoFile]);
-      xAddToFav.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
+      xAddToFav.ImageIndex := FAddImageIndex;
     end else
     begin
       xAddToFav.Caption := Format(sRemoveFromFavoritesS, [xProj.ProjectInfoFile]);
-      xAddToFav.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
+      xAddToFav.ImageIndex := FRemoveImageIndex;
     end;
     xAddToFav.OnClick := @mnuAddRemoveActiveProject;
     xM.Insert(xMIndex, xAddToFav);

@@ -220,7 +220,6 @@ msgid "Connect: Loc: %s Rem: %s"
 msgstr "Соединение: Loc: %s Rem: %s"
 
 #: ipconst.seventdisconnect
-#| msgid "Close:   Loc: %s Rem: %s"
 msgid "Close: Loc: %s Rem: %s"
 msgstr "Завершение: Loc: %s Rem: %s"
 
@@ -290,7 +289,6 @@ msgid "- expected"
 msgstr "- ожидается"
 
 #: ipconst.shtmldefbrowsecaption
-#| msgid "Browse..."
 msgid "Browse ..."
 msgstr "Обзор ..."
 
@@ -1544,7 +1542,6 @@ msgid "Logging on with User"
 msgstr "Вход под именем пользователя"
 
 #: ipconst.spterror
-#| msgid "An error occured with the last task."
 msgid "An error occurred with the last task."
 msgstr "Во время выполнения последней задачи произошла ошибка."
 
@@ -2111,12 +2108,10 @@ msgid "Revoked Certificate."
 msgstr "Отозванный сертификат."
 
 #: ipconst.ssslservernohandshake
-#| msgid "Server cid not return a handshake message."
 msgid "Server did not return a handshake message."
 msgstr "Сервер не возвратил инициализационное (handshake) сообщение."
 
 #: ipconst.ssslservernoserverhello
-#| msgid "Server cid not return a server hello message."
 msgid "Server did not return a server hello message."
 msgstr "Сервер не возвратил сообщение server hello."
 
@@ -2215,7 +2210,6 @@ msgid "Verifying"
 msgstr "Проверка"
 
 #: ipconst.ssterror
-#| msgid "An error has occured during this task."
 msgid "An error has occurred during this task."
 msgstr "Во время выполнения этой задачи произошла ошибка."
 
@@ -2410,7 +2404,6 @@ msgid "Directory not empty"
 msgstr "Каталог не пустой"
 
 #: ipconst.swsaenotsock
-#| msgid "Socket operation on nonsocket"
 msgid "Socket operation on non socket"
 msgstr "Сокет-операция над не-сокетом"
 
@@ -2503,7 +2496,6 @@ msgid "Network subsystem is unavailable"
 msgstr "Сетевая подсистема недоступна"
 
 #: ipconst.swsatry_again
-#| msgid "Nonauthoritative host not found"
 msgid "Non-authoritative host not found"
 msgstr "Неполномочный хост не найден"
 
@@ -2529,7 +2521,6 @@ msgid "Error due to lack of resources"
 msgstr "Ошибка из-за отсутствия ресурсов"
 
 #: ipconst.swsa_qos_bad_object
-#| msgid "Problem filterspec or providerspecific buffer"
 msgid "Problem filterspec or provider specific buffer"
 msgstr "Ошибка буфера провайдера либо фильтра"
 

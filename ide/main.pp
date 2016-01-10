@@ -2377,8 +2377,8 @@ begin
   //  nil,@CreateIDEWindow,'250','200','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwProjectInspector],
     nil,@CreateIDEWindow,'200','150','+300','+400');
-  //IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSearchResultsViewName],
-  //  nil,@CreateIDEWindow,'250','250','+70%','+300');
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSearchResultsViewName],
+    nil,@CreateIDEWindow,'250','250','+70%','+300');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwAnchorEditor],
     nil,@CreateIDEWindow,'250','250','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwTabOrderEditor],
@@ -4039,11 +4039,13 @@ begin
   Project1.CompilerOptions.OtherDefines.Assign(Project1.OtherDefines);
 
   Capt := Format(dlgProjectOptionsFor, [Project1.GetTitleOrName]);
-  if DoOpenIDEOptions(nil, Capt, AFilter, [])
-  and not Project1.OtherDefines.Equals(Project1.CompilerOptions.OtherDefines) then
+  if DoOpenIDEOptions(nil, Capt, AFilter, []) then
   begin
-    Project1.OtherDefines.Assign(Project1.CompilerOptions.OtherDefines);
+    if not Project1.OtherDefines.Equals(Project1.CompilerOptions.OtherDefines) then
+      Project1.OtherDefines.Assign(Project1.CompilerOptions.OtherDefines);
     Project1.Modified:=True;
+    MainBuildBoss.SetBuildTargetProject1(false);
+    MainIDE.UpdateCaption;
   end;
 end;
 
@@ -4924,7 +4926,6 @@ begin
     UpdateCaption;
     AProject.DefineTemplates.AllChanged;
     IncreaseCompilerParseStamp;
-    MainBuildBoss.SetBuildTargetProject1(false);
 
     if AProject.UseAsDefault then
     begin
@@ -5829,8 +5830,8 @@ begin
   end;
 end;
 
-procedure TMainIDE.CreateIDEWindow(Sender: TObject; aFormName: string;
-  var AForm: TCustomForm; DoDisableAutoSizing: boolean);
+procedure TMainIDE.CreateIDEWindow(Sender: TObject; aFormName: string; var
+  AForm: TCustomForm; DoDisableAutoSizing: boolean);
 
   function ItIs(Prefix: string): boolean;
   begin

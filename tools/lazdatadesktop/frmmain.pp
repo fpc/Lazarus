@@ -297,7 +297,7 @@ implementation
 
 {$R *.lfm}
 
-{$DEFINE HAVEMSSQLCONN}
+{ $DEFINE HAVEMSSQLCONN}
 
 uses
   frmselectconnectiontype,

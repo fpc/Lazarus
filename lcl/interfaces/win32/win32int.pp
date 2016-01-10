@@ -30,7 +30,7 @@ interface
 uses
   Windows, // keep as first
   ActiveX, Classes,
-  Translations, ComCtrls, Controls, Buttons,
+  Translations, Controls, Buttons,
   LCLIntf, LclProc, LazUTF8, LCLType, LMessages,
   Forms, Dialogs, GraphMath, GraphType, InterfaceBase,
   StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl,

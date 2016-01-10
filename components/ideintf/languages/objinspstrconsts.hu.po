@@ -1305,7 +1305,7 @@ msgstr "Képek hozzáadása"
 
 #: objinspstrconsts.sccsiledtopendialogn
 msgid "New Image"
-msgstr ""
+msgstr "Új kép"
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
@@ -1313,7 +1313,7 @@ msgstr "Átlátszó szín:"
 
 #: objinspstrconsts.sccsiledtreplace
 msgid "&Replace ..."
-msgstr ""
+msgstr "Csere ..."
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
@@ -1537,7 +1537,7 @@ msgstr "Hozzáadás single-ként"
 
 #: objinspstrconsts.s_confirm_clear
 msgid "Are you sure to clear image list?"
-msgstr ""
+msgstr "Biztosan kiüríthető a képlista?"
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"

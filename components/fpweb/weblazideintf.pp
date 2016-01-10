@@ -726,6 +726,9 @@ begin
     +'begin'+le
     +'  With TFCGIApp.Create(Nil) do'+le
     +'    try'+le
+    +'      { Uncomment the port setting here if you want to run the '+le 
+    +'       FastCGI application stand-alone (e.g. for NGINX) }'+le
+    +'      // Port:=2015; // For example'+le
     +'      Initialize;'+le
     +'      Run;'+le
     +'    finally'+le
@@ -793,6 +796,9 @@ begin
     +le
     +'begin'+le
     +'  Application.Title:=''fcgiproject1'';'+le
+    +'  { Uncomment the port setting here if you want to run the '+le 
+    +'    FastCGI application stand-alone (e.g. for NGINX) }'+le
+    +'  // Application.Port:=2015; // For example'+le
     +'  Application.Initialize;'+le
     +'  Application.Run;'+le
     +'end.'+le

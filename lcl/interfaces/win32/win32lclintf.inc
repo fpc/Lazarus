@@ -584,15 +584,6 @@ begin
     begin
       // win32 combo (but not csSimple) has fixed height
       FixedHeight := TCustomComboBox(SizeConstraints.Control).Style <> csSimple;
-    end
-    // The ProgressBar needs a minimum Height of 10 when themed,
-    // as required by Windows, otherwise it's image is corrupted
-    else if ThemeServices.ThemesEnabled and (SizeConstraints.Control is TCustomProgressBar) then
-    begin
-      MinHeight := 10;
-
-      SizeConstraints.SetInterfaceConstraints(
-        MinWidth, MinHeight, MaxWidth, MaxHeight);
     end;
     
     if (FixedHeight or FixedWidth)

@@ -243,6 +243,7 @@
       <Unit28>
         <Filename Value="projecticon.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ProjectIcon"/>
       </Unit28>
       <Unit29>
         <Filename Value="w32versioninfo.pas"/>
@@ -309,6 +310,7 @@
       <Unit39>
         <Filename Value="../designer/designer.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="Designer"/>
       </Unit39>
       <Unit40>
         <Filename Value="../designer/designerprocs.pas"/>
@@ -329,6 +331,7 @@
       <Unit43>
         <Filename Value="customformeditor.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="CustomFormEditor"/>
       </Unit43>
       <Unit44>
         <Filename Value="aboutfrm.pas"/>
@@ -1291,6 +1294,7 @@
       <Unit230>
         <Filename Value="formeditor.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="FormEditor"/>
       </Unit230>
       <Unit231>
         <Filename Value="revision.inc"/>

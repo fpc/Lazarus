@@ -68,7 +68,7 @@ uses
   Debugger, IDEOptionDefs, Splash, Designer,
   SourceEditor, FindInFilesDlg,
   MainBar, MainIntf, SourceSynEditor, PseudoTerminalDlg,
-  DesktopManager;
+  DesktopManager, ImgList;
 
 type
   TResetToolFlag = (
@@ -218,10 +218,15 @@ type
 
   TOpenFileToolButton = class(TIDEToolButton)
   private
+    FIndex: TStringList;
+
     procedure RefreshMenu(Sender: TObject);
     procedure mnuOpenFile(Sender: TObject);
     procedure mnuProjectFile(Sender: TObject);
   public
+    constructor Create(aOwner: TComponent); override;
+    destructor Destroy; override;
+
     procedure DoOnAdded; override;
   end;
 
@@ -411,12 +416,32 @@ end;
 
 { TOpenFileToolButton }
 
+constructor TOpenFileToolButton.Create(aOwner: TComponent);
+begin
+  inherited Create(aOwner);
+
+  FIndex := TStringList.Create;
+  FIndex.Sorted := True;
+  FIndex.Duplicates := dupIgnore;
+  FIndex.CaseSensitive := False;
+end;
+
+destructor TOpenFileToolButton.Destroy;
+begin
+  FIndex.Free;
+
+  inherited Destroy;
+end;
+
 procedure TOpenFileToolButton.DoOnAdded;
 begin
   inherited DoOnAdded;
 
   DropdownMenu := TPopupMenu.Create(Self);
   DropdownMenu.OnPopup := @RefreshMenu;
+  DropdownMenu.Images := TCustomImageList.Create(Self);
+  DropdownMenu.Images.Width := 16;
+  DropdownMenu.Images.Height := 16;
   Style := tbsDropDown;
 end;
 
@@ -439,12 +464,16 @@ procedure TOpenFileToolButton.RefreshMenu(Sender: TObject);
   procedure AddFile(const AFileName: string; const AOnClick: TNotifyEvent);
   var
     AMenuItem: TOpenFileMenuItem;
+    xExt: string;
   begin
     AMenuItem := TOpenFileMenuItem.Create(DropdownMenu);
+    DropdownMenu.Items.Add(AMenuItem);
     AMenuItem.OnClick := AOnClick;
     AMenuItem.FileName := AFileName;
-    DropdownMenu.Items.Add(AMenuItem);
     AMenuItem.Caption := AFilename;
+    xExt := ExtractFileExt(AFileName);
+    if SameFileName(xExt, '.lpi') or SameFileName(xExt, '.lpr') then
+      AMenuItem.ImageIndex := LoadProjectIconIntoImages(AFileName, DropdownMenu.Images, FIndex);
   end;
 
   procedure AddFiles(List: TStringList; MaxCount: integer; const AOnClick: TNotifyEvent);

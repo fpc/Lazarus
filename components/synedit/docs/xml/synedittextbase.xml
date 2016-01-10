@@ -54,7 +54,7 @@ This is used by SetCapacity and ItemPointer.</p>
           <p>SynEdit needs no special knowledge about the Views, all Views have the same interface as the Textbuffer. This interface is defined in <link id="TSynEditStrings">TSynEditStrings</link>. Since Views act the same as the Textbuffer they can also be stacked, each View acting on the input/output of the next View. If  a View does not need to modify a specific call to the textbuffer, it must simply forward it. A special base class provides the implementation: <link id="TSynEditStringsLinked">TSynEditStringsLinked</link>
           </p>
           <p>Views allow to implement certain Tasks in a single place, and often without the need of making any modification to the code in SynEdit.</p>
-          <p>In additon to the examples at the start of this doc, Views can also store additional data, which may not be needed (or wanted) to be written to the Textbuffer. An example for this is the trimming of trailing spaces. If the user inputs spaces at the end of line, they are treaded as uncommited text. They are stored in the View, untill they are either committed (along with other text entered after the spaces), or discarded (trimmed)</p>
+          <p>In additon to the examples at the start of this doc, Views can also store additional data, which may not be needed (or wanted) to be written to the Textbuffer. An example for this is the trimming of trailing spaces. If the user inputs spaces at the end of line, they are treaded as uncommitted text. They are stored in the View, until they are either committed (along with other text entered after the spaces), or discarded (trimmed)</p>
           <p/>
           <p/>
           <p>Todos:</p>

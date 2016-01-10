@@ -556,12 +556,17 @@ begin
       end;
     TSData.TabVisible:=true;
     PCResult.ActivePage:=TSData;
+    FData.Visible:=True;
     DS.Open;
     TE:=Now;
     RowsAff:=Format(SRecordsFetched,[DS.RecordCount]);
     end;
   MResult.Append(Format(SSQLExecutedOK,[DateTimeToStr(TE)]));
+{$IFDEF VER2_6}
+  MResult.Append(Format(SExecutionTime,[FormatDateTime('hh:nn:ss.zzz',TE-TS)]));
+{$ELSE}
   MResult.Append(Format(SExecutionTime,[FormatDateTime('hh:nn:ss.zzz',TE-TS,[fdoInterval])]));
+{$ENDIF}
   if (RowsAff<>'') then
     MResult.Append(RowsAff);
   AddToHistory(Qry);
@@ -585,6 +590,7 @@ begin
       DoExecuteQuery(Qry,ACount);
       Result:=True;
     except
+{$IFNDEF VER2_6}
       on Ed : ESQLDatabaseError do
         begin
         Msg:=Ed.Message;
@@ -593,6 +599,7 @@ begin
         if (Ed.SQLState<>'') then
           Msg:=Msg+sLineBreak+Format(SSQLStatus,[Ed.SQLState]);
         end;
+{$ENDIF}
       On E : EDatabaseError do
         begin
         Msg:=E.Message;

@@ -3976,6 +3976,7 @@ msgid "The filename \"%s\" is ambiguous, because the package has no default dire
 msgstr "Tiedoston nimi \"%s\" on ristiriitainen, koska paketilla ei ole vielä oletushakemistoa.%sMäärittele koko polku tiedostolle."
 
 #: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
+msgctxt "lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Maximiversio \"%s\" on kelvoton.%sKäytä muotoa iso.pieni.julkaisu.käännös%sEsim.: 1.0.20.10"
 
@@ -3985,6 +3986,7 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "Maximiversio on pienempi kuin Minimiversio."
 
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
+msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Minimiversio \"%s\" on kelvoton.%sKäytä muotoa iso.pieni.julkaisu.käännös%sEsim.: 1.0.20.10"
 
@@ -4433,7 +4435,7 @@ msgid "Anchor top side to top side of sibling. Use BorderSpacing to set a distan
 msgstr "Ankkuroi yläreuna sisarusten yläreunaan. Käytä BorderSpacing välimatkan säätämiseen. Sisarusten BorderSpacing ei vaikuta."
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
-msgid "An error occured at last startup while loading %s!%sLoad this project again?"
+msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "Virhe esiintyi, kun avattiin projektia %s!%sAvataanko tämä projekti uudelleen?"
 
 #: lazarusidestrconsts.lisapplicationclassname
@@ -5235,7 +5237,7 @@ msgid "Wrong indentation"
 msgstr "Väärä sisennys"
 
 #: lazarusidestrconsts.liscfeanexceptionoccuredduringdeletionof
-msgid "An exception occured during deletion of%s\"%s:%s\"%s%s"
+msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "Keskeytys tapahtui poistettaessa%s\"%s:%s\"%s%s"
 
 #: lazarusidestrconsts.liscfecancelloadingthisresource
@@ -7234,8 +7236,8 @@ msgstr ""
 msgid "Create a project first!"
 msgstr "Luo ensin projekti!"
 
-#: lazarusidestrconsts.liscreatedebugandreleasemodesnewproj
-msgid "Create Debug and Release modes for new projects"
+#: lazarusidestrconsts.liscreatedebugandreleasemodes
+msgid "Create Debug and Release modes"
 msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
@@ -7273,10 +7275,6 @@ msgstr "(Luo uusi paketti)"
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
 msgstr "Luo uusi paketin komponentti"
-
-#: lazarusidestrconsts.liscreatenowforthisproject
-msgid "Create now for this project"
-msgstr "Tee nyt tälle projektille"
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
@@ -15398,7 +15396,8 @@ msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."
 msgstr "Riippuvuutta \"%s\" ei löytynyt.%sValitse jokin toinen paketti."
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionisinvalid
-msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionisinvalid"
+msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Maximiversio \"%s\" on kelvoton.%sKäytä muotoa iso.pieni.julkaisu.käännös%sEsim.: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionislowerthantheminimimversion
@@ -15407,7 +15406,8 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "Maximiversio on pienempi kuin Minimiversio."
 
 #: lazarusidestrconsts.lisprojaddtheminimumversionisinvalid
-msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
+msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Minimiversio \"%s\" on kelvoton.%sKäytä muotoa iso.pieni.julkaisu.käännös%sEsim.: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag

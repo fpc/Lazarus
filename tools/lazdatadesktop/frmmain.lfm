@@ -1693,7 +1693,7 @@ object MainForm: TMainForm
     }
   end
   object ODDD: TOpenDialog
-    DefaultExt = '.fpd'
+    DefaultExt = '.fdd'
     FilterIndex = 0
     Options = [ofReadOnly, ofFileMustExist, ofEnableSizing, ofViewDetail]
     left = 104
@@ -1707,7 +1707,7 @@ object MainForm: TMainForm
     top = 136
   end
   object SDDD: TSaveDialog
-    DefaultExt = '.fpd'
+    DefaultExt = '.fdd'
     FilterIndex = 0
     left = 160
     top = 80

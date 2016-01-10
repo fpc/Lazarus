@@ -1341,6 +1341,8 @@ procedure TWindowProcHelper.DoMsgDrawItem;
 var
   menuItem: TObject;
   PDrawIS: PDrawItemStruct;
+  isDrawListItem: Boolean;
+  DrawItemMsg: Integer;
 begin
   PDrawIS := PDrawItemStruct(LParam);
   if (WParam = 0) and (PDrawIS^.ctlType = ODT_MENU) then
@@ -1369,14 +1371,16 @@ begin
           (TCustomCombobox(lWinControl).Style = csOwnerDrawVariable))))
     then
       UpdateDrawListItem(LM_DRAWLISTITEM)
-    else
-    if (lWinControl <> nil) and (lWinControl is TListView) and
-      (TListView(lWinControl).ViewStyle = vsReport) and
-      (PDrawIS^.ctlType = ODT_LISTVIEW) and
-      (TListView(lWinControl).OwnerDraw)
-    then
-      UpdateDrawListItem(CN_DRAWITEM)
-    else
+    else if Assigned(WindowInfo^.DrawItemHandler) then begin
+      DrawItemMsg := 0;
+      isDrawListItem := False;
+      WindowInfo^.DrawItemHandler(lWinControl, Window, Msg, WParam, PDrawIS^,
+        DrawItemMsg, isDrawListItem);
+      if isDrawListItem and (DrawItemMsg<>0) then
+        UpdateDrawListItem(DrawItemMsg)
+      else
+        UpdateDrawItems;
+    end else
       UpdateDrawItems;
   end;
 end;

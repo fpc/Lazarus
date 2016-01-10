@@ -199,7 +199,7 @@ const
      [ctnProcedure];
   AllPointContexts = AllClasses+AllSourceTypes+
     [ctnEnumerationType,ctnInterface,ctnImplementation,ctnTypeType,
-     ctnUseUnitNamespace,ctnUseUnitClearName,ctnOpenArrayType];
+     ctnUseUnitNamespace,ctnUseUnitClearName,ctnRangedArrayType,ctnOpenArrayType];
 
 
   // CodeTreeNodeSubDescriptors

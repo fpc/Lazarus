@@ -267,9 +267,9 @@ resourcestring
   sld_Connectionlv4        = 'Description';
   //
   sld_opendatadictionarytitle      = 'Open data dictionary';
-  sld_opendatadictionaryfilter     = 'Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*';
+  sld_opendatadictionaryfilter     = 'Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*';
   sld_savefileastitle              = 'Save file as';
-  sld_savefileasfilter             = 'Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*';
+  sld_savefileasfilter             = 'Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*';
   //
   sld_Fromconnection       = 'From connection';
   //
