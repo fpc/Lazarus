@@ -179,6 +179,7 @@ object ResizerFrame: TResizerFrame
       Anchors = [akTop, akLeft, akRight]
       BevelOuter = bvNone
       TabOrder = 0
+      Visible = False
       OnPaint = pFakeMenuPaint
     end
   end
