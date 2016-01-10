@@ -421,9 +421,6 @@ begin
   inherited Create(aOwner);
 
   FIndex := TStringList.Create;
-  FIndex.Sorted := True;
-  FIndex.Duplicates := dupIgnore;
-  FIndex.CaseSensitive := False;
 end;
 
 destructor TOpenFileToolButton.Destroy;

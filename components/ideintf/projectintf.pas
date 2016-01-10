@@ -586,7 +586,7 @@ const
 
 
 function LoadProjectIconIntoImages(const ProjFile: string;
-  const Images: TCustomImageList; const Index: TStrings): Integer;
+  const Images: TCustomImageList; const Index: TStringList): Integer;
 
 function ProjectFlagsToStr(Flags: TProjectFlags): string;
 function StrToProjectSessionStorage(const s: string): TProjectSessionStorage;
@@ -697,18 +697,32 @@ begin
   Result:=ProjectDescriptors.FindByName(ProjDescNameEmpty);
 end;
 
+type
+  TLoadProjectIconIntoImagesObject = class
+    ImageIndex: Integer;
+  end;
+
 function LoadProjectIconIntoImages(const ProjFile: string;
-  const Images: TCustomImageList; const Index: TStrings): Integer;
+  const Images: TCustomImageList; const Index: TStringList): Integer;
 var
   xIconFile: RawByteString;
   xIcon: TIcon;
   I: Integer;
+  xObj: TLoadProjectIconIntoImagesObject;
 begin
   //ToDo: better index
 
   I := Index.IndexOf(ProjFile);
   if I >= 0 then
-    Exit(NativeInt(Index.Objects[I]));
+    Exit(TLoadProjectIconIntoImagesObject(Index.Objects[I]).ImageIndex);
+
+  if not Index.Sorted or (Index.Count = 0) then
+  begin // initialize index
+    Index.Sorted := True;
+    Index.Duplicates := dupIgnore;
+    Index.CaseSensitive := False;
+    Index.OwnsObjects := True;
+  end;
 
   Result := -1;
   xIconFile := ChangeFileExt(ProjFile, '.ico');
@@ -732,7 +746,9 @@ begin
     end;
   end;
 
-  Index.AddObject(ProjFile, TObject(Result));
+  xObj := TLoadProjectIconIntoImagesObject.Create;
+  xObj.ImageIndex := Result;
+  Index.AddObject(ProjFile, xObj);
 end;
 
 function ProjectFlagsToStr(Flags: TProjectFlags): string;

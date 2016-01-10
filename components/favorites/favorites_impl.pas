@@ -95,9 +95,6 @@ begin
   inherited Create(aOwner);
 
   FIndex := TStringList.Create;
-  FIndex.Sorted := True;
-  FIndex.Duplicates := dupIgnore;
-  FIndex.CaseSensitive := False;
 
   if FavHandler.FOldToolButtonClass<>nil then
     FOrigButton := FavHandler.FOldToolButtonClass.Create(Self)
