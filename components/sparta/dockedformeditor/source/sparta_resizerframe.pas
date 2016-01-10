@@ -258,9 +258,8 @@ var
 begin
   //fake paint menu
 
-  // pFakeMenu is visible only when HasMainMenu is true
-  //if not HasMainMenu then
-  //  Exit;
+  if not HasMainMenu then
+    Exit;
 
   Menu := FDesignedForm.Form.Menu;
 
