@@ -489,7 +489,8 @@ var
 begin
   if (aMenu = nil) then begin
     DisableGUI;
-    FShadowMenu.SelectedMenuItem:=nil;
+    if FShadowMenu <> nil then
+      FShadowMenu.SelectedMenuItem:=nil;
     if Assigned(GlobalDesignHook) then
       GlobalDesignHook.RemoveAllHandlersForObject(FShadowMenu);
     FreeAndNil(FShadowMenu);
