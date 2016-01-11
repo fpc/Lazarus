@@ -4700,7 +4700,6 @@ resourcestring
     '&Licence Information,,&Check for Updates,,-,,&About,,';
   lisMenuEditorBasicWindowMenuTemplate = '&Window,Basic window menu,' +
     '&New Window,,&Tile,,&Cascade,,&Arrange all,,-,,&Hide,,&Show,,';
-  lisMenuEditorCancelDeletion = 'Cancel deletion';
   lisMenuEditorCaption = 'Caption';
   lisMenuEditorCaptionCannotBeBlank = 'Caption cannot be blank';
   lisMenuEditorCaptionedItemsD = 'Captioned items: %d';
@@ -4725,7 +4724,6 @@ resourcestring
   lisMenuEditorDDItems = '%d (%d items)';
   lisMenuEditorDeepestNestedMenuLevelD = 'Deepest nested menu level: %d';
   lisMenuEditorDeepestNestedMenuLevelNA = 'Deepest nested menu level: n/a';
-  lisMenuEditorDeleteAllSubitems = 'Delete all subitems';
   lisMenuEditorDeleteItem = '&Delete item';
   lisMenuEditorDeleteMenuTemplate = '&Delete menu template ...';
   lisMenuEditorDeletePreviouslySavedMenuTemplate = 'Delete previously saved menu template';

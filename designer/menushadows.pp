@@ -5090,8 +5090,7 @@ begin
      lisMenuEditorDeletingItemWithASubmenu,
      Format('%s%s%s', [lisMenuEditorDeletingThisItemWillDeleteAllSubitemsToo,
                       LineEnding, lisMenuEditorDeleteThisItemAndItsSubitems]),
-     mtWarning, [mrYes, lisMenuEditorCancelDeletion, mrNo,
-       lisMenuEditorDeleteAllSubitems], False) = mrNo then
+     mtWarning, [mrYes, mrNo], False) = mrYes then
   begin
     firstBoxToDelete:=GetBoxWithParentItem(anExistingSI.RealItem);
     Assert(firstBoxToDelete<>nil,'TShadowMenu.DeleteShadowAndItemAndChildren: no children');
