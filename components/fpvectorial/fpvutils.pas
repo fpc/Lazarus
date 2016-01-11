@@ -51,7 +51,8 @@ function CoordToCanvasY(ACoord: Double; ADestY: Integer; AMulY: Double): Integer
 // Other routines
 function SeparateString(AString: string; ASeparator: char): T10Strings;
 function Make2DPoint(AX, AY: Double): T2DPoint;
-function Make3DPoint(AX, AY, AZ: Double): T3DPoint;
+function Make3DPoint(AX, AY, AZ: Double): T3DPoint;  overload;
+function Make3DPoint(AX, AY: Double): T3DPoint; overload;
 // Mathematical routines
 function LineEquation_GetPointAndTangentForLength(AStart, AEnd: T3DPoint; ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean;
 procedure EllipticalArcToBezier(Xc, Yc, Rx, Ry, startAngle, endAngle: Double; var P1, P2, P3, P4: T3DPoint);
@@ -66,12 +67,15 @@ function BezierEquation_GetPointAndTangentForLength(P1, P2, P3, P4: T3DPoint;
 function CalcEllipseCenter(x1,y1, x2,y2, rx,ry, phi: Double; fa, fs: Boolean;
   out cx,cy, lambda: Double): Boolean;
 function CalcEllipsePointAngle(x,y, rx,ry, cx,cy, phi: Double): Double;
-procedure CalcEllipsePoint(angle, rx,ry, cx,cy, phi: Double; out x,y: Double);
+procedure CalcEllipsePoint(t, rx,ry, cx,cy, phi: Double; out x,y: Double);
 procedure ConvertPathToPolygons(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double;
   var PolygonPoints: TPointsArray; var PolygonStartIndexes: TIntegerDynArray);
 procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);
+function GetLinePolygonIntersectionPoints(ACoord: Double;
+  const APoints: T2DPointsArray; ACoordIsX: Boolean): T2DPointsArray;
 function Rotate2DPoint(P, RotCenter: TPoint; alpha:double): TPoint;
 function Rotate3DPointInXY(P, RotCenter: T3DPoint; alpha:double): T3DPoint;
+procedure NormalizeRect(var ARect: TRect);
 // Transformation matrix operations
 // See http://www.useragentman.com/blog/2011/01/07/css3-matrix-transform-for-the-mathematically-challenged/
 procedure ConvertTransformationMatrixToOperations(AA, AB, AC, AD, AE, AF: Double; out ATranslateX, ATranslateY, AScaleX, AScaleY, ASkewX, ASkewY, ARotate: Double);
@@ -242,6 +246,12 @@ begin
   Result.X := AX;
   Result.Y := AY;
   Result.Z := AZ;
+end;
+
+function Make3DPoint(AX, AY: Double): T3DPoint;
+begin
+  Result.X := AX;
+  Result.Y := AY;
 end;
 
 { Considering a counter-clockwise arc, elliptical and alligned to the axises
@@ -515,7 +525,7 @@ begin
   P := Rotate3dPointInXY(Make3dPoint(x-cx, y-cy, 0), Make3dPoint(0, 0, 0), phi);
   // Correctly speaking, above line should use -phi, instead of phi. But
   // Make3DPointInXY seems to define the angle in the opposite way.
-  Result := arctan2(P.Y, P.X);
+  Result := arctan2(P.Y/ry, P.X/rx);
   if Result < 0 then Result := TWO_PI + Result;
 end;
 
@@ -523,18 +533,18 @@ end;
   parameters:
   - rx, ry: major and minor radius
   - phi: rotation angle of the ellipse (angle between major axis and x axis)
-  - angle: angle from ellipse center between x axis and the point
+  - t: angle between x axis and line from ellipse center to point
 
    parameterized:
-     x = Cx + RX*cos(t)*cos(phi) - RY*sin(t)*sin(phi)  [1]
-     y = Cy + RY*sin(t)*cos(phi) + RX*cos(t)*sin(phi)  [2]        }
-procedure CalcEllipsePoint(angle, rx,ry, cx,cy, phi: Double; out x,y: Double);
+     x = cx + rx*cos(t)*cos(phi) - ry*sin(t)*sin(phi)  [1]
+     y = cy + ry*sin(t)*cos(phi) + rx*cos(t)*sin(phi)  [2]        }
+procedure CalcEllipsePoint(t, rx,ry, cx,cy, phi: Double; out x,y: Double);
 var
   P: T3dPoint;
   cost, sint: Extended;
   cosphi, sinphi: Extended;
 begin
-  SinCos(angle, sint, cost);
+  SinCos(t, sint, cost);
   SinCos(phi, sinphi, cosphi);
   x := cx + rx*cost*cosphi - ry*sint*sinphi;
   y := cy + ry*sint*cosphi + rx*cost*sinphi;
@@ -675,6 +685,77 @@ begin
   end;
 end;
 
+function CompareDbl(P1, P2: Pointer): Integer;
+var
+  val1, val2: ^Double;
+begin
+  val1 := P1;
+  val2 := P2;
+  Result := CompareValue(val1^, val2^);
+end;
+
+{@@ Calculates the intersection points of a vertical (ACoordIsX = true) or
+    horizontal (ACoordIsX = false) line with border of the polygon specified
+    by APoints. Returns the coordinates of the intersection points }
+function GetLinePolygonIntersectionPoints(ACoord: Double;
+  const APoints: T2DPointsArray; ACoordIsX: Boolean): T2DPointsArray;
+const
+  EPS = 1e-9;
+var
+  j: Integer;
+  dx, dy: Double;
+  xval, yval: Double;
+  val: ^Double;
+  list: TFPList;
+begin
+  list := TFPList.Create;
+  if ACoordIsX then
+  begin
+    for j:=0 to High(APoints) - 1 do
+    begin
+      if ((APoints[j].X <= ACoord) and (ACoord < APoints[j+1].X)) or
+         ((APoints[j+1].X <= ACoord) and (ACoord < APoints[j].X)) then
+      begin
+        dx := APoints[j+1].X - APoints[j].X;   // can't be zero here
+        dy := APoints[j+1].Y - APoints[j].Y;
+        New(val);
+        val^ := APoints[j].Y + (ACoord - APoints[j].X) * dy / dx;
+        list.Add(val);
+      end;
+    end;
+  end else
+  begin
+    for j:=0 to High(APoints) - 1 do
+      if ((APoints[j].Y <= ACoord) and (ACoord < APoints[j+1].Y)) or
+         ((APoints[j+1].Y <= ACoord) and (ACoord < APoints[j].Y)) then
+      begin
+        dy := APoints[j+1].Y - APoints[j].Y;     // can't be zero here
+        dx := APoints[j+1].X - APoints[j].X;
+        New(val);
+        val^ := APoints[j].X + (ACoord - APoints[j].Y) * dx / dy;
+        list.Add(val);
+      end;
+  end;
+
+  // Sort intersection coordinates in ascending order
+  list.Sort(@CompareDbl);
+  SetLength(Result, list.Count);
+  if ACoordIsX then
+    for j:=0 to list.Count-1 do
+      Result[j] := Make2DPoint(ACoord, Double(list[j]^))
+  else
+    for j:=0 to list.Count-1 do
+      Result[j] := Make2DPoint(Double(list[j]^), ACoord);
+
+  // Clean-up
+  for j:=list.Count-1 downto 0 do
+  begin
+    val := List[j];
+    Dispose(val);
+  end;
+  list.Free;
+end;
+
 // Rotates a point P around RotCenter
 function Rotate2DPoint(P, RotCenter: TPoint; alpha:double): TPoint;
 var
@@ -698,8 +779,27 @@ begin
   SinCos(alpha, sinus, cosinus);
   P.x := P.x - RotCenter.x;
   P.y := P.y - RotCenter.y;
-  result.x := Round(p.x*cosinus + p.y*sinus)  +  RotCenter.x;
-  result.y := Round(-p.x*sinus + p.y*cosinus) +  RotCenter.y;
+  result.x := Round( p.x*cosinus + p.y*sinus)   +  RotCenter.x;
+  result.y := Round(-p.x*sinus   + p.y*cosinus) +  RotCenter.y;
+  result.z := P.z;
+end;
+
+procedure NormalizeRect(var ARect: TRect);
+var
+  tmp: Integer;
+begin
+  if ARect.Left > ARect.Right then
+  begin
+    tmp := ARect.Left;
+    ARect.left := ARect.Right;
+    ARect.Right := tmp;
+  end;
+  if ARect.Top > ARect.Bottom then
+  begin
+    tmp := ARect.Top;
+    ARect.Top := ARect.Bottom;
+    ARect.Bottom := tmp;
+  end;
 end;
 
 // Current Transformation Matrix
