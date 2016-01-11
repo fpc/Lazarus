@@ -22,19 +22,40 @@ TShadowBox = class;
 { TFake }
 
 TFake = class(TCustomControl)
-strict private
-  FAddSubMenu: boolean;
+private
+  type TTexture = (txSquare, txArrowRight, txArrowDown);
+protected
   FShadowMenu: TShadowMenu;
-  function GetShouldBeVisible: boolean;
-  procedure SetVisibilitySizeAndPosition;
+  function GetShouldBeVisible: boolean; virtual; abstract;
+  procedure SetVisibilitySizeAndPosition; virtual; abstract;
 protected
   class function GetControlClassDefaultSize: TSize; override;
-  procedure Paint; override;
+  procedure Draw(aTexture: TTexture);
 public
-  constructor CreateWithPurpose(anOwner: TShadowMenu; addsASubmenu: boolean);
+  constructor CreateWithPurpose(anOwner: TShadowMenu);
   procedure Refresh;
-  property AddSubMenu: boolean read FAddSubMenu;
   property ShouldBeVisible: boolean read GetShouldBeVisible;
+end;
+
+TAddSiblingFake = class(TFake)
+protected
+  function GetShouldBeVisible: boolean; override;
+  procedure SetVisibilitySizeAndPosition; override;
+  procedure Paint; override;
+end;
+
+TAddSubmenuFake = class(TFake)
+protected
+  function GetShouldBeVisible: boolean; override;
+  procedure SetVisibilitySizeAndPosition; override;
+  procedure Paint; override;
+end;
+
+TAddFirstFake = class(TFake)
+protected
+  function GetShouldBeVisible: boolean; override;
+  procedure SetVisibilitySizeAndPosition; override;
+  procedure Paint; override;
 end;
 
 TShadowItemDisplayState = (dsNormal, dsSelected, dsDisabled);
@@ -150,9 +171,9 @@ TPopEnum = {%region}
 TShadowMenu = class(TCustomPanel)
 strict private
   FActionList: TActionList;
-  FAddedSingleInitialItem: boolean;
   FAddImgListIconAction: TAction;
   FAddItemFake: TFake;
+  FAddFirstItemFake: TFake;
   FAddSubmenuFake: TFake;
   FBoxList: TFPList;
   FInitialising: boolean;
@@ -174,7 +195,6 @@ strict private
   procedure CreateShadowBoxesAndItems;
   procedure DeleteChildlessShadowAndItem(anExistingSI: TShadowItem);
   procedure DeleteShadowAndItemAndChildren(anExistingSI: TShadowItem);
-  procedure GetUserInitialMenuBuildPolicy;
   procedure OnDesignerModified(Sender: TObject);
   procedure OnObjectPropertyChanged(Sender: TObject; NewObject: TPersistent);
   procedure SetupPopupMenu;
@@ -187,6 +207,7 @@ strict private
   procedure AddSeparatorAbove(Sender: TObject);
   procedure AddSeparatorBelow(Sender: TObject);
   procedure AddSubMenu(Sender: TObject);
+  procedure AddFirstMenu(Sender: TObject);
   procedure CheckmarkRadioManagement(Sender: TObject);
   procedure DeleteTemplate(Sender: TObject);
   procedure EditCaption(Sender: TObject);
@@ -227,7 +248,6 @@ public
   procedure RefreshFakes;
   procedure SetSelectedMenuItem(aMI: TMenuItem; viaDesigner, prevWasDeleted: boolean);
   procedure UpdateSelectedItemInfo;
-  property AddedSingleInitialItem: boolean read FAddedSingleInitialItem write FAddedSingleInitialItem;
   property IsMainMenu: boolean read FIsMainMenu;
   property LookupRoot: TComponent read FLookupRoot;
   property SelectedMenuItem: TMenuItem read FSelectedMenuItem;
@@ -394,8 +414,6 @@ function InsertMenuTemplateDlg: TMenuItem;
 
 function ListShortCutDlg(shortcutsOnly: boolean; aMenu: TMenu=nil): TModalResult;
 
-function ShowMultiItemDlg(const aSMenu: TShadowMenu; out primaryItemCount, subMenuDepth: integer): TModalResult;
-
 procedure SaveMenuTemplateDlg(aMenuItem: TMenuItem);
 
 function ResolvedConflictsDlg: TModalResult;
@@ -456,23 +474,6 @@ protected
 public
   constructor CreateWithShadowItem(anOwner: TComponent; aSI: TShadowItem);
   property EditedLine: string read GetEditedLine;
-end;
-
-{ TMultiItemDlg }
-
-TMultiItemDlg = class(TForm)
-strict private
-  FButtonPanel: TButtonPanel;
-  FPrimaryItemCountRadioBox: TRadioGroup;
-  FShadowMenu: TShadowMenu;
-  FSubMenuDepthRadioGroup: TRadioGroup;
-  function GetPrimaryItemCount: integer;
-  function GetSubMenuDepth: integer;
-  procedure RadioGroupSelectionChanged(Sender: TObject);
-public
-  constructor CreateWithShadowMenu(aSMenu: TShadowMenu);
-  property PrimaryItemCount: integer read GetPrimaryItemCount;
-  property SubMenuDepth: integer read GetSubMenuDepth;
 end;
 
 { TAddShortcutDialog }
@@ -1348,28 +1349,6 @@ begin
   else Result:=0;
 end;
 
-function ShowMultiItemDlg(const aSMenu: TShadowMenu; out primaryItemCount,
-    subMenuDepth: integer): TModalResult;
-var
-  dlg: TMultiItemDlg;
-begin
-  primaryItemCount:=0;
-  subMenuDepth:=0;
-  dlg:=TMultiItemDlg.CreateWithShadowMenu(aSMenu);
-  try
-    Result:=dlg.ShowModal;
-    if (Result = mrOK) then begin
-      primaryItemCount:=dlg.PrimaryItemCount;
-      if not aSMenu.IsMainMenu then
-        Dec(primaryItemCount);
-      if aSMenu.IsMainMenu then
-        subMenuDepth:=dlg.SubMenuDepth;
-    end;
-  finally
-    dlg.Free;
-  end;
-end;
-
 function ListShortCutDlg(shortcutsOnly: boolean; aMenu: TMenu): TModalResult;
 var
   dlg: TShortcutDisplayDlg;
@@ -1624,6 +1603,148 @@ begin
   else if (name2 > name1) then
     Result:= -1
   else Result:=0;
+end;
+
+{ TAddFirstFake }
+
+function TAddFirstFake.GetShouldBeVisible: boolean;
+begin
+  Result:=(FShadowMenu.FMenu<>nil) and (FShadowMenu.FMenu.Items.Count=0);
+end;
+
+procedure TAddFirstFake.Paint;
+begin
+  Draw(txSquare);
+end;
+
+procedure TAddFirstFake.SetVisibilitySizeAndPosition;
+begin
+  if ShouldBeVisible then begin
+    Show;
+  end
+  else begin
+    Hide;
+  end;
+end;
+
+{ TAddSubmenuFake }
+
+function TAddSubmenuFake.GetShouldBeVisible: boolean;
+var
+  item: TMenuItem;
+begin
+  item:=FShadowMenu.SelectedMenuItem;
+  if (item = nil) then
+    Exit(False)
+  else
+    Result:=not item.IsLine and (item.Count = 0);
+end;
+
+procedure TAddSubmenuFake.Paint;
+begin
+  if FShadowMenu.SelectedMenuItem.IsInMenuBar then
+    Draw(txArrowDown)
+  else
+    Draw(txArrowRight);
+end;
+
+procedure TAddSubmenuFake.SetVisibilitySizeAndPosition;
+var
+  selShadow: TShadowItem;
+  selMI: TMenuItem;
+  w: integer;
+begin
+  selMI:=FShadowMenu.SelectedMenuItem;
+  if (selMI=nil) then
+    Exit;
+  selShadow:=FShadowMenu.GetShadowForMenuItem(selMI);
+  Assert(selShadow<>nil,'TFake.SetVisibilitySizeAndPosition: selectedItem is nil');
+  if not ShouldBeVisible then begin
+    if selMI.IsInMenuBar then
+      selShadow.BottomFake:=nil
+    else
+      selShadow.RightFake:=nil;
+    Hide;
+  end
+  else begin
+    w:=Treble_DropDown_Text_Offset;
+    if (selShadow.Width < w) then
+      w:=selShadow.Width;
+    if selMI.IsInMenuBar then begin
+      SetBounds(selShadow.Left, MenuBar_Height + 1,
+                selShadow.Width, MenuBar_Height);
+      selShadow.ShowingBottomFake:=True;
+      selShadow.BottomFake:=Self;
+      selShadow.ShowingRightFake:=False;
+    end
+    else begin
+      SetBounds(selShadow.ParentBox.Left + selShadow.BoundsRect.Right + 1,
+                selShadow.ParentBox.Top + selShadow.Top, w, DropDown_Height);
+      selShadow.ShowingRightFake:=True;
+      selShadow.RightFake:=Self;
+      selShadow.ShowingBottomFake:=False;
+    end;
+    Show;
+  end;
+end;
+
+{ TAddSiblingFake }
+
+function TAddSiblingFake.GetShouldBeVisible: boolean;
+var
+  item: TMenuItem;
+begin
+  item:=FShadowMenu.SelectedMenuItem;
+  if (item = nil) then
+    Exit(False)
+  else
+    Result:=(item.MenuIndex = Pred(item.Parent.Count));
+end;
+
+procedure TAddSiblingFake.Paint;
+begin
+  Draw(txSquare);
+end;
+
+procedure TAddSiblingFake.SetVisibilitySizeAndPosition;
+var
+  selShadow: TShadowItem;
+  selMI: TMenuItem;
+  w: integer;
+begin
+  selMI:=FShadowMenu.SelectedMenuItem;
+  if (selMI=nil) then
+    Exit;
+  selShadow:=FShadowMenu.GetShadowForMenuItem(selMI);
+  Assert(selShadow<>nil,'TFake.SetVisibilitySizeAndPosition: selectedItem is nil');
+  if not ShouldBeVisible then begin
+    if selMI.IsInMenuBar then
+      selShadow.RightFake:=nil
+    else
+      selShadow.BottomFake:=nil;
+    Hide;
+  end
+  else begin
+    w:=Treble_DropDown_Text_Offset;
+    if (selShadow.Width < w) then
+      w:=selShadow.Width;
+
+    if selMI.IsInMenuBar then begin
+      SetBounds(selShadow.Left + selShadow.Width + 1, 0, w, MenuBar_Height);
+      selShadow.ShowingRightFake:=True;
+      selShadow.RightFake:=Self;
+      selShadow.ShowingBottomFake:=False;
+    end
+    else begin
+      SetBounds(selShadow.ParentBox.Left + selShadow.Left + Gutter_X,
+                selShadow.ParentBox.Top + selShadow.ParentBox.Height + 1,
+                selShadow.Width - Gutter_X, DropDown_Height);
+      selShadow.ShowingBottomFake:=True;
+      selShadow.BottomFake:=Self;
+      selShadow.ShowingRightFake:=False;
+    end;
+    Show;
+  end;
 end;
 
 { TScrollPanel }
@@ -4383,160 +4504,7 @@ begin
   FEdit.Parent:=Self;
 end;
 
-{ TMultiItemDlg }
-
-procedure TMultiItemDlg.RadioGroupSelectionChanged(Sender: TObject);
-begin
-  FButtonPanel.OKButton.Enabled:=(FPrimaryItemCountRadioBox.ItemIndex > -1);
-  if FShadowMenu.IsMainMenu then
-    FButtonPanel.OKButton.Enabled:=FButtonPanel.OKButton.Enabled and
-      (FPrimaryItemCountRadioBox.ItemIndex > -1);
-end;
-
-function TMultiItemDlg.GetPrimaryItemCount: integer;
-begin
-  Result:=FPrimaryItemCountRadioBox.ItemIndex + 2;
-end;
-
-function TMultiItemDlg.GetSubMenuDepth: integer;
-begin
-  Result:=FSubMenuDepthRadioGroup.ItemIndex + 2;
-end;
-
-constructor TMultiItemDlg.CreateWithShadowMenu(aSMenu: TShadowMenu);
-begin
-  inherited CreateNew(nil);
-  FShadowMenu:=aSMenu;
-  Position:=poScreenCenter;
-  Name:='MultiItemDialog';
-  Caption:=lisMenuEditorInitialMenuPopulation;
-  FPrimaryItemCountRadioBox:=TRadioGroup.Create(Self);
-  with FPrimaryItemCountRadioBox do begin
-    Align:=alTop;
-    Top:=1;
-    BorderSpacing.Around:=Margin;
-    Items.CommaText:='2,3,4,5,6,7,8';
-    ItemIndex:= -1;
-    OnSelectionChanged:=@RadioGroupSelectionChanged;
-    case aSMenu.IsMainMenu of
-      False: begin
-         Caption:=lisMenuEditorNumberOfInitialPopupMenuItems;
-         Constraints.MinWidth:=280;
-         Columns:=1;
-         Height:=180;
-        end;
-      True: begin
-          Caption:=lisMenuEditorNumberOfInitialMenubarItems;
-          Constraints.MinWidth:=350;
-          Columns:=7;
-          Height:=50;
-        end;
-    end;
-    Parent:=Self;
-  end;
-  if aSMenu.IsMainMenu then begin
-    FSubMenuDepthRadioGroup:=TRadioGroup.Create(Self);
-    with FSubMenuDepthRadioGroup do begin
-      Align:=alTop;
-      Top:=2;
-      BorderSpacing.Around:=Margin;
-      Columns:=1;
-      Caption:=lisMenuEditorNumberOfDropdownItemsForEachMenubarItem;
-      Items.CommaText:='2,3,4,5,6,7,8';
-      ItemIndex:= -1;
-      OnSelectionChanged:=@RadioGroupSelectionChanged;
-      Height:=180;
-      Parent:=Self;
-    end;
-  end;
-  FButtonPanel:=TButtonPanel.Create(Self);
-  with FButtonPanel do begin
-    ShowButtons:=[pbOK, pbCancel];
-    Align:=alTop;
-    Top:=3;
-    OKButton.Enabled:=False;
-    ShowBevel:=False;
-    Parent:=Self;
-  end;
-  AutoSize:=True;
-end;
-
 { TFake }
-
-function TFake.GetShouldBeVisible: boolean;
-var
-  item: TMenuItem;
-begin
-  item:=FShadowMenu.SelectedMenuItem;
-  if (item = nil) then
-    Exit(False)
-  else case FAddSubMenu of
-    True: Result:=not item.IsLine and (item.Count = 0);
-    False: Result:=(item.MenuIndex = Pred(item.Parent.Count));
-  end;
-end;
-
-procedure TFake.SetVisibilitySizeAndPosition;
-var
-  selShadow: TShadowItem;
-  selMI: TMenuItem;
-  w: integer;
-begin
-  selMI:=FShadowMenu.SelectedMenuItem;
-  selShadow:=FShadowMenu.GetShadowForMenuItem(selMI);
-  Assert(selShadow<>nil,'TFake.SetVisibilitySizeAndPosition: selectedItem is nil');
-  if not ShouldBeVisible then begin
-    case FAddSubMenu of
-      True: if selMI.IsInMenuBar then
-              selShadow.BottomFake:=nil
-            else selShadow.RightFake:=nil;
-      False: if selMI.IsInMenuBar then
-               selShadow.RightFake:=nil
-             else selShadow.BottomFake:=nil;
-    end;
-    Hide;
-  end
-  else begin
-    w:=Treble_DropDown_Text_Offset;
-    if (selShadow.Width < w) then
-      w:=selShadow.Width;
-    case FAddSubMenu of
-      True: begin
-        if selMI.IsInMenuBar then begin
-          SetBounds(selShadow.Left, MenuBar_Height + 1,
-                    selShadow.Width, MenuBar_Height);
-          selShadow.ShowingBottomFake:=True;
-          selShadow.BottomFake:=Self;
-          selShadow.ShowingRightFake:=False;
-        end
-        else begin
-          SetBounds(selShadow.ParentBox.Left + selShadow.BoundsRect.Right + 1,
-                    selShadow.ParentBox.Top + selShadow.Top, w, DropDown_Height);
-          selShadow.ShowingRightFake:=True;
-          selShadow.RightFake:=Self;
-          selShadow.ShowingBottomFake:=False;
-        end;
-      end;
-      False: begin // AddItem
-        if selMI.IsInMenuBar then begin
-          SetBounds(selShadow.Left + selShadow.Width + 1, 0, w, MenuBar_Height);
-          selShadow.ShowingRightFake:=True;
-          selShadow.RightFake:=Self;
-          selShadow.ShowingBottomFake:=False;
-        end
-        else begin
-          SetBounds(selShadow.ParentBox.Left + selShadow.Left + Gutter_X,
-                    selShadow.ParentBox.Top + selShadow.ParentBox.Height + 1,
-                    selShadow.Width - Gutter_X, DropDown_Height);
-          selShadow.ShowingBottomFake:=True;
-          selShadow.BottomFake:=Self;
-          selShadow.ShowingRightFake:=False;
-        end;
-      end;
-    end; // case
-    Show;
-  end;
-end;
 
 class function TFake.GetControlClassDefaultSize: TSize;
 begin
@@ -4544,8 +4512,25 @@ begin
   Result.cy:=DropDown_Height;
 end;
 
-procedure TFake.Paint;
-type TTexture = (txSquare, txArrowRight, txArrowDown);
+constructor TFake.CreateWithPurpose(anOwner: TShadowMenu);
+begin
+  inherited Create(anOwner);
+  FShadowMenu:=anOwner;
+  {case FAddType of ooooooo
+    ftAddSubmenu: Name:='AddsSubMenuFake';
+    ftAddSibling: Name:='AddItemFake';
+    ftAddFirst: Name:='AddFirstItemFake';
+  end;}
+
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, cx, cy);
+  BorderStyle:=bsNone;
+  Visible:=False;
+  Canvas.Pen.Color:=clGradientActiveCaption;
+  Parent:=anOwner;
+end;
+
+procedure TFake.Draw(aTexture: TTexture);
 var
   r: TRect;
 
@@ -4628,45 +4613,17 @@ var
       end;
     end;
   end;
-
-  procedure Draw(aTexture: TTexture);
-  begin
-    case aTexture of
-      txSquare: DoPattern(aTexture, 6);
-      txArrowDown, txArrowRight: DoPattern(aTexture, 7);
-    end;
-  end;
-
 begin
   r:=ClientRect;
-  case FAddSubMenu of
-    True: if FShadowMenu.SelectedMenuItem.IsInMenuBar then
-            Draw(txArrowDown)
-          else Draw(txArrowRight);
-    False: Draw(txSquare);
+  case aTexture of
+    txSquare: DoPattern(aTexture, 6);
+    txArrowDown, txArrowRight: DoPattern(aTexture, 7);
   end;
-end;
-
-constructor TFake.CreateWithPurpose(anOwner: TShadowMenu; addsASubmenu: boolean);
-begin
-  inherited Create(anOwner);
-  FAddSubMenu:=addsASubmenu;
-  FShadowMenu:=anOwner;
-  if FAddSubMenu then
-    Name:='AddsSubMenuFake'
-  else Name:='AddItemFake';
-  with GetControlClassDefaultSize do
-    SetInitialBounds(0, 0, cx, cy);
-  BorderStyle:=bsNone;
-  Visible:=False;
-  Canvas.Pen.Color:=clGradientActiveCaption;
-  Parent:=anOwner;
 end;
 
 procedure TFake.Refresh;
 begin
-  if (FShadowMenu.SelectedMenuItem <> nil) then
-    SetVisibilitySizeAndPosition;
+  SetVisibilitySizeAndPosition;
 end;
 
 { TShadowMenu }
@@ -4840,7 +4797,7 @@ procedure TShadowMenu.DeleteItem(Sender: TObject);
 var
   si: TShadowItem;
 begin
-  if (MenuDesigner.TotalMenuItemsCount > 1) then
+  if (MenuDesigner.TotalMenuItemsCount > 0) then
   begin
     if (Sender is TShadowItem) then
       DeleteChildlessShadowAndItem(TShadowItem(Sender))
@@ -5032,7 +4989,10 @@ begin
       if (nearestMI = nil) then
         nearestMI:=GetPreviousNonSepItem(mi);
       if (nearestMI = nil) then
-        nearestMI:=mi.Parent;
+      begin
+        if mi.Parent<>FMenu.Items then
+          nearestMI:=mi.Parent;
+      end;
       box:=anExistingSI.ParentBox;
       box.ParentMenuItem.Remove(mi);
       ownsIt:=mi.Owner;
@@ -5052,6 +5012,8 @@ begin
         FBoxList.Remove(box);
         box.Parent:=nil;
         RemoveComponent(box);
+        if box=FRootBox then
+          FRootBox:=nil;
         FreeAndNil(box);
       end;
       UpdateBoxLocationsAndSizes;
@@ -5136,24 +5098,6 @@ begin
     RecursiveDeleteBox(firstBoxToDelete);
     RecursiveDeleteChildrenItemsOf(anExistingSI.RealItem);
     DeleteChildlessShadowAndItem(anExistingSI);
-  end;
-end;
-
-procedure TShadowMenu.GetUserInitialMenuBuildPolicy;
-var
-  primaries, depth: integer;
-  mr: TModalResult;
-begin
-  mr:=IDEQuestionDialogAb(lisMenuEditorStartingToCreateAMenu,
-        lisMenuEditorDoYouWantToAddMenuItemsOneByOne + LineEnding +
-          lisMenuEditorOrStartWithASkeletonMenuOfSeveralItems,
-        mtInformation,
-        [mrYes, lisMenuEditorAddItemsOneByOne, mrNo, lisMenuEditorStartWithSeveralItems],
-        False);
-  case mr of
-    mrNo: if (ShowMultiItemDlg(Self, primaries, depth) = mrOK) then
-            AddManyItems(primaries, depth);
-    mrYes: ;
   end;
 end;
 
@@ -5519,6 +5463,7 @@ procedure TShadowMenu.HideFakes;
 begin
   FAddSubmenuFake.Hide;
   FAddItemFake.Hide;
+  FAddFirstItemFake.Hide;
 end;
 
 procedure TShadowMenu.RefreshFakes;
@@ -5526,6 +5471,7 @@ begin
   Application.ProcessMessages;
   FAddItemFake.Refresh;
   FAddSubmenuFake.Refresh;
+  FAddFirstItemFake.Refresh;
 end;
 
 procedure TShadowMenu.UpdateButtonGlyphs(isInBar: boolean);
@@ -5797,9 +5743,7 @@ begin
       if (FInitialSelectedMenuItem <> nil) then begin
         SetSelectedMenuItem(FInitialSelectedMenuItem, True, False);
         UpdateActionsEnabledness;
-      end
-      else if FAddedSingleInitialItem then
-        GetUserInitialMenuBuildPolicy;
+      end;
     end;
 end;
 
@@ -5814,6 +5758,7 @@ begin
       SetSelectedShadow(nil, nil, False)
     else SetSelectedShadow(FSelectedMenuItem, nil, False);
     FSelectedMenuItem:=nil;
+    RefreshFakes;
     Exit;
   end;
   if (FSelectedMenuItem <> aMI) then
@@ -5845,37 +5790,37 @@ var
   selectedShadow, prevShadow: TShadowItem;
 begin
   selectedShadow:=GetShadowForMenuItem(curSelectedItem);
-  case (selectedShadow = nil) of
-    True:begin
-      HideFakes;
-      if (curSelectedItem = nil) and viaDesigner then
-        UpdateSelectedItemInfo;
-    end;
-    False: begin
-      if (prevSelectedItem <> nil) then begin
-        prevShadow:=GetShadowForMenuItem(prevSelectedItem);
-        if (prevShadow <> nil) and
-           (selectedShadow.ParentBox.ParentMenuItem <> prevSelectedItem) and
-           (prevShadow.ParentBox <> selectedShadow.ParentBox) then
-             prevShadow.HideChainFromRoot;
-        end;
-      UpdateButtonGlyphs(FSelectedMenuItem.IsInMenuBar);
-      selectedShadow.ShowChainToRoot;
-      selectedShadow.ShowSelected;
-      HideBoxesAboveLevel(selectedShadow.Level);
-      selectedShadow.ShowChildBox;
+  if selectedShadow=nil then
+  begin
+    HideFakes;
+    UpdateSelectedItemInfo;
+    if not viaDesigner and (FMenu<>nil) then
+      FEditorDesigner.SelectOnlyThisComponent(FMenu);
+  end else
+  begin
+    if (prevSelectedItem <> nil) then begin
+      prevShadow:=GetShadowForMenuItem(prevSelectedItem);
+      if (prevShadow <> nil) and
+         (selectedShadow.ParentBox.ParentMenuItem <> prevSelectedItem) and
+         (prevShadow.ParentBox <> selectedShadow.ParentBox) then
+           prevShadow.HideChainFromRoot;
+      end;
+    UpdateButtonGlyphs(FSelectedMenuItem.IsInMenuBar);
+    selectedShadow.ShowChainToRoot;
+    selectedShadow.ShowSelected;
+    HideBoxesAboveLevel(selectedShadow.Level);
+    selectedShadow.ShowChildBox;
 
-      UpdateSelectedItemInfo;
-      if not viaDesigner then
-        FEditorDesigner.SelectOnlyThisComponent(curSelectedItem);
-      AdjustSizeAndPosition(selectedShadow);
+    UpdateSelectedItemInfo;
+    if not viaDesigner then
+      FEditorDesigner.SelectOnlyThisComponent(curSelectedItem);
+    AdjustSizeAndPosition(selectedShadow);
 
-      if not MenuDesigner.Visible then
-        MenuDesigner.ShowOnTop;
-      selectedShadow.SetFocus;
-      UpdateActionsEnabledness;
-      RefreshFakes;
-    end;
+    if not MenuDesigner.Visible then
+      MenuDesigner.ShowOnTop;
+    selectedShadow.SetFocus;
+    UpdateActionsEnabledness;
+    RefreshFakes;
   end;
 end;
 
@@ -5944,7 +5889,7 @@ begin
                                     lisMenuEditorAddASubmenuAtTheRightOfSelectedItem;
                                 end;
                               end;
-      popItemDelete:          ac.Enabled:=(FMenu.Items.Count > 1);
+      popItemDelete:          ac.Enabled:=(FMenu.Items.Count > 0);
       //popItemAddSep
       //popItemEditCaption
       popItemMoveBefore:      begin ac.Enabled:=not isFirst;
@@ -6005,8 +5950,6 @@ end;
 
 constructor TShadowMenu.CreateWithMenuAndDims(aMenu: TMenu; aSelect: TMenuItem;
   aWidth, aHeight: integer);
-var
-  mi: TMenuItem;
 begin
   Assert(aMenu<>nil,'TShadowMenu.CreateWithMenuAndDims: TMenu parameter is nil');
   inherited Create(nil);
@@ -6017,29 +5960,43 @@ begin
   Name:='ShadowMenu';
   FEditorDesigner:=FindRootDesigner(FMenu) as TComponentEditorDesigner;
   FLookupRoot:=FEditorDesigner.LookupRoot;
-
-  if (FMenu.Items.Count = 0) then begin
-    mi:=TMenuItem.Create(FLookupRoot);
-    FMenu.Items.Insert(0, mi);
-    mi.Name:=FEditorDesigner.CreateUniqueComponentName('TMenuItem');
-    mi.Caption:=mi.Name;
-    FAddedSingleInitialItem:=True;
-  end;
-
   FBoxList:=TFPList.Create;
   FItemsPopupMenu:=TPopupMenu.Create(Self);
   FItemsPopupMenu.Name:='ItemsPopupMenu';
   FActionList:=TActionList.Create(Self);
   SetupPopupMenu;
-  FAddItemFake:=TFake.CreateWithPurpose(Self, False);
+  FAddItemFake:=TAddSiblingFake.CreateWithPurpose(Self);
   FAddItemFake.OnClick:=@AddItemAfter;
-  FAddSubmenuFake:=TFake.CreateWithPurpose(Self, True);
+  FAddSubmenuFake:=TAddSubmenuFake.CreateWithPurpose(Self);
   FAddSubmenuFake.OnClick:=@AddSubMenu;
+  FAddFirstItemFake:=TAddFirstFake.CreateWithPurpose(Self);
+  FAddFirstItemFake.OnClick:=@AddFirstMenu;
+  FAddFirstItemFake.Left := Popup_Origin.x;
+  FAddFirstItemFake.Top := Popup_Origin.y;
   ConnectSpeedButtonOnClickMethods;
   GlobalDesignHook.AddHandlerObjectPropertyChanged(@OnObjectPropertyChanged);
   GlobalDesignHook.AddHandlerModified(@OnDesignerModified);
   AutoSize:=False;
   Color:=clBtnFace;
+end;
+
+procedure TShadowMenu.AddFirstMenu(Sender: TObject);
+var
+  newMI: TMenuItem;
+  box: TShadowBox;
+begin
+  newMI:=TMenuItem.Create(FLookupRoot);
+  newMI.Name:=FEditorDesigner.CreateUniqueComponentName(newMI.ClassName);
+  newMI.Caption:=newMI.Name;
+  FMenu.Items.Add(newMI);
+  GlobalDesignHook.PersistentAdded(newMI, False);
+  GlobalDesignHook.Modified(newMI);
+  box:=TShadowBox.CreateWithParentBox(Self, nil, FMenu.Items);
+  FRootBox:=box;
+  TShadowItem.CreateWithBoxAndItem(Self, box, newMI);
+  UpdateBoxLocationsAndSizes;
+  SetSelectedMenuItem(newMI, False, False);
+  MenuDesigner.UpdateStatistics;
 end;
 
 destructor TShadowMenu.Destroy;
@@ -6064,10 +6021,11 @@ var
   s: string;
   method: TMethod;
 begin
-  if (FSelectedMenuItem = nil) then with MenuDesigner do begin
-    Caption:=Format(lisMenuEditorEditingSSNoMenuitemSelected2,
+  if (FSelectedMenuItem = nil) then
+  begin
+    MenuDesigner.Caption:=Format(lisMenuEditorEditingSSNoMenuitemSelected2,
                                  [FMenu.Owner.Name, FMenu.Name]);
-    ButtonsGroupBox.Enabled:=False;
+    MenuDesigner.ButtonsGroupBox.Enabled:=False;
   end
   else begin
     method:=GetMethodProp(FSelectedMenuItem, 'OnClick');

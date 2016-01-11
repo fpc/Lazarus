@@ -4679,7 +4679,6 @@ resourcestring
   lisMenuEditorAddIconFromS2 = 'Add icon from %s ...';
   lisMenuEditorAddImagelistIcon = 'Add imagelist &icon';
   lisMenuEditorAddImagelistIcon2 = 'Add imagelist icon';
-  lisMenuEditorAddItemsOneByOne = 'Add items one by one';
   lisMenuEditorAddNewItemAbove = '&Add new item above';
   lisMenuEditorAddNeWItemAfter = 'Add ne&w item after';
   lisMenuEditorAddNewItemBefore = '&Add new item before';
@@ -4743,7 +4742,6 @@ resourcestring
     +'of both shortcuts and accelerator keys';
   lisMenuEditorDisplayAListOfMenuitemShortcuts = 'Display a list of menuitem shortcuts';
   lisMenuEditorDisplayPreviewAsPopupMenu = 'Display preview as &Popup menu';
-  lisMenuEditorDoYouWantToAddMenuItemsOneByOne = 'Do you want to add menu items one by one,';
   lisMenuEditorEditCaption = 'Edit &Caption';
   lisMenuEditorEditingCaptionOfS = 'Editing Caption of %s';
   lisMenuEditorEditingSForS = 'Editing %s for %s';
@@ -4762,7 +4760,6 @@ resourcestring
     +'dropdown shows any existing groups)';
   lisMenuEditorGroupIndexMenuItems = 'GroupIndex,MenuItems';
   lisMenuEditorInadequateDescription = 'Inadequate Description';
-  lisMenuEditorInitialMenuPopulation = 'Initial menu population';
   lisMenuEditorInsertMenuTemplateInto = 'Insert menu template into ';
   lisMenuEditorInsertSelectedMenuTemplate = 'Insert selected menu template';
   lisMenuEditorIsNotAssigned = 'is not assigned';
@@ -4793,15 +4790,9 @@ resourcestring
   lisMenuEditorNoteGroupIndexDHasOnlyOneRadioItemItIsNotYetAGroup = ' Note: '
     +'GroupIndex %d has only one RadioItem (it is not yet a group)';
   lisMenuEditorNoUserSavedTemplates = 'No user-saved templates';
-  lisMenuEditorNumberOfDropdownItemsForEachMenubarItem = 'Number of dropdown '
-    +'items for each menubar item';
-  lisMenuEditorNumberOfInitialMenubarItems = 'Number of initial menubar items';
-  lisMenuEditorNumberOfInitialPopupMenuItems = 'Number of initial popup menu items';
   lisMenuEditorOnlyStandardDefaultTemplatesAreAvailable = 'Only standard '
     +'default templates are available.';
   lisMenuEditorOrClickHeaderToSortByThatColumn = '  or click header to sort by that column';
-  lisMenuEditorOrStartWithASkeletonMenuOfSeveralItems = 'Or start with a '
-    +'skeleton menu of several items?';
   lisMenuEditorPickAnIconFromS = 'Pick an icon from %s';
   lisMenuEditorPopupAssignmentsD = 'Popup assignments: %d';
   lisMenuEditorPopupAssignmentsNA = 'Popup assignments n/a';
@@ -4850,8 +4841,6 @@ resourcestring
   lisMenuEditorSShortcutSummary = '%s: Shortcut summary';
   lisMenuEditorSSSOnClickS = '%s.%s.%s - OnClick: %s';
   lisMenuEditorStandardTemplates = 'Standard templates';
-  lisMenuEditorStartingToCreateAMenu = 'Starting to create a menu';
-  lisMenuEditorStartWithSeveralItems = 'Start with several items';
   lisMenuEditorTemplateDescription = 'Template description:';
   lisMenuEditorTemplates = '&Templates';
   lisMenuEditorTemplateSaved = 'Template saved';

@@ -86,8 +86,6 @@ type
     procedure OnDesignerSetSelection(const ASelection: TPersistentSelectionList);
     procedure HidePopupAssignmentsInfo;
     procedure SetupPopupAssignmentsDisplay;
-  protected
-    procedure Activate; override;
   public
     procedure LoadVariableButtonGlyphs(isInMenubar: boolean);
     procedure SetMenu(aMenu: TMenu; aMenuItem: TMenuItem);
@@ -189,6 +187,8 @@ begin
   end;
   FreeAndNil(FShortcutList);
   FreeAndNil(FPopupAssignments);
+  if MenuDesignerSingleton=Self then
+    MenuDesignerSingleton := nil;
 end;
 
 procedure TMenuDesigner.HelpButtonClick(Sender: TObject);
@@ -395,16 +395,6 @@ begin
     ScanLookupRoot;
     Result:=FPopupAssignments.Count;
   end
-end;
-
-procedure TMenuDesigner.Activate;
-begin
-  inherited Activate;
-  if (FShadowMenu <> nil) and FShadowMenu.AddedSingleInitialItem then begin
-    GlobalDesignHook.PersistentAdded(FEditedMenu.Items[0], True);
-    FShadowMenu.AddedSingleInitialItem:=False;
-    FShadowMenu.SetSelectedMenuItem(FEditedMenu.Items[0], True, False);
-  end;
 end;
 
 procedure TMenuDesigner.LoadVariableButtonGlyphs(isInMenubar: boolean);
