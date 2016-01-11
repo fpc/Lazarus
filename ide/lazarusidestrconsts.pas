@@ -4666,7 +4666,6 @@ resourcestring
   // menu editor
   lisMenuEditorMenuEditor = 'Menu Editor';
   lisMenuEditorAcceleratorKeySNeedsChanging = 'Accelerator(&&) key "%s" needs changing ';
-  lisMenuEditorAComponentWithNameExists = 'A component with the name %s already exists';
   lisMenuEditorAddANewItemAboveSelectedItem = 'Add a new item above selected item';
   lisMenuEditorAddANewItemAfterSelectedItem = 'Add a new item after selected item';
   lisMenuEditorAddANewItemBeforeSelectedItem = 'Add a new item before selected item';
