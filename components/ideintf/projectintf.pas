@@ -705,7 +705,7 @@ type
 function LoadProjectIconIntoImages(const ProjFile: string;
   const Images: TCustomImageList; const Index: TStringList): Integer;
 var
-  xIconFile: RawByteString;
+  xIconFile: String;
   xIcon: TIcon;
   I: Integer;
   xObj: TLoadProjectIconIntoImagesObject;
