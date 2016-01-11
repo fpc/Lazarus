@@ -11592,17 +11592,9 @@ msgstr "Éditer l'aide contextuelle"
 msgid "Install/Uninstall Packages ..."
 msgstr "Installer/Désinstaller des paquets..."
 
-#: lazarusidestrconsts.lismenueditor
-msgid "Menu Editor ..."
-msgstr "Éditeur de menu..."
-
 #: lazarusidestrconsts.lismenueditoracceleratorkeysneedschanging
 msgid "Accelerator(&&) key \"%s\" needs changing "
 msgstr "La touche d'accélération (&&) \"%s\" doit être changée"
-
-#: lazarusidestrconsts.lismenueditoracomponentwithnameexists
-msgid "A component with the name %s already exists"
-msgstr "Un composant portant le nom \"%s\" existe déjà"
 
 #: lazarusidestrconsts.lismenueditoraddanewitemaboveselecteditem
 msgid "Add a new item above selected item"
@@ -11620,22 +11612,6 @@ msgstr "Ajouter un nouvel élément avant l'élément choisi"
 msgid "Add a new item below selected item"
 msgstr "Ajouter un nouvel élément sous l'élément choisi"
 
-#: lazarusidestrconsts.lismenueditoraddaniconfromthemenusimagelist
-msgid "Add an icon from the menu's ImageList"
-msgstr "Ajouter une icône du menu de la liste d'images"
-
-#: lazarusidestrconsts.lismenueditoraddanonclickeventtoselecteditem
-msgid "Add an OnClick event to selected item"
-msgstr "Ajouter un événement \"OnClick\" à l'élément sélectionné"
-
-#: lazarusidestrconsts.lismenueditoraddaseparatorafterselecteditem
-msgid "Add a separator after selected item"
-msgstr "Ajouter un séparateur après l'élément sélectionné"
-
-#: lazarusidestrconsts.lismenueditoraddaseparatorbeforeselecteditem
-msgid "Add a separator before selected item"
-msgstr "Ajouter un séparateur avant l'élément sélectionné"
-
 #: lazarusidestrconsts.lismenueditoraddasubmenuattherightofselecteditem
 msgid "Add a submenu at the right of selected item"
 msgstr "Ajouter un sous-menu à droite de l'élément sélectionné"
@@ -11652,21 +11628,9 @@ msgstr "Ajouter depuis un modèle..."
 msgid "Add icon from %s"
 msgstr "Ajout d'une icône depuis %s"
 
-#: lazarusidestrconsts.lismenueditoraddiconfroms2
-msgid "Add icon from %s ..."
-msgstr "Ajout d'une icône depuis %s..."
-
 #: lazarusidestrconsts.lismenueditoraddimagelisticon
 msgid "Add imagelist &icon"
 msgstr "Ajouter une &icône de liste d'images"
-
-#: lazarusidestrconsts.lismenueditoraddimagelisticon2
-msgid "Add imagelist icon"
-msgstr "Ajouter une icône de liste d'images"
-
-#: lazarusidestrconsts.lismenueditoradditemsonebyone
-msgid "Add items one by one"
-msgstr "Ajouter les éléments un par un"
 
 #: lazarusidestrconsts.lismenueditoraddnewitemabove
 msgid "&Add new item above"
@@ -11724,25 +11688,13 @@ msgstr "&Aide,Menu d'aide de base,&Contenu de l'aide,F1,&Index de l'aide,,Aide e
 msgid "&Window,Basic window menu,&New Window,,&Tile,,&Cascade,,&Arrange all,,-,,&Hide,,&Show,,"
 msgstr "&Fenêtre,Menu de base des fenêtres,&Nouvelle fenêtre,,&Tuiles,,&Cascade,,Tout &arranger,,-,,Cac&her,,&Montrer,,"
 
-#: lazarusidestrconsts.lismenueditorcanceldeletion
-msgid "Cancel deletion"
-msgstr "Annuler la suppression"
-
 #: lazarusidestrconsts.lismenueditorcaption
 msgid "Caption"
 msgstr "Légende"
 
-#: lazarusidestrconsts.lismenueditorcaptioncannotbeblank
-msgid "Caption cannot be blank"
-msgstr "La légende ne peut pas être en blanc"
-
-#: lazarusidestrconsts.lismenueditorcaptioneditemsd
-msgid "Captioned items: %d"
-msgstr "Éléments avec légende : %d"
-
-#: lazarusidestrconsts.lismenueditorcaptioneditemsna
-msgid "Captioned items: n/a"
-msgstr "Éléments avec légende : n/a"
+#: lazarusidestrconsts.lismenueditorcaptioneditemss
+msgid "Captioned items: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorcaptionshouldnotbeblank
 msgid "Caption should not be blank"
@@ -11772,30 +11724,13 @@ msgstr "Modifier le raccourci pour %s"
 msgid "Change the shortCutKey2 for %s"
 msgstr "Modifier le raccourci n°2 pour %s"
 
-#: lazarusidestrconsts.lismenueditorcheckmarkandradioitemprops
-msgid "%s \"%s\" - Check mark and RadioItem properties"
-msgstr "\"%s\"%s - coche et propriétés \"RadioItem\""
-
-#: lazarusidestrconsts.lismenueditorcheckmarkradioitem
-msgid "Checkmark && &radioitem ..."
-msgstr "Coche && élément &Radio..."
-
-#: lazarusidestrconsts.lismenueditorchoosetemplatetodelete
-msgid "Choose template to delete"
-msgstr "Choisir le modèle à supprimer"
-
-#: lazarusidestrconsts.lismenueditorchoosetemplatetoinsert
-msgid "Choose template to insert"
-msgstr "Choisir le modèle à insérer"
+#: lazarusidestrconsts.lismenueditorchoosetemplateto
+msgid "Choose template to"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorclickanongreyeditemtoedititsshortcut
 msgid "Click a non-greyed item to edit its shortcut"
 msgstr "Cliquez sur un élément non grisé afin d'éditer ce raccourci"
-
-#: lazarusidestrconsts.lismenueditorclose
-msgctxt "lazarusidestrconsts.lismenueditorclose"
-msgid "&Close"
-msgstr "&Fermer"
 
 #: lazarusidestrconsts.lismenueditorcomponentisunexpectedkind
 msgid "Component is unexpected kind"
@@ -11813,17 +11748,9 @@ msgstr "<résolution de conflit effectuée>"
 msgid "%d (%d items)"
 msgstr "%d (%d éléments)"
 
-#: lazarusidestrconsts.lismenueditordeepestnestedmenuleveld
-msgid "Deepest nested menu level: %d"
-msgstr "Niveau de profondeur de menu maximum : %d"
-
-#: lazarusidestrconsts.lismenueditordeepestnestedmenulevelna
-msgid "Deepest nested menu level: n/a"
-msgstr "Niveau de profondeur de menu maximum : n/a"
-
-#: lazarusidestrconsts.lismenueditordeleteallsubitems
-msgid "Delete all subitems"
-msgstr "Supprimer tous les sous-éléments"
+#: lazarusidestrconsts.lismenueditordeepestnestedmenulevels
+msgid "Deepest nested menu level: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditordeleteitem
 msgid "&Delete item"
@@ -11833,10 +11760,6 @@ msgstr "Supprimer l'élément"
 msgid "&Delete menu template ..."
 msgstr "&Supprimer le modèle de menu..."
 
-#: lazarusidestrconsts.lismenueditordeletepreviouslysavedmenutemplate
-msgid "Delete previously saved menu template"
-msgstr "Supprimer le modèle de menu déjà sauvegardé"
-
 #: lazarusidestrconsts.lismenueditordeletesavedmenutemplate
 msgid "Delete saved menu template"
 msgstr "Supprimer le modèle de menu sauvegardé"
@@ -11844,10 +11767,6 @@ msgstr "Supprimer le modèle de menu sauvegardé"
 #: lazarusidestrconsts.lismenueditordeleteselectedmenutemplate
 msgid "Delete selected menu template"
 msgstr "Supprimer le modèle de menu choisi"
-
-#: lazarusidestrconsts.lismenueditordeletetheselecteditem
-msgid "Delete the selected item"
-msgstr "Supprimer l'élément choisi"
 
 #: lazarusidestrconsts.lismenueditordeletethisitemanditssubitems
 msgid "Delete this item and its subitems?"
@@ -11861,33 +11780,13 @@ msgstr "Suppression d'un élément avec un sous-menu"
 msgid "Deleting this item will delete all subitems too."
 msgstr "La suppression de cet élément supprimera aussi tous les sous-éléments."
 
-#: lazarusidestrconsts.lismenueditordiscoverandresolveanyconflictingshortcuts
-msgid "Discover and resolve any conflicting shortcuts"
-msgstr "Rechercher et résoudre tous les conflits de raccourcis"
-
-#: lazarusidestrconsts.lismenueditordisplayalistofbothshortcutsandacceleratorkeys
-msgid "Display a list of both shortcuts and accelerator keys"
-msgstr "Afficher une liste des raccourcis et des touches d'accélération"
-
-#: lazarusidestrconsts.lismenueditordisplayalistofmenuitemshortcuts
-msgid "Display a list of menuitem shortcuts"
-msgstr "Afficher une liste des raccourcis d'éléments de menu"
-
 #: lazarusidestrconsts.lismenueditordisplaypreviewaspopupmenu
 msgid "Display preview as &Popup menu"
 msgstr "Afficher l'aperçu en tant que &menu surgissant"
 
-#: lazarusidestrconsts.lismenueditordoyouwanttoaddmenuitemsonebyone
-msgid "Do you want to add menu items one by one,"
-msgstr "Voulez-vous ajouter les éléments du menu un par un ?"
-
 #: lazarusidestrconsts.lismenueditoreditcaption
 msgid "Edit &Caption"
 msgstr "Éditer la &légende"
-
-#: lazarusidestrconsts.lismenueditoreditcheckmarkprops
-msgid "Edit Check mark and RadioItem properties"
-msgstr "Modifier les coches et les propriétés \"RadioItem\""
 
 #: lazarusidestrconsts.lismenueditoreditingcaptionofs
 msgid "Editing Caption of %s"
@@ -11902,16 +11801,10 @@ msgid "Editing %s for %s"
 msgstr "Édition de %s pour %s"
 
 #: lazarusidestrconsts.lismenueditoreditingssnomenuitemselected
-msgid "Editing %s.%s - no menu item selected"
-msgstr "Édition de %s.%s - pas d'élément de menu choisi"
-
-#: lazarusidestrconsts.lismenueditoreditingssnomenuitemselected2
+#, fuzzy
+#| msgid "Editing %s.%s - no menu item selected"
 msgid "Editing %s.%s - no menuitem selected"
-msgstr "Édition de %s.%s - pas de sous-menu choisi"
-
-#: lazarusidestrconsts.lismenueditoredittheselecteditemscaption
-msgid "Edit the selected item's Caption"
-msgstr "Éditer la &légende de l'élément choisi"
+msgstr "Édition de %s.%s - pas d'élément de menu choisi"
 
 #: lazarusidestrconsts.lismenueditorenteramenudescription
 msgid "Enter a menu &Description:"
@@ -11949,13 +11842,13 @@ msgstr "&GroupIndex (montre tous les groupes existants)"
 msgid "GroupIndex,MenuItems"
 msgstr "GroupIndex,MenuItems"
 
+#: lazarusidestrconsts.lismenueditorgroupindexvaluess
+msgid "GroupIndex value(s): %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditorinadequatedescription
 msgid "Inadequate Description"
 msgstr "Description inadéquate"
-
-#: lazarusidestrconsts.lismenueditorinitialmenupopulation
-msgid "Initial menu population"
-msgstr "Population du menu initial"
 
 #: lazarusidestrconsts.lismenueditorinsertmenutemplateinto
 msgid "Insert menu template into "
@@ -11969,13 +11862,9 @@ msgstr "Insérer le modèle de menu choisi"
 msgid "is not assigned"
 msgstr "n'est pas assigné"
 
-#: lazarusidestrconsts.lismenueditoritemswithicond
-msgid "Items with icon: %d"
-msgstr "Éléments avec icône : %d"
-
-#: lazarusidestrconsts.lismenueditoritemswithiconna
-msgid "Items with icon: n/a"
-msgstr "Éléments avec icône : n/a"
+#: lazarusidestrconsts.lismenueditoritemswithicons
+msgid "Items with icon: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorlistshortcutsandaccelerators
 msgid "List shortcuts and &accelerators for %s ..."
@@ -11985,17 +11874,13 @@ msgstr "Lister les raccourcis et les accélérateurs pour %s..."
 msgid "List shortcuts for %s ..."
 msgstr "Lister les raccourcis pour %s..."
 
-#: lazarusidestrconsts.lismenueditormanagecheckmarksandradiogroups
-msgid "Manage check marks and radiogroups"
-msgstr "Gérer les coches et les \"RadioGroups\""
-
 #: lazarusidestrconsts.lismenueditormenueditor
 msgid "Menu Editor"
 msgstr "Éditeur de menu"
 
-#: lazarusidestrconsts.lismenueditormenueditornomenuisselected
-msgid "Menu Editor - no menu is selected"
-msgstr "Éditeur de menu - pas de menu choisi"
+#: lazarusidestrconsts.lismenueditormenuitem
+msgid "menu item"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditormenuitemshortcutconflictsin
 msgid "Menuitem shortcut conflicts in "
@@ -12047,6 +11932,10 @@ msgstr "Déplacer Diviser Supprimer Ajouter des éléments"
 msgid "Move Up (or left)"
 msgstr "Déplacer vers le haut (ou à gauche)"
 
+#: lazarusidestrconsts.lismenueditorna
+msgid "n/a"
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditornomenuselected
 msgid "(no menu selected)"
 msgstr "(aucun menu choisi)"
@@ -12059,37 +11948,17 @@ msgstr "<aucun>"
 msgid "<none>,<none>"
 msgstr "< aucun >, <aucun>"
 
-#: lazarusidestrconsts.lismenueditornoshortcutconflictsfound
-msgid "<no shortcut conflicts found>"
-msgstr "< pas de raccourcis en conflit >"
+#: lazarusidestrconsts.lismenueditornoradioitemsinthismenu
+msgid "no radioitems in this menu"
+msgstr ""
 
-#: lazarusidestrconsts.lismenueditornoshortcutconflictsremain
-msgid "<no shortcut conflicts remain>"
-msgstr "< il ne reste pas de raccourcis en conflit >"
-
-#: lazarusidestrconsts.lismenueditornoshortcutconflictstoresolve
-msgid "<no shortcut conflicts to resolve>"
-msgstr "< aucun conflit de raccourcis à résoudre >"
-
-#: lazarusidestrconsts.lismenueditornotegroupindexdhasonlyoneradioitemitisnotyetagroup
-msgid " Note: GroupIndex %d has only one RadioItem (it is not yet a group)"
-msgstr "Remarque : \"GroupIndex\" %d ne possède qu'un \"RadioItem\" (ce n'est pas encore un groupe)"
+#: lazarusidestrconsts.lismenueditornoshortcutconflictss
+msgid "<no shortcut conflicts%s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditornousersavedtemplates
 msgid "No user-saved templates"
 msgstr "Pas de modèles utilisateurs sauvegardés"
-
-#: lazarusidestrconsts.lismenueditornumberofdropdownitemsforeachmenubaritem
-msgid "Number of dropdown items for each menubar item"
-msgstr "Nombre d'éléments déroulants pour chaque élément de la barre de menu"
-
-#: lazarusidestrconsts.lismenueditornumberofinitialmenubaritems
-msgid "Number of initial menubar items"
-msgstr "Nombre initial d'éléments de la barre de menu"
-
-#: lazarusidestrconsts.lismenueditornumberofinitialpopupmenuitems
-msgid "Number of initial popup menu items"
-msgstr "Nombre initial d'éléments de la barre de menu surgissant"
 
 #: lazarusidestrconsts.lismenueditoronlystandarddefaulttemplatesareavailable
 msgid "Only standard default templates are available."
@@ -12099,45 +11968,29 @@ msgstr "Seuls les modèles standards par défaut sont disponibles."
 msgid "  or click header to sort by that column"
 msgstr " ou cliquez sur l'en-tête pour trier par cette colonne"
 
-#: lazarusidestrconsts.lismenueditororstartwithaskeletonmenuofseveralitems
-msgid "Or start with a skeleton menu of several items?"
-msgstr "Ou commencer par un squelette de menu de plusieurs éléments ?"
-
 #: lazarusidestrconsts.lismenueditorpickaniconfroms
 msgid "Pick an icon from %s"
 msgstr "Ajout d'une icône depuis %s"
 
-#: lazarusidestrconsts.lismenueditorpopupassignmentsd
-msgid "Popup assignments: %d"
-msgstr "Affectations de menus surgissants : %d"
+#: lazarusidestrconsts.lismenueditorpopupassignmentss
+msgid "Popup assignments: %s"
+msgstr ""
 
-#: lazarusidestrconsts.lismenueditorpopupassignmentsna
-msgid "Popup assignments n/a"
-msgstr "Affectations de menus surgissants : n/a"
+#: lazarusidestrconsts.lismenueditorremain
+msgid " remain>"
+msgstr ""
 
-#: lazarusidestrconsts.lismenueditorremainingconflicts0
-msgid "Remaining conflicts: 0"
-msgstr "Conflits non résolus : 0"
-
-#: lazarusidestrconsts.lismenueditorremainingconflictsd
-msgid "Remaining conflicts: %d"
-msgstr "Conflits non résolus : %d"
+#: lazarusidestrconsts.lismenueditorremainingconflictss
+msgid "Remaining conflicts: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorremoveallseparators
 msgid "&Remove all separators"
 msgstr "Supp&rimer tous les séparateurs"
 
-#: lazarusidestrconsts.lismenueditorremoveeveryseparatorinthissubmenu
-msgid "Remove every separator in this submenu"
-msgstr "Supprimer chaque séparateur de ce sous-menu"
-
-#: lazarusidestrconsts.lismenueditorresolvedconflicts0
-msgid "Resolved conflicts: 0"
-msgstr "Conflits résolus : 0"
-
-#: lazarusidestrconsts.lismenueditorresolvedconflictsd
-msgid "Resolved conflicts: %d"
-msgstr "Conflits résolus : %d"
+#: lazarusidestrconsts.lismenueditorresolvedconflictss
+msgid "Resolved conflicts: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorresolveselectedconflict
 msgid "Resolve selected conflict"
@@ -12146,6 +11999,10 @@ msgstr "Résoudre le conflit sélectionné"
 #: lazarusidestrconsts.lismenueditorresolveshortcutconflicts
 msgid "&Resolve shortcut conflicts ..."
 msgstr "&Résoudre les conflits de raccourcis..."
+
+#: lazarusidestrconsts.lismenueditorrootmenu
+msgid "root menu"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsavedtemplates
 msgid "Saved templates"
@@ -12167,10 +12024,6 @@ msgstr "Sauvegarder le menu en tant que modèle pour une utilisation ultérieure
 msgid "Save menu shown as a new template"
 msgstr "Sauvegarder le menu montré en tant que nouveau modèle"
 
-#: lazarusidestrconsts.lismenueditorsavethismenulayoutforfuturereuse
-msgid "Save this menu layout for future reuse"
-msgstr "Sauvegarder cette composition de menu pour une utilisation ultérieure"
-
 #: lazarusidestrconsts.lismenueditorsconflictswiths
 msgid "%s conflicts with %s"
 msgstr "%s est en conflit avec %s"
@@ -12179,17 +12032,17 @@ msgstr "%s est en conflit avec %s"
 msgid "Se&parators"
 msgstr "Sé&parateurs"
 
+#: lazarusidestrconsts.lismenueditorsgroupindexd
+msgid "%s.GroupIndex: %d"
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditorshortcutconflictsfoundinitiallyd
 msgid "Shortcut conflicts found initially: %d"
 msgstr "Conflits de raccourcis trouvés initialement : %d"
 
-#: lazarusidestrconsts.lismenueditorshortcutitemsd
-msgid "Shortcut items: %d"
-msgstr "Éléments de raccourcis : %d"
-
-#: lazarusidestrconsts.lismenueditorshortcutitemsna
-msgid "Shortcut items: n/a"
-msgstr "Éléments de raccourcis : n/a"
+#: lazarusidestrconsts.lismenueditorshortcutitemss
+msgid "Shortcut items: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutnotyetchanged
 msgid "Shortcut not yet changed"
@@ -12239,6 +12092,10 @@ msgstr "\"%s\" dans %s"
 msgid "\"%s\" is already in use in %s as a shortcut.%sTry a different shortcut."
 msgstr "\"%s\" est déjà utilisé dans %s comme raccourci.%sVeuillez essayer un raccourci différent."
 
+#: lazarusidestrconsts.lismenueditorsisnotaradioitem
+msgid "%s is not a radioitem"
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
 msgid "Please expand: \"%s\" is not a sufficient Description"
 msgstr "Veuillez développer : \"%s\" n'est pas une description suffisante"
@@ -12250,10 +12107,6 @@ msgstr "Certains ensembles graphiques n'autorisent pas les séparateurs dans la 
 #: lazarusidestrconsts.lismenueditorsshortcuts
 msgid "%s: Shortcuts"
 msgstr "%s : Raccourcis"
-
-#: lazarusidestrconsts.lismenueditorsshortcutsacceleratorkeys
-msgid "%s: Shortcuts & accelerator keys"
-msgstr "%s : Raccourcis et touches d'accélération"
 
 #: lazarusidestrconsts.lismenueditorsshortcutsandacceleratorkeys
 msgid "%s: Shortcuts and accelerator keys"
@@ -12271,13 +12124,9 @@ msgstr "%s.%s.%s - OnClick : %s"
 msgid "Standard templates"
 msgstr "Modèles standard"
 
-#: lazarusidestrconsts.lismenueditorstartingtocreateamenu
-msgid "Starting to create a menu"
-msgstr "Début de création d'un menu"
-
-#: lazarusidestrconsts.lismenueditorstartwithseveralitems
-msgid "Start with several items"
-msgstr "Commencez avec plusieurs éléments"
+#: lazarusidestrconsts.lismenueditorsubmenu
+msgid "submenu"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditortemplatedescription
 msgid "Template description:"
@@ -12295,13 +12144,13 @@ msgstr "Modèle enregistré"
 msgid "There are no user-saved menu templates."
 msgstr "Il n'y a pas de modèles de menu sauvegardés par l'utilisateur."
 
+#: lazarusidestrconsts.lismenueditortoresolve
+msgid " to resolve>"
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditortsclistgetscanlistcompnameinvalidindexdforfscanlis
 msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"
 msgstr "\"TSCList.GetScanListCompName\" : index %d incorrect pour \"FScanList\""
-
-#: lazarusidestrconsts.lismenueditoruseamenutemplatetoconstructmenuitemshere
-msgid "Use a menu template to construct menu items here"
-msgstr "Utiliser un modèle de menu pour construire des éléments de menu ici"
 
 #: lazarusidestrconsts.lismenueditoryouhavetochangetheshortcutfromsstoavoidaconflict
 msgid "You have to change the shortcut from %s%sto avoid a conflict"
