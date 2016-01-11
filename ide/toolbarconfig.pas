@@ -531,10 +531,10 @@ end;
 
 function TToolBarConfig.RootNodeCaption(Item: TIDEButtonCommand): string;
 var
-  AName: string;
+  aCaption: string;
 begin
-  AName:= Item.Caption;
-  case AName of
+  aCaption:= Item.Caption;
+  case aCaption of
     'IDEMainMenu':            Result := lisCoolbarIDEMainMenu;    // mnuMain
     'SourceTab':              Result := lisCoolbarSourceTab;      // SourceTabMenuRootName
     'SourceEditor':           Result := lisCoolbarSourceEditor;   // SourceEditorMenuRootName
@@ -544,7 +544,7 @@ begin
     'Designer':               Result := lisCoolbarDesigner;       // DesignerMenuRootName
     'PackageEditor':          Result := lisCoolbarPackageEditor;  // PackageEditorMenuRootName
     'PackageEditorFiles':     Result := lisCoolbarPackageEditorFiles // PackageEditorMenuFilesRootName
-    else                      Result := Item.Caption;
+    else                      Result := aCaption;
   end;
 end;
 
