@@ -22,15 +22,15 @@ TShadowBox = class;
 { TFake }
 
 TFake = class(TCustomControl)
-private
-  type TTexture = (txSquare, txArrowRight, txArrowDown);
 protected
   FShadowMenu: TShadowMenu;
+  FMinWidth: integer;
   function GetShouldBeVisible: boolean; virtual; abstract;
   procedure SetVisibilitySizeAndPosition; virtual; abstract;
+  procedure TextChanged; override;
 protected
   class function GetControlClassDefaultSize: TSize; override;
-  procedure Draw(aTexture: TTexture);
+  procedure Paint; override;
 public
   constructor CreateWithPurpose(anOwner: TShadowMenu);
   procedure Refresh;
@@ -41,21 +41,18 @@ TAddSiblingFake = class(TFake)
 protected
   function GetShouldBeVisible: boolean; override;
   procedure SetVisibilitySizeAndPosition; override;
-  procedure Paint; override;
 end;
 
 TAddSubmenuFake = class(TFake)
 protected
   function GetShouldBeVisible: boolean; override;
   procedure SetVisibilitySizeAndPosition; override;
-  procedure Paint; override;
 end;
 
 TAddFirstFake = class(TFake)
 protected
   function GetShouldBeVisible: boolean; override;
   procedure SetVisibilitySizeAndPosition; override;
-  procedure Paint; override;
 end;
 
 TShadowItemDisplayState = (dsNormal, dsSelected, dsDisabled);
@@ -116,21 +113,22 @@ end;
 
 TShadowBox = class(TCustomControl)
 strict private
+  FLastRIValue: boolean;
   FLevel: integer;
   FParentBox: TShadowBox;
   FParentMenuItem: TMenuItem;
   FShadowList: TFPList;
   FShadowMenu: TShadowMenu;
   FUpdating: boolean;
+  function GetHasRadioItems: boolean;
   function GetIsMainMenu: boolean;
   function GetIsMenuBar: boolean;
-  function GetRadioGroupList: TStringList;
+  function GetRadioGroupsString: string;
   function GetShadowCount: integer;
   procedure BeginUpdate;
   procedure EndUpdate;
   procedure ShowAllUnSelected;
 protected
-  function GetHasRadioItemInfo(out aByteArr: TByteDynArray): boolean;
   function GetInnerDims: TPoint;
   procedure AddItemAndShadow(existingSI: TShadowItem; addBefore:boolean; isSeparator: boolean=False);
   procedure LocateShadows;
@@ -142,7 +140,6 @@ protected
   property IsMenuBar: boolean read GetIsMenuBar;
   property Level: integer read FLevel;
   property ParentBox: TShadowBox read FParentBox;
-  property ParentMenuItem: TMenuItem read FParentMenuItem;
   property ShadowCount: integer read GetShadowCount;
   property ShadowList: TFPList read FShadowList;
   property Updating: boolean read FUpdating;
@@ -150,17 +147,20 @@ public
   constructor CreateWithParentBox(aSMenu: TShadowMenu; aParentBox: TShadowBox; aParentItem: TMenuItem);
   destructor Destroy; override;
   procedure SetUnCheckedAllExcept(aMI: TMenuItem);
-  property RadioGroupList: TStringList read GetRadioGroupList;
+  property LastRIValue: boolean read FLastRIValue write FLastRIValue;
+  property ParentMenuItem: TMenuItem read FParentMenuItem;
+  property HasRadioItems: boolean read GetHasRadioItems;
+  property RadioGroupsString: string read GetRadioGroupsString;
 end;
 
 TPopEnum = {%region}
-  (popItemAddOnClick, popItemAddBefore, popItemAddAfter, popItemAddSubMenu, popItemDelete,
-   popItemAddSep,
-   popItemEditCaption, popItemMoveBefore, popItemMoveAfter, popAddImgListIcon,
-   popItemSep,
+  (popItemMoveBefore, popItemMoveAfter,
    popSeparators_,
      popAddSeparatorBefore, popAddSeparatorAfter, popRemoveAllSeparators,
-   popCheckRadio,
+   popItemDelete, popItemAddBefore, popItemAddAfter, popItemAddSubMenu,
+   popItemSep,
+   popAddImgListIcon, popItemAddOnClick, popItemEditCaption,
+   popItemOISep,
    popShortcuts_,
      popListShortcuts, popListShortcutsAccelerators, popResolveShortcutConflicts,
    popTemplates_,
@@ -188,6 +188,7 @@ strict private
   function GetHighestLevelVisibleBox: TShadowBox;
   function GetMaxVisibleBoxDims(aSB: TShadowBox): TPoint;
   function GetMaxVisibleFakeDims: TPoint;
+  function GetSelectedShadowBox: TShadowBox;
   function GetSelectedShadowItem: TShadowItem;
   procedure AddManyItems(aPrimaries, aDepth: integer);
   procedure AddSubMenuTo(anExistingSI: TShadowItem);
@@ -197,6 +198,7 @@ strict private
   procedure DeleteShadowAndItemAndChildren(anExistingSI: TShadowItem);
   procedure OnDesignerModified(Sender: TObject);
   procedure OnObjectPropertyChanged(Sender: TObject; NewObject: TPersistent);
+  procedure OnDesignerRefreshPropertyValues;
   procedure SetupPopupMenu;
   procedure UpdateButtonGlyphs(isInBar: boolean);
   // user actions
@@ -208,7 +210,6 @@ strict private
   procedure AddSeparatorBelow(Sender: TObject);
   procedure AddSubMenu(Sender: TObject);
   procedure AddFirstMenu(Sender: TObject);
-  procedure CheckmarkRadioManagement(Sender: TObject);
   procedure DeleteTemplate(Sender: TObject);
   procedure EditCaption(Sender: TObject);
   procedure ListShortcuts(Sender: TObject);
@@ -250,7 +251,8 @@ public
   procedure UpdateSelectedItemInfo;
   property IsMainMenu: boolean read FIsMainMenu;
   property LookupRoot: TComponent read FLookupRoot;
-  property SelectedMenuItem: TMenuItem read FSelectedMenuItem;
+  property SelectedMenuItem: TMenuItem read FSelectedMenuItem write FSelectedMenuItem;
+  property SelectedShadowBox: TShadowBox read GetSelectedShadowBox;
   property SelectedShadowItem: TShadowItem read GetSelectedShadowItem;
 end;
 
@@ -353,8 +355,6 @@ function AIsDescendantOfB(miA, miB: TMenuItem): boolean;
 
 function AmpersandStripped(const aText: string): string;
 
-//function CommaTextIntoTwo(const aText: string; out a2ndHalf: string): string;
-
 function GetAcceleratedItemsCount(aMenu: TMenu): integer;
 
 function GetChildSeparatorCount(aMI: TMenuItem): integer;
@@ -399,16 +399,11 @@ procedure DoShortcutAccelScanCount(const aSCList: TSCList; shortcutsOnly: boolea
 
 function AddNewOrEditShortcutDlg(aMI: TMenuItem; isMainSCut: boolean; var aShortcut: TShortCut): boolean;
 
+function ChooseIconFromImageListDlg(anImageList: TCustomImageList): integer;
+
 function DeleteMenuTemplateDlg: boolean;
 
-function DlgChooseIconFromImageList(anImageList: TCustomImageList): integer;
-
 function EditCaptionDlg(aMI: TMenuItem; var aShortcut: TShortCut): boolean;
-
-function GetCheckMarkPropertiesDlg(aMI: TMenuItem; const aGroupIndexArr: TByteDynArray;
-                               aShadowMenu: TShadowMenu; out aChecked: boolean;
-                               out anAutoCheck: boolean; out anAlwaysShowCheckable: boolean;
-                               out aRadioItem: boolean; out aGroupIndex: byte): boolean;
 
 function InsertMenuTemplateDlg: TMenuItem;
 
@@ -437,7 +432,6 @@ const
   Double_MenuBar_Text_Offset = MenuBar_Text_Offset shl 1;
   DropDown_Text_Offset = 35;
   Double_DropDown_Text_Offset = DropDown_Text_Offset shl 1;
-  Treble_DropDown_Text_Offset = 3*DropDown_Text_Offset;
   Gutter_Offset = 6;
   Gutter_X = DropDown_Text_Offset - Gutter_Offset;
   Popup_Origin: TPoint = (x:15; y:15);
@@ -615,38 +609,6 @@ TEditCaptionDialog = class(TForm)
     property NewShortcut: TShortCut read FNewShortcut;
     property OldShortcut: TShortCut write FOldShortcut;
   end;
-
-{ TCheckMarkDialog }
-
-TCheckMarkDialog = class(TForm)
-  procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
-strict private
-  FButtonPanel: TButtonPanel;
-  FCheckMarkGroup: TCheckGroup;
-  FDisplayGroupIndexes: TDualDisplay;
-  FGBProperties: TGroupBox;
-  FGroupIndexArray: TByteDynArray;
-  FLGroupIndex: TLabel;
-  FMenuItem: TMenuItem;
-  FRadioGroupCombo: TComboBox;
-  FShadowMenu: TShadowMenu;
-  FStatusBar: TStatusBar;
-  function GetAutoCheck: boolean;
-  function GetChecked: boolean;
-  function GetGroupIndex: byte;
-  function GetRadioItem: boolean;
-  function GetShowAlwaysCheckable: boolean;
-  procedure CheckMarkGroupItemClick(Sender: TObject; Index: integer);
-  procedure SetIdleEvent(enableIt: boolean);
-public
-  constructor CreateWithMenuItem(AOwner: TComponent; aMI: TMenuItem;
-                                 aByteArr: TByteDynArray; aShadowMenu: TShadowMenu);
-  property AutoCheck: boolean read GetAutoCheck;
-  property Checked: boolean read GetChecked;
-  property GroupIndex: byte read GetGroupIndex;
-  property RadioItem: boolean read GetRadioItem;
-  property ShowAlwaysCheckable: boolean read GetShowAlwaysCheckable;
-end;
 
 TRadioIconGroup = class;
 
@@ -1396,40 +1358,7 @@ begin
   end;
 end;
 
-function GetCheckMarkPropertiesDlg(aMI: TMenuItem;
-  const aGroupIndexArr: TByteDynArray; aShadowMenu: TShadowMenu; out
-  aChecked: boolean; out anAutoCheck: boolean; out
-  anAlwaysShowCheckable: boolean; out aRadioItem: boolean; out aGroupIndex: byte
-  ): boolean;
-var
-  dlg: TCheckMarkDialog;
-  mr: TModalResult;
-begin
-  dlg:=TCheckMarkDialog.CreateWithMenuItem(nil, aMI, aGroupIndexArr, aShadowMenu);
-  try
-    dlg.PopupMode := pmAuto;
-    mr:=dlg.ShowModal;
-    if mr = mrOK then
-      begin
-        Result:=True;
-        aChecked:=dlg.Checked;
-        anAutoCheck:=dlg.AutoCheck;
-        anAlwaysShowCheckable:=dlg.ShowAlwaysCheckable;
-        aRadioItem:=dlg.RadioItem;
-        aGroupIndex:=dlg.GroupIndex;
-      end
-    else begin
-      aChecked:=False;
-      anAutoCheck:=False;
-      anAlwaysShowCheckable:=False;
-      Result:=False;
-    end;
-  finally
-    dlg.Free;
-  end;
-end;
-
-function DlgChooseIconFromImageList(anImageList: TCustomImageList): integer;
+function ChooseIconFromImageListDlg(anImageList: TCustomImageList): integer;
 var
   dlg: TdlgChooseIcon;
   mr: TModalResult;
@@ -1612,14 +1541,10 @@ begin
   Result:=(FShadowMenu.FMenu<>nil) and (FShadowMenu.FMenu.Items.Count=0);
 end;
 
-procedure TAddFirstFake.Paint;
-begin
-  Draw(txSquare);
-end;
-
 procedure TAddFirstFake.SetVisibilitySizeAndPosition;
 begin
   if ShouldBeVisible then begin
+    SetBounds(Left, Top, FMinWidth, DropDown_Height);
     Show;
   end
   else begin
@@ -1638,14 +1563,6 @@ begin
     Exit(False)
   else
     Result:=not item.IsLine and (item.Count = 0);
-end;
-
-procedure TAddSubmenuFake.Paint;
-begin
-  if FShadowMenu.SelectedMenuItem.IsInMenuBar then
-    Draw(txArrowDown)
-  else
-    Draw(txArrowRight);
 end;
 
 procedure TAddSubmenuFake.SetVisibilitySizeAndPosition;
@@ -1667,12 +1584,11 @@ begin
     Hide;
   end
   else begin
-    w:=Treble_DropDown_Text_Offset;
-    if (selShadow.Width < w) then
-      w:=selShadow.Width;
+    w:=FMinWidth;
     if selMI.IsInMenuBar then begin
-      SetBounds(selShadow.Left, MenuBar_Height + 1,
-                selShadow.Width, MenuBar_Height);
+      if (selShadow.Width > w) then
+        w:=selShadow.Width;
+      SetBounds(selShadow.Left, MenuBar_Height + 1, w, MenuBar_Height);
       selShadow.ShowingBottomFake:=True;
       selShadow.BottomFake:=Self;
       selShadow.ShowingRightFake:=False;
@@ -1701,11 +1617,6 @@ begin
     Result:=(item.MenuIndex = Pred(item.Parent.Count));
 end;
 
-procedure TAddSiblingFake.Paint;
-begin
-  Draw(txSquare);
-end;
-
 procedure TAddSiblingFake.SetVisibilitySizeAndPosition;
 var
   selShadow: TShadowItem;
@@ -1725,9 +1636,7 @@ begin
     Hide;
   end
   else begin
-    w:=Treble_DropDown_Text_Offset;
-    if (selShadow.Width < w) then
-      w:=selShadow.Width;
+    w:=FMinWidth;
 
     if selMI.IsInMenuBar then begin
       SetBounds(selShadow.Left + selShadow.Width + 1, 0, w, MenuBar_Height);
@@ -2008,7 +1917,7 @@ begin
     begin
       if (FEdit.Text = '') then
         begin
-          IDEMessageDialogAb(lisMenuEditorCaptionCannotBeBlank,
+          IDEMessageDialogAb(lisMenuEditorCaptionShouldNotBeBlank,
                      lisMenuEditorYouMustEnterTextForTheCaption,
                      mtWarning, [mbOK], False);
           FEdit.Text:=AmpersandStripped(FOldCaption);
@@ -2221,20 +2130,20 @@ begin
   if (MenuDesigner.ShortcutList.InitialDuplicatesCount > 0) then begin
     FResolvedConflictsCount:=0;
     FResolvedConflictsCountLabel.Caption:=Format(
-      lisMenuEditorResolvedConflictsD, [FResolvedConflictsCount]);
+      lisMenuEditorResolvedConflictsS, [IntToStr(FResolvedConflictsCount)]);
     CreateListboxItems;
     FRemainingConflictsCountLabel.Caption:=Format(
-      lisMenuEditorRemainingConflictsD, [FConflictsListBox.Count]);
+      lisMenuEditorRemainingConflictsS, [IntToStr(FConflictsListBox.Count)]);
     FConflictsListBox.ItemIndex:=0;
   end
   else begin
     FButtonPanel.OKButton.Enabled:=False;
     FSelectedInfo:=nil;
     FConflictsListBox.OnSelectionChange:=nil;
-    FConflictsListBox.Items.Add(lisMenuEditorNoShortcutConflictsFound);
-    FCurrentEdit.Text:=lisMenuEditorNoShortcutConflictsToResolve;
-    FResolvedConflictsCountLabel.Caption:=lisMenuEditorResolvedConflicts0;
-    FRemainingConflictsCountLabel.Caption:=lisMenuEditorRemainingConflicts0;
+    FConflictsListBox.Items.Add(Format(lisMenuEditorNoShortcutConflictsS,['>']));
+    FCurrentEdit.Text:=Format(lisMenuEditorNoShortcutConflictsS,[lisMenuEditorToResolve]);
+    FResolvedConflictsCountLabel.Caption:=Format(lisMenuEditorResolvedConflictsS,['0']);
+    FRemainingConflictsCountLabel.Caption:=Format(lisMenuEditorRemainingConflictsS,['0']);
   end;
 end;
 
@@ -2255,22 +2164,22 @@ begin
     FButtonPanel.OKButton.Enabled:=False;
     FSelectedInfo:=nil;
     FConflictsListBox.OnSelectionChange:=nil;
-    FRemainingConflictsCountLabel.Caption:=lisMenuEditorRemainingConflicts0;
+    FRemainingConflictsCountLabel.Caption:=Format(lisMenuEditorRemainingConflictsS,['0']);
     FResolvedConflictsCountLabel.Caption:=Format(
-      lisMenuEditorResolvedConflictsD, [FInitialConflictsCount]);
-    FConflictsListBox.Items.Add(lisMenuEditorNoShortcutConflictsRemain);
+      lisMenuEditorResolvedConflictsS, [FInitialConflictsCount]);
+    FConflictsListBox.Items.Add(Format(lisMenuEditorNoShortcutConflictsS,[lisMenuEditorRemain]));
     FCurrentEdit.Text:=lisMenuEditorConflictResolutionComplete;
-    FButtonPanel.CancelButton.Caption:=lisMenuEditorClose;
+    FButtonPanel.CancelButton.Caption:=lisBtnClose;
   end;
 end;
 
 procedure TResolveConflictsDlg.UpdateStatistics;
 begin
   FResolvedConflictsCount:=FInitialConflictsCount - FConflictsListBox.Count;
-  FResolvedConflictsCountLabel.Caption:=Format(lisMenuEditorResolvedConflictsD,
-    [FResolvedConflictsCount]);
+  FResolvedConflictsCountLabel.Caption:=Format(lisMenuEditorResolvedConflictsS,
+    [IntToStr(FResolvedConflictsCount)]);
   FRemainingConflictsCountLabel.Caption:=Format(
-    lisMenuEditorRemainingConflictsD, [FConflictsListBox.Count]);
+    lisMenuEditorRemainingConflictsS, [IntToStr(FInitialConflictsCount-FResolvedConflictsCount)]);
 end;
 
 constructor TResolveConflictsDlg.Create(TheOwner: TComponent);
@@ -2942,7 +2851,7 @@ begin
                                                          lisMenuEditorStandardTemplates);
                 FSavedNode:=FTVTemplates.Items.Add(FStandardNode,
                                                    lisMenuEditorSavedTemplates);
-                FGChoose.Caption:=lisMenuEditorChooseTemplateToInsert;
+                FGChoose.Caption:=Format('%s %s',[lisMenuEditorChooseTemplateTo, lisInsert]);
                 FLDescription.Caption:=lisMenuEditorTemplateDescription;
                 FTVTemplates.OnSelectionChanged:=@TVSelectionChanged;
                 FEDescription.ReadOnly:=True;
@@ -2951,7 +2860,7 @@ begin
                 FStandardNode:=nil;
                 FSavedNode:=FTVTemplates.Items.AddFirst(nil,
                                                     lisMenuEditorExistingSavedTemplates);
-                FGChoose.Caption:=lisMenuEditorChooseTemplateToDelete;
+                FGChoose.Caption:=Format('%s %s',[lisMenuEditorChooseTemplateTo, lisDelete]);
                 FLDescription.Caption:=lisMenuEditorTemplateDescription;
                 FTVTemplates.OnSelectionChanged:=@TVSelectionChanged;
                 FEDescription.ReadOnly:=True;
@@ -3634,222 +3543,6 @@ begin
   Caption:=Format(lisMenuEditorPickAnIconFromS, [anImageList.Name]);
 end;
 
-{ TCheckMarkDialog }
-
-procedure TCheckMarkDialog.OnIdle(Sender: TObject; var Done: Boolean);
-const
-  counter: integer = 0;
-begin
-  Inc(counter);
-  if (counter > 250) then begin
-    FStatusBar.SimpleText:='';
-    SetIdleEvent(False);
-  end;
-end;
-
-function TCheckMarkDialog.GetAutoCheck: boolean;
-begin
-  Result:=FCheckMarkGroup.Checked[1];
-end;
-
-function TCheckMarkDialog.GetChecked: boolean;
-begin
-  Result:=FCheckMarkGroup.Checked[0];
-end;
-
-function TCheckMarkDialog.GetGroupIndex: byte;
-var
-  i, len: integer;
-  s: string;
-  numeric: boolean;
-begin
-  len:=Length(FRadioGroupCombo.Text);
-  if (len = 0) then
-    Exit(0);
-  i:=1;
-  repeat
-    if FRadioGroupCombo.Text[i] in ['0'..'9'] then
-      begin
-        AppendStr(s{%H-}, FRadioGroupCombo.Text[i]);
-        numeric:=True;
-      end
-    else numeric:=False;
-    Inc(i);
-  until not numeric or (i > len);
-  i:=StrToIntDef(s, 0);
-  if (i < 0) or (i > High(Byte)-1)then
-    Result:=0
-  else Result:=i;
-end;
-
-function TCheckMarkDialog.GetRadioItem: boolean;
-begin
-  Result:=FCheckMarkGroup.Checked[3];
-end;
-
-function TCheckMarkDialog.GetShowAlwaysCheckable: boolean;
-begin
-  Result:=FCheckMarkGroup.Checked[2];
-end;
-
-procedure TCheckMarkDialog.CheckMarkGroupItemClick(Sender: TObject;
-  Index: integer);
-begin
-  if (Index = 3) then
-  begin
-    FRadioGroupCombo.Enabled:=FCheckMarkGroup.Checked[3];
-    if FCheckMarkGroup.Checked[0] and FCheckMarkGroup.Checked[3] then
-      FShadowMenu.GetParentBoxForMenuItem(FMenuItem).SetUnCheckedAllExcept(FMenuItem);
-  end;
-end;
-
-procedure TCheckMarkDialog.SetIdleEvent(enableIt: boolean);
-begin
-  case enableIt of
-    True:  Application.AddOnIdleHandler(@OnIdle);
-    False: Application.RemoveOnIdleHandler(@OnIdle);
-  end;
-end;
-
-constructor TCheckMarkDialog.CreateWithMenuItem(AOwner: TComponent;
-  aMI: TMenuItem; aByteArr: TByteDynArray; aShadowMenu: TShadowMenu);
-var
-  b: byte;
-  sl: TStringList;
-  s: string;
-begin
-  inherited CreateNew(AOwner);
-  FMenuItem:=aMI;
-  FGroupIndexArray:= aByteArr;
-  FShadowMenu:=aShadowMenu;
-  Position:=poScreenCenter;
-  BorderStyle:=bsDialog;
-  Caption:=lisMenuEditorEditCheckmarkProps;
-
-  FButtonPanel:=TButtonPanel.Create(Self);
-  with FButtonPanel do begin
-    ShowButtons:=[pbOK, pbCancel];
-    OKButton.Name:='OKButton';
-    OKButton.DefaultCaption:=True;
-    CancelButton.Name:='CancelButton';
-    CancelButton.DefaultCaption:=True;
-    ShowBevel:=False;
-    BorderSpacing.Right:=Spacing;
-    BorderSpacing.Bottom:=Spacing;
-    Parent:=Self;
-  end;
-
-  FStatusBar:=TStatusBar.Create(Self);
-  with FStatusBar do begin
-    SimplePanel:=True;
-    SizeGrip:=False;
-    Parent:=Self;
-  end;
-
-  FGBProperties:=TGroupBox.Create(Self);
-  with FGBProperties do begin
-    Align:=alClient;
-    AutoSize:=True;
-    Constraints.MinWidth:=350;
-    BorderSpacing.Around:=Margin;
-    BorderSpacing.Top:=Margin;
-    Caption:=Format(lisMenuEditorCheckMarkAndRadioItemProps,[FMenuItem.Name, FMenuItem.Caption]);
-    Parent:=Self;
-  end;
-
-  FCheckMarkGroup:=TCheckGroup.Create(Self);
-  with FCheckMarkGroup do begin
-    Columns:=3;
-    Items.CommaText:='&Checked,&AutoCheck,&ShowAlwaysCheckable,&RadioItem';
-    Align:=alTop;
-    AutoSize:=True;
-    OnItemClick:=@CheckMarkGroupItemClick;
-    Checked[0]:=FMenuItem.Checked;
-    Checked[1]:=FMenuItem.AutoCheck;
-    Checked[2]:=FMenuItem.ShowAlwaysCheckable;
-    Checked[3]:=FMenuItem.RadioItem;
-    Parent:=FGBProperties;
-  end;
-
-  FRadioGroupCombo:=TComboBox.Create(Self);
-  if FMenuItem.RadioItem then
-    FRadioGroupCombo.Text:=IntToStr(FMenuItem.GroupIndex)
-  else
-    begin
-      FRadioGroupCombo.Text:='0';
-      FRadioGroupCombo.Enabled:=False;
-    end;
-  if (Length(FGroupIndexArray) > 0) then
-    for b:=0 to Pred(Length(FGroupIndexArray)) do
-      if (FGroupIndexArray[b] > 0) then
-        begin
-          FRadioGroupCombo.Items.Add(Format(lisMenuEditorDDItems, [b,
-             FGroupIndexArray[b]]));
-          if (FGroupIndexArray[b] = 1) then begin
-            FStatusBar.SimpleText:=
-  Format(lisMenuEditorNoteGroupIndexDHasOnlyOneRadioItemItIsNotYetAGroup, [b]);
-            SetIdleEvent(True);
-          end;
-        end;
-  with FRadioGroupCombo do begin
-    BorderSpacing.Around:=Margin;
-    AnchorSideLeft.Control:=FGBProperties;
-    AnchorSideTop.Control:=FCheckMarkGroup;
-    AnchorSideTop.Side:=asrBottom;
-    AnchorSideBottom.Control:=FGBProperties;
-    AnchorSideBottom.Side:=asrBottom;
-    Anchors:=[akTop, akLeft, akBottom];
-    Width:=100;
-    Parent:=FGBProperties;
-  end;
-
-  FLGroupIndex:=TLabel.Create(Self);
-  with FLGroupIndex do begin
-    Caption:=lisMenuEditorGroupIndexDropdownShowsAnyExistingGroups;
-    FocusControl:=FRadioGroupCombo;
-    BorderSpacing.Around:=Margin;
-    BorderSpacing.Top:=2;
-    AnchorSideLeft.Control:=FRadioGroupCombo;
-    AnchorSideLeft.Side:=asrBottom;
-    AnchorSideTop.Control:=FCheckMarkGroup;
-    AnchorSideTop.Side:=asrBottom;
-    AnchorSideBottom.Control:=FGBProperties;
-    AnchorSideBottom.Side:=asrBottom;
-    Anchors:=[akTop, akLeft, akBottom];
-    Parent:=FGBProperties;
-  end;
-
-
-  FDisplayGroupIndexes:=TDualDisplay.Create(Self);
-  with FDisplayGroupIndexes do
-    begin
-      Constraints.MinHeight:=163;
-      Constraints.MaxHeight:=Screen.Height - 300;
-      BorderSpacing.Around:=Margin;
-      AnchorSideLeft.Control:=FGBProperties;
-      AnchorSideTop.Control:=FRadioGroupCombo;
-      AnchorSideTop.Side:=asrBottom;
-      AnchorSideBottom.Control:=FGBProperties;
-      AnchorSideBottom.Side:=asrBottom;
-      AnchorSideRight.Control:=FGBProperties;
-      AnchorSideRight.Side:=asrBottom;
-      Anchors:=[akTop, akLeft, akBottom, akRight];
-      Parent:=FGBProperties;
-      AddLine(lisMenuEditorGroupIndexMenuItems, dtBlackBold);
-      try
-        sl:=FShadowMenu.GetParentBoxForMenuItem(FMenuItem).RadioGroupList;
-        if (sl = nil) then
-          AddLine(lisMenuEditorNoneNone, dtGreyed)
-        else
-          for s in sl do
-            AddLine(s);
-      finally
-        sl.Free;
-      end;
-    end;
-  AutoSize:=True;
-end;
-
 { TEditCaptionDialog }
 
 procedure TEditCaptionDialog.EditOnChange(Sender: TObject);
@@ -4237,7 +3930,7 @@ begin
   else begin
     if shortcutsOnly then
       s:=lisMenuEditorSShortcuts
-    else s:=lisMenuEditorSShortcutsAcceleratorKeys;
+    else s:=lisMenuEditorSShortcutsAndAcceleratorKeys;
     lurStr:=TComponent(GlobalDesignHook.LookupRoot).Name;
     Caption:=Format(s, [lurStr]);
   end;
@@ -4516,114 +4209,41 @@ constructor TFake.CreateWithPurpose(anOwner: TShadowMenu);
 begin
   inherited Create(anOwner);
   FShadowMenu:=anOwner;
-  {case FAddType of ooooooo
-    ftAddSubmenu: Name:='AddsSubMenuFake';
-    ftAddSibling: Name:='AddItemFake';
-    ftAddFirst: Name:='AddFirstItemFake';
-  end;}
-
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, cx, cy);
   BorderStyle:=bsNone;
   Visible:=False;
   Canvas.Pen.Color:=clGradientActiveCaption;
+  Canvas.Pen.Color:=clBtnShadow;//clGradientActiveCaption;
+  Canvas.Pen.Style:=psDot;
+  Canvas.Font.Color:=clBtnShadow;
+  Canvas.Brush.Color:=clBtnFace;
   Parent:=anOwner;
 end;
 
-procedure TFake.Draw(aTexture: TTexture);
+procedure TFake.Paint;
 var
   r: TRect;
-
-  procedure DoPattern(aTexture: TTexture; aDim: integer);
-  var
-    row, col, maxRow, maxCol, x1, x2, y1, y2: integer;
-    drawBlob: boolean;
-  begin
-    maxRow:=r.Right - r.Left;
-    maxCol:=2*(r.Bottom - r.Top);
-    Canvas.Brush.Color:=clBtnFace;
-    Canvas.FillRect(r);
-    case aTexture of
-      txSquare: begin
-        Canvas.Brush.Color:=clGradientActiveCaption;
-        for row:=0 to maxRow do
-          for col:=0 to maxCol do begin
-            if not Odd(row) then
-              drawBlob:=Odd(col)
-            else drawBlob:=not Odd(col);
-            if drawBlob then
-              Canvas.FillRect(col*aDim, row*aDim, Succ(col)*aDim, Succ(row)*aDim);
-          end;
-      end;
-      txArrowRight: begin
-        for row:=0 to maxRow do
-          for col:=0 to maxCol do begin
-            if not Odd(row) then
-              drawBlob:=Odd(col)
-            else drawBlob:=not Odd(col);
-            if drawBlob then begin
-              x1:=col*aDim; y1:=row*aDim-1; y2:=y1+8;
-              Canvas.Line(x1, y1, x1, y2);
-              Inc(x1);
-              Canvas.Line(x1, y1, x1, y2);
-              Inc(x1); Inc(y1); Dec(y2);
-              Canvas.Line(x1, y1, x1, y2);
-              Inc(x1);
-              Canvas.Line(x1, y1, x1, y2);
-              Inc(x1); Inc(y1); Dec(y2);
-              Canvas.Line(x1, y1, x1, y2);
-              Inc(x1);
-              Canvas.Line(x1, y1, x1, y2);
-              Inc(x1); Inc(y1); Dec(y2);
-              Canvas.Line(x1, y1, x1, y2);
-              Inc(x1);
-              Canvas.Line(x1, y1, x1, y2);
-              Inc(x1);
-              Canvas.Line(x1, y1, x1, y2);
-            end;
-          end;
-      end;
-      txArrowDown: begin
-        for row:=0 to maxRow do
-          for col:=0 to maxCol do begin
-            if not Odd(row) then
-              drawBlob:=Odd(col)
-            else drawBlob:=not Odd(col);
-            if drawBlob then begin
-              x1:=col*aDim; y1:=row*aDim-1; x2:=x1+8;
-              Canvas.Line(x1, y1, x2, y1);
-              Inc(y1);
-              Canvas.Line(x1, y1, x2, y1);
-              Inc(x1); Inc(y1); Dec(x2);
-              Canvas.Line(x1, y1, x2, y1);
-              Inc(y1);
-              Canvas.Line(x1, y1, x2, y1);
-              Inc(x1); Inc(y1); Dec(x2);
-              Canvas.Line(x1, y1, x2, y1);
-              Inc(y1);
-              Canvas.Line(x1, y1, x2, y1);
-              Inc(x1); Inc(y1); Dec(x2);
-              Canvas.Line(x1, y1, x2, y1);
-              Inc(y1);
-              Canvas.Line(x1, y1, x2, y1);
-              Inc(y1);
-              Canvas.Line(x1, y1, x2, y1);
-            end;
-          end;
-      end;
-    end;
-  end;
+  sz: TSize;
 begin
   r:=ClientRect;
-  case aTexture of
-    txSquare: DoPattern(aTexture, 6);
-    txArrowDown, txArrowRight: DoPattern(aTexture, 7);
-  end;
+  Canvas.FillRect(r);
+  Canvas.RoundRect(r, 3, 3);
+  sz:=Canvas.TextExtent(Caption);
+  Canvas.TextOut((r.Right - r.Left - sz.cx) div 2,
+                 (r.Bottom - r.Top - sz.cy) div 2, Caption);
 end;
 
 procedure TFake.Refresh;
 begin
   SetVisibilitySizeAndPosition;
+end;
+
+procedure TFake.TextChanged;
+begin
+  inherited TextChanged;
+
+  FMinWidth:=GetStringWidth(Caption, False) + Double_MenuBar_Text_Offset;
 end;
 
 { TShadowMenu }
@@ -4818,7 +4438,8 @@ begin
   if (selected <> nil) then begin
     HideFakes;
     s:=GetNewCaptionFor(selected);
-    if (FSelectedMenuItem.IsInMenuBar) and (s = cLineCaption) then begin
+    if (s = cLineCaption) and  // disallow renaming to '-' in these cases
+       (FSelectedMenuItem.IsInMenuBar or (FSelectedMenuItem.Count > 0)) then begin
       RefreshFakes;
       Exit;
     end;
@@ -5200,6 +4821,16 @@ begin
   end;
 end;
 
+function TShadowMenu.GetSelectedShadowBox: TShadowBox;
+var
+  sel: TShadowItem;
+begin
+  sel:=SelectedShadowItem;
+  if (sel = nil) then
+    Result:=nil
+  else Result:=sel.ParentBox;
+end;
+
 procedure TShadowMenu.AddSubMenuTo(anExistingSI: TShadowItem);
 var
   newMI: TMenuItem;
@@ -5226,7 +4857,7 @@ var
   ac: TAction;
   primaryItem, mi: TMenuItem;
 
-  procedure NewPopItem(const aCaption, aHint: string; anOnClick: TNotifyEvent;
+  procedure NewPopItem(const aCaption: string; anOnClick: TNotifyEvent;
             aShortcut: TShortCut=0; aShortCut2: TShortCut=0);
   begin
     ac:=TAction.Create(Self);
@@ -5235,7 +4866,6 @@ var
       ac.DisableIfNoHandler:=False;
       Tag:=PtrInt(pe);
       Caption:=aCaption;
-      Hint:=aHint;
       OnExecute:=anOnClick;
       ShortCut:=aShortcut;
     end;
@@ -5260,7 +4890,7 @@ var
     primaryItem:=mi;
   end;
 
-  procedure NewPopSub(const aPrimary: TMenuItem; const aCaption, aHint: string;
+  procedure NewPopSub(const aPrimary: TMenuItem; const aCaption: string;
                       anOnClick: TNotifyEvent; aShortcut: TShortCut=0);
   begin
     ac:=TAction.Create(Self);
@@ -5269,7 +4899,6 @@ var
       DisableIfNoHandler:=False;
       Tag:=PtrInt(pe);
       Caption:=aCaption;
-      Hint:=aHint;
       OnExecute:=anOnClick;
       ShortCut:=aShortcut;
     end;
@@ -5291,74 +4920,56 @@ begin
   for pe in TPopEnum do begin
     case pe of
       popItemAddOnClick:      NewPopItem(lisMenuEditorAddOnClickHandler,
-                                lisMenuEditorAddAnOnClickEventToSelectedItem,
                                 @AddOnClick);
-      popItemAddBefore:       begin NewPopItem('','', @AddItemBefore, KeyToShortCut(VK_INSERT,[]));
+      popItemAddBefore:       begin NewPopItem('', @AddItemBefore, KeyToShortCut(VK_INSERT,[]));
                                 MenuDesigner.AddItemAboveButton.Action:=ac;
                               end;
-      popItemAddAfter:        begin NewPopItem('','', @AddItemAfter);
+      popItemAddAfter:        begin NewPopItem('', @AddItemAfter);
                                 MenuDesigner.AddItemBelowButton.Action:=ac;
                               end;
-      popItemAddSubMenu:      begin NewPopItem('','', @AddSubMenu,KeyToShortCut(VK_INSERT,[ssCtrl]));
+      popItemAddSubMenu:      begin NewPopItem('', @AddSubMenu,KeyToShortCut(VK_INSERT,[ssCtrl]));
                                 MenuDesigner.AddSubMenuButton.Action:=ac;
                               end;
       popItemDelete:          begin NewPopItem(lisMenuEditorDeleteItem,
-                                lisMenuEditorDeleteTheSelecteditem,
                                 @DeleteItem, KeyToShortCut(VK_DELETE, []));
                                 MenuDesigner.DeleteItemButton.Action:=ac;
                               end;
-      popItemAddSep:          NewSeparatorAction;
+      popItemOISep:          NewSeparatorAction;
       popItemEditCaption:     NewPopItem(lisMenuEditorEditCaption,
-                                lisMenuEditorEditTheSelectedItemSCaption,
                                 @EditCaption, KeyToShortCut(VK_RETURN, []));
-      popItemMoveBefore:      begin NewPopItem('','', @MoveItemBefore, KeyToShortCut(VK_UP,[ssCtrl]));
+      popItemMoveBefore:      begin NewPopItem('', @MoveItemBefore, KeyToShortCut(VK_UP,[ssCtrl]));
                                 MenuDesigner.MoveItemUpButton.Action:=ac;
                               end;
-      popItemMoveAfter:       begin NewPopItem('','', @MoveItemAfter, KeyToShortCut(VK_DOWN,[ssCtrl]));
+      popItemMoveAfter:       begin NewPopItem('', @MoveItemAfter, KeyToShortCut(VK_DOWN,[ssCtrl]));
                                 MenuDesigner.MoveItemDownButton.Action:=ac;
                               end;
-      popAddImgListIcon:      begin NewPopItem('', lisMenuEditorAddAnIconFromTheMenuSImageList,
-                                @AddImageListIcon);
+      popAddImgListIcon:      begin NewPopItem('', @AddImageListIcon);
                                 FAddImgListIconAction:=ac;
                               end;
       popItemSep:             NewSeparatorAction;
       popSeparators_:         NewPopPrimary(lisMenuEditorSeParators);
       popAddSeparatorBefore:  begin NewPopSub(primaryItem, lisMenuEditorAddSeparatorBefore,
-                                lisMenuEditorAddASeparatorBeforeSelectedItem,
                                 @AddSeparatorAbove);
                                 MenuDesigner.AddSeparatorAboveButton.Action:=ac;
                               end;
       popAddSeparatorAfter:   begin NewPopSub(primaryItem, lisMenuEditorAddSeparatorAfter,
-                                lisMenuEditorAddASeparatorAfterSelectedItem,
                                 @AddSeparatorBelow);
                                 MenuDesigner.AddSeparatorBelowButton.Action:=ac;
                               end;
       popRemoveAllSeparators: NewPopSub(primaryItem, lisMenuEditorRemoveAllSeparators,
-                                lisMenuEditorRemoveEverySeparatorinThisSubmenu,
                                 @RemoveAllSeparators);
-      popCheckRadio:          NewPopItem(lisMenuEditorCheckmarkRadioitem,
-                                lisMenuEditorManageCheckMarksAndRadiogroups,
-                                @CheckmarkRadioManagement);
       popShortcuts_:          NewPopPrimary(lisMenuEditorShortcUts2);
-      popListShortcuts:       NewPopSub(primaryItem, '',
-                                lisMenuEditorDisplayAListOfMenuitemShortcuts,
-                                @ListShortcuts);
-      popListShortcutsAccelerators: NewPopSub(primaryItem, '',
-                                      lisMenuEditorDisplayAListOfBothShortcutsAndAcceleratorKeys,
-                                      @ListShortcutsAndAccelerators);
+      popListShortcuts:       NewPopSub(primaryItem, '', @ListShortcuts);
+      popListShortcutsAccelerators: NewPopSub(primaryItem, '', @ListShortcutsAndAccelerators);
       popResolveShortcutConflicts: NewPopSub(primaryItem,
                                      lisMenuEditorResolveShortcutConflicts,
-                                     lisMenuEditorDiscoverAndResolveAnyConflictingShortcuts,
                                      @ResolveshortcutConflicts);
       popTemplates_:          NewPopPrimary(lisMenuEditorTemplates);
       popSaveAsTemplate:      NewPopSub(primaryItem, lisMenuEditorSaveMenuAsATemplate,
-                                lisMenuEditorSaveThisMenuLayoutForFutureReuse,
                                 @SaveAsTemplate);
       popAddFromTemplate:     NewPopSub(primaryItem, lisMenuEditorAddFromTemplate,
-                                lisMenuEditorUseAMenuTemplateToConstructMenuItemsHere,
                                 @AddFromTemplate);
       popDeleteTemplate:      NewPopSub(primaryItem, lisMenuEditorDeleteMenuTemplate,
-                                lisMenuEditorDeletePreviouslySavedMenuTemplate,
                                 @DeleteTemplate);
     end; // case
   end; // for pe
@@ -5523,7 +5134,7 @@ begin
     selected:=SelectedShadowItem;
     if (FMenu.Images <> nil) then
     begin
-      idx:=DlgChooseIconFromImageList(FMenu.Images);
+      idx:=ChooseIconFromImageListDlg(FMenu.Images);
       if (idx > -1) then begin
         FSelectedMenuItem.ImageIndex:=idx;
         selected.Repaint;
@@ -5535,7 +5146,7 @@ begin
     else if (selected.Level > 0) and
             (FSelectedMenuItem.Parent.SubMenuImages <> nil) then
       begin
-        idx:=DlgChooseIconFromImageList(FSelectedMenuItem.Parent.SubMenuImages);
+        idx:=ChooseIconFromImageListDlg(FSelectedMenuItem.Parent.SubMenuImages);
         if (idx > -1) then begin
           FSelectedMenuItem.ImageIndex:=idx;
           selected.Repaint;
@@ -5545,33 +5156,6 @@ begin
         end;
       end;
   end;
-end;
-
-procedure TShadowMenu.CheckmarkRadioManagement(Sender: TObject);
-var
-  check, autochk, showAlways, rItem: boolean;
-  rGroup: byte;
-  bArr: TByteDynArray;
-  si: TShadowItem;
-begin
-  if (FSelectedMenuItem = nil) then
-    Exit;
-  si:=SelectedShadowItem;
-  if (si =nil) then
-    Exit;
-  if not si.ParentBox.GetHasRadioItemInfo(bArr) then
-    SetLength(bArr, 0);
-  if GetCheckMarkPropertiesDlg(FSelectedMenuItem, bArr, Self,
-                               check, autochk, showAlways, rItem, rGroup) then
-    begin
-      FSelectedMenuItem.Checked:=check;
-      FSelectedMenuItem.AutoCheck:=autochk;
-      FSelectedMenuItem.ShowAlwaysCheckable:=showAlways;
-      FSelectedMenuItem.RadioItem:=rItem;
-      FSelectedMenuItem.GroupIndex:=rGroup;
-      SelectedShadowItem.Repaint;
-      FEditorDesigner.PropertyEditorHook.RefreshPropertyValues;
-    end;
 end;
 
 procedure TShadowMenu.DeleteTemplate(Sender: TObject);
@@ -5613,11 +5197,9 @@ var
   i: Integer;
   persistent: TPersistent;
   mi: TMenuItem absolute persistent;
-  invalidateNeeded: boolean = False;
   si: TShadowItem;
-
 begin
-  if not (Sender is TPropertyEditor) then
+  if not (Sender is TPropertyEditor) or (NewObject = nil) then
     Exit;
   if (NewObject is TAction) then
     for i:=0 to propertyEditor.PropCount-1 do begin
@@ -5626,15 +5208,16 @@ begin
         si:=GetShadowForMenuItem(mi);
         if (si = nil) then
           Continue
-        else InvalidateNeeded:=True;
+        else begin
+          UpdateBoxLocationsAndSizes;
+          RefreshFakes;
+          if (FSelectedMenuItem <> nil) then
+          SelectedShadowItem.Repaint;
+        end;
       end;
     end;
-  if InvalidateNeeded then begin
-    UpdateBoxLocationsAndSizes;
-    RefreshFakes;
-    if (FSelectedMenuItem <> nil) then
-      SelectedShadowItem.Repaint;
-  end;
+  if (NewObject is TImageList) and (NewObject = FMenu.Images) then
+    UpdateActionsEnabledness;
 end;
 
 procedure TShadowMenu.OnDesignerModified(Sender: TObject);
@@ -5670,6 +5253,23 @@ begin
       MenuDesigner.UpdateStatistics;
     end;
   end;
+end;
+
+procedure TShadowMenu.OnDesignerRefreshPropertyValues;
+var
+  comp: TComponent;
+  mi: TMenuItem absolute comp;
+  selBox: TShadowBox;
+begin
+  if FSelectedMenuItem = nil
+    then Exit;
+  comp:=GlobalDesignHook.GetComponent(FSelectedMenuItem.Name);
+  if (comp<>nil) and (comp is TMenuItem)
+    then begin
+      selBox:=SelectedShadowBox;
+      if (selBox.LastRIValue <> mi.RadioItem) then
+        MenuDesigner.UpdateSubmenuGroupBox(FSelectedMenuItem, selBox, selBox=FRootBox);
+    end;
 end;
 
 function TShadowMenu.GetBoxContainingMenuItem(aMI: TMenuItem): TShadowBox;
@@ -5792,6 +5392,10 @@ begin
   if selectedShadow=nil then
   begin
     HideFakes;
+    if (FSelectedMenuItem <> nil) then begin
+      SelectedShadowItem.ShowNormal;
+      FSelectedMenuItem:=nil;
+    end;
     UpdateSelectedItemInfo;
     if not viaDesigner and (FMenu<>nil) then
       FEditorDesigner.SelectOnlyThisComponent(FMenu);
@@ -5889,7 +5493,7 @@ begin
                                 end;
                               end;
       popItemDelete:          ac.Enabled:=(FMenu.Items.Count > 0);
-      //popItemAddSep
+      //popItemOISep
       //popItemEditCaption
       popItemMoveBefore:      begin ac.Enabled:=not isFirst;
                                 if isInBar then begin
@@ -5913,19 +5517,19 @@ begin
       popAddImgListIcon:      begin ac.Enabled:=(FMenu.Images <> nil) and (FMenu.Images.Count > 0);
                                 if ac.Enabled then begin
                                   if (FSelectedMenuItem.ImageIndex < 0) then
-                                    ac.Caption:=Format(lisMenuEditorAddIconFromS2, [FMenu.Images.Name])
+                                    ac.Caption:=Format(lisMenuEditorAddIconFromS + ' ...',
+                                                       [FMenu.Images.Name])
                                   else ac.Caption:=lisMenuEditorChangeImagelistIcon;
                                   if (FMenu.Images.Count = 1) and (FSelectedMenuItem.ImageIndex = 0) then
                                     ac.Enabled:=False;
                                 end
-                                else ac.Caption:=lisMenuEditorAddImagelistIcon2;
+                                else ac.Caption:=lisMenuEditorAddImagelistIcon;
                               end;
       //popItemSep
       popSeparators_:         ac.Enabled:=primarySCEnabled;
       popAddSeparatorBefore:  ac.Enabled:=primarySCEnabled and not isFirst and not prevIsSeparator;
       popAddSeparatorAfter:   ac.Enabled:=primarySCEnabled and not isLast and not nextIsSeparator;
       popRemoveAllSeparators: ac.Enabled:=primarySCEnabled and (GetChildSeparatorCount(FSelectedMenuItem.Parent) > 0);
-      popCheckRadio:          ac.Enabled:=not isInBar;
       //popShortcuts_
       popListShortcuts:       begin ac.Enabled:=(MenuDesigner.ShortcutMenuItemsCount > 0);
                                 ac.Caption:=Format(lisMenuEditorListShortcutsForS, [FMenu.Name]);
@@ -5966,15 +5570,19 @@ begin
   SetupPopupMenu;
   FAddItemFake:=TAddSiblingFake.CreateWithPurpose(Self);
   FAddItemFake.OnClick:=@AddItemAfter;
+  FAddItemFake.Caption:=Format('%s %s',[lisAdd, lisMenuEditorMenuItem]);
   FAddSubmenuFake:=TAddSubmenuFake.CreateWithPurpose(Self);
   FAddSubmenuFake.OnClick:=@AddSubMenu;
+  FAddSubmenuFake.Caption:=Format('%s %s',[lisAdd, lisMenuEditorSubmenu]);
   FAddFirstItemFake:=TAddFirstFake.CreateWithPurpose(Self);
   FAddFirstItemFake.OnClick:=@AddFirstMenu;
+  FAddFirstItemFake.Caption:=Format('%s %s',[lisAdd, lisMenuEditorMenuItem]);
   FAddFirstItemFake.Left := Popup_Origin.x;
   FAddFirstItemFake.Top := Popup_Origin.y;
   ConnectSpeedButtonOnClickMethods;
   GlobalDesignHook.AddHandlerObjectPropertyChanged(@OnObjectPropertyChanged);
   GlobalDesignHook.AddHandlerModified(@OnDesignerModified);
+  GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnDesignerRefreshPropertyValues);
   AutoSize:=False;
   Color:=clBtnFace;
 end;
@@ -6019,12 +5627,14 @@ procedure TShadowMenu.UpdateSelectedItemInfo;
 var
   s: string;
   method: TMethod;
+  selBox: TShadowBox;
 begin
   if (FSelectedMenuItem = nil) then
   begin
-    MenuDesigner.Caption:=Format(lisMenuEditorEditingSSNoMenuitemSelected2,
+    MenuDesigner.Caption:=Format(lisMenuEditorEditingSSNoMenuitemSelected,
                                  [FMenu.Owner.Name, FMenu.Name]);
     MenuDesigner.ButtonsGroupBox.Enabled:=False;
+    MenuDesigner.UpdateSubmenuGroupBox(nil, nil, False);
   end
   else begin
     method:=GetMethodProp(FSelectedMenuItem, 'OnClick');
@@ -6035,6 +5645,8 @@ begin
                [FMenu.Owner.Name, FMenu.Name, FSelectedMenuItem.Name, s]);
     if not MenuDesigner.ButtonsGroupBox.Enabled then
       MenuDesigner.ButtonsGroupBox.Enabled:=True;
+    selBox:=SelectedShadowBox;
+    MenuDesigner.UpdateSubmenuGroupBox(FSelectedMenuItem, selBox, selBox.Level=0);
   end;
 end;
 
@@ -6059,32 +5671,42 @@ begin
     si.ShowNormal;
 end;
 
-function TShadowBox.GetRadioGroupList: TStringList;
+function TShadowBox.GetRadioGroupsString: string;
 var
-  ba: TByteDynArray;
-  i: integer;
+  rgSet: set of byte = [];
+  g: byte;
+  p: pointer;
+  si: TShadowItem absolute p;
+  mi: TMenuItem;
 begin
-  if not GetHasRadioItemInfo(ba) then
-    Exit(nil);
-  Result:=TStringList.Create;
-  if (FLevel = 0) then
-    begin
-      for i:=0 to FShadowMenu.FMenu.Items.Count-1 do
-        if FShadowMenu.FMenu.Items[i].RadioItem then
-          Result.Add(Format('%d,%s "%s"',[FShadowMenu.FMenu.Items[i].GroupIndex,
-                            FShadowMenu.FMenu.Items[i].Name, FShadowMenu.FMenu.Items[i].Caption]));
-    end
-  else
-    for i:=0 to FParentMenuItem.Count-1 do
-      if FParentMenuItem.Items[i].RadioItem then
-        Result.Add(Format('%d,%s "%s"',[FParentMenuItem.Items[i].GroupIndex,
-         FParentMenuItem.Items[i].Name, FParentMenuItem.Items[i].Caption]));
-  Result.Sort;
+  Result:='';
+  for p in FShadowList do begin
+    mi:=si.RealItem;
+    if mi.RadioItem then begin
+      g:=mi.GroupIndex;
+      if not (g in rgSet) then begin
+        Include(rgSet, g);
+        AppendStr(Result, IntToStr(g) + ', ');
+      end;
+    end;
+  end;
+  Delete(Result, Pred(Length(Result)), 2);
 end;
 
 function TShadowBox.GetIsMainMenu: boolean;
 begin
   Result:=FShadowMenu.IsMainMenu;
+end;
+
+function TShadowBox.GetHasRadioItems: boolean;
+var
+  p: pointer;
+  si: TShadowItem absolute p;
+begin
+  for p in FShadowList do
+    if si.RealItem.RadioItem then
+      Exit(True);
+  Result:=False;
 end;
 
 function TShadowBox.GetIsMenuBar: boolean;
@@ -6231,35 +5853,6 @@ begin
       Inc(t, h);
     end;
   end;
-end;
-
-function TShadowBox.GetHasRadioItemInfo(out aByteArr: TByteDynArray): boolean;
-var
-  i: integer;
-
-  procedure AddGroup(aGroupIndex: byte);
-  begin
-    if (aGroupIndex >= Length(aByteArr)) then
-      begin
-        SetLength(aByteArr, Succ(aGroupIndex));
-        aByteArr[aGroupIndex]:=1;
-      end
-    else Inc(aByteArr[aGroupIndex]);;
-  end;
-
-begin
-  SetLength(aByteArr, 0);
-  if (FLevel = 0) then
-    begin
-      for i:=0 to FShadowMenu.FMenu.Items.Count-1 do
-        if FShadowMenu.FMenu.Items[i].RadioItem then
-          AddGroup(FShadowMenu.FMenu.Items[i].GroupIndex);
-    end
-  else
-    for i:=0 to FParentMenuItem.Count-1 do
-      if FParentMenuItem.Items[i].RadioItem then
-        AddGroup(FParentMenuItem.Items[i].GroupIndex);
-  Result:=(Length(aByteArr) > 0);
 end;
 
 function TShadowBox.GetInnerDims: TPoint;
@@ -6479,7 +6072,6 @@ end;
 procedure TShadowItem.Paint;
 var
   r, gutterR: TRect;
-  pt: TPoint;
   dets: TThemedElementDetails;
   textFlags: integer = DT_VCENTER or DT_SINGLELINE or DT_EXPANDTABS or DT_CENTER;
 
@@ -6504,32 +6096,67 @@ var
   procedure DrawMenuBarItem;
   var
     oldFontStyle: TFontStyles;
+    oldFontColor: TColor;
+    s: string;
+    x, y: integer;
+    sz: TSize;
+    pt: TPoint;
   begin
-    InflateRect(r, 1, 0); // hack needed only on Windows?
-    case FState of
-      dsNormal:   dets:=ThemeServices.GetElementDetails(tmBarBackgroundActive);
-      dsDisabled: dets:=ThemeServices.GetElementDetails(tmBarItemDisabled);
-      dsSelected: dets:=ThemeServices.GetElementDetails(tmBarItemPushed);
-    end;
-    ThemeServices.DrawElement(Canvas.Handle, dets, r);
-    if FRealItem.HasIcon and (FRealItem.ImageIndex > -1) and (FShadowMenu.FMenu.Images <> nil) then
-      ThemeServices.DrawIcon(Canvas, dets, Point(0,0), FShadowMenu.FMenu.Images, FRealItem.ImageIndex)
-    else if (FRealItem.Bitmap <> nil) and not FRealItem.Bitmap.Empty then begin
-      pt:=GetBitmapLeftTop;
-      Canvas.Draw(pt.x, pt.y, RealItem.Bitmap);
-    end;
-    r.Left:=GetMenuBarIconWidth(FRealItem);
-    if FRealItem.Default then begin
+    if (FState = dsSelected) then begin
+      Canvas.Brush.Color:=clHighlight;
+      Canvas.FillRect(r);
+      if (FRealItem.Caption = '') then
+        s:=FRealItem.Name
+      else s:=FRealItem.Caption;
+      sz:=Canvas.TextExtent(s);
+      y:=(r.Bottom - r.Top - sz.cy) div 2;
+      x:=(r.Right - r.Left - sz.cx) div 2;
+      if FRealItem.HasIcon and (FRealItem.ImageIndex > -1) and (FShadowMenu.FMenu.Images <> nil) then begin
+        pt:=GetIconTopLeft;
+        FShadowMenu.FMenu.Images.Draw(Canvas, 0, pt.y, FRealItem.ImageIndex);
+        Inc(x, MenuBar_Text_Offset);
+      end
+      else if (FRealItem.Bitmap <> nil) and not FRealItem.Bitmap.Empty then begin
+        pt:=GetBitmapLeftTop;
+        Canvas.Draw(0, pt.y, RealItem.Bitmap);
+        Inc(x, MenuBar_Text_Offset);
+      end;
       oldFontStyle:=Canvas.Font.Style;
-      Canvas.Font.Style:=[fsBold];
-    end;
-    ThemeServices.DrawText(Canvas, dets, FRealItem.Caption, r, textFlags, 0);
-    if (FState = dsDisabled) then begin // perhaps this display hack is only needed on Windows?
-      Canvas.Pen.Color:=clBtnShadow;
-      Canvas.Line(0, MenuBar_Height-1, ClientWidth, MenuBar_Height-1);
-    end;
-    if FRealItem.Default then
+      if FRealItem.Default then
+        Canvas.Font.Style:=[fsBold]
+      else Canvas.Font.Style:=[];
+      oldFontColor:=Canvas.Font.Color;
+      Canvas.Font.Color:=clHighlightText;
+      Canvas.TextOut(x, y, s);
+      Canvas.Font.Color:=oldFontColor;
       Canvas.Font.Style:=oldFontStyle;
+    end
+    else begin
+      InflateRect(r, 1, 0); // hack needed only on Windows?
+      case FState of
+        dsNormal:   dets:=ThemeServices.GetElementDetails(tmBarBackgroundActive);
+        dsDisabled: dets:=ThemeServices.GetElementDetails(tmBarItemDisabled);
+      end;
+      ThemeServices.DrawElement(Canvas.Handle, dets, r);
+      if FRealItem.HasIcon and (FRealItem.ImageIndex > -1) and (FShadowMenu.FMenu.Images <> nil) then
+        ThemeServices.DrawIcon(Canvas, dets, Point(0,0), FShadowMenu.FMenu.Images, FRealItem.ImageIndex)
+      else if (FRealItem.Bitmap <> nil) and not FRealItem.Bitmap.Empty then begin
+        pt:=GetBitmapLeftTop;
+        Canvas.Draw(pt.x, pt.y, RealItem.Bitmap);
+      end;
+      r.Left:=GetMenuBarIconWidth(FRealItem);
+      if FRealItem.Default then begin
+        oldFontStyle:=Canvas.Font.Style;
+        Canvas.Font.Style:=[fsBold];
+      end;
+      ThemeServices.DrawText(Canvas, dets, FRealItem.Caption, r, textFlags, 0);
+      if (FState = dsDisabled) then begin // perhaps this display hack is only needed on Windows?
+        Canvas.Pen.Color:=clBtnShadow;
+        Canvas.Line(0, MenuBar_Height-1, ClientWidth, MenuBar_Height-1);
+      end;
+      if FRealItem.Default then
+        Canvas.Font.Style:=oldFontStyle;
+    end;
   end;
 
   procedure DrawBackgroundAndGutter;
@@ -6546,6 +6173,8 @@ var
   end;
 
   procedure DrawCheckMarkIcon;
+  var
+    pt: TPoint;
 
     function GetSubImagesIconTopLeft: TPoint;
     begin

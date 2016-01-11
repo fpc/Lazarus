@@ -1,12 +1,12 @@
 object MenuDesigner: TMenuDesigner
-  Left = 846
-  Height = 345
-  Top = 497
+  Left = 504
+  Height = 400
+  Top = 291
   Width = 730
   Caption = 'MenuDesigner'
-  ClientHeight = 345
+  ClientHeight = 400
   ClientWidth = 730
-  Constraints.MinHeight = 345
+  Constraints.MinHeight = 400
   Constraints.MinWidth = 730
   KeyPreview = True
   OnCreate = FormCreate
@@ -16,12 +16,12 @@ object MenuDesigner: TMenuDesigner
   LCLVersion = '1.7'
   object LeftPanel: TPanel
     Left = 0
-    Height = 345
+    Height = 400
     Top = 0
     Width = 204
     Align = alLeft
     AutoSize = True
-    ClientHeight = 345
+    ClientHeight = 400
     ClientWidth = 204
     Constraints.MinHeight = 345
     Constraints.MinWidth = 204
@@ -258,16 +258,64 @@ object MenuDesigner: TMenuDesigner
       AnchorSideTop.Side = asrBottom
       AnchorSideBottom.Control = LeftPanel
       AnchorSideBottom.Side = asrBottom
-      Left = 13
+      Left = 7
       Height = 25
-      Top = 307
+      Top = 368
       Width = 75
       Anchors = [akLeft, akBottom]
-      BorderSpacing.Around = 12
+      BorderSpacing.Around = 6
       DefaultCaption = True
       Kind = bkHelp
       OnClick = HelpButtonClick
       TabOrder = 2
+    end
+    object SubmenuGroupBox: TGroupBox
+      AnchorSideLeft.Control = LeftPanel
+      AnchorSideTop.Control = StatisticsGroupBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = LeftPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 7
+      Height = 64
+      Top = 254
+      Width = 190
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      Caption = 'SubmenuGroupBox'
+      ClientHeight = 44
+      ClientWidth = 186
+      TabOrder = 3
+      object GroupIndexLabel: TLabel
+        AnchorSideLeft.Control = SubmenuGroupBox
+        AnchorSideTop.Control = RadioGroupsLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = SubmenuGroupBox
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 15
+        Top = 27
+        Width = 168
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Around = 6
+        Caption = 'GroupIndexLabel'
+        ParentColor = False
+      end
+      object RadioGroupsLabel: TLabel
+        AnchorSideLeft.Control = SubmenuGroupBox
+        AnchorSideTop.Control = SubmenuGroupBox
+        AnchorSideRight.Control = SubmenuGroupBox
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 15
+        Top = 6
+        Width = 168
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Around = 6
+        Caption = 'RadioGroupsLabel'
+        ParentColor = False
+      end
     end
   end
 end

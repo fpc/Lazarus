@@ -44,14 +44,17 @@ type
     CaptionedItemsCountLabel: TLabel;
     DeepestNestingLevelLabel: TLabel;
     DeleteItemButton: TSpeedButton;
+    GroupIndexLabel: TLabel;
     HelpButton: TBitBtn;
     IconCountLabel: TLabel;
+    LeftPanel:TPanel;
     MoveItemDownButton: TSpeedButton;
     MoveItemUpButton: TSpeedButton;
     PopupAssignmentsCountLabel: TLabel;
+    RadioGroupsLabel: TLabel;
     ShortcutItemsCountLabel: TLabel;
-    LeftPanel:TPanel;
     StatisticsGroupBox: TGroupBox;
+    SubmenuGroupBox: TGroupBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
@@ -78,13 +81,13 @@ type
                            anIconCount, anAccelCount: integer): integer;
     function GetPopupAssignmentCount: integer;
     function GetSelectedMenuComponent(const aSelection: TPersistentSelectionList;
-                      out isTMenu: boolean; out selCount: integer): TPersistent;
+      out isTMenu: boolean; out isTMenuItem: boolean): TPersistent;
     procedure DisableGUI;
     procedure EnableGUI(selectedIsNil: boolean);
+    procedure HidePopupAssignmentsInfo;
     procedure InitializeStatisticVars;
     procedure LoadFixedButtonGlyphs;
     procedure OnDesignerSetSelection(const ASelection: TPersistentSelectionList);
-    procedure HidePopupAssignmentsInfo;
     procedure SetupPopupAssignmentsDisplay;
   public
     procedure LoadVariableButtonGlyphs(isInMenubar: boolean);
@@ -93,6 +96,7 @@ type
     procedure UpdateShortcutList(includeAccelerators: boolean=False);
     procedure UpdateStatistics;
     procedure UpdateTemplatesCount;
+    procedure UpdateSubmenuGroupBox(selMI: TMenuItem; selBox: TShadowBox; boxIsRoot:boolean);
     procedure BeginUpdate;
     procedure EndUpdate;
     function IsUpdate: Boolean;
@@ -203,35 +207,32 @@ procedure TMenuDesigner.OnDesignerSetSelection(const ASelection: TPersistentSele
 var
   mnu: TMenu;
   mi, tmp: TMenuItem;
-  selCount: integer;
-  isTMenu: boolean;
+  isTMenu, isTMenuItem: boolean;
   persist: TPersistent;
 begin
   if FUpdateCount > 0 then
     Exit; // This event will be executed after all updates, look at EndUpdate
 
-  persist:=GetSelectedMenuComponent(ASelection, isTMenu, selCount);
+  persist:=GetSelectedMenuComponent(ASelection, isTMenu, isTMenuItem);
   if (persist <> nil) then
     begin
-      case isTMenu of
-        True: SetMenu(TMenu(persist), nil);
-        False:begin
-                mi:=TMenuItem(persist);
-                tmp:=mi;
-                while (tmp.Parent <> nil) do
-                  tmp:=tmp.Parent;
-                mnu:=tmp.Menu;
-                if (mnu = nil) then
-                  mnu:=mi.GetParentMenu;
-                if (mnu = FEditedMenu) and (FShadowMenu <> nil) then
-                  FShadowMenu.SetSelectedMenuItem(mi, True, False)
-                else if (mnu <> nil) then
-                       SetMenu(mnu, mi);
-              end;
+      if isTMenu then
+        SetMenu(TMenu(persist), nil)
+      else if isTMenuItem then begin
+        mi:=TMenuItem(persist);
+        tmp:=mi;
+        while (tmp.Parent <> nil) do
+          tmp:=tmp.Parent;
+        mnu:=tmp.Menu;
+        if (mnu = nil) then
+          mnu:=mi.GetParentMenu;
+        if (mnu = FEditedMenu) and (FShadowMenu <> nil) then
+          FShadowMenu.SetSelectedMenuItem(mi, True, False)
+        else if (mnu <> nil) then
+               SetMenu(mnu, mi);
       end;
     end
-  else if (selCount = 1) then  // persist = nil, i.e. no menu component selected, maybe this never happens?
-         SetMenu(nil, nil);
+  else SetMenu(nil, nil);
 end;
 
 procedure TMenuDesigner.ShowPopupAssignmentsInfo;
@@ -245,8 +246,8 @@ begin
       PopupAssignmentsCountLabel.BorderSpacing.Bottom:=0
     else PopupAssignmentsCountLabel.BorderSpacing.Bottom:=Double_Margin;
     if (count= -1) then
-      PopupAssignmentsCountLabel.Caption:=lisMenuEditorPopupAssignmentsNA
-    else PopupAssignmentsCountLabel.Caption:=Format(lisMenuEditorPopupAssignmentsD, [count]);
+      PopupAssignmentsCountLabel.Caption:=Format(lisMenuEditorPopupAssignmentsS,[lisMenuEditorNA])
+    else PopupAssignmentsCountLabel.Caption:=Format(lisMenuEditorPopupAssignmentsS, [IntToStr(count)]);
     if (count > 0) then begin
       FPopupAssignmentsListBox.Items.Assign(FPopupAssignments);
       FPopupAssignmentsListBox.Visible:=True;
@@ -258,7 +259,7 @@ end;
 procedure TMenuDesigner.HidePopupAssignmentsInfo;
 begin
   if (FEditedMenu <> nil) and (FEditedMenu is TMainMenu) then begin
-    PopupAssignmentsCountLabel.Caption:=lisMenuEditorPopupAssignmentsNA;
+    PopupAssignmentsCountLabel.Caption:=Format(lisMenuEditorPopupAssignmentsS,[lisMenuEditorNA]);
     PopupAssignmentsCountLabel.Enabled:=False;
     FPopupAssignmentsListBox.Visible:=False;
   end;
@@ -334,24 +335,29 @@ begin
 end;
 
 function TMenuDesigner.GetSelectedMenuComponent(const aSelection: TPersistentSelectionList;
-                                out isTMenu: boolean; out selCount: integer): TPersistent;
+                                out isTMenu: boolean; out isTMenuItem: boolean): TPersistent;
 begin
-  Result:=nil;
-  selCount:=aSelection.Count;
-  if (selCount = 1) then
-    begin
-      if (aSelection.Items[0] is TMenu) then
-        begin
-          isTMenu:=True;
-          Result:=aSelection.Items[0];
-        end
-      else
-      if (aSelection.Items[0] is TMenuItem) then
-        begin
-          isTMenu:=False;
-          Result:=aSelection.Items[0];
-        end
+  if (aSelection.Count = 1) then begin
+    if (aSelection.Items[0] is TMenu) then
+      begin
+        isTMenu:=True;
+        isTMenuItem:=False;
+        Result:=aSelection.Items[0];
+      end
+    else
+    if (aSelection.Items[0] is TMenuItem) then
+      begin
+        isTMenu:=False;
+        isTMenuItem:=True;
+        Result:=aSelection.Items[0];
+      end
+    else begin
+      isTMenu:=False;
+      isTMenuItem:=False;
+      Result:=nil;
     end;
+  end
+  else Result:=nil;
 end;
 
 function TMenuDesigner.GetPopupAssignmentCount: integer;
@@ -399,22 +405,22 @@ end;
 
 procedure TMenuDesigner.LoadVariableButtonGlyphs(isInMenubar: boolean);
 begin
-  case isInMenubar of
-    True: begin
-        MoveItemUpButton.LoadGlyphFromResourceName(HINSTANCE,'arrow_left');
-        MoveItemDownButton.LoadGlyphFromResourceName(HINSTANCE,'arrow_right');
-        AddItemAboveButton.LoadGlyphFromResourceName(HINSTANCE,'add_item_left');
-        AddItemBelowButton.LoadGlyphFromResourceName(HINSTANCE,'add_item_right');
-        AddSubMenuButton.LoadGlyphFromResourceName(HINSTANCE,'add_submenu_below');
-      end;
-    False: begin
-        MoveItemUpButton.LoadGlyphFromResourceName(HINSTANCE,'arrow_up');
-        MoveItemDownButton.LoadGlyphFromResourceName(HINSTANCE,'arrow_down');
-        AddItemAboveButton.LoadGlyphFromResourceName(HINSTANCE,'add_item_above');
-        AddItemBelowButton.LoadGlyphFromResourceName(HINSTANCE,'add_item_below');
-        AddSubMenuButton.LoadGlyphFromResourceName(HINSTANCE,'add_submenu_right');
-      end;
+  if isInMenubar then
+  begin
+    MoveItemUpButton.LoadGlyphFromResourceName(HINSTANCE,'arrow_left');
+    MoveItemDownButton.LoadGlyphFromResourceName(HINSTANCE,'arrow_right');
+    AddItemAboveButton.LoadGlyphFromResourceName(HINSTANCE,'add_item_left');
+    AddItemBelowButton.LoadGlyphFromResourceName(HINSTANCE,'add_item_right');
+    AddSubMenuButton.LoadGlyphFromResourceName(HINSTANCE,'add_submenu_below');
+  end else
+  begin
+    MoveItemUpButton.LoadGlyphFromResourceName(HINSTANCE,'arrow_up');
+    MoveItemDownButton.LoadGlyphFromResourceName(HINSTANCE,'arrow_down');
+    AddItemAboveButton.LoadGlyphFromResourceName(HINSTANCE,'add_item_above');
+    AddItemBelowButton.LoadGlyphFromResourceName(HINSTANCE,'add_item_below');
+    AddSubMenuButton.LoadGlyphFromResourceName(HINSTANCE,'add_submenu_right');
   end;
+  UpdateSubmenuGroupBox(nil, nil, False);
   FVariableGlyphsInMenuBar:=isInMenubar;
 end;
 
@@ -461,17 +467,18 @@ begin
   if FGUIEnabled then begin
     StatisticsGroupBox.Font.Style:=[];
     StatisticsGroupBox.Caption:=lisMenuEditorNoMenuSelected;
-    CaptionedItemsCountLabel.Caption:=lisMenuEditorCaptionedItemsNA;
-    ShortcutItemsCountLabel.Caption:=lisMenuEditorShortcutItemsNA;
-    IconCountLabel.Caption:=lisMenuEditorItemsWithIconNA;
-    DeepestNestingLevelLabel.Caption:=lisMenuEditorDeepestNestedMenuLevelNA;
-    PopupAssignmentsCountLabel.Caption:=lisMenuEditorPopupAssignmentsNA;
+    CaptionedItemsCountLabel.Caption:=Format(lisMenuEditorCaptionedItemsS,[lisMenuEditorNA]);
+    ShortcutItemsCountLabel.Caption:=Format(lisMenuEditorShortcutItemsS,[lisMenuEditorNA]);
+    IconCountLabel.Caption:=Format(lisMenuEditorItemsWithIconS, [lisMenuEditorNA]);
+    DeepestNestingLevelLabel.Caption:=Format(lisMenuEditorDeepestNestedMenuLevelS, [lisMenuEditorNA]);
+    PopupAssignmentsCountLabel.Caption:=Format(lisMenuEditorPopupAssignmentsS,[lisMenuEditorNA]);
     StatisticsGroupBox.Enabled:=False;
+    UpdateSubmenuGroupBox(nil, nil, False);
     ButtonsGroupBox.Enabled:=False;
     FPopupAssignmentsListBox.Visible:=False;
     FGUIEnabled:=False;
     InitializeStatisticVars;
-    Caption:=lisMenuEditorMenuEditorNoMenuIsSelected;
+    Caption:=Format('%s - %s',[lisMenuEditorMenuEditor, lisMenuEditorNoMenuSelected]);
   end;
 end;
 
@@ -482,8 +489,12 @@ var
 begin
   if (aMenu = nil) then begin
     DisableGUI;
+    FShadowMenu.SelectedMenuItem:=nil;
+    if Assigned(GlobalDesignHook) then
+      GlobalDesignHook.RemoveAllHandlersForObject(FShadowMenu);
     FreeAndNil(FShadowMenu);
     FEditedMenu:=nil;
+    Application.ProcessMessages;
   end
   else
     begin
@@ -528,24 +539,24 @@ begin
   if (FCaptionedItemsCount <> captions) then begin
     FCaptionedItemsCount:=captions;
     CaptionedItemsCountLabel.Caption:=
-      Format(lisMenuEditorCaptionedItemsD, [FCaptionedItemsCount]);
+      Format(lisMenuEditorCaptionedItemsS, [IntToStr(captions)]);
   end;
   if (FShortcutMenuItemsCount <> shortcuts) then begin
     FShortcutMenuItemsCount:=shortcuts;
     ShortcutItemsCountLabel.Caption:=
-      Format(lisMenuEditorShortcutItemsD, [FShortcutMenuItemsCount]);
+      Format(lisMenuEditorShortcutItemsS, [IntToStr(FShortcutMenuItemsCount)]);
   end;
   if (FIconsCount <> icons) then begin
     FIconsCount:=icons;
     IconCountLabel.Caption:=
-      Format(lisMenuEditorItemsWithIconD, [FIconsCount]);
+      Format(lisMenuEditorItemsWithIconS, [IntToStr(FIconsCount)]);
   end;
   if (FAcceleratorMenuItemsCount <> accels) then
     FAcceleratorMenuItemsCount:=accels;
   tmp:=GetNestingLevelDepth(FEditedMenu);
   if (FDeepestNestingLevel <> tmp) then begin
     DeepestNestingLevelLabel.Caption:=
-      Format(lisMenuEditorDeepestNestedMenuLevelD, [tmp]);
+      Format(lisMenuEditorDeepestNestedMenuLevelS, [IntToStr(tmp)]);
     FDeepestNestingLevel:=tmp;
   end;
   StatisticsGroupBox.Invalidate;
@@ -587,6 +598,47 @@ begin
   Result := FUpdateCount > 0;
 end;
 
+procedure TMenuDesigner.UpdateSubmenuGroupBox(selMI: TMenuItem;
+  selBox: TShadowBox; boxIsRoot: boolean);
+begin
+  if SubmenuGroupBox = nil then
+    Exit;
+
+  if (selMI = nil) then begin
+    SubmenuGroupBox.Caption:=lisMenuEditorNoMenuSelected;
+    RadioGroupsLabel.Caption:='';
+    GroupIndexLabel.Caption:='';
+  end
+  else begin
+    selBox.LastRIValue:=selMI.RadioItem;
+    if boxIsRoot then
+      SubmenuGroupBox.Caption:=Format('%s',[lisMenuEditorRootMenu])
+    else SubmenuGroupBox.Caption:=Format('%s %s',[selBox.ParentMenuItem.Name, lisMenuEditorSubmenu]);
+
+    if selMI.RadioItem then begin
+      GroupIndexLabel.Caption:=Format(lisMenuEditorSGroupIndexD,
+                                      [selMI.Name, selMI.GroupIndex]);
+      GroupIndexLabel.Enabled:=True;
+    end
+    else begin
+      GroupIndexLabel.Caption:=Format(lisMenuEditorSIsNotARadioitem,
+                                      [selMI.Name]);
+      GroupIndexLabel.Enabled:=False;
+    end;
+
+    if selBox.HasRadioItems then begin
+      RadioGroupsLabel.Caption:=Format(lisMenuEditorGroupIndexValueSS,
+                                       [selBox.RadioGroupsString]);
+      RadioGroupsLabel.Enabled:=True;
+    end
+    else begin
+      RadioGroupsLabel.Caption:=lisMenuEditorNoRadioitemsInThisMenu;
+      RadioGroupsLabel.Enabled:=False;
+      RadioGroupsLabel.Invalidate; //for some reason this seems necessary
+    end;
+  end;
+end;
+
 { TMainMenuComponentEditor}
 
 procedure TMainMenuComponentEditor.Edit;
@@ -602,7 +654,7 @@ end;
 function TMainMenuComponentEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result:=lisMenuEditor;
+    0: Result:=lisMenuEditorMenuEditor + ' ...';
     else Result:='';
   end;
 end;
