@@ -2140,8 +2140,8 @@ begin
     FButtonPanel.OKButton.Enabled:=False;
     FSelectedInfo:=nil;
     FConflictsListBox.OnSelectionChange:=nil;
-    FConflictsListBox.Items.Add(Format(lisMenuEditorNoShortcutConflictsS,['>']));
-    FCurrentEdit.Text:=Format(lisMenuEditorNoShortcutConflictsS,[lisMenuEditorToResolve]);
+    FConflictsListBox.Items.Add(lisMenuEditorNoShortcutConflicts);
+    FCurrentEdit.Text:=lisMenuEditorNoShortcutConflictsToResolve;
     FResolvedConflictsCountLabel.Caption:=Format(lisMenuEditorResolvedConflictsS,['0']);
     FRemainingConflictsCountLabel.Caption:=Format(lisMenuEditorRemainingConflictsS,['0']);
   end;
@@ -2167,7 +2167,7 @@ begin
     FRemainingConflictsCountLabel.Caption:=Format(lisMenuEditorRemainingConflictsS,['0']);
     FResolvedConflictsCountLabel.Caption:=Format(
       lisMenuEditorResolvedConflictsS, [FInitialConflictsCount]);
-    FConflictsListBox.Items.Add(Format(lisMenuEditorNoShortcutConflictsS,[lisMenuEditorRemain]));
+    FConflictsListBox.Items.Add(lisMenuEditorNoShortcutConflictsRemain);
     FCurrentEdit.Text:=lisMenuEditorConflictResolutionComplete;
     FButtonPanel.CancelButton.Caption:=lisBtnClose;
   end;
@@ -3970,8 +3970,6 @@ begin
   with FDualDisplay do begin
     Align:=alClient;
     BorderSpacing.Around:=Margin;
-    //Constraints.MinHeight:=200;
-    //Constraints.MaxHeight:=200;
     Parent:=FGBDisplay;
     if FSingleMenuOnly then begin
       OnDisplayClick:=@DisplaySingleMenuClick;

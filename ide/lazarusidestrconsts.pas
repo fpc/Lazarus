@@ -4734,8 +4734,6 @@ resourcestring
   lisMenuEditorFurtherShortcutConflict = 'Further shortcut conflict';
   lisMenuEditorGetHelpToUseThisEditor = 'Get help to use this editor';
   lisMenuEditorGrabKey = '&Grab key';
-  lisMenuEditorGroupIndexDropdownShowsAnyExistingGroups = '&GroupIndex ('
-    +'dropdown shows any existing groups)';
   lisMenuEditorGroupIndexMenuItems = 'GroupIndex,MenuItems';
   lisMenuEditorInadequateDescription = 'Inadequate Description';
   lisMenuEditorInsertMenuTemplateInto = 'Insert menu template into ';
@@ -4760,14 +4758,15 @@ resourcestring
   lisMenuEditorNoMenuSelected = '(no menu selected)';
   lisMenuEditorNone = '<none>';
   lisMenuEditorNoneNone = '<none>,<none>';
-  lisMenuEditorNoShortcutConflictsS = '<no shortcut conflicts%s';
+  lisMenuEditorNoShortcutConflicts = '<no shortcut conflicts>';
+  lisMenuEditorNoShortcutConflictsToResolve = '<no shortcut conflicts to resolve>';
+  lisMenuEditorNoShortcutConflictsRemain = '<no shortcut conflicts remain>';
   lisMenuEditorNoUserSavedTemplates = 'No user-saved templates';
   lisMenuEditorOnlyStandardDefaultTemplatesAreAvailable = 'Only standard '
     +'default templates are available.';
   lisMenuEditorOrClickHeaderToSortByThatColumn = '  or click header to sort by that column';
   lisMenuEditorPickAnIconFromS = 'Pick an icon from %s';
   lisMenuEditorPopupAssignmentsS = 'Popup assignments: %s';
-  lisMenuEditorRemain = ' remain>';
   lisMenuEditorRemainingConflictsS = 'Remaining conflicts: %s';
   lisMenuEditorRemoveAllSeparators = '&Remove all separators';
   lisMenuEditorResolvedConflictsS = 'Resolved conflicts: %s';
@@ -4813,7 +4812,6 @@ resourcestring
   lisMenuEditorTemplates = '&Templates';
   lisMenuEditorTemplateSaved = 'Template saved';
   lisMenuEditorThereAreNoUserSavedMenuTemplates = 'There are no user-saved menu templates.';
-  lisMenuEditorToResolve = ' to resolve>';
   lisMenuEditorTSCListGetScanListCompNameInvalidIndexDForFScanLis = 'TSCList.'
     +'GetScanListCompName: invalid index %d for FScanList';
   lisMenuEditorYouHaveToChangeTheShortcutFromSStoAvoidAConflict = 'You have to'
