@@ -382,6 +382,7 @@ type
     function GetPointAndTangentForDistance(ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean; override;
     // edition methods
     procedure Move(ADeltaX, ADeltaY: Double); override;
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
     // rendering
     procedure AddToPoints(ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray); override;
@@ -431,6 +432,8 @@ type
     procedure CalculateEllipseBoundingBox(ADest: TFPCustomCanvas; out ALeft, ATop, ARight, ABottom: Double);
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
     procedure AddToPoints(ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray); override;
+    procedure Move(ADeltaX, ADeltaY: Double); override;
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); override;
   end;
 
   TvFindEntityResult = (vfrNotFound, vfrFound, vfrSubpartFound);
@@ -625,7 +628,7 @@ type
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); override;
     function  MoveToSubpart(ASubpart: Cardinal): TPathSegment;
     function  GetSubpartCount: Integer; override;
-    procedure Rotate(AAngle: Double; ABase: T3DPoint); override;
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); override; // Angle in radians
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
     procedure RenderInternalPolygon(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
@@ -2799,6 +2802,40 @@ begin
   SetLength(Points, n);
 end;
 
+procedure T2DEllipticalArcSegment.Move(ADeltaX, ADeltaY: Double);
+begin
+  inherited Move(ADeltaX, ADeltaY);
+
+  E1.X := E1.X + ADeltaX;
+  E1.X := E1.Y + ADeltaY;
+
+  E2.X := E2.X + ADeltaX;
+  E2.X := E2.Y + ADeltaY;
+
+  CX := CX + ADeltaX;
+  CX := CY + ADeltaY;
+end;
+
+
+procedure T2DEllipticalArcSegment.Rotate(AAngle: Double; ABase: T3dPoint);
+var
+  p: T3DPoint;
+begin
+  inherited Rotate(AAngle, ABase);
+
+  p := fpvutils.Rotate3DPointInXY(E1, ABase, AAngle);
+  E1.X := p.X;
+  E1.Y := p.Y;
+
+  p := fpvutils.Rotate3DPointInXY(E2, ABase, AAngle);
+  E2.X := p.X;
+  E2.Y := p.Y;
+
+  p := fpvutils.Rotate3DPointInXY(Make3dPoint(CX, CY), ABase, AAngle);
+  CX := p.X;
+  CY := p.Y;
+end;
+
 // wp: no longer needed...
 procedure T2DEllipticalArcSegment.CalculateCenter;
 var
@@ -3255,6 +3292,21 @@ begin
   Y2 := Y2 + ADeltaY;
   X3 := X3 + ADeltaX;
   Y3 := Y3 + ADeltaY;
+end;
+
+procedure T2DBezierSegment.Rotate(AAngle: Double; ABase: T3dPoint);
+var
+  p: T3DPoint;
+begin
+  inherited Rotate(AAngle, ABase);
+
+  p := fpvutils.Rotate3DPointInXY(Make3DPoint(X2, Y2), ABase, AAngle);
+  X2 := p.X;
+  Y2 := p.Y;
+
+  p := fpvutils.Rotate3DPointInXY(Make3DPoint(X3, Y3), ABase, AAngle);
+  X3 := p.X;
+  Y3 := p.Y;
 end;
 
 function T2DBezierSegment.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -5037,6 +5089,7 @@ begin
   {$endif}
 end;
                              *)
+
 procedure TPath.RenderInternalPolygon(ADest: TFPCustomCanvas;
   ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double;
   AMulY: Double);
