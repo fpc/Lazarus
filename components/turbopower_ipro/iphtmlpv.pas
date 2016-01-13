@@ -32,6 +32,10 @@
 
 unit IpHtmlPv;
 
+{$IFNDEF Html_Print}
+  {$ERROR requires -dHTML_Print}
+{$ENDIF}
+
 interface
 
 uses
