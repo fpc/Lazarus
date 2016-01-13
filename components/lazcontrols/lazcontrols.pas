@@ -9,7 +9,7 @@ interface
 uses
   CheckBoxThemed, DividerBevel, ExtendedNotebook, ListFilterEdit, 
   ListViewFilterEdit, TreeFilterEdit, ShortPathEdit, LvlGraphCtrl, 
-  ExtendedTabControls, LazarusPackageIntf;
+  ExtendedTabControls, SpinEx, LazarusPackageIntf;
 
 implementation
 
@@ -25,6 +25,7 @@ begin
   RegisterUnit('TreeFilterEdit', @TreeFilterEdit.Register);
   RegisterUnit('ShortPathEdit', @ShortPathEdit.Register);
   RegisterUnit('LvlGraphCtrl', @LvlGraphCtrl.Register);
+  RegisterUnit('SpinEx', @SpinEx.Register);
 end;
 
 initialization

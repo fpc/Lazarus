@@ -3,7 +3,7 @@
 
    fpmake.pp for LazControls 1.0.1
 
-   This file was generated on 02-01-2015
+   This file was generated on 13-1-2016
 }
 
 {$ifndef ALLPACKAGES} 
@@ -39,7 +39,6 @@ begin
     P.Options.Add('-vewnhibq');
     P.Options.Add('-dLCL');
     P.Options.Add('-dLCL$(LCLWidgetType)');
-    P.Options.Add('-dNoCarbon');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('lazcontrols.pas');
     t.Dependencies.AddUnit('checkboxthemed');
@@ -51,6 +50,7 @@ begin
     t.Dependencies.AddUnit('shortpathedit');
     t.Dependencies.AddUnit('lvlgraphctrl');
     t.Dependencies.AddUnit('extendedtabcontrols');
+    t.Dependencies.AddUnit('spinex');
 
     T:=P.Targets.AddUnit('checkboxthemed.pas');
     T:=P.Targets.AddUnit('dividerbevel.pas');
@@ -61,6 +61,7 @@ begin
     T:=P.Targets.AddUnit('shortpathedit.pas');
     T:=P.Targets.AddUnit('lvlgraphctrl.pas');
     T:=P.Targets.AddUnit('extendedtabcontrols.pas');
+    T:=P.Targets.AddUnit('spinex.pp');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.InstallFiles.Add('LazControls.compiled',AllOSes,'$(unitinstalldir)');

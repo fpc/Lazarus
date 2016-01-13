@@ -2266,10 +2266,12 @@ components/lazcontrols/images/lazcontrols_list.txt svneol=native#text/plain
 components/lazcontrols/images/tcheckboxthemed.png -text svneol=unset#image/png
 components/lazcontrols/images/tdividerbevel.png -text
 components/lazcontrols/images/textendednotebook.png -text
+components/lazcontrols/images/tfloatspineditex.png -text svneol=unset#image/png
 components/lazcontrols/images/tlistfilteredit.png -text
 components/lazcontrols/images/tlistviewfilteredit.png -text svneol=unset#image/png
 components/lazcontrols/images/tlvlgraphcontrol.png -text svneol=unset#image/png
 components/lazcontrols/images/tshortpathedit.png -text svneol=unset#image/png
+components/lazcontrols/images/tspineditex.png -text svneol=unset#image/png
 components/lazcontrols/images/ttreefilteredit.png -text svneol=unset#image/png
 components/lazcontrols/lazcontrols.lpk svneol=native#text/xml
 components/lazcontrols/lazcontrols.pas svneol=native#text/pascal
@@ -2278,6 +2280,8 @@ components/lazcontrols/listfilteredit.pas svneol=native#text/plain
 components/lazcontrols/listviewfilteredit.pas svneol=native#text/pascal
 components/lazcontrols/lvlgraphctrl.pas svneol=native#text/plain
 components/lazcontrols/shortpathedit.pas svneol=native#text/plain
+components/lazcontrols/spinex.inc svneol=native#text/plain
+components/lazcontrols/spinex.pp svneol=native#text/pascal
 components/lazcontrols/treefilteredit.pas svneol=native#text/plain
 components/lazdebuggergdbmi/Makefile svneol=native#text/plain
 components/lazdebuggergdbmi/Makefile.compiled svneol=native#text/plain
@@ -6687,6 +6691,7 @@ lcl/graphmath.pp svneol=native#text/pascal
 lcl/graphtype.pp svneol=native#text/pascal
 lcl/graphutil.pp svneol=native#text/pascal
 lcl/grids.pas svneol=native#text/pascal
+lcl/groupededit.pp svneol=native#text/pascal
 lcl/helpintfs.pas svneol=native#text/pascal
 lcl/icnstypes.pas svneol=native#text/pascal
 lcl/imagelistcache.pas svneol=native#text/pascal
