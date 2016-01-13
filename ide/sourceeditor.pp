@@ -1663,6 +1663,8 @@ begin
         (AParent,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF);
     SrcEditMenuCompleteCode := RegisterIDEMenuCommand
         (AParent,'CompleteCode', lisMenuCompleteCode, nil, @ExecuteIdeMenuClick);
+    SrcEditMenuInvertAssignment := RegisterIDEMenuCommand
+        (AParent, 'InvertAssignment',uemInvertAssignment, nil, @ExecuteIdeMenuClick);
     SrcEditMenuUseUnit := RegisterIDEMenuCommand
         (AParent,'UseUnit', lisMenuUseUnit, nil, @ExecuteIdeMenuClick);
     SrcEditMenuShowUnitInfo := RegisterIDEMenuCommand
@@ -1677,8 +1679,6 @@ begin
         (AParent, 'RenameIdentifier',lisMenuRenameIdentifier, nil, @ExecuteIdeMenuClick);
     SrcEditMenuExtractProc := RegisterIDEMenuCommand
         (AParent, 'ExtractProc',lisMenuExtractProc, nil, @ExecuteIdeMenuClick);
-    SrcEditMenuInvertAssignment := RegisterIDEMenuCommand
-        (AParent, 'InvertAssignment',uemInvertAssignment, nil, @ExecuteIdeMenuClick);
     SrcEditMenuShowAbstractMethods := RegisterIDEMenuCommand
         (AParent, 'ShowAbstractMethods',srkmecAbstractMethods, nil, @ExecuteIdeMenuClick);
     SrcEditMenuShowEmptyMethods := RegisterIDEMenuCommand
