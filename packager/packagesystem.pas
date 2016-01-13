@@ -5122,9 +5122,9 @@ begin
     exit;
   end;
   // ignore comments
-  OldShortenSrc:=CodeToolBoss.ExtractCodeWithoutComments(CodeBuffer);
+  OldShortenSrc:=CodeToolBoss.ExtractCodeWithoutComments(CodeBuffer,true);
   NewShortenSrc:=CleanCodeFromComments(Src,
-                CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuffer.Filename));
+           CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuffer.Filename),true);
   // ignore case and spaces
   if CompareTextIgnoringSpace(OldShortenSrc,NewShortenSrc,false)=0 then begin
     Result:=mrOk;
