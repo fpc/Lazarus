@@ -13,8 +13,6 @@ uses
 
 implementation
 
-{$R *.res}
-
 procedure Register;
 begin
   RegisterUnit('CheckBoxThemed', @CheckBoxThemed.Register);

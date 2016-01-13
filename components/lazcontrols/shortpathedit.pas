@@ -2,6 +2,8 @@ unit ShortPathEdit;
 
 {$mode objfpc}{$H+}
 
+{$R lazcontrols.res}
+
 interface
 
 uses
