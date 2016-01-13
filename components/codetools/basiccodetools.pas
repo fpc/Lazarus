@@ -69,8 +69,8 @@ function FindNextIncludeDirective(const ASource: string;
     CommentStartPos, CommentEndPos: integer): integer;
 function FindNextIDEDirective(const ASource: string; StartPos: integer;
     NestedComments: boolean; EndPos: integer = 0): integer;
-function CleanCodeFromComments(const DirtyCode: string;
-    NestedComments: boolean): string;
+function CleanCodeFromComments(const Src: string;
+    NestedComments: boolean; KeepDirectives: boolean = false): string;
 function ExtractCommentContent(const ASource: string; CommentStart: integer;
     NestedComments: boolean;
     TrimStart: boolean = false; TrimEnd: boolean = false;
@@ -3990,27 +3990,36 @@ begin
   Result:=-1;
 end;
 
-function CleanCodeFromComments(const DirtyCode: string;
-  NestedComments: boolean): string;
+function CleanCodeFromComments(const Src: string;
+  NestedComments: boolean; KeepDirectives: boolean): string;
 var
-  DirtyPos: Integer;
-  CleanPos: Integer;
+  SrcPos: Integer;
+  ResultPos: Integer;
   StartPos: Integer;
   l: Integer;
+  p: PChar;
 begin
-  SetLength(Result,length(DirtyCode));
-  DirtyPos:=1;
-  CleanPos:=1;
-  while DirtyPos<=length(DirtyCode) do begin
-    StartPos:=FindNextComment(DirtyCode,DirtyPos);
-    l:=StartPos-DirtyPos;
-    if l>0 then begin
-      System.Move(DirtyCode[DirtyPos],Result[CleanPos],l);
-      inc(CleanPos,l);
+  SetLength(Result,length(Src));
+  SrcPos:=1;
+  ResultPos:=1;
+  while SrcPos<=length(Src) do begin
+    StartPos:=FindNextComment(Src,SrcPos);
+    l:=StartPos-SrcPos;
+    if (l>0) then begin
+      System.Move(Src[SrcPos],Result[ResultPos],l);
+      inc(ResultPos,l);
     end;
-    DirtyPos:=FindCommentEnd(DirtyCode,StartPos,NestedComments);
+    SrcPos:=FindCommentEnd(Src,StartPos,NestedComments);
+    if KeepDirectives and (StartPos<=length(Src)) then begin
+      p:=@Src[StartPos];
+      if (p^='{') and (p[1]='$') then begin
+        l:=SrcPos-StartPos;
+        System.Move(Src[StartPos],Result[ResultPos],l);
+        inc(ResultPos,l);
+      end;
+    end;
   end;
-  SetLength(Result,CleanPos-1);
+  SetLength(Result,ResultPos-1);
 end;
 
 function ExtractCommentContent(const ASource: string; CommentStart: integer;
