@@ -61,6 +61,7 @@ type
       AStartAngle16Deg, AAngleLength16Deg: Integer);
     procedure Rectangle(const ARect: TRect);
     procedure Rectangle(AX1, AY1, AX2, AY2: Integer);
+    procedure ResetFont;
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
@@ -252,6 +253,10 @@ end;
 procedure TOpenGLDrawer.Rectangle(const ARect: TRect);
 begin
   Rectangle(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
+end;
+
+procedure TOpenGLDrawer.ResetFont;
+begin
 end;
 
 procedure TOpenGLDrawer.SetAntialiasingMode(AValue: TChartAntialiasingMode);
