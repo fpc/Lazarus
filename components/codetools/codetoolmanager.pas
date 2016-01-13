@@ -405,9 +405,10 @@ type
 
     // keywords and comments
     function IsKeyword(Code: TCodeBuffer; const KeyWord: string): boolean;
-    function ExtractCodeWithoutComments(Code: TCodeBuffer): string;
+    function ExtractCodeWithoutComments(Code: TCodeBuffer;
+          KeepDirectives: boolean = false): string;
     function GetPasDocComments(Code: TCodeBuffer; X, Y: integer;
-                               out ListOfPCodeXYPosition: TFPList): boolean;
+          out ListOfPCodeXYPosition: TFPList): boolean;
 
     // blocks (e.g. begin..end, case..end, try..finally..end, repeat..until)
     function FindBlockCounterPart(Code: TCodeBuffer; X,Y: integer;
@@ -3447,10 +3448,11 @@ begin
   end;
 end;
 
-function TCodeToolManager.ExtractCodeWithoutComments(Code: TCodeBuffer): string;
+function TCodeToolManager.ExtractCodeWithoutComments(Code: TCodeBuffer;
+  KeepDirectives: boolean): string;
 begin
   Result:=CleanCodeFromComments(Code.Source,
-                                GetNestedCommentsFlagForFile(Code.Filename));
+                    GetNestedCommentsFlagForFile(Code.Filename),KeepDirectives);
 end;
 
 function TCodeToolManager.GetPasDocComments(Code: TCodeBuffer; X, Y: integer;
