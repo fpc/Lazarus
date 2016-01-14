@@ -6540,7 +6540,7 @@ begin
       else
         DebugLn(['TSourceNotebook.TabPopUpMenuPopup: Popup PageIndex=', PageI]);
     end;
-    ASrcEdit:=Editors[PageIndex];
+    ASrcEdit:=ActiveEditor as TSourceEditor;
 
     {$IFnDEF SingleSrcWindow}
     // Multi win
@@ -8388,7 +8388,10 @@ begin
   begin
     TabIndex:=FNotebook.TabIndexAtClientPos(Point(X,Y));
     if TabIndex>=0 then
+    begin
+      TabPopUpMenu.PopupComponent := FNotebook;
       TabPopUpMenu.PopUp;
+    end;
   end;
 end;
 
