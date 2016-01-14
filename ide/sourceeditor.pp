@@ -1821,6 +1821,7 @@ procedure TBrowseEditorTabHistoryDialog.Show(aForward: Boolean);
   procedure PlaceMe;
   var
     xWidth, xHeight: Integer;
+    xTopLeft, xRightBottom: TPoint;
   begin
     xWidth := Canvas.TextWidth('m')*20;
     if FEditorList.ItemHeight>0 then//ItemHeight can be 0 the first time
@@ -1831,9 +1832,11 @@ procedure TBrowseEditorTabHistoryDialog.Show(aForward: Boolean);
     xHeight := xHeight + GetSystemMetrics(SM_CYBORDER)*2;
     {$ENDIF}
 
+    xTopLeft := FNotebook.ClientToScreen(Point(0, 0));
+    xRightBottom := FNotebook.ClientToScreen(FNotebook.ClientRect.BottomRight);
     SetBounds(
-      (FNotebook.Left+FNotebook.BoundsRect.Right-xWidth) div 2,
-      (FNotebook.Top+FNotebook.BoundsRect.Bottom-xHeight) div 2,
+      (xTopLeft.x+xRightBottom.x-xWidth) div 2,
+      (xTopLeft.y+xRightBottom.y-xHeight) div 2,
       xWidth,
       xHeight);
   end;
