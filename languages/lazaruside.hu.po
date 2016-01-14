@@ -11827,10 +11827,6 @@ msgstr ""
 msgid "&Grab key"
 msgstr "Bekérés"
 
-#: lazarusidestrconsts.lismenueditorgroupindexdropdownshowsanyexistinggroups
-msgid "&GroupIndex (dropdown shows any existing groups)"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditorgroupindexmenuitems
 msgid "GroupIndex,MenuItems"
 msgstr ""
@@ -11945,8 +11941,16 @@ msgstr "<nincs>,<nincs>"
 msgid "no radioitems in this menu"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditornoshortcutconflictss
-msgid "<no shortcut conflicts%s"
+#: lazarusidestrconsts.lismenueditornoshortcutconflicts
+msgid "<no shortcut conflicts>"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditornoshortcutconflictsremain
+msgid "<no shortcut conflicts remain>"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditornoshortcutconflictstoresolve
+msgid "<no shortcut conflicts to resolve>"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditornousersavedtemplates
@@ -11967,10 +11971,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorpopupassignmentss
 msgid "Popup assignments: %s"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorremain
-msgid " remain>"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorremainingconflictss
@@ -12136,10 +12136,6 @@ msgstr "Sablon mentve"
 #: lazarusidestrconsts.lismenueditortherearenousersavedmenutemplates
 msgid "There are no user-saved menu templates."
 msgstr "Nincsenek felhasználó által mentett menüsablonok."
-
-#: lazarusidestrconsts.lismenueditortoresolve
-msgid " to resolve>"
-msgstr ""
 
 #: lazarusidestrconsts.lismenueditortsclistgetscanlistcompnameinvalidindexdforfscanlis
 msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"

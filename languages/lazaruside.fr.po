@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-01-07 11:17+0100\n"
+"PO-Revision-Date: 2016-01-13 14:52+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr_FR\n"
@@ -4013,7 +4013,7 @@ msgstr "Le nom de fichier \"%s\" est équivoque parce que le paquet n'a encore a
 #: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr "La version maximale \"%s\" n'est pas valable.%sVeuillez utiliser le format majeure.mineure.sous-version.construction%sPar exemple: 1.0.20.10"
+msgstr "La version maximale \"%s\" n'est pas valable.%sVeuillez utiliser le format majeure.mineure.sous-version.construction%sPar exemple : 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion"
@@ -4023,7 +4023,7 @@ msgstr "La version maximale est inférieure à la version minimale."
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr "La version minimale \"%s\" n'est pas valable.%sVeuillez utiliser le format majeure.mineure.sous-version.construction%sPar exemple: 1.0.20.10"
+msgstr "La version minimale \"%s\" n'est pas valable.%sVeuillez utiliser le format majeure.mineure.sous-version.construction%sPar exemple : 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthepackagehasalreadyadependencyforthe
 msgid "The package already has a dependency on the package \"%s\"."
@@ -7473,7 +7473,7 @@ msgstr "Module de données"
 
 #: lazarusidestrconsts.lisdate
 msgid "Date"
-msgstr "Date"
+msgstr "Date "
 
 #: lazarusidestrconsts.lisdbgallitemdelete
 msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
@@ -9320,7 +9320,7 @@ msgstr "Pour Windows"
 
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
-msgstr "Version %s trouvée, %s attendue"
+msgstr "Version %s trouvée et %s attendue"
 
 #: lazarusidestrconsts.lisfpccfgismissing
 msgid "fpc.cfg is missing."
@@ -9356,7 +9356,7 @@ msgstr "FPC trop ancien"
 
 #: lazarusidestrconsts.lisfpcversion
 msgid "FPC Version: "
-msgstr "Version FPC :"
+msgstr "Version FPC : "
 
 #: lazarusidestrconsts.lisfpcversioneg222
 msgid "FPC Version (e.g. 2.2.2)"
@@ -11694,7 +11694,7 @@ msgstr "Légende"
 
 #: lazarusidestrconsts.lismenueditorcaptioneditemss
 msgid "Captioned items: %s"
-msgstr ""
+msgstr "Éléments avec légende : %s"
 
 #: lazarusidestrconsts.lismenueditorcaptionshouldnotbeblank
 msgid "Caption should not be blank"
@@ -11726,7 +11726,7 @@ msgstr "Modifier le raccourci n°2 pour %s"
 
 #: lazarusidestrconsts.lismenueditorchoosetemplateto
 msgid "Choose template to"
-msgstr ""
+msgstr "Choisir le modèle à"
 
 #: lazarusidestrconsts.lismenueditorclickanongreyeditemtoedititsshortcut
 msgid "Click a non-greyed item to edit its shortcut"
@@ -11750,7 +11750,7 @@ msgstr "%d (%d éléments)"
 
 #: lazarusidestrconsts.lismenueditordeepestnestedmenulevels
 msgid "Deepest nested menu level: %s"
-msgstr ""
+msgstr "Niveau de profondeur de menu maximum : %s"
 
 #: lazarusidestrconsts.lismenueditordeleteitem
 msgid "&Delete item"
@@ -11801,10 +11801,8 @@ msgid "Editing %s for %s"
 msgstr "Édition de %s pour %s"
 
 #: lazarusidestrconsts.lismenueditoreditingssnomenuitemselected
-#, fuzzy
-#| msgid "Editing %s.%s - no menu item selected"
 msgid "Editing %s.%s - no menuitem selected"
-msgstr "Édition de %s.%s - pas d'élément de menu choisi"
+msgstr "Édition de %s.%s - pas de sous-menu choisi"
 
 #: lazarusidestrconsts.lismenueditorenteramenudescription
 msgid "Enter a menu &Description:"
@@ -11834,17 +11832,13 @@ msgstr "Obtenir de l'aide pour cet éditeur"
 msgid "&Grab key"
 msgstr "&Touche d'accroche"
 
-#: lazarusidestrconsts.lismenueditorgroupindexdropdownshowsanyexistinggroups
-msgid "&GroupIndex (dropdown shows any existing groups)"
-msgstr "&GroupIndex (montre tous les groupes existants)"
-
 #: lazarusidestrconsts.lismenueditorgroupindexmenuitems
 msgid "GroupIndex,MenuItems"
 msgstr "GroupIndex,MenuItems"
 
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
 msgid "GroupIndex value(s): %s"
-msgstr ""
+msgstr "Valeur(s) d'index de groupe : %s"
 
 #: lazarusidestrconsts.lismenueditorinadequatedescription
 msgid "Inadequate Description"
@@ -11864,7 +11858,7 @@ msgstr "n'est pas assigné"
 
 #: lazarusidestrconsts.lismenueditoritemswithicons
 msgid "Items with icon: %s"
-msgstr ""
+msgstr "Éléments avec icône : %s"
 
 #: lazarusidestrconsts.lismenueditorlistshortcutsandaccelerators
 msgid "List shortcuts and &accelerators for %s ..."
@@ -11880,7 +11874,7 @@ msgstr "Éditeur de menu"
 
 #: lazarusidestrconsts.lismenueditormenuitem
 msgid "menu item"
-msgstr ""
+msgstr "élément de menu"
 
 #: lazarusidestrconsts.lismenueditormenuitemshortcutconflictsin
 msgid "Menuitem shortcut conflicts in "
@@ -11934,7 +11928,7 @@ msgstr "Déplacer vers le haut (ou à gauche)"
 
 #: lazarusidestrconsts.lismenueditorna
 msgid "n/a"
-msgstr ""
+msgstr "n/a"
 
 #: lazarusidestrconsts.lismenueditornomenuselected
 msgid "(no menu selected)"
@@ -11950,10 +11944,18 @@ msgstr "< aucun >, <aucun>"
 
 #: lazarusidestrconsts.lismenueditornoradioitemsinthismenu
 msgid "no radioitems in this menu"
+msgstr "pas de \"radioitems\" dans ce menu"
+
+#: lazarusidestrconsts.lismenueditornoshortcutconflicts
+msgid "<no shortcut conflicts>"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditornoshortcutconflictss
-msgid "<no shortcut conflicts%s"
+#: lazarusidestrconsts.lismenueditornoshortcutconflictsremain
+msgid "<no shortcut conflicts remain>"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditornoshortcutconflictstoresolve
+msgid "<no shortcut conflicts to resolve>"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditornousersavedtemplates
@@ -11974,15 +11976,11 @@ msgstr "Ajout d'une icône depuis %s"
 
 #: lazarusidestrconsts.lismenueditorpopupassignmentss
 msgid "Popup assignments: %s"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorremain
-msgid " remain>"
-msgstr ""
+msgstr "Affectations de menus surgissants : %s"
 
 #: lazarusidestrconsts.lismenueditorremainingconflictss
 msgid "Remaining conflicts: %s"
-msgstr ""
+msgstr "Conflits non résolus : %s"
 
 #: lazarusidestrconsts.lismenueditorremoveallseparators
 msgid "&Remove all separators"
@@ -11990,7 +11988,7 @@ msgstr "Supp&rimer tous les séparateurs"
 
 #: lazarusidestrconsts.lismenueditorresolvedconflictss
 msgid "Resolved conflicts: %s"
-msgstr ""
+msgstr "Conflits résolus : %s"
 
 #: lazarusidestrconsts.lismenueditorresolveselectedconflict
 msgid "Resolve selected conflict"
@@ -12002,7 +12000,7 @@ msgstr "&Résoudre les conflits de raccourcis..."
 
 #: lazarusidestrconsts.lismenueditorrootmenu
 msgid "root menu"
-msgstr ""
+msgstr "menu racine"
 
 #: lazarusidestrconsts.lismenueditorsavedtemplates
 msgid "Saved templates"
@@ -12034,7 +12032,7 @@ msgstr "Sé&parateurs"
 
 #: lazarusidestrconsts.lismenueditorsgroupindexd
 msgid "%s.GroupIndex: %d"
-msgstr ""
+msgstr "%sIndex de groupe : %d"
 
 #: lazarusidestrconsts.lismenueditorshortcutconflictsfoundinitiallyd
 msgid "Shortcut conflicts found initially: %d"
@@ -12042,7 +12040,7 @@ msgstr "Conflits de raccourcis trouvés initialement : %d"
 
 #: lazarusidestrconsts.lismenueditorshortcutitemss
 msgid "Shortcut items: %s"
-msgstr ""
+msgstr "Éléments de raccourcis : %s"
 
 #: lazarusidestrconsts.lismenueditorshortcutnotyetchanged
 msgid "Shortcut not yet changed"
@@ -12094,7 +12092,7 @@ msgstr "\"%s\" est déjà utilisé dans %s comme raccourci.%sVeuillez essayer un
 
 #: lazarusidestrconsts.lismenueditorsisnotaradioitem
 msgid "%s is not a radioitem"
-msgstr ""
+msgstr "%s n'est pas un \"radioitem\""
 
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
 msgid "Please expand: \"%s\" is not a sufficient Description"
@@ -12126,7 +12124,7 @@ msgstr "Modèles standard"
 
 #: lazarusidestrconsts.lismenueditorsubmenu
 msgid "submenu"
-msgstr ""
+msgstr "sous-menu"
 
 #: lazarusidestrconsts.lismenueditortemplatedescription
 msgid "Template description:"
@@ -12143,10 +12141,6 @@ msgstr "Modèle enregistré"
 #: lazarusidestrconsts.lismenueditortherearenousersavedmenutemplates
 msgid "There are no user-saved menu templates."
 msgstr "Il n'y a pas de modèles de menu sauvegardés par l'utilisateur."
-
-#: lazarusidestrconsts.lismenueditortoresolve
-msgid " to resolve>"
-msgstr ""
 
 #: lazarusidestrconsts.lismenueditortsclistgetscanlistcompnameinvalidindexdforfscanlis
 msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"
