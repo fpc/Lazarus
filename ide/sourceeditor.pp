@@ -8388,7 +8388,11 @@ begin
   begin
     TabIndex:=FNotebook.TabIndexAtClientPos(Point(X,Y));
     if TabIndex>=0 then
+    begin
+      TabPopUpMenu.PopupComponent := FNotebook;
       TabPopUpMenu.PopUp;
+      TabPopUpMenu.PopupComponent := nil;
+    end;
   end;
 end;
 
