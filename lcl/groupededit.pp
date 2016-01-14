@@ -99,10 +99,6 @@ type
     function GetAlignment: TAlignment;
     function GetAutoSelect: Boolean;
     function GetAutoSelected: Boolean;
-    function GetBuddyCaption: TCaption;
-    function GetBuddyCursor: TCursor;
-    function GetBuddyHint: TTranslateString;
-    function GetBuddyWidth: Integer;
     function GetCanUndo: Boolean;
     function GetCaretPos: TPoint;
     function GetCharCase: TEditCharCase;
@@ -127,7 +123,6 @@ type
     function GetTextHintFontColor: TColor;
     function GetTextHintFontStyle: TFontStyles;
 
-    procedure FocusAndMaybeSelectAll;
     procedure InternalOnBuddyClick(Sender: TObject);
     procedure InternalOnEditClick(Sender: TObject);
     procedure InternalOnEditDblClick(Sender: TObject);
@@ -160,10 +155,6 @@ type
     procedure SetAlignment(AValue: TAlignment);
     procedure SetAutoSelect(AValue: Boolean);
     procedure SetAutoSelected(AValue: Boolean);
-    procedure SetBuddyCaption(AValue: TCaption);
-    procedure SetBuddyCursor(AValue: TCursor);
-    procedure SetBuddyHint(AValue: TTranslateString);
-    procedure SetBuddyWidth(AValue: Integer);
     procedure SetCaretPos(AValue: TPoint);
     procedure SetCharCase(AValue: TEditCharCase);
     procedure SetEchoMode(AValue: TEchoMode);
@@ -192,6 +183,8 @@ type
                 WithThemeSpace: Boolean); override;
     function CreateBuddy: TControl; virtual;
     function CreateEditor: TGEEdit; virtual;
+
+    procedure FocusAndMaybeSelectAll;
     function GetEditorClassType: TGEEditClass; virtual;
     function GetBuddyClassType: TControlClass; virtual; abstract;
     class function GetControlClassDefaultSize: TSize; override;
@@ -200,6 +193,14 @@ type
     procedure SetText(AValue: TCaption); virtual;
 
     function GetEditPopupMenu: TPopupMenu;
+    function GetBuddyCaption: TCaption;
+    function GetBuddyCursor: TCursor;
+    function GetBuddyHint: TTranslateString;
+    function GetBuddyWidth: Integer;
+    procedure SetBuddyCaption(AValue: TCaption);
+    procedure SetBuddyCursor(AValue: TCursor);
+    procedure SetBuddyHint(AValue: TTranslateString);
+    procedure SetBuddyWidth(AValue: Integer);
 
     procedure BuddyClick; virtual;
 
@@ -262,7 +263,7 @@ type
     property Spacing: Integer read GetSpacing write SetSpacing default 0;
 
     //Derived classes should implement there own (readonly) Edit property, so that it will have the correct classtype
-    //Derived classes should implement a (readonly) property that retruns the buddy with the correct classtype (e.g. TSpeedButton)
+    //Derived classes should implement a (readonly) property that returns the buddy with the correct classtype (e.g. TSpeedButton)
 
     property OnBuddyClick: TNotifyEvent read FOnBuddyClick write FOnBuddyClick;
   public
@@ -911,11 +912,14 @@ end;
 
 procedure TCustomAbstractGroupedEdit.BuddyClick;
 begin
-  //debugln('TCustomAbstractGroupedEdit.BuddyClick');
+  //debugln(['TCustomAbstractGroupedEdit.BuddyClick: Assigned(FOnBuddyClick)=',Assigned(FOnBuddyClick)]);
   if ReadOnly then
     Exit;
   if Assigned(FOnBuddyClick) then
     FOnBuddyClick(Self);
+  //derived controls that override BuddyClick typically run a dialog after calling inherited,
+  //in that case selecting the text now does not make sense at all (and looks silly)
+  //it's up to the derived control to implement this focus and select if wanted
   if TMethod(@Self.BuddyClick).Code = Pointer(@TCustomAbstractGroupedEdit.BuddyClick) then
   begin
     if FocusOnBuddyClick then FocusAndMaybeSelectAll;
@@ -1080,6 +1084,7 @@ begin
     inherited Loaded sends a CM_PARENTFONTCHANGED message, which then
     also sets FEdit's color, which is undesired.
   }
+  UpdateSpacing;
   if GetColor <> FInitialColor then SetColor(FInitialColor);
 end;
 
@@ -1116,7 +1121,7 @@ procedure TCustomAbstractGroupedEdit.SetSpacing(const Value: integer);
 begin
   if (Value = FSpacing) then Exit;
   FSpacing := Value;
-  UpdateSpacing;
+  if not (csLoading in ComponentState) then UpdateSpacing;
 end;
 
 procedure TCustomAbstractGroupedEdit.SetTabStop(AValue: Boolean);
