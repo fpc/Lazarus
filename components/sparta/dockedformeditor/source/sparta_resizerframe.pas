@@ -834,15 +834,18 @@ end;
 
 procedure TResizerFrame.AppOnIdle(Sender: TObject; var Done: Boolean);
 begin
-  if not FMenuChanged then
-    Exit;
+  if FMenuChanged then
+  begin
+    if FOldHasMainMenu <> HasMainMenu then
+    begin
+      TryBoundDesignedForm;
+      if Assigned(OnNodePositioning) then
+        OnNodePositioning(Self, [pkBottom], pcPositioningEnd);
+    end else
+      pFakeMenu.Invalidate;
 
-  if FOldHasMainMenu <> HasMainMenu then
-    PositionNodes(Self)
-  else if FOldHasMainMenu then
-    pBG.Invalidate;
-
-  FMenuChanged := False;
+    FMenuChanged := False;
+  end;
 end;
 
 destructor TResizerFrame.Destroy;
