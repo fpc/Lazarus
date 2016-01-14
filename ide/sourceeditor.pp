@@ -6540,7 +6540,7 @@ begin
       else
         DebugLn(['TSourceNotebook.TabPopUpMenuPopup: Popup PageIndex=', PageI]);
     end;
-    ASrcEdit:=Editors[PageIndex];
+    ASrcEdit:=ActiveEditor as TSourceEditor;
 
     {$IFnDEF SingleSrcWindow}
     // Multi win
