@@ -645,6 +645,9 @@ var
   AProc: Pointer;
   WidgetInfo: PWidgetInfo;
 begin
+  if MenuWidget<>nil then //cannot popup when another popup menu is visible
+    Exit;
+
   ReleaseMouseCapture;
   APoint.X := X;
   APoint.Y := Y;
