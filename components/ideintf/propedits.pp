@@ -3578,15 +3578,27 @@ end;
 function TFloatPropertyEditor.GetValue: ansistring;
 const
   Precisions: array[TFloatType] of Integer = (7, 15, 19, 19, 19);
+var
+  FS: TFormatSettings;
 begin
+  FS := DefaultFormatSettings;
+  FS.DecimalSeparator := '.'; //It's Pascal sourcecode representation of a float, not a textual (i18n) one
   Result := FloatToStrF(GetFloatValue, ffGeneral,
-    Precisions[GetTypeData(GetPropType)^.FloatType], 0);
+    Precisions[GetTypeData(GetPropType)^.FloatType], 0, FS);
 end;
 
 procedure TFloatPropertyEditor.SetValue(const NewValue: ansistring);
+var
+  FS: TFormatSettings;
+  NewFloat: Extended;
 begin
   //writeln('TFloatPropertyEditor.SetValue A ',NewValue,'  ',StrToFloat(NewValue));
-  SetFloatValue(StrToFloat(NewValue));
+  FS := DefaultFormatSettings;
+  FS.DecimalSeparator := '.'; //after all, this is Pascal, so we expect a period
+  if not TryStrToFloat(NewValue, NewFloat, FS) then
+    //if this failed, assume the user entered DS from his current locale
+    NewFloat := StrToFloat(NewValue, DefaultFormatSettings);
+  SetFloatValue(NewFloat);
   //writeln('TFloatPropertyEditor.SetValue B ',GetValue);
 end;
 

@@ -100,15 +100,18 @@ type
     // debug symbols
     FPathNumber: Integer;
     function ReadSVGColor(AValue: string): TFPColor;
-    function ReadSVGGradientColorStyle(AValue: STring): TFPColor;
-    function ReadSVGStyle(AValue: string; ADestEntity: TvEntityWithPen; ADestStyle: TvStyle = nil; AUseFillAsPen: Boolean = False): TvSetPenBrushAndFontElements;
+    function ReadSVGGradientColorStyle(AValue: String): TFPColor;
+    function ReadSVGStyle(AData: TvVectorialPage; AValue: string;
+      ADestEntity: TvEntityWithPen; ADestStyle: TvStyle = nil;
+      AUseFillAsPen: Boolean = False): TvSetPenBrushAndFontElements;
     function ReadSVGStyleToStyleLists(AValue: string; AStyleKeys, AStyleValues: TStringList): TvSetPenBrushAndFontElements;
     function ReadSVGPenStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
     function ReadSVGBrushStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush): TvSetPenBrushAndFontElements;
     function ReadSVGFontStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenBrushAndFont; ADestStyle: TvStyle = nil): TvSetPenBrushAndFontElements;
-    function ReadSVGGeneralStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntity): TvSetPenBrushAndFontElements;
+    procedure ReadSVGGeneralStyleWithKeyAndValue(AData: TvVectorialPage;
+        AKey, AValue: string; ADestEntity: TvEntity);
     function IsAttributeFromStyle(AStr: string): Boolean;
-    procedure ApplyLayerStyles(ADestEntity: TvEntity);
+    procedure ApplyLayerStyles(AData: TvVectorialPage; ADestEntity: TvEntity);
     function ReadSpaceSeparatedFloats(AInput: string; AOtherSeparators: string): TDoubleArray;
     procedure ReadSVGTransformationMatrix(AMatrix: string; out AA, AB, AC, AD, AE, AF: Double);
     //
@@ -174,8 +177,8 @@ const
   // 90 inches per pixel = (1 / 90) * 25.4 = 0.2822
   // FLOAT_MILIMETERS_PER_PIXEL = 0.3528; // DPI 72 = 1 / 72 inches per pixel
 
-  FLOAT_MILIMETERS_PER_PIXEL = 1; //0.2822; // DPI 90 = 1 / 90 inches per pixel => Actually I changed the value! Because otherwise it looks ugly!
-  FLOAT_PIXELS_PER_MILIMETER = 1 / FLOAT_MILIMETERS_PER_PIXEL; // DPI 90 = 1 / 90 inches per pixel
+  FLOAT_MILLIMETERS_PER_PIXEL = 1; //0.2822; // DPI 90 = 1 / 90 inches per pixel => Actually I changed the value! Because otherwise it looks ugly!
+  FLOAT_PIXELS_PER_MILIMETER = 1 / FLOAT_MILLIMETERS_PER_PIXEL; // DPI 90 = 1 / 90 inches per pixel
 
   FLOAT_POINTS_PER_PIXEL = 0.75; // For conversion
   FLOAT_PIXEL_PER_POINT = 1 / FLOAT_POINTS_PER_PIXEL; // For conversion
@@ -754,7 +757,7 @@ begin
 end;
 
 // style="fill:none;stroke:black;stroke-width:3"
-function TvSVGVectorialReader.ReadSVGStyle(AValue: string;
+function TvSVGVectorialReader.ReadSVGStyle(AData: TvVectorialPage; AValue: string;
   ADestEntity: TvEntityWithPen; ADestStyle: TvStyle = nil;
   AUseFillAsPen: Boolean = False): TvSetPenBrushAndFontElements;
 var
@@ -782,7 +785,7 @@ begin
       if ADestEntity <> nil then
       begin
         ReadSVGPenStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
-        ReadSVGGeneralStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
+        ReadSVGGeneralStyleWithKeyAndValue(AData, lStyleKeyStr, lStyleValueStr, ADestEntity);
         if AUseFillAsPen and (lStyleKeyStr = 'fill') then
           Result := Result + ReadSVGPenStyleWithKeyAndValue('stroke', lStyleValueStr, ADestEntity)
         else if ADestEntity is TvText then
@@ -1032,8 +1035,8 @@ begin
     ADestStyle.SetElements := ADestStyle.SetElements + Result;
 end;
 
-function TvSVGVectorialReader.ReadSVGGeneralStyleWithKeyAndValue(AKey,
-  AValue: string; ADestEntity: TvEntity): TvSetPenBrushAndFontElements;
+procedure TvSVGVectorialReader.ReadSVGGeneralStyleWithKeyAndValue(AData: TvVectorialPage;
+  AKey, AValue: string; ADestEntity: TvEntity);
 var
   // transform
   MA, MB, MC, MD, ME, MF: Double;
@@ -1088,7 +1091,17 @@ begin
         end
         else if lFunctionName = 'rotate' then
         begin
-          ADestEntity.Rotate(lMatrixElements[0], Make3DPoint(0, 0, 0));
+          lMRotate := -DegToRad(lMatrixElements[0]);
+            // "-" because of orientation of svg coordinate system
+          lMTranslateX := 0;
+          lMTranslateY := 0;
+          if Length(lMatrixElements) > 1 then
+            lMTranslateX := lMatrixElements[1];
+          if Length(lMatrixElements) > 2 then
+            lMTranslateY := lMatrixElements[2];
+          ConvertSVGCoordinatesToFPVCoordinates(AData,
+            lMTranslateX, lMTranslateY, lMTranslateX, lMTranslateY);
+          ADestEntity.Rotate(lMRotate, Make3DPoint(lMTranslateX, lMTranslateY));
         end;
 
         Inc(i, 2);
@@ -1115,7 +1128,8 @@ begin
     (AStr = 'font-weight') or (AStr = 'text-anchor');
 end;
 
-procedure TvSVGVectorialReader.ApplyLayerStyles(ADestEntity: TvEntity);
+procedure TvSVGVectorialReader.ApplyLayerStyles(AData: TvVectorialPage;
+  ADestEntity: TvEntity);
 var
   lStringsKeys, lStringsValues: TStringList;
   i, j: Integer;
@@ -1138,7 +1152,7 @@ begin
       if ADestEntity is TvEntityWithPenBrushAndFont then
         ReadSVGFontStyleWithKeyAndValue(lCurKey, lCurValue, ADestEntity as TvEntityWithPenBrushAndFont);
       // transform
-      ReadSVGGeneralStyleWithKeyAndValue(lCurKey, lCurValue, ADestEntity);
+      ReadSVGGeneralStyleWithKeyAndValue(AData, lCurKey, lCurValue, ADestEntity);
     end;
   end;
 end;
@@ -1487,7 +1501,7 @@ end;
 function TvSVGVectorialReader.ReadCircleFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
 var
-  cx, cy, cr, dtmp: double;
+  cx, cy, cr, tmp: double;
   lCircle: TvCircle;
   i: Integer;
   lNodeName, lNodeValue: DOMString;
@@ -1502,7 +1516,7 @@ begin
   lCircle.Brush.Style := bsSolid;
   lCircle.Brush.Color := colBlack;
   // Apply the layer style
-  ApplyLayerStyles(lCircle);
+  ApplyLayerStyles(AData, lCircle);
 
   // read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -1510,26 +1524,35 @@ begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
     lNodeValue := ANode.Attributes.Item[i].NodeValue;
     if lNodeName = 'cx' then
-      cx := StringWithUnitToFloat(lNodeValue, sckX, suPX, suMM)
+      cx := StringWithUnitToFloat(lNodeValue) //, sckX, suPX, suMM)
     else if lNodeName = 'cy' then
-      cy := StringWithUnitToFloat(lNodeValue, sckY, suPX, suMM)
+      cy := StringWithUnitToFloat(lNodeValue) //, sckY, suPX, suMM)
     else if lNodeName = 'r' then
-      cr := StringWithUnitToFloat(lNodeValue, sckXSize, suPX, suMM)
+      cr := StringWithUnitToFloat(lNodeValue) //, sckXSize, suPX, suMM)
     else if lNodeName = 'id' then
-      lCircle.Name := lNodeValue
-    else if lNodeName = 'style' then
-      ReadSVGStyle(lNodeValue, lCircle)
+      lCircle.Name := lNodeValue;
+  end;
+
+  ConvertSVGCoordinatesToFPVCoordinates(AData, cx, cy, cx, cy);
+  ConvertSVGSizeToFPVSize(AData, cr, cr, lCircle.Radius, tmp);
+  lCircle.X := lCircle.X + cx;
+  lCircle.Y := lCircle.Y + cy;
+
+  // Make sure that transformations are read after geometry and position
+  // of cirlce is known.
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
+    if lNodeName = 'style' then
+      ReadSVGStyle(AData, lNodeValue, lCircle)
     else if IsAttributeFromStyle(lNodeName) then
     begin
       ReadSVGPenStyleWithKeyAndValue(lNodeName, lNodeValue, lCircle);
       ReadSVGBrushStyleWithKeyAndValue(lNodeName, lNodeValue, lCircle);
-      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lCircle);
+      ReadSVGGeneralStyleWithKeyAndValue(AData, lNodeName, lNodeValue, lCircle);
     end;
   end;
-
-  lCircle.X := lCircle.X + cx;
-  lCircle.Y := lCircle.Y + cy;
-  lCircle.Radius := lCircle.Radius + cr;
 
   Result := lCircle;
 end;
@@ -1553,7 +1576,7 @@ begin
   lEllipse.Brush.Style := bsSolid;
   lEllipse.Brush.Color := colBlack;
   // Apply the layer style
-  ApplyLayerStyles(lEllipse);
+  ApplyLayerStyles(AData, lEllipse);
 
   // read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -1569,21 +1592,27 @@ begin
     else if lNodeName = 'ry' then
       cry := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'id' then
-      lEllipse.Name := ANode.Attributes.Item[i].NodeValue
-    else if lNodeName = 'style' then
-      ReadSVGStyle(lNodeValue, lEllipse)
+      lEllipse.Name := ANode.Attributes.Item[i].NodeValue;
+  end;
+
+  ConvertSVGCoordinatesToFPVCoordinates(AData, cx, cy, lEllipse.X, lEllipse.Y);
+  ConvertSVGSizeToFPVSize(AData, crx, cry, lEllipse.HorzHalfAxis, lEllipse.VertHalfAxis);
+
+  // Make sure that transformations are read after geometry and position
+  // of ellipse is known.
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
+    if lNodeName = 'style' then
+      ReadSVGStyle(AData, lNodeValue, lEllipse)
     else if IsAttributeFromStyle(lNodeName) then
     begin
       ReadSVGPenStyleWithKeyAndValue(lNodeName, lNodeValue, lEllipse);
       ReadSVGBrushStyleWithKeyAndValue(lNodeName, lNodeValue, lEllipse);
-      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lEllipse);
+      ReadSVGGeneralStyleWithKeyAndValue(AData, lNodeName, lNodeValue, lEllipse);
     end;
   end;
-
-  ConvertSVGCoordinatesToFPVCoordinates(
-        AData, cx, cy, lEllipse.X, lEllipse.Y);
-  ConvertSVGDeltaToFPVDelta(
-        AData, crx, cry, lEllipse.HorzHalfAxis, lEllipse.VertHalfAxis);
 
   Result := lEllipse;
 end;
@@ -1626,7 +1655,7 @@ begin
   lText := nil;//TvText.Create(nil);
 
   // Apply the layer style
-  ApplyLayerStyles(lText);
+  ApplyLayerStyles(AData, lText);
 
   // read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -1638,7 +1667,7 @@ begin
     else if lNodeName = 'svg:y' then
       ly := ly + StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'draw:style-name' then
-      ReadSVGStyle(lNodeValue, lText);
+      ReadSVGStyle(AData, lNodeValue, lText);
   end;
 
   // Get the text contents
@@ -1702,7 +1731,7 @@ begin
   lText := TvText.Create(nil);
 
   // Apply the layer style
-  ApplyLayerStyles(lText);
+  ApplyLayerStyles(AData, lText);
 
   {// read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -1831,7 +1860,7 @@ begin
     begin
       //ReadSVGPenStyleWithKeyAndValue(lNodeName, lNodeValue, lImage);
       //ReadSVGBrushStyleWithKeyAndValue(lNodeName, lNodeValue, lImage);
-      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lImage);
+      ReadSVGGeneralStyleWithKeyAndValue(AData, lNodeName, lNodeValue, lImage);
     end;
   end;
 
@@ -1856,7 +1885,7 @@ begin
   lImage.Y := lImage.Y + lImage.Height / 2;
 
   // Apply the layer style
-  ApplyLayerStyles(lImage);
+  ApplyLayerStyles(AData, lImage);
 
   Result := lImage;
 end;
@@ -1985,18 +2014,20 @@ begin
   lPath.Pen.Style := psClear;
 
   // Apply the layer style
-  ApplyLayerStyles(lPath);
+  ApplyLayerStyles(AData, lPath);
 
   // Add the entity styles
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
     if lNodeName = 'style' then
-      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lPath)
+      ReadSVGStyle(AData, ANode.Attributes.Item[i].NodeValue, lPath)
     else if IsAttributeFromStyle(lNodeName) then
     begin
-      ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
-      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
+      ReadSVGPenStyleWithKeyAndValue(lNodeName,
+        ANode.Attributes.Item[i].NodeValue, lPath);
+      ReadSVGGeneralStyleWithKeyAndValue(AData, lNodeName,
+        ANode.Attributes.Item[i].NodeValue, lPath);
     end;
   end;
   //
@@ -2029,7 +2060,7 @@ begin
   lPath.Brush.Color := colBlack;
   lPath.Brush.Style := bsClear;
   // Apply the layer style
-  ApplyLayerStyles(lPath);
+  ApplyLayerStyles(AData, lPath);
   // Add the pen/brush/name
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
@@ -2037,12 +2068,15 @@ begin
     if lNodeName = 'id' then
       lPath.Name := ANode.Attributes.Item[i].NodeValue
     else if lNodeName = 'style' then
-      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lPath)
+      ReadSVGStyle(AData, ANode.Attributes.Item[i].NodeValue, lPath)
     else if IsAttributeFromStyle(lNodeName) then
     begin
-      ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
-      ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
-      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
+      ReadSVGPenStyleWithKeyAndValue(lNodeName,
+        ANode.Attributes.Item[i].NodeValue, lPath);
+      ReadSVGBrushStyleWithKeyAndValue(lNodeName,
+        ANode.Attributes.Item[i].NodeValue, lPath);
+      ReadSVGGeneralStyleWithKeyAndValue(AData, lNodeName,
+        ANode.Attributes.Item[i].NodeValue, lPath);
     end;
   end;
 end;
@@ -2513,7 +2547,7 @@ begin
   lPath.Brush.Style := bsClear;
 
   // Apply the layer style
-  ApplyLayerStyles(lPath);
+  ApplyLayerStyles(AData, lPath);
 
   // now read the other attributes
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -2522,12 +2556,15 @@ begin
     if lNodeName = 'id' then
       lPath.Name := ANode.Attributes.Item[i].NodeValue
     else if lNodeName = 'style' then
-      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lPath)
+      ReadSVGStyle(AData, ANode.Attributes.Item[i].NodeValue, lPath)
     else if IsAttributeFromStyle(lNodeName) then
     begin
-      ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
-      ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
-      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
+      ReadSVGPenStyleWithKeyAndValue(lNodeName,
+        ANode.Attributes.Item[i].NodeValue, lPath);
+      ReadSVGBrushStyleWithKeyAndValue(lNodeName,
+        ANode.Attributes.Item[i].NodeValue, lPath);
+      ReadSVGGeneralStyleWithKeyAndValue(AData, lNodeName,
+        ANode.Attributes.Item[i].NodeValue, lPath);
     end;
   end;
 end;
@@ -2540,6 +2577,7 @@ var
   lRect: TvRectangle;
   i: Integer;
   lNodeName: DOMString;
+  lNodeValue: String;
 begin
   lx := 0.0;
   ly := 0.0;
@@ -2554,44 +2592,52 @@ begin
   lRect.Brush.Style := bsSolid;
   lRect.Brush.Color := colBlack;
   // Apply the layer style
-  ApplyLayerStyles(lRect);
+  ApplyLayerStyles(AData, lRect);
 
   // read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
     if  lNodeName = 'x' then
-      lx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      lx := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'y' then
-      ly := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      ly := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'rx' then
-      lrx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      lrx := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'ry' then
-      lry := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      lry := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'width' then
-      cx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      cx := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'height' then
-      cy := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      cy := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'id' then
-      lRect.Name := ANode.Attributes.Item[i].NodeValue
-    else if lNodeName = 'style' then
-      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lRect)
-    else if IsAttributeFromStyle(lNodeName) then
-    begin
-      ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lRect);
-      ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lRect);
-      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lRect);
-    end;
+      lRect.Name := lNodeValue;
   end;
 
-  ConvertSVGCoordinatesToFPVCoordinates(
-        AData, lx, ly, lRect.X, lRect.Y);
-  ConvertSVGSizeToFPVSize(
-        AData, cx, cy, lRect.CX, lRect.CY);
-  ConvertSVGSizeToFPVSize(
-        AData, lrx, lry, lRect.RX, lRect.RY);
+  ConvertSVGCoordinatesToFPVCoordinates(AData, lx, ly, lRect.X, lRect.Y);
+  ConvertSVGSizeToFPVSize(AData, cx, cy, lRect.CX, lRect.CY);
+  ConvertSVGSizeToFPVSize(AData, lrx, lry, lRect.RX, lRect.RY);
   lRect.RX := Abs(lRect.RX) * 2;
   lRect.RY := Abs(lRect.RY) * 2;
+
+  // Make sure that transformations are read after geometry and position
+  // of rectangle is known.
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if lNodeName = 'style' then
+      ReadSVGStyle(AData, lNodeValue, lRect)
+    else if IsAttributeFromStyle(lNodeName) then
+    begin
+      ReadSVGPenStyleWithKeyAndValue(lNodeName,
+        ANode.Attributes.Item[i].NodeValue, lRect);
+      ReadSVGBrushStyleWithKeyAndValue(lNodeName,
+        ANode.Attributes.Item[i].NodeValue, lRect);
+      ReadSVGGeneralStyleWithKeyAndValue(AData, lNodeName,
+        ANode.Attributes.Item[i].NodeValue, lRect);
+    end;
+  end;
 
   Result := lRect;
 end;
@@ -2768,7 +2814,7 @@ var
         end;
 
         // Apply the layer style
-        ApplyLayerStyles(lCText);
+        ApplyLayerStyles(AData, lCText);
 
         // Apply the layer style
         ApplyStackStylesToText(lCText);
@@ -2780,7 +2826,7 @@ var
         lText.Font.Size := 10;
         lText.Name := lName;
         // Apply the layer style
-        ApplyLayerStyles(lText);
+        ApplyLayerStyles(AData, lText);
 
         // Apply the layer style
         ApplyStackStylesToText(lText);
@@ -2820,11 +2866,11 @@ begin
       lParagraph.Name := lName;
     end
     else if lNodeName = 'style' then
-      ReadSVGStyle(lNodeValue, nil, lCurStyle)
+      ReadSVGStyle(AData, lNodeValue, nil, lCurStyle)
     else if IsAttributeFromStyle(lNodeName) then
     begin
       ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, nil, lCurStyle);
-      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lParagraph);
+      ReadSVGGeneralStyleWithKeyAndValue(AData, lNodeName, lNodeValue, lParagraph);
     end;
   end;
 
@@ -2903,14 +2949,14 @@ begin
     lNodeValue := ANode.Attributes.Item[i].NodeValue;
     if lNodeName = 'style' then
     begin
-      ReadSVGStyle(lNodeValue, lInsert);
+      ReadSVGStyle(AData, lNodeValue, lInsert);
     end
     else if IsAttributeFromStyle(lNodeName) then
     begin
       lInsert.SetElements += ReadSVGPenStyleWithKeyAndValue(lNodeName, lNodeValue, lInsert);
       lInsert.SetElements += ReadSVGBrushStyleWithKeyAndValue(lNodeName, lNodeValue, lInsert);
       lInsert.SetElements += ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, lInsert);
-      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lInsert);
+      ReadSVGGeneralStyleWithKeyAndValue(AData, lNodeName, lNodeValue, lInsert);
     end;
   end;
 
@@ -3001,7 +3047,7 @@ var
   procedure DoProcessMM_End();
   begin
     if ATargetUnit = suPX then
-      Result := Result / FLOAT_MILIMETERS_PER_PIXEL;
+      Result := Result / FLOAT_MILLIMETERS_PER_PIXEL;
     DoViewBoxAdjust();
   end;
 
@@ -3009,7 +3055,7 @@ var
   begin
     Result := StrToFloat(ValueStr, FPointSeparator);
     case ATargetUnit of
-    suMM: Result := Result * FLOAT_MILIMETERS_PER_PIXEL;
+    suMM: Result := Result * FLOAT_MILLIMETERS_PER_PIXEL;
     suPT: Result := Result * FLOAT_POINTS_PER_PIXEL;
     end;
     DoViewBoxAdjust();
@@ -3098,8 +3144,8 @@ procedure TvSVGVectorialReader.ConvertSVGCoordinatesToFPVCoordinates(
   const AData: TvVectorialPage; const ASrcX, ASrcY: Double;
   var ADestX,ADestY: Double; ADoViewBoxAdjust: Boolean = True);
 begin
-  ADestX := ASrcX * FLOAT_MILIMETERS_PER_PIXEL;
-  ADestY := AData.Height - ASrcY * FLOAT_MILIMETERS_PER_PIXEL;
+  ADestX := ASrcX * FLOAT_MILLIMETERS_PER_PIXEL;
+  ADestY := AData.Height - ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
   if ViewBoxAdjustment and ADoViewBoxAdjust then
   begin
     ADestX := (ASrcX - ViewBox_Left) * Page_Width / ViewBox_Width;
@@ -3111,8 +3157,8 @@ procedure TvSVGVectorialReader.ConvertSVGDeltaToFPVDelta(
   const AData: TvVectorialPage; const ASrcX, ASrcY: Double; var ADestX,
   ADestY: Double; ADoViewBoxAdjust: Boolean = True);
 begin
-  ADestX := ASrcX * FLOAT_MILIMETERS_PER_PIXEL;
-  ADestY := - ASrcY * FLOAT_MILIMETERS_PER_PIXEL;
+  ADestX := ASrcX * FLOAT_MILLIMETERS_PER_PIXEL;
+  ADestY := - ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
   if ViewBoxAdjustment and ADoViewBoxAdjust then
   begin
     ADestX := ASrcX * Page_Width / ViewBox_Width;
@@ -3124,8 +3170,8 @@ procedure TvSVGVectorialReader.ConvertSVGSizeToFPVSize(
   const AData: TvVectorialPage; const ASrcX, ASrcY: Double; var ADestX,
   ADestY: Double; ADoViewBoxAdjust: Boolean = True);
 begin
-  ADestX := ASrcX * FLOAT_MILIMETERS_PER_PIXEL;
-  ADestY := ASrcY * FLOAT_MILIMETERS_PER_PIXEL;
+  ADestX := ASrcX * FLOAT_MILLIMETERS_PER_PIXEL;
+  ADestY := ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
   if ViewBoxAdjustment and ADoViewBoxAdjust then
   begin
     ADestX := ASrcX * Page_Width / ViewBox_Width;

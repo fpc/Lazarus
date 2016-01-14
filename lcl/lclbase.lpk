@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="7"/>
-    <Files Count="285">
+    <Files Count="286">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -1172,6 +1172,10 @@
         <Filename Value="include/clipbrd_html.inc"/>
         <Type Value="Include"/>
       </Item285>
+      <Item286>
+        <Filename Value="groupededit.pp"/>
+        <UnitName Value="GroupedEdit"/>
+      </Item286>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>

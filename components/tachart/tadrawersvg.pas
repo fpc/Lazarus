@@ -89,6 +89,7 @@ type
       AStartAngle16Deg, AAngleLength16Deg: Integer);
     procedure Rectangle(const ARect: TRect);
     procedure Rectangle(AX1, AY1, AX2, AY2: Integer);
+    procedure ResetFont;
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
@@ -376,6 +377,11 @@ procedure TSVGDrawer.Rectangle(const ARect: TRect);
 begin
   with ARect do
     Rectangle(Left, Top, Right, Bottom);
+end;
+
+procedure TSVGDrawer.ResetFont;
+begin
+  FFont.Orientation := 0;
 end;
 
 procedure TSVGDrawer.SetAntialiasingMode(AValue: TChartAntialiasingMode);

@@ -6,3 +6,5 @@ tlistviewfilteredit.png
 ttreefilteredit.png
 tlvlgraphcontrol.png  
 tshortpathedit.png
+tfloatspineditex.png
+tspineditex.png

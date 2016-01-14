@@ -60,6 +60,7 @@ type
       AStartAngle16Deg, AAngleLength16Deg: Integer);
     procedure Rectangle(const ARect: TRect);
     procedure Rectangle(AX1, AY1, AX2, AY2: Integer);
+    procedure ResetFont;
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
@@ -212,6 +213,11 @@ procedure TBGRABitmapDrawer.Rectangle(const ARect: TRect);
 begin
   with ARect do
     Rectangle(Left, Top, Right, Bottom)
+end;
+
+procedure TBGRABitmapDrawer.ResetFont;
+begin
+  Canvas.Font.Orientation := 0;
 end;
 
 procedure TBGRABitmapDrawer.SetAntialiasingMode(AValue: TChartAntialiasingMode);

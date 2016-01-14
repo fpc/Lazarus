@@ -1023,7 +1023,7 @@ begin
   finally
     EndTime:=Now;
     s:=FormatDateTime('hh:nn:ss', EndTime-StartTime);
-    if s<>'00:00:00' then
+    if (Result<>mrAbort) and (s<>'00:00:00') then
       fSettings.AddLogLine(Format(lisConvDelphiConversionTook, [s]));
     EndConvert(Result);
   end;

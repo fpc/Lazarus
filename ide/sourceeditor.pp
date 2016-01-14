@@ -1663,6 +1663,8 @@ begin
         (AParent,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF);
     SrcEditMenuCompleteCode := RegisterIDEMenuCommand
         (AParent,'CompleteCode', lisMenuCompleteCode, nil, @ExecuteIdeMenuClick);
+    SrcEditMenuInvertAssignment := RegisterIDEMenuCommand
+        (AParent, 'InvertAssignment',uemInvertAssignment, nil, @ExecuteIdeMenuClick);
     SrcEditMenuUseUnit := RegisterIDEMenuCommand
         (AParent,'UseUnit', lisMenuUseUnit, nil, @ExecuteIdeMenuClick);
     SrcEditMenuShowUnitInfo := RegisterIDEMenuCommand
@@ -1677,8 +1679,6 @@ begin
         (AParent, 'RenameIdentifier',lisMenuRenameIdentifier, nil, @ExecuteIdeMenuClick);
     SrcEditMenuExtractProc := RegisterIDEMenuCommand
         (AParent, 'ExtractProc',lisMenuExtractProc, nil, @ExecuteIdeMenuClick);
-    SrcEditMenuInvertAssignment := RegisterIDEMenuCommand
-        (AParent, 'InvertAssignment',uemInvertAssignment, nil, @ExecuteIdeMenuClick);
     SrcEditMenuShowAbstractMethods := RegisterIDEMenuCommand
         (AParent, 'ShowAbstractMethods',srkmecAbstractMethods, nil, @ExecuteIdeMenuClick);
     SrcEditMenuShowEmptyMethods := RegisterIDEMenuCommand
@@ -6302,6 +6302,7 @@ Begin
     APage.Caption:='unit1';
     APage.Parent:=FNotebook;
     PageIndex := 0;   // Set it to the first page
+    Options:=Options+[nboHidePageListPopup]; // hide default popup menu, we show custom in mouse up
     if EditorOpts.ShowTabCloseButtons then
       Options:=Options+[nboShowCloseButtons]
     else
@@ -6539,7 +6540,7 @@ begin
       else
         DebugLn(['TSourceNotebook.TabPopUpMenuPopup: Popup PageIndex=', PageI]);
     end;
-    ASrcEdit:=Editors[PageIndex];
+    ASrcEdit:=ActiveEditor as TSourceEditor;
 
     {$IFnDEF SingleSrcWindow}
     // Multi win
@@ -8387,7 +8388,11 @@ begin
   begin
     TabIndex:=FNotebook.TabIndexAtClientPos(Point(X,Y));
     if TabIndex>=0 then
+    begin
+      TabPopUpMenu.PopupComponent := FNotebook;
       TabPopUpMenu.PopUp;
+      TabPopUpMenu.PopupComponent := nil;
+    end;
   end;
 end;
 

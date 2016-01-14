@@ -235,7 +235,7 @@ begin
 
   if not FIsLibraryInstance then
   begin
-    {$IFDEF HAIKU}
+    {$IF DEFINED(HAIKU) OR DEFINED(QTOPIA)}
     FAppSessionQuit := nil;
     FAppSaveSessionRequest := nil;
     {$ELSE}
@@ -1155,7 +1155,7 @@ begin
     ' errorInteraction ',dbgs(QSessionManager_allowsErrorInteraction(sessionManager)),
     ' phase2 ',dbgs(QSessionManager_isPhase2(sessionManager)));
   {$ENDIF}
-  {$IFNDEF HAIKU}
+  {$IF NOT DEFINED(HAIKU) AND NOT DEFINED(QTOPIA)}
   // if session manager does not allow interaction, then we close app without any intf calls
   if QSessionManager_allowsInteraction(sessionManager) then
   begin
