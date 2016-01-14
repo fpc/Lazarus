@@ -6302,6 +6302,7 @@ Begin
     APage.Caption:='unit1';
     APage.Parent:=FNotebook;
     PageIndex := 0;   // Set it to the first page
+    Options:=Options+[nboHidePageListPopup]; // hide default popup menu, we show custom in mouse up
     if EditorOpts.ShowTabCloseButtons then
       Options:=Options+[nboShowCloseButtons]
     else
