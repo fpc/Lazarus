@@ -841,6 +841,7 @@ begin
       TryBoundDesignedForm;
       if Assigned(OnNodePositioning) then
         OnNodePositioning(Self, [pkBottom], pcPositioningEnd);
+      Application.NotifyUserInputHandler(Self, 0); // force repaint invisible components
     end else
       pFakeMenu.Invalidate;
 
