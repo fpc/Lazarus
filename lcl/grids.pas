@@ -3582,7 +3582,7 @@ var
   IsSelected: boolean;
   gc: TGridColumn;
 begin
-  if DefaultDrawing then begin
+  if (gdFixed in aState) or DefaultDrawing then begin
     Canvas.Pen.Mode := pmCopy;
     GetSelectedState(aState, IsSelected);
     if IsSelected then begin
