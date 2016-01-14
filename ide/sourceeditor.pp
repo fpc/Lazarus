@@ -47,7 +47,7 @@ uses
   ExtendedNotebook, LCLProc, LCLType, LResources, LCLIntf, FileUtil, LazFileUtils,
   Translations, ClipBrd, HelpIntfs,
   LConvEncoding, Messages, LazLoggerBase, lazutf8classes, LazLogger, AvgLvlTree,
-  LazFileCache, LazUTF8,
+  LazFileCache, LazUTF8, LMessages,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   LinkScanner, CodeTree, SourceChanger,
@@ -583,6 +583,13 @@ type
   TSourceNotebookUpdateFlags = set of TSourceNotebookUpdateFlag;
 
   TBrowseEditorTabHistoryDialog = class;
+
+  { TIDEExtendedNotebook }
+
+  TIDEExtendedNotebook = class(TExtendedNotebook)
+  protected
+    procedure WMContextMenu(var Message: TLMContextMenu); message LM_CONTEXTMENU;
+  end;
 
   { TSourceNotebook }
 
@@ -1730,6 +1737,27 @@ var
   SE1: TSourceEditorInterface absolute SrcEdit;
 begin
   Result:=CompareFilenames(AnsiString(FileNameStr),SE1.FileName);
+end;
+
+{ TIDEExtendedNotebook }
+
+procedure TIDEExtendedNotebook.WMContextMenu(var Message: TLMContextMenu);
+var
+  Child: TControl;
+begin
+  // Gtk2 workaround to disable default popup menu
+  // -> Gtk2 shows default popup menu for a page control, disable it
+  if Message.XPos <> -1 then
+  begin
+    Child := ControlAtPos(ScreenToClient(SmallPointToPoint(Message.Pos)), [capfHasScrollOffset]);
+    if (Child = nil) or (Child = Self) then
+    begin
+      Message.Result := 1;
+      Exit;
+    end;
+  end;
+
+  inherited WMContextMenu(Message);
 end;
 
 { TBrowseEditorTabHistoryDialog }
@@ -6283,7 +6311,7 @@ Begin
   {$IFDEF IDE_MEM_CHECK}
   CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] A ');
   {$ENDIF}
-  FNotebook := TExtendedNotebook.Create(self);
+  FNotebook := TIDEExtendedNotebook.Create(self);
   {$IFDEF IDE_DEBUG}
   debugln('[TSourceNotebook.CreateNotebook] B');
   {$ENDIF}
