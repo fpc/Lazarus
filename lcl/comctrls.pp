@@ -1825,6 +1825,7 @@ type
 
   { TCustomUpDown }
 
+
   TCustomUpDown = class(TCustomControl)
   private
     FAlignButton: TUDAlignButton;
@@ -1837,6 +1838,7 @@ type
     FMaxBtn: TControl; // TSpeedButton (TUpDownButton)
     FMin: SmallInt;
     FMinBtn: TControl; // TSpeedButton (TUpDownButton)
+    FMinRepeatInterval: Byte;  //Interval starts at 300 and this must be smaller always
     FMouseDownBounds : TRect;
     FMouseTimerEvent: TProcedureOfObject; // the Min/MaxBtn's Click method
     FOnChanging: TUDChangingEvent;
@@ -1854,6 +1856,7 @@ type
     procedure SetIncrement(Value: Integer);
     procedure SetMax(Value: SmallInt);
     procedure SetMin(Value: SmallInt);
+    procedure SetMinRepeatInterval(AValue: Byte);
     procedure SetOrientation(Value: TUDOrientation);
     procedure SetPosition(Value: SmallInt);
     procedure SetThousands(Value: Boolean);
@@ -1882,6 +1885,7 @@ type
     property Increment: Integer read FIncrement write SetIncrement default 1;
     property Max: SmallInt read FMax write SetMax default 100;
     property Min: SmallInt read FMin write SetMin;
+    property MinRepeatInterval: Byte read FMinRepeatInterval write SetMinRepeatInterval default 100;
     property OnChanging: TUDChangingEvent read FOnChanging write FOnChanging;
     property OnChangingEx: TUDChangingEventEx read FOnChangingEx write FOnChangingEx;
     property OnClick: TUDClickEvent read FOnClick write FOnClick;
@@ -1910,6 +1914,7 @@ type
     property Increment;
     property Max;
     property Min;
+    property MinRepeatInterval;
     property OnChanging;
     property OnChangingEx;
     property OnClick;
