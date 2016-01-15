@@ -843,6 +843,7 @@ begin
         OnNodePositioning(Self, [pkBottom], pcPositioningEnd);
       Application.NotifyUserInputHandler(Self, 0); // force repaint invisible components
     end else
+    if pFakeMenu.Visible then
       pFakeMenu.Invalidate; // always repaint menu on modification
 
     FDesignerModified := False;
