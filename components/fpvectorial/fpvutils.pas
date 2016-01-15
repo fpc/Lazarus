@@ -50,9 +50,9 @@ function CoordToCanvasX(ACoord: Double; ADestX: Integer; AMulX: Double): Integer
 function CoordToCanvasY(ACoord: Double; ADestY: Integer; AMulY: Double): Integer; inline;
 // Other routines
 function SeparateString(AString: string; ASeparator: char): T10Strings;
-function Make2DPoint(AX, AY: Double): T2DPoint;
-function Make3DPoint(AX, AY, AZ: Double): T3DPoint;  overload;
-function Make3DPoint(AX, AY: Double): T3DPoint; overload;
+function Make3DPoint(AX, AY, AZ: Double): T3DPoint; overload; inline;
+function Make3DPoint(AX, AY: Double): T3DPoint; overload; inline;
+function Point2D(AX, AY: Double): T2DPoint; inline;
 // Mathematical routines
 function LineEquation_GetPointAndTangentForLength(AStart, AEnd: T3DPoint; ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean;
 procedure EllipticalArcToBezier(Xc, Yc, Rx, Ry, startAngle, endAngle: Double; var P1, P2, P3, P4: T3DPoint);
@@ -235,7 +235,7 @@ begin
   end;
 end;
 
-function Make2DPoint(AX, AY: Double): T2DPoint;
+function Point2D(AX, AY: Double): T2DPoint;
 begin
   Result.X := AX;
   Result.Y := AY;
@@ -252,6 +252,7 @@ function Make3DPoint(AX, AY: Double): T3DPoint;
 begin
   Result.X := AX;
   Result.Y := AY;
+  Result.Z := 0;
 end;
 
 { Considering a counter-clockwise arc, elliptical and alligned to the axises
@@ -306,7 +307,8 @@ var
   lLineAngle: Double; // to X axis
 begin
   Result := False;
-  lLineAngle := arctan((AEnd.Y-AStart.Y) / (AEnd.X - AStart.X));
+//  lLineAngle := arctan((AEnd.Y-AStart.Y) / (AEnd.X - AStart.X));
+  lLineAngle := arctan2(AEnd.Y - AStart.Y, AEnd.X - AStart.X);
   AX := AStart.X + ADistance * Cos(lLineAngle);
   AY := AStart.Y + ADistance * Sin(lLineAngle);
 end;
@@ -742,10 +744,10 @@ begin
   SetLength(Result, list.Count);
   if ACoordIsX then
     for j:=0 to list.Count-1 do
-      Result[j] := Make2DPoint(ACoord, Double(list[j]^))
+      Result[j] := Point2D(ACoord, Double(list[j]^))
   else
     for j:=0 to list.Count-1 do
-      Result[j] := Make2DPoint(Double(list[j]^), ACoord);
+      Result[j] := Point2D(Double(list[j]^), ACoord);
 
   // Clean-up
   for j:=list.Count-1 downto 0 do

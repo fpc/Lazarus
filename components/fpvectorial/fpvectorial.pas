@@ -574,6 +574,7 @@ type
     procedure ApplyFontToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; AMulX: Double = 1.0); overload;
     procedure ApplyFontToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; AFont: TvFont; AMulX: Double = 1.0); overload;
     procedure AssignFont(AFont: TvFont);
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); override; // Angle in radians
     procedure Scale(ADeltaScaleX, ADeltaScaleY: Double); override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
@@ -1664,7 +1665,8 @@ procedure RegisterVectorialReader(
 procedure RegisterVectorialWriter(
   AWriterClass: TvVectorialWriterClass;
   AFormat: TvVectorialFormat);
-//function Make2DPoint(AX, AY: Double): T3DPoint;
+
+function Make2DPoint(AX, AY: Double): T3DPoint;
 function Dimension(AValue : Double; AUnits : TvUnits) : TvDimension;
 function ConvertDimensionToMM(ADimension: TvDimension; ATotalSize: Double): Double;
 
@@ -1761,14 +1763,13 @@ begin
   end;
 end;
 
-{
 function Make2DPoint(AX, AY: Double): T3DPoint;
 begin
   Result.X := AX;
   Result.Y := AY;
   Result.Z := 0;
 end;
- }
+
 function Dimension(AValue: Double; AUnits: TvUnits): TvDimension;
 begin
   Result.Value := AValue;
@@ -2831,7 +2832,7 @@ begin
   E2.X := p.X;
   E2.Y := p.Y;
 
-  p := fpvutils.Rotate3DPointInXY(Make3dPoint(CX, CY), ABase, AAngle);
+  p := fpvutils.Rotate3DPointInXY(Make2dPoint(CX, CY), ABase, AAngle);
   CX := p.X;
   CY := p.Y;
 end;
@@ -3729,8 +3730,8 @@ procedure TvEntityWithPenAndBrush.CalcGradientVector(
   out AGradientStart, AGradientEnd: T2dPoint; const ARect: TRect;
   ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
 begin
-  AGradientStart := Make2DPoint(Brush.Gradient_start.X, Brush.Gradient_start.Y);
-  AGradientEnd := Make2DPoint(Brush.Gradient_end.X, Brush.Gradient_end.Y);
+  AGradientStart := Point2D(Brush.Gradient_start.X, Brush.Gradient_start.Y);
+  AGradientEnd := Point2D(Brush.Gradient_end.X, Brush.Gradient_end.Y);
   if (gfRelToUserSpace in Brush.Gradient_flags) then
   begin
     if (gfRelStartX in Brush.Gradient_flags) then
@@ -3790,18 +3791,18 @@ begin
   // Direction of gradient vector. The gradient vector begins at the first
   // color position and ends at the last color position specified in the
   // brush's Gradient_colors.
-  gv := Make2dPoint(AGradientEnd.X-AGradientStart.X, AGradientEnd.Y-AGradientStart.Y);
+  gv := Point2D(AGradientEnd.X-AGradientStart.X, AGradientEnd.Y-AGradientStart.Y);
   gvlen := sqrt(sqr(gv.x) + sqr(gv.y));
   if gvlen = 0 then
     exit;
 
   // Find boundary points where the gradient starts and ends. The gradient is
   // always travered from 0% to 100% color fractions.
-  p1 := Make2dPoint(
+  p1 := Point2D(
     IfThen(AGradientEnd.x > AGradientStart.x, ARect.Left, ARect.Right),
     IfThen(AGradientEnd.Y > AGradientStart.y, ARect.Top, ARect.Bottom)
   );
-  p2 := Make2dPoint(
+  p2 := Point2D(
     IfThen(AGradientEnd.x > AGradientStart.x, ARect.Right, ARect.Left),
     IfThen(AGradientEnd.Y > AGradientStart.y, ARect.Bottom, ARect.Top)
   );
@@ -3820,7 +3821,7 @@ begin
         gstart := coord1;
         dir := round(dcoord);
         for i := 0 to High(APoints) do
-          pts[i] := Make2DPoint(APoints[i].X, APoints[i].Y);
+          pts[i] := Point2D(APoints[i].X, APoints[i].Y);
         coordIsX := false;
         gstart := coord1;
       end;
@@ -3832,7 +3833,7 @@ begin
         gstart := coord1;
         dir := round(dcoord);
         for i := 0 to High(APoints) do
-          pts[i] := Make2DPoint(APoints[i].X, APoints[i].Y);
+          pts[i] := Point2D(APoints[i].X, APoints[i].Y);
         coordIsX := true;
       end;
     bkOtherLinearGradient:
@@ -3861,7 +3862,7 @@ begin
         // (if angle < 45°) or y axis (if angle > 45°)
         // Rotation center is the projection of the corner of the bounding box
         // onto the gradient vector
-        p1 := Make2dPoint(
+        p1 := Point2D(
           AGradientStart.X + coord1 * gv.x / gvlen,
           AGradientStart.Y + coord1 * gv.y / gvlen
         );
@@ -3869,7 +3870,7 @@ begin
         begin
           px := APoints[j].X - p1.x;
           py := APoints[j].Y - p1.y;
-          pts[j] := Make2DPoint(px*cosPhi + py*sinPhi, -px*sinPhi + py*cosPhi);
+          pts[j] := Point2D(px*cosPhi + py*sinPhi, -px*sinPhi + py*cosPhi);
         end;
         // Begin painting at corner
         coord2 := coord2 - coord1;
@@ -3901,7 +3902,7 @@ begin
       bkOtherLinearGradient:
         // Rotate back
         for j := 0 to High(lPoints) do
-          lPoints[j] := Make2DPoint(
+          lPoints[j] := Point2D(
             lPoints[j].X * cosPhi - lPoints[j].Y * sinPhi + p1.x,
             lPoints[j].X * sinPhi + lPoints[j].Y * cosPhi + p1.y
           );
@@ -4118,7 +4119,7 @@ begin
   {$ENDIF}
 
   {$ifdef USE_LCL_CANVAS}
-  ALCLDest.Font.Orientation := Round(AFont.Orientation * 16);
+  ALCLDest.Font.Orientation := Round(AFont.Orientation * 10);  // wp: was * 16
   {$endif}
   lFPColor := AdjustColorToBackground(AFont.Color, ARenderInfo);
   ADest.Font.FPColor := lFPColor;
@@ -4136,10 +4137,15 @@ begin
   Font.StrikeThrough := AFont.StrikeThrough;
 end;
 
+procedure TvEntityWithPenBrushAndFont.Rotate(AAngle: Double; ABase: T3DPoint);
+begin
+  inherited Rotate(AAngle, ABase);
+  Font.Orientation := RadToDeg(AAngle);
+end;
+
 procedure TvEntityWithPenBrushAndFont.Scale(ADeltaScaleX, ADeltaScaleY: Double);
 begin
   inherited Scale(ADeltaScaleX, ADeltaScaleY);
-
   Font.Size := Round(Font.Size * ADeltaScaleX);
 end;
 
@@ -5267,30 +5273,23 @@ end;
 
 procedure TvText.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double; ADoDraw: Boolean);
-
-  function CoordToCanvasX(ACoord: Double): Integer;
-  begin
-    Result := Round(ADestX + AmulX * ACoord);
-  end;
-
-  function CoordToCanvasY(ACoord: Double): Integer;
-  begin
-    Result := Round(ADestY + AmulY * ACoord);
-  end;
-
 const
   LINE_SPACING = 0.2;  // fraction of font height for line spacing
 var
   i: Integer;
   //
-  LowerDim: T3DPoint;
+  pt, refPt: TPoint;
+  LowerDimY: Double;
   XAnchorAdjustment: Integer;
   lLongestLine, lLineWidth, lFontSizePx, lFontDescenderPx: Integer;
   lText: string;
+  lDescender: Integer;
+  phi: Double;
   {$ifdef USE_LCL_CANVAS}
   ACanvas: TCanvas absolute ADest;
   lTextSize: TSize;
   lTextWidth: Integer;
+  tm: TLCLTextMetric;
   {$endif}
 begin
   lText := Value.Text + Format(' F=%d', [ADest.Font.Size]); // for debugging
@@ -5300,54 +5299,82 @@ begin
 
   // Don't draw anything if we have alpha=zero
   if Font.Color.Alpha = 0 then Exit;
+  ADest.Font.FPColor := AdjustColorToBackground(Font.Color, ARenderInfo);
+
+  // Font metric
+  lFontSizePx := Font.Size;        // is without multiplier!
+  if lFontSizePx = 0 then lFontSizePx := 10;
+  lTextSize := ADest.TextExtent(Str_Line_Height_Tester);
+  lDescender := (lTextSize.CY - lFontSizePx) div 2;  // rough estimate only
+  {$IFDEF USE_LCL_CANVAS}
+  if ACanvas.GetTextMetrics(tm) then
+    lDescender := tm.Descender;
+  {$ENDIF}
+
+  // Angle of text rotation
+  phi := sign(AMulY) * DegToRad(Font.Orientation);
+
+  // Reference point of the entity (X,Y) in pixels
+  // rotation center in case of rotated text
+  refPt := Point(
+    round(CoordToCanvasX(X, ADestX, AMulX)),
+    round(CoordToCanvasY(Y, ADestY, AMulY))
+  );
 
   // if an anchor is set, use it
   // to do this, first search for the longest line
-  lLongestLine := 0;
-  for i := 0 to Value.Count - 1 do
+  XAnchorAdjustment := 0;
+  if TextAnchor <> vtaStart then
   begin
-    lLineWidth := ACanvas.TextWidth(Value.Strings[i]);   // contains multiplier
-    if lLineWidth > lLongestLine then
-      lLongestLine := lLineWidth;
-  end;
-  case TextAnchor of
-  vtaMiddle: XAnchorAdjustment := -1 * lLongestLine div 2;
-  vtaEnd:    XAnchorAdjustment := -1 * lLongestLine;
-  else
-    XAnchorAdjustment := 0;
+    lLongestLine := 0;
+    for i := 0 to Value.Count - 1 do
+    begin
+      lLineWidth := ACanvas.TextWidth(Value.Strings[i]);   // contains multiplier
+      if lLineWidth > lLongestLine then
+        lLongestLine := lLineWidth;
+    end;
+    case TextAnchor of
+      vtaMiddle : XAnchorAdjustment := -lLongestLine div 2;
+      vtaEnd    : XAnchorAdjustment := -lLongestLine;
+    end;
   end;
 
+  // Begin first line at reference point and grow downwards.
+  lowerDimY := IfThen(AMulY < 0, refPt.Y - (lTextSize.CY - lDescender), refPt.Y);
+{
+  // We need to keep the order of lines drawing correct regardless of
+  // the drawing direction
+  if AMulY < 0 then
+    lowerDim.Y := refPt.Y + lFontSizePx * (1 + LINE_SPACING) * Value.Count * AMulY else
+    lowerDim.Y := refPt.Y;
+ }
   // TvText supports multiple lines
   for i := 0 to Value.Count - 1 do
   begin
-    lFontSizePx := Font.Size;        // is without multiplier!
-    if lFontSizePx = 0 then lFontSizePx := 10;
-
-    // We need to keep the order of lines drawing correct regardless of
-    // the drawing direction
-    if AMulY < 0 then
-      lowerDim.Y := CoordToCanvasY(Y) + lFontSizePx * (1 + LINE_SPACING) * (Value.Count - i) * AMulY
-    else
-      LowerDim.Y := CoordToCanvasY(Y) + lFontSizePx * (1 + LINE_SPACING) * i * AMulY;
-
-    ADest.Font.FPColor := AdjustColorToBackground(Font.Color, ARenderInfo);
     lText := Value.Strings[i];
     if not Render_Use_NextText_X then
-    begin
-      Render_NextText_X := CoordToCanvasX(X)+XAnchorAdjustment;
-    end;
-    if ADoDraw then
-      ADest.TextOut(Render_NextText_X, Round(LowerDim.Y), lText);
-    //lText := lText + Format(' F=%d', [ADest.Font.Size]); // for debugging
+      Render_NextText_X := refPt.X + XAnchorAdjustment;
 
-    CalcEntityCanvasMinMaxXY(ARenderInfo, Render_NextText_X, Round(LowerDim.Y));
+    // Start point of text, rotated around the reference point
+    pt := Point(round(Render_NextText_X), round(LowerDimY));  // before rotation
+    pt := Rotate2dPoint(pt, refPt, -Phi);                      // after rotation
+
+    // Paint line
+    if ADoDraw then
+      ADest.TextOut(pt.x, pt.y, lText);
+
+    // Calc text boundaries respecting text rotation.
+    CalcEntityCanvasMinMaxXY(ARenderInfo, pt.x, pt.y);
     lTextSize := ACanvas.TextExtent(lText);
     lTextWidth := lTextSize.cx;
-    lTextSize := ACanvas.TextExtent(Str_Line_Height_Tester);
-    CalcEntityCanvasMinMaxXY(ARenderInfo, Render_NextText_X + lTextWidth,
-      Round(LowerDim.Y)+lTextSize.cy);
+    // other end of the text
+    pt := Point(round(Render_NextText_X) + lTextWidth, round(LowerDimY) + lTextSize.cy );
+    pt := Rotate2dPoint(pt, refPt, -Phi);
+    CalcEntityCanvasMinMaxXY(ARenderInfo, pt.x, pt.y);
 
+    // Prepare next line
     Render_NextText_X := Render_NextText_X + lTextWidth;
+    LowerDimY := LowerdimY - (lFontSizePx * (1 + LINE_SPACING) * AMulY);
   end;
 end;
 
@@ -5398,32 +5425,22 @@ end;
 procedure TvCurvedText.Render(ADest: TFPCustomCanvas;
   var ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer;
   AMulX: Double; AMulY: Double; ADoDraw: Boolean);
-
-  function CoordToCanvasX(ACoord: Double): Integer;
-  begin
-    Result := Round(ADestX + AmulX * ACoord);
-  end;
-
-  function CoordToCanvasY(ACoord: Double): Integer;
-  begin
-    Result := Round(ADestY + AmulY * ACoord);
-  end;
-
 var
   i, lCharLen: Integer;
   lText, lUTF8Char: string;
   lX, lY, lTangentAngle, lTextHeight: Double;
+  pt: TPoint;
   //lLeft, lTop, lWidth, lHeight: Integer;
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, False);
 
   InitializeRenderInfo(ARenderInfo);
-
+       (*
   if not ADoDraw then
   begin
     //Path.CalculateSizeInCanvas(ADest, lLeft, lTop, lWidth, lHeight);
     Exit;
-  end;
+  end;   *)
 
   // Don't draw anything if we have alpha=zero
   if Font.Color.Alpha = 0 then Exit;
@@ -5432,7 +5449,7 @@ begin
   ADest.Font.FPColor := AdjustColorToBackground(Font.Color, ARenderInfo);
   if Value.Count = 0 then Exit;
   lText := Value.Strings[0];
-  Render_NextText_X := CoordToCanvasX(X);
+  Render_NextText_X := CoordToCanvasX(X, ADestX, AMulX);
 
   Path.PrepareForWalking();
   Path.NextWalk(0, lX, lY, lTangentAngle);
@@ -5448,7 +5465,12 @@ begin
     lX := lX - Sin(Pi / 2 - lTangentAngle) * lTextHeight;
     lY := lY + Cos(Pi / 2 - lTangentAngle) * lTextHeight;}
 
-    ADest.TextOut(CoordToCanvasX(lX), CoordToCanvasY(lY), lUTF8Char);
+    pt := Point(CoordToCanvasX(lX, ADestX, AMulX), CoordToCanvasY(lY, ADestY, AMulY));
+    CalcEntityCanvasMinMaxXY(ARenderInfo, pt.x, pt.y);
+
+    if ADoDraw then
+      ADest.TextOut(pt.X, pt.Y, lUTF8Char);
+
     lCharLen := ADest.TextWidth(lUTF8Char);
     Path.NextWalk(lCharLen, lX, lY, lTangentAngle);
   end;
@@ -6116,13 +6138,13 @@ begin
     if ADoDraw then ADest.Polygon(Points);
     ADest.Brush.Style := bsClear;
     // Dimension text
-    Points[0].X := CoordToCanvasX((DimensionLeft.X+DimensionRight.X)/2);
-    Points[0].Y := CoordToCanvasY(DimensionLeft.Y);
     LowerDim.X := DimensionRight.X-DimensionLeft.X;
     ADest.Font.Size := 10;
     ADest.Font.Orientation := 0;
     ADest.Font.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
     txt := Format('%.1f', [LowerDim.X]);
+    Points[0].X := CoordToCanvasX((DimensionLeft.X+DimensionRight.X)/2)-ADest.TextWidth(txt) div 2;
+    Points[0].Y := CoordToCanvasY(DimensionLeft.Y);
     if ADoDraw then
       ADest.TextOut(Points[0].X, Points[0].Y-Round(ADest.Font.Size*1.5), txt);
     CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo,
@@ -6158,14 +6180,15 @@ begin
     CalcEntityCanvasMinMaxXY(ARenderInfo, Points[2].X, Points[0].Y);
     ADest.Brush.Style := bsClear;
     // Dimension text
-    Points[0].X := CoordToCanvasX(DimensionLeft.X);
-    Points[0].Y := CoordToCanvasY((DimensionLeft.Y+DimensionRight.Y)/2);
     LowerDim.Y := DimensionRight.Y-DimensionLeft.Y;
     if LowerDim.Y < 0 then LowerDim.Y := -1 * LowerDim.Y;
     ADest.Font.Size := 10;
     ADest.Font.Orientation := 900;
     ADest.Font.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
     txt := Format('%.1f', [LowerDim.Y]);
+    Points[0].X := CoordToCanvasX(DimensionLeft.X);
+    Points[0].Y := CoordToCanvasY((DimensionLeft.Y+DimensionRight.Y)/2)
+      - sign(AMulY) * ADest.TextWidth(txt) div 2;
     if ADoDraw then
       ADest.TextOut(Points[0].X-Round(ADest.Font.Size*1.5), Points[0].Y, txt);
     ADest.Font.Orientation := 0;
@@ -7837,29 +7860,18 @@ end;
 
 procedure TvParagraph.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double; ADoDraw: Boolean);
-
-  function CoordToCanvasX(ACoord: Double): Integer;
-  begin
-    Result := Round(ADestX + AmulX * ACoord);
-  end;
-
-  function CoordToCanvasY(ACoord: Double): Integer;
-  begin
-    Result := Round(ADestY + AmulY * ACoord);
-  end;
-
 var
   lCurWidth: Double = 0.0;
   lLeft, lTop, lRight, lBottom: Double;
   OldTextX: Double = 0.0;
   OldTextY: Double = 0.0;
   lEntity: TvEntity;
-  lText: TvText absolute lEntity;
+  lText: TvText; // absolute lEntity;
   lPrevText: TvText = nil;
   lFirstText: Boolean = True;
   lResetOldStyle: Boolean = False;
   lEntityRenderInfo: TvRenderInfo;
-  CurX, lHeight_px: Integer;
+  CurX, CurY, lHeight_px: Integer;
 begin
   InitializeRenderInfo(ARenderInfo);
 
@@ -7871,11 +7883,13 @@ begin
 
     if lEntity is TvText then
     begin
+      lText := TvText(lEntity);  // cannot debug with "absolute"...
+
       // Set the text style if not already set
       lResetOldStyle := False;
-      if (Style <> nil) and (TvText(lEntity).Style = nil) then
+      if (Style <> nil) and (lText.Style = nil) then
       begin
-        TvText(lEntity).Style := Style;
+        lText.Style := Style;
         lResetOldStyle := True
       end;
 
@@ -7888,9 +7902,10 @@ begin
 
       OldTextX := lText.X;
       OldTextY := lText.Y;
+      CurX := CoordToCanvasX(lText.X + X + lCurWidth, ADestX, AMulX);
       lText.X := 0;
-      CurX := CoordToCanvasX(lText.X + X + lCurWidth);
       lText.Y := lText.Y + Y;
+      CurY := CoordToCanvasY(lText.Y, ADestY, AMulY);
       lText.Render_Use_NextText_X := not lFirstText;
       if lText.Render_Use_NextText_X then
         lText.Render_NextText_X := lPrevText.Render_NextText_X;
@@ -7914,7 +7929,7 @@ begin
     begin
       OldTextX := lText.X;
       OldTextY := lText.Y;
-      lEntity.X := CoordToCanvasX(lEntity.X + X + lCurWidth);
+      lEntity.X := CoordToCanvasX(lEntity.X + X + lCurWidth, ADestX, AMulX);
       lEntity.Y := lEntity.Y + Y;
 
       lEntity.Render(ADest, lEntityRenderInfo, ADestX, ADestY + lHeight_px, AMulX, AMulY, ADoDraw);
