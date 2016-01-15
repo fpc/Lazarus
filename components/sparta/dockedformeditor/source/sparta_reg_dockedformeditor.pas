@@ -46,6 +46,9 @@ begin
   LazarusIDE.AddHandlerOnShowSourceOfActiveDesignerForm(TSpartaMainIDE.OnShowSrcEditor);
 
   GlobalDesignHook.AddHandlerShowMethod(TSpartaMainIDE.OnShowMethod);
+  GlobalDesignHook.AddHandlerModified(TSpartaMainIDE.OnModifiedSender);
+  GlobalDesignHook.AddHandlerPersistentAdded(TSpartaMainIDE.OnModifiedPersistentAdded);
+  GlobalDesignHook.AddHandlerPersistentDeleted(TSpartaMainIDE.OnModified);
   GlobalDesignHook.AddHandlerRefreshPropertyValues(TSpartaMainIDE.OnDesignRefreshPropertyValues);
   GlobalDesignHook.AddHandlerDesignerMouseDown(TSpartaMainIDE.OnDesignMouseDown);
 

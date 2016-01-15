@@ -74,7 +74,7 @@ type
     FActivePropertyGridItemIndex: Integer;
     FLastClientWidth, FLastClientHeight: Integer;
     FOldHasMainMenu: Boolean;
-    FMenuChanged: Boolean;
+    FDesignerModified: Boolean;
 
     function HasMainMenu: Boolean;
     procedure AppOnIdle(Sender: TObject; var Done: Boolean);
@@ -135,7 +135,7 @@ type
     procedure ShowSizeRects;
     procedure ShowSizeControls;
 
-    procedure OnMenuChanged;
+    procedure OnModified;
     procedure DesignerSetFocus;
 
     property VerticalScrollPos: Integer read FVerticalScrollPos write FVerticalScrollPos;
@@ -633,9 +633,9 @@ begin
   end;
 end;
 
-procedure TResizerFrame.OnMenuChanged;
+procedure TResizerFrame.OnModified;
 begin
-  FMenuChanged := True;
+  FDesignerModified := True;
 end;
 
 function TResizerFrame.GetRightMargin: Integer;
@@ -834,7 +834,7 @@ end;
 
 procedure TResizerFrame.AppOnIdle(Sender: TObject; var Done: Boolean);
 begin
-  if FMenuChanged then
+  if FDesignerModified then
   begin
     if FOldHasMainMenu <> HasMainMenu then
     begin
@@ -843,9 +843,9 @@ begin
         OnNodePositioning(Self, [pkBottom], pcPositioningEnd);
       Application.NotifyUserInputHandler(Self, 0); // force repaint invisible components
     end else
-      pFakeMenu.Invalidate;
+      pFakeMenu.Invalidate; // always repaint menu on modification
 
-    FMenuChanged := False;
+    FDesignerModified := False;
   end;
 end;
 

@@ -174,7 +174,9 @@ type
 
     class procedure OnShowMethod(const Name: String);
     class procedure OnDesignRefreshPropertyValues;
-    class procedure OnMenuChanged;
+    class procedure OnModifiedPersistentAdded(APersistent: TPersistent; Select: Boolean);
+    class procedure OnModifiedSender(Sender: TObject);
+    class procedure OnModified;
     class procedure DesignerSetFocus;
     class procedure OnDesignMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -463,9 +465,6 @@ begin
     if Form.Form is TFakeForm then
       RepaintFormImages;
   end;
-
-  if (TheMessage.msg = CM_MENUCHANGED) and (Form.Form is TFakeForm) then
-    TSpartaMainIDE.OnMenuChanged;
 
   // during docking, form position was in wrong place... we need to delay changing position :)
   if TheMessage.msg = WM_BoundToDesignTabSheet then
@@ -1494,13 +1493,24 @@ begin
   DesignerSetFocus;
 end;
 
-class procedure TSpartaMainIDE.OnMenuChanged;
+class procedure TSpartaMainIDE.OnModifiedSender(Sender: TObject);
+begin
+  OnModified;
+end;
+
+class procedure TSpartaMainIDE.OnModified;
 var
   LResizer: TResizer;
 begin
   LResizer := GetCurrentResizer;
   if LResizer<>nil then
-    LResizer.FResizerFrame.OnMenuChanged;
+    LResizer.FResizerFrame.OnModified;
+end;
+
+class procedure TSpartaMainIDE.OnModifiedPersistentAdded(
+  APersistent: TPersistent; Select: Boolean);
+begin
+  OnModified;
 end;
 
 class procedure TSpartaMainIDE.OnShowDesignerForm(Sender: TObject; AEditor: TSourceEditorInterface;
