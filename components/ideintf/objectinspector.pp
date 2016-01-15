@@ -2677,7 +2677,7 @@ begin
         {$ENDIF}
         Dec(EditCompRect.Top);
       end
-      else if FCurrentEdit is {$IFDEF UseOICheckBoxThemed} TCheckBoxThemed {$ELSE} TCheckBox {$ENDIF} then
+      else if FCurrentEdit is {$IFnDEF UseOINormalCheckBox} TCheckBoxThemed {$ELSE} TCheckBox {$ENDIF} then
       begin                     // Align CheckBox to the middle vertically
         TopMargin := (EditCompRect.Bottom - EditCompRect.Top - ValueCheckBox.Height) div 2;
         Inc(EditCompRect.Top, TopMargin);
