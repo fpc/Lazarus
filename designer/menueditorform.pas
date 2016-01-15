@@ -26,9 +26,13 @@ unit MenuEditorForm;
 interface
 
 uses
-  Buttons, Classes, ComponentEditors, Controls, ExtCtrls, Forms,
-  Graphics, LazarusIDEStrConsts, LazIDEIntf, LCLintf, LCLProc, Menus,
-  MenuShadows, PropEdits, StdCtrls, SysUtils, FormEditingIntf, IDEWindowIntf;
+  // FCL + LCL
+  Classes, SysUtils,
+  Controls, StdCtrls, ExtCtrls, Forms, Graphics, Buttons, Menus, LCLintf, LCLProc,
+  // IdeIntf
+  LazIDEIntf, FormEditingIntf, IDEWindowIntf, ComponentEditors, PropEdits,
+  // IDE
+  LazarusIDEStrConsts, MenuShadows;
 
 type
 

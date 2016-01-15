@@ -5,9 +5,16 @@ unit MenuShadows;
 interface
 
 uses
-  ActnList, ButtonPanel, Buttons, Classes, ComponentEditors, Controls, Dialogs, ExtCtrls,
-  Forms, Graphics, IDEDialogs, ImgList, LazarusIDEStrConsts, LazUTF8, LCLIntf, LCLProc,
-  LCLType, Menus, PropEdits, StdCtrls, SysUtils, Themes, types, typinfo;
+  // FCL + LCL
+  Classes, SysUtils, types, typinfo,
+  ActnList, ButtonPanel, Buttons, Controls, Dialogs, StdCtrls, ExtCtrls, Menus,
+  Forms, Graphics, ImgList, Themes, LCLType, LCLIntf, LCLProc,
+  // LazUtils
+  LazUTF8,
+  // IdeIntf
+  ComponentEditors, IDEDialogs, PropEdits,
+  // IDE
+  LazarusIDEStrConsts;
 
 const
   Margin = 6;
