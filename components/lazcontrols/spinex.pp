@@ -92,6 +92,7 @@ type
     FMaxValue: Double;
     FMinValue: Double;
     FInitialValue: Double;
+    FMinRepeatValue: Byte;
     FNullValue: Double;
     FNullValueBehaviour: TNullValueBehaviour;
     //FNullValueText: String;
@@ -102,6 +103,7 @@ type
     FFS: TFormatSettings;
     function GetDecimalSeparator: Char;
     function GetEdit: TGEEdit;
+    procedure SetMinRepeatValue(AValue: Byte);
     procedure SpinUpDown(Up: Boolean);
     function GetNullValue: Double;
     function GetUpDown: TUpDown;
@@ -136,6 +138,7 @@ type
     property DecimalSeparator: Char read GetDecimalSeparator write SetDecimalSeparator default '.';
     property Edit: TGEEdit read GetEdit;
     property UpDown: TUpDown read GetUpDown;
+    property MinRepeatValue: Byte read FMinRepeatValue write SetMinRepeatValue default 100;
   public
     constructor Create(TheOwner: TComponent); override;
     function GetLimitedValue(const AValue: Double): Double; virtual;
@@ -230,6 +233,7 @@ type
     property Increment;
     property MaxValue;
     property MinValue;
+    property MinRepeatValue;
     property NullValue;
     property NullValueBehaviour;
     //property NullValueText;
@@ -342,6 +346,7 @@ type
     property Increment;
     property MaxValue;
     property MinValue;
+    property MinRepeatValue;
     property NullValue;
     property NullValueBehaviour;
     //property NullValueText;
