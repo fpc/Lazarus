@@ -68,7 +68,6 @@ type
     FPopupAssignments: TStringList;
     FPopupAssignmentsListBox: TListBox;
     FSavedTemplatesCount: integer;
-    FScroller: TScrollPanel;
     FShadowMenu: TShadowMenu;
     FShortcutConflictsCount: integer;
     FShortcutList: TSCList;
@@ -103,7 +102,6 @@ type
     property AcceleratorMenuItemsCount: integer read FAcceleratorMenuItemsCount;
     property EditedMenu: TMenu read FEditedMenu;
     property SavedTemplatesCount: integer read FSavedTemplatesCount;
-    property Scroller: TScrollPanel read FScroller;
     property ShadowMenu: TShadowMenu read FShadowMenu;
     property ShortcutConflictsCount: integer read FShortcutConflictsCount;
     property ShortcutList: TSCList read FShortcutList;
@@ -522,9 +520,8 @@ begin
         FShortcutConflictsCount:=FShortcutList.InitialDuplicatesCount;
         w:=Width - LeftPanel.Width;
         FShadowMenu:=TShadowMenu.CreateWithMenuAndDims(FEditedMenu, selection, w, Height);
-        FScroller:=TScrollPanel.CreateWithChild(Self, FShadowMenu);
-        FScroller.Align:=alClient;
-        FScroller.Parent:=Self;
+        FShadowMenu.Parent := Self;
+        FShadowMenu.Align := alClient;
       end;
     end;
 end;

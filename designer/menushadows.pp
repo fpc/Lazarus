@@ -168,7 +168,7 @@ TPopEnum = {%region}
 
 { TShadowMenu }
 
-TShadowMenu = class(TCustomPanel)
+TShadowMenu = class(TScrollBox)
 strict private
   FActionList: TActionList;
   FAddImgListIconAction: TAction;
@@ -226,7 +226,6 @@ protected
   function GetShadowForMenuItem(aMI: TMenuItem): TShadowItem;
   function OnClickIsAssigned(aMI: TMenuItem): boolean;
   procedure AddOnClick(Sender: TObject);
-  procedure AdjustSizeAndPosition(Sender: TObject);
   procedure DeleteItem(Sender: TObject);
   function GetBoxWithParentItem(aParentMI: TMenuItem): TShadowBox;
   procedure HideFakes;
@@ -255,32 +254,6 @@ public
   property SelectedShadowBox: TShadowBox read GetSelectedShadowBox;
   property SelectedShadowItem: TShadowItem read GetSelectedShadowItem;
 end;
-
-{ TScrollPanel }
-
-  TScrollPanel = class(TCustomPanel)
-  strict private
-    FChildControl: TWinControl;
-    FHeightDim: integer;
-    FHMax: integer;
-    FHSBar: TScrollBar;
-    FVMax: integer;
-    FVSBar: TScrollBar;
-    FWidthDim: integer;
-    procedure HScrollBarScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
-    procedure OnChildControlResize(Sender: TObject);
-    procedure SetLargeChange(AValue: integer);
-    procedure VScrollBarScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
-  protected
-    procedure SetParent(NewParent: TWinControl); override;
-  public
-    constructor CreateWithChild(TheOwner: TComponent; aChild: TWinControl);
-    property ChildControl: TWinControl read FChildControl write FChildControl;
-    property HMax: integer read FHMax;
-    property HSBar: TScrollBar read FHSBar;
-    property VMax: integer read FVMax;
-    property VSBar: TScrollBar read FVSBar;
-  end;
 
 TSCKind = (scUnknown,
            scMenuItemSC, scMenuItemKey2, scMenuItemAccel,
@@ -1654,186 +1627,6 @@ begin
     end;
     Show;
   end;
-end;
-
-{ TScrollPanel }
-
-procedure TScrollPanel.HScrollBarScroll(Sender: TObject;
-  ScrollCode: TScrollCode; var ScrollPos: Integer);
-var
-  sb: TScrollBar absolute Sender;
-  delta, tmp: integer;
-  widthDiff: integer;
-begin
-  if (FChildControl = nil) or (FChildControl.Width <= FWidthDim) then
-    Exit;
-  widthDiff:=FChildControl.Width - FWidthDim;
-  case ScrollCode of
-    scLineUp:    if (ScrollPos > 0) and (FChildControl.Left < 0) then begin
-                   if (ScrollPos > widthDiff) then
-                     ScrollPos:=widthDiff-1;
-                   delta:=trunc(FChildControl.Left/ScrollPos);
-                   FChildControl.Left:=FChildControl.Left - sb.SmallChange*delta;
-                 end;
-    scLineDown:  if (ScrollPos <= FHMax) then begin
-                   delta:=trunc(ScrollPos*(FChildControl.Width-FWidthDim)/FHMax);
-                   FChildControl.Left:= -sb.SmallChange*delta;
-                 end
-                 else if (FChildControl.Left <> -widthDiff) then
-                   FChildControl.Left:= -widthDiff;
-    scPageUp:    if (ScrollPos > 0) and (FChildControl.Left < 0) then begin
-                   if (ScrollPos > widthDiff) then
-                     ScrollPos:=widthDiff-1;
-                   delta:= -trunc(sb.LargeChange*FChildControl.Left/ScrollPos);
-                   tmp:=FChildControl.Left + delta;
-                   if (tmp > 0) then
-                     tmp:=0;
-                   FChildControl.Left:=tmp;
-                 end;
-    scPageDown:  if (ScrollPos > 0) and (FChildControl.Left <= 0) then begin
-                   delta:=trunc((FChildControl.Left+widthDiff)/ScrollPos);
-                   if (delta = 0) then
-                     delta:=1;
-                   tmp:=FChildControl.Left - delta;
-                   if (tmp < -widthDiff) then
-                     tmp:=-widthDiff;
-                   FChildControl.Left:=tmp;
-                 end;
-    scPosition:  if (ScrollPos = 0) and (FChildControl.Left <> 0) then
-                   FChildControl.Left:=0
-                 else if (ScrollPos >= FHMax) and (FChildControl.Left <> -widthDiff) then
-                   FChildControl.Left:= -widthDiff;
-    scTrack:     FChildControl.Left:=-trunc(ScrollPos*(FChildControl.Width-FWidthDim)/FHMax);
-  end;
-end;
-
-procedure TScrollPanel.VScrollBarScroll(Sender: TObject;
-  ScrollCode: TScrollCode; var ScrollPos: Integer);
-var
-  sb: TScrollBar absolute Sender;
-  delta, tmp: integer;
-  heightDiff: integer;
-begin
-  if (FChildControl = nil) or (FChildControl.Height <= FHeightDim) then
-    Exit;
-  heightDiff:=FChildControl.Height - FHeightDim;
-  case ScrollCode of
-    scLineUp:    if (ScrollPos > 0) and (FChildControl.Top < 0) then begin
-                   if (ScrollPos > heightDiff) then
-                     ScrollPos:=heightDiff-1;
-                   delta:=trunc(FChildControl.Top/ScrollPos);
-                   FChildControl.Top:=FChildControl.Top - sb.SmallChange*delta;
-                 end;
-    scLineDown:  if (ScrollPos <= FVMax) then begin
-                   delta:=trunc(ScrollPos*(FChildControl.Height-FHeightDim)/FVMax);
-                   FChildControl.Top:= -sb.SmallChange*delta;
-                 end
-                 else if (FChildControl.Top <> -heightDiff) then
-                   FChildControl.Top:= -heightDiff;
-    scPageUp:    if (ScrollPos > 0) and (FChildControl.Top < 0) then begin
-                   if (ScrollPos > heightDiff) then
-                     ScrollPos:=heightDiff-1;
-                   delta:= -trunc(sb.LargeChange*FChildControl.Top/ScrollPos);
-                   tmp:=FChildControl.Top + delta;
-                   if (tmp > 0) then
-                     tmp:=0;
-                   FChildControl.Top:=tmp;
-                 end;
-    scPageDown:  if (ScrollPos > 0) and (FChildControl.Top <= 0) then begin
-                   delta:=trunc((FChildControl.Top + heightDiff)/ScrollPos);
-                   if (delta = 0) then
-                     delta:=1;
-                   tmp:=FChildControl.Top - delta;
-                   if (tmp < -heightDiff) then
-                     tmp:=-heightDiff;
-                   FChildControl.Top:=tmp;
-                 end;
-    scPosition:  if (ScrollPos = 0) and (FChildControl.Top <> 0) then
-                   FChildControl.Top:=0
-                 else if (ScrollPos >= FVMax) and (FChildControl.Top <> -heightDiff) then
-                   FChildControl.Top:= -heightDiff;
-    scTrack:     FChildControl.Top:=-trunc(ScrollPos*(FChildControl.Height-FHeightDim)/FVMax);
-  end;
-end;
-
-procedure TScrollPanel.OnChildControlResize(Sender: TObject);
-begin
-  if (Sender = FChildControl) then begin
-    FHeightDim:=Height;
-    if FHSBar.Visible then
-      Dec(FHeightDim, FHSBar.Height);
-    FWidthDim:=Width;
-    if FVSBar.Visible then
-      Dec(FWidthDim, FVSBar.Width);
-
-    if (FChildControl.Width > FWidthDim) then begin
-      FHSBar.Visible:=True;
-      FHeightDim:=Height - FHSBar.Height;
-      if (FChildControl.Height > FHeightDim) then begin
-        FVSBar.Visible:=True;
-        FWidthDim:=Width - FVSBar.Width;
-      end;
-    end
-    else if FHSBar.Visible then
-      FHSBar.Visible:=False;
-
-    if not FVSBar.Visible and (FChildControl.Height > FHeightDim) then begin
-      FVSBar.Visible:=True;
-      FWidthDim:=Width - FVSBar.Width;
-    end;
-
-    if FVSBar.Visible and (FChildControl.Height < FHeightDim) then
-      FVSBar.Visible:=False;
-  end;
-end;
-
-procedure TScrollPanel.SetLargeChange(AValue: integer);
-begin
-  if (FHSBar.LargeChange <> AValue) then begin
-    FHSBar.LargeChange:=AValue;
-    FVSBar.LargeChange:=AValue;
-  end;
-end;
-
-procedure TScrollPanel.SetParent(NewParent: TWinControl);
-begin
-  inherited SetParent(NewParent);
-  if (NewParent <> nil) then begin
-    FChildControl.Parent:=Self;
-  end;
-end;
-
-constructor TScrollPanel.CreateWithChild(TheOwner: TComponent;
-  aChild: TWinControl);
-begin
-  inherited Create(TheOwner);
-  Caption:='';
-  BevelOuter:=bvNone;
-  BevelInner:=bvNone;
-  FHSBar:=TScrollBar.Create(Self);
-  with FHSBar do begin
-    PageSize:=30;
-    Max:=100;
-    Align:=alBottom;
-    OnScroll:=@HScrollBarScroll;
-    Visible:=False;
-    Parent:=Self;
-  end;
-  FVSBar:=TScrollBar.Create(Self);
-  with FVSBar do begin
-    Kind:=sbVertical;
-    PageSize:=30;
-    Max:=100;
-    Align:=alRight;
-    OnScroll:=@VScrollBarScroll;
-    Visible:=False;
-    Parent:=Self;
-  end;
-  SetLargeChange(10);
-  FHMax:=FHSBar.Max - FHSBar.PageSize;
-  FVMax:=FVSBar.Max - FVSBar.PageSize;
-  FChildControl:=aChild;
-  FChildControl.OnResize:=@OnChildControlResize;
 end;
 
 { TEditShortcutCaptionDialog }
@@ -4283,123 +4076,6 @@ begin
   end;
 end;
 
-procedure TShadowMenu.AdjustSizeAndPosition(Sender: TObject);
-var
-  h, w, waif, haif, wasf, hasf, whv, hhv: integer;
-  selRightmost, selBottommost, selHCentre, selVCentre: integer;
-  sb: TShadowBox;
-  si: TShadowItem absolute Sender;
-  inMenuBar: boolean;
-
-  function Highest(int1, int2, int3: integer): integer;
-  begin
-    Result:=int1;
-    if (int2 > Result) then
-      Result:=int2;
-    if (int3 > Result) then
-      Result:=int3;
-  end;
-
-  procedure CalcHighestFakeDims;
-  begin
-    if (FAddItemFake.Visible) then begin
-        waif:=FAddItemFake.BoundsRect.Right;
-        haif:=FAddItemFake.BoundsRect.Bottom;
-      end
-      else begin
-        waif:=0;
-        haif:=0;
-      end;
-      if (FAddSubmenuFake.Visible) then begin
-        hasf:=FAddSubmenuFake.BoundsRect.Bottom;
-        wasf:=FAddSubmenuFake.BoundsRect.Right;
-      end
-      else begin
-        hasf:=0;
-        wasf:=0;
-      end;
-  end;
-
-  procedure CentreNear;
-  var
-    newLeft, newTop, range: integer;
-    viewWidth, viewHCentre, viewHeight, viewVCentre: integer;
-  begin
-    viewWidth:=Parent.Width;
-    if TScrollPanel(Parent).VSBar.Visible then
-      Dec(viewWidth, TScrollPanel(Parent).VSBar.Width);
-    viewHCentre:=viewWidth div 2;
-    if (selHCentre > viewHCentre)
-      then newLeft:=viewHCentre - selHCentre;
-    if newLeft < (viewWidth - w) then
-      newLeft:=viewWidth - w;
-    if (newLeft > 0) then
-      newLeft:=0;
-    viewHeight:=Parent.Height;
-    if TScrollPanel(Parent).HSBar.Visible then
-      Dec(viewHeight, TScrollPanel(Parent).HSBar.Height);
-    viewVCentre:=viewHeight div 2;
-    if (selVCentre > viewVCentre) then
-      newTop:=viewVCentre - selVCentre;
-    if (newTop < viewHeight - h) then
-      newTop:=viewHeight - h;
-    if (newTop > 0) then
-      newTop:=0;
-    DisableAlign;
-      SetBounds(newLeft, newTop, w, h);
-    EnableAlign;
-    range:=viewWidth - MenuDesigner.Scroller.HSBar.PageSize;
-    MenuDesigner.Scroller.HSBar.Position:=abs(newLeft)*range div w;
-    range:=viewHeight - MenuDesigner.Scroller.VSBar.PageSize;
-    MenuDesigner.Scroller.VSBar.Position:=abs(newTop)*range div h;
-  end;
-
-begin
-  Assert(Sender<>nil,'TShadowMenu.AdjustSizeAndPosition: Sender is nil');
-  Assert(sender is TShadowItem,'TShadowMenu.AdjustSizeAndPosition: Sender is not TShadowItem');
-  Assert(si.RealItem=FSelectedMenuItem,'TShadowMenu.AdjustSizeAndPosition: Sender is not selected');
-
-  if si.HasChildBox(sb) then begin
-    whv:=sb.BoundsRect.Right;
-    hhv:=sb.BoundsRect.Bottom;
-    if (si.ParentBox.BoundsRect.Bottom > hhv) then
-      hhv:=si.ParentBox.BoundsRect.Bottom;
-  end
-  else begin
-    whv:=si.ParentBox.BoundsRect.Right;
-    hhv:=si.ParentBox.BoundsRect.Bottom;
-  end;
-
-  CalcHighestFakeDims;
-  w:=Highest(waif, wasf, whv);
-  if (w < Parent.Width) then
-    w:=Parent.Width;
-  h:=Highest(haif, hasf, hhv);
-  if (h < Parent.Height) then
-    h:=Parent.Height;
-  selRightmost:=GetHighestLevelVisibleBox.BoundsRect.Right; // childbox elsewhere may be visible
-  if si.ShowingRightFake then begin
-    Assert(si.RightFake <> nil,'TShadowMenu.AdjustSizeAndPosition: RightFake is visible yet nil');
-    if (si.RightFake.BoundsRect.Right > selRightmost) then
-      selRightmost:=si.RightFake.BoundsRect.Right;
-  end;
-  selHCentre:=si.ParentBox.Left + (selRightmost - si.ParentBox.Left) div 2;
-  inMenuBar:=si.RealItem.IsInMenuBar;
-  if inMenuBar and (FMenu.Items.Count > 4) and (si.RealItem.MenuIndex < 4) then
-    selHCentre:=Parent.Width div 2 - FAddItemFake.Width;
-  if inMenuBar and (si.RealItem.MenuIndex = Pred(FMenu.Items.Count)) then begin
-    selHCentre:=w div 2 + FAddItemFake.Width;
-  end;
-
-  if si.ShowingBottomFake then begin
-    Assert(si.BottomFake <> nil,'TShadowMenu.AdjustSizeAndPosition: BottomFake is visible yet nil');
-    selBottommost:=si.BottomFake.BoundsRect.Bottom;
-  end
-  else selBottommost:=si.ParentBox.BoundsRect.Bottom;
-  selVCentre:=si.ParentBox.Top + si.Top + (selBottommost - si.Top) div 2;
-  CentreNear;
-end;
-
 procedure TShadowMenu.AddSubMenu(Sender: TObject);
 var
   si: TShadowItem;
@@ -5415,7 +5091,6 @@ begin
     UpdateSelectedItemInfo;
     if not viaDesigner then
       FEditorDesigner.SelectOnlyThisComponent(curSelectedItem);
-    AdjustSizeAndPosition(selectedShadow);
 
     if not MenuDesigner.Visible then
       MenuDesigner.ShowOnTop;
@@ -5583,6 +5258,7 @@ begin
   GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnDesignerRefreshPropertyValues);
   AutoSize:=False;
   Color:=clBtnFace;
+  BorderStyle:=bsNone;
 end;
 
 procedure TShadowMenu.AddFirstMenu(Sender: TObject);
