@@ -4717,7 +4717,7 @@ resourcestring
   lisMenuEditorDeleteMenuTemplate = '&Delete menu template ...';
   lisMenuEditorDeleteSavedMenuTemplate = 'Delete saved menu template';
   lisMenuEditorDeleteSelectedMenuTemplate = 'Delete selected menu template';
-  lisMenuEditorDeleteThisItemAndItsSubitems = 'Do you want to delete this item and its subitems?';
+  lisMenuEditorDeleteThisItemAndItsSubitems = 'Delete this item and its subitems?';
   lisMenuEditorDisplayPreviewAsPopupMenu = 'Display preview as &Popup menu';
   lisMenuEditorEditCaption = 'Edit &Caption';
   lisMenuEditorEditingCaptionOfS = 'Editing Caption of %s';
