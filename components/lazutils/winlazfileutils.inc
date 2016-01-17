@@ -1,145 +1,6 @@
 {%MainUnit lazfileutils.pas}
 
 
-var
-//procedural variables for procedures that are implemented different on Win9x and NT or WinCE platform
-//They are intialized in InitLazFileUtils
-  _FileAgeUtf8         : function(const Filename:string):Longint;
-  _FileSizeUtf8        : function(const Filename: string): int64;
-  _FileSetDateUtf8     : function(const FileName: String; Age: Longint): Longint;
-  _FindFirstUtf8       : function(const Path: string; Attr: Longint;
-                                  out Rslt: TSearchRec): Longint;
-  _FindNextUtf8        : function(var Rslt: TSearchRec): Longint;
-  _FileGetAttrUtf8     : function(const FileName: String): Longint;
-  _FileSetAttrUtf8     : function(const Filename: String; Attr: longint): Longint;
-  _DeleteFileUtf8      : function(const FileName: String): Boolean;
-  _RenameFileUtf8      : function(const OldName, NewName: String): Boolean;
-  _GetCurrentDirUtf8   : function: String ;
-  _GetDirUtf8          : procedure(DriveNr: Byte; var Dir: String);
-  _FileOpenUtf8        : function(Const FileName : string; Mode : Integer) : THandle;
-  _FileCreateUtf8      : function(Const FileName : String; ShareMode : Integer; Rights: Integer) : THandle;
-  _SetCurrentDirUtf8   : function(const NewDir: String): Boolean;
-  _CreateDirUtf8       : function(const NewDir: String): Boolean;
-  _RemoveDirUtf8       : function(const Dir: String): Boolean ;
-  _GetAppConfigDirUTF8 : function(Global: Boolean; Create: boolean = false): string;
-  _GetAppConfigFileUTF8: function(Global: Boolean; SubDir: boolean = false;CreateDir: boolean = false): string;
-  _GetShellLinkTarget  : function(const FileName: string): string;
-
-
-
-
-
-// ************* "Stubs" that just call Ansi or WideString routines ***********************
-
-
-function GetCurrentDirUTF8: String;
-begin
-  Result:=_GetCurrentDirUtf8();
-end;
-
-procedure GetDirUtf8(DriveNr: Byte; var Dir: String);
-begin
-  _GetDirUtf8(DriveNr, Dir);
-end;
-
-function FileOpenUTF8(Const FileName : string; Mode : Integer) : THandle;
-begin
-  Result := _FileOpenUtf8(FileName, Mode);
-end;
-
-function FileCreateUTF8(Const FileName : string) : THandle;
-begin
-  Result := _FileCreateUtf8(FileName, fmShareExclusive, 0);
-end;
-
-function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle;
-begin
-  Result := _FileCreateUtf8(FileName, fmShareExclusive, Rights);
-end;
-
-Function FileCreateUtf8(Const FileName : String; ShareMode : Integer; Rights : Cardinal) : THandle;
-begin
-  Result := _FileCreateUtf8(FileName, ShareMode, Rights);
-end;
-
-function FileGetAttrUTF8(const FileName: String): Longint;
-begin
-  Result := _FileGetAttrUtf8(FileName);
-end;
-
-function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
-begin
-  Result := _FileSetAttrUtf8(Filename, Attr);
-  InvalidateFileStateCache(Filename);
-end;
-
-function FileAgeUTF8(const FileName: String): Longint;
-begin
-  Result := _FileAgeUtf8(FileName);
-end;
-
-function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
-begin
-  Result := _FileSetDateUtf8(Filename, Age);
-  InvalidateFileStateCache(Filename);
-end;
-
-function FileSizeUtf8(const Filename: string): int64;
-begin
-  Result := _FileSizeUtf8(FileName);
-end;
-
-function CreateDirUTF8(const NewDir: String): Boolean;
-begin
-  Result := _CreateDirUTF8(NewDir);
-end;
-
-function RemoveDirUTF8(const Dir: String): Boolean;
-begin
-  Result := _RemoveDirUtf8(Dir);
-end;
-
-function DeleteFileUTF8(const FileName: String): Boolean;
-begin
-  Result := _DeleteFileUtf8(Filename);
-  if Result then
-    InvalidateFileStateCache;
-end;
-
-function RenameFileUTF8(const OldName, NewName: String): Boolean;
-begin
-  Result := _RenameFileUtf8(OldName,NewName);
-  if Result then
-    InvalidateFileStateCache;
-end;
-
-function SetCurrentDirUTF8(const NewDir: String): Boolean;
-begin
-  Result := _SetCurrentDirUtf8(NewDir);
-end;
-
-function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec
-  ): Longint;
-begin
-  Result := _FindFirstUtf8(Path, Attr, Rslt);
-end;
-
-function FindNextUTF8(var Rslt: TSearchRec): Longint;
-begin
-  Result := _FindNextUtf8(Rslt);
-end;
-
-
-function GetAppConfigDirUTF8(Global: Boolean; Create: boolean = false): string;
-begin
-  Result := _GetAppConfigDirUtf8(Global, Create);
-end;
-
-function GetAppConfigFileUTF8(Global: Boolean; SubDir: boolean;
-  CreateDir: boolean): string;
-begin
-  Result := _GetAppConfigFileUTF8(Global, SubDir, CreateDir);
-end;
 
 function ReadAllLinks(const Filename: string;
                       ExceptionOnError: boolean): string;
@@ -155,173 +16,6 @@ begin
   Result:=Filename;
 end;
 
-function GetShellLinkTarget(const FileName: string): string;
-begin
-  Result := _GetShellLinkTarget(FileName);
-end;
-
-// ******** Start of AnsiString specific implementations ************
-
-{$ifndef WinCE}
-//No ANSII functions on WinCE
-function GetCurrentDirAnsi: String;
-begin
-  Result:=SysToUTF8(SysUtils.GetCurrentDir);
-end;
-
-procedure GetDirAnsi(DriveNr: Byte; var Dir: String);
-begin
-  GetDir(DriveNr, Dir);
-  Dir := SysToUtf8(Dir);
-end;
-
-
-function FileOpenAnsi(Const FileName : string; Mode : Integer) : THandle;
-begin
-  Result := FileOpen(UTF8ToSys(FileName), Mode);
-  //if fail api return feInvalidHandle (INVALIDE_HANDLE=feInvalidHandle=-1)
-end;
-
-
-function FileCreateAnsi(Const FileName : string; ShareMode: Integer; Rights: Integer) : THandle;
-begin
-  Result := FileCreate(Utf8ToSys(FileName), Sharemode, Rights);
-end;
-
-function FileGetAttrAnsi(const FileName: String): Longint;
-begin
-  Result:=SysUtils.FileGetAttr(UTF8ToSys(Filename));
-end;
-
-function FileSetAttrAnsi(const Filename: String; Attr: longint): Longint;
-begin
-  Result:=SysUtils.FileSetAttr(UTF8ToSys(Filename),Attr);
-end;
-
-
-function FileAgeAnsi(const FileName: String): Longint;
-begin
-  Result := SysUtils.FileAge(UTF8ToSys(Filename));
-end;
-
-function FileSetDateAnsi(const FileName: String; Age: Longint): Longint;
-begin
- Result := SysUtils.FileSetDate(UTF8ToSys(Filename), Age);
-end;
-
-function FileSizeAnsi(const Filename: string): int64;
-var
-  FindData: TWIN32FindDataA;
-  FindHandle: THandle;
-  Str: AnsiString;
-begin
-  Str := Utf8ToAnsi(Filename);
-  FindHandle := Windows.FindFirstFileA(PAnsiChar(Str), FindData{%H-});
-  if FindHandle = Windows.Invalid_Handle_value then
-  begin
-    Result := -1;
-    exit;
-  end;
-  Result := (int64(FindData.nFileSizeHigh) shl 32) + FindData.nFileSizeLow;
-  Windows.FindClose(FindHandle);
-end;
-
-function CreateDirAnsi(const NewDir: String): Boolean;
-begin
-  Result:=SysUtils.CreateDir(UTF8ToSys(NewDir));
-end;
-
-function RemoveDirAnsi(const Dir: String): Boolean;
-begin
-  Result:=SysUtils.RemoveDir(UTF8ToSys(Dir));
-end;
-
-function DeleteFileAnsi(const FileName: String): Boolean;
-begin
-  Result:=SysUtils.DeleteFile(UTF8ToSys(Filename));
-end;
-
-function RenameFileAnsi(const OldName, NewName: String): Boolean;
-begin
-  Result:=SysUtils.RenameFile(UTF8ToSys(OldName),UTF8ToSys(NewName));
-end;
-
-function SetCurrentDirAnsi(const NewDir: String): Boolean;
-begin
-  Result:=SysUtils.SetCurrentDir(UTF8ToSys(NewDir));
-end;
-
-function FindFirstAnsi(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
-begin
-  Result:=SysUtils.FindFirst(UTF8ToSys(Path),Attr,Rslt);
-  Rslt.Name:=SysToUTF8(Rslt.Name);
-end;
-
-function FindNextAnsi(var Rslt: TSearchRec): Longint;
-begin
-  Rslt.Name:=UTF8ToSys(Rslt.Name);
-  Result:=SysUtils.FindNext(Rslt);
-  Rslt.Name:=SysToUTF8(Rslt.Name);
-end;
-
-function GetAppConfigDirAnsi(Global: Boolean; Create: boolean = false): string;
-begin
-  Result := SysToUTF8(SysUtils.GetAppConfigDir(Global));
-  if Result = '' then exit;
-  if Create and not ForceDirectoriesUTF8(Result) then
-    raise EInOutError.Create(Format(lrsUnableToCreateConfigDirectoryS,[Result]));
-end;
-
-function GetAppConfigFileAnsi(Global: Boolean; SubDir: boolean;
-  CreateDir: boolean): string;
-var
-  Dir: string;
-begin
-  Result := SysToUTF8(SysUtils.GetAppConfigFile(Global,SubDir));
-  if not CreateDir then exit;
-  Dir := ExtractFilePath(Result);
-  if Dir = '' then exit;
-  if not ForceDirectoriesUTF8(Dir) then
-    raise EInOutError.Create(Format(lrsUnableToCreateConfigDirectoryS,[Dir]));
-end;
-
-function GetShellLinkTargetAnsi(const FileName: string): string;
-{$if (fpc_fullversion >= 20604)}
-var
-  ShellLinkA: IShellLinkA;
-  PersistFile: IPersistFile;
-  WideFileName: WideString;
-  AnsiPath: array [0 .. MAX_PATH] of Char;
-  WinFindData: WIN32_FIND_DATAA;
-{$endif}
-begin
-  Result := FileName;
-  {$if fpc_fullversion >= 20604}
-  if (LowerCase(ExtractFileExt(FileName)) = '.lnk') then
-  begin
-    if (CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_INPROC_SERVER,
-                         IShellLinkA, ShellLinkA) = S_OK) then
-    if (ShellLinkA.QueryInterface(IPersistFile, PersistFile) = S_OK) then
-    begin
-      WideFileName := Utf8ToUtf16(FileName);
-      FillChar(WinFindData{%H-}, SizeOf(WinFindData), 0);
-      if (PersistFile.Load(POleStr(WideFileName), STGM_READ) = S_OK) then
-      begin
-        if (ShellLinkA.GetPath(AnsiPath, Length(AnsiPath),
-                               WinFindData, SLGP_UNCPRIORITY) = S_OK) then
-        begin
-          Result := SysToUtf8(AnsiPath); // implicit conversion
-        end;
-      end;
-    end;
-  end;
-  {$endif}
-end;
-
-
-{$endif WinCE}
-
-// ******** End of AnsiString specific implementations ************
 
 
 // ******** Start of WideString specific implementations ************
@@ -361,7 +55,7 @@ begin
    LocalFileTimeToFileTime(lft,Wintime);                                        ;
 end;
 
-function GetCurrentDirWide: String;
+function GetCurrentDirUtf8: String;
 {$ifndef WinCE}
 var
   w   : WideString;
@@ -382,7 +76,7 @@ begin
   {$endif}
 end;
 
-procedure GetDirWide(DriveNr: Byte; var Dir: String);
+procedure GetDirUtf8(DriveNr: Byte; var Dir: String);
 {This procedure may not be threadsafe, because SetCurrentDirectory isn't}
 {$ifndef WinCE}
 var
@@ -424,7 +118,7 @@ begin
 end;
 
 
-function FileOpenWide(Const FileName : string; Mode : Integer) : THandle;
+function FileOpenUtf8(Const FileName : string; Mode : Integer) : THandle;
 
 begin
   Result := CreateFileW(PWideChar(UTF8Decode(FileName)), dword(AccessModes[Mode and 3]),
@@ -434,19 +128,29 @@ begin
 end;
 
 
-function FileCreateWide(Const FileName : string;  ShareMode: Integer; {%H-}Rights: Integer) : THandle;
+function FileCreateUTF8(Const FileName : string) : THandle;
+begin
+  Result := FileCreateUtf8(FileName, fmShareExclusive, 0);
+end;
+
+function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle;
+begin
+  Result := FileCreateUtf8(FileName, fmShareExclusive, Rights);
+end;
+
+function FileCreateUtf8(Const FileName : string;  ShareMode: Integer; {%H-}Rights: Cardinal) : THandle;
 begin
   Result := CreateFileW(PWideChar(UTF8Decode(FileName)), GENERIC_READ or GENERIC_WRITE,
                        dword(ShareModes[(ShareMode and $F0) shr 4]), nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 end;
 
 
-function FileGetAttrWide(const FileName: String): Longint;
+function FileGetAttrUtf8(const FileName: String): Longint;
 begin
   Result:=Integer(Windows.GetFileAttributesW(PWideChar(UTF8Decode(FileName))));
 end;
 
-function FileSetAttrWide(const Filename: String; Attr: longint): Longint;
+function FileSetAttrUtf8(const Filename: String; Attr: longint): Longint;
 begin
   if Windows.SetFileAttributesW(PWideChar(UTF8Decode(FileName)), Attr) then
     Result:=0
@@ -454,7 +158,7 @@ begin
     Result := Integer(Windows.GetLastError);
 end;
 
-function FileAgeWide(const FileName: String): Longint;
+function FileAgeUtf8(const FileName: String): Longint;
 var
   Hnd: THandle;
   FindData: TWin32FindDataW;
@@ -470,7 +174,7 @@ begin
     end;
 end;
 
-function FileSetDateWide(const FileName: String; Age: Longint): Longint;
+function FileSetDateUtf8(const FileName: String; Age: Longint): Longint;
 var
  FT:TFileTime;
  fh: HANDLE;
@@ -490,7 +194,7 @@ begin
 end;
 
 
-function FileSizeWide(const Filename: string): int64;
+function FileSizeUtf8(const Filename: string): int64;
 var
   FindData: TWIN32FindDataW;
   FindHandle: THandle;
@@ -510,27 +214,27 @@ begin
   Windows.FindClose(FindHandle);
 end;
 
-function CreateDirWide(const NewDir: String): Boolean;
+function CreateDirUtf8(const NewDir: String): Boolean;
 begin
   Result:=Windows.CreateDirectoryW(PWideChar(UTF8Decode(NewDir)), nil);
 end;
 
-function RemoveDirWide(const Dir: String): Boolean;
+function RemoveDirUtf8(const Dir: String): Boolean;
 begin
   Result:=Windows.RemoveDirectoryW(PWideChar(UTF8Decode(Dir)));
 end;
 
-function DeleteFileWide(const FileName: String): Boolean;
+function DeleteFileUtf8(const FileName: String): Boolean;
 begin
   Result:=Windows.DeleteFileW(PWideChar(UTF8Decode(FileName)));
 end;
 
-function RenameFileWide(const OldName, NewName: String): Boolean;
+function RenameFileUtf8(const OldName, NewName: String): Boolean;
 begin
   Result:=MoveFileW(PWideChar(UTF8Decode(OldName)), PWideChar(UTF8Decode(NewName)));
 end;
 
-function SetCurrentDirWide(const NewDir: String): Boolean;
+function SetCurrentDirUtf8(const NewDir: String): Boolean;
 begin
   {$ifdef WinCE}
   raise Exception.Create('[SetCurrentDirWide] The concept of the current directory doesn''t exist in Windows CE');
@@ -609,7 +313,7 @@ begin
 end;
 {$ENDIF}
 
-function FindFirstWide(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
+function FindFirstUtf8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
 var
   find: TWIN32FINDDATAW;
 begin
@@ -638,7 +342,7 @@ begin
 end;
 
 
-function FindNextWide(var Rslt: TSearchRec): Longint;
+function FindNextUtf8(var Rslt: TSearchRec): Longint;
 var
   wide: TWIN32FINDDATAW;
 begin
@@ -743,7 +447,7 @@ begin
 end;
 
 
-function GetAppConfigDirWide(Global: Boolean; Create: boolean = false): string;
+function GetAppConfigDirUtf8(Global: Boolean; Create: boolean = false): string;
 const
   CSIDL_GLOBAL = {$IFDEF WINCE}CSIDL_WINDOWS{$ELSE}CSIDL_COMMON_APPDATA{$ENDIF WINCE};
   CSIDL_LOCAL = {$IFDEF WINCE}CSIDL_APPDATA{$ELSE}CSIDL_LOCAL_APPDATA{$ENDIF};
@@ -765,12 +469,12 @@ begin
     raise EInOutError.Create(Format(lrsUnableToCreateConfigDirectoryS,[Result]));
 end;
 
-function GetAppConfigFileWide(Global: Boolean; SubDir: boolean;
+function GetAppConfigFileUtf8(Global: Boolean; SubDir: boolean;
   CreateDir: boolean): string;
 var
   Dir: string;
 begin
-  Result := GetAppConfigDirWide(Global);
+  Result := GetAppConfigDirUtf8(Global);
   if SubDir then
     Result := AppendPathDelim(Result + 'Config');
   Result := Result + ApplicationName + ConfigExtension;
@@ -782,7 +486,7 @@ begin
 end;
 
 
-function GetShellLinkTargetWide(const FileName: string): string;
+function GetShellLinkTarget(const FileName: string): string;
 {$IFnDEF WINCE}
 var
   ShellLinkW: IShellLinkW;
@@ -837,11 +541,6 @@ begin
   //writeln('FileName = "',FileName,'"');
   //writeln('BaseDir  = "',BaseDir,'"');
 
-  //{$ifndef WinCE}
-  //if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
-  //  Result := SysToUtf8(SysUtils.ExpandFileName(Utf8ToSys(FileName)))
-  //else
-  //{$endif}
   Fn := FileName;
   //if Filename uses ExtendedLengthPath scheme then it cannot be expanded
   //AND it should not be altered by ForcePathDelims or ResolveDots
@@ -865,7 +564,7 @@ begin
     if HasDrive then
     begin
       FnDrive := UpCase(Fn[1]);
-      _GetDirUtf8(Byte(FnDrive)-64, CurDir{%H-});
+      GetDirUtf8(Byte(FnDrive)-64, CurDir{%H-});
       CurDrive := UpCase(GetCurrentDirUtf8[1]);
     end
     else
@@ -944,7 +643,7 @@ function FileExistsUTF8(const Filename: string): boolean;
 var
   Attr: Longint;
 begin
-  Attr := _FileGetAttrUTF8(FileName);
+  Attr := FileGetAttrUTF8(FileName);
   if Attr <> -1 then
     Result:= (Attr and FILE_ATTRIBUTE_DIRECTORY) = 0
   else
@@ -955,7 +654,7 @@ function DirectoryExistsUTF8(const Directory: string): boolean;
 var
   Attr: Longint;
 begin
-  Attr := _FileGetAttrUTF8(Directory);
+  Attr := FileGetAttrUTF8(Directory);
   if Attr <> -1 then
     Result := (Attr and FILE_ATTRIBUTE_DIRECTORY) > 0
   else
@@ -1115,52 +814,6 @@ end;
 
 procedure InitLazFileUtils;
 begin
-  {$ifndef WinCE}
-  if Win32MajorVersion <= 4 then
-  begin
-    _FileAgeUtf8 := @FileAgeAnsi;
-    _FileSizeUtf8 := @FileSizeAnsi;
-    _FileSetDateUtf8 := @FileSetDateAnsi;
-    _FileGetAttrUtf8 := @FileGetAttrAnsi;
-    _FileSetAttrUtf8 := @FileSetAttrAnsi;
-    _DeleteFileUtf8 := @DeleteFileAnsi;
-    _RenameFileUtf8 := @RenameFileAnsi;
-    _SetCurrentDirUtf8 := @SetCurrentDirAnsi;
-    _GetCurrentDirUtf8 := @GetCurrentDirAnsi;
-    _GetDirUtf8 := @GetDirAnsi;
-    _FileOpenUtf8 := @FileOpenAnsi;
-    _FileCreateUtf8 := @FileCreateAnsi;
-    _CreateDirUtf8 := @CreateDirAnsi;
-    _RemoveDirUtf8 := @RemoveDirAnsi;
-    _FindFirstUtf8 := @FindFirstAnsi;
-    _FindNextUtf8 := @FindNextAnsi;
-    _GetAppConfigDirUtf8 := @GetAppConfigDirAnsi;
-    _GetAppConfigFileUtf8 := @GetAppConfigFileAnsi;
-    _GetShellLinkTarget := @GetShellLinkTargetAnsi;
-  end
-  else
-  {$endif}
-  begin
-    _FileAgeUtf8 := @FileAgeWide;
-    _FileSizeUtf8 := @FileSizeWide;
-    _FileSetDateUtf8 := @FileSetDateWide;
-    _FileGetAttrUtf8 := @FileGetAttrWide;
-    _FileSetAttrUtf8 := @FileSetAttrWide;
-    _DeleteFileUtf8 := @DeleteFileWide;
-    _RenameFileUtf8 := @RenameFileWide;
-    _SetCurrentDirUtf8 := @SetCurrentDirWide;
-    _GetCurrentDirUtf8 :=@ GetCurrentDirWide;
-    _GetDirUtf8 := @GetDirWide;
-    _FileOpenUtf8 := @FileOpenWide;
-    _FileCreateUtf8 := @FileCreateWide;
-    _CreateDirUtf8 := @CreateDirWide;
-    _RemoveDirUtf8 := @RemoveDirWide;
-    _FindFirstUtf8 := @FindFirstWide;
-    _FindNextUtf8 := @FindNextWide;
-    _GetAppConfigDirUtf8 := @GetAppConfigDirWide;
-    _GetAppConfigFileUtf8 := @GetAppConfigFileWide;
-    _GetShellLinkTarget := @GetShellLinkTargetWide;
-  end;
 end;
 
 procedure FinalizeLazFileUtils;
