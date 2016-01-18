@@ -412,22 +412,24 @@ end;
 
 procedure TMainIDEBar.DoSetMainIDEHeight(const AIDEIsMaximized: Boolean; ANewHeight: Integer);
 begin
-  if not Showing then
-    Exit;
-
-  if ANewHeight <= 0 then
-    ANewHeight := CalcMainIDEHeight;
+  if not Showing then Exit;
 
   if Assigned(IDEDockMaster) then
   begin
     if EnvironmentOptions.Desktop.AutoAdjustIDEHeight then
+    begin
+      if ANewHeight <= 0 then
+        ANewHeight := CalcMainIDEHeight;
       IDEDockMaster.AdjustMainIDEWindowHeight(Self, True, ANewHeight)
+    end
     else
       IDEDockMaster.AdjustMainIDEWindowHeight(Self, False, 0);
   end else
   begin
     if (AIDEIsMaximized or EnvironmentOptions.Desktop.AutoAdjustIDEHeight) then
     begin
+      if ANewHeight <= 0 then
+        ANewHeight := CalcMainIDEHeight;
       Inc(ANewHeight, CalcNonClientHeight);
       if ANewHeight <> Constraints.MaxHeight then
       begin
