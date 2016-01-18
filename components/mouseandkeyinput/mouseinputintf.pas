@@ -31,6 +31,8 @@ type
     procedure DoDown(Button: TMouseButton); dynamic; abstract;
     procedure DoMove(ScreenX, ScreenY: Integer); dynamic; abstract;
     procedure DoUp(Button: TMouseButton); dynamic; abstract;
+    procedure DoScrollUp; dynamic; abstract;
+    procedure DoScrollDown; dynamic; abstract;
   public
     procedure Down(Button: TMouseButton; Shift: TShiftState);
     procedure Down(Button: TMouseButton; Shift: TShiftState; Control: TControl; X, Y: Integer);
@@ -41,6 +43,12 @@ type
     procedure Move(Shift: TShiftState; ScreenX, ScreenY: Integer; Duration: Integer);
     procedure Move(Shift: TShiftState; ScreenX, ScreenY: Integer);
 
+    procedure ScrollUp(Shift: TShiftState);
+    procedure ScrollUp(Shift: TShiftState; Control: TControl; X, Y: Integer);
+    procedure ScrollUp(Shift: TShiftState; ScreenX, ScreenY: Integer);
+    procedure ScrollDown(Shift: TShiftState);
+    procedure ScrollDown(Shift: TShiftState; Control: TControl; X, Y: Integer);
+    procedure ScrollDown(Shift: TShiftState; ScreenX, ScreenY: Integer);
 
     procedure Up(Button: TMouseButton; Shift: TShiftState);
     procedure Up(Button: TMouseButton; Shift: TShiftState; Control: TControl; X, Y: Integer);
@@ -58,7 +66,7 @@ type
 implementation
 
 uses
-  Math, MouseAndKeyInput, LCLIntf;
+  Math, MouseAndKeyInput;
 
 { TMouseInput }
 
@@ -150,6 +158,58 @@ begin
   Application.ProcessMessages;
 end;
 
+procedure TMouseInput.ScrollUp(Shift: TShiftState);
+begin
+  KeyInput.Apply(Shift);
+  try
+    DoScrollUp;
+  finally
+    KeyInput.Unapply(Shift);
+  end;
+  Application.ProcessMessages;
+end;
+
+procedure TMouseInput.ScrollUp(Shift: TShiftState; Control: TControl;
+  X, Y: Integer);
+var
+  P: TPoint;
+begin
+  P := Control.ClientToScreen(Point(X, Y));
+  ScrollUp(Shift, P.X, P.Y);
+end;
+
+procedure TMouseInput.ScrollUp(Shift: TShiftState; ScreenX, ScreenY: Integer);
+begin
+  Move(Shift, ScreenX, ScreenY);
+  ScrollUp(Shift);
+end;
+
+procedure TMouseInput.ScrollDown(Shift: TShiftState);
+begin
+  KeyInput.Apply(Shift);
+  try
+    DoScrollDown;
+  finally
+    KeyInput.Unapply(Shift);
+  end;
+  Application.ProcessMessages;
+end;
+
+procedure TMouseInput.ScrollDown(Shift: TShiftState; Control: TControl;
+  X, Y: Integer);
+var
+  P: TPoint;
+begin
+  P := Control.ClientToScreen(Point(X, Y));
+  ScrollDown(Shift, P.X, P.Y);
+end;
+
+procedure TMouseInput.ScrollDown(Shift: TShiftState; ScreenX, ScreenY: Integer);
+begin
+  Move(Shift, ScreenX, ScreenY);
+  ScrollDown(Shift);
+end;
+
 procedure TMouseInput.Up(Button: TMouseButton; Shift: TShiftState);
 begin
   KeyInput.Apply(Shift);
@@ -220,8 +280,6 @@ begin
   Move(Shift, ScreenX, ScreenY);
   DblClick(Button, Shift);
 end;
-
-
 
 end.
 
