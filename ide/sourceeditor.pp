@@ -6667,6 +6667,8 @@ var
   i, MarkCount: integer;
   EditorPopupPoint, EditorCaret: TPoint;
 begin
+  IDECommandList.ExecuteUpdateEvents;
+
   SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
   SourceEditorMenuRoot.BeginUpdate;
   try
