@@ -279,6 +279,8 @@ function CopyDirTree(const SourceDir, TargetDir: string; Flags: TCopyFileFlags=[
 // filename parts
 const
   PascalFileExt: array[1..3] of string = ('.pas','.pp','.p');
+  PascalSourceExt: array[1..6] of string = ('.pas','.pp','.p','.lpr','.dpr','.dpk');
+
   AllDirectoryEntriesMask = '*';
 
 implementation

@@ -33,7 +33,7 @@ uses
   // RTL + LCL
   Classes, SysUtils, LCLProc, StdCtrls, ExtCtrls,
   // CodeTools
-  SourceLog, FileProcs, CodeToolManager, CodeToolsConfig, CodeCache,
+  BasicCodeTools, SourceLog, FileProcs, CodeToolManager, CodeToolsConfig, CodeCache,
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, LazUTF8, lazutf8classes,
   AvgLvlTree, Laz2_XMLCfg,
@@ -359,18 +359,29 @@ begin
 end;
 
 function FilenameIsPascalSource(const Filename: string): boolean;
-var Ext: string;
-  p: Integer;
-  AnUnitName: String;
+var
+  s: string;
+  i: Integer;
 begin
-  AnUnitName:=ExtractFileNameOnly(Filename);
-  if (AnUnitName='') or (not IsValidIdent(AnUnitName)) then
-    exit(false);
+  Result:=False;
+  // Check unit name
+  s:=ExtractFileNameOnly(Filename);
+  if (s='') or not IsDottedIdentifier(s) then
+    exit;
+  // Check extension
+  s:=lowercase(ExtractFileExt(Filename));
+  for i:=Low(PascalSourceExt) to High(PascalSourceExt) do
+    if s=PascalSourceExt[i] then
+      exit(True);
+end;
+
+function FilenameIsFormText(const Filename: string): boolean;
+var
+  Ext: string;
+begin
   Ext:=lowercase(ExtractFileExt(Filename));
-  for p:=Low(PascalFileExt) to High(PascalFileExt) do
-    if Ext=PascalFileExt[p] then
-      exit(true);
-  Result:=(Ext='.lpr') or (Ext='.dpr') or (Ext='.dpk');
+  Result:=((Ext='.lfm') or (Ext='.dfm') or (Ext='.xfm'))
+          and (ExtractFileNameOnly(Filename)<>'');
 end;
 
 function FindShortFileNameOnDisk(const Filename: string): string;
@@ -446,14 +457,6 @@ begin
     else if NewFilename<>OldFilename then
       List[i]:=NewFilename;
   end;
-end;
-
-function FilenameIsFormText(const Filename: string): boolean;
-var Ext: string;
-begin
-  Ext:=lowercase(ExtractFileExt(Filename));
-  Result:=((Ext='.lfm') or (Ext='.dfm') or (Ext='.xfm'))
-          and (ExtractFileNameOnly(Filename)<>'');
 end;
 
 function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;

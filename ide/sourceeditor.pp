@@ -1661,6 +1661,8 @@ begin
         (AParent,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF);
     SrcEditMenuCompleteCode := RegisterIDEMenuCommand
         (AParent,'CompleteCode', lisMenuCompleteCode, nil, @ExecuteIdeMenuClick);
+    SrcEditMenuInvertAssignment := RegisterIDEMenuCommand
+        (AParent, 'InvertAssignment',uemInvertAssignment, nil, @ExecuteIdeMenuClick);
     SrcEditMenuUseUnit := RegisterIDEMenuCommand
         (AParent,'UseUnit', lisMenuUseUnit, nil, @ExecuteIdeMenuClick);
     SrcEditMenuShowUnitInfo := RegisterIDEMenuCommand
@@ -1675,8 +1677,6 @@ begin
         (AParent, 'RenameIdentifier',lisMenuRenameIdentifier, nil, @ExecuteIdeMenuClick);
     SrcEditMenuExtractProc := RegisterIDEMenuCommand
         (AParent, 'ExtractProc',lisMenuExtractProc, nil, @ExecuteIdeMenuClick);
-    SrcEditMenuInvertAssignment := RegisterIDEMenuCommand
-        (AParent, 'InvertAssignment',uemInvertAssignment, nil, @ExecuteIdeMenuClick);
     SrcEditMenuShowAbstractMethods := RegisterIDEMenuCommand
         (AParent, 'ShowAbstractMethods',srkmecAbstractMethods, nil, @ExecuteIdeMenuClick);
     SrcEditMenuShowEmptyMethods := RegisterIDEMenuCommand
@@ -6537,7 +6537,7 @@ begin
       else
         DebugLn(['TSourceNotebook.TabPopUpMenuPopup: Popup PageIndex=', PageI]);
     end;
-    ASrcEdit:=Editors[PageIndex];
+    ASrcEdit:=ActiveEditor as TSourceEditor;
 
     {$IFnDEF SingleSrcWindow}
     // Multi win
@@ -6661,6 +6661,8 @@ var
   i, MarkCount: integer;
   EditorPopupPoint, EditorCaret: TPoint;
 begin
+  IDECommandList.ExecuteUpdateEvents;
+
   SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
   SourceEditorMenuRoot.BeginUpdate;
   try
