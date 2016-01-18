@@ -560,6 +560,8 @@ var
   ANode, SelectNode: TTreeNode;
   CurText: string;
 begin
+  if fFilteredTreeview=nil then Exit;
+
   SelectNode:=Nil;
   // ToDo: support more than one items or otherwise clean the code.
   Assert(fSelectionList.Count < 2,
