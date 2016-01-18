@@ -32,7 +32,7 @@ uses
   // FCL
   SysUtils, Types, Classes, TypInfo, FPCanvas,
   // LCL
-  {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
+  {$IFDEF UseOICheckBoxThemed} CheckBoxThemed, {$ENDIF}
   InterfaceBase, Forms, Buttons, Graphics, GraphType, StdCtrls, LCLType,
   LCLIntf, Controls, ComCtrls, ExtCtrls, LMessages, LazConfigStorage,
   LazLoggerBase, Menus, Dialogs, Themes, LCLProc, TreeFilterEdit,
@@ -305,7 +305,7 @@ type
 
     ValueEdit: TEdit;
     ValueComboBox: TComboBox;
-    {$IFnDEF UseOINormalCheckBox}
+    {$IFDEF UseOICheckBoxThemed}
     ValueCheckBox: TCheckBoxThemed;
     {$ELSE}
     ValueCheckBox: TCheckBox;
@@ -968,13 +968,13 @@ begin
     OnMouseWheel:=@OnGridMouseWheel;
   end;
 
-  ValueCheckBox:={$IFnDEF UseOINormalCheckBox} TCheckBoxThemed.Create(Self); {$ELSE} TCheckBox.Create(Self); {$ENDIF}
+  ValueCheckBox:={$IFDEF UseOICheckBoxThemed} TCheckBoxThemed.Create(Self); {$ELSE} TCheckBox.Create(Self); {$ENDIF}
   with ValueCheckBox do
   begin
     Name:='ValueCheckBox';
     Visible:=false;
     Enabled:=false;
-    {$IFnDEF UseOINormalCheckBox}
+    {$IFDEF UseOICheckBoxThemed}
     AutoSize := false;
     {$ELSE}
     AutoSize := true;    // SetBounds does not work for CheckBox, AutoSize does.
@@ -2096,7 +2096,7 @@ begin
     SetActiveControl(FCurrentEdit);
     if (FCurrentEdit is TCustomEdit) then
       TCustomEdit(FCurrentEdit).SelectAll
-    {$IFnDEF UseOINormalCheckBox}
+    {$IFDEF UseOICheckBoxThemed}
     else if (FCurrentEdit is TCheckBoxThemed) and WasValueClick then
       TCheckBoxThemed(FCurrentEdit).Checked:=not TCheckBoxThemed(FCurrentEdit).Checked;
     {$ELSE}
@@ -2636,7 +2636,6 @@ var
           and (r1.Right=r2.Right) and (r1.Bottom=r2.Bottom);
   end;
 
-// AlignEditComponents
 begin
   if ItemIndex>=0 then
   begin
@@ -2699,8 +2698,6 @@ var
   NameBgColor: TColor;
   Details: TThemedElementDetails;
   Size: TSize;
-
-// PaintRow
 begin
   CurRow := Rows[ARow];
   FullRect := RowRect(ARow);
