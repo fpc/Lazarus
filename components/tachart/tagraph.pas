@@ -817,7 +817,6 @@ procedure TChart.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 var
   ldd: TChartLegendDrawingData;
   s: TBasicChartSeries;
-  fnt: TFont;
 begin
   Prepare;
 
@@ -882,14 +881,8 @@ begin
 
   // Undo changes made by the drawer (mainly for printing). The user may print
   // something else after the chart and, for example, would not expect the font
-  // to be rotated.
-  // (Workaround for issue #0027163)
-  fnt := TFont.Create;            // to effectively reset font orientation
-  try
-    ADrawer.Font := fnt;
-  finally
-    fnt.Free;
-  end;
+  // to be rotated (Fix for issue #0027163)
+  ADrawer.ResetFont;
   ADrawer.SetPenParams(psSolid, clDefault);
   ADrawer.SetBrushParams(bsSolid, clWhite);
   ADrawer.SetAntialiasingMode(amDontCare);
