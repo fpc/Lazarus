@@ -696,6 +696,7 @@ end;
 procedure TCustomForm.WMSize(var message: TLMSize);
 var
   NewState: TWindowState;
+  NeedsAutoSize: Boolean;
 begin
   {$IFDEF CHECK_POSITION}
   DebugLn(['[TCustomForm.WMSize] ',DbgSName(Self),' Message.SizeType=',Message.SizeType,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' AutoSizeDelayed=',AutoSizeDelayed]);
@@ -712,6 +713,11 @@ begin
     end;
   end;
 
+  NeedsAutoSize :=
+        (FWindowState = wsMinimized)
+    and ((Message.SizeType and SIZE_SourceIsInterface) <> 0)
+    and ((Message.SizeType xor SIZE_SourceIsInterface) <> SIZE_MINIMIZED);
+
   inherited WMSize(Message);
 
   if (Message.SizeType and not SIZE_SourceIsInterface) = SIZE_RESTORED then
@@ -720,6 +726,9 @@ begin
     FRestoredHeight := Height;
     //DebugLn('[TCustomForm.WMSize] saving restored bounds ',DbgSName(Self),' ',dbgs(FRestoredWidth),'x',dbgs(FRestoredHeight));
   end;
+
+  if NeedsAutoSize then
+    DoAllAutoSize;
 end;
 
 procedure TCustomForm.WMMove(var Message: TLMMove);
