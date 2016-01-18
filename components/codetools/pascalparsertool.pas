@@ -1502,6 +1502,8 @@ end;
 function TPascalParserTool.ReadParamType(ExceptionOnError, Extract: boolean;
   const Attr: TProcHeadAttributes): boolean;
 // after reading, CurPos is the atom after the type
+// Examples:
+//   Domain: LongInt location 'd0'  (only m68k, powerpc)
 var
   copying: boolean;
   IsArrayType: Boolean;
@@ -1602,7 +1604,16 @@ begin
     else exit;
   end;
   if AtomIsChar('<') then
-    ReadGenericParam;
+    ReadGenericParam
+  else if UpAtomIs('LOCATION')
+  and (Scanner.Values.IsDefined('CPUM68K') or Scanner.Values.IsDefined('CPUPOWERPC'))
+  then begin
+    // for example Domain: LongInt location 'd0'
+    ReadNextAtom;
+    if not AtomIsStringConstant then
+      SaveRaiseStringExpectedButAtomFound(ctsStringConstant);
+    ReadNextAtom;
+  end;
   Result:=true;
 end;
 
