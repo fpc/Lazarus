@@ -849,12 +849,13 @@ begin
   else
     pbAsm.Font.Quality := fqDefault;
 
-  GetTextMetrics(pbAsm.Canvas.Handle, TM{%H-});
-  FCharWidth := TM.tmMaxCharWidth; // EditorOpts.ExtraCharSpacing +
-  sbHorizontal.SmallChange := FCHarWidth;
-
-  FLineHeight := Max(6,EditorOpts.ExtraLineSpacing + TM.tmHeight);
-  SetLineCount(pbAsm.Height div FLineHeight);
+  if GetTextMetrics(pbAsm.Canvas.Handle, TM{%H-}) then
+  begin
+    FCharWidth := TM.tmMaxCharWidth; // EditorOpts.ExtraCharSpacing +
+    sbHorizontal.SmallChange := FCharWidth;
+    FLineHeight := Max(6,EditorOpts.ExtraLineSpacing + TM.tmHeight);
+    SetLineCount(pbAsm.Height div FLineHeight);
+  end;
 end;
 
 procedure TAssemblerDlg.SetLocation(ADebugger: TDebuggerIntf; const AAddr: TDBGPtr;
