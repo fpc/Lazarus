@@ -327,11 +327,6 @@ begin
         fFilteredListbox.Selected[i] := True;
     end else
     begin
-      {$IFDEF LCLQt}
-      // With LCL-Qt setting the ItemIndex does not clear selection.
-      for i := 0 to fFilteredListbox.Count - 1 do
-        fFilteredListbox.Selected[i] := False;
-      {$ENDIF LCLQt}
       fFilteredListbox.ItemIndex := AIndex;
     end;
     Assert(fFilteredListbox.ItemFullyVisible(AIndex), 'TListFilterEdit.MoveTo: Item not fully visible');
