@@ -11893,7 +11893,7 @@ msgid "Install/Uninstall Packages ..."
 msgstr "Configura els paquets intal·lats ..."
 
 #: lazarusidestrconsts.lismenueditoracceleratorkeysneedschanging
-msgid "Accelerator(&&) key \"%s\" needs changing "
+msgid "Accelerator(&&) key \"%s\" needs changing"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditoraddanewitemaboveselecteditem
@@ -11932,6 +11932,10 @@ msgstr ""
 msgid "Add imagelist &icon"
 msgstr ""
 
+#: lazarusidestrconsts.lismenueditoraddmenuitem
+msgid "Add menu item"
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditoraddnewitemabove
 msgid "&Add new item above"
 msgstr ""
@@ -11958,6 +11962,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditoraddseparatorbefore
 msgid "Add separator &before"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditoraddsubmenu
+msgid "Add submenu"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditoraddsubmenubelow
@@ -12024,12 +12032,16 @@ msgstr ""
 msgid "Change the shortCutKey2 for %s"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorchoosetemplateto
-msgid "Choose template to"
+#: lazarusidestrconsts.lismenueditorchoosetemplatetodelete
+msgid "Choose template to delete"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorchoosetemplatetoinsert
+msgid "Choose template to insert"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorclickanongreyeditemtoedititsshortcut
-msgid "Click a non-greyed item to edit its shortcut"
+msgid "Click a non-greyed item to edit its shortcut or click header to sort by that column"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorcomponentisunexpectedkind
@@ -12037,7 +12049,7 @@ msgid "Component is unexpected kind"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorcomponentisunnamed
-msgid "component is unnamed"
+msgid "Component is unnamed"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorconflictresolutioncomplete
@@ -12072,14 +12084,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditordeletethisitemanditssubitems
 msgid "Delete this item and its subitems?"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditordeletingitemwithasubmenu
-msgid "Deleting item with a submenu"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditordeletingthisitemwilldeleteallsubitemstoo
-msgid "Deleting this item will delete all subitems too."
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditordisplaypreviewaspopupmenu
@@ -12146,8 +12150,8 @@ msgstr ""
 msgid "Inadequate Description"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorinsertmenutemplateinto
-msgid "Insert menu template into "
+#: lazarusidestrconsts.lismenueditorinsertmenutemplateintorootofs
+msgid "Insert menu template into root of %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorinsertselectedmenutemplate
@@ -12174,12 +12178,12 @@ msgstr ""
 msgid "Menu Editor"
 msgstr "Editor del menú"
 
-#: lazarusidestrconsts.lismenueditormenuitem
-msgid "menu item"
+#: lazarusidestrconsts.lismenueditormenuitemactions
+msgid "Menu Item actions"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditormenuitemshortcutconflictsin
-msgid "Menuitem shortcut conflicts in "
+#: lazarusidestrconsts.lismenueditormenuitemshortcutconflictsins
+msgid "Menuitem shortcut conflicts in %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditormovedown
@@ -12220,10 +12224,6 @@ msgctxt "lazarusidestrconsts.lismenueditormoveselecteditemup"
 msgid "Move selected item up"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditormoveseparatedeleteinsertitems
-msgid "Move Divide Delete  Add  items"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditormoveup
 msgid "Move Up (or left)"
 msgstr "Mou Dalt (o a l'esquerra)"
@@ -12245,31 +12245,15 @@ msgid "<none>,<none>"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditornoradioitemsinthismenu
-msgid "no radioitems in this menu"
+msgid "No radioitems in this menu"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditornoshortcutconflicts
 msgid "<no shortcut conflicts>"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditornoshortcutconflictsremain
-msgid "<no shortcut conflicts remain>"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditornoshortcutconflictstoresolve
-msgid "<no shortcut conflicts to resolve>"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditornousersavedtemplates
 msgid "No user-saved templates"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditoronlystandarddefaulttemplatesareavailable
-msgid "Only standard default templates are available."
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditororclickheadertosortbythatcolumn
-msgid "  or click header to sort by that column"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorpickaniconfroms
@@ -12301,7 +12285,7 @@ msgid "&Resolve shortcut conflicts ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorrootmenu
-msgid "root menu"
+msgid "Root menu"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsavedtemplates
@@ -12380,6 +12364,10 @@ msgstr ""
 msgid "Shortcuts used in %s"
 msgstr ""
 
+#: lazarusidestrconsts.lismenueditorshortcutsusedinsd
+msgid "Shortcuts used in %s (%d)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
 msgid "ShowMenuEditor: TMenu parameter is nil"
 msgstr ""
@@ -12389,7 +12377,9 @@ msgid "\"%s\" in %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsisalreadyinuse
-msgid "\"%s\" is already in use in %s as a shortcut.%sTry a different shortcut."
+msgid ""
+"\"%s\" is already in use in %s as a shortcut.\n"
+"Try a different shortcut.\n"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsisnotaradioitem
@@ -12420,12 +12410,12 @@ msgstr ""
 msgid "%s.%s.%s - OnClick: %s"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorstandardtemplates
-msgid "Standard templates"
+#: lazarusidestrconsts.lismenueditorssubmenu
+msgid "%s submenu"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorsubmenu
-msgid "submenu"
+#: lazarusidestrconsts.lismenueditorstandardtemplates
+msgid "Standard templates"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditortemplatedescription
@@ -12441,7 +12431,10 @@ msgid "Template saved"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditortherearenousersavedmenutemplates
-msgid "There are no user-saved menu templates."
+msgid ""
+"There are no user-saved menu templates.\n"
+"\n"
+"Only standard default templates are available.\n"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditortsclistgetscanlistcompnameinvalidindexdforfscanlis
@@ -12449,7 +12442,9 @@ msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditoryouhavetochangetheshortcutfromsstoavoidaconflict
-msgid "You have to change the shortcut from %s%sto avoid a conflict"
+msgid ""
+"You have to change the shortcut from %s\n"
+"to avoid a conflict\n"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditoryoumustentertextforthecaption

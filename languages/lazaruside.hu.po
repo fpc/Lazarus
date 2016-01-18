@@ -11588,7 +11588,7 @@ msgid "Install/Uninstall Packages ..."
 msgstr "Csomagok telepítése/eltávolítása ..."
 
 #: lazarusidestrconsts.lismenueditoracceleratorkeysneedschanging
-msgid "Accelerator(&&) key \"%s\" needs changing "
+msgid "Accelerator(&&) key \"%s\" needs changing"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditoraddanewitemaboveselecteditem
@@ -11627,6 +11627,10 @@ msgstr "Ikon hozzáadása innen: %s"
 msgid "Add imagelist &icon"
 msgstr ""
 
+#: lazarusidestrconsts.lismenueditoraddmenuitem
+msgid "Add menu item"
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditoraddnewitemabove
 msgid "&Add new item above"
 msgstr "Új elem hozzáadása fölé"
@@ -11654,6 +11658,10 @@ msgstr "Elválasztó hozzáadása utána"
 #: lazarusidestrconsts.lismenueditoraddseparatorbefore
 msgid "Add separator &before"
 msgstr "Elválasztó hozzáadása elé"
+
+#: lazarusidestrconsts.lismenueditoraddsubmenu
+msgid "Add submenu"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditoraddsubmenubelow
 msgid "Add &submenu below"
@@ -11719,12 +11727,16 @@ msgstr ""
 msgid "Change the shortCutKey2 for %s"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorchoosetemplateto
-msgid "Choose template to"
+#: lazarusidestrconsts.lismenueditorchoosetemplatetodelete
+msgid "Choose template to delete"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorchoosetemplatetoinsert
+msgid "Choose template to insert"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorclickanongreyeditemtoedititsshortcut
-msgid "Click a non-greyed item to edit its shortcut"
+msgid "Click a non-greyed item to edit its shortcut or click header to sort by that column"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorcomponentisunexpectedkind
@@ -11732,7 +11744,7 @@ msgid "Component is unexpected kind"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorcomponentisunnamed
-msgid "component is unnamed"
+msgid "Component is unnamed"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorconflictresolutioncomplete
@@ -11766,14 +11778,6 @@ msgstr "Kiválasztott menüsablon törlése"
 #: lazarusidestrconsts.lismenueditordeletethisitemanditssubitems
 msgid "Delete this item and its subitems?"
 msgstr "Ez és alárendelt elemeinek törlése?"
-
-#: lazarusidestrconsts.lismenueditordeletingitemwithasubmenu
-msgid "Deleting item with a submenu"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditordeletingthisitemwilldeleteallsubitemstoo
-msgid "Deleting this item will delete all subitems too."
-msgstr "Ezen elem törlése az összes alárendelt elemet is törölni fogja."
 
 #: lazarusidestrconsts.lismenueditordisplaypreviewaspopupmenu
 msgid "Display preview as &Popup menu"
@@ -11839,8 +11843,8 @@ msgstr ""
 msgid "Inadequate Description"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorinsertmenutemplateinto
-msgid "Insert menu template into "
+#: lazarusidestrconsts.lismenueditorinsertmenutemplateintorootofs
+msgid "Insert menu template into root of %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorinsertselectedmenutemplate
@@ -11867,12 +11871,12 @@ msgstr ""
 msgid "Menu Editor"
 msgstr "Menüszerkesztő"
 
-#: lazarusidestrconsts.lismenueditormenuitem
-msgid "menu item"
+#: lazarusidestrconsts.lismenueditormenuitemactions
+msgid "Menu Item actions"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditormenuitemshortcutconflictsin
-msgid "Menuitem shortcut conflicts in "
+#: lazarusidestrconsts.lismenueditormenuitemshortcutconflictsins
+msgid "Menuitem shortcut conflicts in %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditormovedown
@@ -11913,10 +11917,6 @@ msgctxt "lazarusidestrconsts.lismenueditormoveselecteditemup"
 msgid "Move selected item up"
 msgstr "Kjelölt elem mozgatása felfelé"
 
-#: lazarusidestrconsts.lismenueditormoveseparatedeleteinsertitems
-msgid "Move Divide Delete  Add  items"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditormoveup
 msgid "Move Up (or left)"
 msgstr "Feljebb (vagy balra)"
@@ -11938,32 +11938,16 @@ msgid "<none>,<none>"
 msgstr "<nincs>,<nincs>"
 
 #: lazarusidestrconsts.lismenueditornoradioitemsinthismenu
-msgid "no radioitems in this menu"
+msgid "No radioitems in this menu"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditornoshortcutconflicts
 msgid "<no shortcut conflicts>"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditornoshortcutconflictsremain
-msgid "<no shortcut conflicts remain>"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditornoshortcutconflictstoresolve
-msgid "<no shortcut conflicts to resolve>"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditornousersavedtemplates
 msgid "No user-saved templates"
 msgstr "Nincsenek felhasználó által megadott sablonok"
-
-#: lazarusidestrconsts.lismenueditoronlystandarddefaulttemplatesareavailable
-msgid "Only standard default templates are available."
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditororclickheadertosortbythatcolumn
-msgid "  or click header to sort by that column"
-msgstr ""
 
 #: lazarusidestrconsts.lismenueditorpickaniconfroms
 msgid "Pick an icon from %s"
@@ -11994,7 +11978,7 @@ msgid "&Resolve shortcut conflicts ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorrootmenu
-msgid "root menu"
+msgid "Root menu"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsavedtemplates
@@ -12073,6 +12057,10 @@ msgstr ""
 msgid "Shortcuts used in %s"
 msgstr ""
 
+#: lazarusidestrconsts.lismenueditorshortcutsusedinsd
+msgid "Shortcuts used in %s (%d)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
 msgid "ShowMenuEditor: TMenu parameter is nil"
 msgstr "ShowMenuEditor: a TMenu paraméter \"nil\""
@@ -12082,7 +12070,9 @@ msgid "\"%s\" in %s"
 msgstr "\"%s\" itt: %s: "
 
 #: lazarusidestrconsts.lismenueditorsisalreadyinuse
-msgid "\"%s\" is already in use in %s as a shortcut.%sTry a different shortcut."
+msgid ""
+"\"%s\" is already in use in %s as a shortcut.\n"
+"Try a different shortcut.\n"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsisnotaradioitem
@@ -12113,13 +12103,13 @@ msgstr ""
 msgid "%s.%s.%s - OnClick: %s"
 msgstr "%s.%s.%s - OnClick: %s"
 
+#: lazarusidestrconsts.lismenueditorssubmenu
+msgid "%s submenu"
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditorstandardtemplates
 msgid "Standard templates"
 msgstr "Alapsablonok"
-
-#: lazarusidestrconsts.lismenueditorsubmenu
-msgid "submenu"
-msgstr ""
 
 #: lazarusidestrconsts.lismenueditortemplatedescription
 msgid "Template description:"
@@ -12134,7 +12124,12 @@ msgid "Template saved"
 msgstr "Sablon mentve"
 
 #: lazarusidestrconsts.lismenueditortherearenousersavedmenutemplates
-msgid "There are no user-saved menu templates."
+#, fuzzy
+#| msgid "There are no user-saved menu templates."
+msgid ""
+"There are no user-saved menu templates.\n"
+"\n"
+"Only standard default templates are available.\n"
 msgstr "Nincsenek felhasználó által mentett menüsablonok."
 
 #: lazarusidestrconsts.lismenueditortsclistgetscanlistcompnameinvalidindexdforfscanlis
@@ -12142,7 +12137,9 @@ msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"
 msgstr "TSCList.GetScanListCompName: a %d érvénytelen index a FScanList számára"
 
 #: lazarusidestrconsts.lismenueditoryouhavetochangetheshortcutfromsstoavoidaconflict
-msgid "You have to change the shortcut from %s%sto avoid a conflict"
+msgid ""
+"You have to change the shortcut from %s\n"
+"to avoid a conflict\n"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditoryoumustentertextforthecaption
