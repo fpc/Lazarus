@@ -1114,7 +1114,7 @@ begin
   XMLConfig:=TXMLConfig.Create(templateCfgName);
   try
     s:=XMLConfig.GetValue('menu_1/Name/Value', 'missing_Menu_1_Name');
-    Result:=(CompareText(s, 'missing_Menu_1_Name') = 0);
+    Result:=(CompareText(s, 'missing_Menu_1_Name') <> 0);
   finally
     XMLConfig.Free;
   end;
@@ -1654,7 +1654,7 @@ begin
           inf:=MenuDesigner.ShortcutList.FindUniqueInfoForShortcut(newSC);
           IDEMessageDialogAb(lisMenuEditorFurtherShortcutConflict,
                      Format(lisMenuEditorSIsAlreadyInUse,
-                     [ShortCutToText(newSC), inf.Component.Name, LineEnding]),
+                     [ShortCutToText(newSC), inf.Component.Name]),
                      mtWarning, [mbOK], False);
           FEdit.Text:=AmpersandStripped(FOldCaption);
           FEdit.SetFocus;
@@ -1690,7 +1690,7 @@ begin
     begin
       IDEMessageDialogAb(lisMenuEditorShortcutNotYetChanged,
            Format(lisMenuEditorYouHaveToChangeTheShortcutFromSStoAvoidAConflict,
-                  [ShortCutToText(FInfo.Shortcut), LineEnding]),
+                  [ShortCutToText(FInfo.Shortcut)]),
                   mtWarning, [mbOK], False);
       FGrabBox.KeyComboBox.SetFocus;
       Exit;
@@ -1700,7 +1700,7 @@ begin
       inf:=MenuDesigner.ShortcutList.FindUniqueInfoForShortcut(newSC);
       IDEMessageDialogAb(lisMenuEditorFurtherShortcutConflict,
            Format(lisMenuEditorSIsAlreadyInUse,
-                  [ShortCutToText(newSC), inf.Component.Name, LineEnding]),
+                  [ShortCutToText(newSC), inf.Component.Name]),
                   mtWarning, [mbOK], False);
       FGrabBox.KeyComboBox.SetFocus;
     end
@@ -1941,7 +1941,7 @@ begin
     FSelectedInfo:=nil;
     FConflictsListBox.OnSelectionChange:=nil;
     FConflictsListBox.Items.Add(lisMenuEditorNoShortcutConflicts);
-    FCurrentEdit.Text:=lisMenuEditorNoShortcutConflictsToResolve;
+    FCurrentEdit.Text:=lisMenuEditorNoShortcutConflicts;
     FResolvedConflictsCountLabel.Caption:=Format(lisMenuEditorResolvedConflictsS,['0']);
     FRemainingConflictsCountLabel.Caption:=Format(lisMenuEditorRemainingConflictsS,['0']);
   end;
@@ -1967,7 +1967,7 @@ begin
     FRemainingConflictsCountLabel.Caption:=Format(lisMenuEditorRemainingConflictsS,['0']);
     FResolvedConflictsCountLabel.Caption:=Format(
       lisMenuEditorResolvedConflictsS, [FInitialConflictsCount]);
-    FConflictsListBox.Items.Add(lisMenuEditorNoShortcutConflictsRemain);
+    FConflictsListBox.Items.Add(lisMenuEditorNoShortcutConflicts);
     FCurrentEdit.Text:=lisMenuEditorConflictResolutionComplete;
     FButtonPanel.CancelButton.Caption:=lisBtnClose;
   end;
@@ -1991,8 +1991,7 @@ begin
   Position:=poScreenCenter;
   Constraints.MinWidth:=400;
   Constraints.MinHeight:=256;
-  Caption:=lisMenuEditorMenuItemShortcutConflictsIn +
-           (GlobalDesignHook.LookupRoot as TComponent).Name;
+  Caption:=Format(lisMenuEditorMenuItemShortcutConflictsInS,[(GlobalDesignHook.LookupRoot as TComponent).Name]);
 
   FConflictsGroupBox:=TGroupBox.Create(Self);
   with FConflictsGroupBox do begin
@@ -2651,7 +2650,7 @@ begin
                                                          lisMenuEditorStandardTemplates);
                 FSavedNode:=FTVTemplates.Items.Add(FStandardNode,
                                                    lisMenuEditorSavedTemplates);
-                FGChoose.Caption:=Format('%s %s',[lisMenuEditorChooseTemplateTo, lisInsert]);
+                FGChoose.Caption:=lisMenuEditorChooseTemplateToInsert;
                 FLDescription.Caption:=lisMenuEditorTemplateDescription;
                 FTVTemplates.OnSelectionChanged:=@TVSelectionChanged;
                 FEDescription.ReadOnly:=True;
@@ -2660,7 +2659,7 @@ begin
                 FStandardNode:=nil;
                 FSavedNode:=FTVTemplates.Items.AddFirst(nil,
                                                     lisMenuEditorExistingSavedTemplates);
-                FGChoose.Caption:=Format('%s %s',[lisMenuEditorChooseTemplateTo, lisDelete]);
+                FGChoose.Caption:=lisMenuEditorChooseTemplateToDelete;
                 FLDescription.Caption:=lisMenuEditorTemplateDescription;
                 FTVTemplates.OnSelectionChanged:=@TVSelectionChanged;
                 FEDescription.ReadOnly:=True;
@@ -2760,10 +2759,7 @@ begin
               end;
     dmDelete: begin
                 if noneSaved then begin
-                  IDEMessageDialogAb(lisMenuEditorNoUserSavedTemplates,
-                         Format('%s%s%s%s',[lisMenuEditorThereAreNoUserSavedMenuTemplates,
-                               LineEnding, LineEnding,
-                               lisMenuEditorOnlyStandardDefaultTemplatesAreAvailable]),
+                  IDEMessageDialogAb(lisMenuEditorNoUserSavedTemplates, lisMenuEditorThereAreNoUserSavedMenuTemplates,
                                mtInformation, [mbOK], False);
                   ModalResult:=mrCancel;
                 end
@@ -2781,12 +2777,13 @@ constructor TMenuTemplateDialog.CreateWithMode(AOwner: TComponent;
 begin
   inherited CreateNew(AOwner);
   FDialogMode:=aDialogMode;
-  BorderStyle:=bsDialog;
+  BorderStyle:=bsSizeable;
   SetInitialBounds(0, 0, 530, 380);
   Position:=poScreenCenter;
   case aDialogMode of
     dmSave: Caption:=lisMenuEditorSaveMenuAsTemplate;
-    dmInsert: Caption:=lisMenuEditorInsertMenuTemplateInto;
+    dmInsert: Caption:=Format(lisMenuEditorInsertMenuTemplateIntoRootOfS,
+                              [MenuDesigner.EditedMenu.Name]);
     dmDelete: Caption:=lisMenuEditorDeleteSavedMenuTemplate;
   end;
   FTemplates:=TMenuTemplates.CreateForMode(FDialogMode);
@@ -3695,7 +3692,7 @@ begin
     end
   else
     begin
-      FGBDisplay.Caption:=Format('Shortcuts used in %s (%d)',
+      FGBDisplay.Caption := Format(lisMenuEditorShortcutsUsedInSD,
           [FMenu.Name, FscList.Count]);
       case anIndex of
         -1: ; // unsorted
@@ -3789,8 +3786,7 @@ begin
     end;
   end;
   UpdateContents(FSingleMenuOnly);
-  FLabel.Caption:=lisMenuEditorClickANonGreyedItemToEditItsShortcut+ LineEnding
-                  + lisMenuEditorOrClickHeaderToSortByThatColumn;
+  FLabel.Caption:=lisMenuEditorClickANonGreyedItemToEditItsShortcut;
   AutoSize:=True;
 end;
 
@@ -4840,9 +4836,10 @@ end;
 
 procedure TShadowMenu.DeleteTemplate(Sender: TObject);
 begin
-  if SavedTemplatesExist then
-    if DeleteMenuTemplateDlg then
-      MenuDesigner.UpdateTemplatesCount;
+  if SavedTemplatesExist and DeleteMenuTemplateDlg then begin
+    MenuDesigner.UpdateTemplatesCount;
+    UpdateActionsEnabledness;
+  end;
 end;
 
 procedure TShadowMenu.ListShortcuts(Sender: TObject);
@@ -4867,6 +4864,7 @@ begin
     begin
       SaveMenuTemplateDlg(FSelectedMenuItem);
       MenuDesigner.UpdateTemplatesCount;
+      UpdateActionsEnabledness;
     end;
 end;
 
@@ -5249,13 +5247,13 @@ begin
   SetupPopupMenu;
   FAddItemFake:=TAddSiblingFake.CreateWithPurpose(Self);
   FAddItemFake.OnClick:=@AddItemAfter;
-  FAddItemFake.Caption:=Format('%s %s',[lisAdd, lisMenuEditorMenuItem]);
+  FAddItemFake.Caption:=lisMenuEditorAddMenuItem;
   FAddSubmenuFake:=TAddSubmenuFake.CreateWithPurpose(Self);
   FAddSubmenuFake.OnClick:=@AddSubMenu;
-  FAddSubmenuFake.Caption:=Format('%s %s',[lisAdd, lisMenuEditorSubmenu]);
+  FAddSubmenuFake.Caption:=lisMenuEditorAddSubmenu;
   FAddFirstItemFake:=TAddFirstFake.CreateWithPurpose(Self);
   FAddFirstItemFake.OnClick:=@AddFirstMenu;
-  FAddFirstItemFake.Caption:=Format('%s %s',[lisAdd, lisMenuEditorMenuItem]);
+  FAddFirstItemFake.Caption:=lisMenuEditorAddMenuItem;
   FAddFirstItemFake.Left := Popup_Origin.x;
   FAddFirstItemFake.Top := Popup_Origin.y;
   ConnectSpeedButtonOnClickMethods;
