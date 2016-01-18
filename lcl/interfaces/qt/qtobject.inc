@@ -235,7 +235,7 @@ begin
 
   if not FIsLibraryInstance then
   begin
-    {$IFDEF HAIKU}
+    {$IF DEFINED(HAIKU) OR DEFINED(QTOPIA)}
     FAppSessionQuit := nil;
     FAppSaveSessionRequest := nil;
     {$ELSE}
@@ -1155,7 +1155,7 @@ begin
     ' errorInteraction ',dbgs(QSessionManager_allowsErrorInteraction(sessionManager)),
     ' phase2 ',dbgs(QSessionManager_isPhase2(sessionManager)));
   {$ENDIF}
-  {$IFNDEF HAIKU}
+  {$IF NOT DEFINED(HAIKU) AND NOT DEFINED(QTOPIA)}
   // if session manager does not allow interaction, then we close app without any intf calls
   if QSessionManager_allowsInteraction(sessionManager) then
   begin
@@ -1425,7 +1425,8 @@ begin
       if IsValidHintHandle(TObject(SavedHintHandlesList.Items[i])) then
       begin
         AWidget := TQtHintWindow(SavedHintHandlesList.Items[i]);
-        AWidget.NeedRestoreVisible := AWidget.getVisible;
+        AWidget.NeedRestoreVisible := AWidget.getVisible and
+          Assigned(AWidget.LCLObject) and AWidget.LCLObject.Visible;
         AWidget.Hide;
       end;
     end;
@@ -1448,7 +1449,8 @@ begin
       if IsValidHintHandle(TObject(SavedHintHandlesList.Items[i])) then
       begin
         AWidget := TQtHintWindow(SavedHintHandlesList.Items[i]);
-        if AWidget.NeedRestoreVisible then
+        if AWidget.NeedRestoreVisible and Assigned(AWidget.LCLObject) and
+          AWIdget.LCLObject.Visible then
         begin
           AWidget.NeedRestoreVisible := False;
           AWidget.Show;
