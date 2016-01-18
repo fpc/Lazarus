@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="TurboPowerIPro"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="Turbopower, portiert fuer Lazarus von Mattias Gaertner"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -53,6 +54,7 @@
       </Item6>
       <Item7>
         <Filename Value="iphtmlpv.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="IpHtmlPv"/>
       </Item7>
       <Item8>
@@ -96,7 +98,6 @@
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="Printer4Lazarus"/>
