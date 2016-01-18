@@ -434,7 +434,6 @@ type
     procedure DoCodeExplorerOptionsAfterWrite(Sender: TObject; Restore: boolean);
     procedure DoProjectOptionsBeforeRead(Sender: TObject);
     procedure DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
-    procedure DoCompilerOptionsAfterWrite(Sender: TObject; Restore: boolean);
     procedure OnCompilerOptionsDialogTest(Sender: TObject);
     function DoTestCompilerSettings(TheCompilerOptions: TCompilerOptions): TModalResult;
     function OnCheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions): TModalResult;
@@ -4028,11 +4027,13 @@ begin
   Project1.CompilerOptions.OtherDefines.Assign(Project1.OtherDefines);
 
   Capt := Format(dlgProjectOptionsFor, [Project1.GetTitleOrName]);
-  if DoOpenIDEOptions(nil, Capt, AFilter, [])
-  and not Project1.OtherDefines.Equals(Project1.CompilerOptions.OtherDefines) then
+  if DoOpenIDEOptions(nil, Capt, AFilter, []) then
   begin
-    Project1.OtherDefines.Assign(Project1.CompilerOptions.OtherDefines);
+    if not Project1.OtherDefines.Equals(Project1.CompilerOptions.OtherDefines) then
+      Project1.OtherDefines.Assign(Project1.CompilerOptions.OtherDefines);
     Project1.Modified:=True;
+    MainBuildBoss.SetBuildTargetProject1(false);
+    MainIDE.UpdateCaption;
   end;
 end;
 
@@ -4808,6 +4809,7 @@ end;
 procedure TMainIDE.DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
 var
   AProject: TProject;
+  aFilename: String;
 
   function GetTitle: String;
   begin
@@ -4893,8 +4895,12 @@ var
 begin
   //debugln(['TMainIDE.DoProjectOptionsAfterWrite ',DbgSName(Sender),' Restore=',Restore]);
   AProject:=(Sender as TProjectIDEOptions).Project;
-  if not Restore then
+  if Restore then
   begin
+    AProject.RestoreBuildModes;
+    AProject.RestoreSession;
+  end
+  else begin
     SetTitle;
     SetAutoCreateForms;
     // extend include path
@@ -4906,20 +4912,34 @@ begin
                          mtWarning, [mbOk]);
     end;
     UpdateCaption;
-  end;
-  if Restore then
-  begin
-    AProject.RestoreSession;
+    AProject.DefineTemplates.AllChanged;
+    IncreaseCompilerParseStamp;
+
+    if AProject.UseAsDefault then
+    begin
+      // save as default
+      aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectOptionsFilename;
+      AProject.WriteProject([pwfSkipSeparateSessionInfo,pwfIgnoreModified],
+        aFilename,EnvironmentOptions.BuildMatrixOptions);
+    end;
+
+    Project1.UpdateAllSyntaxHighlighter;
+    SourceEditorManager.BeginGlobalUpdate;
+    try
+      UpdateHighlighters(True);
+      SourceEditorManager.ReloadEditorOptions;
+    finally
+      SourceEditorManager.EndGlobalUpdate;
+    end;
   end;
 end;
 
 procedure TMainIDE.ComponentPaletteClassSelected(Sender: TObject);
 begin
   // code below cant be handled correctly by integrated IDE
-  if
-    (IDETabMaster = nil) and
-    (Screen.CustomFormZOrderCount > 1)
-  and Assigned(Screen.CustomFormsZOrdered[1].Designer) then begin
+  if (IDETabMaster = nil) and (Screen.CustomFormZOrderCount > 1)
+  and Assigned(Screen.CustomFormsZOrdered[1].Designer) then
+  begin
     // previous active form was designer form
     ShowDesignerForm(Screen.CustomFormsZOrdered[1]);
     DoCallShowDesignerFormOfSourceHandler(lihtShowDesignerFormOfSource,
@@ -6034,7 +6054,6 @@ begin
   Result.OnChangeProjectInfoFile:=@OnProjectChangeInfoFile;
   Result.IDEOptions.OnBeforeRead:=@DoProjectOptionsBeforeRead;
   Result.IDEOptions.OnAfterWrite:=@DoProjectOptionsAfterWrite;
-  Result.OnCompilerOptionsAfterWrite := @DoCompilerOptionsAfterWrite;
 end;
 
 function TMainIDE.DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
@@ -6743,47 +6762,6 @@ begin
     DoBuildFile(false)
   else
     DoBuildProject(crCompile, []);
-end;
-
-procedure TMainIDE.DoCompilerOptionsAfterWrite(Sender: TObject; Restore: boolean
-  );
-var
-  AProject: TProject;
-  aFilename: string;
-begin
-  AProject:=(Sender as TProjectCompilerOptions).Project;
-
-  if not Restore then
-  begin
-    AProject.DefineTemplates.AllChanged;
-  end;
-  if Restore then
-  begin
-    AProject.RestoreBuildModes;
-  end;
-
-  IncreaseCompilerParseStamp;
-  MainBuildBoss.SetBuildTargetProject1(false);
-
-  if not Restore then
-  begin
-    if AProject.UseAsDefault then
-    begin
-      // save as default
-      aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectOptionsFilename;
-      AProject.WriteProject([pwfSkipSeparateSessionInfo,pwfIgnoreModified],
-        aFilename,EnvironmentOptions.BuildMatrixOptions);
-    end;
-
-    Project1.UpdateAllSyntaxHighlighter;
-    SourceEditorManager.BeginGlobalUpdate;
-    try
-      UpdateHighlighters(True);
-      SourceEditorManager.ReloadEditorOptions;
-    finally
-      SourceEditorManager.EndGlobalUpdate;
-    end;
-  end;
 end;
 
 procedure TMainIDE.DoQuickCompile;

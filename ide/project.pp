@@ -552,7 +552,6 @@ type
     property BuildMode: TProjectBuildMode read FBuildMode;
   published
     property CompileReasons: TCompileReasons read FCompileReasons write FCompileReasons;
-    property Project: TProject read FProject;
   end;
   
   { TProjectDefineTemplates }
@@ -618,7 +617,6 @@ type
     function GetItems(Index: integer): TProjectBuildMode;
     function GetModified: boolean;
     procedure OnItemChanged(Sender: TObject);
-    procedure CompilerOptionsAfterWrite(Sender: TObject; Restore: boolean);
     procedure SetModified(const AValue: boolean);
     // Used by LoadFromXMLConfig
     procedure AddMatrixMacro(const MacroName, MacroValue, ModeIdentifier: string; InSession: boolean);
@@ -741,7 +739,6 @@ type
     FOnLoadProjectInfo: TOnLoadProjectInfo;
     FOnSaveProjectInfo: TOnSaveProjectInfo;
     FOnSaveUnitSessionInfo: TOnSaveUnitSessionInfoInfo;
-    FOnCompilerOptionsAfterWrite: TIDEOptionsWriteEvent;
     fPathDelimChanged: boolean; // PathDelim in system and current config differ (see StorePathDelim and SessionStorePathDelim)
     FPOOutputDirectory: string;
     fProjectDirectory: string;
@@ -839,7 +836,6 @@ type
     procedure SaveToLPI;
     procedure SaveToSession;
     function DoWrite(Filename: String; IsLpi: Boolean): TModalResult;
-    procedure CompilerOptionsAfterWrite(Sender: TObject; Restore: boolean);
   protected
     function GetActiveBuildModeID: string; override;
     function GetDefineTemplates: TProjPackDefineTemplates;
@@ -1044,7 +1040,6 @@ type
                                                     write SetAutoOpenDesignerFormsDisabled;
     property Bookmarks: TProjectBookmarkList read FBookmarks write FBookmarks;
     property BuildModes: TProjectBuildModes read FBuildModes;
-    property BuildModesBackup: TProjectBuildModes read FBuildModesBackup;
     property SkipCheckLCLInterfaces: boolean read FSkipCheckLCLInterfaces
                                              write SetSkipCheckLCLInterfaces;
     property CompilerOptions: TProjectCompilerOptions read GetCompilerOptions;
@@ -1086,8 +1081,6 @@ type
                                                    write FOnSaveProjectInfo;
     property OnSaveUnitSessionInfo: TOnSaveUnitSessionInfoInfo
       read FOnSaveUnitSessionInfo write FOnSaveUnitSessionInfo;
-    property OnCompilerOptionsAfterWrite: TIDEOptionsWriteEvent
-      read FOnCompilerOptionsAfterWrite write FOnCompilerOptionsAfterWrite;
     property POOutputDirectory: string read FPOOutputDirectory write SetPOOutputDirectory;
     property ProjectDirectory: string read fProjectDirectory;
     property ProjectInfoFile: string read GetProjectInfoFile write SetProjectInfoFile;
@@ -3406,7 +3399,7 @@ begin
   {$IFDEF VerboseIDEModified}
   debugln(['TProject.BackupBuildModes START=====================']);
   {$ENDIF}
-  BuildModesBackup.Assign(BuildModes,true);
+  FBuildModesBackup.Assign(BuildModes,true);
   {$IFDEF VerboseIDEModified}
   debugln(['TProject.BackupBuildModes END===================== Modified=',Modified]);
   {$ENDIF}
@@ -3414,8 +3407,9 @@ end;
 
 procedure TProject.RestoreBuildModes;
 begin
+  Assert(FBuildModesBackup.Count>0, 'TProject.RestoreBuildModes: FBuildModesBackup.Count=0');
   ActiveBuildMode:=nil;
-  BuildModes.Assign(BuildModesBackup,true);
+  BuildModes.Assign(FBuildModesBackup,true);
   if (FActiveBuildModeBackup>=0) and (FActiveBuildModeBackup<BuildModes.Count)
   then
     ActiveBuildMode:=BuildModes[FActiveBuildModeBackup]
@@ -4734,12 +4728,6 @@ var
 begin
   for i:=UnitCount-1 downto 0 do
     Units[i].ClearUnitComponentDependencies(ClearTypes);
-end;
-
-procedure TProject.CompilerOptionsAfterWrite(Sender: TObject; Restore: boolean);
-begin
-  if Assigned(FOnCompilerOptionsAfterWrite) then
-    FOnCompilerOptionsAfterWrite(Sender, Restore);
 end;
 
 procedure TProject.FindUnitsUsingSubComponent(SubComponent: TComponent;
@@ -6767,12 +6755,6 @@ begin
   SessionMatrixOptions.Clear;
 end;
 
-procedure TProjectBuildModes.CompilerOptionsAfterWrite(Sender: TObject;
-  Restore: boolean);
-begin
-  LazProject.CompilerOptionsAfterWrite(Sender, Restore);
-end;
-
 function TProjectBuildModes.IsEqual(OtherModes: TProjectBuildModes): boolean;
 var
   i: Integer;
@@ -6856,7 +6838,6 @@ begin
   if LazProject<>nil then
     Result.CompilerOptions.BaseDirectory:=LazProject.ProjectDirectory;
   Result.AddOnChangedHandler(@OnItemChanged);
-  Result.CompilerOptions.OnAfterWrite:=@CompilerOptionsAfterWrite;
   fItems.Add(Result);
 end;
 
@@ -7211,8 +7192,7 @@ begin
   SharedMatrixOptions.SaveToXMLConfig(FXMLConfig, Path+'BuildModes/SharedMatrixOptions/',@IsSharedMode);
 end;
 
-function TProjectBuildModes.GetLazBuildModes(Index: integer
-  ): TLazProjectBuildMode;
+function TProjectBuildModes.GetLazBuildModes(Index: integer): TLazProjectBuildMode;
 begin
   Result:=TLazProjectBuildMode(fItems[Index]);
 end;
