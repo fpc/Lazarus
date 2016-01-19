@@ -58,7 +58,6 @@ type
     function CalcNonClientHeight: Integer;
   protected
     procedure DoActive;
-    procedure DoShow; override;
     procedure WndProc(var Message: TLMessage); override;
     procedure Resizing(State: TWindowState); override;
   public
@@ -386,6 +385,7 @@ type
     procedure DoSetMainIDEHeight(const AIDEIsMaximized: Boolean; ANewHeight: Integer = 0);
     procedure DoSetViewComponentPalette(aVisible: Boolean);
     procedure AllowCompilation(aAllow: Boolean);
+    procedure InitPaletteAndCoolBar;
   end;
 
 var
@@ -445,13 +445,6 @@ begin
       Constraints.MinHeight := 0;
     end;
   end;
-end;
-
-procedure TMainIDEBar.DoShow;
-begin
-  inherited DoShow;
-  RefreshCoolbar;
-  ComponentPageControl.OnChange(Self);//refresh component palette with button reposition
 end;
 
 function TMainIDEBar.CalcNonClientHeight: Integer;
@@ -674,6 +667,13 @@ begin
   {$ENDIF}
   IDEComponentPalette.Update(False);
   SetupHints;
+end;
+
+procedure TMainIDEBar.InitPaletteAndCoolBar;
+begin
+  RefreshCoolbar;
+  ComponentPageControl.OnChange(Self);//refresh component palette with button reposition
+  SetMainIDEHeight;
 end;
 
 procedure TMainIDEBar.RefreshCoolbar;
