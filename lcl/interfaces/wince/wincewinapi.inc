@@ -1905,7 +1905,11 @@ end;
 function TWinCEWidgetSet.GetSystemMetrics(NIndex: Integer): Integer;
 begin
   //DebugLn(Format('Trace:[TWinCEWidgetSet.GetSystemMetrics] %s', [IntToStr(NIndex)]));
-  Result := Windows.GetSystemMetrics(NIndex);
+  case NIndex of
+  SM_LCLHasFormAlphaBlend: Result := 1;
+  else
+    Result := Windows.GetSystemMetrics(NIndex);
+  end;
   //DebugLn(Format('Trace:[TWinCEWidgetSet.GetSystemMetrics] %s --> 0x%S (%s)', [IntToStr(NIndex), IntToHex(Result, 8), IntToStr(Result)]));
 end;
 

@@ -2021,6 +2021,8 @@ begin
       Result := Windows.GetSystemMetrics(SM_CYMAXIMIZED) -
         (Windows.GetSystemMetrics(SM_CYCAPTION) +
         (Windows.GetSystemMetrics(SM_CYSIZEFRAME) * 2));
+    SM_LCLHasFormAlphaBlend:
+      Result := 1;
   else
     Result := Windows.GetSystemMetrics(NIndex);
   end;
