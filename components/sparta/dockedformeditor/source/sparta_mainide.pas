@@ -1027,7 +1027,8 @@ begin
 {$ELSE}
   if not SourceEditorWindows.contains(LWindow) then
     Exit;
-  if SourceEditorWindows.GetData(LWindow).ActiveDesignFormData = nil then
+  LWindowData := SourceEditorWindows[LWindow];
+  if LWindowData.ActiveDesignFormData = nil then
     Exit;
 {$ENDIF}
 
