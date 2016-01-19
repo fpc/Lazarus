@@ -109,6 +109,9 @@ begin
     FDesignedForm.BeginUpdate;
     
     FDesignedForm.Form.Parent := FResizerFrame.pClient;
+    {$IFNDEF WINDOWS}
+    FDesignedForm.Form.BorderStyle := bsNone;
+    {$ENDIF}
     // for big forms (bigger than screen resolution) we need to refresh Real* values
     DesignedForm.RealWidth := DesignedForm.Width;
     DesignedForm.RealHeight := DesignedForm.Height;
