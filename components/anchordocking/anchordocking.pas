@@ -85,11 +85,7 @@
     Parent bug with links to all other:
     - http://bugs.freepascal.org/view.php?id=18298 default layout sometimes wrong main bar
     Other bugs:
-    - http://bugs.freepascal.org/view.php?id=18553 docked form designer
-    - http://bugs.freepascal.org/view.php?id=18538 second resize after restore
-    - http://bugs.freepascal.org/view.php?id=19735 main bar on different screen size
     - http://bugs.freepascal.org/view.php?id=19810 multi monitor
-    - http://bugs.freepascal.org/view.php?id=21076 views
 }
 unit AnchorDocking;
 
