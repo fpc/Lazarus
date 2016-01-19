@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-01-15 13:02+0100\n"
+"PO-Revision-Date: 2016-01-19 09:43+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr_FR\n"
@@ -11593,8 +11593,6 @@ msgid "Install/Uninstall Packages ..."
 msgstr "Installer/Désinstaller des paquets..."
 
 #: lazarusidestrconsts.lismenueditoracceleratorkeysneedschanging
-#, fuzzy
-#| msgid "Accelerator(&&) key \"%s\" needs changing "
 msgid "Accelerator(&&) key \"%s\" needs changing"
 msgstr "La touche d'accélération (&&) \"%s\" doit être changée"
 
@@ -11636,7 +11634,7 @@ msgstr "Ajouter une &icône de liste d'images"
 
 #: lazarusidestrconsts.lismenueditoraddmenuitem
 msgid "Add menu item"
-msgstr ""
+msgstr "Ajouter un élément au menu"
 
 #: lazarusidestrconsts.lismenueditoraddnewitemabove
 msgid "&Add new item above"
@@ -11668,7 +11666,7 @@ msgstr "Faire &précéder d'un séparateur"
 
 #: lazarusidestrconsts.lismenueditoraddsubmenu
 msgid "Add submenu"
-msgstr ""
+msgstr "Ajouter un sous-menu"
 
 #: lazarusidestrconsts.lismenueditoraddsubmenubelow
 msgid "Add &submenu below"
@@ -11736,27 +11734,23 @@ msgstr "Modifier le raccourci n°2 pour %s"
 
 #: lazarusidestrconsts.lismenueditorchoosetemplatetodelete
 msgid "Choose template to delete"
-msgstr ""
+msgstr "Choisir le modèle à supprimer"
 
 #: lazarusidestrconsts.lismenueditorchoosetemplatetoinsert
 msgid "Choose template to insert"
-msgstr ""
+msgstr "Choisir le modèle à insérer"
 
 #: lazarusidestrconsts.lismenueditorclickanongreyeditemtoedititsshortcut
-#, fuzzy
-#| msgid "Click a non-greyed item to edit its shortcut"
 msgid "Click a non-greyed item to edit its shortcut or click header to sort by that column"
-msgstr "Cliquez sur un élément non grisé afin d'éditer ce raccourci"
+msgstr "Cliquez sur un élément non grisé pour éditer ce raccourci ou sur l'en-tête pour trier cette colonne"
 
 #: lazarusidestrconsts.lismenueditorcomponentisunexpectedkind
 msgid "Component is unexpected kind"
 msgstr "Le composant est d'une espèce inattendue"
 
 #: lazarusidestrconsts.lismenueditorcomponentisunnamed
-#, fuzzy
-#| msgid "component is unnamed"
 msgid "Component is unnamed"
-msgstr "le composant ne porte pas de nom"
+msgstr "Le composant ne porte pas de nom"
 
 #: lazarusidestrconsts.lismenueditorconflictresolutioncomplete
 msgid "<conflict resolution complete>"
@@ -11856,7 +11850,7 @@ msgstr "Description inadéquate"
 
 #: lazarusidestrconsts.lismenueditorinsertmenutemplateintorootofs
 msgid "Insert menu template into root of %s"
-msgstr ""
+msgstr "Insérez le modèle de menu dans la racine de %s"
 
 #: lazarusidestrconsts.lismenueditorinsertselectedmenutemplate
 msgid "Insert selected menu template"
@@ -11884,11 +11878,11 @@ msgstr "Éditeur de menu"
 
 #: lazarusidestrconsts.lismenueditormenuitemactions
 msgid "Menu Item actions"
-msgstr ""
+msgstr "Actions d'éléments de menu"
 
 #: lazarusidestrconsts.lismenueditormenuitemshortcutconflictsins
 msgid "Menuitem shortcut conflicts in %s"
-msgstr ""
+msgstr "Conflits de raccourcis d'éléments de menu dans %s"
 
 #: lazarusidestrconsts.lismenueditormovedown
 msgid "Move Down (or right)"
@@ -11949,10 +11943,8 @@ msgid "<none>,<none>"
 msgstr "< aucun >, <aucun>"
 
 #: lazarusidestrconsts.lismenueditornoradioitemsinthismenu
-#, fuzzy
-#| msgid "no radioitems in this menu"
 msgid "No radioitems in this menu"
-msgstr "pas de \"radioitems\" dans ce menu"
+msgstr "Pas de \"radioitems\" dans ce menu"
 
 #: lazarusidestrconsts.lismenueditornoshortcutconflicts
 msgid "<no shortcut conflicts>"
@@ -11991,10 +11983,8 @@ msgid "&Resolve shortcut conflicts ..."
 msgstr "&Résoudre les conflits de raccourcis..."
 
 #: lazarusidestrconsts.lismenueditorrootmenu
-#, fuzzy
-#| msgid "root menu"
 msgid "Root menu"
-msgstr "menu racine"
+msgstr "Menu racine"
 
 #: lazarusidestrconsts.lismenueditorsavedtemplates
 msgid "Saved templates"
@@ -12074,7 +12064,7 @@ msgstr "Raccourcis utilisés dans %s"
 
 #: lazarusidestrconsts.lismenueditorshortcutsusedinsd
 msgid "Shortcuts used in %s (%d)"
-msgstr ""
+msgstr "Raccourcis utilisés dans %s (%d)"
 
 #: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
 msgid "ShowMenuEditor: TMenu parameter is nil"
@@ -12085,12 +12075,12 @@ msgid "\"%s\" in %s"
 msgstr "\"%s\" dans %s"
 
 #: lazarusidestrconsts.lismenueditorsisalreadyinuse
-#, fuzzy,badformat
-#| msgid "\"%s\" is already in use in %s as a shortcut.%sTry a different shortcut."
 msgid ""
 "\"%s\" is already in use in %s as a shortcut.\n"
 "Try a different shortcut.\n"
-msgstr "\"%s\" est déjà utilisé dans %s comme raccourci.%sVeuillez essayer un raccourci différent."
+msgstr ""
+"\"%s\" est déjà utilisé dans %s comme raccourci.\n"
+"Veuillez essayer un raccourci différent.\n"
 
 #: lazarusidestrconsts.lismenueditorsisnotaradioitem
 msgid "%s is not a radioitem"
@@ -12122,7 +12112,7 @@ msgstr "%s.%s.%s - OnClick : %s"
 
 #: lazarusidestrconsts.lismenueditorssubmenu
 msgid "%s submenu"
-msgstr ""
+msgstr "Sous-menu %s"
 
 #: lazarusidestrconsts.lismenueditorstandardtemplates
 msgid "Standard templates"
@@ -12141,25 +12131,26 @@ msgid "Template saved"
 msgstr "Modèle enregistré"
 
 #: lazarusidestrconsts.lismenueditortherearenousersavedmenutemplates
-#, fuzzy
-#| msgid "There are no user-saved menu templates."
 msgid ""
 "There are no user-saved menu templates.\n"
 "\n"
 "Only standard default templates are available.\n"
-msgstr "Il n'y a pas de modèles de menu sauvegardés par l'utilisateur."
+msgstr ""
+"Il n'y a pas de modèles de menu sauvegardés par l'utilisateur.\n"
+"\n"
+"Seuls les modèles standards sont disponibles.\n"
 
 #: lazarusidestrconsts.lismenueditortsclistgetscanlistcompnameinvalidindexdforfscanlis
 msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"
 msgstr "\"TSCList.GetScanListCompName\" : index %d incorrect pour \"FScanList\""
 
 #: lazarusidestrconsts.lismenueditoryouhavetochangetheshortcutfromsstoavoidaconflict
-#, fuzzy,badformat
-#| msgid "You have to change the shortcut from %s%sto avoid a conflict"
 msgid ""
 "You have to change the shortcut from %s\n"
 "to avoid a conflict\n"
-msgstr "Vous devez modifier le raccourci depuis %s%safin d'éviter un conflit"
+msgstr ""
+"Vous devez modifier le raccourci depuis %s\n"
+"afin d'éviter un conflit\n"
 
 #: lazarusidestrconsts.lismenueditoryoumustentertextforthecaption
 msgid "You must enter text for the Caption"
