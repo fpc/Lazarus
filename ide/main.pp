@@ -841,6 +841,7 @@ type
                              LoadForm: boolean): TIDesigner; override;
     function GetDesignerFormOfSource(AnUnitInfo: TUnitInfo;
                                      LoadForm: boolean): TCustomForm;
+    function GetUnitFileOfLFM(LFMFilename: string): string;
     function GetProjectFileWithRootComponent(AComponent: TComponent): TLazProjectFile; override;
     function GetProjectFileWithDesigner(ADesigner: TIDesigner): TLazProjectFile; override;
     procedure GetObjectInspectorUnit(
@@ -8240,6 +8241,7 @@ procedure TMainIDE.DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface;
 var
   ActiveUnitInfo: TUnitInfo;
   UnitCodeBuf: TCodeBuffer;
+  aFilename: String;
 begin
   {$IFDEF VerboseIDEDisplayState}
   debugln(['TMainIDE.DoShowDesignerFormOfCurrentSrc ']);
@@ -8248,16 +8250,26 @@ begin
   if (ActiveUnitInfo = nil) then exit;
 
   if (ActiveUnitInfo.Component=nil)
-  and (ActiveUnitInfo.Source<>nil)
-  and (CompareFileExt(ActiveUnitInfo.Filename,'.inc',false)=0) then begin
-    // include file => get unit
-    UnitCodeBuf:=CodeToolBoss.GetMainCode(ActiveUnitInfo.Source);
-    if (UnitCodeBuf<>nil) and (UnitCodeBuf<>ActiveUnitInfo.Source) then begin
-      // unit found
-      ActiveUnitInfo:=Project1.ProjectUnitWithFilename(UnitCodeBuf.Filename);
-      if (ActiveUnitInfo=nil) or (ActiveUnitInfo.OpenEditorInfoCount=0) then begin
-        // open unit in source editor and load form
-        DoOpenEditorFile(UnitCodeBuf.Filename,-1,-1,
+  and (ActiveUnitInfo.Source<>nil) then begin
+    if (CompareFileExt(ActiveUnitInfo.Filename,'.inc',false)=0) then begin
+      // include file => get unit
+      UnitCodeBuf:=CodeToolBoss.GetMainCode(ActiveUnitInfo.Source);
+      if (UnitCodeBuf<>nil) and (UnitCodeBuf<>ActiveUnitInfo.Source) then begin
+        // unit found
+        ActiveUnitInfo:=Project1.ProjectUnitWithFilename(UnitCodeBuf.Filename);
+        if (ActiveUnitInfo=nil) or (ActiveUnitInfo.OpenEditorInfoCount=0) then begin
+          // open unit in source editor and load form
+          DoOpenEditorFile(UnitCodeBuf.Filename,-1,-1,
+            [ofOnlyIfExists,ofRegularFile,ofVirtualFile,ofDoLoadResource]);
+          exit;
+        end;
+      end;
+    end;
+    if (CompareFileExt(ActiveUnitInfo.Filename,'.lfm',false)=0) then begin
+      // lfm file => get unit
+      aFilename:=GetUnitFileOfLFM(ActiveUnitInfo.Filename);
+      if aFilename<>'' then begin
+        DoOpenEditorFile(aFilename,-1,-1,
           [ofOnlyIfExists,ofRegularFile,ofVirtualFile,ofDoLoadResource]);
         exit;
       end;
@@ -12014,6 +12026,33 @@ begin
     Result:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
   if (Result<>nil) and (Result.Designer=nil) then
     Result:=nil;
+end;
+
+function TMainIDE.GetUnitFileOfLFM(LFMFilename: string): string;
+var
+  ext: String;
+  SrcEdit: TSourceEditorInterface;
+begin
+  // first search in source editor
+  for ext in PascalExtension do begin
+    if ext='' then continue;
+    Result:=ChangeFileExt(LFMFilename,Ext);
+    SrcEdit:=SourceEditorManagerIntf.SourceEditorIntfWithFilename(Result);
+    if SrcEdit<>nil then begin
+      Result:=SrcEdit.FileName;
+      exit;
+    end;
+  end;
+  // then disk
+  for ext in PascalExtension do begin
+    if ext='' then continue;
+    Result:=ChangeFileExt(LFMFilename,Ext);
+    if FileExistsCached(Result) then begin
+      Result:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(Result);
+      exit;
+    end;
+  end;
+  Result:='';
 end;
 
 function TMainIDE.GetProjectFileWithRootComponent(AComponent: TComponent
