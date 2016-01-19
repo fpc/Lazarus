@@ -1476,13 +1476,16 @@ begin
       DisableControlAutoSizing(AControl);
       // AControl is currently on a visible site, but not in the Tree
       // => close site
-      debugln(['TAnchorDockMaster.CloseUnneededControls Control=',DbgSName(AControl),' Site=',AControl.HostDockSite.Name]);
-      if AControl.HostDockSite is TAnchorDockHostSite then begin
-        if not TAnchorDockHostSite(AControl.HostDockSite).CloseSite then begin
-          if FControls.IndexOf(AControl)<0 then
-            AControl:=nil;
-          debugln(['TAnchorDockMaster.CloseUnneededControls CloseSite failed Control=',DbgSName(AControl)]);
-          exit(false);
+      if AControl.HostDockSite <> nil then
+      begin
+        debugln(['TAnchorDockMaster.CloseUnneededControls Control=',DbgSName(AControl),' Site=',AControl.HostDockSite.Name]);
+        if AControl.HostDockSite is TAnchorDockHostSite then begin
+          if not TAnchorDockHostSite(AControl.HostDockSite).CloseSite then begin
+            if FControls.IndexOf(AControl)<0 then
+              AControl:=nil;
+            debugln(['TAnchorDockMaster.CloseUnneededControls CloseSite failed Control=',DbgSName(AControl)]);
+            exit(false);
+          end;
         end;
       end;
       if FControls.IndexOf(AControl)>=0 then begin
