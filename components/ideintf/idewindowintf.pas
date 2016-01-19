@@ -476,6 +476,7 @@ type
     procedure AdjustMainIDEWindowHeight(const {%H-}AIDEWindow: TCustomForm;
       const {%H-}AAdjustHeight: Boolean; const {%H-}ANewHeight: Integer); virtual;
     procedure CloseAll; virtual; // close all forms, called after IDE has saved all and shuts down
+    procedure ResetSplitters; virtual; abstract; // if the dock site has been resized after loading, you have to reset (percentual) splitters
     function DockedDesktopOptClass: TAbstractDesktopDockingOptClass; virtual; abstract;
     property HideSimpleLayoutOptions: boolean read FHideSimpleLayoutOptions;
   end;

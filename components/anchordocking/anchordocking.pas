@@ -526,7 +526,6 @@ type
     procedure MapTreeToControls(Tree: TAnchorDockLayoutTree);
     function RestoreLayout(Tree: TAnchorDockLayoutTree; Scale: boolean): boolean;
     procedure EnableAllAutoSizing;
-    procedure ResetSplitters;
     procedure ClearLayoutProperties(AControl: TControl; NewAlign: TAlign = alClient);
     procedure PopupMenuPopup(Sender: TObject);
     procedure ChangeLockButtonClick(Sender: TObject);
@@ -614,6 +613,7 @@ type
     procedure LoadSettings(Settings: TAnchorDockSettings);
     procedure SaveSettings(Settings: TAnchorDockSettings);
     function SettingsAreEqual(Settings: TAnchorDockSettings): boolean;
+    procedure ResetSplitters;
 
     // manual docking
     procedure ManualFloat(AControl: TControl);

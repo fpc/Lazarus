@@ -82,6 +82,7 @@ type
     procedure AdjustMainIDEWindowHeight(const AIDEWindow: TCustomForm;
       const AAdjustHeight: Boolean; const ANewHeight: Integer); override;
     procedure CloseAll; override;
+    procedure ResetSplitters; override;
   end;
 
   { TAnchorDockIDEFrame }
@@ -230,6 +231,11 @@ begin
     aManager:=TAnchorDockManager(AForm.DockManager);
     aManager.PreferredSiteSizeAsSiteMinimum:=false;
   end;
+end;
+
+procedure TIDEAnchorDockMaster.ResetSplitters;
+begin
+  DockMaster.ResetSplitters;
 end;
 
 procedure TIDEAnchorDockMaster.MakeIDEWindowDockable(AControl: TWinControl);

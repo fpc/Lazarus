@@ -674,6 +674,7 @@ begin
   RefreshCoolbar;
   ComponentPageControl.OnChange(Self);//refresh component palette with button reposition
   SetMainIDEHeight;
+  IDEDockMaster.ResetSplitters;
 end;
 
 procedure TMainIDEBar.RefreshCoolbar;
