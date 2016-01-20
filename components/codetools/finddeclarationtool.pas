@@ -9469,11 +9469,11 @@ begin
         if not AtomIsChar('(') then
           exit;
         ParamList:=CreateParamExprListFromStatement(CurPos.StartPos,Params);
-        if (CompareIdentifiers(IdentPos,'PREC')=0)
+        if (CompareIdentifiers(IdentPos,'PRED')=0)
         or (CompareIdentifiers(IdentPos,'SUCC')=0)
         or (CompareIdentifiers(IdentPos,'DEFAULT')=0)
         then begin
-          // the DEFAULT, PREC and SUCC of a expression has the same type as the expression
+          // the DEFAULT, PRED and SUCC of a expression has the same type as the expression
           if ParamList.Count<>1 then exit;
           Result:=ParamList.Items[0];
         end

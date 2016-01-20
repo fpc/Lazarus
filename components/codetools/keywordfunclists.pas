@@ -1720,7 +1720,7 @@ begin
     Add('NIL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ORD'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('POINTER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PREC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PRED'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('QWORD'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('REAL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SHORTSTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
