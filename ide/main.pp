@@ -4926,7 +4926,8 @@ begin
                          mtWarning, [mbOk]);
     end;
     UpdateCaption;
-    ProjInspector.UpdateTitle;
+    if Assigned(ProjInspector) then
+      ProjInspector.UpdateTitle;
     AProject.DefineTemplates.AllChanged;
     IncreaseCompilerParseStamp;
 
