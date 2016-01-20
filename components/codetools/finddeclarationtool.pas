@@ -9470,8 +9470,10 @@ begin
           exit;
         ParamList:=CreateParamExprListFromStatement(CurPos.StartPos,Params);
         if (CompareIdentifiers(IdentPos,'PREC')=0)
-        or (CompareIdentifiers(IdentPos,'SUCC')=0) then begin
-          // the PREC and SUCC of a expression has the same type as the expression
+        or (CompareIdentifiers(IdentPos,'SUCC')=0)
+        or (CompareIdentifiers(IdentPos,'DEFAULT')=0)
+        then begin
+          // the DEFAULT, PREC and SUCC of a expression has the same type as the expression
           if ParamList.Count<>1 then exit;
           Result:=ParamList.Items[0];
         end

@@ -1245,6 +1245,7 @@ begin
     Add('SETLENGTH'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INC'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEC'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DEFAULT'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INITIALIZE'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FINALIZE'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COPY'        ,{$ifdef FPC}@{$endif}AllwaysTrue);

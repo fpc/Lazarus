@@ -1383,6 +1383,7 @@ begin
     AddCompilerProcedure('Continue','');
     AddCompilerFunction('Copy','const S:String;FromPosition,Count:Integer', 'String');
     AddCompilerProcedure('Dec','var X:Ordinal;N:Integer=1');
+    AddCompilerFunction('Default','T:Type','const');
     AddCompilerProcedure('Dispose','var X:Pointer');
     AddCompilerProcedure('Exclude','var S:Set;X:Ordinal');
     AddCompilerProcedure('Exit','');
@@ -2911,6 +2912,7 @@ var
       AddCompilerProc('Concat','S1:String;S2:String[...;Sn:String]', 'String');
       AddCompilerProc('Copy','const S:String;FromPosition,Count:Integer', 'String');
       AddCompilerProc('Dec','var X:Ordinal;N:Integer=1');
+      AddCompilerProc('Default','T:Type','const');
       AddCompilerProc('Dispose','var X:Pointer');
       AddCompilerProc('Exclude','var S:Set;X:Ordinal');
       AddCompilerProc('Exit','ResultValue:Ordinal=Result');
