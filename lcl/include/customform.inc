@@ -2332,7 +2332,7 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
 
     function NextChildControl(CurParent, Target: TWinControl): TWinControl; inline;
     begin
-      while Target.Parent <> CurParent do
+      while (Target <> nil) and (Target.Parent <> CurParent) do
         Target := Target.Parent;
       Result := Target;
     end;
