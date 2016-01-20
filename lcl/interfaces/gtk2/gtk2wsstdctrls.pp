@@ -2686,20 +2686,10 @@ end;
 
 class procedure TGtk2WSScrollBar.SetKind(const AScrollBar: TCustomScrollBar;
   const AIsHorizontal: Boolean);
-var
-  B: Boolean;
 begin
   if not AScrollBar.HandleAllocated then
     exit;
-  B := AScrollBar.Visible;
-  if B then
-    AScrollBar.Hide;
-  try
-    RecreateWnd(AScrollBar);
-  finally
-    if B then
-      AScrollBar.Show;
-  end;
+  RecreateWnd(AScrollBar);
 end;
 
 class procedure TGtk2WSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
