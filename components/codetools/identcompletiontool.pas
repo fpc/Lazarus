@@ -2896,11 +2896,19 @@ var
       Item.Params.DelimitedText:=Params;
     end;
 
+  var
+    IsPointedSystem: Boolean = False;
   begin
     MoveCursorToAtomPos(ProcNameAtom);
     ReadPriorAtom;
-    if (CurPos.Flag in [cafEnd,cafSemicolon,cafColon,
-      cafRoundBracketOpen,cafEdgedBracketOpen])
+    if (CurPos.Flag = cafPoint) then
+    begin
+      ReadPriorAtom;
+      IsPointedSystem := UpAtomIs('SYSTEM');
+    end;
+    if (CurPos.Flag in [cafEnd,cafSemicolon,cafEqual,cafComma,cafColon,
+      cafRoundBracketOpen,cafEdgedBracketOpen,cafOtherOperator])
+    or IsPointedSystem
     or UpAtomIs('BEGIN')
     or UpAtomIs('TRY') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
     or UpAtomIs('REPEAT') or UpAtomIs('ASM') then begin
