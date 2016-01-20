@@ -758,11 +758,16 @@ type
     function CanPaintBackground: Boolean; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getClientBounds: TRect; override;
+    function getClientOffset: TPoint; override;
     function getText: WideString; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer;
       {%H-}WithThemeSpace: Boolean); override;
     procedure setText(const W: WideString); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
+    procedure Update(ARect: PRect = nil); override;
+    procedure UpdateRegion(ARgn: QRegionH); override;
+    procedure Repaint(ARect: PRect = nil); override;
+
     property GroupBoxType: TQtGroupBoxType read FGroupBoxType write FGroupBoxType;
     property CheckBoxState: boolean read GetCheckBoxState write SetCheckBoxState;
     property CheckBoxVisible: boolean read GetCheckBoxVisible write SetCheckBoxVisible;
@@ -7760,8 +7765,8 @@ begin
   inherited AttachEvents;
   if FCentralWidget <> nil then
   begin
-    // FCWEventHook := QObject_hook_create(FCentralWidget);
-    // QObject_hook_hook_events(FCWEventHook, @EventFilter);
+    FCWEventHook := QObject_hook_create(FCentralWidget);
+    QObject_hook_hook_events(FCWEventHook, @EventFilter);
   end;
 end;
 
@@ -7769,8 +7774,8 @@ procedure TQtGroupBox.DetachEvents;
 begin
   if FCWEventHook <> nil then
   begin
-    // QObject_hook_destroy(FCWEventHook);
-    // FCWEventHook := nil;
+    QObject_hook_destroy(FCWEventHook);
+    FCWEventHook := nil;
   end;
   inherited DetachEvents;
 end;
@@ -7778,8 +7783,7 @@ end;
 function TQtGroupBox.CanPaintBackground: Boolean;
 begin
   Result := CanSendLCLMessage and getEnabled and
-    (LCLObject.Color <> clBtnFace) and (LCLObject.Color <> clBackground);
-    // DO NOT REMOVE ! QGroupBox default = clBackground not clBtnFace !
+    (LCLObject.Color <> clDefault);
 end;
 
 function TQtGroupBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
@@ -7795,10 +7799,23 @@ begin
 
   if (Sender = FCentralWidget) then
   begin
+    // issue #28155, we are painting our FCentralWidget, not QGroupBox
+    case QEvent_type(Event) of
+      QEventPaint: Result := inherited EventFilter(Sender, Event);
+    end;
     exit;
   end;
 
   case QEvent_type(Event) of
+    QEventPaint:
+      begin
+        Result := False;
+        // paint complete background, like gtk2 does
+        if CanPaintBackground then
+          SlotPaintBg(Sender, Event);
+        // issue #28155, we are painting our FCentralWidget, not QGroupBox
+        // Result := inherited EventFilter(Sender, Event);
+      end;
     QEventFontChange:
       begin
         Result := inherited EventFilter(Sender, Event);
@@ -7833,6 +7850,15 @@ begin
     else
       Result := inherited EventFilter(Sender, Event);
   end;
+end;
+
+function TQtGroupBox.getClientOffset: TPoint;
+begin
+  Result:=inherited getClientOffset;
+  // issue #28155
+  // there's no client offset since FCentralWidget is at it's position 0,0
+  if testAttribute(QtWA_Mapped) and QWidget_testAttribute(FCentralWidget, QtWA_Mapped) then
+    Result := Point(0, 0);
 end;
 
 function TQtGroupBox.getClientBounds: TRect;
@@ -7918,6 +7944,42 @@ begin
     inherited setFocusPolicy(QtNoFocus)
   else
     inherited setFocusPolicy(APolicy);
+end;
+
+procedure TQtGroupBox.Update(ARect: PRect);
+begin
+  if Assigned(FCentralWidget) then
+  begin
+    if ARect <> nil then
+      QWidget_update(FCentralWidget, ARect)
+    else
+      QWidget_update(FCentralWidget);
+  end else
+    inherited Update(ARect);
+end;
+
+procedure TQtGroupBox.UpdateRegion(ARgn: QRegionH);
+begin
+  if Assigned(FCentralWidget) then
+  begin
+    if ARgn <> nil then
+      QWidget_update(FCentralWidget, ARgn)
+    else
+      QWidget_update(FCentralWidget);
+  end else
+    inherited UpdateRegion(ARgn);
+end;
+
+procedure TQtGroupBox.Repaint(ARect: PRect);
+begin
+  if Assigned(FCentralWidget) then
+  begin
+    if ARect <> nil then
+      QWidget_repaint(FCentralWidget, ARect)
+    else
+      QWidget_repaint(FCentralWidget);
+  end else
+  inherited Repaint(ARect);
 end;
 
 { TQtFrame }
