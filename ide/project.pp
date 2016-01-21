@@ -3184,17 +3184,21 @@ begin
     OnSaveProjectInfo(Self,FXMLConfig,CurFlags);
   end;
 
-  // backup
-  if Assigned(fOnFileBackup) then begin
-    if fOnFileBackup(FXMLConfig.Filename)=mrAbort then begin
-      debugln(['Error: (lazarus) [TProject.SaveToLPI] backup of "'+FXMLConfig.Filename+'" failed.']);
-      exit;
+  if FXMLConfig.Modified or (not FileExistsCached(FXMLConfig.Filename)) then
+  begin
+    // backup
+    if Assigned(fOnFileBackup) then begin
+      if fOnFileBackup(FXMLConfig.Filename)=mrAbort then begin
+        debugln(['Error: (lazarus) [TProject.SaveToLPI] backup of "'+FXMLConfig.Filename+'" failed.']);
+        exit;
+      end;
     end;
+
+    // save lpi to disk
+    //debugln(['TProject.WriteProject ',DbgSName(FXMLConfig),' FCfgFilename=',FCfgFilename]);
+    FXMLConfig.Flush;
   end;
 
-  // save lpi to disk
-  //debugln(['TProject.WriteProject ',DbgSName(FXMLConfig),' FCfgFilename=',FCfgFilename]);
-  FXMLConfig.Flush;
   if not (pwfIgnoreModified in FProjectWriteFlags) then
     Modified:=false;
   if FSaveSessionInLPI then
