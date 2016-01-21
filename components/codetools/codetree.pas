@@ -306,7 +306,7 @@ type
   public
     Node: TCodeTreeNode;
     Txt: string;
-    ExtTxt1, ExtTxt2, ExtTxt3: string;
+    ExtTxt1, ExtTxt2, ExtTxt3, ExtTxt4: string;
     Position: integer;
     Data: Pointer;
     Flags: cardinal;
@@ -1078,6 +1078,7 @@ begin
   ExtTxt1:='';
   ExtTxt2:='';
   ExtTxt3:='';
+  ExtTxt4:='';
   Node:=nil;
   Position:=-1;
   Data:=nil;
@@ -1103,7 +1104,7 @@ begin
     DbgOut('Node=',NodeDescriptionAsString(Node.Desc))
   else
     DbgOut('Node=nil');
-  DbgOut(' Position=',dbgs(Position),' Txt="'+Txt+'" ExtTxt1="'+ExtTxt1+'" ExtTxt2="'+ExtTxt2+'" ExtTxt3="'+ExtTxt3+'"');
+  DbgOut(' Position=',dbgs(Position),' Txt="'+Txt+'" ExtTxt1="'+ExtTxt1+'" ExtTxt2="'+ExtTxt2+'" ExtTxt3="'+ExtTxt3+'" ExtTxt4="'+ExtTxt4+'"');
   debugln;
 end;
 
@@ -1113,7 +1114,8 @@ begin
     +MemSizeString(Txt)
     +MemSizeString(ExtTxt1)
     +MemSizeString(ExtTxt2)
-    +MemSizeString(ExtTxt3);
+    +MemSizeString(ExtTxt3)
+    +MemSizeString(ExtTxt4);
 end;
 
 end.

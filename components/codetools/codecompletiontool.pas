@@ -1564,6 +1564,7 @@ begin
     +PtrUInt(SizeOf(FSetPropertyVariableIsPrefix))
     +PtrUInt(SizeOf(FSetPropertyVariableUseConst))
     +MemSizeString(FJumpToProcHead.Name)
+    +MemSizeString(FJumpToProcHead.ResultType)
     +PtrUInt(SizeOf(FJumpToProcHead.Group))
     +length(NewClassSectionIndent)*SizeOf(integer)
     +length(NewClassSectionInsertPos)*SizeOf(integer)
@@ -8615,6 +8616,7 @@ var
       // remember one proc body to jump to after the completion
       FJumpToProcHead.Name:=ANodeExt.Txt;
       FJumpToProcHead.Group:=TPascalMethodGroup(ANodeExt.Flags);
+      FJumpToProcHead.ResultType:=ANodeExt.ExtTxt4;
       if System.Pos('.',FJumpToProcHead.Name)<1 then
         FJumpToProcHead.Name:=TheClassName+'.'+FJumpToProcHead.Name;
       if FJumpToProcHead.Name[length(FJumpToProcHead.Name)]<>';' then
@@ -8683,9 +8685,7 @@ var
       if NextAVLNode<>nil then begin
         ANodeExt:=TCodeTreeNodeExtension(AnAVLNode.Data);
         ANodeExt2:=TCodeTreeNodeExtension(NextAVLNode.Data);
-        if SameMethodHeaders(ANodeExt.Txt, TPascalMethodGroup(ANodeExt.Flags),
-          ANodeExt2.Txt, TPascalMethodGroup(ANodeExt2.Flags))
-        then
+        if CompareCodeTreeNodeExtMethodHeaders(ANodeExt, ANodeExt2) = 0 then
         begin
           // proc redefined -> error
           if ANodeExt.Node.StartPos>ANodeExt2.Node.StartPos then begin
