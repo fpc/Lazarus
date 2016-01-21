@@ -1430,6 +1430,7 @@ function BackupFileForWrite(const Filename, BackupFilename: string): boolean;
 
 var
   FHandle: THandle;
+  Code: TCodeBuffer;
   {$IFdef MSWindows}
   OldAttr: Longint;
   {$ELSE}
@@ -1455,6 +1456,9 @@ begin
     // create empty file
     FHandle := FileCreate(UTF8ToSys(FileName));
     FileClose(FHandle);
+    Code:=CodeToolBoss.FindFile(Filename);
+    if Code<>nil then
+      Code.InvalidateLoadDate;
   end
   else // file is a symlink/hardlink or locked or rename failed => copy file (slow)
   if not CopyFile(Filename, BackupFilename) then exit;
