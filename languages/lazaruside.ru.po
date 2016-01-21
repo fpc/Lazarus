@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-01-19 01:11+0300\n"
+"PO-Revision-Date: 2016-01-22 02:27+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -11628,7 +11628,7 @@ msgstr "Добавить &значок из ImageList"
 
 #: lazarusidestrconsts.lismenueditoraddmenuitem
 msgid "Add menu item"
-msgstr ""
+msgstr "Добавить элемент"
 
 #: lazarusidestrconsts.lismenueditoraddnewitemabove
 msgid "&Add new item above"
@@ -11660,7 +11660,7 @@ msgstr "Добавить разделитель п&еред"
 
 #: lazarusidestrconsts.lismenueditoraddsubmenu
 msgid "Add submenu"
-msgstr ""
+msgstr "Добавить подменю"
 
 #: lazarusidestrconsts.lismenueditoraddsubmenubelow
 msgid "Add &submenu below"
@@ -11672,7 +11672,7 @@ msgstr "Добавить под&меню справа"
 
 #: lazarusidestrconsts.lismenueditoranewmenutemplatehasbeensaved
 msgid "A new menu template described as \"%s\" has been saved based on %s, with %d sub items"
-msgstr ""
+msgstr "Новый шаблон меню \"%s\" сохранён на базе %s (элементов: %d)"
 
 #: lazarusidestrconsts.lismenueditorbasiceditmenutemplate
 msgid "&Edit,Basic edit menu,&Undo,Ctrl+Z,&Redo,,-,,Select &All,Ctrl+A,C&ut,Ctrl+X,C&opy,Ctrl+C,P&aste,Ctrl+V,Paste &Special,,-,,F&ind,,R&eplace,,&Go to ...,,"
@@ -11680,15 +11680,15 @@ msgstr "&Правка,Базовое меню \"Правка\",&Отменить
 
 #: lazarusidestrconsts.lismenueditorbasicfilemenutemplate
 msgid "&File,Basic file menu,&New,,&Open ...,,&Save,,Save &As,,-,,&Print,,P&rint Setup ...,,-,,E&xit,,"
-msgstr ""
+msgstr "&Файл,Базовое меню \"Файл\",&Новый,,&Открыть ...,,&Сохранить,,Сохранить &как,,-,,&Печать,,П&араметры печати ...,,-,,В&ыход,,"
 
 #: lazarusidestrconsts.lismenueditorbasichelpmenutemplate
 msgid "&Help,Basic help menu,Help &Contents,F1,Help &Index,,&Online Help,,-,,&Licence Information,,&Check for Updates,,-,,&About,,"
-msgstr ""
+msgstr "&Справка,Базовое меню \"Справка\",&Содержимое,F1,&Указатель,,Справка в с&ети,,-,,Сведения о &лицензии,,&Проверить обновления,,-,,&О программе,,"
 
 #: lazarusidestrconsts.lismenueditorbasicwindowmenutemplate
 msgid "&Window,Basic window menu,&New Window,,&Tile,,&Cascade,,&Arrange all,,-,,&Hide,,&Show,,"
-msgstr ""
+msgstr "Ок&но,Базовое меню \"Окно\",&Новое окно,,&Замостить,,&Каскадировать,,&Упорядочить все,,-,,Ск&рыть,,&Отобразить,,"
 
 #: lazarusidestrconsts.lismenueditorcaption
 msgid "Caption"
@@ -11872,7 +11872,7 @@ msgstr "Редактор меню"
 
 #: lazarusidestrconsts.lismenueditormenuitemactions
 msgid "Menu Item actions"
-msgstr ""
+msgstr "Действия с элементами"
 
 #: lazarusidestrconsts.lismenueditormenuitemshortcutconflictsins
 msgid "Menuitem shortcut conflicts in %s"
@@ -12120,7 +12120,7 @@ msgstr "&Шаблоны"
 
 #: lazarusidestrconsts.lismenueditortemplatesaved
 msgid "Template saved"
-msgstr ""
+msgstr "Шаблон сохранён"
 
 #: lazarusidestrconsts.lismenueditortherearenousersavedmenutemplates
 msgid ""
@@ -20729,4 +20729,3 @@ msgstr "Только чтение"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Сведения о версии"
-
