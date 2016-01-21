@@ -57,6 +57,7 @@
       <Unit2>
         <Filename Value="basebuildmanager.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="BaseBuildManager"/>
       </Unit2>
       <Unit3>
         <Filename Value="idecmdline.pas"/>

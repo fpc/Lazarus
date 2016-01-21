@@ -76,7 +76,7 @@ type
       Data: TObject) of object;
       
 // file operations
-function BackupFile(const Filename, BackupFilename: string): boolean;
+function BackupFileForWrite(const Filename, BackupFilename: string): boolean;
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 function CreateEmptyFile(const Filename: string): boolean;
 function CopyFileWithMethods(const SrcFilename, DestFilename: string;
@@ -1401,7 +1401,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  BackupFile
+  BackupFileForWrite
 
   Params: const Filename, BackupFilename: string
   Result: boolean
@@ -1409,7 +1409,7 @@ end;
   Rename Filename to Backupfilename and create empty Filename with same
   file attributes
 -------------------------------------------------------------------------------}
-function BackupFile(const Filename, BackupFilename: string): boolean;
+function BackupFileForWrite(const Filename, BackupFilename: string): boolean;
 
   function FileIsLocked(const {%H-}FileName: String): Boolean;
   {$ifdef Windows}

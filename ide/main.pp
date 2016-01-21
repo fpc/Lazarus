@@ -6063,7 +6063,6 @@ begin
     Result.EndUpdate;
 
   Result.MainProject:=true;
-  Result.OnFileBackup:=@MainBuildBoss.BackupFile;
   Result.OnLoadProjectInfo:=@OnLoadProjectInfoFromXMLConfig;
   Result.OnSaveProjectInfo:=@OnSaveProjectInfoToXMLConfig;
   Result.OnSaveUnitSessionInfo:=@OnSaveProjectUnitSessionInfo;

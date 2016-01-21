@@ -79,7 +79,7 @@ type
                                     ): TModalResult; virtual; abstract;
     function CreateProjectApplicationBundle: Boolean; virtual; abstract;
 
-    function BackupFile(const Filename: string): TModalResult; virtual; abstract;
+    function BackupFileForWrite(const Filename: string): TModalResult; virtual; abstract;
 
     function UpdateProjectAutomaticFiles(TestDir: string): TModalResult; virtual; abstract;
   end;

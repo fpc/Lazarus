@@ -3752,7 +3752,7 @@ begin
   end;
   
   // backup old file
-  Result:=BuildBoss.BackupFile(APackage.Filename);
+  Result:=BuildBoss.BackupFileForWrite(APackage.Filename);
   if Result=mrAbort then exit;
 
   // delete ambiguous files

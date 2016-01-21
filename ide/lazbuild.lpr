@@ -995,7 +995,7 @@ begin
     Result.EndUpdate;
 
     Result.MainProject:=true;
-    Result.OnFileBackup:=@BuildBoss.BackupFile;
+    Result.OnFileBackup:=@BuildBoss.BackupFileForWrite;
     Result.OnChangeProjectInfoFile:=@OnProjectChangeInfoFile;
 
   finally
