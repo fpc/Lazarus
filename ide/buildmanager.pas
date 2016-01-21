@@ -1434,8 +1434,7 @@ var
   IsPascalUnit: Boolean;
   AUnitName: String;
 begin
-  Result:=mrOk;
-  if EnvironmentOptions.AmbiguousFileAction=afaIgnore then exit;
+  if EnvironmentOptions.AmbiguousFileAction=afaIgnore then exit(mrOK);
   if EnvironmentOptions.AmbiguousFileAction
     in [afaAsk,afaAutoDelete,afaAutoRename]
   then begin
@@ -1471,21 +1470,22 @@ begin
         end;
         if EnvironmentOptions.AmbiguousFileAction in [afaAutoDelete,afaAsk]
         then begin
-          if not DeleteFileUTF8(CurFilename) then begin
-            IDEMessageDialog(lisDeleteFileFailed,
-              Format(lisPkgMangUnableToDeleteFile, [CurFilename]),
-              mtError,[mbOk]);
-          end;
+          Result:=DeleteFileInteractive(CurFilename);
+          if not (Result in [mrOK,mrIgnore]) then exit(mrCancel);
         end else if EnvironmentOptions.AmbiguousFileAction=afaAutoRename then
         begin
           Result:=BackupFile(CurFilename);
-          if Result=mrAbort then exit;
-          Result:=mrOk;
+          if not (Result in [mrOK,mrIgnore]) then exit(mrCancel);
+          if FileExistsUTF8(CurFilename) then begin
+            Result:=DeleteFileInteractive(CurFilename);
+            if not (Result in [mrOK,mrIgnore]) then exit(mrCancel);
+          end;
         end;
       until FindNextUTF8(FileInfo)<>0;
     end;
     FindCloseUTF8(FileInfo);
   end;
+  Result:=mrOk;
 end;
 
 {-------------------------------------------------------------------------------
