@@ -1442,10 +1442,11 @@ begin
   {$IFdef MSWindows}
   OldAttr := FileGetAttrUTF8(Filename);
   {$ELSE}
-  FpStat(Filename, OldInfo{%H-});
+  if FpStat(Filename, OldInfo{%H-})<>0 then
+    exit; // can't backup this file
   {$ENDIF}
   
-  // if not a symlink/hardlink or locked => rename old file, create empty new file
+  // if not a symlink/hardlink or locked => rename old file (quick), create empty new file
   if not FileIsSymlink(Filename) and
      not FileIsHardLink(FileName) and
      not FileIsLocked(Filename) and
@@ -1455,7 +1456,7 @@ begin
     FHandle := FileCreate(UTF8ToSys(FileName));
     FileClose(FHandle);
   end
-  else // file is a symlink/hardlink or locked or rename failed => copy file
+  else // file is a symlink/hardlink or locked or rename failed => copy file (slow)
   if not CopyFile(Filename, BackupFilename) then exit;
 
   // restore file attributes
