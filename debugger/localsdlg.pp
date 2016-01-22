@@ -36,7 +36,7 @@ unit LocalsDlg;
 interface
 
 uses
-  SysUtils, Classes, Forms, ClipBrd, LCLProc, LazLoggerBase,
+  SysUtils, Classes, Forms, ClipBrd, LCLProc, LazLoggerBase, strutils,
   IDEWindowIntf, DebuggerStrConst,
   ComCtrls, ActnList, Menus, BaseDebugManager, Debugger, DebuggerDlg;
 
@@ -192,7 +192,7 @@ var
     if I > 0 then
     begin
       // Invalid enum value: "true (85)" => "85"
-      L := Pos(')', AValue, I+1);
+      L := PosEx(')', AValue, I+1);
       Result := Copy(AValue, I+1, L-I-1);
     end else
     begin
