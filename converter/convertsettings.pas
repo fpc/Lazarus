@@ -86,6 +86,12 @@ type
     fReplaceFuncs: TFuncsAndCategories;
     // Coordinate offsets of components in a visual container.
     fCoordOffsets: TVisualOffsets;
+    procedure LoadFuncReplacements;
+    procedure LoadStringToStringTree(Path: string; Tree: TStringToStringTree);
+    procedure LoadVisualOffsets;
+    procedure SaveFuncReplacements;
+    procedure SaveStringToStringTree(Path: string; Tree: TStringToStringTree);
+    procedure SaveVisualOffsets;
     // Getter / setter:
     function GetBackupPath: String;
     function GetMainFilename: String;
@@ -209,155 +215,6 @@ uses ConvertDelphi;
 
 {$R *.lfm}
 
-// Load and store configuration in StringToStringTree :
-
-procedure LoadStringToStringTree(Config: TConfigStorage; const Path: string;
-  Tree: TStringToStringTree);
-var
-  SubPath: String;
-  CurName, CurValue: String;
-  Cnt, i: Integer;
-begin
-  Tree.Clear;
-  Cnt:=Config.GetValue(Path+'Count', 0);
-  for i:=0 to Cnt-1 do begin
-    SubPath:=Path+'Item'+IntToStr(i)+'/';
-    CurName:=Config.GetValue(SubPath+'Name','');
-    CurValue:=Config.GetValue(SubPath+'Value','');
-    Tree[CurName]:=CurValue;
-  end;
-end;
-
-procedure SaveStringToStringTree(Config: TConfigStorage; const Path: string;
-  Tree: TStringToStringTree);
-var
-  Node: TAVLTreeNode;
-  Item: PStringToStringTreeItem;
-  SubPath: String;
-  i: Integer;
-begin
-  Config.DeletePath(Path);      // Make sure there are no old leftover items.
-  Config.SetDeleteValue(Path+'Count', Tree.Tree.Count, 0);
-  Node:=Tree.Tree.FindLowest;
-  i:=0;
-  while Node<>nil do begin
-    Item:=PStringToStringTreeItem(Node.Data);
-    SubPath:=Path+'Item'+IntToStr(i)+'/';
-    Config.SetDeleteValue(SubPath+'Name',Item^.Name,'');
-    Config.SetDeleteValue(SubPath+'Value',Item^.Value,'');
-    Node:=Tree.Tree.FindSuccessor(Node);
-    inc(i);
-  end;
-end;
-
-// Load and store configuration in TFuncsAndCategories :
-
-procedure LoadFuncReplacements(Config: TConfigStorage;
-  const FuncPath, CategPath: string; aFuncsAndCateg: TFuncsAndCategories; aVersion: Integer);
-var
-  SubPath: String;
-  xCategory, xDelphiFunc, xReplacement, xPackage, xUnitName: String;
-  CategUsed: Boolean;
-  Cnt, i: Integer;
-begin
-  aFuncsAndCateg.Clear;
-  // Replacement functions
-  Cnt:=Config.GetValue(FuncPath+'Count', 0);
-  for i:=0 to Cnt-1 do begin
-    SubPath:=FuncPath+'Item'+IntToStr(i)+'/';
-    xCategory   :=Config.GetValue(SubPath+'Category','');
-    // Delete UTF8 func conversion from old configuration.
-    if (aVersion < 2) and (xCategory = 'UTF8Names') then Continue;
-    xDelphiFunc :=Config.GetValue(SubPath+'DelphiFunction','');
-    xReplacement:=Config.GetValue(SubPath+'Replacement','');
-    xPackage    :=Config.GetValue(SubPath+'Package','');
-    xUnitName   :=Config.GetValue(SubPath+'UnitName','');
-    aFuncsAndCateg.AddFunc(xCategory, xDelphiFunc, xReplacement, xPackage, xUnitName);
-  end;
-  // Categories
-  Cnt:=Config.GetValue(CategPath+'Count', 0);
-  for i:=0 to Cnt-1 do begin
-    SubPath:=CategPath+'Item'+IntToStr(i)+'/';
-    xCategory:=Config.GetValue(SubPath+'Name','');
-    // Delete UTF8 category from old configuration.
-    if (aVersion < 2) and (xCategory = 'UTF8Names') then Continue;
-    CategUsed:=Config.GetValue(SubPath+'InUse',True);
-    aFuncsAndCateg.AddCategory(xCategory, CategUsed);
-  end;
-end;
-
-procedure SaveFuncReplacements(Config: TConfigStorage;
-  const FuncPath, CategPath: string; aFuncsAndCateg: TFuncsAndCategories);
-var
-  FuncRepl: TFuncReplacement;
-  SubPath, s: String;
-  i: Integer;
-begin
-  // Replacement functions
-  Config.DeletePath(FuncPath);
-  Config.SetDeleteValue(FuncPath+'Count', aFuncsAndCateg.Funcs.Count, 0);
-  for i:=0 to aFuncsAndCateg.Funcs.Count-1 do begin
-    FuncRepl:=aFuncsAndCateg.FuncAtInd(i);
-    if FuncRepl<>nil then begin
-      SubPath:=FuncPath+'Item'+IntToStr(i)+'/';
-      Config.SetDeleteValue(SubPath+'Category'      ,FuncRepl.Category,'');
-      Config.SetDeleteValue(SubPath+'DelphiFunction',aFuncsAndCateg.Funcs[i],'');
-      Config.SetDeleteValue(SubPath+'Replacement'   ,FuncRepl.ReplClause,'');
-      Config.SetDeleteValue(SubPath+'Package'       ,FuncRepl.PackageName,'');
-      Config.SetDeleteValue(SubPath+'UnitName'      ,FuncRepl.UnitName,'');
-    end;
-  end;
-  // Categories
-  Config.DeletePath(CategPath);
-  Config.SetDeleteValue(CategPath+'Count', aFuncsAndCateg.Categories.Count, 0);
-  for i:=0 to aFuncsAndCateg.Categories.Count-1 do begin
-    s:=aFuncsAndCateg.Categories[i];
-    if s<>'' then begin
-      SubPath:=CategPath+'Item'+IntToStr(i)+'/';
-      Config.SetDeleteValue(SubPath+'Name',s,'');
-      Config.SetDeleteValue(SubPath+'InUse',aFuncsAndCateg.CategoryIsUsed(i),True);
-    end;
-  end;
-end;
-
-// Load and store configuration in VisualOffsets :
-
-procedure LoadVisualOffsets(Config: TConfigStorage; const Path: string;
-  aVisualOffsets: TVisualOffsets);
-var
-  ParentType, SubPath: String;
-  xTop, xLeft: Integer;
-  Cnt, i: Integer;
-begin
-  aVisualOffsets.Clear;
-  Cnt:=Config.GetValue(Path+'Count', 0);
-  for i:=0 to Cnt-1 do begin
-    SubPath:=Path+'Item'+IntToStr(i)+'/';
-    ParentType:=Config.GetValue(SubPath+'ParentType','');
-    xTop :=Config.GetValue(SubPath+'Top',0);
-    xLeft:=Config.GetValue(SubPath+'Left',0);
-    aVisualOffsets.Add(TVisualOffset.Create(ParentType, xTop, xLeft));
-  end;
-end;
-
-procedure SaveVisualOffsets(Config: TConfigStorage; const Path: string;
-  aVisualOffsets: TVisualOffsets);
-var
-  offs: TVisualOffset;
-  SubPath: String;
-  i: Integer;
-begin
-  Config.DeletePath(Path);
-  Config.SetDeleteValue(Path+'Count', aVisualOffsets.Count, 0);
-  for i:=0 to aVisualOffsets.Count-1 do begin
-    offs:=aVisualOffsets[i];
-    SubPath:=Path+'Item'+IntToStr(i)+'/';
-    Config.SetDeleteValue(SubPath+'ParentType',offs.ParentType,'');
-    Config.SetDeleteValue(SubPath+'Top'       ,offs.Top,0);
-    Config.SetDeleteValue(SubPath+'Left'      ,offs.Left,0);
-  end;
-end;
-
 function IsWinSpecificUnit(const ALowercaseUnitName: string): Boolean;
 // These units exist in Windows only.
 // They must be treated as missing units when converting for multi-platform.
@@ -417,10 +274,10 @@ begin
   fTypeReplaceMode:=TReplaceModeAllow(fConfigStorage.GetValue('TypeReplaceMode', 1));
   fFuncReplaceMode:=TReplaceModeShort(fConfigStorage.GetValue('FuncReplaceMode', 1));
   fCoordOffsMode  :=TReplaceModeShort(fConfigStorage.GetValue('CoordOffsMode', 1));
-  LoadStringToStringTree(fConfigStorage, 'UnitReplacements/', fReplaceUnits);
-  LoadStringToStringTree(fConfigStorage, 'TypeReplacements/', fReplaceTypes);
-  LoadFuncReplacements(fConfigStorage, 'FuncReplacements/', 'Categories/', fReplaceFuncs, fVersion);
-  LoadVisualOffsets(fConfigStorage, 'VisualOffsets/', fCoordOffsets);
+  LoadStringToStringTree('UnitReplacements/', fReplaceUnits);
+  LoadStringToStringTree('TypeReplacements/', fReplaceTypes);
+  LoadFuncReplacements;
+  LoadVisualOffsets;
 
   // Units left out of project. Some projects include them although there are
   //  Lazarus packages for them. This setting is not saved in configuration.
@@ -623,10 +480,10 @@ begin
   fConfigStorage.SetDeleteValue('TypeReplaceMode',  integer(fTypeReplaceMode), 1);
   fConfigStorage.SetDeleteValue('FuncReplaceMode',  integer(fFuncReplaceMode), 1);
   fConfigStorage.SetDeleteValue('CoordOffsMode',    integer(fCoordOffsMode), 1);
-  SaveStringToStringTree(fConfigStorage, 'UnitReplacements/', fReplaceUnits);
-  SaveStringToStringTree(fConfigStorage, 'TypeReplacements/', fReplaceTypes);
-  SaveFuncReplacements(fConfigStorage, 'FuncReplacements/', 'Categories/', fReplaceFuncs);
-  SaveVisualOffsets(fConfigStorage, 'VisualOffsets/', fCoordOffsets);
+  SaveStringToStringTree('UnitReplacements/', fReplaceUnits);
+  SaveStringToStringTree('TypeReplacements/', fReplaceTypes);
+  SaveFuncReplacements;
+  SaveVisualOffsets;
   // Free stuff
   fConfigStorage.Free;
   fCoordOffsets.Free;
@@ -638,6 +495,149 @@ begin
   fMainFilenames.Free;
   fLog.Free;
   inherited Destroy;
+end;
+
+// Load and store configuration in StringToStringTree :
+
+procedure TConvertSettings.LoadStringToStringTree(Path: string; Tree: TStringToStringTree);
+var
+  SubPath: String;
+  CurName, CurValue: String;
+  Cnt, i: Integer;
+begin
+  Tree.Clear;
+  Cnt:=fConfigStorage.GetValue(Path+'Count', 0);
+  for i:=0 to Cnt-1 do begin
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    CurName:=fConfigStorage.GetValue(SubPath+'Name','');
+    CurValue:=fConfigStorage.GetValue(SubPath+'Value','');
+    Tree[CurName]:=CurValue;
+  end;
+end;
+
+procedure TConvertSettings.SaveStringToStringTree(Path: string; Tree: TStringToStringTree);
+var
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+  SubPath: String;
+  i: Integer;
+begin
+  fConfigStorage.DeletePath(Path);      // Make sure there are no old leftover items.
+  fConfigStorage.SetDeleteValue(Path+'Count', Tree.Tree.Count, 0);
+  Node:=Tree.Tree.FindLowest;
+  i:=0;
+  while Node<>nil do begin
+    Item:=PStringToStringTreeItem(Node.Data);
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    fConfigStorage.SetDeleteValue(SubPath+'Name',Item^.Name,'');
+    fConfigStorage.SetDeleteValue(SubPath+'Value',Item^.Value,'');
+    Node:=Tree.Tree.FindSuccessor(Node);
+    inc(i);
+  end;
+end;
+
+// Load and store configuration in TFuncsAndCategories :
+
+procedure TConvertSettings.LoadFuncReplacements;
+var
+  SubPath: String;
+  xCategory, xDelphiFunc, xReplacement, xPackage, xUnitName: String;
+  CategUsed: Boolean;
+  Cnt, i: Integer;
+begin
+  fReplaceFuncs.Clear;
+  // Replacement functions
+  Cnt:=fConfigStorage.GetValue('FuncReplacements/Count', 0);
+  for i:=0 to Cnt-1 do begin
+    SubPath:='FuncReplacements/Item'+IntToStr(i)+'/';
+    xCategory   :=fConfigStorage.GetValue(SubPath+'Category','');
+    // Delete UTF8 func conversion from old configuration.
+    if (fVersion < 2) and (xCategory = 'UTF8Names') then Continue;
+    xDelphiFunc :=fConfigStorage.GetValue(SubPath+'DelphiFunction','');
+    xReplacement:=fConfigStorage.GetValue(SubPath+'Replacement','');
+    xPackage    :=fConfigStorage.GetValue(SubPath+'Package','');
+    xUnitName   :=fConfigStorage.GetValue(SubPath+'UnitName','');
+    fReplaceFuncs.AddFunc(xCategory, xDelphiFunc, xReplacement, xPackage, xUnitName);
+  end;
+  // Categories
+  Cnt:=fConfigStorage.GetValue('Categories/Count', 0);
+  for i:=0 to Cnt-1 do begin
+    SubPath:='Categories/Item'+IntToStr(i)+'/';
+    xCategory:=fConfigStorage.GetValue(SubPath+'Name','');
+    // Delete UTF8 category from old configuration.
+    if (fVersion < 2) and (xCategory = 'UTF8Names') then Continue;
+    CategUsed:=fConfigStorage.GetValue(SubPath+'InUse',True);
+    fReplaceFuncs.AddCategory(xCategory, CategUsed);
+  end;
+end;
+
+procedure TConvertSettings.SaveFuncReplacements;
+var
+  FuncRepl: TFuncReplacement;
+  SubPath, s: String;
+  i: Integer;
+begin
+  // Replacement functions
+  fConfigStorage.DeletePath('FuncReplacements/');
+  fConfigStorage.SetDeleteValue('FuncReplacements/Count', fReplaceFuncs.Funcs.Count, 0);
+  for i:=0 to fReplaceFuncs.Funcs.Count-1 do begin
+    FuncRepl:=fReplaceFuncs.FuncAtInd(i);
+    if FuncRepl<>nil then begin
+      SubPath:='FuncReplacements/Item'+IntToStr(i)+'/';
+      fConfigStorage.SetDeleteValue(SubPath+'Category'      ,FuncRepl.Category,'');
+      fConfigStorage.SetDeleteValue(SubPath+'DelphiFunction',fReplaceFuncs.Funcs[i],'');
+      fConfigStorage.SetDeleteValue(SubPath+'Replacement'   ,FuncRepl.ReplClause,'');
+      fConfigStorage.SetDeleteValue(SubPath+'Package'       ,FuncRepl.PackageName,'');
+      fConfigStorage.SetDeleteValue(SubPath+'UnitName'      ,FuncRepl.UnitName,'');
+    end;
+  end;
+  // Categories
+  fConfigStorage.DeletePath('Categories/');
+  fConfigStorage.SetDeleteValue('Categories/Count', fReplaceFuncs.Categories.Count, 0);
+  for i:=0 to fReplaceFuncs.Categories.Count-1 do begin
+    s:=fReplaceFuncs.Categories[i];
+    if s<>'' then begin
+      SubPath:='Categories/Item'+IntToStr(i)+'/';
+      fConfigStorage.SetDeleteValue(SubPath+'Name',s,'');
+      fConfigStorage.SetDeleteValue(SubPath+'InUse',fReplaceFuncs.CategoryIsUsed(i),True);
+    end;
+  end;
+end;
+
+// Load and store configuration in VisualOffsets :
+
+procedure TConvertSettings.LoadVisualOffsets;
+var
+  ParentType, SubPath: String;
+  xTop, xLeft: Integer;
+  Cnt, i: Integer;
+begin
+  fCoordOffsets.Clear;
+  Cnt:=fConfigStorage.GetValue('VisualOffsets/Count', 0);
+  for i:=0 to Cnt-1 do begin
+    SubPath:='VisualOffsets/Item'+IntToStr(i)+'/';
+    ParentType:=fConfigStorage.GetValue(SubPath+'ParentType','');
+    xTop :=fConfigStorage.GetValue(SubPath+'Top',0);
+    xLeft:=fConfigStorage.GetValue(SubPath+'Left',0);
+    fCoordOffsets.Add(TVisualOffset.Create(ParentType, xTop, xLeft));
+  end;
+end;
+
+procedure TConvertSettings.SaveVisualOffsets;
+var
+  offs: TVisualOffset;
+  SubPath: String;
+  i: Integer;
+begin
+  fConfigStorage.DeletePath('VisualOffsets/');
+  fConfigStorage.SetDeleteValue('VisualOffsets/Count', fCoordOffsets.Count, 0);
+  for i:=0 to fCoordOffsets.Count-1 do begin
+    offs:=fCoordOffsets[i];
+    SubPath:='VisualOffsets/Item'+IntToStr(i)+'/';
+    fConfigStorage.SetDeleteValue(SubPath+'ParentType',offs.ParentType,'');
+    fConfigStorage.SetDeleteValue(SubPath+'Top'       ,offs.Top,0);
+    fConfigStorage.SetDeleteValue(SubPath+'Left'      ,offs.Left,0);
+  end;
 end;
 
 function TConvertSettings.RunForm(ACacheUnitsThread: TThread): TModalResult;
