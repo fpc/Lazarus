@@ -36,6 +36,10 @@ uses
   DividerBevel, BaseIDEIntf, IDEMsgIntf, IDEExternToolIntf, AVL_Tree,
   LazConfigStorage, ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
 
+const
+  ConverterVersion: integer = 2;
+  // 2 removed conversion of string functions into their UTF8 versions.
+
 type
 
   TReplaceModeLong = (rlDisabled, rlInteractive, rlAutomatic);
@@ -48,6 +52,7 @@ type
 
   TConvertSettings = class
   private
+    fVersion: Integer;
     fEnabled: Boolean;
     fTitle: String;       // Used for form caption.
     fLog: TStringList;
@@ -194,8 +199,6 @@ type
     property CacheUnitsThread: TThread read fCacheUnitsThread;
   end;
 
-var
-  ConvertSettingsForm: TConvertSettingsForm;
 
 function IsWinSpecificUnit(const ALowercaseUnitName: string): Boolean;
 
@@ -250,7 +253,7 @@ end;
 // Load and store configuration in TFuncsAndCategories :
 
 procedure LoadFuncReplacements(Config: TConfigStorage;
-  const FuncPath, CategPath: string; aFuncsAndCateg: TFuncsAndCategories);
+  const FuncPath, CategPath: string; aFuncsAndCateg: TFuncsAndCategories; aVersion: Integer);
 var
   SubPath: String;
   xCategory, xDelphiFunc, xReplacement, xPackage, xUnitName: String;
@@ -263,6 +266,8 @@ begin
   for i:=0 to Cnt-1 do begin
     SubPath:=FuncPath+'Item'+IntToStr(i)+'/';
     xCategory   :=Config.GetValue(SubPath+'Category','');
+    // Delete UTF8 func conversion from old configuration.
+    if (aVersion < 2) and (xCategory = 'UTF8Names') then Continue;
     xDelphiFunc :=Config.GetValue(SubPath+'DelphiFunction','');
     xReplacement:=Config.GetValue(SubPath+'Replacement','');
     xPackage    :=Config.GetValue(SubPath+'Package','');
@@ -274,6 +279,8 @@ begin
   for i:=0 to Cnt-1 do begin
     SubPath:=CategPath+'Item'+IntToStr(i)+'/';
     xCategory:=Config.GetValue(SubPath+'Name','');
+    // Delete UTF8 category from old configuration.
+    if (aVersion < 2) and (xCategory = 'UTF8Names') then Continue;
     CategUsed:=Config.GetValue(SubPath+'InUse',True);
     aFuncsAndCateg.AddCategory(xCategory, CategUsed);
   end;
@@ -287,6 +294,7 @@ var
   i: Integer;
 begin
   // Replacement functions
+  Config.DeletePath(FuncPath);
   Config.SetDeleteValue(FuncPath+'Count', aFuncsAndCateg.Funcs.Count, 0);
   for i:=0 to aFuncsAndCateg.Funcs.Count-1 do begin
     FuncRepl:=aFuncsAndCateg.FuncAtInd(i);
@@ -299,12 +307,8 @@ begin
       Config.SetDeleteValue(SubPath+'UnitName'      ,FuncRepl.UnitName,'');
     end;
   end;
-  // Remove leftover items in case the list has become shorter.
-  for i:=aFuncsAndCateg.Funcs.Count to aFuncsAndCateg.Funcs.Count+10 do begin
-    SubPath:=FuncPath+'Item'+IntToStr(i)+'/';
-    Config.DeletePath(SubPath);
-  end;
   // Categories
+  Config.DeletePath(CategPath);
   Config.SetDeleteValue(CategPath+'Count', aFuncsAndCateg.Categories.Count, 0);
   for i:=0 to aFuncsAndCateg.Categories.Count-1 do begin
     s:=aFuncsAndCateg.Categories[i];
@@ -313,10 +317,6 @@ begin
       Config.SetDeleteValue(SubPath+'Name',s,'');
       Config.SetDeleteValue(SubPath+'InUse',aFuncsAndCateg.CategoryIsUsed(i),True);
     end;
-  end;
-  for i:=aFuncsAndCateg.Categories.Count to aFuncsAndCateg.Categories.Count+10 do begin
-    SubPath:=CategPath+'Item'+IntToStr(i)+'/';
-    Config.DeletePath(SubPath);
   end;
 end;
 
@@ -347,6 +347,7 @@ var
   SubPath: String;
   i: Integer;
 begin
+  Config.DeletePath(Path);
   Config.SetDeleteValue(Path+'Count', aVisualOffsets.Count, 0);
   for i:=0 to aVisualOffsets.Count-1 do begin
     offs:=aVisualOffsets[i];
@@ -354,11 +355,6 @@ begin
     Config.SetDeleteValue(SubPath+'ParentType',offs.ParentType,'');
     Config.SetDeleteValue(SubPath+'Top'       ,offs.Top,0);
     Config.SetDeleteValue(SubPath+'Left'      ,offs.Left,0);
-  end;
-  // Remove leftover items in case the list has become shorter.
-  for i:=aVisualOffsets.Count to aVisualOffsets.Count+10 do begin
-    SubPath:=Path+'Item'+IntToStr(i)+'/';
-    Config.DeletePath(SubPath);
   end;
 end;
 
@@ -407,6 +403,7 @@ begin
   fCoordOffsets:=TVisualOffsets.Create;
   // Load settings from ConfigStorage.
   fConfigStorage:=GetIDEConfigStorage('delphiconverter.xml', true);
+  fVersion                          :=fConfigStorage.GetValue('Version', 0);
   fCrossPlatform                    :=fConfigStorage.GetValue('CrossPlatform', true);
   fSupportDelphi                    :=fConfigStorage.GetValue('SupportDelphi', false);
   fSameDfmFile                      :=fConfigStorage.GetValue('SameDfmFile', false);
@@ -422,7 +419,7 @@ begin
   fCoordOffsMode  :=TReplaceModeShort(fConfigStorage.GetValue('CoordOffsMode', 1));
   LoadStringToStringTree(fConfigStorage, 'UnitReplacements/', fReplaceUnits);
   LoadStringToStringTree(fConfigStorage, 'TypeReplacements/', fReplaceTypes);
-  LoadFuncReplacements(fConfigStorage, 'FuncReplacements/', 'Categories/', fReplaceFuncs);
+  LoadFuncReplacements(fConfigStorage, 'FuncReplacements/', 'Categories/', fReplaceFuncs, fVersion);
   LoadVisualOffsets(fConfigStorage, 'VisualOffsets/', fCoordOffsets);
 
   // Units left out of project. Some projects include them although there are
@@ -577,30 +574,6 @@ begin
 
   // Map Delphi function names to FCL/LCL functions
   with fReplaceFuncs do begin
-    // File name encoding.
-    Categ:='UTF8Names';
-    AddDefaultCategory(Categ);
-    AddFunc(Categ,'FileExists',          'FileExistsUTF8($1)',          'LCL','FileUtil');
-    AddFunc(Categ,'FileAge',             'FileAgeUTF8($1)',             'LCL','FileUtil');
-    AddFunc(Categ,'DirectoryExists',     'DirectoryExistsUTF8($1)',     'LCL','FileUtil');
-    AddFunc(Categ,'ExpandFileName',      'ExpandFileNameUTF8($1)',      'LCL','FileUtil');
-    AddFunc(Categ,'ExpandUNCFileName',   'ExpandUNCFileNameUTF8($1)',   'LCL','FileUtil');
-    AddFunc(Categ,'ExtractShortPathName','ExtractShortPathNameUTF8($1)','LCL','FileUtil');
-    AddFunc(Categ,'FindFirst',           'FindFirstUTF8($1,$2,$3)',     'LCL','FileUtil');
-    AddFunc(Categ,'FindNext',            'FindNextUTF8($1)',            'LCL','FileUtil');
-    AddFunc(Categ,'FindClose',           'FindCloseUTF8($1)',           'LCL','FileUtil');
-    AddFunc(Categ,'FileSetDate',         'FileSetDateUTF8($1,$2)',      'LCL','FileUtil');
-    AddFunc(Categ,'FileGetAttr',         'FileGetAttrUTF8($1)',         'LCL','FileUtil');
-    AddFunc(Categ,'FileSetAttr',         'FileSetAttrUTF8($1,$2)',      'LCL','FileUtil');
-    AddFunc(Categ,'DeleteFile',          'DeleteFileUTF8($1)',          'LCL','FileUtil');
-    AddFunc(Categ,'RenameFile',          'RenameFileUTF8($1,$2)',       'LCL','FileUtil');
-    AddFunc(Categ,'FileSearch',          'FileSearchUTF8($1,$2)',       'LCL','FileUtil');
-    AddFunc(Categ,'FileIsReadOnly',      'FileIsReadOnlyUTF8($1)',      'LCL','FileUtil');
-    AddFunc(Categ,'GetCurrentDir',       'GetCurrentDirUTF8',           'LCL','FileUtil');
-    AddFunc(Categ,'SetCurrentDir',       'SetCurrentDirUTF8($1)',       'LCL','FileUtil');
-    AddFunc(Categ,'CreateDir',           'CreateDirUTF8($1)',           'LCL','FileUtil');
-    AddFunc(Categ,'RemoveDir',           'RemoveDirUTF8($1)',           'LCL','FileUtil');
-    AddFunc(Categ,'ForceDirectories',    'ForceDirectoriesUTF8($1)',    'LCL','FileUtil');
     // File functions using a handle
     Categ:='FileHandle';
     AddDefaultCategory(Categ);
@@ -636,6 +609,7 @@ end;
 destructor TConvertSettings.Destroy;
 begin
   // Save possibly modified settings to ConfigStorage.
+  fConfigStorage.SetDeleteValue('Version',           ConverterVersion, 0);
   fConfigStorage.SetDeleteValue('CrossPlatform',     fCrossPlatform, true);
   fConfigStorage.SetDeleteValue('SupportDelphi',     fSupportDelphi, false);
   fConfigStorage.SetDeleteValue('SameDfmFile',       fSameDfmFile, false);
