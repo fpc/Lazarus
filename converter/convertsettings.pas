@@ -86,9 +86,11 @@ type
     fReplaceFuncs: TFuncsAndCategories;
     // Coordinate offsets of components in a visual container.
     fCoordOffsets: TVisualOffsets;
+    procedure Load;
     procedure LoadFuncReplacements;
     procedure LoadStringToStringTree(Path: string; Tree: TStringToStringTree);
     procedure LoadVisualOffsets;
+    procedure Save;
     procedure SaveFuncReplacements;
     procedure SaveStringToStringTree(Path: string; Tree: TStringToStringTree);
     procedure SaveVisualOffsets;
@@ -228,25 +230,6 @@ end;
 { TConvertSettings }
 
 constructor TConvertSettings.Create(const ATitle: string);
-var
-  TheMap: TStringToStringTree;
-  Categ: string;
-
-  procedure MapReplacement(aDelphi, aLCL: string);
-  begin
-    if not TheMap.Contains(aDelphi) then
-      TheMap[aDelphi]:=aLCL;
-  end;
-
-  procedure AddDefaultCategory(aCategory: string);
-  var
-    x: integer;
-  begin
-    with fReplaceFuncs do
-      if not Categories.Find(aCategory, x) then
-        AddCategory(aCategory, True);
-  end;
-
 begin
   fTitle:=ATitle;
   fLog:=TStringList.Create;
@@ -258,26 +241,7 @@ begin
   fReplaceTypes:=TStringToStringTree.Create(false);
   fReplaceFuncs:=TFuncsAndCategories.Create;
   fCoordOffsets:=TVisualOffsets.Create;
-  // Load settings from ConfigStorage.
   fConfigStorage:=GetIDEConfigStorage('delphiconverter.xml', true);
-  fVersion                          :=fConfigStorage.GetValue('Version', 0);
-  fCrossPlatform                    :=fConfigStorage.GetValue('CrossPlatform', true);
-  fSupportDelphi                    :=fConfigStorage.GetValue('SupportDelphi', false);
-  fSameDfmFile                      :=fConfigStorage.GetValue('SameDfmFile', false);
-  fDelphiDefine                     :=fConfigStorage.GetValue('DelphiDefine', true);
-  fBackupFiles                      :=fConfigStorage.GetValue('BackupFiles', true);
-  fKeepFileOpen                     :=fConfigStorage.GetValue('KeepFileOpen', false);
-  fScanParentDir                    :=fConfigStorage.GetValue('ScanParentDir', true);
-  fFuncReplaceComment               :=fConfigStorage.GetValue('FuncReplaceComment', true);
-  fUnitsReplaceMode:=TReplaceModeLong(fConfigStorage.GetValue('UnitsReplaceMode', 2));
-  fPropReplaceMode :=TReplaceModeLong(fConfigStorage.GetValue('UnknownPropsMode', 2));
-  fTypeReplaceMode:=TReplaceModeAllow(fConfigStorage.GetValue('TypeReplaceMode', 1));
-  fFuncReplaceMode:=TReplaceModeShort(fConfigStorage.GetValue('FuncReplaceMode', 1));
-  fCoordOffsMode  :=TReplaceModeShort(fConfigStorage.GetValue('CoordOffsMode', 1));
-  LoadStringToStringTree('UnitReplacements/', fReplaceUnits);
-  LoadStringToStringTree('TypeReplacements/', fReplaceTypes);
-  LoadFuncReplacements;
-  LoadVisualOffsets;
 
   // Units left out of project. Some projects include them although there are
   //  Lazarus packages for them. This setting is not saved in configuration.
@@ -328,163 +292,10 @@ begin
   fOmitProjUnits['SynHighlighterPas']  :='SynEdit';
   fOmitProjUnits['SynTextDrawer']      :='SynEdit';
   fOmitProjUnits['SynRegExpr']         :='SynEdit';
-
-  // * Add default values for configuration if ConfigStorage doesn't have them *
-
-  // Map Delphi units to Lazarus units.
-  TheMap:=fReplaceUnits;
-  MapReplacement('Windows',             'LCLIntf, LCLType, LMessages');
-  MapReplacement('WinTypes',            'LCLIntf, LCLType, LMessages');
-  MapReplacement('WinProcs',            'LCLIntf, LCLType, LMessages');
-  MapReplacement('Mask',                'MaskEdit');
-  MapReplacement('TabNotBk',            'ComCtrls');
-  MapReplacement('OpenGL',              'dglOpenGL');
-//  MapReplacement('dglOpenGL',           'GL, GLu, GLut');  // ?
-  // Database components
-  MapReplacement('SqlExpr',             'sqldb');
-  MapReplacement('DBLocalS',            'sqldb');
-  MapReplacement('DBLocalB',            'sqldb');
-  MapReplacement('DBTables',            'sqldb');
-  MapReplacement('ADODB',               'sqldb');
-  MapReplacement('IBTable',             'sqldb');
-  MapReplacement('IBQuery',             'sqldb');
-  MapReplacement('IBStoredProc',        'sqldb');
-  MapReplacement('IBDatabase',          'sqldb');
-  MapReplacement('IBUpdateSQL',         'sqldb');
-  MapReplacement('IBCustomDataSet',     'sqldb');
-  MapReplacement('IBSQL',               'sqldb');
-  MapReplacement('DBLocalI',            'IBConnection');
-  // Remove these
-  MapReplacement('ShellApi',            '');
-  MapReplacement('pngImage',            '');
-  MapReplacement('Jpeg',                '');
-  MapReplacement('gifimage',            '');
-  MapReplacement('^FastMM.*',           '');           // External memory manager.
-  MapReplacement('MMSystem',            '');
-  MapReplacement('.*dll.*',             '');
-  MapReplacement('^Q(.+)',              '$1');         // Kylix unit names.
-  // Tnt* third party components.
-  MapReplacement('TntLXStringGrids',    'Grids');
-  MapReplacement('TntLXCombos',         '');
-  MapReplacement('TntLXDataSet',        '');
-  MapReplacement('TntLXVarArrayDataSet','');
-  MapReplacement('TntLXLookupCtrls',    '');
-  MapReplacement('^TntLX(.+)',          '$1');
-  MapReplacement('^Tnt(([^L]|L[^X]).*)','$1');
-
-  // Map Delphi types to LCL types.
-  TheMap:=fReplaceTypes;
-  MapReplacement('TFlowPanel',        'TPanel');
-  MapReplacement('TGridPanel',        'TPanel');
-  MapReplacement('TRichEdit',         'TMemo'); // or TRichMemo from CRC.
-  MapReplacement('TDBRichEdit',       'TDBMemo');
-  MapReplacement('TApplicationEvents','TApplicationProperties');
-  MapReplacement('TPNGObject',        'TPortableNetworkGraphic');
-  MapReplacement('TTabbedNotebook',   'TPageControl');
-  MapReplacement('TTabPage',          'ts$autoinc: TTabSheet');
-  MapReplacement('THeader',           'THeaderControl');
-  MapReplacement('TMonthCalendar',    'TCalendar');
-  MapReplacement('TOleContainer',     'TActiveXContainer'); // from LazActiveX
-  // Database components
-  MapReplacement('TSQLConnection',    'TSQLConnector');
-  MapReplacement('TSQLClientDataSet', 'TSQLConnector');
-  MapReplacement('TSQLDataset',       'TSQLQuery');
-  MapReplacement('TSQLTable',         'TSQLQuery');
-  MapReplacement('TSQLStoredProc',    'TSQLQuery');
-  // BDE
-  MapReplacement('TDatabase',         'TSQLConnector');
-  MapReplacement('TBDEClientDataSet', 'TSQLConnector');
-  MapReplacement('TTable',            'TSQLQuery');
-  MapReplacement('TQuery',            'TSQLQuery');
-  MapReplacement('TUpdateSQL',        'TSQLQuery');
-  MapReplacement('TStoredProc',       'TSQLQuery');
-  // ADO
-  MapReplacement('TADOConnection',    'TSQLConnector');
-  MapReplacement('TADODataSet',       'TSQLQuery');
-  MapReplacement('TADOTable',         'TSQLQuery');
-  MapReplacement('TADOQuery',         'TSQLQuery');
-  MapReplacement('TADOCommand',       'TSQLQuery');
-  MapReplacement('TADOStoredProc',    'TSQLQuery');
-  // Interbase
-  MapReplacement('TIBDatabase',       'TIBConnection');
-  MapReplacement('TIBClientDataSet',  'TIBConnection');
-  MapReplacement('TIBDataSet',        'TSQLQuery');
-  MapReplacement('TIBTable',          'TSQLQuery');
-  MapReplacement('TIBQuery',          'TSQLQuery');
-  MapReplacement('TIBUpdateSQL',      'TSQLQuery');
-  MapReplacement('TIBSQL',            'TSQLQuery');
-  MapReplacement('TIBStoredProc',     'TSQLQuery');
-  MapReplacement('TIBTransaction',    'TSQLTransaction');
-  // DevExpress components
-  MapReplacement('TCxEdit',           'TEdit');
-  // Tnt* third party components
-  MapReplacement('^TTnt(.+)LX$',      'T$1');
-  MapReplacement('^TTnt(.+[^L][^X])$','T$1');
-
-  // Coordinate offsets for some visual containers
-  with fCoordOffsets do begin
-    AddVisualOffset('TGroupBox' , 14,2);
-    AddVisualOffset('TPanel',      2,2);
-    AddVisualOffset('RadioGroup', 14,2);
-    AddVisualOffset('CheckGroup', 14,2);
-  end;
-
-  // Map Delphi function names to FCL/LCL functions
-  with fReplaceFuncs do begin
-    // File functions using a handle
-    Categ:='FileHandle';
-    AddDefaultCategory(Categ);
-    //AddFunc(Categ, 'CreateFile', 'FileCreate($1)','','SysUtils');
-    //AddFunc(Categ, 'ReadFile',   'FileRead($1)'  ,'','SysUtils');
-    AddFunc(Categ, 'GetFileSize','FileSize($1)'  ,'','SysUtils');
-    AddFunc(Categ, 'CloseHandle','FileClose($1)' ,'','SysUtils');
-    // WindowsAPI
-    Categ:='WindowsAPI';
-    AddDefaultCategory(Categ);
-    AddFunc(Categ, 'ShellExecute',
-                   'if $3 match ":/" then OpenURL($3); OpenDocument($3)', 'LCL', 'LCLIntf');
-    AddFunc(Categ, 'TimeGetTime', 'GetTickCount','LCL','LCLIntf'); // In Windows MMSystems unit.
-    // OpenGL
-    Categ:='OpenGL';
-    AddDefaultCategory(Categ);
-    AddFunc(Categ, 'glIsEnabled', 'Boolean(glIsEnabled($1))', '', 'GL');
-    AddFunc(Categ, 'glIsList',    'Boolean(glIsList($1))',    '', 'GL');
-    AddFunc(Categ, 'glIsTexture', 'Boolean(glIsTexture($1))', '', 'GL');
-    AddFunc(Categ, 'glColorMask', 'glColorMask(GLboolean($1),GLboolean($2),GLboolean($3),GLboolean($4))', '', 'GL');
-    AddFunc(Categ, 'glDepthMask', 'glDepthMask(GLboolean($1))', '', 'GL');
-    AddFunc(Categ, 'gluQuadricTexture', 'gluQuadricTexture($1,GLboolean($2))', '', 'GLu');
-    // Others
-    Categ:='Other';
-    AddDefaultCategory(Categ);
-    AddFunc(Categ, 'Ptr','Pointer($1)' ,'','');
-    AddFunc(Categ, 'RecreateWnd','RecreateWnd(Self)' ,'LCL', 'Controls');
-    // SysUtils has AnsiSameStr and SameText but no SameStr.
-    AddFunc(Categ, 'SameStr','(CompareStr($1,$2) = 0)' ,'', 'SysUtils');
-  end;
 end;
 
 destructor TConvertSettings.Destroy;
 begin
-  // Save possibly modified settings to ConfigStorage.
-  fConfigStorage.SetDeleteValue('Version',           ConverterVersion, 0);
-  fConfigStorage.SetDeleteValue('CrossPlatform',     fCrossPlatform, true);
-  fConfigStorage.SetDeleteValue('SupportDelphi',     fSupportDelphi, false);
-  fConfigStorage.SetDeleteValue('SameDfmFile',       fSameDfmFile, false);
-  fConfigStorage.SetDeleteValue('DelphiDefine',      fDelphiDefine, true);
-  fConfigStorage.SetDeleteValue('BackupFiles',       fBackupFiles, true);
-  fConfigStorage.SetDeleteValue('KeepFileOpen',      fKeepFileOpen, false);
-  fConfigStorage.SetDeleteValue('ScanParentDir',     fScanParentDir, true);
-  fConfigStorage.SetDeleteValue('FuncReplaceComment',fFuncReplaceComment, true);
-  fConfigStorage.SetDeleteValue('UnitsReplaceMode', integer(fUnitsReplaceMode), 2);
-  fConfigStorage.SetDeleteValue('UnknownPropsMode', integer(fPropReplaceMode), 2);
-  fConfigStorage.SetDeleteValue('TypeReplaceMode',  integer(fTypeReplaceMode), 1);
-  fConfigStorage.SetDeleteValue('FuncReplaceMode',  integer(fFuncReplaceMode), 1);
-  fConfigStorage.SetDeleteValue('CoordOffsMode',    integer(fCoordOffsMode), 1);
-  SaveStringToStringTree('UnitReplacements/', fReplaceUnits);
-  SaveStringToStringTree('TypeReplacements/', fReplaceTypes);
-  SaveFuncReplacements;
-  SaveVisualOffsets;
-  // Free stuff
   fConfigStorage.Free;
   fCoordOffsets.Free;
   fReplaceFuncs.Clear;
@@ -640,11 +451,212 @@ begin
   end;
 end;
 
+procedure TConvertSettings.Load;
+var
+  TheMap: TStringToStringTree;
+  Categ: string;
+
+  procedure MapReplacement(aDelphi, aLCL: string);
+  begin
+    if not TheMap.Contains(aDelphi) then
+      TheMap[aDelphi]:=aLCL;
+  end;
+
+  procedure AddDefaultCategory(aCategory: string);
+  var
+    x: integer;
+  begin
+    with fReplaceFuncs do
+      if not Categories.Find(aCategory, x) then
+        AddCategory(aCategory, True);
+  end;
+
+begin
+  fVersion                          :=fConfigStorage.GetValue('Version', 0);
+  fCrossPlatform                    :=fConfigStorage.GetValue('CrossPlatform', true);
+  fSupportDelphi                    :=fConfigStorage.GetValue('SupportDelphi', false);
+  fSameDfmFile                      :=fConfigStorage.GetValue('SameDfmFile', false);
+  fDelphiDefine                     :=fConfigStorage.GetValue('DelphiDefine', true);
+  fBackupFiles                      :=fConfigStorage.GetValue('BackupFiles', true);
+  fKeepFileOpen                     :=fConfigStorage.GetValue('KeepFileOpen', false);
+  fScanParentDir                    :=fConfigStorage.GetValue('ScanParentDir', true);
+  fFuncReplaceComment               :=fConfigStorage.GetValue('FuncReplaceComment', true);
+  fUnitsReplaceMode:=TReplaceModeLong(fConfigStorage.GetValue('UnitsReplaceMode', 2));
+  fPropReplaceMode :=TReplaceModeLong(fConfigStorage.GetValue('UnknownPropsMode', 2));
+  fTypeReplaceMode:=TReplaceModeAllow(fConfigStorage.GetValue('TypeReplaceMode', 1));
+  fFuncReplaceMode:=TReplaceModeShort(fConfigStorage.GetValue('FuncReplaceMode', 1));
+  fCoordOffsMode  :=TReplaceModeShort(fConfigStorage.GetValue('CoordOffsMode', 1));
+
+  // * Map Delphi units to Lazarus units *
+  TheMap:=fReplaceUnits;
+  LoadStringToStringTree('UnitReplacements/', TheMap);
+  // Add default values for configuration if ConfigStorage doesn't have them
+  MapReplacement('Windows',             'LCLIntf, LCLType, LMessages');
+  MapReplacement('WinTypes',            'LCLIntf, LCLType, LMessages');
+  MapReplacement('WinProcs',            'LCLIntf, LCLType, LMessages');
+  MapReplacement('Mask',                'MaskEdit');
+  MapReplacement('TabNotBk',            'ComCtrls');
+  MapReplacement('OpenGL',              'dglOpenGL');
+//  MapReplacement('dglOpenGL',           'GL, GLu, GLut');  // ?
+  // Database components
+  MapReplacement('SqlExpr',             'sqldb');
+  MapReplacement('DBLocalS',            'sqldb');
+  MapReplacement('DBLocalB',            'sqldb');
+  MapReplacement('DBTables',            'sqldb');
+  MapReplacement('ADODB',               'sqldb');
+  MapReplacement('IBTable',             'sqldb');
+  MapReplacement('IBQuery',             'sqldb');
+  MapReplacement('IBStoredProc',        'sqldb');
+  MapReplacement('IBDatabase',          'sqldb');
+  MapReplacement('IBUpdateSQL',         'sqldb');
+  MapReplacement('IBCustomDataSet',     'sqldb');
+  MapReplacement('IBSQL',               'sqldb');
+  MapReplacement('DBLocalI',            'IBConnection');
+  // Remove these
+  MapReplacement('ShellApi',            '');
+  MapReplacement('pngImage',            '');
+  MapReplacement('Jpeg',                '');
+  MapReplacement('gifimage',            '');
+  MapReplacement('^FastMM.*',           '');           // External memory manager.
+  MapReplacement('MMSystem',            '');
+  MapReplacement('.*dll.*',             '');
+  MapReplacement('^Q(.+)',              '$1');         // Kylix unit names.
+  // Tnt* third party components.
+  MapReplacement('TntLXStringGrids',    'Grids');
+  MapReplacement('TntLXCombos',         '');
+  MapReplacement('TntLXDataSet',        '');
+  MapReplacement('TntLXVarArrayDataSet','');
+  MapReplacement('TntLXLookupCtrls',    '');
+  MapReplacement('^TntLX(.+)',          '$1');
+  MapReplacement('^Tnt(([^L]|L[^X]).*)','$1');
+
+  // * Map Delphi types to LCL types *
+  TheMap:=fReplaceTypes;
+  LoadStringToStringTree('TypeReplacements/', TheMap);
+  // Add default values for configuration if ConfigStorage doesn't have them
+  MapReplacement('TFlowPanel',        'TPanel');
+  MapReplacement('TGridPanel',        'TPanel');
+  MapReplacement('TRichEdit',         'TMemo'); // or TRichMemo from CRC.
+  MapReplacement('TDBRichEdit',       'TDBMemo');
+  MapReplacement('TApplicationEvents','TApplicationProperties');
+  MapReplacement('TPNGObject',        'TPortableNetworkGraphic');
+  MapReplacement('TTabbedNotebook',   'TPageControl');
+  MapReplacement('TTabPage',          'ts$autoinc: TTabSheet');
+  MapReplacement('THeader',           'THeaderControl');
+  MapReplacement('TMonthCalendar',    'TCalendar');
+  MapReplacement('TOleContainer',     'TActiveXContainer'); // from LazActiveX
+  // Database components
+  MapReplacement('TSQLConnection',    'TSQLConnector');
+  MapReplacement('TSQLClientDataSet', 'TSQLConnector');
+  MapReplacement('TSQLDataset',       'TSQLQuery');
+  MapReplacement('TSQLTable',         'TSQLQuery');
+  MapReplacement('TSQLStoredProc',    'TSQLQuery');
+  // BDE
+  MapReplacement('TDatabase',         'TSQLConnector');
+  MapReplacement('TBDEClientDataSet', 'TSQLConnector');
+  MapReplacement('TTable',            'TSQLQuery');
+  MapReplacement('TQuery',            'TSQLQuery');
+  MapReplacement('TUpdateSQL',        'TSQLQuery');
+  MapReplacement('TStoredProc',       'TSQLQuery');
+  // ADO
+  MapReplacement('TADOConnection',    'TSQLConnector');
+  MapReplacement('TADODataSet',       'TSQLQuery');
+  MapReplacement('TADOTable',         'TSQLQuery');
+  MapReplacement('TADOQuery',         'TSQLQuery');
+  MapReplacement('TADOCommand',       'TSQLQuery');
+  MapReplacement('TADOStoredProc',    'TSQLQuery');
+  // Interbase
+  MapReplacement('TIBDatabase',       'TIBConnection');
+  MapReplacement('TIBClientDataSet',  'TIBConnection');
+  MapReplacement('TIBDataSet',        'TSQLQuery');
+  MapReplacement('TIBTable',          'TSQLQuery');
+  MapReplacement('TIBQuery',          'TSQLQuery');
+  MapReplacement('TIBUpdateSQL',      'TSQLQuery');
+  MapReplacement('TIBSQL',            'TSQLQuery');
+  MapReplacement('TIBStoredProc',     'TSQLQuery');
+  MapReplacement('TIBTransaction',    'TSQLTransaction');
+  // DevExpress components
+  MapReplacement('TCxEdit',           'TEdit');
+  // Tnt* third party components
+  MapReplacement('^TTnt(.+)LX$',      'T$1');
+  MapReplacement('^TTnt(.+[^L][^X])$','T$1');
+
+  // * Map Delphi function names to FCL/LCL functions *
+  LoadFuncReplacements;
+  // Add default values for configuration if ConfigStorage doesn't have them
+  with fReplaceFuncs do begin
+    // File functions using a handle
+    Categ:='FileHandle';
+    AddDefaultCategory(Categ);
+    //AddFunc(Categ, 'CreateFile', 'FileCreate($1)','','SysUtils');
+    //AddFunc(Categ, 'ReadFile',   'FileRead($1)'  ,'','SysUtils');
+    AddFunc(Categ, 'GetFileSize','FileSize($1)'  ,'','SysUtils');
+    AddFunc(Categ, 'CloseHandle','FileClose($1)' ,'','SysUtils');
+    // WindowsAPI
+    Categ:='WindowsAPI';
+    AddDefaultCategory(Categ);
+    AddFunc(Categ, 'ShellExecute',
+                   'if $3 match ":/" then OpenURL($3); OpenDocument($3)', 'LCL', 'LCLIntf');
+    AddFunc(Categ, 'TimeGetTime', 'GetTickCount','LCL','LCLIntf'); // In Windows MMSystems unit.
+    // OpenGL
+    Categ:='OpenGL';
+    AddDefaultCategory(Categ);
+    AddFunc(Categ, 'glIsEnabled', 'Boolean(glIsEnabled($1))', '', 'GL');
+    AddFunc(Categ, 'glIsList',    'Boolean(glIsList($1))',    '', 'GL');
+    AddFunc(Categ, 'glIsTexture', 'Boolean(glIsTexture($1))', '', 'GL');
+    AddFunc(Categ, 'glColorMask', 'glColorMask(GLboolean($1),GLboolean($2),GLboolean($3),GLboolean($4))', '', 'GL');
+    AddFunc(Categ, 'glDepthMask', 'glDepthMask(GLboolean($1))', '', 'GL');
+    AddFunc(Categ, 'gluQuadricTexture', 'gluQuadricTexture($1,GLboolean($2))', '', 'GLu');
+    // Others
+    Categ:='Other';
+    AddDefaultCategory(Categ);
+    AddFunc(Categ, 'Ptr','Pointer($1)' ,'','');
+    AddFunc(Categ, 'RecreateWnd','RecreateWnd(Self)' ,'LCL', 'Controls');
+    // SysUtils has AnsiSameStr and SameText but no SameStr.
+    AddFunc(Categ, 'SameStr','(CompareStr($1,$2) = 0)' ,'', 'SysUtils');
+  end;
+
+  // * Coordinate offsets for some visual containers *
+  LoadVisualOffsets;
+  // Add default values for configuration if ConfigStorage doesn't have them
+  with fCoordOffsets do begin
+    AddVisualOffset('TGroupBox' , 14,2);
+    AddVisualOffset('TPanel',      2,2);
+    AddVisualOffset('RadioGroup', 14,2);
+    AddVisualOffset('CheckGroup', 14,2);
+  end;
+end;
+
+procedure TConvertSettings.Save;
+begin
+  // Save possibly modified settings to ConfigStorage.
+  fConfigStorage.SetDeleteValue('Version',           ConverterVersion, 0);
+  fConfigStorage.SetDeleteValue('CrossPlatform',     fCrossPlatform, true);
+  fConfigStorage.SetDeleteValue('SupportDelphi',     fSupportDelphi, false);
+  fConfigStorage.SetDeleteValue('SameDfmFile',       fSameDfmFile, false);
+  fConfigStorage.SetDeleteValue('DelphiDefine',      fDelphiDefine, true);
+  fConfigStorage.SetDeleteValue('BackupFiles',       fBackupFiles, true);
+  fConfigStorage.SetDeleteValue('KeepFileOpen',      fKeepFileOpen, false);
+  fConfigStorage.SetDeleteValue('ScanParentDir',     fScanParentDir, true);
+  fConfigStorage.SetDeleteValue('FuncReplaceComment', fFuncReplaceComment, true);
+  fConfigStorage.SetDeleteValue('UnitsReplaceMode', integer(fUnitsReplaceMode), 2);
+  fConfigStorage.SetDeleteValue('UnknownPropsMode', integer(fPropReplaceMode), 2);
+  fConfigStorage.SetDeleteValue('TypeReplaceMode',  integer(fTypeReplaceMode), 1);
+  fConfigStorage.SetDeleteValue('FuncReplaceMode',  integer(fFuncReplaceMode), 1);
+  fConfigStorage.SetDeleteValue('CoordOffsMode',    integer(fCoordOffsMode), 1);
+  SaveStringToStringTree('UnitReplacements/', fReplaceUnits);
+  SaveStringToStringTree('TypeReplacements/', fReplaceTypes);
+  SaveFuncReplacements;
+  SaveVisualOffsets;
+end;
+
 function TConvertSettings.RunForm(ACacheUnitsThread: TThread): TModalResult;
 begin
   fSettingsForm:=TConvertSettingsForm.Create(nil, Self);
   try
-    with fSettingsForm do begin
+    Load;   // Load settings from ConfigStorage.
+    with fSettingsForm do
+    begin
       Caption:=fTitle + ' - ' + ExtractFileName(MainFilename);
       InputPathListBox.Items.Assign(fMainFilenames);
       // Settings --> UI. Loaded from ConfigSettings earlier.
@@ -667,8 +679,9 @@ begin
 
       fCacheUnitsThread := ACacheUnitsThread;
       StartThreadIfValid;
-      Result:=ShowModal;        // Let the user change settings in a form.
-      if Result=mrOK then begin // The thread will finished before the form closes.
+      Result:=ShowModal;   // Let the user change the settings.
+      if Result=mrOK then  // The thread will be finished before the form closes.
+      begin
         // UI --> Settings. Will be saved to ConfigSettings later.
         fCrossPlatform     :=CrossPlatformCheckBox.Checked;
         fSupportDelphi     :=SupportDelphiCheckBox.Checked;
@@ -686,6 +699,7 @@ begin
         fCoordOffsMode   :=TReplaceModeShort(CoordOffsComboBox.ItemIndex);
         if fBackupFiles then
           DeleteDirectory(BackupPath, True); // Delete old backup if there is any.
+        Save;
       end;
     end;
   finally
