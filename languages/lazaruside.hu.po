@@ -11239,6 +11239,10 @@ msgstr "Helyi változók"
 msgid "&Copy Name"
 msgstr "Név másolása"
 
+#: lazarusidestrconsts.lislocalsdlgcopyrawvalue
+msgid "Copy &RAW Value"
+msgstr ""
+
 #: lazarusidestrconsts.lislocalsdlgcopyvalue
 msgid "C&opy Value"
 msgstr "Érték másolása"

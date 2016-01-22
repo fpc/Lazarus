@@ -11275,6 +11275,10 @@ msgstr "Locales"
 msgid "&Copy Name"
 msgstr "&Copiar Nombre"
 
+#: lazarusidestrconsts.lislocalsdlgcopyrawvalue
+msgid "Copy &RAW Value"
+msgstr ""
+
 #: lazarusidestrconsts.lislocalsdlgcopyvalue
 msgid "C&opy Value"
 msgstr "C&opiar Valor"

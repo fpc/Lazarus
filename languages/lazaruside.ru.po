@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-01-22 02:27+0300\n"
+"PO-Revision-Date: 2016-01-23 02:08+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -11238,6 +11238,10 @@ msgstr "Локальные переменные"
 msgid "&Copy Name"
 msgstr "Копировать &имя"
 
+#: lazarusidestrconsts.lislocalsdlgcopyrawvalue
+msgid "Copy &RAW Value"
+msgstr "Копировать &необработанное значение"
+
 #: lazarusidestrconsts.lislocalsdlgcopyvalue
 msgid "C&opy Value"
 msgstr "Копировать &значение"
@@ -11692,19 +11696,19 @@ msgstr "Ок&но,Базовое меню \"Окно\",&Новое окно,,&З
 
 #: lazarusidestrconsts.lismenueditorcaption
 msgid "Caption"
-msgstr ""
+msgstr "Заголовок"
 
 #: lazarusidestrconsts.lismenueditorcaptioneditemss
 msgid "Captioned items: %s"
-msgstr ""
+msgstr "Элементов с заголовками: %s"
 
 #: lazarusidestrconsts.lismenueditorcaptionshouldnotbeblank
 msgid "Caption should not be blank"
-msgstr ""
+msgstr "Заголовок не должен быть пустым"
 
 #: lazarusidestrconsts.lismenueditorchangeconflictingaccelerators
 msgid "Change conflicting accelerator \"%s\""
-msgstr ""
+msgstr "Изменение конфликтующей клавиши быстрого вызова \"%s\""
 
 #: lazarusidestrconsts.lismenueditorchangeimagelisticon
 msgid "Change imagelist &icon"
@@ -11712,31 +11716,31 @@ msgstr "Сменить &значок из ImageList"
 
 #: lazarusidestrconsts.lismenueditorchangeshortcutcaptionforcomponent
 msgid "Change %s for %s"
-msgstr ""
+msgstr "Изменение свойства \"%s\" в %s"
 
 #: lazarusidestrconsts.lismenueditorchangeshortcutconflicts
 msgid "Change shortcut conflict \"%s\""
-msgstr ""
+msgstr "Изменение конфликтующей комбинации клавиш \"%s\""
 
 #: lazarusidestrconsts.lismenueditorchangetheshortcutfors
 msgid "Change the shortCut for %s"
-msgstr ""
+msgstr "Изменение свойства ShortCut в %s"
 
 #: lazarusidestrconsts.lismenueditorchangetheshortcutkey2fors
 msgid "Change the shortCutKey2 for %s"
-msgstr ""
+msgstr "Изменение свойства ShortCutKey2 в %s"
 
 #: lazarusidestrconsts.lismenueditorchoosetemplatetodelete
 msgid "Choose template to delete"
-msgstr ""
+msgstr "Выберите шаблон для удаления"
 
 #: lazarusidestrconsts.lismenueditorchoosetemplatetoinsert
 msgid "Choose template to insert"
-msgstr ""
+msgstr "Выберите шаблон для вставки"
 
 #: lazarusidestrconsts.lismenueditorclickanongreyeditemtoedititsshortcut
 msgid "Click a non-greyed item to edit its shortcut or click header to sort by that column"
-msgstr ""
+msgstr "Щёлкните по активному элементу для редактирования комбинации клавиш либо по заголовку столбца списка для сортировки"
 
 #: lazarusidestrconsts.lismenueditorcomponentisunexpectedkind
 msgid "Component is unexpected kind"
@@ -11796,7 +11800,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditoreditingsfors
 msgid "Editing %s for %s"
-msgstr ""
+msgstr "Редактирование свойства \"%s\" в %s"
 
 #: lazarusidestrconsts.lismenueditoreditingssnomenuitemselected
 msgid "Editing %s.%s - no menuitem selected"
@@ -11808,11 +11812,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorenteranewshortcutfors
 msgid "Enter a new ShortCut for %s"
-msgstr ""
+msgstr "Ввод значения свойства ShortCut в %s"
 
 #: lazarusidestrconsts.lismenueditorenteranewshortcutkey2fors
 msgid "Enter a new ShortCutKey2 for %s"
-msgstr ""
+msgstr "Ввод значения свойства ShortCutKey2 в %s"
 
 #: lazarusidestrconsts.lismenueditorexistingsavedtemplates
 msgid "Existing saved templates"
@@ -11922,7 +11926,7 @@ msgstr "Переместить вверх (или налево)"
 
 #: lazarusidestrconsts.lismenueditorna
 msgid "n/a"
-msgstr ""
+msgstr "недоступно"
 
 #: lazarusidestrconsts.lismenueditornomenuselected
 msgid "(no menu selected)"
@@ -12141,7 +12145,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditoryoumustentertextforthecaption
 msgid "You must enter text for the Caption"
-msgstr ""
+msgstr "Необходимо ввести текст заголовка"
 
 #: lazarusidestrconsts.lismenuencloseinifdef
 msgid "Enclose in $IFDEF ..."
@@ -20729,3 +20733,4 @@ msgstr "Только чтение"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Сведения о версии"
+

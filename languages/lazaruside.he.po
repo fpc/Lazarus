@@ -11874,6 +11874,10 @@ msgstr "מקומיים"
 msgid "&Copy Name"
 msgstr ""
 
+#: lazarusidestrconsts.lislocalsdlgcopyrawvalue
+msgid "Copy &RAW Value"
+msgstr ""
+
 #: lazarusidestrconsts.lislocalsdlgcopyvalue
 msgid "C&opy Value"
 msgstr ""

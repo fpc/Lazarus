@@ -11236,6 +11236,10 @@ msgstr "Místní"
 msgid "&Copy Name"
 msgstr "Kopírovat jméno"
 
+#: lazarusidestrconsts.lislocalsdlgcopyrawvalue
+msgid "Copy &RAW Value"
+msgstr ""
+
 #: lazarusidestrconsts.lislocalsdlgcopyvalue
 msgid "C&opy Value"
 msgstr "Kopírovat hodnotu"

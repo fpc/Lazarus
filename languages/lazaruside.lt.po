@@ -11509,6 +11509,10 @@ msgstr "Vietiniai kintamieji"
 msgid "&Copy Name"
 msgstr "Kopijuoti &pavadinimą"
 
+#: lazarusidestrconsts.lislocalsdlgcopyrawvalue
+msgid "Copy &RAW Value"
+msgstr ""
+
 #: lazarusidestrconsts.lislocalsdlgcopyvalue
 msgid "C&opy Value"
 msgstr "Kopijuoti &vertę"

@@ -11424,6 +11424,10 @@ msgstr "ローカル"
 msgid "&Copy Name"
 msgstr "名前をコピー(&C)"
 
+#: lazarusidestrconsts.lislocalsdlgcopyrawvalue
+msgid "Copy &RAW Value"
+msgstr ""
+
 #: lazarusidestrconsts.lislocalsdlgcopyvalue
 msgid "C&opy Value"
 msgstr "値をコピー(&o)"
