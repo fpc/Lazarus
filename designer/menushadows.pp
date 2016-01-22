@@ -39,7 +39,7 @@ protected
   class function GetControlClassDefaultSize: TSize; override;
   procedure Paint; override;
 public
-  constructor CreateWithPurpose(anOwner: TShadowMenu);
+  constructor Create(anOwner: TShadowMenu); reintroduce;
   procedure Refresh;
   property ShouldBeVisible: boolean read GetShouldBeVisible;
 end;
@@ -1616,18 +1616,19 @@ begin
     Hide;
   end
   else begin
-    w:=FMinWidth;
-
     if selMI.IsInMenuBar then begin
-      SetBounds(selShadow.Left + selShadow.Width + 1, 0, w, MenuBar_Height);
+      SetBounds(selShadow.Left + selShadow.Width + 1, 0, FMinWidth, MenuBar_Height);
       selShadow.ShowingRightFake:=True;
       selShadow.RightFake:=Self;
       selShadow.ShowingBottomFake:=False;
     end
     else begin
+      w:=selShadow.ParentBox.Width - Gutter_X;
+      if (FMinWidth > w) then
+        w:=FMinWidth;
       SetBounds(selShadow.ParentBox.Left + selShadow.Left + Gutter_X,
                 selShadow.ParentBox.Top + selShadow.ParentBox.Height + 1,
-                selShadow.Width - Gutter_X, DropDown_Height);
+                w, DropDown_Height);
       selShadow.ShowingBottomFake:=True;
       selShadow.BottomFake:=Self;
       selShadow.ShowingRightFake:=False;
@@ -3999,7 +4000,7 @@ begin
   Result.cy:=DropDown_Height;
 end;
 
-constructor TFake.CreateWithPurpose(anOwner: TShadowMenu);
+constructor TFake.Create(anOwner: TShadowMenu);
 begin
   inherited Create(anOwner);
   FShadowMenu:=anOwner;
@@ -4007,8 +4008,7 @@ begin
     SetInitialBounds(0, 0, cx, cy);
   BorderStyle:=bsNone;
   Visible:=False;
-  Canvas.Pen.Color:=clGradientActiveCaption;
-  Canvas.Pen.Color:=clBtnShadow;//clGradientActiveCaption;
+  Canvas.Pen.Color:=clBtnShadow;
   Canvas.Pen.Style:=psDot;
   Canvas.Font.Color:=clBtnShadow;
   Canvas.Brush.Color:=clBtnFace;
@@ -4019,13 +4019,16 @@ procedure TFake.Paint;
 var
   r: TRect;
   sz: TSize;
+  y: integer;
 begin
   r:=ClientRect;
   Canvas.FillRect(r);
   Canvas.RoundRect(r, 3, 3);
   sz:=Canvas.TextExtent(Caption);
-  Canvas.TextOut((r.Right - r.Left - sz.cx) div 2,
-                 (r.Bottom - r.Top - sz.cy) div 2, Caption);
+  y:=(r.Bottom - r.Top - sz.cy) div 2;
+  if (y < 2) then
+    y:=2;
+  Canvas.TextOut((r.Right - r.Left - sz.cx) div 2, y, Caption);
 end;
 
 procedure TFake.Refresh;
@@ -5245,15 +5248,18 @@ begin
   FItemsPopupMenu.Name:='ItemsPopupMenu';
   FActionList:=TActionList.Create(Self);
   SetupPopupMenu;
-  FAddItemFake:=TAddSiblingFake.CreateWithPurpose(Self);
+  FAddItemFake:=TAddSiblingFake.Create(Self);
   FAddItemFake.OnClick:=@AddItemAfter;
   FAddItemFake.Caption:=lisMenuEditorAddMenuItem;
-  FAddSubmenuFake:=TAddSubmenuFake.CreateWithPurpose(Self);
+  FAddItemFake.Name:='AddItemFake';
+  FAddSubmenuFake:=TAddSubmenuFake.Create(Self);
   FAddSubmenuFake.OnClick:=@AddSubMenu;
   FAddSubmenuFake.Caption:=lisMenuEditorAddSubmenu;
-  FAddFirstItemFake:=TAddFirstFake.CreateWithPurpose(Self);
+  FAddSubmenuFake.Name:='AddSubmenuFake';
+  FAddFirstItemFake:=TAddFirstFake.Create(Self);
   FAddFirstItemFake.OnClick:=@AddFirstMenu;
   FAddFirstItemFake.Caption:=lisMenuEditorAddMenuItem;
+  FAddFirstItemFake.Name:='AddFirstItemFake';
   FAddFirstItemFake.Left := Popup_Origin.x;
   FAddFirstItemFake.Top := Popup_Origin.y;
   ConnectSpeedButtonOnClickMethods;
