@@ -1,4 +1,4 @@
-inherited LocalsDlg: TLocalsDlg
+object LocalsDlg: TLocalsDlg
   Left = 359
   Height = 200
   Top = 126
@@ -10,7 +10,8 @@ inherited LocalsDlg: TLocalsDlg
   Caption = 'Locals'
   ClientHeight = 200
   ClientWidth = 500
-  object lvLocals: TListView[0]
+  LCLVersion = '1.7'
+  object lvLocals: TListView
     Left = 0
     Height = 200
     Top = 0
@@ -32,7 +33,7 @@ inherited LocalsDlg: TLocalsDlg
     TabOrder = 0
     ViewStyle = vsReport
   end
-  object ActionList1: TActionList[1]
+  object ActionList1: TActionList
     left = 152
     top = 80
     object actInspect: TAction
@@ -68,8 +69,14 @@ inherited LocalsDlg: TLocalsDlg
       OnExecute = actCopyValueExecute
       OnUpdate = actInspectUpdate
     end
+    object actCopyAll: TAction
+      Category = 'copy'
+      Caption = 'actCopyAll'
+      OnExecute = actCopyAllExecute
+      OnUpdate = actCopyAllUpdate
+    end
   end
-  object PopupMenu1: TPopupMenu[2]
+  object PopupMenu1: TPopupMenu
     left = 38
     top = 75
     object MenuItem1: TMenuItem
@@ -89,6 +96,9 @@ inherited LocalsDlg: TLocalsDlg
     end
     object MenuItem6: TMenuItem
       Action = actCopyValue
+    end
+    object MenuItem7: TMenuItem
+      Action = actCopyAll
     end
   end
 end

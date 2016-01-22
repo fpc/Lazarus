@@ -49,6 +49,7 @@ type
     actEvaluate: TAction;
     actCopyName: TAction;
     actCopyValue: TAction;
+    actCopyAll: TAction;
     actWath: TAction;
     ActionList1: TActionList;
     lvLocals: TListView;
@@ -58,7 +59,10 @@ type
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
+    MenuItem7: TMenuItem;
     PopupMenu1: TPopupMenu;
+    procedure actCopyAllExecute(Sender: TObject);
+    procedure actCopyAllUpdate(Sender: TObject);
     procedure actCopyNameExecute(Sender: TObject);
     procedure actCopyValueExecute(Sender: TObject);
     procedure actEvaluateExecute(Sender: TObject);
@@ -135,6 +139,7 @@ begin
   actEvaluate.Caption := lisEvaluateModify;
   actCopyName.Caption := lisLocalsDlgCopyName;
   actCopyValue.Caption := lisLocalsDlgCopyValue;
+  actCopyAll.Caption := lisCopyAll;
 
   for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
     lvLocals.Column[i].Width := COL_WIDTHS[i];
@@ -174,6 +179,27 @@ begin
   Clipboard.Open;
   Clipboard.AsText := lvLocals.Selected.Caption;
   Clipboard.Close;
+end;
+
+procedure TLocalsDlg.actCopyAllExecute(Sender: TObject);
+Var
+  AStringList : TStringList;
+  I : Integer;
+begin
+  if lvLocals.Items.Count > 0 then begin
+    AStringList := TStringList.Create;
+    for I := 0 to lvLocals.Items.Count - 1 do
+      AStringList.Values[lvLocals.Items[I].Caption] := lvLocals.Items[I].SubItems[0];
+    Clipboard.Open;
+    Clipboard.AsText := AStringList.Text;
+    Clipboard.Close;
+    FreeAndNil(AStringList);
+  end;
+end;
+
+procedure TLocalsDlg.actCopyAllUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled := lvLocals.Items.Count > 0;
 end;
 
 procedure TLocalsDlg.actCopyValueExecute(Sender: TObject);
