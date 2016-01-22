@@ -50,6 +50,7 @@ type
     actCopyName: TAction;
     actCopyValue: TAction;
     actCopyAll: TAction;
+    actCopyRAWValue: TAction;
     actWath: TAction;
     ActionList1: TActionList;
     lvLocals: TListView;
@@ -60,6 +61,7 @@ type
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
+    MenuItem8: TMenuItem;
     PopupMenu1: TPopupMenu;
     procedure actCopyAllExecute(Sender: TObject);
     procedure actCopyAllUpdate(Sender: TObject);
@@ -68,6 +70,7 @@ type
     procedure actEvaluateExecute(Sender: TObject);
     procedure actInspectExecute(Sender: TObject);
     procedure actInspectUpdate(Sender: TObject);
+    procedure actCopyRAWValueExecute(Sender: TObject);
     procedure actWathExecute(Sender: TObject);
   private
     FUpdateFlags: set of (ufNeedUpdating);
@@ -89,6 +92,7 @@ type
     property SnapshotManager;
   end;
 
+function ValueToRAW(const AValue: string): string;
 
 implementation
 
@@ -119,6 +123,97 @@ begin
     TLocalsDlg(AForm).ColSizeSetter(AColId, ASize);
 end;
 
+function ValueToRAW(const AValue: string): string;
+var
+  I: Integer; //current char in AValue
+  M: Integer; //max char in AValue
+  L: Integer; //current char in Result
+
+  procedure ProcessCharConsts;
+  var
+    xNum: string;
+    xCharOrd: Integer;
+  begin
+    while (I <= M) and (AValue[I] = '#') do
+    begin
+      Inc(I);
+      xNum := '';
+      while (I <= M) and (AValue[I] in ['0'..'9']) do
+      begin
+        xNum := xNum + AValue[I]; // not really fast, but OK for this purpose
+        Inc(I);
+      end;
+      if TryStrToInt(xNum, xCharOrd) then
+      begin
+        Result[L] := Char(xCharOrd);
+        Inc(L);
+      end;
+    end;
+  end;
+
+  procedure ProcessQuote;
+  begin
+    Inc(I);
+    if AValue[I] = '''' then // "''" => "'"
+    begin
+      Result[L] := AValue[I];
+      Inc(L);
+    end else
+    if AValue[I] = '#' then // "'#13#10'" => [CRLF]
+      ProcessCharConsts;
+  end;
+
+  procedure ProcessString;
+  begin
+    I := 2;
+    L := 1;
+    M := Length(AValue);
+    if AValue[M] = '''' then
+      Dec(M);
+    SetLength(Result, Length(AValue)-2);
+    while I <= M do
+    begin
+      if AValue[I] = '''' then
+      begin
+        ProcessQuote;
+      end else
+      begin
+        Result[L] := AValue[I];
+        Inc(L);
+      end;
+      Inc(I);
+    end;
+    SetLength(Result, L-1);
+  end;
+
+  procedure ProcessOther;
+  begin
+    I := Pos('(', AValue);
+    if I > 0 then
+    begin
+      // Invalid enum value: "true (85)" => "85"
+      L := Pos(')', AValue, I+1);
+      Result := Copy(AValue, I+1, L-I-1);
+    end else
+    begin
+      //no formatting
+      Result := AValue;
+    end;
+  end;
+begin
+  // try to guess and format value back to raw data, e.g.
+  //   "'value'" => "value"
+  //   "true (85)" => "85"
+  if AValue='' then
+    Exit('');
+
+  if AValue[1] = '''' then
+    //string "'val''ue'" => "val'ue"
+    ProcessString
+  else
+    ProcessOther;
+end;
+
 { TLocalsDlg }
 
 constructor TLocalsDlg.Create(AOwner: TComponent);
@@ -139,6 +234,7 @@ begin
   actEvaluate.Caption := lisEvaluateModify;
   actCopyName.Caption := lisLocalsDlgCopyName;
   actCopyValue.Caption := lisLocalsDlgCopyValue;
+  actCopyRAWValue.Caption := lisLocalsDlgCopyRAWValue;
   actCopyAll.Caption := lisCopyAll;
 
   for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
@@ -148,6 +244,13 @@ end;
 procedure TLocalsDlg.actInspectUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := Assigned(lvLocals.Selected);
+end;
+
+procedure TLocalsDlg.actCopyRAWValueExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := ValueToRAW(lvLocals.Selected.SubItems[0]);
+  Clipboard.Close;
 end;
 
 procedure TLocalsDlg.actWathExecute(Sender: TObject);

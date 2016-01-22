@@ -75,6 +75,11 @@ object LocalsDlg: TLocalsDlg
       OnExecute = actCopyAllExecute
       OnUpdate = actCopyAllUpdate
     end
+    object actCopyRAWValue: TAction
+      Category = 'copy'
+      Caption = 'actCopyRAWValue'
+      OnExecute = actCopyRAWValueExecute
+    end
   end
   object PopupMenu1: TPopupMenu
     left = 38
@@ -96,6 +101,9 @@ object LocalsDlg: TLocalsDlg
     end
     object MenuItem6: TMenuItem
       Action = actCopyValue
+    end
+    object MenuItem8: TMenuItem
+      Action = actCopyRAWValue
     end
     object MenuItem7: TMenuItem
       Action = actCopyAll
