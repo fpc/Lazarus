@@ -178,7 +178,8 @@ type
 
     fdfSearchInHelpers,     // search in class/record/type helpers too
     fdfSearchInHelpersInTheEnd, // search in helpers after current class (used with inherited call in helper)
-    fdfTypeType             // do not resolve TMyString = type string;
+    fdfTypeType,            // do not resolve TMyString = type string;
+    fdfIgnoreOperatorError  // return expression type even if an operator error was found
     );
   TFindDeclarationFlags = set of TFindDeclarationFlag;
   
@@ -7322,6 +7323,7 @@ var
 var
   OldFlags: TFindDeclarationFlags;
   StackEntry: POperandAndOperator;
+  IsEnd, IsBinOpError: Boolean;
 begin
   {$IFDEF ShowExprEval}
   DebugLn(['[TFindDeclarationTool.FindExpressionResultType] Start',
@@ -7364,8 +7366,15 @@ begin
     DebugLn('[TFindDeclarationTool.FindExpressionResultType] Operator: ',
       GetAtom,' CurPos.EndPos=',dbgs(CurPos.EndPos),' EndPos=',dbgs(EndPos));
     {$ENDIF}
+    IsEnd := (CurPos.EndPos>EndPos) or (CurExprType.Desc=xtNone);
+    if not IsEnd then
+      IsBinOpError := not WordIsBinaryOperator.DoItCaseInsensitive(Src,CurPos.StartPos,
+        CurPos.EndPos-CurPos.StartPos)
+    else
+      IsBinOpError := False;
     // check if expression is completely parsed
-    if (CurPos.EndPos>EndPos) or (CurExprType.Desc=xtNone) then begin
+    if IsEnd or (IsBinOpError and (fdfIgnoreOperatorError in Params.Flags)) then
+    begin
       // -> execute complete stack
       ExecuteStack(true);
       Result:=ExprStack[StackPtr].Operand.Expr;
@@ -7374,9 +7383,7 @@ begin
       Params.Flags:=OldFlags;
       exit;
     end;
-    if not WordIsBinaryOperator.DoItCaseInsensitive(Src,CurPos.StartPos,
-            CurPos.EndPos-CurPos.StartPos)
-    then
+    if IsBinOpError then
       RaiseBinaryOperatorNotFound;
     // put operator on stack
     ExprStack[StackPtr].theOperator:=CurPos;
@@ -11539,7 +11546,7 @@ begin
   end else begin
     ExprType:=CleanExpressionType;
     Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,fdfSearchInHelpers,
-                   fdfTopLvlResolving,fdfFunctionResult];
+                   fdfTopLvlResolving,fdfFunctionResult,fdfIgnoreOperatorError];
     ExprType:=FindExpressionResultType(Params,TermPos.StartPos,TermPos.EndPos,
                                        @AliasType);
   end;
