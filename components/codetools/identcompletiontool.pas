@@ -2911,7 +2911,10 @@ var
     or IsPointedSystem
     or UpAtomIs('BEGIN')
     or UpAtomIs('TRY') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
-    or UpAtomIs('REPEAT') or UpAtomIs('ASM') then begin
+    or UpAtomIs('ASM')
+    or UpAtomIs('REPEAT') or UpAtomIs('UNTIL') or UpAtomIs('WHILE') or UpAtomIs('DO')
+    or UpAtomIs('IF') or UpAtomIs('THEN') or UpAtomIs('ELSE')
+    then begin
       // see fpc/compiler/psystem.pp
       AddCompilerProc('Assert','Condition:Boolean;const Message:String');
       AddCompilerProc('Assigned','P:Pointer','Boolean');
