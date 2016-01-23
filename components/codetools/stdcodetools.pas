@@ -1734,7 +1734,7 @@ var
     Node:=Tree.Root;
     while Node<>nil do begin
       case Node.Desc of
-      ctnUseUnit,ctnUsesSection,
+      ctnUseUnit,ctnUsesSection,ctnUseUnitNamespace,ctnUseUnitClearName,
       ctnProgram,ctnUnit,ctnPackage,ctnLibrary,ctnEndPoint:
         begin
           // skip node
