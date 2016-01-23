@@ -180,8 +180,8 @@ type
     procedure MoveSplitter(Offset: integer); override;
   public
     constructor Create(TheOwner: TComponent); override;
-    property DockBounds: TRect read FDockBounds write FDockBounds;
-    property DockParentClientSize: TSize read FDockParentClientSize write FDockParentClientSize;
+    property DockBounds: TRect read FDockBounds;
+    property DockParentClientSize: TSize read FDockParentClientSize;
     procedure UpdateDockBounds;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override; // any normal movement sets the DockBounds
     procedure SetBoundsPercentually;
