@@ -3505,9 +3505,11 @@ begin
       ReadConstant(true,false,[]);
       CurNode.EndPos:=CurPos.StartPos;
     end;
+    EndChildNode;
+    if IsModifier then // support modifiers not separated with semicolons: "faVolumeId = $00000008 platform deprecated;"
+      continue;
     if not (CurPos.Flag in AllowedAtomsBehind) then
       SaveRaiseCharExpectedButAtomFound(';');
-    EndChildNode;
     if CurPos.Flag<>cafSemicolon then
       break;
     ReadNextAtom;
