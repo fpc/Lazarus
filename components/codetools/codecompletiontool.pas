@@ -9346,7 +9346,7 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
   var
     OldCodePos: TCodePosition;
   begin
-    // Search only within the current instruction - stop on semicolon or else
+    // Search only within the current instruction - stop on semicolon or keywords
     //   (else isn't prepended by a semicolon in contrast to other keywords).
 
     Result := False;
@@ -9373,8 +9373,13 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
             FCompletingCursorNode:=nil;
           end;
         end;
-        cafWord:
-          if UpAtomIs('ELSE') then // stop on else
+        cafWord: // stop on keywords
+          if UpAtomIs('BEGIN') or UpAtomIs('END')
+          or UpAtomIs('TRY') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
+          or UpAtomIs('FOR') or UpAtomIs('TO') or UpAtomIs('DO')
+          or UpAtomIs('REPEAT') or UpAtomIs('UNTIL') or UpAtomIs('WHILE')
+          or UpAtomIs('IF') or UpAtomIs('THEN') or UpAtomIs('CASE') or UpAtomIs('ELSE')
+          then
             break;
         cafSemicolon:
           break; // stop on semicolon
