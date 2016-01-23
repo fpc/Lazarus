@@ -25,7 +25,7 @@
     <License Value="MPL - Mozilla public license
 "/>
     <Version Major="1"/>
-    <Files Count="16">
+    <Files Count="17">
       <Item1>
         <Filename Value="ipanim.pas"/>
         <UnitName Value="IpAnim"/>
@@ -48,51 +48,56 @@
         <UnitName Value="Ipfilebroker"/>
       </Item5>
       <Item6>
+        <Filename Value="iphttpbroker.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="iphttpbroker"/>
+      </Item6>
+      <Item7>
         <Filename Value="iphtml.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="IpHtml"/>
-      </Item6>
-      <Item7>
+      </Item7>
+      <Item8>
         <Filename Value="iphtmlpv.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="IpHtmlPv"/>
-      </Item7>
-      <Item8>
-        <Filename Value="ipmsg.pas"/>
-        <UnitName Value="IpMsg"/>
       </Item8>
       <Item9>
-        <Filename Value="ipstrms.pas"/>
-        <UnitName Value="IpStrms"/>
+        <Filename Value="ipmsg.pas"/>
+        <UnitName Value="IpMsg"/>
       </Item9>
       <Item10>
-        <Filename Value="iputils.pas"/>
-        <UnitName Value="IpUtils"/>
+        <Filename Value="ipstrms.pas"/>
+        <UnitName Value="IpStrms"/>
       </Item10>
       <Item11>
-        <Filename Value="ipcss.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="iputils.pas"/>
+        <UnitName Value="IpUtils"/>
       </Item11>
       <Item12>
-        <Filename Value="iphtmltablist.pas"/>
-        <UnitName Value="IpHtmlTabList"/>
+        <Filename Value="ipcss.inc"/>
+        <Type Value="Include"/>
       </Item12>
       <Item13>
-        <Filename Value="iphtmlprop.pas"/>
-        <UnitName Value="iphtmlprop"/>
+        <Filename Value="iphtmltablist.pas"/>
+        <UnitName Value="IpHtmlTabList"/>
       </Item13>
       <Item14>
-        <Filename Value="iphtmlblocklayout.pas"/>
-        <UnitName Value="ipHtmlBlockLayout"/>
+        <Filename Value="iphtmlprop.pas"/>
+        <UnitName Value="iphtmlprop"/>
       </Item14>
       <Item15>
-        <Filename Value="iphtmltablelayout.pas"/>
-        <UnitName Value="ipHtmlTableLayout"/>
+        <Filename Value="iphtmlblocklayout.pas"/>
+        <UnitName Value="ipHtmlBlockLayout"/>
       </Item15>
       <Item16>
+        <Filename Value="iphtmltablelayout.pas"/>
+        <UnitName Value="ipHtmlTableLayout"/>
+      </Item16>
+      <Item17>
         <Filename Value="iphtmlgenerated.inc"/>
         <Type Value="Binary"/>
-      </Item16>
+      </Item17>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
