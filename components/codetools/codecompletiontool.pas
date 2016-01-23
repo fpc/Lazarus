@@ -9337,8 +9337,7 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
     RaiseExceptionInstance(TempE);
   end;
 
-  function TryAssignment(CleanCursorPos: Integer; CursorNode: TCodeTreeNode;
-    var LastCodeToolsError: ECodeToolError; LastCodeToolsErrorCleanPos: Integer): Boolean;
+  function TryAssignment(CleanCursorPos: Integer; CursorNode: TCodeTreeNode): Boolean;
   begin
     // Search only within the current instruction - stop on semicolon or else
     //   (else isn't prepended by a semicolon in contrast to other keywords).
@@ -9353,15 +9352,8 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
         begin
           // OK FOUND!
           ReadPriorAtom;
-          try
-            if TryComplete(CursorNode, CurPos.StartPos) then
-              exit(true);
-          except
-            if LastCodeToolsError<>nil then
-              ClearAndRaise(LastCodeToolsError, LastCodeToolsErrorCleanPos) // in case of error, raise the last one
-            else
-              raise;
-          end;
+          if TryComplete(CursorNode, CurPos.StartPos) then
+            exit(true);
           break;
         end;
         cafWord:
@@ -9435,7 +9427,7 @@ begin
     end;
 
     // find first assignment before current.
-    if TryAssignment(CleanCursorPos, CursorNode, LastCodeToolsError, LastCodeToolsErrorCleanPos) then
+    if TryAssignment(CleanCursorPos, CursorNode) then
       Exit(true);
 
     if LastCodeToolsError<>nil then // no assignment found, reraise
