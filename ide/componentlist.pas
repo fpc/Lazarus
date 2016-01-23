@@ -62,18 +62,20 @@ type
     TabSheetPaletteTree: TTabSheet;
     TabSheetInheritance: TTabSheet;
     TabSheetList: TTabSheet;
+    tmDeselect: TTimer;
     TreeFilterEd: TTreeFilterEdit;
     procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure ListTreeSelectionChanged(Sender: TObject);
     procedure miCollapseAllClick(Sender: TObject);
     procedure miCollapseClick(Sender: TObject);
     procedure miExpandAllClick(Sender: TObject);
     procedure miExpandClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
-    procedure ComponentsDblClick(Sender: TObject);
-    procedure ComponentsChange(Sender: TObject; {%H-}Node: TTreeNode);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure ComponentsDblClick(Sender: TObject);    
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);    
     procedure pmCollapseExpandPopup(Sender: TObject);
+    procedure tmDeselectTimer(Sender: TObject);
     procedure TreeFilterEdAfterFilter(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
     procedure TreeKeyPress(Sender: TObject; var Key: char);
@@ -85,6 +87,9 @@ type
     FClassList: TStringList;
     FKeepSelected: Boolean;
     FFirstTimeAnchored: Boolean;
+    FIgnoreSelection: Boolean;
+    FPageControlChange: Boolean;
+    FActiveTree: TTreeView;
     procedure ClearSelection;
     procedure SelectionWasChanged;
     procedure ComponentWasAdded({%H-}ALookupRoot, {%H-}AComponent: TComponent;
@@ -114,7 +119,7 @@ begin
   inherited Create(AOwner);
 
   Name:=NonModalIDEWindowNames[nmiwComponentList];
-
+  FActiveTree := ListTree;
   //Translations
   LabelSearch.Caption := lisMenuFind;
   Caption := lisCmpLstComponents;
@@ -201,11 +206,16 @@ begin
     else
       Node := Nil;
   aTree.Selected := Node;
+  if aTree.Selected <> nil then
+    aTree.Selected.MakeVisible;
 end;
 
 procedure TComponentListForm.SelectionWasChanged;
 begin
   // ToDo: Select the component in active treeview.
+  if FIgnoreSelection then
+    Exit;
+
   if ListTree.IsVisible then
     SelectTreeComp(ListTree)
   else if PalletteTree.IsVisible then
@@ -386,8 +396,7 @@ begin
   OKButtonClick(nil);       // Select and close this form
 end;
 
-procedure TComponentListForm.ComponentsChange(Sender: TObject; Node: TTreeNode);
-// This is used for all 3 treeviews
+procedure TComponentListForm.ListTreeSelectionChanged(Sender: TObject);
 var
   AComponent: TRegisteredComponent;
 begin
@@ -401,9 +410,17 @@ begin
     InheritanceTree.Selected := Nil;
   end
   else begin
+    if FPageControlChange then
+      Exit;
     AComponent:=GetSelectedComponent;
     if AComponent<>nil then
-      IDEComponentPalette.SetSelectedComp(AComponent, ssShift in GetKeyShiftState);
+      IDEComponentPalette.SetSelectedComp(AComponent, ssShift in GetKeyShiftState)
+    else
+    begin
+      FIgnoreSelection := True;
+      IDEComponentPalette.SetSelectedComp(nil, False);
+      FIgnoreSelection := False;
+    end;
     UpdateButtonState;
   end;
 end;
@@ -417,17 +434,39 @@ end;
 
 procedure TComponentListForm.PageControlChange(Sender: TObject);
 begin
+  FPageControlChange := True;
   Assert(PageControl.PageIndex <> PrevPageIndex, Format(
     'TComponentListForm.PageControlChange: PageControl.PageIndex = PrevPageIndex = %d',
     [PrevPageIndex]));
   case PageControl.PageIndex of
-    0: TreeFilterEd.FilteredTreeview := ListTree;
-    1: TreeFilterEd.FilteredTreeview := PalletteTree;
-    2: TreeFilterEd.FilteredTreeview := InheritanceTree;
+    0: begin
+         TreeFilterEd.FilteredTreeview := ListTree;
+         FActiveTree := ListTree;
+        end;
+    1: begin
+         TreeFilterEd.FilteredTreeview := PalletteTree;
+         FActiveTree := PalletteTree;
+       end;
+    2: begin
+         TreeFilterEd.FilteredTreeview := InheritanceTree;
+         FActiveTree := InheritanceTree;
+        end;
   end;
   TreeFilterEd.InvalidateFilter;
   PrevPageIndex := PageControl.PageIndex;
+  FActiveTree.BeginUpdate;
+  tmDeselect.Enabled := True;
 end;
+
+procedure TComponentListForm.tmDeselectTimer(Sender: TObject);
+begin
+  tmDeselect.Enabled := False;
+  FActiveTree.Selected := nil;
+  SelectionWasChanged;
+  FActiveTree.EndUpdate;
+  FPageControlChange := False;
+end;
+
 
 procedure TComponentListForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
@@ -456,10 +495,10 @@ procedure TComponentListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: 
 begin
   if Key=VK_ESCAPE then
   begin
-    if ListTree.Selected = nil then //close only if no component is selected
+    if IDEComponentPalette.Selected = nil then //close only if no component is selected
       Close
     else
-      ListTree.Selected := nil; //unselect if component is selected
+      ClearSelection; //unselect if component is selected
   end;
 end;
 
@@ -470,6 +509,7 @@ var
 begin
   AComponent := GetSelectedComponent;
   if AComponent<>nil then begin
+    FPageControlChange:=True;
     IDEComponentPalette.Selected := AComponent;
     FKeepSelected := True;
     Close;
@@ -528,7 +568,6 @@ begin
     miCollapse.Enabled := (Node.HasChildren) and (Node.Expanded);
   end;
 end;
-
 
 end.
 

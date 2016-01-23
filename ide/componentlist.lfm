@@ -54,9 +54,9 @@ object ComponentListForm: TComponentListForm
           ShowLines = False
           ShowRoot = False
           TabOrder = 0
-          OnChange = ComponentsChange
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
+          OnSelectionChanged = ListTreeSelectionChanged
           Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoToolTips]
         end
       end
@@ -91,9 +91,9 @@ object ComponentListForm: TComponentListForm
           ScrollBars = ssAutoBoth
           ShowLines = False
           TabOrder = 0
-          OnChange = ComponentsChange
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
+          OnSelectionChanged = ListTreeSelectionChanged
           Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowRoot, tvoToolTips]
         end
       end
@@ -128,9 +128,9 @@ object ComponentListForm: TComponentListForm
           RowSelect = True
           ScrollBars = ssAutoBoth
           TabOrder = 0
-          OnChange = ComponentsChange
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
+          OnSelectionChanged = ListTreeSelectionChanged
           Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
         end
       end
@@ -230,5 +230,12 @@ object ComponentListForm: TComponentListForm
     Width = 24
     left = 56
     top = 168
+  end
+  object tmDeselect: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = tmDeselectTimer
+    left = 155
+    top = 172
   end
 end
