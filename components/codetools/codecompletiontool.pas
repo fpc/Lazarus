@@ -9256,14 +9256,13 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
   end;
 
   function TryFirstLocalIdentOccurence(CursorNode: TCodeTreeNode;
-    OrigCleanCursorPos, CleanCursorPos: Integer): boolean;
+    CleanCursorPos: Integer): boolean;
   var
     AtomContextNode, StatementNode: TCodeTreeNode;
     IdentAtom, LastCurPos: TAtomPosition;
     UpIdentifier: string;
     LastAtomIsDot: Boolean;
     Params: TFindDeclarationParams;
-    OldCodePos: TCodePosition;
   begin
     Result := false;
 
@@ -9313,10 +9312,7 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
           begin
             FCompletingCursorNode:=CursorNode;
             try
-              if not CleanPosToCodePos(OrigCleanCursorPos,OldCodePos) then
-                RaiseException('TCodeCompletionCodeTool.TryFirstLocalIdentOccurence CleanPosToCodePos');
               CompleteCode:=TryCompleteLocalVar(LastCurPos.StartPos,AtomContextNode);
-              AdjustCursor(OldCodePos,OldTopLine,NewPos,NewTopLine);
               exit(true);
             finally
               FCompletingCursorNode:=nil;
@@ -9331,9 +9327,58 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
     end;
   end;
 
+  procedure ClearAndRaise(var E: ECodeToolError; CleanPos: Integer);
+  var
+    TempE: ECodeToolError;
+  begin
+    TempE := E;
+    E := nil;
+    MoveCursorToCleanPos(CleanPos);
+    RaiseExceptionInstance(TempE);
+  end;
+
+  function TryAssignment(CleanCursorPos: Integer; CursorNode: TCodeTreeNode;
+    var LastCodeToolsError: ECodeToolError; LastCodeToolsErrorCleanPos: Integer): Boolean;
+  begin
+    // Search only within the current instruction - stop on semicolon or else
+    //   (else isn't prepended by a semicolon in contrast to other keywords).
+
+    Result := False;
+    MoveCursorToCleanPos(CleanCursorPos);
+    while CurPos.StartPos > 0 do
+    begin
+      ReadPriorAtom;
+      case CurPos.Flag of
+        cafAssignment:
+        begin
+          // OK FOUND!
+          ReadPriorAtom;
+          try
+            if TryComplete(CursorNode, CurPos.StartPos) then
+              exit(true);
+          except
+            if LastCodeToolsError<>nil then
+              ClearAndRaise(LastCodeToolsError, LastCodeToolsErrorCleanPos) // in case of error, raise the last one
+            else
+              raise;
+          end;
+          break;
+        end;
+        cafWord:
+          if UpAtomIs('ELSE') then // stop on else
+            break;
+        cafSemicolon:
+          break; // stop on semicolon
+      end;
+    end;
+  end;
+
 var
   CleanCursorPos, OrigCleanCursorPos: integer;
   CursorNode: TCodeTreeNode;
+  OldCodePos: TCodePosition;
+  LastCodeToolsErrorCleanPos: Integer;
+  LastCodeToolsError: ECodeToolError;
 begin
   //DebugLn(['TCodeCompletionCodeTool.CompleteCode CursorPos=',Dbgs(CursorPos),' OldTopLine=',OldTopLine]);
 
@@ -9364,18 +9409,46 @@ begin
   CodeCompleteSrcChgCache:=SourceChangeCache;
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
-  if TryComplete(CursorNode, CleanCursorPos) then
-    exit(true);
+  try
+    LastCodeToolsError := nil;
+    try
+      if TryComplete(CursorNode, CleanCursorPos) then
+        exit(true);
 
-  { Find the first occurence of the (local) identifier at cursor in current
-    procedure body and try again. }
-  if TryFirstLocalIdentOccurence(CursorNode,OrigCleanCursorPos,CleanCursorPos) then
-    exit(true);
+      { Find the first occurence of the (local) identifier at cursor in current
+        procedure body and try again. }
+      if TryFirstLocalIdentOccurence(CursorNode,CleanCursorPos) then
+        exit(true);
 
-  if CompleteMethodByBody(OrigCleanCursorPos,OldTopLine,CursorNode,
-                         NewPos,NewTopLine,SourceChangeCache)
-  then
-    exit(true);
+      if CompleteMethodByBody(OrigCleanCursorPos,OldTopLine,CursorNode,
+                             NewPos,NewTopLine,SourceChangeCache)
+      then
+        exit(true);
+    except
+      on E: ECodeToolError do
+      begin
+        // we have a codetool error, let's try to find the assignment in any case
+        LastCodeToolsErrorCleanPos := CurPos.StartPos;
+        LastCodeToolsError := ECodeToolError.Create(E.Sender, E.Message);
+      end else
+        raise;
+    end;
+
+    // find first assignment before current.
+    if TryAssignment(CleanCursorPos, CursorNode, LastCodeToolsError, LastCodeToolsErrorCleanPos) then
+      Exit(true);
+
+    if LastCodeToolsError<>nil then // no assignment found, reraise
+      ClearAndRaise(LastCodeToolsError, LastCodeToolsErrorCleanPos);
+  finally
+    LastCodeToolsError.Free;
+    if Result then
+    begin
+      if not CleanPosToCodePos(OrigCleanCursorPos,OldCodePos) then
+        RaiseException('TCodeCompletionCodeTool.CompleteCode CleanPosToCodePos');
+      AdjustCursor(OldCodePos,OldTopLine,NewPos,NewTopLine);
+    end;
+  end;
 
   {$IFDEF CTDEBUG}
   DebugLn('TCodeCompletionCodeTool.CompleteCode  nothing to complete ... ');
