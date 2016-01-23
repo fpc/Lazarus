@@ -1018,7 +1018,7 @@ var
     with imageBar do begin
       TopLeft := ParentChart.GraphToImage(graphBar.a);
       BottomRight := ParentChart.GraphToImage(graphBar.b);
-      NormalizeRect(imageBar);
+      TAGeometry.NormalizeRect(imageBar);
 
       // Draw a line instead of an empty rectangle.
       if Bottom = Top then Dec(Top);
