@@ -59,6 +59,7 @@ type
     procedure FakeExitEnter(Sender: TObject);
     procedure FakeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FakeKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FakeUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure SetDesignedForm(const AValue: IDesignedForm);
   private
     { private declarations }
@@ -814,6 +815,7 @@ begin
   FFakeFocusControl.Top := -100;
   FFakeFocusControl.OnKeyDown := FakeKeyDown;
   FFakeFocusControl.OnKeyUp := FakeKeyUp;
+  FFakeFocusControl.OnUTF8KeyPress := FakeUTF8KeyPress;
   FFakeFocusControl.OnEnter := FakeExitEnter;
   FFakeFocusControl.OnExit := FakeExitEnter;
 
@@ -878,7 +880,7 @@ begin
   LMsg.msg := CN_KEYDOWN;
   LMsg.CharCode := Key;
   LWndProc(TLMessage(LMsg));
-  Key := 0;
+  Key := LMsg.CharCode;
 end;
 
 procedure TResizerFrame.FakeKeyUp(Sender: TObject; var Key: Word;
@@ -892,7 +894,13 @@ begin
   LMsg.msg := CN_KEYUP;
   LMsg.CharCode := Key;
   LWndProc(TLMessage(LMsg));
-  Key := 0;
+  Key := LMsg.CharCode;
+end;
+
+procedure TResizerFrame.FakeUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char
+  );
+begin
+  FDesignedForm.Form.IntfUTF8KeyPress(UTF8Key, 1, False);
 end;
 
 procedure TResizerFrame.PositionNodes(AroundControl: TWinControl);
