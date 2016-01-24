@@ -577,7 +577,7 @@ procedure TInputHistories.SetLazarusDefaultFilename;
 var
   ConfFileName: string;
 begin
-  ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+DefaultHistoryFile);
+  ConfFileName:=IncludeTrailingPathDelimiter(GetPrimaryConfigPath)+DefaultHistoryFile;
   CopySecondaryConfigFile(DefaultHistoryFile);
   FFilename:=ConfFilename;
 end;

@@ -209,7 +209,7 @@ procedure THelpOptions.SetDefaultFilename;
 var
   ConfFileName: string;
 begin
-  ConfFileName := SetDirSeparators(GetPrimaryConfigPath+'/'+DefaultHelpOptsFile);
+  ConfFileName := AppendPathDelim(GetPrimaryConfigPath)+DefaultHelpOptsFile;
   CopySecondaryConfigFile(DefaultHelpOptsFile);
   if (not FileExistsUTF8(ConfFileName)) then
     DebugLn('NOTE: help options config file not found - using defaults');

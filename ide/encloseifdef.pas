@@ -433,7 +433,7 @@ var
   ConfFileName: String;
 begin
   Result:=nil;
-  ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/encloseifdef.xml');
+  ConfFileName:=AppendPathDelim(GetPrimaryConfigPath)+'encloseifdef.xml';
   try
     if (not FileExistsUTF8(ConfFileName)) then
       Result:=TXMLConfig.CreateClean(ConfFileName)

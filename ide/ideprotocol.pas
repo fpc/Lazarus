@@ -80,7 +80,7 @@ var
   Config: TConfigStorage;
 begin
   if Filename='' then
-    Filename:=SetDirSeparators(GetPrimaryConfigPath+'/'+IDEProtocolFilename);
+    Filename:=IncludeTrailingPathDelimiter(GetPrimaryConfigPath)+IDEProtocolFilename;
   try
     Config:=DefaultConfigClass.Create(Filename,true);
     try
@@ -100,7 +100,7 @@ var
   Config: TConfigStorage;
 begin
   if Filename='' then
-    Filename:=SetDirSeparators(GetPrimaryConfigPath+'/'+IDEProtocolFilename);
+    Filename:=IncludeTrailingPathDelimiter(GetPrimaryConfigPath)+IDEProtocolFilename;
   try
     Config:=DefaultConfigClass.Create(Filename,false);
     try
