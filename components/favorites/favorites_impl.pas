@@ -234,7 +234,7 @@ begin
   FFavoriteProjects.Duplicates := dupIgnore;
   FFavoriteProjects.CaseSensitive := False;
   FFavoriteProjects.Sorted := True;
-  FConfig := TXMLConfig.Create(LazarusIDE.GetPrimaryConfigPath+'favorites.xml');
+  FConfig := TXMLConfig.Create(IncludeTrailingPathDelimiter(LazarusIDE.GetPrimaryConfigPath)+'favorites.xml');
   LoadFromConfig;
 
   xToolButton := IDEToolButtonCategories.FindItemByCommand(ecOpen);
