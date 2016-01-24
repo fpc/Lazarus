@@ -86,7 +86,7 @@ type
     // List for Component inheritence view
     FClassList: TStringList;
     FKeepSelected: Boolean;
-    FFirstTimeAnchored: Boolean;
+    FInitialized: Boolean;
     FIgnoreSelection: Boolean;
     FPageControlChange: Boolean;
     FActiveTree: TTreeView;
@@ -156,31 +156,19 @@ begin
 end;
 
 procedure TComponentListForm.FormShow(Sender: TObject);
-var
-  ParentParent: TWinControl;  // Used for checking if the form is anchored.
 begin
-  ParentParent := Nil;
-  if Assigned(Parent) then
-    ParentParent := Parent.Parent;
   //DebugLn(['*** TComponentListForm.FormShow, Parent=', Parent, ', Parent.Parent=', ParentParent]);
-  ButtonPanel.Visible := ParentParent=Nil;
-  if ButtonPanel.Visible then begin
+  ButtonPanel.Visible := (HostDockSite=Nil) or (HostDockSite.Parent=Nil);
+  if ButtonPanel.Visible then
+  begin                              // ComponentList is undocked
     PageControl.AnchorSideBottom.Side := asrTop;
     UpdateButtonState;
-  end
-  else
-  begin
-    PageControl.AnchorSideBottom.Side := asrBottom;
-    // Only with AnchorDocking. This is a temporary solution, many usability issues remain.
-    FFirstTimeAnchored := True;
-  end;
-
-  if not Assigned(Parent) then //only in undocked IDE
-  begin
-    if TreeFilterEd.CanFocus then
+    if TreeFilterEd.CanFocus then    // Focus filter if window is undocked
       TreeFilterEd.SetFocus;
     TreeFilterEd.SelectAll;
-  end;
+  end
+  else                               // ComponentList is docked
+    PageControl.AnchorSideBottom.Side := asrBottom;
 end;
 
 procedure TComponentListForm.FormActivate(Sender: TObject);
@@ -400,16 +388,8 @@ procedure TComponentListForm.ListTreeSelectionChanged(Sender: TObject);
 var
   AComponent: TRegisteredComponent;
 begin
-  if FFirstTimeAnchored then
+  if FInitialized then
   begin
-    // Only run once when the anchored IDE starts.
-    FFirstTimeAnchored := False;
-    IDEComponentPalette.SetSelectedComp(nil, False);
-    ListTree.Selected := Nil;
-    PalletteTree.Selected := Nil;
-    InheritanceTree.Selected := Nil;
-  end
-  else begin
     if FPageControlChange then
       Exit;
     AComponent:=GetSelectedComponent;
@@ -422,7 +402,15 @@ begin
       FIgnoreSelection := False;
     end;
     UpdateButtonState;
-  end;
+  end
+  else begin
+    // Only run once when the IDE starts.
+    FInitialized := True;
+    IDEComponentPalette.SetSelectedComp(nil, False);
+    ListTree.Selected := Nil;
+    PalletteTree.Selected := Nil;
+    InheritanceTree.Selected := Nil;
+  end
 end;
 
 procedure TComponentListForm.TreeKeyPress(Sender: TObject; var Key: char);
