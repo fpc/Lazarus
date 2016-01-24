@@ -184,6 +184,7 @@ type
     procedure HandleScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
     procedure HandleRemoteControlTimer(Sender: TObject);
     procedure HandleSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
+    procedure ForwardKeyToObjectInspector(Sender: TObject; Key: TUTF8Char);
     procedure OIChangedTimerTimer(Sender: TObject);
     procedure LazInstancesStartNewInstance(const aFiles: TStrings;
       var Result: TStartNewInstanceResult; var outSourceWindowHandle: HWND);
@@ -3463,6 +3464,7 @@ begin
     OnViewLFM:=@OnDesignerViewLFM;
     OnSaveAsXML:=@OnDesignerSaveAsXML;
     OnShowObjectInspector:=@OnDesignerShowObjectInspector;
+    OnForwardKeyToObjectInspector:=@ForwardKeyToObjectInspector;
     OnShowAnchorEditor:=@OnDesignerShowAnchorEditor;
     OnShowTabOrderEditor:=@OnDesignerShowTabOrderEditor;
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
@@ -11783,6 +11785,31 @@ end;
 procedure TMainIDE.HandleSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
 begin
   AComponentClass := DoSelectFrame;
+end;
+
+procedure TMainIDE.ForwardKeyToObjectInspector(Sender: TObject; Key: TUTF8Char);
+var
+  Kind: TTypeKind;
+begin
+  CreateObjectInspector(False);
+  IDEWindowCreators.ShowForm(ObjectInspector1, True);
+  if ObjectInspector1.IsVisible then
+  begin
+    ObjectInspector1.FocusGrid;
+    if ObjectInspector1.GetActivePropertyGrid.CanEditRowValue(False) then
+    begin
+      Kind := ObjectInspector1.GetActivePropertyGrid.GetActiveRow.Editor.GetPropType^.Kind;
+      if Kind in [tkInteger, tkInt64, tkSString, tkLString, tkAString, tkWString, tkUString] then
+      begin
+        ObjectInspector1.GetActivePropertyGrid.CurrentEditValue := Key;
+        ObjectInspector1.GetActivePropertyGrid.FocusCurrentEditor;
+      end;
+    end
+  end;
+  case DisplayState of
+    dsSource: DisplayState := dsInspector;
+    dsForm: DisplayState := dsInspector2;
+  end;
 end;
 
 procedure TMainIDE.OIChangedTimerTimer(Sender: TObject);

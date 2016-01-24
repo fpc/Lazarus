@@ -5959,7 +5959,18 @@ begin
     UTF8KeyPress(UTF8Key);
     if UTF8Key = '' then Exit;
   end;
-  
+
+  // redirect to designer
+  if (csDesigning in ComponentState) then
+  begin
+    F := GetDesignerForm(Self);
+    if Assigned(F) and Assigned(F.Designer) then
+    begin
+      F.Designer.UTF8KeyPress(UTF8Key);
+      if UTF8Key = '' then Exit;
+    end;
+  end;
+
   Result := False;
 end;
 

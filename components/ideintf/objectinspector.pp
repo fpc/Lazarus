@@ -436,6 +436,7 @@ type
     destructor Destroy;  override;
     function InitHints: boolean;
     function CanEditRowValue(CheckFocus: boolean): boolean;
+    procedure FocusCurrentEditor;
     procedure SaveChanges;
     function ConsistencyCheck: integer;
     procedure EraseBackground({%H-}DC: HDC); override;
@@ -1199,6 +1200,16 @@ end;
 function TOICustomPropertyGrid.IsCurrentEditorAvailable: Boolean;
 begin
   Result := (FCurrentEdit <> nil) and InRange(FItemIndex, 0, FRows.Count - 1);
+end;
+
+procedure TOICustomPropertyGrid.FocusCurrentEditor;
+begin
+  if (IsCurrentEditorAvailable) and (FCurrentEdit.CanFocus) then
+  begin
+    FCurrentEdit.SetFocus;
+    if (FCurrentEdit is TEdit) then
+      (FCurrentEdit as TEdit).SelStart := Length((FCurrentEdit as TEdit).Text);
+  end;
 end;
 
 function TOICustomPropertyGrid.ConsistencyCheck: integer;

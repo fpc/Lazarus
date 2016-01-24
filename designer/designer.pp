@@ -73,6 +73,7 @@ type
     var Handled: boolean) of object;
   TOnComponentAdded = procedure(Sender: TObject; AComponent: TComponent;
                            ARegisteredComponent: TRegisteredComponent) of object;
+  TOnForwardKeyToObjectInspector = procedure(Sender: TObject; Key: TUTF8Char) of object;
 
   TDesignerFlag = (
     dfHasSized,
@@ -125,6 +126,7 @@ type
     FOnShowOptions: TNotifyEvent;
     FOnComponentAdded: TOnComponentAdded;
     FOnViewLFM: TNotifyEvent;
+    FOnForwardKeyToObjectInspector: TOnForwardKeyToObjectInspector;
     FShiftState: TShiftState;
     FTheFormEditor: TCustomFormEditor;
     FPopupMenuComponentEditor: TBaseComponentEditor;
@@ -164,6 +166,7 @@ type
     procedure SetShowEditorHints(const AValue: boolean);
     procedure SetShowGrid(const AValue: boolean);
     procedure SetSnapToGrid(const AValue: boolean);
+    procedure DoOnForwardKeyToObjectInspector(Sender: TObject; Key: TUTF8Char);
   protected
     MouseDownComponent: TComponent;
     MouseDownSender: TComponent;
@@ -316,6 +319,7 @@ type
 
     function IsDesignMsg(Sender: TControl;
                                   var TheMessage: TLMessage): Boolean; override;
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     function UniqueName(const BaseName: string): string; override;
     Procedure RemovePersistentAndChilds(APersistent: TPersistent);
     procedure Notification({%H-}AComponent: TComponent;
@@ -370,6 +374,8 @@ type
     property OnShowObjectInspector: TNotifyEvent read FOnShowObjectInspector write FOnShowObjectInspector;
     property OnShowAnchorEditor: TNotifyEvent read FOnShowAnchorEditor write FOnShowAnchorEditor;
     property OnShowTabOrderEditor: TNotifyEvent read FOnShowTabOrderEditor write FOnShowTabOrderEditor;
+    property OnForwardKeyToObjectInspector: TOnForwardKeyToObjectInspector read FOnForwardKeyToObjectInspector
+                                                                          write FOnForwardKeyToObjectInspector;
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
     property ShowBorderSpacing: boolean read GetShowBorderSpacing write SetShowBorderSpacing;
     property ShowEditorHints: boolean read GetShowEditorHints write SetShowEditorHints;
@@ -2807,7 +2813,7 @@ begin
             GlobalDesignHook.ComponentRenamed(Current);
             Modified;
           end;
-        end
+        end; // don't forget the semicolon before else !!!
 
       else
         Handled := False;
@@ -3034,6 +3040,19 @@ end;
 function TDesigner.UniqueName(const BaseName: string): string;
 begin
   Result:=TheFormEditor.CreateUniqueComponentName(BaseName,LookupRoot);
+end;
+
+procedure TDesigner.UTF8KeyPress(var UTF8Key: TUTF8Char);
+begin
+  if ((Length(UTF8Key) = 1) and (Ord(UTF8Key[1]) < 32))
+  or (UTF8Key = sLineBreak) then // pass only printable characters
+    Exit;
+
+  if UTF8Key<>'' then
+  begin
+    DoOnForwardKeyToObjectInspector(Self, UTF8Key);
+    UTF8Key := '';
+  end;
 end;
 
 procedure TDesigner.Modified;
@@ -4312,6 +4331,13 @@ procedure TDesigner.SetSnapToGrid(const AValue: boolean);
 begin
   if SnapToGrid=AValue then exit;
   EnvironmentOptions.SnapToGrid:=AValue;
+end;
+
+procedure TDesigner.DoOnForwardKeyToObjectInspector(Sender: TObject;
+  Key: TUTF8Char);
+begin
+  if Assigned(FOnForwardKeyToObjectInspector) then
+    FOnForwardKeyToObjectInspector(Self, Key);
 end;
 
 function TDesigner.DoFormActivated(Active: boolean): boolean;
