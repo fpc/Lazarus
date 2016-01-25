@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, FileProcs, LazFileCache, DiffPatch, IDEProcs,
   AvgLvlTree, Laz2_XMLCfg, SynEditTypes, LazConf, Dialogs, LazUTF8, IDEDialogs,
-  ProjectIntf;
+  ProjectIntf, LazFileUtils;
 
 {$ifdef Windows}
 {$define CaseInsensitiveFilenames}
@@ -577,7 +577,7 @@ procedure TInputHistories.SetLazarusDefaultFilename;
 var
   ConfFileName: string;
 begin
-  ConfFileName:=IncludeTrailingPathDelimiter(GetPrimaryConfigPath)+DefaultHistoryFile;
+  ConfFileName:=AppendPathDelim(GetPrimaryConfigPath)+DefaultHistoryFile;
   CopySecondaryConfigFile(DefaultHistoryFile);
   FFilename:=ConfFilename;
 end;

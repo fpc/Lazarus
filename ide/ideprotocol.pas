@@ -32,7 +32,8 @@ unit IDEProtocol;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LazConf, BaseIDEIntf, LazConfigStorage;
+  Classes, SysUtils, LCLProc, LazConf, BaseIDEIntf, LazConfigStorage,
+  LazFileUtils;
   
 const
   IDEProtocolOptsVersion: integer = 1;
@@ -80,7 +81,7 @@ var
   Config: TConfigStorage;
 begin
   if Filename='' then
-    Filename:=IncludeTrailingPathDelimiter(GetPrimaryConfigPath)+IDEProtocolFilename;
+    Filename:=AppendPathDelim(GetPrimaryConfigPath)+IDEProtocolFilename;
   try
     Config:=DefaultConfigClass.Create(Filename,true);
     try
@@ -100,7 +101,7 @@ var
   Config: TConfigStorage;
 begin
   if Filename='' then
-    Filename:=IncludeTrailingPathDelimiter(GetPrimaryConfigPath)+IDEProtocolFilename;
+    Filename:=AppendPathDelim(GetPrimaryConfigPath)+IDEProtocolFilename;
   try
     Config:=DefaultConfigClass.Create(Filename,false);
     try
