@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, ToolBarIntf, IDEImagesIntf, Graphics, PackageIntf,
   Menus, LazIDEIntf, ProjectIntf, Laz2_XMLCfg, IDEOptionsIntf,
-  IDECommands, ComCtrls, favoritesstr, ImgList;
+  IDECommands, ComCtrls, favoritesstr, ImgList, LazFileUtils;
 
 type
   TFavoritesHandler = class
@@ -234,7 +234,7 @@ begin
   FFavoriteProjects.Duplicates := dupIgnore;
   FFavoriteProjects.CaseSensitive := False;
   FFavoriteProjects.Sorted := True;
-  FConfig := TXMLConfig.Create(IncludeTrailingPathDelimiter(LazarusIDE.GetPrimaryConfigPath)+'favorites.xml');
+  FConfig := TXMLConfig.Create(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+'favorites.xml');
   LoadFromConfig;
 
   xToolButton := IDEToolButtonCategories.FindItemByCommand(ecOpen);
