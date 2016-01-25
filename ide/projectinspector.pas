@@ -1357,16 +1357,31 @@ end;
 procedure TProjectInspectorForm.UpdateTitle;
 var
   NewCaption: String;
+  IconStream: TStream;
 begin
   if not CanUpdate(pifNeedUpdateTitle) then exit;
 
+  Icon.Clear;
   if LazProject=nil then
-    Caption:=lisMenuProjectInspector
-  else begin
+  begin
+    Caption:=lisMenuProjectInspector;
+  end else
+  begin
     NewCaption:=LazProject.GetTitle;
     if NewCaption='' then
       NewCaption:=ExtractFilenameOnly(LazProject.ProjectInfoFile);
     Caption:=Format(lisProjInspProjectInspector, [NewCaption]);
+
+    if not LazProject.ProjResources.ProjectIcon.IsEmpty then
+    begin
+      IconStream := LazProject.ProjResources.ProjectIcon.GetStream;
+      if IconStream<>nil then
+        try
+          Icon.LoadFromStream(IconStream);
+        finally
+          IconStream.Free;
+        end;
+    end;
   end;
 end;
 

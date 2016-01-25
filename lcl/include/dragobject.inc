@@ -12,6 +12,40 @@
  *****************************************************************************
 }
 
+type
+
+  { TDockImageWindow - used if widgetset supports hints with alphablend }
+
+  TDockImageWindow = class(THintWindow)
+  public
+    constructor Create(AOwner: TComponent); override;
+  end;
+
+constructor TDockImageWindow.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Color := clHighlight;
+  Width := 100;
+  Height := 100;
+  AlphaBlend := True;
+  AlphaBlendValue := 100;
+end;
+
+var
+  DockImageWindow: TDockImageWindow;
+
+procedure HintDockImage(Sender: TObject; AOldRect, ANewRect: TRect;
+  AOperation: TDockImageOperation);
+begin
+  if DockImageWindow = nil then
+    DockImageWindow := TDockImageWindow.Create(Application);
+  DockImageWindow.BoundsRect := ANewRect;
+  if AOperation = disShow then
+    DockImageWindow.Show
+  else if AOperation = disHide then
+    DockImageWindow.Hide;
+end;
+
 { TDragObject }
 
 constructor TDragObject.Create(AControl : TControl);
@@ -135,14 +169,20 @@ end;
 
 procedure TDragDockObject.ShowDockImage;
 begin
-  WidgetSet.DrawDefaultDockImage(EraseDockRect, DockRect, disShow);
+  if HasOnDrawImage then
+    OnDrawDockImage(Self, EraseDockRect, DockRect, disShow)
+  else
+    WidgetSet.DrawDefaultDockImage(EraseDockRect, DockRect, disShow);
   EraseDockRect := DockRect;
 end;
 
 procedure TDragDockObject.HideDockImage;
 begin
   if FEraseDockRect.Left<MaxInt then
-    WidgetSet.DrawDefaultDockImage(EraseDockRect, DockRect, disHide);
+    if HasOnDrawImage then
+      OnDrawDockImage(Self, EraseDockRect, DockRect, disHide)
+    else
+      WidgetSet.DrawDefaultDockImage(EraseDockRect, DockRect, disHide);
   FEraseDockRect := Rect(MaxInt, 0, MaxInt, 0);
 end;
 
@@ -151,9 +191,22 @@ begin
   //Draw the form outlines when the position has changed
   if not CompareRect(@DockRect, @EraseDockRect) then
   begin
-    WidgetSet.DrawDefaultDockImage(EraseDockRect, DockRect, disMove);
+    if HasOnDrawImage then
+      OnDrawDockImage(Self, EraseDockRect, DockRect, disMove)
+    else
+      WidgetSet.DrawDefaultDockImage(EraseDockRect, DockRect, disMove);
     EraseDockRect := DockRect;
   end;
+end;
+
+function TDragDockObject.HasOnDrawImage: boolean;
+begin
+  if Assigned(OnDrawDockImage) then
+    exit(true);
+  if WidgetSet.GetSystemMetrics(SM_LCLHasFormAlphaBlend)=0 then
+    exit(false);
+  OnDrawDockImage := @HintDockImage;
+  Result:=true;
 end;
 
 { TDragDockObjectEx }

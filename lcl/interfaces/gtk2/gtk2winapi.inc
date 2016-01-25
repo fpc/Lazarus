@@ -5911,6 +5911,10 @@ begin
         Result := GetSystemMetrics(SM_CYMAXIMIZED) - 1 -
           (GetSystemMetrics(SM_CYCAPTION) - (GetSystemMetrics(SM_CYSIZEFRAME) * 2));
       end;
+    SM_LCLHasFormAlphaBlend:
+      begin
+        Result:=1;
+      end;
   end;
 end;
 

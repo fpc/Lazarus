@@ -15,18 +15,21 @@ type
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
+    Button4: TButton;
     Edit1: TEdit;
     StringGrid1: TStringGrid;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
     procedure FormDblClick(Sender: TObject);
   private
-    { private declarations }
+
   public
     procedure SelectCells(Data: PtrInt);
     procedure MoveToCorner(Data: PtrInt);
     procedure SendKeys(Data: PtrInt);
+    procedure ScrollUpDown(Data: PtrInt);
   end; 
 
 var
@@ -71,6 +74,21 @@ begin
   KeyInput.Press(VK_O);
 end;
 
+procedure TForm1.ScrollUpDown(Data: PtrInt);
+var
+  I: Integer;
+begin
+  ActiveControl := StringGrid1;
+  for I := 1 to 12 do
+  begin
+    if I < 6 then
+      MouseInput.ScrollDown([], StringGrid1, 10, 10)
+    else
+      MouseInput.ScrollUp([], StringGrid1, 10, 10);
+    Sleep(30);
+  end;
+end;
+
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   Application.QueueAsyncCall(@SelectCells, 0);
@@ -84,6 +102,11 @@ end;
 procedure TForm1.Button3Click(Sender: TObject);
 begin
   Application.QueueAsyncCall(@SendKeys, 0);
+end;
+
+procedure TForm1.Button4Click(Sender: TObject);
+begin
+  Application.QueueAsyncCall(@ScrollUpDown, 0);
 end;
 
 end.

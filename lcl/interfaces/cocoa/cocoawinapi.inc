@@ -2271,6 +2271,8 @@ begin
       Result := Round(NSScroller.scrollerWidthForControlSize(NSRegularControlSize));
     SM_SWSCROLLBARSPACING:
       Result := 0;
+    SM_LCLHasFormAlphaBlend:
+      Result := 1;
   else
     DebugLn('TCocoaWidgetSet.GetSystemMetrics TODO ', DbgS(NIndex));;
   end;

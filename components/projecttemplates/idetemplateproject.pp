@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  ProjectTemplates, ProjectIntf, BaseIDEIntf, LazIDEIntf;
+  ProjectTemplates, ProjectIntf, BaseIDEIntf, LazIDEIntf, LazFileUtils;
 
 type
 
@@ -84,7 +84,7 @@ Function GetTemplateDir : String;
 begin
   With GetIDEConfigStorage('projtemplate.xml',True) do
     try
-      Result:=GetValue('TemplateDir',IncludeTrailingPathDelimiter(LazarusIDE.GetPrimaryConfigPath)+'templates');
+      Result:=GetValue('TemplateDir',AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+'templates');
     Finally
       Free;
     end;

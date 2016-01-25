@@ -2251,8 +2251,6 @@ end;
 ------------------------------------------------------------------------------}
 function TCustomForm.AutoSizeDelayedHandle: Boolean;
 begin
-  if WindowState=wsMinimized then
-    exit(true);
   if (Parent<>nil) or (ParentWindow<>0) then
     // this form is inlined / embedded it works like a normal TWinControl
     Result:=inherited AutoSizeDelayedHandle
@@ -2334,7 +2332,7 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
 
     function NextChildControl(CurParent, Target: TWinControl): TWinControl; inline;
     begin
-      while Target.Parent <> CurParent do
+      while (Target <> nil) and (Target.Parent <> CurParent) do
         Target := Target.Parent;
       Result := Target;
     end;

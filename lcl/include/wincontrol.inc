@@ -2862,7 +2862,7 @@ var
       {$ENDIF}
     end;
 
-    // set min size to stop circling (this should not be needed. But if someone
+    // set min size to stop cycling (this should not be needed. But if someone
     // plays/fixes the above code, new bugs can enter and there are far too many
     // combinations to test, and so the LCL can loop for some applications.
     // Prevent this, so users can at least report a bug.)
@@ -3197,7 +3197,7 @@ begin
         // Auto aligning/anchoring can be very interdependent.
         // In worst case the n-2 depends on the n-1, the n-3 depends on n-2
         // and so forth. This is allowed, so do up to n loop step.
-        // Do not more, to avoid endless loops, if there are circle
+        // Do not more, to avoid endless loops, if there are circlular
         // dependencies.
         MaxTries:=ControlCount;
         {$IFDEF CHECK_POSITION}inc(MaxTries);{$ENDIF}
@@ -3216,9 +3216,9 @@ begin
           DoAlignNotAligned;
           if not BoundsMutated then break;
           if (i=ControlCount+1) then begin
-            DebugLn(['TWinControl.AlignControls ENDLESS LOOP STOPPED ',DbgSName(Self),' i=',i]);
+            DebugLn(['Warning: TWinControl.AlignControls ENDLESS LOOP STOPPED ',DbgSName(Self),' i=',i]);
             if LastBoundsMutated<>nil then
-              DebugLn(['TWinControl.AlignControls LAST CHANGED: ',DbgSName(LastBoundsMutated),' Old=',dbgs(LastBoundsMutatedOld),' Now=',dbgs(LastBoundsMutated.BoundsRect)]);
+              DebugLn(['Warning: TWinControl.AlignControls LAST CHANGED: ',DbgSName(LastBoundsMutated),' Old=',dbgs(LastBoundsMutatedOld),' Now=',dbgs(LastBoundsMutated.BoundsRect)]);
           end;
           // update again
           RemainingClientRect:=OldRemainingClientRect;
@@ -5959,7 +5959,18 @@ begin
     UTF8KeyPress(UTF8Key);
     if UTF8Key = '' then Exit;
   end;
-  
+
+  // redirect to designer
+  if (csDesigning in ComponentState) then
+  begin
+    F := GetDesignerForm(Self);
+    if Assigned(F) and Assigned(F.Designer) then
+    begin
+      F.Designer.UTF8KeyPress(UTF8Key);
+      if UTF8Key = '' then Exit;
+    end;
+  end;
+
   Result := False;
 end;
 
@@ -6850,7 +6861,8 @@ begin
     if CompareRect(@NewBoundsRealized,@FBoundsRealized) then exit;
 
     TopParent:=GetTopParent;
-    if (TopParent is TWinControl) and (wcfKillIntfSetBounds in TWinControl(TopParent).FWinControlFlags) then
+    if (TopParent is TWinControl)
+    and (wcfKillIntfSetBounds in TWinControl(TopParent).FWinControlFlags) then
       RaiseLoop;
 
     FBoundsRealized := NewBoundsRealized;

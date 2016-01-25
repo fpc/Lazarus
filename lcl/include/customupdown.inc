@@ -215,6 +215,7 @@ begin
     SetInitialBounds(0, 0, CX, CY);
   FArrowKeys := True;
   FMax := 100;
+  FMinRepeatInterval := 100;
   FIncrement := 1;
   FAlignButton := udRight;
   FThousands := True;
@@ -227,11 +228,17 @@ begin
 end;
 
 procedure TCustomUpDown.BTimerExec(Sender : TObject);
+var
+  AInterval:Integer;
 begin
   If Assigned(FMouseTimerEvent)
      and PtInRect(FMouseDownBounds,Mouse.CursorPos) then begin
-    if TTimer(Sender).Interval > 100
-      then TTimer(Sender).Interval := TTimer(Sender).Interval - 25;
+    AInterval := TTimer(Sender).Interval;
+    if AInterval > FMinRepeatInterval then begin
+      AInterval := AInterval - 25;
+      if AInterval < FMinRepeatInterval then AInterval := FMinRepeatInterval;
+      TTimer(Sender).Interval := AInterval;
+    end;
     FMouseTimerEvent;
   end;
 end;
@@ -483,6 +490,13 @@ begin
     If FPosition < FMin then
       Position := FMin;
   end;
+end;
+
+procedure TCustomUpDown.SetMinRepeatInterval(AValue: Byte);
+begin
+  if FMinRepeatInterval = AValue then Exit;
+  FMinRepeatInterval := AValue;
+  if FMinRepeatInterval < 25 then FMinRepeatInterval := 25;
 end;
 
 procedure TCustomUpDown.SetMax(Value: SmallInt);

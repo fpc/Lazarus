@@ -76,7 +76,7 @@ type
       Data: TObject) of object;
       
 // file operations
-function BackupFile(const Filename, BackupFilename: string): boolean;
+function BackupFileForWrite(const Filename, BackupFilename: string): boolean;
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 function CreateEmptyFile(const Filename: string): boolean;
 function CopyFileWithMethods(const SrcFilename, DestFilename: string;
@@ -1401,7 +1401,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  BackupFile
+  BackupFileForWrite
 
   Params: const Filename, BackupFilename: string
   Result: boolean
@@ -1409,7 +1409,7 @@ end;
   Rename Filename to Backupfilename and create empty Filename with same
   file attributes
 -------------------------------------------------------------------------------}
-function BackupFile(const Filename, BackupFilename: string): boolean;
+function BackupFileForWrite(const Filename, BackupFilename: string): boolean;
 
   function FileIsLocked(const {%H-}FileName: String): Boolean;
   {$ifdef Windows}
@@ -1430,6 +1430,7 @@ function BackupFile(const Filename, BackupFilename: string): boolean;
 
 var
   FHandle: THandle;
+  Code: TCodeBuffer;
   {$IFdef MSWindows}
   OldAttr: Longint;
   {$ELSE}
@@ -1442,10 +1443,11 @@ begin
   {$IFdef MSWindows}
   OldAttr := FileGetAttrUTF8(Filename);
   {$ELSE}
-  FpStat(Filename, OldInfo{%H-});
+  if FpStat(Filename, OldInfo{%H-})<>0 then
+    exit; // can't backup this file
   {$ENDIF}
   
-  // if not a symlink/hardlink or locked => rename old file, create empty new file
+  // if not a symlink/hardlink or locked => rename old file (quick), create empty new file
   if not FileIsSymlink(Filename) and
      not FileIsHardLink(FileName) and
      not FileIsLocked(Filename) and
@@ -1454,8 +1456,11 @@ begin
     // create empty file
     FHandle := FileCreate(UTF8ToSys(FileName));
     FileClose(FHandle);
+    Code:=CodeToolBoss.FindFile(Filename);
+    if Code<>nil then
+      Code.InvalidateLoadDate;
   end
-  else // file is a symlink/hardlink or locked or rename failed => copy file
+  else // file is a symlink/hardlink or locked or rename failed => copy file (slow)
   if not CopyFile(Filename, BackupFilename) then exit;
 
   // restore file attributes

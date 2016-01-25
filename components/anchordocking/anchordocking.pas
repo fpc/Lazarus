@@ -85,11 +85,7 @@
     Parent bug with links to all other:
     - http://bugs.freepascal.org/view.php?id=18298 default layout sometimes wrong main bar
     Other bugs:
-    - http://bugs.freepascal.org/view.php?id=18553 docked form designer
-    - http://bugs.freepascal.org/view.php?id=18538 second resize after restore
-    - http://bugs.freepascal.org/view.php?id=19735 main bar on different screen size
     - http://bugs.freepascal.org/view.php?id=19810 multi monitor
-    - http://bugs.freepascal.org/view.php?id=21076 views
 }
 unit AnchorDocking;
 
@@ -184,8 +180,8 @@ type
     procedure MoveSplitter(Offset: integer); override;
   public
     constructor Create(TheOwner: TComponent); override;
-    property DockBounds: TRect read FDockBounds write FDockBounds;
-    property DockParentClientSize: TSize read FDockParentClientSize write FDockParentClientSize;
+    property DockBounds: TRect read FDockBounds;
+    property DockParentClientSize: TSize read FDockParentClientSize;
     procedure UpdateDockBounds;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override; // any normal movement sets the DockBounds
     procedure SetBoundsPercentually;
@@ -526,7 +522,6 @@ type
     procedure MapTreeToControls(Tree: TAnchorDockLayoutTree);
     function RestoreLayout(Tree: TAnchorDockLayoutTree; Scale: boolean): boolean;
     procedure EnableAllAutoSizing;
-    procedure ResetSplitters;
     procedure ClearLayoutProperties(AControl: TControl; NewAlign: TAlign = alClient);
     procedure PopupMenuPopup(Sender: TObject);
     procedure ChangeLockButtonClick(Sender: TObject);
@@ -614,6 +609,7 @@ type
     procedure LoadSettings(Settings: TAnchorDockSettings);
     procedure SaveSettings(Settings: TAnchorDockSettings);
     function SettingsAreEqual(Settings: TAnchorDockSettings): boolean;
+    procedure ResetSplitters;
 
     // manual docking
     procedure ManualFloat(AControl: TControl);
@@ -1476,13 +1472,16 @@ begin
       DisableControlAutoSizing(AControl);
       // AControl is currently on a visible site, but not in the Tree
       // => close site
-      debugln(['TAnchorDockMaster.CloseUnneededControls Control=',DbgSName(AControl),' Site=',AControl.HostDockSite.Name]);
-      if AControl.HostDockSite is TAnchorDockHostSite then begin
-        if not TAnchorDockHostSite(AControl.HostDockSite).CloseSite then begin
-          if FControls.IndexOf(AControl)<0 then
-            AControl:=nil;
-          debugln(['TAnchorDockMaster.CloseUnneededControls CloseSite failed Control=',DbgSName(AControl)]);
-          exit(false);
+      if AControl.HostDockSite <> nil then
+      begin
+        debugln(['TAnchorDockMaster.CloseUnneededControls Control=',DbgSName(AControl),' Site=',AControl.HostDockSite.Name]);
+        if AControl.HostDockSite is TAnchorDockHostSite then begin
+          if not TAnchorDockHostSite(AControl.HostDockSite).CloseSite then begin
+            if FControls.IndexOf(AControl)<0 then
+              AControl:=nil;
+            debugln(['TAnchorDockMaster.CloseUnneededControls CloseSite failed Control=',DbgSName(AControl)]);
+            exit(false);
+          end;
         end;
       end;
       if FControls.IndexOf(AControl)>=0 then begin

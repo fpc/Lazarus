@@ -32,7 +32,7 @@ uses
   // FCL
   SysUtils, Types, Classes, TypInfo, FPCanvas,
   // LCL
-  {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
+  {$IFDEF UseOICheckBoxThemed} CheckBoxThemed, {$ENDIF}
   InterfaceBase, Forms, Buttons, Graphics, GraphType, StdCtrls, LCLType,
   LCLIntf, Controls, ComCtrls, ExtCtrls, LMessages, LazConfigStorage,
   LazLoggerBase, Menus, Dialogs, Themes, LCLProc, TreeFilterEdit,
@@ -305,7 +305,7 @@ type
 
     ValueEdit: TEdit;
     ValueComboBox: TComboBox;
-    {$IFnDEF UseOINormalCheckBox}
+    {$IFDEF UseOICheckBoxThemed}
     ValueCheckBox: TCheckBoxThemed;
     {$ELSE}
     ValueCheckBox: TCheckBox;
@@ -436,6 +436,7 @@ type
     destructor Destroy;  override;
     function InitHints: boolean;
     function CanEditRowValue(CheckFocus: boolean): boolean;
+    procedure FocusCurrentEditor;
     procedure SaveChanges;
     function ConsistencyCheck: integer;
     procedure EraseBackground({%H-}DC: HDC); override;
@@ -968,13 +969,13 @@ begin
     OnMouseWheel:=@OnGridMouseWheel;
   end;
 
-  ValueCheckBox:={$IFnDEF UseOINormalCheckBox} TCheckBoxThemed.Create(Self); {$ELSE} TCheckBox.Create(Self); {$ENDIF}
+  ValueCheckBox:={$IFDEF UseOICheckBoxThemed} TCheckBoxThemed.Create(Self); {$ELSE} TCheckBox.Create(Self); {$ENDIF}
   with ValueCheckBox do
   begin
     Name:='ValueCheckBox';
     Visible:=false;
     Enabled:=false;
-    {$IFnDEF UseOINormalCheckBox}
+    {$IFDEF UseOICheckBoxThemed}
     AutoSize := false;
     {$ELSE}
     AutoSize := true;    // SetBounds does not work for CheckBox, AutoSize does.
@@ -1199,6 +1200,16 @@ end;
 function TOICustomPropertyGrid.IsCurrentEditorAvailable: Boolean;
 begin
   Result := (FCurrentEdit <> nil) and InRange(FItemIndex, 0, FRows.Count - 1);
+end;
+
+procedure TOICustomPropertyGrid.FocusCurrentEditor;
+begin
+  if (IsCurrentEditorAvailable) and (FCurrentEdit.CanFocus) then
+  begin
+    FCurrentEdit.SetFocus;
+    if (FCurrentEdit is TEdit) then
+      (FCurrentEdit as TEdit).SelStart := Length((FCurrentEdit as TEdit).Text);
+  end;
 end;
 
 function TOICustomPropertyGrid.ConsistencyCheck: integer;
@@ -2099,7 +2110,7 @@ begin
     SetActiveControl(FCurrentEdit);
     if (FCurrentEdit is TCustomEdit) then
       TCustomEdit(FCurrentEdit).SelectAll
-    {$IFnDEF UseOINormalCheckBox}
+    {$IFDEF UseOICheckBoxThemed}
     else if (FCurrentEdit is TCheckBoxThemed) and WasValueClick then
       TCheckBoxThemed(FCurrentEdit).Checked:=not TCheckBoxThemed(FCurrentEdit).Checked;
     {$ELSE}
@@ -2639,7 +2650,6 @@ var
           and (r1.Right=r2.Right) and (r1.Bottom=r2.Bottom);
   end;
 
-// AlignEditComponents
 begin
   if ItemIndex>=0 then
   begin
@@ -2702,8 +2712,6 @@ var
   NameBgColor: TColor;
   Details: TThemedElementDetails;
   Size: TSize;
-
-// PaintRow
 begin
   CurRow := Rows[ARow];
   FullRect := RowRect(ARow);
@@ -3349,10 +3357,10 @@ begin
 
   if (FCurrentEdit = ValueComboBox) then 
   begin
-    //either an Event or an enumeration or Boolean
+    //either an Enumeration, Set, Class or Boolean
     CurRow := Rows[FItemIndex];
     TypeKind := CurRow.Editor.GetPropType^.Kind;
-    if TypeKind in [tkEnumeration, tkBool, tkSet] then 
+    if TypeKind in [tkEnumeration, tkSet, tkClass, tkBool] then
     begin
       // set value to next value in list
       if ValueComboBox.Items.Count = 0 then Exit;

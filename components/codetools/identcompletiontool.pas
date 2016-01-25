@@ -215,7 +215,7 @@ type
     ilcfIsExpression,      // is expression part of statement. e.g. 'if expr'
     ilcfCanProcDeclaration,// context allows one to declare a procedure/method
     ilcfEndOfLine,         // atom at end of line
-    ilcfDontAllowProcedures// context doesn't allow procedures (e.g. in function parameter, after assignment or other operator, in if codition etc.)
+    ilcfDontAllowProcedures// context doesn't allow procedures (e.g. in function parameter, after other operator, in if codition etc. - Delphi mode supports assignment of procedures!)
     );
   TIdentifierListContextFlags = set of TIdentifierListContextFlag;
   
@@ -1383,6 +1383,7 @@ begin
     AddCompilerProcedure('Continue','');
     AddCompilerFunction('Copy','const S:String;FromPosition,Count:Integer', 'String');
     AddCompilerProcedure('Dec','var X:Ordinal;N:Integer=1');
+    AddCompilerFunction('Default','T:Type','const');
     AddCompilerProcedure('Dispose','var X:Pointer');
     AddCompilerProcedure('Exclude','var S:Set;X:Ordinal');
     AddCompilerProcedure('Exit','');
@@ -2728,7 +2729,9 @@ begin
                 CurrentIdentifierList.ContextFlags+[ilcfIsExpression, ilcfDontAllowProcedures];
             end;
             // check if procedure is allowed
-            if CurPos.Flag in [cafComma, cafRoundBracketOpen, cafEdgedBracketOpen, cafEqual, cafOtherOperator] then
+            if (CurPos.Flag in [cafComma, cafRoundBracketOpen, cafEdgedBracketOpen, cafEqual, cafOtherOperator])
+            or ((Scanner.CompilerMode<>cmDelphi) and (CurPos.Flag = cafAssignment)) // "MyEvent := MyProc;" is supported only in Delphi mode
+            then
               CurrentIdentifierList.ContextFlags:=
                 CurrentIdentifierList.ContextFlags+[ilcfDontAllowProcedures];
           end;
@@ -2895,14 +2898,25 @@ var
       Item.Params.DelimitedText:=Params;
     end;
 
+  var
+    IsPointedSystem: Boolean = False;
   begin
     MoveCursorToAtomPos(ProcNameAtom);
     ReadPriorAtom;
-    if (CurPos.Flag in [cafEnd,cafSemicolon,cafColon,
-      cafRoundBracketOpen,cafEdgedBracketOpen])
+    if (CurPos.Flag = cafPoint) then
+    begin
+      ReadPriorAtom;
+      IsPointedSystem := UpAtomIs('SYSTEM');
+    end;
+    if (CurPos.Flag in [cafEnd,cafSemicolon,cafEqual,cafComma,cafColon,
+      cafRoundBracketOpen,cafEdgedBracketOpen,cafAssignment,cafOtherOperator])
+    or IsPointedSystem
     or UpAtomIs('BEGIN')
     or UpAtomIs('TRY') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
-    or UpAtomIs('REPEAT') or UpAtomIs('ASM') then begin
+    or UpAtomIs('ASM')
+    or UpAtomIs('REPEAT') or UpAtomIs('UNTIL') or UpAtomIs('WHILE') or UpAtomIs('DO')
+    or UpAtomIs('IF') or UpAtomIs('THEN') or UpAtomIs('ELSE')
+    then begin
       // see fpc/compiler/psystem.pp
       AddCompilerProc('Assert','Condition:Boolean;const Message:String');
       AddCompilerProc('Assigned','P:Pointer','Boolean');
@@ -2911,6 +2925,7 @@ var
       AddCompilerProc('Concat','S1:String;S2:String[...;Sn:String]', 'String');
       AddCompilerProc('Copy','const S:String;FromPosition,Count:Integer', 'String');
       AddCompilerProc('Dec','var X:Ordinal;N:Integer=1');
+      AddCompilerProc('Default','T:Type','const');
       AddCompilerProc('Dispose','var X:Pointer');
       AddCompilerProc('Exclude','var S:Set;X:Ordinal');
       AddCompilerProc('Exit','ResultValue:Ordinal=Result');

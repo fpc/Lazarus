@@ -1512,10 +1512,8 @@ var
   ACaption:string;
   AText:string;
 begin
-  if fSource=nil then begin
-    Result:=mrOk;
-    exit;
-  end;
+  if fSource=nil then
+    exit(mrOK);
   if Assigned(fOnFileBackup) then begin
     Result:=fOnFileBackup(Filename);
     if Result=mrAbort then exit;
@@ -1540,10 +1538,8 @@ var
   ACaption:string;
   AText:string;
 begin
-  if fSource=nil then begin
-    Result:=mrOk;
-    exit;
-  end;
+  if fSource=nil then
+    exit(mrOK);
   if Assigned(fOnFileBackup) then begin
     Result:=fOnFileBackup(AFilename);
     if Result=mrAbort then exit;
@@ -3188,9 +3184,21 @@ begin
     OnSaveProjectInfo(Self,FXMLConfig,CurFlags);
   end;
 
-  // save lpi to disk
-  //debugln(['TProject.WriteProject ',DbgSName(FXMLConfig),' FCfgFilename=',FCfgFilename]);
-  FXMLConfig.Flush;
+  if FXMLConfig.Modified or (not FileExistsCached(FXMLConfig.Filename)) then
+  begin
+    // backup
+    if Assigned(fOnFileBackup) then begin
+      if fOnFileBackup(FXMLConfig.Filename)=mrAbort then begin
+        debugln(['Error: (lazarus) [TProject.SaveToLPI] backup of "'+FXMLConfig.Filename+'" failed.']);
+        exit;
+      end;
+    end;
+
+    // save lpi to disk
+    //debugln(['TProject.WriteProject ',DbgSName(FXMLConfig),' FCfgFilename=',FCfgFilename]);
+    FXMLConfig.Flush;
+  end;
+
   if not (pwfIgnoreModified in FProjectWriteFlags) then
     Modified:=false;
   if FSaveSessionInLPI then
@@ -3329,12 +3337,6 @@ begin
     if not (WriteLPI or WriteLPS) then exit(mrOk);
   end;
   //debugln(['TProject.WriteProject WriteLPI=',WriteLPI,' WriteLPS=',WriteLPS,' Modifed=',Modified,' SessionModified=',SessionModified]);
-
-  // backup
-  if WriteLPI and Assigned(fOnFileBackup) then begin
-    Result:=fOnFileBackup(CfgFilename);
-    if Result=mrAbort then exit;
-  end;
 
   // increase usage counters
   UpdateUsageCounts(CfgFilename);

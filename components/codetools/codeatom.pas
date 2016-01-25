@@ -47,6 +47,7 @@ type
     cafSemicolon, cafEqual, cafColon, cafComma, cafPoint,
     cafRoundBracketOpen, cafRoundBracketClose,
     cafEdgedBracketOpen, cafEdgedBracketClose,
+    cafAssignment,
     cafWord, cafEnd,
     cafOtherOperator // = other operator
     );
@@ -59,6 +60,7 @@ const
       'Semicolon', 'Equal', 'Colon', 'Comma', 'Point',
       'RoundBracketOpen', 'RoundBracketClose',
       'EdgedBracketOpen', 'EdgedBracketClose',
+      'Assignment',
       'Word', 'End', 'Operator'
     );
     

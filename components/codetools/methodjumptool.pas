@@ -101,10 +101,9 @@ begin
   AVLNode1:=Tree1.FindLowest;
   AVLNode2:=Tree2.FindLowest;
   while (AVLNode1<>nil) and (AVLNode2<>nil) do begin
-    cmp:=CompareTextIgnoringSpace(
-                 TCodeTreeNodeExtension(AVLNode1.Data).Txt,
-                 TCodeTreeNodeExtension(AVLNode2.Data).Txt,
-                 false);
+    cmp:=CompareCodeTreeNodeExtMethodHeaders(
+      TCodeTreeNodeExtension(AVLNode1.Data),
+      TCodeTreeNodeExtension(AVLNode2.Data));
     if cmp<0 then
       AVLNode1:=Tree1.FindSuccessor(AVLNode1)
     else if cmp>0 then
@@ -826,6 +825,8 @@ begin
               Node:=ANode;
               Txt:=CurProcName;
               Flags:=Ord(ExtractProcedureGroup(ANode));
+              if TPascalMethodGroup(Flags)=mgClassOperator then
+                ExtTxt4:=ExtractFuncResultType(ANode,Attr);
             end;
             Result.Add(NewNodeExt);
           end;

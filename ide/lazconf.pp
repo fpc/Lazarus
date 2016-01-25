@@ -323,7 +323,7 @@ end;
 procedure SetPrimaryConfigPath(const NewValue: String);
 begin
   debugln('SetPrimaryConfigPath NewValue="',UTF8ToConsole(NewValue),'" -> "',UTF8ToConsole(ExpandFileNameUTF8(NewValue)),'"');
-  PrimaryConfigPath := AppendPathDelim(ExpandFileNameUTF8(NewValue));
+  PrimaryConfigPath := ChompPathDelim(ExpandFileNameUTF8(NewValue));
 end;
 
 {---------------------------------------------------------------------------
@@ -332,7 +332,7 @@ end;
 procedure SetSecondaryConfigPath(const NewValue: String);
 begin
   debugln('SetSecondaryConfigPath NewValue="',UTF8ToConsole(NewValue),'" -> "',UTF8ToConsole(ExpandFileNameUTF8(NewValue)),'"');
-  SecondaryConfigPath := AppendPathDelim(ExpandFileNameUTF8(NewValue));
+  SecondaryConfigPath := ChompPathDelim(ExpandFileNameUTF8(NewValue));
 end;
 
 {---------------------------------------------------------------------------

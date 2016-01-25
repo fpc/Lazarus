@@ -34,6 +34,8 @@ type
     procedure DoDown(Button: TMouseButton); override;
     procedure DoMove(ScreenX, ScreenY: Integer); override;
     procedure DoUp(Button: TMouseButton); override;
+    procedure DoScrollUp; override;
+    procedure DoScrollDown; override;
   end;
   
 function InitializeMouseInput: TMouseInput;
@@ -49,7 +51,11 @@ procedure SendMouseInput(Flag: DWORD; MouseData: DWORD = 0);
 var
   Input: TInput;
 begin
+{$IFDEF VER2_6}
   FillChar(Input, SizeOf(Input), 0);
+{$ELSE}
+  Input := Default(TInput);
+{$ENDIF}
   Input.mi.mouseData := MouseData;
   Input.type_ := INPUT_MOUSE;
   Input.mi.dwFlags := Flag;
@@ -61,7 +67,11 @@ procedure SendMouseInput(Flag: DWORD; X, Y: Integer);
 var
   Input: TInput;
 begin
+{$IFDEF VER2_6}
   FillChar(Input, SizeOf(Input), 0);
+{$ELSE}
+  Input := Default(TInput);
+{$ENDIF}
   Input.type_ := INPUT_MOUSE;
   Input.mi.dx := MulDiv(X, 65535, Screen.Width - 1); // screen horizontal coordinates: 0 - 65535
   Input.mi.dy := MulDiv(Y, 65535, Screen.Height - 1); // screen vertical coordinates: 0 - 65535
@@ -103,7 +113,15 @@ begin
   SendMouseInput(Flag);
 end;
 
+procedure TWinMouseInput.DoScrollUp;
+begin
+  SendMouseInput(MOUSEEVENTF_WHEEL, WHEEL_DELTA);
+end;
 
+procedure TWinMouseInput.DoScrollDown;
+begin
+  SendMouseInput(MOUSEEVENTF_WHEEL, DWORD(-WHEEL_DELTA));
+end;
 
 end.
 

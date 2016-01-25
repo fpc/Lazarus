@@ -36,6 +36,10 @@ uses
   DividerBevel, BaseIDEIntf, IDEMsgIntf, IDEExternToolIntf, AVL_Tree,
   LazConfigStorage, ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
 
+const
+  ConverterVersion: integer = 2;
+  // 2 removed conversion of string functions into their UTF8 versions.
+
 type
 
   TReplaceModeLong = (rlDisabled, rlInteractive, rlAutomatic);
@@ -48,6 +52,7 @@ type
 
   TConvertSettings = class
   private
+    fVersion: Integer;
     fEnabled: Boolean;
     fTitle: String;       // Used for form caption.
     fLog: TStringList;
@@ -81,6 +86,14 @@ type
     fReplaceFuncs: TFuncsAndCategories;
     // Coordinate offsets of components in a visual container.
     fCoordOffsets: TVisualOffsets;
+    procedure Load;
+    procedure LoadFuncReplacements;
+    procedure LoadStringToStringTree(Path: string; Tree: TStringToStringTree);
+    procedure LoadVisualOffsets;
+    procedure Save;
+    procedure SaveFuncReplacements;
+    procedure SaveStringToStringTree(Path: string; Tree: TStringToStringTree);
+    procedure SaveVisualOffsets;
     // Getter / setter:
     function GetBackupPath: String;
     function GetMainFilename: String;
@@ -194,8 +207,6 @@ type
     property CacheUnitsThread: TThread read fCacheUnitsThread;
   end;
 
-var
-  ConvertSettingsForm: TConvertSettingsForm;
 
 function IsWinSpecificUnit(const ALowercaseUnitName: string): Boolean;
 
@@ -205,162 +216,6 @@ implementation
 uses ConvertDelphi;
 
 {$R *.lfm}
-
-// Load and store configuration in StringToStringTree :
-
-procedure LoadStringToStringTree(Config: TConfigStorage; const Path: string;
-  Tree: TStringToStringTree);
-var
-  SubPath: String;
-  CurName, CurValue: String;
-  Cnt, i: Integer;
-begin
-  Tree.Clear;
-  Cnt:=Config.GetValue(Path+'Count', 0);
-  for i:=0 to Cnt-1 do begin
-    SubPath:=Path+'Item'+IntToStr(i)+'/';
-    CurName:=Config.GetValue(SubPath+'Name','');
-    CurValue:=Config.GetValue(SubPath+'Value','');
-    Tree[CurName]:=CurValue;
-  end;
-end;
-
-procedure SaveStringToStringTree(Config: TConfigStorage; const Path: string;
-  Tree: TStringToStringTree);
-var
-  Node: TAVLTreeNode;
-  Item: PStringToStringTreeItem;
-  SubPath: String;
-  i: Integer;
-begin
-  Config.DeletePath(Path);      // Make sure there are no old leftover items.
-  Config.SetDeleteValue(Path+'Count', Tree.Tree.Count, 0);
-  Node:=Tree.Tree.FindLowest;
-  i:=0;
-  while Node<>nil do begin
-    Item:=PStringToStringTreeItem(Node.Data);
-    SubPath:=Path+'Item'+IntToStr(i)+'/';
-    Config.SetDeleteValue(SubPath+'Name',Item^.Name,'');
-    Config.SetDeleteValue(SubPath+'Value',Item^.Value,'');
-    Node:=Tree.Tree.FindSuccessor(Node);
-    inc(i);
-  end;
-end;
-
-// Load and store configuration in TFuncsAndCategories :
-
-procedure LoadFuncReplacements(Config: TConfigStorage;
-  const FuncPath, CategPath: string; aFuncsAndCateg: TFuncsAndCategories);
-var
-  SubPath: String;
-  xCategory, xDelphiFunc, xReplacement, xPackage, xUnitName: String;
-  CategUsed: Boolean;
-  Cnt, i: Integer;
-begin
-  aFuncsAndCateg.Clear;
-  // Replacement functions
-  Cnt:=Config.GetValue(FuncPath+'Count', 0);
-  for i:=0 to Cnt-1 do begin
-    SubPath:=FuncPath+'Item'+IntToStr(i)+'/';
-    xCategory   :=Config.GetValue(SubPath+'Category','');
-    xDelphiFunc :=Config.GetValue(SubPath+'DelphiFunction','');
-    xReplacement:=Config.GetValue(SubPath+'Replacement','');
-    xPackage    :=Config.GetValue(SubPath+'Package','');
-    xUnitName   :=Config.GetValue(SubPath+'UnitName','');
-    aFuncsAndCateg.AddFunc(xCategory, xDelphiFunc, xReplacement, xPackage, xUnitName);
-  end;
-  // Categories
-  Cnt:=Config.GetValue(CategPath+'Count', 0);
-  for i:=0 to Cnt-1 do begin
-    SubPath:=CategPath+'Item'+IntToStr(i)+'/';
-    xCategory:=Config.GetValue(SubPath+'Name','');
-    CategUsed:=Config.GetValue(SubPath+'InUse',True);
-    aFuncsAndCateg.AddCategory(xCategory, CategUsed);
-  end;
-end;
-
-procedure SaveFuncReplacements(Config: TConfigStorage;
-  const FuncPath, CategPath: string; aFuncsAndCateg: TFuncsAndCategories);
-var
-  FuncRepl: TFuncReplacement;
-  SubPath, s: String;
-  i: Integer;
-begin
-  // Replacement functions
-  Config.SetDeleteValue(FuncPath+'Count', aFuncsAndCateg.Funcs.Count, 0);
-  for i:=0 to aFuncsAndCateg.Funcs.Count-1 do begin
-    FuncRepl:=aFuncsAndCateg.FuncAtInd(i);
-    if FuncRepl<>nil then begin
-      SubPath:=FuncPath+'Item'+IntToStr(i)+'/';
-      Config.SetDeleteValue(SubPath+'Category'      ,FuncRepl.Category,'');
-      Config.SetDeleteValue(SubPath+'DelphiFunction',aFuncsAndCateg.Funcs[i],'');
-      Config.SetDeleteValue(SubPath+'Replacement'   ,FuncRepl.ReplClause,'');
-      Config.SetDeleteValue(SubPath+'Package'       ,FuncRepl.PackageName,'');
-      Config.SetDeleteValue(SubPath+'UnitName'      ,FuncRepl.UnitName,'');
-    end;
-  end;
-  // Remove leftover items in case the list has become shorter.
-  for i:=aFuncsAndCateg.Funcs.Count to aFuncsAndCateg.Funcs.Count+10 do begin
-    SubPath:=FuncPath+'Item'+IntToStr(i)+'/';
-    Config.DeletePath(SubPath);
-  end;
-  // Categories
-  Config.SetDeleteValue(CategPath+'Count', aFuncsAndCateg.Categories.Count, 0);
-  for i:=0 to aFuncsAndCateg.Categories.Count-1 do begin
-    s:=aFuncsAndCateg.Categories[i];
-    if s<>'' then begin
-      SubPath:=CategPath+'Item'+IntToStr(i)+'/';
-      Config.SetDeleteValue(SubPath+'Name',s,'');
-      Config.SetDeleteValue(SubPath+'InUse',aFuncsAndCateg.CategoryIsUsed(i),True);
-    end;
-  end;
-  for i:=aFuncsAndCateg.Categories.Count to aFuncsAndCateg.Categories.Count+10 do begin
-    SubPath:=CategPath+'Item'+IntToStr(i)+'/';
-    Config.DeletePath(SubPath);
-  end;
-end;
-
-// Load and store configuration in VisualOffsets :
-
-procedure LoadVisualOffsets(Config: TConfigStorage; const Path: string;
-  aVisualOffsets: TVisualOffsets);
-var
-  ParentType, SubPath: String;
-  xTop, xLeft: Integer;
-  Cnt, i: Integer;
-begin
-  aVisualOffsets.Clear;
-  Cnt:=Config.GetValue(Path+'Count', 0);
-  for i:=0 to Cnt-1 do begin
-    SubPath:=Path+'Item'+IntToStr(i)+'/';
-    ParentType:=Config.GetValue(SubPath+'ParentType','');
-    xTop :=Config.GetValue(SubPath+'Top',0);
-    xLeft:=Config.GetValue(SubPath+'Left',0);
-    aVisualOffsets.Add(TVisualOffset.Create(ParentType, xTop, xLeft));
-  end;
-end;
-
-procedure SaveVisualOffsets(Config: TConfigStorage; const Path: string;
-  aVisualOffsets: TVisualOffsets);
-var
-  offs: TVisualOffset;
-  SubPath: String;
-  i: Integer;
-begin
-  Config.SetDeleteValue(Path+'Count', aVisualOffsets.Count, 0);
-  for i:=0 to aVisualOffsets.Count-1 do begin
-    offs:=aVisualOffsets[i];
-    SubPath:=Path+'Item'+IntToStr(i)+'/';
-    Config.SetDeleteValue(SubPath+'ParentType',offs.ParentType,'');
-    Config.SetDeleteValue(SubPath+'Top'       ,offs.Top,0);
-    Config.SetDeleteValue(SubPath+'Left'      ,offs.Left,0);
-  end;
-  // Remove leftover items in case the list has become shorter.
-  for i:=aVisualOffsets.Count to aVisualOffsets.Count+10 do begin
-    SubPath:=Path+'Item'+IntToStr(i)+'/';
-    Config.DeletePath(SubPath);
-  end;
-end;
 
 function IsWinSpecificUnit(const ALowercaseUnitName: string): Boolean;
 // These units exist in Windows only.
@@ -375,25 +230,6 @@ end;
 { TConvertSettings }
 
 constructor TConvertSettings.Create(const ATitle: string);
-var
-  TheMap: TStringToStringTree;
-  Categ: string;
-
-  procedure MapReplacement(aDelphi, aLCL: string);
-  begin
-    if not TheMap.Contains(aDelphi) then
-      TheMap[aDelphi]:=aLCL;
-  end;
-
-  procedure AddDefaultCategory(aCategory: string);
-  var
-    x: integer;
-  begin
-    with fReplaceFuncs do
-      if not Categories.Find(aCategory, x) then
-        AddCategory(aCategory, True);
-  end;
-
 begin
   fTitle:=ATitle;
   fLog:=TStringList.Create;
@@ -405,25 +241,7 @@ begin
   fReplaceTypes:=TStringToStringTree.Create(false);
   fReplaceFuncs:=TFuncsAndCategories.Create;
   fCoordOffsets:=TVisualOffsets.Create;
-  // Load settings from ConfigStorage.
   fConfigStorage:=GetIDEConfigStorage('delphiconverter.xml', true);
-  fCrossPlatform                    :=fConfigStorage.GetValue('CrossPlatform', true);
-  fSupportDelphi                    :=fConfigStorage.GetValue('SupportDelphi', false);
-  fSameDfmFile                      :=fConfigStorage.GetValue('SameDfmFile', false);
-  fDelphiDefine                     :=fConfigStorage.GetValue('DelphiDefine', true);
-  fBackupFiles                      :=fConfigStorage.GetValue('BackupFiles', true);
-  fKeepFileOpen                     :=fConfigStorage.GetValue('KeepFileOpen', false);
-  fScanParentDir                    :=fConfigStorage.GetValue('ScanParentDir', true);
-  fFuncReplaceComment               :=fConfigStorage.GetValue('FuncReplaceComment', true);
-  fUnitsReplaceMode:=TReplaceModeLong(fConfigStorage.GetValue('UnitsReplaceMode', 2));
-  fPropReplaceMode :=TReplaceModeLong(fConfigStorage.GetValue('UnknownPropsMode', 2));
-  fTypeReplaceMode:=TReplaceModeAllow(fConfigStorage.GetValue('TypeReplaceMode', 1));
-  fFuncReplaceMode:=TReplaceModeShort(fConfigStorage.GetValue('FuncReplaceMode', 1));
-  fCoordOffsMode  :=TReplaceModeShort(fConfigStorage.GetValue('CoordOffsMode', 1));
-  LoadStringToStringTree(fConfigStorage, 'UnitReplacements/', fReplaceUnits);
-  LoadStringToStringTree(fConfigStorage, 'TypeReplacements/', fReplaceTypes);
-  LoadFuncReplacements(fConfigStorage, 'FuncReplacements/', 'Categories/', fReplaceFuncs);
-  LoadVisualOffsets(fConfigStorage, 'VisualOffsets/', fCoordOffsets);
 
   // Units left out of project. Some projects include them although there are
   //  Lazarus packages for them. This setting is not saved in configuration.
@@ -474,11 +292,205 @@ begin
   fOmitProjUnits['SynHighlighterPas']  :='SynEdit';
   fOmitProjUnits['SynTextDrawer']      :='SynEdit';
   fOmitProjUnits['SynRegExpr']         :='SynEdit';
+end;
 
-  // * Add default values for configuration if ConfigStorage doesn't have them *
+destructor TConvertSettings.Destroy;
+begin
+  fConfigStorage.Free;
+  fCoordOffsets.Free;
+  fReplaceFuncs.Clear;
+  fReplaceFuncs.Free;
+  fReplaceTypes.Free;
+  fReplaceUnits.Free;
+  fOmitProjUnits.Free;
+  fMainFilenames.Free;
+  fLog.Free;
+  inherited Destroy;
+end;
 
-  // Map Delphi units to Lazarus units.
+// Load and store configuration in StringToStringTree :
+
+procedure TConvertSettings.LoadStringToStringTree(Path: string; Tree: TStringToStringTree);
+var
+  SubPath: String;
+  CurName, CurValue: String;
+  Cnt, i: Integer;
+begin
+  Tree.Clear;
+  Cnt:=fConfigStorage.GetValue(Path+'Count', 0);
+  for i:=0 to Cnt-1 do begin
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    CurName:=fConfigStorage.GetValue(SubPath+'Name','');
+    CurValue:=fConfigStorage.GetValue(SubPath+'Value','');
+    Tree[CurName]:=CurValue;
+  end;
+end;
+
+procedure TConvertSettings.SaveStringToStringTree(Path: string; Tree: TStringToStringTree);
+var
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+  SubPath: String;
+  i: Integer;
+begin
+  fConfigStorage.DeletePath(Path);      // Make sure there are no old leftover items.
+  fConfigStorage.SetDeleteValue(Path+'Count', Tree.Tree.Count, 0);
+  Node:=Tree.Tree.FindLowest;
+  i:=0;
+  while Node<>nil do begin
+    Item:=PStringToStringTreeItem(Node.Data);
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    fConfigStorage.SetDeleteValue(SubPath+'Name',Item^.Name,'');
+    fConfigStorage.SetDeleteValue(SubPath+'Value',Item^.Value,'');
+    Node:=Tree.Tree.FindSuccessor(Node);
+    inc(i);
+  end;
+end;
+
+// Load and store configuration in TFuncsAndCategories :
+
+procedure TConvertSettings.LoadFuncReplacements;
+var
+  SubPath: String;
+  xCategory, xDelphiFunc, xReplacement, xPackage, xUnitName: String;
+  CategUsed: Boolean;
+  Cnt, i: Integer;
+begin
+  fReplaceFuncs.Clear;
+  // Replacement functions
+  Cnt:=fConfigStorage.GetValue('FuncReplacements/Count', 0);
+  for i:=0 to Cnt-1 do begin
+    SubPath:='FuncReplacements/Item'+IntToStr(i)+'/';
+    xCategory   :=fConfigStorage.GetValue(SubPath+'Category','');
+    // Delete UTF8 func conversion from old configuration.
+    if (fVersion < 2) and (xCategory = 'UTF8Names') then Continue;
+    xDelphiFunc :=fConfigStorage.GetValue(SubPath+'DelphiFunction','');
+    xReplacement:=fConfigStorage.GetValue(SubPath+'Replacement','');
+    xPackage    :=fConfigStorage.GetValue(SubPath+'Package','');
+    xUnitName   :=fConfigStorage.GetValue(SubPath+'UnitName','');
+    fReplaceFuncs.AddFunc(xCategory, xDelphiFunc, xReplacement, xPackage, xUnitName);
+  end;
+  // Categories
+  Cnt:=fConfigStorage.GetValue('Categories/Count', 0);
+  for i:=0 to Cnt-1 do begin
+    SubPath:='Categories/Item'+IntToStr(i)+'/';
+    xCategory:=fConfigStorage.GetValue(SubPath+'Name','');
+    // Delete UTF8 category from old configuration.
+    if (fVersion < 2) and (xCategory = 'UTF8Names') then Continue;
+    CategUsed:=fConfigStorage.GetValue(SubPath+'InUse',True);
+    fReplaceFuncs.AddCategory(xCategory, CategUsed);
+  end;
+end;
+
+procedure TConvertSettings.SaveFuncReplacements;
+var
+  FuncRepl: TFuncReplacement;
+  SubPath, s: String;
+  i: Integer;
+begin
+  // Replacement functions
+  fConfigStorage.DeletePath('FuncReplacements/');
+  fConfigStorage.SetDeleteValue('FuncReplacements/Count', fReplaceFuncs.Funcs.Count, 0);
+  for i:=0 to fReplaceFuncs.Funcs.Count-1 do begin
+    FuncRepl:=fReplaceFuncs.FuncAtInd(i);
+    if FuncRepl<>nil then begin
+      SubPath:='FuncReplacements/Item'+IntToStr(i)+'/';
+      fConfigStorage.SetDeleteValue(SubPath+'Category'      ,FuncRepl.Category,'');
+      fConfigStorage.SetDeleteValue(SubPath+'DelphiFunction',fReplaceFuncs.Funcs[i],'');
+      fConfigStorage.SetDeleteValue(SubPath+'Replacement'   ,FuncRepl.ReplClause,'');
+      fConfigStorage.SetDeleteValue(SubPath+'Package'       ,FuncRepl.PackageName,'');
+      fConfigStorage.SetDeleteValue(SubPath+'UnitName'      ,FuncRepl.UnitName,'');
+    end;
+  end;
+  // Categories
+  fConfigStorage.DeletePath('Categories/');
+  fConfigStorage.SetDeleteValue('Categories/Count', fReplaceFuncs.Categories.Count, 0);
+  for i:=0 to fReplaceFuncs.Categories.Count-1 do begin
+    s:=fReplaceFuncs.Categories[i];
+    if s<>'' then begin
+      SubPath:='Categories/Item'+IntToStr(i)+'/';
+      fConfigStorage.SetDeleteValue(SubPath+'Name',s,'');
+      fConfigStorage.SetDeleteValue(SubPath+'InUse',fReplaceFuncs.CategoryIsUsed(i),True);
+    end;
+  end;
+end;
+
+// Load and store configuration in VisualOffsets :
+
+procedure TConvertSettings.LoadVisualOffsets;
+var
+  ParentType, SubPath: String;
+  xTop, xLeft: Integer;
+  Cnt, i: Integer;
+begin
+  fCoordOffsets.Clear;
+  Cnt:=fConfigStorage.GetValue('VisualOffsets/Count', 0);
+  for i:=0 to Cnt-1 do begin
+    SubPath:='VisualOffsets/Item'+IntToStr(i)+'/';
+    ParentType:=fConfigStorage.GetValue(SubPath+'ParentType','');
+    xTop :=fConfigStorage.GetValue(SubPath+'Top',0);
+    xLeft:=fConfigStorage.GetValue(SubPath+'Left',0);
+    fCoordOffsets.Add(TVisualOffset.Create(ParentType, xTop, xLeft));
+  end;
+end;
+
+procedure TConvertSettings.SaveVisualOffsets;
+var
+  offs: TVisualOffset;
+  SubPath: String;
+  i: Integer;
+begin
+  fConfigStorage.DeletePath('VisualOffsets/');
+  fConfigStorage.SetDeleteValue('VisualOffsets/Count', fCoordOffsets.Count, 0);
+  for i:=0 to fCoordOffsets.Count-1 do begin
+    offs:=fCoordOffsets[i];
+    SubPath:='VisualOffsets/Item'+IntToStr(i)+'/';
+    fConfigStorage.SetDeleteValue(SubPath+'ParentType',offs.ParentType,'');
+    fConfigStorage.SetDeleteValue(SubPath+'Top'       ,offs.Top,0);
+    fConfigStorage.SetDeleteValue(SubPath+'Left'      ,offs.Left,0);
+  end;
+end;
+
+procedure TConvertSettings.Load;
+var
+  TheMap: TStringToStringTree;
+  Categ: string;
+
+  procedure MapReplacement(aDelphi, aLCL: string);
+  begin
+    if not TheMap.Contains(aDelphi) then
+      TheMap[aDelphi]:=aLCL;
+  end;
+
+  procedure AddDefaultCategory(aCategory: string);
+  var
+    x: integer;
+  begin
+    with fReplaceFuncs do
+      if not Categories.Find(aCategory, x) then
+        AddCategory(aCategory, True);
+  end;
+
+begin
+  fVersion                          :=fConfigStorage.GetValue('Version', 0);
+  fCrossPlatform                    :=fConfigStorage.GetValue('CrossPlatform', true);
+  fSupportDelphi                    :=fConfigStorage.GetValue('SupportDelphi', false);
+  fSameDfmFile                      :=fConfigStorage.GetValue('SameDfmFile', false);
+  fDelphiDefine                     :=fConfigStorage.GetValue('DelphiDefine', true);
+  fBackupFiles                      :=fConfigStorage.GetValue('BackupFiles', true);
+  fKeepFileOpen                     :=fConfigStorage.GetValue('KeepFileOpen', false);
+  fScanParentDir                    :=fConfigStorage.GetValue('ScanParentDir', true);
+  fFuncReplaceComment               :=fConfigStorage.GetValue('FuncReplaceComment', true);
+  fUnitsReplaceMode:=TReplaceModeLong(fConfigStorage.GetValue('UnitsReplaceMode', 2));
+  fPropReplaceMode :=TReplaceModeLong(fConfigStorage.GetValue('UnknownPropsMode', 2));
+  fTypeReplaceMode:=TReplaceModeAllow(fConfigStorage.GetValue('TypeReplaceMode', 1));
+  fFuncReplaceMode:=TReplaceModeShort(fConfigStorage.GetValue('FuncReplaceMode', 1));
+  fCoordOffsMode  :=TReplaceModeShort(fConfigStorage.GetValue('CoordOffsMode', 1));
+
+  // * Map Delphi units to Lazarus units *
   TheMap:=fReplaceUnits;
+  LoadStringToStringTree('UnitReplacements/', TheMap);
+  // Add default values for configuration if ConfigStorage doesn't have them
   MapReplacement('Windows',             'LCLIntf, LCLType, LMessages');
   MapReplacement('WinTypes',            'LCLIntf, LCLType, LMessages');
   MapReplacement('WinProcs',            'LCLIntf, LCLType, LMessages');
@@ -518,8 +530,10 @@ begin
   MapReplacement('^TntLX(.+)',          '$1');
   MapReplacement('^Tnt(([^L]|L[^X]).*)','$1');
 
-  // Map Delphi types to LCL types.
+  // * Map Delphi types to LCL types *
   TheMap:=fReplaceTypes;
+  LoadStringToStringTree('TypeReplacements/', TheMap);
+  // Add default values for configuration if ConfigStorage doesn't have them
   MapReplacement('TFlowPanel',        'TPanel');
   MapReplacement('TGridPanel',        'TPanel');
   MapReplacement('TRichEdit',         'TMemo'); // or TRichMemo from CRC.
@@ -567,40 +581,10 @@ begin
   MapReplacement('^TTnt(.+)LX$',      'T$1');
   MapReplacement('^TTnt(.+[^L][^X])$','T$1');
 
-  // Coordinate offsets for some visual containers
-  with fCoordOffsets do begin
-    AddVisualOffset('TGroupBox' , 14,2);
-    AddVisualOffset('TPanel',      2,2);
-    AddVisualOffset('RadioGroup', 14,2);
-    AddVisualOffset('CheckGroup', 14,2);
-  end;
-
-  // Map Delphi function names to FCL/LCL functions
+  // * Map Delphi function names to FCL/LCL functions *
+  LoadFuncReplacements;
+  // Add default values for configuration if ConfigStorage doesn't have them
   with fReplaceFuncs do begin
-    // File name encoding.
-    Categ:='UTF8Names';
-    AddDefaultCategory(Categ);
-    AddFunc(Categ,'FileExists',          'FileExistsUTF8($1)',          'LCL','FileUtil');
-    AddFunc(Categ,'FileAge',             'FileAgeUTF8($1)',             'LCL','FileUtil');
-    AddFunc(Categ,'DirectoryExists',     'DirectoryExistsUTF8($1)',     'LCL','FileUtil');
-    AddFunc(Categ,'ExpandFileName',      'ExpandFileNameUTF8($1)',      'LCL','FileUtil');
-    AddFunc(Categ,'ExpandUNCFileName',   'ExpandUNCFileNameUTF8($1)',   'LCL','FileUtil');
-    AddFunc(Categ,'ExtractShortPathName','ExtractShortPathNameUTF8($1)','LCL','FileUtil');
-    AddFunc(Categ,'FindFirst',           'FindFirstUTF8($1,$2,$3)',     'LCL','FileUtil');
-    AddFunc(Categ,'FindNext',            'FindNextUTF8($1)',            'LCL','FileUtil');
-    AddFunc(Categ,'FindClose',           'FindCloseUTF8($1)',           'LCL','FileUtil');
-    AddFunc(Categ,'FileSetDate',         'FileSetDateUTF8($1,$2)',      'LCL','FileUtil');
-    AddFunc(Categ,'FileGetAttr',         'FileGetAttrUTF8($1)',         'LCL','FileUtil');
-    AddFunc(Categ,'FileSetAttr',         'FileSetAttrUTF8($1,$2)',      'LCL','FileUtil');
-    AddFunc(Categ,'DeleteFile',          'DeleteFileUTF8($1)',          'LCL','FileUtil');
-    AddFunc(Categ,'RenameFile',          'RenameFileUTF8($1,$2)',       'LCL','FileUtil');
-    AddFunc(Categ,'FileSearch',          'FileSearchUTF8($1,$2)',       'LCL','FileUtil');
-    AddFunc(Categ,'FileIsReadOnly',      'FileIsReadOnlyUTF8($1)',      'LCL','FileUtil');
-    AddFunc(Categ,'GetCurrentDir',       'GetCurrentDirUTF8',           'LCL','FileUtil');
-    AddFunc(Categ,'SetCurrentDir',       'SetCurrentDirUTF8($1)',       'LCL','FileUtil');
-    AddFunc(Categ,'CreateDir',           'CreateDirUTF8($1)',           'LCL','FileUtil');
-    AddFunc(Categ,'RemoveDir',           'RemoveDirUTF8($1)',           'LCL','FileUtil');
-    AddFunc(Categ,'ForceDirectories',    'ForceDirectoriesUTF8($1)',    'LCL','FileUtil');
     // File functions using a handle
     Categ:='FileHandle';
     AddDefaultCategory(Categ);
@@ -631,11 +615,22 @@ begin
     // SysUtils has AnsiSameStr and SameText but no SameStr.
     AddFunc(Categ, 'SameStr','(CompareStr($1,$2) = 0)' ,'', 'SysUtils');
   end;
+
+  // * Coordinate offsets for some visual containers *
+  LoadVisualOffsets;
+  // Add default values for configuration if ConfigStorage doesn't have them
+  with fCoordOffsets do begin
+    AddVisualOffset('TGroupBox' , 14,2);
+    AddVisualOffset('TPanel',      2,2);
+    AddVisualOffset('RadioGroup', 14,2);
+    AddVisualOffset('CheckGroup', 14,2);
+  end;
 end;
 
-destructor TConvertSettings.Destroy;
+procedure TConvertSettings.Save;
 begin
   // Save possibly modified settings to ConfigStorage.
+  fConfigStorage.SetDeleteValue('Version',           ConverterVersion, 0);
   fConfigStorage.SetDeleteValue('CrossPlatform',     fCrossPlatform, true);
   fConfigStorage.SetDeleteValue('SupportDelphi',     fSupportDelphi, false);
   fConfigStorage.SetDeleteValue('SameDfmFile',       fSameDfmFile, false);
@@ -643,34 +638,25 @@ begin
   fConfigStorage.SetDeleteValue('BackupFiles',       fBackupFiles, true);
   fConfigStorage.SetDeleteValue('KeepFileOpen',      fKeepFileOpen, false);
   fConfigStorage.SetDeleteValue('ScanParentDir',     fScanParentDir, true);
-  fConfigStorage.SetDeleteValue('FuncReplaceComment',fFuncReplaceComment, true);
+  fConfigStorage.SetDeleteValue('FuncReplaceComment', fFuncReplaceComment, true);
   fConfigStorage.SetDeleteValue('UnitsReplaceMode', integer(fUnitsReplaceMode), 2);
   fConfigStorage.SetDeleteValue('UnknownPropsMode', integer(fPropReplaceMode), 2);
   fConfigStorage.SetDeleteValue('TypeReplaceMode',  integer(fTypeReplaceMode), 1);
   fConfigStorage.SetDeleteValue('FuncReplaceMode',  integer(fFuncReplaceMode), 1);
   fConfigStorage.SetDeleteValue('CoordOffsMode',    integer(fCoordOffsMode), 1);
-  SaveStringToStringTree(fConfigStorage, 'UnitReplacements/', fReplaceUnits);
-  SaveStringToStringTree(fConfigStorage, 'TypeReplacements/', fReplaceTypes);
-  SaveFuncReplacements(fConfigStorage, 'FuncReplacements/', 'Categories/', fReplaceFuncs);
-  SaveVisualOffsets(fConfigStorage, 'VisualOffsets/', fCoordOffsets);
-  // Free stuff
-  fConfigStorage.Free;
-  fCoordOffsets.Free;
-  fReplaceFuncs.Clear;
-  fReplaceFuncs.Free;
-  fReplaceTypes.Free;
-  fReplaceUnits.Free;
-  fOmitProjUnits.Free;
-  fMainFilenames.Free;
-  fLog.Free;
-  inherited Destroy;
+  SaveStringToStringTree('UnitReplacements/', fReplaceUnits);
+  SaveStringToStringTree('TypeReplacements/', fReplaceTypes);
+  SaveFuncReplacements;
+  SaveVisualOffsets;
 end;
 
 function TConvertSettings.RunForm(ACacheUnitsThread: TThread): TModalResult;
 begin
   fSettingsForm:=TConvertSettingsForm.Create(nil, Self);
   try
-    with fSettingsForm do begin
+    Load;   // Load settings from ConfigStorage.
+    with fSettingsForm do
+    begin
       Caption:=fTitle + ' - ' + ExtractFileName(MainFilename);
       InputPathListBox.Items.Assign(fMainFilenames);
       // Settings --> UI. Loaded from ConfigSettings earlier.
@@ -693,8 +679,9 @@ begin
 
       fCacheUnitsThread := ACacheUnitsThread;
       StartThreadIfValid;
-      Result:=ShowModal;        // Let the user change settings in a form.
-      if Result=mrOK then begin // The thread will finished before the form closes.
+      Result:=ShowModal;   // Let the user change the settings.
+      if Result=mrOK then  // The thread will be finished before the form closes.
+      begin
         // UI --> Settings. Will be saved to ConfigSettings later.
         fCrossPlatform     :=CrossPlatformCheckBox.Checked;
         fSupportDelphi     :=SupportDelphiCheckBox.Checked;
@@ -712,6 +699,7 @@ begin
         fCoordOffsMode   :=TReplaceModeShort(CoordOffsComboBox.ItemIndex);
         if fBackupFiles then
           DeleteDirectory(BackupPath, True); // Delete old backup if there is any.
+        Save;
       end;
     end;
   finally

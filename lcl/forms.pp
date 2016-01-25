@@ -1692,6 +1692,7 @@ type
   public
     function IsDesignMsg(Sender: TControl; var Message: TLMessage): Boolean;
       virtual; abstract;
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); virtual; abstract;
     procedure Modified; virtual; abstract;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); virtual; abstract;
@@ -2153,7 +2154,6 @@ initialization
   IsFormDesign := @IsFormDesignFunction;
   Screen:=TScreen.Create(nil);
   Application:=TApplication.Create(nil);
-
 finalization
   //DebugLn('forms.pp - finalization section');
   LCLProc.OwnerFormDesignerModifiedProc:=nil;

@@ -34,6 +34,8 @@ type
     procedure DoDown(Button: TMouseButton); override;
     procedure DoMove(ScreenX, ScreenY: Integer); override;
     procedure DoUp(Button: TMouseButton); override;
+    procedure DoScrollUp; override;
+    procedure DoScrollDown; override;
   end;
   
 function InitializeMouseInput: TMouseInput;
@@ -82,6 +84,28 @@ var
 begin
   Display := XOpenDisplay(nil);
   XTestFakeButtonEvent(Display, MouseButtonToXButton[Button], False, 0);
+  XFlush(Display);
+  XCloseDisplay(Display);
+end;
+
+procedure TXMouseInput.DoScrollUp;
+var
+  Display: PDisplay;
+begin
+  Display := XOpenDisplay(nil);
+  XTestFakeButtonEvent(Display, 4, True, 0);
+  XTestFakeButtonEvent(Display, 4, False, 0);
+  XFlush(Display);
+  XCloseDisplay(Display);
+end;
+
+procedure TXMouseInput.DoScrollDown;
+var
+  Display: PDisplay;
+begin
+  Display := XOpenDisplay(nil);
+  XTestFakeButtonEvent(Display, 5, True, 0);
+  XTestFakeButtonEvent(Display, 5, False, 0);
   XFlush(Display);
   XCloseDisplay(Display);
 end;

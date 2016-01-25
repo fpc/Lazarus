@@ -42,7 +42,7 @@ uses
   // LazUtils
   LazFileCache, LazFileUtils,
   // IdeIntf
-  LCLIntf, IDEWindowIntf, IDEOptionsIntf,
+  LCLIntf, IDEWindowIntf, IDEOptionsIntf, LazIDEIntf,
   // AnchorDocking
   AnchorDockStr, AnchorDocking, AnchorDesktopOptions, AnchorDockOptionsDlg;
 
@@ -82,6 +82,7 @@ type
     procedure AdjustMainIDEWindowHeight(const AIDEWindow: TCustomForm;
       const AAdjustHeight: Boolean; const ANewHeight: Integer); override;
     procedure CloseAll; override;
+    procedure ResetSplitters; override;
   end;
 
   { TAnchorDockIDEFrame }
@@ -232,6 +233,11 @@ begin
   end;
 end;
 
+procedure TIDEAnchorDockMaster.ResetSplitters;
+begin
+  DockMaster.ResetSplitters;
+end;
+
 procedure TIDEAnchorDockMaster.MakeIDEWindowDockable(AControl: TWinControl);
 begin
   {$IFDEF VerboseAnchorDocking}
@@ -260,13 +266,16 @@ begin
 
   Site := nil;
   for I := 0 to AIDEWindow.ControlCount-1 do
-  if AIDEWindow.Controls[I] is TAnchorDockHostSite then
-  begin
-    Site := TAnchorDockHostSite(AIDEWindow.Controls[I]);
-    Break;
-  end;
+    if AIDEWindow.Controls[I] is TAnchorDockHostSite then
+    begin
+      Site := TAnchorDockHostSite(AIDEWindow.Controls[I]);
+      if (Site.Parent<>nil) and (Site.Parent=LazarusIDE.GetMainBar) then
+        Break // found
+      else
+        Site := nil;
+    end;
 
-  if not Assigned(Site) then
+  if (Site=nil) or (Site.BoundSplitter=nil) then
     Exit;
 
   Site.BoundSplitter.Enabled := not AAdjustHeight;

@@ -222,7 +222,7 @@ var
   ConfFileName: string;
 begin
   if fFilename='' then begin
-    ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+MiscOptsFilename);
+    ConfFileName:=AppendPathDelim(GetPrimaryConfigPath)+MiscOptsFilename;
     CopySecondaryConfigFile(MiscOptsFilename);
     if (not FileExistsUTF8(ConfFileName)) then begin
       //DebugLn('Note: miscellaneous options file not found - using defaults');

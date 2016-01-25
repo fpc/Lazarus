@@ -758,11 +758,16 @@ type
     function CanPaintBackground: Boolean; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getClientBounds: TRect; override;
+    function getClientOffset: TPoint; override;
     function getText: WideString; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer;
       {%H-}WithThemeSpace: Boolean); override;
     procedure setText(const W: WideString); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
+    procedure Update(ARect: PRect = nil); override;
+    procedure UpdateRegion(ARgn: QRegionH); override;
+    procedure Repaint(ARect: PRect = nil); override;
+
     property GroupBoxType: TQtGroupBoxType read FGroupBoxType write FGroupBoxType;
     property CheckBoxState: boolean read GetCheckBoxState write SetCheckBoxState;
     property CheckBoxVisible: boolean read GetCheckBoxVisible write SetCheckBoxVisible;
@@ -1066,8 +1071,10 @@ type
     {$ENDIF}
     FEditingFinishedHook: QAbstractSpinBox_hookH;
     FLineEditHook: QObject_hookH;
+    FTextChangedHook: QLineEdit_hookH;
     // parts
     FLineEdit: QLineEditH;
+    FTextChangedByValueChanged: Boolean;
     function GetLineEdit: QLineEditH;
     function LineEditEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
   protected
@@ -1082,10 +1089,12 @@ type
     procedure setMaxLength(const ALength: Integer);
     procedure setSelection(const AStart, ALength: Integer);
     procedure setCursorPosition(const ACursorPosition: Integer);
+    procedure SignalLineEditTextChanged(AnonParam1: PWideString); virtual; cdecl;
     procedure Cut;
     procedure Copy;
     procedure Paste;
     procedure Undo;
+    property TextChangedByValueChanged: Boolean read FTextChangedByValueChanged write FTextChangedByValueChanged;
   public
     function getValue: Double; virtual; abstract;
     function getReadOnly: Boolean;
@@ -7756,8 +7765,8 @@ begin
   inherited AttachEvents;
   if FCentralWidget <> nil then
   begin
-    // FCWEventHook := QObject_hook_create(FCentralWidget);
-    // QObject_hook_hook_events(FCWEventHook, @EventFilter);
+    FCWEventHook := QObject_hook_create(FCentralWidget);
+    QObject_hook_hook_events(FCWEventHook, @EventFilter);
   end;
 end;
 
@@ -7765,8 +7774,8 @@ procedure TQtGroupBox.DetachEvents;
 begin
   if FCWEventHook <> nil then
   begin
-    // QObject_hook_destroy(FCWEventHook);
-    // FCWEventHook := nil;
+    QObject_hook_destroy(FCWEventHook);
+    FCWEventHook := nil;
   end;
   inherited DetachEvents;
 end;
@@ -7774,8 +7783,7 @@ end;
 function TQtGroupBox.CanPaintBackground: Boolean;
 begin
   Result := CanSendLCLMessage and getEnabled and
-    (LCLObject.Color <> clBtnFace) and (LCLObject.Color <> clBackground);
-    // DO NOT REMOVE ! QGroupBox default = clBackground not clBtnFace !
+    (LCLObject.Color <> clDefault);
 end;
 
 function TQtGroupBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
@@ -7791,10 +7799,23 @@ begin
 
   if (Sender = FCentralWidget) then
   begin
+    // issue #28155, we are painting our FCentralWidget, not QGroupBox
+    case QEvent_type(Event) of
+      QEventPaint: Result := inherited EventFilter(Sender, Event);
+    end;
     exit;
   end;
 
   case QEvent_type(Event) of
+    QEventPaint:
+      begin
+        Result := False;
+        // paint complete background, like gtk2 does
+        if CanPaintBackground then
+          SlotPaintBg(Sender, Event);
+        // issue #28155, we are painting our FCentralWidget, not QGroupBox
+        // Result := inherited EventFilter(Sender, Event);
+      end;
     QEventFontChange:
       begin
         Result := inherited EventFilter(Sender, Event);
@@ -7829,6 +7850,15 @@ begin
     else
       Result := inherited EventFilter(Sender, Event);
   end;
+end;
+
+function TQtGroupBox.getClientOffset: TPoint;
+begin
+  Result:=inherited getClientOffset;
+  // issue #28155
+  // there's no client offset since FCentralWidget is at it's position 0,0
+  if testAttribute(QtWA_Mapped) and QWidget_testAttribute(FCentralWidget, QtWA_Mapped) then
+    Result := Point(0, 0);
 end;
 
 function TQtGroupBox.getClientBounds: TRect;
@@ -7914,6 +7944,42 @@ begin
     inherited setFocusPolicy(QtNoFocus)
   else
     inherited setFocusPolicy(APolicy);
+end;
+
+procedure TQtGroupBox.Update(ARect: PRect);
+begin
+  if Assigned(FCentralWidget) then
+  begin
+    if ARect <> nil then
+      QWidget_update(FCentralWidget, ARect)
+    else
+      QWidget_update(FCentralWidget);
+  end else
+    inherited Update(ARect);
+end;
+
+procedure TQtGroupBox.UpdateRegion(ARgn: QRegionH);
+begin
+  if Assigned(FCentralWidget) then
+  begin
+    if ARgn <> nil then
+      QWidget_update(FCentralWidget, ARgn)
+    else
+      QWidget_update(FCentralWidget);
+  end else
+    inherited UpdateRegion(ARgn);
+end;
+
+procedure TQtGroupBox.Repaint(ARect: PRect);
+begin
+  if Assigned(FCentralWidget) then
+  begin
+    if ARect <> nil then
+      QWidget_repaint(FCentralWidget, ARect)
+    else
+      QWidget_repaint(FCentralWidget);
+  end else
+  inherited Repaint(ARect);
 end;
 
 { TQtFrame }
@@ -10923,6 +10989,8 @@ begin
   begin
     FLineEditHook := QObject_hook_create(FLineEdit);
     QObject_hook_hook_events(FLineEditHook, @LineEditEventFilter);
+    FTextChangedHook := QLineEdit_hook_create(FLineEdit);
+    QLineEdit_hook_hook_textChanged(FTextChangedHook, @SignalLineEditTextChanged);
   end;
   Result := FLineEdit;
 end;
@@ -10934,6 +11002,21 @@ begin
   QEvent_accept(Event);
   if QEvent_type(Event) = QEventFontChange then
     Result := EventFilter(QWidgetH(Sender), Event);
+end;
+
+procedure TQtAbstractSpinBox.SignalLineEditTextChanged(AnonParam1: PWideString); cdecl;
+var
+  Msg: TLMessage;
+begin
+  if FTextChangedByValueChanged then
+  begin
+    FTextChangedByValueChanged := False;
+    Exit;
+  end;
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  Msg.Msg := CM_TEXTCHANGED;
+  if not InUpdate then
+    DeliverMessage(Msg);
 end;
 
 function TQtAbstractSpinBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -10949,6 +11032,7 @@ begin
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
     Parent := nil;
+  FTextChangedByValueChanged := False;
   Result := QAbstractSpinBox_create(Parent);
 end;
 
@@ -11134,6 +11218,12 @@ begin
     QObject_hook_destroy(FLineEditHook);
     FLineEditHook := nil;
   end;
+
+  if FTextChangedHook <> nil then
+  begin
+    QLineEdit_hook_destroy(FTextChangedHook);
+    FTextChangedHook := nil;
+  end;
   
   inherited DetachEvents;
 end;
@@ -11265,6 +11355,7 @@ var
   Msg: TLMessage;
 begin
   FValue := p1;
+  FTextChangedByValueChanged := True;
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := CM_TEXTCHANGED;
   if not InUpdate then
@@ -11340,10 +11431,11 @@ var
   Msg: TLMessage;
 begin
   FValue := p1;
+  FTextChangedByValueChanged := True;
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := CM_TEXTCHANGED;
   if not InUpdate then
-    DeliverMessage(Msg);
+   DeliverMessage(Msg);
 end;
 
 { TQtListView }

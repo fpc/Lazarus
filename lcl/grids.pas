@@ -6848,9 +6848,9 @@ var
 
   procedure MoveSel(Rel: Boolean; aCol,aRow: Integer);
   begin
-    // Always reset Offset in keyboard Events
-    FGCache.TLColOff:=0;
-    FGCache.TLRowOff:=0;
+    // Do not reset Offset in keyboard Events - see issue #29420
+    //FGCache.TLColOff:=0;
+    //FGCache.TLRowOff:=0;
     SelectActive:=Sh;
     Include(FGridFlags, gfEditingDone);
     if MoveNextSelectable(Rel, aCol, aRow) then

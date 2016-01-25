@@ -194,6 +194,7 @@ end;
 procedure TCustomFloatSpinEditEx.Loaded;
 begin
   inherited Loaded;
+  UpDown.MinRepeatInterval := FMinRepeatValue;
   if FUpdatePending then UpdateControl;
 end;
 
@@ -260,6 +261,14 @@ begin
   Result := BaseEditor;
 end;
 
+procedure TCustomFloatSpinEditEx.SetMinRepeatValue(AValue: Byte);
+begin
+  if FMinRepeatValue = AValue then Exit;
+  FMinRepeatValue := AValue;
+  if not (csLoading in ComponentState) then
+    UpDown.MinRepeatInterval := FMinRepeatValue;
+end;
+
 
 procedure TCustomFloatSpinEditEx.SpinUpDown(Up: Boolean);
 var
@@ -321,6 +330,7 @@ begin
   FUpdatePending := True;
   FSettingValue := False;
   FNullValueBehaviour := nvbMinValue;
+  FMinRepeatValue := 100;
 
   Edit.Alignment := taRightJustify;
 

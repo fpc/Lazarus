@@ -466,6 +466,12 @@ type
   TGetSiteInfoEvent = procedure(Sender: TObject; DockClient: TControl;
     var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean) of object;
 
+  TDrawDockImageEvent = procedure(Sender: TObject; AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
+
+var
+  OnDrawDockImage: TDrawDockImageEvent = nil;
+
+type
   TDragDockObject = class(TDragObject)
   private
     FDockOffset: TPoint;
@@ -485,6 +491,7 @@ type
     procedure ShowDockImage; virtual;
     procedure HideDockImage; virtual;
     procedure MoveDockImage; virtual;
+    function HasOnDrawImage: boolean; virtual;
   public
     property DockOffset: TPoint read FDockOffset write FDockOffset;
     property DockRect: TRect read FDockRect write FDockRect; // where to drop Control, screen coordinates

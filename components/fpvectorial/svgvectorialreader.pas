@@ -2727,12 +2727,13 @@ var
 
   procedure ReadTextSpans(ACurNode: TDOMNode);
   var
-    j: Integer;
+    i,j: Integer;
     lCurNode: TDOMNode;
     lTextStr: string;
     lText: TvText;
     lCText: TvCurvedText;
     lInsertedEntity, lInsertedSubEntity: TvEntity;
+    s: String;
   begin
     lCurNode := ACurNode.FirstChild;
     while lCurNode <> nil do
@@ -2820,18 +2821,16 @@ var
         ApplyStackStylesToText(lCText);
       end
       else
+      if lNodeValue <> '' then
       begin
         lText := lParagraph.AddText(lNodeValue);
-
         lText.Font.Size := 10;
         lText.Name := lName;
         // Apply the layer style
         ApplyLayerStyles(AData, lText);
-
         // Apply the layer style
         ApplyStackStylesToText(lText);
       end;
-
 
       lCurNode := lCurNode.NextSibling;
     end;
@@ -2870,7 +2869,7 @@ begin
     else if IsAttributeFromStyle(lNodeName) then
     begin
       ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, nil, lCurStyle);
-      ReadSVGGeneralStyleWithKeyAndValue(AData, lNodeName, lNodeValue, lParagraph);
+  //    ReadSVGGeneralStyleWithKeyAndValue(AData, lNodeName, lNodeValue, lParagraph);
     end;
   end;
 
@@ -2891,6 +2890,15 @@ begin
   // </text>
   // These other lines can be positioned, so they need to appear as independent TvText elements
   ReadTextSpans(ANode);
+
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
+    if IsAttributeFromStyle(lNodeName) then
+      ReadSVGGeneralStyleWithKeyAndValue(AData, lNodeName, lNodeValue, lParagraph);
+  end;
 
   // Finalization
   lCurObject := lTextSpanStack.Pop();

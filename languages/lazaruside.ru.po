@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-01-12 01:45+0300\n"
+"PO-Revision-Date: 2016-01-23 02:08+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -11238,6 +11238,10 @@ msgstr "Локальные переменные"
 msgid "&Copy Name"
 msgstr "Копировать &имя"
 
+#: lazarusidestrconsts.lislocalsdlgcopyrawvalue
+msgid "Copy &RAW Value"
+msgstr "Копировать &необработанное значение"
+
 #: lazarusidestrconsts.lislocalsdlgcopyvalue
 msgid "C&opy Value"
 msgstr "Копировать &значение"
@@ -11587,8 +11591,8 @@ msgid "Install/Uninstall Packages ..."
 msgstr "Установить/удалить пакеты ..."
 
 #: lazarusidestrconsts.lismenueditoracceleratorkeysneedschanging
-msgid "Accelerator(&&) key \"%s\" needs changing "
-msgstr "Клавишу (&&) быстрого вызова \"%s\" требуется изменить "
+msgid "Accelerator(&&) key \"%s\" needs changing"
+msgstr "Клавишу (&&) быстрого вызова \"%s\" требуется изменить"
 
 #: lazarusidestrconsts.lismenueditoraddanewitemaboveselecteditem
 msgid "Add a new item above selected item"
@@ -11608,130 +11612,142 @@ msgstr "Добавить новый элемент под выделенным"
 
 #: lazarusidestrconsts.lismenueditoraddasubmenuattherightofselecteditem
 msgid "Add a submenu at the right of selected item"
-msgstr ""
+msgstr "Добавить подменю справа от выделенного элемента"
 
 #: lazarusidestrconsts.lismenueditoraddasubmenubelowselecteditem
 msgid "Add a submenu below selected item"
-msgstr ""
+msgstr "Добавить подменю под выделенным элементом"
 
 #: lazarusidestrconsts.lismenueditoraddfromtemplate
 msgid "&Add from template ..."
-msgstr ""
+msgstr "&Добавить из шаблона ..."
 
 #: lazarusidestrconsts.lismenueditoraddiconfroms
 msgid "Add icon from %s"
-msgstr ""
+msgstr "Добавить значок из %s"
 
 #: lazarusidestrconsts.lismenueditoraddimagelisticon
 msgid "Add imagelist &icon"
-msgstr ""
+msgstr "Добавить &значок из ImageList"
+
+#: lazarusidestrconsts.lismenueditoraddmenuitem
+msgid "Add menu item"
+msgstr "Добавить элемент"
 
 #: lazarusidestrconsts.lismenueditoraddnewitemabove
 msgid "&Add new item above"
-msgstr ""
+msgstr "Добавить новый элемент &выше"
 
 #: lazarusidestrconsts.lismenueditoraddnewitemafter
 msgid "Add ne&w item after"
-msgstr ""
+msgstr "Добавить новый элемент &после"
 
 #: lazarusidestrconsts.lismenueditoraddnewitembefore
 msgid "&Add new item before"
-msgstr ""
+msgstr "Добавить новый элемент п&еред"
 
 #: lazarusidestrconsts.lismenueditoraddnewitembelow
 msgid "Add ne&w item below"
-msgstr ""
+msgstr "Добавить новый элемент &ниже"
 
 #: lazarusidestrconsts.lismenueditoraddonclickhandler
 msgid "Add &OnClick handler"
-msgstr ""
+msgstr "Добавить &обработчик OnClick"
 
 #: lazarusidestrconsts.lismenueditoraddseparatorafter
 msgid "Add separator &after"
-msgstr ""
+msgstr "Добавить разделитель &после"
 
 #: lazarusidestrconsts.lismenueditoraddseparatorbefore
 msgid "Add separator &before"
-msgstr ""
+msgstr "Добавить разделитель п&еред"
+
+#: lazarusidestrconsts.lismenueditoraddsubmenu
+msgid "Add submenu"
+msgstr "Добавить подменю"
 
 #: lazarusidestrconsts.lismenueditoraddsubmenubelow
 msgid "Add &submenu below"
-msgstr ""
+msgstr "Добавить под&меню ниже"
 
 #: lazarusidestrconsts.lismenueditoraddsubmenuright
 msgid "Add &submenu right"
-msgstr ""
+msgstr "Добавить под&меню справа"
 
 #: lazarusidestrconsts.lismenueditoranewmenutemplatehasbeensaved
 msgid "A new menu template described as \"%s\" has been saved based on %s, with %d sub items"
-msgstr ""
+msgstr "Новый шаблон меню \"%s\" сохранён на базе %s (элементов: %d)"
 
 #: lazarusidestrconsts.lismenueditorbasiceditmenutemplate
 msgid "&Edit,Basic edit menu,&Undo,Ctrl+Z,&Redo,,-,,Select &All,Ctrl+A,C&ut,Ctrl+X,C&opy,Ctrl+C,P&aste,Ctrl+V,Paste &Special,,-,,F&ind,,R&eplace,,&Go to ...,,"
-msgstr ""
+msgstr "&Правка,Базовое меню \"Правка\",&Отменить,Ctrl+Z,&Вернуть,,-,,Вы&делить все,Ctrl+A,В&ырезать,Ctrl+X,&Копировать,Ctrl+C,В&ставить,Ctrl+V,Сп&ециальная вставка,,-,,&Найти,,&Заменить,,&Перейти ...,,"
 
 #: lazarusidestrconsts.lismenueditorbasicfilemenutemplate
 msgid "&File,Basic file menu,&New,,&Open ...,,&Save,,Save &As,,-,,&Print,,P&rint Setup ...,,-,,E&xit,,"
-msgstr ""
+msgstr "&Файл,Базовое меню \"Файл\",&Новый,,&Открыть ...,,&Сохранить,,Сохранить &как,,-,,&Печать,,П&араметры печати ...,,-,,В&ыход,,"
 
 #: lazarusidestrconsts.lismenueditorbasichelpmenutemplate
 msgid "&Help,Basic help menu,Help &Contents,F1,Help &Index,,&Online Help,,-,,&Licence Information,,&Check for Updates,,-,,&About,,"
-msgstr ""
+msgstr "&Справка,Базовое меню \"Справка\",&Содержимое,F1,&Указатель,,Справка в с&ети,,-,,Сведения о &лицензии,,&Проверить обновления,,-,,&О программе,,"
 
 #: lazarusidestrconsts.lismenueditorbasicwindowmenutemplate
 msgid "&Window,Basic window menu,&New Window,,&Tile,,&Cascade,,&Arrange all,,-,,&Hide,,&Show,,"
-msgstr ""
+msgstr "Ок&но,Базовое меню \"Окно\",&Новое окно,,&Замостить,,&Каскадировать,,&Упорядочить все,,-,,Ск&рыть,,&Отобразить,,"
 
 #: lazarusidestrconsts.lismenueditorcaption
 msgid "Caption"
-msgstr ""
+msgstr "Заголовок"
 
 #: lazarusidestrconsts.lismenueditorcaptioneditemss
 msgid "Captioned items: %s"
-msgstr ""
+msgstr "Элементов с заголовками: %s"
 
 #: lazarusidestrconsts.lismenueditorcaptionshouldnotbeblank
 msgid "Caption should not be blank"
-msgstr ""
+msgstr "Заголовок не должен быть пустым"
 
 #: lazarusidestrconsts.lismenueditorchangeconflictingaccelerators
 msgid "Change conflicting accelerator \"%s\""
-msgstr ""
+msgstr "Изменение конфликтующей клавиши быстрого вызова \"%s\""
 
 #: lazarusidestrconsts.lismenueditorchangeimagelisticon
 msgid "Change imagelist &icon"
-msgstr ""
+msgstr "Сменить &значок из ImageList"
 
 #: lazarusidestrconsts.lismenueditorchangeshortcutcaptionforcomponent
 msgid "Change %s for %s"
-msgstr ""
+msgstr "Изменение свойства \"%s\" в %s"
 
 #: lazarusidestrconsts.lismenueditorchangeshortcutconflicts
 msgid "Change shortcut conflict \"%s\""
-msgstr ""
+msgstr "Изменение конфликтующей комбинации клавиш \"%s\""
 
 #: lazarusidestrconsts.lismenueditorchangetheshortcutfors
 msgid "Change the shortCut for %s"
-msgstr ""
+msgstr "Изменение свойства ShortCut в %s"
 
 #: lazarusidestrconsts.lismenueditorchangetheshortcutkey2fors
 msgid "Change the shortCutKey2 for %s"
-msgstr ""
+msgstr "Изменение свойства ShortCutKey2 в %s"
 
-#: lazarusidestrconsts.lismenueditorchoosetemplateto
-msgid "Choose template to"
-msgstr ""
+#: lazarusidestrconsts.lismenueditorchoosetemplatetodelete
+msgid "Choose template to delete"
+msgstr "Выберите шаблон для удаления"
+
+#: lazarusidestrconsts.lismenueditorchoosetemplatetoinsert
+msgid "Choose template to insert"
+msgstr "Выберите шаблон для вставки"
 
 #: lazarusidestrconsts.lismenueditorclickanongreyeditemtoedititsshortcut
-msgid "Click a non-greyed item to edit its shortcut"
-msgstr ""
+msgid "Click a non-greyed item to edit its shortcut or click header to sort by that column"
+msgstr "Щёлкните по активному элементу для редактирования комбинации клавиш либо по заголовку столбца списка для сортировки"
 
 #: lazarusidestrconsts.lismenueditorcomponentisunexpectedkind
 msgid "Component is unexpected kind"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorcomponentisunnamed
-msgid "component is unnamed"
+msgid "Component is unnamed"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorconflictresolutioncomplete
@@ -11752,7 +11768,7 @@ msgstr "&Удалить элемент"
 
 #: lazarusidestrconsts.lismenueditordeletemenutemplate
 msgid "&Delete menu template ..."
-msgstr ""
+msgstr "&Удалить шаблон меню ..."
 
 #: lazarusidestrconsts.lismenueditordeletesavedmenutemplate
 msgid "Delete saved menu template"
@@ -11766,21 +11782,13 @@ msgstr ""
 msgid "Delete this item and its subitems?"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditordeletingitemwithasubmenu
-msgid "Deleting item with a submenu"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditordeletingthisitemwilldeleteallsubitemstoo
-msgid "Deleting this item will delete all subitems too."
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditordisplaypreviewaspopupmenu
 msgid "Display preview as &Popup menu"
-msgstr ""
+msgstr "Отображать предпросмотр как &всплывающее меню"
 
 #: lazarusidestrconsts.lismenueditoreditcaption
 msgid "Edit &Caption"
-msgstr ""
+msgstr "Редактировать за&головок"
 
 #: lazarusidestrconsts.lismenueditoreditingcaptionofs
 msgid "Editing Caption of %s"
@@ -11792,7 +11800,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditoreditingsfors
 msgid "Editing %s for %s"
-msgstr ""
+msgstr "Редактирование свойства \"%s\" в %s"
 
 #: lazarusidestrconsts.lismenueditoreditingssnomenuitemselected
 msgid "Editing %s.%s - no menuitem selected"
@@ -11804,11 +11812,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorenteranewshortcutfors
 msgid "Enter a new ShortCut for %s"
-msgstr ""
+msgstr "Ввод значения свойства ShortCut в %s"
 
 #: lazarusidestrconsts.lismenueditorenteranewshortcutkey2fors
 msgid "Enter a new ShortCutKey2 for %s"
-msgstr ""
+msgstr "Ввод значения свойства ShortCutKey2 в %s"
 
 #: lazarusidestrconsts.lismenueditorexistingsavedtemplates
 msgid "Existing saved templates"
@@ -11824,7 +11832,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
-msgstr ""
+msgstr "&Захватить клавишу"
 
 #: lazarusidestrconsts.lismenueditorgroupindexmenuitems
 msgid "GroupIndex,MenuItems"
@@ -11838,8 +11846,8 @@ msgstr ""
 msgid "Inadequate Description"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorinsertmenutemplateinto
-msgid "Insert menu template into "
+#: lazarusidestrconsts.lismenueditorinsertmenutemplateintorootofs
+msgid "Insert menu template into root of %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorinsertselectedmenutemplate
@@ -11866,12 +11874,12 @@ msgstr ""
 msgid "Menu Editor"
 msgstr "Редактор меню"
 
-#: lazarusidestrconsts.lismenueditormenuitem
-msgid "menu item"
-msgstr ""
+#: lazarusidestrconsts.lismenueditormenuitemactions
+msgid "Menu Item actions"
+msgstr "Действия с элементами"
 
-#: lazarusidestrconsts.lismenueditormenuitemshortcutconflictsin
-msgid "Menuitem shortcut conflicts in "
+#: lazarusidestrconsts.lismenueditormenuitemshortcutconflictsins
+msgid "Menuitem shortcut conflicts in %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditormovedown
@@ -11880,19 +11888,19 @@ msgstr "Переместить вниз (или направо)"
 
 #: lazarusidestrconsts.lismenueditormoveitemdown
 msgid "Mo&ve item down"
-msgstr ""
+msgstr "Переместить элемент вн&из"
 
 #: lazarusidestrconsts.lismenueditormoveitemleft
 msgid "&Move item left"
-msgstr ""
+msgstr "Переместить элемент н&алево"
 
 #: lazarusidestrconsts.lismenueditormoveitemright
 msgid "Mo&ve item right"
-msgstr ""
+msgstr "Переместить &элемент направо"
 
 #: lazarusidestrconsts.lismenueditormoveitemup
 msgid "&Move item up"
-msgstr ""
+msgstr "Переместить элемент ввер&х"
 
 #: lazarusidestrconsts.lismenueditormoveselecteditemdown
 msgctxt "lazarusidestrconsts.lismenueditormoveselecteditemdown"
@@ -11912,17 +11920,13 @@ msgctxt "lazarusidestrconsts.lismenueditormoveselecteditemup"
 msgid "Move selected item up"
 msgstr "Переместить выбранный элемент вверх"
 
-#: lazarusidestrconsts.lismenueditormoveseparatedeleteinsertitems
-msgid "Move Divide Delete  Add  items"
-msgstr "Действия с элементами"
-
 #: lazarusidestrconsts.lismenueditormoveup
 msgid "Move Up (or left)"
 msgstr "Переместить вверх (или налево)"
 
 #: lazarusidestrconsts.lismenueditorna
 msgid "n/a"
-msgstr ""
+msgstr "недоступно"
 
 #: lazarusidestrconsts.lismenueditornomenuselected
 msgid "(no menu selected)"
@@ -11937,31 +11941,15 @@ msgid "<none>,<none>"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditornoradioitemsinthismenu
-msgid "no radioitems in this menu"
+msgid "No radioitems in this menu"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditornoshortcutconflicts
 msgid "<no shortcut conflicts>"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditornoshortcutconflictsremain
-msgid "<no shortcut conflicts remain>"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditornoshortcutconflictstoresolve
-msgid "<no shortcut conflicts to resolve>"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditornousersavedtemplates
 msgid "No user-saved templates"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditoronlystandarddefaulttemplatesareavailable
-msgid "Only standard default templates are available."
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditororclickheadertosortbythatcolumn
-msgid "  or click header to sort by that column"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorpickaniconfroms
@@ -11978,7 +11966,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorremoveallseparators
 msgid "&Remove all separators"
-msgstr ""
+msgstr "Удалить &все разделители"
 
 #: lazarusidestrconsts.lismenueditorresolvedconflictss
 msgid "Resolved conflicts: %s"
@@ -11990,10 +11978,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorresolveshortcutconflicts
 msgid "&Resolve shortcut conflicts ..."
-msgstr ""
+msgstr "&Устранить конфликты комбинаций клавиш ..."
 
 #: lazarusidestrconsts.lismenueditorrootmenu
-msgid "root menu"
+msgid "Root menu"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsavedtemplates
@@ -12002,7 +11990,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsavemenuasatemplate
 msgid "&Save menu as a template ..."
-msgstr ""
+msgstr "&Сохранить меню в качестве шаблона ..."
 
 #: lazarusidestrconsts.lismenueditorsavemenuastemplate
 msgid "Save menu as template"
@@ -12022,7 +12010,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorseparators
 msgid "Se&parators"
-msgstr ""
+msgstr "&Разделители"
 
 #: lazarusidestrconsts.lismenueditorsgroupindexd
 msgid "%s.GroupIndex: %d"
@@ -12050,15 +12038,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcuts
 msgid "Shortcuts"
-msgstr ""
+msgstr "Комбинации клавиш"
 
 #: lazarusidestrconsts.lismenueditorshortcuts2
 msgid "Shortc&uts"
-msgstr ""
+msgstr "&Комбинации клавиш"
 
 #: lazarusidestrconsts.lismenueditorshortcutsandacceleratorkeys
 msgid "Shortcuts and Accelerator keys"
-msgstr ""
+msgstr "Комбинации и клавиши быстрого вызова"
 
 #: lazarusidestrconsts.lismenueditorshortcutsassociatedwithmenusandactionsd
 msgid "Shortcuts associated with Menus and Actions (%d)"
@@ -12072,6 +12060,10 @@ msgstr ""
 msgid "Shortcuts used in %s"
 msgstr ""
 
+#: lazarusidestrconsts.lismenueditorshortcutsusedinsd
+msgid "Shortcuts used in %s (%d)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
 msgid "ShowMenuEditor: TMenu parameter is nil"
 msgstr ""
@@ -12081,7 +12073,9 @@ msgid "\"%s\" in %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsisalreadyinuse
-msgid "\"%s\" is already in use in %s as a shortcut.%sTry a different shortcut."
+msgid ""
+"\"%s\" is already in use in %s as a shortcut.\n"
+"Try a different shortcut.\n"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsisnotaradioitem
@@ -12112,12 +12106,12 @@ msgstr ""
 msgid "%s.%s.%s - OnClick: %s"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorstandardtemplates
-msgid "Standard templates"
+#: lazarusidestrconsts.lismenueditorssubmenu
+msgid "%s submenu"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorsubmenu
-msgid "submenu"
+#: lazarusidestrconsts.lismenueditorstandardtemplates
+msgid "Standard templates"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditortemplatedescription
@@ -12126,14 +12120,17 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditortemplates
 msgid "&Templates"
-msgstr ""
+msgstr "&Шаблоны"
 
 #: lazarusidestrconsts.lismenueditortemplatesaved
 msgid "Template saved"
-msgstr ""
+msgstr "Шаблон сохранён"
 
 #: lazarusidestrconsts.lismenueditortherearenousersavedmenutemplates
-msgid "There are no user-saved menu templates."
+msgid ""
+"There are no user-saved menu templates.\n"
+"\n"
+"Only standard default templates are available.\n"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditortsclistgetscanlistcompnameinvalidindexdforfscanlis
@@ -12141,12 +12138,14 @@ msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditoryouhavetochangetheshortcutfromsstoavoidaconflict
-msgid "You have to change the shortcut from %s%sto avoid a conflict"
+msgid ""
+"You have to change the shortcut from %s\n"
+"to avoid a conflict\n"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditoryoumustentertextforthecaption
 msgid "You must enter text for the Caption"
-msgstr ""
+msgstr "Необходимо ввести текст заголовка"
 
 #: lazarusidestrconsts.lismenuencloseinifdef
 msgid "Enclose in $IFDEF ..."

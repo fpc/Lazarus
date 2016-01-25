@@ -318,7 +318,7 @@ begin
   CleanDir(fWorkingDir+PathDelim+'test');
 
   // clean config directory
-  CleanDir(GetPrimaryConfigPath+PathDelim+'units');
+  CleanDir(AppendPathDelim(GetPrimaryConfigPath)+'units');
 
   // clean custom target directory
   if fProfile.TargetDirectory<>'' then begin

@@ -5,9 +5,16 @@ unit MenuShadows;
 interface
 
 uses
-  ActnList, ButtonPanel, Buttons, Classes, ComponentEditors, Controls, Dialogs, ExtCtrls,
-  Forms, Graphics, IDEDialogs, ImgList, LazarusIDEStrConsts, LazUTF8, LCLIntf, LCLProc,
-  LCLType, Menus, PropEdits, StdCtrls, SysUtils, Themes, types, typinfo;
+  // FCL + LCL
+  Classes, SysUtils, types, typinfo,
+  ActnList, ButtonPanel, Buttons, Controls, Dialogs, StdCtrls, ExtCtrls, Menus,
+  Forms, Graphics, ImgList, Themes, LCLType, LCLIntf, LCLProc,
+  // LazUtils
+  LazUTF8,
+  // IdeIntf
+  ComponentEditors, IDEDialogs, PropEdits,
+  // IDE
+  LazarusIDEStrConsts;
 
 const
   Margin = 6;
@@ -32,7 +39,7 @@ protected
   class function GetControlClassDefaultSize: TSize; override;
   procedure Paint; override;
 public
-  constructor CreateWithPurpose(anOwner: TShadowMenu);
+  constructor Create(anOwner: TShadowMenu); reintroduce;
   procedure Refresh;
   property ShouldBeVisible: boolean read GetShouldBeVisible;
 end;
@@ -168,7 +175,7 @@ TPopEnum = {%region}
 
 { TShadowMenu }
 
-TShadowMenu = class(TCustomPanel)
+TShadowMenu = class(TScrollBox)
 strict private
   FActionList: TActionList;
   FAddImgListIconAction: TAction;
@@ -226,7 +233,6 @@ protected
   function GetShadowForMenuItem(aMI: TMenuItem): TShadowItem;
   function OnClickIsAssigned(aMI: TMenuItem): boolean;
   procedure AddOnClick(Sender: TObject);
-  procedure AdjustSizeAndPosition(Sender: TObject);
   procedure DeleteItem(Sender: TObject);
   function GetBoxWithParentItem(aParentMI: TMenuItem): TShadowBox;
   procedure HideFakes;
@@ -255,32 +261,6 @@ public
   property SelectedShadowBox: TShadowBox read GetSelectedShadowBox;
   property SelectedShadowItem: TShadowItem read GetSelectedShadowItem;
 end;
-
-{ TScrollPanel }
-
-  TScrollPanel = class(TCustomPanel)
-  strict private
-    FChildControl: TWinControl;
-    FHeightDim: integer;
-    FHMax: integer;
-    FHSBar: TScrollBar;
-    FVMax: integer;
-    FVSBar: TScrollBar;
-    FWidthDim: integer;
-    procedure HScrollBarScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
-    procedure OnChildControlResize(Sender: TObject);
-    procedure SetLargeChange(AValue: integer);
-    procedure VScrollBarScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
-  protected
-    procedure SetParent(NewParent: TWinControl); override;
-  public
-    constructor CreateWithChild(TheOwner: TComponent; aChild: TWinControl);
-    property ChildControl: TWinControl read FChildControl write FChildControl;
-    property HMax: integer read FHMax;
-    property HSBar: TScrollBar read FHSBar;
-    property VMax: integer read FVMax;
-    property VSBar: TScrollBar read FVSBar;
-  end;
 
 TSCKind = (scUnknown,
            scMenuItemSC, scMenuItemKey2, scMenuItemAccel,
@@ -1134,7 +1114,7 @@ begin
   XMLConfig:=TXMLConfig.Create(templateCfgName);
   try
     s:=XMLConfig.GetValue('menu_1/Name/Value', 'missing_Menu_1_Name');
-    Result:=(CompareText(s, 'missing_Menu_1_Name') = 0);
+    Result:=(CompareText(s, 'missing_Menu_1_Name') <> 0);
   finally
     XMLConfig.Free;
   end;
@@ -1636,204 +1616,25 @@ begin
     Hide;
   end
   else begin
-    w:=FMinWidth;
-
     if selMI.IsInMenuBar then begin
-      SetBounds(selShadow.Left + selShadow.Width + 1, 0, w, MenuBar_Height);
+      SetBounds(selShadow.Left + selShadow.Width + 1, 0, FMinWidth, MenuBar_Height);
       selShadow.ShowingRightFake:=True;
       selShadow.RightFake:=Self;
       selShadow.ShowingBottomFake:=False;
     end
     else begin
+      w:=selShadow.ParentBox.Width - Gutter_X;
+      if (FMinWidth > w) then
+        w:=FMinWidth;
       SetBounds(selShadow.ParentBox.Left + selShadow.Left + Gutter_X,
                 selShadow.ParentBox.Top + selShadow.ParentBox.Height + 1,
-                selShadow.Width - Gutter_X, DropDown_Height);
+                w, DropDown_Height);
       selShadow.ShowingBottomFake:=True;
       selShadow.BottomFake:=Self;
       selShadow.ShowingRightFake:=False;
     end;
     Show;
   end;
-end;
-
-{ TScrollPanel }
-
-procedure TScrollPanel.HScrollBarScroll(Sender: TObject;
-  ScrollCode: TScrollCode; var ScrollPos: Integer);
-var
-  sb: TScrollBar absolute Sender;
-  delta, tmp: integer;
-  widthDiff: integer;
-begin
-  if (FChildControl = nil) or (FChildControl.Width <= FWidthDim) then
-    Exit;
-  widthDiff:=FChildControl.Width - FWidthDim;
-  case ScrollCode of
-    scLineUp:    if (ScrollPos > 0) and (FChildControl.Left < 0) then begin
-                   if (ScrollPos > widthDiff) then
-                     ScrollPos:=widthDiff-1;
-                   delta:=trunc(FChildControl.Left/ScrollPos);
-                   FChildControl.Left:=FChildControl.Left - sb.SmallChange*delta;
-                 end;
-    scLineDown:  if (ScrollPos <= FHMax) then begin
-                   delta:=trunc(ScrollPos*(FChildControl.Width-FWidthDim)/FHMax);
-                   FChildControl.Left:= -sb.SmallChange*delta;
-                 end
-                 else if (FChildControl.Left <> -widthDiff) then
-                   FChildControl.Left:= -widthDiff;
-    scPageUp:    if (ScrollPos > 0) and (FChildControl.Left < 0) then begin
-                   if (ScrollPos > widthDiff) then
-                     ScrollPos:=widthDiff-1;
-                   delta:= -trunc(sb.LargeChange*FChildControl.Left/ScrollPos);
-                   tmp:=FChildControl.Left + delta;
-                   if (tmp > 0) then
-                     tmp:=0;
-                   FChildControl.Left:=tmp;
-                 end;
-    scPageDown:  if (ScrollPos > 0) and (FChildControl.Left <= 0) then begin
-                   delta:=trunc((FChildControl.Left+widthDiff)/ScrollPos);
-                   if (delta = 0) then
-                     delta:=1;
-                   tmp:=FChildControl.Left - delta;
-                   if (tmp < -widthDiff) then
-                     tmp:=-widthDiff;
-                   FChildControl.Left:=tmp;
-                 end;
-    scPosition:  if (ScrollPos = 0) and (FChildControl.Left <> 0) then
-                   FChildControl.Left:=0
-                 else if (ScrollPos >= FHMax) and (FChildControl.Left <> -widthDiff) then
-                   FChildControl.Left:= -widthDiff;
-    scTrack:     FChildControl.Left:=-trunc(ScrollPos*(FChildControl.Width-FWidthDim)/FHMax);
-  end;
-end;
-
-procedure TScrollPanel.VScrollBarScroll(Sender: TObject;
-  ScrollCode: TScrollCode; var ScrollPos: Integer);
-var
-  sb: TScrollBar absolute Sender;
-  delta, tmp: integer;
-  heightDiff: integer;
-begin
-  if (FChildControl = nil) or (FChildControl.Height <= FHeightDim) then
-    Exit;
-  heightDiff:=FChildControl.Height - FHeightDim;
-  case ScrollCode of
-    scLineUp:    if (ScrollPos > 0) and (FChildControl.Top < 0) then begin
-                   if (ScrollPos > heightDiff) then
-                     ScrollPos:=heightDiff-1;
-                   delta:=trunc(FChildControl.Top/ScrollPos);
-                   FChildControl.Top:=FChildControl.Top - sb.SmallChange*delta;
-                 end;
-    scLineDown:  if (ScrollPos <= FVMax) then begin
-                   delta:=trunc(ScrollPos*(FChildControl.Height-FHeightDim)/FVMax);
-                   FChildControl.Top:= -sb.SmallChange*delta;
-                 end
-                 else if (FChildControl.Top <> -heightDiff) then
-                   FChildControl.Top:= -heightDiff;
-    scPageUp:    if (ScrollPos > 0) and (FChildControl.Top < 0) then begin
-                   if (ScrollPos > heightDiff) then
-                     ScrollPos:=heightDiff-1;
-                   delta:= -trunc(sb.LargeChange*FChildControl.Top/ScrollPos);
-                   tmp:=FChildControl.Top + delta;
-                   if (tmp > 0) then
-                     tmp:=0;
-                   FChildControl.Top:=tmp;
-                 end;
-    scPageDown:  if (ScrollPos > 0) and (FChildControl.Top <= 0) then begin
-                   delta:=trunc((FChildControl.Top + heightDiff)/ScrollPos);
-                   if (delta = 0) then
-                     delta:=1;
-                   tmp:=FChildControl.Top - delta;
-                   if (tmp < -heightDiff) then
-                     tmp:=-heightDiff;
-                   FChildControl.Top:=tmp;
-                 end;
-    scPosition:  if (ScrollPos = 0) and (FChildControl.Top <> 0) then
-                   FChildControl.Top:=0
-                 else if (ScrollPos >= FVMax) and (FChildControl.Top <> -heightDiff) then
-                   FChildControl.Top:= -heightDiff;
-    scTrack:     FChildControl.Top:=-trunc(ScrollPos*(FChildControl.Height-FHeightDim)/FVMax);
-  end;
-end;
-
-procedure TScrollPanel.OnChildControlResize(Sender: TObject);
-begin
-  if (Sender = FChildControl) then begin
-    FHeightDim:=Height;
-    if FHSBar.Visible then
-      Dec(FHeightDim, FHSBar.Height);
-    FWidthDim:=Width;
-    if FVSBar.Visible then
-      Dec(FWidthDim, FVSBar.Width);
-
-    if (FChildControl.Width > FWidthDim) then begin
-      FHSBar.Visible:=True;
-      FHeightDim:=Height - FHSBar.Height;
-      if (FChildControl.Height > FHeightDim) then begin
-        FVSBar.Visible:=True;
-        FWidthDim:=Width - FVSBar.Width;
-      end;
-    end
-    else if FHSBar.Visible then
-      FHSBar.Visible:=False;
-
-    if not FVSBar.Visible and (FChildControl.Height > FHeightDim) then begin
-      FVSBar.Visible:=True;
-      FWidthDim:=Width - FVSBar.Width;
-    end;
-
-    if FVSBar.Visible and (FChildControl.Height < FHeightDim) then
-      FVSBar.Visible:=False;
-  end;
-end;
-
-procedure TScrollPanel.SetLargeChange(AValue: integer);
-begin
-  if (FHSBar.LargeChange <> AValue) then begin
-    FHSBar.LargeChange:=AValue;
-    FVSBar.LargeChange:=AValue;
-  end;
-end;
-
-procedure TScrollPanel.SetParent(NewParent: TWinControl);
-begin
-  inherited SetParent(NewParent);
-  if (NewParent <> nil) then begin
-    FChildControl.Parent:=Self;
-  end;
-end;
-
-constructor TScrollPanel.CreateWithChild(TheOwner: TComponent;
-  aChild: TWinControl);
-begin
-  inherited Create(TheOwner);
-  Caption:='';
-  BevelOuter:=bvNone;
-  BevelInner:=bvNone;
-  FHSBar:=TScrollBar.Create(Self);
-  with FHSBar do begin
-    PageSize:=30;
-    Max:=100;
-    Align:=alBottom;
-    OnScroll:=@HScrollBarScroll;
-    Visible:=False;
-    Parent:=Self;
-  end;
-  FVSBar:=TScrollBar.Create(Self);
-  with FVSBar do begin
-    Kind:=sbVertical;
-    PageSize:=30;
-    Max:=100;
-    Align:=alRight;
-    OnScroll:=@VScrollBarScroll;
-    Visible:=False;
-    Parent:=Self;
-  end;
-  SetLargeChange(10);
-  FHMax:=FHSBar.Max - FHSBar.PageSize;
-  FVMax:=FVSBar.Max - FVSBar.PageSize;
-  FChildControl:=aChild;
-  FChildControl.OnResize:=@OnChildControlResize;
 end;
 
 { TEditShortcutCaptionDialog }
@@ -1854,7 +1655,7 @@ begin
           inf:=MenuDesigner.ShortcutList.FindUniqueInfoForShortcut(newSC);
           IDEMessageDialogAb(lisMenuEditorFurtherShortcutConflict,
                      Format(lisMenuEditorSIsAlreadyInUse,
-                     [ShortCutToText(newSC), inf.Component.Name, LineEnding]),
+                     [ShortCutToText(newSC), inf.Component.Name]),
                      mtWarning, [mbOK], False);
           FEdit.Text:=AmpersandStripped(FOldCaption);
           FEdit.SetFocus;
@@ -1890,7 +1691,7 @@ begin
     begin
       IDEMessageDialogAb(lisMenuEditorShortcutNotYetChanged,
            Format(lisMenuEditorYouHaveToChangeTheShortcutFromSStoAvoidAConflict,
-                  [ShortCutToText(FInfo.Shortcut), LineEnding]),
+                  [ShortCutToText(FInfo.Shortcut)]),
                   mtWarning, [mbOK], False);
       FGrabBox.KeyComboBox.SetFocus;
       Exit;
@@ -1900,7 +1701,7 @@ begin
       inf:=MenuDesigner.ShortcutList.FindUniqueInfoForShortcut(newSC);
       IDEMessageDialogAb(lisMenuEditorFurtherShortcutConflict,
            Format(lisMenuEditorSIsAlreadyInUse,
-                  [ShortCutToText(newSC), inf.Component.Name, LineEnding]),
+                  [ShortCutToText(newSC), inf.Component.Name]),
                   mtWarning, [mbOK], False);
       FGrabBox.KeyComboBox.SetFocus;
     end
@@ -2141,7 +1942,7 @@ begin
     FSelectedInfo:=nil;
     FConflictsListBox.OnSelectionChange:=nil;
     FConflictsListBox.Items.Add(lisMenuEditorNoShortcutConflicts);
-    FCurrentEdit.Text:=lisMenuEditorNoShortcutConflictsToResolve;
+    FCurrentEdit.Text:=lisMenuEditorNoShortcutConflicts;
     FResolvedConflictsCountLabel.Caption:=Format(lisMenuEditorResolvedConflictsS,['0']);
     FRemainingConflictsCountLabel.Caption:=Format(lisMenuEditorRemainingConflictsS,['0']);
   end;
@@ -2167,7 +1968,7 @@ begin
     FRemainingConflictsCountLabel.Caption:=Format(lisMenuEditorRemainingConflictsS,['0']);
     FResolvedConflictsCountLabel.Caption:=Format(
       lisMenuEditorResolvedConflictsS, [FInitialConflictsCount]);
-    FConflictsListBox.Items.Add(lisMenuEditorNoShortcutConflictsRemain);
+    FConflictsListBox.Items.Add(lisMenuEditorNoShortcutConflicts);
     FCurrentEdit.Text:=lisMenuEditorConflictResolutionComplete;
     FButtonPanel.CancelButton.Caption:=lisBtnClose;
   end;
@@ -2191,8 +1992,7 @@ begin
   Position:=poScreenCenter;
   Constraints.MinWidth:=400;
   Constraints.MinHeight:=256;
-  Caption:=lisMenuEditorMenuItemShortcutConflictsIn +
-           (GlobalDesignHook.LookupRoot as TComponent).Name;
+  Caption:=Format(lisMenuEditorMenuItemShortcutConflictsInS,[(GlobalDesignHook.LookupRoot as TComponent).Name]);
 
   FConflictsGroupBox:=TGroupBox.Create(Self);
   with FConflictsGroupBox do begin
@@ -2851,7 +2651,7 @@ begin
                                                          lisMenuEditorStandardTemplates);
                 FSavedNode:=FTVTemplates.Items.Add(FStandardNode,
                                                    lisMenuEditorSavedTemplates);
-                FGChoose.Caption:=Format('%s %s',[lisMenuEditorChooseTemplateTo, lisInsert]);
+                FGChoose.Caption:=lisMenuEditorChooseTemplateToInsert;
                 FLDescription.Caption:=lisMenuEditorTemplateDescription;
                 FTVTemplates.OnSelectionChanged:=@TVSelectionChanged;
                 FEDescription.ReadOnly:=True;
@@ -2860,7 +2660,7 @@ begin
                 FStandardNode:=nil;
                 FSavedNode:=FTVTemplates.Items.AddFirst(nil,
                                                     lisMenuEditorExistingSavedTemplates);
-                FGChoose.Caption:=Format('%s %s',[lisMenuEditorChooseTemplateTo, lisDelete]);
+                FGChoose.Caption:=lisMenuEditorChooseTemplateToDelete;
                 FLDescription.Caption:=lisMenuEditorTemplateDescription;
                 FTVTemplates.OnSelectionChanged:=@TVSelectionChanged;
                 FEDescription.ReadOnly:=True;
@@ -2960,10 +2760,7 @@ begin
               end;
     dmDelete: begin
                 if noneSaved then begin
-                  IDEMessageDialogAb(lisMenuEditorNoUserSavedTemplates,
-                         Format('%s%s%s%s',[lisMenuEditorThereAreNoUserSavedMenuTemplates,
-                               LineEnding, LineEnding,
-                               lisMenuEditorOnlyStandardDefaultTemplatesAreAvailable]),
+                  IDEMessageDialogAb(lisMenuEditorNoUserSavedTemplates, lisMenuEditorThereAreNoUserSavedMenuTemplates,
                                mtInformation, [mbOK], False);
                   ModalResult:=mrCancel;
                 end
@@ -2981,12 +2778,13 @@ constructor TMenuTemplateDialog.CreateWithMode(AOwner: TComponent;
 begin
   inherited CreateNew(AOwner);
   FDialogMode:=aDialogMode;
-  BorderStyle:=bsDialog;
+  BorderStyle:=bsSizeable;
   SetInitialBounds(0, 0, 530, 380);
   Position:=poScreenCenter;
   case aDialogMode of
     dmSave: Caption:=lisMenuEditorSaveMenuAsTemplate;
-    dmInsert: Caption:=lisMenuEditorInsertMenuTemplateInto;
+    dmInsert: Caption:=Format(lisMenuEditorInsertMenuTemplateIntoRootOfS,
+                              [MenuDesigner.EditedMenu.Name]);
     dmDelete: Caption:=lisMenuEditorDeleteSavedMenuTemplate;
   end;
   FTemplates:=TMenuTemplates.CreateForMode(FDialogMode);
@@ -3895,7 +3693,7 @@ begin
     end
   else
     begin
-      FGBDisplay.Caption:=Format('Shortcuts used in %s (%d)',
+      FGBDisplay.Caption := Format(lisMenuEditorShortcutsUsedInSD,
           [FMenu.Name, FscList.Count]);
       case anIndex of
         -1: ; // unsorted
@@ -3989,8 +3787,7 @@ begin
     end;
   end;
   UpdateContents(FSingleMenuOnly);
-  FLabel.Caption:=lisMenuEditorClickANonGreyedItemToEditItsShortcut+ LineEnding
-                  + lisMenuEditorOrClickHeaderToSortByThatColumn;
+  FLabel.Caption:=lisMenuEditorClickANonGreyedItemToEditItsShortcut;
   AutoSize:=True;
 end;
 
@@ -4203,7 +4000,7 @@ begin
   Result.cy:=DropDown_Height;
 end;
 
-constructor TFake.CreateWithPurpose(anOwner: TShadowMenu);
+constructor TFake.Create(anOwner: TShadowMenu);
 begin
   inherited Create(anOwner);
   FShadowMenu:=anOwner;
@@ -4211,8 +4008,7 @@ begin
     SetInitialBounds(0, 0, cx, cy);
   BorderStyle:=bsNone;
   Visible:=False;
-  Canvas.Pen.Color:=clGradientActiveCaption;
-  Canvas.Pen.Color:=clBtnShadow;//clGradientActiveCaption;
+  Canvas.Pen.Color:=clBtnShadow;
   Canvas.Pen.Style:=psDot;
   Canvas.Font.Color:=clBtnShadow;
   Canvas.Brush.Color:=clBtnFace;
@@ -4223,13 +4019,16 @@ procedure TFake.Paint;
 var
   r: TRect;
   sz: TSize;
+  y: integer;
 begin
   r:=ClientRect;
   Canvas.FillRect(r);
   Canvas.RoundRect(r, 3, 3);
   sz:=Canvas.TextExtent(Caption);
-  Canvas.TextOut((r.Right - r.Left - sz.cx) div 2,
-                 (r.Bottom - r.Top - sz.cy) div 2, Caption);
+  y:=(r.Bottom - r.Top - sz.cy) div 2;
+  if (y < 2) then
+    y:=2;
+  Canvas.TextOut((r.Right - r.Left - sz.cx) div 2, y, Caption);
 end;
 
 procedure TFake.Refresh;
@@ -4281,123 +4080,6 @@ begin
       MenuDesigner.EndUpdate;
     end;
   end;
-end;
-
-procedure TShadowMenu.AdjustSizeAndPosition(Sender: TObject);
-var
-  h, w, waif, haif, wasf, hasf, whv, hhv: integer;
-  selRightmost, selBottommost, selHCentre, selVCentre: integer;
-  sb: TShadowBox;
-  si: TShadowItem absolute Sender;
-  inMenuBar: boolean;
-
-  function Highest(int1, int2, int3: integer): integer;
-  begin
-    Result:=int1;
-    if (int2 > Result) then
-      Result:=int2;
-    if (int3 > Result) then
-      Result:=int3;
-  end;
-
-  procedure CalcHighestFakeDims;
-  begin
-    if (FAddItemFake.Visible) then begin
-        waif:=FAddItemFake.BoundsRect.Right;
-        haif:=FAddItemFake.BoundsRect.Bottom;
-      end
-      else begin
-        waif:=0;
-        haif:=0;
-      end;
-      if (FAddSubmenuFake.Visible) then begin
-        hasf:=FAddSubmenuFake.BoundsRect.Bottom;
-        wasf:=FAddSubmenuFake.BoundsRect.Right;
-      end
-      else begin
-        hasf:=0;
-        wasf:=0;
-      end;
-  end;
-
-  procedure CentreNear;
-  var
-    newLeft, newTop, range: integer;
-    viewWidth, viewHCentre, viewHeight, viewVCentre: integer;
-  begin
-    viewWidth:=Parent.Width;
-    if TScrollPanel(Parent).VSBar.Visible then
-      Dec(viewWidth, TScrollPanel(Parent).VSBar.Width);
-    viewHCentre:=viewWidth div 2;
-    if (selHCentre > viewHCentre)
-      then newLeft:=viewHCentre - selHCentre;
-    if newLeft < (viewWidth - w) then
-      newLeft:=viewWidth - w;
-    if (newLeft > 0) then
-      newLeft:=0;
-    viewHeight:=Parent.Height;
-    if TScrollPanel(Parent).HSBar.Visible then
-      Dec(viewHeight, TScrollPanel(Parent).HSBar.Height);
-    viewVCentre:=viewHeight div 2;
-    if (selVCentre > viewVCentre) then
-      newTop:=viewVCentre - selVCentre;
-    if (newTop < viewHeight - h) then
-      newTop:=viewHeight - h;
-    if (newTop > 0) then
-      newTop:=0;
-    DisableAlign;
-      SetBounds(newLeft, newTop, w, h);
-    EnableAlign;
-    range:=viewWidth - MenuDesigner.Scroller.HSBar.PageSize;
-    MenuDesigner.Scroller.HSBar.Position:=abs(newLeft)*range div w;
-    range:=viewHeight - MenuDesigner.Scroller.VSBar.PageSize;
-    MenuDesigner.Scroller.VSBar.Position:=abs(newTop)*range div h;
-  end;
-
-begin
-  Assert(Sender<>nil,'TShadowMenu.AdjustSizeAndPosition: Sender is nil');
-  Assert(sender is TShadowItem,'TShadowMenu.AdjustSizeAndPosition: Sender is not TShadowItem');
-  Assert(si.RealItem=FSelectedMenuItem,'TShadowMenu.AdjustSizeAndPosition: Sender is not selected');
-
-  if si.HasChildBox(sb) then begin
-    whv:=sb.BoundsRect.Right;
-    hhv:=sb.BoundsRect.Bottom;
-    if (si.ParentBox.BoundsRect.Bottom > hhv) then
-      hhv:=si.ParentBox.BoundsRect.Bottom;
-  end
-  else begin
-    whv:=si.ParentBox.BoundsRect.Right;
-    hhv:=si.ParentBox.BoundsRect.Bottom;
-  end;
-
-  CalcHighestFakeDims;
-  w:=Highest(waif, wasf, whv);
-  if (w < Parent.Width) then
-    w:=Parent.Width;
-  h:=Highest(haif, hasf, hhv);
-  if (h < Parent.Height) then
-    h:=Parent.Height;
-  selRightmost:=GetHighestLevelVisibleBox.BoundsRect.Right; // childbox elsewhere may be visible
-  if si.ShowingRightFake then begin
-    Assert(si.RightFake <> nil,'TShadowMenu.AdjustSizeAndPosition: RightFake is visible yet nil');
-    if (si.RightFake.BoundsRect.Right > selRightmost) then
-      selRightmost:=si.RightFake.BoundsRect.Right;
-  end;
-  selHCentre:=si.ParentBox.Left + (selRightmost - si.ParentBox.Left) div 2;
-  inMenuBar:=si.RealItem.IsInMenuBar;
-  if inMenuBar and (FMenu.Items.Count > 4) and (si.RealItem.MenuIndex < 4) then
-    selHCentre:=Parent.Width div 2 - FAddItemFake.Width;
-  if inMenuBar and (si.RealItem.MenuIndex = Pred(FMenu.Items.Count)) then begin
-    selHCentre:=w div 2 + FAddItemFake.Width;
-  end;
-
-  if si.ShowingBottomFake then begin
-    Assert(si.BottomFake <> nil,'TShadowMenu.AdjustSizeAndPosition: BottomFake is visible yet nil');
-    selBottommost:=si.BottomFake.BoundsRect.Bottom;
-  end
-  else selBottommost:=si.ParentBox.BoundsRect.Bottom;
-  selVCentre:=si.ParentBox.Top + si.Top + (selBottommost - si.Top) div 2;
-  CentreNear;
 end;
 
 procedure TShadowMenu.AddSubMenu(Sender: TObject);
@@ -4706,10 +4388,9 @@ var
 
 begin
   if IDEQuestionDialogAb(
-     lisMenuEditorDeletingItemWithASubmenu,
-     Format('%s%s%s', [lisMenuEditorDeletingThisItemWillDeleteAllSubitemsToo,
-                      LineEnding, lisMenuEditorDeleteThisItemAndItsSubitems]),
-     mtWarning, [mrYes, mrNo], False) = mrYes then
+       lisDelete,
+       lisMenuEditorDeleteThisItemAndItsSubitems,
+       mtWarning, [mrYes, mrNo], False) = mrYes then
   begin
     firstBoxToDelete:=GetBoxWithParentItem(anExistingSI.RealItem);
     Assert(firstBoxToDelete<>nil,'TShadowMenu.DeleteShadowAndItemAndChildren: no children');
@@ -5158,9 +4839,10 @@ end;
 
 procedure TShadowMenu.DeleteTemplate(Sender: TObject);
 begin
-  if SavedTemplatesExist then
-    if DeleteMenuTemplateDlg then
-      MenuDesigner.UpdateTemplatesCount;
+  if SavedTemplatesExist and DeleteMenuTemplateDlg then begin
+    MenuDesigner.UpdateTemplatesCount;
+    UpdateActionsEnabledness;
+  end;
 end;
 
 procedure TShadowMenu.ListShortcuts(Sender: TObject);
@@ -5185,6 +4867,7 @@ begin
     begin
       SaveMenuTemplateDlg(FSelectedMenuItem);
       MenuDesigner.UpdateTemplatesCount;
+      UpdateActionsEnabledness;
     end;
 end;
 
@@ -5415,7 +5098,6 @@ begin
     UpdateSelectedItemInfo;
     if not viaDesigner then
       FEditorDesigner.SelectOnlyThisComponent(curSelectedItem);
-    AdjustSizeAndPosition(selectedShadow);
 
     if not MenuDesigner.Visible then
       MenuDesigner.ShowOnTop;
@@ -5566,15 +5248,18 @@ begin
   FItemsPopupMenu.Name:='ItemsPopupMenu';
   FActionList:=TActionList.Create(Self);
   SetupPopupMenu;
-  FAddItemFake:=TAddSiblingFake.CreateWithPurpose(Self);
+  FAddItemFake:=TAddSiblingFake.Create(Self);
   FAddItemFake.OnClick:=@AddItemAfter;
-  FAddItemFake.Caption:=Format('%s %s',[lisAdd, lisMenuEditorMenuItem]);
-  FAddSubmenuFake:=TAddSubmenuFake.CreateWithPurpose(Self);
+  FAddItemFake.Caption:=lisMenuEditorAddMenuItem;
+  FAddItemFake.Name:='AddItemFake';
+  FAddSubmenuFake:=TAddSubmenuFake.Create(Self);
   FAddSubmenuFake.OnClick:=@AddSubMenu;
-  FAddSubmenuFake.Caption:=Format('%s %s',[lisAdd, lisMenuEditorSubmenu]);
-  FAddFirstItemFake:=TAddFirstFake.CreateWithPurpose(Self);
+  FAddSubmenuFake.Caption:=lisMenuEditorAddSubmenu;
+  FAddSubmenuFake.Name:='AddSubmenuFake';
+  FAddFirstItemFake:=TAddFirstFake.Create(Self);
   FAddFirstItemFake.OnClick:=@AddFirstMenu;
-  FAddFirstItemFake.Caption:=Format('%s %s',[lisAdd, lisMenuEditorMenuItem]);
+  FAddFirstItemFake.Caption:=lisMenuEditorAddMenuItem;
+  FAddFirstItemFake.Name:='AddFirstItemFake';
   FAddFirstItemFake.Left := Popup_Origin.x;
   FAddFirstItemFake.Top := Popup_Origin.y;
   ConnectSpeedButtonOnClickMethods;
@@ -5583,6 +5268,7 @@ begin
   GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnDesignerRefreshPropertyValues);
   AutoSize:=False;
   Color:=clBtnFace;
+  BorderStyle:=bsNone;
 end;
 
 procedure TShadowMenu.AddFirstMenu(Sender: TObject);
@@ -6072,6 +5758,9 @@ var
   r, gutterR: TRect;
   dets: TThemedElementDetails;
   textFlags: integer = DT_VCENTER or DT_SINGLELINE or DT_EXPANDTABS or DT_CENTER;
+  tStyle: TTextStyle;
+  alygn: TAlignment;
+  s: string;
 
    function GetIconTopLeft: TPoint;
     begin
@@ -6095,7 +5784,6 @@ var
   var
     oldFontStyle: TFontStyles;
     oldFontColor: TColor;
-    s: string;
     x, y: integer;
     sz: TSize;
     pt: TPoint;
@@ -6103,9 +5791,6 @@ var
     if (FState = dsSelected) then begin
       Canvas.Brush.Color:=clHighlight;
       Canvas.FillRect(r);
-      if (FRealItem.Caption = '') then
-        s:=FRealItem.Name
-      else s:=FRealItem.Caption;
       sz:=Canvas.TextExtent(s);
       y:=(r.Bottom - r.Top - sz.cy) div 2;
       x:=(r.Right - r.Left - sz.cx) div 2;
@@ -6125,7 +5810,7 @@ var
       else Canvas.Font.Style:=[];
       oldFontColor:=Canvas.Font.Color;
       Canvas.Font.Color:=clHighlightText;
-      Canvas.TextOut(x, y, s);
+      Canvas.TextRect(r, x, y, s, tStyle);
       Canvas.Font.Color:=oldFontColor;
       Canvas.Font.Style:=oldFontStyle;
     end
@@ -6237,29 +5922,11 @@ var
   var
     oldFontColor: TColor;
     oldFontStyle: TFontStyles;
-    s, s1, s2: string;
+    s1, s2: string;
     sc1, sc2: boolean;
     x, y: integer;
-    tStyle : TTextStyle;
-    align: TAlignment;
   begin
-    FillChar(tStyle{%H-}, SizeOf(tStyle), 0);
     Canvas.Brush.Style:=bsClear;
-    if FRealItem.RightJustify then
-      align:=taRightJustify
-    else align:=taLeftJustify;
-    with tStyle do begin
-      Alignment:=BidiFlipAlignment(align, UseRightToLeftAlignment);
-      Layout:=tlCenter;
-      SingleLine:=True;
-      Clipping:=True;
-      ShowPrefix:=True;
-      RightToLeft:=UseRightToLeftReading;
-      ExpandTabs:=True;
-    end;
-    if (FRealItem.Caption = '') then
-      s:=FRealItem.Name
-    else s:=FRealItem.Caption;
     if FRealItem.RightJustify then
       textFlags:=textFlags or DT_RIGHT
     else textFlags:=textFlags or DT_LEFT;
@@ -6275,7 +5942,7 @@ var
       dsSelected: begin
           OldFontColor:=Canvas.Font.Color;
           Canvas.Font.Color:=clHighlightText;
-          Canvas.TextRect(r, x, y, s);
+          Canvas.TextRect(r, x, y, s, tStyle);
           Canvas.Font.Color:=oldFontColor;
         end;
       dsDisabled: begin
@@ -6305,7 +5972,7 @@ var
           dsSelected: begin
               OldFontColor:=Canvas.Font.Color;
               Canvas.Font.Color:=clHighlightText;
-              Canvas.TextRect(r, x, y, s);
+              Canvas.TextRect(r, x, y, s, tStyle);
               Canvas.Font.Color:=oldFontColor;
             end;
           dsDisabled: begin
@@ -6320,16 +5987,56 @@ var
   end;
 
   procedure DrawChevron;
+  var
+    pts: array of TPoint;
+    oldBrushColor, oldPenColor: TColor;
   begin
-    r.Right:=ClientWidth;
-    r.Left:=r.Right - DropDown_Text_Offset;
+    { ToDo: This should be done by theme services
+            but it must be implemented for different widgetsets first.
     dets:=ThemeServices.GetElementDetails(tmPopupSubmenuNormal);
     ThemeServices.DrawElement(Canvas.Handle, dets, r);
+    }
+    r.Right:=ClientWidth;
+    r.Left:=r.Right - MenuBar_Height;
+    SetLength(pts, 4);
+    pts[0]:=Point(r.Left, 9);
+    pts[1]:=Point(r.Left + 4, 12);
+    pts[2]:=Point(r.Left, 15);
+    pts[3]:=pts[0];
+    oldBrushColor:=Canvas.Brush.Color;
+    oldPenColor:=Canvas.Pen.Color;
+    if (FState = dsSelected) then begin
+      Canvas.Pen.Color:=clHighlightText;
+      Canvas.Brush.Color:=clHighlightText;
+    end
+    else begin
+      Canvas.Brush.Color:=clBlack;
+      Canvas.Pen.Color:=clBlack;
+    end;
+    Canvas.Polygon(pts);
+    Canvas.Brush.Color:=oldBrushColor;
+    Canvas.Pen.Color:=oldPenColor;
   end;
 
 begin
   if not FParentBox.Updating then begin
     r:=ClientRect;
+    if FRealItem.RightJustify then
+      alygn:=taRightJustify
+    else alygn:=taLeftJustify;
+    if (FRealItem.Caption = '') then
+      s:=FRealItem.Name
+    else s:=FRealItem.Caption;
+    FillChar(tStyle{%H-}, SizeOf(tStyle), 0);
+    with tStyle do begin
+      Alignment:=BidiFlipAlignment(alygn, UseRightToLeftAlignment);
+      Layout:=tlCenter;
+      SingleLine:=True;
+      Clipping:=True;
+      ShowPrefix:=True;
+      RightToLeft:=UseRightToLeftReading;
+      ExpandTabs:=True;
+    end;
     if FRealItem.IsInMenuBar then
       DrawMenuBarItem
     else begin

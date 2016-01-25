@@ -15,13 +15,13 @@ object FpDocOptionsFrame: TFpDocOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 198
+    Height = 207
     Top = 0
     Width = 476
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     Caption = 'LazDocPathsGroupBox'
-    ClientHeight = 180
+    ClientHeight = 188
     ClientWidth = 472
     TabOrder = 0
     object LazDocListBox: TListBox
@@ -33,16 +33,18 @@ object FpDocOptionsFrame: TFpDocOptionsFrame
       BorderSpacing.Around = 6
       ItemHeight = 0
       OnSelectionChange = LazDocListBoxSelectionChange
+      ScrollWidth = 458
       TabOrder = 0
+      TopIndex = -1
     end
     object LazDocAddPathButton: TButton
       AnchorSideLeft.Control = LazDocPathsGroupBox
       AnchorSideTop.Control = LazDocListBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 25
+      Height = 29
       Top = 120
-      Width = 146
+      Width = 166
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'LazDocAddPathButton'
@@ -54,10 +56,10 @@ object FpDocOptionsFrame: TFpDocOptionsFrame
       AnchorSideLeft.Control = LazDocAddPathButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = LazDocAddPathButton
-      Left = 162
-      Height = 25
+      Left = 182
+      Height = 29
       Top = 120
-      Width = 157
+      Width = 182
       AutoSize = True
       BorderSpacing.Left = 10
       Caption = 'LazDocDeletePathButton'
@@ -72,10 +74,10 @@ object FpDocOptionsFrame: TFpDocOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = LazDocPathEdit
       AnchorSideBottom.Side = asrBottom
-      Left = 442
-      Height = 23
-      Top = 151
-      Width = 24
+      Left = 416
+      Height = 27
+      Top = 155
+      Width = 50
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Right = 6
       Caption = '...'
@@ -88,9 +90,9 @@ object FpDocOptionsFrame: TFpDocOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = LazDocBrowseButton
       Left = 6
-      Height = 23
-      Top = 151
-      Width = 436
+      Height = 27
+      Top = 155
+      Width = 410
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6

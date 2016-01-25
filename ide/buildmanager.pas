@@ -214,7 +214,7 @@ type
                                     CompiledExt, ContextDescription: string
                                     ): TModalResult; override;
     function CreateProjectApplicationBundle: Boolean; override;
-    function BackupFile(const Filename: string): TModalResult; override;
+    function BackupFileForWrite(const Filename: string): TModalResult; override;
 
     function GetResourceType(AnUnitInfo: TUnitInfo): TResourceType;
     function FindLRSFilename(AnUnitInfo: TUnitInfo;
@@ -328,7 +328,7 @@ begin
   fLCLWidgetType:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
   FUnitSetChangeStamp:=TFPCUnitSetCache.GetInvalidChangeStamp;
 
-  OnBackupFileInteractive:=@BackupFile;
+  OnBackupFileInteractive:=@BackupFileForWrite;
 
   GetBuildMacroValues:=@OnGetBuildMacroValues;
   OnAppendCustomOption:=@AppendMatrixCustomOption;
@@ -1434,8 +1434,7 @@ var
   IsPascalUnit: Boolean;
   AUnitName: String;
 begin
-  Result:=mrOk;
-  if EnvironmentOptions.AmbiguousFileAction=afaIgnore then exit;
+  if EnvironmentOptions.AmbiguousFileAction=afaIgnore then exit(mrOK);
   if EnvironmentOptions.AmbiguousFileAction
     in [afaAsk,afaAutoDelete,afaAutoRename]
   then begin
@@ -1471,21 +1470,22 @@ begin
         end;
         if EnvironmentOptions.AmbiguousFileAction in [afaAutoDelete,afaAsk]
         then begin
-          if not DeleteFileUTF8(CurFilename) then begin
-            IDEMessageDialog(lisDeleteFileFailed,
-              Format(lisPkgMangUnableToDeleteFile, [CurFilename]),
-              mtError,[mbOk]);
-          end;
+          Result:=DeleteFileInteractive(CurFilename);
+          if not (Result in [mrOK,mrIgnore]) then exit(mrCancel);
         end else if EnvironmentOptions.AmbiguousFileAction=afaAutoRename then
         begin
-          Result:=BackupFile(CurFilename);
-          if Result=mrAbort then exit;
-          Result:=mrOk;
+          Result:=BackupFileForWrite(CurFilename);
+          if not (Result in [mrOK,mrIgnore]) then exit(mrCancel);
+          if FileExistsUTF8(CurFilename) then begin
+            Result:=DeleteFileInteractive(CurFilename);
+            if not (Result in [mrOK,mrIgnore]) then exit(mrCancel);
+          end;
         end;
       until FindNextUTF8(FileInfo)<>0;
     end;
     FindCloseUTF8(FileInfo);
   end;
+  Result:=mrOk;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1625,7 +1625,7 @@ begin
   Result := True;
 end;
 
-function TBuildManager.BackupFile(const Filename: string): TModalResult;
+function TBuildManager.BackupFileForWrite(const Filename: string): TModalResult;
 var BackupFilename, CounterFilename: string;
   AText,ACaption:string;
   BackupInfo: TBackupInfo;
@@ -1752,7 +1752,7 @@ begin
   end;
   // backup file
   repeat
-    if not IDEProcs.BackupFile(Filename, BackupFilename) then
+    if not IDEProcs.BackupFileForWrite(Filename, BackupFilename) then
     begin
       ACaption := lisBackupFileFailed;
       AText := Format(lisUnableToBackupFileTo, [Filename, BackupFilename]);

@@ -59,6 +59,7 @@ type
     procedure FakeExitEnter(Sender: TObject);
     procedure FakeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FakeKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FakeUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure SetDesignedForm(const AValue: IDesignedForm);
   private
     { private declarations }
@@ -74,7 +75,7 @@ type
     FActivePropertyGridItemIndex: Integer;
     FLastClientWidth, FLastClientHeight: Integer;
     FOldHasMainMenu: Boolean;
-    FMenuChanged: Boolean;
+    FDesignerModified: Boolean;
 
     function HasMainMenu: Boolean;
     procedure AppOnIdle(Sender: TObject; var Done: Boolean);
@@ -135,7 +136,7 @@ type
     procedure ShowSizeRects;
     procedure ShowSizeControls;
 
-    procedure OnMenuChanged;
+    procedure OnModified;
     procedure DesignerSetFocus;
 
     property VerticalScrollPos: Integer read FVerticalScrollPos write FVerticalScrollPos;
@@ -633,9 +634,9 @@ begin
   end;
 end;
 
-procedure TResizerFrame.OnMenuChanged;
+procedure TResizerFrame.OnModified;
 begin
-  FMenuChanged := True;
+  FDesignerModified := True;
 end;
 
 function TResizerFrame.GetRightMargin: Integer;
@@ -814,6 +815,7 @@ begin
   FFakeFocusControl.Top := -100;
   FFakeFocusControl.OnKeyDown := FakeKeyDown;
   FFakeFocusControl.OnKeyUp := FakeKeyUp;
+  FFakeFocusControl.OnUTF8KeyPress := FakeUTF8KeyPress;
   FFakeFocusControl.OnEnter := FakeExitEnter;
   FFakeFocusControl.OnExit := FakeExitEnter;
 
@@ -834,7 +836,7 @@ end;
 
 procedure TResizerFrame.AppOnIdle(Sender: TObject; var Done: Boolean);
 begin
-  if FMenuChanged then
+  if FDesignerModified then
   begin
     if FOldHasMainMenu <> HasMainMenu then
     begin
@@ -843,9 +845,10 @@ begin
         OnNodePositioning(Self, [pkBottom], pcPositioningEnd);
       Application.NotifyUserInputHandler(Self, 0); // force repaint invisible components
     end else
-      pFakeMenu.Invalidate;
+    if pFakeMenu.Visible then
+      pFakeMenu.Invalidate; // always repaint menu on modification
 
-    FMenuChanged := False;
+    FDesignerModified := False;
   end;
 end;
 
@@ -877,7 +880,7 @@ begin
   LMsg.msg := CN_KEYDOWN;
   LMsg.CharCode := Key;
   LWndProc(TLMessage(LMsg));
-  Key := 0;
+  Key := LMsg.CharCode;
 end;
 
 procedure TResizerFrame.FakeKeyUp(Sender: TObject; var Key: Word;
@@ -891,7 +894,13 @@ begin
   LMsg.msg := CN_KEYUP;
   LMsg.CharCode := Key;
   LWndProc(TLMessage(LMsg));
-  Key := 0;
+  Key := LMsg.CharCode;
+end;
+
+procedure TResizerFrame.FakeUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char
+  );
+begin
+  FDesignedForm.Form.IntfUTF8KeyPress(UTF8Key, 1, False);
 end;
 
 procedure TResizerFrame.PositionNodes(AroundControl: TWinControl);

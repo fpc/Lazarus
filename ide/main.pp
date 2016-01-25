@@ -184,6 +184,7 @@ type
     procedure HandleScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
     procedure HandleRemoteControlTimer(Sender: TObject);
     procedure HandleSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
+    procedure ForwardKeyToObjectInspector(Sender: TObject; Key: TUTF8Char);
     procedure OIChangedTimerTimer(Sender: TObject);
     procedure LazInstancesStartNewInstance(const aFiles: TStrings;
       var Result: TStartNewInstanceResult; var outSourceWindowHandle: HWND);
@@ -841,6 +842,7 @@ type
                              LoadForm: boolean): TIDesigner; override;
     function GetDesignerFormOfSource(AnUnitInfo: TUnitInfo;
                                      LoadForm: boolean): TCustomForm;
+    function GetUnitFileOfLFM(LFMFilename: string): string;
     function GetProjectFileWithRootComponent(AComponent: TComponent): TLazProjectFile; override;
     function GetProjectFileWithDesigner(ADesigner: TIDesigner): TLazProjectFile; override;
     procedure GetObjectInspectorUnit(
@@ -1061,7 +1063,7 @@ begin
     HelpLang := GetLanguageSpecified;
     if HelpLang = '' then
     begin
-      ConfFileName:=TrimFilename(SetDirSeparators(GetPrimaryConfigPath+'/'+EnvOptsConfFileName));
+      ConfFileName:=TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+EnvOptsConfFileName);
       try
         Cfg:=TXMLConfig.Create(ConfFileName);
         try
@@ -1576,6 +1578,7 @@ begin
   MainIDEBar.SetupHints;
   SetupIDEWindowsLayout;
   RestoreIDEWindows;
+  MainIDEBar.InitPaletteAndCoolBar;
   IDEWindowCreators.AddLayoutChangedHandler(@HandleLayoutChanged);
   // make sure the main IDE bar is always shown
   IDEWindowCreators.ShowForm(MainIDEBar,false);
@@ -3461,6 +3464,7 @@ begin
     OnViewLFM:=@OnDesignerViewLFM;
     OnSaveAsXML:=@OnDesignerSaveAsXML;
     OnShowObjectInspector:=@OnDesignerShowObjectInspector;
+    OnForwardKeyToObjectInspector:=@ForwardKeyToObjectInspector;
     OnShowAnchorEditor:=@OnDesignerShowAnchorEditor;
     OnShowTabOrderEditor:=@OnDesignerShowTabOrderEditor;
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
@@ -3549,7 +3553,7 @@ begin
   inherited SetToolStatus(AValue);
   if DebugBoss <> nil then
     DebugBoss.UpdateButtonsAndMenuItems;
-  if Assigned(MainIDEBar) then
+  if Assigned(MainIDEBar) and not IDEIsClosing then
     MainIDEBar.AllowCompilation(ToolStatus <> itBuilder); // Disable some GUI controls while compiling.
   if FWaitForClose and (ToolStatus = itNone) then
   begin
@@ -4924,6 +4928,8 @@ begin
                          mtWarning, [mbOk]);
     end;
     UpdateCaption;
+    if Assigned(ProjInspector) then
+      ProjInspector.UpdateTitle;
     AProject.DefineTemplates.AllChanged;
     IncreaseCompilerParseStamp;
 
@@ -6059,7 +6065,7 @@ begin
     Result.EndUpdate;
 
   Result.MainProject:=true;
-  Result.OnFileBackup:=@MainBuildBoss.BackupFile;
+  Result.OnFileBackup:=@MainBuildBoss.BackupFileForWrite;
   Result.OnLoadProjectInfo:=@OnLoadProjectInfoFromXMLConfig;
   Result.OnSaveProjectInfo:=@OnSaveProjectInfoToXMLConfig;
   Result.OnSaveUnitSessionInfo:=@OnSaveProjectUnitSessionInfo;
@@ -8239,6 +8245,7 @@ procedure TMainIDE.DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface;
 var
   ActiveUnitInfo: TUnitInfo;
   UnitCodeBuf: TCodeBuffer;
+  aFilename: String;
 begin
   {$IFDEF VerboseIDEDisplayState}
   debugln(['TMainIDE.DoShowDesignerFormOfCurrentSrc ']);
@@ -8247,16 +8254,26 @@ begin
   if (ActiveUnitInfo = nil) then exit;
 
   if (ActiveUnitInfo.Component=nil)
-  and (ActiveUnitInfo.Source<>nil)
-  and (CompareFileExt(ActiveUnitInfo.Filename,'.inc',false)=0) then begin
-    // include file => get unit
-    UnitCodeBuf:=CodeToolBoss.GetMainCode(ActiveUnitInfo.Source);
-    if (UnitCodeBuf<>nil) and (UnitCodeBuf<>ActiveUnitInfo.Source) then begin
-      // unit found
-      ActiveUnitInfo:=Project1.ProjectUnitWithFilename(UnitCodeBuf.Filename);
-      if (ActiveUnitInfo=nil) or (ActiveUnitInfo.OpenEditorInfoCount=0) then begin
-        // open unit in source editor and load form
-        DoOpenEditorFile(UnitCodeBuf.Filename,-1,-1,
+  and (ActiveUnitInfo.Source<>nil) then begin
+    if (CompareFileExt(ActiveUnitInfo.Filename,'.inc',false)=0) then begin
+      // include file => get unit
+      UnitCodeBuf:=CodeToolBoss.GetMainCode(ActiveUnitInfo.Source);
+      if (UnitCodeBuf<>nil) and (UnitCodeBuf<>ActiveUnitInfo.Source) then begin
+        // unit found
+        ActiveUnitInfo:=Project1.ProjectUnitWithFilename(UnitCodeBuf.Filename);
+        if (ActiveUnitInfo=nil) or (ActiveUnitInfo.OpenEditorInfoCount=0) then begin
+          // open unit in source editor and load form
+          DoOpenEditorFile(UnitCodeBuf.Filename,-1,-1,
+            [ofOnlyIfExists,ofRegularFile,ofVirtualFile,ofDoLoadResource]);
+          exit;
+        end;
+      end;
+    end;
+    if (CompareFileExt(ActiveUnitInfo.Filename,'.lfm',false)=0) then begin
+      // lfm file => get unit
+      aFilename:=GetUnitFileOfLFM(ActiveUnitInfo.Filename);
+      if aFilename<>'' then begin
+        DoOpenEditorFile(aFilename,-1,-1,
           [ofOnlyIfExists,ofRegularFile,ofVirtualFile,ofDoLoadResource]);
         exit;
       end;
@@ -11770,6 +11787,31 @@ begin
   AComponentClass := DoSelectFrame;
 end;
 
+procedure TMainIDE.ForwardKeyToObjectInspector(Sender: TObject; Key: TUTF8Char);
+var
+  Kind: TTypeKind;
+begin
+  CreateObjectInspector(False);
+  IDEWindowCreators.ShowForm(ObjectInspector1, True);
+  if ObjectInspector1.IsVisible then
+  begin
+    ObjectInspector1.FocusGrid;
+    if ObjectInspector1.GetActivePropertyGrid.CanEditRowValue(False) then
+    begin
+      Kind := ObjectInspector1.GetActivePropertyGrid.GetActiveRow.Editor.GetPropType^.Kind;
+      if Kind in [tkInteger, tkInt64, tkSString, tkLString, tkAString, tkWString, tkUString] then
+      begin
+        ObjectInspector1.GetActivePropertyGrid.CurrentEditValue := Key;
+        ObjectInspector1.GetActivePropertyGrid.FocusCurrentEditor;
+      end;
+    end
+  end;
+  case DisplayState of
+    dsSource: DisplayState := dsInspector;
+    dsForm: DisplayState := dsInspector2;
+  end;
+end;
+
 procedure TMainIDE.OIChangedTimerTimer(Sender: TObject);
 var
   OI: TObjectInspectorDlg;
@@ -12013,6 +12055,33 @@ begin
     Result:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
   if (Result<>nil) and (Result.Designer=nil) then
     Result:=nil;
+end;
+
+function TMainIDE.GetUnitFileOfLFM(LFMFilename: string): string;
+var
+  ext: String;
+  SrcEdit: TSourceEditorInterface;
+begin
+  // first search in source editor
+  for ext in PascalExtension do begin
+    if ext='' then continue;
+    Result:=ChangeFileExt(LFMFilename,Ext);
+    SrcEdit:=SourceEditorManagerIntf.SourceEditorIntfWithFilename(Result);
+    if SrcEdit<>nil then begin
+      Result:=SrcEdit.FileName;
+      exit;
+    end;
+  end;
+  // then disk
+  for ext in PascalExtension do begin
+    if ext='' then continue;
+    Result:=ChangeFileExt(LFMFilename,Ext);
+    if FileExistsCached(Result) then begin
+      Result:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(Result);
+      exit;
+    end;
+  end;
+  Result:='';
 end;
 
 function TMainIDE.GetProjectFileWithRootComponent(AComponent: TComponent

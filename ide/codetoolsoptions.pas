@@ -538,7 +538,7 @@ begin
       XMLConfig.GetValue('CodeToolsOptions/Indentation/OnPaste/Enabled',true);
     fIndentationFilename :=
       XMLConfig.GetValue('CodeToolsOptions/Indentation/FileName'
-      , TrimFilename(GetPrimaryConfigPath + PathDelim +DefaultIndentationFilename));
+      , TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+DefaultIndentationFilename));
     FIndentContextSensitive :=
       XMLConfig.GetValue('CodeToolsOptions/Indentation/ContextSensitive',true);
 
@@ -732,7 +732,7 @@ procedure TCodeToolsOptions.SetLazarusDefaultFilename;
 var
   ConfFileName: string;
 begin
-  ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+DefaultCodeToolsOptsFile);
+  ConfFileName:=AppendPathDelim(GetPrimaryConfigPath)+DefaultCodeToolsOptsFile;
   CopySecondaryConfigFile(DefaultCodeToolsOptsFile);
   if (not FileExistsCached(ConfFileName)) then begin
     debugln('Looking for code tools config file:  "' + ConfFileName + '"');
@@ -899,7 +899,7 @@ begin
   FIndentOnLineBreak:=true;
   FIndentOnPaste:=true;
   fIndentationFilename:=
-    TrimFilename(GetPrimaryConfigPath+PathDelim+DefaultIndentationFilename);
+    TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+DefaultIndentationFilename);
   FIndentContextSensitive:=true;
 
   // code completion templates

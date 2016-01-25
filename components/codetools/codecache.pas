@@ -95,6 +95,7 @@ type
     procedure IncrementRefCount;
     procedure ReleaseRefCount;
     procedure MakeFileDateValid;
+    procedure InvalidateLoadDate;
     function SourceIsText: boolean;
   public
     property CodeCache: TCodeCache read FCodeCache write FCodeCache;
@@ -1417,6 +1418,11 @@ begin
   FFileChangeStep:=ChangeStep;
   FLoadDateValid:=true;
   FLoadDate:=FileAgeCached(Filename);
+end;
+
+procedure TCodeBuffer.InvalidateLoadDate;
+begin
+  FLoadDateValid:=false;
 end;
 
 function TCodeBuffer.SourceIsText: boolean;

@@ -1934,6 +1934,8 @@ const
   SM_LCLMAXIMIZEDWIDTH = 121;
   SM_LCLMAXIMIZEDHEIGHT = 122;
 
+  SM_LCLHasFormAlphaBlend = 123;
+
 //==============================================
 // SystemParametersInfo constants
 //==============================================

@@ -2401,7 +2401,7 @@ end;
 
 function UserSchemeDirectory(CreateIfNotExists: Boolean): String;
 begin
-  Result := GetPrimaryConfigPath + DirectorySeparator + 'userschemes';
+  Result := AppendPathDelim(GetPrimaryConfigPath) + 'userschemes';
   If CreateIfNotExists and (not DirectoryExistsUTF8(Result)) then
     CreateDirUTF8(Result);
 end;
@@ -4412,8 +4412,7 @@ begin
   inherited Create;
   InitLocale;
 
-  ConfFileName := SetDirSeparators(GetPrimaryConfigPath + '/' +
-    EditOptsConfFileName);
+  ConfFileName := AppendPathDelim(GetPrimaryConfigPath) + EditOptsConfFileName;
   CopySecondaryConfigFile(EditOptsConfFileName);
   try
     if (not FileExistsUTF8(ConfFileName)) then
@@ -4436,7 +4435,7 @@ begin
 
   // code templates (dci file)
   fCodeTemplateFileName :=
-    TrimFilename(GetPrimaryConfigPath+PathDelim+DefaultCodeTemplatesFilename);
+    TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+DefaultCodeTemplatesFilename);
   CopySecondaryConfigFile(DefaultCodeTemplatesFilename);
   if not FileExistsUTF8(CodeTemplateFileName) then
   begin
@@ -4784,7 +4783,7 @@ begin
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoDelayInMSec', 1000);
     fCodeTemplateFileName :=
       XMLConfig.GetValue('EditorOptions/CodeTools/CodeTemplateFileName'
-      , TrimFilename(GetPrimaryConfigPath + PathDelim + DefaultCodeTemplatesFilename));
+      , TrimFilename(AppendPathDelim(GetPrimaryConfigPath) + DefaultCodeTemplatesFilename));
     fCTemplIndentToTokenStart :=
       XMLConfig.GetValue(
       'EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value', False);

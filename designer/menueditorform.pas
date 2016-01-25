@@ -26,9 +26,13 @@ unit MenuEditorForm;
 interface
 
 uses
-  Buttons, Classes, ComponentEditors, Controls, ExtCtrls, Forms,
-  Graphics, LazarusIDEStrConsts, LazIDEIntf, LCLintf, LCLProc, Menus,
-  MenuShadows, PropEdits, StdCtrls, SysUtils, FormEditingIntf, IDEWindowIntf;
+  // FCL + LCL
+  Classes, SysUtils,
+  Controls, StdCtrls, ExtCtrls, Forms, Graphics, Buttons, Menus, LCLintf, LCLProc,
+  // IdeIntf
+  LazIDEIntf, FormEditingIntf, IDEWindowIntf, ComponentEditors, PropEdits,
+  // IDE
+  LazarusIDEStrConsts, MenuShadows;
 
 type
 
@@ -68,7 +72,6 @@ type
     FPopupAssignments: TStringList;
     FPopupAssignmentsListBox: TListBox;
     FSavedTemplatesCount: integer;
-    FScroller: TScrollPanel;
     FShadowMenu: TShadowMenu;
     FShortcutConflictsCount: integer;
     FShortcutList: TSCList;
@@ -103,7 +106,6 @@ type
     property AcceleratorMenuItemsCount: integer read FAcceleratorMenuItemsCount;
     property EditedMenu: TMenu read FEditedMenu;
     property SavedTemplatesCount: integer read FSavedTemplatesCount;
-    property Scroller: TScrollPanel read FScroller;
     property ShadowMenu: TShadowMenu read FShadowMenu;
     property ShortcutConflictsCount: integer read FShortcutConflictsCount;
     property ShortcutList: TSCList read FShortcutList;
@@ -166,7 +168,7 @@ procedure TMenuDesigner.FormCreate(Sender: TObject);
 begin
   Name:='MenuDesignerWindow';
   Caption:=lisMenuEditorMenuEditor;
-  ButtonsGroupBox.Caption:=lisMenuEditorMoveSeparateDeleteInsertItems;
+  ButtonsGroupBox.Caption:=lisMenuEditorMenuItemActions;
   FEditedMenu:=nil;
   FGUIEnabled:=False;
   LoadFixedButtonGlyphs;
@@ -522,9 +524,8 @@ begin
         FShortcutConflictsCount:=FShortcutList.InitialDuplicatesCount;
         w:=Width - LeftPanel.Width;
         FShadowMenu:=TShadowMenu.CreateWithMenuAndDims(FEditedMenu, selection, w, Height);
-        FScroller:=TScrollPanel.CreateWithChild(Self, FShadowMenu);
-        FScroller.Align:=alClient;
-        FScroller.Parent:=Self;
+        FShadowMenu.Parent := Self;
+        FShadowMenu.Align := alClient;
       end;
     end;
 end;
@@ -573,6 +574,7 @@ end;
 procedure TMenuDesigner.UpdateTemplatesCount;
 begin
   FTemplatesSaved:=SavedTemplatesExist;
+  DebugLn('SavedTemplatesExist is %s',[booltostr(FTemplatesSaved)]);
   if not FTemplatesSaved then begin
     FSavedTemplatesCount:=GetSavedTemplatesCount;
     Exit;
@@ -613,8 +615,8 @@ begin
   else begin
     selBox.LastRIValue:=selMI.RadioItem;
     if boxIsRoot then
-      SubmenuGroupBox.Caption:=Format('%s',[lisMenuEditorRootMenu])
-    else SubmenuGroupBox.Caption:=Format('%s %s',[selBox.ParentMenuItem.Name, lisMenuEditorSubmenu]);
+      SubmenuGroupBox.Caption:=lisMenuEditorRootMenu
+    else SubmenuGroupBox.Caption:=Format(lisMenuEditorSSubmenu,[selBox.ParentMenuItem.Name]);
 
     if selMI.RadioItem then begin
       GroupIndexLabel.Caption:=Format(lisMenuEditorSGroupIndexD,

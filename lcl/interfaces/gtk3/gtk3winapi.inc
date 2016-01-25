@@ -2568,6 +2568,8 @@ begin
       begin
         result := gdk_Screen_Height;
       end;
+    SM_LCLHasFormAlphaBlend:
+      Result := 1;
   end;
 end;
 
