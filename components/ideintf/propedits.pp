@@ -5757,7 +5757,7 @@ end;
 function TPropertyEditorHook.GetComponentName(AComponent: TComponent): String;
 var
   i: Integer;
-  CompName, ParentName: String;
+  CompName, OwnerName: String;
   Handler: TPropHookGetComponentName;
 begin
   Result := '';
@@ -5773,17 +5773,17 @@ begin
   begin
     CompName := AComponent.Name;
     if (AComponent.Owner<>LookupRoot) and (AComponent.Owner<>nil) then
-      ParentName := AComponent.Owner.Name;
-    if CompName='' then
+      OwnerName := AComponent.Owner.Name;
+{    if CompName='' then
       DebugLn('TPropertyEditorHook.GetComponentName: AComponent.Name is empty, '+
-              'AComponent.Owner.Name="' + ParentName+'".');
-    if ParentName='' then
+              'AComponent.Owner.Name="' + OwnerName+'".');
+    if OwnerName='' then
       DebugLn('TPropertyEditorHook.GetComponentName: AComponent.Owner.Name is empty.');
-
+}
     Result := CompName;
-    if ParentName<>'' then
+    if OwnerName<>'' then
     begin
-      Result := ParentName;
+      Result := OwnerName;
       if CompName<>'' then
         Result := Result+'.'+CompName;
     end;
