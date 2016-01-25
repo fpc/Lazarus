@@ -1091,8 +1091,9 @@ begin
     debugln('TIDEMenuSection.UpdateMenuStructure Front Section="',Section.Name,'" Name="',Name,'" Section.Invalid=',dbgs(Section.FInvalidChildStartIndex),'..',dbgs(Section.FInvalidChildEndIndex),' Count=',dbgs(Count),' SectionIndex=',dbgs(SectionIndex));
     {$ENDIF}
     Section.UpdateMenuStructure;
-  end else if FInvalidChildStartIndex<Count then begin
-    // the sections in front are uptodate
+  end;
+  // the sections in front are now uptodate, lets continue updating the current section
+  if FInvalidChildStartIndex<Count then begin
     ContainerMenuItem:=GetContainerMenuItem;
     if ChildrenAsSubMenu then
       ContainerMenuIndex:=0
