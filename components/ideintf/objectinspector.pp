@@ -3357,10 +3357,10 @@ begin
 
   if (FCurrentEdit = ValueComboBox) then 
   begin
-    //either an Event or an enumeration or Boolean
+    //either an Enumeration, Set, Class or Boolean
     CurRow := Rows[FItemIndex];
     TypeKind := CurRow.Editor.GetPropType^.Kind;
-    if TypeKind in [tkEnumeration, tkBool, tkSet] then 
+    if TypeKind in [tkEnumeration, tkSet, tkClass, tkBool] then
     begin
       // set value to next value in list
       if ValueComboBox.Items.Count = 0 then Exit;
