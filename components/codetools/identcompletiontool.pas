@@ -215,7 +215,7 @@ type
     ilcfIsExpression,      // is expression part of statement. e.g. 'if expr'
     ilcfCanProcDeclaration,// context allows one to declare a procedure/method
     ilcfEndOfLine,         // atom at end of line
-    ilcfDontAllowProcedures// context doesn't allow procedures (e.g. in function parameter, after assignment or other operator, in if codition etc.)
+    ilcfDontAllowProcedures// context doesn't allow procedures (e.g. in function parameter, after other operator, in if codition etc. - Delphi mode supports assignment of procedures!)
     );
   TIdentifierListContextFlags = set of TIdentifierListContextFlag;
   
@@ -2729,7 +2729,9 @@ begin
                 CurrentIdentifierList.ContextFlags+[ilcfIsExpression, ilcfDontAllowProcedures];
             end;
             // check if procedure is allowed
-            if CurPos.Flag in [cafComma, cafRoundBracketOpen, cafEdgedBracketOpen, cafEqual, cafOtherOperator] then
+            if (CurPos.Flag in [cafComma, cafRoundBracketOpen, cafEdgedBracketOpen, cafEqual, cafOtherOperator])
+            or ((Scanner.CompilerMode<>cmDelphi) and (CurPos.Flag = cafAssignment)) // "MyEvent := MyProc;" is supported only in Delphi mode
+            then
               CurrentIdentifierList.ContextFlags:=
                 CurrentIdentifierList.ContextFlags+[ilcfDontAllowProcedures];
           end;
@@ -2907,7 +2909,7 @@ var
       IsPointedSystem := UpAtomIs('SYSTEM');
     end;
     if (CurPos.Flag in [cafEnd,cafSemicolon,cafEqual,cafComma,cafColon,
-      cafRoundBracketOpen,cafEdgedBracketOpen,cafOtherOperator])
+      cafRoundBracketOpen,cafEdgedBracketOpen,cafAssignment,cafOtherOperator])
     or IsPointedSystem
     or UpAtomIs('BEGIN')
     or UpAtomIs('TRY') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
