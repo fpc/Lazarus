@@ -176,7 +176,7 @@ begin
   Result:=TXMLConfig.Create(nil);
   Result.RootName:='config';
   if (ConfigFileName='') and Assigned(LazarusIDE) then
-    ConfigFileName:=IncludeTrailingPathDelimiter(LazarusIDE.GetPrimaryConfigPath)+'leakview.xml';
+    ConfigFileName:=AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+'leakview.xml';
   Result.FileName:=ConfigFileName;
 end;
 
