@@ -5758,6 +5758,9 @@ var
   r, gutterR: TRect;
   dets: TThemedElementDetails;
   textFlags: integer = DT_VCENTER or DT_SINGLELINE or DT_EXPANDTABS or DT_CENTER;
+  tStyle: TTextStyle;
+  alygn: TAlignment;
+  s: string;
 
    function GetIconTopLeft: TPoint;
     begin
@@ -5781,7 +5784,6 @@ var
   var
     oldFontStyle: TFontStyles;
     oldFontColor: TColor;
-    s: string;
     x, y: integer;
     sz: TSize;
     pt: TPoint;
@@ -5789,9 +5791,6 @@ var
     if (FState = dsSelected) then begin
       Canvas.Brush.Color:=clHighlight;
       Canvas.FillRect(r);
-      if (FRealItem.Caption = '') then
-        s:=FRealItem.Name
-      else s:=FRealItem.Caption;
       sz:=Canvas.TextExtent(s);
       y:=(r.Bottom - r.Top - sz.cy) div 2;
       x:=(r.Right - r.Left - sz.cx) div 2;
@@ -5811,7 +5810,7 @@ var
       else Canvas.Font.Style:=[];
       oldFontColor:=Canvas.Font.Color;
       Canvas.Font.Color:=clHighlightText;
-      Canvas.TextOut(x, y, s);
+      Canvas.TextRect(r, x, y, s, tStyle);
       Canvas.Font.Color:=oldFontColor;
       Canvas.Font.Style:=oldFontStyle;
     end
@@ -5923,29 +5922,11 @@ var
   var
     oldFontColor: TColor;
     oldFontStyle: TFontStyles;
-    s, s1, s2: string;
+    s1, s2: string;
     sc1, sc2: boolean;
     x, y: integer;
-    tStyle : TTextStyle;
-    align: TAlignment;
   begin
-    FillChar(tStyle{%H-}, SizeOf(tStyle), 0);
     Canvas.Brush.Style:=bsClear;
-    if FRealItem.RightJustify then
-      align:=taRightJustify
-    else align:=taLeftJustify;
-    with tStyle do begin
-      Alignment:=BidiFlipAlignment(align, UseRightToLeftAlignment);
-      Layout:=tlCenter;
-      SingleLine:=True;
-      Clipping:=True;
-      ShowPrefix:=True;
-      RightToLeft:=UseRightToLeftReading;
-      ExpandTabs:=True;
-    end;
-    if (FRealItem.Caption = '') then
-      s:=FRealItem.Name
-    else s:=FRealItem.Caption;
     if FRealItem.RightJustify then
       textFlags:=textFlags or DT_RIGHT
     else textFlags:=textFlags or DT_LEFT;
@@ -5961,7 +5942,7 @@ var
       dsSelected: begin
           OldFontColor:=Canvas.Font.Color;
           Canvas.Font.Color:=clHighlightText;
-          Canvas.TextRect(r, x, y, s);
+          Canvas.TextRect(r, x, y, s, tStyle);
           Canvas.Font.Color:=oldFontColor;
         end;
       dsDisabled: begin
@@ -5991,7 +5972,7 @@ var
           dsSelected: begin
               OldFontColor:=Canvas.Font.Color;
               Canvas.Font.Color:=clHighlightText;
-              Canvas.TextRect(r, x, y, s);
+              Canvas.TextRect(r, x, y, s, tStyle);
               Canvas.Font.Color:=oldFontColor;
             end;
           dsDisabled: begin
@@ -6006,16 +5987,56 @@ var
   end;
 
   procedure DrawChevron;
+  var
+    pts: array of TPoint;
+    oldBrushColor, oldPenColor: TColor;
   begin
-    r.Right:=ClientWidth;
-    r.Left:=r.Right - DropDown_Text_Offset;
+    { ToDo: This should be done by theme services
+            but it must be implemented for different widgetsets first.
     dets:=ThemeServices.GetElementDetails(tmPopupSubmenuNormal);
     ThemeServices.DrawElement(Canvas.Handle, dets, r);
+    }
+    r.Right:=ClientWidth;
+    r.Left:=r.Right - MenuBar_Height;
+    SetLength(pts, 4);
+    pts[0]:=Point(r.Left, 9);
+    pts[1]:=Point(r.Left + 4, 12);
+    pts[2]:=Point(r.Left, 15);
+    pts[3]:=pts[0];
+    oldBrushColor:=Canvas.Brush.Color;
+    oldPenColor:=Canvas.Pen.Color;
+    if (FState = dsSelected) then begin
+      Canvas.Pen.Color:=clHighlightText;
+      Canvas.Brush.Color:=clHighlightText;
+    end
+    else begin
+      Canvas.Brush.Color:=clBlack;
+      Canvas.Pen.Color:=clBlack;
+    end;
+    Canvas.Polygon(pts);
+    Canvas.Brush.Color:=oldBrushColor;
+    Canvas.Pen.Color:=oldPenColor;
   end;
 
 begin
   if not FParentBox.Updating then begin
     r:=ClientRect;
+    if FRealItem.RightJustify then
+      alygn:=taRightJustify
+    else alygn:=taLeftJustify;
+    if (FRealItem.Caption = '') then
+      s:=FRealItem.Name
+    else s:=FRealItem.Caption;
+    FillChar(tStyle{%H-}, SizeOf(tStyle), 0);
+    with tStyle do begin
+      Alignment:=BidiFlipAlignment(alygn, UseRightToLeftAlignment);
+      Layout:=tlCenter;
+      SingleLine:=True;
+      Clipping:=True;
+      ShowPrefix:=True;
+      RightToLeft:=UseRightToLeftReading;
+      ExpandTabs:=True;
+    end;
     if FRealItem.IsInMenuBar then
       DrawMenuBarItem
     else begin
