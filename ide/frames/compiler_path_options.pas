@@ -73,6 +73,9 @@ implementation
 
 {$R *.lfm}
 
+const
+  cBrowseBtnSize = 50;
+
 function CheckSearchPath(const Context, ExpandedPath: string; Level: TCheckCompileOptionsMsgLvl): boolean;
 var
   CurPath: string;
@@ -500,7 +503,7 @@ begin
     AnchorParallel(akTop, 0, OtherUnitsEdit);
     AnchorParallel(akBottom, 0, OtherUnitsEdit);
     AnchorParallel(akRight, 0, Self);
-    AutoSize := True;
+    Width := cBrowseBtnSize;
     AssociatedEdit := OtherUnitsEdit;
     ContextCaption := OtherUnitsLabel.Caption;
     Templates:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)' +
@@ -527,7 +530,7 @@ begin
     AnchorParallel(akTop, 0, IncludeFilesEdit);
     AnchorParallel(akBottom, 0, IncludeFilesEdit);
     AnchorParallel(akRight, 0, Self);
-    AutoSize := True;
+    Width := cBrowseBtnSize;
     AssociatedEdit := IncludeFilesEdit;
     ContextCaption := IncludeFilesLabel.Caption;
     Templates := 'include;inc';
@@ -550,7 +553,7 @@ begin
     AnchorParallel(akTop, 0, OtherSourcesEdit);
     AnchorParallel(akBottom, 0, OtherSourcesEdit);
     AnchorParallel(akRight, 0, Self);
-    AutoSize := True;
+    Width := cBrowseBtnSize;
     AssociatedEdit := OtherSourcesEdit;
     ContextCaption := OtherSourcesLabel.Caption;
     Templates := '$(LazarusDir)/lcl' +
@@ -576,7 +579,7 @@ begin
     AnchorParallel(akTop, 0, LibrariesEdit);
     AnchorParallel(akBottom, 0, LibrariesEdit);
     AnchorParallel(akRight, 0, Self);
-    AutoSize := True;
+    Width := cBrowseBtnSize;
     AssociatedEdit := LibrariesEdit;
     ContextCaption := LibrariesLabel.Caption;
     Templates := '/usr/X11R6/lib;/sw/lib';
@@ -599,7 +602,7 @@ begin
     AnchorParallel(akTop, 0, UnitOutputDirEdit);
     AnchorParallel(akBottom, 0, UnitOutputDirEdit);
     AnchorParallel(akRight, 0, Self);
-    AutoSize := True;
+    Width := cBrowseBtnSize;
     OnClick := @FileBrowseBtnClick;
   end;
   UnitOutputDirEdit.AnchorToNeighbour(akRight, 0, btnUnitOutputDir);
@@ -618,7 +621,7 @@ begin
     AnchorParallel(akTop, 0, DebugPathEdit);
     AnchorParallel(akBottom, 0, DebugPathEdit);
     AnchorParallel(akRight, 0, Self);
-    AutoSize := True;
+    Width := cBrowseBtnSize;
     AssociatedEdit := DebugPathEdit;
     ContextCaption := DebugPathLabel.Caption;
     Templates := '$(LazarusDir)/lcl/include' +
