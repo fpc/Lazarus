@@ -2641,8 +2641,7 @@ end;
 
 procedure TOICustomPropertyGrid.AlignEditComponents;
 var
-  RRect,EditCompRect,EditBtnRect:TRect;
-  TopMargin: Integer;
+  RRect, EditCompRect, EditBtnRect: TRect;
 
   function CompareRectangles(r1,r2:TRect):boolean;
   begin
@@ -2686,12 +2685,14 @@ begin
         Dec(EditCompRect.Left);
         {$ENDIF}
         Dec(EditCompRect.Top);
+      {$IFnDEF UseOICheckBoxThemed}
       end
-      else if FCurrentEdit is {$IFDEF UseOICheckBoxThemed} TCheckBoxThemed {$ELSE} TCheckBox {$ENDIF} then
-      begin                     // Align CheckBox to the middle vertically
-        TopMargin := (EditCompRect.Bottom - EditCompRect.Top - ValueCheckBox.Height) div 2;
-        Inc(EditCompRect.Top, TopMargin);
-        Inc(EditCompRect.Left); // and move it a little right.
+      else if FCurrentEdit is TCheckBox then
+      begin
+        with EditCompRect do  // Align "normal" CheckBox to the middle vertically
+          Inc(Top, (Bottom - Top - ValueCheckBox.Height) div 2);
+        Inc(EditCompRect.Left);  // and move it a little right.
+      {$ENDIF}
       end;
       //debugln('TOICustomPropertyGrid.AlignEditComponents A ',dbgsName(FCurrentEdit),' ',dbgs(EditCompRect));
       if not CompareRectangles(FCurrentEdit.BoundsRect,EditCompRect) then
