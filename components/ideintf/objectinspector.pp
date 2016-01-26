@@ -3350,6 +3350,7 @@ procedure TOICustomPropertyGrid.ToggleRow;
 var
   CurRow: TOIPropertyGridRow;
   TypeKind : TTypeKind;
+  NewIndex: Integer;
 begin
   if not CanEditRowValue(false) then exit;
 
@@ -3358,17 +3359,26 @@ begin
 
   if (FCurrentEdit = ValueComboBox) then 
   begin
-    //either an Enumeration, Set, Class or Boolean
     CurRow := Rows[FItemIndex];
     TypeKind := CurRow.Editor.GetPropType^.Kind;
-    if TypeKind in [tkEnumeration, tkSet, tkClass, tkBool] then
+    // Integer (like TImageIndex), Enumeration, Set, Class or Boolean ComboBox
+    if TypeKind in [tkInteger, tkEnumeration, tkSet, tkClass, tkBool] then
     begin
-      // set value to next value in list
       if ValueComboBox.Items.Count = 0 then Exit;
-      if ValueComboBox.ItemIndex < (ValueComboBox.Items.Count - 1) then
-        ValueComboBox.ItemIndex := ValueComboBox.ItemIndex + 1
+      // Pick the next value from list
+      if ValueComboBox.ItemIndex < (ValueComboBox.Items.Count-1) then
+      begin
+        NewIndex := ValueComboBox.ItemIndex + 1;
+        // Go to first object of tkClass. Skip '(none)' which can be in different
+        // places depending on widgetset sorting rules.
+        if (ValueComboBox.ItemIndex = -1) // Only happen at nil value of tkClass
+        and (ValueComboBox.Items[NewIndex] = oisNone)
+        and (NewIndex < (ValueComboBox.Items.Count-1)) then
+          Inc(NewIndex);
+      end
       else
-        ValueComboBox.ItemIndex := 0;
+        NewIndex := 0;
+      ValueComboBox.ItemIndex := NewIndex;
       SetRowValue(false);
       exit;
     end;
