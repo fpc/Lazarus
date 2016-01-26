@@ -73,6 +73,7 @@ type
     function GetPath: string;
     function GetRoot: TIDEMenuItem;
     function VisibleActive: boolean; virtual;
+    function RealVisible: boolean; // this one and all parent sections are visible
     function GetContainerSection: TIDEMenuSection; // returns nearest sub menu section
     function GetContainerMenuItem: TMenuItem; // returns nearest sub menu
     function Size: integer; virtual; // size of this item including separators and children in parent section (e.g. a submenu has size=1)
@@ -555,6 +556,19 @@ begin
   FAutoFreeMenuItem:=false;
 end;
 
+function TIDEMenuItem.RealVisible: boolean;
+var
+  xSection: TIDEMenuSection;
+begin
+  Result := Visible;
+  xSection := Section;
+  while (xSection<>nil) and Result do
+  begin
+    Result := xSection.Visible;
+    xSection := xSection.Section;
+  end;
+end;
+
 procedure TIDEMenuItem.BitmapChange(Sender: TObject);
 begin
   if MenuItem<>nil then MenuItem.Bitmap:=Bitmap;
@@ -936,6 +950,7 @@ var
   ContainerMenuIndex: integer;
   Item: TIDEMenuItem;
   CurSection: TIDEMenuSection;
+  xRealVisible: Boolean;
 
   procedure UpdateNeedTopSeparator;
   // a separator at top is needed, if
@@ -948,7 +963,7 @@ var
     NewNeedTopSeparator: Boolean;
   begin
     NewNeedTopSeparator:=false;
-    if (not ChildrenAsSubMenu) and (Section<>nil) and VisibleActive then begin
+    if (not ChildrenAsSubMenu) and (Section<>nil) and VisibleActive and xRealVisible then begin
       // check for any visible item in front
       i:=SectionIndex-1;
       while i>=0 do begin
@@ -1014,7 +1029,7 @@ var
   begin
     NewNeedBottomSeparator:=false;
     //debugln('TIDEMenuSection.UpdateNeedBottomSeparator Name="',Name,'" ChildrenAsSubMenu=',dbgs(ChildrenAsSubMenu),' Section=',dbgs(Section<>nil),' VisibleActive=',dbgs(VisibleActive));
-    if (not ChildrenAsSubMenu) and (Section<>nil) and VisibleActive then begin
+    if (not ChildrenAsSubMenu) and (Section<>nil) and VisibleActive and xRealVisible then begin
       // check for any visible item behind
       i:=SectionIndex+1;
       while i<Section.Count do begin
@@ -1082,6 +1097,7 @@ begin
     exit;
   end;
   if FInvalidChildStartIndex<0 then FInvalidChildStartIndex:=0;
+  xRealVisible := RealVisible;
 
   if (Section<>nil) and (not Section.ChildrenAsSubMenu)
   and (Section.FInvalidChildStartIndex<=SectionIndex) then begin
@@ -1110,7 +1126,7 @@ begin
       inc(ContainerMenuIndex);
 
     // update children
-    if Visible then
+    if xRealVisible then
       for i:=0 to FInvalidChildStartIndex-1 do
         inc(ContainerMenuIndex,Items[i].Size);
     while (FInvalidChildStartIndex<=FInvalidChildEndIndex)
@@ -1124,7 +1140,7 @@ begin
         CurSection:=TIDEMenuSection(Item)
       else
         CurSection:=nil;
-      if Visible then begin
+      if xRealVisible then begin
         // insert menu item
         if ((CurSection=nil) or CurSection.ChildrenAsSubMenu)
         and (ContainerMenuItem<>nil) then begin
