@@ -1910,28 +1910,30 @@ var
   Params: TFindDeclarationParams;
   DirectSearch, SkipChecks, SearchForward: boolean;
 
-  procedure CheckIfCursorOnAForwardDefinedClass;
+  function CheckIfNodeIsForwardDefinedClass(ANode: TCodeTreeNode;
+    ATool: TFindDeclarationTool): Boolean;
   var
     TypeNode: TCodeTreeNode;
   begin
-    if SkipChecks then exit;
-    if not (CursorNode.Desc in [ctnTypeDefinition,ctnGenericType]) then exit;
-    TypeNode:=FindTypeNodeOfDefinition(CursorNode);
+    Result := False;
+    if not (ANode.Desc in [ctnTypeDefinition,ctnGenericType]) then exit;
+    TypeNode:=ATool.FindTypeNodeOfDefinition(ANode);
     if (TypeNode<>nil)
     and (TypeNode.Desc in AllClasses)
-    and ((TypeNode.SubDesc and ctnsForwardDeclaration)>0) then
+    and ((TypeNode.SubDesc and ctnsForwardDeclaration)>0)
+    then
+      Result := True;
+  end;
+
+  procedure CheckIfCursorOnAForwardDefinedClass;
+  begin
+    if SkipChecks then exit;
+    if CheckIfNodeIsForwardDefinedClass(CursorNode, Self) then
     begin
       DirectSearch:=true;
       SearchForward:=true;
       SkipChecks:=true;
     end;
-  end;
-
-  procedure CheckIfCursorInTypeNode;
-  begin
-    if (CursorNode.Desc in AllIdentifierDefinitions)
-    and (fsfSkipClassForward in SearchSmartFlags) then
-      Exclude(SearchSmartFlags,fsfSkipClassForward);
   end;
 
   procedure CheckIfCursorInClassNode;
@@ -2083,6 +2085,7 @@ var
   CursorAtIdentifier: boolean;
   IdentifierStart: PChar;
   LineRange: TLineRange;
+  ForwardXY: TCodeXYPosition;
 begin
   Result:=false;
   NewExprType:=CleanExpressionType;
@@ -2226,7 +2229,6 @@ begin
     SearchForward:=false;
     CheckIfCursorOnAForwardDefinedClass;
     CheckIfCursorInClassNode;
-    CheckIfCursorInTypeNode;
     CheckIfCursorInProcNode;
     CheckIfCursorInPropertyNode;
     // set cursor on identifier
@@ -2263,6 +2265,15 @@ begin
           Result:=FindIdentifierInContext(Params);
           if Result then
           begin
+            // if we skip forward class definitions and we found one -> proceed search!
+            if (fsfSkipClassForward in SearchSmartFlags)
+            and CheckIfNodeIsForwardDefinedClass(Params.NewNode, Params.NewCodeTool)
+            and Params.NewCodeTool.CleanPosToCaret(Params.NewNode.StartPos, ForwardXY)
+            and Params.NewCodeTool.FindDeclaration(ForwardXY, SearchSmartFlags-[fsfSkipClassForward],
+              NewExprType, NewPos, NewTopLine)
+            then
+              Exit(True);
+
             NewExprType.Desc:=xtContext;
             NewExprType.Context.Node:=Params.NewNode;
             NewExprType.Context.Tool:=Params.NewCodeTool;
