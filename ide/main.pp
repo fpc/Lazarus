@@ -9595,9 +9595,10 @@ procedure TMainIDE.DoFindDeclarationAtCaret(const LogCaretXY: TPoint);
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  NewSource: TCodeBuffer;
-  NewX, NewY, NewTopLine: integer;
+  NewSource, BodySource: TCodeBuffer;
+  NewX, NewY, NewTopLine, BodyX, BodyY, BodyTopLine: integer;
   FindFlags: TFindSmartFlags;
+  RevertableJump, JumpToBody: boolean;
 begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
@@ -9614,8 +9615,17 @@ begin
     LogCaretXY.X, LogCaretXY.Y, NewSource, NewX, NewY, NewTopLine, FindFlags )
   then begin
     //debugln(['TMainIDE.DoFindDeclarationAtCaret ',NewSource.Filename,' NewX=',Newx,',y=',NewY,' ',NewTopLine]);
-    DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
-      NewSource, NewX, NewY, NewTopLine, [jfAddJumpPoint, jfFocusEditor]);
+    if (CodeToolsOpts.JumpToMethodBody)
+    and(CodeToolBoss.JumpToMethod(NewSource,
+        NewX,NewY,BodySource,BodyX,BodyY,BodyTopLine,RevertableJump))
+    then
+      JumpToBody := DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
+        BodySource, BodyX, BodyY, BodyTopLine, [jfAddJumpPoint, jfFocusEditor]) = mrOK
+    else
+      JumpToBody := False;
+    if not JumpToBody then
+      DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
+        NewSource, NewX, NewY, NewTopLine, [jfAddJumpPoint, jfFocusEditor]);
   end else begin
     DoJumpToCodeToolBossError;
   end;

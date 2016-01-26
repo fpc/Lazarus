@@ -2094,6 +2094,7 @@ resourcestring
   dlgCenterCursorLine = 'Center cursor line';
   dlgCursorBeyondEOL = 'Cursor beyond EOL';
   dlgSkipForwardClassDeclarations = 'Skip forward class declarations';
+  dlgJumpToMethodBody = 'Jump directly to method body';
   dlgInsertClassParts = 'Insert class parts';
   lisClassCompletion = 'Class Completion';
   dlgAlphabetically = 'Alphabetically';

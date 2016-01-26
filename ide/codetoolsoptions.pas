@@ -66,6 +66,7 @@ type
     FJumpCentered: boolean;
     FCursorBeyondEOL: boolean;
     FSkipForwardDeclarations: boolean;
+    FJumpToMethodBody: boolean;
     
     // Define Templates
     FGlobalDefineTemplates: TDefineTemplate;
@@ -152,7 +153,7 @@ type
     property CursorBeyondEOL: boolean
       read FCursorBeyondEOL write FCursorBeyondEOL;
     property SkipForwardDeclarations: boolean read FSkipForwardDeclarations write FSkipForwardDeclarations;
-
+    property JumpToMethodBody: boolean read FJumpToMethodBody write FJumpToMethodBody;
     // Define Templates
     property GlobalDefineTemplates: TDefineTemplate read FGlobalDefineTemplates;
     property DefinesEditMainSplitterTop: integer read FDefinesEditMainSplitterTop
@@ -425,7 +426,9 @@ begin
       'CodeToolsOptions/CursorBeyondEOL/Value',true);
     FSkipForwardDeclarations:=XMLConfig.GetValue(
       'CodeToolsOptions/SkipForwardDeclarations/Value',false);
-      
+    FJumpToMethodBody:=XMLConfig.GetValue(
+      'CodeToolsOptions/JumpToMethodBody/Value',false);
+
     // Define templates
     LoadGlobalDefineTemplates;
     FDefinesEditMainSplitterTop:=XMLConfig.GetValue(
@@ -581,7 +584,8 @@ begin
                              FCursorBeyondEOL,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/SkipForwardDeclarations/Value',
                              FSkipForwardDeclarations,false);
-
+    XMLConfig.SetDeleteValue('CodeToolsOptions/JumpToMethodBody/Value',
+                             FJumpToMethodBody,false);
     // Define templates
     SaveGlobalDefineTemplates;
     XMLConfig.SetDeleteValue('CodeToolsOptions/DefinesEditMainSplitter/Top',
@@ -778,6 +782,7 @@ begin
     FAddInheritedCodeToOverrideMethod:=CodeToolsOpts.AddInheritedCodeToOverrideMethod;
     FCompleteProperties:=CodeToolsOpts.CompleteProperties;
     FSkipForwardDeclarations:=CodeToolsOpts.FSkipForwardDeclarations;
+    FJumpToMethodBody:=CodeToolsOpts.FJumpToMethodBody;
 
     // define templates
     ClearGlobalDefineTemplates;
@@ -925,6 +930,7 @@ begin
     and (AddInheritedCodeToOverrideMethod=CodeToolsOpts.AddInheritedCodeToOverrideMethod)
     and (CompleteProperties=CodeToolsOpts.CompleteProperties)
     and (FSkipForwardDeclarations=CodeToolsOpts.FSkipForwardDeclarations)
+    and (FJumpToMethodBody=CodeToolsOpts.FJumpToMethodBody)
     
     // define templates
     and (FGlobalDefineTemplates.IsEqual(
