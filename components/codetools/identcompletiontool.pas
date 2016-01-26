@@ -100,7 +100,8 @@ type
     iliIsUnimplemented,
     iliIsLibrary,
     iliAtCursor, // the item is the identifier at the completion
-    iliNeedsAmpersand //the item has to be prefixed with '&'
+    iliNeedsAmpersand, //the item has to be prefixed with '&'
+    iliHasLowerVisibility
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
   
@@ -1109,6 +1110,7 @@ var
   ProtectedForeignClass: Boolean;
   Lvl: LongInt;
   NamePos: TAtomPosition;
+  HasLowerVisibility: Boolean;
 begin
   // proceed searching ...
   Result:=ifrProceedSearch;
@@ -1128,6 +1130,7 @@ begin
   end;
 
   Lvl:=FLastGatheredIdentLevel;
+  HasLowerVisibility:=False;
 
   ProtectedForeignClass:=false;
   if FoundContext.Tool=Self then begin
@@ -1152,14 +1155,16 @@ begin
       //debugln(['TIdentCompletionTool.CollectAllIdentifiers Node=',Node.DescAsString,' Context=',CurrentIdentifierList.Context.Node.DescAsString,' CtxVis=',NodeDescToStr(CurrentIdentifierList.NewMemberVisibility)]);
       if (CurrentIdentifierList.NewMemberVisibility<>ctnNone)
       and (CurrentIdentifierList.NewMemberVisibility<Node.Desc)
-      and (CurrentIdentifierList.Context.Node.Desc
+      and (FoundContext.Node.Desc
         in ([ctnProcedure,ctnProcedureHead,ctnProperty]+AllClassSections))
       then begin
         // the user wants to override a method or property
         // => ignore all with a higher visibility, because fpc does not allow
         //    to downgrade the visibility and will give a hint when trying
+        //---- No, allow visibility downgrading to reduce confusion tha CodeTools do not list those functions.
+        //---- FPC actually allows it although it shows a warning
         //debugln(['TIdentCompletionTool.CollectAllIdentifiers skipping member, because it would downgrade: ',dbgstr(FoundContext.Tool.ExtractNode(FoundContext.Node,[]),1,30)]);
-        exit;
+        HasLowerVisibility:=True;
       end;
       case Node.Desc of
       ctnClassPrivate:
@@ -1304,10 +1309,13 @@ begin
   if (Ident^='&') and (IsIdentStartChar[Ident[1]]) then
     Include(NewItem.Flags,iliNeedsAmpersand);
 
-  if (FoundContext.Node=CurrentIdentifierList.StartContext.Node) then begin
-    // found identifier is in cursor node
+  // found identifier is in cursor node
+  if (FoundContext.Node=CurrentIdentifierList.StartContext.Node) then
     Include(NewItem.Flags,iliAtCursor);
-  end;
+
+  // method has lower visibility
+  if HasLowerVisibility then
+    Include(NewItem.Flags,iliHasLowerVisibility);
 
   {$IFDEF ShowFoundIdents}
   if FoundContext.Tool=Self then
