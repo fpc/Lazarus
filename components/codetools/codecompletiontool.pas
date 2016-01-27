@@ -1783,8 +1783,9 @@ var
   VarNameAtom, AssignmentOperator, TermAtom: TAtomPosition;
   NewType: string;
   Params: TFindDeclarationParams;
-  ExprType: TExpressionType;
+  ExprType, ResExprType: TExpressionType;
   MissingUnit: String;
+  ResExprContext, OrigExprContext: TFindContext;
 begin
   Result:=false;
 
@@ -1844,10 +1845,21 @@ begin
     begin
       Params.SetIdentifier(Self, PChar(NewType), nil);
       Params.ContextNode := CursorNode;
-      Params.Flags := [fdfSearchInAncestors..fdfIgnoreCurContextNode,fdfSearchInHelpers];
-      if FindIdentifierInContext(Params)
-        and (Params.NewCodeTool <> ExprType.Context.Tool) then
-          NewType := ExprType.Context.Tool.ExtractSourceName + '.' + NewType;
+      Params.Flags := [fdfSearchInAncestors..fdfIgnoreCurContextNode,fdfTypeType,fdfSearchInHelpers];
+      if FindIdentifierInContext(Params) then
+      begin
+        ResExprContext:=Params.NewCodeTool.FindBaseTypeOfNode(
+          Params,Params.NewNode);
+        OrigExprContext:=ExprType.Context.Tool.FindBaseTypeOfNode(
+          Params,ExprType.Context.Node);
+        if (ResExprContext.Tool <> OrigExprContext.Tool) then // the "source" types are different -> add unit to the type
+          NewType := ExprType.Context.Tool.ExtractSourceName + '.' + NewType
+        else
+        begin // the "source" types are the same -> set ExprType to found Params.New* so that unit adding is avoided (with MissingUnit)
+          ExprType.Context.Tool:=Params.NewCodeTool;
+          ExprType.Context.Node:=Params.NewNode;
+        end;
+      end;
     end;
   finally
     Params.Free;
