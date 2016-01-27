@@ -2793,6 +2793,16 @@ begin
 end;
 {$ENDIF}
 
+{$IFDEF MSWINDOWS}
+function GetDefaultWinControlColor(AColor: TColor): TColor;
+begin
+  if AColor = clDefault then
+    Result := clWhite
+  else
+    Result := AColor;
+end;
+{$ENDIF}
+
 function CalcBorderColor(AColor: TColor; AStyle: TCSSBorderStyle; ASide: TIpHtmlFrameProp): TColor;
 begin
   case AStyle of
@@ -11369,6 +11379,9 @@ begin
       FControl := TEdit.Create(Parent);
       setCommonProperties;
       with TEdit(FControl) do begin
+{$IFDEF MSWINDOWS}
+        Color := GetDefaultWinControlColor(Color);
+{$ENDIF}
         Text := Value;
         MaxLength := Self.MaxLength;
         setWidhtHeight(Self.Size, 8, 0);
