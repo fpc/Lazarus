@@ -47,6 +47,7 @@
 {$DEFINE VERSION5}
 {$DEFINE Version6OrHigher}
 {$DEFINE Version7OrHigher}
+{$MODESWITCH NESTEDPROCVARS}
 
 {$ELSE}
 

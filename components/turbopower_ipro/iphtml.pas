@@ -2656,6 +2656,8 @@ type
     property FlagErrors;
   end;
 
+  TIdFindNodeCriteria = function(ACurrNode: TIpHtmlNodeCore): Boolean is nested;
+
 const
   NAnchorChar = #3 ; {character used to represent an Anchor }
 var
@@ -2683,6 +2685,9 @@ function dbgs(et: TElementType): string; overload;
 function GetNextSiblingNode(ANode: TIpHtmlNode): TIpHtmlNode;
 function GetPrevSiblingNode(ANode: TIpHtmlNode): TIpHtmlNode;
 function GetParentNodeOfClass(ANode: TIpHtmlNode; AClass: TIpHtmlNodeClass): TIpHtmlNode;
+function FindNode(ANode: TIpHtmlNode; ACriteria: TIdFindNodeCriteria): TIpHtmlNodeCore;
+function FindNodeByElemId(ANode: TIpHtmlNode; const AElemId: string): TIpHtmlNodeCore;
+function FindNodeByElemClass(ANode: TIpHtmlNode; const AElemClass: string): TIpHtmlNodeCore;
 
 procedure Register;
 
@@ -2886,6 +2891,58 @@ begin
     Result := Result.FParentNode;
 end;
 
+function FindNode(ANode: TIpHtmlNode; ACriteria: TIdFindNodeCriteria): TIpHtmlNodeCore;
+var
+  I: Integer;
+  VNode: TIpHtmlNodeMulti;
+  VPrevNode, VNextNode: TIpHtmlNode;
+begin
+  if not Assigned(ANode) or not (ANode is TIpHtmlNodeMulti) then
+    Exit(nil);
+  VNode := ANode as TIpHtmlNodeMulti;
+  if VNode.ChildCount < 1 then
+    Exit(nil);
+  for I := 0 to Pred(VNode.ChildCount) do
+  begin
+    VPrevNode := VNode.ChildNode[I];
+    VNextNode := FindNode(VPrevNode, ACriteria);
+    if not Assigned(VNextNode) then
+      VNextNode := VPrevNode;
+    if VNextNode is TIpHtmlNodeCore then
+    begin
+      Result := VNextNode as TIpHtmlNodeCore;
+      if ACriteria(Result) then
+        Exit;
+    end;
+  end;
+  Result := nil;
+end;
+
+function FindNodeByElemId(ANode: TIpHtmlNode; const AElemId: string): TIpHtmlNodeCore;
+
+  function Criteria(ACurrNode: TIpHtmlNodeCore): Boolean;
+  begin
+    if ACurrNode.Id = AElemId then
+      Exit(True);
+    Result := False;
+  end;
+
+begin
+  Result := FindNode(ANode, Criteria);
+end;
+
+function FindNodeByElemClass(ANode: TIpHtmlNode; const AElemClass: string): TIpHtmlNodeCore;
+
+  function Criteria(ACurrNode: TIpHtmlNodeCore): Boolean;
+  begin
+    if ACurrNode.ClassId = AElemClass then
+      Exit(True);
+    Result := False;
+  end;
+
+begin
+  Result := FindNode(ANode, Criteria);
+end;
 
 procedure Register;
 begin
