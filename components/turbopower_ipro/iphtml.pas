@@ -11548,18 +11548,10 @@ begin
   end;
 }
   inherited;
-{$IFDEF VERSION3ONLY}
-  if FControl is TRadioButton then begin
-{$ELSE}
-  if FControl is THtmlRadioButton then begin
-{$ENDIF}
-    if Props.BgColor <> -1 then
-{$IFDEF VERSION3ONLY}
-      TRadioButton(FControl).Color := Props.BgColor;
-{$ELSE}
-      THtmlRadioButton(FControl).Color := Props.BgColor;
-{$ENDIF}
-  end;
+  if (Props.BgColor <> -1) and (
+    (FControl is {$IFDEF VERSION3ONLY}TRadioButton{$ELSE}THtmlRadioButton{$ENDIF}) or
+    (FControl is TCustomEdit)) then
+    FControl.Color := Props.BgColor;
 end;
 
 procedure TIpHtmlNodeINPUT.ImageChange(NewPicture: TPicture);
