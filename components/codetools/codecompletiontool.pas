@@ -1783,7 +1783,7 @@ var
   VarNameAtom, AssignmentOperator, TermAtom: TAtomPosition;
   NewType: string;
   Params: TFindDeclarationParams;
-  ExprType, ResExprType: TExpressionType;
+  ExprType: TExpressionType;
   MissingUnit: String;
   ResExprContext, OrigExprContext: TFindContext;
 begin
