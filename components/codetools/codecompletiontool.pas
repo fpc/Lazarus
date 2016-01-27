@@ -1211,7 +1211,7 @@ begin
       begin
         if (VarNode.Desc = ctnVarDefinition) and Assigned(VarNode.LastChild) and
            (VarNode.LastChild.Desc = ctnIdentifier) and
-           (CompareIdentifiers(PChar(VariableType), PChar(ExtractNode(VarNode.LastChild,[phpCommentsToSpace]))) = 0)
+           (CompareTextIgnoringSpace(VariableType,ExtractNode(VarNode.LastChild,[phpCommentsToSpace]),False) = 0)
         then
           VarTypeNode := VarNode;
         VarNode := VarNode.PriorBrother;
