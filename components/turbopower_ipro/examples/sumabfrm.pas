@@ -44,7 +44,7 @@ var
 begin
   A := FindNodeByElemId(Html.HtmlNode, 'a') as TIpHtmlNodeINPUT;
   B := FindNodeByElemId(Html.HtmlNode, 'b') as TIpHtmlNodeINPUT;
-  ShowMessageFmt('Sum: %d', [A.Value.ToInteger + B.Value.ToInteger]);
+  ShowMessageFmt('Sum: %d', [StrToInt(A.Value) + StrToInt(B.Value)]);
 end;
 
 end.
