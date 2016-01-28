@@ -13,7 +13,7 @@ uses
 
 begin
   Application.Initialize;
-  Application.CreateForm(TXMLRederForm, XMLRederForm);
+  Application.CreateForm(TXMLReaderForm, XMLReaderForm);
   Application.Run;
 end.
 

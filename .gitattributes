@@ -5632,10 +5632,10 @@ examples/widestringstreaming/mainunit.lfm svneol=native#text/plain
 examples/widestringstreaming/mainunit.pas svneol=native#text/plain
 examples/widestringstreaming/widestringstreaming.lpi svneol=native#text/plain
 examples/widestringstreaming/widestringstreaming.lpr svneol=native#text/plain
-examples/xmlreader/TestXMLReder.ico -text svneol=unset#image/ico
-examples/xmlreader/TestXMLReder.lpi svneol=native#text/plain
-examples/xmlreader/TestXMLReder.lpr svneol=native#text/plain
-examples/xmlreader/TestXMLReder.res -text
+examples/xmlreader/TestXMLReader.ico -text svneol=unset#image/ico
+examples/xmlreader/TestXMLReader.lpi svneol=native#text/plain
+examples/xmlreader/TestXMLReader.lpr svneol=native#text/plain
+examples/xmlreader/TestXMLReader.res -text
 examples/xmlreader/test.xml svneol=native#text/plain
 examples/xmlreader/testxmlreaderunit.lfm svneol=native#text/plain
 examples/xmlreader/testxmlreaderunit.pas svneol=native#text/plain
