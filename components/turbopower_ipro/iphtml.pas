@@ -2798,16 +2798,6 @@ begin
 end;
 {$ENDIF}
 
-{$IFDEF MSWINDOWS}
-function GetDefaultWinControlColor(AColor: TColor): TColor;
-begin
-  if AColor = clDefault then
-    Result := clWhite
-  else
-    Result := AColor;
-end;
-{$ENDIF}
-
 function CalcBorderColor(AColor: TColor; AStyle: TCSSBorderStyle; ASide: TIpHtmlFrameProp): TColor;
 begin
   case AStyle of
@@ -7932,12 +7922,12 @@ end;
 
 function TIpHtml.getControlCount:integer;
 begin
-     result := FControlList.Count;
+  result := FControlList.Count;
 end;
 
 function TIpHtml.getControl(i:integer):TIpHtmlNode;
 begin
-     result := FControlList[i];
+  result := FControlList[i];
 end;
 
 procedure TIpHtml.PaintSelection;
@@ -11411,19 +11401,19 @@ var
 
   procedure setCommonProperties;
   begin
-      FControl.Visible := False;
-      FControl.Parent := Parent;
-      adjustFromCss;
-      aCanvas.Font.Size := FControl.Font.Size;
+    FControl.Parent := Parent;
+    FControl.Visible := False;
+    AdjustFromCss;
+    aCanvas.Font.Size := FControl.Font.Size;
   end;
 
-  procedure setWidhtHeight(iSize, iTopPlus, iSidePlus: integer);
+  procedure SetWidthHeight(iSize, iTopPlus, iSidePlus: integer);
   begin
-        if iSize <> -1 then
-          FControl.Width := iSize * aCanvas.TextWidth('0') + iSidePlus
-        else
-          FControl.Width := 20 * aCanvas.TextWidth('0')  + iSidePlus;
-        FControl.Height := aCanvas.TextHeight('Wy') + iTopPlus;
+    if iSize <> -1 then
+      FControl.Width := iSize * aCanvas.TextWidth('0') + iSidePlus
+    else
+      FControl.Width := 20 * aCanvas.TextWidth('0')  + iSidePlus;
+    FControl.Height := aCanvas.TextHeight('Wy') + iTopPlus;
   end;
 
 begin
@@ -11436,12 +11426,10 @@ begin
       FControl := TEdit.Create(Parent);
       setCommonProperties;
       with TEdit(FControl) do begin
-{$IFDEF MSWINDOWS}
-        Color := GetDefaultWinControlColor(Color);
-{$ENDIF}
+        Color := clWindow;  // clDefault renders as black in Windows
         Text := Value;
         MaxLength := Self.MaxLength;
-        setWidhtHeight(Self.Size, 8, 0);
+        SetWidthHeight(Self.Size, 8, 0);
         Enabled := not Self.Disabled;
         ReadOnly := Self.ReadOnly;
         OnChange := ButtonClick;
@@ -11453,9 +11441,10 @@ begin
       FControl := TEdit.Create(Parent);
       setCommonProperties;
       with TEdit(FControl) do begin
+        Color := clWindow;
         Text := Value;
         MaxLength := Self.MaxLength;
-        setWidhtHeight(1, 8, 0);
+        SetWidthHeight(1, 8, 0);
         Enabled := not Self.Disabled;
         ReadOnly := Self.ReadOnly;
         PasswordChar := '*';
@@ -11468,7 +11457,7 @@ begin
       FControl := TCheckBox.Create(Parent);
       setCommonProperties;
       with TCheckBox(FControl) do begin
-        setWidhtHeight(1, 8, 0);
+        SetWidthHeight(1, 8, 0);
         Checked := Self.Checked;
         Enabled := not Self.Disabled and not Self.Readonly;
         OnClick := ButtonClick;
@@ -11489,7 +11478,7 @@ begin
 {$ELSE}
       with THtmlRadioButton(FControl) do begin
 {$ENDIF}
-        setWidhtHeight(1, 8, 0);
+        SetWidthHeight(1, 8, 0);
         Checked := Self.Checked;
         Enabled := not Self.Disabled and not Self.Readonly;
         OnClick := ButtonClick;
@@ -11551,6 +11540,7 @@ begin
       FFileEdit := TEdit.Create(Parent);
       with FFileEdit do begin
         Parent := FControl;
+        Color := clWindow;
         Left := 1;
         Top := 1;
         Width := FControl.Width - FFileSelect.Width;
