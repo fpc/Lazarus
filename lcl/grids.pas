@@ -3078,7 +3078,7 @@ end;
 
 procedure TCustomGrid.VisualChange;
 begin
-  if FUpdateCount<>0 then
+  if (FUpdateCount<>0) or (not HandleAllocated) then
     exit;
 
   {$ifdef DbgVisualChange}
@@ -7858,7 +7858,7 @@ var
   CellR: TRect;
 begin
   {$ifdef dbgGrid} DebugLn('Grid.EditorPos INIT');{$endif}
-  if FEditor<>nil then begin
+  if HandleAllocated and (FEditor<>nil) then begin
 
     // send editor position
     Msg.LclMsg.msg:=GM_SETPOS;
