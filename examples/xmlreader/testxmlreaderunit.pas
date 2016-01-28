@@ -10,9 +10,9 @@ uses
 
 type
 
-  { TXMLRederForm }
+  { TXMLReaderForm }
 
-  TXMLRederForm = class(TForm)
+  TXMLReaderForm = class(TForm)
     BitBtn1: TBitBtn;
     Edit1: TEdit;
     Edit2: TEdit;
@@ -37,14 +37,14 @@ type
   end; 
 
 var
-  XMLRederForm: TXMLRederForm;
+  XMLReaderForm: TXMLReaderForm;
 
 implementation
 
 
-{ TXMLRederForm }
+{ TXMLReaderForm }
 
-procedure TXMLRederForm.BitBtn1Click(Sender: TObject);
+procedure TXMLReaderForm.BitBtn1Click(Sender: TObject);
 begin
   if Assigned(FDoc) then
     FreeAndNil(FDoc);
@@ -55,13 +55,13 @@ begin
     ParseDoc;
 end;
 
-procedure TXMLRederForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+procedure TXMLReaderForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   if Assigned(FDoc) then
     FDoc.Free;
 end;
 
-procedure TXMLRederForm.FormCreate(Sender: TObject);
+procedure TXMLReaderForm.FormCreate(Sender: TObject);
 begin
   if ParamCount > 0 then
   begin
@@ -72,7 +72,7 @@ begin
   TreeView1Click(nil);
 end;
 
-procedure TXMLRederForm.TreeView1Click(Sender: TObject);
+procedure TXMLReaderForm.TreeView1Click(Sender: TObject);
 var
   Node:TDOMNode;
   Item:TListItem;
@@ -101,7 +101,7 @@ begin
   ListView1.EndUpdate;
 end;
 
-procedure TXMLRederForm.ParseDoc;
+procedure TXMLReaderForm.ParseDoc;
 
 procedure DoFill(AOwner:TTreeNode; Node:TDOMNode);
 var
