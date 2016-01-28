@@ -399,6 +399,7 @@ type
     procedure ToolBarOptionsClick(Sender: TObject);
   private
     fBuilder: TLazarusBuilder;
+    fOIActivateLastRow: Boolean;
     function DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
     procedure ProjectOptionsHelper(AFilter: array of TAbstractIDEOptionsClass);
     // Global IDE events
@@ -646,7 +647,6 @@ type
     FFixingGlobalComponentLock: integer;
     OldCompilerFilename, OldLanguage: String;
     OIChangedTimer: TIdleTimer;
-
     procedure DoDropFilesAsync(Data: PtrInt);
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
     function OIHelpProvider: TAbstractIDEHTMLProvider;
@@ -8596,24 +8596,13 @@ end;
 
 procedure TMainIDE.OnDesignerComponentAdded(Sender: TObject;
   AComponent: TComponent; ARegisteredComponent: TRegisteredComponent);
-var
-  Grid: TOICustomPropertyGrid;
-  Row: TOIPropertyGridRow;
 begin
   TComponentPalette(IDEComponentPalette).DoAfterComponentAdded(TDesigner(Sender).LookupRoot,
                                                AComponent, ARegisteredComponent);
-  if EnvironmentOptions.CreateComponentFocusNameProperty
-  and (ObjectInspector1<>nil) then begin
-    if (ObjectInspector1.ShowFavorites) and (EnvironmentOptions.SwitchToFavoritesOITab) then
-      Grid:=ObjectInspector1.FavoriteGrid
-    else
-      Grid:=ObjectInspector1.PropertyGrid;
-     ObjectInspector1.ActivateGrid(Grid);
-     Row:=Grid.GetRowByPath('Name');
-     if Row<>nil then begin
-       Grid.ItemIndex:=Row.Index;
-       ObjectInspector1.FocusGrid(Grid);
-     end;
+  if (ObjectInspector1 <> nil) then
+  begin
+    fOIActivateLastRow := True;
+    OIChangedTimer.AutoEnabled := True;
   end;
 end;
 
@@ -11825,7 +11814,8 @@ end;
 procedure TMainIDE.OIChangedTimerTimer(Sender: TObject);
 var
   OI: TObjectInspectorDlg;
-  ARow: TOIPropertyGridRow;
+  Row: TOIPropertyGridRow;
+  Grid: TOICustomPropertyGrid;
   Code: TCodeBuffer;
   Caret: TPoint;
   i: integer;
@@ -11839,17 +11829,37 @@ begin
   OIChangedTimer.AutoEnabled:=false;
   OIChangedTimer.Enabled:=false;
 
+  // Select again the last grid / property after a new component was added
+  if fOIActivateLastRow then
+  begin
+    fOIActivateLastRow := False;
+    if EnvironmentOptions.CreateComponentFocusNameProperty then
+    begin
+      if (OI.ShowFavorites) and (EnvironmentOptions.SwitchToFavoritesOITab) then
+        Grid := OI.FavoriteGrid
+      else
+        Grid := OI.PropertyGrid;
+      Row := Grid.GetRowByPath('Name');
+    end
+    else begin //focus to the last active property(row)
+      Grid := OI.PropertyGrid;
+      Row := Grid.GetRowByPath(OI.LastActiveRowName);
+    end;
+    if Row <> nil then
+    begin
+      OI.ActivateGrid(Grid);
+      OI.FocusGrid(Grid);
+      Grid.ItemIndex := Row.Index;
+     end;
+  end
+  else
+    Row := OI.GetActivePropertyRow;
+
+  // Get help text for this property
   if not BeginCodeTools or not OI.ShowInfoBox then
     Exit;
-
-  HtmlHint := '';
-  BaseURL := '';
-  PropDetails := '';
-
-  ARow := OI.GetActivePropertyRow;
-
-  if (ARow <> nil)
-  and FindDeclarationOfOIProperty(OI, ARow, Code, Caret, i) then
+  if (Row <> nil)
+  and FindDeclarationOfOIProperty(OI, Row, Code, Caret, i) then
   begin
     if CodeHelpBoss.GetHTMLHint(Code, Caret.X, Caret.Y, [],
       BaseURL, HtmlHint, PropDetails, CacheWasUsed) <> chprSuccess then
@@ -11860,6 +11870,7 @@ begin
     end;
   end;
 
+  // Update InfoPanel contents with the help text
   if OI.InfoPanel.ControlCount > 0 then
     OI.InfoPanel.Controls[0].Visible := HtmlHint <> '';
   if HtmlHint <> '' then
@@ -11872,6 +11883,7 @@ begin
       Stream.Free;
     end;
   end;
+
   // Property details always starts with "published property". Get rid of it.
   i:=Pos(' ', PropDetails);
   if i>0 then begin

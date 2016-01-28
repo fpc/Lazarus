@@ -721,6 +721,7 @@ type
     FEnableHookGetSelection: boolean;
     FInSelection: Boolean;
     FOnAutoShow: TNotifyEvent;
+    FLastActiveRowName: String;
     function GetComponentPanelHeight: integer;
     function GetInfoBoxHeight: integer;
     procedure SetEnableHookGetSelection(AValue: boolean);
@@ -805,6 +806,7 @@ type
     property ShowInfoBox: Boolean read FShowInfoBox write SetShowInfoBox;
     property ShowRestricted: Boolean read FShowRestricted write SetShowRestricted;
     property ShowStatusBar: Boolean read FShowStatusBar write SetShowStatusBar;
+    property LastActiveRowName: string read FLastActiveRowName;
   end;
 
 const
@@ -4737,8 +4739,14 @@ begin
 end;
 
 procedure TObjectInspectorDlg.OnGridSelectionChange(Sender: TObject);
+var
+  Row: TOIPropertyGridRow;
 begin
-  if Assigned(FOnSelectionChange) then FOnSelectionChange(Self);
+  Row := GetActivePropertyRow;
+  if Assigned(Row) then
+    FLastActiveRowName := Row.Name;
+  if Assigned(FOnSelectionChange) then
+    FOnSelectionChange(Self);
 end;
 
 function TObjectInspectorDlg.OnGridPropertyHint(Sender: TObject;
