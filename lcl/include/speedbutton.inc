@@ -272,7 +272,13 @@ end;
 procedure TCustomSpeedButton.RealSetText(const Value: TCaption);
 begin
   if Caption = Value then Exit;
-  inherited RealSetText(Value);
+  if (Parent<>nil) and (Parent.HandleAllocated) and (not (csLoading in ComponentState)) then
+  begin
+    InvalidatePreferredSize;
+    inherited RealSetText(Value);
+    AdjustSize;
+  end else
+    inherited RealSetText(Value);
   
   Invalidate;
 end;
