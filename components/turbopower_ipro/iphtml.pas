@@ -11426,7 +11426,7 @@ begin
       FControl := TEdit.Create(Parent);
       setCommonProperties;
       with TEdit(FControl) do begin
-        Color := clWindow;  // clDefault renders as black in Windows
+        Color := Brush.Color;
         Text := Value;
         MaxLength := Self.MaxLength;
         SetWidthHeight(Self.Size, 8, 0);
@@ -11441,10 +11441,10 @@ begin
       FControl := TEdit.Create(Parent);
       setCommonProperties;
       with TEdit(FControl) do begin
-        Color := clWindow;
+        Color := Brush.Color;
         Text := Value;
         MaxLength := Self.MaxLength;
-        SetWidthHeight(1, 8, 0);
+        SetWidthHeight(Self.Size, 8, 0);
         Enabled := not Self.Disabled;
         ReadOnly := Self.ReadOnly;
         PasswordChar := '*';
@@ -11457,6 +11457,7 @@ begin
       FControl := TCheckBox.Create(Parent);
       setCommonProperties;
       with TCheckBox(FControl) do begin
+        Color := Brush.Color;
         SetWidthHeight(1, 8, 0);
         Checked := Self.Checked;
         Enabled := not Self.Disabled and not Self.Readonly;
@@ -11478,6 +11479,7 @@ begin
 {$ELSE}
       with THtmlRadioButton(FControl) do begin
 {$ENDIF}
+        Color := Brush.Color;
         SetWidthHeight(1, 8, 0);
         Checked := Self.Checked;
         Enabled := not Self.Disabled and not Self.Readonly;
@@ -11494,6 +11496,7 @@ begin
           Caption := Self.Value
         else
           Caption := SHtmlDefSubmitCaption;
+        Color := Brush.Color;
         Width := aCanvas.TextWidth(Caption) + 40;
         Height := aCanvas.TextHeight(Caption) + 10;
         Enabled := not Self.Disabled and not Self.Readonly;
@@ -11509,6 +11512,7 @@ begin
           Caption := Self.Value
         else
           Caption := SHtmlDefResetCaption;
+        Color := Brush.Color;
         Width := aCanvas.TextWidth(Caption) + 40;
         Height := aCanvas.TextHeight(Caption) + 10;
         Enabled := not Self.Disabled and not Self.Readonly;
@@ -11540,7 +11544,7 @@ begin
       FFileEdit := TEdit.Create(Parent);
       with FFileEdit do begin
         Parent := FControl;
-        Color := clWindow;
+        Color := Brush.Color;
         Left := 1;
         Top := 1;
         Width := FControl.Width - FFileSelect.Width;
@@ -11736,6 +11740,7 @@ constructor TIpHtmlNodeINPUT.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
   FElementName := 'input';
+  Props.BgColor := clWhite;
 end;
 
 destructor TIpHtmlNodeINPUT.Destroy;
