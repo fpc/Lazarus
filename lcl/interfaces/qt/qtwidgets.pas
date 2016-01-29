@@ -7405,8 +7405,8 @@ begin
             {TODO: find better way to find out which controls are top,left,right & bottom aligned ...}
             for i := 0 to LCLObject.ComponentCount - 1 do
             begin
-              {find statusbars}
-              if LCLObject.Components[i] is TStatusBar then
+              if (LCLObject.Components[i] is TWinControl) and
+                (TWinControl(LCLObject.Components[i]).Align in [alTop, alLeft, alRight, alBottom]) then
               begin
                 R2 := TWinControl(LCLObject.Components[i]).BoundsRect;
                 case TWinControl(LCLObject.Components[i]).Align of
@@ -7416,19 +7416,6 @@ begin
                   alBottom: R.Bottom := R.Bottom - (R2.Bottom - R2.Top);
                 end;
               end;
-              
-              {find toolbars}
-              if LCLObject.Components[i] is TToolBar then
-              begin
-                R2 := TWinControl(LCLObject.Components[i]).BoundsRect;
-                case TWinControl(LCLObject.Components[i]).Align of
-                  alLeft: R.Left := R.Left + (R2.Right - R2.Left);
-                  alTop: R.Top := R.Top + (R2.Bottom - R2.Top);
-                  alRight: R.Right := R.Right - (R2.Right - R2.Left);
-                  alBottom: R.Bottom := R.Bottom - (R2.Bottom - R2.Top);
-                end;
-              end;
-              
             end; {components loop}
             QWidget_setGeometry(MDIAreaHandle.Widget, @R);
           end;
