@@ -96,8 +96,8 @@ type
     function GetParent: TWinControl;
     property Parent: TWinControl read GetParent write SetParent;
 
-    function GetDesignedForm: IDesignedRealForm;
-    property DesignedForm: IDesignedRealForm read GetDesignedForm;
+    function GetDesignedForm: IDesignedForm;
+    property DesignedForm: IDesignedForm read GetDesignedForm;
 
     procedure RefreshValues;
   end;

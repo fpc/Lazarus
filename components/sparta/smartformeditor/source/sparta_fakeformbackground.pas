@@ -21,7 +21,7 @@ uses
   // BGRAButton,
   // BGRAImageButton,
   Forms, Controls, StdCtrls, ExtCtrls, Menus, sparta_DesignedForm,
-  LCLType, LMessages, PropEdits, Graphics;
+  LCLType, LMessages, PropEdits, Graphics, sparta_InterfacesMDI;
 
 type
 
@@ -250,11 +250,13 @@ end;
 procedure TfrFakeFormBackground.OnUserInputHandler(Sender: TObject; Msg: Cardinal);
 var
   LCtrl: TControl;
+  LIDE: IDesignedFormIDE;
 begin
-  if FDesignedForm.LastActiveSourceWindow = nil then
+  LIDE := FDesignedForm as IDesignedFormIDE;
+  if LIDE.LastActiveSourceWindow = nil then
     Exit;
 
-  if FindModulePageControl(FDesignedForm.LastActiveSourceWindow).PageIndex <> 1 then
+  if FindModulePageControl(LIDE.LastActiveSourceWindow).PageIndex <> 1 then
     Exit;
 
   LCtrl := FindDragTarget(Mouse.CursorPos, True);

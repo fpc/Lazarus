@@ -17,7 +17,8 @@ unit sparta_FakeFormBG;
 interface
 
 uses
-  Classes, SysUtils, sparta_FakeForm, sparta_FakeFormBackground, sparta_DesignedForm;
+  Classes, SysUtils, sparta_FakeForm, sparta_FakeFormBackground, sparta_DesignedForm,
+  sparta_InterfacesMDI;
 
 type
 
@@ -49,7 +50,7 @@ var
   I: IInterfaceComponentReference;
 begin
   inherited;
-  FBackground.QueryInterface(IInterfaceComponentReference, I);
+  FBackground.QueryInterface(IInterfaceComponentReference, I); // only way to omit SIGSEGV
   I.GetComponent.Free;
   Pointer(I) := nil; // omit _Release (Free is above)
   Pointer(FBackground) := nil; // omit _Release (Free is above)
