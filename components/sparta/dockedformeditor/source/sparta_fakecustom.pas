@@ -18,7 +18,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, FormEditingIntf, Controls, TypInfo, LCLIntf,
-  LCLType, sparta_DesignedForm, Math,
+  LCLType, sparta_DesignedForm, Math, sparta_InterfacesMDI,
 {$IFDEF USE_GENERICS_COLLECTIONS}
   Generics.Defaults,
 {$ENDIF}
@@ -27,7 +27,7 @@ uses
 type
   { TDesignedFormImpl }
 
-  TDesignedFormImpl = class(TComponent, IDesignedRealFormHelper, IDesignedForm)
+  TDesignedFormImpl = class(TComponent, IDesignedRealFormHelper, IDesignedForm, IDesignedFormIDE)
   private
     FOwner: TForm;
     FDesignedRealForm: IDesignedRealForm;
@@ -111,12 +111,12 @@ type
 
   { TFakeCustomForm }
 
-  TFakeCustomForm = class(TForm, IDesignedRealForm, IDesignedForm)
+  TFakeCustomForm = class(TForm, IDesignedRealForm, IDesignedForm, IDesignedFormIDE)
   private
     FDesignedForm: TDesignedFormImpl;
     function GetDesignedForm: TDesignedFormImpl;
   protected
-    property DesignedForm: TDesignedFormImpl read GetDesignedForm implements IDesignedForm;
+    property DesignedForm: TDesignedFormImpl read GetDesignedForm implements IDesignedForm, IDesignedFormIDE;
     function GetLogicalClientRect: TRect; override;
   protected
     function GetRealBounds(AIndex: Integer): Integer; virtual;
@@ -157,12 +157,12 @@ type
 
   { TFakeCustomNonControl }
 
-  TFakeCustomNonControl = class(TNonControlProxyDesignerForm, IDesignedRealForm, IDesignedForm)
+  TFakeCustomNonControl = class(TNonControlProxyDesignerForm, IDesignedRealForm, IDesignedForm, IDesignedFormIDE)
   private
     FDesignedForm: TDesignedFormImpl;
     function GetDesignedForm: TDesignedFormImpl;
   protected
-    property DesignedForm: TDesignedFormImpl read GetDesignedForm implements IDesignedForm;
+    property DesignedForm: TDesignedFormImpl read GetDesignedForm implements IDesignedForm, IDesignedFormIDE;
     function GetLogicalClientRect: TRect; override;
   protected
     function GetRealBounds(AIndex: Integer): Integer; virtual;
@@ -202,12 +202,12 @@ type
 
   { TFakeCustomFrame }
 
-  TFakeCustomFrame = class(TFrameProxyDesignerForm, IDesignedRealForm, IDesignedForm)
+  TFakeCustomFrame = class(TFrameProxyDesignerForm, IDesignedRealForm, IDesignedForm, IDesignedFormIDE)
   private
     FDesignedForm: TDesignedFormImpl;
     function GetDesignedForm: TDesignedFormImpl;
   protected
-    property DesignedForm: TDesignedFormImpl read GetDesignedForm implements IDesignedForm;
+    property DesignedForm: TDesignedFormImpl read GetDesignedForm implements IDesignedForm, IDesignedFormIDE;
     function GetLogicalClientRect: TRect; override;
   protected
     function GetRealBounds(AIndex: Integer): Integer; virtual;

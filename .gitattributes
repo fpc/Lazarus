@@ -3574,6 +3574,11 @@ components/sparta/dockedformeditor/source/spartaapi.pas svneol=native#text/pasca
 components/sparta/dockedformeditor/sparta_dockedformeditor.lpk svneol=native#text/plain
 components/sparta/dockedformeditor/sparta_dockedformeditor.pas svneol=native#text/pascal
 components/sparta/dockedformeditor/sparta_strconsts.pas svneol=native#text/pascal
+components/sparta/mdi/source/sparta_basicresizeframe.lfm svneol=native#text/plain
+components/sparta/mdi/source/sparta_basicresizeframe.pas svneol=native#text/pascal
+components/sparta/mdi/source/sparta_interfacesmdi.pas svneol=native#text/pascal
+components/sparta/mdi/sparta_mdi.lpk svneol=native#text/plain
+components/sparta/mdi/sparta_mdi.pas svneol=native#text/pascal
 components/sparta/smartformeditor/source/sparta.res -text
 components/sparta/smartformeditor/source/sparta_componentpalette.pas svneol=native#text/pascal
 components/sparta/smartformeditor/source/sparta_edtu_main.lfm svneol=native#text/plain
