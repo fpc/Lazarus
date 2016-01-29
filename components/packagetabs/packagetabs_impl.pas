@@ -788,7 +788,7 @@ var
   xEditor, xOldActive: TSourceEditorInterface;
   xLbl: TGroupTabLabel;
   xPkgItem: TGroupItem;
-  xGroupTitle: string;
+  xGroupTitle, xCaptionToSort: string;
   xGroupType: TGroupType;
 begin
   xActBtn := nil;
@@ -826,7 +826,10 @@ begin
         end;
         if not xPackages.Find(xGroupType, xPackage, xPkgIndex) then
           xPkgIndex := xPackages.Add(TGroupItem.Create(xGroupType, xGroupTitle, xPackage));
-        xPackages.Items[xPkgIndex].Files.AddObject(xEditor.PageCaption, xEditor);
+        xCaptionToSort := xEditor.PageCaption;
+        if (xCaptionToSort<>'') and (xCaptionToSort[1] in ['*', '#']) then // delete modified or locked flag
+          Delete(xCaptionToSort, 1, 1);
+        xPackages.Items[xPkgIndex].Files.AddObject(xCaptionToSort, xEditor);
       end;
 
       xNewIndex := 0;
