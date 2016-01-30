@@ -598,7 +598,7 @@ begin
   if AValue<>nil then
     Bitmap.Assign(AValue)
   else
-    FBitmap.Free;
+    FreeAndNil(FBitmap);
   if MenuItem<>nil then
     MenuItem.Bitmap:=FBitmap;
 end;
