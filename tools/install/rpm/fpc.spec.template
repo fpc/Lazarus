@@ -146,7 +146,7 @@ rm -rf %{buildroot}%{_libdir}/%{name}/lexyacc
 rm -rf %{buildroot}%{_defaultdocdir}/fpc-libc-*
 rm -rf %{buildroot}%{_defaultdocdir}/fpc-symbolic-*
 # 2.7.1 ignores the INSTALL_DOC variable and writes some files directly to /usr/share/doc
-rm -rf %{buildroot}/usr/share/doc/fpc-symbolic-*
+rm -rf %{buildroot}/usr/share/doc/fpc-*
 
 %clean
 rm -rf %{buildroot}
