@@ -89,6 +89,18 @@ make distclean all FPC=${STARTPP}
 %install 
 rm -rf %{buildroot}
 FPCMAKE=`pwd`/utils/fpcm/fpcmake
+if [ -f "$FPCMAKE" ]; then
+    echo found fpcmake: $FPCMAKE
+else
+    FPCMAKE=`pwd`/utils/fpcm/bin/*-linux/fpcmake
+    FPCMAKE=`echo $FPCMAKE`
+fi
+if [ -f "$FPCMAKE" ]; then
+    echo found fpcmake: $FPCMAKE
+else
+    echo Error: fpcmake not found: $FPCMAKE
+    exit 1
+fi
 DATA2INC=`pwd`/utils/data2inc
 NEWPP=`pwd`/compiler/%{ppcname}
 FPCVERSION=`${NEWPP} -iV`
