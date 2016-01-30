@@ -167,7 +167,7 @@ rm -rf %{buildroot}
 %{_datadir}/fpcsrc
 
 %changelog
-* Tue Jul 28 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-1
+* Thu Jul 28 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-1
 - Added some requirements
 - Added COPYING-info to %%doc
 
@@ -176,7 +176,7 @@ rm -rf %{buildroot}
 - Silenced post-script
 - disabled the debuginfo-package
 
-* Sat Jun 5 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-0.5
+* Sun Jun 5 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-0.5
 - Added doc-subpackage
 - Added src-subpackage
 
