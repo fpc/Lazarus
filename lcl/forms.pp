@@ -131,6 +131,7 @@ type
     property Kind: TScrollBarKind read FKind;
     function GetOtherScrollBar: TControlScrollBar;
     property Size: integer read GetSize stored False;
+    function ControlSize: integer; // return for vertical scrollbar the control width
     function ClientSize: integer; // return for vertical scrollbar the clientwidth
     function ClientSizeWithBar: integer; // return for vertical scrollbar the clientwidth with the bar, even if Visible=false
     function ClientSizeWithoutBar: integer; // return for vertical scrollbar the clientwidth without the bar, even if Visible=true

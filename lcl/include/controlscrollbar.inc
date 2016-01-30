@@ -373,6 +373,14 @@ begin
   Result := FControl.Handle;
 end;
 
+function TControlScrollBar.ControlSize: integer;
+begin
+  if Kind = sbVertical then
+    Result := FControl.Width
+  else
+    Result := FControl.Height;
+end;
+
 constructor TControlScrollBar.Create(AControl: TWinControl;
   AKind: TScrollBarKind);
 begin
@@ -448,7 +456,7 @@ function TControlScrollBar.ClientSizeWithoutBar: integer;
 begin
   Result:=ClientSize;
   if IsScrollBarVisible then
-    Result := Min(FControl.Width, Result+GetSize+GetSystemMetrics(SM_SWSCROLLBARSPACING));
+    Result := Min(ControlSize, Result+GetSize+GetSystemMetrics(SM_SWSCROLLBARSPACING));
 end;
 
 function TControlScrollBar.GetHorzScrollBar: TControlScrollBar;
