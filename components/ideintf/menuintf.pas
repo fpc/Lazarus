@@ -879,22 +879,10 @@ procedure TIDEMenuItem.ConsistencyCheck;
     RaiseGDBException(s);
   end;
 
-  procedure RaiseBitmapError;
-  var
-    s: String;
-  begin
-    s:='TIDEMenuItem.ConsistencyCheck Name="'+Name+'" Caption="'+DbgStr(Caption)+'"';
-    debugln(s);
-    debugln(['RaiseBitmapError HasBitmap=',HasBitmap,' MenuItem.HasBitmap=',MenuItem.HasBitmap]);
-    debugln(['RaiseBitmapError ImageIndex=',ImageIndex,' MenuItem.ImageIndex=',MenuItem.ImageIndex]);
-    debugln(['RaiseBitmapError ImageList=',dbgsname(GetImageList),' MenuItem.ImageIndex=',DbgSName(MenuItem.GetImageList)]);
-    RaiseError;
-  end;
-
 begin
   if MenuItem<>nil then begin
-    if MenuItem.HasBitmap<>HasBitmap then
-      RaiseBitmapError;
+    debugln(['TIDEMenuItem.ConsistencyCheck: Bitmap=', FBitmap,
+             ', ImageIndex=', ImageIndex, ', ImageList=', GetImageList]);
     if MenuItem.Enabled<>Enabled then
       RaiseError;
     if MenuItem.Visible<>Visible then
