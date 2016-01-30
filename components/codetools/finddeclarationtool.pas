@@ -2081,11 +2081,46 @@ var
   {$ENDIF}
 
 var
+  IdentStartPos: Integer;
+
+  function TrySkipClassForward: Boolean;
+  var
+    ForwardXY, NewSkipPos: TCodeXYPosition;
+    NewSkipExprType: TExpressionType;
+    NewSkipTopLine, NewSkipCleanPos: integer;
+  begin
+    // if we skip forward class definitions and we found one -> proceed search!
+    Result :=
+         (fsfSkipClassForward in SearchSmartFlags)
+      and CheckIfNodeIsForwardDefinedClass(Params.NewNode, Params.NewCodeTool)
+      and Params.NewCodeTool.CleanPosToCaret(Params.NewNode.StartPos, ForwardXY)
+      and Params.NewCodeTool.FindDeclaration(ForwardXY, SearchSmartFlags-[fsfSkipClassForward],
+        NewSkipExprType, NewSkipPos, NewSkipTopLine);
+
+    if Result
+      and (NewSkipExprType.Desc=xtContext)
+      and (NewSkipExprType.Context.Tool=Self)
+      and (NewSkipExprType.Context.Tool.CaretToCleanPos(NewSkipPos, NewSkipCleanPos)=0)
+      and (IdentStartPos = GetIdentStartPosition(Src,NewSkipCleanPos))
+    then begin
+      // the old startpos and the skipclass startpos are the same -> we want to
+      // jump to the forward declaration because we jump from the actual one
+      Result := False;
+    end;
+
+    if Result then
+    begin
+      NewExprType := NewSkipExprType;
+      NewPos := NewSkipPos;
+      NewTopLine := NewSkipTopLine;
+    end;
+  end;
+
+var
   CleanPosInFront: integer;
   CursorAtIdentifier: boolean;
   IdentifierStart: PChar;
   LineRange: TLineRange;
-  ForwardXY: TCodeXYPosition;
 begin
   Result:=false;
   NewExprType:=CleanExpressionType;
@@ -2235,6 +2270,7 @@ begin
     MoveCursorToCleanPos(CleanCursorPos);
     GetIdentStartEndAtPosition(Src,CleanCursorPos,
                                CurPos.StartPos,CurPos.EndPos);
+    IdentStartPos:=CurPos.StartPos;
     CursorAtIdentifier:=CurPos.StartPos<CurPos.EndPos;
     if CursorAtIdentifier then
       IdentifierStart:=@Src[CurPos.StartPos]
@@ -2257,6 +2293,8 @@ begin
             debugln(['TFindDeclarationTool.FindDeclaration FindDeclarationOfIdentAtParam failed']);
           end;
           {$ENDIF}
+          if Result and TrySkipClassForward then
+            Exit(True);
         end else begin
           Include(Params.Flags,fdfIgnoreCurContextNode);
           if SearchForward then
@@ -2265,13 +2303,7 @@ begin
           Result:=FindIdentifierInContext(Params);
           if Result then
           begin
-            // if we skip forward class definitions and we found one -> proceed search!
-            if (fsfSkipClassForward in SearchSmartFlags)
-            and CheckIfNodeIsForwardDefinedClass(Params.NewNode, Params.NewCodeTool)
-            and Params.NewCodeTool.CleanPosToCaret(Params.NewNode.StartPos, ForwardXY)
-            and Params.NewCodeTool.FindDeclaration(ForwardXY, SearchSmartFlags-[fsfSkipClassForward],
-              NewExprType, NewPos, NewTopLine)
-            then
+            if TrySkipClassForward then
               Exit(True);
 
             NewExprType.Desc:=xtContext;
