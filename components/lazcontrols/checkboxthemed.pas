@@ -295,7 +295,7 @@ end;
 
 procedure TCustomCheckBoxThemed.KeyUp(var Key: Word; Shift: TShiftState);
 begin
-  inherited KeyDown(Key, Shift);
+  inherited KeyUp(Key, Shift);
   if (Key in [VK_RETURN, VK_SPACE]) and not (ssCtrl in Shift) then begin
     CheckBoxPressed :=  False;
     DoClick;
