@@ -2679,7 +2679,7 @@ begin
 
         GatherContext := ExprType.Context;
         // find class and ancestors if existing (needed for protected identifiers)
-        //if GatherContext.Tool = Self then // must not be here otherwise the "inherited" keyword doesn't find protected methods, e.g.: "inherited S|how"
+        if GatherContext.Tool = Self then
         begin
           FindContextClassAndAncestorsAndExtendedClassOfHelper(IdentStartXY, FICTClassAndAncestorsAndExtClassOfHelper);
         end;
