@@ -1398,6 +1398,7 @@ begin
     AddCompilerProcedure('Finalize','var X');
     AddCompilerFunction('get_frame','','Pointer');
     AddCompilerFunction('High','Arg:TypeOrVariable','Ordinal');
+    AddCompilerFunction('IfThen','Condition:Boolean;ThenExpr,ElseExpr:T','T');
     AddCompilerProcedure('Inc','var X:Ordinal;N:Integer=1');
     AddCompilerProcedure('Include','var S:Set;X:Ordinal');
     AddCompilerProcedure('Initialize','var X');
@@ -2940,6 +2941,7 @@ var
       AddCompilerProc('Finalize','var X');
       AddCompilerProc('get_frame','','Pointer');
       AddCompilerProc('High','Arg:TypeOrVariable','Ordinal');
+      AddCompilerProc('IfThen','Condition:Boolean;ThenExpr,ElseExpr:T','T');
       AddCompilerProc('Inc','var X:Ordinal;N:Integer=1');
       AddCompilerProc('Include','var S:Set;X:Ordinal');
       AddCompilerProc('Initialize','var X');
