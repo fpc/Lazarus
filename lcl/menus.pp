@@ -108,6 +108,13 @@ type
     mihtDestroy
     );
 
+  TMenuDrawItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;
+    ARect: TRect; ASelected: Boolean) of object;
+  TAdvancedMenuDrawItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;
+    ARect: TRect; AState: TOwnerDrawState) of object;
+  TMenuMeasureItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;
+    var AWidth, AHeight: Integer) of object;
+
   TMenuItem = class(TLCLComponent)
   private
     FActionLink: TMenuActionLink;
@@ -121,8 +128,11 @@ type
     FImageIndex: TImageIndex;
     FItems: TList; // list of TMenuItem
     FMenu: TMenu;
+    FOnAdvancedDrawItem: TAdvancedMenuDrawItemEvent;
     FOnChange: TMenuChangeEvent;
     FOnClick: TNotifyEvent;
+    FOnDrawItem: TMenuDrawItemEvent;
+    FOnMeasureItem: TMenuMeasureItemEvent;
     FParent: TMenuItem;
     FMenuItemHandlers: array[TMenuItemHandlerType] of TMethodList;
     FSubMenuImages: TCustomImageList;
@@ -283,6 +293,9 @@ type
     property Visible: Boolean read FVisible write SetVisible
                               stored IsVisibleStored default True;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
+    property OnDrawItem: TMenuDrawItemEvent read FOnDrawItem write FOnDrawItem;
+    property OnAdvancedDrawItem: TAdvancedMenuDrawItemEvent read FOnAdvancedDrawItem write FOnAdvancedDrawItem;
+    property OnMeasureItem: TMenuMeasureItemEvent read FOnMeasureItem write FOnMeasureItem;
   end;
   TMenuItemClass = class of TMenuItem;
 
@@ -297,7 +310,11 @@ type
     FImageChangeLink: TChangeLink;
     FImages: TCustomImageList;
     FItems: TMenuItem;
+    FOnAdvancedDrawItem: TAdvancedMenuDrawItemEvent;
     FOnChange: TMenuChangeEvent;
+    FOnDrawItem: TMenuDrawItemEvent;
+    FOnMeasureItem: TMenuMeasureItemEvent;
+    FOwnerDraw: Boolean;
     FParent: TComponent;
     FParentBiDiMode: Boolean;
     FShortcutHandled: boolean;
@@ -350,6 +367,7 @@ type
     property ParentBidiMode:Boolean read FParentBidiMode write SetParentBidiMode default True;
     property Items: TMenuItem read FItems;
     property Images: TCustomImageList read FImages write SetImages;
+    property OwnerDraw: Boolean read FOwnerDraw write FOwnerDraw;
   end;
 
 

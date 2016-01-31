@@ -53,7 +53,7 @@ begin
   FItems.UpdateImages;
 end;
 
-procedure TMenu.SetBidiMode(const AValue: TBidiMode);
+procedure TMenu.SetBiDiMode(const AValue: TBiDiMode);
 begin
   if FBidiMode=AValue then exit;
   FBidiMode:=AValue;
@@ -62,7 +62,7 @@ begin
     BidiModeChanged;
 end;
 
-procedure TMenu.SetParentBidiMode(const AValue: Boolean);
+procedure TMenu.SetParentBiDiMode(const AValue: Boolean);
 begin
   if FParentBiDiMode = AValue then exit;
   FParentBiDiMode := AValue;
@@ -275,7 +275,7 @@ end;
 
   The handle will be created if not already allocated.
  ------------------------------------------------------------------------------}
-function TMenu.GetHandle: HMenu;
+function TMenu.GetHandle: HMENU;
 begin
   HandleNeeded();
   Result := FItems.Handle;
@@ -358,7 +358,7 @@ begin
   end;
 end;
 
-function TMenu.IsBiDiModeStored: boolean;
+function TMenu.IsBiDiModeStored: Boolean;
 begin
   Result := not FParentBidiMode;
 end;
