@@ -6062,7 +6062,12 @@ begin
     if Instance is TComponent then
       Result:=TComponent(Instance).Name
     else if instance is TCollectionItem then 
-      Result:=TCollectionItem(Instance).GetNamePath;
+      Result:=TCollectionItem(Instance).GetNamePath
+    else begin
+      Result:=Instance.ClassName;
+      if (Length(Result) > 1) and (Result[1] in ['t', 'T']) then
+        system.Delete(Result, 1, 1);
+    end;
 end;
 
 procedure TPropertyEditorHook.GetObjectNames(TypeData: PTypeData;
