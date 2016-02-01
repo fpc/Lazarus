@@ -16,7 +16,7 @@ type
   { TBasicResizeFrame }
 
   TResizerFrameClass = class of TBasicResizeFrame;
-  TBasicResizeFrame = class(TFrame)
+  TBasicResizeFrame = class(TFrame, IResizeFrame)
     iResizerLineImg: TImage;
     pFakeMenu: TPanel;
     pBG: TPanel;
@@ -100,6 +100,9 @@ type
     procedure TryBoundDesignedForm; virtual;
     procedure BeginFormSizeUpdate(Sender: TObject); virtual;
     procedure EndFormSizeUpdate(Sender: TObject); virtual;
+  protected
+    function GetFrameBounds(AIndex: Integer): Integer; virtual;
+    procedure SetFrameBounds(AIndex: Integer; AValue: Integer); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -235,11 +238,16 @@ procedure TBasicResizeFrame.SetDesignedForm(const AValue: IDesignedForm);
 begin
   FDesignedForm := AValue;
   if FDesignedForm = nil then
-    FBackground := nil
+  begin
+    if Assigned(FBackground) then
+      FBackground.ResizeFrame := nil;
+    FBackground := nil;
+  end
   else
     if Supports(FDesignedForm, IDesignedFormBackground, FBackground) then
     begin
       FBackground.Parent := pBG;
+      FBackground.ResizeFrame := Self;
     end;
   // special for QT (at start "design form" has wrong position)
   TryBoundDesignedForm;
@@ -446,30 +454,30 @@ begin
     LCtrlPoint := (Sender as TWinControl).ScreenToClient(Mouse.CursorPos);
     if Sender = pR then
     begin
-      FDelta.X := -(LCtrlPoint.x - RightSizerLineWidth) + RightMargin;
+      FDelta.X := -(LCtrlPoint.x - RightSizerLineWidth) + RightMargin + Left;
       FPositioningKind := [pkRight];
     end
     else if Sender = pB then
     begin
-      FDelta.Y := -(LCtrlPoint.y - BottomSizerLineWidth) + BottomMargin;
+      FDelta.Y := -(LCtrlPoint.y - BottomSizerLineWidth) + BottomMargin + Top;
       FPositioningKind := [pkBottom];
     end
     else
       case FNodes.IndexOf(Sender) of
         3: // middle right
           begin
-            FDelta.X := -(LCtrlPoint.x - RightSizerRectWidth) + RightMargin;
+            FDelta.X := -(LCtrlPoint.x - RightSizerRectWidth) + RightMargin + Left;
             FPositioningKind := [pkRight];
           end;
         4: // right bottom
           begin
-            FDelta.X := -(LCtrlPoint.x - RightSizerRectWidth) + RightMargin;
-            FDelta.Y := -(LCtrlPoint.y - BottomSizerRectHeight) + BottomMargin;
+            FDelta.X := -(LCtrlPoint.x - RightSizerRectWidth) + RightMargin + Left;
+            FDelta.Y := -(LCtrlPoint.y - BottomSizerRectHeight) + BottomMargin + Top;
             FPositioningKind := [pkRight, pkBottom];
           end;
         5: // middle bottom
           begin
-            FDelta.Y := -(LCtrlPoint.y - BottomSizerRectHeight) + BottomMargin;
+            FDelta.Y := -(LCtrlPoint.y - BottomSizerRectHeight) + BottomMargin + Top;
             FPositioningKind := [pkBottom];
           end;
       end;
@@ -756,6 +764,26 @@ end;
 
 procedure TBasicResizeFrame.EndFormSizeUpdate(Sender: TObject);
 begin
+end;
+
+function TBasicResizeFrame.GetFrameBounds(AIndex: Integer): Integer;
+begin
+  case AIndex of
+    0: Exit(Left);
+    1: Exit(Top);
+    2: Exit(Width);
+    3: Exit(Height);
+  end;
+end;
+
+procedure TBasicResizeFrame.SetFrameBounds(AIndex: Integer; AValue: Integer);
+begin
+  case AIndex of
+    0: Left   := AValue;
+    1: Top    := AValue;
+    2: Width  := AValue;
+    3: Height := AValue;
+  end;
 end;
 
 function TBasicResizeFrame.DesignedWidthToScroll: Integer;

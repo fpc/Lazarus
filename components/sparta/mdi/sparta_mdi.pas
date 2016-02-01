@@ -8,7 +8,8 @@ interface
 
 uses
   sparta_BasicResizeFrame, sparta_InterfacesMDI, sparta_BasicResizer, 
-  sparta_MDI_StrConsts, sparta_BasicFakeCustom, LazarusPackageIntf;
+  sparta_MDI_StrConsts, sparta_BasicFakeCustom, sparta_FormBackgroundForMDI, 
+  LazarusPackageIntf;
 
 implementation
 

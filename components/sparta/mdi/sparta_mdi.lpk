@@ -12,7 +12,7 @@
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="5">
+    <Files Count="6">
       <Item1>
         <Filename Value="source\sparta_basicresizeframe.pas"/>
         <UnitName Value="sparta_BasicResizeFrame"/>
@@ -27,12 +27,16 @@
       </Item3>
       <Item4>
         <Filename Value="sparta_mdi_strconsts.pas"/>
-        <UnitName Value="sparta_mdi_strconsts"/>
+        <UnitName Value="sparta_MDI_StrConsts"/>
       </Item4>
       <Item5>
         <Filename Value="source\sparta_basicfakecustom.pas"/>
-        <UnitName Value="sparta_basicfakecustom"/>
+        <UnitName Value="sparta_BasicFakeCustom"/>
       </Item5>
+      <Item6>
+        <Filename Value="source\sparta_formbackgroundformdi.pas"/>
+        <UnitName Value="sparta_formbackgroundformdi"/>
+      </Item6>
     </Files>
     <RequiredPkgs Count="2">
       <Item1>

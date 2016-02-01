@@ -83,6 +83,15 @@ type
     function GetLogicalClientRect(ALogicalClientRect: TRect): TRect;
   end;
 
+  IResizeFrame = interface
+    function GetFrameBounds(AIndex: Integer): Integer;
+    procedure SetFrameBounds(AIndex: Integer; AValue: Integer);
+    property Left: Integer index 0 read GetFrameBounds write SetFrameBounds;
+    property Top: Integer index 1 read GetFrameBounds write SetFrameBounds;
+    property Width: Integer index 2 read GetFrameBounds write SetFrameBounds;
+    property Height: Integer index 3 read GetFrameBounds write SetFrameBounds;
+  end;
+
   IDesignedFormBackground = interface
   ['{AC7F6594-1C2D-4424-977B-28053A79CE99}']
     function GetMargin(const AIndex: Integer): Integer;
@@ -98,6 +107,10 @@ type
 
     function GetDesignedForm: IDesignedForm;
     property DesignedForm: IDesignedForm read GetDesignedForm;
+
+    function GetResizeFrame: IResizeFrame;
+    procedure SetResizeFrame(AValue: IResizeFrame);
+    property ResizeFrame: IResizeFrame read GetResizeFrame write SetResizeFrame;
 
     procedure RefreshValues;
   end;

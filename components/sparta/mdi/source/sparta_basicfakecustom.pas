@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, Forms, sparta_InterfacesMDI, LCLIntf, Math,
-  LCLType;
+  LCLType, sparta_FormBackgroundForMDI;
 
 type
   TFormImpl = class(TComponent, IDesignedRealFormHelper, IDesignedForm)
@@ -26,7 +26,7 @@ type
     function GetOnChangeHackedBounds: TNotifyEvent;
     function PositionDelta: TPoint;
   protected
-    FOwner: TForm;
+    FOwner: TCustomForm;
     FUpdate: boolean;
   protected
     function GetRealBounds(AIndex: Integer): Integer; virtual;
@@ -68,7 +68,7 @@ type
     property RealBorderIcons: TBorderIcons read GetRealBorderIcons write SetRealBorderIcons;
     property RealFormStyle: TFormStyle read GetRealFormStyle write SetRealFormStyle;
 
-    constructor Create(AOwner: TForm); virtual;
+    constructor Create(AOwner: TCustomForm); virtual;
     destructor Destroy; override;
 
     procedure BeginUpdate; virtual;
@@ -85,6 +85,52 @@ type
     property Height: Integer index 3 read GetPublishedBounds write SetPublishedBounds;
   public
     function QueryInterface(constref IID: TGUID; out Obj): HResult; override;
+  end;
+
+  { TFormContainer }
+
+  TFormContainer = class(TCustomForm, IDesignedRealForm, IDesignedForm, IDesignedFormBackground)
+  private
+    FDesignedForm: TFormImpl;
+    function GetDesignedForm: TFormImpl;
+  protected
+    property DesignedForm: TFormImpl read GetDesignedForm implements IDesignedForm;
+    function GetLogicalClientRect: TRect; override;
+  protected
+    function GetRealBounds(AIndex: Integer): Integer; virtual;
+    procedure SetRealBounds(AIndex: Integer; AValue: Integer); virtual;
+    function GetPublishedBounds(AIndex: Integer): Integer; virtual;
+    procedure SetPublishedBounds(AIndex: Integer; AValue: Integer); virtual;
+
+    procedure SetRealBorderStyle(AVal: TFormBorderStyle); virtual;
+    procedure SetRealBorderIcons(AVal: TBorderIcons); virtual;
+    procedure SetRealFormStyle(AVal: TFormStyle); virtual;
+    procedure SetRealPopupMode(AVal: TPopupMode); virtual;
+    procedure SetRealPopupParent(AVal: TCustomForm); virtual;
+
+    function GetRealBorderStyle: TFormBorderStyle; virtual;
+    function GetRealBorderIcons: TBorderIcons; virtual;
+    function GetRealFormStyle: TFormStyle; virtual;
+    function GetRealPopupMode: TPopupMode; virtual;
+    function GetRealPopupParent: TCustomForm; virtual;
+  protected
+    FHandledForm: TCustomForm;
+    FBackground: IDesignedFormBackground;
+
+    procedure SetHandledForm(AForm: TCustomForm);
+  public
+    constructor CreateNew(AOwner: TComponent; Num: Integer = 0); override;
+    destructor Destroy; override;
+
+    property HandledForm: TCustomForm read FHandledForm write SetHandledForm;
+    property Background: IDesignedFormBackground read FBackground implements IDesignedFormBackground;
+  published
+    property Left: Integer index 0 read GetPublishedBounds write SetPublishedBounds;
+    property Top: Integer index 1 read GetPublishedBounds write SetPublishedBounds;
+    property Width: Integer index 2 read GetPublishedBounds write SetPublishedBounds;
+    property Height: Integer index 3 read GetPublishedBounds write SetPublishedBounds;
+    property ClientWidth: Integer index 2 read GetPublishedBounds write SetPublishedBounds;
+    property ClientHeight: Integer index 3 read GetPublishedBounds write SetPublishedBounds;
   end;
 
 implementation
@@ -304,7 +350,7 @@ begin
   Result:=ALogicalClientRect;
 end;
 
-constructor TFormImpl.Create(AOwner: TForm);
+constructor TFormImpl.Create(AOwner: TCustomForm);
 begin
   FOwner := AOwner;
   FDesignedRealForm := FOwner as IDesignedRealForm;
@@ -315,6 +361,158 @@ begin
   Pointer(FDesignedRealForm) := nil;
   inherited Destroy;
 end;
+
+{ TFakeCustomForm }
+
+function TFormContainer.GetDesignedForm: TFormImpl;
+begin
+  if not Assigned(FDesignedForm) then
+    FDesignedForm := TFormImpl.Create(Self);
+
+  Result := FDesignedForm;
+end;
+
+function TFormContainer.GetLogicalClientRect: TRect;
+begin
+  Result := DesignedForm.GetLogicalClientRect(inherited GetLogicalClientRect);
+end;
+
+function TFormContainer.GetRealBounds(AIndex: Integer): Integer;
+begin
+  case AIndex of
+    0: Result := inherited Left;
+    1: Result := inherited Top;
+    2: Result := inherited Width;
+    3: Result := inherited Height;
+  end;
+end;
+
+procedure TFormContainer.SetRealBounds(AIndex: Integer; AValue: Integer);
+begin
+  case AIndex of
+    0: inherited Left := AValue;
+    1: inherited Top := AValue;
+    2:
+      begin
+        inherited Width := AValue;
+        if FHandledForm <> nil then
+          FHandledForm.Width  := AValue;
+      end;
+    3: inherited Height := AValue;
+  end;
+end;
+
+function TFormContainer.GetPublishedBounds(AIndex: Integer): Integer;
+begin
+  Result := DesignedForm.GetPublishedBounds(AIndex);
+end;
+
+procedure TFormContainer.SetPublishedBounds(AIndex: Integer; AValue: Integer);
+begin
+  case AIndex of
+    0, 1: DesignedForm.SetPublishedBounds(AIndex, AValue);
+    2, 3:
+      begin
+        DesignedForm.SetPublishedBounds(AIndex, AValue);
+        SetRealBounds(AIndex, DesignedForm.GetPublishedBounds(AIndex));
+      end;
+  end;
+end;
+
+constructor TFormContainer.CreateNew(AOwner: TComponent; Num: Integer);
+begin
+  FBackground := TfrFormBackgroundForMDI.Create(DesignedForm);
+  FBackground._AddRef;
+
+  inherited CreateNew(AOwner, Num);
+
+  Left := inherited Left;
+  Top := inherited Top;
+  Width := inherited Width;
+  Height := inherited Height;
+end;
+
+destructor TFormContainer.Destroy;
+var
+  I: IInterfaceComponentReference;
+begin
+  // we need to call "Screen.RemoveForm" to perform
+  // references back to nil by IDesignedForm to FDesignedForm
+  inherited Destroy;
+
+  FBackground.QueryInterface(IInterfaceComponentReference, I); // only way to omit SIGSEGV
+  I.GetComponent.Free;
+  Pointer(I) := nil; // omit _Release (Free is above)
+  Pointer(FBackground) := nil; // omit _Release (Free is above)
+
+  if Assigned(FDesignedForm) then
+    FreeAndNil(FDesignedForm);
+end;
+
+procedure TFormContainer.SetRealBorderStyle(AVal: TFormBorderStyle);
+begin
+  inherited BorderStyle := AVal;
+end;
+
+procedure TFormContainer.SetRealBorderIcons(AVal: TBorderIcons);
+begin
+  inherited BorderIcons := AVal;
+end;
+
+procedure TFormContainer.SetRealFormStyle(AVal: TFormStyle);
+begin
+  inherited FormStyle := AVal;
+end;
+
+procedure TFormContainer.SetRealPopupMode(AVal: TPopupMode);
+begin
+  inherited PopupMode := AVal;
+end;
+
+procedure TFormContainer.SetRealPopupParent(AVal: TCustomForm);
+begin
+  inherited PopupParent := AVal;
+end;
+
+function TFormContainer.GetRealBorderStyle: TFormBorderStyle;
+begin
+  Result := inherited BorderStyle;
+end;
+
+function TFormContainer.GetRealBorderIcons: TBorderIcons;
+begin
+  Result := inherited BorderIcons;
+end;
+
+function TFormContainer.GetRealFormStyle: TFormStyle;
+begin
+  Result := inherited FormStyle;
+end;
+
+function TFormContainer.GetRealPopupMode: TPopupMode;
+begin
+  Result := inherited PopupMode;
+end;
+
+function TFormContainer.GetRealPopupParent: TCustomForm;
+begin
+  Result := inherited PopupParent;
+end;
+
+procedure TFormContainer.SetHandledForm(AForm: TCustomForm);
+begin
+  if FHandledForm = AForm then
+    Exit;
+
+  if FHandledForm <> nil then
+    FHandledForm.Parent := nil;
+
+  FHandledForm := AForm;
+
+  if FHandledForm <> nil then
+    FHandledForm.Parent := Self;
+end;
+
 
 end.
 
