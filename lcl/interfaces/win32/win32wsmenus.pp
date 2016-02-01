@@ -842,12 +842,18 @@ var
   ParentMenu: TMenu;
 begin
   ParentMenu := AMenuItem.GetParentMenu;
-  if (ParentMenu<>nil) and ParentMenu.OwnerDraw and Assigned(AMenuItem.OnMeasureItem) then
+  if (ParentMenu<>nil) and ParentMenu.OwnerDraw
+  and (Assigned(ParentMenu.OnMeasureItem) or Assigned(AMenuItem.OnMeasureItem)) then
   begin
     CC := TControlCanvas.Create;
     try
       CC.Handle := AHDC;
-      AMenuItem.OnMeasureItem(AMenuItem, CC, Result.cx, Result.cy);
+      Result.cx := 0;
+      Result.cy := 0;
+      if Assigned(ParentMenu.OnMeasureItem) then
+        ParentMenu.OnMeasureItem(AMenuItem, CC, Result.cx, Result.cy);
+      if Assigned(AMenuItem.OnMeasureItem) then
+        AMenuItem.OnMeasureItem(AMenuItem, CC, Result.cx, Result.cy);
     finally
       CC.Free;
     end;
@@ -861,7 +867,7 @@ begin
       Result := VistaPopupMenuItemSize(AMenuItem, AHDC);
   end
   else
-    ClassicMenuItemSize(AMenuItem, AHDC);
+    Result := ClassicMenuItemSize(AMenuItem, AHDC);
 end;
 
 function IsFlatMenus: Boolean; inline;
@@ -1210,6 +1216,7 @@ var
   B: Bool;
   ParentMenu: TMenu;
   CC: TControlCanvas;
+  ItemDrawState: LCLType.TOwnerDrawState;
 begin
   ASelected := (ItemState and ODS_SELECTED) <> 0;
   ANoAccel := (ItemState and ODS_NOACCEL) <> 0;
@@ -1222,15 +1229,16 @@ begin
 
   ParentMenu := AMenuItem.GetParentMenu;
   if (ParentMenu<>nil) and ParentMenu.OwnerDraw
-  and (Assigned(AMenuItem.OnDrawItem) or Assigned(AMenuItem.OnAdvancedDrawItem)) then
+  and (Assigned(ParentMenu.OnAdvancedDrawItem) or Assigned(AMenuItem.OnAdvancedDrawItem)) then
   begin
     CC := TControlCanvas.Create;
     try
       CC.Handle := AHDC;
-      if Assigned(AMenuItem.OnDrawItem) then
-        AMenuItem.OnDrawItem(AMenuItem, CC, ARect, ASelected);
+      ItemDrawState := ItemStateToDrawState(ItemState);
+      if Assigned(ParentMenu.OnAdvancedDrawItem) then
+        ParentMenu.OnAdvancedDrawItem(AMenuItem, CC, ARect, ItemDrawState);
       if Assigned(AMenuItem.OnAdvancedDrawItem) then
-        AMenuItem.OnAdvancedDrawItem(AMenuItem, CC, ARect, ItemStateToDrawState(ItemState));
+        AMenuItem.OnAdvancedDrawItem(AMenuItem, CC, ARect, ItemDrawState);
     finally
       CC.Free;
     end;

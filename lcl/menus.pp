@@ -108,8 +108,6 @@ type
     mihtDestroy
     );
 
-  TMenuDrawItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;
-    ARect: TRect; ASelected: Boolean) of object;
   TAdvancedMenuDrawItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;
     ARect: TRect; AState: TOwnerDrawState) of object;
   TMenuMeasureItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;
@@ -131,7 +129,6 @@ type
     FOnAdvancedDrawItem: TAdvancedMenuDrawItemEvent;
     FOnChange: TMenuChangeEvent;
     FOnClick: TNotifyEvent;
-    FOnDrawItem: TMenuDrawItemEvent;
     FOnMeasureItem: TMenuMeasureItemEvent;
     FParent: TMenuItem;
     FMenuItemHandlers: array[TMenuItemHandlerType] of TMethodList;
@@ -293,7 +290,6 @@ type
     property Visible: Boolean read FVisible write SetVisible
                               stored IsVisibleStored default True;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
-    property OnDrawItem: TMenuDrawItemEvent read FOnDrawItem write FOnDrawItem;
     property OnAdvancedDrawItem: TAdvancedMenuDrawItemEvent read FOnAdvancedDrawItem write FOnAdvancedDrawItem;
     property OnMeasureItem: TMenuMeasureItemEvent read FOnMeasureItem write FOnMeasureItem;
   end;
@@ -312,7 +308,6 @@ type
     FItems: TMenuItem;
     FOnAdvancedDrawItem: TAdvancedMenuDrawItemEvent;
     FOnChange: TMenuChangeEvent;
-    FOnDrawItem: TMenuDrawItemEvent;
     FOnMeasureItem: TMenuMeasureItemEvent;
     FOwnerDraw: Boolean;
     FParent: TComponent;
@@ -368,6 +363,8 @@ type
     property Items: TMenuItem read FItems;
     property Images: TCustomImageList read FImages write SetImages;
     property OwnerDraw: Boolean read FOwnerDraw write FOwnerDraw;
+    property OnAdvancedDrawItem: TAdvancedMenuDrawItemEvent read FOnAdvancedDrawItem write FOnAdvancedDrawItem;
+    property OnMeasureItem: TMenuMeasureItemEvent read FOnMeasureItem write FOnMeasureItem;
   end;
 
 
