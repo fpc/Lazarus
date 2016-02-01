@@ -5,7 +5,6 @@ unit sparta_strconsts;
 interface
 
 resourcestring
-  SArgumentOutOfRange = 'Argument out of range';
   SCode = 'Code';
   SDesigner = 'Designer';
 

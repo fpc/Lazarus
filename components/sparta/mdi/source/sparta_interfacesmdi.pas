@@ -102,6 +102,11 @@ type
     procedure RefreshValues;
   end;
 
+  IResizer = interface
+  ['{C3D1A2C0-8AED-493B-9809-1F5C3A54A8A8}']
+    procedure TryBoundSizerToDesignedForm(Sender: TObject);
+  end;
+
 implementation
 
 end.

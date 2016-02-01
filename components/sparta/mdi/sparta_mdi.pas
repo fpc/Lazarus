@@ -7,7 +7,8 @@ unit sparta_MDI;
 interface
 
 uses
-  sparta_BasicResizeFrame, sparta_InterfacesMDI, LazarusPackageIntf;
+  sparta_BasicResizeFrame, sparta_InterfacesMDI, sparta_BasicResizer, 
+  sparta_MDI_StrConsts, sparta_BasicFakeCustom, LazarusPackageIntf;
 
 implementation
 

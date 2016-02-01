@@ -201,6 +201,9 @@ function FindSourceEditorForDesigner(ADesigner: TIDesigner): TSourceEditorInterf
 
 implementation
 
+uses
+  sparta_ResizerFrame;
+
 // FUTURE USE
 //
 //function FindDesignForm(ADesigner: TIDesigner): TCustomForm;
@@ -834,10 +837,10 @@ begin
     Exit;
 
   LPageCtrl := FindModulePageControl(LFormData.Form.LastActiveSourceWindow);
-  if (LPageCtrl = nil) or (LPageCtrl.Resizer = nil) or (LPageCtrl.Resizer.FMainDTU = nil) then
+  if (LPageCtrl = nil) or (LPageCtrl.Resizer = nil) or (LPageCtrl.Resizer.MainDTU = nil) then
     Exit;
 
-  Result := LPageCtrl.Resizer.FMainDTU.ShowNonVisualComponents;
+  Result := LPageCtrl.Resizer.MainDTU.ShowNonVisualComponents;
 end;
 
 { TSpartaMainIDE }
@@ -1161,7 +1164,7 @@ begin
     else
     begin
       if LPageCtrl.Resizer = nil then
-        LPageCtrl.FResizer := TResizer.Create(LPageCtrl.Pages[1]);
+        LPageCtrl.FResizer := TResizer.Create(LPageCtrl.Pages[1], TResizerFrame);
 
       LPageCtrl.ShowDesignPage;
     end;

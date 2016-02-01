@@ -15,6 +15,7 @@ type
 
   { TBasicResizeFrame }
 
+  TResizerFrameClass = class of TBasicResizeFrame;
   TBasicResizeFrame = class(TFrame)
     iResizerLineImg: TImage;
     pFakeMenu: TPanel;

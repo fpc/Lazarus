@@ -20,12 +20,6 @@ uses
   Classes, SysUtils, Forms, Controls;
 
 type
-  IResizer = interface
-  ['{C3D1A2C0-8AED-493B-9809-1F5C3A54A8A8}']
-    procedure TryBoundSizerToDesignedForm(Sender: TObject);
-  end;
-
-
   ISTADesignTimeUtil = interface
   ['{E135BF89-AFA9-402A-9663-4F1536C7717A}']
     function GetRoot: TPersistent;

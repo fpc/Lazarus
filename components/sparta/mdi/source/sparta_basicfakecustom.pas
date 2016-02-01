@@ -1,0 +1,320 @@
+unit sparta_BasicFakeCustom;
+
+{$mode delphi}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils, Controls, Forms, sparta_InterfacesMDI, LCLIntf, Math,
+  LCLType;
+
+type
+  TFormImpl = class(TComponent, IDesignedRealFormHelper, IDesignedForm)
+  private
+    FDesignedRealForm: IDesignedRealForm;
+    FHackLeft: Integer;
+    FHackTop: Integer;
+    FHackWidth: Integer;
+    FHackHeight: Integer;
+
+  private
+    FHorzScrollPosition: Integer;
+    FVertScrollPosition: Integer;
+    FOnChangeHackedBounds: TNotifyEvent;
+
+    procedure SetOnChangeHackedBounds(const AValue: TNotifyEvent);
+    function GetOnChangeHackedBounds: TNotifyEvent;
+    function PositionDelta: TPoint;
+  protected
+    FOwner: TForm;
+    FUpdate: boolean;
+  protected
+    function GetRealBounds(AIndex: Integer): Integer; virtual;
+    procedure SetRealBounds(AIndex: Integer; AValue: Integer); virtual;
+    function GetPublishedBounds(AIndex: Integer): Integer; virtual;
+    procedure SetPublishedBounds(AIndex: Integer; AValue: Integer); virtual;
+
+    procedure SetHorzScrollPosition(AValue: Integer); virtual;
+    procedure SetVertScrollPosition(AValue: Integer); virtual;
+
+    // own custom form scrool system
+    function GetHorzScrollPosition: Integer; virtual;
+    function GetVertScrollPosition: Integer; virtual;
+
+    procedure SetRealBorderStyle(AVal: TFormBorderStyle); virtual;
+    procedure SetRealBorderIcons(AVal: TBorderIcons); virtual;
+    procedure SetRealFormStyle(AVal: TFormStyle); virtual;
+    procedure SetRealPopupMode(AVal: TPopupMode); virtual;
+    procedure SetRealPopupParent(AVal: TCustomForm); virtual;
+
+    function GetRealBorderStyle: TFormBorderStyle; virtual;
+    function GetRealBorderIcons: TBorderIcons; virtual;
+    function GetRealFormStyle: TFormStyle; virtual;
+    function GetRealPopupMode: TPopupMode; virtual;
+    function GetRealPopupParent: TCustomForm; virtual;
+
+    function GetForm: TCustomForm; virtual;
+    function GetUpdate: Boolean; virtual;
+  protected
+    procedure DoChangeHackedBounds; virtual;
+
+    function GetLogicalClientRect(ALogicalClientRect: TRect): TRect; virtual;
+  public
+    property RealLeft: Integer index 0 read GetRealBounds write SetRealBounds;
+    property RealTop: Integer index 1 read GetRealBounds write SetRealBounds;
+    property RealWidth: Integer index 2 read GetRealBounds write SetRealBounds;
+    property RealHeight: Integer index 3 read GetRealBounds write SetRealBounds;
+    property RealBorderStyle: TFormBorderStyle read GetRealBorderStyle write SetRealBorderStyle;
+    property RealBorderIcons: TBorderIcons read GetRealBorderIcons write SetRealBorderIcons;
+    property RealFormStyle: TFormStyle read GetRealFormStyle write SetRealFormStyle;
+
+    constructor Create(AOwner: TForm); virtual;
+    destructor Destroy; override;
+
+    procedure BeginUpdate; virtual;
+    procedure EndUpdate(AModified: Boolean = False); virtual;
+
+    procedure ShowWindow; virtual;
+    procedure HideWindow; virtual;
+
+    property Update: Boolean read GetUpdate;
+  public
+    property Left: Integer index 0 read GetPublishedBounds write SetPublishedBounds;
+    property Top: Integer index 1 read GetPublishedBounds write SetPublishedBounds;
+    property Width: Integer index 2 read GetPublishedBounds write SetPublishedBounds;
+    property Height: Integer index 3 read GetPublishedBounds write SetPublishedBounds;
+  public
+    function QueryInterface(constref IID: TGUID; out Obj): HResult; override;
+  end;
+
+implementation
+
+type
+  TFormAccess = class(TForm);
+
+{ TDesignedFormImpl }
+
+function TFormImpl.GetPublishedBounds(AIndex: Integer): Integer;
+begin
+  case AIndex of
+    0: Result := FHackLeft;
+    1: Result := FHackTop;
+    2: Result := FHackWidth;
+    3: Result := FHackHeight;
+  end;
+end;
+
+procedure TFormImpl.SetPublishedBounds(AIndex: Integer; AValue: Integer);
+begin
+  if AIndex = 2 then
+    if AValue < 135 then
+      AValue := 135;
+
+  if AIndex in [2, 3] then
+    if AValue > 4096 then
+      AValue := 4096;
+
+  case AIndex of
+    0: FHackLeft := AValue;
+    1: FHackTop := AValue;
+    2: FHackWidth := AValue;
+    3: FHackHeight := AValue;
+  end;
+  DoChangeHackedBounds;
+end;
+
+{-----------------------------------------------
+  Real values inherited for design form
+{----------------------------------------------}
+
+function TFormImpl.GetRealBounds(AIndex: Integer): Integer;
+begin
+  Result := FDesignedRealForm.GetRealBounds(AIndex);
+end;
+
+procedure TFormImpl.SetRealBounds(AIndex: Integer; AValue: Integer);
+begin
+  FDesignedRealForm.SetRealBounds(AIndex, AValue);
+end;
+
+procedure TFormImpl.SetRealBorderStyle(AVal: TFormBorderStyle);
+begin
+  FDesignedRealForm.SetRealBorderStyle(AVal);
+end;
+
+procedure TFormImpl.SetRealBorderIcons(AVal: TBorderIcons);
+begin
+  FDesignedRealForm.SetRealBorderIcons(AVal);
+end;
+
+procedure TFormImpl.SetRealFormStyle(AVal: TFormStyle);
+begin
+  FDesignedRealForm.SetRealFormStyle(AVal);
+end;
+
+procedure TFormImpl.SetRealPopupMode(AVal: TPopupMode);
+begin
+  FDesignedRealForm.SetRealPopupMode(AVal);
+end;
+
+procedure TFormImpl.SetRealPopupParent(AVal: TCustomForm);
+begin
+  FDesignedRealForm.SetRealPopupParent(AVal);
+end;
+
+function TFormImpl.GetRealBorderStyle: TFormBorderStyle;
+begin
+  Result := FDesignedRealForm.GetRealBorderStyle;
+end;
+
+function TFormImpl.GetRealBorderIcons: TBorderIcons;
+begin
+  Result := FDesignedRealForm.GetRealBorderIcons;
+end;
+
+function TFormImpl.GetRealFormStyle: TFormStyle;
+begin
+  Result := FDesignedRealForm.GetRealFormStyle;
+end;
+
+function TFormImpl.GetRealPopupMode: TPopupMode;
+begin
+  Result := FDesignedRealForm.GetRealPopupMode;
+end;
+
+function TFormImpl.GetRealPopupParent: TCustomForm;
+begin
+  Result := FDesignedRealForm.GetRealPopupParent;
+end;
+
+//////
+
+function TFormImpl.GetForm: TCustomForm;
+begin
+  Result := FOwner;
+end;
+
+function TFormImpl.GetUpdate: Boolean;
+begin
+  Result := FUpdate;
+end;
+
+function TFormImpl.GetOnChangeHackedBounds: TNotifyEvent;
+begin
+  Result := FOnChangeHackedBounds;
+end;
+
+function TFormImpl.PositionDelta: TPoint;
+
+  procedure FormBorderDelta;
+  var
+    LTestCtrl: TWinControl;
+    LTestRec, LFormRect: TRect;
+    LForm: TCustomForm;
+  begin
+    LForm := GetForm;
+    LTestCtrl := TWinControl.Create(Self);
+    try
+      LTestCtrl.Parent := LForm;
+      LTestCtrl.Left := 0;
+      LTestCtrl.Top := 0;
+
+      GetWindowRect(LForm.Handle, LFormRect);
+      GetWindowRect(LTestCtrl.Handle, LTestRec);
+
+      Result.x := Result.x + Max(LTestRec.Left - LFormRect.Left, 0);
+      Result.y := Result.y + Max(LTestRec.Top  - LFormRect.Top,  0);
+    finally
+      LTestCtrl.free;
+    end;
+  end;
+
+begin
+  Result := Point(0, 0);
+  {$IFDEF WINDOWS}
+  FormBorderDelta;
+  {$ENDIF}
+end;
+
+procedure TFormImpl.SetOnChangeHackedBounds(const AValue: TNotifyEvent);
+begin
+  FOnChangeHackedBounds := AValue;
+end;
+
+/////// positions
+
+procedure TFormImpl.SetHorzScrollPosition(AValue: Integer);
+begin
+  RealLeft := -PositionDelta.x - AValue;
+end;
+
+procedure TFormImpl.SetVertScrollPosition(AValue: Integer);
+begin
+  RealTop := -PositionDelta.y - AValue;
+end;
+
+function TFormImpl.GetHorzScrollPosition: Integer;
+begin
+  Result := -(RealLeft + PositionDelta.x);
+end;
+
+function TFormImpl.GetVertScrollPosition: Integer;
+begin
+  Result := -(RealTop + PositionDelta.y);
+end;
+
+procedure TFormImpl.BeginUpdate;
+begin
+  FUpdate := True;
+end;
+
+procedure TFormImpl.EndUpdate(AModified: Boolean);
+begin
+  FUpdate := False;
+end;
+
+procedure TFormImpl.ShowWindow;
+begin
+  if FOwner.Parent = nil then
+    LCLIntf.ShowWindow(FOwner.Handle, SW_SHOW);
+end;
+
+procedure TFormImpl.HideWindow;
+begin
+  if FOwner.Parent = nil then
+    LCLIntf.ShowWindow(FOwner.Handle, SW_HIDE);
+end;
+
+function TFormImpl.QueryInterface(constref IID: TGUID; out Obj
+  ): HResult;
+begin
+  Result := inherited QueryInterface(IID, Obj);
+  if Result <> S_OK then
+    Result := TFormAccess(FOwner).QueryInterface(IID, Obj);
+end;
+
+procedure TFormImpl.DoChangeHackedBounds;
+begin
+  if not FUpdate and Assigned(FOnChangeHackedBounds) then
+    FOnChangeHackedBounds(FOwner);
+end;
+
+function TFormImpl.GetLogicalClientRect(ALogicalClientRect: TRect): TRect;
+begin
+  Result:=ALogicalClientRect;
+end;
+
+constructor TFormImpl.Create(AOwner: TForm);
+begin
+  FOwner := AOwner;
+  FDesignedRealForm := FOwner as IDesignedRealForm;
+end;
+
+destructor TFormImpl.Destroy;
+begin
+  Pointer(FDesignedRealForm) := nil;
+  inherited Destroy;
+end;
+
+end.
+

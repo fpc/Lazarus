@@ -12,15 +12,27 @@
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="2">
+    <Files Count="5">
       <Item1>
         <Filename Value="source\sparta_basicresizeframe.pas"/>
         <UnitName Value="sparta_BasicResizeFrame"/>
       </Item1>
       <Item2>
         <Filename Value="source\sparta_interfacesmdi.pas"/>
-        <UnitName Value="sparta_interfacesmdi"/>
+        <UnitName Value="sparta_InterfacesMDI"/>
       </Item2>
+      <Item3>
+        <Filename Value="source\sparta_basicresizer.pas"/>
+        <UnitName Value="sparta_BasicResizer"/>
+      </Item3>
+      <Item4>
+        <Filename Value="sparta_mdi_strconsts.pas"/>
+        <UnitName Value="sparta_mdi_strconsts"/>
+      </Item4>
+      <Item5>
+        <Filename Value="source\sparta_basicfakecustom.pas"/>
+        <UnitName Value="sparta_basicfakecustom"/>
+      </Item5>
     </Files>
     <RequiredPkgs Count="2">
       <Item1>
