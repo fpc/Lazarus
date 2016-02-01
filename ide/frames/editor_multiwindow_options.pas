@@ -63,7 +63,6 @@ type
     procedure listAccessTypeKeyUp(Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState);
     procedure radioAccessOrderEditChange(Sender: TObject);
   private
-    { private declarations }
     FMultiWinEditAccessOrder: TEditorOptionsEditAccessOrderList;
   public
     constructor Create(AOwner: TComponent); override;
@@ -153,8 +152,7 @@ begin
 
 end;
 
-procedure TEditorMultiWindowOptionsFrame.ReadSettings(
-  AOptions: TAbstractIDEOptions);
+procedure TEditorMultiWindowOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 const
   TabPosToIndex : Array [TTabPosition] of Integer = (0, 1, 2, 3);
 var
@@ -183,8 +181,7 @@ begin
   listAccessTypeClickCheck(nil);
 end;
 
-procedure TEditorMultiWindowOptionsFrame.WriteSettings(
-  AOptions: TAbstractIDEOptions);
+procedure TEditorMultiWindowOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 const
   TabIndexToPos : Array [0..3] of TTabPosition = (tpTop, tpBottom, tpLeft, tpRight);
 begin

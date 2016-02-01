@@ -1740,8 +1740,7 @@ function SaveFocusState: TFocusState;
 procedure RestoreFocusState(FocusState: TFocusState);
 
 type
-  TGetDesignerFormEvent =
-    function(APersistent: TPersistent): TCustomForm of object;
+  TGetDesignerFormEvent = function(APersistent: TPersistent): TCustomForm of object;
   TIsFormDesignFunction = function(AForm: TWinControl): boolean;
 
 var
@@ -1771,8 +1770,7 @@ var
   RequireDerivedFormResource: Boolean = False;
 
 type
-  TMessageBoxFunction =
-    function(Text, Caption : PChar; Flags : Longint) : Integer;
+  TMessageBoxFunction = function(Text, Caption : PChar; Flags : Longint) : Integer;
 var
   MessageBoxFunction: TMessageBoxFunction = nil;
 

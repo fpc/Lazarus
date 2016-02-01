@@ -4960,8 +4960,7 @@ begin
   Result:=nil;
 end;
 
-function TPkgManager.ShowFindInPackageFilesDlg(APackage: TLazPackage
-  ): TModalResult;
+function TPkgManager.ShowFindInPackageFilesDlg(APackage: TLazPackage): TModalResult;
 var
   Dlg: TLazFindInFilesDialog;
 begin

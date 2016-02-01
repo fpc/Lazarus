@@ -5943,8 +5943,7 @@ begin
     FreeThenNil(APersistent);
 end;
 
-procedure TPropertyEditorHook.GetSelection(
-  const ASelection: TPersistentSelectionList);
+procedure TPropertyEditorHook.GetSelection(const ASelection: TPersistentSelectionList);
 var
   i: Integer;
   Handler: TPropHookGetSelection;
@@ -6001,8 +6000,7 @@ begin
   end;
 end;
 
-function TPropertyEditorHook.IsSelected(const APersistent: TPersistent
-  ): boolean;
+function TPropertyEditorHook.IsSelected(const APersistent: TPersistent): boolean;
 var
   Selection: TPersistentSelectionList;
 begin
@@ -6168,8 +6166,7 @@ begin
   end;
 end;
 
-procedure TPropertyEditorHook.Revert(Instance:TPersistent;
-  PropInfo:PPropInfo);
+procedure TPropertyEditorHook.Revert(Instance:TPersistent; PropInfo:PPropInfo);
 var
   i: Integer;
 begin

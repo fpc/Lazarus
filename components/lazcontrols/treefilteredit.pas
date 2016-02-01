@@ -73,7 +73,7 @@ type
     fBranches: TBranchList;         // Items under these nodes can be sorted.
     fExpandAllInitially: Boolean;   // Expand all levels when searched for the first time.
     fIsFirstTime: Boolean;          // Needed for fExpandAllInitially.
-    // First node that matched the filter. Will be selected if old selection is hidden.
+    // First node matching the filter. Will be selected if old selection is hidden.
     fFirstPassedNode: TTreeNode;
     fOnGetImageIndex: TImageIndexEvent;
     procedure SetFilteredTreeview(const AValue: TCustomTreeview);
@@ -578,12 +578,12 @@ begin
       fSelectionList.Delete(0);
     end;
   end;
-  if Assigned(SelectNode) then  // Original selection will be restored later.
-    ANode:=SelectNode
+  if Assigned(SelectNode) then
+    ANode:=SelectNode                       // Stored selection
   else if Assigned(fFirstPassedNode) then
-    ANode:=fFirstPassedNode
+    ANode:=fFirstPassedNode                 // Node matching the filter
   else
-    ANode:=fFilteredTreeview.Items.GetFirstVisibleNode;
+    ANode:=fFilteredTreeview.Items.GetFirstVisibleNode; // Otherwise first node
   fFilteredTreeview.Selected:=ANode;
 end;
 
