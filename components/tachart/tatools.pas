@@ -437,6 +437,8 @@ type
     FOnDrag: TDataPointDragEvent;
     FOnDragStart: TDataPointDragEvent;
     FOrigin: TDoublePoint;
+    FKeepDistance: Boolean;
+    FDistance: TDoublePoint;
   strict protected
     procedure Cancel; override;
   public
@@ -448,6 +450,7 @@ type
   published
     property ActiveCursor default crSizeAll;
     property EscapeCancels default true;
+    property KeepDistance: Boolean read FKeepDistance write FKeepDistance default false;
     property OnDrag: TDataPointDragEvent read FOnDrag write FOnDrag;
     property OnDragStart: TDataPointDragEvent
       read FOnDragStart write FOnDragStart;
@@ -1688,8 +1691,9 @@ begin
   FindNearestPoint(APoint);
   if FSeries = nil then exit;
   FOrigin := NearestGraphPoint;
+  p := FChart.ImageToGraph(APoint);
+  FDistance := p - FOrigin;
   if Assigned(OnDragStart) then begin
-    p := FChart.ImageToGraph(APoint);
     OnDragStart(Self, p);
     if Toolset.FIsHandled then exit;
   end;
@@ -1707,6 +1711,7 @@ begin
     OnDrag(Self, p);
     if Toolset.FIsHandled then exit;
   end;
+  if FKeepDistance then p := p - FDistance;
   FSeries.MovePoint(FPointIndex, p);
   Handled;
 end;
