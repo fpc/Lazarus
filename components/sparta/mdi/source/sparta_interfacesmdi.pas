@@ -5,7 +5,7 @@ unit sparta_InterfacesMDI;
 interface
 
 uses
-  Classes, SysUtils, Controls, Forms;
+  Classes, SysUtils, Controls, Forms, ExtCtrls;
 
 type
   IDesignedRealForm = interface
@@ -80,16 +80,48 @@ type
   end;
 
   IDesignedRealFormHelper = interface(IDesignedRealForm)
+  ['{7EF20246-A8B4-4919-8C33-20E07C24F0E9}']
     function GetLogicalClientRect(ALogicalClientRect: TRect): TRect;
   end;
 
   IResizeFrame = interface
-    function GetFrameBounds(AIndex: Integer): Integer;
-    procedure SetFrameBounds(AIndex: Integer; AValue: Integer);
-    property Left: Integer index 0 read GetFrameBounds write SetFrameBounds;
-    property Top: Integer index 1 read GetFrameBounds write SetFrameBounds;
-    property Width: Integer index 2 read GetFrameBounds write SetFrameBounds;
-    property Height: Integer index 3 read GetFrameBounds write SetFrameBounds;
+  ['{A674B2AF-4984-433D-8872-5B5825F345D7}']
+    procedure HideSizeRects;
+    procedure ShowSizeRects;
+    procedure PositionNodes;
+    function DesignedWidthToScroll: Integer;
+    function DesignedHeightToScroll: Integer;
+    procedure ClientChangeBounds;
+    procedure DesignerSetFocus;
+
+    function GetFrame: TCustomFrame;
+    function GetVerticalScrollPos: Integer;
+    procedure SetVerticalScrollPos(AValue: Integer);
+    function GetHorizontalScrollPos: Integer;
+    procedure SetHorizontalScrollPos(AValue: Integer);
+    function GetBackgroundPanel: TPanel;
+    function GetBackgroundMargin(const AIndex: Integer): Integer;
+    function GetClientPanel: TPanel;
+    function GetNodePositioning: Boolean;
+
+    function GetSizerRectSize: Integer;
+    function GetSizerLineWidth: Integer;
+
+    property Frame: TCustomFrame read GetFrame;
+    property VerticalScrollPos: Integer read GetVerticalScrollPos write SetVerticalScrollPos;
+    property HorizontalScrollPos: Integer read GetHorizontalScrollPos write SetHorizontalScrollPos;
+    property BgPanel: TPanel read GetBackgroundPanel;
+
+    property BgLeftMargin: Integer index 0 read GetBackgroundMargin;
+    property BgTopMargin: Integer index 1 read GetBackgroundMargin;
+    property BgRightMargin: Integer index 2 read GetBackgroundMargin;
+    property BgBottomMargin: Integer index 3 read GetBackgroundMargin;
+
+    property ClientPanel: TPanel read GetClientPanel;
+    property NodePositioning: Boolean read GetNodePositioning;
+
+    property SizerRectSize: Integer read GetSizerRectSize;
+    property SizerLineWidth: Integer read GetSizerLineWidth;
   end;
 
   IDesignedFormBackground = interface
@@ -118,6 +150,10 @@ type
   IResizer = interface
   ['{C3D1A2C0-8AED-493B-9809-1F5C3A54A8A8}']
     procedure TryBoundSizerToDesignedForm(Sender: TObject);
+    function GetActiveResizeFrame: IResizeFrame;
+    property ActiveResizeFrame: IResizeFrame read GetActiveResizeFrame;
+    function GetActiveDesignedForm: IDesignedForm;
+    property ActiveDesignedForm: IDesignedForm read GetActiveDesignedForm;
   end;
 
 implementation

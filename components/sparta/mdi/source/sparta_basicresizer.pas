@@ -1,71 +1,33 @@
 unit sparta_BasicResizer;
 
-{$mode objfpc}{$H+}
+{$mode delphi}{$H+}
 
 interface
 
 uses
   Classes, SysUtils, Controls, ExtCtrls, sparta_BasicResizeFrame, Forms, Math, StdCtrls,
   LCLType, Buttons, Dialogs,
-  sparta_InterfacesMDI, sparta_MDI_StrConsts;
+  sparta_InterfacesMDI, sparta_MDI_StrConsts, sparta_AbstractResizer;
 
 type
 
   { TBasicResizer }
 
-  TBasicResizer = class(TComponent, IResizer)
+  TBasicResizer = class(TAbstractResizer)
   private
     FDesignedForm: IDesignedForm;
-
-    procedure SetDesignScroll(AIndex: Integer; AValue: Boolean);
-    procedure sbScroll(Sender: TObject; ScrollCode: TScrollCode;
-      var ScrollPos: Integer);
-
-    procedure FunnyButtonClick(Sender: TObject);
+    FResizerFrame: TBasicResizeFrame;
   protected
-    // To perform proper behaviour for scroolbar with "PageSize" we need to remember real
-    // maximal values (is possible to scroll outside of range 0..(Max - PageSize),
-    // after mouse click in button responsible for changing value of scrollbar,
-    // our value is equal to Max :\). Workaround: we need to remember real max value in our own place
-    FRealMaxH: Integer;
-    FRealMaxV: Integer;
-    FSpecialMargin: array[0..3] of Integer;
-    FDesignScroll: array[0..1] of Boolean;
-    FParent: TWinControl;
-
-    class var
-      FStarter, FProfessional: TNotifyEvent;
-
     procedure SetDesignedForm(const AValue: IDesignedForm); virtual;
   public
-    pMainDTU: TPanel;
-    pMain: TPanel;
-    pAddons: TPanel;
-    pComponents: TPanel;
-    lInfo: TLabel;
-    sbShowComponents  : TSpeedButton;
-    sbShowFormEditor: TSpeedButton;
-    sbShowAnchorEditor: TSpeedButton;
-    sbShowNonVisualEditor: TSpeedButton;
-    pDesignTimeUtils: TPanel;
-    sbV: TScrollBar;
-    sbH: TScrollBar;
-    bR: TButton;
-    FResizerFrame: TBasicResizeFrame;
-
-    FEDTU: TList;
-
-    constructor Create(AParent: TWinControl; AResizerFrameClass: TResizerFrameClass); virtual;
+    constructor Create(AParent: TWinControl; AResizerFrameClass: TResizerFrameClass); override;
     destructor Destroy; override;
 
     property DesignedForm: IDesignedForm read FDesignedForm write SetDesignedForm;
 
-    procedure TryBoundSizerToDesignedForm(Sender: TObject);
-
-    procedure NodePositioning(Sender: TObject; PositioningKind: TPositioningKind; PositioningCode: TPositioningCode);
-
-    property DesignScrollRight: Boolean index SB_Vert read FDesignScroll[SB_Vert] write SetDesignScroll;
-    property DesignScrollBottom: Boolean index SB_Horz read FDesignScroll[SB_Horz] write SetDesignScroll;
+    procedure TryBoundSizerToDesignedForm(Sender: TObject); override;
+    function GetActiveResizeFrame: IResizeFrame; override;
+    function GetActiveDesignedForm: IDesignedForm; override;
   end;
 
 implementation
@@ -102,171 +64,23 @@ begin
     DesignedForm.RealHeight := DesignedForm.Height;
 
     FDesignedForm.EndUpdate;
-    FDesignedForm.OnChangeHackedBounds := @TryBoundSizerToDesignedForm;
+    FDesignedForm.OnChangeHackedBounds := TryBoundSizerToDesignedForm;
   end;
 
   FResizerFrame.DesignedForm := AValue;
 end;
 
-procedure TBasicResizer.SetDesignScroll(AIndex: Integer; AValue: Boolean);
-
-  procedure PerformScroll(AScroll: TScrollBar);
-  begin
-    AScroll.Visible := AValue;
-    AScroll.Position:=0;
-  end;
-
-begin
-  if FDesignScroll[AIndex] = AValue then
-    Exit;
-
-  FDesignScroll[AIndex] := AValue;
-
-  case AIndex of
-    SB_Horz: PerformScroll(sbH);
-    SB_Vert: PerformScroll(sbV);
-  else
-    raise EArgumentOutOfRangeException.CreateRes(@SArgumentOutOfRange);
-  end;
-end;
-
-procedure TBasicResizer.sbScroll(Sender: TObject; ScrollCode: TScrollCode;
-  var ScrollPos: Integer);
-var
-  LScrollPos: Integer;
-begin
-  if FDesignedForm = nil then
-    Exit;
-
-  if ScrollCode <> scEndScroll then
-    FResizerFrame.HideSizeRects
-  else
-    FResizerFrame.ShowSizeRects;
-
-
-  FDesignedForm.BeginUpdate;
-  if Sender = sbV then
-  begin
-    // Warning - don't overflow the range! (go to description for FRealMaxV)
-    ScrollPos := Min(ScrollPos, FRealMaxV);
-    FResizerFrame.VerticalScrollPos := ScrollPos;
-    // scroll for form
-    with FResizerFrame do // -8 when we scaling the form and we don't need to scroll -> there is Max
-      LScrollPos := Max(ifthen(pBG.Top + BgTopMargin <= 0, ScrollPos - SIZER_RECT_SIZE - BgTopMargin, 0), 0);
-    FDesignedForm.VertScrollPosition := LScrollPos;
-  end;
-  if Sender = sbH then
-  begin
-    ScrollPos := Min(ScrollPos, FRealMaxH);
-    FResizerFrame.HorizontalScrollPos := ScrollPos;
-    // scroll for form
-    with FResizerFrame do
-      LScrollPos := Max(ifthen(pBG.Left + BgLeftMargin <= 0, ScrollPos - SIZER_RECT_SIZE - BgLeftMargin, 0), 0);
-    FDesignedForm.HorzScrollPosition := LScrollPos;
-  end;
-  FDesignedForm.EndUpdate;
-
-  FResizerFrame.PositionNodes(FResizerFrame);
-
-  FDesignedForm.Form.Invalidate;
-end;
-
 constructor TBasicResizer.Create(AParent: TWinControl;
   AResizerFrameClass: TResizerFrameClass);
 begin
-  inherited Create(AParent);
-  FParent := AParent;
-  // create layout
-  FEDTU := TList.Create;
+  inherited Create(AParent, AResizerFrameClass);
 
-  if Assigned(FStarter) then
-    FStarter(Self);
-
-  pMainDTU := TPanel.Create(AParent);
-  with pMainDTU do
-  begin
-    Parent := AParent;
-    Align := alTop;
-    BevelOuter := bvNone;
-    Height := 0;
-  end;
-
-  pAddons := TPanel.Create(AParent);
-  pAddons.Parent := AParent;
-  pAddons.Align := alRight;
-  pAddons.BevelOuter := bvNone;
-  pAddons.Width:=0;
-
-  // Funny button
-  bR := TButton.Create(AParent);
-  with bR do
-  begin
-    Parent := AParent;
-    Height := 17;
-    Width := 17;
-    AnchorSideRight.Control := pAddons;
-    AnchorSideBottom.Control := AParent;
-    AnchorSideBottom.Side := asrBottom;
-    Anchors := [akRight, akBottom];
-    Caption := 'R';
-    Visible := True;
-    OnClick := @FunnyButtonClick;
-  end;
-
-  sbV := TScrollBar.Create(AParent);
-  with sbV do
-  begin
-    Kind := sbVertical;
-    Parent := AParent;
-    AnchorSideTop.Control := pMainDTU;
-    AnchorSideTop.Side := asrBottom;
-    AnchorSideRight.Control := pAddons;
-    AnchorSideBottom.Control := bR;
-    Width := 17;
-    Anchors := [akTop, akRight, akBottom];
-    Visible := False;
-    OnScroll := @sbScroll;
-  end;
-
-  sbH := TScrollBar.Create(AParent);
-  with sbH do
-  begin
-    Parent := AParent;
-    AnchorSideLeft.Control := AParent;
-    AnchorSideRight.Control := bR;
-    AnchorSideBottom.Control := AParent;
-    AnchorSideBottom.Side := asrBottom;
-    Anchors := [akLeft, akRight, akBottom];
-    Visible := False;
-    OnScroll := @sbScroll;
-  end;
-
-  pMain := TPanel.Create(AParent);
-  with pMain do
-  begin
-    Parent := AParent;
-    AnchorSideLeft.Control := AParent;
-    AnchorSideTop.Control := pMainDTU;
-    AnchorSideTop.Side := asrBottom;
-    AnchorSideRight.Control := sbV;
-    AnchorSideBottom.Control := sbH;
-    Anchors := [akTop, akLeft, akRight, akBottom];
-    BevelOuter := bvNone;
-  end;
-
-  FResizerFrame := AResizerFrameClass.Create(AParent);
-  FResizerFrame.Parent := pMain;
-  FResizerFrame.Left := 0;
-  FResizerFrame.Top := 0;
-  FResizerFrame.OnNodePositioning := @NodePositioning;
-
-  pMain.OnChangeBounds:=@TryBoundSizerToDesignedForm;
+  FResizerFrame := CreateResizeFrame;
 end;
 
 destructor TBasicResizer.Destroy;
 begin
   Pointer(FDesignedForm) := nil;
-  FEDTU.Free;
   inherited Destroy;
 end;
 
@@ -334,84 +148,16 @@ begin
   FResizerFrame.DesignerSetFocus;
 end;
 
-procedure TBasicResizer.NodePositioning(Sender: TObject; PositioningKind: TPositioningKind; PositioningCode: TPositioningCode);
-
-  procedure Positioning;
-  var
-    LHiddenHeight, LNewHeight: Integer;
-    LHiddenWidth, LNewWidth: Integer;
-  begin
-    DesignedForm.BeginUpdate;
-
-    if pkRight in PositioningKind then
-    begin
-      LHiddenWidth := sbH.Position;
-      if LHiddenWidth > FResizerFrame.DesignedWidthToScroll then
-        LHiddenWidth := FResizerFrame.DesignedWidthToScroll;
-
-      // TODO - better handling of min width - same in TDesignedFormImpl.SetPublishedBounds (sparta_FakeCustom.pas)
-
-      LNewWidth := FResizerFrame.pClient.Width + LHiddenWidth;
-      DesignedForm.RealWidth := LNewWidth;
-      DesignedForm.Width := LNewWidth;
-
-      // perform minimal width (TODO)
-      {if LNewWidth < DesignedForm.Width then
-      begin
-        FResizerFrame.pClient.Width := DesignedForm.Width;
-        Application.HandleMessage;
-        Application.ProcessMessages;
-      end;}
-    end;
-
-    if pkBottom in PositioningKind then
-    begin
-      LHiddenHeight := sbV.Position;
-      if LHiddenHeight > FResizerFrame.DesignedHeightToScroll then
-        LHiddenHeight := FResizerFrame.DesignedHeightToScroll;
-
-      LNewHeight := FResizerFrame.pClient.Height + LHiddenHeight;
-      DesignedForm.RealHeight := LNewHeight;
-      DesignedForm.Height := LNewHeight;
-
-      // perform minimal height (TODO)
-      {if LNewHeight < DesignedForm.RealHeight then
-      begin
-        if FResizerFrame.pClient.Height < DesignedForm.RealHeight then
-          FResizerFrame.pClient.Height := DesignedForm.RealHeight;
-        Application.ProcessMessages;
-      end;}
-    end;
-
-    DesignedForm.EndUpdate;
-  end;
-
-  procedure PositioningEnd;
-  begin
-    TryBoundSizerToDesignedForm(nil);
-  end;
-
+function TBasicResizer.GetActiveResizeFrame: IResizeFrame;
 begin
-  if DesignedForm = nil then
-    Exit;
-
-  case PositioningCode of
-    pcPositioningEnd: PositioningEnd;
-    pcPositioning: Positioning;
-  end;
+  Result := FResizerFrame;
 end;
 
-procedure TBasicResizer.FunnyButtonClick(Sender: TObject);
+function TBasicResizer.GetActiveDesignedForm: IDesignedForm;
 begin
-  ShowMessage('Funny button with no functionality!'
-              + sLineBreak
-              + sLineBreak +
-              'Regards'
-              + sLineBreak +
-              'Maciej Izak'
-              + sLineBreak
-              + sLineBreak + 'DaThoX team FreeSparta.com project');
+  Result := FDesignedForm;
 end;
+
 
 end.
 

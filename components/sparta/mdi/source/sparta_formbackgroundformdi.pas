@@ -62,13 +62,15 @@ procedure TfrFormBackgroundForMDI.Panel1MouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 var
   frmPoint: TPoint;
+  LFrame: TCustomFrame;
 begin
   if (not FDown) or (FResizeFrame = nil) then
     Exit;
 
   frmPoint := Self.ScreenToClient(Mouse.CursorPos);
-  FResizeFrame.Left := FResizeFrame.Left + (frmPoint.x + FDelta.x);
-  FResizeFrame.Top := FResizeFrame.Top + (frmPoint.y + FDelta.y);
+  LFrame := FResizeFrame.Frame;
+  LFrame.Left := LFrame.Left + (frmPoint.x + FDelta.x);
+  LFrame.Top := LFrame.Top + (frmPoint.y + FDelta.y);
 end;
 
 procedure TfrFormBackgroundForMDI.Panel1MouseUp(Sender: TObject;

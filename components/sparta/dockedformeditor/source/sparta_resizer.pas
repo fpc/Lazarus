@@ -19,7 +19,7 @@ interface
 uses
   Classes, SysUtils, Controls, ExtCtrls, sparta_ResizerFrame, sparta_DesignedForm, Forms, Math, StdCtrls,
   LCLType, LazIDEIntf, Buttons, SpartaAPI, Dialogs, FormEditingIntf,
-  sparta_strconsts, sparta_InterfacesMDI, sparta_BasicResizeFrame, sparta_BasicResizer;
+  sparta_InterfacesMDI, sparta_BasicResizeFrame, sparta_BasicResizer;
 
 type
 
@@ -28,6 +28,10 @@ type
   TResizer = class(TBasicResizer, IResizer)
   protected
     FMainDTU: ISTAMainDesignTimeUtil;
+    FEDTU: TList;
+
+  class var
+    FStarter, FProfessional: TNotifyEvent;
 
     procedure SetDesignedForm(const AValue: IDesignedForm); override;
   public
@@ -68,14 +72,20 @@ constructor TResizer.Create(AParent: TWinControl;
 begin
   inherited Create(AParent, AResizerFrameClass);
 
+  FEDTU := TList.Create;
+
   if DTUManager <> nil then
   begin
     FMainDTU := DTUManager.CreateMainDTU(pMainDTU, pAddons);
   end;
+
+  if Assigned(FStarter) then
+    FStarter(Self);
 end;
 
 destructor TResizer.Destroy;
 begin
+  FEDTU.Free;
   Pointer(FMainDTU) := nil; // released by owner
 
   inherited Destroy;

@@ -91,27 +91,47 @@ type
     function LeftSizerLineWidth: Integer;
     function HorizontalSizerLineLength: Integer;
 
-    function GetBackgroundMargin(const AIndex: Integer): Integer;
     function GetMenuHeight: Integer;
-
   protected
     FNodes: TObjectList;
   protected
     procedure TryBoundDesignedForm; virtual;
     procedure BeginFormSizeUpdate(Sender: TObject); virtual;
     procedure EndFormSizeUpdate(Sender: TObject); virtual;
-  protected
-    function GetFrameBounds(AIndex: Integer): Integer; virtual;
-    procedure SetFrameBounds(AIndex: Integer; AValue: Integer); virtual;
+  protected { IResizeFrame }
+    procedure HideSizeRects;
+    procedure ShowSizeRects;
+    procedure PositionNodes; overload;
+    function DesignedWidthToScroll: Integer;
+    function DesignedHeightToScroll: Integer;
+    procedure ClientChangeBounds; overload;
+
+    function GetFrame: TCustomFrame;
+    function GetVerticalScrollPos: Integer;
+    procedure SetVerticalScrollPos(AValue: Integer);
+    function GetHorizontalScrollPos: Integer;
+    procedure SetHorizontalScrollPos(AValue: Integer);
+
+    function GetBackgroundPanel: TPanel;
+    function GetBackgroundMargin(const AIndex: Integer): Integer;
+
+    function GetClientPanel: TPanel;
+
+    function GetNodePositioning: Boolean;
+
+    function GetSizerRectSize: Integer;
+    function GetSizerLineWidth: Integer;
+  public { IResizeFrame }
+    procedure DesignerSetFocus;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
 
     property DesignedForm: IDesignedForm read FDesignedForm write SetDesignedForm;
 
-    procedure PositionNodes(AroundControl: TWinControl);
-    property NodePositioning: Boolean read FNodePositioning;
-    procedure ClientChangeBounds(Sender: TObject);
+    procedure PositionNodes(AroundControl: TWinControl); overload;
+    property NodePositioning: Boolean read GetNodePositioning;
+    procedure ClientChangeBounds(Sender: TObject); overload;
 
     property RightMargin: Integer read GetRightMargin;
     property BottomMargin: Integer read GetBottomMargin;
@@ -122,19 +142,13 @@ type
     property BgRightMargin: Integer index 2 read GetBackgroundMargin;
     property BgBottomMargin: Integer index 3 read GetBackgroundMargin;
 
-    function DesignedWidthToScroll: Integer;
-    function DesignedHeightToScroll: Integer;
-
-    procedure HideSizeRects;
     procedure HideSizeControls;
-    procedure ShowSizeRects;
     procedure ShowSizeControls;
 
     procedure OnModified;
-    procedure DesignerSetFocus;
 
-    property VerticalScrollPos: Integer read FVerticalScrollPos write FVerticalScrollPos;
-    property HorizontalScrollPos: Integer read FHorizontalScrollPos write FHorizontalScrollPos;
+    property VerticalScrollPos: Integer read GetVerticalScrollPos write SetVerticalScrollPos;
+    property HorizontalScrollPos: Integer read GetHorizontalScrollPos write SetHorizontalScrollPos;
   end;
 
 implementation
@@ -333,6 +347,11 @@ var
 begin
   for p in FNodes do
     wc.Visible := True;
+end;
+
+procedure TBasicResizeFrame.PositionNodes;
+begin
+  PositionNodes(Self);
 end;
 
 procedure TBasicResizeFrame.ShowSizeControls;
@@ -718,6 +737,16 @@ begin
     Result := Result + GetMenuHeight;
 end;
 
+function TBasicResizeFrame.GetClientPanel: TPanel;
+begin
+  Result := pClient;
+end;
+
+function TBasicResizeFrame.GetNodePositioning: Boolean;
+begin
+  Result := FNodePositioning;
+end;
+
 function TBasicResizeFrame.GetMenuHeight: Integer;
 begin
   // some WS (Gtk2) return too big SM_CYMENU, just set it according to font height
@@ -766,24 +795,44 @@ procedure TBasicResizeFrame.EndFormSizeUpdate(Sender: TObject);
 begin
 end;
 
-function TBasicResizeFrame.GetFrameBounds(AIndex: Integer): Integer;
+function TBasicResizeFrame.GetFrame: TCustomFrame;
 begin
-  case AIndex of
-    0: Exit(Left);
-    1: Exit(Top);
-    2: Exit(Width);
-    3: Exit(Height);
-  end;
+  Result := Self;
 end;
 
-procedure TBasicResizeFrame.SetFrameBounds(AIndex: Integer; AValue: Integer);
+function TBasicResizeFrame.GetVerticalScrollPos: Integer;
 begin
-  case AIndex of
-    0: Left   := AValue;
-    1: Top    := AValue;
-    2: Width  := AValue;
-    3: Height := AValue;
-  end;
+  Result := FVerticalScrollPos;
+end;
+
+procedure TBasicResizeFrame.SetVerticalScrollPos(AValue: Integer);
+begin
+  FVerticalScrollPos := AValue;
+end;
+
+function TBasicResizeFrame.GetHorizontalScrollPos: Integer;
+begin
+  Result := FHorizontalScrollPos;
+end;
+
+procedure TBasicResizeFrame.SetHorizontalScrollPos(AValue: Integer);
+begin
+  FHorizontalScrollPos := AValue;
+end;
+
+function TBasicResizeFrame.GetSizerRectSize: Integer;
+begin
+  Result := SIZER_RECT_SIZE;
+end;
+
+function TBasicResizeFrame.GetSizerLineWidth: Integer;
+begin
+  Result := SIZER_LINE_WIDTH;
+end;
+
+function TBasicResizeFrame.GetBackgroundPanel: TPanel;
+begin
+  Result := pBG;
 end;
 
 function TBasicResizeFrame.DesignedWidthToScroll: Integer;
@@ -808,6 +857,11 @@ begin
 
   Result := DesignedForm.Height - FLastClientHeight;
   //Result := DesignedForm.Height - DesignedForm.RealHeight;
+end;
+
+procedure TBasicResizeFrame.ClientChangeBounds;
+begin
+  ClientChangeBounds(nil);
 end;
 
 {}
