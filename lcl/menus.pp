@@ -362,7 +362,7 @@ type
     property ParentBidiMode:Boolean read FParentBidiMode write SetParentBidiMode default True;
     property Items: TMenuItem read FItems;
     property Images: TCustomImageList read FImages write SetImages;
-    property OwnerDraw: Boolean read FOwnerDraw write FOwnerDraw;
+    property OwnerDraw: Boolean read FOwnerDraw write FOwnerDraw default False;
     property OnAdvancedDrawItem: TAdvancedMenuDrawItemEvent read FOnAdvancedDrawItem write FOnAdvancedDrawItem;
     property OnMeasureItem: TMenuMeasureItemEvent read FOnMeasureItem write FOnMeasureItem;
   end;
