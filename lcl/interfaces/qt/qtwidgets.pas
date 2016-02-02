@@ -7778,6 +7778,9 @@ function TQtGroupBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 var
   ResizeEvent: QResizeEventH;
   NewSize, OldSize: TSize;
+  R: TRect;
+  APos, AGlobalPos: TQtPoint;
+  ANewMouseEvent: QMouseEventH;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -7786,14 +7789,62 @@ begin
 
   if (Sender = FCentralWidget) then
   begin
-    // issue #28155, we are painting our FCentralWidget, not QGroupBox
     case QEvent_type(Event) of
       QEventPaint: Result := inherited EventFilter(Sender, Event);
     end;
     exit;
   end;
-
+  {about issue #29572: we must use main widget for mouse
+   events, since using it in FCentralWidget above freezes
+   application for some reason. Offsetting pos fixes problem.}
   case QEvent_type(Event) of
+    QEventWheel: // issue #29572
+    begin
+      APos := QMouseEvent_pos(QMouseEventH(Event))^;
+      AGlobalPos := QMouseEvent_globalPos(QMouseEventH(Event))^;
+      QWidget_geometry(FCentralWidget, @R);
+      inc(APos.X, -R.Left);
+      inc(APos.Y, -R.Top);
+      ANewMouseEvent := QMouseEvent_create(QEvent_type(Event), @APos, @AGlobalPos, QMouseEvent_button(QMouseEventH(Event)),
+        QMouseEvent_buttons(QMouseEventH(Event)), QInputEvent_modifiers(QInputEventH(Event)));
+      try
+        Result := SlotMouseWheel(Sender, ANewMouseEvent);
+      finally
+        QMouseEvent_destroy(ANewMouseEvent);
+      end;
+    end;
+    QEventMouseMove: // issue #29572
+    begin
+      APos := QMouseEvent_pos(QMouseEventH(Event))^;
+      AGlobalPos := QMouseEvent_globalPos(QMouseEventH(Event))^;
+      QWidget_geometry(FCentralWidget, @R);
+      inc(APos.X, -R.Left);
+      inc(APos.Y, -R.Top);
+      ANewMouseEvent := QMouseEvent_create(QEvent_type(Event), @APos, @AGlobalPos, QMouseEvent_button(QMouseEventH(Event)),
+        QMouseEvent_buttons(QMouseEventH(Event)), QInputEvent_modifiers(QInputEventH(Event)));
+      try
+        Result := SlotMouseMove(Sender, ANewMouseEvent);
+      finally
+        QMouseEvent_destroy(ANewMouseEvent);
+      end;
+    end;
+    QEventMouseButtonPress,
+    QEventMouseButtonRelease,
+    QEventMouseButtonDblClick: // issue #29572
+    begin
+      APos := QMouseEvent_pos(QMouseEventH(Event))^;
+      AGlobalPos := QMouseEvent_globalPos(QMouseEventH(Event))^;
+      QWidget_geometry(FCentralWidget, @R);
+      inc(APos.X, -R.Left);
+      inc(APos.Y, -R.Top);
+      ANewMouseEvent := QMouseEvent_create(QEvent_type(Event), @APos, @AGlobalPos, QMouseEvent_button(QMouseEventH(Event)),
+        QMouseEvent_buttons(QMouseEventH(Event)), QInputEvent_modifiers(QInputEventH(Event)));
+      try
+        Result := SlotMouse(Sender, ANewMouseEvent);
+      finally
+        QMouseEvent_destroy(ANewMouseEvent);
+      end;
+    end;
     QEventPaint:
       begin
         Result := False;
