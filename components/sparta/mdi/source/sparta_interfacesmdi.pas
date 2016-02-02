@@ -93,6 +93,7 @@ type
     function DesignedHeightToScroll: Integer;
     procedure ClientChangeBounds;
     procedure DesignerSetFocus;
+    procedure OnModified;
 
     function GetFrame: TCustomFrame;
     function GetVerticalScrollPos: Integer;

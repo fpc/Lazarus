@@ -18,6 +18,8 @@ type
     FDesignedForm: IDesignedForm;
     FResizerFrame: TBasicResizeFrame;
   protected
+    function GetActiveResizeFrame: IResizeFrame; override;
+    function GetActiveDesignedForm: IDesignedForm; override;
     procedure SetDesignedForm(const AValue: IDesignedForm); virtual;
   public
     constructor Create(AParent: TWinControl; AResizerFrameClass: TResizerFrameClass); override;
@@ -26,8 +28,6 @@ type
     property DesignedForm: IDesignedForm read FDesignedForm write SetDesignedForm;
 
     procedure TryBoundSizerToDesignedForm(Sender: TObject); override;
-    function GetActiveResizeFrame: IResizeFrame; override;
-    function GetActiveDesignedForm: IDesignedForm; override;
   end;
 
 implementation

@@ -1070,7 +1070,7 @@ var
 begin
   LResizer := GetCurrentResizer;
   if LResizer<>nil then
-    LResizer.FResizerFrame.DesignerSetFocus;
+    LResizer.ActiveResizeFrame.DesignerSetFocus;
 end;
 
 class procedure TSpartaMainIDE.EditorActivated(Sender: TObject);
@@ -1483,7 +1483,7 @@ begin
     //PostMessage(LWindow.Handle, WM_BoundToDesignTabSheet, 0, 0);
     if LDesignForm <> nil then
     begin
-      LDesignForm.Form.Form.Parent := FindModulePageControl(LWindow).Resizer.FResizerFrame.pClient;
+      LDesignForm.Form.Form.Parent := FindModulePageControl(LWindow).Resizer.ActiveResizeFrame.ClientPanel;
       PostMessage(LDesignForm.Form.Form.Handle, WM_BoundToDesignTabSheet, 0, 0);
     end;
   end;
@@ -1508,7 +1508,7 @@ var
 begin
   LResizer := GetCurrentResizer;
   if LResizer<>nil then
-    LResizer.FResizerFrame.OnModified;
+    LResizer.ActiveResizeFrame.OnModified;
 end;
 
 class procedure TSpartaMainIDE.OnModifiedPersistentAdded(

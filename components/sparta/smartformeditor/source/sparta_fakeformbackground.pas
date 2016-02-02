@@ -79,6 +79,8 @@ type
     procedure SetParent(AParent: TWinControl); override;
 
     function GetDesignedForm: IDesignedForm;
+    function GetResizeFrame: IResizeFrame;
+    procedure SetResizeFrame(AValue: IResizeFrame);
   public
     { public declarations }
     constructor Create(const ADesignedForm: IDesignedForm; const ADesignedFakeForm: IDesignedFakeForm); virtual; reintroduce;
@@ -285,6 +287,15 @@ end;
 function TfrFakeFormBackground.GetDesignedForm: IDesignedForm;
 begin
   Result := FDesignedForm as IDesignedForm;
+end;
+
+function TfrFakeFormBackground.GetResizeFrame: IResizeFrame;
+begin
+  Result := nil;
+end;
+
+procedure TfrFakeFormBackground.SetResizeFrame(AValue: IResizeFrame);
+begin
 end;
 
 constructor TfrFakeFormBackground.Create(const ADesignedForm: IDesignedForm;

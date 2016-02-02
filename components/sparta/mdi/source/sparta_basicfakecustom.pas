@@ -180,6 +180,8 @@ end;
 
 procedure TFormImpl.SetRealBounds(AIndex: Integer; AValue: Integer);
 begin
+  //if AValue > GetPublishedBounds(AIndex) then
+  //  AValue := GetPublishedBounds(AIndex); TODO
   FDesignedRealForm.SetRealBounds(AIndex, AValue);
 end;
 

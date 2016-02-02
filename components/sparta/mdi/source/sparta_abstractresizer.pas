@@ -61,6 +61,9 @@ type
     constructor Create(AParent: TWinControl; AResizerFrameClass: TResizerFrameClass); virtual;
     property DesignScrollRight: Boolean index SB_Vert read FDesignScroll[SB_Vert] write SetDesignScroll;
     property DesignScrollBottom: Boolean index SB_Horz read FDesignScroll[SB_Horz] write SetDesignScroll;
+
+    property ActiveResizeFrame: IResizeFrame read GetActiveResizeFrame;
+    property ActiveDesignedForm: IDesignedForm read GetActiveDesignedForm;
   end;
 
 implementation
