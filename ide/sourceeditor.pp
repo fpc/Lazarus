@@ -7041,7 +7041,7 @@ procedure TSourceNotebook.RemoveContextMenuItems;
 begin
   SrcEditMenuSectionFileDynamic.Clear;
   {$IFDEF VerboseMenuIntf}
-  SrcEditMenuSectionFileDynamic.WriteDebugReport('TSourceNotebook.RemoveContextMenuItems ');
+  SrcEditMenuSectionFileDynamic.WriteDebugReport('TSourceNotebook.RemoveContextMenuItems ', true);
   {$ENDIF}
 end;
 

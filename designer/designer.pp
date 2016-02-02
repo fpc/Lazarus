@@ -3850,7 +3850,7 @@ begin
   // assign the root TMenuItem to the registered menu root.
   // This will automatically create all registered items
   {$IFDEF VerboseMenuIntf}
-  DesignerPopupMenu.Items.WriteDebugReport('TSourceNotebook.BuildPopupMenu ');
+  FDesignerPopupMenu.Items.WriteDebugReport('TSourceNotebook.BuildPopupMenu ');
   DesignerMenuRoot.ConsistencyCheck;
   {$ENDIF}
   DesignerMenuRoot.MenuItem := FDesignerPopupMenu.Items;

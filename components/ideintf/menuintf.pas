@@ -1313,7 +1313,10 @@ begin
   
   FreeSeparators;
 
-  for i:=FItems.Count-1 downto 0 do TObject(FItems[i]).Free;
+  for i:=FItems.Count-1 downto 0 do begin
+    TObject(FItems[i]).Free;
+    FItems[i] := nil;
+  end;
   FItems.Clear;
   FChildMenuItemsCreated:=false;
   FVisibleCount:=0;
@@ -1502,7 +1505,8 @@ begin
     ' ContainerIndex=',GetContainerIndex(false),
     ' NeedSep:Top=',NeedTopSeparator,',Bottom=',NeedBottomSeparator,
     ' Size=',dbgs(Size)]);
-  for i:=0 to Count-1 do Items[i].WriteDebugReport(Prefix+'  ',false);
+  for i:=0 to Count-1 do
+    if Items[i]<>nil then Items[i].WriteDebugReport(Prefix+'  ',false);
   if MenuItemDebugReport and (MenuItem<>nil) then
     MenuItem.WriteDebugReport(Prefix);
 end;
