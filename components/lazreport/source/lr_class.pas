@@ -12515,16 +12515,26 @@ begin
       DebugLn('CurBand=%s CurBand.View=%s AggrBand=%s',
         [BandInfo(CurBand),dbgsName(CurBand.View),BandInfo(AggrBand)]);
       {$ENDIF}
-      s1 := Trim(string(p2));
-      if s1 = '' then begin
-        if (dk=dkCount) and (p1+''<>'') then
-          s1 := p1
-        else
+      if dk <> dkCount then begin
+        // p1 = field
+        // p2 = data band
+        // p3 = InvisibleToo
+        s1 := trim(string(p2));
+        if s1='' then
           s1 := CurBand.View.Name;
-      end;
-      if dk <> dkCount then
-        s2 := Trim(string(p3)) else
+        s2 := Trim(string(p3))
+      end
+      else begin
+        // p1 = data band
+        // p2 = InvisibleToo
+        s1 := Trim(string(p1));
         s2 := Trim(string(p2));
+        if s2<>'1' then
+          s2 := '0';
+      end;
+      // s1 = data band
+      // s2 = '1' o '0' (1 means process invisible records too)
+
       if (AggrBand.Typ in [btPageFooter, btMasterFooter, btDetailFooter,
         btSubDetailFooter, btGroupFooter, btCrossFooter, btReportSummary]) and
          ((s2 = '1') or ((s2 <> '1') and CurBand.Visible)) then
