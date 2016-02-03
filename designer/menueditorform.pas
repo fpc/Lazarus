@@ -575,11 +575,7 @@ procedure TMenuDesigner.UpdateTemplatesCount;
 begin
   FTemplatesSaved:=SavedTemplatesExist;
   DebugLn('SavedTemplatesExist is %s',[booltostr(FTemplatesSaved)]);
-  if not FTemplatesSaved then begin
-    FSavedTemplatesCount:=GetSavedTemplatesCount;
-    Exit;
-  end
-  else FSavedTemplatesCount:=GetSavedTemplatesCount;
+  FSavedTemplatesCount:=GetSavedTemplatesCount;
 end;
 
 procedure TMenuDesigner.BeginUpdate;
