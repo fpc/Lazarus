@@ -8,9 +8,9 @@ uses
   // FCL + LCL
   Classes, SysUtils, types, typinfo,
   ActnList, ButtonPanel, Buttons, Controls, Dialogs, StdCtrls, ExtCtrls, Menus,
-  Forms, Graphics, ImgList, Themes, LCLType, LCLIntf, LCLProc,
+  ComCtrls, Forms, Graphics, ImgList, Themes, LCLType, LCLIntf, LCLProc,
   // LazUtils
-  LazUTF8,
+  LazUTF8, LazFileUtils, Laz2_XMLCfg,
   // IdeIntf
   ComponentEditors, IDEDialogs, PropEdits,
   // IDE
@@ -188,6 +188,7 @@ strict private
   FIsMainMenu: boolean;
   FItemsPopupMenu: TPopupMenu;
   FLookupRoot: TComponent;
+  FMainCanvas: TCanvas;
   FRootBox: TShadowBox;
   FSelectedMenuItem: TMenuItem;
   function GetBoxContainingMenuItem(aMI: TMenuItem): TShadowBox;
@@ -226,6 +227,9 @@ strict private
   procedure RemoveAllSeparators(Sender: TObject);
   procedure ResolveShortcutConflicts(Sender: TObject);
   procedure SaveAsTemplate(Sender: TObject);
+private
+  function GetStringWidth(const aText: string; isBold: boolean): integer;
+  function GetMenuBarIconWidth(aMI: TMenuItem): integer;
 protected
   FEditorDesigner: TComponentEditorDesigner;
   FMenu: TMenu;
@@ -249,7 +253,8 @@ protected
   property ItemsPopupMenu: TPopupMenu read FItemsPopupMenu;
   property RootBox: TShadowBox read FRootBox;
 public
-  constructor CreateWithMenuAndDims(aMenu: TMenu; aSelect: TMenuItem; aWidth, aHeight: integer);
+  constructor CreateWithMenuAndDims(aCanvas: TCanvas; aMenu: TMenu; aSelect: TMenuItem;
+                                    aWidth, aHeight: integer);
   destructor Destroy; override;
   procedure HideBoxesAboveLevel(aLevel: integer);
   procedure RefreshFakes;
@@ -332,67 +337,36 @@ end;
 // utility functions
 
 function AIsDescendantOfB(miA, miB: TMenuItem): boolean;
-
 function AmpersandStripped(const aText: string): string;
-
 function GetAcceleratedItemsCount(aMenu: TMenu): integer;
-
 function GetChildSeparatorCount(aMI: TMenuItem): integer;
-
-function GetMenuBarIconWidth(aMI: TMenuItem): integer;
-
 function GetNestingLevelDepth(aMenu: TMenu): integer;
-
 function GetNewCaptionFor(aSI: TShadowItem): string;
-
 function GetNextItem(aMI: TMenuItem): TMenuItem;
-
 function GetNextNonSepItem(aMI: TMenuItem): TMenuItem;
-
 function GetPreviousItem(aMI: TMenuItem): TMenuItem;
-
 function GetPreviousNonSepItem(aMI: TMenuItem): TMenuItem;
-
 function GetSavedTemplatesCount: integer;
-
-function GetStringWidth(const aText: string; isBold: boolean): integer;
-
 function HasAccelerator(const aText: string; out aShortcut: TShortCut): boolean;
-
 function ItemStateToStr(aState: TShadowItemDisplayState): string;
-
 function KindToPropertyName(aKind: TSCKind): string;
-
 function LevelZeroAndNoGrandchildren(aMI: TMenuItem): boolean;
-
 function NextItemIsSeparator(aMI: TMenuItem): boolean;
-
 function PreviousItemIsSeparator(aMI: TMenuItem): boolean;
-
 function SavedTemplatesExist: boolean;
-
 function SplitCommaText(const aCommaText: string; out firstBit: string): string;
-
 procedure DoShortcutAccelScanCount(const aSCList: TSCList; shortcutsOnly: boolean);
 
 // utility dialogs
 
 function AddNewOrEditShortcutDlg(aMI: TMenuItem; isMainSCut: boolean; var aShortcut: TShortCut): boolean;
-
 function ChooseIconFromImageListDlg(anImageList: TCustomImageList): integer;
-
 function DeleteMenuTemplateDlg: boolean;
-
 function EditCaptionDlg(aMI: TMenuItem; var aShortcut: TShortCut): boolean;
-
 function InsertMenuTemplateDlg: TMenuItem;
-
 function ListShortCutDlg(shortcutsOnly: boolean; aMenu: TMenu=nil): TModalResult;
-
 procedure SaveMenuTemplateDlg(aMenuItem: TMenuItem);
-
 function ResolvedConflictsDlg: TModalResult;
-
 function NewShortcutOrCaptionIsValidDlg(aConflictingInfo: TSCInfo;
                                         out aNewShortcut: TShortCut;
                                         out aNewCaption: string): boolean;
@@ -400,7 +374,7 @@ function NewShortcutOrCaptionIsValidDlg(aConflictingInfo: TSCInfo;
 
 implementation
 
-uses MenuEditorForm, Laz2_XMLCfg, LazFileUtils, ComCtrls;
+uses MenuEditorForm;
 
 const
   MenuBar_Height = 20;
@@ -845,34 +819,9 @@ begin
   end;
 end;
 
-function GetStringWidth(const aText: string; isBold: boolean): integer;
-var
-  cnv: TCanvas;
-begin
-  cnv:=MenuDesigner.Canvas;
-  if isBold then
-    cnv.Font.Style:=[fsBold]
-  else cnv.Font.Style:=[];
-  Result:=cnv.TextWidth(aText);
-end;
-
 function ItemStateToStr(aState: TShadowItemDisplayState): string;
 begin
   Result:=GetEnumName(TypeInfo(TShadowItemDisplayState), Ord(aState));
-end;
-
-function GetMenuBarIconWidth(aMI: TMenuItem): integer;
-begin
-  Result:=0;
-  if aMI.IsInMenuBar then begin
-    if aMI.HasIcon and (aMI.ImageIndex > -1) and
-       (MenuDesigner.EditedMenu.Images <> nil) then
-         Inc(Result, MenuDesigner.EditedMenu.Images.Width)
-    else if (aMI.Bitmap <> nil) and not aMI.Bitmap.Empty then
-      Inc(Result, aMI.Bitmap.Width);
-    if (Result > 24) then
-      Result:=24;
-  end;
 end;
 
 function GetPreviousNonSepItem(aMI: TMenuItem): TMenuItem;
@@ -3963,8 +3912,7 @@ begin
   Result:=FEdit.Text;
 end;
 
-procedure TLineEditor.EditKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TLineEditor.EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   case Key of
     VK_ESCAPE: begin ModalResult:=mrCancel; Key:=0; end;
@@ -3973,8 +3921,7 @@ begin
   end;
 end;
 
-constructor TLineEditor.CreateWithShadowItem(anOwner: TComponent;
-  aSI: TShadowItem);
+constructor TLineEditor.CreateWithShadowItem(anOwner: TComponent; aSI: TShadowItem);
 var
   topLeft: TPoint;
 begin
@@ -4039,8 +3986,7 @@ end;
 procedure TFake.TextChanged;
 begin
   inherited TextChanged;
-
-  FMinWidth:=GetStringWidth(Caption, False) + Double_MenuBar_Text_Offset;
+  FMinWidth:=FShadowMenu.GetStringWidth(Caption, False) + Double_MenuBar_Text_Offset;
 end;
 
 { TShadowMenu }
@@ -4403,6 +4349,31 @@ end;
 function TShadowMenu.GetSelectedShadowItem: TShadowItem;
 begin
   Result:=GetShadowForMenuItem(FSelectedMenuItem);
+end;
+
+function TShadowMenu.GetStringWidth(const aText: string; isBold: boolean): integer;
+begin
+  Assert(FMenu = MenuDesigner.EditedMenu, 'TShadowMenu.GetStringWidth: FMenu <> MenuDesigner');
+  if isBold then
+    FMainCanvas.Font.Style:=[fsBold]
+  else
+    FMainCanvas.Font.Style:=[];
+  Result:=FMainCanvas.TextWidth(aText);
+end;
+
+function TShadowMenu.GetMenuBarIconWidth(aMI: TMenuItem): integer;
+begin
+  Result:=0;
+  if aMI.IsInMenuBar then begin
+    Assert(FMenu = MenuDesigner.EditedMenu, 'TShadowMenu.GetMenuBarIconWidth: FMenu <> MenuDesigner');
+    if aMI.HasIcon and (aMI.ImageIndex > -1) and
+       (FMenu.Images <> nil) then
+         Inc(Result, FMenu.Images.Width)
+    else if (aMI.Bitmap <> nil) and not aMI.Bitmap.Empty then
+      Inc(Result, aMI.Bitmap.Width);
+    if (Result > 24) then
+      Result:=24;
+  end;
 end;
 
 procedure TShadowMenu.AddManyItems(aPrimaries, aDepth: integer);
@@ -5231,11 +5202,12 @@ begin
   ac.Enabled:=ac1.Enabled or ac2.Enabled or ac3.Enabled;
 end;
 
-constructor TShadowMenu.CreateWithMenuAndDims(aMenu: TMenu; aSelect: TMenuItem;
-  aWidth, aHeight: integer);
+constructor TShadowMenu.CreateWithMenuAndDims(aCanvas: TCanvas; aMenu: TMenu;
+  aSelect: TMenuItem; aWidth, aHeight: integer);
 begin
   Assert(aMenu<>nil,'TShadowMenu.CreateWithMenuAndDims: TMenu parameter is nil');
   inherited Create(nil);
+  FMainCanvas:=aCanvas;
   FMenu:=aMenu;
   FInitialSelectedMenuItem:=aSelect;
   SetInitialBounds(0, 0, aWidth, aHeight);
@@ -5607,10 +5579,11 @@ function TShadowItem.GetWidth: integer;
 var
   w: integer;
 begin
-  w:=GetStringWidth(FRealItem.Caption, FRealItem.Default);
+  w:=FShadowMenu.GetStringWidth(FRealItem.Caption, FRealItem.Default);
   if FRealItem.IsInMenuBar then
-    Result:=w + Double_MenuBar_Text_Offset + GetMenuBarIconWidth(FRealItem)
-  else Result:=w + Double_DropDown_Text_Offset + GetShortcutWidth;
+    Result:=w + Double_MenuBar_Text_Offset + FShadowMenu.GetMenuBarIconWidth(FRealItem)
+  else
+    Result:=w + Double_DropDown_Text_Offset + GetShortcutWidth;
 end;
 
 function TShadowItem.HasChildBox(out aChildBox: TShadowBox): boolean;
@@ -5725,14 +5698,16 @@ begin
     Exit;
   hasSC:=(FRealItem.ShortCut <> 0);
   if hasSC then
-    Inc(Result, GetStringWidth(ShortCutToText(FRealItem.ShortCut), FRealItem.Default));
+    Inc(Result, FShadowMenu.GetStringWidth(ShortCutToText(FRealItem.ShortCut),
+                                           FRealItem.Default));
   hasSC2:=(FRealItem.ShortCutKey2 <> 0);
   if hasSC2 then
-    Inc(Result, GetStringWidth(ShortCutToText(FRealItem.ShortCutKey2), FRealItem.Default));
+    Inc(Result, FShadowMenu.GetStringWidth(ShortCutToText(FRealItem.ShortCutKey2),
+                                           FRealItem.Default));
   if (hasSC or hasSC2) then
     Inc(Result, Shortcut_Offset);
   if (hasSC and hasSC2) then
-    Inc(Result, GetStringWidth(', ', False));
+    Inc(Result, FShadowMenu.GetStringWidth(', ', False));
 end;
 
 function TShadowItem.GetShowingBottomFake: boolean;
@@ -5827,7 +5802,7 @@ var
         pt:=GetBitmapLeftTop;
         Canvas.Draw(pt.x, pt.y, RealItem.Bitmap);
       end;
-      r.Left:=GetMenuBarIconWidth(FRealItem);
+      r.Left:=FShadowMenu.GetMenuBarIconWidth(FRealItem);
       if FRealItem.Default then begin
         oldFontStyle:=Canvas.Font.Style;
         Canvas.Font.Style:=[fsBold];

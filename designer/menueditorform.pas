@@ -522,7 +522,8 @@ begin
         FShortcutList.ScanContainerForShortcutsAndAccelerators;
         FShortcutConflictsCount:=FShortcutList.InitialDuplicatesCount;
         w:=Width - LeftPanel.Width;
-        FShadowMenu:=TShadowMenu.CreateWithMenuAndDims(FEditedMenu, selection, w, Height);
+        FShadowMenu:=TShadowMenu.CreateWithMenuAndDims(Canvas, FEditedMenu, selection,
+                                                       w, Height);
         FShadowMenu.Parent := Self;
         FShadowMenu.Align := alClient;
       end;
