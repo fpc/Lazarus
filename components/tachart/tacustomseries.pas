@@ -195,7 +195,7 @@ type
       AXLabel: String = ''; AColor: TColor = clTAColor): Integer; overload;
     function AddY(
       AY: Double; ALabel: String = ''; AColor: TColor = clTAColor): Integer; inline;
-    procedure Clear; inline;
+    procedure Clear; virtual;
     function Count: Integer; inline;
     procedure Delete(AIndex: Integer); virtual;
     function Extent: TDoubleRect; virtual;
