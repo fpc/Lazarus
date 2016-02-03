@@ -32,7 +32,7 @@ uses
   // IdeIntf
   LazIDEIntf, FormEditingIntf, IDEWindowIntf, ComponentEditors, PropEdits,
   // IDE
-  LazarusIDEStrConsts, MenuShadows;
+  LazarusIDEStrConsts, MenuShadows, MenuShortcuts;
 
 type
 
@@ -73,9 +73,7 @@ type
     FPopupAssignmentsListBox: TListBox;
     FSavedTemplatesCount: integer;
     FShadowMenu: TShadowMenu;
-    FShortcutConflictsCount: integer;
-    FShortcutList: TSCList;
-    FShortcutMenuItemsCount: integer;
+    FShortcuts: TMenuShortcuts;
     FTemplatesSaved: boolean;
     FTotalMenuItemsCount: integer;
     FVariableGlyphsInMenuBar: boolean;
@@ -98,20 +96,16 @@ type
     procedure LoadVariableButtonGlyphs(isInMenubar: boolean);
     procedure SetMenu(aMenu: TMenu; aMenuItem: TMenuItem);
     procedure ShowPopupAssignmentsInfo;
-    procedure UpdateShortcutList(includeAccelerators: boolean=False);
     procedure UpdateStatistics;
     procedure UpdateTemplatesCount;
     procedure UpdateSubmenuGroupBox(selMI: TMenuItem; selBox: TShadowBox; boxIsRoot:boolean);
     procedure BeginUpdate;
     procedure EndUpdate;
     function IsUpdate: Boolean;
-    property AcceleratorMenuItemsCount: integer read FAcceleratorMenuItemsCount;
+    //property AcceleratorMenuItemsCount: integer read FAcceleratorMenuItemsCount;
     property EditedMenu: TMenu read FEditedMenu;
-    property SavedTemplatesCount: integer read FSavedTemplatesCount;
+    //property SavedTemplatesCount: integer read FSavedTemplatesCount;
     property ShadowMenu: TShadowMenu read FShadowMenu;
-    property ShortcutConflictsCount: integer read FShortcutConflictsCount;
-    property ShortcutList: TSCList read FShortcutList;
-    property ShortcutMenuItemsCount: integer read FShortcutMenuItemsCount;
     property TemplatesSaved: boolean read FTemplatesSaved;
     property TotalMenuItemsCount: integer read FTotalMenuItemsCount;
     property VariableGlyphsInMenuBar: boolean read FVariableGlyphsInMenuBar;
@@ -177,7 +171,7 @@ begin
   LoadVariableButtonGlyphs(True);
   KeyPreview:=True;
   GlobalDesignHook.AddHandlerSetSelection(@OnDesignerSetSelection);
-  FShortcutList:=TSCList.Create;
+  FShortcuts:=TMenuShortcuts.Create;
   InitializeStatisticVars;
   FTemplatesSaved:=SavedTemplatesExist;
   SetupPopupAssignmentsDisplay;
@@ -190,10 +184,9 @@ begin
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
   if (FShadowMenu <> nil) then begin
     FShadowMenu.Parent:=nil;
-    FShadowMenu.Free;
-    FShadowMenu:=nil;
+    FreeAndNil(FShadowMenu);
   end;
-  FreeAndNil(FShortcutList);
+  FreeAndNil(FShortcuts);
   FreeAndNil(FPopupAssignments);
   if MenuDesignerSingleton=Self then
     MenuDesignerSingleton := nil;
@@ -233,10 +226,11 @@ begin
         if (mnu = FEditedMenu) and (FShadowMenu <> nil) then
           FShadowMenu.SetSelectedMenuItem(mi, True, False)
         else if (mnu <> nil) then
-               SetMenu(mnu, mi);
+          SetMenu(mnu, mi);
       end;
     end
-  else SetMenu(nil, nil);
+  else
+    SetMenu(nil, nil);
 end;
 
 procedure TMenuDesigner.ShowPopupAssignmentsInfo;
@@ -457,10 +451,10 @@ end;
 
 procedure TMenuDesigner.InitializeStatisticVars;
 begin
-  FShortcutMenuItemsCount:= -1;
-  FIconsCount:= -1;
-  FDeepestNestingLevel:= -1;
-  FCaptionedItemsCount:= -1;
+  FShortcuts.ResetMenuItemsCount;
+  FIconsCount := -1;
+  FDeepestNestingLevel := -1;
+  FCaptionedItemsCount := -1;
 end;
 
 procedure TMenuDesigner.DisableGUI;
@@ -486,9 +480,9 @@ end;
 procedure TMenuDesigner.SetMenu(aMenu: TMenu; aMenuItem: TMenuItem);
 var
   selection: TMenuItem;
-  w: integer;
 begin
-  if (aMenu = nil) then begin
+  if (aMenu = nil) then
+  begin
     DisableGUI;
     if FShadowMenu <> nil then
       FShadowMenu.SelectedMenuItem:=nil;
@@ -498,41 +492,39 @@ begin
     FEditedMenu:=nil;
     Application.ProcessMessages;
   end
-  else
-    begin
-      if (aMenu = FEditedMenu) and (FShadowMenu <> nil) then
-        FShadowMenu.SetSelectedMenuItem(aMenuItem, True, False)
-      else begin
-        if (aMenu = FEditedMenu) and (FShadowMenu = nil) then begin
-          if (FEditedMenu.Items.Count > 0) then
-            selection:=FEditedMenu.Items[0]
-          else selection:=nil;
-        end
-        else if (aMenu <> FEditedMenu) then begin
-          if (FShadowMenu <> nil) then
-            FreeAndNil(FShadowMenu);
-          FEditedMenu:=aMenu;
-          selection:=aMenuItem;
-        end;
-
-        FGUIEnabled:=False;
-        EnableGUI(selection = nil);
-        UpdateStatistics;
-        FShortcutList.ClearAllLists;
-        FShortcutList.ScanContainerForShortcutsAndAccelerators;
-        FShortcutConflictsCount:=FShortcutList.InitialDuplicatesCount;
-        w:=Width - LeftPanel.Width;
-        FShadowMenu:=TShadowMenu.CreateWithMenuAndDims(Canvas, FEditedMenu, selection,
-                                                       w, Height);
-        FShadowMenu.Parent := Self;
-        FShadowMenu.Align := alClient;
+  else begin
+    if (aMenu = FEditedMenu) and (FShadowMenu <> nil) then
+      FShadowMenu.SetSelectedMenuItem(aMenuItem, True, False)
+    else begin
+      if (aMenu = FEditedMenu) and (FShadowMenu = nil) then
+      begin
+        if (FEditedMenu.Items.Count > 0) then
+          selection:=FEditedMenu.Items[0]
+        else
+          selection:=nil;
+      end
+      else if (aMenu <> FEditedMenu) then
+      begin
+        FreeAndNil(FShadowMenu);
+        FEditedMenu:=aMenu;
+        selection:=aMenuItem;
       end;
+
+      FGUIEnabled:=False;
+      EnableGUI(selection = nil);
+      UpdateStatistics;
+      FShadowMenu:=TShadowMenu.CreateWithMenuAndDims(Canvas, FShortcuts,
+                          FEditedMenu, selection, Width-LeftPanel.Width, Height);
+      FShadowMenu.Parent := Self;
+      FShadowMenu.Align := alClient;
     end;
+  end;
 end;
 
 procedure TMenuDesigner.UpdateStatistics;
 var
   captions, shortcuts, icons, accels, tmp: integer;
+  s: String;
 begin
   if not SameText(StatisticsGroupBox.Caption, FEditedMenu.Name) then
     StatisticsGroupBox.Caption:=FEditedMenu.Name;
@@ -543,11 +535,9 @@ begin
     CaptionedItemsCountLabel.Caption:=
       Format(lisMenuEditorCaptionedItemsS, [IntToStr(captions)]);
   end;
-  if (FShortcutMenuItemsCount <> shortcuts) then begin
-    FShortcutMenuItemsCount:=shortcuts;
-    ShortcutItemsCountLabel.Caption:=
-      Format(lisMenuEditorShortcutItemsS, [IntToStr(FShortcutMenuItemsCount)]);
-  end;
+  s:=FShortcuts.Statistics(shortcuts);
+  if s <> '' then
+    ShortcutItemsCountLabel.Caption := s;
   if (FIconsCount <> icons) then begin
     FIconsCount:=icons;
     IconCountLabel.Caption:=
@@ -562,13 +552,6 @@ begin
     FDeepestNestingLevel:=tmp;
   end;
   StatisticsGroupBox.Invalidate;
-end;
-
-procedure TMenuDesigner.UpdateShortcutList(includeAccelerators: boolean);
-begin
-  if includeAccelerators then
-    FShortcutList.ScanContainerForShortcutsAndAccelerators
-  else FShortcutList.ScanContainerForShortcutsOnly;
 end;
 
 procedure TMenuDesigner.UpdateTemplatesCount;

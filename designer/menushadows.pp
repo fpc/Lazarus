@@ -14,11 +14,7 @@ uses
   // IdeIntf
   ComponentEditors, IDEDialogs, PropEdits,
   // IDE
-  LazarusIDEStrConsts;
-
-const
-  Margin = 6;
-  Double_Margin = Margin shl 1;
+  LazarusIDEStrConsts, MenuShortcuts;
 
 type
 
@@ -80,7 +76,7 @@ strict private
   function GetIsInMenuBar: boolean;
   function GetIsMainMenu: boolean;
   function GetLevel: integer;
-  function GetMenu: TMenu;
+  //function GetMenu: TMenu;
   function GetRightFake: TFake;
   function GetShortcutWidth: integer;
   function GetShowingBottomFake: boolean;
@@ -107,13 +103,13 @@ public
   property IsInMenuBar: boolean read GetIsInMenuBar;
   property IsMainMenu: boolean read GetIsMainMenu;
   property Level: integer read GetLevel;
-  property Menu: TMenu read GetMenu;
+  //property Menu: TMenu read GetMenu;
   property ParentBox: TShadowBox read FParentBox;
   property RealItem: TMenuItem read FRealItem write FRealItem;
   property RightFake: TFake read GetRightFake write FRightFake;
   property ShowingBottomFake: boolean read GetShowingBottomFake write FShowingBottomFake;
   property ShowingRightFake: boolean read GetShowingRightFake write FShowingRightFake;
-  property State: TShadowItemDisplayState read FState;
+  //property State: TShadowItemDisplayState read FState;
 end;
 
 { TShadowBox }
@@ -191,6 +187,7 @@ strict private
   FMainCanvas: TCanvas;
   FRootBox: TShadowBox;
   FSelectedMenuItem: TMenuItem;
+  FShortcuts: TMenuShortcuts;
   function GetBoxContainingMenuItem(aMI: TMenuItem): TShadowBox;
   function GetBoxCount: integer;
   function GetHighestLevelVisibleBox: TShadowBox;
@@ -253,13 +250,14 @@ protected
   property ItemsPopupMenu: TPopupMenu read FItemsPopupMenu;
   property RootBox: TShadowBox read FRootBox;
 public
-  constructor CreateWithMenuAndDims(aCanvas: TCanvas; aMenu: TMenu; aSelect: TMenuItem;
-                                    aWidth, aHeight: integer);
+  constructor CreateWithMenuAndDims(aCanvas: TCanvas; aShortcuts: TMenuShortcuts;
+    aMenu: TMenu; aSelect: TMenuItem; aWidth, aHeight: integer);
   destructor Destroy; override;
   procedure HideBoxesAboveLevel(aLevel: integer);
   procedure RefreshFakes;
   procedure SetSelectedMenuItem(aMI: TMenuItem; viaDesigner, prevWasDeleted: boolean);
   procedure UpdateSelectedItemInfo;
+public
   property IsMainMenu: boolean read FIsMainMenu;
   property LookupRoot: TComponent read FLookupRoot;
   property SelectedMenuItem: TMenuItem read FSelectedMenuItem write FSelectedMenuItem;
@@ -267,109 +265,12 @@ public
   property SelectedShadowItem: TShadowItem read GetSelectedShadowItem;
 end;
 
-TSCKind = (scUnknown,
-           scMenuItemSC, scMenuItemKey2, scMenuItemAccel,
-           scActionSC, scActionSecondary, scActionAccel,
-           scOtherCompAccel);
-
-const
-  Accelerator_Kinds = [scMenuItemAccel, scActionAccel, scOtherCompAccel];
-  MenuItem_Kinds = [scMenuItemSC, scMenuItemKey2, scMenuItemAccel];
-  ShortcutOnly_Kinds = [scMenuItemSC, scMenuItemKey2, scActionSC, scActionSecondary];
-
-type
-
- { TSCInfo }
-
-TSCInfo = class(TObject)
-strict private
-  FComponent: TComponent;
-  FComponentName: string;
-  FKind: TSCKind;
-  FShortcut: TShortCut;
-  function GetAction: TAction;
-  function GetCaption: string;
-  function GetMenuItem: TMenuItem;
-  function GetToCompositeString: string;
-public
-  constructor CreateWithParams(aComponent: TComponent; aKind: TSCKind; aSC: TShortCut);
-  property Action: TAction read GetAction;
-  property Caption: string read GetCaption;
-  property Component: TComponent read FComponent;
-  property ComponentName: string read FComponentName;
-  property Kind: TSCKind read FKind;
-  property MenuItem: TMenuItem read GetMenuItem;
-  property Shortcut: TShortCut read FShortcut;
-  property ToCompositeString: string read GetToCompositeString;
-end;
-
-  { TSCList }
-
-  TSCList = class(TObject)
-  strict private
-    FAcceleratorsInContainerCount: integer;
-    FInitialDuplicates: TFPList;
-    FScanList: TStringList;
-    FShortcutsInContainerCount: integer;
-    FUniqueList: TFPList;
-    function GetInitialDuplicatesCount: integer;
-    function GetScanListCompName(index: integer): string;
-    function GetUniqueCount: integer;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    function FindUniqueInfoForShortcut(aSC: TShortCut): TSCInfo;
-    function UniqueListContainsShortcut(aSC: TShortCut): boolean;
-    procedure ClearAllLists;
-    procedure ScanContainerForShortcutsAndAccelerators;
-    procedure ScanContainerForShortcutsOnly;
-    procedure ScanSCListForDuplicates;
-    procedure SortByComponentPropertyName;
-    property AcceleratorsInContainerCount: integer read FAcceleratorsInContainerCount write FAcceleratorsInContainerCount;
-    property InitialDuplicates: TFPList read FInitialDuplicates;
-    property InitialDuplicatesCount: integer read GetInitialDuplicatesCount;
-    property ScanList: TStringList read FScanList;
-    property ScanListCompName[index: integer]: string read GetScanListCompName;
-    property ShortcutsInContainerCount: integer read FShortcutsInContainerCount write FShortcutsInContainerCount;
-    property UniqueCount: integer read GetUniqueCount;
-  end;
 
 // utility functions
 
-function AIsDescendantOfB(miA, miB: TMenuItem): boolean;
-function AmpersandStripped(const aText: string): string;
-function GetAcceleratedItemsCount(aMenu: TMenu): integer;
-function GetChildSeparatorCount(aMI: TMenuItem): integer;
 function GetNestingLevelDepth(aMenu: TMenu): integer;
-function GetNewCaptionFor(aSI: TShadowItem): string;
-function GetNextItem(aMI: TMenuItem): TMenuItem;
-function GetNextNonSepItem(aMI: TMenuItem): TMenuItem;
-function GetPreviousItem(aMI: TMenuItem): TMenuItem;
-function GetPreviousNonSepItem(aMI: TMenuItem): TMenuItem;
 function GetSavedTemplatesCount: integer;
-function HasAccelerator(const aText: string; out aShortcut: TShortCut): boolean;
-function ItemStateToStr(aState: TShadowItemDisplayState): string;
-function KindToPropertyName(aKind: TSCKind): string;
-function LevelZeroAndNoGrandchildren(aMI: TMenuItem): boolean;
-function NextItemIsSeparator(aMI: TMenuItem): boolean;
-function PreviousItemIsSeparator(aMI: TMenuItem): boolean;
 function SavedTemplatesExist: boolean;
-function SplitCommaText(const aCommaText: string; out firstBit: string): string;
-procedure DoShortcutAccelScanCount(const aSCList: TSCList; shortcutsOnly: boolean);
-
-// utility dialogs
-
-function AddNewOrEditShortcutDlg(aMI: TMenuItem; isMainSCut: boolean; var aShortcut: TShortCut): boolean;
-function ChooseIconFromImageListDlg(anImageList: TCustomImageList): integer;
-function DeleteMenuTemplateDlg: boolean;
-function EditCaptionDlg(aMI: TMenuItem; var aShortcut: TShortCut): boolean;
-function InsertMenuTemplateDlg: TMenuItem;
-function ListShortCutDlg(shortcutsOnly: boolean; aMenu: TMenu=nil): TModalResult;
-procedure SaveMenuTemplateDlg(aMenuItem: TMenuItem);
-function ResolvedConflictsDlg: TModalResult;
-function NewShortcutOrCaptionIsValidDlg(aConflictingInfo: TSCInfo;
-                                        out aNewShortcut: TShortCut;
-                                        out aNewCaption: string): boolean;
 
 
 implementation
@@ -389,20 +290,6 @@ const
   Gutter_Offset = 6;
   Gutter_X = DropDown_Text_Offset - Gutter_Offset;
   Popup_Origin: TPoint = (x:15; y:15);
-  Ampersand_Char = '&';
-  Leading = 4;
-  Double_Leading = Leading shl 1;
-  Treble_Leading = Leading + Double_Leading;
-  VDim = 20;
-  VTextOffset = 2;
-  Header_Color = TColor($00EDEFD6);
-  ShortCutKeys: array[0..48] of word = (VK_UNKNOWN,   //#todo extend this list, or use one from elsewhere in LCL?
-    VK_0, VK_1, VK_2, VK_3, VK_4, VK_5, VK_6, VK_7, VK_8, VK_9,
-    VK_A, VK_B, VK_C, VK_D, VK_E, VK_F, VK_G, VK_H, VK_I, VK_J, VK_K, VK_L,
-    VK_M, VK_N, VK_O, VK_P, VK_Q, VK_R, VK_S, VK_T, VK_U, VK_V, VK_W, VK_X,
-    VK_Y, VK_Z, VK_F1, VK_F2, VK_F3, VK_F4, VK_F5, VK_F6, VK_F7, VK_F8,
-    VK_F9, VK_F10, VK_F11, VK_F12);
-
   MenuTemplatesFilename='menutemplates.xml';
 
 var
@@ -411,144 +298,22 @@ var
 
 type
 
-{ TLineEditor }
+  { TLineEditor }
 
-TLineEditor = class(TForm)
-strict private
-  FEdit: TEdit;
-  function GetEditedLine: string;
-protected
-  procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-public
-  constructor CreateWithShadowItem(anOwner: TComponent; aSI: TShadowItem);
-  property EditedLine: string read GetEditedLine;
-end;
-
-{ TAddShortcutDialog }
-
-TAddShortcutDialog = class(TForm)
-strict private
-  FButtonPanel: TButtonPanel;
-  FMenuItem: TMenuItem;
-  FNewShortcut: TShortCut;
-  FOldShortcut: TShortCut;
-  FShortCutGrabBox: TShortCutGrabBox;
-  procedure OKButtonClick(Sender: TObject);
-  procedure OnGrabBoxCloseUp(Sender: TObject);
-public
-  constructor CreateWithMenuItem(AOwner: TComponent; aMI: TMenuItem; isMainSC: boolean; aSC: TShortCut);
-  property NewShortcut: TShortCut read FNewShortcut;
-  property OldShortcut: TShortCut write FOldShortcut;
-end;
-
-TDisplayType = (dtNone, dtBlack, dtBlackBold, dtGreyed, dtGreyedBold);
-
-TDisplayClickEvent = procedure(isHeader: boolean; index: integer) of object;
-
-TDualDisplay = class;
-
-TContents = class(TCustomControl)
-  private
-    FCol1MaxTextWidth: integer;
-    FCol2MaxTextWidth: integer;
-    FDualDisplay: TDualDisplay;
-    FOnContentsClick: TModalDialogFinished;
-    FSList: TStringList;
+  TLineEditor = class(TForm)
+  strict private
+    FEdit: TEdit;
+    function GetEditedLine: string;
   protected
-    procedure DoContentsClick(anIndex: integer);
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure Paint; override;
-    property Col1MaxTextWidth: integer read FCol1MaxTextWidth;
-    property Col2MaxTextWidth: integer read FCol2MaxTextWidth;
-    property SList: TStringList read FSList;
+    procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure AddToList(const aLine: string; aDisplayType: TDisplayType=dtBlack);
-    procedure Clear;
-    property OnContentsClick: TModalDialogFinished read FOnContentsClick write FOnContentsClick;
+    constructor CreateWithShadowItem(anOwner: TComponent; aSI: TShadowItem);
+    property EditedLine: string read GetEditedLine;
   end;
-
-  { THeader }
-
-  THeader = class(TCustomControl)
-  private
-    FCol1Header: string;
-    FCol2Header: string;
-    FColumn1TextWidth: integer;
-    FDisplayType: TDisplayType;
-    FDualDisplay: TDualDisplay;
-    FOnHeaderClick: TModalDialogFinished;
-  protected
-    procedure DoHeaderClick(anIndex: integer);
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure Paint; override;
-  public
-    constructor Create(AOwner: TComponent); override;
-    procedure AddHeader(const aHeader: string; aDisplayType: TDisplayType);
-    procedure Clear;
-    property Column1TextWidth: integer read FColumn1TextWidth;
-    property OnHeaderClick: TModalDialogFinished read FOnHeaderClick write FOnHeaderClick;
-  end;
-
-  { TDualDisplay }
-
-  TDualDisplay = class(TCustomControl)
-  private
-    FCol1Right: integer;
-    FContents: TContents;
-    FHeader: THeader;
-    FOnDisplayClick: TDisplayClickEvent;
-    FSBox: TScrollBox;
-    FUpdating: boolean;
-    function GetContentsCount: integer;
-    procedure HeaderContentsClick(Sender: TObject; index: integer);
-    procedure SetCol1Right(AValue: integer);
-  protected
-    class function GetControlClassDefaultSize: TSize; override;
-    function TextWidth(const aText: string): integer;
-    property Updating: boolean read FUpdating;
-  public
-    constructor Create(AOwner: TComponent); override;
-    procedure AddHeader(const aHeader: string; aDT: TDisplayType=dtBlackBold);
-    procedure AddLine(const aLine: string; aDT: TDisplayType=dtBlack);
-    procedure BeginUpdate;
-    procedure Clear;
-    procedure ClearContents;
-    procedure ClearHeader;
-    procedure EndUpdate;
-    procedure InvalidateContents;
-    property Col1Right: integer read FCol1Right write SetCol1Right;
-    property ContentsCount: integer read GetContentsCount;
-    property OnDisplayClick: TDisplayClickEvent read FOnDisplayClick write FOnDisplayClick;
-  end;
-
-{ TShortcutDisplayDlg }
-
-TShortcutDisplayDlg = class(TForm)
-strict private
-  FLastSortIndex: integer;
-  FMenu: TMenu;
-  FscList: TStringList;
-  FSingleMenuOnly: boolean;
-  FShortcutsOnly: boolean;
-  // GUI
-  FBPanel: TButtonPanel;
-  FDualDisplay: TDualDisplay;
-  FGBDisplay: TGroupBox;
-  FLabel: TLabel;
-  procedure DisplayAllDlgClick(isHeader: boolean; index: integer);
-  procedure DisplaySingleMenuClick(isHeader: boolean; index: integer);
-  procedure UpdateContents(singleMenuOnly: boolean=False);
-  procedure UpdateFromMenu(anIndex: integer= -1);
-public
-  constructor CreateWithShortcutsOnly(shortcutsOnly: boolean; aMenu: TMenu=nil);
-  destructor Destroy; override;
-end;
 
   { TEditCaptionDialog }
 
-TEditCaptionDialog = class(TForm)
+  TEditCaptionDialog = class(TForm)
   strict private
     FButtonPanel: TButtonPanel;
     FEdit: TEdit;
@@ -561,148 +326,198 @@ TEditCaptionDialog = class(TForm)
   public
     constructor CreateWithMenuItem(AOwner: TComponent; aMI: TMenuItem; aSC: TShortCut);
     property NewShortcut: TShortCut read FNewShortcut;
-    property OldShortcut: TShortCut write FOldShortcut;
+    //property OldShortcut: TShortCut write FOldShortcut;
   end;
 
-TRadioIconGroup = class;
+  { TResolveConflictsDlg }
 
-TRadioIconState = (risUp, risDown, risPressed, risUncheckedHot, risCheckedHot);
-
-    { TRadioIcon }
-
-TRadioIcon = class(TGraphicControl)
-strict private
-  FBGlyph: TButtonGlyph;
-  FOnChange: TNotifyEvent;
-  FRIGroup: TRadioIconGroup;
-  FRIState: TRadioIconState;
-  function GetChecked: Boolean;
-  procedure SetChecked(aValue: Boolean);
-protected
-  procedure DoChange;
-  procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-  procedure MouseEnter; override;
-  procedure MouseLeave; override;
-  procedure Paint; override;
-public
-  constructor CreateWithGlyph(aRIGroup: TRadioIconGroup; anImgIndex: integer);
-  destructor Destroy; override;
-  property Checked: Boolean read GetChecked write SetChecked;
-  property OnChange: TNotifyEvent read FOnChange write FOnChange;
-end;
-
-{ TRadioIconGroup }
-
-TRadioIconGroup = class(TScrollBox)
-strict private
-  FItemIndex: integer;
-  FOnSelectItem: TNotifyEvent;
-  FRIArray: array of TRadioIcon;
-  procedure CreateRadioItems;
-  procedure ApplyLayout;
-  procedure RIOnChange(Sender: TObject);
-  procedure DoSelectItem;
-protected
-  FImageList: TCustomImageList;
-  FedSize: TSize;
-  FedUnchecked, FedChecked, FedPressed, FedUncheckedHot, FedCheckedHot: TThemedElementDetails;
-  FGlyphPt: TPoint;
-  FSpacing: integer;
-  FRadioHeight, FRadioWidth: integer;
-  FRadioRect: TRect;
-  procedure SetParent(NewParent: TWinControl); override;
-public
-  constructor CreateWithImageList(AOwner: TComponent; anImgList: TCustomImageList);
-  property ItemIndex: integer read FItemIndex;
-  property OnSelectItem: TNotifyEvent read FOnSelectItem write FOnSelectItem;
-end;
-
-{ TdlgChooseIcon }
-
-TdlgChooseIcon = class(TForm)
-  private
+  TResolveConflictsDlg = class(TForm)
+  strict private
     FButtonPanel: TButtonPanel;
-    FRadioIconGroup: TRadioIconGroup;
-    function GetImageIndex: integer;
-    procedure RIGClick(Sender: TObject);
+    FConflictsGroupBox: TGroupBox;
+    FConflictsListBox: TListBox;
+    FCurrentEdit: TEdit;
+    FInitialConflictsCount: integer;
+    FRemainingConflictsCountLabel: TLabel;
+    FResolvedConflictsCount: integer;
+    FResolvedConflictsCountLabel: TLabel;
+    FSelectedDuplicate: TSCInfo;
+    FSelectedInfo: TSCInfo;
+    FSelectedUnique: TSCInfo;
+    FShortcuts: TMenuShortcuts;
+    procedure ConflictsBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
+    procedure CreateListboxItems;
+    procedure InitialPopulateListBox;
+    procedure OKButtonClick(Sender: TObject);
+    procedure RePopulateListBox;
+    procedure UpdateStatistics;
   public
-    constructor Create(TheOwner: TComponent); override;
-    procedure SetRadioIconGroup(anImageList: TCustomImageList);
-    property ImageIndex: integer read GetImageIndex;
+    constructor Create(aShortcuts: TMenuShortcuts); reintroduce;
+    destructor Destroy; override;
   end;
 
-{ TMenuTemplate }
+  { TShortcutDisplayDlg }
 
- TMenuTemplate = class(TObject)
- strict private
-   FDescription: string;
-   FIsStandardTemplate: boolean;
-   FPrimaryItem: string;
-   FSubList: TStringList;
-   function GetShortcut(index: integer): TShortCut;
-   function GetSubItem(index: integer): string;
-   function GetSubItemCount: integer;
- public
-   class function MenuItemToString(aMenuItem: TMenuItem; aDescription: string): string;
-   constructor CreateFromString(const aMenuString: string);
-   destructor Destroy; override;
-   function ReadFromString(const aString: string): boolean;
-   property Description: string read FDescription write FDescription;
-   property IsStandardTemplate: boolean read FIsStandardTemplate write FIsStandardTemplate;
-   property PrimaryItem: string read FPrimaryItem;
-   property Shortcut[index: integer]: TShortCut read GetShortcut;
-   property SubItem[index: integer]: string read GetSubItem;
-   property SubItemCount: integer read GetSubItemCount;
- end;
+  TShortcutDisplayDlg = class(TForm)
+  strict private
+    FLastSortIndex: integer;
+    FMenu: TMenu;
+    FscList: TStringList;
+    FSingleMenuOnly: boolean;
+    FShortcutsOnly: boolean;
+    FShortcuts: TMenuShortcuts;
+    // GUI
+    FBPanel: TButtonPanel;
+    FDualDisplay: TDualDisplay;
+    FGBDisplay: TGroupBox;
+    FLabel: TLabel;
+    procedure DisplayAllDlgClick(isHeader: boolean; index: integer);
+    procedure DisplaySingleMenuClick(isHeader: boolean; index: integer);
+    procedure UpdateContents(singleMenuOnly: boolean=False);
+    procedure UpdateFromMenu(anIndex: integer= -1);
+  public
+    constructor CreateWithShortcutsOnly(aShortcuts: TMenuShortcuts; shortcutsOnly: boolean; aMenu: TMenu=nil);
+    destructor Destroy; override;
+  end;
 
- TDialogMode = (dmInsert, dmSave, dmDelete);
+  TRadioIconGroup = class;
+  TRadioIconState = (risUp, risDown, risPressed, risUncheckedHot, risCheckedHot);
 
- { TMenuTemplates }
+  { TRadioIcon }
 
- TMenuTemplates = class(TObject)
- strict private
-   FTemplateList: TFPList;
-   function GetDescription(index: integer): string;
-   function GetMenu(index: integer): TMenuItem;
-   function GetMenuCount: integer;
-   function GetMenuTemplate(index: integer): TMenuTemplate;
-   function GetPrimaryItem(index: integer): string;
-   procedure CheckIndex(anIndex: integer);
-   procedure LoadDefaultTemplates;
-   procedure LoadSavedTemplates;
- public
-   constructor CreateForMode(aDialogMode: TDialogMode=dmInsert);
-   destructor Destroy; override;
-   function GetIndexOfTemplate(aMT: TMenuTemplate): integer;
-   procedure AddTemplate(const aTemplateText: string; isStandard: boolean=True);
-   procedure SaveTemplateToConfig(aMenuTemplate: TMenuTemplate);
-   property Description[index: integer]: string read GetDescription;
-   property Menu[index: integer]: TMenuItem read GetMenu;
-   property MenuCount: integer read GetMenuCount;
-   property MenuTemplate[index: integer]: TMenuTemplate read GetMenuTemplate;
-   property PrimaryItem[index: integer]: string read GetPrimaryItem;
- end;
+  TRadioIcon = class(TGraphicControl)
+  strict private
+    FBGlyph: TButtonGlyph;
+    FOnChange: TNotifyEvent;
+    FRIGroup: TRadioIconGroup;
+    FRIState: TRadioIconState;
+    function GetChecked: Boolean;
+    procedure SetChecked(aValue: Boolean);
+  protected
+    procedure DoChange;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseEnter; override;
+    procedure MouseLeave; override;
+    procedure Paint; override;
+  public
+    constructor CreateWithGlyph(aRIGroup: TRadioIconGroup; anImgIndex: integer);
+    destructor Destroy; override;
+    property Checked: Boolean read GetChecked write SetChecked;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
 
-{ TPreview }
+  { TRadioIconGroup }
 
-TPreview = class(TGraphicControl)
- strict private
-   FDisplayAsPopup: boolean;
-   FTemplate: TMenuTemplate;
-   function GetSize: TSize;
-   procedure SetDisplayAsPopup(AValue: boolean);
- protected
-   procedure Paint; override;
-   procedure SetParent(NewParent: TWinControl); override;
- public
-   property DisplayAsPopup: boolean read FDisplayAsPopup write SetDisplayAsPopup;
-   procedure Clear;
-   procedure LoadTemplate(aMenuTemplate: tmenuTemplate);
-end;
+  TRadioIconGroup = class(TScrollBox)
+  strict private
+    FItemIndex: integer;
+    FOnSelectItem: TNotifyEvent;
+    FRIArray: array of TRadioIcon;
+    procedure CreateRadioItems;
+    procedure ApplyLayout;
+    procedure RIOnChange(Sender: TObject);
+    procedure DoSelectItem;
+  protected
+    FImageList: TCustomImageList;
+    FedSize: TSize;
+    FedUnchecked, FedChecked, FedPressed, FedUncheckedHot, FedCheckedHot: TThemedElementDetails;
+    FGlyphPt: TPoint;
+    FSpacing: integer;
+    FRadioHeight, FRadioWidth: integer;
+    FRadioRect: TRect;
+    procedure SetParent(NewParent: TWinControl); override;
+  public
+    constructor CreateWithImageList(AOwner: TComponent; anImgList: TCustomImageList);
+    property ItemIndex: integer read FItemIndex;
+    property OnSelectItem: TNotifyEvent read FOnSelectItem write FOnSelectItem;
+  end;
 
-{ TMenuTemplateDialog }
+  { TdlgChooseIcon }
 
-TMenuTemplateDialog = class(TForm)
+  TdlgChooseIcon = class(TForm)
+    private
+      FButtonPanel: TButtonPanel;
+      FRadioIconGroup: TRadioIconGroup;
+      function GetImageIndex: integer;
+      procedure RIGClick(Sender: TObject);
+    public
+      constructor Create(TheOwner: TComponent); override;
+      procedure SetRadioIconGroup(anImageList: TCustomImageList);
+      property ImageIndex: integer read GetImageIndex;
+    end;
+
+  { TMenuTemplate }
+
+   TMenuTemplate = class(TObject)
+   strict private
+     FDescription: string;
+     FIsStandardTemplate: boolean;
+     FPrimaryItem: string;
+     FSubList: TStringList;
+     function GetShortcut(index: integer): TShortCut;
+     function GetSubItem(index: integer): string;
+     function GetSubItemCount: integer;
+   public
+     class function MenuItemToString(aMenuItem: TMenuItem; aDescription: string): string;
+     constructor CreateFromString(const aMenuString: string);
+     destructor Destroy; override;
+     function ReadFromString(const aString: string): boolean;
+     property Description: string read FDescription write FDescription;
+     property IsStandardTemplate: boolean read FIsStandardTemplate write FIsStandardTemplate;
+     property PrimaryItem: string read FPrimaryItem;
+     property Shortcut[index: integer]: TShortCut read GetShortcut;
+     property SubItem[index: integer]: string read GetSubItem;
+     property SubItemCount: integer read GetSubItemCount;
+   end;
+
+   TDialogMode = (dmInsert, dmSave, dmDelete);
+
+   { TMenuTemplates }
+
+   TMenuTemplates = class(TObject)
+   strict private
+     FTemplateList: TFPList;
+     function GetDescription(index: integer): string;
+     function GetMenu(index: integer): TMenuItem;
+     function GetMenuCount: integer;
+     function GetMenuTemplate(index: integer): TMenuTemplate;
+     function GetPrimaryItem(index: integer): string;
+     procedure CheckIndex(anIndex: integer);
+     procedure LoadDefaultTemplates;
+     procedure LoadSavedTemplates;
+   public
+     constructor CreateForMode(aDialogMode: TDialogMode=dmInsert);
+     destructor Destroy; override;
+     function GetIndexOfTemplate(aMT: TMenuTemplate): integer;
+     procedure AddTemplate(const aTemplateText: string; isStandard: boolean=True);
+     procedure SaveTemplateToConfig(aMenuTemplate: TMenuTemplate);
+     property Description[index: integer]: string read GetDescription;
+     property Menu[index: integer]: TMenuItem read GetMenu;
+     property MenuCount: integer read GetMenuCount;
+     property MenuTemplate[index: integer]: TMenuTemplate read GetMenuTemplate;
+     property PrimaryItem[index: integer]: string read GetPrimaryItem;
+   end;
+
+  { TPreview }
+
+  TPreview = class(TGraphicControl)
+   strict private
+     FDisplayAsPopup: boolean;
+     FTemplate: TMenuTemplate;
+     function GetSize: TSize;
+     procedure SetDisplayAsPopup(AValue: boolean);
+   protected
+     procedure Paint; override;
+     procedure SetParent(NewParent: TWinControl); override;
+   public
+     property DisplayAsPopup: boolean read FDisplayAsPopup write SetDisplayAsPopup;
+     procedure Clear;
+     procedure LoadTemplate(aMenuTemplate: tmenuTemplate);
+  end;
+
+  { TMenuTemplateDialog }
+
+  TMenuTemplateDialog = class(TForm)
   strict private
     // GUI
     FBCancel: TBitBtn;
@@ -751,58 +566,6 @@ TMenuTemplateDialog = class(TForm)
     destructor Destroy; override;
     property MenuToInsert: TMenuItem read FMenuToInsert;
     property MenuToSave: TMenuItem read FMenuToSave write FMenuToSave;
-  end;
-
-{ TResolveConflictsDlg }
-
-TResolveConflictsDlg = class(TForm)
-strict private
-  FButtonPanel: TButtonPanel;
-  FConflictsGroupBox: TGroupBox;
-  FConflictsListBox: TListBox;
-  FCurrentEdit: TEdit;
-  FInitialConflictsCount: integer;
-  FRemainingConflictsCountLabel: TLabel;
-  FResolvedConflictsCount: integer;
-  FResolvedConflictsCountLabel: TLabel;
-  FSelectedDuplicate: TSCInfo;
-  FSelectedInfo: TSCInfo;
-  FSelectedUnique: TSCInfo;
-  procedure ConflictsBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
-  procedure CreateListboxItems;
-  procedure InitialPopulateListBox;
-  procedure OKButtonClick(Sender: TObject);
-  procedure RePopulateListBox;
-  procedure UpdateStatistics;
-public
-  constructor {%H-}Create(TheOwner: TComponent);
-  destructor Destroy; override;
-end;
-
-{ TEditShortcutCaptionDialog }
-
-TEditShortcutCaptionDialog = class(TForm)
-strict private
-    FEditingCaption: boolean;
-    FInfo: TSCInfo;
-    FNewCaption: string;
-    FNewShortcut: TShortCut;
-    FOldCaption: string;
-    // GUI controls
-    FButtonPanel: TButtonPanel;
-    FEdit: TEdit;
-    FGrabBox: TCustomShortCutGrabBox;
-    FGroupBox: TGroupBox;
-    procedure CaptionEditChange(Sender: TObject);
-    procedure GrabBoxEnter(Sender: TObject);
-    procedure GrabBoxExit(Sender: TObject);
-    procedure OKButtonOnClick(Sender: TObject);
-  protected
-    procedure Activate; override;
-  public
-    constructor {%H-}CreateNew(anOwner: TComponent; aSCInfo: TSCInfo);
-    property NewCaption: string read FNewCaption;
-    property NewShortcut: TShortCut read FNewShortcut;
   end;
 
 // utility functions
@@ -924,38 +687,6 @@ begin
   end;
 end;
 
-function HasAccelerator(const aText: string; out aShortcut: TShortCut): boolean;
-var
-  p: integer;
-  aCopy, foundChar, accelStr: string;
-begin
-  if (aText = '') then begin
-    aShortcut:=0;
-    Exit(False);
-  end;
-  aCopy:=aText;
-  Result:=False;
-  p:=LazUTF8.UTF8Pos(Ampersand_Char, aCopy);
-  while (p > 0) and (p < LazUTF8.UTF8Length(aCopy)) do
-  begin
-    foundChar:=LazUTF8.UTF8Copy(aCopy, p+1, 1);
-    if (foundChar <> Ampersand_Char) then begin
-      accelStr:=LazUTF8.UTF8UpperCase(foundChar); // force uppercase
-      Result:=True;
-      Break;
-    end
-    else begin
-      LazUTF8.UTF8Delete(aCopy, 1, p+1);
-      p:=LazUTF8.UTF8Pos(Ampersand_Char, aCopy);
-    end;
-  end;
-  if Result then
-    aShortcut:=KeyToShortCut(Ord(accelStr[1]),
-    {$if defined(darwin) or defined(macos) or defined(iphonesim)} [ssMeta]
-    {$else} [ssAlt] {$endif})
-  else aShortcut:=0;
-end;
-
 {function CommaTextIntoTwo(const aText: string; out a2ndHalf: string): string;
 var
   p, len: integer;
@@ -970,56 +701,6 @@ begin
   Result:=Copy(aText, 1, Pred(p));
   a2ndHalf:=Copy(aText, Succ(p), len - p);
 end;}
-
-function SplitCommaText(const aCommaText: string; out firstBit: string): string;
-var
-  p: integer;
-begin
-  if (aCommaText = '') then begin
-    firstBit:='';
-    Exit('');
-  end;
-  p:=Pos(',', aCommaText);
-  if (p = 0) then begin
-    firstBit:=aCommaText;
-    Exit('');
-  end;
-  firstBit:=Copy(aCommaText, 1, Pred(p));
-  Result:=Copy(aCommaText, Succ(p), Length(aCommaText)-p);
-end;
-
-function KindToPropertyName(aKind: TSCKind): string;
-begin
-   case aKind of
-    scUnknown:   Result:='<unknown property>';
-    scActionAccel, scMenuItemAccel, scOtherCompAccel:
-                  Result:='Caption';
-    scActionSC, scMenuItemSC: Result:='ShortCut';
-    scActionSecondary: Result:='SecondaryShortcuts';
-    scMenuItemKey2:    Result:='ShortCutKey2';
-  end;
-end;
-
-function GetAcceleratedItemsCount(aMenu: TMenu): integer;
-var
-  i: integer;
-
-  procedure RecursiveCountAcceleratedCaptions(aMI: TMenuItem);
-  var
-    j: integer;
-    sc: TShortCut;
-  begin
-    if HasAccelerator(aMI.Caption, sc) then
-      Inc(Result);
-    for j:=0 to aMI.Count-1 do
-      RecursiveCountAcceleratedCaptions(aMI.Items[j]);
-  end;
-
-begin
-  Result:=0;
-  for i:=0 to aMenu.Items.Count-1 do
-    RecursiveCountAcceleratedCaptions(aMenu.Items[i]);
-end;
 
 function SavedTemplatesExist: boolean;
 var
@@ -1069,87 +750,6 @@ begin
   end;
 end;
 
-procedure DoShortcutAccelScanCount(const aSCList: TSCList; shortcutsOnly: boolean);
-var
-  dm: TDataModule;
-  frm: TCustomForm;
-  i, a: integer;
-  aLst: TActionList;
-  ac: TAction;
-  sc: TShortCut;
-  container: TComponent;
-
-  procedure AddInfoToScanList(aComp: TComponent; aSC: TShortCut; aKind: TSCKind);
-  var
-    isAccel: boolean;
-  begin
-    isAccel:=(aKind in Accelerator_Kinds);
-    if isAccel and not shortcutsOnly then
-      aSCList.AcceleratorsInContainerCount:=aSCList.AcceleratorsInContainerCount+1
-    else aSCList.ShortcutsInContainerCount:=aSCList.ShortcutsInContainerCount+1;
-    aSCList.ScanList.AddObject(ShortCutToText(aSC), TSCInfo.CreateWithParams(aComp, aKind, aSC));
-  end;
-
-  procedure ScanMenu(aMenu: TMenu);
-  var
-    i: integer;
-
-    procedure RecursiveScanItem(anItem:TMenuItem);
-    var
-      j: integer;
-      sc: TShortCut;
-    begin
-      if (anItem.ShortCut <> 0) then
-        AddInfoToScanList(anItem, anItem.ShortCut, scMenuItemSC);
-      if (anItem.ShortCutKey2 <> 0) then
-        AddInfoToScanList(anItem, anItem.ShortCutKey2, scMenuItemKey2);
-      if not shortcutsOnly and HasAccelerator(anItem.Caption, sc) then
-        AddInfoToScanList(anItem, sc, scMenuItemAccel);
-      for j:=0 to anItem.Count-1 do
-        RecursiveScanItem(anItem.Items[j]);
-    end;
-
-  begin
-    for i:=0 to aMenu.Items.Count-1 do
-      RecursiveScanItem(aMenu.Items[i]);
-  end;
-
-begin
-  container:=GlobalDesignHook.LookupRoot as TComponent;
-  aSCList.ClearAllLists;
-  aSCList.AcceleratorsInContainerCount:=0;
-  aSCList.ShortcutsInContainerCount:=0;
-  if (container is TDataModule) then begin
-    dm:=TDataModule(container);
-    for i:=0 to dm.ComponentCount-1 do
-      if (dm.Components[i] is TMenu) then
-        ScanMenu(TMenu(dm.Components[i]));
-  end
-  else if (container is TCustomForm) then begin
-    frm:=TCustomForm(container);
-    for i:=0 to frm.ComponentCount-1 do
-      if (frm.Components[i] is TMenu) then
-        ScanMenu(TMenu(frm.Components[i]))
-      else if (frm.Components[i] is TActionList) then begin
-        aLst:=TActionList(frm.Components[i]);
-        for a:=0 to aLst.ActionCount-1 do begin
-          ac:=TAction(aLst.Actions[a]);
-          if (ac.ShortCut > 0) then
-            AddInfoToScanList(ac, ac.ShortCut, scActionSC);
-          if (ac.SecondaryShortCuts.Count > 0) then
-            AddInfoToScanList(ac, ac.SecondaryShortCuts.ShortCuts[0], scActionSecondary);
-          if not shortcutsOnly and HasAccelerator(ac.Caption, sc) then
-            AddInfoToScanList(ac, sc, scActionAccel);
-        end;
-      end
-      else if not shortcutsOnly and (frm.Components[i] is TControl) and
-             HasAccelerator(TControl(frm.Components[i]).Caption, sc) then
-               AddInfoToScanList(frm.Components[i], sc, scOtherCompAccel);
-  end;
-  Assert(aSCList.AcceleratorsInContainerCount+aSCList.ShortcutsInContainerCount=
-         aSCList.ScanList.Count,'DoShortcutAccelScanCount: internal counting error');
-end;
-
 function AIsDescendantOfB(miA, miB: TMenuItem): boolean;
 var
   tmp: TMenuItem;
@@ -1163,18 +763,6 @@ begin
     tmp:=tmp.Parent;
   until (tmp = nil);
   Result:=False;
-end;
-
-function AmpersandStripped(const aText: string): string;
-var
-  p: integer;
-begin
-  Result:=aText;
-  p:=Pos(Ampersand_Char, Result);
-  while (p > 0) do begin
-    Delete(Result, p, 1);
-    p:=Pos(Ampersand_Char, Result);
-  end;
 end;
 
 function GetNestingLevelDepth(aMenu: TMenu): integer;
@@ -1240,36 +828,6 @@ begin
   else Result:=0;
 end;
 
-function ListShortCutDlg(shortcutsOnly: boolean; aMenu: TMenu): TModalResult;
-var
-  dlg: TShortcutDisplayDlg;
-begin
-  dlg:=TShortcutDisplayDlg.CreateWithShortcutsOnly(shortcutsOnly, aMenu);
-  try
-    Result:=dlg.ShowModal;
-  finally
-    FreeAndNil(dlg);
-  end;
-end;
-
-function AddNewOrEditShortcutDlg(aMI: TMenuItem; isMainSCut: boolean;
-  var aShortcut: TShortCut): boolean;
-var
-  dlg: TAddShortcutDialog;
-begin
-  dlg:=TAddShortcutDialog.CreateWithMenuItem(nil, aMI, isMainSCut, aShortcut);
-  try
-    if (dlg.ShowModal = mrOK) then
-      begin
-        aShortcut:=dlg.NewShortcut;
-        Result:=True;
-      end
-    else Result:=False;
-  finally
-    dlg.Free;
-  end;
-end;
-
 function EditCaptionDlg(aMI: TMenuItem; var aShortcut: TShortCut): boolean;
 var
   dlg: TEditCaptionDialog;
@@ -1323,52 +881,6 @@ begin
   end;
 end;
 
-function ResolvedConflictsDlg: TModalResult;
-var
-  dlg: TResolveConflictsDlg;
-begin
-  dlg:=TResolveConflictsDlg.Create(nil);
-  try
-    Result:=dlg.ShowModal;
-  finally
-    dlg.Free;
-  end;
-end;
-
-function NewShortcutOrCaptionIsValidDlg(aConflictingInfo: TSCInfo; out
-  aNewShortcut: TShortCut; out aNewCaption: string): boolean;
-var
-  dlg: TEditShortcutCaptionDialog;
-  ok: boolean;
-  sc: TShortCut;
-begin
-  dlg:=TEditShortcutCaptionDialog.CreateNew(nil, aConflictingInfo);
-  try
-    Result:=(dlg.ShowModal = mrOK);
-    case (aConflictingInfo.Kind in Accelerator_Kinds) of
-      True: begin
-              if HasAccelerator(dlg.NewCaption, sc) then
-                ok:=(sc <> aConflictingInfo.Shortcut)
-              else ok:=True;
-            end;
-      False: ok:=(aConflictingInfo.Shortcut <> dlg.NewShortcut);
-    end;
-    Result:=Result and ok;
-    if Result then
-      begin
-        aNewShortcut:=dlg.NewShortcut;
-        aNewCaption:=dlg.NewCaption;
-      end
-    else
-      begin
-        aNewShortcut:=0;
-        aNewCaption:='';
-      end;
-  finally
-    FreeAndNil(dlg);
-  end;
-end;
-
 function InsertMenuTemplateDlg: TMenuItem;
 var
   dlg: TMenuTemplateDialog;
@@ -1397,16 +909,29 @@ begin
   end;
 end;
 
-{ TShortcutDisplayDlg }
-
-function SortOnComponentPropertyName(List: TStringList; Index1, Index2: Integer
-  ): Integer;
+function ResolvedConflictsDlg: TModalResult;
 var
-  s1, s2: string;
+  dlg: TResolveConflictsDlg;
 begin
-  s1:=TSCInfo(List.Objects[Index1]).ToCompositeString;
-  s2:=TSCInfo(List.Objects[Index2]).ToCompositeString;
-  Result:=AnsiCompareText(s1, s2);
+  dlg:=TResolveConflictsDlg.Create(nil);
+  try
+    Result:=dlg.ShowModal;
+  finally
+    dlg.Free;
+  end;
+end;
+
+function ListShortCutDlg(aShortcuts: TMenuShortcuts; shortcutsOnly: boolean;
+  aMenu: TMenu): TModalResult;
+var
+  dlg: TShortcutDisplayDlg;
+begin
+  dlg:=TShortcutDisplayDlg.CreateWithShortcutsOnly(aShortcuts, shortcutsOnly, aMenu);
+  try
+    Result:=dlg.ShowModal;
+  finally
+    FreeAndNil(dlg);
+  end;
 end;
 
 { TMenuTemplates }
@@ -1419,46 +944,6 @@ begin
   if (SCInfo1.ComponentName > SCInfo2.ComponentName) then
     Result:= +1
   else if (SCInfo1.ComponentName < SCInfo2.ComponentName) then
-    Result:= -1
-  else Result:=0;
-end;
-
-{ TEditShortcutCaptionDialog }
-
-function SortByShortcut(Item1, Item2: Pointer): Integer;
-var
-  inf1: TSCInfo absolute Item1;
-  inf2: TSCInfo absolute Item2;
-begin
-  if (inf1.Shortcut > inf2.Shortcut) then
-    Result:= +1
-  else if (inf1.Shortcut < inf2.Shortcut) then
-    Result:= -1
-  else Result:=0;
-end;
-
-function SortFPListByComponentPropertyName(Item1, Item2: Pointer): Integer;
-var
-  inf1: TSCInfo absolute Item1;
-  inf2: TSCInfo absolute Item2;
-begin
-  if (inf1.ComponentName > inf2.ComponentName) then
-    Result:= +1
-  else if (inf1.ComponentName < inf2.ComponentName) then
-    Result:= -1
-  else Result:=0;
-end;
-
-function SortByComponentPropertyName(List: TStringList; Index1, Index2: Integer): Integer;
-var
-  name1: string;
-  name2: string;
-begin
-  name1:=TSCInfo(List.Objects[Index1]).ComponentName;
-  name2:=TSCInfo(List.Objects[Index2]).ComponentName;
-  if (name1 > name2) then
-    Result:= +1
-  else if (name2 > name1) then
     Result:= -1
   else Result:=0;
 end;
@@ -1584,443 +1069,6 @@ begin
     end;
     Show;
   end;
-end;
-
-{ TEditShortcutCaptionDialog }
-
-procedure TEditShortcutCaptionDialog.CaptionEditChange(Sender: TObject);
-var
-  newSC: TShortCut;
-  hasAccel: boolean;
-  ed: TEdit absolute Sender;
-  inf: TSCInfo;
-begin
-  if not (Sender is TEdit) then
-    Exit;
-  if HasAccelerator(ed.Text, newSC) then
-    begin
-      if MenuDesigner.ShortcutList.UniqueListContainsShortcut(newSC) then
-        begin
-          inf:=MenuDesigner.ShortcutList.FindUniqueInfoForShortcut(newSC);
-          IDEMessageDialogAb(lisMenuEditorFurtherShortcutConflict,
-                     Format(lisMenuEditorSIsAlreadyInUse,
-                     [ShortCutToText(newSC), inf.Component.Name]),
-                     mtWarning, [mbOK], False);
-          FEdit.Text:=AmpersandStripped(FOldCaption);
-          FEdit.SetFocus;
-        end
-      else
-        begin
-          FNewShortcut:=newSC;
-          FNewCaption:=ed.Text;
-        end;
-    end
-  else
-    begin
-      FNewShortcut:=0;
-      FNewCaption:=ed.Text;
-    end;
-  hasAccel:=HasAccelerator(FEdit.Text, newSC);
-  FButtonPanel.OKButton.Enabled:=not hasAccel or (hasAccel and (newSC <> FInfo.Shortcut));
-end;
-
-procedure TEditShortcutCaptionDialog.GrabBoxEnter(Sender: TObject);
-begin
-  if not FButtonPanel.OKButton.Enabled then
-    FButtonPanel.OKButton.Enabled:=True;
-end;
-
-procedure TEditShortcutCaptionDialog.GrabBoxExit(Sender: TObject);
-var
-  newSC: TShortCut;
-  inf: TSCInfo;
-begin
-  newSC:=KeyToShortCut(FGrabBox.Key, FGrabBox.ShiftState);
-  if (FInfo.Shortcut = newSC) then
-    begin
-      IDEMessageDialogAb(lisMenuEditorShortcutNotYetChanged,
-           Format(lisMenuEditorYouHaveToChangeTheShortcutFromSStoAvoidAConflict,
-                  [ShortCutToText(FInfo.Shortcut)]),
-                  mtWarning, [mbOK], False);
-      FGrabBox.KeyComboBox.SetFocus;
-      Exit;
-    end;
-  if MenuDesigner.ShortcutList.UniqueListContainsShortcut(newSC) then
-    begin
-      inf:=MenuDesigner.ShortcutList.FindUniqueInfoForShortcut(newSC);
-      IDEMessageDialogAb(lisMenuEditorFurtherShortcutConflict,
-           Format(lisMenuEditorSIsAlreadyInUse,
-                  [ShortCutToText(newSC), inf.Component.Name]),
-                  mtWarning, [mbOK], False);
-      FGrabBox.KeyComboBox.SetFocus;
-    end
-  else
-    begin
-      FNewShortcut:=newSC;
-      FButtonPanel.OKButton.Enabled:=True;
-    end;
-end;
-
-procedure TEditShortcutCaptionDialog.OKButtonOnClick(Sender: TObject);
-begin
-  if FEditingCaption then
-    begin
-      if (FEdit.Text = '') then
-        begin
-          IDEMessageDialogAb(lisMenuEditorCaptionShouldNotBeBlank,
-                     lisMenuEditorYouMustEnterTextForTheCaption,
-                     mtWarning, [mbOK], False);
-          FEdit.Text:=AmpersandStripped(FOldCaption);
-          FEdit.SetFocus;
-        end
-      else ModalResult:=mrOK;
-    end
-  else
-    ModalResult:=mrOK;
-end;
-
-procedure TEditShortcutCaptionDialog.Activate;
-begin
-  inherited Activate;
-  FButtonPanel.OKButton.Enabled:=False;
-end;
-
-constructor TEditShortcutCaptionDialog.CreateNew(anOwner: TComponent;
-  aSCInfo: TSCInfo);
-var
-  s: string;
-  sse: TShiftStateEnum;
-  i: integer;
-begin
-  Assert(aSCInfo<>nil,'TEditShortcutCaptionDialog.CreateNew: aSCInfo is nil');
-  Assert(aSCInfo.Kind<>scUnknown,'TEditShortcutCaptionDialog.CreateNew: aSCInfo is unknown type');
-  Assert(MenuDesigner.ShortcutList.UniqueCount>0,'TEditShortcutCaptionDialog.CreateNew: unique list is empty');
-  inherited CreateNew(anOwner);
-  FInfo:=aSCInfo;
-  FEditingCaption:=(FInfo.Kind in Accelerator_Kinds);
-  Position:=poScreenCenter;
-  BorderStyle:=bsDialog;
-  Constraints.MinWidth:=300;
-
-  FGroupBox:=TGroupBox.Create(Self);
-  if FEditingCaption then
-    begin
-      Caption:=Format(lisMenuEditorChangeConflictingAcceleratorS,
-                      [ShortCutToText(FInfo.Shortcut)]);
-      if (FInfo.Kind = scMenuItemAccel) then
-        FOldCaption:=FInfo.MenuItem.Caption;
-      FEdit:=TEdit.Create(Self);
-      with FEdit do
-        begin
-          Align:=alClient;
-          BorderSpacing.Around:=Margin;
-          AutoSize:=True;
-          Text:=FOldCaption;
-          OnChange:=@CaptionEditChange;
-          Parent:=FGroupBox;
-        end;
-      s:=lisMenuEditorCaption;
-    end
-  else
-    begin
-      Caption:=Format(lisMenuEditorChangeShortcutConflictS,
-                      [ShortCutToText(FInfo.Shortcut)]);
-      s:=KindToPropertyName(FInfo.Kind);
-      // don't set values to old shortcut since they need to be changed anyhow
-      FGrabBox:=TCustomShortCutGrabBox.Create(Self);
-      with FGrabBox do
-        begin
-          Align:=alClient;
-          BorderSpacing.Around:=Margin;
-          AutoSize:=True;
-          GrabButton.Caption:=lisMenuEditorGrabKey;
-         // this rather restricted list covers most of the common values needed
-          with KeyComboBox.Items do
-            begin
-              Clear;
-              BeginUpdate;
-              for i:=Low(ShortCutKeys) to High(ShortCutKeys) do
-                Add(ShortCutToText(ShortCutKeys[i]));
-              EndUpdate;
-            end;
-          GrabButton.OnEnter:=@GrabBoxEnter; // we can't alter any grabBox OnClick event
-          KeyComboBox.OnEnter:=@GrabBoxEnter;
-          for sse in ShiftButtons do
-            ShiftCheckBox[sse].OnEnter:=@GrabBoxEnter;
-          OnExit:=@GrabBoxExit;
-          FGrabBox.Caption:=Format(lisMenuEditorChangeShortcutCaptionForComponent,
-                           [s, FInfo.Component.Name]);
-          Parent:=FGroupBox;
-        end;
-    end;
-  FGroupBox.Caption:=Format(lisMenuEditorEditingSForS,[s, FInfo.Component.Name]);
-  FGroupBox.Align:=alTop;
-  FGroupBox.BorderSpacing.Around:=Margin;
-  FGroupBox.AutoSize:=True;
-  FGroupBox.Parent:=Self;
-
-  FButtonPanel:=TButtonPanel.Create(Self);
-  with FButtonPanel do
-    begin
-      ShowButtons:=[pbOK, pbCancel];
-      Top:=1;
-      Align:=alTop;
-      OKButton.OnClick:=@OKButtonOnClick;
-      OKButton.ModalResult:=mrNone;
-      OKButton.Enabled:=False;
-      ShowBevel:=False;
-      Parent:=Self;
-    end;
-  AutoSize:=True;
-end;
-
-{ TResolveConflictsDlg }
-
-procedure TResolveConflictsDlg.ConflictsBoxSelectionChange(Sender: TObject;
-  User: boolean);
-begin
-  if (FConflictsListBox.ItemIndex < 0) then
-    Exit;
-  FSelectedDuplicate:=TSCInfo(FConflictsListBox.Items.Objects[FConflictsListBox.ItemIndex]);
-  Assert(FSelectedDuplicate<>nil,'TResolveConflictsDlg.ConflictsBoxSelectionChange: FSelectedDuplicate is nil');
-  FSelectedUnique:=MenuDesigner.ShortcutList.FindUniqueInfoForShortcut(FSelectedDuplicate.Shortcut);
-  Assert(FSelectedDuplicate<>nil,'TResolveConflictsDlg.ConflictsBoxSelectionChange: FSelectedDuplicate is nil');
-  Assert(FSelectedUnique<>nil,'TResolveConflictsDlg.ConflictsBoxSelectionChange: FSelectedUnique is nil');
-  if (FSelectedDuplicate.Kind in MenuItem_Kinds) then
-    FSelectedInfo:=FSelectedDuplicate
-  else if (FSelectedUnique.Kind in MenuItem_Kinds) then
-    FSelectedInfo:=FSelectedUnique
-  else FSelectedInfo:=FSelectedDuplicate;
-  FCurrentEdit.Text:=Format(lisMenuEditorEditingSdotS,
-         [FSelectedInfo.ComponentName, KindToPropertyName(FSelectedInfo.Kind)]);
-  FButtonPanel.OKButton.Enabled:=True;
-end;
-
-procedure TResolveConflictsDlg.CreateListboxItems;
-var
-  sUnique: string;
-  sDup: string;
-  infUnique: TSCInfo;
-  p: pointer;
-  infDup: TSCInfo absolute p;
-begin
-  FConflictsListBox.OnSelectionChange:=nil;
-  FConflictsListBox.Items.Clear;
-  for p in MenuDesigner.ShortcutList.InitialDuplicates do begin
-    sDup:=Format(lisMenuEditorSInS, [ShortCutToText(infDup.Shortcut),
-      infDup.ComponentName]);
-    infUnique:=MenuDesigner.ShortcutList.FindUniqueInfoForShortcut(infDup.Shortcut);
-    Assert(infUnique<>nil,'TResolveConflictsDlg.PopulateListBox: missing unique shortcut');
-    sUnique:=Format(lisMenuEditorSInS, [ShortCutToText(infUnique.Shortcut),
-      infUnique.ComponentName]);
-    FConflictsListBox.Items.AddObject(Format(lisMenuEditorSConflictsWithS, [
-      sDup, sUnique]), infDup);
-  end;
-  FConflictsListBox.OnSelectionChange:=@ConflictsBoxSelectionChange;
-end;
-
-procedure TResolveConflictsDlg.OKButtonClick(Sender: TObject);
-var
-  newShortcut: TShortCut;
-  newCaption: string;
-  si: TShadowItem = nil;
-
-  procedure AddSecondaryShortcut;
-  var
-    scList: TShortCutList;
-  begin
-    scList:=TShortCutList.Create;
-    try
-      scList.Add(ShortCutToText(newShortcut));
-      TAction(FSelectedInfo.Component).SecondaryShortCuts.Assign(scList);
-    finally
-      scList.Free;
-    end;
-  end;
-
-begin
-  Assert(FSelectedInfo<>nil,'TShortcutScanDlg.ResolveConflictClick: FSelectedInfo is nil');
-  if NewShortcutOrCaptionIsValidDlg(FSelectedInfo, newShortcut, newCaption) then
-    begin
-      case FSelectedInfo.Kind of
-        scMenuItemAccel:   FSelectedInfo.MenuItem.Caption:=newCaption;
-        scMenuItemSC:      FSelectedInfo.MenuItem.ShortCut:=newShortcut;
-        scMenuItemKey2:    FSelectedInfo.MenuItem.ShortCutKey2:=newShortcut;
-        scActionAccel:     TAction(FSelectedInfo.Component).Caption:=newCaption;
-        scActionSC:        TAction(FSelectedInfo.Component).ShortCut:=newShortcut;
-        scActionSecondary: AddSecondaryShortcut;
-        scOtherCompAccel:  TControl(FSelectedInfo.Component).Caption:=newCaption;
-      end;
-      if (FSelectedInfo.Kind in MenuItem_Kinds) then begin
-        MenuDesigner.ShadowMenu.FEditorDesigner.PropertyEditorHook.RefreshPropertyValues;
-        MenuDesigner.ShadowMenu.FEditorDesigner.Modified;
-        si:=MenuDesigner.ShadowMenu.GetShadowForMenuItem(FSelectedInfo.MenuItem);
-        if (si <> nil) then begin
-          MenuDesigner.ShadowMenu.UpdateBoxLocationsAndSizes;
-          si.Repaint;
-        end;
-      end
-      else case FSelectedInfo.Kind of
-        scActionAccel, scActionSC, scActionSecondary: begin
-            GlobalDesignHook.RefreshPropertyValues;
-            GlobalDesignHook.Modified(TAction(FSelectedInfo.Component));
-          end;
-        scOtherCompAccel: begin
-            GlobalDesignHook.RefreshPropertyValues;
-            GlobalDesignHook.Modified(TControl(FSelectedInfo.Component));
-          end;
-      end;
-
-      RePopulateListBox;
-    end;
-end;
-
-procedure TResolveConflictsDlg.InitialPopulateListBox;
-begin
-  if (MenuDesigner.ShortcutList.InitialDuplicatesCount > 0) then begin
-    FResolvedConflictsCount:=0;
-    FResolvedConflictsCountLabel.Caption:=Format(
-      lisMenuEditorResolvedConflictsS, [IntToStr(FResolvedConflictsCount)]);
-    CreateListboxItems;
-    FRemainingConflictsCountLabel.Caption:=Format(
-      lisMenuEditorRemainingConflictsS, [IntToStr(FConflictsListBox.Count)]);
-    FConflictsListBox.ItemIndex:=0;
-  end
-  else begin
-    FButtonPanel.OKButton.Enabled:=False;
-    FSelectedInfo:=nil;
-    FConflictsListBox.OnSelectionChange:=nil;
-    FConflictsListBox.Items.Add(lisMenuEditorNoShortcutConflicts);
-    FCurrentEdit.Text:=lisMenuEditorNoShortcutConflicts;
-    FResolvedConflictsCountLabel.Caption:=Format(lisMenuEditorResolvedConflictsS,['0']);
-    FRemainingConflictsCountLabel.Caption:=Format(lisMenuEditorRemainingConflictsS,['0']);
-  end;
-end;
-
-procedure TResolveConflictsDlg.RePopulateListBox;
-begin
-  FConflictsListBox.OnSelectionChange:=nil;
-  FConflictsListBox.Items.Clear;
-  FConflictsListBox.ItemIndex:= -1;
-  FButtonPanel.OKButton.Enabled:=False;
-  MenuDesigner.ShortcutList.ScanContainerForShortcutsAndAccelerators;
-  if (MenuDesigner.ShortcutList.InitialDuplicatesCount > 0) then begin
-    CreateListboxItems;
-    UpdateStatistics;
-    FConflictsListBox.ItemIndex:=0;
-    FConflictsListBox.OnSelectionChange:=@ConflictsBoxSelectionChange;
-  end
-  else begin
-    FButtonPanel.OKButton.Enabled:=False;
-    FSelectedInfo:=nil;
-    FConflictsListBox.OnSelectionChange:=nil;
-    FRemainingConflictsCountLabel.Caption:=Format(lisMenuEditorRemainingConflictsS,['0']);
-    FResolvedConflictsCountLabel.Caption:=Format(
-      lisMenuEditorResolvedConflictsS, [FInitialConflictsCount]);
-    FConflictsListBox.Items.Add(lisMenuEditorNoShortcutConflicts);
-    FCurrentEdit.Text:=lisMenuEditorConflictResolutionComplete;
-    FButtonPanel.CancelButton.Caption:=lisBtnClose;
-  end;
-end;
-
-procedure TResolveConflictsDlg.UpdateStatistics;
-begin
-  FResolvedConflictsCount:=FInitialConflictsCount - FConflictsListBox.Count;
-  FResolvedConflictsCountLabel.Caption:=Format(lisMenuEditorResolvedConflictsS,
-    [IntToStr(FResolvedConflictsCount)]);
-  FRemainingConflictsCountLabel.Caption:=Format(
-    lisMenuEditorRemainingConflictsS, [IntToStr(FInitialConflictsCount-FResolvedConflictsCount)]);
-end;
-
-constructor TResolveConflictsDlg.Create(TheOwner: TComponent);
-begin
-  inherited CreateNew(TheOwner);
-  MenuDesigner.ShortcutList.ScanContainerForShortcutsAndAccelerators;
-  FInitialConflictsCount:=MenuDesigner.ShortcutList.InitialDuplicatesCount;
-  FResolvedConflictsCount:=0;
-  Position:=poScreenCenter;
-  Constraints.MinWidth:=400;
-  Constraints.MinHeight:=256;
-  Caption:=Format(lisMenuEditorMenuItemShortcutConflictsInS,[(GlobalDesignHook.LookupRoot as TComponent).Name]);
-
-  FConflictsGroupBox:=TGroupBox.Create(Self);
-  with FConflictsGroupBox do begin
-    Caption:=Format(lisMenuEditorShortcutConflictsFoundInitiallyD, [
-      MenuDesigner.ShortcutList.InitialDuplicatesCount]);
-    Align:=alTop;
-    Top:=0;
-    BorderSpacing.Around:=Margin;
-    BorderSpacing.Top:=Margin;
-    Parent:=Self;
-  end;
-
-  FResolvedConflictsCountLabel:=TLabel.Create(Self);
-  with FResolvedConflictsCountLabel do begin
-    BorderSpacing.Around:=Margin;
-    Align:=alTop;
-    Top:=1;
-    Name:='ResolvedConflictsCountLabel';
-    Caption:=Name;
-    Parent:=FConflictsGroupBox;
-  end;
-
-  FRemainingConflictsCountLabel:=TLabel.Create(Self);
-  with FRemainingConflictsCountLabel do begin
-    BorderSpacing.Around:=Margin;
-    Align:=alTop;
-    Top:=2;
-    Name:='RemainingConflictsCountLabel';
-    Caption:=Name;
-    Parent:=FConflictsGroupBox;
-  end;
-
-  FConflictsListBox:=TListBox.Create(Self);
-  with FConflictsListBox do begin
-    Color:=clBtnFace;
-    Align:=alTop;
-    Top:=3;
-    BorderSpacing.Around:=Margin;
-    Height:=100;
-    Name:='ConflictsListBox';
-    OnSelectionChange:=@ConflictsBoxSelectionChange;
-    Parent:=FConflictsGroupBox;
-  end;
-
-  FCurrentEdit:=TEdit.Create(Self);
-  with FCurrentEdit do begin
-    Align:=alTop;
-    Top:=4;
-    BorderSpacing.Around:=Margin;
-    ReadOnly:=True;
-    Name:='CurrentEdit';
-    Text:=Name;
-    Parent:=FConflictsGroupBox;
-  end;
-
-  FConflictsGroupBox.AutoSize:=True;
-
-  FButtonPanel:=TButtonPanel.Create(Self);
-  with FButtonPanel do begin
-    Align:=alTop;
-    Top:=1;
-    BorderSpacing.Right:=Margin;
-    ShowBevel:=False;
-    ShowButtons:=[pbOK, pbCancel];
-    ShowGlyphs:=[pbClose];
-    OKButton.Enabled:=False;
-    OKButton.ModalResult:=mrNone;
-    OKButton.Caption:=lisMenuEditorResolveSelectedConflict;
-    OKButton.OnClick:=@OKButtonClick;
-    Parent:=Self;
-  end;
-
-  InitialPopulateListBox;
-  AutoSize:=True;
-end;
-
-destructor TResolveConflictsDlg.Destroy;
-begin
-  inherited Destroy;
 end;
 
 { TMenuTemplates }
@@ -3374,301 +2422,266 @@ begin
   AutoSize:=True;
 end;
 
-{ TAddShortcutDialog }
+{ TResolveConflictsDlg }
 
-procedure TAddShortcutDialog.OKButtonClick(Sender: TObject);
+constructor TResolveConflictsDlg.Create(aShortcuts: TMenuShortcuts);
 begin
-  if (FShortCutGrabBox.Key <> VK_UNKNOWN) then
-    FNewShortcut:=KeyToShortCut(FShortCutGrabBox.Key, FShortCutGrabBox.ShiftState)
-  else FNewShortcut:=0;
-end;
-
-procedure TAddShortcutDialog.OnGrabBoxCloseUp(Sender: TObject);
-begin
-  if (FShortCutGrabBox.KeyComboBox.ItemIndex = 0) then
-    FShortCutGrabBox.ShiftState:=[];
-end;
-
-constructor TAddShortcutDialog.CreateWithMenuItem(AOwner: TComponent;
-  aMI: TMenuItem; isMainSC: boolean; aSC: TShortCut);
-var
-  editing: boolean;
-  key: word;
-  shift: TShiftState;
-  i: integer;
-begin
-  inherited CreateNew(AOwner);
-  FMenuItem:=aMI;
-  FOldShortcut:=aSC;
-  editing:=(aSC <> 0);
+  inherited CreateNew(Nil);
+  FShortcuts:=aShortcuts;
+  FShortcuts.ShortcutList.ScanContainerForShortcutsAndAccelerators;
+  FInitialConflictsCount:=FShortcuts.ShortcutList.InitialDuplicatesCount;
+  FResolvedConflictsCount:=0;
   Position:=poScreenCenter;
-  BorderStyle:=bsDialog;
-  case editing of
-    False: if isMainSC then
-             Caption:=Format(lisMenuEditorEnterANewShortCutForS, [FMenuItem.Name])
-           else Caption:=Format(lisMenuEditorEnterANewShortCutKey2ForS, [FMenuItem.Name]);
-    True : if isMainSC then
-             Caption:=Format(lisMenuEditorChangeTheShortCutForS, [FMenuItem.Name])
-           else Caption:=Format(lisMenuEditorChangeTheShortCutKey2ForS, [FMenuItem.Name]);
+  Constraints.MinWidth:=400;
+  Constraints.MinHeight:=256;
+  Caption:=Format(lisMenuEditorMenuItemShortcutConflictsInS,
+                  [(GlobalDesignHook.LookupRoot as TComponent).Name]);
+  FConflictsGroupBox:=TGroupBox.Create(Self);
+  with FConflictsGroupBox do begin
+    Caption:=Format(lisMenuEditorShortcutConflictsFoundInitiallyD,
+      [FShortcuts.ShortcutList.InitialDuplicatesCount]);
+    Align:=alTop;
+    Top:=0;
+    BorderSpacing.Around:=Margin;
+    BorderSpacing.Top:=Margin;
+    Parent:=Self;
   end;
+
+  FResolvedConflictsCountLabel:=TLabel.Create(Self);
+  with FResolvedConflictsCountLabel do begin
+    BorderSpacing.Around:=Margin;
+    Align:=alTop;
+    Top:=1;
+    Name:='ResolvedConflictsCountLabel';
+    Caption:=Name;
+    Parent:=FConflictsGroupBox;
+  end;
+
+  FRemainingConflictsCountLabel:=TLabel.Create(Self);
+  with FRemainingConflictsCountLabel do begin
+    BorderSpacing.Around:=Margin;
+    Align:=alTop;
+    Top:=2;
+    Name:='RemainingConflictsCountLabel';
+    Caption:=Name;
+    Parent:=FConflictsGroupBox;
+  end;
+
+  FConflictsListBox:=TListBox.Create(Self);
+  with FConflictsListBox do begin
+    Color:=clBtnFace;
+    Align:=alTop;
+    Top:=3;
+    BorderSpacing.Around:=Margin;
+    Height:=100;
+    Name:='ConflictsListBox';
+    OnSelectionChange:=@ConflictsBoxSelectionChange;
+    Parent:=FConflictsGroupBox;
+  end;
+
+  FCurrentEdit:=TEdit.Create(Self);
+  with FCurrentEdit do begin
+    Align:=alTop;
+    Top:=4;
+    BorderSpacing.Around:=Margin;
+    ReadOnly:=True;
+    Name:='CurrentEdit';
+    Text:=Name;
+    Parent:=FConflictsGroupBox;
+  end;
+
+  FConflictsGroupBox.AutoSize:=True;
+
   FButtonPanel:=TButtonPanel.Create(Self);
-  FButtonPanel.ShowButtons:=[pbOK, pbCancel];
-  FButtonPanel.OKButton.Name:='OKButton';
-  FButtonPanel.OKButton.DefaultCaption:=True;
-  FButtonPanel.OKButton.OnClick:=@OKButtonClick;
-  FButtonPanel.CancelButton.Name:='CancelButton';
-  FButtonPanel.CancelButton.DefaultCaption:=True;
-  FButtonPanel.Parent:=Self;
-  FShortCutGrabBox:=TShortCutGrabBox.Create(Self);
-  FShortCutGrabBox.BorderSpacing.Around:=Margin;
-  FShortCutGrabBox.GrabButton.Caption:='&Grab key';
-  // this rather restricted list covers most of the common values needed
-  // #todo - extend list?
-  with FShortCutGrabBox.KeyComboBox.Items do
-    begin
-      Clear;
-      BeginUpdate;
-      Add(lisMenuEditorNone);
-      for i:=1 to High(ShortCutKeys) do
-        Add(ShortCutToText(ShortCutKeys[i]));
-      EndUpdate;
-    end;
-  {$if defined(darwin) or defined(macos) or defined(iphonesim)}
-    FShortCutGrabBox.AllowedShifts:=[ssShift, ssCtrl, ssMeta]
-  {$else} FShortCutGrabBox.AllowedShifts:=[ssShift, ssCtrl, ssAlt] {$endif};
-  FShortCutGrabBox.KeyComboBox.OnCloseUp:=@OnGrabBoxCloseUp;
-  FShortCutGrabBox.Align:=alClient;
-  FShortCutGrabBox.MainOkButton:=FButtonPanel.OKButton;
-  if editing then begin
-    ShortCutToKey(FOldShortcut, key, shift);
-    FShortCutGrabBox.ShiftState:=shift;
-    FShortCutGrabBox.Key:=key;
+  with FButtonPanel do begin
+    Align:=alTop;
+    Top:=1;
+    BorderSpacing.Right:=Margin;
+    ShowBevel:=False;
+    ShowButtons:=[pbOK, pbCancel];
+    ShowGlyphs:=[pbClose];
+    OKButton.Enabled:=False;
+    OKButton.ModalResult:=mrNone;
+    OKButton.Caption:=lisMenuEditorResolveSelectedConflict;
+    OKButton.OnClick:=@OKButtonClick;
+    Parent:=Self;
   end;
-  FShortCutGrabBox.Parent:=Self;
+
+  InitialPopulateListBox;
   AutoSize:=True;
+end;
+
+destructor TResolveConflictsDlg.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TResolveConflictsDlg.ConflictsBoxSelectionChange(Sender: TObject; User: boolean);
+begin
+  if (FConflictsListBox.ItemIndex < 0) then
+    Exit;
+  FSelectedDuplicate:=TSCInfo(FConflictsListBox.Items.Objects[FConflictsListBox.ItemIndex]);
+  Assert(FSelectedDuplicate<>nil,'TResolveConflictsDlg.ConflictsBoxSelectionChange: FSelectedDuplicate is nil');
+  FSelectedUnique:=FShortcuts.ShortcutList.FindUniqueInfoForShortcut(FSelectedDuplicate.Shortcut);
+  Assert(FSelectedDuplicate<>nil,'TResolveConflictsDlg.ConflictsBoxSelectionChange: FSelectedDuplicate is nil');
+  Assert(FSelectedUnique<>nil,'TResolveConflictsDlg.ConflictsBoxSelectionChange: FSelectedUnique is nil');
+  if (FSelectedDuplicate.Kind in MenuItem_Kinds) then
+    FSelectedInfo:=FSelectedDuplicate
+  else if (FSelectedUnique.Kind in MenuItem_Kinds) then
+    FSelectedInfo:=FSelectedUnique
+  else FSelectedInfo:=FSelectedDuplicate;
+  FCurrentEdit.Text:=Format(lisMenuEditorEditingSdotS,
+         [FSelectedInfo.ComponentName, KindToPropertyName(FSelectedInfo.Kind)]);
+  FButtonPanel.OKButton.Enabled:=True;
+end;
+
+procedure TResolveConflictsDlg.CreateListboxItems;
+var
+  sUnique: string;
+  sDup: string;
+  infUnique: TSCInfo;
+  p: pointer;
+  infDup: TSCInfo absolute p;
+begin
+  FConflictsListBox.OnSelectionChange:=nil;
+  FConflictsListBox.Items.Clear;
+  for p in FShortcuts.ShortcutList.InitialDuplicates do begin
+    sDup:=Format(lisMenuEditorSInS, [ShortCutToText(infDup.Shortcut),
+      infDup.ComponentName]);
+    infUnique:=FShortcuts.ShortcutList.FindUniqueInfoForShortcut(infDup.Shortcut);
+    Assert(infUnique<>nil,'TResolveConflictsDlg.PopulateListBox: missing unique shortcut');
+    sUnique:=Format(lisMenuEditorSInS, [ShortCutToText(infUnique.Shortcut),
+      infUnique.ComponentName]);
+    FConflictsListBox.Items.AddObject(Format(lisMenuEditorSConflictsWithS, [
+      sDup, sUnique]), infDup);
+  end;
+  FConflictsListBox.OnSelectionChange:=@ConflictsBoxSelectionChange;
+end;
+
+procedure TResolveConflictsDlg.OKButtonClick(Sender: TObject);
+var
+  newShortcut: TShortCut;
+  newCaption: string;
+  si: TShadowItem = nil;
+
+  procedure AddSecondaryShortcut;
+  var
+    scList: TShortCutList;
+  begin
+    scList:=TShortCutList.Create;
+    try
+      scList.Add(ShortCutToText(newShortcut));
+      TAction(FSelectedInfo.Component).SecondaryShortCuts.Assign(scList);
+    finally
+      scList.Free;
+    end;
+  end;
+
+begin
+  Assert(FSelectedInfo<>nil,'TShortcutScanDlg.ResolveConflictClick: FSelectedInfo is nil');
+  if NewShortcutOrCaptionIsValidDlg(FSelectedInfo, newShortcut, newCaption) then
+    begin
+      case FSelectedInfo.Kind of
+        scMenuItemAccel:   FSelectedInfo.MenuItem.Caption:=newCaption;
+        scMenuItemSC:      FSelectedInfo.MenuItem.ShortCut:=newShortcut;
+        scMenuItemKey2:    FSelectedInfo.MenuItem.ShortCutKey2:=newShortcut;
+        scActionAccel:     TAction(FSelectedInfo.Component).Caption:=newCaption;
+        scActionSC:        TAction(FSelectedInfo.Component).ShortCut:=newShortcut;
+        scActionSecondary: AddSecondaryShortcut;
+        scOtherCompAccel:  TControl(FSelectedInfo.Component).Caption:=newCaption;
+      end;
+      if (FSelectedInfo.Kind in MenuItem_Kinds) then begin
+        MenuDesigner.ShadowMenu.FEditorDesigner.PropertyEditorHook.RefreshPropertyValues;
+        MenuDesigner.ShadowMenu.FEditorDesigner.Modified;
+        si:=MenuDesigner.ShadowMenu.GetShadowForMenuItem(FSelectedInfo.MenuItem);
+        if (si <> nil) then begin
+          MenuDesigner.ShadowMenu.UpdateBoxLocationsAndSizes;
+          si.Repaint;
+        end;
+      end
+      else case FSelectedInfo.Kind of
+        scActionAccel, scActionSC, scActionSecondary: begin
+            GlobalDesignHook.RefreshPropertyValues;
+            GlobalDesignHook.Modified(TAction(FSelectedInfo.Component));
+          end;
+        scOtherCompAccel: begin
+            GlobalDesignHook.RefreshPropertyValues;
+            GlobalDesignHook.Modified(TControl(FSelectedInfo.Component));
+          end;
+      end;
+
+      RePopulateListBox;
+    end;
+end;
+
+procedure TResolveConflictsDlg.InitialPopulateListBox;
+begin
+  if (FShortcuts.ShortcutList.InitialDuplicatesCount > 0) then begin
+    FResolvedConflictsCount:=0;
+    FResolvedConflictsCountLabel.Caption:=Format(
+      lisMenuEditorResolvedConflictsS, [IntToStr(FResolvedConflictsCount)]);
+    CreateListboxItems;
+    FRemainingConflictsCountLabel.Caption:=Format(
+      lisMenuEditorRemainingConflictsS, [IntToStr(FConflictsListBox.Count)]);
+    FConflictsListBox.ItemIndex:=0;
+  end
+  else begin
+    FButtonPanel.OKButton.Enabled:=False;
+    FSelectedInfo:=nil;
+    FConflictsListBox.OnSelectionChange:=nil;
+    FConflictsListBox.Items.Add(lisMenuEditorNoShortcutConflicts);
+    FCurrentEdit.Text:=lisMenuEditorNoShortcutConflicts;
+    FResolvedConflictsCountLabel.Caption:=Format(lisMenuEditorResolvedConflictsS,['0']);
+    FRemainingConflictsCountLabel.Caption:=Format(lisMenuEditorRemainingConflictsS,['0']);
+  end;
+end;
+
+procedure TResolveConflictsDlg.RePopulateListBox;
+begin
+  FConflictsListBox.OnSelectionChange:=nil;
+  FConflictsListBox.Items.Clear;
+  FConflictsListBox.ItemIndex:= -1;
+  FButtonPanel.OKButton.Enabled:=False;
+  FShortcuts.ShortcutList.ScanContainerForShortcutsAndAccelerators;
+  if (FShortcuts.ShortcutList.InitialDuplicatesCount > 0) then begin
+    CreateListboxItems;
+    UpdateStatistics;
+    FConflictsListBox.ItemIndex:=0;
+    FConflictsListBox.OnSelectionChange:=@ConflictsBoxSelectionChange;
+  end
+  else begin
+    FButtonPanel.OKButton.Enabled:=False;
+    FSelectedInfo:=nil;
+    FConflictsListBox.OnSelectionChange:=nil;
+    FRemainingConflictsCountLabel.Caption:=Format(lisMenuEditorRemainingConflictsS,['0']);
+    FResolvedConflictsCountLabel.Caption:=Format(
+      lisMenuEditorResolvedConflictsS, [FInitialConflictsCount]);
+    FConflictsListBox.Items.Add(lisMenuEditorNoShortcutConflicts);
+    FCurrentEdit.Text:=lisMenuEditorConflictResolutionComplete;
+    FButtonPanel.CancelButton.Caption:=lisBtnClose;
+  end;
+end;
+
+procedure TResolveConflictsDlg.UpdateStatistics;
+begin
+  FResolvedConflictsCount:=FInitialConflictsCount - FConflictsListBox.Count;
+  FResolvedConflictsCountLabel.Caption:=Format(lisMenuEditorResolvedConflictsS,
+    [IntToStr(FResolvedConflictsCount)]);
+  FRemainingConflictsCountLabel.Caption:=Format(
+    lisMenuEditorRemainingConflictsS, [IntToStr(FInitialConflictsCount-FResolvedConflictsCount)]);
 end;
 
 { TShortcutDisplayDlg }
 
-procedure TShortcutDisplayDlg.DisplaySingleMenuClick(isHeader: boolean; index: integer);
-var
-  mi: TMenuItem;
-  sc: TShortCut;
-  result: boolean;
-  si: TShadowItem;
-  info: TSCInfo;
-  isMainSC: boolean;
-begin
-  case isHeader of
-    True: begin // header click
-      if (FLastSortIndex = index) or (FscList.Count = 0) then
-        Exit;
-      FLastSortIndex:=index;
-      UpdateFromMenu(index);
-    end;
-    False: begin // contents click
-      info:=TSCInfo(FscList.Objects[index]);
-      mi:=info.MenuItem;
-      if (mi <> nil) then
-        begin
-          sc:=info.Shortcut;
-          isMainSC:=(info.Kind = scMenuItemSC);
-          result:=AddNewOrEditShortcutDlg(mi, isMainSC, sc);
-          if result then
-            begin
-              if isMainSC then
-                mi.ShortCut:=sc
-              else mi.ShortCutKey2:=sc;
-              si:=MenuDesigner.ShadowMenu.GetShadowForMenuItem(mi);
-              if (si <> nil) then begin
-                MenuDesigner.ShadowMenu.UpdateBoxLocationsAndSizes;
-                si.Repaint;
-              end;
-              MenuDesigner.UpdateShortcutList(False);
-              UpdateFromMenu;
-              GlobalDesignHook.RefreshPropertyValues;
-              GlobalDesignHook.Modified(mi);
-              MenuDesigner.ShadowMenu.RefreshFakes;
-            end;
-        end;
-    end;
-  end; // case
-end;
-
-procedure TShortcutDisplayDlg.DisplayAllDlgClick(isHeader: boolean; index: integer);
-var
-  i: integer;
-  dt: TDisplayType;
-  inf: TSCInfo;
-  mi: TMenuItem;
-  sc: TShortCut;
-  isMainSC, isCaptionSC, result: boolean;
-  si: TShadowItem;
-begin
-  case isHeader of
-    True: begin
-      if (FLastSortIndex = index) or (FDualDisplay.ContentsCount = 0) then
-        Exit;
-      FLastSortIndex:=index;
-      FDualDisplay.ClearContents;
-      case index of
-        0: MenuDesigner.ShortcutList.ScanList.Sort;
-        1: MenuDesigner.ShortcutList.SortByComponentPropertyName;
-      end;
-      for i:=0 to MenuDesigner.ShortcutList.ScanList.Count-1 do
-        begin
-          inf:=TSCInfo(MenuDesigner.ShortcutList.ScanList.Objects[i]);
-          if (inf.Kind in MenuItem_Kinds) then
-            dt:=dtBlack
-          else dt:=dtGreyed;
-          FDualDisplay.AddLine(MenuDesigner.ShortcutList.ScanList[i] + ',' +
-                     inf.Component.Name+ '.' + KindToPropertyName(inf.Kind), dt);
-        end;
-    end;
-    False: begin
-      inf:=TSCInfo(MenuDesigner.ShortcutList.ScanList.Objects[index]);
-      mi:=inf.MenuItem;
-      if (mi <> nil) then
-        begin
-          isMainSC:=(inf.Kind in ShortcutOnly_Kinds);
-          isCaptionSC:=(inf.Kind in Accelerator_Kinds);
-          sc:=inf.Shortcut;
-          if isCaptionSC then
-            result:=EditCaptionDlg(mi, sc)
-          else result:=AddNewOrEditShortcutDlg(mi, isMainSC, sc);
-          if result then
-            begin
-              if not isCaptionSC and isMainSC then
-                mi.ShortCut:=sc
-              else if not isCaptionSC then
-                mi.ShortCutKey2:=sc;
-              si:=MenuDesigner.ShadowMenu.GetShadowForMenuItem(mi);
-              if (si <> nil) then
-                begin
-                  MenuDesigner.ShadowMenu.UpdateBoxLocationsAndSizes;
-                  si.Repaint;
-                end;
-              MenuDesigner.UpdateShortcutList(True);
-              UpdateContents;
-              GlobalDesignHook.RefreshPropertyValues;
-              GlobalDesignHook.Modified(mi);
-              MenuDesigner.ShadowMenu.RefreshFakes;
-            end;
-        end;
-    end;
-  end; // case
-end;
-
-procedure TShortcutDisplayDlg.UpdateContents(singleMenuOnly: boolean);
-var
-  i: integer;
-  dt: TDisplayType;
-  kind: TSCKind;
-  inf: TSCInfo;
-begin
-  FDualDisplay.ClearContents;
-  if singleMenuOnly then
-    UpdateFromMenu
-  else begin
-    MenuDesigner.UpdateShortcutList(not FShortcutsOnly);
-    if (MenuDesigner.ShortcutList.ScanList.Count = 0) then
-      begin
-        FDualDisplay.AddLine(lisMenuEditorNoneNone, dtGreyed);
-        if FShortcutsOnly then
-          FGBDisplay.Caption:=lisMenuEditorShortcuts
-        else FGBDisplay.Caption:=lisMenuEditorShortcutsAndAcceleratorKeys;
-      end
-    else
-      begin
-        if FShortcutsOnly then
-          FGBDisplay.Caption:=Format(
-            lisMenuEditorShortcutsAssociatedWithMenusAndActionsD,
-            [MenuDesigner.ShortcutList.ShortcutsInContainerCount])
-        else FGBDisplay.Caption:=Format(
-          lisMenuEditorShortcutsDAndAcceleratorKeysD,
-            [MenuDesigner.ShortcutList.ShortcutsInContainerCount,
-            MenuDesigner.ShortcutList.AcceleratorsInContainerCount]);
-
-        FDualDisplay.BeginUpdate;
-        for i:=0 to MenuDesigner.ShortcutList.ScanList.Count-1 do
-          begin
-            inf:=TSCInfo(MenuDesigner.ShortcutList.ScanList.Objects[i]);
-            kind:=inf.Kind;
-            if (kind in MenuItem_Kinds) then
-              dt:=dtBlack
-            else dt:=dtGreyed;
-            FDualDisplay.AddLine(MenuDesigner.ShortcutList.ScanList[i] + ',' +
-                         inf.Component.Name + '.' + KindToPropertyName(inf.Kind), dt);
-          end;
-        FDualDisplay.EndUpdate;
-      end;
-  end;
-end;
-
-procedure TShortcutDisplayDlg.UpdateFromMenu(anIndex: integer);
-var
-  i: integer;
-  inf: TSCInfo;
-
-  procedure AddSCitemToListRecursive(anItem: TMenuItem);
-  var
-    inf: TSCInfo;
-    j: integer;
-  begin
-    if (anItem.ShortCut <> 0) then begin
-      inf:=TSCInfo.CreateWithParams(anItem, scMenuItemSC, anItem.ShortCut);
-      FscList.AddObject(ShortCutToText(anItem.ShortCut), TObject(inf));
-    end;
-    if (anItem.ShortCutKey2 <> 0) and (anItem.ShortCutKey2 <> anItem.ShortCut) then begin
-      inf:=TSCInfo.CreateWithParams(anItem, scMenuItemKey2, anItem.ShortCutKey2);
-      FscList.AddObject(ShortCutToText(anItem.ShortCutKey2), TObject(inf));
-    end;
-    for j:=0 to anItem.Count-1 do
-      AddSCitemToListRecursive(anItem[j]);
-  end;
-
-begin
-  Assert(FMenu<>nil,'TShortcutDisplayDlg.UpdateFromMenu: FMenu is nil');
-  FreeAndNil(FscList);
-  FscList:=TStringList.Create;
-  FscList.CaseSensitive:=False;
-  FDualDisplay.ClearContents;
-  for i:=0 to FMenu.Items.Count-1 do
-    AddSCitemToListRecursive(FMenu.Items[i]);
-  if (FscList.Count = 0) then
-    begin
-      FDualDisplay.AddLine(lisMenuEditorNoneNone, dtGreyed);
-      FGBDisplay.Caption:=lisMenuEditorShortcuts;
-    end
-  else
-    begin
-      FGBDisplay.Caption := Format(lisMenuEditorShortcutsUsedInSD,
-          [FMenu.Name, FscList.Count]);
-      case anIndex of
-        -1: ; // unsorted
-        0: FscList.Sort;
-        1: FscList.CustomSort(@SortByComponentPropertyName);
-      end;
-      FDualDisplay.BeginUpdate;
-      for i:=0 to FscList.Count-1 do
-        begin
-          inf:=TSCInfo(FscList.Objects[i]);
-          FDualDisplay.AddLine(FscList[i] + ',' +
-            inf.Component.Name + '.' + KindToPropertyName(inf.Kind), dtBlack);
-        end;
-      FDualDisplay.EndUpdate;
-      FDualDisplay.InvalidateContents;
-    end;
-end;
-
-constructor TShortcutDisplayDlg.CreateWithShortcutsOnly(shortcutsOnly: boolean;
-  aMenu: TMenu);
+constructor TShortcutDisplayDlg.CreateWithShortcutsOnly(
+  aShortcuts: TMenuShortcuts; shortcutsOnly: boolean; aMenu: TMenu);
 var
   s: string;
   lurStr: string;
 begin
   inherited CreateNew(nil);
   FShortcutsOnly:=shortcutsOnly;
+  FShortcuts:=aShortcuts;
   FMenu:=aMenu;
   FSingleMenuOnly:=(FMenu <> nil);
   FLastSortIndex:= -1;
@@ -3677,7 +2690,8 @@ begin
   else begin
     if shortcutsOnly then
       s:=lisMenuEditorSShortcuts
-    else s:=lisMenuEditorSShortcutsAndAcceleratorKeys;
+    else
+      s:=lisMenuEditorSShortcutsAndAcceleratorKeys;
     lurStr:=TComponent(GlobalDesignHook.LookupRoot).Name;
     Caption:=Format(s, [lurStr]);
   end;
@@ -3746,163 +2760,218 @@ begin
   inherited Destroy;
 end;
 
-{ TSCList }
-
-function TSCList.GetScanListCompName(index: integer): string;
+procedure TShortcutDisplayDlg.DisplaySingleMenuClick(isHeader: boolean; index: integer);
 var
+  mi: TMenuItem;
+  sc: TShortCut;
+  result: boolean;
+  si: TShadowItem;
+  info: TSCInfo;
+  isMainSC: boolean;
+begin
+  case isHeader of
+    True: begin // header click
+      if (FLastSortIndex = index) or (FscList.Count = 0) then
+        Exit;
+      FLastSortIndex:=index;
+      UpdateFromMenu(index);
+    end;
+    False: begin // contents click
+      info:=TSCInfo(FscList.Objects[index]);
+      mi:=info.MenuItem;
+      if (mi <> nil) then
+        begin
+          sc:=info.Shortcut;
+          isMainSC:=(info.Kind = scMenuItemSC);
+          result:=AddNewOrEditShortcutDlg(mi, isMainSC, sc);
+          if result then
+            begin
+              if isMainSC then
+                mi.ShortCut:=sc
+              else
+                mi.ShortCutKey2:=sc;
+              si:=MenuDesigner.ShadowMenu.GetShadowForMenuItem(mi);
+              if (si <> nil) then begin
+                MenuDesigner.ShadowMenu.UpdateBoxLocationsAndSizes;
+                si.Repaint;
+              end;
+              FShortcuts.UpdateShortcutList(False);
+              UpdateFromMenu;
+              GlobalDesignHook.RefreshPropertyValues;
+              GlobalDesignHook.Modified(mi);
+              MenuDesigner.ShadowMenu.RefreshFakes;
+            end;
+        end;
+    end;
+  end; // case
+end;
+
+procedure TShortcutDisplayDlg.DisplayAllDlgClick(isHeader: boolean; index: integer);
+var
+  i: integer;
+  dt: TDisplayType;
+  inf: TSCInfo;
+  mi: TMenuItem;
+  sc: TShortCut;
+  isMainSC, isCaptionSC, result: boolean;
+  si: TShadowItem;
+begin
+  case isHeader of
+    True: begin
+      if (FLastSortIndex = index) or (FDualDisplay.ContentsCount = 0) then
+        Exit;
+      FLastSortIndex:=index;
+      FDualDisplay.ClearContents;
+      case index of
+        0: FShortcuts.ShortcutList.ScanList.Sort;
+        1: FShortcuts.ShortcutList.SortByComponentPropertyName;
+      end;
+      for i:=0 to FShortcuts.ShortcutList.ScanList.Count-1 do
+        begin
+          inf:=TSCInfo(FShortcuts.ShortcutList.ScanList.Objects[i]);
+          if (inf.Kind in MenuItem_Kinds) then
+            dt:=dtBlack
+          else
+            dt:=dtGreyed;
+          FDualDisplay.AddLine(FShortcuts.ShortcutList.ScanList[i] + ',' +
+                     inf.Component.Name+ '.' + KindToPropertyName(inf.Kind), dt);
+        end;
+    end;
+    False: begin
+      inf:=TSCInfo(FShortcuts.ShortcutList.ScanList.Objects[index]);
+      mi:=inf.MenuItem;
+      if (mi <> nil) then
+        begin
+          isMainSC:=(inf.Kind in ShortcutOnly_Kinds);
+          isCaptionSC:=(inf.Kind in Accelerator_Kinds);
+          sc:=inf.Shortcut;
+          if isCaptionSC then
+            result:=EditCaptionDlg(mi, sc)
+          else result:=AddNewOrEditShortcutDlg(mi, isMainSC, sc);
+          if result then
+            begin
+              if not isCaptionSC and isMainSC then
+                mi.ShortCut:=sc
+              else if not isCaptionSC then
+                mi.ShortCutKey2:=sc;
+              si:=MenuDesigner.ShadowMenu.GetShadowForMenuItem(mi);
+              if (si <> nil) then
+              begin
+                MenuDesigner.ShadowMenu.UpdateBoxLocationsAndSizes;
+                si.Repaint;
+              end;
+              FShortcuts.UpdateShortcutList(True);
+              UpdateContents;
+              GlobalDesignHook.RefreshPropertyValues;
+              GlobalDesignHook.Modified(mi);
+              MenuDesigner.ShadowMenu.RefreshFakes;
+            end;
+        end;
+    end;
+  end; // case
+end;
+
+procedure TShortcutDisplayDlg.UpdateContents(singleMenuOnly: boolean);
+var
+  i: integer;
+  dt: TDisplayType;
+  kind: TSCKind;
   inf: TSCInfo;
 begin
-  if (index > -1) and (index < FScanList.Count) then begin
-    inf:=TSCInfo(FScanList.Objects[index]);
-    if (inf.ComponentName <> '') then
-      Result:=inf.ComponentName
-    else Result:=lisMenuEditorComponentIsUnnamed;
-  end
-  else Result:=Format(
-    lisMenuEditorTSCListGetScanListCompNameInvalidIndexDForFScanLis, [index]);
-end;
+  FDualDisplay.ClearContents;
+  if singleMenuOnly then
+    UpdateFromMenu
+  else begin
+    FShortcuts.UpdateShortcutList(not FShortcutsOnly);
+    if (FShortcuts.ShortcutList.ScanList.Count = 0) then
+      begin
+        FDualDisplay.AddLine(lisMenuEditorNoneNone, dtGreyed);
+        if FShortcutsOnly then
+          FGBDisplay.Caption:=lisMenuEditorShortcuts
+        else
+          FGBDisplay.Caption:=lisMenuEditorShortcutsAndAcceleratorKeys;
+      end
+    else
+      begin
+        if FShortcutsOnly then
+          FGBDisplay.Caption:=Format(lisMenuEditorShortcutsAssociatedWithMenusAndActionsD,
+            [FShortcuts.ShortcutList.ShortcutsInContainerCount])
+        else
+          FGBDisplay.Caption:=Format(lisMenuEditorShortcutsDAndAcceleratorKeysD,
+            [FShortcuts.ShortcutList.ShortcutsInContainerCount,
+             FShortcuts.ShortcutList.AcceleratorsInContainerCount]);
 
-function TSCList.GetInitialDuplicatesCount: integer;
-begin
-  Result:=FInitialDuplicates.Count;
-end;
-
-function TSCList.GetUniqueCount: integer;
-begin
-  Result:=FUniqueList.Count;
-end;
-
-procedure TSCList.ClearAllLists;
-var
-  i: integer;
-begin
-  for i:=0 to FScanList.Count-1 do
-    TSCInfo(FScanList.Objects[i]).Free;
-  FScanList.Clear;
-  FUniqueList.Clear;
-  FInitialDuplicates.Clear;
-end;
-
-function TSCList.UniqueListContainsShortcut(aSC: TShortCut): boolean;
-var
-  p: pointer;
-  inf: TSCInfo absolute p;
-begin
-  for p in FUniqueList do
-    if (inf.Shortcut = aSC) then
-      Exit(True);
-  Result:=False;
-end;
-
-function TSCList.FindUniqueInfoForShortcut(aSC: TShortCut): TSCInfo;
-var
-  p: pointer;
-  inf: TSCInfo absolute p;
-begin
-  for p in FUniqueList do
-    if (inf.Shortcut = aSC) then
-      Exit(inf);
-  Result:=nil;
-end;
-
-constructor TSCList.Create;
-begin
-  FScanList:=TStringList.Create;
-  FUniqueList:=TFPList.Create;
-  FInitialDuplicates:=TFPList.Create;
-  ScanContainerForShortcutsAndAccelerators;
-end;
-
-destructor TSCList.Destroy;
-begin
-  ClearAllLists;
-  FreeAndNil(FUniqueList);
-  FreeAndNil(FInitialDuplicates);
-  FreeAndNil(FScanList);
-  inherited Destroy;
-end;
-
-procedure TSCList.ScanContainerForShortcutsAndAccelerators;
-begin
-  DoShortcutAccelScanCount(Self, False);
-  ScanSCListForDuplicates;
-  if (FInitialDuplicates.Count > 0) then
-    FInitialDuplicates.Sort(@SortByShortcut);
-  if (FUniqueList.Count > 0) then
-    FUniqueList.Sort(@SortByShortcut);
-end;
-
-procedure TSCList.ScanContainerForShortcutsOnly;
-begin
-  DoShortcutAccelScanCount(Self, True);
-end;
-
-procedure TSCList.ScanSCListForDuplicates;
-var
-  i: integer;
-  inf2, inf1: TSCInfo;
-
-begin
-  FreeAndNil(FUniqueList);
-  FreeAndNil(FInitialDuplicates);
-  FUniqueList:=TFPList.Create;
-  FInitialDuplicates:=TFPList.Create;
-  for i:=0 to FScanList.Count-1 do
-    if UniqueListContainsShortcut(TSCInfo(FScanList.Objects[i]).Shortcut) then
-      FInitialDuplicates.Add(FScanList.Objects[i])
-    else FUniqueList.Add(FScanList.Objects[i]);
-  if (FInitialDuplicates.Count > 0) then begin
-    FInitialDuplicates.Sort(@SortFPListByComponentPropertyName);
-    for i:=FInitialDuplicates.Count-1 downto 1 do begin
-      inf2:=TSCInfo(FInitialDuplicates[i]);
-      inf1:=TSCInfo(FInitialDuplicates[i-1]);
-      if (CompareText(inf2.ComponentName, inf1.ComponentName) = 0) and
-      (inf2.Shortcut = inf1.Shortcut) then
-        FInitialDuplicates.Delete(i);
-    end;
+        FDualDisplay.BeginUpdate;
+        for i:=0 to FShortcuts.ShortcutList.ScanList.Count-1 do
+          begin
+            inf:=TSCInfo(FShortcuts.ShortcutList.ScanList.Objects[i]);
+            kind:=inf.Kind;
+            if (kind in MenuItem_Kinds) then
+              dt:=dtBlack
+            else
+              dt:=dtGreyed;
+            FDualDisplay.AddLine(FShortcuts.ShortcutList.ScanList[i] + ',' +
+                         inf.Component.Name + '.' + KindToPropertyName(inf.Kind), dt);
+          end;
+        FDualDisplay.EndUpdate;
+      end;
   end;
 end;
 
-procedure TSCList.SortByComponentPropertyName;
-begin
-  FScanList.CustomSort(@SortOnComponentPropertyName);
-end;
+procedure TShortcutDisplayDlg.UpdateFromMenu(anIndex: integer);
+var
+  i: integer;
+  inf: TSCInfo;
 
-{ TSCInfo }
+  procedure AddSCitemToListRecursive(anItem: TMenuItem);
+  var
+    inf: TSCInfo;
+    j: integer;
+  begin
+    if (anItem.ShortCut <> 0) then begin
+      inf:=TSCInfo.CreateWithParams(anItem, scMenuItemSC, anItem.ShortCut);
+      FscList.AddObject(ShortCutToText(anItem.ShortCut), TObject(inf));
+    end;
+    if (anItem.ShortCutKey2 <> 0) and (anItem.ShortCutKey2 <> anItem.ShortCut) then begin
+      inf:=TSCInfo.CreateWithParams(anItem, scMenuItemKey2, anItem.ShortCutKey2);
+      FscList.AddObject(ShortCutToText(anItem.ShortCutKey2), TObject(inf));
+    end;
+    for j:=0 to anItem.Count-1 do
+      AddSCitemToListRecursive(anItem[j]);
+  end;
 
-function TSCInfo.GetAction: TAction;
 begin
-  if (FComponent is TAction) then
-    Result:=TAction(FComponent)
-  else Result:=nil;
-end;
-
-function TSCInfo.GetCaption: string;
-begin
-  if (FComponent is TControl) then
-    Result:=TControl(FComponent).Caption
-  else Result:=lisMenuEditorComponentIsUnexpectedKind;
-end;
-
-function TSCInfo.GetMenuItem: TMenuItem;
-begin
-  if (FComponent is TMenuItem) then
-    Result:=TMenuItem(FComponent)
-  else Result:=nil;
-end;
-
-function TSCInfo.GetToCompositeString: string;
-begin
-  Result:=FComponent.Name + ShortCutToText(FShortcut);
-end;
-
-constructor TSCInfo.CreateWithParams(aComponent: TComponent; aKind: TSCKind;
-  aSC: TShortCut);
-begin
-  FComponent:=aComponent;
-  FComponentName:=aComponent.Name;
-  FKind:=aKind;
-  FShortcut:=aSC;
+  Assert(FMenu<>nil,'TShortcutDisplayDlg.UpdateFromMenu: FMenu is nil');
+  FreeAndNil(FscList);
+  FscList:=TStringList.Create;
+  FscList.CaseSensitive:=False;
+  FDualDisplay.ClearContents;
+  for i:=0 to FMenu.Items.Count-1 do
+    AddSCitemToListRecursive(FMenu.Items[i]);
+  if (FscList.Count = 0) then
+    begin
+      FDualDisplay.AddLine(lisMenuEditorNoneNone, dtGreyed);
+      FGBDisplay.Caption:=lisMenuEditorShortcuts;
+    end
+  else
+    begin
+      FGBDisplay.Caption := Format(lisMenuEditorShortcutsUsedInSD,
+          [FMenu.Name, FscList.Count]);
+      case anIndex of
+        -1: ; // unsorted
+        0: FscList.Sort;
+        1: FscList.CustomSort(@SortByComponentPropertyName);
+      end;
+      FDualDisplay.BeginUpdate;
+      for i:=0 to FscList.Count-1 do
+        begin
+          inf:=TSCInfo(FscList.Objects[i]);
+          FDualDisplay.AddLine(FscList[i] + ',' +
+            inf.Component.Name + '.' + KindToPropertyName(inf.Kind), dtBlack);
+        end;
+      FDualDisplay.EndUpdate;
+      FDualDisplay.InvalidateContents;
+    end;
 end;
 
 { TLineEditor }
@@ -4818,12 +3887,12 @@ end;
 
 procedure TShadowMenu.ListShortcuts(Sender: TObject);
 begin
-  ListShortCutDlg(True, FMenu);
+  ListShortCutDlg(FShortcuts, True, FMenu);
 end;
 
 procedure TShadowMenu.ListShortcutsAndAccelerators(Sender: TObject);
 begin
-  ListShortCutDlg(False);
+  ListShortCutDlg(FShortcuts, False, Nil);
 end;
 
 procedure TShadowMenu.ResolveShortcutConflicts(Sender: TObject);
@@ -4835,11 +3904,11 @@ end;
 procedure TShadowMenu.SaveAsTemplate(Sender: TObject);
 begin
   if (FSelectedMenuItem <> nil) and LevelZeroAndNoGrandchildren(FSelectedMenuItem) then
-    begin
-      SaveMenuTemplateDlg(FSelectedMenuItem);
-      MenuDesigner.UpdateTemplatesCount;
-      UpdateActionsEnabledness;
-    end;
+  begin
+    SaveMenuTemplateDlg(FSelectedMenuItem);
+    MenuDesigner.UpdateTemplatesCount;
+    UpdateActionsEnabledness;
+  end;
 end;
 
 procedure TShadowMenu.OnObjectPropertyChanged(Sender: TObject;
@@ -4897,7 +3966,7 @@ begin
       UpdateBoxLocationsAndSizes;
       if ((mi.Action <> nil) and (TAction(mi.Action).ShortCut <> 0)) or
          (mi.ShortCut <> 0) or (mi.ShortCutKey2 <> 0) then
-           MenuDesigner.UpdateShortcutList(True);
+           FShortcuts.UpdateShortcutList(True);
       if (FSelectedMenuItem <> nil) then begin
         RefreshFakes;
         SelectedShadowItem.Repaint;
@@ -5182,13 +4251,13 @@ begin
       popAddSeparatorAfter:   ac.Enabled:=primarySCEnabled and not isLast and not nextIsSeparator;
       popRemoveAllSeparators: ac.Enabled:=primarySCEnabled and (GetChildSeparatorCount(FSelectedMenuItem.Parent) > 0);
       //popShortcuts_
-      popListShortcuts:       begin ac.Enabled:=(MenuDesigner.ShortcutMenuItemsCount > 0);
+      popListShortcuts:       begin ac.Enabled:=(FShortcuts.ShortcutMenuItemsCount > 0);
                                 ac.Caption:=Format(lisMenuEditorListShortcutsForS, [FMenu.Name]);
                               end;
-      popListShortcutsAccelerators: begin ac.Enabled:=(MenuDesigner.ShortcutList.AcceleratorsInContainerCount > 0);
+      popListShortcutsAccelerators: begin ac.Enabled:=(FShortcuts.ShortcutList.AcceleratorsInContainerCount > 0);
                                 ac.Caption:=Format(lisMenuEditorListShortcutsAndAccelerators,[FLookupRoot.Name]);
                               end;
-      popResolveShortcutConflicts: ac.Enabled:=(MenuDesigner.ShortcutList.InitialDuplicatesCount > 0);
+      popResolveShortcutConflicts: ac.Enabled:=(FShortcuts.ShortcutList.InitialDuplicatesCount > 0);
       popTemplates_:          ac.Enabled:=levelZero or MenuDesigner.TemplatesSaved;
       popSaveAsTemplate:      ac.Enabled:=levelZeroOr1;
       popAddFromTemplate:     ac.Enabled:=levelZero;
@@ -5202,15 +4271,17 @@ begin
   ac.Enabled:=ac1.Enabled or ac2.Enabled or ac3.Enabled;
 end;
 
-constructor TShadowMenu.CreateWithMenuAndDims(aCanvas: TCanvas; aMenu: TMenu;
-  aSelect: TMenuItem; aWidth, aHeight: integer);
+constructor TShadowMenu.CreateWithMenuAndDims(aCanvas: TCanvas; aShortcuts: TMenuShortcuts;
+  aMenu: TMenu; aSelect: TMenuItem; aWidth, aHeight: integer);
 begin
   Assert(aMenu<>nil,'TShadowMenu.CreateWithMenuAndDims: TMenu parameter is nil');
   inherited Create(nil);
   FMainCanvas:=aCanvas;
+  FShortcuts:=aShortcuts;
   FMenu:=aMenu;
   FInitialSelectedMenuItem:=aSelect;
   SetInitialBounds(0, 0, aWidth, aHeight);
+
   FIsMainMenu:=(FMenu is TMainMenu);
   Name:='ShadowMenu';
   FEditorDesigner:=FindRootDesigner(FMenu) as TComponentEditorDesigner;
@@ -5241,6 +4312,7 @@ begin
   AutoSize:=False;
   Color:=clBtnFace;
   BorderStyle:=bsNone;
+  FShortcuts.Initialize;
 end;
 
 procedure TShadowMenu.AddFirstMenu(Sender: TObject);
@@ -5669,12 +4741,12 @@ function TShadowItem.GetLevel: integer;
 begin
   Result:=FParentBox.Level;
 end;
-
+{
 function TShadowItem.GetMenu: TMenu;
 begin
   Result:=FShadowMenu.FMenu;
 end;
-
+}
 function TShadowItem.GetRightFake: TFake;
 begin
   if (FShadowMenu.SelectedShadowItem <> Self) then
@@ -6161,316 +5233,6 @@ begin
   TabOrder:= -1;
   PopupMenu:=FShadowMenu.ItemsPopupMenu;
   Parent:=FParentBox;
-end;
-
-{ THeader }
-
-procedure THeader.DoHeaderClick(anIndex: integer);
-begin
-  if Assigned(FOnHeaderClick) then
-    FOnHeaderClick(Self, anIndex);
-end;
-
-procedure THeader.Paint;
-begin
-  Canvas.Brush.Color:=Header_Color;
-  Canvas.FillRect(ClientRect);
-  case FDisplayType of
-    dtNone: begin FCol1Header:=''; FCol2Header:=''; end;
-    dtBlack: begin
-      if (Canvas.Font.Color <> clBlack) then Canvas.Font.Color:=clBlack;
-      if (Canvas.Font.Style <> []) then Canvas.Font.Style:=[];
-    end;
-    dtBlackBold: begin
-      if (Canvas.Font.Color <> clBlack) then Canvas.Font.Color:=clBlack;
-      if (Canvas.Font.Style <> [fsBold]) then Canvas.Font.Style:=[fsBold];
-    end;
-    dtGreyed: begin
-      if (Canvas.Font.Color <> clGrayText) then Canvas.Font.Color:=clGrayText;
-      if (Canvas.Font.Style <> []) then Canvas.Font.Style:=[];
-    end;
-    dtGreyedBold: begin
-      if (Canvas.Font.Color <> clGrayText) then Canvas.Font.Color:=clGrayText;
-      if (Canvas.Font.Style <> [fsBold]) then Canvas.Font.Style:=[fsBold];
-    end;
-  end;
-  Canvas.TextOut(FDualDisplay.Col1Right - Leading - FColumn1TextWidth, VTextOffset, FCol1Header);
-  Canvas.TextOut(FDualDisplay.Col1Right + Leading, VTextOffset, FCol2Header);
-end;
-
-procedure THeader.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  i: integer=0;
-begin
-  inherited MouseDown(Button, Shift, X, Y);
-  if (X > FDualDisplay.Col1Right) then
-    i:=1;
-  DoHeaderClick(i);
-end;
-
-constructor THeader.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FDualDisplay:=AOwner as TDualDisplay;
-  Align:=alTop;
-  Height:=VDim;
-  Canvas.Font.Style:=[fsBold];
-end;
-
-procedure THeader.AddHeader(const aHeader: string; aDisplayType: TDisplayType);
-begin
-  FCol2Header:=SplitCommaText(aHeader, FCol1Header);
-  FDisplayType:=aDisplayType;
-  FColumn1TextWidth:=FDualDisplay.TextWidth(FCol1Header);
-  Repaint;
-end;
-
-procedure THeader.Clear;
-begin
-  FColumn1TextWidth:=0;
-  FDisplayType:=dtNone;
-  Invalidate;
-end;
-
-{ TDualDisplay }
-
-function TDualDisplay.GetContentsCount: integer;
-begin
-  Result:=FContents.SList.Count;
-end;
-
-procedure TDualDisplay.HeaderContentsClick(Sender: TObject; index: integer);
-begin
-  if Assigned(FOnDisplayClick) then begin
-    Assert(Sender<>nil,'TDualDisplay.HeaderContentsClick: Sender is nil');
-    Assert(index>-1,'TDualDisplay.HeaderContentsClick: index is negative');
-    if (Sender is TContents) then begin
-      Assert(index<GetContentsCount,'TDualDisplay.HeaderContentsClick: index exceeds contents count');
-      FOnDisplayClick(False, index);
-    end
-    else if (Sender is THeader) then begin
-      Assert(index<2,'TDualDisplay.HeaderContentsClick: index value too high');
-      FOnDisplayClick(True, index);
-    end
-    else Assert(True,'TDualDisplay.HeaderContentsClick: Sender is invalid type');
-  end;
-end;
-
-procedure TDualDisplay.SetCol1Right(AValue: integer);
-begin
-  if (FCol1Right <> AValue) then begin
-    FCol1Right:=AValue;
-    FHeader.Invalidate;
-    FContents.Invalidate;
-  end;
-end;
-
-class function TDualDisplay.GetControlClassDefaultSize: TSize;
-begin
-  Result.cx:=200;
-  Result.cy:=120;
-end;
-
-function TDualDisplay.TextWidth(const aText: string): integer;
-begin
-  Result:=Canvas.TextWidth(aText);
-end;
-
-constructor TDualDisplay.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  Name:='DualDisplay';
-  Color:=clBtnFace;
-  Canvas.Font.Style:=[fsBold];
-  with GetControlClassDefaultSize do
-    SetInitialBounds(0, 0, cx, cy);
-
-  FHeader:=THeader.Create(Self);
-  with FHeader do begin
-    Name:='Header';
-    OnHeaderClick:=@HeaderContentsClick;
-    Parent:=Self;
-  end;
-
-  FSBox:=TScrollBox.Create(Self);
-  with FSBox do begin
-    Align:=alClient;
-    BorderStyle:=bsNone;
-    AutoScroll:=True;
-    Parent:=Self;
-  end;
-
-  FContents:=TContents.Create(Self);
-  with FContents do begin
-    Name:='Contents';
-    SetInitialBounds(0, 0, FSBox.Width, FSBox.Height);
-    OnContentsClick:=@HeaderContentsClick;
-    Color:=clBtnFace;
-    Parent:=FSBox;
-  end;
-end;
-
-procedure TDualDisplay.AddLine(const aLine: string; aDT: TDisplayType);
-var
-  tmp: integer;
-begin
-  FContents.AddToList(aLine, aDT);
-  tmp:=FCol1Right - Double_Leading;
-  if (FContents.Col1MaxTextWidth > tmp) then
-    SetCol1Right(FContents.Col1MaxTextWidth + Double_Leading);
-  tmp:=FContents.Width;
-  if (tmp > ClientWidth) then begin
-    Width:=tmp;
-    FHeader.Width:=tmp;
-  end;
-end;
-
-procedure TDualDisplay.BeginUpdate;
-begin
-  FUpdating:=True;
-end;
-
-procedure TDualDisplay.AddHeader(const aHeader: string; aDT: TDisplayType);
-var
-  tmp: integer;
-begin
-  FHeader.AddHeader(aHeader, aDT);
-  tmp:=FCol1Right - Double_Leading;
-  if (FHeader.Column1TextWidth > tmp) then
-    SetCol1Right(FHeader.Column1TextWidth + Double_Leading);
-  tmp:=TextWidth(aHeader) + Treble_Leading;
-  if (tmp > Width) then begin
-    Width:=tmp;
-    FHeader.Width:=tmp;
-    FContents.Width:=tmp;
-  end;
-  FHeader.Repaint;
-end;
-
-procedure TDualDisplay.ClearHeader;
-begin
-  FHeader.Clear;
-end;
-
-procedure TDualDisplay.EndUpdate;
-begin
-  FUpdating:=False;
-end;
-
-procedure TDualDisplay.ClearContents;
-begin
-  FContents.Clear;
-end;
-
-procedure TDualDisplay.InvalidateContents;
-begin
-  FContents.Invalidate;
-end;
-
-procedure TDualDisplay.Clear;
-begin
-  FHeader.Clear;
-  FContents.Clear;
-end;
-
-{ TContents }
-
-procedure TContents.DoContentsClick(anIndex: integer);
-begin
-  if Assigned(FOnContentsClick) and (anIndex < FSList.Count) then
-    FOnContentsClick(Self, anIndex);
-end;
-
-procedure TContents.Paint;
-var
-  s, s1, s2: string;
-  i: integer = 0;
-  col1, col2: integer;
-  dt: TDisplayType;
-begin
-  if FDualDisplay.Updating then
-    Exit;
-  Canvas.FillRect(ClientRect);
-  col2:=FDualDisplay.Col1Right + Leading;
-  for s in FSList do begin
-    s2:=SplitCommaText(s, s1);
-    col1:=FDualDisplay.Col1Right - Leading - Canvas.TextWidth(s1);
-    dt:=TDisplayType(PtrUInt(FSList.Objects[i]));
-    case dt of
-      dtNone: begin s1:=''; s2:=''; end;
-      dtBlack: begin
-        if (Canvas.Font.Color <> clBlack) then Canvas.Font.Color:=clBlack;
-        if (Canvas.Font.Style <> []) then Canvas.Font.Style:=[];
-      end;
-      dtBlackBold: begin
-        if (Canvas.Font.Color <> clBlack) then Canvas.Font.Color:=clBlack;
-        if (Canvas.Font.Style <> [fsBold]) then Canvas.Font.Style:=[fsBold];
-      end;
-      dtGreyed: begin
-        if (Canvas.Font.Color <> clGrayText) then Canvas.Font.Color:=clGrayText;
-        if (Canvas.Font.Style <> []) then Canvas.Font.Style:=[];
-      end;
-      dtGreyedBold: begin
-        if (Canvas.Font.Color <> clGrayText) then Canvas.Font.Color:=clGrayText;
-        if (Canvas.Font.Style <> [fsBold]) then Canvas.Font.Style:=[fsBold];
-      end;
-    end;
-    Canvas.TextOut(col1, i*VDim + VTextOffset, s1);
-    Canvas.TextOut(col2, i*VDim + VTextOffset, s2);
-    Inc(i);
-  end;
-end;
-
-procedure TContents.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
-begin
-  inherited MouseDown(Button, Shift, X, Y);
-  DoContentsClick(Y div VDim);
-end;
-
-constructor TContents.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FDualDisplay:=AOwner as TDualDisplay;
-  FSList:=TStringList.Create;
-  Color:=clBtnFace;
-end;
-
-destructor TContents.Destroy;
-begin
-  FreeAndNil(FSList);
-  inherited Destroy;
-end;
-
-procedure TContents.AddToList(const aLine: string; aDisplayType: TDisplayType);
-var
-  h, w, cw, ch: integer;
-  second, first: string;
-begin
-  Assert(Parent<>nil,'TContents.AddToList: Parent is nil');
-  Assert(aDisplayType<>dtNone,'TContents.AddToList: TDisplayType=dtNone');
-  FSList.AddObject(aLine, TObject(PtrUInt(aDisplayType)));
-  second:=SplitCommaText(aLine, first);
-  w:=FDualDisplay.TextWidth(second);
-  if (w > FCol2MaxTextWidth) then
-    FCol2MaxTextWidth:=w;
-  w:=FDualDisplay.TextWidth(first);
-  if (w > FCol1MaxTextWidth) then
-    FCol1MaxTextWidth:=w;
-  w:=FCol1MaxTextWidth + FCol2MaxTextWidth + Treble_Leading;
-  if (w < Parent.Width) then
-    w:=Parent.Width;
-  h:=FSList.Count*VDim;
-  ch:=ClientHeight;
-  cw:=ClientWidth;
-  if (h > ch) or (w > cw) then
-    SetBounds(0, 0, w, h);
-end;
-
-procedure TContents.Clear;
-begin
-  FSList.Clear;
-  Height:=0;
 end;
 
 end.
