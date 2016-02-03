@@ -296,13 +296,12 @@ end;
 function TMenuDesigner.GetItemCounts(out aCaptionedItemCount,
   aShortcutItemCount, anIconCount, anAccelCount: integer): integer;
 var
-  i, imgCount: integer;
-  hasImages: boolean;
-  sc: TShortCut;
+  imgCount: integer;
 
   procedure ProcessItems(aMI: TMenuItem);
   var
     i: integer;
+    sc: TShortCut;
   begin
     Inc(Result);
     if not aMI.IsLine and (aMI.Caption <> '') then begin
@@ -312,26 +311,28 @@ var
     end;
     if (aMI.ShortCut <> 0) or (aMI.ShortCutKey2 <> 0) then
       Inc(aShortcutItemCount);
-    if hasImages and (aMI.ImageIndex > -1) and (aMI.ImageIndex < imgCount) then
+    if (imgCount > 0) and (aMI.ImageIndex > -1) and (aMI.ImageIndex < imgCount) then
       Inc(anIconCount)
     else if aMI.HasBitmap and not aMI.Bitmap.Empty then
       Inc(anIconCount);
     for i:=0 to aMI.Count-1 do
-      ProcessItems(aMI.Items[i]);
+      ProcessItems(aMI.Items[i]);   // Recursive call for sub-menus.
   end;
 
+var
+  i: integer;
 begin
   if (FEditedMenu = nil) then
     Exit;
   aCaptionedItemCount:=0;
   aShortcutItemCount:=0;
   anIconCount:=0;
-  imgCount:=0;
   anAccelCount:=0;
+  if (FEditedMenu.Images <> nil) and (FEditedMenu.Images.Count > 0) then
+    imgCount:=FEditedMenu.Images.Count
+  else
+    imgCount:=0;
   Result:=0;
-  hasImages:=(FEditedMenu.Images <> nil) and (FEditedMenu.Images.Count > 0);
-  if hasImages then
-    imgCount:=FEditedMenu.Images.Count;
   for i:=0 to FEditedMenu.Items.Count-1 do
     ProcessItems(FEditedMenu.Items[i]);
 end;
