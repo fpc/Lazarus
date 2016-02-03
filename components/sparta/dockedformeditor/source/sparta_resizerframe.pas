@@ -46,10 +46,10 @@ begin
     Exit;
 
   // special for frames
-  DesignedForm.BeginUpdate;
+  {DesignedForm.BeginUpdate;
   DesignedForm.RealWidth := DesignedForm.RealWidth + 1;
   DesignedForm.RealWidth := DesignedForm.RealWidth - 1;
-  DesignedForm.EndUpdate;
+  DesignedForm.EndUpdate;}
 
   inherited TryBoundDesignedForm;
 end;

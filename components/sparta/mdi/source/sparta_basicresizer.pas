@@ -27,7 +27,7 @@ type
 
     property DesignedForm: IDesignedForm read FDesignedForm write SetDesignedForm;
 
-    procedure TryBoundSizerToDesignedForm(Sender: TObject); override;
+    //procedure TryBoundSizerToDesignedForm(Sender: TObject); override;
   end;
 
 implementation
@@ -84,7 +84,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TBasicResizer.TryBoundSizerToDesignedForm(Sender: TObject);
+(*procedure TBasicResizer.TryBoundSizerToDesignedForm(Sender: TObject);
 var
   LWidth, LHeight: Integer;
   LScrollPos: Integer;
@@ -146,7 +146,7 @@ begin
     (FDesignedForm as IDesignedFormBackground).RefreshValues;
 
   FResizerFrame.DesignerSetFocus;
-end;
+end;*)
 
 function TBasicResizer.GetActiveResizeFrame: IResizeFrame;
 begin

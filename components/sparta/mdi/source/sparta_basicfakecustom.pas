@@ -166,6 +166,7 @@ begin
     2: FHackWidth := AValue;
     3: FHackHeight := AValue;
   end;
+
   DoChangeHackedBounds;
 end;
 
@@ -179,10 +180,25 @@ begin
 end;
 
 procedure TFormImpl.SetRealBounds(AIndex: Integer; AValue: Integer);
+
+  procedure AdjustSize;
+  var
+    LFormRect: TRect;
+    LRealValue, LValue: Integer;
+  begin
+    LCLIntf.GetClientRect(GetForm.Handle, LFormRect);
+    LRealValue := GetRealBounds(AIndex);
+    LValue := LFormRect.Vector[AIndex];
+
+    if LValue <> LRealValue then
+      FDesignedRealForm.SetRealBounds(AIndex, AValue - (LRealValue - LValue));
+  end;
+
 begin
-  //if AValue > GetPublishedBounds(AIndex) then
-  //  AValue := GetPublishedBounds(AIndex); TODO
   FDesignedRealForm.SetRealBounds(AIndex, AValue);
+
+  if AIndex = 2 then
+    AdjustSize;
 end;
 
 procedure TFormImpl.SetRealBorderStyle(AVal: TFormBorderStyle);
@@ -294,11 +310,17 @@ end;
 procedure TFormImpl.SetHorzScrollPosition(AValue: Integer);
 begin
   RealLeft := -PositionDelta.x - AValue;
+  // ! must. resize problem for controls with Align = Top, Right etc.
+  RealWidth := Width;
+  RealHeight := Height;
 end;
 
 procedure TFormImpl.SetVertScrollPosition(AValue: Integer);
 begin
   RealTop := -PositionDelta.y - AValue;
+  // ! must. resize problem for controls with Align = Top, Right etc.
+  RealWidth := Width;
+  RealHeight := Height;
 end;
 
 function TFormImpl.GetHorzScrollPosition: Integer;
@@ -400,7 +422,12 @@ begin
         if FHandledForm <> nil then
           FHandledForm.Width  := AValue;
       end;
-    3: inherited Height := AValue;
+    3:
+      begin
+        inherited Height := AValue;
+        if FHandledForm <> nil then
+          FHandledForm.Height  := AValue;
+      end;
   end;
 end;
 

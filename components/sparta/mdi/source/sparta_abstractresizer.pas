@@ -217,7 +217,7 @@ var
   begin
     LForm.BeginUpdate;
 
-    if pkRight in PositioningKind then
+    //if pkRight in PositioningKind then
     begin
       LHiddenWidth := sbH.Position;
       if LHiddenWidth > LFrame.DesignedWidthToScroll then
@@ -226,8 +226,8 @@ var
       // TODO - better handling of min width - same in TDesignedFormImpl.SetPublishedBounds (sparta_FakeCustom.pas)
 
       LNewWidth := LFrame.ClientPanel.Width + LHiddenWidth;
-      LForm.RealWidth := LNewWidth;
       LForm.Width := LNewWidth;
+      LForm.RealWidth := LNewWidth;
 
       // perform minimal width (TODO)
       {if LNewWidth < DesignedForm.Width then
@@ -238,15 +238,15 @@ var
       end;}
     end;
 
-    if pkBottom in PositioningKind then
+    //if pkBottom in PositioningKind then
     begin
       LHiddenHeight := sbV.Position;
       if LHiddenHeight > LFrame.DesignedHeightToScroll then
         LHiddenHeight := LFrame.DesignedHeightToScroll;
 
       LNewHeight := LFrame.ClientPanel.Height + LHiddenHeight;
-      LForm.RealHeight := LNewHeight;
       LForm.Height := LNewHeight;
+      LForm.RealHeight := LNewHeight;
 
       // perform minimal height (TODO)
       {if LNewHeight < DesignedForm.RealHeight then

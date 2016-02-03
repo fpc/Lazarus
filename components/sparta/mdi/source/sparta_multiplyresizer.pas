@@ -73,6 +73,7 @@ end;
 
 class destructor TMultiplyResizer.Destroy;
 begin
+  Application.RemoveOnUserInputHandler(OnUserInputHandler);
   FAllForms.Free;
 end;
 
