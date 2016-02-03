@@ -464,7 +464,7 @@ type
     property TabIndex: Integer read FPageIndex write SetPageIndex default -1;
     property TabWidth: Smallint read FTabWidth write FTabWidth default 0;
     property OnChange: TNotifyEvent read FOnPageChanged write FOnPageChanged;
-    property OnDrawTab: TDrawTabEvent read FOnDrawTab write FOnDrawTab;
+    property OnDrawTab: TDrawTabEvent read FOnDrawTab write FOnDrawTab; deprecated 'Will be deleted in Lazarus 1.8';
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -841,7 +841,7 @@ type
     property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect default False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChanging;
-    property OnDrawTab;
+    property OnDrawTab; deprecated 'Will be removed in 1.8';
     property OnGetImageIndex;
     property OwnerDraw: Boolean read GetOwnerDraw write SetOwnerDraw default False;
     property RaggedRight: Boolean read GetRaggedRight write SetRaggedRight default False;
