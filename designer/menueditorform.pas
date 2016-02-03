@@ -91,6 +91,8 @@ type
     procedure InitializeStatisticVars;
     procedure LoadFixedButtonGlyphs;
     procedure OnDesignerSetSelection(const ASelection: TPersistentSelectionList);
+    procedure ProcessForPopup(aControl: TControl);
+    procedure ScanLookupRoot(aForm: TCustomForm);
     procedure SetupPopupAssignmentsDisplay;
   public
     procedure LoadVariableButtonGlyphs(isInMenubar: boolean);
@@ -363,37 +365,33 @@ begin
   else Result:=nil;
 end;
 
+procedure TMenuDesigner.ProcessForPopup(aControl: TControl);
+var
+  wc: TWinControl;
+  j:integer;
+begin
+  if (aControl.PopupMenu = FEditedMenu) and (aControl.Name <> '') then
+    FPopupAssignments.Add(aControl.Name);
+  if (aControl is TWinControl) then begin
+    wc:=TWinControl(aControl);
+    for j:=0 to wc.ControlCount-1 do
+      ProcessForPopup(wc.Controls[j]);   // Recursive call
+  end;
+end;
+
+procedure TMenuDesigner.ScanLookupRoot(aForm: TCustomForm);
+var
+  i: integer;
+begin
+  if (aForm.PopupMenu = FEditedMenu) then
+    FPopupAssignments.Add(aForm.Name);
+  for i:=0 to aForm.ControlCount-1 do
+    ProcessForPopup(aForm.Controls[i]);
+end;
+
 function TMenuDesigner.GetPopupAssignmentCount: integer;
 var
   lookupRoot: TPersistent;
-
-  procedure ScanLookupRoot;
-  var
-    frm: TCustomForm;
-    i: integer;
-
-    procedure ProcessForPopup(aControl: TControl);
-    var
-      wc: TWinControl;
-      j:integer;
-    begin
-      if (aControl.PopupMenu = FEditedMenu) and (aControl.Name <> '') then
-        FPopupAssignments.Add(aControl.Name);
-      if (aControl is TWinControl) then begin
-        wc:=TWinControl(aControl);
-        for j:=0 to wc.ControlCount-1 do
-          ProcessForPopup(wc.Controls[j]);
-      end;
-    end;
-
-  begin
-    frm:=TCustomForm(lookupRoot);
-    if (frm.PopupMenu = FEditedMenu) then
-      FPopupAssignments.Add(frm.Name);
-    for i:=0 to frm.ControlCount-1 do
-      ProcessForPopup(frm.Controls[i]);
-  end;
-
 begin
   lookupRoot:=GlobalDesignHook.LookupRoot;
   if (FEditedMenu is TMainMenu) or (lookupRoot is TDataModule) then
@@ -401,7 +399,7 @@ begin
   else begin
     FreeAndNil(FPopupAssignments);
     FPopupAssignments:=TStringList.Create;
-    ScanLookupRoot;
+    ScanLookupRoot(lookupRoot as TCustomForm);
     Result:=FPopupAssignments.Count;
   end
 end;
@@ -695,7 +693,6 @@ end;
 initialization
 
   RegisterComponentEditor(TMenu, TMainMenuComponentEditor);
-
   RegisterPropertyEditor(TypeInfo(TMenu), TMenu, 'Items', TMenuItemsPropertyEditor);
 
 end.
