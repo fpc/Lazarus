@@ -12268,7 +12268,8 @@ var
   end;
 
 begin
-  if List.Find(funName, i) then
+  i:=List.IndexOf(funName);
+  if i>=0 then
     AddDesc(List)
   else
   begin
