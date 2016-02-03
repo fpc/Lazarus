@@ -4546,6 +4546,7 @@ designer/jitforms.pp svneol=native#text/pascal
 designer/menueditorform.lfm svneol=native#text/pascal
 designer/menueditorform.pas svneol=native#text/pascal
 designer/menushadows.pp svneol=native#text/pascal
+designer/menushortcuts.pas svneol=native#text/pascal
 designer/noncontroldesigner.pas svneol=native#text/pascal
 designer/objinspext.pas svneol=native#text/pascal
 designer/scalecompsdlg.lfm svneol=native#text/plain
