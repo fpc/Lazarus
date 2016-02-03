@@ -317,7 +317,7 @@ begin
   FParent := AParent;
   // create layout
 
-  pMainDTU := TPanel.Create(AParent);
+  pMainDTU := TPanel.Create(Self);
   with pMainDTU do
   begin
     Parent := AParent;
@@ -326,14 +326,14 @@ begin
     Height := 0;
   end;
 
-  pAddons := TPanel.Create(AParent);
+  pAddons := TPanel.Create(Self);
   pAddons.Parent := AParent;
   pAddons.Align := alRight;
   pAddons.BevelOuter := bvNone;
   pAddons.Width:=0;
 
   // Funny button
-  bR := TButton.Create(AParent);
+  bR := TButton.Create(Self);
   with bR do
   begin
     Parent := AParent;
@@ -348,7 +348,7 @@ begin
     OnClick := FunnyButtonClick;
   end;
 
-  sbV := TScrollBar.Create(AParent);
+  sbV := TScrollBar.Create(Self);
   with sbV do
   begin
     Kind := sbVertical;
@@ -363,7 +363,7 @@ begin
     OnScroll := sbScroll;
   end;
 
-  sbH := TScrollBar.Create(AParent);
+  sbH := TScrollBar.Create(Self);
   with sbH do
   begin
     Parent := AParent;
@@ -376,7 +376,7 @@ begin
     OnScroll := sbScroll;
   end;
 
-  pMain := TPanel.Create(AParent);
+  pMain := TPanel.Create(Self);
   with pMain do
   begin
     Parent := AParent;

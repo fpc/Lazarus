@@ -104,6 +104,8 @@ type
     function GetBackgroundMargin(const AIndex: Integer): Integer;
     function GetClientPanel: TPanel;
     function GetNodePositioning: Boolean;
+    function GetDesignedForm: IDesignedForm;
+    procedure SetDesignedForm(const AValue: IDesignedForm);
 
     function GetSizerRectSize: Integer;
     function GetSizerLineWidth: Integer;
@@ -120,6 +122,7 @@ type
 
     property ClientPanel: TPanel read GetClientPanel;
     property NodePositioning: Boolean read GetNodePositioning;
+    property DesignedForm: IDesignedForm read GetDesignedForm write SetDesignedForm;
 
     property SizerRectSize: Integer read GetSizerRectSize;
     property SizerLineWidth: Integer read GetSizerLineWidth;

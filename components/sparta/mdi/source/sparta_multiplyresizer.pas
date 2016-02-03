@@ -5,8 +5,9 @@ unit sparta_MultiplyResizer;
 interface
 
 uses
-  Classes, SysUtils, Controls, Generics.Collections, sparta_AbstractResizer, sparta_InterfacesMDI,
-  sparta_BasicResizeFrame;
+  Forms, Classes, SysUtils, Controls, Generics.Collections, LMessages,
+
+  sparta_AbstractResizer, sparta_InterfacesMDI, sparta_BasicResizeFrame;
 
 type
 
@@ -28,6 +29,8 @@ type
 
     class constructor Create;
     class destructor Destroy;
+
+    class procedure OnUserInputHandler(Sender: TObject; Msg: Cardinal);
   private
     FFormsStack: TList<IDesignedForm>;
     FForms: TObjectDictionary<IDesignedForm, TResizerRec>;
@@ -64,12 +67,59 @@ end;
 
 class constructor TMultiplyResizer.Create;
 begin
+  Application.AddOnUserInputHandler(OnUserInputHandler);
   FAllForms := TDictionary<IDesignedForm, TMultiplyResizer>.Create;
 end;
 
 class destructor TMultiplyResizer.Destroy;
 begin
   FAllForms.Free;
+end;
+
+class procedure TMultiplyResizer.OnUserInputHandler(Sender: TObject;
+  Msg: Cardinal);
+var
+  LCtrl: TControl;
+  LActiveFrame: TBasicResizeFrame = nil;
+  LResizer: TMultiplyResizer = nil;
+  LResizerRec, LLastResizerRec: TResizerRec;
+  tmp: Integer;
+begin
+  if (Msg = LM_LBUTTONDOWN) or (Msg = LM_RBUTTONDOWN) or (Msg = LM_MBUTTONDOWN) then
+  begin
+    LCtrl := FindDragTarget(Mouse.CursorPos, True);
+
+    // find dedicated TMultiplyResizer and Frame
+    if LCtrl <> nil then
+    repeat
+      if LCtrl is TBasicResizeFrame then
+        LActiveFrame := TBasicResizeFrame(LCtrl);
+
+      LCtrl := LCtrl.Parent;
+      if (LCtrl <> nil) and (LCtrl.Owner is TMultiplyResizer) then
+      begin
+        LResizer := TMultiplyResizer(LCtrl.Owner);
+        Break;
+      end;
+    until (LCtrl = nil);
+
+    // frame to activate
+    if Assigned(LActiveFrame) and Assigned(LResizer) then
+    begin
+      LResizerRec := LResizer.FForms[LActiveFrame.DesignedForm];
+      LLastResizerRec := LResizer.FForms[LResizer.FFormsStack.Last];
+      // already on top
+      if LResizerRec = LLastResizerRec then
+        Exit;
+
+      LResizer.FFormsStack.Exchange(LResizerRec.Idx, LLastResizerRec.Idx);
+      tmp := LLastResizerRec.Idx;
+      LLastResizerRec.Idx := LResizerRec.Idx;
+      LResizerRec.Idx := tmp;
+      // show!
+      LActiveFrame.BringToFront;
+    end;
+  end;
 end;
 
 function TMultiplyResizer.GetActiveResizeFrame: IResizeFrame;
@@ -100,6 +150,7 @@ end;
 procedure TMultiplyResizer.AddDesignedForm(const AForm: IDesignedForm);
 var
   LFrame: TBasicResizeFrame;
+  LResizerRec: TResizerRec;
 begin
   if AForm = nil then
     Exit;
@@ -121,8 +172,9 @@ begin
 
   LFrame.DesignedForm := AForm;
 
-  FForms.Add(AForm, TResizerRec.Create(LFrame));
-  FFormsStack.Add(AForm);
+  LResizerRec := TResizerRec.Create(LFrame);
+  FForms.Add(AForm, LResizerRec);
+  LResizerRec.Idx := FFormsStack.Add(AForm);
 end;
 
 end.

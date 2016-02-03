@@ -48,7 +48,6 @@ type
     procedure FakeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FakeKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FakeUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
-    procedure SetDesignedForm(const AValue: IDesignedForm);
   private
     { private declarations }
     FOnNodePositioning: TPositioningEvent;
@@ -116,8 +115,9 @@ type
     function GetBackgroundMargin(const AIndex: Integer): Integer;
 
     function GetClientPanel: TPanel;
-
     function GetNodePositioning: Boolean;
+    function GetDesignedForm: IDesignedForm;
+    procedure SetDesignedForm(const AValue: IDesignedForm);
 
     function GetSizerRectSize: Integer;
     function GetSizerLineWidth: Integer;
@@ -127,7 +127,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
 
-    property DesignedForm: IDesignedForm read FDesignedForm write SetDesignedForm;
+    property DesignedForm: IDesignedForm read GetDesignedForm write SetDesignedForm;
 
     procedure PositionNodes(AroundControl: TWinControl); overload;
     property NodePositioning: Boolean read GetNodePositioning;
@@ -246,25 +246,6 @@ begin
     end;
     Inc(LY, LDeltaY);
   end;
-end;
-
-procedure TBasicResizeFrame.SetDesignedForm(const AValue: IDesignedForm);
-begin
-  FDesignedForm := AValue;
-  if FDesignedForm = nil then
-  begin
-    if Assigned(FBackground) then
-      FBackground.ResizeFrame := nil;
-    FBackground := nil;
-  end
-  else
-    if Supports(FDesignedForm, IDesignedFormBackground, FBackground) then
-    begin
-      FBackground.Parent := pBG;
-      FBackground.ResizeFrame := Self;
-    end;
-  // special for QT (at start "design form" has wrong position)
-  TryBoundDesignedForm;
 end;
 
 procedure TBasicResizeFrame.PanelPaint(Sender: TObject);
@@ -745,6 +726,30 @@ end;
 function TBasicResizeFrame.GetNodePositioning: Boolean;
 begin
   Result := FNodePositioning;
+end;
+
+function TBasicResizeFrame.GetDesignedForm: IDesignedForm;
+begin
+  Result := FDesignedForm;
+end;
+
+procedure TBasicResizeFrame.SetDesignedForm(const AValue: IDesignedForm);
+begin
+  FDesignedForm := AValue;
+  if FDesignedForm = nil then
+  begin
+    if Assigned(FBackground) then
+      FBackground.ResizeFrame := nil;
+    FBackground := nil;
+  end
+  else
+    if Supports(FDesignedForm, IDesignedFormBackground, FBackground) then
+    begin
+      FBackground.Parent := pBG;
+      FBackground.ResizeFrame := Self;
+    end;
+  // special for QT (at start "design form" has wrong position)
+  TryBoundDesignedForm;
 end;
 
 function TBasicResizeFrame.GetMenuHeight: Integer;
