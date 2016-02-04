@@ -1679,6 +1679,11 @@ const
   INVALID_RENDERINFO_CANVAS_XY = Low(Integer);
   Str_Line_Height_Tester = 'Áç';
 
+{$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
+var
+  AutoFitDebug: TStrings = nil;
+{$endif}
+
 {@@
   Registers a new reader for a format
 }
@@ -4611,6 +4616,9 @@ begin
   y2 := -MaxInt;
   for i := 0 to High(FPolyPoints) do
   begin
+    {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
+    if AutoFitDebug <> nil then AutoFitDebug.Add(Format('==[%d=%d]', [FPolyPoints[i].X, FPolyPoints[i].Y]));
+    {$endif}
     x1 := min(x1, FPolyPoints[i].X);
     y1 := min(y1, FPolyPoints[i].Y);
     x2 := max(x2, FPolyPoints[i].X);
@@ -7600,6 +7608,12 @@ begin
         ARenderInfo.EntityCanvasMaxXY.Y
       );
 
+    {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
+    if AutoFitDebug <> nil then AutoFitDebug.Add(Format('=[%s] MinX=%d MinY=%d MaxX=%d MaxY=%d',
+      [lEntity.ClassName, ARenderInfo.EntityCanvasMinXY.X, ARenderInfo.EntityCanvasMinXY.Y,
+       ARenderInfo.EntityCanvasMaxXY.X, ARenderInfo.EntityCanvasMaxXY.Y]));
+    {$endif}
+
     lEntity := GetNextEntity();
   end;
 
@@ -9068,12 +9082,9 @@ var
   lLeft, lTop, lWidth, lHeight: Integer;
   lMinX, lMinY, lMaxX, lMaxY: Integer;
   lZoomFitX, lZoomFitY: Double;
-  {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
-  lStrings: TStrings;
-  {$endif}
 begin
   {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
-  lStrings := TStringList.Create;
+  AutoFitDebug := TStringList.Create;
   try
   {$endif}
   ADeltaX := 0;
@@ -9095,7 +9106,7 @@ begin
       lMaxY := Max(lMaxY, lTop  + lHeight);
     end;
     {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
-    lStrings.Add(Format('[%s] MinX=%d MinY=%d MaxX=%d MaxY=%D', [lCurEntity.ClassName, lMinX, lMinY, lMaxX, lMaxY]));
+    AutoFitDebug.Add(Format('[%s] MinX=%d MinY=%d MaxX=%d MaxY=%D', [lCurEntity.ClassName, lMinX, lMinY, lMaxX, lMaxY]));
     {$endif}
   end;
 
@@ -9115,8 +9126,9 @@ begin
   ADeltaY += Round(-1.05 * AZoom * lHeight);
   {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
   finally
-    lStrings.SaveToFile('H:\autofit.txt');
-    lStrings.Free;
+    AutoFitDebug.SaveToFile('C:\Programas\autofit.txt');
+    AutoFitDebug.Free;
+    AutoFitDebug := nil;
   end;
   {$endif}
 end;
