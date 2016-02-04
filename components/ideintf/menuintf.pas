@@ -1449,7 +1449,7 @@ end;
 
 function TIDEMenuSection.VisibleActive: boolean;
 begin
-  Result:=Visible and ((VisibleCount>0) or ChildrenAsSubMenu);
+  Result:=Visible and (VisibleCount>0);
 end;
 
 function TIDEMenuSection.Size: integer;
