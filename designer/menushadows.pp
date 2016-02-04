@@ -236,8 +236,6 @@ private
 protected
   FEditorDesigner: TComponentEditorDesigner;
   FMenu: TMenu;
-  function GetParentBoxForMenuItem(aMI: TMenuItem): TShadowBox;
-  function GetShadowForMenuItem(aMI: TMenuItem): TShadowItem;
   function OnClickIsAssigned(aMI: TMenuItem): boolean;
   procedure AddOnClick(Sender: TObject);
   procedure DeleteItem(Sender: TObject);
@@ -248,7 +246,6 @@ protected
   procedure SetParent(NewParent: TWinControl); override;
   procedure SetSelectedShadow(const prevSelectedItem, curSelectedItem: TMenuItem; viaDesigner: boolean);
   procedure UpdateActionsEnabledness;
-  procedure UpdateBoxLocationsAndSizes;
   property AddItemFake: TFake read FAddItemFake;
   property AddSubmenuFake: TFake read FAddSubmenuFake;
   property BoxCount: integer read GetBoxCount;
@@ -259,11 +256,15 @@ public
   constructor CreateWithMenuAndDims(aCanvas: TCanvas; aShortcuts: TMenuShortcuts;
     aMenu: TMenu; aSelect: TMenuItem; aWidth, aHeight: integer);
   destructor Destroy; override;
+  function GetParentBoxForMenuItem(aMI: TMenuItem): TShadowBox;
+  function GetShadowForMenuItem(aMI: TMenuItem): TShadowItem;
   procedure HideBoxesAboveLevel(aLevel: integer);
   procedure RefreshFakes;
   procedure SetSelectedMenuItem(aMI: TMenuItem; viaDesigner, prevWasDeleted: boolean);
+  procedure UpdateBoxLocationsAndSizes;
   procedure UpdateSelectedItemInfo;
 public
+  property EditorDesigner: TComponentEditorDesigner read FEditorDesigner;
   property IsMainMenu: boolean read FIsMainMenu;
   property LookupRoot: TComponent read FLookupRoot;
   property SelectedMenuItem: TMenuItem read FSelectedMenuItem write FSelectedMenuItem;
@@ -296,7 +297,7 @@ const
   Gutter_Offset = 6;
   Gutter_X = DropDown_Text_Offset - Gutter_Offset;
   Popup_Origin: TPoint = (x:15; y:15);
-  MenuTemplatesFilename='menutemplates.xml';
+  MenuTemplatesFilename = 'menutemplates.xml';
 
 var
   ShadowItemID: integer = 0;
@@ -309,11 +310,12 @@ type
   TLineEditor = class(TForm)
   strict private
     FEdit: TEdit;
+    FShadowMenu: TShadowMenu;
     function GetEditedLine: string;
   protected
     procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   public
-    constructor CreateWithShadowItem(anOwner: TComponent; aSI: TShadowItem);
+    constructor CreateWithShadowItem(aShadowMenu: TShadowMenu; aSI: TShadowItem);
     property EditedLine: string read GetEditedLine;
   end;
 
@@ -351,6 +353,7 @@ type
     FSelectedInfo: TSCInfo;
     FSelectedUnique: TSCInfo;
     FShortcuts: TMenuShortcuts;
+    FShadowMenu: TShadowMenu;
     procedure ConflictsBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure CreateListboxItems;
     procedure InitialPopulateListBox;
@@ -358,7 +361,7 @@ type
     procedure RePopulateListBox;
     procedure UpdateStatistics;
   public
-    constructor Create(aShortcuts: TMenuShortcuts); reintroduce;
+    constructor Create(aShortcuts: TMenuShortcuts; aShadowMenu: TShadowMenu); reintroduce;
     destructor Destroy; override;
   end;
 
@@ -372,6 +375,7 @@ type
     FSingleMenuOnly: boolean;
     FShortcutsOnly: boolean;
     FShortcuts: TMenuShortcuts;
+    FShadowMenu: TShadowMenu;
     // GUI
     FBPanel: TButtonPanel;
     FDualDisplay: TDualDisplay;
@@ -383,7 +387,8 @@ type
     procedure UpdateContents(singleMenuOnly: boolean=False);
     procedure UpdateFromMenu(anIndex: integer= -1);
   public
-    constructor CreateWithShortcutsOnly(aShortcuts: TMenuShortcuts; shortcutsOnly: boolean; aMenu: TMenu=nil);
+    constructor CreateWithShortcutsOnly(aShortcuts: TMenuShortcuts; shortcutsOnly: boolean;
+                                        aShadowMenu: TShadowMenu; aMenu: TMenu=nil);
     destructor Destroy; override;
   end;
 
@@ -549,6 +554,7 @@ type
     FSavedNode: TTreeNode;
     FStandardNode: TTreeNode;
     FTemplates: TMenuTemplates;
+    FMenu: TMenu;
     procedure BExecuteDeleteClick(Sender: TObject);
     procedure BExecuteInsertClick(Sender: TObject);
     procedure BExecuteSaveClick(Sender: TObject);
@@ -569,7 +575,7 @@ type
   protected
     procedure DoShowWindow; override;
   public
-    constructor CreateWithMode(AOwner: TComponent; aDialogMode: TDialogMode=dmInsert);
+    constructor CreateWithMode(aMenu: TMenu; aDialogMode: TDialogMode);
     destructor Destroy; override;
     property MenuToInsert: TMenuItem read FMenuToInsert;
     property MenuToSave: TMenuItem read FMenuToSave write FMenuToSave;
@@ -691,10 +697,9 @@ var
   i: integer;
 begin
   Result:=0;
-  for i:=0 to aMI.Count-1 do begin
+  for i:=0 to aMI.Count-1 do
     if aMI.Items[i].IsLine then
       Inc(Result);
-  end;
 end;
 
 {function CommaTextIntoTwo(const aText: string; out a2ndHalf: string): string;
@@ -712,49 +717,50 @@ begin
   a2ndHalf:=Copy(aText, Succ(p), len - p);
 end;}
 
+function InvalidXML(aTemplateCfgName: string): boolean;
+// perform a quick check, far from a full validation
+var
+  sl: TStringList;
+  tr0, s: string;
+begin
+  sl:=TStringList.Create;
+  try
+    sl.LoadFromFile(aTemplateCfgName);
+    if (sl.Count < 3) then
+      Exit(True);
+    tr0:=Trim(sl[0]);
+    s:=Copy(tr0, 1, 15);
+    if not SameText(s, '<?xml version="') then
+      Exit(True);
+    s:=Copy(tr0, Length(tr0) - 17, 18);
+    if not SameText(s, 'encoding="UTF-8"?>') then
+      Exit(True);
+    if not SameText(Trim(sl[1]), '<CONFIG>') then
+      Exit(True);
+    if not SameText(Trim(sl[Pred(sl.Count)]), '</CONFIG>') then
+      Exit(True);
+    Result:=False;
+  finally
+    sl.Free;
+  end;
+end;
+
 function SavedTemplatesExist: boolean;
 var
   XMLConfig: TXMLConfig;
   cfgPath, s, templateCfgName: string;
-
-  function InvalidXML: boolean; // perform a quick check, far from a full validation
-  var
-    sl: TStringList;
-    tr0, s: string;
-  begin
-    sl:=TStringList.Create;
-    try
-      sl.LoadFromFile(templateCfgName);
-      if (sl.Count < 3) then
-        Exit(True);
-      tr0:=Trim(sl[0]);
-      s:=Copy(tr0, 1, 15);
-      if not SameText(s, '<?xml version="') then
-        Exit(True);
-      s:=Copy(tr0, Length(tr0) - 17, 18);
-      if not SameText(s, 'encoding="UTF-8"?>') then
-        Exit(True);
-      if not SameText(Trim(sl[1]), '<CONFIG>') then
-        Exit(True);
-      if not SameText(Trim(sl[Pred(sl.Count)]), '</CONFIG>') then
-        Exit(True);
-      Result:=False;
-    finally
-      sl.Free;
-    end;
-  end;
-
 begin
   cfgPath:=SetDirSeparators(ExtractFilePath(ChompPathDelim(SysToUTF8(GetAppConfigDir(False)))) + 'lazarus');
   templateCfgName:=cfgPath + DirectorySeparator + MenuTemplatesFilename;
   if not FileExistsUTF8(templateCfgName) then
     Exit(False);
-  if InvalidXML then // file is corrupted or not XML, so discard to prevent exception
+  if InvalidXML(templateCfgName) then
+    // file is corrupted or not XML, so discard to prevent exception
     DeleteFile(templateCfgName);
   XMLConfig:=TXMLConfig.Create(templateCfgName);
   try
     s:=XMLConfig.GetValue('menu_1/Name/Value', 'missing_Menu_1_Name');
-    Result:=(CompareText(s, 'missing_Menu_1_Name') <> 0);
+    Result:=CompareText(s, 'missing_Menu_1_Name') <> 0;
   finally
     XMLConfig.Free;
   end;
@@ -881,7 +887,7 @@ begin
     dlg.Free;
   end;
 end;
-
+{
 procedure SaveMenuTemplateDlg(aMenuItem: TMenuItem);
 var
   dlg: TMenuTemplateDialog;
@@ -894,7 +900,7 @@ begin
     dlg.Free;
   end;
 end;
-
+}
 function InsertMenuTemplateDlg: TMenuItem;
 var
   dlg: TMenuTemplateDialog;
@@ -923,7 +929,7 @@ begin
     dlg.Free;
   end;
 end;
-
+{
 function ResolvedConflictsDlg: TModalResult;
 var
   dlg: TResolveConflictsDlg;
@@ -935,13 +941,14 @@ begin
     dlg.Free;
   end;
 end;
-
+}
 function ListShortCutDlg(aShortcuts: TMenuShortcuts; shortcutsOnly: boolean;
-  aMenu: TMenu): TModalResult;
+  aShadowMenu: TShadowMenu; aMenu: TMenu): TModalResult;
 var
   dlg: TShortcutDisplayDlg;
 begin
-  dlg:=TShortcutDisplayDlg.CreateWithShortcutsOnly(aShortcuts, shortcutsOnly, aMenu);
+  dlg:=TShortcutDisplayDlg.CreateWithShortcutsOnly(aShortcuts, shortcutsOnly,
+                                                   aShadowMenu, aMenu);
   try
     Result:=dlg.ShowModal;
   finally
@@ -1354,6 +1361,32 @@ begin
 end;
 
 { TMenuTemplateDialog }
+
+constructor TMenuTemplateDialog.CreateWithMode(aMenu: TMenu; aDialogMode: TDialogMode);
+begin
+  inherited CreateNew(Nil);
+  FMenu:=aMenu;
+  FDialogMode:=aDialogMode;
+  BorderStyle:=bsSizeable;
+  SetInitialBounds(0, 0, 530, 380);
+  Position:=poScreenCenter;
+  case aDialogMode of
+    dmSave: Caption:=lisMenuEditorSaveMenuAsTemplate;
+    dmInsert: Caption:=Format(lisMenuEditorInsertMenuTemplateIntoRootOfS, [FMenu.Name]);
+    dmDelete: Caption:=lisMenuEditorDeleteSavedMenuTemplate;
+  end;
+  FTemplates:=TMenuTemplates.CreateForMode(FDialogMode);
+  SetupGUI;
+  PopulateTreeView;
+end;
+
+destructor TMenuTemplateDialog.Destroy;
+begin
+  FreeAndNil(FNewMenuTemplate);
+  FreeAndNil(FTemplates);
+  FreeAndNil(FPreview);
+  inherited Destroy;
+end;
 
 procedure TMenuTemplateDialog.BExecuteDeleteClick(Sender: TObject);
 begin
@@ -1781,33 +1814,6 @@ begin
     end;
 
   end;
-end;
-
-constructor TMenuTemplateDialog.CreateWithMode(AOwner: TComponent;
-  aDialogMode: TDialogMode);
-begin
-  inherited CreateNew(AOwner);
-  FDialogMode:=aDialogMode;
-  BorderStyle:=bsSizeable;
-  SetInitialBounds(0, 0, 530, 380);
-  Position:=poScreenCenter;
-  case aDialogMode of
-    dmSave: Caption:=lisMenuEditorSaveMenuAsTemplate;
-    dmInsert: Caption:=Format(lisMenuEditorInsertMenuTemplateIntoRootOfS,
-                              [MenuDesigner.EditedMenu.Name]);
-    dmDelete: Caption:=lisMenuEditorDeleteSavedMenuTemplate;
-  end;
-  FTemplates:=TMenuTemplates.CreateForMode(FDialogMode);
-  SetupGUI;
-  PopulateTreeView;
-end;
-
-destructor TMenuTemplateDialog.Destroy;
-begin
-  FreeAndNil(FNewMenuTemplate);
-  FreeAndNil(FTemplates);
-  FreeAndNil(FPreview);
-  inherited Destroy;
 end;
 
 { TPreview }
@@ -2442,12 +2448,14 @@ end;
 
 { TResolveConflictsDlg }
 
-constructor TResolveConflictsDlg.Create(aShortcuts: TMenuShortcuts);
+constructor TResolveConflictsDlg.Create(aShortcuts: TMenuShortcuts;
+  aShadowMenu: TShadowMenu);
 begin
   inherited CreateNew(Nil);
   FShortcuts:=aShortcuts;
   FShortcuts.ShortcutList.ScanContainerForShortcutsAndAccelerators;
   FInitialConflictsCount:=FShortcuts.ShortcutList.InitialDuplicatesCount;
+  FShadowMenu:=aShadowMenu;
   FResolvedConflictsCount:=0;
   Position:=poScreenCenter;
   Constraints.MinWidth:=400;
@@ -2609,11 +2617,11 @@ begin
         scOtherCompAccel:  TControl(FSelectedInfo.Component).Caption:=newCaption;
       end;
       if (FSelectedInfo.Kind in MenuItem_Kinds) then begin
-        MenuDesigner.ShadowMenu.FEditorDesigner.PropertyEditorHook.RefreshPropertyValues;
-        MenuDesigner.ShadowMenu.FEditorDesigner.Modified;
-        si:=MenuDesigner.ShadowMenu.GetShadowForMenuItem(FSelectedInfo.MenuItem);
+        FShadowMenu.EditorDesigner.PropertyEditorHook.RefreshPropertyValues;
+        FShadowMenu.EditorDesigner.Modified;
+        si:=FShadowMenu.GetShadowForMenuItem(FSelectedInfo.MenuItem);
         if (si <> nil) then begin
-          MenuDesigner.ShadowMenu.UpdateBoxLocationsAndSizes;
+          FShadowMenu.UpdateBoxLocationsAndSizes;
           si.Repaint;
         end;
       end
@@ -2691,8 +2699,8 @@ end;
 
 { TShortcutDisplayDlg }
 
-constructor TShortcutDisplayDlg.CreateWithShortcutsOnly(
-  aShortcuts: TMenuShortcuts; shortcutsOnly: boolean; aMenu: TMenu);
+constructor TShortcutDisplayDlg.CreateWithShortcutsOnly(aShortcuts: TMenuShortcuts;
+  shortcutsOnly: boolean; aShadowMenu: TShadowMenu; aMenu: TMenu);
 var
   s: string;
   lurStr: string;
@@ -2701,6 +2709,7 @@ begin
   FShortcutsOnly:=shortcutsOnly;
   FShortcuts:=aShortcuts;
   FMenu:=aMenu;
+  FShadowMenu:=aShadowMenu;
   FSingleMenuOnly:=(FMenu <> nil);
   FLastSortIndex:= -1;
   if FSingleMenuOnly then
@@ -2810,16 +2819,16 @@ begin
             mi.ShortCut:=sc
           else
             mi.ShortCutKey2:=sc;
-          si:=MenuDesigner.ShadowMenu.GetShadowForMenuItem(mi);
+          si:=FShadowMenu.GetShadowForMenuItem(mi);
           if (si <> nil) then begin
-            MenuDesigner.ShadowMenu.UpdateBoxLocationsAndSizes;
+            FShadowMenu.UpdateBoxLocationsAndSizes;
             si.Repaint;
           end;
           FShortcuts.UpdateShortcutList(False);
           UpdateFromMenu;
           GlobalDesignHook.RefreshPropertyValues;
           GlobalDesignHook.Modified(mi);
-          MenuDesigner.ShadowMenu.RefreshFakes;
+          FShadowMenu.RefreshFakes;
         end;
       end;
     end;
@@ -2875,17 +2884,17 @@ begin
                 mi.ShortCut:=sc
               else if not isCaptionSC then
                 mi.ShortCutKey2:=sc;
-              si:=MenuDesigner.ShadowMenu.GetShadowForMenuItem(mi);
+              si:=FShadowMenu.GetShadowForMenuItem(mi);
               if (si <> nil) then
               begin
-                MenuDesigner.ShadowMenu.UpdateBoxLocationsAndSizes;
+                FShadowMenu.UpdateBoxLocationsAndSizes;
                 si.Repaint;
               end;
               FShortcuts.UpdateShortcutList(True);
               UpdateContents;
               GlobalDesignHook.RefreshPropertyValues;
               GlobalDesignHook.Modified(mi);
-              MenuDesigner.ShadowMenu.RefreshFakes;
+              FShadowMenu.RefreshFakes;
             end;
         end;
     end;
@@ -2996,6 +3005,25 @@ end;
 
 { TLineEditor }
 
+constructor TLineEditor.CreateWithShadowItem(aShadowMenu: TShadowMenu; aSI: TShadowItem);
+var
+  topLeft: TPoint;
+begin
+  inherited CreateNew(Nil);
+  FShadowMenu:=aShadowMenu;
+  BorderStyle:=bsNone;
+  Name:='LineEditor';
+  topLeft:=FShadowMenu.ClientToScreen(aSI.BoundsRect.TopLeft);
+  SetInitialBounds(topLeft.x + asi.ParentBox.Left,
+                   topLeft.y + aSI.ParentBox.Top,
+                   aSI.Width+1, aSI.Height+1);
+  FEdit:=TEdit.Create(Self);
+  FEdit.Align:=alClient;
+  FEdit.Text:=aSI.RealItem.Caption;
+  FEdit.OnKeyDown:=@EditKeyDown;
+  FEdit.Parent:=Self;
+end;
+
 function TLineEditor.GetEditedLine: string;
 begin
   Result:=FEdit.Text;
@@ -3010,31 +3038,7 @@ begin
   end;
 end;
 
-constructor TLineEditor.CreateWithShadowItem(anOwner: TComponent; aSI: TShadowItem);
-var
-  topLeft: TPoint;
-begin
-  inherited CreateNew(anOwner);
-  BorderStyle:=bsNone;
-  Name:='LineEditor';
-  topLeft:=MenuDesigner.ShadowMenu.ClientToScreen(aSI.BoundsRect.TopLeft);
-  SetInitialBounds(topLeft.x + asi.ParentBox.Left,
-                   topLeft.y + aSI.ParentBox.Top,
-                   aSI.Width+1, aSI.Height+1);
-  FEdit:=TEdit.Create(Self);
-  FEdit.Align:=alClient;
-  FEdit.Text:=aSI.RealItem.Caption;
-  FEdit.OnKeyDown:=@EditKeyDown;
-  FEdit.Parent:=Self;
-end;
-
 { TFake }
-
-class function TFake.GetControlClassDefaultSize: TSize;
-begin
-  Result.cx:=100;
-  Result.cy:=DropDown_Height;
-end;
 
 constructor TFake.Create(anOwner: TShadowMenu);
 begin
@@ -3049,6 +3053,12 @@ begin
   Canvas.Font.Color:=clBtnShadow;
   Canvas.Brush.Color:=clBtnFace;
   Parent:=anOwner;
+end;
+
+class function TFake.GetControlClassDefaultSize: TSize;
+begin
+  Result.cx:=100;
+  Result.cy:=DropDown_Height;
 end;
 
 procedure TFake.Paint;
@@ -3428,7 +3438,6 @@ end;
 
 function TShadowMenu.GetStringWidth(const aText: string; isBold: boolean): integer;
 begin
-  Assert(FMenu = MenuDesigner.EditedMenu, 'TShadowMenu.GetStringWidth: FMenu <> MenuDesigner');
   if isBold then
     FMainCanvas.Font.Style:=[fsBold]
   else
@@ -3440,7 +3449,6 @@ function TShadowMenu.GetMenuBarIconWidth(aMI: TMenuItem): integer;
 begin
   Result:=0;
   if aMI.IsInMenuBar then begin
-    Assert(FMenu = MenuDesigner.EditedMenu, 'TShadowMenu.GetMenuBarIconWidth: FMenu <> MenuDesigner');
     if aMI.HasIcon and (aMI.ImageIndex > -1) and
        (FMenu.Images <> nil) then
          Inc(Result, FMenu.Images.Width)
@@ -3905,25 +3913,42 @@ end;
 
 procedure TShadowMenu.ListShortcuts(Sender: TObject);
 begin
-  ListShortCutDlg(FShortcuts, True, FMenu);
+  ListShortCutDlg(FShortcuts, True, Self, FMenu);
 end;
 
 procedure TShadowMenu.ListShortcutsAndAccelerators(Sender: TObject);
 begin
-  ListShortCutDlg(FShortcuts, False, Nil);
+  ListShortCutDlg(FShortcuts, False, Self, Nil);
 end;
 
 procedure TShadowMenu.ResolveShortcutConflicts(Sender: TObject);
+var
+  dlg: TResolveConflictsDlg;
 begin
-  if (ResolvedConflictsDlg <> mrCancel) then
-    UpdateActionsEnabledness;
+  dlg:=TResolveConflictsDlg.Create(FShortcuts, Self);
+  try
+    if dlg.ShowModal <> mrCancel then
+      UpdateActionsEnabledness;
+  finally
+    dlg.Free;
+  end;
 end;
 
 procedure TShadowMenu.SaveAsTemplate(Sender: TObject);
+var
+  dlg: TMenuTemplateDialog;
 begin
   if (FSelectedMenuItem <> nil) and LevelZeroAndNoGrandchildren(FSelectedMenuItem) then
   begin
-    SaveMenuTemplateDlg(FSelectedMenuItem);
+    //SaveMenuTemplateDlg(FSelectedMenuItem);
+    dlg:=TMenuTemplateDialog.CreateWithMode(FMenu, dmSave);
+    try
+      dlg.MenuToSave:=FSelectedMenuItem;
+      dlg.ShowModal;
+    finally
+      dlg.Free;
+    end;
+
     MenuDesigner.UpdateTemplatesCount;
     UpdateActionsEnabledness;
   end;
