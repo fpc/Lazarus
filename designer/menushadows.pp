@@ -188,11 +188,16 @@ strict private
   FRootBox: TShadowBox;
   FSelectedMenuItem: TMenuItem;
   FShortcuts: TMenuShortcuts;
+  procedure DeleteBox(aMI: TMenuItem);
+  procedure DeleteItm(anItem: TMenuItem);
+  function GetActionForEnum(anEnum: TPopEnum): TAction;
   function GetBoxContainingMenuItem(aMI: TMenuItem): TShadowBox;
   function GetBoxCount: integer;
   function GetHighestLevelVisibleBox: TShadowBox;
   function GetMaxVisibleBoxDims(aSB: TShadowBox): TPoint;
   function GetMaxVisibleFakeDims: TPoint;
+  function GetMenuBarCumWidthForItemIndex(anIndex: integer): integer;
+  function GetParentItemHeightInBox(aParentItem: TMenuItem): integer;
   function GetSelectedShadowBox: TShadowBox;
   function GetSelectedShadowItem: TShadowItem;
   procedure AddManyItems(aPrimaries, aDepth: integer);
@@ -204,6 +209,7 @@ strict private
   procedure OnDesignerModified(Sender: TObject);
   procedure OnObjectPropertyChanged(Sender: TObject; NewObject: TPersistent);
   procedure OnDesignerRefreshPropertyValues;
+  procedure RecursiveCreateShadows(aParentBox: TShadowBox; aMI: TMenuItem);
   procedure SetupPopupMenu;
   procedure UpdateButtonGlyphs(isInBar: boolean);
   // user actions
@@ -371,6 +377,7 @@ type
     FDualDisplay: TDualDisplay;
     FGBDisplay: TGroupBox;
     FLabel: TLabel;
+    procedure AddSCitemToListRecursive(anItem: TMenuItem);
     procedure DisplayAllDlgClick(isHeader: boolean; index: integer);
     procedure DisplaySingleMenuClick(isHeader: boolean; index: integer);
     procedure UpdateContents(singleMenuOnly: boolean=False);
@@ -610,7 +617,8 @@ begin
   idx:=aMI.MenuIndex;
   if (idx = 0) then
     Exit(nil)
-  else Result:=aMI.Parent.Items[Pred(idx)];
+  else
+    Result:=aMI.Parent.Items[Pred(idx)];
 end;
 
 function GetNextItem(aMI: TMenuItem): TMenuItem;
@@ -620,7 +628,8 @@ begin
   idx:=aMI.MenuIndex;
   if (idx = Pred(aMI.Parent.Count)) then
     Exit(nil)
-  else Result:=aMI.Parent.Items[Succ(idx)];
+  else
+    Result:=aMI.Parent.Items[Succ(idx)];
 end;
 
 function GetNextNonSepItem(aMI: TMenuItem): TMenuItem;
@@ -650,7 +659,8 @@ begin
     mr:=dlg.ShowModal;
     if (mr = mrOK) then
       Result:=dlg.EditedLine
-    else Result:='';
+    else
+      Result:='';
   finally
     dlg.Free;
   end;
@@ -730,7 +740,7 @@ var
         Exit(True);
       Result:=False;
     finally
-       sl.Free;
+      sl.Free;
     end;
   end;
 
@@ -738,7 +748,7 @@ begin
   cfgPath:=SetDirSeparators(ExtractFilePath(ChompPathDelim(SysToUTF8(GetAppConfigDir(False)))) + 'lazarus');
   templateCfgName:=cfgPath + DirectorySeparator + MenuTemplatesFilename;
   if not FileExistsUTF8(templateCfgName) then
-      Exit(False);
+    Exit(False);
   if InvalidXML then // file is corrupted or not XML, so discard to prevent exception
     DeleteFile(templateCfgName);
   XMLConfig:=TXMLConfig.Create(templateCfgName);
@@ -766,8 +776,6 @@ begin
 end;
 
 function GetNestingLevelDepth(aMenu: TMenu): integer;
-var
-  i: integer;
 
   procedure CheckLevel(aMI: TMenuItem; aLevel: integer);
   var
@@ -781,6 +789,8 @@ var
     end;
   end;
 
+var
+  i: integer;
 begin
   Result:=0;
   for i:=0 to aMenu.Items.Count-1 do
@@ -810,7 +820,8 @@ begin
     Result:=1
   else if (i2 > i1) then
     Result:= -1
-  else Result:=0;
+  else
+    Result:=0;
 end;
 
 function SortByBoxLevel(Item1, Item2: Pointer): Integer;
@@ -825,7 +836,8 @@ begin
     Result:=1
   else if (lvl1 < lvl2) then
     Result:= -1
-  else Result:=0;
+  else
+    Result:=0;
 end;
 
 function EditCaptionDlg(aMI: TMenuItem; var aShortcut: TShortCut): boolean;
@@ -835,11 +847,12 @@ begin
   dlg:=TEditCaptionDialog.CreateWithMenuItem(nil, aMI, aShortcut);
   try
     if (dlg.ShowModal = mrOK) then
-      begin
-        aShortcut:=dlg.NewShortcut;
-        Result:=True;
-      end
-    else Result:=False;
+    begin
+      aShortcut:=dlg.NewShortcut;
+      Result:=True;
+    end
+    else
+      Result:=False;
   finally
     dlg.Free;
   end;
@@ -855,14 +868,15 @@ begin
   if (anImageList.Count = 0) then
     Exit(-1)
   else if (anImageList.Count = 1) then
-         Exit(0);
+    Exit(0);
   dlg:=TdlgChooseIcon.Create(nil);
   try
     dlg.SetRadioIconGroup(anImageList);
     mr:=dlg.ShowModal;
     if (mr = mrOK) then
       Result:=dlg.ImageIndex
-    else Result:= -1;
+    else
+      Result:= -1;
   finally
     dlg.Free;
   end;
@@ -889,7 +903,8 @@ begin
   try
     if (dlg.ShowModal = mrOK) then
       Result:=dlg.MenuToInsert
-    else Result:=nil;
+    else
+      Result:=nil;
   finally
     dlg.Free;
   end;
@@ -945,7 +960,8 @@ begin
     Result:= +1
   else if (SCInfo1.ComponentName < SCInfo2.ComponentName) then
     Result:= -1
-  else Result:=0;
+  else
+    Result:=0;
 end;
 
 { TAddFirstFake }
@@ -1084,22 +1100,18 @@ var
   mt: TMenuTemplate;
   submi, mi: TMenuItem;
   i: integer;
-
-  procedure AddSubItem(anIndex: integer);
-  begin
-    submi:=TMenuItem.Create(nil);
-    submi.Caption:=mt.SubItem[anIndex];
-    submi.ShortCut:=mt.Shortcut[anIndex];
-    mi.Insert(anIndex, submi);
-  end;
-
 begin
   CheckIndex(index);
   mt:=TMenuTemplate(FTemplateList[index]);
   mi:=TMenuItem.Create(nil);
   mi.Caption:=mt.PrimaryItem;
   for i:=0 to mt.SubItemCount-1 do
-    AddSubItem(i);
+  begin
+    submi:=TMenuItem.Create(nil);
+    submi.Caption:=mt.SubItem[i];
+    submi.ShortCut:=mt.Shortcut[i];
+    mi.Insert(i, submi);
+  end;
   Result:=mi;
 end;
 
@@ -1200,7 +1212,8 @@ function TMenuTemplates.GetIndexOfTemplate(aMT: TMenuTemplate): integer;
 begin
   if (aMT = nil) then
     Result:= -1
-  else Result:=FTemplateList.IndexOf(aMT);
+  else
+    Result:=FTemplateList.IndexOf(aMT);
 end;
 
 procedure TMenuTemplates.AddTemplate(const aTemplateText: string;
@@ -1227,21 +1240,19 @@ begin
     i:=1;
     s:=XMLConfig.GetValue(Format('menu_%d/Name/Value',[i]), 'missing');
     while not SameText(s, 'missing') do
-      begin
-        Inc(i);
-        s:=XMLConfig.GetValue(Format('menu_%d/Name/Value',[i]), 'missing');
-      end;
+    begin
+      Inc(i);
+      s:=XMLConfig.GetValue(Format('menu_%d/Name/Value',[i]), 'missing');
+    end;
     XMLConfig.SetValue(Format('menu_%d/Name/Value',[i]), aMenuTemplate.PrimaryItem);
     XMLConfig.SetValue(format('menu_%d/Description/Value',[i]), aMenuTemplate.Description);
     if (aMenuTemplate.SubItemCount > 0) then
-      begin
-        XMLConfig.SetValue(Format('menu_%d/SubItems/Value', [i]), 'true');
-      end;
+      XMLConfig.SetValue(Format('menu_%d/SubItems/Value', [i]), 'true');
     for j:=0 to aMenuTemplate.SubItemCount-1 do
-      begin
-        XMLConfig.SetValue(Format('menu_%d/subitem_%d/Name/Value',[i,j]), aMenuTemplate.SubItem[j]);
-        XMLConfig.SetValue(Format('menu_%d/subitem_%d/Shortcut/Value',[i,j]), ShortCutToText(aMenuTemplate.Shortcut[j]));
-      end;
+    begin
+      XMLConfig.SetValue(Format('menu_%d/subitem_%d/Name/Value',[i,j]), aMenuTemplate.SubItem[j]);
+      XMLConfig.SetValue(Format('menu_%d/subitem_%d/Shortcut/Value',[i,j]), ShortCutToText(aMenuTemplate.Shortcut[j]));
+    end;
     InvalidateFileStateCache;
     XMLConfig.Flush;
   finally
@@ -1269,29 +1280,30 @@ end;
 class function TMenuTemplate.MenuItemToString(aMenuItem: TMenuItem;
   aDescription: string): string;
 var
-    sc: TShortCut;
-    scStr: string;
-    i: integer;
-    mi: TMenuItem;
+  sc: TShortCut;
+  scStr: string;
+  i: integer;
+  mi: TMenuItem;
+begin
+  if (aMenuItem = nil) then
+    Exit('');
+  Result:=Format('%s,%s,',[aMenuItem.Caption, aDescription]);
+  for i:=0 to aMenuItem.Count-1 do
   begin
-    if (aMenuItem = nil) then
-      Result:=''
-    else begin
-      Result:=Format('%s,%s,',[aMenuItem.Caption, aDescription]);
-      for i:=0 to aMenuItem.Count-1 do begin
-        mi:=aMenuItem.Items[i];
-        sc:=mi.ShortCut;
-        if (sc = 0) then
-          begin
-            if (mi.ShortCutKey2 = 0) then
-              scStr:=''
-            else scStr:=ShortCutToText(mi.ShortCutKey2);
-          end
-        else scStr:=ShortCutToText(sc);
-        AppendStr(Result, Format('%s,%s,',[mi.Caption, scStr]));
-      end;
-    end;
+    mi:=aMenuItem.Items[i];
+    sc:=mi.ShortCut;
+    if (sc = 0) then
+    begin
+      if (mi.ShortCutKey2 = 0) then
+        scStr:=''
+      else
+        scStr:=ShortCutToText(mi.ShortCutKey2);
+    end
+    else
+      scStr:=ShortCutToText(sc);
+    AppendStr(Result, Format('%s,%s,',[mi.Caption, scStr]));
   end;
+end;
 
 constructor TMenuTemplate.CreateFromString(const aMenuString: string);
 begin
@@ -1325,15 +1337,16 @@ begin
            FDescription:=sl[1];
          end;
       else begin
-             FPrimaryItem:=sl[0];
-             FDescription:=sl[1];
-             for i:=2 to sl.Count-1 do
-               begin
-                 if not Odd(i) then
-                   s:=sl[i]
-                 else FSubList.AddObject(s, TObject(PtrUInt(TextToShortCut(sl[i]))));
-               end;
-           end;
+         FPrimaryItem:=sl[0];
+         FDescription:=sl[1];
+         for i:=2 to sl.Count-1 do
+         begin
+           if not Odd(i) then
+             s:=sl[i]
+           else
+             FSubList.AddObject(s, TObject(PtrUInt(TextToShortCut(sl[i]))));
+         end;
+       end;
     end; // case
   finally
     sl.Free;
@@ -1390,9 +1403,7 @@ end;
 
 procedure TMenuTemplateDialog.DeleteSelectedFromConfigFile;
 var
-  highestOldIdx, i, idxToDelete: integer;
   XMLConfig: TXMLConfig;
-  cfgPath, s, desc, currDesc: string;
 
   procedure ExchangeConfigTemplates(aLower, aHigher: integer);
   var
@@ -1431,6 +1442,9 @@ var
       XMLConfig.SetValue(Format('menu_%d/Description/Value',[aLower]), valueN);
   end;
 
+var
+  highestOldIdx, i, idxToDelete: integer;
+  cfgPath, s, desc, currDesc: string;
 begin
   desc:=TMenuTemplate(FTVTemplates.Selected.Data).Description;
   cfgPath:=SetDirSeparators(ExtractFilePath(ChompPathDelim(SysToUTF8(GetAppConfigDir(False)))) + 'lazarus');
@@ -1474,19 +1488,18 @@ var
   mt: TMenuTemplate;
   i: integer;
   processed: string;
-
 begin
   for i:=0 to FTemplates.MenuCount-1 do
-    begin
-      mt:=FTemplates.MenuTemplate[i];
-      processed:=AmpersandStripped(mt.PrimaryItem);
-      if mt.IsStandardTemplate then
-        FTVTemplates.Items.AddChildObject(FStandardNode, processed, mt)
-      else begin
-        AppendStr(processed, Format(' [%s]',[mt.Description]));
-        FTVTemplates.Items.AddChildObject(FSavedNode, processed, mt);
-      end;
+  begin
+    mt:=FTemplates.MenuTemplate[i];
+    processed:=AmpersandStripped(mt.PrimaryItem);
+    if mt.IsStandardTemplate then
+      FTVTemplates.Items.AddChildObject(FStandardNode, processed, mt)
+    else begin
+      AppendStr(processed, Format(' [%s]',[mt.Description]));
+      FTVTemplates.Items.AddChildObject(FSavedNode, processed, mt);
     end;
+  end;
 end;
 
 procedure TMenuTemplateDialog.SaveMenuAsTemplate;
@@ -1637,31 +1650,27 @@ begin
 
   case FDialogMode of
     dmSave: begin
-              FSavedNode:=FTVTemplates.Items.AddFirst(nil,
-                                                   lisMenuEditorExistingSavedTemplates);
-              FGChoose.Caption:=lisMenuEditorSaveMenuAsTemplateForFutureUse;
-              FLDescription.Caption:=lisMenuEditorEnterAMenuDescription;
-              FLDescription.FocusControl:=FEDescription;
-            end;
+      FSavedNode:=FTVTemplates.Items.AddFirst(nil, lisMenuEditorExistingSavedTemplates);
+      FGChoose.Caption:=lisMenuEditorSaveMenuAsTemplateForFutureUse;
+      FLDescription.Caption:=lisMenuEditorEnterAMenuDescription;
+      FLDescription.FocusControl:=FEDescription;
+    end;
     dmInsert: begin
-                FStandardNode:=FTVTemplates.Items.AddFirst(nil,
-                                                         lisMenuEditorStandardTemplates);
-                FSavedNode:=FTVTemplates.Items.Add(FStandardNode,
-                                                   lisMenuEditorSavedTemplates);
-                FGChoose.Caption:=lisMenuEditorChooseTemplateToInsert;
-                FLDescription.Caption:=lisMenuEditorTemplateDescription;
-                FTVTemplates.OnSelectionChanged:=@TVSelectionChanged;
-                FEDescription.ReadOnly:=True;
-              end;
+      FStandardNode:=FTVTemplates.Items.AddFirst(nil, lisMenuEditorStandardTemplates);
+      FSavedNode:=FTVTemplates.Items.Add(FStandardNode, lisMenuEditorSavedTemplates);
+      FGChoose.Caption:=lisMenuEditorChooseTemplateToInsert;
+      FLDescription.Caption:=lisMenuEditorTemplateDescription;
+      FTVTemplates.OnSelectionChanged:=@TVSelectionChanged;
+      FEDescription.ReadOnly:=True;
+    end;
     dmDelete: begin
-                FStandardNode:=nil;
-                FSavedNode:=FTVTemplates.Items.AddFirst(nil,
-                                                    lisMenuEditorExistingSavedTemplates);
-                FGChoose.Caption:=lisMenuEditorChooseTemplateToDelete;
-                FLDescription.Caption:=lisMenuEditorTemplateDescription;
-                FTVTemplates.OnSelectionChanged:=@TVSelectionChanged;
-                FEDescription.ReadOnly:=True;
-              end;
+      FStandardNode:=nil;
+      FSavedNode:=FTVTemplates.Items.AddFirst(nil, lisMenuEditorExistingSavedTemplates);
+      FGChoose.Caption:=lisMenuEditorChooseTemplateToDelete;
+      FLDescription.Caption:=lisMenuEditorTemplateDescription;
+      FTVTemplates.OnSelectionChanged:=@TVSelectionChanged;
+      FEDescription.ReadOnly:=True;
+    end;
   end;
 end;
 
@@ -1739,34 +1748,38 @@ begin
   inherited DoShowWindow;
   noneSaved:=not SavedTemplatesExist;
   case FDialogMode of
+
     dmSave: begin
-              menuString:=TMenuTemplate.MenuItemToString(FMenuToSave, '');
-              FNewMenuTemplate:=TMenuTemplate.CreateFromString(menuString);
-              FPreview.LoadTemplate(FNewMenuTemplate);
-              if noneSaved then
-                FNoneSavedNode:=FTVTemplates.Items.AddChild(FSavedNode,lisMenuEditorNone);
-              FEDescription.SetFocus;
-              FEDescription.OnChange:=@EDescriptionChange;
-            end;
+      menuString:=TMenuTemplate.MenuItemToString(FMenuToSave, '');
+      FNewMenuTemplate:=TMenuTemplate.CreateFromString(menuString);
+      FPreview.LoadTemplate(FNewMenuTemplate);
+      if noneSaved then
+        FNoneSavedNode:=FTVTemplates.Items.AddChild(FSavedNode,lisMenuEditorNone);
+      FEDescription.SetFocus;
+      FEDescription.OnChange:=@EDescriptionChange;
+    end;
+
     dmInsert: begin
-                if noneSaved then
-                  FNoneSavedNode:=FTVTemplates.Items.AddChild(FSavedNode,lisMenuEditorNone);
-                TVSelectionChanged(FTVTemplates);
-                FTVTemplates.Selected:=FTVTemplates.Items[1];
-                FTVTemplates.SetFocus;
-              end;
+      if noneSaved then
+        FNoneSavedNode:=FTVTemplates.Items.AddChild(FSavedNode,lisMenuEditorNone);
+      TVSelectionChanged(FTVTemplates);
+      FTVTemplates.Selected:=FTVTemplates.Items[1];
+      FTVTemplates.SetFocus;
+    end;
+
     dmDelete: begin
-                if noneSaved then begin
-                  IDEMessageDialogAb(lisMenuEditorNoUserSavedTemplates, lisMenuEditorThereAreNoUserSavedMenuTemplates,
-                               mtInformation, [mbOK], False);
-                  ModalResult:=mrCancel;
-                end
-                else begin
-                  TVSelectionChanged(FTVTemplates);
-                  FTVTemplates.Selected:=FTVTemplates.Items[1];
-                  FTVTemplates.SetFocus;
-                end;
-              end;
+      if noneSaved then begin
+        IDEMessageDialogAb(lisMenuEditorNoUserSavedTemplates, lisMenuEditorThereAreNoUserSavedMenuTemplates,
+                     mtInformation, [mbOK], False);
+        ModalResult:=mrCancel;
+      end
+      else begin
+        TVSelectionChanged(FTVTemplates);
+        FTVTemplates.Selected:=FTVTemplates.Items[1];
+        FTVTemplates.SetFocus;
+      end;
+    end;
+
   end;
 end;
 
@@ -1801,59 +1814,61 @@ end;
 
 function TPreview.GetSize: TSize;
 var
-    w, h: integer;
-    i, tmp: integer;
-    s: string;
+  w, h: integer;
+  i, tmp: integer;
+  s: string;
 begin
   if (FTemplate = nil) then
-    begin
-      FillChar(Result{%H-}, SizeOf(Result), 0);
-      SetBounds(0,0,0,0);
-    end
-  else case FDisplayAsPopup of
-    True: begin
-            w:=5;
-            h:=10;
-            for i:=0 to FTemplate.SubItemCount-1 do
-              begin
-                s:=FTemplate.SubItem[i];
-                if (s = '-') then
-                  Inc(h, Separator_Height)
-                 else
-                  begin
-                    Inc(h, DropDown_Height);
-                    tmp:=Canvas.TextWidth(s);
-                    if (FTemplate.Shortcut[i] <> 0) then
-                      Inc(tmp, Canvas.TextWidth(ShortCutToText(FTemplate.Shortcut[i])) + Double_MenuBar_Text_Offset);
-                    if (tmp > w) then
-                      w:=tmp;
-                  end;
-              end;
-            Result.cx:=w + 2*Double_DropDown_Text_Offset + Canvas.TextWidth(FTemplate.PrimaryItem);
-            Result.cy:=h + 2;
+  begin
+    FillChar(Result{%H-}, SizeOf(Result), 0);
+    SetBounds(0,0,0,0);
+  end
+  else
+    case FDisplayAsPopup of
+
+      True: begin
+        w:=5;
+        h:=10;
+        for i:=0 to FTemplate.SubItemCount-1 do
+        begin
+          s:=FTemplate.SubItem[i];
+          if (s = '-') then
+            Inc(h, Separator_Height)
+          else begin
+            Inc(h, DropDown_Height);
+            tmp:=Canvas.TextWidth(s);
+            if (FTemplate.Shortcut[i] <> 0) then
+              Inc(tmp, Canvas.TextWidth(ShortCutToText(FTemplate.Shortcut[i])) + Double_MenuBar_Text_Offset);
+            if (tmp > w) then
+              w:=tmp;
           end;
-    False: begin
-             w:=0;
-             h:=MenuBar_Height;
-             for i:=0 to FTemplate.SubItemCount-1 do
-               begin
-                 s:=FTemplate.SubItem[i];
-                 if (s = '-') then
-                   Inc(h, Separator_Height)
-                  else
-                   begin
-                     Inc(h, DropDown_Height);
-                     tmp:=Canvas.TextWidth(s);
-                     if (FTemplate.Shortcut[i] <> 0) then
-                       Inc(tmp, Canvas.TextWidth(ShortCutToText(FTemplate.Shortcut[i])) + Double_MenuBar_Text_Offset);
-                     if (tmp > w) then
-                       w:=tmp;
-                   end;
-               end;
-             Result.cx:=w + Double_DropDown_Text_Offset;
-             Result.cy:=h + 2;
-           end;
-  end;
+        end;
+        Result.cx:=w + 2*Double_DropDown_Text_Offset + Canvas.TextWidth(FTemplate.PrimaryItem);
+        Result.cy:=h + 2;
+      end;
+
+      False: begin
+        w:=0;
+        h:=MenuBar_Height;
+        for i:=0 to FTemplate.SubItemCount-1 do
+        begin
+          s:=FTemplate.SubItem[i];
+          if (s = '-') then
+            Inc(h, Separator_Height)
+          else begin
+            Inc(h, DropDown_Height);
+            tmp:=Canvas.TextWidth(s);
+            if (FTemplate.Shortcut[i] <> 0) then
+              Inc(tmp, Canvas.TextWidth(ShortCutToText(FTemplate.Shortcut[i])) + Double_MenuBar_Text_Offset);
+            if (tmp > w) then
+              w:=tmp;
+          end;
+        end;
+        Result.cx:=w + Double_DropDown_Text_Offset;
+        Result.cy:=h + 2;
+      end;
+
+    end;
 end;
 
 procedure TPreview.SetDisplayAsPopup(AValue: boolean);
@@ -1883,111 +1898,113 @@ begin
   InflateRect(r, -1, -1);
   rBar:=r;
   if FDisplayAsPopup then
+  begin
+    rBar.Top:=rBar.Top+5;
+    rBar.Left:=rBar.Left+5;
+    rBar.Bottom:=rBar.Top + DropDown_Height;
+    rBar.Right:=rBar.Left + DropDown_Text_Offset - Gutter_Offset;
+    dets:=ThemeServices.GetElementDetails(tmPopupGutter);
+    ThemeServices.DrawElement(Canvas.Handle, dets, rBar);
+    w:=Canvas.TextWidth(FTemplate.PrimaryItem);
+    rBar.Right:=rBar.Left + w + Double_DropDown_Text_Offset;
+    rBar.Left:=rBar.Left + DropDown_Text_Offset;
+    dets:=ThemeServices.GetElementDetails(tmPopupItemNormal);
+    ThemeServices.DrawText(Canvas, dets, FTemplate.PrimaryItem, rBar, textFlags, 0);
+    rBar.Left:=r.Left+5;
+    Canvas.Pen.Color:=clLtGray;
+    Canvas.Frame(rBar);
+    if (FTemplate.SubItemCount > 0) then
     begin
-      rBar.Top:=rBar.Top+5;
-      rBar.Left:=rBar.Left+5;
-      rBar.Bottom:=rBar.Top + DropDown_Height;
+      rDrop:=rBar;
+      dets:=ThemeServices.GetElementDetails(tmPopupSubmenuNormal);
+      rDrop.Left:=rDrop.Right - DropDown_Text_Offset;
+      ThemeServices.DrawElement(Canvas.Handle, dets, rDrop);
+    end;
+    rDrop:=rBar;
+    szB:=Size(rBar);
+    OffsetRect(rDrop, szB.cx + 1, 2);
+    rDrop.Right:=r.Right-1;
+    rDrop.Bottom:=r.Bottom-1;
+    Canvas.Frame(rDrop);
+    l:=rDrop.Left+1;
+    w:=r.Right-2;
+    t:=rDrop.Top+1;
+    for i:=0 to Pred(FTemplate.SubItemCount) do
+    begin
+      txt:=FTemplate.SubItem[i];
+      separator:=(txt = '-');
+      if separator then
+        h:=Separator_Height
+      else
+        h:=DropDown_Height;
+      rDrop:=Rect(l, t, w, t+h);
+      Inc(t, h);
+      rBar:=rDrop;
       rBar.Right:=rBar.Left + DropDown_Text_Offset - Gutter_Offset;
       dets:=ThemeServices.GetElementDetails(tmPopupGutter);
       ThemeServices.DrawElement(Canvas.Handle, dets, rBar);
-      w:=Canvas.TextWidth(FTemplate.PrimaryItem);
-      rBar.Right:=rBar.Left + w + Double_DropDown_Text_Offset;
-      rBar.Left:=rBar.Left + DropDown_Text_Offset;
-      dets:=ThemeServices.GetElementDetails(tmPopupItemNormal);
-      ThemeServices.DrawText(Canvas, dets, FTemplate.PrimaryItem, rBar, textFlags, 0);
-      rBar.Left:=r.Left+5;
-      Canvas.Pen.Color:=clLtGray;
-      Canvas.Frame(rBar);
-      if (FTemplate.SubItemCount > 0) then
+      if separator then
+      begin
+        dets:=ThemeServices.GetElementDetails(tmPopupSeparator);
+        ThemeServices.DrawElement(Canvas.Handle, dets, rDrop);
+      end
+      else
+      begin
+        rDrop.Left:=rDrop.Left + DropDown_Text_Offset;
+        dets:=ThemeServices.GetElementDetails(tmPopupItemNormal);
+        ThemeServices.DrawText(Canvas, dets, txt, rDrop, textFlags, 0);
+        if (FTemplate.Shortcut[i] <> 0) then
         begin
-          rDrop:=rBar;
-          dets:=ThemeServices.GetElementDetails(tmPopupSubmenuNormal);
-          rDrop.Left:=rDrop.Right - DropDown_Text_Offset;
-          ThemeServices.DrawElement(Canvas.Handle, dets, rDrop);
+          txt:=ShortCutToText(FTemplate.Shortcut[i]);
+          rDrop.Left:=r.Right - Canvas.TextWidth(txt) - Double_MenuBar_Text_Offset;
+          ThemeServices.DrawText(Canvas, dets, txt, rDrop, textFlags, 0);
         end;
-      rDrop:=rBar;
-      szB:=Size(rBar);
-      OffsetRect(rDrop, szB.cx + 1, 2);
-      rDrop.Right:=r.Right-1;
-      rDrop.Bottom:=r.Bottom-1;
-      Canvas.Frame(rDrop);
-      l:=rDrop.Left+1;
-      w:=r.Right-2;
-      t:=rDrop.Top+1;
-      for i:=0 to Pred(FTemplate.SubItemCount) do
-        begin
-          txt:=FTemplate.SubItem[i];
-          separator:=(txt = '-');
-          if separator then
-            h:=Separator_Height
-          else h:=DropDown_Height;
-          rDrop:=Rect(l, t, w, t+h);
-          Inc(t, h);
-          rBar:=rDrop;
-          rBar.Right:=rBar.Left + DropDown_Text_Offset - Gutter_Offset;
-          dets:=ThemeServices.GetElementDetails(tmPopupGutter);
-          ThemeServices.DrawElement(Canvas.Handle, dets, rBar);
-          if separator then
-            begin
-              dets:=ThemeServices.GetElementDetails(tmPopupSeparator);
-              ThemeServices.DrawElement(Canvas.Handle, dets, rDrop);
-            end
-          else
-            begin
-              rDrop.Left:=rDrop.Left + DropDown_Text_Offset;
-              dets:=ThemeServices.GetElementDetails(tmPopupItemNormal);
-              ThemeServices.DrawText(Canvas, dets, txt, rDrop, textFlags, 0);
-              if (FTemplate.Shortcut[i] <> 0) then
-                begin
-                  txt:=ShortCutToText(FTemplate.Shortcut[i]);
-                  rDrop.Left:=r.Right - Canvas.TextWidth(txt) - Double_MenuBar_Text_Offset;
-                  ThemeServices.DrawText(Canvas, dets, txt, rDrop, textFlags, 0);
-                end;
-            end;
-        end;
-     end
-  else
-    begin
-      rBar.Bottom:=rBar.Top + MenuBar_Height;
-      dets:=ThemeServices.GetElementDetails(tmBarBackgroundActive);
-      ThemeServices.DrawElement(Canvas.Handle, dets, rBar);
-      rBar.Left:=rBar.Left + MenuBar_Text_Offset;
-      ThemeServices.DrawText(Canvas, dets, FTemplate.PrimaryItem, rBar, textFlags, 0);
-      t:=MenuBar_Height + 1;
-      for i:=0 to Pred(FTemplate.SubItemCount) do
-        begin
-          rBar:=r;
-          rBar.Top:=t;
-          txt:=FTemplate.SubItem[i];
-          separator:=(txt = '-');
-          if separator then
-            h:=Separator_Height
-          else h:=DropDown_Height;
-          rBar.Bottom:=rBar.Top + h;
-          rBar.Right:=DropDown_Text_Offset - Gutter_Offset;
-          dets:=ThemeServices.GetElementDetails(tmPopupGutter);
-          ThemeServices.DrawElement(Canvas.Handle, dets, rBar);
-          rBar.Left:=rBar.Left + DropDown_Text_Offset;
-          rBar.Right:=r.Right;
-          if separator then
-            begin
-              dets:=ThemeServices.GetElementDetails(tmPopupSeparator);
-              ThemeServices.DrawElement(Canvas.Handle, dets, rBar);
-            end
-          else
-            begin
-              dets:=ThemeServices.GetElementDetails(tmPopupItemNormal);
-              ThemeServices.DrawText(Canvas, dets, txt, rBar, textFlags, 0);
-              if (FTemplate.Shortcut[i] <> 0) then
-                begin
-                  txt:=ShortCutToText(FTemplate.Shortcut[i]);
-                  rBar.Left:=r.Right - Canvas.TextWidth(txt) - Double_MenuBar_Text_Offset;
-                  ThemeServices.DrawText(Canvas, dets, txt, rBar, textFlags, 0);
-                end;
-            end;
-          inc(t, h);
-        end;
+      end;
     end;
+  end
+  else
+  begin
+    rBar.Bottom:=rBar.Top + MenuBar_Height;
+    dets:=ThemeServices.GetElementDetails(tmBarBackgroundActive);
+    ThemeServices.DrawElement(Canvas.Handle, dets, rBar);
+    rBar.Left:=rBar.Left + MenuBar_Text_Offset;
+    ThemeServices.DrawText(Canvas, dets, FTemplate.PrimaryItem, rBar, textFlags, 0);
+    t:=MenuBar_Height + 1;
+    for i:=0 to Pred(FTemplate.SubItemCount) do
+    begin
+      rBar:=r;
+      rBar.Top:=t;
+      txt:=FTemplate.SubItem[i];
+      separator:=(txt = '-');
+      if separator then
+        h:=Separator_Height
+      else
+        h:=DropDown_Height;
+      rBar.Bottom:=rBar.Top + h;
+      rBar.Right:=DropDown_Text_Offset - Gutter_Offset;
+      dets:=ThemeServices.GetElementDetails(tmPopupGutter);
+      ThemeServices.DrawElement(Canvas.Handle, dets, rBar);
+      rBar.Left:=rBar.Left + DropDown_Text_Offset;
+      rBar.Right:=r.Right;
+      if separator then
+      begin
+        dets:=ThemeServices.GetElementDetails(tmPopupSeparator);
+        ThemeServices.DrawElement(Canvas.Handle, dets, rBar);
+      end
+      else
+      begin
+        dets:=ThemeServices.GetElementDetails(tmPopupItemNormal);
+        ThemeServices.DrawText(Canvas, dets, txt, rBar, textFlags, 0);
+        if (FTemplate.Shortcut[i] <> 0) then
+        begin
+          txt:=ShortCutToText(FTemplate.Shortcut[i]);
+          rBar.Left:=r.Right - Canvas.TextWidth(txt) - Double_MenuBar_Text_Offset;
+          ThemeServices.DrawText(Canvas, dets, txt, rBar, textFlags, 0);
+        end;
+      end;
+      inc(t, h);
+    end;
+  end;
 end;
 
 procedure TPreview.SetParent(NewParent: TWinControl);
@@ -2049,8 +2066,7 @@ begin
     FOnChange(Self);
 end;
 
-procedure TRadioIcon.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TRadioIcon.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if (Button = mbLeft) and (FRIState in [risUncheckedHot, risUp]) then begin
@@ -2142,16 +2158,8 @@ begin
 end;
 
 procedure TRadioIconGroup.ApplyLayout;
-const
-  BPanelVertDim = 46;
 var
-  areaToFill, unitArea, hBorderAndMargins, hSpace, vSpace, sepn, vSepn, oldCols,
-    count, cols, rows, lastRowCount, space, i, h, v, num, denom, gap,
-    hInc, vInc, maxIdx, vBorderAndMargins: integer;
-  lft: integer = Margin;
-  tp: integer = Margin;
-  r: integer = 1;
-  c: integer = 1;
+  unitArea, hSpace, sepn, count, cols, rows, lastRowCount, space, h, num, denom: integer;
 
   procedure CalcSepn;
   begin
@@ -2171,6 +2179,15 @@ var
     until (h < hSpace) or (sepn <= Margin);
   end;
 
+const
+  BPanelVertDim = 46;
+var
+  areaToFill, hBorderAndMargins, vSpace, vSepn, oldCols,
+    i, v, gap, hInc, vInc, maxIdx, vBorderAndMargins: integer;
+  lft: integer = Margin;
+  tp: integer = Margin;
+  r: integer = 1;
+  c: integer = 1;
 begin
   hBorderAndMargins:=integer(BorderSpacing.Left)+integer(BorderSpacing.Right)+integer(BorderSpacing.Around*2) + Double_Margin;
   hSpace:=Parent.ClientWidth - hBorderAndMargins;
@@ -2189,15 +2206,15 @@ begin
 
   gap:=hSpace - h;
   if (gap > 0) and (gap > FRIArray[0].Width) then
-    begin
-      Inc(cols);
-      CalcSepn;
-    end;
+  begin
+    Inc(cols);
+    CalcSepn;
+  end;
   if (sepn <= Margin) then
-    begin
-      cols:=oldcols;
-      CalcSepn;
-    end;
+  begin
+    cols:=oldcols;
+    CalcSepn;
+  end;
 
   vSepn:=sepn;
   v:=rows*FRIArray[0].Height + Pred(rows)*vSepn;
@@ -2211,19 +2228,19 @@ begin
   vInc:=FRIArray[0].Height + vSepn;
   maxIdx:=High(FRIArray);
   for i:=Low(FRIArray) to maxIdx do
+  begin
+    FRIArray[i].Left:=lft;
+    FRIArray[i].Top:=tp;
+    Inc(c);
+    Inc(lft, hInc);
+    if (c > cols) and (i < maxIdx) then
     begin
-      FRIArray[i].Left:=lft;
-      FRIArray[i].Top:=tp;
-      Inc(c);
-      Inc(lft, hInc);
-      if (c > cols) and (i < maxIdx) then
-        begin
-          c:=1;
-          lft:=Margin;
-          Inc(r);
-          Inc(tp, vInc);
-        end;
+      c:=1;
+      lft:=Margin;
+      Inc(r);
+      Inc(tp, vInc);
     end;
+  end;
   Assert(r <= rows,'TRadioIconGroup.ApplyLayout: error in calculation of space needed');
 end;
 
@@ -2238,11 +2255,11 @@ begin
   FItemIndex:=aRi.Tag;
   DoSelectItem;
   if aRi.Checked then
-    begin
-     for i:=Low(FRIArray) to High(FRIArray) do
-       if (i <> FItemIndex) then
-         FRIArray[i].Checked:=False;
-    end;
+  begin
+   for i:=Low(FRIArray) to High(FRIArray) do
+     if (i <> FItemIndex) then
+       FRIArray[i].Checked:=False;
+  end;
 end;
 
 procedure TRadioIconGroup.DoSelectItem;
@@ -2257,11 +2274,11 @@ var
 begin
   inherited SetParent(NewParent);
   if (NewParent <> nil) then
-    begin
-      ApplyLayout;
-      for i:=Low(FRIArray) to High(FRIArray) do
-        FRIArray[i].SetParent(Self);
-    end;
+  begin
+    ApplyLayout;
+    for i:=Low(FRIArray) to High(FRIArray) do
+      FRIArray[i].SetParent(Self);
+  end;
 end;
 
 constructor TRadioIconGroup.CreateWithImageList(AOwner: TComponent;
@@ -2403,7 +2420,8 @@ begin
       p:=LazUTF8.UTF8Pos('&', aMI.Caption);
       if (p > 0) and (p < LazUTF8.UTF8Length(aMI.Caption)) then
         ch:=aMI.Caption[Succ(p)] // gets correct case of key
-      else ch:=Chr(Ord(key));    // fallback
+      else
+        ch:=Chr(Ord(key));    // fallback
     Caption:=Format(lisMenuEditorAcceleratorKeySNeedsChanging, [ch]);
       Align:=alClient;
       Parent:=Self;
@@ -2770,39 +2788,42 @@ var
   isMainSC: boolean;
 begin
   case isHeader of
+
     True: begin // header click
       if (FLastSortIndex = index) or (FscList.Count = 0) then
         Exit;
       FLastSortIndex:=index;
       UpdateFromMenu(index);
     end;
+
     False: begin // contents click
       info:=TSCInfo(FscList.Objects[index]);
       mi:=info.MenuItem;
       if (mi <> nil) then
+      begin
+        sc:=info.Shortcut;
+        isMainSC:=(info.Kind = scMenuItemSC);
+        result:=AddNewOrEditShortcutDlg(mi, isMainSC, sc);
+        if result then
         begin
-          sc:=info.Shortcut;
-          isMainSC:=(info.Kind = scMenuItemSC);
-          result:=AddNewOrEditShortcutDlg(mi, isMainSC, sc);
-          if result then
-            begin
-              if isMainSC then
-                mi.ShortCut:=sc
-              else
-                mi.ShortCutKey2:=sc;
-              si:=MenuDesigner.ShadowMenu.GetShadowForMenuItem(mi);
-              if (si <> nil) then begin
-                MenuDesigner.ShadowMenu.UpdateBoxLocationsAndSizes;
-                si.Repaint;
-              end;
-              FShortcuts.UpdateShortcutList(False);
-              UpdateFromMenu;
-              GlobalDesignHook.RefreshPropertyValues;
-              GlobalDesignHook.Modified(mi);
-              MenuDesigner.ShadowMenu.RefreshFakes;
-            end;
+          if isMainSC then
+            mi.ShortCut:=sc
+          else
+            mi.ShortCutKey2:=sc;
+          si:=MenuDesigner.ShadowMenu.GetShadowForMenuItem(mi);
+          if (si <> nil) then begin
+            MenuDesigner.ShadowMenu.UpdateBoxLocationsAndSizes;
+            si.Repaint;
+          end;
+          FShortcuts.UpdateShortcutList(False);
+          UpdateFromMenu;
+          GlobalDesignHook.RefreshPropertyValues;
+          GlobalDesignHook.Modified(mi);
+          MenuDesigner.ShadowMenu.RefreshFakes;
         end;
+      end;
     end;
+
   end; // case
 end;
 
@@ -2918,28 +2939,27 @@ begin
   end;
 end;
 
+procedure TShortcutDisplayDlg.AddSCitemToListRecursive(anItem: TMenuItem);
+var
+  inf: TSCInfo;
+  i: integer;
+begin
+  if (anItem.ShortCut <> 0) then begin
+    inf:=TSCInfo.CreateWithParams(anItem, scMenuItemSC, anItem.ShortCut);
+    FscList.AddObject(ShortCutToText(anItem.ShortCut), TObject(inf));
+  end;
+  if (anItem.ShortCutKey2 <> 0) and (anItem.ShortCutKey2 <> anItem.ShortCut) then begin
+    inf:=TSCInfo.CreateWithParams(anItem, scMenuItemKey2, anItem.ShortCutKey2);
+    FscList.AddObject(ShortCutToText(anItem.ShortCutKey2), TObject(inf));
+  end;
+  for i:=0 to anItem.Count-1 do
+    AddSCitemToListRecursive(anItem[i]);
+end;
+
 procedure TShortcutDisplayDlg.UpdateFromMenu(anIndex: integer);
 var
   i: integer;
   inf: TSCInfo;
-
-  procedure AddSCitemToListRecursive(anItem: TMenuItem);
-  var
-    inf: TSCInfo;
-    j: integer;
-  begin
-    if (anItem.ShortCut <> 0) then begin
-      inf:=TSCInfo.CreateWithParams(anItem, scMenuItemSC, anItem.ShortCut);
-      FscList.AddObject(ShortCutToText(anItem.ShortCut), TObject(inf));
-    end;
-    if (anItem.ShortCutKey2 <> 0) and (anItem.ShortCutKey2 <> anItem.ShortCut) then begin
-      inf:=TSCInfo.CreateWithParams(anItem, scMenuItemKey2, anItem.ShortCutKey2);
-      FscList.AddObject(ShortCutToText(anItem.ShortCutKey2), TObject(inf));
-    end;
-    for j:=0 to anItem.Count-1 do
-      AddSCitemToListRecursive(anItem[j]);
-  end;
-
 begin
   Assert(FMenu<>nil,'TShortcutDisplayDlg.UpdateFromMenu: FMenu is nil');
   FreeAndNil(FscList);
@@ -3255,24 +3275,23 @@ begin
   Result:=FBoxList.Count;
 end;
 
+procedure TShadowMenu.RecursiveCreateShadows(aParentBox: TShadowBox; aMI: TMenuItem);
+var
+  j: integer;
+  sb: TShadowBox;
+begin
+  TShadowItem.CreateWithBoxAndItem(Self, aParentBox, aMI);
+  if (aMI.Count > 0) then
+  begin
+    sb:=TShadowBox.CreateWithParentBox(Self, aParentBox, aMI);
+    for j:=0 to aMI.Count-1 do
+      RecursiveCreateShadows(sb, aMI.Items[j]);
+  end;
+end;
+
 procedure TShadowMenu.CreateShadowBoxesAndItems;
 var
   i: integer;
-
-  procedure RecursiveCreateShadows(aParentBox: TShadowBox; aMI: TMenuItem);
-  var
-    j: integer;
-    sb: TShadowBox;
-  begin
-    TShadowItem.CreateWithBoxAndItem(Self, aParentBox, aMI);
-    if (aMI.Count > 0) then
-      begin
-        sb:=TShadowBox.CreateWithParentBox(Self, aParentBox, aMI);
-        for j:=0 to aMI.Count-1 do
-          RecursiveCreateShadows(sb, aMI.Items[j]);
-      end;
-  end;
-
 begin
   if (FMenu.Items.Count > 0) then
     begin
@@ -3341,66 +3360,46 @@ begin
   end;
 end;
 
+procedure TShadowMenu.DeleteBox(aMI: TMenuItem);
+var
+  i: integer;
+  sb: TShadowBox;
+  si: TShadowItem;
+begin
+  for i:=aMI.Count-1 downto 0 do
+    DeleteBox(aMI.Items[i]);
+  sb:=GetBoxContainingMenuItem(aMI);
+  Assert(sb<>nil,'TShadowMenu.DeleteBox: internal error');
+  sb.Hide;
+  sb.ShadowList.Remove(GetShadowForMenuItem(aMI));
+  if (sb.ShadowCount = 0) then
+  begin
+    FBoxList.Remove(sb);
+    sb.Parent:=nil;
+    RemoveComponent(sb);
+    si:=GetShadowForMenuItem(sb.ParentMenuItem);
+    if Assigned(si) then
+      si.Repaint;
+    FreeAndNil(sb);
+  end;
+end;
+
+procedure TShadowMenu.DeleteItm(anItem: TMenuItem);
+var
+  i: integer;
+begin
+  for i:=anItem.Count-1 downto 0 do
+    DeleteItm(anItem.Items[i]);
+  anItem.Parent.Remove(anItem);
+  GlobalDesignHook.DeletePersistent(TPersistent(anItem));
+  GlobalDesignHook.Modified(anItem);
+end;
+
 procedure TShadowMenu.DeleteShadowAndItemAndChildren(anExistingSI: TShadowItem);
 var
   firstBoxToDelete: TShadowBox;
-
-  procedure RecursiveDeleteBox(aBoxToDelete: TShadowBox);
-  var
   mi: TMenuItem;
   i: integer;
-
-  procedure DeleteBox(aMI: TMenuItem);
-  var
-    j: integer;
-    sb: TShadowBox;
-    si: TShadowItem;
-  begin
-    for j:=aMI.Count-1 downto 0 do
-      DeleteBox(aMI.Items[j]);
-    sb:=GetBoxContainingMenuItem(aMI);
-    Assert(sb<>nil,'TShadowMenu.DeleteBox: internal error');
-    sb.Hide;
-    sb.ShadowList.Remove(GetShadowForMenuItem(aMI));
-    if (sb.ShadowCount = 0) then
-      begin
-        FBoxList.Remove(sb);
-        sb.Parent:=nil;
-        RemoveComponent(sb);
-        si:=GetShadowForMenuItem(sb.ParentMenuItem);
-        if Assigned(si) then
-          si.Repaint;
-        FreeAndNil(sb);
-      end;
-  end;
-
-  begin
-    mi:=aBoxToDelete.ParentMenuItem;
-    Assert(mi<>nil,'TShadowMenu,DeleteShadowAndItemAndChildren: RecursiveBoxDelete internal error');
-    for i:=mi.Count-1 downto 0 do
-      DeleteBox(mi.Items[i]);
-  end;
-
-  procedure RecursiveDeleteChildrenItemsOf(aMI: TMenuItem);
-  var
-    i: integer;
-
-    procedure DeleteItm(anItem: TMenuItem);
-    var
-      j: integer;
-    begin
-      for j:=anItem.Count-1 downto 0 do
-        DeleteItm(anItem.Items[j]);
-      anItem.Parent.Remove(anItem);
-      GlobalDesignHook.DeletePersistent(TPersistent(anItem));
-      GlobalDesignHook.Modified(anItem);
-    end;
-
-  begin
-    for i:=aMI.Count-1 downto 0 do
-      DeleteItm(aMI.Items[i]);
-  end;
-
 begin
   if IDEQuestionDialogAb(
        lisDelete,
@@ -3409,8 +3408,15 @@ begin
   begin
     firstBoxToDelete:=GetBoxWithParentItem(anExistingSI.RealItem);
     Assert(firstBoxToDelete<>nil,'TShadowMenu.DeleteShadowAndItemAndChildren: no children');
-    RecursiveDeleteBox(firstBoxToDelete);
-    RecursiveDeleteChildrenItemsOf(anExistingSI.RealItem);
+    // Delete boxes recursively
+    mi:=firstBoxToDelete.ParentMenuItem;
+    Assert(mi<>nil,'TShadowMenu,DeleteShadowAndItemAndChildren: RecursiveBoxDelete internal error');
+    for i:=mi.Count-1 downto 0 do
+      DeleteBox(mi.Items[i]);
+    // Delete children recursively
+    mi:=anExistingSI.RealItem;
+    for i:=mi.Count-1 downto 0 do
+      DeleteItm(mi.Items[i]);
     DeleteChildlessShadowAndItem(anExistingSI);
   end;
 end;
@@ -3547,7 +3553,8 @@ begin
   sel:=SelectedShadowItem;
   if (sel = nil) then
     Result:=nil
-  else Result:=sel.ParentBox;
+  else
+    Result:=sel.ParentBox;
 end;
 
 procedure TShadowMenu.AddSubMenuTo(anExistingSI: TShadowItem);
@@ -3638,60 +3645,109 @@ var
 begin
   for pe in TPopEnum do begin
     case pe of
-      popItemAddOnClick:      NewPopItem(lisMenuEditorAddOnClickHandler,
-                                @AddOnClick);
-      popItemAddBefore:       begin NewPopItem('', @AddItemBefore, KeyToShortCut(VK_INSERT,[]));
-                                MenuDesigner.AddItemAboveButton.Action:=ac;
-                              end;
-      popItemAddAfter:        begin NewPopItem('', @AddItemAfter);
-                                MenuDesigner.AddItemBelowButton.Action:=ac;
-                              end;
-      popItemAddSubMenu:      begin NewPopItem('', @AddSubMenu,KeyToShortCut(VK_INSERT,[ssCtrl]));
-                                MenuDesigner.AddSubMenuButton.Action:=ac;
-                              end;
-      popItemDelete:          begin NewPopItem(lisMenuEditorDeleteItem,
-                                @DeleteItem, KeyToShortCut(VK_DELETE, []));
-                                MenuDesigner.DeleteItemButton.Action:=ac;
-                              end;
-      popItemOISep:          NewSeparatorAction;
-      popItemEditCaption:     NewPopItem(lisMenuEditorEditCaption,
-                                @EditCaption, KeyToShortCut(VK_RETURN, []));
-      popItemMoveBefore:      begin NewPopItem('', @MoveItemBefore, KeyToShortCut(VK_UP,[ssCtrl]));
-                                MenuDesigner.MoveItemUpButton.Action:=ac;
-                              end;
-      popItemMoveAfter:       begin NewPopItem('', @MoveItemAfter, KeyToShortCut(VK_DOWN,[ssCtrl]));
-                                MenuDesigner.MoveItemDownButton.Action:=ac;
-                              end;
-      popAddImgListIcon:      begin NewPopItem('', @AddImageListIcon);
-                                FAddImgListIconAction:=ac;
-                              end;
-      popItemSep:             NewSeparatorAction;
-      popSeparators_:         NewPopPrimary(lisMenuEditorSeParators);
-      popAddSeparatorBefore:  begin NewPopSub(primaryItem, lisMenuEditorAddSeparatorBefore,
-                                @AddSeparatorAbove);
-                                MenuDesigner.AddSeparatorAboveButton.Action:=ac;
-                              end;
-      popAddSeparatorAfter:   begin NewPopSub(primaryItem, lisMenuEditorAddSeparatorAfter,
-                                @AddSeparatorBelow);
-                                MenuDesigner.AddSeparatorBelowButton.Action:=ac;
-                              end;
-      popRemoveAllSeparators: NewPopSub(primaryItem, lisMenuEditorRemoveAllSeparators,
-                                @RemoveAllSeparators);
-      popShortcuts_:          NewPopPrimary(lisMenuEditorShortcUts2);
-      popListShortcuts:       NewPopSub(primaryItem, '', @ListShortcuts);
-      popListShortcutsAccelerators: NewPopSub(primaryItem, '', @ListShortcutsAndAccelerators);
-      popResolveShortcutConflicts: NewPopSub(primaryItem,
-                                     lisMenuEditorResolveShortcutConflicts,
-                                     @ResolveshortcutConflicts);
-      popTemplates_:          NewPopPrimary(lisMenuEditorTemplates);
-      popSaveAsTemplate:      NewPopSub(primaryItem, lisMenuEditorSaveMenuAsATemplate,
-                                @SaveAsTemplate);
-      popAddFromTemplate:     NewPopSub(primaryItem, lisMenuEditorAddFromTemplate,
-                                @AddFromTemplate);
-      popDeleteTemplate:      NewPopSub(primaryItem, lisMenuEditorDeleteMenuTemplate,
-                                @DeleteTemplate);
+      popItemAddOnClick:
+        NewPopItem(lisMenuEditorAddOnClickHandler, @AddOnClick);
+      popItemAddBefore: begin
+        NewPopItem('', @AddItemBefore, KeyToShortCut(VK_INSERT,[]));
+        MenuDesigner.AddItemAboveButton.Action:=ac;
+      end;
+      popItemAddAfter: begin
+        NewPopItem('', @AddItemAfter);
+        MenuDesigner.AddItemBelowButton.Action:=ac;
+      end;
+      popItemAddSubMenu: begin
+        NewPopItem('', @AddSubMenu,KeyToShortCut(VK_INSERT,[ssCtrl]));
+        MenuDesigner.AddSubMenuButton.Action:=ac;
+      end;
+      popItemDelete: begin
+        NewPopItem(lisMenuEditorDeleteItem, @DeleteItem, KeyToShortCut(VK_DELETE, []));
+        MenuDesigner.DeleteItemButton.Action:=ac;
+      end;
+      popItemOISep:
+        NewSeparatorAction;
+      popItemEditCaption:
+        NewPopItem(lisMenuEditorEditCaption, @EditCaption, KeyToShortCut(VK_RETURN, []));
+      popItemMoveBefore: begin
+        NewPopItem('', @MoveItemBefore, KeyToShortCut(VK_UP,[ssCtrl]));
+        MenuDesigner.MoveItemUpButton.Action:=ac;
+      end;
+      popItemMoveAfter: begin
+        NewPopItem('', @MoveItemAfter, KeyToShortCut(VK_DOWN,[ssCtrl]));
+        MenuDesigner.MoveItemDownButton.Action:=ac;
+      end;
+      popAddImgListIcon: begin
+        NewPopItem('', @AddImageListIcon);
+        FAddImgListIconAction:=ac;
+      end;
+      popItemSep:
+        NewSeparatorAction;
+      popSeparators_:
+        NewPopPrimary(lisMenuEditorSeParators);
+      popAddSeparatorBefore: begin
+        NewPopSub(primaryItem, lisMenuEditorAddSeparatorBefore, @AddSeparatorAbove);
+        MenuDesigner.AddSeparatorAboveButton.Action:=ac;
+      end;
+      popAddSeparatorAfter: begin
+        NewPopSub(primaryItem, lisMenuEditorAddSeparatorAfter, @AddSeparatorBelow);
+        MenuDesigner.AddSeparatorBelowButton.Action:=ac;
+      end;
+      popRemoveAllSeparators:
+        NewPopSub(primaryItem, lisMenuEditorRemoveAllSeparators, @RemoveAllSeparators);
+      popShortcuts_:
+        NewPopPrimary(lisMenuEditorShortcUts2);
+      popListShortcuts:
+        NewPopSub(primaryItem, '', @ListShortcuts);
+      popListShortcutsAccelerators:
+        NewPopSub(primaryItem, '', @ListShortcutsAndAccelerators);
+      popResolveShortcutConflicts:
+        NewPopSub(primaryItem, lisMenuEditorResolveShortcutConflicts, @ResolveshortcutConflicts);
+      popTemplates_:
+        NewPopPrimary(lisMenuEditorTemplates);
+      popSaveAsTemplate:
+        NewPopSub(primaryItem, lisMenuEditorSaveMenuAsATemplate, @SaveAsTemplate);
+      popAddFromTemplate:
+        NewPopSub(primaryItem, lisMenuEditorAddFromTemplate, @AddFromTemplate);
+      popDeleteTemplate:
+        NewPopSub(primaryItem, lisMenuEditorDeleteMenuTemplate, @DeleteTemplate);
     end; // case
   end; // for pe
+end;
+
+function TShadowMenu.GetMenuBarCumWidthForItemIndex(anIndex: integer): integer;
+var
+  w: integer;
+  mi: TMenuItem;
+begin
+  Result:=0;
+  if anIndex <> 0 then
+    repeat
+      mi:=FMenu.Items[Pred(anIndex)];
+      w:=GetStringWidth(mi.Caption, mi.Default) +
+         Double_MenuBar_Text_Offset + GetMenuBarIconWidth(mi);
+      Inc(Result, w);
+      Dec(anIndex)
+    until (anIndex <= 0);
+end;
+
+function TShadowMenu.GetParentItemHeightInBox(aParentItem: TMenuItem): integer;
+
+  function HeightOfItem(anIndex: integer): integer;
+  begin
+    if aParentItem.Parent.Items[anIndex].IsLine then
+      Result:=Separator_Height
+    else
+      Result:=DropDown_Height;
+  end;
+
+var
+  idx: integer = 0;
+begin
+  Result:=1;
+  repeat
+    if (idx < aParentItem.MenuIndex) then
+      Inc(Result, HeightOfItem(idx));
+    Inc(idx);
+  until (idx >= aParentItem.MenuIndex);
 end;
 
 procedure TShadowMenu.UpdateBoxLocationsAndSizes;
@@ -3702,44 +3758,6 @@ var
   si: TShadowItem absolute s;
   lft, w, idx: integer;
   pt: TPoint;
-
-  function GetMenuBarCumWidthForItemIndex(anIndex: integer): integer;
-  var
-    w: integer;
-    mi: TMenuItem;
-  begin
-    Result:=0;
-    if (anIndex = 0) then
-      Exit
-    else repeat
-      mi:=FMenu.Items[Pred(anIndex)];
-      w:=GetStringWidth(mi.Caption, mi.Default) +
-         Double_MenuBar_Text_Offset + GetMenuBarIconWidth(mi);
-      Inc(Result, w);
-      Dec(anIndex)
-    until (anIndex <= 0);
-  end;
-
-  function GetParentItemHeightInBox(aParentItem: TMenuItem): integer;
-  var
-    idx: integer = 0;
-
-    function HeightOfItem(anIndex: integer): integer;
-    begin
-      if aParentItem.Parent.Items[anIndex].IsLine then
-        Result:=Separator_Height
-      else Result:=DropDown_Height;
-    end;
-
-  begin
-    Result:=1;
-    repeat
-      if (idx < aParentItem.MenuIndex) then
-        Inc(Result, HeightOfItem(idx));
-      Inc(idx);
-    until (idx >= aParentItem.MenuIndex);
-  end;
-
 begin
   FBoxList.Sort(@SortByBoxLevel);
   for p in FBoxList do begin
@@ -3816,32 +3834,32 @@ var
   i: integer;
 begin
   if (FSelectedMenuItem <> nil) and (FSelectedMenuItem.Parent.Parent = nil) then
+  begin
+    HideFakes;
+    newItem:=InsertMenuTemplateDlg;
+    if (newItem <> nil) then
     begin
-      HideFakes;
-      newItem:=InsertMenuTemplateDlg;
-      if (newItem <> nil) then
+      FMenu.Items.Add(newItem);
+      FLookupRoot.InsertComponent(newItem);
+      newItem.Name:=FEditorDesigner.CreateUniqueComponentName(newItem.ClassName);
+      FEditorDesigner.PropertyEditorHook.PersistentAdded(TPersistent(newItem), False);
+      FEditorDesigner.Modified;
+      TShadowItem.CreateWithBoxAndItem(Self, FRootBox, newItem);
+      if (newItem.Count > 0) then begin
+        sb:=TShadowBox.CreateWithParentBox(Self, FRootBox, newItem);
+        for i:=0 to newItem.Count-1 do
         begin
-          FMenu.Items.Add(newItem);
-          FLookupRoot.InsertComponent(newItem);
-          newItem.Name:=FEditorDesigner.CreateUniqueComponentName(newItem.ClassName);
-          FEditorDesigner.PropertyEditorHook.PersistentAdded(TPersistent(newItem), False);
+          FLookupRoot.InsertComponent(newItem.Items[i]);
+          newItem.Items[i].Name:=FEditorDesigner.CreateUniqueComponentName(newItem.Items[i].ClassName);
+          FEditorDesigner.PropertyEditorHook.PersistentAdded(TPersistent(newItem.Items[i]), False);
           FEditorDesigner.Modified;
-          TShadowItem.CreateWithBoxAndItem(Self, FRootBox, newItem);
-          if (newItem.Count > 0) then begin
-            sb:=TShadowBox.CreateWithParentBox(Self, FRootBox, newItem);
-            for i:=0 to newItem.Count-1 do
-              begin
-                FLookupRoot.InsertComponent(newItem.Items[i]);
-                newItem.Items[i].Name:=FEditorDesigner.CreateUniqueComponentName(newItem.Items[i].ClassName);
-                FEditorDesigner.PropertyEditorHook.PersistentAdded(TPersistent(newItem.Items[i]), False);
-                FEditorDesigner.Modified;
-                TShadowItem.CreateWithBoxAndItem(Self, sb, newItem.Items[i]);
-              end;
-          end;
-          UpdateBoxLocationsAndSizes;
-          SetSelectedMenuItem(newItem, False, False);
+          TShadowItem.CreateWithBoxAndItem(Self, sb, newItem.Items[i]);
         end;
-   end;
+      end;
+      UpdateBoxLocationsAndSizes;
+      SetSelectedMenuItem(newItem, False, False);
+    end;
+  end;
 end;
 
 procedure TShadowMenu.AddImageListIcon(Sender: TObject);
@@ -3918,7 +3936,6 @@ var
   i: Integer;
   persistent: TPersistent;
   mi: TMenuItem absolute persistent;
-  si: TShadowItem;
 begin
   if not (Sender is TPropertyEditor) or (NewObject = nil) then
     Exit;
@@ -3926,14 +3943,12 @@ begin
     for i:=0 to propertyEditor.PropCount-1 do begin
       persistent:=propertyEditor.GetComponent(i);
       if (persistent is TMenuItem) then begin
-        si:=GetShadowForMenuItem(mi);
-        if (si = nil) then
-          Continue
-        else begin
+        if GetShadowForMenuItem(mi) <> nil then
+        begin
           UpdateBoxLocationsAndSizes;
           RefreshFakes;
           if (FSelectedMenuItem <> nil) then
-          SelectedShadowItem.Repaint;
+            SelectedShadowItem.Repaint;
         end;
       end;
     end;
@@ -3946,7 +3961,6 @@ var
   i: integer;
   persistent: TPersistent;
   mi: TMenuItem absolute persistent;
-  si: TShadowItem;
   refreshNeeded: boolean = False;
 begin
   if MenuDesigner.IsUpdate then
@@ -3956,10 +3970,8 @@ begin
     for i:=0 to TPropertyEditor(Sender).PropCount-1 do begin
       persistent:=TPropertyEditor(Sender).GetComponent(i);
       if (persistent is TMenuItem) then begin
-        si:=GetShadowForMenuItem(mi);
-        if (si = nil) then
-          Continue
-        else refreshNeeded:=True;
+        if GetShadowForMenuItem(mi) <> nil then
+          refreshNeeded:=True;
       end;
     end;
     if refreshNeeded then begin
@@ -3982,15 +3994,15 @@ var
   mi: TMenuItem absolute comp;
   selBox: TShadowBox;
 begin
-  if FSelectedMenuItem = nil
-    then Exit;
+  if FSelectedMenuItem = nil then
+    Exit;
   comp:=GlobalDesignHook.GetComponent(FSelectedMenuItem.Name);
-  if (comp<>nil) and (comp is TMenuItem)
-    then begin
-      selBox:=SelectedShadowBox;
-      if (selBox.LastRIValue <> mi.RadioItem) then
-        MenuDesigner.UpdateSubmenuGroupBox(FSelectedMenuItem, selBox, selBox=FRootBox);
-    end;
+  if (comp<>nil) and (comp is TMenuItem) then
+  begin
+    selBox:=SelectedShadowBox;
+    if (selBox.LastRIValue <> mi.RadioItem) then
+      MenuDesigner.UpdateSubmenuGroupBox(FSelectedMenuItem, selBox, selBox=FRootBox);
+  end;
 end;
 
 function TShadowMenu.GetBoxContainingMenuItem(aMI: TMenuItem): TShadowBox;
@@ -4076,7 +4088,8 @@ begin
   if (aMI = nil) then begin
     if prevWasDeleted then
       SetSelectedShadow(nil, nil, False)
-    else SetSelectedShadow(FSelectedMenuItem, nil, False);
+    else
+      SetSelectedShadow(FSelectedMenuItem, nil, False);
     FSelectedMenuItem:=nil;
     RefreshFakes;
     Exit;
@@ -4094,7 +4107,8 @@ begin
       if (prevSelectedShadow <> nil) then begin
         if prevSelectedMenuItem.Enabled then
           prevSelectedShadow.ShowNormal
-        else prevSelectedShadow.ShowDisabled;
+        else
+          prevSelectedShadow.ShowDisabled;
         if not AIsDescendantOfB(aMI, prevSelectedMenuItem) then
           prevSelectedShadow.HideChildren;
       end;
@@ -4147,23 +4161,22 @@ begin
   end;
 end;
 
+function TShadowMenu.GetActionForEnum(anEnum: TPopEnum): TAction;
+var
+  i: integer;
+begin
+  for i:=0 to FActionList.ActionCount do
+    if TAction(FActionList.Actions[i]).Tag = PtrInt(anEnum) then
+      Exit(TAction(FActionList.Actions[i]));
+  Result:=nil;
+end;
+
 procedure TShadowMenu.UpdateActionsEnabledness;
 var
   ac, ac1, ac2, ac3: TAction;
   pe: TPopEnum;
   isInBar, isFirst, isLast, prevIsSeparator, nextIsSeparator,
     levelZero, levelZeroOr1, primarySCEnabled: boolean;
-
-  function GetActionForEnum(anEnum: TPopEnum): TAction;
-  var
-    i: integer;
-  begin
-    for i:=0 to FActionList.ActionCount do
-      if TAction(FActionList.Actions[i]).Tag = PtrInt(anEnum) then
-        Exit(TAction(FActionList.Actions[i]));
-    Result:=nil;
-  end;
-
 begin
   if (FSelectedMenuItem = nil) then
     Exit;
@@ -4180,83 +4193,91 @@ begin
   begin
     ac:=GetActionForEnum(pe);
     case pe of
-      popItemAddOnClick:     ac.Enabled:=not OnClickIsAssigned(FSelectedMenuItem);
-      popItemAddBefore:       if isInBar then begin
-                                ac.Caption:=lisMenuEditorAddNewItemBefore;
-                                ac.Hint:=
-                                  lisMenuEditorAddANewItemBeforeSelectedItem;
-                                  end
-                              else begin
-                                ac.Caption:=lisMenuEditorAddNewItemAbove;
-                                ac.Hint:=
-                                  lisMenuEditorAddANewItemAboveSelectedItem;
-                                  end;
-      popItemAddAfter:        if isInBar then begin
-                                ac.Caption:=lisMenuEditorAddNeWItemAfter;
-                                ac.Hint:=
-                                  lisMenuEditorAddANewItemAfterSelectedItem; end
-                              else begin
-                                ac.Caption:=lisMenuEditorAddNeWItemBelow;
-                                ac.Hint:=
-                                  lisMenuEditorAddANewItemBelowSelectedItem;
-                                  end;
-      popItemAddSubMenu:      begin ac.Enabled:=(FSelectedMenuItem.Count = 0) and not FSelectedMenuItem.IsLine;
-                                if isInBar then begin
-                                  ac.Caption:=lisMenuEditorAddSubmenuBelow;
-                                  ac.Hint:=
-                                    lisMenuEditorAddASubmenuBelowSelectedItem;
-                                    end
-                                else begin
-                                  ac.Caption:=lisMenuEditorAddSubmenuRight;
-                                  ac.Hint:=
-                                    lisMenuEditorAddASubmenuAtTheRightOfSelectedItem;
-                                end;
-                              end;
-      popItemDelete:          ac.Enabled:=(FMenu.Items.Count > 0);
+      popItemAddOnClick: ac.Enabled:=not OnClickIsAssigned(FSelectedMenuItem);
+      popItemAddBefore:
+        if isInBar then begin
+          ac.Caption:=lisMenuEditorAddNewItemBefore;
+          ac.Hint:=lisMenuEditorAddANewItemBeforeSelectedItem;
+        end
+        else begin
+          ac.Caption:=lisMenuEditorAddNewItemAbove;
+          ac.Hint:=lisMenuEditorAddANewItemAboveSelectedItem;
+        end;
+      popItemAddAfter:
+        if isInBar then begin
+          ac.Caption:=lisMenuEditorAddNeWItemAfter;
+          ac.Hint:=lisMenuEditorAddANewItemAfterSelectedItem;
+        end
+        else begin
+          ac.Caption:=lisMenuEditorAddNeWItemBelow;
+          ac.Hint:=lisMenuEditorAddANewItemBelowSelectedItem;
+        end;
+      popItemAddSubMenu: begin
+        ac.Enabled:=(FSelectedMenuItem.Count = 0) and not FSelectedMenuItem.IsLine;
+        if isInBar then begin
+          ac.Caption:=lisMenuEditorAddSubmenuBelow;
+          ac.Hint:=lisMenuEditorAddASubmenuBelowSelectedItem;
+        end
+        else begin
+          ac.Caption:=lisMenuEditorAddSubmenuRight;
+          ac.Hint:=
+            lisMenuEditorAddASubmenuAtTheRightOfSelectedItem;
+        end;
+      end;
+      popItemDelete: ac.Enabled:=(FMenu.Items.Count > 0);
       //popItemOISep
       //popItemEditCaption
-      popItemMoveBefore:      begin ac.Enabled:=not isFirst;
-                                if isInBar then begin
-                                  ac.Caption:=lisMenuEditorMoveItemLeft;
-                                  ac.Hint:=
-                                    lisMenuEditorMoveSelectedItemToTheLeft; end
-                                else begin
-                                  ac.Caption:=lisMenuEditorMoveItemUp;
-                                  ac.Hint:=lisMenuEditorMoveSelectedItemUp; end;
-                              end;
-      popItemMoveAfter:       begin ac.Enabled:=not isLast;
-                                if isInBar then begin
-                                  ac.Caption:=lisMenuEditorMoVeItemRight;
-                                  ac.Hint:=
-                                    lisMenuEditorMoveSelectedItemToTheRight; end
-                                else begin
-                                  ac.Caption:=lisMenuEditorMoVeItemDown;
-                                  ac.Hint:=lisMenuEditorMoveSelectedItemDown;
-                                    end;
-                              end;
-      popAddImgListIcon:      begin ac.Enabled:=(FMenu.Images <> nil) and (FMenu.Images.Count > 0);
-                                if ac.Enabled then begin
-                                  if (FSelectedMenuItem.ImageIndex < 0) then
-                                    ac.Caption:=Format(lisMenuEditorAddIconFromS + ' ...',
-                                                       [FMenu.Images.Name])
-                                  else ac.Caption:=lisMenuEditorChangeImagelistIcon;
-                                  if (FMenu.Images.Count = 1) and (FSelectedMenuItem.ImageIndex = 0) then
-                                    ac.Enabled:=False;
-                                end
-                                else ac.Caption:=lisMenuEditorAddImagelistIcon;
-                              end;
+      popItemMoveBefore: begin
+        ac.Enabled:=not isFirst;
+        if isInBar then begin
+          ac.Caption:=lisMenuEditorMoveItemLeft;
+          ac.Hint:=lisMenuEditorMoveSelectedItemToTheLeft;
+        end
+        else begin
+          ac.Caption:=lisMenuEditorMoveItemUp;
+          ac.Hint:=lisMenuEditorMoveSelectedItemUp; end;
+      end;
+      popItemMoveAfter: begin
+        ac.Enabled:=not isLast;
+        if isInBar then begin
+          ac.Caption:=lisMenuEditorMoVeItemRight;
+          ac.Hint:=lisMenuEditorMoveSelectedItemToTheRight;
+        end
+        else begin
+          ac.Caption:=lisMenuEditorMoVeItemDown;
+          ac.Hint:=lisMenuEditorMoveSelectedItemDown;
+        end;
+      end;
+      popAddImgListIcon: begin
+        ac.Enabled:=(FMenu.Images <> nil) and (FMenu.Images.Count > 0);
+        if ac.Enabled then begin
+          if (FSelectedMenuItem.ImageIndex < 0) then
+            ac.Caption:=Format(lisMenuEditorAddIconFromS + ' ...',
+                               [FMenu.Images.Name])
+          else ac.Caption:=lisMenuEditorChangeImagelistIcon;
+          if (FMenu.Images.Count = 1) and (FSelectedMenuItem.ImageIndex = 0) then
+            ac.Enabled:=False;
+        end
+        else
+          ac.Caption:=lisMenuEditorAddImagelistIcon;
+      end;
       //popItemSep
-      popSeparators_:         ac.Enabled:=primarySCEnabled;
-      popAddSeparatorBefore:  ac.Enabled:=primarySCEnabled and not isFirst and not prevIsSeparator;
-      popAddSeparatorAfter:   ac.Enabled:=primarySCEnabled and not isLast and not nextIsSeparator;
-      popRemoveAllSeparators: ac.Enabled:=primarySCEnabled and (GetChildSeparatorCount(FSelectedMenuItem.Parent) > 0);
+      popSeparators_: ac.Enabled:=primarySCEnabled;
+      popAddSeparatorBefore:
+        ac.Enabled:=primarySCEnabled and not isFirst and not prevIsSeparator;
+      popAddSeparatorAfter:
+        ac.Enabled:=primarySCEnabled and not isLast and not nextIsSeparator;
+      popRemoveAllSeparators:
+        ac.Enabled:=primarySCEnabled and (GetChildSeparatorCount(FSelectedMenuItem.Parent) > 0);
       //popShortcuts_
-      popListShortcuts:       begin ac.Enabled:=(FShortcuts.ShortcutMenuItemsCount > 0);
-                                ac.Caption:=Format(lisMenuEditorListShortcutsForS, [FMenu.Name]);
-                              end;
-      popListShortcutsAccelerators: begin ac.Enabled:=(FShortcuts.ShortcutList.AcceleratorsInContainerCount > 0);
-                                ac.Caption:=Format(lisMenuEditorListShortcutsAndAccelerators,[FLookupRoot.Name]);
-                              end;
+      popListShortcuts: begin
+        ac.Enabled:=(FShortcuts.ShortcutMenuItemsCount > 0);
+        ac.Caption:=Format(lisMenuEditorListShortcutsForS, [FMenu.Name]);
+      end;
+      popListShortcutsAccelerators: begin
+        ac.Enabled:=(FShortcuts.ShortcutList.AcceleratorsInContainerCount > 0);
+        ac.Caption:=Format(lisMenuEditorListShortcutsAndAccelerators,[FLookupRoot.Name]);
+      end;
       popResolveShortcutConflicts: ac.Enabled:=(FShortcuts.ShortcutList.InitialDuplicatesCount > 0);
       popTemplates_:          ac.Enabled:=levelZero or MenuDesigner.TemplatesSaved;
       popSaveAsTemplate:      ac.Enabled:=levelZeroOr1;
@@ -4710,7 +4731,8 @@ begin
     Result:=MenuBar_Height
   else if FRealItem.IsLine then
     Result:=Separator_Height
-  else Result:=DropDown_Height;
+  else
+    Result:=DropDown_Height;
 end;
 
 function TShadowItem.GetIsInMenuBar: boolean;
@@ -4720,16 +4742,14 @@ end;
 
 function TShadowItem.GetBottomFake: TFake;
 begin
-  if (FShadowMenu.SelectedShadowItem <> Self) then
-    Result:=nil
-  else case FRealItem.IsInMenuBar of
-    False: if (FShadowMenu.AddItemFake.Visible) then
-             Result:=FBottomFake
-           else Result:=nil;
-    True: if (FShadowMenu.AddSubMenuFake.Visible) then
-            Result:=FBottomFake
-          else Result:=nil;
-  end;
+  Result:=nil;
+  if (FShadowMenu.SelectedShadowItem = Self) then
+    case FRealItem.IsInMenuBar of
+      False: if (FShadowMenu.AddItemFake.Visible) then
+               Result:=FBottomFake;
+      True: if (FShadowMenu.AddSubMenuFake.Visible) then
+              Result:=FBottomFake;
+    end;
 end;
 
 function TShadowItem.GetIsMainMenu: boolean;
@@ -5070,7 +5090,8 @@ begin
     r:=ClientRect;
     if FRealItem.RightJustify then
       alygn:=taRightJustify
-    else alygn:=taLeftJustify;
+    else
+      alygn:=taLeftJustify;
     if (FRealItem.Caption = '') then
       s:=FRealItem.Name
     else s:=FRealItem.Caption;
@@ -5155,7 +5176,8 @@ begin
   end;
   if (FState = dsSelected) then
     SetFocus
-  else FShadowMenu.SetSelectedMenuItem(FRealItem, False, False);
+  else
+    FShadowMenu.SetSelectedMenuItem(FRealItem, False, False);
   inherited MouseDown(Button, Shift, X, Y);
 end;
 
