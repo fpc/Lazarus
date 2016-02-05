@@ -688,14 +688,7 @@ begin
   _gnu_lvi.iSubItem := ASubIndex;
   _gnu_lvi.pszText := PChar(PWideChar(UTF8ToUTF16(AText)));
 
-  if (TListView(ALV).ViewStyle in [vsList, vsReport]) and Assigned(TListView(ALV).SmallImages) then
-  begin
-    _gnu_lvi.Mask := LVIF_TEXT or LVIF_IMAGE;
-    _gnu_lvi.iItem := AIndex;
-    _gnu_lvi.iImage := AItem.ImageIndex;
-    SendMessage(ALV.Handle, LVM_SETITEMW{TEXTW}, WPARAM(AIndex), LPARAM(@_gnu_lvi));
-  end else
-    SendMessage(ALV.Handle, LVM_SETITEMTEXTW, WPARAM(AIndex), LPARAM(@_gnu_lvi));
+  SendMessage(ALV.Handle, LVM_SETITEMTEXTW, WPARAM(AIndex), LPARAM(@_gnu_lvi));
   // autosize is an *extreme* performance bottleneck, even if WM_SETREDRAW
   // was set to false it will ignore this and still redraw all columns.
   // We will therefore postpone all autosizing until EndUpdate where we do
