@@ -16,6 +16,8 @@ begin
   ControlStyle:= [csCaptureMouse, csClickEvents, csDoubleClicks];
   AutoSize := False;
   FCenter := False;
+  FKeepOriginXWhenClipped := False;
+  FKeepOriginYWhenClipped := False;
   FProportional := False;
   FStretch := False;
   FTransparent := False;
@@ -63,6 +65,20 @@ procedure TCustomImage.SetAntialiasingMode(AValue: TAntialiasingMode);
 begin
   if FAntialiasingMode = AValue then Exit;
   FAntialiasingMode := AValue;
+  PictureChanged(Self);
+end;
+
+procedure TCustomImage.SetKeepOriginX(AValue: Boolean);
+begin
+  if FKeepOriginXWhenClipped=AValue then Exit;
+  FKeepOriginXWhenClipped:=AValue;
+  PictureChanged(Self);
+end;
+
+procedure TCustomImage.SetKeepOriginY(AValue: Boolean);
+begin
+  if FKeepOriginYWhenClipped=AValue then Exit;
+  FKeepOriginYWhenClipped:=AValue;
   PictureChanged(Self);
 end;
 
@@ -134,6 +150,7 @@ var
   ImgHeight: Integer;
   w: Integer;
   h: Integer;
+  ChangeX, ChangeY: Integer;
 begin
   PicWidth := Picture.Width;
   PicHeight := Picture.Height;
@@ -160,7 +177,13 @@ begin
   Result:=Rect(0,0,PicWidth,PicHeight);
 
   if Center then
-    OffsetRect(Result,(ImgWidth-PicWidth) div 2,(ImgHeight-PicHeight) div 2);
+  begin
+    ChangeX := (ImgWidth-PicWidth) div 2;
+    ChangeY := (ImgHeight-PicHeight) div 2;
+    if FKeepOriginXWhenClipped and (ChangeX<0) then ChangeX := 0;
+    if FKeepOriginYWhenClipped and (ChangeY<0) then ChangeY := 0;
+    OffsetRect(Result, ChangeX, ChangeY);
+  end;
 end;
 
 procedure TCustomImage.Invalidate;

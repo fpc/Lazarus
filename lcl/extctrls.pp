@@ -483,6 +483,8 @@ type
     FOnPictureChanged: TNotifyEvent;
     FPicture: TPicture;
     FCenter: Boolean;
+    FKeepOriginXWhenClipped: Boolean;
+    FKeepOriginYWhenClipped: Boolean;
     FProportional: Boolean;
     FTransparent: Boolean;
     FStretch: Boolean;
@@ -492,6 +494,8 @@ type
     procedure SetAntialiasingMode(AValue: TAntialiasingMode);
     procedure SetPicture(const AValue: TPicture);
     procedure SetCenter(const AValue : Boolean);
+    procedure SetKeepOriginX(AValue: Boolean);
+    procedure SetKeepOriginY(AValue: Boolean);
     procedure SetProportional(const AValue: Boolean);
     procedure SetStretch(const AValue : Boolean);
     procedure SetTransparent(const AValue : Boolean);
@@ -514,6 +518,8 @@ type
     property Align;
     property AutoSize;
     property Center: Boolean read FCenter write SetCenter default False;
+    property KeepOriginXWhenClipped: Boolean read FKeepOriginXWhenClipped write SetKeepOriginX default False;
+    property KeepOriginYWhenClipped: Boolean read FKeepOriginYWhenClipped write SetKeepOriginY default False;
     property Constraints;
     property Picture: TPicture read FPicture write SetPicture;
     property Visible;
@@ -543,6 +549,8 @@ type
     property AutoSize;
     property BorderSpacing;
     property Center;
+    property KeepOriginXWhenClipped;
+    property KeepOriginYWhenClipped;
     property Constraints;
     property DragCursor;
     property DragMode;
