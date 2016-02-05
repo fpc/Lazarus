@@ -108,7 +108,7 @@ type
     mihtDestroy
     );
 
-  TAdvancedMenuDrawItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;
+  TMenuDrawItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;
     ARect: TRect; AState: TOwnerDrawState) of object;
   TMenuMeasureItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;
     var AWidth, AHeight: Integer) of object;
@@ -126,9 +126,9 @@ type
     FImageIndex: TImageIndex;
     FItems: TList; // list of TMenuItem
     FMenu: TMenu;
-    FOnAdvancedDrawItem: TAdvancedMenuDrawItemEvent;
     FOnChange: TMenuChangeEvent;
     FOnClick: TNotifyEvent;
+    FOnDrawItem: TMenuDrawItemEvent;
     FOnMeasureItem: TMenuMeasureItemEvent;
     FParent: TMenuItem;
     FMenuItemHandlers: array[TMenuItemHandlerType] of TMethodList;
@@ -290,7 +290,7 @@ type
     property Visible: Boolean read FVisible write SetVisible
                               stored IsVisibleStored default True;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
-    property OnAdvancedDrawItem: TAdvancedMenuDrawItemEvent read FOnAdvancedDrawItem write FOnAdvancedDrawItem;
+    property OnDrawItem: TMenuDrawItemEvent read FOnDrawItem write FOnDrawItem;
     property OnMeasureItem: TMenuMeasureItemEvent read FOnMeasureItem write FOnMeasureItem;
   end;
   TMenuItemClass = class of TMenuItem;
@@ -306,7 +306,7 @@ type
     FImageChangeLink: TChangeLink;
     FImages: TCustomImageList;
     FItems: TMenuItem;
-    FOnAdvancedDrawItem: TAdvancedMenuDrawItemEvent;
+    FOnDrawItem: TMenuDrawItemEvent;
     FOnChange: TMenuChangeEvent;
     FOnMeasureItem: TMenuMeasureItemEvent;
     FOwnerDraw: Boolean;
@@ -363,7 +363,7 @@ type
     property Items: TMenuItem read FItems;
     property Images: TCustomImageList read FImages write SetImages;
     property OwnerDraw: Boolean read FOwnerDraw write FOwnerDraw default False;
-    property OnAdvancedDrawItem: TAdvancedMenuDrawItemEvent read FOnAdvancedDrawItem write FOnAdvancedDrawItem;
+    property OnDrawItem: TMenuDrawItemEvent read FOnDrawItem write FOnDrawItem;
     property OnMeasureItem: TMenuMeasureItemEvent read FOnMeasureItem write FOnMeasureItem;
   end;
 

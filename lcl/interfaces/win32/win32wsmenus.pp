@@ -850,10 +850,10 @@ begin
       CC.Handle := AHDC;
       Result.cx := 0;
       Result.cy := 0;
-      if Assigned(ParentMenu.OnMeasureItem) then
-        ParentMenu.OnMeasureItem(AMenuItem, CC, Result.cx, Result.cy);
       if Assigned(AMenuItem.OnMeasureItem) then
-        AMenuItem.OnMeasureItem(AMenuItem, CC, Result.cx, Result.cy);
+        AMenuItem.OnMeasureItem(AMenuItem, CC, Result.cx, Result.cy)
+      else if Assigned(ParentMenu.OnMeasureItem) then
+        ParentMenu.OnMeasureItem(AMenuItem, CC, Result.cx, Result.cy);
     finally
       CC.Free;
     end;
@@ -1229,16 +1229,16 @@ begin
 
   ParentMenu := AMenuItem.GetParentMenu;
   if (ParentMenu<>nil) and ParentMenu.OwnerDraw
-  and (Assigned(ParentMenu.OnAdvancedDrawItem) or Assigned(AMenuItem.OnAdvancedDrawItem)) then
+  and (Assigned(ParentMenu.OnDrawItem) or Assigned(AMenuItem.OnDrawItem)) then
   begin
     CC := TControlCanvas.Create;
     try
       CC.Handle := AHDC;
       ItemDrawState := ItemStateToDrawState(ItemState);
-      if Assigned(ParentMenu.OnAdvancedDrawItem) then
-        ParentMenu.OnAdvancedDrawItem(AMenuItem, CC, ARect, ItemDrawState);
-      if Assigned(AMenuItem.OnAdvancedDrawItem) then
-        AMenuItem.OnAdvancedDrawItem(AMenuItem, CC, ARect, ItemDrawState);
+      if Assigned(AMenuItem.OnDrawItem) then
+        AMenuItem.OnDrawItem(AMenuItem, CC, ARect, ItemDrawState)
+      else if Assigned(ParentMenu.OnDrawItem) then
+        ParentMenu.OnDrawItem(AMenuItem, CC, ARect, ItemDrawState);
     finally
       CC.Free;
     end;
