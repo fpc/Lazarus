@@ -471,7 +471,7 @@ type
     // in CalculateBoundingBox always remember to treat correctly the case of ADest=nil!!!
     // This cased is utilized to guess the size of a document even before getting a canvas to draw at
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; out ALeft, ATop, ARight, ABottom: Double); virtual;
-    function CalculateSizeInCanvas(ADest: TFPCustomCanvas; AParent: TvPage; out ALeft, ATop, AWidth, AHeight: Integer): Boolean;
+    function CalculateSizeInCanvas(ADest: TFPCustomCanvas; APage: TvPage; APageHeight: Integer; AZoom: Double; out ALeft, ATop, AWidth, AHeight: Integer): Boolean;
     procedure CalculateHeightInCanvas(ADest: TFPCustomCanvas; out AHeight: Integer);
     // helper functions for CalculateBoundingBox & TvRenderInfo
     procedure ExpandBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
@@ -1475,7 +1475,7 @@ type
       ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0;
       ADoDraw: Boolean = true); virtual; abstract;
     procedure AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight: Integer; out ADeltaX, ADeltaY: Integer; out AZoom: Double); virtual; abstract;
-    function GetNaturalMulY(): Double; virtual; abstract;
+    procedure GetNaturalRenderPos(var APageHeight: Integer; out AMulY: Double); virtual; abstract;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); virtual; abstract;
   end;
@@ -1559,7 +1559,7 @@ type
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0; ADestY: Integer = 0;
       AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = true); override;
     procedure AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight: Integer; out ADeltaX, ADeltaY: Integer; out AZoom: Double); override;
-    function GetNaturalMulY(): Double; override;
+    procedure GetNaturalRenderPos(var APageHeight: Integer; out AMulY: Double); override;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); override;
     //
@@ -1604,7 +1604,7 @@ type
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0; ADestY: Integer = 0;
       AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = true); override;
     procedure AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight: Integer; out ADeltaX, ADeltaY: Integer; out AZoom: Double); override;
-    function GetNaturalMulY(): Double; override;
+    procedure GetNaturalRenderPos(var APageHeight: Integer; out AMulY: Double); override;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); override;
   end;
@@ -3427,13 +3427,17 @@ end;
 
 // returns false if the element is invisible
 function TvEntity.CalculateSizeInCanvas(ADest: TFPCustomCanvas;
-  AParent: TvPage; out ALeft, ATop, AWidth, AHeight: Integer): Boolean;
+  APage: TvPage; APageHeight: Integer; AZoom: Double;
+  out ALeft, ATop, AWidth, AHeight: Integer): Boolean;
 var
   lRenderInfo: TvRenderInfo;
+  lMulY: Double;
 begin
   Result := True;
   InitializeRenderInfo(lRenderInfo);
-  Render(ADest, lRenderInfo, 0, 0, 1, AParent.GetNaturalMulY(), False);
+  APage.GetNaturalRenderPos(APageHeight, lMulY);
+  AZoom := Abs(AZoom);
+  Render(ADest, lRenderInfo, 0, APageHeight, AZoom, AZoom * lMulY, False);
   ALeft := lRenderInfo.EntityCanvasMinXY.X;
   ATop := lRenderInfo.EntityCanvasMinXY.Y;
   AWidth := lRenderInfo.EntityCanvasMaxXY.X - lRenderInfo.EntityCanvasMinXY.X;
@@ -9080,11 +9084,46 @@ end;
 procedure TvVectorialPage.AutoFit(ADest: TFPCustomCanvas;
   AWidth, AHeight: Integer; out ADeltaX, ADeltaY: Integer; out AZoom: Double);
 var
-  i: Integer;
   lCurEntity: TvEntity;
   lLeft, lTop, lWidth, lHeight: Integer;
-  lMinX, lMinY, lMaxX, lMaxY: Integer;
-  lZoomFitX, lZoomFitY: Double;
+  lMinX, lMinY, lMaxX, lMaxY, lNaturalHeightDiff: Integer;
+  lZoomFitX, lZoomFitY, lNaturalMulY: Double;
+
+  function CalculateAllEntitySizes(): Boolean;
+  var
+    i: Integer;
+  begin
+    Result := True;
+
+    lMinX := High(Integer);
+    lMinY := High(Integer);
+    lMaxX := Low(Integer);
+    lMaxY := Low(Integer);
+
+    for i := 0 to FEntities.Count - 1 do
+    begin
+      lCurEntity := TvEntity(FEntities.Items[i]);
+      if lCurEntity.CalculateSizeInCanvas(ADest, Self, AHeight, AZoom, lLeft, lTop, lWidth, lHeight) then
+      begin
+        lMinX := Min(lMinX, lLeft);
+        lMinY := Min(lMinY, lTop);
+        lMaxX := Max(lMaxX, lLeft + lWidth);
+        lMaxY := Max(lMaxY, lTop  + lHeight);
+      end;
+      {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
+      AutoFitDebug.Add(Format('[%s] MinX=%d MinY=%d MaxX=%d MaxY=%D', [lCurEntity.ClassName, lMinX, lMinY, lMaxX, lMaxY]));
+      {$endif}
+    end;
+
+    if (lMinX = High(Integer)) or (lMinY = High(Integer)) or
+       (lMaxX = Low(Integer)) or(lMaxY = Low(Integer)) then
+       Exit(False);
+
+    lWidth := lMaxX - lMinX;
+    lHeight := lMaxY - lMinY;
+    if (lWidth = 0) or (lHeight = 0) then Exit(False);
+  end;
+
 begin
   {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
   AutoFitDebug := TStringList.Create;
@@ -9092,53 +9131,40 @@ begin
   {$endif}
   ADeltaX := 0;
   ADeltaY := 0;
+  GetNaturalRenderPos(lNaturalHeightDiff, lNaturalMulY);
+
+  // First Calculate the zoom
+
   AZoom := 1;
-  lMinX := High(Integer);
-  lMinY := High(Integer);
-  lMaxX := Low(Integer);
-  lMaxY := Low(Integer);
-
-  for i := 0 to FEntities.Count - 1 do
-  begin
-    lCurEntity := TvEntity(FEntities.Items[i]);
-    if lCurEntity.CalculateSizeInCanvas(ADest, Self, lLeft, lTop, lWidth, lHeight) then
-    begin
-      lMinX := Min(lMinX, lLeft);
-      lMinY := Min(lMinY, lTop);
-      lMaxX := Max(lMaxX, lLeft + lWidth);
-      lMaxY := Max(lMaxY, lTop  + lHeight);
-    end;
-    {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
-    AutoFitDebug.Add(Format('[%s] MinX=%d MinY=%d MaxX=%d MaxY=%D', [lCurEntity.ClassName, lMinX, lMinY, lMaxX, lMaxY]));
-    {$endif}
-  end;
-
-  if (lMinX = High(Integer)) or (lMinY = High(Integer)) or
-     (lMaxX = Low(Integer)) or(lMaxY = Low(Integer)) then
-     Exit;
-
-  lWidth := lMaxX - lMinX;
-  lHeight := lMaxY - lMinY;
-  if (lWidth = 0) or (lHeight = 0) then Exit;
+  if not CalculateAllEntitySizes() then Exit;
 
   lZoomFitX := AWidth / lWidth;
   lZoomFitY := AHeight / lHeight;
   AZoom := Min(lZoomFitX, lZoomFitY) * 0.9;
-  ADeltaX := Round(-1 * AZoom * lMinX);
-  ADeltaY := Round(-1 * AZoom * lMinY);
-  ADeltaY += Round(-1.05 * AZoom * lHeight);
+
+  // Now DeltaX, DeltaY
+
+  if not CalculateAllEntitySizes() then Exit;
+  ADeltaX := Round(-1 * lMinX) + AWidth div 2 - lWidth div 2;
+  ADeltaY := Round(-1 * lMinY) + AHeight div 2 - lHeight div 2;
+  ADeltaY := Round(ADeltaY * lNaturalMulY);
+
   {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
   finally
+    {$ifdef Windows}
     AutoFitDebug.SaveToFile('C:\Programas\autofit.txt');
+    {$else}
+    AutoFitDebug.SaveToFile('/Users/felipe/autofit.txt');
+    {$endif}
     AutoFitDebug.Free;
     AutoFitDebug := nil;
   end;
   {$endif}
 end;
 
-function TvVectorialPage.GetNaturalMulY: Double;
+procedure TvVectorialPage.GetNaturalRenderPos(var APageHeight: Integer; out AMulY: Double);
 begin
-  Result := -1.0;
+  AMulY := -1.0;
 end;
 
 procedure TvVectorialPage.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -9322,9 +9348,10 @@ begin
   AZoom := 1;
 end;
 
-function TvTextPageSequence.GetNaturalMulY: Double;
+procedure TvTextPageSequence.GetNaturalRenderPos(var APageHeight: Integer; out AMulY: Double);
 begin
-  Result := 1.0;
+  APageHeight := 0;
+  AMulY := 1.0;
 end;
 
 procedure TvTextPageSequence.GenerateDebugTree(
