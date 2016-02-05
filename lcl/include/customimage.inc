@@ -239,6 +239,8 @@ begin
   C.AntialiasingMode := FAntialiasingMode;
   FPainting:=true;
   try
+    if Assigned(FOnPaintBackground) then
+      FOnPaintBackground(Self, C, R);
     C.StretchDraw(R, Picture.Graphic);
   finally
     FPainting:=false;

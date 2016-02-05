@@ -37,6 +37,7 @@ type
   TPage = class;
 
   TBeforeShowPageEvent = procedure (ASender: TObject; ANewPage: TPage; ANewIndex: Integer) of object;
+  TImagePaintBackgroundEvent = procedure (ASender: TObject; ACanvas: TCanvas; ARect: TRect) of object;
 
   TPage = class(TCustomControl)
   private
@@ -481,6 +482,7 @@ type
   private
     FAntialiasingMode: TAntialiasingMode;
     FOnPictureChanged: TNotifyEvent;
+    FOnPaintBackground: TImagePaintBackgroundEvent;
     FPicture: TPicture;
     FCenter: Boolean;
     FKeepOriginXWhenClipped: Boolean;
@@ -536,6 +538,7 @@ type
     property Transparent: Boolean read FTransparent write SetTransparent default False;
     property Proportional: Boolean read FProportional write SetProportional default False;
     property OnPictureChanged: TNotifyEvent read FOnPictureChanged write FOnPictureChanged;
+    property OnPaintBackground: TImagePaintBackgroundEvent read FOnPaintBackground write FOnPaintBackground;
   end;
 
 
@@ -571,6 +574,7 @@ type
     property OnMouseWheelUp;
     property OnPaint;
     property OnPictureChanged;
+    property OnPaintBackground;
     property OnResize;
     property OnStartDrag;
     property ParentShowHint;
