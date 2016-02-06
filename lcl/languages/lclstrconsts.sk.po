@@ -30,6 +30,7 @@ msgid "Unable to find a HTML browser."
 msgstr "Nie je možné nájsť prehliadač HTML."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
+#, fuzzy,badformat
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
 msgstr "HTML prehliadač nebol nájdený.% Prosím zadajte jeden v Nástroje -> Možnosti -> Pomoc -> Možnosti pomoci"
 
