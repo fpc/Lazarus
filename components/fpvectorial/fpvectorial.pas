@@ -8421,7 +8421,7 @@ begin
 
   if not CalculateAllEntitySizes() then Exit;
   ADeltaX := Round(-1 * lMinX) + AWidth div 2 - lWidth div 2;
-  ADeltaY := Round(-1 * lMinY) + (AHeight div 2 - lHeight div 2);// * Round(lNaturalMulY);
+  ADeltaY := Round(-1 * lMinY) + (AHeight div 2 - lHeight div 2);
 
   {$ifdef FPVECTORIAL_RENDERINFO_VISUALDEBUG}
   ADest.Brush.Style := bsClear;
@@ -9339,12 +9339,13 @@ var
   CurY_px: Integer = 0;
   lHeight_px: Integer;
   lBoundsLeft, lBoundsTop, lBoundsRight, lBoundsBottom: Double;
+  lSumRenderInfo: TvRenderInfo;
 begin
   {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
   WriteLn(':>TvTextPageSequence.Render');
   {$endif}
   CurY_px := ADestY;
-  TvEntity.InitializeRenderInfo(RenderInfo);
+  TvEntity.InitializeRenderInfo(lSumRenderInfo);
 
   for i := 0 to GetEntitiesCount - 1 do
   begin
@@ -9364,7 +9365,13 @@ begin
     CurEntity.Y := CurY_px;
     lHeight_px := Abs(RenderInfo.EntityCanvasMaxXY.Y - RenderInfo.EntityCanvasMinXY.Y);
     CurY_px := CurY_px + lHeight_px;
+
+    TvEntity.CalcEntityCanvasMinMaxXY_With2Points(lSumRenderInfo,
+      RenderInfo.EntityCanvasMinXY.X, RenderInfo.EntityCanvasMinXY.Y,
+      RenderInfo.EntityCanvasMaxXY.X, RenderInfo.EntityCanvasMaxXY.Y);
   end;
+
+  RenderInfo := lSumRenderInfo;
 
   {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
   WriteLn(':<TvTextPageSequence.Render');
