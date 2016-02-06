@@ -23,8 +23,10 @@ unit fpvectorial;
 {.$define FPVECTORIAL_DEBUG_DIMENSIONS}
 {.$define FPVECTORIAL_TOCANVAS_DEBUG}
 {.$define FPVECTORIAL_DEBUG_BLOCKS}
-{$define FPVECTORIAL_AUTOFIT_DEBUG}
+{.$define FPVECTORIAL_AUTOFIT_DEBUG}
+// visual debugs
 {.$define FPVECTORIAL_TOCANVAS_ELLIPSE_VISUALDEBUG}
+{.$define FPVECTORIAL_RENDERINFO_VISUALDEBUG}
 
 interface
 
@@ -1474,7 +1476,7 @@ type
     procedure Render(ADest: TFPCustomCanvas;
       ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0;
       ADoDraw: Boolean = true); virtual; abstract;
-    procedure AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight: Integer; out ADeltaX, ADeltaY: Integer; out AZoom: Double); virtual;
+    procedure AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight, ARenderHeight: Integer; out ADeltaX, ADeltaY: Integer; out AZoom: Double); virtual;
     procedure GetNaturalRenderPos(var APageHeight: Integer; out AMulY: Double); virtual; abstract;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); virtual; abstract;
@@ -8338,8 +8340,8 @@ begin
   Height := MaxY - MinY;
 end;
 
-procedure TvPage.AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight: Integer; out
-  ADeltaX, ADeltaY: Integer; out AZoom: Double);
+procedure TvPage.AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight, ARenderHeight: Integer;
+  out ADeltaX, ADeltaY: Integer; out AZoom: Double);
 var
   lCurEntity: TvEntity;
   lLeft, lTop, lWidth, lHeight: Integer;
@@ -8357,19 +8359,35 @@ var
     lMaxX := Low(Integer);
     lMaxY := Low(Integer);
 
-    for i := 0 to GetEntitiesCount() - 1 do
+    if Self is TvVectorialPage then
     begin
-      lCurEntity := TvEntity(GetEntity(i));
-      if lCurEntity.CalculateSizeInCanvas(ADest, Self, AHeight, AZoom, lLeft, lTop, lWidth, lHeight) then
+      for i := 0 to GetEntitiesCount() - 1 do
       begin
-        lMinX := Min(lMinX, lLeft);
-        lMinY := Min(lMinY, lTop);
-        lMaxX := Max(lMaxX, lLeft + lWidth);
-        lMaxY := Max(lMaxY, lTop  + lHeight);
+        lCurEntity := TvEntity(GetEntity(i));
+        if lCurEntity.CalculateSizeInCanvas(ADest, Self, ARenderHeight, AZoom, lLeft, lTop, lWidth, lHeight) then
+        begin
+          lMinX := Min(lMinX, lLeft);
+          lMinY := Min(lMinY, lTop);
+          lMaxX := Max(lMaxX, lLeft + lWidth);
+          lMaxY := Max(lMaxY, lTop  + lHeight);
+        end;
+        {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
+        AutoFitDebug.Add(Format('[%s] MinX=%d MinY=%d MaxX=%d MaxY=%D', [lCurEntity.ClassName, lMinX, lMinY, lMaxX, lMaxY]));
+        {$endif}
       end;
-      {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
-      AutoFitDebug.Add(Format('[%s] MinX=%d MinY=%d MaxX=%d MaxY=%D', [lCurEntity.ClassName, lMinX, lMinY, lMaxX, lMaxY]));
-      {$endif}
+
+      lMinX := Min(lMinX, lLeft);
+      lMinY := Min(lMinY, lTop);
+      lMaxX := Max(lMaxX, lLeft + lWidth);
+      lMaxY := Max(lMaxY, lTop  + lHeight);
+    end
+    else
+    begin
+      Render(ADest, 0, ARenderHeight, AZoom, AZoom * lNaturalMulY, False);
+      lMinX := RenderInfo.EntityCanvasMinXY.X;
+      lMinY := RenderInfo.EntityCanvasMinXY.Y;
+      lMaxX := RenderInfo.EntityCanvasMaxXY.X;
+      lMaxY := RenderInfo.EntityCanvasMaxXY.Y;
     end;
 
     if (lMinX = High(Integer)) or (lMinY = High(Integer)) or
@@ -8403,8 +8421,14 @@ begin
 
   if not CalculateAllEntitySizes() then Exit;
   ADeltaX := Round(-1 * lMinX) + AWidth div 2 - lWidth div 2;
-  ADeltaY := Round(-1 * lMinY) + AHeight div 2 - lHeight div 2;
-  ADeltaY := Round(ADeltaY * lNaturalMulY);
+  ADeltaY := Round(-1 * lMinY) + (AHeight div 2 - lHeight div 2);// * Round(lNaturalMulY);
+
+  {$ifdef FPVECTORIAL_RENDERINFO_VISUALDEBUG}
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.FPColor := colRed;
+  ADest.Pen.Style := psSolid;
+  ADest.Rectangle(lMinX+ADeltaX, lMinY+ADeltaY, lMaxX+ADeltaX, lMaxY+ADeltaY);
+  {$endif}
 
   {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
   finally
@@ -9129,6 +9153,8 @@ begin
   WriteLn(':>DrawFPVectorialToCanvas');
   {$endif}
 
+  TvEntity.InitializeRenderInfo(RenderInfo);
+
   for i := 0 to GetEntitiesCount - 1 do
   begin
     {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
@@ -9155,6 +9181,12 @@ begin
 
   RenderInfo := rInfo;
 
+  {$ifdef FPVECTORIAL_RENDERINFO_VISUALDEBUG}
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.FPColor := colRed;
+  ADest.Rectangle(rInfo.EntityCanvasMinXY.X, RenderInfo.EntityCanvasMinXY.Y,
+    rInfo.EntityCanvasMaxXY.X, rInfo.EntityCanvasMaxXY.Y);
+  {$endif}
   {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
   WriteLn(':<DrawFPVectorialToCanvas');
   {$endif}
@@ -9312,6 +9344,7 @@ begin
   WriteLn(':>TvTextPageSequence.Render');
   {$endif}
   CurY_px := ADestY;
+  TvEntity.InitializeRenderInfo(RenderInfo);
 
   for i := 0 to GetEntitiesCount - 1 do
   begin
