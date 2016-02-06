@@ -295,7 +295,7 @@ end;
 
 procedure TCustomCheckBoxThemed.KeyUp(var Key: Word; Shift: TShiftState);
 begin
-  inherited KeyDown(Key, Shift);
+  inherited KeyUp(Key, Shift);
   if (Key in [VK_RETURN, VK_SPACE]) and not (ssCtrl in Shift) then begin
     CheckBoxPressed :=  False;
     DoClick;
@@ -360,7 +360,7 @@ begin
     if ARightToLeft then inc(aFlags, DT_RTLREADING);
     with ThemeServices.GetTextExtent(ACanvas.Handle, aDetails, ACaption, aFlags, nil) do begin
       aTextSize.cx := Right;
-      aTextSize.cy := ACanvas.TextExtent(ACaption).cy;
+      aTextSize.cy := Bottom;
     end;
     aCaptionPoint.Y := (ARect.Bottom + ARect.Top - aTextSize.cy) div 2;
     aCheckBoxPoint.Y := (ARect.Bottom + ARect.Top - CheckBoxSize.cy) div 2;
