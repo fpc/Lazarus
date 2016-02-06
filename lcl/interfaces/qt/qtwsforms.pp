@@ -436,6 +436,8 @@ begin
       // qt doesn't modal windows as QtTool.see issue #18709
       if (TForm(AWinControl).BorderStyle in [bsToolWindow, bsSizeToolWin]) then
         QWidget_setWindowFlags(Widget.Widget, QtDialog);
+      if QApplication_activeModalWidget <> nil then
+        QWidget_setParent(Widget.Widget, QApplication_activeModalWidget);
       {$endif}
 
       {$ifdef HASX11}
