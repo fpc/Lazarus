@@ -1186,7 +1186,7 @@ begin
   inherited Create(aOwner);
 
   FTabPanels := TObjectList.Create(True);
-  FConfig := TXMLConfig.Create(LazarusIDE.GetPrimaryConfigPath+'packagetabs.xml');
+  FConfig := TXMLConfig.Create(IncludeTrailingPathDelimiter(LazarusIDE.GetPrimaryConfigPath)+'packagetabs.xml');
 
   Assert(SourceEditorManagerIntf <> nil);
   SourceEditorManagerIntf.RegisterChangeEvent(semWindowCreate, @WindowCreated);
