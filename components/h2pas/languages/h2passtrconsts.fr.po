@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2015-12-24 11:00+0100\n"
+"PO-Revision-Date: 2016-01-25 10:12+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -45,7 +45,7 @@ msgstr "Ajouter les parenthèses manquantes autour des valeurs de macros"
 
 #: h2passtrconsts.h2paddmissingh2pasifdefsforfunctionbodies
 msgid "Add missing H2Pas IFDEFs for function bodies"
-msgstr "Ajouter les IFDEF manquants de  H2Pas pour les corps de fonctions"
+msgstr "Ajouter les \"IFDEF\" manquants de H2Pas pour les corps de fonctions"
 
 #: h2passtrconsts.h2paddmissingpointertypeslikepppchar
 msgid "Add missing pointer types like PPPChar"
