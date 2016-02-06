@@ -84,6 +84,7 @@ type
     // List for Component inheritence view
     FClassList: TStringList;
     FKeepSelected: Boolean;
+    FFirstTimeAnchored: Boolean;
     procedure ClearSelection;
     procedure SelectionWasChanged;
     procedure ComponentWasAdded({%H-}ALookupRoot, {%H-}AComponent: TComponent;
@@ -163,9 +164,13 @@ begin
     UpdateButtonState;
   end
   else
+  begin
     PageControl.AnchorSideBottom.Side := asrBottom;
+    // Only with AnchorDocking. This is a temporary solution, many usability issues remain.
+    FFirstTimeAnchored := True;
+  end;
 
-  if not Assigned(Parent) then//only in undocked IDE
+  if not Assigned(Parent) then //only in undocked IDE
   begin
     if TreeFilterEd.CanFocus then
       TreeFilterEd.SetFocus;
@@ -386,10 +391,21 @@ procedure TComponentListForm.ComponentsChange(Sender: TObject; Node: TTreeNode);
 var
   AComponent: TRegisteredComponent;
 begin
-  AComponent:=GetSelectedComponent;
-  if AComponent<>nil then
-    IDEComponentPalette.SetSelectedComp(AComponent, ssShift in GetKeyShiftState);
-  UpdateButtonState;
+  if FFirstTimeAnchored then
+  begin
+    // Only run once when the anchored IDE starts.
+    FFirstTimeAnchored := False;
+    IDEComponentPalette.SetSelectedComp(nil, False);
+    ListTree.Selected := Nil;
+    PalletteTree.Selected := Nil;
+    InheritanceTree.Selected := Nil;
+  end
+  else begin
+    AComponent:=GetSelectedComponent;
+    if AComponent<>nil then
+      IDEComponentPalette.SetSelectedComp(AComponent, ssShift in GetKeyShiftState);
+    UpdateButtonState;
+  end;
 end;
 
 procedure TComponentListForm.TreeKeyPress(Sender: TObject; var Key: char);

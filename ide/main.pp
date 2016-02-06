@@ -1575,6 +1575,7 @@ begin
   MainIDEBar.SetupHints;
   SetupIDEWindowsLayout;
   RestoreIDEWindows;
+  MainIDEBar.InitPaletteAndCoolBar;
   IDEWindowCreators.AddLayoutChangedHandler(@HandleLayoutChanged);
   // make sure the main IDE bar is always shown
   IDEWindowCreators.ShowForm(MainIDEBar,false);
@@ -3537,7 +3538,7 @@ begin
   inherited SetToolStatus(AValue);
   if DebugBoss <> nil then
     DebugBoss.UpdateButtonsAndMenuItems;
-  if Assigned(MainIDEBar) then
+  if Assigned(MainIDEBar) and not IDEIsClosing then
     MainIDEBar.AllowCompilation(ToolStatus <> itBuilder); // Disable some GUI controls while compiling.
   if FWaitForClose and (ToolStatus = itNone) then
   begin

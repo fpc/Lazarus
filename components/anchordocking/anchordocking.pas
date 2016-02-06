@@ -526,7 +526,6 @@ type
     procedure MapTreeToControls(Tree: TAnchorDockLayoutTree);
     function RestoreLayout(Tree: TAnchorDockLayoutTree; Scale: boolean): boolean;
     procedure EnableAllAutoSizing;
-    procedure ResetSplitters;
     procedure ClearLayoutProperties(AControl: TControl; NewAlign: TAlign = alClient);
     procedure PopupMenuPopup(Sender: TObject);
     procedure ChangeLockButtonClick(Sender: TObject);
@@ -614,6 +613,7 @@ type
     procedure LoadSettings(Settings: TAnchorDockSettings);
     procedure SaveSettings(Settings: TAnchorDockSettings);
     function SettingsAreEqual(Settings: TAnchorDockSettings): boolean;
+    procedure ResetSplitters;
 
     // manual docking
     procedure ManualFloat(AControl: TControl);
@@ -1476,13 +1476,16 @@ begin
       DisableControlAutoSizing(AControl);
       // AControl is currently on a visible site, but not in the Tree
       // => close site
-      debugln(['TAnchorDockMaster.CloseUnneededControls Control=',DbgSName(AControl),' Site=',AControl.HostDockSite.Name]);
-      if AControl.HostDockSite is TAnchorDockHostSite then begin
-        if not TAnchorDockHostSite(AControl.HostDockSite).CloseSite then begin
-          if FControls.IndexOf(AControl)<0 then
-            AControl:=nil;
-          debugln(['TAnchorDockMaster.CloseUnneededControls CloseSite failed Control=',DbgSName(AControl)]);
-          exit(false);
+      if AControl.HostDockSite <> nil then
+      begin
+        debugln(['TAnchorDockMaster.CloseUnneededControls Control=',DbgSName(AControl),' Site=',AControl.HostDockSite.Name]);
+        if AControl.HostDockSite is TAnchorDockHostSite then begin
+          if not TAnchorDockHostSite(AControl.HostDockSite).CloseSite then begin
+            if FControls.IndexOf(AControl)<0 then
+              AControl:=nil;
+            debugln(['TAnchorDockMaster.CloseUnneededControls CloseSite failed Control=',DbgSName(AControl)]);
+            exit(false);
+          end;
         end;
       end;
       if FControls.IndexOf(AControl)>=0 then begin
