@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-01-23 02:08+0300\n"
+"PO-Revision-Date: 2016-02-06 21:44+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2160,7 +2160,7 @@ msgstr "Переход (например, по методу)"
 
 #: lazarusidestrconsts.dlgjumptomethodbody
 msgid "Jump directly to method body"
-msgstr ""
+msgstr "Переходить непосредственно к телу метода"
 
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
@@ -11748,23 +11748,23 @@ msgstr "Щёлкните по активному элементу для ред�
 
 #: lazarusidestrconsts.lismenueditorcomponentisunexpectedkind
 msgid "Component is unexpected kind"
-msgstr ""
+msgstr "Компонент неизвестного типа"
 
 #: lazarusidestrconsts.lismenueditorcomponentisunnamed
 msgid "Component is unnamed"
-msgstr ""
+msgstr "Компонент без имени"
 
 #: lazarusidestrconsts.lismenueditorconflictresolutioncomplete
 msgid "<conflict resolution complete>"
-msgstr ""
+msgstr "<устранение конфликтов завершено>"
 
-#: lazarusidestrconsts.lismenueditordditems
-msgid "%d (%d items)"
-msgstr ""
+#: lazarusidestrconsts.lismenueditorconflictsfoundinitiallyd
+msgid "Conflicts found initially: %d"
+msgstr "Изначально найденных конфликтов: %d"
 
 #: lazarusidestrconsts.lismenueditordeepestnestedmenulevels
 msgid "Deepest nested menu level: %s"
-msgstr ""
+msgstr "Максимальный уровень вложенности: %s"
 
 #: lazarusidestrconsts.lismenueditordeleteitem
 msgid "&Delete item"
@@ -11776,15 +11776,15 @@ msgstr "&Удалить шаблон меню ..."
 
 #: lazarusidestrconsts.lismenueditordeletesavedmenutemplate
 msgid "Delete saved menu template"
-msgstr ""
+msgstr "Удалить сохранённый шаблон меню"
 
 #: lazarusidestrconsts.lismenueditordeleteselectedmenutemplate
 msgid "Delete selected menu template"
-msgstr ""
+msgstr "Удалить выделенный шаблон меню"
 
 #: lazarusidestrconsts.lismenueditordeletethisitemanditssubitems
 msgid "Delete this item and its subitems?"
-msgstr ""
+msgstr "Удалить этот элемент со всеми дочерними?"
 
 #: lazarusidestrconsts.lismenueditordisplaypreviewaspopupmenu
 msgid "Display preview as &Popup menu"
@@ -11800,7 +11800,7 @@ msgstr "Редактирование заголовка %s"
 
 #: lazarusidestrconsts.lismenueditoreditingsdots
 msgid "To resolve conflict edit %s.%s"
-msgstr ""
+msgstr "Для устранения конфликта измените %s.%s"
 
 #: lazarusidestrconsts.lismenueditoreditingsfors
 msgid "Editing %s for %s"
@@ -11856,7 +11856,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorinsertselectedmenutemplate
 msgid "Insert selected menu template"
-msgstr ""
+msgstr "Вставить выделенный шаблон меню"
 
 #: lazarusidestrconsts.lismenueditorisnotassigned
 msgid "is not assigned"
@@ -11864,7 +11864,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditoritemswithicons
 msgid "Items with icon: %s"
-msgstr ""
+msgstr "Элементов со значками: %s"
 
 #: lazarusidestrconsts.lismenueditorlistshortcutsandaccelerators
 msgid "List shortcuts and &accelerators for %s ..."
@@ -11884,7 +11884,7 @@ msgstr "Действия с элементами"
 
 #: lazarusidestrconsts.lismenueditormenuitemshortcutconflictsins
 msgid "Menuitem shortcut conflicts in %s"
-msgstr ""
+msgstr "Конфликты комбинаций клавиш меню в %s"
 
 #: lazarusidestrconsts.lismenueditormovedown
 msgid "Move Down (or right)"
@@ -11962,11 +11962,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorpopupassignmentss
 msgid "Popup assignments: %s"
-msgstr ""
+msgstr "Присваиваний всплывающего меню: %s"
 
 #: lazarusidestrconsts.lismenueditorremainingconflictss
 msgid "Remaining conflicts: %s"
-msgstr ""
+msgstr "Оставшихся конфликтов: %s"
 
 #: lazarusidestrconsts.lismenueditorremoveallseparators
 msgid "&Remove all separators"
@@ -11974,11 +11974,11 @@ msgstr "Удалить &все разделители"
 
 #: lazarusidestrconsts.lismenueditorresolvedconflictss
 msgid "Resolved conflicts: %s"
-msgstr ""
+msgstr "Устранённых конфликтов: %s"
 
 #: lazarusidestrconsts.lismenueditorresolveselectedconflict
 msgid "Resolve selected conflict"
-msgstr ""
+msgstr "Устранить выбранный конфликт"
 
 #: lazarusidestrconsts.lismenueditorresolveshortcutconflicts
 msgid "&Resolve shortcut conflicts ..."
@@ -11986,7 +11986,7 @@ msgstr "&Устранить конфликты комбинаций клавиш
 
 #: lazarusidestrconsts.lismenueditorrootmenu
 msgid "Root menu"
-msgstr ""
+msgstr "Корневое меню"
 
 #: lazarusidestrconsts.lismenueditorsavedtemplates
 msgid "Saved templates"
@@ -12006,11 +12006,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsavemenushownasanewtemplate
 msgid "Save menu shown as a new template"
-msgstr ""
+msgstr "Сохранить показанное меню в качестве шаблона"
 
 #: lazarusidestrconsts.lismenueditorsconflictswiths
 msgid "%s conflicts with %s"
-msgstr ""
+msgstr "%s конфликтует с %s"
 
 #: lazarusidestrconsts.lismenueditorseparators
 msgid "Se&parators"
@@ -12020,13 +12020,9 @@ msgstr "&Разделители"
 msgid "%s.GroupIndex: %d"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorshortcutconflictsfoundinitiallyd
-msgid "Shortcut conflicts found initially: %d"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditorshortcutitemss
 msgid "Shortcut items: %s"
-msgstr ""
+msgstr "Элементов с комбинациями клавиш: %s"
 
 #: lazarusidestrconsts.lismenueditorshortcutnotyetchanged
 msgid "Shortcut not yet changed"
@@ -12074,7 +12070,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsins
 msgid "\"%s\" in %s"
-msgstr ""
+msgstr "\"%s\" в %s"
 
 #: lazarusidestrconsts.lismenueditorsisalreadyinuse
 msgid ""

@@ -11762,9 +11762,9 @@ msgstr "Komponente ist unbenannt"
 msgid "<conflict resolution complete>"
 msgstr "<Konfliktauflösung komplett>"
 
-#: lazarusidestrconsts.lismenueditordditems
-msgid "%d (%d items)"
-msgstr "%d (%d Elemente)"
+#: lazarusidestrconsts.lismenueditorconflictsfoundinitiallyd
+msgid "Conflicts found initially: %d"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditordeepestnestedmenulevels
 msgid "Deepest nested menu level: %s"
@@ -12022,10 +12022,6 @@ msgstr "Trennlinien"
 
 #: lazarusidestrconsts.lismenueditorsgroupindexd
 msgid "%s.GroupIndex: %d"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorshortcutconflictsfoundinitiallyd
-msgid "Shortcut conflicts found initially: %d"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutitemss

@@ -12035,8 +12035,8 @@ msgstr ""
 msgid "<conflict resolution complete>"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditordditems
-msgid "%d (%d items)"
+#: lazarusidestrconsts.lismenueditorconflictsfoundinitiallyd
+msgid "Conflicts found initially: %d"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditordeepestnestedmenulevels
@@ -12297,10 +12297,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsgroupindexd
 msgid "%s.GroupIndex: %d"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorshortcutconflictsfoundinitiallyd
-msgid "Shortcut conflicts found initially: %d"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutitemss

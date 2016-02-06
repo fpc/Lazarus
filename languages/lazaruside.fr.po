@@ -11764,9 +11764,9 @@ msgstr "Le composant ne porte pas de nom"
 msgid "<conflict resolution complete>"
 msgstr "<résolution de conflit effectuée>"
 
-#: lazarusidestrconsts.lismenueditordditems
-msgid "%d (%d items)"
-msgstr "%d (%d éléments)"
+#: lazarusidestrconsts.lismenueditorconflictsfoundinitiallyd
+msgid "Conflicts found initially: %d"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditordeepestnestedmenulevels
 msgid "Deepest nested menu level: %s"
@@ -12025,10 +12025,6 @@ msgstr "Sé&parateurs"
 #: lazarusidestrconsts.lismenueditorsgroupindexd
 msgid "%s.GroupIndex: %d"
 msgstr "%sIndex de groupe : %d"
-
-#: lazarusidestrconsts.lismenueditorshortcutconflictsfoundinitiallyd
-msgid "Shortcut conflicts found initially: %d"
-msgstr "Conflits de raccourcis trouvés initialement : %d"
 
 #: lazarusidestrconsts.lismenueditorshortcutitemss
 msgid "Shortcut items: %s"
