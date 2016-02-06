@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr_FR\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #: projecttemplates.sbtncancel
 msgid "Cancel"
@@ -30,4 +30,4 @@ msgstr "Échec de la copie du fichier \"%s\" vers \"%s\""
 
 #: projecttemplates.serrnosuchtemplate
 msgid "\"%s\": No such template."
-msgstr "\"%s\" : modèle inexistant"
+msgstr "\"%s\" : modèle inexistant."

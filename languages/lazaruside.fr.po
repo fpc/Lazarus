@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-01-19 09:43+0100\n"
+"PO-Revision-Date: 2016-01-25 17:52+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr_FR\n"
@@ -2158,6 +2158,10 @@ msgstr "Intervalle en secondes"
 #: lazarusidestrconsts.dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Sauts"
+
+#: lazarusidestrconsts.dlgjumptomethodbody
+msgid "Jump directly to method body"
+msgstr ""
 
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
@@ -4614,7 +4618,7 @@ msgstr "Afficher automatiquement l'inspecteur d'objets"
 
 #: lazarusidestrconsts.lisavailableforinstallation
 msgid "Available for installation"
-msgstr "Disponible pour l'installation"
+msgstr "Disponibles pour l'installation"
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
 msgid "Available project build modes:"
@@ -6517,7 +6521,7 @@ msgstr "Tout afficher"
 
 #: lazarusidestrconsts.liscomppalopenpackage
 msgid "Open package"
-msgstr "Ouvrir un paquet"
+msgstr "Ouvrir le paquet"
 
 #: lazarusidestrconsts.liscomppalopenunit
 msgid "Open unit"
@@ -9136,7 +9140,7 @@ msgstr "Le fichier %s a une syntaxe incorrecte."
 
 #: lazarusidestrconsts.lisfileshasregisterprocedureinpackageusessection
 msgid "Files: %s, has Register procedure: %s, in package uses section: %s"
-msgstr "Fichiers : %s, a une procédure \"Register \" : %s, dans la section \"uses\" du paquet %s"
+msgstr "Fichiers : %s - avec procédure \"Register \" : %s - dans la section \"uses\" du paquet : %s"
 
 #: lazarusidestrconsts.lisfileshaverightencoding
 msgid "*** All found files already have the right encoding ***"
@@ -10145,7 +10149,7 @@ msgstr "Installer la sélection"
 #: lazarusidestrconsts.lisinstalluninstallpackages
 msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall Packages"
-msgstr "Installer/Désinstaller les paquets"
+msgstr "Installer/Désinstaller des paquets"
 
 #: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
 msgid "Instead of compile package create a simple Makefile."
@@ -11246,7 +11250,7 @@ msgstr "&Copier le nom"
 
 #: lazarusidestrconsts.lislocalsdlgcopyrawvalue
 msgid "Copy &RAW Value"
-msgstr ""
+msgstr "Copie la valeur &RAW"
 
 #: lazarusidestrconsts.lislocalsdlgcopyvalue
 msgid "C&opy Value"
@@ -13804,7 +13808,7 @@ msgstr "ou"
 
 #: lazarusidestrconsts.lisos
 msgid ", OS: %s"
-msgstr ", OS : %s"
+msgstr "- OS : %s"
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
@@ -13856,11 +13860,11 @@ msgstr "paquet %s"
 
 #: lazarusidestrconsts.lispackage3
 msgid ", package %s"
-msgstr ", paquet %s"
+msgstr "- paquet %s"
 
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
-msgstr "Informations de paquet"
+msgstr "Informations concernant le paquet"
 
 #: lazarusidestrconsts.lispackagenamebeginswith
 msgid "Package name begins with ..."
@@ -14070,7 +14074,7 @@ msgstr "Créer le \"Makefile\""
 
 #: lazarusidestrconsts.lispckeditdefault
 msgid "%s, default: %s"
-msgstr "%s, par defaut : %s"
+msgstr "%s - par défaut : %s"
 
 #: lazarusidestrconsts.lispckeditdependencyproperties
 msgid "Dependency Properties"
@@ -14130,7 +14134,7 @@ msgstr "paquet %s non enregistré"
 
 #: lazarusidestrconsts.lispckeditpage
 msgid "%s, Page: %s"
-msgstr "%s, Page : %s"
+msgstr "%s - Page : %s"
 
 #: lazarusidestrconsts.lispckeditreadddependency
 msgid "Re-Add dependency"
@@ -14241,7 +14245,7 @@ msgstr "Fondamental : ne peut être désinstallé"
 #: lazarusidestrconsts.lispckexplinstalled
 msgctxt "lazarusidestrconsts.lispckexplinstalled"
 msgid "Installed"
-msgstr "Installé"
+msgstr "Installés"
 
 #: lazarusidestrconsts.lispckexplinstallonnextstart
 msgid "Install on next start"

@@ -3,12 +3,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Yann Merignac <yann.merignac@laposte.net>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"PO-Revision-Date: 2015-04-29 15:02+0100\n"
+"PO-Revision-Date: 2016-01-25 10:17+0100\n"
 "Language: fr\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.6\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 
@@ -60,7 +60,7 @@ msgstr "Fichier d'exemple de code"
 
 #: lazdemsg.scopyright1
 msgid "This application is (c) by  Michael Van Canneyt and the Lazarus team"
-msgstr "Ce programme est (c) Michael Van Canneyt et l'équipe Lazarus"
+msgstr "Ce programme est (c) de Michael Van Canneyt et de l'équipe Lazarus"
 
 #: lazdemsg.scopyright2
 msgid "It is released under the terms of the  GENERAL PUBLIC LICENSE:"
@@ -172,7 +172,7 @@ msgstr " dans le sujet "
 
 #: lazdemsg.shideprotectedmethods
 msgid "&Hide protected methods"
-msgstr "Cacher les méthodes protégées"
+msgstr "Cac&her les méthodes protégées"
 
 #: lazdemsg.shinteditelementlink
 msgid "Edit element link"
@@ -672,7 +672,7 @@ msgstr "Enregistrer"
 
 #: lazdemsg.ssavebeforebuildquestion
 msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
-msgstr "Il reste des modifications non enregistrées dans \"%s\".%s Elles doivent être enregistrées pour être visibles dans la documentation produite. Voulez-vous les enregistrer ?"
+msgstr "Il reste des modifications non enregistrées dans \"%s\".%sElles doivent être enregistrées pour être visibles dans la documentation produite. Voulez-vous les enregistrer ?"
 
 #: lazdemsg.sseealso
 msgid "See Also"
@@ -712,7 +712,7 @@ msgstr "Sources"
 
 #: lazdemsg.sstartnodenotfound
 msgid "Start element \"%s\" could not be found"
-msgstr "L'élément de départ \"%s\" ne peut pas être trouvé."
+msgstr "L'élément de départ \"%s\" est introuvable"
 
 #: lazdemsg.stablecols
 msgid "Columns"
@@ -732,9 +732,8 @@ msgstr "OS cible"
 
 #: lazdemsg.susingcommand
 msgid "Building docs using command: "
-msgstr "Produire la documentation avec la commande :"
+msgstr "Production de la documentation avec la commande :"
 
 #: lazdemsg.swarnifnodocumentationnodefound
 msgid "Warn if no documentation node found"
 msgstr "Avertir si aucun noeud de documentation n'est trouvé"
-

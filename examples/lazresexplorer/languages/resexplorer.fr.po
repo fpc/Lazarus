@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-12-18 09:27+0100\n"
+"PO-Revision-Date: 2016-01-25 21:42+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr_FR\n"
@@ -26,7 +26,7 @@ msgstr "Tous les fichiers (*)|*|Bibliothèques partagées (*.so)|*.so"
 
 #: reconstsunit.sbuilddate
 msgid "Build date: "
-msgstr "Date de création :"
+msgstr "Date de création : "
 
 #: reconstsunit.scarbonwidgetset
 msgid "Carbon widget set"
@@ -42,7 +42,7 @@ msgstr "Fichier"
 
 #: reconstsunit.sfpcversion
 msgid "FPC version: "
-msgstr "Version FPC :"
+msgstr "Version FPC : "
 
 #: reconstsunit.sfpguiwidgetset
 msgid "FpGUI widget set"
@@ -66,7 +66,7 @@ msgstr "Image"
 
 #: reconstsunit.slclversion
 msgid "LCL Version: "
-msgstr "Version LCL :"
+msgstr "Version LCL : "
 
 #: reconstsunit.slicense
 msgid "This program is free software under GNU GPL 2 license, see COPYING file"
@@ -102,11 +102,11 @@ msgstr "Chaînes"
 
 #: reconstsunit.stargetcpu
 msgid "Target CPU: "
-msgstr "Processeur cible :"
+msgstr "Processeur cible : "
 
 #: reconstsunit.stargetos
 msgid "Target OS: "
-msgstr "OS cible :"
+msgstr "OS cible : "
 
 #: reconstsunit.swin32_64widgetset
 msgid "Win32/Win64 widget set"
@@ -115,4 +115,3 @@ msgstr "Jeu graphique Win32/Win64"
 #: reconstsunit.swincewidgetset
 msgid "WinCE widget set"
 msgstr "Jeu graphique WinCE"
-
