@@ -303,6 +303,7 @@ class procedure TQtWSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayI
 var
   SystemTrayIcon: TQtSystemTrayIcon;
   AIcon: QIconH;
+  AHint: WideString;
 begin
   if (ATrayIcon.Handle = 0) then Exit;
 
@@ -334,6 +335,9 @@ begin
   if Assigned(ATrayIcon.PopUpMenu) then
     if TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget <> nil then
       SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget));
+
+  AHint := UTF8ToUTF16(ATrayIcon.Hint);
+  SystemTrayIcon.setToolTip(AHint);
 
   SystemTrayIcon.UpdateSystemTrayWidget;
 end;

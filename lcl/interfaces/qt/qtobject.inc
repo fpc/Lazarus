@@ -986,11 +986,22 @@ var
         Assigned(TQtMainWindow(OldWidget).LCLObject) and
         not (csDesigning in TQtMainWindow(OldWidget).LCLObject.ComponentState))
         or MDIFocusFixNeeded then
+      begin
         // DO NOT TRIGGER ANYTHING, THIS IS SPURIOUS EVENT FROM MDIAREA
-        {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
-        Writeln('TQtWidgetSet.FocusChanged: *** DO NOT KILL FOCUS ***')
-        {$ENDIF}
-      else
+        //issue #29528
+        if TQtMainWindow(OldWidget).IsMdiChild and (TQtMainWindow(OldWidget).LCLObject.ControlCount = 0) then
+        begin
+          {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+          Writeln('TQtWidgetSet.FocusChanged: *** SEND KILL FOCUS FOR MDICHILD WITH 0 CONTROLS ***');
+          {$ENDIF}
+          OldWidget.DeliverMessage(Msg);
+        end else
+        begin
+          {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+          Writeln('TQtWidgetSet.FocusChanged: *** DO NOT KILL FOCUS ***');
+          {$ENDIF}
+        end;
+      end else
         if CheckIfActiveForm(OldWidget) then
           OldWidget.DeliverMessage(Msg)
         {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
@@ -1111,11 +1122,26 @@ begin
                 ;
 
             end else
-              // if this happens then qt's mdi focus is real crap
-              {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
-              writeln('TQtWidgetSet.FocusChanged: WE ARE COMPLETELY OUT OF MIND WHAT TO DO (1) .....')
-              {$ENDIF}
-              ;
+            begin
+              // issue #29528
+              if TQtMainWindow(NewWidget).LCLObject.ControlCount = 0 then
+              begin
+                {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+                writeln('TQtWidgetSet.FocusChanged: setting focus to mdiChild with 0 controls .....');
+                {$ENDIF}
+                Msg.msg := LM_SETFOCUS;
+                if OldWidget = NewWidget then
+                  OldWidget := nil;
+                Msg.wParam := PtrInt(OldWidget);
+                NewWidget.DeliverMessage(Msg);
+              end else
+              begin
+                // if this happens then qt's mdi focus is real crap
+                {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+                writeln('TQtWidgetSet.FocusChanged: WE ARE COMPLETELY OUT OF MIND WHAT TO DO (1) .....');
+                {$ENDIF}
+              end;
+            end;
 
           end else
           begin

@@ -758,11 +758,16 @@ type
     function CanPaintBackground: Boolean; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getClientBounds: TRect; override;
+    function getClientOffset: TPoint; override;
     function getText: WideString; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer;
       {%H-}WithThemeSpace: Boolean); override;
     procedure setText(const W: WideString); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
+    procedure Update(ARect: PRect = nil); override;
+    procedure UpdateRegion(ARgn: QRegionH); override;
+    procedure Repaint(ARect: PRect = nil); override;
+
     property GroupBoxType: TQtGroupBoxType read FGroupBoxType write FGroupBoxType;
     property CheckBoxState: boolean read GetCheckBoxState write SetCheckBoxState;
     property CheckBoxVisible: boolean read GetCheckBoxVisible write SetCheckBoxVisible;
@@ -7400,8 +7405,8 @@ begin
             {TODO: find better way to find out which controls are top,left,right & bottom aligned ...}
             for i := 0 to LCLObject.ComponentCount - 1 do
             begin
-              {find statusbars}
-              if LCLObject.Components[i] is TStatusBar then
+              if (LCLObject.Components[i] is TWinControl) and
+                (TWinControl(LCLObject.Components[i]).Align in [alTop, alLeft, alRight, alBottom]) then
               begin
                 R2 := TWinControl(LCLObject.Components[i]).BoundsRect;
                 case TWinControl(LCLObject.Components[i]).Align of
@@ -7411,19 +7416,6 @@ begin
                   alBottom: R.Bottom := R.Bottom - (R2.Bottom - R2.Top);
                 end;
               end;
-              
-              {find toolbars}
-              if LCLObject.Components[i] is TToolBar then
-              begin
-                R2 := TWinControl(LCLObject.Components[i]).BoundsRect;
-                case TWinControl(LCLObject.Components[i]).Align of
-                  alLeft: R.Left := R.Left + (R2.Right - R2.Left);
-                  alTop: R.Top := R.Top + (R2.Bottom - R2.Top);
-                  alRight: R.Right := R.Right - (R2.Right - R2.Left);
-                  alBottom: R.Bottom := R.Bottom - (R2.Bottom - R2.Top);
-                end;
-              end;
-              
             end; {components loop}
             QWidget_setGeometry(MDIAreaHandle.Widget, @R);
           end;
@@ -7760,8 +7752,8 @@ begin
   inherited AttachEvents;
   if FCentralWidget <> nil then
   begin
-    // FCWEventHook := QObject_hook_create(FCentralWidget);
-    // QObject_hook_hook_events(FCWEventHook, @EventFilter);
+    FCWEventHook := QObject_hook_create(FCentralWidget);
+    QObject_hook_hook_events(FCWEventHook, @EventFilter);
   end;
 end;
 
@@ -7769,8 +7761,8 @@ procedure TQtGroupBox.DetachEvents;
 begin
   if FCWEventHook <> nil then
   begin
-    // QObject_hook_destroy(FCWEventHook);
-    // FCWEventHook := nil;
+    QObject_hook_destroy(FCWEventHook);
+    FCWEventHook := nil;
   end;
   inherited DetachEvents;
 end;
@@ -7778,8 +7770,7 @@ end;
 function TQtGroupBox.CanPaintBackground: Boolean;
 begin
   Result := CanSendLCLMessage and getEnabled and
-    (LCLObject.Color <> clBtnFace) and (LCLObject.Color <> clBackground);
-    // DO NOT REMOVE ! QGroupBox default = clBackground not clBtnFace !
+    (LCLObject.Color <> clDefault);
 end;
 
 function TQtGroupBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
@@ -7787,6 +7778,9 @@ function TQtGroupBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 var
   ResizeEvent: QResizeEventH;
   NewSize, OldSize: TSize;
+  R: TRect;
+  APos, AGlobalPos: TQtPoint;
+  ANewMouseEvent: QMouseEventH;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -7795,10 +7789,71 @@ begin
 
   if (Sender = FCentralWidget) then
   begin
+    case QEvent_type(Event) of
+      QEventPaint: Result := inherited EventFilter(Sender, Event);
+    end;
     exit;
   end;
-
+  {about issue #29572: we must use main widget for mouse
+   events, since using it in FCentralWidget above freezes
+   application for some reason. Offsetting pos fixes problem.}
   case QEvent_type(Event) of
+    QEventWheel: // issue #29572
+    begin
+      APos := QMouseEvent_pos(QMouseEventH(Event))^;
+      AGlobalPos := QMouseEvent_globalPos(QMouseEventH(Event))^;
+      QWidget_geometry(FCentralWidget, @R);
+      inc(APos.X, -R.Left);
+      inc(APos.Y, -R.Top);
+      ANewMouseEvent := QMouseEvent_create(QEvent_type(Event), @APos, @AGlobalPos, QMouseEvent_button(QMouseEventH(Event)),
+        QMouseEvent_buttons(QMouseEventH(Event)), QInputEvent_modifiers(QInputEventH(Event)));
+      try
+        Result := SlotMouseWheel(Sender, ANewMouseEvent);
+      finally
+        QMouseEvent_destroy(ANewMouseEvent);
+      end;
+    end;
+    QEventMouseMove: // issue #29572
+    begin
+      APos := QMouseEvent_pos(QMouseEventH(Event))^;
+      AGlobalPos := QMouseEvent_globalPos(QMouseEventH(Event))^;
+      QWidget_geometry(FCentralWidget, @R);
+      inc(APos.X, -R.Left);
+      inc(APos.Y, -R.Top);
+      ANewMouseEvent := QMouseEvent_create(QEvent_type(Event), @APos, @AGlobalPos, QMouseEvent_button(QMouseEventH(Event)),
+        QMouseEvent_buttons(QMouseEventH(Event)), QInputEvent_modifiers(QInputEventH(Event)));
+      try
+        Result := SlotMouseMove(Sender, ANewMouseEvent);
+      finally
+        QMouseEvent_destroy(ANewMouseEvent);
+      end;
+    end;
+    QEventMouseButtonPress,
+    QEventMouseButtonRelease,
+    QEventMouseButtonDblClick: // issue #29572
+    begin
+      APos := QMouseEvent_pos(QMouseEventH(Event))^;
+      AGlobalPos := QMouseEvent_globalPos(QMouseEventH(Event))^;
+      QWidget_geometry(FCentralWidget, @R);
+      inc(APos.X, -R.Left);
+      inc(APos.Y, -R.Top);
+      ANewMouseEvent := QMouseEvent_create(QEvent_type(Event), @APos, @AGlobalPos, QMouseEvent_button(QMouseEventH(Event)),
+        QMouseEvent_buttons(QMouseEventH(Event)), QInputEvent_modifiers(QInputEventH(Event)));
+      try
+        Result := SlotMouse(Sender, ANewMouseEvent);
+      finally
+        QMouseEvent_destroy(ANewMouseEvent);
+      end;
+    end;
+    QEventPaint:
+      begin
+        Result := False;
+        // paint complete background, like gtk2 does
+        if CanPaintBackground then
+          SlotPaintBg(Sender, Event);
+        // issue #28155, we are painting our FCentralWidget, not QGroupBox
+        // Result := inherited EventFilter(Sender, Event);
+      end;
     QEventFontChange:
       begin
         Result := inherited EventFilter(Sender, Event);
@@ -7833,6 +7888,15 @@ begin
     else
       Result := inherited EventFilter(Sender, Event);
   end;
+end;
+
+function TQtGroupBox.getClientOffset: TPoint;
+begin
+  Result:=inherited getClientOffset;
+  // issue #28155
+  // there's no client offset since FCentralWidget is at it's position 0,0
+  if testAttribute(QtWA_Mapped) and QWidget_testAttribute(FCentralWidget, QtWA_Mapped) then
+    Result := Point(0, 0);
 end;
 
 function TQtGroupBox.getClientBounds: TRect;
@@ -7918,6 +7982,42 @@ begin
     inherited setFocusPolicy(QtNoFocus)
   else
     inherited setFocusPolicy(APolicy);
+end;
+
+procedure TQtGroupBox.Update(ARect: PRect);
+begin
+  if Assigned(FCentralWidget) then
+  begin
+    if ARect <> nil then
+      QWidget_update(FCentralWidget, ARect)
+    else
+      QWidget_update(FCentralWidget);
+  end else
+    inherited Update(ARect);
+end;
+
+procedure TQtGroupBox.UpdateRegion(ARgn: QRegionH);
+begin
+  if Assigned(FCentralWidget) then
+  begin
+    if ARgn <> nil then
+      QWidget_update(FCentralWidget, ARgn)
+    else
+      QWidget_update(FCentralWidget);
+  end else
+    inherited UpdateRegion(ARgn);
+end;
+
+procedure TQtGroupBox.Repaint(ARect: PRect);
+begin
+  if Assigned(FCentralWidget) then
+  begin
+    if ARect <> nil then
+      QWidget_repaint(FCentralWidget, ARect)
+    else
+      QWidget_repaint(FCentralWidget);
+  end else
+  inherited Repaint(ARect);
 end;
 
 { TQtFrame }
