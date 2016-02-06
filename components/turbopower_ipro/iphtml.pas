@@ -2656,6 +2656,8 @@ type
     property FlagErrors;
   end;
 
+  TIdFindNodeCriteria = function(ACurrNode: TIpHtmlNodeCore): Boolean is nested;
+
 const
   NAnchorChar = #3 ; {character used to represent an Anchor }
 var
@@ -2683,6 +2685,9 @@ function dbgs(et: TElementType): string; overload;
 function GetNextSiblingNode(ANode: TIpHtmlNode): TIpHtmlNode;
 function GetPrevSiblingNode(ANode: TIpHtmlNode): TIpHtmlNode;
 function GetParentNodeOfClass(ANode: TIpHtmlNode; AClass: TIpHtmlNodeClass): TIpHtmlNode;
+function FindNode(ANode: TIpHtmlNode; ACriteria: TIdFindNodeCriteria): TIpHtmlNodeCore;
+function FindNodeByElemId(ANode: TIpHtmlNode; const AElemId: string): TIpHtmlNodeCore;
+function FindNodeByElemClass(ANode: TIpHtmlNode; const AElemClass: string): TIpHtmlNodeCore;
 
 procedure Register;
 
@@ -2876,6 +2881,58 @@ begin
     Result := Result.FParentNode;
 end;
 
+function FindNode(ANode: TIpHtmlNode; ACriteria: TIdFindNodeCriteria): TIpHtmlNodeCore;
+var
+  I: Integer;
+  VNode: TIpHtmlNodeMulti;
+  VPrevNode, VNextNode: TIpHtmlNode;
+begin
+  if not Assigned(ANode) or not (ANode is TIpHtmlNodeMulti) then
+    Exit(nil);
+  VNode := ANode as TIpHtmlNodeMulti;
+  if VNode.ChildCount < 1 then
+    Exit(nil);
+  for I := 0 to Pred(VNode.ChildCount) do
+  begin
+    VPrevNode := VNode.ChildNode[I];
+    VNextNode := FindNode(VPrevNode, ACriteria);
+    if not Assigned(VNextNode) then
+      VNextNode := VPrevNode;
+    if VNextNode is TIpHtmlNodeCore then
+    begin
+      Result := VNextNode as TIpHtmlNodeCore;
+      if ACriteria(Result) then
+        Exit;
+    end;
+  end;
+  Result := nil;
+end;
+
+function FindNodeByElemId(ANode: TIpHtmlNode; const AElemId: string): TIpHtmlNodeCore;
+
+  function Criteria(ACurrNode: TIpHtmlNodeCore): Boolean;
+  begin
+    if ACurrNode.Id = AElemId then
+      Exit(True);
+    Result := False;
+  end;
+
+begin
+  Result := FindNode(ANode, Criteria);
+end;
+
+function FindNodeByElemClass(ANode: TIpHtmlNode; const AElemClass: string): TIpHtmlNodeCore;
+
+  function Criteria(ACurrNode: TIpHtmlNodeCore): Boolean;
+  begin
+    if ACurrNode.ClassId = AElemClass then
+      Exit(True);
+    Result := False;
+  end;
+
+begin
+  Result := FindNode(ANode, Criteria);
+end;
 
 procedure Register;
 begin
@@ -7865,12 +7922,12 @@ end;
 
 function TIpHtml.getControlCount:integer;
 begin
-     result := FControlList.Count;
+  result := FControlList.Count;
 end;
 
 function TIpHtml.getControl(i:integer):TIpHtmlNode;
 begin
-     result := FControlList[i];
+  result := FControlList[i];
 end;
 
 procedure TIpHtml.PaintSelection;
@@ -11344,19 +11401,19 @@ var
 
   procedure setCommonProperties;
   begin
-      FControl.Visible := False;
-      FControl.Parent := Parent;
-      adjustFromCss;
-      aCanvas.Font.Size := FControl.Font.Size;
+    FControl.Parent := Parent;
+    FControl.Visible := False;
+    AdjustFromCss;
+    aCanvas.Font.Size := FControl.Font.Size;
   end;
 
-  procedure setWidhtHeight(iSize, iTopPlus, iSidePlus: integer);
+  procedure SetWidthHeight(iSize, iTopPlus, iSidePlus: integer);
   begin
-        if iSize <> -1 then
-          FControl.Width := iSize * aCanvas.TextWidth('0') + iSidePlus
-        else
-          FControl.Width := 20 * aCanvas.TextWidth('0')  + iSidePlus;
-        FControl.Height := aCanvas.TextHeight('Wy') + iTopPlus;
+    if iSize <> -1 then
+      FControl.Width := iSize * aCanvas.TextWidth('0') + iSidePlus
+    else
+      FControl.Width := 20 * aCanvas.TextWidth('0')  + iSidePlus;
+    FControl.Height := aCanvas.TextHeight('Wy') + iTopPlus;
   end;
 
 begin
@@ -11369,9 +11426,10 @@ begin
       FControl := TEdit.Create(Parent);
       setCommonProperties;
       with TEdit(FControl) do begin
+        Color := Brush.Color;
         Text := Value;
         MaxLength := Self.MaxLength;
-        setWidhtHeight(Self.Size, 8, 0);
+        SetWidthHeight(Self.Size, 8, 0);
         Enabled := not Self.Disabled;
         ReadOnly := Self.ReadOnly;
         OnChange := ButtonClick;
@@ -11383,9 +11441,10 @@ begin
       FControl := TEdit.Create(Parent);
       setCommonProperties;
       with TEdit(FControl) do begin
+        Color := Brush.Color;
         Text := Value;
         MaxLength := Self.MaxLength;
-        setWidhtHeight(1, 8, 0);
+        SetWidthHeight(Self.Size, 8, 0);
         Enabled := not Self.Disabled;
         ReadOnly := Self.ReadOnly;
         PasswordChar := '*';
@@ -11398,7 +11457,8 @@ begin
       FControl := TCheckBox.Create(Parent);
       setCommonProperties;
       with TCheckBox(FControl) do begin
-        setWidhtHeight(1, 8, 0);
+        Color := Brush.Color;
+        SetWidthHeight(1, 8, 0);
         Checked := Self.Checked;
         Enabled := not Self.Disabled and not Self.Readonly;
         OnClick := ButtonClick;
@@ -11419,7 +11479,8 @@ begin
 {$ELSE}
       with THtmlRadioButton(FControl) do begin
 {$ENDIF}
-        setWidhtHeight(1, 8, 0);
+        Color := Brush.Color;
+        SetWidthHeight(1, 8, 0);
         Checked := Self.Checked;
         Enabled := not Self.Disabled and not Self.Readonly;
         OnClick := ButtonClick;
@@ -11435,6 +11496,7 @@ begin
           Caption := Self.Value
         else
           Caption := SHtmlDefSubmitCaption;
+        Color := Brush.Color;
         Width := aCanvas.TextWidth(Caption) + 40;
         Height := aCanvas.TextHeight(Caption) + 10;
         Enabled := not Self.Disabled and not Self.Readonly;
@@ -11450,6 +11512,7 @@ begin
           Caption := Self.Value
         else
           Caption := SHtmlDefResetCaption;
+        Color := Brush.Color;
         Width := aCanvas.TextWidth(Caption) + 40;
         Height := aCanvas.TextHeight(Caption) + 10;
         Enabled := not Self.Disabled and not Self.Readonly;
@@ -11481,6 +11544,7 @@ begin
       FFileEdit := TEdit.Create(Parent);
       with FFileEdit do begin
         Parent := FControl;
+        Color := Brush.Color;
         Left := 1;
         Top := 1;
         Width := FControl.Width - FFileSelect.Width;
@@ -11535,18 +11599,10 @@ begin
   end;
 }
   inherited;
-{$IFDEF VERSION3ONLY}
-  if FControl is TRadioButton then begin
-{$ELSE}
-  if FControl is THtmlRadioButton then begin
-{$ENDIF}
-    if Props.BgColor <> -1 then
-{$IFDEF VERSION3ONLY}
-      TRadioButton(FControl).Color := Props.BgColor;
-{$ELSE}
-      THtmlRadioButton(FControl).Color := Props.BgColor;
-{$ENDIF}
-  end;
+  if (Props.BgColor <> -1) and (
+    (FControl is {$IFDEF VERSION3ONLY}TRadioButton{$ELSE}THtmlRadioButton{$ENDIF}) or
+    (FControl is TCustomEdit)) then
+    FControl.Color := Props.BgColor;
 end;
 
 procedure TIpHtmlNodeINPUT.ImageChange(NewPicture: TPicture);
@@ -11684,6 +11740,7 @@ constructor TIpHtmlNodeINPUT.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
   FElementName := 'input';
+  Props.BgColor := clWhite;
 end;
 
 destructor TIpHtmlNodeINPUT.Destroy;
