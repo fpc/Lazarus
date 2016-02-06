@@ -3776,7 +3776,8 @@ var
   i, j: Integer;
   pf: Double;          // fraction of path travelled along gradient vector
   px, py: Double;
-  phi, sinphi, cosphi: Double;
+  phi: Double;
+  sinphi, cosphi: float;
   coord, coord1, coord2, dcoord: Double;
   coordIsX: Boolean;
   p1, p2: T2dPoint;
