@@ -1881,7 +1881,7 @@ msgstr "Kiemelés"
 
 #: lazarusidestrconsts.dlgfrmeditor
 msgid "Form Editor"
-msgstr "Form-szerkesztő"
+msgstr "Form szerkesztő"
 
 #: lazarusidestrconsts.dlgfrombeginning
 msgid "From b&eginning"
@@ -5301,15 +5301,15 @@ msgstr "Betöltés folytatása"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
-msgstr "Nem tudom, hogyan kell másolni ezt a kijelölést az Form-szerkesztőben"
+msgstr "Nem tudom, hogyan kell másolni ezt a kijelölést az Form szerkesztőben"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocutthisformeditingselection
 msgid "Do not know how to cut this form editing selection"
-msgstr "Nem tudom, hogyan kell kivágni ezt a kijelölést az Form-szerkesztőben"
+msgstr "Nem tudom, hogyan kell kivágni ezt a kijelölést az Form szerkesztőben"
 
 #: lazarusidestrconsts.liscfedonotknowhowtodeletethisformeditingselection
 msgid "Do not know how to delete this form editing selection"
-msgstr "Nem tudom, hogyan kell törölni ezt a kijelölést az Form-szerkesztőben"
+msgstr "Nem tudom, hogyan kell törölni ezt a kijelölést az Form szerkesztőben"
 
 #: lazarusidestrconsts.liscfeerrorcreatingcomponent
 msgid "Error creating component"
@@ -5389,7 +5389,7 @@ msgstr "A(z) %s típusú komponens nem tudta beállítani saját szülőjeként 
 
 #: lazarusidestrconsts.liscfeunabletocleartheformeditingselection
 msgid "Unable to clear the form editing selection%s%s"
-msgstr "Nem lehet megszüntetni a kijelölést az Form-szerkesztőben%s%s"
+msgstr "Nem lehet megszüntetni a kijelölést az Form szerkesztőben%s%s"
 
 #: lazarusidestrconsts.lischange
 msgctxt "lazarusidestrconsts.lischange"
@@ -5894,7 +5894,7 @@ msgstr "Bekezdés formázó címke beszúrása"
 #: lazarusidestrconsts.liscodehelpmainformcaption
 msgctxt "lazarusidestrconsts.liscodehelpmainformcaption"
 msgid "FPDoc Editor"
-msgstr "FPDoc-szerkesztő"
+msgstr "FPDoc szerkesztő"
 
 #: lazarusidestrconsts.liscodehelpnoinheriteddescriptionfound
 msgid "(no inherited description found)"
@@ -7726,7 +7726,7 @@ msgstr "Program által kezelve"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
-msgstr "E kivételek a figyelmen kívül hagyása"
+msgstr "E kivételek figyelmen kívül hagyása"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
@@ -9366,7 +9366,7 @@ msgstr "FPC változat (pl. 2.2.2)"
 #: lazarusidestrconsts.lisfpdoceditor
 msgctxt "lazarusidestrconsts.lisfpdoceditor"
 msgid "FPDoc Editor"
-msgstr "FPDoc-szerkesztő"
+msgstr "FPDoc szerkesztő"
 
 #: lazarusidestrconsts.lisfpdocerrorwriting
 msgid "Error writing \"%s\"%s%s"
@@ -9874,7 +9874,7 @@ msgstr "Bináris fájlok kihagyása"
 
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
-msgstr "E kivétel típus figyelmen kívül hagyása"
+msgstr "Az ilyen típusú kivételek figyelmen kívül hagyása"
 
 #: lazarusidestrconsts.lisignoreuseasancestor
 msgid "Ignore, use %s as ancestor"
@@ -16909,7 +16909,7 @@ msgstr "A(z) \"%s\" unit fájlneve nem kisbetűs.%sA Free Pascal fordító nem k
 
 #: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
 msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
-msgstr "A(z) %s unit az FPC forrásainak része, de a megfelelő FPDoc xml fájl nincs meg.%sVagy az fpcdocs könyvtár nem lett hozzáadva a keresési útvonalakhoz vagy a unit még nincs dokumentálva.%sAz FPC forrásainak FPDoc fájljai letölthetők innen: %s%sAdja meg a könyvtárat az FPDoc-szerkesztő beállításai között.%sÚj fájl létrehozásához a könyvtárnak írhatónak kell lennie."
+msgstr "A(z) %s unit az FPC forrásainak része, de a megfelelő FPDoc xml fájl nincs meg.%sVagy az fpcdocs könyvtár nem lett hozzáadva a keresési útvonalakhoz vagy a unit még nincs dokumentálva.%sAz FPC forrásainak FPDoc fájljai letölthetők innen: %s%sAdja meg a könyvtárat az FPDoc szerkesztő beállításai között.%sÚj fájl létrehozásához a könyvtárnak írhatónak kell lennie."
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 msgid "The unit %s is used by other files.%sUpdate references automatically?"

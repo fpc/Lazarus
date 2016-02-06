@@ -181,7 +181,7 @@ msgstr "Írja ide a javascript kódot"
 
 #: fpwebstrconsts.smihtmleditor
 msgid "HTML Editor"
-msgstr "HTML-szerkesztő"
+msgstr "HTML szerkesztő"
 
 #: fpwebstrconsts.smihtmlformbuttton
 msgid "Insert Button control"

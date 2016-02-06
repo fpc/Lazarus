@@ -13,27 +13,27 @@ msgstr ""
 
 #: fpcunitlazideintf.sfpcunconsoletestapp
 msgid "FPCUnit Console Test Application"
-msgstr "FPCUnit Parancssoros Teszt Alkalmazás"
+msgstr "FPCUnit parancssoros teszt alkalmazás"
 
 #: fpcunitlazideintf.sfpcunconsoletestdesc
 msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
-msgstr "FPCUnit Parancssoros Teszt Alkalmazás%sEgy alkalmazás FPCUnit tesztek futtatására parancssoros módban.%sAz alkalmazás forráskódját a Lazarus automatikusan karbantartja."
+msgstr "FPCUnit parancssoros teszt alkalmazás%sEgy alkalmazás FPCUnit tesztek futtatására parancssoros módban.%sAz alkalmazás forráskódját a Lazarus automatikusan karbantartja."
 
 #: fpcunitlazideintf.sfpcuntestapp
 msgid "FPCUnit Test Application"
-msgstr "FPCUnit Teszt Alkalmazás"
+msgstr "FPCUnit teszt alkalmazás"
 
 #: fpcunitlazideintf.sfpcuntestappdesc
 msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
-msgstr "FPCUnit Teszt Alkalmazás%sEgy alkalmazás FPCUnit tesztek futtatására.%sAz alkalmazás forráskódját a Lazarus automatikusan karbantartja."
+msgstr "FPCUnit teszt alkalmazás%sEgy alkalmazás FPCUnit tesztek futtatására.%sAz alkalmazás forráskódját a Lazarus automatikusan karbantartja."
 
 #: fpcunitlazideintf.sfpcuntestcase
 msgid "FPCUnit Test Case"
-msgstr "FPCUnit Teszt"
+msgstr "FPCUnit teszt"
 
 #: fpcunitlazideintf.sfpcuntestcasedesc
 msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
-msgstr "FPCUnit Teszt%sEgy unit, amely FPCUnit tesztet tartalmaz."
+msgstr "FPCUnit teszt%sEgy unit, amely FPCUnit tesztet tartalmaz."
 
 #: fpcunitlazideintf.swriteyourowntest
 msgid "Write your own test"
