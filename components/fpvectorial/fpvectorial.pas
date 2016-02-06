@@ -8383,7 +8383,7 @@ var
     end
     else
     begin
-      Render(ADest, 0, ARenderHeight, AZoom, AZoom * lNaturalMulY, False);
+      Render(ADest, 0, 0, AZoom, AZoom * lNaturalMulY, False);
       lMinX := RenderInfo.EntityCanvasMinXY.X;
       lMinY := RenderInfo.EntityCanvasMinXY.Y;
       lMaxX := RenderInfo.EntityCanvasMaxXY.X;
