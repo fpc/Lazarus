@@ -469,7 +469,7 @@ msgid "Connection type"
 msgstr ""
 
 #: lazdatadeskstr.sld_connecttoadatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Connect to a database"
 msgctxt "lazdatadeskstr.sld_connecttoadatabase"
 msgid "Connect to a database of type %s"
