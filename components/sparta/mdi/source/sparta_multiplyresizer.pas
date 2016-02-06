@@ -124,13 +124,22 @@ begin
 end;
 
 function TMultiplyResizer.GetActiveResizeFrame: IResizeFrame;
+var
+  LForm: IDesignedForm; 
 begin
-  Result := FForms[GetActiveDesignedForm].Frame;
+  LForm := GetActiveDesignedForm;
+  if LForm = nil then
+    Result := nil
+  else
+    Result := FForms[LForm].Frame;
 end;
 
 function TMultiplyResizer.GetActiveDesignedForm: IDesignedForm;
 begin
-  Result := FFormsStack.Last;
+  if FFormsStack.Count = 0 then
+    Result := nil
+  else
+    Result := FFormsStack.Last;
 end;
 
 constructor TMultiplyResizer.Create(AParent: TWinControl;
