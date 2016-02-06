@@ -2189,6 +2189,10 @@ msgstr "Invervalo em segundos"
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Saltando (ex. Saltando Métodos)"
 
+#: lazarusidestrconsts.dlgjumptomethodbody
+msgid "Jump directly to method body"
+msgstr ""
+
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
 msgstr "Manter posição X cursor"

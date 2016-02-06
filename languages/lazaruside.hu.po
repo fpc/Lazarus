@@ -2157,6 +2157,10 @@ msgstr "Intervallum másodpercben"
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Ugrás (pl. metódus ugrás)"
 
+#: lazarusidestrconsts.dlgjumptomethodbody
+msgid "Jump directly to method body"
+msgstr ""
+
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
 msgstr "A kurzor X pozíciójának megtartása"

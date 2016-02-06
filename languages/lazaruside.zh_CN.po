@@ -2243,6 +2243,10 @@ msgstr "时间间隔(秒为单位)"
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "跳转(也就是方法跳转)"
 
+#: lazarusidestrconsts.dlgjumptomethodbody
+msgid "Jump directly to method body"
+msgstr ""
+
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
 msgstr "保持光标 X 定位"

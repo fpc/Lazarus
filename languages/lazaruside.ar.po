@@ -2164,6 +2164,10 @@ msgstr ""
 msgid "Jumping (e.g. Method Jumping)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgjumptomethodbody
+msgid "Jump directly to method body"
+msgstr ""
+
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
 msgstr ""

@@ -2225,6 +2225,10 @@ msgstr "Interval in seconden"
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Springen ('Method Jumping')"
 
+#: lazarusidestrconsts.dlgjumptomethodbody
+msgid "Jump directly to method body"
+msgstr ""
+
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
 msgstr ""

@@ -2178,6 +2178,10 @@ msgstr "インターバル(秒)"
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "移動 (例：メソッド移動)"
 
+#: lazarusidestrconsts.dlgjumptomethodbody
+msgid "Jump directly to method body"
+msgstr ""
+
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
 msgstr "カーソルのX座標を保持"

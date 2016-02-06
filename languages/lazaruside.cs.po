@@ -2159,6 +2159,10 @@ msgstr "Interval v sekundách"
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Skákání (např. metoda skákání)"
 
+#: lazarusidestrconsts.dlgjumptomethodbody
+msgid "Jump directly to method body"
+msgstr ""
+
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
 msgstr "Udržovat x-ovou pozici kurzoru"

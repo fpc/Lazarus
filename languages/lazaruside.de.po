@@ -2158,6 +2158,10 @@ msgstr "Intervall in Sekunden"
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Springen (bspw. Methodenspringen)"
 
+#: lazarusidestrconsts.dlgjumptomethodbody
+msgid "Jump directly to method body"
+msgstr ""
+
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
 msgstr "X-Position des Cursors beibehalten"
@@ -20734,3 +20738,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+

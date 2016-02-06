@@ -2219,6 +2219,10 @@ msgstr "Interval en seg."
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Salt (p.ex. Salta mètodes)"
 
+#: lazarusidestrconsts.dlgjumptomethodbody
+msgid "Jump directly to method body"
+msgstr ""
+
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
 msgstr ""

@@ -2128,6 +2128,10 @@ msgstr "Aika sekunteina"
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Hyppely (esim. metodeihin)"
 
+#: lazarusidestrconsts.dlgjumptomethodbody
+msgid "Jump directly to method body"
+msgstr ""
+
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
 msgstr "Säilytä kursorin X-koordinaatti"

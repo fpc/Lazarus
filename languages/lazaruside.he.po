@@ -2257,6 +2257,10 @@ msgstr "מרווח זמן בשניות"
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "קפיצה (למשל קפיצה למתודה)"
 
+#: lazarusidestrconsts.dlgjumptomethodbody
+msgid "Jump directly to method body"
+msgstr ""
+
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
 msgstr "שמור על המיקום האופקי של הסמן"
