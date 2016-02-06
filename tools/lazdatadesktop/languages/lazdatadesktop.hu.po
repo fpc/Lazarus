@@ -39,6 +39,10 @@ msgstr "Külső kulcsok átugrása"
 msgid "Use OLD prefix in where parameters"
 msgstr "Az OLD előtag használata a paramétereknél"
 
+#: lazdatadeskstr.sabortscript
+msgid "Abort the script"
+msgstr "Szkript megszakítása"
+
 #: lazdatadeskstr.sclose
 msgid "Close result"
 msgstr "Eredmény bezárása"
@@ -123,9 +127,29 @@ msgstr "Változások eldobása"
 msgid "Engine"
 msgstr "Motor"
 
+#: lazdatadeskstr.serrcommitnotsupported
+msgid "COMMIT Not supported yet"
+msgstr "A COMMIT még nincs támogatva"
+
+#: lazdatadeskstr.serrinscript
+msgid "Error in SQL script"
+msgstr "Hiba az SQL szkriptben"
+
+#: lazdatadeskstr.serrinscriptchoice
+msgid ""
+"An error occurred in the SQL script.\n"
+"How would you like to continue ?\n"
+msgstr ""
+"Hiba történt az SQL szkript közben.\n"
+"Hogyan szeretné folytatni?\n"
+
 #: lazdatadeskstr.serrnoengine
 msgid "No database engine !"
 msgstr "Nincs adatbázis-motor!"
+
+#: lazdatadeskstr.serrorexecutingsql
+msgid "Error executing SQL statement:"
+msgstr "Hiba az SQL állomány futtatásakor:"
 
 #: lazdatadeskstr.serrselectfields
 msgid "No fields selected. Please select some fields"
@@ -135,6 +159,10 @@ msgstr "Nincs mező kiválasztva. Válasszon mező(ke)t!"
 msgid "No table selected. Please select a table"
 msgstr "Nincs tábla kiválasztva. Válasszon egy táblát!"
 
+#: lazdatadeskstr.serrunknowndirective
+msgid "Unknown directive: %s (args: %s)"
+msgstr "Ismeretlen direktíva: %s (paraméterek: %s)"
+
 #: lazdatadeskstr.serrunknowntype
 msgid "Unknown object type: %d"
 msgstr "Ismeretlen objektum típus: %d"
@@ -142,6 +170,18 @@ msgstr "Ismeretlen objektum típus: %d"
 #: lazdatadeskstr.sexecute
 msgid "Execute SQL"
 msgstr "SQL futtatása"
+
+#: lazdatadeskstr.sexecutingsqlstatement
+msgid "%s : Executing SQL statement:"
+msgstr "%s: SQL állomány futtatása:"
+
+#: lazdatadeskstr.sexecutingsqlstatementcount
+msgid "%s : Executing script SQL statement nr. %d:"
+msgstr "%s: SQL szkript %d. állományának futtatása:"
+
+#: lazdatadeskstr.sexecutiontime
+msgid "Execution time: %s"
+msgstr "Futási idő: %s"
 
 #: lazdatadeskstr.sexport
 msgid "Export data"
@@ -411,9 +451,13 @@ msgctxt "lazdatadeskstr.sld_connections"
 msgid "Connections"
 msgstr "Kapcsolatok"
 
+#: lazdatadeskstr.sld_connectiontype
+msgid "Connection type"
+msgstr "Kapcsolat típusa"
+
 #: lazdatadeskstr.sld_connecttoadatabase
-msgid "Connect to a database"
-msgstr "Kapcsolódás adatbázishoz"
+msgid "Connect to a database of type %s"
+msgstr "Kapcsolódás %s típusú adatbázishoz"
 
 #: lazdatadeskstr.sld_createfulltablecreationsql
 msgid "Create full table creation SQL"
@@ -436,6 +480,10 @@ msgstr "&Törlés"
 #: lazdatadeskstr.sld_dictionaries
 msgid "Dictionaries"
 msgstr "Szótárak"
+
+#: lazdatadeskstr.sld_firststart
+msgid "First start of database desktop"
+msgstr "A Database Desktop első indítása"
 
 #: lazdatadeskstr.sld_fromconnection
 msgid "From connection"
@@ -473,6 +521,10 @@ msgstr "&Kulcs mezők"
 msgid "Lazarus Database Desktop"
 msgstr "Lazarus Database Desktop"
 
+#: lazdatadeskstr.sld_legacyview
+msgid "Legacy List View"
+msgstr "Örökölt lista megjelenítése"
+
 #: lazdatadeskstr.sld_linelength
 msgid "Line Length"
 msgstr "Sor hossza"
@@ -504,8 +556,8 @@ msgstr "&OK"
 
 #: lazdatadeskstr.sld_opendatadictionaryfilter
 msgctxt "lazdatadeskstr.sld_opendatadictionaryfilter"
-msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
-msgstr "Adatszótár fájlok|*.fpd|Ini fájlok|*.ini|Minden fájl|*.*"
+msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
+msgstr "Adatszótár fájlok (fdd)|*.fdd|Ini fájlok|*.ini|Minden fájl|*.*"
 
 #: lazdatadeskstr.sld_opendatadictionarytitle
 msgid "Open data dictionary"
@@ -535,8 +587,8 @@ msgstr "Utolsó használat"
 
 #: lazdatadeskstr.sld_savefileasfilter
 msgctxt "lazdatadeskstr.sld_savefileasfilter"
-msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
-msgstr "Adatszótár fájlok|*.fpd|Ini fájlok|*.ini|Minden fájl|*.*"
+msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
+msgstr "Adatszótár fájlok (fdd)|*.fdd|Ini fájlok|*.ini|Minden fájl|*.*"
 
 #: lazdatadeskstr.sld_savefileastitle
 msgid "Save file as"
@@ -566,6 +618,22 @@ msgstr "Mezők kiválasztása/frissítése/beszúrása"
 msgid "-"
 msgstr "-"
 
+#: lazdatadeskstr.sld_startempty
+msgid "Thanks, I know what to do"
+msgstr "Köszi, tudom mit kell tennem"
+
+#: lazdatadeskstr.sld_startnewconnection
+msgid "Create new connection"
+msgstr "Új kapcsolat létrehozása"
+
+#: lazdatadeskstr.sld_startnewdict
+msgid "Start new dictionary"
+msgstr "Indítás új szótárral"
+
+#: lazdatadeskstr.sld_succesconnecting
+msgid "Connection established successfully!"
+msgstr "A kapcsolat sikeresen létrejött!"
+
 #: lazdatadeskstr.sld_table
 msgid "Ta&ble"
 msgstr "Tá&bla"
@@ -573,6 +641,14 @@ msgstr "Tá&bla"
 #: lazdatadeskstr.sld_tableandfields
 msgid "Tables and &Fields"
 msgstr "Táblák és mezők"
+
+#: lazdatadeskstr.sld_testconnection
+msgid "Test connection"
+msgstr "Kapcsolat tesztelése"
+
+#: lazdatadeskstr.sld_unknowntype
+msgid "Unknown type"
+msgstr "Ismeretlen típus"
 
 #: lazdatadeskstr.sld_update
 msgid "&Update"
@@ -720,9 +796,29 @@ msgstr "Paraméter"
 msgid "Previous"
 msgstr "Előző"
 
+#: lazdatadeskstr.sql_noconnectionsfound
+msgid ""
+"No connections or data dictionaries were found.\n"
+" Start by creating a new connection or data dictionary\n"
+msgstr ""
+"Nem található kapcsolat vagy adatszótár.\n"
+" Egy új kapcsolat vagy adatszótár létrehozásával kell kezdeni\n"
+
 #: lazdatadeskstr.squery
 msgid "Run query"
 msgstr "Lekérdezés futtatása"
+
+#: lazdatadeskstr.sreadyforsql
+msgid "Ready to execute SQL statements"
+msgstr "SQL állományok futtatására lehetséges"
+
+#: lazdatadeskstr.srecordsfetched
+msgid "Records fetched: %d"
+msgstr "Lehívott rekordok: %d"
+
+#: lazdatadeskstr.sretrystatement
+msgid "Retry the statement"
+msgstr "Állomány újrapróálása"
 
 #: lazdatadeskstr.srowsaffected
 msgid "Query executed successfully: %d rows affected."
@@ -736,6 +832,18 @@ msgstr "SQL mentése"
 msgid "Save changes"
 msgstr "Változások mentése"
 
+#: lazdatadeskstr.sscriptaborted
+msgid "Script was aborted after %d statements"
+msgstr "A szkript %d állomány után megszakadt"
+
+#: lazdatadeskstr.sscriptcompleted
+msgid "Executed %d statements from script"
+msgstr "A szkript %d állománya futott le"
+
+#: lazdatadeskstr.sscripterrorcount
+msgid "%d script statements resulted in errors"
+msgstr "A szkript %d állománya hibát eredményezett"
+
 #: lazdatadeskstr.sselectdbfdir
 msgid "Select a directory with DBF files"
 msgstr "Könyvtár választása a DBF fájlok számára"
@@ -748,9 +856,29 @@ msgstr "Kiválasztott objektum"
 msgid "Sequence"
 msgstr "Sorozat"
 
+#: lazdatadeskstr.ssqlerrorcode
+msgid "SQL Error code: %d"
+msgstr "SQL hibakód: %d"
+
+#: lazdatadeskstr.ssqlexecutedok
+msgid "%s : Statement executed succesfully."
+msgstr "%s: Sikeresen futtatott állomány."
+
 #: lazdatadeskstr.ssqlfilters
 msgid "SQL files|*.sql|All files|*.*"
 msgstr "SQL fájlok|*.sql|Minden fájl|*.*"
+
+#: lazdatadeskstr.ssqlstatus
+msgid "SQL State: %s"
+msgstr "SQL állapot: %s"
+
+#: lazdatadeskstr.sstopnoerror
+msgid "Continue, ignore all errors"
+msgstr "Folytatás a hibákat figyelmen kívül hagyva"
+
+#: lazdatadeskstr.sstoponnexterror
+msgid "Continue, stop on the next error"
+msgstr "Folytatás a következő hibáig"
 
 #: lazdatadeskstr.stable
 msgid "Table"

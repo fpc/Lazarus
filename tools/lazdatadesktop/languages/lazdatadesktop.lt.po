@@ -39,6 +39,10 @@ msgstr "Praleisti svetimus raktus"
 msgid "Use OLD prefix in where parameters"
 msgstr "„where“ parametrams naudoti prefiksą „OLD“"
 
+#: lazdatadeskstr.sabortscript
+msgid "Abort the script"
+msgstr ""
+
 #: lazdatadeskstr.sclose
 msgid "Close result"
 msgstr "Užvėrimo rezultatas"
@@ -123,9 +127,27 @@ msgstr "Neįrašyti pakitimų"
 msgid "Engine"
 msgstr "Variklis"
 
+#: lazdatadeskstr.serrcommitnotsupported
+msgid "COMMIT Not supported yet"
+msgstr ""
+
+#: lazdatadeskstr.serrinscript
+msgid "Error in SQL script"
+msgstr ""
+
+#: lazdatadeskstr.serrinscriptchoice
+msgid ""
+"An error occurred in the SQL script.\n"
+"How would you like to continue ?\n"
+msgstr ""
+
 #: lazdatadeskstr.serrnoengine
 msgid "No database engine !"
 msgstr "Nėra duomenų bazės variklio!"
+
+#: lazdatadeskstr.serrorexecutingsql
+msgid "Error executing SQL statement:"
+msgstr ""
 
 #: lazdatadeskstr.serrselectfields
 msgid "No fields selected. Please select some fields"
@@ -135,6 +157,10 @@ msgstr "Nėra pažymėtų laukelių. Reiktų pažymėti nors vieną."
 msgid "No table selected. Please select a table"
 msgstr "Nėra pažymėtos lentelės. Pirma ją reiktų pažymėti."
 
+#: lazdatadeskstr.serrunknowndirective
+msgid "Unknown directive: %s (args: %s)"
+msgstr ""
+
 #: lazdatadeskstr.serrunknowntype
 msgid "Unknown object type: %d"
 msgstr "Nežinomas objekto tipas: %d"
@@ -142,6 +168,18 @@ msgstr "Nežinomas objekto tipas: %d"
 #: lazdatadeskstr.sexecute
 msgid "Execute SQL"
 msgstr "Vykdyti SQL"
+
+#: lazdatadeskstr.sexecutingsqlstatement
+msgid "%s : Executing SQL statement:"
+msgstr ""
+
+#: lazdatadeskstr.sexecutingsqlstatementcount
+msgid "%s : Executing script SQL statement nr. %d:"
+msgstr ""
+
+#: lazdatadeskstr.sexecutiontime
+msgid "Execution time: %s"
+msgstr ""
 
 #: lazdatadeskstr.sexport
 msgid "Export data"
@@ -417,8 +455,14 @@ msgctxt "lazdatadeskstr.sld_connections"
 msgid "Connections"
 msgstr "Ryšiai"
 
+#: lazdatadeskstr.sld_connectiontype
+msgid "Connection type"
+msgstr ""
+
 #: lazdatadeskstr.sld_connecttoadatabase
-msgid "Connect to a database"
+#, fuzzy
+#| msgid "Connect to a database"
+msgid "Connect to a database of type %s"
 msgstr "Užmegzti ryšį su duomenų baze"
 
 #: lazdatadeskstr.sld_createfulltablecreationsql
@@ -442,6 +486,10 @@ msgstr "Paša&linti"
 #: lazdatadeskstr.sld_dictionaries
 msgid "Dictionaries"
 msgstr "Žodynai"
+
+#: lazdatadeskstr.sld_firststart
+msgid "First start of database desktop"
+msgstr ""
 
 #: lazdatadeskstr.sld_fromconnection
 msgid "From connection"
@@ -481,6 +529,10 @@ msgstr "&Raktų laukeliai"
 msgid "Lazarus Database Desktop"
 msgstr "Lazarus duomenų bazės darbalaukis"
 
+#: lazdatadeskstr.sld_legacyview
+msgid "Legacy List View"
+msgstr ""
+
 #: lazdatadeskstr.sld_linelength
 msgid "Line Length"
 msgstr "Linijos ilgis"
@@ -511,8 +563,10 @@ msgid "&OK"
 msgstr "&Tinka"
 
 #: lazdatadeskstr.sld_opendatadictionaryfilter
+#, fuzzy
+#| msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
 msgctxt "lazdatadeskstr.sld_opendatadictionaryfilter"
-msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
+msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
 msgstr "Duomenų žodyno failai|*.fpd|„Ini“ failai|*.ini|Visi failai|*.*"
 
 #: lazdatadeskstr.sld_opendatadictionarytitle
@@ -542,8 +596,10 @@ msgid "Last used on"
 msgstr "Paskiausia naudota"
 
 #: lazdatadeskstr.sld_savefileasfilter
+#, fuzzy
+#| msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
 msgctxt "lazdatadeskstr.sld_savefileasfilter"
-msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
+msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
 msgstr "Duomenų žodyno failai|*.fpd|„Ini“ failai|*.ini|Visi failai|*.*"
 
 #: lazdatadeskstr.sld_savefileastitle
@@ -574,6 +630,22 @@ msgstr "Pažymėti/naujinti/įterpti laukelius"
 msgid "-"
 msgstr "-"
 
+#: lazdatadeskstr.sld_startempty
+msgid "Thanks, I know what to do"
+msgstr ""
+
+#: lazdatadeskstr.sld_startnewconnection
+msgid "Create new connection"
+msgstr ""
+
+#: lazdatadeskstr.sld_startnewdict
+msgid "Start new dictionary"
+msgstr ""
+
+#: lazdatadeskstr.sld_succesconnecting
+msgid "Connection established successfully!"
+msgstr ""
+
 #: lazdatadeskstr.sld_table
 msgid "Ta&ble"
 msgstr "&Lentelė"
@@ -581,6 +653,14 @@ msgstr "&Lentelė"
 #: lazdatadeskstr.sld_tableandfields
 msgid "Tables and &Fields"
 msgstr "Lentelės ir lau&keliai"
+
+#: lazdatadeskstr.sld_testconnection
+msgid "Test connection"
+msgstr ""
+
+#: lazdatadeskstr.sld_unknowntype
+msgid "Unknown type"
+msgstr ""
 
 #: lazdatadeskstr.sld_update
 msgid "&Update"
@@ -732,9 +812,27 @@ msgstr "Parametras"
 msgid "Previous"
 msgstr "Ankstesnis"
 
+#: lazdatadeskstr.sql_noconnectionsfound
+msgid ""
+"No connections or data dictionaries were found.\n"
+" Start by creating a new connection or data dictionary\n"
+msgstr ""
+
 #: lazdatadeskstr.squery
 msgid "Run query"
 msgstr "Vykdyti užklausą"
+
+#: lazdatadeskstr.sreadyforsql
+msgid "Ready to execute SQL statements"
+msgstr ""
+
+#: lazdatadeskstr.srecordsfetched
+msgid "Records fetched: %d"
+msgstr ""
+
+#: lazdatadeskstr.sretrystatement
+msgid "Retry the statement"
+msgstr ""
 
 #: lazdatadeskstr.srowsaffected
 #, fuzzy
@@ -750,6 +848,18 @@ msgstr "Įrašyti SQL"
 msgid "Save changes"
 msgstr "Įrašyti pakeitimus"
 
+#: lazdatadeskstr.sscriptaborted
+msgid "Script was aborted after %d statements"
+msgstr ""
+
+#: lazdatadeskstr.sscriptcompleted
+msgid "Executed %d statements from script"
+msgstr ""
+
+#: lazdatadeskstr.sscripterrorcount
+msgid "%d script statements resulted in errors"
+msgstr ""
+
 #: lazdatadeskstr.sselectdbfdir
 msgid "Select a directory with DBF files"
 msgstr "Parinkite aplanką, kuriame yra „DBF“ failai"
@@ -762,9 +872,29 @@ msgstr "Pažymėti objektą"
 msgid "Sequence"
 msgstr "Seka"
 
+#: lazdatadeskstr.ssqlerrorcode
+msgid "SQL Error code: %d"
+msgstr ""
+
+#: lazdatadeskstr.ssqlexecutedok
+msgid "%s : Statement executed succesfully."
+msgstr ""
+
 #: lazdatadeskstr.ssqlfilters
 msgid "SQL files|*.sql|All files|*.*"
 msgstr "SQL failai|*.sql|Visi failai|*.*"
+
+#: lazdatadeskstr.ssqlstatus
+msgid "SQL State: %s"
+msgstr ""
+
+#: lazdatadeskstr.sstopnoerror
+msgid "Continue, ignore all errors"
+msgstr ""
+
+#: lazdatadeskstr.sstoponnexterror
+msgid "Continue, stop on the next error"
+msgstr ""
 
 #: lazdatadeskstr.stable
 msgid "Table"
