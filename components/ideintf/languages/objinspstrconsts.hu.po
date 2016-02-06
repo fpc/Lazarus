@@ -357,11 +357,11 @@ msgstr "Művelet"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
 msgid "Action&List Editor ..."
-msgstr "Műveletlista-szerkesztő ..."
+msgstr "Műveletlista szerkesztő ..."
 
 #: objinspstrconsts.oisactionlisteditor
 msgid "ActionList Editor"
-msgstr "Műveletlista-szerkesztő"
+msgstr "Műveletlista szerkesztő"
 
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
@@ -385,11 +385,11 @@ msgstr "Minden fájl"
 
 #: objinspstrconsts.oisarray
 msgid "Array"
-msgstr "Array"
+msgstr "Tömb"
 
 #: objinspstrconsts.oisboolean
 msgid "Boolean"
-msgstr "Boolean"
+msgstr "Logikai érték"
 
 #: objinspstrconsts.oisbtncomponents
 msgid "Co&mponents"
@@ -426,7 +426,7 @@ msgstr "Szülő módosítása"
 
 #: objinspstrconsts.oischar
 msgid "Char"
-msgstr "Char"
+msgstr "Karakter"
 
 #: objinspstrconsts.oischaractersforblanks
 msgid "Characters for Blanks"
@@ -434,7 +434,7 @@ msgstr "Szóközt jelölő karakter"
 
 #: objinspstrconsts.oisclass
 msgid "Class"
-msgstr "Class"
+msgstr "Osztály"
 
 #: objinspstrconsts.oisclear
 msgid "C&lear"
@@ -538,7 +538,7 @@ msgstr "Ugrás a deklarációra"
 
 #: objinspstrconsts.oisfloat
 msgid "Float"
-msgstr "Float"
+msgstr "Lebegőpontos szám"
 
 #: objinspstrconsts.oishelp
 msgid "&Help"
@@ -546,7 +546,7 @@ msgstr "&Súgó"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor ..."
-msgstr "Képlista-szerkesztő ..."
+msgstr "Képlista szerkesztő ..."
 
 #: objinspstrconsts.oisincompatibleidentifier
 msgid "Incompatible Identifier"
@@ -562,11 +562,11 @@ msgstr "Beviteli maszk:"
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
-msgstr "Int64"
+msgstr "64 bites egész szám"
 
 #: objinspstrconsts.oisinteger
 msgid "Integer"
-msgstr "Integer"
+msgstr "Egész szám"
 
 #: objinspstrconsts.oisinterface
 msgid "Interface"
@@ -708,7 +708,7 @@ msgstr "%s tulajdonságai"
 
 #: objinspstrconsts.oisrecord
 msgid "Record"
-msgstr "Record"
+msgstr "Rekord"
 
 #: objinspstrconsts.oisremovefromfavorites
 msgid "Remove from Favorites"
@@ -816,11 +816,11 @@ msgstr "Elérhető művelet osztályok:"
 
 #: objinspstrconsts.oisstring
 msgid "String"
-msgstr "String"
+msgstr "Karakterlánc"
 
 #: objinspstrconsts.oisstringseditordialog
 msgid "Strings Editor Dialog"
-msgstr "Karakterlánc-szerkesztő ablak"
+msgstr "Karakterlánc szerkesztő ablak"
 
 #: objinspstrconsts.oistdactcolorselect1headline
 msgid "Select &Color ..."
@@ -1153,7 +1153,7 @@ msgstr "Érték:"
 
 #: objinspstrconsts.oisvariant
 msgid "Variant"
-msgstr "Variant"
+msgstr "Variáns"
 
 #: objinspstrconsts.oisviewrestrictedproperties
 msgid "View restricted properties"
@@ -1165,7 +1165,7 @@ msgstr "Általános vezérlőkészlet korlátozások:"
 
 #: objinspstrconsts.oisword
 msgid "Word"
-msgstr "Word"
+msgstr "Előjel nélküli egész szám"
 
 #: objinspstrconsts.oiszorder
 msgid "Z-order"
@@ -1189,15 +1189,15 @@ msgstr "Pascal unit"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"
-msgstr "Alignment"
+msgstr "Igazítás"
 
 #: objinspstrconsts.rscdautosize
 msgid "Auto Size"
-msgstr "Auto Size"
+msgstr "Automatikus méretezés"
 
 #: objinspstrconsts.rscdcaption
 msgid "Caption"
-msgstr "Caption"
+msgstr "Felirat"
 
 #: objinspstrconsts.rscdcolumneditor
 msgid "Column Editor"
@@ -1232,15 +1232,15 @@ msgstr "Jobbra"
 
 #: objinspstrconsts.rscdvisible
 msgid "Visible"
-msgstr "Visible"
+msgstr "Láthatóság"
 
 #: objinspstrconsts.rscdwidth
 msgid "Width"
-msgstr "Width"
+msgstr "Szélesség"
 
 #: objinspstrconsts.sccshceditsections
 msgid "Sections Editor ..."
-msgstr "Szakasz-szerkesztő ..."
+msgstr "Szakasz szerkesztő ..."
 
 #: objinspstrconsts.sccsiledtadd
 msgid "&Add ..."
@@ -1257,7 +1257,7 @@ msgstr "&Alkalmazás"
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
-msgstr "ImageList szerkesztő"
+msgstr "Képlista szerkesztő"
 
 #: objinspstrconsts.sccsiledtcenter
 msgid "Center"
@@ -1279,7 +1279,7 @@ msgstr "&Törlés"
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
-msgstr "Images"
+msgstr "Képek"
 
 #: objinspstrconsts.sccsiledtgrprcaption
 msgid "Selected Image"
@@ -1368,7 +1368,7 @@ msgstr "Elem tulajdonságai"
 #: objinspstrconsts.sccslvedtitem
 msgctxt "objinspstrconsts.sccslvedtitem"
 msgid "Item"
-msgstr "Item"
+msgstr "Elem"
 
 #: objinspstrconsts.sccslvedtlabelcaption
 msgid "Caption:"
@@ -1382,7 +1382,7 @@ msgstr "Kép index:"
 #: objinspstrconsts.sccslvedtlabelstateindex
 msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
 msgid "State Index:"
-msgstr "State Index:"
+msgstr "Állapot index:"
 
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
@@ -1400,7 +1400,7 @@ msgstr "Beviteli maszk szerkesztő ..."
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
-msgstr "Panel-szerkesztő ..."
+msgstr "Panel szerkesztő ..."
 
 #: objinspstrconsts.sccssgedt
 msgid "Edit StringGrid ..."
@@ -1582,4 +1582,3 @@ msgstr "Fül mozgatása eggyel balra"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Fül mozgatása eggyel jobbra"
-
