@@ -4713,7 +4713,6 @@ resourcestring
   lisMenuEditorComponentIsUnexpectedKind = 'Component is unexpected kind';
   lisMenuEditorComponentIsUnnamed = 'Component is unnamed';
   lisMenuEditorConflictResolutionComplete = '<conflict resolution complete>';
-  lisMenuEditorDDItems = '%d (%d items)';
   lisMenuEditorDeleteItem = '&Delete item';
   lisMenuEditorDeepestNestedMenuLevelS = 'Deepest nested menu level: %s';
   lisMenuEditorDeleteMenuTemplate = '&Delete menu template ...';
@@ -4775,7 +4774,7 @@ resourcestring
   lisMenuEditorSaveMenuShownAsANewTemplate = 'Save menu shown as a new template';
   lisMenuEditorSConflictsWithS = '%s conflicts with %s';
   lisMenuEditorSeParators = 'Se&parators';
-  lisMenuEditorShortcutConflictsFoundInitiallyD = 'Shortcut conflicts found initially: %d';
+  lisMenuEditorConflictsFoundInitiallyD = 'Conflicts found initially: %d';
   lisMenuEditorShortcutNotYetChanged = 'Shortcut not yet changed';
   lisMenuEditorShortcutPropertyWithShortcut = 'Shortcut,Property with shortcut';
   lisMenuEditorShortcutPropertyWithShortcutAccelerator = 'Shortcut,Property '

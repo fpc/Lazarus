@@ -2464,7 +2464,7 @@ begin
                   [(GlobalDesignHook.LookupRoot as TComponent).Name]);
   FConflictsGroupBox:=TGroupBox.Create(Self);
   with FConflictsGroupBox do begin
-    Caption:=Format(lisMenuEditorShortcutConflictsFoundInitiallyD,
+    Caption:=Format(lisMenuEditorConflictsFoundInitiallyD,
       [FShortcuts.ShortcutList.InitialDuplicatesCount]);
     Align:=alTop;
     Top:=0;
