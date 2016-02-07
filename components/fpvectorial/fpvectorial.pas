@@ -5205,12 +5205,14 @@ var
   lStr: string;
   lCurPathSeg: TPathSegment;
 begin
-  lStr := Format('[%s] Name=%s Pen.Color=%s Pen.Style=%s Brush.Color=%s Brush.Style=%s',
+  lStr := Format('[%s] Name=%s Pen.Color=%s Pen.Style=%s Brush.Color=%s Brush.Style=%s'
+    + ' Brush.Kind=%s',
     [Self.ClassName, Self.Name,
     GenerateDebugStrForFPColor(Pen.Color),
     GetEnumName(TypeInfo(TFPPenStyle), integer(Pen.Style)),
     GenerateDebugStrForFPColor(Brush.Color),
-    GetEnumName(TypeInfo(TFPBrushStyle), integer(Brush.Style))
+    GetEnumName(TypeInfo(TFPBrushStyle), integer(Brush.Style)),
+    GetEnumName(TypeInfo(TvBrushKind), integer(Brush.Kind))
     ]);
   Result := ADestRoutine(lStr, APageItem);
   // Add sub-entities
