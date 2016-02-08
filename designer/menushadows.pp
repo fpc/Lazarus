@@ -1051,17 +1051,17 @@ begin
     Parent:=FGBDisplay;
     if FSingleMenuOnly then begin
       OnDisplayClick:=@DisplaySingleMenuClick;
-      AddHeader(lisMenuEditorShortcutPropertyWithShortcut);
+      AddHeader(lisMenuEditorShortcutSourceProperty);
       Caption:=lisMenuEditorShortcuts;
     end
     else begin
       OnDisplayClick:=@DisplayAllDlgClick;
       if FShortcutsOnly then begin
-        AddHeader(lisMenuEditorShortcutPropertyWithShortcut);
-        Caption:=Format(lisMenuEditorSShortcutSummary, [lurStr]);
+        AddHeader(lisMenuEditorShortcutSourceProperty);
+        Caption:=Format(lisMenuEditorSShortcuts, [lurStr]);
       end
       else begin
-        AddHeader(lisMenuEditorShortcutPropertyWithShortcutAccelerator);
+        AddHeader(lisMenuEditorShortcutSourceProperty);
         Caption:=Format(lisMenuEditorSShortcutsAndAcceleratorKeys, [lurStr]);
       end;
     end;
@@ -1214,7 +1214,7 @@ begin
     else
       begin
         if FShortcutsOnly then
-          FGBDisplay.Caption:=Format(lisMenuEditorShortcutsAssociatedWithMenusAndActionsD,
+          FGBDisplay.Caption:=Format(lisMenuEditorShortcutsD,
             [FShortcuts.ShortcutList.ShortcutsInContainerCount])
         else
           FGBDisplay.Caption:=Format(lisMenuEditorShortcutsDAndAcceleratorKeysD,

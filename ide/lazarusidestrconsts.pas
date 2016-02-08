@@ -4732,7 +4732,6 @@ resourcestring
   lisMenuEditorFurtherShortcutConflict = 'Further shortcut conflict';
   lisMenuEditorGetHelpToUseThisEditor = 'Get help to use this editor';
   lisMenuEditorGrabKey = '&Grab key';
-  lisMenuEditorGroupIndexMenuItems = 'GroupIndex,MenuItems';
   lisMenuEditorInadequateDescription = 'Inadequate Description';
   lisMenuEditorInsertMenuTemplateIntoRootOfS = 'Insert menu template into root of %s';
   lisMenuEditorInsertSelectedMenuTemplate = 'Insert selected menu template';
@@ -4776,14 +4775,11 @@ resourcestring
   lisMenuEditorSeParators = 'Se&parators';
   lisMenuEditorConflictsFoundInitiallyD = 'Conflicts found initially: %d';
   lisMenuEditorShortcutNotYetChanged = 'Shortcut not yet changed';
-  lisMenuEditorShortcutPropertyWithShortcut = 'Shortcut,Property with shortcut';
-  lisMenuEditorShortcutPropertyWithShortcutAccelerator = 'Shortcut,Property '
-    +'with shortcut/accelerator';
+  lisMenuEditorShortcutSourceProperty = 'Shortcut,Source Property';
   lisMenuEditorShortcuts = 'Shortcuts';
   lisMenuEditorShortcUts2 = 'Shortc&uts';
   lisMenuEditorShortcutsAndAcceleratorKeys = 'Shortcuts and Accelerator keys';
-  lisMenuEditorShortcutsAssociatedWithMenusAndActionsD = 'Shortcuts associated '
-    +'with Menus and Actions (%d)';
+  lisMenuEditorShortcutsD = 'Shortcuts (%d)';
   lisMenuEditorShortcutsDAndAcceleratorKeysD = 'Shortcuts (%d) and Accelerator keys (%d)';
   lisMenuEditorShortcutsUsedInS = 'Shortcuts used in %s';
   lisMenuEditorShortcutsUsedInSD = 'Shortcuts used in %s (%d)';
@@ -4797,7 +4793,6 @@ resourcestring
     +'widgetsets do not allow separators in the main menubar';
   lisMenuEditorSShortcuts = '%s: Shortcuts';
   lisMenuEditorSShortcutsAndAcceleratorKeys = '%s: Shortcuts and accelerator keys';
-  lisMenuEditorSShortcutSummary = '%s: Shortcut summary';
   lisMenuEditorSSSOnClickS = '%s.%s.%s - OnClick: %s';
   lisMenuEditorStandardTemplates = 'Standard templates';
   lisMenuEditorAddMenuItem = 'Add menu item';
