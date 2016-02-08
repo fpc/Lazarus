@@ -273,11 +273,13 @@ type
 
   TQtBrush = class(TQtResource)
   private
+    FRadialGradient: QRadialGradientH;
     function getStyle: QtBrushStyle;
     procedure setStyle(style: QtBrushStyle);
   public
     FHandle: QBrushH;
     constructor Create(CreateHandle: Boolean); virtual;
+    constructor CreateWithRadialGradient(ALogBrush: TLogRadialGradient);
     destructor Destroy; override;
     function getColor: PQColor;
     function GetLBStyle(out AStyle: LongWord; out AHatch: PtrUInt): Boolean;
@@ -1802,6 +1804,28 @@ begin
   FShared := False;
   FSelected := False;
   QtGDIObjects.AddGDIObject(Self);
+end;
+
+constructor TQtBrush.CreateWithRadialGradient(ALogBrush: TLogRadialGradient);
+var
+  i: Integer;
+  lColor: PQColor;
+  lR, lG, lB, lA: Double;
+begin
+  FRadialGradient := QRadialGradient_create(
+    ALogBrush.radCenterX, ALogBrush.radCenterY, ALogBrush.radCenterY
+    ALogBrush.radFocalX, ALogBrush.radFocalY);
+  for i := 0 to Length(ALogBrush.radStops) - 1 do
+  begin
+    lR := ALogBrush.radStops[i].radColorR / $FFFF;
+    lG := ALogBrush.radStops[i].radColorG / $FFFF;
+    lB := ALogBrush.radStops[i].radColorB / $FFFF;
+    lA := ALogBrush.radStops[i].radColorA / $FFFF;
+    QColor_fromRgbF(lColor, lR, lG, lB, lA);
+    QGradient_setColorAt(FRadialGradient, ALogBrush.radStops[i].radPosition, lColor);
+  end;
+
+  FHandle := QBrush_create(FRadialGradient);
 end;
 
 {------------------------------------------------------------------------------

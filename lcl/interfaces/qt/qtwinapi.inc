@@ -460,6 +460,23 @@ begin
   {$endif}
 end;
 
+{------------------------------------------------------------------------------
+  Function:  CreateBrushWithRadialGradient
+  Params:  none
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreateBrushWithRadialGradient(const LogBrush: TLogRadialGradient): HBRUSH;
+var
+  QtBrush: TQtBrush;
+begin
+  Result := 0;
+
+  QtBrush := TQtBrush.CreateWithRadialGradient(LogBrush);
+  Result := HBRUSH(QtBrush);
+  if Result = 0 then
+    DebugLn('TQtWidgetSet.CreateBrushWithRadialGradient: Failed');
+end;
+
 function TQtWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; Width, Height: Integer): Boolean;
 begin
   Result := (Handle <> 0) and

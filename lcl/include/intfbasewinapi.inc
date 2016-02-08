@@ -104,6 +104,11 @@ begin
   Result := 0;
 end;
 
+function TWidgetSet.CreateBrushWithRadialGradient(const LogBrush: TLogRadialGradient): HBRUSH;
+begin
+  Result := 0;
+end;
+
 function TWidgetSet.CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean;
 begin
   Result := False;

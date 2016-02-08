@@ -1230,6 +1230,7 @@ begin
      {$ifdef HASX11} LCL_CAPABILITY_YES {$else} LCL_CAPABILITY_NO {$endif};
      {when issue #20475 is fixed, then set this to LCL_CAPABILITY_YES}
      lcReceivesLMClearCutCopyPasteReliably: Result := LCL_CAPABILITY_NO;
+    lcRadialGradientBrush: Result := LCL_CAPABILITY_YES;
   else
     Result := inherited GetLCLCapability(ACapability);
   end;

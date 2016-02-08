@@ -94,6 +94,11 @@ begin
   Result := WidgetSet.CreateBrushIndirect(LogBrush);
 end;
 
+function CreateBrushWithRadialGradient(const LogBrush: TLogRadialGradient): HBRUSH;
+begin
+  Result := WidgetSet.CreateBrushWithRadialGradient(LogBrush);
+end;
+
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean;
 begin
   Result := WidgetSet.CreateCaret(Handle, Bitmap, width, Height);

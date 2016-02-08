@@ -2320,6 +2320,15 @@ type
   TLogBrush = tagLOGBRUSH;
   LOGBRUSH = tagLOGBRUSH;
 
+  // non-winapi radial gradient log info
+  TLogGradientStop = record
+    radColorR, radColorG, radColorB, radColorA: Word;
+    radPosition: Double; // must be in 0..1
+  end;
+  TLogRadialGradient = record
+    radCenterX, radCenterY, radRadius, radFocalX, radFocalY: Integer;
+    radStops: array of TLogGradientStop;
+  end;
 
   PMaxLogPalette = ^TMaxLogPalette; // not in Windows Headers
   TMaxLogPalette = record
