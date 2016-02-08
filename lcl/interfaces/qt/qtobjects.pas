@@ -1813,7 +1813,7 @@ var
   lR, lG, lB, lA: Double;
 begin
   FRadialGradient := QRadialGradient_create(
-    ALogBrush.radCenterX, ALogBrush.radCenterY, ALogBrush.radCenterY
+    ALogBrush.radCenterX, ALogBrush.radCenterY, ALogBrush.radCenterY,
     ALogBrush.radFocalX, ALogBrush.radFocalY);
   for i := 0 to Length(ALogBrush.radStops) - 1 do
   begin
