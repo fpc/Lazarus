@@ -18,245 +18,245 @@ uses
 
 type
 
-TShadowMenu = class;
-TShadowBox = class;
+  TShadowMenu = class;
+  TShadowBox = class;
 
-{ TFake }
+  { TFake }
 
-TFake = class(TCustomControl)
-protected
-  FShadowMenu: TShadowMenu;
-  FMinWidth: integer;
-  function GetShouldBeVisible: boolean; virtual; abstract;
-  procedure SetVisibilitySizeAndPosition; virtual; abstract;
-  procedure TextChanged; override;
-protected
-  class function GetControlClassDefaultSize: TSize; override;
-  procedure Paint; override;
-public
-  constructor Create(anOwner: TShadowMenu); reintroduce;
-  procedure Refresh;
-  property ShouldBeVisible: boolean read GetShouldBeVisible;
-end;
+  TFake = class(TCustomControl)
+  protected
+    FShadowMenu: TShadowMenu;
+    FMinWidth: integer;
+    function GetShouldBeVisible: boolean; virtual; abstract;
+    procedure SetVisibilitySizeAndPosition; virtual; abstract;
+    procedure TextChanged; override;
+  protected
+    class function GetControlClassDefaultSize: TSize; override;
+    procedure Paint; override;
+  public
+    constructor Create(anOwner: TShadowMenu); reintroduce;
+    procedure Refresh;
+    property ShouldBeVisible: boolean read GetShouldBeVisible;
+  end;
 
-TAddSiblingFake = class(TFake)
-protected
-  function GetShouldBeVisible: boolean; override;
-  procedure SetVisibilitySizeAndPosition; override;
-end;
+  TAddSiblingFake = class(TFake)
+  protected
+    function GetShouldBeVisible: boolean; override;
+    procedure SetVisibilitySizeAndPosition; override;
+  end;
 
-TAddSubmenuFake = class(TFake)
-protected
-  function GetShouldBeVisible: boolean; override;
-  procedure SetVisibilitySizeAndPosition; override;
-end;
+  TAddSubmenuFake = class(TFake)
+  protected
+    function GetShouldBeVisible: boolean; override;
+    procedure SetVisibilitySizeAndPosition; override;
+  end;
 
-TAddFirstFake = class(TFake)
-protected
-  function GetShouldBeVisible: boolean; override;
-  procedure SetVisibilitySizeAndPosition; override;
-end;
+  TAddFirstFake = class(TFake)
+  protected
+    function GetShouldBeVisible: boolean; override;
+    procedure SetVisibilitySizeAndPosition; override;
+  end;
 
-TShadowItemDisplayState = (dsNormal, dsSelected, dsDisabled);
+  TShadowItemDisplayState = (dsNormal, dsSelected, dsDisabled);
 
-TMenuDesigner = class;
+  TMenuDesigner = class;
 
-{ TShadowItem }
+  { TShadowItem }
 
-TShadowItem = class(TShadowItemBase)
-strict private
-  FBottomFake: TFake;
-  FParentBox: TShadowBox;
-  FRightFake: TFake;
-  FShadowMenu: TShadowMenu;
-  FShowingBottomFake: boolean;
-  FShowingRightFake: boolean;
-  FState: TShadowItemDisplayState;
-  function GetBottomFake: TFake;
-  function GetIsInMenuBar: boolean;
-  function GetIsMainMenu: boolean;
-  function GetLevel: integer;
-  function GetRightFake: TFake;
-  function GetShortcutWidth: integer;
-  function GetShowingBottomFake: boolean;
-  function GetShowingRightFake: boolean;
-  procedure SetState(AValue: TShadowItemDisplayState);
-protected
-  function GetHeight: integer;
-  function GetWidth: integer;
-  function HasChildBox(out aChildBox: TShadowBox): boolean;
-  procedure DblClick; override;
-  procedure HideChainFromRoot;
-  procedure HideChildren;
-  procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-  procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-  procedure Paint; override;
-  procedure ShowChainToRoot;
-  procedure ShowChildBox;
-  procedure ShowDisabled;
-  procedure ShowNormal;
-  procedure ShowSelected;
-public
-  constructor CreateWithBoxAndItem(aSMenu: TShadowMenu; aParentBox: TShadowBox;
-    aRealItem: TMenuItem);
-  property BottomFake: TFake read GetBottomFake write FBottomFake;
-  property IsInMenuBar: boolean read GetIsInMenuBar;
-  property IsMainMenu: boolean read GetIsMainMenu;
-  property Level: integer read GetLevel;
-  property ParentBox: TShadowBox read FParentBox;
-  property RightFake: TFake read GetRightFake write FRightFake;
-  property ShowingBottomFake: boolean read GetShowingBottomFake write FShowingBottomFake;
-  property ShowingRightFake: boolean read GetShowingRightFake write FShowingRightFake;
-  //property State: TShadowItemDisplayState read FState;
-end;
+  TShadowItem = class(TShadowItemBase)
+  strict private
+    FBottomFake: TFake;
+    FParentBox: TShadowBox;
+    FRightFake: TFake;
+    FShadowMenu: TShadowMenu;
+    FShowingBottomFake: boolean;
+    FShowingRightFake: boolean;
+    FState: TShadowItemDisplayState;
+    function GetBottomFake: TFake;
+    function GetIsInMenuBar: boolean;
+    function GetIsMainMenu: boolean;
+    function GetLevel: integer;
+    function GetRightFake: TFake;
+    function GetShortcutWidth: integer;
+    function GetShowingBottomFake: boolean;
+    function GetShowingRightFake: boolean;
+    procedure SetState(AValue: TShadowItemDisplayState);
+  protected
+    function GetHeight: integer;
+    function GetWidth: integer;
+    function HasChildBox(out aChildBox: TShadowBox): boolean;
+    procedure DblClick; override;
+    procedure HideChainFromRoot;
+    procedure HideChildren;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure Paint; override;
+    procedure ShowChainToRoot;
+    procedure ShowChildBox;
+    procedure ShowDisabled;
+    procedure ShowNormal;
+    procedure ShowSelected;
+  public
+    constructor CreateWithBoxAndItem(aSMenu: TShadowMenu; aParentBox: TShadowBox;
+      aRealItem: TMenuItem);
+    property BottomFake: TFake read GetBottomFake write FBottomFake;
+    property IsInMenuBar: boolean read GetIsInMenuBar;
+    property IsMainMenu: boolean read GetIsMainMenu;
+    property Level: integer read GetLevel;
+    property ParentBox: TShadowBox read FParentBox;
+    property RightFake: TFake read GetRightFake write FRightFake;
+    property ShowingBottomFake: boolean read GetShowingBottomFake write FShowingBottomFake;
+    property ShowingRightFake: boolean read GetShowingRightFake write FShowingRightFake;
+    //property State: TShadowItemDisplayState read FState;
+  end;
 
-{ TShadowBox }
+  { TShadowBox }
 
-TShadowBox = class(TShadowBoxBase)
-strict private
-  FParentBox: TShadowBox;
-  FShadowMenu: TShadowMenu;
-  FUpdating: boolean;
-  function GetIsMainMenu: boolean;
-  function GetIsMenuBar: boolean;
-  function GetShadowCount: integer;
-  procedure BeginUpdate;
-  procedure EndUpdate;
-  procedure ShowAllUnSelected;
-protected
-  function GetInnerDims: TPoint;
-  procedure AddItemAndShadow(existingSI: TShadowItem; addBefore: boolean;
-    isSeparator: boolean=False);
-  procedure LocateShadows;
-  procedure Paint; override;
-  procedure RemoveAllSeparators;
-  procedure SelectPrevious(aSI: TShadowItem);
-  procedure SelectSuccessor(aSI: TShadowItem);
-  property IsMainMenu: boolean read GetIsMainMenu;
-  property IsMenuBar: boolean read GetIsMenuBar;
-  property ParentBox: TShadowBox read FParentBox;
-  property ShadowCount: integer read GetShadowCount;
-  property Updating: boolean read FUpdating;
-public
-  constructor CreateWithParentBox(aSMenu: TShadowMenu; aParentBox: TShadowBox;
-    aParentItem: TMenuItem);
-  destructor Destroy; override;
-  procedure SetUnCheckedAllExcept(aMI: TMenuItem);
-end;
+  TShadowBox = class(TShadowBoxBase)
+  strict private
+    FParentBox: TShadowBox;
+    FShadowMenu: TShadowMenu;
+    FUpdating: boolean;
+    function GetIsMainMenu: boolean;
+    function GetIsMenuBar: boolean;
+    function GetShadowCount: integer;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    procedure ShowAllUnSelected;
+  protected
+    function GetInnerDims: TPoint;
+    procedure AddItemAndShadow(existingSI: TShadowItem; addBefore: boolean;
+      isSeparator: boolean=False);
+    procedure LocateShadows;
+    procedure Paint; override;
+    procedure RemoveAllSeparators;
+    procedure SelectPrevious(aSI: TShadowItem);
+    procedure SelectSuccessor(aSI: TShadowItem);
+    property IsMainMenu: boolean read GetIsMainMenu;
+    property IsMenuBar: boolean read GetIsMenuBar;
+    property ParentBox: TShadowBox read FParentBox;
+    property ShadowCount: integer read GetShadowCount;
+    property Updating: boolean read FUpdating;
+  public
+    constructor CreateWithParentBox(aSMenu: TShadowMenu; aParentBox: TShadowBox;
+      aParentItem: TMenuItem);
+    destructor Destroy; override;
+    procedure SetUnCheckedAllExcept(aMI: TMenuItem);
+  end;
 
-TPopEnum = {%region}
-  (popItemMoveBefore, popItemMoveAfter,
-   popSeparators_,
-     popAddSeparatorBefore, popAddSeparatorAfter, popRemoveAllSeparators,
-   popItemDelete, popItemAddBefore, popItemAddAfter, popItemAddSubMenu,
-   popItemSep,
-   popAddImgListIcon, popItemAddOnClick, popItemEditCaption,
-   popItemOISep,
-   popShortcuts_,
-     popListShortcuts, popListShortcutsAccelerators, popResolveShortcutConflicts,
-   popTemplates_,
-     popSaveAsTemplate, popAddFromTemplate, popDeleteTemplate);{%endregion}
+  TPopEnum = {%region}
+    (popItemMoveBefore, popItemMoveAfter,
+     popSeparators_,
+       popAddSeparatorBefore, popAddSeparatorAfter, popRemoveAllSeparators,
+     popItemDelete, popItemAddBefore, popItemAddAfter, popItemAddSubMenu,
+     popItemSep,
+     popAddImgListIcon, popItemAddOnClick, popItemEditCaption,
+     popItemOISep,
+     popShortcuts_,
+       popListShortcuts, popListShortcutsAccelerators, popResolveShortcutConflicts,
+     popTemplates_,
+       popSaveAsTemplate, popAddFromTemplate, popDeleteTemplate);{%endregion}
 
-{ TShadowMenu }
+  { TShadowMenu }
 
-TShadowMenu = class(TShadowMenuBase)
-strict private
-  FActionList: TActionList;
-  FAddImgListIconAction: TAction;
-  FAddItemFake: TFake;
-  FAddFirstItemFake: TFake;
-  FAddSubmenuFake: TFake;
-  FBoxList: TFPList;
-  FInitialising: boolean;
-  FInitialSelectedMenuItem: TMenuItem;
-  FIsMainMenu: boolean;
-  FItemsPopupMenu: TPopupMenu;
-  FLookupRoot: TComponent;
-  FMainCanvas: TCanvas;
-  FRootBox: TShadowBox;
-  procedure DeleteBox(aMI: TMenuItem);
-  procedure DeleteItm(anItem: TMenuItem);
-  function GetActionForEnum(anEnum: TPopEnum): TAction;
-  function GetBoxContainingMenuItem(aMI: TMenuItem): TShadowBox;
-  function GetHighestLevelVisibleBox: TShadowBox;
-  function GetMaxVisibleBoxDims(aSB: TShadowBox): TPoint;
-  function GetMaxVisibleFakeDims: TPoint;
-  function GetMenuBarCumWidthForItemIndex(anIndex: integer): integer;
-  function GetParentItemHeightInBox(aParentItem: TMenuItem): integer;
-  function GetSelectedShadowBox: TShadowBox;
-  function GetSelectedShadowItem: TShadowItem;
-  procedure AddManyItems(aPrimaries, aDepth: integer);
-  procedure AddSubMenuTo(anExistingSI: TShadowItem);
-  procedure ConnectSpeedButtonOnClickMethods;
-  procedure CreateShadowBoxesAndItems;
-  procedure DeleteChildlessShadowAndItem(anExistingSI: TShadowItem);
-  procedure DeleteShadowAndItemAndChildren(anExistingSI: TShadowItem);
-  procedure OnDesignerModified(Sender: TObject);
-  procedure OnObjectPropertyChanged(Sender: TObject; NewObject: TPersistent);
-  procedure OnDesignerRefreshPropertyValues;
-  procedure RecursiveCreateShadows(aParentBox: TShadowBox; aMI: TMenuItem);
-  procedure SetupPopupMenu;
-  procedure UpdateButtonGlyphs(isInBar: boolean);
-  // user actions
-  procedure AddFromTemplate(Sender: TObject);
-  procedure AddImageListIcon(Sender: TObject);
-  procedure AddItemAfter(Sender: TObject);
-  procedure AddItemBefore(Sender: TObject);
-  procedure AddSeparatorAbove(Sender: TObject);
-  procedure AddSeparatorBelow(Sender: TObject);
-  procedure AddSubMenu(Sender: TObject);
-  procedure AddFirstMenu(Sender: TObject);
-  procedure DeleteTemplate(Sender: TObject);
-  procedure EditCaption(Sender: TObject);
-  procedure ListShortcuts(Sender: TObject);
-  procedure ListShortcutsAndAccelerators(Sender: TObject);
-  procedure MoveItemAfter(Sender: TObject);
-  procedure MoveItemBefore(Sender: TObject);
-  procedure RemoveAllSeparators(Sender: TObject);
-  procedure ResolveShortcutConflicts(Sender: TObject);
-  procedure SaveAsTemplate(Sender: TObject);
-private
-  FMenu: TMenu;
-  FDesigner: TMenuDesigner;
-  FEditorDesigner: TComponentEditorDesigner;
-  function GetStringWidth(const aText: string; isBold: boolean): integer;
-  function GetMenuBarIconWidth(aMI: TMenuItem): integer;
-  function OnClickIsAssigned(aMI: TMenuItem): boolean;
-  procedure AddOnClick(Sender: TObject);
-  procedure DeleteItem(Sender: TObject);
-  function GetBoxWithParentItem(aParentMI: TMenuItem): TShadowBox;
-  procedure HideFakes;
-  procedure RemoveEmptyBox(aSB: TShadowBox);
-  procedure SetSelectedShadow(const prevSelectedItem, curSelectedItem: TMenuItem; viaDesigner: boolean);
-  procedure UpdateActionsEnabledness;
-private
-  property AddItemFake: TFake read FAddItemFake;
-  property AddSubmenuFake: TFake read FAddSubmenuFake;
-  property BoxList: TFPList read FBoxList;
-  property ItemsPopupMenu: TPopupMenu read FItemsPopupMenu;
-  property RootBox: TShadowBox read FRootBox;
-protected
-  procedure Paint; override;
-  procedure SetParent(NewParent: TWinControl); override;
-public
-  constructor Create(aDesigner: TMenuDesigner; aForm: TForm; aMenu: TMenu;
-    aSelect: TMenuItem; aWidth, aHeight: integer); reintroduce;
-  destructor Destroy; override;
-  function GetParentBoxForMenuItem(aMI: TMenuItem): TShadowBox;
-  function GetShadowForMenuItem(aMI: TMenuItem): TShadowItem;
-  procedure HideBoxesAboveLevel(aLevel: integer);
-  procedure RefreshFakes;
-  procedure SetSelectedMenuItem(aMI: TMenuItem;
-    viaDesigner, prevWasDeleted: boolean); override;
-  procedure UpdateBoxLocationsAndSizes;
-  procedure UpdateSelectedItemInfo;
-public
-  property EditorDesigner: TComponentEditorDesigner read FEditorDesigner;
-  property IsMainMenu: boolean read FIsMainMenu;
-  property LookupRoot: TComponent read FLookupRoot;
-  property SelectedShadowBox: TShadowBox read GetSelectedShadowBox;
-  property SelectedShadowItem: TShadowItem read GetSelectedShadowItem;
-end;
+  TShadowMenu = class(TShadowMenuBase)
+  strict private
+    FActionList: TActionList;
+    FAddImgListIconAction: TAction;
+    FAddItemFake: TFake;
+    FAddFirstItemFake: TFake;
+    FAddSubmenuFake: TFake;
+    FBoxList: TFPList;
+    FInitialising: boolean;
+    FInitialSelectedMenuItem: TMenuItem;
+    FIsMainMenu: boolean;
+    FItemsPopupMenu: TPopupMenu;
+    FLookupRoot: TComponent;
+    FMainCanvas: TCanvas;
+    FRootBox: TShadowBox;
+    procedure DeleteBox(aMI: TMenuItem);
+    procedure DeleteItm(anItem: TMenuItem);
+    function GetActionForEnum(anEnum: TPopEnum): TAction;
+    function GetBoxContainingMenuItem(aMI: TMenuItem): TShadowBox;
+    function GetHighestLevelVisibleBox: TShadowBox;
+    function GetMaxVisibleBoxDims(aSB: TShadowBox): TPoint;
+    function GetMaxVisibleFakeDims: TPoint;
+    function GetMenuBarCumWidthForItemIndex(anIndex: integer): integer;
+    function GetParentItemHeightInBox(aParentItem: TMenuItem): integer;
+    function GetSelectedShadowBox: TShadowBox;
+    function GetSelectedShadowItem: TShadowItem;
+    procedure AddManyItems(aPrimaries, aDepth: integer);
+    procedure AddSubMenuTo(anExistingSI: TShadowItem);
+    procedure ConnectSpeedButtonOnClickMethods;
+    procedure CreateShadowBoxesAndItems;
+    procedure DeleteChildlessShadowAndItem(anExistingSI: TShadowItem);
+    procedure DeleteShadowAndItemAndChildren(anExistingSI: TShadowItem);
+    procedure OnDesignerModified(Sender: TObject);
+    procedure OnObjectPropertyChanged(Sender: TObject; NewObject: TPersistent);
+    procedure OnDesignerRefreshPropertyValues;
+    procedure RecursiveCreateShadows(aParentBox: TShadowBox; aMI: TMenuItem);
+    procedure SetupPopupMenu;
+    procedure UpdateButtonGlyphs(isInBar: boolean);
+    // user actions
+    procedure AddFromTemplate(Sender: TObject);
+    procedure AddImageListIcon(Sender: TObject);
+    procedure AddItemAfter(Sender: TObject);
+    procedure AddItemBefore(Sender: TObject);
+    procedure AddSeparatorAbove(Sender: TObject);
+    procedure AddSeparatorBelow(Sender: TObject);
+    procedure AddSubMenu(Sender: TObject);
+    procedure AddFirstMenu(Sender: TObject);
+    procedure DeleteTemplate(Sender: TObject);
+    procedure EditCaption(Sender: TObject);
+    procedure ListShortcuts(Sender: TObject);
+    procedure ListShortcutsAndAccelerators(Sender: TObject);
+    procedure MoveItemAfter(Sender: TObject);
+    procedure MoveItemBefore(Sender: TObject);
+    procedure RemoveAllSeparators(Sender: TObject);
+    procedure ResolveShortcutConflicts(Sender: TObject);
+    procedure SaveAsTemplate(Sender: TObject);
+  private
+    FMenu: TMenu;
+    FDesigner: TMenuDesigner;
+    FEditorDesigner: TComponentEditorDesigner;
+    function GetStringWidth(const aText: string; isBold: boolean): integer;
+    function GetMenuBarIconWidth(aMI: TMenuItem): integer;
+    function OnClickIsAssigned(aMI: TMenuItem): boolean;
+    procedure AddOnClick(Sender: TObject);
+    procedure DeleteItem(Sender: TObject);
+    function GetBoxWithParentItem(aParentMI: TMenuItem): TShadowBox;
+    procedure HideFakes;
+    procedure RemoveEmptyBox(aSB: TShadowBox);
+    procedure SetSelectedShadow(const prevSelectedItem, curSelectedItem: TMenuItem; viaDesigner: boolean);
+    procedure UpdateActionsEnabledness;
+  private
+    property AddItemFake: TFake read FAddItemFake;
+    property AddSubmenuFake: TFake read FAddSubmenuFake;
+    property BoxList: TFPList read FBoxList;
+    property ItemsPopupMenu: TPopupMenu read FItemsPopupMenu;
+    property RootBox: TShadowBox read FRootBox;
+  protected
+    procedure Paint; override;
+    procedure SetParent(NewParent: TWinControl); override;
+  public
+    constructor Create(aDesigner: TMenuDesigner; aForm: TForm; aMenu: TMenu;
+      aSelect: TMenuItem; aWidth, aHeight: integer); reintroduce;
+    destructor Destroy; override;
+    function GetParentBoxForMenuItem(aMI: TMenuItem): TShadowBox;
+    function GetShadowForMenuItem(aMI: TMenuItem): TShadowItem;
+    procedure HideBoxesAboveLevel(aLevel: integer);
+    procedure RefreshFakes;
+    procedure SetSelectedMenuItem(aMI: TMenuItem;
+      viaDesigner, prevWasDeleted: boolean); override;
+    procedure UpdateBoxLocationsAndSizes;
+    procedure UpdateSelectedItemInfo;
+  public
+    property EditorDesigner: TComponentEditorDesigner read FEditorDesigner;
+    property IsMainMenu: boolean read FIsMainMenu;
+    property LookupRoot: TComponent read FLookupRoot;
+    property SelectedShadowBox: TShadowBox read GetSelectedShadowBox;
+    property SelectedShadowItem: TShadowItem read GetSelectedShadowItem;
+  end;
 
   { TMenuDesigner }
 
@@ -279,7 +279,6 @@ end;
     function GetVerb(Index: Integer): string; override;
     procedure ExecuteVerb(Index: Integer); override;
   end;
-
 
   { TMenuItemsPropertyEditor - property editor for TMenuItem properties.
     Invokes the parent menu's component editor }
