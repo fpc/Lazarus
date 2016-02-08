@@ -1271,7 +1271,7 @@ begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lAttrName := lowercase(ANode.Attributes.Item[i].NodeName);
-    lAttrValue := lowercase(ANode.Attributes.Item[i].NodeValue);
+    lAttrValue := ANode.Attributes.Item[i].NodeValue;
     if lAttrName = 'id' then
       ADest.Name := lAttrValue
     else
@@ -1301,6 +1301,7 @@ begin
     end else
     if lAttrName = 'gradientunits' then
     begin
+      lAttrValue := LowerCase(lAttrValue);
       if lAttrValue = 'userspaceonuse' then
         Include(ADest.Brush.Gradient_flags, gfRelToUserSpace)
       else if lAttrValue = 'objectboundingbox' then
@@ -1395,6 +1396,7 @@ begin
           lAttrValue := lCurNode.Attributes.Item[i].NodeValue;
           if lAttrName = 'xlink:href' then
           begin
+            lAttrValue := StringReplace(Trim(lAttrValue), '#', '', []);
             lCurBrush := FindBrushDef_WithName(lAttrValue);
             if lCurBrush <> nil then
               lBrushEntity.Brush := lCurBrush.Brush;

@@ -4013,13 +4013,14 @@ begin
   begin
     for J := 0 to lHeight-1 do
     begin
+      lx := ARect.Left + i;
+      ly := ARect.Top + j;
+      if not IsPointInPolygon(lx, ly, APoints) then Continue;
+
       lDist := sqrt(sqr(i-lGradient_cx_px)+sqr(j-lGradient_cy_px));
       lDist := lDist / lBiggestHalfSide;
       lDist := Min(Max(0, lDist), 1);
       lColor := Distance_To_RadialGradient_Color(lDist);
-      lx := ARect.Left + i;
-      ly := ARect.Top + j;
-      if not IsPointInPolygon(lx, ly, APoints) then Exit;
       ADest.Colors[lx, ly] := AlphaBlendColor(ADest.Colors[lx, ly], lColor);
     end;
   end;
