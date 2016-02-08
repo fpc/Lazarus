@@ -188,7 +188,16 @@ procedure TFormImpl.SetRealBounds(AIndex: Integer; AValue: Integer);
   begin
     LCLIntf.GetClientRect(GetForm.Handle, LFormRect);
     LRealValue := GetRealBounds(AIndex);
+    {$IF FPC_FULLVERSION < 301010}
+    case AIndex of
+      0: LValue := LFormRect.Left;
+      1: LValue := LFormRect.Top;
+      2: LValue := LFormRect.Right;
+      3: LValue := LFormRect.Bottom;
+    end;
+    {$ELSE}
     LValue := LFormRect.Vector[AIndex];
+    {$ENDIF}
 
     if LValue <> LRealValue then
       FDesignedRealForm.SetRealBounds(AIndex, AValue - (LRealValue - LValue));
