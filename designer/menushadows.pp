@@ -4111,5 +4111,8 @@ initialization
   RegisterComponentEditor(TMenu, TMainMenuComponentEditor);
   RegisterPropertyEditor(TypeInfo(TMenu), TMenu, 'Items', TMenuItemsPropertyEditor);
 
+finalization
+  FreeAndNil(MenuDesignerSingleton);
+
 end.
 

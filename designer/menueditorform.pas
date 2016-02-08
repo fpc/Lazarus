@@ -137,7 +137,7 @@ end;
 
 constructor TMenuDesignerForm.Create(aDesigner: TMenuDesignerBase);
 begin
-  Inherited Create(LazarusIDE.OwningComponent);
+  Inherited Create(Nil);  // LazarusIDE.OwningComponent
   FDesigner := aDesigner;
 end;
 
