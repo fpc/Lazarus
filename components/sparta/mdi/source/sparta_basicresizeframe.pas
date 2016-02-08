@@ -155,6 +155,18 @@ implementation
 
 {$R *.lfm}
 
+{ Node grip indices are as follows:
+
+       1
+0 +----+----+ 2
+  |         |
+7 +         + 3
+  |         |
+6 +----+----+ 4
+       5
+
+Only grips 3, 4, and 5 are sizeable }
+
 procedure TBasicResizeFrame.pFakeMenuPaint(Sender: TObject);
 var
   MenuRect: Types.TRect;
@@ -367,29 +379,29 @@ begin
       Visible := True;
       FNodes.Add(Panel);
 
+      case Node of
+        {0,}4: Cursor := crSizeNWSE;
+        {1,}5: Cursor := crSizeNS;
+        //{2,}6: Cursor := crSizeNESW;
+        3{,7}: Cursor := crSizeWE;
+      end;
+      if Node in [3,4,5] then
+      begin
+        OnMouseDown := NodeMouseDown;
+        OnMouseMove := NodeMouseMove;
+        OnMouseUp := NodeMouseUp;
+      end;
+
       with TShape.Create(Panel) do
       begin
         Parent := Panel;
         Align:= alClient;
+        Enabled := False;
 
         if Node in [3,4,5] then
           Brush.Color:=clBtnFace
         else
           Brush.Color:=clGray;
-
-        case Node of
-          {0,}4: Cursor := crSizeNWSE;
-          {1,}5: Cursor := crSizeNS;
-          //{2,}6: Cursor := crSizeNESW;
-          3{,7}: Cursor := crSizeWE;
-        end;
-        if Node in [3,4,5] then
-        begin
-          OnMouseDown := NodeMouseDown;
-          OnMouseMove := NodeMouseMove;
-          OnMouseUp := NodeMouseUp;
-        end;
-
       end;
     end;
   end;
@@ -413,10 +425,11 @@ procedure TBasicResizeFrame.NodeMouseDown(Sender: TObject; Button: TMouseButton;
 var
   LCtrlPoint: TPoint;
 begin
+  { TShape in TBasicResizeFrame.CreateNodes is disabled, anyway in future can be usefull
   if Sender is TGraphicControl then
-    Sender := TGraphicControl(Sender).Parent;
+    Sender := TGraphicControl(Sender).Parent;}
 
-  if (Enabled) AND (Sender is TWinControl) then
+  if (Enabled) and (Sender is TWinControl) then
   begin
     FNodePositioning:=True;
 
@@ -492,9 +505,10 @@ var
   OldRect: TRect;
   AdjL,AdjR,AdjT,AdjB: Boolean;
 begin
+  { TShape in TBasicResizeFrame.CreateNodes is disabled, anyway in future can be usefull
   // handle TPanel for resizing rectangles
   if Sender is TGraphicControl then
-    Sender := TGraphicControl(Sender).Parent;
+    Sender := TGraphicControl(Sender).Parent;}
 
   if FNodePositioning then
   begin
@@ -584,8 +598,9 @@ end;
 procedure TBasicResizeFrame.NodeMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
+  { TShape in TBasicResizeFrame.CreateNodes is disabled, anyway in future can be usefull
   if Sender is TGraphicControl then
-    Sender := TGraphicControl(Sender).Parent;
+    Sender := TGraphicControl(Sender).Parent;}
 
   if FNodePositioning then
   begin
