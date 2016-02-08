@@ -37,7 +37,7 @@ uses
   // lazutils
   laz2_dom,
   // LCL
-  lazutf8
+  lazutf8, lazregions
   {$ifdef USE_LCL_CANVAS}
   , Graphics, LCLIntf, LCLType, intfgraphics, graphtype
   {$endif}
@@ -547,6 +547,8 @@ type
       AMulX: Double = 1.0; AMulY: Double = 1.0);
     procedure DrawPolygonBrushGradient(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
       const APoints: TPointsArray; ARect: TRect; AGradientStart, AGradientEnd: T2DPoint);
+    procedure DrawPolygonBrushRadialGradient(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
+      const APoints: TPointsArray; ARect: TRect);
   public
     {@@ The global Brush for the entire entity. In the case of paths, individual
         elements might be able to override this setting. }
@@ -554,8 +556,8 @@ type
     WindingRule: TvClipMode;
     constructor Create(APage: TvPage); override;
     procedure ApplyBrushToCanvas(ADest: TFPCustomCanvas); overload;
-    procedure ApplyBrushToCanvas(ADest: TFPCustomCanvas; ABrush: TvBrush); overload;
-    procedure AssignBrush(ABrush: TvBrush);
+    procedure ApplyBrushToCanvas(ADest: TFPCustomCanvas; ABrush: PvBrush); overload;
+    procedure AssignBrush(ABrush: PvBrush);
     procedure DrawBrush(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
       ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
     procedure DrawBrushGradient(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
@@ -3717,20 +3719,19 @@ end;
 
 procedure TvEntityWithPenAndBrush.ApplyBrushToCanvas(ADest: TFPCustomCanvas);
 begin
-  ApplyBrushToCanvas(ADest, Brush);
+  ApplyBrushToCanvas(ADest, @Brush);
 end;
 
 procedure TvEntityWithPenAndBrush.ApplyBrushToCanvas(ADest: TFPCustomCanvas;
-  ABrush: TvBrush);
+  ABrush: PvBrush);
 begin
-  ADest.Brush.FPColor := ABrush.Color;
-  ADest.Brush.Style := ABrush.Style;
+  ADest.Brush.FPColor := ABrush^.Color;
+  ADest.Brush.Style := ABrush^.Style;
 end;
 
-procedure TvEntityWithPenAndBrush.AssignBrush(ABrush: TvBrush);
+procedure TvEntityWithPenAndBrush.AssignBrush(ABrush: PvBrush);
 begin
-  Brush.Style := ABrush.Style;
-  Brush.Color := ABrush.Color;
+  Brush := ABrush^;
 end;
 
 { Calculates the canvas coordinates of the gradient vector (i.e. x,y of start
@@ -3780,9 +3781,10 @@ end;
 { Fills the entity with a gradient.
   Assumes that the boundary is already in canvas units and is specified by
   polygon APoints. }
-procedure TvEntityWithPenAndBrush.DrawPolygonBrushGradient(ADest: TFPCustomCanvas;
-  var ARenderInfo: TvRenderInfo; const APoints: TPointsArray; ARect: TRect;
-  AGradientStart, AGradientEnd: T2dPoint);
+procedure TvEntityWithPenAndBrush.DrawPolygonBrushGradient(
+  ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
+  const APoints: TPointsArray; ARect: TRect; AGradientStart,
+  AGradientEnd: T2DPoint);
 var
   lPoints, pts: T2DPointsArray;
   i, j: Integer;
@@ -3798,6 +3800,11 @@ var
   gstart: Double;      // Gradient start point (1-dim)
   dir: Integer;
 begin
+  if Brush.Kind = bkRadialGradient then
+  begin
+    DrawPolygonBrushRadialGradient(ADest, ARenderInfo, APoints, ARect);
+    Exit;
+  end;
   if not (Brush.Kind in [bkVerticalGradient, bkHorizontalGradient, bkOtherLinearGradient]) then
     Exit;
 
@@ -3938,9 +3945,89 @@ begin
   end;
 end;
 
+procedure TvEntityWithPenAndBrush.DrawPolygonBrushRadialGradient(
+  ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
+  const APoints: TPointsArray; ARect: TRect);
+var
+  i, j: Integer;
+  lx, ly: Integer;
+  lDist: Double;
+  lGradient_cx_px, lGradient_cy_px, lGradient_r_px, lGradient_fx_px, lGradient_fy_px: Double;
+  lWidth, lHeight, lBiggestHalfSide: Integer;
+  lBiggestSizeIsY: Boolean;
+  lColor: TFPColor;
+
+  function Gradient_value_to_px(AValue: Double; AUnit: TvCoordinateUnit; AIsY: Boolean): Integer;
+  var
+    lSideLen: Integer;
+  begin
+    Result := 0;
+    if AIsY then lSideLen := (ARect.Bottom-ARect.Top)
+    else lSideLen := (ARect.Right-ARect.Left);
+    case AUnit of
+    //vcuDocumentUnit: Result := ;
+    vcuPercentage:   Result := Round(lSideLen * AValue);
+    end;
+  end;
+
+  function Distance_To_RadialGradient_Color(ADist: Double): TFPColor;
+  var
+    k: Integer;
+  begin
+    Result := colTransparent;
+    for k := 0 to Length(Brush.Gradient_colors)-1 do
+    begin
+      if k = 0 then
+      begin
+        Result := Brush.Gradient_colors[k].Color;
+        Continue;
+      end;
+
+      if ADist < Brush.Gradient_colors[k].Position then
+      begin
+        Result := MixColors(
+          Brush.Gradient_colors[k-1].Color, Brush.Gradient_colors[k].Color,
+          ADist - Brush.Gradient_colors[k-1].Position,
+          Brush.Gradient_colors[k].Position - Brush.Gradient_colors[k-1].Position);
+        Exit;
+      end;
+    end;
+  end;
+
+begin
+  lWidth := (ARect.Right-ARect.Left);
+  lHeight := (ARect.Bottom-ARect.Top);
+  lBiggestSizeIsY := lHeight > lWidth;
+  if lBiggestSizeIsY then lBiggestHalfSide := Round(lHeight / 2)
+  else lBiggestHalfSide := Round(lWidth / 2);
+
+  // Calculate Gradient_X_px
+  lGradient_cx_px := Gradient_value_to_px(Brush.Gradient_cx, Brush.Gradient_cx_Unit, True);
+  lGradient_cy_px := Gradient_value_to_px(Brush.Gradient_cy, Brush.Gradient_cy_Unit, False);
+  lGradient_r_px := Gradient_value_to_px(Brush.Gradient_r, Brush.Gradient_r_Unit, lBiggestSizeIsY);
+  lGradient_fx_px := Gradient_value_to_px(Brush.Gradient_fx, Brush.Gradient_fx_Unit, True);
+  lGradient_fy_px := Gradient_value_to_px(Brush.Gradient_fy, Brush.Gradient_fy_Unit, False);
+
+  // pixel-by-pixel version
+  for i := 0 to lWidth-1 do
+  begin
+    for J := 0 to lHeight-1 do
+    begin
+      lDist := sqrt(sqr(i-lGradient_cx_px)+sqr(j-lGradient_cy_px));
+      lDist := lDist / lBiggestHalfSide;
+      lDist := Min(Max(0, lDist), 1);
+      lColor := Distance_To_RadialGradient_Color(lDist);
+      lx := ARect.Left + i;
+      ly := ARect.Top + j;
+      if not IsPointInPolygon(lx, ly, APoints) then Exit;
+      ADest.Colors[lx, ly] := AlphaBlendColor(ADest.Colors[lx, ly], lColor);
+    end;
+  end;
+end;
+
 procedure TvEntityWithPenAndBrush.DrawBrushGradient(ADest: TFPCustomCanvas;
-  var ARenderInfo: TvRenderInfo; x1, y1, x2, y2: Integer;
-  ADestX, ADestY: Integer; AMulX, AMulY: Double);
+  var ARenderInfo: TvRenderInfo; x1, y1, x2, y2: Integer; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
 var
   tmpPath: TPath;
   polypoints: TPointsArray;
@@ -4056,7 +4143,8 @@ begin
 end;      *)
 
 procedure TvEntityWithPenAndBrush.DrawBrush(ADest: TFPCustomCanvas;
-  var ARenderInfo: TvRenderInfo; ADestX, ADestY: Integer; AMulX, AMulY: Double);
+  var ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer;
+  AMulX: Double; AMulY: Double);
 var
   tmpPath: TPath;
   polypoints: TPointsArray;
@@ -4085,12 +4173,13 @@ function TvEntityWithPenAndBrush.GenerateDebugTree(
 var
   lStr: string;
 begin
-  lStr := Format('[%s] Name=%s X=%f Y=%f Pen.Color=%s Pen.Style=%s Brush.Color=%s Brush.Style=%s %s',
+  lStr := Format('[%s] Name=%s X=%f Y=%f Pen=[Color=%s Style=%s] Brush=[Color=%s Style=%s Kind=%s] %s',
     [Self.ClassName, Self.Name, X, Y,
     GenerateDebugStrForFPColor(Pen.Color),
     GetEnumName(TypeInfo(TFPPenStyle), integer(Pen.Style)),
     GenerateDebugStrForFPColor(Brush.Color),
     GetEnumName(TypeInfo(TFPBrushStyle), integer(Brush.Style)),
+    GetEnumName(TypeInfo(TvBrushKind), integer(Brush.Kind)),
     FExtraDebugStr]);
   Result := ADestRoutine(lStr, APageItem);
 end;
@@ -4215,7 +4304,7 @@ begin
   if (Style <> nil) then
   begin
     ApplyPenToCanvas(ADest, ARenderInfo, Style.Pen);
-    ApplyBrushToCanvas(ADest, Style.Brush);
+    ApplyBrushToCanvas(ADest, @Style.Brush);
     ApplyFontToCanvas(ADest, ARenderInfo, Style.Font, AMulX);
   end;
 end;
