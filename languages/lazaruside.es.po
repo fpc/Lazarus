@@ -11877,10 +11877,6 @@ msgstr ""
 msgid "&Grab key"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorgroupindexmenuitems
-msgid "GroupIndex,MenuItems"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
 msgid "GroupIndex value(s): %s"
 msgstr ""
@@ -12069,14 +12065,6 @@ msgstr ""
 msgid "Shortcut not yet changed"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorshortcutpropertywithshortcut
-msgid "Shortcut,Property with shortcut"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorshortcutpropertywithshortcutaccelerator
-msgid "Shortcut,Property with shortcut/accelerator"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditorshortcuts
 msgid "Shortcuts"
 msgstr ""
@@ -12089,12 +12077,16 @@ msgstr ""
 msgid "Shortcuts and Accelerator keys"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorshortcutsassociatedwithmenusandactionsd
-msgid "Shortcuts associated with Menus and Actions (%d)"
+#: lazarusidestrconsts.lismenueditorshortcutsd
+msgid "Shortcuts (%d)"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutsdandacceleratorkeysd
 msgid "Shortcuts (%d) and Accelerator keys (%d)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshortcutsourceproperty
+msgid "Shortcut,Source Property"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutsusedins
@@ -12137,10 +12129,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsshortcutsandacceleratorkeys
 msgid "%s: Shortcuts and accelerator keys"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorsshortcutsummary
-msgid "%s: Shortcut summary"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsssonclicks

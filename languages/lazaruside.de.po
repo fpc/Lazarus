@@ -11842,10 +11842,6 @@ msgstr "Hilfe für die Verwendung dieses Editors"
 msgid "&Grab key"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorgroupindexmenuitems
-msgid "GroupIndex,MenuItems"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
 msgid "GroupIndex value(s): %s"
 msgstr ""
@@ -12032,14 +12028,6 @@ msgstr "Einträge mit Tastaturbefehl: %s"
 msgid "Shortcut not yet changed"
 msgstr "Tastaturbefehl noch nicht geändert"
 
-#: lazarusidestrconsts.lismenueditorshortcutpropertywithshortcut
-msgid "Shortcut,Property with shortcut"
-msgstr "Tastaturbefehl, Eigenschaft mit Tastaturbefehl"
-
-#: lazarusidestrconsts.lismenueditorshortcutpropertywithshortcutaccelerator
-msgid "Shortcut,Property with shortcut/accelerator"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditorshortcuts
 msgid "Shortcuts"
 msgstr "Tastaturbefehle"
@@ -12052,12 +12040,16 @@ msgstr "Tastat&urbefehle"
 msgid "Shortcuts and Accelerator keys"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorshortcutsassociatedwithmenusandactionsd
-msgid "Shortcuts associated with Menus and Actions (%d)"
+#: lazarusidestrconsts.lismenueditorshortcutsd
+msgid "Shortcuts (%d)"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutsdandacceleratorkeysd
 msgid "Shortcuts (%d) and Accelerator keys (%d)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshortcutsourceproperty
+msgid "Shortcut,Source Property"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutsusedins
@@ -12101,10 +12093,6 @@ msgstr "%s: Tastaturbefehle"
 #: lazarusidestrconsts.lismenueditorsshortcutsandacceleratorkeys
 msgid "%s: Shortcuts and accelerator keys"
 msgstr ""
-
-#: lazarusidestrconsts.lismenueditorsshortcutsummary
-msgid "%s: Shortcut summary"
-msgstr "%s: Tastaturbefehl-Zusammenfassung"
 
 #: lazarusidestrconsts.lismenueditorsssonclicks
 msgid "%s.%s.%s - OnClick: %s"

@@ -11839,10 +11839,6 @@ msgstr "Segítség ezen szerkesztő használatával kapcsolatban"
 msgid "&Grab key"
 msgstr "Bekérés"
 
-#: lazarusidestrconsts.lismenueditorgroupindexmenuitems
-msgid "GroupIndex,MenuItems"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
 msgid "GroupIndex value(s): %s"
 msgstr "GroupIndex-ek: %s"
@@ -12029,14 +12025,6 @@ msgstr "Elemek gyorsbillentyűvel: %s"
 msgid "Shortcut not yet changed"
 msgstr "A gyorsbillentyű még nincs megváltoztatva"
 
-#: lazarusidestrconsts.lismenueditorshortcutpropertywithshortcut
-msgid "Shortcut,Property with shortcut"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorshortcutpropertywithshortcutaccelerator
-msgid "Shortcut,Property with shortcut/accelerator"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditorshortcuts
 msgid "Shortcuts"
 msgstr "Gyorsbillentyűk"
@@ -12049,13 +12037,17 @@ msgstr "Gyorsbillentyűk"
 msgid "Shortcuts and Accelerator keys"
 msgstr "Gyorsbillentyűk és hívóbillentyűk"
 
-#: lazarusidestrconsts.lismenueditorshortcutsassociatedwithmenusandactionsd
-msgid "Shortcuts associated with Menus and Actions (%d)"
-msgstr "Gyorsbillentyűk menükhöz és műveletekhez rendelve (%d)"
+#: lazarusidestrconsts.lismenueditorshortcutsd
+msgid "Shortcuts (%d)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutsdandacceleratorkeysd
 msgid "Shortcuts (%d) and Accelerator keys (%d)"
 msgstr "Gyorsbillentyűk (%d) és hívóbillentyűk (%d)"
+
+#: lazarusidestrconsts.lismenueditorshortcutsourceproperty
+msgid "Shortcut,Source Property"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutsusedins
 msgid "Shortcuts used in %s"
@@ -12100,10 +12092,6 @@ msgstr "%s: Gyorsbillentyűk"
 #: lazarusidestrconsts.lismenueditorsshortcutsandacceleratorkeys
 msgid "%s: Shortcuts and accelerator keys"
 msgstr "%s: Gyorsbillentyűk és hívóbillentyűk"
-
-#: lazarusidestrconsts.lismenueditorsshortcutsummary
-msgid "%s: Shortcut summary"
-msgstr "%s: Gyorbillentyűk"
 
 #: lazarusidestrconsts.lismenueditorsssonclicks
 msgid "%s.%s.%s - OnClick: %s"

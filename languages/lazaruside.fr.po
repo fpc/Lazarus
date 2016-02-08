@@ -11844,10 +11844,6 @@ msgstr "Obtenir de l'aide pour cet éditeur"
 msgid "&Grab key"
 msgstr "&Touche d'accroche"
 
-#: lazarusidestrconsts.lismenueditorgroupindexmenuitems
-msgid "GroupIndex,MenuItems"
-msgstr "GroupIndex,MenuItems"
-
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
 msgid "GroupIndex value(s): %s"
 msgstr "Valeur(s) d'index de groupe : %s"
@@ -12034,14 +12030,6 @@ msgstr "Éléments de raccourcis : %s"
 msgid "Shortcut not yet changed"
 msgstr "Raccourci non encore modifié"
 
-#: lazarusidestrconsts.lismenueditorshortcutpropertywithshortcut
-msgid "Shortcut,Property with shortcut"
-msgstr "Raccourci,Propriété avec raccourci"
-
-#: lazarusidestrconsts.lismenueditorshortcutpropertywithshortcutaccelerator
-msgid "Shortcut,Property with shortcut/accelerator"
-msgstr "Raccourci,Propriété avec raccourci/ accélérateur"
-
 #: lazarusidestrconsts.lismenueditorshortcuts
 msgid "Shortcuts"
 msgstr "Raccourcis"
@@ -12054,13 +12042,17 @@ msgstr "Ra&ccourcis"
 msgid "Shortcuts and Accelerator keys"
 msgstr "Raccourcis et touches d'accélération"
 
-#: lazarusidestrconsts.lismenueditorshortcutsassociatedwithmenusandactionsd
-msgid "Shortcuts associated with Menus and Actions (%d)"
-msgstr "Raccourcis associés à des menus et des actions (%d)"
+#: lazarusidestrconsts.lismenueditorshortcutsd
+msgid "Shortcuts (%d)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutsdandacceleratorkeysd
 msgid "Shortcuts (%d) and Accelerator keys (%d)"
 msgstr "Raccourcis (%d) et touches d'accélération (%d)"
+
+#: lazarusidestrconsts.lismenueditorshortcutsourceproperty
+msgid "Shortcut,Source Property"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutsusedins
 msgid "Shortcuts used in %s"
@@ -12105,10 +12097,6 @@ msgstr "%s : Raccourcis"
 #: lazarusidestrconsts.lismenueditorsshortcutsandacceleratorkeys
 msgid "%s: Shortcuts and accelerator keys"
 msgstr "%s : Raccourcis et touches d'accélération"
-
-#: lazarusidestrconsts.lismenueditorsshortcutsummary
-msgid "%s: Shortcut summary"
-msgstr "%s : résumé de raccourci"
 
 #: lazarusidestrconsts.lismenueditorsssonclicks
 msgid "%s.%s.%s - OnClick: %s"
