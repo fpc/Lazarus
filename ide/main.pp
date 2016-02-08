@@ -93,7 +93,7 @@ uses
   // designer
   JITForms, ComponentPalette, ComponentList, CompPagesPopup, IdeCoolbarData,
   ObjInspExt, Designer, FormEditor, CustomFormEditor, lfmUnitResource,
-  ControlSelection, AnchorEditor, TabOrderDlg, MenuEditorForm,
+  ControlSelection, AnchorEditor, TabOrderDlg, MenuShadows,
   // LRT stuff
   Translations,
   // debugger

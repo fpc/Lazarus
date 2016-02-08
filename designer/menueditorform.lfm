@@ -1,4 +1,4 @@
-object MenuDesigner: TMenuDesigner
+object MenuDesignerForm: TMenuDesignerForm
   Left = 504
   Height = 400
   Top = 291

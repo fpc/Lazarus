@@ -27,18 +27,18 @@ interface
 
 uses
   // FCL + LCL
-  Classes, SysUtils,
+  Classes, SysUtils, typinfo,
   Controls, StdCtrls, ExtCtrls, Forms, Graphics, Buttons, Menus, LCLintf, LCLProc,
   // IdeIntf
-  LazIDEIntf, FormEditingIntf, IDEWindowIntf, ComponentEditors, PropEdits,
+  LazIDEIntf, FormEditingIntf, PropEdits,
   // IDE
-  LazarusIDEStrConsts, MenuShadows, MenuShortcuts;
+  LazarusIDEStrConsts, MenuDesignerBase, MenuShortcuts;
 
 type
 
-  { TMenuDesigner }
+  { TMenuDesignerForm }
 
-  TMenuDesigner = class(TForm)
+  TMenuDesignerForm = class(TForm)
     AddItemAboveButton: TSpeedButton;
     AddItemBelowButton: TSpeedButton;
     AddSeparatorAboveButton: TSpeedButton;
@@ -63,21 +63,16 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
   strict private
-    FAcceleratorMenuItemsCount: integer;
-    FCaptionedItemsCount:integer;
-    FDeepestNestingLevel: integer;
+    FDesigner: TMenuDesignerBase;
     FEditedMenu: TMenu;
+    FAcceleratorMenuItemsCount: integer;
+    FCaptionedItemsCount: integer;
+    FDeepestNestingLevel: integer;
     FGUIEnabled: boolean;
     FIconsCount: integer;
+    FUpdateCount: integer;
     FPopupAssignments: TStringList;
     FPopupAssignmentsListBox: TListBox;
-    FSavedTemplatesCount: integer;
-    FShadowMenu: TShadowMenu;
-    FShortcuts: TMenuShortcuts;
-    FTemplatesSaved: boolean;
-    FTotalMenuItemsCount: integer;
-    FVariableGlyphsInMenuBar: boolean;
-    FUpdateCount: integer;
     function GetItemCounts(out aCaptionedItemCount, aShortcutItemCount,
                            anIconCount, anAccelCount: integer): integer;
     function GetPopupAssignmentCount: integer;
@@ -93,106 +88,84 @@ type
     procedure ScanLookupRoot(aForm: TCustomForm);
     procedure SetupPopupAssignmentsDisplay;
   public
+    constructor Create(aDesigner: TMenuDesignerBase);
+    destructor Destroy; override;
     procedure LoadVariableButtonGlyphs(isInMenubar: boolean);
     procedure SetMenu(aMenu: TMenu; aMenuItem: TMenuItem);
     procedure ShowPopupAssignmentsInfo;
-    procedure UpdateStatistics;
-    procedure UpdateTemplatesCount;
-    procedure UpdateSubmenuGroupBox(selMI: TMenuItem; selBox: TShadowBox; boxIsRoot:boolean);
     procedure BeginUpdate;
     procedure EndUpdate;
     function IsUpdate: Boolean;
+    procedure UpdateStatistics;
+    procedure UpdateSubmenuGroupBox(selMI: TMenuItem; selBox: TShadowBoxBase; boxIsRoot:boolean);
+    procedure UpdateItemInfo(aMenu: TMenu; aMenuItem: TMenuItem;
+      aShadowBox: TShadowBoxBase; aPropEditHook: TPropertyEditorHook);
+    //property EditedMenu: TMenu read FEditedMenu;
     //property AcceleratorMenuItemsCount: integer read FAcceleratorMenuItemsCount;
-    property EditedMenu: TMenu read FEditedMenu;
-    //property SavedTemplatesCount: integer read FSavedTemplatesCount;
-    property ShadowMenu: TShadowMenu read FShadowMenu;
-    property TemplatesSaved: boolean read FTemplatesSaved;
-    property TotalMenuItemsCount: integer read FTotalMenuItemsCount;
-    property VariableGlyphsInMenuBar: boolean read FVariableGlyphsInMenuBar;
   end;
 
-{ TMenuComponentEditor - the default component editor for TMenu }
+function GetNestingLevelDepth(aMenu: TMenu): integer;
 
-  TMainMenuComponentEditor = class(TComponentEditor)
-  public
-    procedure Edit; override;
-    function GetVerbCount: Integer; override;
-    function GetVerb(Index: Integer): string; override;
-    procedure ExecuteVerb(Index: Integer); override;
-  end;
-
-
-{ TMenuItemsPropertyEditor - property editor for TMenuItem properties.
-  Invokes the parent menu's component editor }
-
-  TMenuItemsPropertyEditor = class(TClassPropertyEditor)
-  public
-    procedure Edit; override;
-    function GetAttributes: TPropertyAttributes; override;
-  end;
-
-  procedure ShowMenuEditor(aMenu: TMenu);
-
-  function MenuDesigner: TMenuDesigner;
 
 implementation
 
 {$R *.lfm}
 
+function GetNestingLevelDepth(aMenu: TMenu): integer;
+
+  procedure CheckLevel(aMI: TMenuItem; aLevel: integer);
+  var
+    j: integer;
+  begin
+    if (aMI.Count > 0) then begin
+      if (Succ(aLevel) > Result) then
+        Result:=Succ(aLevel);
+      for j:=0 to aMI.Count-1 do
+        CheckLevel(aMI.Items[j], Succ(aLevel));
+    end;
+  end;
+
 var
-  MenuDesignerSingleton: TMenuDesigner = nil;
-
-procedure ShowMenuEditor(aMenu: TMenu);
+  i: integer;
 begin
-  if (aMenu = nil) then
-    RaiseGDBException(lisMenuEditorShowMenuEditorTMenuParameterIsNil);
-  MenuDesigner.SetMenu(aMenu, nil);
-  SetPopupModeParentForPropertyEditor(MenuDesigner);
-  MenuDesigner.ShowOnTop;
+  Result:=0;
+  for i:=0 to aMenu.Items.Count-1 do
+    CheckLevel(aMenu.Items[i], 0);
 end;
 
-function MenuDesigner: TMenuDesigner; // refer always to a single instance
+{ TMenuDesignerForm }
+
+constructor TMenuDesignerForm.Create(aDesigner: TMenuDesignerBase);
 begin
-  if (MenuDesignerSingleton = nil) then
-    MenuDesignerSingleton:=TMenuDesigner.Create(LazarusIDE.OwningComponent);
-  Result:=MenuDesignerSingleton;
+  Inherited Create(LazarusIDE.OwningComponent);
+  FDesigner := aDesigner;
 end;
 
-{ TMenuDesigner }
+destructor TMenuDesignerForm.Destroy;
+begin
+  inherited Destroy;
+end;
 
-procedure TMenuDesigner.FormCreate(Sender: TObject);
+procedure TMenuDesignerForm.FormCreate(Sender: TObject);
 begin
   Name:='MenuDesignerWindow';
   Caption:=lisMenuEditorMenuEditor;
   ButtonsGroupBox.Caption:=lisMenuEditorMenuItemActions;
-  FEditedMenu:=nil;
   FGUIEnabled:=False;
   LoadFixedButtonGlyphs;
   LoadVariableButtonGlyphs(True);
   KeyPreview:=True;
   GlobalDesignHook.AddHandlerSetSelection(@OnDesignerSetSelection);
-  FShortcuts:=TMenuShortcuts.Create;
   InitializeStatisticVars;
-  FTemplatesSaved:=SavedTemplatesExist;
   SetupPopupAssignmentsDisplay;
 end;
 
-procedure TMenuDesigner.FormDestroy(Sender: TObject);
+procedure TMenuDesignerForm.FormDestroy(Sender: TObject);
 begin
-  FEditedMenu:=nil;
-  if (GlobalDesignHook <> nil) then
-    GlobalDesignHook.RemoveAllHandlersForObject(Self);
-  if (FShadowMenu <> nil) then begin
-    FShadowMenu.Parent:=nil;
-    FreeAndNil(FShadowMenu);
-  end;
-  FreeAndNil(FShortcuts);
   FreeAndNil(FPopupAssignments);
-  if MenuDesignerSingleton=Self then
-    MenuDesignerSingleton := nil;
 end;
 
-procedure TMenuDesigner.HelpButtonClick(Sender: TObject);
+procedure TMenuDesignerForm.HelpButtonClick(Sender: TObject);
 const
   helpPath = 'http://wiki.lazarus.freepascal.org/IDE_Window:_menu_editor';
 begin
@@ -200,7 +173,7 @@ begin
   OpenURL(helpPath);
 end;
 
-procedure TMenuDesigner.OnDesignerSetSelection(const ASelection: TPersistentSelectionList);
+procedure TMenuDesignerForm.OnDesignerSetSelection(const ASelection: TPersistentSelectionList);
 var
   mnu: TMenu;
   mi, tmp: TMenuItem;
@@ -223,8 +196,8 @@ begin
         mnu:=tmp.Menu;
         if (mnu = nil) then
           mnu:=mi.GetParentMenu;
-        if (mnu = FEditedMenu) and (FShadowMenu <> nil) then
-          FShadowMenu.SetSelectedMenuItem(mi, True, False)
+        if (mnu = FEditedMenu) and (FDesigner.ShadowMenu <> nil) then
+          FDesigner.ShadowMenu.SetSelectedMenuItem(mi, True, False)
         else if (mnu <> nil) then
           SetMenu(mnu, mi);
       end;
@@ -233,7 +206,7 @@ begin
     SetMenu(nil, nil);
 end;
 
-procedure TMenuDesigner.ShowPopupAssignmentsInfo;
+procedure TMenuDesignerForm.ShowPopupAssignmentsInfo;
 var
   count: integer;
 begin
@@ -242,19 +215,22 @@ begin
     PopupAssignmentsCountLabel.Enabled:=True;
     if (count > 0) then
       PopupAssignmentsCountLabel.BorderSpacing.Bottom:=0
-    else PopupAssignmentsCountLabel.BorderSpacing.Bottom:=Double_Margin;
+    else
+      PopupAssignmentsCountLabel.BorderSpacing.Bottom:=Double_Margin;
     if (count= -1) then
       PopupAssignmentsCountLabel.Caption:=Format(lisMenuEditorPopupAssignmentsS,[lisMenuEditorNA])
-    else PopupAssignmentsCountLabel.Caption:=Format(lisMenuEditorPopupAssignmentsS, [IntToStr(count)]);
+    else
+      PopupAssignmentsCountLabel.Caption:=Format(lisMenuEditorPopupAssignmentsS, [IntToStr(count)]);
     if (count > 0) then begin
       FPopupAssignmentsListBox.Items.Assign(FPopupAssignments);
       FPopupAssignmentsListBox.Visible:=True;
     end
-    else FPopupAssignmentsListBox.Visible:=False;
+    else
+      FPopupAssignmentsListBox.Visible:=False;
   end;
 end;
 
-procedure TMenuDesigner.HidePopupAssignmentsInfo;
+procedure TMenuDesignerForm.HidePopupAssignmentsInfo;
 begin
   if (FEditedMenu <> nil) and (FEditedMenu is TMainMenu) then begin
     PopupAssignmentsCountLabel.Caption:=Format(lisMenuEditorPopupAssignmentsS,[lisMenuEditorNA]);
@@ -263,7 +239,7 @@ begin
   end;
 end;
 
-procedure TMenuDesigner.SetupPopupAssignmentsDisplay;
+procedure TMenuDesignerForm.SetupPopupAssignmentsDisplay;
 begin
   FPopupAssignmentsListBox:=TListBox.Create(Self);
   with FPopupAssignmentsListBox do begin
@@ -289,7 +265,7 @@ begin
   end;
 end;
 
-function TMenuDesigner.GetItemCounts(out aCaptionedItemCount,
+function TMenuDesignerForm.GetItemCounts(out aCaptionedItemCount,
   aShortcutItemCount, anIconCount, anAccelCount: integer): integer;
 var
   imgCount: integer;
@@ -333,7 +309,7 @@ begin
     ProcessItems(FEditedMenu.Items[i]);
 end;
 
-function TMenuDesigner.GetSelectedMenuComponent(const aSelection: TPersistentSelectionList;
+function TMenuDesignerForm.GetSelectedMenuComponent(const aSelection: TPersistentSelectionList;
                                 out isTMenu: boolean; out isTMenuItem: boolean): TPersistent;
 begin
   if (aSelection.Count = 1) then begin
@@ -356,10 +332,11 @@ begin
       Result:=nil;
     end;
   end
-  else Result:=nil;
+  else
+    Result:=nil;
 end;
 
-procedure TMenuDesigner.ProcessForPopup(aControl: TControl);
+procedure TMenuDesignerForm.ProcessForPopup(aControl: TControl);
 var
   wc: TWinControl;
   j:integer;
@@ -373,7 +350,7 @@ begin
   end;
 end;
 
-procedure TMenuDesigner.ScanLookupRoot(aForm: TCustomForm);
+procedure TMenuDesignerForm.ScanLookupRoot(aForm: TCustomForm);
 var
   i: integer;
 begin
@@ -383,7 +360,7 @@ begin
     ProcessForPopup(aForm.Controls[i]);
 end;
 
-function TMenuDesigner.GetPopupAssignmentCount: integer;
+function TMenuDesignerForm.GetPopupAssignmentCount: integer;
 var
   lookupRoot: TPersistent;
 begin
@@ -398,7 +375,7 @@ begin
   end
 end;
 
-procedure TMenuDesigner.LoadVariableButtonGlyphs(isInMenubar: boolean);
+procedure TMenuDesignerForm.LoadVariableButtonGlyphs(isInMenubar: boolean);
 begin
   if isInMenubar then
   begin
@@ -416,10 +393,10 @@ begin
     AddSubMenuButton.LoadGlyphFromResourceName(HINSTANCE,'add_submenu_right');
   end;
   UpdateSubmenuGroupBox(nil, nil, False);
-  FVariableGlyphsInMenuBar:=isInMenubar;
+  FDesigner.VariableGlyphsInMenuBar:=isInMenubar;
 end;
 
-procedure TMenuDesigner.LoadFixedButtonGlyphs;
+procedure TMenuDesignerForm.LoadFixedButtonGlyphs;
 begin
   DeleteItemButton.LoadGlyphFromResourceName(HINSTANCE,'laz_delete');
   AddSeparatorAboveButton.LoadGlyphFromResourceName(HINSTANCE,'add_sep_above');
@@ -427,7 +404,7 @@ begin
   HelpButton.Hint:=lisMenuEditorGetHelpToUseThisEditor;
 end;
 
-procedure TMenuDesigner.EnableGUI(selectedIsNil: boolean);
+procedure TMenuDesignerForm.EnableGUI(selectedIsNil: boolean);
 var
   isPopupMenu: boolean;
 begin
@@ -449,15 +426,15 @@ begin
     end;
 end;
 
-procedure TMenuDesigner.InitializeStatisticVars;
+procedure TMenuDesignerForm.InitializeStatisticVars;
 begin
-  FShortcuts.ResetMenuItemsCount;
+  FDesigner.Shortcuts.ResetMenuItemsCount;
   FIconsCount := -1;
   FDeepestNestingLevel := -1;
   FCaptionedItemsCount := -1;
 end;
 
-procedure TMenuDesigner.DisableGUI;
+procedure TMenuDesignerForm.DisableGUI;
 begin
   if FGUIEnabled then begin
     StatisticsGroupBox.Font.Style:=[];
@@ -477,65 +454,78 @@ begin
   end;
 end;
 
-procedure TMenuDesigner.SetMenu(aMenu: TMenu; aMenuItem: TMenuItem);
+procedure TMenuDesignerForm.SetMenu(aMenu: TMenu; aMenuItem: TMenuItem);
 var
   selection: TMenuItem;
 begin
   if (aMenu = nil) then
   begin
     DisableGUI;
-    if FShadowMenu <> nil then
-      FShadowMenu.SelectedMenuItem:=nil;
-    if Assigned(GlobalDesignHook) then
-      GlobalDesignHook.RemoveAllHandlersForObject(FShadowMenu);
-    FreeAndNil(FShadowMenu);
+    FDesigner.FreeShadowMenu;
     FEditedMenu:=nil;
     Application.ProcessMessages;
   end
   else begin
-    if (aMenu = FEditedMenu) and (FShadowMenu <> nil) then
-      FShadowMenu.SetSelectedMenuItem(aMenuItem, True, False)
+    if (aMenu = FEditedMenu) and (FDesigner.ShadowMenu <> nil) then
+      FDesigner.ShadowMenu.SetSelectedMenuItem(aMenuItem, True, False)
     else begin
-      if (aMenu = FEditedMenu) and (FShadowMenu = nil) then
+      if (aMenu = FEditedMenu) and (FDesigner.ShadowMenu = nil) then
       begin
         if (FEditedMenu.Items.Count > 0) then
-          selection:=FEditedMenu.Items[0]
+          selection := FEditedMenu.Items[0]
         else
-          selection:=nil;
+          selection := nil;
       end
       else if (aMenu <> FEditedMenu) then
       begin
-        FreeAndNil(FShadowMenu);
-        FEditedMenu:=aMenu;
-        selection:=aMenuItem;
+        FDesigner.ShadowMenu.Free;
+        FDesigner.ShadowMenu := Nil;
+        FEditedMenu := aMenu;
+        selection := aMenuItem;
       end;
 
-      FGUIEnabled:=False;
+      FGUIEnabled := False;
       EnableGUI(selection = nil);
       UpdateStatistics;
-      FShadowMenu:=TShadowMenu.CreateWithMenuAndDims(Canvas, FShortcuts,
-                          FEditedMenu, selection, Width-LeftPanel.Width, Height);
-      FShadowMenu.Parent := Self;
-      FShadowMenu.Align := alClient;
+      FDesigner.CreateShadowMenu(FEditedMenu, selection, Width-LeftPanel.Width, Height);
     end;
   end;
 end;
 
-procedure TMenuDesigner.UpdateStatistics;
+procedure TMenuDesignerForm.BeginUpdate;
+begin
+  Inc(FUpdateCount);
+end;
+
+procedure TMenuDesignerForm.EndUpdate;
+begin
+  if FUpdateCount<=0 then
+    RaiseGDBException('');
+  Dec(FUpdateCount);
+  if FUpdateCount = 0 then
+    OnDesignerSetSelection(FormEditingHook.GetCurrentObjectInspector.Selection);
+end;
+
+function TMenuDesignerForm.IsUpdate: Boolean;
+begin
+  Result := FUpdateCount > 0;
+end;
+
+procedure TMenuDesignerForm.UpdateStatistics;
 var
-  captions, shortcuts, icons, accels, tmp: integer;
+  captions, shrtcuts, icons, accels, tmp: integer;
   s: String;
 begin
   if not SameText(StatisticsGroupBox.Caption, FEditedMenu.Name) then
     StatisticsGroupBox.Caption:=FEditedMenu.Name;
 
-  FTotalMenuItemsCount:=GetItemCounts(captions, shortcuts, icons, accels);
+  FDesigner.TotalMenuItemsCount:=GetItemCounts(captions, shrtcuts, icons, accels);
   if (FCaptionedItemsCount <> captions) then begin
     FCaptionedItemsCount:=captions;
     CaptionedItemsCountLabel.Caption:=
       Format(lisMenuEditorCaptionedItemsS, [IntToStr(captions)]);
   end;
-  s:=FShortcuts.Statistics(shortcuts);
+  s:=FDesigner.Shortcuts.Statistics(shrtcuts);
   if s <> '' then
     ShortcutItemsCountLabel.Caption := s;
   if (FIconsCount <> icons) then begin
@@ -554,34 +544,8 @@ begin
   StatisticsGroupBox.Invalidate;
 end;
 
-procedure TMenuDesigner.UpdateTemplatesCount;
-begin
-  FTemplatesSaved:=SavedTemplatesExist;
-  DebugLn('SavedTemplatesExist is %s',[booltostr(FTemplatesSaved)]);
-  FSavedTemplatesCount:=GetSavedTemplatesCount;
-end;
-
-procedure TMenuDesigner.BeginUpdate;
-begin
-  Inc(FUpdateCount);
-end;
-
-procedure TMenuDesigner.EndUpdate;
-begin
-  if FUpdateCount<=0 then
-    RaiseGDBException('');
-  Dec(FUpdateCount);
-  if FUpdateCount = 0 then
-    OnDesignerSetSelection(FormEditingHook.GetCurrentObjectInspector.Selection);
-end;
-
-function TMenuDesigner.IsUpdate: Boolean;
-begin
-  Result := FUpdateCount > 0;
-end;
-
-procedure TMenuDesigner.UpdateSubmenuGroupBox(selMI: TMenuItem;
-  selBox: TShadowBox; boxIsRoot: boolean);
+procedure TMenuDesignerForm.UpdateSubmenuGroupBox(selMI: TMenuItem;
+  selBox: TShadowBoxBase; boxIsRoot: boolean);
 begin
   if SubmenuGroupBox = nil then
     Exit;
@@ -621,58 +585,30 @@ begin
   end;
 end;
 
-{ TMainMenuComponentEditor}
-
-procedure TMainMenuComponentEditor.Edit;
+procedure TMenuDesignerForm.UpdateItemInfo(aMenu: TMenu; aMenuItem: TMenuItem;
+  aShadowBox: TShadowBoxBase; aPropEditHook: TPropertyEditorHook);
+var
+  s: string;
+  method: TMethod;
 begin
-  ShowMenuEditor(Component as TMenu);
-end;
-
-function TMainMenuComponentEditor.GetVerbCount: Integer;
-begin
-  Result:=1;
-end;
-
-function TMainMenuComponentEditor.GetVerb(Index: Integer): string;
-begin
-  case Index of
-    0: Result:=lisMenuEditorMenuEditor + ' ...';
-    else Result:='';
+  if aMenuItem = nil then
+  begin
+    Caption:=Format(lisMenuEditorEditingSSNoMenuitemSelected,
+                    [aMenu.Owner.Name, aMenu.Name]);
+    ButtonsGroupBox.Enabled:=False;
+    UpdateSubmenuGroupBox(nil, nil, False);
+  end
+  else begin
+    method:=GetMethodProp(aMenuItem, 'OnClick');
+    s:=aPropEditHook.GetMethodName(method, aMenuItem);
+    if s = '' then
+      s:=lisMenuEditorIsNotAssigned;
+    Caption:=Format(lisMenuEditorSSSOnClickS,
+                    [aMenu.Owner.Name, aMenu.Name, aMenuItem.Name, s]);
+    ButtonsGroupBox.Enabled:=True;
+    UpdateSubmenuGroupBox(aMenuItem, aShadowBox, aShadowBox.Level=0);
   end;
 end;
 
-procedure TMainMenuComponentEditor.ExecuteVerb(Index: Integer);
-begin
-  if (Index = 0) then
-    Edit;
-end;
-
-{ TMenuItemsPropertyEditor }
-
-procedure TMenuItemsPropertyEditor.Edit;
-var
-  mnu: TMenu;
-  mnuItem: TMenuItem;
-  designer: TComponentEditorDesigner;
-begin
-  mnuItem:=TMenuItem(GetObjectValue(TMenuItem));
-  if (mnuItem <> nil) then
-    begin
-      mnu:=mnuItem.GetParentMenu;
-      designer:=FindRootDesigner(mnu) as TComponentEditorDesigner;
-      if (mnu <> nil) and (designer <> nil) then
-        ShowMenuEditor(mnu);
-    end;
-end;
-
-function TMenuItemsPropertyEditor.GetAttributes: TPropertyAttributes;
-begin
-  Result := [paDialog, paRevertable, paReadOnly];
-end;
-
-initialization
-
-  RegisterComponentEditor(TMenu, TMainMenuComponentEditor);
-  RegisterPropertyEditor(TypeInfo(TMenu), TMenu, 'Items', TMenuItemsPropertyEditor);
-
 end.
+

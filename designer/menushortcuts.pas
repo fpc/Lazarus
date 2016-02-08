@@ -5,13 +5,13 @@ unit MenuShortcuts;
 interface
 
 uses
-  Classes, SysUtils, types, typinfo,
-  ActnList, ButtonPanel, Buttons, Controls, Dialogs, StdCtrls, ExtCtrls, Menus,
-  Forms, Graphics, Themes, LCLType, LCLIntf, LCLProc,
+  Classes, SysUtils, types,
+  ActnList, ButtonPanel, Controls, Dialogs, StdCtrls, Menus,
+  Forms, Graphics, LCLType, LCLIntf, LCLProc,
   // LazUtils
-  LazUTF8, LazFileUtils,
+  LazUTF8,
   // IdeIntf
-  ComponentEditors, IDEDialogs, PropEdits,
+  IDEDialogs, PropEdits,
   // IDE
   LazarusIDEStrConsts;
 
@@ -324,7 +324,8 @@ begin
     aShortcut:=KeyToShortCut(Ord(accelStr[1]),
     {$if defined(darwin) or defined(macos) or defined(iphonesim)} [ssMeta]
     {$else} [ssAlt] {$endif})
-  else aShortcut:=0;
+  else
+    aShortcut:=0;
 end;
 {
 function GetAcceleratedItemsCount(aMenu: TMenu): integer;
