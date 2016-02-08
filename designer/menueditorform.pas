@@ -27,8 +27,11 @@ interface
 
 uses
   // FCL + LCL
-  Classes, SysUtils, typinfo,
-  Controls, StdCtrls, ExtCtrls, Forms, Graphics, Buttons, Menus, LCLintf, LCLProc,
+  Classes, SysUtils, Types, typinfo,
+  Controls, StdCtrls, ExtCtrls, Forms, Graphics, Buttons, Menus, ButtonPanel,
+  ImgList, Themes, LCLintf, LCLProc,
+  // LazUtils
+  LazUTF8,
   // IdeIntf
   LazIDEIntf, FormEditingIntf, PropEdits,
   // IDE
@@ -104,7 +107,92 @@ type
     //property AcceleratorMenuItemsCount: integer read FAcceleratorMenuItemsCount;
   end;
 
+  { TEditCaptionDialog }
+
+  TEditCaptionDialog = class(TForm)
+  strict private
+    FButtonPanel: TButtonPanel;
+    FEdit: TEdit;
+    FGBEdit: TGroupBox;
+    FMenuItem: TMenuItem;
+    FNewShortcut: TShortCut;
+    FOldShortcut: TShortCut;
+    procedure EditOnChange(Sender: TObject);
+    procedure OKButtonClick(Sender: TObject);
+  public
+    constructor CreateWithMenuItem(AOwner: TComponent; aMI: TMenuItem; aSC: TShortCut);
+    property NewShortcut: TShortCut read FNewShortcut;
+  end;
+
+  TRadioIconGroup = class;
+  TRadioIconState = (risUp, risDown, risPressed, risUncheckedHot, risCheckedHot);
+
+  { TRadioIcon }
+
+  TRadioIcon = class(TGraphicControl)
+  strict private
+    FBGlyph: TButtonGlyph;
+    FOnChange: TNotifyEvent;
+    FRIGroup: TRadioIconGroup;
+    FRIState: TRadioIconState;
+    function GetChecked: Boolean;
+    procedure SetChecked(aValue: Boolean);
+  protected
+    procedure DoChange;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseEnter; override;
+    procedure MouseLeave; override;
+    procedure Paint; override;
+  public
+    constructor CreateWithGlyph(aRIGroup: TRadioIconGroup; anImgIndex: integer);
+    destructor Destroy; override;
+    property Checked: Boolean read GetChecked write SetChecked;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
+
+  { TRadioIconGroup }
+
+  TRadioIconGroup = class(TScrollBox)
+  strict private
+    FItemIndex: integer;
+    FOnSelectItem: TNotifyEvent;
+    FRIArray: array of TRadioIcon;
+    procedure CreateRadioItems;
+    procedure ApplyLayout;
+    procedure RIOnChange(Sender: TObject);
+    procedure DoSelectItem;
+  protected
+    FImageList: TCustomImageList;
+    FedSize: TSize;
+    FedUnchecked, FedChecked, FedPressed, FedUncheckedHot, FedCheckedHot: TThemedElementDetails;
+    FGlyphPt: TPoint;
+    FSpacing: integer;
+    FRadioHeight, FRadioWidth: integer;
+    FRadioRect: TRect;
+    procedure SetParent(NewParent: TWinControl); override;
+  public
+    constructor CreateWithImageList(AOwner: TComponent; anImgList: TCustomImageList);
+    property ItemIndex: integer read FItemIndex;
+    property OnSelectItem: TNotifyEvent read FOnSelectItem write FOnSelectItem;
+  end;
+
+  { TdlgChooseIcon }
+
+  TdlgChooseIcon = class(TForm)
+  private
+    FButtonPanel: TButtonPanel;
+    FRadioIconGroup: TRadioIconGroup;
+    function GetImageIndex: integer;
+    procedure RIGClick(Sender: TObject);
+  public
+    constructor Create(TheOwner: TComponent); override;
+    procedure SetRadioIconGroup(anImageList: TCustomImageList);
+    property ImageIndex: integer read GetImageIndex;
+  end;
+
 function GetNestingLevelDepth(aMenu: TMenu): integer;
+function EditCaptionDlg(aMI: TMenuItem; var aShortcut: TShortCut): boolean;
+function ChooseIconFromImageListDlg(anImageList: TCustomImageList): integer;
 
 
 implementation
@@ -131,6 +219,40 @@ begin
   Result:=0;
   for i:=0 to aMenu.Items.Count-1 do
     CheckLevel(aMenu.Items[i], 0);
+end;
+
+function EditCaptionDlg(aMI: TMenuItem; var aShortcut: TShortCut): boolean;
+var
+  dlg: TEditCaptionDialog;
+begin
+  dlg := TEditCaptionDialog.CreateWithMenuItem(nil, aMI, aShortcut);
+  try
+    Result := dlg.ShowModal = mrOK;
+    if Result then
+      aShortcut := dlg.NewShortcut;
+  finally
+    dlg.Free;
+  end;
+end;
+
+function ChooseIconFromImageListDlg(anImageList: TCustomImageList): integer;
+var
+  dlg: TdlgChooseIcon;
+begin
+  if (anImageList = nil) or (anImageList.Count = 0) then
+    Exit(-1);
+  if (anImageList.Count = 1) then
+    Exit(0);
+  dlg := TdlgChooseIcon.Create(nil);
+  try
+    dlg.SetRadioIconGroup(anImageList);
+    if (dlg.ShowModal = mrOK) then
+      Result := dlg.ImageIndex
+    else
+      Result := -1;
+  finally
+    dlg.Free;
+  end;
 end;
 
 { TMenuDesignerForm }
@@ -608,6 +730,406 @@ begin
     ButtonsGroupBox.Enabled:=True;
     UpdateSubmenuGroupBox(aMenuItem, aShadowBox, aShadowBox.Level=0);
   end;
+end;
+
+{ TEditCaptionDialog }
+
+constructor TEditCaptionDialog.CreateWithMenuItem(AOwner: TComponent;
+  aMI: TMenuItem; aSC: TShortCut);
+var
+  key: word;
+  sstate: TShiftState;
+  p: integer;
+  ch: Char;
+begin
+  inherited CreateNew(AOwner);
+  FMenuItem:=aMI;
+  FOldShortcut:=aSC;
+  ShortCutToKey(aSC, key, sstate);
+  Position:=poScreenCenter;
+  BorderStyle:=bsDialog;
+  Caption:=Format(lisMenuEditorEditingCaptionOfS, [FMenuItem.Name]);
+
+  FButtonPanel:=TButtonPanel.Create(Self);
+  with FButtonPanel do
+    begin
+      ShowButtons:=[pbOK, pbCancel];
+      OKButton.Name:='OKButton';
+      OKButton.DefaultCaption:=True;
+      OKButton.Enabled:=False;
+      OKButton.OnClick:=@OKButtonClick;
+      CancelButton.Name:='CancelButton';
+      CancelButton.DefaultCaption:=True;
+      ShowBevel:=False;
+      Parent:=Self;
+    end;
+
+  FGBEdit:=TGroupBox.Create(Self);
+  with FGBEdit do
+    begin
+      BorderSpacing.Around:=Margin;
+      p:=LazUTF8.UTF8Pos('&', aMI.Caption);
+      if (p > 0) and (p < LazUTF8.UTF8Length(aMI.Caption)) then
+        ch:=aMI.Caption[Succ(p)] // gets correct case of key
+      else
+        ch:=Chr(Ord(key));    // fallback
+    Caption:=Format(lisMenuEditorAcceleratorKeySNeedsChanging, [ch]);
+      Align:=alClient;
+      Parent:=Self;
+    end;
+
+  FEdit:=TEdit.Create(Self);
+  with FEdit do
+    begin;
+      BorderSpacing.Around:=Margin;
+      Text:=FMenuItem.Caption;
+      Align:=alClient;
+      OnChange:=@EditOnChange;
+      Parent:=FGBEdit;
+    end;
+
+  AutoSize:=True;
+end;
+
+procedure TEditCaptionDialog.EditOnChange(Sender: TObject);
+var
+  hasAccel: boolean;
+  sc: TShortCut;
+begin
+  if (FEdit.Text = '') then
+    begin
+      FEdit.Text:=lisMenuEditorCaptionShouldNotBeBlank;
+      FEdit.SetFocus;
+    end
+  else
+  begin
+    hasAccel:=HasAccelerator(FEdit.Text, sc);
+    if (not hasAccel) or (hasAccel and (sc <> FOldShortcut)) then
+    begin
+      FNewShortcut:=sc;
+      FButtonPanel.OKButton.Enabled:=True;
+    end;
+  end;
+end;
+
+procedure TEditCaptionDialog.OKButtonClick(Sender: TObject);
+begin
+  FMenuItem.Caption:=FEdit.Text;
+end;
+
+{ TRadioIcon }
+
+constructor TRadioIcon.CreateWithGlyph(aRIGroup: TRadioIconGroup;
+  anImgIndex: integer);
+begin
+  Assert(anImgIndex > -1, 'TRadioIcon.CreateWithGlyph: param not > -1');
+  inherited Create(aRIGroup);
+  FRIGroup:=aRIGroup;
+
+  FBGlyph:=TButtonGlyph.Create;
+  FBGlyph.IsDesigning:=False;
+  FBGlyph.ShowMode:=gsmAlways;
+  FBGlyph.OnChange:=nil;
+  FBGlyph.CacheSetImageList(FRIGroup.FImageList);
+  FBGlyph.CacheSetImageIndex(0, anImgIndex);
+  Tag:=anImgIndex;
+
+  SetInitialBounds(0, 0, FRIGroup.FRadioWidth, FRIGroup.FRadioHeight);
+  ControlStyle:=ControlStyle + [csCaptureMouse]-[csSetCaption, csClickEvents, csOpaque];
+  FRIState:=risUp;
+  Color:=clBtnFace;
+end;
+
+destructor TRadioIcon.Destroy;
+begin
+  FreeAndNil(FBGlyph);
+  inherited Destroy;
+end;
+
+function TRadioIcon.GetChecked: Boolean;
+begin
+  Result:=FRIState in [risDown, risPressed, risCheckedHot];
+end;
+
+procedure TRadioIcon.SetChecked(aValue: Boolean);
+begin
+  case aValue of
+    True: if (FRIState <> risDown) then begin // set to True
+            FRIState:=risDown;
+            Repaint;
+          end;
+    False: if (FRIState <> risUp) then begin // set to False
+             FRIState:=risUp;
+             Repaint;
+           end;
+  end;
+end;
+
+procedure TRadioIcon.DoChange;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+procedure TRadioIcon.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  if (Button = mbLeft) and (FRIState in [risUncheckedHot, risUp]) then begin
+    FRIState:=risPressed;
+    Repaint;
+    DoChange;
+  end;
+end;
+
+procedure TRadioIcon.MouseEnter;
+begin
+  inherited MouseEnter;
+  case FRIState of
+    risUp: FRIState:=risUncheckedHot;
+    risDown: FRIState:=risCheckedHot;
+  end;
+  Repaint;
+end;
+
+procedure TRadioIcon.MouseLeave;
+begin
+  case FRIState of
+    risPressed, risCheckedHot: FRIState:=risDown;
+    risUncheckedHot:           FRIState:=risUp;
+  end;
+  Repaint;
+  inherited MouseLeave;
+end;
+
+procedure TRadioIcon.Paint;
+var
+  ted: TThemedElementDetails;
+begin
+  if (Canvas.Brush.Color <> Color) then
+    Canvas.Brush.Color:=Color;
+  Canvas.FillRect(ClientRect);
+  case FRIState of
+    risUp:           ted:=FRIGroup.FedUnchecked;
+    risDown:         ted:=FRIGroup.FedChecked;
+    risPressed:      ted:=FRIGroup.FedPressed;
+    risUncheckedHot: ted:=FRIGroup.FedUncheckedHot;
+    risCheckedHot:   ted:=FRIGroup.FedCheckedHot;
+  end;
+  ThemeServices.DrawElement(Canvas.Handle, ted, FRIGroup.FRadioRect);
+  FBGlyph.Draw(Canvas, ClientRect, FRIGroup.FGlyphPt, bsUp, False, 0);
+
+  inherited Paint;
+end;
+
+{ TRadioIconGroup }
+
+constructor TRadioIconGroup.CreateWithImageList(AOwner: TComponent;
+  anImgList: TCustomImageList);
+var
+  topOffset: integer;
+begin
+  Assert(AOwner<>nil,'TRadioIconGroup.CreateWithImageList: AOwner is nil');
+  Assert(anImgList<>nil,'TRadioIconGroup.CreateWithImageList:anImgList is nil');
+
+  inherited Create(AOwner);
+  FImageList:=anImgList;
+  FedUnChecked:=ThemeServices.GetElementDetails(tbRadioButtonUncheckedNormal);
+  FedChecked:=ThemeServices.GetElementDetails(tbRadioButtonCheckedNormal);
+  FedPressed:=ThemeServices.GetElementDetails(tbRadioButtonCheckedPressed);
+  FedUncheckedHot:=ThemeServices.GetElementDetails(tbRadioButtonUncheckedHot);
+  FedCheckedHot:=ThemeServices.GetElementDetails(tbRadioButtonCheckedHot);
+  FedSize:=ThemeServices.GetDetailSize(FedUnChecked);
+  FRadioHeight:=FedSize.cy;
+  if (anImgList.Height > FRadioHeight) then
+    FRadioHeight:=anImgList.Height;
+  topOffset:=(FRadioHeight - FedSize.cy) div 2;
+  FRadioRect:=Rect(0, topOffset, FedSize.cx, topOffset+FedSize.cy);
+  FSpacing:=5;
+  FRadioWidth:=FedSize.cx + FSpacing + anImgList.Width;
+  FGlyphPt:=Point(FedSize.cx+FSpacing, 0);
+  FItemIndex:= -1;
+  CreateRadioItems;
+end;
+
+procedure TRadioIconGroup.CreateRadioItems;
+var
+  i: integer;
+begin
+  SetLength(FRIArray, FImageList.Count);
+  for i:=Low(FRIArray) to High(FRIArray) do
+    begin
+      FRIArray[i]:=TRadioIcon.CreateWithGlyph(Self, i);
+      FRIArray[i].OnChange:=@RIOnChange;
+    end;
+end;
+
+procedure TRadioIconGroup.ApplyLayout;
+var
+  unitArea, hSpace, sepn, count, cols, rows, lastRowCount, space, h, num, denom: integer;
+
+  procedure CalcSepn;
+  begin
+    rows:=count div cols;
+    if (cols*rows < count) or (rows < 2) then
+      Inc(rows);
+    lastRowCount:=count mod cols;
+    if (lastRowCount = 0) then
+      lastRowCount:=cols;
+    num:=space + hSpace*FRIArray[0].Height - lastRowCount*unitArea;
+    denom:=Pred(rows)*hSpace + FRIArray[0].Height*Pred(cols)*Pred(rows);
+    Assert(denom > 0,'TRadioIconGroup.ApplyLayout: divisor is zero');
+    sepn:=trunc(num/denom);
+    repeat
+      Dec(sepn);
+      h:=cols*FRIArray[0].Width + Pred(cols)*sepn;
+    until (h < hSpace) or (sepn <= Margin);
+  end;
+
+const
+  BPanelVertDim = 46;
+var
+  areaToFill, hBorderAndMargins, vSpace, vSepn, oldCols,
+    i, v, gap, hInc, vInc, maxIdx, vBorderAndMargins: integer;
+  lft: integer = Margin;
+  tp: integer = Margin;
+  r: integer = 1;
+  c: integer = 1;
+begin
+  hBorderAndMargins:=integer(BorderSpacing.Left)+integer(BorderSpacing.Right)+integer(BorderSpacing.Around*2) + Double_Margin;
+  hSpace:=Parent.ClientWidth - hBorderAndMargins;
+  vBorderAndMargins:=integer(BorderSpacing.Top)+integer(BorderSpacing.Bottom)+integer(BorderSpacing.Around*2) + Double_Margin;
+  vSpace:=Parent.ClientHeight - vBorderAndMargins - BPanelVertDim;
+  areaToFill:=hSpace*vSpace;
+  unitArea:=FRIArray[0].Width*FRIArray[0].Height;
+  count:=Length(FRIArray);
+  space:=areaToFill - count*unitArea;
+
+  cols:=trunc(sqrt(count)); // assume area is roughly square
+  if (cols = 0) then
+    Inc(cols);
+  oldCols:=cols;
+  CalcSepn;
+
+  gap:=hSpace - h;
+  if (gap > 0) and (gap > FRIArray[0].Width) then
+  begin
+    Inc(cols);
+    CalcSepn;
+  end;
+  if (sepn <= Margin) then
+  begin
+    cols:=oldcols;
+    CalcSepn;
+  end;
+
+  vSepn:=sepn;
+  v:=rows*FRIArray[0].Height + Pred(rows)*vSepn;
+  if (v > vSpace) then
+  repeat
+    Dec(vSepn);
+    v:=rows*FRIArray[0].Height + Pred(rows)*vSepn;
+  until (v < vSpace) or (vSepn <= Margin);
+
+  hInc:=FRIArray[0].Width + sepn;
+  vInc:=FRIArray[0].Height + vSepn;
+  maxIdx:=High(FRIArray);
+  for i:=Low(FRIArray) to maxIdx do
+  begin
+    FRIArray[i].Left:=lft;
+    FRIArray[i].Top:=tp;
+    Inc(c);
+    Inc(lft, hInc);
+    if (c > cols) and (i < maxIdx) then
+    begin
+      c:=1;
+      lft:=Margin;
+      Inc(r);
+      Inc(tp, vInc);
+    end;
+  end;
+  Assert(r <= rows,'TRadioIconGroup.ApplyLayout: error in calculation of space needed');
+end;
+
+procedure TRadioIconGroup.RIOnChange(Sender: TObject);
+var
+  aRi: TRadioIcon;
+  i: integer;
+begin
+  if not (Sender is TRadioIcon) then
+    Exit;
+  aRi:=TRadioIcon(Sender);
+  FItemIndex:=aRi.Tag;
+  DoSelectItem;
+  if aRi.Checked then
+  begin
+   for i:=Low(FRIArray) to High(FRIArray) do
+     if (i <> FItemIndex) then
+       FRIArray[i].Checked:=False;
+  end;
+end;
+
+procedure TRadioIconGroup.DoSelectItem;
+begin
+  if Assigned(FOnSelectItem) then
+    FOnSelectItem(Self);
+end;
+
+procedure TRadioIconGroup.SetParent(NewParent: TWinControl);
+var
+  i: Integer;
+begin
+  inherited SetParent(NewParent);
+  if (NewParent <> nil) then
+  begin
+    ApplyLayout;
+    for i:=Low(FRIArray) to High(FRIArray) do
+      FRIArray[i].SetParent(Self);
+  end;
+end;
+
+{ TdlgChooseIcon }
+
+constructor TdlgChooseIcon.Create(TheOwner: TComponent);
+begin
+  inherited CreateNew(TheOwner);
+  Position:=poScreenCenter;
+  BorderStyle:=bsDialog;
+  Width:=250;
+  Height:=250;
+  FButtonPanel:=TButtonPanel.Create(Self);
+  FButtonPanel.ShowButtons:=[pbOK, pbCancel];
+  FButtonPanel.OKButton.Name:='OKButton';
+  FButtonPanel.OKButton.DefaultCaption:=True;
+  FButtonPanel.OKButton.Enabled:=False;
+  FButtonPanel.CancelButton.Name:='CancelButton';
+  FButtonPanel.CancelButton.DefaultCaption:=True;
+  FButtonPanel.Parent:=Self;
+end;
+
+function TdlgChooseIcon.GetImageIndex: integer;
+begin
+  Result:=FRadioIconGroup.ItemIndex;
+end;
+
+procedure TdlgChooseIcon.RIGClick(Sender: TObject);
+begin
+  FButtonPanel.OKButton.Enabled:=True;
+  FButtonPanel.OKButton.SetFocus;
+end;
+
+procedure TdlgChooseIcon.SetRadioIconGroup(anImageList: TCustomImageList);
+begin
+  FRadioIconGroup:=TRadioIconGroup.CreateWithImageList(Self, anImageList);
+  with FRadioIconGroup do begin
+    Align:=alClient;
+    BorderSpacing.Top:=FButtonPanel.BorderSpacing.Around;
+    BorderSpacing.Left:=FButtonPanel.BorderSpacing.Around;
+    BorderSpacing.Right:=FButtonPanel.BorderSpacing.Around;
+    TabOrder:=0;
+    OnSelectItem:=@RIGClick;
+    Parent:=Self;
+  end;
+  Caption:=Format(lisMenuEditorPickAnIconFromS, [anImageList.Name]);
 end;
 
 end.
