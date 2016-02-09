@@ -243,6 +243,8 @@ begin
   if SaveIconButton.Glyph.Empty then
     SaveIconButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
   ClearIconButton.LoadGlyphFromResourceName(HInstance, 'menu_clean');
+  IconImage.KeepOriginXWhenClipped := True;
+  IconImage.KeepOriginYWhenClipped := True;
   IconImagePictureChanged(nil);
 end;
 
