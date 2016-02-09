@@ -7372,6 +7372,7 @@ lcl/interfaces/gtk2/issues.xml svneol=native#text/xml
 lcl/interfaces/gtk2/tests/checkbuttononfixed.lpi svneol=native#text/plain
 lcl/interfaces/gtk2/tests/checkbuttononfixed.lpr svneol=native#text/plain
 lcl/interfaces/gtk2/tests/stutter.pas svneol=native#text/plain
+lcl/interfaces/gtk2/unitywsctrls.pas svneol=native#text/pascal
 lcl/interfaces/gtk3/Makefile svneol=native#text/plain
 lcl/interfaces/gtk3/Makefile.compiled svneol=native#text/plain
 lcl/interfaces/gtk3/Makefile.fpc svneol=native#text/plain
