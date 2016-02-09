@@ -39,7 +39,7 @@ uses
   // LCL
   lazutf8, lazregions
   {$ifdef USE_LCL_CANVAS}
-  , Graphics, LCLIntf, LCLType, intfgraphics, graphtype
+  , Graphics, LCLIntf, LCLType, intfgraphics, graphtype, interfacebase
   {$endif}
   ;
 
@@ -548,6 +548,8 @@ type
     procedure DrawPolygonBrushGradient(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
       const APoints: TPointsArray; ARect: TRect; AGradientStart, AGradientEnd: T2DPoint);
     procedure DrawPolygonBrushRadialGradient(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
+      const APoints: TPointsArray; ARect: TRect);
+    procedure DrawNativePolygonBrushRadialGradient(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
       const APoints: TPointsArray; ARect: TRect);
   public
     {@@ The global Brush for the entire entity. In the case of paths, individual
@@ -4002,11 +4004,11 @@ begin
   else lBiggestHalfSide := Round(lWidth / 2);
 
   // Calculate Gradient_X_px
-  lGradient_cx_px := Gradient_value_to_px(Brush.Gradient_cx, Brush.Gradient_cx_Unit, True);
-  lGradient_cy_px := Gradient_value_to_px(Brush.Gradient_cy, Brush.Gradient_cy_Unit, False);
+  lGradient_cx_px := Gradient_value_to_px(Brush.Gradient_cx, Brush.Gradient_cx_Unit, False);
+  lGradient_cy_px := Gradient_value_to_px(Brush.Gradient_cy, Brush.Gradient_cy_Unit, True);
   lGradient_r_px := Gradient_value_to_px(Brush.Gradient_r, Brush.Gradient_r_Unit, lBiggestSizeIsY);
-  lGradient_fx_px := Gradient_value_to_px(Brush.Gradient_fx, Brush.Gradient_fx_Unit, True);
-  lGradient_fy_px := Gradient_value_to_px(Brush.Gradient_fy, Brush.Gradient_fy_Unit, False);
+  lGradient_fx_px := Gradient_value_to_px(Brush.Gradient_fx, Brush.Gradient_fx_Unit, False);
+  lGradient_fy_px := Gradient_value_to_px(Brush.Gradient_fy, Brush.Gradient_fy_Unit, True);
 
   // pixel-by-pixel version
   for i := 0 to lWidth-1 do
@@ -4024,6 +4026,55 @@ begin
       ADest.Colors[lx, ly] := AlphaBlendColor(ADest.Colors[lx, ly], lColor);
     end;
   end;
+end;
+
+procedure TvEntityWithPenAndBrush.DrawNativePolygonBrushRadialGradient(
+  ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
+  const APoints: TPointsArray; ARect: TRect);
+{$ifdef USE_LCL_CANVAS}
+var
+  lLogRadGrad: TLogRadialGradient;
+  lBrush, lOldBrush: HBRUSH;
+  i: Integer;
+
+  function Gradient_value_to_px(AValue: Double; AUnit: TvCoordinateUnit; AIsY: Boolean): Integer;
+  var
+    lSideLen: Integer;
+  begin
+    Result := 0;
+    if AIsY then lSideLen := (ARect.Bottom-ARect.Top)
+    else lSideLen := (ARect.Right-ARect.Left);
+    case AUnit of
+    vcuDocumentUnit: Result := Round(AValue);
+    vcuPercentage:   Result := Round(lSideLen * AValue);
+    end;
+  end;
+
+{$endif}
+begin
+  {$ifdef USE_LCL_CANVAS}
+  lLogRadGrad.radCenterX := Gradient_value_to_px(Brush.Gradient_cx, Brush.Gradient_cx_Unit, False);
+  lLogRadGrad.radCenterY := Gradient_value_to_px(Brush.Gradient_cy, Brush.Gradient_cy_Unit, False);
+  lLogRadGrad.radRadius := Gradient_value_to_px(Brush.Gradient_r, Brush.Gradient_r_Unit, True);
+  lLogRadGrad.radFocalX := Gradient_value_to_px(Brush.Gradient_fx, Brush.Gradient_fx_Unit, True);
+  lLogRadGrad.radFocalY := Gradient_value_to_px(Brush.Gradient_fy, Brush.Gradient_fy_Unit, False);
+
+  SetLength(lLogRadGrad.radStops, Length(Brush.Gradient_colors));
+  for i := 0 to Length(Brush.Gradient_colors)-1 do
+  begin
+    lLogRadGrad.radStops[i].radColorA := Brush.Gradient_colors[i].Color.alpha;
+    lLogRadGrad.radStops[i].radColorR := Brush.Gradient_colors[i].Color.red;
+    lLogRadGrad.radStops[i].radColorG := Brush.Gradient_colors[i].Color.green;
+    lLogRadGrad.radStops[i].radColorB := Brush.Gradient_colors[i].Color.blue;
+    lLogRadGrad.radStops[i].radPosition := Brush.Gradient_colors[i].Position;
+  end;
+
+  lBrush := LCLIntf.CreateBrushWithRadialGradient(lLogRadGrad);
+  lOldBrush := TCanvas(ADest).Brush.Handle;
+  TCanvas(ADest).Brush.Handle := lBrush;
+  TCanvas(ADest).Polygon(polypoints);
+  TCanvas(ADest).Brush.Handle := lOldBrush;
+  {$endif}
 end;
 
 procedure TvEntityWithPenAndBrush.DrawBrushGradient(ADest: TFPCustomCanvas;
@@ -4048,7 +4099,14 @@ begin
     // calculate gradient vector
     CalcGradientVector(gv1, gv2, lRect, ADestX, ADestY, AMulX, AMulY);
     // Draw the gradient
-    DrawPolygonBrushGradient(ADest, ARenderInfo, polypoints, lRect, gv1, gv2);
+    {$ifdef USE_LCL_CANVAS}
+    if Widgetset.GetLCLCapability(lcRadialGradientBrush) = LCL_CAPABILITY_YES then
+    begin
+      DrawNativePolygonBrushRadialGradient(ADest, ARenderInfo, polypoints, Bounds(0, 0, 1, 1));
+    end
+    else
+    {$endif}
+      DrawPolygonBrushGradient(ADest, ARenderInfo, polypoints, lRect, gv1, gv2);
     // to do: multiple polygons!
 
     // Paint outline
