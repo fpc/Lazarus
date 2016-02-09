@@ -2333,6 +2333,7 @@ type
     function getFrame(i: integer): TIpHtmlFrame;
     procedure InternalFreeFrames;
     procedure InternalCreateFrames;
+    procedure RemoveDataProvider;
   public
     constructor Create(Viewer: TIpHtmlCustomPanel; Parent: TCustomPanel;
       DataProvider : TIpAbstractHtmlDataProvider; FlagErrors, NoScroll: Boolean;
@@ -14614,6 +14615,16 @@ begin
      result := FFrames[i];
 end;
 
+procedure TIpHtmlFrame.RemoveDataProvider;
+var
+  i: Integer;
+begin
+  FDataProvider := nil;
+  for i:=0 to High(FFrames) do
+    if FFrames[i] <> nil then FFrames[i].FDataProvider := nil;
+end;
+
+
 { TIpHtmlNvFrame }
 
 procedure TIpHtmlNvFrame.InitHtml;
@@ -15099,6 +15110,7 @@ begin
   if (Operation = opRemove) then
     if (AComponent = DataProvider) then begin
       DataProvider := nil;
+      FMasterFrame.RemoveDataProvider;
     end;
   inherited Notification(AComponent, Operation);
 end;
