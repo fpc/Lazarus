@@ -5,9 +5,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-11-21 04:02+0300\n"
+"PO-Revision-Date: 2016-02-10 01:08+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: ipconst.cacheadding
 msgid "Caching item (%s = %s)"
@@ -378,7 +380,7 @@ msgstr "Не назначен провайдер данных"
 
 #: ipconst.shtmlnogetimage
 msgid "No OnGetImage event handler assigned"
-msgstr "Не назначен обработчик события OnGetImage"
+msgstr "Не присвоен обработчик события OnGetImage"
 
 #: ipconst.shtmlnographic
 msgid "Picture object contains no graphic object"
@@ -2559,4 +2561,3 @@ msgstr "Прибыл по крайней мере один путь"
 #: ipconst.swsa_qos_traffic_ctrl_error
 msgid "Problem with some part of the flowspec"
 msgstr "Ошибка в одной из частей flowspec"
-

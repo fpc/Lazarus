@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: sdb_consts.scancelrecordsexported
 msgid "Exported %d before user canceled."
@@ -63,7 +65,7 @@ msgstr "Выберите экспортируемые &поля"
 
 #: sdb_consts.serrnodatasetassigned
 msgid "DataExporter has no Dataset assigned."
-msgstr "У DataExporter отсутствует назначенный набор данных."
+msgstr "У DataExporter отсутствует присвоенный набор данных."
 
 #: sdb_consts.serropeningdataset
 msgid "Could not open dataset for exporting: %s"
@@ -80,4 +82,3 @@ msgstr "Экспорт записей (%d шт.) успешно завершён
 #: sdb_consts.sprogress
 msgid "Exporting %d records"
 msgstr "Экспорт записи %d"
-
