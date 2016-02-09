@@ -46,6 +46,8 @@ type
     ScrollBox: TScrollBox;
     procedure CopyActionExecute(Sender: TObject);
     procedure CopyActionUpdate(Sender: TObject);
+    procedure ImagePreviewPaintBackground(ASender: TObject; ACanvas: TCanvas;
+      ARect: TRect);
     procedure PasteActionExecute(Sender: TObject);
     procedure PasteActionUpdate(Sender: TObject);
     procedure ClearActionExecute(Sender: TObject);
@@ -54,6 +56,7 @@ type
     procedure FileSaveActionExecute(Sender: TObject);
     procedure FileSaveActionUpdate(Sender: TObject);
     procedure PictureChanged(Sender: TObject);
+    procedure ScrollBoxResize(Sender: TObject);
   private
     FFileName: String;
     FModified: Boolean;
@@ -104,6 +107,34 @@ begin
   CopyAction.Enabled := ImagePreview.Picture.Graphic <> nil;
 end;
 
+procedure TGraphicPropertyEditorForm.ImagePreviewPaintBackground(
+  ASender: TObject; ACanvas: TCanvas; ARect: TRect);
+const
+  cell=8; //8 pixels is usual checkers size
+var
+  bmp: TBitmap;
+  i, j: integer;
+begin
+  //Paint checkers BG picture for transparent image
+  bmp:= TBitmap.Create;
+  try
+    bmp.PixelFormat:= pf24bit;
+    bmp.SetSize(ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
+    bmp.Canvas.Brush.Color:= clWhite;
+    bmp.Canvas.FillRect(0, 0, bmp.Width, bmp.Height);
+    bmp.Canvas.Brush.Color:= clLtGray;
+
+    for i:= 0 to bmp.Width div cell do
+      for j:= 0 to bmp.Height div cell do
+        if not (Odd(i) xor Odd(j)) then
+          bmp.Canvas.FillRect(i*cell, j*cell, (i+1)*cell, (j+1)*cell);
+
+    ACanvas.CopyRect(ARect, bmp.Canvas, Rect(0, 0, bmp.Width, bmp.Height));
+  finally
+    FreeAndNil(bmp);
+  end;
+end;
+
 procedure TGraphicPropertyEditorForm.FileSaveActionUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := (Graphic <> nil) and (not Graphic.Empty);
@@ -147,6 +178,21 @@ begin
     ScrollBox.Hint := Graphic.ClassName
   else
     ScrollBox.Hint := '';
+
+  ScrollBoxResize(Self);
+end;
+
+procedure TGraphicPropertyEditorForm.ScrollBoxResize(Sender: TObject);
+begin
+  if ImagePreview.Width<ScrollBox.ClientWidth then
+    ImagePreview.Left:= (ScrollBox.ClientWidth-ImagePreview.Width) div 2
+  else
+    ImagePreview.Left:= 0;
+
+  if ImagePreview.Height<ScrollBox.ClientHeight then
+    ImagePreview.Top:= (ScrollBox.ClientHeight-ImagePreview.Height) div 2
+  else
+    ImagePreview.Top:= 0;
 end;
 
 procedure TGraphicPropertyEditorForm.FileSaveActionExecute(Sender: TObject);
