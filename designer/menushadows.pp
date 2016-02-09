@@ -2637,11 +2637,11 @@ begin
   GlobalDesignHook.AddHandlerObjectPropertyChanged(@OnObjectPropertyChanged);
   GlobalDesignHook.AddHandlerModified(@OnDesignerModified);
   GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnDesignerRefreshPropertyValues);
+  Parent := aForm;
   AutoSize := False;
   Color := clBtnFace;
   BorderStyle := bsNone;
   Align := alClient;
-  Parent := aForm;
 end;
 
 procedure TShadowMenu.AddFirstMenu(Sender: TObject);
