@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-02-09 02:11+0300\n"
+"PO-Revision-Date: 2016-02-10 01:48+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -11832,7 +11832,7 @@ msgstr "Дополнительный конфликт комбинаций кл�
 
 #: lazarusidestrconsts.lismenueditorgethelptousethiseditor
 msgid "Get help to use this editor"
-msgstr ""
+msgstr "Открыть справку для этого редактора"
 
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
@@ -11840,7 +11840,7 @@ msgstr "&Захватить клавишу"
 
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
 msgid "GroupIndex value(s): %s"
-msgstr ""
+msgstr "Значения GroupIndex: %s"
 
 #: lazarusidestrconsts.lismenueditorinadequatedescription
 msgid "Inadequate Description"
@@ -11848,7 +11848,7 @@ msgstr "Некорректное описание"
 
 #: lazarusidestrconsts.lismenueditorinsertmenutemplateintorootofs
 msgid "Insert menu template into root of %s"
-msgstr ""
+msgstr "Вставить шаблон меню на верхний уровень %s"
 
 #: lazarusidestrconsts.lismenueditorinsertselectedmenutemplate
 msgid "Insert selected menu template"
@@ -11942,7 +11942,7 @@ msgstr "<нет>,<нет>"
 
 #: lazarusidestrconsts.lismenueditornoradioitemsinthismenu
 msgid "No radioitems in this menu"
-msgstr ""
+msgstr "Элементы-переключатели отсутствуют"
 
 #: lazarusidestrconsts.lismenueditornoshortcutconflicts
 msgid "<no shortcut conflicts>"
@@ -11954,7 +11954,7 @@ msgstr "Пользовательские шаблоны меню отсутст�
 
 #: lazarusidestrconsts.lismenueditorpickaniconfroms
 msgid "Pick an icon from %s"
-msgstr ""
+msgstr "Добавить значок из %s"
 
 #: lazarusidestrconsts.lismenueditorpopupassignmentss
 msgid "Popup assignments: %s"
@@ -11982,11 +11982,11 @@ msgstr "&Устранить конфликты комбинаций клавиш
 
 #: lazarusidestrconsts.lismenueditorrootmenu
 msgid "Root menu"
-msgstr "Корневое меню"
+msgstr "Меню верхнего уровня"
 
 #: lazarusidestrconsts.lismenueditorsavedtemplates
 msgid "Saved templates"
-msgstr ""
+msgstr "Сохранённые шаблоны"
 
 #: lazarusidestrconsts.lismenueditorsavemenuasatemplate
 msgid "&Save menu as a template ..."
@@ -12058,7 +12058,7 @@ msgstr "Комбинации клавиш в %s (%d)"
 
 #: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
 msgid "ShowMenuEditor: TMenu parameter is nil"
-msgstr ""
+msgstr "ShowMenuEditor: параметр TMenu является нулём"
 
 #: lazarusidestrconsts.lismenueditorsins
 msgid "\"%s\" in %s"
@@ -12074,7 +12074,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsisnotaradioitem
 msgid "%s is not a radioitem"
-msgstr ""
+msgstr "%s не является элементом-переключателем"
 
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
 msgid "Please expand: \"%s\" is not a sufficient Description"
@@ -12082,7 +12082,7 @@ msgstr "Введите более длинное описание: \"%s\" сли
 
 #: lazarusidestrconsts.lismenueditorsomewidgetsetsdonotallowseparatorsinthemainmenubar
 msgid "Some widgetsets do not allow separators in the main menubar"
-msgstr ""
+msgstr "Некоторые библиотеки виджетов не разрешают иметь разделители в главной строке меню"
 
 #: lazarusidestrconsts.lismenueditorsshortcuts
 msgid "%s: Shortcuts"
@@ -12102,11 +12102,11 @@ msgstr "Подменю %s"
 
 #: lazarusidestrconsts.lismenueditorstandardtemplates
 msgid "Standard templates"
-msgstr ""
+msgstr "Стандартные шаблоны"
 
 #: lazarusidestrconsts.lismenueditortemplatedescription
 msgid "Template description:"
-msgstr ""
+msgstr "Описание шаблона:"
 
 #: lazarusidestrconsts.lismenueditortemplates
 msgid "&Templates"
@@ -12124,7 +12124,7 @@ msgid ""
 msgstr ""
 "Пользовательские шаблоны меню отсутствуют.\n"
 "\n"
-"Доступны только шаблоны, имеющиеся по умолчанию.\n"
+"Доступны только стандартные шаблоны, имеющиеся по умолчанию.\n"
 
 #: lazarusidestrconsts.lismenueditortsclistgetscanlistcompnameinvalidindexdforfscanlis
 msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"
