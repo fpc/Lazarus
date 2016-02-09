@@ -72,7 +72,9 @@ type
     FShowingBottomFake: boolean;
     FShowingRightFake: boolean;
     FState: TShadowItemDisplayState;
+    function GetBitmapLeftTop: TPoint;
     function GetBottomFake: TFake;
+    function GetIconTopLeft: TPoint;
     function GetIsInMenuBar: boolean;
     function GetIsMainMenu: boolean;
     function GetLevel: integer;
@@ -80,6 +82,7 @@ type
     function GetShortcutWidth: integer;
     function GetShowingBottomFake: boolean;
     function GetShowingRightFake: boolean;
+    function GetSubImagesIconTopLeft: TPoint;
     procedure SetState(AValue: TShadowItemDisplayState);
   protected
     function GetHeight: integer;
@@ -2991,6 +2994,16 @@ begin
   Result:=FRealItem.IsInMenuBar;
 end;
 
+function TShadowItem.GetIsMainMenu: boolean;
+begin
+  Result:=FShadowMenu.IsMainMenu;
+end;
+
+function TShadowItem.GetLevel: integer;
+begin
+  Result:=FParentBox.Level;
+end;
+
 function TShadowItem.GetBottomFake: TFake;
 begin
   Result:=nil;
@@ -3003,33 +3016,16 @@ begin
     end;
 end;
 
-function TShadowItem.GetIsMainMenu: boolean;
-begin
-  Result:=FShadowMenu.IsMainMenu;
-end;
-
-function TShadowItem.GetLevel: integer;
-begin
-  Result:=FParentBox.Level;
-end;
-{
-function TShadowItem.GetMenu: TMenu;
-begin
-  Result:=FShadowMenu.FMenu;
-end;
-}
 function TShadowItem.GetRightFake: TFake;
 begin
-  if (FShadowMenu.SelectedShadowItem <> Self) then
-    Result:=nil
-  else case FRealItem.IsInMenuBar of
-    False: if (FShadowMenu.AddSubMenuFake.Visible) then
-             Result:=FRightFake
-           else Result:=nil;
-    True: if FShadowMenu.AddItemFake.Visible then
-            Result:=FRightFake
-          else Result:=nil;
-  end;
+  Result:=nil;
+  if (FShadowMenu.SelectedShadowItem = Self) then
+    case FRealItem.IsInMenuBar of
+      False: if (FShadowMenu.AddSubMenuFake.Visible) then
+               Result:=FRightFake;
+      True: if FShadowMenu.AddItemFake.Visible then
+              Result:=FRightFake;
+    end;
 end;
 
 function TShadowItem.GetShortcutWidth: integer;
@@ -3071,32 +3067,39 @@ begin
   end;
 end;
 
+function TShadowItem.GetIconTopLeft: TPoint;
+begin
+  Result:=Point(1, 1);
+  if (FShadowMenu.FMenu.Images.Height < ClientHeight) then
+    Result.y:=(ClientHeight - FShadowMenu.FMenu.Images.Height) div 2;
+  if (FShadowMenu.FMenu.Images.Width < Gutter_X) then
+    Result.x:=(Gutter_X - FShadowMenu.FMenu.Images.Width) div 2;
+end;
+
+function TShadowItem.GetBitmapLeftTop: TPoint;
+begin
+  Result:=Point(1, 1);
+  if (FRealItem.Bitmap.Height < ClientHeight) then
+    Result.y:=(ClientHeight - FRealItem.Bitmap.Height) div 2;
+  if (FRealItem.Bitmap.Width < Gutter_X) then
+    Result.x:=(Gutter_X - FRealItem.Bitmap.Width) div 2;
+end;
+
+function TShadowItem.GetSubImagesIconTopLeft: TPoint;
+begin
+  Result:=Point(1, 1);
+  if (FRealItem.Parent.SubMenuImages.Height < ClientHeight) then
+    Result.y:=(ClientHeight - FRealItem.Parent.SubMenuImages.Height) div 2;
+  if (FRealItem.Parent.SubMenuImages.Width < Gutter_X) then
+    Result.x:=(Gutter_X - FRealItem.Parent.SubMenuImages.Width) div 2;
+end;
+
 procedure TShadowItem.Paint;
 var
   r, gutterR: TRect;
-  dets: TThemedElementDetails;
   textFlags: integer = DT_VCENTER or DT_SINGLELINE or DT_EXPANDTABS or DT_CENTER;
   tStyle: TTextStyle;
-  alygn: TAlignment;
   s: string;
-
-   function GetIconTopLeft: TPoint;
-    begin
-      Result:=Point(1, 1);
-      if (FShadowMenu.FMenu.Images.Height < ClientHeight) then
-        Result.y:=(ClientHeight - FShadowMenu.FMenu.Images.Height) div 2;
-      if (FShadowMenu.FMenu.Images.Width < Gutter_X) then
-        Result.x:=(Gutter_X - FShadowMenu.FMenu.Images.Width) div 2;
-    end;
-
-   function GetBitmapLeftTop: TPoint;
-    begin
-      Result:=Point(1, 1);
-      if (FRealItem.Bitmap.Height < ClientHeight) then
-        Result.y:=(ClientHeight - FRealItem.Bitmap.Height) div 2;
-      if (FRealItem.Bitmap.Width < Gutter_X) then
-        Result.x:=(Gutter_X - FRealItem.Bitmap.Width) div 2;
-    end;
 
   procedure DrawMenuBarItem;
   var
@@ -3105,6 +3108,7 @@ var
     x, y: integer;
     sz: TSize;
     pt: TPoint;
+    dets: TThemedElementDetails;
   begin
     if (FState = dsSelected) then begin
       Canvas.Brush.Color:=clHighlight;
@@ -3168,7 +3172,8 @@ var
     end;
     if FRealItem.IsLine and (FState = dsSelected) then
       Canvas.FillRect(r.Left, r.Top+2, r.Right, r.Bottom+2)
-    else Canvas.FillRect(r);
+    else
+      Canvas.FillRect(r);
     gutterR:=Rect(Gutter_X, 0, Gutter_X+1, ClientHeight);
     LCLIntf.DrawEdge(Canvas.Handle, gutterR, EDGE_ETCHED, BF_LEFT);
   end;
@@ -3176,16 +3181,7 @@ var
   procedure DrawCheckMarkIcon;
   var
     pt: TPoint;
-
-    function GetSubImagesIconTopLeft: TPoint;
-    begin
-      Result:=Point(1, 1);
-      if (FRealItem.Parent.SubMenuImages.Height < ClientHeight) then
-        Result.y:=(ClientHeight - FRealItem.Parent.SubMenuImages.Height) div 2;
-      if (FRealItem.Parent.SubMenuImages.Width < Gutter_X) then
-        Result.x:=(Gutter_X - FRealItem.Parent.SubMenuImages.Width) div 2;
-    end;
-
+    dets: TThemedElementDetails;
   begin
     if FRealItem.Checked then begin
       gutterR:=r;
@@ -3247,7 +3243,8 @@ var
     Canvas.Brush.Style:=bsClear;
     if FRealItem.RightJustify then
       textFlags:=textFlags or DT_RIGHT
-    else textFlags:=textFlags or DT_LEFT;
+    else
+      textFlags:=textFlags or DT_LEFT;
     r.Left:=DropDown_Text_Offset;
     oldFontStyle:=Canvas.Font.Style;
     if FRealItem.Default then
@@ -3278,29 +3275,30 @@ var
     if sc2 then
       s2:=ShortCutToText(FRealItem.ShortCutKey2);
     if sc1 or sc2 then    //#todo allow for rightjustify?
-      begin
-        if sc1 and not sc2 then
-          s:=s1
-        else if sc2 and not sc1 then
-               s:=s2
-             else s:=s1 + ', ' + s2;
-        x:=r.Right - Canvas.TextWidth(s) - DropDown_Height;
-        case FState of
-          dsNormal: Canvas.TextRect(r, x, y, s, tStyle);
-          dsSelected: begin
-              OldFontColor:=Canvas.Font.Color;
-              Canvas.Font.Color:=clHighlightText;
-              Canvas.TextRect(r, x, y, s, tStyle);
-              Canvas.Font.Color:=oldFontColor;
-            end;
-          dsDisabled: begin
-              OldFontColor:=Canvas.Font.Color;
-              Canvas.Font.Color:=clBtnShadow;
-              Canvas.TextRect(r, x, y, s, tStyle);
-              Canvas.Font.Color:=OldFontColor;
-            end;
-        end;
+    begin
+      if sc1 and not sc2 then
+        s:=s1
+      else if sc2 and not sc1 then
+        s:=s2
+      else
+        s:=s1 + ', ' + s2;
+      x:=r.Right - Canvas.TextWidth(s) - DropDown_Height;
+      case FState of
+        dsNormal: Canvas.TextRect(r, x, y, s, tStyle);
+        dsSelected: begin
+            OldFontColor:=Canvas.Font.Color;
+            Canvas.Font.Color:=clHighlightText;
+            Canvas.TextRect(r, x, y, s, tStyle);
+            Canvas.Font.Color:=oldFontColor;
+          end;
+        dsDisabled: begin
+            OldFontColor:=Canvas.Font.Color;
+            Canvas.Font.Color:=clBtnShadow;
+            Canvas.TextRect(r, x, y, s, tStyle);
+            Canvas.Font.Color:=OldFontColor;
+          end;
       end;
+    end;
     Canvas.Font.Style:=oldFontStyle;
   end;
 
@@ -3336,41 +3334,43 @@ var
     Canvas.Pen.Color:=oldPenColor;
   end;
 
+var
+  alygn: TAlignment;
 begin
-  if not FParentBox.Updating then begin
-    r:=ClientRect;
-    if FRealItem.RightJustify then
-      alygn:=taRightJustify
-    else
-      alygn:=taLeftJustify;
-    if (FRealItem.Caption = '') then
-      s:=FRealItem.Name
-    else s:=FRealItem.Caption;
-    FillChar(tStyle{%H-}, SizeOf(tStyle), 0);
-    with tStyle do begin
-      Alignment:=BidiFlipAlignment(alygn, UseRightToLeftAlignment);
-      Layout:=tlCenter;
-      SingleLine:=True;
-      Clipping:=True;
-      ShowPrefix:=True;
-      RightToLeft:=UseRightToLeftReading;
-      ExpandTabs:=True;
+  if FParentBox.Updating then Exit;
+  r:=ClientRect;
+  if FRealItem.RightJustify then
+    alygn:=taRightJustify
+  else
+    alygn:=taLeftJustify;
+  if (FRealItem.Caption = '') then
+    s:=FRealItem.Name
+  else
+    s:=FRealItem.Caption;
+  FillChar(tStyle{%H-}, SizeOf(tStyle), 0);
+  with tStyle do begin
+    Alignment:=BidiFlipAlignment(alygn, UseRightToLeftAlignment);
+    Layout:=tlCenter;
+    SingleLine:=True;
+    Clipping:=True;
+    ShowPrefix:=True;
+    RightToLeft:=UseRightToLeftReading;
+    ExpandTabs:=True;
+  end;
+  if FRealItem.IsInMenuBar then
+    DrawMenuBarItem
+  else begin
+    DrawBackgroundAndGutter;
+    if FRealItem.IsLine then begin
+      gutterR:=Rect(Gutter_X, Separator_Centre, ClientWidth, Separator_Centre);
+      LCLIntf.DrawEdge(Canvas.Handle, gutterR, EDGE_ETCHED, BF_TOP);
+      Exit;
     end;
-    if FRealItem.IsInMenuBar then
-      DrawMenuBarItem
-    else begin
-      DrawBackgroundAndGutter;
-      if FRealItem.IsLine then begin
-        gutterR:=Rect(Gutter_X, Separator_Centre, ClientWidth, Separator_Centre);
-        LCLIntf.DrawEdge(Canvas.Handle, gutterR, EDGE_ETCHED, BF_TOP);
-        Exit;
-      end;
-      if (FRealItem.Checked or FRealItem.HasIcon) then
-        DrawCheckMarkIcon;
-      DrawText;
-      if (FRealItem.Count > 0) then
-        DrawChevron;
-    end;
+    if (FRealItem.Checked or FRealItem.HasIcon) then
+      DrawCheckMarkIcon;
+    DrawText;
+    if (FRealItem.Count > 0) then
+      DrawChevron;
   end;
 end;
 
@@ -3520,8 +3520,6 @@ begin
   FGui.Free;
   if (GlobalDesignHook <> nil) then
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
-  if MenuDesignerSingleton = Self then
-    MenuDesignerSingleton := nil;
   inherited Destroy;
 end;
 

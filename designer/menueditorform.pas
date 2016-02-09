@@ -33,7 +33,7 @@ uses
   // LazUtils
   LazUTF8,
   // IdeIntf
-  LazIDEIntf, FormEditingIntf, PropEdits,
+  FormEditingIntf, PropEdits,
   // IDE
   LazarusIDEStrConsts, MenuDesignerBase, MenuShortcuts;
 
@@ -91,7 +91,7 @@ type
     procedure ScanLookupRoot(aForm: TCustomForm);
     procedure SetupPopupAssignmentsDisplay;
   public
-    constructor Create(aDesigner: TMenuDesignerBase);
+    constructor Create(aDesigner: TMenuDesignerBase); reintroduce;
     destructor Destroy; override;
     procedure LoadVariableButtonGlyphs(isInMenubar: boolean);
     procedure SetMenu(aMenu: TMenu; aMenuItem: TMenuItem);
