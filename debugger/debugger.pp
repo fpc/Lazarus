@@ -79,9 +79,22 @@ type
     property ColumnValueWidth: Integer read FColumnValueWidth write FColumnValueWidth;
   end;
 
+  { TDebuggerWatchesDlgConfig }
+
+  TDebuggerCallStackDlgConfig = class(TDebuggerConfigStoreBase)
+  private
+    FViewCount: Integer;
+  public
+    constructor Create;
+    procedure Init; override;
+  published
+    property ViewCount: Integer read FViewCount write FViewCount;
+  end;
+
   TDebuggerConfigStore = class(TDebuggerConfigStoreBase)
   private
     FDebuggerClass: String;
+    FDlgCallStackConfig: TDebuggerCallStackDlgConfig;
     FTDebuggerWatchesDlgConfig: TDebuggerWatchesDlgConfig;
   public
     procedure Load; override;
@@ -91,6 +104,7 @@ type
     destructor Destroy; override;
     property DebuggerClass: String read FDebuggerClass write FDebuggerClass;
     property DlgWatchesConfig: TDebuggerWatchesDlgConfig read FTDebuggerWatchesDlgConfig;
+    property DlgCallStackConfig: TDebuggerCallStackDlgConfig read FDlgCallStackConfig write FDlgCallStackConfig;
   published
   end;
 
@@ -1816,6 +1830,18 @@ begin
   Result:=bpaStop;
 end;
 
+{ TDebuggerCallStackDlgConfig }
+
+constructor TDebuggerCallStackDlgConfig.Create;
+begin
+  Init;
+end;
+
+procedure TDebuggerCallStackDlgConfig.Init;
+begin
+  inherited Init;
+end;
+
 { TIdeThreadFrameEntry }
 
 function TIdeThreadFrameEntry.GetUnitInfoProvider: TDebuggerUnitInfoProvider;
@@ -1942,6 +1968,13 @@ begin
   finally
     ConfigStore.UndoAppendBasePath;
   end;
+  ConfigStore.AppendBasePath('CallStackDlg/');
+  try
+    FDlgCallStackConfig.ConfigStore := ConfigStore;
+    FDlgCallStackConfig.Load;
+  finally
+    ConfigStore.UndoAppendBasePath;
+  end;
 end;
 
 procedure TDebuggerConfigStore.Save;
@@ -1956,17 +1989,26 @@ begin
   finally
     ConfigStore.UndoAppendBasePath;
   end;
+  ConfigStore.AppendBasePath('CallStackDlg/');
+  try
+    FDlgCallStackConfig.ConfigStore := ConfigStore;
+    FDlgCallStackConfig.Save;
+  finally
+    ConfigStore.UndoAppendBasePath;
+  end;
 end;
 
 constructor TDebuggerConfigStore.Create;
 begin
   FTDebuggerWatchesDlgConfig := TDebuggerWatchesDlgConfig.Create;
+  FDlgCallStackConfig := TDebuggerCallStackDlgConfig.Create;
 end;
 
 destructor TDebuggerConfigStore.Destroy;
 begin
   inherited Destroy;
   FreeAndNil(FTDebuggerWatchesDlgConfig);
+  FreeAndNil(FDlgCallStackConfig);
 end;
 
 { TDebuggerUnitInfoProvider }
