@@ -3221,6 +3221,7 @@ begin
         if (ExtToolRelation.Command>=ecExtToolFirst)
         and (ExtToolRelation.Command<=ecExtToolLast) then begin
           fRelations.Remove(ExtToolRelation);
+          fCmdRelCache.Remove(ExtToolRelation);
           ExtToolCat.Delete(i);
           dec(fExtToolCount);
         end;
@@ -3833,6 +3834,7 @@ end;
 procedure TKeyCommandRelationList.RemoveCommand(ACommand: TIDECommand);
 begin
   fRelations.Remove(ACommand);
+  fCmdRelCache.Remove(ACommand);
 end;
 
 function TKeyCommandRelationList.GetCategory(Index: integer): TIDECommandCategory;
