@@ -7139,6 +7139,13 @@ begin
 
   if DoAbortBuild(true)<>mrOK then exit;
 
+  // show messages
+  IDEWindowCreators.ShowForm(MessagesView,EnvironmentOptions.MsgViewFocus);
+
+  // clear old error lines
+  SourceEditorManager.ClearErrorLines;
+  SourceFileMgr.ArrangeSourceEditorAndMessageView(false);
+
   Result:=DoSaveAll([sfDoNotSaveVirtualFiles]);
   if Result<>mrOk then begin
     DebugLn('Error: (lazarus) TMainIDE.DoBuildLazarus: failed because saving failed');
@@ -7174,7 +7181,6 @@ begin
     and (BuildLazProfiles.Current.IdeBuildMode<>bmBuild) then begin
       PkgCompileFlags:=PkgCompileFlags+[pcfCompileDependenciesClean];
       if BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild then begin
-        SourceEditorManager.ClearErrorLines;
         fBuilder.PackageOptions:='';
         Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current, [blfDontBuild]);
         if Result<>mrOk then begin
@@ -7225,7 +7231,6 @@ begin
     end;
 
     // make lazarus ide
-    SourceEditorManager.ClearErrorLines;
     IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean];
     Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current, IDEBuildFlags);
     DoCallBuildingFinishedHandler(lihtLazarusBuildingFinished, Self, Result=mrOk);
