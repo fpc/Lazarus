@@ -84,25 +84,9 @@ msgstr ""
 msgid "Please select"
 msgstr ""
 
-#: tform2.lblmoney.caption
-msgid "LblMoney"
-msgstr ""
-
-#: tform2.lblsum.caption
-msgid "LblSum"
-msgstr ""
-
-#: tform2.lbltodayis.caption
-msgid "LblTodayIs"
-msgstr ""
-
 #: tform2.radiogroup.caption
 msgctxt "TFORM2.RADIOGROUP.CAPTION"
 msgid "Single item"
-msgstr ""
-
-#: tlocalizedform.caption
-msgid "LocalizedForm"
 msgstr ""
 
 #: tmainform.button1.caption

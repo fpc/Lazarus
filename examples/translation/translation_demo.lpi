@@ -13,6 +13,12 @@
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
+      <ExcludedIdentifiers Count="4">
+        <Item1 Value="tform2.lblmoney.caption"/>
+        <Item2 Value="tform2.lblsum.caption"/>
+        <Item3 Value="tform2.lbltodayis.caption"/>
+        <Item4 Value="tlocalizedform.caption"/>
+      </ExcludedIdentifiers>
     </i18n>
     <VersionInfo>
       <StringTable ProductVersion=""/>

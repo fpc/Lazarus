@@ -94,26 +94,10 @@ msgstr "מספר פריטים"
 msgid "Please select"
 msgstr "אנא בחר"
 
-#: tform2.lblmoney.caption
-msgid "LblMoney"
-msgstr ""
-
-#: tform2.lblsum.caption
-msgid "LblSum"
-msgstr ""
-
-#: tform2.lbltodayis.caption
-msgid "LblTodayIs"
-msgstr ""
-
 #: tform2.radiogroup.caption
 msgctxt "tform2.radiogroup.caption"
 msgid "Single item"
 msgstr "פריט בודד"
-
-#: tlocalizedform.caption
-msgid "LocalizedForm"
-msgstr ""
 
 #: tmainform.button1.caption
 msgctxt "TMAINFORM.BUTTON1.CAPTION"

@@ -95,26 +95,10 @@ msgstr "Plusieurs éléments"
 msgid "Please select"
 msgstr "Veuillez choisir"
 
-#: tform2.lblmoney.caption
-msgid "LblMoney"
-msgstr "LblArgent"
-
-#: tform2.lblsum.caption
-msgid "LblSum"
-msgstr "LblSomme"
-
-#: tform2.lbltodayis.caption
-msgid "LblTodayIs"
-msgstr "LblAujourdHui"
-
 #: tform2.radiogroup.caption
 msgctxt "tform2.radiogroup.caption"
 msgid "Single item"
 msgstr "Un seul élément"
-
-#: tlocalizedform.caption
-msgid "LocalizedForm"
-msgstr "FicheTraduite"
 
 #: tmainform.button1.caption
 msgctxt "tmainform.button1.caption"
