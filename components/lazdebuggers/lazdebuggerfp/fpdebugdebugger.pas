@@ -525,7 +525,7 @@ begin
                 params := params + v;
               end;
             end;
-            AContext.Free;
+            AContext.ReleaseReference;
           end;
         end;
       end;
