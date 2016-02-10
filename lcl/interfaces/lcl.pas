@@ -7,7 +7,7 @@ unit LCL;
 interface
 
 uses
-  UnityWSCtrls, AllLCLIntfUnits, LazarusPackageIntf;
+  AllLCLIntfUnits, LazarusPackageIntf;
 
 implementation
 
