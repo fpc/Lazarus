@@ -1873,6 +1873,10 @@ begin
   if Keys and MK_MButton <> 0 then Include(Result, ssMiddle);
   if Keys and MK_XBUTTON1 <> 0 then Include(Result, ssExtra1);
   if Keys and MK_XBUTTON2 <> 0 then Include(Result, ssExtra2);
+  if Keys and MK_DOUBLECLICK <> 0 then Include(Result, ssDouble);
+  if Keys and MK_TRIPLECLICK <> 0 then Include(Result, ssTriple);
+  if Keys and MK_QUADCLICK <> 0 then Include(Result, ssQuad);
+
   if GetKeyState(VK_MENU) < 0 then Include(Result, ssAlt);
   if (GetKeyState(VK_LWIN) < 0) or (GetKeyState(VK_RWIN) < 0) then Include(Result, ssMeta);
 end;
@@ -1892,6 +1896,9 @@ begin
   if ssMiddle in ShiftState then Result := Result or MK_MBUTTON;
   if ssExtra1 in ShiftState then Result := Result or MK_XBUTTON1;
   if ssExtra2 in ShiftState then Result := Result or MK_XBUTTON2;
+  if ssDouble in ShiftState then Result := Result or MK_DOUBLECLICK;
+  if ssTriple in ShiftState then Result := Result or MK_TRIPLECLICK;
+  if ssQuad   in ShiftState then Result := Result or MK_QUADCLICK;
 end;
 
 function WindowStateToStr(const State: TWindowState): string;

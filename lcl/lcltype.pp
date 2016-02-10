@@ -2846,6 +2846,10 @@ const
   MK_MBUTTON = $10;
   MK_XBUTTON1 = $20;
   MK_XBUTTON2 = $40;
+  // following are "virtual" key states
+  MK_DOUBLECLICK = $80;
+  MK_TRIPLECLICK = $100;
+  MK_QUADCLICK = $200;
 
 //==============================================
 // Constants from commctrl
