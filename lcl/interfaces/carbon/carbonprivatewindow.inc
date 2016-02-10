@@ -80,21 +80,6 @@ const
 //
 // helper functions used commonly
 //
-  function GetClickCount: Integer;
-  var
-    ClickCount: UInt32;
-  begin
-    Result := 1;
-    
-    if OSError(
-      GetEventParameter(AEvent, kEventParamClickCount, typeUInt32, nil,
-        SizeOf(ClickCount), nil, @ClickCount),
-      SName, SGetEvent, 'kEventParamClickCount') then Exit;
-
-    Result := Integer(ClickCount);
-    {debugln('GetClickCount ClickCount=',dbgs(ClickCount));}
-  end;
-
   function GetMousePoint: TPoint;
   var
     MousePoint: HIPoint;
@@ -167,7 +152,7 @@ const
     {$ENDIF}
     Msg := @AMsg;
 
-    ClickCount := GetClickCount;
+    ClickCount := GetCarbonMouseClickCount(AEvent);
     MouseButton := GetCarbonMouseButton(AEvent);
     MousePoint := GetMousePoint;
 

@@ -66,6 +66,7 @@ function VirtualKeyCodeToMac(AKey: Word): Word;
 function GetBorderWindowAttrs(const ABorderStyle: TFormBorderStyle;
   const ABorderIcons: TBorderIcons): WindowAttributes;
 
+function GetCarbonMouseClickCount(AEvent: EventRef): Integer;
 function GetCarbonMouseButton(AEvent: EventRef): Integer;
 function GetCarbonMsgKeyState: PtrInt;
 function GetCarbonShiftState: TShiftState;
@@ -375,6 +376,27 @@ begin
   else
     Result := Result and not (kWindowCloseBoxAttribute or
       kWindowCollapseBoxAttribute or kWindowFullZoomAttribute);
+end;
+
+{------------------------------------------------------------------------------
+  Name:    GetCarbonMouseClickCount
+  Returns: The click count of mouse
+ ------------------------------------------------------------------------------}
+function GetCarbonMouseClickCount(AEvent: EventRef): Integer;
+var
+  ClickCount: UInt32;
+const
+  SName = 'CarbonWindow_MouseProc';
+begin
+  Result := 1;
+
+  if OSError(
+    GetEventParameter(AEvent, kEventParamClickCount, typeUInt32, nil,
+      SizeOf(ClickCount), nil, @ClickCount),
+    SName, SGetEvent, 'kEventParamClickCount') then Exit;
+
+  Result := Integer(ClickCount);
+  {debugln('GetClickCount ClickCount=',dbgs(ClickCount));}
 end;
 
 {------------------------------------------------------------------------------

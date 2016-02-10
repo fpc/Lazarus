@@ -273,7 +273,12 @@ begin
   Msg.XPos := P.X;
   Msg.YPos := P.Y;
   Msg.Keys := GetCarbonMsgKeyState;
-  
+  case GetCarbonMouseClickCount(AEvent) of
+    2: Msg.Keys := msg.Keys or MK_DOUBLECLICK;
+    3: Msg.Keys := msg.Keys or MK_TRIPLECLICK;
+    4: Msg.Keys := msg.Keys or MK_QUADCLICK;
+  end;
+
   LastMousePos := P;
   
   if (AWidget is TCarbonControl) and
