@@ -1116,6 +1116,7 @@ end;"/>
       </Item212>
       <Item213>
         <Filename Value="gtk2/unitywsctrls.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="UnityWSCtrls"/>
       </Item213>
       <Item214>
