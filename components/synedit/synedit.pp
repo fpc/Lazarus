@@ -6938,9 +6938,15 @@ begin
           DefaultSelectionMode := SEL_MODE[Command];
         end;
       EcFoldLevel1..EcFoldLevel9:
-        FoldAll(Command - EcFoldLevel1);
+        begin
+          FoldAll(Command - EcFoldLevel1);
+          FCaret.Touch;
+        end;
       EcFoldLevel0:
-        UnfoldAll;
+        begin
+          UnfoldAll;
+          FCaret.Touch;
+        end;
       EcFoldCurrent:
         begin
           CY := FFoldedLinesView.ExpandedLineForBlockAtLine(CaretY);
@@ -6950,7 +6956,10 @@ begin
           end;
         end;
       EcUnFoldCurrent:
+        begin
           FFoldedLinesView.UnFoldAtTextIndex(CaretY-1);
+          FCaret.Touch;
+        end;
       EcToggleMarkupWord:
           FMarkupHighCaret.ToggleCurrentWord;
       ecZoomOut, ecZoomIn: begin

@@ -325,6 +325,7 @@ type
     procedure IncAutoMoveOnEdit;
     procedure DecAutoMoveOnEdit;
     procedure ChangeOnTouch;
+    procedure Touch(aChangeOnTouch: Boolean = False);
 
     function WasAtLineChar(aPoint: TPoint): Boolean;
     function WasAtLineByte(aPoint: TPoint): Boolean;
@@ -1337,6 +1338,13 @@ begin
   FChangeOnTouch := True;
   if not Locked then
     FTouched := False;
+end;
+
+procedure TSynEditCaret.Touch(aChangeOnTouch: Boolean);
+begin
+  if aChangeOnTouch then
+    ChangeOnTouch;
+  FTouched := True;
 end;
 
 
