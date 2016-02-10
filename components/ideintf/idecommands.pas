@@ -1418,6 +1418,8 @@ end;
 
 destructor TIDECommand.Destroy;
 begin
+  if Category <> nil then
+    Category := nil;
   FUsers.Free;
   inherited Destroy;
 end;
