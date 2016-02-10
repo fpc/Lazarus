@@ -9527,12 +9527,6 @@ begin
           if ParamList.Count<>1 then exit;
           Result:=ParamList.Items[0];
         end
-        else if (CompareIdentifiers(IdentPos,'IFTHEN')=0)
-        and (StrToIntDef(Scanner.Values['FPC_FULLVERSION'],0)>=30100) then //IfThen is available since FPC 3.1
-        begin
-          if ParamList.Count<>3 then exit;
-          Result:=ParamList.Items[1]; // ifthen sets the result based on the second parameter
-        end
         else if (CompareIdentifiers(IdentPos,'LOW')=0)
              or (CompareIdentifiers(IdentPos,'HIGH')=0) then
         begin
