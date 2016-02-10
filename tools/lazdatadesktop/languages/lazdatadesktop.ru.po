@@ -454,10 +454,8 @@ msgid "Connection type"
 msgstr ""
 
 #: lazdatadeskstr.sld_connecttoadatabase
-#, fuzzy,badformat
-#| msgid "Connect to a database"
 msgid "Connect to a database of type %s"
-msgstr "Подключиться к базе данных"
+msgstr "Подключиться к базе данных типа \"%s\""
 
 #: lazdatadeskstr.sld_createfulltablecreationsql
 msgid "Create full table creation SQL"
@@ -555,11 +553,9 @@ msgid "&OK"
 msgstr "&ОК"
 
 #: lazdatadeskstr.sld_opendatadictionaryfilter
-#, fuzzy
-#| msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
 msgctxt "lazdatadeskstr.sld_opendatadictionaryfilter"
 msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
-msgstr "Файлы словарей данных|*.fpd|Файлы INI|*.ini|Все файлы|*.*"
+msgstr "Файлы словарей данных (fdd)|*.fdd|Файлы INI|*.ini|Все файлы|*.*"
 
 #: lazdatadeskstr.sld_opendatadictionarytitle
 msgid "Open data dictionary"
@@ -588,11 +584,9 @@ msgid "Last used on"
 msgstr "Последнее использование"
 
 #: lazdatadeskstr.sld_savefileasfilter
-#, fuzzy
-#| msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
 msgctxt "lazdatadeskstr.sld_savefileasfilter"
 msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
-msgstr "Файлы словарей данных|*.fpd|Файлы INI|*.ini|Все файлы|*.*"
+msgstr "Файлы словарей данных (fdd)|*.fdd|Файлы INI|*.ini|Все файлы|*.*"
 
 #: lazdatadeskstr.sld_savefileastitle
 msgid "Save file as"
@@ -652,7 +646,7 @@ msgstr ""
 
 #: lazdatadeskstr.sld_unknowntype
 msgid "Unknown type"
-msgstr ""
+msgstr "Неизвестный тип"
 
 #: lazdatadeskstr.sld_update
 msgid "&Update"
