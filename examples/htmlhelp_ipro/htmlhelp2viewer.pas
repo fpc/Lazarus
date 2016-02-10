@@ -147,5 +147,8 @@ begin
   BringToFront;  // needed if already open and another help is shown
 end;
 
+finalization
+  FreeAndNil(Help_Viewer);
+
 end.
 
