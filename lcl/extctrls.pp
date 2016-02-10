@@ -1167,8 +1167,10 @@ type
     FControlList: TFlowPanelControlList;
     FAutoWrap: Boolean;
     FFlowStyle: TFlowStyle;
+    FFlowLayout: TTextLayout;
     procedure SetAutoWrap(const AAutoWrap: Boolean);
     procedure SetControlList(const AControlList: TFlowPanelControlList);
+    procedure SetFlowLayout(const aFlowLayout: TTextLayout);
     procedure SetFlowStyle(const AFlowStyle: TFlowStyle);
   protected
     procedure CMControlChange(var Message: TCMControlChange); message CM_CONTROLCHANGE;
@@ -1187,6 +1189,7 @@ type
     property AutoWrap: Boolean read FAutoWrap write SetAutoWrap;
     property ControlList: TFlowPanelControlList read FControlList write SetControlList;
     property FlowStyle: TFlowStyle read FFlowStyle write SetFlowStyle;
+    property FlowLayout: TTextLayout read FFlowLayout write SetFlowLayout;
   end;
 
   TFlowPanel = class(TCustomFlowPanel)
@@ -1213,6 +1216,7 @@ type
     property DragKind;
     property DragMode;
     property Enabled;
+    property FlowLayout;
     property FlowStyle;
     property FullRepaint;
     property Font;

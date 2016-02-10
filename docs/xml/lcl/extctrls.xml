@@ -6049,6 +6049,11 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
       </element><element name="TCustomFlowPanel"><short>The base class for <link id="#LCLBase.extctrls.TFlowPanel">TFlowPanel</link>
         </short>
       </element>
+    <element name="TCustomFlowPanel.FlowLayout"><short>Use FlowLayout to set the layout (alignment) for the non-flow coordinate. Default: tlTop</short><descr>In case of horizontal/vertical flow style:
+tlTop: top/left alignment in row/column
+tlCenter: center
+tlBottom: bottom/right</descr>
+      </element>
     </module>
     <!-- ExtCtrls -->
   </package>
