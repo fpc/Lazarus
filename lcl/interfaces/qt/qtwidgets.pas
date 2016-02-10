@@ -3647,6 +3647,11 @@ begin
       if ((MButton and QtLeftButton) = 0) and ((MButton and QtRightButton) = 0) and
         ((MButton and QtMidButton) = 0) then
       Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
+      case LastMouse.ClickCount of
+        2: Msg.Keys := Msg.Keys or MK_DOUBLECLICK;
+        3: Msg.Keys := Msg.Keys or MK_TRIPLECLICK;
+        4: Msg.Keys := Msg.Keys or MK_QUADCLICK;
+      end;
       case MButton of
         QtLeftButton: Msg.Msg := LM_LBUTTONUP;
         QtRightButton: Msg.Msg := LM_RBUTTONUP;
