@@ -120,7 +120,8 @@ uses
   Gtk2WSSpin,
   Gtk2WSStdCtrls,
   Gtk2WSPairSplitter,
-  Gtk2WSPrivate;
+  Gtk2WSPrivate,
+  UnityWSCtrls;
 
 // imglist
 function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
@@ -460,7 +461,10 @@ end;
 
 function RegisterCustomTrayIcon: Boolean; alias : 'WSRegisterCustomTrayIcon';
 begin
-  RegisterWSComponent(TCustomTrayIcon, TGtk2WSCustomTrayIcon);
+  if UnityAppIndicatorInit then
+    RegisterWSComponent(TCustomTrayIcon, TUnityWSCustomTrayIcon)
+  else
+    RegisterWSComponent(TCustomTrayIcon, TGtk2WSCustomTrayIcon);
   Result := True;
 end;
 

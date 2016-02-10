@@ -9,8 +9,8 @@ interface
 {$mode delphi}
 uses
   GLib2, Gtk2, Gdk2, Gdk2Pixbuf,
-  Classes, SysUtils, Graphics,
-  Controls, Forms, ExtCtrls, WSExtCtrls, LCLType;
+  Classes, SysUtils, dynlibs,
+  Graphics, Controls, Forms, ExtCtrls, WSExtCtrls, LCLType;
 
 { TUnityWSCustomTrayIcon is the class for tray icons on systems
   running the Unity desktop environment.
@@ -39,7 +39,7 @@ type
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
-    class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
+    class function GetPosition(const {%H-}ATrayIcon: TCustomTrayIcon): TPoint; override;
   end;
 
 { UnityAppIndicatorInit returns true if appindicator libraries can be loaded }
@@ -253,8 +253,6 @@ var
     Result := Proc <> nil;
   end;
 
-var
-  S: string;
 begin
   Result := False;
   if Loaded then
