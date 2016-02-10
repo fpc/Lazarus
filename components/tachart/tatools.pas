@@ -1337,12 +1337,14 @@ var
   ext: TDoubleRect;
 begin
   ext := FChart.LogicalExtent;
-  center := FChart.ImageToGraph(APoint);
   sz := ext.b - ext.a;
-  if FixedPoint and (sz.X <> 0) and (sz.Y <> 0) then
-    ratio := (center - ext.a) / sz
-  else
+  if FixedPoint and (sz.X <> 0) and (sz.Y <> 0) then begin
+    center := FChart.ImageToGraph(APoint);
+    ratio := (center - ext.a) / sz;
+  end else begin
+    center := DoublePoint((ext.a.x + ext.b.X) / 2, (ext.a.y + ext.b.y) / 2);
     ratio := DoublePoint(0.5, 0.5);
+  end;
   ext.a := center - sz * ratio / AFactor;
   ext.b := center + sz * (DoublePoint(1, 1) - ratio) / AFactor;
   DoZoom(ext, false);
