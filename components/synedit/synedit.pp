@@ -8172,9 +8172,9 @@ begin
     end else begin
       BB := BlockBegin;
       BE := BlockEnd;
-      if (BE.X = 1)
-      then e := BE.y - 1
-      else e := BE.y;
+      if FBlockSelection.LastLineHasSelection
+      then e := BE.y
+      else e := BE.y - 1;
     end;
 
     Spaces := StringOfChar(#32, FBlockIndent);
@@ -8237,10 +8237,10 @@ begin
     BB := BlockBegin;
     BE := BlockEnd;
     // convert selection to complete lines
-    if BE.X = 1 then
-      e := BE.y - 1
+    if FBlockSelection.LastLineHasSelection then
+      e := BE.y
     else
-      e := BE.y;
+      e := BE.y - 1;
   end;
 
   IncPaintLock;

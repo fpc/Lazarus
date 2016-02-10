@@ -123,6 +123,7 @@ type
     function  AdjustBytePosToCharacterStart(Line: integer; BytePos: integer): integer;
     function  GetFirstLineBytePos: TPoint;
     function  GetLastLineBytePos: TPoint;
+    function GetLastLineHasSelection: Boolean;
     procedure SetAutoExtend(AValue: Boolean);
     procedure SetCaret(const AValue: TSynEditCaret);
     procedure SetEnabled(const Value : Boolean);
@@ -186,6 +187,7 @@ type
     // First and Last Pos are ordered according to the text flow (LTR)
     property  FirstLineBytePos: TPoint read GetFirstLineBytePos;
     property  LastLineBytePos: TPoint read GetLastLineBytePos;
+    property  LastLineHasSelection: Boolean read GetLastLineHasSelection;
     property  InvalidateLinesMethod : TInvalidateLines write FInvalidateLinesMethod;
     property  Caret: TSynEditCaret read FCaret write SetCaret;
     property  Persistent: Boolean read FPersistent write SetPersistent;
@@ -2360,6 +2362,11 @@ begin
     Result := StartLineBytePos
   else
     Result := EndLineBytePos;
+end;
+
+function TSynEditSelection.GetLastLineHasSelection: Boolean;
+begin
+  Result := (LastLineBytePos.x > 1) or ((FActiveSelectionMode = smLine) and FForceSingleLineSelected);
 end;
 
 procedure TSynEditSelection.SetAutoExtend(AValue: Boolean);
