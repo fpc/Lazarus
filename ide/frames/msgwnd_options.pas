@@ -248,7 +248,7 @@ begin
   MWShowIconsCheckBox.Hint:=dlgAnIconForErrorWarningHintIsShown;
   MWAlwaysDrawFocusedCheckBox.Caption:=lisAlwaysDrawSelectedItemsFocused;
   MWAlwaysDrawFocusedCheckBox.Hint:=lisDrawTheSelectionFocusedEvenIfTheMessagesWindowHasN;
-  MWFocusCheckBox.Caption:=dlgEOFocusMessagesAfterCompilation;
+  MWFocusCheckBox.Caption:=dlgEOFocusMessagesAtCompilation;
   MWMaxProcsLabel.Caption:=Format(lisMaximumParallelProcesses0MeansDefault, [
     IntToStr(DefaultMaxProcessCount)]);
   MWShowFPCMsgLinesCompiledCheckBox.Caption:=lisShowFPCMessageLinesCompiled;

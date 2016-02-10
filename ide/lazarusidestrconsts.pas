@@ -1186,7 +1186,7 @@ resourcestring
   // Options dialog
   dlgIDEOptions = 'IDE Options';
   dlgBakNoSubDirectory = '(no subdirectory)';
-  dlgEOFocusMessagesAfterCompilation = 'Focus messages after compilation';
+  dlgEOFocusMessagesAtCompilation = 'Focus messages at compilation';
   lisMaximumParallelProcesses0MeansDefault = 'Maximum parallel processes, 0 '
     +'means default (%s)';
   lisShowFPCMessageLinesCompiled = 'Show FPC message "lines compiled"';
