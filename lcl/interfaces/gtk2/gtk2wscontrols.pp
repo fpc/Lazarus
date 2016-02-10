@@ -696,7 +696,7 @@ begin
       win_gravity := gtk_window_get_gravity({%H-}PGtkWindow(AForm.Handle));
     end;
     //debugln('TGtk2WSWinControl.ConstraintsChange A ',GetWidgetDebugReport(Widget),' max=',dbgs(Geometry.max_width),'x',dbgs(Geometry.max_height));
-    if (AForm.BorderStyle in [bsDialog, bsSingle]) then
+    if (AForm.BorderStyle in [bsDialog, bsSingle, bsToolWindow]) then
       gtk_window_set_geometry_hints({%H-}PGtkWindow(AForm.Handle), nil, @Geometry,
         GDK_HINT_POS or GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE)
     else
