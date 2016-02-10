@@ -1107,7 +1107,7 @@ end;
 function TCustomListView.FindCaption(StartIndex: Integer; Value: string;
   Partial, Inclusive, Wrap: Boolean; PartStart: Boolean = True): TListItem;
 begin
-  Result := FListItems.FindCaption(StartIndex, Value, Partial, Inclusive, Wrap);
+  Result := FListItems.FindCaption(StartIndex, Value, Partial, Inclusive, Wrap, PartStart);
 end;
 
 function TCustomListView.FindData(StartIndex: Integer; Value: Pointer;
