@@ -1534,6 +1534,11 @@ begin
     XPos := GET_X_LPARAM(LParam);
     YPos := GET_Y_LPARAM(LParam);
     Keys := WParam;
+    case MouseDownCount of
+      2: Keys := Keys or MK_DOUBLECLICK;
+      3: Keys := Keys or MK_TRIPLECLICK;
+      4: Keys := Keys or MK_QUADCLICK;
+    end;
   end;
 end;
 
