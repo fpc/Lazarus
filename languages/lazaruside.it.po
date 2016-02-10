@@ -1543,9 +1543,9 @@ msgctxt "lazarusidestrconsts.dlgenvtype"
 msgid "Type"
 msgstr "Tipo"
 
-#: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
-msgid "Focus messages after compilation"
-msgstr "Focus sui messaggi dopo la compilazione"
+#: lazarusidestrconsts.dlgeofocusmessagesatcompilation
+msgid "Focus messages at compilation"
+msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -18909,9 +18909,25 @@ msgstr "Filtrare le righe nella lista con una stringa"
 msgid "Found, but not listed here: "
 msgstr "Trovati, ma non elencati qui:"
 
+#: lazarusidestrconsts.rsi18nexcluded
+msgid "Excluded"
+msgstr ""
+
+#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextcompile
+msgid "Force update PO files on next compile"
+msgstr ""
+
+#: lazarusidestrconsts.rsi18nidentifiers
+msgid "Identifiers:"
+msgstr ""
+
 #: lazarusidestrconsts.rsi18noptions
 msgid "i18n Options"
 msgstr "Opzioni i18n"
+
+#: lazarusidestrconsts.rsi18noriginals
+msgid "Originals:"
+msgstr ""
 
 #: lazarusidestrconsts.rsincludeversioninfohint
 msgid "Version info is stored if the executable format supports it."
