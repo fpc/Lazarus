@@ -2307,8 +2307,11 @@ begin
   WasAvail := SelAvail;
   FForceSingleLineSelected := AValue;
 
-  if WasAvail <> SelAvail then
+  if WasAvail <> SelAvail then begin
+    FInvalidateLinesMethod(Min(FStartLinePos, FEndLinePos),
+                           Max(FStartLinePos, FEndLinePos) );
     fOnChangeList.CallNotifyEvents(self);
+  end;
 end;
 
 procedure TSynEditSelection.SetHide(const AValue: Boolean);
