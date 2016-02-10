@@ -8542,6 +8542,7 @@ var
   StartPt: TPoint;
   // for ContextMatch
   BracketKind, TmpStart: Integer;
+  SearchingForward: Boolean;
   TmpAttr : TSynHighlighterAttributes;
   // for IsContextBracket
   MaxKnownTokenPos, LastUsedTokenIdx, TokenListCnt: Integer;
@@ -8603,7 +8604,8 @@ var
     while (i > 0) and (TokenPosList[i].X > PosX) do
       dec(i);
     Result := TokenPosList[i].Attr = BracketKind;
-    LastUsedTokenIdx := i;
+    if not SearchingForward then
+      LastUsedTokenIdx := i;
   end;
 
   procedure DoMatchingBracketFound;
@@ -8652,7 +8654,8 @@ var
     PrevPosX := -1;
     PrevCnt := 0;
     // search until start of line
-     while PosX > 1 do begin
+    SearchingForward := False;
+    while PosX > 1 do begin
       Dec(PosX);
       Test := Line[PosX];
       if (Test = q) and IsContextBracket then begin
@@ -8669,6 +8672,8 @@ var
 
     PosX := Len;
     Len := Length(Line);
+    SearchingForward := True;
+    LastUsedTokenIdx := TokenListCnt;
     while PosX < Len do begin
       Inc(PosX);
       Test := Line[PosX];
@@ -8699,6 +8704,7 @@ var
     NumBrackets := 1;
     if Odd(i) then begin
       // closing bracket -> search opening bracket
+      SearchingForward := False;
       repeat
         // search until start of line
         while PosX > 1 do begin
@@ -8727,6 +8733,7 @@ var
       until FALSE;
     end else begin
       // opening bracket -> search closing bracket
+      SearchingForward := True;
       repeat
         // search until end of line
         Len := Length(Line);
