@@ -5,24 +5,34 @@ unit project_i18n_options;
 interface
 
 uses
-  StdCtrls, EditBtn, LazFileUtils, Project, IDEOptionsIntf,
-  LazarusIDEStrConsts, IDEDialogs;
+  StdCtrls, EditBtn, ExtCtrls, LazFileUtils, Project, IDEOptionsIntf,
+  LazarusIDEStrConsts, IDEDialogs, Classes, Graphics;
 
 type
 
   { TProjectI18NOptionsFrame }
 
   TProjectI18NOptionsFrame = class(TAbstractIDEOptionsEditor)
+    ForceUpdatePoFilesCheckBox: TCheckBox;
     EnableI18NCheckBox: TCheckBox;
+    ExcludedGroupBox: TGroupBox;
     I18NGroupBox: TGroupBox;
+    ExcludedIdentifiersMemo: TMemo;
+    ExcludedOriginalsMemo: TMemo;
+    ExcludedIdentifiersLabel: TLabel;
+    ExcludedIdentifiersPanel: TPanel;
+    ExcludedOriginalsPanel: TPanel;
+    ExcludedOriginalsLabel: TLabel;
     PoForFormsCheckBox: TCheckBox;
     POOutDirEdit: TEditButton;
     PoOutDirLabel: TLabel;
     procedure EnableI18NCheckBoxChange(Sender: TObject);
-    procedure FrameClick(Sender: TObject);
+    procedure ExcludedIdentifiersMemoChange(Sender: TObject);
+    procedure ExcludedOriginalsMemoChange(Sender: TObject);
     procedure POOutDirButtonClick(Sender: TObject);
   private
     FProject: TProject;
+    FExcludedStringsChanged: Boolean;
     procedure Enablei18nInfo(Usei18n: boolean);
   public
     function GetTitle: string; override;
@@ -43,11 +53,6 @@ begin
   Enablei18nInfo(EnableI18NCheckBox.Checked);
 end;
 
-procedure TProjectI18NOptionsFrame.FrameClick(Sender: TObject);
-begin
-
-end;
-
 procedure TProjectI18NOptionsFrame.POOutDirButtonClick(Sender: TObject);
 var
   NewDirectory: string;
@@ -60,9 +65,25 @@ begin
   POOutDirEdit.Text := NewDirectory;
 end;
 
+procedure TProjectI18NOptionsFrame.ExcludedIdentifiersMemoChange(Sender: TObject);
+begin
+  FExcludedStringsChanged := True;
+  ExcludedIdentifiersLabel.Font.Style := [fsBold];
+  ForceUpdatePoFilesCheckBox.Font.Style := [fsBold];
+end;
+
+procedure TProjectI18NOptionsFrame.ExcludedOriginalsMemoChange(Sender: TObject);
+begin
+  FExcludedStringsChanged := True;
+  ExcludedOriginalsLabel.Font.Style := [fsBold];
+  ForceUpdatePoFilesCheckBox.Font.Style := [fsBold];
+end;
+
 procedure TProjectI18NOptionsFrame.Enablei18nInfo(Usei18n: boolean);
 begin
   I18NGroupBox.Enabled := Usei18n;
+  ExcludedGroupBox.Enabled := Usei18n;
+  ForceUpdatePoFilesCheckBox.Enabled := Usei18n;
 end;
 
 function TProjectI18NOptionsFrame.GetTitle: string;
@@ -80,6 +101,10 @@ begin
   PoForFormsCheckBox.Caption:=lisCreateUpdatePoFileWhenSavingALfmFile;
   PoForFormsCheckBox.Hint:=
     lisYouCanDisableThisForIndividualFormsViaThePopupMenu;
+  ExcludedGroupBox.Caption := rsI18nExcluded;
+  ExcludedIdentifiersLabel.Caption := rsI18nIdentifiers;
+  ExcludedOriginalsLabel.Caption := rsI18nOriginals;
+  ForceUpdatePoFilesCheckBox.Caption := rsI18nForceUpdatePoFilesOnNextCompile;
 end;
 
 procedure TProjectI18NOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -90,8 +115,17 @@ begin
     POOutDirEdit.Text := POOutputDirectory;
     EnableI18NCheckBox.Checked := Enablei18n;
     PoForFormsCheckBox.Checked:=EnableI18NForLFM;
+    ExcludedIdentifiersMemo.Lines.Clear;
+    ExcludedIdentifiersMemo.Lines.AddStrings(I18NExcludedIdentifiers);
+    ExcludedOriginalsMemo.Lines.Clear;
+    ExcludedOriginalsMemo.Lines.AddStrings(I18NExcludedOriginals);
+    ForceUpdatePoFilesCheckBox.Checked := ForceUpdatePoFiles;
     Enablei18nInfo(Enablei18n);
   end;
+  FExcludedStringsChanged := False;
+  ExcludedIdentifiersLabel.ParentFont := True;
+  ExcludedOriginalsLabel.ParentFont := True;
+  ForceUpdatePoFilesCheckBox.ParentFont := True;
   POOutDirEdit.Button.LoadGlyphFromResourceName(HInstance, ResBtnSelDir); //DirectoryEdit
 end;
 
@@ -102,6 +136,13 @@ begin
     POOutputDirectory := POOutDirEdit.Text;
     EnableI18N := EnableI18NCheckBox.Checked;
     EnableI18NForLFM := PoForFormsCheckBox.Checked;
+    I18NExcludedIdentifiers.Clear;
+    I18NExcludedIdentifiers.AddStrings(ExcludedIdentifiersMemo.Lines);
+    I18NExcludedOriginals.Clear;
+    I18NExcludedOriginals.AddStrings(ExcludedOriginalsMemo.Lines);
+    ForceUpdatePoFiles := ForceUpdatePoFilesCheckBox.Checked;
+    if FExcludedStringsChanged then
+      Modified := True;
   end;
 end;
 

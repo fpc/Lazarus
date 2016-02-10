@@ -720,6 +720,9 @@ type
     FDefineTemplates: TProjectDefineTemplates;
     fDestroying: boolean;
     FEnableI18N: boolean;
+    FI18NExcludedIdentifiers: TStrings;
+    FI18NExcludedOriginals: TStrings;
+    FForceUpdatePoFiles: Boolean;
     fFirst, fLast: array[TUnitInfoList] of TUnitInfo;
     FFirstRemovedDependency: TPkgDependency;
     FFirstRequiredDependency: TPkgDependency;
@@ -1047,6 +1050,9 @@ type
     property Destroying: boolean read fDestroying;
     property EnableI18N: boolean read FEnableI18N write SetEnableI18N;
     property EnableI18NForLFM: boolean read FEnableI18NForLFM write SetEnableI18NForLFM;
+    property I18NExcludedIdentifiers: TStrings read FI18NExcludedIdentifiers;
+    property I18NExcludedOriginals: TStrings read FI18NExcludedOriginals;
+    property ForceUpdatePoFiles: Boolean read FForceUpdatePoFiles write FForceUpdatePoFiles;
     property FirstAutoRevertLockedUnit: TUnitInfo read GetFirstAutoRevertLockedUnit;
     property FirstLoadedUnit: TUnitInfo read GetFirstLoadedUnit;
     property FirstPartOfProject: TUnitInfo read GetFirstPartOfProject;
@@ -2664,6 +2670,10 @@ begin
   Title := '';
   FUnitList := TFPList.Create;  // list of TUnitInfo
   FOtherDefines := TStringList.Create;
+  FEnableI18N := False;
+  FEnableI18NForLFM := True;
+  FI18NExcludedIdentifiers := TStringList.Create;
+  FI18NExcludedOriginals := TStringList.Create;
 
   FResources := TProjectResources.Create(Self);
   ProjResources.OnModified := @EmbeddedObjectModified;
@@ -2686,6 +2696,8 @@ begin
   FreeAndNil(FAllEditorsInfoList);
   FreeThenNil(FResources);
   FreeThenNil(FBookmarks);
+  FreeThenNil(FI18NExcludedOriginals);
+  FreeThenNil(FI18NExcludedIdentifiers);
   FreeThenNil(FOtherDefines);
   FreeThenNil(FUnitList);
   FreeThenNil(FJumpHistory);
@@ -2861,6 +2873,8 @@ begin
     EnableI18NForLFM := FXMLConfig.GetValue(Path+'i18n/EnableI18N/LFM', True);
     POOutputDirectory := SwitchPathDelims(
          FXMLConfig.GetValue(Path+'i18n/OutDir/Value', ''),fPathDelimChanged);
+    LoadStringList(FXMLConfig, FI18NExcludedIdentifiers, Path+'i18n/ExcludedIdentifiers/');
+    LoadStringList(FXMLConfig, FI18NExcludedOriginals, Path+'i18n/ExcludedOriginals/');
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
 
@@ -3150,6 +3164,9 @@ begin
   FXMLConfig.SetDeleteValue(Path+'i18n/OutDir/Value',
      SwitchPathDelims(CreateRelativePath(POOutputDirectory,ProjectDirectory),
                       fCurStorePathDelim), '');
+  SaveStringList(FXMLConfig, FI18NExcludedIdentifiers, Path+'i18n/ExcludedIdentifiers/');
+  SaveStringList(FXMLConfig, FI18NExcludedOriginals, Path+'i18n/ExcludedOriginals/');
+
   // Resources
   ProjResources.WriteToProjectFile(FXMLConfig, Path);
   // save custom data
@@ -3617,6 +3634,8 @@ begin
   FAutoOpenDesignerFormsDisabled := false;
   FEnableI18N:=false;
   FEnableI18NForLFM:=true;
+  FI18NExcludedOriginals.Clear;
+  FI18NExcludedIdentifiers.Clear;
   FBookmarks.Clear;
   ClearBuildModes;
   FDefineTemplates.Clear;

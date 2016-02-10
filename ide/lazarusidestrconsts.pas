@@ -2467,6 +2467,10 @@ resourcestring
     +'this for individual forms via the package editor';
   lisYouCanDisableThisForIndividualFormsViaThePopupMenu = 'You can disable '
     +'this for individual forms via the popup menu in the project inspector';
+  rsI18nExcluded = 'Excluded';
+  rsI18nIdentifiers = 'Identifiers:';
+  rsI18nOriginals = 'Originals:';
+  rsI18nForceUpdatePoFilesOnNextCompile = 'Force update PO files on next compile';
 
   rsIncludeVersionInfoInExecutable = 'Include version info in executable';
   rsIncludeVersionInfoHint = 'Version info is stored if the executable format supports it.';

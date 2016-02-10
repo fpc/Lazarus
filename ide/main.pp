@@ -4103,10 +4103,11 @@ begin
   end;
 
   POFileAgeValid:=false;
-  if FileExistsCached(POFilename) then begin
-    POFileAge:=FileAgeCached(POFilename);
-    POFileAgeValid:=true;
-  end;
+  if not AProject.ForceUpdatePoFiles then
+    if FileExistsCached(POFilename) then begin
+      POFileAge:=FileAgeCached(POFilename);
+      POFileAgeValid:=true;
+    end;
 
   //DebugLn(['TMainIDE.UpdateProjectPOFile Updating POFilename="',POFilename,'"']);
 
@@ -4150,7 +4151,8 @@ begin
     if Files.Tree.Count=0 then exit(mrOk);
     Files.GetNames(FileList);
     try
-      UpdatePoFileAndTranslations(FileList, POFilename);
+      UpdatePoFileAndTranslations(FileList, POFilename, AProject.ForceUpdatePoFiles,
+        AProject.I18NExcludedIdentifiers, AProject.I18NExcludedOriginals);
       Result := mrOk;
     except
       on E:EPOFileError do begin
@@ -4159,6 +4161,9 @@ begin
             LineEnding+LineEnding, E.Message]), mtError, [mbOk]);
       end;
     end;
+
+    // Reset force update of PO files
+    AProject.ForceUpdatePoFiles := False;
   finally
     FileList.Free;
     Files.Free;
