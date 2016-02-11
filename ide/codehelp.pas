@@ -2559,6 +2559,7 @@ begin
   finally
     ElementNames.Free;
     FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+
     // Add package name
     s:=OwnerToFPDocHint(AnOwner);
     if s<>'' then
@@ -2674,6 +2675,13 @@ begin
       Tool.CleanPosToCaret(Tool.Tree.Root.StartPos,XYPos);
   end;
   Result:=Result+'  '+SourcePosToFPDocHint(XYPos)+LineEnding;
+
+  if (XYPos.Code<>nil) and (CompareFilenames(Tool.MainFilename,XYPos.Code.Filename)<>0)
+  then begin
+    // node in include file => show link to unit
+    Result:=Result+'<br>  unit '+SourcePosToFPDocHint(Tool.MainFilename,1,1,Tool.GetSourceName)+LineEnding;
+  end;
+
   Result:=Result+'</div>'+LineEnding;
 end;
 
