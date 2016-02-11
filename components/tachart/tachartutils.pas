@@ -57,6 +57,7 @@ type
   end;
 
   TPointArray = array of TPoint;
+  TDoublePointArray = array of TDoublepoint;
 
   TChartDistance = 0..MaxInt;
 
