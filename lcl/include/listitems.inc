@@ -215,17 +215,17 @@ end;
 {------------------------------------------------------------------------------}
 procedure TListItems.WSCreateCacheItem;
 var
-  xCacheItem: TListItem;
+  ACacheItem: TListItem;
 begin
-  xCacheItem := FCacheItem; // we must use local copy because FCacheItem changes in WSUpdateText on win32
-  TWSCustomListViewClass(FOwner.WidgetSetClass).ItemInsert(FOwner, FCacheIndex, xCacheItem);
-  Include(xCacheItem.FFlags, lifCreated);
-  xCacheItem.WSUpdateText;
-  xCacheItem.WSUpdateImages;
-  xCacheItem.WSUpdateChecked;
+  ACacheItem := FCacheItem; // we must use local copy because FCacheItem changes in WSUpdateText on win32
+  TWSCustomListViewClass(FOwner.WidgetSetClass).ItemInsert(FOwner, FCacheIndex, ACacheItem);
+  Include(ACacheItem.FFlags, lifCreated);
+  ACacheItem.WSUpdateText;
+  ACacheItem.WSUpdateImages;
+  ACacheItem.WSUpdateChecked;
   if not (lisfWSItemsCreated in FFlags) then
-    xCacheItem.WSSetState;
-  xCacheItem.WSUpdateState;
+    ACacheItem.WSSetState;
+  ACacheItem.WSUpdateState;
 end;
 
 {------------------------------------------------------------------------------}
