@@ -1486,15 +1486,16 @@ begin
      (PopupMode in [pmAuto, pmExplicit]) // set WndParent of non-modal windows only for pmAuto, pmExplicit
   then
   begin
-    case PopupMode of
-      pmAuto:
-      begin
-        Result := Screen.ActiveForm;
-        if (Result<>nil) and (Result.FormStyle = fsSplash) then // ignore fsSplash
-          Result := nil;
-      end;
-      pmExplicit: Result := PopupParent;
-    end;
+    if (PopupMode = pmAuto)
+    or ((PopupMode = pmNone) and (fsModal in FormState)) then
+    begin
+      Result := Screen.ActiveForm;
+      if (Result<>nil) and (Result.FormStyle = fsSplash) then // ignore fsSplash
+        Result := nil;
+    end else
+    if (PopupMode = pmExplicit) then
+      Result := PopupParent;
+
     if (Result = nil) or not Result.HandleAllocated then
       Result := Application.MainForm;
   end;
@@ -2900,6 +2901,11 @@ begin
   Application.ModalStarted;
   try
     Include(FFormState, fsModal);
+    if PopupMode = pmNone then
+    begin
+      RecreateWnd(Self);
+      HandleNeeded;
+    end;
     ActiveWindow := GetActiveWindow;
     SavedFocusState := SaveFocusState;
     SavedCursor := Screen.Cursor;

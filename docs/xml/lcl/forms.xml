@@ -1492,7 +1492,8 @@
         </notes>
       </element>
       <element name="TPopupMode.pmNone">
-        <short>modal: popup to mainform/taskbar window; non-modal: no window parent</short>
+        <short>modal: popup to active form or if not available, to main form; non-modal: no window parent</short>
+      <descr>For modal windows, the handle has to be recreated in ShowModal. If this is not wanted, please use explicitely pmAuto before calling ShowModal.</descr>
       </element>
       <element name="TPopupMode.pmAuto">
         <short>modal &amp; non-modal: popup to active form or if not available, to main form</short>

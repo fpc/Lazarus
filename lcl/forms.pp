@@ -390,7 +390,7 @@ type
   );
 
   TPopupMode = (
-    pmNone,     // modal: popup to mainform/taskbar window; non-modal: no window parent
+    pmNone,     // modal: popup to active form or if not available, to main form; non-modal: no window parent
     pmAuto,     // modal & non-modal: popup to active form or if not available, to main form
     pmExplicit  // modal & non-modal: popup to PopupParent or if not available, to main form
   );
