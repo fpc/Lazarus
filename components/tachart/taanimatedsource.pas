@@ -158,7 +158,7 @@ var
   d, s: Cardinal;
 begin
   Unused(ASender);
-  d := GetTickCount - FStartTime;
+  d := GetTickCount64 - FStartTime;
   if d >= AnimationTime then
     Stop(true);
   s := Round(d * ProjectedSteps / AnimationTime);
@@ -200,7 +200,7 @@ begin
   FSkippedFramesCount := 0;
   if (AnimationInterval = 0) or (AnimationTime <= AnimationInterval) then exit;
   FProjectedSteps := Round(AnimationTime / AnimationInterval);
-  FStartTime := GetTickCount;
+  FStartTime := GetTickCount64;
   FTimer.Interval := AnimationInterval;
   FTimer.Enabled := true;
 end;

@@ -95,19 +95,6 @@ type
   end;
   PChartDataItem = ^TChartDataItem;
 
-  TChartLinkKind = (lkStraight, lkAngled);
-
-  TChartLinkItem = packed record
-    FromIndex: Integer;
-    ToIndex: Integer;
-    case Kind: TChartLinkKind of
-      lkStraight: ();
-      lkAngled  : (ForwardAnglePos: Double;
-                   BackwardAnglePos: array[0..2] of Double);
-  end;
-
-  PChartLinkItem = ^TChartLinkItem;
-
   TGraphToImageFunc = function (AX: Double): Integer of object;
   TIntegerTransformFunc = function (AX: Integer): Integer of object;
 
@@ -171,8 +158,6 @@ type
 
     function GetCount: Integer; virtual; abstract;
     function GetItem(AIndex: Integer): PChartDataItem; virtual; abstract;
-    function GetLink(AIndex: Integer): PChartLinkItem; virtual; abstract;
-    function GetLinkCount: Integer; virtual; abstract;
     procedure InvalidateCaches;
     procedure SetYCount(AValue: Cardinal); virtual; abstract;
   public
@@ -201,7 +186,6 @@ type
 
     property Count: Integer read GetCount;
     property Item[AIndex: Integer]: PChartDataItem read GetItem; default;
-    property Link[AIndex: Integer]: PChartLinkItem read GetLink;
     property YCount: Cardinal read FYCount write SetYCount default 1;
   end;
 
