@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-02-07 09:53+0100\n"
+"PO-Revision-Date: 2016-02-11 07:32+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr_FR\n"
@@ -1541,7 +1541,7 @@ msgstr "Type"
 
 #: lazarusidestrconsts.dlgeofocusmessagesatcompilation
 msgid "Focus messages at compilation"
-msgstr ""
+msgstr "Focus sur les messages lors de la compilation"
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -12044,7 +12044,7 @@ msgstr "Raccourcis et touches d'accélération"
 
 #: lazarusidestrconsts.lismenueditorshortcutsd
 msgid "Shortcuts (%d)"
-msgstr ""
+msgstr "Raccourcis (%d)"
 
 #: lazarusidestrconsts.lismenueditorshortcutsdandacceleratorkeysd
 msgid "Shortcuts (%d) and Accelerator keys (%d)"
@@ -12052,7 +12052,7 @@ msgstr "Raccourcis (%d) et touches d'accélération (%d)"
 
 #: lazarusidestrconsts.lismenueditorshortcutsourceproperty
 msgid "Shortcut,Source Property"
-msgstr ""
+msgstr "Raccourci,Propriété source"
 
 #: lazarusidestrconsts.lismenueditorshortcutsusedins
 msgid "Shortcuts used in %s"
@@ -18852,15 +18852,15 @@ msgstr "Trouvé mais ne figure pas ici :"
 
 #: lazarusidestrconsts.rsi18nexcluded
 msgid "Excluded"
-msgstr ""
+msgstr "Exclu"
 
 #: lazarusidestrconsts.rsi18nforceupdatepofilesonnextcompile
 msgid "Force update PO files on next compile"
-msgstr ""
+msgstr "Forcer la mise à jour des fichiers \"PO\" à la prochaine compilation"
 
 #: lazarusidestrconsts.rsi18nidentifiers
 msgid "Identifiers:"
-msgstr ""
+msgstr "Identificateurs :"
 
 #: lazarusidestrconsts.rsi18noptions
 msgid "i18n Options"
@@ -18868,7 +18868,7 @@ msgstr "Options \"i18n\""
 
 #: lazarusidestrconsts.rsi18noriginals
 msgid "Originals:"
-msgstr ""
+msgstr "Originaux :"
 
 #: lazarusidestrconsts.rsincludeversioninfohint
 msgid "Version info is stored if the executable format supports it."
