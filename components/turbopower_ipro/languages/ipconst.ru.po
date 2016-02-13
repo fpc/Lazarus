@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-02-10 01:08+0300\n"
+"PO-Revision-Date: 2016-02-13 15:23+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -145,7 +145,7 @@ msgstr "Неверное место начала поиска"
 
 #: ipconst.sbibuffernotassigned
 msgid "Buffer not assigned"
-msgstr "Буфер не назначен"
+msgstr "Буфер не присвоен"
 
 #: ipconst.sbinhexbadchar
 msgid "Invalid BinHex character"
@@ -376,7 +376,7 @@ msgstr "Ошибка \"%s\" на строке %d, позиция %d"
 
 #: ipconst.shtmlnodataprovider
 msgid "No data provider assigned"
-msgstr "Не назначен провайдер данных"
+msgstr "Не присвоен провайдер данных"
 
 #: ipconst.shtmlnogetimage
 msgid "No OnGetImage event handler assigned"
@@ -552,7 +552,7 @@ msgstr "Неверная длина строки для закодированн
 
 #: ipconst.slistnotassigned
 msgid "List not assigned"
-msgstr "Список не назначен"
+msgstr "Список не присвоен"
 
 #: ipconst.slogarticle
 msgid "Generating OnArticle event"
@@ -1059,7 +1059,7 @@ msgstr "Нет границы Mime"
 
 #: ipconst.snomemorystreamerr
 msgid "No Memory Stream assigned"
-msgstr "Не назначен поток для записи в память"
+msgstr "Не присвоен поток для записи в память"
 
 #: ipconst.snorecipients
 msgid "No recipients specified"
@@ -1075,11 +1075,11 @@ msgstr "Поиск для записи не производился"
 
 #: ipconst.snosockerr
 msgid "Socket not assigned"
-msgstr "Сокет не назначен"
+msgstr "Сокет не присвоен"
 
 #: ipconst.snostreamerr
 msgid "Stream not assigned"
-msgstr "Поток не назначен"
+msgstr "Поток не присвоен"
 
 #: ipconst.snotenoughdata
 msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
@@ -2095,7 +2095,7 @@ msgstr "Ошибка анализа."
 
 #: ipconst.ssslpointernotassigned
 msgid "Pointer not assigned."
-msgstr "Указатель не назначен."
+msgstr "Указатель не присвоен."
 
 #: ipconst.ssslreaderror
 msgid "Read error."
@@ -2278,7 +2278,7 @@ msgstr "Адрес уже используется"
 
 #: ipconst.swsaeaddrnotavail
 msgid "Cannot assign requested address"
-msgstr "Невозможно назначить запрашиваемый адрес"
+msgstr "Невозможно присвоить запрашиваемый адрес"
 
 #: ipconst.swsaeafnosupport
 msgid "Address family not supported by protocol family"
@@ -2561,3 +2561,4 @@ msgstr "Прибыл по крайней мере один путь"
 #: ipconst.swsa_qos_traffic_ctrl_error
 msgid "Problem with some part of the flowspec"
 msgstr "Ошибка в одной из частей flowspec"
+
