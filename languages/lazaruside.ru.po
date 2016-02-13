@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-02-11 01:51+0300\n"
+"PO-Revision-Date: 2016-02-13 15:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -19691,7 +19691,7 @@ msgstr "просмотреть"
 #: lazarusidestrconsts.srkmecinvertassignment
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
-msgstr "Инвертировать присваивание"
+msgstr "Обратить присваивание"
 
 #: lazarusidestrconsts.srkmeckeymapleft
 msgctxt "lazarusidestrconsts.srkmeckeymapleft"
@@ -20626,7 +20626,7 @@ msgstr "&Просмотреть ..."
 #: lazarusidestrconsts.ueminvertassignment
 msgctxt "lazarusidestrconsts.ueminvertassignment"
 msgid "Invert Assignment"
-msgstr "Инвертировать присваивание"
+msgstr "Обратить присваивание"
 
 #: lazarusidestrconsts.uemlineending
 msgid "Line Ending"
