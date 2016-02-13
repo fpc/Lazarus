@@ -9,7 +9,7 @@ uses
   Classes, SysUtils,
   Controls, Forms, Menus, LCLProc,
   // IdeIntf
-  PropEdits,
+  FormEditingIntf, ComponentEditors, PropEdits,
   // IDE
   MenuShortcuts, MenuTemplates;
 
@@ -39,6 +39,7 @@ type
     FLastRIValue: boolean;
     FParentMenuItem: TMenuItem;
     FShadowList: TFPList;
+    function GetShadowCount: integer;
   public
     constructor Create(AOwner: TComponent; aParentItem: TMenuItem); reintroduce;
     destructor Destroy; override;
@@ -47,6 +48,7 @@ type
     property LastRIValue: boolean read FLastRIValue write FLastRIValue;
     property ParentMenuItem: TMenuItem read FParentMenuItem;
     property ShadowList: TFPList read FShadowList;
+    property ShadowCount: integer read GetShadowCount;
     property HasRadioItems: boolean read GetHasRadioItems;
     property RadioGroupsString: string read GetRadioGroupsString;
   end;
@@ -56,14 +58,25 @@ type
   TShadowMenuBase = class(TScrollBox)
   private
   protected
+    FEditorDesigner: TComponentEditorDesigner;
+    FLookupRoot: TComponent;
+    FMenu: TMenu;
     FSelectedMenuItem: TMenuItem;
+    FBoxList: TFPList;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent; aMenu: TMenu); reintroduce;
     destructor Destroy; override;
     procedure SetSelectedMenuItem(aMI: TMenuItem;
       viaDesigner, prevWasDeleted: boolean); virtual; abstract;
+    procedure UpdateBoxLocationsAndSizes; virtual; abstract;
+    function GetParentBoxForMenuItem(aMI: TMenuItem): TShadowBoxBase;
+    function GetShadowForMenuItem(aMI: TMenuItem): TShadowItemBase;
+    function IsMainMenu: boolean;
   public
+    property EditorDesigner: TComponentEditorDesigner read FEditorDesigner;
+    property LookupRoot: TComponent read FLookupRoot;
     property SelectedMenuItem: TMenuItem read FSelectedMenuItem write FSelectedMenuItem;
+    property BoxList: TFPList read FBoxList;
   end;
 
   { TMenuDesignerBase }
@@ -160,16 +173,60 @@ begin
   Delete(Result, Pred(Length(Result)), 2);
 end;
 
+function TShadowBoxBase.GetShadowCount: integer;
+begin
+  Result:=FShadowList.Count;
+end;
+
 { TShadowMenuBase }
 
-constructor TShadowMenuBase.Create(AOwner: TComponent);
+constructor TShadowMenuBase.Create(AOwner: TComponent; aMenu: TMenu);
 begin
   inherited Create(AOwner);
+  FMenu := aMenu;
+  FEditorDesigner := FindRootDesigner(FMenu) as TComponentEditorDesigner;
+  FLookupRoot := FEditorDesigner.LookupRoot;
+  FBoxList := TFPList.Create;
 end;
 
 destructor TShadowMenuBase.Destroy;
 begin
+  FEditorDesigner:=nil;
+  FreeAndNil(FBoxList);
   inherited Destroy;
+end;
+
+function TShadowMenuBase.GetParentBoxForMenuItem(aMI: TMenuItem): TShadowBoxBase;
+var
+  p: pointer;
+  sb: TShadowBoxBase absolute p;
+  ps: pointer;
+  si: TShadowItemBase absolute ps;
+begin
+  for p in FBoxList do
+    for ps in sb.ShadowList do
+      if (si.RealItem = aMI) then
+        Exit(sb);
+  Result:=nil;
+end;
+
+function TShadowMenuBase.GetShadowForMenuItem(aMI: TMenuItem): TShadowItemBase;
+var
+  p: pointer;
+  sb: TShadowBoxBase absolute p;
+  ps: pointer;
+  si: TShadowItemBase absolute ps;
+begin
+  for p in FBoxList do
+    for ps in sb.ShadowList do
+      if (si.RealItem = aMI) then
+        Exit(si);
+  Result:=nil;
+end;
+
+function TShadowMenuBase.IsMainMenu: boolean;
+begin
+  Result := FMenu is TMainMenu;
 end;
 
 { TMenuDesignerBase }

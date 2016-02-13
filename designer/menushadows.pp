@@ -7,14 +7,13 @@ interface
 uses
   // FCL + LCL
   Classes, SysUtils, Types, typinfo,
-  ActnList, ButtonPanel, Buttons, Controls, Dialogs, StdCtrls, ExtCtrls, Menus,
+  ActnList, ButtonPanel, Controls, Dialogs, StdCtrls, ExtCtrls, Menus,
   Forms, Graphics, ImgList, Themes, LCLType, LCLIntf, LCLProc,
-  // LazUtils
-  LazUTF8,
   // IdeIntf
   FormEditingIntf, IDEWindowIntf, ComponentEditors, IDEDialogs, PropEdits,
   // IDE
-  LazarusIDEStrConsts, MenuDesignerBase, MenuEditorForm, MenuShortcuts, MenuTemplates;
+  LazarusIDEStrConsts,
+  MenuDesignerBase, MenuEditorForm, MenuShortcuts, MenuTemplates, MenuResolveConflicts;
 
 type
 
@@ -124,7 +123,6 @@ type
     FUpdating: boolean;
     function GetIsMainMenu: boolean;
     function GetIsMenuBar: boolean;
-    function GetShadowCount: integer;
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure ShowAllUnSelected;
@@ -139,7 +137,6 @@ type
     property IsMainMenu: boolean read GetIsMainMenu;
     property IsMenuBar: boolean read GetIsMenuBar;
     property ParentBox: TShadowBox read FParentBox;
-    property ShadowCount: integer read GetShadowCount;
     property Updating: boolean read FUpdating;
   protected
     procedure Paint; override;
@@ -172,18 +169,15 @@ type
     FAddItemFake: TFake;
     FAddFirstItemFake: TFake;
     FAddSubmenuFake: TFake;
-    FBoxList: TFPList;
     FInitialising: boolean;
     FInitialSelectedMenuItem: TMenuItem;
-    FIsMainMenu: boolean;
     FItemsPopupMenu: TPopupMenu;
-    FLookupRoot: TComponent;
     FMainCanvas: TCanvas;
     FRootBox: TShadowBox;
     procedure DeleteBox(aMI: TMenuItem);
     procedure DeleteItm(anItem: TMenuItem);
     function GetActionForEnum(anEnum: TPopEnum): TAction;
-    function GetBoxContainingMenuItem(aMI: TMenuItem): TShadowBox;
+    //function GetBoxContainingMenuItem(aMI: TMenuItem): TShadowBox;
     function GetHighestLevelVisibleBox: TShadowBox;
     function GetMaxVisibleBoxDims(aSB: TShadowBox): TPoint;
     function GetMaxVisibleFakeDims: TPoint;
@@ -222,9 +216,7 @@ type
     procedure ResolveShortcutConflicts(Sender: TObject);
     procedure SaveAsTemplate(Sender: TObject);
   private
-    FMenu: TMenu;
     FDesigner: TMenuDesigner;
-    FEditorDesigner: TComponentEditorDesigner;
     function GetStringWidth(const aText: string; isBold: boolean): integer;
     function GetMenuBarIconWidth(aMI: TMenuItem): integer;
     function OnClickIsAssigned(aMI: TMenuItem): boolean;
@@ -238,7 +230,6 @@ type
   private
     property AddItemFake: TFake read FAddItemFake;
     property AddSubmenuFake: TFake read FAddSubmenuFake;
-    property BoxList: TFPList read FBoxList;
     property ItemsPopupMenu: TPopupMenu read FItemsPopupMenu;
     property RootBox: TShadowBox read FRootBox;
   protected
@@ -248,18 +239,13 @@ type
     constructor Create(aDesigner: TMenuDesigner; aForm: TForm; aMenu: TMenu;
       aSelect: TMenuItem; aWidth, aHeight: integer); reintroduce;
     destructor Destroy; override;
-    function GetParentBoxForMenuItem(aMI: TMenuItem): TShadowBox;
-    function GetShadowForMenuItem(aMI: TMenuItem): TShadowItem;
     procedure HideBoxesAboveLevel(aLevel: integer);
     procedure RefreshFakes;
     procedure SetSelectedMenuItem(aMI: TMenuItem;
       viaDesigner, prevWasDeleted: boolean); override;
-    procedure UpdateBoxLocationsAndSizes;
+    procedure UpdateBoxLocationsAndSizes; override;
     procedure UpdateSelectedItemInfo;
   public
-    property EditorDesigner: TComponentEditorDesigner read FEditorDesigner;
-    property IsMainMenu: boolean read FIsMainMenu;
-    property LookupRoot: TComponent read FLookupRoot;
     property SelectedShadowBox: TShadowBox read GetSelectedShadowBox;
     property SelectedShadowItem: TShadowItem read GetSelectedShadowItem;
   end;
@@ -341,34 +327,6 @@ type
   public
     constructor CreateWithShadowItem(aSI: TShadowItem);
     property EditedLine: string read GetEditedLine;
-  end;
-
-  { TResolveConflictsDlg }
-
-  TResolveConflictsDlg = class(TForm)
-  strict private
-    FButtonPanel: TButtonPanel;
-    FConflictsGroupBox: TGroupBox;
-    FConflictsListBox: TListBox;
-    FCurrentEdit: TEdit;
-    FInitialConflictsCount: integer;
-    FRemainingConflictsCountLabel: TLabel;
-    FResolvedConflictsCount: integer;
-    FResolvedConflictsCountLabel: TLabel;
-    FSelectedDuplicate: TSCInfo;
-    FSelectedInfo: TSCInfo;
-    FSelectedUnique: TSCInfo;
-    FShortcuts: TMenuShortcuts;
-    FShadowMenu: TShadowMenu;
-    procedure ConflictsBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
-    procedure CreateListboxItems;
-    procedure InitialPopulateListBox;
-    procedure OKButtonClick(Sender: TObject);
-    procedure RePopulateListBox;
-    procedure UpdateStatistics;
-  public
-    constructor Create(aShortcuts: TMenuShortcuts; aShadowMenu: TShadowMenu); reintroduce;
-    destructor Destroy; override;
   end;
 
   { TShortcutDisplayDlg }
@@ -579,19 +537,7 @@ begin
   else
     Result:=0;
 end;
-{
-function ResolvedConflictsDlg: TModalResult;
-var
-  dlg: TResolveConflictsDlg;
-begin
-  dlg:=TResolveConflictsDlg.Create(nil);
-  try
-    Result:=dlg.ShowModal;
-  finally
-    dlg.Free;
-  end;
-end;
-}
+
 function ListShortCutDlg(aShortcuts: TMenuShortcuts; shortcutsOnly: boolean;
   aShadowMenu: TShadowMenu; aMenu: TMenu): TModalResult;
 var
@@ -659,7 +605,7 @@ begin
   selMI:=FShadowMenu.SelectedMenuItem;
   if (selMI=nil) then
     Exit;
-  selShadow:=FShadowMenu.GetShadowForMenuItem(selMI);
+  selShadow:=TShadowItem(FShadowMenu.GetShadowForMenuItem(selMI));
   Assert(selShadow<>nil,'TFake.SetVisibilitySizeAndPosition: selectedItem is nil');
   if not ShouldBeVisible then begin
     if selMI.IsInMenuBar then
@@ -711,7 +657,7 @@ begin
   selMI:=FShadowMenu.SelectedMenuItem;
   if (selMI=nil) then
     Exit;
-  selShadow:=FShadowMenu.GetShadowForMenuItem(selMI);
+  selShadow:=TShadowItem(FShadowMenu.GetShadowForMenuItem(selMI));
   Assert(selShadow<>nil,'TFake.SetVisibilitySizeAndPosition: selectedItem is nil');
   if not ShouldBeVisible then begin
     if selMI.IsInMenuBar then
@@ -740,257 +686,6 @@ begin
     end;
     Show;
   end;
-end;
-
-{ TResolveConflictsDlg }
-
-constructor TResolveConflictsDlg.Create(aShortcuts: TMenuShortcuts;
-  aShadowMenu: TShadowMenu);
-begin
-  inherited CreateNew(Nil);
-  FShortcuts:=aShortcuts;
-  FShortcuts.ShortcutList.ScanContainerForShortcutsAndAccelerators;
-  FInitialConflictsCount:=FShortcuts.ShortcutList.InitialDuplicatesCount;
-  FShadowMenu:=aShadowMenu;
-  FResolvedConflictsCount:=0;
-  Position:=poScreenCenter;
-  Constraints.MinWidth:=400;
-  Constraints.MinHeight:=256;
-  Caption:=Format(lisMenuEditorMenuItemShortcutConflictsInS,
-                  [(GlobalDesignHook.LookupRoot as TComponent).Name]);
-  FConflictsGroupBox:=TGroupBox.Create(Self);
-  with FConflictsGroupBox do begin
-    Caption:=Format(lisMenuEditorConflictsFoundInitiallyD,
-      [FShortcuts.ShortcutList.InitialDuplicatesCount]);
-    Align:=alTop;
-    Top:=0;
-    BorderSpacing.Around:=Margin;
-    BorderSpacing.Top:=Margin;
-    Parent:=Self;
-  end;
-
-  FResolvedConflictsCountLabel:=TLabel.Create(Self);
-  with FResolvedConflictsCountLabel do begin
-    BorderSpacing.Around:=Margin;
-    Align:=alTop;
-    Top:=1;
-    Name:='ResolvedConflictsCountLabel';
-    Caption:=Name;
-    Parent:=FConflictsGroupBox;
-  end;
-
-  FRemainingConflictsCountLabel:=TLabel.Create(Self);
-  with FRemainingConflictsCountLabel do begin
-    BorderSpacing.Around:=Margin;
-    Align:=alTop;
-    Top:=2;
-    Name:='RemainingConflictsCountLabel';
-    Caption:=Name;
-    Parent:=FConflictsGroupBox;
-  end;
-
-  FConflictsListBox:=TListBox.Create(Self);
-  with FConflictsListBox do begin
-    Color:=clBtnFace;
-    Align:=alTop;
-    Top:=3;
-    BorderSpacing.Around:=Margin;
-    Height:=100;
-    Name:='ConflictsListBox';
-    OnSelectionChange:=@ConflictsBoxSelectionChange;
-    Parent:=FConflictsGroupBox;
-  end;
-
-  FCurrentEdit:=TEdit.Create(Self);
-  with FCurrentEdit do begin
-    Align:=alTop;
-    Top:=4;
-    BorderSpacing.Around:=Margin;
-    ReadOnly:=True;
-    Name:='CurrentEdit';
-    Text:=Name;
-    Parent:=FConflictsGroupBox;
-  end;
-
-  FConflictsGroupBox.AutoSize:=True;
-
-  FButtonPanel:=TButtonPanel.Create(Self);
-  with FButtonPanel do begin
-    Align:=alTop;
-    Top:=1;
-    BorderSpacing.Right:=Margin;
-    ShowBevel:=False;
-    ShowButtons:=[pbOK, pbCancel];
-    ShowGlyphs:=[pbClose];
-    OKButton.Enabled:=False;
-    OKButton.ModalResult:=mrNone;
-    OKButton.Caption:=lisMenuEditorResolveSelectedConflict;
-    OKButton.OnClick:=@OKButtonClick;
-    Parent:=Self;
-  end;
-
-  InitialPopulateListBox;
-  AutoSize:=True;
-end;
-
-destructor TResolveConflictsDlg.Destroy;
-begin
-  inherited Destroy;
-end;
-
-procedure TResolveConflictsDlg.ConflictsBoxSelectionChange(Sender: TObject; User: boolean);
-begin
-  if (FConflictsListBox.ItemIndex < 0) then
-    Exit;
-  FSelectedDuplicate:=TSCInfo(FConflictsListBox.Items.Objects[FConflictsListBox.ItemIndex]);
-  Assert(FSelectedDuplicate<>nil,'TResolveConflictsDlg.ConflictsBoxSelectionChange: FSelectedDuplicate is nil');
-  FSelectedUnique:=FShortcuts.ShortcutList.FindUniqueInfoForShortcut(FSelectedDuplicate.Shortcut);
-  Assert(FSelectedDuplicate<>nil,'TResolveConflictsDlg.ConflictsBoxSelectionChange: FSelectedDuplicate is nil');
-  Assert(FSelectedUnique<>nil,'TResolveConflictsDlg.ConflictsBoxSelectionChange: FSelectedUnique is nil');
-  if (FSelectedDuplicate.Kind in MenuItem_Kinds) then
-    FSelectedInfo:=FSelectedDuplicate
-  else if (FSelectedUnique.Kind in MenuItem_Kinds) then
-    FSelectedInfo:=FSelectedUnique
-  else FSelectedInfo:=FSelectedDuplicate;
-  FCurrentEdit.Text:=Format(lisMenuEditorEditingSdotS,
-         [FSelectedInfo.ComponentName, KindToPropertyName(FSelectedInfo.Kind)]);
-  FButtonPanel.OKButton.Enabled:=True;
-end;
-
-procedure TResolveConflictsDlg.CreateListboxItems;
-var
-  sUnique: string;
-  sDup: string;
-  infUnique: TSCInfo;
-  p: pointer;
-  infDup: TSCInfo absolute p;
-begin
-  FConflictsListBox.OnSelectionChange:=nil;
-  FConflictsListBox.Items.Clear;
-  for p in FShortcuts.ShortcutList.InitialDuplicates do begin
-    sDup:=Format(lisMenuEditorSInS, [ShortCutToText(infDup.Shortcut),
-      infDup.ComponentName]);
-    infUnique:=FShortcuts.ShortcutList.FindUniqueInfoForShortcut(infDup.Shortcut);
-    Assert(infUnique<>nil,'TResolveConflictsDlg.PopulateListBox: missing unique shortcut');
-    sUnique:=Format(lisMenuEditorSInS, [ShortCutToText(infUnique.Shortcut),
-      infUnique.ComponentName]);
-    FConflictsListBox.Items.AddObject(Format(lisMenuEditorSConflictsWithS, [
-      sDup, sUnique]), infDup);
-  end;
-  FConflictsListBox.OnSelectionChange:=@ConflictsBoxSelectionChange;
-end;
-
-procedure TResolveConflictsDlg.OKButtonClick(Sender: TObject);
-var
-  newShortcut: TShortCut;
-  newCaption: string;
-  si: TShadowItem = nil;
-
-  procedure AddSecondaryShortcut;
-  var
-    scList: TShortCutList;
-  begin
-    scList:=TShortCutList.Create;
-    try
-      scList.Add(ShortCutToText(newShortcut));
-      TAction(FSelectedInfo.Component).SecondaryShortCuts.Assign(scList);
-    finally
-      scList.Free;
-    end;
-  end;
-
-begin
-  Assert(FSelectedInfo<>nil,'TShortcutScanDlg.ResolveConflictClick: FSelectedInfo is nil');
-  if NewShortcutOrCaptionIsValidDlg(FSelectedInfo, newShortcut, newCaption) then
-    begin
-      case FSelectedInfo.Kind of
-        scMenuItemAccel:   FSelectedInfo.MenuItem.Caption:=newCaption;
-        scMenuItemSC:      FSelectedInfo.MenuItem.ShortCut:=newShortcut;
-        scMenuItemKey2:    FSelectedInfo.MenuItem.ShortCutKey2:=newShortcut;
-        scActionAccel:     TAction(FSelectedInfo.Component).Caption:=newCaption;
-        scActionSC:        TAction(FSelectedInfo.Component).ShortCut:=newShortcut;
-        scActionSecondary: AddSecondaryShortcut;
-        scOtherCompAccel:  TControl(FSelectedInfo.Component).Caption:=newCaption;
-      end;
-      if (FSelectedInfo.Kind in MenuItem_Kinds) then begin
-        FShadowMenu.EditorDesigner.PropertyEditorHook.RefreshPropertyValues;
-        FShadowMenu.EditorDesigner.Modified;
-        si:=FShadowMenu.GetShadowForMenuItem(FSelectedInfo.MenuItem);
-        if (si <> nil) then begin
-          FShadowMenu.UpdateBoxLocationsAndSizes;
-          si.Repaint;
-        end;
-      end
-      else case FSelectedInfo.Kind of
-        scActionAccel, scActionSC, scActionSecondary: begin
-            GlobalDesignHook.RefreshPropertyValues;
-            GlobalDesignHook.Modified(TAction(FSelectedInfo.Component));
-          end;
-        scOtherCompAccel: begin
-            GlobalDesignHook.RefreshPropertyValues;
-            GlobalDesignHook.Modified(TControl(FSelectedInfo.Component));
-          end;
-      end;
-
-      RePopulateListBox;
-    end;
-end;
-
-procedure TResolveConflictsDlg.InitialPopulateListBox;
-begin
-  if (FShortcuts.ShortcutList.InitialDuplicatesCount > 0) then begin
-    FResolvedConflictsCount:=0;
-    FResolvedConflictsCountLabel.Caption:=Format(
-      lisMenuEditorResolvedConflictsS, [IntToStr(FResolvedConflictsCount)]);
-    CreateListboxItems;
-    FRemainingConflictsCountLabel.Caption:=Format(
-      lisMenuEditorRemainingConflictsS, [IntToStr(FConflictsListBox.Count)]);
-    FConflictsListBox.ItemIndex:=0;
-  end
-  else begin
-    FButtonPanel.OKButton.Enabled:=False;
-    FSelectedInfo:=nil;
-    FConflictsListBox.OnSelectionChange:=nil;
-    FConflictsListBox.Items.Add(lisMenuEditorNoShortcutConflicts);
-    FCurrentEdit.Text:=lisMenuEditorNoShortcutConflicts;
-    FResolvedConflictsCountLabel.Caption:=Format(lisMenuEditorResolvedConflictsS,['0']);
-    FRemainingConflictsCountLabel.Caption:=Format(lisMenuEditorRemainingConflictsS,['0']);
-  end;
-end;
-
-procedure TResolveConflictsDlg.RePopulateListBox;
-begin
-  FConflictsListBox.OnSelectionChange:=nil;
-  FConflictsListBox.Items.Clear;
-  FConflictsListBox.ItemIndex:= -1;
-  FButtonPanel.OKButton.Enabled:=False;
-  FShortcuts.ShortcutList.ScanContainerForShortcutsAndAccelerators;
-  if (FShortcuts.ShortcutList.InitialDuplicatesCount > 0) then begin
-    CreateListboxItems;
-    UpdateStatistics;
-    FConflictsListBox.ItemIndex:=0;
-    FConflictsListBox.OnSelectionChange:=@ConflictsBoxSelectionChange;
-  end
-  else begin
-    FButtonPanel.OKButton.Enabled:=False;
-    FSelectedInfo:=nil;
-    FConflictsListBox.OnSelectionChange:=nil;
-    FRemainingConflictsCountLabel.Caption:=Format(lisMenuEditorRemainingConflictsS,['0']);
-    FResolvedConflictsCountLabel.Caption:=Format(
-      lisMenuEditorResolvedConflictsS, [FInitialConflictsCount]);
-    FConflictsListBox.Items.Add(lisMenuEditorNoShortcutConflicts);
-    FCurrentEdit.Text:=lisMenuEditorConflictResolutionComplete;
-    FButtonPanel.CancelButton.Caption:=lisBtnClose;
-  end;
-end;
-
-procedure TResolveConflictsDlg.UpdateStatistics;
-begin
-  FResolvedConflictsCount:=FInitialConflictsCount - FConflictsListBox.Count;
-  FResolvedConflictsCountLabel.Caption:=Format(lisMenuEditorResolvedConflictsS,
-    [IntToStr(FResolvedConflictsCount)]);
-  FRemainingConflictsCountLabel.Caption:=Format(
-    lisMenuEditorRemainingConflictsS, [IntToStr(FInitialConflictsCount-FResolvedConflictsCount)]);
 end;
 
 { TShortcutDisplayDlg }
@@ -1088,7 +783,7 @@ var
   mi: TMenuItem;
   sc: TShortCut;
   result: boolean;
-  si: TShadowItem;
+  si: TShadowItemBase;
   info: TSCInfo;
   isMainSC: boolean;
 begin
@@ -1140,7 +835,7 @@ var
   mi: TMenuItem;
   sc: TShortCut;
   isMainSC, isCaptionSC, result: boolean;
-  si: TShadowItem;
+  si: TShadowItemBase;
 begin
   case isHeader of
     True: begin
@@ -1596,7 +1291,7 @@ begin
   begin
     FRootBox:=TShadowBox.CreateWithParentBox(Self, nil, FMenu.Items);
     for i:=0 to FMenu.Items.Count-1 do begin
-      if FIsMainMenu and FMenu.Items[i].IsLine then
+      if IsMainMenu and FMenu.Items[i].IsLine then
         RaiseGDBException(lisMenuEditorSomeWidgetsetsDoNotAllowSeparatorsInTheMainMenubar);
       RecursiveCreateShadows(FRootBox, FMenu.Items[i]);
     end;
@@ -1661,12 +1356,12 @@ end;
 procedure TShadowMenu.DeleteBox(aMI: TMenuItem);
 var
   i: integer;
-  sb: TShadowBox;
-  si: TShadowItem;
+  sb: TShadowBoxBase;
+  si: TShadowItemBase;
 begin
   for i:=aMI.Count-1 downto 0 do
     DeleteBox(aMI.Items[i]);
-  sb:=GetBoxContainingMenuItem(aMI);
+  sb:=GetParentBoxForMenuItem(aMI); //GetBoxContainingMenuItem(aMI);
   Assert(sb<>nil,'TShadowMenu.DeleteBox: internal error');
   sb.Hide;
   sb.ShadowList.Remove(GetShadowForMenuItem(aMI));
@@ -1721,7 +1416,7 @@ end;
 
 function TShadowMenu.GetSelectedShadowItem: TShadowItem;
 begin
-  Result:=GetShadowForMenuItem(FSelectedMenuItem);
+  Result:=TShadowItem(GetShadowForMenuItem(FSelectedMenuItem));
 end;
 
 function TShadowMenu.GetStringWidth(const aText: string; isBold: boolean): integer;
@@ -1766,7 +1461,7 @@ var
   end;
 
 begin
-  if not FIsMainMenu then
+  if not IsMainMenu then
     begin
       for p:=1 to aPrimaries do
         TShadowItem.CreateWithBoxAndItem(Self, FRootBox, NewMenuItem(nil));
@@ -2068,7 +1763,7 @@ begin
           Inc(lft, w);
         end;
       end
-    else if FIsMainMenu and (sb.Level = 1) then
+    else if IsMainMenu and (sb.Level = 1) then
       begin
         pt:=sb.GetInnerDims;
         idx:=sb.ParentMenuItem.MenuIndex;
@@ -2316,36 +2011,8 @@ begin
       FDesigner.FGui.UpdateSubmenuGroupBox(FSelectedMenuItem, selBox, selBox=FRootBox);
   end;
 end;
-
+{
 function TShadowMenu.GetBoxContainingMenuItem(aMI: TMenuItem): TShadowBox;
-var
-  p: pointer;
-  sb: TShadowBox absolute p;
-  s: pointer;
-  si: TShadowItem absolute s;
-begin
-  for p in FBoxList do
-    for s in sb.ShadowList do
-      if (si.RealItem = aMI) then
-        Exit(sb);
-  Result:=nil;
-end;
-
-function TShadowMenu.GetParentBoxForMenuItem(aMI: TMenuItem): TShadowBox;
-var
-  p: pointer;
-  sb: TShadowBox absolute p;
-  s: pointer;
-  si: TShadowItem absolute s;
-begin
-  for p in FBoxList do
-    for s in sb.ShadowList do
-      if (si.RealItem = aMI) then
-        Exit(sb);
-  Result:=nil;
-end;
-
-function TShadowMenu.GetShadowForMenuItem(aMI: TMenuItem): TShadowItem;
 var
   p: pointer;
   sb: TShadowBox absolute p;
@@ -2355,10 +2022,10 @@ begin
   for p in FBoxList do
     for ps in sb.ShadowList do
       if (si.RealItem = aMI) then
-        Exit(si);
+        Exit(sb);
   Result:=nil;
 end;
-
+}
 function TShadowMenu.OnClickIsAssigned(aMI: TMenuItem): boolean;
 begin
   if (aMI = nil) then
@@ -2415,7 +2082,7 @@ begin
     end
     else begin
       prevSelectedMenuItem:=FSelectedMenuItem;
-      prevSelectedShadow:=GetShadowForMenuItem(prevSelectedMenuItem);
+      prevSelectedShadow:=TShadowItem(GetShadowForMenuItem(prevSelectedMenuItem));
     end;
     if (prevSelectedShadow <> nil) then begin
       if prevSelectedMenuItem.Enabled then
@@ -2436,7 +2103,7 @@ procedure TShadowMenu.SetSelectedShadow(const prevSelectedItem,
 var
   selectedShadow, prevShadow: TShadowItem;
 begin
-  selectedShadow:=GetShadowForMenuItem(curSelectedItem);
+  selectedShadow:=TShadowItem(GetShadowForMenuItem(curSelectedItem));
   if selectedShadow=nil then
   begin
     HideFakes;
@@ -2450,7 +2117,7 @@ begin
   end else
   begin
     if (prevSelectedItem <> nil) then begin
-      prevShadow:=GetShadowForMenuItem(prevSelectedItem);
+      prevShadow:=TShadowItem(GetShadowForMenuItem(prevSelectedItem));
       if (prevShadow <> nil) and
          (selectedShadow.ParentBox.ParentMenuItem <> prevSelectedItem) and
          (prevShadow.ParentBox <> selectedShadow.ParentBox) then
@@ -2610,17 +2277,12 @@ constructor TShadowMenu.Create(aDesigner: TMenuDesigner; aForm: TForm;
   aMenu: TMenu; aSelect: TMenuItem; aWidth, aHeight: integer);
 begin
   Assert(aMenu<>nil,'TShadowMenu.Create: TMenu parameter is nil');
-  inherited Create(nil);
+  inherited Create(nil, aMenu);
   FDesigner := aDesigner;
   FMainCanvas := aForm.Canvas;
   FInitialSelectedMenuItem := aSelect;
   SetInitialBounds(0, 0, aWidth, aHeight);
-  FMenu := aMenu;
-  FIsMainMenu := (FMenu is TMainMenu);
   Name := 'ShadowMenu';
-  FEditorDesigner := FindRootDesigner(FMenu) as TComponentEditorDesigner;
-  FLookupRoot := FEditorDesigner.LookupRoot;
-  FBoxList := TFPList.Create;
   FItemsPopupMenu := TPopupMenu.Create(Self);
   FItemsPopupMenu.Name := 'ItemsPopupMenu';
   FActionList := TActionList.Create(Self);
@@ -2650,6 +2312,11 @@ begin
   Align := alClient;
 end;
 
+destructor TShadowMenu.Destroy;
+begin
+  inherited Destroy;
+end;
+
 procedure TShadowMenu.AddFirstMenu(Sender: TObject);
 var
   newMI: TMenuItem;
@@ -2667,13 +2334,6 @@ begin
   UpdateBoxLocationsAndSizes;
   SetSelectedMenuItem(newMI, False, False);
   FDesigner.FGui.UpdateStatistics;
-end;
-
-destructor TShadowMenu.Destroy;
-begin
-  FEditorDesigner:=nil;
-  FreeAndNil(FBoxList);
-  inherited Destroy;
 end;
 
 procedure TShadowMenu.HideBoxesAboveLevel(aLevel: integer);
@@ -2721,11 +2381,6 @@ end;
 function TShadowBox.GetIsMenuBar: boolean;
 begin
   Result:=(FLevel = 0) and IsMainMenu;
-end;
-
-function TShadowBox.GetShadowCount: integer;
-begin
-  Result:=FShadowList.Count;
 end;
 
 procedure TShadowBox.Paint;
@@ -2794,7 +2449,7 @@ procedure TShadowBox.RemoveAllSeparators;
 var
   mi, nearestMI: TMenuItem;
   i, sepCount: integer;
-  si: TShadowItem;
+  si: TShadowItemBase;
   ownsIt: TComponent;
 begin
   if (IsMainMenu and (Self = FShadowMenu.RootBox)) then
@@ -2948,7 +2603,7 @@ end;
 
 procedure TShadowItem.RecursiveHideChildren(aMI: TMenuItem);
 var
-  container: TShadowBox;
+  container: TShadowBoxBase;
   firstChild: TMenuItem;
 begin
   container:=FShadowMenu.GetParentBoxForMenuItem(aMI);
