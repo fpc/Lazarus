@@ -28,6 +28,8 @@ uses
   qtwidgets,
   // LCL
   Spin, SysUtils, Controls, Classes, LCLType, LCLProc, LCLIntf, Forms, StdCtrls,
+  //RTL
+  Math,
   // Widgetset
   WsProc, WSSpin, WSLCLClasses;
 
@@ -69,9 +71,16 @@ begin
   try
     if ASpinWidget is TQtFloatSpinBox then
       TQtFloatSpinBox(ASpinWidget).setDecimals(ACustomFloatSpinEdit.DecimalPlaces);
-
-    ASpinWidget.setMinimum(ACustomFloatSpinEdit.MinValue);
-    ASpinWidget.setMaximum(ACustomFloatSpinEdit.MaxValue);
+    if (ACustomFloatSpinEdit.MaxValue > ACustomFloatSpinEdit.MinValue) then
+    begin
+      ASpinWidget.setMinimum(ACustomFloatSpinEdit.MinValue);
+      ASpinWidget.setMaximum(ACustomFloatSpinEdit.MaxValue);
+    end
+    else
+    begin
+      ASpinWidget.setMinimum(-MaxDouble);
+      ASpinWidget.setMaximum(MaxDouble);
+    end;
     ASpinWidget.setSingleStep(ACustomFloatSpinEdit.Increment);
   finally
     ASpinWidget.EndUpdate;
