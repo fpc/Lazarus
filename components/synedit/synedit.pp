@@ -6938,9 +6938,15 @@ begin
           DefaultSelectionMode := SEL_MODE[Command];
         end;
       EcFoldLevel1..EcFoldLevel9:
-        FoldAll(Command - EcFoldLevel1);
+        begin
+          FoldAll(Command - EcFoldLevel1);
+          FCaret.Touch;
+        end;
       EcFoldLevel0:
-        UnfoldAll;
+        begin
+          UnfoldAll;
+          FCaret.Touch;
+        end;
       EcFoldCurrent:
         begin
           CY := FFoldedLinesView.ExpandedLineForBlockAtLine(CaretY);
@@ -6950,7 +6956,10 @@ begin
           end;
         end;
       EcUnFoldCurrent:
+        begin
           FFoldedLinesView.UnFoldAtTextIndex(CaretY-1);
+          FCaret.Touch;
+        end;
       EcToggleMarkupWord:
           FMarkupHighCaret.ToggleCurrentWord;
       ecZoomOut, ecZoomIn: begin
@@ -8163,9 +8172,9 @@ begin
     end else begin
       BB := BlockBegin;
       BE := BlockEnd;
-      if (BE.X = 1)
-      then e := BE.y - 1
-      else e := BE.y;
+      if FBlockSelection.LastLineHasSelection
+      then e := BE.y
+      else e := BE.y - 1;
     end;
 
     Spaces := StringOfChar(#32, FBlockIndent);
@@ -8228,10 +8237,10 @@ begin
     BB := BlockBegin;
     BE := BlockEnd;
     // convert selection to complete lines
-    if BE.X = 1 then
-      e := BE.y - 1
+    if FBlockSelection.LastLineHasSelection then
+      e := BE.y
     else
-      e := BE.y;
+      e := BE.y - 1;
   end;
 
   IncPaintLock;
