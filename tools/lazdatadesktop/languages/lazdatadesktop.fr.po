@@ -451,9 +451,9 @@ msgctxt "lazdatadeskstr.sld_connections"
 msgid "Connections"
 msgstr "Connexions"
 
-#: lazdatadeskstr.sld_connectiontype
-msgid "Connection type"
-msgstr "Type de connexion"
+#: lazdatadeskstr.sld_connectionsdictionaries
+msgid "Connections/Dictionaries"
+msgstr ""
 
 #: lazdatadeskstr.sld_connecttoadatabase
 msgid "Connect to a database of type %s"
@@ -662,6 +662,10 @@ msgstr "Mettre à jour les tables existantes"
 msgid "Username"
 msgstr "Nom d'utilisateur"
 
+#: lazdatadeskstr.sld_view
+msgid "View"
+msgstr ""
+
 #: lazdatadeskstr.sload
 msgid "Load SQL"
 msgstr "Charger du code SQL"
@@ -797,9 +801,13 @@ msgid "Previous"
 msgstr "Précédent"
 
 #: lazdatadeskstr.sql_noconnectionsfound
+#, fuzzy
+#| msgid ""
+#| "No connections or data dictionaries were found.\n"
+#| " Start by creating a new connection or data dictionary\n"
 msgid ""
 "No connections or data dictionaries were found.\n"
-" Start by creating a new connection or data dictionary\n"
+" Start by creating a new connection or data dictionary.\n"
 msgstr ""
 "Connexions ou dictionnaires de données introuvables.\n"
 "Commencez par créer une connexion ou un dictionnaire de données.\n"

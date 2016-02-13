@@ -451,9 +451,9 @@ msgctxt "lazdatadeskstr.sld_connections"
 msgid "Connections"
 msgstr "Kapcsolatok"
 
-#: lazdatadeskstr.sld_connectiontype
-msgid "Connection type"
-msgstr "Kapcsolat típusa"
+#: lazdatadeskstr.sld_connectionsdictionaries
+msgid "Connections/Dictionaries"
+msgstr ""
 
 #: lazdatadeskstr.sld_connecttoadatabase
 msgid "Connect to a database of type %s"
@@ -662,6 +662,10 @@ msgstr "Létező táblák frissítése"
 msgid "Username"
 msgstr "Felhasználónév"
 
+#: lazdatadeskstr.sld_view
+msgid "View"
+msgstr ""
+
 #: lazdatadeskstr.sload
 msgid "Load SQL"
 msgstr "SQL betöltése"
@@ -797,9 +801,13 @@ msgid "Previous"
 msgstr "Előző"
 
 #: lazdatadeskstr.sql_noconnectionsfound
+#, fuzzy
+#| msgid ""
+#| "No connections or data dictionaries were found.\n"
+#| " Start by creating a new connection or data dictionary\n"
 msgid ""
 "No connections or data dictionaries were found.\n"
-" Start by creating a new connection or data dictionary\n"
+" Start by creating a new connection or data dictionary.\n"
 msgstr ""
 "Nem található kapcsolat vagy adatszótár.\n"
 " Egy új kapcsolat vagy adatszótár létrehozásával kell kezdeni\n"

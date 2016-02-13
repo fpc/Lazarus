@@ -356,6 +356,7 @@ begin
   MenuItem2.Caption:= sld_Menuedit;
   MIDataDict.Caption:= sld_Menudictionary;
   MIConnection.Caption:= sld_Menuconnections;
+  MView.Caption:= sld_View;
   MIImport.Caption:= sld_Menudictionaryimport;
   MICloseSep.Caption:= sld_Separator;
   MISep.Caption:= sld_Separator;
@@ -418,6 +419,7 @@ begin
   //
   TSRecent.Caption:= sld_Dictionaries;
   TSConnections.Caption:= sld_Connections;
+  TSAll.Caption:= sld_ConnectionsDictionaries;
   LVDicts.Column[0].Caption:= sld_Recentlv1;
   LVDicts.Column[1].Caption:= sld_Recentlv2;
   LVDicts.Column[2].Caption:= sld_Recentlv3;

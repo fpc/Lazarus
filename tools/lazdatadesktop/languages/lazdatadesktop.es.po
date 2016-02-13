@@ -453,8 +453,8 @@ msgctxt "lazdatadeskstr.sld_connections"
 msgid "Connections"
 msgstr "Conexiones"
 
-#: lazdatadeskstr.sld_connectiontype
-msgid "Connection type"
+#: lazdatadeskstr.sld_connectionsdictionaries
+msgid "Connections/Dictionaries"
 msgstr ""
 
 #: lazdatadeskstr.sld_connecttoadatabase
@@ -672,6 +672,10 @@ msgstr "Actualizar tablas existentes"
 msgid "Username"
 msgstr "Usuario"
 
+#: lazdatadeskstr.sld_view
+msgid "View"
+msgstr ""
+
 #: lazdatadeskstr.sload
 msgid "Load SQL"
 msgstr "Cargar \"SQL\""
@@ -813,7 +817,7 @@ msgstr "Anterior"
 #: lazdatadeskstr.sql_noconnectionsfound
 msgid ""
 "No connections or data dictionaries were found.\n"
-" Start by creating a new connection or data dictionary\n"
+" Start by creating a new connection or data dictionary.\n"
 msgstr ""
 
 #: lazdatadeskstr.squery

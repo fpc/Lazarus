@@ -452,8 +452,8 @@ msgctxt "lazdatadeskstr.sld_connections"
 msgid "Connections"
 msgstr "Připojení"
 
-#: lazdatadeskstr.sld_connectiontype
-msgid "Connection type"
+#: lazdatadeskstr.sld_connectionsdictionaries
+msgid "Connections/Dictionaries"
 msgstr ""
 
 #: lazdatadeskstr.sld_connecttoadatabase
@@ -671,6 +671,10 @@ msgstr "Aktualizovat existující tabulky"
 msgid "Username"
 msgstr "Uživatel"
 
+#: lazdatadeskstr.sld_view
+msgid "View"
+msgstr ""
+
 #: lazdatadeskstr.sload
 msgid "Load SQL"
 msgstr "Načíst SQL"
@@ -812,7 +816,7 @@ msgstr "Předchozí"
 #: lazdatadeskstr.sql_noconnectionsfound
 msgid ""
 "No connections or data dictionaries were found.\n"
-" Start by creating a new connection or data dictionary\n"
+" Start by creating a new connection or data dictionary.\n"
 msgstr ""
 
 #: lazdatadeskstr.squery

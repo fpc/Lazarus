@@ -41,7 +41,7 @@ msgstr "Префикс OLD параметров WHERE"
 
 #: lazdatadeskstr.sabortscript
 msgid "Abort the script"
-msgstr ""
+msgstr "Прервать сценарий"
 
 #: lazdatadeskstr.sclose
 msgid "Close result"
@@ -129,17 +129,19 @@ msgstr "Механизм БД"
 
 #: lazdatadeskstr.serrcommitnotsupported
 msgid "COMMIT Not supported yet"
-msgstr ""
+msgstr "COMMIT пока не поддерживается"
 
 #: lazdatadeskstr.serrinscript
 msgid "Error in SQL script"
-msgstr ""
+msgstr "Ошибка в сценарии SQL"
 
 #: lazdatadeskstr.serrinscriptchoice
 msgid ""
 "An error occurred in the SQL script.\n"
 "How would you like to continue ?\n"
 msgstr ""
+"При исполнении сценария SQL произошла ошибка.\n"
+"Как вы хотите продолжить?\n"
 
 #: lazdatadeskstr.serrnoengine
 msgid "No database engine !"
@@ -147,7 +149,7 @@ msgstr "Отсутствует механизм баз данных!"
 
 #: lazdatadeskstr.serrorexecutingsql
 msgid "Error executing SQL statement:"
-msgstr ""
+msgstr "Ошибка исполнения выражения SQL:"
 
 #: lazdatadeskstr.serrselectfields
 msgid "No fields selected. Please select some fields"
@@ -159,7 +161,7 @@ msgstr "Не выбрано таблицы. Выберите её."
 
 #: lazdatadeskstr.serrunknowndirective
 msgid "Unknown directive: %s (args: %s)"
-msgstr ""
+msgstr "Неизвестная директива: %s (аргументы: %s)"
 
 #: lazdatadeskstr.serrunknowntype
 msgid "Unknown object type: %d"
@@ -171,15 +173,15 @@ msgstr "Выполнить код SQL"
 
 #: lazdatadeskstr.sexecutingsqlstatement
 msgid "%s : Executing SQL statement:"
-msgstr ""
+msgstr "%s : Исполнение выражения SQL:"
 
 #: lazdatadeskstr.sexecutingsqlstatementcount
 msgid "%s : Executing script SQL statement nr. %d:"
-msgstr ""
+msgstr "%s : Исполнение выражения SQL №%d:"
 
 #: lazdatadeskstr.sexecutiontime
 msgid "Execution time: %s"
-msgstr ""
+msgstr "Время исполнения: %s"
 
 #: lazdatadeskstr.sexport
 msgid "Export data"
@@ -449,9 +451,9 @@ msgctxt "lazdatadeskstr.sld_connections"
 msgid "Connections"
 msgstr "Соединения"
 
-#: lazdatadeskstr.sld_connectiontype
-msgid "Connection type"
-msgstr ""
+#: lazdatadeskstr.sld_connectionsdictionaries
+msgid "Connections/Dictionaries"
+msgstr "Соединения/словари"
 
 #: lazdatadeskstr.sld_connecttoadatabase
 msgid "Connect to a database of type %s"
@@ -481,7 +483,7 @@ msgstr "Словари"
 
 #: lazdatadeskstr.sld_firststart
 msgid "First start of database desktop"
-msgstr ""
+msgstr "Первый запуск рабочего стола базы данных"
 
 #: lazdatadeskstr.sld_fromconnection
 msgid "From connection"
@@ -521,7 +523,7 @@ msgstr "Рабочий стол базы данных Lazarus"
 
 #: lazdatadeskstr.sld_legacyview
 msgid "Legacy List View"
-msgstr ""
+msgstr "Старый вид списка"
 
 #: lazdatadeskstr.sld_linelength
 msgid "Line Length"
@@ -618,19 +620,19 @@ msgstr "-"
 
 #: lazdatadeskstr.sld_startempty
 msgid "Thanks, I know what to do"
-msgstr ""
+msgstr "Спасибо, я знаю, что делаю"
 
 #: lazdatadeskstr.sld_startnewconnection
 msgid "Create new connection"
-msgstr ""
+msgstr "Создать новое соединение"
 
 #: lazdatadeskstr.sld_startnewdict
 msgid "Start new dictionary"
-msgstr ""
+msgstr "Создать новый словарь"
 
 #: lazdatadeskstr.sld_succesconnecting
 msgid "Connection established successfully!"
-msgstr ""
+msgstr "Соединение успешно установлено!"
 
 #: lazdatadeskstr.sld_table
 msgid "Ta&ble"
@@ -642,7 +644,7 @@ msgstr "&Таблицы и поля"
 
 #: lazdatadeskstr.sld_testconnection
 msgid "Test connection"
-msgstr ""
+msgstr "Проверить соединение"
 
 #: lazdatadeskstr.sld_unknowntype
 msgid "Unknown type"
@@ -659,6 +661,10 @@ msgstr "Обновить существующие таблицы"
 #: lazdatadeskstr.sld_username
 msgid "Username"
 msgstr "Имя пользователя"
+
+#: lazdatadeskstr.sld_view
+msgid "View"
+msgstr "Вид"
 
 #: lazdatadeskstr.sload
 msgid "Load SQL"
@@ -797,8 +803,10 @@ msgstr "Предыдущий"
 #: lazdatadeskstr.sql_noconnectionsfound
 msgid ""
 "No connections or data dictionaries were found.\n"
-" Start by creating a new connection or data dictionary\n"
+" Start by creating a new connection or data dictionary.\n"
 msgstr ""
+"Не найдено соединений и словарей данных.\n"
+"Начните с создания нового соединения либо словаря данных.\n"
 
 #: lazdatadeskstr.squery
 msgid "Run query"
@@ -806,15 +814,15 @@ msgstr "Запрос"
 
 #: lazdatadeskstr.sreadyforsql
 msgid "Ready to execute SQL statements"
-msgstr ""
+msgstr "Готов для исполнения выражений SQL"
 
 #: lazdatadeskstr.srecordsfetched
 msgid "Records fetched: %d"
-msgstr ""
+msgstr "Загружено записей: %d"
 
 #: lazdatadeskstr.sretrystatement
 msgid "Retry the statement"
-msgstr ""
+msgstr "Повторить исполнение выражения"
 
 #: lazdatadeskstr.srowsaffected
 msgid "Query executed successfully: %d rows affected."
@@ -830,15 +838,15 @@ msgstr "Сохранить изменения"
 
 #: lazdatadeskstr.sscriptaborted
 msgid "Script was aborted after %d statements"
-msgstr ""
+msgstr "Сценарий был прерван после исполнения выражений (%d шт.)"
 
 #: lazdatadeskstr.sscriptcompleted
 msgid "Executed %d statements from script"
-msgstr ""
+msgstr "Выражения (%d шт.) сценария исполнены"
 
 #: lazdatadeskstr.sscripterrorcount
 msgid "%d script statements resulted in errors"
-msgstr ""
+msgstr "Исполнение выражений (%d шт.) сценария завершилось ошибкой"
 
 #: lazdatadeskstr.sselectdbfdir
 msgid "Select a directory with DBF files"
@@ -854,11 +862,11 @@ msgstr "Счётчик"
 
 #: lazdatadeskstr.ssqlerrorcode
 msgid "SQL Error code: %d"
-msgstr ""
+msgstr "Код ошибки SQL: %d"
 
 #: lazdatadeskstr.ssqlexecutedok
 msgid "%s : Statement executed succesfully."
-msgstr ""
+msgstr "%s : Выражение успешно исполнено."
 
 #: lazdatadeskstr.ssqlfilters
 msgid "SQL files|*.sql|All files|*.*"
@@ -866,15 +874,15 @@ msgstr "Файлы SQL|*.sql|Все файлы|*.*"
 
 #: lazdatadeskstr.ssqlstatus
 msgid "SQL State: %s"
-msgstr ""
+msgstr "Статус SQL: %s"
 
 #: lazdatadeskstr.sstopnoerror
 msgid "Continue, ignore all errors"
-msgstr ""
+msgstr "Продолжить, игнорировать все ошибки"
 
 #: lazdatadeskstr.sstoponnexterror
 msgid "Continue, stop on the next error"
-msgstr ""
+msgstr "Продолжить, остановиться при следующей ошибке"
 
 #: lazdatadeskstr.stable
 msgid "Table"

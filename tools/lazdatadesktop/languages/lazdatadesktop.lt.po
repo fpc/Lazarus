@@ -455,8 +455,8 @@ msgctxt "lazdatadeskstr.sld_connections"
 msgid "Connections"
 msgstr "Ryšiai"
 
-#: lazdatadeskstr.sld_connectiontype
-msgid "Connection type"
+#: lazdatadeskstr.sld_connectionsdictionaries
+msgid "Connections/Dictionaries"
 msgstr ""
 
 #: lazdatadeskstr.sld_connecttoadatabase
@@ -674,6 +674,10 @@ msgstr "Naujinti egzistuojančias lenteles"
 msgid "Username"
 msgstr "Naudotojo vardas"
 
+#: lazdatadeskstr.sld_view
+msgid "View"
+msgstr ""
+
 #: lazdatadeskstr.sload
 msgid "Load SQL"
 msgstr "Įkelti SQL"
@@ -815,7 +819,7 @@ msgstr "Ankstesnis"
 #: lazdatadeskstr.sql_noconnectionsfound
 msgid ""
 "No connections or data dictionaries were found.\n"
-" Start by creating a new connection or data dictionary\n"
+" Start by creating a new connection or data dictionary.\n"
 msgstr ""
 
 #: lazdatadeskstr.squery
