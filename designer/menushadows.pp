@@ -24,15 +24,15 @@ type
   { TFake }
 
   TFake = class(TCustomControl)
-  protected
+  private
     FShadowMenu: TShadowMenu;
     FMinWidth: integer;
+  protected
     function GetShouldBeVisible: boolean; virtual; abstract;
     procedure SetVisibilitySizeAndPosition; virtual; abstract;
     procedure TextChanged; override;
-  protected
-    class function GetControlClassDefaultSize: TSize; override;
     procedure Paint; override;
+    class function GetControlClassDefaultSize: TSize; override;
   public
     constructor Create(anOwner: TShadowMenu); reintroduce;
     procedure Refresh;
@@ -83,22 +83,24 @@ type
     function GetShowingBottomFake: boolean;
     function GetShowingRightFake: boolean;
     function GetSubImagesIconTopLeft: TPoint;
+    procedure RecursiveHideChildren(aMI: TMenuItem);
     procedure SetState(AValue: TShadowItemDisplayState);
-  protected
+  private
     function GetHeight: integer;
     function GetWidth: integer;
     function HasChildBox(out aChildBox: TShadowBox): boolean;
-    procedure DblClick; override;
     procedure HideChainFromRoot;
     procedure HideChildren;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure Paint; override;
     procedure ShowChainToRoot;
     procedure ShowChildBox;
     procedure ShowDisabled;
     procedure ShowNormal;
     procedure ShowSelected;
+  protected
+    procedure DblClick; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure Paint; override;
   public
     constructor CreateWithBoxAndItem(aSMenu: TShadowMenu; aParentBox: TShadowBox;
       aRealItem: TMenuItem);
@@ -126,12 +128,11 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure ShowAllUnSelected;
-  protected
+  private
     function GetInnerDims: TPoint;
     procedure AddItemAndShadow(existingSI: TShadowItem; addBefore: boolean;
       isSeparator: boolean=False);
     procedure LocateShadows;
-    procedure Paint; override;
     procedure RemoveAllSeparators;
     procedure SelectPrevious(aSI: TShadowItem);
     procedure SelectSuccessor(aSI: TShadowItem);
@@ -140,6 +141,8 @@ type
     property ParentBox: TShadowBox read FParentBox;
     property ShadowCount: integer read GetShadowCount;
     property Updating: boolean read FUpdating;
+  protected
+    procedure Paint; override;
   public
     constructor CreateWithParentBox(aSMenu: TShadowMenu; aParentBox: TShadowBox;
       aParentItem: TMenuItem);
@@ -2943,27 +2946,24 @@ begin
   end;
 end;
 
+procedure TShadowItem.RecursiveHideChildren(aMI: TMenuItem);
+var
+  container: TShadowBox;
+  firstChild: TMenuItem;
+begin
+  container:=FShadowMenu.GetParentBoxForMenuItem(aMI);
+  Assert(container<>nil,'TShadowItem.HideChildren: missing parent box for '+aMI.Caption);
+  container.Hide;
+  if (aMI.Count > 0) then begin
+    firstChild:=aMI.Items[0];
+    Assert(firstChild<>nil,'TShadowItem.HideChildren: missing child');
+    RecursiveHideChildren(firstChild);
+  end;
+end;
+
 procedure TShadowItem.HideChildren;
 var
   child: TMenuItem;
-  s: string;
-
-  procedure RecursiveHideChildren(aMI: TMenuItem);
-  var
-    container: TShadowBox;
-    firstChild: TMenuItem;
-  begin
-    container:=FShadowMenu.GetParentBoxForMenuItem(aMI);
-    s:=aMI.Caption;
-    Assert(container<>nil,'TShadowItem.HideChildren: missing parent box for '+s);
-    container.Hide;
-    if (aMI.Count > 0) then begin
-      firstChild:=aMI.Items[0];
-      Assert(firstChild<>nil,'TShadowItem.HideChildren: missing child');
-      RecursiveHideChildren(firstChild);
-    end;
-  end;
-
 begin
   if (FRealItem.Count > 0) then begin
     child:=FRealItem.Items[0];
