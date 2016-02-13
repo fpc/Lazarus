@@ -30,8 +30,6 @@ uses
   Classes, SysUtils, Types, typinfo,
   Controls, StdCtrls, ExtCtrls, Forms, Graphics, Buttons, Menus, ButtonPanel,
   ImgList, Themes, LCLintf, LCLProc,
-  // LazUtils
-  LazUTF8,
   // IdeIntf
   FormEditingIntf, PropEdits,
   // IDE
@@ -107,23 +105,6 @@ type
     //property AcceleratorMenuItemsCount: integer read FAcceleratorMenuItemsCount;
   end;
 
-  { TEditCaptionDialog }
-
-  TEditCaptionDialog = class(TForm)
-  strict private
-    FButtonPanel: TButtonPanel;
-    FEdit: TEdit;
-    FGBEdit: TGroupBox;
-    FMenuItem: TMenuItem;
-    FNewShortcut: TShortCut;
-    FOldShortcut: TShortCut;
-    procedure EditOnChange(Sender: TObject);
-    procedure OKButtonClick(Sender: TObject);
-  public
-    constructor CreateWithMenuItem(AOwner: TComponent; aMI: TMenuItem; aSC: TShortCut);
-    property NewShortcut: TShortCut read FNewShortcut;
-  end;
-
   TRadioIconGroup = class;
   TRadioIconState = (risUp, risDown, risPressed, risUncheckedHot, risCheckedHot);
 
@@ -191,7 +172,6 @@ type
   end;
 
 function GetNestingLevelDepth(aMenu: TMenu): integer;
-function EditCaptionDlg(aMI: TMenuItem; var aShortcut: TShortCut): boolean;
 function ChooseIconFromImageListDlg(anImageList: TCustomImageList): integer;
 
 
@@ -219,20 +199,6 @@ begin
   Result:=0;
   for i:=0 to aMenu.Items.Count-1 do
     CheckLevel(aMenu.Items[i], 0);
-end;
-
-function EditCaptionDlg(aMI: TMenuItem; var aShortcut: TShortCut): boolean;
-var
-  dlg: TEditCaptionDialog;
-begin
-  dlg := TEditCaptionDialog.CreateWithMenuItem(nil, aMI, aShortcut);
-  try
-    Result := dlg.ShowModal = mrOK;
-    if Result then
-      aShortcut := dlg.NewShortcut;
-  finally
-    dlg.Free;
-  end;
 end;
 
 function ChooseIconFromImageListDlg(anImageList: TCustomImageList): integer;
@@ -730,91 +696,6 @@ begin
     ButtonsGroupBox.Enabled:=True;
     UpdateSubmenuGroupBox(aMenuItem, aShadowBox, aShadowBox.Level=0);
   end;
-end;
-
-{ TEditCaptionDialog }
-
-constructor TEditCaptionDialog.CreateWithMenuItem(AOwner: TComponent;
-  aMI: TMenuItem; aSC: TShortCut);
-var
-  key: word;
-  sstate: TShiftState;
-  p: integer;
-  ch: Char;
-begin
-  inherited CreateNew(AOwner);
-  FMenuItem:=aMI;
-  FOldShortcut:=aSC;
-  ShortCutToKey(aSC, key, sstate);
-  Position:=poScreenCenter;
-  BorderStyle:=bsDialog;
-  Caption:=Format(lisMenuEditorEditingCaptionOfS, [FMenuItem.Name]);
-
-  FButtonPanel:=TButtonPanel.Create(Self);
-  with FButtonPanel do
-    begin
-      ShowButtons:=[pbOK, pbCancel];
-      OKButton.Name:='OKButton';
-      OKButton.DefaultCaption:=True;
-      OKButton.Enabled:=False;
-      OKButton.OnClick:=@OKButtonClick;
-      CancelButton.Name:='CancelButton';
-      CancelButton.DefaultCaption:=True;
-      ShowBevel:=False;
-      Parent:=Self;
-    end;
-
-  FGBEdit:=TGroupBox.Create(Self);
-  with FGBEdit do
-    begin
-      BorderSpacing.Around:=Margin;
-      p:=LazUTF8.UTF8Pos('&', aMI.Caption);
-      if (p > 0) and (p < LazUTF8.UTF8Length(aMI.Caption)) then
-        ch:=aMI.Caption[Succ(p)] // gets correct case of key
-      else
-        ch:=Chr(Ord(key));    // fallback
-    Caption:=Format(lisMenuEditorAcceleratorKeySNeedsChanging, [ch]);
-      Align:=alClient;
-      Parent:=Self;
-    end;
-
-  FEdit:=TEdit.Create(Self);
-  with FEdit do
-    begin;
-      BorderSpacing.Around:=Margin;
-      Text:=FMenuItem.Caption;
-      Align:=alClient;
-      OnChange:=@EditOnChange;
-      Parent:=FGBEdit;
-    end;
-
-  AutoSize:=True;
-end;
-
-procedure TEditCaptionDialog.EditOnChange(Sender: TObject);
-var
-  hasAccel: boolean;
-  sc: TShortCut;
-begin
-  if (FEdit.Text = '') then
-    begin
-      FEdit.Text:=lisMenuEditorCaptionShouldNotBeBlank;
-      FEdit.SetFocus;
-    end
-  else
-  begin
-    hasAccel:=HasAccelerator(FEdit.Text, sc);
-    if (not hasAccel) or (hasAccel and (sc <> FOldShortcut)) then
-    begin
-      FNewShortcut:=sc;
-      FButtonPanel.OKButton.Enabled:=True;
-    end;
-  end;
-end;
-
-procedure TEditCaptionDialog.OKButtonClick(Sender: TObject);
-begin
-  FMenuItem.Caption:=FEdit.Text;
 end;
 
 { TRadioIcon }

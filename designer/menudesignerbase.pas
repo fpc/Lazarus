@@ -66,6 +66,7 @@ type
   public
     constructor Create(AOwner: TComponent; aMenu: TMenu); reintroduce;
     destructor Destroy; override;
+    procedure RefreshFakes; virtual; abstract;
     procedure SetSelectedMenuItem(aMI: TMenuItem;
       viaDesigner, prevWasDeleted: boolean); virtual; abstract;
     procedure UpdateBoxLocationsAndSizes; virtual; abstract;
