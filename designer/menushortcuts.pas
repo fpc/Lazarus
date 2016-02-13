@@ -5,7 +5,7 @@ unit MenuShortcuts;
 interface
 
 uses
-  Classes, SysUtils, types,
+  Classes, SysUtils, strutils, types,
   ActnList, ButtonPanel, Controls, Dialogs, StdCtrls, Menus,
   Forms, Graphics, LCLType, LCLIntf, LCLProc,
   // LazUtils
@@ -294,38 +294,29 @@ begin
 end;
 
 function HasAccelerator(const aText: string; out aShortcut: TShortCut): boolean;
-// ToDo: implement the UTF-8 stuff in a more clever way.
 var
   p, UTF8Len: integer;
-  aCopy, foundChar, accelStr: string;
+  accelStr: string;
 begin
-  if (aText = '') then begin
-    aShortcut:=0;
-    Exit(False);
-  end;
-  aCopy:=aText;
-  Result:=False;
-  UTF8Len := LazUTF8.UTF8Length(aCopy);
-  p:=LazUTF8.UTF8Pos('&', aCopy);
-  while (p > 0) and (p < UTF8Len) do
-  begin
-    foundChar:=LazUTF8.UTF8Copy(aCopy, p+1, 1);
-    if (foundChar <> '&') then begin
-      accelStr:=LazUTF8.UTF8UpperCase(foundChar); // force uppercase
-      Result:=True;
+  Result := False;
+  aShortcut := 0;
+  if aText = '' then Exit;
+  p := 0;
+  repeat
+    p := PosEx('&', aText, p+1);
+    if (p = 0) or (p = Length(aText)) then Break;
+    if aText[p+1] <> '&' then  // '&&' is reduced to '&' by widgetset GUI.
+    begin
+      UTF8Len := UTF8CharacterLength(@aText[p+1]);
+      accelStr := UTF8UpperCase(Copy(aText, p+1, UTF8Len)); // force uppercase
+      // ToDo: Use the whole UTF-8 character in accelStr. How?
+      aShortcut := KeyToShortCut(Ord(accelStr[1]),
+      {$if defined(darwin) or defined(macos) or defined(iphonesim)} [ssMeta]
+      {$else} [ssAlt] {$endif});
+      Result := True;
       Break;
-    end
-    else begin
-      LazUTF8.UTF8Delete(aCopy, 1, p+1);
-      p:=LazUTF8.UTF8Pos('&', aCopy);
     end;
-  end;
-  if Result then
-    aShortcut:=KeyToShortCut(Ord(accelStr[1]),
-    {$if defined(darwin) or defined(macos) or defined(iphonesim)} [ssMeta]
-    {$else} [ssAlt] {$endif})
-  else
-    aShortcut:=0;
+  until False;
 end;
 {
 function GetAcceleratedItemsCount(aMenu: TMenu): integer;
