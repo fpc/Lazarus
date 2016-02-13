@@ -155,8 +155,16 @@ begin
   end
   else
   begin
-    AnAdjustment^.lower := TCustomFloatSpinEdit(ACustomEdit).MinValue;
-    AnAdjustment^.upper := TCustomFloatSpinEdit(ACustomEdit).MaxValue;
+    if (TCustomFloatSpinEdit(ACustomEdit).MaxValue > TCustomFloatSpinEdit(ACustomEdit).MinValue) then
+    begin
+      AnAdjustment^.lower := TCustomFloatSpinEdit(ACustomEdit).MinValue;
+      AnAdjustment^.upper := TCustomFloatSpinEdit(ACustomEdit).MaxValue;
+    end
+    else
+    begin
+      AnAdjustment^.lower := -MaxDouble;
+      AnAdjustment^.upper := MaxDouble;
+    end;
   end;
   gtk_spin_button_update(GTK_SPIN_BUTTON(Widget));
 end;
@@ -175,7 +183,7 @@ begin
   wHandle := ACustomFloatSpinEdit.Handle;
   SpinWidget:=GTK_SPIN_BUTTON({%H-}Pointer(wHandle));
 
-  if ACustomFloatSpinEdit.MaxValue >= ACustomFloatSpinEdit.MinValue then
+  if ACustomFloatSpinEdit.MaxValue > ACustomFloatSpinEdit.MinValue then
   begin
     AMin := ACustomFloatSpinEdit.MinValue;
     AMax := ACustomFloatSpinEdit.MaxValue;
