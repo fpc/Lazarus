@@ -130,34 +130,3 @@ msgctxt "TMAINFORM.RGDRINKS.CAPTION"
 msgid "Please select a drink"
 msgstr "Veuillez sélectionner une boisson"
 
-#~ msgctxt "tform2.checkgroup.caption"
-#~ msgid "Several items"
-#~ msgstr "Plusieurs éléments"
-
-#~ msgctxt "tform2.radiogroup.caption"
-#~ msgid "Single item"
-#~ msgstr "Un seul élément"
-
-#~ msgctxt "tmainform.button1.caption"
-#~ msgid "Open second form"
-#~ msgstr "Ouvrir la deuxième fiche"
-
-#~ msgctxt "tmainform.button2.caption"
-#~ msgid "What did you select?"
-#~ msgstr "Qu'avez-vous choisi ?"
-
-#~ msgctxt "tmainform.caption"
-#~ msgid "Translation demo"
-#~ msgstr "Démonstration de traduction"
-
-#~ msgctxt "tmainform.label1.caption"
-#~ msgid "Select language"
-#~ msgstr "Choisir la langue"
-
-#~ msgctxt "tmainform.lblcurrentselection.caption"
-#~ msgid "No drink selected."
-#~ msgstr "Aucune boisson n'est sélectionnée."
-
-#~ msgctxt "tmainform.rgdrinks.caption"
-#~ msgid "Please select a drink"
-#~ msgstr "Veuillez choisir une boisson"
