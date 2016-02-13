@@ -325,9 +325,12 @@ begin
       fFilteredListbox.ItemIndex := AIndex;
       for i := Min(AIndex+1, xSelStart+1) to Max(AIndex-1, xSelEnd-1) do
         fFilteredListbox.Selected[i] := True;
+      //Win32 sets ItemIndex to the last Selected[?] := True - in contrast to Gtk2 -> set selected again to work on all widgetsets
+       fFilteredListbox.Selected[AIndex] := True;
     end else
     begin
       fFilteredListbox.ItemIndex := AIndex;
+      fFilteredListbox.Selected[AIndex] := True;
     end;
     Assert(fFilteredListbox.ItemFullyVisible(AIndex), 'TListFilterEdit.MoveTo: Item not fully visible');
 {    if not fFilteredListbox.ItemFullyVisible(AIndex) then
