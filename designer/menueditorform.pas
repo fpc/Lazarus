@@ -52,7 +52,7 @@ type
     GroupIndexLabel: TLabel;
     HelpButton: TBitBtn;
     IconCountLabel: TLabel;
-    LeftPanel:TPanel;
+    LeftPanel: TPanel;
     MoveItemDownButton: TSpeedButton;
     MoveItemUpButton: TSpeedButton;
     PopupAssignmentsCountLabel: TLabel;

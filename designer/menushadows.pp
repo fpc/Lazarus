@@ -174,6 +174,8 @@ type
     FItemsPopupMenu: TPopupMenu;
     FMainCanvas: TCanvas;
     FRootBox: TShadowBox;
+    FInPlaceEditor: TEdit;
+    FEditedMenuItem: TMenuItem;
     procedure DeleteBox(aMI: TMenuItem);
     procedure DeleteItm(anItem: TMenuItem);
     function GetActionForEnum(anEnum: TPopEnum): TAction;
@@ -191,11 +193,13 @@ type
     procedure CreateShadowBoxesAndItems;
     procedure DeleteChildlessShadowAndItem(anExistingSI: TShadowItem);
     procedure DeleteShadowAndItemAndChildren(anExistingSI: TShadowItem);
+    procedure InPlaceEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnDesignerModified(Sender: TObject);
     procedure OnObjectPropertyChanged(Sender: TObject; NewObject: TPersistent);
     procedure OnDesignerRefreshPropertyValues;
     procedure RecursiveCreateShadows(aParentBox: TShadowBox; aMI: TMenuItem);
     procedure SetupPopupMenu;
+    procedure StopEditingCaption;
     procedure UpdateButtonGlyphs(isInBar: boolean);
     // user actions
     procedure AddFromTemplate(Sender: TObject);
@@ -313,22 +317,6 @@ begin
   Result:=MenuDesignerSingleton;
 end;
 
-
-type
-
-  { TLineEditor }
-
-  TLineEditor = class(TForm)
-  strict private
-    FEdit: TEdit;
-    function GetEditedLine: string;
-  protected
-    procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-  public
-    constructor CreateWithShadowItem(aSI: TShadowItem);
-    property EditedLine: string read GetEditedLine;
-  end;
-
 // utility functions
 
 function ItemStateToStr(aState: TShadowItemDisplayState): string;
@@ -389,23 +377,6 @@ begin
   until not Result.IsLine or (idx = maxIdx);
   if Result.IsLine then
     Result:=nil;
-end;
-
-function GetNewCaptionFor(aSI: TShadowItem): string;
-var
-  dlg: TLineEditor;
-  mr: TModalResult;
-begin
-  dlg:=TLineEditor.CreateWithShadowItem(aSI);
-  try
-    mr:=dlg.ShowModal;
-    if (mr = mrOK) then
-      Result:=dlg.EditedLine
-    else
-      Result:='';
-  finally
-    dlg.Free;
-  end;
 end;
 
 function PreviousItemIsSeparator(aMI: TMenuItem): boolean;
@@ -619,41 +590,6 @@ begin
   end;
 end;
 
-{ TLineEditor }
-
-constructor TLineEditor.CreateWithShadowItem(aSI: TShadowItem);
-var
-  topLeft: TPoint;
-begin
-  inherited CreateNew(Nil);
-  BorderStyle:=bsNone;
-  Name:='LineEditor';
-  // ToDo: Get rid of the global MenuDesigner reference.
-  topLeft:=MenuDesigner.ShadowMenu.ClientToScreen(aSI.BoundsRect.TopLeft);
-  SetInitialBounds(topLeft.x + aSI.ParentBox.Left,
-                   topLeft.y + aSI.ParentBox.Top,
-                   aSI.Width+1, aSI.Height+1);
-  FEdit:=TEdit.Create(Self);
-  FEdit.Align:=alClient;
-  FEdit.Text:=aSI.RealItem.Caption;
-  FEdit.OnKeyDown:=@EditKeyDown;
-  FEdit.Parent:=Self;
-end;
-
-function TLineEditor.GetEditedLine: string;
-begin
-  Result:=FEdit.Text;
-end;
-
-procedure TLineEditor.EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  case Key of
-    VK_ESCAPE: begin ModalResult:=mrCancel; Key:=0; end;
-    VK_RETURN: begin ModalResult:=mrOK; Key:=0; end;
-    else inherited KeyDown(Key, Shift);
-  end;
-end;
-
 { TFake }
 
 constructor TFake.Create(anOwner: TShadowMenu);
@@ -770,27 +706,54 @@ end;
 
 procedure TShadowMenu.EditCaption(Sender: TObject);
 var
-  s: string;
-  selected: TShadowItem;
+  SelShadow: TShadowItem;
 begin
-  selected:=SelectedShadowItem;
-  if (selected <> nil) then begin
+  SelShadow := SelectedShadowItem;
+  if (SelShadow <> nil) then begin
     HideFakes;
-    s:=GetNewCaptionFor(selected);
-    if (s = cLineCaption) and  // disallow renaming to '-' in these cases
-       (FSelectedMenuItem.IsInMenuBar or (FSelectedMenuItem.Count > 0)) then begin
-      RefreshFakes;
-      Exit;
-    end;
-    if (s <> '') then begin
-      FSelectedMenuItem.Caption:=s;
-      GlobalDesignHook.RefreshPropertyValues;
-      GlobalDesignHook.Modified(FSelectedMenuItem);
-      UpdateBoxLocationsAndSizes;
-      selected.Repaint;
-      FDesigner.FGui.UpdateStatistics;
-    end;
-    RefreshFakes;
+    FEditedMenuItem := FSelectedMenuItem;
+    FInPlaceEditor.Parent := SelShadow;
+    // ToDo: Calculate Left and Width properly.
+    FInPlaceEditor.Left := 24;
+    FInPlaceEditor.Width := SelShadow.Width - 24;
+    FInPlaceEditor.Text := FEditedMenuItem.Caption;
+    FInPlaceEditor.Visible := True;
+    FInPlaceEditor.SetFocus;
+  end;
+end;
+
+procedure TShadowMenu.StopEditingCaption;
+var
+  EditedShadow: TShadowItem;
+  s: TCaption;
+begin
+  if not FInPlaceEditor.Visible then Exit;
+  Assert(Assigned(FEditedMenuItem), 'TShadowMenu.StopEditingCaption: FEditedMenuItem = Nil');
+  EditedShadow := TShadowItem(GetShadowForMenuItem(FEditedMenuItem));
+  s := FInPlaceEditor.Text;
+  if (s <> cLineCaption) and (s <> '') then
+  begin
+    FEditedMenuItem.Caption:=s;
+    GlobalDesignHook.RefreshPropertyValues;
+    GlobalDesignHook.Modified(FEditedMenuItem);
+    //UpdateBoxLocationsAndSizes;
+    EditedShadow.Repaint;
+    //FDesigner.FGui.UpdateStatistics;
+  end;
+  EditedShadow.SetFocus;
+  FInPlaceEditor.Text := '';
+  FInPlaceEditor.Visible := False;
+  FInPlaceEditor.Parent := Nil;
+  FEditedMenuItem := Nil;
+  RefreshFakes;
+end;
+
+procedure TShadowMenu.InPlaceEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  case Key of
+    VK_ESCAPE: begin Key:=0; FInPlaceEditor.Text := ''; StopEditingCaption; end;
+    VK_RETURN: begin Key:=0; StopEditingCaption; end;
+    else inherited KeyDown(Key, Shift);
   end;
 end;
 
@@ -929,6 +892,7 @@ var
   box: TShadowBox;
   ownsIt: TComponent;
 begin
+  StopEditingCaption;
   FDesigner.FGui.BeginUpdate;
   try
     mi:=anExistingSI.RealItem;
@@ -961,7 +925,8 @@ begin
       FEditorDesigner.PropertyEditorHook.PersistentDeleted;
       FEditorDesigner.Modified;
 
-      if (box.ShadowCount = 0) then begin
+      if (box.ShadowCount = 0) then
+      begin
         FBoxList.Remove(box);
         box.Parent:=nil;
         RemoveComponent(box);
@@ -1636,21 +1601,7 @@ begin
       FDesigner.FGui.UpdateSubmenuGroupBox(FSelectedMenuItem, selBox, selBox=FRootBox);
   end;
 end;
-{
-function TShadowMenu.GetBoxContainingMenuItem(aMI: TMenuItem): TShadowBox;
-var
-  p: pointer;
-  sb: TShadowBox absolute p;
-  ps: pointer;
-  si: TShadowItem absolute ps;
-begin
-  for p in FBoxList do
-    for ps in sb.ShadowList do
-      if (si.RealItem = aMI) then
-        Exit(sb);
-  Result:=nil;
-end;
-}
+
 function TShadowMenu.OnClickIsAssigned(aMI: TMenuItem): boolean;
 begin
   if (aMI = nil) then
@@ -1732,7 +1683,8 @@ begin
   if selectedShadow=nil then
   begin
     HideFakes;
-    if (FSelectedMenuItem <> nil) then begin
+    if (FSelectedMenuItem <> nil) then
+    begin
       SelectedShadowItem.ShowNormal;
       FSelectedMenuItem:=nil;
     end;
@@ -1741,13 +1693,16 @@ begin
       FEditorDesigner.SelectOnlyThisComponent(FMenu);
   end else
   begin
-    if (prevSelectedItem <> nil) then begin
+    if (prevSelectedItem <> nil) then
+    begin
+      StopEditingCaption;
       prevShadow:=TShadowItem(GetShadowForMenuItem(prevSelectedItem));
-      if (prevShadow <> nil) and
-         (selectedShadow.ParentBox.ParentMenuItem <> prevSelectedItem) and
-         (prevShadow.ParentBox <> selectedShadow.ParentBox) then
-           prevShadow.HideChainFromRoot;
-      end;
+      if (prevShadow <> nil)
+      and (selectedShadow.ParentBox.ParentMenuItem <> prevSelectedItem)
+      and (prevShadow.ParentBox <> selectedShadow.ParentBox)
+      then
+        prevShadow.HideChainFromRoot;
+    end;
     UpdateButtonGlyphs(FSelectedMenuItem.IsInMenuBar);
     selectedShadow.ShowChainToRoot;
     selectedShadow.ShowSelected;
@@ -1926,6 +1881,9 @@ begin
   FAddFirstItemFake.Name := 'AddFirstItemFake';
   FAddFirstItemFake.Left := Popup_Origin.x;
   FAddFirstItemFake.Top := Popup_Origin.y;
+  FInPlaceEditor := TEdit.Create(Self);
+  FInPlaceEditor.OnKeyDown := @InPlaceEditKeyDown;
+  FInPlaceEditor.Visible := False;
   ConnectSpeedButtonOnClickMethods;
   GlobalDesignHook.AddHandlerObjectPropertyChanged(@OnObjectPropertyChanged);
   GlobalDesignHook.AddHandlerModified(@OnDesignerModified);
