@@ -2901,11 +2901,8 @@ begin
   Application.ModalStarted;
   try
     Include(FFormState, fsModal);
-    if PopupMode = pmNone then
-    begin
-      RecreateWnd(Self);
-      HandleNeeded;
-    end;
+    if (PopupMode = pmNone) and HandleAllocated then
+      RecreateWnd(Self); // need to refresh handle for pmNone because ParentWindow changes if (fsModal in FFormState) - see GetRealPopupParent
     ActiveWindow := GetActiveWindow;
     SavedFocusState := SaveFocusState;
     SavedCursor := Screen.Cursor;
