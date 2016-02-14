@@ -1,4 +1,4 @@
-unit MenuShadows;
+unit MenuEditor;
 
 {$mode objfpc}{$H+}
 
