@@ -116,7 +116,6 @@ type
     // Create Lazarus file name and copy/rename from Delphi file with new suffix.
     function RenameDelphiToLazFile(const DelphiFilename, LazExt: string;
       out LazFilename: string; LowercaseFilename: Boolean): TModalResult; overload;
-    function RenameFile(const SrcFilename, DestFilename: string): TModalResult;
     function MaybeBackupFile(const AFilename: string): TModalResult;
     procedure ClearLog;
     function AddLogLine(const ALine: string; Urgency: TMessageLineUrgency = mluHint): integer;
@@ -753,13 +752,6 @@ begin
   if Result<>mrOK then exit;
   LazFilename:=MainPath+SubPath+fn+LazExt;
   Result:=RenameFileWithErrorDialogs(DelphiFilename,LazFilename,[mbAbort]);
-end;
-
-function TConvertSettings.RenameFile(const SrcFilename, DestFilename: string): TModalResult;
-begin
-  Result:=MaybeBackupFile(SrcFilename); // Save before rename.
-  if Result<>mrOK then exit;
-  Result:=RenameFileWithErrorDialogs(SrcFilename,DestFilename,[mbAbort]);
 end;
 
 function TConvertSettings.MaybeBackupFile(const AFilename: string): TModalResult;
