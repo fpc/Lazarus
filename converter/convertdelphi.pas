@@ -556,33 +556,40 @@ var
 begin
   Result:=mrOK;
   fLFMBuffer:=nil;
-  if ADfmFilename<>'' then begin
+  if ADfmFilename<>'' then
+  begin
     Result:=LazarusIDE.DoCloseEditorFile(ADfmFilename,[cfSaveFirst]);
+    if Result<>mrOK then exit;
+    // Save before using .dfm.
+    Result:=fOwnerConverter.fSettings.MaybeBackupFile(ADfmFilename);
     if Result<>mrOK then exit;
   end;
   if fOwnerConverter.fSettings.SameDfmFile then
     LfmFilename:=ADfmFilename
-  else
-    with fOwnerConverter do begin
-      // Create a form file name based on the unit file name.
-      LfmFilename:=fSettings.DelphiToLazFilename(fOrigUnitFilename, '.lfm',
-                                                 cdtlufRenameLowercase in fFlags);
-      if ADfmFilename<>'' then begin
-        if FileExistsUTF8(LfmFilename) then
-          if (FileAgeUTF8(LfmFilename)<FileAgeUTF8(ADfmFilename)) then
-            DeleteFileUTF8(LfmFilename); // .lfm is older than .dfm -> remove .lfm
-        if not FileExistsUTF8(LfmFilename) then begin
-          // TODO: update project
-          if fSettings.SupportDelphi and not fSettings.SameDfmFile then
-            Result:=CopyFileWithErrorDialogs(ADfmFilename,LfmFilename,[mbAbort])
-          else
-            Result:=fSettings.RenameFile(ADfmFilename,LfmFilename);
-          if Result<>mrOK then exit;
-        end;
+  else begin
+    // Create a form file name based on the unit file name.
+    with fOwnerConverter.fSettings do
+      LfmFilename:=DelphiToLazFilename(fOrigUnitFilename, '.lfm',
+                                       cdtlufRenameLowercase in fFlags);
+    if ADfmFilename<>'' then
+    begin
+      if FileExistsUTF8(LfmFilename) then
+        if (FileAgeUTF8(LfmFilename)<FileAgeUTF8(ADfmFilename)) then
+          DeleteFileUTF8(LfmFilename); // .lfm is older than .dfm -> remove .lfm
+      if not FileExistsUTF8(LfmFilename) then
+      begin
+        // TODO: update project
+        if fOwnerConverter.fSettings.SupportDelphi then
+          Result:=CopyFileWithErrorDialogs(ADfmFilename, LfmFilename, [mbAbort])
+        else
+          Result:=RenameFileWithErrorDialogs(ADfmFilename, LfmFilename, [mbAbort]);
+        if Result<>mrOK then exit;
       end;
     end;
+  end;
   // Convert Unit .dfm file to .lfm file (without context type checking)
-  if FileExistsUTF8(LfmFilename) then begin
+  if FileExistsUTF8(LfmFilename) then
+  begin
     DFMConverter:=TDFMConverter.Create;
     try
       DFMConverter.Settings:=fOwnerConverter.fSettings;
@@ -595,17 +602,17 @@ begin
     Result:=LoadCodeBuffer(TempLFMBuffer,LfmFilename,
                            [lbfCheckIfText,lbfUpdateFromDisk],true);
     // Change encoding to UTF-8
-    if TempLFMBuffer.DiskEncoding<>EncodingUTF8 then begin
+    if TempLFMBuffer.DiskEncoding<>EncodingUTF8 then
+    begin
       fOwnerConverter.fSettings.AddLogLine(Format(lisConvDelphiChangedEncodingToUTF8,
                                                   [TempLFMBuffer.DiskEncoding]));
       TempLFMBuffer.DiskEncoding:=EncodingUTF8;
       TempLFMBuffer.Save;
     end;
     // Read form file code in.
-    if not fOwnerConverter.fSettings.SameDfmFile then begin
+    if not fOwnerConverter.fSettings.SameDfmFile then
       Result:=LoadCodeBuffer(fLFMBuffer,LfmFilename,
                              [lbfCheckIfText,lbfUpdateFromDisk],true);
-    end;
   end;
 end;
 
