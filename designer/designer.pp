@@ -1324,7 +1324,7 @@ procedure TDesigner.ExecuteUndoItem(IsActUndo: boolean);
           tkFloat:
             SetFloatProp(tmpObj, fieldName, StrToFloat(tmpStr));
           tkBool:
-            SetOrdProp(tmpObj, FUndoList[FUndoCurr].fieldName, Integer(StrToBool(tmpStr)));
+            SetOrdProp(tmpObj, FUndoList[FUndoCurr].fieldName, Integer(StrToBoolOI(tmpStr)));
           tkString, tkLString, tkAString, tkUString, tkWString:
             SetStrProp(tmpObj, fieldName, tmpStr);
           tkSet:
