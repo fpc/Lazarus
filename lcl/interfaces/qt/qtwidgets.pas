@@ -7219,6 +7219,10 @@ begin
   {inform LCL about change}
   SlotWindowStateChange;
 
+  if (AOldState and QtWindowMinimized <> 0) and (ANewState and QtWindowMinimized = 0) and
+    (ANewState and QtWindowMaximized = 0) and LCLObject.ClientRectNeedsInterfaceUpdate then
+    LCLObject.DoAdjustClientRectChange(True);
+
   {activate next mdi in chain if we are minimized}
   if Assigned(MDIChildArea) and
     (ANewState and QtWindowMinimized = QtWindowMinimized) and
