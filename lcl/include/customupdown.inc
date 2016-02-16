@@ -37,6 +37,7 @@ Type
 procedure TUpDownButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
+  inherited MouseDown(Button, Shift, X, Y);
   if Button = mbLeft then begin
     With FUpDown do begin
       FMouseTimerEvent := @Self.Click;
@@ -57,6 +58,7 @@ end;
 procedure TUpDownButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
+  inherited MouseUp(Button, Shift, X, Y);
   With FUpDown do
     If Assigned(FMouseTimer) then begin
       FreeAndNil(FMouseTimer);
@@ -129,7 +131,6 @@ var
   j : integer;
 begin
   Inherited Paint;
-
   if Enabled then
     Canvas.Pen.Color := clBtnText //Not perfect, but it works
   else
