@@ -51,6 +51,10 @@ msgstr ""
 msgid "Export pictures"
 msgstr "Képek exportálása"
 
+#: le_e_spreadsheet_consts.sexportprintrange
+msgid "Export print range"
+msgstr ""
+
 #: le_e_spreadsheet_consts.sexportsettings
 msgid "Export settings"
 msgstr "Exportálás beállításai"
@@ -58,6 +62,10 @@ msgstr "Exportálás beállításai"
 #: le_e_spreadsheet_consts.sexporttospreadsheet
 msgid "Export to spreadsheet"
 msgstr "Exportálás táblázatba"
+
+#: le_e_spreadsheet_consts.sexporturl
+msgid "Export URL"
+msgstr ""
 
 #: le_e_spreadsheet_consts.sgeneral
 msgid "General"

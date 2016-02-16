@@ -50,6 +50,8 @@ type
     FDataGrouping: TlreDataGrouping;
     FDataGroupingChunks: integer;
     FDeleteEmptyRow: boolean;
+    FExportPrintRange: boolean;
+    FExportURL: boolean;
     FMergeCell: boolean;
     FOpenAfterExport: boolean;
     FShowSetupForm: boolean;
@@ -66,6 +68,8 @@ type
     property DeleteEmptyRow:boolean read FDeleteEmptyRow write FDeleteEmptyRow;
     property MergeCell:boolean read FMergeCell write FMergeCell;
     property ShowSetupForm:boolean read FShowSetupForm write FShowSetupForm;
+    property ExportURL:boolean read FExportURL write FExportURL default false;
+    property ExportPrintRange:boolean read FExportPrintRange write FExportPrintRange default false;
   end;
 
 procedure Register;
@@ -97,6 +101,8 @@ begin
   FOpenAfterExport:=true;
   FMergeCell:=true;
   FDeleteEmptyRow:=false;
+  FExportURL:=false;
+  FExportPrintRange:=false;
   FShowSetupForm:=true;
 end;
 

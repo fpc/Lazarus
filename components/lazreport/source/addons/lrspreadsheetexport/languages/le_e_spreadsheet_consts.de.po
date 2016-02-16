@@ -52,6 +52,10 @@ msgstr ""
 msgid "Export pictures"
 msgstr "Bilder exportieren"
 
+#: le_e_spreadsheet_consts.sexportprintrange
+msgid "Export print range"
+msgstr ""
+
 #: le_e_spreadsheet_consts.sexportsettings
 msgid "Export settings"
 msgstr "Exporteinstellungen"
@@ -59,6 +63,10 @@ msgstr "Exporteinstellungen"
 #: le_e_spreadsheet_consts.sexporttospreadsheet
 msgid "Export to spreadsheet"
 msgstr "In Tabellenkalkulation exportieren"
+
+#: le_e_spreadsheet_consts.sexporturl
+msgid "Export URL"
+msgstr ""
 
 #: le_e_spreadsheet_consts.sgeneral
 msgid "General"
@@ -99,3 +107,4 @@ msgstr "Seiten:"
 #: le_e_spreadsheet_consts.sreportpagename
 msgid "Report"
 msgstr "Report"
+

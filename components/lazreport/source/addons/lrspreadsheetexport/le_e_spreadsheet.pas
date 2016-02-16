@@ -51,6 +51,8 @@ type
     FDataGroupingChunks: integer;
     FDeleteEmptyRow: boolean;
     FExportMatrix:TExportMatrix;
+    FExportPrintRange: boolean;
+    FExportURL: boolean;
     FMergeCell: boolean;
     FOpenAfterExport: boolean;
     FWorkbook:TsWorkbook;
@@ -63,6 +65,7 @@ type
     FTmpTextHeight: Double;
     procedure ExportColWidth;
     procedure ExportRowHight;
+    procedure DoExportPrintRange;
     //procedure ExportData;
     procedure ExportData1;
 
@@ -94,11 +97,14 @@ type
     property OpenAfterExport:boolean read FOpenAfterExport write FOpenAfterExport;
     property DeleteEmptyRow:boolean read FDeleteEmptyRow write FDeleteEmptyRow;
     property MergeCell:boolean read FMergeCell write FMergeCell;
+    property ExportURL:boolean read FExportURL write FExportURL;
+    property ExportPrintRange:boolean read FExportPrintRange write FExportPrintRange;
   end;
 
 implementation
-uses LCLType, le_e_spreadsheet_params, fpsTypes, fpsutils, LazUTF8Classes, Forms, Controls,
-  LCLIntf, LazFileUtils, le_e_spreadsheet_consts, lrSpreadSheetExp, math;
+uses LCLType, le_e_spreadsheet_params, fpsTypes, fpsutils, fpsAllFormats,
+  LazUTF8Classes, Forms, Controls, LCLIntf, LazFileUtils, le_e_spreadsheet_consts,
+  lrSpreadSheetExp, math;
 
 const
   ssAligns : array [TAlignment] of TsHorAlignment = (haLeft, haRight, haCenter);
@@ -122,6 +128,56 @@ var
 begin
   for i:=0 to FExportMatrix.RowCount - 1 do
     FWorksheet.WriteRowHeight(i, FExportMatrix.RowHiht[i] / FTmpTextHeight);
+end;
+
+procedure TlrSpreadSheetExportFilter.DoExportPrintRange;
+var
+  X1, Y1, X2, Y2, R, C: Integer;
+  Row: TExportRow;
+  Cel: TExportObject;
+begin
+  X1:=MaxInt;
+  Y1:=MaxInt;
+  X2:=-1;
+  Y2:=-1;
+  for R:=0 to FExportMatrix.Rows.Count-1 do
+  begin
+    Row:=TExportRow(FExportMatrix.Rows[R]);
+    for C:=0 to Row.Cells.Count-1 do
+    begin
+      Cel:=TExportObject(Row.Cells[C]);
+      if Assigned(Cel) then
+      begin
+        if Cel.Col < X1 then
+          X1:=Cel.Col;
+        if Cel.Row < Y1 then
+          Y1:=Cel.Row;
+
+        //MERG!
+        if (Cel.Col < Cel.MergedCol) then
+        begin
+          if Cel.MergedCol > X2 then
+            X2:=Cel.MergedCol;
+        end
+        else
+        if Cel.Col > X2 then
+          X2:=Cel.Col;
+
+
+        if (Cel.Row < Cel.MergedRow) then
+        begin
+          if Cel.MergedRow > Y2 then
+            Y2:=Cel.MergedRow;
+        end
+        else
+        if Cel.Row > Y2 then
+          Y2:=Cel.Row;
+      end;
+    end;
+  end;
+
+  if (X1>0) and (Y1>0) and (X2>X1) and (Y2>Y1) then
+    FWorksheet.AddPrintRange(Y1, X1, Y2, X2);
 end;
 
 function sftofs(AFont:TFont):TsFontStyles;
@@ -263,6 +319,9 @@ begin
 
         if scFrm <> [] then
           FWorksheet.WriteBorders(Y, X, scFrm);
+
+        if FExportURL and  (Cel.URLInfo <> '') then
+          FWorksheet.WriteHyperlink(Y, X, Cel.URLInfo, Cel.URLInfo);
       end;
     end;
   end;
@@ -279,10 +338,13 @@ begin
     S:=sReportPageName;
 
   FWorksheet := FWorkbook.AddWorksheet(S);
+
   ExportColWidth;
   ExportRowHight;
-  //ExportData;
   ExportData1;
+  if FExportPrintRange then
+    DoExportPrintRange;
+
   FWorksheet:=nil;
   FExportMatrix.Clear;
 end;
@@ -301,6 +363,8 @@ begin
   leSpreadsheetParamsForm.CheckBox4.Checked:=FOpenAfterExport;
   leSpreadsheetParamsForm.CheckBox2.Checked:=FMergeCell;
   leSpreadsheetParamsForm.CheckBox6.Checked:=FDeleteEmptyRow;
+  leSpreadsheetParamsForm.CheckBox7.Checked:=FExportURL;
+  leSpreadsheetParamsForm.CheckBox8.Checked:=FExportPrintRange;
 
 
   Result:=leSpreadsheetParamsForm.ShowModal = mrOk;
@@ -316,9 +380,11 @@ begin
       FDataGrouping:=ldgChunks;
       FDataGroupingChunks:=leSpreadsheetParamsForm.SpinEdit1.Value;
     end;
-    FOpenAfterExport:=leSpreadsheetParamsForm.CheckBox4.Checked;
+    FOpenAfterExport:= leSpreadsheetParamsForm.CheckBox4.Checked;
     FMergeCell      := leSpreadsheetParamsForm.CheckBox2.Checked;
     FDeleteEmptyRow := leSpreadsheetParamsForm.CheckBox6.Checked;
+    FExportURL      := leSpreadsheetParamsForm.CheckBox7.Checked;
+    FExportPrintRange:=leSpreadsheetParamsForm.CheckBox8.Checked;
 
     FExportMatrix.MergeCell:=FMergeCell;
     FExportMatrix.DeleteEmptyRow:=FDeleteEmptyRow;
@@ -344,6 +410,8 @@ begin
     FOpenAfterExport:=lrSpreadSheetExportComponent.OpenAfterExport;
     FMergeCell:=lrSpreadSheetExportComponent.MergeCell;
     FDeleteEmptyRow:=lrSpreadSheetExportComponent.DeleteEmptyRow;
+    FExportURL:=lrSpreadSheetExportComponent.ExportURL;
+    FExportPrintRange:=lrSpreadSheetExportComponent.ExportPrintRange;
   end
   else
   begin
@@ -352,6 +420,8 @@ begin
     FOpenAfterExport:=true;
     FMergeCell:=true;
     FDeleteEmptyRow:=false;
+    FExportURL:=false;
+    FExportPrintRange:=false;
   end;
 
   FExportMatrix:=TExportMatrix.Create;
@@ -400,6 +470,26 @@ begin
   FWorkbook := TsWorkbook.Create;
   FCurPage:=0;
 end;
+
+function GetFormatFromFileName(const AFileName: TFileName;
+  out SheetType: TsSpreadsheetFormat): Boolean;
+var
+  suffix: String;
+begin
+  Result := true;
+  suffix := Lowercase(ExtractFileExt(AFileName));
+  case suffix of
+    STR_EXCEL_EXTENSION               : SheetType := sfExcel8;
+    STR_OOXML_EXCEL_EXTENSION         : SheetType := sfOOXML;
+    STR_OPENDOCUMENT_CALC_EXTENSION   : SheetType := sfOpenDocument;
+    STR_COMMA_SEPARATED_EXTENSION     : SheetType := sfCSV;
+    STR_HTML_EXTENSION, '.htm'        : SheetType := sfHTML;
+    STR_WIKITABLE_PIPES_EXTENSION     : SheetType := sfWikiTable_Pipes;
+    STR_WIKITABLE_WIKIMEDIA_EXTENSION : SheetType := sfWikiTable_WikiMedia;
+    else                                Result := False;
+  end;
+end;
+
 
 procedure TlrSpreadSheetExportFilter.OnEndDoc;
 var

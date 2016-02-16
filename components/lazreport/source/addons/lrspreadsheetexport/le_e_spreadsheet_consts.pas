@@ -59,6 +59,8 @@ resourcestring
   sPages               = 'Pages:';
   sEnterPageNumbers    = 'Enter page numbers and/or page ranges,'#13'separated by commas. For example, 1,3,5-12';
   sExportPictures      = 'Export pictures';
+  sExportURL           = 'Export URL';
+  sExportPrintRange    = 'Export print range';
   sMergeCells          = 'Merge cells';
   sPageBreaks          = 'Page breaks';
   sDeleteEmptyRows     = 'Delete empty rows';

@@ -62,6 +62,7 @@ type
     FHeight: integer;
     FLeft: integer;
     FTop: integer;
+    FURLInfo: string;
     FWidht: integer;
 
     FObjType: integer;
@@ -97,6 +98,7 @@ type
     property Angle:byte read FAngle;
     property Layout : TTextLayout read FLayout;
     property WordWrap:boolean read FWordWrap;
+    property URLInfo: string read FURLInfo write FURLInfo;
   end;
 
   { TExportRows }
@@ -248,6 +250,8 @@ begin
 end;
 
 constructor TExportObject.Create(AObj: TfrView);
+var
+  S: String;
 begin
   Inherited Create;
 
@@ -277,6 +281,10 @@ begin
       FAngle:=TfrMemoView(AObj).Angle;
       FLayout:=TfrMemoView(AObj).Layout;
       FWordWrap:=TfrMemoView(AObj).WordWrap;
+                                    //http://www.lazarus-ide.org/
+      S:=UpperCase(TfrMemoView(AObj).URLInfo);
+      if (S <> '') and ((Copy(S, 1,  7) = 'HTTP://') or (Copy(S, 1, 8) = 'HTTPS://')) then
+          URLInfo:=TfrMemoView(AObj).URLInfo;
     end
     else
     if AObj is TfrPictureView then

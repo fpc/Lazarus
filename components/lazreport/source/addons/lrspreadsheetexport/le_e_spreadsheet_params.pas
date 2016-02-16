@@ -54,6 +54,8 @@ type
     CheckBox4: TCheckBox;
     CheckBox5: TCheckBox;
     CheckBox6: TCheckBox;
+    CheckBox7: TCheckBox;
+    CheckBox8: TCheckBox;
     Edit1: TEdit;
     GroupBox1: TGroupBox;
     GroupBox2: TGroupBox;
@@ -112,6 +114,8 @@ begin
   CheckBox2.Caption:=sMergeCells;
   CheckBox3.Caption:=sPageBreaks;
   CheckBox6.Caption:=sDeleteEmptyRows;
+  CheckBox7.Caption:=sExportURL;
+  CheckBox8.Caption:=sExportPrintRange;
 end;
 
 end.

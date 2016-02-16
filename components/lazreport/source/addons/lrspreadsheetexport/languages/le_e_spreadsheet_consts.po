@@ -39,12 +39,20 @@ msgstr ""
 msgid "Export pictures"
 msgstr ""
 
+#: le_e_spreadsheet_consts.sexportprintrange
+msgid "Export print range"
+msgstr ""
+
 #: le_e_spreadsheet_consts.sexportsettings
 msgid "Export settings"
 msgstr ""
 
 #: le_e_spreadsheet_consts.sexporttospreadsheet
 msgid "Export to spreadsheet"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sexporturl
+msgid "Export URL"
 msgstr ""
 
 #: le_e_spreadsheet_consts.sgeneral
