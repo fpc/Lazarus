@@ -586,11 +586,16 @@ type
 
   TQtMDIArea = class(TQtAbstractScrollArea)
   private
+    FViewPortEventHook: QObject_hookH;
     FSubWindowActivationHook: QMdiArea_hookH;
     procedure SubWindowActivated(AWindow: QMDISubWindowH); cdecl;
+  protected
+    function ScrollViewEventFilter(Sender: QObjectH; Event: QEventH): boolean; cdecl;
   public
     constructor Create(const AParent: QWidgetH); overload;
     destructor Destroy; override;
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
     function ActiveSubWindow: QMdiSubWindowH;
     procedure ActivateSubWindow(AMdiWindow: QMdiSubWindowH);
   end;
@@ -6367,6 +6372,58 @@ begin
   inherited Destroy;
 end;
 
+procedure TQtMDIArea.AttachEvents;
+begin
+  inherited AttachEvents;
+  FViewPortEventHook := QObject_hook_create(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)));
+  QObject_hook_hook_events(FViewPortEventHook, @ScrollViewEventFilter);
+end;
+
+procedure TQtMDIArea.DetachEvents;
+begin
+  if Assigned(FViewPortEventHook) then
+  begin
+    QObject_hook_destroy(FViewPortEventHook);
+    FViewPortEventHook := nil;
+  end;
+  inherited DetachEvents;
+end;
+
+function TQtMDIArea.ScrollViewEventFilter(Sender: QObjectH; Event: QEventH
+  ): boolean; cdecl;
+var
+  R: TRect;
+  Brush: QBrushH;
+  Color: TQColor;
+  Painter: QPainterH;
+begin
+  Result := False;
+  QEvent_accept(Event);
+  if QEvent_type(Event) = QEventPaint then
+  begin
+    QPaintEvent_rect(QPaintEventH(Event), @R);
+    if CanSendLCLMessage and (LCLObject is TWinControl) then
+    begin
+      Brush := QBrush_create;
+      QMdiArea_background(QMDIAreaH(Widget), Brush);
+      Color := QBrush_color(Brush)^;
+      QBrush_destroy(Brush);
+      Painter := QPainter_create(QWidget_to_QPaintDevice(QWidgetH(Sender)));
+      Brush := QBrush_create(@Color, QtSolidPattern);
+      try
+        QPaintEvent_rect(QPaintEventH(Event), @R);
+        QPainter_fillRect(Painter, @R, Brush);
+        QPainter_end(Painter);
+      finally
+        QBrush_destroy(Brush);
+        QPainter_destroy(Painter);
+      end;
+      SlotPaint(Sender, Event);
+      Result := True; // do not paint MDIArea again
+    end;
+  end;
+end;
+
 function TQtMDIArea.ActiveSubWindow: QMdiSubWindowH;
 begin
   Result := QMdiArea_activeSubWindow(QMdiAreaH(Widget));
@@ -6455,7 +6512,11 @@ begin
                                {must be added, see issue #29159}
                                QEventMouseMove]) then
     begin
-      Result := inherited EventFilter(Sender, Event);
+      if Assigned(FOwner) and (FOwner is TQtMainWindow) and (TCustomForm(LCLObject).FormStyle = fsMDIForm) and
+        (TQtMainWindow(FOwner).MDIAreaHandle <> nil) then
+        // paint via MDIAreaHandle viewport hook
+      else
+        Result := inherited EventFilter(Sender, Event);
     end else
     case QEvent_type(Event) of
       QEventResize:
@@ -6613,6 +6674,8 @@ begin
     begin
       FCentralWidget := QWidget_create(Result);
       MDIAreaHandle := TQtMDIArea.Create(Result);
+      MDIAreaHandle.LCLObject := LCLObject;
+      MDIAreaHandle.AttachEvents;
       p := QWidget_palette(FCentralWidget);
       if p <> nil then
         QMdiArea_setBackground(QMdiAreaH(MdiAreaHandle.Widget), QPalette_background(P));
@@ -6752,6 +6815,7 @@ begin
 
   if MDIAreaHandle <> nil then
   begin
+    MDIAreaHandle.DetachEvents;
     MDIAreaHandle.Widget := nil;
     FreeThenNil(MDIAreaHandle);
   end;
