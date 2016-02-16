@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-02-11 07:32+0100\n"
+"PO-Revision-Date: 2016-02-16 09:22+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr_FR\n"
@@ -2121,7 +2121,7 @@ msgstr "Devant les méthodes"
 
 #: lazarusidestrconsts.dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
-msgstr "Le nom du constructeur doit être 'init' (le destructeur doit être 'done')"
+msgstr "Le nom du constructeur doit être \"init\" (le destructeur doit être \"done\")"
 
 #: lazarusidestrconsts.dlginsertclassparts
 msgid "Insert class parts"
@@ -2222,7 +2222,7 @@ msgstr "3 (-O2 + optimisations lentes)"
 
 #: lazarusidestrconsts.dlglevel4opt
 msgid "4 (-O3 + aggressive optimizations, beware)"
-msgstr "4 (-O3 + optimisations agressives - se méfier)"
+msgstr "4 (-O3 + optimisations agressives - à utiliser avec prudence)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
 msgid "0 (no optimization)"
@@ -2466,7 +2466,7 @@ msgstr "Milieu"
 
 #: lazarusidestrconsts.dlgmouseoptbtnmoddef
 msgid "Make Fallback"
-msgstr "Chemin de \"make\""
+msgstr "Chemin de \"Make\""
 
 #: lazarusidestrconsts.dlgmouseoptbtnright
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnright"
@@ -2908,7 +2908,7 @@ msgstr "Mots-clés appariés"
 
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass options to linker with \"-k\", delimiter is space"
-msgstr "Passer les options à l'éditeur de liens avec \"-k\";  le délimiteur est l'espace"
+msgstr "Passer les options à l'éditeur de liens avec \"-k\", le délimiteur étant l'espace"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
 msgid "Highlight \"String\" keyword(s)"
@@ -4017,7 +4017,7 @@ msgstr "Le nom de fichier \"%s\" est équivoque parce que le paquet n'a encore a
 #: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr "La version maximale \"%s\" n'est pas valable.%sVeuillez utiliser le format majeure.mineure.sous-version.construction%sPar exemple : 1.0.20.10"
+msgstr "La version maximale \"%s\" n'est pas correcte.%sVeuillez utiliser le format majeure.mineure.sous-version.construction%sPar exemple : 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion"
@@ -4027,7 +4027,7 @@ msgstr "La version maximale est inférieure à la version minimale."
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr "La version minimale \"%s\" n'est pas valable.%sVeuillez utiliser le format majeure.mineure.sous-version.construction%sPar exemple : 1.0.20.10"
+msgstr "La version minimale \"%s\" n'est pas correcte.%sVeuillez utiliser le format majeure.mineure.sous-version.construction%sPar exemple : 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthepackagehasalreadyadependencyforthe
 msgid "The package already has a dependency on the package \"%s\"."
@@ -4129,7 +4129,7 @@ msgstr "À propos de Lazarus"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr "License : GPL/LGPL. Voir les sources Lazarus et Free Pascal pour les détails de la licence.%sLazarus est un EDI (Environnement de Développement Intégré) qui permet de créer des applications graphiques et consoles avec Free Pascal. Ce dernier est un compilateur Pascal et Pascal Objet fonctionnant sous Windows, Linux, Mac OS X, FreeBSD et autres.%sLazarus est le chaînon manquant pour le développement d'applications multiplateformes dans un environnement proche de celui de Delphi, mais non limité à Windows. À l'image de Delphi, cet EDI est un outil de \"Développement Rapide d'Applications\" (ou \"RAD\" en anglais) doté d'un concepteur de fiches.%sComme le projet Lazarus est en pleine expansion, les nouveaux développeurs sont les bienvenus ."
+msgstr "Licence : GPL/LGPL. Voir les sources Lazarus et Free Pascal pour les détails de la licence.%sLazarus est un Environnement de Développement Intégré (EDI) qui permet de créer des applications graphiques et en mode console avec Free Pascal. Ce dernier est un compilateur Pascal et Pascal Objet fonctionnant sous Windows, Linux, Mac OS X, FreeBSD et autres.%sLazarus est le chaînon manquant pour le développement d'applications multiplateformes dans un environnement proche de celui de Delphi, mais non limité à Windows. À l'image de Delphi, cet EDI est un outil de Développement Rapide d'Applications (ou \"RAD\" en anglais) doté d'un concepteur de fiches.%sComme le projet Lazarus est en pleine expansion, les nouveaux développeurs sont les bienvenus."
 
 #: lazarusidestrconsts.lisaboutnocontributors
 msgid "Cannot find contributors list."
@@ -4841,7 +4841,7 @@ msgstr "Créer un nouveau projet"
 
 #: lazarusidestrconsts.lisbuildnumber
 msgid "Build number"
-msgstr "Numéro de création"
+msgstr "Construction"
 
 #: lazarusidestrconsts.lisbuildstage
 msgctxt "lazarusidestrconsts.lisbuildstage"
@@ -5336,7 +5336,7 @@ msgstr "Erreur lors de la destruction de l'intermédiaire"
 
 #: lazarusidestrconsts.liscfeerrordestroyingmediatorofunit
 msgid "Error destroying mediator %s of unit %s:%s%s"
-msgstr "Erreur lors de la destruction de l'intermédiaire %s de l'unité %s  :%s%s"
+msgstr "Erreur lors de la destruction de l'intermédiaire %s de l'unité %s :%s%s"
 
 #: lazarusidestrconsts.liscfeerrorreading
 msgid "Error reading %s"
@@ -5560,7 +5560,7 @@ msgstr "Choisir le répertoire de Lazarus"
 
 #: lazarusidestrconsts.lischoosemakeexecutable
 msgid "Choose \"make\" executable"
-msgstr "Choisir l'exécutable du \"make\""
+msgstr "Choisir l'exécutable du \"Make\""
 
 #: lazarusidestrconsts.lischoosename
 msgid "Choose name"
@@ -5648,7 +5648,7 @@ msgstr "Retirer les fichiers correspondant au filtre"
 
 #: lazarusidestrconsts.liscldirsimplesyntaxeginsteadof
 msgid "Simple Syntax (e.g. * instead of .*)"
-msgstr "Syntaxe simple (par exemple \"*\" au lieu de \".*\")"
+msgstr "Syntaxe simplifiée (par exemple \"*\" au lieu de \".*\")"
 
 #: lazarusidestrconsts.liscleanall
 msgid "Clean all"
@@ -11814,7 +11814,7 @@ msgstr "Édition de %s pour %s"
 
 #: lazarusidestrconsts.lismenueditoreditingssnomenuitemselected
 msgid "Editing %s.%s - no menuitem selected"
-msgstr "Édition de %s.%s - pas de sous-menu choisi"
+msgstr "Édition de %s.%s - pas d'élément de menu choisi"
 
 #: lazarusidestrconsts.lismenueditorenteramenudescription
 msgid "Enter a menu &Description:"
@@ -13610,7 +13610,7 @@ msgstr "installé statiquement"
 
 #: lazarusidestrconsts.lisoiplicenselicense
 msgid "%sLicense:  %s"
-msgstr "%sLicense :  %s"
+msgstr "%sLicence :  %s"
 
 #: lazarusidestrconsts.lisoipmissing
 msgid "missing"
@@ -13987,7 +13987,7 @@ msgstr "Chemin du cache de \"instantfpc\""
 
 #: lazarusidestrconsts.lispathofthemakeutility
 msgid "Path of the make utility"
-msgstr "Chemin de l'utilitaire \"make\""
+msgstr "Chemin de l'utilitaire \"Make\""
 
 #: lazarusidestrconsts.lispathtoinstance
 msgid "Path to failed Instance:"
@@ -14008,7 +14008,7 @@ msgstr "Désactiver \"I18N\" du \"lfm\""
 
 #: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
 msgid "Add Files from File System"
-msgstr "Ajouter les fichiers depuis le système"
+msgstr "Ajouter des fichiers depuis le système"
 
 #: lazarusidestrconsts.lispckeditaddotheritems
 msgid "Add other items"
@@ -14310,7 +14310,7 @@ msgstr "Éditeur de liens"
 
 #: lazarusidestrconsts.lispckoptsmajor
 msgid "Major"
-msgstr "Principal"
+msgstr "Majeure"
 
 #: lazarusidestrconsts.lispckoptsmanualcompilationneverautomatically
 msgid "Manual compilation (never automatically)"
@@ -14318,7 +14318,7 @@ msgstr "Compilation manuelle (jamais automatiquement)"
 
 #: lazarusidestrconsts.lispckoptsminor
 msgid "Minor"
-msgstr "Mineur"
+msgstr "Mineure"
 
 #: lazarusidestrconsts.lispckoptsobject
 msgid "Object"
@@ -14354,7 +14354,7 @@ msgstr "Ce paquet fournit les mêmes services que les paquets suivants :"
 
 #: lazarusidestrconsts.lispckoptsupdaterebuild
 msgid "Update / Rebuild"
-msgstr "Mettre à jour/Reconstruire"
+msgstr "Mettre à jour / Reconstruire"
 
 #: lazarusidestrconsts.lispckoptsusage
 msgid "Usage"
@@ -16056,7 +16056,7 @@ msgstr "Exécuter"
 
 #: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
 msgid "Runtime only, cannot be installed in IDE"
-msgstr "D'exécution seule : ne peut être installé dans l'EDI"
+msgstr "Exécution seule : ne peut être installé dans l'EDI"
 
 #: lazarusidestrconsts.lisruntimeonlypackagesareonlyforprojectstheycannotbei
 msgid "\"Run time only\" packages are only for projects. They cannot be installed in the IDE, not even indirectly."
@@ -16567,7 +16567,7 @@ msgstr "Un programme minimal Free Pascal en ligne de commande."
 
 #: lazarusidestrconsts.lissimplesyntax
 msgid "Simple syntax"
-msgstr "Syntaxe simple"
+msgstr "Syntaxe simplifiée"
 
 #: lazarusidestrconsts.lisskiperrors
 msgid "Skip errors"
@@ -18816,7 +18816,7 @@ msgstr "Incrémenté à chaque compilation du programme."
 
 #: lazarusidestrconsts.rsbuild
 msgid "&Build:"
-msgstr "&Construire :"
+msgstr "&Construction :"
 
 #: lazarusidestrconsts.rscharacterset
 msgid "Character set:"
@@ -18876,7 +18876,7 @@ msgstr "L'information de version est enregistrée si le format d'exécutable l'a
 
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 msgid "Include version info in executable"
-msgstr "Inclure l'information de version dans l'exécutable"
+msgstr "Inclure les informations de version dans l'exécutable"
 
 #: lazarusidestrconsts.rsiwpcolumnnameshint
 msgid "Column Names"
