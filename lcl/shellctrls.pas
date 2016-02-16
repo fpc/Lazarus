@@ -70,7 +70,6 @@ type
     { Other methods specific to Lazarus }
     function  PopulateTreeNodeWithFiles(
       ANode: TTreeNode; ANodePath: string): Boolean;
-    procedure PopulateWithBaseFiles;
     procedure DoSelectionChanged; override;
     function CanExpand(Node: TTreeNode): Boolean; override;
   public
@@ -85,6 +84,7 @@ type
       AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType = fstNone);
     { Other methods specific to Lazarus }
     function  GetPathFromNode(ANode: TTreeNode): string;
+    procedure PopulateWithBaseFiles;
     procedure Refresh(ANode: TTreeNode); overload;
 
     { Properties }
@@ -858,7 +858,7 @@ var
 begin
   // avoids crashes in the IDE by not populating during design
   if (csDesigning in ComponentState) then Exit;
-
+  Items.Clear;
   r := GetLogicalDriveStrings(SizeOf(Drives), Drives);
   if r = 0 then Exit;
   if r > SizeOf(Drives) then Exit;
@@ -883,6 +883,7 @@ begin
   // avoids crashes in the IDE by not populating during design
   // also do not populate before loading is done
   if ([csDesigning, csLoading] * ComponentState <> []) then Exit;
+  Items.Clear;
 
   // This allows showing "/" in Linux, but in Windows it makes no sense to show the base
   if GetBasePath() <> '' then
