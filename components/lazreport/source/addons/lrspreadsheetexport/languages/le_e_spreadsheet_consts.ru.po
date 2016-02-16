@@ -53,7 +53,7 @@ msgstr "Экспортировать изображения"
 
 #: le_e_spreadsheet_consts.sexportprintrange
 msgid "Export print range"
-msgstr "Экспорт диапазона печати"
+msgstr "Экспортировать диапазон печати"
 
 #: le_e_spreadsheet_consts.sexportsettings
 msgid "Export settings"
@@ -65,7 +65,7 @@ msgstr "Экспорт в электронную таблицу"
 
 #: le_e_spreadsheet_consts.sexporturl
 msgid "Export URL"
-msgstr "Экспорт HTTP адресов"
+msgstr "Экспортировать адреса URL"
 
 #: le_e_spreadsheet_consts.sgeneral
 msgid "General"
@@ -97,7 +97,7 @@ msgstr "Страница %d"
 
 #: le_e_spreadsheet_consts.spagerange
 msgid "Page range"
-msgstr "Диапазон страниц"
+msgstr "Диапазон печати"
 
 #: le_e_spreadsheet_consts.spages
 msgid "Pages:"
@@ -106,4 +106,3 @@ msgstr "Страницы:"
 #: le_e_spreadsheet_consts.sreportpagename
 msgid "Report"
 msgstr "Отчёт"
-
