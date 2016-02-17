@@ -20,5 +20,14 @@
 		<issue name="TTabControl.MultiLine">
 			<short>MultiLine property is not supported</short>
 		</issue>
+		<issue name="TMenu.OwnerDraw">
+			<short>not supported</short>
+		</issue>		
+		<issue name="TMenu.OnDrawItem">
+			<short>not supported</short>
+		</issue>		
+		<issue name="TMenu.OnMeasureItem">
+			<short>not supported</short>
+		</issue>		
 	</widgetset>
 </package>
