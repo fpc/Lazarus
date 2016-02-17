@@ -5077,6 +5077,23 @@ begin
   end;
 end;
 
+function TQtWidgetSet.PaintRgn(DC: HDC; RGN: HRGN): Boolean;
+var
+  APath: QPainterPathH;
+begin
+  Result := False;
+  if not IsValidDC(DC) or not IsValidGDIObject(RGN) then
+    exit;
+  if TQtRegion(RGN).FHandle = nil then
+    exit;
+  APath := QPainterPath_create;
+  QPainterPath_addRegion(APath, TQtRegion(RGN).FHandle);
+  QPainterPath_closeSubpath(APath);
+  QPainter_fillPath(TQtDeviceContext(DC).Widget, APath, QPainter_brush(TQtDeviceContext(DC).Widget));
+  QPainterPath_destroy(APath);
+  Result := True;
+end;
+
 function TQtWidgetSet.PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
 begin
   Result := False;
