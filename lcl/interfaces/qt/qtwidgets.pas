@@ -594,6 +594,8 @@ type
   public
     constructor Create(const AParent: QWidgetH); overload;
     destructor Destroy; override;
+    function getClientOffset: TPoint; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     function ActiveSubWindow: QMdiSubWindowH;
@@ -657,6 +659,10 @@ type
     function getTextStatic: Boolean; override;
 
     function MapToGlobal(APt: TPoint; const AWithScrollOffset: Boolean = False): TPoint; override;
+
+    procedure Update(ARect: PRect = nil); override;
+    procedure UpdateRegion(ARgn: QRegionH); override;
+    procedure Repaint(ARect: PRect = nil); override;
 
     procedure Resize(ANewWidth, ANewHeight: Integer); override;
     procedure setText(const W: WideString); override;
@@ -6360,6 +6366,11 @@ begin
   Palette.ForceColor := False;
   FSubWindowActivationHook := QMdiArea_hook_create(Widget);
   QMdiArea_hook_hook_subWindowActivated(FSubWindowActivationHook, @SubWindowActivated);
+  QWidget_setMouseTracking(Widget, True);
+  FillChar(FPaintData, sizeOf(FPaintData), 0);
+  setProperty(Widget, 'lclwidget', Int64(PtrUInt(Self)));
+  setProperty(viewportWidget, 'lclwidget', Int64(PtrUInt(Self)));
+  QtWidgetSet.AddHandle(Self);
 end;
 
 destructor TQtMDIArea.Destroy;
@@ -6370,6 +6381,14 @@ begin
     FSubWindowActivationHook := nil;
   end;
   inherited Destroy;
+end;
+
+function TQtMDIArea.getClientOffset: TPoint;
+begin
+  if Assigned(FOwner) then
+    Result := FOwner.getClientOffset
+  else
+    Result := inherited getClientOffset;
 end;
 
 procedure TQtMDIArea.AttachEvents;
@@ -6389,6 +6408,23 @@ begin
   inherited DetachEvents;
 end;
 
+function TQtMDIArea.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  Result := False;
+  QEvent_accept(Event);
+  case QEvent_type(Event) of
+    QEventPaint: ;
+    QEventMouseButtonPress, QEventMouseButtonRelease,
+    QEventMouseButtonDblClick: ;
+    QEventMouseMove, QEventWheel: ;
+    QEventEnter,
+    QEventLeave: Result := SlotMouseEnter(Sender, Event);
+    else
+      Result:=inherited EventFilter(Sender, Event);
+  end;
+end;
+
 function TQtMDIArea.ScrollViewEventFilter(Sender: QObjectH; Event: QEventH
   ): boolean; cdecl;
 var
@@ -6396,30 +6432,105 @@ var
   Brush: QBrushH;
   Color: TQColor;
   Painter: QPainterH;
+  APoint, APos, AOldPos, ANewPos: TQtPoint;
+  AEvent: QEventH;
+  APaintEvent: QPaintEventH;
 begin
   Result := False;
   QEvent_accept(Event);
-  if QEvent_type(Event) = QEventPaint then
-  begin
-    QPaintEvent_rect(QPaintEventH(Event), @R);
-    if CanSendLCLMessage and (LCLObject is TWinControl) then
+  case QEvent_type(Event) of
+    QEventMouseButtonPress, QEventMouseButtonRelease,
+    QEventMouseButtonDblClick:
     begin
-      Brush := QBrush_create;
-      QMdiArea_background(QMDIAreaH(Widget), Brush);
-      Color := QBrush_color(Brush)^;
-      QBrush_destroy(Brush);
-      Painter := QPainter_create(QWidget_to_QPaintDevice(QWidgetH(Sender)));
-      Brush := QBrush_create(@Color, QtSolidPattern);
+      // new event with parent coordinates
+      APos := QMouseEvent_pos(QMouseEventH(Event))^;
+      QWidget_mapToParent(Widget, @APoint, @APos);
+      AEvent := QMouseEvent_create(QEvent_type(Event), @APoint, QMouseEvent_globalPos(QMouseEventH(Event)),
+        QMouseEvent_button(QMouseEventH(Event)), QMouseEvent_buttons(QMouseEventH(Event)), QInputEvent_modifiers(QInputEventH(Event)));
       try
-        QPaintEvent_rect(QPaintEventH(Event), @R);
-        QPainter_fillRect(Painter, @R, Brush);
-        QPainter_end(Painter);
+        Result := SlotMouse(Sender, AEvent);
       finally
-        QBrush_destroy(Brush);
-        QPainter_destroy(Painter);
+        QEvent_destroy(AEvent);
       end;
-      SlotPaint(Sender, Event);
-      Result := True; // do not paint MDIArea again
+    end;
+    QEventMouseMove:
+    begin
+      AOldPos := QMouseEvent_globalPos(QMouseEventH(Event))^;
+      APos := QMouseEvent_pos(QMouseEventH(Event))^;
+      QWidget_mapToParent(Widget, @APoint, @APos);
+      AEvent := QMouseEvent_create(QEvent_type(Event), @APoint, QMouseEvent_globalPos(QMouseEventH(Event)),
+        QMouseEvent_button(QMouseEventH(Event)), QMouseEvent_buttons(QMouseEventH(Event)), QInputEvent_modifiers(QInputEventH(Event)));
+      try
+        Result := SlotMouseMove(Sender, AEvent);
+      finally
+        QEvent_destroy(AEvent);
+      end;
+    end;
+
+    QEventWheel:
+    begin
+      APos := QWheelEvent_pos(QWheelEventH(Event))^;
+      QWidget_mapToParent(Widget, @APoint, @APos);
+      AEvent := QWheelEvent_create(@APoint, QWheelEvent_delta(QWheelEventH(Event)), QWheelEvent_buttons(QWheelEventH(Event)),
+        QInputEvent_modifiers(QInputEventH(Event)), QWheelEvent_orientation(QWheelEventH(Event)));
+      try
+        Result := SlotMouseWheel(Sender, AEvent);
+      finally
+        QEvent_destroy(AEvent);
+      end;
+    end;
+
+    QEventEnter,
+    QEventLeave: Result := SlotMouseEnter(Sender, Event);
+    QEventHoverEnter,
+    QEventHoverLeave,
+    QEventHoverMove:
+    begin
+      APos := QHoverEvent_pos(QHoverEventH(Event))^;
+      AOldPos := QHoverEvent_oldPos(QHoverEventH(Event))^;
+      QWidget_mapToParent(Widget, @APoint, @APos);
+      QWidget_mapToParent(Widget, @ANewPos, @AOldPos);
+      QHoverEvent_create(QEvent_type(Event), @APoint, @ANewPos);
+      try
+        Result := SlotHover(Sender, AEvent);
+      finally
+        QEvent_destroy(AEvent);
+      end;
+    end;
+    QEventPaint:
+    begin
+      QPaintEvent_rect(QPaintEventH(Event), @R);
+      if CanSendLCLMessage and (LCLObject is TWinControl) then
+      begin
+        Brush := QBrush_create;
+        QMdiArea_background(QMDIAreaH(Widget), Brush);
+        Color := QBrush_color(Brush)^;
+        QBrush_destroy(Brush);
+        Painter := QPainter_create(QWidget_to_QPaintDevice(QWidgetH(Sender)));
+        Brush := QBrush_create(@Color, QtSolidPattern);
+        try
+          QPaintEvent_rect(QPaintEventH(Event), @R);
+          QPainter_fillRect(Painter, @R, Brush);
+          QPainter_end(Painter);
+        finally
+          QBrush_destroy(Brush);
+          QPainter_destroy(Painter);
+        end;
+        APos.X := 0;
+        APos.Y := 0;
+        QWidget_mapToParent(Widget, @APoint, @APos);
+        FScrollX := -APoint.x;
+        FScrollY := -APoint.Y;
+        APaintEvent := QPaintEvent_create(PRect(@R));
+        try
+          SlotPaint(Sender, Event);
+        finally
+          FScrollX := 0;
+          FScrollY := 0;
+          QPaintEvent_destroy(APaintEvent);
+        end;
+        Result := True; // do not paint MDIArea again
+      end;
     end;
   end;
 end;
@@ -6674,6 +6785,7 @@ begin
     begin
       FCentralWidget := QWidget_create(Result);
       MDIAreaHandle := TQtMDIArea.Create(Result);
+      MDIAreaHandle.FOwner := Self;
       MDIAreaHandle.LCLObject := LCLObject;
       MDIAreaHandle.AttachEvents;
       p := QWidget_palette(FCentralWidget);
@@ -6942,6 +7054,66 @@ begin
   {$ELSE}
   Result := inherited MapToGlobal(APt, AWithScrollOffset);
   {$ENDIF}
+end;
+
+procedure TQtMainWindow.Update(ARect: PRect);
+var
+  R,R1: TRect;
+begin
+  if Assigned(MDIAreaHandle) and not IsMDIChild then
+  begin
+    if ARect = nil then
+      QWidget_update(MDIAreaHandle.viewportWidget)
+    else
+    begin
+      R1 := ARect^;
+      QWidget_geometry(MDIAreaHandle.Widget, @R);
+      OffsetRect(R1, -R.Left, -R.Top);
+      QWidget_update(MDIAreaHandle.viewportWidget, @R1);
+    end;
+  end else
+    inherited Update(ARect);
+end;
+
+procedure TQtMainWindow.UpdateRegion(ARgn: QRegionH);
+var
+  R1, R: TRect;
+  ANewRgn: QRegionH;
+begin
+  if Assigned(MDIAreaHandle) and not IsMDIChild then
+  begin
+    if ARgn = nil then
+      QWidget_update(MDIAreaHandle.viewportWidget)
+    else
+    begin
+      QRegion_boundingRect(ARgn, @R1);
+      QWidget_geometry(MDIAreaHandle.Widget, @R);
+      OffsetRect(R1, -R.Left, -R.Top);
+      ANewRgn := QRegion_create(PRect(@R1));
+      QWidget_update(MDIAreaHandle.viewportWidget, ANewRgn);
+      QRegion_destroy(ANewRgn);
+    end;
+  end else
+    inherited UpdateRegion(ARgn);
+end;
+
+procedure TQtMainWindow.Repaint(ARect: PRect);
+var
+  R, R1: TRect;
+begin
+  if Assigned(MDIAreaHandle) and not IsMDIChild then
+  begin
+    if ARect = nil then
+      QWidget_repaint(MDIAreaHandle.viewportWidget)
+    else
+    begin
+      R1 := ARect^;
+      QWidget_geometry(MDIAreaHandle.Widget, @R);
+      OffsetRect(R1, -R.Left, -R.Top);
+      QWidget_repaint(MDIAreaHandle.viewportWidget, @R1);
+    end;
+  end else
+    inherited Repaint(ARect);
 end;
 
 procedure TQtMainWindow.Resize(ANewWidth, ANewHeight: Integer);
