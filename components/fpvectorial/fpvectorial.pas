@@ -4072,7 +4072,7 @@ begin
   lBrush := LCLIntf.CreateBrushWithRadialGradient(lLogRadGrad);
   lOldBrush := TCanvas(ADest).Brush.Handle;
   TCanvas(ADest).Brush.Handle := lBrush;
-  TCanvas(ADest).Polygon(polypoints);
+  TCanvas(ADest).Polygon(APoints);
   TCanvas(ADest).Brush.Handle := lOldBrush;
   {$endif}
 end;
