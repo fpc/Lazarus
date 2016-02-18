@@ -37,7 +37,7 @@
           </CodeGeneration>
           <Linking>
             <Debugging>
-              <StripSymbols Value="True"/>
+              <GenerateDebugInfo Value="False"/>
             </Debugging>
             <LinkSmart Value="True"/>
             <Options>
@@ -81,6 +81,7 @@
         <ComponentName Value="LocalizedForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="LocalizedForms"/>
       </Unit2>
       <Unit3>
         <Filename Value="unit2.pas"/>
@@ -88,6 +89,7 @@
         <ComponentName Value="Form2"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Unit2"/>
       </Unit3>
       <Unit4>
         <Filename Value="stringsunit.pas"/>
@@ -105,8 +107,20 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <IncludeAssertionCode Value="True"/>
+      </SyntaxOptions>
+    </Parsing>
     <CodeGeneration>
       <SmartLinkUnit Value="True"/>
+      <Checks>
+        <IOChecks Value="True"/>
+        <RangeChecks Value="True"/>
+        <OverflowChecks Value="True"/>
+        <StackChecks Value="True"/>
+      </Checks>
+      <VerifyObjMethodCallValidity Value="True"/>
     </CodeGeneration>
     <Linking>
       <Options>
