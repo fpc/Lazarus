@@ -126,6 +126,7 @@ begin
    'fi'   : Result := $040B;    // Finnish
    'fr'   : Result := $040C;    // French
    'he'   : Result := $040D;    // Hebrew
+   'hu'   : Result := $040E;    // Hungarian
    'it'   : Result := $0410;    // Italian
    'jp'   : Result := $0411;    // Japanese
    'pl'   : Result := $0415;    // Polish
