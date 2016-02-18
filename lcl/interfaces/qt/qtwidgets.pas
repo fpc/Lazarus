@@ -9544,7 +9544,8 @@ begin
     // QTextCursor slowness
     // https://bugreports.qt-project.org/browse/QTBUG-3554
     // differentiate append vs. insert issue #22715
-    if AIndex >= FList.Count - 1 then
+    // added check for AIndex. issue #29670
+    if (AIndex > 0) and (AIndex >= FList.Count - 1) then
     begin
       QTextCursor_movePosition(QtCursor, QTextCursorEnd,
         QTextCursorMoveAnchor, 1);
