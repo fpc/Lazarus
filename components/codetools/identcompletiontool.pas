@@ -3528,9 +3528,6 @@ begin
   and (FToolNodesDeletedStep<>Tool.NodesDeletedChangeStep) then
     Exclude(Flags,iliNodeValid);
 
-  if (Flags * [iliNodeHashValid, iliNodeValid] = [iliNodeValid]) then
-    StoreNodeHash;
-
   if (not (iliNodeValid in Flags)) then begin
     if iliNodeHashValid in Flags then begin
       RestoreNode;
@@ -3566,6 +3563,8 @@ begin
     RaiseToolMissing;
   if (Tool<>nil) then
     FToolNodesDeletedStep:=Tool.NodesDeletedChangeStep;
+  if (FNode<>nil) then
+    StoreNodeHash;
 end;
 
 procedure TIdentifierListItem.SetParamTypeList(const AValue: string);
