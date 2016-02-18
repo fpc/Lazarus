@@ -239,6 +239,7 @@ type
     function NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode): boolean;
     function ExtractDefinitionNodeType(DefinitionNode: TCodeTreeNode): string;
     function ExtractDefinitionName(DefinitionNode: TCodeTreeNode): string;
+    function FindDefinitionNameNode(DefinitionNode: TCodeTreeNode): TCodeTreeNode;
     function PositionInDefinitionName(DefinitionNode: TCodeTreeNode;
                                       CleanPos: integer): boolean;
     function MoveCursorToParameterSpecifier(DefinitionNode: TCodeTreeNode
@@ -1082,6 +1083,19 @@ begin
     end;
     Result:=nil;
   end;
+end;
+
+function TPascalReaderTool.FindDefinitionNameNode(DefinitionNode: TCodeTreeNode
+  ): TCodeTreeNode;
+begin
+  if DefinitionNode.Desc=ctnGenericType then
+  begin
+    if DefinitionNode.FirstChild<>nil then
+      Result:=DefinitionNode.FirstChild
+    else
+      Result:=nil;
+  end else
+    Result:=DefinitionNode;
 end;
 
 function TPascalReaderTool.FindProcBody(ProcNode: TCodeTreeNode): TCodeTreeNode;
@@ -2816,14 +2830,11 @@ end;
 function TPascalReaderTool.ExtractDefinitionName(DefinitionNode: TCodeTreeNode
   ): string;
 begin
-  if DefinitionNode.Desc=ctnGenericType then begin
-    if DefinitionNode.FirstChild<>nil then
-      Result:=GetIdentifier(@Src[DefinitionNode.FirstChild.StartPos])
-    else
-      Result:='';
-  end else begin
-    Result:=GetIdentifier(@Src[DefinitionNode.StartPos]);
-  end;
+  DefinitionNode:=FindDefinitionNameNode(DefinitionNode);
+  if DefinitionNode<>nil then
+    Result:=GetIdentifier(@Src[DefinitionNode.StartPos])
+  else
+    Result:='';
 end;
 
 function TPascalReaderTool.PositionInDefinitionName(

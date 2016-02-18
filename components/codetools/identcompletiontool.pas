@@ -52,7 +52,7 @@ uses
   CodeTree, CodeAtom, CodeCache, CustomCodeTool, CodeToolsStrConsts,
   KeywordFuncLists, BasicCodeTools, LinkScanner, AvgLvlTree, AVL_Tree,
   SourceChanger, FindDeclarationTool, PascalReaderTool, PascalParserTool,
-  CodeToolsStructs, ExprEval, LazDbgLog;
+  CodeToolsStructs, ExprEval, LazDbgLog, crc;
   
 type
   TIdentCompletionTool = class;
@@ -127,7 +127,7 @@ type
     FToolNodesDeletedStep: integer;// only valid if iliNodeValid
     FNodeStartPos: integer;
     FNodeDesc: TCodeTreeNodeDesc;
-    FNodeHash: string;
+    FNodeHash: Cardinal;
     function GetNode: TCodeTreeNode;
     function GetParamTypeList: string;
     function GetParamNameList: string;
@@ -170,7 +170,7 @@ type
     procedure UnbindNode;
     procedure StoreNodeHash;
     function RestoreNode: boolean;
-    function GetNodeHash(ANode: TCodeTreeNode): string;
+    function GetNodeHash(ANode: TCodeTreeNode): Cardinal;
     function CompareParamList(CompareItem: TIdentifierListItem): integer;
     function CompareParamList(CompareItem: TIdentifierListSearchItem): integer;
     function CalcMemSize: PtrUInt; virtual;
@@ -3917,7 +3917,7 @@ end;
 function TIdentifierListItem.RestoreNode: boolean;
 var
   NewNode: TCodeTreeNode;
-  NewHash: String;
+  NewHash: Cardinal;
 begin
   if not (iliNodeHashValid in Flags) then exit(true);
   //DebugLn(['TIdentifierListItem.RestoreNode ',Identifier]);
@@ -3940,20 +3940,23 @@ begin
   Result:=true;
 end;
 
-function TIdentifierListItem.GetNodeHash(ANode: TCodeTreeNode): string;
+function TIdentifierListItem.GetNodeHash(ANode: TCodeTreeNode): Cardinal;
 var
   StartPos: LongInt;
   EndPos: LongInt;
 begin
   case ANode.Desc of
-  ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnGenericType:
-    Result:=Tool.ExtractDefinitionName(ANode)
-  else
+    ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnGenericType:
+      ANode:=Tool.FindDefinitionNameNode(ANode);
+  end;
+  if ANode<>nil then
+  begin
     StartPos:=ANode.StartPos;
     EndPos:=StartPos+20;
     if EndPos>ANode.EndPos then EndPos:=ANode.EndPos;
-    Result:=copy(Tool.Src,StartPos,EndPos);
-  end;
+    Result:=crc32(0, @Tool.Src[StartPos], EndPos-StartPos);
+  end else
+    Result:=0;
 end;
 
 function TIdentifierListItem.CompareParamList(CompareItem: TIdentifierListItem
@@ -3991,7 +3994,7 @@ function TIdentifierListItem.CalcMemSize: PtrUInt;
 begin
   Result:=PtrUInt(InstanceSize)
     +MemSizeString(FParamTypeList)
-    +MemSizeString(FNodeHash)
+    +SizeOf(FNodeHash)
     +MemSizeString(Identifier);
 end;
 
