@@ -262,9 +262,11 @@ begin
   //DebugLn(['TMenu.IsShortcut ',dbgsName(Self),' Result=',Result,' Message.CharCode=',Message.CharCode,' ShiftState=',dbgs(ShiftState)]);
   if Result then
   begin
+    //DebugLn(['TMenu.IsShortcut ',dbgsName(Self),' Result=',Result,' Message.CharCode=',Message.CharCode,' ShiftState=',dbgs(ShiftState)]);
     FShortcutHandled := True;
     HandleItem(Item);
     Result := FShortcutHandled;
+    //debugln(['TMenu.IsShortcut ',Result]); DumpStack;
   end;
 end;
 
