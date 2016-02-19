@@ -5431,10 +5431,6 @@ resourcestring
   lisUseAnsistrings = 'Use Ansistrings';
   lisDoNotShowThisDialogForThisProject = 'Do not show this dialog for this project';
   lisObjectPascalDefault = 'Object Pascal - default';
-  lisDelphi = 'Delphi';
-  lisTurboPascal = 'Turbo Pascal';
-  lisMacPascal = 'Mac Pascal';
-  lisFreePascal = 'Free Pascal';
   lisVerifyMethodCalls = 'Verify method calls';
   lisToggleShowingFilenamesWithFullPathOrWithRelativePa = 'Toggle showing '
     +'filenames with full path or with relative path';

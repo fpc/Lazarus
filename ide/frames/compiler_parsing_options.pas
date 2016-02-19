@@ -36,13 +36,17 @@ begin
   if CompareText(Mode, 'ObjFPC') = 0 then
     Result := lisObjectPascalDefault + ' (-Mobjfpc)'
   else if CompareText(Mode, 'Delphi') = 0 then
-    Result := lisDelphi + ' (-Mdelphi)'
+    Result := 'Delphi (-Mdelphi)'
+  else if CompareText(Mode, 'DelphiUnicode') = 0 then
+    Result := 'DelphiUnicode (-Mdelphiunicode)'
   else if CompareText(Mode, 'tp') = 0 then
-    Result := lisTurboPascal + ' (-Mtp)'
+    Result := 'Turbo Pascal (-Mtp)'
   else if CompareText(Mode, 'fpc') = 0 then
-    Result := lisFreePascal + ' (-Mfpc)'
+    Result := 'Free Pascal (-Mfpc)'
   else if CompareText(Mode, 'macpas') = 0 then
-    Result := lisMacPascal + ' (-Mmacpas)'
+    Result := 'Mac Pascal (-Mmacpas)'
+  else if CompareText(Mode, 'iso') = 0 then
+    Result := 'ISO/IEC 7185 Pascal (-Miso)'
   else
     Result := '';
 end;
@@ -51,12 +55,16 @@ function CaptionToSyntaxMode(const Caption: string): string;
 begin
   if Pos('-Mdelphi', Caption) > 0 then
     Result := 'Delphi'
+  else if Pos('-Mdelphiunicode', Caption) > 0 then
+    Result := 'delphiunicode'
+  else if Pos('-Mfpc', Caption) > 0 then
+    Result := 'fpc'
   else if Pos('-Mtp', Caption) > 0 then
     Result := 'tp'
   else if Pos('-Mmacpas', Caption) > 0 then
     Result := 'macpas'
-  else if Pos('-Mfpc', Caption) > 0 then
-    Result := 'fpc'
+  else if Pos('-Miso', Caption) > 0 then
+    Result := 'iso'
   else
     Result := 'ObjFPC';
 end;
