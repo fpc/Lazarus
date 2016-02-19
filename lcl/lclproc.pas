@@ -159,7 +159,9 @@ function StrToDouble(const s: string): double;
 procedure RaiseGDBException(const Msg: string);
 procedure RaiseAndCatchException;
 procedure DumpExceptionBackTrace;
-procedure DumpStack;
+{$IFnDEF WithOldDebugln}
+procedure DumpStack; inline;
+{$ENDIF}
 function GetStackTrace(UseCache: boolean): string;
 procedure GetStackTracePointers(var AStack: TStackTracePointers);
 function StackTraceAsString(const AStack: TStackTracePointers;
