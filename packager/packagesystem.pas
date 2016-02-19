@@ -4675,7 +4675,7 @@ begin
   s:=s+'begin'+e;
   s:=s+'  with Installer do'+e;
   s:=s+'    begin'+e;
-  s:=s+'    P:=AddPAckage('''+lowercase(APackage.Name)+''');'+e;
+  s:=s+'    P:=AddPackage('''+lowercase(APackage.Name)+''');'+e;
   s:=s+'    P.Version:='''+APackage.Version.AsString+''';'+e;
   s:=s+''+e;
   s:=s+'    P.Directory:=ADirectory;'+e;
