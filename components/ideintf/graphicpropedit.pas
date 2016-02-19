@@ -46,7 +46,7 @@ type
     ScrollBox: TScrollBox;
     procedure CopyActionExecute(Sender: TObject);
     procedure CopyActionUpdate(Sender: TObject);
-    procedure ImagePreviewPaintBackground(ASender: TObject; ACanvas: TCanvas;
+    procedure ImagePreviewPaintBackground({%H-}ASender: TObject; ACanvas: TCanvas;
       ARect: TRect);
     procedure PasteActionExecute(Sender: TObject);
     procedure PasteActionUpdate(Sender: TObject);
