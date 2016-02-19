@@ -185,7 +185,7 @@ type
     procedure OnProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
     procedure EnableI18NForSelectedLFM(TheEnable: boolean);
   protected
-    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure IdleHandler(Sender: TObject; var {%H-}Done: Boolean);
   public
     constructor Create(TheOwner: TComponent); override;
@@ -1191,7 +1191,7 @@ begin
   end;
 end;
 
-procedure TProjectInspectorForm.KeyUp(var Key: Word; Shift: TShiftState);
+procedure TProjectInspectorForm.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
   ExecuteIDEShortCut(Self,Key,Shift,nil);
