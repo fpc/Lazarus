@@ -362,7 +362,7 @@ type
     // packages handling
     function CreateNewPackage(const Prefix: string): TLazPackage;
     procedure AddPackage(APackage: TLazPackage);
-    procedure ReplacePackage(OldPackage, NewPackage: TLazPackage);
+    procedure ReplacePackage(var OldPackage: TLazPackage; NewPackage: TLazPackage);
     procedure ClosePackage(APackage: TLazPackage);
     procedure CloseUnneededPackages;
     procedure ChangePackageID(APackage: TLazPackage;
@@ -2071,7 +2071,8 @@ begin
   EndUpdate;
 end;
 
-procedure TLazPackageGraph.ReplacePackage(OldPackage, NewPackage: TLazPackage);
+procedure TLazPackageGraph.ReplacePackage(var OldPackage: TLazPackage;
+  NewPackage: TLazPackage);
 
   procedure MoveInstalledComponents(OldPkgFile: TPkgFile);
   var
@@ -2118,6 +2119,7 @@ begin
     MoveInstalledComponents(OldPackage.RemovedFiles[i]);
   // delete old package
   Delete(fItems.IndexOf(OldPackage));
+  OldPackage:=nil;
   // restore flags
   NewPackage.Installed:=OldInstalled;
   NewPackage.AutoInstall:=OldAutoInstall;
