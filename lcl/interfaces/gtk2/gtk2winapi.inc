@@ -6141,7 +6141,6 @@ function TGtk2WidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
   Widget: PGTKWidget;
   GRect: TGdkRectangle;
-  R: TRect;
   P: TPoint;
 begin
   Result := 0; // error
@@ -6149,14 +6148,14 @@ begin
   begin
     Widget := {%H-}PGtkWidget(Handle);
 
-    if GTK_IS_WINDOW(Widget) and Assigned(Widget^.window) then
+    if GTK_IS_WINDOW(Widget) and Assigned(Widget^.window)
+    and GTK_WIDGET_VISIBLE(Widget) then
     begin
       gdk_window_get_origin(Widget^.window, @ARect.Left, @ARect.Top);
       gdk_window_get_size(Widget^.window, @ARect.Right, @ARect.Bottom);
       P := GetWidgetOrigin(Widget);
       gdk_window_get_frame_extents(Widget^.window, @GRect);
-      R := RectFromGdkRect(GRect);
-      ARect := Bounds(P.X,P.Y,R.Right-R.Left,R.Bottom-R.Top);
+      ARect := Bounds(P.X,P.Y,GRect.width,GRect.height);
       // writeln('Frame extents are: ',dbgs(R),' ARECT=',dbgs(AREct));
       Result := 1; // success
       exit;

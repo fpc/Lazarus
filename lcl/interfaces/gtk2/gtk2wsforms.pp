@@ -353,6 +353,7 @@ var
   WindowType: TGtkWindowType;
   ACustomForm: TCustomForm;
   AResizable: gint;
+  Allocation: TGtkAllocation;
 begin
   // Start of old CreateForm method
   ACustomForm := TCustomForm(AWinControl);
@@ -442,6 +443,12 @@ begin
 
   if not (csDesigning in AWinControl.ComponentState) then
     WidgetInfo^.UserData := Pointer(1);
+
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(P, @Allocation);
 
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P, dbgsName(AWinControl));
