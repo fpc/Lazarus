@@ -6153,12 +6153,10 @@ begin
   and GTK_WIDGET_VISIBLE(Widget) // Gtk2 returns invalid origin/frame for invisible widgets
   then
   begin
-    gdk_window_get_origin(Widget^.window, @ARect.Left, @ARect.Top);
-    gdk_window_get_size(Widget^.window, @ARect.Right, @ARect.Bottom);
     P := GetWidgetOrigin(Widget);
     gdk_window_get_frame_extents(Widget^.window, @GRect);
     ARect := Bounds(P.X,P.Y,GRect.width,GRect.height);
-    // writeln('Frame extents are: ',dbgs(R),' ARECT=',dbgs(AREct));
+    // writeln('Frame extents are: ',dbgs(R),' ARECT=',dbgs(ARect));
     Result := 1; // success
   end else
   begin
