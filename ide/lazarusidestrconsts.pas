@@ -5795,9 +5795,6 @@ resourcestring
   lisConvDelphiRepairingFormFiles = '*** Fixing used units and Repairing form files ***';
   lisConvDelphiConvertingProjPackUnits = '*** Converting unit files belonging to project/package ***';
   lisConvDelphiConvertingFoundUnits = '*** Converting unit files found during conversion ***';
-  lisConvDelphiRepairingFormFile = '* Repairing form file %s *';
-  lisConvDelphiConvertingFile = '* Converting file %s *';
-  lisConvDelphiFixingUsedUnits = '* Fixing used units for file %s *';
   lisConvDelphiChangedEncodingToUTF8 = 'Changed encoding from %s to UTF-8';
   lisConvDelphiAllSubDirsScanned = 'All sub-directories will be scanned for unit files';
   lisConvDelphiMissingIncludeFile = '%s(%s,%s) missing include file';

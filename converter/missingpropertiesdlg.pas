@@ -40,8 +40,9 @@ uses
   SynHighlighterLFM, SynEdit, SynEditMiscClasses, LFMTrees,
   // codetools
   CodeCache, CodeToolManager, CodeToolsStructs, CodeCompletionTool,
+  // IdeIntf
+  ComponentReg, PackageIntf, IDEWindowIntf, IDEExternToolIntf,
   // IDE
-  ComponentReg, PackageIntf, IDEWindowIntf,
   CustomFormEditor, LazarusIDEStrConsts, IDEProcs,
   EditorOptions, CheckLFMDlg, Project, SourceMarks,
   // Converter
@@ -161,15 +162,20 @@ end;
 function TDFMConverter.Convert(const DfmFilename: string): TModalResult;
 var
   s: String;
+  Urgency: TMessageLineUrgency;
 begin
   Result:=ConvertDfmToLfm(DfmFilename);
   if Result=mrOK then begin
-    if fOrigFormat=sofBinary then
-      s:=Format(lisFileSIsConvertedToTextFormat, [DfmFilename])
-    else
+    if fOrigFormat=sofBinary then begin
+      s:=Format(lisFileSIsConvertedToTextFormat, [DfmFilename]);
+      Urgency:=mluHint;
+    end
+    else begin
       s:=Format(lisFileSHasIncorrectSyntax, [DfmFilename]);
+      Urgency:=mluError;
+    end;
     if Assigned(fSettings) then
-      fSettings.AddLogLine(s)
+      fSettings.AddLogLine(Urgency, s, DfmFilename)
     else
       ShowMessage(s);
   end;
@@ -416,8 +422,9 @@ begin
           NewIdent:=ObjNode.Name+':'+ObjNode.TypeName;
           fCTLink.CodeTool.AddClassInsertion(UpperCase(ObjNode.Name),
                                    NewIdent+';', ObjNode.Name, ncpPublishedVars);
-          fSettings.AddLogLine(Format(lisAddedMissingObjectSToPascalSource,
-                                      [NewIdent]));
+          fSettings.AddLogLine(mluNote,
+            Format(lisAddedMissingObjectSToPascalSource, [NewIdent]),
+            fUsedUnitsTool.Filename);
         end
         else if IsMissingType(CurError) then
         begin
@@ -429,8 +436,9 @@ begin
           if NewIdent<>'' then begin
             StartPos:=ObjNode.TypeNamePosition;
             EndPos:=StartPos+Length(OldIdent);
-            fSettings.AddLogLine(Format(lisReplacedTypeSWithS,
-                                        [OldIdent, NewIdent]));
+            fSettings.AddLogLine(mluNote,
+              Format(lisReplacedTypeSWithS, [OldIdent, NewIdent]),
+              fUsedUnitsTool.Filename);
             AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
             Result:=mrRetry;
           end;
@@ -444,11 +452,12 @@ begin
             // Delete the whole property line if no replacement.
             if NewIdent='' then begin
               FindNiceNodeBounds(TheNode,StartPos,EndPos);
-              fSettings.AddLogLine(Format(lisRemovedPropertyS, [OldIdent]));
+              fSettings.AddLogLine(mluNote, Format(lisRemovedPropertyS, [OldIdent]),
+                fUsedUnitsTool.Filename);
             end
             else
-              fSettings.AddLogLine(Format(lisReplacedPropertySWithS,
-                                          [OldIdent, NewIdent]));
+              fSettings.AddLogLine(mluNote,
+                Format(lisReplacedPropertySWithS, [OldIdent, NewIdent]));
             AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
             Result:=mrRetry;
           end;
@@ -501,8 +510,9 @@ begin
       if NewNum<0 then
         NewNum:=0;
       fLFMBuffer.Replace(TopOffs.StartPos, Len, IntToStr(NewNum));
-      fSettings.AddLogLine(Format(lisChangedSCoordOfSFromDToDInsideS,
-        [TopOffs.PropName, TopOffs.ChildType, OldNum, NewNum, TopOffs.ParentType]));
+      fSettings.AddLogLine(mluNote, Format(lisChangedSCoordOfSFromDToDInsideS,
+        [TopOffs.PropName, TopOffs.ChildType, OldNum, NewNum, TopOffs.ParentType]),
+        fUsedUnitsTool.Filename);
     end;
   end;
 end;
@@ -518,8 +528,9 @@ begin
     Entry:=TAddPropEntry(aNewProps[i]);
     fLFMBuffer.Replace(Entry.StartPos, Entry.EndPos-Entry.StartPos,
                        Entry.NewPrefix+Entry.NewText);
-    fSettings.AddLogLine(Format(lisAddedPropertySForS,
-                                [Entry.NewText, Entry.ParentType]));
+    fSettings.AddLogLine(mluNote,
+      Format(lisAddedPropertySForS, [Entry.NewText, Entry.ParentType]),
+      fUsedUnitsTool.Filename);
   end;
 end;
 

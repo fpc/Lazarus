@@ -40,8 +40,10 @@ uses
   CodeCache, SourceChanger, CustomCodeTool, CodeToolsStructs,
   // LazUtils
   LazFileUtils,
+  // IdeIntf
+  LazIDEIntf, IDEExternToolIntf,
   // IDE
-  LazIDEIntf, IDEExternToolIntf, FormEditor, LazarusIDEStrConsts,
+  FormEditor, LazarusIDEStrConsts,
   // Converter
   ConverterTypes, ConvertSettings, ReplaceNamesUnit, ReplaceFuncsUnit;
 
@@ -252,6 +254,7 @@ function TConvDelphiCodeTool.RenameUnitIfNeeded: boolean;
 // Change the unit name to match the disk name unless the disk name is all lowercase.
 var
   NamePos: TAtomPosition;
+  CaretPos: TCodeXYPosition;
   DiskNm, UnitNm: String;
 begin
   Result:=false;
@@ -265,7 +268,10 @@ begin
         SrcCache.MainScanner:=CodeTool.Scanner;
         SrcCache.Replace(gtNone, gtNone, NamePos.StartPos, NamePos.EndPos, DiskNm);
         if not SrcCache.Apply then exit;
-        fSettings.AddLogLine(Format(lisConvFixedUnitName, [UnitNm, DiskNm]));
+        if CodeTool.CleanPosToCaret(NamePos.StartPos, CaretPos) then
+          fSettings.AddLogLine(mluNote,
+            Format(lisConvFixedUnitName, [UnitNm, DiskNm]), fCode.Filename,
+            CaretPos.Y, CaretPos.X);
       end;
     end;
   end;
@@ -496,6 +502,7 @@ var
 
 var
   FuncInfo: TFuncReplacement;
+  CaretPos: TCodeXYPosition;
   PossibleCommentPos: Integer;               // Start looking for comments here.
   i: Integer;
   s, NewFunc, Comment: String;
@@ -510,24 +517,29 @@ begin
       ReplacementParams.Clear;
       PossibleCommentPos:=ParseReplacementParams(FuncInfo.ReplFunc);
       // Replace only if the params match somehow, so eg. a variable is not replaced.
-      if (FuncInfo.Params.Count>0) or (ReplacementParams.Count=0) then begin
+      if (FuncInfo.Params.Count>0) or (ReplacementParams.Count=0) then
+      with fCTLink do
+      begin
         NewFunc:=InsertParams2Replacement(FuncInfo);
         // Separate function body
         NewFunc:=NewFunc+FuncInfo.InclEmptyBrackets+FuncInfo.InclSemiColon;
-        if fCTLink.fSettings.FuncReplaceComment then
+        if fSettings.FuncReplaceComment then
           NewFunc:=NewFunc+Format(lisConvConvertedFrom, [FuncInfo.FuncName]);
         Comment:=GetComment(FuncInfo.ReplFunc, PossibleCommentPos);
         if Comment<>'' then            // Possible comment from the configuration
           NewFunc:=NewFunc+' { ' +Comment+' }';
         // Old function call with params for IDE message output.
-        s:=copy(fCTLink.CodeTool.Src, FuncInfo.StartPos, FuncInfo.EndPos-FuncInfo.StartPos);
+        s:=copy(CodeTool.Src, FuncInfo.StartPos, FuncInfo.EndPos-FuncInfo.StartPos);
         s:=StringReplace(s, #10, '', [rfReplaceAll]);
         s:=StringReplace(s, #13, '', [rfReplaceAll]);
         // Now replace it.
-        fCTLink.ResetMainScanner;
-        if not fCTLink.SrcCache.Replace(gtNone, gtNone,
+        ResetMainScanner;
+        if not SrcCache.Replace(gtNone, gtNone,
                             FuncInfo.StartPos, FuncInfo.EndPos, NewFunc) then exit;
-        fCTLink.fSettings.AddLogLine(Format(lisConvReplacedCall, [s, NewFunc]));
+        if CodeTool.CleanPosToCaret(FuncInfo.StartPos, CaretPos) then
+          fSettings.AddLogLine(mluNote,
+            Format(lisConvReplacedCall, [s, NewFunc]), fCode.Filename,
+            CaretPos.Y, CaretPos.X);
         // Add the required unit name to uses section if needed.
         if Assigned(AddUnitEvent) and (FuncInfo.UnitName<>'') then
           AddUnitEvent(FuncInfo.UnitName);

@@ -30,10 +30,17 @@ unit ConvertSettings;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, IDEProcs, StdCtrls, Buttons,
-  ButtonPanel, ComCtrls, DialogProcs, FileUtil, LazFileUtils,
-  LazarusIDEStrConsts, CodeToolsStructs, CodeToolManager, CodeCache,
-  DividerBevel, BaseIDEIntf, IDEMsgIntf, IDEExternToolIntf, AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
+  Forms, Controls, Dialogs, StdCtrls, Buttons, ButtonPanel, ComCtrls,
+  // LazUtils
+  FileUtil, LazFileUtils, DividerBevel,
+  // CodeTools
+  CodeToolsStructs, CodeToolManager, CodeCache,
+  // IdeIntf
+  BaseIDEIntf, IDEMsgIntf, IDEExternToolIntf,
+  // IDE
+  IDEProcs, DialogProcs, LazarusIDEStrConsts,
+  // Converter
   LazConfigStorage, ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
 
 const
@@ -118,7 +125,8 @@ type
       out LazFilename: string; LowercaseFilename: Boolean): TModalResult; overload;
     function MaybeBackupFile(const AFilename: string): TModalResult;
     procedure ClearLog;
-    function AddLogLine(const ALine: string; Urgency: TMessageLineUrgency = mluHint): integer;
+    procedure AddLogLine(Urgency: TMessageLineUrgency; const Msg: string;
+      const Filename: string=''; LineNumber: integer=0; Column: integer=0);
     function SaveLog: Boolean;
   public
     property MainFilenames: TStringlist read fMainFilenames;
@@ -772,11 +780,20 @@ begin
   fLog.Clear;
 end;
 
-function TConvertSettings.AddLogLine(
-  const ALine: string; Urgency: TMessageLineUrgency): integer;
+procedure TConvertSettings.AddLogLine(Urgency: TMessageLineUrgency;
+  const Msg: string; const Filename: string; LineNumber: integer; Column: integer);
+var
+  FN, Coords, Urg: String;
 begin
-  IDEMessagesWindow.AddCustomMessage(Urgency,aLine); // Show in message window
-  Result:=fLog.Add(MessageLineUrgencyNames[Urgency]+': '+ALine);// and store for log.
+  // Show in message window
+  IDEMessagesWindow.AddCustomMessage(Urgency, Msg, Filename, LineNumber, Column);
+  // and store for log.
+  FN := ExtractFileName(Filename);
+  if (LineNumber<>0) or (Column<>0) then
+    Coords := Format('(%d,%d)', [LineNumber, Column]);
+  if Urgency <> mluImportant then
+    Urg := MessageLineUrgencyNames[Urgency];
+  fLog.Add(FN + Coords + ' ' + Urg + ': ' + Msg);
 end;
 
 function TConvertSettings.SaveLog: Boolean;
