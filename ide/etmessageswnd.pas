@@ -100,7 +100,7 @@ begin
   IDEMessagesWindow:=Self;
   Caption:=lisMenuViewMessages;
   try
-    IDEMessagesWindow.Icon.LoadFromResourceName(HInstance, 'WIN_MESSAGES');
+    Icon.LoadFromResourceName(HInstance, 'WIN_MESSAGES');
   except
   end;
   MessagesFrame1.MessagesCtrl.OnOpenMessage:=@OnOpenMessage;
@@ -122,8 +122,7 @@ begin
     FormStyle:=fsNormal;
 end;
 
-function TMessagesView.OnOpenMessage(Sender: TObject; Msg: TMessageLine
-  ): boolean;
+function TMessagesView.OnOpenMessage(Sender: TObject; Msg: TMessageLine): boolean;
 begin
   Result:=false;
   // ask quickfixes
