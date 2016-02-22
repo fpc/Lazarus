@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils,
-  Masks, LazUTF8, LazFileUtils;
+  Masks, LazUTF8, LazFileUtils, StrUtils;
   
 {$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}
