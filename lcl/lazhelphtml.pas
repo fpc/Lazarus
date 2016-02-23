@@ -19,7 +19,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLIntf, Forms, Process, LazFileUtils, UTF8Process,
-  LazConfigStorage, LCLStrConsts, HelpIntfs, LazHelpIntf;
+  LazConfigStorage, LazUTF8, LCLStrConsts, HelpIntfs, LazHelpIntf;
   
 type
   { THTMLHelpDatabase
@@ -306,10 +306,9 @@ end;
 function THTMLBrowserHelpViewer.ShowNode(Node: THelpNode; var ErrMsg: string
   ): TShowHelpResult;
 var
-  Params: String;
   URLMacroPos: LongInt;
   BrowserProcess: TProcessUTF8;
-  CommandLine: String;
+  Executable, ParamsStr: String;
 begin
   Result:=shrViewerError;
   ErrMsg:='';
@@ -323,11 +322,11 @@ begin
   end;
 
   // check browser path
-  CommandLine:=BrowserPath;
-  Params:=BrowserParams;
-  if CommandLine='' then
-    FindDefaultBrowser(CommandLine, Params);
-  if CommandLine='' then begin
+  Executable:=BrowserPath;
+  ParamsStr:=BrowserParams;
+  if Executable='' then
+    FindDefaultBrowser(Executable, ParamsStr);
+  if Executable='' then begin
     if (HelpDatabases<>nil)
     and (CompareText(HelpDatabases.ClassName,'TIDEHelpDatabases')=0) then
       ErrMsg:=Format(hhsHelpNoHTMLBrowserFoundPleaseDefineOne,[LineEnding])
@@ -335,31 +334,29 @@ begin
       ErrMsg:=hhsHelpNoHTMLBrowserFound;
     exit;
   end;
-  if (not FileExistsUTF8(CommandLine)) then begin
-    ErrMsg:=Format(hhsHelpBrowserNotFound, [CommandLine]);
+  if (not FileExistsUTF8(Executable)) then begin
+    ErrMsg:=Format(hhsHelpBrowserNotFound, [Executable]);
     exit;
   end;
-  if (not FileIsExecutable(CommandLine)) then begin
-    ErrMsg:=Format(hhsHelpBrowserNotExecutable, [CommandLine]);
+  if (not FileIsExecutable(Executable)) then begin
+    ErrMsg:=Format(hhsHelpBrowserNotExecutable, [Executable]);
     exit;
   end;
-  
+
   //debugln('THTMLBrowserHelpViewer.ShowNode Node.URL=',Node.URL);
-  
-  // create params and replace %s for URL
-  URLMacroPos:=Pos('%s',Params);
+
+  // create params and replace %ParamsStr for URL
+  URLMacroPos:=Pos('%s',ParamsStr);
   if URLMacroPos>=1 then
-    Params:=copy(Params,1,URLMacroPos-1)+Node.URL
-           +copy(Params,URLMacroPos+2,length(Params)-URLMacroPos-1)
+    ReplaceSubstring(ParamsStr,URLMacroPos,2,Node.URL)
   else begin
-    if Params<>'' then
-      Params:=Params+' ';
-    Params:=Params+Node.URL;
+    if ParamsStr<>'' then
+      ParamsStr:=ParamsStr+' ';
+    ParamsStr:=ParamsStr+Node.URL;
   end;
-  CommandLine:=CommandLine+' '+Params;
-  
+
   {$IFNDEF DisableChecks}
-  debugln('THTMLBrowserHelpViewer.ShowNode CommandLine=',CommandLine);
+  debugln('THTMLBrowserHelpViewer.ShowNode Executable="',Executable,'" Params="',ParamsStr,'"');
   {$ENDIF}
 
   // run
@@ -367,7 +364,8 @@ begin
     BrowserProcess:=TProcessUTF8.Create(nil);
     try
       BrowserProcess.InheritHandles:=false;
-      BrowserProcess.CommandLine:=CommandLine;
+      BrowserProcess.Executable:=Executable;
+      SplitCmdLineParams(ParamsStr,BrowserProcess.Parameters);
       BrowserProcess.Execute;
     finally
       BrowserProcess.Free;
@@ -375,7 +373,7 @@ begin
     Result:=shrSuccess;
   except
     on E: Exception do begin
-      ErrMsg:=Format(hhsHelpErrorWhileExecuting, [CommandLine, LineEnding, E.Message]);
+      ErrMsg:=Format(hhsHelpErrorWhileExecuting, [Executable+' '+ParamsStr, LineEnding, E.Message]);
     end;
   end;
 end;
