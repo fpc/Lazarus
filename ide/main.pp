@@ -6895,9 +6895,9 @@ const
     StartLazProcess : TProcessUTF8;
     ExeName         : string;
     Params          : TStrings;
-    Dummy           : Integer;
+    Dummy           , i: Integer;
     Unused          : boolean;
-    CmdLine: string;
+    aParam: string;
   begin
     StartLazProcess := TProcessUTF8.Create(nil);
     try
@@ -6922,18 +6922,23 @@ const
         exit;
       end;
       //DebugLn('Setting CommandLine');
-      CmdLine := ExeName +
-         ' --lazarus-pid='+IntToStr(GetProcessID) + ' '+
-         GetCommandLineParameters(Params, False);
+      StartLazProcess.Executable:=ExeName;
+      StartLazProcess.Parameters.Add('--lazarus-pid='+IntToStr(GetProcessID));
+      StartLazProcess.Parameters.AddStrings(Params);
 
-      DebugLn('Hint: (lazarus) CommandLine 1 : %s', [CmdLine]);
+      i:=StartLazProcess.Parameters.Count-1;
+      while (i>=0) do begin
+        aParam:=StartLazProcess.Parameters[i];
+        if (LeftStr(aParam,length(PrimaryConfPathOptLong))=PrimaryConfPathOptLong)
+        or (LeftStr(aParam,length(PrimaryConfPathOptShort))=PrimaryConfPathOptShort)
+        then break;
+        dec(i);
+      end;
 
-      if (pos(PrimaryConfPathOptLong, CmdLine) = 0) and
-         (pos(PrimaryConfPathOptShort, CmdLine) = 0) then
-        CmdLine := CmdLine + ' "' + PrimaryConfPathOptLong + GetPrimaryConfigPath+'"';
+      if i<0 then
+        StartLazProcess.Parameters.Add(PrimaryConfPathOptLong + GetPrimaryConfigPath);
 
-      DebugLn('Hint: (lazarus) CommandLine 2 : %s', [CmdLine]);
-      StartLazProcess.CommandLine := CmdLine;
+      DebugLn('Hint: (lazarus) CmdLine=[',StartLazProcess.Executable,' ',MergeCmdLineParams(StartLazProcess.Parameters),']');
       StartLazProcess.Execute;
     finally
       FreeAndNil(Params);
