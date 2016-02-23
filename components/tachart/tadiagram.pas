@@ -73,6 +73,8 @@ type
     procedure Add(ADecorator: IDiaDecorator);
   public
     constructor Create(AOwner: TDiaObject);
+    procedure Changed(ASender: TDiaObject); override;
+    procedure Notify(ASender: TDiaObject); override;
     property Owner: TDiaObject read FOwner;
     function GetEnumerator: TDiaDecoratorEnumerator;
   end;
@@ -454,9 +456,21 @@ begin
   FOwner := AOwner;
 end;
 
+procedure TDiaDecoratorList.Changed(ASender: TDiaObject);
+begin
+  // Remove compiler warning of abstract method
+  Unused(ASender);
+end;
+
 function TDiaDecoratorList.GetEnumerator: TDiaDecoratorEnumerator;
 begin
   Result := TDiaDecoratorEnumerator.Create(Self);
+end;
+
+procedure TDiaDecoratorList.Notify(ASender: TDiaObject);
+begin
+  // Remove compiler warning of abstract method
+  Unused(ASender);
 end;
 
 { TDiaDecorator }

@@ -124,7 +124,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure BeginUpdate;
+    procedure BeginUpdate; virtual;
     procedure EndUpdate; virtual;
     function IsUpdating: Boolean; inline;
     property Broadcaster: TBroadcaster read FBroadcaster;
@@ -165,7 +165,7 @@ type
   public
     procedure AfterDraw; virtual;
     procedure BeforeDraw; virtual;
-    procedure EndUpdate; virtual;
+    procedure EndUpdate; override;
   public
     class procedure CheckFormat(const AFormat: String);
     function Extent: TDoubleRect; virtual;

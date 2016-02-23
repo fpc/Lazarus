@@ -567,7 +567,7 @@ end;
 procedure THistory.DeleteOld(ACount: Integer);
 begin
   FCount -= ACount;
-  Move(FData[ACount], FData[0], SizeOf(FData[0]) * FCount);
+  Move(FData[ACount], FData[0], SizeInt(FCount) * SizeOf(FData[0]));
 end;
 
 function THistory.GetCapacity: Cardinal;
