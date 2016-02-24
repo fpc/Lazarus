@@ -333,12 +333,7 @@ end;
 class procedure TCarbonWSCustomForm.SetRealPopupParent(
   const ACustomForm: TCustomForm; const APopupParent: TCustomForm);
 begin
-  if Assigned(APopupParent) and (APopupParent.Handle<>0) then
-  begin
-    SetWindowGroup( TCarbonWindow(ACustomForm.Handle).Window, GetWindowGroupOfClass(kHelpWindowClass));
-  end
-  else
-    SetFormStyle(ACustomForm, ACustomForm.FormStyle, ACustomForm.FormStyle);
+  {ToDo: implement PopupMode/PopupParent for Carbon}
 end;
 
 { TCarbonWSHintWindow }
