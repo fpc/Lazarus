@@ -77,6 +77,10 @@ msgstr ""
 msgid "Polish"
 msgstr ""
 
+#: pocheckerconsts.rs_lang_pt
+msgid "Portuguese"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_pt_br
 msgid "Brazilian Portuguese"
 msgstr ""
