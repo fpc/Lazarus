@@ -7164,10 +7164,6 @@ msgstr "המר פרוייקט דלפי"
 msgid "Convert Delphi unit"
 msgstr "המר יחידת דלפי"
 
-#: lazarusidestrconsts.lisconvdelphiconvertingfile
-msgid "* Converting file %s *"
-msgstr "* ממיר קובץ %s *"
-
 #: lazarusidestrconsts.lisconvdelphiconvertingfoundunits
 msgid "*** Converting unit files found during conversion ***"
 msgstr ""
@@ -7197,10 +7193,6 @@ msgstr "לא הצליח להמיר יחידה %s%s%s"
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
 msgstr "תוקנה ראשיות התוים ביחידה \"%s\" ל \"%s\"."
-
-#: lazarusidestrconsts.lisconvdelphifixingusedunits
-msgid "* Fixing used units for file %s *"
-msgstr "* מתקן יחידות שהשתמשו בהן בקובץ %s *"
 
 #: lazarusidestrconsts.lisconvdelphifoundallunitfiles
 msgid "Found all unit files"
@@ -7233,12 +7225,6 @@ msgstr "הושמטה יחידה %s מהפרוייקט"
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
 msgid "Removed unit \"%s\" in uses section."
 msgstr "הוסרה יחידה  \"%s\"  מסעיף \"משתמש ב\""
-
-#: lazarusidestrconsts.lisconvdelphirepairingformfile
-#, fuzzy
-#| msgid "Repairing form file %s"
-msgid "* Repairing form file %s *"
-msgstr "מתקן מקובץ %s"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 #, fuzzy
@@ -8422,10 +8408,6 @@ msgstr "מחיקת הקובץ s%s%s% נכשלה."
 #: lazarusidestrconsts.lisdelimiterissemicolon
 msgid "Delimiter is semicolon."
 msgstr ""
-
-#: lazarusidestrconsts.lisdelphi
-msgid "Delphi"
-msgstr "דלפי"
 
 #: lazarusidestrconsts.lisdelphicompatibleresources
 msgid "Delphi compatible resources. Recommended."
@@ -9961,10 +9943,6 @@ msgstr "חפש אחורנית"
 #: lazarusidestrconsts.lisfreeingbufferlines
 msgid "freeing buffer lines: %s"
 msgstr ""
-
-#: lazarusidestrconsts.lisfreepascal
-msgid "Free Pascal"
-msgstr "Free Pascal"
 
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
@@ -11930,10 +11908,6 @@ msgstr ""
 #| msgid "lrs include files"
 msgid "Lazarus resources (.lrs) include files"
 msgstr "קובץ \"כלול\" מסוג lrs"
-
-#: lazarusidestrconsts.lismacpascal
-msgid "Mac Pascal"
-msgstr "פסקל של מאק"
 
 #: lazarusidestrconsts.lismacro
 msgid "Macro %s"
@@ -18913,10 +18887,6 @@ msgstr ""
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "העת זקוק לרענון"
-
-#: lazarusidestrconsts.listurbopascal
-msgid "Turbo Pascal"
-msgstr "טורבו פסקל"
 
 #: lazarusidestrconsts.listwomovedfileswillhavethesamefilenamein
 msgid "Two moved files will have the same file name:%s%s%s%s%sin %s"

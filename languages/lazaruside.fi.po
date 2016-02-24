@@ -6695,10 +6695,6 @@ msgstr "Muunna Delphi-projekti"
 msgid "Convert Delphi unit"
 msgstr "Muunna Delphi-käännösyksikkö"
 
-#: lazarusidestrconsts.lisconvdelphiconvertingfile
-msgid "* Converting file %s *"
-msgstr "* Muunnetaan tiedostoa %s *"
-
 #: lazarusidestrconsts.lisconvdelphiconvertingfoundunits
 msgid "*** Converting unit files found during conversion ***"
 msgstr "*** Muunnetaan muunnoksen aikana löytyneet käännösyksiköt ***"
@@ -6726,10 +6722,6 @@ msgstr "käännösyksikön \"%s\" muunnos epäonnistui"
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
 msgstr "Korjattu kirjainkoko käännösyksikössä \"%s\". Uusi: \"%s\"."
-
-#: lazarusidestrconsts.lisconvdelphifixingusedunits
-msgid "* Fixing used units for file %s *"
-msgstr "* Korjataan tiedoston %s käyttämiä käännösyksikköjä *"
 
 #: lazarusidestrconsts.lisconvdelphifoundallunitfiles
 msgid "Found all unit files"
@@ -6762,10 +6754,6 @@ msgstr "Käännösyksikkö %s jätettiin pois projektista"
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
 msgid "Removed unit \"%s\" in uses section."
 msgstr "Poistettu käännösyksikkö \"%s\" uses-lauseesta."
-
-#: lazarusidestrconsts.lisconvdelphirepairingformfile
-msgid "* Repairing form file %s *"
-msgstr "* Korjataan lomaketiedostoa %s *"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Fixing used units and Repairing form files ***"
@@ -7881,10 +7869,6 @@ msgstr "Tiedoston \"%s\" poistaminen epäonnistui."
 #: lazarusidestrconsts.lisdelimiterissemicolon
 msgid "Delimiter is semicolon."
 msgstr "Erotin on puolipiste."
-
-#: lazarusidestrconsts.lisdelphi
-msgid "Delphi"
-msgstr ""
 
 #: lazarusidestrconsts.lisdelphicompatibleresources
 msgid "Delphi compatible resources. Recommended."
@@ -9338,10 +9322,6 @@ msgstr "&Taaksepäin haku"
 #: lazarusidestrconsts.lisfreeingbufferlines
 msgid "freeing buffer lines: %s"
 msgstr "vapauttaa puskurin rivit: %s"
-
-#: lazarusidestrconsts.lisfreepascal
-msgid "Free Pascal"
-msgstr ""
 
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
@@ -11204,10 +11184,6 @@ msgstr "lpk puuttuu"
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "Lazarus resources (.lrs) include files"
 msgstr "Lazarus resurssi (.lrs) include-tiedostot"
-
-#: lazarusidestrconsts.lismacpascal
-msgid "Mac Pascal"
-msgstr ""
 
 #: lazarusidestrconsts.lismacro
 msgid "Macro %s"
@@ -17513,10 +17489,6 @@ msgstr "Käännä englanninkieliset viestit"
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Puu pitää päivittää"
-
-#: lazarusidestrconsts.listurbopascal
-msgid "Turbo Pascal"
-msgstr ""
 
 #: lazarusidestrconsts.listwomovedfileswillhavethesamefilenamein
 msgid "Two moved files will have the same file name:%s%s%s%s%sin %s"
