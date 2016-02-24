@@ -4553,18 +4553,17 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer
   ): boolean;
+var
+  ASize: TSize;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetWindowSize]');
   {$endif}
   if Handle = 0 then
     Exit(False);
-
-  with TQtWidget(Handle).getSize do
-  begin
-    Height := cy;
-    Width := cx;
-  end;
+  ASize := TQtWidget(Handle).getSize;
+  Height := ASize.cy;
+  Width := ASize.cx;
 
   Result := True;
 
