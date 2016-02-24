@@ -141,19 +141,11 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
-var
-  frm : TCustomForm;
 begin
   if IsFormDesign(AWinControl) then
     Result := TLCLIntfHandle(TCarbonDesignWindow.Create(AWinControl, AParams))
   else
     Result := TLCLIntfHandle(TCarbonWindow.Create(AWinControl, AParams));
-  frm:=TCustomForm(AWinControl);
-  if Assigned(frm) then
-  begin
-    if (AParams.WndParent<>0) and ((AParams.Style and WS_CHILD) = 0) then
-      SetWindowGroup(TCarbonWindow(Result).Window, GetWindowGroupOfClass(kHelpWindowClass));
-  end;
 end;
 
 {------------------------------------------------------------------------------
