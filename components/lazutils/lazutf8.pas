@@ -2044,7 +2044,7 @@ begin
             case c3 of
             #$A2: OutStr^ := #$AB;
             #$A4: OutStr^ := #$BD;
-            #$AD: OutStr^ := #$90;
+            #$AD: OutStr^ := #$91;
             #$AE: OutStr^ := #$B1;
             #$AF: OutStr^ := #$90;
             #$B0: OutStr^ := #$92;
