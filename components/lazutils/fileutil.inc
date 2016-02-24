@@ -709,9 +709,13 @@ begin
 
     // Don't even try to copy to a subdirectory of SourceDir.
     {$ifdef CaseInsensitiveFilenames}
-    if AnsiStartsText(Searcher.FSourceDir, Searcher.FTargetDir) then Exit;
+      {$ifdef ACP_RTL}
+      if AnsiStartsText(Searcher.FSourceDir, Searcher.FTargetDir) then Exit;
+      {$else ACP_RTL}
+      if Utf8StartsText(Searcher.FSourceDir, Searcher.FTargetDir) then Exit;
+      {$endif}
     {$ELSE}
-    if AnsiStartsStr(Searcher.FSourceDir, Searcher.FTargetDir) then Exit;
+      if AnsiStartsStr(Searcher.FSourceDir, Searcher.FTargetDir) then Exit;
     {$ENDIF}
     Searcher.Search(SourceDir);
     Result:=Searcher.FCopyFailedCount=0;

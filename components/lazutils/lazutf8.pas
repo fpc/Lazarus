@@ -120,6 +120,8 @@ function UTF8LeftStr(const AText: String; const ACount: Integer): String;
 function UTF8RightStr(const AText: String; const ACount: Integer): String;
 function UTF8QuotedStr(const S, Quote: string): string;
 //Utf8 version of MidStr is just Utf8Copy with same parameters, so it is not implemented here
+function Utf8StartsText(const ASubText, AText: string): Boolean;
+function Utf8EndsText(const ASubText, AText: string): Boolean;
 
 function UTF8WrapText(S, BreakStr :string; BreakChars :TSysCharSet; MaxCol: integer): string; overload;
 function UTF8WrapText(S :string; MaxCol :integer) :string; overload;
@@ -2807,6 +2809,34 @@ begin
       inc(p);
   until false;
   Result+=copy(S,CopyPos-PChar(S)+1,p-CopyPos)+Quote;
+end;
+
+function Utf8StartsText(const ASubText, AText: string): Boolean;
+var
+  TextLen, SubTextLen: PtrInt;
+begin
+  Result := False;
+  if (ASubText <> '') then
+  begin
+    TextLen := Utf8Length(AText);
+    SubTextLen := Utf8Length(ASubText);
+    if (TextLen >= SubTextLen) then
+      Result := (Utf8CompareText(Utf8Copy(AText,1,SubTextLen),ASubText) = 0);
+  end;
+end;
+
+function Utf8EndsText(const ASubText, AText: string): Boolean;
+var
+  TextLen, SubTextLen: PtrInt;
+begin
+  Result := False;
+  if (ASubText <> '') then
+  begin
+    TextLen := Utf8Length(AText);
+    SubTextLen := Utf8Length(ASubText);
+    if (TextLen >= SubTextLen) then
+      Result := (Utf8CompareText(Utf8Copy(AText,TextLen-SubTextLen+1,SubTextLen),ASubText) = 0);
+  end;
 end;
 
 function UTF8WrapText(S, BreakStr :string; BreakChars :TSysCharSet; MaxCol: integer): string;
