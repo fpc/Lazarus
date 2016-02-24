@@ -86,6 +86,10 @@ msgstr ""
 msgid "Polish"
 msgstr ""
 
+#: pocheckerconsts.rs_lang_pt
+msgid "Portuguese"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_pt_br
 msgid "Brazilian Portuguese"
 msgstr ""
@@ -223,7 +227,6 @@ msgid "Ignore translated strings marked as \"fuzzy\""
 msgstr ""
 
 #: pocheckerconsts.sincompatibleformatargs
-#| msgid "[Line: %d] Incompatible format() arguments for:"
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Linha: %d] argumentos de format() incompatíveis ou inválidos para:"
 

@@ -87,6 +87,10 @@ msgstr "Hollandais"
 msgid "Polish"
 msgstr "Polonais"
 
+#: pocheckerconsts.rs_lang_pt
+msgid "Portuguese"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_pt_br
 msgid "Brazilian Portuguese"
 msgstr "Portugais brésilien"
@@ -420,3 +424,4 @@ msgstr "Désélectionner tous les fichiers"
 #: pocheckerconsts.suntranslated
 msgid "Untranslated"
 msgstr "Non traduit"
+

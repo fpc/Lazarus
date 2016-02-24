@@ -87,6 +87,10 @@ msgstr "Holland"
 msgid "Polish"
 msgstr "Lengyel"
 
+#: pocheckerconsts.rs_lang_pt
+msgid "Portuguese"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_pt_br
 msgid "Brazilian Portuguese"
 msgstr "Brazil portugál"
@@ -420,3 +424,4 @@ msgstr "Kijelölés megszüntetése"
 #: pocheckerconsts.suntranslated
 msgid "Untranslated"
 msgstr "Nincs lefordítva"
+

@@ -89,6 +89,10 @@ msgstr ""
 msgid "Polish"
 msgstr ""
 
+#: pocheckerconsts.rs_lang_pt
+msgid "Portuguese"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_pt_br
 msgid "Brazilian Portuguese"
 msgstr ""
@@ -226,7 +230,6 @@ msgid "Ignore translated strings marked as \"fuzzy\""
 msgstr ""
 
 #: pocheckerconsts.sincompatibleformatargs
-#| msgid "[Line: %d] Incompatible format() arguments for:"
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Řádek %d] Nekompatibilní/vadné argumenty funkce format():"
 
@@ -309,19 +312,19 @@ msgid "Original"
 msgstr "Originál"
 
 #: pocheckerconsts.spercfuzzy
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Fuzzy strings: %2.0f%%."
 msgid "%s: %4.1f%% fuzzy strings."
 msgstr "Nepřesné překlady: %2.0f%%."
 
 #: pocheckerconsts.sperctranslated
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Translated strings: %2.0f%%."
 msgid "%s: %4.1f%% translated strings."
 msgstr "Přeloženo:          %2.0f%%."
 
 #: pocheckerconsts.spercuntranslated
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Untranslated strings: %2.0f%%."
 msgid "%s: %4.1f%% untranslated strings."
 msgstr "Nepřeloženo:       %2.0f%%."

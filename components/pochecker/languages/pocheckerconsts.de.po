@@ -86,6 +86,10 @@ msgstr "Niederländisch"
 msgid "Polish"
 msgstr "Polnisch"
 
+#: pocheckerconsts.rs_lang_pt
+msgid "Portuguese"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_pt_br
 msgid "Brazilian Portuguese"
 msgstr "Brasilianisches Portugiesisch"
@@ -172,8 +176,7 @@ msgstr "[Zeile %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
 msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
-msgstr ""
-"Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
+msgstr "Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
 
 #: pocheckerconsts.serroroncleanup
 msgid ""
@@ -202,8 +205,7 @@ msgid ""
 "The following non-existent files were removed from the list:\n"
 "%s\n"
 msgstr ""
-"Die folgenden nicht mehr existierenden Dateien wurden entfernt aus der "
-"Liste:\n"
+"Die folgenden nicht mehr existierenden Dateien wurden entfernt aus der Liste:\n"
 "%s\n"
 
 #: pocheckerconsts.sfuzzy
@@ -319,17 +321,14 @@ msgid "Original"
 msgstr "Original"
 
 #: pocheckerconsts.spercfuzzy
-#| msgid "Fuzzy strings: %2.0f%%."
 msgid "%s: %4.1f%% fuzzy strings."
 msgstr "%s: %4.1f%% ungeklärte Zeichenketten."
 
 #: pocheckerconsts.sperctranslated
-#| msgid "Translated strings: %2.0f%%."
 msgid "%s: %4.1f%% translated strings."
 msgstr "%s: %4.1f%% übersetzte Zeichenketten."
 
 #: pocheckerconsts.spercuntranslated
-#| msgid "Untranslated strings: %2.0f%%."
 msgid "%s: %4.1f%% untranslated strings."
 msgstr "%s: %4.1f%% nicht übersetzte Zeichenketten."
 
@@ -370,7 +369,6 @@ msgid "Select &All"
 msgstr "&Alle auswählen"
 
 #: pocheckerconsts.sselectbasictests
-#| msgid "Select &Basic Tests"
 msgid "Select &Basic"
 msgstr "&Basistests auswähl."
 
@@ -383,10 +381,6 @@ msgid "Show statistics graph"
 msgstr "Zeige Statistik-Graphik"
 
 #: pocheckerconsts.sstathint
-#| msgid ""
-#| "%3.1f%% Translated\n"
-#| "%3.1f%% UnTranslated\n"
-#| "%3.1f%% Fuzzy\n"
 msgid ""
 "%3d Translated (%3.1f%%)\n"
 "%3d UnTranslated (%3.1f%%)\n"
@@ -399,7 +393,6 @@ msgstr ""
 "%d Fehler in den gewählten Tests\n"
 
 #: pocheckerconsts.stotalerrors
-#| msgid "Total errors / warnings found: %d"
 msgid "Total errors found: %d"
 msgstr "Insgesamt %d Fehler gefunden"
 
@@ -416,7 +409,6 @@ msgid "Translation"
 msgstr "Übersetzung"
 
 #: pocheckerconsts.stranslationstatistics
-#| msgid "Translation statistics for:"
 msgid "Translation statistics per language:"
 msgstr "Übersetzungsstatistik pro Sprache:"
 
@@ -425,10 +417,10 @@ msgid "&Unselect All"
 msgstr "Alle abwählen"
 
 #: pocheckerconsts.sunselectlistbox
-#| msgid "Unselect"
 msgid "Unselect all files"
 msgstr "Alle Dateien abwählen"
 
 #: pocheckerconsts.suntranslated
 msgid "Untranslated"
 msgstr "Nicht übersetzt"
+

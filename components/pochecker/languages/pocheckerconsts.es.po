@@ -85,6 +85,10 @@ msgstr "Holandés"
 msgid "Polish"
 msgstr "Polaco"
 
+#: pocheckerconsts.rs_lang_pt
+msgid "Portuguese"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_pt_br
 msgid "Brazilian Portuguese"
 msgstr "Portugues Brasileño"
@@ -179,7 +183,7 @@ msgid ""
 "%s\n"
 "Please close the program\n"
 msgstr ""
-"A ocurrido un error irrecuperable\n
+"A ocurrido un error irrecuperable\n"
 "%s\n"
 "Por favor, cierre el programa\n"
 
@@ -202,6 +206,7 @@ msgid ""
 msgstr ""
 "Los siguientes ficheros que ya no existen fueron removidos de la lista:\n"
 "%s\n"
+
 #: pocheckerconsts.sfuzzy
 msgid "Fuzzy"
 msgstr "Confuso"
@@ -293,6 +298,7 @@ msgstr ""
 "\"%s\"\n"
 "en un editor externo\n"
 "\"%s\"\n"
+
 #: pocheckerconsts.sopenfile
 msgid "Open file %s in Ide Editor?"
 msgstr "¿Abrir fichero %s en el editor del IDE?"
@@ -308,6 +314,7 @@ msgstr ""
 "\"%s\"\n"
 "en editor externo:\n"
 "\"%s\"?\n"
+
 #: pocheckerconsts.soriginal
 msgid "Original"
 msgstr "Original"
@@ -383,6 +390,7 @@ msgstr ""
 "%3d No traducido (%3.1f%%)\n"
 "%3d Confuso (%3.1f%%)\n"
 "%d Error(es) en el Test Seleccionado\n"
+
 #: pocheckerconsts.stotalerrors
 msgid "Total errors found: %d"
 msgstr "Total de errores encontrados: %d"
