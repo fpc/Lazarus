@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-01-31 18:08+0100\n"
+"PO-Revision-Date: 2016-02-25 18:25+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1540,7 +1540,7 @@ msgstr "Typ"
 
 #: lazarusidestrconsts.dlgeofocusmessagesatcompilation
 msgid "Focus messages at compilation"
-msgstr ""
+msgstr "Nachrichtenfenster während Kompilierung fokussieren"
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -2160,7 +2160,7 @@ msgstr "Springen (bspw. Methodenspringen)"
 
 #: lazarusidestrconsts.dlgjumptomethodbody
 msgid "Jump directly to method body"
-msgstr ""
+msgstr "Direkt zum Methodenrumpf springen"
 
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
@@ -2221,7 +2221,7 @@ msgstr "Stufe 3 (-O2 + langsame Opt.)"
 
 #: lazarusidestrconsts.dlglevel4opt
 msgid "4 (-O3 + aggressive optimizations, beware)"
-msgstr "Stufe 4 (-O3 + aggressive Opt. , Vorsicht)"
+msgstr "Stufe 4 (-O3 + aggressive Opt. , Vorsicht!)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
 msgid "0 (no optimization)"
@@ -7325,7 +7325,7 @@ msgstr "Projekt anlegen"
 
 #: lazarusidestrconsts.liscreateupdatepofilewhensavingalfmfile
 msgid "Create/update .po file when saving a lfm file"
-msgstr ".po Datei beim Speichern einer lfm Datei erstellen/aktualisieren"
+msgstr ".po-Datei beim Speichern einer lfm-Datei erstellen/aktualisieren"
 
 #: lazarusidestrconsts.liscreatingfileindexoffpcsources
 msgid "Creating file index of FPC sources %s ..."
@@ -18812,11 +18812,11 @@ msgstr ""
 
 #: lazarusidestrconsts.rsi18nforceupdatepofilesonnextcompile
 msgid "Force update PO files on next compile"
-msgstr ""
+msgstr "Aktualisierung der po-Dateien erzwingen bei nächster Kompilierung"
 
 #: lazarusidestrconsts.rsi18nidentifiers
 msgid "Identifiers:"
-msgstr ""
+msgstr "Bezeichner:"
 
 #: lazarusidestrconsts.rsi18noptions
 msgid "i18n Options"
@@ -18824,7 +18824,7 @@ msgstr "i18n-Einstellungen"
 
 #: lazarusidestrconsts.rsi18noriginals
 msgid "Originals:"
-msgstr ""
+msgstr "Originale:"
 
 #: lazarusidestrconsts.rsincludeversioninfohint
 msgid "Version info is stored if the executable format supports it."
@@ -20710,4 +20710,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
