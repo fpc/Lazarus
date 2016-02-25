@@ -46,6 +46,7 @@ type
        const AConstraints: TObject): Boolean; override;
     class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
     class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
+    class function GetCurrentView(const ACalendar: TCustomCalendar): TCalendarView; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings); override;
   end;
@@ -156,6 +157,26 @@ begin
     MCHT_TITLEYEAR: Result := cpTitleYear;
     MCHT_TITLEBTNNEXT,
     MCHT_TITLEBTNPREV: Result := cpTitleBtn;
+  end;
+end;
+
+class function TWin32WSCustomCalendar.GetCurrentView(
+  const ACalendar: TCustomCalendar): TCalendarView;
+var
+  CurrentView: LRESULT;
+begin
+  Result := inherited GetCurrentView(ACalendar);
+  if WindowsVersion >= wvVista then begin
+    if not WSCheckHandleAllocated(ACalendar, 'TWin32WSCustomCalendar.GetCurrentView') then
+      Exit;
+
+    CurrentView := SendMessage(ACalendar.Handle, MCM_GETCURRENTVIEW, 0, 0);
+    case CurrentView of
+      MCMV_MONTH: Result := cvMonth;
+      MCMV_YEAR: Result := cvYear;
+      MCMV_DECADE: Result := cvDecade;
+      MCMV_CENTURY: Result := cvCentury;
+    end;
   end;
 end;
 
