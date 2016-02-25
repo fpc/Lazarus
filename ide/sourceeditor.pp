@@ -240,7 +240,7 @@ type
     FLineInfoNotification: TIDELineInfoNotification;
     FInEditorChangedUpdating: Boolean;
 
-    FOnEditorChange: TNotifyEvent;
+    FOnEditorChange: TStatusChangeEvent;
     FVisible: Boolean;
     FOnMouseMove: TMouseMoveEvent;
     FOnMouseDown: TMouseEvent;
@@ -512,8 +512,8 @@ type
     property ExecutionLine: integer read GetExecutionLine write SetExecutionLine;
     property HasExecutionMarks: Boolean read GetHasExecutionMarks;
     property InsertMode: Boolean read GetInsertmode;
-    property OnEditorChange: TNotifyEvent read FOnEditorChange
-                                          write FOnEditorChange;
+    property OnEditorChange: TStatusChangeEvent read FOnEditorChange
+                                                write FOnEditorChange;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
     property OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
@@ -703,7 +703,7 @@ type
                    ATabCaption: String = ''): TSourceEditor;
     procedure AcceptEditor(AnEditor: TSourceEditor; SendEvent: Boolean = False);
     procedure ReleaseEditor(AnEditor: TSourceEditor; SendEvent: Boolean = False);
-    procedure EditorChanged(Sender: TObject);
+    procedure EditorChanged(Sender: TObject; Changes: TSynStatusChanges);
     procedure DoClose(var CloseAction: TCloseAction); override;
     procedure DoShow; override;
     procedure DoHide; override;
@@ -4046,7 +4046,7 @@ procedure TSourceEditor.EditorStatusChanged(Sender: TObject;
   Changes: TSynStatusChanges);
 Begin
   If Assigned(OnEditorChange) then
-    OnEditorChange(Sender);
+    OnEditorChange(Sender, Changes);
   UpdatePageName;
   if Changes * [scCaretX, scCaretY, scSelection] <> [] then
     IDECommandList.PostponeUpdateEvents;
@@ -7059,14 +7059,16 @@ end;
 
   Called whenever an editor status changes. Sender is normally a TSynEdit.
 -------------------------------------------------------------------------------}
-procedure TSourceNotebook.EditorChanged(Sender: TObject);
+procedure TSourceNotebook.EditorChanged(Sender: TObject;
+  Changes: TSynStatusChanges);
 var SenderDeleted: boolean;
 Begin
   SenderDeleted:=(Sender as TControl).Parent=nil;
   if SenderDeleted then exit;
   UpdateStatusBar;
   if Assigned(Manager) then begin
-    Manager.FHints.HideIfVisible;
+    if not(Changes=[scFocus]) then // has to be here because of issue #29726
+      Manager.FHints.HideIfVisible;
     Manager.DoEditorStatusChanged(FindSourceEditorWithEditorComponent(TSynEdit(Sender)));
   end;
 End;
