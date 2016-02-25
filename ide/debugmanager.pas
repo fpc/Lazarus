@@ -47,7 +47,7 @@ uses
   CodeCache, CodeToolManager, PascalParserTool, CodeTree,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
-  CompOptsIntf, IDEDialogs,
+  CompOptsIntf, IDEDialogs, ToolBarIntf,
   // IDE
   CompilerOptions, EnvironmentOpts,
   SourceEditor, ProjectDefs, Project, IDEProcs, InputHistory, Debugger,
@@ -1807,9 +1807,20 @@ end;
 
 procedure TDebugManager.SetupMainBarShortCuts;
 
-  function GetCommand(ACommand: word): TIDECommand;
+  function GetCmdAndBtn(ACommand: word; out ToolButton: TIDEButtonCommand): TIDECommand;
   begin
     Result:=IDECommandList.FindIDECommand(ACommand);
+    if Result<>nil then
+      ToolButton := RegisterIDEButtonCommand(Result)
+    else
+      ToolButton := nil;
+  end;
+
+  function GetCommand(ACommand: word): TIDECommand;
+  var
+    ToolButton: TIDEButtonCommand;
+  begin
+    Result:=GetCmdAndBtn(ACommand, ToolButton);
   end;
 
 begin
@@ -1839,9 +1850,20 @@ end;
 
 procedure TDebugManager.SetupSourceMenuShortCuts;
 
-  function GetCommand(ACommand: word): TIDECommand;
+  function GetCmdAndBtn(ACommand: word; out ToolButton: TIDEButtonCommand): TIDECommand;
   begin
     Result:=IDECommandList.FindIDECommand(ACommand);
+    if Result<>nil then
+      ToolButton := RegisterIDEButtonCommand(Result)
+    else
+      ToolButton := nil;
+  end;
+
+  function GetCommand(ACommand: word): TIDECommand;
+  var
+    ToolButton: TIDEButtonCommand;
+  begin
+    Result:=GetCmdAndBtn(ACommand, ToolButton);
   end;
 
 begin
