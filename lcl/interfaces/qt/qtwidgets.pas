@@ -7270,7 +7270,7 @@ begin
             begin
               AForm := Screen.CustomFormsZOrdered[i];
               if (AForm <> Application.MainForm) and
-                (AForm.FormStyle in [fsStayOnTop, fsSystemStayOnTop]) and
+                // (AForm.FormStyle in [fsStayOnTop, fsSystemStayOnTop]) and
                 AForm.HandleAllocated and AForm.Visible then
               begin
                 W := TQtWidget(AForm.Handle).Widget;
@@ -7298,7 +7298,7 @@ begin
             begin
               AForm := Screen.CustomFormsZOrdered[i];
               if (AForm <> Application.MainForm) and
-                (AForm.FormStyle in [fsStayOnTop, fsSystemStayOnTop]) and
+                // (AForm.FormStyle in [fsStayOnTop, fsSystemStayOnTop]) and
                 AForm.HandleAllocated and AForm.Visible then
               begin
                 W := TQtWidget(AForm.Handle).Widget;
@@ -7334,6 +7334,17 @@ begin
         begin
           {$IFDEF MSWINDOWS}
           AForm := TCustomForm(LCLObject);
+          if (fsModal in AForm.FormState) then
+          begin
+            AOldState := QWindowStateChangeEvent_oldState(QWindowStateChangeEventH(Event));
+            AState := GetWindowState;
+            SlotWindowStateChange;
+            if (AState and QtWindowMinimized = QtWindowMinimized) and (AOldState and QtWindowMinimized = 0) then
+              Application.Minimize
+            else
+            if (AOldState and QtWindowMinimized = QtWindowMinimized) and (AState and QtWindowMinimized = 0) then
+              Application.Restore;
+          end else
           if (AForm.FormStyle in [fsStayOnTop, fsSystemStayOnTop]) and InUpdate then
             // do not trigger LCL
           else
