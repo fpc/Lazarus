@@ -3310,11 +3310,10 @@ end;
 {------------------------------S T A R T  F I N D-----------------------------}
 procedure TSourceEditor.StartFindAndReplace(Replace:boolean);
 const
-  SaveOptions = [ssoMatchCase,ssoWholeWord,ssoRegExpr,ssoRegExprMultiLine,ssoPrompt,ssoEntireScope,ssoSelectedOnly,ssoBackwards];
+  SaveOptions = [ssoMatchCase,ssoWholeWord,ssoRegExpr,ssoRegExprMultiLine,ssoPrompt,ssoBackwards];
 var
   NewOptions: TSynSearchOptions;
   ALeft,ATop:integer;
-  bSelectedTextOption: Boolean;
   DlgResult: TModalResult;
 begin
   LazFindReplaceDialog.ResetUserHistory;
@@ -3325,8 +3324,8 @@ begin
     NewOptions := NewOptions + [ssoReplace, ssoReplaceAll]
   else
     NewOptions := NewOptions - [ssoReplace, ssoReplaceAll];
-  NewOptions:=NewOptions-SaveOptions+InputHistories.FindOptions*SaveOptions;
-  LazFindReplaceDialog.Options := NewOptions;
+  NewOptions:=NewOptions-SaveOptions+InputHistories.FindOptions*SaveOptions
+                        -[ssoSelectedOnly, ssoEntireScope];
 
   // Fill in history items
   LazFindReplaceDialog.TextToFindComboBox.Items.Assign(InputHistories.FindHistory);
@@ -3342,7 +3341,8 @@ begin
          )
       then begin
         //debugln('TSourceEditor.StartFindAndReplace B FindTextAtCursor SelAvail');
-        LazFindReplaceDialog.FindText := SelText
+        LazFindReplaceDialog.FindText := SelText;
+        NewOptions := NewOptions + [ssoSelectedOnly, ssoEntireScope];
       end else begin
         //debugln('TSourceEditor.StartFindAndReplace B FindTextAtCursor not SelAvail');
         LazFindReplaceDialog.FindText := GetWordAtRowCol(LogicalCaretXY);
@@ -3361,34 +3361,21 @@ begin
   LazFindReplaceDialog.Left:=ALeft;
   LazFindReplaceDialog.Top:=ATop;
 
-  try
-    bSelectedTextOption := (ssoSelectedOnly in LazFindReplaceDialog.Options);
-    //if there are selected text and more than 1 word, automatically enable selected text option
-    if EditorComponent.SelAvail
-    and (EditorComponent.BlockBegin.Y<>EditorComponent.BlockEnd.Y) then
-      LazFindReplaceDialog.Options := LazFindReplaceDialog.Options + [ssoSelectedOnly];
+  LazFindReplaceDialog.Options := NewOptions;
+  DlgResult:=LazFindReplaceDialog.ShowModal;
+  InputHistories.FindOptions:=LazFindReplaceDialog.Options*SaveOptions;
+  InputHistories.FindAutoComplete:=LazFindReplaceDialog.EnableAutoComplete;
+  if DlgResult = mrCancel then
+    exit;
+  //debugln('TSourceEditor.StartFindAndReplace B LazFindReplaceDialog.FindText="',dbgstr(LazFindReplaceDialog.FindText),'"');
 
-    DlgResult:=LazFindReplaceDialog.ShowModal;
-    InputHistories.FindOptions:=LazFindReplaceDialog.Options*SaveOptions;
-    InputHistories.FindAutoComplete:=LazFindReplaceDialog.EnableAutoComplete;
-    if DlgResult = mrCancel then
-      exit;
-    //debugln('TSourceEditor.StartFindAndReplace B LazFindReplaceDialog.FindText="',dbgstr(LazFindReplaceDialog.FindText),'"');
-
-    Replace:=ssoReplace in LazFindReplaceDialog.Options;
-    if Replace then
-      InputHistories.AddToReplaceHistory(LazFindReplaceDialog.ReplaceText);
-    InputHistories.AddToFindHistory(LazFindReplaceDialog.FindText);
-    InputHistories.Save;
-    DoFindAndReplace(LazFindReplaceDialog.FindText, LazFindReplaceDialog.ReplaceText,
-      LazFindReplaceDialog.Options);
-  finally
-    //Restore original find options
-    if bSelectedTextOption then
-      LazFindReplaceDialog.Options := LazFindReplaceDialog.Options + [ssoSelectedOnly]
-    else
-      LazFindReplaceDialog.Options := LazFindReplaceDialog.Options - [ssoSelectedOnly];
-  end;//End try-finally
+  Replace:=ssoReplace in LazFindReplaceDialog.Options;
+  if Replace then
+    InputHistories.AddToReplaceHistory(LazFindReplaceDialog.ReplaceText);
+  InputHistories.AddToFindHistory(LazFindReplaceDialog.FindText);
+  InputHistories.Save;
+  DoFindAndReplace(LazFindReplaceDialog.FindText, LazFindReplaceDialog.ReplaceText,
+    LazFindReplaceDialog.Options);
 end;
 
 procedure TSourceEditor.AskReplace(Sender: TObject; const ASearch,
