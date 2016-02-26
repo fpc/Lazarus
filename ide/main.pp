@@ -9600,9 +9600,12 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   NewSource, BodySource: TCodeBuffer;
-  NewX, NewY, NewTopLine, BodyX, BodyY, BodyTopLine: integer;
+  NewX, NewY, NewTopLine, BodyX, BodyY, BodyTopLine, NewCleanPos: integer;
   FindFlags: TFindSmartFlags;
-  RevertableJump, JumpToBody: boolean;
+  RevertableJump, JumpToBody, JumpToBodySuccess: boolean;
+  NewTool: TCodeTool;
+  NewOrigPos: TCodeXYPosition;
+  ProcNode: TCodeTreeNode;
 begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
@@ -9612,6 +9615,20 @@ begin
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoFindDeclarationAtCaret A');{$ENDIF}
   //DebugLn(['TMainIDE.DoFindDeclarationAtCaret LogCaretXY=',dbgs(LogCaretXY),' SynEdit.Log=',dbgs(ActiveSrcEdit.EditorComponent.LogicalCaretXY),' SynEdit.Caret=',dbgs(ActiveSrcEdit.EditorComponent.CaretXY)]);
+
+  // do not jump twice, check if current node is procedure
+  JumpToBody := False;
+  if CodeToolsOpts.JumpToMethodBody
+  and CodeToolBoss.Explore(ActiveSrcEdit.CodeBuffer, NewTool, false, false) then
+  begin
+    NewOrigPos := CodeXYPosition(LogCaretXY.X, LogCaretXY.Y, ActiveSrcEdit.CodeBuffer);
+    if NewTool.CaretToCleanPos(NewOrigPos, NewCleanPos) = 0 then
+    begin
+      ProcNode := NewTool.FindDeepestNodeAtPos(NewCleanPos,true);
+      JumpToBody := (ProcNode.Desc <> ctnProcedureHead);
+    end;
+  end;
+
   FindFlags := DefaultFindSmartFlags;
   if CodeToolsOpts.SkipForwardDeclarations then
     Include(FindFlags, fsfSkipClassForward);
@@ -9619,15 +9636,23 @@ begin
     LogCaretXY.X, LogCaretXY.Y, NewSource, NewX, NewY, NewTopLine, FindFlags )
   then begin
     //debugln(['TMainIDE.DoFindDeclarationAtCaret ',NewSource.Filename,' NewX=',Newx,',y=',NewY,' ',NewTopLine]);
-    if (CodeToolsOpts.JumpToMethodBody)
-    and(CodeToolBoss.JumpToMethod(NewSource,
-        NewX,NewY,BodySource,BodyX,BodyY,BodyTopLine,RevertableJump))
-    then
-      JumpToBody := DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
-        BodySource, BodyX, BodyY, BodyTopLine, [jfAddJumpPoint, jfFocusEditor]) = mrOK
-    else
-      JumpToBody := False;
-    if not JumpToBody then
+    JumpToBodySuccess := False;
+    if JumpToBody
+    and CodeToolBoss.Explore(NewSource, NewTool, false, false) then
+    begin
+      NewOrigPos := CodeXYPosition(NewX, NewY, NewSource);
+      if (NewTool.CaretToCleanPos(NewOrigPos, NewCleanPos) = 0) then
+      begin
+        ProcNode := NewTool.FindDeepestNodeAtPos(NewCleanPos,true);
+        if (ProcNode.Desc = ctnProcedureHead)
+        and(CodeToolBoss.JumpToMethod(NewSource,
+          NewX,NewY,BodySource,BodyX,BodyY,BodyTopLine,RevertableJump))
+        then
+          JumpToBodySuccess := DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
+            BodySource, BodyX, BodyY, BodyTopLine, [jfAddJumpPoint, jfFocusEditor]) = mrOK;
+      end;
+    end;
+    if not JumpToBodySuccess then
       DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
         NewSource, NewX, NewY, NewTopLine, [jfAddJumpPoint, jfFocusEditor]);
   end else begin
