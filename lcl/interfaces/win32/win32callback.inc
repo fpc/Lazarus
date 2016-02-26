@@ -370,9 +370,6 @@ type
     procedure DoMsgEnable;
     function DoMsgEraseBkgnd(var WinResult: LResult): Boolean;
     procedure DoMsgKeyDownUp(aMsg: Cardinal; var WinResult: LResult);
-    procedure DoMsgLButtonCommon;
-    procedure DoMsgLButtonDoubleClick;
-    procedure DoMsgLButtonDown;
     procedure DoMsgMeasureItem;
     procedure DoMsgMouseMove;
     procedure DoMsgMouseUpDownClick(aMsg: Cardinal);
@@ -1494,56 +1491,69 @@ begin
   WinProcess := false;
 end;
 
-procedure TWindowProcHelper.DoMsgLButtonCommon;
+procedure TWindowProcHelper.DoMsgMouseUpDownClick(aMsg: Cardinal);
+const
+  MouseDownToMessage: array[1..4{l, r, m, x}, 1..4{single..quad}] of LongWord =
+  ((LM_LBUTTONDOWN, LM_LBUTTONDBLCLK, LM_LBUTTONTRIPLECLK, LM_LBUTTONQUADCLK),
+   (LM_RBUTTONDOWN, LM_RBUTTONDBLCLK, LM_RBUTTONTRIPLECLK, LM_RBUTTONQUADCLK),
+   (LM_MBUTTONDOWN, LM_MBUTTONDBLCLK, LM_MBUTTONTRIPLECLK, LM_MBUTTONQUADCLK),
+   (LM_XBUTTONDOWN, LM_XBUTTONDBLCLK, LM_XBUTTONTRIPLECLK, LM_XBUTTONQUADCLK));
+var
+  CurButton: Integer;
+  IsMouseUp: Boolean;
 begin
+  case aMsg of
+    LM_LBUTTONDOWN, LM_LBUTTONUP, LM_LBUTTONDBLCLK: CurButton := 1;
+    LM_RBUTTONDOWN, LM_RBUTTONUP, LM_RBUTTONDBLCLK: CurButton := 2;
+    LM_MBUTTONDOWN, LM_MBUTTONUP, LM_MBUTTONDBLCLK: CurButton := 3;
+    LM_XBUTTONDOWN, LM_XBUTTONUP, LM_XBUTTONDBLCLK: CurButton := 4;
+  end;
+
+  if (MouseDownCount>=4) and (CurButton>0) then
+    MouseDownCount := MouseDownCount;
+
+  IsMouseUp := False;
+  case aMsg of
+    LM_LBUTTONDOWN, LM_RBUTTONDOWN, LM_MBUTTONDOWN, LM_XBUTTONDOWN:
+    begin
+      if (MouseDownWindow = Window)
+          and (MouseDownCountButton = CurButton)
+          and (GetTickCount64 - MouseDownTime <= GetDoubleClickTime)
+          and CheckMouseMovement then
+        inc(MouseDownCount)
+      else
+        MouseDownCount := 1;
+      MouseDownCountButton := CurButton;
+      MouseDownWindow := Window;
+      GetCursorPos(MouseDownPos);
+    end;
+    LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP, LM_XBUTTONUP:
+    begin
+      IsMouseUp := True;
+      if (MouseDownCountButton <> CurButton) then
+        MouseDownCount := 1;
+    end;
+    LM_LBUTTONDBLCLK, LM_RBUTTONDBLCLK, LM_MBUTTONDBLCLK, LM_XBUTTONDBLCLK:
+    begin
+      // always within the time-window
+      if (MouseDownCount < 1) then
+        MouseDownCount := 1;
+      inc(MouseDownCount);
+    end;
+  end;
+
+  if (MouseDownCount < 1) or (MouseDownCount > 4) then
+    MouseDownCount := 1;
   MouseDownTime := GetTickCount64;
   NotifyUserInput := True;
   PLMsg := @LMMouse;
-  with LMMouse Do
+  with LMMouse do
   begin
-    case MouseDownCount of
-      2: Msg := LM_LBUTTONDBLCLK;
-      3: Msg := LM_LBUTTONTRIPLECLK;
-      4: Msg := LM_LBUTTONQUADCLK;
-      else Msg := LM_LBUTTONDOWN;
-    end;
-    XPos := GET_X_LPARAM(LParam);
-    YPos := GET_Y_LPARAM(LParam);
-    Keys := WParam;
-  end;
-end;
+    if IsMouseUp then
+      Msg := aMsg
+    else
+      Msg := MouseDownToMessage[MouseDownCountButton, MouseDownCount];
 
-procedure TWindowProcHelper.DoMsgLButtonDoubleClick;
-begin
-  // always within the time-window
-  if (MouseDownCount < 1) or (MouseDownCount > 4) then
-    MouseDownCount := 1;
-  inc(MouseDownCount);
-  DoMsgLButtonCommon;
-end;
-
-procedure TWindowProcHelper.DoMsgLButtonDown;
-begin
-  if (MouseDownCount < 1) or (MouseDownCount > 4) then
-    MouseDownCount := 1;
-  if (MouseDownWindow = Window)
-      and (GetTickCount64 - MouseDownTime <= GetDoubleClickTime)
-      and CheckMouseMovement then
-    inc(MouseDownCount)
-  else
-    MouseDownCount := 1;
-  MouseDownWindow := Window;
-  GetCursorPos(MouseDownPos);
-  DoMsgLButtonCommon;
-end;
-
-procedure TWindowProcHelper.DoMsgMouseUpDownClick(aMsg: Cardinal);
-begin
-  NotifyUserInput := True;
-  PLMsg := @LMMouse;
-  with LMMouse Do
-  begin
-    Msg := aMsg;
     XPos := GET_X_LPARAM(LParam);
     YPos := GET_Y_LPARAM(LParam);
     Keys := WParam;
@@ -2155,8 +2165,8 @@ begin
       LMessage.WParam := WParam;
     end;
     //TODO:LM_KILLCHAR,LM_KILLWORD,LM_KILLLINE
-    WM_LBUTTONDBLCLK: DoMsgLButtonDoubleClick;
-    WM_LBUTTONDOWN:   DoMsgLButtonDown;
+    WM_LBUTTONDBLCLK: DoMsgMouseUpDownClick(LM_LBUTTONDBLCLK);
+    WM_LBUTTONDOWN:   DoMsgMouseUpDownClick(LM_LBUTTONDOWN);
     WM_LBUTTONUP:     DoMsgMouseUpDownClick(LM_LBUTTONUP);
     WM_MBUTTONDBLCLK: DoMsgMouseUpDownClick(LM_MBUTTONDBLCLK);
     WM_MBUTTONDOWN:   DoMsgMouseUpDownClick(LM_MBUTTONDOWN);

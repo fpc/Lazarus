@@ -266,6 +266,7 @@ type
 
 var
   MouseDownCount: Integer;
+  MouseDownCountButton: Byte; // 1 left, 2 right, 3 middle, 4 x
   MouseDownTime: QWord;
   MouseDownPos: TPoint;
   MouseDownWindow: HWND = 0;
