@@ -257,8 +257,8 @@ type
     procedure UpdateShowArrowButton;
     procedure DestroyUpDown;
     procedure DestroyArrowBtn;
-    procedure ArrowMouseDown(Sender: TObject; Button: TMouseButton;
-                                            Shift: TShiftState; X, Y: Integer);
+    procedure ArrowMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
+                                            {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure UpDownClick(Sender: TObject; Button: TUDBtnType);
     procedure CheckBoxChange(Sender: TObject);
     procedure SetFocusIfPossible;
@@ -281,7 +281,7 @@ type
     procedure KeyPress(var Key: char); override;
     procedure SelectTextPartUnderMouse(XMouse: Integer);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
+    function DoMouseWheel({%H-}Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     procedure UpdateDate; virtual;
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -291,7 +291,7 @@ type
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     procedure CalculatePreferredSize(var PreferredWidth,
-                  PreferredHeight: integer; WithThemeSpace: Boolean); override;
+                  PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
     procedure SetBiDiMode(AValue: TBiDiMode); override;
 
     procedure IncreaseCurrentTextPart;
@@ -538,10 +538,10 @@ type
     procedure CloseCalendarForm(const AndSetTheDate: Boolean = False);
 
     procedure CalendarKeyDown(Sender: TObject; var Key: Word;
-                                      Shift: TShiftState);
+                                      {%H-}Shift: TShiftState);
     procedure CalendarResize(Sender: TObject);
-    procedure CalendarMouseUp(Sender: TObject; Button: TMouseButton;
-                                      Shift: TShiftState; X, Y: Integer);
+    procedure CalendarMouseUp(Sender: TObject; {%H-}Button: TMouseButton;
+                                      {%H-}Shift: TShiftState; X, Y: Integer);
     procedure VisibleOfParentChanged(Sender: TObject);
 
   protected
