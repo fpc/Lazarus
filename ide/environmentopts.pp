@@ -49,10 +49,11 @@ uses
   IdeCoolbarData, EditorToolbarStatic;
 
 const
-  EnvOptsVersion: integer = 109;
+  EnvOptsVersion: integer = 110;
   // 107 added Lazarus version
   // 108 added LastCalledByLazarusFullPath
   // 109 changed paths for desktop settings, supporting multiple desktops.
+  // 110 changed BackupType to string instead of integer
 
   {$IFDEF Windows}
   DefaultMakefilename = '$Path($(CompPath))make.exe';
@@ -96,7 +97,9 @@ type
     MaxCounter: integer;         // for bakCounter
     SubDirectory: string;
   end;
-  
+const
+  DefaultBackupTypeProject = bakSameName;
+  DefaultBackupTypeOther = bakUserDefinedAddExt;
   
   { Debugging }
 
@@ -839,6 +842,8 @@ function CharCaseFileActionNameToType(const Action: string): TCharCaseFileAction
 function UnitRenameReferencesActionNameToType(const Action: string): TUnitRenameReferencesAction;
 function StrToMsgWndFilenameStyle(const s: string): TMsgWndFileNameStyle;
 function StrToIDEMultipleInstancesOption(const s: string): TIDEMultipleInstancesOption;
+function BackupTypeToName(b: TBackupType): string;
+function NameToBackupType(const s: string): TBackupType;
 
 function SimpleDirectoryCheck(const OldDir, NewDir,
   NotFoundErrMsg: string; out StopChecking: boolean): boolean;
@@ -913,6 +918,21 @@ begin
   for Result in TIDEMultipleInstancesOption do
     if CompareText(s,IDEMultipleInstancesOptionNames[Result])=0 then exit;
   Result:=DefaultIDEMultipleInstancesOption;
+end;
+
+function BackupTypeToName(b: TBackupType): string;
+begin
+  Str(b,Result);
+  Delete(Result,1,length('bak'));
+end;
+
+function NameToBackupType(const s: string): TBackupType;
+var
+  b: TBackupType;
+begin
+  for b in TBackupType do
+    if CompareText(s,BackupTypeToName(b))=0 then exit(b);
+  Result:=bakNone;
 end;
 
 function SimpleDirectoryCheck(const OldDir, NewDir,
@@ -1365,13 +1385,13 @@ begin
 
   // backup
   with FBackupInfoProjectFiles do begin
-    BackupType:=bakSameName;
+    BackupType:=DefaultBackupTypeProject;
     AdditionalExtension:='bak';  // for bakUserDefinedAddExt
     MaxCounter:=3;               // for bakCounter
     SubDirectory:='';
   end;
   with FBackupInfoOtherFiles do begin
-    BackupType:=bakUserDefinedAddExt;
+    BackupType:=DefaultBackupTypeOther;
     AdditionalExtension:='bak';  // for bakUserDefinedAddExt
     MaxCounter:=3;               // for bakCounter
     SubDirectory:='';
@@ -1513,19 +1533,25 @@ end;
 
 procedure TEnvironmentOptions.LoadNonDesktop(Path: String);
 
-  procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
+  procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string;
+    DefaultBackupType: TBackupType);
   var i:integer;
   begin
     with BackupInfo do begin
-      i:=FXMLCfg.GetValue(Path+'Type',5);
-      case i of
-       0:BackupType:=bakNone;
-       1:BackupType:=bakSymbolInFront;
-       2:BackupType:=bakSymbolBehind;
-       3:BackupType:=bakCounter;
-       4:BackupType:=bakSameName;
-      else
-        BackupType:=bakUserDefinedAddExt;
+      if FFileVersion>=110 then begin
+        BackupType:=NameToBackupType(FXMLCfg.GetValue(Path+'Type',BackupTypeToName(DefaultBackupType)));
+      end else begin
+        // 109 and less:
+        i:=FXMLCfg.GetValue(Path+'Type',5);
+        case i of
+         0:BackupType:=bakNone;
+         1:BackupType:=bakSymbolInFront;
+         2:BackupType:=bakSymbolBehind;
+         3:BackupType:=bakCounter;
+         4:BackupType:=bakSameName;
+        else
+          BackupType:=bakUserDefinedAddExt;
+        end;
       end;
       AdditionalExtension:=FXMLCfg.GetValue(Path+'AdditionalExtension','bak');
       MaxCounter:=FXMLCfg.GetValue(Path+'MaxCounter',9);
@@ -1573,8 +1599,8 @@ begin
   FUseBuildModes:=FXMLCfg.GetValue(Path+'Build/UseBuildModes',false);
 
   // backup
-  LoadBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/');
-  LoadBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/');
+  LoadBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/',DefaultBackupTypeProject);
+  LoadBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/',DefaultBackupTypeOther);
 
   // Debugger
   FDebuggerConfig.Load;
@@ -1878,20 +1904,11 @@ end;
 
 procedure TEnvironmentOptions.SaveNonDesktop(Path: String);
 
-  procedure SaveBackupInfo(var BackupInfo: TBackupInfo; Path:string);
-  var i:integer;
+  procedure SaveBackupInfo(var BackupInfo: TBackupInfo; Path:string;
+    DefaultBackupType: TBackupType);
   begin
     with BackupInfo do begin
-      case BackupType of
-       bakNone: i:=0;
-       bakSymbolInFront: i:=1;
-       bakSymbolBehind: i:=2;
-       bakCounter: i:=3;
-       bakSameName: i:=4;
-      else
-        i:=5; // bakUserDefinedAddExt;
-      end;
-      FXMLCfg.SetDeleteValue(Path+'Type',i,5);
+      FXMLCfg.SetDeleteValue(Path+'Type',BackupTypeToName(BackupType),BackupTypeToName(DefaultBackupType));
       FXMLCfg.SetDeleteValue(Path+'AdditionalExtension',AdditionalExtension,'.bak');
       FXMLCfg.SetDeleteValue(Path+'MaxCounter',MaxCounter,10);
       FXMLCfg.SetDeleteValue(Path+'SubDirectory',SubDirectory,'backup');
@@ -1939,8 +1956,8 @@ begin
   FXMLCfg.SetDeleteValue(Path+'Build/UseBuildModes',FUseBuildModes,false);
 
   // backup
-  SaveBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/');
-  SaveBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/');
+  SaveBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/',DefaultBackupTypeProject);
+  SaveBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/',DefaultBackupTypeOther);
 
   // debugger
   FDebuggerConfig.Save;
