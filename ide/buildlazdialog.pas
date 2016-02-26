@@ -1078,6 +1078,7 @@ begin
       Add('embedded');
       Add('symbian');
       Add('msdos');
+      Add('wii');
     end;
     ItemIndex:=0;
   end;
