@@ -71,6 +71,8 @@ type
 
   TWin32WSOpenDialog = class(TWSOpenDialog)
   public
+    class function GetVistaOptions(Options: TOpenOptions; SelectFolder: Boolean): FileOpenDialogOptions;
+
     class procedure SetupVistaFileDialog(ADialog: IFileDialog; const AOpenDialog: TOpenDialog);
     class function ProcessVistaDialogResult(ADialog: IFileDialog; const AOpenDialog: TOpenDialog): HResult;
     class procedure VistaDialogShowModal(ADialog: IFileDialog; const AOpenDialog: TOpenDialog);
@@ -94,6 +96,8 @@ type
   { TWin32WSSelectDirectoryDialog }
 
   TWin32WSSelectDirectoryDialog = class(TWSSelectDirectoryDialog)
+  public
+    class function CreateOldHandle(const ACommonDialog: TCommonDialog): THandle;
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
@@ -686,41 +690,6 @@ end;
 
 
 class procedure TWin32WSOpenDialog.SetupVistaFileDialog(ADialog: IFileDialog; const AOpenDialog: TOpenDialog);
-{ non-used flags
-FOS_PICKFOLDERS
-FOS_FORCEFILESYSTEM
-FOS_ALLNONSTORAGEITEMS
-FOS_HIDEMRUPLACES
-FOS_HIDEPINNEDPLACES
-FOS_DONTADDTORECENT
-FOS_DEFAULTNOMINIMODE
-FOS_FORCEPREVIEWPANEON}
-
-  function GetOptions(Options: TOpenOptions): FileOpenDialogOptions;
-  begin
-    Result := 0;
-    if ofAllowMultiSelect in Options then Result := Result or FOS_ALLOWMULTISELECT;
-    if ofCreatePrompt in Options then Result := Result or FOS_CREATEPROMPT;
-    if ofExtensionDifferent in Options then Result := Result or FOS_STRICTFILETYPES;
-    if ofFileMustExist in Options then Result := Result or FOS_FILEMUSTEXIST;
-    if ofNoChangeDir in Options then Result := Result or FOS_NOCHANGEDIR;
-    if ofNoDereferenceLinks in Options then Result := Result or FOS_NODEREFERENCELINKS;
-    if ofNoReadOnlyReturn in  Options then Result := Result or FOS_NOREADONLYRETURN;
-    if ofNoTestFileCreate in Options then Result := Result or FOS_NOTESTFILECREATE;
-    if ofNoValidate in Options then Result := Result or FOS_NOVALIDATE;
-    if ofOverwritePrompt in Options then Result := Result or FOS_OVERWRITEPROMPT;
-    if ofPathMustExist in Options then Result := Result or FOS_PATHMUSTEXIST;
-    if ofShareAware in Options then Result := Result or FOS_SHAREAWARE;
-    if ofDontAddToRecent in Options then Result := Result or FOS_DONTADDTORECENT;
-    { unavailable options:
-      ofHideReadOnly
-      ofEnableSizing
-      ofNoLongNames
-      ofNoNetworkButton
-      ofReadOnly
-      ofShowHelp
-    }
-  end;
 
   function GetDefaultExt: String;
   begin
@@ -780,7 +749,7 @@ begin
     ParsedFilter.Free;
   end;
 
-  ADialog.SetOptions(GetOptions(AOpenDialog.Options));
+  ADialog.SetOptions(GetVistaOptions(AOpenDialog.Options, AOpenDialog is TSelectDirectoryDialog));
 end;
 
 class function TWin32WSOpenDialog.GetFileName(ShellItem: IShellItem): String;
@@ -794,6 +763,43 @@ begin
   end
   else
     Result := '';
+end;
+
+class function TWin32WSOpenDialog.GetVistaOptions(Options: TOpenOptions;
+  SelectFolder: Boolean): FileOpenDialogOptions;
+{ non-used flags
+FOS_FORCEFILESYSTEM
+FOS_ALLNONSTORAGEITEMS
+FOS_HIDEMRUPLACES
+FOS_HIDEPINNEDPLACES
+FOS_DONTADDTORECENT
+FOS_DEFAULTNOMINIMODE
+FOS_FORCEPREVIEWPANEON}
+
+begin
+  Result := 0;
+  if ofAllowMultiSelect in Options then Result := Result or FOS_ALLOWMULTISELECT;
+  if ofCreatePrompt in Options then Result := Result or FOS_CREATEPROMPT;
+  if ofExtensionDifferent in Options then Result := Result or FOS_STRICTFILETYPES;
+  if ofFileMustExist in Options then Result := Result or FOS_FILEMUSTEXIST;
+  if ofNoChangeDir in Options then Result := Result or FOS_NOCHANGEDIR;
+  if ofNoDereferenceLinks in Options then Result := Result or FOS_NODEREFERENCELINKS;
+  if ofNoReadOnlyReturn in  Options then Result := Result or FOS_NOREADONLYRETURN;
+  if ofNoTestFileCreate in Options then Result := Result or FOS_NOTESTFILECREATE;
+  if ofNoValidate in Options then Result := Result or FOS_NOVALIDATE;
+  if ofOverwritePrompt in Options then Result := Result or FOS_OVERWRITEPROMPT;
+  if ofPathMustExist in Options then Result := Result or FOS_PATHMUSTEXIST;
+  if ofShareAware in Options then Result := Result or FOS_SHAREAWARE;
+  if ofDontAddToRecent in Options then Result := Result or FOS_DONTADDTORECENT;
+  if SelectFolder then Result := Result or FOS_PICKFOLDERS;
+  { unavailable options:
+    ofHideReadOnly
+    ofEnableSizing
+    ofNoLongNames
+    ofNoNetworkButton
+    ofReadOnly
+    ofShowHelp
+  }
 end;
 
 class function TWin32WSOpenDialog.ProcessVistaDialogResult(ADialog: IFileDialog; const AOpenDialog: TOpenDialog): HResult;
@@ -1128,6 +1134,27 @@ begin
 end;
 
 class function TWin32WSSelectDirectoryDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+var
+  Dialog: IFileOpenDialog;
+begin
+  if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
+  //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  begin
+    if Succeeded(CoCreateInstance(CLSID_FileOpenDialog, nil, CLSCTX_INPROC_SERVER, IFileOpenDialog, Dialog)) and Assigned(Dialog) then
+    begin
+      Dialog._AddRef;
+      TWin32WSOpenDialog.SetupVistaFileDialog(Dialog, TOpenDialog(ACommonDialog));
+      Result := THandle(Dialog);
+    end
+    else
+      Result := INVALID_HANDLE_VALUE;
+  end
+  else
+    Result := CreateOldHandle(ACommonDialog);
+end;
+
+class function TWin32WSSelectDirectoryDialog.CreateOldHandle(
+  const ACommonDialog: TCommonDialog): THandle;
 var
   Options : TOpenOptions;
   InitialDir : string;
