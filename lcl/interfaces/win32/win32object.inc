@@ -164,11 +164,25 @@ end;
   Minimizes the whole application to the taskbar
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppMinimize;
+var
+  AForm: TCustomForm;
+  i: Integer;
 begin
+  // issue #26463
+  if Assigned(Application) and (Application.ModalLevel > 0) then
+  begin
+    for i := Screen.CustomFormZOrderCount - 1 downto 0 do
+    begin
+      AForm := Screen.CustomFormsZOrdered[i];
+      if AForm.HandleAllocated and AForm.Visible and (fsModal in AForm.FormState) then
+        ShowWindow(AForm.Handle, SW_SHOWMINIMIZED);
+    end;
+    ShowWindow(Win32WidgetSet.AppHandle, SW_SHOWMINNOACTIVE);
+  end else
   if Assigned(Application) and Application.MainFormOnTaskBar then
     Windows.SendMessage(Application.MainFormHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0)
   else
-    Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0)
+    Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -179,7 +193,23 @@ end;
   Restore minimized whole application from taskbar
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppRestore;
+var
+  AForm: TCustomForm;
+  i: Integer;
 begin
+  // issue #26463
+  if Assigned(Application) and (Application.ModalLevel > 0) then
+  begin
+    for i := Screen.CustomFormZOrderCount - 1 downto 0 do
+    begin
+      AForm := Screen.CustomFormsZOrdered[i];
+      if AForm.HandleAllocated and AForm.Visible and (fsModal in AForm.FormState) then
+      begin
+        ShowWindow(AForm.Handle, SW_RESTORE);
+      end;
+    end;
+    ShowWindow(FAppHandle, SW_RESTORE);
+  end else
   if Assigned(Application) and Application.MainFormOnTaskBar then
     Windows.SendMessage(Application.MainFormHandle, WM_SYSCOMMAND, SC_RESTORE, 0)
   else

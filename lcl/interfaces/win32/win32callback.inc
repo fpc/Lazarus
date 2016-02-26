@@ -933,7 +933,6 @@ begin
       if Application.MainForm.HandleAllocated then
         Windows.ShowWindow(Application.MainFormHandle, SW_HIDE);
     end;
-
     PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
     WinProcess := False;
     Application.IntfAppMinimize;
@@ -944,6 +943,12 @@ begin
     PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
     WinProcess := False;
     Application.IntfAppMinimize;
+  end else
+  if Assigned(lWinControl) and (fsModal in TCustomForm(lWinControl).FormState) then
+  begin
+    // issue #26463
+    PLMsg^.Result := 1;
+    Win32WidgetSet.AppMinimize;
   end;
 end;
 
@@ -962,7 +967,15 @@ begin
     Application.IntfAppRestore;
   end
   else if Assigned(lWinControl) and (lWinControl = Application.MainForm) then
+  begin
     Application.IntfAppRestore;
+  end else
+  if Assigned(lWinControl) and (fsModal in TCustomForm(lWinControl).FormState) then
+  begin
+    // issue #26463
+    PLMsg^.Result := 1;
+    Win32WidgetSet.AppRestore;
+  end;
 end;
 
 procedure TWindowProcHelper.HandleSysCommand;
