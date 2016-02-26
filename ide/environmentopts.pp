@@ -100,7 +100,9 @@ type
 const
   DefaultBackupTypeProject = bakSameName;
   DefaultBackupTypeOther = bakUserDefinedAddExt;
-  
+  DefaultBackupAddExt = 'bak';
+  DefaultBackupMaxCounter = 9;
+
   { Debugging }
 
 type
@@ -1386,14 +1388,14 @@ begin
   // backup
   with FBackupInfoProjectFiles do begin
     BackupType:=DefaultBackupTypeProject;
-    AdditionalExtension:='bak';  // for bakUserDefinedAddExt
-    MaxCounter:=3;               // for bakCounter
+    AdditionalExtension:=DefaultBackupAddExt;  // for bakUserDefinedAddExt
+    MaxCounter:=DefaultBackupMaxCounter;       // for bakCounter
     SubDirectory:='';
   end;
   with FBackupInfoOtherFiles do begin
     BackupType:=DefaultBackupTypeOther;
-    AdditionalExtension:='bak';  // for bakUserDefinedAddExt
-    MaxCounter:=3;               // for bakCounter
+    AdditionalExtension:=DefaultBackupAddExt;  // for bakUserDefinedAddExt
+    MaxCounter:=DefaultBackupMaxCounter;       // for bakCounter
     SubDirectory:='';
   end;
   
@@ -1553,8 +1555,8 @@ procedure TEnvironmentOptions.LoadNonDesktop(Path: String);
           BackupType:=bakUserDefinedAddExt;
         end;
       end;
-      AdditionalExtension:=FXMLCfg.GetValue(Path+'AdditionalExtension','bak');
-      MaxCounter:=FXMLCfg.GetValue(Path+'MaxCounter',9);
+      AdditionalExtension:=FXMLCfg.GetValue(Path+'AdditionalExtension',DefaultBackupAddExt);
+      MaxCounter:=FXMLCfg.GetValue(Path+'MaxCounter',DefaultBackupMaxCounter);
       if FFileVersion<101 then
         SubDirectory:=''
       else
@@ -1909,8 +1911,8 @@ procedure TEnvironmentOptions.SaveNonDesktop(Path: String);
   begin
     with BackupInfo do begin
       FXMLCfg.SetDeleteValue(Path+'Type',BackupTypeToName(BackupType),BackupTypeToName(DefaultBackupType));
-      FXMLCfg.SetDeleteValue(Path+'AdditionalExtension',AdditionalExtension,'.bak');
-      FXMLCfg.SetDeleteValue(Path+'MaxCounter',MaxCounter,10);
+      FXMLCfg.SetDeleteValue(Path+'AdditionalExtension',AdditionalExtension,DefaultBackupAddExt);
+      FXMLCfg.SetDeleteValue(Path+'MaxCounter',MaxCounter,DefaultBackupMaxCounter);
       FXMLCfg.SetDeleteValue(Path+'SubDirectory',SubDirectory,'backup');
     end;
   end;
