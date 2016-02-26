@@ -2411,6 +2411,7 @@ begin
           AddKeyWord('FPCVersion');
           AddKeyWord('Time');
           AddKeyWord('CurrentRoutine'); // since FPC 3.1+
+          AddKeyWord('Line'); // since FPC 3.1+
         end else if (Directive='codepage') then begin
           // see fpcsrc/compiler/widestr.pas
           AddKeyWord('UTF8');
