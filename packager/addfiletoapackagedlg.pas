@@ -42,8 +42,8 @@ uses
   Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls,
   Dialogs, AVL_Tree, FileUtil, LazFileUtils, ButtonPanel,
   IDEWindowIntf, PackageIntf, IDEHelpIntf,
-  IDEDefs, LazarusIDEStrConsts, IDEProcs,
-  AddToPackageDlg, ComponentReg, PackageDefs, PackageSystem;
+  LazarusIDEStrConsts, IDEProcs,
+  PackageDefs, PackageSystem;
 
 type
 
