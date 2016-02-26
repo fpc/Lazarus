@@ -1674,7 +1674,7 @@ begin
     // ToDo: Get rid of EnvironmentOptions/ path. The whole file is about
     //  environment options. Many section are not under it any more.
     Path:='EnvironmentOptions/';
-    FFileVersion:=FXMLCfg.GetValue(Path+'Version/Value',0);
+    FFileVersion:=FXMLCfg.GetValue(Path+'Version/Value',EnvOptsVersion);
     FOldLazarusVersion:=FXMLCfg.GetValue(Path+'Version/Lazarus','');
     if FOldLazarusVersion='' then begin
       // 108 added LastCalledByLazarusFullPath
