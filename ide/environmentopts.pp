@@ -96,8 +96,10 @@ type
     MaxCounter: integer;         // for bakCounter
     SubDirectory: string;
   end;
-  
-  
+const
+  DefaultBackupTypeProject = bakSameName;
+  DefaultBackupTypeOther = bakUserDefinedAddExt;
+
   { Debugging }
 
 type
@@ -1365,16 +1367,16 @@ begin
 
   // backup
   with FBackupInfoProjectFiles do begin
-    BackupType:=bakSameName;
+    BackupType:=DefaultBackupTypeProject;
     AdditionalExtension:='bak';  // for bakUserDefinedAddExt
-    MaxCounter:=3;               // for bakCounter
-    SubDirectory:='';
+    MaxCounter:=9;               // for bakCounter
+    SubDirectory:='backup';
   end;
   with FBackupInfoOtherFiles do begin
-    BackupType:=bakUserDefinedAddExt;
+    BackupType:=DefaultBackupTypeOther;
     AdditionalExtension:='bak';  // for bakUserDefinedAddExt
-    MaxCounter:=3;               // for bakCounter
-    SubDirectory:='';
+    MaxCounter:=9;               // for bakCounter
+    SubDirectory:='backup';
   end;
   
   // external tools
@@ -1513,19 +1515,21 @@ end;
 
 procedure TEnvironmentOptions.LoadNonDesktop(Path: String);
 
-  procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
+  procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string;
+    DefaultBackupType: TBackupType);
   var i:integer;
   begin
     with BackupInfo do begin
-      i:=FXMLCfg.GetValue(Path+'Type',5);
+      i:=FXMLCfg.GetValue(Path+'Type',ord(DefaultBackupType));
       case i of
        0:BackupType:=bakNone;
        1:BackupType:=bakSymbolInFront;
        2:BackupType:=bakSymbolBehind;
        3:BackupType:=bakCounter;
        4:BackupType:=bakSameName;
+       5:BackupType:=bakUserDefinedAddExt;
       else
-        BackupType:=bakUserDefinedAddExt;
+        BackupType:=DefaultBackupType;
       end;
       AdditionalExtension:=FXMLCfg.GetValue(Path+'AdditionalExtension','bak');
       MaxCounter:=FXMLCfg.GetValue(Path+'MaxCounter',9);
@@ -1573,8 +1577,8 @@ begin
   FUseBuildModes:=FXMLCfg.GetValue(Path+'Build/UseBuildModes',false);
 
   // backup
-  LoadBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/');
-  LoadBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/');
+  LoadBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/',DefaultBackupTypeProject);
+  LoadBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/',DefaultBackupTypeOther);
 
   // Debugger
   FDebuggerConfig.Load;
@@ -1643,10 +1647,9 @@ begin
     // ToDo: Get rid of EnvironmentOptions/ path. The whole file is about
     //  environment options. Many section are not under it any more.
     Path:='EnvironmentOptions/';
-    FFileVersion:=FXMLCfg.GetValue(Path+'Version/Value',0);
+    FFileVersion:=FXMLCfg.GetValue(Path+'Version/Value',EnvOptsVersion);
     FOldLazarusVersion:=FXMLCfg.GetValue(Path+'Version/Lazarus','');
     if FOldLazarusVersion='' then begin
-      // 108 added LastCalledByLazarusFullPath
       // 107 added Lazarus version
       // 1.1     r36507  106
       // 0.9.31  r28811  106
@@ -1878,7 +1881,8 @@ end;
 
 procedure TEnvironmentOptions.SaveNonDesktop(Path: String);
 
-  procedure SaveBackupInfo(var BackupInfo: TBackupInfo; Path:string);
+  procedure SaveBackupInfo(var BackupInfo: TBackupInfo; Path:string;
+    DefaultBackupType: TBackupType);
   var i:integer;
   begin
     with BackupInfo do begin
@@ -1891,9 +1895,9 @@ procedure TEnvironmentOptions.SaveNonDesktop(Path: String);
       else
         i:=5; // bakUserDefinedAddExt;
       end;
-      FXMLCfg.SetDeleteValue(Path+'Type',i,5);
-      FXMLCfg.SetDeleteValue(Path+'AdditionalExtension',AdditionalExtension,'.bak');
-      FXMLCfg.SetDeleteValue(Path+'MaxCounter',MaxCounter,10);
+      FXMLCfg.SetDeleteValue(Path+'Type',i,ord(DefaultBackupType));
+      FXMLCfg.SetDeleteValue(Path+'AdditionalExtension',AdditionalExtension,'bak');
+      FXMLCfg.SetDeleteValue(Path+'MaxCounter',MaxCounter,9);
       FXMLCfg.SetDeleteValue(Path+'SubDirectory',SubDirectory,'backup');
     end;
   end;
@@ -1939,8 +1943,8 @@ begin
   FXMLCfg.SetDeleteValue(Path+'Build/UseBuildModes',FUseBuildModes,false);
 
   // backup
-  SaveBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/');
-  SaveBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/');
+  SaveBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/',DefaultBackupTypeProject);
+  SaveBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/',DefaultBackupTypeOther);
 
   // debugger
   FDebuggerConfig.Save;
