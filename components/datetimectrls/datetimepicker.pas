@@ -46,7 +46,8 @@ uses
   clocale, // needed to initialize default locale settings on Linux.
   {$endif}
   Classes, SysUtils, Controls, LCLType, Graphics, Math, StdCtrls, Buttons,
-  ExtCtrls, Forms, ComCtrls, Types, LMessages, LazUTF8, CalControlWrapper;
+  ExtCtrls, Forms, ComCtrls, Types, LMessages, Calendar, LazUTF8,
+  CalControlWrapper;
 
 const
   { We will deal with the NullDate value the special way. It will be especially
@@ -542,6 +543,7 @@ type
     procedure CalendarResize(Sender: TObject);
     procedure CalendarMouseUp(Sender: TObject; Button: TMouseButton;
                                       Shift: TShiftState; X, Y: Integer);
+
     procedure VisibleOfParentChanged(Sender: TObject);
 
   protected
@@ -666,14 +668,16 @@ end;
 procedure TDTCalendarForm.CalendarKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  case Key of
-    VK_ESCAPE:
-      CloseCalendarForm;
+  if (not(Cal.GetCalendarControl is TCustomCalendar))
+       or (TCustomCalendar(Cal.GetCalendarControl).GetCalendarView = cvMonth) then
+    case Key of
+      VK_ESCAPE:
+        CloseCalendarForm;
 
-    VK_RETURN, VK_SPACE:
-      CloseCalendarForm(True);
+      VK_RETURN, VK_SPACE:
+        CloseCalendarForm(True);
 
-  end;
+    end;
 end;
 
 procedure TDTCalendarForm.CalendarResize(Sender: TObject);
