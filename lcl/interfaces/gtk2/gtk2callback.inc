@@ -2062,9 +2062,9 @@ var
     MessI.Msg := CheckMouseButtonDownUp(AWinControl, LastMouse, EventXY, MouseButton, True);
     MessI.Keys := MessI.Keys or BtnKey;
     case LastMouse.ClickCount of
-      2: Msg.Keys := Msg.Keys or MK_DOUBLECLICK;
-      3: Msg.Keys := Msg.Keys or MK_TRIPLECLICK;
-      4: Msg.Keys := Msg.Keys or MK_QUADCLICK;
+      2: MessI.Keys := MessI.Keys or MK_DOUBLECLICK;
+      3: MessI.Keys := MessI.Keys or MK_TRIPLECLICK;
+      4: MessI.Keys := MessI.Keys or MK_QUADCLICK;
     end;
 
     {$IFDEF VerboseMouseBugfix}
@@ -2228,11 +2228,6 @@ var
   function CheckMouseButtonUp(MouseButton, BtnKey: longint): boolean;
   begin
     MessI.Msg := CheckMouseButtonDownUp(AWinControl, LastMouse, EventXY, MouseButton, False);
-    case LastMouse.ClickCount of
-      2: Msg.Keys := Msg.Keys or MK_DOUBLECLICK;
-      3: Msg.Keys := Msg.Keys or MK_TRIPLECLICK;
-      4: Msg.Keys := Msg.Keys or MK_QUADCLICK;
-    end;
     Result := True;
  end;
 
@@ -2270,6 +2265,11 @@ begin
     3: ShiftState := ShiftState - [ssRight];
   end;
   MessI.Keys := ShiftStateToKeys(ShiftState);
+  case LastMouse.ClickCount of
+    2: MessI.Keys := MessI.Keys or MK_DOUBLECLICK;
+    3: MessI.Keys := MessI.Keys or MK_TRIPLECLICK;
+    4: MessI.Keys := MessI.Keys or MK_QUADCLICK;
+  end;
 
   if MessI.Msg <> LM_NULL then
   begin
