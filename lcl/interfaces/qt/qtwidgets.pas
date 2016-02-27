@@ -3543,7 +3543,6 @@ begin
   then
     Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
   Msg.Msg := CheckMouseButtonDownUp(LCLObject, LastMouse, LazPos, LazButton,
-    QEvent_type(Event) = QEventMouseButtonDblClick,
     QEvent_type(Event) in [QEventMouseButtonPress, QEventMouseButtonDblClick]);
   case LastMouse.ClickCount of
     2: Msg.Keys := Msg.Keys or MK_DOUBLECLICK;
