@@ -2971,6 +2971,8 @@ begin
       if LCLIntf.IsWindow(ActiveWindow) then
         SetActiveWindow(ActiveWindow);
       Exclude(FFormState, fsModal);
+      if ((PopupMode = pmNone) and HandleAllocated) and not (csDestroying in ComponentState) then
+        RecreateWnd(Self); // need to refresh handle for pmNone because ParentWindow changes if (fsModal in FFormState) - see GetRealPopupParent
     end;
   finally
     Application.ModalFinished;
