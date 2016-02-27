@@ -7148,7 +7148,28 @@ begin
       end;
       QEventWindowUnblocked: Blocked := False;
       QEventWindowBlocked: Blocked := True;
-      QEventWindowActivate: if not IsMDIChild then SlotActivateWindow(True);
+      QEventWindowActivate:
+      begin
+        if not IsMDIChild then
+        begin
+          {$IFDEF MSWINDOWS}
+          // issues #26463, #29744, must restore app if we activate non modal window from taskbar
+          if (Application.ModalLevel > 0) and not IsModal and
+              (QApplication_activeModalWidget <> nil) and QWidget_isMinimized(QApplication_activeModalWidget) then
+          begin
+            W := QApplication_activeModalWidget;
+            // back to tray
+            BeginUpdate;
+            ShowMinimized;
+            EndUpdate;
+            AState := QWidget_windowState(W);
+            AState := AState and not QtWindowMinimized;
+            QWidget_setWindowState(W, AState);
+          end else
+          {$ENDIF}
+          SlotActivateWindow(True);
+        end;
+      end;
       QEventWindowDeactivate: if not IsMDIChild then SlotActivateWindow(False);
       QEventShowToParent: ; // do nothing for TQtMainWindow, but leave it unhandled
       QEventWindowStateChange:
