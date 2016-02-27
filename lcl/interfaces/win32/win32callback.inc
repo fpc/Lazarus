@@ -1861,6 +1861,7 @@ var
   // used by WM_CHAR, WM_SYSCHAR and WM_KEYDOWN, WM_KEYUP, WM_SYSKEYDOWN, WM_SYSKEYUP
   CharCodeNotEmpty: boolean;
   R: TRect;
+  ACtl: TWinControl;
 begin
   FillChar(LMessage, SizeOf(LMessage), 0);
   PLMsg := @LMessage;
@@ -2168,8 +2169,18 @@ begin
         if not IsIconic(Window) and (GetFocus = Window) then
         begin
           TargetWindow := LookupTopWindow(Window);
+
           if TargetWindow <> Window then
+          begin
+            // issues #26463, #29744
+            if (Application.ModalLevel > 0) and IsIconic(TargetWindow) then
+            begin
+              ACtl := FindControl(TargetWindow);
+              if (ACtl is TCustomForm) and (fsModal in TCustomForm(ACtl).FormState) then
+                Win32WidgetSet.AppRestore;
+            end;
             SetFocus(TargetWindow);
+          end;
         end;
         Result := 0;
         Exit;
