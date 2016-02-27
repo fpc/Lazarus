@@ -2061,6 +2061,11 @@ var
 
     MessI.Msg := CheckMouseButtonDownUp(AWinControl, LastMouse, EventXY, MouseButton, True);
     MessI.Keys := MessI.Keys or BtnKey;
+    case LastMouse.ClickCount of
+      2: Msg.Keys := Msg.Keys or MK_DOUBLECLICK;
+      3: Msg.Keys := Msg.Keys or MK_TRIPLECLICK;
+      4: Msg.Keys := Msg.Keys or MK_QUADCLICK;
+    end;
 
     {$IFDEF VerboseMouseBugfix}
     DebugLn('  ClickCount=',dbgs(LastMouse.ClickCount));
@@ -2223,6 +2228,11 @@ var
   function CheckMouseButtonUp(MouseButton, BtnKey: longint): boolean;
   begin
     MessI.Msg := CheckMouseButtonDownUp(AWinControl, LastMouse, EventXY, MouseButton, False);
+    case LastMouse.ClickCount of
+      2: Msg.Keys := Msg.Keys or MK_DOUBLECLICK;
+      3: Msg.Keys := Msg.Keys or MK_TRIPLECLICK;
+      4: Msg.Keys := Msg.Keys or MK_QUADCLICK;
+    end;
     Result := True;
  end;
 
