@@ -2031,42 +2031,19 @@ var
 
 {off $DEFINE VerboseMouseBugfix}
 
-  function CheckMouseButtonDown(var LastMouse: TLastMouseClick;
-    BtnKey, MsgNormal, MsgDouble, MsgTriple, MsgQuad: longint): boolean;
-
-    function LastClickInSameGdkWindow: boolean;
-    begin
-      Result:=(LastMouse.Window<>nil) and (LastMouse.Window=Event^.Window);
-    end;
-
-    function LastClickInSameComponent: boolean;
-    begin
-      Result:=(LastMouse.Component<>nil) and (LastMouse.Component=AWinControl);
-    end;
-
-    function LastClickAtSamePosition: boolean;
-    begin
-      Result:= (Abs(EventXY.X-LastMouse.WindowPoint.X)<=DblClickThreshold)
-           and (Abs(EventXY.Y-LastMouse.WindowPoint.Y)<=DblClickThreshold);
-    end;
-
-    function LastClickInTime: boolean;
-    begin
-      Result:=(event^.time -  LastMouse.eventTime) <= DblClickTime;
-    end;
-
-    function TestIfMultiClick: boolean;
-    begin
-      Result:=LastClickInSameGdkWindow
-          and LastClickInSameComponent
-          and LastClickAtSamePosition
-          and LastClickInTime;
-    end;
-
-  var
-    IsMultiClick: boolean;
+  function CheckMouseButtonDown(MouseButton, BtnKey: longint): boolean;
   begin
     Result := False;
+
+    case gdk_event_get_type(Event) of
+      gdk_2button_press, gdk_3button_press:
+      // the gtk itself has detected a double/triple click
+      begin
+        // they were already detected and sent to the LCL
+        // -> skip this message
+        exit;
+      end;
+    end;
 
     if (LastMouse.Down) and
       (not (gdk_event_get_type(Event) in [GDK_BUTTON_PRESS, gdk_2button_press, gdk_3button_press]))
@@ -2082,75 +2059,14 @@ var
       (csDesigning in AWinControl.ComponentState) then
         exit;
 
+    MessI.Msg := CheckMouseButtonDownUp(AWinControl, LastMouse, EventXY, MouseButton, True);
     MessI.Keys := MessI.Keys or BtnKey;
 
-    if BtnKey in [MK_XBUTTON1, MK_XBUTTON2] then
-      MessI.Keys := MessI.Keys or BtnKey shl 11;
-    IsMultiClick := TestIfMultiClick;
-
-    case gdk_event_get_type(Event) of
-      gdk_2button_press:
-        // the gtk itself has detected a double click
-        if (LastMouse.ClickCount>=2)
-        and IsMultiClick
-        then begin
-          // the double click was already detected and sent to the LCL
-          // -> skip this message
-          exit;
-        end else begin
-          LastMouse.ClickCount:=2;
-        end;
-
-      gdk_3button_press:
-        // the gtk itself has detected a triple click
-        if (LastMouse.ClickCount>=3)
-        and IsMultiClick
-        then begin
-          // the triple click was already detected and sent to the LCL
-          // -> skip this message
-          exit;
-        end else begin
-          LastMouse.ClickCount:=3;
-        end;
-
-      else
-        begin
-          inc(LastMouse.ClickCount);
-
-          if (LastMouse.ClickCount<=4)
-          and IsMultiClick
-          then begin
-            // multi click
-            {$IFDEF VerboseMouseBugfix}
-            DebugLn('  MULTI CLICK: ',dbgs(now),'-',dbgs(LastMouse.eventTime),'<= ',
-              dbgs((1/86400)*(DblClickTime/1000)));
-            {$ENDIF}
-          end else begin
-            // normal click
-            LastMouse.ClickCount:=1;
-          end;
-        end;
-    end;
     {$IFDEF VerboseMouseBugfix}
     DebugLn('  ClickCount=',dbgs(LastMouse.ClickCount));
     {$ENDIF}
 
-    LastMouse.eventTime := event^.time;
-    LastMouse.Window := Event^.Window;
-    LastMouse.WindowPoint := EventXY;
-    LastMouse.Down := True;
-    LastMouse.Component := AWinControl;
-
     //DebugLn('DeliverMouseDownMessage ',DbgSName(AWinControl),' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y),' ',dbgs(LastMouse.ClickCount));
-    case LastMouse.ClickCount of
-      1: MessI.Msg := MsgNormal;
-      2: MessI.Msg := MsgDouble;
-      3: MessI.Msg := MsgTriple;
-      4: MessI.Msg := MsgQuad;
-      else
-        MessI.Msg := LM_NULL;
-    end;
-
     Result := True;
   end;
 
@@ -2192,21 +2108,11 @@ begin
     // a normal mouse button is pressed
     MessI.Keys := 0;
     case event^.Button of
-      1: if not CheckMouseButtonDown(LastLeft,
-                MK_LBUTTON, LM_LBUTTONDOWN,
-                LM_LBUTTONDBLCLK, LM_LBUTTONTRIPLECLK, LM_LBUTTONQUADCLK) then Exit;
-      2: if not CheckMouseButtonDown(LastMiddle,
-                MK_MBUTTON, LM_MBUTTONDOWN,
-                LM_MBUTTONDBLCLK, LM_MBUTTONTRIPLECLK, LM_MBUTTONQUADCLK) then Exit;
-      3: if not CheckMouseButtonDown(LastRight,
-                MK_RBUTTON, LM_RBUTTONDOWN,
-                LM_RBUTTONDBLCLK, LM_RBUTTONTRIPLECLK, LM_RBUTTONQUADCLK) then Exit;
-      8: if not CheckMouseButtonDown(LastXButton,
-                MK_XBUTTON1, LM_XBUTTONDOWN,
-                LM_XBUTTONDBLCLK, LM_XBUTTONTRIPLECLK, LM_XBUTTONQUADCLK) then Exit;
-      9: if not CheckMouseButtonDown(LastX2Button,
-                MK_XBUTTON2, LM_XBUTTONDOWN,
-                LM_XBUTTONDBLCLK, LM_XBUTTONTRIPLECLK, LM_XBUTTONQUADCLK) then Exit;
+      1: if not CheckMouseButtonDown(1, MK_LBUTTON) then Exit;
+      2: if not CheckMouseButtonDown(2, MK_MBUTTON) then Exit;
+      3: if not CheckMouseButtonDown(3, MK_RBUTTON) then Exit;
+      8: if not CheckMouseButtonDown(4, MK_XBUTTON1) then Exit;
+      9: if not CheckMouseButtonDown(4, MK_XBUTTON2) then Exit;
       else
         begin
           MessI.Msg := LM_NULL;
@@ -2312,24 +2218,19 @@ var
   MessI : TLMMouse;
   ShiftState: TShiftState;
   MappedXY: TPoint;
+  EventXY: TPoint;
 
-  function CheckMouseButtonUp(var LastMouse: TLastMouseClick;
-    MsgUp: longint): boolean;
+  function CheckMouseButtonUp(MouseButton, BtnKey: longint): boolean;
   begin
-    case LastMouse.ClickCount of
-      2: ShiftState := ShiftState + [ssDouble];
-      3: ShiftState := ShiftState + [ssTriple];
-      4: ShiftState := ShiftState + [ssQuad];
-    end;
-    MessI.Msg := MsgUp;
-    LastMouse.Down := False;
+    MessI.Msg := CheckMouseButtonDownUp(AWinControl, LastMouse, EventXY, MouseButton, False);
     Result := True;
  end;
 
 begin
   Result := False;
+  EventXY := Point(TruncToInt(Event^.X), TruncToInt(Event^.Y));
   MappedXY := TranslateGdkPointToClientArea(Event^.Window,
-                               Point(TruncToInt(Event^.X), TruncToInt(Event^.Y)),
+                               EventXY,
                                {%H-}PGtkWidget(AWinControl.Handle));
   MappedXY := SubtractScoll({%H-}PGtkWidget(AWinControl.Handle), MappedXY);
   //DebugLn(['DeliverMouseUpMessage ',GetWidgetDebugReport(Widget),' ',dbgsName(AWinControl),' ',dbgs(MappedXY)]);
@@ -2337,11 +2238,11 @@ begin
   ShiftState := GTKEventStateToShiftState(Event^.State);
 
   case event^.Button of
-    1: if not CheckMouseButtonUp(LastLeft, LM_LBUTTONUP) then Exit;
-    2: if not CheckMouseButtonUp(LastMiddle, LM_MBUTTONUP) then Exit;
-    3: if not CheckMouseButtonUp(LastRight, LM_RBUTTONUP) then exit;
-    8: if not CheckMouseButtonUp(LastXButton, LM_XBUTTONUP) then exit;
-    9: if not CheckMouseButtonUp(LastX2Button, LM_XBUTTONUP) then exit;
+    1: if not CheckMouseButtonUp(1, LM_LBUTTONUP) then Exit;
+    2: if not CheckMouseButtonUp(2, LM_MBUTTONUP) then Exit;
+    3: if not CheckMouseButtonUp(3, LM_RBUTTONUP) then exit;
+    8: if not CheckMouseButtonUp(4, LM_XBUTTONUP) then exit;
+    9: if not CheckMouseButtonUp(4, LM_XBUTTONUP) then exit;
   else
     begin
       MessI.Msg := LM_NULL;

@@ -1944,28 +1944,16 @@ uses
   ;
 
 const
-  DblClickThreshold = 3;// max Movement between two clicks of a DblClick
   Forbid_TCN_SELCHANGE = -3;
   Allow_TCN_SELCHANGE = -2;
 
 type
   TWinControlAccess = class(TWinControl)
   end;
-  TLastMouseInfo = record
-    Widget: QObjectH;
-    MousePos: TQtPoint;
-    TheTime: TDateTime;
-    ClickCount: Integer;
-    Button: Byte;
-  end;
   TCustomListViewAccess = class(TCustomListView);
 
 var
-{$IFDEF DARWIN}
-  LastMouse: TLastMouseInfo = (Widget: nil; MousePos: (y:0; x:0); TheTime:0; ClickCount: 0; Button: 0);
-{$ELSE}
-  LastMouse: TLastMouseInfo = (Widget: nil; MousePos: (x:0; y:0); TheTime:0; ClickCount: 0; Button: 0);
-{$ENDIF}
+  LastMouse: TLastMouseInfo;
 
 { TQtWidget }
 
@@ -2542,11 +2530,13 @@ begin
             begin
               Exclude(FWidgetState, qtwsHiddenInsideRightMouseButtonPressEvent);
               Exclude(FWidgetState, qtwsInsideRightMouseButtonPressEvent);
-              if (LastMouse.Widget = Sender) and
+              if (LastMouse.WinControl = LCLObject) and
                 (QApplication_mouseButtons and QtRightButton <> 0) then
               begin
-                AContextEvent := QContextMenuEvent_create(QContextMenuEventMouse, @LastMouse.MousePos);
+                Pt := QtPoint(LastMouse.MousePos.X, LastMouse.MousePos.Y);
+                AContextEvent := QContextMenuEvent_create(QContextMenuEventMouse, @Pt);
                 QCoreApplication_postEvent(Sender, AContextEvent);
+                LastMouse.MousePos := Point(Pt.X, Pt.Y);
               end;
             end;
             {$ENDIF}
@@ -3502,91 +3492,14 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TQtWidget.SlotMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-const
-  // array of clickcount x buttontype
-  MSGKIND: array[0..2, 1..4] of Integer =
-  (
-    (LM_LBUTTONDOWN, LM_LBUTTONDBLCLK, LM_LBUTTONTRIPLECLK, LM_LBUTTONQUADCLK),
-    (LM_RBUTTONDOWN, LM_RBUTTONDBLCLK, LM_RBUTTONTRIPLECLK, LM_RBUTTONQUADCLK),
-    (LM_MBUTTONDOWN, LM_MBUTTONDBLCLK, LM_MBUTTONTRIPLECLK, LM_MBUTTONQUADCLK)
-  );
 var
   Msg: TLMMouse;
   MousePos: TQtPoint;
   MButton: QTMouseButton;
   Modifiers: QtKeyboardModifiers;
   SaveWidget: QWidgetH;
-
-  function CheckMouseButtonDown(AButton: Integer): Cardinal;
-
-    function LastClickInSameWidget: boolean;
-    begin
-      Result := (LastMouse.Widget <> nil) and
-                (LastMouse.Widget = Sender);
-    end;
-
-    function LastClickAtSamePosition: boolean;
-    begin
-      Result:= (Abs(MousePos.X-LastMouse.MousePos.X) <= DblClickThreshold) and
-               (Abs(MousePos.Y-LastMouse.MousePos.Y) <= DblClickThreshold);
-    end;
-
-    function LastClickInTime: boolean;
-    begin
-      Result:=((now - LastMouse.TheTime) <= ((1/86400)*(QApplication_doubleClickInterval/1000)));
-    end;
-
-    function LastClickSameButton: boolean;
-    begin
-      Result:=(MButton=LastMouse.Button);
-    end;
-
-    function TestIfMultiClick: boolean;
-    begin
-      Result:= LastClickInSameWidget and
-               LastClickAtSamePosition and
-               LastClickInTime and
-               LastClickSameButton;
-    end;
-
-  var
-    IsMultiClick: boolean;
-  begin
-    Result := LM_NULL;
-
-    IsMultiClick := TestIfMultiClick;
-
-    if QEvent_type(Event) = QEventMouseButtonDblClick then
-    begin
-      // the qt itself has detected a double click
-      if (LastMouse.ClickCount >= 2) and IsMultiClick then
-        // the double click was already detected and sent to the LCL
-        // -> skip this message
-        exit
-      else
-        LastMouse.ClickCount := 2;
-    end
-    else
-    begin
-      inc(LastMouse.ClickCount);
-
-      if (LastMouse.ClickCount <= 4) and IsMultiClick then
-      begin
-        // multi click
-      end else
-      begin
-        // normal click
-        LastMouse.ClickCount:=1;
-      end;
-    end;
-
-    LastMouse.TheTime := Now;
-    LastMouse.MousePos := MousePos;
-    LastMouse.Widget := Sender;
-    LastMouse.Button := MButton;
-
-    Result := MSGKIND[AButton][LastMouse.ClickCount];
-  end;
+  LazButton: Byte;
+  LazPos: TPoint;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotMouse');
@@ -3615,17 +3528,32 @@ begin
   Msg.YPos := SmallInt(MousePos.Y);
   
   MButton := QMouseEvent_Button(QMouseEventH(Event));
+  LazPos := Point(MousePos.X, MousePos.Y);
+  Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
+  case MButton of
+    QtLeftButton: LazButton := 1;
+    QtRightButton: LazButton := 2;
+    QtMidButton: LazButton := 3;
+    QtXButton1, QtXButton2: LazButton := 4;
+  end;
+  // do not pass mouse button into keys (TShiftState). issue #20916
+  if (QEvent_type(Event) <> QEventMouseButtonRelease)
+  or (((MButton and QtLeftButton) = 0) and ((MButton and QtRightButton) = 0) and
+      ((MButton and QtMidButton) = 0))
+  then
+    Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
+  Msg.Msg := CheckMouseButtonDownUp(LCLObject, LastMouse, LazPos, LazButton,
+    QEvent_type(Event) = QEventMouseButtonDblClick,
+    QEvent_type(Event) in [QEventMouseButtonPress, QEventMouseButtonDblClick]);
+  case LastMouse.ClickCount of
+    2: Msg.Keys := Msg.Keys or MK_DOUBLECLICK;
+    3: Msg.Keys := Msg.Keys or MK_TRIPLECLICK;
+    4: Msg.Keys := Msg.Keys or MK_QUADCLICK;
+  end;
 
   case QEvent_type(Event) of
     QEventMouseButtonPress, QEventMouseButtonDblClick:
     begin
-      Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
-      case MButton of
-        QtLeftButton: Msg.Msg := CheckMouseButtonDown(0);
-        QtRightButton: Msg.Msg := CheckMouseButtonDown(1);
-        QtMidButton: Msg.Msg := CheckMouseButtonDown(2);
-      end;
-
       {$IFDEF MSWINDOWS}
       if (QEvent_type(Event) = QEventMouseButtonPress) and
           (MButton = QtRightButton) then
@@ -3660,23 +3588,6 @@ begin
     end;
     QEventMouseButtonRelease:
     begin
-      LastMouse.Widget := Sender;
-      LastMouse.MousePos := MousePos;
-      // do not pass mouse button into keys (TShiftState). issue #20916
-      if ((MButton and QtLeftButton) = 0) and ((MButton and QtRightButton) = 0) and
-        ((MButton and QtMidButton) = 0) then
-      Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
-      case LastMouse.ClickCount of
-        2: Msg.Keys := Msg.Keys or MK_DOUBLECLICK;
-        3: Msg.Keys := Msg.Keys or MK_TRIPLECLICK;
-        4: Msg.Keys := Msg.Keys or MK_QUADCLICK;
-      end;
-      case MButton of
-        QtLeftButton: Msg.Msg := LM_LBUTTONUP;
-        QtRightButton: Msg.Msg := LM_RBUTTONUP;
-        QtMidButton: Msg.Msg := LM_MBUTTONUP;
-      end;
-
       SaveWidget := nil;
       if (FChildOfComplexWidget = ccwCustomControl) and (FOwner <> nil) then
         SaveWidget := Widget;
@@ -3939,8 +3850,8 @@ begin
   if (ModifierState and $20000000) <> 0 then
     Msg.State := [ssAlt] + Msg.State;
 
-  LastMouse.Widget := Sender;
-  LastMouse.MousePos := MousePos;
+  LastMouse.WinControl := LCLObject;
+  LastMouse.MousePos := Point(MousePos.X, MousePos.Y);
   
   Msg.Msg := LM_MOUSEWHEEL;
 

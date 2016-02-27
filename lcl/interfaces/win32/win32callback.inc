@@ -178,18 +178,6 @@ var
   DisabledForms: TList = nil;
   CurrentWindow: HWND = 0;
 
-function CheckMouseMovement: boolean;
-  // returns true if mouse did not move between lmousebutton down
-var
-  lCursorPos: TPoint;
-  moveX, moveY: integer;
-begin
-  GetCursorPos(lCursorPos);
-  moveX := lCursorPos.X - MouseDownPos.X;
-  moveY := lCursorPos.Y - MouseDownPos.Y;
-  Result := (-3 <= moveX) and (moveX <= 3) and (-3 <= moveY) and (moveY <= 3);
-end;
-
 function GetNeedParentPaint(AWindowInfo: PWin32WindowInfo; AWinControl: TWinControl): boolean;
 begin
   Result := AWindowInfo^.needParentPaint
@@ -372,7 +360,7 @@ type
     procedure DoMsgKeyDownUp(aMsg: Cardinal; var WinResult: LResult);
     procedure DoMsgMeasureItem;
     procedure DoMsgMouseMove;
-    procedure DoMsgMouseUpDownClick(aMsg: Cardinal);
+    procedure DoMsgMouseDownUpClick(aButton: Byte; aIsDblClick: Boolean; aMouseDown: Boolean);
     procedure DoMsgContextMenu;
     function DoMsgMouseWheel(var WinResult: LResult): Boolean;
     function DoMsgMove: Boolean;
@@ -1491,77 +1479,24 @@ begin
   WinProcess := false;
 end;
 
-procedure TWindowProcHelper.DoMsgMouseUpDownClick(aMsg: Cardinal);
-const
-  MouseDownToMessage: array[1..4{l, r, m, x}, 1..4{single..quad}] of LongWord =
-  ((LM_LBUTTONDOWN, LM_LBUTTONDBLCLK, LM_LBUTTONTRIPLECLK, LM_LBUTTONQUADCLK),
-   (LM_RBUTTONDOWN, LM_RBUTTONDBLCLK, LM_RBUTTONTRIPLECLK, LM_RBUTTONQUADCLK),
-   (LM_MBUTTONDOWN, LM_MBUTTONDBLCLK, LM_MBUTTONTRIPLECLK, LM_MBUTTONQUADCLK),
-   (LM_XBUTTONDOWN, LM_XBUTTONDBLCLK, LM_XBUTTONTRIPLECLK, LM_XBUTTONQUADCLK));
+procedure TWindowProcHelper.DoMsgMouseDownUpClick(aButton: Byte;
+  aIsDblClick: Boolean; aMouseDown: Boolean);
 var
-  CurButton: Integer;
-  IsMouseUp: Boolean;
+  MousePos: TPoint;
 begin
-  case aMsg of
-    LM_LBUTTONDOWN, LM_LBUTTONUP, LM_LBUTTONDBLCLK: CurButton := 1;
-    LM_RBUTTONDOWN, LM_RBUTTONUP, LM_RBUTTONDBLCLK: CurButton := 2;
-    LM_MBUTTONDOWN, LM_MBUTTONUP, LM_MBUTTONDBLCLK: CurButton := 3;
-    LM_XBUTTONDOWN, LM_XBUTTONUP, LM_XBUTTONDBLCLK: CurButton := 4;
-  end;
+  GetCursorPos(MousePos{%H-});
 
-  if (MouseDownCount>=4) and (CurButton>0) then
-    MouseDownCount := MouseDownCount;
-
-  IsMouseUp := False;
-  case aMsg of
-    LM_LBUTTONDOWN, LM_RBUTTONDOWN, LM_MBUTTONDOWN, LM_XBUTTONDOWN:
-    begin
-      if (MouseDownWindow = Window)
-          and (MouseDownCountButton = CurButton)
-          and (GetTickCount64 - MouseDownTime <= GetDoubleClickTime)
-          and CheckMouseMovement then
-        inc(MouseDownCount)
-      else
-        MouseDownCount := 1;
-      MouseDownCountButton := CurButton;
-      MouseDownWindow := Window;
-      GetCursorPos(MouseDownPos);
-    end;
-    LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP, LM_XBUTTONUP:
-    begin
-      IsMouseUp := True;
-      if (MouseDownCountButton <> CurButton) then
-        MouseDownCount := 1;
-    end;
-    LM_LBUTTONDBLCLK, LM_RBUTTONDBLCLK, LM_MBUTTONDBLCLK, LM_XBUTTONDBLCLK:
-    begin
-      // always within the time-window
-      if (MouseDownCount < 1) then
-        MouseDownCount := 1;
-      inc(MouseDownCount);
-    end;
-  end;
-
-  if (MouseDownCount < 1) or (MouseDownCount > 4) then
-    MouseDownCount := 1;
-  MouseDownTime := GetTickCount64;
   NotifyUserInput := True;
   PLMsg := @LMMouse;
-  with LMMouse do
-  begin
-    if IsMouseUp then
-      Msg := aMsg
-    else
-      Msg := MouseDownToMessage[MouseDownCountButton, MouseDownCount];
+  LMMouse.Msg := CheckMouseButtonDownUp(lWinControl, LastMouse, MousePos, aButton, aMouseDown);
 
-    XPos := GET_X_LPARAM(LParam);
-    YPos := GET_Y_LPARAM(LParam);
-    Keys := WParam;
-    case MouseDownCount of
-      2: Keys := Keys or MK_DOUBLECLICK;
-      3: Keys := Keys or MK_TRIPLECLICK;
-      4: Keys := Keys or MK_QUADCLICK;
-    end;
+  LMMouse.XPos := GET_X_LPARAM(LParam);
+  LMMouse.YPos := GET_Y_LPARAM(LParam);
+  LMMouse.Keys := WParam;
+  case LastMouse.ClickCount of
+    2: LMMouse.Keys := LMMouse.Keys or MK_DOUBLECLICK;
+    3: LMMouse.Keys := LMMouse.Keys or MK_TRIPLECLICK;
+    4: LMMouse.Keys := LMMouse.Keys or MK_QUADCLICK;
   end;
 end;
 
@@ -2165,15 +2100,23 @@ begin
       LMessage.WParam := WParam;
     end;
     //TODO:LM_KILLCHAR,LM_KILLWORD,LM_KILLLINE
-    WM_LBUTTONDBLCLK: DoMsgMouseUpDownClick(LM_LBUTTONDBLCLK);
-    WM_LBUTTONDOWN:   DoMsgMouseUpDownClick(LM_LBUTTONDOWN);
-    WM_LBUTTONUP:     DoMsgMouseUpDownClick(LM_LBUTTONUP);
-    WM_MBUTTONDBLCLK: DoMsgMouseUpDownClick(LM_MBUTTONDBLCLK);
-    WM_MBUTTONDOWN:   DoMsgMouseUpDownClick(LM_MBUTTONDOWN);
-    WM_MBUTTONUP:     DoMsgMouseUpDownClick(LM_MBUTTONUP);
-    WM_XBUTTONDBLCLK: DoMsgMouseUpDownClick(LM_XBUTTONDBLCLK);
-    WM_XBUTTONDOWN:   DoMsgMouseUpDownClick(LM_XBUTTONDOWN);
-    WM_XBUTTONUP:     DoMsgMouseUpDownClick(LM_XBUTTONUP);
+    WM_LBUTTONDBLCLK: DoMsgMouseDownUpClick(1, True, True);
+    WM_LBUTTONDOWN:   DoMsgMouseDownUpClick(1, False, True);
+    WM_LBUTTONUP:     DoMsgMouseDownUpClick(1, False, False);
+    WM_RBUTTONDBLCLK: DoMsgMouseDownUpClick(2, True, True);
+    WM_RBUTTONDOWN:   DoMsgMouseDownUpClick(2, False, True);
+    WM_RBUTTONUP:
+    begin
+      DoMsgMouseDownUpClick(2, False, False);
+      WinProcess := false;
+      Result := 0;
+    end;
+    WM_MBUTTONDBLCLK: DoMsgMouseDownUpClick(3, True, True);
+    WM_MBUTTONDOWN:   DoMsgMouseDownUpClick(3, False, True);
+    WM_MBUTTONUP:     DoMsgMouseDownUpClick(3, False, False);
+    WM_XBUTTONDBLCLK: DoMsgMouseDownUpClick(4, True, True);
+    WM_XBUTTONDOWN:   DoMsgMouseDownUpClick(4, False, True);
+    WM_XBUTTONUP:     DoMsgMouseDownUpClick(4, False, False);
     WM_MOUSEHOVER:
     begin
       NotifyUserInput := True;
@@ -2210,14 +2153,6 @@ begin
       if ((LParam and PRF_CLIENT) = PRF_CLIENT) and (lWinControl <> nil) then
         SendPaintMessage(HDC(WParam));
     WM_PASTE:         LMessage.Msg := LM_PASTE;
-    WM_RBUTTONDBLCLK: DoMsgMouseUpDownClick(LM_RBUTTONDBLCLK);
-    WM_RBUTTONDOWN:   DoMsgMouseUpDownClick(LM_RBUTTONDOWN);
-    WM_RBUTTONUP:
-    begin
-      DoMsgMouseUpDownClick(LM_RBUTTONUP);
-      WinProcess := false;
-      Result := 0;
-    end;
     WM_CONTEXTMENU:
     begin
       DoMsgContextMenu;

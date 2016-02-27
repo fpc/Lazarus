@@ -265,11 +265,7 @@ type
   end;
 
 var
-  MouseDownCount: Integer;
-  MouseDownCountButton: Byte; // 1 left, 2 right, 3 middle, 4 x
-  MouseDownTime: QWord;
-  MouseDownPos: TPoint;
-  MouseDownWindow: HWND = 0;
+  LastMouse: TLastMouseInfo;
   ComboBoxHandleSizeWindow: HWND = 0;
   IgnoreNextCharWindow: HWND = 0;  // ignore next WM_(SYS)CHAR message
   // set to true, if we are redirecting a WM_MOUSEWHEEL message, to prevent recursion
@@ -290,11 +286,6 @@ var
 
 
 initialization
-  { initialize mousedownclick to far before double click time }
-  if GetTickCount64 > 5000 then
-    MouseDownTime := GetTickCount64 - 5000
-  else
-    MouseDownTime := 0;
   SystemCharSetIsUTF8:=true;
 
   MMenuItemInfoSize := sizeof(MENUITEMINFO);

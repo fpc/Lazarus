@@ -4746,12 +4746,8 @@ begin
   end;
 
   // mouse click messages
-  if LastLeft.Component=Sender then
-    LastLeft:=EmptyLastMouseClick;
-  if LastMiddle.Component=Sender then
-    LastMiddle:=EmptyLastMouseClick;
-  if LastRight.Component=Sender then
-    LastRight:=EmptyLastMouseClick;
+  if LastMouse.WinControl=Sender then
+    LastMouse.Button := 0;
 end;
 
 procedure TGtk2WidgetSet.FinishCreateHandle(const AWinControl: TWinControl;

@@ -56,23 +56,8 @@ const
   DblClickTime = 250;// 250 miliseconds or less between clicks is a double click
   DblClickThreshold = 3;// max Movement between two clicks of a DblClick
 
-type
-  TLastMouseClick = record
-    Down: boolean;
-    eventTime: guint32;   // last Down time
-    ClickCount: integer;
-    Component: TComponent;
-    Window: PGdkWindow;
-    WindowPoint: TPoint;
-  end;
-
-const
-  EmptyLastMouseClick: TLastMouseClick =
-    (Down: false; eventTime: 0; ClickCount: 0; Component: nil;
-     Window: nil; WindowPoint: (X: 0; Y: 0));
-
 var
-  LastLeft, LastMiddle, LastRight, LastXButton, LastX2Button: TLastMouseClick;
+  LastMouse: TLastMouseInfo;
   
 var
   im_context: PGtkIMContext = nil;
