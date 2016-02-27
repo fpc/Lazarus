@@ -2614,6 +2614,10 @@ procedure GetCursorValues(Proc: TGetStrProc);
 function CursorToIdent(Cursor: Longint; var Ident: string): Boolean;
 function IdentToCursor(const Ident: string; var Cursor: Longint): Boolean;
 
+function CheckMouseButtonDownUp(const AWinControl: TWinControl;
+  var LastMouse: TLastMouseInfo; const AMousePos: TPoint; const AButton: Byte;
+  const AMouseDown: Boolean): Cardinal;
+
 // shiftstate
 function GetKeyShiftState: TShiftState;
 
@@ -2929,6 +2933,106 @@ end;
 procedure MoveWindowOrg(dc: hdc; X, Y: Integer);
 begin
   MoveWindowOrgEx(DC,X,Y);
+end;
+
+function CheckMouseButtonDownUp(const AWinControl: TWinControl;
+  var LastMouse: TLastMouseInfo; const AMousePos: TPoint; const AButton: Byte;
+  const AMouseDown: Boolean): Cardinal;
+const
+  DblClickThreshold = 3;// max Movement between two clicks of a DblClick
+
+  // array of clickcount x buttontype
+  MSGKINDDOWN: array[1..4, 1..4] of Integer =
+  (
+    (LM_LBUTTONDOWN, LM_LBUTTONDBLCLK, LM_LBUTTONTRIPLECLK, LM_LBUTTONQUADCLK),
+    (LM_RBUTTONDOWN, LM_RBUTTONDBLCLK, LM_RBUTTONTRIPLECLK, LM_RBUTTONQUADCLK),
+    (LM_MBUTTONDOWN, LM_MBUTTONDBLCLK, LM_MBUTTONTRIPLECLK, LM_MBUTTONQUADCLK),
+    (LM_XBUTTONDOWN, LM_XBUTTONDBLCLK, LM_XBUTTONTRIPLECLK, LM_XBUTTONQUADCLK)
+  );
+  MSGKINDUP: array[1..4] of Integer =
+    (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP, LM_XBUTTONUP);
+
+  function LastClickInSameWinControl: boolean;
+  begin
+    Result := (LastMouse.WinControl <> nil) and
+              (LastMouse.WinControl = AWinControl);
+  end;
+
+  function LastClickAtSamePosition: boolean;
+  begin
+    Result:= (Abs(AMousePos.X-LastMouse.MousePos.X) <= DblClickThreshold) and
+             (Abs(AMousePos.Y-LastMouse.MousePos.Y) <= DblClickThreshold);
+  end;
+
+  function LastClickInTime: boolean;
+  begin
+    Result:=((GetTickCount64 - LastMouse.Time) <= GetDoubleClickTime);
+  end;
+
+  function LastClickSameButton: boolean;
+  begin
+    Result:=(AButton=LastMouse.Button);
+  end;
+
+  function TestIfMultiClickDown: boolean;
+  begin
+    Result:= LastClickInSameWinControl and
+             LastClickAtSamePosition and
+             LastClickInTime and
+             LastClickSameButton;
+  end;
+
+  function TestIfMultiClickUp: boolean;
+  begin
+    Result:= LastClickInSameWinControl and
+             LastClickAtSamePosition and
+             LastClickSameButton;
+  end;
+
+var
+  IsMultiClick: boolean;
+begin
+  Result := LM_NULL;
+
+  if AMouseDown then
+    IsMultiClick := TestIfMultiClickDown
+  else
+    IsMultiClick := TestIfMultiClickUp;
+
+  if AMouseDown then
+  begin
+    inc(LastMouse.ClickCount);
+
+    if (LastMouse.ClickCount <= 4) and IsMultiClick then
+    begin
+      // multi click
+    end else
+    begin
+      // normal click
+      LastMouse.ClickCount:=1;
+    end;
+
+    LastMouse.Time := GetTickCount64;
+    LastMouse.MousePos := AMousePos;
+    LastMouse.WinControl := AWinControl;
+    LastMouse.Button := AButton;
+  end else
+  begin // mouse up
+    if not IsMultiClick then
+      LastMouse.ClickCount := 1;
+  end;
+
+  case LastMouse.ClickCount of
+    2: if not(csDoubleClicks in AWinControl.ControlStyle) then LastMouse.ClickCount := 1;
+    3: if not(csTripleClicks in AWinControl.ControlStyle) then LastMouse.ClickCount := 1;
+    4: if not(csQuadClicks in AWinControl.ControlStyle) then LastMouse.ClickCount := 1;
+  end;
+  LastMouse.Down := AMouseDown;
+
+  if AMouseDown then
+    Result := MSGKINDDOWN[AButton][LastMouse.ClickCount]
+  else
+    Result := MSGKINDUP[AButton];
 end;
 
 function GetKeyShiftState: TShiftState;

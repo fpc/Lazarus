@@ -627,6 +627,15 @@ type
   TLMMButtonUp = TLMMouse;
   TLMXButtonUp = TLMMouse;
 
+  TLastMouseInfo = record
+    WinControl: TObject;
+    MousePos: TPoint;
+    Time: QWord;
+    ClickCount: Integer;
+    Button: Byte; // 1=left, 2=right, 3=middle, 4=Extra
+    Down: Boolean;
+  end;
+
   TLMSetFocus = record
     Msg: Cardinal;
 {$ifdef cpu64}

@@ -2048,36 +2048,6 @@ begin
   or ((TheMessage.Msg>=LM_MOUSEFIRST2) and (TheMessage.Msg<=LM_MOUSELAST2))
   then begin
     // mouse messages
-    
-    // map double clicks for controls, that do not want doubleclicks
-    if not (csDoubleClicks in ControlStyle) then
-    begin
-      case TheMessage.Msg of
-        LM_LButtonDBLCLK,
-        LM_RButtonDBLCLK,
-        LM_MButtonDBLCLK:
-          Dec(TheMessage.Msg, LM_LBUTTONDBLCLK - LM_LBUTTONDOWN);
-      end;
-    end;
-    // map triple clicks for controls, that do not want tripleclicks
-    if not (csTripleClicks in ControlStyle) then
-    begin
-      case TheMessage.Msg of
-        LM_LBUTTONTRIPLECLK: TheMessage.Msg:=LM_LBUTTONDOWN;
-        LM_MBUTTONTRIPLECLK: TheMessage.Msg:=LM_MBUTTONDOWN;
-        LM_RBUTTONTRIPLECLK: TheMessage.Msg:=LM_RBUTTONDOWN;
-      end;
-    end;
-    // map quad clicks for controls, that do not want quadclicks
-    if not (csQuadClicks in ControlStyle) then
-    begin
-      case TheMessage.Msg of
-        LM_LBUTTONQUADCLK: TheMessage.Msg:=LM_LBUTTONDBLCLK;
-        LM_MBUTTONQUADCLK: TheMessage.Msg:=LM_MBUTTONDBLCLK;
-        LM_RBUTTONQUADCLK: TheMessage.Msg:=LM_RBUTTONDBLCLK;
-      end;
-    end;
-
     case TheMessage.Msg of
 
       LM_MOUSEMOVE:
