@@ -1956,14 +1956,15 @@ type
     MousePos: TQtPoint;
     TheTime: TDateTime;
     ClickCount: Integer;
+    Button: Byte;
   end;
   TCustomListViewAccess = class(TCustomListView);
 
 var
 {$IFDEF DARWIN}
-  LastMouse: TLastMouseInfo = (Widget: nil; MousePos: (y:0; x:0); TheTime:0; ClickCount: 0);
+  LastMouse: TLastMouseInfo = (Widget: nil; MousePos: (y:0; x:0); TheTime:0; ClickCount: 0; Button: 0);
 {$ELSE}
-  LastMouse: TLastMouseInfo = (Widget: nil; MousePos: (x:0; y:0); TheTime:0; ClickCount: 0);
+  LastMouse: TLastMouseInfo = (Widget: nil; MousePos: (x:0; y:0); TheTime:0; ClickCount: 0; Button: 0);
 {$ENDIF}
 
 { TQtWidget }
@@ -3535,11 +3536,17 @@ var
       Result:=((now - LastMouse.TheTime) <= ((1/86400)*(QApplication_doubleClickInterval/1000)));
     end;
 
+    function LastClickSameButton: boolean;
+    begin
+      Result:=(MButton=LastMouse.Button);
+    end;
+
     function TestIfMultiClick: boolean;
     begin
       Result:= LastClickInSameWidget and
                LastClickAtSamePosition and
-               LastClickInTime;
+               LastClickInTime and
+               LastClickSameButton;
     end;
 
   var
@@ -3576,6 +3583,7 @@ var
     LastMouse.TheTime := Now;
     LastMouse.MousePos := MousePos;
     LastMouse.Widget := Sender;
+    LastMouse.Button := MButton;
 
     Result := MSGKIND[AButton][LastMouse.ClickCount];
   end;
