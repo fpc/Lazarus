@@ -7154,8 +7154,8 @@ begin
         begin
           {$IFDEF MSWINDOWS}
           // issues #26463, #29744, must restore app if we activate non modal window from taskbar
-          if (Application.ModalLevel > 0) and not IsModal and
-              (QApplication_activeModalWidget <> nil) and QWidget_isMinimized(QApplication_activeModalWidget) then
+          if (Application.ModalLevel > 0) and
+            (QApplication_activeModalWidget <> nil) and QWidget_isMinimized(QApplication_activeModalWidget) then
           begin
             W := QApplication_activeModalWidget;
             // back to tray
