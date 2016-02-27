@@ -541,9 +541,7 @@ type
     procedure CalendarKeyDown(Sender: TObject; var Key: Word;
                                       Shift: TShiftState);
     procedure CalendarResize(Sender: TObject);
-    procedure CalendarMouseUp(Sender: TObject; Button: TMouseButton;
-                                      Shift: TShiftState; X, Y: Integer);
-
+    procedure CalendarClick(Sender: TObject);
     procedure VisibleOfParentChanged(Sender: TObject);
 
   protected
@@ -685,11 +683,13 @@ begin
   AdjustCalendarFormSize;
 end;
 
-procedure TDTCalendarForm.CalendarMouseUp(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TDTCalendarForm.CalendarClick(Sender: TObject);
+var
+  P: TPoint;
 begin
-  if Cal.AreCoordinatesOnDate(X, Y) then
-    CloseCalendarForm(True);
+  P := Cal.GetCalendarControl.ScreenToClient(Mouse.CursorPos);
+  if Cal.AreCoordinatesOnDate(P.x, P.y) then
+     CloseCalendarForm(True);
 
 end;
 
@@ -736,11 +736,6 @@ begin
 
   inherited DoClose(CloseAction);
 end;
-
-type
-  { To be able to access TControl's protected members,
-    we derive our class TDTControl from TControl: }
-  TDTControl = class(TControl);
 
 constructor TDTCalendarForm.CreateNewDTCalendarForm(AOwner: TComponent;
   ADTPicker: TCustomDateTimePicker);
@@ -801,7 +796,7 @@ begin
     Cal.SetDate(DTPicker.Date);
 
   Cal.GetCalendarControl.OnResize := @CalendarResize;
-  TDTControl(Cal.GetCalendarControl).OnMouseUp := @CalendarMouseUp;
+  Cal.GetCalendarControl.OnClick := @CalendarClick;
   if Cal.GetCalendarControl is TWinControl then begin
     TWinControl(Cal.GetCalendarControl).OnKeyDown := @CalendarKeyDown;
     TWinControl(Cal.GetCalendarControl).TabStop := True;
@@ -821,7 +816,7 @@ begin
 
   if Assigned(Cal) then begin
     Cal.GetCalendarControl.OnResize := nil;
-    TDTControl(Cal.GetCalendarControl).OnMouseUp := nil;
+    Cal.GetCalendarControl.OnClick := nil;
     if Cal.GetCalendarControl is TWinControl then
       TWinControl(Cal.GetCalendarControl).OnKeyDown := nil;
     Cal.Free;
