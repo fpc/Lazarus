@@ -37,6 +37,7 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
+    procedure SetXCount(AValue: Cardinal); override;
     procedure SetYCount(AValue: Cardinal); override;
   public
     type
@@ -59,6 +60,7 @@ type
     procedure SetColor(AIndex: Integer; AColor: TChartColor);
     procedure SetText(AIndex: Integer; AValue: String);
     function SetXValue(AIndex: Integer; AValue: Double): Integer;
+    procedure SetXList(AIndex: Integer; const AXList: array of Double);
     procedure SetYList(AIndex: Integer; const AYList: array of Double);
     procedure SetYValue(AIndex: Integer; AValue: Double);
 
@@ -114,6 +116,7 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
+    procedure SetXCount(AValue: Cardinal); override;
     procedure SetYCount(AValue: Cardinal); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -125,6 +128,7 @@ type
       read FPointsNumber write SetPointsNumber default 0;
     property RandomX: Boolean read FRandomX write SetRandomX default false;
     property RandSeed: Integer read FRandSeed write SetRandSeed;
+    property XCount;
     property XMax: Double read FXMax write SetXMax;
     property XMin: Double read FXMin write SetXMin;
     property YCount;
@@ -152,6 +156,7 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
+    procedure SetXCount(AValue: Cardinal); override;
     procedure SetYCount(AValue: Cardinal); override;
   public
     procedure EndUpdate; override;
@@ -204,6 +209,7 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
+    procedure SetXCount(AValue: Cardinal); override;
     procedure SetYCount(AValue: Cardinal); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -495,6 +501,7 @@ end;
 function TListChartSource.NewItem: PChartDataItem;
 begin
   New(Result);
+  SetLength(Result^.XList, Max(XCount - 1, 0));
   SetLength(Result^.YList, Max(YCount - 1, 0));
 end;
 
@@ -536,6 +543,27 @@ begin
     Text := AValue;
   end;
   Notify;
+end;
+
+procedure TListChartSource.SetXCount(AValue: Cardinal);
+var
+  i: Integer;
+begin
+  if AValue = FXCount then exit;
+  FXCount := AValue;
+  for i := 0 to Count - 1 do
+    SetLength(Item[i]^.XList, Max(FXCount - 1, 0));
+end;
+
+procedure TListChartSource.SetXList(
+  AIndex: Integer; const AXList: array of Double);
+var
+  i: Integer;
+begin
+  with Item[AIndex]^ do
+    for i := 0 to Min(High(AXList), High(XList)) do
+      XList[i] := AXList[i];
+  // wp: Update x extent here ?
 end;
 
 function TListChartSource.SetXValue(AIndex: Integer; AValue: Double): Integer;
@@ -654,8 +682,22 @@ begin
 end;
 
 function CompareDataItemX(AItem1, AItem2: Pointer): Integer;
+var
+  i: Integer;
+  item1, item2: PChartDataItem;
 begin
-  Result := Sign(PChartDataItem(AItem1)^.X - PChartDataItem(AItem2)^.X);
+  item1 := PChartDataItem(AItem1);
+  item2 := PChartDataItem(AItem2);
+  Result := Sign(item1^.X - item2^.X);          // wp: why "sign" ???
+
+//  Result := Sign(PChartDataItem(AItem1)^.X - PChartDataItem(AItem2)^.X);
+
+  if Result = 0 then
+    for i := 0 to Min(High(item1^.XList), High(item2^.XList)) do begin
+      Result := Sign(item1^.XList[i] - item2^.XList[i]);
+      if Result <> 0 then
+        exit;
+    end;
 end;
 
 procedure TListChartSource.Sort;
@@ -761,14 +803,19 @@ begin
   end;
   while FCurIndex < AIndex do begin
     FCurIndex += 1;
-    if XMax <= XMin then
-      FCurItem.X := XMin
-    else begin
-      if FRandomX then
-        FCurItem.X := FRNG.Get / High(LongWord)
-      else
-        FCurItem.X := FCurIndex / (Count - 1);
-      FCurItem.X := FCurItem.X * (XMax - XMin) + XMin;
+    if XMax <= XMin then begin
+      FCurItem.X := XMin;
+      for i := 0 to XCount - 2 do FCurItem.XList[i] := XMin;
+    end else begin
+      if FRandomX then begin
+        FCurItem.X := FRNG.Get / High(LongWord) * (XMax - XMin) + XMin;
+        for i := 0 to XCount - 2 do
+          FCurItem.XList[i] := FRNG.Get / High(LongWord) * (XMax - XMin) + XMin;
+      end else begin
+        FCurItem.X := FCurIndex / (Count - 1) * (XMax - XMin) + XMin;
+        for i := 0 to XCount - 2 do
+          FCurItem.XList[i] := FCurItem.X;
+      end;
     end;
     if YCount > 0 then begin
       FCurItem.Y := GetRandomY;
@@ -811,6 +858,13 @@ begin
   if FRandSeed = AValue then exit;
   FRandSeed := AValue;
   FRNG.Seed := AValue;
+  Reset;
+end;
+
+procedure TRandomChartSource.SetXCount(AValue: Cardinal);
+begin
+  if XCount = AValue then exit;
+  FXCount := AValue;
   Reset;
 end;
 
@@ -903,6 +957,14 @@ procedure TUserDefinedChartSource.SetPointsNumber(AValue: Integer);
 begin
   if FPointsNumber = AValue then exit;
   FPointsNumber := AValue;
+  Reset;
+end;
+
+procedure TUserDefinedChartSource.SetXCount(AValue: Cardinal);
+begin
+  if FXCount = AValue then exit;
+  FXCount := AValue;
+  SetLength(FItem.XList, Max(XCount - 1, 0));
   Reset;
 end;
 
@@ -1236,10 +1298,16 @@ begin
   UpdateYOrder;
 end;
 
+procedure TCalculatedChartSource.SetXCount(AValue: Cardinal);
+begin
+  Unused(AValue);
+  raise EXCountError.Create('Cannot set XCount');
+end;
+
 procedure TCalculatedChartSource.SetYCount(AValue: Cardinal);
 begin
   Unused(AValue);
-  raise EYCountError.Create('Can not set YCount');
+  raise EYCountError.Create('Cannot set YCount');
 end;
 
 procedure TCalculatedChartSource.UpdateYOrder;

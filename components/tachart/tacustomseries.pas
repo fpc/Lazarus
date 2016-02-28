@@ -146,9 +146,12 @@ type
     procedure AfterDraw; override;
     procedure BeforeDraw; override;
     procedure GetBounds(var ABounds: TDoubleRect); override;
-    function GetGraphPoint(AIndex: Integer): TDoublePoint;
-    function GetGraphPointX(AIndex: Integer): Double; inline;
-    function GetGraphPointY(AIndex: Integer): Double; inline;
+    function GetGraphPoint(AIndex: Integer): TDoublePoint; overload;
+    function GetGraphPoint(AIndex, AXIndex, AYIndex: Integer): TDoublePoint; overload;
+    function GetGraphPointX(AIndex: Integer): Double; overload; inline;
+    function GetGraphPointX(AIndex, AXIndex: Integer): Double; overload; inline;
+    function GetGraphPointY(AIndex: Integer): Double; overload; inline;
+    function GetGraphPointY(AIndex, AYIndex: Integer): Double; overload; inline;
     function GetSeriesColor: TColor; virtual;
     function GetXMaxVal: Double;
     procedure SourceChanged(ASender: TObject); virtual;
@@ -777,14 +780,32 @@ begin
     Exchange(Result.X, Result.Y);
 end;
 
+function TChartSeries.GetGraphPoint(AIndex, AXIndex, AYIndex: Integer): TDoublePoint;
+begin
+  Result.X := GetGraphPointX(AIndex, AXIndex);
+  Result.Y := GetGraphPointY(AIndex, AYIndex);
+  if IsRotated then
+    Exchange(Result.X, Result.Y);
+end;
+
 function TChartSeries.GetGraphPointX(AIndex: Integer): Double;
 begin
   Result := AxisToGraphX(Source[AIndex]^.X);
 end;
 
+function TChartSeries.GetGraphPointX(AIndex, AXIndex: Integer): Double;
+begin
+  Result := AxisToGraphX(Source[AIndex]^.GetX(AXIndex));
+end;
+
 function TChartSeries.GetGraphPointY(AIndex: Integer): Double;
 begin
   Result := AxisToGraphY(Source[AIndex]^.Y);
+end;
+
+function TChartSeries.GetGraphPointY(AIndex, AYIndex: Integer): Double;
+begin
+  Result := AxisToGraphY(Source[AIndex]^.GetY(AYIndex));
 end;
 
 procedure TChartSeries.GetMax(out X, Y: Double);

@@ -71,6 +71,7 @@ type
 type
   EBufferError = class(EChartError);
   EEditableSourceRequired = class(EChartError);
+  EXCountError = class(EChartError);
   EYCountError = class(EChartError);
 
   TChartValueText = record
@@ -86,8 +87,12 @@ type
     X, Y: Double;
     Color: TChartColor;
     Text: String;
+    XList: TDoubleDynArray;
     YList: TDoubleDynArray;
+    function GetX(AIndex: Integer): Double;
     function GetY(AIndex: Integer): Double;
+    procedure SetX(AIndex: Integer; AValue: Double);
+    procedure SetX(AValue: Double);
     procedure SetY(AIndex: Integer; AValue: Double);
     procedure SetY(AValue: Double);
     procedure MultiplyY(ACoeff: Double);
@@ -154,11 +159,13 @@ type
     FUpdateCount: Integer;
     FValuesTotal: Double;
     FValuesTotalIsValid: Boolean;
+    FXCount: Cardinal;
     FYCount: Cardinal;
 
     function GetCount: Integer; virtual; abstract;
     function GetItem(AIndex: Integer): PChartDataItem; virtual; abstract;
     procedure InvalidateCaches;
+    procedure SetXCount(AValue: Cardinal); virtual; abstract;
     procedure SetYCount(AValue: Cardinal); virtual; abstract;
   public
     constructor Create(AOwner: TComponent); override;
@@ -181,11 +188,12 @@ type
     procedure ValuesInRange(
       AParams: TValuesInRangeParams; var AValues: TChartValueTextArray); virtual;
     function ValuesTotal: Double; virtual;
-    function XOfMax: Double;
-    function XOfMin: Double;
+    function XOfMax(AIndex: Integer = 0): Double;
+    function XOfMin(AIndex: Integer = 0): Double;
 
     property Count: Integer read GetCount;
     property Item[AIndex: Integer]: PChartDataItem read GetItem; default;
+    property XCount: Cardinal read FXCount write SetXCount default 1;
     property YCount: Cardinal read FYCount write SetYCount default 1;
   end;
 
@@ -400,6 +408,15 @@ end;
 
 { TChartDataItem }
 
+function TChartDataItem.GetX(AIndex: Integer): Double;
+begin
+  AIndex := EnsureRange(AIndex, 0, Length(XList));
+  if AIndex = 0 then
+    Result := X
+  else
+    Result := XList[AIndex - 1];
+end;
+
 function TChartDataItem.GetY(AIndex: Integer): Double;
 begin
   AIndex := EnsureRange(AIndex, 0, Length(YList));
@@ -422,6 +439,23 @@ function TChartDataItem.Point: TDoublePoint;
 begin
   Result.X := X;
   Result.Y := Y;
+end;
+
+procedure TChartDataItem.SetX(AValue: Double);
+var
+  i: Integer;
+begin
+  X := AValue;
+  for i := 0 to High(XList) do
+    XList[i] := AValue;
+end;
+
+procedure TChartDataItem.SetX(AIndex: Integer; AValue: Double);
+begin
+  if AIndex = 0 then
+    X := AValue
+  else
+    XList[AIndex - 1] := AValue;
 end;
 
 procedure TChartDataItem.SetY(AValue: Double);
@@ -634,6 +668,7 @@ end;
 constructor TCustomChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FXCount := 1;
   FYCount := 1;
 end;
 
@@ -684,9 +719,12 @@ var
 begin
   Result := Extent;
   for i := 0 to Count - 1 do
-    with Item[i]^ do
+    with Item[i]^ do begin
+      for j := 0 to High(XList) do
+        UpdateMinMax(XList[j], Result.a.X, Result.b.X);
       for j := 0 to High(YList) do
         UpdateMinMax(YList[j], Result.a.Y, Result.b.Y);
+    end;
 end;
 
 // ALB -> leftmost item where X >= AXMin, or Count if no such item
@@ -941,23 +979,23 @@ begin
   Result := FValuesTotal;
 end;
 
-function TCustomChartSource.XOfMax: Double;
+function TCustomChartSource.XOfMax(AIndex: Integer = 0): Double;
 var
   i: Integer;
 begin
   for i := 0 to Count - 1 do
     with Item[i]^ do
-      if Y = Extent.b.Y then exit(X);
+      if Y = Extent.b.Y then exit(GetX(AIndex));
   Result := 0.0;
 end;
 
-function TCustomChartSource.XOfMin: Double;
+function TCustomChartSource.XOfMin(AIndex: Integer = 0): Double;
 var
   i: Integer;
 begin
   for i := 0 to Count - 1 do
     with Item[i]^ do
-      if Y = Extent.a.Y then exit(X);
+      if Y = Extent.a.Y then exit(GetX(AIndex));
   Result := 0.0;
 end;
 
