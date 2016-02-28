@@ -9624,8 +9624,8 @@ begin
     NewOrigPos := CodeXYPosition(LogCaretXY.X, LogCaretXY.Y, ActiveSrcEdit.CodeBuffer);
     if NewTool.CaretToCleanPos(NewOrigPos, NewCleanPos) = 0 then
     begin
-      ProcNode := NewTool.FindDeepestNodeAtPos(NewCleanPos,true);
-      JumpToBody := (ProcNode.Desc <> ctnProcedureHead);
+      ProcNode := NewTool.FindDeepestNodeAtPos(NewCleanPos,False);
+      JumpToBody := (ProcNode=nil) or (ProcNode.Desc <> ctnProcedureHead);
     end;
   end;
 
@@ -9643,8 +9643,8 @@ begin
       NewOrigPos := CodeXYPosition(NewX, NewY, NewSource);
       if (NewTool.CaretToCleanPos(NewOrigPos, NewCleanPos) = 0) then
       begin
-        ProcNode := NewTool.FindDeepestNodeAtPos(NewCleanPos,true);
-        if (ProcNode.Desc = ctnProcedureHead)
+        ProcNode := NewTool.FindDeepestNodeAtPos(NewCleanPos,False);
+        if (ProcNode<>nil) and (ProcNode.Desc = ctnProcedureHead)
         and(CodeToolBoss.JumpToMethod(NewSource,
           NewX,NewY,BodySource,BodyX,BodyY,BodyTopLine,RevertableJump))
         then
