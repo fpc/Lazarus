@@ -277,6 +277,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property Glyph;
     property Layout;
     property MaxLength;
     property ParentBidiMode;
@@ -374,7 +375,7 @@ type
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property DirectInput;
-    // property Glyph;
+    property Glyph;
     property NumGlyphs;
     property Flat;
     property FocusOnButtonClick;
@@ -468,7 +469,7 @@ type
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property DirectInput;
-    // property Glyph;
+    property Glyph;
     property NumGlyphs;
     property Flat;
     property FocusOnButtonClick;
@@ -785,7 +786,7 @@ type
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property DirectInput;
-    // property Glyph;
+    property Glyph;
     property NumGlyphs;
     property Flat;
     property FocusOnButtonClick;
