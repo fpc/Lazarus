@@ -1423,9 +1423,14 @@ begin
   R.size.width := R.size.width - 1;
   R.size.height := R.size.height - 1;
 
-  CGContextBeginPath(CGContext);
-  CGContextAddRect(CGContext, R);
-  CGContextDrawPath(CGContext, kCGPathFillStroke);
+  CurrentBrush.Apply(Self, false); // apply current brush
+  try
+    CGContextBeginPath(CGContext);
+    CGContextAddRect(CGContext, R);
+    CGContextDrawPath(CGContext, kCGPathFillStroke);
+  finally
+    CurrentBrush.Apply(Self);
+  end;
 end;
 
 {------------------------------------------------------------------------------
