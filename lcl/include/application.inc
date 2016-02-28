@@ -1548,17 +1548,17 @@ begin
     try
       if ExceptionDialog=aedOkMessageBox then
       begin
-        MsgResult := mrOk;
-        MessageBox(PChar(msg), PChar(GetTitle), MB_OK + MB_ICONERROR);
+        MsgResult:=PromptUser(GetTitle, msg,
+          idDialogError, [idButtonOk], 0, idButtonCancel);
       end else
-        MsgResult:=MessageBox(PChar(
-          Format(rsPressOkToIgnoreAndRiskDataCorruptionPressCancelToK,
-                 [Msg, LineEnding+LineEnding, LineEnding])),
-          PChar(GetTitle), MB_OKCANCEL + MB_ICONERROR);
+        MsgResult:=PromptUser(GetTitle,
+          Format(rsPressOkToIgnoreAndRiskDataCorruptionPressAbortToK,
+                 [Msg, LineEnding+LineEnding, LineEnding]),
+          idDialogError, [idButtonOk, idButtonAbort], 0, idButtonCancel);
     finally
       EnableIdleHandler;
     end;
-    if MsgResult<>mrOk then
+    if MsgResult=idButtonAbort then
     begin
       Include(FFlags, AppNoExceptionMessages);
       HaltingProgram := True;
