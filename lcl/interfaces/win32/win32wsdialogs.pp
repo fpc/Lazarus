@@ -1190,8 +1190,11 @@ begin
     Title :=  UTF8ToUTF16(ACommonDialog.Title);
     lpszTitle := PWideChar(Title);
     ulFlags := BIF_RETURNONLYFSDIRS;
+    if not (ofCreatePrompt in Options) then
+      ulFlags := ulFlags + BIF_NONEWFOLDERBUTTON;
     if not (ofOldStyleDialog in Options) then
-       ulFlags := ulFlags + BIF_USENEWUI;
+      // better than flag BIF_USENEWUI, to hide editbox, it's not handy
+      ulFlags := ulFlags + BIF_NEWDIALOGSTYLE;
     lpfn := @BrowseForFolderCallback;
     // this value will be passed to callback proc as lpData
     lParam := Windows.LParam(PWideChar(InitialDirW));
