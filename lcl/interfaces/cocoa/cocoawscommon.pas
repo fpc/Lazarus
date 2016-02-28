@@ -755,7 +755,8 @@ begin
       Msg.Msg := CheckMouseButtonDown(Event,MButton);
 
       NotifyApplicationUserInput(Target, Msg.Msg);
-      Result := DeliverMessage(Msg) <> 0;
+      DeliverMessage(Msg);
+      Result := True;
 
       // TODO: Check if Cocoa has special context menu check event
       if (Event.type_ = NSRightMouseDown) and (GetTarget is TControl) then
@@ -767,7 +768,8 @@ begin
         ScreenMousePos(MousePos);
         MsgContext.XPos := Round(MousePos.X);
         MsgContext.YPos := Round(MousePos.Y);
-        Result := DeliverMessage(MsgContext) <> 0;
+        DeliverMessage(MsgContext);
+        Result := True;
       end;
     end;
     NSLeftMouseUp,
@@ -777,7 +779,8 @@ begin
       Msg.Msg := MSGKINDUP[MButton];
 
       NotifyApplicationUserInput(Target, Msg.Msg);
-      Result := DeliverMessage(Msg) <> 0;
+      DeliverMessage(Msg);
+      Result := True;
     end;
   end;
 
