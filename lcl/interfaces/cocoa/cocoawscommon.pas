@@ -30,7 +30,6 @@ type
       FBoundsReportedToChildren: boolean;
       FIsOpaque:boolean;
       FIsEventRouting:boolean;
-    function CheckMouseButtonDown(Event: NSEvent; AButton: Integer): Cardinal;
     function GetHasCaret: Boolean;
     procedure SetHasCaret(AValue: Boolean);
     function GetIsOpaque: Boolean;
@@ -120,9 +119,6 @@ type
       const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
-const
-  DblClickThreshold = 3;// max Movement between two clicks of a DblClick
-
 // Utility WS functions
 
 function EmbedInScrollView(AView: NSView): TCocoaScrollView;
@@ -131,6 +127,9 @@ implementation
 
 uses
   CocoaInt;
+
+var
+  LastMouse: TLastMouseInfo;
 
 {$I mackeycodes.inc}
 
@@ -677,26 +676,6 @@ begin
   LCLSendClickedMsg(Target);
 end;
 
-function TLCLCommonCallback.CheckMouseButtonDown(Event: NSEvent; AButton: Integer): Cardinal;
-const
-  // array of clickcount x buttontype
-  MSGKIND: array[0..3, 1..4] of Integer =
-  (
-    (LM_LBUTTONDOWN, LM_LBUTTONDBLCLK, LM_LBUTTONTRIPLECLK, LM_LBUTTONQUADCLK),
-    (LM_RBUTTONDOWN, LM_RBUTTONDBLCLK, LM_RBUTTONTRIPLECLK, LM_RBUTTONQUADCLK),
-    (LM_MBUTTONDOWN, LM_MBUTTONDBLCLK, LM_MBUTTONTRIPLECLK, LM_MBUTTONQUADCLK),
-    (LM_XBUTTONDOWN, LM_XBUTTONDBLCLK, LM_XBUTTONTRIPLECLK, LM_XBUTTONQUADCLK)
-  );
-var
-  ClickCount: Integer;
-begin
-  ClickCount := Event.clickCount;
-  if ClickCount > 4 then
-    ClickCount := 1;
-
-  Result := MSGKIND[AButton][ClickCount];
-end;
-
 function TLCLCommonCallback.MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False): Boolean;
 const
   MSGKINDUP: array[0..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP, LM_XBUTTONUP);
@@ -724,8 +703,6 @@ begin
     exit;
   end;
 
-  // idea of multi click implementation is taken from gtk
-
   FillChar(Msg, SizeOf(Msg), #0);
 
   MousePos := Event.locationInWindow;
@@ -752,7 +729,13 @@ begin
     NSRightMouseDown,
     NSOtherMouseDown:
     begin
-      Msg.Msg := CheckMouseButtonDown(Event,MButton);
+      Msg.Msg := CheckMouseButtonDownUp(FTarget,LastMouse,
+        FTarget.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,True);
+      case LastMouse.ClickCount of
+        2: Msg.Keys := msg.Keys or MK_DOUBLECLICK;
+        3: Msg.Keys := msg.Keys or MK_TRIPLECLICK;
+        4: Msg.Keys := msg.Keys or MK_QUADCLICK;
+      end;
 
       NotifyApplicationUserInput(Target, Msg.Msg);
       DeliverMessage(Msg);
@@ -776,7 +759,13 @@ begin
     NSRightMouseUp,
     NSOtherMouseUp:
     begin
-      Msg.Msg := MSGKINDUP[MButton];
+      Msg.Msg := CheckMouseButtonDownUp(FTarget,LastMouse,
+        FTarget.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,False);
+      case LastMouse.ClickCount of
+        2: Msg.Keys := msg.Keys or MK_DOUBLECLICK;
+        3: Msg.Keys := msg.Keys or MK_TRIPLECLICK;
+        4: Msg.Keys := msg.Keys or MK_QUADCLICK;
+      end;
 
       NotifyApplicationUserInput(Target, Msg.Msg);
       DeliverMessage(Msg);
