@@ -2991,6 +2991,7 @@ const
 
 var
   IsMultiClick: boolean;
+  TargetControl: TControl;
 begin
   Result := LM_NULL;
 
@@ -3022,10 +3023,16 @@ begin
       LastMouse.ClickCount := 1;
   end;
 
-  case LastMouse.ClickCount of
-    2: if not(csDoubleClicks in AWinControl.ControlStyle) then LastMouse.ClickCount := 1;
-    3: if not(csTripleClicks in AWinControl.ControlStyle) then LastMouse.ClickCount := 1;
-    4: if not(csQuadClicks in AWinControl.ControlStyle) then LastMouse.ClickCount := 1;
+  if LastMouse.ClickCount > 1 then
+  begin
+    TargetControl := AWinControl.ControlAtPos(AWinControl.ScreenToClient(AMousePos), [capfHasScrollOffset]);
+    if TargetControl=nil then
+      TargetControl := AWinControl;
+    case LastMouse.ClickCount of
+      2: if not(csDoubleClicks in TargetControl.ControlStyle) then LastMouse.ClickCount := 1;
+      3: if not(csTripleClicks in TargetControl.ControlStyle) then LastMouse.ClickCount := 1;
+      4: if not(csQuadClicks in TargetControl.ControlStyle) then LastMouse.ClickCount := 1;
+    end;
   end;
   LastMouse.Down := AMouseDown;
 
