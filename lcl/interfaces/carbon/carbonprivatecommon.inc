@@ -206,8 +206,6 @@ end;
 function CarbonCommon_Track(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
-const
-  MSGKIND: array[1..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP);
 var
   ActionUPP, OldActionUPP: ControlActionUPP;
   P: TPoint;
@@ -266,14 +264,13 @@ begin
 
   FillChar(Msg{%H-}, SizeOf(Msg), 0);
 
-  if  (MouseButton >= Low(MSGKIND)) and (MouseButton <= High(MSGKIND)) then
-    Msg.Msg := MSGKIND[MouseButton];
-
   P := AWidget.GetMousePos;
   Msg.XPos := P.X;
   Msg.YPos := P.Y;
   Msg.Keys := GetCarbonMsgKeyState;
-  case GetCarbonMouseClickCount(AEvent) of
+  Msg.Msg := CheckMouseButtonDownUp(AWidget.LCLObject, LastMouse,
+    AWidget.LCLObject.ClientToScreen(P), MouseButton, False);
+  case LastMouse.ClickCount of
     2: Msg.Keys := msg.Keys or MK_DOUBLECLICK;
     3: Msg.Keys := msg.Keys or MK_TRIPLECLICK;
     4: Msg.Keys := msg.Keys or MK_QUADCLICK;
