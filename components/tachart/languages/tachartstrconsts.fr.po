@@ -99,6 +99,10 @@ msgstr "Supprimer"
 msgid "Distance measurement"
 msgstr "Mesure des distances"
 
+#: tachartstrconsts.rsfieldseries
+msgid "Vector field series"
+msgstr ""
+
 #: tachartstrconsts.rsfunctionseries
 msgid "Function series"
 msgstr "Séries de fonctions"

@@ -99,6 +99,10 @@ msgstr "Удалить"
 msgid "Distance measurement"
 msgstr "Измерение расстояния"
 
+#: tachartstrconsts.rsfieldseries
+msgid "Vector field series"
+msgstr ""
+
 #: tachartstrconsts.rsfunctionseries
 msgid "Function series"
 msgstr "Диаграмма по функции"
@@ -204,3 +208,4 @@ msgstr "Невозможно переименовать компоненты: %s
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Редактор средств диаграмм"
+

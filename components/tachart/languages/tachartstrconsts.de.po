@@ -101,6 +101,10 @@ msgstr "Entf."
 msgid "Distance measurement"
 msgstr "Distanzmessung"
 
+#: tachartstrconsts.rsfieldseries
+msgid "Vector field series"
+msgstr "Vektorfeld-Diagramm"
+
 #: tachartstrconsts.rsfunctionseries
 msgid "Function series"
 msgstr "Funktions-Diagramm"

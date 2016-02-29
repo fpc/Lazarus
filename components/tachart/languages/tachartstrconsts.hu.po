@@ -99,6 +99,10 @@ msgstr "Törlés"
 msgid "Distance measurement"
 msgstr "Távolságmérés"
 
+#: tachartstrconsts.rsfieldseries
+msgid "Vector field series"
+msgstr ""
+
 #: tachartstrconsts.rsfunctionseries
 msgid "Function series"
 msgstr "Függvény"
@@ -204,3 +208,4 @@ msgstr "Nem sikerült átnevezni a komponenseket: %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Eszközök szerkesztése"
+

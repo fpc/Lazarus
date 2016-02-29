@@ -102,6 +102,10 @@ msgstr "Radera"
 msgid "Distance measurement"
 msgstr "Avståndsmätning"
 
+#: tachartstrconsts.rsfieldseries
+msgid "Vector field series"
+msgstr ""
+
 #: tachartstrconsts.rsfunctionseries
 msgid "Function series"
 msgstr "Funktionskurva"
