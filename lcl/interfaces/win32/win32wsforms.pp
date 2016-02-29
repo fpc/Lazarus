@@ -393,7 +393,7 @@ begin
   // general initialization of Params
   PrepareCreateWindow(AWinControl, AParams, Params);
   // show minimized modal window in taskbar not above start button. issue #29744
-  if (fsModal in TCustomForm(AWinControl).FormState) and (TCustomForm(AWinControl).PopupMode = pmNone) and
+  if (fsModal in TCustomForm(AWinControl).FormState) and (TCustomForm(AWinControl).PopupMode in [pmNone, pmAuto]) and
     (TCustomForm(AWinControl).BorderStyle <> bsNone) and (TCustomForm(AWinControl).PopupParent = nil) then
     Params.Parent := Windows.GetDesktopWindow;
 
