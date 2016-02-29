@@ -2396,6 +2396,8 @@ resourcestring
   lisSAMUnableToShowAbstractMethodsOfTheCurrentClassBecaus = 'Unable to show '
     +'abstract methods of the current class, because';
   lisCCOWarningCaption = 'Warning';
+  lisHintClickOnShowOptionsToFindOutWhereInheritedPaths = 'Hint: Click on "'
+    +'Show Options" to find out where inherited paths are coming from.';
   lisFileNotFound5 = 'File not found:%s%s';
   lisMovingTheseUnitsWillBreakTheirUsesSectionsSeeMessa = 'Moving these units '
     +'will break their uses sections. See Messages window for details.';

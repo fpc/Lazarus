@@ -76,7 +76,7 @@ implementation
 const
   cBrowseBtnSize = 50;
 
-function CheckSearchPath(const Context, ExpandedPath: string; Level: TCheckCompileOptionsMsgLvl): boolean;
+function CheckSearchPath(const Context, ExpandedPath: string; Level: TCheckCompileOptionsMsgLvl; Hint: string = ''): boolean;
 var
   CurPath: string;
   p: integer;
@@ -85,13 +85,15 @@ var
 begin
   Result := False;
 
+  if Hint<>'' then Hint:=#13#13+Hint;
+
   // check for *
   if Ord(Level) <= Ord(ccomlHints) then
   begin
     if System.Pos('*', ExpandedPath) > 0 then
     begin
       if IDEMessageDialog(lisHint, Format(
-        lisTheContainsAStarCharacterLazarusUsesThisAsNormalCh, [Context, LineEnding]),
+        lisTheContainsAStarCharacterLazarusUsesThisAsNormalCh, [Context, LineEnding])+Hint,
         mtWarning, [mbOK, mbCancel]) <> mrOk then
         exit;
     end;
@@ -110,7 +112,7 @@ begin
         if not DirPathExistsCached(CurPath) then
         begin
           if IDEMessageDialog(lisCCOWarningCaption, Format(
-            lisTheContainsANotExistingDirectory, [Context, LineEnding, CurPath]),
+            lisTheContainsANotExistingDirectory, [Context, LineEnding, CurPath])+Hint,
             mtWarning, [mbIgnore, mbCancel]) <> mrIgnore then
             Exit;
         end;
@@ -130,7 +132,7 @@ begin
         ErrorMsg := SpecialCharsToStr(HasChars);
       if ErrorMsg <> '' then
       begin
-        if IDEMessageDialog(lisCCOWarningCaption, Context + LineEnding + ErrorMsg,
+        if IDEMessageDialog(lisCCOWarningCaption, Context + LineEnding + ErrorMsg+Hint,
           mtWarning, [mbOK, mbCancel]) <> mrOk then
           exit;
       end;
@@ -162,7 +164,7 @@ var
     if NewParsedOutputDir<>'' then
       p:=RemoveSearchPaths(p,NewParsedOutputDir);
 
-    Result := CheckSearchPath(Context, p, Level);
+    Result := CheckSearchPath(Context, p, Level, lisHintClickOnShowOptionsToFindOutWhereInheritedPaths);
   end;
 
 var
