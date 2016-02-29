@@ -379,8 +379,10 @@ const
 var
   Widget: TQtMainWindow;
   R: TRect;
-  {$IFDEF HASX11}
+  {$IF DEFINED(HASX11) OR DEFINED(MSWINDOWS)}
   APopupParent: TCustomForm;
+  {$ENDIF}
+  {$IFDEF HASX11}
   ActiveWin: HWND;
   W: QWidgetH;
   {$ENDIF}
@@ -409,7 +411,11 @@ var
         GetQtBorderIcons(TCustomForm(AWinControl).BorderStyle,
           TCustomForm(AWinControl).BorderIcons));
       {$ELSE}
-      QWidget_setParent(AWidget, QApplication_desktop());
+      APopupParent := TCustomForm(AWinControl).GetRealPopupParent;
+      if (APopupParent <> nil) then
+        QWidget_setParent(AWidget, TQtWidget(APopupParent.Handle).Widget)
+      else
+        QWidget_setParent(AWidget, QApplication_desktop());
       {$IFDEF MSWINDOWS}
       QWidget_setWindowFlags(Widget.Widget, QtDialog or
         QtWindowSystemMenuHint or
