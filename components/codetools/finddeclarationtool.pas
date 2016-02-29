@@ -3054,10 +3054,11 @@ function TFindDeclarationTool.GetSmartHint(Node: TCodeTreeNode;
     CTCursorPos: TCodeXYPosition;
   begin
     MoveToLastIdentifierThroughDots(ExtTool);
-    if ExtTool.CleanPosToCaret(ExtTool.CurPos.StartPos,CTCursorPos) and
-       ExtTool.FindDeclaration(CTCursorPos,
-         DefaultFindSmartHintFlags+[fsfSearchSourceName],CTExprType,CTXYPos,CTTopLine) and
-       not((CTExprType.Desc=xtContext) and (CTExprType.Context.Node=nil) and (CTExprType.Context.Tool=nil))
+    if ExtTool.CleanPosToCaret(ExtTool.CurPos.StartPos,CTCursorPos)
+    and ExtTool.FindDeclaration(CTCursorPos,
+         DefaultFindSmartHintFlags+[fsfSearchSourceName],CTExprType,CTXYPos,CTTopLine)
+    and not((CTExprType.Desc=xtContext) and (CTExprType.Context.Node=nil) and (CTExprType.Context.Tool=nil))
+    and not((CTExprType.Context.Tool=Self) and (CTXYPos.X=XYPos.X) and (CTXYPos.Y=XYPos.Y)) // prevent endless loop
     then
       Result := CTExprType.Context.Tool.GetSmartHint(CTExprType.Context.Node, CTXYPos, False, False)
     else
