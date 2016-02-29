@@ -379,7 +379,7 @@ const
 var
   Widget: TQtMainWindow;
   R: TRect;
-  {$IF (DEFINED HASX11) OR DEFINED(MSWINDOWS)}
+  {$IF DEFINED (HASX11) OR DEFINED(MSWINDOWS)}
   APopupParent: TCustomForm;
   {$ENDIF}
   {$IFDEF HASX11}
