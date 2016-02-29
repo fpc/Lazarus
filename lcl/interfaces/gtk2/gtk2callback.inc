@@ -2114,8 +2114,8 @@ begin
     MessI.Keys := 0;
     case event^.Button of
       1: if not CheckMouseButtonDown(1, MK_LBUTTON) then Exit;
-      2: if not CheckMouseButtonDown(2, MK_MBUTTON) then Exit;
-      3: if not CheckMouseButtonDown(3, MK_RBUTTON) then Exit;
+      2: if not CheckMouseButtonDown(3, MK_MBUTTON) then Exit;
+      3: if not CheckMouseButtonDown(2, MK_RBUTTON) then Exit;
       8: if not CheckMouseButtonDown(4, MK_XBUTTON1) then Exit;
       9: if not CheckMouseButtonDown(4, MK_XBUTTON2) then Exit;
       else
@@ -2244,8 +2244,8 @@ begin
 
   case event^.Button of
     1: if not CheckMouseButtonUp(1, LM_LBUTTONUP) then Exit;
-    2: if not CheckMouseButtonUp(2, LM_MBUTTONUP) then Exit;
-    3: if not CheckMouseButtonUp(3, LM_RBUTTONUP) then exit;
+    2: if not CheckMouseButtonUp(3, LM_MBUTTONUP) then Exit;
+    3: if not CheckMouseButtonUp(2, LM_RBUTTONUP) then exit;
     8: if not CheckMouseButtonUp(4, LM_XBUTTONUP) then exit;
     9: if not CheckMouseButtonUp(4, LM_XBUTTONUP) then exit;
   else
