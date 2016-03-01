@@ -2,21 +2,22 @@
   This source is only used to compile and install the package.
  }
 
-unit ProjTemplates; 
+unit ProjTemplates;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-    ProjectTemplates, IDETemplateProject, frmTemplateVariables, 
+  ProjectTemplates, IDETemplateProject, frmTemplateVariables, 
   LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('IDETemplateProject', @IDETemplateProject.Register); 
-end; 
+  RegisterUnit('IDETemplateProject', @IDETemplateProject.Register);
+end;
 
 initialization
-  RegisterPackage('ProjTemplates', @Register); 
+  RegisterPackage('ProjTemplates', @Register);
 end.
