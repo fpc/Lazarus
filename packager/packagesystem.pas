@@ -5100,6 +5100,7 @@ begin
   // leave the unit case the same as the package name (e.g: package name LazReport, unit name lazreport)
   Src:='unit '+ PkgUnitName +';'+e
       +e
+      +'{$warn 5023 off : no warning about unused units}'+e
       +'interface'+e
       +e;
   Src:=BeautifyCodeOptions.BeautifyStatement(Src,0);
