@@ -168,6 +168,7 @@ var
   AForm: TCustomForm;
   i: Integer;
 begin
+  FAppMinimizing := True;
   // issue #26463
   if Assigned(Application) and Application.MainFormOnTaskBar
   and Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
@@ -188,6 +189,8 @@ begin
   end
   else
     Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+
+  FAppMinimizing := False;
 end;
 
 {------------------------------------------------------------------------------

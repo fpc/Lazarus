@@ -2279,6 +2279,11 @@ begin
     WM_IME_SETCONTEXT,
     WM_IME_STARTCOMPOSITION:
       SetLMessageAndParams(Msg, True);
+    WM_ACTIVATEAPP:
+    begin
+      if Application.MainFormOnTaskBar and not Win32WidgetSet.AppMinimizing then
+        RestorePopups;
+    end;
   else
     // pass along user defined messages
     if Msg >= WM_USER then

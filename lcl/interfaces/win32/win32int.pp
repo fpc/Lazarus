@@ -117,6 +117,7 @@ type
     // Assoc. windowproc also acts as handler for popup menus
     FAppHandle,
     FDockWndHandle: HWND;
+    FAppMinimizing: Boolean;
     FCommonControlsVersion: DWord;
 
     FMetrics: TNonClientMetrics;
@@ -147,6 +148,8 @@ type
     function CreateThemeServices: TThemeServices; override;
     function GetAppHandle: THandle; override;
     procedure SetAppHandle(const AValue: THandle); override;
+
+    property AppMinimizing: Boolean read FAppMinimizing; // true if application is minimizing itself
   public
     { Creates a callback of Lazarus message Msg for Sender }
     procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
