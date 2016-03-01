@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: guitestrunner.rsalltests
 msgid "All Tests"
@@ -66,77 +68,61 @@ msgid "Unit name: %s"
 msgstr "Имя модуля: %s"
 
 #: guitestrunner.sactcheckall
-#, fuzzy
-#| msgid "Check all Tests"
 msgid "Select all tests"
-msgstr "Отметить все тесты"
+msgstr "Выбрать все тесты"
 
 #: guitestrunner.sactcheckcurrentsuite
-#, fuzzy
-#| msgid "Check the Current Suite"
 msgid "Select current suite"
-msgstr "Отметить текущий набор"
+msgstr "Выбрать текущий набор"
 
 #: guitestrunner.sactcloseform
 msgid "Quit"
 msgstr "Выйти"
 
 #: guitestrunner.sactcloseformh
-#, fuzzy
-#| msgid "Quit Testting"
 msgid "Quit testing"
 msgstr "Завершить тестирование"
 
 #: guitestrunner.sactcopyalltoclipboard
 msgid "Copy text to clipboard"
-msgstr ""
+msgstr "Копировать текст в буфер обмена"
 
 #: guitestrunner.sactcopyalltoclipboardh
 msgid "Copy the entire text to clipboard"
-msgstr ""
+msgstr "Копировать весь текст в буфер обмена"
 
 #: guitestrunner.sactrunaction
-#, fuzzy
-#| msgid "&Run"
 msgid "&Run all"
-msgstr "&Запустить"
+msgstr "&Запустить все"
 
 #: guitestrunner.sactrunactionh
-#, fuzzy
-#| msgid "Run all checked test(s)"
 msgid "Run all checked tests"
-msgstr "Запустить все отмеченные тесты"
+msgstr "Запустить все выбранные тесты"
 
 #: guitestrunner.sactrunhighlightedtest
-#, fuzzy
-#| msgid "Run highlighted test"
 msgctxt "guitestrunner.sactrunhighlightedtest"
 msgid "Run selected"
-msgstr "Запустить выделенный тест"
+msgstr "Запустить выбранный"
 
 #: guitestrunner.sactrunhighlightedtesth
 msgid "Run selected test"
-msgstr ""
+msgstr "Запустить выбранный тест"
 
 #: guitestrunner.sactsaveresults
 msgid "Save results"
-msgstr ""
+msgstr "Сохранить результаты"
 
 #: guitestrunner.sactsaveresultsh
 msgid "Save XML results to file"
-msgstr ""
+msgstr "Сохранить результаты в формате XML в файл"
 
 #: guitestrunner.sactuncheckall
-#, fuzzy
-#| msgid "Uncheck all tests"
 msgid "Deselect all tests"
-msgstr "Снять отметку со всех тестов"
+msgstr "Снять выбор со всех тестов"
 
 #: guitestrunner.sactuncheckcurrentsuite
-#, fuzzy
-#| msgid "Uncheck the Current Suite"
 msgid "Deselect current suite"
-msgstr "Снять отметку с текущего набора"
+msgstr "Снять выбор с текущего набора"
 
 #: guitestrunner.sbtnclose
 msgid "Close"
@@ -157,15 +143,15 @@ msgstr "FPCUnit - модульное тестирование"
 
 #: guitestrunner.smiactions
 msgid "Actions"
-msgstr ""
+msgstr "Действия"
 
 #: guitestrunner.smiedit
 msgid "Edit"
-msgstr ""
+msgstr "Правка"
 
 #: guitestrunner.smitesttree
 msgid "Test tree"
-msgstr ""
+msgstr "Тесты"
 
 #: guitestrunner.stshresults
 msgid "Results XML"
