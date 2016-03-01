@@ -2,8 +2,9 @@
   This source is only used to compile and install the package.
  }
 
-unit LazarusPackageManager; 
+unit LazarusPackageManager;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
@@ -13,11 +14,11 @@ uses
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('LazPackageManagerIntf', @LazPackageManagerIntf.Register); 
-end; 
+  RegisterUnit('LazPackageManagerIntf', @LazPackageManagerIntf.Register);
+end;
 
 initialization
-  RegisterPackage('LazarusPackageManager', @Register); 
+  RegisterPackage('LazarusPackageManager', @Register);
 end.

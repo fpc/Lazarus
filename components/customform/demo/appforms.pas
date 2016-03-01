@@ -1,20 +1,21 @@
 { This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+  This source is only used to compile and install the package.
  }
 
-unit appforms; 
+unit appforms;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  AppForm, dbappform, regappforms, LazarusPackageIntf; 
+  AppForm, dbappform, regappforms, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-end; 
+end;
 
 initialization
-  RegisterPackage('appforms', @Register); 
+  RegisterPackage('appforms', @Register);
 end.

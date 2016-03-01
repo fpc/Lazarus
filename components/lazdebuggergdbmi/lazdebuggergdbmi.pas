@@ -4,12 +4,13 @@
 
 unit LazDebuggerGdbmi;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  CmdLineDebugger, DebugUtils, GDBTypeInfo, GDBMIMiscClasses, IDEMiniLibC, GDBMIDebugger, 
-  GDBMIDebugInstructions, GDBMIServerDebugger, SSHGDBMIDebugger, GdbmiStringConstants, 
-  LazarusPackageIntf;
+  CmdLineDebugger, DebugUtils, GDBTypeInfo, GDBMIMiscClasses, IDEMiniLibC, 
+  GDBMIDebugger, GDBMIDebugInstructions, GDBMIServerDebugger, 
+  SSHGDBMIDebugger, GdbmiStringConstants, LazarusPackageIntf;
 
 implementation
 

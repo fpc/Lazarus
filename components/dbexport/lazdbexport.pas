@@ -1,22 +1,23 @@
-{ Este arquivo foi automaticamente criado pelo Lazarus. Não edite!
-  Este fonte é usado apenas para compilar e instalar o pacote.
+{ This file was automatically created by Lazarus. Do not edit!
+  This source is only used to compile and install the package.
  }
 
-unit lazdbexport; 
+unit lazdbexport;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-    regdbexport, fpdataexporter, frmSelectExportFormat, frmexportprogress, 
+  regdbexport, fpdataexporter, frmSelectExportFormat, frmexportprogress, 
   frmBaseConfigExport, sdb_consts, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('regdbexport', @regdbexport.Register); 
-end; 
+  RegisterUnit('regdbexport', @regdbexport.Register);
+end;
 
 initialization
-  RegisterPackage('lazdbexport', @Register); 
+  RegisterPackage('lazdbexport', @Register);
 end.

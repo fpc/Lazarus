@@ -1,9 +1,10 @@
-{ This file was automatically created by Lazarus. do not edit!
+{ This file was automatically created by Lazarus. Do not edit!
   This source is only used to compile and install the package.
  }
 
-unit lazc; 
+unit LazC;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
@@ -11,11 +12,11 @@ uses
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('LazCUtil', @LazCUtil.Register); 
-end; 
+  RegisterUnit('LazCUtil', @LazCUtil.Register);
+end;
 
 initialization
-  RegisterPackage('LazC', @Register); 
+  RegisterPackage('LazC', @Register);
 end.

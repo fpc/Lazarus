@@ -2,21 +2,22 @@
   This source is only used to compile and install the package.
  }
 
-unit H2PasWizard; 
+unit H2PasWizard;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-    H2PasConvert, H2PasDlg, H2PasStrConsts, IDETextConvListEdit, 
+  H2PasConvert, H2PasDlg, H2PasStrConsts, IDETextConvListEdit, 
   IDETextConvListAdd, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('H2PasDlg', @H2PasDlg.Register); 
-end; 
+  RegisterUnit('H2PasDlg', @H2PasDlg.Register);
+end;
 
 initialization
-  RegisterPackage('H2PasWizard', @Register); 
+  RegisterPackage('H2PasWizard', @Register);
 end.

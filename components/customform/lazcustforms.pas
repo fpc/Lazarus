@@ -1,21 +1,22 @@
 { This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+  This source is only used to compile and install the package.
  }
 
-unit LazCustForms; 
+unit LazCustForms;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  custforms, LazarusPackageIntf; 
+  custforms, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('custforms', @custforms.Register); 
-end; 
+  RegisterUnit('custforms', @custforms.Register);
+end;
 
 initialization
-  RegisterPackage('LazCustForms', @Register); 
+  RegisterPackage('LazCustForms', @Register);
 end.
