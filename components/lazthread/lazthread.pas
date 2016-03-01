@@ -1,21 +1,22 @@
 { This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+  This source is only used to compile and install the package.
  }
 
-unit lazthread; 
+unit lazthread;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  RegLazThread, ThreadOptionsDialog, LazarusPackageIntf; 
+  RegLazThread, ThreadOptionsDialog, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('RegLazThread', @RegLazThread.Register); 
-end; 
+  RegisterUnit('RegLazThread', @RegLazThread.Register);
+end;
 
 initialization
-  RegisterPackage('lazthread', @Register); 
+  RegisterPackage('lazthread', @Register);
 end.

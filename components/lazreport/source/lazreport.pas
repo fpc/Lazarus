@@ -4,6 +4,7 @@
 
 unit lazreport;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
@@ -13,7 +14,7 @@ uses
   LR_GEdit, LR_GrpEd, LR_IFlds, LR_Pars, LR_pgopt, LR_PGrid, LR_PrDlg, 
   LR_Prntr, LR_progr, lr_propedit, LR_Register, LR_RRect, LR_Shape, LR_Utils, 
   LR_Var, LR_Vared, LR_View, LR_Newrp, Barcode, LR_DBRel, LR_DBComponent, 
-  lr_hyphen, LR_Intrp, fr3tolrf, lr_design_ins_filed, lr_previewtoolsabstract, 
+  lr_hyphen, LR_Intrp, fr3tolrf, lr_design_ins_filed, lr_PreviewToolsAbstract, 
   lr_CrossArray, lr_CrossTab, lr_CrossTabEditor, LazarusPackageIntf;
 
 implementation
