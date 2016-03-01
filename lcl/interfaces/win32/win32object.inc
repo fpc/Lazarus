@@ -169,6 +169,14 @@ var
   i: Integer;
 begin
   // issue #26463
+  if Assigned(Application) and Application.MainFormOnTaskBar
+  and Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+  begin
+    HidePopups(Application.MainFormHandle);
+    FLastMainFormState := Application.MainForm.WindowState;
+    Application.MainForm.WindowState := wsMinimized;
+  end
+  else
   if Assigned(Application) and (Application.ModalLevel > 0) then
   begin
     for i := Screen.CustomFormZOrderCount - 1 downto 0 do
@@ -178,9 +186,7 @@ begin
         ShowWindow(AForm.Handle, SW_SHOWMINIMIZED);
     end;
     ShowWindow(Win32WidgetSet.AppHandle, SW_SHOWMINNOACTIVE);
-  end else
-  if Assigned(Application) and Application.MainFormOnTaskBar then
-    Windows.SendMessage(Application.MainFormHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0)
+  end
   else
     Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 end;
@@ -193,11 +199,22 @@ end;
   Restore minimized whole application from taskbar
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppRestore;
+const
+  SWSHOW: array[TWindowState] of Cardinal = (SW_SHOWNORMAL, SW_SHOWMINIMIZED, SW_SHOWMAXIMIZED, SW_SHOWMAXIMIZED);
 var
   AForm: TCustomForm;
   i: Integer;
 begin
   // issue #26463
+  if Assigned(Application) and Application.MainFormOnTaskBar
+  and Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+  begin
+    ShowWindow(Application.MainForm.Handle, SWSHOW[FLastMainFormState]);
+    RestorePopups;
+    if (Screen.ActiveControl<>nil) and Screen.ActiveControl.HandleAllocated then
+      SetFocus(Screen.ActiveControl.Handle);
+  end
+  else
   if Assigned(Application) and (Application.ModalLevel > 0) then
   begin
     for i := Screen.CustomFormZOrderCount - 1 downto 0 do
@@ -209,9 +226,7 @@ begin
       end;
     end;
     ShowWindow(FAppHandle, SW_RESTORE);
-  end else
-  if Assigned(Application) and Application.MainFormOnTaskBar then
-    Windows.SendMessage(Application.MainFormHandle, WM_SYSCOMMAND, SC_RESTORE, 0)
+  end
   else
     Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_RESTORE, 0);
 end;

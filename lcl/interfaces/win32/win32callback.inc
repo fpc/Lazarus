@@ -925,6 +925,7 @@ begin
   else
   if Assigned(lWinControl) and (lWinControl = Application.MainForm) then
   begin
+    Win32WidgetSet.FLastMainFormState := Application.MainForm.WindowState;
     PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
     WinProcess := False;
     Application.IntfAppMinimize;

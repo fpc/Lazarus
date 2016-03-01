@@ -134,6 +134,8 @@ type
     FOnAsyncSocketMsg: TSocketEvent;
     FDotsPatternBitmap: HBitmap;
 
+    FLastMainFormState: TWindowState;
+
     function GetDotsPatternBitmap: HBitmap;
 
     { event handler helper functions }
