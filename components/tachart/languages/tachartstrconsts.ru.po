@@ -101,7 +101,7 @@ msgstr "Измерение расстояния"
 
 #: tachartstrconsts.rsfieldseries
 msgid "Vector field series"
-msgstr ""
+msgstr "Диаграмма с векторным полем"
 
 #: tachartstrconsts.rsfunctionseries
 msgid "Function series"
