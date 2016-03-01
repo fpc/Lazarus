@@ -322,6 +322,7 @@ var
   MsgID: integer;
   Tool: TCodeTool;
   Code: TCodeBuffer;
+  Comment: String;
 begin
   if not IsApplicable(Msg,MsgID,Tool) then exit;
 
@@ -336,7 +337,8 @@ begin
     exit;
   end;
 
-  if not CodeToolBoss.AddUnitWarnDirective(Code,IntToStr(MsgID),true) then
+  Comment:=' : '+TIDEFPCParser.GetFPCMsgPattern(Msg);
+  if not CodeToolBoss.AddUnitWarnDirective(Code,IntToStr(MsgID),Comment,true) then
   begin
     DebugLn(['TQuickFix_HideWithCompilerDirective CodeToolBoss.AddUnitWarnDirective failed']);
     LazarusIDE.DoJumpToCodeToolBossError;

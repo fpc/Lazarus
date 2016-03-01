@@ -280,7 +280,7 @@ type
     function AddIncludeDirectiveForInit(const Filename: string;
           SourceChangeCache: TSourceChangeCache; const NewSrc: string = ''
           ): boolean;
-    function AddUnitWarnDirective(WarnID: string; TurnOn: boolean;
+    function AddUnitWarnDirective(WarnID, Comment: string; TurnOn: boolean;
           SourceChangeCache: TSourceChangeCache): boolean;
     function FixIncludeFilenames(Code: TCodeBuffer;
           SourceChangeCache: TSourceChangeCache;
@@ -6483,13 +6483,12 @@ begin
   Result:=true;
 end;
 
-function TStandardCodeTool.AddUnitWarnDirective(WarnID: string;
+function TStandardCodeTool.AddUnitWarnDirective(WarnID, Comment: string;
   TurnOn: boolean; SourceChangeCache: TSourceChangeCache): boolean;
 const
   DirectiveFlagValue: array[boolean] of string = ('on','off');
 var
-  ACleanPos, DirEndPos, InsertStartPos,
-    MaxPos: Integer;
+  ACleanPos, DirEndPos, InsertStartPos, MaxPos: Integer;
   Node: TCodeTreeNode;
   p, IDStartPos, IDEndPos, ParamPos: PChar;
   NewCode: String;
@@ -6500,6 +6499,14 @@ begin
   InsertStartPos:=0;
   BuildTree(lsrMainUsesSectionStart);
   SourceChangeCache.MainScanner:=Scanner;
+
+  // fix comment
+  if Comment<>'' then begin
+    for ACleanPos:=1 to length(Comment) do
+      if Comment[ACleanPos] in [#0..#8,#11,#12,#14..#31,'{','}'] then
+        Comment[ACleanPos]:='?';
+    if not (Comment[1] in [' ',#9,#10,#13]) then Comment:=' '+Comment;
+  end;
 
   MaxPos:=0;
   Node:=Tree.Root.NextBrother;
@@ -6551,7 +6558,7 @@ begin
 
   // there was no such directive yet -> find nice insert pos
   InsertStartPos:=FindLineEndOrCodeInFrontOfPosition(MaxPos,true,true);
-  NewCode:='{$WARN '+WarnID+' '+DirectiveFlagValue[TurnOn]+'}';
+  NewCode:='{$WARN '+WarnID+' '+DirectiveFlagValue[TurnOn]+Comment+'}';
   if not SourceChangeCache.Replace(gtNewLine,gtNewLine,
     InsertStartPos,InsertStartPos,NewCode)
   then
