@@ -1483,7 +1483,7 @@
       </element>
 <!-- enumeration type Visibility: default -->
       <element name="TPopupMode">
-        <short>Defines where popup menus shall appear.</short>
+        <short>Defines the parent handling for forms and dialogs.</short>
         <descr>
         </descr>
         <seealso>
