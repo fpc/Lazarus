@@ -933,6 +933,7 @@ begin
   begin
     // issue #26463
     PLMsg^.Result := 1;
+    WinProcess := False;
     Win32WidgetSet.AppMinimize;
   end;
 end;
