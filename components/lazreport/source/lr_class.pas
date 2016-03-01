@@ -46,7 +46,7 @@ const
   flBandOnFirstPage        = $10;
   flBandOnLastPage         = $20;
   flBandRepeatHeader       = $40;
-  flBandPrintChildIfNotVisible = $80;
+  flBandPrintChildIfNotVisible = $100;
 
   flPictCenter             = 2;
   flPictRatio              = 4;
@@ -570,6 +570,7 @@ type
     function  GetTitleRect: TRect;
     function  TitleSize: Integer;
     procedure CalcTitleSize;
+    procedure FixPrintChildIfNotVisible;
   protected
     procedure SetHeight(const AValue: Double); override;
     procedure SetVisible(AValue: Boolean);override;
@@ -1460,8 +1461,9 @@ const
     //                         on TfrView, used to extend export facilities
     // version 2.6: lazreport: added to binary stream Tag property on TfrView
     // version 2.7: lazreport: added to binary stream FOnClick, FOnMouseEnter, FOnMouseLeave, FCursor property on TfrMemoView
-    // version 2.8. lazreport: added support for child bands
-    // version 2.9. lazreport: added support LineSpacing and GapX, GapY
+    // version 2.8: lazreport: added support for child bands
+    // version 2.9: lazreport: added support LineSpacing and GapX, GapY
+    // version 3.0: lazreport: decoupled flHideZeros and flBandPrintChildIfNotVisible
 
   frSpecCount = 9;
   frSpecFuncs: Array[0..frSpecCount - 1] of String = ('PAGE#', '',
@@ -5087,6 +5089,7 @@ begin
     fDataSetStr:=ReadString(Stream);
     if frVersion>=28 then
       fChild :=ReadString(Stream);
+    fixPrintChildIfNotVisible;
   end else
   begin
     if StreamMode=smDesigning then begin
@@ -5104,6 +5107,7 @@ begin
   FCondition := XML.GetValue(Path+'Condition/Value', ''); // todo chk
   FDatasetStr := XML.GetValue(Path+'DatasetStr/Value', ''); // todo chk
   FChild := XML.GetValue(Path+'Child/Value', '');
+  FixPrintChildIfNotVisible;
 end;
 
 procedure TfrBandView.SaveToStream(Stream: TStream);
@@ -5462,6 +5466,15 @@ begin
       if W>MaxTitleSize then
         MaxTitleSize := W;
     end;
+  end;
+end;
+
+procedure TfrBandView.FixPrintChildIfNotVisible;
+begin
+  if ((frVersion=28) or (frVersion=29)) and (flags and $80 <> 0) then
+  begin
+    flags := flags and not $80;
+    flags := flags or flBandPrintChildIfNotVisible;
   end;
 end;
 
@@ -10150,8 +10163,8 @@ begin
       end;
     end;
   end;
-
-  if Assigned(CurView) and (CurView.Flags and flHideZeros <> 0) then
+  //check if CurView is TfrBandView to avoid clash with flBandPrintChildIfNotVisible. Issue 29313
+  if Assigned(CurView) and ((CurView.Flags and flHideZeros <> 0) and not (CurView is TfrBandView)) then
   begin
     if TVarData(aValue).VType in [varSmallInt, varInteger, varCurrency,
        varDecimal, varShortInt, varByte, varWord, varLongWord, varInt64,
