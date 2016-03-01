@@ -3023,16 +3023,23 @@ begin
       LastMouse.ClickCount := 1;
   end;
 
-  if LastMouse.ClickCount > 1 then
-  begin
-    TargetControl := AWinControl.ControlAtPos(AWinControl.ScreenToClient(AMousePos), [capfHasScrollOffset]);
-    if TargetControl=nil then
-      TargetControl := AWinControl;
-    case LastMouse.ClickCount of
-      2: if not(csDoubleClicks in TargetControl.ControlStyle) then LastMouse.ClickCount := 1;
-      3: if not(csTripleClicks in TargetControl.ControlStyle) then LastMouse.ClickCount := 1;
-      4: if not(csQuadClicks in TargetControl.ControlStyle) then LastMouse.ClickCount := 1;
+  if not(csDesigning in AWinControl.ComponentState) then
+  begin // runtime - handle multi clicks according to ControlStyle
+    if LastMouse.ClickCount > 1 then
+    begin
+      TargetControl := AWinControl.ControlAtPos(AWinControl.ScreenToClient(AMousePos), [capfHasScrollOffset]);
+      if TargetControl=nil then
+        TargetControl := AWinControl;
+      case LastMouse.ClickCount of
+        2: if not(csDoubleClicks in TargetControl.ControlStyle) then LastMouse.ClickCount := 1;
+        3: if not(csTripleClicks in TargetControl.ControlStyle) then LastMouse.ClickCount := 1;
+        4: if not(csQuadClicks in TargetControl.ControlStyle) then LastMouse.ClickCount := 1;
+      end;
     end;
+  end else
+  begin // design time, allow only double clicks
+    if LastMouse.ClickCount > 2 then
+      LastMouse.ClickCount := 2;
   end;
   LastMouse.Down := AMouseDown;
 
