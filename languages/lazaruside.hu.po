@@ -9623,6 +9623,10 @@ msgstr "A tipp az elem nevénél megjeleníti annak leírását."
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Tipp: Ellenőrizze, hogy két csomag tartalmaz-e egyforma nevű unit-ot."
 
+#: lazarusidestrconsts.lishintclickonshowoptionstofindoutwhereinheritedpaths
+msgid "Hint: Click on \"Show Options\" to find out where inherited paths are coming from."
+msgstr ""
+
 #: lazarusidestrconsts.lishints
 msgid ", Hints: %s"
 msgstr ", Tippek: %s"

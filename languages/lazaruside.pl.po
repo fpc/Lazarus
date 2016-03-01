@@ -9977,6 +9977,10 @@ msgstr "Podpowiedź przy nazwie właściwości pokaże zawarty opis."
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr ""
 
+#: lazarusidestrconsts.lishintclickonshowoptionstofindoutwhereinheritedpaths
+msgid "Hint: Click on \"Show Options\" to find out where inherited paths are coming from."
+msgstr ""
+
 #: lazarusidestrconsts.lishints
 msgid ", Hints: %s"
 msgstr ""

@@ -9803,6 +9803,10 @@ msgstr ""
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "ヒント： ２つのパッケージが同じ名前のユニットを含んでいないかチェックしてください。"
 
+#: lazarusidestrconsts.lishintclickonshowoptionstofindoutwhereinheritedpaths
+msgid "Hint: Click on \"Show Options\" to find out where inherited paths are coming from."
+msgstr ""
+
 #: lazarusidestrconsts.lishints
 msgid ", Hints: %s"
 msgstr ""

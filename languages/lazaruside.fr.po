@@ -9626,6 +9626,10 @@ msgstr "Une bulle d'aide près du nom de la propriété la décrit."
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Suggestion : vérifiez si deux paquets contiennent une unité du même nom."
 
+#: lazarusidestrconsts.lishintclickonshowoptionstofindoutwhereinheritedpaths
+msgid "Hint: Click on \"Show Options\" to find out where inherited paths are coming from."
+msgstr ""
+
 #: lazarusidestrconsts.lishints
 msgid ", Hints: %s"
 msgstr " - Conseils : %s"

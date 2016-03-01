@@ -9625,6 +9625,10 @@ msgstr "Pokyn u jména vlastnosti ukazuje její popis."
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Tip: Zkontrolujte, zda dva balíčky neobsahují jednotku se stejným jménem."
 
+#: lazarusidestrconsts.lishintclickonshowoptionstofindoutwhereinheritedpaths
+msgid "Hint: Click on \"Show Options\" to find out where inherited paths are coming from."
+msgstr ""
+
 #: lazarusidestrconsts.lishints
 msgid ", Hints: %s"
 msgstr ", Pokynů:%s"
