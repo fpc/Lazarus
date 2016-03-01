@@ -1,21 +1,22 @@
 { This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+  This source is only used to compile and install the package.
  }
 
-unit messagecomposerpkg; 
+unit messagecomposerpkg;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  MessageComposer, LazarusPackageIntf; 
+  MessageComposer, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('MessageComposer', @MessageComposer.Register); 
-end; 
+  RegisterUnit('MessageComposer', @MessageComposer.Register);
+end;
 
 initialization
-  RegisterPackage('messagecomposerpkg', @Register); 
+  RegisterPackage('messagecomposerpkg', @Register);
 end.
