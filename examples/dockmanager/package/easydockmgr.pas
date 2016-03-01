@@ -2,20 +2,14 @@
   This source is only used to compile and install the package.
  }
 
-unit EasyDockMgr; 
+unit EasyDockMgr;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-    EasyDockSite, fDockBook, fFloatingSite, uMiniRestore, uMakeSite, 
-  LazarusPackageIntf;
+  EasyDockSite, fDockBook, fFloatingSite, uMiniRestore, uMakeSite;
 
 implementation
 
-procedure Register; 
-begin
-end; 
-
-initialization
-  RegisterPackage('EasyDockMgr', @Register); 
 end.

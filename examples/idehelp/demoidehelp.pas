@@ -4,6 +4,7 @@
 
 unit DemoIDEHelp;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses

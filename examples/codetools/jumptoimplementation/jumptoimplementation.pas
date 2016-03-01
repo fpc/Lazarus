@@ -1,21 +1,22 @@
 { This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+  This source is only used to compile and install the package.
  }
 
-unit JumpToImplementation; 
+unit JumpToImplementation;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  CodeToolsExample1, LazarusPackageIntf; 
+  CodeToolsExample1, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('CodeToolsExample1', @CodeToolsExample1.Register); 
-end; 
+  RegisterUnit('CodeToolsExample1', @CodeToolsExample1.Register);
+end;
 
 initialization
-  RegisterPackage('JumpToImplementation', @Register); 
+  RegisterPackage('JumpToImplementation', @Register);
 end.

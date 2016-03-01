@@ -1,21 +1,22 @@
 { This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+  This source is only used to compile and install the package.
  }
 
-unit exploreidemenu; 
+unit exploreidemenu;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  frmExploreMenu, LazarusPackageIntf; 
+  frmExploreMenu, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('frmExploreMenu', @frmExploreMenu.Register); 
-end; 
+  RegisterUnit('frmExploreMenu', @frmExploreMenu.Register);
+end;
 
 initialization
-  RegisterPackage('exploreidemenu', @Register); 
+  RegisterPackage('exploreidemenu', @Register);
 end.
