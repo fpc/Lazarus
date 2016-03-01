@@ -144,6 +144,16 @@ type
     procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
 
+  { TQuickFix_HideWithCompilerDirective - hide with compiler directive $warn <id> off }
+
+  TQuickFix_HideWithCompilerDirective = class(TMsgQuickFix)
+  public
+    function IsApplicable(Msg: TMessageLine; out MsgID: integer;
+      out Tool: TCodeTool): boolean;
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+  end;
+
   { TIDEQuickFixes }
 
   TIDEQuickFixes = class(TMsgQuickFixes)
@@ -267,6 +277,74 @@ var
 begin
   Result:=GetMsgSrcPosOfIdentifier(Msg,CurIdentifier,Code,Tool,CleanPos,Node)
      and (CompareIdentifiers(PChar(CurIdentifier),PChar(Identifier))=0);
+end;
+
+{ TQuickFix_HideWithCompilerDirective }
+
+function TQuickFix_HideWithCompilerDirective.IsApplicable(Msg: TMessageLine;
+  out MsgID: integer; out Tool: TCodeTool): boolean;
+var
+  CleanPos: integer;
+  Node: TCodeTreeNode;
+  Code: TCodeBuffer;
+begin
+  Result:=false;
+  MsgID:=0;
+  Tool:=nil;
+  if (Msg.Urgency>=mluError)
+  or (Msg.SubTool<>SubToolFPC)
+  or (Msg.MsgID=0)
+  then exit;
+  MsgID:=Msg.MsgID;
+  GetMsgCodetoolPos(Msg,Code,Tool,CleanPos,Node);
+  Result:=(Tool<>nil);
+end;
+
+procedure TQuickFix_HideWithCompilerDirective.CreateMenuItems(
+  Fixes: TMsgQuickFixes);
+var
+  i, MsgID: Integer;
+  Msg: TMessageLine;
+  Tool: TCodeTool;
+  aCaption: String;
+begin
+  for i:=0 to Fixes.LineCount-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,MsgID,Tool) then continue;
+    aCaption:='Hide message by inserting {$warn '+IntToStr(MsgID)+' off} to unit "'+ExtractFilename(Tool.MainFilename)+'"';
+    Fixes.AddMenuItem(Self,Msg,aCaption);
+  end;
+end;
+
+procedure TQuickFix_HideWithCompilerDirective.QuickFix(Fixes: TMsgQuickFixes;
+  Msg: TMessageLine);
+var
+  MsgID: integer;
+  Tool: TCodeTool;
+  Code: TCodeBuffer;
+begin
+  if not IsApplicable(Msg,MsgID,Tool) then exit;
+
+  if not LazarusIDE.BeginCodeTools then begin
+    DebugLn(['TQuickFix_HideWithCompilerDirective failed because IDE busy']);
+    exit;
+  end;
+
+  Code:=CodeToolBoss.LoadFile(Tool.MainFilename,true,false);
+  if Code=nil then begin
+    debugln(['TQuickFix_HideWithCompilerDirective.QuickFix LoadFile failed: ',Tool.MainFilename]);
+    exit;
+  end;
+
+  if not CodeToolBoss.AddUnitWarnDirective(Code,IntToStr(MsgID),true) then
+  begin
+    DebugLn(['TQuickFix_HideWithCompilerDirective CodeToolBoss.AddUnitWarnDirective failed']);
+    LazarusIDE.DoJumpToCodeToolBossError;
+    exit;
+  end;
+
+  // success
+  Msg.MarkFixed;
 end;
 
 { TQuickFixLocalVarNotInitialized_AddAssignment }
@@ -983,6 +1061,7 @@ begin
 
   // add as last (no fix, just hide message)
   IDEQuickFixes.RegisterQuickFix(TQuickFix_HideWithIDEDirective.Create);
+  IDEQuickFixes.RegisterQuickFix(TQuickFix_HideWithCompilerDirective.Create);
   IDEQuickFixes.RegisterQuickFix(TQuickFix_HideWithCompilerOption.Create);
 end;
 
