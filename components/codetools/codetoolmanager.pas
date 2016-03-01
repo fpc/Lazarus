@@ -394,6 +394,8 @@ type
           const NewSrc: string = ''): boolean; deprecated;
     function AddIncludeDirectiveForInit(Code: TCodeBuffer; const Filename: string;
           const NewSrc: string = ''): boolean;
+    function AddUnitWarnDirective(Code: TCodeBuffer; aParam: string;
+          TurnOn: boolean): boolean;
     function RemoveDirective(Code: TCodeBuffer; NewX, NewY: integer;
           RemoveEmptyIFs: boolean): boolean;
     function FixIncludeFilenames(Code: TCodeBuffer; Recursive: boolean;
@@ -3276,6 +3278,21 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.AddIncludeDirectiveForInit(Filename,SourceChangeCache,NewSrc);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.AddUnitWarnDirective(Code: TCodeBuffer;
+  aParam: string; TurnOn: boolean): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn(['TCodeToolManager.AddUnitWarnDirective A ',Code.Filename,' aParam="',aParam,'" TurnOn=',TurnOn]);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.AddUnitWarnDirective(aParam,TurnOn,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
