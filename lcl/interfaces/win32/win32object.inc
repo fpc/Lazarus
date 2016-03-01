@@ -173,7 +173,6 @@ begin
   and Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
   begin
     HidePopups(Application.MainFormHandle);
-    FLastMainFormState := Application.MainForm.WindowState;
     Application.MainForm.WindowState := wsMinimized;
   end
   else
@@ -199,8 +198,6 @@ end;
   Restore minimized whole application from taskbar
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppRestore;
-const
-  SWSHOW: array[TWindowState] of Cardinal = (SW_SHOWNORMAL, SW_SHOWMINIMIZED, SW_SHOWMAXIMIZED, SW_SHOWMAXIMIZED);
 var
   AForm: TCustomForm;
   i: Integer;
@@ -209,7 +206,7 @@ begin
   if Assigned(Application) and Application.MainFormOnTaskBar
   and Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
   begin
-    ShowWindow(Application.MainForm.Handle, SWSHOW[FLastMainFormState]);
+    ShowWindow(Application.MainForm.Handle, SW_RESTORE);
     RestorePopups;
     if (Screen.ActiveControl<>nil) and Screen.ActiveControl.HandleAllocated then
       SetFocus(Screen.ActiveControl.Handle);
