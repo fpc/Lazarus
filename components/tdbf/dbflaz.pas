@@ -2,8 +2,9 @@
   This source is only used to compile and install the package.
  }
 
-unit DBFLaz; 
+unit DBFLaz;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
@@ -11,11 +12,11 @@ uses
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('RegisterDBF', @RegisterDBF.Register); 
-end; 
+  RegisterUnit('RegisterDBF', @RegisterDBF.Register);
+end;
 
 initialization
-  RegisterPackage('DBFLaz', @Register); 
+  RegisterPackage('DBFLaz', @Register);
 end.
