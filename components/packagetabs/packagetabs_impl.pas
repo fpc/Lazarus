@@ -50,6 +50,7 @@ type
   TGroupTabLabel = class(TLabel)
   private
     FLeftClickPopupBlock: QWord;
+    FOnCloseAllFiles: TNotifyEvent;
   protected
     procedure CalculatePreferredSize(var PreferredWidth,
       PreferredHeight: integer; WithThemeSpace: Boolean); override;
@@ -58,6 +59,8 @@ type
     procedure MouseLeave; override;
   public
     constructor Create(aOwner: TComponent); override;
+  public
+    property OnCloseAllFiles: TNotifyEvent read FOnCloseAllFiles write FOnCloseAllFiles;
   end;
   TGroupTabLabelClass = class of TGroupTabLabel;
 
@@ -166,6 +169,7 @@ type
     procedure SetActiveEditor;
     procedure AppOnIdle(Sender: TObject; var {%H-}Done: Boolean);
     function FindEditorInWindow(AEditor: TSourceEditorInterface): Integer;
+    procedure CloseAllFiles(AGroupLabel: TObject);
 
     procedure EditorActivated;
     procedure EditorCreated;
@@ -531,12 +535,22 @@ var
 begin
   inherited MouseDown(Button, Shift, X, Y);
 
-  if (Button = mbLeft) and (GetTickCount64 > FLeftClickPopupBlock) then
+  if (GetTickCount64 > FLeftClickPopupBlock) then
   begin
-    xPt := ClientToScreen(Point(0, Height));
-    PopupMenu.PopupComponent := Self;
-    PopupMenu.PopUp(xPt.X, xPt.Y);
-    FLeftClickPopupBlock := GetTickCount64 + 10;
+    case Button of
+      mbLeft:
+      begin
+        xPt := ClientToScreen(Point(0, Height));
+        PopupMenu.PopupComponent := Self;
+        PopupMenu.PopUp(xPt.X, xPt.Y);
+        FLeftClickPopupBlock := GetTickCount64 + 10;
+      end;
+      mbMiddle:
+      begin
+        if Assigned(FOnCloseAllFiles) then
+          FOnCloseAllFiles(Self);
+      end;
+    end;
   end;
 end;
 
@@ -686,6 +700,37 @@ begin
     RecreateToolBar
   else if FSetActiveEditor then
     SetActiveEditor;
+end;
+
+procedure TPackageTabPanel.CloseAllFiles(AGroupLabel: TObject);
+var
+  I: Integer;
+  xDelete: Boolean;
+  xBtn: TPackageTabButton;
+begin
+  FAppIdleLocked := True;
+  try
+    I := 0;
+    xDelete := False;
+    while I < FPanel.ControlCount do
+    begin
+      if xDelete then
+      begin
+        if FPanel.Controls[I] is TPackageTabButton then
+        begin
+          xBtn := TPackageTabButton(FPanel.Controls[I]);
+          LazarusIDE.DoCloseEditorFile(xBtn.Editor, [cfSaveFirst]);
+        end else
+          Exit; // close only group from label
+      end else
+      if FPanel.Controls[I] = AGroupLabel then
+        xDelete := True;
+
+      Inc(I);
+    end;
+  finally
+    FAppIdleLocked := False;
+  end;
 end;
 
 procedure TPackageTabPanel.RecreatePanel;
@@ -863,6 +908,7 @@ begin
         xLbl.Parent := FPanel;
         xLbl.PopupMenu := FTabLabelMenu;
         xLbl.Height := TPackageTabButton.GetControlClassDefaultSize.cy;
+        xLbl.OnCloseAllFiles := @CloseAllFiles;
         if FPanel is TPackageTabScrollBox then
         begin
           xLbl.Alignment := taLeftJustify;
@@ -1104,37 +1150,8 @@ begin
 end;
 
 procedure TPackageTabPanel.TabLabelCloseAllGroupClick(Sender: TObject);
-var
-  xPopupControl: TControl;
-  I: Integer;
-  xDelete: Boolean;
-  xBtn: TPackageTabButton;
 begin
-  xPopupControl := FTabLabelMenu.PopupComponent as TControl;
-
-  FAppIdleLocked := True;
-  try
-    I := 0;
-    xDelete := False;
-    while I < FPanel.ControlCount do
-    begin
-      if xDelete then
-      begin
-        if FPanel.Controls[I] is TPackageTabButton then
-        begin
-          xBtn := TPackageTabButton(FPanel.Controls[I]);
-          LazarusIDE.DoCloseEditorFile(xBtn.Editor, [cfSaveFirst]);
-        end else
-          Exit; // close only group from label
-      end else
-      if FPanel.Controls[I] = xPopupControl then
-        xDelete := True;
-
-      Inc(I);
-    end;
-  finally
-    FAppIdleLocked := False;
-  end;
+  CloseAllFiles(FTabLabelMenu.PopupComponent);
 end;
 
 procedure TPackageTabPanel.TabLabelCopyToClipboardClick(Sender: TObject);
