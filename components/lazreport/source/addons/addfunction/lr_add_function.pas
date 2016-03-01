@@ -1,22 +1,23 @@
 { This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+  This source is only used to compile and install the package.
  }
 
-unit lr_add_function; 
+unit lr_add_function;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
   lrAddFunctionLibrary, lr_add_function_const, frFuncDate, frFuncNum, 
-    frFuncSQL, frFuncStr, LazarusPackageIntf; 
+  frFuncSQL, frFuncStr, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('lrAddFunctionLibrary', @lrAddFunctionLibrary.Register); 
-end; 
+  RegisterUnit('lrAddFunctionLibrary', @lrAddFunctionLibrary.Register);
+end;
 
 initialization
-  RegisterPackage('lr_add_function', @Register); 
+  RegisterPackage('lr_add_function', @Register);
 end.
