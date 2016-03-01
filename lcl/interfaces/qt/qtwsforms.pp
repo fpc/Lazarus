@@ -379,10 +379,8 @@ const
 var
   Widget: TQtMainWindow;
   R: TRect;
-  {$IF DEFINED (HASX11) OR DEFINED(MSWINDOWS)}
-  APopupParent: TCustomForm;
-  {$ENDIF}
   {$IFDEF HASX11}
+  APopupParent: TCustomForm;
   ActiveWin: HWND;
   W: QWidgetH;
   {$ENDIF}
@@ -438,12 +436,8 @@ begin
       // qt doesn't modal windows as QtTool.see issue #18709
       if (TForm(AWinControl).BorderStyle in [bsToolWindow, bsSizeToolWin]) then
         QWidget_setWindowFlags(Widget.Widget, QtDialog);
-      // show modal windows in taskbar, not above start button. issue #29744
-      APopupParent := TCustomForm(AWinControl).GetRealPopupParent;
-      if (APopupParent <> nil) then
-        QWidget_setParent(Widget.Widget, TQtWidget(APopupParent.Handle).Widget)
-      else
-        QWidget_setParent(Widget.Widget, QApplication_desktop);
+      if QApplication_activeModalWidget <> nil then
+        QWidget_setParent(Widget.Widget, QApplication_activeModalWidget);
       {$endif}
 
       {$ifdef HASX11}
