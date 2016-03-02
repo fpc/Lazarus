@@ -25,11 +25,18 @@ begin
 end;
 
 function TCommonDialog.Execute: boolean;
+var
+  DisabledList: TList;
 begin
-  FUserChoice := mrNone;
-  Handle := TWSCommonDialogClass(WidgetSetClass).CreateHandle(Self);
-  Result:= DoExecute;
-  Close;
+  DisabledList := Screen.DisableForms(nil);
+  try
+    FUserChoice := mrNone;
+    Handle := TWSCommonDialogClass(WidgetSetClass).CreateHandle(Self);
+    Result:= DoExecute;
+    Close;
+  finally
+    Screen.EnableForms(DisabledList);
+  end;
 end;
 
 procedure TCommonDialog.Close;

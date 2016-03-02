@@ -120,7 +120,6 @@ type
     procedure SetFilterIndex(const AValue: Integer);
   protected
     class procedure WSRegisterClass; override;
-    function DoExecute: boolean; override;
     function GetFilterIndex: Integer; virtual;
     procedure SetFileName(const Value: String); virtual;
     procedure SetFilter(const Value: String); virtual;
@@ -129,7 +128,6 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure DoTypeChange; virtual;
-    function Execute: boolean; override;
     property Files: TStrings read FFiles;
     property HistoryList: TStrings read FHistoryList write SetHistoryList;
     procedure IntfFileTypeChanged(NewFilterIndex: Integer);
@@ -423,7 +421,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure CloseDialog;
-    function Execute: Boolean;override;
+    function Execute: Boolean; override;
     property Left: Integer read GetLeft write SetLeft;
     property Position: TPoint read GetPosition write SetPosition;
     property Top: Integer read GetTop write SetTop;

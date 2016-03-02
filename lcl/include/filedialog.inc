@@ -45,14 +45,6 @@ begin
     OnTypeChange(Self);
 end;
 
-{------------------------------------------------------------------------------}
-{  TFileDialog Execute                                                         }
-{------------------------------------------------------------------------------}
-function TFileDialog.Execute : boolean;
-begin
-  Result:=inherited Execute;
-end;
-
 {------------------------------------------------------------------------------
   TFileDialog DoExecute
 ------------------------------------------------------------------------------}
@@ -197,14 +189,6 @@ class procedure TFileDialog.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterFileDialog;
-end;
-
-{------------------------------------------------------------------------------
-  TFileDialog DoExecute
-------------------------------------------------------------------------------}
-function TFileDialog.DoExecute : boolean;
-begin
-  Result:= inherited DoExecute;
 end;
 
 {------------------------------------------------------------------------------

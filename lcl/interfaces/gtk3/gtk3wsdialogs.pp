@@ -1514,7 +1514,6 @@ class function TGtk3WSCommonDialog.CreateHandle(
   const ACommonDialog: TCommonDialog): THandle;
 begin
   Result := 0;
-  DebugLn('TGtkWSCommonDialog.CreateHandle is generic dialog handle constructor => implement CreateHandle for: ', dbgsName(ACommonDialog))
 end;
 
 class procedure TGtk3WSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);

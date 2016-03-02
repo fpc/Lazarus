@@ -307,13 +307,10 @@ end;
  ------------------------------------------------------------------------------}
 function GetOwnerHandle(ADialog : TCommonDialog): HWND;
 begin
-  with ADialog do
-  begin
-    if Owner is TWinControl then
-      Result := TWinControl(Owner).Handle
-    else
-      Result := TWin32WidgetSet(WidgetSet).AppHandle;
-  end;
+  if (Screen.ActiveForm<>nil) and Screen.ActiveForm.HandleAllocated then
+    Result := Screen.ActiveForm.Handle
+  else
+    Result := Application.MainFormHandle;
 end;
 
 procedure SetDialogResult(const ACommonDialog: TCommonDialog; Ret: WINBOOL);
@@ -1097,7 +1094,6 @@ end;
 
 class function TWin32WSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
-  DebugLn('TWin32WSCommonDialog.CreateHandle: unhandled dialog!');
   Result := 0;
 end;
 
