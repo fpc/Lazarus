@@ -729,7 +729,7 @@ begin
     NSRightMouseDown,
     NSOtherMouseDown:
     begin
-      Msg.Msg := CheckMouseButtonDownUp(FTarget,LastMouse,
+      Msg.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(Owner),FTarget,LastMouse,
         FTarget.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,True);
       case LastMouse.ClickCount of
         2: Msg.Keys := msg.Keys or MK_DOUBLECLICK;
@@ -759,7 +759,7 @@ begin
     NSRightMouseUp,
     NSOtherMouseUp:
     begin
-      Msg.Msg := CheckMouseButtonDownUp(FTarget,LastMouse,
+      Msg.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(Owner),FTarget,LastMouse,
         FTarget.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,False);
       case LastMouse.ClickCount of
         2: Msg.Keys := msg.Keys or MK_DOUBLECLICK;

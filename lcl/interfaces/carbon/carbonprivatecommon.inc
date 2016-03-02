@@ -268,7 +268,7 @@ begin
   Msg.XPos := P.X;
   Msg.YPos := P.Y;
   Msg.Keys := GetCarbonMsgKeyState;
-  Msg.Msg := CheckMouseButtonDownUp(AWidget.LCLObject, LastMouse,
+  Msg.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(AWidget), AWidget.LCLObject, LastMouse,
     AWidget.LCLObject.ClientToScreen(P), MouseButton, False);
   case LastMouse.ClickCount of
     2: Msg.Keys := msg.Keys or MK_DOUBLECLICK;
