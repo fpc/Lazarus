@@ -885,7 +885,6 @@ var
   Dialog: IFileOpenDialog;
 begin
   if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
-  //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
   begin
     if Succeeded(CoCreateInstance(CLSID_FileOpenDialog, nil, CLSCTX_INPROC_SERVER, IFileOpenDialog, Dialog)) and Assigned(Dialog) then
     begin
@@ -906,7 +905,6 @@ var
 begin
   if ACommonDialog.Handle <> 0 then
     if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
-    //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
     begin
       Dialog := IFileDialog(ACommonDialog.Handle);
       Dialog._Release;
@@ -928,9 +926,9 @@ begin
     lOldWorkingDir := GetCurrentDirUTF8;
     try
       lInitialDir := TOpenDialog(ACommonDialog).InitialDir;
-      if lInitialDir <> '' then SetCurrentDirUTF8(lInitialDir);
+      if lInitialDir <> '' then
+        SetCurrentDirUTF8(lInitialDir);
       if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
-      //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
       begin
         Dialog := IFileOpenDialog(ACommonDialog.Handle);
         VistaDialogShowModal(Dialog, TOpenDialog(ACommonDialog));
@@ -954,7 +952,6 @@ var
   Dialog: IFileSaveDialog;
 begin
   if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
-  //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
   begin
     if Succeeded(CoCreateInstance(CLSID_FileSaveDialog, nil, CLSCTX_INPROC_SERVER, IFileSaveDialog, Dialog))
     and Assigned(Dialog) then
@@ -976,7 +973,6 @@ var
 begin
   if ACommonDialog.Handle <> 0 then
     if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
-    //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
     begin
       Dialog := IFileDialog(ACommonDialog.Handle);
       Dialog._Release;
@@ -998,9 +994,9 @@ begin
     lOldWorkingDir := GetCurrentDirUTF8;
     try
       lInitialDir := TSaveDialog(ACommonDialog).InitialDir;
-      if lInitialDir <> '' then SetCurrentDirUTF8(lInitialDir);
+      if lInitialDir <> '' then
+        SetCurrentDirUTF8(lInitialDir);
       if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
-      //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
       begin
         Dialog := IFileSaveDialog(ACommonDialog.Handle);
         TWin32WSOpenDialog.VistaDialogShowModal(Dialog, TOpenDialog(ACommonDialog));
@@ -1134,7 +1130,6 @@ var
   Dialog: IFileOpenDialog;
 begin
   if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
-  //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
   begin
     if Succeeded(CoCreateInstance(CLSID_FileOpenDialog, nil, CLSCTX_INPROC_SERVER, IFileOpenDialog, Dialog)) and Assigned(Dialog) then
     begin

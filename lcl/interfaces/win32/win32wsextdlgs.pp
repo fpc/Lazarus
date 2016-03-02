@@ -158,7 +158,6 @@ var
   fos: FILEOPENDIALOGOPTIONS;
 begin
   Result := inherited CreateHandle(ACommonDialog);
-  //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
   if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
   begin
     Dialog := IFileOpenDialog(Result);
@@ -201,7 +200,6 @@ var
   fos: FILEOPENDIALOGOPTIONS;
 begin
   Result := inherited CreateHandle(ACommonDialog);
-  //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
   if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
   begin
     Dialog := IFileSaveDialog(Result);
