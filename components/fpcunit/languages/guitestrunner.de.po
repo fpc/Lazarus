@@ -66,11 +66,13 @@ msgid "Unit name: %s"
 msgstr "Unit-Name: %s"
 
 #: guitestrunner.sactcheckall
-msgid "Check all Tests"
+#, fuzzy
+#| msgid "Check all Tests"
+msgid "Select all tests"
 msgstr "Alle Tests markieren"
 
 #: guitestrunner.sactcheckcurrentsuite
-msgid "Check the Current Suite"
+msgid "Select current suite"
 msgstr ""
 
 #: guitestrunner.sactcloseform
@@ -78,28 +80,52 @@ msgid "Quit"
 msgstr "Beenden"
 
 #: guitestrunner.sactcloseformh
-msgid "Quit Testting"
+msgid "Quit testing"
+msgstr ""
+
+#: guitestrunner.sactcopyalltoclipboard
+msgid "Copy text to clipboard"
+msgstr ""
+
+#: guitestrunner.sactcopyalltoclipboardh
+msgid "Copy the entire text to clipboard"
 msgstr ""
 
 #: guitestrunner.sactrunaction
-msgid "&Run"
+msgid "&Run all"
 msgstr ""
 
 #: guitestrunner.sactrunactionh
-msgid "Run all checked test(s)"
+#, fuzzy
+#| msgid "Run all checked test(s)"
+msgid "Run all checked tests"
 msgstr "Alle markierten Tests starten"
 
 #: guitestrunner.sactrunhighlightedtest
+#, fuzzy
+#| msgid "Run highlighted test"
 msgctxt "guitestrunner.sactrunhighlightedtest"
-msgid "Run highlighted test"
+msgid "Run selected"
 msgstr "hervorgehobenen Test starten"
 
+#: guitestrunner.sactrunhighlightedtesth
+msgid "Run selected test"
+msgstr ""
+
+#: guitestrunner.sactsaveresults
+msgid "Save results"
+msgstr ""
+
+#: guitestrunner.sactsaveresultsh
+msgid "Save XML results to file"
+msgstr ""
+
 #: guitestrunner.sactuncheckall
-msgid "Uncheck all tests"
+msgid "Deselect all tests"
 msgstr ""
 
 #: guitestrunner.sactuncheckcurrentsuite
-msgid "Uncheck the Current Suite"
+msgid "Deselect current suite"
 msgstr ""
 
 #: guitestrunner.sbtnclose
@@ -119,25 +145,17 @@ msgstr "hervorgehobenen Test starten"
 msgid "FPCUnit - run unit test"
 msgstr "FPCUnit - starte Unit-Test"
 
-#: guitestrunner.smicopy
-msgid "&Copy"
-msgstr "Kopieren"
-
-#: guitestrunner.smicopyclipbrd
-msgid "Copy to clipboard"
-msgstr "In Zwischenablage kopieren"
-
-#: guitestrunner.smicut
-msgid "C&ut"
-msgstr "Ausschneiden"
-
-#: guitestrunner.smiruntest
-msgid "&Run all selected (checked) tests"
+#: guitestrunner.smiactions
+msgid "Actions"
 msgstr ""
 
-#: guitestrunner.smishowfail
-msgid "Copy message to clipboard"
-msgstr "Meldung in Zwischenablage kopieren"
+#: guitestrunner.smiedit
+msgid "Edit"
+msgstr ""
+
+#: guitestrunner.smitesttree
+msgid "Test tree"
+msgstr ""
 
 #: guitestrunner.stshresults
 msgid "Results XML"
