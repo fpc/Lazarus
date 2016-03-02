@@ -2059,7 +2059,7 @@ var
       (csDesigning in AWinControl.ComponentState) then
         exit;
 
-    MessI.Msg := CheckMouseButtonDownUp(AWinControl, LastMouse, EventXY, MouseButton, True);
+    MessI.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(widget), AWinControl, LastMouse, EventXY, MouseButton, True);
     MessI.Keys := MessI.Keys or BtnKey;
     case LastMouse.ClickCount of
       2: MessI.Keys := MessI.Keys or MK_DOUBLECLICK;
@@ -2227,7 +2227,7 @@ var
 
   function CheckMouseButtonUp(MouseButton, BtnKey: longint): boolean;
   begin
-    MessI.Msg := CheckMouseButtonDownUp(AWinControl, LastMouse, EventXY, MouseButton, False);
+    MessI.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(widget), AWinControl, LastMouse, EventXY, MouseButton, False);
     Result := True;
  end;
 

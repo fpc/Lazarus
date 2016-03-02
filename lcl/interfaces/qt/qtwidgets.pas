@@ -3542,7 +3542,7 @@ begin
       ((MButton and QtMidButton) = 0))
   then
     Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
-  Msg.Msg := CheckMouseButtonDownUp(LCLObject, LastMouse, LazPos, LazButton,
+  Msg.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(Self), LCLObject, LastMouse, LazPos, LazButton,
     QEvent_type(Event) in [QEventMouseButtonPress, QEventMouseButtonDblClick]);
   case LastMouse.ClickCount of
     2: Msg.Keys := Msg.Keys or MK_DOUBLECLICK;
@@ -3850,6 +3850,7 @@ begin
     Msg.State := [ssAlt] + Msg.State;
 
   LastMouse.WinControl := LCLObject;
+  LastMouse.WinHandle := TLCLIntfHandle(Self);
   LastMouse.MousePos := Point(MousePos.X, MousePos.Y);
   
   Msg.Msg := LM_MOUSEWHEEL;

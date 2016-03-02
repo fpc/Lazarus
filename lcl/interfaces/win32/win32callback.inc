@@ -1500,7 +1500,7 @@ begin
 
   NotifyUserInput := True;
   PLMsg := @LMMouse;
-  LMMouse.Msg := CheckMouseButtonDownUp(lWinControl, LastMouse, MousePos, aButton, aMouseDown);
+  LMMouse.Msg := CheckMouseButtonDownUp(Window, lWinControl, LastMouse, MousePos, aButton, aMouseDown);
 
   LMMouse.XPos := GET_X_LPARAM(LParam);
   LMMouse.YPos := GET_Y_LPARAM(LParam);
