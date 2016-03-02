@@ -243,13 +243,20 @@ procedure TWin32WidgetSet.AppBringToFront;
 var
   Window: HWND;
 begin
-  if Assigned(Screen) and Assigned(Screen.ActiveCustomForm) and Screen.ActiveCustomForm.HandleAllocated then
-    Window := Screen.ActiveCustomForm.Handle
+  if Application.MainFormOnTaskBar and (Application.MainFormHandle<>0) then
+    Window := GetLastActivePopup(Application.MainFormHandle)
   else
-  if Assigned(Application) and Application.MainFormOnTaskBar then
-    Window := Application.MainFormHandle
-  else
-    Window := FAppHandle;
+    Window := GetLastActivePopup(AppHandle);
+  if not((Window <> 0) and IsWindowVisible(Window) and IsWindowEnabled(Window)) then
+  begin
+    if Assigned(Screen) and Assigned(Screen.ActiveCustomForm) and Screen.ActiveCustomForm.HandleAllocated then
+      Window := Screen.ActiveCustomForm.Handle
+    else
+    if Assigned(Application) and Application.MainFormOnTaskBar then
+      Window := Application.MainFormHandle
+    else
+      Window := FAppHandle;
+  end;
   if (Window <> 0) and IsWindowVisible(Window) and IsWindowEnabled(Window) then
     Windows.SetForegroundWindow(Window);
 end;
