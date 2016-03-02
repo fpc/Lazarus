@@ -817,19 +817,6 @@ begin
   else LMScroll.SmallPos := High(LMScroll.SmallPos);
 end;
 
-// FlashWindowEx is not yet in FPC
-type
-  FLASHWINFO = record
-    cbSize: UINT;
-    hwnd: HWND;
-    dwFlags: DWORD;
-    uCount: UINT;
-    dwTimeout: DWORD;
-  end;
-  PFLASHWINFO = ^FLASHWINFO;
-
-function FlashWindowEx(pfwi:PFLASHWINFO):WINBOOL; stdcall; external 'user32' name 'FlashWindowEx';
-
 procedure TWindowProcHelper.HandleSetCursor;
 var
   lControl: TControl;
@@ -838,7 +825,6 @@ var
   MouseMessage: Word;
   P: TPoint;
   lWindow: HWND;
-  FlashInfo: FLASHWINFO;
 begin
   if Assigned(lWinControl) then
   begin
@@ -884,27 +870,17 @@ begin
         // we need to active it ourself. This is needed only when click is happen
         // on disabled window (e.g. ShowModal is called and non modal window is clicked)
         // We also flash the modal window and beep (default windows behavior).
-        Win32WidgetSet.AppBringToFront;
-        if Assigned(Screen.ActiveCustomForm)
-        and Screen.ActiveCustomForm.HandleAllocated then
+
+        // search for modal window with GetLastActivePopup
+        if Application.MainFormOnTaskBar and (Application.MainFormHandle <> 0) then
+          lWindow := GetLastActivePopup(Application.MainFormHandle)
+        else
+          lWindow := GetLastActivePopup(Win32WidgetSet.AppHandle);
+        if (lWindow <> 0) and (lWindow <> GetActiveWindow) then // modal window found and different from active
         begin
-          if Application.MainFormOnTaskBar and (Application.MainFormHandle <> 0) then
-            lWindow := GetLastActivePopup(Application.MainFormHandle)
-          else
-            lWindow := GetLastActivePopup(Win32WidgetSet.AppHandle);
-          if (lWindow <> 0) then
-          begin
-            Beep;
-            FillChar(FlashInfo, SizeOf(FlashInfo), 0);
-            FlashInfo.cbSize := SizeOf(FlashInfo);
-            FlashInfo.hwnd := lWindow;
-            FlashInfo.dwFlags := 1 or 4;
-            FlashInfo.uCount := 6;
-            FlashInfo.dwTimeout := 70;
-            FlashWindowEx(@flashinfo);
-          end;
+          Win32WidgetSet.AppBringToFront; // bring application to front
+          LMessage.Result := 1; // by setting 1 we forbid flashing of modal dialog
         end;
-        LMessage.Result := 1;
       end;
     end;
   end;
