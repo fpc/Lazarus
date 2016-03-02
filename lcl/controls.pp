@@ -2614,7 +2614,7 @@ procedure GetCursorValues(Proc: TGetStrProc);
 function CursorToIdent(Cursor: Longint; var Ident: string): Boolean;
 function IdentToCursor(const Ident: string; var Cursor: Longint): Boolean;
 
-function CheckMouseButtonDownUp(const AWinControl: TWinControl;
+function CheckMouseButtonDownUp(const AWinHandle: THandle; const AWinControl: TWinControl;
   var LastMouse: TLastMouseInfo; const AMousePos: TPoint; const AButton: Byte;
   const AMouseDown: Boolean): Cardinal;
 
@@ -2935,9 +2935,10 @@ begin
   MoveWindowOrgEx(DC,X,Y);
 end;
 
-function CheckMouseButtonDownUp(const AWinControl: TWinControl;
-  var LastMouse: TLastMouseInfo; const AMousePos: TPoint; const AButton: Byte;
-  const AMouseDown: Boolean): Cardinal;
+function CheckMouseButtonDownUp(const AWinHandle: THandle;
+  const AWinControl: TWinControl; var LastMouse: TLastMouseInfo;
+  const AMousePos: TPoint; const AButton: Byte; const AMouseDown: Boolean
+  ): Cardinal;
 const
   DblClickThreshold = 3;// max Movement between two clicks of a DblClick
 
@@ -2954,7 +2955,8 @@ const
 
   function LastClickInSameWinControl: boolean;
   begin
-    Result := (LastMouse.WinControl <> nil) and
+    Result := (LastMouse.WinHandle <> 0) and
+              (LastMouse.WinHandle = AWinHandle) and
               (LastMouse.WinControl = AWinControl);
   end;
 
@@ -3016,6 +3018,7 @@ begin
     LastMouse.Time := GetTickCount64;
     LastMouse.MousePos := AMousePos;
     LastMouse.WinControl := AWinControl;
+    LastMouse.WinHandle := AWinHandle;
     LastMouse.Button := AButton;
   end else
   begin // mouse up
@@ -3023,7 +3026,7 @@ begin
       LastMouse.ClickCount := 1;
   end;
 
-  if not(csDesigning in AWinControl.ComponentState) then
+  if (AWinControl<>nil) and not(csDesigning in AWinControl.ComponentState) then
   begin // runtime - handle multi clicks according to ControlStyle
     if LastMouse.ClickCount > 1 then
     begin
@@ -3037,7 +3040,7 @@ begin
       end;
     end;
   end else
-  begin // design time, allow only double clicks
+  begin // design time or special system controls without TWinControl, allow only double clicks
     if LastMouse.ClickCount > 2 then
       LastMouse.ClickCount := 2;
   end;

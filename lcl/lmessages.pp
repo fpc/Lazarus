@@ -628,7 +628,8 @@ type
   TLMXButtonUp = TLMMouse;
 
   TLastMouseInfo = record
-    WinControl: TObject;
+    WinHandle: THandle;
+    WinControl: TObject; // can be nil in special cases
     MousePos: TPoint;
     Time: QWord;
     ClickCount: Integer;
