@@ -1841,7 +1841,7 @@ var
   Size: TSize;
 begin
   {$IFDEF DARWIN}
-  FCachedMenuBarHeight := 1;
+  Exit(0);
   {$ENDIF}
   if FCachedMenuBarHeight = -1 then
   begin
@@ -1854,19 +1854,10 @@ begin
     QMenuBar_sizeHint(AMenuBar, @Size);
     QMainWindow_destroy(DummyWindow);
     FCachedMenuBarHeight := Size.cy;
-
-    if QStyle_styleHint(QApplication_style(),
-      QStyleSH_MainWindow_SpaceBelowMenuBar) > 0 then
-      inc(FCachedMenuBarHeight, 4);
-    if QStyle_styleHint(QApplication_style(),
-      QStyleSH_ScrollView_FrameOnlyAroundContents) > 0 then
-      inc(FCachedMenuBarHeight, 4);
   end;
   if (FCachedMenuBarHeight <= 0) then
   begin
     FCachedMenuBarHeight := 22;
-    if QStyle_styleHint(QApplication_style(), QStyleSH_MainWindow_SpaceBelowMenuBar) > 0 then
-      inc(FCachedMenuBarHeight, 4);
   end;
   Result := FCachedMenuBarHeight;
 end;
