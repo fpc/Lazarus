@@ -1560,6 +1560,7 @@ lblState := TLabel.Create(Self);
 //             ADD TrackBar CompTools HERE !!!!!!!!!
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++ TUpDown Tools ++++++++++++++++++++++++++++++++++++++
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //             ADD UpDown CompTools HERE !!!!!!!!!
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2495,17 +2496,31 @@ procedure TForm1.ApplicationIdle(Sender: TObject; var Done: Boolean);
 var 
   CurControl: TControl;
   P: TPoint;
-begin 
-  GetCursorPos(P);  
+  F: TForm;
+  i: Integer;
+begin
+  //Only perform OnIdle if either the mainform or one of the BenchForms is active
+  //e.g. if a ShowMessage is showing, FFocusControl may point to an aready
+  //destroyed component, thus crashing the application.
+  F := Screen.ActiveForm;
+  if not Assigned(F) then Exit;
+  if (F <> Self) then
+  begin
+    for i := Low(BenchForm) to High(BenchForm) do
+      if (BenchForm[i] = F) then Break;
+    //writeln('Not the MainForm or a BenchForm');
+    Exit;
+  end;
+  GetCursorPos(P);
   CurControl := FindControlAtPosition(P, True);
   if FFocusControl <> CurControl then
     begin  
-    if FFocusControl <> nil then  
+    if FFocusControl <> nil then
       VirOnLeave(FFocusControl);  
     FFocusControl := CurControl;  
     if FFocusControl <> nil then  
       VirOnEnter(FFocusControl);  
-  end; 
+  end;
 end; 
 procedure TForm1.VirOnEnter(Sender: TObject); 
 begin 
