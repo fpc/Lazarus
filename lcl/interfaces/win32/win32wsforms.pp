@@ -220,31 +220,43 @@ begin
     Result := AForm.BorderStyle;
 end;
 
-function CalcBorderStyleFlags(const AForm: TCustomForm): DWORD;
+function CalcBorderStyleFlags(const ABorderStyle: TFormBorderStyle): DWORD;
 begin
   Result := WS_CLIPCHILDREN or WS_CLIPSIBLINGS;
-  case GetDesigningBorderStyle(AForm) of
+  case ABorderStyle of
     bsSizeable, bsSizeToolWin:
       Result := Result or (WS_OVERLAPPED or WS_THICKFRAME or WS_CAPTION);
     bsSingle, bsToolWindow:
       Result := Result or (WS_OVERLAPPED or WS_BORDER or WS_CAPTION);
     bsDialog:
       Result := Result or (WS_POPUP or WS_BORDER or WS_CAPTION);
-    bsNone:
-      if (AForm.Parent = nil) and (AForm.ParentWindow = 0) then
-        Result := Result or WS_POPUP;
   end;
 end;
 
-function CalcBorderStyleFlagsEx(const AForm: TCustomForm): DWORD;
+function CalcBorderStyleFlags(const AForm: TCustomForm): DWORD;
+var
+  BS: TFormBorderStyle;
+begin
+  BS := GetDesigningBorderStyle(AForm);
+  Result := CalcBorderStyleFlags(BS);
+  if (BS = bsNone) and (AForm.Parent = nil) and (AForm.ParentWindow = 0) then
+    Result := Result or WS_POPUP;
+end;
+
+function CalcBorderStyleFlagsEx(const ABorderStyle: TFormBorderStyle): DWORD;
 begin
   Result := 0;
-  case GetDesigningBorderStyle(AForm) of
+  case ABorderStyle of
     bsDialog:
       Result := WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE;
     bsToolWindow, bsSizeToolWin:
       Result := WS_EX_TOOLWINDOW;
   end;
+end;
+
+function CalcBorderStyleFlagsEx(const AForm: TCustomForm): DWORD;
+begin
+  Result := CalcBorderStyleFlagsEx(GetDesigningBorderStyle(AForm));
 end;
 
 function CalcBorderIconsFlags(const AForm: TCustomForm): DWORD;
@@ -295,11 +307,13 @@ end;
 
 procedure AdjustFormBounds(const AForm: TCustomForm; out SizeRect: TRect);
 begin
+  SizeRect := AForm.BoundsRect;
+  {$IFNDEF LCLRealFormBounds}
   // the LCL defines the size of a form without border, win32 with.
   // -> adjust size according to BorderStyle
-  SizeRect := AForm.BoundsRect;
   Windows.AdjustWindowRectEx(@SizeRect, CalcBorderStyleFlags(AForm) or CalcBorderIconsFlags(AForm),
     False, CalcBorderStyleFlagsEx(AForm) or CalcBorderIconsFlagsEx(AForm));
+  {$ENDIF}
 end;
 
 function CustomFormWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam): LResult; stdcall;
@@ -325,7 +339,9 @@ function CustomFormWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LPar
 
       IntfWidth := AWidth;
       IntfHeight := AHeight;
+      {$IFNDEF LCLRealFormBounds}
       LCLFormSizeToWin32Size(TCustomForm(WinControl), IntfWidth, IntfHeight);
+      {$ENDIF}
 
       if AWidth > 0 then
         pt.X := IntfWidth;
@@ -588,15 +604,15 @@ begin
   // -> adjust size according to BorderStyle
   SizeRect := Bounds(ALeft, ATop, AWidth, AHeight);
 
+  {$IFNDEF LCLRealFormBounds}
   Windows.AdjustWindowRectEx(@SizeRect, CalcBorderStyleFlags(AForm) or CalcBorderIconsFlags(AForm),
     False, CalcBorderStyleFlagsEx(AForm) or CalcBorderIconsFlagsEx(AForm));
-
-
+  {$ENDIF}
   L := ALeft;
   T := ATop;
   W := SizeRect.Right - SizeRect.Left;
   H := SizeRect.Bottom - SizeRect.Top;
-  
+
   // we are calling setbounds in TWinControl.Initialize
   // if position is default it will be changed to designed. We do not want this.
   if wcfInitializing in TWinControlAccess(AWinControl).FWinControlFlags then

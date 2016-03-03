@@ -2257,9 +2257,11 @@ begin
         SetWidthHeightFromRect(WP.rcNormalPosition)
       else
         SetWidthHeightFromRect(Info.rcWindow);
+      {$IFNDEF LCLRealFormBounds}
       Width := Width - 2 * Integer(Info.cxWindowBorders);
       Height := Height - 2 * Integer(Info.cyWindowBorders);
       ExcludeCaption;
+      {$ENDIF}
       //WriteLn('W = ', Width, ' H = ', Height);
       Exit;
     end;
