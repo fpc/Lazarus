@@ -27,8 +27,12 @@ end;
 function TCommonDialog.Execute: boolean;
 var
   DisabledList: TList;
+  SavedFocusState: TFocusState;
+  FocusedWindow: HWnd;
 begin
-  DisabledList := Screen.DisableForms(nil);
+  FocusedWindow := GetFocus;
+  SavedFocusState := SaveFocusState;
+  DisabledList := Screen.DisableForms(Screen.ActiveForm);
   try
     FUserChoice := mrNone;
     Handle := TWSCommonDialogClass(WidgetSetClass).CreateHandle(Self);
@@ -36,6 +40,9 @@ begin
     Close;
   finally
     Screen.EnableForms(DisabledList);
+    RestoreFocusState(SavedFocusState);
+    if IsWindow(FocusedWindow) and (GetFocus<>FocusedWindow) then
+      SetFocus(FocusedWindow);
   end;
 end;
 
