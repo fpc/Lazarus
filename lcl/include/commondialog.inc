@@ -28,9 +28,7 @@ function TCommonDialog.Execute: boolean;
 var
   DisabledList: TList;
   SavedFocusState: TFocusState;
-  FocusedWindow: HWnd;
 begin
-  FocusedWindow := GetFocus;
   SavedFocusState := SaveFocusState;
   DisabledList := Screen.DisableForms(Screen.ActiveForm);
   try
@@ -41,8 +39,9 @@ begin
   finally
     Screen.EnableForms(DisabledList);
     RestoreFocusState(SavedFocusState);
-    if IsWindow(FocusedWindow) and (GetFocus<>FocusedWindow) then
-      SetFocus(FocusedWindow);
+    if (Screen.ActiveControl<>nil) and (Screen.ActiveControl.HandleAllocated)
+    and (GetFocus<>Screen.ActiveControl.Handle) then
+      SetFocus(Screen.ActiveControl.Handle); // must restore focus after Screen.EnableForms
   end;
 end;
 
