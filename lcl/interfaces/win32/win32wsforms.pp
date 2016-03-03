@@ -220,43 +220,31 @@ begin
     Result := AForm.BorderStyle;
 end;
 
-function CalcBorderStyleFlags(const ABorderStyle: TFormBorderStyle): DWORD;
+function CalcBorderStyleFlags(const AForm: TCustomForm): DWORD;
 begin
   Result := WS_CLIPCHILDREN or WS_CLIPSIBLINGS;
-  case ABorderStyle of
+  case GetDesigningBorderStyle(AForm) of
     bsSizeable, bsSizeToolWin:
       Result := Result or (WS_OVERLAPPED or WS_THICKFRAME or WS_CAPTION);
     bsSingle, bsToolWindow:
       Result := Result or (WS_OVERLAPPED or WS_BORDER or WS_CAPTION);
     bsDialog:
       Result := Result or (WS_POPUP or WS_BORDER or WS_CAPTION);
-  end;
-end;
-
-function CalcBorderStyleFlags(const AForm: TCustomForm): DWORD;
-var
-  BS: TFormBorderStyle;
-begin
-  BS := GetDesigningBorderStyle(AForm);
-  Result := CalcBorderStyleFlags(BS);
-  if (BS = bsNone) and (AForm.Parent = nil) and (AForm.ParentWindow = 0) then
-    Result := Result or WS_POPUP;
-end;
-
-function CalcBorderStyleFlagsEx(const ABorderStyle: TFormBorderStyle): DWORD;
-begin
-  Result := 0;
-  case ABorderStyle of
-    bsDialog:
-      Result := WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE;
-    bsToolWindow, bsSizeToolWin:
-      Result := WS_EX_TOOLWINDOW;
+    bsNone:
+      if (AForm.Parent = nil) and (AForm.ParentWindow = 0) then
+        Result := Result or WS_POPUP;
   end;
 end;
 
 function CalcBorderStyleFlagsEx(const AForm: TCustomForm): DWORD;
 begin
-  Result := CalcBorderStyleFlagsEx(GetDesigningBorderStyle(AForm));
+  Result := 0;
+  case GetDesigningBorderStyle(AForm) of
+    bsDialog:
+      Result := WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE;
+    bsToolWindow, bsSizeToolWin:
+      Result := WS_EX_TOOLWINDOW;
+  end;
 end;
 
 function CalcBorderIconsFlags(const AForm: TCustomForm): DWORD;
