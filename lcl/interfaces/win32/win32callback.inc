@@ -817,6 +817,19 @@ begin
   else LMScroll.SmallPos := High(LMScroll.SmallPos);
 end;
 
+// FlashWindowEx is not (yet) in FPC
+type
+  FLASHWINFO = record
+    cbSize: UINT;
+    hwnd: HWND;
+    dwFlags: DWORD;
+    uCount: UINT;
+    dwTimeout: DWORD;
+  end;
+  PFLASHWINFO = ^FLASHWINFO;
+
+function FlashWindowEx(pfwi:PFLASHWINFO):WINBOOL; stdcall; external 'user32' name 'FlashWindowEx';
+
 procedure TWindowProcHelper.HandleSetCursor;
 var
   lControl: TControl;
@@ -825,6 +838,7 @@ var
   MouseMessage: Word;
   P: TPoint;
   lWindow: HWND;
+  FlashInfo: FLASHWINFO;
 begin
   if Assigned(lWinControl) then
   begin
@@ -876,10 +890,30 @@ begin
           lWindow := GetLastActivePopup(Application.MainFormHandle)
         else
           lWindow := GetLastActivePopup(Win32WidgetSet.AppHandle);
-        if (lWindow <> 0) and (lWindow <> GetActiveWindow) then // modal window found and different from active
+
+        if lWindow <> 0 then // modal window found
         begin
-          Win32WidgetSet.AppBringToFront; // bring application to front
-          LMessage.Result := 1; // by setting 1 we forbid flashing of modal dialog
+          if lWindow <> GetActiveWindow then
+          begin
+            // Activate the application in case it is not active without beep+flash
+            Win32WidgetSet.AppBringToFront;
+            LMessage.Result := 1; // disable native beep+flash, we don't want it
+          end else
+          begin
+            // Simulate default MS Windows beep+flash
+            // because MS Windows is able to flash only modal windows if
+            // a disabled window from the same parent chain was clicked on.
+            // This code flashes the dialog if whatever disabled form was clicked on.
+            Beep;
+            FillChar(FlashInfo{%H-}, SizeOf(FlashInfo), 0);
+            FlashInfo.cbSize := SizeOf(FlashInfo);
+            FlashInfo.hwnd := lWindow;
+            FlashInfo.dwFlags := 1; // FLASHW_CAPTION
+            FlashInfo.uCount := 6;
+            FlashInfo.dwTimeout := 70;
+            FlashWindowEx(@flashinfo);
+            LMessage.Result := 1; // disable native beep+flash, we already beep+flashed
+          end;
         end;
       end;
     end;
