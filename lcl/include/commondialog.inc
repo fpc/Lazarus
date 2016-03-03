@@ -30,15 +30,20 @@ var
   SavedFocusState: TFocusState;
 begin
   SavedFocusState := SaveFocusState;
-  DisabledList := Screen.DisableForms(Screen.ActiveForm);
+  Application.RemoveStayOnTop(True);
   try
-    FUserChoice := mrNone;
-    Handle := TWSCommonDialogClass(WidgetSetClass).CreateHandle(Self);
-    Result:= DoExecute;
-    Close;
+    DisabledList := Screen.DisableForms(Screen.ActiveForm);
+    try
+      FUserChoice := mrNone;
+      Handle := TWSCommonDialogClass(WidgetSetClass).CreateHandle(Self);
+      Result:= DoExecute;
+      Close;
+    finally
+      Screen.EnableForms(DisabledList);
+      RestoreFocusState(SavedFocusState);
+    end;
   finally
-    Screen.EnableForms(DisabledList);
-    RestoreFocusState(SavedFocusState);
+    Application.RestoreStayOnTop(True);
     if (Screen.ActiveControl<>nil) and (Screen.ActiveControl.HandleAllocated)
     and (GetFocus<>Screen.ActiveControl.Handle) then
       SetFocus(Screen.ActiveControl.Handle); // must restore focus after Screen.EnableForms
