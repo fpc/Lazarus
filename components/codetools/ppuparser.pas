@@ -198,7 +198,7 @@ const
      'mipsel',
      'jvm',
      'i8086',
-     'a64'
+     'aarch64'
      );
 
 // from ppu.pas

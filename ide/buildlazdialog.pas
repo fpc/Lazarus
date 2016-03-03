@@ -1086,7 +1086,7 @@ begin
   with TargetCPUComboBox do begin
     with Items do begin
       Add(''); //('+rsiwpDefault+')');
-      Add('a64');
+      Add('aarch64');
       Add('arm');
       Add('i386');
       Add('m68k');
