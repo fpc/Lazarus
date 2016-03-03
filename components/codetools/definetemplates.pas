@@ -181,7 +181,7 @@ const
       'bsd', 'linux' // see GetDefaultSrcOS2ForTargetOS
     );
   FPCProcessorNames: array[1..12] of shortstring =(
-      'a64',
+      'aarch64',
       'arm',
       'avr',
       'i386',
@@ -3003,8 +3003,8 @@ begin
     Result:=Result+'x64'
   else if SysUtils.CompareText(TargetCPU,'ia64')=0 then
     Result:=Result+'ia64'
-  else if SysUtils.CompareText(TargetCPU,'a64')=0 then
-    Result:=Result+'a64'
+  else if SysUtils.CompareText(TargetCPU,'aarch64')=0 then
+    Result:=Result+'aarch64'
   else
     Result:='fpc';
   Result:=Result+ExeExt;
@@ -3090,7 +3090,7 @@ begin
     'x86_64' : Intel_x86_64;
     'mipsel','mips' : Mips;
     'jvm'    : ;
-    'a64'    : ;
+    'aarch64': ;
   end;
 end;
 
