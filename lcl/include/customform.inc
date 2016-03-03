@@ -2910,7 +2910,6 @@ begin
     Screen.FFocusedForm := Self;
     Screen.MoveFormToFocusFront(Self);
     Screen.Cursor := crDefault;
-    Application.RemoveStayOnTop(True);
     ModalResult := 0;
 
     try
@@ -2974,7 +2973,6 @@ begin
       Exclude(FFormState, fsModal);
       if ((PopupMode = pmNone) and HandleAllocated) and not (csDestroying in ComponentState) then
         RecreateWnd(Self); // need to refresh handle for pmNone because ParentWindow changes if (fsModal in FFormState) - see GetRealPopupParent
-      Application.RestoreStayOnTop(True);
     end;
   finally
     Application.ModalFinished;

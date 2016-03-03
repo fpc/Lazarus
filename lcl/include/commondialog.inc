@@ -30,7 +30,7 @@ var
   SavedFocusState: TFocusState;
 begin
   SavedFocusState := SaveFocusState;
-  Application.RemoveStayOnTop(True);
+  Application.ModalStarted;
   try
     DisabledList := Screen.DisableForms(Screen.ActiveForm);
     try
@@ -41,12 +41,12 @@ begin
     finally
       Screen.EnableForms(DisabledList);
       RestoreFocusState(SavedFocusState);
+      if (Screen.ActiveControl<>nil) and (Screen.ActiveControl.HandleAllocated)
+      and (GetFocus<>Screen.ActiveControl.Handle) then
+        SetFocus(Screen.ActiveControl.Handle); // must restore focus after Screen.EnableForms
     end;
   finally
-    Application.RestoreStayOnTop(True);
-    if (Screen.ActiveControl<>nil) and (Screen.ActiveControl.HandleAllocated)
-    and (GetFocus<>Screen.ActiveControl.Handle) then
-      SetFocus(Screen.ActiveControl.Handle); // must restore focus after Screen.EnableForms
+    Application.ModalFinished;
   end;
 end;
 
