@@ -178,7 +178,7 @@ const
     False, //tadTcolordialog,
     False, //tadTfinddialog,
     False, //tadTfontdialog,
-    False, //tadTMessageDialog,
+    True, //tadTMessageDialog,
     False, //tadTopendialog,
     False, //tadTopenpicturedialog,
     False, //tadTreplacedialog,

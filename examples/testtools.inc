@@ -141,3 +141,86 @@ begin
 end;
 
 
+type
+  { TMsgDlgDummmy }
+  TMsgDlgDummmy = class
+    ed: TEdit;
+    cg: TCheckGroup;
+    rg: TRadioGroup;
+    btn: TButton;
+    procedure OnBtnClick(Sender: TObject);
+  end;
+{ TMsgDlgDummmy }
+procedure TMsgDlgDummmy.OnBtnClick(Sender: TObject);
+var
+  DT: TMsgDlgType;
+  Btns: TMsgDlgButtons;
+  i: Integer;
+  aMsg: TCaption;
+begin
+  DT := TMsgDlgType(rg.ItemIndex);
+  aMsg := ed.Text;
+  if (aMsg = '')
+    then aMsg := 'You did not enter a message';
+  Btns := [];
+  for i := 0 to cg.Items.Count - 1 do
+  begin
+    if cg.Checked[i] then
+      Btns := Btns + [TMsgDlgBtn(i)];
+  end;
+  if (Btns = []) then
+    Btns := [mbOk];
+  MessageDlg('MessageDlg test', aMsg, DT, Btns, 0);
+end;
+
+procedure TForm1.TestMsgDlg;
+var
+  ed: TEdit;
+  cg: TCheckGroup;
+  rg: TRadioGroup;
+  dummy: TMsgDlgDummmy;
+  btn: TButton;
+begin
+  Clear;
+  ed := TEdit.Create(nil);
+  cg := TCheckGroup.Create(nil);
+  rg := TRadioGroup.Create(nil);
+  btn := TButton.Create(nil);
+  dummy := TMsgDlgDummmy.Create;
+  FObjList.Add(ed);
+  FObjList.Add(cg);
+  FObjList.Add(rg);
+  FObjList.Add(btn);
+  FObjList.Add(dummy);
+  dummy.ed := ed;
+  dummy.cg := cg;
+  dummy.rg := rg;
+  btn.OnClick := @dummy.OnBtnClick;
+  ed.TextHint := 'Type your message here';
+  ed.Parent := TestPnl;
+  cg.Items.AddStrings(['mbYes', 'mbNo', 'mbOK', 'mbCancel', 'mbAbort', 'mbRetry', 'mbIgnore',
+                       'mbAll', 'mbNoToAll', 'mbYesToAll', 'mbHelp', 'mbClose']);
+  cg.Caption := 'Buttons';
+  cg.AutoSize := True;
+  rg.Items.AddStrings(['mtWarning', 'mtError', 'mtInformation', 'mtConfirmation',
+                       'mtCustom']);
+  cg.Parent := TestPnl;
+  rg.Caption := 'DialogType';
+  rg.AutoSize := True;
+  rg.ItemIndex := Ord(mtInformation);
+  ed.Left := 5;
+  ed.Top := 10;
+  ed.Width := TestPnl.Width - 2*5;
+  cg.Left := 5;
+  cg.Top := ed.Top + ed.Height + 10;
+  rg.Left := cg.Left + cg.Width + 20;
+  rg.Top := cg.Top;
+  rg.Parent := TestPnl;
+  btn.Caption := 'Show dialog';
+  btn.AutoSize := True;
+  btn.Top := rg.Top + rg.Height + 20;
+  btn.Left := rg.Left;
+  btn.Parent := TestPnl;
+end;
+
+

@@ -81,9 +81,13 @@ type
     procedure ConnectStandardEvents(AControl: TControl);
     function VkToString(Key: Word): String;
     procedure CreateMainMenu;
+
     // Components tests
     procedure TestArrow;
     procedure TestBitBtn;
+
+    // Dialog tests
+    procedure TestMsgDlg;
 
   public
     { public declarations }
@@ -138,8 +142,26 @@ begin
 end;
 
 procedure TForm1.DlgMenuClick(Sender: TObject);
+var
+  mi: TMenuItem;
+  tg: PtrInt;
+  TagValid: Boolean;
 begin
-
+  debugln('TForm1.DlgMenuClick A');
+  mi := Sender as TMenuItem;
+  tg := mi.Tag and not tagDlgStart;
+  TagValid := ((mi.Tag and tagDlgStart) = tagDlgStart) and
+              (tg >= Ord(Low(taComponents))) and
+              (tg <= Ord(High(taComponents)));
+  if not TagValid then
+  begin
+    DebugLn(['TForm1.DlgMenuClick: Unexpected Tag from TMenuItem: [',mi.Name,']']);
+    Exit;
+  end;
+  case taDialogs(tg) of
+    tadTMessageDialog: TestMsgDlg;
+  end;
+  debugln('TForm1.DlgMenuClick End');
 end;
 
 procedure TForm1.GenClick(Sender: TObject);
