@@ -176,11 +176,14 @@ var
       Pos.Y := Y;
     end;
     ClientToScreen(Handle, Pos);
-    WParam := Windows.WParam(Longint(PointToSmallPoint(Pos)));
+    WParam := Windows.WParam(Longint(PointToSmallPointNoChecks(Pos)));
     with TLMMouseEvent(Message) do
     begin
+      {$PUSH}
+      {$R-}{$Q-} // no range, no overflow checks
       X := Pos.X;
       Y := Pos.Y;
+      {$POP}
     end;
 
     with TLMessage(Message) do

@@ -4702,8 +4702,11 @@ begin
     if MouseMessage.Msg = LM_MOUSEWHEEL then
     begin
       MouseEventMessage := TLMMouseEvent(TheMessage);
+      {$PUSH}
+      {$R-}{$Q-} // no range, no overflow checks
       MouseEventMessage.X := P.X;
       MouseEventMessage.Y := P.Y;
+      {$POP}
       Control.Dispatch(MouseEventMessage);
       MouseMessage.Result := MouseEventMessage.Result;
       Result := (MouseMessage.Result <> 0);
@@ -4711,7 +4714,7 @@ begin
     else
     begin
       MouseMessage.Result := Control.Perform(MouseMessage.Msg, WParam(MouseMessage.Keys),
-                             LParam(Integer(PointToSmallPoint(P))));
+                             LParam(Integer(PointToSmallPointNoChecks(P))));
       Result := True;
     end;
   end;
@@ -5133,7 +5136,7 @@ var
               (Enabled or (capfAllowDisabled in Flags))
               and
               (Perform(CM_HITTEST, 0,
-                       LParam(Integer(PointToSmallPoint(ControlPos)))) <> 0)
+                       LParam(Integer(PointToSmallPointNoChecks(ControlPos)))) <> 0)
              )
             );
       {$IFDEF VerboseMouseBugfix}

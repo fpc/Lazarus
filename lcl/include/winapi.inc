@@ -1533,6 +1533,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: PointToSmallPointNoChecks
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function PointToSmallPointNoChecks(const P : TPoint) : TSmallPoint; inline;
+begin
+  {$PUSH}
+  {$R-}{$Q-} // no range, no overflow checks
+  Result.X := P.X;
+  Result.Y := P.Y;
+  {$POP}
+end;
+
+{------------------------------------------------------------------------------
   Function: PtInRect
   Params:  Rect
            Point

@@ -1762,6 +1762,17 @@ begin
   Result := (Parent<>nil) and Parent.HandleAllocated and (GetCaptureControl = Self);
 end;
 
+function TControl.GetMousePosFromMessage(const MessageMousePos: TSmallPoint
+  ): TPoint;
+begin
+  if (Width>High(SmallInt)) or (Height>High(SmallInt)) then
+  begin
+    GetCursorPos(Result);
+    Result := ScreenToClient(Result);
+  end else
+    Result := SmallPointToPoint(MessageMousePos);
+end;
+
 function TControl.GetTBDockHeight: Integer;
 begin
   if FTBDockHeight>0 then
@@ -2124,11 +2135,14 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.DoMouseDown(var Message: TLMMouse; Button: TMouseButton;
   Shift: TShiftState);
+var
+  MP: TPoint;
 begin
   //DebugLn('TControl.DoMouseDown ',DbgSName(Self),' ');
-  if not (csNoStdEvents in ControlStyle) then begin
-    with Message do
-      MouseDown(Button, KeysToShiftState(Keys) + Shift, XPos, YPos);
+  if not (csNoStdEvents in ControlStyle) then
+  begin
+    MP := GetMousePosFromMessage(Message.Pos);
+    MouseDown(Button, KeysToShiftState(Message.Keys) + Shift, MP.X, MP.Y);
   end;
 end;
 
@@ -2137,19 +2151,19 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
 var
-  P: TPoint;
+  P, MP: TPoint;
 begin
   if not (csNoStdEvents in ControlStyle) then
-    with Message do
+  begin
+    MP := GetMousePosFromMessage(Message.Pos);
+    if (Button in [mbLeft, mbRight]) and DragManager.IsDragging then
     begin
-      if (Button in [mbLeft, mbRight]) and DragManager.IsDragging then
-      begin
-        P := ClientToScreen(Point(XPos, YPos));
-        DragManager.MouseUp(Button, KeysToShiftState(Keys), P.X, P.Y);
-        Message.Result := 1;
-      end;
-      MouseUp(Button, KeysToShiftState(Keys), XPos, YPos);
+      P := ClientToScreen(MP);
+      DragManager.MouseUp(Button, KeysToShiftState(Message.Keys), P.X, P.Y);
+      Message.Result := 1;
     end;
+    MouseUp(Button, KeysToShiftState(Message.Keys), MP.X, MP.Y);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2217,7 +2231,7 @@ var
   Handled: Boolean;
 begin
   if (csDesigning in ComponentState) or (Message.Result <> 0) then Exit;
-  P := SmallPointToPoint(Message.Pos);
+  P := GetMousePosFromMessage(Message.Pos);
   // X and Y = -1 when user clicks on keyboard menu button
   if P.X <> -1 then
     P := ScreenToClient(P);
@@ -2585,7 +2599,7 @@ begin
   begin
     Exclude(FControlState, csClicked);
     //DebugLn('TControl.WMLButtonUp B ',dbgs(ClientRect.Left),',',dbgs(ClientRect.Top),',',dbgs(ClientRect.Right),',',dbgs(ClientRect.Bottom),' ',dbgs(Message.Pos.X),',',dbgs(Message.Pos.Y));
-    if PtInRect(ClientRect, SmallPointToPoint(Message.Pos))
+    if PtInRect(ClientRect, GetMousePosFromMessage(Message.Pos))
     then begin
       //DebugLn('TControl.WMLButtonUp C');
       Click;
@@ -2669,8 +2683,7 @@ var
   MousePos: TPoint;
   lState: TShiftState;
 begin
-  MousePos.X := Message.X;
-  MousePos.Y := Message.Y;
+  MousePos := GetMousePosFromMessage(SmallPoint(Message.X, Message.Y));
 
   lState := Message.State - [ssCaps, ssNum, ssScroll]; // Remove unreliable states, see http://bugs.freepascal.org/view.php?id=20065
   if DoMouseWheel(lState, Message.WheelDelta, MousePos) then
@@ -4132,14 +4145,16 @@ end;
   TControl WMMouseMove
 ------------------------------------------------------------------------------}
 procedure TControl.WMMouseMove(var Message: TLMMouseMove);
+var
+  MP: TPoint;
 begin
   {$IFDEF VerboseMouseBugfix}
   DebugLn(['[TControl.WMMouseMove] ',Name,':',ClassName,' ',Message.XPos,',',Message.YPos]);
   {$ENDIF}
-  UpdateMouseCursor(Message.XPos,Message.YPos);
+  MP := GetMousePosFromMessage(Message.Pos);
+  UpdateMouseCursor(MP.X,MP.Y);
   if not (csNoStdEvents in ControlStyle) then
-    with Message do
-      MouseMove(KeystoShiftState(Word(Keys)), XPos, YPos);
+    MouseMove(KeystoShiftState(Word(Message.Keys)), MP.X, MP.Y);
 end;
 
 {------------------------------------------------------------------------------

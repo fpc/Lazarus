@@ -338,6 +338,7 @@ function OffsetRect(var Rect: TRect; dx,dy: Integer): Boolean; inline;
 
 function PtInRect(const Rect : TRect; const Point : TPoint) : Boolean; inline;
 function PointToSmallPoint(const P : TPoint) : TSmallPoint; inline;
+function PointToSmallPointNoChecks(const P : TPoint) : TSmallPoint; inline;
 
 function RGB(R, G, B : Byte) : TColorRef; inline;
 

@@ -1330,6 +1330,7 @@ type
     procedure DblClick; virtual;
     procedure TripleClick; virtual;
     procedure QuadClick; virtual;
+    function GetMousePosFromMessage(const MessageMousePos: TSmallPoint): TPoint;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); virtual;
     procedure MouseMove(Shift: TShiftState; X,Y: Integer); virtual;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); virtual;
