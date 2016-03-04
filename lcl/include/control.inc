@@ -1765,7 +1765,7 @@ end;
 function TControl.GetMousePosFromMessage(const MessageMousePos: TSmallPoint
   ): TPoint;
 begin
-  if (Width>High(SmallInt)) or (Height>High(SmallInt)) then
+  if (Width>32767) or (Height>32767) then
   begin
     GetCursorPos(Result);
     Result := ScreenToClient(Result);
@@ -2682,8 +2682,11 @@ procedure TControl.WMMouseWheel(var Message: TLMMouseEvent);
 var
   MousePos: TPoint;
   lState: TShiftState;
+  SP: TSmallPoint;
 begin
-  MousePos := GetMousePosFromMessage(SmallPoint(Message.X, Message.Y));
+  SP.X := Message.X; // cannot use SmallPoint() here due to FPC inconsistency in Classes.TSmallPoint<>Types.TSmallPoint on Linux
+  SP.Y := Message.Y;
+  MousePos := GetMousePosFromMessage(SP);
 
   lState := Message.State - [ssCaps, ssNum, ssScroll]; // Remove unreliable states, see http://bugs.freepascal.org/view.php?id=20065
   if DoMouseWheel(lState, Message.WheelDelta, MousePos) then
