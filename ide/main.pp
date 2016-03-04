@@ -9593,7 +9593,7 @@ var
   RevertableJump, JumpToBody, JumpToBodySuccess: boolean;
   NewTool: TCodeTool;
   NewOrigPos: TCodeXYPosition;
-  ProcNode: TCodeTreeNode;
+  ProcNode, ImplementationNode: TCodeTreeNode;
 begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
@@ -9632,7 +9632,9 @@ begin
       if (NewTool.CaretToCleanPos(NewOrigPos, NewCleanPos) = 0) then
       begin
         ProcNode := NewTool.FindDeepestNodeAtPos(NewCleanPos,False);
+        ImplementationNode := NewTool.FindImplementationNode;
         if (ProcNode<>nil) and (ProcNode.Desc = ctnProcedureHead)
+        and (ImplementationNode<>nil) and (ProcNode.StartPos<ImplementationNode.StartPos)
         and(CodeToolBoss.JumpToMethod(NewSource,
           NewX,NewY,BodySource,BodyX,BodyY,BodyTopLine,RevertableJump))
         then
