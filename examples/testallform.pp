@@ -313,7 +313,7 @@ end;
 
 procedure TForm1.GenKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  ShowEventFmt('%s.OnKeyDown [$%s]',[Sender.ClassName,VkToString(Key)]);
+  ShowEventFmt('%s.OnKeyDown [%s]',[Sender.ClassName,VkToString(Key)]);
 end;
 
 procedure TForm1.GenKeyPress(Sender: TObject; var Key: char);
@@ -326,7 +326,7 @@ end;
 
 procedure TForm1.GenKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  ShowEventFmt('%s.OnKeyUp [$%s]',[Sender.ClassName,VkToString(Key)]);
+  ShowEventFmt('%s.OnKeyUp [%s]',[Sender.ClassName,VkToString(Key)]);
 end;
 
 procedure TForm1.GenMouseDown(Sender: TObject; Button: TMouseButton;
