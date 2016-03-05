@@ -20,6 +20,10 @@
  ***************************************************************************
 }
 
+{
+  Common types, consts, functions and procedures that are not part of
+  the TForm
+}
 const
   AppTitle = 'Test Many (but not all) Components';
   AboutMsg = 'A little test suite to test many (but not all) components' + LineEnding +
@@ -103,7 +107,7 @@ type
     tadTsavedialog,
     tadTsavepicturedialog,
     tadTselectdirectorydialog,
-    tadTQuesionDialog
+    tadTQuestionDialog
     );
 
 const
@@ -185,14 +189,12 @@ const
     False, //tadTsavedialog,
     False, //tadTsavepicturedialog,
     False, //tadTselectdirectorydialog,
-    False //tadTQuesionDialog
+    False //tadTQuestionDialog
   );
 
   taCompNames: Array[taComponents] of String = (
     'Tarrow',
-    //False, //   //tacTbevel,
     'Tbitbtn',
-    //False, //   //tacTbufdataset,
     'Tbutton',
     'Tbuttonpanel',
     'Tcalcedit',
@@ -208,73 +210,33 @@ const
     'Tcomboboxex',
     'Tcontrolbar',
     'Tcoolbar',
-    //False, //   //tacTdatasource,
     'Tdateedit',
-    //False, //   //tacTdbcalendar,
-    //False, //   //tacTdbcheckbox,
-    //False, //   //tacTdbcombobox,
-    //False, //   //tacTdbedit,
-    //False, //   //tacTdbdateedit,
-    //False, //   //tacTdbgrid,
-    //False, //   //tacTdbgroupbox,
-    //False, //   //tacTdbimage,
-    //False, //   //tacTdblistbox,
-    //False, //   //tacTdblookupcombobox,
-    //False, //   //tacTdblookuplistbox,
-    //False, //   //tacTdbmemo,
-    //False, //   //tacTdbnavigator,
-    //False, //   //tacTdbradiogroup,
-    //False, //   //tacTdbtext,
     'Tdirectoryedit',
-    //False, //   //tacTdrawgrid,
     'Tedit',
     'Teditbutton',
-    //False, //   //tacTeventlog,
     'Tfilelistbox',
     'Tfilenameedit',
     'Tfiltercombobox',
     'Tfloatspinedit',
-    //False, //   //tacTflowpanel,
-    //False, //   //tacTframe,
     'Tgroupbox',
     'Theadercontrol',
-    //False, //   //tacThtmlbrowserhelpviewer,
-    //False, //   //tacThtmlhelpdatabase,
-    //False, //   //tacTidedialoglayoutstorage,
-    //False, //   //tacTidletimer,
     'Timage',
-    //False, //   //tacTimagelist,
-    //False, //   //tacTinipropstorage,
     'Tlabel',
     'Tlabelededit',
-    //False, //   //tacTlazcomponentqueue,
     'Tlistbox',
     'Tlistview',
-    //False, //   //tacTmainmenu,
     'Tmaskedit',
     'Tmemo',
-    //False, //   //tacTmouse,
     'Tnotebook',
     'Tpagecontrol',
     'Tpaintbox',
-    //False, //   //tacTpairsplitter,
     'Tpanel',
-    //False, //   //tacTpicture,
-    //False, //   //tacTpopupmenu,
-    //False, //   //tacTpopupnotifier,
-    //False, //   //tacTprocess,
-    //False, //   //tacTprocessutf8,
     'Tprogressbar',
     'Tradiobutton',
     'Tradiogroup',
-    //False, //   //tacTscrollbar,
-    //False, //   //tacTscrollbox,
-    //False, //   //tacTservicemanager,
     'Tshape',
     'Tshelllistview',
     'Tshelltreeview',
-    //False, //   //tacTsimpleipcclient,
-    //False, //   //tacTsimpleipcserver,
     'Tspeedbutton',
     'Tspinedit',
     'Tsplitter',
@@ -287,12 +249,9 @@ const
     'Ttogglebox',
     'Ttoolbar',
     'Ttrackbar',
-    //False, //   //tacTtrayicon,
     'Ttreeview',
     'Tupdown',
     'Tvaluelisteditor'
-    //False, //   //tacTxmlconfig,
-    //False, //   //tacTxmlpropstorage
     );
 
     taDlgNames: Array[taDialogs] of String = (
@@ -311,4 +270,10 @@ const
       'QuesionDialog'
   );
 
+function VkToString(Key: Word): String;
+begin
+  Result := DbgsVKCode(Key);
+  if (Pos('(', Result) > 0) and (Pos(')', Result) > 0) then
+    Result := '$' + IntToHex(Key,4);
+end;
 

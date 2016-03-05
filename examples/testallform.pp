@@ -79,15 +79,83 @@ type
     procedure ShowEventFmt(const Fmt: String; const Args: array of const);
 
     procedure ConnectStandardEvents(AControl: TControl);
-    function VkToString(Key: Word): String;
     procedure CreateMainMenu;
 
     // Components tests
     procedure TestArrow;
     procedure TestBitBtn;
+    procedure TestButton;
+    procedure TestButtonpanel;
+    procedure TestCalcedit;
+    procedure TestCalendar;
+    procedure TestCheckbox;
+    procedure TestCheckcombobox;
+    procedure TestCheckgroup;
+    procedure TestChecklistbox;
+    procedure TestColorbox;
+    procedure TestColorbutton;
+    procedure TestColorlistbox;
+    procedure TestCombobox;
+    procedure TestComboboxex;
+    procedure TestControlbar;
+    procedure TestCoolbar;
+    procedure TestDateedit;
+    procedure TestDirectoryedit;
+    procedure TestEdit;
+    procedure TestEditbutton;
+    procedure TestFilelistbox;
+    procedure TestFilenameedit;
+    procedure TestFiltercombobox;
+    procedure TestFloatspinedit;
+    procedure TestGroupbox;
+    procedure TestHeadercontrol;
+    procedure TestImage;
+    procedure TestLabel;
+    procedure TestLabelededit;
+    procedure TestListbox;
+    procedure TestListview;
+    procedure TestMaskedit;
+    procedure TestMemo;
+    procedure TestNotebook;
+    procedure TestPagecontrol;
+    procedure TestPaintbox;
+    procedure TestPanel;
+    procedure TestProgressbar;
+    procedure TestRadiobutton;
+    procedure TestRadiogroup;
+    procedure TestShape;
+    procedure TestShelllistview;
+    procedure TestShelltreeview;
+    procedure TestSpeedbutton;
+    procedure TestSpinedit;
+    procedure TestSplitter;
+    procedure TestStacTictext;
+    procedure TestStatusbar;
+    procedure TestStringgrid;
+    procedure TestTabcontrol;
+    procedure TestTimeedit;
+    procedure TestTimer;
+    procedure TestTogglebox;
+    procedure TestToolbar;
+    procedure TestTrackbar;
+    procedure TestTreeview;
+    procedure TestUpdown;
+    procedure TestValuelisteditor;
 
     // Dialog tests
-    procedure TestMsgDlg;
+    procedure TestMessageDialog;
+    procedure TestCalculatorDialog;
+    procedure TestCalendarDialog;
+    procedure TestColorDialog;
+    procedure TestFindDialog;
+    procedure TestFontDialog;
+    procedure TestOpenDialog;
+    procedure TestOpenpictureDialog;
+    procedure TestReplaceDialog;
+    procedure TestSaveDialog;
+    procedure TestSavepictureDialog;
+    procedure TestSelectdirectoryDialog;
+    procedure TestQuestionDialog;
 
   public
     { public declarations }
@@ -96,13 +164,13 @@ type
 var
   Form1: TForm1;
 
-{$i testallform_include.inc}
 
 implementation
 
 {$R *.lfm}
 {$R ../images/laz_images.res}
 {$R ../images/components_images.res}
+{$i testallform_include.inc}
 
 { TForm1 }
 
@@ -137,6 +205,63 @@ begin
   case taComponents(tg) of
     tacTarrow: TestArrow;
     tacTbitbtn: TestBitBtn;
+    tacTButton: TestButton;
+    tacTButtonpanel: TestButtonpanel;
+    tacTCalcedit: TestCalcedit;
+    tacTCalendar: TestCalendar;
+    tacTCheckbox: TestCheckbox;
+    tacTCheckcombobox: TestCheckcombobox;
+    tacTCheckgroup: TestCheckgroup;
+    tacTChecklistbox: TestChecklistbox;
+    tacTColorbox: TestColorbox;
+    tacTColorbutton: TestColorbutton;
+    tacTColorlistbox: TestColorlistbox;
+    tacTCombobox: TestCombobox;
+    tacTComboboxex: TestComboboxex;
+    tacTControlbar: TestControlbar;
+    tacTCoolbar: TestCoolbar;
+    tacTDateedit: TestDateedit;
+    tacTDirectoryedit: TestDirectoryedit;
+    tacTEdit: TestEdit;
+    tacTEditbutton: TestEditbutton;
+    tacTFilelistbox: TestFilelistbox;
+    tacTFilenameedit: TestFilenameedit;
+    tacTFiltercombobox: TestFiltercombobox;
+    tacTFloatspinedit: TestFloatspinedit;
+    tacTGroupbox: TestGroupbox;
+    tacTHeadercontrol: TestHeadercontrol;
+    tacTImage: TestImage;
+    tacTLabel: TestLabel;
+    tacTLabelededit: TestLabelededit;
+    tacTListbox: TestListbox;
+    tacTListview: TestListview;
+    tacTMaskedit: TestMaskedit;
+    tacTMemo: TestMemo;
+    tacTNotebook: TestNotebook;
+    tacTPagecontrol: TestPagecontrol;
+    tacTPaintbox: TestPaintbox;
+    tacTPanel: TestPanel;
+    tacTProgressbar: TestProgressbar;
+    tacTRadiobutton: TestRadiobutton;
+    tacTRadiogroup: TestRadiogroup;
+    tacTShape: TestShape;
+    tacTShelllistview: TestShelllistview;
+    tacTShelltreeview: TestShelltreeview;
+    tacTSpeedbutton: TestSpeedbutton;
+    tacTSpinedit: TestSpinedit;
+    tacTSplitter: TestSplitter;
+    tacTStacTictext: TestStacTictext;
+    tacTStatusbar: TestStatusbar;
+    tacTStringgrid: TestStringgrid;
+    tacTTabcontrol: TestTabcontrol;
+    tacTTimeedit: TestTimeedit;
+    tacTTimer: TestTimer;
+    tacTTogglebox: TestTogglebox;
+    tacTToolbar: TestToolbar;
+    tacTTrackbar: TestTrackbar;
+    tacTTreeview: TestTreeview;
+    tacTUpdown: TestUpdown;
+    tacTValuelisteditor: TestValuelisteditor;
   end;
   debugln('TForm1.CompMenuClick End');
 end;
@@ -159,7 +284,19 @@ begin
     Exit;
   end;
   case taDialogs(tg) of
-    tadTMessageDialog: TestMsgDlg;
+    tadTCalculatorDialog: TestCalculatorDialog;
+    tadTCalendarDialog: TestCalendarDialog;
+    tadTColorDialog: TestColorDialog;
+    tadTFindDialog: TestFindDialog;
+    tadTFontDialog: TestFontDialog;
+    tadTMessageDialog: TestMessageDialog;
+    tadTOpenDialog: TestOpenDialog;
+    tadTOpenpictureDialog: TestOpenpictureDialog;
+    tadTReplaceDialog: TestReplaceDialog;
+    tadTSaveDialog: TestSaveDialog;
+    tadTSavepictureDialog: TestSavepictureDialog;
+    tadTSelectdirectoryDialog: TestSelectdirectoryDialog;
+    tadTQuestionDialog: TestQuestionDialog;
   end;
   debugln('TForm1.DlgMenuClick End');
 end;
@@ -259,12 +396,6 @@ begin
   if (AControl is TCustomEdit) then TCustomEdit(AControl).OnKeyPress := @GenKeyPress;
 end;
 
-function TForm1.VkToString(Key: Word): String;
-begin
-  Result := DbgsVKCode(Key);
-  if (Pos('(', Result) > 0) and (Pos(')', Result) > 0) then
-    Result := '$' + IntToHex(Key,4);
-end;
 
 procedure TForm1.CreateMainMenu;
 var

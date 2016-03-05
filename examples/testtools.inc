@@ -140,6 +140,520 @@ begin
   rg.Parent := TestPnl;
 end;
 
+{---------------- TButton; ----------------}
+
+procedure TForm1.TestButton;
+begin
+  Clear;
+end;
+{---------------- End of TButton; ---------}
+
+
+{---------------- TButtonpanel; ----------------}
+
+procedure TForm1.TestButtonpanel;
+begin
+  Clear;
+end;
+{---------------- End of TButtonpanel; ---------}
+
+
+{---------------- TCalcedit; ----------------}
+
+procedure TForm1.TestCalcedit;
+begin
+  Clear;
+end;
+{---------------- End of TCalcedit; ---------}
+
+
+{---------------- TCalendar; ----------------}
+
+procedure TForm1.TestCalendar;
+begin
+  Clear;
+end;
+{---------------- End of TCalendar; ---------}
+
+
+{---------------- TCheckbox; ----------------}
+
+procedure TForm1.TestCheckbox;
+begin
+  Clear;
+end;
+{---------------- End of TCheckbox; ---------}
+
+
+{---------------- TCheckcombobox; ----------------}
+
+procedure TForm1.TestCheckcombobox;
+begin
+  Clear;
+end;
+{---------------- End of TCheckcombobox; ---------}
+
+
+{---------------- TCheckgroup; ----------------}
+
+procedure TForm1.TestCheckgroup;
+begin
+  Clear;
+end;
+{---------------- End of TCheckgroup; ---------}
+
+
+{---------------- TChecklistbox; ----------------}
+
+procedure TForm1.TestChecklistbox;
+begin
+  Clear;
+end;
+{---------------- End of TChecklistbox; ---------}
+
+
+{---------------- TColorbox; ----------------}
+
+procedure TForm1.TestColorbox;
+begin
+  Clear;
+end;
+{---------------- End of TColorbox; ---------}
+
+
+{---------------- TColorbutton; ----------------}
+
+procedure TForm1.TestColorbutton;
+begin
+  Clear;
+end;
+{---------------- End of TColorbutton; ---------}
+
+
+{---------------- TColorlistbox; ----------------}
+
+procedure TForm1.TestColorlistbox;
+begin
+  Clear;
+end;
+{---------------- End of TColorlistbox; ---------}
+
+
+{---------------- TCombobox; ----------------}
+
+procedure TForm1.TestCombobox;
+begin
+  Clear;
+end;
+{---------------- End of TCombobox; ---------}
+
+
+{---------------- TComboboxex; ----------------}
+
+procedure TForm1.TestComboboxex;
+begin
+  Clear;
+end;
+{---------------- End of TComboboxex; ---------}
+
+
+{---------------- TControlbar; ----------------}
+
+procedure TForm1.TestControlbar;
+begin
+  Clear;
+end;
+{---------------- End of TControlbar; ---------}
+
+
+{---------------- TCoolbar; ----------------}
+
+procedure TForm1.TestCoolbar;
+begin
+  Clear;
+end;
+{---------------- End of TCoolbar; ---------}
+
+
+{---------------- TDateedit; ----------------}
+
+procedure TForm1.TestDateedit;
+begin
+  Clear;
+end;
+{---------------- End of TDateedit; ---------}
+
+
+{---------------- TDirectoryedit; ----------------}
+
+procedure TForm1.TestDirectoryedit;
+begin
+  Clear;
+end;
+{---------------- End of TDirectoryedit; ---------}
+
+
+{---------------- TEdit; ----------------}
+
+procedure TForm1.TestEdit;
+begin
+  Clear;
+end;
+{---------------- End of TEdit; ---------}
+
+
+{---------------- TEditbutton; ----------------}
+
+procedure TForm1.TestEditbutton;
+begin
+  Clear;
+end;
+{---------------- End of TEditbutton; ---------}
+
+
+{---------------- TFilelistbox; ----------------}
+
+procedure TForm1.TestFilelistbox;
+begin
+  Clear;
+end;
+{---------------- End of TFilelistbox; ---------}
+
+
+{---------------- TFilenameedit; ----------------}
+
+procedure TForm1.TestFilenameedit;
+begin
+  Clear;
+end;
+{---------------- End of TFilenameedit; ---------}
+
+
+{---------------- TFiltercombobox; ----------------}
+
+procedure TForm1.TestFiltercombobox;
+begin
+  Clear;
+end;
+{---------------- End of TFiltercombobox; ---------}
+
+
+{---------------- TFloatspinedit; ----------------}
+
+procedure TForm1.TestFloatspinedit;
+begin
+  Clear;
+end;
+{---------------- End of TFloatspinedit; ---------}
+
+
+{---------------- TGroupbox; ----------------}
+
+procedure TForm1.TestGroupbox;
+begin
+  Clear;
+end;
+{---------------- End of TGroupbox; ---------}
+
+
+{---------------- THeadercontrol; ----------------}
+
+procedure TForm1.TestHeadercontrol;
+begin
+  Clear;
+end;
+{---------------- End of THeadercontrol; ---------}
+
+
+{---------------- TImage; ----------------}
+
+procedure TForm1.TestImage;
+begin
+  Clear;
+end;
+{---------------- End of TImage; ---------}
+
+
+{---------------- TLabel; ----------------}
+
+procedure TForm1.TestLabel;
+begin
+  Clear;
+end;
+{---------------- End of TLabel; ---------}
+
+
+{---------------- TLabelededit; ----------------}
+
+procedure TForm1.TestLabelededit;
+begin
+  Clear;
+end;
+{---------------- End of TLabelededit; ---------}
+
+
+{---------------- TListbox; ----------------}
+
+procedure TForm1.TestListbox;
+begin
+  Clear;
+end;
+{---------------- End of TListbox; ---------}
+
+
+{---------------- TListview; ----------------}
+
+procedure TForm1.TestListview;
+begin
+  Clear;
+end;
+{---------------- End of TListview; ---------}
+
+
+{---------------- TMaskedit; ----------------}
+
+procedure TForm1.TestMaskedit;
+begin
+  Clear;
+end;
+{---------------- End of TMaskedit; ---------}
+
+
+{---------------- TMemo; ----------------}
+
+procedure TForm1.TestMemo;
+begin
+  Clear;
+end;
+{---------------- End of TMemo; ---------}
+
+
+{---------------- TNotebook; ----------------}
+
+procedure TForm1.TestNotebook;
+begin
+  Clear;
+end;
+{---------------- End of TNotebook; ---------}
+
+
+{---------------- TPagecontrol; ----------------}
+
+procedure TForm1.TestPagecontrol;
+begin
+  Clear;
+end;
+{---------------- End of TPagecontrol; ---------}
+
+
+{---------------- TPaintbox; ----------------}
+
+procedure TForm1.TestPaintbox;
+begin
+  Clear;
+end;
+{---------------- End of TPaintbox; ---------}
+
+
+{---------------- TPanel; ----------------}
+
+procedure TForm1.TestPanel;
+begin
+  Clear;
+end;
+{---------------- End of TPanel; ---------}
+
+
+{---------------- TProgressbar; ----------------}
+
+procedure TForm1.TestProgressbar;
+begin
+  Clear;
+end;
+{---------------- End of TProgressbar; ---------}
+
+
+{---------------- TRadiobutton; ----------------}
+
+procedure TForm1.TestRadiobutton;
+begin
+  Clear;
+end;
+{---------------- End of TRadiobutton; ---------}
+
+
+{---------------- TRadiogroup; ----------------}
+
+procedure TForm1.TestRadiogroup;
+begin
+  Clear;
+end;
+{---------------- End of TRadiogroup; ---------}
+
+
+{---------------- TShape; ----------------}
+
+procedure TForm1.TestShape;
+begin
+  Clear;
+end;
+{---------------- End of TShape; ---------}
+
+
+{---------------- TShelllistview; ----------------}
+
+procedure TForm1.TestShelllistview;
+begin
+  Clear;
+end;
+{---------------- End of TShelllistview; ---------}
+
+
+{---------------- TShelltreeview; ----------------}
+
+procedure TForm1.TestShelltreeview;
+begin
+  Clear;
+end;
+{---------------- End of TShelltreeview; ---------}
+
+
+{---------------- TSpeedbutton; ----------------}
+
+procedure TForm1.TestSpeedbutton;
+begin
+  Clear;
+end;
+{---------------- End of TSpeedbutton; ---------}
+
+
+{---------------- TSpinedit; ----------------}
+
+procedure TForm1.TestSpinedit;
+begin
+  Clear;
+end;
+{---------------- End of TSpinedit; ---------}
+
+
+{---------------- TSplitter; ----------------}
+
+procedure TForm1.TestSplitter;
+begin
+  Clear;
+end;
+{---------------- End of TSplitter; ---------}
+
+
+{---------------- TStacTictext; ----------------}
+
+procedure TForm1.TestStacTictext;
+begin
+  Clear;
+end;
+{---------------- End of TStacTictext; ---------}
+
+
+{---------------- TStatusbar; ----------------}
+
+procedure TForm1.TestStatusbar;
+begin
+  Clear;
+end;
+{---------------- End of TStatusbar; ---------}
+
+
+{---------------- TStringgrid; ----------------}
+
+procedure TForm1.TestStringgrid;
+begin
+  Clear;
+end;
+{---------------- End of TStringgrid; ---------}
+
+
+{---------------- TTabcontrol; ----------------}
+
+procedure TForm1.TestTabcontrol;
+begin
+  Clear;
+end;
+{---------------- End of TTabcontrol; ---------}
+
+
+{---------------- TTimeedit; ----------------}
+
+procedure TForm1.TestTimeedit;
+begin
+  Clear;
+end;
+{---------------- End of TTimeedit; ---------}
+
+
+{---------------- TTimer; ----------------}
+
+procedure TForm1.TestTimer;
+begin
+  Clear;
+end;
+{---------------- End of TTimer; ---------}
+
+
+{---------------- TTogglebox; ----------------}
+
+procedure TForm1.TestTogglebox;
+begin
+  Clear;
+end;
+{---------------- End of TTogglebox; ---------}
+
+
+{---------------- TToolbar; ----------------}
+
+procedure TForm1.TestToolbar;
+begin
+  Clear;
+end;
+{---------------- End of TToolbar; ---------}
+
+
+{---------------- TTrackbar; ----------------}
+
+procedure TForm1.TestTrackbar;
+begin
+  Clear;
+end;
+{---------------- End of TTrackbar; ---------}
+
+
+{---------------- TTreeview; ----------------}
+
+procedure TForm1.TestTreeview;
+begin
+  Clear;
+end;
+{---------------- End of TTreeview; ---------}
+
+
+{---------------- TUpdown; ----------------}
+
+procedure TForm1.TestUpdown;
+begin
+  Clear;
+end;
+{---------------- End of TUpdown; ---------}
+
+
+{---------------- TValuelisteditor; ----------------}
+
+procedure TForm1.TestValuelisteditor;
+begin
+  Clear;
+end;
+{---------------- End of TValuelisteditor; ---------}
+
+
+{---------------- MessageDialog; ----------------}
 
 type
   { TMsgDlgDummmy }
@@ -173,7 +687,7 @@ begin
   MessageDlg('MessageDlg test', aMsg, DT, Btns, 0);
 end;
 
-procedure TForm1.TestMsgDlg;
+procedure TForm1.TestMessageDialog;
 var
   ed: TEdit;
   cg: TCheckGroup;
@@ -222,5 +736,113 @@ begin
   btn.Left := rg.Left;
   btn.Parent := TestPnl;
 end;
+{---------------- End of MessageDialog; ---------}
 
+
+{---------------- CalculatorDialog; ----------------}
+
+procedure TForm1.TestCalculatorDialog;
+begin
+  Clear;
+end;
+{---------------- End of CalculatorDialog; ---------}
+
+
+{---------------- CalendarDialog; ----------------}
+
+procedure TForm1.TestCalendarDialog;
+begin
+  Clear;
+end;
+{---------------- End of CalendarDialog; ---------}
+
+
+{---------------- ColorDialog; ----------------}
+
+procedure TForm1.TestColorDialog;
+begin
+  Clear;
+end;
+{---------------- End of ColorDialog; ---------}
+
+
+{---------------- FindDialog; ----------------}
+
+procedure TForm1.TestFindDialog;
+begin
+  Clear;
+end;
+{---------------- End of FindDialog; ---------}
+
+
+{---------------- FontDialog; ----------------}
+
+procedure TForm1.TestFontDialog;
+begin
+  Clear;
+end;
+{---------------- End of FontDialog; ---------}
+
+
+{---------------- OpenDialog; ----------------}
+
+procedure TForm1.TestOpenDialog;
+begin
+  Clear;
+end;
+{---------------- End of OpenDialog; ---------}
+
+
+{---------------- OpenpictureDialog; ----------------}
+
+procedure TForm1.TestOpenpictureDialog;
+begin
+  Clear;
+end;
+{---------------- End of OpenpictureDialog; ---------}
+
+
+{---------------- ReplaceDialog; ----------------}
+
+procedure TForm1.TestReplaceDialog;
+begin
+  Clear;
+end;
+{---------------- End of ReplaceDialog; ---------}
+
+
+{---------------- SaveDialog; ----------------}
+
+procedure TForm1.TestSaveDialog;
+begin
+  Clear;
+end;
+{---------------- End of SaveDialog; ---------}
+
+
+{---------------- SavepictureDialog; ----------------}
+
+procedure TForm1.TestSavepictureDialog;
+begin
+  Clear;
+end;
+{---------------- End of SavepictureDialog; ---------}
+
+
+{---------------- SelectdirectoryDialog; ----------------}
+
+procedure TForm1.TestSelectdirectoryDialog;
+begin
+  Clear;
+end;
+{---------------- End of SelectdirectoryDialog; ---------}
+
+
+{---------------- QuesionDialog; ----------------}
+
+procedure TForm1.TestQuestionDialog;
+begin
+  Clear;
+end;
+{---------------- End of QuesionDialog; ---------}
 
