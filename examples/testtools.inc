@@ -141,19 +141,162 @@ begin
 end;
 
 {---------------- TButton; ----------------}
+type
+  { TButDummy }
+  TButDummy = class
+    Btn: TButton;
+    Tm: TTimer;
+    OldClick: TNotifyEvent;
+    procedure OnTimer(Sender: TObject);
+    procedure OnBtnClick(Sender: TObject);
+  end;
+{ TButDummy }
+procedure TButDummy.OnTimer(Sender: TObject);
+var
+  PW, PH, BW, BH: Integer;
+begin
+  if not Assigned(Btn) then Exit;
+  if not Assigned(Btn.Parent) then Exit;
+  PW := Btn.Parent.Width;
+  PH := Btn.Parent.Height;
+  BW := Btn.Width;
+  BH := Btn.Height;
+  Btn.Left := Random(PW-BW);
+  Btn.Top := Random(PH-BH);
+end;
+
+procedure TButDummy.OnBtnClick(Sender: TObject);
+begin
+  OldClick(Sender);
+  if Tm.Enabled then
+  begin
+    OnTimer(Sender); //move the button first
+    Btn.Caption := Btn.Caption + '...';
+    Tm.Interval := Tm.Interval - 100;
+    if Tm.Interval < 500 then
+    begin
+      Tm.Enabled := False;
+      Btn.Caption := 'Stop hitting me!';
+    end;
+  end
+  else
+  begin
+    ShowMessage('I told you NOT to hit me!'^m^m'Game''s over!');
+    Btn.Enabled := False;
+  end;
+end;
 
 procedure TForm1.TestButton;
+var
+  Btn: TButton;
+  Tm: TTimer;
+  dummy: TButDummy;
 begin
   Clear;
+  Btn := TButton.Create(nil);
+  Tm := TTimer.Create(nil);
+  dummy := TButDummy.Create;
+  FObjList.Add(Btn);
+  FObjList.Add(Tm);  //Add it after Btn, so Tm will be destroyed before Btn!
+  FObjList.Add(dummy);
+  dummy.Btn := Btn;
+  dummy.Tm := Tm;
+  Btn.Caption := 'Click me ...';
+  Btn.AutoSize := True;
+  Btn.Top := 10;
+  Btn.Left := 5;
+  Btn.Cursor := crCross;
+  ConnectStandardEvents(Btn);
+  dummy.OldClick := Btn.OnClick;
+  Btn.OnClick := @dummy.OnBtnClick;
+
+  Btn.Parent := TestPnl;
+  Tm.Interval := 1000;
+  Tm.OnTimer := @dummy.OnTimer;
+  Tm.Enabled := True;
 end;
 {---------------- End of TButton; ---------}
 
 
 {---------------- TButtonpanel; ----------------}
+type
+  { TBPDummy }
+  TBPDummy = class
+    bp: TButtonPanel;
+    cg: TCheckGroup;
+    rg: TRadioGroup;
+    procedure OnCgItemClick(Sender: TObject; Index: integer);
+    procedure OnRgClick(Sender: TObject);
+  end;
+
+procedure TBPDummy.OnCgItemClick(Sender: TObject; Index: integer);
+var
+  b: TPanelButton;
+begin
+  if not assigned(bp) then Exit;
+  b := TPanelButton(Index);
+  if cg.Checked[Index] then
+  begin
+    bp.ShowButtons := bp.ShowButtons + [b];
+  end
+  else
+  begin
+    bp.ShowButtons := bp.ShowButtons - [b];
+  end;
+  if Assigned(bp.CloseButton) then bp.CloseButton.ModalResult := mrNo;
+end;
+
+procedure TBPDummy.OnRgClick(Sender: TObject);
+begin
+  if not assigned(bp) then Exit;
+  bp.ButtonOrder := TButtonOrder(rg.ItemIndex);
+end;
 
 procedure TForm1.TestButtonpanel;
+var
+  bp: TButtonPanel;
+  cg: TCheckGroup;
+  b: TPanelButton;
+  dummy: TBPDummy;
+  rg: TRadioGroup;
 begin
   Clear;
+  bp := TButtonPanel.Create(nil);
+  cg := TCheckGroup.Create(nil);
+  rg := TRadioGroup.Create(nil);
+  dummy := TBPDummy.Create;
+  FObjList.Add(bp);
+  FObjList.Add(cg);
+  FObjList.Add(rg);
+  FObjList.Add(dummy);
+  dummy.bp := bp;
+  dummy.cg := cg;
+  dummy.rg := rg;
+  if assigned(bp.CloseButton) then bp.CloseButton.ModalResult := mrNO; //otherwise it will close the application
+  ConnectStandardEvents(bp);
+  ConnectStandardEvents(bp.OKButton);
+  ConnectStandardEvents(bp.CancelButton);
+  ConnectStandardEvents(bp.CloseButton);
+  ConnectStandardEvents(bp.HelpButton);
+  cg.Items.AddStrings(['pbOK','pbCancel','pbClose','pbHelp']);
+  for b := Low(TPanelButton) to High(TPanelButton) do
+    if (b in bp.ShowButtons) then cg.Checked[Ord(b)] := True;
+  cg.OnItemClick := @dummy.OnCgItemClick;
+  cg.AutoSize := True;
+  cg.Caption := 'ShowButtons';
+  bp.Parent := TestPnl;
+  cg.Left := 5;
+  cg.Top := 20;
+  cg.Parent := TestPnl;
+  rg.Items.AddStrings(['boDefault', 'boCloseCancelOK', 'boCloseOKCancel']);
+  rg.ItemIndex := Ord(bp.ButtonOrder);
+  rg.Caption := 'ButtonOrder';
+  rg.Autosize := True;
+  rg.OnClick := @dummy.OnRgClick;
+  rg.Left := cg.Left + cg.Width + 20;
+  rg.Top := cg.Top;
+  rg.Parent := TestPnl;
+
 end;
 {---------------- End of TButtonpanel; ---------}
 

@@ -117,8 +117,8 @@ const
   taCompImplemented: Array[taComponents] of Boolean = (
     True, //tacTarrow,
     True, //tacTbitbtn,
-    False, //tacTbutton,
-    False, //tacTbuttonpanel,
+    True, //tacTbutton,
+    True, //tacTbuttonpanel,
     False, //tacTcalcedit,
     False, //tacTcalendar,
     False, //tacTcheckbox,

@@ -29,7 +29,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   Menus, Buttons, StdCtrls, LclProc, LCLType, ContNrs,
 
-  Arrow;
+  Arrow, ButtonPanel;
 
 type
 
@@ -355,7 +355,7 @@ procedure TForm1.FormCreate(Sender: TObject);
 begin
   FObjList := TFPObjectList.Create(True);
   CreateMainMenu;
-
+  Randomize;
 end;
 
 procedure TForm1.BtnClearClick(Sender: TObject);
@@ -385,6 +385,7 @@ type
 
 procedure TForm1.ConnectStandardEvents(AControl: TControl);
 begin
+  if not Assigned(AControl) then Exit;
   THackControl(AControl).OnMouseDown := @GenMouseDown;
   THackControl(AControl).OnMouseUp := @GenMouseUp;
   THackControl(AControl).OnMouseEnter := @GenMouseEnter;
