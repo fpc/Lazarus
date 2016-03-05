@@ -1308,7 +1308,6 @@ components/fpcunit/Makefile svneol=native#text/plain
 components/fpcunit/Makefile.compiled svneol=native#text/plain
 components/fpcunit/Makefile.fpc svneol=native#text/plain
 components/fpcunit/blueball.xpm svneol=native#text/plain
-components/fpcunit/console/consoletestrunner.pas svneol=native#text/plain
 components/fpcunit/console/fpcunit.xsl svneol=native#text/plain
 components/fpcunit/console/fpcunitconsolerunner.lpk svneol=native#text/plain
 components/fpcunit/console/fpcunitconsolerunner.pas svneol=native#text/plain
