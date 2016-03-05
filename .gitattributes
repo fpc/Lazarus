@@ -5601,6 +5601,7 @@ examples/taborder.lpi svneol=native#text/plain
 examples/taborder.pas svneol=native#text/pascal
 examples/testall.lpi svneol=native#text/plain
 examples/testall.pp svneol=native#text/pascal
+examples/testallform.lfm svneol=native#text/plain
 examples/testallform.pp svneol=native#text/pascal
 examples/testallform_include.inc svneol=native#text/plain
 examples/testtools.inc svneol=native#text/pascal
