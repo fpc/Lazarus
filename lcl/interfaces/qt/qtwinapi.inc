@@ -4581,6 +4581,11 @@ begin
   {$endif}
   if Handle = 0 then
     Exit(False);
+  {$IFDEF QTUSEACCURATEFRAME}
+  if TQtWidget(Handle).IsFramedWidget then
+    ASize := TQtWidget(handle).getFrameSize
+  else
+  {$ENDIF}
   ASize := TQtWidget(Handle).getSize;
   Height := ASize.cy;
   Width := ASize.cx;

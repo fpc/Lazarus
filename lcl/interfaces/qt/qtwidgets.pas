@@ -4570,7 +4570,18 @@ begin
 end;
 
 function TQtWidget.getHeight: Integer;
+{$IFDEF QtUseAccurateFrame}
+var
+  ASize: TSize;
+{$ENDIF}
 begin
+  {$IFDEF QtUseAccurateFrame}
+  if IsFramedWidget then
+  begin
+    ASize := getFrameSize;
+    Result := ASize.cy;
+  end else
+  {$ENDIF}
   Result := QWidget_height(Widget);
 end;
 
@@ -4580,8 +4591,19 @@ begin
 end;
 
 function TQtWidget.getWidth: Integer;
+{$IFDEF QtUseAccurateFrame}
+var
+  ASize: TSize;
+{$ENDIF}
 begin
-  Result := QWidget_width(Widget);
+  {$IFDEF QtUseAccurateFrame}
+  if IsFramedWidget then
+  begin
+    ASize := getFrameSize;
+    Result := ASize.cx;
+  end else
+  {$ENDIF}
+    Result := QWidget_width(Widget);
 end;
 
 function TQtWidget.getWindow: TQtWidget;
@@ -4768,16 +4790,26 @@ var
   R1, R2: TRect;
   dw, dh: integer;
 begin
+  {$IFDEF QTUSEACCURATEFRAME}
+  QWidget_resize(Widget, ANewWidth - (FFrameMargins.Right + FFrameMargins.Left),
+    ANewHeight - (FFrameMargins.Bottom + FFrameMargins.Top));
+  {$ELSE}
   R1 := getGeometry;
   R2 := getFrameGeometry;
   dw := (R1.Left - R2.Left) + (R2.Right - R1.Right);
   dh := (R1.Top - R2.Top) + (R2.Bottom - R1.Bottom);
   QWidget_resize(Widget, ANewWidth - dw, ANewHeight - dh);
+  {$ENDIF}
 end;
 
 procedure TQtWidget.Resize(ANewWidth, ANewHeight: Integer);
 begin
-  QWidget_resize(Widget, ANewWidth, ANewHeight);
+  {$IFDEF QTUSEACCURATEFRAME}
+  if IsFramedWidget then
+    frame_resize(ANewWidth, ANewHeight)
+  else
+  {$ENDIF}
+    QWidget_resize(Widget, ANewWidth, ANewHeight);
 end;
 
 procedure TQtWidget.releaseMouse;
@@ -4892,6 +4924,12 @@ end;
 
 procedure TQtWidget.setMaximumSize(AWidth, AHeight: Integer);
 begin
+  {$IFDEF QTUSEACCURATEFRAME}
+  if IsFramedWidget then
+    QWidget_setMaximumSize(Widget, AWidth - (FFrameMargins.Right + FFrameMargins.Left),
+      AHeight - (FFrameMargins.Bottom + FFrameMargins.Top))
+  else
+  {$ENDIF}
   QWidget_setMaximumSize(Widget, AWidth, AHeight);
 end;
 
@@ -4907,6 +4945,12 @@ end;
 
 procedure TQtWidget.setMinimumSize(AWidth, AHeight: Integer);
 begin
+  {$IFDEF QTUSEACCURATEFRAME}
+  if IsFramedWidget then
+    QWidget_setMinimumSize(Widget, Max(0, AWidth - (FFrameMargins.Right + FFrameMargins.Left)),
+      Max(0, AHeight - (FFrameMargins.Bottom + FFrameMargins.Top)))
+  else
+  {$ENDIF}
   QWidget_setMinimumSize(Widget, AWidth, AHeight);
 end;
 
@@ -6573,7 +6617,12 @@ begin
         begin
           {TQtMainWindow does not send resize event if ScrollArea is assigned,
            it is done here when viewport geometry is finally updated by Qt.}
-          ASize := FOwner.getSize;
+          {$IFDEF QTUSEACCURATEFRAME}
+          if (FOwner.IsFramedWidget) then
+            ASize := FOwner.getFrameSize
+          else
+          {$ENDIF}
+            ASize := FOwner.getSize;
           AResizeEvent := QResizeEvent_create(@ASize, @ASize);
           try
             // issue #28596 and others of TCustomControl clientrect related
@@ -7114,8 +7163,15 @@ begin
   if not IsMDIChild and
     (TCustomForm(LCLObject).BorderStyle in [bsDialog, bsNone, bsSingle]) and
      not (csDesigning in LCLObject.ComponentState) then
-    QWidget_setFixedSize(Widget, ANewWidth, ANewHeight)
-  else
+  begin
+    {$IFDEF QtUseAccurateFrame}
+    if IsFramedWidget then
+      QWidget_setFixedSize(Widget, ANewWidth - (FFrameMargins.Right + FFrameMargins.Left),
+        ANewHeight - (FFrameMargins.Bottom + FFrameMargins.Top))
+    else
+    {$ENDIF}
+    QWidget_setFixedSize(Widget, ANewWidth, ANewHeight);
+  end else
     inherited Resize(ANewWidth, ANewHeight);
 end;
 
