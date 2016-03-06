@@ -11,7 +11,7 @@
  *****************************************************************************
 }
  
-{$IFnDEF DisableWrapperFunctions}
+{$IFDEF EnableWrapperFunctions}
 function NeedRTLAnsi: boolean;
 begin
   Result := LazUtf8.NeedRTLAnsi;
@@ -340,7 +340,7 @@ begin
 end;
 {$ENDIF}
 
-{$ENDIF DisableWrapperFunctions}
+{$ENDIF EnableWrapperFunctions}
 
 // ToDo: For ExpandUNCFileNameUTF8
 //
