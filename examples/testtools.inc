@@ -795,6 +795,39 @@ begin
 end;
 {---------------- End of TValuelisteditor; ---------}
 
+{---------------------------  End of Components -------------------------}
+
+
+{--------------------------- Start of Dialogs ---------------------------}
+
+const
+  MsgDlgBtnStr: array[TMsgDlgBtn] of String = (
+    'mbYes', 'mbNo', 'mbOK', 'mbCancel', 'mbAbort', 'mbRetry', 'mbIgnore',
+    'mbAll', 'mbNoToAll', 'mbYesToAll', 'mbHelp', 'mbClose'
+    );
+  MsgDlgTypeStr: array[TMsgDlgType] of String = (
+    'mtWarning', 'mtError', 'mtInformation',
+    'mtConfirmation', 'mtCustom'
+    );
+
+function ModalResultToStr(Mr: TModalResult): String;
+begin
+  case Mr of
+    mrNone: Result :=  'mrNone';
+    mrOK: Result :=  'mrOK';
+    mrCancel: Result :=  'mrCancel';
+    mrAbort: Result :=  'mrAbort';
+    mrRetry: Result :=  'mrRetry';
+    mrIgnore: Result :=  'mrInore';
+    mrYes: Result :=  'mrYes';
+    mrNo: Result :=  'mrNo';
+    mrAll: Result :=  'mrAll';
+    mrNoToAll: Result :=  'mrNoToAll';
+    mrYesToAll: Result :=  'mrYesToAll';
+    mrClose: Result :=  'mrClose';
+    else Result := IntToStr(Mr);
+  end;
+end;
 
 {---------------- MessageDialog; ----------------}
 
@@ -805,6 +838,7 @@ type
     cg: TCheckGroup;
     rg: TRadioGroup;
     btn: TButton;
+    lbl: TLabel;
     procedure OnBtnClick(Sender: TObject);
   end;
 { TMsgDlgDummmy }
@@ -814,6 +848,7 @@ var
   Btns: TMsgDlgButtons;
   i: Integer;
   aMsg: TCaption;
+  Res: TModalResult;
 begin
   DT := TMsgDlgType(rg.ItemIndex);
   aMsg := ed.Text;
@@ -827,7 +862,8 @@ begin
   end;
   if (Btns = []) then
     Btns := [mbOk];
-  MessageDlg('MessageDlg test', aMsg, DT, Btns, 0);
+  Res := MessageDlg('MessageDlg test', aMsg, DT, Btns, 0);
+  lbl.Caption := 'Dialog result = ' + ModalResultToStr(Res);
 end;
 
 procedure TForm1.TestMessageDialog;
@@ -836,33 +872,42 @@ var
   cg: TCheckGroup;
   rg: TRadioGroup;
   dummy: TMsgDlgDummmy;
+  lbl: TLabel;
   btn: TButton;
+  mdbtn: TMsgDlgBtn;
+  mdt: TMsgDlgType;
 begin
   Clear;
   ed := TEdit.Create(nil);
   cg := TCheckGroup.Create(nil);
   rg := TRadioGroup.Create(nil);
   btn := TButton.Create(nil);
+  lbl := TLabel.Create(nil);
   dummy := TMsgDlgDummmy.Create;
   FObjList.Add(ed);
   FObjList.Add(cg);
   FObjList.Add(rg);
   FObjList.Add(btn);
+  FObjList.Add(lbl);
   FObjList.Add(dummy);
   dummy.ed := ed;
   dummy.cg := cg;
   dummy.rg := rg;
+  dummy.lbl := lbl;
   btn.OnClick := @dummy.OnBtnClick;
+
   ed.TextHint := 'Type your message here';
   ed.Parent := TestPnl;
-  cg.Items.AddStrings(['mbYes', 'mbNo', 'mbOK', 'mbCancel', 'mbAbort', 'mbRetry', 'mbIgnore',
-                       'mbAll', 'mbNoToAll', 'mbYesToAll', 'mbHelp', 'mbClose']);
+
   cg.Caption := 'Buttons';
+  for mdbtn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
+    cg.Items.Add(MsgDlgBtnStr[mdbtn]);
   cg.AutoSize := True;
-  rg.Items.AddStrings(['mtWarning', 'mtError', 'mtInformation', 'mtConfirmation',
-                       'mtCustom']);
   cg.Parent := TestPnl;
+
   rg.Caption := 'DialogType';
+  for mdt := Low(TMsgDlgType) to high(TMsgDlgType) do
+    rg.items.Add(MsgDlgTypeStr[mdt]);
   rg.AutoSize := True;
   rg.ItemIndex := Ord(mtInformation);
   ed.Left := 5;
@@ -873,11 +918,17 @@ begin
   rg.Left := cg.Left + cg.Width + 20;
   rg.Top := cg.Top;
   rg.Parent := TestPnl;
+
   btn.Caption := 'Show dialog';
   btn.AutoSize := True;
   btn.Top := rg.Top + rg.Height + 20;
   btn.Left := rg.Left;
   btn.Parent := TestPnl;
+
+  lbl.Caption := '';
+  lbl.Top := btn.Top + btn.Height + 20;
+  lbl.Left := btn.Left;
+  lbl.Parent := TestPnl;
 end;
 {---------------- End of MessageDialog; ---------}
 
@@ -979,6 +1030,7 @@ type
   cg : TCheckGroup;
   btn: TButton;
   ed: TEdit;
+  lbl: TLabel;
   Sdd: TSelectDirectoryDialog;
   Procedure OnBtnClick(sender:TObject);
 end;
@@ -996,7 +1048,9 @@ begin
     Opts := sdd.Options;
   sdd.Options:=Opts;
   if sdd.Execute then
-    ShowMessage('You selected "'+sdd.FileName+'"' );
+    lbl.Caption := 'Selected: ' + {ExtractFileDir}(sdd.FileName)
+  else
+    lbl.Caption := 'Dialog was canceled';
 end;
 
 
@@ -1006,6 +1060,7 @@ var
   cg : TCheckGroup;
   btn: TButton;
   ed: TEdit;
+  lbl:TLabel;
   Sdd: TSelectDirectoryDialog;
   i: Integer;
   opt: TOpenOption;
@@ -1015,16 +1070,19 @@ begin
   sdd := TSelectDirectoryDialog.Create(nil);
   btn := TButton.Create(nil);
   cg := TCheckGroup.Create(nil);
+  lbl := TLabel.Create(nil);
   FObjList.Add(ed);
   FObjList.Add(sdd);
   FObjList.Add(btn);
   FObjList.Add(cg);
+  FObjList.Add(lbl);
   dummy := TSelDirDlgDummy.Create;
   FObjList.Add(dummy);
   dummy.ed := ed;
   dummy.Sdd := Sdd;
   dummy.btn := btn;
   dummy.cg :=cg;
+  dummy.lbl := lbl;
 
   ed.TextHint := 'Enter a Start-Directory here';
   ed.Parent := TestPnl;
@@ -1040,6 +1098,7 @@ begin
   btn.parent := TestPnl;
   btn.onclick := @dummy.OnBtnClick;
   btn.Anchors:=ed.Anchors + [akRight]-[akLeft];
+
   for opt := Low(TOpenOption) to High(TOpenOption) do
     cg.Items.Add(DbgS(opt));
   cg.Caption := 'OpenOptions';
@@ -1047,12 +1106,16 @@ begin
   cg.Columns:=2;
   cg.Parent := TestPnl;
   cg.Left := 5;
+  cg.AutoSize := True;
   cg.Top := btn.Top + btn.Height + 10;
-  cg.Width:= TestPnl.Width -cg.Left-5;
-  cg.Height := TestPnl.Height - cg.Top -5;
   cg.Anchors:=cg.Anchors + [akRight,akBottom];
   for i := 0 to cg.Items.Count - 1 do
     cg.Checked[i]:= TOpenOption(i) in sdd.Options;
+
+  lbl.Top := cg.Top + cg.Height + 10;
+  lbl.Left := cg.Left;
+  lbl.Caption := '';
+  lbl.Parent := TestPnl;
 end;
 {---------------- End of SelectdirectoryDialog; ---------}
 
@@ -1067,6 +1130,7 @@ type
     cg: TCheckGroup;
     {$ENDIF}
     btn: TButton;
+    lbl: TLabel;
     procedure OnBtnClick(Sender: TObject);
   end;
 
@@ -1078,6 +1142,7 @@ var
   i: Integer;
   {$ENDIF}
   aMsg: TCaption;
+  Res: TModalResult;
 begin
   DT := TMsgDlgType(rg.ItemIndex);
   aMsg := ed.Text;
@@ -1099,12 +1164,8 @@ begin
       Btns[high(Btns)] := mbOK;
     end;
   {$ENDIF}
-  case QuestionDlg('QuestionDlg test', aMsg, DT, [mrYes,'&Yes','isDefault',mrNo, '&No'], 0) of
-    mrYes: ShowMessage('You selected Yes !');
-    mrNo: ShowMessage('You selected No !')
-  else;
-    ShowMessage('Canceled the Question')
-  end;
+  Res := QuestionDlg('QuestionDlg test', aMsg, DT, [mrYes,'&Yes','isDefault',mrNo, '&No'], 0);
+  lbl.Caption := 'Dialog result = ' + ModalResultToStr(Res);
 end;
 
 
@@ -1114,22 +1175,28 @@ var
   ed: TEdit;
   btn: TButton;
   rg: TRadioGroup;
+  mdt: TMsgDlgType;
+  lbl: TLabel;
   {$IFDEF QDDynSelectBtn}
   cg: TCheckGroup;
+  mdbtn: TMsgDlgBtn;
   {$ENDIF QDDynSelectBtn}
 begin
   Clear;
   ed := TEdit.Create(nil);
   rg := TRadioGroup.Create(nil);
   btn := TButton.Create(nil);
+  lbl := TLabel.Create(nil);
   FObjList.Add(btn);
   FObjList.Add(ed);
   FObjList.Add(rg);
+  FObjList.Add(lbl);
   dummy := TQuesionDlgDummmy.Create;
   FObjList.Add(dummy);
   dummy.ed := ed;
   dummy.btn := btn;
   dummy.rg := rg;
+  dummy.lbl := lbl;
   {$IFDEF QDDynSelectBtn}
   cg := TCheckGroup.Create(nil);
   FObjList.Add(cg);
@@ -1143,17 +1210,17 @@ begin
 
   {$IFDEF QDDynSelectBtn}
   cg := TCheckGroup.Create(nil);
-  cg.Items.AddStrings(['mbYes', 'mbNo', 'mbOK', 'mbCancel', 'mbAbort', 'mbRetry', 'mbIgnore',
-                       'mbAll', 'mbNoToAll', 'mbYesToAll', 'mbHelp', 'mbClose']);
+  for mdbtn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
+    cg.Items.Add(MsgDlgBtnStr[mdbtn]);
   cg.Caption := 'Buttons';
   cg.AutoSize := True;
   cg.Parent := TestPnl;
   cg.Left := 5;
   cg.Top := ed.Top + ed.Height + 10;
   {$ENDIF}
-  rg.Items.AddStrings(['mtWarning', 'mtError', 'mtInformation', 'mtConfirmation',
-                       'mtCustom']);
   rg.Caption := 'DialogType';
+  for mdt := Low(TMsgDlgType) to high(TMsgDlgType) do
+    rg.items.Add(MsgDlgTypeStr[mdt]);
   rg.AutoSize := True;
   rg.ItemIndex := Ord(mtInformation);
   {$IFDEF QDDynSelectBtn}
@@ -1171,6 +1238,11 @@ begin
   btn.Top := rg.Top + rg.Height + 20;
   btn.Left := rg.Left;
   btn.Parent := TestPnl;
+
+  lbl.Top := Btn.Top + Btn.Height + 10;
+  lbl.Left := Btn.Left;
+  lbl.Caption := '';
+  lbl.Parent := TestPnl;
 end;
 {---------------- End of QuesionDialog; ---------}
 
