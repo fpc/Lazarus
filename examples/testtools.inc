@@ -973,19 +973,206 @@ end;
 
 
 {---------------- SelectdirectoryDialog; ----------------}
+type
+{ TSelDirDlgDummmy }
+ TSelDirDlgDummy = class
+  cg : TCheckGroup;
+  btn: TButton;
+  ed: TEdit;
+  Sdd: TSelectDirectoryDialog;
+  Procedure OnBtnClick(sender:TObject);
+end;
+
+procedure TSelDirDlgDummy.OnBtnClick(sender: TObject);
+var
+  Opts:TOpenOptions;
+  i: Integer;
+begin
+  Opts:= [];
+  for i := 0 to cg.Items.Count - 1 do
+    if cg.Checked[i] then
+       Opts := Opts + [TOpenOption(i)];
+  if Opts = [] then
+    Opts := sdd.Options;
+  sdd.Options:=Opts;
+  if sdd.Execute then
+    ShowMessage('You selected "'+sdd.FileName+'"' );
+end;
+
 
 procedure TForm1.TestSelectdirectoryDialog;
+var
+  dummy: TSelDirDlgDummy;
+  cg : TCheckGroup;
+  btn: TButton;
+  ed: TEdit;
+  Sdd: TSelectDirectoryDialog;
+  i: Integer;
+  opt: TOpenOption;
 begin
   Clear;
+  ed := TEdit.Create(nil);
+  sdd := TSelectDirectoryDialog.Create(nil);
+  btn := TButton.Create(nil);
+  cg := TCheckGroup.Create(nil);
+  FObjList.Add(ed);
+  FObjList.Add(sdd);
+  FObjList.Add(btn);
+  FObjList.Add(cg);
+  dummy := TSelDirDlgDummy.Create;
+  FObjList.Add(dummy);
+  dummy.ed := ed;
+  dummy.Sdd := Sdd;
+  dummy.btn := btn;
+  dummy.cg :=cg;
+
+  ed.TextHint := 'Enter a Start-Directory here';
+  ed.Parent := TestPnl;
+  ed.Top:=7;
+  ed.left:=5;
+  ed.width := TestPnl.Width - 120;
+  ed.Anchors:=ed.Anchors + [akRight];
+
+  btn.Caption:= 'Select Directory';
+  btn.AutoSize:=true;
+  btn.Top:=ed.top -2;
+  btn.left:=ed.Left + ed.Width + 4;
+  btn.parent := TestPnl;
+  btn.onclick := @dummy.OnBtnClick;
+  btn.Anchors:=ed.Anchors + [akRight]-[akLeft];
+  for opt := Low(TOpenOption) to High(TOpenOption) do
+    cg.Items.Add(DbgS(opt));
+  cg.Caption := 'OpenOptions';
+  cg.ColumnLayout:=clVerticalThenHorizontal;
+  cg.Columns:=2;
+  cg.Parent := TestPnl;
+  cg.Left := 5;
+  cg.Top := btn.Top + btn.Height + 10;
+  cg.Width:= TestPnl.Width -cg.Left-5;
+  cg.Height := TestPnl.Height - cg.Top -5;
+  cg.Anchors:=cg.Anchors + [akRight,akBottom];
+  for i := 0 to cg.Items.Count - 1 do
+    cg.Checked[i]:= TOpenOption(i) in sdd.Options;
 end;
 {---------------- End of SelectdirectoryDialog; ---------}
 
 
 {---------------- QuesionDialog; ----------------}
+type
+  { TQuesionDlgDummmy }
+  TQuesionDlgDummmy = class
+    ed: TEdit;
+    rg: TRadioGroup;
+    {$IFDEF QDDynSelectBtn}
+    cg: TCheckGroup;
+    {$ENDIF}
+    btn: TButton;
+    procedure OnBtnClick(Sender: TObject);
+  end;
+
+procedure TQuesionDlgDummmy.OnBtnClick(Sender: TObject);
+var
+  DT: TMsgDlgType;
+  {$IFDEF QDDynSelectBtn}
+  Btns: array of TMsgDlgBtn;
+  i: Integer;
+  {$ENDIF}
+  aMsg: TCaption;
+begin
+  DT := TMsgDlgType(rg.ItemIndex);
+  aMsg := ed.Text;
+  if (aMsg = '')
+    then aMsg := 'You did not enter a question';
+  {$IFDEF QDDynSelectBtn}
+  setlength(Btns,0);
+  for i := 0 to cg.Items.Count - 1 do
+  begin
+    if cg.Checked[i] then
+      begin
+        setlength(Btns,high(Btns)+2);
+        Btns[high(Btns)] := TMsgDlgBtn(i);
+      end;
+  end;
+  if high(Btns) = -1 then
+    begin
+      setlength(Btns,1);
+      Btns[high(Btns)] := mbOK;
+    end;
+  {$ENDIF}
+  case QuestionDlg('QuestionDlg test', aMsg, DT, [mrYes,'&Yes','isDefault',mrNo, '&No'], 0) of
+    mrYes: ShowMessage('You selected Yes !');
+    mrNo: ShowMessage('You selected No !')
+  else;
+    ShowMessage('Canceled the Question')
+  end;
+end;
+
 
 procedure TForm1.TestQuestionDialog;
+var
+  dummy: TQuesionDlgDummmy;
+  ed: TEdit;
+  btn: TButton;
+  rg: TRadioGroup;
+  {$IFDEF QDDynSelectBtn}
+  cg: TCheckGroup;
+  {$ENDIF QDDynSelectBtn}
 begin
   Clear;
+  ed := TEdit.Create(nil);
+  rg := TRadioGroup.Create(nil);
+  btn := TButton.Create(nil);
+  FObjList.Add(btn);
+  FObjList.Add(ed);
+  FObjList.Add(rg);
+  dummy := TQuesionDlgDummmy.Create;
+  FObjList.Add(dummy);
+  dummy.ed := ed;
+  dummy.btn := btn;
+  dummy.rg := rg;
+  {$IFDEF QDDynSelectBtn}
+  cg := TCheckGroup.Create(nil);
+  FObjList.Add(cg);
+  dummy.cg := cg;
+  {$ENDIF QDDynSelectBtn}
+  ed.TextHint := 'Type your question here';
+  ed.Parent := TestPnl;
+  ed.Left := 5;
+  ed.Top := 10;
+  ed.Width := TestPnl.Width - 2*5;
+
+  {$IFDEF QDDynSelectBtn}
+  cg := TCheckGroup.Create(nil);
+  cg.Items.AddStrings(['mbYes', 'mbNo', 'mbOK', 'mbCancel', 'mbAbort', 'mbRetry', 'mbIgnore',
+                       'mbAll', 'mbNoToAll', 'mbYesToAll', 'mbHelp', 'mbClose']);
+  cg.Caption := 'Buttons';
+  cg.AutoSize := True;
+  cg.Parent := TestPnl;
+  cg.Left := 5;
+  cg.Top := ed.Top + ed.Height + 10;
+  {$ENDIF}
+  rg.Items.AddStrings(['mtWarning', 'mtError', 'mtInformation', 'mtConfirmation',
+                       'mtCustom']);
+  rg.Caption := 'DialogType';
+  rg.AutoSize := True;
+  rg.ItemIndex := Ord(mtInformation);
+  {$IFDEF QDDynSelectBtn}
+  rg.Left := cg.Left + cg.Width + 20;
+  rg.Top := cg.Top;
+  {$ELSE}
+  rg.Left := 5;
+  rg.Top := ed.Top + ed.Height + 10;
+  {$ENDIF}
+  rg.Parent := TestPnl;
+
+  btn.OnClick := @dummy.OnBtnClick;
+  btn.Caption := 'Show dialog';
+  btn.AutoSize := True;
+  btn.Top := rg.Top + rg.Height + 20;
+  btn.Left := rg.Left;
+  btn.Parent := TestPnl;
 end;
 {---------------- End of QuesionDialog; ---------}
+
+
 

@@ -188,8 +188,8 @@ const
     False, //tadTreplacedialog,
     False, //tadTsavedialog,
     False, //tadTsavepicturedialog,
-    False, //tadTselectdirectorydialog,
-    False //tadTQuestionDialog
+    True, //tadTselectdirectorydialog,
+    True //tadTQuestionDialog
   );
 
   taCompNames: Array[taComponents] of String = (
