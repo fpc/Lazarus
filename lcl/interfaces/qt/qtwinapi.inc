@@ -4524,6 +4524,14 @@ begin
   Result := 0;
   if not IsValidHandle(Handle) then
     exit;
+
+  {$IFDEF QTUSEACCURATEFRAME}
+  if TQtWidget(Handle).IsFramedWidget then
+  begin
+    ARect := TQtWidget(Handle).getFrameGeometry;
+    exit(-1);
+  end;
+  {$ENDIF}
   APos := QtPoint(0,0);
   QWidget_mapToGlobal(TQtWidget(Handle).Widget, @APos, @APos);
 
@@ -4550,12 +4558,7 @@ begin
   {$endif}
   if Handle = 0 then
     Exit(False);
-  {$IFDEF QTUSEACCURATEFRAME}
-  if TQtWidget(Handle).IsFramedWidget then
-    R := Rect(0, 0, 0, 0)
-  else
-  {$ENDIF}
-    R := TQtWidget(Handle).getFrameGeometry;
+  R := TQtWidget(Handle).getFrameGeometry;
   Left := R.Left;
   Top := R.Top;
   Result := True;
