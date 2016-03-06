@@ -81,7 +81,7 @@ var
       P.X:=0;
       P.Y:=0;
     end;
-    Result := PointToSmallPoint(P);
+    Result := Windows.PointToSmallPoint(P);
   end;
 
   procedure HandleListViewOwnerData(ALV: TCustomListViewAccess);
