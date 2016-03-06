@@ -201,6 +201,11 @@ begin
     QCoreApplication_setAttribute(QtAA_ImmediateWidgetCreation, False);
   {$ENDIF}
 
+  {$IFDEF QtUseAccurateFrame}
+  if QtMainWindow.IsFramedWidget then
+    QtMainWindow.FrameMargins := QtWidgetSet.WSFrameMargins;
+  {$ENDIF}
+
   // Sets Various Events
   QtMainWindow.AttachEvents;
   {$IFDEF QTSCROLLABLEFORMS}

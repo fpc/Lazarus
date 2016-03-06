@@ -70,6 +70,9 @@ begin
   FLastWFPMousePos := Point(MaxInt, MaxInt);
   FLastWFPResult := 0;
   inherited Create;
+  {$IFDEF QtUseAccurateFrame}
+  FWSFrameMargins := Rect(0, 0, 0, 0);
+  {$ENDIF}
   FIsLibraryInstance := QCoreApplication_instance() <> nil;
   if FIsLibraryInstance then
     App := QApplicationH(QCoreApplication_instance())
@@ -1861,6 +1864,104 @@ begin
   end;
   Result := FCachedMenuBarHeight;
 end;
+
+{$IFDEF QtUseAccurateFrame}
+function TQtWidgetSet.GetFrameMargins: TRect;
+var
+  ATempWidget: QWidgetH;
+  R: TRect;
+  {$IF DEFINED(DebugQtUseAccurateFrame) OR NOT DEFINED(HASX11)}
+  ASize, AFrameSize: TSize;
+  {$ENDIF}
+  AID: LongWord;
+  I: integer;
+  B: Boolean;
+  ATicks: DWORD;
+  {$IFDEF HASX11}
+  AWMName: String;
+  {$ENDIF}
+begin
+  if (FWSFrameMargins.Left = 0) and (FWSFrameMargins.Top = 0) or
+    (FWSFrameMargins.Right = 0) and (FWSFrameMargins.Bottom = 0) then
+  begin
+    {$IFDEF HASX11}
+    AWMName := GetWindowManager;
+    // blacklist of window managers which does not support NET_FRAME_EXTENTS
+    if (AWMName = 'Blackbox') then
+    begin
+      DebugLn('WARNING: QtLCL: "Blackbox" wm does not implement for _NET_FRAME_EXTENTS.');
+      FWSFrameMargins := Rect(1, 23, 1, 10);
+      Result := FWSFrameMargins;
+      exit;
+    end else
+    if (AWMName = 'Openbox') then
+    begin
+      DebugLn('WARNING: QtLCL: "Openbox" wm have wrong implementation for _NET_FRAME_EXTENTS.');
+      FWSFrameMargins := Rect(1, 20, 1, 5);
+      Result := FWSFrameMargins;
+      exit;
+    end;
+    {$ENDIF}
+
+    ATempWidget := QWidget_create(nil, QtWindow or QtDialog);
+    QWidget_setAttribute(ATempWidget, QtWA_NativeWindow, True);
+    QWidget_move(ATempWidget, -MAXSHORT, -MAXSHORT);
+    QWidget_resize(ATempWidget, 32, 32);
+    QWidget_show(ATempWidget);
+    {$IFDEF HASX11}
+    AID := QWidget_winID(ATempWidget);
+
+    B := AskX11_NET_REQUEST_FRAME_EXTENTS(AID, R);
+
+    if not B then
+    begin
+      MapX11Window(AID);
+      QApplication_syncX();
+    end;
+
+    if not B and not GetWindowFrameSize(AID, R.Left, R.Top, R.Right, R.Bottom) then
+    begin
+      AId := QWidget_winID(ATempWidget);
+      I := 0;
+      ATicks := GetTickCount;
+      while not GetWindowFrameSize(AID, R.Left, R.Top, R.Right, R.Bottom) do
+      begin
+        QApplication_syncX();
+        QCoreApplication_processEvents;
+        inc(I);
+        {if we do not get frame extents in 100ms get out}
+        if GetTickCount - ATicks > 100 then
+          break;
+      end;
+      {$IFDEF DebugQtUseAccurateFrame}
+      DebugLn('TQtWidgetSet.GetFrameMargins: EXIT LOOP AFTER ',dbgs(GetTickCount - ATicks),' ms LOOP=',dbgs(i),' R=',dbgs(R));
+      {$ENDIF}
+    end;
+    {$ELSE}
+    //TODO: create FWSFrameMargins from AFrameSize - ASize
+    QWidget_size(ATempWidget, @ASize);
+    QWidget_frameSize(ATempWidget, @AFrameSize);
+    R.Left := (AFrameSize.cx - ASize.cx) div 2;
+    R.Right := R.Left;
+    R.Top := (AFrameSize.cy - ASize.cy) - R.Left;
+    R.Bottom := R.Left;
+    {$ENDIF}
+
+    FWSFrameMargins := R;
+    {$IFDEF DebugQtUseAccurateFrame}
+    // just test
+    QWidget_size(ATempWidget, @ASize);
+    QWidget_frameSize(ATempWidget, @AFrameSize);
+    with FWSFrameMargins do
+      DebugLn('TQtWidgetSet.GetFrameMargins: **MARGINS=',Format('l %d t %d r %d b %d QtFrame x %d y %d compositor %s sysMetrics %d',
+        [Left, Top, Right, Bottom, AFrameSize.cx - ASize.cx, AFrameSize.cy - ASize.cy, BoolToStr(QX11Info_isCompositingManagerRunning), GetSystemMetrics(SM_CYCAPTION)]));
+    {$ENDIF}
+    QWidget_hide(ATempWidget);
+    QWidget_destroy(ATempWidget);
+  end;
+  Result := FWSFrameMargins;
+end;
+{$ENDIF}
 
 procedure TQtWidgetSet.ClearCachedColors;
 var

@@ -50,6 +50,9 @@ type
   TQtWidgetSet = Class(TWidgetSet)
   private
     App: QApplicationH;
+    {$IFDEF QtUseAccurateFrame}
+    FWSFrameMargins: TRect;
+    {$ENDIF}
     FIsLibraryInstance: Boolean;
 
     // cache for WindowFromPoint
@@ -91,6 +94,9 @@ type
     // qt style does not have pixel metric for themed menubar (menu) height
     // so we must calculate it somehow.
     FCachedMenuBarHeight: Integer;
+    {$IFDEF QtUseAccurateFrame}
+    function GetFrameMargins: TRect;
+    {$ENDIF}
     function GetMenuHeight: Integer;
 
     procedure ClearCachedColors;
@@ -211,6 +217,10 @@ type
     property AppActive: Boolean read FAppActive;
     property DragImageLock: Boolean read FDragImageLock write FDragImageLock;
 
+    {$IFDEF QtUseAccurateFrame}
+    property WSFrameMargins: TRect read GetFrameMargins write FWSFrameMargins;
+    {$ENDIF}
+
     {do not create new QApplication object if we are called from library }
     property IsLibraryInstance: Boolean read FIsLibraryInstance;
 
@@ -252,6 +262,14 @@ type
   function GetAlwaysOnTopX11(Widget: QWidgetH): boolean;
   {check if we are running under kde3 installation}
   function IsOldKDEInstallation: Boolean;
+  {force mapping}
+  procedure MapX11Window(AWinID: LongWord);
+  {$IFDEF QtUseAccurateFrame}
+  {check if wm supports request for frame extents}
+  function AskX11_NET_REQUEST_FRAME_EXTENTS(AWinID: LongWord; out AMargins: TRect): boolean;
+  {trial to get real frame size on X11 before window is visible by using _NET_FRAME_EXTENTS}
+  function GetWindowFrameSize(AWinID: LongWord; out ALeft, ATop, ARight, ABottom: integer): Boolean;
+  {$ENDIF}
   {$ENDIF}
 
 const

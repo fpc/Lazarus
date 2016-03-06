@@ -102,6 +102,9 @@ type
 
   TQtWidget = class(TQtObject, IUnknown)
   private
+    {$IFDEF QtUseAccurateFrame}
+    FFrameMargins: TRect;
+    {$ENDIF}
     FInResizeEvent: boolean;
     FWidgetState: TQtWidgetStates;
     FWidgetDefaultFont: TQtFont;
@@ -230,7 +233,7 @@ type
     function getEnabled: Boolean;
     function getFont: QFontH;
     function getFocusPolicy: QtFocusPolicy;
-    function getFrameGeometry: TRect;
+    function getFrameGeometry: TRect; virtual;
     function getGeometry: TRect; virtual;
     function getLayoutDirection: QtLayoutDirection;
     function getVisible: Boolean; virtual;
@@ -238,7 +241,7 @@ type
     function getOwner: TQtWidget;
     function getParent: QWidgetH;
     function getPos: TQtPoint;
-    function getFrameSize: TSize;
+    function getFrameSize: TSize; virtual;
     function getSize: TSize;
     function getText: WideString; virtual;
     function getTextStatic: Boolean; virtual;
@@ -252,6 +255,7 @@ type
     function IsActiveWindow: Boolean;
     function isMinimized: Boolean;
     function isMaximized: Boolean;
+    function IsFramedWidget: boolean; virtual;
     function isFullScreen: Boolean;
     function IsWindow: Boolean;
     procedure lowerWidget; virtual;
@@ -304,6 +308,9 @@ type
     function windowModality: QtWindowModality;
     property ChildOfComplexWidget: TChildOfComplexWidget read FChildOfComplexWidget write FChildOfComplexWidget;
     property Context: HDC read GetContext;
+    {$IFDEF QtUseAccurateFrame}
+    property FrameMargins: TRect read FFrameMargins write FFrameMargins;
+    {$ENDIF}
     property HasCaret: Boolean read FHasCaret write SetHasCaret;
     property HasPaint: Boolean read FHasPaint write FHasPaint;
     property InResizeEvent: boolean read FInResizeEvent write FInResizeEvent;
@@ -655,6 +662,8 @@ type
     function getClientBounds: TRect; override;
     function getClientOffset: TPoint; override;
 
+    function getFrameSize: TSize; override;
+    function getFrameGeometry: TRect; override;
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
 
@@ -669,6 +678,7 @@ type
     procedure setMenuBar(AMenuBar: QMenuBarH);
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure MDIChildWindowStateChanged(AOldState: QtWindowStates; ANewState: QtWindowStates); cdecl;
+    function IsFramedWidget: boolean; override;
     function IsMdiChild: Boolean;
     function IsModal: Boolean;
     function MdiChildCount: integer;
@@ -2014,6 +2024,9 @@ end;
 
 procedure TQtWidget.InitializeWidget;
 begin
+  {$IFDEF QtUseAccurateFrame}
+  FFrameMargins := Rect(0, 0, 0, 0);
+  {$ENDIF}
   FInResizeEvent := False;
   // default states
   FWidgetState := [];
@@ -4679,6 +4692,11 @@ begin
   Result := QWidget_isMaximized(Widget);
 end;
 
+function TQtWidget.IsFramedWidget: boolean;
+begin
+  Result := False;
+end;
+
 function TQtWidget.isFullScreen: Boolean;
 begin
   Result := QWidget_isFullScreen(Widget);
@@ -6952,6 +6970,62 @@ begin
   {$ENDIF}
 end;
 
+function TQtMainWindow.getFrameSize: TSize;
+{$IFDEF QtUseAccurateFrame}
+var
+  ASize, AFrameSize: TSize;
+{$ENDIF}
+begin
+  Result:=inherited getFrameSize;
+  {$IFDEF QtUseAccurateFrame}
+  if IsFramedWidget then
+  begin
+    ASize := GetSize;
+    AFrameSize := Result;
+    if (ASize.cx = AFrameSize.cx) and (ASize.cy = AFrameSize.cy) then
+    begin
+      {$IFDEF DebugQtUseAccurateFrame}
+      DebugLn('>TQtMainWindow.getFrameSize ',dbgs(Result),' must apply frameMargins=',dbgs(FFrameMargins));
+      {$ENDIF}
+      inc(Result.cx, FrameMargins.Left + FrameMargins.Right);
+      inc(Result.cy, FrameMargins.Top + FrameMargins.Bottom);
+      {$IFDEF DebugQtUseAccurateFrame}
+      DebugLn('<TQtMainWindow.getFrameSize ',dbgs(Result),' must apply frameMargins=',dbgs(FFrameMargins));
+      {$ENDIF}
+    end;
+  end;
+  {$ENDIF}
+end;
+
+function TQtMainWindow.getFrameGeometry: TRect;
+{$IFDEF QtUseAccurateFrame}
+var
+  ASize, AFrameSize: TSize;
+{$ENDIF}
+begin
+  Result:=inherited getFrameGeometry;
+  {$IFDEF QtUseAccurateFrame}
+  if IsFramedWidget then
+  begin
+    QWidget_size(Widget, @ASize);
+    QWidget_frameSize(Widget, @AFrameSize);
+    if (ASize.cx = AFrameSize.cx) and (ASize.cy = AFrameSize.cy) then
+    begin
+      {$IFDEF DebugQtUseAccurateFrame}
+      DebugLn('>TQtMainWindow.getFrameGeometry ',dbgs(Result),' must apply frameMargins=',dbgs(FFrameMargins));
+      if (FFrameMargins.Left = 0) and (FFrameMargins.Top = 0) and (FFrameMargins.Right = 0) and (FFrameMargins.Bottom = 0) then
+        FFrameMargins := QtWidgetSet.WSFrameMargins;
+      {$ENDIF}
+      inc(Result.Right, FrameMargins.Left + FrameMargins.Right);
+      inc(Result.Bottom, FrameMargins.Top + FrameMargins.Bottom);
+      {$IFDEF DebugQtUseAccurateFrame}
+      DebugLn('<TQtMainWindow.getFrameGeometry ',dbgs(Result),' WS W=',dbgs(Result.Right - Result.Left),' H=',dbgs(Result.Bottom - Result.Top),' SIZE=',dbgs(ASize));
+      {$ENDIF}
+    end;
+  end;
+  {$ENDIF}
+end;
+
 function TQtMainWindow.getText: WideString;
 begin
   WindowTitle(@Result);
@@ -7070,6 +7144,10 @@ var
   AState: QtWindowStates;
   AOldState: QtWindowStates;
   CanSendEvent: Boolean;
+  {$IFDEF QtUseAccurateFrame}
+  R: TRect;
+  ASize, AFrameSize: TSize;
+  {$ENDIF}
   {$IFDEF MSWINDOWS}
   i: Integer;
   AForm: TCustomForm;
@@ -7153,6 +7231,43 @@ begin
       begin
         if not IsMDIChild then
         begin
+          {$IF DEFINED(QtUseAccurateFrame) AND DEFINED(HASX11)}
+          if IsFramedWidget then
+          begin
+            R := QtWidgetSet.WSFrameMargins;
+            if (R.Left = 0) and (R.Top = 0) and (R.Bottom = 0) and (R.Right = 0) then
+            begin
+              GetWindowFrameSize(QWidget_winID(Widget), R.Left, R.Top, R.Right, R.Bottom);
+              QtWidgetSet.WSFrameMargins := R;
+              FrameMargins := R;
+            end else
+            begin
+              if QX11Info_isCompositingManagerRunning then
+              begin
+                QWidget_size(Widget, @ASize);
+                QWidget_frameSize(Widget, @AFrameSize);
+                R.Left := (AFrameSize.cx - ASize.cx) div 2;
+                R.Right :=  R.Left;
+                R.Bottom := R.Left;
+                R.Top := (AFrameSize.cy - ASize.cy) - R.Bottom;
+                if (AFrameSize.cy > ASize.cy) and not EqualRect(FFrameMargins, R) then
+                begin
+                  {$IFDEF DebugQtUseAccurateFrame}
+                  DebugLn('***CHANGE FRAME MARGINS OLD FFFRAME=',dbgs(FFrameMargins),' NEW FFRAME=',dbgs(R));
+                  {$ENDIF}
+                  // composite wm changes _NET_FRAME_EXTENTS to + or even - for shadows
+                  // so update just this window FFrameMargins.
+                  // eg. Gnome 3 shows modal window without title, so changes frame
+                  // size eg from 4,27,4,4 to 1,3,1,1.
+                  // Cinnamon have shadows eg _NET_FRAME_EXTENTS are 4,27,4,4
+                  // but after shadowing we have 10,36,10,10. So keep them here !
+                  FFrameMargins := R;
+                end;
+              end;
+            end;
+          end;
+          {$ENDIF}
+
           {$IFDEF MSWINDOWS}
           // issues #26463, #29744, must restore app if we activate non modal window from taskbar
           if (Application.ModalLevel > 0) and
@@ -7388,11 +7503,20 @@ begin
   end;
 end;
 
+function TQtMainWindow.IsFramedWidget: boolean;
+begin
+  Result:=inherited IsFramedWidget;
+  {$IFDEF QtUseAccurateFrame}
+  Result := not IsMDIChild and (LCLObject.Parent = nil) and (TCustomForm(LCLObject).BorderStyle <> bsNone) and
+    (TCustomForm(LCLObject).FormStyle <> fsSplash);
+  {$ENDIF}
+end;
+
 function TQtMainWindow.IsMdiChild: Boolean;
 begin
   Result := (LCLObject <> nil) and not
     (csDesigning in LCLObject.ComponentState) and
-    (TCustomForm(LCLObject).FormStyle = fsMDIChild);
+    (TCustomForm(LCLObject).FormStyle = fsMDIChild) and not IsFormDesign(LCLObject);
 end;
 
 function TQtMainWindow.IsModal: Boolean;

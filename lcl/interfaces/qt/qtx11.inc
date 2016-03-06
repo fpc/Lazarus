@@ -111,7 +111,7 @@ begin
 	      @XClient) <> Success;
 end;
 
-function X11GetActivewindow: QWidgetH;
+function X11GetActiveWindow: QWidgetH;
 var
   Display: PDisplay;
   RootWin: TWindow;
@@ -348,4 +348,170 @@ begin
       Result := (n and $02) = 2;
   end;
 end;
+
+procedure MapX11Window(AWinID: LongWord);
+begin
+  XMapWindow(QX11Info_display(), TWindow(AWinID));
+end;
+
+{$IFDEF QtUseAccurateFrame}
+function GetWindowFrameSize(AWinID: LongWord; out ALeft, ATop, ARight,
+  ABottom: integer): Boolean;
+var
+  Display: PDisplay;
+  X11Window: TWindow;
+  WMAtom: TAtom;
+  typeReturned: TAtom;
+  formatReturned: Integer;
+  nitemsReturned: PtrInt;
+  unused: PtrInt;
+  data: Pointer;
+  ANewData: PUInt32;
+begin
+
+  Result := False;
+  Display := QX11Info_display();
+  ALeft := 0;
+  ATop := 0;
+  ARight := 0;
+  ABottom := 0;
+  if Display = nil then
+    exit;
+
+  X11Window := TWindow(AWinID);
+  if X11Window = 0 then
+    exit;
+
+  WMAtom := XInternAtom(Display,'_NET_FRAME_EXTENTS', True);
+  if WMAtom > 0 then
+  begin
+    data := nil;
+    if XGetWindowProperty(Display, X11Window, WMAtom, 0, 4, False, XA_CARDINAL,
+      @typeReturned, @formatReturned, @nitemsReturned,
+      @unused, @data) = Success then
+    begin
+      if (typeReturned = XA_CARDINAL) and (formatReturned = 32) and
+        (Data <> nil) then
+      begin
+        ANewData := Data;
+        while nitemsReturned > 0 do
+        begin
+          if ALeft = 0 then
+            ALeft := Integer(ANewData^)
+          else
+          if ARight = 0 then
+            ARight := Integer(ANewData^)
+          else
+          if ATop = 0 then
+            ATop := Integer(ANewData^)
+          else
+          if ABottom = 0 then
+            ABottom := Integer(ANewData^);
+          dec(nItemsReturned);
+          if Result or (nItemsReturned = 0) then
+            break;
+          inc(ANewData);
+        end;
+        Result := True;
+        if nitemsReturned > 0 then
+          XFree(Data);
+        Data := nil;
+      end;
+    end;
+  end else
+  begin
+    DebugLn('QtLCL error: "'+GetWindowManager+'" wm does not support _NET_FRAME_EXTENTS (1).');
+  end;
+end;
+
+var
+  InternalExtentsAtom: TAtom = 0; {find extents atom}
+  InternalExtentsCounter: Integer = 0; {counter for bad wm, eg for blackbox}
+
+function propNotifyFrameExtents({%H-}ADisplay: PDisplay; AEvent:PXEvent;
+  AData : TXPointer): TBoolResult;cdecl;
+var
+  AWin: PLongWord;
+begin
+  Result := False;
+  AWin := PLongWord(AData);
+  if (AEvent^.xany.window = AWin^) then
+    inc(InternalExtentsCounter);
+  if (AEvent^.xany._type = PropertyNotify) and (AEvent^.xany.window = AWin^) then
+  begin
+    if (AEvent^.xproperty.atom = InternalExtentsAtom) then
+      Result := True;
+  end;
+  if InternalExtentsCounter > 50 then
+  begin
+    Result := True;
+    InternalExtentsCounter := -BadImplementation;
+  end;
+end;
+
+function AskX11_NET_REQUEST_FRAME_EXTENTS(AWinID: LongWord; out AMargins: TRect): boolean;
+var
+  AAtom: TAtom;
+  AEvent: TXEvent;
+  d: PDisplay;
+  AScreen: Integer;
+  ARootWindow: TWindow;
+  ReturnEvent: TXEvent;
+begin
+  Result := False;
+  AMargins := Rect(0, 0, 0, 0);
+  d := QX11Info_display;
+
+  AAtom := XInternAtom(d, '_NET_REQUEST_FRAME_EXTENTS', True);
+
+  if AAtom = None then
+    AAtom := XInternAtom(d, '_NET_REQUEST_FRAME_EXTENTS', False);
+
+  if AAtom > 0 then
+  begin
+    if InternalExtentsAtom = 0 then
+      InternalExtentsAtom := XInternAtom(d,'_NET_FRAME_EXTENTS', True);
+    if InternalExtentsAtom > 0 then
+    begin
+      AScreen := QX11Info_appScreen();
+      ARootWindow := XRootWindow(d, AScreen);
+      AEvent._type := ClientMessage;
+      AEvent.xclient._type := ClientMessage;
+      AEvent.xclient.message_type := AAtom; // extents_request_atom;
+      AEvent.xclient.display := d;
+      AEvent.xclient.window := AWinID;
+      AEvent.xclient.format := 32;
+      AEvent.xclient.data.l[0] := 0;
+      AEvent.xclient.data.l[1] := 0;
+      AEvent.xclient.data.l[2] := 0;
+      AEvent.xclient.data.l[3] := 0;
+      AEvent.xclient.data.l[4] := 0;
+
+
+      XSendEvent (d, ARootWindow, False, SubstructureRedirectMask or
+        SubstructureNotifyMask, @AEvent);
+
+      InternalExtentsCounter := 0;
+
+      if XIfEvent(d, @ReturnEvent,
+        @propNotifyFrameExtents, TXPointer(@AWinID)) = Success then
+      begin
+        Result := GetWindowFrameSize(AWinID, AMargins.Left, AMargins.Top, AMargins.Right, AMargins.Bottom);
+        if not Result and (InternalExtentsCounter = -BadImplementation) then
+        begin
+          DebugLn('QtLCL WARNING: "'+GetWindowManager+'" wm bad implementation of _NET_REQUEST_FRAME_EXTENTS.');
+          Result := True;
+          AMargins := Rect(2, 27, 2, 2);
+        end;
+      end;
+    end else
+    begin
+      DebugLn('QtLCL error: "'+GetWindowManager+'" wm does not support _NET_FRAME_EXTENTS (2).');
+    end;
+  end else
+  begin
+    DebugLn('QtLCL error: "'+GetWindowManager+'" wm does not support _NET_REQUEST_FRAME_EXTENTS.');
+  end;
+end;
+{$ENDIF}
 

@@ -3933,7 +3933,15 @@ begin
       end;
     SM_CXBORDER, SM_CYBORDER:
       begin
-        // size of frame around controls
+        //The height of a window border, in pixels
+        {$IFDEF QtUseAccurateFrame}
+        if (nIndex = SM_CYBORDER) and (WSFrameMargins.Top > 0) then
+          Result := WSFrameMargins.Bottom
+        else
+        if (nIndex = SM_CXBORDER) and (WSFrameMargins.Top > 0) then
+          Result := WSFrameMargins.Left
+        else
+        {$ENDIF}
         Result := GetPixelMetric(QStylePM_DefaultFrameWidth, nil, nil);
       end;
     SM_CXCURSOR:
@@ -4111,6 +4119,11 @@ begin
       end;
     SM_CYCAPTION:
       begin
+        {$IFDEF QtUseAccurateFrame}
+        if WSFrameMargins.Top > 0 then
+          Result := WSFrameMargins.Top
+        else
+        {$ENDIF}
         Result := GetPixelMetric(QStylePM_TitleBarHeight, nil, nil);
       end;
     SM_CYKANJIWINDOW:
@@ -4516,7 +4529,6 @@ begin
 
   R := TQtWidget(Handle).getFrameGeometry;
   ARect := Bounds(APos.X,APos.Y,R.Right-R.Left,R.Bottom-R.Top);
-
   Result := -1;
 end;
 
@@ -4526,7 +4538,7 @@ end;
   Returns: true on success
 
   returns the current widget Left, Top, relative to the client origin of its
-  parent
+  parent. Top level form returns 0,0 when we use accurate frames.
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetWindowRelativePosition(Handle: hwnd; var Left,
   Top: Integer): boolean;
@@ -4538,7 +4550,12 @@ begin
   {$endif}
   if Handle = 0 then
     Exit(False);
-  R := TQtWidget(Handle).getFrameGeometry;
+  {$IFDEF QTUSEACCURATEFRAME}
+  if TQtWidget(Handle).IsFramedWidget then
+    R := Rect(0, 0, 0, 0)
+  else
+  {$ENDIF}
+    R := TQtWidget(Handle).getFrameGeometry;
   Left := R.Left;
   Top := R.Top;
   Result := True;
