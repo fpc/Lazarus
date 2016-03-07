@@ -7007,10 +7007,37 @@ end;
 function TQtMainWindow.getClientBounds: TRect;
 begin
   {$IFDEF QTSCROLLABLEFORMS}
-  if Assigned(ScrollArea) and not
-    ScrollArea.testAttribute(QtWA_PendingResizeEvent) then
-    Result := ScrollArea.getClientBounds
-  else
+  if Assigned(ScrollArea) then
+  begin
+    if not ScrollArea.testAttribute(QtWA_PendingResizeEvent) then
+    begin
+      Result := ScrollArea.getClientBounds;
+      {$IF DEFINED(QTUSEACCURATEFRAME) AND DEFINED(DEBUGQTUSEACCURATEFRAME)}
+      DebugLn('TQtMainWindow.getClientBounds(',dbgsName(LCLObject),'): ',dbgs(Result),' FFrame=',dbgs(FFrameMargins));
+      {$ENDIF}
+    end else
+    begin
+      Result := inherited GetClientBounds;
+      {$IFDEF QTUSEACCURATEFRAME}
+      if IsFramedWidget then
+      begin
+        {$IFDEF DEBUGQTUSEACCURATEFRAME}
+        DebugLn('>TQtMainWindow.getClientBounds(',dbgsName(LCLObject),'): ***ERROR*** ',dbgs(Result),' FFrame=',dbgs(FFrameMargins),' Assigned ? ',BoolToStr(Assigned(ScrollArea)));
+        {$ENDIF}
+        dec(Result.Right, FFrameMargins.Right + FFrameMargins.Left);
+        dec(Result.Bottom, FFrameMargins.Bottom + FFrameMargins.Top);
+        {menubar is not yet allocated, so use SM_CYMENU}
+        if Assigned(TCustomForm(LCLObject).Menu) then
+        begin
+          dec(Result.Bottom, QtWidgetSet.GetSystemMetrics(SM_CYMENU));
+        end;
+        {$ENDIF}
+        {$IFDEF DEBUGQTUSEACCURATEFRAME}
+        DebugLn('<TQtMainWindow.getClientBounds(',dbgsName(LCLObject),'): ***ERROR*** NEW RESULT=',dbgs(Result));
+        {$ENDIF}
+      end;
+    end;
+  end else
   {$ENDIF}
   Result:=inherited getClientBounds;
 end;
