@@ -355,6 +355,28 @@ begin
 end;
 
 {$IFDEF QtUseAccurateFrame}
+function GetX11WindowPos(AWinID: LongWord; out ALeft, ATop: integer): boolean;
+var
+  D: PDisplay;
+  ARootWindow, AChildWin: TWindow;
+  AXWinAttr: TXWindowAttributes;
+begin
+  Result := False;
+  ALeft := 0;
+  ATop := 0;
+  D := QX11Info_display;
+  if D = nil then
+    exit;
+  ARootWindow := XRootWindow(D, QX11Info_appScreen);
+  if XTranslateCoordinates(d, TWindow(AWinID), ARootWindow, 0, 0, @ALeft, @ATop, @AChildWin) = SUCCESS then
+  begin
+    XGetWindowAttributes(d, TWindow(AWinID), @AXWinAttr);
+    ALeft := ALeft - AXWinAttr.x;
+    ATop := ATop - AXWinAttr.y;
+    Result := True;
+  end;
+end;
+
 function GetWindowFrameSize(AWinID: LongWord; out ALeft, ATop, ARight,
   ABottom: integer): Boolean;
 var
