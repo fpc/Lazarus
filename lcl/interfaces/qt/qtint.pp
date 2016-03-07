@@ -266,6 +266,8 @@ type
   procedure MapX11Window(AWinID: LongWord);
   {$IFDEF QtUseAccurateFrame}
   function GetX11SupportedAtoms(AWinID: LongWord; AList: TStrings): boolean;
+  {will be used for shadow sizes and getWindowFrameSize after testing}
+  function GetX11RectForAtom(AWinID: LongWord; const AAtomName: string; out ARect: TRect): boolean;
   function GetX11WindowPos(AWinID: LongWord; out ALeft, ATop: integer): boolean;
   {check if wm supports request for frame extents}
   function AskX11_NET_REQUEST_FRAME_EXTENTS(AWinID: LongWord; out AMargins: TRect): boolean;

@@ -535,6 +535,84 @@ begin
   end;
 end;
 
+function GetX11RectForAtom(AWinID: LongWord; const AAtomName: string; out ARect: TRect): boolean;
+var
+  d: PDisplay;
+  X11Window: TWindow;
+  WMAtom: TAtom;
+  typeReturned: TAtom;
+  formatReturned: Integer;
+  nitemsReturned: PtrInt;
+  unused: PtrInt;
+  data: Pointer;
+  ANewData: PUInt32;
+begin
+  Result := False;
+  d := QX11Info_display();
+  with ARect do
+  begin
+    Left := 0;
+    Top := 0;
+    Right := 0;
+    Bottom := 0;
+  end;
+  if d = nil then
+    exit;
+
+  if AWinID = 0 then
+  begin
+    X11Window := XRootWindow(d, QX11Info_appScreen);
+  end else
+    X11Window := TWindow(AWinID);
+  if X11Window = 0 then
+    exit;
+
+  {_KDE_NET_WM_SHADOW, find others}
+  WMAtom := XInternAtom(d,PChar(AAtomName), True);
+  if WMAtom > 0 then
+  begin
+    data := nil;
+    if XGetWindowProperty(d, X11Window, WMAtom, 0, 4, False, XA_CARDINAL,
+      @typeReturned, @formatReturned, @nitemsReturned,
+      @unused, @data) = Success then
+    begin
+      if (typeReturned = XA_CARDINAL) and (formatReturned = 32) and
+        (Data <> nil) then
+      begin
+        ANewData := Data;
+        while nitemsReturned > 0 do
+        begin
+          with ARect do
+          begin
+            if Left = 0 then
+              Left := Integer(ANewData^)
+            else
+            if Right = 0 then
+              Right := Integer(ANewData^)
+            else
+            if Top = 0 then
+              Top := Integer(ANewData^)
+            else
+            if Bottom = 0 then
+              Bottom := Integer(ANewData^);
+          end;
+          dec(nItemsReturned);
+          if Result or (nItemsReturned = 0) then
+            break;
+          inc(ANewData);
+        end;
+        Result := True;
+        if nitemsReturned > 0 then
+          XFree(Data);
+        Data := nil;
+      end;
+    end;
+  end else
+  begin
+    DebugLn('QtLCL error: "'+GetWindowManager+'" wm does not support '+AAtomName+'.');
+  end;
+end;
+
 function GetX11SupportedAtoms(AWinID: LongWord; AList: TStrings): boolean;
 var
   d: PDisplay;
