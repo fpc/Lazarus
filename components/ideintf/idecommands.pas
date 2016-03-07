@@ -152,6 +152,7 @@ const
   ecUseUnit                 = ecFirstLazarus + 122;
   ecFindOverloads           = ecFirstLazarus + 123;
   ecFindUsedUnitRefs        = ecFirstLazarus + 124;
+  ecClassCompleteCode       = ecFirstLazarus + 125;
 
   // file menu
   ecNew                     = ecFirstLazarus + 201;
@@ -1904,7 +1905,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..312] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..313] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -2006,6 +2007,7 @@ const
     (Value: ecUseUnit;                                Name: 'ecUseUnit'),
     (Value: ecFindOverloads;                          Name: 'ecFindOverloads'),
     (Value: ecFindUsedUnitRefs;                       Name: 'ecFindUsedUnitRefs'),
+    (Value: ecClassCompleteCode;                      Name: 'ecClassCompleteCode'),
 
   // file menu
     (Value: ecNew;                                    Name: 'ecNew'),

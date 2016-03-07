@@ -182,6 +182,7 @@ type
     MixMethodsAndProperties: boolean;
     MethodInsertPolicy: TMethodInsertPolicy;
     EventMethodSection: TInsertClassSection;
+    VarSection: TInsertClassSection;
     PropertyReadIdentPrefix: string;
     PropertyWriteIdentPrefix: string;
     PropertyStoredIdentPostfix: string;
@@ -195,7 +196,8 @@ type
     
     NestedComments: boolean;
 
-    function GetRealEventMethodSection(out Section: TInsertClassSectionResult): Boolean; //in case of imsPrompt show a dialog and return a "normal" section; returns true if OK, false if canceled
+    function GetRealVarSection(const ANewIdent: string; out Section: TInsertClassSectionResult): Boolean; //in case of imsPrompt show a dialog and return a "normal" section; returns true if OK, false if canceled
+    function GetRealEventMethodSection(const ANewIdent: string; out Section: TInsertClassSectionResult): Boolean; //in case of imsPrompt show a dialog and return a "normal" section; returns true if OK, false if canceled
     function GetIndentStr(TheIndent: integer): string; inline;
     function GetLineIndent(const Source: string; Position: integer): integer; inline;
     procedure SetupWordPolicyExceptions(ws: TStrings);
@@ -387,9 +389,10 @@ const
   DefaultDoNotInsertSpaceAfter: TAtomTypes = [atDirectiveStart];
 
 type
-  TShowEventClassSectionPromptFunc = function(out Section: TInsertClassSectionResult): Boolean;
+  TShowEventClassSectionPromptFunc = function(const ANewIdent: string; out Section: TInsertClassSectionResult): Boolean;
 var
   ShowEventMethodSectionPrompt: TShowEventClassSectionPromptFunc = nil;
+  ShowVarSectionPrompt: TShowEventClassSectionPromptFunc = nil;
 
 function AtomTypeNameToType(const s: string): TAtomType;
 function AtomTypesToStr(const AtomTypes: TAtomTypes): string;
@@ -1317,6 +1320,7 @@ begin
   GroupLocalVariables:=true;
   MethodInsertPolicy:=mipClassOrder;
   EventMethodSection:=DefaultEventMethodSection;
+  VarSection:=DefaultEventMethodSection;
   ForwardProcBodyInsertPolicy:=fpipBehindMethods;
   KeepForwardProcOrder:=true;
   ClassHeaderComments:=true;
@@ -1743,8 +1747,8 @@ begin
     Result:=false;
 end;
 
-function TBeautifyCodeOptions.GetRealEventMethodSection(out
-  Section: TInsertClassSectionResult): Boolean;
+function TBeautifyCodeOptions.GetRealEventMethodSection(
+  const ANewIdent: string; out Section: TInsertClassSectionResult): Boolean;
 begin
   Result := True;
   if (EventMethodSection <> icsPrompt) then
@@ -1752,7 +1756,22 @@ begin
   else
   begin
     if Assigned(ShowEventMethodSectionPrompt) then
-      Result := ShowEventMethodSectionPrompt(Section)
+      Result := ShowEventMethodSectionPrompt(ANewIdent, Section)
+    else
+      Section := InsertClassSectionToResult[DefaultEventMethodSection];
+  end;
+end;
+
+function TBeautifyCodeOptions.GetRealVarSection(const ANewIdent: string; out
+  Section: TInsertClassSectionResult): Boolean;
+begin
+  Result := True;
+  if (VarSection <> icsPrompt) then
+    Section := InsertClassSectionToResult[VarSection]
+  else
+  begin
+    if Assigned(ShowVarSectionPrompt) then
+      Result := ShowVarSectionPrompt(ANewIdent, Section)
     else
       Section := InsertClassSectionToResult[DefaultEventMethodSection];
   end;

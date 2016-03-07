@@ -85,6 +85,10 @@ msgstr "constante de caracteres fuera del rango"
 msgid "circle in definitions"
 msgstr "círculo en definiciones"
 
+#: codetoolsstrconsts.ctsclasscodecreationneedsclassobject
+msgid "Class code creation needs a class or similar object."
+msgstr ""
+
 #: codetoolsstrconsts.ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "se esperaba identificador de clase"

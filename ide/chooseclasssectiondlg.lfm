@@ -1,21 +1,22 @@
 object ChooseClassSectionDialog: TChooseClassSectionDialog
   Left = 460
-  Height = 177
+  Height = 213
   Top = 220
-  Width = 252
+  Width = 304
   BorderStyle = bsDialog
   Caption = 'ChooseClassSectionDialog'
-  ClientHeight = 177
-  ClientWidth = 252
+  ClientHeight = 213
+  ClientWidth = 304
+  Color = clBtnFace
   KeyPreview = True
   OnKeyPress = FormKeyPress
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.7'
   object SectionsListBox: TListBox
     Left = 10
-    Height = 117
-    Top = 10
-    Width = 232
+    Height = 129
+    Top = 34
+    Width = 284
     Align = alClient
     BorderSpacing.Left = 10
     BorderSpacing.Top = 10
@@ -29,8 +30,8 @@ object ChooseClassSectionDialog: TChooseClassSectionDialog
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 34
-    Top = 137
-    Width = 240
+    Top = 173
+    Width = 292
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -41,5 +42,21 @@ object ChooseClassSectionDialog: TChooseClassSectionDialog
     CancelButton.DefaultCaption = True
     TabOrder = 1
     ShowButtons = [pbOK]
+  end
+  object NewIdentLabel: TLabel
+    Left = 10
+    Height = 14
+    Top = 10
+    Width = 284
+    Align = alTop
+    BorderSpacing.Left = 10
+    BorderSpacing.Top = 10
+    BorderSpacing.Right = 10
+    Caption = 'NewIdentLabel'
+    Font.Height = -11
+    Font.Name = 'Courier New'
+    ParentColor = False
+    ParentFont = False
+    WordWrap = True
   end
 end

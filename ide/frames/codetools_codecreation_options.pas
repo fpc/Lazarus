@@ -33,6 +33,8 @@ type
   { TCodetoolsCodeCreationOptionsFrame }
 
   TCodetoolsCodeCreationOptionsFrame = class(TAbstractIDEOptionsEditor)
+    VarSectionComboBox: TComboBox;
+    VarSectionLabel: TLabel;
     ForwardProcsInsertPolicyComboBox: TComboBox;
     TemplateFileEdit: TFileNameEdit;
     UsesInsertPolicyComboBox: TComboBox;
@@ -67,6 +69,22 @@ end;
 
 procedure TCodetoolsCodeCreationOptionsFrame.Setup(
   ADialog: TAbstractOptionsEditorDialog);
+
+  procedure FillSectionCB(CB: TComboBox);
+  begin
+    with CB do begin
+      Assert(Ord(High(TInsertClassSectionResult)) = 3,  'TCodetoolsCodeCreationOptionsFrame.Setup: High(TInsertClassSectionResult) <> 3');
+      with Items do begin
+        BeginUpdate;
+        Add(lisPrivate);
+        Add(lisProtected);
+        Add(lisEMDPublic);
+        Add(lisEMDPublished);
+        Add(dlgEnvAsk);
+        EndUpdate;
+      end;
+    end;
+  end;
 begin
   ForwardProcsInsertPolicyLabel.Caption:=dlgForwardProcsInsertPolicy;
   with ForwardProcsInsertPolicyComboBox do begin
@@ -95,18 +113,10 @@ begin
   end;
 
   EventMethodSectionLabel.Caption:=lisEventMethodSectionLabel;
-  with EventMethodSectionComboBox do begin
-    Assert(Ord(High(TInsertClassSectionResult)) = 3,  'TCodetoolsCodeCreationOptionsFrame.Setup: High(TInsertClassSectionResult) <> 3');
-    with Items do begin
-      BeginUpdate;
-      Add(lisPrivate);
-      Add(lisProtected);
-      Add(lisEMDPublic);
-      Add(lisEMDPublished);
-      Add(dlgEnvAsk);
-      EndUpdate;
-    end;
-  end;
+  FillSectionCB(EventMethodSectionComboBox);
+
+  VarSectionLabel.Caption:=lisVarSectionLabel;
+  FillSectionCB(VarSectionComboBox);
 
   UpdateMultiProcSignaturesCheckBox.Caption:=
     lisCTOUpdateMultipleProcedureSignatures;
@@ -151,6 +161,7 @@ begin
                           UsesInsertPolicyComboBox.ItemIndex:=4;
     end;
     EventMethodSectionComboBox.ItemIndex := Ord(EventMethodSection);
+    VarSectionComboBox.ItemIndex := Ord(VarSection);
 
     UpdateMultiProcSignaturesCheckBox.Checked:=UpdateMultiProcSignatures;
     UpdateOtherProcSignaturesCaseCheckBox.Checked:=UpdateOtherProcSignaturesCase;
@@ -182,6 +193,7 @@ begin
     end;
 
     EventMethodSection := TInsertClassSection(EventMethodSectionComboBox.ItemIndex);
+    VarSection := TInsertClassSection(VarSectionComboBox.ItemIndex);
 
     UpdateMultiProcSignatures:=UpdateMultiProcSignaturesCheckBox.Checked;
     UpdateOtherProcSignaturesCase:=UpdateOtherProcSignaturesCaseCheckBox.Checked;

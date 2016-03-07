@@ -87,6 +87,10 @@ msgstr "simbolinė konstanta peržengia ribas"
 msgid "circle in definitions"
 msgstr "žiedinė apibrėžtis"
 
+#: codetoolsstrconsts.ctsclasscodecreationneedsclassobject
+msgid "Class code creation needs a class or similar object."
+msgstr ""
+
 #: codetoolsstrconsts.ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "tikėtasi klasės identifikatoriaus"

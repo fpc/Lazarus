@@ -39,6 +39,7 @@ type
 
   TChooseClassSectionDialog = class(TForm)
     ButtonPanel: TButtonPanel;
+    NewIdentLabel: TLabel;
     SectionsListBox: TListBox;
     procedure FormKeyPress(Sender: TObject; var Key: char);
     procedure SectionsListBoxDblClick(Sender: TObject);
@@ -49,15 +50,16 @@ type
 
   end;
 
-function ChooseClassSectionDialog(const ACaption: string; ADefault: TInsertClassSectionResult;
+function ChooseClassSectionDialog(const ACaption, ANewIdent: string; ADefault: TInsertClassSectionResult;
   out Section: TInsertClassSectionResult): Boolean;
-function ShowEventMethodSectionDialog(out Section: TInsertClassSectionResult): Boolean;
+function ShowEventMethodSectionDialog(const ANewIdent: string; out Section: TInsertClassSectionResult): Boolean;
+function ShowVarSectionDialog(const ANewIdent: string; out Section: TInsertClassSectionResult): Boolean;
 
 implementation
 
 {$R *.lfm}
 
-function ChooseClassSectionDialog(const ACaption: string; ADefault: TInsertClassSectionResult;
+function ChooseClassSectionDialog(const ACaption, ANewIdent: string; ADefault: TInsertClassSectionResult;
   out Section: TInsertClassSectionResult): Boolean;
 var
   Dlg: TChooseClassSectionDialog;
@@ -65,6 +67,10 @@ begin
   Dlg := TChooseClassSectionDialog.Create(Application);
   try
     Dlg.Caption := ACaption;
+    if ANewIdent<>'' then
+      Dlg.NewIdentLabel.Caption := ANewIdent
+    else
+      Dlg.NewIdentLabel.Visible := False;
     Dlg.PopupMode := pmAuto;
     if Ord(ADefault) < Dlg.SectionsListBox.Count then
       Dlg.SectionsListBox.ItemIndex := Ord(ADefault)
@@ -80,12 +86,22 @@ begin
   end;
 end;
 
-function ShowEventMethodSectionDialog(out Section: TInsertClassSectionResult): Boolean;
+function ShowEventMethodSectionDialog(const ANewIdent: string; out
+  Section: TInsertClassSectionResult): Boolean;
 begin
   Result := ChooseClassSectionDialog(lisChooseClassSectionDlgForMethodCaption,
-    EnvironmentOptions.LastEventMethodSectionPrompt, Section);
+    ANewIdent, EnvironmentOptions.LastEventMethodSectionPrompt, Section);
   if Result then
     EnvironmentOptions.LastEventMethodSectionPrompt := Section;
+end;
+
+function ShowVarSectionDialog(const ANewIdent: string; out
+  Section: TInsertClassSectionResult): Boolean;
+begin
+  Result := ChooseClassSectionDialog(lisChooseClassSectionDlgForVariableCaption,
+    ANewIdent, EnvironmentOptions.LastVarSectionPrompt, Section);
+  if Result then
+    EnvironmentOptions.LastVarSectionPrompt := Section;
 end;
 
 { TChooseClassSectionDialog }
@@ -122,6 +138,7 @@ end;
 
 initialization
   ShowEventMethodSectionPrompt := @ShowEventMethodSectionDialog;
+  ShowVarSectionPrompt := @ShowVarSectionDialog;
 
 end.
 

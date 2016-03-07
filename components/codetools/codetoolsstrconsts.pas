@@ -198,6 +198,7 @@ ResourceString
   ctsTypeSectionOfClassNotFound = 'type section of class not found';
   ctsUnableToCompleteProperty = 'unable to complete property';
   ctsErrorDuringInsertingNewClassParts = 'error during inserting new class parts';
+  ctsClassCodeCreationNeedsClassObject = 'Class code creation needs a class or similar object.';
   ctsErrorDuringCreationOfNewProcBodies = 'error during creation of new proc bodies';
   ctsErrorDuringInsertingNewUsesSection = 'error during inserting new units to the main uses section';
   ctsUnableToApplyChanges = 'unable to apply changes';

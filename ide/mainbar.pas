@@ -204,6 +204,7 @@ type
         itmSourceEncloseBlock: TIDEMenuCommand;
         itmSourceEncloseInIFDEF: TIDEMenuCommand;
         itmSourceCompleteCode: TIDEMenuCommand;
+        itmSourceClassCompleteCode: TIDEMenuCommand;
         itmSourceUseUnit: TIDEMenuCommand;
       //itmSourceCodeToolChecks: TIDEMenuSection;
         itmSourceSyntaxCheck: TIDEMenuCommand;

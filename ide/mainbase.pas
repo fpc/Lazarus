@@ -1175,6 +1175,7 @@ begin
     CreateMenuItem(ParentMI,itmSourceEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
     CreateMenuItem(ParentMI,itmSourceEncloseInIFDEF,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF);
     CreateMenuItem(ParentMI,itmSourceCompleteCode,'itmSourceCompleteCode',lisMenuCompleteCode);
+    CreateMenuItem(ParentMI,itmSourceClassCompleteCode,'itmSourceClassCompleteCode',lisMenuClassCompleteCode);
     CreateMenuItem(ParentMI,itmRefactorInvertAssignment,'itmInvertAssignment',uemInvertAssignment);
     CreateMenuItem(ParentMI,itmSourceUseUnit,'itmSourceUseUnit',lisMenuUseUnit);
     // Refactor
@@ -1591,6 +1592,7 @@ begin
     itmSourceEncloseBlock.Command:=GetCommand(ecSelectionEnclose);
     itmSourceEncloseInIFDEF.Command:=GetCommand(ecSelectionEncloseIFDEF);
     itmSourceCompleteCode.Command:=GetCommand(ecCompleteCode);
+    itmSourceClassCompleteCode.Command:=GetCommand(ecClassCompleteCode);
     itmSourceUseUnit.Command:=GetCommand(ecUseUnit);
 
     itmSourceSyntaxCheck.Command:=GetCommand(ecSyntaxCheck);

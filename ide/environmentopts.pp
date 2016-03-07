@@ -513,6 +513,7 @@ type
 
     //other recent settings
     FLastEventMethodSectionPrompt: TInsertClassSectionResult;
+    FLastVarSectionPrompt: TInsertClassSectionResult;
 
     // backup
     FBackupInfoProjectFiles: TBackupInfo;
@@ -772,6 +773,8 @@ type
     // other recent settings
     property LastEventMethodSectionPrompt: TInsertClassSectionResult
       read FLastEventMethodSectionPrompt write FLastEventMethodSectionPrompt;
+    property LastVarSectionPrompt: TInsertClassSectionResult
+      read FLastVarSectionPrompt write FLastVarSectionPrompt;
 
     // backup
     property BackupInfoProjectFiles: TBackupInfo read FBackupInfoProjectFiles
@@ -1387,6 +1390,7 @@ begin
 
   // other recent settings
   FLastEventMethodSectionPrompt:=InsertClassSectionToResult[DefaultEventMethodSection];
+  FLastVarSectionPrompt:=InsertClassSectionToResult[DefaultEventMethodSection];
 
   // backup
   with FBackupInfoProjectFiles do begin
@@ -1796,6 +1800,9 @@ begin
     FLastEventMethodSectionPrompt:=InsertClassSectionResultNameToSection(FXMLCfg.GetValue(
       'Recent/EventMethodSectionPrompt/Value',
       InsertClassSectionNames[DefaultEventMethodSection]));
+    FLastVarSectionPrompt:=InsertClassSectionResultNameToSection(FXMLCfg.GetValue(
+      'Recent/VarSectionPrompt/Value',
+      InsertClassSectionNames[DefaultEventMethodSection]));
 
     // Add example projects to an empty project list if examples have write access
     if (FRecentProjectFiles.count=0) and (not FAlreadyPopulatedRecentFiles) then begin
@@ -2119,6 +2126,9 @@ begin
     // other recent settings
     FXMLCfg.SetDeleteValue('Recent/EventMethodSectionPrompt/Value',
       InsertClassSectionResultNames[FLastEventMethodSectionPrompt],
+      InsertClassSectionResultNames[InsertClassSectionToResult[DefaultEventMethodSection]]);
+    FXMLCfg.SetDeleteValue('Recent/VarSectionPrompt/Value',
+      InsertClassSectionResultNames[FLastVarSectionPrompt],
       InsertClassSectionResultNames[InsertClassSectionToResult[DefaultEventMethodSection]]);
 
     // external tools

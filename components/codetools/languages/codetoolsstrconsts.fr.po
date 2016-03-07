@@ -88,6 +88,10 @@ msgstr "constante caractère hors plage"
 msgid "circle in definitions"
 msgstr "définitions circulaires"
 
+#: codetoolsstrconsts.ctsclasscodecreationneedsclassobject
+msgid "Class code creation needs a class or similar object."
+msgstr ""
+
 #: codetoolsstrconsts.ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "identificateur de classe attendu"
