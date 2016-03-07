@@ -368,13 +368,11 @@ begin
   if D = nil then
     exit;
   ARootWindow := XRootWindow(D, QX11Info_appScreen);
-  if XTranslateCoordinates(d, TWindow(AWinID), ARootWindow, 0, 0, @ALeft, @ATop, @AChildWin) = SUCCESS then
-  begin
-    XGetWindowAttributes(d, TWindow(AWinID), @AXWinAttr);
-    ALeft := ALeft - AXWinAttr.x;
-    ATop := ATop - AXWinAttr.y;
-    Result := True;
-  end;
+  XTranslateCoordinates(d, TWindow(AWinID), ARootWindow, 0, 0, @ALeft, @ATop, @AChildWin);
+  XGetWindowAttributes(d, TWindow(AWinID), @AXWinAttr);
+  ALeft := ALeft - AXWinAttr.x;
+  ATop := ATop - AXWinAttr.y;
+  Result := (AXWinAttr.map_installed > 0) and (AXWinAttr.map_state = 2);
 end;
 
 function GetWindowFrameSize(AWinID: LongWord; out ALeft, ATop, ARight,
