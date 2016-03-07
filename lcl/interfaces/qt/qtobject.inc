@@ -1893,13 +1893,6 @@ begin
       FWSFrameMargins := Rect(1, 23, 1, 10);
       Result := FWSFrameMargins;
       exit;
-    end else
-    if (AWMName = 'Openbox') then
-    begin
-      DebugLn('WARNING: QtLCL: "Openbox" wm have wrong implementation for _NET_FRAME_EXTENTS.');
-      FWSFrameMargins := Rect(1, 20, 1, 5);
-      Result := FWSFrameMargins;
-      exit;
     end;
     {$ENDIF}
 
