@@ -7035,14 +7035,14 @@ begin
         {menubar is not yet allocated, so use SM_CYMENU}
         if Assigned(TCustomForm(LCLObject).Menu) then
           dec(Result.Bottom, QtWidgetSet.GetSystemMetrics(SM_CYMENU));
-        {$ENDIF}
         {$IFDEF DEBUGQTUSEACCURATEFRAME}
         DebugLn('<TQtMainWindow.getClientBounds(',dbgsName(LCLObject),'): ***ERROR*** NEW RESULT=',dbgs(Result));
         {$ENDIF}
       end;
+      {$ENDIF}
     end;
-  end else
   {$ENDIF}
+  end else
   Result:=inherited getClientBounds;
 end;
 
