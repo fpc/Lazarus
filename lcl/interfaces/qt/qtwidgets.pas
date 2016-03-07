@@ -2052,6 +2052,17 @@ begin
   move(FParams.X, FParams.Y);
   if GetContainerWidget <> Widget then
     QWidget_resize(GetContainerWidget, FParams.Width, FParams.Height);
+
+  {$IFDEF QTUSEACCURATEFRAME}
+  if IsFramedWidget then
+  begin
+    {$IFDEF DEBUGQTUSEACCURATEFRAME}
+    DebugLn(Format('TQtWidget.InitializeWidget: proposed width %d height %d',[FParams.Width, FParams.Height]),' WSFrame=',dbgs(QtWidgetSet.WSFrameMargins),' FFrame=',dbgs(FFrameMargins));
+    {$ENDIF}
+    if (QtWidgetSet.WSFrameMargins.Top > 0) then
+      FFrameMargins := QtWidgetSet.WSFrameMargins;
+  end;
+  {$ENDIF}
   Resize(FParams.Width, FParams.Height);
 
   FScrollX := 0;
