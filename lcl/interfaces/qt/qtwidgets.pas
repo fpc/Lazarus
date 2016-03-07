@@ -7260,6 +7260,11 @@ var
   {$IFDEF QtUseAccurateFrame}
   R: TRect;
   ASize, AFrameSize: TSize;
+  {$IFDEF HASX11}
+  X11X, X11Y: integer;
+  AMoveMsg: TLMMove;
+  ASizeMsg: TLMSize;
+  {$ENDIF}
   {$ENDIF}
   {$IFDEF MSWINDOWS}
   i: Integer;
@@ -7374,7 +7379,7 @@ begin
                 if (AFrameSize.cy > ASize.cy) and not EqualRect(FFrameMargins, R) then
                 begin
                   {$IFDEF DebugQtUseAccurateFrame}
-                  DebugLn('***CHANGE FRAME MARGINS OLD FFFRAME=',dbgs(FFrameMargins),' NEW FFRAME=',dbgs(R));
+                  DebugLn('***CHANGE FRAME MARGINS ',dbgsName(LCLObject),' OLD FFFRAME=',dbgs(FFrameMargins),' NEW FFRAME=',dbgs(R));
                   {$ENDIF}
                   // composite wm changes _NET_FRAME_EXTENTS to + or even - for shadows
                   // so update just this window FFrameMargins.
@@ -7382,7 +7387,48 @@ begin
                   // size eg from 4,27,4,4 to 1,3,1,1.
                   // Cinnamon have shadows eg _NET_FRAME_EXTENTS are 4,27,4,4
                   // but after shadowing we have 10,36,10,10. So keep them here !
+                  // More problems comes from cinnamon since titlebar size depends
+                  // if widget have constraints (min,max) or if widget is modal.
+                  // All we can do is to inform LCL that handle bounds are changed.
                   FFrameMargins := R;
+                  GetX11WindowPos(QWidget_winID(Widget), X11X, X11Y);
+                  X11X -= R.Left;
+                  X11Y -= R.Top;
+                  {$IFDEF DebugQtUseAccurateFrame}
+                  DebugLn(Format('  =>> X11 pos x %d y %d',[X11X, X11Y]));
+                  {$ENDIF}
+
+                  if QtWidgetSet.IsWidgetAtCache(HWND(Self)) then
+                    QtWidgetSet.InvalidateWidgetAtCache;
+
+                  FillChar(AMoveMsg{%H-}, SizeOf(AMoveMsg), #0);
+                  AMoveMsg.Msg := LM_MOVE;
+                  AMoveMsg.MoveType := AMoveMsg.MoveType or Move_SourceIsInterface;
+                  AMoveMsg.XPos := SmallInt(X11X);
+                  AMoveMsg.YPos := SmallInt(X11Y);
+                  DeliverMessage(AMoveMsg);
+
+                  FillChar(ASizeMsg{%H-}, SizeOf(ASizeMsg), #0);
+
+                  ASizeMsg.Msg := LM_SIZE;
+
+                  case getWindowState of
+                    QtWindowMinimized: ASizeMsg.SizeType := SIZE_MINIMIZED;
+                    QtWindowMaximized: ASizeMsg.SizeType := SIZE_MAXIMIZED;
+                    QtWindowFullScreen: ASizeMsg.SizeType := SIZE_FULLSCREEN;
+                  else
+                    ASizeMsg.SizeType := SIZE_RESTORED;
+                  end;
+
+                  ASizeMsg.SizeType := ASizeMsg.SizeType or Size_SourceIsInterface;
+
+                  AFrameSize := getFrameSize;
+                  ASizeMsg.Width := Word(AFrameSize.cx);
+                  ASizeMsg.Height := Word(AFrameSize.cy);
+
+                  DeliverMessage(ASizeMsg);
+
+
                 end;
               end;
             end;
