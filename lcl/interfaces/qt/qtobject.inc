@@ -1917,28 +1917,21 @@ begin
 
     B := AskX11_NET_REQUEST_FRAME_EXTENTS(AID, R);
 
-    if B and QX11Info_isCompositingManagerRunning then
+    if B and (R.Top = 0) then
     begin
-      // some compositing WMs like KWin does not provide
-      // correct _NET_FRAME_EXTENTS. Checked with FC23 last time.
-      // so wait until this dummy widget is activated.
-      // Widget is fully transparent so won''t harm
-      if (R.Left > 0) and (R.Top = 0) then
+      ATicks := 0;
+      while R.Top = 0 do
       begin
-        ATicks := 0;
-        while R.Top = 0 do
-        begin
-          QWidget_size(ATempWidget, @ASize);
-          QWidget_frameSize(ATempWidget, @AFrameSize);
-          R.Left := (AFrameSize.cx - ASize.cx) div 2;
-          R.Right := R.Left;
-          R.Top := (AFrameSize.cy - ASize.cy) - R.Left;
-          R.Bottom := R.Left;
-          QCoreApplication_processEvents;
-          ATicks += 1;
-          if ATicks > 50 then
-            break; // error !
-        end;
+        QWidget_size(ATempWidget, @ASize);
+        QWidget_frameSize(ATempWidget, @AFrameSize);
+        R.Left := (AFrameSize.cx - ASize.cx) div 2;
+        R.Right := R.Left;
+        R.Top := (AFrameSize.cy - ASize.cy) - R.Left;
+        R.Bottom := R.Left;
+        QCoreApplication_processEvents;
+        ATicks += 1;
+        if ATicks > 50 then
+          break; // error !
       end;
       (* TODO: If shadows are enabled on KWin ask for shadow rect !
       AList := TStringList.Create;
