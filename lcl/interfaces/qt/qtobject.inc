@@ -1870,15 +1870,15 @@ function TQtWidgetSet.GetFrameMargins: TRect;
 var
   ATempWidget: QWidgetH;
   R: TRect;
-  {$IF DEFINED(DebugQtUseAccurateFrame) OR NOT DEFINED(HASX11)}
   ASize, AFrameSize: TSize;
-  {$ENDIF}
   AID: LongWord;
   I: integer;
   B: Boolean;
   ATicks: DWORD;
   {$IFDEF HASX11}
   AWMName: String;
+  AShadowRect: TRect;
+  AList: TStringList;
   {$ENDIF}
 begin
   if (FWSFrameMargins.Left = 0) and (FWSFrameMargins.Top = 0) or
@@ -1905,6 +1905,10 @@ begin
 
     ATempWidget := QWidget_create(nil, QtWindow or QtDialog);
     QWidget_setAttribute(ATempWidget, QtWA_NativeWindow, True);
+    {$IFDEF HASX11}
+    if QX11Info_isCompositingManagerRunning then
+      QWidget_setWindowOpacity(ATempWidget, 0);
+    {$ENDIF}
     QWidget_move(ATempWidget, -MAXSHORT, -MAXSHORT);
     QWidget_resize(ATempWidget, 32, 32);
     QWidget_show(ATempWidget);
@@ -1913,6 +1917,39 @@ begin
 
     B := AskX11_NET_REQUEST_FRAME_EXTENTS(AID, R);
 
+    if B and QX11Info_isCompositingManagerRunning then
+    begin
+      // some compositing WMs like KWin does not provide
+      // correct _NET_FRAME_EXTENTS. Checked with FC23 last time.
+      // so wait until this dummy widget is activated.
+      // Widget is fully transparent so won''t harm
+      if (R.Left > 0) and (R.Top = 0) then
+      begin
+        ATicks := 0;
+        while R.Top = 0 do
+        begin
+          QWidget_size(ATempWidget, @ASize);
+          QWidget_frameSize(ATempWidget, @AFrameSize);
+          R.Left := (AFrameSize.cx - ASize.cx) div 2;
+          R.Right := R.Left;
+          R.Top := (AFrameSize.cy - ASize.cy) - R.Left;
+          R.Bottom := R.Left;
+          QCoreApplication_processEvents;
+          ATicks += 1;
+          if ATicks > 50 then
+            break; // error !
+        end;
+      end;
+      (* TODO: If shadows are enabled on KWin ask for shadow rect !
+      AList := TStringList.Create;
+      try
+        GetX11SupportedAtoms(AID, AList);
+        GetX11RectForAtom(AID,'_KDE_NET_WM_SHADOW', AShadowRect);
+      finally
+        AList.Free;
+      end;
+      *)
+    end;
     if not B then
     begin
       MapX11Window(AID);
