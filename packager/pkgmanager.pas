@@ -259,7 +259,7 @@ type
     function AddDependencyToUnitOwners(const OwnedFilename,
                               RequiredUnitname: string): TModalResult; override;
     function RedirectPackageDependency(APackage: TIDEPackage): TIDEPackage; override;
-    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList); override;
+    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList; IgnoreModifiedFlag: boolean = False); override;
     function RevertPackages(APackageList: TStringList): TModalResult; override;
 
     // project
@@ -5003,10 +5003,11 @@ begin
   end;
 end;
 
-procedure TPkgManager.GetPackagesChangedOnDisk(out ListOfPackages: TStringList);
+procedure TPkgManager.GetPackagesChangedOnDisk(out ListOfPackages: TStringList;
+  IgnoreModifiedFlag: boolean);
 begin
   if PackageGraph=nil then exit;
-  PackageGraph.GetPackagesChangedOnDisk(ListOfPackages);
+  PackageGraph.GetPackagesChangedOnDisk(ListOfPackages, IgnoreModifiedFlag);
 end;
 
 function TPkgManager.RevertPackages(APackageList: TStringList): TModalResult;

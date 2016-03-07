@@ -85,9 +85,9 @@ type
     function SaveToFile(const AFilename: string): boolean; override;
     function Save: boolean;
     function FileDateOnDisk: longint;
-    function FileNeedsUpdate: boolean; // needs loading
+    function FileNeedsUpdate(IgnoreModifiedFlag: Boolean = False): boolean; // needs loading
     function FileOnDiskNeedsUpdate: boolean;
-    function FileOnDiskHasChanged: boolean;
+    function FileOnDiskHasChanged(IgnoreModifiedFlag: Boolean = False): boolean;
     function FileOnDiskIsEqual: boolean;
     function AutoRevertFromDisk: boolean;
     procedure LockAutoDiskRevert;
@@ -1444,14 +1444,21 @@ begin
   Result:=FileAgeCached(Filename);
 end;
 
-function TCodeBuffer.FileNeedsUpdate: boolean;
+function TCodeBuffer.FileNeedsUpdate(IgnoreModifiedFlag: Boolean): boolean;
 // file needs update (to be loaded), if file is not modified and file on disk has changed
 begin
-  if Modified or IsVirtual then exit(false);
-  if LoadDateValid then
-    Result:=(FFileChangeStep=ChangeStep) and (FileDateOnDisk<>LoadDate)
-  else
-    Result:=true;
+  if IgnoreModifiedFlag then
+  begin
+    if IsVirtual then exit(false);
+    Result:=FileDateOnDisk<>LoadDate; // ignore LoadDateValid because it is set to false after edit
+  end else
+  begin
+    if Modified or IsVirtual then exit(false);
+    if LoadDateValid then
+      Result:=(FFileChangeStep=ChangeStep) and (FileDateOnDisk<>LoadDate)
+    else
+      Result:=true;
+  end;
 end;
 
 function TCodeBuffer.FileOnDiskNeedsUpdate: boolean;
@@ -1464,13 +1471,19 @@ begin
           or (not FileExistsCached(Filename));
 end;
 
-function TCodeBuffer.FileOnDiskHasChanged: boolean;
+function TCodeBuffer.FileOnDiskHasChanged(IgnoreModifiedFlag: Boolean): boolean;
 // file on disk has changed since last load/save
 begin
-  if LoadDateValid and FileExistsCached(Filename) then
-    Result:=(FileDateOnDisk<>LoadDate)
-  else
-    Result:=false;
+  if IgnoreModifiedFlag then
+  begin
+    Result:=FileDateOnDisk<>LoadDate; // ignore LoadDateValid because it is set to false after edit
+  end else
+  begin
+    if LoadDateValid and FileExistsCached(Filename) then
+      Result:=(FileDateOnDisk<>LoadDate)
+    else
+      Result:=false;
+  end;
 end;
 
 function TCodeBuffer.FileOnDiskIsEqual: boolean;

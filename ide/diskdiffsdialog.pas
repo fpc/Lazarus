@@ -34,6 +34,7 @@ interface
 uses
   // RTL + FCL + LCL
   Classes, SysUtils, LCLProc, Forms, Controls, StdCtrls, ExtCtrls, LCLType,
+  CheckLst,
   // CodeTools
   FileProcs, CodeCache,
   // LazUtils
@@ -60,32 +61,33 @@ type
     BtnPanel: TPanel;
     CheckDiskChangesWithLoadingCheckBox: TCheckBox;
     DiffSynEdit: TSynEdit;
-    FilesListBox: TListBox;
-    RevertAllButton: TButton;
+    FilesListBox: TCheckListBox;
+    RevertButton: TButton;
     IgnoreDiskChangesButton: TButton;
     Splitter: TSplitter;
     SynDiffSyn1: TSynDiffSyn;
-    procedure DiskDiffsDlgKeyDown(Sender: TObject; var Key: Word;
-          {%H-}Shift: TShiftState);
-    procedure FilesListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure FilesListBoxClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
   private
+    FIgnoreList: TFPList;
     FPackageList: TStringList;
     FUnitList: TFPList;
     FCachedDiffs: TFPList; // List of PDiffItem
     procedure FillFilesListBox;
+    procedure ApplyChecks;
     procedure ShowDiff;
     function GetCachedDiff(FileOwner: TObject; AltFilename: string): PDiffItem;
     procedure ClearCache;
   public
     property UnitList: TFPList read FUnitList write FUnitList; // list of TUnitInfo
     property PackageList: TStringList read FPackageList write FPackageList; // list of alternative filename and TLazPackage
+    property IgnoreList: TFPList read FIgnoreList write FIgnoreList;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  
-function ShowDiskDiffsDialog(AnUnitList: TFPList; APackageList: TStringList): TModalResult;
 
+function ShowDiskDiffsDialog(AnUnitList: TFPList;
+  APackageList: TStringList; AnIgnoreList: TFPList): TModalResult;
 
 implementation
 
@@ -94,7 +96,8 @@ implementation
 var
   DiskDiffsDlg: TDiskDiffsDlg = nil;
 
-function ShowDiskDiffsDialog(AnUnitList: TFPList; APackageList: TStringList): TModalResult;
+function ShowDiskDiffsDialog(AnUnitList: TFPList; APackageList: TStringList;
+  AnIgnoreList: TFPList): TModalResult;
 
   function ListsAreEmpty: boolean;
   begin
@@ -194,29 +197,20 @@ begin
   DiskDiffsDlg:=TDiskDiffsDlg.Create(nil);
   DiskDiffsDlg.UnitList:=AnUnitList;
   DiskDiffsDlg.PackageList:=APackageList;
+  DiskDiffsDlg.IgnoreList:=AnIgnoreList;
   DiskDiffsDlg.FillFilesListBox;
   Result:=DiskDiffsDlg.ShowModal;
+  if Result=mrYes then
+    DiskDiffsDlg.ApplyChecks;
   DiskDiffsDlg.Free;
   DiskDiffsDlg:=nil;
 end;
 
 { TDiskDiffsDlg }
 
-procedure TDiskDiffsDlg.DiskDiffsDlgKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TDiskDiffsDlg.FilesListBoxClick(Sender: TObject);
 begin
-  if Key = VK_Escape then
-    ModalResult := mrIgnore
-  else
-  if Key = VK_Return then
-    ModalResult := mrYesToAll;
-end;
-
-procedure TDiskDiffsDlg.FilesListBoxSelectionChange(Sender: TObject;
-  User: boolean);
-begin
-  if User then
-    ShowDiff;
+  ShowDiff;
 end;
 
 procedure TDiskDiffsDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -225,21 +219,32 @@ begin
 end;
 
 procedure TDiskDiffsDlg.FillFilesListBox;
-var i: integer;
+var i, ii: integer;
   AnUnitInfo: TUnitInfo;
   APackage: TLazPackage;
+  AFileName: string;
 begin
   FilesListBox.Items.BeginUpdate;
   FilesListBox.Items.Clear;
   if UnitList<>nil then
     for i:=0 to UnitList.Count-1 do begin
       AnUnitInfo:=TUnitInfo(UnitList[i]);
-      FilesListBox.Items.AddObject(AnUnitInfo.ShortFilename,AnUnitInfo);
+      AFileName:=AnUnitInfo.ShortFilename;
+      if AnUnitInfo.Modified then
+        AFileName:='*'+AFileName;
+      ii := FilesListBox.Items.AddObject(AFileName,AnUnitInfo);
+      if not AnUnitInfo.Modified then
+        FilesListBox.Checked[ii] := True;
     end;
   if PackageList<>nil then
     for i:=0 to PackageList.Count-1 do begin
       APackage:=TLazPackage(PackageList.Objects[i]);
-      FilesListBox.Items.AddObject(APackage.Filename,APackage);
+      AFileName:=APackage.Filename;
+      if APackage.Modified then
+        AFileName:='*'+AFileName;
+      ii := FilesListBox.Items.AddObject(AFileName,APackage);
+      if not APackage.Modified then
+        FilesListBox.Checked[ii] := True;
     end;
   FilesListBox.Items.EndUpdate;
 end;
@@ -354,10 +359,23 @@ begin
   Caption:=lisDiskDiffSomeFilesHaveChangedOnDisk;
   EditorOpts.GetSynEditSettings(DiffSynEdit);
   DiffSynEdit.Lines.Text:=lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff;
-  RevertAllButton.Caption:=lisDiskDiffRevertAll;
-  IgnoreDiskChangesButton.Caption:=lisDiskDiffIgnoreDiskChanges;
+  RevertButton.Caption:=lisDiskDiffReloadCheckedFilesFromDisk;
+  IgnoreDiskChangesButton.Caption:=lisDiskDiffIgnoreAllDiskChanges;
   CheckDiskChangesWithLoadingCheckBox.Caption:=lisCheckForDiskFileChangesViaContent;
   CheckDiskChangesWithLoadingCheckBox.Checked:=EnvironmentOptions.CheckDiskChangesWithLoading;
+
+  DefaultControl:=RevertButton;
+  CancelControl:=IgnoreDiskChangesButton;
+end;
+
+procedure TDiskDiffsDlg.ApplyChecks;
+var
+  i: Integer;
+begin
+  FIgnoreList.Clear;
+  for i := 0 to FilesListBox.Count-1 do
+    if not FilesListBox.Checked[i] then
+      FIgnoreList.Add(FilesListBox.Items.Objects[i]);
 end;
 
 destructor TDiskDiffsDlg.Destroy;

@@ -335,7 +335,7 @@ type
                                  var PkgList: TFPList; var Tree: TPkgPairTree);
     function GetBrokenDependenciesWhenChangingPkgID(APackage: TLazPackage;
                          const NewName: string; NewVersion: TPkgVersion): TFPList;
-    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList); // returns list of new filename and TLazPackage
+    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList; IgnoreModifiedFlag: boolean = False); // returns list of new filename and TLazPackage
     procedure GetAllRequiredPackages(APackage: TLazPackage; // if not nil then ignore FirstDependency and do not add APackage to Result
                                      FirstDependency: TPkgDependency;
                                      out List: TFPList;
@@ -5166,7 +5166,7 @@ begin
 end;
 
 procedure TLazPackageGraph.GetPackagesChangedOnDisk(out
-  ListOfPackages: TStringList);
+  ListOfPackages: TStringList; IgnoreModifiedFlag: boolean);
 // if package source is changed in IDE (codetools)
 // then changes on disk are ignored
 var
@@ -5198,7 +5198,7 @@ begin
     NewFilename:=APackage.Filename;
     if FileExistsCached(APackage.Filename) then begin
       if (APackage.LPKSource<>nil)
-      and (not APackage.LPKSource.FileNeedsUpdate) then
+      and (not APackage.LPKSource.FileNeedsUpdate(IgnoreModifiedFlag)) then
         continue;
       // a lpk has changed, this might include dependencies => reload lpl files
       UpdateGlobalLinks;

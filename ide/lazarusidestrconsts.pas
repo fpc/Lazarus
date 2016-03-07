@@ -3969,8 +3969,8 @@ resourcestring
   lisDiskDiffSomeFilesHaveChangedOnDisk = 'Some files have changed on disk:';
   lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff = 'Click on one of the '
     +'above items to see the diff';
-  lisDiskDiffRevertAll = 'Reload from disk';
-  lisDiskDiffIgnoreDiskChanges = 'Ignore disk changes';
+  lisDiskDiffReloadCheckedFilesFromDisk = 'Reload checked files from disk';
+  lisDiskDiffIgnoreAllDiskChanges = 'Ignore all disk changes';
   
   // edit define tree
   lisEdtDefCurrentProject = 'Current Project';

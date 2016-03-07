@@ -345,7 +345,7 @@ type
     function GetFileOwner: TObject; override;
     function GetFileOwnerName: string; override;
 
-    function ChangedOnDisk(CompareOnlyLoadSaveTime: boolean): boolean;
+    function ChangedOnDisk(CompareOnlyLoadSaveTime: boolean; IgnoreModifiedFlag: boolean = False): boolean;
     function IsAutoRevertLocked: boolean;
     function IsReverting: boolean;
     function IsMainUnit: boolean;
@@ -885,7 +885,7 @@ type
     function SomeDataModified(Verbose: boolean = false): boolean;
     function SomeSessionModified(Verbose: boolean = false): boolean;
     procedure MainSourceFilenameChanged;
-    procedure GetUnitsChangedOnDisk(var AnUnitList: TFPList);
+    procedure GetUnitsChangedOnDisk(var AnUnitList: TFPList; IgnoreModifiedFlag: boolean = False);
     function HasProjectInfoFileChangedOnDisk: boolean;
     procedure IgnoreProjectInfoFileOnDisk;
     function ReadProject(const NewProjectInfoFile: string;
@@ -2071,9 +2071,10 @@ begin
   Result:=FRevertLockCount>0;
 end;
 
-function TUnitInfo.ChangedOnDisk(CompareOnlyLoadSaveTime: boolean): boolean;
+function TUnitInfo.ChangedOnDisk(CompareOnlyLoadSaveTime: boolean;
+  IgnoreModifiedFlag: boolean): boolean;
 begin
-  Result:=(Source<>nil) and Source.FileOnDiskHasChanged;
+  Result:=(Source<>nil) and Source.FileOnDiskHasChanged(IgnoreModifiedFlag);
   //if Result then debugln(['TUnitInfo.ChangedOnDisk ',Filename,' FileAgeCached=',FileAgeCached(Source.Filename)]);
   if Result
   and (not CompareOnlyLoadSaveTime)
@@ -4362,7 +4363,8 @@ begin
   ExtendPath(SrcPathMacroName,CompilerOptions.SrcPath);
 end;
 
-procedure TProject.GetUnitsChangedOnDisk(var AnUnitList: TFPList);
+procedure TProject.GetUnitsChangedOnDisk(var AnUnitList: TFPList;
+  IgnoreModifiedFlag: boolean);
 var
   AnUnitInfo: TUnitInfo;
 begin
@@ -4370,7 +4372,7 @@ begin
   AnUnitInfo:=fFirst[uilAutoRevertLocked];
   while (AnUnitInfo<>nil) do begin
     if (AnUnitInfo.Source<>nil)
-    and AnUnitInfo.ChangedOnDisk(false) then begin
+    and AnUnitInfo.ChangedOnDisk(false, IgnoreModifiedFlag) then begin
       if AnUnitList=nil then
         AnUnitList:=TFPList.Create;
       AnUnitList.Add(AnUnitInfo);

@@ -2986,7 +2986,7 @@ end;
 
 function TLazSourceFileManager.CheckFilesOnDisk(Instantaneous: boolean): TModalResult;
 var
-  AnUnitList: TFPList; // list of TUnitInfo
+  AnUnitList, AIgnoreList: TFPList; // list of TUnitInfo
   APackageList: TStringList; // list of alternative lpkfilename and TLazPackage
   i: integer;
   CurUnit: TUnitInfo;
@@ -3005,7 +3005,9 @@ begin
   FCheckingFilesOnDisk:=true;
   AnUnitList:=nil;
   APackageList:=nil;
+  AIgnoreList:=nil;
   try
+    AIgnoreList := TFPList.Create;
     InvalidateFileStateCache;
 
     if Project1.HasProjectInfoFileChangedOnDisk then begin
@@ -3020,11 +3022,11 @@ begin
       exit(mrOk);
     end;
 
-    Project1.GetUnitsChangedOnDisk(AnUnitList);
-    PkgBoss.GetPackagesChangedOnDisk(APackageList);
+    Project1.GetUnitsChangedOnDisk(AnUnitList, True);
+    PkgBoss.GetPackagesChangedOnDisk(APackageList, True);
     if (AnUnitList=nil) and (APackageList=nil) then exit;
-    Result:=ShowDiskDiffsDialog(AnUnitList,APackageList);
-    if Result in [mrYesToAll] then
+    Result:=ShowDiskDiffsDialog(AnUnitList,APackageList,AIgnoreList);
+    if Result in [mrYes,mrYesToAll] then
       Result:=mrOk;
 
     // reload units
@@ -3032,7 +3034,9 @@ begin
       for i:=0 to AnUnitList.Count-1 do begin
         CurUnit:=TUnitInfo(AnUnitList[i]);
         //DebugLn(['TLazSourceFileManager.CheckFilesOnDisk revert ',CurUnit.Filename,' EditorIndex=',CurUnit.EditorIndex]);
-        if Result=mrOk then begin
+        if (Result=mrOk)
+        and (AIgnoreList.IndexOf(CurUnit)<0) then // ignore current
+        begin
           if CurUnit.OpenEditorInfoCount > 0 then begin
             // Revert one Editor-View, the others follow
             Result:=OpenEditorFile(CurUnit.Filename, CurUnit.OpenEditorInfo[0].PageIndex,
@@ -3054,14 +3058,21 @@ begin
     end;
 
     // reload packages
-    Result:=PkgBoss.RevertPackages(APackageList);
-    if Result<>mrOk then exit;
+    if APackageList<>nil then
+    begin
+      for i:=APackageList.Count-1 downto 0 do
+        if AIgnoreList.IndexOf(APackageList.Objects[i])>=0 then
+          APackageList.Delete(i);
+      Result:=PkgBoss.RevertPackages(APackageList);
+      if Result<>mrOk then exit;
+    end;
 
     Result:=mrOk;
   finally
     FCheckingFilesOnDisk:=false;
     AnUnitList.Free;
     APackageList.Free;
+    AIgnoreList.Free;
   end;
 end;
 
