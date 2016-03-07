@@ -638,6 +638,9 @@ type
     FShowOnTaskBar: Boolean;
     FPopupParent: QWidgetH;
     FMDIStateHook: QMdiSubWindow_hookH;
+    {$IFDEF QtUseAccurateFrame}
+    FFormHasInvalidPosition: boolean;
+    {$ENDIF}
   protected
     function CreateWidget(const {%H-}AParams: TCreateParams):QWidgetH; override;
     procedure ChangeParent(NewParent: QWidgetH);
@@ -6746,6 +6749,9 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtMainWindow.CreateWidget Name: ', LCLObject.Name);
   {$endif}
+  {$IFDEF QtUseAccurateFrame}
+  FFormHasInvalidPosition := False;
+  {$ENDIF}
   FBlocked := False;
   FShowOnTaskBar := False;
   QtFormBorderStyle := Ord(bsSizeable);
@@ -7028,9 +7034,7 @@ begin
         dec(Result.Bottom, FFrameMargins.Bottom + FFrameMargins.Top);
         {menubar is not yet allocated, so use SM_CYMENU}
         if Assigned(TCustomForm(LCLObject).Menu) then
-        begin
           dec(Result.Bottom, QtWidgetSet.GetSystemMetrics(SM_CYMENU));
-        end;
         {$ENDIF}
         {$IFDEF DEBUGQTUSEACCURATEFRAME}
         DebugLn('<TQtMainWindow.getClientBounds(',dbgsName(LCLObject),'): ***ERROR*** NEW RESULT=',dbgs(Result));
@@ -7088,6 +7092,7 @@ function TQtMainWindow.getFrameGeometry: TRect;
 {$IFDEF QtUseAccurateFrame}
 var
   ASize, AFrameSize: TSize;
+  X11X, X11Y, X, Y: integer;
 {$ENDIF}
 begin
   Result:=inherited getFrameGeometry;
@@ -7108,6 +7113,20 @@ begin
       {$IFDEF DebugQtUseAccurateFrame}
       DebugLn('<TQtMainWindow.getFrameGeometry ',dbgs(Result),' WS W=',dbgs(Result.Right - Result.Left),' H=',dbgs(Result.Bottom - Result.Top),' SIZE=',dbgs(ASize));
       {$ENDIF}
+    end;
+    if FFormHasInvalidPosition then
+    begin
+      if GetX11WindowPos(QWidget_winID(Widget), X11X, X11Y) then
+      begin
+        X11X -= FFrameMargins.Left;
+        X11Y -= FFrameMargins.Top;
+        X := Result.Left;
+        Y := Result.Top;
+        if (X11X = x) and (X11Y = y) then
+          FFormHasInvalidPosition := False
+        else
+          OffsetRect(Result, X11X - x, X11Y - y);
+      end;
     end;
   end;
   {$ENDIF}
@@ -7328,6 +7347,14 @@ begin
           {$IF DEFINED(QtUseAccurateFrame) AND DEFINED(HASX11)}
           if IsFramedWidget then
           begin
+            {This is Qt bug, so we must take care of it}
+            if GetX11WindowPos(QWidget_winID(Widget), R.Left, R.Top) then
+            begin
+              R.Left := R.Left - FFrameMargins.Left;
+              R.Top := R.Top - FFrameMargins.Top;
+              if (R.Left <> QWidget_x(Widget)) or (R.Top <> QWidget_y(Widget)) then
+                FFormHasInvalidPosition := True;
+            end;
             R := QtWidgetSet.WSFrameMargins;
             if (R.Left = 0) and (R.Top = 0) and (R.Bottom = 0) and (R.Right = 0) then
             begin
