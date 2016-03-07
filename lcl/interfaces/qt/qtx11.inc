@@ -402,6 +402,7 @@ begin
   if X11Window = 0 then
     exit;
 
+  {TODO: compositing wm must provide shadow decorations _KDE_NET_WM_SHADOW, find others}
   WMAtom := XInternAtom(Display,'_NET_FRAME_EXTENTS', True);
   if WMAtom > 0 then
   begin
@@ -533,5 +534,56 @@ begin
     DebugLn('QtLCL error: "'+GetWindowManager+'" wm does not support _NET_REQUEST_FRAME_EXTENTS.');
   end;
 end;
+
+function GetX11SupportedAtoms(AWinID: LongWord; AList: TStrings): boolean;
+var
+  d: PDisplay;
+  ARoot: TWindow;
+  WMAtom: TAtom;
+  typeReturned: TAtom;
+  formatReturned: Integer;
+  nitemsReturned: PtrInt;
+  unused: PtrInt;
+  data: Pointer;
+  ANewData: PAtom;
+begin
+  Result := False;
+  d := QX11Info_display;
+  if d = nil then
+    exit;
+  ARoot := XRootWindow(d, QX11Info_appScreen);
+
+  WMAtom := XInternAtom(d, '_NET_SUPPORTED', True);
+  if WMAtom = 0 then
+  begin
+    DebugLn('ERROR : QtLCL: _NET_SUPPORTED not provided by wm ',GetWindowManager);
+    exit;
+  end;
+
+  data := nil;
+  if XGetWindowProperty(d, ARoot, WMAtom, 0, (65536 div sizeof(LongInt)), False, AnyPropertyType,
+    @typeReturned, @formatReturned, @nitemsReturned,
+    @unused, @data) = Success then
+  begin
+    if (typeReturned = XA_ATOM) and (formatReturned = 32) and
+      (Data <> nil) then
+    begin
+      ANewData := Data;
+      while nitemsReturned > 0 do
+      begin
+        AList.AddObject(XGetAtomName(d, ANewData^),TObject(ANewData^));
+        dec(nItemsReturned);
+        if Result or (nItemsReturned = 0) then
+          break;
+        inc(ANewData);
+      end;
+      Result := True;
+      if nitemsReturned > 0 then
+        XFree(Data);
+      Data := nil;
+    end;
+  end;
+end;
+
 {$ENDIF}
 

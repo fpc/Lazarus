@@ -265,6 +265,7 @@ type
   {force mapping}
   procedure MapX11Window(AWinID: LongWord);
   {$IFDEF QtUseAccurateFrame}
+  function GetX11SupportedAtoms(AWinID: LongWord; AList: TStrings): boolean;
   function GetX11WindowPos(AWinID: LongWord; out ALeft, ATop: integer): boolean;
   {check if wm supports request for frame extents}
   function AskX11_NET_REQUEST_FRAME_EXTENTS(AWinID: LongWord; out AMargins: TRect): boolean;
