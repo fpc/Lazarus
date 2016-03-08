@@ -146,12 +146,12 @@ procedure TCodeCreationDialog.FormKeyPress(Sender: TObject;
 begin
   case Key of
     #27: ModalResult := mrCancel;
-    'p': SectionRadioGroup.ItemIndex := Ord(icsPrivate);
-    'r': SectionRadioGroup.ItemIndex := Ord(icsProtected);
-    'u': SectionRadioGroup.ItemIndex := Ord(icsPublic);
-    's': SectionRadioGroup.ItemIndex := Ord(icsPublished);
-    'l': LocationRadioGroup.ItemIndex := Ord(cclLocal);
-    'c': LocationRadioGroup.ItemIndex := Ord(cclClass);
+    'p': if SectionRadioGroup.Enabled then SectionRadioGroup.ItemIndex := Ord(icsPrivate);
+    'r': if SectionRadioGroup.Enabled then SectionRadioGroup.ItemIndex := Ord(icsProtected);
+    'u': if SectionRadioGroup.Enabled then SectionRadioGroup.ItemIndex := Ord(icsPublic);
+    's': if SectionRadioGroup.Enabled then SectionRadioGroup.ItemIndex := Ord(icsPublished);
+    'l': if LocationRadioGroup.Enabled then LocationRadioGroup.ItemIndex := Ord(cclLocal);
+    'c': if LocationRadioGroup.Enabled then LocationRadioGroup.ItemIndex := Ord(cclClass);
   end;
 end;
 
