@@ -166,29 +166,34 @@ procedure TListFilterEdit.SortAndFilter;
 // Copy data from fOriginalData to fSortedData in sorted order
 var
   Origi, i: Integer;
-  s, FilterLC: string;
+  Capt, FilterLC: string;
   Pass, Done: Boolean;
 begin
   Done:=False;
   fSortedData.Clear;
-  FilterLC := UTF8LowerCase(Filter);
+  FilterLC:=UTF8LowerCase(Filter);
   for Origi:=0 to fOriginalData.Count-1 do begin
-    s:=fOriginalData[Origi];
+    Capt:=fOriginalData[Origi];
+
     // Filter with event handler if there is one.
-    if Assigned(OnFilterItem) then
-      Pass:=OnFilterItem(fOriginalData.Objects[Origi], Done)
+    if Assigned(fOnFilterItemEx) then
+      Pass:=fOnFilterItemEx(Capt, fOriginalData.Objects[Origi], Done)
     else
       Pass:=False;
-    // Filter by item's title text if needed.
+    // Support also the old filter event without a caption.
+    if (not (Pass and Done)) and Assigned(fOnFilterItem) then
+      Pass:=fOnFilterItem(fOriginalData.Objects[Origi], Done);
+
+    // Filter by item's caption text if needed.
     if not (Pass or Done) then
-      Pass:=(FilterLC='') or (Pos(FilterLC,UTF8LowerCase(s))>0);
+      Pass:=(FilterLC='') or (Pos(FilterLC,UTF8LowerCase(Capt))>0);
     if Pass then begin
       i:=fSortedData.Count-1;       // Always sort the data.
       while i>=0 do begin
-        if CompareFNs(s,fSortedData[i])>=0 then break;
+        if CompareFNs(Capt,fSortedData[i])>=0 then break;
         dec(i);
       end;
-      fSortedData.InsertObject(i+1, s, fOriginalData.Objects[Origi]);
+      fSortedData.InsertObject(i+1, Capt, fOriginalData.Objects[Origi]);
     end;
   end;
 end;

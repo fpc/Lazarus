@@ -189,6 +189,7 @@ type
   // Done=False means the data should also be filtered by its title string.
   // Done=True means no other filtering is needed.
   TFilterItemEvent = function (Item: TObject; out Done: Boolean): Boolean of object;
+  TFilterItemExEvent = function (ACaption: string;Item: TObject; out Done: Boolean): Boolean of object;
 
   // Can be used only for items that have a checkbox. Returns true if checked.
   TCheckItemEvent = function (Item: TObject): Boolean of object;
@@ -219,6 +220,7 @@ type
     fIsFirstUpdate: Boolean;
     fSelectedPart: TObject;         // Select this node on next update
     fOnFilterItem: TFilterItemEvent;
+    fOnFilterItemEx: TFilterItemExEvent;
     fOnCheckItem: TCheckItemEvent;
     procedure EditKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure EditChange; override;
@@ -252,6 +254,8 @@ type
   published
     property OnAfterFilter: TNotifyEvent read fOnAfterFilter write fOnAfterFilter;
     property OnFilterItem: TFilterItemEvent read fOnFilterItem write fOnFilterItem;
+      deprecated 'Use OnFilterItemEx with a caption parameter instead.';
+    property OnFilterItemEx: TFilterItemExEvent read fOnFilterItemEx write fOnFilterItemEx;
     property OnCheckItem: TCheckItemEvent read fOnCheckItem write fOnCheckItem;
     property UseFormActivate: Boolean read fUseFormActivate write SetUseFormActivate default False;
     // TEditButton properties.
