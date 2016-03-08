@@ -154,6 +154,7 @@ begin
   else
     EndInd := 0;
   for i := 0 to EndInd do begin
+    // ToDo: Use OnFilterItemEx event.
     Result := Pos(FilterLC,UTF8LowerCase(aData[i]))>0;
     if Result then
       Exit;

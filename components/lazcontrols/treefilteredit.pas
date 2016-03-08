@@ -475,12 +475,16 @@ begin
   FilterLC:=UTF8LowerCase(Filter);
   while Node<>nil do
   begin
-    // Call OnFilterItem handler.
-    if Assigned(OnFilterItem) then
-      Pass:=OnFilterItem(TObject(Node.Data), Done)
+    // Filter with event handler if there is one.
+    if Assigned(fOnFilterItemEx) then
+      Pass:=fOnFilterItemEx(Node.Text, TObject(Node.Data), Done)
     else
       Pass:=False;
-    // Filter by item's title text if needed.
+    // Support also the old filter event without a caption.
+    if (not (Pass and Done)) and Assigned(fOnFilterItem) then
+      Pass:=fOnFilterItem(TObject(Node.Data), Done);
+
+    // Filter by item's caption text if needed.
     if not (Pass or Done) then
       Pass:=(FilterLC='') or (Pos(FilterLC,UTF8LowerCase(Node.Text))>0);
     if Pass and (fFirstPassedNode=Nil) then
