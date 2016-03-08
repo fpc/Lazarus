@@ -1879,6 +1879,7 @@ var
   AWMName: String;
   AShadowRect: TRect;
   AList: TStringList;
+  ALeft, ATop, AWidth, AHeight, ABorder: integer;
   {$ENDIF}
 begin
   if (FWSFrameMargins.Left = 0) and (FWSFrameMargins.Top = 0) or
@@ -1935,6 +1936,21 @@ begin
         AList.Free;
       end;
       *)
+    end;
+
+    if B and QX11Info_isCompositingManagerRunning then
+    begin
+      {TODO: some wm's have different attributes for windows with fixed sizes and modal windows,
+      so we need to query attributes for such windows too.
+      Currently such composited wm's is "Mutter (Muffin)", "Gnome Shell"}
+      // writeln('Current WM=',GetWindowManager);
+      while not GetX11WindowRealized(QWidget_winID(ATempWidget)) do
+        QApplication_syncX();
+      if GetX11WindowAttributes(QWidget_winID(ATempWidget), ALeft, ATop, AWidth, AHeight, ABorder) then
+      begin
+        if (ALeft > 0) and (ATop > 0) then
+          R := Rect(ALeft, ATop, ALeft, ALeft);
+      end;
     end;
     if not B then
     begin

@@ -3945,6 +3945,10 @@ var
   APos: TQtPoint;
   {$IFDEF HASX11}
   ACurrPos: TQtPoint;
+  {$IFDEF QtUseAccurateFrame}
+  //X11Pos: TQtPoint;
+  //ALeft, ATop, ABorder, AWidth, AHeight: integer;
+  {$ENDIF}
   {$ENDIF}
   FrameRect, WindowRect: TRect;
 begin
@@ -3994,6 +3998,53 @@ begin
   Msg.XPos := SmallInt(APos.x - (WindowRect.Left - FrameRect.Left));
   Msg.YPos := SmallInt(APos.y - (WindowRect.Top - FrameRect.Top));
 
+  {$IFDEF QtUseAccurateFrame}
+  // Qt is sometimes mismatched with X11
+  {$IFDEF HASX11}
+  if IsFramedWidget and PointsEqual(FrameRect.TopLeft, WindowRect.TopLeft) then
+  begin
+    // checking code above means that we have mismatch somewhere
+    // in between Qt and X11. Question is who is correct in this case X or Qt.
+    // SlotMove is triggered always after form activation
+    if GetX11WindowRealized(QWidget_winID(Widget)) then
+    begin
+      {$IF DEFINED(DEBUGQTUSEACCURATEFRAME) OR DEFINED(DEBUGQTCHECKMOVESIZE)}
+      DebugLn('WARNING: SlotMove(',dbgsName(LCLObject),') frame and geometry have same values geom=',dbgs(WindowRect),' frame=',dbgs(FrameRect),' MARGINS=',dbgs(FrameMargins),' WS=',dbgs(QtWidgetSet.WSFrameMargins),' InvPos=',dbgs(TQtMainWindow(Self).FFormHasInvalidPosition));
+      {$ENDIF}
+      TQtMainWindow(Self).FFormHasInvalidPosition := True;
+      exit;
+      (*
+      GetX11WindowPos(QWidget_winId(Widget),  X11Pos.x, X11Pos.y);
+
+      if GetX11WindowAttributes(QWidget_winID(Widget), ALeft, ATop, AWidth, AHeight, ABorder) then
+      begin
+        if ALeft = 0 then
+          X11Pos.x -= FFrameMargins.Left;
+        if ATop = 0 then
+          X11Pos.y -= FFrameMargins.Top;
+      end else
+      begin
+        X11Pos.x -= FFrameMargins.Left;
+        X11Pos.y -= FFrameMargins.Top;
+      end;
+
+      if (X11Pos.x = LCLObject.Left) and (X11Pos.y = LCLObject.Top) and
+        ((QWidget_x(Widget) <> X11Pos.x) or (QWidget_y(Widget) <> X11Pos.y)) then
+      begin
+        {$IF DEFINED(DEBUGQTUSEACCURATEFRAME) OR DEFINED(DEBUGQTCHECKMOVESIZE)}
+        DebugLn('1.*error: *** SlotMove(',dbgsName(LCLObject),Format(' calculated pos x %d y %d',[Msg.XPos, Msg.YPos]),' realized=',dbgs(GetX11WindowRealized(QWidget_winId(Widget))));
+        DebugLn(' > ',Format('current LCL x %d y %d Qt x %d y %d X11 x %d y %d CALC x %d y %d',[LCLObject.Left, LCLObject.Top, QWidget_x(Widget), QWidget_y(Widget), X11Pos.x, X11Pos.y, Msg.XPos, Msg.YPos]));
+        DebugLn(' > FrameRect=',dbgs(FrameRect),' WindowRect=',dbgs(WindowRect),' Margins=',dbgs(FFrameMargins));
+        DebugLn('< sending valid values to Qt and LCL ',Format('x %d y %d compositor %s ',[X11Pos.X, X11Pos.y,dbgs(QX11Info_isCompositingManagerRunning)]));
+        {$ENDIF}
+        QWidget_move(Widget, X11Pos.x, X11Pos.y);
+        exit;
+      end;
+      *)
+    end;
+  end;
+  {$ENDIF}
+  {$ENDIF}
   DeliverMessage(Msg);
 end;
 
@@ -7261,9 +7312,11 @@ var
   R: TRect;
   ASize, AFrameSize: TSize;
   {$IFDEF HASX11}
+  ALeft, ATop, ABorder, AWidth, AHeight: integer;
   X11X, X11Y: integer;
   AMoveMsg: TLMMove;
   ASizeMsg: TLMSize;
+  ATempFrame: TRect;
   {$ENDIF}
   {$ENDIF}
   {$IFDEF MSWINDOWS}
@@ -7346,6 +7399,7 @@ begin
       QEventWindowUnblocked: Blocked := False;
       QEventWindowBlocked: Blocked := True;
       {$IF DEFINED(QtUseAccurateFrame) AND DEFINED(HASX11)}
+      (*
       QEventActivationChange:
       begin
         // here we still have wrong x,y from qt
@@ -7370,6 +7424,7 @@ begin
           end;
         end;
       end;
+      *)
       {$ENDIF}
       QEventWindowActivate:
       begin
@@ -7384,15 +7439,34 @@ begin
               // fluxbox
               if (R.Left - QWidget_x(Widget) = FrameMargins.Left) and (R.Top - QWidget_y(Widget) = FrameMargins.Left) then
               begin
-                DebugLn('WARNING: QEventWindowActivate(FALSE) ',GetWindowManager,' wm strange position: ',Format('X11 x %d y %d Qt x %d y %d',[R.Left, R.Top, QWidget_x(Widget), QWidget_y(Widget)]));
+                GetX11WindowAttributes(QWidget_winID(Widget), ALeft, ATop, AWidth, AHeight, ABorder);
+                {$IF DEFINED(DEBUGQTUSEACCURATEFRAME) OR DEFINED(DEBUGQTCHECKMOVESIZE)}
+                DebugLn('WARNING: QEventWindowActivate(FALSE) ',dbgsName(LCLObject),' ',GetWindowManager,' wm strange position: ',Format('X11 x %d y %d Qt x %d y %d X11 attr x %d y %d',[R.Left, R.Top, QWidget_x(Widget), QWidget_y(Widget), ALeft, ATop]));
+                {$ENDIF}
               end else
               begin
-                R.Left := R.Left - FFrameMargins.Left;
-                R.Top := R.Top - FFrameMargins.Top;
+                if GetX11WindowAttributes(QWidget_winID(Widget), ALeft, ATop, AWidth, AHeight, ABorder) then
+                begin
+                  if ALeft = 0 then
+                    R.Left -= FFrameMargins.Left;
+                  if ATop = 0 then
+                    R.Top -= FFrameMargins.Top;
+                end else
+                begin
+                  R.Left -= FFrameMargins.Left;
+                  R.Top -= FFrameMargins.Top;
+                end;
                 if (R.Left <> QWidget_x(Widget)) or (R.Top <> QWidget_y(Widget)) then
                 begin
-                  DebugLn('WARNING: QEventWindowActivate(***TRUE***) ',Format('%s wm invalid form %s position: X11 x %d y %d Qt x %d y %d',[GetWindowManager, dbgsName(LCLObject),R.Left, R.Top, QWidget_x(Widget), QWidget_y(Widget)]));
+                  {$IF DEFINED(DEBUGQTUSEACCURATEFRAME) OR DEFINED(DEBUGQTCHECKMOVESIZE)}
+                  GetX11RectForAtom(QWidget_winID(Widget), '_NET_FRAME_EXTENTS', ATempFrame);
+                  DebugLn('WARNING: QEventWindowActivate(**',dbgsName(LCLObject),'**) ',
+                    Format('%s wm invalid form position: X11 x %d y %d Qt x %d y %d realized %s LCL x %d y %d margins %s x11m %s',
+                    [GetWindowManager, R.Left, R.Top, QWidget_x(Widget), QWidget_y(Widget), dbgs(GetX11WindowRealized(QWidget_winID(Widget))), LCLObject.Left, LCLObject.Top, dbgs(FrameMargins),dbgs(ATempFrame)]));
+                  DebugLn('  Attributes ',Format('x %d y %d w %d h %d border %d x11wob x %d y %d',[ALeft, ATop, AWidth, AHeight, ABorder,R.Left, R.Top]));
+                  {$ENDIF}
                   FFormHasInvalidPosition := True;
+                  QWidget_move(Widget, R.Left, R.Top);
                 end;
               end;
             end;
@@ -7415,7 +7489,7 @@ begin
                 R.Top := (AFrameSize.cy - ASize.cy) - R.Bottom;
                 if (AFrameSize.cy > ASize.cy) and not EqualRect(FFrameMargins, R) then
                 begin
-                  {$IFDEF DebugQtUseAccurateFrame}
+                  {$IF DEFINED(DEBUGQTUSEACCURATEFRAME) OR DEFINED(DEBUGQTCHECKMOVESIZE)}
                   DebugLn('***CHANGE FRAME MARGINS ',dbgsName(LCLObject),' OLD FFFRAME=',dbgs(FFrameMargins),' NEW FFRAME=',dbgs(R));
                   {$ENDIF}
                   // composite wm changes _NET_FRAME_EXTENTS to + or even - for shadows
@@ -7431,7 +7505,7 @@ begin
                   GetX11WindowPos(QWidget_winID(Widget), X11X, X11Y);
                   X11X -= R.Left;
                   X11Y -= R.Top;
-                  {$IFDEF DebugQtUseAccurateFrame}
+                  {$IF DEFINED(DEBUGQTUSEACCURATEFRAME) OR DEFINED(DEBUGQTCHECKMOVESIZE)}
                   DebugLn(Format('  =>> X11 pos x %d y %d',[X11X, X11Y]));
                   {$ENDIF}
 
