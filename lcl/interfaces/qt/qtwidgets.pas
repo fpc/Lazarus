@@ -7363,9 +7363,10 @@ begin
             R := QtWidgetSet.WSFrameMargins;
             if (R.Left = 0) and (R.Top = 0) and (R.Bottom = 0) and (R.Right = 0) then
             begin
-              GetWindowFrameSize(QWidget_winID(Widget), R.Left, R.Top, R.Right, R.Bottom);
+              GetX11RectForAtom(QWidget_winID(Widget),'_NET_FRAME_EXTENTS', R);
               QtWidgetSet.WSFrameMargins := R;
               FrameMargins := R;
+              DebugLn('WARNING: TQtMainWindow.EventFilter('+dbgsName(LCLObject)+') setting widgetset frame margins to '+dbgs(R)+' from form activation !');
             end else
             begin
               if QX11Info_isCompositingManagerRunning then

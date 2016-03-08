@@ -1942,12 +1942,12 @@ begin
       QApplication_syncX();
     end;
 
-    if not B and not GetWindowFrameSize(AID, R.Left, R.Top, R.Right, R.Bottom) then
+    if not B and not GetX11RectForAtom(AID, '_NET_FRAME_EXTENTS', R) then
     begin
       AId := QWidget_winID(ATempWidget);
       I := 0;
       ATicks := GetTickCount;
-      while not GetWindowFrameSize(AID, R.Left, R.Top, R.Right, R.Bottom) do
+      while not GetX11RectForAtom(AID, '_NET_FRAME_EXTENTS', R) do
       begin
         QApplication_syncX();
         QCoreApplication_processEvents;

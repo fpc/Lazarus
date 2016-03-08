@@ -375,76 +375,6 @@ begin
   Result := (AXWinAttr.map_installed > 0) and (AXWinAttr.map_state = 2);
 end;
 
-function GetWindowFrameSize(AWinID: LongWord; out ALeft, ATop, ARight,
-  ABottom: integer): Boolean;
-var
-  Display: PDisplay;
-  X11Window: TWindow;
-  WMAtom: TAtom;
-  typeReturned: TAtom;
-  formatReturned: Integer;
-  nitemsReturned: PtrInt;
-  unused: PtrInt;
-  data: Pointer;
-  ANewData: PUInt32;
-begin
-
-  Result := False;
-  Display := QX11Info_display();
-  ALeft := 0;
-  ATop := 0;
-  ARight := 0;
-  ABottom := 0;
-  if Display = nil then
-    exit;
-
-  X11Window := TWindow(AWinID);
-  if X11Window = 0 then
-    exit;
-
-  {TODO: compositing wm must provide shadow decorations _KDE_NET_WM_SHADOW, find others}
-  WMAtom := XInternAtom(Display,'_NET_FRAME_EXTENTS', True);
-  if WMAtom > 0 then
-  begin
-    data := nil;
-    if XGetWindowProperty(Display, X11Window, WMAtom, 0, 4, False, XA_CARDINAL,
-      @typeReturned, @formatReturned, @nitemsReturned,
-      @unused, @data) = Success then
-    begin
-      if (typeReturned = XA_CARDINAL) and (formatReturned = 32) and
-        (Data <> nil) then
-      begin
-        ANewData := Data;
-        while nitemsReturned > 0 do
-        begin
-          if ALeft = 0 then
-            ALeft := Integer(ANewData^)
-          else
-          if ARight = 0 then
-            ARight := Integer(ANewData^)
-          else
-          if ATop = 0 then
-            ATop := Integer(ANewData^)
-          else
-          if ABottom = 0 then
-            ABottom := Integer(ANewData^);
-          dec(nItemsReturned);
-          if Result or (nItemsReturned = 0) then
-            break;
-          inc(ANewData);
-        end;
-        Result := True;
-        if nitemsReturned > 0 then
-          XFree(Data);
-        Data := nil;
-      end;
-    end;
-  end else
-  begin
-    DebugLn('QtLCL error: "'+GetWindowManager+'" wm does not support _NET_FRAME_EXTENTS (1).');
-  end;
-end;
-
 var
   InternalExtentsAtom: TAtom = 0; {find extents atom}
   InternalExtentsCounter: Integer = 0; {counter for bad wm, eg for blackbox}
@@ -517,7 +447,7 @@ begin
       if XIfEvent(d, @ReturnEvent,
         @propNotifyFrameExtents, TXPointer(@AWinID)) = Success then
       begin
-        Result := GetWindowFrameSize(AWinID, AMargins.Left, AMargins.Top, AMargins.Right, AMargins.Bottom);
+        Result := GetX11RectForAtom(AWinID, '_NET_FRAME_EXTENTS', AMargins);
         if not Result and (InternalExtentsCounter = -BadImplementation) then
         begin
           DebugLn('QtLCL WARNING: "'+GetWindowManager+'" wm bad implementation of _NET_REQUEST_FRAME_EXTENTS.');
