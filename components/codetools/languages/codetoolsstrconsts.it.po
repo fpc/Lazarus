@@ -85,10 +85,6 @@ msgstr "costante carattere fuori dal limite"
 msgid "circle in definitions"
 msgstr "definizione circolare"
 
-#: codetoolsstrconsts.ctsclasscodecreationneedsclassobject
-msgid "Class code creation needs a class or similar object."
-msgstr ""
-
 #: codetoolsstrconsts.ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "era previsto un identificatore di classe"

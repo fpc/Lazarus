@@ -85,10 +85,6 @@ msgstr ""
 msgid "circle in definitions"
 msgstr "hi ha un cercle en les definicions"
 
-#: codetoolsstrconsts.ctsclasscodecreationneedsclassobject
-msgid "Class code creation needs a class or similar object."
-msgstr ""
-
 #: codetoolsstrconsts.ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "s'esperava identificador de classe"

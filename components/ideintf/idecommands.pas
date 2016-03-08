@@ -152,7 +152,7 @@ const
   ecUseUnit                 = ecFirstLazarus + 122;
   ecFindOverloads           = ecFirstLazarus + 123;
   ecFindUsedUnitRefs        = ecFirstLazarus + 124;
-  ecClassCompleteCode       = ecFirstLazarus + 125;
+  ecCompleteCodeInteractive = ecFirstLazarus + 125;
 
   // file menu
   ecNew                     = ecFirstLazarus + 201;
@@ -2007,7 +2007,7 @@ const
     (Value: ecUseUnit;                                Name: 'ecUseUnit'),
     (Value: ecFindOverloads;                          Name: 'ecFindOverloads'),
     (Value: ecFindUsedUnitRefs;                       Name: 'ecFindUsedUnitRefs'),
-    (Value: ecClassCompleteCode;                      Name: 'ecClassCompleteCode'),
+    (Value: ecCompleteCodeInteractive;                Name: 'ecCompleteCodeInteractive'),
 
   // file menu
     (Value: ecNew;                                    Name: 'ecNew'),

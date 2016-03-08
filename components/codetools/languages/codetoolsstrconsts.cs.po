@@ -87,10 +87,6 @@ msgstr "znaková konstanta mimo rozsah"
 msgid "circle in definitions"
 msgstr "zacyklení v definicích"
 
-#: codetoolsstrconsts.ctsclasscodecreationneedsclassobject
-msgid "Class code creation needs a class or similar object."
-msgstr ""
-
 #: codetoolsstrconsts.ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "očekáván třídní identifikátor"

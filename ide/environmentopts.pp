@@ -39,7 +39,7 @@ uses
 {$endif}
   Classes, SysUtils, TypInfo, contnrs, Graphics, Controls, Forms, Dialogs,
   LCLProc, FileProcs, LazFileUtils, LazFileCache, LazConfigStorage,
-  Laz2_XMLCfg, LazUTF8, SourceChanger,
+  Laz2_XMLCfg, LazUTF8, SourceChanger, CodeCompletionTool,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
   ComponentReg, IDEExternToolIntf, MacroDefIntf, DbgIntfDebuggerBase,
@@ -512,8 +512,8 @@ type
     FAlreadyPopulatedRecentFiles : Boolean;
 
     //other recent settings
-    FLastEventMethodSectionPrompt: TInsertClassSectionResult;
-    FLastVarSectionPrompt: TInsertClassSectionResult;
+    FLastEventMethodCCResult: TCodeCreationDlgResult;
+    FLastVariableCCResult: TCodeCreationDlgResult;
 
     // backup
     FBackupInfoProjectFiles: TBackupInfo;
@@ -771,10 +771,10 @@ type
     property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;
 
     // other recent settings
-    property LastEventMethodSectionPrompt: TInsertClassSectionResult
-      read FLastEventMethodSectionPrompt write FLastEventMethodSectionPrompt;
-    property LastVarSectionPrompt: TInsertClassSectionResult
-      read FLastVarSectionPrompt write FLastVarSectionPrompt;
+    property LastEventMethodCCResult: TCodeCreationDlgResult
+      read FLastEventMethodCCResult write FLastEventMethodCCResult;
+    property LastVariableCCResult: TCodeCreationDlgResult
+      read FLastVariableCCResult write FLastVariableCCResult;
 
     // backup
     property BackupInfoProjectFiles: TBackupInfo read FBackupInfoProjectFiles
@@ -1389,8 +1389,9 @@ begin
   FMultipleInstances:=DefaultIDEMultipleInstancesOption;
 
   // other recent settings
-  FLastEventMethodSectionPrompt:=InsertClassSectionToResult[DefaultEventMethodSection];
-  FLastVarSectionPrompt:=InsertClassSectionToResult[DefaultEventMethodSection];
+  FLastEventMethodCCResult.ClassSection:=icsPublic;
+  FLastVariableCCResult.ClassSection:=icsPrivate;
+  FLastVariableCCResult.Location:=cclLocal;
 
   // backup
   with FBackupInfoProjectFiles do begin
@@ -1664,6 +1665,15 @@ procedure TEnvironmentOptions.Load(OnlyDesktop: boolean);
     if fPascalFileExtension=petNone then
       fPascalFileExtension:=petPAS;
   end;
+
+  procedure LoadCCResult(var CCResult: TCodeCreationDlgResult; const Path: string;
+    const DefaultClassSection: TInsertClassSection);
+  begin
+    CCResult.ClassSection:=InsertClassSectionNameToSection(FXMLCfg.GetValue(
+      Path+'/ClassSection',InsertClassSectionNames[DefaultClassSection]));
+    CCResult.Location:=CreateCodeLocationNameToLocation(FXMLCfg.GetValue(
+      Path+'/Location',CreateCodeLocationNames[cclLocal]));
+  end;
   
 var
   Path, CurPath: String;
@@ -1797,12 +1807,8 @@ begin
     FAlreadyPopulatedRecentFiles := FXMLCfg.GetValue(Path+'Recent/AlreadyPopulated', false);
 
     // other recent settings
-    FLastEventMethodSectionPrompt:=InsertClassSectionResultNameToSection(FXMLCfg.GetValue(
-      'Recent/EventMethodSectionPrompt/Value',
-      InsertClassSectionNames[DefaultEventMethodSection]));
-    FLastVarSectionPrompt:=InsertClassSectionResultNameToSection(FXMLCfg.GetValue(
-      'Recent/VarSectionPrompt/Value',
-      InsertClassSectionNames[DefaultEventMethodSection]));
+    LoadCCResult(FLastEventMethodCCResult, Path+'Recent/EventMethodCCResult', icsPublic);
+    LoadCCResult(FLastVariableCCResult, Path+'Recent/VariableCCResult', icsPrivate);
 
     // Add example projects to an empty project list if examples have write access
     if (FRecentProjectFiles.count=0) and (not FAlreadyPopulatedRecentFiles) then begin
@@ -2006,6 +2012,17 @@ begin
 end;
 
 procedure TEnvironmentOptions.Save(OnlyDesktop: boolean);
+  procedure SaveCCResult(const CCResult: TCodeCreationDlgResult; const Path: string;
+    const DefaultClassSection: TInsertClassSection);
+  begin
+    FXMLCfg.SetDeleteValue(Path+'/ClassSection',
+      InsertClassSectionNames[CCResult.ClassSection],
+      InsertClassSectionNames[DefaultClassSection]);
+    FXMLCfg.SetDeleteValue(Path+'/Location',
+      CreateCodeLocationNames[CCResult.Location],
+      CreateCodeLocationNames[cclLocal]);
+  end;
+
 var
   Path, CurPath, NodeName: String;
   i, j: Integer;
@@ -2124,12 +2141,8 @@ begin
     FXMLCfg.SetDeleteValue(Path+'Recent/AlreadyPopulated', FAlreadyPopulatedRecentFiles, false);
 
     // other recent settings
-    FXMLCfg.SetDeleteValue('Recent/EventMethodSectionPrompt/Value',
-      InsertClassSectionResultNames[FLastEventMethodSectionPrompt],
-      InsertClassSectionResultNames[InsertClassSectionToResult[DefaultEventMethodSection]]);
-    FXMLCfg.SetDeleteValue('Recent/VarSectionPrompt/Value',
-      InsertClassSectionResultNames[FLastVarSectionPrompt],
-      InsertClassSectionResultNames[InsertClassSectionToResult[DefaultEventMethodSection]]);
+    SaveCCResult(FLastEventMethodCCResult, Path+'Recent/EventMethodCCResult', icsPublic);
+    SaveCCResult(FLastVariableCCResult, Path+'Recent/VariableCCResult', icsPrivate);
 
     // external tools
     fExternalUserTools.Save(FConfigStore,Path+'ExternalTools/');

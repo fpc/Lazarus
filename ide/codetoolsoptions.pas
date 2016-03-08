@@ -83,8 +83,6 @@ type
     FForwardProcBodyInsertPolicy: TForwardProcBodyInsertPolicy;
     FKeepForwardProcOrder: boolean;
     FMethodInsertPolicy: TMethodInsertPolicy;
-    FEventMethodSection: TInsertClassSection;
-    FVarSection: TInsertClassSection;
     FKeyWordPolicy : TWordPolicy;
     FIdentifierPolicy: TWordPolicy;
     FUpdateAllMethodSignatures: boolean;
@@ -192,10 +190,6 @@ type
       read FClassImplementationComments write FClassImplementationComments;
     property MethodInsertPolicy: TMethodInsertPolicy
       read FMethodInsertPolicy write FMethodInsertPolicy;
-    property EventMethodSection: TInsertClassSection
-      read FEventMethodSection write FEventMethodSection;
-    property VarSection: TInsertClassSection
-      read FVarSection write FVarSection;
     property KeyWordPolicy : TWordPolicy
       read FKeyWordPolicy write FKeyWordPolicy;
     property IdentifierPolicy: TWordPolicy
@@ -474,12 +468,6 @@ begin
     FMethodInsertPolicy:=MethodInsertPolicyNameToPolicy(XMLConfig.GetValue(
       'CodeToolsOptions/MethodInsertPolicy/Value',
       MethodInsertPolicyNames[mipClassOrder]));
-    FEventMethodSection:=InsertClassSectionNameToSection(XMLConfig.GetValue(
-      'CodeToolsOptions/EventMethodSection/Value',
-      InsertClassSectionNames[DefaultEventMethodSection]), DefaultEventMethodSection);
-    FVarSection:=InsertClassSectionNameToSection(XMLConfig.GetValue(
-      'CodeToolsOptions/VarSection/Value',
-      InsertClassSectionNames[DefaultEventMethodSection]), DefaultEventMethodSection);
     FKeyWordPolicy:=WordPolicyNameToPolicy(XMLConfig.GetValue(
       'CodeToolsOptions/KeyWordPolicy/Value',
       WordPolicyNames[wpLowerCase]));
@@ -640,12 +628,6 @@ begin
     XMLConfig.SetDeleteValue('CodeToolsOptions/MethodInsertPolicy/Value',
       MethodInsertPolicyNames[FMethodInsertPolicy],
       MethodInsertPolicyNames[mipClassOrder]);
-    XMLConfig.SetDeleteValue('CodeToolsOptions/EventMethodSection/Value',
-      InsertClassSectionNames[FEventMethodSection],
-      InsertClassSectionNames[DefaultEventMethodSection]);
-    XMLConfig.SetDeleteValue('CodeToolsOptions/VarSection/Value',
-      InsertClassSectionNames[FVarSection],
-      InsertClassSectionNames[DefaultEventMethodSection]);
     XMLConfig.SetDeleteValue('CodeToolsOptions/KeyWordPolicy/Value',
       WordPolicyNames[FKeyWordPolicy],
       WordPolicyNames[wpLowerCase]);
@@ -816,8 +798,6 @@ begin
     FClassHeaderComments:=CodeToolsOpts.ClassHeaderComments;
     FClassImplementationComments:=CodeToolsOpts.ClassImplementationComments;
     FMethodInsertPolicy:=CodeToolsOpts.FMethodInsertPolicy;
-    FEventMethodSection:=CodeToolsOpts.FEventMethodSection;
-    FVarSection:=CodeToolsOpts.FVarSection;
     FKeyWordPolicy:=CodeToolsOpts.FKeyWordPolicy;
     FIdentifierPolicy:=CodeToolsOpts.FIdentifierPolicy;
     FDoNotSplitLineInFront:=CodeToolsOpts.FDoNotSplitLineInFront;
@@ -880,8 +860,6 @@ begin
   FClassHeaderComments:=true;
   FClassImplementationComments:=true;
   FMethodInsertPolicy:=mipClassOrder;
-  FEventMethodSection:=DefaultEventMethodSection;
-  FVarSection:=DefaultEventMethodSection;
   FKeyWordPolicy:=wpLowerCase;
   FIdentifierPolicy:=wpNone;
   FDoNotSplitLineInFront:=DefaultDoNotSplitLineInFront;
@@ -963,8 +941,6 @@ begin
     and (FClassHeaderComments=CodeToolsOpts.ClassHeaderComments)
     and (FClassImplementationComments=CodeToolsOpts.ClassImplementationComments)
     and (FMethodInsertPolicy=CodeToolsOpts.FMethodInsertPolicy)
-    and (FEventMethodSection=CodeToolsOpts.FEventMethodSection)
-    and (FVarSection=CodeToolsOpts.FVarSection)
     and (FKeyWordPolicy=CodeToolsOpts.FKeyWordPolicy)
     and (FIdentifierPolicy=CodeToolsOpts.FIdentifierPolicy)
     and (FDoNotSplitLineInFront=CodeToolsOpts.FDoNotSplitLineInFront)
@@ -1087,8 +1063,6 @@ begin
     Beauty.ClassHeaderComments:=ClassHeaderComments;
     Beauty.ClassImplementationComments:=ClassImplementationComments;
     Beauty.MethodInsertPolicy:=MethodInsertPolicy;
-    Beauty.EventMethodSection:=EventMethodSection;
-    Beauty.VarSection:=VarSection;
     Beauty.KeyWordPolicy:=KeyWordPolicy;
     Beauty.IdentifierPolicy:=IdentifierPolicy;
     Beauty.SetupWordPolicyExceptions(WordPolicyExceptions);

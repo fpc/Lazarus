@@ -61,7 +61,7 @@ uses
   IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, IDEDialogs, MenuIntf,
   ProjectIntf, PackageIntf, CompOptsIntf,
   LazarusIDEStrConsts,
-  etFPCMsgParser, AbstractsMethodsDlg, QFInitLocalVarDlg, CodeCompletionTool;
+  etFPCMsgParser, AbstractsMethodsDlg, QFInitLocalVarDlg;
 
 type
 
@@ -876,7 +876,7 @@ begin
   if Code=nil then exit;
 
   if not CodeToolBoss.CreateVariableForIdentifier(Code,Msg.Column,Msg.Line,-1,
-             NewCode,NewX,NewY,NewTopLine,ccLocal)
+             NewCode,NewX,NewY,NewTopLine,False)
   then begin
     LazarusIDE.DoJumpToCodeToolBossError;
     exit;

@@ -53,7 +53,7 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 15
-    Top = 224
+    Top = 166
     Width = 95
     Caption = 'TemplateFileLabel'
     ParentColor = False
@@ -121,43 +121,16 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     Style = csDropDownList
     TabOrder = 2
   end
-  object EventMethodSectionLabel: TLabel
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = EventMethodSectionComboBox
-    AnchorSideTop.Side = asrCenter
-    AnchorSideRight.Control = EventMethodSectionComboBox
-    Left = 6
-    Height = 15
-    Top = 166
-    Width = 138
-    BorderSpacing.Around = 6
-    Caption = 'EventMethodSectionLabel'
-    ParentColor = False
-  end
-  object EventMethodSectionComboBox: TComboBox
-    AnchorSideLeft.Control = EventMethodSectionLabel
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = GroupLocalVariablesCheckBox
-    AnchorSideTop.Side = asrBottom
-    Left = 150
-    Height = 23
-    Top = 162
-    Width = 170
-    BorderSpacing.Top = 6
-    ItemHeight = 15
-    Style = csDropDownList
-    TabOrder = 6
-  end
   object TemplateFileEdit: TFileNameEdit
     AnchorSideLeft.Control = TemplateFileLabel
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = VarSectionComboBox
+    AnchorSideTop.Control = GroupLocalVariablesCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 107
     Height = 23
-    Top = 220
+    Top = 162
     Width = 453
     FilterIndex = 0
     HideDirectories = False
@@ -168,34 +141,7 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     MaxLength = 0
-    TabOrder = 7
+    TabOrder = 6
     Text = 'TemplateFileEdit'
-  end
-  object VarSectionLabel: TLabel
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = VarSectionComboBox
-    AnchorSideTop.Side = asrCenter
-    AnchorSideRight.Control = VarSectionComboBox
-    Left = 6
-    Height = 15
-    Top = 195
-    Width = 83
-    BorderSpacing.Around = 6
-    Caption = 'VarSectionLabel'
-    ParentColor = False
-  end
-  object VarSectionComboBox: TComboBox
-    AnchorSideLeft.Control = VarSectionLabel
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = EventMethodSectionComboBox
-    AnchorSideTop.Side = asrBottom
-    Left = 95
-    Height = 23
-    Top = 191
-    Width = 170
-    BorderSpacing.Top = 6
-    ItemHeight = 15
-    Style = csDropDownList
-    TabOrder = 8
   end
 end

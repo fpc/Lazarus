@@ -87,10 +87,6 @@ msgstr "a karakterkonstans a tartományon kívülre esik"
 msgid "circle in definitions"
 msgstr "körkörös definíció"
 
-#: codetoolsstrconsts.ctsclasscodecreationneedsclassobject
-msgid "Class code creation needs a class or similar object."
-msgstr ""
-
 #: codetoolsstrconsts.ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "osztályazonosító az elvárt"

@@ -80,10 +80,6 @@ msgstr "merkkivakio sallitun alueen ulkopuolella"
 msgid "circle in definitions"
 msgstr "kehäriippuvuus määrityksissä"
 
-#: codetoolsstrconsts.ctsclasscodecreationneedsclassobject
-msgid "Class code creation needs a class or similar object."
-msgstr ""
-
 #: codetoolsstrconsts.ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "odotettiin luokan tunnistetta"

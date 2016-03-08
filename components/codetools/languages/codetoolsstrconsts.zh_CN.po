@@ -88,10 +88,6 @@ msgstr ""
 msgid "circle in definitions"
 msgstr "循环定义"
 
-#: codetoolsstrconsts.ctsclasscodecreationneedsclassobject
-msgid "Class code creation needs a class or similar object."
-msgstr ""
-
 #: codetoolsstrconsts.ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "预期的类标识符未出现"

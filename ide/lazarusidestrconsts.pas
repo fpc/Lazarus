@@ -3108,8 +3108,8 @@ resourcestring
 
   // codetools
   srkmecWordCompletion            = 'Word Completion';
-  lisMenuCompleteCode             = 'Complete Code (local)';
-  lisMenuClassCompleteCode        = 'Complete Code (class)';
+  lisMenuCompleteCode             = 'Complete Code';
+  lisMenuCompleteCodeInteractive  = 'Complete Code (with dialog)';
   lisUseUnit                      = 'Add Unit to Uses Section';
   lisMenuUseUnit                  = 'Add Unit to Uses Section ...';
   srkmecShowCodeContext           = 'Show Code Context';
@@ -3662,9 +3662,9 @@ resourcestring
   lisTheApplicationBundleWasCreatedFor = 'The Application Bundle was created for "%s"';
 
   //codetools ChooseClassSectionDlg
-  lisChooseClassSectionDlgCaption = 'Insert new field to section';
-  lisEventMethodSectionLabel = 'Insert new event methods to section';
-  lisVarSectionLabel = 'Insert new object variables to section';
+  lisCodeCreationDialogCaption = 'Code creation options';
+  lisCodeCreationDialogLocation = 'Location';
+  lisCodeCreationDialogClassSection = 'Class section';
 
   // diff dialog
   lisDiffDlgFile1 = 'File1';

@@ -66,7 +66,7 @@ uses
   // CodeTools
   FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
   CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists, CodeTree,
-  StdCodeTools, ChooseClassSectionDlg, CodeCompletionTool,
+  StdCodeTools, CodeCreationDlg,
   // LazUtils
   // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
   FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazUTF8Classes, UTF8Process,
@@ -265,8 +265,7 @@ type
     procedure mnuSourceToggleCommentClicked(Sender: TObject);
     procedure mnuSourceEncloseBlockClicked(Sender: TObject);
     procedure mnuSourceEncloseInIFDEFClicked(Sender: TObject);
-    procedure mnuSourceCompleteCodeClicked(Sender: TObject);
-    procedure mnuSourceClassCompleteCodeClicked(Sender: TObject);
+    procedure mnuSourceCompleteCodeInteractiveClicked(Sender: TObject);
     procedure mnuSourceUseUnitClicked(Sender: TObject);
     procedure mnuSourceSyntaxCheckClicked(Sender: TObject);
     procedure mnuSourceGuessUnclosedBlockClicked(Sender: TObject);
@@ -901,7 +900,7 @@ type
     function DoFindOverloads: TModalResult;
     function DoInitIdentCompletion(JumpToError: boolean): boolean;
     function DoShowCodeContext(JumpToError: boolean): boolean;
-    procedure DoCompleteCodeAtCursor(Location: TCreateCodeLocation);
+    procedure DoCompleteCodeAtCursor(Interactive: Boolean);
     procedure DoExtractProcFromSelection;
     function DoCheckSyntax: TModalResult;
     procedure DoGoToPascalBlockOtherEnd;
@@ -2649,8 +2648,7 @@ begin
     itmSourceToggleComment.OnClick:=@mnuSourceToggleCommentClicked;
     itmSourceEncloseBlock.OnClick:=@mnuSourceEncloseBlockClicked;
     itmSourceEncloseInIFDEF.OnClick:=@mnuSourceEncloseInIFDEFClicked;
-    itmSourceCompleteCode.OnClick:=@mnuSourceCompleteCodeClicked;
-    itmSourceClassCompleteCode.OnClick:=@mnuSourceClassCompleteCodeClicked;
+    itmSourceCompleteCodeInteractive.OnClick:=@mnuSourceCompleteCodeInteractiveClicked;
     itmSourceUseUnit.OnClick:=@mnuSourceUseUnitClicked;
     // CodeTool Checks
     itmSourceSyntaxCheck.OnClick := @mnuSourceSyntaxCheckClicked;
@@ -3273,8 +3271,8 @@ begin
   ecFindBlockOtherEnd:        DoGoToPascalBlockOtherEnd;
   ecFindBlockStart:           DoGoToPascalBlockStart;
   ecGotoIncludeDirective:     DoGotoIncludeDirective;
-  ecCompleteCode:             DoCompleteCodeAtCursor(ccLocal);
-  ecClassCompleteCode:        DoCompleteCodeAtCursor(ccClass);
+  ecCompleteCode:             DoCompleteCodeAtCursor(False);
+  ecCompleteCodeInteractive:  DoCompleteCodeAtCursor(True);
   ecExtractProc:              DoExtractProcFromSelection;
   // user used shortcut/menu item to show the window, so focusing is ok.
   ecToggleMessages:           DoShowMessagesView;
@@ -4213,11 +4211,6 @@ end;
 procedure TMainIDE.mnuShowExecutionPointClicked(Sender: TObject);
 begin
   DebugBoss.DoShowExecutionPoint;
-end;
-
-procedure TMainIDE.mnuSourceClassCompleteCodeClicked(Sender: TObject);
-begin
-  DoCompleteCodeAtCursor(ccClass);
 end;
 
 procedure TMainIDE.mnuStepIntoProjectClicked(Sender: TObject);
@@ -10337,7 +10330,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.DoCompleteCodeAtCursor(Location: TCreateCodeLocation);
+procedure TMainIDE.DoCompleteCodeAtCursor(Interactive: Boolean);
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -10358,7 +10351,7 @@ begin
       ActiveSrcEdit.EditorComponent.CaretX,
       ActiveSrcEdit.EditorComponent.CaretY,
       ActiveSrcEdit.EditorComponent.TopLine,
-      NewSource,NewX,NewY,NewTopLine, Location);
+      NewSource,NewX,NewY,NewTopLine, Interactive);
     if (CodeToolBoss.ErrorMessage='')
     and (CodeToolBoss.SourceChangeCache.BuffersToModifyCount=0) then
       CodeToolBoss.SetError(nil,0,0,'there is no completion for this code');
@@ -12969,9 +12962,9 @@ begin
   DoSourceEditorCommand(ecInsertCVSSource);
 end;
 
-procedure TMainIDE.mnuSourceCompleteCodeClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceCompleteCodeInteractiveClicked(Sender: TObject);
 begin
-  DoCompleteCodeAtCursor(ccLocal);
+  DoCompleteCodeAtCursor(True);
 end;
 
 procedure TMainIDE.mnuSourceUseUnitClicked(Sender: TObject);

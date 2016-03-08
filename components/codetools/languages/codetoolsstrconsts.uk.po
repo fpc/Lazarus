@@ -88,10 +88,6 @@ msgstr "символьна константа поза допустимими м
 msgid "circle in definitions"
 msgstr "цикл у визначеннях"
 
-#: codetoolsstrconsts.ctsclasscodecreationneedsclassobject
-msgid "Class code creation needs a class or similar object."
-msgstr ""
-
 #: codetoolsstrconsts.ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "очікується ідентифікатор класу"

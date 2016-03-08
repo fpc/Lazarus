@@ -556,10 +556,10 @@ type
     //             (local) var assignment completion, event assignment completion
     function CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
           out NewCode: TCodeBuffer;
-          out NewX, NewY, NewTopLine: integer;Location: TCreateCodeLocation): boolean;
+          out NewX, NewY, NewTopLine: integer;Interactive: Boolean): boolean;
     function CreateVariableForIdentifier(Code: TCodeBuffer; X,Y,TopLine: integer;
           out NewCode: TCodeBuffer;
-          out NewX, NewY, NewTopLine: integer; Location: TCreateCodeLocation): boolean;
+          out NewX, NewY, NewTopLine: integer; Interactive: Boolean): boolean;
     function AddMethods(Code: TCodeBuffer; X,Y, TopLine: integer;
           ListOfPCodeXYPosition: TFPList;
           const VirtualToOverride: boolean;
@@ -4094,7 +4094,7 @@ end;
 
 function TCodeToolManager.CompleteCode(Code: TCodeBuffer; X, Y,
   TopLine: integer; out NewCode: TCodeBuffer; out NewX, NewY,
-  NewTopLine: integer; Location: TCreateCodeLocation): boolean;
+  NewTopLine: integer; Interactive: Boolean): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;
@@ -4113,7 +4113,7 @@ begin
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.CompleteCode(CursorPos,TopLine,
-      NewPos,NewTopLine,SourceChangeCache,Location);
+      NewPos,NewTopLine,SourceChangeCache,Interactive);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
@@ -4126,7 +4126,7 @@ end;
 
 function TCodeToolManager.CreateVariableForIdentifier(Code: TCodeBuffer; X, Y,
   TopLine: integer; out NewCode: TCodeBuffer; out NewX, NewY,
-  NewTopLine: integer; Location: TCreateCodeLocation): boolean;
+  NewTopLine: integer; Interactive: Boolean): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;
@@ -4141,7 +4141,7 @@ begin
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.CreateVariableForIdentifier(CursorPos,TopLine,
-      NewPos,NewTopLine,SourceChangeCache,Location);
+      NewPos,NewTopLine,SourceChangeCache,Interactive);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;

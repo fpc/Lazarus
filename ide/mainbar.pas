@@ -203,8 +203,7 @@ type
         itmSourceToggleComment: TIDEMenuCommand;
         itmSourceEncloseBlock: TIDEMenuCommand;
         itmSourceEncloseInIFDEF: TIDEMenuCommand;
-        itmSourceCompleteCode: TIDEMenuCommand;
-        itmSourceClassCompleteCode: TIDEMenuCommand;
+        itmSourceCompleteCodeInteractive: TIDEMenuCommand;
         itmSourceUseUnit: TIDEMenuCommand;
       //itmSourceCodeToolChecks: TIDEMenuSection;
         itmSourceSyntaxCheck: TIDEMenuCommand;

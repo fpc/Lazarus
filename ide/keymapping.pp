@@ -601,7 +601,7 @@ begin
     // codetools
     ecWordCompletion          : Result:= srkmecWordCompletion;
     ecCompleteCode            : Result:= lisMenuCompleteCode;
-    ecClassCompleteCode       : Result:= lisMenuClassCompleteCode;
+    ecCompleteCodeInteractive : Result:= lisMenuCompleteCodeInteractive;
     ecIdentCompletion         : Result:= dlgedidcomlet;
     ecShowCodeContext         : Result:= srkmecShowCodeContext;
     ecExtractProc             : Result:= srkmecExtractProc;
@@ -1134,7 +1134,7 @@ begin
   ecAutoCompletion:      SetSingle(VK_J,[ssCtrl]);
   ecWordCompletion:      SetSingle(VK_W,[ssCtrl]);
   ecCompleteCode:        SetSingle(VK_C,[ssCtrl,ssShift]);
-  ecClassCompleteCode:   SetSingle(VK_X,[ssCtrl,ssShift]);
+  ecCompleteCodeInteractive: SetSingle(VK_X,[ssCtrl,ssShift]);
   ecIdentCompletion:     SetSingle(VK_SPACE,[ssCtrl]);
   ecShowCodeContext:     SetSingle(VK_SPACE,[ssCtrl,ssShift]);
   ecExtractProc:         SetSingle(VK_UNKNOWN,[]);
@@ -1575,7 +1575,7 @@ begin
   ecAutoCompletion:      SetSingle(VK_J,[ssCtrl]);
   ecWordCompletion:      SetSingle(VK_W,[ssShift,ssCtrl]);
   ecCompleteCode:        SetSingle(VK_C,[ssShift,ssCtrl]);
-  ecClassCompleteCode:   SetSingle(VK_X,[ssCtrl,ssShift]);
+  ecCompleteCodeInteractive: SetSingle(VK_X,[ssCtrl,ssShift]);
   ecIdentCompletion:     SetSingle(VK_UNKNOWN,[]);
   ecShowCodeContext:     SetSingle(VK_SPACE,[ssShift,ssCtrl]);
   ecExtractProc:         SetSingle(VK_UNKNOWN,[]);
@@ -2195,7 +2195,7 @@ begin
   ecAutoCompletion:      SetSingle(VK_J,[ssMeta]);
   ecWordCompletion:      SetSingle(VK_SPACE,[ssCtrl,ssAlt]);
   ecCompleteCode:        SetSingle(VK_C,[ssCtrl,ssShift]);
-  ecClassCompleteCode:   SetSingle(VK_X,[ssCtrl,ssShift]);
+  ecCompleteCodeInteractive: SetSingle(VK_X,[ssCtrl,ssShift]);
   ecIdentCompletion:     SetSingle(VK_SPACE,[ssCtrl]);
   ecShowCodeContext:     SetSingle(VK_SPACE,[ssCtrl,ssShift]);
   ecExtractProc:         SetSingle(VK_UNKNOWN,[]);
@@ -2800,7 +2800,7 @@ begin
   AddDefault(C, 'Code template completion', srkmecAutoCompletion, ecAutoCompletion);
   AddDefault(C, 'Word completion', srkmecWordCompletion, ecWordCompletion);
   AddDefault(C, 'Complete code', lisMenuCompleteCode, ecCompleteCode);
-  AddDefault(C, 'Class complete code', lisMenuClassCompleteCode, ecClassCompleteCode);
+  AddDefault(C, 'Complete code (with dialog)', lisMenuCompleteCodeInteractive, ecCompleteCodeInteractive);
   AddDefault(C, 'Identifier completion', dlgEdIdComlet, ecIdentCompletion);
   AddDefault(C, 'Rename identifier', srkmecRenameIdentifier, ecRenameIdentifier);
   AddDefault(C, 'Find identifier references', srkmecFindIdentifierRefs, ecFindIdentifierRefs);

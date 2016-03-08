@@ -92,10 +92,6 @@ msgstr "קבוע תו מחוץ לתחום"
 msgid "circle in definitions"
 msgstr "מעגליות בהגדרות"
 
-#: codetoolsstrconsts.ctsclasscodecreationneedsclassobject
-msgid "Class code creation needs a class or similar object."
-msgstr ""
-
 #: codetoolsstrconsts.ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "צפוי מזהה מחלקה"
