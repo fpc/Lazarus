@@ -7345,6 +7345,32 @@ begin
       end;
       QEventWindowUnblocked: Blocked := False;
       QEventWindowBlocked: Blocked := True;
+      {$IF DEFINED(QtUseAccurateFrame) AND DEFINED(HASX11)}
+      QEventActivationChange:
+      begin
+        // here we still have wrong x,y from qt
+        if IsFramedWidget and not FFormHasInvalidPosition then
+        begin
+          {This is Qt bug, so we must take care of it}
+          if GetX11WindowPos(QWidget_winID(Widget), R.Left, R.Top) then
+          begin
+            if (R.Left - QWidget_x(Widget) = FrameMargins.Left) and (R.Top - QWidget_y(Widget) = FrameMargins.Left) then
+            begin
+              DebugLn('WARNING: QEventActivationChange(FALSE) ',GetWindowManager,' wm strange position: ',Format('X11 x %d y %d Qt x %d y %d',[R.Left, R.Top, QWidget_x(Widget), QWidget_y(Widget)]));
+            end else
+            begin
+              R.Left := R.Left - FFrameMargins.Left;
+              R.Top := R.Top - FFrameMargins.Top;
+              if (R.Left <> QWidget_x(Widget)) or (R.Top <> QWidget_y(Widget)) then
+              begin
+                DebugLn('WARNING: QEventActivationChange(*TRUE*) ',GetWindowManager,' wm strange position: ',Format('X11 x %d y %d Qt x %d y %d',[R.Left, R.Top, QWidget_x(Widget), QWidget_y(Widget)]));
+                FFormHasInvalidPosition := True;
+              end;
+            end;
+          end;
+        end;
+      end;
+      {$ENDIF}
       QEventWindowActivate:
       begin
         if not IsMDIChild then
@@ -7355,10 +7381,20 @@ begin
             {This is Qt bug, so we must take care of it}
             if GetX11WindowPos(QWidget_winID(Widget), R.Left, R.Top) then
             begin
-              R.Left := R.Left - FFrameMargins.Left;
-              R.Top := R.Top - FFrameMargins.Top;
-              if (R.Left <> QWidget_x(Widget)) or (R.Top <> QWidget_y(Widget)) then
-                FFormHasInvalidPosition := True;
+              // fluxbox
+              if (R.Left - QWidget_x(Widget) = FrameMargins.Left) and (R.Top - QWidget_y(Widget) = FrameMargins.Left) then
+              begin
+                DebugLn('WARNING: QEventWindowActivate(FALSE) ',GetWindowManager,' wm strange position: ',Format('X11 x %d y %d Qt x %d y %d',[R.Left, R.Top, QWidget_x(Widget), QWidget_y(Widget)]));
+              end else
+              begin
+                R.Left := R.Left - FFrameMargins.Left;
+                R.Top := R.Top - FFrameMargins.Top;
+                if (R.Left <> QWidget_x(Widget)) or (R.Top <> QWidget_y(Widget)) then
+                begin
+                  DebugLn('WARNING: QEventWindowActivate(***TRUE***) ',Format('%s wm invalid form %s position: X11 x %d y %d Qt x %d y %d',[GetWindowManager, dbgsName(LCLObject),R.Left, R.Top, QWidget_x(Widget), QWidget_y(Widget)]));
+                  FFormHasInvalidPosition := True;
+                end;
+              end;
             end;
             R := QtWidgetSet.WSFrameMargins;
             if (R.Left = 0) and (R.Top = 0) and (R.Bottom = 0) and (R.Right = 0) then
