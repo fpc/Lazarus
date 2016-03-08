@@ -367,6 +367,30 @@ begin
   Result := (AXWinAttr.map_installed > 0) and (AXWinAttr.map_state = 2);
 end;
 
+function GetX11WindowAttributes(AWinID: LongWord; out ALeft, ATop, ABorder, AWidth, AHeight: integer): boolean;
+var
+  d: PDisplay;
+  Attr: TXWindowAttributes;
+begin
+  Result := False;
+  d := QX11Info_display;
+  ALeft := MAXINT;
+  ATop := MAXINT;
+  ABorder := MAXINT;
+  AWidth := MAXINT;
+  AHeight := MAXINT;
+  XGetWindowAttributes(d, TWindow(AWinID), @Attr);
+  Result := (Attr.map_installed > 0) and (Attr.map_state = 2);
+  if Result then
+  begin
+    ALeft := Attr.x;
+    ATop := Attr.y;
+    ABorder := Attr.border_width;
+    AWidth := Attr.width;
+    AHeight := Attr.height;
+  end;
+end;
+
 function GetX11WindowPos(AWinID: LongWord; out ALeft, ATop: integer): boolean;
 var
   D: PDisplay;
