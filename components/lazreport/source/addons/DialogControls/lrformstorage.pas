@@ -35,7 +35,7 @@ unit lrFormStorage;
 interface
 
 uses
-  Classes, SysUtils, LR_Class, Graphics, Forms;
+  Classes, SysUtils, LazUTF8, LazFileUtils, LR_Class, Graphics, Forms;
 
 type
 
