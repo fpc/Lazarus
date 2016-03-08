@@ -7,21 +7,20 @@ object ChooseClassSectionDialog: TChooseClassSectionDialog
   Caption = 'ChooseClassSectionDialog'
   ClientHeight = 213
   ClientWidth = 304
-  Color = clBtnFace
   KeyPreview = True
   OnKeyPress = FormKeyPress
   Position = poScreenCenter
   LCLVersion = '1.7'
   object SectionsListBox: TListBox
-    Left = 10
-    Height = 129
-    Top = 34
-    Width = 284
+    Left = 6
+    Height = 140
+    Top = 27
+    Width = 292
     Align = alClient
-    BorderSpacing.Left = 10
-    BorderSpacing.Top = 10
-    BorderSpacing.Right = 10
-    BorderSpacing.Bottom = 10
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
     ItemHeight = 0
     OnDblClick = SectionsListBoxDblClick
     OnKeyPress = SectionsListBoxKeyPress
@@ -45,18 +44,15 @@ object ChooseClassSectionDialog: TChooseClassSectionDialog
   end
   object NewIdentLabel: TLabel
     Left = 10
-    Height = 14
-    Top = 10
+    Height = 15
+    Top = 6
     Width = 284
     Align = alTop
     BorderSpacing.Left = 10
-    BorderSpacing.Top = 10
+    BorderSpacing.Top = 6
     BorderSpacing.Right = 10
     Caption = 'NewIdentLabel'
-    Font.Height = -11
-    Font.Name = 'Courier New'
     ParentColor = False
-    ParentFont = False
     WordWrap = True
   end
 end

@@ -50,7 +50,7 @@ type
 
   end;
 
-function ChooseClassSectionDialog(const ACaption, ANewIdent: string; ADefault: TInsertClassSectionResult;
+function ChooseClassSectionDialog(const ANewIdent: string; ADefault: TInsertClassSectionResult;
   out Section: TInsertClassSectionResult): Boolean;
 function ShowEventMethodSectionDialog(const ANewIdent: string; out Section: TInsertClassSectionResult): Boolean;
 function ShowVarSectionDialog(const ANewIdent: string; out Section: TInsertClassSectionResult): Boolean;
@@ -59,14 +59,14 @@ implementation
 
 {$R *.lfm}
 
-function ChooseClassSectionDialog(const ACaption, ANewIdent: string; ADefault: TInsertClassSectionResult;
+function ChooseClassSectionDialog(const ANewIdent: string; ADefault: TInsertClassSectionResult;
   out Section: TInsertClassSectionResult): Boolean;
 var
   Dlg: TChooseClassSectionDialog;
 begin
   Dlg := TChooseClassSectionDialog.Create(Application);
   try
-    Dlg.Caption := ACaption;
+    Dlg.Caption := lisChooseClassSectionDlgCaption;
     if ANewIdent<>'' then
       Dlg.NewIdentLabel.Caption := ANewIdent
     else
@@ -89,7 +89,7 @@ end;
 function ShowEventMethodSectionDialog(const ANewIdent: string; out
   Section: TInsertClassSectionResult): Boolean;
 begin
-  Result := ChooseClassSectionDialog(lisChooseClassSectionDlgForMethodCaption,
+  Result := ChooseClassSectionDialog(
     ANewIdent, EnvironmentOptions.LastEventMethodSectionPrompt, Section);
   if Result then
     EnvironmentOptions.LastEventMethodSectionPrompt := Section;
@@ -98,7 +98,7 @@ end;
 function ShowVarSectionDialog(const ANewIdent: string; out
   Section: TInsertClassSectionResult): Boolean;
 begin
-  Result := ChooseClassSectionDialog(lisChooseClassSectionDlgForVariableCaption,
+  Result := ChooseClassSectionDialog(
     ANewIdent, EnvironmentOptions.LastVarSectionPrompt, Section);
   if Result then
     EnvironmentOptions.LastVarSectionPrompt := Section;

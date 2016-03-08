@@ -3662,8 +3662,7 @@ resourcestring
   lisTheApplicationBundleWasCreatedFor = 'The Application Bundle was created for "%s"';
 
   //codetools ChooseClassSectionDlg
-  lisChooseClassSectionDlgForMethodCaption = 'Insert new method to section';
-  lisChooseClassSectionDlgForVariableCaption = 'Insert new variable to section';
+  lisChooseClassSectionDlgCaption = 'Insert new field to section';
   lisEventMethodSectionLabel = 'Insert new event methods to section';
   lisVarSectionLabel = 'Insert new object variables to section';
 
