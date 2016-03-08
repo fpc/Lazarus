@@ -1122,13 +1122,17 @@ end;
 
 {---------------- QuesionDialog; ----------------}
 type
+  TQRange = 1..3;
+const
+  QAnsStrings: array[TQRange] of String = (
+    'Appels', 'Pears', 'Programmers');
+  QAnsResults: array[TQRange] of Integer = (
+    -1, -2, -3);
+type
   { TQuesionDlgDummmy }
   TQuesionDlgDummmy = class
-    ed: TEdit;
+    qed, a1ed, a2ed, a3ed: TEdit;
     rg: TRadioGroup;
-    {$IFDEF QDDynSelectBtn}
-    cg: TCheckGroup;
-    {$ENDIF}
     btn: TButton;
     lbl: TLabel;
     procedure OnBtnClick(Sender: TObject);
@@ -1137,99 +1141,110 @@ type
 procedure TQuesionDlgDummmy.OnBtnClick(Sender: TObject);
 var
   DT: TMsgDlgType;
-  {$IFDEF QDDynSelectBtn}
-  Btns: array of TMsgDlgBtn;
-  i: Integer;
-  {$ENDIF}
   aMsg: TCaption;
   Res: TModalResult;
+  Ans: Array[TQRange] of String;
+  i: TQRange;
 begin
   DT := TMsgDlgType(rg.ItemIndex);
-  aMsg := ed.Text;
-  if (aMsg = '')
-    then aMsg := 'You did not enter a question';
-  {$IFDEF QDDynSelectBtn}
-  setlength(Btns,0);
-  for i := 0 to cg.Items.Count - 1 do
+  aMsg := qed.Text;
+  Ans[1] := a1ed.Text;
+  Ans[2] := a2ed.Text;
+  Ans[3] := a3ed.Text;
+  if (aMsg = '') then
   begin
-    if cg.Checked[i] then
-      begin
-        setlength(Btns,high(Btns)+2);
-        Btns[high(Btns)] := TMsgDlgBtn(i);
-      end;
-  end;
-  if high(Btns) = -1 then
+    if (Ans[1]='') and (Ans[2]='') and (Ans[3]='') then
     begin
-      setlength(Btns,1);
-      Btns[high(Btns)] := mbOK;
-    end;
-  {$ENDIF}
-  Res := QuestionDlg('QuestionDlg test', aMsg, DT, [mrYes,'&Yes','isDefault',mrNo, '&No'], 0);
-  lbl.Caption := 'Dialog result = ' + ModalResultToStr(Res);
+      aMsg := 'Which fruit do you prefer?';
+      for i := Low(TQRange) to High(TQRange) do Ans[i] := QAnsStrings[i];
+    end
+    else
+      aMsg := 'The question is undefined: answer as best as you can anyway ...';
+  end;
+  for i := Low(TQRange) to High(TQRange) do
+    if (Ans[i] = '') then Ans[i] := Format('Undefined answer [%d]',[i]);
+  //Res := QuestionDlg('QuestionDlg test', aMsg, DT, [mrYes,'&Yes','isDefault',mrNo, '&No'], 0);
+  Res := QuestionDlg('QuestionDlg test', aMsg, DT,
+                     [QAnsResults[1], Ans[1],
+                      QAnsResults[2], Ans[2],
+                      QAnsResults[3], Ans[3] ], 0);
+  if (-Res in [-QAnsResults[Low(QAnsResults)]..-QAnsResults[High(QAnsResults)]]) then
+    lbl.Caption := Format('You chose: "%s"',[Ans[-Res]])
+  else
+    lbl.Caption := 'You chose nothing';
 end;
 
 
 procedure TForm1.TestQuestionDialog;
 var
   dummy: TQuesionDlgDummmy;
-  ed: TEdit;
+  qed, a1ed, a2ed, a3ed: TEdit;
   btn: TButton;
   rg: TRadioGroup;
   mdt: TMsgDlgType;
   lbl: TLabel;
-  {$IFDEF QDDynSelectBtn}
-  cg: TCheckGroup;
-  mdbtn: TMsgDlgBtn;
-  {$ENDIF QDDynSelectBtn}
 begin
   Clear;
-  ed := TEdit.Create(nil);
+  qed := TEdit.Create(nil);
+  a1ed := TEdit.Create(nil);
+  a2ed := TEdit.Create(nil);
+  a3ed := TEdit.Create(nil);
   rg := TRadioGroup.Create(nil);
   btn := TButton.Create(nil);
   lbl := TLabel.Create(nil);
   FObjList.Add(btn);
-  FObjList.Add(ed);
+  FObjList.Add(qed);
+  FObjList.Add(a1ed);
+  FObjList.Add(a2ed);
+  FObjList.Add(a3ed);
   FObjList.Add(rg);
   FObjList.Add(lbl);
   dummy := TQuesionDlgDummmy.Create;
   FObjList.Add(dummy);
-  dummy.ed := ed;
+  dummy.qed := qed;
+  dummy.a1ed := a1ed;
+  dummy.a2ed := a2ed;
+  dummy.a3ed := a3ed;
   dummy.btn := btn;
   dummy.rg := rg;
   dummy.lbl := lbl;
-  {$IFDEF QDDynSelectBtn}
-  cg := TCheckGroup.Create(nil);
-  FObjList.Add(cg);
-  dummy.cg := cg;
-  {$ENDIF QDDynSelectBtn}
-  ed.TextHint := 'Type your question here';
-  ed.Parent := TestPnl;
-  ed.Left := 5;
-  ed.Top := 10;
-  ed.Width := TestPnl.Width - 2*5;
+  qed.TextHint := 'Type your question here';
+  qed.Left := 5;
+  qed.Top := 10;
+  qed.Width := TestPnl.Width - 2*5;
+  qed.Parent := TestPnl;
 
-  {$IFDEF QDDynSelectBtn}
-  cg := TCheckGroup.Create(nil);
-  for mdbtn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
-    cg.Items.Add(MsgDlgBtnStr[mdbtn]);
-  cg.Caption := 'Buttons';
-  cg.AutoSize := True;
-  cg.Parent := TestPnl;
-  cg.Left := 5;
-  cg.Top := ed.Top + ed.Height + 10;
-  {$ENDIF}
+  a1ed.Left := qed.Left;
+  a1ed.Width := qed.Width;
+  a1ed.Top := qed.Top + qed.Height + 10;
+  a1ed.MaxLength := 40;
+  //a1ed.Text := QAnsStrings[1];
+  a1ed.TextHint := 'Type the first answer here';
+  a1ed.Parent := TestPnl;
+
+  a2ed.Left := a1ed.Left;
+  a2ed.Width := qed.Width;
+  a2ed.Top := a1ed.Top + a1ed.Height + 10;
+  a2ed.MaxLength := 40;
+  //a2ed.Text := QAnsStrings[2];
+  a2ed.TextHint := 'Type the second answer here';
+  a2ed.Parent := TestPnl;
+
+  a3ed.Left := a2ed.Left;
+  a3ed.Width := qed.Width;
+  a3ed.Top := a2ed.Top + a2ed.Height + 10;
+  a3ed.MaxLength := 40;
+  //a3ed.Text := QAnsStrings[3];
+  a3ed.TextHint := 'Type the third answer here';
+  a3ed.Parent := TestPnl;
+
   rg.Caption := 'DialogType';
   for mdt := Low(TMsgDlgType) to high(TMsgDlgType) do
     rg.items.Add(MsgDlgTypeStr[mdt]);
   rg.AutoSize := True;
-  rg.ItemIndex := Ord(mtInformation);
-  {$IFDEF QDDynSelectBtn}
-  rg.Left := cg.Left + cg.Width + 20;
-  rg.Top := cg.Top;
-  {$ELSE}
-  rg.Left := 5;
-  rg.Top := ed.Top + ed.Height + 10;
-  {$ENDIF}
+  rg.ItemIndex := Ord(mtConfirmation);
+  rg.Left := qed.Left;
+  rg.Top := a3ed.Top + a3ed.Height + 10;
   rg.Parent := TestPnl;
 
   btn.OnClick := @dummy.OnBtnClick;
@@ -1239,8 +1254,8 @@ begin
   btn.Left := rg.Left;
   btn.Parent := TestPnl;
 
-  lbl.Top := Btn.Top + Btn.Height + 10;
-  lbl.Left := Btn.Left;
+  lbl.Top := btn.Top;
+  lbl.Left := btn.Left + btn.Width + 10;;
   lbl.Caption := '';
   lbl.Parent := TestPnl;
 end;
