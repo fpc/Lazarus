@@ -355,6 +355,18 @@ begin
 end;
 
 {$IFDEF QtUseAccurateFrame}
+
+function GetX11WindowRealized(AWinID: LongWord): boolean;
+var
+  d: PDisplay;
+  AXWinAttr: TXWindowAttributes;
+begin
+  Result := False;
+  d := QX11Info_display;
+  XGetWindowAttributes(d, TWindow(AWinID), @AXWinAttr);
+  Result := (AXWinAttr.map_installed > 0) and (AXWinAttr.map_state = 2);
+end;
+
 function GetX11WindowPos(AWinID: LongWord; out ALeft, ATop: integer): boolean;
 var
   D: PDisplay;
