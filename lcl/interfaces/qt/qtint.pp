@@ -266,7 +266,7 @@ type
   procedure MapX11Window(AWinID: LongWord);
   {$IFDEF QtUseAccurateFrame}
   function GetX11WindowRealized(AWinID: LongWord): boolean;
-  function GetX11WindowAttributes(AWinID: LongWord; out ALeft, ATop, ABorder, AWidth, AHeight: integer): boolean;
+  function GetX11WindowAttributes(AWinID: LongWord; out ALeft, ATop, AWidth, AHeight, ABorder: integer): boolean;
   function GetX11SupportedAtoms(AWinID: LongWord; AList: TStrings): boolean;
   {Ask for _NET_FRAME_EXTENTS,_KDE_NET_WM_SHADOW,_GTK_NET_FRAME_EXTENTS}
   function GetX11RectForAtom(AWinID: LongWord; const AAtomName: string; out ARect: TRect): boolean;
