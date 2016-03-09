@@ -1875,10 +1875,13 @@ var
   I: integer;
   B: Boolean;
   ATicks: DWORD;
+  {$IFDEF DebugQtUseAccurateFrame}
+  StartupTime: DWord;
+  {$ENDIF}
   {$IFDEF HASX11}
   AWMName: String;
-  AShadowRect: TRect;
-  AList: TStringList;
+  //AShadowRect: TRect;
+  //AList: TStringList;
   ALeft, ATop, AWidth, AHeight, ABorder: integer;
   {$ENDIF}
 begin
@@ -1897,15 +1900,23 @@ begin
     end;
     {$ENDIF}
 
+    {$IFDEF DebugQtUseAccurateFrame}
+    StartupTime := GetTickCount;
+    {$ENDIF}
+
     ATempWidget := QWidget_create(nil, QtWindow or QtDialog);
     QWidget_setAttribute(ATempWidget, QtWA_NativeWindow, True);
+
     {$IFDEF HASX11}
     if QX11Info_isCompositingManagerRunning then
       QWidget_setWindowOpacity(ATempWidget, 0);
     {$ENDIF}
+
     QWidget_move(ATempWidget, -MAXSHORT, -MAXSHORT);
     QWidget_resize(ATempWidget, 32, 32);
+
     {$IFDEF HASX11}
+    QWidget_setAttribute(ATempWidget, QtWA_ShowWithoutActivating);
     QWidget_show(ATempWidget);
     AID := QWidget_winID(ATempWidget);
 
@@ -1995,8 +2006,8 @@ begin
     QWidget_frameSize(ATempWidget, @AFrameSize);
     {$ENDIF}
     with FWSFrameMargins do
-      DebugLn('TQtWidgetSet.GetFrameMargins: **MARGINS=',Format('l %d t %d r %d b %d QtFrame x %d y %d compositor %s sysMetrics %d',
-        [Left, Top, Right, Bottom, AFrameSize.cx - ASize.cx, AFrameSize.cy - ASize.cy, BoolToStr({$IFDEF HASX11}QX11Info_isCompositingManagerRunning{$ELSE}False{$ENDIF}), GetSystemMetrics(SM_CYCAPTION)]));
+      DebugLn('TQtWidgetSet.GetFrameMargins: **MARGINS=',Format('l %d t %d r %d b %d QtFrame x %d y %d compositor %s sysMetrics %d startup needed %d ms',
+        [Left, Top, Right, Bottom, AFrameSize.cx - ASize.cx, AFrameSize.cy - ASize.cy, BoolToStr({$IFDEF HASX11}QX11Info_isCompositingManagerRunning{$ELSE}False{$ENDIF}), GetSystemMetrics(SM_CYCAPTION),GetTickCount - StartupTime]));
     {$ENDIF}
     QWidget_hide(ATempWidget);
     QWidget_destroy(ATempWidget);
