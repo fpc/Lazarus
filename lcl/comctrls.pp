@@ -1484,7 +1484,6 @@ type
     procedure ImageChanged(Sender : TObject);
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure Sort;
 
     function IsCustomDrawn(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage): Boolean; virtual;
     function CustomDraw(const ARect: TRect; AStage: TCustomDrawStage): Boolean; virtual;                                                   // Return True if default drawing should be done
@@ -1548,6 +1547,7 @@ type
     destructor Destroy; override;
     procedure AddItem(Item: string; AObject: TObject);
     function AlphaSort: Boolean; // always sorts column 0 in sdAscending order
+    procedure Sort;
     procedure BeginUpdate;
     procedure Clear;
     procedure EndUpdate;
