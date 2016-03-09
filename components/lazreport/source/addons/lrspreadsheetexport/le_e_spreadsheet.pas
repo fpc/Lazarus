@@ -52,6 +52,7 @@ type
     FDeleteEmptyRow: boolean;
     FExportMatrix:TExportMatrix;
     FExportPrintRange: boolean;
+    FExportImages: boolean;
     FExportURL: boolean;
     FMergeCell: boolean;
     FOpenAfterExport: boolean;
@@ -66,7 +67,6 @@ type
     procedure ExportColWidth;
     procedure ExportRowHight;
     procedure DoExportPrintRange;
-    //procedure ExportData;
     procedure ExportData1;
 
     procedure MakeWorksheet;
@@ -99,12 +99,13 @@ type
     property MergeCell:boolean read FMergeCell write FMergeCell;
     property ExportURL:boolean read FExportURL write FExportURL;
     property ExportPrintRange:boolean read FExportPrintRange write FExportPrintRange;
+    property ExportImages:boolean read FExportImages write FExportImages;
   end;
 
 implementation
 uses LCLType, le_e_spreadsheet_params, fpsTypes, fpsutils, fpsAllFormats,
   LazUTF8Classes, Forms, Controls, LCLIntf, LazFileUtils, le_e_spreadsheet_consts,
-  lrSpreadSheetExp, math;
+  lrSpreadSheetExp, math, fpsPageLayout;
 
 const
   ssAligns : array [TAlignment] of TsHorAlignment = (haLeft, haRight, haCenter);
@@ -177,7 +178,9 @@ begin
   end;
 
   if (X1>0) and (Y1>0) and (X2>X1) and (Y2>Y1) then
-    FWorksheet.AddPrintRange(Y1, X1, Y2, X2);
+  begin
+    FWorksheet.PageLayout.AddPrintRange(Y1, X1, Y2, X2);
+  end;
 end;
 
 function sftofs(AFont:TFont):TsFontStyles;
@@ -195,67 +198,7 @@ begin
   if fsUnderline in AFont.Style then
     Result:=Result + [fssUnderline];
 end;
-{
-procedure TlrSpreadSheetExportFilter.ExportData;
-var
-  R:TExportObject;
-  y: Integer;
-  x: Integer;
-  scFrm:TsCellBorders;
 
-begin
-  for y:=0 to FExportMatrix.RowCount do
-    for x:=0 to FExportMatrix.ColumnCount do
-    begin
-      R:=FExportMatrix.Objects[X, Y];
-      if Assigned(R) then
-      begin
-        if R.Text<>'' then
-        begin
-          FWorksheet.WriteUTF8Text(Y, X, TrimRight(R.Texts.Text));
-          if R.Angle <> 0 then
-            FWorksheet.WriteTextRotation(Y, X, rt90DegreeCounterClockwiseRotation);
-          FWorksheet.WriteVertAlignment(Y, X, ssLayout[R.Layout]);
-          FWorksheet.WriteWordwrap(Y, X, R.WordWrap);
-        end;
-        FWorksheet.WriteBackgroundColor(Y, X, R.FillColor);
-
-        if (R.Col < R.MergedCol) or (R.Row < R.MergedRow) then
-          FWorksheet.MergeCells(Y, X, R.MergedRow, R.MergedCol);
-
-        if Assigned(R.Font) then
-          FWorksheet.WriteFont(Y, X, R.Font.Name,  R.Font.Size, sftofs(R.Font), R.Font.Color, fpNormal);
-
-        FWorksheet.WriteHorAlignment(Y, X, ssAligns[R.Alignment]);
-
-        scFrm:=[];
-        if frbLeft in R.Frames then
-        begin
-          FWorksheet.WriteBorderColor(Y, X, cbEast, R.FrameColor);
-          scFrm:=scFrm + [cbEast]
-        end;
-        if frbTop in R.Frames then
-        begin
-          FWorksheet.WriteBorderColor(Y, X, cbNorth, R.FrameColor);
-          scFrm:=scFrm + [cbNorth]
-        end;
-        if frbBottom in R.Frames then
-        begin
-          FWorksheet.WriteBorderColor(Y, X, cbSouth, R.FrameColor);
-          scFrm:=scFrm + [cbSouth]
-        end;
-        if frbRight in R.Frames then
-        begin
-          FWorksheet.WriteBorderColor(Y, X, cbWest, R.FrameColor);
-          scFrm:=scFrm + [cbWest]
-        end;
-
-        if scFrm <> [] then
-          FWorksheet.WriteBorders(Y, X, scFrm);
-      end;
-    end;
-end;
-}
 procedure TlrSpreadSheetExportFilter.ExportData1;
 var
   R: Integer;
@@ -277,15 +220,23 @@ begin
       begin
         X:=Cel.Col;
         Y:=Row.Row;
-        if Cel.Text<>'' then
+        if (Cel.ObjType = gtMemo) and (Cel.Text<>'') then
         begin
           FWorksheet.WriteUTF8Text(Y, X, TrimRight(Cel.Texts.Text));
           if Cel.Angle <> 0 then
             FWorksheet.WriteTextRotation(Y, X, rt90DegreeCounterClockwiseRotation);
           FWorksheet.WriteVertAlignment(Y, X, ssLayout[Cel.Layout]);
           FWorksheet.WriteWordwrap(Y, X, Cel.WordWrap);
-        end;
-        FWorksheet.WriteBackgroundColor(Y, X, Cel.FillColor);
+
+          FWorksheet.WriteBackgroundColor(Y, X, Cel.FillColor);
+        end
+{ this code for export images - not work. in progress
+        else
+        if (Cel.ObjType = gtPicture) and (Assigned(Cel.Picture)) then
+        begin
+          FWorksheet.WriteImage(Y, X, '/home/work/demos/Demo_65_ODSWrite/lazarus32x32.png');
+        end};
+
 
         if (Cel.Col < Cel.MergedCol) or (Cel.Row < Cel.MergedRow) then
           FWorksheet.MergeCells(Y, X, Cel.MergedRow, Cel.MergedCol);
@@ -343,7 +294,12 @@ begin
   ExportRowHight;
   ExportData1;
   if FExportPrintRange then
+  begin
     DoExportPrintRange;
+    FWorksheet.PageLayout.Options := FWorksheet.PageLayout.Options + [poFitPages];
+    FWorksheet.PageLayout.FitWidthToPages := 1;     // all columns on one page width
+    FWorksheet.PageLayout.FitHeightToPages := 0;
+  end;
 
   FWorksheet:=nil;
   FExportMatrix.Clear;
@@ -360,6 +316,7 @@ begin
   leSpreadsheetParamsForm.RadioButton5.Checked:=FDataGrouping = ldgAllInOnePage;
   leSpreadsheetParamsForm.RadioButton6.Checked:=FDataGrouping = ldgChunks;
   leSpreadsheetParamsForm.SpinEdit1.Value:=FDataGroupingChunks;
+  leSpreadsheetParamsForm.CheckBox1.Checked:=FExportImages;
   leSpreadsheetParamsForm.CheckBox4.Checked:=FOpenAfterExport;
   leSpreadsheetParamsForm.CheckBox2.Checked:=FMergeCell;
   leSpreadsheetParamsForm.CheckBox6.Checked:=FDeleteEmptyRow;
@@ -380,6 +337,7 @@ begin
       FDataGrouping:=ldgChunks;
       FDataGroupingChunks:=leSpreadsheetParamsForm.SpinEdit1.Value;
     end;
+    FExportImages   := leSpreadsheetParamsForm.CheckBox1.Checked;
     FOpenAfterExport:= leSpreadsheetParamsForm.CheckBox4.Checked;
     FMergeCell      := leSpreadsheetParamsForm.CheckBox2.Checked;
     FDeleteEmptyRow := leSpreadsheetParamsForm.CheckBox6.Checked;
@@ -412,6 +370,7 @@ begin
     FDeleteEmptyRow:=lrSpreadSheetExportComponent.DeleteEmptyRow;
     FExportURL:=lrSpreadSheetExportComponent.ExportURL;
     FExportPrintRange:=lrSpreadSheetExportComponent.ExportPrintRange;
+    FExportImages:=lrSpreadSheetExportComponent.ExportImages;
   end
   else
   begin
@@ -422,6 +381,7 @@ begin
     FDeleteEmptyRow:=false;
     FExportURL:=false;
     FExportPrintRange:=false;
+    FExportImages:=false;
   end;
 
   FExportMatrix:=TExportMatrix.Create;

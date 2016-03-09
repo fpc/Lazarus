@@ -72,6 +72,8 @@ type
     FAngle:byte;
     FWordWrap: boolean;
 
+    FPicture: TPicture;
+
     function GetText: string;
   public
     constructor Create(AObj:TfrView);
@@ -99,6 +101,8 @@ type
     property Layout : TTextLayout read FLayout;
     property WordWrap:boolean read FWordWrap;
     property URLInfo: string read FURLInfo write FURLInfo;
+    property Picture: TPicture read FPicture;
+
   end;
 
   { TExportRows }
@@ -127,6 +131,7 @@ type
   TExportMatrix =class
   private
     FDeleteEmptyRow: boolean;
+    FExportImages: boolean;
     FMergeCell: boolean;
     FRows:TFpList;
     FColWidth:TBoundArray;
@@ -164,6 +169,7 @@ type
     property DeleteEmptyRow:boolean read FDeleteEmptyRow write FDeleteEmptyRow;
     property MergeCell:boolean read FMergeCell write FMergeCell;
     property PageMargin:integer read FPageMargin write FPageMargin;
+    property ExportImages:boolean read FExportImages write FExportImages;
 
     property Rows:TFpList read FRows;
   end;
@@ -288,7 +294,11 @@ begin
     end
     else
     if AObj is TfrPictureView then
-      FObjType:=gtPicture
+    begin
+      FObjType:=gtPicture;
+      FPicture := TPicture.Create;
+      FPicture.Assign(TfrPictureView(AObj).Picture);
+    end
     else
     if AObj is TfrLineView then
       FObjType:=gtLine;
@@ -301,6 +311,9 @@ begin
     FreeAndNil(FTexts);
   if Assigned(FFont) then
     FreeAndNil(FFont);
+
+  if Assigned(FPicture) then
+    FreeAndNil(FPicture);
   inherited Destroy;
 end;
 
@@ -634,12 +647,12 @@ var
   R: TExportRow;
 begin
   Result:=nil;
-  if AObj is TfrMemoView then
+  if (AObj is TfrMemoView) or ((AObj is TfrPictureView) and FExportImages) then
   begin
     R:=FindRow(AObj.Y);
     Result:=R.ExportObject(AObj);
     Result.Top:=R.Top;
-  end;
+  end
 end;
 
 procedure TExportMatrix.PrepareData;

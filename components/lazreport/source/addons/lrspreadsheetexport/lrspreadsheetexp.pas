@@ -50,6 +50,7 @@ type
     FDataGrouping: TlreDataGrouping;
     FDataGroupingChunks: integer;
     FDeleteEmptyRow: boolean;
+    FExportImages: boolean;
     FExportPrintRange: boolean;
     FExportURL: boolean;
     FMergeCell: boolean;
@@ -61,6 +62,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property ExportImages:boolean read FExportImages write FExportImages;
   published
     property DataGrouping:TlreDataGrouping read FDataGrouping write FDataGrouping;
     property DataGroupingChunks:integer read FDataGroupingChunks write FDataGroupingChunks;
