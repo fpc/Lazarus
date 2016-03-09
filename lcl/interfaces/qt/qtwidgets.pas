@@ -7145,7 +7145,10 @@ function TQtMainWindow.getFrameGeometry: TRect;
 {$IFDEF QtUseAccurateFrame}
 var
   ASize, AFrameSize: TSize;
+  {$IFDEF HASX11}
   X11X, X11Y, X, Y: integer;
+  ALeft, ATop, AWidth, AHeight, ABorder: integer;
+  {$ENDIF}
 {$ENDIF}
 begin
   Result:=inherited getFrameGeometry;
@@ -7172,8 +7175,18 @@ begin
       {$IFDEF HASX11}
       if GetX11WindowPos(QWidget_winID(Widget), X11X, X11Y) then
       begin
-        X11X -= FFrameMargins.Left;
-        X11Y -= FFrameMargins.Top;
+        if GetX11WindowAttributes(QWidget_winID(Widget), ALeft, ATop, AWidth, AHeight, ABorder) then
+        begin
+          if ALeft = 0 then
+            X11X -= FFrameMargins.Left;
+          if ATop = 0 then
+            X11Y -= FFrameMargins.Top;
+        end else
+        begin
+          X11X -= FFrameMargins.Left;
+          X11Y -= FFrameMargins.Top;
+        end;
+
         X := Result.Left;
         Y := Result.Top;
         if (X11X = x) and (X11Y = y) then
