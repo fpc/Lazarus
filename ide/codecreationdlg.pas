@@ -51,7 +51,9 @@ type
     procedure DoCreate; override;
     procedure DoShow; override;
   public
-
+    procedure Init(const ANewIdent: string; const AIsMethod: Boolean;
+      const Options: TCodeCreationDlgResult);
+    procedure Final(const AIsMethod: Boolean; var Options: TCodeCreationDlgResult);
   end;
 
 function ShowCodeCreationDialog(const ANewIdent: string; const AIsMethod: Boolean;
@@ -73,42 +75,12 @@ begin
 
   Dlg := TCodeCreationDialog.Create(Application);
   try
-    Dlg.Caption := lisCodeCreationDialogCaption;
-    Dlg.LocationRadioGroup.Caption := lisCodeCreationDialogLocation;
-    Dlg.SectionRadioGroup.Caption := lisCodeCreationDialogClassSection;
-
-    if ANewIdent<>'' then
-      Dlg.NewIdentLabel.Caption := ANewIdent
-    else
-      Dlg.NewIdentLabel.Visible := False;
-
-    if Ord(Options.ClassSection) < Dlg.SectionRadioGroup.Items.Count then
-      Dlg.SectionRadioGroup.ItemIndex := Ord(Options.ClassSection)
-    else
-      Dlg.SectionRadioGroup.ItemIndex := 0;
-
-    if Ord(Options.Location) < Dlg.LocationRadioGroup.Items.Count then
-      Dlg.LocationRadioGroup.ItemIndex := Ord(Options.Location)
-    else
-      Dlg.LocationRadioGroup.ItemIndex := 0;
-
-    if AIsMethod then
-    begin
-      Dlg.LocationRadioGroup.ItemIndex := Ord(cclClass);
-      Dlg.LocationRadioGroup.Enabled := False;
-    end;
+    Dlg.Init(ANewIdent, AIsMethod, Options);
 
     Result := Dlg.ShowModal = mrOK;
 
     if Result then
-    begin
-      Options.ClassSection := TInsertClassSection(Dlg.SectionRadioGroup.ItemIndex);
-      Options.Location := TCreateCodeLocation(Dlg.LocationRadioGroup.ItemIndex);
-      if AIsMethod then
-        EnvironmentOptions.LastEventMethodCCResult := Options
-      else
-        EnvironmentOptions.LastVariableCCResult := Options;
-    end;
+      Dlg.Final(AIsMethod, Options);
   finally
     Dlg.Free;
   end;
@@ -141,17 +113,87 @@ begin
   LocationRadioGroupClick(nil);
 end;
 
+procedure TCodeCreationDialog.Final(const AIsMethod: Boolean;
+  var Options: TCodeCreationDlgResult);
+begin
+  Options.ClassSection := TInsertClassSection(SectionRadioGroup.ItemIndex);
+  Options.Location := TCreateCodeLocation(LocationRadioGroup.ItemIndex);
+  if AIsMethod then
+    EnvironmentOptions.LastEventMethodCCResult := Options
+  else
+    EnvironmentOptions.LastVariableCCResult := Options;
+end;
+
 procedure TCodeCreationDialog.FormKeyPress(Sender: TObject;
   var Key: char);
 begin
   case Key of
     #27: ModalResult := mrCancel;
-    'p': if SectionRadioGroup.Enabled then SectionRadioGroup.ItemIndex := Ord(icsPrivate);
-    'r': if SectionRadioGroup.Enabled then SectionRadioGroup.ItemIndex := Ord(icsProtected);
-    'u': if SectionRadioGroup.Enabled then SectionRadioGroup.ItemIndex := Ord(icsPublic);
-    's': if SectionRadioGroup.Enabled then SectionRadioGroup.ItemIndex := Ord(icsPublished);
-    'l': if LocationRadioGroup.Enabled then LocationRadioGroup.ItemIndex := Ord(cclLocal);
-    'c': if LocationRadioGroup.Enabled then LocationRadioGroup.ItemIndex := Ord(cclClass);
+    'p':
+      if SectionRadioGroup.Enabled then
+      begin
+        SectionRadioGroup.ItemIndex := Ord(icsPrivate);
+        ModalResult := mrOK;
+      end;
+    'r':
+      if SectionRadioGroup.Enabled then
+      begin
+        SectionRadioGroup.ItemIndex := Ord(icsProtected);
+        ModalResult := mrOK;
+      end;
+    'u':
+      if SectionRadioGroup.Enabled then
+      begin
+        SectionRadioGroup.ItemIndex := Ord(icsPublic);
+        ModalResult := mrOK;
+      end;
+    's':
+      if SectionRadioGroup.Enabled then
+      begin
+        SectionRadioGroup.ItemIndex := Ord(icsPublished);
+        ModalResult := mrOK;
+      end;
+    'l':
+      if LocationRadioGroup.Enabled then
+      begin
+        LocationRadioGroup.ItemIndex := Ord(cclLocal);
+        ModalResult := mrOK;
+      end;
+    'c':
+      if LocationRadioGroup.Enabled then
+      begin
+        LocationRadioGroup.ItemIndex := Ord(cclClass);
+        // do not set ModalResult, the user has to set section
+      end;
+  end;
+end;
+
+procedure TCodeCreationDialog.Init(const ANewIdent: string;
+  const AIsMethod: Boolean; const Options: TCodeCreationDlgResult);
+begin
+  Caption := lisCodeCreationDialogCaption;
+  LocationRadioGroup.Caption := lisCodeCreationDialogLocation;
+  SectionRadioGroup.Caption := lisCodeCreationDialogClassSection;
+
+  if ANewIdent<>'' then
+    NewIdentLabel.Caption := ANewIdent
+  else
+    NewIdentLabel.Visible := False;
+
+  if Ord(Options.ClassSection) < SectionRadioGroup.Items.Count then
+    SectionRadioGroup.ItemIndex := Ord(Options.ClassSection)
+  else
+    SectionRadioGroup.ItemIndex := 0;
+
+  if Ord(Options.Location) < LocationRadioGroup.Items.Count then
+    LocationRadioGroup.ItemIndex := Ord(Options.Location)
+  else
+    LocationRadioGroup.ItemIndex := 0;
+
+  if AIsMethod then
+  begin
+    LocationRadioGroup.ItemIndex := Ord(cclClass);
+    LocationRadioGroup.Enabled := False;
   end;
 end;
 
