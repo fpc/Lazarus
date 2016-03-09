@@ -139,6 +139,11 @@ function GetDarwinSystemFilename(Filename: string): string;
 function GetDarwinNormalizedFilename(Filename: string; nForm:Integer=2): string;
 {$ENDIF}
 
+// windows paths
+{$IFDEF windows}
+function SHGetFolderPathUTF8(ID :  Integer) : String;
+{$ENDIF}
+
 procedure SplitCmdLineParams(const Params: string; ParamList: TStrings;
                              ReadBackslash: boolean = false);
 function StrToCmdLineParam(const Param: string): string;
