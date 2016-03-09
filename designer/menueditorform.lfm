@@ -161,7 +161,6 @@ object MenuDesignerForm: TMenuDesignerForm
         Top = 6
         Width = 168
         Anchors = [akTop, akLeft, akRight]
-        AutoSize = False
         BorderSpacing.Left = 6
         BorderSpacing.Around = 6
         Caption = 'CaptionedItemsCountLabel'
