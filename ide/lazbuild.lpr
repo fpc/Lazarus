@@ -755,8 +755,8 @@ var
   CompilePolicy: TPackageUpdatePolicy;
   i,MatchCount: Integer;
   CompileHint: String;
+  CompReason: TCompileReason;
   NeedBuildAllFlag: Boolean;
-  SubResult: TModalResult;
   MatrixOption: TBuildMatrixOption;
   ModeMask: TMask;
   CurResult: Boolean;
@@ -803,6 +803,23 @@ var
     WorkingDir:=Project1.ProjectDirectory;
     SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
 
+    NeedBuildAllFlag:=false;
+    CompileHint:='';
+    if (CompReason in Project1.CompilerOptions.CompileReasons) then begin
+      // only check if NeedBuildAllFlag will be set
+      MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1, NeedBuildAllFlag,CompileHint);
+    end;
+
+    // execute compilation tool 'Before'
+    ToolBefore:=TProjectCompilationToolOptions(
+                                      Project1.CompilerOptions.ExecuteBefore);
+    if (CompReason in ToolBefore.CompileReasons) then begin
+      if ToolBefore.Execute(Project1.ProjectDirectory,
+        lisProject2+lisExecutingCommandBefore, CompileHint)<>mrOk
+      then
+        Error(ErrorBuildFailed,'failed "tool before" of project '+AFilename);
+    end;
+
     // create unit output directory
     UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
     if not ForceDirectory(UnitOutputDirectory) then
@@ -814,9 +831,6 @@ var
     if not ForceDirectory(TargetExeDir) then
       Error(ErrorBuildFailed,'Unable to create project target directory '+TargetExeDir);
 
-    // update all lrs files
-    MainBuildBoss.UpdateProjectAutomaticFiles('');
-
     // create LazBuildApp bundle
     if Project1.UseAppBundle and (Project1.MainUnitID>=0)
     and (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
@@ -826,6 +840,9 @@ var
       if not (CreateAppBundleSymbolicLink(TargetExeName) in [mrOk,mrIgnore]) then
         Error(ErrorBuildFailed,'Unable to create application bundle symbolic link for '+TargetExeName);
     end;
+
+    // update all lrs files
+    MainBuildBoss.UpdateProjectAutomaticFiles('');
 
     // regenerate resources
     if not Project1.ProjResources.Regenerate(SrcFileName, False, True, '') then
@@ -844,39 +861,7 @@ var
     CompilerParams:=Project1.CompilerOptions.MakeOptionsString([ccloAbsolutePaths])
                                            +' '+PrepareCmdLineOption(SrcFilename);
 
-    NeedBuildAllFlag:=false;
-    CompileHint:='';
-    if (crCompile in Project1.CompilerOptions.CompileReasons) then begin
-      // check if project is already uptodate
-      SubResult:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1,
-                                                  NeedBuildAllFlag,CompileHint);
-      if (not BuildAll)
-      and (not (pfAlwaysBuild in Project1.Flags)) then begin
-        if SubResult=mrNo then begin
-          if ConsoleVerbosity>=0 then
-            debugln(['Hint: (lazarus) [TLazBuildApplication.BuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to do']);
-          exit(true);
-        end;
-        if SubResult<>mrYes then
-        begin
-          if ConsoleVerbosity>=0 then
-            debugln(['Hint: (lazarus) [TLazBuildApplication.BuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
-          exit(false);
-        end;
-      end;
-    end;
-
-    // execute compilation tool 'Before'
-    ToolBefore:=TProjectCompilationToolOptions(
-                                      Project1.CompilerOptions.ExecuteBefore);
-    if (crCompile in ToolBefore.CompileReasons) then begin
-      if ToolBefore.Execute(Project1.ProjectDirectory,
-        lisProject2+lisExecutingCommandBefore, CompileHint)<>mrOk
-      then
-        Error(ErrorBuildFailed,'failed "tool before" of project '+AFilename);
-    end;
-
-    if (crCompile in Project1.CompilerOptions.CompileReasons) then begin
+    if (CompReason in Project1.CompilerOptions.CompileReasons) then begin
       // compile
       // write state file to avoid building clean every time
       if Project1.SaveStateFile(CompilerFilename,CompilerParams,false)<>mrOk then
@@ -894,7 +879,7 @@ var
     // execute compilation tool 'After'
     ToolAfter:=TProjectCompilationToolOptions(
                                        Project1.CompilerOptions.ExecuteAfter);
-    if (crCompile in ToolAfter.CompileReasons) then begin
+    if (CompReason in ToolAfter.CompileReasons) then begin
       if ToolAfter.Execute(Project1.ProjectDirectory,
         lisProject2+lisExecutingCommandAfter,CompileHint)<>mrOk
       then
@@ -915,6 +900,11 @@ begin
   
   if Project1.MainUnitInfo=nil then
     Error(ErrorBuildFailed,'project has no main unit');
+
+  if BuildAll then
+    CompReason:= crBuild
+  else
+    CompReason:= crCompile;
 
   // first override build mode
   if (BuildModeOverride<>'') then
