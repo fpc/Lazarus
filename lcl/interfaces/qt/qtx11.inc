@@ -510,6 +510,34 @@ begin
   end;
 end;
 
+function GetX11WindowGeometry(AWinID: LongWord; out ARect: TRect): boolean;
+var
+  d: PDisplay;
+  ARootWin, X11Window: TWindow;
+  ABorder, ADepth: integer;
+begin
+  Result := False;
+  d := QX11Info_display();
+  with ARect do
+  begin
+    Left := 0;
+    Top := 0;
+    Right := 0;
+    Bottom := 0;
+  end;
+  if d = nil then
+    exit;
+
+  if AWinID = 0 then
+  begin
+    X11Window := XRootWindow(d, QX11Info_appScreen);
+  end else
+    X11Window := TWindow(AWinID);
+  if X11Window = 0 then
+    exit;
+  Result := XGetGeometry(d, X11Window, @ARootWin, @ARect.Left, @ARect.Top, @ARect.Right, @ARect.Bottom, @ABorder, @ADepth) = 1;
+end;
+
 function GetX11RectForAtom(AWinID: LongWord; const AAtomName: string; out ARect: TRect): boolean;
 var
   d: PDisplay;
