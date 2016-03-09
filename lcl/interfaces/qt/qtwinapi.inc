@@ -5035,19 +5035,146 @@ begin
 end;
 
 function TQtWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
+const
+  ButtonToQtButton: array[1..4] of QMessageBoxStandardButton = (
+   QMessageBoxOk, QMessageBoxYes, QMessageBoxNo, QMessageBoxCancel);
+
+
+  function IconToMessageType(AType: cardinal): QMessageBoxIcon;
+  begin
+    Result := QMessageBoxNoIcon;
+    case AType of
+      1: Result := QMessageBoxInformation;
+      2: Result := QMessageBoxQuestion;
+      3: Result := QMessageBoxCritical;
+      4: Result := QMessageBoxWarning;
+    end;
+  end;
+
+  function ButtonToQtButtons(AType: cardinal): QMessageBoxStandardButtons;
+  begin
+    Result := QMessageBoxNoButton;
+    case AType of
+      0: Result := QMessageBoxOk;
+      1: Result := QMessageBoxOk or QMessageBoxCancel;
+      2: Result := QMessageBoxAbort or QMessageBoxRetry or QMessageBoxIgnore;
+      3: Result := QMessageBoxYes or QMessageBoxNo or QMessageBoxCancel;
+      4: Result := QMessageBoxYes or QMessageBoxNo;
+      5: Result := QMessageBoxRetry or QMessageBoxCancel;
+      6: Result := QMessageBoxCancel or QMessageBoxRetry or QMessageBoxApply; // not supported by lcl
+      else
+      begin
+        DebugLn(Format('WARNING: TQtWidgetSet.MessageBox() invalid message box type %d',[AType]));
+      end;
+    end;
+  end;
+
+  function ButtonToQtDefButton(AType: cardinal; ADefButton: cardinal): QMessageBoxStandardButton;
+  begin
+    Result := QMessageBoxNoButton;
+    case AType of
+      0: Result := QMessageBoxOk;
+      1:
+      begin
+        if ADefButton = 2 then
+          Result := QMessageBoxCancel
+        else
+          Result := QMessageBoxOk;
+      end;
+      2:
+      begin
+        if ADefButton = 3 then
+          Result := QMessageBoxIgnore
+        else
+        if ADefButton = 2 then
+          Result := QMessageBoxRetry
+        else
+          Result := QMessageBoxAbort;
+      end;
+      3:
+      begin
+        if ADefButton = 3 then
+          Result := QMessageBoxCancel
+        else
+        if ADefButton = 2 then
+          Result := QMessageBoxNo
+        else
+          Result := QMessageBoxYes;
+      end;
+      4:
+      begin
+        if ADefButton = 2 then
+          Result := QMessageBoxNo
+        else
+          Result := QMessageBoxYes;
+      end;
+      5:
+      begin
+        if ADefButton = 2 then
+          Result := QMessageBoxCancel
+        else
+          Result := QMessageBoxRetry;
+      end;
+      6:
+      begin
+        if ADefButton = 3 then
+          Result := QMessageBoxCancel
+        else
+        if ADefButton = 2 then
+          Result := QMessageBoxRetry
+        else
+          Result := QMessageBoxApply;
+      end;
+      else
+        DebugLn(Format('WARNING: TQtWidgetSet.MessageBox() invalid message box type %d',[AType]));
+    end;
+  end;
+
+  function QtButtonToResult(AResult: integer): integer;
+  begin
+    Result := 0;
+    case AResult of
+      QMessageBoxOk, QMessageBoxApply: Result := ID_OK;
+      QMessageBoxCancel: Result := ID_CANCEL;
+      QMessageBoxAbort: Result := ID_ABORT;
+      QMessageBoxRetry: Result := ID_RETRY;
+      QMessageBoxIgnore: Result := ID_IGNORE;
+      QMessageBoxYes: Result := ID_YES;
+      QMessageBoxNo: Result := ID_NO;
+      QMessageBoxClose: Result := ID_CLOSE;
+      QMessageBoxHelp: Result := ID_HELP;
+    end;
+  end;
 var
   Str: WideString;
   TitleStr: WideString;
-  OkStr: WideString;
+  //OkStr: WideString;
+  AParent: QWidgetH;
+  DialogType, DefButton, DefIcon : Cardinal;
 begin
-  //TODO: Finish full implementation of MessageBox
-  Str := GetUtf8String('TQtWidgetSet.MessageBox - not implemented');
+  Result := 0;
+  Str := GetUtf8String(lpText);
   TitleStr := GetUtf8String(lpCaption);
-  OkStr := GetUtf8String('Ok');
+  //TODO: TRANSLATIONS for buttons text, use TQtMessageBox
   if HWND <> 0 then
-    Result := QMessageBox_information(TQtWidget(hWnd).Widget, @Str, @TitleStr, @OkStr)
+    AParent := TQtWidget(Hwnd).Widget
   else
-    Result := QMessageBox_information(nil, @Str, @TitleStr, @OkStr);
+    AParent := nil;
+  DefButton:= ((uType and $00000300) shr 8) + 1;
+  DialogType:= (uType and $0000000F);
+  DefIcon := (uType and $000000FF) shr 4;
+  case IconToMessageType(DefIcon) of
+    QMessageBoxInformation: Result := QMessageBox_information(AParent, @TitleStr, @Str, ButtonToQtButtons(DialogType), ButtonToQtDefButton(DialogType, DefButton));
+    QMessageBoxQuestion: Result := QMessageBox_question(AParent, @TitleStr, @Str, ButtonToQtButtons(DialogType), ButtonToQtDefButton(DialogType, DefButton));
+    QMessageBoxCritical: Result := QMessageBox_critical(AParent, @TitleStr, @Str, ButtonToQtButtons(DialogType), ButtonToQtDefButton(DialogType, DefButton));
+    QMessageBoxWarning: Result := QMessageBox_warning(AParent, @TitleStr, @Str, ButtonToQtButtons(DialogType), ButtonToQtDefButton(DialogType, DefButton));
+    else
+    begin
+      DebugLn('WARNING: TQtWidgetSet.MessageBox() unspecified dialog type.');
+      Result := QMessageBox_information(AParent, @Str, @TitleStr, ButtonToQtButtons(DialogType), ButtonToQtButton[DefButton]);
+    end;
+  end;
+  Result := QtButtonToResult(Result);
 end;
 
 {------------------------------------------------------------------------------
