@@ -200,6 +200,9 @@ resourcestring
   lisMaximumNumberOfThreadsForCompilingInParallelDefaul = 'Maximum number of '
     +'threads for compiling in parallel. Default is 0, which guesses the '
     +'number of cores in the system.';
+  lisDoNotWriteUpdatedProjectInfoAfterBuild = 'Do not write updated project '+
+    'info file after build. If not specified, build number will be incremented '+
+    'if configured.';
 
   // component palette
   lisSelectionTool = 'Selection tool';

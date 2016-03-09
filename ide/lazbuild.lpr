@@ -70,6 +70,7 @@ type
     fLazarusDirInCfg: string;
     fLazarusDirOverride : String;
     FMaxProcessCount: integer;
+    FNoWriteProject: Boolean;
     fOSOverride: String;
     FPackageAction: TPkgAction;
     FPkgGraphVerbosity: TPkgVerbosityFlags;
@@ -172,6 +173,7 @@ type
     property LazarusDirOverride: String read fLazarusDirOverride write fLazarusDirOverride;
     property BuildModeOverride: String read FBuildModeOverride write FBuildModeOverride;
     property MaxProcessCount: integer read FMaxProcessCount write FMaxProcessCount;
+    property NoWriteProject: boolean read FNoWriteProject write FNoWriteProject;
     property PkgGraphVerbosity: TPkgVerbosityFlags read FPkgGraphVerbosity write FPkgGraphVerbosity;
   end;
 
@@ -955,15 +957,17 @@ begin
     Result := StartBuilding;
 
   // Auto increment build number
-  if Result then
+  if Result and not NoWriteProject then
   begin
-    with Project1.ProjResources.VersionInfo do
+    if FileIsWritable(AFilename) then
     begin
-      if UseVersionInfo and AutoIncrementBuild then
-      begin
-        BuildNr := BuildNr + 1;
-        Project1.WriteProject(Project1.PublishOptions.WriteFlags,AFileName,EnvironmentOptions.BuildMatrixOptions);
-      end;
+      Project1.ProjResources.DoAfterBuild(CompReason, Project1.IsVirtual);
+      Project1.WriteProject(Project1.PublishOptions.WriteFlags,AFileName,EnvironmentOptions.BuildMatrixOptions)
+    end
+    else
+    begin
+      if ConsoleVerbosity>=-1 then
+        DebugLn('Error: (lazarus) Project1.WriteProject skipped for read-only ',SrcFilename);
     end;
   end;
 end;
@@ -1554,6 +1558,7 @@ begin
     LongOptions.Add('lazarusdir:');
     LongOptions.Add('create-makefile');
     LongOptions.Add('max-process-count:');
+    LongOptions.Add('no-write-project');
     ErrorMsg:=RepairedCheckOptions('lBrdq',LongOptions,Options,NonOptions);
     if ErrorMsg<>'' then begin
       writeln(ErrorMsg);
@@ -1716,6 +1721,13 @@ begin
         writeln('Parameter: max-process-count=',MaxProcessCount);
     end;
 
+    if HasOption('no-write-project') then
+    begin
+      NoWriteProject := true;
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: no-write-project');
+    end;
+
     if HasOption('create-makefile') then
     begin
       CreateMakefile := true;
@@ -1823,6 +1835,9 @@ begin
   writeln('');
   writeln('--max-process-count=<count>');
   w(space+lisMaximumNumberOfThreadsForCompilingInParallelDefaul);
+  writeln('');
+  writeln('--no-write-project');
+  w(space+lisDoNotWriteUpdatedProjectInfoAfterBuild);
   writeln('');
 end;
 
