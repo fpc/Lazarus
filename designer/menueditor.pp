@@ -1165,7 +1165,7 @@ var
   primaryItem, mi: TMenuItem;
 
   procedure NewPopItem(const aCaption: string; anOnClick: TNotifyEvent;
-                       aShortcut: TShortCut=0; aShortCut2: TShortCut=0);
+                       aShortcut: TShortCut=0); //aShortCut2: String='');
   begin
     ac:=TAction.Create(Self);
     with ac do begin
@@ -1175,11 +1175,12 @@ var
       Caption:=aCaption;
       OnExecute:=anOnClick;
       ShortCut:=aShortcut;
+      //if aShortCut2 <> '' then                 Does not work.
+      //  SecondaryShortCuts.Add(aShortCut2);
     end;
     mi:=TMenuItem.Create(Self);
     FItemsPopupMenu.Items.Add(mi);
     mi.Action:=ac;
-    mi.ShortCutKey2:=aShortCut2;
   end;
 
   procedure NewPopPrimary(const aCaption: string);
