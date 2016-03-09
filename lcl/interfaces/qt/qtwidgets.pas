@@ -4030,8 +4030,7 @@ begin
           X11Pos.x -= FFrameMargins.Left;
           X11Pos.y -= FFrameMargins.Top;
         end;
-
-        if (X11Pos.x = LCLObject.Left) and (X11Pos.y = LCLObject.Top) and
+        if ((GetKdeSessionVersion = 5) or ((X11Pos.x = LCLObject.Left) and (X11Pos.y = LCLObject.Top))) and
           ((QWidget_x(Widget) <> X11Pos.x) or (QWidget_y(Widget) <> X11Pos.y)) then
         begin
           {$IF DEFINED(DEBUGQTUSEACCURATEFRAME) OR DEFINED(DEBUGQTCHECKMOVESIZE)}
