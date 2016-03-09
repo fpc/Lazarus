@@ -1476,7 +1476,10 @@ function TCodeBuffer.FileOnDiskHasChanged(IgnoreModifiedFlag: Boolean): boolean;
 begin
   if IgnoreModifiedFlag then
   begin
-    Result:=FileDateOnDisk<>LoadDate; // ignore LoadDateValid because it is set to false after edit
+    if FileExistsCached(Filename) then
+      Result:=(FileDateOnDisk<>LoadDate) // ignore LoadDateValid because it is set to false after edit
+    else
+      Result:=false;
   end else
   begin
     if LoadDateValid and FileExistsCached(Filename) then
