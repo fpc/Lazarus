@@ -1544,7 +1544,7 @@ begin
           (AParent, 'Find previous word occurrence', srkmecFindPrevWordOccurrence,
            nil, @ExecuteIdeMenuClick, nil, 'menu_search_find_previous');
       SrcEditMenuFindInFiles := RegisterIDEMenuCommand
-          (AParent, 'Find in files', srkmecFindInFiles, nil,
+          (AParent, 'Find in files', srkmecFindInFiles + ' ...', nil,
            @ExecuteIdeMenuClick, nil, 'menu_search_files');
       SrcEditMenuFindIdentifierReferences := RegisterIDEMenuCommand
           (AParent, 'FindIdentifierReferences',lisMenuFindIdentifierRefs, nil,
