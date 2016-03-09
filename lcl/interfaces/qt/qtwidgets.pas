@@ -7470,7 +7470,14 @@ begin
                   DebugLn('  Attributes ',Format('x %d y %d w %d h %d border %d x11wob x %d y %d',[ALeft, ATop, AWidth, AHeight, ABorder,R.Left, R.Top]));
                   {$ENDIF}
                   FFormHasInvalidPosition := True;
-                  QWidget_move(Widget, R.Left, R.Top);
+                  // KWin under KDE5 makes problem sometimes since
+                  // Qt and X11 values are totally unsynced
+                  if QX11Info_isCompositingManagerRunning and (GetKdeSessionVersion = 5) then
+                    {$IF DEFINED(DEBUGQTUSEACCURATEFRAME) OR DEFINED(DEBUGQTCHECKMOVESIZE)}
+                    DebugLn(Format('**** DO NOT TOUCH QT POSITION UNDER KWin AND KDE v.%d, but we are trying coords x %d y %d',[GetKdeSessionVersion, R.Left, R.Top]))
+                    {$ENDIF}
+                  else
+                    QWidget_move(Widget, R.Left, R.Top);
                 end;
               end;
             end;
