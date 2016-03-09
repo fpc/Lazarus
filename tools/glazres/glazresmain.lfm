@@ -184,7 +184,7 @@ object GLazResForm: TGLazResForm
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '1.5'
+  LCLVersion = '1.7'
   object LrsLabel: TLabel
     Left = 16
     Height = 17
@@ -376,9 +376,7 @@ object GLazResForm: TGLazResForm
     Width = 552
     OnAcceptFileName = DestEdtAcceptFileName
     DialogKind = dkSave
-    DialogTitle = 'Save resourcefile as'
     DialogOptions = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
-    Filter = 'Lazarus Resource Files|*.lrs|All Files|*'
     FilterIndex = 0
     DefaultExt = 'lrs'
     HideDirectories = False

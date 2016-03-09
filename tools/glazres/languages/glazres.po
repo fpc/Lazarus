@@ -1,0 +1,130 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: glazresmain.cbtncancel
+msgid "Cancel"
+msgstr ""
+
+#: glazresmain.defilter
+msgctxt "glazresmain.defilter"
+msgid "Lazarus Resource Files|*.lrs|All Files|*"
+msgstr ""
+
+#: glazresmain.desaveresourcefileas
+msgctxt "glazresmain.desaveresourcefileas"
+msgid "Save resourcefile as"
+msgstr ""
+
+#: glazresmain.errconverttotext
+msgid "ERROR: unable to convert Delphi form to text: \"%s\""
+msgstr ""
+
+#: glazresmain.errcreate
+msgid "ERROR: Cannot create \"%s\""
+msgstr ""
+
+#: glazresmain.errfileisresource
+msgid "ERROR: Cannot add resource file to itself (\"%s\")"
+msgstr ""
+
+#: glazresmain.errfilenotfound
+msgid "ERROR: File not found: \"%s\""
+msgstr ""
+
+#: glazresmain.errnoresourcename
+msgid "ERROR: No resourcename found for \"%s\""
+msgstr ""
+
+#: glazresmain.errread
+msgid "ERROR: Cannot read from \"%s\""
+msgstr ""
+
+#: glazresmain.msgcreatinglrs
+msgid "Creating \"%s\""
+msgstr ""
+
+#: glazresmain.msgprocessing
+msgid "Processing \"%s\""
+msgstr ""
+
+#: glazresmain.msgresourcenametype
+msgid " Resource name = \"%s\", Type = \"%s\""
+msgstr ""
+
+#: glazresmain.msgsuccess
+msgid ""
+"Done.\n"
+"Number of resources added: %d.\n"
+msgstr ""
+
+#: glazresmain.msgwrongext
+msgid "Filename does not have the required extension: fix it?"
+msgstr ""
+
+#: glazresmain.odopenexistingfile
+msgctxt "glazresmain.odopenexistingfile"
+msgid "Open existing file"
+msgstr ""
+
+#: glazresmain.opdfilter
+msgctxt "glazresmain.opdfilter"
+msgid "Graphic (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|Cursor (*.cur)|*.cur|Icon (*.ico)|*.ico|Mac OS X Icon (*.icns)|*.icns|Joint Picture Expert Group (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|Tagged Image File Format (*.tif;*.tiff)|*.tif;*.tiff|Graphics Interchange Format (*.gif)|*.gif|Portable PixMap (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|Animated GIF (*.gif)|*.gif|TGA Image File (*.tga)|*.tga|"
+msgstr ""
+
+#: glazresmain.opdfilterall
+msgid "All files"
+msgstr ""
+
+#: glazresmain.opdopenexistingpicture
+msgctxt "glazresmain.opdopenexistingpicture"
+msgid "Open existing picture"
+msgstr ""
+
+#: tglazresform.addanybtn.hint
+msgid "Add (any kind of) files to the list"
+msgstr ""
+
+#: tglazresform.addimgbtn.hint
+msgid "Add images to the list"
+msgstr ""
+
+#: tglazresform.caption
+msgid "LRS Builder"
+msgstr ""
+
+#: tglazresform.clearbtn.caption
+msgid "Clear"
+msgstr ""
+
+#: tglazresform.clearbtn.hint
+msgid "Cleare the entire list"
+msgstr ""
+
+#: tglazresform.closebtn.hint
+msgid "Exit the program"
+msgstr ""
+
+#: tglazresform.deletebtn.hint
+msgid "Delete selected files from the list"
+msgstr ""
+
+#: tglazresform.fileslabel.caption
+msgid "Files to include"
+msgstr ""
+
+#: tglazresform.lrslabel.caption
+msgid "Lazarus Resource Filename"
+msgstr ""
+
+#: tglazresform.messageslabel.caption
+msgid "Messages"
+msgstr ""
+
+#: tglazresform.startbtn.caption
+msgid "Create LRS"
+msgstr ""
+
+#: tglazresform.startbtn.hint
+msgid "Create the output LRS file"
+msgstr ""
+

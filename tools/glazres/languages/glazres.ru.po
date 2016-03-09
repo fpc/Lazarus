@@ -1,0 +1,142 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
+
+#: glazresmain.cbtncancel
+msgid "Cancel"
+msgstr "Отмена"
+
+#: glazresmain.defilter
+msgctxt "glazresmain.defilter"
+msgid "Lazarus Resource Files|*.lrs|All Files|*"
+msgstr "Файлы ресурсов Lazarus|*.lrs|Все файлы|*"
+
+#: glazresmain.desaveresourcefileas
+msgctxt "glazresmain.desaveresourcefileas"
+msgid "Save resourcefile as"
+msgstr "Сохранить файл ресурсов как"
+
+#: glazresmain.errconverttotext
+msgid "ERROR: unable to convert Delphi form to text: \"%s\""
+msgstr "ОШИБКА: невозможно преобразовать форму Delphi в текст: \"%s\""
+
+#: glazresmain.errcreate
+msgid "ERROR: Cannot create \"%s\""
+msgstr "ОШИБКА: невозможно создать \"%s\""
+
+#: glazresmain.errfileisresource
+msgid "ERROR: Cannot add resource file to itself (\"%s\")"
+msgstr "ОШИБКА: невозможно добавить файл ресурсов в него самого (\"%s\")"
+
+#: glazresmain.errfilenotfound
+msgid "ERROR: File not found: \"%s\""
+msgstr "ОШИБКА: файл не найден: \"%s\""
+
+#: glazresmain.errnoresourcename
+msgid "ERROR: No resourcename found for \"%s\""
+msgstr "ОШИБКА: не найдено имени ресурса для \"%s\""
+
+#: glazresmain.errread
+msgid "ERROR: Cannot read from \"%s\""
+msgstr "ОШИБКА: невозможно прочитать \"%s\""
+
+#: glazresmain.msgcreatinglrs
+msgid "Creating \"%s\""
+msgstr "Создание \"%s\""
+
+#: glazresmain.msgprocessing
+msgid "Processing \"%s\""
+msgstr "Обработка \"%s\""
+
+#: glazresmain.msgresourcenametype
+msgid " Resource name = \"%s\", Type = \"%s\""
+msgstr " Имя ресурса = \"%s\", Тип = \"%s\""
+
+#: glazresmain.msgsuccess
+msgid ""
+"Done.\n"
+"Number of resources added: %d.\n"
+msgstr ""
+"Готово.\n"
+"Добавлено ресурсов: %d.\n"
+
+#: glazresmain.msgwrongext
+msgid "Filename does not have the required extension: fix it?"
+msgstr "Файл не имеет требуемого расширения. Добавить его?"
+
+#: glazresmain.odopenexistingfile
+msgctxt "glazresmain.odopenexistingfile"
+msgid "Open existing file"
+msgstr "Открыть существующий файл"
+
+#: glazresmain.opdfilter
+msgctxt "glazresmain.opdfilter"
+msgid "Graphic (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|Cursor (*.cur)|*.cur|Icon (*.ico)|*.ico|Mac OS X Icon (*.icns)|*.icns|Joint Picture Expert Group (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|Tagged Image File Format (*.tif;*.tiff)|*.tif;*.tiff|Graphics Interchange Format (*.gif)|*.gif|Portable PixMap (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|Animated GIF (*.gif)|*.gif|TGA Image File (*.tga)|*.tga|"
+msgstr "Файлы изображений (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|Файлы Portable Network Graphic (*.png)|*.png|Файлы Pixmap (*.xpm)|*.xpm|Файлы BMP (*.bmp)|*.bmp|Файлы курсоров (*.cur)|*.cur|Файлы значков (*.ico)|*.ico|Файлы значков Mac OS X (*.icns)|*.icns|Файлы Joint Picture Expert Group (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|Файлы формата Tagged Image File (*.tif;*.tiff)|*.tif;*.tiff|Файлы GIF (*.gif)|*.gif|Файлы Portable PixMap (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|Файлы GIF с анимацией (*.gif)|*.gif|Файлы изображений TGA (*.tga)|*.tga|"
+
+#: glazresmain.opdfilterall
+msgid "All files"
+msgstr "Все файлы"
+
+#: glazresmain.opdopenexistingpicture
+msgctxt "glazresmain.opdopenexistingpicture"
+msgid "Open existing picture"
+msgstr "Открыть существующее изображение"
+
+#: tglazresform.addanybtn.hint
+msgid "Add (any kind of) files to the list"
+msgstr "Добавить файлы (любого типа) в список"
+
+#: tglazresform.addimgbtn.hint
+msgid "Add images to the list"
+msgstr "Добавить изображения в список"
+
+#: tglazresform.caption
+msgid "LRS Builder"
+msgstr "Программа создания ресурсов LRS"
+
+#: tglazresform.clearbtn.caption
+msgid "Clear"
+msgstr "Очистить"
+
+#: tglazresform.clearbtn.hint
+msgid "Cleare the entire list"
+msgstr "Очистить весь список"
+
+#: tglazresform.closebtn.hint
+msgid "Exit the program"
+msgstr "Выйти из программы"
+
+#: tglazresform.deletebtn.hint
+msgid "Delete selected files from the list"
+msgstr "Удалить выделенные файлы из списка"
+
+#: tglazresform.fileslabel.caption
+msgid "Files to include"
+msgstr "Файлы для включения"
+
+#: tglazresform.lrslabel.caption
+msgid "Lazarus Resource Filename"
+msgstr "Имя файла ресурсов Lazarus"
+
+#: tglazresform.messageslabel.caption
+msgid "Messages"
+msgstr "Сообщения"
+
+#: tglazresform.startbtn.caption
+msgid "Create LRS"
+msgstr "Создать LRS"
+
+#: tglazresform.startbtn.hint
+msgid "Create the output LRS file"
+msgstr "Вывести файл ресурсов в формате LRS"
+
