@@ -273,6 +273,7 @@ type
   {Ask for _NET_FRAME_EXTENTS,_KDE_NET_WM_SHADOW,_GTK_NET_FRAME_EXTENTS}
   function GetX11RectForAtom(AWinID: LongWord; const AAtomName: string; out ARect: TRect): boolean;
   function GetX11WindowPos(AWinID: LongWord; out ALeft, ATop: integer): boolean;
+  function SetX11WindowPos(AWinID: LongWord; const ALeft, ATop: integer): boolean;
   function GetX11WindowGeometry(AWinID: LongWord; out ARect: TRect): boolean;
   {check if wm supports request for frame extents}
   function AskX11_NET_REQUEST_FRAME_EXTENTS(AWinID: LongWord; out AMargins: TRect): boolean;

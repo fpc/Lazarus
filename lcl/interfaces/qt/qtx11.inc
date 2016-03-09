@@ -420,6 +420,19 @@ begin
   Result := (AXWinAttr.map_installed > 0) and (AXWinAttr.map_state = 2);
 end;
 
+function SetX11WindowPos(AWinID: LongWord; const ALeft, ATop: integer): boolean;
+var
+  D: PDisplay;
+  ARootWindow, AChildWin: TWindow;
+  AResult: integer;
+begin
+  Result := False;
+  D := QX11Info_display;
+  if D = nil then
+    exit;
+  Result := XMoveWindow(d, AWinID, ALeft, ATop) <> BadWindow;
+end;
+
 var
   InternalExtentsAtom: TAtom = 0; {find extents atom}
   InternalExtentsCounter: Integer = 0; {counter for bad wm, eg for blackbox}
