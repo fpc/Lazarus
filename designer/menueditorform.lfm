@@ -181,7 +181,6 @@ object MenuDesignerForm: TMenuDesignerForm
         Top = 27
         Width = 168
         Anchors = [akTop, akLeft, akRight]
-        AutoSize = False
         BorderSpacing.Left = 6
         BorderSpacing.Around = 6
         Caption = 'ShortcutItemsCountLabel'
@@ -201,7 +200,6 @@ object MenuDesignerForm: TMenuDesignerForm
         Top = 48
         Width = 168
         Anchors = [akTop, akLeft, akRight]
-        AutoSize = False
         BorderSpacing.Left = 6
         BorderSpacing.Around = 6
         Caption = 'DeepestNestingLevelLabel'
@@ -221,7 +219,6 @@ object MenuDesignerForm: TMenuDesignerForm
         Top = 69
         Width = 168
         Anchors = [akTop, akLeft, akRight]
-        AutoSize = False
         BorderSpacing.Left = 6
         BorderSpacing.Around = 6
         Caption = 'IconCountLabel'
@@ -241,7 +238,6 @@ object MenuDesignerForm: TMenuDesignerForm
         Top = 90
         Width = 168
         Anchors = [akTop, akLeft, akRight]
-        AutoSize = False
         BorderSpacing.Left = 6
         BorderSpacing.Bottom = 6
         BorderSpacing.Around = 6
@@ -280,6 +276,7 @@ object MenuDesignerForm: TMenuDesignerForm
       Top = 254
       Width = 190
       Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'SubmenuGroupBox'
       ClientHeight = 44
