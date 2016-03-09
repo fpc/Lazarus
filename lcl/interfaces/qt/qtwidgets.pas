@@ -3946,8 +3946,8 @@ var
   {$IFDEF HASX11}
   ACurrPos: TQtPoint;
   {$IFDEF QtUseAccurateFrame}
-  //X11Pos: TQtPoint;
-  //ALeft, ATop, ABorder, AWidth, AHeight: integer;
+  X11Pos: TQtPoint;
+  ALeft, ATop, ABorder, AWidth, AHeight: integer;
   {$ENDIF}
   {$ENDIF}
   FrameRect, WindowRect: TRect;
@@ -4011,36 +4011,39 @@ begin
       {$IF DEFINED(DEBUGQTUSEACCURATEFRAME) OR DEFINED(DEBUGQTCHECKMOVESIZE)}
       DebugLn('WARNING: SlotMove(',dbgsName(LCLObject),') frame and geometry have same values geom=',dbgs(WindowRect),' frame=',dbgs(FrameRect),' MARGINS=',dbgs(FrameMargins),' WS=',dbgs(QtWidgetSet.WSFrameMargins),' InvPos=',dbgs(TQtMainWindow(Self).FFormHasInvalidPosition));
       {$ENDIF}
-      TQtMainWindow(Self).FFormHasInvalidPosition := True;
-      exit;
-      (*
-      GetX11WindowPos(QWidget_winId(Widget),  X11Pos.x, X11Pos.y);
-
-      if GetX11WindowAttributes(QWidget_winID(Widget), ALeft, ATop, AWidth, AHeight, ABorder) then
+      {TODO: KWin4 is find with FFormHasInvalidPosition := True, but gtk based wm's like
+       xfce,gnome-shell and cinnamon and kwin5 aren''t, so we must use code below.}
+      if (GetKdeSessionVersion = 3) or (GetKdeSessionVersion = 4) then
+        TQtMainWindow(Self).FFormHasInvalidPosition := True
+      else
       begin
-        if ALeft = 0 then
+        GetX11WindowPos(QWidget_winId(Widget),  X11Pos.x, X11Pos.y);
+
+        if GetX11WindowAttributes(QWidget_winID(Widget), ALeft, ATop, AWidth, AHeight, ABorder) then
+        begin
+          if ALeft = 0 then
+            X11Pos.x -= FFrameMargins.Left;
+          if ATop = 0 then
+            X11Pos.y -= FFrameMargins.Top;
+        end else
+        begin
           X11Pos.x -= FFrameMargins.Left;
-        if ATop = 0 then
           X11Pos.y -= FFrameMargins.Top;
-      end else
-      begin
-        X11Pos.x -= FFrameMargins.Left;
-        X11Pos.y -= FFrameMargins.Top;
-      end;
+        end;
 
-      if (X11Pos.x = LCLObject.Left) and (X11Pos.y = LCLObject.Top) and
-        ((QWidget_x(Widget) <> X11Pos.x) or (QWidget_y(Widget) <> X11Pos.y)) then
-      begin
-        {$IF DEFINED(DEBUGQTUSEACCURATEFRAME) OR DEFINED(DEBUGQTCHECKMOVESIZE)}
-        DebugLn('1.*error: *** SlotMove(',dbgsName(LCLObject),Format(' calculated pos x %d y %d',[Msg.XPos, Msg.YPos]),' realized=',dbgs(GetX11WindowRealized(QWidget_winId(Widget))));
-        DebugLn(' > ',Format('current LCL x %d y %d Qt x %d y %d X11 x %d y %d CALC x %d y %d',[LCLObject.Left, LCLObject.Top, QWidget_x(Widget), QWidget_y(Widget), X11Pos.x, X11Pos.y, Msg.XPos, Msg.YPos]));
-        DebugLn(' > FrameRect=',dbgs(FrameRect),' WindowRect=',dbgs(WindowRect),' Margins=',dbgs(FFrameMargins));
-        DebugLn('< sending valid values to Qt and LCL ',Format('x %d y %d compositor %s ',[X11Pos.X, X11Pos.y,dbgs(QX11Info_isCompositingManagerRunning)]));
-        {$ENDIF}
-        QWidget_move(Widget, X11Pos.x, X11Pos.y);
-        exit;
+        if (X11Pos.x = LCLObject.Left) and (X11Pos.y = LCLObject.Top) and
+          ((QWidget_x(Widget) <> X11Pos.x) or (QWidget_y(Widget) <> X11Pos.y)) then
+        begin
+          {$IF DEFINED(DEBUGQTUSEACCURATEFRAME) OR DEFINED(DEBUGQTCHECKMOVESIZE)}
+          DebugLn('1.*error: *** SlotMove(',dbgsName(LCLObject),Format(' calculated pos x %d y %d',[Msg.XPos, Msg.YPos]),' realized=',dbgs(GetX11WindowRealized(QWidget_winId(Widget))));
+          DebugLn(' > ',Format('current LCL x %d y %d Qt x %d y %d X11 x %d y %d CALC x %d y %d',[LCLObject.Left, LCLObject.Top, QWidget_x(Widget), QWidget_y(Widget), X11Pos.x, X11Pos.y, Msg.XPos, Msg.YPos]));
+          DebugLn(' > FrameRect=',dbgs(FrameRect),' WindowRect=',dbgs(WindowRect),' Margins=',dbgs(FFrameMargins));
+          DebugLn('< sending valid values to Qt and LCL ',Format('x %d y %d compositor %s ',[X11Pos.X, X11Pos.y,dbgs(QX11Info_isCompositingManagerRunning)]));
+          {$ENDIF}
+          QWidget_move(Widget, X11Pos.x, X11Pos.y);
+          exit;
+        end;
       end;
-      *)
     end;
   end;
   {$ENDIF}
