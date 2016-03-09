@@ -7167,6 +7167,7 @@ begin
     end;
     if FFormHasInvalidPosition then
     begin
+      {$IFDEF HASX11}
       if GetX11WindowPos(QWidget_winID(Widget), X11X, X11Y) then
       begin
         X11X -= FFrameMargins.Left;
@@ -7178,6 +7179,9 @@ begin
         else
           OffsetRect(Result, X11X - x, X11Y - y);
       end;
+      {$ELSE}
+      DebugLn('TQtMainWindow.getFrameGeometry currently implemented only on X11');
+      {$ENDIF}
     end;
   end;
   {$ENDIF}
