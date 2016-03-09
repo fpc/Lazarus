@@ -142,11 +142,9 @@ type
   // build project flags
   // Normally you don't need to pass any flags.
   TProjectBuildFlag = (
-    pbfCleanCompile,  // append -B to the compiler options
     pbfDoNotCompileDependencies,
     pbfDoNotCompileProject,
     pbfCompileDependenciesClean,
-    pbfOnlyIfNeeded,
     pbfDoNotSaveEditorFiles,
     pbfSkipLinking,
     pbfSkipAssembler,

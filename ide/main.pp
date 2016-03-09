@@ -3248,7 +3248,7 @@ begin
       end;
     end;
   ecDetach:                   DebugBoss.Detach;
-  ecBuild:                    DoBuildProject(crBuild, [pbfCleanCompile]);
+  ecBuild:                    DoBuildProject(crBuild, []);
   ecCleanUpAndBuild:          mnuCleanUpAndBuildProjectClicked(nil);
   ecQuickCompile:             DoQuickCompile;
   ecAbortBuild:               DoAbortBuild(false);
@@ -4166,7 +4166,7 @@ end;
 
 procedure TMainIDE.mnuBuildProjectClicked(Sender: TObject);
 Begin
-  DoBuildProject(crBuild,[pbfCleanCompile]);
+  DoBuildProject(crBuild,[]);
 end;
 
 procedure TMainIDE.mnuQuickCompileProjectClicked(Sender: TObject);
@@ -6446,6 +6446,7 @@ var
   WorkingDir: String;
   CompilerParams: String;
   NeedBuildAllFlag: Boolean;
+  NoBuildNeeded: Boolean;
   UnitOutputDirectory: String;
   TargetExeName: String;
   TargetExeDirectory: String;
@@ -6557,17 +6558,20 @@ begin
     // check if build is needed (only if we will call the compiler)
     // and check if a 'build all' is needed
     NeedBuildAllFlag:=false;
+    NoBuildNeeded:= false;
     aCompileHint:='';
     if (AReason in Project1.CompilerOptions.CompileReasons) then begin
       Result:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1,
                                                  NeedBuildAllFlag,aCompileHint);
-      if  (pbfOnlyIfNeeded in Flags)
+      if  (AReason = crRun)
       and (not (pfAlwaysBuild in Project1.Flags)) then begin
         if Result=mrNo then begin
           debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to be done']);
           Result:=mrOk;
-          exit;
-        end;
+          // continue for now, check if 'Before' tool is required
+          NoBuildNeeded:= true;
+        end
+        else
         if Result<>mrYes then
         begin
           debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
@@ -6577,6 +6581,26 @@ begin
     end;
     if aCompileHint<>'' then
       aCompileHint:='Compile Reason: '+aCompileHint;
+
+    // execute compilation tool 'Before'
+    if not (pbfSkipTools in Flags) then begin
+      ToolBefore:=TProjectCompilationToolOptions(
+                                        Project1.CompilerOptions.ExecuteBefore);
+      if (AReason in ToolBefore.CompileReasons) then begin
+        Result:=Project1.CompilerOptions.ExecuteBefore.Execute(
+               Project1.ProjectDirectory, lisProject2+lisExecutingCommandBefore,
+               aCompileHint);
+        if Result<>mrOk then
+        begin
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CompilerOptions.ExecuteBefore.Execute failed']);
+          exit;
+        end;
+      end;
+    end;
+
+    // leave if no further action is needed
+    if NoBuildNeeded then
+      exit;
 
     // create unit output directory
     UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
@@ -6638,22 +6662,6 @@ begin
       exit;
     end;
 
-    // execute compilation tool 'Before'
-    if not (pbfSkipTools in Flags) then begin
-      ToolBefore:=TProjectCompilationToolOptions(
-                                        Project1.CompilerOptions.ExecuteBefore);
-      if (AReason in ToolBefore.CompileReasons) then begin
-        Result:=Project1.CompilerOptions.ExecuteBefore.Execute(
-               Project1.ProjectDirectory, lisProject2+lisExecutingCommandBefore,
-               aCompileHint);
-        if Result<>mrOk then
-        begin
-          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CompilerOptions.ExecuteBefore.Execute failed']);
-          exit;
-        end;
-      end;
-    end;
-
     if (AReason in Project1.CompilerOptions.CompileReasons)
     and (not (pbfDoNotCompileProject in Flags)) then begin
       try
@@ -6678,7 +6686,7 @@ begin
         StartTime:=Now;
         Result:=TheCompiler.Compile(Project1,
                                 WorkingDir,CompilerFilename,CompilerParams,
-                                (pbfCleanCompile in Flags) or NeedBuildAllFlag,
+                                (AReason = crBuild) or NeedBuildAllFlag,
                                 pbfSkipLinking in Flags,
                                 pbfSkipAssembler in Flags,aCompileHint);
         if ConsoleVerbosity>=0 then
@@ -6830,7 +6838,7 @@ begin
   // Build project first
   if ConsoleVerbosity>0 then
     debugln('Hint: (lazarus) TMainIDE.DoInitProjectRun Check build ...');
-  if DoBuildProject(crRun,[pbfOnlyIfNeeded]) <> mrOk then
+  if DoBuildProject(crRun,[]) <> mrOk then
     Exit;
 
   // Check project build
