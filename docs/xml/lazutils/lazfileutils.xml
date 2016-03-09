@@ -1105,6 +1105,8 @@ It resolves 'A/../B' to 'B', which might be wrong under Unix if A is a symlink. 
 The single dot './A' is resolved to 'A', but a single '.' is kept as '.'.
 </descr>
       </element>
+    <element name="SHGetFolderPathUTF8"><short>Works as the WinAPI function SHGetFolderPathW, except it returns an UTF8 encoded string.</short>
+      </element>
     </module> <!-- LazFileUtils -->
 
 </package>
