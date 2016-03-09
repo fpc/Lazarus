@@ -262,6 +262,8 @@ type
   function GetAlwaysOnTopX11(Widget: QWidgetH): boolean;
   {check if we are running under kde3 installation}
   function IsOldKDEInstallation: Boolean;
+  {check KDE session version. Possible results are > 2, -1 means not running under KDE}
+  function GetKdeSessionVersion: integer;
   {force mapping}
   procedure MapX11Window(AWinID: LongWord);
   {$IFDEF QtUseAccurateFrame}

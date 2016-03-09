@@ -6,7 +6,8 @@ var
   i: longint;
 begin
   //if we are under KDE4, it's already recent one.
-  Result := not ((GetEnvironmentVariable('KDE_SESSION_VERSION') = '4')
+  Result := not ((GetEnvironmentVariable('KDE_SESSION_VERSION') = '4') or
+    (GetEnvironmentVariable('KDE_SESSION_VERSION') = '5')
     or QX11Info_isCompositingManagerRunning);
   if Result then
     exit;
@@ -20,6 +21,14 @@ begin
   //Fedora marks XOrg 7.XX as 1.XX, so we have to check that too.
   Result := ((i >= 50000000) and (i <= 70040000)) or
     ((i > 0) and (i <= 10400000));
+end;
+
+function GetKdeSessionVersion: integer;
+var
+  S: String;
+begin
+  S := GetEnvironmentVariable('KDE_SESSION_VERSION');
+  Result := StrToIntDef(S, -1);
 end;
 
 function IsCurrentDesktop(AWidget: QWidgetH): Boolean;
