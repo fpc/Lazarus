@@ -1905,8 +1905,8 @@ begin
     {$ENDIF}
     QWidget_move(ATempWidget, -MAXSHORT, -MAXSHORT);
     QWidget_resize(ATempWidget, 32, 32);
-    QWidget_show(ATempWidget);
     {$IFDEF HASX11}
+    QWidget_show(ATempWidget);
     AID := QWidget_winID(ATempWidget);
 
     B := AskX11_NET_REQUEST_FRAME_EXTENTS(AID, R);
@@ -1977,7 +1977,8 @@ begin
       {$ENDIF}
     end;
     {$ELSE}
-    //TODO: create FWSFrameMargins from AFrameSize - ASize
+    // create native window
+    QWidget_winId(ATempWidget);
     QWidget_size(ATempWidget, @ASize);
     QWidget_frameSize(ATempWidget, @AFrameSize);
     R.Left := (AFrameSize.cx - ASize.cx) div 2;
@@ -1989,8 +1990,10 @@ begin
     FWSFrameMargins := R;
     {$IFDEF DebugQtUseAccurateFrame}
     // just test
+    {$IFDEF HASX11}
     QWidget_size(ATempWidget, @ASize);
     QWidget_frameSize(ATempWidget, @AFrameSize);
+    {$ENDIF}
     with FWSFrameMargins do
       DebugLn('TQtWidgetSet.GetFrameMargins: **MARGINS=',Format('l %d t %d r %d b %d QtFrame x %d y %d compositor %s sysMetrics %d',
         [Left, Top, Right, Bottom, AFrameSize.cx - ASize.cx, AFrameSize.cy - ASize.cy, BoolToStr({$IFDEF HASX11}QX11Info_isCompositingManagerRunning{$ELSE}False{$ENDIF}), GetSystemMetrics(SM_CYCAPTION)]));
