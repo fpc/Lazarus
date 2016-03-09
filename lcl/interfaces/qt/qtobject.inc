@@ -1993,7 +1993,7 @@ begin
     QWidget_frameSize(ATempWidget, @AFrameSize);
     with FWSFrameMargins do
       DebugLn('TQtWidgetSet.GetFrameMargins: **MARGINS=',Format('l %d t %d r %d b %d QtFrame x %d y %d compositor %s sysMetrics %d',
-        [Left, Top, Right, Bottom, AFrameSize.cx - ASize.cx, AFrameSize.cy - ASize.cy, BoolToStr(QX11Info_isCompositingManagerRunning), GetSystemMetrics(SM_CYCAPTION)]));
+        [Left, Top, Right, Bottom, AFrameSize.cx - ASize.cx, AFrameSize.cy - ASize.cy, BoolToStr({$IFDEF HASX11}QX11Info_isCompositingManagerRunning{$ELSE}False{$ENDIF}), GetSystemMetrics(SM_CYCAPTION)]));
     {$ENDIF}
     QWidget_hide(ATempWidget);
     QWidget_destroy(ATempWidget);
