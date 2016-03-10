@@ -252,6 +252,7 @@ type
   function GetQtVersion: String;
   function QtVersionCheck(const AMajor, AMinor, AMicro: Integer): Boolean;
   {$IFDEF HASX11}
+  function IsWayland: Boolean; {this is not X11 but wayland !}
   function IsCurrentDesktop(AWidget: QWidgetH): Boolean;
   function X11Raise(AHandle: HWND): boolean;
   function X11GetActiveWindow: QWidgetH;

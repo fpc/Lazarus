@@ -1,10 +1,17 @@
 {%MainUnit qtint.pp}
 
+function IsWayland: Boolean;
+begin
+  Result := GetEnvironmentVariable('XDG_SESSION_TYPE') = 'wayland';
+end;
+
 function IsOldKDEInstallation: Boolean;
 var
   Display: PDisplay;
   i: longint;
 begin
+  if IsWayland then
+    exit(False);
   //if we are under KDE4, it's already recent one.
   Result := not ((GetEnvironmentVariable('KDE_SESSION_VERSION') = '4') or
     (GetEnvironmentVariable('KDE_SESSION_VERSION') = '5')
