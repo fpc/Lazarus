@@ -125,7 +125,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="7"/>
-    <Files Count="439">
+    <Files Count="440">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2178,6 +2178,10 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk3WSExtDlgs"/>
       </Item439>
+      <Item440>
+        <Filename Value="win32/win32pagecontrol.inc"/>
+        <Type Value="Include"/>
+      </Item440>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
