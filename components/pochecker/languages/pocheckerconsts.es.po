@@ -207,6 +207,10 @@ msgstr ""
 "Los siguientes ficheros que ya no existen fueron removidos de la lista:\n"
 "%s\n"
 
+#: pocheckerconsts.sfindtroublesomefiles
+msgid "Find troublesome files"
+msgstr ""
+
 #: pocheckerconsts.sfuzzy
 msgid "Fuzzy"
 msgstr "Confuso"
@@ -258,6 +262,10 @@ msgstr "No existen pruebas seleccionadas."
 #: pocheckerconsts.snotetranslationisfuzzy
 msgid "Note: translation is fuzzy"
 msgstr "Nota: la traducción es confusa (fuzzy)"
+
+#: pocheckerconsts.snotroublesomepofilesfound
+msgid "No troublesome .po files found"
+msgstr ""
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
@@ -391,6 +399,14 @@ msgstr ""
 "%3d Confuso (%3.1f%%)\n"
 "%d Error(es) en el Test Seleccionado\n"
 
+#: pocheckerconsts.sthefollowingmasterpofilesaddedtothelist
+msgid "The following %s master .po file(s) added to the list:"
+msgstr ""
+
+#: pocheckerconsts.sthefollowingorphanedpofilesfound
+msgid "The following %s orphaned .po file(s) found:"
+msgstr ""
+
 #: pocheckerconsts.stotalerrors
 msgid "Total errors found: %d"
 msgstr "Total de errores encontrados: %d"
@@ -410,6 +426,10 @@ msgstr "Traducción"
 #: pocheckerconsts.stranslationstatistics
 msgid "Translation statistics per language:"
 msgstr "Estadísticas de traducción por lenguaje"
+
+#: pocheckerconsts.stroublesomefiles
+msgid "Troublesome files"
+msgstr ""
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"

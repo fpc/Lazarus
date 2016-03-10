@@ -209,6 +209,10 @@ msgstr ""
 "Следующие несуществующие файлы были удалены из списка:\n"
 "%s\n"
 
+#: pocheckerconsts.sfindtroublesomefiles
+msgid "Find troublesome files"
+msgstr ""
+
 #: pocheckerconsts.sfuzzy
 msgid "Fuzzy"
 msgstr "Неточные переводы"
@@ -260,6 +264,10 @@ msgstr "Не выбрано ни одного теста."
 #: pocheckerconsts.snotetranslationisfuzzy
 msgid "Note: translation is fuzzy"
 msgstr "Внимание: перевод неточен"
+
+#: pocheckerconsts.snotroublesomepofilesfound
+msgid "No troublesome .po files found"
+msgstr ""
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
@@ -393,6 +401,14 @@ msgstr ""
 "Неточных переводов: %3d (%3.1f%%)\n"
 "Ошибок в выбранных тестах: %d\n"
 
+#: pocheckerconsts.sthefollowingmasterpofilesaddedtothelist
+msgid "The following %s master .po file(s) added to the list:"
+msgstr ""
+
+#: pocheckerconsts.sthefollowingorphanedpofilesfound
+msgid "The following %s orphaned .po file(s) found:"
+msgstr ""
+
 #: pocheckerconsts.stotalerrors
 msgid "Total errors found: %d"
 msgstr "Всего найдено ошибок: %d"
@@ -412,6 +428,10 @@ msgstr "Перевод"
 #: pocheckerconsts.stranslationstatistics
 msgid "Translation statistics per language:"
 msgstr "Статистика переводов по языкам:"
+
+#: pocheckerconsts.stroublesomefiles
+msgid "Troublesome files"
+msgstr ""
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"

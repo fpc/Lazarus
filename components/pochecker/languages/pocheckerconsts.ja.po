@@ -207,6 +207,10 @@ msgid ""
 "%s\n"
 msgstr ""
 
+#: pocheckerconsts.sfindtroublesomefiles
+msgid "Find troublesome files"
+msgstr ""
+
 #: pocheckerconsts.sfuzzy
 msgid "Fuzzy"
 msgstr ""
@@ -257,6 +261,10 @@ msgstr "テスト項目が選択されていません。"
 
 #: pocheckerconsts.snotetranslationisfuzzy
 msgid "Note: translation is fuzzy"
+msgstr ""
+
+#: pocheckerconsts.snotroublesomepofilesfound
+msgid "No troublesome .po files found"
 msgstr ""
 
 #: pocheckerconsts.snrerrorsfound
@@ -385,6 +393,14 @@ msgid ""
 "%d Error(s) in Selected Tests\n"
 msgstr ""
 
+#: pocheckerconsts.sthefollowingmasterpofilesaddedtothelist
+msgid "The following %s master .po file(s) added to the list:"
+msgstr ""
+
+#: pocheckerconsts.sthefollowingorphanedpofilesfound
+msgid "The following %s orphaned .po file(s) found:"
+msgstr ""
+
 #: pocheckerconsts.stotalerrors
 #, fuzzy
 #| msgid "Total errors / warnings found: %d"
@@ -408,6 +424,10 @@ msgstr "訳文"
 #| msgid "Translation statistics for:"
 msgid "Translation statistics per language:"
 msgstr "翻訳状況："
+
+#: pocheckerconsts.stroublesomefiles
+msgid "Troublesome files"
+msgstr ""
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
