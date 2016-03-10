@@ -255,7 +255,7 @@ end;
 
 procedure TMenuDesignerForm.HelpButtonClick(Sender: TObject);
 const
-  helpPath = 'http://wiki.lazarus.freepascal.org/IDE_Window:_menu_editor';
+  helpPath = 'http://wiki.lazarus.freepascal.org/IDE_Window:_Menu_Editor';
 begin
   //LazarusHelp.ShowHelpForIDEControl(Self);
   OpenURL(helpPath);
