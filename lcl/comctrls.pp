@@ -445,7 +445,6 @@ type
     property ActivePage: String read GetActivePage write SetActivePage
                                                       stored IsStoredActivePage;
   protected //elevated visibility for un/paged
-    FUnPaged: boolean; //false iff unpaged (TabControl)
     function GetPage(AIndex: Integer): TCustomPage; virtual;
     function GetPageCount : integer; virtual;
     procedure InsertPage(APage: TCustomPage; Index: Integer); virtual;
@@ -497,7 +496,6 @@ type
     property Pages: TStrings read FAccess write SetPages;
     property ShowTabs: Boolean read FShowTabs write SetShowTabs default True;
     property TabPosition: TTabPosition read FTabPosition write SetTabPosition default tpTop;
-    property IsUnpaged: boolean read FUnPaged; deprecated;
   published
     property TabStop default true;
   end;
@@ -767,6 +765,8 @@ type
 
 (* This is the new TTabControl which replaces the one one.
   This new one is derived from TCustomTabControl.
+
+  Note: TabControls that do not implement "pages" MUST be derived from TTabControl !
 *)
 
   TTabControl = class(TCustomTabControl)
