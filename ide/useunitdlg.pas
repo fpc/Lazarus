@@ -34,7 +34,7 @@ uses
   Dialogs, LCLProc, FileProcs, Graphics, LCLType, SourceEditor, LazIDEIntf,
   IDEImagesIntf, LazarusIDEStrConsts, ProjectIntf, IDEWindowIntf, Project,
   CodeCache, CodeToolManager, IdentCompletionTool, CodeTree, ListFilterEdit,
-  LinkScanner, CodeToolsOptions;
+  LinkScanner, EnvironmentOpts;
 
 type
 
@@ -47,6 +47,7 @@ type
     UnitsListBox: TListBox;
     SectionRadioGroup: TRadioGroup;
     procedure AllUnitsCheckBoxChange(Sender: TObject);
+    procedure FilterEditAfterFilter(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -84,6 +85,7 @@ var
   SrcEdit: TSourceEditor;
   s: String;
   CTRes: Boolean;
+  EnvOptions: TUseUnitDlgOptions;
 begin
   Result:=mrOk;
   if not LazarusIDE.BeginCodeTools then begin
@@ -111,11 +113,13 @@ begin
       // automatic choice of dest uses-section by cursor position
       UseUnitDlg.DetermineUsesSection(SrcEdit.CodeBuffer);
 
-    if UseUnitDlg.FilterEdit.Items.Count = 0 then
-      // no available units from current project => turn on "all units"
-      UseUnitDlg.AllUnitsCheckBox.Checked := True;
+    // Read recent properties
+    EnvOptions := EnvironmentOptions.UseUnitDlgOptions;
+    UseUnitDlg.AllUnitsCheckBox.Checked := EnvOptions.AllUnits;
+    UseUnitDlg.SectionRadioGroup.ItemIndex:=Ord(EnvOptions.AddToImplementation);
 
-    if UseUnitDlg.FilterEdit.Items.Count = 0 then begin
+    if (UseUnitDlg.FilterEdit.Items.Count = 0)
+    and UseUnitDlg.AllUnitsCheckBox.Checked then begin
       // No available units. This may not be a pascal source file.
       ShowMessage(dlgNoAvailableUnits);
       Exit(mrCancel);
@@ -123,6 +127,12 @@ begin
 
     // Show the dialog.
     if UseUnitDlg.ShowModal=mrOk then begin
+
+      // Write recent properties
+      EnvOptions.AllUnits := UseUnitDlg.AllUnitsCheckBox.Checked;
+      EnvOptions.AddToImplementation := Boolean(UseUnitDlg.SectionRadioGroup.ItemIndex);
+      EnvironmentOptions.UseUnitDlgOptions := EnvOptions;
+
       s:=UseUnitDlg.SelectedUnit;
       if s <> '' then begin
         if UseUnitDlg.InterfaceSelected then
@@ -154,10 +164,6 @@ begin
   SectionRadioGroup.Items.Clear;
   SectionRadioGroup.Items.Add(dlgInsertInterface);
   SectionRadioGroup.Items.Add(dlgInsertImplementation);
-  if CodeToolsOpts.UsesSectionPreferInterface then
-    SectionRadioGroup.ItemIndex:=0
-  else
-    SectionRadioGroup.ItemIndex:=1;
   ButtonPanel1.OKButton.Caption:=lisMenuOk;
   ButtonPanel1.CancelButton.Caption:=lisCancel;
   UnitImgInd := IDEImages.LoadImage(16, 'item_unit');
@@ -210,9 +216,7 @@ end;
 procedure TUseUnitDialog.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
-  CodeToolsOpts.UsesSectionPreferInterface:=SectionRadioGroup.ItemIndex=0;
   IDEDialogLayoutList.SaveLayout(Self);
-  CodeToolsOpts.Save;
 end;
 
 procedure TUseUnitDialog.UnitsListBoxDblClick(Sender: TObject);
@@ -438,6 +442,12 @@ begin
       FilterEdit.Items.Add(FProjUnits[i]);
   end;
   FilterEdit.InvalidateFilter;
+end;
+
+procedure TUseUnitDialog.FilterEditAfterFilter(Sender: TObject);
+begin
+  if (UnitsListBox.Count > 0) and (UnitsListBox.ItemIndex = -1) then
+    UnitsListBox.ItemIndex := 0;
 end;
 
 end.

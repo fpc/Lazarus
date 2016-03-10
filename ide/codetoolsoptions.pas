@@ -102,7 +102,6 @@ type
     FSetPropertyVariableIsPrefix: Boolean;
     FSetPropertyVariableUseConst: Boolean;
     FUsesInsertPolicy: TUsesInsertPolicy;
-    FUsesSectionPreferInterface: boolean;
 
     // identifier completion
     FIdentComplAddSemicolon: Boolean;
@@ -220,9 +219,7 @@ type
       read FSetPropertyVariableUseConst write SetSetPropertyVariableUseConst;
     property UsesInsertPolicy: TUsesInsertPolicy
       read FUsesInsertPolicy write FUsesInsertPolicy;
-    property UsesSectionPreferInterface: boolean read FUsesSectionPreferInterface
-      write FUsesSectionPreferInterface;
-      
+
     // identifier completion
     property IdentComplAddSemicolon: Boolean read FIdentComplAddSemicolon
                                              write FIdentComplAddSemicolon;
@@ -501,8 +498,6 @@ begin
     FUsesInsertPolicy:=UsesInsertPolicyNameToPolicy(XMLConfig.GetValue(
       'CodeToolsOptions/UsesInsertPolicy/Value',
       UsesInsertPolicyNames[DefaultUsesInsertPolicy]));
-    FUsesSectionPreferInterface:=XMLConfig.GetValue(
-      'CodeToolsOptions/UsesSectionPreferInterface/Value',true);
 
     // identifier completion
     FIdentComplAddSemicolon:=XMLConfig.GetValue(
@@ -661,8 +656,6 @@ begin
     XMLConfig.SetDeleteValue('CodeToolsOptions/UsesInsertPolicy/Value',
       UsesInsertPolicyNames[FUsesInsertPolicy],
       UsesInsertPolicyNames[DefaultUsesInsertPolicy]);
-    XMLConfig.SetDeleteValue('CodeToolsOptions/UsesSectionPreferInterface/Value',
-      FUsesSectionPreferInterface,true);
 
     // identifier completion
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AddSemicolon',
@@ -812,8 +805,7 @@ begin
     FSetPropertyVariableIsPrefix:=CodeToolsOpts.FSetPropertyVariableIsPrefix;
     FSetPropertyVariableUseConst:=CodeToolsOpts.FSetPropertyVariableUseConst;
     FUsesInsertPolicy:=CodeToolsOpts.FUsesInsertPolicy;
-    FUsesSectionPreferInterface:=CodeToolsOpts.FUsesSectionPreferInterface;
-    
+
     // identifier completion
     FIdentComplAddSemicolon:=CodeToolsOpts.FIdentComplAddSemicolon;
     FIdentComplAddAssignOperator:=CodeToolsOpts.FIdentComplAddAssignOperator;
@@ -874,8 +866,7 @@ begin
   FSetPropertyVariableIsPrefix:=false;
   FSetPropertyVariableUseConst:=false;
   FUsesInsertPolicy:=DefaultUsesInsertPolicy;
-  FUsesSectionPreferInterface:=true;
-  
+
   // identifier completion
   FIdentComplAddSemicolon:=true;
   FIdentComplAddAssignOperator:=true;
@@ -955,7 +946,6 @@ begin
     and (FSetPropertyVariableIsPrefix=CodeToolsOpts.FSetPropertyVariableIsPrefix)
     and (FSetPropertyVariableUseConst=CodeToolsOpts.FSetPropertyVariableUseConst)
     and (FUsesInsertPolicy=CodeToolsOpts.FUsesInsertPolicy)
-    and (FUsesSectionPreferInterface=CodeToolsOpts.FUsesSectionPreferInterface)
 
     // identifier completion
     and (FIdentComplAddSemicolon=CodeToolsOpts.FIdentComplAddSemicolon)
@@ -1075,7 +1065,6 @@ begin
     Beauty.PropertyStoredIdentPostfix:=PropertyStoredIdentPostfix;
     Beauty.PrivateVariablePrefix:=PrivateVariablePrefix;
     Beauty.UsesInsertPolicy:=UsesInsertPolicy;
-    Beauty.UsesSectionPreferInterface:=UsesSectionPreferInterface;
   end
   else
     inherited AssignTo(Dest);

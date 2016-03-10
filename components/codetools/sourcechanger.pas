@@ -173,7 +173,6 @@ type
     UpdateAllMethodSignatures: boolean;
     // uses section
     UsesInsertPolicy: TUsesInsertPolicy;
-    UsesSectionPreferInterface: boolean;
 
     CurFlags: TBeautifyCodeFlags;
     

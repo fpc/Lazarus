@@ -16,8 +16,8 @@ object UseUnitDialog: TUseUnitDialog
   LCLVersion = '1.7'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 28
-    Top = 388
+    Height = 26
+    Top = 390
     Width = 351
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -42,7 +42,7 @@ object UseUnitDialog: TUseUnitDialog
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
     Height = 49
-    Top = 333
+    Top = 335
     Width = 351
     Anchors = [akLeft, akRight, akBottom]
     AutoFill = True
@@ -57,7 +57,7 @@ object UseUnitDialog: TUseUnitDialog
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 32
+    ClientHeight = 29
     ClientWidth = 347
     Columns = 2
     ItemIndex = 0
@@ -75,7 +75,7 @@ object UseUnitDialog: TUseUnitDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = AllUnitsCheckBox
     Left = 6
-    Height = 265
+    Height = 272
     Top = 32
     Width = 351
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -87,15 +87,14 @@ object UseUnitDialog: TUseUnitDialog
     ScrollWidth = 349
     Style = lbOwnerDrawFixed
     TabOrder = 1
-    TopIndex = -1
   end
   object AllUnitsCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = SectionRadioGroup
     Left = 12
-    Height = 24
-    Top = 303
-    Width = 100
+    Height = 19
+    Top = 310
+    Width = 93
     Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Around = 6
@@ -107,9 +106,10 @@ object UseUnitDialog: TUseUnitDialog
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 25
+    Height = 23
     Top = 6
     Width = 351
+    OnAfterFilter = FilterEditAfterFilter
     ButtonWidth = 23
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]

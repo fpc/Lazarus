@@ -288,6 +288,11 @@ type
     constructor Create;
   end;
 
+  TUseUnitDlgOptions = record
+    AllUnits: Boolean;
+    AddToImplementation: Boolean;
+  end;
+
   { TDesktopOpt }
 
   TDesktopOpt = class
@@ -514,6 +519,7 @@ type
     //other recent settings
     FLastEventMethodCCResult: TCodeCreationDlgResult;
     FLastVariableCCResult: TCodeCreationDlgResult;
+    FUseUnitDlgOptions: TUseUnitDlgOptions;
 
     // backup
     FBackupInfoProjectFiles: TBackupInfo;
@@ -775,6 +781,8 @@ type
       read FLastEventMethodCCResult write FLastEventMethodCCResult;
     property LastVariableCCResult: TCodeCreationDlgResult
       read FLastVariableCCResult write FLastVariableCCResult;
+    property UseUnitDlgOptions: TUseUnitDlgOptions
+      read FUseUnitDlgOptions write FUseUnitDlgOptions;
 
     // backup
     property BackupInfoProjectFiles: TBackupInfo read FBackupInfoProjectFiles
@@ -1810,6 +1818,9 @@ begin
     LoadCCResult(FLastEventMethodCCResult, Path+'Recent/EventMethodCCResult', icsPublic);
     LoadCCResult(FLastVariableCCResult, Path+'Recent/VariableCCResult', icsPrivate);
 
+    FUseUnitDlgOptions.AllUnits:=FXMLCfg.GetValue(Path+'Recent/UseUnitDlg/AllUnits',False);
+    FUseUnitDlgOptions.AddToImplementation:=FXMLCfg.GetValue(Path+'Recent/UseUnitDlg/AddToImplementation',False);
+
     // Add example projects to an empty project list if examples have write access
     if (FRecentProjectFiles.count=0) and (not FAlreadyPopulatedRecentFiles) then begin
       AddRecentProjectInitial('examples/jpeg/',          'jpegexample.lpi');
@@ -2143,6 +2154,9 @@ begin
     // other recent settings
     SaveCCResult(FLastEventMethodCCResult, Path+'Recent/EventMethodCCResult', icsPublic);
     SaveCCResult(FLastVariableCCResult, Path+'Recent/VariableCCResult', icsPrivate);
+
+    FXMLCfg.SetDeleteValue(Path+'Recent/UseUnitDlg/AllUnits',FUseUnitDlgOptions.AllUnits,False);
+    FXMLCfg.SetDeleteValue(Path+'Recent/UseUnitDlg/AddToImplementation',FUseUnitDlgOptions.AddToImplementation,False);
 
     // external tools
     fExternalUserTools.Save(FConfigStore,Path+'ExternalTools/');
