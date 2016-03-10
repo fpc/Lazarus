@@ -267,7 +267,7 @@ msgstr "Внимание: перевод неточен"
 
 #: pocheckerconsts.snotroublesomepofilesfound
 msgid "No troublesome .po files found"
-msgstr "Проблемных файлов переводов PO не найдено"
+msgstr "Проблемных файлов переводов PO не найдено."
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
