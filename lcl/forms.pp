@@ -1726,6 +1726,7 @@ type
 
 function KeysToShiftState(Keys: PtrUInt): TShiftState;
 function KeyDataToShiftState(KeyData: PtrInt): TShiftState;
+function KeyboardStateToShiftState: TShiftState;
 function ShiftStateToKeys(ShiftState: TShiftState): PtrUInt;
 
 function WindowStateToStr(const State: TWindowState): string;
@@ -1880,6 +1881,16 @@ begin
 
   if GetKeyState(VK_MENU) < 0 then Include(Result, ssAlt);
   if (GetKeyState(VK_LWIN) < 0) or (GetKeyState(VK_RWIN) < 0) then Include(Result, ssMeta);
+end;
+
+function KeyboardStateToShiftState: TShiftState;
+begin
+  Result := [];
+  if GetKeyState(VK_SHIFT) < 0 then Include(Result, ssShift);
+  if GetKeyState(VK_CONTROL) < 0 then Include(Result, ssCtrl);
+  if GetKeyState(VK_MENU) < 0 then Include(Result, ssAlt);
+  if (GetKeyState(VK_LWIN) < 0) or
+     (GetKeyState(VK_RWIN) < 0) then Include(Result, ssMeta);
 end;
 
 function KeyDataToShiftState(KeyData: PtrInt): TShiftState;
