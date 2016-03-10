@@ -3807,6 +3807,7 @@ msgid "View Snapshots"
 msgstr "Zobrazit snímky"
 
 #: lazarusidestrconsts.histdlgcolumnloc
+msgctxt "lazarusidestrconsts.histdlgcolumnloc"
 msgid "Location"
 msgstr "Umístění"
 
@@ -5518,10 +5519,6 @@ msgstr "Vyberte soubor FPC zpráv"
 msgid "Choose a Pascal file for indentation examples"
 msgstr "Vyberte pascalovských soubor pro ukázku odsazení"
 
-#: lazarusidestrconsts.lischooseclasssectiondlgformethodcaption
-msgid "Insert new method to section"
-msgstr "Vložit novou metodu do sekce"
-
 #: lazarusidestrconsts.lischoosecompilerexecutable
 msgid "Choose compiler executable (%s)"
 msgstr "Vybrat spustitelné překladače (%s)"
@@ -5812,6 +5809,20 @@ msgstr "Kód"
 msgctxt "lazarusidestrconsts.liscodebrowser"
 msgid "Code Browser"
 msgstr "Prohlížeč kódu"
+
+#: lazarusidestrconsts.liscodecreationdialogcaption
+msgid "Code creation options"
+msgstr ""
+
+#: lazarusidestrconsts.liscodecreationdialogclasssection
+msgid "Class section"
+msgstr ""
+
+#: lazarusidestrconsts.liscodecreationdialoglocation
+#, fuzzy
+msgctxt "lazarusidestrconsts.liscodecreationdialoglocation"
+msgid "Location"
+msgstr "Umístění"
 
 #: lazarusidestrconsts.liscodeexplorer
 msgctxt "lazarusidestrconsts.liscodeexplorer"
@@ -8112,13 +8123,13 @@ msgstr "Ke zobrazení rozdílu klikněte na jednu z položek nahoře"
 msgid "Error reading file: %s"
 msgstr "Chyba načítání souboru: %s"
 
-#: lazarusidestrconsts.lisdiskdiffignorediskchanges
-msgid "Ignore disk changes"
-msgstr "Ignorovat změny na disku"
+#: lazarusidestrconsts.lisdiskdiffignorealldiskchanges
+msgid "Ignore all disk changes"
+msgstr ""
 
-#: lazarusidestrconsts.lisdiskdiffrevertall
-msgid "Reload from disk"
-msgstr "Znovu načíst z disku"
+#: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
+msgid "Reload checked files from disk"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
@@ -8206,6 +8217,10 @@ msgstr "Nezobrazovat tento dialog pro tento projekt"
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
 msgstr "Neukazovat znova tuto zprávu"
+
+#: lazarusidestrconsts.lisdonotwriteupdatedprojectinfoafterbuild
+msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
+msgstr ""
 
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
@@ -8772,10 +8787,6 @@ msgstr "Volby záznamu událostí ..."
 #: lazarusidestrconsts.liseventlogsavetofile
 msgid "Save Events to File"
 msgstr "Uložit události do souboru"
-
-#: lazarusidestrconsts.liseventmethodsectionlabel
-msgid "Insert new event methods to section"
-msgstr "Vložit nové metody události do sekce"
 
 #: lazarusidestrconsts.liseventslogaddcomment
 msgid "Add Comment ..."
@@ -11507,6 +11518,10 @@ msgstr "Porovnat soubory ..."
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "Dokončení kódu"
+
+#: lazarusidestrconsts.lismenucompletecodeinteractive
+msgid "Complete Code (with dialog)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
@@ -19356,11 +19371,6 @@ msgstr "Režim výběru sloupce"
 #: lazarusidestrconsts.srkmeccompile
 msgid "compile program/project"
 msgstr "přeložit program/projekt"
-
-#: lazarusidestrconsts.srkmeccompletecode
-msgctxt "lazarusidestrconsts.srkmeccompletecode"
-msgid "Complete Code"
-msgstr "Dokončení kódu"
 
 #: lazarusidestrconsts.srkmecconfigbuildfile
 msgid "config build file"

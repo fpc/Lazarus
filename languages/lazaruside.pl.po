@@ -4014,6 +4014,7 @@ msgid "View Snapshots"
 msgstr ""
 
 #: lazarusidestrconsts.histdlgcolumnloc
+msgctxt "lazarusidestrconsts.histdlgcolumnloc"
 msgid "Location"
 msgstr ""
 
@@ -5799,10 +5800,6 @@ msgstr "Wybierz plik z komunikatami dla FPC"
 msgid "Choose a Pascal file for indentation examples"
 msgstr "Wybierz plik Pascala dla  przykładu wcięć "
 
-#: lazarusidestrconsts.lischooseclasssectiondlgformethodcaption
-msgid "Insert new method to section"
-msgstr ""
-
 #: lazarusidestrconsts.lischoosecompilerexecutable
 msgid "Choose compiler executable (%s)"
 msgstr ""
@@ -6095,6 +6092,19 @@ msgstr "Kod"
 msgctxt "lazarusidestrconsts.liscodebrowser"
 msgid "Code Browser"
 msgstr "Inspektor kodu"
+
+#: lazarusidestrconsts.liscodecreationdialogcaption
+msgid "Code creation options"
+msgstr ""
+
+#: lazarusidestrconsts.liscodecreationdialogclasssection
+msgid "Class section"
+msgstr ""
+
+#: lazarusidestrconsts.liscodecreationdialoglocation
+msgctxt "lazarusidestrconsts.liscodecreationdialoglocation"
+msgid "Location"
+msgstr ""
 
 #: lazarusidestrconsts.liscodeexplorer
 msgctxt "lazarusidestrconsts.liscodeexplorer"
@@ -8445,12 +8455,12 @@ msgstr "Kliknij na jeden z powyższych elementów aby zobaczyć diff"
 msgid "Error reading file: %s"
 msgstr "Błąd podczas odczytu pliku: %s"
 
-#: lazarusidestrconsts.lisdiskdiffignorediskchanges
-msgid "Ignore disk changes"
-msgstr "Ignoruj zmiany na dysku"
+#: lazarusidestrconsts.lisdiskdiffignorealldiskchanges
+msgid "Ignore all disk changes"
+msgstr ""
 
-#: lazarusidestrconsts.lisdiskdiffrevertall
-msgid "Reload from disk"
+#: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
+msgid "Reload checked files from disk"
 msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
@@ -8543,6 +8553,10 @@ msgstr ""
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
 msgstr "Nie pokazuj więcej tego komunikatu"
+
+#: lazarusidestrconsts.lisdonotwriteupdatedprojectinfoafterbuild
+msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
+msgstr ""
 
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
@@ -9108,10 +9122,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liseventlogsavetofile
 msgid "Save Events to File"
-msgstr ""
-
-#: lazarusidestrconsts.liseventmethodsectionlabel
-msgid "Insert new event methods to section"
 msgstr ""
 
 #: lazarusidestrconsts.liseventslogaddcomment
@@ -11910,6 +11920,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "Uzupełnij kod"
+
+#: lazarusidestrconsts.lismenucompletecodeinteractive
+msgid "Complete Code (with dialog)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
@@ -20203,13 +20217,6 @@ msgstr "Tryb wyboru kolumn"
 #: lazarusidestrconsts.srkmeccompile
 msgid "compile program/project"
 msgstr ""
-
-#: lazarusidestrconsts.srkmeccompletecode
-#, fuzzy
-#| msgid "Complete code"
-msgctxt "lazarusidestrconsts.srkmeccompletecode"
-msgid "Complete Code"
-msgstr "Uzupełnij kod"
 
 #: lazarusidestrconsts.srkmecconfigbuildfile
 msgid "config build file"

@@ -3768,6 +3768,7 @@ msgid "View Snapshots"
 msgstr "Näytä pikakuvat"
 
 #: lazarusidestrconsts.histdlgcolumnloc
+msgctxt "lazarusidestrconsts.histdlgcolumnloc"
 msgid "Location"
 msgstr "Sijainti"
 
@@ -5473,10 +5474,6 @@ msgstr "Valitse FPC-viestitiedosto"
 msgid "Choose a Pascal file for indentation examples"
 msgstr "Valitse sisennysesimerkiksi Pascal-tiedosto"
 
-#: lazarusidestrconsts.lischooseclasssectiondlgformethodcaption
-msgid "Insert new method to section"
-msgstr "Lisää uusi metodi osioon"
-
 #: lazarusidestrconsts.lischoosecompilerexecutable
 msgid "Choose compiler executable (%s)"
 msgstr "Valitse kääntäjä (%s)"
@@ -5766,6 +5763,20 @@ msgstr "Koodi"
 msgctxt "lazarusidestrconsts.liscodebrowser"
 msgid "Code Browser"
 msgstr "Koodin selain"
+
+#: lazarusidestrconsts.liscodecreationdialogcaption
+msgid "Code creation options"
+msgstr ""
+
+#: lazarusidestrconsts.liscodecreationdialogclasssection
+msgid "Class section"
+msgstr ""
+
+#: lazarusidestrconsts.liscodecreationdialoglocation
+#, fuzzy
+msgctxt "lazarusidestrconsts.liscodecreationdialoglocation"
+msgid "Location"
+msgstr "Sijainti"
 
 #: lazarusidestrconsts.liscodeexplorer
 msgctxt "lazarusidestrconsts.liscodeexplorer"
@@ -8055,13 +8066,13 @@ msgstr "Klikkaa jotain ylläolevaa kohtaa nähdäksesi muuttuneet kohdat"
 msgid "Error reading file: %s"
 msgstr "Virhe luettaessa tiedostoa: %s"
 
-#: lazarusidestrconsts.lisdiskdiffignorediskchanges
-msgid "Ignore disk changes"
-msgstr "Jätä huomiotta tallennetun version muutokset"
+#: lazarusidestrconsts.lisdiskdiffignorealldiskchanges
+msgid "Ignore all disk changes"
+msgstr ""
 
-#: lazarusidestrconsts.lisdiskdiffrevertall
-msgid "Reload from disk"
-msgstr "Hae tallennettu versio"
+#: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
+msgid "Reload checked files from disk"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
@@ -8143,6 +8154,10 @@ msgstr "Älä näytä tätä ikkunaa tälle projektille"
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
 msgstr "Älä näytä tätä viestiä enää"
+
+#: lazarusidestrconsts.lisdonotwriteupdatedprojectinfoafterbuild
+msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
+msgstr ""
 
 #: lazarusidestrconsts.lisdown
 msgid "Down"
@@ -8707,10 +8722,6 @@ msgstr "Tapahtumalokin asetukset ..."
 #: lazarusidestrconsts.liseventlogsavetofile
 msgid "Save Events to File"
 msgstr "Talleta tapahtumat tieostoon"
-
-#: lazarusidestrconsts.liseventmethodsectionlabel
-msgid "Insert new event methods to section"
-msgstr "Lisää uusia tapahtumametodeja osioon"
 
 #: lazarusidestrconsts.liseventslogaddcomment
 msgid "Add Comment ..."
@@ -11423,6 +11434,10 @@ msgstr "Vertaa tiedostoja ..."
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "Täydennä koodi"
+
+#: lazarusidestrconsts.lismenucompletecodeinteractive
+msgid "Complete Code (with dialog)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
@@ -19225,11 +19240,6 @@ msgstr "Sarake valintatila"
 #: lazarusidestrconsts.srkmeccompile
 msgid "compile program/project"
 msgstr "käännä ohjelma/projekti"
-
-#: lazarusidestrconsts.srkmeccompletecode
-msgctxt "lazarusidestrconsts.srkmeccompletecode"
-msgid "Complete Code"
-msgstr "Täydennä koodi"
 
 #: lazarusidestrconsts.srkmecconfigbuildfile
 msgid "config build file"

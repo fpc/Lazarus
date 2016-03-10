@@ -3801,6 +3801,7 @@ msgid "View Snapshots"
 msgstr "Pillanatkép megjelenítése"
 
 #: lazarusidestrconsts.histdlgcolumnloc
+msgctxt "lazarusidestrconsts.histdlgcolumnloc"
 msgid "Location"
 msgstr "Hely"
 
@@ -5512,10 +5513,6 @@ msgstr "Válasszon egy FPC üzenetfájlt!"
 msgid "Choose a Pascal file for indentation examples"
 msgstr "Válasszon egy pascal fájlt behúzási példaként!"
 
-#: lazarusidestrconsts.lischooseclasssectiondlgformethodcaption
-msgid "Insert new method to section"
-msgstr "Új metódusok beszúrásának helye"
-
 #: lazarusidestrconsts.lischoosecompilerexecutable
 msgid "Choose compiler executable (%s)"
 msgstr "Válasszon fordító programot! (%s)"
@@ -5806,6 +5803,20 @@ msgstr "Kód"
 msgctxt "lazarusidestrconsts.liscodebrowser"
 msgid "Code Browser"
 msgstr "Kódtallózó"
+
+#: lazarusidestrconsts.liscodecreationdialogcaption
+msgid "Code creation options"
+msgstr ""
+
+#: lazarusidestrconsts.liscodecreationdialogclasssection
+msgid "Class section"
+msgstr ""
+
+#: lazarusidestrconsts.liscodecreationdialoglocation
+#, fuzzy
+msgctxt "lazarusidestrconsts.liscodecreationdialoglocation"
+msgid "Location"
+msgstr "Hely"
 
 #: lazarusidestrconsts.liscodeexplorer
 msgctxt "lazarusidestrconsts.liscodeexplorer"
@@ -8106,13 +8117,13 @@ msgstr "Kattintson az alábbi elemek egyikére, hogy lássa a különbségeket"
 msgid "Error reading file: %s"
 msgstr "Hiba a fájl olvasása közben: %s"
 
-#: lazarusidestrconsts.lisdiskdiffignorediskchanges
-msgid "Ignore disk changes"
-msgstr "Lemez változások figyelmen kívül hagyása"
+#: lazarusidestrconsts.lisdiskdiffignorealldiskchanges
+msgid "Ignore all disk changes"
+msgstr ""
 
-#: lazarusidestrconsts.lisdiskdiffrevertall
-msgid "Reload from disk"
-msgstr "Újraolvasás a lemezről"
+#: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
+msgid "Reload checked files from disk"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
@@ -8200,6 +8211,10 @@ msgstr "Ne mutassa ezt a párbeszédet ebben a projektben"
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
 msgstr "Ne mutassa újra ezt az üzenetet"
+
+#: lazarusidestrconsts.lisdonotwriteupdatedprojectinfoafterbuild
+msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
+msgstr ""
 
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
@@ -8766,10 +8781,6 @@ msgstr "Eseménynapló beállításai ..."
 #: lazarusidestrconsts.liseventlogsavetofile
 msgid "Save Events to File"
 msgstr "Események mentése fájlba"
-
-#: lazarusidestrconsts.liseventmethodsectionlabel
-msgid "Insert new event methods to section"
-msgstr "Új eseménykezelő metódusok beszúrásának helye"
 
 #: lazarusidestrconsts.liseventslogaddcomment
 msgid "Add Comment ..."
@@ -11510,6 +11521,10 @@ msgstr "Fájlok összehasonlítása ..."
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "Kód kiegészítése"
+
+#: lazarusidestrconsts.lismenucompletecodeinteractive
+msgid "Complete Code (with dialog)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
@@ -19359,11 +19374,6 @@ msgstr "Oszlop kijelölési mód"
 #: lazarusidestrconsts.srkmeccompile
 msgid "compile program/project"
 msgstr "program/projekt fordítása"
-
-#: lazarusidestrconsts.srkmeccompletecode
-msgctxt "lazarusidestrconsts.srkmeccompletecode"
-msgid "Complete Code"
-msgstr "Kód kiegészítése"
 
 #: lazarusidestrconsts.srkmecconfigbuildfile
 msgid "config build file"

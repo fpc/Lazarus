@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-03-02 02:15+0300\n"
+"PO-Revision-Date: 2016-03-11 01:45+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3802,6 +3802,7 @@ msgid "View Snapshots"
 msgstr "Показать снимки"
 
 #: lazarusidestrconsts.histdlgcolumnloc
+msgctxt "lazarusidestrconsts.histdlgcolumnloc"
 msgid "Location"
 msgstr "Расположение"
 
@@ -5513,10 +5514,6 @@ msgstr "Выберите файл сообщений FPC"
 msgid "Choose a Pascal file for indentation examples"
 msgstr "Выберите файл Паскаля для получения образцов отступов"
 
-#: lazarusidestrconsts.lischooseclasssectiondlgformethodcaption
-msgid "Insert new method to section"
-msgstr "Вставить новый метод в секцию"
-
 #: lazarusidestrconsts.lischoosecompilerexecutable
 msgid "Choose compiler executable (%s)"
 msgstr "Выберите исполнимый файл компилятора (%s)"
@@ -5807,6 +5804,19 @@ msgstr "Код"
 msgctxt "lazarusidestrconsts.liscodebrowser"
 msgid "Code Browser"
 msgstr "Браузер кода"
+
+#: lazarusidestrconsts.liscodecreationdialogcaption
+msgid "Code creation options"
+msgstr "Параметры создания кода"
+
+#: lazarusidestrconsts.liscodecreationdialogclasssection
+msgid "Class section"
+msgstr "Секция класса"
+
+#: lazarusidestrconsts.liscodecreationdialoglocation
+msgctxt "lazarusidestrconsts.liscodecreationdialoglocation"
+msgid "Location"
+msgstr "Расположение"
 
 #: lazarusidestrconsts.liscodeexplorer
 msgctxt "lazarusidestrconsts.liscodeexplorer"
@@ -8104,13 +8114,13 @@ msgstr "Выберите один из элементов выше, чтобы �
 msgid "Error reading file: %s"
 msgstr "Ошибка чтения файла: %s"
 
-#: lazarusidestrconsts.lisdiskdiffignorediskchanges
-msgid "Ignore disk changes"
-msgstr "Игнорировать изменения на диске"
+#: lazarusidestrconsts.lisdiskdiffignorealldiskchanges
+msgid "Ignore all disk changes"
+msgstr "Игнорировать все изменения на диске"
 
-#: lazarusidestrconsts.lisdiskdiffrevertall
-msgid "Reload from disk"
-msgstr "Перечитать с диска"
+#: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
+msgid "Reload checked files from disk"
+msgstr "Перечитать выбранные файлы с диска"
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
@@ -8198,6 +8208,10 @@ msgstr "Не показывать этот диалог для данного п
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
 msgstr "Больше не показывать это сообщение"
+
+#: lazarusidestrconsts.lisdonotwriteupdatedprojectinfoafterbuild
+msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
+msgstr "Не записывать обновлённый файл сведений о проекте после сборки. Если параметр не указан, номер сборки будет наращиваться (если данная функция была включена)."
 
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
@@ -8764,10 +8778,6 @@ msgstr "Параметры журнала событий ..."
 #: lazarusidestrconsts.liseventlogsavetofile
 msgid "Save Events to File"
 msgstr "Сохранить события в файл"
-
-#: lazarusidestrconsts.liseventmethodsectionlabel
-msgid "Insert new event methods to section"
-msgstr "Вставлять новые методы событий в секцию"
 
 #: lazarusidestrconsts.liseventslogaddcomment
 msgid "Add Comment ..."
@@ -11509,6 +11519,10 @@ msgstr "Сравнить файлы ..."
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "Завершить код"
+
+#: lazarusidestrconsts.lismenucompletecodeinteractive
+msgid "Complete Code (with dialog)"
+msgstr "Завершить код (с диалогом)"
 
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
@@ -15412,7 +15426,7 @@ msgstr "Путь поиска включаемых файлов проекта"
 
 #: lazarusidestrconsts.lisprojectinfofiledetected
 msgid "Project info file detected"
-msgstr "Обнаружен файл сведений проекта"
+msgstr "Обнаружен файл сведений о проекте"
 
 #: lazarusidestrconsts.lisprojectinformation
 msgid "Project information"
@@ -19359,11 +19373,6 @@ msgstr "Режим выбора столбца"
 #: lazarusidestrconsts.srkmeccompile
 msgid "compile program/project"
 msgstr "Компилировать программу/проект"
-
-#: lazarusidestrconsts.srkmeccompletecode
-msgctxt "lazarusidestrconsts.srkmeccompletecode"
-msgid "Complete Code"
-msgstr "Завершить код"
 
 #: lazarusidestrconsts.srkmecconfigbuildfile
 msgid "config build file"
