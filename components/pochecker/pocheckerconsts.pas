@@ -97,6 +97,12 @@ resourcestring
   sPercUntranslated = '%s: %4.1f%% untranslated strings.';
   sPercFuzzy = '%s: %4.1f%% fuzzy strings.';
 
+  sFindTroublesomeFiles = 'Find troublesome files';
+  sNoTroublesomePoFilesFound = 'No troublesome .po files found';
+  sTheFollowingMasterPoFileSAddedToTheList = 'The following %s master .po file(s) added to the list:';
+  sTheFollowingOrphanedPoFileSFound = 'The following %s orphaned .po file(s) found:';
+  sTroublesomeFiles = 'Troublesome files';
+
 const
   mrOpenEditorFile = mrNone+100;
 

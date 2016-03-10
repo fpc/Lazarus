@@ -21,7 +21,7 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideTop.Side = asrBottom
     Left = 201
     Height = 118
-    Top = 29
+    Top = 27
     Width = 436
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -34,7 +34,7 @@ object PoCheckerForm: TPoCheckerForm
       'sCheckForDuplicateUntranslatedValues'
       'sCheckStatistics'
     )
-    ItemHeight = 17
+    ItemHeight = 19
     TabOrder = 3
     Data = {
       06000000000000000000
@@ -44,9 +44,9 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideLeft.Control = OpenBtn
     AnchorSideLeft.Side = asrBottom
     Left = 201
-    Height = 15
+    Height = 13
     Top = 8
-    Width = 93
+    Width = 82
     BorderSpacing.Left = 9
     Caption = 'Select test types'
     Font.Style = [fsBold]
@@ -61,7 +61,7 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideBottom.Control = ScanDirBtn
     Left = 8
     Height = 50
-    Top = 29
+    Top = 27
     Width = 184
     BorderSpacing.Bottom = 10
     Caption = '&Open a po-file'
@@ -111,7 +111,7 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideRight.Side = asrBottom
     Left = 8
     Height = 50
-    Top = 149
+    Top = 147
     Width = 184
     BorderSpacing.Top = 5
     Caption = '&Run Selected Tests'
@@ -122,9 +122,9 @@ object PoCheckerForm: TPoCheckerForm
   end
   object NoErrLabel: TLabel
     Left = 8
-    Height = 25
-    Top = 451
-    Width = 146
+    Height = 23
+    Top = 453
+    Width = 145
     Anchors = [akLeft, akBottom]
     Caption = 'No errors found'
     Font.Color = clGreen
@@ -139,8 +139,8 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideTop.Side = asrBottom
     Left = 201
     Height = 25
-    Top = 153
-    Width = 117
+    Top = 151
+    Width = 99
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Select Basic Tests'
@@ -152,10 +152,10 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideLeft.Control = SelectBasicTestsBtn
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = SelectBasicTestsBtn
-    Left = 322
+    Left = 304
     Height = 25
-    Top = 153
-    Width = 104
+    Top = 151
+    Width = 85
     AutoSize = True
     BorderSpacing.Left = 4
     Caption = 'Select All Tests'
@@ -167,10 +167,10 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideLeft.Control = SelectAllTestsBtn
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = SelectAllTestsBtn
-    Left = 430
+    Left = 393
     Height = 25
-    Top = 153
-    Width = 118
+    Top = 151
+    Width = 97
     AutoSize = True
     BorderSpacing.Left = 4
     Caption = 'Unselect All Tests'
@@ -183,17 +183,17 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideTop.Control = SelectBasicTestsBtn
     AnchorSideTop.Side = asrBottom
     Left = 201
-    Height = 19
-    Top = 184
-    Width = 152
+    Height = 22
+    Top = 182
+    Width = 147
     BorderSpacing.Top = 6
     Caption = 'sIgnoreFuzzyTranslations'
     TabOrder = 7
   end
   object StatusBar: TStatusBar
     Left = 0
-    Height = 23
-    Top = 490
+    Height = 17
+    Top = 496
     Width = 644
     Panels = <>
   end
@@ -206,7 +206,7 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideBottom.Control = RunBtn
     Left = 8
     Height = 50
-    Top = 89
+    Top = 87
     Width = 184
     BorderSpacing.Top = 5
     BorderSpacing.Bottom = 10
@@ -257,8 +257,8 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = NoErrLabel
     Left = 8
-    Height = 185
-    Top = 208
+    Height = 186
+    Top = 209
     Width = 629
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 5
@@ -268,9 +268,11 @@ object PoCheckerForm: TPoCheckerForm
     OnDrawItem = MasterPoListBoxDrawItem
     OnResize = MasterPoListBoxResize
     OnSelectionChange = MasterPoListBoxSelectionChange
+    ScrollWidth = 627
     Sorted = True
     Style = lbOwnerDrawFixed
     TabOrder = 8
+    TopIndex = -1
   end
   object LangFilter: TComboBox
     AnchorSideLeft.Control = MasterPoListBox
@@ -278,12 +280,12 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideRight.Control = TestListBox
     AnchorSideRight.Side = asrBottom
     Left = 8
-    Height = 23
-    Top = 400
+    Height = 25
+    Top = 399
     Width = 629
     Anchors = [akLeft, akRight]
     BorderSpacing.Top = 5
-    ItemHeight = 15
+    ItemHeight = 0
     ItemIndex = 0
     Items.Strings = (
       'All languages'
@@ -323,8 +325,8 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideBottom.Control = NoErrLabel
     Left = 8
     Height = 25
-    Top = 426
-    Width = 53
+    Top = 428
+    Width = 37
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Top = 10
@@ -336,10 +338,10 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideLeft.Control = SelectAllMasterFilesBtn
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = NoErrLabel
-    Left = 167
+    Left = 136
     Height = 25
-    Top = 426
-    Width = 110
+    Top = 428
+    Width = 93
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 5
@@ -352,10 +354,10 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideLeft.Control = ClearMasterFilesBtn
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = NoErrLabel
-    Left = 66
+    Left = 50
     Height = 25
-    Top = 426
-    Width = 96
+    Top = 428
+    Width = 81
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 5
@@ -363,15 +365,26 @@ object PoCheckerForm: TPoCheckerForm
     OnClick = SelectAllMasterFilesBtnClick
     TabOrder = 11
   end
+  object FindTroublesomeFilesBtn: TButton
+    Left = 514
+    Height = 25
+    Top = 428
+    Width = 121
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    Caption = 'Find troublesome files'
+    OnClick = FindTroublesomeFilesBtnClick
+    TabOrder = 14
+  end
   object OpenDialog: TOpenDialog
     Filter = 'po-files (*.po)|*.po|all files|*'
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
-    left = 480
-    top = 432
+    left = 245
+    top = 435
   end
   object SelectDirectoryDialog: TSelectDirectoryDialog
     Options = [ofEnableSizing]
-    left = 584
-    top = 432
+    left = 355
+    top = 435
   end
 end

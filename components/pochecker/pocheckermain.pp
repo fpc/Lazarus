@@ -38,6 +38,7 @@ type
   { TPoCheckerForm }
 
   TPoCheckerForm = class(TForm)
+    FindTroublesomeFilesBtn: TButton;
     SelectAllMasterFilesBtn: TButton;
     SelectDirectoryDialog: TSelectDirectoryDialog;
     UnselectAllMasterFilesBtn: TButton;
@@ -53,6 +54,7 @@ type
     procedure MasterPoListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
     procedure MasterPoListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure FindTroublesomeFilesBtnClick(Sender: TObject);
     procedure ScanDirBtnClick(Sender: TObject);
     procedure SelectAllMasterFilesBtnClick(Sender: TObject);
     procedure UnselectAllMasterFilesBtnClick(Sender: TObject);
@@ -297,6 +299,63 @@ begin
   end;
   UnselectAllMasterFilesBtn.Enabled := (MasterPoListBox.SelCount <> 0);
   SelectAllMasterFilesBtn.Enabled := (MasterPoListBox.Items.Count > 0);
+end;
+
+procedure TPoCheckerForm.FindTroublesomeFilesBtnClick(Sender: TObject);
+var
+  SL,FL,OL:TStringList;
+  S, Mn: String;
+  I: Integer;
+  Cur: TCursor;
+begin
+  Cur := Screen.Cursor;
+  Screen.Cursor := crHourGlass;
+  try
+    StatusBar.SimpleText := sScanningInProgress;
+    FL := TStringList.Create;
+    OL := TStringList.Create;
+    SL := FindAllFiles(SelectDirectoryDialog.FileName, '*.po',True);
+    for I := 0 to SL.Count - 1 do // we must check master .po files in a separate round first
+    begin
+      S := SL[I];
+      if IsMasterPOName(S) and (MasterPoListBox.Items.IndexOf(S) = -1)
+      then
+      begin
+          AddToMasterPoList(S);
+          FL.Add(S);
+      end;
+    end;
+    for I := 0 to SL.Count - 1 do
+    begin
+      S := SL[I];
+      if not IsMasterPOName(S)
+      then
+      begin
+        Mn:=ExtractMasterNameFromChildName(S);
+        if (Mn <> '') and (MasterPoListBox.Items.IndexOf(Mn) = -1)
+        then
+          OL.Add(S);
+      end;
+    end;
+    if(OL.Count = 0) and (FL.Count = 0)
+    then
+      S := sNoTroublesomePoFilesFound
+    else
+    begin
+      S:='';
+      if (FL.Count > 0) then S :=  Format(sTheFollowingMasterPoFileSAddedToTheList, [IntToStr(FL.Count)]) + LineEnding + FL.Text;
+      if S <> '' then S := S + LineEnding + LineEnding;
+      if (OL.Count > 0) then S := S + Format(sTheFollowingOrphanedPoFileSFound, [IntToStr(OL.Count)]) + LineEnding + OL.Text;
+    end;
+    MemoDlg(sTroublesomeFiles, S);
+    UpdateGUI(MasterPoListBox.SelCount > 0);
+  finally
+    StatusBar.SimpleText := '';
+    FL.Free;
+    OL.Free;
+    SL.Free;
+  end;
+  Screen.Cursor := Cur;
 end;
 
 procedure TPoCheckerForm.ScanDirBtnClick(Sender: TObject);
@@ -604,6 +663,7 @@ begin
   end;
   ClearMasterFilesBtn.Enabled := (MasterPoListBox.Items.Count > 0);
   SelectAllMasterFilesBtn.Enabled := (MasterPoListBox.Items.Count > 0);
+  FindTroublesomeFilesBtn.Enabled := (SelectDirectoryDialog.FileName <> '');
 end;
 
 function TPoCheckerForm.GetSelectedMasterFiles: TStringList;
@@ -928,6 +988,7 @@ begin
   SelectAllTestsBtn.Caption := sSelectAllTests;
   SelectBasicTestsBtn.Caption := sSelectBasicTests;
   UnselectAllTestsBtn.Caption := sUnselectAllTests;
+  FindTroublesomeFilesBtn.Caption:= sFindTroublesomeFiles;
 end;
 
 
