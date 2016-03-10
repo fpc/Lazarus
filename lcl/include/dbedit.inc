@@ -202,9 +202,14 @@ begin
     exit;
   FFocusedDisplay := true;
   if WidgetSet.GetLCLCapability(lcReceivesLMClearCutCopyPasteReliably) = LCL_CAPABILITY_YES then
+  begin
     FDataLink.Reset
-  else
+  end
+  else begin
+    RestoreMask(Self.Text);
     FDataLink.Edit;
+    Self.DoEnter;
+  end;
 end;
 
 procedure TDBEdit.WMKillFocus(var Message: TLMKillFocus);
