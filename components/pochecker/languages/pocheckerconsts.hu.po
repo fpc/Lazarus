@@ -266,7 +266,9 @@ msgid "Note: translation is fuzzy"
 msgstr "Megjegyzés: a fordítás bizonytalan"
 
 #: pocheckerconsts.snotroublesomepofilesfound
-msgid "No troublesome .po files found"
+#, fuzzy
+#| msgid "No troublesome .po files found"
+msgid "No troublesome .po files found."
 msgstr "Nincsenek aggasztó .po fájlok"
 
 #: pocheckerconsts.snrerrorsfound

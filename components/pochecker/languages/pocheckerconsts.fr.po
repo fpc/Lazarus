@@ -266,7 +266,7 @@ msgid "Note: translation is fuzzy"
 msgstr "Remarque : la traduction est floue"
 
 #: pocheckerconsts.snotroublesomepofilesfound
-msgid "No troublesome .po files found"
+msgid "No troublesome .po files found."
 msgstr ""
 
 #: pocheckerconsts.snrerrorsfound
