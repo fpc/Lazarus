@@ -4013,7 +4013,7 @@ begin
       {$ENDIF}
       {TODO: KWin4 is find with FFormHasInvalidPosition := True, but gtk based wm's like
        xfce,gnome-shell and cinnamon and kwin5 aren''t, so we must use code below.}
-      if (GetKdeSessionVersion = 3) or (GetKdeSessionVersion = 4) then
+      if (GetKdeSessionVersion = 3) then
         TQtMainWindow(Self).FFormHasInvalidPosition := True
       else
       begin
