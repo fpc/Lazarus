@@ -5999,6 +5999,8 @@ resourcestring
   lisCleanUpAndBuildProject = 'Clean up and build project';
   lisBuildFollowingModes = 'Build the following modes';
   lisSelectedModesWereBuilt  = 'Selected %d modes were successfully built.';
+
+  // Clean Build Project Dialog
   lisProjectOutputDirectory = 'Project output directory';
   lisProjectSourceDirectories = 'Project source directories';
   lisPackageOutputDirectories = 'Package output directories';
@@ -6007,6 +6009,7 @@ resourcestring
   lisCleanUpAndBuild = 'Clean up and build';
   lisCBPFiles = '%s (%s files)';
   lisCBPReallyDeleteSourceFiles = 'Really delete %s source files%s%s';
+
   lisChangesWereNotSaved = 'Changes were not saved';
   lisDoYouStillWantToOpenAnotherProject = 'Do you still want to open another project?';
   lisDiscardChangesAndOpenProject = 'Discard changes and open project';

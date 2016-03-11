@@ -481,6 +481,12 @@ type
     FUseBuildModes: Boolean;
     FIsGlobalMode: TStrToBoolEvent;
 
+    // Clean build project dialog
+    FCleanBuildProjOut: Boolean;
+    FCleanBuildProjSrc: Boolean;
+    FCleanBuildPkgOut: Boolean;
+    FCleanBuildPkgSrc: Boolean;
+
     // Primary-config verification
     FLastCalledByLazarusFullPath: String;
 
@@ -729,6 +735,12 @@ type
     // global build options
     property BuildMatrixOptions: TBuildMatrixOptions read FBuildMatrixOptions;
     property UseBuildModes: Boolean read FUseBuildModes write FUseBuildModes;
+
+    // Clean build project dialog
+    property CleanBuildProjOut: Boolean read FCleanBuildProjOut write FCleanBuildProjOut;
+    property CleanBuildProjSrc: Boolean read FCleanBuildProjSrc write FCleanBuildProjSrc;
+    property CleanBuildPkgOut: Boolean read FCleanBuildPkgOut write FCleanBuildPkgOut;
+    property CleanBuildPkgSrc: Boolean read FCleanBuildPkgSrc write FCleanBuildPkgSrc;
 
     // Debugger
     procedure SaveDebuggerPropertiesList;
@@ -1616,6 +1628,12 @@ begin
   FConfigStore.UndoAppendBasePath;
   FUseBuildModes:=FXMLCfg.GetValue(Path+'Build/UseBuildModes',false);
 
+  // Clean build project dialog
+  FCleanBuildProjOut:=FXMLCfg.GetValue(Path+'CleanBuild/ProjOut',true);
+  FCleanBuildProjSrc:=FXMLCfg.GetValue(Path+'CleanBuild/ProjSrc',true);
+  FCleanBuildPkgOut:=FXMLCfg.GetValue(Path+'CleanBuild/PkgOut',true);
+  FCleanBuildPkgSrc:=FXMLCfg.GetValue(Path+'CleanBuild/PkgSrc',true);
+
   // backup
   LoadBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/',DefaultBackupTypeProject);
   LoadBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/',DefaultBackupTypeOther);
@@ -1983,6 +2001,12 @@ begin
   FBuildMatrixOptions.SaveToConfig(FConfigStore,IsGlobalMode);
   FConfigStore.UndoAppendBasePath;
   FXMLCfg.SetDeleteValue(Path+'Build/UseBuildModes',FUseBuildModes,false);
+
+  // Clean build project dialog
+  FXMLCfg.SetDeleteValue(Path+'CleanBuild/ProjOut',FCleanBuildProjOut,true);
+  FXMLCfg.SetDeleteValue(Path+'CleanBuild/ProjSrc',FCleanBuildProjSrc,true);
+  FXMLCfg.SetDeleteValue(Path+'CleanBuild/PkgOut',FCleanBuildPkgOut,true);
+  FXMLCfg.SetDeleteValue(Path+'CleanBuild/PkgSrc',FCleanBuildPkgSrc,true);
 
   // backup
   SaveBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/',DefaultBackupTypeProject);
