@@ -3667,6 +3667,10 @@ resourcestring
   //codetools ChooseClassSectionDlg
   lisCodeCreationDialogCaption = 'Code creation options';
   lisCodeCreationDialogLocation = 'Location';
+  lisLocal = '&Local';
+  lisClass = '&Class';
+  lisYouCanSelectItemsBySimplyPressingUnderscoredLetter = 'You can select '
+    +'items by simply pressing underscored letters';
   lisCodeCreationDialogClassSection = 'Class section';
 
   // diff dialog

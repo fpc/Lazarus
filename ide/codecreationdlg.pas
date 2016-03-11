@@ -91,19 +91,20 @@ end;
 procedure TCodeCreationDialog.DoCreate;
 var
   S: TInsertClassSection;
-  L: TCreateCodeLocation;
 begin
   inherited DoCreate;
 
   KeyPreview := True;
+
+  Hint := lisYouCanSelectItemsBySimplyPressingUnderscoredLetter;
 
   SectionRadioGroup.Items.Clear;
   for S := Low(TInsertClassSection) to High(TInsertClassSection) do
     SectionRadioGroup.Items.Add(InsertClassSectionAmpNames[S]);
 
   LocationRadioGroup.Items.Clear;
-  for L := Low(TCreateCodeLocation) to High(TCreateCodeLocation) do
-    LocationRadioGroup.Items.Add(CreateCodeLocationAmpNames[L]);
+  LocationRadioGroup.Items.Add(lisLocal);
+  LocationRadioGroup.Items.Add(lisClass);
 end;
 
 procedure TCodeCreationDialog.DoShow;

@@ -10,6 +10,7 @@ object CodeCreationDialog: TCodeCreationDialog
   KeyPreview = True
   OnKeyPress = FormKeyPress
   Position = poScreenCenter
+  ShowHint = True
   LCLVersion = '1.7'
   object ButtonPanel: TButtonPanel
     Left = 6

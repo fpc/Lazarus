@@ -347,9 +347,6 @@ const
   CreateCodeLocationNames: array[TCreateCodeLocation] of ShortString = (
     'Local', 'Class'
     );
-  CreateCodeLocationAmpNames: array[TCreateCodeLocation] of ShortString = (
-    '&Local', '&Class'
-    );
 
   ForwardProcBodyInsertPolicyNames: array[TForwardProcBodyInsertPolicy] of
     shortstring = (
