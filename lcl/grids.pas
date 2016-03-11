@@ -5814,7 +5814,7 @@ begin
     if Y<FGcache.FixedHeight+aBorderWidth then
       Result:= gzFixedCells
     else
-    if RowCount>FixedRows then
+    if (RowCount>FixedRows) and (Y<=FGCache.GridHeight) then
       Result:= gzFixedRows
     else
       Result:= gzInvalid
@@ -5824,7 +5824,7 @@ begin
     if FlipX(X)<FGCache.FixedWidth+aBorderWidth then
       Result:=gzFixedCells
     else
-    if ColCount>FixedCols then
+    if (ColCount>FixedCols) and (FlipX(X)<=FGCache.GridWidth) then
       Result:=gzFixedCols
     else
       Result:=gzInvalid
@@ -5843,6 +5843,9 @@ end;
 
 function TCustomGrid.CellToGridZone(aCol, aRow: Integer): TGridZone;
 begin
+  if (aCol<0) or (aRow<0) then
+    Result := gzInvalid
+  else
   if (aCol<FFixedCols) then
     if aRow<FFixedRows then
       Result:= gzFixedCells
@@ -6331,16 +6334,24 @@ procedure TCustomGrid.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 var
    Cur: TPoint;
+   Gz: TGridZone;
+
+   function IsValidCellClick: boolean;
+   begin
+     result := (Cur.X=FGCache.ClickCell.X) and (Cur.Y=FGCache.ClickCell.Y) and (gz<>gzInvalid);
+   end;
+
 begin
   inherited MouseUp(Button, Shift, X, Y);
   {$IfDef dbgGrid}DebugLn('MouseUP INIT');{$Endif}
 
   Cur:=MouseToCell(Point(x,y));
+  Gz :=CellToGridZone(cur.x, cur.y);
 
   case fGridState of
 
     gsHeaderClicking, gsButtonColumnClicking:
-      if (Cur.X=FGCache.ClickCell.X) and (Cur.Y=FGCache.ClickCell.Y) then begin
+      if IsValidCellClick then begin
         if fGridState=gsHeaderClicking then
           HeaderClick(True, FGCache.ClickCell.X)
         else
@@ -6349,7 +6360,7 @@ begin
       end;
 
     gsNormal:
-      if not FixedGrid and (Cur.X=FGCache.ClickCell.X) and (Cur.Y=FGCache.ClickCell.Y) then
+      if not FixedGrid and IsValidCellClick then
         CellClick(cur.x, cur.y, Button);
 
     gsSelecting:

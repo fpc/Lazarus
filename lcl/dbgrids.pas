@@ -2816,9 +2816,9 @@ begin
       if (Editor=nil) or not EditorMode then
         SwapCheckBox
     end;
+    if Assigned(OnCellClick) then
+      OnCellClick(TColumn(ColumnFromGridColumn(aCol)));
   end;
-  if Assigned(OnCellClick) then
-    OnCellClick(TColumn(ColumnFromGridColumn(aCol)));
 end;
 
 procedure TCustomDBGrid.EndLayout;
@@ -3483,6 +3483,7 @@ begin
 
   // What a dilema!, we need ssAutoHorizontal and ssVertical!!!
   ScrollBars:=ssBoth;
+  AllowOutboundEvents := false;
 end;
 
 procedure TCustomDBGrid.AutoSizeColumns;
