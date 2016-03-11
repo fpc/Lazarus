@@ -4006,6 +4006,13 @@ begin
     // checking code above means that we have mismatch somewhere
     // in between Qt and X11. Question is who is correct in this case X or Qt.
     // SlotMove is triggered always after form activation
+    if (getWindowState and QtWindowFullScreen = QtWindowFullScreen) or
+      (getWindowState and QtWindowMaximized = QtWindowMaximized) then
+    begin
+      {$IF DEFINED(DEBUGQTUSEACCURATEFRAME) OR DEFINED(DEBUGQTCHECKMOVESIZE)}
+      DebugLn('WARNING: SlotMove(',dbgsName(LCLObject),') FULLSCREEN CALCULATED X=',dbgs(Msg.XPos),' Y=',dbgs(Msg.YPos));
+      {$ENDIF}
+    end else
     if GetX11WindowRealized(QWidget_winID(Widget)) then
     begin
       {$IF DEFINED(DEBUGQTUSEACCURATEFRAME) OR DEFINED(DEBUGQTCHECKMOVESIZE)}
@@ -7126,6 +7133,11 @@ begin
   begin
     ASize := GetSize;
     AFrameSize := Result;
+    if (getWindowState and QtWindowMaximized = QtWindowMaximized) then
+    begin
+      Result.cx := ASize.cx;
+      Result.cy := ASize.cy + FFrameMargins.Top + FFrameMargins.Bottom;
+    end else
     if (ASize.cx = AFrameSize.cx) and (ASize.cy = AFrameSize.cy) then
     begin
       {$IFDEF DebugQtUseAccurateFrame}
@@ -7157,6 +7169,23 @@ begin
   begin
     QWidget_size(Widget, @ASize);
     QWidget_frameSize(Widget, @AFrameSize);
+
+    if (getWindowState and QtWindowFullScreen = QtWindowFullScreen) then
+    begin
+      Result.Left := 0;
+      Result.Top := 0;
+      Result.Right := Screen.Width;
+      Result.Bottom := Screen.Height;
+      FFormHasInvalidPosition := False;
+    end else
+    if (getWindowState and QtWindowMaximized = QtWindowMaximized) then
+    begin
+      Result.Left := 0;
+      Result.Top := 0;
+      Result.Right := ASize.cx;
+      Result.Bottom := ASize.cy + FFrameMargins.Top + FFrameMargins.Bottom;
+      FFormHasInvalidPosition := False;
+    end else
     if (ASize.cx = AFrameSize.cx) and (ASize.cy = AFrameSize.cy) then
     begin
       {$IFDEF DebugQtUseAccurateFrame}
@@ -7450,7 +7479,7 @@ begin
         if not IsMDIChild then
         begin
           {$IF DEFINED(QtUseAccurateFrame) AND DEFINED(HASX11)}
-          if IsFramedWidget then
+          if IsFramedWidget and not (getWindowState and QtWindowFullScreen = QtWindowFullScreen) then
           begin
             {This is Qt bug, so we must take care of it}
             if GetX11WindowPos(QWidget_winID(Widget), R.Left, R.Top) then
