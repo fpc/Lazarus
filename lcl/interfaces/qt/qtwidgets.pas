@@ -7811,8 +7811,11 @@ function TQtMainWindow.IsFramedWidget: boolean;
 begin
   Result:=inherited IsFramedWidget;
   {$IFDEF QtUseAccurateFrame}
-  Result := not IsMDIChild and (LCLObject.Parent = nil) and (TCustomForm(LCLObject).BorderStyle <> bsNone) and
-    (TCustomForm(LCLObject).FormStyle <> fsSplash);
+  Result := not IsMDIChild and (LCLObject.Parent = nil) and
+    (TCustomForm(LCLObject).BorderStyle <> bsNone) and
+    (TCustomForm(LCLObject).FormStyle <> fsSplash) and
+    (getWindowState and QtWindowMaximized = 0) and
+    (getWindowState and QtWindowFullScreen = 0);
   {$ENDIF}
 end;
 
