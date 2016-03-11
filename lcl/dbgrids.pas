@@ -3381,6 +3381,7 @@ end;
 procedure TCustomDBGrid.UpdateActive;
 var
   PrevRow: Integer;
+  NewRow: Integer;
 begin
   if (csDestroying in ComponentState) or
     (FDatalink=nil) or (not FDatalink.Active) or
@@ -3391,7 +3392,10 @@ begin
   		[ClassName, Name, FDataLink.ActiveRecord, FixedRows, Row]);
   {$endif}
   PrevRow := Row;
-  Row:= FixedRows + FDataLink.ActiveRecord;
+  NewRow:= FixedRows + FDataLink.ActiveRecord;
+  if NewRow>RowCount-1 then
+    NewRow := RowCount-1;
+  Row := NewRow;
   if PrevRow<>Row then
     InvalidateCell(0, PrevRow);//(InvalidateRow(PrevRow);
   InvalidateRow(Row);
