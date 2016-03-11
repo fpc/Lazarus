@@ -141,10 +141,6 @@ msgstr "konstanta"
 msgid "Converter Directory"
 msgstr "Konverterio aplankas"
 
-#: codetoolsstrconsts.ctscpudirectory
-msgid "CPU directory"
-msgstr "CPU aplankas"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "žymeklis už kodo ribų"
@@ -225,25 +221,9 @@ msgstr "Apibrėžti LCLwidgetset, pvz. „LCLgtk“"
 msgid "Define macro carbon1"
 msgstr "Apibrėžti makrokomandą „carbon1“"
 
-#: codetoolsstrconsts.ctsdefinemacrogtk1
-msgid "Define macro gtk1"
-msgstr "Apibrėžti makrokomandą gtk1"
-
-#: codetoolsstrconsts.ctsdefinemacrogtk2
-msgid "Define macro gtk2"
-msgstr "Apibrėžti makrokomandą gtk2"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "Apibrėžti makrokomandą %s"
-
-#: codetoolsstrconsts.ctsdefinemacroqt1
-msgid "Define macro qt1"
-msgstr "Apibrėžti makrokomandą qt1"
-
-#: codetoolsstrconsts.ctsdefinemacrowince1
-msgid "Define macro wince1"
-msgstr "Apibrėžti makrokomandą wince1"
 
 #: codetoolsstrconsts.ctsdefineprocessortype
 msgid "Define processor type"
@@ -260,14 +240,6 @@ msgstr "Konstruktoriaus aplankas"
 #: codetoolsstrconsts.ctsdesignerunitsdirectory
 msgid "Designer Units"
 msgstr "Konstruktoriaus moduliai"
-
-#: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
-msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "%s esantis aplanko komponentas neegzistuoja arba jis yra betikslis simbolinis saitas"
-
-#: codetoolsstrconsts.ctsdircomponentisnotdir
-msgid "a directory component in %s is not a directory"
-msgstr "%s esantis aplanko komponentas nėra aplankas"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"
@@ -333,10 +305,6 @@ msgstr "klaida direktyvos išraiškoje"
 msgid "error in paramlist"
 msgstr "klaida parametrų sąraše"
 
-#: codetoolsstrconsts.ctsexecuteaccessdeniedforfile
-msgid "execute access denied for %s"
-msgstr "%s apibrėžtas leidimas startuoti"
-
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
 msgstr "tikėtasi „%s“"
@@ -372,10 +340,6 @@ msgstr "eksporto sakinys galimas tik bibliotekose"
 #: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
 msgstr "išraiškos tipas turi būti klasė arba įrašas"
-
-#: codetoolsstrconsts.ctsfilehascircularsymlink
-msgid "%s has a circular symbolic link"
-msgstr "%s turi uždarą simbolinį saitą"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"
@@ -423,10 +387,6 @@ msgstr "šioje klasėje funkcija „GetEnumerator“ nerasta"
 msgid "generic identifier"
 msgstr "daugybinis identifikatorius"
 
-#: codetoolsstrconsts.ctsgtk2intfdirectory
-msgid "gtk2 interface directory"
-msgstr "gtk2 interfeiso aplankas"
-
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
 msgstr "TuriKlaida"
@@ -438,10 +398,6 @@ msgstr ""
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "IKA aplankas"
-
-#: codetoolsstrconsts.ctsideintfdirectory
-msgid "IDEIntf Directory"
-msgstr "IDEIntf aplankas"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
@@ -544,17 +500,9 @@ msgstr "Diegimo aplankas"
 msgid "Installer directories"
 msgstr "Diegimo programos aplankai"
 
-#: codetoolsstrconsts.ctsinsufficientmemory
-msgid "insufficient memory"
-msgstr "trūksta atminties"
-
 #: codetoolsstrconsts.ctsinterfacesectionnotfound
 msgid "interface section not found"
 msgstr "nerasta interfeiso sekcija"
-
-#: codetoolsstrconsts.ctsintfdirectory
-msgid "interface directory"
-msgstr "interfeiso aplankas"
 
 #: codetoolsstrconsts.ctsinvalidclassname
 #, fuzzy,badformat
@@ -603,10 +551,6 @@ msgstr "kintamojo pavadinimas %s%s%s yra klaidingas"
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "kintamojo tipas %s%s%s yra klaidingas"
-
-#: codetoolsstrconsts.ctsjitformdirectory
-msgid "JITForm Directory"
-msgstr "JITForm aplankas"
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -832,10 +776,6 @@ msgstr "šaltinis nėra modulis"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "pirminis kodas nerastas: modulis %s"
 
-#: codetoolsstrconsts.ctssrcpathforcompiledunits
-msgid "src path for compiled units"
-msgstr "pirminio kodo kelias kompiliuotiems moduliams"
-
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr "Pirminio kodo kelio inicializacija"
@@ -853,10 +793,6 @@ msgstr "eilutės konstanta"
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
 msgstr "Išraiškoje „%s“ yra sintaksės klaida"
-
-#: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
-msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr "TCodeToolManager.ConsistencyCheck=%d"
 
 #: codetoolsstrconsts.ctstermnotsimple
 msgid "Term has no simple type"
@@ -965,10 +901,6 @@ msgstr "Paslaugų programų aplankai"
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
 msgstr "„var“ galimas tik daugybinėje klasėje; nerasta klasės pabaiga"
-
-#: codetoolsstrconsts.ctswidgetdirectory
-msgid "Widget Directory"
-msgstr "Valdiklių aplankas"
 
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"

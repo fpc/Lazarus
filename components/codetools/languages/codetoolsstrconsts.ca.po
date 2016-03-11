@@ -139,10 +139,6 @@ msgstr "constant"
 msgid "Converter Directory"
 msgstr "Directori del Conversor"
 
-#: codetoolsstrconsts.ctscpudirectory
-msgid "CPU directory"
-msgstr "Directori de la CPU"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "posició del cursor fora del codi"
@@ -223,25 +219,9 @@ msgstr ""
 msgid "Define macro carbon1"
 msgstr "Defineix macroinstrucció carbon1"
 
-#: codetoolsstrconsts.ctsdefinemacrogtk1
-msgid "Define macro gtk1"
-msgstr "Defineix macroinstrucció gtk1"
-
-#: codetoolsstrconsts.ctsdefinemacrogtk2
-msgid "Define macro gtk2"
-msgstr "Defineix macroinstrucció gtk2"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "Defineix macroinstrucció %s"
-
-#: codetoolsstrconsts.ctsdefinemacroqt1
-msgid "Define macro qt1"
-msgstr "Defineix macroinstrucció qt1"
-
-#: codetoolsstrconsts.ctsdefinemacrowince1
-msgid "Define macro wince1"
-msgstr "Defineix macroinstrucció wince1"
 
 #: codetoolsstrconsts.ctsdefineprocessortype
 msgid "Define processor type"
@@ -258,14 +238,6 @@ msgstr "Directori del dissenyador"
 #: codetoolsstrconsts.ctsdesignerunitsdirectory
 msgid "Designer Units"
 msgstr "Unitats del dissenyador"
-
-#: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
-msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "No existeix un component del directori a %s, o és un enllaç simbòlic no vàlid"
-
-#: codetoolsstrconsts.ctsdircomponentisnotdir
-msgid "a directory component in %s is not a directory"
-msgstr "un directori dels components a %s no és un directori"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"
@@ -333,10 +305,6 @@ msgstr "s'ha produït un error en l'expressió de la directiva"
 msgid "error in paramlist"
 msgstr "s'ha produït un error en llista dels paràmetres"
 
-#: codetoolsstrconsts.ctsexecuteaccessdeniedforfile
-msgid "execute access denied for %s"
-msgstr "s'ha denegat l'accés d'execució per: %s"
-
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
 msgstr ""
@@ -372,10 +340,6 @@ msgstr "la clausula exportada només es permet en biblioteques"
 #: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
 msgstr "el tipus de l'expressió ha de ser CLASS o RECORD"
-
-#: codetoolsstrconsts.ctsfilehascircularsymlink
-msgid "%s has a circular symbolic link"
-msgstr "%s té un enllaç simbòlic circular"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"
@@ -423,10 +387,6 @@ msgstr ""
 msgid "generic identifier"
 msgstr ""
 
-#: codetoolsstrconsts.ctsgtk2intfdirectory
-msgid "gtk2 interface directory"
-msgstr "directori d'interfície del gtk2"
-
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
 msgstr ""
@@ -438,10 +398,6 @@ msgstr ""
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "Directori de l'IDE"
-
-#: codetoolsstrconsts.ctsideintfdirectory
-msgid "IDEIntf Directory"
-msgstr "Directori IDEIntf"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
@@ -543,17 +499,9 @@ msgstr "Directori d'instal·lació"
 msgid "Installer directories"
 msgstr "Directoris de l'instal·lador"
 
-#: codetoolsstrconsts.ctsinsufficientmemory
-msgid "insufficient memory"
-msgstr "no hi ha prou memòria"
-
 #: codetoolsstrconsts.ctsinterfacesectionnotfound
 msgid "interface section not found"
 msgstr "no s'ha trobat la secció Interface"
-
-#: codetoolsstrconsts.ctsintfdirectory
-msgid "interface directory"
-msgstr "directori d'interfície"
 
 #: codetoolsstrconsts.ctsinvalidclassname
 #, fuzzy,badformat
@@ -602,10 +550,6 @@ msgstr "el nom de la variable %s%s%s no és vàlid"
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "el tipus de la variable %s%s%s no és vàlid"
-
-#: codetoolsstrconsts.ctsjitformdirectory
-msgid "JITForm Directory"
-msgstr "Directori de les JitForm"
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -831,10 +775,6 @@ msgstr "la font no és una unitat"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "no s'ha trobat la font: unitat %s"
 
-#: codetoolsstrconsts.ctssrcpathforcompiledunits
-msgid "src path for compiled units"
-msgstr "trajectòria font per les unitats compilades"
-
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr "Inicialització de SrcPath"
@@ -852,10 +792,6 @@ msgstr "constant de la cadena"
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
 msgstr "S'ha produït un error de sintaxi en l'expressió \"%s\""
-
-#: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
-msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr "TCodeToolManager.ConsistencyCheck=%d"
 
 #: codetoolsstrconsts.ctstermnotsimple
 msgid "Term has no simple type"
@@ -964,10 +900,6 @@ msgstr "Directoris de les utilitats"
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
 msgstr ""
-
-#: codetoolsstrconsts.ctswidgetdirectory
-msgid "Widget Directory"
-msgstr "Directori dels ginys"
 
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"

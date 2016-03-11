@@ -142,10 +142,6 @@ msgstr "常量"
 msgid "Converter Directory"
 msgstr "转换目录"
 
-#: codetoolsstrconsts.ctscpudirectory
-msgid "CPU directory"
-msgstr "CPU 目录"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "光标位置在代码区外"
@@ -226,25 +222,9 @@ msgstr "定义LCL窗口部件类型，如LCLgtk"
 msgid "Define macro carbon1"
 msgstr "定义 carbon1 宏"
 
-#: codetoolsstrconsts.ctsdefinemacrogtk1
-msgid "Define macro gtk1"
-msgstr "定义 gtk1 宏"
-
-#: codetoolsstrconsts.ctsdefinemacrogtk2
-msgid "Define macro gtk2"
-msgstr "定义 gtk2 宏"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "定义宏 %s"
-
-#: codetoolsstrconsts.ctsdefinemacroqt1
-msgid "Define macro qt1"
-msgstr "定义 qt1 宏"
-
-#: codetoolsstrconsts.ctsdefinemacrowince1
-msgid "Define macro wince1"
-msgstr "定义 wince1 宏"
 
 #: codetoolsstrconsts.ctsdefineprocessortype
 msgid "Define processor type"
@@ -261,14 +241,6 @@ msgstr "Designer 目录"
 #: codetoolsstrconsts.ctsdesignerunitsdirectory
 msgid "Designer Units"
 msgstr "设计器单元"
-
-#: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
-msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "a directory component in %s does not exist or is a dangling symlink"
-
-#: codetoolsstrconsts.ctsdircomponentisnotdir
-msgid "a directory component in %s is not a directory"
-msgstr "组件目录 %s 不是一个目录"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"
@@ -336,10 +308,6 @@ msgstr "指示错误"
 msgid "error in paramlist"
 msgstr "参数列表错误"
 
-#: codetoolsstrconsts.ctsexecuteaccessdeniedforfile
-msgid "execute access denied for %s"
-msgstr "访问 %s 遭到拒绝"
-
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
 msgstr ""
@@ -375,10 +343,6 @@ msgstr "exports 语句只允许在 libraries 中使用"
 #: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
 msgstr "表达类型必须是类或记录类型"
-
-#: codetoolsstrconsts.ctsfilehascircularsymlink
-msgid "%s has a circular symbolic link"
-msgstr "%s 有循环符号链接"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"
@@ -426,10 +390,6 @@ msgstr ""
 msgid "generic identifier"
 msgstr "通用标识符"
 
-#: codetoolsstrconsts.ctsgtk2intfdirectory
-msgid "gtk2 interface directory"
-msgstr "gtk2 接口目录"
-
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
 msgstr ""
@@ -441,10 +401,6 @@ msgstr ""
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "IDE 目录"
-
-#: codetoolsstrconsts.ctsideintfdirectory
-msgid "IDEIntf Directory"
-msgstr "IDEIntf 目录"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
@@ -546,17 +502,9 @@ msgstr "安装目录"
 msgid "Installer directories"
 msgstr "安装目录"
 
-#: codetoolsstrconsts.ctsinsufficientmemory
-msgid "insufficient memory"
-msgstr "内存不够"
-
 #: codetoolsstrconsts.ctsinterfacesectionnotfound
 msgid "interface section not found"
 msgstr "接口节未找到"
-
-#: codetoolsstrconsts.ctsintfdirectory
-msgid "interface directory"
-msgstr "接口目录"
 
 #: codetoolsstrconsts.ctsinvalidclassname
 #, fuzzy,badformat
@@ -606,10 +554,6 @@ msgstr "无效变量名 %s%s%s"
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "无效变量类型 %s%s%s"
-
-#: codetoolsstrconsts.ctsjitformdirectory
-msgid "JITForm Directory"
-msgstr "JITForm 目录"
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -835,10 +779,6 @@ msgstr "代码不是单元"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "代码未着大: 单元 %s"
 
-#: codetoolsstrconsts.ctssrcpathforcompiledunits
-msgid "src path for compiled units"
-msgstr "已编译单元的源代码路径"
-
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr "SrcPath Initialization"
@@ -856,10 +796,6 @@ msgstr "字符串常量"
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
 msgstr "表达式语法错误 \"%s\""
-
-#: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
-msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr "TCodeToolManager.ConsistencyCheck=%d"
 
 #: codetoolsstrconsts.ctstermnotsimple
 msgid "Term has no simple type"
@@ -969,10 +905,6 @@ msgstr "单元目录"
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
 msgstr ""
-
-#: codetoolsstrconsts.ctswidgetdirectory
-msgid "Widget Directory"
-msgstr "窗口部件目录"
 
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"

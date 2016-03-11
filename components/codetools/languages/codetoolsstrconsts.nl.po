@@ -139,10 +139,6 @@ msgstr "constante"
 msgid "Converter Directory"
 msgstr ""
 
-#: codetoolsstrconsts.ctscpudirectory
-msgid "CPU directory"
-msgstr ""
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "cursor positie buiten broncode"
@@ -223,24 +219,8 @@ msgstr ""
 msgid "Define macro carbon1"
 msgstr ""
 
-#: codetoolsstrconsts.ctsdefinemacrogtk1
-msgid "Define macro gtk1"
-msgstr ""
-
-#: codetoolsstrconsts.ctsdefinemacrogtk2
-msgid "Define macro gtk2"
-msgstr ""
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
-msgstr ""
-
-#: codetoolsstrconsts.ctsdefinemacroqt1
-msgid "Define macro qt1"
-msgstr ""
-
-#: codetoolsstrconsts.ctsdefinemacrowince1
-msgid "Define macro wince1"
 msgstr ""
 
 #: codetoolsstrconsts.ctsdefineprocessortype
@@ -257,14 +237,6 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsdesignerunitsdirectory
 msgid "Designer Units"
-msgstr ""
-
-#: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
-msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr ""
-
-#: codetoolsstrconsts.ctsdircomponentisnotdir
-msgid "a directory component in %s is not a directory"
 msgstr ""
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
@@ -333,10 +305,6 @@ msgstr ""
 msgid "error in paramlist"
 msgstr "fout in paramlijst"
 
-#: codetoolsstrconsts.ctsexecuteaccessdeniedforfile
-msgid "execute access denied for %s"
-msgstr ""
-
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
 msgstr ""
@@ -371,10 +339,6 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
-msgstr ""
-
-#: codetoolsstrconsts.ctsfilehascircularsymlink
-msgid "%s has a circular symbolic link"
 msgstr ""
 
 #: codetoolsstrconsts.ctsfileisreadonly
@@ -423,10 +387,6 @@ msgstr ""
 msgid "generic identifier"
 msgstr ""
 
-#: codetoolsstrconsts.ctsgtk2intfdirectory
-msgid "gtk2 interface directory"
-msgstr ""
-
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
 msgstr ""
@@ -437,10 +397,6 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
-msgstr ""
-
-#: codetoolsstrconsts.ctsideintfdirectory
-msgid "IDEIntf Directory"
 msgstr ""
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
@@ -543,17 +499,9 @@ msgstr ""
 msgid "Installer directories"
 msgstr ""
 
-#: codetoolsstrconsts.ctsinsufficientmemory
-msgid "insufficient memory"
-msgstr "onvoldoende geheugen"
-
 #: codetoolsstrconsts.ctsinterfacesectionnotfound
 msgid "interface section not found"
 msgstr "interface sectie niet gevonden"
-
-#: codetoolsstrconsts.ctsintfdirectory
-msgid "interface directory"
-msgstr ""
 
 #: codetoolsstrconsts.ctsinvalidclassname
 #, fuzzy
@@ -602,10 +550,6 @@ msgstr "ongeldige variabele naam \"%s\""
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "ongeldige variabele type \"%s\""
-
-#: codetoolsstrconsts.ctsjitformdirectory
-msgid "JITForm Directory"
-msgstr ""
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -831,10 +775,6 @@ msgstr "broncode is geen unit"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "broncode niet gevonden: unit %s"
 
-#: codetoolsstrconsts.ctssrcpathforcompiledunits
-msgid "src path for compiled units"
-msgstr ""
-
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr ""
@@ -852,10 +792,6 @@ msgstr "string constante"
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
 msgstr "Syntax fout in expressie \"%s\""
-
-#: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
-msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr ""
 
 #: codetoolsstrconsts.ctstermnotsimple
 msgid "Term has no simple type"
@@ -963,10 +899,6 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
-msgstr ""
-
-#: codetoolsstrconsts.ctswidgetdirectory
-msgid "Widget Directory"
 msgstr ""
 
 #: codetoolsstrconsts.ctswordnotfound

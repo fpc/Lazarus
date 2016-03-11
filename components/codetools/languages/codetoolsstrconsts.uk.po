@@ -142,10 +142,6 @@ msgstr "константа"
 msgid "Converter Directory"
 msgstr "Каталог Конвертера"
 
-#: codetoolsstrconsts.ctscpudirectory
-msgid "CPU directory"
-msgstr "тека CPU"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "позиція курсора поза кодом"
@@ -226,25 +222,9 @@ msgstr "Визначити LCLwidgetset, напр. LCLgtk"
 msgid "Define macro carbon1"
 msgstr "Визначити макрос carbon1"
 
-#: codetoolsstrconsts.ctsdefinemacrogtk1
-msgid "Define macro gtk1"
-msgstr "Визначити макрос gtk1"
-
-#: codetoolsstrconsts.ctsdefinemacrogtk2
-msgid "Define macro gtk2"
-msgstr "Визначити макрос gtk2"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "Визначити макрос %s"
-
-#: codetoolsstrconsts.ctsdefinemacroqt1
-msgid "Define macro qt1"
-msgstr "Визначити макрос qt1"
-
-#: codetoolsstrconsts.ctsdefinemacrowince1
-msgid "Define macro wince1"
-msgstr "Визначити макрос wince1"
 
 #: codetoolsstrconsts.ctsdefineprocessortype
 msgid "Define processor type"
@@ -261,14 +241,6 @@ msgstr "Тека проектувальника"
 #: codetoolsstrconsts.ctsdesignerunitsdirectory
 msgid "Designer Units"
 msgstr "Модулі проектувальника"
-
-#: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
-msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "тека компонентів в %s не існує, або вона має пошкоджене посилання"
-
-#: codetoolsstrconsts.ctsdircomponentisnotdir
-msgid "a directory component in %s is not a directory"
-msgstr "тека компонентів в %s не є текою"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"
@@ -334,10 +306,6 @@ msgstr "помилка у виразі директиви"
 msgid "error in paramlist"
 msgstr "помилка в списку параметрів"
 
-#: codetoolsstrconsts.ctsexecuteaccessdeniedforfile
-msgid "execute access denied for %s"
-msgstr "немає доступу до виконання %s"
-
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
 msgstr "\"%s\" очікується"
@@ -373,10 +341,6 @@ msgstr "експортований оператор дозволяється л�
 #: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
 msgstr "тип виразу має бути об'єктом або записом"
-
-#: codetoolsstrconsts.ctsfilehascircularsymlink
-msgid "%s has a circular symbolic link"
-msgstr "%s вміщує циклічне символічне посилання"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"
@@ -424,10 +388,6 @@ msgstr "функція GetEnumerator не знайдена в цьому кла�
 msgid "generic identifier"
 msgstr "універсальний ідентифікатор"
 
-#: codetoolsstrconsts.ctsgtk2intfdirectory
-msgid "gtk2 interface directory"
-msgstr "тека інтерфейсу gtk2"
-
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
 msgstr "HasError"
@@ -439,10 +399,6 @@ msgstr ""
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "Тека IDE"
-
-#: codetoolsstrconsts.ctsideintfdirectory
-msgid "IDEIntf Directory"
-msgstr "Тека інтерфейсу IDE"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
@@ -544,17 +500,9 @@ msgstr "Тека встановлення"
 msgid "Installer directories"
 msgstr "Теки встановлювача"
 
-#: codetoolsstrconsts.ctsinsufficientmemory
-msgid "insufficient memory"
-msgstr "недостатньо пам'яті"
-
 #: codetoolsstrconsts.ctsinterfacesectionnotfound
 msgid "interface section not found"
 msgstr "не знайдений розділ описів (interface)"
-
-#: codetoolsstrconsts.ctsintfdirectory
-msgid "interface directory"
-msgstr "тека інтерфейсу"
 
 #: codetoolsstrconsts.ctsinvalidclassname
 #, fuzzy,badformat
@@ -603,10 +551,6 @@ msgstr "неправильне ім'я змінної %s%s%s"
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "неправильний тип змінної %s%s%s"
-
-#: codetoolsstrconsts.ctsjitformdirectory
-msgid "JITForm Directory"
-msgstr "Тека JITForm"
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -832,10 +776,6 @@ msgstr "код не є модулем"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "текст програми не знайдений: модуль %s"
 
-#: codetoolsstrconsts.ctssrcpathforcompiledunits
-msgid "src path for compiled units"
-msgstr "шлях до текстів програм зібраних модулів"
-
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr "Ініціалізація шляхів до текстів програм"
@@ -853,10 +793,6 @@ msgstr "рядкова константа"
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
 msgstr "Помилка синтаксису в виразі \"%s\""
-
-#: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
-msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr "TCodeToolManager.ConsistencyCheck=%d"
 
 #: codetoolsstrconsts.ctstermnotsimple
 msgid "Term has no simple type"
@@ -966,10 +902,6 @@ msgstr "Теки інструментів"
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
 msgstr "var дозволено лише в загальних, кінець класу не знайдено"
-
-#: codetoolsstrconsts.ctswidgetdirectory
-msgid "Widget Directory"
-msgstr "Тека елементів інтерфейсу"
 
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"

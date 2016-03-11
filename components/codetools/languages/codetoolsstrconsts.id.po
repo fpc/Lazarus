@@ -141,10 +141,6 @@ msgstr "konstan"
 msgid "Converter Directory"
 msgstr "Direktori Konverter"
 
-#: codetoolsstrconsts.ctscpudirectory
-msgid "CPU directory"
-msgstr "Direktori CPU"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "posisi kursor diluar kode"
@@ -225,25 +221,9 @@ msgstr ""
 msgid "Define macro carbon1"
 msgstr "Definisikan makro carbon1"
 
-#: codetoolsstrconsts.ctsdefinemacrogtk1
-msgid "Define macro gtk1"
-msgstr "Definisikan makro gtk1"
-
-#: codetoolsstrconsts.ctsdefinemacrogtk2
-msgid "Define macro gtk2"
-msgstr "Definisikan makro gtk2"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "Definisikan Makro %s"
-
-#: codetoolsstrconsts.ctsdefinemacroqt1
-msgid "Define macro qt1"
-msgstr "Definisikan makro qt1"
-
-#: codetoolsstrconsts.ctsdefinemacrowince1
-msgid "Define macro wince1"
-msgstr "Definisikan makro wince1"
 
 #: codetoolsstrconsts.ctsdefineprocessortype
 msgid "Define processor type"
@@ -260,14 +240,6 @@ msgstr "Direktori Desainer"
 #: codetoolsstrconsts.ctsdesignerunitsdirectory
 msgid "Designer Units"
 msgstr "Unit Desainer"
-
-#: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
-msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "direktori komponen dalam %s tidak ada atau merupakan dangling symlink"
-
-#: codetoolsstrconsts.ctsdircomponentisnotdir
-msgid "a directory component in %s is not a directory"
-msgstr "direktori komponen dalam %s bukan sebuah direktori"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"
@@ -335,10 +307,6 @@ msgstr "Kesalahan dalam ekspresi direktif"
 msgid "error in paramlist"
 msgstr "kesalahan dalam paramlist"
 
-#: codetoolsstrconsts.ctsexecuteaccessdeniedforfile
-msgid "execute access denied for %s"
-msgstr "akses eksekusi ditolak untuk %s"
-
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
 msgstr ""
@@ -374,10 +342,6 @@ msgstr "klausul ekspor hanya dibolehkan dalam librari"
 #: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
 msgstr "tipe ekspresi harus tipe class atau record"
-
-#: codetoolsstrconsts.ctsfilehascircularsymlink
-msgid "%s has a circular symbolic link"
-msgstr "%s mempunyai link simbolik berputar"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"
@@ -425,10 +389,6 @@ msgstr ""
 msgid "generic identifier"
 msgstr "pengenal generik"
 
-#: codetoolsstrconsts.ctsgtk2intfdirectory
-msgid "gtk2 interface directory"
-msgstr "Direktori interface gtk2"
-
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
 msgstr ""
@@ -440,10 +400,6 @@ msgstr ""
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "Direktori IDE"
-
-#: codetoolsstrconsts.ctsideintfdirectory
-msgid "IDEIntf Directory"
-msgstr "Direktori IDEIntf"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
@@ -545,17 +501,9 @@ msgstr "Direktori Instalasi"
 msgid "Installer directories"
 msgstr "Direktori Instalator"
 
-#: codetoolsstrconsts.ctsinsufficientmemory
-msgid "insufficient memory"
-msgstr "memori tidak cukup"
-
 #: codetoolsstrconsts.ctsinterfacesectionnotfound
 msgid "interface section not found"
 msgstr "bagian interface tidak ditemukan"
-
-#: codetoolsstrconsts.ctsintfdirectory
-msgid "interface directory"
-msgstr "direktori interface"
 
 #: codetoolsstrconsts.ctsinvalidclassname
 #, fuzzy,badformat
@@ -604,10 +552,6 @@ msgstr "nama variabel tidak benar %s%s%s"
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "tipe variabel tidak benar %s%s%s"
-
-#: codetoolsstrconsts.ctsjitformdirectory
-msgid "JITForm Directory"
-msgstr "Direktori JITForm"
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -833,10 +777,6 @@ msgstr "sumber bukan unit"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "sumber tidak ditemukan: unit %s"
 
-#: codetoolsstrconsts.ctssrcpathforcompiledunits
-msgid "src path for compiled units"
-msgstr "src path untuk unit yang dikompilasi"
-
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr "Inisialisasi SrcPath"
@@ -854,10 +794,6 @@ msgstr "konstan string"
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
 msgstr "Kesalahan sintaks dalam ekspresi \"%s\""
-
-#: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
-msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr "TCodeToolManager.ConsistencyCheck=%d"
 
 #: codetoolsstrconsts.ctstermnotsimple
 msgid "Term has no simple type"
@@ -966,10 +902,6 @@ msgstr "Direktori Utils"
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
 msgstr ""
-
-#: codetoolsstrconsts.ctswidgetdirectory
-msgid "Widget Directory"
-msgstr "Direktori Widget"
 
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"

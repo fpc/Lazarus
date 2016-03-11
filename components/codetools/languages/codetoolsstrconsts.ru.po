@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-25 00:58+0300\n"
+"PO-Revision-Date: 2016-03-12 00:50+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Language: ru\n"
@@ -139,10 +139,6 @@ msgstr "константа"
 msgid "Converter Directory"
 msgstr "Каталог конвертера"
 
-#: codetoolsstrconsts.ctscpudirectory
-msgid "CPU directory"
-msgstr "Каталог CPU"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "позиция курсора вне кода"
@@ -223,25 +219,9 @@ msgstr "Задать LCLwidgetset, например, LCLgtk"
 msgid "Define macro carbon1"
 msgstr "Задать макрос carbon1"
 
-#: codetoolsstrconsts.ctsdefinemacrogtk1
-msgid "Define macro gtk1"
-msgstr "Задать макрос gtk1"
-
-#: codetoolsstrconsts.ctsdefinemacrogtk2
-msgid "Define macro gtk2"
-msgstr "Задать макрос gtk2"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "Задать макрос %s"
-
-#: codetoolsstrconsts.ctsdefinemacroqt1
-msgid "Define macro qt1"
-msgstr "Задать макрос qt1"
-
-#: codetoolsstrconsts.ctsdefinemacrowince1
-msgid "Define macro wince1"
-msgstr "Задать макрос wince1"
 
 #: codetoolsstrconsts.ctsdefineprocessortype
 msgid "Define processor type"
@@ -258,14 +238,6 @@ msgstr "Каталог дизайнера"
 #: codetoolsstrconsts.ctsdesignerunitsdirectory
 msgid "Designer Units"
 msgstr "Модули дизайнера"
-
-#: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
-msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "компонент каталога в %s не существует или является повреждённой ссылкой"
-
-#: codetoolsstrconsts.ctsdircomponentisnotdir
-msgid "a directory component in %s is not a directory"
-msgstr "компонент каталога в %s не является каталогом"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"
@@ -331,10 +303,6 @@ msgstr "ошибка в выражении директивы"
 msgid "error in paramlist"
 msgstr "ошибка в списке параметров"
 
-#: codetoolsstrconsts.ctsexecuteaccessdeniedforfile
-msgid "execute access denied for %s"
-msgstr "нет доступа для выполнения %s"
-
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
 msgstr "Ожидается \"%s\""
@@ -370,10 +338,6 @@ msgstr "выражение exports разрешается только в биб
 #: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
 msgstr "тип выражения должен быть объектом или записью"
-
-#: codetoolsstrconsts.ctsfilehascircularsymlink
-msgid "%s has a circular symbolic link"
-msgstr "%s содержит циклическую символическую ссылку"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"
@@ -421,10 +385,6 @@ msgstr "функция GetEnumerator не найдена в данном кла�
 msgid "generic identifier"
 msgstr "идентификатор обобщённого типа"
 
-#: codetoolsstrconsts.ctsgtk2intfdirectory
-msgid "gtk2 interface directory"
-msgstr "каталог интерфейса gtk2"
-
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
 msgstr "Ошибка"
@@ -436,10 +396,6 @@ msgstr "Модификатор \"helper\" после %s не разрешает�
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "Каталог IDE"
-
-#: codetoolsstrconsts.ctsideintfdirectory
-msgid "IDEIntf Directory"
-msgstr "Каталог интерфейса IDE"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
@@ -541,17 +497,9 @@ msgstr "Каталог установки"
 msgid "Installer directories"
 msgstr "Каталоги инсталлятора"
 
-#: codetoolsstrconsts.ctsinsufficientmemory
-msgid "insufficient memory"
-msgstr "недостаточно памяти"
-
 #: codetoolsstrconsts.ctsinterfacesectionnotfound
 msgid "interface section not found"
 msgstr "секция interface не найдена"
-
-#: codetoolsstrconsts.ctsintfdirectory
-msgid "interface directory"
-msgstr "каталог интерфейса"
 
 #: codetoolsstrconsts.ctsinvalidclassname
 msgid "invalid class name=\"%s\""
@@ -592,10 +540,6 @@ msgstr "неверное имя переменной \"%s\""
 #: codetoolsstrconsts.ctsinvalidvariabletype
 msgid "invalid variable type \"%s\""
 msgstr "неверный тип переменной \"%s\""
-
-#: codetoolsstrconsts.ctsjitformdirectory
-msgid "JITForm Directory"
-msgstr "Каталог JITForm"
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -819,10 +763,6 @@ msgstr "исходный код не является модулем"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "не найден исходный код: модуль %s. Проверьте путь к исходному коду FPC."
 
-#: codetoolsstrconsts.ctssrcpathforcompiledunits
-msgid "src path for compiled units"
-msgstr "путь к исходным кодам для откомпилированных модулей"
-
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr "Инициализация путей к исходному коду"
@@ -838,10 +778,6 @@ msgstr "строковая константа"
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
 msgstr "Синтаксическая ошибка в выражении \"%s\""
-
-#: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
-msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr "TCodeToolManager.ConsistencyCheck=%d"
 
 #: codetoolsstrconsts.ctstermnotsimple
 msgid "Term has no simple type"
@@ -950,10 +886,6 @@ msgstr "Каталоги утилит"
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
 msgstr "секция var разрешена только в обобщённых типах, конец класса не найден"
-
-#: codetoolsstrconsts.ctswidgetdirectory
-msgid "Widget Directory"
-msgstr "Каталог виджетов"
 
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"

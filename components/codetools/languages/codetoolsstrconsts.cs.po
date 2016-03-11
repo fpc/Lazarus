@@ -141,10 +141,6 @@ msgstr "konstanta"
 msgid "Converter Directory"
 msgstr "Adresář převaděče"
 
-#: codetoolsstrconsts.ctscpudirectory
-msgid "CPU directory"
-msgstr "Adresář CPU"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "pozice ukazatele mimo kód"
@@ -225,25 +221,9 @@ msgstr "Definice LCLwidgetset, např. LCLgtk"
 msgid "Define macro carbon1"
 msgstr "Definice makra carbon1"
 
-#: codetoolsstrconsts.ctsdefinemacrogtk1
-msgid "Define macro gtk1"
-msgstr "Definice makra gtk1"
-
-#: codetoolsstrconsts.ctsdefinemacrogtk2
-msgid "Define macro gtk2"
-msgstr "Definice makra gtk2"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "Definice makra %s"
-
-#: codetoolsstrconsts.ctsdefinemacroqt1
-msgid "Define macro qt1"
-msgstr "Definice makra qt1"
-
-#: codetoolsstrconsts.ctsdefinemacrowince1
-msgid "Define macro wince1"
-msgstr "Definice makra wince1"
 
 #: codetoolsstrconsts.ctsdefineprocessortype
 msgid "Define processor type"
@@ -260,14 +240,6 @@ msgstr "Adresář Návrháře"
 #: codetoolsstrconsts.ctsdesignerunitsdirectory
 msgid "Designer Units"
 msgstr "Jednotky Návrháře"
-
-#: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
-msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "adresář komponenty v %s neexistuje nebo není platný symbolický odkaz"
-
-#: codetoolsstrconsts.ctsdircomponentisnotdir
-msgid "a directory component in %s is not a directory"
-msgstr "adresář komponenty v %s není adresář"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"
@@ -333,10 +305,6 @@ msgstr "chyba ve výrazu směrnice"
 msgid "error in paramlist"
 msgstr "chyba v seznamu parametrů"
 
-#: codetoolsstrconsts.ctsexecuteaccessdeniedforfile
-msgid "execute access denied for %s"
-msgstr "přístup zamítnut pro vykonání %s"
-
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
 msgstr "očekáváno \"%s\""
@@ -372,10 +340,6 @@ msgstr "klauzule exports povolena pouze v knihovnách"
 #: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
 msgstr "typ výrazu musí být třída nebo záznamový typ"
-
-#: codetoolsstrconsts.ctsfilehascircularsymlink
-msgid "%s has a circular symbolic link"
-msgstr "%s má cyklický symbolický odkaz"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"
@@ -423,10 +387,6 @@ msgstr "v této třídě nenalezena funkce GetEnumerator"
 msgid "generic identifier"
 msgstr "obecný identifikátor"
 
-#: codetoolsstrconsts.ctsgtk2intfdirectory
-msgid "gtk2 interface directory"
-msgstr "adresář rozhraní gtk2"
-
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
 msgstr "HasError"
@@ -438,10 +398,6 @@ msgstr ""
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "Adresář IDE"
-
-#: codetoolsstrconsts.ctsideintfdirectory
-msgid "IDEIntf Directory"
-msgstr "Adresář IDEIntf"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
@@ -543,17 +499,9 @@ msgstr "Instalační adresář"
 msgid "Installer directories"
 msgstr "Adresáře instalátoru"
 
-#: codetoolsstrconsts.ctsinsufficientmemory
-msgid "insufficient memory"
-msgstr "Nedostatek paměti"
-
 #: codetoolsstrconsts.ctsinterfacesectionnotfound
 msgid "interface section not found"
 msgstr "nenalezena sekce interface"
-
-#: codetoolsstrconsts.ctsintfdirectory
-msgid "interface directory"
-msgstr "adresář rozhraní"
 
 #: codetoolsstrconsts.ctsinvalidclassname
 #, fuzzy,badformat
@@ -602,10 +550,6 @@ msgstr "neplatné jméno proměnné %s%s%s"
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "neplatný typ proměnné %s%s%s"
-
-#: codetoolsstrconsts.ctsjitformdirectory
-msgid "JITForm Directory"
-msgstr "Adresář JITForm"
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -831,10 +775,6 @@ msgstr "zdroj není jednotka"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "nenalezen zdroj: jednotka %s"
 
-#: codetoolsstrconsts.ctssrcpathforcompiledunits
-msgid "src path for compiled units"
-msgstr "zdrojová cesta pro přeložené jednotky"
-
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr "Inicializace SrcPath"
@@ -852,10 +792,6 @@ msgstr "řetězcová konstanta"
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
 msgstr "Syntaktická chyba ve výrazu \"%s\""
-
-#: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
-msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr "TCodeToolManager.ConsistencyCheck=%d"
 
 #: codetoolsstrconsts.ctstermnotsimple
 msgid "Term has no simple type"
@@ -964,10 +900,6 @@ msgstr "Adresáře nástrojů:"
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
 msgstr "var je povolen pouze v generikách, nenalezen konec třídy "
-
-#: codetoolsstrconsts.ctswidgetdirectory
-msgid "Widget Directory"
-msgstr "Adresář Widgetů"
 
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"

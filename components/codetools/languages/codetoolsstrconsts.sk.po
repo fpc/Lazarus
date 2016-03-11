@@ -140,10 +140,6 @@ msgstr ""
 msgid "Converter Directory"
 msgstr ""
 
-#: codetoolsstrconsts.ctscpudirectory
-msgid "CPU directory"
-msgstr ""
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr ""
@@ -224,24 +220,8 @@ msgstr ""
 msgid "Define macro carbon1"
 msgstr ""
 
-#: codetoolsstrconsts.ctsdefinemacrogtk1
-msgid "Define macro gtk1"
-msgstr ""
-
-#: codetoolsstrconsts.ctsdefinemacrogtk2
-msgid "Define macro gtk2"
-msgstr ""
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
-msgstr ""
-
-#: codetoolsstrconsts.ctsdefinemacroqt1
-msgid "Define macro qt1"
-msgstr ""
-
-#: codetoolsstrconsts.ctsdefinemacrowince1
-msgid "Define macro wince1"
 msgstr ""
 
 #: codetoolsstrconsts.ctsdefineprocessortype
@@ -258,14 +238,6 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsdesignerunitsdirectory
 msgid "Designer Units"
-msgstr ""
-
-#: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
-msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr ""
-
-#: codetoolsstrconsts.ctsdircomponentisnotdir
-msgid "a directory component in %s is not a directory"
 msgstr ""
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
@@ -332,10 +304,6 @@ msgstr "chyba vo výraze direktívy"
 msgid "error in paramlist"
 msgstr ""
 
-#: codetoolsstrconsts.ctsexecuteaccessdeniedforfile
-msgid "execute access denied for %s"
-msgstr ""
-
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
 msgstr ""
@@ -370,10 +338,6 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
-msgstr ""
-
-#: codetoolsstrconsts.ctsfilehascircularsymlink
-msgid "%s has a circular symbolic link"
 msgstr ""
 
 #: codetoolsstrconsts.ctsfileisreadonly
@@ -422,10 +386,6 @@ msgstr ""
 msgid "generic identifier"
 msgstr ""
 
-#: codetoolsstrconsts.ctsgtk2intfdirectory
-msgid "gtk2 interface directory"
-msgstr ""
-
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
 msgstr ""
@@ -436,10 +396,6 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
-msgstr ""
-
-#: codetoolsstrconsts.ctsideintfdirectory
-msgid "IDEIntf Directory"
 msgstr ""
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
@@ -542,16 +498,8 @@ msgstr ""
 msgid "Installer directories"
 msgstr ""
 
-#: codetoolsstrconsts.ctsinsufficientmemory
-msgid "insufficient memory"
-msgstr ""
-
 #: codetoolsstrconsts.ctsinterfacesectionnotfound
 msgid "interface section not found"
-msgstr ""
-
-#: codetoolsstrconsts.ctsintfdirectory
-msgid "interface directory"
 msgstr ""
 
 #: codetoolsstrconsts.ctsinvalidclassname
@@ -601,10 +549,6 @@ msgstr "neplatné meno premennej %s%s%s"
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "neplatný typ premennej %s%s%s"
-
-#: codetoolsstrconsts.ctsjitformdirectory
-msgid "JITForm Directory"
-msgstr ""
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -828,10 +772,6 @@ msgstr ""
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr ""
 
-#: codetoolsstrconsts.ctssrcpathforcompiledunits
-msgid "src path for compiled units"
-msgstr ""
-
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr ""
@@ -846,10 +786,6 @@ msgstr ""
 
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
-msgstr ""
-
-#: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
-msgid "TCodeToolManager.ConsistencyCheck=%d"
 msgstr ""
 
 #: codetoolsstrconsts.ctstermnotsimple
@@ -958,10 +894,6 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
-msgstr ""
-
-#: codetoolsstrconsts.ctswidgetdirectory
-msgid "Widget Directory"
 msgstr ""
 
 #: codetoolsstrconsts.ctswordnotfound

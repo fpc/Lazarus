@@ -132,10 +132,6 @@ msgstr "vakio"
 msgid "Converter Directory"
 msgstr "Muuntimen hakemisto"
 
-#: codetoolsstrconsts.ctscpudirectory
-msgid "CPU directory"
-msgstr "CPU hakemisto"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "kursori on koodin ulkopuolella"
@@ -216,25 +212,9 @@ msgstr "Määrittele LCLwidgetset, esim. LCLgtk"
 msgid "Define macro carbon1"
 msgstr "Määrittele makro carbon1"
 
-#: codetoolsstrconsts.ctsdefinemacrogtk1
-msgid "Define macro gtk1"
-msgstr "Määrittele makro gtk1"
-
-#: codetoolsstrconsts.ctsdefinemacrogtk2
-msgid "Define macro gtk2"
-msgstr "Määrittele makro gtk2"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "Määrittele makro %s"
-
-#: codetoolsstrconsts.ctsdefinemacroqt1
-msgid "Define macro qt1"
-msgstr "Määrittele makro qt1"
-
-#: codetoolsstrconsts.ctsdefinemacrowince1
-msgid "Define macro wince1"
-msgstr "Määrittele makro wince1"
 
 #: codetoolsstrconsts.ctsdefineprocessortype
 msgid "Define processor type"
@@ -251,14 +231,6 @@ msgstr "Lomake-editorin hakemisto"
 #: codetoolsstrconsts.ctsdesignerunitsdirectory
 msgid "Designer Units"
 msgstr "Lomake-editorin käännösyksiköt"
-
-#: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
-msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "hakemistokomponenttia %s:ssa ei löydy tai se on rikkinäinen symbolinen linkki"
-
-#: codetoolsstrconsts.ctsdircomponentisnotdir
-msgid "a directory component in %s is not a directory"
-msgstr "hakemistokomponentti %s:ssa ei ole hakemisto"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"
@@ -324,10 +296,6 @@ msgstr "virhe ohjeistuslauseessa"
 msgid "error in paramlist"
 msgstr "virhe parametriluettelossa"
 
-#: codetoolsstrconsts.ctsexecuteaccessdeniedforfile
-msgid "execute access denied for %s"
-msgstr "suoritus on kielletty %s:lle"
-
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
 msgstr "odotettiin \"%s\""
@@ -363,10 +331,6 @@ msgstr "exports-lause on sallittu vain kirjatoille"
 #: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
 msgstr "Ilmaisun tyypin pitää olla luokka tai record tyyppi"
-
-#: codetoolsstrconsts.ctsfilehascircularsymlink
-msgid "%s has a circular symbolic link"
-msgstr "%s:ssa on kehäriippuvuus"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"
@@ -414,10 +378,6 @@ msgstr "funktiota GetEnumerator ei löydy tästä luokasta"
 msgid "generic identifier"
 msgstr "yleinen tunniste"
 
-#: codetoolsstrconsts.ctsgtk2intfdirectory
-msgid "gtk2 interface directory"
-msgstr "gtk2 rajapinnan hakemisto"
-
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
 msgstr ""
@@ -429,10 +389,6 @@ msgstr ""
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "IDE hakemisto"
-
-#: codetoolsstrconsts.ctsideintfdirectory
-msgid "IDEIntf Directory"
-msgstr "IDEIntf hakemisto"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
@@ -534,17 +490,9 @@ msgstr "Asennushakemisto"
 msgid "Installer directories"
 msgstr "Asennushakemistot"
 
-#: codetoolsstrconsts.ctsinsufficientmemory
-msgid "insufficient memory"
-msgstr "Riittämätön muisti"
-
 #: codetoolsstrconsts.ctsinterfacesectionnotfound
 msgid "interface section not found"
 msgstr "interface-lausetta ei löydy"
-
-#: codetoolsstrconsts.ctsintfdirectory
-msgid "interface directory"
-msgstr "interface-hakemisto"
 
 #: codetoolsstrconsts.ctsinvalidclassname
 msgid "invalid class name=\"%s\""
@@ -585,10 +533,6 @@ msgstr "Kelvoton muuttujan nimi \"%s\""
 #: codetoolsstrconsts.ctsinvalidvariabletype
 msgid "invalid variable type \"%s\""
 msgstr "Kelvoton muuttujan tyyppi \"%s\""
-
-#: codetoolsstrconsts.ctsjitformdirectory
-msgid "JITForm Directory"
-msgstr "JITForm hakemisto"
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -812,10 +756,6 @@ msgstr "lähde ei ole käännösyksikkö"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "lähdettä ei löydy: käännösyksikkö %s. Tarkista FPC lähdehakemisto."
 
-#: codetoolsstrconsts.ctssrcpathforcompiledunits
-msgid "src path for compiled units"
-msgstr "lähdehakemisto käännetyille yksiköille"
-
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr "SrcPath alustus"
@@ -831,10 +771,6 @@ msgstr "tekstivakio"
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
 msgstr "Kielioppivirhe lausekkeessa \"%s\""
-
-#: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
-msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr ""
 
 #: codetoolsstrconsts.ctstermnotsimple
 msgid "Term has no simple type"
@@ -943,10 +879,6 @@ msgstr "Apuhakemistot"
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
 msgstr "var on sallittu vain generics:ssa, luokan loppua ei löydy"
-
-#: codetoolsstrconsts.ctswidgetdirectory
-msgid "Widget Directory"
-msgstr "Widget hakemisto"
 
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"

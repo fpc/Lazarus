@@ -137,10 +137,6 @@ msgstr "constante"
 msgid "Converter Directory"
 msgstr "Directorio del conversor"
 
-#: codetoolsstrconsts.ctscpudirectory
-msgid "CPU directory"
-msgstr "Directorio de la CPU"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "posición de cursor fuera del código"
@@ -221,25 +217,9 @@ msgstr "Definir LCLwidgetset, por ejemplo, LCLgtk"
 msgid "Define macro carbon1"
 msgstr "Definir macro carbon1"
 
-#: codetoolsstrconsts.ctsdefinemacrogtk1
-msgid "Define macro gtk1"
-msgstr "Define macro gtk1"
-
-#: codetoolsstrconsts.ctsdefinemacrogtk2
-msgid "Define macro gtk2"
-msgstr "Definir macro gtk2"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "Definir Macro %s"
-
-#: codetoolsstrconsts.ctsdefinemacroqt1
-msgid "Define macro qt1"
-msgstr "Definir macro qt1"
-
-#: codetoolsstrconsts.ctsdefinemacrowince1
-msgid "Define macro wince1"
-msgstr "Definir macro wince1"
 
 #: codetoolsstrconsts.ctsdefineprocessortype
 msgid "Define processor type"
@@ -256,14 +236,6 @@ msgstr "Directorio del Diseñador"
 #: codetoolsstrconsts.ctsdesignerunitsdirectory
 msgid "Designer Units"
 msgstr "Unidades del diseñador"
-
-#: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
-msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "componente de un directorio en %s no existe o es un enlace simbólico colgando"
-
-#: codetoolsstrconsts.ctsdircomponentisnotdir
-msgid "a directory component in %s is not a directory"
-msgstr "un componente de directorio en %s no es un directorio"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"
@@ -329,10 +301,6 @@ msgstr "error en expresión de directiva"
 msgid "error in paramlist"
 msgstr "error en lista de parametros"
 
-#: codetoolsstrconsts.ctsexecuteaccessdeniedforfile
-msgid "execute access denied for %s"
-msgstr "acceso de ejecutar denegado para %s"
-
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
 msgstr "\"%s\" esperado"
@@ -368,10 +336,6 @@ msgstr "La cláusula exports sólo está permitida en bibliotecas"
 #: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
 msgstr "tipo de expresión debe de ser de tipo class o record"
-
-#: codetoolsstrconsts.ctsfilehascircularsymlink
-msgid "%s has a circular symbolic link"
-msgstr "%s tiene un enlace simbólico circular"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"
@@ -419,10 +383,6 @@ msgstr "función GetEnumerator no se encuentran en esta clase"
 msgid "generic identifier"
 msgstr "identificador genérico"
 
-#: codetoolsstrconsts.ctsgtk2intfdirectory
-msgid "gtk2 interface directory"
-msgstr "directorio de la interfase gtk2"
-
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
 msgstr "EsError"
@@ -434,10 +394,6 @@ msgstr ""
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "Directorio del IDE"
-
-#: codetoolsstrconsts.ctsideintfdirectory
-msgid "IDEIntf Directory"
-msgstr "Directorio IDEIntf"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
@@ -539,17 +495,9 @@ msgstr "Directorio de instalación"
 msgid "Installer directories"
 msgstr "Directorios del instalador"
 
-#: codetoolsstrconsts.ctsinsufficientmemory
-msgid "insufficient memory"
-msgstr "memoria insuficiente"
-
 #: codetoolsstrconsts.ctsinterfacesectionnotfound
 msgid "interface section not found"
 msgstr "sección interface no encontrada"
-
-#: codetoolsstrconsts.ctsintfdirectory
-msgid "interface directory"
-msgstr "directorio de la interfaz"
 
 #: codetoolsstrconsts.ctsinvalidclassname
 msgid "invalid class name=\"%s\""
@@ -590,10 +538,6 @@ msgstr "nombre de variable inválido \"%s\""
 #: codetoolsstrconsts.ctsinvalidvariabletype
 msgid "invalid variable type \"%s\""
 msgstr "tipo de variable inválido \"%s\""
-
-#: codetoolsstrconsts.ctsjitformdirectory
-msgid "JITForm Directory"
-msgstr "Directorio JITForm"
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -817,10 +761,6 @@ msgstr "código fuente no es una unidad"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "fuente no encontrada: unidad %s. Comprueba tu directorio de código fuente FPC."
 
-#: codetoolsstrconsts.ctssrcpathforcompiledunits
-msgid "src path for compiled units"
-msgstr "ruta de fuentes para las unidades compiladas"
-
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr "Inicialización SrcPath"
@@ -836,10 +776,6 @@ msgstr "constante de cadena"
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
 msgstr "Error de sintáxis en expresión \"%s\""
-
-#: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
-msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr "TCodeToolManager.ConsistencyCheck=%d"
 
 #: codetoolsstrconsts.ctstermnotsimple
 msgid "Term has no simple type"
@@ -948,10 +884,6 @@ msgstr "Directorios de utilidades"
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
 msgstr "var sólo se permite en genéricos, final de la clase no encontrada"
-
-#: codetoolsstrconsts.ctswidgetdirectory
-msgid "Widget Directory"
-msgstr "Directorio de Widget"
 
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"

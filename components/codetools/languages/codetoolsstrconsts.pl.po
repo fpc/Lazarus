@@ -143,10 +143,6 @@ msgstr "stała"
 msgid "Converter Directory"
 msgstr ""
 
-#: codetoolsstrconsts.ctscpudirectory
-msgid "CPU directory"
-msgstr ""
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "Kursor jest poza kodem"
@@ -227,25 +223,9 @@ msgstr ""
 msgid "Define macro carbon1"
 msgstr "Definiuj makro carbon1"
 
-#: codetoolsstrconsts.ctsdefinemacrogtk1
-msgid "Define macro gtk1"
-msgstr "Definicja makra gtk1"
-
-#: codetoolsstrconsts.ctsdefinemacrogtk2
-msgid "Define macro gtk2"
-msgstr "Definicja makra gtk2"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "Definicja makra %s"
-
-#: codetoolsstrconsts.ctsdefinemacroqt1
-msgid "Define macro qt1"
-msgstr "Definiuj makro qt1"
-
-#: codetoolsstrconsts.ctsdefinemacrowince1
-msgid "Define macro wince1"
-msgstr "Definiuj makro wince1"
 
 #: codetoolsstrconsts.ctsdefineprocessortype
 msgid "Define processor type"
@@ -262,14 +242,6 @@ msgstr "katalog projektanta"
 #: codetoolsstrconsts.ctsdesignerunitsdirectory
 msgid "Designer Units"
 msgstr "Narzędzia projektanta"
-
-#: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
-msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "część ścieżki w %s nie istnieje lub jest popsutym dowiązaniem symbolicznym"
-
-#: codetoolsstrconsts.ctsdircomponentisnotdir
-msgid "a directory component in %s is not a directory"
-msgstr "część ścieżki w %s nie jest katalogiem"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"
@@ -337,10 +309,6 @@ msgstr "błąd w wyrażeniu dyrektywy"
 msgid "error in paramlist"
 msgstr "błąd w liście parametrów"
 
-#: codetoolsstrconsts.ctsexecuteaccessdeniedforfile
-msgid "execute access denied for %s"
-msgstr "brak uprawnień do wykonania dla %s"
-
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
 msgstr ""
@@ -376,10 +344,6 @@ msgstr ""
 #: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
 msgstr "wyrażenie musi typu klasy lub rekordu"
-
-#: codetoolsstrconsts.ctsfilehascircularsymlink
-msgid "%s has a circular symbolic link"
-msgstr "%s ma zapętlone dowązanie symboliczne"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"
@@ -427,10 +391,6 @@ msgstr ""
 msgid "generic identifier"
 msgstr ""
 
-#: codetoolsstrconsts.ctsgtk2intfdirectory
-msgid "gtk2 interface directory"
-msgstr "katalog interfejsu gtk2"
-
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
 msgstr ""
@@ -442,10 +402,6 @@ msgstr ""
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr ""
-
-#: codetoolsstrconsts.ctsideintfdirectory
-msgid "IDEIntf Directory"
-msgstr "IDEIntf Directory"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
@@ -547,17 +503,9 @@ msgstr ""
 msgid "Installer directories"
 msgstr ""
 
-#: codetoolsstrconsts.ctsinsufficientmemory
-msgid "insufficient memory"
-msgstr "brak pamięci"
-
 #: codetoolsstrconsts.ctsinterfacesectionnotfound
 msgid "interface section not found"
 msgstr "brakuje sekcji interfejsu"
-
-#: codetoolsstrconsts.ctsintfdirectory
-msgid "interface directory"
-msgstr "katalog interfejsu"
 
 #: codetoolsstrconsts.ctsinvalidclassname
 #, fuzzy,badformat
@@ -606,10 +554,6 @@ msgstr "błędna nazwa zmiennej %s%s%s"
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
 msgstr "błędny typ zmiennej %s%s%s"
-
-#: codetoolsstrconsts.ctsjitformdirectory
-msgid "JITForm Directory"
-msgstr "Katalog JITForm"
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -835,10 +779,6 @@ msgstr "źródło nie jest modułem"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "nieznaleziono źródła: moduł %s"
 
-#: codetoolsstrconsts.ctssrcpathforcompiledunits
-msgid "src path for compiled units"
-msgstr "ścieżka źródłowa dla kompilowanych modułów"
-
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr "Inicjowanie SrcPath"
@@ -856,10 +796,6 @@ msgstr "stała łańcuchowa"
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
 msgstr "Błąd składniowy w wyrażeniu \"%s\""
-
-#: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
-msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr "TCodeToolManager.ConsistencyCheck=%d"
 
 #: codetoolsstrconsts.ctstermnotsimple
 msgid "Term has no simple type"
@@ -968,10 +904,6 @@ msgstr "Katalogi narzedzi"
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
 msgstr ""
-
-#: codetoolsstrconsts.ctswidgetdirectory
-msgid "Widget Directory"
-msgstr "Katalog widgetów"
 
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"
