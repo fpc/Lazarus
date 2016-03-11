@@ -219,10 +219,6 @@ msgstr ""
 msgid "Define LCLwidgetset, e.g. LCLgtk"
 msgstr ""
 
-#: codetoolsstrconsts.ctsdefinemacrocarbon1
-msgid "Define macro carbon1"
-msgstr "Definiuj makro carbon1"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "Definicja makra %s"
@@ -238,10 +234,6 @@ msgstr "Definicje dla źródeł Lazarusa"
 #: codetoolsstrconsts.ctsdesignerdirectory
 msgid "Designer Directory"
 msgstr "katalog projektanta"
-
-#: codetoolsstrconsts.ctsdesignerunitsdirectory
-msgid "Designer Units"
-msgstr "Narzędzia projektanta"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"

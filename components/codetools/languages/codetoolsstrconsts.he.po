@@ -225,10 +225,6 @@ msgstr "הגדרת LCL"
 msgid "Define LCLwidgetset, e.g. LCLgtk"
 msgstr "הגדרת LCLwidgetset, למשל LCLgtk"
 
-#: codetoolsstrconsts.ctsdefinemacrocarbon1
-msgid "Define macro carbon1"
-msgstr "הגדר מאקרו carbon1"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 #, fuzzy,badformat
 msgid "Define Macro %s"
@@ -245,10 +241,6 @@ msgstr "הגדרות עבור הקוד של לזארוס"
 #: codetoolsstrconsts.ctsdesignerdirectory
 msgid "Designer Directory"
 msgstr "תיקיית המעצב"
-
-#: codetoolsstrconsts.ctsdesignerunitsdirectory
-msgid "Designer Units"
-msgstr "יחידות המעצב"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"

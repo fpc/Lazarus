@@ -215,10 +215,6 @@ msgstr "Задать переменную LCL"
 msgid "Define LCLwidgetset, e.g. LCLgtk"
 msgstr "Задать LCLwidgetset, например, LCLgtk"
 
-#: codetoolsstrconsts.ctsdefinemacrocarbon1
-msgid "Define macro carbon1"
-msgstr "Задать макрос carbon1"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "Задать макрос %s"
@@ -234,10 +230,6 @@ msgstr "Определения для исходного кода Lazarus"
 #: codetoolsstrconsts.ctsdesignerdirectory
 msgid "Designer Directory"
 msgstr "Каталог дизайнера"
-
-#: codetoolsstrconsts.ctsdesignerunitsdirectory
-msgid "Designer Units"
-msgstr "Модули дизайнера"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"

@@ -217,10 +217,6 @@ msgstr "Apibrėžti LCL"
 msgid "Define LCLwidgetset, e.g. LCLgtk"
 msgstr "Apibrėžti LCLwidgetset, pvz. „LCLgtk“"
 
-#: codetoolsstrconsts.ctsdefinemacrocarbon1
-msgid "Define macro carbon1"
-msgstr "Apibrėžti makrokomandą „carbon1“"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "Apibrėžti makrokomandą %s"
@@ -236,10 +232,6 @@ msgstr "Lazarus pirminio kodo apibrėžtys"
 #: codetoolsstrconsts.ctsdesignerdirectory
 msgid "Designer Directory"
 msgstr "Konstruktoriaus aplankas"
-
-#: codetoolsstrconsts.ctsdesignerunitsdirectory
-msgid "Designer Units"
-msgstr "Konstruktoriaus moduliai"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"

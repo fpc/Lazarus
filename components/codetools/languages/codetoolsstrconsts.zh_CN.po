@@ -218,10 +218,6 @@ msgstr "定义LCL"
 msgid "Define LCLwidgetset, e.g. LCLgtk"
 msgstr "定义LCL窗口部件类型，如LCLgtk"
 
-#: codetoolsstrconsts.ctsdefinemacrocarbon1
-msgid "Define macro carbon1"
-msgstr "定义 carbon1 宏"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "定义宏 %s"
@@ -237,10 +233,6 @@ msgstr "Definitions for the Lazarus Sources"
 #: codetoolsstrconsts.ctsdesignerdirectory
 msgid "Designer Directory"
 msgstr "Designer 目录"
-
-#: codetoolsstrconsts.ctsdesignerunitsdirectory
-msgid "Designer Units"
-msgstr "设计器单元"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"

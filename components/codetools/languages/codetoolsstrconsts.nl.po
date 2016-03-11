@@ -215,10 +215,6 @@ msgstr ""
 msgid "Define LCLwidgetset, e.g. LCLgtk"
 msgstr ""
 
-#: codetoolsstrconsts.ctsdefinemacrocarbon1
-msgid "Define macro carbon1"
-msgstr ""
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr ""
@@ -233,10 +229,6 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsdesignerdirectory
 msgid "Designer Directory"
-msgstr ""
-
-#: codetoolsstrconsts.ctsdesignerunitsdirectory
-msgid "Designer Units"
 msgstr ""
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound

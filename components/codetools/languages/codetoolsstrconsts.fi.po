@@ -208,10 +208,6 @@ msgstr "Määrittele LCL"
 msgid "Define LCLwidgetset, e.g. LCLgtk"
 msgstr "Määrittele LCLwidgetset, esim. LCLgtk"
 
-#: codetoolsstrconsts.ctsdefinemacrocarbon1
-msgid "Define macro carbon1"
-msgstr "Määrittele makro carbon1"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "Määrittele makro %s"
@@ -227,10 +223,6 @@ msgstr "Lazarus lähdekoodin määritykset"
 #: codetoolsstrconsts.ctsdesignerdirectory
 msgid "Designer Directory"
 msgstr "Lomake-editorin hakemisto"
-
-#: codetoolsstrconsts.ctsdesignerunitsdirectory
-msgid "Designer Units"
-msgstr "Lomake-editorin käännösyksiköt"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"

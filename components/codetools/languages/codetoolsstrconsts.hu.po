@@ -215,10 +215,6 @@ msgstr "LCL definiálása"
 msgid "Define LCLwidgetset, e.g. LCLgtk"
 msgstr "LCLwidgetset definiálása, pl. LCLgtk"
 
-#: codetoolsstrconsts.ctsdefinemacrocarbon1
-msgid "Define macro carbon1"
-msgstr "Carbon1 makró definiálása"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "%s makró definiálása"
@@ -234,10 +230,6 @@ msgstr "Definíciók a Lazarus források számára"
 #: codetoolsstrconsts.ctsdesignerdirectory
 msgid "Designer Directory"
 msgstr "Tervező könyvtára"
-
-#: codetoolsstrconsts.ctsdesignerunitsdirectory
-msgid "Designer Units"
-msgstr "Tervező unit-jai"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"

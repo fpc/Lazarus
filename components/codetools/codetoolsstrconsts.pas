@@ -254,13 +254,11 @@ ResourceString
   ctsIfLCLWidgetTypeEqualsGtk2 = 'If LCLWidgetType=gtk2 then';
   ctsElse = 'else';
   ctsIfTargetOSIsNotWin32 = 'If TargetOS<>win32 then';
-  ctsDefineMacroCarbon1 = 'Define macro carbon1';
   ctsComponentsDirectory = 'Components Directory';
   ctsCustomComponentsDirectory = 'Custom Components Directory';
   ctsToolsDirectory = 'Tools Directory';
   ctsInstallDirectory = 'Install Directory';
   ctsDesignerDirectory = 'Designer Directory';
-  ctsDesignerUnitsDirectory = 'Designer Units';
   ctsCompiledSrcPath = 'Compiled SrcPath';
   ctsPackagerDirectory = 'Packager Directory';
   ctsPackagerRegistrationDirectory = 'Packager Registration Directory';

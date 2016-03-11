@@ -217,10 +217,6 @@ msgstr "Definice LCL"
 msgid "Define LCLwidgetset, e.g. LCLgtk"
 msgstr "Definice LCLwidgetset, např. LCLgtk"
 
-#: codetoolsstrconsts.ctsdefinemacrocarbon1
-msgid "Define macro carbon1"
-msgstr "Definice makra carbon1"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "Definice makra %s"
@@ -236,10 +232,6 @@ msgstr "Definice zdrojů Lazarusu"
 #: codetoolsstrconsts.ctsdesignerdirectory
 msgid "Designer Directory"
 msgstr "Adresář Návrháře"
-
-#: codetoolsstrconsts.ctsdesignerunitsdirectory
-msgid "Designer Units"
-msgstr "Jednotky Návrháře"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"

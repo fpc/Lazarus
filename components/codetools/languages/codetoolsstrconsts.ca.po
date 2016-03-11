@@ -215,10 +215,6 @@ msgstr ""
 msgid "Define LCLwidgetset, e.g. LCLgtk"
 msgstr ""
 
-#: codetoolsstrconsts.ctsdefinemacrocarbon1
-msgid "Define macro carbon1"
-msgstr "Defineix macroinstrucció carbon1"
-
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
 msgstr "Defineix macroinstrucció %s"
@@ -234,10 +230,6 @@ msgstr "Definicions de les fonts del Lazarus"
 #: codetoolsstrconsts.ctsdesignerdirectory
 msgid "Designer Directory"
 msgstr "Directori del dissenyador"
-
-#: codetoolsstrconsts.ctsdesignerunitsdirectory
-msgid "Designer Units"
-msgstr "Unitats del dissenyador"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"
