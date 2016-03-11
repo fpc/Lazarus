@@ -5740,6 +5740,10 @@ msgstr "Виберіть теку для тестів"
 msgid "Circular dependency detected"
 msgstr "Виявлена кругова залежність"
 
+#: lazarusidestrconsts.lisclass
+msgid "&Class"
+msgstr ""
+
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
 msgstr "Завершення Класу"
@@ -11486,6 +11490,10 @@ msgstr "Завантаження %s провалилось."
 
 #: lazarusidestrconsts.lisloadmacrofrom
 msgid "Load macro from"
+msgstr ""
+
+#: lazarusidestrconsts.lislocal
+msgid "&Local"
 msgstr ""
 
 #: lazarusidestrconsts.lislocals
@@ -19310,6 +19318,10 @@ msgstr ""
 #| msgid "You can not build lazarus while debugging or compiling."
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Ви не можете перебудувати lazarus при налагоджуванні або компіляції."
+
+#: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
+msgid "You can select items by simply pressing underscored letters"
+msgstr ""
 
 #: lazarusidestrconsts.lis_all_
 #, fuzzy

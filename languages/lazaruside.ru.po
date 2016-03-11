@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-03-11 01:45+0300\n"
+"PO-Revision-Date: 2016-03-12 01:29+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5593,6 +5593,10 @@ msgstr "Выберите каталог для проб"
 #: lazarusidestrconsts.liscirculardependencydetected
 msgid "Circular dependency detected"
 msgstr "Обнаружен порочный круг зависимостей"
+
+#: lazarusidestrconsts.lisclass
+msgid "&Class"
+msgstr "В классе (&C)"
 
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
@@ -11227,6 +11231,10 @@ msgstr "Загрузка %s не удалась."
 #: lazarusidestrconsts.lisloadmacrofrom
 msgid "Load macro from"
 msgstr "Загрузить макрос"
+
+#: lazarusidestrconsts.lislocal
+msgid "&Local"
+msgstr "Локальная (&L)"
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -18702,6 +18710,10 @@ msgstr "FPC и его исходный код можно загрузить с h
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Вы не можете пересобрать Lazarus в процессе отладки или компиляции."
+
+#: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
+msgid "You can select items by simply pressing underscored letters"
+msgstr "Элементы можно выбрать простыми нажатиями подчёркнутых букв"
 
 #: lazarusidestrconsts.lis_all_
 msgctxt "lazarusidestrconsts.lis_all_"

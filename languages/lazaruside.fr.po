@@ -5595,6 +5595,10 @@ msgstr "Choisir le répertoire de tests"
 msgid "Circular dependency detected"
 msgstr "Une référence circulaire a été détectée"
 
+#: lazarusidestrconsts.lisclass
+msgid "&Class"
+msgstr ""
+
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
 msgstr "Complétion de classe"
@@ -11234,6 +11238,10 @@ msgstr "Le chargement de%s a échoué."
 #: lazarusidestrconsts.lisloadmacrofrom
 msgid "Load macro from"
 msgstr "Charger la macro depuis"
+
+#: lazarusidestrconsts.lislocal
+msgid "&Local"
+msgstr ""
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -18712,6 +18720,10 @@ msgstr "Vous pouvez télécharger FPC et ses codes sources depuis http://sourcef
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Vous ne pouvez pas construire Lazarus pendant que vous déboguez ou compilez."
+
+#: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
+msgid "You can select items by simply pressing underscored letters"
+msgstr ""
 
 #: lazarusidestrconsts.lis_all_
 msgctxt "lazarusidestrconsts.lis_all_"

@@ -5593,6 +5593,10 @@ msgstr "Válassza ki a tesztek könyvtárát!"
 msgid "Circular dependency detected"
 msgstr "Körkörös függőség érzékelve"
 
+#: lazarusidestrconsts.lisclass
+msgid "&Class"
+msgstr ""
+
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
 msgstr "Osztályok kiegészítése"
@@ -11229,6 +11233,10 @@ msgstr "Hiba %s betöltése közben."
 #: lazarusidestrconsts.lisloadmacrofrom
 msgid "Load macro from"
 msgstr "Makró betöltése innen:"
+
+#: lazarusidestrconsts.lislocal
+msgid "&Local"
+msgstr ""
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -18703,6 +18711,10 @@ msgstr "Az FPC és az FPC forráskódjai letölthetők innen: http://sourceforge
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "A Lazarus nem építhető fordítás vagy hibakeresés közben."
+
+#: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
+msgid "You can select items by simply pressing underscored letters"
+msgstr ""
 
 #: lazarusidestrconsts.lis_all_
 msgctxt "lazarusidestrconsts.lis_all_"

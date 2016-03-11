@@ -5599,6 +5599,10 @@ msgstr "Vyberte adresář na zkoušky"
 msgid "Circular dependency detected"
 msgstr "Detekována kruhová závislost"
 
+#: lazarusidestrconsts.lisclass
+msgid "&Class"
+msgstr ""
+
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
 msgstr "Dokončení třídy"
@@ -11226,6 +11230,10 @@ msgstr "Načítání %s selhalo."
 #: lazarusidestrconsts.lisloadmacrofrom
 msgid "Load macro from"
 msgstr "Nahrát makro z"
+
+#: lazarusidestrconsts.lislocal
+msgid "&Local"
+msgstr ""
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -18700,6 +18708,10 @@ msgstr "Můžete stáhnout FPC a zdroje FPC z http://sourceforge.net/projects/la
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Nemůžete sestavit Lazarus v průběhu ladění nebo překládání."
+
+#: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
+msgid "You can select items by simply pressing underscored letters"
+msgstr ""
 
 #: lazarusidestrconsts.lis_all_
 msgctxt "lazarusidestrconsts.lis_all_"

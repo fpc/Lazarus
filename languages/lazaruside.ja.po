@@ -5697,6 +5697,10 @@ msgstr "テスト用ディレクトリを選択してください"
 msgid "Circular dependency detected"
 msgstr "循環参照が見つかりました"
 
+#: lazarusidestrconsts.lisclass
+msgid "&Class"
+msgstr ""
+
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
 msgstr "クラス補完"
@@ -11414,6 +11418,10 @@ msgstr "%sの読み込みに失敗しました。"
 #: lazarusidestrconsts.lisloadmacrofrom
 msgid "Load macro from"
 msgstr "マクロを以下から読み込む"
+
+#: lazarusidestrconsts.lislocal
+msgid "&Local"
+msgstr ""
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -19191,6 +19199,10 @@ msgstr "次のURLからFPCとFPCソースをダウンロードできます：htt
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "デバッグ中もしくはコンパイル中に Lazarus を構築できません。"
+
+#: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
+msgid "You can select items by simply pressing underscored letters"
+msgstr ""
 
 #: lazarusidestrconsts.lis_all_
 #, fuzzy

@@ -5959,6 +5959,10 @@ msgstr "בחר את התיקיה עבור בדיקות"
 msgid "Circular dependency detected"
 msgstr ""
 
+#: lazarusidestrconsts.lisclass
+msgid "&Class"
+msgstr ""
+
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
 msgstr "השלמת מחלקה"
@@ -11860,6 +11864,10 @@ msgstr "טעינת s% נכשלה"
 
 #: lazarusidestrconsts.lisloadmacrofrom
 msgid "Load macro from"
+msgstr ""
+
+#: lazarusidestrconsts.lislocal
+msgid "&Local"
 msgstr ""
 
 #: lazarusidestrconsts.lislocals
@@ -20063,6 +20071,10 @@ msgstr ""
 #| msgid "You can not build lazarus while debugging or compiling."
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "לא ניתן לבנות את לזרוס בזמן שהוא מנפה שגיאות או מהדר"
+
+#: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
+msgid "You can select items by simply pressing underscored letters"
+msgstr ""
 
 #: lazarusidestrconsts.lis_all_
 #, fuzzy

@@ -5748,6 +5748,10 @@ msgstr "Nurodykite aplanką testams"
 msgid "Circular dependency detected"
 msgstr "Aptiktas priklausomybių ratas"
 
+#: lazarusidestrconsts.lisclass
+msgid "&Class"
+msgstr ""
+
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
 msgstr "Klasės užbaigimas"
@@ -11499,6 +11503,10 @@ msgstr "Nepavyko įkelti %s."
 #: lazarusidestrconsts.lisloadmacrofrom
 msgid "Load macro from"
 msgstr "Makrokomandą įkelti iš"
+
+#: lazarusidestrconsts.lislocal
+msgid "&Local"
+msgstr ""
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -19337,6 +19345,10 @@ msgstr ""
 #| msgid "You can not build lazarus while debugging or compiling."
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Derinimo ar kompiliavimo metu negalima daryti Lazarus."
+
+#: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
+msgid "You can select items by simply pressing underscored letters"
+msgstr ""
 
 #: lazarusidestrconsts.lis_all_
 #, fuzzy

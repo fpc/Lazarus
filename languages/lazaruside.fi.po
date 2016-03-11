@@ -5554,6 +5554,10 @@ msgstr "Valitse hakemisto testeille"
 msgid "Circular dependency detected"
 msgstr "Kehäriippuvuus havaittu"
 
+#: lazarusidestrconsts.lisclass
+msgid "&Class"
+msgstr ""
+
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
 msgstr "Luokan täydennys"
@@ -11142,6 +11146,10 @@ msgstr "%s lataus epäonnistui."
 #: lazarusidestrconsts.lisloadmacrofrom
 msgid "Load macro from"
 msgstr "Lataa makro:"
+
+#: lazarusidestrconsts.lislocal
+msgid "&Local"
+msgstr ""
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -18569,6 +18577,10 @@ msgstr "FPC ja sen lähdekoodit löytyvät: http://sourceforge.net/projects/laza
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Lazarusta ei voi koota kun ohjelmaa ajetaan tai käännetään."
+
+#: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
+msgid "You can select items by simply pressing underscored letters"
+msgstr ""
 
 #: lazarusidestrconsts.lis_all_
 msgctxt "lazarusidestrconsts.lis_all_"

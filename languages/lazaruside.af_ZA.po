@@ -5595,6 +5595,10 @@ msgstr ""
 msgid "Circular dependency detected"
 msgstr ""
 
+#: lazarusidestrconsts.lisclass
+msgid "&Class"
+msgstr ""
+
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
 msgstr ""
@@ -11220,6 +11224,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisloadmacrofrom
 msgid "Load macro from"
+msgstr ""
+
+#: lazarusidestrconsts.lislocal
+msgid "&Local"
 msgstr ""
 
 #: lazarusidestrconsts.lislocals
@@ -18762,6 +18770,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
+msgstr ""
+
+#: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
+msgid "You can select items by simply pressing underscored letters"
 msgstr ""
 
 #: lazarusidestrconsts.lis_all_
