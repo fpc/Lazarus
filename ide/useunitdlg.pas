@@ -73,13 +73,13 @@ type
 
   end; 
 
-function ShowUseUnitDialog: TModalResult;
+function ShowUseUnitDialog(const DefText: string): TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowUseUnitDialog: TModalResult;
+function ShowUseUnitDialog(const DefText: string): TModalResult;
 var
   UseUnitDlg: TUseUnitDialog;
   SrcEdit: TSourceEditor;
@@ -124,6 +124,8 @@ begin
       ShowMessage(dlgNoAvailableUnits);
       Exit(mrCancel);
     end;
+
+    UseUnitDlg.FilterEdit.Text := DefText;
 
     // Show the dialog.
     if UseUnitDlg.ShowModal=mrOk then begin

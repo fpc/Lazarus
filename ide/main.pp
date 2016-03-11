@@ -72,7 +72,7 @@ uses
   FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazUTF8Classes, UTF8Process,
   LConvEncoding, Laz2_XMLCfg, LazLogger,
   // SynEdit
-  AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter,
+  SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter,
   // IDE interface
   IDEIntf, ObjectInspector, PropEdits, PropEditUtils,
   MacroIntf, IDECommands, IDEWindowIntf, ComponentReg,
@@ -9974,8 +9974,23 @@ begin
 end;
 
 function TMainIDE.DoUseUnit: TModalResult;
+var
+  TempEditor: TSourceEditorInterface;
+  DefText: String;
 begin
-  Result:=ShowUseUnitDialog;
+  DefText:='';
+  TempEditor := SourceEditorManagerIntf.ActiveEditor;
+  if TempEditor <> nil then
+  begin
+    if EditorOpts.FindTextAtCursor then
+    begin
+      if TempEditor.SelectionAvailable and (TempEditor.BlockBegin.Y = TempEditor.BlockEnd.Y)
+      then DefText := TempEditor.Selection
+      else DefText := TSynEdit(TempEditor.EditorControl).GetWordAtRowCol(TempEditor.CursorTextXY);
+    end;
+  end;
+
+  Result:=ShowUseUnitDialog(DefText);
 end;
 
 function TMainIDE.DoFindOverloads: TModalResult;
