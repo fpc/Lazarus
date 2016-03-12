@@ -122,6 +122,9 @@ function UTF8QuotedStr(const S, Quote: string): string;
 //Utf8 version of MidStr is just Utf8Copy with same parameters, so it is not implemented here
 function Utf8StartsText(const ASubText, AText: string): Boolean;
 function Utf8EndsText(const ASubText, AText: string): Boolean;
+function Utf8ReverseString(p: PChar; const ByteCount: LongInt): string;
+function Utf8ReverseString(const AText: string): string; inline;
+function Utf8RPos(const Substr, Source: string): integer;
 
 function UTF8WrapText(S, BreakStr :string; BreakChars :TSysCharSet; MaxCol: integer): string; overload;
 function UTF8WrapText(S :string; MaxCol :integer) :string; overload;
@@ -2836,6 +2839,42 @@ begin
     SubTextLen := Utf8Length(ASubText);
     if (TextLen >= SubTextLen) then
       Result := (Utf8CompareText(Utf8Copy(AText,TextLen-SubTextLen+1,SubTextLen),ASubText) = 0);
+  end;
+end;
+
+function Utf8ReverseString(p: PChar; const ByteCount: LongInt): string;
+var
+  CharLen, rBytePos: LongInt;
+begin
+  SetLength(Result, ByteCount);
+  rBytePos := ByteCount + 1;
+  while (rBytePos > 1) do
+  begin
+    CharLen:=UTF8CharacterLength(p);
+    Dec(rBytePos, CharLen);
+    Move(p^, Result[rBytePos], CharLen);
+    Inc(p, CharLen);
+  end;
+end;
+
+function Utf8ReverseString(const AText: string): string; inline;
+begin
+  Result := UTF8ReverseString(PChar(AText), length(AText));
+end;
+
+
+function Utf8RPos(const Substr, Source: string): integer;
+var
+  RevSubstr, RevSource: string; pRev: integer;
+begin
+  if (Pos(Substr, Source) = 0) then
+    Result := 0
+  else
+  begin
+    RevSubstr := UTF8ReverseString(Substr);
+    RevSource := UTF8ReverseString(Source);
+    pRev := UTF8Pos(RevSubstr, RevSource);
+    Result := UTF8Length(Source) -pRev -UTF8Length(Substr) +2;
   end;
 end;
 
