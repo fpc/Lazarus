@@ -230,6 +230,8 @@ begin
   with Params do
   begin
     // Different from win32
+    if (AParams.Style and WS_CHILD) = 0 then // remove parent for stand-alone forms because it seems to be unsupported on WinCE
+      Parent := 0;
     SubClassWndProc := nil; // Otherwise crash in wince, works in win32
     BorderStyle := TCustomForm(AWinControl).BorderStyle;
 
