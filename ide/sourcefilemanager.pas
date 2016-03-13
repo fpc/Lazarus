@@ -2153,7 +2153,6 @@ begin
     // show form and select form
     if NewUnitInfo.Component<>nil then begin
       // show form
-      IDEWindowCreators.ShowForm(DefaultObjectInspectorName,false);
       MainIDE.DoShowDesignerFormOfCurrentSrc(False);
     end else begin
       MainIDE.DisplayState:= dsSource;
@@ -6068,7 +6067,6 @@ begin
     MainIDE.DisplayState := dsForm;
     GlobalDesignHook.LookupRoot := NewComponent;
     TheControlSelection.AssignPersistent(NewComponent);
-    IDEWindowCreators.ShowForm(DefaultObjectInspectorName,false);
   end;
 
   // show new form

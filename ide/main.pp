@@ -1357,6 +1357,7 @@ var
   CfgCache: TFPCTargetConfigCache;
   OldLazDir: String;
   Note: string;
+  OI: TSimpleWindowLayout;
 begin
   {$IFDEF DebugSearchFPCSrcThread}
   ShowSetupDialog:=true;
@@ -1417,6 +1418,10 @@ begin
       Application.Terminate;
       exit;
     end;
+    // show OI with empty configuration
+    OI := IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(DefaultObjectInspectorName);
+    if OI<>nil then
+      OI.Visible := True;
     EnvironmentOptions.Save(true);
     if OldLazDir<>EnvironmentOptions.LazarusDirectory then begin
       // fetch new translations

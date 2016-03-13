@@ -2233,7 +2233,8 @@ begin
     end;
 
     //automatically save active desktops
-    if AutoSaveActiveDesktop then
+    if AutoSaveActiveDesktop
+    and (Application.MainForm<>nil) and Application.MainForm.Visible then
     begin
       //save active desktop
       Desktop.ImportSettingsFromIDE;
