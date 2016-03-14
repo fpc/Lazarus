@@ -203,7 +203,7 @@ begin
   FocusableButtons[nbEdit].Enabled:=CanModify and not FDataLink.Editing;
   FocusableButtons[nbPost].Enabled:=CanModify and FDataLink.Editing;
   FocusableButtons[nbCancel].Enabled:=CanModify and FDataLink.Editing;
-  FocusableButtons[nbRefresh].Enabled:=CanModify;
+  FocusableButtons[nbRefresh].Enabled:=Enabled and FDataLink.Active and not FDataLink.Editing;
 end;
 
 procedure TDBCustomNavigator.ActiveChanged;
