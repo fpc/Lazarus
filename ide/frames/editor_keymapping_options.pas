@@ -63,6 +63,7 @@ type
     function FilterEditFilterItem(Item: TObject; out Done: Boolean): Boolean;
     procedure FilterEditKeyPress(Sender: TObject; var {%H-}Key: char);
     procedure FindKeyButtonClick(Sender: TObject);
+    procedure KeyMapSplitterMoved(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure ResetKeyFilterBtnClick(Sender: TObject);
     procedure TreeViewDblClick(Sender: TObject);
@@ -263,6 +264,12 @@ begin
   finally
     ShortCutDialog.Free;
   end;
+end;
+
+procedure TEditorKeymappingOptionsFrame.KeyMapSplitterMoved(Sender: TObject);
+begin
+  TreeView.Update;
+  ConflictsTreeView.Update;
 end;
 
 procedure TEditorKeymappingOptionsFrame.OnIdle(Sender: TObject;
