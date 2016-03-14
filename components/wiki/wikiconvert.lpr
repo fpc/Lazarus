@@ -24,7 +24,8 @@ program wikiconvert;
 uses
   Classes, SysUtils, CustApp, WikiParser, WikiFormat,
   Wiki2XHTMLConvert, Wiki2HTMLConvert, Wiki2CHMConvert, Wiki2FPDocConvert,
-  LazFileUtils, FileUtil, LazLogger, KeywordFuncLists;
+  LazUtf8, LazFileUtils, FileUtil,
+  LazLogger, KeywordFuncLists;
 
 type
 
