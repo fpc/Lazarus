@@ -507,4 +507,4 @@ begin
       inc(Result);
 end;
 
-// included by dbctrls.pas
+// included by dbctrls.pp
