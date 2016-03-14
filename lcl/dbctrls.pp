@@ -1058,7 +1058,7 @@ Type
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DataChange(Sender: TObject);
-    procedure UpdateData(Sender: TObject);
+    procedure UpdateData(Sender: TObject); virtual;
     procedure PictureChanged(Sender: TObject); override;
     procedure LoadPicture; virtual;
     class procedure WSRegisterClass; override;
