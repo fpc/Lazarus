@@ -1,43 +1,45 @@
 object SelectPropertiesForm: TSelectPropertiesForm
   Left = 411
-  Height = 462
+  Height = 448
   Top = 175
-  Width = 485
+  Width = 481
   ActiveControl = LBProperties
   Caption = 'Select properties'
-  ClientHeight = 462
-  ClientWidth = 485
+  ClientHeight = 448
+  ClientWidth = 481
+  Constraints.MinHeight = 403
+  Constraints.MinWidth = 350
   OnClose = SelectPropertiesFormClose
   OnCreate = SelectPropertiesFormCreate
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.7'
   object PTop: TPanel
     Left = 0
     Height = 248
     Top = 0
-    Width = 485
+    Width = 481
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 248
-    ClientWidth = 485
+    ClientWidth = 481
     FullRepaint = False
     TabOrder = 0
     object PProperties: TPanel
-      Left = 233
+      Left = 243
       Height = 248
       Top = 0
-      Width = 252
+      Width = 238
       Align = alClient
       BevelOuter = bvNone
       ClientHeight = 248
-      ClientWidth = 252
+      ClientWidth = 238
       FullRepaint = False
       TabOrder = 0
       object LProperties: TLabel
         Left = 6
-        Height = 13
+        Height = 17
         Top = 6
-        Width = 240
+        Width = 226
         Align = alTop
         BorderSpacing.Around = 6
         Caption = '&Properties'
@@ -47,9 +49,9 @@ object SelectPropertiesForm: TSelectPropertiesForm
       end
       object LBProperties: TListBox
         Left = 6
-        Height = 217
-        Top = 25
-        Width = 240
+        Height = 213
+        Top = 29
+        Width = 226
         Align = alClient
         BorderSpacing.Around = 6
         ItemHeight = 0
@@ -63,19 +65,19 @@ object SelectPropertiesForm: TSelectPropertiesForm
       Left = 0
       Height = 248
       Top = 0
-      Width = 229
+      Width = 239
       Align = alLeft
       BevelOuter = bvNone
       Caption = 'PComponents'
       ClientHeight = 248
-      ClientWidth = 229
+      ClientWidth = 239
       FullRepaint = False
       TabOrder = 1
       object LComponents: TLabel
         Left = 6
-        Height = 13
+        Height = 17
         Top = 6
-        Width = 217
+        Width = 227
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'Co&mponents'
@@ -85,9 +87,9 @@ object SelectPropertiesForm: TSelectPropertiesForm
       end
       object LBComponents: TListBox
         Left = 6
-        Height = 217
-        Top = 25
-        Width = 217
+        Height = 213
+        Top = 29
+        Width = 227
         Align = alClient
         BorderSpacing.Around = 6
         ItemHeight = 0
@@ -97,7 +99,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
       end
     end
     object VSplitter: TSplitter
-      Left = 229
+      Left = 239
       Height = 248
       Top = 0
       Width = 4
@@ -108,28 +110,28 @@ object SelectPropertiesForm: TSelectPropertiesForm
     Left = 0
     Height = 4
     Top = 248
-    Width = 485
+    Width = 481
     Align = alTop
     Beveled = True
     ResizeAnchor = akTop
   end
   object PBottom: TPanel
     Left = 0
-    Height = 210
+    Height = 196
     Top = 252
-    Width = 485
+    Width = 481
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 210
-    ClientWidth = 485
-    Constraints.MinHeight = 190
+    ClientHeight = 196
+    ClientWidth = 481
+    Constraints.MinHeight = 170
     FullRepaint = False
     TabOrder = 1
     object LLBSelected: TLabel
       Left = 10
-      Height = 13
+      Height = 17
       Top = 3
-      Width = 93
+      Width = 130
       BorderSpacing.Around = 6
       Caption = '&Selected Properties'
       FocusControl = LBSelected
@@ -140,93 +142,78 @@ object SelectPropertiesForm: TSelectPropertiesForm
       AnchorSideTop.Control = LLBSelected
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BAdd
-      AnchorSideBottom.Control = PBottom
-      AnchorSideBottom.Side = asrBottom
+      AnchorSideBottom.Control = ButtonPanel1
       Left = 6
-      Height = 182
-      Top = 22
-      Width = 392
+      Height = 114
+      Top = 26
+      Width = 352
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ItemHeight = 0
       MultiSelect = True
       TabOrder = 0
     end
-    object BAdd: TButton
+    object ButtonPanel1: TButtonPanel
+      Left = 6
+      Height = 44
+      Top = 146
+      Width = 469
+      OKButton.Name = 'OKButton'
+      OKButton.DefaultCaption = True
+      HelpButton.Name = 'HelpButton'
+      HelpButton.DefaultCaption = True
+      CloseButton.Name = 'CloseButton'
+      CloseButton.DefaultCaption = True
+      CancelButton.Name = 'CancelButton'
+      CancelButton.DefaultCaption = True
+      TabOrder = 1
+      ShowButtons = [pbOK, pbCancel, pbHelp]
+    end
+    object BAdd: TBitBtn
       AnchorSideTop.Control = LBSelected
       AnchorSideRight.Control = PBottom
       AnchorSideRight.Side = asrBottom
-      Left = 404
-      Height = 25
-      Top = 22
-      Width = 75
+      Left = 364
+      Height = 28
+      Top = 26
+      Width = 111
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 6
       Caption = '&Add'
       OnClick = BAddClick
-      TabOrder = 1
+      TabOrder = 2
     end
-    object BDelete: TButton
+    object BDelete: TBitBtn
       AnchorSideLeft.Control = BAdd
       AnchorSideTop.Control = BAdd
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BAdd
       AnchorSideRight.Side = asrBottom
-      Left = 404
-      Height = 25
-      Top = 53
-      Width = 75
+      Left = 364
+      Height = 28
+      Top = 60
+      Width = 111
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       Caption = '&Delete'
       OnClick = BDeleteClick
-      TabOrder = 2
+      TabOrder = 3
     end
-    object BClear: TButton
+    object BClear: TBitBtn
       AnchorSideLeft.Control = BDelete
       AnchorSideTop.Control = BDelete
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BDelete
       AnchorSideRight.Side = asrBottom
-      Left = 404
-      Height = 25
-      Top = 84
-      Width = 75
+      Left = 364
+      Height = 28
+      Top = 94
+      Width = 111
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       Caption = 'C&lear'
       OnClick = BClearClick
-      TabOrder = 3
-    end
-    object BOK: TButton
-      AnchorSideRight.Control = PBottom
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = PBottom
-      AnchorSideBottom.Side = asrBottom
-      Left = 404
-      Height = 25
-      Top = 179
-      Width = 75
-      Anchors = [akRight, akBottom]
-      BorderSpacing.Around = 6
-      Caption = '&OK'
-      Default = True
-      ModalResult = 1
       TabOrder = 4
-    end
-    object BCancel: TButton
-      AnchorSideRight.Control = BOK
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = BOK
-      Left = 404
-      Height = 25
-      Top = 148
-      Width = 75
-      Anchors = [akRight, akBottom]
-      Cancel = True
-      Caption = '&Cancel'
-      ModalResult = 2
-      TabOrder = 5
     end
   end
 end
