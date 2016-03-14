@@ -1238,6 +1238,7 @@ resourcestring
   lisKMLazarusDefault = 'Lazarus (default)';
   lisKMMacOSXApple = 'Mac OS X (Apple style)';
   lisKMMacOSXLaz = 'Mac OS X (Lazarus style)';
+  lisKMDefaultToOSX = 'Default adapted to OS X';
   lisPEFilename = 'Filename:';
   lisPEUnitname = 'Unitname:';
   lisPVUTheUnitnameIsUsedWhenTheIDEExtendsUsesClauses = 'The unitname is used '

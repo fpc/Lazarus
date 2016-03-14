@@ -1,19 +1,18 @@
 object ChooseKeySchemeDlg: TChooseKeySchemeDlg
   Left = 406
-  Height = 233
+  Height = 226
   Top = 307
   Width = 433
-  ActiveControl = SchemeRadiogroup.RadioButton0
   BorderStyle = bsDialog
   Caption = 'ChooseKeySchemeDlg'
-  ClientHeight = 233
+  ClientHeight = 226
   ClientWidth = 433
   OnCreate = ChooseKeySchemeDlgCREATE
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.7'
   object NoteLabel: TLabel
     Left = 6
-    Height = 14
+    Height = 17
     Top = 6
     Width = 421
     Align = alTop
@@ -24,8 +23,8 @@ object ChooseKeySchemeDlg: TChooseKeySchemeDlg
   end
   object SchemeRadiogroup: TRadioGroup
     Left = 6
-    Height = 169
-    Top = 26
+    Height = 149
+    Top = 29
     Width = 421
     Align = alClient
     AutoFill = True
@@ -39,23 +38,32 @@ object ChooseKeySchemeDlg: TChooseKeySchemeDlg
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 151
-    ClientWidth = 417
+    ClientHeight = 131
+    ClientWidth = 413
     ItemIndex = 0
     Items.Strings = (
       'Default (Lazarus)'
       'Classic (TP)'
       'Mac OS X (Apple style)'
       'Mac OS X (Lazarus style)'
+      'Default to OSX'
     )
     TabOrder = 0
     TabStop = True
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 201
+    Height = 36
+    Top = 184
     Width = 421
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
