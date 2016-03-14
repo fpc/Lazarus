@@ -154,7 +154,7 @@ uses
   CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
   RestrictionBrowser, ProjectWizardDlg, IDECmdLine, IDEGuiCmdLine, CodeExplOpts,
   EditorMacroListViewer, SourceFileManager, EditorToolbarStatic,
-  IDEInstances,
+  IDEInstances, process,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -6895,7 +6895,7 @@ end;
 
 function TMainIDE.DoRunProjectWithoutDebug: TModalResult;
 var
-  Tool: TIDEExternalToolOptions;
+  Process: TProcessUTF8;
   ExeCmdLine, ExeWorkingDirectory: string;
   ExeFileEnd, ExeFileStart: Integer;
 begin
@@ -6906,7 +6906,7 @@ begin
   if Result <> mrOK then
     Exit;
 
-  Tool := TIDEExternalToolOptions.Create;
+  Process := TProcessUTF8.Create(nil);
   try
     ExeCmdLine := MainBuildBoss.GetRunCommandLine;
     if ExeCmdLine='' then
@@ -6928,13 +6928,13 @@ begin
         ExeFileEnd := Length(ExeCmdLine)+1;
     end;
 
-    Tool.Executable := Copy(ExeCmdLine, ExeFileStart, ExeFileEnd-ExeFileStart);
-    Tool.CmdLineParams := Copy(ExeCmdLine, ExeFileEnd+ExeFileStart, High(Integer));
-    if not FileIsExecutable(Tool.Executable) then
+    Process.Executable := Copy(ExeCmdLine, ExeFileStart, ExeFileEnd-ExeFileStart);
+    Process.Parameters.Text := Copy(ExeCmdLine, ExeFileEnd+ExeFileStart, High(Integer));
+    if not FileIsExecutable(Process.Executable) then
     begin
       IDEMessageDialog(lisLaunchingApplicationInvalid,
         Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta,
-               [Tool.Executable, LineEnding, LineEnding+LineEnding]),
+               [Process.Executable, LineEnding, LineEnding+LineEnding]),
         mtError, [mbOK]);
       Exit(mrNone);
     end;
@@ -6944,21 +6944,21 @@ begin
       ExeWorkingDirectory := '';
 
     if ExeWorkingDirectory = '' then
-      ExeWorkingDirectory := ExtractFilePath(Tool.Executable);
-    Tool.WorkingDirectory := ExeWorkingDirectory;
+      ExeWorkingDirectory := ExtractFilePath(Process.Executable);
+    Process.CurrentDirectory := ExeWorkingDirectory;
 
-    if not DirectoryExists(Tool.WorkingDirectory) then
+    if not DirectoryExists(Process.CurrentDirectory) then
     begin
       IDEMessageDialog(lisUnableToRun,
         Format(lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki,
-               [Tool.WorkingDirectory, LineEnding]),
+               [Process.CurrentDirectory, LineEnding]),
         mtError,[mbCancel]);
       Exit(mrNone);
     end;
 
-    RunExternalTool(Tool);
+    Process.Execute;
   finally
-    Tool.Free;
+    Process.Free;
   end;
 end;
 
