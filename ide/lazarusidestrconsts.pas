@@ -520,7 +520,7 @@ resourcestring
   lisMenuResetDebugger = 'Reset Debugger';
   lisMenuRunParameters = 'Run &Parameters ...';
   lisMenuBuildFile = 'Build File';
-  lisMenuRunWithoutDebugging = 'Run without Degugging';
+  lisMenuRunWithoutDebugging = 'Run without Debugging';
   lisMenuRunFile = 'Run File';
   lisKMConfigBuildFile = 'Config "Build File"';
   lisKMInspect = 'Inspect';
