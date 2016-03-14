@@ -520,6 +520,7 @@ resourcestring
   lisMenuResetDebugger = 'Reset Debugger';
   lisMenuRunParameters = 'Run &Parameters ...';
   lisMenuBuildFile = 'Build File';
+  lisMenuRunWithoutDebugging = 'Run without Degugging';
   lisMenuRunFile = 'Run File';
   lisKMConfigBuildFile = 'Config "Build File"';
   lisKMInspect = 'Inspect';
@@ -3184,6 +3185,7 @@ resourcestring
   srkmecCleanUpAndBuild           = 'clean up and build';
   srkmecBuildManyModes            = 'build many modes';
   srkmecAbortBuild                = 'abort build';
+  srkmecRunWithoutDebugging       = 'run without debugging';
   srkmecRun                       = 'run program';
   srkmecPause                     = 'pause program';
   srkmecShowExecutionPoint        = 'show execution point';

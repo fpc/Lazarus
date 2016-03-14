@@ -284,6 +284,7 @@ type
         itmRunMenuBuildManyModes: TIDEMenuCommand;
         itmRunMenuAbortBuild: TIDEMenuCommand;
       //itmRunnning: TIDEMenuSection;
+        itmRunMenuRunWithoutDebugging: TIDEMenuCommand;
         itmRunMenuRun: TIDEMenuCommand;
         itmRunMenuPause: TIDEMenuCommand;
         itmRunMenuShowExecutionPoint: TIDEMenuCommand;
@@ -818,6 +819,7 @@ procedure TMainIDEBar.AllowCompilation(aAllow: Boolean);
 // Enables or disables IDE GUI controls associated with compiling and building.
 // Does it interfere with DebugBoss.UpdateButtonsAndMenuItems? Maybe should be refactored and combined.
 begin
+  itmRunMenuRunWithoutDebugging.Enabled:=aAllow;
   itmRunMenuRun.Enabled:=aAllow;
   itmRunMenuCompile.Enabled:=aAllow;
   itmRunMenuBuild.Enabled:=aAllow;

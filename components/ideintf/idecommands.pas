@@ -256,6 +256,7 @@ const
   ecCleanUpAndBuild         = ecFirstLazarus + 403;
   ecBuildManyModes          = ecFirstLazarus + 404;
   ecAbortBuild              = ecFirstLazarus + 405;
+  ecRunWithoutDebugging     = ecFirstLazarus + 409;
   ecRun                     = ecFirstLazarus + 410;
   ecPause                   = ecFirstLazarus + 411;
   ecStepInto                = ecFirstLazarus + 412;
@@ -1905,7 +1906,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..313] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..314] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -2109,6 +2110,7 @@ const
     (Value: ecQuickCompile;                           Name: 'ecQuickCompile'),
     (Value: ecCleanUpAndBuild;                        Name: 'ecCleanUpAndBuild'),
     (Value: ecAbortBuild;                             Name: 'ecAbortBuild'),
+    (Value: ecRunWithoutDebugging;                    Name: 'ecRunWithoutDebugging'),
     (Value: ecRun;                                    Name: 'ecRun'),
     (Value: ecPause;                                  Name: 'ecPause'),
     (Value: ecStepInto;                               Name: 'ecStepInto'),

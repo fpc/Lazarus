@@ -77,6 +77,7 @@ menu/menu_redo.png
 menu/menu_reportingbug.png
 menu/menu_reset_debugger.png
 menu/menu_run.png
+menu/menu_run_withoutdebugging.png
 menu/menu_run_cursor.png
 menu/menu_run_file.png
 menu/menu_run_parameters.png

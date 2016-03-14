@@ -1298,6 +1298,7 @@ begin
 
     CreateMenuSeparatorSection(mnuRun,itmRunnning,'itmRunnning');
     ParentMI:=itmRunnning;
+    CreateMenuItem(ParentMI,itmRunMenuRunWithoutDebugging,'itmRunMenuRunWithoutDebugging',lisMenuRunWithoutDebugging,'menu_run_withoutdebugging');
     CreateMenuItem(ParentMI,itmRunMenuRun,'itmRunMenuRun',lisMenuProjectRun,'menu_run');
     CreateMenuItem(ParentMI,itmRunMenuPause,'itmRunMenuPause',lisPause,'menu_pause', False);
     CreateMenuItem(ParentMI,itmRunMenuShowExecutionPoint,'itmRunMenuShowExecutionPoint',
@@ -1663,6 +1664,7 @@ begin
     itmRunMenuCleanUpAndBuild.Command:=GetCommand(ecCleanUpAndBuild);
     itmRunMenuBuildManyModes.Command:=GetCommand(ecBuildManyModes);
     itmRunMenuAbortBuild.Command:=GetCommand(ecAbortBuild);
+    itmRunMenuRunWithoutDebugging.Command:=GetCommand(ecRunWithoutDebugging);
     itmRunMenuRun.Command:=GetCommand(ecRun);
     itmRunMenuPause.Command:=GetCommand(ecPause);
     itmRunMenuStepInto.Command:=GetCommand(ecStepInto);

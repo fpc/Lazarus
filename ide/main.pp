@@ -332,6 +332,7 @@ type
     procedure mnuCleanUpAndBuildProjectClicked(Sender: TObject);
     procedure mnuBuildManyModesClicked(Sender: TObject);
     procedure mnuAbortBuildProjectClicked(Sender: TObject);
+    procedure mnuRunMenuRunWithoutDebugging(Sender: TObject);
     procedure mnuRunProjectClicked(Sender: TObject);
     procedure mnuPauseProjectClicked(Sender: TObject);
     procedure mnuShowExecutionPointClicked(Sender: TObject);
@@ -803,6 +804,7 @@ type
     procedure DoQuickCompile;
     function DoInitProjectRun: TModalResult; override;
     function DoRunProject: TModalResult; override;
+    function DoRunProjectWithoutDebug: TModalResult; override;
     function DoSaveProjectToTestDirectory(Flags: TSaveFlags): TModalResult;
     function QuitIDE: boolean;
 
@@ -2733,6 +2735,7 @@ begin
     itmRunMenuCleanUpAndBuild.OnClick := @mnuCleanUpAndBuildProjectClicked;
     itmRunMenuBuildManyModes.OnClick := @mnuBuildManyModesClicked;
     itmRunMenuAbortBuild.OnClick := @mnuAbortBuildProjectClicked;
+    itmRunMenuRunWithoutDebugging.OnClick := @mnuRunMenuRunWithoutDebugging;
     itmRunMenuRun.OnClick := @mnuRunProjectClicked;
     itmRunMenuPause.OnClick := @mnuPauseProjectClicked;
     itmRunMenuShowExecutionPoint.OnClick := @mnuShowExecutionPointClicked;
@@ -4194,6 +4197,11 @@ end;
 procedure TMainIDE.mnuAbortBuildProjectClicked(Sender: TObject);
 Begin
   DoAbortBuild(false);
+end;
+
+procedure TMainIDE.mnuRunMenuRunWithoutDebugging(Sender: TObject);
+begin
+  DoRunProjectWithoutDebug;
 end;
 
 procedure TMainIDE.mnuRunProjectClicked(Sender: TObject);
@@ -6883,6 +6891,75 @@ begin
   Result := DebugBoss.StartDebugging;
 
   DebugLn('Hint: (lazarus) [TMainIDE.DoRunProject] END');
+end;
+
+function TMainIDE.DoRunProjectWithoutDebug: TModalResult;
+var
+  Tool: TIDEExternalToolOptions;
+  ExeCmdLine, ExeWorkingDirectory: string;
+  ExeFileEnd, ExeFileStart: Integer;
+begin
+  if Project1=nil then
+    Exit(mrNone);
+
+  Result := DoBuildProject(crRun,[]);
+  if Result <> mrOK then
+    Exit;
+
+  Tool := TIDEExternalToolOptions.Create;
+  try
+    ExeCmdLine := MainBuildBoss.GetRunCommandLine;
+    if ExeCmdLine='' then
+    begin
+      IDEMessageDialog(lisUnableToRun, lisLaunchingApplicationInvalid,
+        mtError,[mbCancel]);
+      Exit(mrNone);
+    end;
+
+    if ExeCmdLine[1]='"' then
+    begin
+      ExeFileStart := 2;
+      ExeFileEnd := PosEx('"', ExeCmdLine, ExeFileStart);
+    end else
+    begin
+      ExeFileStart := 1;
+      ExeFileEnd := PosEx(' ', ExeCmdLine, ExeFileStart);
+      if ExeFileEnd<1 then
+        ExeFileEnd := Length(ExeCmdLine)+1;
+    end;
+
+    Tool.Executable := Copy(ExeCmdLine, ExeFileStart, ExeFileEnd-ExeFileStart);
+    Tool.CmdLineParams := Copy(ExeCmdLine, ExeFileEnd+ExeFileStart, High(Integer));
+    if not FileIsExecutable(Tool.Executable) then
+    begin
+      IDEMessageDialog(lisLaunchingApplicationInvalid,
+        Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta,
+               [Tool.Executable, LineEnding, LineEnding+LineEnding]),
+        mtError, [mbOK]);
+      Exit(mrNone);
+    end;
+
+    ExeWorkingDirectory := Project1.RunParameterOptions.WorkingDirectory;
+    if not GlobalMacroList.SubstituteStr(ExeWorkingDirectory) then
+      ExeWorkingDirectory := '';
+
+    if ExeWorkingDirectory = '' then
+      ExeWorkingDirectory := ExtractFilePath(Tool.Executable);
+    Tool.WorkingDirectory := ExeWorkingDirectory;
+
+    if not DirectoryExists(Tool.WorkingDirectory) then
+    begin
+      IDEMessageDialog(lisUnableToRun,
+        Format(lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki,
+               [Tool.WorkingDirectory, LineEnding]),
+        mtError,[mbCancel]);
+      Exit(mrNone);
+    end;
+
+    RunExternalTool(Tool);
+  finally
+    Tool.Free;
+  end;
 end;
 
 procedure TMainIDE.DoRestart;
