@@ -716,7 +716,6 @@ type
     FSavedFontStyle: TFontStyles;
     FSavedParentFont: Boolean;
     FSavedPasswordChar: Char;
-    procedure SetTextHint(AValue: TTranslateString);
     procedure ShowTextHint;
     procedure HideTextHint;
     procedure SetAlignment(const AValue: TAlignment);
@@ -745,6 +744,7 @@ type
     function GetSelLength: integer; virtual;
     function GetSelStart: integer; virtual;
     function GetSelText: string; virtual;
+    function GetTextHint: TTranslateString; virtual;
     procedure Loaded; override;
     procedure SetCaretPos(const Value: TPoint); virtual;
     procedure SetEchoMode(Val: TEchoMode); virtual;
@@ -753,6 +753,7 @@ type
     procedure SetSelLength(Val: integer); virtual;
     procedure SetSelStart(Val: integer); virtual;
     procedure SetSelText(const Val: string); virtual;
+    procedure SetTextHint(AValue: TTranslateString); virtual;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     class function GetControlClassDefaultSize: TSize; override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
@@ -796,7 +797,7 @@ type
     property TabOrder;
     property TabStop default true;
     property Text;
-    property TextHint: TTranslateString read FTextHint write SetTextHint;
+    property TextHint: TTranslateString read GetTextHint write SetTextHint;
     property TextHintFontColor: TColor read FTextHintFontColor write FTextHintFontColor default clGrayText;
     property TextHintFontStyle: TFontStyles read FTextHintFontStyle write FTextHintFontStyle default [fsItalic];
   end;
