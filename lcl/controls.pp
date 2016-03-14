@@ -663,7 +663,7 @@ type
         layout.
   }
 
-  TSpacingSize = 0..MaxInt;
+  TSpacingSize = Integer;
   TControlCellAlign = (
     ccaFill,
     ccaLeftTop,
