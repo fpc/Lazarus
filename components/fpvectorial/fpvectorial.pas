@@ -2289,7 +2289,7 @@ var
   OriginalColWidthsInMM: array of Double;
   CurRowTableWidth: Double;
 begin
-  SetLength(ColWidthsInMM, GetRowCount());
+  SetLength(ColWidthsInMM, GetColCount());
 
   // Process predefined widths
   for col := 0 to Length(ColWidthsInMM)-1 do

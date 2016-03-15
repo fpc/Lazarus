@@ -34,6 +34,7 @@ type
     function ReadHeaderFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     procedure ReadParagraphFromNode(ADest: TvParagraph; ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument);
     function ReadSVGFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+    function ReadSVGFromNode_WithEmbDoc(ANode: TDOMNode; AEmbDoc: TvEmbeddedVectorialDoc; ADoc: TvVectorialDocument): TvEntity;
     function ReadMathFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadTableFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadTableRowNode(ATable: TvTable; ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
@@ -106,7 +107,7 @@ begin
   // Raw text
   if (ANode is TDOMText) and (lEntityName = '#text') then
   begin
-    lTextValue := Trim(ANode.NodeValue);
+    lTextValue := RemoveLineEndingsAndTrim(ANode.NodeValue);
     if (lTextValue <> '') then
     begin
       AData.AddParagraph().AddText(lTextValue);
@@ -290,6 +291,11 @@ begin
         lEmbVecImg.Height := lHeight;
       end;
     end;
+    'svg':
+    begin
+      lEmbVecImg := ADest.AddEmbeddedVectorialDoc();
+      ReadSVGFromNode_WithEmbDoc(lCurNode, lEmbVecImg, ADoc);
+    end;
     end;
 
     lCurNode := lCurNode.NextSibling;
@@ -308,6 +314,26 @@ var
 begin
   Result := nil;
   CurSVG := AData.AddEmbeddedVectorialDoc();
+  lDoc := TXMLDocument.Create;
+  try
+    lImportedNode := lDoc.ImportNode(ANode, True);
+    lDoc.AppendChild(lImportedNode);
+    CurSVG.Document.ReadFromXML(lDoc, vfSVG);
+  finally
+    lDoc.Free;
+  end;
+end;
+
+function TvHTMLVectorialReader.ReadSVGFromNode_WithEmbDoc(ANode: TDOMNode;
+  AEmbDoc: TvEmbeddedVectorialDoc; ADoc: TvVectorialDocument): TvEntity;
+var
+  CurSVG: TvEmbeddedVectorialDoc;
+  lText: TvText;
+  lDoc: TXMLDocument;
+  lImportedNode: TDOMNode;
+begin
+  Result := nil;
+  CurSVG := AEmbDoc;
   lDoc := TXMLDocument.Create;
   try
     lImportedNode := lDoc.ImportNode(ANode, True);
@@ -598,7 +624,7 @@ begin
   Result := False;
   lExt := LowerCase(ExtractFileExt(AFileName));
   case lExt of
-  '.png', '.jpg', '.jpeg', '.bmp', '.xpm':
+  '.png', '.jpg', '.jpeg', '.bmp', '.xpm', '.gif':
     Result := True
   end;
 end;
