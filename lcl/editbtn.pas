@@ -1035,8 +1035,11 @@ end;
 
 procedure TCustomEditButton.CheckButtonVisible;
 begin
-  If Assigned(Button) then
+  if Assigned(Button) then
+  begin
     Button.Visible := CalcButtonVisible;
+    UpdateSpacing;
+  end;
 end;
 
 procedure TCustomEditButton.ButtonClick;

@@ -177,7 +177,6 @@ type
     procedure SetTextHint(AValue: TTranslateString);
     procedure SetTextHintFontColor(AValue: TColor);
     procedure SetTextHintFontStyle(AValue: TFontStyles);
-    procedure UpdateSpacing;
   protected
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                 WithThemeSpace: Boolean); override;
@@ -232,7 +231,7 @@ type
     procedure EditUtf8KeyPress(var UTF8Key: TUTF8Char); virtual;
     procedure EditStartDrag(var DragObject: TDragObject); virtual;
 
-
+    procedure UpdateSpacing;
     procedure CheckCursor;
     procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
     function  EditCanModify: Boolean; virtual;
@@ -1147,6 +1146,12 @@ end;
 
 procedure TCustomAbstractGroupedEdit.UpdateSpacing;
 begin
+  if (FBuddy=nil) or not FBuddy.Visible then
+  begin
+    FEdit.BorderSpacing.Right := 0;
+    FEdit.BorderSpacing.Left := 0;
+  end
+  else
   if (FLayout = taLeftJustify) then
   begin
     FEdit.BorderSpacing.Right := FSpacing;
