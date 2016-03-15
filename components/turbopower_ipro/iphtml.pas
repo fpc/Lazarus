@@ -15110,7 +15110,8 @@ begin
   if (Operation = opRemove) then
     if (AComponent = DataProvider) then begin
       DataProvider := nil;
-      FMasterFrame.RemoveDataProvider;
+      if Assigned(FMasterFrame) then
+        FMasterFrame.RemoveDataProvider;
     end;
   inherited Notification(AComponent, Operation);
 end;
