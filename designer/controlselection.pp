@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, Math, types,
   // LCL
-  LCLIntf, LCLType, LCLProc, Controls, Forms, GraphType, Graphics, Menus,
+  LCLIntf, LCLType, LCLProc, Controls, Forms, GraphType, Graphics, Menus, ComCtrls,
   // IDEIntf
   PropEditUtils, ComponentEditors, FormEditingIntf,
   // IDE
@@ -418,6 +418,7 @@ type
     function IsSelected(APersistent: TPersistent): Boolean;
     function IsOnlySelected(APersistent: TPersistent): Boolean;
     function ParentLevel: integer;
+    function OkToCopy: boolean;
     function OnlyNonVisualPersistentsSelected: boolean;
     function OnlyVisualComponentsSelected: boolean;
     function OnlyInvisiblePersistentsSelected: boolean;
@@ -2897,6 +2898,18 @@ begin
       InvalidateFrame(FForm.Handle,@InvFrame,false,1);
     end;
   end;
+end;
+
+function TControlSelection.OkToCopy: boolean;
+// Prevent copying / cutting components that would lead to a crash or halt.
+var
+  i: Integer;
+begin
+  for i:=0 to FControls.Count-1 do
+    if (Items[i].Persistent is TCustomTabControl)
+    or (Items[i].Persistent is TCustomPage) then
+      Exit(False);
+  Result:=True;
 end;
 
 function TControlSelection.OnlyNonVisualPersistentsSelected: boolean;

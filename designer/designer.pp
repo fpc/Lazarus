@@ -1501,6 +1501,7 @@ function TDesigner.CanCopy: Boolean;
 begin
   Result := (ControlSelection.Count > 0) and
             (ControlSelection.SelectionForm = Form) and
+            ControlSelection.OkToCopy and
             not ControlSelection.OnlyInvisiblePersistentsSelected and
             not ControlSelection.LookupRootSelected;
 end;
@@ -1509,6 +1510,7 @@ function TDesigner.CanPaste: Boolean;
 begin
   Result:= Assigned(Form) and
            Assigned(FLookupRoot) and
+           ClipBoard.HasFormat(CF_Text) and
            not (csDestroying in FLookupRoot.ComponentState);
 end;
 
