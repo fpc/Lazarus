@@ -3633,10 +3633,10 @@ procedure TMainIDE.UpdateEditorCommands(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
-  Editable: Boolean;
-  SelAvail: Boolean;
-  SelEditable: Boolean;
-  SrcEditorActive, DsgEditorActive, IdentFound, StringFound: Boolean;
+  Editable, SelEditable: Boolean;
+  SelAvail, DesignerCanCopy: Boolean;
+  SrcEditorActive, DsgEditorActive: Boolean;
+  IdentFound, StringFound: Boolean;
   ActiveDesigner: TComponentEditorDesigner;
   CurWordAtCursor: string;
 begin
@@ -3667,8 +3667,9 @@ begin
   begin
     IDECommandList.FindIDECommand(ecUndo).Enabled := DsgEditorActive and ActiveDesigner.CanUndo; {and not ActiveDesigner.ReadOnly}
     IDECommandList.FindIDECommand(ecRedo).Enabled := DsgEditorActive and ActiveDesigner.CanRedo; {and not ActiveDesigner.ReadOnly}
-    IDECommandList.FindIDECommand(ecCut).Enabled := ActiveDesigner.CanCopy;
-    IDECommandList.FindIDECommand(ecCopy).Enabled := ActiveDesigner.CanCopy;
+    DesignerCanCopy := ActiveDesigner.CanCopy;
+    IDECommandList.FindIDECommand(ecCut).Enabled := DesignerCanCopy;
+    IDECommandList.FindIDECommand(ecCopy).Enabled := DesignerCanCopy;
     IDECommandList.FindIDECommand(ecPaste).Enabled := ActiveDesigner.CanPaste;
     IDECommandList.FindIDECommand(ecSelectAll).Enabled := Assigned(ActiveDesigner.Form) and (ActiveDesigner.Form.ComponentCount>0);
   end

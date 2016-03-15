@@ -3905,7 +3905,7 @@ var
   OneControlSelected: Boolean;
   SelectionVisible: Boolean;
   SrcFile: TLazProjectFile;
-  UnitIsVirtual: Boolean;
+  UnitIsVirtual, DesignerCanCopy: Boolean;
 
   function GetChangeParentCandidates: TFPList;
   var
@@ -4014,8 +4014,9 @@ begin
     DesignerMenuOrderForwardOne.Enabled := OneControlSelected and not OnlyNonVisualsAreSelected;
     DesignerMenuOrderBackOne.Enabled := OneControlSelected and not OnlyNonVisualsAreSelected;
 
-  DesignerMenuCut.Enabled := CanCopy;
-  DesignerMenuCopy.Enabled := CanCopy;
+  DesignerCanCopy := CanCopy;
+  DesignerMenuCut.Enabled := DesignerCanCopy;
+  DesignerMenuCopy.Enabled := DesignerCanCopy;
   DesignerMenuPaste.Enabled := CanPaste;
   DesignerMenuDeleteSelection.Enabled := CompsAreSelected;
 
