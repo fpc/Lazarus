@@ -2336,6 +2336,7 @@ begin
   end;
 
   // If it goes over the page width, recalculate with equal sizes (in the future do better)
+  if FPage.Width <= 0 then Exit;
   if TableWidth <= FPage.Width then Exit;
   TableWidth := FPage.Width;
   for col := 0 to Length(ColWidthsInMM)-1 do
@@ -5533,6 +5534,9 @@ begin
     CalcEntityCanvasMinMaxXY(ARenderInfo, pt.x, pt.y);
     lTextSize := ACanvas.TextExtent(lText);
     lTextWidth := lTextSize.cx;
+    // Reserve vertical space for </br> and similar line ending constructs
+    if (lText = '') then
+      lTextSize.cy := ACanvas.TextHeight(STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE);
     // other end of the text
     pt := Point(round(Render_NextText_X) + lTextWidth, round(LowerDimY) + lTextSize.cy );
     pt := Rotate2dPoint(pt, refPt, -Phi);

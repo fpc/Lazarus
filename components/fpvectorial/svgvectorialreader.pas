@@ -5,6 +5,11 @@ License: The same modified LGPL as the Free Pascal RTL
          See the file COPYING.modifiedLGPL for more details
 
 AUTHORS: Felipe Monteiro de Carvalho
+
+SVG Coordinates vs FPVectorial coordinates:
+
+SVG by default has [0, 0] at the top-left and coordinates grow downwards and to the right
+Text is drawn upwards (towards negative Y)
 }
 unit svgvectorialreader;
 

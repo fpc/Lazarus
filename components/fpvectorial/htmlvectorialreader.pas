@@ -80,7 +80,7 @@ end;
 function TvHTMLVectorialReader.ReadEntityFromNode(ANode: TDOMNode;
   AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
 var
-  lEntityName: DOMString;
+  lEntityName, lTextValue: DOMString;
   lPara: TvParagraph;
 begin
   Result := nil;
@@ -102,6 +102,16 @@ begin
       Result := nil;
     end;
     'ul': Result := ReadUListFromNode(ANode, AData, ADoc);
+  end;
+  // Raw text
+  if (ANode is TDOMText) and (lEntityName = '#text') then
+  begin
+    lTextValue := Trim(ANode.NodeValue);
+    if (lTextValue <> '') then
+    begin
+      AData.AddParagraph().AddText(lTextValue);
+      Result := nil;
+    end;
   end;
 end;
 
