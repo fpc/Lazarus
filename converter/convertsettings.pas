@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, AVL_Tree,
   Forms, Controls, Dialogs, StdCtrls, Buttons, ButtonPanel, ComCtrls,
   // LazUtils
-  FileUtil, LazFileUtils, DividerBevel,
+  FileUtil, LazFileUtils, DividerBevel, LazConfigStorage,
   // CodeTools
   CodeToolsStructs, CodeToolManager, CodeCache,
   // IdeIntf
@@ -41,7 +41,7 @@ uses
   // IDE
   IDEProcs, DialogProcs, LazarusIDEStrConsts,
   // Converter
-  LazConfigStorage, ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
+  ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
 
 const
   ConverterVersion: integer = 2;
