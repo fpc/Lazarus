@@ -60,6 +60,7 @@ type
   TDiskDiffsDlg = class(TForm)
     BtnPanel: TPanel;
     CheckDiskChangesWithLoadingCheckBox: TCheckBox;
+    AutoCheckModifiedFilesCheckBox: TCheckBox;
     DiffSynEdit: TSynEdit;
     FilesListBox: TCheckListBox;
     RevertButton: TButton;
@@ -216,6 +217,7 @@ end;
 procedure TDiskDiffsDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   EnvironmentOptions.CheckDiskChangesWithLoading:=CheckDiskChangesWithLoadingCheckBox.Checked;
+  EnvironmentOptions.DiskChangesAutoCheckModified:=AutoCheckModifiedFilesCheckBox.Checked;
 end;
 
 procedure TDiskDiffsDlg.FillFilesListBox;
@@ -227,25 +229,29 @@ begin
   FilesListBox.Items.BeginUpdate;
   FilesListBox.Items.Clear;
   if UnitList<>nil then
+  begin
     for i:=0 to UnitList.Count-1 do begin
       AnUnitInfo:=TUnitInfo(UnitList[i]);
       AFileName:=AnUnitInfo.ShortFilename;
       if AnUnitInfo.Modified then
         AFileName:='*'+AFileName;
       ii := FilesListBox.Items.AddObject(AFileName,AnUnitInfo);
-      if not AnUnitInfo.Modified then
+      if AutoCheckModifiedFilesCheckBox.Checked or not AnUnitInfo.Modified then
         FilesListBox.Checked[ii] := True;
     end;
+  end;
   if PackageList<>nil then
+  begin
     for i:=0 to PackageList.Count-1 do begin
       APackage:=TLazPackage(PackageList.Objects[i]);
       AFileName:=APackage.Filename;
       if APackage.Modified then
         AFileName:='*'+AFileName;
       ii := FilesListBox.Items.AddObject(AFileName,APackage);
-      if not APackage.Modified then
+      if AutoCheckModifiedFilesCheckBox.Checked or not APackage.Modified then
         FilesListBox.Checked[ii] := True;
     end;
+  end;
   FilesListBox.Items.EndUpdate;
 end;
 
@@ -363,6 +369,8 @@ begin
   IgnoreDiskChangesButton.Caption:=lisDiskDiffIgnoreAllDiskChanges;
   CheckDiskChangesWithLoadingCheckBox.Caption:=lisCheckForDiskFileChangesViaContent;
   CheckDiskChangesWithLoadingCheckBox.Checked:=EnvironmentOptions.CheckDiskChangesWithLoading;
+  AutoCheckModifiedFilesCheckBox.Caption:=lisAutoCheckModifiedFiles;
+  AutoCheckModifiedFilesCheckBox.Checked:=EnvironmentOptions.DiskChangesAutoCheckModified;
 
   DefaultControl:=RevertButton;
   CancelControl:=IgnoreDiskChangesButton;

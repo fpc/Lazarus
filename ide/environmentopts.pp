@@ -451,6 +451,7 @@ type
     // hints
     FAskSaveSessionOnly: boolean;
     FCheckDiskChangesWithLoading: boolean;
+    FDiskChangesAutoCheckModified: boolean;
     FShowHintsForComponentPalette: boolean;
     FShowHintsForMainSpeedButtons: boolean;
     
@@ -701,6 +702,8 @@ type
     // hints
     property CheckDiskChangesWithLoading: boolean read FCheckDiskChangesWithLoading
                                                  write FCheckDiskChangesWithLoading;
+    property DiskChangesAutoCheckModified: boolean read FDiskChangesAutoCheckModified
+                                                  write FDiskChangesAutoCheckModified;
     property ShowHintsForComponentPalette: boolean read FShowHintsForComponentPalette
                                                   write FShowHintsForComponentPalette;
     property ShowHintsForMainSpeedButtons: boolean read FShowHintsForMainSpeedButtons
@@ -1357,6 +1360,7 @@ begin
 
   // hints
   FCheckDiskChangesWithLoading:=false;
+  FDiskChangesAutoCheckModified:=false;
   FShowHintsForComponentPalette:=true;
   FShowHintsForMainSpeedButtons:=true;
   
@@ -1795,6 +1799,7 @@ begin
 
     // hints
     FCheckDiskChangesWithLoading:=FXMLCfg.GetValue(Path+'CheckDiskChangesWithLoading/Value',false);
+    FDiskChangesAutoCheckModified:=FXMLCfg.GetValue(Path+'DiskChangesAutoCheckModified/Value',false);
     FShowHintsForComponentPalette:=FXMLCfg.GetValue(Path+'ShowHintsForComponentPalette/Value',true);
     FShowHintsForMainSpeedButtons:=FXMLCfg.GetValue(Path+'ShowHintsForMainSpeedButtons/Value',true);
 
@@ -2139,6 +2144,7 @@ begin
 
     // hints
     FXMLCfg.SetDeleteValue(Path+'CheckDiskChangesWithLoading/Value',FCheckDiskChangesWithLoading,false);
+    FXMLCfg.SetDeleteValue(Path+'DiskChangesAutoCheckModified/Value',FDiskChangesAutoCheckModified,false);
     FXMLCfg.SetDeleteValue(Path+'ShowHintsForComponentPalette/Value',FShowHintsForComponentPalette,true);
     FXMLCfg.SetDeleteValue(Path+'ShowHintsForMainSpeedButtons/Value',FShowHintsForMainSpeedButtons,true);
 

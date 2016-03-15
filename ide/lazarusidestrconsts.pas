@@ -1199,6 +1199,7 @@ resourcestring
   lisMessagesWindow = 'Messages Window';
   lisCheckForDiskFileChangesViaContent = 'Check for disk file changes via content '
     +'rather than timestamp';
+  lisAutoCheckModifiedFiles = 'Automatically check (select) modified files';
   lisSlowerButMoreAccurate = 'Slower but more accurate.';
 
   // Search dialog

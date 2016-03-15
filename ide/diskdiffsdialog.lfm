@@ -1,11 +1,11 @@
 object DiskDiffsDlg: TDiskDiffsDlg
   Left = 314
-  Height = 354
+  Height = 353
   Top = 351
   Width = 600
   ActiveControl = FilesListBox
   Caption = 'DiskDiffsDlg'
-  ClientHeight = 354
+  ClientHeight = 353
   ClientWidth = 600
   KeyPreview = True
   OnClose = FormClose
@@ -27,7 +27,7 @@ object DiskDiffsDlg: TDiskDiffsDlg
   inline DiffSynEdit: TSynEdit
     AnchorSideBottom.Control = CheckDiskChangesWithLoadingCheckBox
     Left = 6
-    Height = 189
+    Height = 167
     Top = 97
     Width = 588
     Align = alTop
@@ -40,7 +40,7 @@ object DiskDiffsDlg: TDiskDiffsDlg
     Font.Quality = fqNonAntialiased
     ParentColor = False
     ParentFont = False
-    TabOrder = 1
+    TabOrder = 2
     BookMarkOptions.Xoffset = -18
     Gutter.Visible = False
     Gutter.Width = 59
@@ -574,24 +574,24 @@ object DiskDiffsDlg: TDiskDiffsDlg
     AnchorSideBottom.Control = BtnPanel
     Left = 6
     Height = 19
-    Top = 292
+    Top = 270
     Width = 241
-    Anchors = [akLeft, akBottom]
+    Anchors = [akLeft]
     BorderSpacing.Around = 6
     Caption = 'CheckDiskChangesWithLoadingCheckBox'
-    TabOrder = 2
+    TabOrder = 3
   end
   object BtnPanel: TPanel
     Left = 0
     Height = 37
-    Top = 317
+    Top = 316
     Width = 600
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 37
     ClientWidth = 600
-    TabOrder = 4
+    TabOrder = 5
     object RevertButton: TButton
       Left = 499
       Height = 25
@@ -617,6 +617,20 @@ object DiskDiffsDlg: TDiskDiffsDlg
       ModalResult = 5
       TabOrder = 0
     end
+  end
+  object AutoCheckModifiedFilesCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CheckDiskChangesWithLoadingCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = BtnPanel
+    Left = 6
+    Height = 15
+    Top = 295
+    Width = 202
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'AutoCheckModifiedFilesCheckBox'
+    TabOrder = 4
   end
   object SynDiffSyn1: TSynDiffSyn
     Enabled = False
