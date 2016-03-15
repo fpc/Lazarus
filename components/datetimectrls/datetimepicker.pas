@@ -46,7 +46,7 @@ uses
   clocale, // needed to initialize default locale settings on Linux.
   {$endif}
   Classes, SysUtils, Controls, LCLType, Graphics, Math, StdCtrls, Buttons,
-  ExtCtrls, Forms, ComCtrls, Types, LMessages, Calendar, LazUTF8,
+  ExtCtrls, Forms, ComCtrls, Types, LMessages, Calendar, LazUTF8, LCLIntf,
   CalControlWrapper;
 
 const
@@ -550,6 +550,7 @@ type
     procedure DoClose(var CloseAction: TCloseAction); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
+    procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
   public
     constructor CreateNewDTCalendarForm(AOwner: TComponent;
                   ADTPicker: TCustomDateTimePicker);
@@ -700,6 +701,17 @@ procedure TDTCalendarForm.VisibleOfParentChanged(Sender: TObject);
 begin
   SetClosingCalendarForm;
   Release;
+end;
+
+procedure TDTCalendarForm.WMActivate(var Message: TLMActivate);
+var
+  PP: HWND;
+begin
+  inherited;
+
+  PP := LCLIntf.GetParent(Handle);
+  if (PP<>0) then
+    SendMessage(PP, LM_NCACTIVATE, Ord(Message.Active <> WA_INACTIVE), 0);
 end;
 
 procedure TDTCalendarForm.Notification(AComponent: TComponent;
