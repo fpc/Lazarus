@@ -2680,6 +2680,7 @@ begin
     CurCell := GetCell(i);
     CurCell.X := CurX_mm;
     CurCell.Y := Y;
+    //ADest.Line(CoordToCanvasX(CurX_mm), CoordToCanvasY(Y), CoordToCanvasX(CurX_mm+1), CoordToCanvasY(Y+1));
     CurCell.Render(ADest, lEntityRenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
     if (Table <> nil) then
     begin
@@ -8103,8 +8104,8 @@ begin
     end
     else
     begin
-      OldTextX := lText.X;
-      OldTextY := lText.Y;
+      OldTextX := lEntity.X;
+      OldTextY := lEntity.Y;
       lEntity.X := CoordToCanvasX(lEntity.X + X + lCurWidth, ADestX, AMulX);
       lEntity.Y := lEntity.Y + Y;
 
