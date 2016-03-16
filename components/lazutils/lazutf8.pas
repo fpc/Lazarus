@@ -2852,7 +2852,7 @@ begin
   begin
     CharLen:=UTF8CharacterLength(p);
     Dec(rBytePos, CharLen);
-    Move(p^, Result[rBytePos], CharLen);
+    System.Move(p^, Result[rBytePos], CharLen);
     Inc(p, CharLen);
   end;
 end;
