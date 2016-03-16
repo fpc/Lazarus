@@ -3647,6 +3647,7 @@ function TvEntity.GetEntityFeatures(ADest: TFPCustomCanvas): TvEntityFeatures;
 begin
   Result.DrawsUpwards := False;
   Result.DrawsUpwardHeightAdjustment := 0;
+  Result.DrawsUpwardHeightAdjustment_FirstLineExcluded := 0;
 end;
 
 function TvEntity.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -8094,7 +8095,6 @@ begin
   while lEntity <> nil do
   begin
     lHeight_px := lEntity.GetEntityFeatures(ADest).DrawsUpwardHeightAdjustment_FirstLineExcluded;
-    lHeight_px := 0; // This breaks multiline text inside tables, but removing this breaks raster images inside table position
 
     if lEntity is TvText then
     begin
