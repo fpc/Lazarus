@@ -441,11 +441,15 @@ type
   TvFindEntityResult = (vfrNotFound, vfrFound, vfrSubpartFound);
 
   TvRenderInfo = record
-    // Input to the rendering
+    // Input to the rendering, provided by the Document or some other
+    // top-level entity and propagated down to all sub-entities
     BackgroundColor: TFPColor;
     AdjustPenColorToBackground: Boolean;
-    Selected: Boolean;
+    Selected: TvEntity;
+
+    // Input to the rendering, other inputs
     ForceRenderBlock: Boolean; // Blocks are usually invisible, but when rendering an insert, their drawing can be forced
+
     // Fields which are output from the rendering process
     EntityCanvasMinXY, EntityCanvasMaxXY: TPoint; // The size utilized in the canvas to draw this entity, in pixels
   end;
@@ -2542,6 +2546,8 @@ end;
 procedure TvEmbeddedVectorialDoc.CalculateBoundingBox(ADest: TFPCustomCanvas;
   out ALeft, ATop, ARight, ABottom: Double);
 begin
+  if (Document.Width = 0) or (Document.Height = 0) then
+    Document.GuessDocumentSize();
   ALeft := X;
   ATop := Y;
   ARight := X + Document.Width;
@@ -3519,11 +3525,14 @@ end;
 
 class procedure TvEntity.InitializeRenderInfo(out ARenderInfo: TvRenderInfo);
 begin
+  // Don't change these because otherwise we lose the value set by the page
+  // See CopyAndInitDocumentRenderInfo
+  // ARenderInfo.BackgroundColor := colBlack;
+  // ARenderInfo.AdjustPenColorToBackground := True;
+  // ARenderInfo.Selected := nil;
+
   ARenderInfo.EntityCanvasMinXY := Point(INVALID_RENDERINFO_CANVAS_XY, INVALID_RENDERINFO_CANVAS_XY);
   ARenderInfo.EntityCanvasMaxXY := Point(INVALID_RENDERINFO_CANVAS_XY, INVALID_RENDERINFO_CANVAS_XY);
-  //ARenderInfo.BackgroundColor := colBlack; Don't change this because otherwise we lose the value set by the page
-  //ARenderInfo.AdjustPenColorToBackground := True;    dto.
-  ARenderInfo.Selected := False;
   ARenderInfo.ForceRenderBlock := False;
 end;
 
@@ -3533,6 +3542,7 @@ begin
   InitializeRenderInfo(ATo);
   ATo.AdjustPenColorToBackground := AFrom.AdjustPenColorToBackground;
   ATo.BackgroundColor := AFrom.BackgroundColor;
+  ATo.Selected := AFrom.Selected;
 end;
 
 function TvEntity.CentralizeY_InHeight(ADest: TFPCustomCanvas; AHeight: Double): Double;
