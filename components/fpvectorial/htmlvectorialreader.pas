@@ -371,7 +371,7 @@ var
   lCurNode, lCurSubnode: TDOMNode;
   lNodeName, lNodeValue: DOMString;
   CurRow: TvTableRow;
-  Caption_Cell: TvTableCell;
+  Caption_Cell: TvTableCell = nil;
   CurCellPara: TvParagraph;
   // attributes
   i, lBorderNr: Integer;
@@ -456,7 +456,8 @@ begin
   end;
 
   // the caption spans all columns
-  Caption_Cell.SpannedCols := CurTable.GetColCount();
+  if Caption_Cell <> nil then
+    Caption_Cell.SpannedCols := CurTable.GetColCount();
 end;
 
 function TvHTMLVectorialReader.ReadTableRowNode(ATable: TvTable; ANode: TDOMNode;

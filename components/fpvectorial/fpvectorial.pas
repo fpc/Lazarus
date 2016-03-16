@@ -2561,12 +2561,21 @@ procedure TvEmbeddedVectorialDoc.Render(ADest: TFPCustomCanvas;
 
 var
   lPage: TvPage;
+  lPageHeight: Integer;
+  lMulY, lY: Double;
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
   lPage := Document.GetPage(0);
+  lPageHeight := Round(lPage.Height);
+  lPage.GetNaturalRenderPos(lPageHeight, lMulY);
+  lY := Y;
+  if AmulY * lMulY < 0 then
+  begin
+    lY := Y + lPage.Height;
+  end;
   if ADoDraw then
-    lPage.Render(ADest, CoordToCanvasX(X), CoordToCanvasY(Y), AMulX, AMulY);
+    lPage.Render(ADest, CoordToCanvasX(X), CoordToCanvasY(Y), AMulX, AMulY * lMulY);
 
   CalcEntityCanvasMinMaxXY(ARenderInfo, CoordToCanvasX(X), CoordToCanvasY(Y));
   CalcEntityCanvasMinMaxXY(ARenderInfo,
@@ -8106,7 +8115,7 @@ begin
     begin
       OldTextX := lEntity.X;
       OldTextY := lEntity.Y;
-      lEntity.X := CoordToCanvasX(lEntity.X + X + lCurWidth, ADestX, AMulX);
+      lEntity.X := lEntity.X + X + lCurWidth;
       lEntity.Y := lEntity.Y + Y;
 
       lEntity.Render(ADest, lEntityRenderInfo, ADestX, ADestY + lHeight_px, AMulX, AMulY, ADoDraw);
