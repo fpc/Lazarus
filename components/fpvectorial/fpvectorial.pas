@@ -482,6 +482,7 @@ type
     class procedure CalcEntityCanvasMinMaxXY_With2Points(var ARenderInfo: TvRenderInfo; AX1, AY1, AX2, AY2: Integer);
     procedure MergeRenderInfo(var AFrom, ATo: TvRenderInfo);
     class procedure InitializeRenderInfo(out ARenderInfo: TvRenderInfo);
+    class procedure CopyAndInitDocumentRenderInfo(out ATo: TvRenderInfo; AFrom: TvRenderInfo);
     function CentralizeY_InHeight(ADest: TFPCustomCanvas; AHeight: Double): Double;
     function  GetHeight(ADest: TFPCustomCanvas): Double;
     function  GetWidth(ADest: TFPCustomCanvas): Double;
@@ -2496,6 +2497,7 @@ begin
     // changes from pos relative inside table (calculated in CalculateRowHeights) to absolute pos
     CurRow.Y := Y + CurRow.Y;
 
+    CopyAndInitDocumentRenderInfo(lEntityRenderInfo, ARenderInfo);
     CurRow.Render(ADest, lEntityRenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
     //MergeRenderInfo(lEntityRenderInfo, ARenderInfo); no need to merge, since TvTableCell.DrawBorder calculates the proper size
   end;
@@ -2691,6 +2693,7 @@ begin
     CurCell.X := CurX_mm;
     CurCell.Y := Y;
     //ADest.Line(CoordToCanvasX(CurX_mm), CoordToCanvasY(Y), CoordToCanvasX(CurX_mm+1), CoordToCanvasY(Y+1));
+    CopyAndInitDocumentRenderInfo(lEntityRenderInfo, ARenderInfo);
     CurCell.Render(ADest, lEntityRenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
     if (Table <> nil) then
     begin
@@ -3522,6 +3525,14 @@ begin
   //ARenderInfo.AdjustPenColorToBackground := True;    dto.
   ARenderInfo.Selected := False;
   ARenderInfo.ForceRenderBlock := False;
+end;
+
+class procedure TvEntity.CopyAndInitDocumentRenderInfo(out ATo: TvRenderInfo;
+  AFrom: TvRenderInfo);
+begin
+  InitializeRenderInfo(ATo);
+  ATo.AdjustPenColorToBackground := AFrom.AdjustPenColorToBackground;
+  ATo.BackgroundColor := AFrom.BackgroundColor;
 end;
 
 function TvEntity.CentralizeY_InHeight(ADest: TFPCustomCanvas; AHeight: Double): Double;
@@ -5539,7 +5550,9 @@ begin
 
     // Paint line
     if ADoDraw then
+    begin
       ADest.TextOut(pt.x, pt.y, lText);
+    end;
 
     // Calc text boundaries respecting text rotation.
     CalcEntityCanvasMinMaxXY(ARenderInfo, pt.x, pt.y);
@@ -8106,6 +8119,7 @@ begin
       if Style <> nil then
         Style.ApplyIntoEntity(lText);
 
+      CopyAndInitDocumentRenderInfo(lEntityRenderInfo, ARenderInfo);
       lText.Render(ADest, lEntityRenderInfo, CurX, CurY, AMulX, AMulY, ADoDraw);
       lText.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
       lCurWidth := lCurWidth + Abs(lRight - lLeft);
@@ -8434,6 +8448,7 @@ begin
     lEntity.X := X;
     lEntity.Y := Y + lCurHeight;
     lHeight_px := lEntity.GetEntityFeatures(ADest).DrawsUpwardHeightAdjustment;
+    CopyAndInitDocumentRenderInfo(lEntityRenderInfo, ARenderInfo);
     lEntity.Render(ADest, lEntityRenderInfo, ADestX, ADestY + lHeight_px, AMulX, AMulY, ADoDraw);
     lEntity.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
     lCurHeight := lCurHeight + (lBottom - lTop);
