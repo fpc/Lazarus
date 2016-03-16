@@ -28,7 +28,6 @@ type
   public
     constructor Create(TheRadioGroup: TCustomRadioGroup);
     procedure Assign(Source: TPersistent); override;
-    procedure Clear; override;
   end;
 
 { TRadioGroupStringList }
@@ -40,6 +39,7 @@ begin
     FRadioGroup.UpdateAll
   else
     FRadioGroup.UpdateInternalObjectList;
+  FRadioGroup.FLastClickedItemIndex := FRadioGroup.FItemIndex;
 end;
 
 constructor TRadioGroupStringList.Create(TheRadioGroup: TCustomRadioGroup);
@@ -55,12 +55,6 @@ begin
   SavedIndex := FRadioGroup.ItemIndex;
   inherited Assign(Source);
   if SavedIndex < Count then FRadioGroup.ItemIndex := SavedIndex;
-end;
-
-procedure TRadioGroupStringList.Clear;
-begin
-  inherited Clear;
-  FRadioGroup.FLastClickedItemIndex := -1;
 end;
 
 
