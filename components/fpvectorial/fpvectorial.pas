@@ -5561,16 +5561,16 @@ end;
 function TvText.GetEntityFeatures(ADest: TFPCustomCanvas): TvEntityFeatures;
 var
   ActualText: String;
-  lHeight_px: Integer;
+  lHeight_px: Integer = 0;
 begin
   Result.DrawsUpwardHeightAdjustment := 0;
   if Value.Count > 0 then
   begin
-    ActualText := Value.Text;
-    Value.Text := Value.Strings[0];
+    //ActualText := Value.Text;
+    //Value.Text := Value.Strings[0];
     CalculateHeightInCanvas(ADest, lHeight_px);
     Result.DrawsUpwardHeightAdjustment := lHeight_px;
-    Value.Text := ActualText;
+    //Value.Text := ActualText;
   end;
   Result.DrawsUpwards := True;
 end;
@@ -8090,8 +8090,8 @@ begin
       OldTextY := lText.Y;
       CurX := CoordToCanvasX(lText.X + X + lCurWidth, ADestX, AMulX);
       lText.X := 0;
-      lText.Y := lText.Y + Y;
-      CurY := CoordToCanvasY(lText.Y, ADestY, AMulY);
+      lText.Y := 0;
+      CurY := CoordToCanvasY(lText.Y + Y, ADestY, AMulY) + lHeight_px;
       lText.Render_Use_NextText_X := not lFirstText;
       if lText.Render_Use_NextText_X then
         lText.Render_NextText_X := lPrevText.Render_NextText_X;
@@ -8100,7 +8100,7 @@ begin
       if Style <> nil then
         Style.ApplyIntoEntity(lText);
 
-      lText.Render(ADest, lEntityRenderInfo, CurX, ADestY, AMulX, AMulY, ADoDraw);
+      lText.Render(ADest, lEntityRenderInfo, CurX, CurY, AMulX, AMulY, ADoDraw);
       lText.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
       lCurWidth := lCurWidth + Abs(lRight - lLeft);
       lFirstText := False;
