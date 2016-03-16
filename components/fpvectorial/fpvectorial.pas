@@ -453,6 +453,7 @@ type
   TvEntityFeatures = record
     DrawsUpwards: Boolean; // TvText, TvEmbeddedVectorialDoc, etc draws upwards, but in the future we might have entities drawing downwards
     DrawsUpwardHeightAdjustment: Integer; // in Canvas pixels
+    DrawsUpwardHeightAdjustment_FirstLineExcluded: Integer; // in Canvas pixels
   end;
 
   { Now all elements }
@@ -5566,11 +5567,15 @@ begin
   Result.DrawsUpwardHeightAdjustment := 0;
   if Value.Count > 0 then
   begin
-    //ActualText := Value.Text;
-    //Value.Text := Value.Strings[0];
     CalculateHeightInCanvas(ADest, lHeight_px);
     Result.DrawsUpwardHeightAdjustment := lHeight_px;
-    //Value.Text := ActualText;
+
+    ActualText := Value.Text;
+    if Value.Count > 0 then
+      Value.Delete(0);
+    CalculateHeightInCanvas(ADest, lHeight_px);
+    Result.DrawsUpwardHeightAdjustment_FirstLineExcluded := lHeight_px;
+    Value.Text := ActualText;
   end;
   Result.DrawsUpwards := True;
 end;
@@ -8065,7 +8070,7 @@ begin
   lEntity := GetFirstEntity();
   while lEntity <> nil do
   begin
-    lHeight_px := lEntity.GetEntityFeatures(ADest).DrawsUpwardHeightAdjustment;
+    lHeight_px := lEntity.GetEntityFeatures(ADest).DrawsUpwardHeightAdjustment_FirstLineExcluded;
 
     if lEntity is TvText then
     begin
