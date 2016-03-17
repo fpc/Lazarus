@@ -3092,15 +3092,25 @@ end;
 
 {------------------------------------------------------------------------------
   Name:    UTF8CompareStr
-  Params: S1, S2 - UTF8 encoded strings
-  Returns: < 0 if S1 < S2, 0 if S1 = S2, > 0 if S1 > S2.
+  Params:  S1, S2 - UTF8 encoded strings
+  Compares UTF8 encoded strings
+  Returns
+     0: if S1 = S2
+    -1: if S1 < S2 ("alphabetically")
+    +1: if S1 > S2
+    -2: if S1 < S2, comparison ended at a different byte in an invalid UTF8 codepoint in either S1 or S2 (byte at S1 > byte at S2)
+    +2: if S1 > S2, comparison ended at a different byte in an invalid UTF8 codepoint in either S1 or S2
+
   Compare two UTF8 encoded strings, case sensitive.
-  Internally it uses CompareMemRange, which returns -1 if a byte of S1 is lower than S2.
- ------------------------------------------------------------------------------}
+
+  Internally it uses WideCompareStr on the first Utf8 codepoint that differs between S1 and S2
+  and therefor has proper colation on platforms where the WidestringManager supports this
+  (Windows, *nix with cwstring unit)
+------------------------------------------------------------------------------}
 function UTF8CompareStr(const S1, S2: string): PtrInt;
 begin
   Result := UTF8CompareStr(PChar(Pointer(S1)),length(S1),
-                            PChar(Pointer(S2)),length(S2));
+                           PChar(Pointer(S2)),length(S2));
 end;
 
 function UTF8CompareStrP(S1, S2: PChar): PtrInt;
@@ -3108,24 +3118,68 @@ begin
   Result:=UTF8CompareStr(S1,StrLen(S1),S2,StrLen(S2));
 end;
 
-function UTF8CompareStr(S1: PChar; Count1: SizeInt; S2: PChar; Count2: SizeInt
-  ): PtrInt;
+
+function UTF8CompareStr(S1: PChar; Count1: SizeInt; S2: PChar; Count2: SizeInt): PtrInt;
 var
   Count: SizeInt;
+  i, CL1, CL2: Integer;
+  B1, B2: Byte;
+  W1, W2: WideString;
+  Org1, Org2: PChar;
 begin
   Result := 0;
-  if Count1>Count2 then
-    Count:=Count2
+  Org1 := S1;
+  Org2 := S2;
+  if (Count1 > Count2) then
+    Count := Count2
   else
-    Count:=Count1;
-  Result := CompareMemRange(Pointer(S1),Pointer(S2), Count); // Note: CompareMemRange can handle nil if Count=0
-  if Result<>0 then exit;
-  if Count1>Count2 then
-    Result:=1
-  else if Count1<Count2 then
-    Result:=-1
+    Count := Count1;
+
+  i := 0;
+  if (Count > 0) then
+  begin
+   //unfortunately we cannot use CompareByte here, so we have to iterate ourselves
+    while (i < Count) do
+    begin
+      B1 := byte(S1^);
+      B2 := byte(S2^);
+      if (B1 <> B2) then
+      begin
+        //writeln('UCS: B1=',IntToHex(B1,2),', B2=',IntToHex(B2,2));
+        Break;
+      end;
+      Inc(S1); Inc(S2); Inc(I);
+    end;
+  end;
+  if (i < Count) then
+  begin
+    //Fallback result
+    Result := B1 - B2;
+    if (Result < 0) then
+      Result := -2
+    else
+      Result := 2;
+    //writeln('UCS: FallBack Result = ',Result);
+    //Try t find start of valid UTF8 codepoints
+    if (not Utf8TryFindCodepointStart(Org1, S1, CL1)) or
+        not Utf8TryFindCodepointStart(Org2, S2, CL2) then
+      Exit;
+
+    //writeln('UCS: CL1=',CL1,', CL2=',CL2);
+    //writeln('S1 = "',S1,'"');
+    //writeln('S2 = "',S2,'"');
+    W1 := Utf8ToUtf16(S1, CL1);
+    W2 := Utf8ToUtf16(S2, CL2);
+    //writeln('UCS: W1 = ',Word(W1[1]),' W2 = ',Word(W2[1]));
+    Result := WideCompareStr(W1, W2);
+  end
   else
-    Result:=0;
+    //Strings are the same up and until size of smallest one
+    Result := Count1 - Count2;
+  if (Result > 1) then
+    Result := 1
+  else if (Result < -1) then
+    Result := -1;
 end;
 
 {------------------------------------------------------------------------------
@@ -3135,16 +3189,12 @@ end;
   Compare two UTF8 encoded strings, case insensitive.
   Note: Use this function instead of AnsiCompareText.
   This function guarantees proper collation on all supported platforms.
-  Internally it uses UTF8CompareStr.
+  Internally it uses WideCompareText.
  ------------------------------------------------------------------------------}
-function UTF8CompareText(const S1, S2: string): PtrInt;
-var
-  S1Lower, S2Lower: string;
-begin
-  S1Lower := UTF8LowerCase(S1);
-  S2Lower := UTF8LowerCase(S2);
-  Result := UTF8CompareStr(S1Lower, S2Lower);
-end;
+ function UTF8CompareText(const S1, S2: String): PtrInt;
+ begin
+   Result := WideCompareText(Utf8ToUtf16(S1),Utf8ToUtf16(S2));
+ end;
 
 function UTF8CompareStrCollated(const S1, S2: string): PtrInt;
 begin
