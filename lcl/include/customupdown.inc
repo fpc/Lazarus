@@ -483,6 +483,14 @@ begin
   Result := FPosition;
 end;
 
+function TCustomUpDown.GetFlat: Boolean;
+begin
+  if FMinBtn<>nil then
+    Result := (FMinBtn as TSpeedButton).Flat
+  else
+    Result := False;
+end;
+
 procedure TCustomUpDown.SetMin(Value: SmallInt);
 begin
   if Value <> FMin then
@@ -547,6 +555,14 @@ procedure TCustomUpDown.SetThousands(Value: Boolean);
 begin
   if Value <> FThousands then
     FThousands := Value;
+end;
+
+procedure TCustomUpDown.SetFlat(Value: Boolean);
+begin
+  if Flat = Value then Exit;
+
+  (FMinBtn as TSpeedButton).Flat := Value;
+  (FMaxBtn as TSpeedButton).Flat := Value;
 end;
 
 procedure TCustomUpDown.SetWrap(Value: Boolean);

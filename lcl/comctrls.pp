@@ -1851,6 +1851,7 @@ type
     FWrap: Boolean;
     function GetPosition: SmallInt;
     procedure BTimerExec(Sender : TObject);
+    function GetFlat: Boolean;
     procedure SetAlignButton(Value: TUDAlignButton);
     procedure SetArrowKeys(Value: Boolean);
     procedure SetAssociate(Value: TWinControl);
@@ -1861,6 +1862,7 @@ type
     procedure SetOrientation(Value: TUDOrientation);
     procedure SetPosition(Value: SmallInt);
     procedure SetThousands(Value: Boolean);
+    procedure SetFlat(Value: Boolean);
     procedure SetWrap(Value: Boolean);
     procedure UpdateAlignButtonPos;
     procedure UpdateOrientation;
@@ -1893,6 +1895,7 @@ type
     property Orientation: TUDOrientation read FOrientation write SetOrientation default udVertical;
     property Position: SmallInt read GetPosition write SetPosition;
     property Thousands: Boolean read FThousands write SetThousands default True;
+    property Flat: Boolean read GetFlat write SetFlat default False;
     property Wrap: Boolean read FWrap write SetWrap;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1938,6 +1941,7 @@ type
     property TabOrder;
     property TabStop;
     property Thousands;
+    property Flat;
     property Visible;
     property Wrap;
   end;
