@@ -15,6 +15,9 @@ http://www.famfamfam.com/lab/icons/silk/
 Tango Icon Library 
 http://tango.freedesktop.org/Tango_Icon_Library
 
+Fugue Icons
+http://p.yusukekamiyamane.com/
+
 
 #RemObjects Pascal Script 
 Created by Carlo Kok / RemObjects Software
