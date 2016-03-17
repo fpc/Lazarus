@@ -151,7 +151,7 @@ function UTF8CompareStr(const S1, S2: string): PtrInt; inline;
 function UTF8CompareStrP(S1, S2: PChar): PtrInt;
 function UTF8CompareStr(S1: PChar; Count1: SizeInt; S2: PChar; Count2: SizeInt): PtrInt;
 function UTF8CompareText(const S1, S2: string): PtrInt;
-function UTF8CompareStrCollated(const S1, S2: string): PtrInt;
+function UTF8CompareStrCollated(const S1, S2: string): PtrInt; {$IFnDEF ACP_RTL}inline;{$endif}
 function CompareStrListUTF8LowerCase(List: TStringList; Index1, Index2: Integer): Integer;
 
 type
@@ -3196,12 +3196,13 @@ end;
    Result := WideCompareText(Utf8ToUtf16(S1),Utf8ToUtf16(S2));
  end;
 
-function UTF8CompareStrCollated(const S1, S2: string): PtrInt;
+function UTF8CompareStrCollated(const S1, S2: string): PtrInt; {$IFnDEF ACP_RTL}inline;{$endif}
 begin
-  {$IFDEF MSWINDOWS}
+  {$IFDEF ACP_RTL}
+    //Only with this define AnsiCompareStr does not point to Utf8CompareStr
     Result := AnsiCompareStr(UTF8ToSys(S1), UTF8ToSys(S2));
   {$ELSE}
-    Result := WideCompareStr(WideString(S1),WideString(S2));
+    Result := Utf8CompareStr(S1,S2);
   {$ENDIF}
 end;
 
