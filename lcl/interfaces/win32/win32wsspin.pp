@@ -29,7 +29,7 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   CommCtrl, Windows, Win32Extra,
-  Spin, Controls, StdCtrls, LCLType, LMessages, LazUTF8,
+  Spin, Controls, StdCtrls, LCLType, LMessages, Themes, LazUTF8,
 ////////////////////////////////////////////////////
   WSSpin, WSLCLClasses, WSProc,
   Win32Int, Win32Proc, Win32WSStdCtrls, Win32WSControls;
@@ -163,8 +163,11 @@ begin
     Flags := Flags or ES_AUTOHSCROLL;
     HotTracking := False;
     SystemParametersInfo(SPI_GETHOTTRACKING, 0, @HotTracking, 0);
-    UpDownFlags := WS_CHILD or WS_CLIPSIBLINGS or UDS_ALIGNRIGHT or UDS_ARROWKEYS or
-    UpDownHotStyle[HotTracking] or ((WS_VISIBLE or WS_DISABLED) and Flags);
+
+    UpDownFlags := WS_CHILD or WS_CLIPSIBLINGS or UDS_ARROWKEYS
+      or UpDownHotStyle[HotTracking]
+      or ((WS_VISIBLE or WS_DISABLED) and Flags);
+
     Window := CreateWindowExW(FlagsEx, PWideChar(WideString(EditClsName)),
                 PWideChar(UTF8ToUTF16(StrCaption)), Flags,
                 Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
@@ -260,7 +263,7 @@ class procedure TWin32WSCustomFloatSpinEdit.AdaptBounds(const AWinControl: TWinC
 var
   WinHandle, UpDown: HWND;
   R: TRect;
-  UpDownWidth: Integer;
+  UpDownWidth, BorderWidth: Integer;
   DWP: HDWP;
 begin
   WinHandle := AWinControl.Handle;
@@ -275,11 +278,16 @@ begin
 }
   GetWindowRect(UpDown, @R);
   UpDownWidth := R.Right - R.Left;
+  if (WindowsVersion >= wvXP) and ThemeServices.ThemesEnabled then
+    BorderWidth := GetSystemMetrics(SM_CXBORDER)
+  else
+    BorderWidth := GetSystemMetrics(SM_CXEDGE);
 
   DWP := BeginDeferWindowPos(2);
-  DeferWindowPos(DWP, WinHandle, UpDown, Left, Top, Width - UpDownWidth + 2, Height, SWP_NOACTIVATE);
-  DeferWindowPos(DWP, UpDown, 0, Left + Width - UpDownWidth, Top, UpDownWidth, Height, SWP_NOZORDER or SWP_NOACTIVATE);
+  DeferWindowPos(DWP, WinHandle, UpDown, Left, Top, Width, Height, SWP_NOACTIVATE);
+  DeferWindowPos(DWP, UpDown, 0, Left + Width - UpDownWidth-BorderWidth, Top+BorderWidth, UpDownWidth, Height-BorderWidth*2, SWP_NOZORDER or SWP_NOACTIVATE);
   EndDeferWindowPos(DWP);
+  SendMessage(WinHandle, EM_SETMARGINS, EC_RIGHTMARGIN, MAKELONG(0, UpDownWidth + BorderWidth + 1));
 
   SuppressMove := True;
 end;

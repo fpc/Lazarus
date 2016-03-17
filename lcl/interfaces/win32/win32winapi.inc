@@ -2221,7 +2221,7 @@ var
   begin
     UpDownWP.length := SizeOf(UpDownWP);
     if Windows.GetWindowPlacement(WindowInfo^.UpDown, UpDownWP) then
-      Width := UpDownWP.rcNormalPosition.Right - WP.rcNormalPosition.Left;
+      Width := Max(Width, UpDownWP.rcNormalPosition.Right - WP.rcNormalPosition.Left);
   end;
 
   procedure ExcludeCaption; inline;
