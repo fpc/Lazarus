@@ -107,10 +107,14 @@ function SpinUpDownWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 begin
   case Msg of
     WM_PAINT,
-    WM_PRINTCLIENT,
-    WM_ERASEBKGND:
+    WM_PRINTCLIENT:
       begin
         Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+        Exit;
+      end;
+    WM_ERASEBKGND:
+      begin
+        Result := 1; // disable: solves painting issues and flicker
         Exit;
       end;
   end;
