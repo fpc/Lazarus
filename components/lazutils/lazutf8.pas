@@ -78,6 +78,8 @@ function UTF8ToDoubleByteString(const s: string): string;
 function UTF8ToDoubleByte(UTF8Str: PChar; Len: PtrInt; DBStr: PByte): PtrInt;
 function UTF8FindNearestCharStart(UTF8Str: PChar; Len: SizeInt;
                                   BytePos: SizeInt): SizeInt;
+function Utf8TryFindCodepointStart(AString: PChar; var CurPos: PChar; out CharLen: Integer): Boolean;
+function Utf8TryFindCodepointStart(const AString: String; var Index: Integer; out CharLen: Integer): Boolean;
 // find the n-th UTF8 character, ignoring BIDI
 function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: PtrInt): PChar;
 // find the byte index of the n-th UTF8 character, ignoring BIDI (byte len of substr)
@@ -580,6 +582,64 @@ begin
     dec(Len,CharLen);
     inc(Result);
   end;
+end;
+
+
+{ Tries to find the start of a valid UTF8 codepoint that contains the character pointed to by CurPos
+  - AString: pointer to the (start of the) string
+  - CurPos: pointer to the character inside AString that we want to get the information off
+    * if the function succeeds, CurPos wil point to the start of the valid UTF8 codepoint
+    * if the function fails, CurPos will not be changed
+    Note: if CurPos points beyond the end of AString you will get a crash!
+  - CharLen: the length of the UTF8 codepoint in bytes, if the function succeeds
+  - Returns:
+    True if the character pointed to by Curpos is part of a valid UTF8 codepoint (1 to 4 bytes),
+    otherwise it returns False.                                                                          }
+function Utf8TryFindCodepointStart(AString: PChar; var CurPos: PChar; out CharLen: Integer): Boolean;
+var
+  SavedPos: PChar;
+begin
+  Result := False;
+  CharLen := 0;
+  if (not (Assigned(AString) and Assigned(CurPos)))
+      or (CurPos < AString) then Exit;
+  SavedPos := CurPos;
+  //Note: UTF8CharacterStrictLength will NOT "look" beyond the terminating #0 of a PChar, so this is safe with AnsiStrings
+  CharLen := UTF8CharacterStrictLength(CurPos);
+  if (CharLen > 0) then Exit(True);
+  if (CurPos > AString) then
+  begin
+    Dec(CurPos);   //-1
+    //is it second byte of 2..4 byte codepoint?
+    CharLen := UTF8CharacterStrictLength(CurPos);
+    if (CharLen > 1) then Exit(True);
+    if (CurPos > AString) then
+    begin
+      Dec(CurPos);   //-2
+      //is it third byte of 3..4 byte codepoint?
+      CharLen := UTF8CharacterStrictLength(CurPos);
+      if (CharLen > 2) then Exit(True);
+      if (CurPos > AString) then
+      begin
+        Dec(CurPos);   //-3
+       //is it fouth byte of 4 byte codepoint?
+       CharLen := UTF8CharacterStrictLength(CurPos);
+       if (CharLen = 4) then Exit(True);
+      end;
+    end;
+  end;
+  //At this point we failed: we are NOT inside a valid UTF8 codepoint!
+  CurPos := SavedPos;
+end;
+
+function Utf8TryFindCodepointStart(const AString: String; var Index: Integer; out CharLen: Integer): Boolean;
+var
+  CurPos, SavedCurPos: PChar;
+begin
+  CurPos := @AString[Index];
+  SavedCurPos := CurPos;
+  Result := Utf8TryFindCodepointStart(PChar(AString), CurPos, CharLen);
+  Index := Index - (SavedCurPos - CurPos);
 end;
 
 { Find the start of the UTF8 character which contains BytePos,
