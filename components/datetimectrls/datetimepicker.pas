@@ -47,7 +47,7 @@ uses
   {$endif}
   Classes, SysUtils, Controls, LCLType, Graphics, Math, StdCtrls, Buttons,
   ExtCtrls, Forms, ComCtrls, Types, LMessages, Calendar, LazUTF8, LCLIntf,
-  CalControlWrapper;
+  Themes, CalControlWrapper;
 
 const
   { We will deal with the NullDate value the special way. It will be especially
@@ -111,7 +111,7 @@ type
            // course, it makes a difference only when TimeFormat is set to tf12)
 
   TArrowShape = (asClassicSmaller, asClassicLarger, asModernSmaller,
-                                           asModernLarger, asYetAnotherShape);
+    asModernLarger, asYetAnotherShape, asTheme);
 
   TDTDateMode = (dmComboBox, dmUpDown, dmNone);
 
@@ -332,7 +332,6 @@ type
     procedure Change; virtual;
     procedure DoDropDown; virtual;
     procedure DoCloseUp; virtual;
-    procedure DrawArrowButtonGlyph; virtual;
 
     property BorderStyle default bsSingle;
     property AutoSize default True;
@@ -364,7 +363,7 @@ type
              read GetShowCheckBox write SetShowCheckBox default False;
     property Checked: Boolean read GetChecked write SetChecked default True;
     property ArrowShape: TArrowShape
-             read FArrowShape write SetArrowShape default asModernSmaller;
+             read FArrowShape write SetArrowShape default asTheme;
     property Kind: TDateTimeKind
              read FKind write SetKind;
     property DateSeparator: String
@@ -525,6 +524,34 @@ begin
 end;
 
 type
+
+  { TDTUpDown }
+
+{ The two buttons contained by UpDown control are never disabled in original
+  UpDown class. This class is defined here to override this behaviour. }
+  TDTUpDown = class(TCustomUpDown)
+  private
+    DTPicker: TCustomDateTimePicker;
+  protected
+    procedure SetEnabled(Value: Boolean); override;
+    procedure CalculatePreferredSize(var PreferredWidth,
+                  PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    procedure WndProc(var Message: TLMessage); override;
+  end;
+
+  { TDTSpeedButton }
+
+  TDTSpeedButton = class(TCustomSpeedButton)
+  private
+    DTPicker: TCustomDateTimePicker;
+  protected
+    procedure CalculatePreferredSize(var PreferredWidth,
+                  PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+      override;
+  public
+    procedure Paint; override;
+  end;
 
   { TDTCalendarForm }
 
@@ -3262,52 +3289,6 @@ begin
   Result := (not Assigned(FCheckBox)) or (FCheckBox.State = cbChecked);
 end;
 
-{ DrawArrowButtonGlyph
- ----------------------
- Draws the arrow shape on button (when DateMode dmComboBox is set). }
-procedure TCustomDateTimePicker.DrawArrowButtonGlyph;
-const
-  ArrowColor = TColor($8D665A);
-begin
-// First I ment to put arrow images in a lrs file. In my opinion, however, that
-// wouldn't be an elegant option for so simple shapes.
-
-  if Assigned(FArrowButton) then begin
-    FArrowButton.Glyph.SetSize(9, 6);
-    FArrowButton.Glyph.Canvas.Brush.Style := bsSolid;
-    FArrowButton.Glyph.Canvas.Brush.Color := clSkyBlue;
-    FArrowButton.Glyph.Canvas.FillRect(0, 0, 9, 6);
-    FArrowButton.Glyph.Canvas.Pen.Color := ArrowColor;
-    FArrowButton.Glyph.Canvas.Brush.Color := FArrowButton.Glyph.Canvas.Pen.Color;
-
-{ Let's draw shape of the arrow on the button: }
-    case FArrowShape of
-      asClassicLarger:
-        { triangle: }
-        FArrowButton.Glyph.Canvas.Polygon([Point(0, 1), Point(8, 1),
-                                                        Point(4, 5)]);
-      asClassicSmaller:
-        { triangle -- smaller variant:  }
-        FArrowButton.Glyph.Canvas.Polygon([Point(1, 2), Point(7, 2),
-                                                        Point(4, 5)]);
-      asModernLarger:
-        { modern: }
-        FArrowButton.Glyph.Canvas.Polygon([Point(0, 1), Point(1, 0),
-                          Point(4, 3), Point(7, 0), Point(8, 1), Point(4, 5)]);
-      asModernSmaller:
-        { modern -- smaller variant:    }
-        FArrowButton.Glyph.Canvas.Polygon([Point(1, 2), Point(2, 1),
-                          Point(4, 3), Point(6, 1), Point(7, 2), Point(4, 5)]);
-      asYetAnotherShape:
-        { something in between, not very pretty:  }
-        FArrowButton.Glyph.Canvas.Polygon([Point(0, 1), Point(1, 0),
-              Point(2, 1), Point(6, 1),Point(7, 0), Point(8, 1), Point(4, 5)]);
-    end;
-
-    FArrowButton.Glyph.Mask(clSkyBlue);
-  end;
-end;
-
 function TCustomDateTimePicker.AreSeparatorsStored: Boolean;
 begin
   Result := not FUseDefaultSeparators;
@@ -3360,7 +3341,8 @@ begin
   if FArrowShape = AValue then Exit;
 
   FArrowShape := AValue;
-  DrawArrowButtonGlyph;
+  if FArrowButton<>nil then
+    FArrowButton.Invalidate;
 end;
 
 const
@@ -3478,34 +3460,6 @@ begin
 
 end;
 
-type
-
-  { TDTUpDown }
-
-{ The two buttons contained by UpDown control are never disabled in original
-  UpDown class. This class is defined here to override this behaviour. }
-  TDTUpDown = class(TCustomUpDown)
-  private
-    DTPicker: TCustomDateTimePicker;
-  protected
-    procedure SetEnabled(Value: Boolean); override;
-    procedure CalculatePreferredSize(var PreferredWidth,
-                  PreferredHeight: integer; WithThemeSpace: Boolean); override;
-    procedure WndProc(var Message: TLMessage); override;
-  end;
-
-  { TDTSpeedButton }
-
-  TDTSpeedButton = class(TCustomSpeedButton)
-  private
-    DTPicker: TCustomDateTimePicker;
-  protected
-    procedure CalculatePreferredSize(var PreferredWidth,
-                  PreferredHeight: integer; WithThemeSpace: Boolean); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-      override;
-  end;
-
 { TDTUpDown }
 
 { When our UpDown control gets enabled/disabled, the two its buttons' Enabled
@@ -3590,6 +3544,64 @@ begin
   end;
 end;
 
+procedure TDTSpeedButton.Paint;
+  procedure DrawDropDownArrow(const Canvas: TCanvas; const DropDownButtonRect: TRect);
+  var
+    Details: TThemedElementDetails;
+    ArrowState: TThemedToolBar;
+  begin
+    if Enabled then
+      ArrowState := ttbSplitButtonDropDownNormal
+    else
+      ArrowState := ttbSplitButtonDropDownDisabled;
+    Details := ThemeServices.GetElementDetails(ArrowState);
+    ThemeServices.DrawElement(Canvas.Handle, Details, DropDownButtonRect);
+  end;
+const
+  ArrowColor = TColor($8D665A);
+var
+  X, Y: Integer;
+begin
+  inherited Paint;
+
+  // First I ment to put arrow images in a lrs file. In my opinion, however, that
+  // wouldn't be an elegant option for so simple shapes.
+
+  Canvas.Brush.Style := bsSolid;
+  Canvas.Pen.Color := ArrowColor;
+  Canvas.Brush.Color := Canvas.Pen.Color;
+
+  X := (Width-9) div 2;
+  Y := (Height-6) div 2;
+
+{ Let's draw shape of the arrow on the button: }
+  case DTPicker.FArrowShape of
+    asTheme:
+      DrawDropDownArrow(Canvas, Rect(0, 0, Width, Height));
+
+    asClassicLarger:
+      { triangle: }
+      Canvas.Polygon([Point(X+0, Y+1), Point(X+8, Y+1),
+                                                      Point(X+4, Y+5)]);
+    asClassicSmaller:
+      { triangle -- smaller variant:  }
+      Canvas.Polygon([Point(X+1, Y+2), Point(X+7, Y+2),
+                                                      Point(X+4, Y+5)]);
+    asModernLarger:
+      { modern: }
+      Canvas.Polygon([Point(X+0, Y+1), Point(X+1, Y+0),
+                        Point(X+4, Y+3), Point(X+7, Y+0), Point(X+8, Y+1), Point(X+4, Y+5)]);
+    asModernSmaller:
+      { modern -- smaller variant:    }
+      Canvas.Polygon([Point(X+1, Y+2), Point(X+2, Y+1),
+                        Point(X+4, Y+3), Point(X+6, Y+1), Point(X+7, Y+2), Point(X+4, Y+5)]);
+    asYetAnotherShape:
+      { something in between, not very pretty:  }
+      Canvas.Polygon([Point(X+0, Y+1), Point(X+1, Y+0),
+            Point(X+2, Y+1), Point(X+6, Y+1),Point(X+7, Y+0), Point(X+8, 1), Point(X+4, Y+5)]);
+  end;
+end;
+
 procedure TCustomDateTimePicker.UpdateShowArrowButton;
 
   procedure CreateArrowBtn;
@@ -3603,8 +3615,6 @@ procedure TCustomDateTimePicker.UpdateShowArrowButton;
                                             [csNoFocus, csNoDesignSelectable];
       TDTSpeedButton(FArrowButton).DTPicker := Self;
       FArrowButton.SetBounds(0, 0, DefaultArrowButtonWidth, 1);
-
-      DrawArrowButtonGlyph;
 
       FArrowButton.Parent := Self;
       FAllowDroppingCalendar := True;
@@ -3697,7 +3707,7 @@ begin
   FCorrectedValue := 0;
   FChangeInRecursiveCall := False;
   FNoEditingDone := 0;
-  FArrowShape := asModernSmaller;
+  FArrowShape := asTheme;
   FAllowDroppingCalendar := True;
 
   FOnDropDown := nil;
