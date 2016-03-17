@@ -643,44 +643,21 @@ begin
 end;
 
 { Find the start of the UTF8 character which contains BytePos,
+  if BytePos is not part of a valid Utf8Codepoint the function returns BytePos
   Len is length in byte, BytePos starts at 0 }
-function UTF8FindNearestCharStart(UTF8Str: PChar; Len: SizeInt; BytePos: SizeInt
-  ): SizeInt;
+function UTF8FindNearestCharStart(UTF8Str: PChar; Len: SizeInt; BytePos: SizeInt): SizeInt;
+var
+  CurPos: PChar;
+  CharLen: Integer;
 begin
-  Result:=0;
-  if (UTF8Str<>nil) and (Len>0) and (BytePos>=0) then begin
-    Result:=BytePos;
-    if Result>Len then Result:=Len-1;
-    if (Result>0) and (ord(UTF8Str[Result]) and %11000000=%10000000) then begin
-      dec(Result);
-      if (Result>0) and (ord(UTF8Str[Result]) and %11000000=%10000000) then begin
-        dec(Result);
-        if (Result>0) and (ord(UTF8Str[Result]) and %11000000=%10000000) then begin
-          dec(Result);
-          // should be four byte character
-          if (ord(UTF8Str[Result]) and %11111000<>%11110000) then begin
-            // broken UTF8 character
-            inc(Result,3);
-          end else begin
-            // is four byte character
-          end;
-        end else if (ord(UTF8Str[Result]) and %11110000<>%11100000) then begin
-          // broken UTF8 character, should be three byte
-          inc(Result,2);
-        end else
-        begin
-          // is three byte character
-        end;
-      end else if (ord(UTF8Str[Result]) and %11100000<>%11000000) then begin
-        // broken UTF8 character, should be two byte
-        inc(Result);
-      end else
-      begin
-        // is two byte character
-      end;
-    end;
-  end;
+  if (BytePos > Len-1) then BytePos := Len - 1;
+  CurPos := Utf8Str + BytePos;
+  //No need to check the result value, since when it retuns False CurPos will be reset
+  //to it's original value, and that's what we want to return in that case
+  Utf8TryFindCodepointStart(Utf8Str, CurPos, CharLen);
+  Result := CurPos - Utf8Str;
 end;
+
 
 { Len is the length in bytes of UTF8Str
   CharIndex is the position of the desired char (starting at 0), in chars
