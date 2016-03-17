@@ -278,7 +278,9 @@ begin
 }
   GetWindowRect(UpDown, @R);
   UpDownWidth := R.Right - R.Left;
-  if (WindowsVersion >= wvXP) and ThemeServices.ThemesEnabled then
+  if (AWinControl as TCustomFloatSpinEdit).BorderStyle = bsNone then
+    BorderWidth := 0
+  else if (WindowsVersion >= wvXP) and ThemeServices.ThemesEnabled then
     BorderWidth := GetSystemMetrics(SM_CXBORDER)
   else
     BorderWidth := GetSystemMetrics(SM_CXEDGE);
