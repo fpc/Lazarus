@@ -5715,12 +5715,12 @@ begin
   Result:=false;
   with FGCache do begin
     if IsCol then begin
-      if index>ColCount-1 then
+      if (index<0) or (index>ColCount-1) then
         exit;
       StartPos:=integer(PtrUInt(AccumWidth[index]));
       Dim:=GetColWidths(index);
     end else begin
-      if index>RowCount-1 then
+      if (index<0) or (index>RowCount-1) then
         exit;
       StartPos:=integer(PtrUInt(AccumHeight[index]));
       Dim:= GetRowHeights(index);
@@ -5807,35 +5807,40 @@ end;
 function TCustomGrid.MouseToGridZone(X, Y: Integer): TGridZone;
 var
   aBorderWidth: Integer;
+  aCol, aRow: Longint;
 begin
   aBorderWidth := GetBorderWidth;
   if FlipX(X)<FGCache.FixedWidth+aBorderWidth then begin
     // in fixedwidth zone
     if Y<FGcache.FixedHeight+aBorderWidth then
       Result:= gzFixedCells
-    else
-    if (RowCount>FixedRows) and (Y<=FGCache.GridHeight) then
-      Result:= gzFixedRows
-    else
-      Result:= gzInvalid
+    else begin
+      OffsetToColRow(False, True, Y, aRow, aCol);
+      if (aRow<0) or (RowCount<=FixedRows) then
+        Result := gzInvalid
+      else
+        Result := gzFixedRows;
+    end;
   end
   else if Y<FGCache.FixedHeight+aBorderWidth then begin
     // if fixedheight zone
     if FlipX(X)<FGCache.FixedWidth+aBorderWidth then
       Result:=gzFixedCells
-    else
-    if (ColCount>FixedCols) and (FlipX(X)<=FGCache.GridWidth) then
-      Result:=gzFixedCols
-    else
-      Result:=gzInvalid
+    else begin
+      OffsetToColRow(True, True, X, aCol, aRow);
+      if (aCol<0) or (ColCount<=FixedCols) then
+        Result := gzInvalid
+      else
+        Result := gzFixedCols;
+    end;
   end
   else if not FixedGrid then begin
     // in normal cell zone (though, might be outbounds)
-    if AllowOutboundEvents or
-      ((FlipX(X)<=FGCache.GridWidth) and (Y<=FGCache.GridHeight)) then
-      result := gzNormal
-    else
+    MouseToCell(x, y, aCol, aRow);
+    if (aCol<0) or (aRow<0) then
       result := gzInvalid
+    else
+      result := gzNormal;
   end
   else
     result := gzInvalid;
