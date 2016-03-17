@@ -193,6 +193,7 @@ type
     function GetDate: TDate;
     function GetDateTime: TDateTime;
     function GetDroppedDown: Boolean;
+    function GetFlatButton: Boolean;
     function GetShowCheckBox: Boolean;
     function GetTime: TTime;
     procedure SetArrowShape(const AValue: TArrowShape);
@@ -204,6 +205,7 @@ type
     procedure CheckTextEnabled;
     procedure SetDateDisplayOrder(const AValue: TDateDisplayOrder);
     procedure SetDateMode(const AValue: TDTDateMode);
+    procedure SetFlatButton(const AValue: Boolean);
     procedure SetHideDateTimeParts(AValue: TDateTimeParts);
     procedure SetKind(const AValue: TDateTimeKind);
     procedure SetLeadingZeros(const AValue: Boolean);
@@ -390,6 +392,7 @@ type
              read FShowMonthNames write SetShowMonthNames default False;
     property DroppedDown: Boolean read GetDroppedDown;
     property CalAlignment: TDTCalAlignment read FCalAlignment write SetCalAlignment default dtaDefault;
+    property FlatButton: Boolean read GetFlatButton write SetFlatButton default False;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -461,6 +464,7 @@ type
     property MonthNames;
     property ShowMonthNames;
     property CalAlignment;
+    property FlatButton;
 // events:
     property OnChange;
     property OnCheckBoxChange;
@@ -2879,6 +2883,14 @@ begin
   end;
 end;
 
+procedure TCustomDateTimePicker.SetFlatButton(const AValue: Boolean);
+begin
+  if FlatButton=AValue then
+    Exit;
+  if FArrowButton<>nil then
+    FArrowButton.Flat := AValue;
+end;
+
 procedure TCustomDateTimePicker.SetAutoSize(Value: Boolean);
 begin
   if AutoSize <> Value then begin
@@ -3320,6 +3332,14 @@ end;
 function TCustomDateTimePicker.GetDroppedDown: Boolean;
 begin
   Result := Assigned(FCalendarForm);
+end;
+
+function TCustomDateTimePicker.GetFlatButton: Boolean;
+begin
+  if FArrowButton<>nil then
+    Result := FArrowButton.Flat
+  else
+    Result := False;
 end;
 
 function TCustomDateTimePicker.GetShowCheckBox: Boolean;
