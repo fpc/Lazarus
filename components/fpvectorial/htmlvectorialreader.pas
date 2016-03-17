@@ -287,8 +287,8 @@ begin
       end
       else if (lEmbVecImg <> nil) and (lWidth > 0) and (lHeight > 0) then
       begin
-        lEmbVecImg.Width := lWidth;
-        lEmbVecImg.Height := lHeight;
+        lEmbVecImg.SetWidth(lWidth);
+        lEmbVecImg.SetHeight(lHeight);
       end;
     end;
     'svg':

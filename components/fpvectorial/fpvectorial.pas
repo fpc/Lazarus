@@ -1360,11 +1360,17 @@ type
   { TvEmbeddedVectorialDoc }
 
   TvEmbeddedVectorialDoc = class(TvEntity)
+  private
+    FWidth, FHeight: Double;
   public
     Document: TvVectorialDocument;
-    Width, Height: Double;
     constructor create(APage : TvPage); override;
     destructor destroy; override;
+    procedure UpdateDocumentSize();
+    function GetWidth: Double;
+    function GetHeight: Double;
+    procedure SetWidth(AValue: Double);
+    procedure SetHeight(AValue: Double);
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; out ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
@@ -2535,6 +2541,8 @@ constructor TvEmbeddedVectorialDoc.create(APage: TvPage);
 begin
   inherited create(APage);
   Document := TvVectorialDocument.Create();
+  FWidth := -1;
+  FHeight := -1;
 end;
 
 destructor TvEmbeddedVectorialDoc.destroy;
@@ -2543,11 +2551,44 @@ begin
   inherited destroy;
 end;
 
+procedure TvEmbeddedVectorialDoc.UpdateDocumentSize;
+begin
+  if (Document.Width = 0) or (Document.Height = 0) then
+  begin
+    Document.GuessDocumentSize();
+  end;
+end;
+
+function TvEmbeddedVectorialDoc.GetWidth: Double;
+begin
+  if FWidth >= 0 then
+    Result := FWidth
+  else
+    Result := Document.Width;
+end;
+
+function TvEmbeddedVectorialDoc.GetHeight: Double;
+begin
+  if FHeight >= 0 then
+    Result := FHeight
+  else
+    Result := Document.Height;
+end;
+
+procedure TvEmbeddedVectorialDoc.SetWidth(AValue: Double);
+begin
+  FWidth := AValue;
+end;
+
+procedure TvEmbeddedVectorialDoc.SetHeight(AValue: Double);
+begin
+  FHeight := AValue;
+end;
+
 procedure TvEmbeddedVectorialDoc.CalculateBoundingBox(ADest: TFPCustomCanvas;
   out ALeft, ATop, ARight, ABottom: Double);
 begin
-  if (Document.Width = 0) or (Document.Height = 0) then
-    Document.GuessDocumentSize();
+  UpdateDocumentSize();
   ALeft := X;
   ATop := Y;
   ARight := X + Document.Width;
@@ -2570,26 +2611,44 @@ procedure TvEmbeddedVectorialDoc.Render(ADest: TFPCustomCanvas;
 
 var
   lPage: TvPage;
-  lPageHeight: Integer;
-  lMulY, lY: Double;
+  lX_px, lY_px, lWidth_px, lHeight_px, lPageHeight, lDeltaX, lDeltaY: Integer;
+  lMulY, lZoom: Double;
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
   lPage := Document.GetPage(0);
   lPageHeight := Round(lPage.Height);
   lPage.GetNaturalRenderPos(lPageHeight, lMulY);
-  lY := Y;
+  lX_px := CoordToCanvasX(X);
+  lY_px := CoordToCanvasY(Y);
+
+  UpdateDocumentSize();
+  lWidth_px := Abs(lX_px - CoordToCanvasX(X+GetWidth()));
+  lHeight_px := Abs(lY_px - CoordToCanvasY(Y+GetHeight()));
+  lPage.AutoFit(ADest, lWidth_px, lHeight_px, lHeight_px, lDeltaX, lDeltaY, lZoom);
+  lZoom := Abs(lZoom);
+  lX_px += lDeltaX;
+  lY_px += lDeltaY;
   if AmulY * lMulY < 0 then
   begin
-    lY := Y + lPage.Height;
+    lY_px := lY_px + lHeight_px;
   end;
+
   if ADoDraw then
-    lPage.Render(ADest, CoordToCanvasX(X), CoordToCanvasY(Y), AMulX, AMulY * lMulY);
+  begin
+    lPage.Render(ADest, lX_px, lY_px, AMulX * lZoom, AMulY * lMulY * lZoom);
+    {ADest.Pen.FPColor := colRed;
+    ADest.Pen.Style := psSolid;
+    ADest.Rectangle(CoordToCanvasX(X), CoordToCanvasY(lY), CoordToCanvasX(X+Width), CoordToCanvasY(lY+Height));
+    ADest.Rectangle(lX_px, lY_px, lX_px+100, lY_px+100);}
+  end;
 
   CalcEntityCanvasMinMaxXY(ARenderInfo, CoordToCanvasX(X), CoordToCanvasY(Y));
   CalcEntityCanvasMinMaxXY(ARenderInfo,
     CoordToCanvasX(X + Document.Width),
     CoordToCanvasY(Y + Document.Height));
+  CalcEntityCanvasMinMaxXY(ARenderInfo, lX_px, lY_px);
+  CalcEntityCanvasMinMaxXY(ARenderInfo, lX_px+lWidth_px, lY_px+lHeight_px);
 end;
 
 function TvEmbeddedVectorialDoc.GenerateDebugTree(
