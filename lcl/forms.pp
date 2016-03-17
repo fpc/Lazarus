@@ -660,6 +660,7 @@ type
       write FDefaultMonitor default dmActiveForm;
     property Designer: TIDesigner read FDesigner write FDesigner;
     property DesignTimeDPI: Integer read FDesignTimeDPI write FDesignTimeDPI;
+    property EffectiveShowInTaskBar: TShowInTaskBar read GetEffectiveShowInTaskBar;
     property FormState: TFormState read FFormState;
     property FormStyle: TFormStyle read FFormStyle write SetFormStyle
                                    default fsNormal;

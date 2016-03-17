@@ -402,15 +402,19 @@ begin
   begin
     if (Parent = 0) then
     begin
-      if not Application.MainFormOnTaskBar then
-        Parent := Win32WidgetSet.AppHandle
-      else
-      if (AWinControl <> Application.MainForm) then
+      // Leave Parent at 0 if this is a standalone form.
+      if (lForm.EffectiveShowInTaskBar <> stAlways) then
       begin
-        if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
-          Parent := Application.MainFormHandle
+        if not Application.MainFormOnTaskBar then
+          Parent := Win32WidgetSet.AppHandle
         else
-          Parent := Win32WidgetSet.AppHandle;
+        if (AWinControl <> Application.MainForm) then
+        begin
+          if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+            Parent := Application.MainFormHandle
+          else
+            Parent := Win32WidgetSet.AppHandle;
+        end;
       end;
     end;
     CalcFormWindowFlags(lForm, Flags, FlagsEx);
