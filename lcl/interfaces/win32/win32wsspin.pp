@@ -104,6 +104,10 @@ end;
 
 function SpinUpDownWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
+var
+  DC: HDC;
+  SRect: TRect;
+  Brush: HBRUSH;
 begin
   case Msg of
     WM_PAINT,
@@ -114,7 +118,20 @@ begin
       end;
     WM_ERASEBKGND:
       begin
-        Result := 1; // disable: solves painting issues and flicker
+        // manually erase space between the buttons: solves painting issues and flicker
+        if GetWindowRect(Window, @SRect) then
+        begin
+          SRect.Right := SRect.Right-SRect.Left;
+          SRect.Left := 0;
+          SRect.Top := (SRect.Bottom-SRect.Top-1) div 2;
+          SRect.Bottom := SRect.Top+1;
+          DC := GetDC(Window);
+          Brush := GetSysColorBrush(COLOR_BTNFACE);
+          FillRect(DC, SRect, Brush);
+          DeleteObject(Brush); // not really needed, but no harm if you do
+          ReleaseDC(Window, DC);
+        end;
+        Result := 1;
         Exit;
       end;
   end;
@@ -164,7 +181,8 @@ begin
     SubClassWndProc := @SpinWindowProc;
     if TCustomSpinEdit(AWinControl).BorderStyle = bsSingle then
       FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
-    Flags := Flags or ES_AUTOHSCROLL;
+    FlagsEx := FlagsEx;
+    Flags := Flags or ES_AUTOHSCROLL and not WS_CLIPCHILDREN and not WS_CLIPCHILDREN;
     HotTracking := False;
     SystemParametersInfo(SPI_GETHOTTRACKING, 0, @HotTracking, 0);
 
