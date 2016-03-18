@@ -181,8 +181,7 @@ begin
     SubClassWndProc := @SpinWindowProc;
     if TCustomSpinEdit(AWinControl).BorderStyle = bsSingle then
       FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
-    FlagsEx := FlagsEx;
-    Flags := Flags or ES_AUTOHSCROLL and not WS_CLIPCHILDREN and not WS_CLIPCHILDREN;
+    Flags := Flags or ES_AUTOHSCROLL;
     HotTracking := False;
     SystemParametersInfo(SPI_GETHOTTRACKING, 0, @HotTracking, 0);
 
