@@ -1419,7 +1419,7 @@ end;
 function FieldIsEditable(Field: TField): boolean;
 begin
   result := (Field<>nil) and (not Field.Calculated) and
-            (Field.DataType<>ftAutoInc) and (not Field.Lookup)
+            (Field.DataType<>ftAutoInc) and (Field.FieldKind<>fkLookup)
 end;
 
 function FieldCanAcceptKey(Field: TField; AKey: char): boolean;
