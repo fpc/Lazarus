@@ -149,6 +149,8 @@ type
   { TWin32WSCustomEdit }
 
   TWin32WSCustomEdit = class(TWSCustomEdit)
+  private
+    class procedure ApplyMargins(const AWinControl: TWinControl);
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
@@ -174,6 +176,7 @@ type
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
 
     class procedure Cut(const ACustomEdit: TCustomEdit); override;
     class procedure Copy(const ACustomEdit: TCustomEdit); override;
@@ -1150,6 +1153,8 @@ begin
   // edit is not a transparent control -> no need for parentpainting
   Params.WindowInfo^.needParentPaint := false;
   Result := Params.Window;
+
+  ApplyMargins(AWinControl);
 end;
 
 class function TWin32WSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit): Boolean;
@@ -1234,6 +1239,14 @@ begin
   // nothing to do, SetPasswordChar will do the work
 end;
 
+class procedure TWin32WSCustomEdit.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+begin
+  inherited SetFont(AWinControl, AFont);
+
+  ApplyMargins(AWinControl);
+end;
+
 class procedure TWin32WSCustomEdit.SetHideSelection(const ACustomEdit: TCustomEdit; NewHideSelection: Boolean);
 var
   CurrentStyle: DWord;
@@ -1297,6 +1310,12 @@ end;
 class procedure TWin32WSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
 begin
   SendMessage(ACustomEdit.Handle, WM_CUT, 0, 0)
+end;
+
+class procedure TWin32WSCustomEdit.ApplyMargins(const AWinControl: TWinControl);
+begin
+  if (WindowsVersion >= wv2000) and AWinControl.HandleAllocated then
+    SendMessage(AWinControl.Handle, EM_SETMARGINS, EC_LEFTMARGIN or EC_RIGHTMARGIN, 0);
 end;
 
 class procedure TWin32WSCustomEdit.Copy(const ACustomEdit: TCustomEdit);
