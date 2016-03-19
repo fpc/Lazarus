@@ -927,13 +927,12 @@ begin
     end;
     
     NewDependency.PackageName:=DependPkgNameComboBox.Text;
-    if CheckAddingDependency(LazPackage,NewDependency,false,true)<>mrOk then exit;
+    ModalResult:=CheckAddingDependency(LazPackage,NewDependency,false,true);
+    if ModalResult<>mrOk then exit;
 
     // ok
     Params.Dependency:=NewDependency;
     NewDependency:=nil;
-
-    ModalResult:=mrOk;
   finally
     NewDependency.Free;
   end;
