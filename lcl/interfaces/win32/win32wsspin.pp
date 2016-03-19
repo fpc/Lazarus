@@ -29,7 +29,7 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   CommCtrl, Windows, Win32Extra,
-  Spin, Controls, StdCtrls, LCLType, LMessages, Themes, LazUTF8,
+  Spin, Controls, StdCtrls, LCLType, LMessages, Themes, Graphics, LazUTF8,
 ////////////////////////////////////////////////////
   WSSpin, WSLCLClasses, WSProc,
   Win32Int, Win32Proc, Win32WSStdCtrls, Win32WSControls;
@@ -39,6 +39,9 @@ type
   { TWin32WSCustomFloatSpinEdit }
 
   TWin32WSCustomFloatSpinEdit = class(TWSCustomFloatSpinEdit)
+  private
+    class procedure ApplyMargins(const AWinControl: TWinControl);
+    class function GetUpDownWidth(const AWinControl: TWinControl): Integer;
   published
     class procedure AdaptBounds(const AWinControl: TWinControl;
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
@@ -55,6 +58,7 @@ type
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class function GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double; override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
 
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
@@ -208,6 +212,7 @@ begin
   Info^.DefWndProc := Windows.WNDPROC(SetWindowLongPtrW(UpDown, GWL_WNDPROC, PtrInt(@SpinUpDownWndProc)));
   SetProp(UpDown, 'WinControl', PtrUInt(AWinControl));
   Result := Params.Window;
+  ApplyMargins(AWinControl);
 end;
 
 class procedure TWin32WSCustomFloatSpinEdit.DefaultWndHandler(const AWinControl: TWinControl; var AMessage);
@@ -283,7 +288,6 @@ class procedure TWin32WSCustomFloatSpinEdit.AdaptBounds(const AWinControl: TWinC
   var Left, Top, Width, Height: integer; var SuppressMove: boolean);
 var
   WinHandle, UpDown: HWND;
-  R: TRect;
   UpDownWidth, BorderWidth: Integer;
   DWP: HDWP;
 begin
@@ -297,8 +301,7 @@ begin
   // reattach
   Windows.SendMessage(UpDown, UDM_SETBUDDY, WParam(WinHandle), 0);
 }
-  GetWindowRect(UpDown, @R);
-  UpDownWidth := R.Right - R.Left;
+  UpDownWidth := GetUpDownWidth(AWinControl);
   if (AWinControl as TCustomFloatSpinEdit).BorderStyle = bsNone then
     BorderWidth := 0
   else if (WindowsVersion >= wvXP) and ThemeServices.ThemesEnabled then
@@ -310,9 +313,26 @@ begin
   DeferWindowPos(DWP, WinHandle, UpDown, Left, Top, Width, Height, SWP_NOACTIVATE);
   DeferWindowPos(DWP, UpDown, 0, Left + Width - UpDownWidth-BorderWidth, Top+BorderWidth, UpDownWidth, Height-BorderWidth*2, SWP_NOZORDER or SWP_NOACTIVATE);
   EndDeferWindowPos(DWP);
-  SendMessage(WinHandle, EM_SETMARGINS, EC_RIGHTMARGIN, MAKELONG(0, UpDownWidth + BorderWidth + 1));
 
   SuppressMove := True;
+end;
+
+class procedure TWin32WSCustomFloatSpinEdit.ApplyMargins(
+  const AWinControl: TWinControl);
+var
+  UpDownWidth: Integer;
+  AWParam: WPARAM;
+begin
+  if not AWinControl.HandleAllocated then
+    Exit;
+
+  UpDownWidth := GetUpDownWidth(AWinControl);
+
+  if WindowsVersion >= wv2000 then
+    AWParam := EC_LEFTMARGIN or EC_RIGHTMARGIN
+  else
+    AWParam := EC_RIGHTMARGIN;
+  SendMessage(AWinControl.Handle, EM_SETMARGINS, AWParam, MAKELONG(0, UpDownWidth));
 end;
 
 class function TWin32WSCustomFloatSpinEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
@@ -325,8 +345,8 @@ begin
   Result := EditGetSelLength(ACustomEdit.Handle);
 end;
 
-class function TWin32WSCustomFloatSpinEdit.GetText(const AWinControl: TWinControl;
-  var AText: string): boolean;
+class function TWin32WSCustomFloatSpinEdit.GetText(
+  const AWinControl: TWinControl; var AText: String): Boolean;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'GetText') then
     Exit(False);
@@ -334,10 +354,29 @@ begin
   Result := True;
 end;
 
+class function TWin32WSCustomFloatSpinEdit.GetUpDownWidth(
+  const AWinControl: TWinControl): Integer;
+var
+  UpDown: HWND;
+  R: TRect;
+begin
+  UpDown := GetWin32WindowInfo(AWinControl.Handle)^.UpDown;
+  GetWindowRect(UpDown, @R);
+  Result := R.Right - R.Left;
+end;
+
 class function TWin32WSCustomFloatSpinEdit.GetValue(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double;
 begin
   Result := GetWin32WindowInfo(ACustomFloatSpinEdit.Handle)^.spinValue;
+end;
+
+class procedure TWin32WSCustomFloatSpinEdit.SetFont(
+  const AWinControl: TWinControl; const AFont: TFont);
+begin
+  inherited SetFont(AWinControl, AFont);
+
+  ApplyMargins(AWinControl);
 end;
 
 class procedure TWin32WSCustomFloatSpinEdit.SetReadOnly
