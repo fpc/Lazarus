@@ -7744,6 +7744,8 @@ var
   Requisition: TGtkRequisition;
   WindowFixedWidget: PGtkWidget;
   VBox: PGtkWidget;
+  lscreen: PGdkScreen;
+  lscreenrect: TGdkRectangle;
 begin
   Result := nil;
   if Styles=nil then exit;
@@ -8055,7 +8057,9 @@ begin
           end;
           //DebugLn('AddToStyleWindow realized: ',WName,' ',GetWidgetDebugReport(StyleObject^.Widget));
         end;
-        ResizeWidget(StyleObject^.Widget,200,200);
+        lscreen := gdk_screen_get_default();
+        gdk_screen_get_monitor_geometry(lscreen, 0, @lscreenrect);
+        ResizeWidget(StyleObject^.Widget,lscreenrect.width,lscreenrect.height);
       end;
     end;
 
