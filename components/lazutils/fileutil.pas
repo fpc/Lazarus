@@ -28,6 +28,7 @@ the LazFileUtils unit.
 unit FileUtil;
 
 {$mode objfpc}{$H+}
+{$i lazutils_defines.inc}
 
 interface
 
