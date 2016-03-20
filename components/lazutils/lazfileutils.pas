@@ -733,10 +733,9 @@ function ChompPathDelim(const Path: string): string;
 var
   Len, MinLen: Integer;
 begin
+  Result:=Path;
   if Path = '' then
     exit;
-
-  Result:=Path;
   Len:=length(Result);
   if (Result[1] in AllowDirectorySeparators) then begin
     MinLen := 1;
