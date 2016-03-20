@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-02-25 18:25+0100\n"
+"PO-Revision-Date: 2016-03-20 17:43+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -601,10 +601,8 @@ msgid "Main .lpr unit creates each form with Application.CreateForm(). They are 
 msgstr ""
 
 #: lazarusidestrconsts.dlgautocreatenewforms
-#, fuzzy
-#| msgid "When creating new forms, add them to auto-created forms"
 msgid "Auto-create new forms"
-msgstr "Neue Formulare werden beim Erzeugen zu den automatisch generierten zugefügt"
+msgstr "Neue Formulare automatisch erzeugen"
 
 #: lazarusidestrconsts.dlgautodel
 msgid "Auto delete file"
@@ -2007,7 +2005,7 @@ msgstr "Heap-Größe"
 
 #: lazarusidestrconsts.dlgheightofonepropertyingrid
 msgid "Height of one property in the grid."
-msgstr ""
+msgstr "Höhe einer Eigenschaft im Gitter."
 
 #: lazarusidestrconsts.dlgheightpos
 msgid "Height:"
@@ -5711,7 +5709,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
 msgid "Click to Select Palette Page"
-msgstr ""
+msgstr "Klicken um Palettenseite auszuwählen"
 
 #: lazarusidestrconsts.lisclone
 msgid "Clone"
@@ -9720,11 +9718,11 @@ msgstr "ID"
 
 #: lazarusidestrconsts.lisidcaddition
 msgid "Addition"
-msgstr ""
+msgstr "Hinzufügung"
 
 #: lazarusidestrconsts.lisidcopening
 msgid "Opening"
-msgstr ""
+msgstr "Auslösung"
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -9740,7 +9738,7 @@ msgstr "Die IDE wird neu kompiliert und neu gestartet während der (De-)Installa
 
 #: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
-msgstr ""
+msgstr "Willkommen zu Lazarus.%0:sDie gefundene IDE-Konfiguration wurde zuvor von einer anderen Lazarus-Installation verwendet.%0:sWenn Sie zwei oder mehr separate Lazarus-Installationen haben, dann sollten sie nicht die selbe Konfiguration teilen. Dies könnte zu Konflikten führen und Ihre Lazarus-Installationen können unbenutzbar werden.%0:s%0:sWenn Sie nur eine Installation haben und die ausführbare Datei kopiert oder verschoben haben, dann können Sie diese Konfiguration aktualisieren.%0:s%1:s%0:s%0:sWählen Sie:%0:s%0:s* Aktualisierungsinformation: Verwenden Sie diese Konfiguration und aktualisieren Sie sie, um sie in Zukunft mit diesem Lazarus zu verwenden. Die alte Installation wird sie nicht länger verwenden.%0:s* Ignorieren: Verwenden Sie diese Konfiguration, aber behalten Sie die Warnung bei. Dies kann zu Konflikten mit der anderen Installation führen.%0:s* Abbruch: Jetzt beenden. Sie können dann das Problem beheben, indem Sie dieses Lazarus mit der korrekten Konfiguration starten.%0:s%0:sZusätzliche Informationen:%0:sDiese Konfiguration befindet sich in: %2:s%0:sSie gehört zur Lazarus-Installation bei: %3:s%0:sDie aktuelle IDE wurde gestartet von: %4:s%0:s"
 
 #: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
 msgid "Creating Makefile for package %s"
@@ -10176,7 +10174,7 @@ msgstr "Ungültiger Löschvorgang"
 
 #: lazarusidestrconsts.lisinvalidexecutable
 msgid "Invalid Executable"
-msgstr ""
+msgstr "Ungültige ausführbare Datei"
 
 #: lazarusidestrconsts.lisinvalidexecutablemessagetext
 msgid "The file \"%s\" is not executable."
@@ -11251,7 +11249,7 @@ msgstr "Namen kopieren"
 
 #: lazarusidestrconsts.lislocalsdlgcopyrawvalue
 msgid "Copy &RAW Value"
-msgstr ""
+msgstr "&RAW-Wert kopieren"
 
 #: lazarusidestrconsts.lislocalsdlgcopyvalue
 msgid "C&opy Value"
@@ -11847,7 +11845,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
 msgid "GroupIndex value(s): %s"
-msgstr ""
+msgstr "GroupIndex-Wert(e): %s"
 
 #: lazarusidestrconsts.lismenueditorinadequatedescription
 msgid "Inadequate Description"
@@ -11957,7 +11955,7 @@ msgstr "<keine Tastaturbefehl-Konflikte>"
 
 #: lazarusidestrconsts.lismenueditornousersavedtemplates
 msgid "No user-saved templates"
-msgstr ""
+msgstr "Keine benutzergespeicherten Vorlagen"
 
 #: lazarusidestrconsts.lismenueditorpickaniconfroms
 msgid "Pick an icon from %s"
@@ -12083,11 +12081,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
 msgid "Please expand: \"%s\" is not a sufficient Description"
-msgstr ""
+msgstr "Bitte erweitern: \"%s\" ist keine ausreichende Beschreibung."
 
 #: lazarusidestrconsts.lismenueditorsomewidgetsetsdonotallowseparatorsinthemainmenubar
 msgid "Some widgetsets do not allow separators in the main menubar"
-msgstr ""
+msgstr "Einige Widgetsets erlauben keine Trenner in der Hauptmenüleiste."
 
 #: lazarusidestrconsts.lismenueditorsshortcuts
 msgid "%s: Shortcuts"
@@ -13865,7 +13863,7 @@ msgstr "Package-Quellverzeichnisse"
 
 #: lazarusidestrconsts.lispackagesunitsidentifierslinesbytes
 msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
-msgstr ""
+msgstr "Packages=%s/%s Units=%s/%s Bezeichner=%s/%s Zeilen=%s Bytes=%s"
 
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
@@ -15440,7 +15438,7 @@ msgstr "Projekt ist lauffähig"
 
 #: lazarusidestrconsts.lisprojectisrunnablehint
 msgid "Generates a binary executable which can be run."
-msgstr ""
+msgstr "Erzeugt eine binäre ausführbare Datei, die gestartet werden kann."
 
 #: lazarusidestrconsts.lisprojectmacro
 msgctxt "lazarusidestrconsts.lisprojectmacro"
@@ -15627,7 +15625,7 @@ msgstr ".lrs-Datei in das Ausgabeverzeichnis speichern"
 
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectoryhint
 msgid "The resource will be available for FPC."
-msgstr ""
+msgstr "Die Ressource wird für FPC verfügbar sein."
 
 #: lazarusidestrconsts.lispvuapascalunitmusthavetheextensionpporpas
 msgctxt "lazarusidestrconsts.lispvuapascalunitmusthavetheextensionpporpas"
@@ -16017,7 +16015,7 @@ msgstr "Start"
 
 #: lazarusidestrconsts.lisrunanddesigntimepackageshavenolimitations
 msgid "\"Run and Design time\" packages have no limitations."
-msgstr ""
+msgstr "\"Lauf- und Entwicklungszeit\"-Packages haben keine Begrenzungen."
 
 #: lazarusidestrconsts.lisrunbuttonhint
 msgctxt "lazarusidestrconsts.lisrunbuttonhint"
@@ -16047,11 +16045,11 @@ msgstr "Nur für Laufzeit, kann nicht in der IDE installiert werden"
 
 #: lazarusidestrconsts.lisruntimeonlypackagesareonlyforprojectstheycannotbei
 msgid "\"Run time only\" packages are only for projects. They cannot be installed in the IDE, not even indirectly."
-msgstr ""
+msgstr "\"Nur-Laufzeit\"-Packages können nur von Projekten verwendet werden. Sie können nicht in die IDE installiert werden, nicht einmal indirekt."
 
 #: lazarusidestrconsts.lisruntimepackagescanbeusedbyprojectstheycannotbeinst
 msgid "\"Run time\" packages can be used by projects. They cannot be installed in the IDE, unless some design time package requires them."
-msgstr ""
+msgstr "\"Laufzeit\"-Packages können von Projekten verwendet werden. Sie können nicht in die IDE installiert werden, es sei denn, ein Entwicklungszeit-Package benötigt sie."
 
 #: lazarusidestrconsts.lisruntofailed
 msgid "Run-to failed"
@@ -16207,7 +16205,7 @@ msgstr "Faltungsinformationen speichern"
 
 #: lazarusidestrconsts.lissavesessionfoldstatehint
 msgid "Code editor supports folding (temporarily hiding) blocks of code."
-msgstr ""
+msgstr "Der Code-Editor unterstützt das Falten (zeitweiliges Verbergen) von Codeblöcken."
 
 #: lazarusidestrconsts.lissavesessionjumphistory
 msgctxt "lazarusidestrconsts.lissavesessionjumphistory"
@@ -16216,7 +16214,7 @@ msgstr "Sprunghistorie speichern"
 
 #: lazarusidestrconsts.lissavesessionjumphistoryhint
 msgid "Ctrl-Click on an identifier in code editor is stored in jump history."
-msgstr ""
+msgstr "Strg-Klick auf einen Bezeichner im Code-Editor wird in der Sprungliste gesichert."
 
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
@@ -16232,7 +16230,7 @@ msgstr "Speichere "
 
 #: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
 msgid "Saving file \"%s\" as \"%s\" looses characters at line %s, column %s."
-msgstr ""
+msgstr "Speichern der Datei \"%s\" als \"%s\" führt zu Zeichenverlust in Zeile %s, Spalte %s."
 
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
@@ -16598,7 +16596,7 @@ msgstr "Nach Bereich sortieren"
 
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
-msgstr ""
+msgstr "Sortierung"
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"
@@ -17461,7 +17459,7 @@ msgstr "Diese Anweisung kann nicht extrahiert werden.%sBitte wählen Sie etwas C
 
 #: lazarusidestrconsts.listhiswillallowchangingallbuildmodesatoncenotimpleme
 msgid "This will allow changing all build modes at once. Not implemented yet."
-msgstr ""
+msgstr "Dies erlaubt die Änderung aller Erstellmodi auf einmal. Noch nicht implementiert."
 
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."
@@ -18839,7 +18837,7 @@ msgstr "Gefunden aber hier nicht aufgeführt: "
 
 #: lazarusidestrconsts.rsi18nexcluded
 msgid "Excluded"
-msgstr ""
+msgstr "Ausgenommen"
 
 #: lazarusidestrconsts.rsi18nforceupdatepofilesonnextcompile
 msgid "Force update PO files on next compile"
@@ -20412,11 +20410,11 @@ msgstr "Cursor ein Wort nach rechts bewegen"
 
 #: lazarusidestrconsts.srkmeczoomin
 msgid "Zoom in"
-msgstr ""
+msgstr "Ansicht vergrößern"
 
 #: lazarusidestrconsts.srkmeczoomout
 msgid "Zoom out"
-msgstr ""
+msgstr "Ansicht verkleinern"
 
 #: lazarusidestrconsts.srkmeditforcmd
 msgid "Edit keys of command"
@@ -20736,4 +20734,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
