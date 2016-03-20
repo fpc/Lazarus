@@ -232,6 +232,7 @@ type
     constructor Create(ARawImage: TRawImage; ADataOwner: Boolean);
     constructor CreateCompatible(IntfImg: TLazIntfImage; AWidth, AHeight: integer);
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure SetSize(AWidth, AHeight: integer); override;
@@ -3456,6 +3457,21 @@ destructor TLazIntfImage.Destroy;
 begin
   FreeData;
   inherited Destroy;
+end;
+
+procedure TLazIntfImage.Assign(Source: TPersistent);
+var
+  Src: TLazIntfImage;
+  Desc: TRawImageDescription;
+begin
+  if Source is TLazIntfImage then begin
+    Src:=TLazIntfImage(Source);
+    Desc:=Src.DataDescription;
+    Desc.Width:=0; // avoid side effects
+    Desc.Height:=0; // avoid side effects
+    DataDescription:=Src.DataDescription;
+  end;
+  inherited Assign(Source);
 end;
 
 procedure TLazIntfImage.AlphaFromMask(AKeepAlpha: Boolean);
