@@ -25,11 +25,29 @@ begin
 end;
 
 function TCommonDialog.Execute: boolean;
+var
+  DisabledList: TList;
+  SavedFocusState: TFocusState;
 begin
-  FUserChoice := mrNone;
-  Handle := TWSCommonDialogClass(WidgetSetClass).CreateHandle(Self);
-  Result:= DoExecute;
-  Close;
+  SavedFocusState := SaveFocusState;
+  Application.ModalStarted;
+  try
+    DisabledList := Screen.DisableForms(Screen.ActiveForm);
+    try
+      FUserChoice := mrNone;
+      Handle := TWSCommonDialogClass(WidgetSetClass).CreateHandle(Self);
+      Result:= DoExecute;
+      Close;
+    finally
+      Screen.EnableForms(DisabledList);
+      RestoreFocusState(SavedFocusState);
+      if (Screen.ActiveControl<>nil) and (Screen.ActiveControl.HandleAllocated)
+      and (GetFocus<>Screen.ActiveControl.Handle) then
+        SetFocus(Screen.ActiveControl.Handle); // must restore focus after Screen.EnableForms
+    end;
+  finally
+    Application.ModalFinished;
+  end;
 end;
 
 procedure TCommonDialog.Close;

@@ -1336,6 +1336,7 @@ type
     FRestoreStayOnTop: TList;
     FTaskBarBehavior: TTaskBarBehavior;
     FUpdateFormatSettings: Boolean;
+    FRemoveStayOnTopCounter: Integer;
     procedure DoOnIdleEnd;
     function GetActive: boolean;
     function GetCurrentHelpFile: string;

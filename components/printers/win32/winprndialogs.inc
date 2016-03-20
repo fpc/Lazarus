@@ -73,7 +73,7 @@ end;
 
 { TPageSetupDialog }
 
-function TPageSetupDialog.Execute: Boolean;
+function TPageSetupDialog.DoExecute: Boolean;
 var
   lpp        : tagPSD;
   PDev       : TPrinterDevice;
@@ -186,7 +186,7 @@ end;
 
 { TPrinterSetupDialog }
 
-function TPrinterSetupDialog.Execute: Boolean;
+function TPrinterSetupDialog.DoExecute: Boolean;
 var
   lpp        : tagPD;
   PDev       : TPrinterDevice;
@@ -293,7 +293,7 @@ end;
 
 { TPrintDialog }
 
-function TPrintDialog.Execute: Boolean;
+function TPrintDialog.DoExecute: Boolean;
 var
   lpp        : tagPD;
   PDev       : TPrinterDevice;

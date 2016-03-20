@@ -336,11 +336,13 @@ begin
       FOnModalBegin(Self);
     FApplicationHandlers[ahtModalBegin].CallNotifyEvents(Self);
   end;
+  RemoveStayOnTop(True);
 end;
 
 procedure TApplication.ModalFinished;
 begin
   dec(FModalLevel);
+  RestoreStayOnTop(True);
   if (FModalLevel = 0) then
   begin
     if Assigned(FOnModalEnd) then
@@ -1313,6 +1315,7 @@ begin
     Exit;
   if Screen = nil then
     Exit;
+  Inc(FRemoveStayOnTopCounter);
   for i := 0 to Screen.CustomFormCount - 1 do
   begin
     AForm := Screen.CustomForms[i];
@@ -1335,7 +1338,8 @@ var
 begin
   if WidgetSet.AppRestoreStayOnTopFlags(ASystemTopAlso) then
     Exit;
-  if FRestoreStayOnTop <> nil then
+  Dec(FRemoveStayOnTopCounter);
+  if (FRestoreStayOnTop <> nil) and (FRemoveStayOnTopCounter = 0) then
     for i := FRestoreStayOnTop.Count - 1 downto 0 do
     begin
       TCustomForm(FRestoreStayOnTop[i]).FormStyle := fsStayOnTop;

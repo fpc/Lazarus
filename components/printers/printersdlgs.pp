@@ -35,9 +35,10 @@ type
   private
    fMargins : TRect;
    fUnits : TMeasureUnits;
+  protected
+    function DoExecute: Boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
-    function Execute: Boolean; override;
     property Margins : TRect read fMargins write fMargins;
     property Units : TMeasureUnits read fUnits;
   end;
@@ -45,15 +46,15 @@ type
   { TPrinterDialog }
   
   TPrinterSetupDialog = class(TCustomPrinterSetupDialog)
-  public
-    function Execute: Boolean; override;
+  protected
+    function DoExecute: Boolean; override;
   end;
 
   { TPrintDialog }
 
   TPrintDialog = class(TCustomPrintDialog)
-  public
-    function Execute: Boolean; override;
+  protected
+    function DoExecute: Boolean; override;
   published
     property Collate;
     property Copies;
