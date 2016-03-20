@@ -695,6 +695,8 @@ end;
 
 procedure TLazBuildApplication.DoCreateMakefile(APackage: TLazPackage);
 begin
+  if ConsoleVerbosity>0 then
+    debugln(['Hint: (lazarus) [TLazBuildApplication.DoCreateMakefile] ',APackage.Filename]);
   PackageGraph.WriteMakeFile(APackage);
 end;
 

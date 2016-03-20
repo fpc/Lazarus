@@ -4226,11 +4226,14 @@ begin
       // it is not needed because it is the location of the Makefile.compiled
       s:=s+' '+SwitchPathDelims(CreateRelativePath(APackage.GetSrcFilename,APackage.Directory),pdsUnix);
       if ConsoleVerbosity>1 then
-        debugln(['Hint: (lazarus) writing Makefile.compiled IncPath="',IncPath,'" UnitPath="',UnitPath,'" Custom="',OtherOptions,'" Makefile.compiled="',TargetCompiledFile,'"']);
+        debugln(['Hint: (lazarus) writing ',TargetCompiledFile,' IncPath="',IncPath,'" UnitPath="',UnitPath,'" Custom="',OtherOptions,'" Makefile.compiled="',TargetCompiledFile,'"']);
       XMLConfig.SetValue('Params/Value',s);
       if XMLConfig.Modified then begin
         InvalidateFileStateCache;
         XMLConfig.Flush;
+      end else begin
+        if ConsoleVerbosity>1 then
+          debugln(['Hint: (lazarus) not writing ',TargetCompiledFile,', because nothing changed']);
       end;
     finally
       XMLConfig.Free;
@@ -4321,6 +4324,7 @@ var
   FormIncPath: String;
   Executable: String;
   DistCleanDir: String;
+  NeedFPCMake: Boolean;
 begin
   Result:=mrCancel;
   PathDelimNeedsReplace:=PathDelim<>'/';
@@ -4494,28 +4498,39 @@ begin
     end;
   end;
 
-  if ExtractCodeFromMakefile(CodeBuffer.Source)=ExtractCodeFromMakefile(s)
+  NeedFPCMake:=false;
+  if ExtractCodeFromMakefile(CodeBuffer.Source)<>ExtractCodeFromMakefile(s)
   then begin
-    // Makefile.fpc not changed
-    Result:=mrOk;
-    exit;
-  end;
-  CodeBuffer.Source:=s;
+    // Makefile.fpc changed
+    CodeBuffer.Source:=s;
 
-  //debugln('TPkgManager.DoWriteMakefile MakefileFPCFilename="',MakefileFPCFilename,'"');
-  Result:=SaveCodeBufferToFile(CodeBuffer,MakefileFPCFilename);
-  if Result<>mrOk then begin
-    if not DirectoryIsWritableCached(ExtractFilePath(MakefileFPCFilename)) then
-    begin
-      // the package source is read only => no problem
-      Result:=mrOk;
+    //debugln('TPkgManager.DoWriteMakefile MakefileFPCFilename="',MakefileFPCFilename,'"');
+    Result:=SaveCodeBufferToFile(CodeBuffer,MakefileFPCFilename);
+    if Result<>mrOk then begin
+      if not DirectoryIsWritableCached(ExtractFilePath(MakefileFPCFilename)) then
+      begin
+        // the package source is read only => no problem
+        if ConsoleVerbosity>0 then
+          debugln(['Note: (lazarus) [TLazPackageGraph.WriteMakeFile] not writing "',MakefileFPCFilename,'" because dir not writable, ignoring...']);
+        Result:=mrOk;
+      end;
+      exit;
     end;
-    exit;
+    NeedFPCMake:=true;
   end;
 
   Executable:=FindFPCTool('fpcmake'+GetExecutableExt,
                                   EnvironmentOptions.GetParsedCompilerFilename);
-  if not FileIsExecutableCached(Executable) then
+  if FileIsExecutableCached(Executable) then begin
+    if (not NeedFPCMake)
+    and (FileAgeUTF8(MakefileFPCFilename)<FileAgeCached(Executable)) then begin
+      if ConsoleVerbosity>=-1 then
+        debugln(['Hint: (lazarus) [TLazPackageGraph.WriteMakeFile] "',Executable,'" is newer than "',MakefileFPCFilename,'"']);
+      NeedFPCMake:=true;// fpcmake is newer than Makefile.fpc
+    end;
+    if not NeedFPCMake then
+      exit(mrOk);
+  end else
     Executable:='fpcmake'+GetExecutableExt;
 
   // call fpcmake to create the Makefile
@@ -4528,7 +4543,6 @@ begin
                       'FPCDIR='+EnvironmentOptions.GetParsedFPCSourceDirectory);
   FPCMakeTool.Execute;
   FPCMakeTool.WaitForExit;
-
   Result:=mrOk;
 end;
 
