@@ -12,6 +12,11 @@ Silk icon set http://www.famfamfam.com/lab/icons/silk/ - CC 2.5/3.0 license
 - btncalculator.png
 
 
+Matte Basic Icons by Momentum http://www.softicons.com/toolbar-icons/matte-basic-icons-by-momentum/trash-can-icon - CC Attribution-Share Alike 3.0 United States
+(not allowed in products for resale including software applications)
+- dbnavdelete.png
+
+
 LCL license (created for LCL)
 - wince/wincedialog_ok.PNG
 - btncalcmin.xpm
@@ -40,7 +45,6 @@ Unknown (added by Paul)
 
 
 Unknown (added by Bart)
-- dbnavdelete.png
 - dbnavcancel.png
 - btntime.png
 
