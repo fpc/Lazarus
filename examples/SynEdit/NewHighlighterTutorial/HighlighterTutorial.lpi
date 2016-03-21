@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -42,7 +42,6 @@
       <Unit0>
         <Filename Value="HighlighterTutorial.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="HighlighterTutorial"/>
       </Unit0>
       <Unit1>
         <Filename Value="unit1.pas"/>
@@ -92,12 +91,6 @@
         <UseHeaptrc Value="True"/>
       </Debugging>
     </Linking>
-    <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">
