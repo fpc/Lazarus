@@ -5000,7 +5000,7 @@ end;
   Setup AnchorSide to anchor one side to the side of a neighbour sibling.
   For example Right side to Left side, or Top side to Bottom.
  ------------------------------------------------------------------------------}
-procedure TControl.AnchorToNeighbour(Side: TAnchorKind; Space: integer;
+procedure TControl.AnchorToNeighbour(Side: TAnchorKind; Space: TSpacingSize;
   Sibling: TControl);
 begin
   if Parent<>nil then Parent.DisableAlign;
@@ -5019,7 +5019,7 @@ begin
   end;
 end;
 
-procedure TControl.AnchorParallel(Side: TAnchorKind; Space: integer;
+procedure TControl.AnchorParallel(Side: TAnchorKind; Space: TSpacingSize;
   Sibling: TControl);
 begin
   if Parent<>nil then Parent.DisableAlign;
@@ -5077,7 +5077,7 @@ begin
   end;
 end;
 
-procedure TControl.AnchorToCompanion(Side: TAnchorKind; Space: integer;
+procedure TControl.AnchorToCompanion(Side: TAnchorKind; Space: TSpacingSize;
   Sibling: TControl; FreeCompositeSide: boolean);
 
   procedure AnchorCompanionSides(
@@ -5130,7 +5130,7 @@ begin
   end;
 end;
 
-procedure TControl.AnchorAsAlign(TheAlign: TAlign; Space: Integer);
+procedure TControl.AnchorAsAlign(TheAlign: TAlign; Space: TSpacingSize);
 begin
   Parent.DisableAlign;
   try
@@ -5160,7 +5160,7 @@ begin
   end;
 end;
 
-procedure TControl.AnchorClient(Space: Integer);
+procedure TControl.AnchorClient(Space: TSpacingSize);
 begin
   AnchorAsAlign(alClient,Space);
 end;
