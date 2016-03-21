@@ -40,6 +40,7 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, LCLType, LCLUnicodeData, GraphType, Grids, ButtonPanel, ComCtrls,
   IDEHelpIntf, LazUTF8,
+  {$ifdef WINDOWS}Windows,{$endif} lconvencoding,
   LazarusIDEStrConsts, EditorOptions, EnvironmentOpts;
 
 type
@@ -49,15 +50,18 @@ type
 
   TCharacterMapDialog = class(TForm)
     ButtonPanel: TButtonPanel;
+    cbCodePage: TComboBox;
     CharInfoLabel: TLabel;
     cbUniRange: TComboBox;
+    Label1: TLabel;
     RangeLabel: TLabel;
     UnicodeCharInfoLabel: TLabel;
     PageControl1: TPageControl;
     StringGrid1: TStringGrid;
     StringGrid2: TStringGrid;
-    TabSheet1: TTabSheet;
-    TabSheet2: TTabSheet;
+    pgAnsi: TTabSheet;
+    pgUnicode: TTabSheet;
+    procedure cbCodePageSelect(Sender: TObject);
     procedure cbUniRangeSelect(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure HelpButtonClick(Sender: TObject);
@@ -79,6 +83,7 @@ type
     procedure DoStatusGrid1(ACol, ARow: integer);
     procedure DoStatusGrid2(ACol, ARow: integer);
     procedure FillCharMap;
+    procedure SelectSystemCP;
   public
     property OnInsertCharacter: TOnInsertCharacterEvent read FOnInsertCharacter
                                                         write FOnInsertCharacter;
@@ -112,9 +117,43 @@ begin
   ButtonPanel.CloseButton.Caption:=lisBtnClose;
 
   //EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
+  PageControl1.ActivePageIndex := 0;
   CharInfoLabel.Caption := '-';
   UnicodeCharInfoLabel.Caption := '-';
+  SelectSystemCP;
   FillCharMap;
+end;
+
+procedure TCharacterMapDialog.SelectSystemCP;
+{$ifdef Windows}
+var
+  i: Integer;
+  cp: Word;
+  cpStr: String;
+{$endif}
+begin
+ {$ifdef Windows}
+  // Find system code page on Windows...
+  // see: msdn.microsoft.com/library/windows/desktop/dd317756%28v=vs.85%29.aspx
+  cp := Windows.GetACP;
+  case cp of  // add spaces to be sure of unique names found in the combobox
+    437..1258: cpStr := 'cp' + IntToStr(cp) + ' ';
+    10000    : cpStr := 'macintosh ';
+    20866    : cpStr := 'koi8 ';
+    28591    : cpStr := 'iso88591 ';
+    28592    : cpStr := 'iso88592 ';
+    28605    : cpStr := 'iso885915 ';
+    else       cpStr := '';
+  end;
+  for i := 0 to cbCodePage.Items.Count-1 do
+    if pos(cpStr, cbCodePage.Items[i]) = 1 then
+    begin
+      cbCodePage.ItemIndex := i;
+      exit;
+    end;
+ {$endif}
+  // ... if not found, or non-Windows, just pick the first item.
+  cbCodePage.ItemIndex := 0;
 end;
 
 procedure TCharacterMapDialog.HelpButtonClick(Sender: TObject);
@@ -127,6 +166,11 @@ begin
   if Value mod Divi=0 then
    Result:=Value div Divi else
    Result:=(Value div Divi)+1;
+end;
+
+procedure TCharacterMapDialog.cbCodePageSelect(Sender: TObject);
+begin
+  FillCharMap;
 end;
 
 procedure TCharacterMapDialog.cbUniRangeSelect(Sender: TObject);
@@ -276,8 +320,12 @@ end;
 
 procedure TCharacterMapDialog.FillCharMap;
 var
-  R, C: Integer;
+  R, C, p: Integer;
+  cp: String;
 begin
+  cp := cbCodePage.Items[cbCodePage.ItemIndex];
+  p := pos(' ', cp);
+  if p > 0 then SetLength(cp, p-1);
   for R := 0 to Pred(StringGrid1.RowCount) do
   begin
     if R <> 0 then  StringGrid1.Cells[0, R] := Format('%.3d +', [Succ(R) * 16]);
@@ -285,7 +333,7 @@ begin
     begin
       if R = 0 then StringGrid1.Cells[C, R] := Format('%.2d', [Pred(C)])
       else
-        StringGrid1.Cells[C, R] := AnsiToUTF8(Chr(Succ(R) * 16 + Pred(C)));
+        StringGrid1.Cells[C, R] := ConvertEncoding(Chr(Succ(R) * 16 + Pred(C)), cp, 'utf8');
     end;
   end;
 end;
