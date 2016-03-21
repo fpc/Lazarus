@@ -1,0 +1,50 @@
+LICENSE AND COPYRIGHT INFORMATION ABOUT IMAGES USED IN LCL
+----------------------------------------------------------
+
+Silk icon set http://www.famfamfam.com/lab/icons/silk/ - CC 2.5/3.0 license
+- buttons/*
+- wince/wincedialog_cancel.png
+- btnselfile.png
+- btnseldir.png
+- dbnavpost.png
+- dbnavedit.png
+- btncalendar.png
+- btncalculator.png
+
+
+LCL license (created for LCL)
+- wince/wincedialog_ok.PNG
+- btncalcmin.xpm
+- btncalcplus.xpm
+- dbgridcheckedcb.xpm
+- btncalcimg.xpm
+- dbgridgrayedcb.xpm
+- btncalcpmin.xpm
+- btncalcmul.xpm
+- dbgriduncheckedcb.xpm
+- btncalcok.xpm
+- btncalccancel.xpm
+
+
+Unknown (added by Paul)
+- dialogs/*
+- cursors/*
+- dock/*
+- btnfiltercancel.png
+- dbnavrefresh.png
+- dbnavnext.png
+- dbnavlast.png
+- dbnavinsert.png
+- dbnavfirst.png
+- dbnavprior.png
+
+
+Unknown (added by Bart)
+- dbnavdelete.png
+- dbnavcancel.png
+- btntime.png
+
+
+Unknown (added by Juha)
+- sortasc.png
+- sortdesc.png

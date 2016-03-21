@@ -15,5 +15,4 @@ If you have not yet compiled lazres, go to the tools directory and type make.
 Under windows use script files: lcl_dbgrid_images.bat, lcl_dbnav_images.bat,
 Under other systems use similar script - just replace directory separator.
 
-
-
+Please see copyright.txt for copyright and license information.
