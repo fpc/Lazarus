@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, TypInfo, SysUtils, types, RtlConsts, Forms, Controls, LCLProc,
-  {$IFDEF UseOICheckBoxThemed} CheckBoxThemed, {$ENDIF}
+  {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
   GraphType, FPCAdds, // for StrToQWord in older fpc versions
   StringHashList, ButtonPanel, Graphics, StdCtrls, Buttons, Menus, LCLType,
   ExtCtrls, ComCtrls, LCLIntf, Dialogs, EditBtn, PropertyStorage, Grids, ValEdit,
@@ -3485,14 +3485,14 @@ procedure TBoolPropertyEditor.PropDrawValue(ACanvas: TCanvas; const ARect: TRect
                                             AState: TPropEditDrawState);
 var
   TxtRect: TRect;
-  {$IFDEF UseOICheckBoxThemed}
+  {$IFnDEF UseOINormalCheckBox}
   str: string;
   stat: TCheckBoxState;
   {$ENDIF}
 begin
   if FPropertyHook.GetCheckboxForBoolean then
   begin                         // Checkbox for Booleans.
-  {$IFDEF UseOICheckBoxThemed}
+  {$IFnDEF UseOINormalCheckBox}
     TxtRect.Top := -100;        // Don't call inherited PropDrawValue
     if GetOrdValue<>0 then
     begin
