@@ -44,7 +44,3 @@ Unknown (added by Paul)
 - cursors/*
 - dock/*
 - btnfiltercancel.png
-
-
-Unknown (added by Bart)
-
