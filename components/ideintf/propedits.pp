@@ -1165,8 +1165,8 @@ type
   // methods
   TPropHookCreateMethod = function(const Name: ShortString; ATypeInfo: PTypeInfo;
       APersistent: TPersistent; const APropertyPath: string): TMethod of object;
-  TPropHookGetMethodName = function(const Method: TMethod;
-                                    CheckOwner: TObject): String of object;
+  TPropHookGetMethodName = function(const Method: TMethod; CheckOwner: TObject;
+      OrigLookupRoot: TPersistent): String of object;
   TPropHookGetCompatibleMethods = procedure(InstProp: PInstProp; const Proc: TGetStrProc) of object;
   TPropHookGetMethods = procedure(TypeData: PTypeData; Proc: TGetStrProc) of object;
   TPropHookCompatibleMethodExists = function(const Name: String; InstProp: PInstProp;
@@ -4283,6 +4283,22 @@ begin
   Result := True;
 end;
 
+function IsValidPropName(const PropName: string): boolean;
+var
+  i, len: integer;
+begin
+  result := false;
+  len := length(PropName);
+  if len <> 0 then begin
+    result := PropName[1] in ['A'..'Z', 'a'..'z', '_'];
+    i := 1;
+    while (result) and (i < len) do begin
+      i := i + 1;
+      result := result and (PropName[i] in ['A'..'Z', 'a'..'z', '0'..'9', '_', '.']);
+      end ;
+    end ;
+end ;
+
 procedure TMethodPropertyEditor.Edit;
 { If the method does not exist in current lookuproot: create it
   Then jump to the source.
@@ -4291,11 +4307,11 @@ procedure TMethodPropertyEditor.Edit;
   the ancestor value is added. Then the IDE jumps to the new method body.
 }
 var
-  NewMethodName: shortstring;
+  NewMethodName: String;
 begin
   NewMethodName := GetValue;
   //DebugLn('### TMethodPropertyEditor.Edit A OldValue=',NewMethodName);
-  if not IsValidIdent(NewMethodName) or PropertyHook.MethodFromAncestor(GetMethodValue) then
+  if not IsValidPropName(NewMethodName) or PropertyHook.MethodFromAncestor(GetMethodValue) then
   begin
     // the current method is from the ancestor
     // -> add an override with the default name
@@ -5592,7 +5608,7 @@ var
 begin
   i:=GetHandlerCount(htGetMethodName);
   if GetNextHandlerIndex(htGetMethodName,i) then begin
-    Result:=TPropHookGetMethodName(FHandlers[htGetMethodName][i])(Method,PropOwner);
+    Result:=TPropHookGetMethodName(FHandlers[htGetMethodName][i])(Method,PropOwner,LookupRoot);
   end else begin
     // search the method name with the given code pointer
     if Assigned(Method.Code) then begin

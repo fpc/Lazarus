@@ -506,8 +506,8 @@ type
     function OIOnPropertyHint(Sender: TObject; PointedRow: TOIPropertyGridRow;
        out AHint: string): boolean;
     procedure OIOnUpdateRestricted(Sender: TObject);
-    function OnPropHookGetMethodName(const Method: TMethod;
-                                     PropOwner: TObject): String;
+    function OnPropHookGetMethodName(const Method: TMethod; PropOwner: TObject;
+      OrigLookupRoot: TPersistent): String;
     procedure OnPropHookGetMethods(TypeData: PTypeData; Proc:TGetStrProc);
     procedure OnPropHookGetCompatibleMethods(InstProp: PInstProp;
                                              const Proc:TGetStrProc);
@@ -1832,8 +1832,10 @@ begin
     (Sender as TObjectInspectorDlg).RestrictedProps := GetRestrictedProperties;
 end;
 
-function TMainIDE.OnPropHookGetMethodName(const Method: TMethod;
-  PropOwner: TObject): String;
+function TMainIDE.OnPropHookGetMethodName(const Method: TMethod; PropOwner: TObject;
+  OrigLookupRoot: TPersistent): String;
+// OrigLookupRoot can be different from the PropOwner's LookupRoot when we refer
+//  to an object (eg. TAction) in another form / unit.
 var
   JITMethod: TJITMethod;
   LookupRoot: TPersistent;
@@ -1845,16 +1847,17 @@ begin
         Result:='<Unpublished>';
     end else
       Result:='<No LookupRoot>';
-  end else if IsJITMethod(Method) then begin
+  end
+  else if IsJITMethod(Method) then begin
     JITMethod:=TJITMethod(Method.Data);
     Result:=JITMethod.TheMethodName;
     if PropOwner is TComponent then begin
       LookupRoot:=GetLookupRootForComponent(TComponent(PropOwner));
       if LookupRoot is TComponent then begin
         //DebugLn(['TMainIDE.OnPropHookGetMethodName ',Result,' GlobalDesignHook.LookupRoot=',dbgsName(GlobalDesignHook.LookupRoot),' JITMethod.TheClass=',dbgsName(JITMethod.TheClass),' PropOwner=',DbgSName(PropOwner),' PropOwner-LookupRoot=',DbgSName(LookupRoot)]);
-        if (LookupRoot.ClassType<>JITMethod.TheClass) then begin
+        if (LookupRoot.ClassType<>JITMethod.TheClass)
+        or (LookupRoot<>OrigLookupRoot) then
           Result:=JITMethod.TheClass.ClassName+'.'+Result;
-        end;
       end;
     end;
   end else
@@ -9305,13 +9308,14 @@ begin
       Result:=TObject(Method.Data).MethodName(Method.Code)
     else
       Result:='';
-  end else if IsJITMethod(Method) then begin
+  end
+  else if IsJITMethod(Method) then begin
     JITMethod:=TJITMethod(Method.Data);
     Result:=JITMethod.TheMethodName;
     if PropOwner is TComponent then begin
       LookupRoot:=GetLookupRootForComponent(TComponent(PropOwner));
       if LookupRoot is TComponent then begin
-        //DebugLn(['TMainIDE.OnPropHookGetMethodName ',Result,' ',dbgsName(GlobalDesignHook.LookupRoot),' ',dbgsName(JITMethod.TheClass)]);
+        //DebugLn(['TMainIDE.OnCodeToolBossGetMethodName ',Result,' GlobalDesignHook.LookupRoot=',dbgsName(GlobalDesignHook.LookupRoot),' JITMethod.TheClass=',dbgsName(JITMethod.TheClass),' PropOwner=',DbgSName(PropOwner),' PropOwner-LookupRoot=',DbgSName(LookupRoot)]);
         if (LookupRoot.ClassType<>JITMethod.TheClass) then begin
           Result:=JITMethod.TheClass.ClassName+'.'+Result;
         end;
@@ -9321,7 +9325,7 @@ begin
     Result:='';
   {$IFDEF VerboseDanglingComponentEvents}
   if IsJITMethod(Method) then
-    DebugLn(['TMainIDE.OnPropHookGetMethodName ',Result,' ',IsJITMethod(Method)]);
+    DebugLn(['TMainIDE.OnCodeToolBossGetMethodName ',Result,' ',IsJITMethod(Method)]);
   {$ENDIF}
 end;
 
