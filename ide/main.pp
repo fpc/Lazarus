@@ -12470,10 +12470,8 @@ var
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
-  AClassName: string;
-  AInheritedMethodName: string;
-  AnInheritedClassName: string;
-  CurMethodName: String;
+  AClassName, AnInheritedClassName: string;
+  CurMethodName, AInheritedMethodName: string;
 begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
@@ -12501,8 +12499,7 @@ begin
   end;
 
   if CodeToolBoss.JumpToPublishedMethodBody(ActiveUnitInfo.Source,
-    AClassName,CurMethodName,
-    NewSource,NewX,NewY,NewTopLine) then
+    AClassName, CurMethodName, NewSource, NewX, NewY, NewTopLine) then
   begin
     DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
       NewSource, NewX, NewY, NewTopLine, [jfAddJumpPoint, jfFocusEditor]);
@@ -12514,7 +12511,8 @@ begin
 end;
 
 procedure TMainIDE.OnPropHookRenameMethod(const CurName, NewName: String);
-var ActiveSrcEdit: TSourceEditor;
+var
+  ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   BossResult: boolean;
   ErrorMsg: String;

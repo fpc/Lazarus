@@ -109,8 +109,7 @@ function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer): in
 function FindNextIdentifierSkipStrings(const Source: string;
     StartPos, MaxPos: integer): integer;
 function IsValidIdentPair(const NamePair: string): boolean;
-function IsValidIdentPair(const NamePair: string;
-    out First, Second: string): boolean;
+function IsValidIdentPair(const NamePair: string; out First, Second: string): boolean;
 
 // line/code ends
 function SrcPosToLineCol(const s: string; Position: integer;

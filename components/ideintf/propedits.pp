@@ -5706,7 +5706,7 @@ begin
     TPropHookRenameMethod(FHandlers[htRenameMethod][i])(CurName,NewName);
 end;
 
-procedure TPropertyEditorHook.ShowMethod(const aName:String);
+procedure TPropertyEditorHook.ShowMethod(const aName: String);
 // jump cursor to published method body
 var
   i: Integer;

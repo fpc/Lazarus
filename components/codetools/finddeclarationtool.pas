@@ -3575,7 +3575,7 @@ var
     Result:=false;
     // the node cache is identifier based
     if ([fdfCollect,fdfExtractOperand]*Flags<>[]) then exit;
-    
+
     NodeCache:=GetNodeCache(ContextNode,false);
     if (NodeCache<>LastNodeCache) then begin
       // NodeCache changed -> search nearest cache entry for the identifier
