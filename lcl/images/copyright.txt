@@ -17,6 +17,19 @@ Matte Basic Icons by Momentum http://www.softicons.com/toolbar-icons/matte-basic
 - dbnavdelete.png
 
 
+Tango https://commons.wikimedia.org/wiki/Tango_icons - public domain
+- dialogs/*
+- dbnavrefresh.png
+- dbnavnext.png
+- dbnavlast.png
+- dbnavinsert.png
+- dbnavfirst.png
+- dbnavprior.png
+- btntime.png (modified by Michael Fuchs)
+- sortasc.png
+- sortdesc.png
+
+
 LCL license (created for LCL)
 - wince/wincedialog_ok.PNG
 - btncalcmin.xpm
@@ -32,23 +45,10 @@ LCL license (created for LCL)
 
 
 Unknown (added by Paul)
-- dialogs/*
 - cursors/*
 - dock/*
 - btnfiltercancel.png
-- dbnavrefresh.png
-- dbnavnext.png
-- dbnavlast.png
-- dbnavinsert.png
-- dbnavfirst.png
-- dbnavprior.png
 
 
 Unknown (added by Bart)
 - dbnavcancel.png
-- btntime.png
-
-
-Unknown (added by Juha)
-- sortasc.png
-- sortdesc.png
