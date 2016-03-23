@@ -6717,6 +6717,7 @@ lcl/images/buttons/btn_ok.png -text svneol=unset#image/png
 lcl/images/buttons/btn_retry.png -text svneol=unset#image/png
 lcl/images/buttons/btn_yes.png -text svneol=unset#image/png
 lcl/images/buttons/build.bat svneol=native#text/x-msdos-program
+lcl/images/copyright.txt svneol=native#text/plain
 lcl/images/cursors/build.bat svneol=native#text/x-msdos-program
 lcl/images/cursors/cur_1.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_10.cur -text svneol=unset#image/x-cursor
