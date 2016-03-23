@@ -29,6 +29,10 @@ PNG versions: http://http.debian.net/debian/pool/main/t/tango-icon-theme/tango-i
 - wince/wincedialog_cancel.png
 
 
+Public domain cursors (common property, see e.g. https://commons.wikimedia.org/wiki/File:Cursor_Hand.png)
+- cursors/*
+
+
 LCL license (created for LCL)
 - wince/wincedialog_ok.PNG
 - btncalcmin.xpm
@@ -44,7 +48,6 @@ LCL license (created for LCL)
 
 
 Unknown (added by Paul)
-- cursors/*
 - dock/*
 
 
