@@ -8704,7 +8704,7 @@ begin
     if c.PickList.Count>0 then
       cfg.SetValue(cPath + '/picklist/value', c.PickList.CommaText);
     if c.IsSizePriorityStored then
-      cfg.SetValue(cPath + '/sizepriority', c.SizePriority);
+      cfg.SetValue(cPath + '/sizepriority/value', c.SizePriority);
     if not c.IsDefaultFont then
       CfgSetFontValue(cfg, cPath + '/font', c.Font);
     cfg.setValue(cPath + '/title/caption/value', c.Title.Caption);
