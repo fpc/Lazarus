@@ -700,8 +700,10 @@ type
     FRight: TSpacingSize;
     FTop: TSpacingSize;
     FDefault: PControlBorderSpacingDefault;
+    function GetControlBottom: Integer;
     function GetControlHeight: Integer;
     function GetControlLeft: Integer;
+    function GetControlRight: Integer;
     function GetControlTop: Integer;
     function GetControlWidth: Integer;
     function IsAroundStored: boolean;
@@ -736,6 +738,8 @@ type
     property ControlTop: Integer read GetControlTop;
     property ControlWidth: Integer read GetControlWidth;
     property ControlHeight: Integer read GetControlHeight;
+    property ControlRight: Integer read GetControlRight;
+    property ControlBottom: Integer read GetControlBottom;
   published
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Left: TSpacingSize read FLeft write SetLeft stored IsLeftStored;
@@ -3601,6 +3605,14 @@ begin
   if Assigned(OnChange) then OnChange(Self);
 end;
 
+function TControlBorderSpacing.GetControlBottom: Integer;
+begin
+  if FControl<>nil then
+    Result := FControl.Top+FControl.Height+Around+Bottom
+  else
+    Result := 0;
+end;
+
 function TControlBorderSpacing.GetControlHeight: Integer;
 begin
   if FControl<>nil then
@@ -3613,6 +3625,14 @@ function TControlBorderSpacing.GetControlLeft: Integer;
 begin
   if FControl<>nil then
     Result := FControl.Left-Around-Left
+  else
+    Result := 0;
+end;
+
+function TControlBorderSpacing.GetControlRight: Integer;
+begin
+  if FControl<>nil then
+    Result := FControl.Left+FControl.Width+Around+Right
   else
     Result := 0;
 end;
