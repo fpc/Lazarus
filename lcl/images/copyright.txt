@@ -1,18 +1,11 @@
 LICENSE AND COPYRIGHT INFORMATION ABOUT IMAGES USED IN LCL
 ----------------------------------------------------------
 
-Silk icon set http://www.famfamfam.com/lab/icons/silk/ - CC 2.5/3.0 license
-- buttons/*
-- wince/wincedialog_cancel.png
+Tango https://commons.wikimedia.org/wiki/Tango_icons - public domain
+PNG versions: https://www.iconfinder.com/iconsets/tango
+- dialogs/*
 - btnselfile.png
 - btnseldir.png
-- dbnavpost.png
-- dbnavedit.png
-- btncalendar.png
-- btncalculator.png
-
-Tango https://commons.wikimedia.org/wiki/Tango_icons - public domain
-- dialogs/*
 - dbnavcancel.png
 - dbnavdelete.png
 - dbnavrefresh.png
@@ -21,9 +14,19 @@ Tango https://commons.wikimedia.org/wiki/Tango_icons - public domain
 - dbnavinsert.png
 - dbnavfirst.png
 - dbnavprior.png
-- btntime.png (modified by Michael Fuchs)
+- btntime.png (modified Appointment.svg by Michael Fuchs)
+- btncalendar.png
+- btncalculator.png
+- btnfiltercancel.png
 - sortasc.png
 - sortdesc.png
+- dbnavpost.png (modified Text-x-generic-apply.svg by Ondrej Pokorny)
+- dbnavedit.png (modified Edit-metadata.svg by Ondrej Pokorny)
+- buttons/*
+- button/btn_ok.png (modified Text-x-generic-apply.svg by Ondrej Pokorny)
+- button/btn_yes.png (modified Text-x-generic-apply.svg by Ondrej Pokorny)
+- button/btn_cancel.png (modified Process-stop.svg by Ondrej Pokorny)
+- wince/wincedialog_cancel.png
 
 
 LCL license (created for LCL)
@@ -43,4 +46,12 @@ LCL license (created for LCL)
 Unknown (added by Paul)
 - cursors/*
 - dock/*
-- btnfiltercancel.png
+
+
+
+ADDING IMAGES TO LCL POLICY
+---------------------------
+All images in the LCL must be public domain or especially created for the LCL and under the LCL license.
+When you are adding images to the LCL add information about their origin here in the list and also in SVN commit log.
+
+!!! Do not add images under other licenses (CC, GPL, LGPL ...) or unknown origin into the LCL !!!
