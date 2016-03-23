@@ -55,3 +55,5 @@ All images in the LCL must be public domain or especially created for the LCL an
 When you are adding images to the LCL add information about their origin here in the list and also in SVN commit log.
 
 !!! Do not add images under other licenses (CC, GPL, LGPL ...) or unknown origin into the LCL !!!
+
+Please use Tango icons whenever possible because they are SVG and exist in various PNG resolutions (see https://www.iconfinder.com/iconsets/tango) - it will make updating LCL icons for high-DPI easy in the future.
