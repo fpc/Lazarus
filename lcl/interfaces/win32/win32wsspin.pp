@@ -374,7 +374,8 @@ end;
 class procedure TWin32WSCustomFloatSpinEdit.SetFont(
   const AWinControl: TWinControl; const AFont: TFont);
 begin
-  inherited SetFont(AWinControl, AFont);
+  if not WSCheckHandleAllocated(AWinControl, 'SetFont') then Exit;
+  TWin32WSWinControl.SetFont(AWinControl, AFont);
 
   ApplyMargins(AWinControl);
 end;
