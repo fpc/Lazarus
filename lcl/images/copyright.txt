@@ -1,8 +1,8 @@
 LICENSE AND COPYRIGHT INFORMATION ABOUT IMAGES USED IN LCL
 ----------------------------------------------------------
 
-Tango https://commons.wikimedia.org/wiki/Tango_icons - public domain
-PNG versions: https://www.iconfinder.com/iconsets/tango
+Tango https://packages.debian.org/sid/tango-icon-theme - public domain
+PNG versions: http://http.debian.net/debian/pool/main/t/tango-icon-theme/tango-icon-theme_0.8.90.orig.tar.gz
 - dialogs/*
 - btnselfile.png
 - btnseldir.png
@@ -56,4 +56,4 @@ When you are adding images to the LCL add information about their origin here in
 
 !!! Do not add images under other licenses (CC, GPL, LGPL ...) or unknown origin into the LCL !!!
 
-Please use Tango icons whenever possible because they are SVG and exist in various PNG resolutions (see https://www.iconfinder.com/iconsets/tango) - it will make updating LCL icons for high-DPI easy in the future.
+Please use Tango icons whenever possible because they are SVG and exist in various PNG resolutions - it will make updating LCL icons for high-DPI easy in the future.
