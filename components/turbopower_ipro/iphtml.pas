@@ -2235,6 +2235,7 @@ type
     PrintWidth, PrintHeight: Integer;
     PrintTopLeft: TPoint;
     PageCount: Integer;
+    function AntiAliasingMode: TAntiAliasingMode;
     {$ENDIF}
     procedure InvalidateSize;
     property Hyper : TIpHtml read FHyper write SetHtml;
@@ -2396,6 +2397,7 @@ type
 
   TIpHtmlPrintSettings = class(TPersistent)
   private
+    FAntiAliasingMode: TAntiAliasingMode;
     FMarginTop: Double;
     FMarginLeft: Double;
     FMarginBottom: Double;
@@ -2403,6 +2405,7 @@ type
   public
     constructor Create;
   published
+    property AntiAliasingMode: TAntiAliasingMode read FAntiAliasingMode write FAntiAliasingMode;
     property MarginLeft: Double read FMarginLeft write FMarginLeft;
     property MarginTop: Double read FMarginTop write FMarginTop;
     property MarginRight: Double read FMarginRight write FMarginRight;
@@ -13321,6 +13324,11 @@ begin
 end;
 
 {$IFDEF Html_Print}
+function TIpHtmlInternalPanel.AntiAliasingMode: TAntiAliasingMode;
+begin
+  Result := HTMLPanel.PrintSettings.AntiAliasingMode;
+end;
+
 procedure TIpHtmlInternalPanel.BeginPrint;
 begin
   if InPrint = 0 then begin

@@ -246,6 +246,7 @@ begin
         R.Right := R.Left + round(SCRATCH_WIDTH * Scale) + 1;
         R.Bottom := R.Top + round(SCRATCH_HEIGHT * Scale) + 1;
 
+        PaintBox1.Canvas.AntialiasingMode := OwnerPanel.AntiAliasingMode;
         PaintBox1.Canvas.StretchDraw(R, Scratch);
 
         inc(WindowLeft, SCRATCH_WIDTH);
