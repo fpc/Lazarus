@@ -13,7 +13,7 @@
 }
 
 const
-  IconSignature: array [0..3] of char = #0#0#1#0;
+  IconSignature: array [0..3] of Byte = (0, 0, 1, 0);
 
 type
   TIconHeader = {packed} record // packed it not needed
@@ -770,7 +770,7 @@ end;
 
 procedure TCustomIcon.ReadData(Stream: TStream);
 var
-  Signature: array [0..3] of Char;
+  Signature: array [0..3] of Byte;
   Size: longint absolute Signature;
   Position: Int64;
 begin

@@ -12,7 +12,7 @@
  *****************************************************************************
 }
 const
-  CursorSignature: array [0..3] of char = #0#0#2#0;
+  CursorSignature: array [0..3] of Byte = (0, 0, 2, 0);
 
 function TestStreamIsCursor(const AStream: TStream): boolean;
 var
