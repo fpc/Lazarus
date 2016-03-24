@@ -4677,6 +4677,10 @@ msgstr ""
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr ""
 
+#: lazarusidestrconsts.lisautocheckmodifiedfiles
+msgid "Automatically check (select) modified files"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Automatinis baigimas: išjungtas"
@@ -10724,6 +10728,10 @@ msgstr "Kopijuoti pažymėtas komponentes į iškarpinę"
 msgid "Cut selected Components to clipboard"
 msgstr "Iškirpti pažymėtas komponentes į iškarpinę"
 
+#: lazarusidestrconsts.liskmdefaulttoosx
+msgid "Default adapted to OS X"
+msgstr ""
+
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
 msgstr "Pašalinti paskutinį simbolį"
@@ -12829,6 +12837,10 @@ msgstr "Startavimo &parametrai…"
 #| msgid "Run to &Cursor"
 msgid "Step over to &Cursor"
 msgstr "Startuoti iki ž&ymeklio"
+
+#: lazarusidestrconsts.lismenurunwithoutdebugging
+msgid "Run without Debugging"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusave
 msgctxt "lazarusidestrconsts.lismenusave"
@@ -20567,6 +20579,10 @@ msgstr "startuoti failą"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "starto parametrai"
+
+#: lazarusidestrconsts.srkmecrunwithoutdebugging
+msgid "run without debugging"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

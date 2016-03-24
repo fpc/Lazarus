@@ -4673,6 +4673,10 @@ msgstr ""
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr ""
 
+#: lazarusidestrconsts.lisautocheckmodifiedfiles
+msgid "Automatically check (select) modified files"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Автозавершення: викл"
@@ -10716,6 +10720,10 @@ msgstr "Копіювати обрані Компоненти в буфер об�
 msgid "Cut selected Components to clipboard"
 msgstr "Вирізати обрані Компоненти в буфер обміну"
 
+#: lazarusidestrconsts.liskmdefaulttoosx
+msgid "Default adapted to OS X"
+msgstr ""
+
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
 msgstr "Видалення останнього символу"
@@ -12817,6 +12825,10 @@ msgstr "Пара&метри виконання ..."
 #| msgid "Run to &Cursor"
 msgid "Step over to &Cursor"
 msgstr "Виконати до &курсора"
+
+#: lazarusidestrconsts.lismenurunwithoutdebugging
+msgid "Run without Debugging"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusave
 msgctxt "lazarusidestrconsts.lismenusave"
@@ -20539,6 +20551,10 @@ msgstr "запуск файлу"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "параметри запуску"
+
+#: lazarusidestrconsts.srkmecrunwithoutdebugging
+msgid "run without debugging"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

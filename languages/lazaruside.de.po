@@ -4546,6 +4546,10 @@ msgstr "Zeige komplette Komponentenpalette"
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr "Wenn sich die Komponentenpalette über mehrere Zeilen erstreckt, zeige alle und nicht nur eine."
 
+#: lazarusidestrconsts.lisautocheckmodifiedfiles
+msgid "Automatically check (select) modified files"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Auto-Vervollständigung: aus"
@@ -10451,6 +10455,10 @@ msgstr "Ausgewählte Komponenten in die Zwischenablage kopieren"
 msgid "Cut selected Components to clipboard"
 msgstr "Ausgewählte Komponenten in die Zwischenablage ausschneiden"
 
+#: lazarusidestrconsts.liskmdefaulttoosx
+msgid "Default adapted to OS X"
+msgstr ""
+
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
 msgstr "Letztes Zeichen löschen"
@@ -12552,6 +12560,10 @@ msgstr "Start&parameter ..."
 #: lazarusidestrconsts.lismenuruntocursor
 msgid "Step over to &Cursor"
 msgstr "Start bis &Cursor"
+
+#: lazarusidestrconsts.lismenurunwithoutdebugging
+msgid "Run without Debugging"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusave
 msgctxt "lazarusidestrconsts.lismenusave"
@@ -19913,6 +19925,10 @@ msgstr "Datei starten"
 msgid "run parameters"
 msgstr "Startparameter"
 
+#: lazarusidestrconsts.srkmecrunwithoutdebugging
+msgid "run without debugging"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
 msgstr "Eine Zeile nach unten scrollen"
@@ -20734,3 +20750,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+

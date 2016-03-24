@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-03-12 01:29+0300\n"
+"PO-Revision-Date: 2016-03-25 01:08+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4546,6 +4546,10 @@ msgstr "Показывать палитру компонентов полнос�
 #: lazarusidestrconsts.lisautoadjustideheightfullcomponentpalettehint
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr "Показывать все строки палитры компонентов, если она занимает несколько."
+
+#: lazarusidestrconsts.lisautocheckmodifiedfiles
+msgid "Automatically check (select) modified files"
+msgstr "Автоматически выбирать изменённые файлы"
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -10447,6 +10451,10 @@ msgstr "Копировать выбранные компоненты в буфе
 msgid "Cut selected Components to clipboard"
 msgstr "Вырезать выбранные компоненты в буфер обмена"
 
+#: lazarusidestrconsts.liskmdefaulttoosx
+msgid "Default adapted to OS X"
+msgstr "Схема по умолчанию в адаптации для OS X"
+
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
 msgstr "Удалить последний символ"
@@ -12554,6 +12562,10 @@ msgstr "П&араметры запуска ..."
 #: lazarusidestrconsts.lismenuruntocursor
 msgid "Step over to &Cursor"
 msgstr "Шаг в обход до &курсора"
+
+#: lazarusidestrconsts.lismenurunwithoutdebugging
+msgid "Run without Debugging"
+msgstr "Запустить без отладки"
 
 #: lazarusidestrconsts.lismenusave
 msgctxt "lazarusidestrconsts.lismenusave"
@@ -19920,6 +19932,10 @@ msgstr "Запустить файл"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "Параметры запуска"
+
+#: lazarusidestrconsts.srkmecrunwithoutdebugging
+msgid "run without debugging"
+msgstr "Запустить без отладки"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

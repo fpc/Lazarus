@@ -4546,6 +4546,10 @@ msgstr "Teljes komponens paletta megjelenítése"
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr "Ha a komponens paletta több sort foglal el akkor mind jelenjen meg, ne csak egy."
 
+#: lazarusidestrconsts.lisautocheckmodifiedfiles
+msgid "Automatically check (select) modified files"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Automatikus kiegészítés: ki"
@@ -10450,6 +10454,10 @@ msgstr "Kijelölt komponensek másolása a vágólapra"
 msgid "Cut selected Components to clipboard"
 msgstr "Kijelölt komponensek kivágása a vágólapra"
 
+#: lazarusidestrconsts.liskmdefaulttoosx
+msgid "Default adapted to OS X"
+msgstr ""
+
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
 msgstr "Utolsó karakter törlése"
@@ -12556,6 +12564,10 @@ msgstr "Futtatási paraméterek ..."
 #: lazarusidestrconsts.lismenuruntocursor
 msgid "Step over to &Cursor"
 msgstr "Átlépni a kurzorig"
+
+#: lazarusidestrconsts.lismenurunwithoutdebugging
+msgid "Run without Debugging"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusave
 msgctxt "lazarusidestrconsts.lismenusave"
@@ -19921,6 +19933,10 @@ msgstr "fájl futtatása"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "futtatási paraméterek"
+
+#: lazarusidestrconsts.srkmecrunwithoutdebugging
+msgid "run without debugging"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

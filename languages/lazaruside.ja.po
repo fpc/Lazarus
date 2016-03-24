@@ -4642,6 +4642,10 @@ msgstr ""
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr ""
 
+#: lazarusidestrconsts.lisautocheckmodifiedfiles
+msgid "Automatically check (select) modified files"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "自動補完:off"
@@ -10643,6 +10647,10 @@ msgstr "選択したコンポーネントをクリップボードにコピー"
 msgid "Cut selected Components to clipboard"
 msgstr "選択されたコンポーネントをクリップボードに切り取る"
 
+#: lazarusidestrconsts.liskmdefaulttoosx
+msgid "Default adapted to OS X"
+msgstr ""
+
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
 msgstr "末尾の文字を削除"
@@ -12742,6 +12750,10 @@ msgstr "実行パラメーター(&P) ..."
 #: lazarusidestrconsts.lismenuruntocursor
 msgid "Step over to &Cursor"
 msgstr "カーソル位置まで実行(&C)"
+
+#: lazarusidestrconsts.lismenurunwithoutdebugging
+msgid "Run without Debugging"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusave
 msgctxt "lazarusidestrconsts.lismenusave"
@@ -20416,6 +20428,10 @@ msgstr "ファイルを実行"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "実行パラメータ"
+
+#: lazarusidestrconsts.srkmecrunwithoutdebugging
+msgid "run without debugging"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

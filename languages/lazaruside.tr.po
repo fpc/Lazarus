@@ -4588,6 +4588,10 @@ msgstr ""
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr ""
 
+#: lazarusidestrconsts.lisautocheckmodifiedfiles
+msgid "Automatically check (select) modified files"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr ""
@@ -10552,6 +10556,10 @@ msgstr ""
 msgid "Cut selected Components to clipboard"
 msgstr ""
 
+#: lazarusidestrconsts.liskmdefaulttoosx
+msgid "Default adapted to OS X"
+msgstr ""
+
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
 msgstr ""
@@ -12796,6 +12804,10 @@ msgstr "Çalıştırma Parametreleri ..."
 #| msgid "Run to &Cursor"
 msgid "Step over to &Cursor"
 msgstr "İmlece kadar çalıştır"
+
+#: lazarusidestrconsts.lismenurunwithoutdebugging
+msgid "Run without Debugging"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusave
 #, fuzzy
@@ -20328,6 +20340,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecrunwithoutdebugging
+msgid "run without debugging"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecscrolldown

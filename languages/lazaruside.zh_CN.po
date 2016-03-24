@@ -4822,6 +4822,10 @@ msgstr ""
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr ""
 
+#: lazarusidestrconsts.lisautocheckmodifiedfiles
+msgid "Automatically check (select) modified files"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr ""
@@ -10890,6 +10894,10 @@ msgstr "复制选择的组件到剪贴板"
 msgid "Cut selected Components to clipboard"
 msgstr "剪切选择的组件到剪贴板"
 
+#: lazarusidestrconsts.liskmdefaulttoosx
+msgid "Default adapted to OS X"
+msgstr ""
+
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
 msgstr "删除最后的字符"
@@ -13177,6 +13185,10 @@ msgstr "带参数运行..."
 #| msgid "Run to &Cursor"
 msgid "Step over to &Cursor"
 msgstr "运行到光标处"
+
+#: lazarusidestrconsts.lismenurunwithoutdebugging
+msgid "Run without Debugging"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusave
 #, fuzzy
@@ -21020,6 +21032,10 @@ msgstr "运行文件"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "运行带命令行参数的程序"
+
+#: lazarusidestrconsts.srkmecrunwithoutdebugging
+msgid "run without debugging"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

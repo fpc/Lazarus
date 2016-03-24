@@ -4512,6 +4512,10 @@ msgstr "Näytä koko komponenttipaletti"
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr "Jos komponenttipaletti menee monelle riville, näytä kaikki rivit."
 
+#: lazarusidestrconsts.lisautocheckmodifiedfiles
+msgid "Automatically check (select) modified files"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Automaattinen täydennys: pois"
@@ -10376,6 +10380,10 @@ msgstr "Kopioi valitut komponentit leikepöydälle"
 msgid "Cut selected Components to clipboard"
 msgstr "Leikkaa valitut komponentit leikepöydälle"
 
+#: lazarusidestrconsts.liskmdefaulttoosx
+msgid "Default adapted to OS X"
+msgstr ""
+
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
 msgstr "Poista viimeksi kirjoitettu merkki"
@@ -12463,6 +12471,10 @@ msgstr "Suoritus&parametrit ..."
 #: lazarusidestrconsts.lismenuruntocursor
 msgid "Step over to &Cursor"
 msgstr "Jatka &kursorin kohtaan"
+
+#: lazarusidestrconsts.lismenurunwithoutdebugging
+msgid "Run without Debugging"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusave
 msgid "&Save"
@@ -19786,6 +19798,10 @@ msgstr "suorita tiedosto"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "suoritusparametrit"
+
+#: lazarusidestrconsts.srkmecrunwithoutdebugging
+msgid "run without debugging"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

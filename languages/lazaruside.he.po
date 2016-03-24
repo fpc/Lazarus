@@ -4848,6 +4848,10 @@ msgstr ""
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr ""
 
+#: lazarusidestrconsts.lisautocheckmodifiedfiles
+msgid "Automatically check (select) modified files"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "השלמה אוטומטית: כבה"
@@ -11038,6 +11042,10 @@ msgstr "העתק את הרכיבים הנבחרים ללוח הזמני"
 msgid "Cut selected Components to clipboard"
 msgstr "גזור את הרכיבים שנבחרו אל הלוח הזמני"
 
+#: lazarusidestrconsts.liskmdefaulttoosx
+msgid "Default adapted to OS X"
+msgstr ""
+
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
 msgstr "מחק את התו האחרון"
@@ -13346,6 +13354,10 @@ msgstr "הרץ פרמטרים ..."
 #| msgid "Run to &Cursor"
 msgid "Step over to &Cursor"
 msgstr "רוץ עד לסמן"
+
+#: lazarusidestrconsts.lismenurunwithoutdebugging
+msgid "Run without Debugging"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusave
 msgctxt "lazarusidestrconsts.lismenusave"
@@ -21346,6 +21358,10 @@ msgstr "הרץ קובץ"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "הרץ פרמטרים"
+
+#: lazarusidestrconsts.srkmecrunwithoutdebugging
+msgid "run without debugging"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

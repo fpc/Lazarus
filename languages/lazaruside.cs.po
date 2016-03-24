@@ -4552,6 +4552,10 @@ msgstr "Ukázat celou paletu komponent"
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr "Pokud je paleta komponent roztažena přes více řádek, zobrazit je všechny a ne pouze jednu."
 
+#: lazarusidestrconsts.lisautocheckmodifiedfiles
+msgid "Automatically check (select) modified files"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Automatické dokončení: vypnuto"
@@ -10452,6 +10456,10 @@ msgstr "Zkopírovat vybrané komponenty do schránky"
 msgid "Cut selected Components to clipboard"
 msgstr "Vyjmout vybrané komponenty do schránky"
 
+#: lazarusidestrconsts.liskmdefaulttoosx
+msgid "Default adapted to OS X"
+msgstr ""
+
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
 msgstr "Odstranit poslední znak"
@@ -12550,6 +12558,10 @@ msgstr "Spustit s parametry ..."
 #: lazarusidestrconsts.lismenuruntocursor
 msgid "Step over to &Cursor"
 msgstr "Spustit po ukazatel"
+
+#: lazarusidestrconsts.lismenurunwithoutdebugging
+msgid "Run without Debugging"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusave
 msgctxt "lazarusidestrconsts.lismenusave"
@@ -19918,6 +19930,10 @@ msgstr "spustit soubor"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "spustit s parametry"
+
+#: lazarusidestrconsts.srkmecrunwithoutdebugging
+msgid "run without debugging"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

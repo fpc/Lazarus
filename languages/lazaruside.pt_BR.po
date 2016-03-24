@@ -4659,6 +4659,10 @@ msgstr ""
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr ""
 
+#: lazarusidestrconsts.lisautocheckmodifiedfiles
+msgid "Automatically check (select) modified files"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Auto completar: desligado"
@@ -10681,6 +10685,10 @@ msgstr "Copiar componentes selecionados para a Área de Transferência"
 msgid "Cut selected Components to clipboard"
 msgstr "Recortar componentes selecionados para a Área de Transferência"
 
+#: lazarusidestrconsts.liskmdefaulttoosx
+msgid "Default adapted to OS X"
+msgstr ""
+
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
 msgstr "Excluir último caractere"
@@ -12780,6 +12788,10 @@ msgstr "&Parâmetros de Execução ..."
 #: lazarusidestrconsts.lismenuruntocursor
 msgid "Step over to &Cursor"
 msgstr "Executar até o &cursor"
+
+#: lazarusidestrconsts.lismenurunwithoutdebugging
+msgid "Run without Debugging"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusave
 msgctxt "lazarusidestrconsts.lismenusave"
@@ -20478,6 +20490,10 @@ msgstr "executar arquivo"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "parâmetros de execução"
+
+#: lazarusidestrconsts.srkmecrunwithoutdebugging
+msgid "run without debugging"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
