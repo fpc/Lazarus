@@ -1,7 +1,7 @@
 LICENSE AND COPYRIGHT INFORMATION ABOUT IMAGES USED IN LCL
 ----------------------------------------------------------
 
-Tango https://packages.debian.org/sid/tango-icon-theme - public domain
+Public domain Tango https://packages.debian.org/sid/tango-icon-theme
 PNG versions: http://http.debian.net/debian/pool/main/t/tango-icon-theme/tango-icon-theme_0.8.90.orig.tar.gz
 - dialogs/*
 - btnselfile.png
@@ -27,6 +27,11 @@ PNG versions: http://http.debian.net/debian/pool/main/t/tango-icon-theme/tango-i
 - button/btn_yes.png (modified Text-x-generic-apply.svg by Ondrej Pokorny)
 - button/btn_cancel.png (modified Process-stop.svg by Ondrej Pokorny)
 - wince/wincedialog_cancel.png
+- dock/lcl_dock_to_page.png
+- dock/lcl_dock_to_bottom.png (modified format-indent-less.png by Ondrej Pokorny)
+- dock/lcl_dock_to_left.png (modified format-indent-less.png by Ondrej Pokorny)
+- dock/lcl_dock_to_right.png (modified format-indent-less.png by Ondrej Pokorny)
+- dock/lcl_dock_to_top.png (modified format-indent-less.png by Ondrej Pokorny)
 
 
 Public domain cursors (common property, see e.g. https://commons.wikimedia.org/wiki/File:Cursor_Hand.png)
@@ -45,18 +50,5 @@ LCL license (created for LCL)
 - dbgriduncheckedcb.xpm
 - btncalcok.xpm
 - btncalccancel.xpm
-
-
-Unknown (added by Paul)
-- dock/*
-
-
-
-ADDING IMAGES TO LCL POLICY
----------------------------
-All images in the LCL must be public domain or especially created for the LCL and under the LCL license.
-When you are adding images to the LCL add information about their origin here in the list and also in SVN commit log.
-
-!!! Do not add images under other licenses (CC, GPL, LGPL ...) or unknown origin into the LCL !!!
-
-Please use Tango icons whenever possible because they are SVG and exist in various PNG resolutions - it will make updating LCL icons for high-DPI easy in the future.
+- dock/lcl_dock_close.png
+- dock/lcl_dock_restore.png
