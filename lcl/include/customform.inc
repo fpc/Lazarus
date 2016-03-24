@@ -1270,7 +1270,8 @@ var
   X, Y: integer;
   p: TPosition;
   AForm: TCustomForm;
-  RealRect: TRect;
+  RealRect, AFormRealRect: TRect;
+  AFormRealWidth, AFormRealHeight: Integer;
 begin
   if (Parent <> nil) or (ParentWindow <> 0) then exit;
 
@@ -1323,8 +1324,17 @@ begin
             Y := (AForm.ClientHeight - RealHeight) div 2;
           end else
           begin
-            X := ((AForm.Width - RealWidth) div 2) + AForm.Left;
-            Y := ((AForm.Height - RealHeight) div 2) + AForm.Top;
+            if AForm.HandleAllocated and (GetWindowRect(AForm.Handle, AFormRealRect) <> 0) then
+            begin // success
+              AFormRealWidth := AFormRealRect.Right-AFormRealRect.Left;
+              AFormRealHeight := AFormRealRect.Bottom-AFormRealRect.Top;
+            end else
+            begin // error
+              AFormRealWidth := AForm.Width;
+              AFormRealHeight := AForm.Height;
+            end;
+            X := ((AFormRealWidth - RealWidth) div 2) + AForm.Left;
+            Y := ((AFormRealHeight - RealHeight) div 2) + AForm.Top;
           end;
         end;
       end;
