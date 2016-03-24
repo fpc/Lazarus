@@ -165,6 +165,10 @@ var
     ScrollMsg, ScrollBar: dword;
     ScrollOffset: integer;
     Pos: TPoint;
+    MouseMessage: TLMMouseEvent;
+    SW: TScrollingWinControl;
+    SB: TControlScrollBar;
+    ScrollWheelDelta: LongInt;
   begin
     if not TWinControl(Sender).HandleAllocated then
       exit;
@@ -208,15 +212,30 @@ var
       ScrollBar := SB_VERT;
       ScrollMsg := WM_VSCROLL;
     end;
-    if Windows.GetScrollInfo(Handle, ScrollBar, ScrollInfo) then
+    if Windows.GetScrollInfo(Handle, ScrollBar, ScrollInfo)
+    and (Int64(ScrollInfo.nPage) < Int64(ScrollInfo.nMax)) then
     begin
-      with TLMMouseEvent(Message) do
+      MouseMessage := TLMMouseEvent(Message);
       begin
         if Mouse.WheelScrollLines < 0 then
           // -1 means, scroll one page
-          ScrollOffset := (WheelDelta * integer(ScrollInfo.nPage)) div 120
+          ScrollOffset := (MouseMessage.WheelDelta * integer(ScrollInfo.nPage)) div 120
         else
-          ScrollOffset := (WheelDelta * Mouse.WheelScrollLines) div 120;
+          if Sender is TScrollingWinControl then // support scrollbar increment
+          begin
+            SW := TScrollingWinControl(Sender);
+            if ScrollBar = SB_Horz then
+              SB := SW.HorzScrollBar
+            else
+              SB := SW.VertScrollBar;
+            ScrollWheelDelta :=
+              (Min(High(MouseMessage.WheelDelta), Max(Low(MouseMessage.WheelDelta),
+                (SB.Increment * MouseMessage.WheelDelta))) div 120) * 120;
+          end else
+            ScrollWheelDelta := MouseMessage.WheelDelta;
+        begin
+          ScrollOffset := (ScrollWheelDelta * Mouse.WheelScrollLines) div 120;
+        end;
         WParam := Windows.WParam(ScrollInfo.nPos - ScrollOffset);
         if WParam > ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1 then
           WParam := ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1;
@@ -225,7 +244,9 @@ var
         WParam := SB_THUMBPOSITION or (WParam shl 16);
       end;
       Windows.PostMessage(Handle, ScrollMsg, WParam, HWND(nil));
-    end;
+    end else
+    if (TControl(Sender).Parent <> nil) then
+      TControl(Sender).Parent.WindowProc(TLMessage(Message));
   end;
 
 begin

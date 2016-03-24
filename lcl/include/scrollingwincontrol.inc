@@ -304,18 +304,6 @@ begin
   HorzScrollbar.ScrollHandler(Message);
 end;
 
-procedure TScrollingWinControl.WMMouseWheel(var Message: TLMMouseEvent);
-begin
-  // support VertScrollBar.Increment on Windows.
-  // The code has no meaning on other OS because scrolling is handled there directly by the OS
-  if Mouse.WheelScrollLines > 0 then
-    Message.WheelDelta :=
-      (Min(High(Message.WheelDelta), Max(Low(Message.WheelDelta),
-        (VertScrollBar.Increment * Message.WheelDelta))) div 120) * 120;
-
-  inherited WMMouseWheel(Message);
-end;
-
 constructor TScrollingWinControl.Create(TheOwner : TComponent);
 begin
   Inherited Create(TheOwner);
