@@ -168,7 +168,6 @@ var
     MouseMessage: TLMMouseEvent;
     SW: TScrollingWinControl;
     SB: TControlScrollBar;
-    ScrollWheelDelta: LongInt;
   begin
     if not TWinControl(Sender).HandleAllocated then
       exit;
@@ -221,21 +220,19 @@ var
           // -1 means, scroll one page
           ScrollOffset := (MouseMessage.WheelDelta * integer(ScrollInfo.nPage)) div 120
         else
-          if Sender is TScrollingWinControl then // support scrollbar increment
-          begin
-            SW := TScrollingWinControl(Sender);
-            if ScrollBar = SB_Horz then
-              SB := SW.HorzScrollBar
-            else
-              SB := SW.VertScrollBar;
-            ScrollWheelDelta :=
-              (Min(High(MouseMessage.WheelDelta), Max(Low(MouseMessage.WheelDelta),
-                (SB.Increment * MouseMessage.WheelDelta))) div 120) * 120;
-          end else
-            ScrollWheelDelta := MouseMessage.WheelDelta;
+        if Sender is TScrollingWinControl then // support scrollbar increment
         begin
-          ScrollOffset := (ScrollWheelDelta * Mouse.WheelScrollLines) div 120;
-        end;
+          SW := TScrollingWinControl(Sender);
+          if ScrollBar = SB_Horz then
+            SB := SW.HorzScrollBar
+          else
+            SB := SW.VertScrollBar;
+          ScrollOffset :=
+            (Min(High(MouseMessage.WheelDelta), Max(Low(MouseMessage.WheelDelta),
+              (SB.Increment * MouseMessage.WheelDelta))) div 120);
+        end else
+          ScrollOffset := (MouseMessage.WheelDelta * Mouse.WheelScrollLines) div 120;
+
         WParam := Windows.WParam(ScrollInfo.nPos - ScrollOffset);
         if WParam > ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1 then
           WParam := ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1;
