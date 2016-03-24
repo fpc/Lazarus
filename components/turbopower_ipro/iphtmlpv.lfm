@@ -226,7 +226,9 @@ object IpHTMLPreview: TIpHTMLPreview
     Top = 36
     Width = 645
     HorzScrollBar.Page = 158
+    HorzScrollBar.Tracking = True
     VertScrollBar.Page = 125
+    VertScrollBar.Tracking = True
     Align = alClient
     ClientHeight = 332
     ClientWidth = 641
