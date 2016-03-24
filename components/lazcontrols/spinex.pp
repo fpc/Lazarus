@@ -356,14 +356,7 @@ type
 
 function DbgS(ANvb: TNullValueBehaviour): String; overload;
 
-procedure Register;
-
 implementation
-
-procedure Register;
-begin
-  RegisterComponents('LazControls', [TSpinEditEx, TFloatSpinEditEx]);
-end;
 
 {$I spinex.inc}
 

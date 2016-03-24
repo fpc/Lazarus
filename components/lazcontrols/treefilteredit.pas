@@ -130,14 +130,7 @@ type
 var
   TreeFilterGlyph: TBitmap;
 
-procedure Register;
-
 implementation
-
-procedure Register;
-begin
-  RegisterComponents('LazControls',[TTreeFilterEdit]);
-end;
 
 { TTreeFilterBranch }
 

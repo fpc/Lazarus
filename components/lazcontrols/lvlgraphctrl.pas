@@ -606,8 +606,6 @@ function dbgs(p: TLvlGraphNodeCaptionPosition): string; overload;
 function dbgs(o: TLvlGraphCtrlOption): string; overload;
 function dbgs(Options: TLvlGraphCtrlOptions): string; overload;
 
-procedure Register;
-
 implementation
 
 type
@@ -989,11 +987,6 @@ begin
       Result+=dbgs(o);
     end;
   Result:='['+Result+']';
-end;
-
-procedure Register;
-begin
-  RegisterComponents('LazControls',[TLvlGraphControl]);
 end;
 
 { TLvlGraphEdgeStyle }

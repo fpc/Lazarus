@@ -71,14 +71,7 @@ type
 var
   ListFilterGlyph: TBitmap;
 
-procedure Register;
-
 implementation
-
-procedure Register;
-begin
-  RegisterComponents('LazControls',[TListViewFilterEdit]);
-end;
 
 { TListViewFilterEdit }
 

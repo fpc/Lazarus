@@ -151,15 +151,7 @@ type
     property OnUTF8KeyPress;
   end;
 
-procedure Register;
-
 implementation
-
-procedure Register;
-begin
-  RegisterComponents('LazControls', [TCheckBoxThemed]);
-  //RegisterPropertyEditor(TypeInfo(TCaption), TCheckBoxThemed, 'Caption', TStringMultilinePropertyEditor);
-end;
 
 { TCheckBoxThemedActionLink }
 

@@ -102,14 +102,7 @@ type
              default dmManual;
   end;
 
-procedure Register;
-
 implementation
-
-procedure Register;
-begin
-  RegisterComponents('LazControls',[TExtendedNotebook]);
-end;
 
 { TExtendedNotebook }
 
