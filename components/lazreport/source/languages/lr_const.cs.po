@@ -6,9 +6,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
+"Last-Translator: Ing. Jiří Vejda <jiri.vejda@gmail.com>\n"
 "Language-Team: \n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: cs\n"
 
 #: lr_const.saboutformcapt
 msgid "About FastReport"
@@ -48,7 +49,7 @@ msgstr "Skupina:"
 
 #: lr_const.sband1
 msgid "Report title"
-msgstr "Titulek reportu:"
+msgstr "Titulek reportu"
 
 #: lr_const.sband10
 msgid "Detail footer"
@@ -151,7 +152,7 @@ msgstr "Skupina dat. zdrojů"
 #: lr_const.sbandeditorformdatasrc
 msgctxt "lr_const.sbandeditorformdatasrc"
 msgid "Data source"
-msgstr "Zdroj at"
+msgstr "Zdroj dat"
 
 #: lr_const.sbandeditorformreccount
 msgctxt "lr_const.sbandeditorformreccount"
@@ -172,7 +173,7 @@ msgstr "Chyba v čárovém kódu"
 
 #: lr_const.sbarcodeformchksum
 msgid "Check&sum"
-msgstr "Kontrolní součet"
+msgstr "Kontrolní&součet"
 
 #: lr_const.sbarcodeformcode
 msgid "&Code"
@@ -265,7 +266,7 @@ msgstr "CSV Soubor"
 
 #: lr_const.scurmemo
 msgid "Memo:"
-msgstr "Memo: (text)"
+msgstr "Memo:"
 
 #: lr_const.sdateformat1
 msgid "mm.dd.yy"
@@ -285,7 +286,7 @@ msgstr ""
 
 #: lr_const.sdatetimecategory
 msgid "Date and time"
-msgstr "Datum a čas:"
+msgstr "Datum a čas"
 
 #: lr_const.sdbfield
 msgid "DB field"
@@ -296,49 +297,42 @@ msgid "Default printer"
 msgstr "Výchozí tiskárna"
 
 #: lr_const.sdescriptionavg
-#, fuzzy
 msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
-msgstr "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
+msgstr "AVG(<Expression> [,BandName [,1]])/Vypočítá průměr <Expression> pro [BandName] zadaného řádku. Pokud je použit parametr [1], počítá i s neviditelnými řádky."
 
 #: lr_const.sdescriptioncopy
-#, fuzzy
 msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
-msgstr "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
+msgstr "COPY(<String>, <Position>, <Length>)/Vrací <Length> znaků ze <String> od  pozice <Position>."
 
 #: lr_const.sdescriptioncount
 #, fuzzy
 #| msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
 msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
-msgstr "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
+msgstr "COUNT(<BandName>)/Vrací počet datových řádků zadaných v <BandName>. "
 
 #: lr_const.sdescriptiondayof
-#, fuzzy
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
-msgstr "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
+msgstr "DAYOF(<Date>)/Vrací číslo dne (1..31) zadaného <Date>."
 
 #: lr_const.sdescriptiondec
 msgid "DEC(<Value>)/Decrement <Value>."
 msgstr ""
 
 #: lr_const.sdescriptionformatdatetime
-#, fuzzy
 msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
-msgstr "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
+msgstr "FORMATDATETIME(<Fmt>, <DateTime>)/Převede <DateTime> na textový řetězec za použití masky <Fmt>."
 
 #: lr_const.sdescriptionformatfloat
-#, fuzzy
 msgid "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
-msgstr "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
+msgstr "FORMATFLOAT(<Fmt>, <Numeric>)/Převede <Numeric> hodnotu na textový řetězec za použití masky v <Fmt>."
 
 #: lr_const.sdescriptionformattext
-#, fuzzy
 msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
-msgstr "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
+msgstr "FORMATTEXT(<Mask>, <String>)/Aplikuje masku <Mask> na zadaný <String> a vrátí naformátovaný textový řetězec."
 
 #: lr_const.sdescriptionfrac
-#, fuzzy
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
-msgstr "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
+msgstr "FRAC(<Value>)/Vrací desetinnou část destinného čísla <Value>."
 
 #: lr_const.sdescriptioninc
 msgid "INC(<Value>)/Increment <Value>."
@@ -348,57 +342,47 @@ msgstr ""
 #, fuzzy
 #| msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
-msgstr "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgstr "INPUT(<Caption> [,Default])/Zobrazí dialogové okno s názvem <Caption> a editačním polem. Pokud je nastaven parametr [Default], umístí jeho textový řetězec do editačního pole. Po stisknut tlačítka OK vrátí zadaný textový řetězec."
 
 #: lr_const.sdescriptionint
-#, fuzzy
 msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
-msgstr "INT(<Value>)/Returns the integer part of floating point <Value>."
+msgstr "INT(<Value>)/Vrací celočíselnou část z desetinného čísla <Value>."
 
 #: lr_const.sdescriptionlength
-#, fuzzy
 msgid "LENGTH(<String>)/Returns length of <String>."
-msgstr "LENGTH(<String>)/Returns length of <String>."
+msgstr "LENGTH(<String>)/Vrací počet znaků <String>."
 
 #: lr_const.sdescriptionlowercase
-#, fuzzy
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
-msgstr "LOWERCASE(<String>)/Converts <String> symbols to lower case."
+msgstr "LOWERCASE(<String>)/Převede znaky <String> na malá písmena."
 
 #: lr_const.sdescriptionmax
-#, fuzzy
 msgid "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
-msgstr "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
+msgstr "MAX(<Expression> [,BandName [,1]])/Vypočítá maximum <Expression> pro [BandName] zadaného řádku. Pokud je použit parametr [1], počítá i s neviditelnými řádky."
 
 #: lr_const.sdescriptionmaxnum
-#, fuzzy
 msgid "MAXNUM(<Value1>, <Value2>)/Returns max of given values."
-msgstr "MAXNUM(<Value1>, <Value2>)/Returns max of given values."
+msgstr "MAXNUM(<Value1>, <Value2>)/Vrací maximální hodnotu z množiny hodnot."
 
 #: lr_const.sdescriptionmessagebox
-#, fuzzy
 msgid "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Shows standard dialog window with title, text and buttons."
-msgstr "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Shows standard dialog window with title, text and buttons."
+msgstr "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Zobrazí standartní dialog s titulkem, textem a tlačítky."
 
 #: lr_const.sdescriptionmin
-#, fuzzy
 msgid "MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> for [BandName] row given. If [1] parameter is used, calculates minimum for non-visible rows too."
-msgstr "MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> for [BandName] row given. If [1] parameter is used, calculates minimum for non-visible rows too."
+msgstr "MIN(<Expression> [,BandName [,1]])/Vypočítá minimum <Expression> pro [BandName] zadaného řádku. Pokud je použit parametr [1], počítá i s neviditelnými řádky."
 
 #: lr_const.sdescriptionminnum
-#, fuzzy
 msgid "MINNUM(<Value1>, <Value2>)/Returns min of given values."
-msgstr "MINNUM(<Value1>, <Value2>)/Returns min of given values."
+msgstr "MINNUM(<Value1>, <Value2>)/Vrací minimální hodnotu z množiny hodnot."
 
 #: lr_const.sdescriptionmonthof
-#, fuzzy
 msgid "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
-msgstr "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
+msgstr "MONTHOF(<Date>)/Vrací číslo měsíce (1..12) zadaného <Date>."
 
 #: lr_const.sdescriptionnamecase
-#, fuzzy
 msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
-msgstr "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
+msgstr "NAMECASE(<String>)/Převede znaky textového řetězce <String> na malá písmena, první na velké."
 
 #: lr_const.sdescriptionnewcolumn
 msgid "NEWCOLUMN/Create new column on page for current report."
@@ -409,14 +393,12 @@ msgid "NEWPAGE/Create new page for current report."
 msgstr ""
 
 #: lr_const.sdescriptionpos
-#, fuzzy
 msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
-msgstr "POS(<SubString>, <String>)/Returns position of substring in given string."
+msgstr "POS(<SubString>, <String>)/Vrací pozici textu v daném textovém řetězci."
 
 #: lr_const.sdescriptionround
-#, fuzzy
 msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
-msgstr "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
+msgstr "ROUND(<Value>)/Zaokrouhlí desetinné číslo <Value> na nejbližší celé číslo."
 
 #: lr_const.sdescriptionshowband
 msgid "SHOWBAND(<BandName>)/Show <BandName> in report."
@@ -427,39 +409,32 @@ msgid "STOPREPORT/Terminate report creation."
 msgstr ""
 
 #: lr_const.sdescriptionstr
-#, fuzzy
 msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
-msgstr "STR(<Value>)/Converts the given (numeric) <Value> in string."
+msgstr "STR(<Value>)/Převede danou (číselnou) <Value> na textový řetězec."
 
 #: lr_const.sdescriptionstrtodate
-#, fuzzy
 msgid "STRTODATE(<String>)/Converts <String> to date."
-msgstr "STRTODATE(<String>)/Converts <String> to date."
+msgstr "STRTODATE(<String>)/Převede <String> na datum."
 
 #: lr_const.sdescriptionstrtotime
-#, fuzzy
 msgid "STRTOTIME(<String>)/Converts <String> to time."
-msgstr "STRTOTIME(<String>)/Converts <String> to time."
+msgstr "STRTOTIME(<String>)/Převede <String> na čas."
 
 #: lr_const.sdescriptionsum
-#, fuzzy
 msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
-msgstr "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
+msgstr "SUM(<Expression> [,BandName [,1]])/Vypočítá součet všech čísel <Expression> pro [BandName] zadaného řádku. Pokud je použit parametr [1], počítá i s neviditelnými řádky."
 
 #: lr_const.sdescriptiontrim
-#, fuzzy
 msgid "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
-msgstr "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
+msgstr "TRIM(<String>)/Odstraní mezery na začátku a konci ve <String> a vrátí výsledný textový řetězec."
 
 #: lr_const.sdescriptionuppercase
-#, fuzzy
 msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
-msgstr "UPPERCASE(<String>)/Converts <String> symbols to upper case."
+msgstr "UPPERCASE(<String>)/Převede znaky <String> na velká písmena."
 
 #: lr_const.sdescriptionyearof
-#, fuzzy
 msgid "YEAROF(<Date>)/Returns year of given <Date>."
-msgstr "YEAROF(<Date>)/Returns year of given <Date>."
+msgstr "YEAROF(<Date>)/Vrací rok zadaného <Date>."
 
 #: lr_const.sdesignreport
 msgid "Design report"
@@ -539,15 +514,15 @@ msgstr "Tvar"
 
 #: lr_const.sdesoptionsformshowband
 msgid "Show band &titles"
-msgstr "Ukázat titulky skupin"
+msgstr "Zobrazit titulky skupin"
 
 #: lr_const.sdesoptionsformshowgrd
 msgid "&Show grid"
-msgstr "Ukázat mřížku"
+msgstr "Zbrazit mřížku"
 
 #: lr_const.sdesoptionsformunits
 msgid "Report units"
-msgstr "Report unit"
+msgstr "Jednotky reportu"
 
 #: lr_const.sdoc
 msgid "Report:"
@@ -561,7 +536,7 @@ msgstr "Autor"
 
 #: lr_const.sdocbuild
 msgid "Build"
-msgstr "Sestávaní"
+msgstr "Sestavení"
 
 #: lr_const.sdocmajor
 msgid "Major"
@@ -592,7 +567,7 @@ msgstr "Volby reportu"
 #: lr_const.sdocoptformother
 msgctxt "lr_const.sdocoptformother"
 msgid "Other"
-msgstr "Ostatní"
+msgstr "Další"
 
 #: lr_const.sdocoptformprinter
 msgctxt "lr_const.sdocoptformprinter"
@@ -754,7 +729,7 @@ msgstr "1 strana"
 
 #: lr_const.sfindtextnotfound
 msgid "Search text not found."
-msgstr "Hledaný text nenalezen"
+msgstr "Hledaný text nenalezen."
 
 #: lr_const.sfindtextoptions
 msgctxt "lr_const.sfindtextoptions"
@@ -763,7 +738,7 @@ msgstr "Volby"
 
 #: lr_const.sfindtextorg
 msgid "Origin"
-msgstr "Původ"
+msgstr "Počátek"
 
 #: lr_const.sfindtexttext
 msgid "Text to &find"
@@ -784,7 +759,7 @@ msgstr "Zlomkový &symbol"
 #: lr_const.sfmtformfrmt
 msgctxt "lr_const.sfmtformfrmt"
 msgid "&Format"
-msgstr "&Format"
+msgstr "&Formát"
 
 #: lr_const.sfmtformfrmtvar
 msgid "Variable formatting"
@@ -901,7 +876,7 @@ msgstr ""
 
 #: lr_const.sfrdesignerexists
 msgid "You already have one TfrDesigner component"
-msgstr ""
+msgstr "Minimálně jedna TfrDesigner komponenta již existuje"
 
 #: lr_const.sfrdesignerformaddpg
 msgctxt "lr_const.sfrdesignerformaddpg"
@@ -926,11 +901,11 @@ msgstr "Zarovnat horizontálně na střed"
 
 #: lr_const.sfrdesignerformalignleftedge
 msgid "Align left edges"
-msgstr "Zarovnat leve hrany"
+msgstr "Zarovnat levé hrany"
 
 #: lr_const.sfrdesignerformalignrightedge
 msgid "Align right edges"
-msgstr "Zarovnat ptavé hrany"
+msgstr "Zarovnat pravé hrany"
 
 #: lr_const.sfrdesignerformalignvertcenter
 msgid "Align vertical centers"
@@ -950,7 +925,7 @@ msgstr "Barva pozadí"
 
 #: lr_const.sfrdesignerformbold
 msgid "Bold"
-msgstr "Bold"
+msgstr "Tučné"
 
 #: lr_const.sfrdesignerformbottomalign
 msgid "Bottom align"
@@ -1057,7 +1032,7 @@ msgstr "Vložit subreport"
 
 #: lr_const.sfrdesignerformitalic
 msgid "Italic"
-msgstr "Italic"
+msgstr "Kurzíva"
 
 #: lr_const.sfrdesignerformleftalign
 msgid "Left align"
@@ -1109,7 +1084,7 @@ msgstr "Obdélník"
 
 #: lr_const.sfrdesignerformredo
 msgid "Redo cancelled action"
-msgstr "Provéct znovu zrušenou akci"
+msgstr "Provést znovu zrušenou akci"
 
 #: lr_const.sfrdesignerformremovepg
 msgid "Remove page"
@@ -1208,7 +1183,7 @@ msgstr "Poslat na pozadí"
 
 #: lr_const.sfrdesignerform_beforeprintscript
 msgid "&Before print script ..."
-msgstr ""
+msgstr "Skript před tiskem ..."
 
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
@@ -1302,7 +1277,7 @@ msgstr "Náhled"
 
 #: lr_const.sfrdesignerform_rect
 msgid "&Rectangle"
-msgstr "Obdélnák"
+msgstr "Obdélník"
 
 #: lr_const.sfrdesignerform_redo
 msgid "&Redo"
@@ -1318,7 +1293,7 @@ msgstr "Volby reportu ..."
 
 #: lr_const.sfrdesignerform_save
 msgid "&Save"
-msgstr "Uložiz"
+msgstr "Uložit"
 
 #: lr_const.sfrdesignerform_saveas
 msgid "Save &as ..."
@@ -1449,7 +1424,7 @@ msgstr "Zvýrazněné atributy"
 
 #: lr_const.shilightformitalic
 msgid "&Italic"
-msgstr "Italic"
+msgstr "Kurzíva"
 
 #: lr_const.shilightformother
 msgid "Ot&her"
@@ -1612,7 +1587,7 @@ msgstr "Na poslední stránce"
 
 #: lr_const.sother
 msgid "Other ..."
-msgstr "Ostatní .."
+msgstr "Ostatní ..."
 
 #: lr_const.sothercategory
 msgctxt "lr_const.sothercategory"
@@ -2115,7 +2090,7 @@ msgstr "Podle řádků"
 #: lr_const.spgoptformcapt
 msgctxt "lr_const.spgoptformcapt"
 msgid "Page options"
-msgstr "Volby strábjy"
+msgstr "Volby stránky"
 
 #: lr_const.spgoptformcolgap
 msgid "&Column gap, mm"
@@ -2299,7 +2274,7 @@ msgstr "Aktuální stránka"
 
 #: lr_const.sprintforminfo
 msgid "Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12"
-msgstr "Vložte čísla stránek a/nebo rozsahy. Užíjte čárku (,) a pomlčku (-). Příklad: 1,3,5-12"
+msgstr "Vložte čísla stránek a/nebo rozsahy. Použijte čárku (,) a pomlčku (-). Příklad: 1,3,5-12"
 
 #: lr_const.sprintformnumber
 msgid "&Numbers:"
@@ -2324,7 +2299,7 @@ msgstr "Vlastnosti"
 
 #: lr_const.sprintifsubsetempty
 msgid "Print if detail empty"
-msgstr "Tisknout pokud je detail prázdný"
+msgstr "Tisknout detail pokud je prázdný"
 
 #: lr_const.sremovepg
 msgid "Remove this page?"
@@ -2332,7 +2307,7 @@ msgstr "Odstranit tuto stránku?"
 
 #: lr_const.srepeatheader
 msgid "Show on all pages"
-msgstr "Ukázat na všech stránkách"
+msgstr "Zobrazit na všech stránkách"
 
 #: lr_const.srepfile
 msgid "Report file"
@@ -2404,7 +2379,7 @@ msgstr "Příklad :"
 
 #: lr_const.sroundrectformshadow
 msgid "Shadow width"
-msgstr "Šářka stínu"
+msgstr "Šířka stínu"
 
 #: lr_const.sroundrectformstyle
 msgid "Style"
@@ -2412,7 +2387,7 @@ msgstr "Styl"
 
 #: lr_const.sroundrectformstyledif
 msgid "Vertical,Horizontal,Elliptic,Rectangle,Horiz._Center,Vert._Center"
-msgstr "Vertikální,Horizontální,Eliptický,Obdélníkový,Horiz._Centr,Vert.Centr"
+msgstr "Vertikální,Horizontální,Eliptický,Obdélníkový,Horiz._Centr,Vert._Centr"
 
 #: lr_const.sroundrectformvar
 msgid "Variables ..."
@@ -2474,7 +2449,7 @@ msgstr "Ostatní"
 
 #: lr_const.sstretched
 msgid "Stretched"
-msgstr "Roztežené"
+msgstr "Roztažené"
 
 #: lr_const.sstringcategory
 msgid "String"
