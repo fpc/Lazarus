@@ -15,6 +15,18 @@ msgstr ""
 msgid "Close"
 msgstr "Bezárás"
 
+#: iphtmlpv.rsiphtmlpreviewfitall
+msgid "Fit all"
+msgstr ""
+
+#: iphtmlpv.rsiphtmlpreviewfitheight
+msgid "Height"
+msgstr ""
+
+#: iphtmlpv.rsiphtmlpreviewfitwidth
+msgid "Width"
+msgstr ""
+
 #: iphtmlpv.rsiphtmlpreviewof
 msgid "of"
 msgstr "/"
@@ -38,3 +50,4 @@ msgstr "Nyomtató választása..."
 #: iphtmlpv.rsiphtmlpreviewzoom
 msgid "Zoom:"
 msgstr "Nagyítás:"
+

@@ -1,34 +1,34 @@
 object IpHTMLPreview: TIpHTMLPreview
   Left = 274
-  Height = 372
+  Height = 498
   Top = 141
-  Width = 645
+  Width = 868
   Caption = 'Print preview'
-  ClientHeight = 372
-  ClientWidth = 645
+  ClientHeight = 498
+  ClientWidth = 868
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '1.7'
-  object Panel1: TPanel
+  object ToolbarPanel: TPanel
     Left = 0
     Height = 36
     Top = 0
-    Width = 645
+    Width = 868
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 36
-    ClientWidth = 645
+    ClientWidth = 868
     TabOrder = 0
     object Label1: TLabel
       AnchorSideLeft.Control = btnPrev
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = ToolbarPanel
       AnchorSideTop.Side = asrCenter
-      Left = 422
+      Left = 551
       Height = 15
       Top = 11
       Width = 29
@@ -39,9 +39,9 @@ object IpHTMLPreview: TIpHTMLPreview
     object Label2: TLabel
       AnchorSideLeft.Control = edtPage
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = ToolbarPanel
       AnchorSideTop.Side = asrCenter
-      Left = 493
+      Left = 622
       Height = 15
       Top = 11
       Width = 11
@@ -52,9 +52,9 @@ object IpHTMLPreview: TIpHTMLPreview
     object lblMaxPage: TLabel
       AnchorSideLeft.Control = Label2
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = ToolbarPanel
       AnchorSideTop.Side = asrCenter
-      Left = 509
+      Left = 638
       Height = 1
       Top = 18
       Width = 1
@@ -64,7 +64,7 @@ object IpHTMLPreview: TIpHTMLPreview
     object Label3: TLabel
       AnchorSideLeft.Control = btnSelectPrinter
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = ToolbarPanel
       AnchorSideTop.Side = asrCenter
       Left = 170
       Height = 15
@@ -75,7 +75,7 @@ object IpHTMLPreview: TIpHTMLPreview
       ParentColor = False
     end
     object btnPrint: TButton
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = ToolbarPanel
       AnchorSideTop.Side = asrCenter
       Left = 5
       Height = 25
@@ -89,11 +89,11 @@ object IpHTMLPreview: TIpHTMLPreview
       TabOrder = 0
     end
     object btnFirst: TButton
-      AnchorSideLeft.Control = btnClose
+      AnchorSideLeft.Control = btnFit
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = ToolbarPanel
       AnchorSideTop.Side = asrCenter
-      Left = 336
+      Left = 465
       Height = 25
       Top = 6
       Width = 42
@@ -101,14 +101,14 @@ object IpHTMLPreview: TIpHTMLPreview
       BorderSpacing.Around = 5
       Caption = '<<'
       OnClick = btnFirstClick
-      TabOrder = 1
+      TabOrder = 6
     end
     object btnPrev: TButton
       AnchorSideLeft.Control = btnFirst
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = ToolbarPanel
       AnchorSideTop.Side = asrCenter
-      Left = 383
+      Left = 512
       Height = 25
       Top = 6
       Width = 34
@@ -116,14 +116,14 @@ object IpHTMLPreview: TIpHTMLPreview
       BorderSpacing.Around = 5
       Caption = '<'
       OnClick = btnPrevClick
-      TabOrder = 2
+      TabOrder = 7
     end
     object btnNext: TButton
       AnchorSideLeft.Control = lblMaxPage
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = ToolbarPanel
       AnchorSideTop.Side = asrCenter
-      Left = 515
+      Left = 644
       Height = 25
       Top = 6
       Width = 34
@@ -131,14 +131,14 @@ object IpHTMLPreview: TIpHTMLPreview
       BorderSpacing.Around = 5
       Caption = '>'
       OnClick = btnNextClick
-      TabOrder = 4
+      TabOrder = 9
     end
     object btnLast: TButton
       AnchorSideLeft.Control = btnNext
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = ToolbarPanel
       AnchorSideTop.Side = asrCenter
-      Left = 554
+      Left = 683
       Height = 25
       Top = 6
       Width = 42
@@ -146,68 +146,43 @@ object IpHTMLPreview: TIpHTMLPreview
       BorderSpacing.Around = 5
       Caption = '>>'
       OnClick = btnLastClick
-      TabOrder = 5
+      TabOrder = 10
     end
     object btnClose: TButton
-      AnchorSideLeft.Control = ZoomCombo
+      AnchorSideLeft.Control = btnLast
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = ToolbarPanel
       AnchorSideTop.Side = asrCenter
-      Left = 276
+      Left = 746
       Height = 25
       Top = 6
       Width = 55
       AutoSize = True
+      BorderSpacing.Left = 16
       BorderSpacing.Around = 5
-      Cancel = True
       Caption = 'Close'
       ModalResult = 2
-      TabOrder = 6
+      TabOrder = 11
     end
     object edtPage: TEdit
       AnchorSideLeft.Control = Label1
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = ToolbarPanel
       AnchorSideTop.Side = asrCenter
-      Left = 456
+      Left = 585
       Height = 23
       Top = 7
       Width = 32
+      Alignment = taRightJustify
       BorderSpacing.Around = 5
       OnChange = edtPageChange
-      TabOrder = 3
+      TabOrder = 8
       Text = '1'
-    end
-    object ZoomCombo: TComboBox
-      AnchorSideLeft.Control = Label3
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel1
-      AnchorSideTop.Side = asrCenter
-      Left = 210
-      Height = 23
-      Top = 7
-      Width = 61
-      BorderSpacing.Around = 5
-      ItemHeight = 15
-      Items.Strings = (
-        '10%'
-        '25%'
-        '50%'
-        '75%'
-        '100%'
-        '150%'
-        '200%'
-        '300%'
-        '400%'
-      )
-      OnChange = ZoomComboChange
-      Style = csDropDownList
-      TabOrder = 7
     end
     object btnSelectPrinter: TButton
       AnchorSideLeft.Control = btnPrint
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = ToolbarPanel
       AnchorSideTop.Side = asrCenter
       Left = 61
       Height = 25
@@ -217,21 +192,83 @@ object IpHTMLPreview: TIpHTMLPreview
       BorderSpacing.Around = 5
       Caption = 'Select printer...'
       OnClick = btnSelectPrinterClick
-      TabOrder = 8
+      TabOrder = 1
+    end
+    object edtZoom: TSpinEdit
+      AnchorSideLeft.Control = Label3
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ToolbarPanel
+      AnchorSideTop.Side = asrCenter
+      Left = 210
+      Height = 23
+      Top = 7
+      Width = 61
+      Alignment = taRightJustify
+      BorderSpacing.Around = 5
+      MaxValue = 1000
+      MinValue = 1
+      OnChange = edtZoomChange
+      TabOrder = 2
+      Value = 100
+    end
+    object btnFitHeight: TButton
+      AnchorSideLeft.Control = edtZoom
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ToolbarPanel
+      AnchorSideTop.Side = asrCenter
+      Left = 276
+      Height = 25
+      Top = 6
+      Width = 62
+      AutoSize = True
+      BorderSpacing.Around = 5
+      Caption = 'Height'
+      OnClick = btnFitHeightClick
+      TabOrder = 3
+    end
+    object btnFitWidth: TButton
+      AnchorSideLeft.Control = btnFitHeight
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ToolbarPanel
+      AnchorSideTop.Side = asrCenter
+      Left = 343
+      Height = 25
+      Top = 6
+      Width = 58
+      AutoSize = True
+      BorderSpacing.Around = 5
+      Caption = 'Width'
+      OnClick = btnFitWidthClick
+      TabOrder = 4
+    end
+    object btnFit: TButton
+      AnchorSideLeft.Control = btnFitWidth
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ToolbarPanel
+      AnchorSideTop.Side = asrCenter
+      Left = 406
+      Height = 25
+      Top = 6
+      Width = 54
+      AutoSize = True
+      BorderSpacing.Around = 5
+      Caption = 'Fit all'
+      OnClick = btnFitClick
+      TabOrder = 5
     end
   end
   object ScrollBox1: TScrollBox
     Left = 0
-    Height = 336
+    Height = 462
     Top = 36
-    Width = 645
+    Width = 868
     HorzScrollBar.Page = 158
     HorzScrollBar.Tracking = True
     VertScrollBar.Page = 125
     VertScrollBar.Tracking = True
     Align = alClient
-    ClientHeight = 332
-    ClientWidth = 641
+    ClientHeight = 458
+    ClientWidth = 864
     Color = clBtnFace
     ParentColor = False
     TabOrder = 1
@@ -241,8 +278,9 @@ object IpHTMLPreview: TIpHTMLPreview
       Top = 0
       Width = 158
       BevelOuter = bvNone
-      ClientHeight = 125
-      ClientWidth = 158
+      BorderStyle = bsSingle
+      ClientHeight = 121
+      ClientWidth = 154
       Color = clWhite
       ParentColor = False
       TabOrder = 0

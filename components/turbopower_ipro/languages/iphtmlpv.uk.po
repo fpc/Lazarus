@@ -1,4 +1,3 @@
- Igor Paliychuk <mansonigor@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
@@ -16,6 +15,18 @@ msgstr ""
 #: iphtmlpv.rsiphtmlpreviewclose
 msgid "Close"
 msgstr "Закрити"
+
+#: iphtmlpv.rsiphtmlpreviewfitall
+msgid "Fit all"
+msgstr ""
+
+#: iphtmlpv.rsiphtmlpreviewfitheight
+msgid "Height"
+msgstr ""
+
+#: iphtmlpv.rsiphtmlpreviewfitwidth
+msgid "Width"
+msgstr ""
 
 #: iphtmlpv.rsiphtmlpreviewof
 msgid "of"

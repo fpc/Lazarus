@@ -13,6 +13,18 @@ msgstr ""
 msgid "Close"
 msgstr "Закрыть"
 
+#: iphtmlpv.rsiphtmlpreviewfitall
+msgid "Fit all"
+msgstr ""
+
+#: iphtmlpv.rsiphtmlpreviewfitheight
+msgid "Height"
+msgstr ""
+
+#: iphtmlpv.rsiphtmlpreviewfitwidth
+msgid "Width"
+msgstr ""
+
 #: iphtmlpv.rsiphtmlpreviewof
 msgid "of"
 msgstr "из"

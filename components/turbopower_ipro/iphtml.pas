@@ -99,6 +99,10 @@ const
   FONTSIZESVALUSARRAY : array[0..6] of integer = (8,10,12,14,18,24,36);
   MAXWORDS = 65536;
 
+  ZOOM_TO_FIT = 0;
+  ZOOM_TO_FIT_WIDTH = -1;
+  ZOOM_TO_FIT_HEIGHT = -2;
+
 type
   {$IFDEF IP_LAZARUS}
   TIpEnumItemsMethod = TLCLEnumItemsMethod;
@@ -2235,7 +2239,7 @@ type
     PrintWidth, PrintHeight: Integer;
     PrintTopLeft: TPoint;
     PageCount: Integer;
-    function AntiAliasingMode: TAntiAliasingMode;
+    function PreviewAntiAliasingMode: TAntiAliasingMode;
     {$ENDIF}
     procedure InvalidateSize;
     property Hyper : TIpHtml read FHyper write SetHtml;
@@ -2395,21 +2399,58 @@ type
   TIpHtmlControlEvent2 = procedure(Sender: TIpHtmlCustomPanel;
     Frame: TIpHtmlFrame; Html: TIpHtml; Node: TIpHtmlNodeControl; var cancel: boolean) of object;
 
-  TIpHtmlPrintSettings = class(TPersistent)
+  TIpHtmlPreviewSettings = class(TPersistent)
   private
     FAntiAliasingMode: TAntiAliasingMode;
+    FPosition: TPosition;
+    FMaximized: Boolean;
+    FLeft: Integer;
+    FTop: Integer;
+    FWidth: Integer;
+    FHeight: Integer;
+    FZoom: Integer;
+  private
+    function IsLeftStored: Boolean;
+    function IsHeightStored: Boolean;
+    function IsTopStored: Boolean;
+    function IsWidthStored: Boolean;
+  public
+    constructor Create;
+  published
+    property AntiAliasingMode: TAntiAliasingMode
+      read FAntiAliasingMode write FAntiAliasingMode default amDontCare;
+    property Position: TPosition
+      read FPosition write FPosition default poScreenCenter;
+    property Maximized: Boolean
+      read FMaximized write FMaximized default false;
+    property Left: Integer
+      read FLeft write FLeft stored IsLeftStored;
+    property Top: Integer
+      read FTop write FTop stored IsTopStored;
+    property Width: Integer
+      read FWidth write FWidth stored IsWidthStored;
+    property Height: Integer
+      read FHeight write FHeight stored IsHeightStored;
+    property Zoom: integer
+      read FZoom write FZoom default 100;
+  end;
+
+  TIpHtmlPrintSettings = class(TPersistent)
+  private
+    FPreview: TIpHtmlPreviewSettings;
     FMarginTop: Double;
     FMarginLeft: Double;
     FMarginBottom: Double;
     FMarginRight: Double;
   public
     constructor Create;
+    destructor Destroy; override;
   published
-    property AntiAliasingMode: TAntiAliasingMode read FAntiAliasingMode write FAntiAliasingMode;
     property MarginLeft: Double read FMarginLeft write FMarginLeft;
     property MarginTop: Double read FMarginTop write FMarginTop;
     property MarginRight: Double read FMarginRight write FMarginRight;
     property MarginBottom: Double read FMarginBottom write FMarginBottom;
+    property Preview: TIpHtmlPreviewSettings read FPreview write FPreview;
   end;
 
   { TIpHtmlCustomPanel }
@@ -13324,9 +13365,9 @@ begin
 end;
 
 {$IFDEF Html_Print}
-function TIpHtmlInternalPanel.AntiAliasingMode: TAntiAliasingMode;
+function TIpHtmlInternalPanel.PreviewAntiAliasingMode: TAntiAliasingMode;
 begin
-  Result := HTMLPanel.PrintSettings.AntiAliasingMode;
+  Result := HTMLPanel.PrintSettings.Preview.AntiAliasingMode;
 end;
 
 procedure TIpHtmlInternalPanel.BeginPrint;
@@ -13447,20 +13488,46 @@ begin
 end;
 
 procedure TIpHtmlInternalPanel.PrintPreview;
+var
+  preview: TIpHtmlPreview;
+  p: TPosition;
 begin
   if (Hyper <> nil) then begin
     BeginPrint;
     try
 
-      with TIpHTMLPreview.Create(Application) do
+      preview := TIpHTMLPreview.Create(Application);
+      with preview do
         try
+          p := HTMLPanel.PrintSettings.Preview.Position;
+          if (p = poDesigned) or (p = poDefaultSizeOnly) then begin
+            Left := HTMLPanel.PrintSettings.Preview.Left;
+            Top := HTMLPanel.PrintSettings.Preview.Top;
+          end;
+          if (p <> poDefault) and (p <> poDefaultSizeOnly) then begin
+            Width := HTMLPanel.PrintSettings.Preview.Width;
+            Height := HTMLPanel.PrintSettings.Preview.Height;
+          end;
+          Position := p;
+          if HTMLPanel.PrintSettings.Preview.Maximized then
+            WindowState := wsMaximized else
+            WindowState := wsNormal;
           lblMaxPage.Caption := IntToStr(PageCount);
           FCurPage := 1;
           HTML := Hyper;
           ScaleFonts := True;
           try
             OwnerPanel := Self;
+            Zoom := HTMLPanel.PrintSettings.Preview.Zoom;
             ShowModal;
+            HTMLPanel.PrintSettings.Preview.Maximized := (WindowState = wsMaximized);
+            if (WindowState = wsNormal) and (p <> poDefault) and (p <> poDefaultSizeOnly)
+            then begin
+              HTMLPanel.PrintSettings.Preview.Left := Left;
+              HTMLPanel.PrintSettings.Preview.Top := Top;
+              HTMLPanel.PrintSettings.Preview.Width := Width;
+              HTMLPanel.PrintSettings.Preview.Height := Height;
+            end;
           finally
             ScaleFonts := False;
           end;
@@ -15851,15 +15918,59 @@ begin
     Result := nil;
 end;
 
+{ TIpHtmlPreviewSettings }
+
+constructor TIpHtmlPreviewSettings.Create;
+begin
+  inherited;
+  FPosition := poScreenCenter;
+  FZoom := 100;
+  FWidth := Screen.Width * 3 div 4;
+  FHeight := Screen.Height * 3 div 4;
+  FLeft := Screen.Width div 4;
+  FTop := Screen.Height div 4;
+end;
+
+function TIpHtmlPreviewSettings.IsLeftStored: Boolean;
+begin
+  Result := ((FPosition = poDesigned) or (FPosition = poDefaultSizeOnly)) and
+            (FLeft <> Screen.Width div 4);
+end;
+
+function TIpHtmlPreviewSettings.IsHeightStored: Boolean;
+begin
+  Result := ((FPosition = poDesigned) or (FPosition = poDefaultPosOnly)) and
+            (FHeight <> Screen.Height * 3 div 4)
+end;
+
+function TIpHtmlPreviewSettings.IsTopStored: Boolean;
+begin
+  Result := ((FPosition = poDesigned) or (FPosition = poDefaultSizeOnly)) and
+            (FTop <> Screen.Height div 4);
+end;
+
+function TIpHtmlPreviewSettings.IsWidthStored: Boolean;
+begin
+  Result := ((FPosition = poDesigned) or (FPosition = poDefaultPosOnly)) and
+            (FWidth <> Screen.Width * 3 div 4)
+end;
+
 { TIpHtmlPrintSettings }
 
 constructor TIpHtmlPrintSettings.Create;
 begin
   inherited;
+  FPreview := TIpHtmlPreviewSettings.Create;
   FMarginLeft := DEFAULT_PRINTMARGIN;
   FMarginTop := DEFAULT_PRINTMARGIN;
   FMarginRight := DEFAULT_PRINTMARGIN;
   FMarginBottom := DEFAULT_PRINTMARGIN;
+end;
+
+destructor TIpHtmlPrintSettings.Destroy;
+begin
+  FPreview.Free;
+  inherited;
 end;
 
 { TIpHtmlNodeTH }

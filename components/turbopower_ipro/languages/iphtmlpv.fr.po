@@ -15,6 +15,18 @@ msgstr ""
 msgid "Close"
 msgstr "Fermer"
 
+#: iphtmlpv.rsiphtmlpreviewfitall
+msgid "Fit all"
+msgstr ""
+
+#: iphtmlpv.rsiphtmlpreviewfitheight
+msgid "Height"
+msgstr ""
+
+#: iphtmlpv.rsiphtmlpreviewfitwidth
+msgid "Width"
+msgstr ""
+
 #: iphtmlpv.rsiphtmlpreviewof
 msgid "of"
 msgstr "de"
@@ -38,3 +50,4 @@ msgstr "Choisir une imprimante..."
 #: iphtmlpv.rsiphtmlpreviewzoom
 msgid "Zoom:"
 msgstr "Zoom :"
+
