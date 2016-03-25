@@ -366,7 +366,7 @@ const
   vmtInstanceSizeNeg = vmtInstanceSize+sizeof(ptrint);
 
 type
-  // these definitions are copied from objpas.inc
+  // these definitions are copied from typinfo.pp
 
   TMethodNameRec = packed record
     Name : PShortString;
@@ -396,7 +396,7 @@ type
   packed
 {$endif FPC_REQUIRES_PROPER_ALIGNMENT}
   record  
-    FieldOffset: LongWord;
+    FieldOffset: PtrUInt;
     ClassTypeIndex: Word;
     Name: ShortString;
   end;
