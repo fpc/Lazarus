@@ -19209,8 +19209,11 @@ begin
   W := QWidget_width(Widget) div 5;
   H := W;
 
-  APreviewControl.Width := W;
-  APreviewControl.Height := H;
+  if Assigned(APreviewControl) then
+  begin
+    APreviewControl.Width := W;
+    APreviewControl.Height := H;
+  end;
 
   QWidget_setGeometry(FTextWidget, 0, 0, W, 32);
   QWidget_setMaximumHeight(FTextWidget, 32);
