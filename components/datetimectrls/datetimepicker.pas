@@ -250,6 +250,7 @@ type
     procedure SetHMSMs(const AValue: THMSMs);
     procedure UpdateIfUserChangedText;
     function GetSelectedText: String;
+    procedure AdjustSelection;
     procedure AdjustEffectiveCenturyFrom;
     procedure AdjustEffectiveDateDisplayOrder;
     procedure AdjustEffectiveHideDateTimeParts;
@@ -913,8 +914,10 @@ begin
     PreviousEffectiveDDO := FEffectiveDateDisplayOrder;
     FDateDisplayOrder := AValue;
     AdjustEffectiveDateDisplayOrder;
-    if FEffectiveDateDisplayOrder <> PreviousEffectiveDDO then
+    if FEffectiveDateDisplayOrder <> PreviousEffectiveDDO then begin
+      AdjustSelection;
       UpdateDate;
+    end;
   end;
 end;
 
@@ -1652,6 +1655,13 @@ begin
     Result := FTimeText[TDateTimePart(FSelectedTextPart - 1)];
 end;
 
+procedure TCustomDateTimePicker.AdjustSelection;
+begin
+  if GetDateTimePartFromTextPart(FSelectedTextPart) in
+                   FEffectiveHideDateTimeParts then
+    MoveSelectionLR(False);
+end;
+
 procedure TCustomDateTimePicker.AdjustEffectiveCenturyFrom;
 var
   Y1, Y2, M, D: Word;
@@ -1830,10 +1840,7 @@ begin
 
   if FEffectiveHideDateTimeParts
                           <> PreviousEffectiveHideDateTimeParts then begin
-    if GetDateTimePartFromTextPart(FSelectedTextPart) in
-                     FEffectiveHideDateTimeParts then
-      MoveSelectionLR(False);
-
+    AdjustSelection;
     FRecalculatingTextSizesNeeded := True;
     UpdateShowArrowButton;
     UpdateDate;
