@@ -2265,6 +2265,7 @@ components/lazcontrols/images/lazcontrols_list.txt svneol=native#text/plain
 components/lazcontrols/images/tcheckboxthemed.png -text svneol=unset#image/png
 components/lazcontrols/images/tdividerbevel.png -text
 components/lazcontrols/images/textendednotebook.png -text
+components/lazcontrols/images/textendedtabcontrol.png -text svneol=unset#image/png
 components/lazcontrols/images/tfloatspineditex.png -text svneol=unset#image/png
 components/lazcontrols/images/tlistfilteredit.png -text
 components/lazcontrols/images/tlistviewfilteredit.png -text svneol=unset#image/png

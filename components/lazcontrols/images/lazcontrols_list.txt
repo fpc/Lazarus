@@ -1,6 +1,7 @@
 tcheckboxthemed.png
 tdividerbevel.png
 textendednotebook.png
+textendedtabcontrol.png
 tlistfilteredit.png
 tlistviewfilteredit.png
 ttreefilteredit.png
