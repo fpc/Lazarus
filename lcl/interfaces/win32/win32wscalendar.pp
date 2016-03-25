@@ -150,7 +150,8 @@ begin
   case HitPart of
     MCHT_CALENDARDATE,
     MCHT_CALENDARDATENEXT,
-    MCHT_CALENDARDATEPREV: Result := cpDate;
+    MCHT_CALENDARDATEPREV,
+    MCHT_TODAYLINK: Result := cpDate;
     MCHT_CALENDARWEEKNUM : Result := cpWeekNumber;
     MCHT_TITLEBK: Result := cpTitle;
     MCHT_TITLEMONTH: Result := cpTitleMonth;
