@@ -4421,7 +4421,7 @@ begin
     aPos := Message.Pos;
 
   with FGCache do begin
-    TL:=  integer(PtrUInt(AccumWidth[ MaxTopLeft.X ])) - FixedWidth;
+    TL:=  Max(integer(PtrUInt(AccumWidth[ MaxTopLeft.X ])) - FixedWidth, GridWidth - ClientWidth);
     CTL:= integer(PtrUInt(AccumWidth[ FTopLeft.X ])) - FixedWidth + TLColOff;
   end;
 
@@ -4539,7 +4539,7 @@ begin
     exit;
 
   with FGCache do begin
-    TL:=  integer(PtrUInt(AccumHeight[ MaxTopLeft.Y ])) - FixedHeight;
+    TL:=  Max(integer(PtrUInt(AccumHeight[ MaxTopLeft.Y ])) - FixedHeight, GridHeight - ClientHeight);
     CTL:= integer(PtrUInt(AccumHeight[ FTopLeft.Y ])) - FixedHeight + TLRowOff;
   end;
 
