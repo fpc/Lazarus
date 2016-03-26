@@ -2471,6 +2471,7 @@ type
     FPrintSettings: TIpHtmlPrintSettings;
     FFactBAParag: Real;
     FWantTabs: Boolean;
+    FScrollDist: Integer;
     procedure SetDataProvider(const AValue: TIpAbstractHtmlDataProvider);
     procedure SetFactBAParag(const Value: Real);
     function FactBAParagNotIs1: Boolean;
@@ -2586,6 +2587,7 @@ type
     property MarginHeight: Integer read FMarginHeight write FMarginHeight default 10;
     property MarginWidth: Integer read FMarginWidth write FMarginWidth default 10;
     property PrintSettings: TIpHtmlPrintSettings read FPrintSettings write FPrintSettings;
+    property ScrollDist: Integer read FScrollDist write FScrollDist default 100;
     property ShowHints: Boolean read FShowHints write FShowHints default True;
     property TextColor: TColor read FTextColor write FTextColor default clBlack;
     property Title: string read GetTitle;
@@ -2632,6 +2634,7 @@ type
     property PrintSettings;
     property MarginHeight;
     property MarginWidth;
+    property ScrollDist;
     property ShowHints;
     property TabOrder;
     property TabStop;
@@ -13264,22 +13267,22 @@ begin
   end
   else if key = VK_UP then // up
   begin
-    TIpHtmlCustomPanel(Owner).Scroll(hsaUp);
+    TIpHtmlCustomPanel(Owner).Scroll(hsaUp, TIpHtmlCustomPanel(Owner).ScrollDist);
     Key := 0
   end
   else if key = VK_DOWN then // down
   begin
-    TIpHtmlCustomPanel(Owner).Scroll(hsaDown);
+    TIpHtmlCustomPanel(Owner).Scroll(hsaDown, TIpHtmlCustomPanel(Owner).ScrollDist);
     Key := 0
   end
   else if key = VK_LEFT then // left
   begin
-    TIpHtmlCustomPanel(Owner).Scroll(hsaLeft);
+    TIpHtmlCustomPanel(Owner).Scroll(hsaLeft, TIpHtmlCustomPanel(Owner).ScrollDist);
     Key := 0
   end
   else if key = VK_RIGHT then // right
   begin
-    TIpHtmlCustomPanel(Owner).Scroll(hsaRight);
+    TIpHtmlCustomPanel(Owner).Scroll(hsaRight, TIpHtmlCustomPanel(Owner).ScrollDist);
     Key := 0
   end
   else if key = VK_HOME then // home
@@ -15017,6 +15020,7 @@ begin
   FPrintSettings := TIpHtmlPrintSettings.Create;
   FFactBAParag := 1;
   FWantTabs := True;
+  FScrollDist := 100;
 end;
 
 destructor TIpHtmlCustomPanel.Destroy;
