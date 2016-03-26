@@ -2,10 +2,10 @@ object IpHTMLPreview: TIpHTMLPreview
   Left = 274
   Height = 498
   Top = 141
-  Width = 868
+  Width = 863
   Caption = 'Print preview'
   ClientHeight = 498
-  ClientWidth = 868
+  ClientWidth = 863
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
@@ -16,12 +16,12 @@ object IpHTMLPreview: TIpHTMLPreview
     Left = 0
     Height = 36
     Top = 0
-    Width = 868
+    Width = 863
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 36
-    ClientWidth = 868
+    ClientWidth = 863
     TabOrder = 0
     object Label1: TLabel
       AnchorSideLeft.Control = btnPrev
@@ -261,14 +261,14 @@ object IpHTMLPreview: TIpHTMLPreview
     Left = 0
     Height = 462
     Top = 36
-    Width = 868
+    Width = 863
     HorzScrollBar.Page = 158
     HorzScrollBar.Tracking = True
     VertScrollBar.Page = 125
     VertScrollBar.Tracking = True
     Align = alClient
     ClientHeight = 458
-    ClientWidth = 864
+    ClientWidth = 859
     Color = clBtnFace
     ParentColor = False
     TabOrder = 1

@@ -2409,11 +2409,6 @@ type
     FWidth: Integer;
     FHeight: Integer;
     FZoom: Integer;
-  private
-    function IsLeftStored: Boolean;
-    function IsHeightStored: Boolean;
-    function IsTopStored: Boolean;
-    function IsWidthStored: Boolean;
   public
     constructor Create;
   published
@@ -2424,13 +2419,13 @@ type
     property Maximized: Boolean
       read FMaximized write FMaximized default false;
     property Left: Integer
-      read FLeft write FLeft stored IsLeftStored;
+      read FLeft write FLeft;
     property Top: Integer
-      read FTop write FTop stored IsTopStored;
+      read FTop write FTop;
     property Width: Integer
-      read FWidth write FWidth stored IsWidthStored;
+      read FWidth write FWidth;
     property Height: Integer
-      read FHeight write FHeight stored IsHeightStored;
+      read FHeight write FHeight;
     property Zoom: integer
       read FZoom write FZoom default 100;
   end;
@@ -13503,13 +13498,13 @@ begin
       with preview do
         try
           p := HTMLPanel.PrintSettings.Preview.Position;
+          if not (p in [poDefault, poDefaultSizeOnly]) then begin
+            Width := HTMLPanel.PrintSettings.Preview.Width;
+            Height := HTMLPanel.PrintSettings.Preview.Height;
+          end;
           if (p = poDesigned) or (p = poDefaultSizeOnly) then begin
             Left := HTMLPanel.PrintSettings.Preview.Left;
             Top := HTMLPanel.PrintSettings.Preview.Top;
-          end;
-          if (p <> poDefault) and (p <> poDefaultSizeOnly) then begin
-            Width := HTMLPanel.PrintSettings.Preview.Width;
-            Height := HTMLPanel.PrintSettings.Preview.Height;
           end;
           Position := p;
           if HTMLPanel.PrintSettings.Preview.Maximized then
@@ -13524,12 +13519,15 @@ begin
             Zoom := HTMLPanel.PrintSettings.Preview.Zoom;
             ShowModal;
             HTMLPanel.PrintSettings.Preview.Maximized := (WindowState = wsMaximized);
-            if (WindowState = wsNormal) and (p <> poDefault) and (p <> poDefaultSizeOnly)
-            then begin
-              HTMLPanel.PrintSettings.Preview.Left := Left;
-              HTMLPanel.PrintSettings.Preview.Top := Top;
-              HTMLPanel.PrintSettings.Preview.Width := Width;
-              HTMLPanel.PrintSettings.Preview.Height := Height;
+            if (WindowState = wsNormal) then begin
+              if (p = poDesigned) or (p = poDefaultSizeOnly) then begin
+                HTMLPanel.PrintSettings.Preview.Left := Left;
+                HTMLPanel.PrintSettings.Preview.Top := Top;
+              end;
+              if not (p in [poDefault, poDefaultSizeOnly]) then begin
+                HTMLPanel.PrintSettings.Preview.Width := Width;
+                HTMLPanel.PrintSettings.Preview.Height := Height;
+              end;
             end;
           finally
             ScaleFonts := False;
@@ -15940,30 +15938,6 @@ begin
   FHeight := Screen.Height * 3 div 4;
   FLeft := Screen.Width div 4;
   FTop := Screen.Height div 4;
-end;
-
-function TIpHtmlPreviewSettings.IsLeftStored: Boolean;
-begin
-  Result := ((FPosition = poDesigned) or (FPosition = poDefaultSizeOnly)) and
-            (FLeft <> Screen.Width div 4);
-end;
-
-function TIpHtmlPreviewSettings.IsHeightStored: Boolean;
-begin
-  Result := ((FPosition = poDesigned) or (FPosition = poDefaultPosOnly)) and
-            (FHeight <> Screen.Height * 3 div 4)
-end;
-
-function TIpHtmlPreviewSettings.IsTopStored: Boolean;
-begin
-  Result := ((FPosition = poDesigned) or (FPosition = poDefaultSizeOnly)) and
-            (FTop <> Screen.Height div 4);
-end;
-
-function TIpHtmlPreviewSettings.IsWidthStored: Boolean;
-begin
-  Result := ((FPosition = poDesigned) or (FPosition = poDefaultPosOnly)) and
-            (FWidth <> Screen.Width * 3 div 4)
 end;
 
 { TIpHtmlPrintSettings }

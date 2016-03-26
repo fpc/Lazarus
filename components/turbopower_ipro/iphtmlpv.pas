@@ -270,7 +270,6 @@ end;
 procedure TIpHTMLPreview.FormShow(Sender: TObject);
 begin
   UpdateBtnStates;
-//  SetZoom(FZoom);
   RenderPage(CurPage);
 end;
 
