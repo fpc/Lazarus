@@ -2330,7 +2330,7 @@ type
     function HaveSelection: Boolean;
     function FindFrame(const FrameName: string): TIpHtmlFrame;
     procedure MakeAnchorVisible(const URL: string);
-    function Scroll(Action: TIpScrollAction): Boolean;
+    function Scroll(Action: TIpScrollAction; ADistance: Integer = 100): Boolean;
     procedure Home;
     function IsExternal(const URL: string): Boolean;
     procedure SetHtml(NewHtml : TIpHtml);
@@ -2471,7 +2471,6 @@ type
     FPrintSettings: TIpHtmlPrintSettings;
     FFactBAParag: Real;
     FWantTabs: Boolean;
-    FScrollDist: Integer;
     procedure SetDataProvider(const AValue: TIpAbstractHtmlDataProvider);
     procedure SetFactBAParag(const Value: Real);
     function FactBAParagNotIs1: Boolean;
@@ -2558,7 +2557,7 @@ type
     procedure MouseWheelHandler(Var Message: TMessage); Override;
     {$ENDIF}
     procedure OpenURL(const URL: string);
-    function Scroll(Action: TIpScrollAction): Boolean;
+    function Scroll(Action: TIpScrollAction; ADistance: Integer = 100): Boolean;
     procedure SelectAll;
     procedure DeselectAll;
     procedure SetHtml(NewHtml : TIpHtml);
@@ -2587,7 +2586,6 @@ type
     property MarginHeight: Integer read FMarginHeight write FMarginHeight default 10;
     property MarginWidth: Integer read FMarginWidth write FMarginWidth default 10;
     property PrintSettings: TIpHtmlPrintSettings read FPrintSettings write FPrintSettings;
-    property ScrollDist: Integer read FScrollDist write FScrollDist default 100;
     property ShowHints: Boolean read FShowHints write FShowHints default True;
     property TextColor: TColor read FTextColor write FTextColor default clBlack;
     property Title: string read GetTitle;
@@ -2634,7 +2632,6 @@ type
     property PrintSettings;
     property MarginHeight;
     property MarginWidth;
-    property ScrollDist;
     property ShowHints;
     property TabOrder;
     property TabStop;
@@ -14610,12 +14607,12 @@ begin
 end;
 
 { Returns false if view rect was not changed }
-function TIpHtmlFrame.Scroll(Action: TIpScrollAction): Boolean;
+function TIpHtmlFrame.Scroll(Action: TIpScrollAction;
+  ADistance: Integer = 100): Boolean;
 var
   R : TRect;
   H, W : Integer;
 begin
-  Result := false;
   if FHtml = nil then Exit;
   if HyperPanel = nil then Exit;
   R := FHtml.FPageViewRect;
@@ -14624,19 +14621,16 @@ begin
   case Action of
   hsaHome :
     begin
-      Result := FHtml.FPageViewRect.Top > 0;
       R.Top := 0;
       R.Bottom := R.Top + H;
     end;
   hsaEnd :
     begin
-      Result := FHtml.FPageViewRect.Bottom < FHtml.FPageRect.Bottom;
       R.Bottom := FHtml.FPageRect.Bottom;
       R.Top := R.Bottom - H;
     end;
   hsaPgUp :
     begin
-      Result := FHtml.FPageViewRect.Top > 0;
       OffsetRect(R, 0, -H);
       if R.Top < 0 then begin
         R.Top := 0;
@@ -14645,7 +14639,6 @@ begin
     end;
   hsaPgDn :
     begin
-      Result := FHtml.FPageViewRect.Bottom < FHtml.FPageRect.Bottom;
       OffsetRect(R, 0, H);
       if R.Bottom > FHtml.FPageRect.Bottom then begin
         R.Bottom := FHtml.FPageRect.Bottom;
@@ -14655,7 +14648,7 @@ begin
   hsaLeft :
     begin
       Result := FHtml.FPageViewRect.Left > 0;
-      OffsetRect(R, -FViewer.ScrollDist, 0);
+      OffsetRect(R, -ADistance, 0);
       if R.Left < 0 then begin
         R.Left := 0;
         R.Right := R.Left + W;
@@ -14664,7 +14657,7 @@ begin
   hsaRight :
     begin
       Result := FHtml.FPageViewRect.Right < FHtml.FPageRect.Right;
-      OffsetRect(R, FViewer.ScrollDist, 0);
+      OffsetRect(R, ADistance, 0);
       if R.Right > FHtml.FPageRect.Right then begin
         R.Bottom := FHtml.FPageRect.Right;
         R.Left := R.Right - W;
@@ -14673,7 +14666,7 @@ begin
   hsaUp :
     begin
       Result := FHtml.FPageViewRect.Top > 0;
-      OffsetRect(R, 0, -FViewer.ScrollDist);
+      OffsetRect(R, 0, -ADistance);
       if R.Top < 0 then begin
         R.Top := 0;
         R.Bottom := R.Top + H;
@@ -14682,7 +14675,7 @@ begin
   hsaDown :
     begin
       Result := FHtml.FPageViewRect.Bottom < FHtml.FPageRect.Bottom;
-      OffsetRect(R, 0, FViewer.ScrollDist);
+      OffsetRect(R, 0, ADistance);
       if R.Bottom > FHtml.FPageRect.Bottom then begin
         R.Bottom := FHtml.FPageRect.Bottom;
         R.Top := R.Bottom - H;
@@ -15024,7 +15017,6 @@ begin
   FPrintSettings := TIpHtmlPrintSettings.Create;
   FFactBAParag := 1;
   FWantTabs := True;
-  FScrollDist := 100;
 end;
 
 destructor TIpHtmlCustomPanel.Destroy;
@@ -15463,12 +15455,12 @@ begin
     Result := Size(0, 0);
 end;
 
-function TIpHtmlCustomPanel.Scroll(Action: TIpScrollAction): Boolean;
+function TIpHtmlCustomPanel.Scroll(Action: TIpScrollAction;
+  ADistance: Integer = 100): Boolean;
 begin
-  Result := true;
   if FMasterFrame <> nil then
-    Result := FMasterFrame.Scroll(Action);
-end;                    
+    Result := FMasterFrame.Scroll(Action, ADistance);
+end;
 
 procedure TIpHtmlCustomPanel.WMGetDlgCode(var Msg: TMessage);
 begin
