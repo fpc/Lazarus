@@ -1386,6 +1386,7 @@ type
     // Multi window
     FMultiWinEditAccessOrder: TEditorOptionsEditAccessOrderList;
     FCtrlMiddleTabClickClosesOthers: Boolean;
+    FShowFileNameInCaption: Boolean;
 
     // Comment Continue
     FAnsiCommentContinueEnabled: Boolean;
@@ -1626,6 +1627,9 @@ type
     // Multi window
     property CtrlMiddleTabClickClosesOthers: Boolean
       read FCtrlMiddleTabClickClosesOthers write FCtrlMiddleTabClickClosesOthers default True;
+
+    property ShowFileNameInCaption: Boolean
+      read FShowFileNameInCaption write FShowFileNameInCaption default False;
 
     // Commend Continue
     property AnsiCommentContinueEnabled: Boolean
@@ -4549,6 +4553,7 @@ begin
 
   // Multi window
   FCtrlMiddleTabClickClosesOthers := True;
+  FShowFileNameInCaption := False;
 
   // Comment
   FAnsiCommentContinueEnabled := False;
@@ -4765,6 +4770,9 @@ begin
     FMarkupCurWordNoTimer :=
       XMLConfig.GetValue(
       'EditorOptions/Display/MarkupCurrentWord/NoTimer', False);
+    FShowFileNameInCaption :=
+      XMLConfig.GetValue(
+      'EditorOptions/Display/ShowFileNameInCaption', False);
 
     // Code Tools options
     fAutoBlockCompletion :=
@@ -4952,6 +4960,8 @@ begin
       FMarkupCurWordTrim, True);
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/NoTimer',
       FMarkupCurWordNoTimer, False);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/ShowFileNameInCaption',
+        FShowFileNameInCaption, False);
 
     // Code Tools options
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoBlockCompletion'

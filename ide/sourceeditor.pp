@@ -7272,7 +7272,14 @@ begin
   if i>= 0 then
     PageIndex := i;
   dec(FFocusLock);
-  SourceEditorManager.ActiveSourceWindow := self;
+  SourceEditorManager.ActiveSourceWindow := Self;
+  if EditorOpts.ShowFileNameInCaption then
+  begin
+    if ActiveEditor<>nil then
+      Caption := FBaseCaption+' - '+ActiveEditor.FileName
+    else
+      Caption := FBaseCaption;
+  end;
 end;
 
 procedure TSourceNotebook.CheckCurrentCodeBufferChanged;
@@ -7395,10 +7402,12 @@ begin
     exit;
   end;
   if (PageCount = 1) and (EditorOpts.HideSingleTabInWindow) then begin
-    Caption := FBaseCaption + ': ' + NotebookPages[0];
+    if not EditorOpts.ShowFileNameInCaption then
+      Caption := FBaseCaption + ': ' + NotebookPages[0];
     FNotebook.ShowTabs := False;
   end else begin
-    Caption := FBaseCaption;
+    if not EditorOpts.ShowFileNameInCaption then
+      Caption := FBaseCaption;
     FNotebook.ShowTabs := (Manager=nil) or Manager.ShowTabs;
   end;
 end;
