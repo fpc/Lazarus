@@ -1165,8 +1165,7 @@ type
   // methods
   TPropHookCreateMethod = function(const Name: ShortString; ATypeInfo: PTypeInfo;
       APersistent: TPersistent; const APropertyPath: string): TMethod of object;
-  TPropHookGetMethodName = function(const Method: TMethod; CheckOwner: TObject;
-      OrigLookupRoot: TPersistent): String of object;
+  TPropHookGetMethodName = function(const Method: TMethod; CheckOwner: TObject): String of object;
   TPropHookGetCompatibleMethods = procedure(InstProp: PInstProp; const Proc: TGetStrProc) of object;
   TPropHookGetMethods = procedure(TypeData: PTypeData; Proc: TGetStrProc) of object;
   TPropHookCompatibleMethodExists = function(const Name: String; InstProp: PInstProp;
@@ -5608,7 +5607,7 @@ var
 begin
   i:=GetHandlerCount(htGetMethodName);
   if GetNextHandlerIndex(htGetMethodName,i) then begin
-    Result:=TPropHookGetMethodName(FHandlers[htGetMethodName][i])(Method,PropOwner,LookupRoot);
+    Result:=TPropHookGetMethodName(FHandlers[htGetMethodName][i])(Method,PropOwner);
   end else begin
     // search the method name with the given code pointer
     if Assigned(Method.Code) then begin
