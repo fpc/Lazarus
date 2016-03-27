@@ -47,12 +47,28 @@ msgstr ""
 "Saisir les numéros de pages et/ou les intervalles de pages,\n"
 "séparés par des virgules. Par exemple : 1,3,5-12\n"
 
+#: le_e_spreadsheet_consts.sexportpagefooter
+msgid "Export page footer"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sexportpageheader
+msgid "Export page header"
+msgstr ""
+
 #: le_e_spreadsheet_consts.sexportpictures
 msgid "Export pictures"
 msgstr "Exporter les images"
 
 #: le_e_spreadsheet_consts.sexportprintrange
 msgid "Export print range"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sexportreportsummary
+msgid "Export report summary"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sexportreporttitle
+msgid "Export report title"
 msgstr ""
 
 #: le_e_spreadsheet_consts.sexportsettings

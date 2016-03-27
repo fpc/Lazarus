@@ -39,7 +39,7 @@ unit lrSpreadSheetExp;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, le_e_spreadsheet_types;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, le_e_spreadsheet_types, LR_Class;
 
 type
 
@@ -47,6 +47,7 @@ type
 
   TlrSpreadSheetExport = class(TComponent)
   private
+    FBandTypes: TfrBandTypes;
     FDataGrouping: TlreDataGrouping;
     FDataGroupingChunks: integer;
     FDeleteEmptyRow: boolean;
@@ -72,6 +73,7 @@ type
     property ShowSetupForm:boolean read FShowSetupForm write FShowSetupForm;
     property ExportURL:boolean read FExportURL write FExportURL default false;
     property ExportPrintRange:boolean read FExportPrintRange write FExportPrintRange default false;
+    property BandTypes:TfrBandTypes read FBandTypes write FBandTypes;
   end;
 
 procedure Register;
@@ -106,6 +108,7 @@ begin
   FExportURL:=false;
   FExportPrintRange:=false;
   FShowSetupForm:=true;
+  FBandTypes:=[btReportTitle..btNone];
 end;
 
 destructor TlrSpreadSheetExport.Destroy;

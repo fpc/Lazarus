@@ -312,40 +312,60 @@ begin
   if Assigned(lrSpreadSheetExportComponent) and not lrSpreadSheetExportComponent.ShowSetupForm then exit;
 
   leSpreadsheetParamsForm:=TleSpreadsheetParamsForm.Create(Application);
-  leSpreadsheetParamsForm.RadioButton4.Checked:=FDataGrouping = ldgLikeReport;
-  leSpreadsheetParamsForm.RadioButton5.Checked:=FDataGrouping = ldgAllInOnePage;
-  leSpreadsheetParamsForm.RadioButton6.Checked:=FDataGrouping = ldgChunks;
-  leSpreadsheetParamsForm.SpinEdit1.Value:=FDataGroupingChunks;
-  leSpreadsheetParamsForm.CheckBox1.Checked:=FExportImages;
-  leSpreadsheetParamsForm.CheckBox4.Checked:=FOpenAfterExport;
-  leSpreadsheetParamsForm.CheckBox2.Checked:=FMergeCell;
-  leSpreadsheetParamsForm.CheckBox6.Checked:=FDeleteEmptyRow;
-  leSpreadsheetParamsForm.CheckBox7.Checked:=FExportURL;
-  leSpreadsheetParamsForm.CheckBox8.Checked:=FExportPrintRange;
-
+  leSpreadsheetParamsForm.LikeReportRadioButton.Checked:=FDataGrouping = ldgLikeReport;
+  leSpreadsheetParamsForm.AllInOnePageRadioButton.Checked:=FDataGrouping = ldgAllInOnePage;
+  leSpreadsheetParamsForm.RowsPerChunkRadioButton.Checked:=FDataGrouping = ldgChunks;
+  leSpreadsheetParamsForm.RowsPerChunkEdit.Value:=FDataGroupingChunks;
+  leSpreadsheetParamsForm.OpenAfterExportCheckBox.Checked:=FOpenAfterExport;
+  leSpreadsheetParamsForm.MergeCellsCheckBox.Checked:=FMergeCell;
+  leSpreadsheetParamsForm.DeleteEmptyRowsCheckBox.Checked:=FDeleteEmptyRow;
+  leSpreadsheetParamsForm.ExportPicturesCheckBox.Checked:=FExportImages;
+  leSpreadsheetParamsForm.ExportURLCheckBox.Checked:=FExportURL;
+  leSpreadsheetParamsForm.ExportPrintRangeCheckBox.Checked:=FExportPrintRange;
+  leSpreadsheetParamsForm.ExportReportTitleCheckBox.Checked:=btReportTitle in BandTypes;
+  leSpreadsheetParamsForm.ExportReportSummaryCheckBox.Checked:=btReportSummary in BandTypes;
+  leSpreadsheetParamsForm.ExportPageHeaderCheckBox.Checked:=btPageHeader in BandTypes;
+  leSpreadsheetParamsForm.ExportPageFooterCheckBox.Checked:=btPageFooter in BandTypes;
 
   Result:=leSpreadsheetParamsForm.ShowModal = mrOk;
   if Result then
   begin
-    if leSpreadsheetParamsForm.RadioButton4.Checked then
+    if leSpreadsheetParamsForm.LikeReportRadioButton.Checked then
       FDataGrouping:=ldgLikeReport
     else
-    if leSpreadsheetParamsForm.RadioButton5.Checked then
+    if leSpreadsheetParamsForm.AllInOnePageRadioButton.Checked then
       FDataGrouping:=ldgAllInOnePage
     else
     begin
       FDataGrouping:=ldgChunks;
-      FDataGroupingChunks:=leSpreadsheetParamsForm.SpinEdit1.Value;
+      FDataGroupingChunks:=leSpreadsheetParamsForm.RowsPerChunkEdit.Value;
     end;
-    FExportImages   := leSpreadsheetParamsForm.CheckBox1.Checked;
-    FOpenAfterExport:= leSpreadsheetParamsForm.CheckBox4.Checked;
-    FMergeCell      := leSpreadsheetParamsForm.CheckBox2.Checked;
-    FDeleteEmptyRow := leSpreadsheetParamsForm.CheckBox6.Checked;
-    FExportURL      := leSpreadsheetParamsForm.CheckBox7.Checked;
-    FExportPrintRange:=leSpreadsheetParamsForm.CheckBox8.Checked;
+    FExportImages   := leSpreadsheetParamsForm.ExportPicturesCheckBox.Checked;
+    FOpenAfterExport:= leSpreadsheetParamsForm.OpenAfterExportCheckBox.Checked;
+    FMergeCell      := leSpreadsheetParamsForm.MergeCellsCheckBox.Checked;
+    FDeleteEmptyRow := leSpreadsheetParamsForm.DeleteEmptyRowsCheckBox.Checked;
+    FExportURL      := leSpreadsheetParamsForm.ExportURLCheckBox.Checked;
+    FExportPrintRange:=leSpreadsheetParamsForm.ExportPrintRangeCheckBox.Checked;
 
     FExportMatrix.MergeCell:=FMergeCell;
     FExportMatrix.DeleteEmptyRow:=FDeleteEmptyRow;
+
+    if leSpreadsheetParamsForm.ExportReportTitleCheckBox.Checked then
+      BandTypes := BandTypes + [btReportTitle]
+    else
+      BandTypes := BandTypes - [btReportTitle];
+    if leSpreadsheetParamsForm.ExportReportSummaryCheckBox.Checked then
+      BandTypes := BandTypes + [btReportSummary]
+    else
+      BandTypes := BandTypes - [btReportSummary];
+    if leSpreadsheetParamsForm.ExportPageHeaderCheckBox.Checked then
+      BandTypes := BandTypes + [btPageHeader]
+    else
+      BandTypes := BandTypes - [btPageHeader];
+    if leSpreadsheetParamsForm.ExportPageFooterCheckBox.Checked then
+      BandTypes := BandTypes + [btPageFooter]
+    else
+      BandTypes := BandTypes - [btPageFooter];
   end;
   leSpreadsheetParamsForm.Free;
 end;
@@ -371,6 +391,7 @@ begin
     FExportURL:=lrSpreadSheetExportComponent.ExportURL;
     FExportPrintRange:=lrSpreadSheetExportComponent.ExportPrintRange;
     FExportImages:=lrSpreadSheetExportComponent.ExportImages;
+    BandTypes:=lrSpreadSheetExportComponent.BandTypes;
   end
   else
   begin
@@ -472,7 +493,7 @@ end;
 
 procedure TlrSpreadSheetExportFilter.OnExported(x, y: Integer; View: TfrView);
 begin
-  if not Assigned(View) then exit;
+  if not Assigned(View) or not (View.ParentBandType in BandTypes) then exit;  
   FExportMatrix.ExportObject(View);
 end;
 

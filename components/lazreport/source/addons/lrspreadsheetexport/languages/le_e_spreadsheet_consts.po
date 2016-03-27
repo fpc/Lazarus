@@ -35,12 +35,28 @@ msgid ""
 "separated by commas. For example, 1,3,5-12\n"
 msgstr ""
 
+#: le_e_spreadsheet_consts.sexportpagefooter
+msgid "Export page footer"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sexportpageheader
+msgid "Export page header"
+msgstr ""
+
 #: le_e_spreadsheet_consts.sexportpictures
 msgid "Export pictures"
 msgstr ""
 
 #: le_e_spreadsheet_consts.sexportprintrange
 msgid "Export print range"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sexportreportsummary
+msgid "Export report summary"
+msgstr ""
+
+#: le_e_spreadsheet_consts.sexportreporttitle
+msgid "Export report title"
 msgstr ""
 
 #: le_e_spreadsheet_consts.sexportsettings

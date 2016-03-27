@@ -61,6 +61,10 @@ resourcestring
   sExportPictures      = 'Export pictures';
   sExportURL           = 'Export URL';
   sExportPrintRange    = 'Export print range';
+  sExportReportTitle   = 'Export report title';
+  sExportReportSummary = 'Export report summary';
+  sExportPageHeader    = 'Export page header';
+  sExportPageFooter    = 'Export page footer';
   sMergeCells          = 'Merge cells';
   sPageBreaks          = 'Page breaks';
   sDeleteEmptyRows     = 'Delete empty rows';
