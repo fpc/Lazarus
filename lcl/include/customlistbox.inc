@@ -655,6 +655,27 @@ begin
   end;
 end;
 
+procedure TCustomListBox.DeleteSelected;
+var
+  i: Integer;
+begin
+  if MultiSelect then
+  begin
+    i:=0;
+    while True do
+        if(i<Items.Count) then
+        begin
+          if Selected[i] then
+             FItems.Delete(i)
+          else
+             inc(i);
+        end else
+          break;
+
+  end else
+    if ItemIndex>=0 then Items.Delete(ItemIndex);
+end;
+
 {------------------------------------------------------------------------------
   function TCustomListBox.GetIndexAtXY(X, Y: integer): integer;
 

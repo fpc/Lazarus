@@ -563,6 +563,7 @@ type
     procedure MakeCurrentVisible;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
     procedure SelectAll; virtual;
+    procedure DeleteSelected; virtual;
     procedure UnlockSelectionChange;
   public
     property Align;
