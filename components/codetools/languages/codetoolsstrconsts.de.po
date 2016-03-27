@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-06-29 15:35+0100\n"
+"PO-Revision-Date: 2016-03-26 21:43+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Language: de_DE\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.4\n"
 
 #: codetoolsstrconsts.crsbracketnotfound
 msgid "bracket ) not found"
@@ -559,9 +559,8 @@ msgid "method name"
 msgstr "Methodenname"
 
 #: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
-#, fuzzy,badformat
 msgid "Method signature %s not found in class"
-msgstr "Methodensignatur nicht in Klasse gefunden"
+msgstr "Methodensignatur %s nicht in Klasse gefunden"
 
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
@@ -726,9 +725,8 @@ msgid "Runtime library"
 msgstr "Laufzeitbibliothek"
 
 #: codetoolsstrconsts.ctsscannedfiles
-#, fuzzy,badformat
 msgid "Scanned files: %s"
-msgstr "Gescannte Dateien: 5s"
+msgstr "Gescannte Dateien: %s"
 
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
@@ -885,4 +883,3 @@ msgstr "var ist nur in Generics erlaubt, Ende der Klasse nicht gefunden"
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"
 msgstr "\"%s\" nicht gefunden"
-

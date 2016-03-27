@@ -5,12 +5,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-09-24 11:08+0100\n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"PO-Revision-Date: 2016-03-26 21:17+0100\n"
+"Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Language: de_DE\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.4\n"
 
 #: ipconst.cacheadding
 msgid "Caching item (%s = %s)"
@@ -50,7 +50,7 @@ msgstr "GET: (%s)"
 
 #: ipconst.httpgeterror
 msgid "GET: (%s) FAILED"
-msgstr "GET: (%s) FAILED"
+msgstr "GET: (%s) FEHLGESCHLAGEN"
 
 #: ipconst.httpgotheader
 msgid "Download: (%s), Got Header Data"
@@ -62,7 +62,7 @@ msgstr "HEAD: (%s)"
 
 #: ipconst.httpheaderror
 msgid "HEAD: (%s) FAILED"
-msgstr "HEAD: (%s) FAILED"
+msgstr "HEAD: (%s) FEHLGESCHLAGEN"
 
 #: ipconst.httpnoheaderdata
 msgid "No Header Data for Entity"
@@ -74,7 +74,7 @@ msgstr "POST: (%s)"
 
 #: ipconst.httpposterror
 msgid "POST: (%s) FAILED"
-msgstr "POST: (%s) FAILED"
+msgstr "POST: (%s) FEHLGESCHLAGEN"
 
 #: ipconst.httpprogress
 msgid "Progress Made: (%s), %s bytes received"
@@ -223,8 +223,6 @@ msgid "Connect: Loc: %s Rem: %s"
 msgstr "Verbinden: Loc: %s Rem: %s"
 
 #: ipconst.seventdisconnect
-#, fuzzy
-#| msgid "Close:   Loc: %s Rem: %s"
 msgid "Close: Loc: %s Rem: %s"
 msgstr "Schließen: Loc: %s Rem: %s"
 
@@ -434,14 +432,12 @@ msgid "Pinging %s with %d bytes data"
 msgstr "Pinge %s mit %d Byte Daten"
 
 #: ipconst.sicmpthreadexecute
-#, fuzzy,badformat
 msgid "Thread %d executing (Hop number = %d)"
-msgstr "Thread %s wird ausgefühlt (Hop-Nummer ist %d)"
+msgstr "Thread %d wird ausgeführt (Hop-Nummer ist %d)"
 
 #: ipconst.sicmpthreadterminate
-#, fuzzy,badformat
 msgid "Thread %d terminating (Hop number = %d)"
-msgstr "Thread %s wird beendet (Hop-Nummer ist %d)"
+msgstr "Thread %d wird beendet (Hop-Nummer ist %d)"
 
 #: ipconst.sicmptracecomplete
 msgid "Trace complete (%s), %d hops"
@@ -548,9 +544,8 @@ msgid "Unknown status"
 msgstr "Unbekannter Status"
 
 #: ipconst.slesszero
-#, fuzzy,badformat
 msgid "%s: new col count %d is less than zero"
-msgstr "%s: Die neue Spaltenzählung %s ist kleiner als Null"
+msgstr "%s: Die neue Spaltenzählung %d ist kleiner als Null"
 
 #: ipconst.slinelengtherr
 msgid "Invalid line length for encoded text"
@@ -1251,18 +1246,16 @@ msgid "When origin is soFromEnd, Offset must be <= 0"
 msgstr "Bei einem Ursprung von soFromEnd muß der Offset <= 0 sein"
 
 #: ipconst.spngbadbitdepth
-#, fuzzy,badformat
 msgid "Unsupported Bit Depth of %d"
-msgstr "Nicht unterstützte Bit-Tiefe von %s"
+msgstr "Nicht unterstützte Bit-Tiefe von %d"
 
 #: ipconst.spngbadchunktype
 msgid "Unrecognized Chunk Type: %s"
 msgstr "Unerkannter Chunk-Typ: %s"
 
 #: ipconst.spngbadcolortype
-#, fuzzy,badformat
 msgid "Unrecognized color type of %d"
-msgstr "Unerkannter Farbtyp von %s"
+msgstr "Unerkannter Farbtyp von %d"
 
 #: ipconst.spngbadinterlacemethod
 msgid "Unrecognized Interlace Method"
@@ -1301,9 +1294,8 @@ msgid "PNG Chunk: %s  Length: %d"
 msgstr "PNG-Chunk: %s Länge: %d"
 
 #: ipconst.spngcolortype
-#, fuzzy,badformat
 msgid "Color Type: %d"
-msgstr "Farbtyp: %s"
+msgstr "Farbtyp: %d"
 
 #: ipconst.spngcompressionmethod
 msgid "Compression Method: %d"
@@ -1322,9 +1314,8 @@ msgid "**** ERROR ****"
 msgstr "**** FEHLER ****"
 
 #: ipconst.spngfilterchange
-#, fuzzy,badformat
 msgid "Filter changed on Row %d to %x"
-msgstr "Filter in Zeile %s auf %x geändert"
+msgstr "Filter in Zeile %d auf %x geändert"
 
 #: ipconst.spngfiltermethod
 msgid "Filter Method: %d"
@@ -1351,9 +1342,8 @@ msgid "IHDR chunk is short."
 msgstr "IHDR-Chunk ist kurz."
 
 #: ipconst.spngimagesize
-#, fuzzy,badformat
 msgid "Image size is %dx%d pixels"
-msgstr "Bildgröße ist %sx%d Pixel"
+msgstr "Bildgröße ist %dx%d Pixel"
 
 #: ipconst.spnginterlacemethod
 msgid "Interlace Method: %d"
@@ -1380,9 +1370,8 @@ msgid "PNG Clipboard support is not supported."
 msgstr "PNG-Zwischenablage nicht unterstützt."
 
 #: ipconst.spngpaletteentry
-#, fuzzy,badformat
 msgid "Palette Entry %d - Red: %d   Green: %d   Blue: %d"
-msgstr "Paletteneintrag %d - Rot: %s, Grün: %d, Blau: %d"
+msgstr "Paletteneintrag %d - Rot: %d, Grün: %d, Blau: %d"
 
 #: ipconst.spngpalettetoolong
 msgid "Too many palette entries"
@@ -1556,8 +1545,6 @@ msgid "Logging on with User"
 msgstr "Logge ein mit User"
 
 #: ipconst.spterror
-#, fuzzy
-#| msgid "An error occured with the last task."
 msgid "An error occurred with the last task."
 msgstr "Beim letzten Task trat ein Fehler auf."
 
@@ -1723,9 +1710,8 @@ msgid "Renamed disk file to "
 msgstr "Benenne Datei um in"
 
 #: ipconst.srowcoloor
-#, fuzzy,badformat
 msgid "%s: either row %d or col %d is out of range"
-msgstr "%s: Entweder Zeile %s oder Spalte %s überschreitet den Bereich"
+msgstr "%s: Entweder Zeile %d oder Spalte %d überschreitet den Bereich"
 
 #: ipconst.srowoor
 msgid "%s: row number is out of range"
@@ -2125,14 +2111,10 @@ msgid "Revoked Certificate."
 msgstr "Widerrufe Zertifikat."
 
 #: ipconst.ssslservernohandshake
-#, fuzzy
-#| msgid "Server cid not return a handshake message."
 msgid "Server did not return a handshake message."
-msgstr "Server gab keine Handshake-Meldung zurück"
+msgstr "Server gab keine Handshake-Meldung zurück."
 
 #: ipconst.ssslservernoserverhello
-#, fuzzy
-#| msgid "Server cid not return a server hello message."
 msgid "Server did not return a server hello message."
 msgstr "Server gab kein Server-Hello zurück."
 
@@ -2231,8 +2213,6 @@ msgid "Verifying"
 msgstr "Prüfe"
 
 #: ipconst.ssterror
-#, fuzzy
-#| msgid "An error has occured during this task."
 msgid "An error has occurred during this task."
 msgstr "Bei diesem Task trat ein Fehler auf."
 
@@ -2427,8 +2407,6 @@ msgid "Directory not empty"
 msgstr "Verzeichnis nicht leer"
 
 #: ipconst.swsaenotsock
-#, fuzzy
-#| msgid "Socket operation on nonsocket"
 msgid "Socket operation on non socket"
 msgstr "Socket-Operation auf Nicht-Socket"
 
@@ -2521,8 +2499,6 @@ msgid "Network subsystem is unavailable"
 msgstr "Netzwerk-Subsystem ist nicht verfügbar"
 
 #: ipconst.swsatry_again
-#, fuzzy
-#| msgid "Nonauthoritative host not found"
 msgid "Non-authoritative host not found"
 msgstr "Keinen nonauthoritativen Host gefunden"
 
@@ -2548,8 +2524,6 @@ msgid "Error due to lack of resources"
 msgstr "Fehler wegen Ressourcenmangels"
 
 #: ipconst.swsa_qos_bad_object
-#, fuzzy
-#| msgid "Problem filterspec or providerspecific buffer"
 msgid "Problem filterspec or provider specific buffer"
 msgstr "Problematische Filterdefinition oder providerspezifischer Puffer"
 
@@ -2588,4 +2562,3 @@ msgstr "Mindestens ein Pfad ist eingetroffen"
 #: ipconst.swsa_qos_traffic_ctrl_error
 msgid "Problem with some part of the flowspec"
 msgstr "Problem mit Teilen der Übertragungsspezifikation"
-
