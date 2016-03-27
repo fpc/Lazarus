@@ -1456,7 +1456,7 @@ function FindObjectProps(AObjStr:string; out frObj:TfrObject; out PropName:strin
 
 const
   lrTemplatePath = 'LazReportTemplate/';
-  frCurrentVersion = 29;
+  frCurrentVersion = 31;
     // version 2.5: lazreport: added to binary stream ParentBandType variable
     //                         on TfrView, used to extend export facilities
     // version 2.6: lazreport: added to binary stream Tag property on TfrView
@@ -1464,6 +1464,8 @@ const
     // version 2.8: lazreport: added support for child bands
     // version 2.9: lazreport: added support LineSpacing and GapX, GapY
     // version 3.0: lazreport: decoupled flHideZeros and flBandPrintChildIfNotVisible
+    // version 3.1: lazreport: Save Restrictions to stream
+
 
   frSpecCount = 9;
   frSpecFuncs: Array[0..frSpecCount - 1] of String = ('PAGE#', '',
@@ -2957,6 +2959,10 @@ begin
       Stream.Read(FGapY, SizeOf(FGapX));
     end;
 
+    if frVersion >= 30 then
+    begin
+      Stream.Read(FRestrictions, SizeOf(TlrRestrictions));
+    end;
   end;
   {$IFDEF DebugLR}
   DebugLn('%s.TfrView.LoadFromStream end Position=%d',[name, Stream.Position]);
@@ -3084,6 +3090,9 @@ begin
 
     Stream.Write(FGapX, SizeOf(FGapX));
     Stream.Write(FGapY, SizeOf(FGapX));
+
+    Stream.Write(FRestrictions, SizeOf(TlrRestrictions));
+
   end;
   {$IFDEF DebugLR}
   Debugln('%s.SaveToStream end',[name]);
@@ -3264,6 +3273,9 @@ end;
 
 procedure TfrView.SetDataField(AValue: string);
 begin
+  if (AValue <> '') and (AValue[1]<>'[') then
+    AValue:='[' + AValue + ']';
+
   if Memo.Count = 0 then
     Memo.Add(AValue)
   else
@@ -3284,6 +3296,9 @@ begin
     Result:=Memo[0]
   else
     Result:='';
+
+  if Result <> '' then
+    Result:=lrGetUnBrackedStr(Result);
 end;
 
 function TfrView.GetStretched: Boolean;
@@ -10983,52 +10998,52 @@ begin
   if (aFileName='') and (fDefExportFileName<>'') then
     aFileName := fDefExportFileName;
 
-  if FilterClass=nil then begin
-    raise Exception.Create('No valid filterclass was supplied');
-  end;
+  if FilterClass=nil then
+    raise Exception.Create(sNoValidFilterClassWasSupplied);
 
-  if aFilename='' then begin
-    raise Exception.create('No valid export filename was supplied');
-  end;
+  if Trim(aFilename) = '' then
+    raise Exception.create(sNoValidExportFilenameWasSupplied);
 
   ExportStream := TFileStreamUtf8.Create(aFileName, fmCreate);
   FCurrentFilter := FilterClass.Create(ExportStream);
+  try
+    CurReport := Self;
+    MasterReport := Self;
 
-  CurReport := Self;
-  MasterReport := Self;
+    FCurrentFilter.OnSetup:=CurReport.OnExportFilterSetup;
 
-  FCurrentFilter.OnSetup:=CurReport.OnExportFilterSetup;
-
-  if FCurrentFilter.Setup then
-  begin
-    FCurrentFilter.OnBeginDoc;
-
-    SavedAllPages := EMFPages.Count;
-
-    if FCurrentFilter.UseProgressbar then
-    with frProgressForm do
+    if FCurrentFilter.Setup then
     begin
-      s := sReportPreparing;
-      if Title = '' then
-        Caption := s
-      else
-        Caption := s + ' - ' + Title;
-      FirstCaption := sPagePreparing;
-      Label1.Caption := FirstCaption + '  1';
-      OnBeforeModal := @ExportBeforeModal;
-      Show_Modal(Self);
-    end else
-      ExportBeforeModal(nil);
+      FCurrentFilter.OnBeginDoc;
 
-    fDefExportFilterClass := FCurrentFilter.ClassName;
-    fDefExportFileName := aFileName;
-    Result:=true;
-  end
-  else
-    Result:=false;
-  //is necessary to destroy the file stream before calling FCurrentFilter.AfterExport
-  //to ensure the exported file is properly written to the file system
-  ExportStream.Free;
+      SavedAllPages := EMFPages.Count;
+
+      if FCurrentFilter.UseProgressbar then
+      with frProgressForm do
+      begin
+        s := sReportPreparing;
+        if Title = '' then
+          Caption := s
+        else
+          Caption := s + ' - ' + Title;
+        FirstCaption := sPagePreparing;
+        Label1.Caption := FirstCaption + '  1';
+        OnBeforeModal := @ExportBeforeModal;
+        Show_Modal(Self);
+      end else
+        ExportBeforeModal(nil);
+
+      fDefExportFilterClass := FCurrentFilter.ClassName;
+      fDefExportFileName := aFileName;
+      Result:=true;
+    end
+    else
+      Result:=false;
+  finally
+    //is necessary to destroy the file stream before calling FCurrentFilter.AfterExport
+    //to ensure the exported file is properly written to the file system
+    ExportStream.Free;
+  end;
   FCurrentFilter.Stream := nil;
 
   if Result then

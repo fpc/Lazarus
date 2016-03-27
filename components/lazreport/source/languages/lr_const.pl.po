@@ -1554,6 +1554,14 @@ msgctxt "lr_const.snotassigned"
 msgid "[None]"
 msgstr "[Brak]"
 
+#: lr_const.snovalidexportfilenamewassupplied
+msgid "No valid export filename was supplied"
+msgstr ""
+
+#: lr_const.snovalidfilterclasswassupplied
+msgid "No valid filterclass was supplied"
+msgstr ""
+
 #: lr_const.sobjectinspector
 msgid "Object inspector"
 msgstr "Inspektor obiektów"

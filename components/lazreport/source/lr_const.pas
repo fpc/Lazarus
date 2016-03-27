@@ -275,6 +275,8 @@ resourcestring
   sDuplicatedObjectName = 'An object named "%s" already exists';
   sObjectNotFound = 'Object "%s" not found';
   sFileNotFound = 'File not found';
+  sNoValidFilterClassWasSupplied    = 'No valid filterclass was supplied';
+  sNoValidExportFilenameWasSupplied = 'No valid export filename was supplied';
   
   SDoc       = 'Report:';
   SBand      = 'Band:';
