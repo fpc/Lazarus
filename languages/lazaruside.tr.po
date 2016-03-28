@@ -1253,6 +1253,10 @@ msgstr ""
 msgid "%d desktop(s) successfully imported from \"%s\""
 msgstr ""
 
+#: lazarusidestrconsts.dlgdifferentvaluebackgroundcolor
+msgid "Different values background"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
 msgstr ""
@@ -3346,6 +3350,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgshowexecutableinfo
 msgid "Show executable info (Win32 only)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgshowfilenameincaption
+msgid "Show file name in caption"
 msgstr ""
 
 #: lazarusidestrconsts.dlgshowgeneralinfo

@@ -1251,6 +1251,10 @@ msgstr "%d ploch úspěšně exportováno do \"%s\""
 msgid "%d desktop(s) successfully imported from \"%s\""
 msgstr "%d ploch úspěšně importováno z \"%s\""
 
+#: lazarusidestrconsts.dlgdifferentvaluebackgroundcolor
+msgid "Different values background"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
 msgstr "Směr"
@@ -3338,6 +3342,10 @@ msgstr "Ukázat vše"
 #: lazarusidestrconsts.dlgshowexecutableinfo
 msgid "Show executable info (Win32 only)"
 msgstr "Ukázat spustitelné informace (pouze Win32)"
+
+#: lazarusidestrconsts.dlgshowfilenameincaption
+msgid "Show file name in caption"
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"

@@ -1249,6 +1249,10 @@ msgstr "%d felület sikeresen exportálva ide: \"%s\""
 msgid "%d desktop(s) successfully imported from \"%s\""
 msgstr "%d felület sikeresen importálva innen: \"%s\""
 
+#: lazarusidestrconsts.dlgdifferentvaluebackgroundcolor
+msgid "Different values background"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
 msgstr "Irány"
@@ -3332,6 +3336,10 @@ msgstr "Minden megjelenítése"
 #: lazarusidestrconsts.dlgshowexecutableinfo
 msgid "Show executable info (Win32 only)"
 msgstr "A program információinak megjelenítése (csak Win32)"
+
+#: lazarusidestrconsts.dlgshowfilenameincaption
+msgid "Show file name in caption"
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"

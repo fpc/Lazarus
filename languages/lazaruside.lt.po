@@ -1270,6 +1270,10 @@ msgstr ""
 msgid "%d desktop(s) successfully imported from \"%s\""
 msgstr ""
 
+#: lazarusidestrconsts.dlgdifferentvaluebackgroundcolor
+msgid "Different values background"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
 msgstr "Kryptis"
@@ -3394,6 +3398,10 @@ msgstr "Rodyti viską"
 #: lazarusidestrconsts.dlgshowexecutableinfo
 msgid "Show executable info (Win32 only)"
 msgstr "Rodyti vykdomosios bylos informaciją (tik Win32)"
+
+#: lazarusidestrconsts.dlgshowfilenameincaption
+msgid "Show file name in caption"
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"

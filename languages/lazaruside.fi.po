@@ -1242,6 +1242,10 @@ msgstr "%d työpöytää vietiin onnistuneesti \"%s\":hen"
 msgid "%d desktop(s) successfully imported from \"%s\""
 msgstr "%d työpöytää tuotiin onnistuneesti \"%s\":sta"
 
+#: lazarusidestrconsts.dlgdifferentvaluebackgroundcolor
+msgid "Different values background"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
 msgstr "Suunta"
@@ -3301,6 +3305,10 @@ msgstr "Näytä kaikki (hidas)"
 #: lazarusidestrconsts.dlgshowexecutableinfo
 msgid "Show executable info (Win32 only)"
 msgstr "Näytä ohjelman tiedot (vain Win32)"
+
+#: lazarusidestrconsts.dlgshowfilenameincaption
+msgid "Show file name in caption"
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"
