@@ -162,12 +162,12 @@ type
 
   TOIPropertyGridRow = class
   private
-    FTop:integer;
-    FHeight:integer;
-    FLvl:integer;
-    FName:string;
+    FTop: integer;
+    FHeight: integer;
+    FLvl: integer;
+    FName: string;
     FExpanded: boolean;
-    FTree:TOICustomPropertyGrid;
+    FTree: TOICustomPropertyGrid;
     FChildCount:integer;
     FPriorBrother,
     FFirstChild,
@@ -198,20 +198,20 @@ type
     function Next: TOIPropertyGridRow;
     function NextSkipChilds: TOIPropertyGridRow;
 
-    property Editor:TPropertyEditor read FEditor;
-    property Top:integer read FTop write FTop;
-    property Height:integer read FHeight write FHeight;
+    property Editor: TPropertyEditor read FEditor;
+    property Top: integer read FTop write FTop;
+    property Height: integer read FHeight write FHeight;
     property Bottom: integer read GetBottom;
-    property Lvl:integer read FLvl;
+    property Lvl: integer read FLvl;
     property Name: string read FName;
-    property Expanded:boolean read FExpanded;
-    property Tree:TOICustomPropertyGrid read FTree;
-    property Parent:TOIPropertyGridRow read FParent;
-    property ChildCount:integer read FChildCount;
-    property FirstChild:TOIPropertyGridRow read FFirstChild;
-    property LastChild:TOIPropertyGridRow read FLastChild;
-    property NextBrother:TOIPropertyGridRow read FNextBrother;
-    property PriorBrother:TOIPropertyGridRow read FPriorBrother;
+    property Expanded: boolean read FExpanded;
+    property Tree: TOICustomPropertyGrid read FTree;
+    property Parent: TOIPropertyGridRow read FParent;
+    property ChildCount: integer read FChildCount;
+    property FirstChild: TOIPropertyGridRow read FFirstChild;
+    property LastChild: TOIPropertyGridRow read FLastChild;
+    property NextBrother: TOIPropertyGridRow read FNextBrother;
+    property PriorBrother: TOIPropertyGridRow read FPriorBrother;
     property Index: integer read FIndex;
   end;
 
@@ -2705,11 +2705,11 @@ end;
 
 procedure TOICustomPropertyGrid.PaintRow(ARow: integer);
 var
-  FullRect,NameRect,NameIconRect,NameTextRect,ValueRect, ParentRect:TRect;
-  IconX,IconY:integer;
-  CurRow:TOIPropertyGridRow;
-  DrawState:TPropEditDrawState;
-  OldFont:TFont;
+  FullRect, NameRect, NameIconRect, NameTextRect, ValueRect, ParentRect: TRect;
+  IconX,IconY: integer;
+  CurRow: TOIPropertyGridRow;
+  DrawState: TPropEditDrawState;
+  OldFont: TFont;
   lclPlatform: TLCLPlatform;
   X, Y: Integer;
   NameBgColor: TColor;
@@ -2722,8 +2722,8 @@ begin
   ValueRect := FullRect;
   Inc(FullRect.Bottom, FRowSpacing);
 
-  if Layout = oilHorizontal
-  then begin
+  if Layout = oilHorizontal then
+  begin
     NameRect.Right:=SplitterX;
     ValueRect.Left:=SplitterX;
   end
@@ -2732,7 +2732,7 @@ begin
     ValueRect.Top := NameRect.Bottom;
   end;
 
-  IconX:=GetTreeIconX(ARow);
+  IconX := GetTreeIconX(ARow);
   NameIconRect := NameRect;
   NameIconRect.Right := IconX + Indent;
   NameTextRect := NameRect;
@@ -2882,7 +2882,7 @@ begin
               LineTo(X - 1, NameRect.Top - 1 - FRowSpacing);
             end;
           end;
-          // to to parent next sibling
+          // to parent next sibling
           if ARow < FRows.Count - 1 then
           begin
             ParentRect := RowRect(ARow + 1);
