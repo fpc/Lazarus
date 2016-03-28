@@ -51,3 +51,4 @@ msgstr "Drucker auswählen..."
 #: iphtmlpv.rsiphtmlpreviewzoom
 msgid "Zoom:"
 msgstr "Zoom:"
+

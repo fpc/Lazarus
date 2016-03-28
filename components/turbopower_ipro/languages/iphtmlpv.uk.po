@@ -45,7 +45,6 @@ msgid "Print preview"
 msgstr "Попередній перегляд"
 
 #: iphtmlpv.rsiphtmlpreviewselectprinter
-#| msgid "Select printer..."
 msgid "Select printer ..."
 msgstr "Виберіть принтер ..."
 

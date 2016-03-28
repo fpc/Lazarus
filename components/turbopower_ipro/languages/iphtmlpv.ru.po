@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: iphtmlpv.rsiphtmlpreviewclose
 msgid "Close"
@@ -15,15 +17,15 @@ msgstr "Закрыть"
 
 #: iphtmlpv.rsiphtmlpreviewfitall
 msgid "Fit all"
-msgstr ""
+msgstr "Уместить"
 
 #: iphtmlpv.rsiphtmlpreviewfitheight
 msgid "Height"
-msgstr ""
+msgstr "Высота"
 
 #: iphtmlpv.rsiphtmlpreviewfitwidth
 msgid "Width"
-msgstr ""
+msgstr "Ширина"
 
 #: iphtmlpv.rsiphtmlpreviewof
 msgid "of"
@@ -42,7 +44,6 @@ msgid "Print preview"
 msgstr "Предварительный просмотр"
 
 #: iphtmlpv.rsiphtmlpreviewselectprinter
-#| msgid "Select printer..."
 msgid "Select printer ..."
 msgstr "Выбрать принтер ..."
 
