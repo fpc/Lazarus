@@ -49,11 +49,11 @@ msgstr ""
 
 #: le_e_spreadsheet_consts.sexportpagefooter
 msgid "Export page footer"
-msgstr ""
+msgstr "Экспортировать нижний колонтитул"
 
 #: le_e_spreadsheet_consts.sexportpageheader
 msgid "Export page header"
-msgstr ""
+msgstr "Экспортировать верхний колонтитул"
 
 #: le_e_spreadsheet_consts.sexportpictures
 msgid "Export pictures"
@@ -65,11 +65,11 @@ msgstr "Экспортировать диапазон печати"
 
 #: le_e_spreadsheet_consts.sexportreportsummary
 msgid "Export report summary"
-msgstr ""
+msgstr "Экспортировать итог отчёта"
 
 #: le_e_spreadsheet_consts.sexportreporttitle
 msgid "Export report title"
-msgstr ""
+msgstr "Экспортировать заголовок отчёта"
 
 #: le_e_spreadsheet_consts.sexportsettings
 msgid "Export settings"
