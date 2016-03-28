@@ -1450,13 +1450,14 @@ resourcestring
   lisToolHeaderScrolledUp = 'Tool Header: Scrolled up';
   dlgSubPropColor = 'SubProperties';
   dlgReferenceColor = 'Reference';
-  dlgValueColor = 'Value';
   lisAllBuildModes = '<All build modes>';
   lisNameOfActiveBuildMode = 'Name of active build mode';
   dlfReadOnlyColor = 'Read Only';
   dlgHighlightColor = 'Highlight Color';
   dlgHighlightFontColor = 'Highlight Font Color';
+  dlgValueColor = 'Value';
   dlgDefValueColor = 'Default Value';
+  dlgDifferentValueBackgroundColor = 'Different values background';
   dlgPropNameColor = 'Property Name';
   dlgGutterEdgeColor = 'Gutter Edge Color';
 

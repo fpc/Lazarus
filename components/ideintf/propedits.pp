@@ -579,6 +579,7 @@ type
   public
     constructor Create(Hook: TPropertyEditorHook; APropCount: Integer); override;
 
+    function AllEqual: Boolean; override;
     function GetAttributes: TPropertyAttributes; override;
     procedure GetProperties(Proc: TGetPropEditProc); override;
     function GetValue: ansistring; override;
@@ -614,6 +615,9 @@ type
   edited (e.g. the DataSource property). }
 
   TPersistentPropertyEditor = class(TClassPropertyEditor)
+  private
+    // Used in AllEqual of TComponentOneFormPropertyEditor and TComponentPropertyEditor.
+    function ComponentsAllEqual: Boolean;
   protected
     function FilterFunc(const ATestEditor: TPropertyEditor): Boolean;
     function GetPersistentReference: TPersistent; virtual;
@@ -3485,7 +3489,7 @@ procedure TBoolPropertyEditor.PropDrawValue(ACanvas: TCanvas; const ARect: TRect
 var
   TxtRect: TRect;
   {$IFnDEF UseOINormalCheckBox}
-  str: string;
+  VisVal: string;
   stat: TCheckBoxState;
   {$ENDIF}
 begin
@@ -3493,15 +3497,14 @@ begin
   begin                         // Checkbox for Booleans.
   {$IFnDEF UseOINormalCheckBox}
     TxtRect.Top := -100;        // Don't call inherited PropDrawValue
-    if GetOrdValue<>0 then
-    begin
-      stat := cbChecked;
-      str := '(True)';
-    end else begin
+    VisVal := GetVisualValue;
+    if (VisVal = '') or (VisVal = oisMixed) then
+      stat := cbGrayed
+    else if VisVal = '(True)' then
+      stat := cbChecked
+    else
       stat := cbUnchecked;
-      str := '(False)';
-    end;
-    TCheckBoxThemed.PaintSelf(ACanvas, str, ARect, stat, False, False, False, False, taRightJustify);
+    TCheckBoxThemed.PaintSelf(ACanvas, VisVal, ARect, stat, False, False, False, False, taRightJustify);
   {$ELSE}
     TxtRect := DrawCheckbox(ACanvas, ARect, GetOrdValue<>0);
   {$ENDIF}
@@ -4210,6 +4213,11 @@ begin
   FSubPropsTypeFilter := tkAny;
 end;
 
+function TClassPropertyEditor.AllEqual: Boolean;
+begin
+  Result:=True; // ToDo: Maybe all sub-properties should be compared for equality.
+end;
+
 function TClassPropertyEditor.EditorFilter(
   const AEditor: TPropertyEditor): Boolean;
 begin
@@ -4562,6 +4570,22 @@ begin
   Result:=true;
 end;
 
+function TPersistentPropertyEditor.ComponentsAllEqual: Boolean;
+// Called from AllEqual of TComponentOneFormPropertyEditor and TComponentPropertyEditor.
+var
+  I: Integer;
+  AComponent: TComponent;
+begin
+  Result:=False;
+  AComponent:=TComponent(GetObjectValue);
+  if PropCount > 1 then
+    for I := 1 to PropCount - 1 do
+      if TComponent(GetObjectValueAt(I)) <> AComponent then
+        Exit;
+  if AComponent=nil then Exit(True);
+  Result:=csDesigning in AComponent.ComponentState;
+end;
+
 function TPersistentPropertyEditor.AllEqual: Boolean;
 var
   I: Integer;
@@ -4573,7 +4597,7 @@ begin
     for I := 1 to PropCount - 1 do
       if TPersistent(GetObjectValueAt(I)) <> LInstance then
         Exit;
-  Result := LInstance<>nil;
+  Result := True;
 end;
 
 procedure TPersistentPropertyEditor.Edit;
@@ -4662,14 +4686,8 @@ end;
 { TComponentOneFormPropertyEditor }
 
 function TComponentOneFormPropertyEditor.AllEqual: Boolean;
-var
-  AComponent: TComponent;
 begin
-  Result:=false;
-  if not (inherited AllEqual) then exit;
-  AComponent:=TComponent(GetObjectValue);
-  if AComponent=nil then exit;
-  Result:=csDesigning in AComponent.ComponentState;
+  Result:=ComponentsAllEqual;
 end;
 
 procedure TComponentOneFormPropertyEditor.GetValues(Proc: TGetStrProc);
@@ -4705,14 +4723,8 @@ begin
 end;
 
 function TComponentPropertyEditor.AllEqual: Boolean;
-var
-  AComponent: TComponent;
 begin
-  Result:=false;
-  if not (inherited AllEqual) then exit;
-  AComponent:=GetComponentReference;
-  if AComponent=nil then exit;
-  Result:=csDesigning in AComponent.ComponentState;
+  Result:=ComponentsAllEqual;
 end;
 
 { TInterfacePropertyEditor }

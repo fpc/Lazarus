@@ -47,8 +47,9 @@ const
   DefReferencesColor = clMaroon;
   DefSubPropertiesColor = clGreen;
   DefNameColor = clWindowText;
-  DefDefaultValueColor = clWindowText;
   DefValueColor = clMaroon;
+  DefDefaultValueColor = clWindowText;
+  DefValueDifferBackgrndColor = $F0F0FF; // Sort of pink.
   DefReadOnlyColor = clGrayText;
   DefHighlightColor = clHighlight;
   DefHighlightFontColor = clHighlightText;
@@ -94,9 +95,10 @@ type
     FGridSplitterX: array[TObjectInspectorPage] of integer;
 
     FPropertyNameColor: TColor;
-    FDefaultValueColor: TColor;
     FSubPropertiesColor: TColor;
     FValueColor: TColor;
+    FDefaultValueColor: TColor;
+    FValueDifferBackgrndColor: TColor;
     FReadOnlyColor: TColor;
     FReferencesColor: TColor;
     FGridBackgroundColor: TColor;
@@ -138,9 +140,10 @@ type
     property GridBackgroundColor: TColor read FGridBackgroundColor write FGridBackgroundColor;
     property SubPropertiesColor: TColor read FSubPropertiesColor write FSubPropertiesColor;
     property ReferencesColor: TColor read FReferencesColor write FReferencesColor;
-    property ValueColor: TColor read FValueColor write FValueColor;
     property ReadOnlyColor: TColor read FReadOnlyColor write FReadOnlyColor;
+    property ValueColor: TColor read FValueColor write FValueColor;
     property DefaultValueColor: TColor read FDefaultValueColor write FDefaultValueColor;
+    property ValueDifferBackgrndColor: TColor read FValueDifferBackgrndColor write FValueDifferBackgrndColor;
     property PropertyNameColor: TColor read FPropertyNameColor write FPropertyNameColor;
     property HighlightColor: TColor read FHighlightColor write FHighlightColor;
     property HighlightFontColor: TColor read FHighlightFontColor write FHighlightFontColor;
@@ -281,6 +284,7 @@ type
     FIndent: integer;
     FItemIndex: integer;
     FNameFont, FDefaultValueFont, FValueFont, FHighlightFont: TFont;
+    FValueDifferBackgrndColor: TColor;
     FNewComboBoxItems: TStringList;
     FOnModified: TNotifyEvent;
     FRows: TFPList;// list of TOIPropertyGridRow
@@ -409,6 +413,7 @@ type
     procedure SetReferences(const AValue: TColor);
     procedure SetSubPropertiesColor(const AValue: TColor);
     procedure SetReadOnlyColor(const AValue: TColor);
+    procedure SetValueDifferBackgrndColor(AValue: TColor);
     procedure UpdateScrollBar;
     function FillComboboxItems: boolean; // true if something changed
     function EditorFilter(const AEditor: TPropertyEditor): Boolean;
@@ -472,6 +477,9 @@ type
                                      write SetSubPropertiesColor default DefSubPropertiesColor;
     property ReadOnlyColor: TColor read FReadOnlyColor
                                      write SetReadOnlyColor default DefReadOnlyColor;
+    property ValueDifferBackgrndColor: TColor read FValueDifferBackgrndColor
+           write SetValueDifferBackgrndColor default DefValueDifferBackgrndColor;
+
     property NameFont: TFont read FNameFont write FNameFont;
     property DefaultValueFont: TFont read FDefaultValueFont write FDefaultValueFont;
     property ValueFont: TFont read FValueFont write FValueFont;
@@ -1766,6 +1774,13 @@ begin
     begin
       if FPropertyEditorHook<>nil then
         FCurrentEditorLookupRoot:=FPropertyEditorHook.LookupRoot;
+      if (FCurrentEdit=ValueComboBox) or (FCurrentEdit=ValueEdit) then
+      begin
+        if NewRow.Editor.AllEqual then
+          FCurrentEdit.Color:=clWindow
+        else
+          FCurrentEdit.Color:=FValueDifferBackgrndColor;
+      end;
       FCurrentEdit.Visible:=true;
       if (FDragging=false) and (FCurrentEdit.Showing)
       and FCurrentEdit.Enabled
@@ -2715,6 +2730,7 @@ var
   NameBgColor: TColor;
   Details: TThemedElementDetails;
   Size: TSize;
+  DrawValuesDiffer: Boolean;
 begin
   CurRow := Rows[ARow];
   FullRect := RowRect(ARow);
@@ -2753,16 +2769,20 @@ begin
   with Canvas do
   begin
     // clear background in one go
-
-    if (ARow = FItemIndex) and (FHighlightColor <> clNone) then
-      NameBgColor := FHighlightColor
-    else
-      NameBgColor := FBackgroundColor;
-
+    DrawValuesDiffer := (FValueDifferBackgrndColor<>clNone) and not CurRow.Editor.AllEqual;
     if FBackgroundColor <> clNone then
     begin
       Brush.Color := FBackgroundColor;
-      FillRect(FullRect);
+      if DrawValuesDiffer then
+        FillRect(NameRect)
+      else
+        FillRect(FullRect);
+    end;
+    if DrawValuesDiffer then
+    begin
+      // Make the background color darker than what the active edit control has.
+      Brush.Color := FValueDifferBackgrndColor - $282828;
+      FillRect(ValueRect);
     end;
 
     if ShowGutter and (Layout = oilHorizontal) and
@@ -2784,6 +2804,10 @@ begin
       Canvas.Draw(IconX, IconY, FActiveRowBmp);
 
     // draw name
+    if (ARow = FItemIndex) and (FHighlightColor <> clNone) then
+      NameBgColor := FHighlightColor
+    else
+      NameBgColor := FBackgroundColor;
     OldFont:=Font;
     Font:=FNameFont;
     Font.Color := GetPropNameColor(CurRow);
@@ -3415,6 +3439,13 @@ begin
   Invalidate;
 end;
 
+procedure TOICustomPropertyGrid.SetValueDifferBackgrndColor(AValue: TColor);
+begin
+  if FValueDifferBackgrndColor=AValue then Exit;
+  FValueDifferBackgrndColor:=AValue;
+  Invalidate;
+end;
+
 //------------------------------------------------------------------------------
 
 { TOIPropertyGridRow }
@@ -3692,9 +3723,10 @@ begin
   FInfoBoxHeight:=80;
 
   FGridBackgroundColor := DefBackgroundColor;
-  FDefaultValueColor := DefDefaultValueColor;
   FSubPropertiesColor := DefSubPropertiesColor;
   FValueColor := DefValueColor;
+  FDefaultValueColor := DefDefaultValueColor;
+  FValueDifferBackgrndColor := DefValueDifferBackgrndColor;
   FReadOnlyColor := DefReadOnlyColor;
   FReferencesColor := DefReferencesColor;
   FPropertyNameColor := DefNameColor;
@@ -3747,9 +3779,10 @@ begin
     FComponentTreeHeight:=ConfigStore.GetValue(Path+'ComponentTree/Height/Value',160);
 
     FGridBackgroundColor:=ConfigStore.GetValue(Path+'Color/GridBackground',DefBackgroundColor);
-    FDefaultValueColor:=ConfigStore.GetValue(Path+'Color/DefaultValue',DefDefaultValueColor);
     FSubPropertiesColor:=ConfigStore.GetValue(Path+'Color/SubProperties',DefSubPropertiesColor);
     FValueColor:=ConfigStore.GetValue(Path+'Color/Value',DefValueColor);
+    FDefaultValueColor:=ConfigStore.GetValue(Path+'Color/DefaultValue',DefDefaultValueColor);
+    FValueDifferBackgrndColor:=ConfigStore.GetValue(Path+'Color/ValueDifferBackgrnd',DefValueDifferBackgrndColor);
     FReadOnlyColor:=ConfigStore.GetValue(Path+'Color/ReadOnly',DefReadOnlyColor);
     FReferencesColor:=ConfigStore.GetValue(Path+'Color/References',DefReferencesColor);
     FPropertyNameColor:=ConfigStore.GetValue(Path+'Color/PropertyName',DefNameColor);
@@ -3801,9 +3834,10 @@ begin
     ConfigStore.SetDeleteValue(Path+'ComponentTree/Height/Value',FComponentTreeHeight,160);
 
     ConfigStore.SetDeleteValue(Path+'Color/GridBackground',FGridBackgroundColor,DefBackgroundColor);
-    ConfigStore.SetDeleteValue(Path+'Color/DefaultValue',FDefaultValueColor,DefDefaultValueColor);
     ConfigStore.SetDeleteValue(Path+'Color/SubProperties',FSubPropertiesColor,DefSubPropertiesColor);
     ConfigStore.SetDeleteValue(Path+'Color/Value',FValueColor,DefValueColor);
+    ConfigStore.SetDeleteValue(Path+'Color/DefaultValue',FDefaultValueColor,DefDefaultValueColor);
+    ConfigStore.SetDeleteValue(Path+'Color/ValueDifferBackgrnd',FValueDifferBackgrndColor,DefValueDifferBackgrndColor);
     ConfigStore.SetDeleteValue(Path+'Color/ReadOnly',FReadOnlyColor,DefReadOnlyColor);
     ConfigStore.SetDeleteValue(Path+'Color/References',FReferencesColor,DefReferencesColor);
     ConfigStore.SetDeleteValue(Path+'Color/PropertyName',FPropertyNameColor,DefNameColor);
@@ -3850,6 +3884,7 @@ begin
   FReferencesColor:=AnObjInspector.PropertyGrid.ReferencesColor;
   FValueColor:=AnObjInspector.PropertyGrid.ValueFont.Color;
   FDefaultValueColor:=AnObjInspector.PropertyGrid.DefaultValueFont.Color;
+  FValueDifferBackgrndColor:=AnObjInspector.PropertyGrid.ValueDifferBackgrndColor;
   FReadOnlyColor:=AnObjInspector.PropertyGrid.ReadOnlyColor;
   FPropertyNameColor:=AnObjInspector.PropertyGrid.NameFont.Color;
   FHighlightColor:=AnObjInspector.PropertyGrid.HighlightColor;
@@ -3903,6 +3938,7 @@ begin
   AGrid.SubPropertiesColor := FSubPropertiesColor;
   AGrid.ReferencesColor := FReferencesColor;
   AGrid.ReadOnlyColor := FReadOnlyColor;
+  AGrid.ValueDifferBackgrndColor := FValueDifferBackgrndColor;
   AGrid.ValueFont.Color := FValueColor;
   if FBoldNonDefaultValues then
     AGrid.ValueFont.Style := [fsBold]
