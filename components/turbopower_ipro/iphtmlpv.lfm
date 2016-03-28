@@ -278,9 +278,8 @@ object IpHTMLPreview: TIpHTMLPreview
       Top = 0
       Width = 158
       BevelOuter = bvNone
-      BorderStyle = bsSingle
-      ClientHeight = 121
-      ClientWidth = 154
+      ClientHeight = 125
+      ClientWidth = 158
       Color = clWhite
       ParentColor = False
       TabOrder = 0

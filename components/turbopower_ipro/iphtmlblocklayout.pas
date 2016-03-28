@@ -1248,6 +1248,7 @@ var
   {$ENDIF}
 
 begin
+
   P := FIpHtml.PagePtToScreen(aCurWord.WordRect2.TopLeft);
   {$IFDEF IP_LAZARUS}
   //if (LastOwner <> aCurWord.Owner) then LastPoint := P;
@@ -1312,7 +1313,9 @@ begin
     //DumpTIpHtmlProps(FCurProps);
     {$endif}
     //debugln(['TIpHtmlNodeBlock.RenderQueue ',i,' ',IntersectRect(R, CurWord.WordRect2, Owner.PageViewRect),' CurWord.WordRect2=',dbgs(CurWord.WordRect2),' Owner.PageViewRect=',dbgs(Owner.PageViewRect)]);
-    if IntersectRect(R, CurWord.WordRect2, FIpHtml.PageViewRect) then
+    if (CurWord.WordRect2.Bottom <= FIpHtml.PageViewBottom) and
+      IntersectRect(R, CurWord.WordRect2, FIpHtml.PageViewRect)
+    then begin
       case CurWord.ElementType of
       etWord :
         DoRenderElemWord(CurWord, CurTabFocus);
@@ -1330,14 +1333,15 @@ begin
           FIpHtml.AddRect(CurWord.WordRect2, CurWord, FBlockOwner);
         end;
       end
+    end
     else
       case CurWord.ElementType of
       etWord,
       etObject,
       etSoftHyphen :
-        if (CurWord.WordRect2.Bottom <> 0)
-        and (CurWord.WordRect2.Top > FIpHtml.PageViewRect.Bottom)
-        and L0 then
+        if (CurWord.WordRect2.Bottom <> 0) and
+           (CurWord.WordRect2.Top > FIpHtml.PageViewRect.Bottom) and L0
+        then
           break;
       end;
   end;

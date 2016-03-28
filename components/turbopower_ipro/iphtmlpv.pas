@@ -294,6 +294,7 @@ begin
 
   Screen.Cursor := crHourglass;
   try
+    Application.ProcessMessages;
     PaintBox1.Canvas.Brush.Color := clWhite;
     PaintBox1.Canvas.FillRect(PaintBox1.Canvas.ClipRect);
     WindowTop := SourceRect.Top;
@@ -307,7 +308,7 @@ begin
         R.Right := R.Left + SCRATCH_WIDTH + 1;
         R.Bottom := R.Top + SCRATCH_HEIGHT + 1;
 
-        HTML.Render(Scratch.Canvas, R, False, Point(0, 0));
+        HTML.Render(Scratch.Canvas, R, PageRect.Bottom, False, Point(0, 0));
 
         R.Left := PaintBox1.Canvas.ClipRect.Left + round(TLeft * Scale);
         R.Top := PaintBox1.Canvas.ClipRect.Top + round(TTop * Scale);

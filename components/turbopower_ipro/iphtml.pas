@@ -1804,8 +1804,9 @@ type
     TokenBuffer : TIpHtmlToken;
     FPageRect : TRect;
     HaveToken : Boolean;
-    FPageViewRect : TRect; {the current section of the page}
     FClientRect : TRect;   {the coordinates of the paint rectangle}
+    FPageViewRect : TRect; {the current section of the page}
+    FPageViewBottom : Integer; {the lower end of the page, may be different from PageViewRect.Bottom }
     DefaultProps : TIpHtmlProps;
     Body : TIpHtmlNodeBODY;
     FTitleNode : TIpHtmlNodeTITLE;
@@ -2070,7 +2071,9 @@ type
     procedure AddRect(const R: TRect; AElement: PIpHtmlElement; ABlock: TIpHtmlNodeBlock);
     procedure LoadFromStream(S : TStream);
     procedure Render(TargetCanvas: TCanvas; TargetPageRect : TRect;
-      UsePaintBuffer: Boolean; const TopLeft: TPoint);
+      UsePaintBuffer: Boolean; const TopLeft: TPoint); overload;
+    procedure Render(TargetCanvas: TCanvas; TargetPageRect: TRect; APageEnd: Integer;
+      UsePaintBuffer: Boolean; const TopLeft: TPoint); overload;
     {$IFDEF IP_LAZARUS_DBG}
     procedure DebugChild(Node: TIpHtmlNode; const UserData: Pointer);
     procedure DebugAll;
@@ -2089,6 +2092,7 @@ type
     property TitleNode : TIpHtmlNodeTITLE read FTitleNode;
     property PageHeight : Integer read FPageHeight;
     property PageViewRect : TRect read FPageViewRect;
+    property PageViewBottom: Integer read FPageViewBottom;
     property ClientRect : TRect read FClientRect;
     property ControlsCount: integer read getControlCount;
     property Controls[i:integer]: TIpHtmlNode read getControl;
@@ -8116,8 +8120,14 @@ begin
 end;
 {$ENDIF}
 
-procedure TIpHtml.Render(TargetCanvas: TCanvas; TargetPageRect : TRect;
+procedure TIpHtml.Render(TargetCanvas: TCanvas; TargetPageRect: TRect;
   UsePaintBuffer: Boolean; const TopLeft: TPoint);
+begin
+  Render(TargetCanvas, TargetPageRect, TargetPageRect.Bottom, UsePaintBuffer, TopLeft);
+end;
+
+procedure TIpHtml.Render(TargetCanvas: TCanvas; TargetPageRect: TRect;
+  APageEnd: Integer; UsePaintBuffer: Boolean; const TopLeft: TPoint);
 var
   i : Integer;
 begin
@@ -8152,6 +8162,9 @@ begin
     TIpHtmlNode(FControlList[i]).UnmarkControl;
   SetDefaultProps;
   FPageViewRect := TargetPageRect;
+  FPageViewBottom := APageEnd;
+  { Note: In Preview mode the page is tiled of "mini-pages" sized PageViewRect.
+    The lower end of the "real" page is given by PageViewBottom }
   if UsePaintBuffer then begin
     if (PaintBuffer = nil)
     or (PaintBufferBitmap.Width <> FClientRect.Right)
@@ -13337,21 +13350,23 @@ end;
 
 procedure TIpHtmlInternalPanel.Paint;
 var
-  CR : TRect;
+  CR: TRect;
 begin
   CR := GetClientRect;
-  if not ScaleBitmaps {printing}
-  and (Hyper <> nil) then begin
+  if not ScaleBitmaps {printing} and (Hyper <> nil) then
+  begin
     // update layout
     GetPageRect;
     // render
     Hyper.Render(Canvas,
       Rect(
         ViewLeft, ViewTop,
-          ViewLeft + (CR.Right - CR.Left),
-          ViewTop + (CR.Bottom - CR.Top)),
-          True,
-          Point(0, 0))
+        ViewLeft + (CR.Right - CR.Left),
+        ViewTop + (CR.Bottom - CR.Top)
+      ),
+      True,
+      Point(0, 0)
+    )
   end
   else
     Canvas.FillRect(CR);
