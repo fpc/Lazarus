@@ -1292,6 +1292,7 @@ var
   R : TRect;
   P : TPoint;
   L0 : Boolean;
+  isVisible: Boolean;
 begin
   L0 := FBlockOwner.Level0;
   FCurProps := nil;
@@ -1313,9 +1314,11 @@ begin
     //DumpTIpHtmlProps(FCurProps);
     {$endif}
     //debugln(['TIpHtmlNodeBlock.RenderQueue ',i,' ',IntersectRect(R, CurWord.WordRect2, Owner.PageViewRect),' CurWord.WordRect2=',dbgs(CurWord.WordRect2),' Owner.PageViewRect=',dbgs(Owner.PageViewRect)]);
-    if (CurWord.WordRect2.Bottom <= FIpHtml.PageViewBottom) and
-      IntersectRect(R, CurWord.WordRect2, FIpHtml.PageViewRect)
-    then begin
+
+    isVisible := ((CurWord.ElementType = etObject) or (CurWord.WordRect2.Bottom <= FIpHtml.PageViewBottom))
+      and IntersectRect(R, CurWord.WordRect2, FIpHtml.PageViewRect);
+
+    if isVisible then begin
       case CurWord.ElementType of
       etWord :
         DoRenderElemWord(CurWord, CurTabFocus);
