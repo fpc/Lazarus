@@ -3571,8 +3571,9 @@ begin
         ScaledImage := QImage_create();
         try
           QImage_copy(Image, ScaledImage, 0, 0, QImage_width(Image), QImage_height(Image));
+          // use smooth transformation when scaling image. issue #29883
           QImage_scaled(ScaledImage, ScaledImage, LocalRect.Right - LocalRect.Left,
-            LocalRect.Bottom - LocalRect.Top);
+            LocalRect.Bottom - LocalRect.Top, QtIgnoreAspectRatio, QtSmoothTransformation);
           NewRect := sourceRect^;
           NewRect.Right := (LocalRect.Right - LocalRect.Left) + sourceRect^.Left;
           NewRect.Bottom := (LocalRect.Bottom - LocalRect.Top) + sourceRect^.Top;
