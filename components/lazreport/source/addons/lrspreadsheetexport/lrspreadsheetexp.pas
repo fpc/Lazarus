@@ -63,7 +63,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property ExportImages:boolean read FExportImages write FExportImages;
   published
     property DataGrouping:TlreDataGrouping read FDataGrouping write FDataGrouping;
     property DataGroupingChunks:integer read FDataGroupingChunks write FDataGroupingChunks;
@@ -74,6 +73,7 @@ type
     property ExportURL:boolean read FExportURL write FExportURL default false;
     property ExportPrintRange:boolean read FExportPrintRange write FExportPrintRange default false;
     property BandTypes:TfrBandTypes read FBandTypes write FBandTypes;
+    property ExportImages:boolean read FExportImages write FExportImages;
   end;
 
 procedure Register;

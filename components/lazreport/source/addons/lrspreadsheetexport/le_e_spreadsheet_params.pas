@@ -53,6 +53,7 @@ type
     ExportReportTitleCheckBox: TCheckBox;
     ExportPicturesCheckBox: TCheckBox;
     ExportReportSummaryCheckBox: TCheckBox;
+    Label2: TLabel;
     MergeCellsCheckBox: TCheckBox;
     PageBreaksCheckBox: TCheckBox;
     OpenAfterExportCheckBox: TCheckBox;

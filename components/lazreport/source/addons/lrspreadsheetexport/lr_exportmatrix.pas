@@ -78,6 +78,7 @@ type
   public
     constructor Create(AObj:TfrView);
     destructor Destroy; override;
+    procedure NeedPicture;
 
     property Top:integer read FTop write FTop;
     property Left:integer read FLeft write FLeft;
@@ -90,7 +91,7 @@ type
     property MergedRow:Integer read FMergedRow;
     property Text:string read GetText;
     property Texts:TStringList read FTexts;
-    property ObjType:integer read FObjType;
+    property ObjType:integer read FObjType write FObjType;
     property FillColor:TColor read FFillColor;
     property Font:TFont read FFont;
     property Frames : TfrFrameBorders read FFrames;
@@ -131,7 +132,7 @@ type
   TExportMatrix =class
   private
     FDeleteEmptyRow: boolean;
-    FExportImages: boolean;
+    //FExportImages: boolean;
     FMergeCell: boolean;
     FRows:TFpList;
     FColWidth:TBoundArray;
@@ -169,7 +170,7 @@ type
     property DeleteEmptyRow:boolean read FDeleteEmptyRow write FDeleteEmptyRow;
     property MergeCell:boolean read FMergeCell write FMergeCell;
     property PageMargin:integer read FPageMargin write FPageMargin;
-    property ExportImages:boolean read FExportImages write FExportImages;
+    //property ExportImages:boolean read FExportImages write FExportImages;
 
     property Rows:TFpList read FRows;
   end;
@@ -296,7 +297,7 @@ begin
     if AObj is TfrPictureView then
     begin
       FObjType:=gtPicture;
-      FPicture := TPicture.Create;
+      NeedPicture;
       FPicture.Assign(TfrPictureView(AObj).Picture);
     end
     else
@@ -315,6 +316,12 @@ begin
   if Assigned(FPicture) then
     FreeAndNil(FPicture);
   inherited Destroy;
+end;
+
+procedure TExportObject.NeedPicture;
+begin
+  if not Assigned(FPicture) then
+    FPicture := TPicture.Create;
 end;
 
 { TExportMatrix }
@@ -646,13 +653,13 @@ function TExportMatrix.ExportObject(AObj: TfrView): TExportObject;
 var
   R: TExportRow;
 begin
-  Result:=nil;
+{  Result:=nil;
   if (AObj is TfrMemoView) or ((AObj is TfrPictureView) and FExportImages) then
-  begin
+  begin}
     R:=FindRow(AObj.Y);
     Result:=R.ExportObject(AObj);
     Result.Top:=R.Top;
-  end
+//  end
 end;
 
 procedure TExportMatrix.PrepareData;

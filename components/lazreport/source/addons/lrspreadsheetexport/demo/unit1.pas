@@ -5,7 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, LR_Class, LR_Desgn, Forms, Controls,
+  Classes, SysUtils, LR_Class, LR_Desgn, LR_BarC, Forms, Controls,
   Graphics, Dialogs, StdCtrls, ExtCtrls, le_e_spreadsheet,
   lrSpreadSheetExp;
 
@@ -20,6 +20,7 @@ type
     Button3: TButton;
     Button4: TButton;
     Button9: TButton;
+    frBarCodeObject1: TfrBarCodeObject;
     frDesigner1: TfrDesigner;
     frReport1: TfrReport;
     Label1: TLabel;
@@ -29,6 +30,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     function RepName(Num:integer):string;
   public
@@ -79,6 +81,11 @@ begin
   frReport1.LoadFromFile(RepName((Sender as TComponent).Tag));
   frReport1.PrepareReport;
   frReport1.ExportTo(TlrSpreadSheetExportFilter, FExportName);
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  lrSpreadSheetExport1.ExportImages:=true;
 end;
 
 function TForm1.RepName(Num: integer): string;

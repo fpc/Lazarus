@@ -39,7 +39,7 @@ unit le_e_spreadsheet;
 interface
 
 uses
-  Classes, SysUtils, LR_ExportMatrix, LR_Class, fpspreadsheet, Graphics, le_e_spreadsheet_types;
+  Classes, SysUtils, LR_ExportMatrix, LR_Class, LR_BarC, fpspreadsheet, Graphics, le_e_spreadsheet_types;
 
 type
 
@@ -60,16 +60,17 @@ type
     FWorksheet:TsWorksheet;
     FFileName:string;
     FCurPage:integer;
-{    FTmpTextWidth: Integer;
-    FTmpTextHeight: Integer;}
     FTmpTextWidth: Double;
     FTmpTextHeight: Double;
+    FTempMemStreem: TStream;
     procedure ExportColWidth;
     procedure ExportRowHight;
     procedure DoExportPrintRange;
     procedure ExportData1;
 
     procedure MakeWorksheet;
+    function GetTempMemStreem(AClear:boolean):TStream;
+    procedure ShowBarCode(View: TfrCustomBarCodeView);
   protected
     function Setup:boolean; override;
     procedure AfterExport; override;
@@ -84,7 +85,6 @@ type
     procedure Frame(View: TfrView; x, y, h, w: integer);
     procedure ShowFrame(View: TfrView; x, y, h, w: integer);
     procedure Line(View: TfrView; x1,y1, x2,y2: Integer);
-    procedure ShowBarCode(View: TfrBarCodeView; x, y, h, w: integer);
     procedure ShowPicture(View: TfrPictureView; x, y, h, w: integer);
     procedure ShowRoundRect(View: TfrRoundRectView; x, y, h, w: integer);
     procedure ShowShape(View: TfrShapeView; x, y, h, w: integer);
@@ -154,7 +154,6 @@ begin
         if Cel.Row < Y1 then
           Y1:=Cel.Row;
 
-        //MERG!
         if (Cel.Col < Cel.MergedCol) then
         begin
           if Cel.MergedCol > X2 then
@@ -208,6 +207,8 @@ var
   X: Integer;
   Y: Integer;
   scFrm:TsCellBorders;
+  FS: TStream;
+  FISF: Extended;
 begin
   for R:=0 to FExportMatrix.Rows.Count-1 do
   begin
@@ -230,18 +231,25 @@ begin
 
           FWorksheet.WriteBackgroundColor(Y, X, Cel.FillColor);
         end
-{ this code for export images - not work. in progress
         else
         if (Cel.ObjType = gtPicture) and (Assigned(Cel.Picture)) then
         begin
-          FWorksheet.WriteImage(Y, X, '/home/work/demos/Demo_65_ODSWrite/lazarus32x32.png');
-        end};
+          // this code for export images - not work. in progress
+          FS:=GetTempMemStreem(true);
+          Cel.Picture.SaveToStream(FS);
+          if (FS.Size > 0) and (Cel.Widht > 0) and (Cel.Height > 0) then
+          begin
+            FS.Position:=0;
+            FISF:=2.1;  // empiric value :-(
+            FWorksheet.WriteImage(Y, X, FS, 0, 0, Cel.Picture.Width / Cel.Widht / FISF, Cel.Picture.Height / Cel.Height / FISF);
+          end;
+        end;
 
 
         if (Cel.Col < Cel.MergedCol) or (Cel.Row < Cel.MergedRow) then
           FWorksheet.MergeCells(Y, X, Cel.MergedRow, Cel.MergedCol);
 
-        if Assigned(Cel.Font) then
+        if Assigned(Cel.Font) and (Cel.Font.Size > 0) then
           FWorksheet.WriteFont(Y, X, Cel.Font.Name,  Cel.Font.Size, sftofs(Cel.Font), Cel.Font.Color, fpNormal);
 
         FWorksheet.WriteHorAlignment(Y, X, ssAligns[Cel.Alignment]);
@@ -303,6 +311,80 @@ begin
 
   FWorksheet:=nil;
   FExportMatrix.Clear;
+end;
+
+function TlrSpreadSheetExportFilter.GetTempMemStreem(AClear: boolean): TStream;
+begin
+  if FTempMemStreem = nil then
+    FTempMemStreem:=TMemoryStream.Create
+  else
+  if AClear then
+    TMemoryStream(FTempMemStreem).Clear;
+
+  Result:=FTempMemStreem;
+end;
+
+procedure TlrSpreadSheetExportFilter.ShowBarCode(View: TfrCustomBarCodeView);
+var
+  R: TExportObject;
+  FBmp: TBitmap;
+  FX, FY: Integer;
+  LHeader: ^TBitMapInfoHeader;
+  M: TMemoryStream;
+const
+  F_DPI = 60; //empiric value :-(
+{
++  procedure BitmapSaveToFile(const ABitmap: TBitmap; const AFileName: TFileName;
++    const ADPI: Integer);
++  var
++    LMemoryStream: TMemoryStream;
++    LHeader: ^TBitMapInfoHeader;
++  begin
++    LMemoryStream := TMemoryStream.Create;
++    try
++      ABitmap.SaveToStream(LMemoryStream);
++      LHeader := LMemoryStream.Memory + SizeOf(TBitMapFileHeader);
++      LHeader^.biXPelsPerMeter := Ceil(ADPI * 100 / 2.54);
++      LHeader^.biYPelsPerMeter := LHeader^.biXPelsPerMeter;
++      LMemoryStream.SaveToFile(AFileName);
++    finally
++      FreeAndNil(LMemoryStream);
++    end;
++  end;
++}
+begin
+  R:=FExportMatrix.ExportObject(View);
+  FBmp:=TBitmap.Create;
+  FBmp.Width:=View.dx;
+  FBmp.Height:=View.dy;
+  FBmp.Canvas.Brush.Color:=clWhite;
+  FBmp.Canvas.FillRect(0, 0, FBmp.Width, FBmp.Height);
+  FBmp.Canvas.Pen.Color:=clBlack;
+  FBmp.Canvas.Line(1, 1 , 10, 10 );
+
+  FX:=View.X;
+  FY:=View.Y;
+  View.X:=0;
+  View.Y:=0;
+
+  View.Draw(FBmp.Canvas);
+
+  View.X:=FX;
+  View.Y:=FY;
+
+  M:=TMemoryStream.Create;
+  FBMP.SaveToStream(M);
+
+  LHeader := M.Memory + SizeOf(TBitMapFileHeader);
+  LHeader^.biXPelsPerMeter := Ceil(F_DPI * 100 / 2.54);
+  LHeader^.biYPelsPerMeter := LHeader^.biXPelsPerMeter;
+  M.Position:=0;
+  R.NeedPicture;
+  M.Position:=0;
+  R.Picture.LoadFromStream(M);
+
+  R.ObjType:=gtPicture;
+  FBmp.Free;
 end;
 
 function TlrSpreadSheetExportFilter.Setup: boolean;
@@ -418,6 +500,8 @@ end;
 destructor TlrSpreadSheetExportFilter.Destroy;
 begin
   FExportMatrix.Free;
+  if Assigned(FTempMemStreem) then
+    FreeAndNil(FTempMemStreem);
   inherited Destroy;
 end;
 
@@ -494,7 +578,14 @@ end;
 procedure TlrSpreadSheetExportFilter.OnExported(x, y: Integer; View: TfrView);
 begin
   if not Assigned(View) or not (View.ParentBandType in BandTypes) then exit;  
-  FExportMatrix.ExportObject(View);
+  if View is TfrCustomBarCodeView then
+    ShowBarCode(View as TfrCustomBarCodeView)
+  else
+  if (View is TfrMemoView) then
+    FExportMatrix.ExportObject(View)
+  else
+  if (View is TfrPictureView) and FExportImages then
+    FExportMatrix.ExportObject(View)
 end;
 
 initialization
