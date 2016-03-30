@@ -2720,17 +2720,150 @@ end;
 
 procedure TOICustomPropertyGrid.PaintRow(ARow: integer);
 var
-  FullRect, NameRect, NameIconRect, NameTextRect, ValueRect, ParentRect: TRect;
-  IconX,IconY: integer;
+  FullRect, NameRect, NameTextRect, NameIconRect, ValueRect: TRect;
   CurRow: TOIPropertyGridRow;
+
+  procedure ClearBackground;
+  var
+    DrawValuesDiffer: Boolean;
+  begin
+    DrawValuesDiffer := (FValueDifferBackgrndColor<>clNone) and not CurRow.Editor.AllEqual;
+    if FBackgroundColor <> clNone then
+    begin
+      Canvas.Brush.Color := FBackgroundColor;
+      if DrawValuesDiffer then
+        Canvas.FillRect(NameRect)
+      else
+        Canvas.FillRect(FullRect);
+    end;
+    if DrawValuesDiffer then
+    begin
+      // Make the background color darker than what the active edit control has.
+      Canvas.Brush.Color := FValueDifferBackgrndColor - $282828;
+      Canvas.FillRect(ValueRect);
+    end;
+    if ShowGutter and (Layout = oilHorizontal) and
+       (FGutterColor <> FBackgroundColor) and (FGutterColor <> clNone) then
+    begin
+      Canvas.Brush.Color := FGutterColor;
+      Canvas.FillRect(NameIconRect);
+    end;
+  end;
+
+  procedure DrawIcon(IconX: integer);
+  var
+    Details: TThemedElementDetails;
+    sz: TSize;
+    IconY: integer;
+  begin
+    if CurRow.Expanded then
+      Details := ThemeServices.GetElementDetails(ttGlyphOpened)
+    else
+      Details := ThemeServices.GetElementDetails(ttGlyphClosed);
+    sz := ThemeServices.GetDetailSize(Details);
+    IconY:=((NameRect.Bottom - NameRect.Top - sz.cy) div 2) + NameRect.Top;
+    if CanExpandRow(CurRow) then
+      ThemeServices.DrawElement(Canvas.Handle, Details,
+                                Rect(IconX, IconY, IconX + sz.cx, IconY + sz.cy), nil)
+    else if (ARow = FItemIndex) then
+      Canvas.Draw(IconX, IconY, FActiveRowBmp);
+  end;
+
+  procedure DrawName(DrawState: TPropEditDrawState);
+  var
+    OldFont: TFont;
+    NameBgColor: TColor;
+  begin
+    if (ARow = FItemIndex) and (FHighlightColor <> clNone) then
+      NameBgColor := FHighlightColor
+    else
+      NameBgColor := FBackgroundColor;
+    OldFont:=Canvas.Font;
+    Canvas.Font:=FNameFont;
+    Canvas.Font.Color := GetPropNameColor(CurRow);
+    // set bg color to highlight if needed
+    if (NameBgColor <> FBackgroundColor) and (NameBgColor <> clNone) then
+    begin
+      Canvas.Brush.Color := NameBgColor;
+      Canvas.FillRect(NameTextRect);
+    end;
+    CurRow.Editor.PropDrawName(Canvas, NameTextRect, DrawState);
+    Canvas.Font := OldFont;
+    if FBackgroundColor <> clNone then // return color back to background
+      Canvas.Brush.Color := FBackgroundColor;
+  end;
+
+  procedure DrawWidgetsets;
+  var
+    OldFont: TFont;
+    X, Y: Integer;
+    lclPlatform: TLCLPlatform;
+  begin
+    X := NameRect.Right - 2;
+    Y := (NameRect.Top + NameRect.Bottom - IDEImages.Images_16.Height) div 2;
+    OldFont:=Canvas.Font;
+    Canvas.Font:=FNameFont;
+    Canvas.Font.Color := clRed;
+    for lclPlatform := High(TLCLPlatform) downto Low(TLCLPlatform) do
+    begin
+      if lclPlatform in CurRow.FWidgetSets then
+      begin
+        Dec(X, IDEImages.Images_16.Width);
+        IDEImages.Images_16.Draw(Canvas, X, Y,
+          IDEImages.LoadImage(16, 'issue_'+LCLPlatformDirNames[lclPlatform]));
+      end;
+    end;
+    Canvas.Font:=OldFont;
+  end;
+
+  procedure DrawValue(DrawState: TPropEditDrawState);
+  var
+    OldFont: TFont;
+  begin
+    if ARow<>ItemIndex then
+    begin
+      OldFont:=Canvas.Font;
+      if CurRow.Editor.IsNotDefaultValue then
+        Canvas.Font:=FValueFont
+      else
+        Canvas.Font:=FDefaultValueFont;
+      CurRow.Editor.PropDrawValue(Canvas,ValueRect,DrawState);
+      Canvas.Font:=OldFont;
+    end;
+    CurRow.LastPaintedValue:=CurRow.Editor.GetVisualValue;
+  end;
+
+  procedure DrawGutterToParent;
+  var
+    ParentRect: TRect;
+    X: Integer;
+  begin
+    if ARow > 0 then
+    begin
+      ParentRect := RowRect(ARow - 1);
+      X := ParentRect.Left + GetTreeIconX(ARow - 1) + Indent + 3;
+      if X <> NameIconRect.Right then
+      begin
+        Canvas.MoveTo(NameIconRect.Right, NameRect.Top - 1 - FRowSpacing);
+        Canvas.LineTo(X - 1, NameRect.Top - 1 - FRowSpacing);
+      end;
+    end;
+    // to parent next sibling
+    if ARow < FRows.Count - 1 then
+    begin
+      ParentRect := RowRect(ARow + 1);
+      X := ParentRect.Left + GetTreeIconX(ARow + 1) + Indent + 3;
+      if X <> NameIconRect.Right then
+      begin
+        Canvas.MoveTo(NameIconRect.Right, NameRect.Bottom - 1);
+        Canvas.LineTo(X - 1, NameRect.Bottom - 1);
+      end;
+    end;
+  end;
+
+var
+  IconX: integer;
   DrawState: TPropEditDrawState;
-  OldFont: TFont;
-  lclPlatform: TLCLPlatform;
-  X, Y: Integer;
-  NameBgColor: TColor;
-  Details: TThemedElementDetails;
-  Size: TSize;
-  DrawValuesDiffer: Boolean;
 begin
   CurRow := Rows[ARow];
   FullRect := RowRect(ARow);
@@ -2766,101 +2899,19 @@ begin
   if ARow = FItemIndex then
     Include(DrawState, pedsSelected);
 
+  ClearBackground;      // clear background in one go
+  DrawIcon(IconX);      // draw icon
+  DrawName(DrawState);  // draw name
+  DrawWidgetsets;       // draw widgetsets
+  DrawValue(DrawState); // draw value
+
   with Canvas do
   begin
-    // clear background in one go
-    DrawValuesDiffer := (FValueDifferBackgrndColor<>clNone) and not CurRow.Editor.AllEqual;
-    if FBackgroundColor <> clNone then
-    begin
-      Brush.Color := FBackgroundColor;
-      if DrawValuesDiffer then
-        FillRect(NameRect)
-      else
-        FillRect(FullRect);
-    end;
-    if DrawValuesDiffer then
-    begin
-      // Make the background color darker than what the active edit control has.
-      Brush.Color := FValueDifferBackgrndColor - $282828;
-      FillRect(ValueRect);
-    end;
-
-    if ShowGutter and (Layout = oilHorizontal) and
-       (FGutterColor <> FBackgroundColor) and (FGutterColor <> clNone) then
-    begin
-      Brush.Color := FGutterColor;
-      FillRect(NameIconRect);
-    end;
-
-    // draw icon
-    if CurRow.Expanded then
-      Details := ThemeServices.GetElementDetails(ttGlyphOpened)
-    else Details := ThemeServices.GetElementDetails(ttGlyphClosed);
-    Size := ThemeServices.GetDetailSize(Details);
-    IconY:=((NameRect.Bottom - NameRect.Top - Size.cy) div 2) + NameRect.Top;
-    if CanExpandRow(CurRow) then
-      ThemeServices.DrawElement(Canvas.Handle, Details, Rect(IconX, IconY, IconX + Size.cx, IconY + Size.cy), nil)
-    else if (ARow = FItemIndex) then
-      Canvas.Draw(IconX, IconY, FActiveRowBmp);
-
-    // draw name
-    if (ARow = FItemIndex) and (FHighlightColor <> clNone) then
-      NameBgColor := FHighlightColor
-    else
-      NameBgColor := FBackgroundColor;
-    OldFont:=Font;
-    Font:=FNameFont;
-    Font.Color := GetPropNameColor(CurRow);
-    // set bg color to highlight if needed
-    if (NameBgColor <> FBackgroundColor) and (NameBgColor <> clNone) then
-    begin
-      Brush.Color := NameBgColor;
-      FillRect(NameTextRect);
-    end;
-    CurRow.Editor.PropDrawName(Canvas, NameTextRect, DrawState);
-    Font := OldFont;
-
-    if (FBackgroundColor <> clNone) then // return color back to background
-      Brush.Color := FBackgroundColor;
-    
-    // draw widgetsets
-    X := NameRect.Right - 2;
-    Y := (NameRect.Top + NameRect.Bottom - IDEImages.Images_16.Height) div 2;
-    OldFont:=Font;
-    Font:=FNameFont;
-    Font.Color := clRed;
-    for lclPlatform := High(TLCLPlatform) downto Low(TLCLPlatform) do
-    begin
-      if lclPlatform in CurRow.FWidgetSets then
-      begin
-        Dec(X, IDEImages.Images_16.Width);
-        IDEImages.Images_16.Draw(Canvas, X, Y,
-          IDEImages.LoadImage(16, 'issue_'+LCLPlatformDirNames[lclPlatform]));
-      end;
-    end;
-    Font:=OldFont;
-
-    // draw value
-    if ARow<>ItemIndex
-    then begin
-      OldFont:=Font;
-      if CurRow.Editor.IsNotDefaultValue then
-        Font:=FValueFont
-      else
-        Font:=FDefaultValueFont;
-      CurRow.Editor.PropDrawValue(Canvas,ValueRect,DrawState);
-      Font:=OldFont;
-    end;
-    CurRow.LastPaintedValue:=CurRow.Editor.GetVisualValue;
-
-    // -----------------
     // frames
-    // -----------------
 
     if Layout = oilHorizontal then
     begin
       // Row Divider
-
       if DrawHorzGridLines then
       begin
         Pen.Style := psDot;
@@ -2892,32 +2943,8 @@ begin
         Pen.Color := GutterEdgeColor;
         MoveTo(NameIconRect.Right, NameRect.Bottom - 1);
         LineTo(NameIconRect.Right, NameRect.Top - 1 - FRowSpacing);
-
         if CurRow.Lvl > 0 then
-        begin
-          // draw to parent
-          if ARow > 0 then
-          begin
-            ParentRect := RowRect(ARow - 1);
-            X := ParentRect.Left + GetTreeIconX(ARow - 1) + Indent + 3;
-            if X <> NameIconRect.Right then
-            begin
-              MoveTo(NameIconRect.Right, NameRect.Top - 1 - FRowSpacing);
-              LineTo(X - 1, NameRect.Top - 1 - FRowSpacing);
-            end;
-          end;
-          // to parent next sibling
-          if ARow < FRows.Count - 1 then
-          begin
-            ParentRect := RowRect(ARow + 1);
-            X := ParentRect.Left + GetTreeIconX(ARow + 1) + Indent + 3;
-            if X <> NameIconRect.Right then
-            begin
-              MoveTo(NameIconRect.Right, NameRect.Bottom - 1);
-              LineTo(X - 1, NameRect.Bottom - 1);
-            end;
-          end;
-        end;
+          DrawGutterToParent;
       end;
     end
     else begin                              // Layout <> oilHorizontal
