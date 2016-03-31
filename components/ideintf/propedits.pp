@@ -6839,10 +6839,14 @@ begin
   Result:=true;
 end;
 
-
 function ClassTypeInfo(Value: TClass): PTypeInfo;
 begin
   Result := PTypeInfo(Value.ClassInfo);
+end;
+
+function ContainsTextUpper(const AText, AUpperSubText: string): Boolean;
+begin
+  Result := Pos(AUpperSubText, UpperCase(AText)) > 0;
 end;
 
 procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
@@ -6855,9 +6859,10 @@ function IsInteresting(AEditor: TPropertyEditor; const AFilter: TTypeKinds;
 
 var
   visited: TFPList;
+  UpperPropName: String;
 
   // check set element names against AFilter
-  function IsPropInSet( const ATypeInfo: PTypeInfo; ANameFilter : String ) : Boolean;
+  function IsPropInSet( const ATypeInfo: PTypeInfo; AUpperNameFilter : String ) : Boolean;
   var
     TypeInfo: PTypeInfo;
     TypeData: PTypeData;
@@ -6875,14 +6880,14 @@ var
 
     for i:= TypeData^.MinValue to TypeData^.MaxValue do
     begin
-      Result := AnsiContainsText( GetEnumName(TypeInfo, i), ANameFilter );
+      Result := ContainsTextUpper( GetEnumName(TypeInfo, i), AUpperNameFilter );
       if Result then
         Break;
     end;
   end;
 
   // check class has property name
-  function IsPropInClass( const ATypeInfo: PTypeInfo; ANameFilter : String ) : Boolean;
+  function IsPropInClass( const ATypeInfo: PTypeInfo; AUpperNameFilter : String ) : Boolean;
   var
     propInfo: PPropInfo;
     propList: PPropList;
@@ -6896,17 +6901,17 @@ var
       //if encounter a Set check its elements name.
       if (propInfo^.PropType^.Kind = tkSet) then
       begin
-        Result := IsPropInSet( propInfo^.PropType, ANameFilter );
+        Result := IsPropInSet( propInfo^.PropType, AUpperNameFilter );
         if Result then break;
       end;
       // check properties of subclass recursively
       if (propInfo^.PropType^.Kind = tkClass) then
       begin
-        Result := IsPropInClass( propInfo^.PropType, ANameFilter );
+        Result := IsPropInClass( propInfo^.PropType, AUpperNameFilter );
         if Result then break;
       end;
 
-      Result := AnsiContainsText( propInfo^.Name, ANameFilter );
+      Result := ContainsTextUpper( propInfo^.Name, AUpperNameFilter );
       if result then break;
     end;
   end;
@@ -6928,17 +6933,17 @@ var
     Result := ti^.Kind <> tkClass;
     if Result then
     begin
-      if (APropNameFilter = '') or AForceShow then
+      if (UpperPropName = '') or AForceShow then
         exit;
       // Check if check Set has element.
       if (ti^.Kind = tkSet) and (A.ClassType <> TSetElementPropertyEditor) then
       begin
-        Result := AnsiContainsText(A.GetName, APropNameFilter)
-                or IsPropInSet(A.GetPropType, APropNameFilter);
+        Result := ContainsTextUpper(A.GetName, UpperPropName)
+                or IsPropInSet(A.GetPropType, UpperPropName);
         exit;
       end;
       // Check single Props
-      Result := AnsiContainsText(A.GetName, APropNameFilter);
+      Result := ContainsTextUpper(A.GetName, UpperPropName);
       exit;
     end;
 
@@ -6954,12 +6959,12 @@ var
       if Result then
       begin
         // if no SubProperties check against filter name
-        if (APropNameFilter <> '') then
+        if (UpperPropName <> '') then
           if (paSubProperties in A.GetAttributes) then
-            Result := AnsiContainsText(A.GetName, APropNameFilter)
-                  or IsPropInClass(A.GetPropType, APropNameFilter)
+            Result := ContainsTextUpper(A.GetName, UpperPropName)
+                  or IsPropInClass(A.GetPropType, UpperPropName)
           else
-            Result := AnsiContainsText(A.GetName, APropNameFilter );
+            Result := ContainsTextUpper(A.GetName, UpperPropName );
 
         exit;
       end;
@@ -6989,7 +6994,7 @@ var
           ed.SetPropEntry(0, obj, propList^[i]);
           ed.Initialize;
           // filter TClassPropertyEditor name recursively
-          Rec(ed, AnsiContainsText(A.GetName,APropNameFilter) );
+          Rec(ed, ContainsTextUpper(A.GetName, UpperPropName) );
         finally
           ed.Free;
         end;
@@ -7004,6 +7009,7 @@ var
 begin
   visited := TFPList.Create;
   try
+    UpperPropName := Uppercase(APropNameFilter);
     //DebugLn('IsInteresting -> ', AEditor.GetPropInfo^.Name, ': ', AEditor.GetPropInfo^.PropType^.Name);
     Rec(AEditor);
     //DebugLn('IsInteresting <- ', BoolToStr(Result, true));
