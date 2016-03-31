@@ -762,6 +762,9 @@ type
     FDialogTitle: String;
     FCalculatorLayout: TCalculatorLayout;
     FOnAcceptValue: TAcceptValueEvent;
+    FDialogPosition: TPosition;
+    FDialogLeft: Integer;
+    FDialogTop: Integer;
     function GetAsFloat: Double;
     function GetAsInteger: Integer;
     procedure SetAsFloat(const AValue: Double);
@@ -789,6 +792,9 @@ type
     property ButtonHint;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
+    property DialogPosition: TPosition read FDialogPosition write FDialogPosition default poScreenCenter;
+    property DialogTop: Integer read FDialogTop write FDialogTop;
+    property DialogLeft: Integer read FDialogLeft write FDialogLeft;
     property DirectInput;
     property Glyph;
     property NumGlyphs;
@@ -2194,12 +2200,17 @@ procedure TCalcEdit.RunDialog;
 var
   D : Double;
   B : Boolean;
+  Dlg: TCalculatorForm;
 begin
   D:=AsFloat;
-  with CreateCalculatorForm(Self,FCalculatorLayout,0) do
+  Dlg := CreateCalculatorForm(Self,FCalculatorLayout,0);
+  with Dlg do
     try
       Caption:=DialogTitle;
       Value:=D;
+      Dlg.Top := FDialogTop;
+      Dlg.Left := FDialogLeft;
+      Dlg.Position := FDialogPosition;
       if (ShowModal=mrOK) then
       begin
         D:=Value;
@@ -2217,7 +2228,8 @@ end;
 constructor TCalcEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FdialogTitle:=rsCalculator;
+  FDialogTitle:=rsCalculator;
+  FDialogPosition := poScreenCenter;
 end;
 
 
