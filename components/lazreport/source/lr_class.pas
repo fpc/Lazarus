@@ -3755,8 +3755,8 @@ var
     {$ENDIF}
     SMemo.Add(str + Chr(w div 256) + Chr(w mod 256));
     Inc(size, size1);
-    //!!
-    maxWidth := dx - InternalGapX - InternalGapX;
+    if Angle=0 then
+      maxWidth := dx - InternalGapX - InternalGapX;
   end;
 
   procedure WrapLine(const s: String);
