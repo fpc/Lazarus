@@ -22,12 +22,18 @@ unit PropEdits;
 interface
 
 uses
-  Classes, TypInfo, SysUtils, types, RtlConsts, Forms, Controls, LCLProc,
+  // RTL / FCL
+  Classes, TypInfo, SysUtils, types, RtlConsts, StrUtils,
+  // LCL
+  LCLType, LCLIntf, LCLProc, Forms, Controls, GraphType, ButtonPanel, Graphics,
+  StdCtrls, Buttons, Menus, ExtCtrls, ComCtrls, Dialogs, EditBtn, Grids, ValEdit,
+  FileCtrl, StringHashList, PropertyStorage, Themes,
+  // LazControls
   {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
-  GraphType, FPCAdds, // for StrToQWord in older fpc versions
-  StringHashList, ButtonPanel, Graphics, StdCtrls, Buttons, Menus, LCLType,
-  ExtCtrls, ComCtrls, LCLIntf, Dialogs, EditBtn, PropertyStorage, Grids, ValEdit,
-  FileUtil, FileCtrl, ObjInspStrConsts, PropEditUtils, Themes,
+  // LazUtils
+  FileUtil, FPCAdds, // for StrToQWord in older fpc versions
+  // IdeIntf
+  ObjInspStrConsts, PropEditUtils,
   // Forms with .lfm files
   FrmSelectProps, StringsPropEditDlg, KeyValPropEditDlg, CollectionPropEditForm,
   FileFilterPropEditor, IDEWindowIntf;
@@ -571,6 +577,7 @@ type
   TClassPropertyEditor = class(TPropertyEditor)
   private
     FSubPropsTypeFilter: TTypeKinds;
+    FSubPropsNameFilter: String;
     FHideClassName: Boolean;
     procedure SetSubPropsTypeFilter(const AValue: TTypeKinds);
     function EditorFilter(const AEditor: TPropertyEditor): Boolean;
@@ -586,6 +593,8 @@ type
 
     property SubPropsTypeFilter: TTypeKinds
       read FSubPropsTypeFilter write SetSubPropsTypeFilter default tkAny;
+    property SubPropsNameFilter: String
+      read FSubPropsNameFilter write FSubPropsNameFilter;
     property HideClassName: Boolean read FHideClassName write FHideClassName;
   end;
 
@@ -1636,9 +1645,9 @@ procedure WritePublishedProperties(Instance: TPersistent);
 procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
 
 // Returns true if given property should be displayed on the property list
-// filtered by AFilter.
-function IsInteresting(
-  const AEditor: TPropertyEditor; const AFilter: TTypeKinds): Boolean;
+// filtered by AFilter and APropNameFilter.
+function IsInteresting(AEditor: TPropertyEditor;
+  const AFilter: TTypeKinds; const APropNameFilter: String): Boolean;
 
 function dbgs(peh: TPropEditHint): string; overload;
 
@@ -4195,10 +4204,9 @@ begin
   Result:=True; // ToDo: Maybe all sub-properties should be compared for equality.
 end;
 
-function TClassPropertyEditor.EditorFilter(
-  const AEditor: TPropertyEditor): Boolean;
+function TClassPropertyEditor.EditorFilter(const AEditor: TPropertyEditor): Boolean;
 begin
-  Result := IsInteresting(AEditor, SubPropsTypeFilter);
+  Result := IsInteresting(AEditor, SubPropsTypeFilter, SubPropsNameFilter);
 end;
 
 function TClassPropertyEditor.GetAttributes: TPropertyAttributes;
@@ -6842,11 +6850,70 @@ begin
   TCollectionPropertyEditor.ShowCollectionEditor(ACollection, AComponent, APropertyName);
 end;
 
-function IsInteresting(const AEditor: TPropertyEditor; const AFilter: TTypeKinds): Boolean;
+function IsInteresting(AEditor: TPropertyEditor; const AFilter: TTypeKinds;
+  const APropNameFilter: String): Boolean;
+
 var
   visited: TFPList;
 
-  procedure Rec(A: TPropertyEditor);
+  // check set element names against AFilter
+  function IsPropInSet( const ATypeInfo: PTypeInfo; ANameFilter : String ) : Boolean;
+  var
+    TypeInfo: PTypeInfo;
+    TypeData: PTypeData;
+    i: Integer;
+  begin
+    Result := False;
+    TypeInfo := ATypeInfo;
+
+    if (TypeInfo^.Kind <> tkSet) then exit;
+
+    TypeData := GetTypeData(TypeInfo);
+    // Get TypeInfo of set type.
+    TypeInfo := TypeData^.CompType;
+    TypeData := GetTypeData(TypeInfo);
+
+    for i:= TypeData^.MinValue to TypeData^.MaxValue do
+    begin
+      Result := AnsiContainsText( GetEnumName(TypeInfo, i), ANameFilter );
+      if Result then
+        Break;
+    end;
+  end;
+
+  // check class has property name
+  function IsPropInClass( const ATypeInfo: PTypeInfo; ANameFilter : String ) : Boolean;
+  var
+    propInfo: PPropInfo;
+    propList: PPropList;
+    i, propCount: Integer;
+  begin
+    Result := False;
+    propCount := GetPropList(ATypeInfo, propList);
+    for i := 0 to propCount - 1 do
+    begin
+      propInfo := propList^[i];
+      //if encounter a Set check its elements name.
+      if (propInfo^.PropType^.Kind = tkSet) then
+      begin
+        Result := IsPropInSet( propInfo^.PropType, ANameFilter );
+        if Result then break;
+      end;
+      // check properties of subclass recursively
+      if (propInfo^.PropType^.Kind = tkClass) then
+      begin
+        Result := IsPropInClass( propInfo^.PropType, ANameFilter );
+        if Result then break;
+      end;
+
+      Result := AnsiContainsText( propInfo^.Name, ANameFilter );
+      if result then break;
+    end;
+  end;
+
+  // Add AForceShow to display T****PropertyEditor when subproperties found.
+  // and name of class is not the same as filter
+  procedure Rec(A: TPropertyEditor; AForceShow: Boolean = False);
   var
     propList: PPropList;
     i: Integer;
@@ -6859,21 +6926,46 @@ var
     ti := A.GetPropInfo^.PropType;
     //DebugLn('IsInteresting: ', ti^.Name);
     Result := ti^.Kind <> tkClass;
-    if Result then exit;
+    if Result then
+    begin
+      if (APropNameFilter = '') or AForceShow then
+        exit;
+      // Check if check Set has element.
+      if (ti^.Kind = tkSet) and (A.ClassType <> TSetElementPropertyEditor) then
+      begin
+        Result := AnsiContainsText(A.GetName, APropNameFilter)
+                or IsPropInSet(A.GetPropType, APropNameFilter);
+        exit;
+      end;
+      // Check single Props
+      Result := AnsiContainsText(A.GetName, APropNameFilter);
+      exit;
+    end;
 
     // Subroperties can change if user selects another object =>
     // we must show the property, even if it is not interesting currently.
     Result := paVolatileSubProperties in A.GetAttributes;
     if Result then exit;
 
-    if tkClass in AFilter then begin
+    if tkClass in AFilter then
+    begin
       // We want classes => any non-trivial editor is immediately interesting.
       Result := A.ClassType <> TClassPropertyEditor;
-      if Result then exit;
+      if Result then
+      begin
+        // if no SubProperties check against filter name
+        if (APropNameFilter <> '') then
+          if (paSubProperties in A.GetAttributes) then
+            Result := AnsiContainsText(A.GetName, APropNameFilter)
+                  or IsPropInClass(A.GetPropType, APropNameFilter)
+          else
+            Result := AnsiContainsText(A.GetName, APropNameFilter );
+
+        exit;
+      end;
     end
-    else if
-      A.GetAttributes * [paSubProperties, paVolatileSubProperties] = []
-    then exit;
+    else if A.GetAttributes * [paSubProperties, paVolatileSubProperties] = [] then
+      exit;
 
     obj := TPersistent(A.GetObjectValue);
     // At this stage, there is nothing interesting left in empty objects.
@@ -6896,7 +6988,8 @@ var
         try
           ed.SetPropEntry(0, obj, propList^[i]);
           ed.Initialize;
-          Rec(ed);
+          // filter TClassPropertyEditor name recursively
+          Rec(ed, AnsiContainsText(A.GetName,APropNameFilter) );
         finally
           ed.Free;
         end;

@@ -29,16 +29,19 @@ interface
 uses
   // IMPORTANT: the object inspector is a tool and can be used in other programs
   //            too. Don't put Lazarus IDE specific things here.
-  // FCL
+  // RTL / FCL
   SysUtils, Types, Classes, TypInfo, FPCanvas,
   // LCL
+  InterfaceBase, LCLType, LCLIntf, Forms, Buttons, Graphics, GraphType, StdCtrls,
+  Controls, ComCtrls, ExtCtrls, Menus, Dialogs, Themes, LMessages, LCLProc,
+  // LazControls
   {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
-  InterfaceBase, Forms, Buttons, Graphics, GraphType, StdCtrls, LCLType,
-  LCLIntf, Controls, ComCtrls, ExtCtrls, LMessages, LazConfigStorage,
-  LazLoggerBase, Menus, Dialogs, Themes, LCLProc, TreeFilterEdit,
-  ObjInspStrConsts, PropEdits, ListViewPropEdit, ImageListEditor,
-  ComponentTreeView, ComponentEditors, IDEImagesIntf, IDEHelpIntf,
-  OIFavoriteProperties, PropEditUtils;
+  TreeFilterEdit, ListFilterEdit,
+  // LazUtils
+  LazConfigStorage, LazLoggerBase,
+  // IdeIntf
+  ObjInspStrConsts, PropEdits, ListViewPropEdit, ImageListEditor, ComponentTreeView,
+  ComponentEditors, IDEImagesIntf, IDEHelpIntf, OIFavoriteProperties, PropEditUtils;
 
 const
   OIOptionsFileVersion = 3;
@@ -300,6 +303,7 @@ type
     FFirstClickTime: DWORD;
     FKeySearchText: string;
     FHideClassNames: Boolean;
+    FPropNameFilter : String;
 
     // hint stuff
     FHintTimer: TTimer;
@@ -518,6 +522,7 @@ type
     property Favorites: TOIFavoriteProperties read FFavorites write SetFavorites;
     property Filter : TTypeKinds read FFilter write SetFilter;
     property HideClassNames: Boolean read FHideClassNames write FHideClassNames;
+    property PropNameFilter : String read FPropNameFilter write FPropNameFilter;
   end;
 
 
@@ -594,6 +599,9 @@ type
   { TObjectInspectorDlg }
 
   TObjectInspectorDlg = class(TForm)
+    PropertyPanel: TPanel;
+    FilterLabel1: TLabel;
+    PropFilterEdit: TListFilterEdit;
     ComponentPanel: TPanel;
     FilterLabel: TLabel;
     CompFilterEdit: TTreeFilterEdit;
@@ -666,6 +674,8 @@ type
     procedure ComponentRestrictedPaint(Sender: TObject);
     procedure DoUpdateRestricted;
     procedure DoViewRestricted;
+    procedure PropFilterEditAfterFilter(Sender: TObject);
+    procedure NoteBookPageChange(Sender: TObject);
   private
     StateOfHintsOnMainPopupMenu:Boolean;
     FFavorites: TOIFavoriteProperties;
@@ -1888,9 +1898,11 @@ begin
       end;
   end;
   if PropEditor is TClassPropertyEditor then
+  begin
+    (PropEditor as TClassPropertyEditor).SubPropsNameFilter := PropNameFilter;
     (PropEditor as TClassPropertyEditor).SubPropsTypeFilter := FFilter;
-  if PropEditor is TClassPropertyEditor then
     (PropEditor as TClassPropertyEditor).HideClassName:=FHideClassNames;
+  end;
   NewRow := TOIPropertyGridRow.Create(Self, PropEditor, nil, WidgetSets);
   FRows.Add(NewRow);
   if FRows.Count>1 then begin
@@ -2017,9 +2029,11 @@ begin
     Exit;
 
   if PropEditor is TClassPropertyEditor then
+  begin
+    (PropEditor as TClassPropertyEditor).SubPropsNameFilter := PropNameFilter;
     (PropEditor as TClassPropertyEditor).SubPropsTypeFilter := FFilter;
-  if PropEditor is TClassPropertyEditor then
     (PropEditor as TClassPropertyEditor).HideClassName:=FHideClassNames;
+  end;
   NewRow:=TOIPropertyGridRow.Create(Self,PropEditor,FExpandingRow, []);
   NewIndex:=FExpandingRow.Index+1+FExpandingRow.ChildCount;
   NewRow.FIndex:=NewIndex;
@@ -2473,7 +2487,7 @@ end;
 
 function TOICustomPropertyGrid.EditorFilter(const AEditor: TPropertyEditor): Boolean;
 begin
-  Result := IsInteresting(AEditor, FFilter);
+  Result := IsInteresting(AEditor, FFilter, PropNameFilter);
   if Result and Assigned(OnEditorFilter) then
     OnEditorFilter(Self,AEditor,Result);
 end;
@@ -4177,6 +4191,52 @@ begin
   if ShowInfoBox then
     CreateBottomSplitter;
 
+  //Create properties filter
+  PropertyPanel := TPanel.Create(Self);
+  with PropertyPanel do
+  begin
+    Name := 'PropertyPanel';
+    Caption := '';
+    Parent := self;
+    BevelOuter := bvNone;
+    BevelInner := bvNone;
+    Align := alClient;
+    Visible := True;
+  end;
+
+  FilterLabel1 := TLabel.Create(self);
+  PropFilterEdit:= TListFilterEdit.Create(self);
+  with FilterLabel1 do
+  begin
+    Parent := PropertyPanel;
+    Left := 5;
+    Height := 15;
+    Top := 7;
+    Width := 53;
+    Caption := 'Properties';
+    FocusControl := PropFilterEdit;
+  end;
+
+  with PropFilterEdit do
+  begin
+    Parent := PropertyPanel;
+    AnchorSideLeft.Control := FilterLabel1;
+    AnchorSideLeft.Side := asrBottom;
+    AnchorSideTop.Control := FilterLabel1;
+    AnchorSideTop.Side := asrCenter;
+    Left := 61;
+    Height := 23;
+    Top := 3;
+    Width := PropertyPanel.Width - ( Left + 3);
+    AutoSelect := False;
+    AutoSize:=False;
+    ButtonWidth := 23;
+    Anchors := [akTop, akLeft, akRight];
+    BorderSpacing.Left := 5;
+    TabOrder := 0;
+    OnAfterFilter := @PropFilterEditAfterFilter;
+  end;
+
   CreateNoteBook;
 end;
 
@@ -4184,8 +4244,23 @@ destructor TObjectInspectorDlg.Destroy;
 begin
   FreeAndNil(FSelection);
   FreeAndNil(FComponentEditor);
+  FreeAndNil(FilterLabel1);
+  FreeAndNil(PropFilterEdit);
+  FreeAndNil(PropertyPanel);  
   inherited Destroy;
   FreeAndNil(FFavorites);
+end;
+
+procedure TObjectInspectorDlg.PropFilterEditAfterFilter(Sender: TObject);
+begin
+  GetActivePropertyGrid.PropNameFilter := PropFilterEdit.Filter;
+  RebuildPropertyLists;
+  PropFilterEdit.SetFocus;
+end;
+
+procedure TObjectInspectorDlg.NoteBookPageChange(Sender: TObject);
+begin
+  PropFilterEditAfterFilter(Sender);
 end;
 
 procedure TObjectInspectorDlg.SetPropertyEditorHook(NewValue:TPropertyEditorHook);
@@ -5080,9 +5155,11 @@ begin
   with NoteBook do
   begin
     Name := 'NoteBook';
-    Parent := Self;
+    Parent := PropertyPanel;
     Align := alClient;
+    BorderSpacing.Top := 29;
     PopupMenu := MainPopupMenu;
+    OnChange := @NoteBookPageChange;
   end;
 
   AddPage(DefaultOIPageNames[oipgpProperties],oisProperties);
