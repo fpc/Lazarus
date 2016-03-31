@@ -1366,14 +1366,10 @@ type
     procedure RemoveHandlerChangeLookupRoot(
                            const OnChangeLookupRoot: TPropHookChangeLookupRoot);
     // method events
-    procedure AddHandlerCreateMethod(
-                                   const OnCreateMethod: TPropHookCreateMethod);
-    procedure RemoveHandlerCreateMethod(
-                                   const OnCreateMethod: TPropHookCreateMethod);
-    procedure AddHandlerGetMethodName(
-                                 const OnGetMethodName: TPropHookGetMethodName);
-    procedure RemoveHandlerGetMethodName(
-                                 const OnGetMethodName: TPropHookGetMethodName);
+    procedure AddHandlerCreateMethod(const OnCreateMethod: TPropHookCreateMethod);
+    procedure RemoveHandlerCreateMethod(const OnCreateMethod: TPropHookCreateMethod);
+    procedure AddHandlerGetMethodName(const OnGetMethodName: TPropHookGetMethodName);
+    procedure RemoveHandlerGetMethodName(const OnGetMethodName: TPropHookGetMethodName);
     procedure AddHandlerGetCompatibleMethods(
                              const OnGetMethods: TPropHookGetCompatibleMethods);
     procedure RemoveHandlerGetCompatibleMethods(
@@ -1384,14 +1380,10 @@ type
                          const OnMethodExists: TPropHookCompatibleMethodExists);
     procedure RemoveHandlerCompatibleMethodExists(
                          const OnMethodExists: TPropHookCompatibleMethodExists);
-    procedure AddHandlerMethodExists(
-                                   const OnMethodExists: TPropHookMethodExists);
-    procedure RemoveHandlerMethodExists(
-                                   const OnMethodExists: TPropHookMethodExists);
-    procedure AddHandlerRenameMethod(
-                                   const OnRenameMethod: TPropHookRenameMethod);
-    procedure RemoveHandlerRenameMethod(
-                                   const OnRenameMethod: TPropHookRenameMethod);
+    procedure AddHandlerMethodExists(const OnMethodExists: TPropHookMethodExists);
+    procedure RemoveHandlerMethodExists(const OnMethodExists: TPropHookMethodExists);
+    procedure AddHandlerRenameMethod(const OnRenameMethod: TPropHookRenameMethod);
+    procedure RemoveHandlerRenameMethod(const OnRenameMethod: TPropHookRenameMethod);
     procedure AddHandlerShowMethod(const OnShowMethod: TPropHookShowMethod);
     procedure RemoveHandlerShowMethod(const OnShowMethod: TPropHookShowMethod);
     procedure AddHandlerMethodFromAncestor(
@@ -1401,10 +1393,8 @@ type
     procedure AddHandlerChainCall(const OnChainCall: TPropHookChainCall);
     procedure RemoveHandlerChainCall(const OnChainCall: TPropHookChainCall);
     // component event
-    procedure AddHandlerGetComponent(
-                                   const OnGetComponent: TPropHookGetComponent);
-    procedure RemoveHandlerGetComponent(
-                                   const OnGetComponent: TPropHookGetComponent);
+    procedure AddHandlerGetComponent(const OnGetComponent: TPropHookGetComponent);
+    procedure RemoveHandlerGetComponent(const OnGetComponent: TPropHookGetComponent);
     procedure AddHandlerGetComponentName(
                            const OnGetComponentName: TPropHookGetComponentName);
     procedure RemoveHandlerGetComponentName(
@@ -1423,14 +1413,10 @@ type
                      const OnGetAncestorInstProp: TPropHookGetAncestorInstProp);
     procedure RemoveHandlerGetAncestorInstProp(
                      const OnGetAncestorInstProp: TPropHookGetAncestorInstProp);
-    procedure AddHandlerDesignerMouseDown(
-                 const OnMouseDown: TMouseEvent);
-    procedure RemoveHandlerDesignerMouseDown(
-                 const OnMouseDown: TMouseEvent);
-    procedure AddHandlerDesignerMouseUp(
-                 const OnMouseUp: TMouseEvent);
-    procedure RemoveHandlerDesignerMouseUp(
-                 const OnMouseUp: TMouseEvent);
+    procedure AddHandlerDesignerMouseDown(const OnMouseDown: TMouseEvent);
+    procedure RemoveHandlerDesignerMouseDown(const OnMouseDown: TMouseEvent);
+    procedure AddHandlerDesignerMouseUp(const OnMouseUp: TMouseEvent);
+    procedure RemoveHandlerDesignerMouseUp(const OnMouseUp: TMouseEvent);
     // component create, delete, rename
     procedure AddHandlerComponentRenamed(
                            const OnComponentRenamed: TPropHookComponentRenamed);
@@ -1457,25 +1443,17 @@ type
     procedure RemoveHandlerDeletePersistent(
                            const OnDeletePersistent: TPropHookDeletePersistent);
     // persistent selection
-    procedure AddHandlerGetSelection(
-                                   const OnGetSelection: TPropHookGetSelection);
-    procedure RemoveHandlerGetSelection(
-                                   const OnGetSelection: TPropHookGetSelection);
-    procedure AddHandlerSetSelection(
-                                   const OnSetSelection: TPropHookSetSelection);
-    procedure RemoveHandlerSetSelection(
-                                   const OnSetSelection: TPropHookSetSelection);
+    procedure AddHandlerGetSelection(const OnGetSelection: TPropHookGetSelection);
+    procedure RemoveHandlerGetSelection(const OnGetSelection: TPropHookGetSelection);
+    procedure AddHandlerSetSelection(const OnSetSelection: TPropHookSetSelection);
+    procedure RemoveHandlerSetSelection(const OnSetSelection: TPropHookSetSelection);
     // persistent object events
     procedure AddHandlerGetObject(const OnGetObject: TPropHookGetObject);
     procedure RemoveHandlerGetObject(const OnGetObject: TPropHookGetObject);
-    procedure AddHandlerGetObjectName(
-                                 const OnGetObjectName: TPropHookGetObjectName);
-    procedure RemoveHandlerGetObjectName(
-                                 const OnGetObjectName: TPropHookGetObjectName);
-    procedure AddHandlerGetObjectNames(
-                               const OnGetObjectNames: TPropHookGetObjectNames);
-    procedure RemoveHandlerGetObjectNames(
-                               const OnGetObjectNames: TPropHookGetObjectNames);
+    procedure AddHandlerGetObjectName(const OnGetObjectName: TPropHookGetObjectName);
+    procedure RemoveHandlerGetObjectName(const OnGetObjectName: TPropHookGetObjectName);
+    procedure AddHandlerGetObjectNames(const OnGetObjectNames: TPropHookGetObjectNames);
+    procedure RemoveHandlerGetObjectNames(const OnGetObjectNames: TPropHookGetObjectNames);
     procedure AddHandlerObjectPropertyChanged(
                  const OnObjectPropertyChanged: TPropHookObjectPropertyChanged);
     procedure RemoveHandlerObjectPropertyChanged(
@@ -1489,10 +1467,8 @@ type
                  const OnRefreshPropertyValues: TPropHookRefreshPropertyValues);
     procedure RemoveHandlerRefreshPropertyValues(
                  const OnRefreshPropertyValues: TPropHookRefreshPropertyValues);
-    procedure AddHandlerAddDependency(
-                                 const OnAddDependency: TPropHookAddDependency);
-    procedure RemoveHandlerAddDependency(
-                                 const OnAddDependency: TPropHookAddDependency);
+    procedure AddHandlerAddDependency(const OnAddDependency: TPropHookAddDependency);
+    procedure RemoveHandlerAddDependency(const OnAddDependency: TPropHookAddDependency);
     procedure AddHandlerGetCheckboxForBoolean(
                  const OnGetCheckboxForBoolean: TPropHookGetCheckboxForBoolean);
   end;
