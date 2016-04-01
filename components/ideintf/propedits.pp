@@ -6914,6 +6914,8 @@ var
       Result := ContainsTextUpper( propInfo^.Name, AUpperNameFilter );
       if result then break;
     end;
+    if Assigned(propList) then
+      FreeMem(propList);
   end;
 
   // Add AForceShow to display T****PropertyEditor when subproperties found.

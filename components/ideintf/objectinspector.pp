@@ -2026,7 +2026,14 @@ var NewRow:TOIPropertyGridRow;
   NewIndex:integer;
 begin
   if not EditorFilter(PropEditor) then
+  begin
+    // if some elements of a set is not being shown then free their editor
+    // to avoid memory leaks; sine only visible editors will be cleared.
+    if PropEditor.ClassType = TSetElementPropertyEditor then
+        PropEditor.Free;
     Exit;
+  end;
+
 
   if PropEditor is TClassPropertyEditor then
   begin
