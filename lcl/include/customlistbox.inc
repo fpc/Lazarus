@@ -661,19 +661,16 @@ var
 begin
   if MultiSelect then
   begin
-    i:=0;
-    while True do
-        if(i<Items.Count) then
-        begin
-          if Selected[i] then
-             FItems.Delete(i)
-          else
-             inc(i);
-        end else
-          break;
-
+    i := Items.Count;
+    while i > 0 do
+    begin
+      dec(i);
+      if Selected[i] then
+        FItems.Delete(i);
+    end;
   end else
-    if ItemIndex>=0 then Items.Delete(ItemIndex);
+    if ItemIndex>=0 then
+      Items.Delete(ItemIndex);
 end;
 
 {------------------------------------------------------------------------------
