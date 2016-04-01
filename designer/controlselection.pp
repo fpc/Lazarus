@@ -2907,7 +2907,11 @@ var
 begin
   for i:=0 to FControls.Count-1 do
     if (Items[i].Persistent is TCustomTabControl)
-    or (Items[i].Persistent is TCustomPage) then
+    {$IFDEF LCLGTK2}   // Copying PageControl (TCustomPage) fails with GTK2
+    // in Destroy with LCLRefCount>0 due to some messages used. Issue #r51950.
+    or (Items[i].Persistent is TCustomPage)
+    {$ENDIF}
+    then
       Exit(False);
   Result:=True;
 end;
