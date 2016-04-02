@@ -27,7 +27,7 @@ implementation
 
 function TIpHtmlTabList.GetTabItem: TObject;
 begin
-  if FIndex = -1 then
+  if (FIndex = -1) or (FIndex >= Count) then
     Exit(nil)
   else
     Result := TObject(Items[FIndex]);
