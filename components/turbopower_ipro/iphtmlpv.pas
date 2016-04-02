@@ -104,7 +104,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure PaintBox1Paint(Sender: TObject);
   private
-    FClipRect, SourceRect: TRect;
+    SourceRect: TRect;
     Scratch: TBitmap;
     FScale: double;
     FZoom: Integer;
@@ -116,7 +116,7 @@ type
     procedure AlignPaintBox;
     procedure Render;
     procedure ResizeCanvas;
-    procedure ScaleSourceRect;
+//    procedure ScaleSourceRect;
     procedure UpdateBtnStates;
   public
     FCurPage: Integer;
@@ -124,7 +124,6 @@ type
     PageRect: TRect;
     OwnerPanel: TIpHtmlInternalPanel;
     procedure RenderPage(PageNo: Integer);
-    property ClipRect: TRect read FClipRect write FClipRect;
     property CurPage: Integer read FCurPage write SetCurPage;
     property Scale: double read FScale;
     property Zoom: Integer read FZoom write SetZoom;
@@ -146,6 +145,14 @@ const
   SCRATCH_WIDTH = 800; //640;
   SCRATCH_HEIGHT = 600; //480;
   ZOOM_FACTOR = 1.1;
+
+function ScaleRect(ARect: TRect; AFactor: Double): TRect;
+begin
+  Result.Left := round(ARect.Left * AFactor);
+  Result.Top := round(ARect.Top * AFactor);
+  Result.Right := round(ARect.Right * AFactor);
+  Result.Bottom := round(ARect.Bottom * AFactor);
+end;
 
 procedure TIpHTMLPreview.AlignPaintBox;
 var
@@ -251,7 +258,6 @@ begin
   btnFit.Caption := rsIpHTMLPreviewFitAll;
   btnFitWidth.Caption := rsIpHTMLPreviewFitWidth;
   btnFitHeight.Caption := rsIpHTMLPreviewFitHeight;
-
 end;
 
 procedure TIpHTMLPreview.FormDestroy(Sender: TObject);
@@ -275,18 +281,16 @@ end;
 
 procedure TIpHTMLPreview.PaintBox1Paint(Sender: TObject);
 begin
-  SourceRect := PaintBox1.Canvas.ClipRect;
-  ScaleSourceRect;
-  ClipRect := SourceRect;
+  SourceRect := ScaleRect(PaintBox1.Canvas.ClipRect, 1.0/Scale);
   OffsetRect(SourceRect, 0, PageRect.Top);
   Render;
 end;
 
 procedure TIpHTMLPreview.Render;
 var
-  TTop, TLeft,
+  TileTop, TileLeft,
   WindowTop, WindowLeft: Integer;
-  R: TRect;
+  R, Rscr: TRect;
 begin
   {GDI won't let us create a bitmap for a whole page
    since it would become too big for large resolutions,
@@ -297,36 +301,68 @@ begin
     Application.ProcessMessages;
     PaintBox1.Canvas.Brush.Color := clWhite;
     PaintBox1.Canvas.FillRect(PaintBox1.Canvas.ClipRect);
+    PaintBox1.Canvas.AntialiasingMode := OwnerPanel.PreviewAntiAliasingMode;
     WindowTop := SourceRect.Top;
-    TTop := 0;
+    TileTop := 0;
     while WindowTop < SourceRect.Bottom do begin
       WindowLeft := SourceRect.Left;
-      TLeft := 0;
+      TileLeft := 0;
       while WindowLeft < SourceRect.Right do begin
         R.Left := WindowLeft;
         R.Top := WindowTop;
         R.Right := R.Left + SCRATCH_WIDTH + 1;
         R.Bottom := R.Top + SCRATCH_HEIGHT + 1;
+        Rscr := R;
+        if R.Bottom - SourceRect.Top > OwnerPanel.PrintHeight then begin
+          Scratch.Canvas.FillRect(0, 0, R.Right-R.Left, R.Bottom-R.Top);
+          R.Bottom := SourceRect.Top + OwnerPanel.PrintHeight;
+        end;
 
-        HTML.Render(Scratch.Canvas, R, PageRect.Bottom, False, Point(0, 0));
+        HTML.Render(Scratch.Canvas, R, PageRect.Top, PageRect.Bottom, False, Point(0, 0));
 
-        R.Left := PaintBox1.Canvas.ClipRect.Left + round(TLeft * Scale);
-        R.Top := PaintBox1.Canvas.ClipRect.Top + round(TTop * Scale);
-        R.Right := R.Left + round(SCRATCH_WIDTH * Scale) + 1;
-        R.Bottom := R.Top + round(SCRATCH_HEIGHT * Scale) + 1;
-
-        PaintBox1.Canvas.AntialiasingMode := OwnerPanel.PreviewAntiAliasingMode;
-        PaintBox1.Canvas.StretchDraw(R, Scratch);
+        OffsetRect(RScr, 0, -PageRect.Top);
+        Rscr := ScaleRect(Rscr, Scale);
+        PaintBox1.Canvas.StretchDraw(Rscr, Scratch);
 
         inc(WindowLeft, SCRATCH_WIDTH);
-        inc(TLeft, SCRATCH_WIDTH);
+        inc(TileLeft, SCRATCH_WIDTH);
       end;
       inc(WindowTop, SCRATCH_HEIGHT);
-      inc(TTop, SCRATCH_HEIGHT);
+      inc(TileTop, SCRATCH_HEIGHT);
     end;
   finally
     Screen.Cursor := crDefault;
   end;
+
+(*
+  This is an untiled version ...
+var
+  R: TRect;
+begin
+  // Render to single "scratch" bitmap which has the original print size and
+  // then is stretch-drawn into the preview paintbox.
+  Screen.Cursor := crHourglass;
+  try
+    Application.ProcessMessages;
+    Paintbox1.Canvas.Brush.Color := clWhite;
+    Paintbox1.Canvas.FillRect(Paintbox1.Canvas.ClipRect);
+    PaintBox1.Canvas.AntialiasingMode := OwnerPanel.PreviewAntiAliasingMode;
+    Scratch.Clear;
+    Scratch.Width := SourceRect.Right - SourceRect.Left;
+    Scratch.Height := SourceRect.Bottom - SourceRect.Top;
+
+    // probably not needed
+    Scratch.Canvas.Brush.Color := clWhite;
+    Scratch.Canvas.FillRect(SourceRect);
+
+    HTML.Render(Scratch.Canvas, SourceRect, PageRect.Top, PageRect.Bottom, False, Point(0, 0));
+
+    R := Paintbox1.Canvas.ClipRect;
+    PaintBox1.Canvas.StretchDraw(R, Scratch);
+  finally
+    Screen.Cursor := crDefault;
+  end;
+*)
 end;
 
 procedure TIpHTMLPreview.RenderPage(PageNo: Integer);
@@ -345,11 +381,11 @@ begin
   ScrollBox1.HorzScrollBar.Position := 0;
   ScrollBox1.VertScrollBar.Position := 0;
   {$IFDEF IP_LAZARUS}
-  if Printer.PageHeight>0 then
+  if Printer.PageHeight > 0 then
     PaperPanel.Height := round(Printer.PageHeight * Scale)
   else
     PaperPanel.Height := round(500 * Scale);
-  if Printer.PageWidth>0 then
+  if Printer.PageWidth > 0 then
     PaperPanel.Width := round(Printer.PageWidth * Scale)
   else
     PaperPanel.Width := round(500 * Scale);
@@ -357,26 +393,19 @@ begin
   PaperPanel.Width := round(Printer.PageWidth * Scale);
   PaperPanel.Height := round(Printer.PageHeight * Scale);
   {$ENDIF}
-  PaintBox1.Width := round(OwnerPanel.PrintWidth * Scale);
-  PaintBox1.Height := round(OwnerPanel.PrintHeight * Scale);
+
   PaintBox1.Left := round(OwnerPanel.PrintTopLeft.x * Scale);
   PaintBox1.Top := round(OwnerPanel.PrintTopLeft.y * Scale);
-  AlignPaintBox;
-end;
+  Paintbox1.Width := PaperPanel.Width - Paintbox1.Left;
+  Paintbox1.Height := PaperPanel.Height - Paintbox1.top;
 
-procedure TIpHTMLPreview.ScaleSourceRect;
-begin
-  SourceRect.Left := round(SourceRect.Left / Scale);
-  SourceRect.Top := round(SourceRect.Top / Scale);
-  SourceRect.Right := round(SourceRect.Right / Scale);
-  SourceRect.Bottom := round(SourceRect.Bottom / Scale);
+  AlignPaintBox;
 end;
 
 procedure TIpHTMLPreview.SetCurPage(const Value: Integer);
 begin
-  if (Value <> FCurPage)
-  and (Value >= 1)
-  and (Value <= OwnerPanel.PageCount) then begin
+  if (Value <> FCurPage) and (Value >= 1) and (Value <= OwnerPanel.PageCount) then
+  begin
     FCurPage := Value;
     RenderPage(Value);
     edtPage.Text := IntToStr(CurPage);
@@ -421,6 +450,7 @@ begin
   edtZoom.Value := FZoom;
   dec(FLockZoomUpdate);
   FScale := ScreenInfo.PixelsPerInchX / Printer.XDpi * FZoom * 0.01;
+
   ResizeCanvas;
 end;
 

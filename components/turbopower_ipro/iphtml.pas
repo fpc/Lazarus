@@ -1715,6 +1715,8 @@ type
     property Align : TIpHtmlVAlignment2 read FAlign write FAlign;
   end;
 
+  TIpHtmlRenderDevice = (rdScreen, rdPrinter, rdPreview);
+
   TWriteCharProvider = procedure(C : AnsiChar) of object;
 
   TIpHtmlDataGetImageEvent =
@@ -1784,6 +1786,7 @@ type
     FCanPaint : Boolean;
     FMarginHeight: Integer;
     FMarginWidth: Integer;
+    FRenderDev: TIpHtmlRenderDevice;
     {$IFDEF IP_LAZARUS}
     FCSS: TCSSGlobalProps;
     FDocCharset: string;
@@ -1807,6 +1810,7 @@ type
     FClientRect : TRect;   {the coordinates of the paint rectangle}
     FPageViewRect : TRect; {the current section of the page}
     FPageViewBottom : Integer; {the lower end of the page, may be different from PageViewRect.Bottom }
+    FPageViewTop: Integer; { the upper end of the page }
     DefaultProps : TIpHtmlProps;
     Body : TIpHtmlNodeBODY;
     FTitleNode : TIpHtmlNodeTITLE;
@@ -2072,8 +2076,9 @@ type
     procedure LoadFromStream(S : TStream);
     procedure Render(TargetCanvas: TCanvas; TargetPageRect : TRect;
       UsePaintBuffer: Boolean; const TopLeft: TPoint); overload;
-    procedure Render(TargetCanvas: TCanvas; TargetPageRect: TRect; APageEnd: Integer;
-      UsePaintBuffer: Boolean; const TopLeft: TPoint); overload;
+    procedure Render(TargetCanvas: TCanvas; TargetPageRect: TRect;
+      APageTop, APageBottom: Integer; UsePaintBuffer: Boolean;
+      const TopLeft: TPoint); overload;
     {$IFDEF IP_LAZARUS_DBG}
     procedure DebugChild(Node: TIpHtmlNode; const UserData: Pointer);
     procedure DebugAll;
@@ -2093,12 +2098,14 @@ type
     property PageHeight : Integer read FPageHeight;
     property PageViewRect : TRect read FPageViewRect;
     property PageViewBottom: Integer read FPageViewBottom;
+    property PageViewTop: Integer read FPageViewTop;
     property ClientRect : TRect read FClientRect;
     property ControlsCount: integer read getControlCount;
     property Controls[i:integer]: TIpHtmlNode read getControl;
     property FrameSet : TIpHtmlNodeFRAMESET read FCurFrameSet;
     property FactBAParag: Real read FFactBAParag write FFactBAParag;
     property MouseLastPoint : TPoint read FMouseLastPoint;
+    property RenderDevice: TIpHtmlRenderDevice read FRenderDev;
   end;
 
   {$IFNDEF IP_LAZARUS}
@@ -8123,11 +8130,12 @@ end;
 procedure TIpHtml.Render(TargetCanvas: TCanvas; TargetPageRect: TRect;
   UsePaintBuffer: Boolean; const TopLeft: TPoint);
 begin
-  Render(TargetCanvas, TargetPageRect, TargetPageRect.Bottom, UsePaintBuffer, TopLeft);
+  Render(TargetCanvas, TargetPageRect, TargetPageRect.Top, TargetPageRect.Bottom,
+    UsePaintBuffer, TopLeft);
 end;
 
 procedure TIpHtml.Render(TargetCanvas: TCanvas; TargetPageRect: TRect;
-  APageEnd: Integer; UsePaintBuffer: Boolean; const TopLeft: TPoint);
+  APageTop, APageBottom: Integer; UsePaintBuffer: Boolean; const TopLeft: TPoint);
 var
   i : Integer;
 begin
@@ -8158,13 +8166,17 @@ begin
         if Painters <> nil then
           PaintStop;
  {$ENDIF}
-  for i := 0 to Pred(FControlList.Count) do
+
+ for i := 0 to Pred(FControlList.Count) do
     TIpHtmlNode(FControlList[i]).UnmarkControl;
   SetDefaultProps;
   FPageViewRect := TargetPageRect;
-  FPageViewBottom := APageEnd;
   { Note: In Preview mode the page is tiled of "mini-pages" sized PageViewRect.
-    The lower end of the "real" page is given by PageViewBottom }
+    The lower end of the "real" page is given by PageViewBottom. We set here
+    its default. The value needed for the preview will be set there. }
+  FPageViewBottom := APageBottom;
+  FPageViewTop := APageTop;
+
   if UsePaintBuffer then begin
     if (PaintBuffer = nil)
     or (PaintBufferBitmap.Width <> FClientRect.Right)
@@ -13364,6 +13376,8 @@ begin
         ViewLeft + (CR.Right - CR.Left),
         ViewTop + (CR.Bottom - CR.Top)
       ),
+      ViewTop,
+      ViewTop + (CR.Bottom - CR.Top),
       True,
       Point(0, 0)
     )
@@ -13475,8 +13489,10 @@ procedure TIpHtmlInternalPanel.PrintPages(FromPage, ToPage: Integer);
 var
   CR : TRect;
   i : Integer;
+  oldRD: TIpHtmlRenderDevice;
 begin
   if (Hyper <> nil) then begin
+    oldRD := Hyper.RenderDevice;
     Printer.Refresh;
     BeginPrint;
     Printer.BeginDoc;
@@ -13485,6 +13501,7 @@ begin
       for i := FromPage to ToPage do begin
         CR.Top := (i - 1) * PrintHeight;
         CR.Bottom := Cr.Top + PrintHeight;
+        Hyper.FRenderDev := rdPrinter;
         Hyper.Render(Printer.Canvas, CR, False, PrintTopLeft);
         if i < ToPage then
           Printer.NewPage;
@@ -13496,6 +13513,7 @@ begin
       else
         Printer.Abort;
       EndPrint;
+      Hyper.FRenderDev := oldRD;
     end;
   end;
 end;
@@ -13504,8 +13522,10 @@ procedure TIpHtmlInternalPanel.PrintPreview;
 var
   preview: TIpHtmlPreview;
   p: TPosition;
+  oldRD: TIpHtmlRenderDevice;
 begin
   if (Hyper <> nil) then begin
+    oldRD := Hyper.RenderDevice;
     BeginPrint;
     try
 
@@ -13532,6 +13552,7 @@ begin
           try
             OwnerPanel := Self;
             Zoom := HTMLPanel.PrintSettings.Preview.Zoom;
+            Hyper.FRenderDev := rdPreview;
             ShowModal;
             HTMLPanel.PrintSettings.Preview.Maximized := (WindowState = wsMaximized);
             if (WindowState = wsNormal) then begin
@@ -13553,6 +13574,7 @@ begin
 
     finally
       EndPrint;
+      Hyper.FRenderDev := oldRD;
     end;
   end;
 end;

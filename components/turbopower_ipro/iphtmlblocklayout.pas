@@ -1248,8 +1248,14 @@ var
   {$ENDIF}
 
 begin
-
   P := FIpHtml.PagePtToScreen(aCurWord.WordRect2.TopLeft);
+
+  // We dont't want clipped lines at the top of the preview
+  if (FIpHtml.RenderDevice = rdPreview) and
+     (P.Y < 0) and (FIpHtml.PageViewRect.Top = FIpHtml.PageViewTop)
+  then
+    exit;
+
   {$IFDEF IP_LAZARUS}
   //if (LastOwner <> aCurWord.Owner) then LastPoint := P;
   saveCanvasProperties;
@@ -1268,19 +1274,22 @@ begin
   else
   {$ENDIF}
     FCanvas.Brush.Style := bsClear;
+
   //debugln(['TIpHtmlNodeBlock.RenderQueue ',aCurWord.AnsiWord]);
   FIpHtml.PageRectToScreen(aCurWord.WordRect2, R);
+
   {$IFDEF IP_LAZARUS}
   if aCurWord.Owner.ParentNode = aCurTabFocus then
     FCanvas.DrawFocusRect(R);
-  if FCanvas.Font.color=-1 then
-    FCanvas.Font.color:=clBlack;
+  if FCanvas.Font.color = -1 then
+    FCanvas.Font.color := clBlack;
   {$ENDIF}
   if aCurWord.AnsiWord <> NAnchorChar then
     FCanvas.TextRect(R, P.x, P.y, NoBreakToSpace(aCurWord.AnsiWord));
   {$IFDEF IP_LAZARUS}
   restoreCanvasProperties;
   {$ENDIF}
+
   FIpHtml.AddRect(aCurWord.WordRect2, aCurWord, FBlockOwner);
 end;
 
@@ -1305,7 +1314,8 @@ begin
   else
     CurTabFocus := nil;
   {$ENDIF}
-  for i := 0 to Pred(FElementQueue.Count) do begin
+
+  for i := 0 to pred(FElementQueue.Count) do begin
     CurWord := PIpHtmlElement(FElementQueue[i]);
     if (CurWord.Props <> nil) and (CurWord.Props <> FCurProps) then
       DoRenderFont(CurWord);
@@ -1315,7 +1325,11 @@ begin
     {$endif}
     //debugln(['TIpHtmlNodeBlock.RenderQueue ',i,' ',IntersectRect(R, CurWord.WordRect2, Owner.PageViewRect),' CurWord.WordRect2=',dbgs(CurWord.WordRect2),' Owner.PageViewRect=',dbgs(Owner.PageViewRect)]);
 
-    isVisible := ((CurWord.ElementType = etObject) or (CurWord.WordRect2.Bottom <= FIpHtml.PageViewBottom))
+    isVisible := (CurWord.WordRect2.Top < FIpHtml.PageViewBottom);
+    // Make sure that the printer does not duplicate clipped lines.
+    if FIpHtml.RenderDevice = rdPrinter then
+      isVisible := isVisible and (CurWord.WordRect2.Top >= FIpHtml.PageViewTop);
+    isVisible := (isVisible or (CurWord.ElementType = etObject))
       and IntersectRect(R, CurWord.WordRect2, FIpHtml.PageViewRect);
 
     if isVisible then begin

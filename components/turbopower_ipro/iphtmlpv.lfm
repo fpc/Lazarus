@@ -284,12 +284,10 @@ object IpHTMLPreview: TIpHTMLPreview
       ParentColor = False
       TabOrder = 0
       object PaintBox1: TPaintBox
-        AnchorSideLeft.Side = asrCenter
-        AnchorSideTop.Side = asrCenter
-        Left = 0
-        Height = 113
-        Top = 0
-        Width = 145
+        Left = 24
+        Height = 101
+        Top = 24
+        Width = 134
         OnPaint = PaintBox1Paint
       end
     end
