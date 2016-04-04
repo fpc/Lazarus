@@ -4271,7 +4271,7 @@ var
     DebugLn('');
     DebugLn(Format('Building mode %d: %s ...', [ModeCnt, Project1.ActiveBuildMode.Identifier]));
     DebugLn('');
-    Result := MainIDE.DoBuildProject(crBuild, [], LastMode) = mrOK;
+    Result := MainIDE.DoBuildProject(crCompile, [], LastMode) = mrOK;
   end;
 
 var
