@@ -7,7 +7,7 @@ interface
 uses
   Classes, ComCtrls, ExtCtrls, Spin, StdCtrls, SysUtils, FileUtil, Forms,
   Controls, Graphics, Dialogs, TAGraph, TASeries, TASources, TATools,
-  TATransformations, TACustomSeries, Types, TADrawUtils;
+  TATransformations, TACustomSeries, Types, TADrawUtils, TATypes;
 
 type
 
@@ -21,13 +21,12 @@ type
     cbLineType: TComboBox;
     cbRotated: TCheckBox;
     cbSorted: TCheckBox;
-    ccsAvg: TCalculatedChartSource;
-    ccsDerivative: TCalculatedChartSource;
-    ccsSum: TCalculatedChartSource;
     catOscillator: TChartAxisTransformations;
-    ChartOwnerDrawnPointer: TChart;
+    Chart_CustomDrawPointer: TChart;
+    ChartGetPointerStyleEvent: TChart;
+    lsGetPointerStyle: TLineSeries;
     PointerImage: TImage;
-    lsOwnerDrawnPointer: TLineSeries;
+    lsCustomDrawPointer: TLineSeries;
     cbBitmapPointer: TCheckBox;
     cbDrawEveryNthPointer: TCheckBox;
     chOscillator: TChart;
@@ -51,6 +50,8 @@ type
     RandomChartSource1: TRandomChartSource;
     sePointerSize: TSpinEdit;
     edEveryNth: TSpinEdit;
+    tsCustomDrawPointer: TTabSheet;
+    tsGetPointerStyle: TTabSheet;
     tsOwnerDrawnPointer: TTabSheet;
     timOscilloscope: TTimer;
     tsOscilloscope: TTabSheet;
@@ -65,7 +66,9 @@ type
     procedure cbSortedChange(Sender: TObject);
     procedure edEveryNthChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure lsOwnerDrawnPointerOwnerDrawPointer(ASender: TChartSeries;
+    function lsGetPointerStyleGetPointerStyle(ASender: TChartSeries;
+      AValueIndex: Integer): TSeriesPointerStyle;
+    procedure lsCustomDrawPointerCustomDrawPointer(ASender: TChartSeries;
       ADrawer: IChartDrawer; AIndex: Integer; ACenter: TPoint);
     procedure PageControl1Change(Sender: TObject);
     procedure sePointerSizeChange(Sender: TObject);
@@ -80,7 +83,7 @@ implementation
 {$R *.lfm}
 
 uses
-  LCLIntf, IntfGraphics, TAChartUtils, TATypes, TAEnumerators;
+  LCLIntf, IntfGraphics, TAChartUtils, TAEnumerators;
 
 type
   TLineSeriesEnum =
@@ -126,10 +129,10 @@ end;
 procedure TForm1.cbBitmapPointerChange(Sender: TObject);
 begin
   if cbBitmapPointer.Checked or cbDrawEveryNthPointer.Checked then
-    lsOwnerDrawnPointer.OnOwnerDrawPointer := @lsOwnerDrawnPointerOwnerDrawPointer
+    lsCustomDrawPointer.OnCustomDrawPointer := @lsCustomDrawPointerCustomDrawPointer
   else
-    lsOwnerDrawnPointer.OnOwnerDrawPointer := nil;
-  ChartOwnerDrawnPointer.Invalidate;
+    lsCustomDrawPointer.OnCustomDrawPointer := nil;
+  Chart_CustomDrawPointer.Invalidate;
 end;
 
 procedure TForm1.cbLineTypeChange(Sender: TObject);
@@ -161,7 +164,7 @@ end;
 
 procedure TForm1.edEveryNthChange(Sender: TObject);
 begin
-  ChartOwnerDrawnPointer.Invalidate;
+  Chart_CustomDrawPointer.Invalidate;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -187,15 +190,20 @@ begin
   end;
 end;
 
-procedure TForm1.lsOwnerDrawnPointerOwnerDrawPointer(ASender: TChartSeries;
+function TForm1.lsGetPointerStyleGetPointerStyle(ASender: TChartSeries;
+  AValueIndex: Integer): TSeriesPointerStyle;
+begin
+  Result := TSeriesPointerStyle(AValueIndex mod (ord(High(TSeriespointerStyle))+1));
+end;
+
+procedure TForm1.lsCustomDrawPointerCustomDrawPointer(ASender: TChartSeries;
   ADrawer: IChartDrawer; AIndex: Integer; ACenter: TPoint);
-var
-  lineser: TLineSeries;
 
   procedure DoDrawPointer;
   var
     img: TLazIntfImage;
     bmp: TBitmap;
+    ser: TLineSeries;
   begin
     if cbBitmapPointer.Checked then begin
       img := TLazIntfImage.Create(0,0);
@@ -210,12 +218,13 @@ var
       finally
         img.Free;
       end;
-    end else
-      lineser.Pointer.Draw(ADrawer, ACenter, lineser.Pointer.Brush.Color);
+    end else begin
+      ser := TLineseries(ASender);
+      ser.Pointer.Draw(ADrawer, ACenter, ser.Pointer.Brush.Color);
+    end;
   end;
 
 begin
-  lineser := TLineSeries(ASender);
   if not cbDrawEveryNthPointer.Checked or (AIndex mod edEveryNth.Value = 0) then
     DoDrawPointer;
 end;

@@ -231,11 +231,20 @@ type
 
   TLinearMarkPositions = (lmpOutside, lmpPositive, lmpNegative, lmpInside);
 
+  TSeriesPointerCustomDrawEvent = procedure (
+    ASender: TChartSeries; ADrawer: IChartDrawer; AIndex: Integer;
+    ACenter: TPoint) of object;
+
+  TSeriesPointerStyleEvent = function (ASender: TChartSeries;
+    AValueIndex: Integer): TSeriesPointerStyle of object;
+
   { TBasicPointSeries }
 
   TBasicPointSeries = class(TChartSeries)
   strict private
     FMarkPositions: TLinearMarkPositions;
+    FOnCustomDrawPointer: TSeriesPointerCustomDrawEvent;
+    FOnGetPointerStyle: TSeriesPointerStyleEvent;
     function GetLabelDirection(AIndex: Integer): TLabelDirection;
     procedure SetMarkPositions(AValue: TLinearMarkPositions);
     procedure SetPointer(AValue: TSeriesPointer);
@@ -259,9 +268,6 @@ type
     function GetXRange(AX: Double; AIndex: Integer): Double;
     function GetZeroLevel: Double; virtual;
     function NearestXNumber(var AIndex: Integer; ADir: Integer): Double;
-    procedure OwnerDrawPointer(
-      ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint;
-      var AContinue: Boolean); virtual;
     procedure PrepareGraphPoints(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
     procedure UpdateGraphPoints(AIndex: Integer); overload; inline;
@@ -272,6 +278,10 @@ type
   protected
     procedure AfterAdd; override;
     procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
+    property OnCustomDrawPointer: TSeriesPointerCustomDrawEvent
+      read FOnCustomDrawPointer write FOnCustomDrawPointer;
+    property OnGetPointerStyle: TSeriesPointerStyleEvent
+      read FOnGetPointerStyle write FOnGetPointerStyle;
 
   public
     destructor Destroy; override;
@@ -1095,7 +1105,7 @@ var
   i: Integer;
   p: TDoublePoint;
   ai: TPoint;
-  defaultdraw: Boolean;
+  ps: TSeriesPointerStyle;
 begin
   Assert(Pointer <> nil, 'Series pointer');
   if not Pointer.Visible then exit;
@@ -1103,11 +1113,20 @@ begin
     p := FGraphPoints[i - FLoBound];
     if not ParentChart.IsPointInViewPort(p) then continue;
     ai := ParentChart.GraphToImage(p);
-    defaultdraw := true;
-    OwnerDrawPointer(ADrawer, i, ai, defaultdraw);
-    if defaultdraw then begin
+    if Assigned(FOnCustomDrawPointer) then
+      FOnCustomDrawPointer(Self, ADrawer, i, ai)
+    else begin
+      ps := Pointer.Style;
+      if Assigned(FOnGetPointerStyle) then begin
+        Pointer.SetOwner(nil);   // avoid recursion
+        Pointer.Style := FOnGetPointerStyle(self, i);
+      end;
       Pointer.Draw(ADrawer, ai, Source[i]^.Color);
       AfterDrawPointer(ADrawer, i, ai);
+      if Assigned(FOnGetPointerStyle) then begin
+        Pointer.Style := ps;
+        Pointer.SetOwner(ParentChart);
+      end;
     end;
   end;
 end;
@@ -1264,15 +1283,6 @@ begin
       else
         exit(AxisToGraphX(X));
   Result := SafeNan;
-end;
-
-procedure TBasicPointSeries.OwnerDrawPointer(
-  ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint;
-  var AContinue: Boolean);
-begin
-  Unused(ADrawer);
-  Unused(AIndex, APos);
-  Unused(AContinue);
 end;
 
 procedure TBasicPointSeries.PrepareGraphPoints(

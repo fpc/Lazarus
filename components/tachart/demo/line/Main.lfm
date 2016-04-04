@@ -46,6 +46,7 @@ object Form1: TForm1
         )
         Toolset = ChartToolset1
         Align = alClient
+        Color = clWindow
         DoubleBuffered = True
         object chFastLineSeries1: TLineSeries
           LinePen.Color = clTeal
@@ -66,13 +67,14 @@ object Form1: TForm1
         Top = 0
         Width = 683
         Align = alTop
+        BevelOuter = bvNone
         ClientHeight = 38
         ClientWidth = 683
         TabOrder = 1
         object cbLineType: TComboBox
           Left = 8
           Height = 23
-          Top = 8
+          Top = 6
           Width = 96
           ItemHeight = 15
           ItemIndex = 1
@@ -91,7 +93,7 @@ object Form1: TForm1
         object cb3D: TCheckBox
           Left = 112
           Height = 19
-          Top = 12
+          Top = 8
           Width = 34
           Caption = '3D'
           OnChange = cb3DChange
@@ -100,7 +102,7 @@ object Form1: TForm1
         object cbRotated: TCheckBox
           Left = 152
           Height = 19
-          Top = 12
+          Top = 8
           Width = 61
           Caption = 'Rotated'
           OnChange = cbRotatedChange
@@ -135,7 +137,7 @@ object Form1: TForm1
         object cbSorted: TCheckBox
           Left = 216
           Height = 19
-          Top = 12
+          Top = 8
           Width = 54
           Caption = 'Sorted'
           OnChange = cbSortedChange
@@ -208,14 +210,14 @@ object Form1: TForm1
         end
       end
     end
-    object tsOwnerDrawnPointer: TTabSheet
+    object tsCustomDrawPointer: TTabSheet
       Caption = 'Ownerdrawn pointer'
       ClientHeight = 466
       ClientWidth = 683
-      object ChartOwnerDrawnPointer: TChart
+      object Chart_CustomDrawPointer: TChart
         Left = 0
-        Height = 432
-        Top = 34
+        Height = 428
+        Top = 38
         Width = 683
         AxisList = <        
           item
@@ -234,20 +236,21 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
-        object lsOwnerDrawnPointer: TLineSeries
-          OnOwnerDrawPointer = lsOwnerDrawnPointerOwnerDrawPointer
+        Color = clWindow
+        object lsCustomDrawPointer: TLineSeries
           ShowPoints = True
           Source = RandomChartSource1
+          OnCustomDrawPointer = lsCustomDrawPointerCustomDrawPointer
         end
       end
       object Panel2: TPanel
         Left = 0
-        Height = 34
+        Height = 38
         Top = 0
         Width = 683
         Align = alTop
         BevelOuter = bvNone
-        ClientHeight = 34
+        ClientHeight = 38
         ClientWidth = 683
         TabOrder = 1
         object cbBitmapPointer: TCheckBox
@@ -267,9 +270,9 @@ object Form1: TForm1
           Left = 139
           Height = 19
           Top = 8
-          Width = 115
+          Width = 142
           BorderSpacing.Left = 16
-          Caption = 'Every n-th pointer'
+          Caption = 'Every n-th pointer, n = '
           Checked = True
           OnChange = cbBitmapPointerChange
           State = cbChecked
@@ -278,7 +281,7 @@ object Form1: TForm1
         object edEveryNth: TSpinEdit
           AnchorSideLeft.Control = cbDrawEveryNthPointer
           AnchorSideLeft.Side = asrBottom
-          Left = 254
+          Left = 281
           Height = 23
           Top = 8
           Width = 50
@@ -294,7 +297,7 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           Left = 107
           Height = 16
-          Top = 10
+          Top = 8
           Width = 16
           AutoSize = True
           Picture.Data = {
@@ -318,6 +321,40 @@ object Form1: TForm1
             FAE65C23326A0620E3CADB4F9B2BB3C3787F01CE48DFB7D4C375300000000049
             454E44AE426082
           }
+        end
+      end
+    end
+    object tsGetPointerStyle: TTabSheet
+      Caption = 'OnGetPointerStyle event'
+      ClientHeight = 466
+      ClientWidth = 683
+      object ChartGetPointerStyleEvent: TChart
+        Left = 0
+        Height = 466
+        Top = 0
+        Width = 683
+        AxisList = <        
+          item
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Minors = <>
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        Color = clWindow
+        object lsGetPointerStyle: TLineSeries
+          ShowPoints = True
+          Source = RandomChartSource1
+          OnGetPointerStyle = lsGetPointerStyleGetPointerStyle
         end
       end
     end
@@ -355,6 +392,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
+        Color = clWindow
         DoubleBuffered = True
         object chOscillatorLineSeries1: TLineSeries
           AxisIndexX = 1
@@ -391,26 +429,6 @@ object Form1: TForm1
       Shift = [ssRight]
     end
   end
-  object ccsAvg: TCalculatedChartSource
-    AccumulationMethod = camAverage
-    AccumulationRange = 5
-    Origin = RandomChartSource1
-    left = 464
-    top = 108
-  end
-  object ccsSum: TCalculatedChartSource
-    AccumulationMethod = camSum
-    AccumulationRange = 0
-    Origin = RandomChartSource1
-    left = 464
-    top = 52
-  end
-  object ccsDerivative: TCalculatedChartSource
-    AccumulationMethod = camDerivative
-    Origin = RandomChartSource1
-    left = 464
-    top = 160
-  end
   object lcsOscillator: TListChartSource
     DataPoints.Strings = (
       '0|0|?|'
@@ -422,7 +440,7 @@ object Form1: TForm1
     Enabled = False
     Interval = 150
     OnTimer = timOscilloscopeTimer
-    left = 408
+    left = 376
     top = 376
   end
   object catOscillator: TChartAxisTransformations
