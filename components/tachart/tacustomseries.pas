@@ -259,6 +259,9 @@ type
     function GetXRange(AX: Double; AIndex: Integer): Double;
     function GetZeroLevel: Double; virtual;
     function NearestXNumber(var AIndex: Integer; ADir: Integer): Double;
+    procedure OwnerDrawPointer(
+      ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint;
+      var AContinue: Boolean); virtual;
     procedure PrepareGraphPoints(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
     procedure UpdateGraphPoints(AIndex: Integer); overload; inline;
@@ -1092,6 +1095,7 @@ var
   i: Integer;
   p: TDoublePoint;
   ai: TPoint;
+  defaultdraw: Boolean;
 begin
   Assert(Pointer <> nil, 'Series pointer');
   if not Pointer.Visible then exit;
@@ -1099,8 +1103,12 @@ begin
     p := FGraphPoints[i - FLoBound];
     if not ParentChart.IsPointInViewPort(p) then continue;
     ai := ParentChart.GraphToImage(p);
-    Pointer.Draw(ADrawer, ai, Source[i]^.Color);
-    AfterDrawPointer(ADrawer, i, ai);
+    defaultdraw := true;
+    OwnerDrawPointer(ADrawer, i, ai, defaultdraw);
+    if defaultdraw then begin
+      Pointer.Draw(ADrawer, ai, Source[i]^.Color);
+      AfterDrawPointer(ADrawer, i, ai);
+    end;
   end;
 end;
 
@@ -1256,6 +1264,15 @@ begin
       else
         exit(AxisToGraphX(X));
   Result := SafeNan;
+end;
+
+procedure TBasicPointSeries.OwnerDrawPointer(
+  ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint;
+  var AContinue: Boolean);
+begin
+  Unused(ADrawer);
+  Unused(AIndex, APos);
+  Unused(AContinue);
 end;
 
 procedure TBasicPointSeries.PrepareGraphPoints(

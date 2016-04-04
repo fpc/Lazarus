@@ -176,6 +176,10 @@ type
     ASender: TChartSeries; ACanvas: TCanvas; AIndex: Integer;
     ACenter: TPoint) of object;
 
+  TSeriesPointerOwnerDrawEvent = procedure (
+    ASender: TChartSeries; ADrawer: IChartDrawer; AIndex: Integer;
+    ACenter: TPoint) of object;
+
   TLineType = (ltNone, ltFromPrevious, ltFromOrigin, ltStepXY, ltStepYX);
 
   { TLineSeries }
@@ -185,6 +189,7 @@ type
     FLinePen: TPen;
     FLineType: TLineType;
     FOnDrawPointer: TSeriesPointerDrawEvent;
+    FOnOwnerDrawPointer: TSeriesPointerOwnerDrawEvent;
     FShowPoints: Boolean;
 
     procedure DrawSingleLineInStack(ADrawer: IChartDrawer; AIndex: Integer);
@@ -199,6 +204,8 @@ type
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
+    procedure OwnerDrawPointer(ADrawer: IChartDrawer; AIndex: Integer;
+      const APos: TPoint; var AContinue: Boolean); override;
   public
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
@@ -216,7 +223,9 @@ type
       read FLineType write SetLineType default ltFromPrevious;
     property MarkPositions;
     property OnDrawPointer: TSeriesPointerDrawEvent
-      read FOnDrawPointer write FOnDrawPointer;
+      read FOnDrawPointer write FOnDrawPointer; deprecated 'Use OnOwnerDrawPointer';
+    property OnOwnerDrawPointer: TSeriesPointerOwnerDrawEvent
+      read FOnOwnerDrawPointer write FOnOwnerDrawPointer;
     property Pointer;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clBlack;
@@ -608,6 +617,17 @@ end;
 function TLineSeries.GetShowLines: Boolean;
 begin
   Result := FLineType <> ltNone;
+end;
+
+procedure TLineSeries.OwnerDrawPointer(
+  ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint;
+  var AContinue: Boolean);
+begin
+  if Assigned(FOnOwnerDrawPointer) then begin
+    FOnOwnerDrawPointer(Self, ADrawer, AIndex, APos);
+    AContinue := false;
+  end else
+    AContinue := true;
 end;
 
 procedure TLineSeries.SetLinePen(AValue: TPen);

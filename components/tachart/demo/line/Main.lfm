@@ -8,7 +8,7 @@ object Form1: TForm1
   ClientWidth = 691
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.7'
   object PageControl1: TPageControl
     Left = 0
     Height = 494
@@ -21,11 +21,11 @@ object Form1: TForm1
     OnChange = PageControl1Change
     object tsFast: TTabSheet
       Caption = 'Fast drawing'
-      ClientHeight = 468
+      ClientHeight = 466
       ClientWidth = 683
       object chFast: TChart
         Left = 0
-        Height = 430
+        Height = 428
         Top = 38
         Width = 683
         AxisList = <        
@@ -47,7 +47,6 @@ object Form1: TForm1
         Toolset = ChartToolset1
         Align = alClient
         DoubleBuffered = True
-        ParentColor = False
         object chFastLineSeries1: TLineSeries
           LinePen.Color = clTeal
           LinePen.Width = 3
@@ -72,10 +71,10 @@ object Form1: TForm1
         TabOrder = 1
         object cbLineType: TComboBox
           Left = 8
-          Height = 21
+          Height = 23
           Top = 8
           Width = 96
-          ItemHeight = 13
+          ItemHeight = 15
           ItemIndex = 1
           Items.Strings = (
             'None'
@@ -91,18 +90,18 @@ object Form1: TForm1
         end
         object cb3D: TCheckBox
           Left = 112
-          Height = 17
+          Height = 19
           Top = 12
-          Width = 33
+          Width = 34
           Caption = '3D'
           OnChange = cb3DChange
           TabOrder = 1
         end
         object cbRotated: TCheckBox
           Left = 152
-          Height = 17
+          Height = 19
           Top = 12
-          Width = 59
+          Width = 61
           Caption = 'Rotated'
           OnChange = cbRotatedChange
           TabOrder = 2
@@ -118,7 +117,7 @@ object Form1: TForm1
         end
         object edTime: TEdit
           Left = 496
-          Height = 21
+          Height = 23
           Top = 6
           Width = 76
           Alignment = taRightJustify
@@ -135,9 +134,9 @@ object Form1: TForm1
         end
         object cbSorted: TCheckBox
           Left = 216
-          Height = 17
+          Height = 19
           Top = 12
-          Width = 52
+          Width = 54
           Caption = 'Sorted'
           OnChange = cbSortedChange
           TabOrder = 6
@@ -153,11 +152,11 @@ object Form1: TForm1
     end
     object tsPointers: TTabSheet
       Caption = 'Pointers'
-      ClientHeight = 468
+      ClientHeight = 466
       ClientWidth = 683
       object chPointers: TChart
         Left = 0
-        Height = 468
+        Height = 466
         Top = 0
         Width = 513
         AxisList = <        
@@ -180,20 +179,19 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
-        ParentColor = False
       end
       object pnlPointers: TPanel
         Left = 513
-        Height = 468
+        Height = 466
         Top = 0
         Width = 170
         Align = alRight
-        ClientHeight = 468
+        ClientHeight = 466
         ClientWidth = 170
         TabOrder = 1
         object sePointerSize: TSpinEdit
           Left = 49
-          Height = 21
+          Height = 23
           Top = 6
           Width = 50
           OnChange = sePointerSizeChange
@@ -202,21 +200,134 @@ object Form1: TForm1
         end
         object lblPointerSize: TLabel
           Left = 9
-          Height = 13
+          Height = 15
           Top = 10
-          Width = 19
+          Width = 20
           Caption = 'Size'
           ParentColor = False
         end
       end
     end
+    object tsOwnerDrawnPointer: TTabSheet
+      Caption = 'Ownerdrawn pointer'
+      ClientHeight = 466
+      ClientWidth = 683
+      object ChartOwnerDrawnPointer: TChart
+        Left = 0
+        Height = 432
+        Top = 34
+        Width = 683
+        AxisList = <        
+          item
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Minors = <>
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        object lsOwnerDrawnPointer: TLineSeries
+          OnOwnerDrawPointer = lsOwnerDrawnPointerOwnerDrawPointer
+          ShowPoints = True
+          Source = RandomChartSource1
+        end
+      end
+      object Panel2: TPanel
+        Left = 0
+        Height = 34
+        Top = 0
+        Width = 683
+        Align = alTop
+        BevelOuter = bvNone
+        ClientHeight = 34
+        ClientWidth = 683
+        TabOrder = 1
+        object cbBitmapPointer: TCheckBox
+          Left = 8
+          Height = 19
+          Top = 8
+          Width = 99
+          Caption = 'Bitmap pointer'
+          Checked = True
+          OnChange = cbBitmapPointerChange
+          State = cbChecked
+          TabOrder = 0
+        end
+        object cbDrawEveryNthPointer: TCheckBox
+          AnchorSideLeft.Control = PointerImage
+          AnchorSideLeft.Side = asrBottom
+          Left = 139
+          Height = 19
+          Top = 8
+          Width = 115
+          BorderSpacing.Left = 16
+          Caption = 'Every n-th pointer'
+          Checked = True
+          OnChange = cbBitmapPointerChange
+          State = cbChecked
+          TabOrder = 1
+        end
+        object edEveryNth: TSpinEdit
+          AnchorSideLeft.Control = cbDrawEveryNthPointer
+          AnchorSideLeft.Side = asrBottom
+          Left = 254
+          Height = 23
+          Top = 8
+          Width = 50
+          Alignment = taRightJustify
+          MaxValue = 10
+          MinValue = 1
+          OnChange = edEveryNthChange
+          TabOrder = 2
+          Value = 3
+        end
+        object PointerImage: TImage
+          AnchorSideLeft.Control = cbBitmapPointer
+          AnchorSideLeft.Side = asrBottom
+          Left = 107
+          Height = 16
+          Top = 10
+          Width = 16
+          AutoSize = True
+          Picture.Data = {
+            1754506F727461626C654E6574776F726B477261706869632B02000089504E47
+            0D0A1A0A0000000D49484452000000100000001008060000001FF3FF61000000
+            017352474200AECE1CE900000006624B474400FF00FF00FFA0BDA79300000009
+            7048597300000B1300000B1301009A9C180000000774494D4507DC06140F1F36
+            F0AF9FA6000001AB4944415438CB9592416813411486BFD96EECB1D09357AF5E
+            24224868D18330117BF5604E1AC1A6EBA188500985F4D0802C22228B685BC1D6
+            532EB92849210BA145101B5A103C45BDE79243C183D0E2CEF3B0DD71D326D8FE
+            30CCCC9BFFCD9B7FDEAF18814BD71E3C17D45D4761322E6BBBEDB50AA7C554BE
+            D4CC694FBABD48BABD4872DA93EBB74A1F4E957CFEE29D8974F2FF2E5147155B
+            461C9D044B8BCFC85E18673C3366893B3F7EB3FAF489DD3BCA849F5BAB793595
+            2FB544D0EF365E7316DCBFF730528AB60B2038001466AE58C2D51BB779F4B80C
+            C0CB173E9D76DD9ED59A7B08CE98C2C4819CF62468F4A5DB8B249BCD8A483C77
+            7E1EC8FBADFD8158D0E84BD0E84B4E7B02E0027C09DF2840F4C62B6ACD3DBC05
+            1F80CEF75FB6AAB7E053AC86F10B82A524E7E8EDC7D069D72D19A0580D0724A4
+            E124120AF3CB270ED72B9AF58A3E112FCC2F6325C42D047D7992C33FC2F6B7FD
+            B318AEE5C6663003C9C56AC8D7FAA295915EFF3390196DA4617292CF3B6EA4A1
+            C4A4ADE991684E502E974777C151264C57AB054B9C73CDC734C7F77DB1128661
+            FAE65C23326A0620E3CADB4F9B2BB3C3787F01CE48DFB7D4C375300000000049
+            454E44AE426082
+          }
+        end
+      end
+    end
     object tsOscilloscope: TTabSheet
       Caption = 'Oscilloscope'
-      ClientHeight = 453
+      ClientHeight = 466
       ClientWidth = 683
       object chOscillator: TChart
         Left = 0
-        Height = 453
+        Height = 466
         Top = 0
         Width = 683
         AxisList = <        
@@ -245,7 +356,6 @@ object Form1: TForm1
         )
         Align = alClient
         DoubleBuffered = True
-        ParentColor = False
         object chOscillatorLineSeries1: TLineSeries
           AxisIndexX = 1
           LinePen.Color = clLime
