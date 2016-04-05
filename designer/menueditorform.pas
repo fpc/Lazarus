@@ -86,7 +86,6 @@ type
     procedure LoadFixedButtonGlyphs;
     procedure OnDesignerSetSelection(const ASelection: TPersistentSelectionList);
     procedure ProcessForPopup(aControl: TControl);
-    procedure ScanLookupRoot(aForm: TCustomForm);
     procedure SetupPopupAssignmentsDisplay;
   public
     constructor Create(aDesigner: TMenuDesignerBase); reintroduce;
@@ -438,16 +437,6 @@ begin
   end;
 end;
 
-procedure TMenuDesignerForm.ScanLookupRoot(aForm: TCustomForm);
-var
-  i: integer;
-begin
-  if (aForm.PopupMenu = FEditedMenu) then
-    FPopupAssignments.Add(aForm.Name);
-  for i:=0 to aForm.ControlCount-1 do
-    ProcessForPopup(aForm.Controls[i]);
-end;
-
 function TMenuDesignerForm.GetPopupAssignmentCount: integer;
 var
   lookupRoot: TPersistent;
@@ -458,7 +447,7 @@ begin
   else begin
     FreeAndNil(FPopupAssignments);
     FPopupAssignments:=TStringList.Create;
-    ScanLookupRoot(lookupRoot as TCustomForm);
+    ProcessForPopup(lookupRoot as TControl);
     Result:=FPopupAssignments.Count;
   end
 end;
