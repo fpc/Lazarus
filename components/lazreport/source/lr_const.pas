@@ -816,6 +816,8 @@ resourcestring
   sUseFixedFontSettings = 'Use fixed font settings';
   sScriptEditor = 'Script editor';
   sUseSyntaxHighlight = 'Use syntax highlight';
+  sReportCorruptOldKnowVersion = 'This report is corrupt, it probably needs "LRE_OLDV%d_FRF_READ"=true';
+  sReportCorruptUnknownVersion = 'This report is corrupt, frVersion=%d';
 
 const
   frRes = 53000;

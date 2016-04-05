@@ -2303,6 +2303,14 @@ msgstr "Mostrar en todas las páginas"
 msgid "Report file"
 msgstr "Archivo de reporte"
 
+#: lr_const.sreportcorruptoldknowversion
+msgid "This report is corrupt, it probably needs \"LRE_OLDV%d_FRF_READ\"=true"
+msgstr ""
+
+#: lr_const.sreportcorruptunknownversion
+msgid "This report is corrupt, frVersion=%d"
+msgstr ""
+
 #: lr_const.sreportcreatedate
 msgid "Report creation date"
 msgstr "Fecha de creación del reporte"

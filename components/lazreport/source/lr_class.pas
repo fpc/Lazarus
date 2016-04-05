@@ -90,7 +90,7 @@ type
   TfrFrameBorders = set of TfrFrameBorder;
   TfrFrameStyle = (frsSolid,frsDash, frsDot, frsDashDot, frsDashDotDot,frsDouble);
   TfrPageType = (ptReport, ptDialog);   //todo: - remove this
-  TfrReportOption = (roIgnoreFieldNotFound, roIgnoreSymbolNotFound, roHideDefaultFilter);
+  TfrReportOption = (roIgnoreFieldNotFound, roIgnoreSymbolNotFound, roHideDefaultFilter, roDontUpgradePreparedReport);
   TfrReportOptions = set of TfrReportOption;
   TfrObjectType = (otlReportView, otlUIControl);
 
@@ -1022,6 +1022,7 @@ type
     procedure SaveToStream(AStream: TStream);
     procedure SavePageToStream(PageNo:Integer; AStream: TStream);
     procedure SaveToXML({%H-}XML: TLrXMLConfig; const {%H-}Path: String);
+    procedure UpgradeToCurrentVersion;
     property Pages[Index: Integer]: PfrPageInfo read GetPages; default;
     property Count: Integer read GetCount;
   end;
@@ -1587,6 +1588,7 @@ var
   FRE_COMPATIBLE_READ: Boolean = False;
 {$ENDIF}
   LRE_OLDV25_FRF_READ: Boolean = False;  // read broken frf v25 reports, bug 25037
+  LRE_OLDV28_FRF_READ: Boolean = False;  // read frf v28 (lazarus 1.4.4) reports, bug 29966
 
   // variables used through report building
   TempBmp: TBitmap;            // temporary bitmap used by TfrMemoView
@@ -1664,7 +1666,10 @@ end;
 
 function ViewInfo(View: TfrView): string;
 begin
-  result := format('"%s":%s typ=%s',[View.Name, dbgsname(View), frTypeObjectToStr(View.Typ)]);
+  if View=nil then
+    result := 'View is nil'
+  else
+    result := format('"%s":%s typ=%s',[View.Name, dbgsname(View), frTypeObjectToStr(View.Typ)]);
 end;
 
 function ViewInfoDim(View: TfrView): string;
@@ -4582,7 +4587,10 @@ begin
       frReadMemo(Stream, FOnMouseEnter);
       frReadMemo(Stream, FOnMouseLeave);
       FDetailReport:=frReadString(Stream);
-      Stream.Read(FParagraphGap, SizeOf(FParagraphGap));
+      if LRE_OLDV28_FRF_READ and (frVersion=28) then
+        //
+      else
+        Stream.Read(FParagraphGap, SizeOf(FParagraphGap));
     end;
 
     if frVersion >= 29 then
@@ -9170,9 +9178,17 @@ begin
       else
         s := '';
       t := frCreateObject(b, s, P^.Page);
-      t.StreamMode := smPrinting;
-      t.LoadFromStream(Stream);
-      t.StreamMode := smDesigning;
+      try
+        t.StreamMode := smPrinting;
+        t.LoadFromStream(Stream);
+        t.StreamMode := smDesigning;
+      except
+        if frVersion in [25, 28] then
+          ShowMessage(format(sReportCorruptOldKnowVersion,[frVersion]))
+        else
+          ShowMessage(format(sReportCorruptUnknownVersion,[frVersion]));
+        break;
+      end;
 //      Page.Objects.Add(t);
     end;
   end;
@@ -9555,6 +9571,16 @@ end;
 procedure TfrEMFPages.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   // Todo
+end;
+
+procedure TfrEMFPages.UpgradeToCurrentVersion;
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do begin
+    ObjectsToPage(i);
+    PageToObjects(i);
+  end;
 end;
 
 {-----------------------------------------------------------------------}
@@ -10614,6 +10640,8 @@ var
   Stream: TFileStreamUtf8;
 begin
   Stream := TFileStreamUtf8.Create(FName, fmCreate);
+  if not CanRebuild and not (roDontUpgradePreparedReport in Options) then
+    EMFPages.UpgradeToCurrentVersion;
   EMFPages.SaveToStream(Stream);
   Stream.Free;
 end;
