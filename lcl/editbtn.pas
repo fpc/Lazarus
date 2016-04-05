@@ -2092,7 +2092,8 @@ begin
   ATime := GetTime;
   if ATime = NullDate then
     ATime := SysUtils.Time;
-  ShowTimePopup(PopupOrigin, ATime, Self.DoubleBuffered, @TimePopupReturnTime, @TimePopupShowHide, FSimpleLayout);
+  ShowTimePopup(PopupOrigin, ATime, Self.DoubleBuffered,
+    @TimePopupReturnTime, @TimePopupShowHide, FSimpleLayout, self);
 end;
 
 function TTimeEdit.TryParseInput(AInput: String; out ParseResult: TDateTime): Boolean;
