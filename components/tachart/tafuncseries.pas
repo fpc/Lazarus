@@ -164,6 +164,8 @@ type
     property Pointer;
     property Step: TFuncSeriesStep
       read FStep write SetStep default DEF_SPLINE_STEP;
+    property OnCustomDrawPointer;
+    property OnGetPointerStyle;
   end;
 
   TBadDataChartPen = class(TChartPen)
@@ -234,6 +236,8 @@ type
     property Source;
     property Title;
     property ZPosition;
+    property OnCustomDrawPointer;
+    property OnGetPointerStyle;
   published
     // Used when data is not suitable for drawing cubic spline --
     // e.g. points are too few or not ordered by X value.
