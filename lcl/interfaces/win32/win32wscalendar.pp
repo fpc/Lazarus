@@ -18,6 +18,8 @@ unit Win32WSCalendar;
 
 {$mode objfpc}{$H+}
 
+{.$define debug_win32calendar}
+
 interface
 
 uses
@@ -30,7 +32,7 @@ uses
   CommCtrl, SysUtils, Controls, LCLType, Calendar,
 ////////////////////////////////////////////////////
   WSCalendar, WSLCLClasses, WSProc, Windows, Win32WSControls,
-  win32proc;
+  win32proc, win32extra;
 
 type
 
@@ -137,16 +139,33 @@ var
   HitTestInfo: MCHITTESTINFO;
   HitPart: DWord;
 begin
+  {$ifdef debug_win32calendar}
+  writeln('TWin32WSCustomCalendar.HitTest:');
+  writeln('  ComCtlVersion = ',IntToHex(ComCtlVersion,8),' [ComCtlVersionIE6=',IntToHex(ComCtlVersionIE6,8),']');
+  writeln('  HasManifest = ',HasManifest);
+  writeln('  SizeOf(HitTestInfo) = ',SizeOf(HitTestInfo));
+  {$endif}
   Result := cpNoWhere;
   if not WSCheckHandleAllocated(ACalendar, 'TWin32WSCustomCalendar.HitTest') then
     Exit;
   FillChar(HitTestInfo, SizeOf(HitTestInfo), 0);
-  if WindowsVersion >= wvVista then
+  //the MCHITTESTINFO structure not only depends on Windows version but also on wether or not
+  //the application has a Manifest (Issue #0029975)
+  if (WindowsVersion >= wvVista) and HasManifest then
     HitTestInfo.cbSize := SizeOf(HitTestInfo)
   else
     HitTestInfo.cbSize := 32;
   HitTestInfo.pt := APoint;
+  {$ifdef debug_win32calendar}
+  if IsConsole then writeln('  HitTestInfo.cbSize = ',HitTestInfo.cbSize);
+  {$endif}
   HitPart := SendMessage(ACalendar.Handle, MCM_HITTEST, 0, LPARAM(@HitTestInfo));
+  {$ifdef debug_win32calendar}
+  //if IsConsole then writeln('TWin32WSCustomCalendar.HitTest: Handle = ',IntToHex(ACalendar.Handle,8));
+  if IsConsole then writeln('  APoint = (',APoint.x,',',APoint.y,'), pt = (',HitTestInfo.pt.x,',',HitTestInfo.pt.y,')');
+  if IsConsole then writeln('  HitPart = ',IntToHex(HitPart,8),', uHit = ',IntToHex(Hittestinfo.uHit,8));
+  {$endif}
+
   case HitPart of
     MCHT_CALENDARDATE,
     MCHT_CALENDARDATENEXT,
