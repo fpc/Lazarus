@@ -179,7 +179,7 @@ begin
   a := UTF8LowerCase(a);
   b := UTF16ToUTF8(PWideChar(s2),length(s2));
   b := UTF8LowerCase(b);
-  result := UTF8CompareText(a,b);
+  result := UTF8CompareStr(a,b);
 end;
 
 function CharLengthPChar(const Str: PChar): PtrInt;
