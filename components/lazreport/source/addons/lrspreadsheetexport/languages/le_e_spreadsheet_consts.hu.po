@@ -49,11 +49,11 @@ msgstr ""
 
 #: le_e_spreadsheet_consts.sexportpagefooter
 msgid "Export page footer"
-msgstr ""
+msgstr "Lap láblécének exportálása"
 
 #: le_e_spreadsheet_consts.sexportpageheader
 msgid "Export page header"
-msgstr ""
+msgstr "Lap fejlécének exportálása"
 
 #: le_e_spreadsheet_consts.sexportpictures
 msgid "Export pictures"
@@ -61,15 +61,15 @@ msgstr "Képek exportálása"
 
 #: le_e_spreadsheet_consts.sexportprintrange
 msgid "Export print range"
-msgstr ""
+msgstr "Nyomtatási kép exportálása"
 
 #: le_e_spreadsheet_consts.sexportreportsummary
 msgid "Export report summary"
-msgstr ""
+msgstr "Jelentés összefoglalójának exportálása"
 
 #: le_e_spreadsheet_consts.sexportreporttitle
 msgid "Export report title"
-msgstr ""
+msgstr "Jelentés címének exportálása"
 
 #: le_e_spreadsheet_consts.sexportsettings
 msgid "Export settings"
@@ -81,7 +81,7 @@ msgstr "Exportálás táblázatba"
 
 #: le_e_spreadsheet_consts.sexporturl
 msgid "Export URL"
-msgstr ""
+msgstr "URL exportálása"
 
 #: le_e_spreadsheet_consts.sgeneral
 msgid "General"

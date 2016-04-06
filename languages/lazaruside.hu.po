@@ -1251,7 +1251,7 @@ msgstr "%d felület sikeresen importálva innen: \"%s\""
 
 #: lazarusidestrconsts.dlgdifferentvaluebackgroundcolor
 msgid "Different values background"
-msgstr ""
+msgstr "Eltérő értékek háttere"
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -1543,7 +1543,7 @@ msgstr "Típus"
 
 #: lazarusidestrconsts.dlgeofocusmessagesatcompilation
 msgid "Focus messages at compilation"
-msgstr ""
+msgstr "Üzenetek előtérbe hozása fordításkor"
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -3339,7 +3339,7 @@ msgstr "A program információinak megjelenítése (csak Win32)"
 
 #: lazarusidestrconsts.dlgshowfilenameincaption
 msgid "Show file name in caption"
-msgstr ""
+msgstr "Fájlnév megjelenítése a felíratban"
 
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"
@@ -4500,7 +4500,7 @@ msgstr "Alkalmazás"
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
-msgstr "építési kapcsolók (-B) használata a függőségekhez is"
+msgstr "Építési kapcsolók (-B) használata a függőségekhez is"
 
 #: lazarusidestrconsts.lisapplyconventions
 msgid "Apply conventions"
@@ -4556,7 +4556,7 @@ msgstr "Ha a komponens paletta több sort foglal el akkor mind jelenjen meg, ne 
 
 #: lazarusidestrconsts.lisautocheckmodifiedfiles
 msgid "Automatically check (select) modified files"
-msgstr ""
+msgstr "Megváltozott fájlok automatikus kijelölése"
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -4661,11 +4661,11 @@ msgstr "Kapcsolódó után"
 
 #: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
 msgid "be less verbose, can be given multiple times"
-msgstr "kevésbé részletes, többször megadható"
+msgstr "Kevésbé részletes, többször megadható"
 
 #: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
 msgid "be more verbose, can be given multiple times"
-msgstr "részletesebb, többször megadható"
+msgstr "Részletesebb, többször megadható"
 
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
 msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
@@ -4795,7 +4795,7 @@ msgstr "Építés"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
-msgstr "projekt/csomag/IDE minden fájljának építése"
+msgstr "Projekt/csomag/IDE minden fájljának építése"
 
 #: lazarusidestrconsts.lisbuildcaption
 msgctxt "lazarusidestrconsts.lisbuildcaption"
@@ -5607,7 +5607,7 @@ msgstr "Körkörös függőség érzékelve"
 
 #: lazarusidestrconsts.lisclass
 msgid "&Class"
-msgstr ""
+msgstr "&Osztály"
 
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
@@ -5822,14 +5822,13 @@ msgstr "Kódtallózó"
 
 #: lazarusidestrconsts.liscodecreationdialogcaption
 msgid "Code creation options"
-msgstr ""
+msgstr "Kód létrehozásának beállításai"
 
 #: lazarusidestrconsts.liscodecreationdialogclasssection
 msgid "Class section"
-msgstr ""
+msgstr "Osztály szakasz"
 
 #: lazarusidestrconsts.liscodecreationdialoglocation
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscodecreationdialoglocation"
 msgid "Location"
 msgstr "Hely"
@@ -8135,11 +8134,11 @@ msgstr "Hiba a fájl olvasása közben: %s"
 
 #: lazarusidestrconsts.lisdiskdiffignorealldiskchanges
 msgid "Ignore all disk changes"
-msgstr ""
+msgstr "Minden lemezen történt változás figyelmen kívül hagyása"
 
 #: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
 msgid "Reload checked files from disk"
-msgstr ""
+msgstr "Kijelölt fájlok újratöltése a lemezről"
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
@@ -8214,7 +8213,7 @@ msgstr "Ne zárja be a projektet"
 
 #: lazarusidestrconsts.lisdonotcompiledependencies
 msgid "do not compile dependencies"
-msgstr "ne fordítsa le a függőségeket"
+msgstr "Ne fordítsa le a függőségeket"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -8230,7 +8229,7 @@ msgstr "Ne mutassa újra ezt az üzenetet"
 
 #: lazarusidestrconsts.lisdonotwriteupdatedprojectinfoafterbuild
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
-msgstr ""
+msgstr "Ne legyen frissítve a projekt információs fájlja építés után. Így az építési szám csak megfelelő beállítás esetén növekszik."
 
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
@@ -8734,7 +8733,7 @@ msgstr "Hiba .lfm komponens folyam elemzése közben."
 
 #: lazarusidestrconsts.liserrorreadingpackagelistfromfile
 msgid "Error reading package list from file%s%s%s%s"
-msgstr "Csomaglista beolvasása a(z) %s%s%s%s fájlból"
+msgstr "Hiba a csomaglista fájlból történő beolvasása közben:%s%s%s%s"
 
 #: lazarusidestrconsts.liserrorreadingxml
 msgid "Error reading XML"
@@ -9169,7 +9168,7 @@ msgstr "Nem ASCII vagy UTF-8 kódolású fájlok"
 
 #: lazarusidestrconsts.lisfilewheredebugoutputiswritten
 msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
-msgstr "fájl, ahová a hibakereső kimenete mentésre kerül. Ha nincs megadva, a hibakereső kimenete a konzolra lesz kiírva."
+msgstr "A fájl, ahová a hibakereső kimenete mentésre kerül. Ha nincs megadva, a hibakereső kimenete a konzolra lesz kiírva."
 
 #: lazarusidestrconsts.lisfilter
 msgid "Filter"
@@ -9652,7 +9651,7 @@ msgstr "Tipp: Ellenőrizze, hogy két csomag tartalmaz-e egyforma nevű unit-ot.
 
 #: lazarusidestrconsts.lishintclickonshowoptionstofindoutwhereinheritedpaths
 msgid "Hint: Click on \"Show Options\" to find out where inherited paths are coming from."
-msgstr ""
+msgstr "Tipp: Kattintson a \"Beállítások megjelenítése\" lehetőségre a leszármazási útvonalak felderítéséhez."
 
 #: lazarusidestrconsts.lishints
 msgid ", Hints: %s"
@@ -9961,7 +9960,7 @@ msgstr "Include útvonalak"
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"
-msgstr "Alkönyvtárak belevétele"
+msgstr "Alkönyvtárakat is beleértve"
 
 #: lazarusidestrconsts.lisincompatibleppu
 msgid ", incompatible ppu=%s"
@@ -10468,7 +10467,7 @@ msgstr "Kijelölt komponensek kivágása a vágólapra"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
 msgid "Default adapted to OS X"
-msgstr ""
+msgstr "Alapértelmezés Mac OS X rendszerhez igazítva"
 
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
@@ -10929,7 +10928,7 @@ msgstr "Lazarus könyvtára"
 
 #: lazarusidestrconsts.lislazarusdiroverride
 msgid "directory, to be used as a basedirectory"
-msgstr "könyvtár, mely alapkönyvtárként használandó"
+msgstr "A könyvtár, mely alapkönyvtárként használandó"
 
 #: lazarusidestrconsts.lislazaruseditorv
 msgid "Lazarus IDE v%s"
@@ -11128,7 +11127,7 @@ msgstr "Másolás öröklöttből"
 
 #: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
 msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
-msgstr "a(z) %s nem tartalmaz érvényes FPDoc útvonalat.%sNem lehet létrehozni az FPDoc fájlt ehhez: %s"
+msgstr "A(z) %s nem tartalmaz érvényes FPDoc útvonalat.%sNem lehet létrehozni az FPDoc fájlt ehhez: %s"
 
 #: lazarusidestrconsts.lisldmoveentriestoinherited
 msgid "Move entries to inherited"
@@ -11256,7 +11255,7 @@ msgstr "Makró betöltése innen:"
 
 #: lazarusidestrconsts.lislocal
 msgid "&Local"
-msgstr ""
+msgstr "&Helyi"
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -11552,7 +11551,7 @@ msgstr "Kód kiegészítése"
 
 #: lazarusidestrconsts.lismenucompletecodeinteractive
 msgid "Complete Code (with dialog)"
-msgstr ""
+msgstr "Kód kiegészítése (párbeszéddel)"
 
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
@@ -11784,7 +11783,7 @@ msgstr "<ütközések feloldása befejezve>"
 
 #: lazarusidestrconsts.lismenueditorconflictsfoundinitiallyd
 msgid "Conflicts found initially: %d"
-msgstr ""
+msgstr "Ütközések felderítve: %d"
 
 #: lazarusidestrconsts.lismenueditordeepestnestedmenulevels
 msgid "Deepest nested menu level: %s"
@@ -11864,7 +11863,7 @@ msgstr "Bekérés"
 
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
 msgid "GroupIndex value(s): %s"
-msgstr "GroupIndex-ek: %s"
+msgstr "Csoportok (GroupIndex): %s"
 
 #: lazarusidestrconsts.lismenueditorinadequatedescription
 msgid "Inadequate Description"
@@ -12062,7 +12061,7 @@ msgstr "Gyorsbillentyűk és hívóbillentyűk"
 
 #: lazarusidestrconsts.lismenueditorshortcutsd
 msgid "Shortcuts (%d)"
-msgstr ""
+msgstr "Gyorsbillentyűk (%d)"
 
 #: lazarusidestrconsts.lismenueditorshortcutsdandacceleratorkeysd
 msgid "Shortcuts (%d) and Accelerator keys (%d)"
@@ -12070,7 +12069,7 @@ msgstr "Gyorsbillentyűk (%d) és hívóbillentyűk (%d)"
 
 #: lazarusidestrconsts.lismenueditorshortcutsourceproperty
 msgid "Shortcut,Source Property"
-msgstr ""
+msgstr "Gyorsbillentyű,Forrás tulajdonság"
 
 #: lazarusidestrconsts.lismenueditorshortcutsusedins
 msgid "Shortcuts used in %s"
@@ -12579,7 +12578,7 @@ msgstr "Átlépni a kurzorig"
 
 #: lazarusidestrconsts.lismenurunwithoutdebugging
 msgid "Run without Debugging"
-msgstr ""
+msgstr "Futtatás hibakeresés nélkül"
 
 #: lazarusidestrconsts.lismenusave
 msgctxt "lazarusidestrconsts.lismenusave"
@@ -13822,23 +13821,23 @@ msgstr "Nyelv felülbírálása. Például --language=de. A lehetséges értéke
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
-msgstr "%saz alapértelmezett fordító felülbírálása. Pl. ppc386, ppcx64, ppcppc stb. Az alapértelmezett az environmentoptions.xml van tárolva"
+msgstr "%sAz alapértelmezett fordító felülbírálása. Pl. ppc386, ppcx64, ppcppc stb. Az alapértelmezett az environmentoptions.xml van tárolva"
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
 msgid "%soverride the project or IDE build mode."
-msgstr "%sa projekt vagy az IDE építési módjának felülbírálása"
+msgstr "%sA projekt vagy az IDE építési módjának felülbírálása"
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
-msgstr "%sa projekt CPU felülbírálása. Pl. i386, x86_64, powerpc, powerpc_64 stb. Alapértelmezett: %s"
+msgstr "%sA projekt cél CPU beállításának felülbírálása. Pl. i386, x86_64, powerpc, powerpc_64 stb. Alapértelmezett: %s"
 
 #: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
 msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
-msgstr "%sa projekt operációs rendszer felülbírálása.pl. win32 linux. alapértelmezett: %s"
+msgstr "%sA projekt cél operációs rendszerének felülbírálása.pl. win32 linux. alapértelmezett: %s"
 
 #: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
 msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
-msgstr "%sa projekt vezérlőkészletének felülbírálása. pl. gtk gtk2 qt win32 carbon. alapértelmezett: %s"
+msgstr "%sA projekt vezérlőkészletének felülbírálása. pl. gtk gtk2 qt win32 carbon. alapértelmezett: %s"
 
 #: lazarusidestrconsts.lisoverwritefile
 msgid "Overwrite file?"
@@ -14689,7 +14688,7 @@ msgstr "A fájlnév eltér a csomagnévtől"
 
 #: lazarusidestrconsts.lispkgmangfilenameisusedbyotherpackage
 msgid "Filename is used by other package"
-msgstr "a fájlnevet egy másik csomag használja"
+msgstr "A fájlnevet egy másik csomag használja"
 
 #: lazarusidestrconsts.lispkgmangfilenameisusedbyproject
 msgid "Filename is used by project"
@@ -14714,7 +14713,7 @@ msgstr "A(z) %s csomag telepítése automatikusan telepíti ezeket a csomagokat:
 
 #: lazarusidestrconsts.lispkgmanginvalidcompilerfilename
 msgid "invalid Compiler filename"
-msgstr "érvénytelen fordító fűájlnév"
+msgstr "érvénytelen fordító fájlnév"
 
 #: lazarusidestrconsts.lispkgmanginvalidfileextension
 msgid "Invalid file extension"
@@ -14826,7 +14825,7 @@ msgstr "A fájlnév átnevezhető kisbetűsre a következőképpen:%s\"%s\"?"
 
 #: lazarusidestrconsts.lispkgmangskipthispackage
 msgid "Skip this package"
-msgstr "Átugorja ezt a csomagot"
+msgstr "E csomag átugrása"
 
 #: lazarusidestrconsts.lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
@@ -15267,7 +15266,7 @@ msgstr "Megelőző szó"
 
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
-msgstr "elsődleges beállítások könyvtára, ahol a Lazarus a beállítási fájlokat tárolja. Az alapértelmezett:"
+msgstr "Elsődleges beállítások könyvtára, ahol a Lazarus a beállítási fájlokat tárolja. Az alapértelmezett:"
 
 #: lazarusidestrconsts.lisprimaryconfigpath
 msgid "Primary config path"
@@ -16299,7 +16298,7 @@ msgstr "Unit keresése: \"%s\""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
-msgstr "másodlagos beállítások könyvtára, ahol a Lazarus keresi a beállítási sablon fájlokat. Alapértelmezett:"
+msgstr "Másodlagos beállítások könyvtára, ahol a Lazarus keresi a beállítási sablon fájlokat. Alapértelmezett:"
 
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
@@ -16565,7 +16564,7 @@ msgstr "Érték-tippek megjelenítése hibakeresés közben"
 
 #: lazarusidestrconsts.lisshowversionandexit
 msgid "show version and exit"
-msgstr "változatszám megjelenítése és kilépés"
+msgstr "Változatszám megjelenítése és kilépés"
 
 #: lazarusidestrconsts.lisshrinktosmal
 msgid "Shrink to smallest"
@@ -17464,7 +17463,7 @@ msgstr "Ehhez a funkcióhoz szükség van egy megnyitott .lfm fájlra a forrásk
 
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
-msgstr "ez a súgó üzenet"
+msgstr "Ez a súgó üzenet"
 
 #: lazarusidestrconsts.listhisistestprojectfordesigntimepackage
 msgid "This is a test project for a design time package, testing it outside the IDE."
@@ -18045,7 +18044,7 @@ msgstr "Nem található pascal unit (.pas, .pp) az .lfm fájlhoz: %s\"%s\""
 
 #: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
 msgid "Unable to find the component class \"%s\".%sIt is not registered via RegisterClass and no lfm was found.%sIt is needed by unit:%s%s"
-msgstr "Nem található a komponensosztály: \"%s\".%sNem let regisztrálva a RegisterClass által és nem található lfm fájl sem.%sA következő unit igényli:%s%s"
+msgstr "Nem található a komponensosztály: \"%s\".%sNem lett regisztrálva a RegisterClass által és nem található lfm fájl sem.%sA következő unit igényli:%s%s"
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
@@ -18706,7 +18705,7 @@ msgstr "Írási hiba: %s%sFájl: %s%s%s"
 
 #: lazarusidestrconsts.liswrongversionin
 msgid "wrong version in %s: %s"
-msgstr "a %s rossz változatot tartalmaz: %s"
+msgstr "a(z) %s rossz változatot tartalmaz: %s"
 
 #: lazarusidestrconsts.lisxmlerror
 msgid "XML Error"
@@ -18738,7 +18737,7 @@ msgstr "A Lazarus nem építhető fordítás vagy hibakeresés közben."
 
 #: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
 msgid "You can select items by simply pressing underscored letters"
-msgstr ""
+msgstr "Az elemek egyszerűen kiválaszthatók az aláhúzott betűk lenyomásával"
 
 #: lazarusidestrconsts.lis_all_
 msgctxt "lazarusidestrconsts.lis_all_"
@@ -18870,15 +18869,15 @@ msgstr "Megtalálható, de itt nincs felsorolva:"
 
 #: lazarusidestrconsts.rsi18nexcluded
 msgid "Excluded"
-msgstr ""
+msgstr "Kizárva"
 
 #: lazarusidestrconsts.rsi18nforceupdatepofilesonnextcompile
 msgid "Force update PO files on next compile"
-msgstr ""
+msgstr "PO fájlok frissítésének kényszerítése a következő fordításkor"
 
 #: lazarusidestrconsts.rsi18nidentifiers
 msgid "Identifiers:"
-msgstr ""
+msgstr "Azonosítók:"
 
 #: lazarusidestrconsts.rsi18noptions
 msgid "i18n Options"
@@ -18886,11 +18885,11 @@ msgstr "i18n beállítások"
 
 #: lazarusidestrconsts.rsi18noriginals
 msgid "Originals:"
-msgstr ""
+msgstr "Eredeti szövegek:"
 
 #: lazarusidestrconsts.rsincludeversioninfohint
 msgid "Version info is stored if the executable format supports it."
-msgstr "A változatinformáció tárolva lesz ha a programban formátuma támogatja azt."
+msgstr "A változatinformáció tárolva lesz a programban ha a formátuma támogatja azt."
 
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 msgid "Include version info in executable"
@@ -19948,7 +19947,7 @@ msgstr "futtatási paraméterek"
 
 #: lazarusidestrconsts.srkmecrunwithoutdebugging
 msgid "run without debugging"
-msgstr ""
+msgstr "futtatás hibakeresés nélkül"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

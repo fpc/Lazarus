@@ -65,7 +65,7 @@ msgstr "Színtérkép"
 
 #: tachartstrconsts.rsconstantline
 msgid "Constant line"
-msgstr "Folyamatos vonal"
+msgstr "Állandó vonal"
 
 #: tachartstrconsts.rscubicsplineseries
 msgid "Cubic spline series"
@@ -101,7 +101,7 @@ msgstr "Távolságmérés"
 
 #: tachartstrconsts.rsfieldseries
 msgid "Vector field series"
-msgstr ""
+msgstr "Vektormezők"
 
 #: tachartstrconsts.rsfunctionseries
 msgid "Function series"

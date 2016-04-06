@@ -17,15 +17,15 @@ msgstr "Bezárás"
 
 #: iphtmlpv.rsiphtmlpreviewfitall
 msgid "Fit all"
-msgstr ""
+msgstr "Helykitöltés"
 
 #: iphtmlpv.rsiphtmlpreviewfitheight
 msgid "Height"
-msgstr ""
+msgstr "Magasság"
 
 #: iphtmlpv.rsiphtmlpreviewfitwidth
 msgid "Width"
-msgstr ""
+msgstr "Szélesség"
 
 #: iphtmlpv.rsiphtmlpreviewof
 msgid "of"

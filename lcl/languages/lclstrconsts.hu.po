@@ -1046,7 +1046,7 @@ msgstr "Küldés"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpressaborttok
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Abort to kill the program."
-msgstr ""
+msgstr "%s%sAz OK-t választva figyelmen kívül hagyja és adatsérülést kockáztat. %sA Megszakítás gombbal bezárja a programot."
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
