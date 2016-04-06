@@ -10104,6 +10104,10 @@ msgstr ""
 msgid "Import from File"
 msgstr ""
 
+#: lazarusidestrconsts.lisimportingbuildmodesnotsupported
+msgid "Importing BuildModes is not supported for packages."
+msgstr ""
+
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr "インポートリスト"
@@ -11690,10 +11694,6 @@ msgstr "現在のプロファイルで Lazarus を構築"
 msgid "Build Lazarus with Profile: %s"
 msgstr "プロファイル %s で Lazarus を構築"
 
-#: lazarusidestrconsts.lismenubuildmanymodes
-msgid "Build many Modes ..."
-msgstr ""
-
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM File in Editor"
 msgstr "エディタでLFMファイルをチェック"
@@ -11728,6 +11728,10 @@ msgstr "選択部分をコメントにする"
 
 #: lazarusidestrconsts.lismenucomparefiles
 msgid "Compare files ..."
+msgstr ""
+
+#: lazarusidestrconsts.lismenucompilemanymodes
+msgid "Compile many Modes ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenucompletecode

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-03-29 01:12+0300\n"
+"PO-Revision-Date: 2016-04-07 01:18+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9916,6 +9916,10 @@ msgstr "Импортировать параметры окружения"
 msgid "Import from File"
 msgstr "Импортировать из файла"
 
+#: lazarusidestrconsts.lisimportingbuildmodesnotsupported
+msgid "Importing BuildModes is not supported for packages."
+msgstr "Импорт режимов сборки не поддерживается для пакетов."
+
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr "Список импорта"
@@ -11499,10 +11503,6 @@ msgstr "Собрать Lazarus по текущему профилю"
 msgid "Build Lazarus with Profile: %s"
 msgstr "Пересобрать Lazarus по профилю: %s"
 
-#: lazarusidestrconsts.lismenubuildmanymodes
-msgid "Build many Modes ..."
-msgstr "Собрать в нескольких режимах ..."
-
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM File in Editor"
 msgstr "Проверить файл LFM в редакторе"
@@ -11538,6 +11538,10 @@ msgstr "Закомментировать выделенное"
 #: lazarusidestrconsts.lismenucomparefiles
 msgid "Compare files ..."
 msgstr "Сравнить файлы ..."
+
+#: lazarusidestrconsts.lismenucompilemanymodes
+msgid "Compile many Modes ..."
+msgstr "Компилировать в нескольких режимах ..."
 
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"

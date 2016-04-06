@@ -9919,6 +9919,10 @@ msgstr "Környezet beállításainak importálása"
 msgid "Import from File"
 msgstr "Importálás fájlból"
 
+#: lazarusidestrconsts.lisimportingbuildmodesnotsupported
+msgid "Importing BuildModes is not supported for packages."
+msgstr ""
+
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr "Lista importálása"
@@ -11501,10 +11505,6 @@ msgstr "Lazarus építése az aktuális profillal"
 msgid "Build Lazarus with Profile: %s"
 msgstr "Lazarus építése a következő profillal: %s"
 
-#: lazarusidestrconsts.lismenubuildmanymodes
-msgid "Build many Modes ..."
-msgstr "Építés több módban ..."
-
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM File in Editor"
 msgstr "LFM fájl ellenőrzése a szerkesztőben"
@@ -11540,6 +11540,10 @@ msgstr "Kijelölés megjegyzésbe"
 #: lazarusidestrconsts.lismenucomparefiles
 msgid "Compare files ..."
 msgstr "Fájlok összehasonlítása ..."
+
+#: lazarusidestrconsts.lismenucompilemanymodes
+msgid "Compile many Modes ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
