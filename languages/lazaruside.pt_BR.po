@@ -10130,6 +10130,10 @@ msgstr ""
 msgid "Import from File"
 msgstr ""
 
+#: lazarusidestrconsts.lisimportingbuildmodesnotsupported
+msgid "Importing BuildModes is not supported for packages."
+msgstr ""
+
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr "Importar lista"

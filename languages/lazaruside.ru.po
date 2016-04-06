@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-02-13 15:25+0300\n"
+"PO-Revision-Date: 2016-04-07 01:52+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9904,6 +9904,10 @@ msgstr "Импортировать параметры окружения"
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"
 msgstr "Импортировать из файла"
+
+#: lazarusidestrconsts.lisimportingbuildmodesnotsupported
+msgid "Importing BuildModes is not supported for packages."
+msgstr "Импорт режимов сборки не поддерживается для пакетов."
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"

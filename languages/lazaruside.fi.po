@@ -9835,6 +9835,10 @@ msgstr "Tuo ympäristön asetukset"
 msgid "Import from File"
 msgstr "Tuo tiedostosta"
 
+#: lazarusidestrconsts.lisimportingbuildmodesnotsupported
+msgid "Importing BuildModes is not supported for packages."
+msgstr ""
+
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr "Tuo luettelo"
@@ -11396,7 +11400,7 @@ msgstr "Kokoa Lazarus käyttäen profiilia: %s"
 
 #: lazarusidestrconsts.lismenubuildmanymodes
 msgid "Build many Modes ..."
-msgstr "Kokoa monta moodia ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM File in Editor"
