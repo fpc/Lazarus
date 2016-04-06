@@ -643,7 +643,7 @@ begin
 end;
 
 { Find the start of the UTF8 character which contains BytePos,
-  if BytePos is not part of a valid Utf8Codepoint the function returns BytePos
+  if BytePos is not part of a valid Utf8 Codepoint the function returns BytePos
   Len is length in byte, BytePos starts at 0 }
 function UTF8FindNearestCharStart(UTF8Str: PChar; Len: SizeInt; BytePos: SizeInt): SizeInt;
 var

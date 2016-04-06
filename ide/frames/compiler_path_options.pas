@@ -639,7 +639,7 @@ begin
   // register special buttons in the dialog itself
   btnShowOptions := CreateButton(dlgCOShowOptions);
   btnShowOptions.LoadGlyphFromResourceName(HInstance, 'menu_compiler_options');
-  btnShowOptions.OnClick  := @DoShowOptions;
+  btnShowOptions.OnClick := @DoShowOptions;
   // Check
   btnCheck := CreateButton(lisCompTest);
   btnCheck.ModalResult := mrNone;
@@ -650,12 +650,12 @@ begin
 
   // Export
   btnExport := CreateButton(lisExport);
-  btnExport.OnClick  := @DoExport;
+  btnExport.OnClick := @DoExport;
   btnExport.Hint := dlgCOLoadSaveHint;
   btnExport.LoadGlyphFromStock(idButtonSave);
   // Import
   btnLoadSave := CreateButton(lisImport);
-  btnLoadSave.OnClick  := @DoImport;
+  btnLoadSave.OnClick := @DoImport;
   btnLoadSave.Hint := dlgCOLoadSaveHint;
   btnLoadSave.LoadGlyphFromStock(idButtonOpen);
   if btnLoadSave.Glyph.Empty then
