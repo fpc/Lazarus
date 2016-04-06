@@ -460,7 +460,7 @@ implementation
 
 uses
   Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, TADrawerCanvas,
-  TAGeometry, TAMath, Types;
+  TAGeometry, TAMath, TAStyles, Types;
 
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
@@ -1250,11 +1250,19 @@ begin
 end;
 
 procedure TChart.Notification(AComponent: TComponent; AOperation: TOperation);
+var
+  ax: TChartAxis;
 begin
   if (AOperation = opRemove) and (AComponent = Toolset) then
     FToolset := nil
   else if (AOperation = opRemove) and (AComponent = GUIConnector) then
-    GUIConnector := nil;
+    GUIConnector := nil
+  else if (AOperation = opRemove) and (AComponent is TChartStyles) then begin
+    for ax in FAxisList do
+      if ax.Marks.Stripes = AComponent then
+        ax.Marks.Stripes := nil;
+  end;
+
   inherited Notification(AComponent, AOperation);
 end;
 
