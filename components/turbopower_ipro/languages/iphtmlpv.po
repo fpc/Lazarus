@@ -5,6 +5,18 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "Close"
 msgstr ""
 
+#: iphtmlpv.rsiphtmlpreviewfitall
+msgid "Fit all"
+msgstr ""
+
+#: iphtmlpv.rsiphtmlpreviewfitheight
+msgid "Height"
+msgstr ""
+
+#: iphtmlpv.rsiphtmlpreviewfitwidth
+msgid "Width"
+msgstr ""
+
 #: iphtmlpv.rsiphtmlpreviewof
 msgid "of"
 msgstr ""
