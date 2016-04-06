@@ -89,7 +89,7 @@ msgstr "Lengyel"
 
 #: pocheckerconsts.rs_lang_pt
 msgid "Portuguese"
-msgstr ""
+msgstr "Portugál"
 
 #: pocheckerconsts.rs_lang_pt_br
 msgid "Brazilian Portuguese"

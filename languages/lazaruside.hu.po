@@ -4490,7 +4490,7 @@ msgstr "Alkalmazás"
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
-msgstr "építési kapcsolók (-B) használata a függőségekhez is"
+msgstr "Építési kapcsolók (-B) használata a függőségekhez is"
 
 #: lazarusidestrconsts.lisapplyconventions
 msgid "Apply conventions"
@@ -4647,11 +4647,11 @@ msgstr "Kapcsolódó után"
 
 #: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
 msgid "be less verbose, can be given multiple times"
-msgstr "kevésbé részletes, többször megadható"
+msgstr "Kevésbé részletes, többször megadható"
 
 #: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
 msgid "be more verbose, can be given multiple times"
-msgstr "részletesebb, többször megadható"
+msgstr "Részletesebb, többször megadható"
 
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
 msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
@@ -4781,7 +4781,7 @@ msgstr "Építés"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
-msgstr "projekt/csomag/IDE minden fájljának építése"
+msgstr "Projekt/csomag/IDE minden fájljának építése"
 
 #: lazarusidestrconsts.lisbuildcaption
 msgctxt "lazarusidestrconsts.lisbuildcaption"
@@ -8202,7 +8202,7 @@ msgstr "Ne zárja be a projektet"
 
 #: lazarusidestrconsts.lisdonotcompiledependencies
 msgid "do not compile dependencies"
-msgstr "ne fordítsa le a függőségeket"
+msgstr "Ne fordítsa le a függőségeket"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -8718,7 +8718,7 @@ msgstr "Hiba .lfm komponens folyam elemzése közben."
 
 #: lazarusidestrconsts.liserrorreadingpackagelistfromfile
 msgid "Error reading package list from file%s%s%s%s"
-msgstr "Csomaglista beolvasása a(z) %s%s%s%s fájlból"
+msgstr "Hiba a csomaglista fájlból történő beolvasása közben:%s%s%s%s"
 
 #: lazarusidestrconsts.liserrorreadingxml
 msgid "Error reading XML"
@@ -9157,7 +9157,7 @@ msgstr "Nem ASCII vagy UTF-8 kódolású fájlok"
 
 #: lazarusidestrconsts.lisfilewheredebugoutputiswritten
 msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
-msgstr "fájl, ahová a hibakereső kimenete mentésre kerül. Ha nincs megadva, a hibakereső kimenete a konzolra lesz kiírva."
+msgstr "A fájl, ahová a hibakereső kimenete mentésre kerül. Ha nincs megadva, a hibakereső kimenete a konzolra lesz kiírva."
 
 #: lazarusidestrconsts.lisfilter
 msgid "Filter"
@@ -9949,7 +9949,7 @@ msgstr "Include útvonalak"
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"
-msgstr "Alkönyvtárak belevétele"
+msgstr "Alkönyvtárakat is beleértve"
 
 #: lazarusidestrconsts.lisincompatibleppu
 msgid ", incompatible ppu=%s"
@@ -10913,7 +10913,7 @@ msgstr "Lazarus könyvtára"
 
 #: lazarusidestrconsts.lislazarusdiroverride
 msgid "directory, to be used as a basedirectory"
-msgstr "könyvtár, mely alapkönyvtárként használandó"
+msgstr "A könyvtár, mely alapkönyvtárként használandó"
 
 #: lazarusidestrconsts.lislazaruseditorv
 msgid "Lazarus IDE v%s"
@@ -11112,7 +11112,7 @@ msgstr "Másolás öröklöttből"
 
 #: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
 msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
-msgstr "a(z) %s nem tartalmaz érvényes FPDoc útvonalat.%sNem lehet létrehozni az FPDoc fájlt ehhez: %s"
+msgstr "A(z) %s nem tartalmaz érvényes FPDoc útvonalat.%sNem lehet létrehozni az FPDoc fájlt ehhez: %s"
 
 #: lazarusidestrconsts.lisldmoveentriestoinherited
 msgid "Move entries to inherited"
@@ -11487,7 +11487,7 @@ msgstr "Lazarus építése a következő profillal: %s"
 
 #: lazarusidestrconsts.lismenubuildmanymodes
 msgid "Build many Modes ..."
-msgstr ""
+msgstr "Építés több módban ..."
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM File in Editor"
@@ -13304,23 +13304,23 @@ msgstr "Nyelv felülbírálása. Például --language=de. A lehetséges értéke
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
-msgstr "%saz alapértelmezett fordító felülbírálása. Pl. ppc386, ppcx64, ppcppc stb. Az alapértelmezett az environmentoptions.xml van tárolva"
+msgstr "%sAz alapértelmezett fordító felülbírálása. Pl. ppc386, ppcx64, ppcppc stb. Az alapértelmezett az environmentoptions.xml van tárolva"
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
 msgid "%soverride the project or IDE build mode."
-msgstr "%sa projekt vagy az IDE építési módjának felülbírálása"
+msgstr "%sA projekt vagy az IDE építési módjának felülbírálása"
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
-msgstr "%sa projekt CPU felülbírálása. Pl. i386, x86_64, powerpc, powerpc_64 stb. Alapértelmezett: %s"
+msgstr "%sA projekt cél CPU beállításának felülbírálása. Pl. i386, x86_64, powerpc, powerpc_64 stb. Alapértelmezett: %s"
 
 #: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
 msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
-msgstr "%sa projekt operációs rendszer felülbírálása.pl. win32 linux. alapértelmezett: %s"
+msgstr "%sA projekt cél operációs rendszerének felülbírálása.pl. win32 linux. alapértelmezett: %s"
 
 #: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
 msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
-msgstr "%sa projekt vezérlőkészletének felülbírálása. pl. gtk gtk2 qt win32 carbon. alapértelmezett: %s"
+msgstr "%sA projekt vezérlőkészletének felülbírálása. pl. gtk gtk2 qt win32 carbon. alapértelmezett: %s"
 
 #: lazarusidestrconsts.lisoverwritefile
 msgid "Overwrite file?"
@@ -14171,7 +14171,7 @@ msgstr "A fájlnév eltér a csomagnévtől"
 
 #: lazarusidestrconsts.lispkgmangfilenameisusedbyotherpackage
 msgid "Filename is used by other package"
-msgstr "a fájlnevet egy másik csomag használja"
+msgstr "A fájlnevet egy másik csomag használja"
 
 #: lazarusidestrconsts.lispkgmangfilenameisusedbyproject
 msgid "Filename is used by project"
@@ -14196,7 +14196,7 @@ msgstr "A(z) %s csomag telepítése automatikusan telepíti ezeket a csomagokat:
 
 #: lazarusidestrconsts.lispkgmanginvalidcompilerfilename
 msgid "invalid Compiler filename"
-msgstr "érvénytelen fordító fűájlnév"
+msgstr "érvénytelen fordító fájlnév"
 
 #: lazarusidestrconsts.lispkgmanginvalidfileextension
 msgid "Invalid file extension"
@@ -14308,7 +14308,7 @@ msgstr "A fájlnév átnevezhető kisbetűsre a következőképpen:%s\"%s\"?"
 
 #: lazarusidestrconsts.lispkgmangskipthispackage
 msgid "Skip this package"
-msgstr "Átugorja ezt a csomagot"
+msgstr "E csomag átugrása"
 
 #: lazarusidestrconsts.lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
@@ -14749,7 +14749,7 @@ msgstr "Megelőző szó"
 
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
-msgstr "elsődleges beállítások könyvtára, ahol a Lazarus a beállítási fájlokat tárolja. Az alapértelmezett:"
+msgstr "Elsődleges beállítások könyvtára, ahol a Lazarus a beállítási fájlokat tárolja. Az alapértelmezett:"
 
 #: lazarusidestrconsts.lisprimaryconfigpath
 msgid "Primary config path"
@@ -15776,7 +15776,7 @@ msgstr "Unit keresése: \"%s\""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
-msgstr "másodlagos beállítások könyvtára, ahol a Lazarus keresi a beállítási sablon fájlokat. Alapértelmezett:"
+msgstr "Másodlagos beállítások könyvtára, ahol a Lazarus keresi a beállítási sablon fájlokat. Alapértelmezett:"
 
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
@@ -16042,7 +16042,7 @@ msgstr "Érték-tippek megjelenítése hibakeresés közben"
 
 #: lazarusidestrconsts.lisshowversionandexit
 msgid "show version and exit"
-msgstr "változatszám megjelenítése és kilépés"
+msgstr "Változatszám megjelenítése és kilépés"
 
 #: lazarusidestrconsts.lisshrinktosmal
 msgid "Shrink to smallest"
@@ -16941,7 +16941,7 @@ msgstr "Ehhez a funkcióhoz szükség van egy megnyitott .lfm fájlra a forrásk
 
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
-msgstr "ez a súgó üzenet"
+msgstr "Ez a súgó üzenet"
 
 #: lazarusidestrconsts.listhisistestprojectfordesigntimepackage
 msgid "This is a test project for a design time package, testing it outside the IDE."
@@ -17526,7 +17526,7 @@ msgstr "Nem található pascal unit (.pas, .pp) az .lfm fájlhoz: %s\"%s\""
 
 #: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
 msgid "Unable to find the component class \"%s\".%sIt is not registered via RegisterClass and no lfm was found.%sIt is needed by unit:%s%s"
-msgstr "Nem található a komponensosztály: \"%s\".%sNem let regisztrálva a RegisterClass által és nem található lfm fájl sem.%sA következő unit igényli:%s%s"
+msgstr "Nem található a komponensosztály: \"%s\".%sNem lett regisztrálva a RegisterClass által és nem található lfm fájl sem.%sA következő unit igényli:%s%s"
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
@@ -18188,7 +18188,7 @@ msgstr "Írási hiba: %s%sFájl: %s%s%s"
 
 #: lazarusidestrconsts.liswrongversionin
 msgid "wrong version in %s: %s"
-msgstr "a %s rossz változatot tartalmaz: %s"
+msgstr "a(z) %s rossz változatot tartalmaz: %s"
 
 #: lazarusidestrconsts.lisxmlerror
 msgid "XML Error"
@@ -18352,7 +18352,7 @@ msgstr "i18n beállítások"
 
 #: lazarusidestrconsts.rsincludeversioninfohint
 msgid "Version info is stored if the executable format supports it."
-msgstr "A változatinformáció tárolva lesz ha a programban formátuma támogatja azt."
+msgstr "A változatinformáció tárolva lesz a programban ha a formátuma támogatja azt."
 
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 msgid "Include version info in executable"

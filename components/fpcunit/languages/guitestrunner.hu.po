@@ -68,14 +68,10 @@ msgid "Unit name: %s"
 msgstr "Unit név: %s"
 
 #: guitestrunner.sactcheckall
-#, fuzzy
-#| msgid "Check all Tests"
 msgid "Select all tests"
-msgstr "Összes teszt kijelölése"
+msgstr "Minden teszt kijelölése"
 
 #: guitestrunner.sactcheckcurrentsuite
-#, fuzzy
-#| msgid "Check the Current Suite"
 msgid "Select current suite"
 msgstr "Az aktuális sorozat kijelölése"
 
@@ -84,61 +80,49 @@ msgid "Quit"
 msgstr "Kilépés"
 
 #: guitestrunner.sactcloseformh
-#, fuzzy
-#| msgid "Quit Testting"
 msgid "Quit testing"
 msgstr "Kilépés a tesztelésből"
 
 #: guitestrunner.sactcopyalltoclipboard
 msgid "Copy text to clipboard"
-msgstr ""
+msgstr "Szöveg másolása a vágólapra"
 
 #: guitestrunner.sactcopyalltoclipboardh
 msgid "Copy the entire text to clipboard"
-msgstr ""
+msgstr "Teljes szöveg másolása a vágólapra"
 
 #: guitestrunner.sactrunaction
-#, fuzzy
-#| msgid "&Run"
 msgid "&Run all"
-msgstr "Futtatás"
+msgstr "Összes futtatása"
 
 #: guitestrunner.sactrunactionh
-#, fuzzy
-#| msgid "Run all checked test(s)"
 msgid "Run all checked tests"
 msgstr "Minden kijelölt teszt futtatása"
 
 #: guitestrunner.sactrunhighlightedtest
-#, fuzzy
-#| msgid "Run highlighted test"
 msgctxt "guitestrunner.sactrunhighlightedtest"
 msgid "Run selected"
-msgstr "A kiemelt teszt futtatása"
+msgstr "Kijelölt futtatása"
 
 #: guitestrunner.sactrunhighlightedtesth
 msgid "Run selected test"
-msgstr ""
+msgstr "A kiválasztott teszt futtatása"
 
 #: guitestrunner.sactsaveresults
 msgid "Save results"
-msgstr ""
+msgstr "Eredmények mentése"
 
 #: guitestrunner.sactsaveresultsh
 msgid "Save XML results to file"
-msgstr ""
+msgstr "XML eredmény mentése fájlba"
 
 #: guitestrunner.sactuncheckall
-#, fuzzy
-#| msgid "Uncheck all tests"
 msgid "Deselect all tests"
 msgstr "Összes teszt kijelölésének törlése"
 
 #: guitestrunner.sactuncheckcurrentsuite
-#, fuzzy
-#| msgid "Uncheck the Current Suite"
 msgid "Deselect current suite"
-msgstr "Az aktuális sorozat kijelölésének megszüntetése"
+msgstr "Az aktuális sorozat kijelölésének törlése"
 
 #: guitestrunner.sbtnclose
 msgid "Close"
@@ -159,15 +143,15 @@ msgstr "FPCUnit - unit teszt futtatása"
 
 #: guitestrunner.smiactions
 msgid "Actions"
-msgstr ""
+msgstr "Műveletek"
 
 #: guitestrunner.smiedit
 msgid "Edit"
-msgstr ""
+msgstr "Szerkesztés"
 
 #: guitestrunner.smitesttree
 msgid "Test tree"
-msgstr ""
+msgstr "Teszt-fa"
 
 #: guitestrunner.stshresults
 msgid "Results XML"
@@ -175,5 +159,5 @@ msgstr "Eredmények XML-ként"
 
 #: guitestrunner.stshtree
 msgid "Testcase tree"
-msgstr "Teszt-fa"
+msgstr "Tesztesetek fája"
 
