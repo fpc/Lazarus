@@ -17,6 +17,7 @@
 unit Gtk2WSControls;
 
 {$mode objfpc}{$H+}
+{$I gtk2defines.inc}
 
 interface
 
@@ -725,8 +726,13 @@ begin
         if (AForm.Constraints.MaxHeight > 0) or (AForm.Constraints.MaxWidth > 0) then
           AHints := AHints or GDK_HINT_MAX_SIZE;
 
-        gtk_window_set_geometry_hints({%H-}PGtkWindow(AForm.Handle), nil, @Geometry,
-          AHints);
+        {$IFDEF HASX}
+        if (AHints and GDK_HINT_MIN_SIZE = 0) and (AHints and GDK_HINT_MAX_SIZE = 0) and
+          (Gtk2WidgetSet.GetWindowManager = 'openbox') then
+        else
+        {$ENDIF}
+          gtk_window_set_geometry_hints({%H-}PGtkWindow(AForm.Handle), nil, @Geometry,
+            AHints);
       end;
       gtk_window_resize({%H-}PGtkWindow(AForm.Handle), AForm.Width, AForm.Height);
     end;
