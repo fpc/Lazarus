@@ -3412,6 +3412,7 @@ var
   ScaledImage: QImageH;
   ScaledMask: QImageH;
   NewRect: TRect;
+  ARenderHint: Boolean;
 
   function NeedScaling: boolean;
   var
@@ -3546,8 +3547,9 @@ begin
         ScaledImage := QImage_create();
         try
           QImage_copy(Image, ScaledImage, 0, 0, QImage_width(Image), QImage_height(Image));
+          // use smooth transformation when scaling image. issue #29883
           QImage_scaled(ScaledImage, ScaledImage, LocalRect.Right - LocalRect.Left,
-            LocalRect.Bottom - LocalRect.Top);
+            LocalRect.Bottom - LocalRect.Top, QtIgnoreAspectRatio, QtSmoothTransformation);
           NewRect := sourceRect^;
           NewRect.Right := (LocalRect.Right - LocalRect.Left) + sourceRect^.Left;
           NewRect.Bottom := (LocalRect.Bottom - LocalRect.Top) + sourceRect^.Top;
@@ -3556,7 +3558,15 @@ begin
           QImage_destroy(ScaledImage);
         end;
       end else
+      begin
+        // smooth a bit. issue #29883
+        ARenderHint := QPainter_testRenderHint(Widget, QPainterSmoothPixmapTransform);
+        if (QImage_format(image) = QImageFormat_ARGB32) and (flags = QtAutoColor) and
+          not EqualRect(LocalRect, sourceRect^) then
+            QPainter_setRenderHint(Widget, QPainterSmoothPixmapTransform, True);
         QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
+        QPainter_setRenderHint(Widget, QPainterSmoothPixmapTransform, ARenderHint);
+      end;
     end;
   end;
 end;
