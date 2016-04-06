@@ -163,6 +163,7 @@ var
   UnicodeEnabledOS: Boolean = False;
 
   WindowsVersion: TWindowsVersion = wvUnknown;
+  ComCtlVersion: Cardinal = 0; //initialized in Win32Extra
 
 
 implementation
