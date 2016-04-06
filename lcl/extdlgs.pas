@@ -667,12 +667,9 @@ procedure TCalendarDialog.CalendarDblClick(Sender: TObject);
 var
   CalendarForm: TForm;
   P: TPoint;
-  htRes: TCalendarPart;
 begin
   P := FCalendar.ScreenToClient(Mouse.CursorPos);
-  //if FCalendar.HitTest(P) in [cpNoWhere, cpDate] then
-  htRes := FCalendar.HitTest(P);
-  if {(htRes = cpNoWhere) or }((htRes = cpDate) and (FCalendar.GetCalendarView = cvMonth)) then
+  if FCalendar.HitTest(P) in [cpNoWhere, cpDate] then
   begin
     GetNewDate(Sender);
     CalendarForm:=TForm(TComponent(Sender).Owner);
