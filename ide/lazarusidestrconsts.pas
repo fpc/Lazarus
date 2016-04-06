@@ -490,7 +490,7 @@ resourcestring
   lisBFBuildCommand = 'Build Command';
   lisMenuQuickCompile = 'Quick Compile';
   lisMenuCleanUpAndBuild = 'Clean up and Build ...';
-  lisMenuBuildManyModes = 'Build many Modes ...';
+  lisMenuCompileManyModes = 'Compile many Modes ...';
   lisMenuAbortBuild = 'Abort Build';
   lisMenuProjectRun = '&Run';
   lisBFAlwaysBuildBeforeRun = 'Always build before run';
