@@ -1009,6 +1009,7 @@ resourcestring
 
   lisIECOErrorOpeningXml = 'Error opening XML';
   lisIECOErrorOpeningXmlFile = 'Error opening XML file "%s":%s%s';
+  lisImportingBuildModesNotSupported = 'Importing BuildModes is not supported for packages.';
   lisSuccessfullyImportedBuildModes = 'Successfully imported %d BuildModes from "%s".';
   lisSuccessfullyExportedBuildModes = 'Successfully exported %d BuildModes to "%s".';
   lisSuccessfullyImportedCompilerOptions = 'Successfully imported compiler options from "%s".';
