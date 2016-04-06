@@ -3646,6 +3646,7 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnNodeChanged;
+    property OnResize;
     property OnSelectionChanged;
     property OnShowHint;
     //property OnStartDock;
