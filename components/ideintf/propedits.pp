@@ -6860,6 +6860,9 @@ function IsInteresting(AEditor: TPropertyEditor; const AFilter: TTypeKinds;
 var
   visited: TFPList;
   UpperPropName: String;
+  // RecurseLevel counter is a hack to prevent a recursive loop in IsPropInClass.
+  //  ToDo: Fix the fundamental reason for recursive loop.
+  ClassRecurseLevel: integer;
 
   // check set element names against AFilter
   function IsPropInSet( const ATypeInfo: PTypeInfo ) : Boolean;
@@ -6893,6 +6896,9 @@ var
     propList: PPropList;
     i, propCount: Integer;
   begin
+    if ClassRecurseLevel > 10 then
+      DebugLn(['IsInteresting,IsPropInClass: ClassRecurseLevel=', ClassRecurseLevel]);
+    Inc(ClassRecurseLevel);
     Result := False;
     propCount := GetPropList(ATypeInfo, propList);
     for i := 0 to propCount - 1 do
@@ -6905,12 +6911,11 @@ var
         if Result then break;
       end;
       // check properties of subclass recursively
-      if (propInfo^.PropType^.Kind = tkClass) then
+      if (propInfo^.PropType^.Kind = tkClass) and (ClassRecurseLevel < 15) then
       begin
         Result := IsPropInClass( propInfo^.PropType );
         if Result then break;
       end;
-
       Result := ContainsTextUpper( propInfo^.Name, UpperPropName );
       if result then break;
     end;
@@ -6963,8 +6968,11 @@ var
         // if no SubProperties check against filter name
         if (UpperPropName <> '') then
           if (paSubProperties in A.GetAttributes) then
+          begin
+            ClassRecurseLevel := 0;
             Result := ContainsTextUpper(A.GetName, UpperPropName)
                        or IsPropInClass(A.GetPropType)
+          end
           else
             Result := ContainsTextUpper(A.GetName, UpperPropName );
 
