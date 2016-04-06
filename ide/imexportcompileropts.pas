@@ -57,7 +57,7 @@ type
     FFilename: string;
     FParentDialog: TAbstractOptionsEditorDialog;
     FExport: boolean;
-    procedure InitExport;
+    procedure InitExport(AOptions: TBaseCompilerOptions);
     procedure InitImport;
     procedure LoadRecentList;
     //procedure SaveRecentList;
@@ -72,7 +72,8 @@ type
 
   TOptsImExport = class
   private
-    fOwner: TImExportCompOptsDlg;
+    fOptions: TBaseCompilerOptions; // TProjectCompilerOptions or TPkgCompilerOptions
+    fImExportDlg: TImExportCompOptsDlg;
     fXMLConfig: TXMLConfig;
     function GetXMLPathForCompilerOptions: string;
     function OpenXML(const Filename: string): TModalResult;
@@ -80,12 +81,14 @@ type
     function DoImport(const Filename: string): TModalResult;
     function DoExportOptions(const Filename: string): TModalResult;
     function DoExportBuildModes(const Filename: string): TModalResult;
-    constructor Create(aOwner: TImExportCompOptsDlg);
+    constructor Create(AOptions: TBaseCompilerOptions; aImExportDlg: TImExportCompOptsDlg);
     destructor Destroy; override;
   end;
 
-function ShowImportCompilerOptionsDialog(aDialog: TAbstractOptionsEditorDialog): TModalResult;
-function ShowExportCompilerOptionsDialog(aDialog: TAbstractOptionsEditorDialog): TModalResult;
+function ShowImportCompilerOptionsDialog(AOptions: TBaseCompilerOptions;
+  aDialog: TAbstractOptionsEditorDialog): TModalResult;
+function ShowExportCompilerOptionsDialog(AOptions: TBaseCompilerOptions;
+  aDialog: TAbstractOptionsEditorDialog): TModalResult;
 
 
 implementation
@@ -95,7 +98,8 @@ implementation
 const
   DefaultCompilerOptPath = 'CompilerOptions/';
 
-function ShowImportCompilerOptionsDialog(aDialog: TAbstractOptionsEditorDialog): TModalResult;
+function ShowImportCompilerOptionsDialog(AOptions: TBaseCompilerOptions;
+  aDialog: TAbstractOptionsEditorDialog): TModalResult;
 var
   ImExportCompOptsDlg: TImExportCompOptsDlg;
   Importer: TOptsImExport;
@@ -106,7 +110,7 @@ begin
     ImExportCompOptsDlg.InitImport;
     Result := ImExportCompOptsDlg.ShowModal;
     if Result <> mrOk then Exit;
-    Importer := TOptsImExport.Create(ImExportCompOptsDlg);
+    Importer := TOptsImExport.Create(AOptions, ImExportCompOptsDlg);
     try
       Result := Importer.DoImport(ImExportCompOptsDlg.Filename);
     finally
@@ -117,7 +121,8 @@ begin
   end;
 end;
 
-function ShowExportCompilerOptionsDialog(aDialog: TAbstractOptionsEditorDialog): TModalResult;
+function ShowExportCompilerOptionsDialog(AOptions: TBaseCompilerOptions;
+  aDialog: TAbstractOptionsEditorDialog): TModalResult;
 var
   ImExportCompOptsDlg: TImExportCompOptsDlg;
   Exporter: TOptsImExport;
@@ -125,10 +130,10 @@ begin
   ImExportCompOptsDlg := TImExportCompOptsDlg.Create(nil);
   try
     ImExportCompOptsDlg.FParentDialog := aDialog;
-    ImExportCompOptsDlg.InitExport;
+    ImExportCompOptsDlg.InitExport(AOptions);
     Result := ImExportCompOptsDlg.ShowModal;
     if Result <> mrOk then Exit;
-    Exporter := TOptsImExport.Create(ImExportCompOptsDlg);
+    Exporter := TOptsImExport.Create(AOptions, ImExportCompOptsDlg);
     try
       case ImExportCompOptsDlg.ExportRadioGroup.ItemIndex of
         0: Result := Exporter.DoExportOptions(ImExportCompOptsDlg.Filename);
@@ -144,10 +149,12 @@ end;
 
 { TOptsImExport }
 
-constructor TOptsImExport.Create(aOwner: TImExportCompOptsDlg);
+constructor TOptsImExport.Create(AOptions: TBaseCompilerOptions;
+  aImExportDlg: TImExportCompOptsDlg);
 begin
   inherited Create;
-  fOwner := aOwner;
+  fOptions := AOptions;
+  fImExportDlg := aImExportDlg;
 end;
 
 destructor TOptsImExport.Destroy;
@@ -205,19 +212,29 @@ begin
 end;
 
 function TOptsImExport.DoImport(const Filename: string): TModalResult;
+// Import options to project or package. Only projects support BuildModes.
 var
-  Path: String;
+  CompOptPath: String;
 begin
   Result := OpenXML(Filename);
   if Result <> mrOK then Exit;
-  Path := GetXMLPathForCompilerOptions;
-  if Assigned(fXMLConfig.FindNode('BuildModes',False)) then begin
-    Project1.BuildModes.LoadProjOptsFromXMLConfig(fXMLConfig, '');
-    fOwner.FParentDialog.UpdateBuildModeGUI;
-    ShowMessageFmt(lisSuccessfullyImportedBuildModes, [Project1.BuildModes.Count, Filename]);
+  CompOptPath := GetXMLPathForCompilerOptions;
+  if Assigned(fXMLConfig.FindNode('BuildModes',False)) then
+  begin                                        // The import file has BuildModes.
+    if fOptions is TProjectCompilerOptions then
+    begin                                      // Project options
+      Project1.BuildModes.LoadProjOptsFromXMLConfig(fXMLConfig, '');
+      fImExportDlg.FParentDialog.UpdateBuildModeGUI;
+      ShowMessageFmt(lisSuccessfullyImportedBuildModes, [Project1.BuildModes.Count, Filename]);
+    end
+    else begin                                 // Package options
+      ShowMessage(lisImportingBuildModesNotSupported);
+      Result := mrAbort;
+    end;
   end
-  else if Assigned(fXMLConfig.FindNode(Path,False)) then begin
-    Project1.CompilerOptions.LoadFromXMLConfig(fXMLConfig, Path);
+  else if Assigned(fXMLConfig.FindNode(CompOptPath,False)) then
+  begin
+    fOptions.LoadFromXMLConfig(fXMLConfig, CompOptPath);
     ShowMessageFmt(lisSuccessfullyImportedCompilerOptions, [Filename]);
   end
   else
@@ -225,15 +242,17 @@ begin
 end;
 
 function TOptsImExport.DoExportOptions(const Filename: string): TModalResult;
+// Export options of project or package.
 begin
   Result := OpenXML(Filename);
   if Result <> mrOK then Exit;
-  Project1.CompilerOptions.SaveToXMLConfig(fXMLConfig, DefaultCompilerOptPath);
+  fOptions.SaveToXMLConfig(fXMLConfig, DefaultCompilerOptPath);
   fXMLConfig.Flush;
   ShowMessageFmt(lisSuccessfullyExportedCompilerOptions, [Filename]);
 end;
 
 function TOptsImExport.DoExportBuildModes(const Filename: string): TModalResult;
+// Export options of project's BuildModes. Packages don't have BuildModes.
 begin
   Result := OpenXML(Filename);
   if Result <> mrOK then Exit;
@@ -253,12 +272,11 @@ begin
   //  If file contains one mode -> ItemIndex:=0. If more modes -> ItemIndex:=1.
   ExportRadioGroup.Visible:=False;
 
-  OpenDlg.Filter:=Format(
-                       '%s|*.xml|'
-                      +'%s|*.lpi|'
-                      +'%s|*.lpk|'
-                      +'%s|*.lps|'
-                      +'%s|%s',
+  OpenDlg.Filter:=Format('%s|*.xml|'
+                        +'%s|*.lpi|'
+                        +'%s|*.lpk|'
+                        +'%s|*.lps|'
+                        +'%s|%s',
                       [dlgFilterXML,
                        dlgFilterLazarusProject,
                        dlgFilterLazarusPackage,
@@ -275,14 +293,16 @@ begin
   end;
 end;
 
-procedure TImExportCompOptsDlg.InitExport;
+procedure TImExportCompOptsDlg.InitExport(AOptions: TBaseCompilerOptions);
 begin
   FExport:=true;
   Caption:=lisIECOExportCompilerOptions;
   SaveDlg.Filter:=Format('%s|*.xml|%s|%s',
                      [dlgFilterXML, dlgFilterAll, GetAllFilesMask]);
 
-  if Project1.BuildModes.Count <= 1 then
+  if not (AOptions is TProjectCompilerOptions) then
+    ExportRadioGroup.Visible:=False
+  else if Project1.BuildModes.Count <= 1 then
     ExportRadioGroup.Enabled:=False;
   with ButtonPanel1 do begin
     OKButton.Caption:=lisIECOSaveToFile;

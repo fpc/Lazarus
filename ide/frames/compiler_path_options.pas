@@ -309,7 +309,7 @@ end;
 procedure TCompilerPathOptionsFrame.DoImport(Sender: TObject);
 begin
   DoSaveSettings(FCompilerOpts);
-  if (ShowImportCompilerOptionsDialog(FDialog) = mrOK)
+  if (ShowImportCompilerOptionsDialog(FCompilerOpts, FDialog) = mrOK)
   and Assigned(OnLoadIDEOptions) then
     OnLoadIDEOptions(Self, FCompilerOpts);
 end;
@@ -317,7 +317,7 @@ end;
 procedure TCompilerPathOptionsFrame.DoExport(Sender: TObject);
 begin
   DoSaveSettings(FCompilerOpts);
-  if (ShowExportCompilerOptionsDialog(FDialog) = mrOK)
+  if (ShowExportCompilerOptionsDialog(FCompilerOpts, FDialog) = mrOK)
   and Assigned(OnSaveIDEOptions) then
     OnSaveIDEOptions(Self, FCompilerOpts);
 end;
