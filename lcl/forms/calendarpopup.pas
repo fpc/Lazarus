@@ -35,35 +35,41 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
   private
+    FCaller: TControl;
     FClosed: boolean;
     FOnReturnDate: TReturnDateEvent;
-    procedure Initialize(const PopupOrigin: TPoint; ADate: TDateTime;
-                         const DisplaySettings: TDisplaySettings);
+    procedure Initialize(ADate: TDateTime;
+      const DisplaySettings: TDisplaySettings);
+    procedure KeepInView(const PopupOrigin: TPoint);
     procedure ReturnDate;
   protected
     procedure Paint; override;
   end;
 
-procedure ShowCalendarPopup(const Position: TPoint; ADate: TDateTime;
+procedure ShowCalendarPopup(const APosition: TPoint; ADate: TDateTime;
     const CalendarDisplaySettings: TDisplaySettings;
-    const OnReturnDate: TReturnDateEvent; const OnShowHide: TNotifyEvent = nil);
+    const OnReturnDate: TReturnDateEvent; const OnShowHide: TNotifyEvent = nil;
+    ACaller: TControl = nil);
 
 implementation
 
 {$R *.lfm}
 
-procedure ShowCalendarPopup(const Position: TPoint; ADate: TDateTime;
+procedure ShowCalendarPopup(const APosition: TPoint; ADate: TDateTime;
   const CalendarDisplaySettings: TDisplaySettings;
-  const OnReturnDate: TReturnDateEvent; const OnShowHide: TNotifyEvent = nil);
+  const OnReturnDate: TReturnDateEvent; const OnShowHide: TNotifyEvent;
+  ACaller: TControl);
 var
   PopupForm: TCalendarPopupForm;
 begin
   PopupForm := TCalendarPopupForm.Create(nil);
-  PopupForm.Initialize(Position, ADate, CalendarDisplaySettings);
+  PopupForm.FCaller := ACaller;
+  PopupForm.Initialize(ADate, CalendarDisplaySettings);
   PopupForm.FOnReturnDate := OnReturnDate;
   PopupForm.OnShow := OnShowHide;
   PopupForm.OnHide := OnShowHide;
   PopupForm.Show;
+  PopupForm.KeepInView(APosition);   // must be after Show for PopupForm.AutoSize to be in effect.
 end;
 
 { TCalendarPopupForm }
@@ -127,22 +133,37 @@ begin
     Close;
 end;
 
-procedure TCalendarPopupForm.Initialize(const PopupOrigin: TPoint;
-  ADate: TDateTime; const DisplaySettings: TDisplaySettings);
+procedure TCalendarPopupForm.Initialize(ADate: TDateTime;
+  const DisplaySettings: TDisplaySettings);
+begin
+  Calendar.DateTime := ADate;
+  Calendar.DisplaySettings:=DisplaySettings;
+end;
+
+procedure TCalendarPopupForm.KeepInView(const PopupOrigin: TPoint);
 var
   ABounds: TRect;
+  P: TPoint;
 begin
-  ABounds := Screen.MonitorFromPoint(PopupOrigin).BoundsRect;
+  ABounds := Screen.MonitorFromPoint(PopupOrigin).WorkAreaRect; // take care of taskbar
   if PopupOrigin.X + Width > ABounds.Right then
     Left := ABounds.Right - Width
+  else if PopupOrigin.X < ABounds.Left then
+    Left := ABounds.Left
   else
     Left := PopupOrigin.X;
   if PopupOrigin.Y + Height > ABounds.Bottom then
-    Top := ABounds.Bottom - Height
+  begin
+    if Assigned(FCaller) then
+      Top := PopupOrigin.Y - FCaller.Height - Height
+    else
+      Top := ABounds.Bottom - Height;
+  end else if PopupOrigin.Y < ABounds.Top then
+    Top := ABounds.Top
   else
     Top := PopupOrigin.Y;
-  Calendar.DateTime := ADate;
-  Calendar.DisplaySettings:=DisplaySettings;
+  if Left < ABounds.Left then Left := 0;
+  if Top < ABounds.Top then Top := 0;
 end;
 
 procedure TCalendarPopupForm.ReturnDate;

@@ -1597,7 +1597,7 @@ begin
   if ADate = NullDate then
     ADate := SysUtils.Date;
   ShowCalendarPopup(PopupOrigin, ADate, CalendarDisplaySettings,
-                    @CalendarPopupReturnDate, @CalendarPopupShowHide);
+                    @CalendarPopupReturnDate, @CalendarPopupShowHide, self);
   //Do this after the dialog, otherwise it just looks silly
   if FocusOnButtonClick then FocusAndMaybeSelectAll;
 end;
