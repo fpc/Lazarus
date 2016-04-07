@@ -133,6 +133,7 @@
       <Unit11>
         <Filename Value="codetoolstests\testcfgscript.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="TestCfgScript"/>
       </Unit11>
       <Unit12>
         <Filename Value="codetoolstests\teststdcodetools.pas"/>
