@@ -70,7 +70,8 @@ function FindNextIncludeDirective(const ASource: string;
 function FindNextIDEDirective(const ASource: string; StartPos: integer;
     NestedComments: boolean; EndPos: integer = 0): integer;
 function CleanCodeFromComments(const Src: string;
-    NestedComments: boolean; KeepDirectives: boolean = false): string;
+    NestedComments: boolean; KeepDirectives: boolean = false;
+    KeepVerbosityDirectives: boolean = false): string;
 function ExtractCommentContent(const ASource: string; CommentStart: integer;
     NestedComments: boolean;
     TrimStart: boolean = false; TrimEnd: boolean = false;
@@ -3989,8 +3990,9 @@ begin
   Result:=-1;
 end;
 
-function CleanCodeFromComments(const Src: string;
-  NestedComments: boolean; KeepDirectives: boolean): string;
+function CleanCodeFromComments(const Src: string; NestedComments: boolean;
+  KeepDirectives: boolean; KeepVerbosityDirectives: boolean): string;
+// KeepVerbosityDirectives=true requires KeepDirectives=true
 var
   SrcPos: Integer;
   ResultPos: Integer;
@@ -4008,14 +4010,19 @@ begin
       System.Move(Src[SrcPos],Result[ResultPos],l);
       inc(ResultPos,l);
     end;
+    if StartPos>length(Src) then break;
     SrcPos:=FindCommentEnd(Src,StartPos,NestedComments);
-    if KeepDirectives and (StartPos<=length(Src)) then begin
+    if KeepDirectives then begin
       p:=@Src[StartPos];
-      if (p^='{') and (p[1]='$') then begin
-        l:=SrcPos-StartPos;
-        System.Move(Src[StartPos],Result[ResultPos],l);
-        inc(ResultPos,l);
+      if (p^<>'{') or (p[1]<>'$') then continue;
+      if not KeepVerbosityDirectives then begin
+        inc(p,2);
+        if (CompareIdentifiers(p,'warn')=0)
+        or (CompareIdentifiers(p,'hint')=0) then continue;
       end;
+      l:=SrcPos-StartPos;
+      System.Move(Src[StartPos],Result[ResultPos],l);
+      inc(ResultPos,l);
     end;
   end;
   SetLength(Result,ResultPos-1);

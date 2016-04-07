@@ -408,7 +408,8 @@ type
     // keywords and comments
     function IsKeyword(Code: TCodeBuffer; const KeyWord: string): boolean;
     function ExtractCodeWithoutComments(Code: TCodeBuffer;
-          KeepDirectives: boolean = false): string;
+          KeepDirectives: boolean = false;
+          KeepVerbosityDirectives: boolean = false): string;
     function GetPasDocComments(Code: TCodeBuffer; X, Y: integer;
           out ListOfPCodeXYPosition: TFPList): boolean;
 
@@ -3466,10 +3467,11 @@ begin
 end;
 
 function TCodeToolManager.ExtractCodeWithoutComments(Code: TCodeBuffer;
-  KeepDirectives: boolean): string;
+  KeepDirectives: boolean; KeepVerbosityDirectives: boolean): string;
 begin
   Result:=CleanCodeFromComments(Code.Source,
-                    GetNestedCommentsFlagForFile(Code.Filename),KeepDirectives);
+          GetNestedCommentsFlagForFile(Code.Filename),KeepDirectives,
+          KeepVerbosityDirectives);
 end;
 
 function TCodeToolManager.GetPasDocComments(Code: TCodeBuffer; X, Y: integer;
