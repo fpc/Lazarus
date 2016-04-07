@@ -5107,7 +5107,7 @@ begin
   end;
   // create source
   BeautifyCodeOptions:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions;
-  // keep in english to avoid svn updates
+  // do not translate to avoid svn updates
   HeaderSrc:= '{ This file was automatically created by Lazarus. Do not edit!'+e
            +'  This source is only used to compile and install the package.'+e
            +' }'+e+e;
