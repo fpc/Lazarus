@@ -1597,7 +1597,6 @@ clean:
 	$(MAKE) -C debuggerintf clean
 	$(MAKE) -C lazdebuggergdbmi clean
 	$(MAKE) -C lazcontrols clean
-	$(MAKE) -C lazcontrols/design clean
 	$(MAKE) -C ideintf clean
 	$(MAKE) -C synedit clean
 	$(MAKE) -C synedit/design clean
@@ -1632,7 +1631,6 @@ distclean:
 	$(MAKE) -C debuggerintf distclean
 	$(MAKE) -C lazdebuggergdbmi distclean
 	$(MAKE) -C lazcontrols distclean
-	$(MAKE) -C lazcontrols/design distclean
 	$(MAKE) -C ideintf distclean
 	$(MAKE) -C synedit distclean
 	$(MAKE) -C synedit/design distclean
