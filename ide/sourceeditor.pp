@@ -3332,6 +3332,8 @@ begin
   LazFindReplaceDialog.ReplaceTextComboBox.Items.Assign(InputHistories.ReplaceHistory);
 
   with EditorComponent do begin
+    if SelAvail then
+      NewOptions := NewOptions + [ssoSelectedOnly, ssoEntireScope];
     if EditorOpts.FindTextAtCursor then begin
       if SelAvail and (BlockBegin.Y = BlockEnd.Y) and
          (  ((ComparePoints(BlockBegin, LogicalCaretXY) <= 0) and
@@ -3342,7 +3344,6 @@ begin
       then begin
         //debugln('TSourceEditor.StartFindAndReplace B FindTextAtCursor SelAvail');
         LazFindReplaceDialog.FindText := SelText;
-        NewOptions := NewOptions + [ssoSelectedOnly, ssoEntireScope];
       end else begin
         //debugln('TSourceEditor.StartFindAndReplace B FindTextAtCursor not SelAvail');
         LazFindReplaceDialog.FindText := GetWordAtRowCol(LogicalCaretXY);
