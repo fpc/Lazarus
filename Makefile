@@ -3198,6 +3198,7 @@ lcl:
 basecomponents:
 	$(MAKE) -C components/debuggerintf
 	$(MAKE) -C components/lazcontrols
+	$(MAKE) -C components/lazcontrols/design
 	$(MAKE) -C components/synedit
 	$(MAKE) -C components/ideintf
 	$(MAKE) -C components/lazdebuggergdbmi
