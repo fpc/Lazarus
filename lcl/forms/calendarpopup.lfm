@@ -15,10 +15,10 @@ object CalendarPopupForm: TCalendarPopupForm
   PopupMode = pmAuto
   LCLVersion = '1.7'
   object Calendar: TCalendar
-    Left = 1
+    Left = 0
     Height = 160
-    Top = 1
-    Width = 169
+    Top = 0
+    Width = 176
     AutoSize = True
     BorderSpacing.Around = 1
     DateTime = 38823

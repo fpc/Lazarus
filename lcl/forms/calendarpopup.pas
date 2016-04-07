@@ -179,7 +179,7 @@ begin
   inherited Paint;
   Canvas.Pen.Color := clWindowText;
   Canvas.Pen.Style := psSolid;
-  Canvas.Rectangle(0, 0, Width-1, Height-1);
+  Canvas.Rectangle(0, 0, Width, Height);
 end;
 
 end.
