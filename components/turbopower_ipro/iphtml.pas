@@ -2710,7 +2710,7 @@ type
     property FlagErrors;
   end;
 
-  TIdFindNodeCriteria = function(ACurrNode: TIpHtmlNodeCore): Boolean is nested;
+  TIdFindNodeCriteria = function(ACurrNode: TIpHtmlNodeCore; const AParamStr: string): Boolean;
 
 const
   NAnchorChar = #3 ; {character used to represent an Anchor }
@@ -2739,7 +2739,7 @@ function dbgs(et: TElementType): string; overload;
 function GetNextSiblingNode(ANode: TIpHtmlNode): TIpHtmlNode;
 function GetPrevSiblingNode(ANode: TIpHtmlNode): TIpHtmlNode;
 function GetParentNodeOfClass(ANode: TIpHtmlNode; AClass: TIpHtmlNodeClass): TIpHtmlNode;
-function FindNode(ANode: TIpHtmlNode; ACriteria: TIdFindNodeCriteria): TIpHtmlNodeCore;
+function FindNode(ANode: TIpHtmlNode; ACriteria: TIdFindNodeCriteria; const AParamStr: string): TIpHtmlNodeCore;
 function FindNodeByElemId(ANode: TIpHtmlNode; const AElemId: string): TIpHtmlNodeCore;
 function FindNodeByElemClass(ANode: TIpHtmlNode; const AElemClass: string): TIpHtmlNodeCore;
 
@@ -2935,7 +2935,7 @@ begin
     Result := Result.FParentNode;
 end;
 
-function FindNode(ANode: TIpHtmlNode; ACriteria: TIdFindNodeCriteria): TIpHtmlNodeCore;
+function FindNode(ANode: TIpHtmlNode; ACriteria: TIdFindNodeCriteria; const AParamStr: string): TIpHtmlNodeCore;
 var
   I: Integer;
   VNode: TIpHtmlNodeMulti;
@@ -2949,43 +2949,41 @@ begin
   for I := 0 to Pred(VNode.ChildCount) do
   begin
     VPrevNode := VNode.ChildNode[I];
-    VNextNode := FindNode(VPrevNode, ACriteria);
+    VNextNode := FindNode(VPrevNode, ACriteria, AParamStr);
     if not Assigned(VNextNode) then
       VNextNode := VPrevNode;
     if VNextNode is TIpHtmlNodeCore then
     begin
       Result := VNextNode as TIpHtmlNodeCore;
-      if ACriteria(Result) then
+      if ACriteria(Result, AParamStr) then
         Exit;
     end;
   end;
   Result := nil;
 end;
 
-function FindNodeByElemId(ANode: TIpHtmlNode; const AElemId: string): TIpHtmlNodeCore;
-
-  function Criteria(ACurrNode: TIpHtmlNodeCore): Boolean;
-  begin
-    if ACurrNode.Id = AElemId then
-      Exit(True);
-    Result := False;
-  end;
-
+function Criteria_FindNodeByElemId(ACurrNode: TIpHtmlNodeCore; const AParamStr: string): Boolean;
 begin
-  Result := FindNode(ANode, Criteria);
+  if ACurrNode.Id = AParamStr then
+    Exit(True);
+  Result := False;
+end;
+
+function FindNodeByElemId(ANode: TIpHtmlNode; const AElemId: string): TIpHtmlNodeCore;
+begin
+  Result := FindNode(ANode, Criteria_FindNodeByElemId, AElemId);
+end;
+
+function Criteria_FindNodeByElemClass(ACurrNode: TIpHtmlNodeCore; const AParamStr: string): Boolean;
+begin
+  if ACurrNode.ClassId = AParamStr then
+    Exit(True);
+  Result := False;
 end;
 
 function FindNodeByElemClass(ANode: TIpHtmlNode; const AElemClass: string): TIpHtmlNodeCore;
-
-  function Criteria(ACurrNode: TIpHtmlNodeCore): Boolean;
-  begin
-    if ACurrNode.ClassId = AElemClass then
-      Exit(True);
-    Result := False;
-  end;
-
 begin
-  Result := FindNode(ANode, Criteria);
+  Result := FindNode(ANode, Criteria_FindNodeByElemClass, AElemClass);
 end;
 
 procedure Register;
