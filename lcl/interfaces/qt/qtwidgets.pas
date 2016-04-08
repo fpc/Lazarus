@@ -8057,14 +8057,13 @@ begin
             {first must get contents rect - all except main menu}
             QWidget_contentsRect(FCentralWidget, @R);
             {TODO: find better way to find out which controls are top,left,right & bottom aligned ...}
-            for i := 0 to LCLObject.ComponentCount - 1 do
+            for i := 0 to LCLObject.ControlCount - 1 do
             begin
-              if (LCLObject.Components[i] is TWinControl) and
-                (TWinControl(LCLObject.Components[i]).Parent = LCLObject) and
-                (TWinControl(LCLObject.Components[i]).Align in [alTop, alLeft, alRight, alBottom]) then
+              if (LCLObject.Controls[i] is TWinControl) and
+                (TWinControl(LCLObject.Controls[i]).Align in [alTop, alLeft, alRight, alBottom]) then
               begin
-                R2 := TWinControl(LCLObject.Components[i]).BoundsRect;
-                case TWinControl(LCLObject.Components[i]).Align of
+                R2 := TWinControl(LCLObject.Controls[i]).BoundsRect;
+                case TWinControl(LCLObject.Controls[i]).Align of
                   alLeft: R.Left := R.Left + (R2.Right - R2.Left);
                   alTop: R.Top := R.Top + (R2.Bottom - R2.Top);
                   alRight: R.Right := R.Right - (R2.Right - R2.Left);
