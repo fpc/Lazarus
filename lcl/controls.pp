@@ -700,6 +700,10 @@ type
     FRight: TSpacingSize;
     FTop: TSpacingSize;
     FDefault: PControlBorderSpacingDefault;
+    function GetAroundBottom: Integer;
+    function GetAroundLeft: Integer;
+    function GetAroundRight: Integer;
+    function GetAroundTop: Integer;
     function GetControlBottom: Integer;
     function GetControlHeight: Integer;
     function GetControlLeft: Integer;
@@ -734,6 +738,10 @@ type
   public
     property Control: TControl read FControl;
     property Space[Kind: TAnchorKind]: integer read GetSpace write SetSpace;
+    property AroundLeft: Integer read GetAroundLeft;
+    property AroundTop: Integer read GetAroundTop;
+    property AroundRight: Integer read GetAroundRight;
+    property AroundBottom: Integer read GetAroundBottom;
     property ControlLeft: Integer read GetControlLeft;
     property ControlTop: Integer read GetControlTop;
     property ControlWidth: Integer read GetControlWidth;
@@ -3603,6 +3611,26 @@ begin
   if FControl <> nil then
     FControl.DoBorderSpacingChange(Self,InnerSpaceChanged);
   if Assigned(OnChange) then OnChange(Self);
+end;
+
+function TControlBorderSpacing.GetAroundBottom: Integer;
+begin
+  Result := Around+Bottom;
+end;
+
+function TControlBorderSpacing.GetAroundLeft: Integer;
+begin
+  Result := Around+Left;
+end;
+
+function TControlBorderSpacing.GetAroundRight: Integer;
+begin
+  Result := Around+Right;
+end;
+
+function TControlBorderSpacing.GetAroundTop: Integer;
+begin
+  Result := Around+Top;
 end;
 
 function TControlBorderSpacing.GetControlBottom: Integer;
