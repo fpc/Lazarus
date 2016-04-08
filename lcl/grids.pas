@@ -853,7 +853,6 @@ type
     procedure SetDefRowHeight(AValue: Integer);
     procedure SetDefaultDrawing(const AValue: Boolean);
     procedure SetEditor(AValue: TWinControl);
-    procedure SetFixedRows(const AValue: Integer);
     procedure SetFocusColor(const AValue: TColor);
     procedure SetGridLineColor(const AValue: TColor);
     procedure SetGridLineStyle(const AValue: TPenStyle);
@@ -1076,6 +1075,7 @@ type
     procedure SetBorderStyle(NewStyle: TBorderStyle); override;
     procedure SetFixedcolor(const AValue: TColor); virtual;
     procedure SetFixedCols(const AValue: Integer); virtual;
+    procedure SetFixedRows(const AValue: Integer); virtual;
     procedure SetRawColWidths(ACol: Integer; AValue: Integer);
     procedure SetSelectedColor(const AValue: TColor); virtual;
     procedure ShowCellHintWindow(APoint: TPoint);

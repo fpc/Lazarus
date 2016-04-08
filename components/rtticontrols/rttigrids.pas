@@ -203,6 +203,8 @@ type
                                    Shift: TShiftState); virtual;
     procedure WriteCellText(aRect: TRect; const aText: string);
     procedure UnlinkPropertyEditor(aEditor: TWinControl);
+    procedure SetFixedCols(const AValue: Integer); override;
+    procedure SetFixedRows(const AValue: Integer); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -485,10 +487,10 @@ end;
 {$IFDEF DebugEditor}
 procedure TTICustomGrid.DebugEditor(msg: String; aEditor: TWinControl);
 begin
-  Write(Msg,': Editor=');
-  if aEditor=nil then Write('nil')
-  else Write(AEditor.className);
-  WriteLn;
+  DbgOut(Msg,': Editor=');
+  if aEditor=nil then DbgOut('nil')
+  else DbgOut(AEditor.className);
+  DebugLn;
 end;
 {$ENDIF}
 
@@ -531,6 +533,9 @@ var
   ToID: Integer;
   FromID: integer;
 begin
+  if FProperties=nil then
+    exit;
+  
   ClearProperties;
   // set column/row count for objects
   if ListDirection=tldObjectsAsRows then begin
@@ -599,6 +604,7 @@ begin
     FExtraBtnEditor.Parent := nil;
     UnlinkPropertyEditor(FExtraBtnEditor);
     FExtraBtnEditor.Visible := false;
+    FExtraBtnEditor := nil;
     UnlockEditor;
   end;
 end;
@@ -676,6 +682,12 @@ var
   CurProp: TTIGridProperty;
   PropName: String;
 begin
+  if FProperties=nil then begin
+    // still creating ancestor grid
+    Editor := nil;
+    FExtraBtnEditor := nil;
+    exit;
+  end;
   NewEditor:=nil;
   MapCell(Col,Row,ObjectIndex,PropertyIndex,CellType);
   if CellType=tgctValue then begin
@@ -816,6 +828,18 @@ begin
     PropLink.SetObjectAndProperty(nil,'');
 end;
 
+procedure TTICustomGrid.SetFixedCols(const AValue: Integer);
+begin
+  inherited SetFixedCols(AValue);
+  RebuildGridLayout;
+end;
+
+procedure TTICustomGrid.SetFixedRows(const AValue: Integer);
+begin
+  inherited SetFixedRows(AValue);
+  RebuildGridLayout;
+end;
+
 constructor TTICustomGrid.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -863,6 +887,7 @@ begin
   end;
   FProperties.Clear;
   Editor := nil;
+  FExtraBtnEditor := nil;
 end;
 
 procedure TTICustomGrid.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
@@ -1109,10 +1134,16 @@ begin
   end;
   PropertyIndexValid:=(PropertyIndex>=0) and (PropertyIndex<PropertyCount);
   ObjectIndexValid:=(ObjectIndex>=0) and (ObjectIndex<TIObjectCount);
+  // tldObjectsAsRows:
+  //      PropertyIndex is a Col index, needs to be checked against ObjectHeaderLines (fixedCols)
+  //      ObjectIndex is a Row index, needs to be checked against PropHeaderLines (fixedRows)
+  // tldObjectsAsColumns:
+  //      PropertyIndex is a Row index, needs to be checked against ObjectHeaderLines (fixedRows)
+  //      ObjectIndex is a Col index, needs to be checked against PropHeaderLines (fixedCols)
   PropertyIndexInHeader:=(PropertyIndex<0)
-                         and (PropertyIndex>=-PropHeaderLines);
+                         and (PropertyIndex>=-ObjectHeaderLines);
   ObjectIndexInHeader:=(ObjectIndex<0)
-                         and (ObjectIndex>=-ObjectHeaderLines);
+                         and (ObjectIndex>=-PropHeaderLines);
   //debugln('TTICustomGrid.MapCell A ',dbgs(aCol),',',dbgs(aRow),' ',
   //  dbgs(PropertyIndex),',',dbgs(ObjectIndex),' ',
   //  dbgs(PropertyIndexValid),',',dbgs(ObjectIndexValid),
@@ -1124,14 +1155,14 @@ begin
     else if ObjectIndexInHeader then begin
       if ObjectIndex=-1 then
         CellType:=tgctPropName
-      else
+      else if Objectindex=-2 then
         CellType:=tgctPropNameAlt;
     end;
   end else if ObjectIndexValid then begin
     if PropertyIndexInHeader then begin
       if PropertyIndex=-1 then
         CellType:=tgctObjectName
-      else
+      else if PropertyIndex=-2 then
         CellType:=tgctObjectNameAlt;
     end;
   end else begin
