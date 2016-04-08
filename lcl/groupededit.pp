@@ -188,8 +188,8 @@ type
     function GetBuddyClassType: TControlClass; virtual; abstract;
     class function GetControlClassDefaultSize: TSize; override;
     procedure SetDirectInput(AValue: Boolean); virtual;
-    function GetText: TCaption; virtual;
-    procedure SetText(AValue: TCaption); virtual;
+    function RealGetText: TCaption; override;
+    procedure RealSetText(const AValue: TCaption); override;
 
     function GetEditPopupMenu: TPopupMenu;
     function GetBuddyCaption: TCaption;
@@ -299,7 +299,7 @@ type
     property SelStart: Integer read GetSelStart write SetSelStart;
     property SelText: String read GetSelText write SetSelText;
     property TabStop: Boolean read GetTabStop write SetTabStop default True;
-    property Text: TCaption read GetText write SetText;
+    property Text;
     property TextHint: TTranslateString read GetTextHint write SetTextHint;
     property TextHintFontColor: TColor read GetTextHintFontColor write SetTextHintFontColor default clGrayText;
     property TextHintFontStyle: TFontStyles read GetTextHintFontStyle write SetTextHintFontStyle default [fsItalic];
@@ -622,7 +622,7 @@ begin
   Result := inherited TabStop;
 end;
 
-function TCustomAbstractGroupedEdit.GetText: TCaption;
+function TCustomAbstractGroupedEdit.RealGetText: TCaption;
 begin
   Result := FEdit.Text;
 end;
@@ -903,7 +903,7 @@ begin
   FEdit.PopupMenu := AValue;
 end;
 
-procedure TCustomAbstractGroupedEdit.SetText(AValue: TCaption);
+procedure TCustomAbstractGroupedEdit.RealSetText(const AValue: TCaption);
 begin
   FEdit.Text := AValue;
 end;

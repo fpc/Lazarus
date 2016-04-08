@@ -99,10 +99,10 @@ begin
   FInitialValue := GetValue;
 end;
 
-function TCustomFloatSpinEditEx.GetText: TCaption;
+function TCustomFloatSpinEditEx.RealGetText: TCaption;
 begin
   if HandleAllocated then
-    Result := inherited GetText
+    Result := inherited RealGetText
   else
     Result := ValueToStr(FValue);
 end;

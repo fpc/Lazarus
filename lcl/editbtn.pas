@@ -568,7 +568,7 @@ type
     procedure ButtonClick; override;
     procedure EditDblClick; override;
     procedure SetDirectInput(AValue: Boolean); override;
-    procedure SetText(AValue: TCaption); override;
+    procedure RealSetText(const AValue: TCaption); override;
     procedure SetDateMask; virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1619,7 +1619,7 @@ begin
   SetDate(FDate);
 end;
 
-procedure TDateEdit.SetText(AValue: TCaption);
+procedure TDateEdit.RealSetText(const AValue: TCaption);
 begin
   if (not DirectInput) and not FUpdatingDate then
   begin
@@ -1629,9 +1629,9 @@ begin
       FDate := TextToDate(AValue, SysUtils.Date)
     else
       FDate := TextToDate(AValue, NullDate);
-    AValue := DateToText(FDate);
-  end;
-  inherited SetText(AValue);
+    inherited RealSetText(DateToText(FDate));
+  end else
+    inherited RealSetText(AValue);
 end;
 
 procedure TDateEdit.SetDateMask;
