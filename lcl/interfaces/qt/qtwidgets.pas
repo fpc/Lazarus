@@ -8060,6 +8060,7 @@ begin
             for i := 0 to LCLObject.ComponentCount - 1 do
             begin
               if (LCLObject.Components[i] is TWinControl) and
+                (TWinControl(LCLObject.Components[i]).Parent = LCLObject) and
                 (TWinControl(LCLObject.Components[i]).Align in [alTop, alLeft, alRight, alBottom]) then
               begin
                 R2 := TWinControl(LCLObject.Components[i]).BoundsRect;
