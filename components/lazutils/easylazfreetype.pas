@@ -141,7 +141,7 @@ type
     procedure BeginUpdate; virtual; abstract;
     procedure AddFolder(AFolder: string); virtual; abstract;
     procedure RemoveFolder(AFolder: string); virtual; abstract;
-    function AddFile(AFilename: string): boolean; virtual; abstract;
+    function AddFile(AFilename: string): TCustomFontCollectionItem; virtual; abstract;
     function RemoveFile(AFilename: string): boolean; virtual; abstract;
     function AddStream(AStream: TStream; AOwned: boolean): boolean; virtual; abstract;
     procedure EndUpdate; virtual; abstract;

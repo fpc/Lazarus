@@ -111,7 +111,7 @@ type
     procedure BeginUpdate; override;
     procedure AddFolder(AFolder: string); override;
     procedure RemoveFolder(AFolder: string); override;
-    function AddFile(AFilename: string): boolean; override;
+    function AddFile(AFilename: string): TCustomFontCollectionItem; override;
     function RemoveFile(AFilename: string): boolean; override;
     function AddStream(AStream: TStream; AOwned: boolean): boolean; override;
     procedure EndUpdate; override;
@@ -945,14 +945,15 @@ begin
   toBeDeleted.Free;
 end;
 
-function TFreeTypeFontCollection.AddFile(AFilename: string): boolean;
+function TFreeTypeFontCollection.AddFile(AFilename: string
+  ): TCustomFontCollectionItem;
 var info: TFreeTypeInformation;
     fName: string;
     item: TFontCollectionItem;
     f: TFamilyCollectionItem;
 begin
   AFilename:= ExpandFileName(AFilename);
-  result := false;
+  result := nil;
   BeginUpdate;
   try
     FTempFont.Name := AFilename;
@@ -969,7 +970,7 @@ begin
           Information[info] := FTempFont.Information[info];
       end;
       f.AddFont(item);
-      result := true;
+      result := item;
     end;
   finally
     EndUpdate;
