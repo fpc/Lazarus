@@ -9142,6 +9142,8 @@ begin
           LMScroll.ScrollCode := SB_LINERIGHT
         else
           LMScroll.ScrollCode := SB_LINEDOWN;
+        if (FOwner = nil) and (getSliderPosition + 1 >= getMax) then
+          LMScroll.ScrollCode := SB_ENDSCROLL;
       end;
     QAbstractSliderSliderSingleStepSub:
       begin
@@ -9156,6 +9158,8 @@ begin
           LMScroll.ScrollCode := SB_PAGERIGHT
         else
           LMScroll.ScrollCode := SB_PAGEDOWN;
+        if (FOwner = nil) and (getSliderPosition + 1 >= getMax) then
+          LMScroll.ScrollCode := SB_ENDSCROLL;
       end;
     QAbstractSliderSliderPageStepSub:
       begin
@@ -9186,6 +9190,8 @@ begin
           LMScroll.ScrollCode := SB_RIGHT
         else
           LMScroll.ScrollCode := SB_BOTTOM;
+        if (FOwner = nil) and (getSliderPosition + 1 >= getMax) then
+          LMScroll.ScrollCode := SB_ENDSCROLL;
       end;
     QAbstractSliderSliderMove:
       begin
@@ -9194,6 +9200,8 @@ begin
         else
         if not getSliderDown then
           LMScroll.ScrollCode := SB_THUMBPOSITION;
+        if (FOwner = nil) and (getSliderPosition + 1 >= getMax) then
+          LMScroll.ScrollCode := SB_ENDSCROLL;
       end;
   end;
 

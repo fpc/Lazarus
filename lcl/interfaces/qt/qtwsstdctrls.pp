@@ -374,7 +374,12 @@ begin
       QtScrollBar.setSingleStep((AScrollBar.PageSize div 6) + 1);
     end;
     if QtScrollbar.getValue <> AScrollBar.Position then
-      QtScrollBar.setValue(AScrollBar.Position);
+    begin
+      if AScrollBar.Position > QtScrollBar.getMax then
+        QtScrollBar.setValue(QtScrollBar.getMax)
+      else
+        QtScrollBar.setValue(AScrollBar.Position);
+    end;
 
     case AScrollBar.Kind of
       sbHorizontal:
