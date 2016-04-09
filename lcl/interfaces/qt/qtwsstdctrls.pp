@@ -366,8 +366,8 @@ begin
   QtScrollBar.BeginUpdate;
   try
     if (QtScrollBar.getMin <> AScrollBar.Min) or
-      (QtScrollBar.getMax <> AScrollbar.Max) then
-      QtScrollBar.setRange(AScrollBar.Min, AScrollBar.Max);
+      (QtScrollBar.getMax <> (AScrollbar.Max - AScrollBar.PageSize)) then
+      QtScrollBar.setRange(AScrollBar.Min, AScrollBar.Max - AScrollBar.PageSize);
     if QtScrollBar.getPageStep <> AScrollBar.PageSize then
     begin
       QtScrollBar.setPageStep(AScrollBar.PageSize);
