@@ -10,8 +10,8 @@ uses
 
   IntfGraphics, GraphType,      //Intf basic routines
 
-  EasyLazFreeType,  LazFreeTypeIntfDrawer  //EasyFreeType with Intf
-
+  EasyLazFreeType,  LazFreeTypeIntfDrawer,  //EasyFreeType with Intf
+  LazFreeTypeFontCollection
   ;
 
 type
@@ -65,7 +65,7 @@ var
 
   function LoadFont: TFreeTypeFont;
   var
-    FileName: string;
+    FileName, FontFamilyName: string;
   begin
     result := nil;
     inc(n);
@@ -81,8 +81,9 @@ var
       else
         exit;
     end;
+    FontFamilyName := FontCollection.AddFile(FileName).Family.FamilyName;
     result := TFreeTypeFont.Create;
-    result.Name := FileName;
+    result.Name := FontFamilyName;
     LastFileName:= FileName;
   end;
 
