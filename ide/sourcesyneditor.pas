@@ -215,6 +215,7 @@ type
   private
     FCaretStamp: Int64;
     FShowTopInfo: boolean;
+    FTopInfoNestList: TLazSynEditNestedFoldsList;
     FSyncroEdit: TSynPluginSyncroEdit;
     FTemplateEdit: TSynPluginTemplateEdit;
     FMultiCaret: TSynPluginMultiCaret;
@@ -245,6 +246,7 @@ type
     procedure SetTopInfoMarkup(AValue: TSynSelectedColor);
     procedure DoHighlightChanged(Sender: TSynEditStrings; {%H-}AIndex, {%H-}ACount : Integer);
     procedure SrcSynCaretChanged(Sender: TObject);
+    function  GetHighlighter: TSynCustomFoldHighlighter;
   protected
     procedure DoOnStatusChange(Changes: TSynStatusChanges); override;
     function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
@@ -1366,6 +1368,7 @@ end;
 
 procedure TIDESynEditor.DoHighlightChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
 begin
+  FTopInfoNestList.Clear;
   if FSrcSynCaretChangedNeeded then
     SrcSynCaretChanged(nil);
 end;
@@ -1383,7 +1386,6 @@ var
       FoldType: TPascalCodeFoldBlockType;
     end;
   NodeFoldType: TPascalCodeFoldBlockType;
-  List: TLazSynEditNestedFoldsList;
 begin
   if (not FShowTopInfo) or (not HandleAllocated) or (TextView.HighLighter = nil) then exit;
   if FSrcSynCaretChangedLock or not(TextView.HighLighter is TSynPasSyn) then exit;
@@ -1399,43 +1401,38 @@ begin
     ListCnt := 0;
 
     if CaretY >= RealTopLine then begin
-      List := TextView.FoldProvider.NestedFoldsList;
-      List.ResetFilter;
-      List.Clear;
-      List.Line := CaretY-1;
-      List.FoldGroup := FOLDGROUP_PASCAL;
-      List.FoldFlags := [sfbIncludeDisabled];
-      List.IncludeOpeningOnLine := False;
+      FTopInfoNestList.Line := CaretY-1;
+      FTopInfoNestList := FTopInfoNestList;
 
-      InfCnt := List.Count;
+      InfCnt := FTopInfoNestList.Count;
       for i := InfCnt-1 downto 0 do begin
-        NodeFoldType := TPascalCodeFoldBlockType({%H-}PtrUInt(List.NodeFoldType[i]));
+        NodeFoldType := TPascalCodeFoldBlockType({%H-}PtrUInt(FTopInfoNestList.NodeFoldType[i]));
         if not(NodeFoldType in
            [cfbtClass, cfbtClassSection, cfbtProcedure])
         then
           continue;
 
         if (NodeFoldType in [cfbtClassSection]) and (ListCnt = 0) then begin
-          InfList[ListCnt].LineIndex := List.NodeLine[i];
+          InfList[ListCnt].LineIndex := FTopInfoNestList.NodeLine[i];
           InfList[ListCnt].FoldType := NodeFoldType;
           inc(ListCnt);
         end;
 
         if (NodeFoldType in [cfbtClass]) and (ListCnt < 2) then begin
-          InfList[ListCnt].LineIndex := List.NodeLine[i];
+          InfList[ListCnt].LineIndex := FTopInfoNestList.NodeLine[i];
           InfList[ListCnt].FoldType := NodeFoldType;
           inc(ListCnt);
         end;
 
         if (NodeFoldType in [cfbtProcedure]) and (ListCnt < 2) then begin
-          InfList[ListCnt].LineIndex := List.NodeLine[i];
+          InfList[ListCnt].LineIndex := FTopInfoNestList.NodeLine[i];
           InfList[ListCnt].FoldType := NodeFoldType;
           inc(ListCnt);
         end;
         if (NodeFoldType in [cfbtProcedure]) and (ListCnt = 2) and
            (InfList[ListCnt-1].FoldType = cfbtProcedure)
         then begin
-          InfList[ListCnt-1].LineIndex := List.NodeLine[i];
+          InfList[ListCnt-1].LineIndex := FTopInfoNestList.NodeLine[i];
           InfList[ListCnt-1].FoldType := NodeFoldType;
         end;
       end;
@@ -1479,6 +1476,14 @@ begin
     FSrcSynCaretChangedLock := False;
     FTopInfoLastTopLine := TopLine;
   end;
+end;
+
+function TIDESynEditor.GetHighlighter: TSynCustomFoldHighlighter;
+begin
+  if Highlighter is TSynCustomFoldHighlighter then
+    Result := TSynCustomFoldHighlighter(Highlighter)
+  else
+    Result := nil;
 end;
 
 procedure TIDESynEditor.DoOnStatusChange(Changes: TSynStatusChanges);
@@ -1669,6 +1674,11 @@ begin
 //  TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.TextArea.BackgroundColor := clSilver;
   TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.DisplayView := FTopInfoDisplay;
 
+  FTopInfoNestList := TLazSynEditNestedFoldsList.Create(@GetHighlighter);
+  FTopInfoNestList.ResetFilter;
+  FTopInfoNestList.FoldGroup := FOLDGROUP_PASCAL;
+  FTopInfoNestList.FoldFlags := [sfbIncludeDisabled];
+  FTopInfoNestList.IncludeOpeningOnLine := False;
   FTopInfoMarkup := TSynSelectedColor.Create;
   FTopInfoMarkup.Clear;
 
@@ -1700,6 +1710,7 @@ begin
   FreeAndNil(FTopInfoDisplay);
   FreeAndNil(FExtraMarkupMgr);
   FreeAndNil(FTopInfoMarkup);
+  FreeAndNil(FTopInfoNestList);
   inherited Destroy;
 end;
 
