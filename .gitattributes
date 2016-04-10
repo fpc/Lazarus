@@ -3653,6 +3653,7 @@ components/sqlite/sqlitelaz.lpk svneol=native#text/plain
 components/sqlite/sqlitelaz.pas svneol=native#text/plain
 components/sqlite/tsqlite3dataset.png -text
 components/sqlite/tsqlitedataset.png -text
+components/synedit/Contributors.txt svneol=native#text/plain
 components/synedit/Makefile.compiled svneol=native#text/plain
 components/synedit/allsynedit.pas svneol=native#text/plain
 components/synedit/design/Makefile svneol=native#text/plain

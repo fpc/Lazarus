@@ -1,0 +1,60 @@
+﻿Contributors to the SynEdit in Lazarus project:
+(This file was restored in 2016, if you are missing please contact the Lazarus team)
+For details see svn log.
+
+ Aleksa Todorovic, Alexander Klenin, Andrew Haines, Andrew Johnson, Antonio Galvao,
+ August Klein, Brad Campbell, Burkhard Carstens, Darius, Dean Zobec, Denis Golovan,
+ Dmitry Boyarintsev, Dominik Zablotny, Equinox, Eugen Bolz, Evgen Palamarchuck,
+ Flávio Etrusco, Gerard Visent, Gilles Vasseur, Graeme Geldenhuys, Igor Paliychuk,
+ J.Salvador Pérez, Janusz Tomczak, Jesus Reyes A., Joerg Braun, José Martínez,
+ Juha Manninen, Laurent Jacques, Lucas Martín, Khaled Shagrouni, Marc Weustink,
+ Marcelo B Paula, Marco Ciampa, Marco, Mark Morgan Lloyd, Martin Friebe,
+ Martin Smat, Mattias Gaertner, Maxim Ganetsky, Mazen, Micha, Nyitrai Péter,
+ Ondrej Pokorny, Paul Ishenin, Pawel, Péter Gábor, Robert Calmas, Rostislav Okulov,
+ Sandro Cumerlato, Sekelsenmat, Seppo, Shane, Taras Boychuk, Tom Lisjac, Tombo, 
+ Tomáš Gregoric, Tomasz Wieckowski, Vaclav Valicek, Valdas Jankunas, 
+ Vincent Beuselinck, Vincent Snijders, x2nie, Yauheni Nazimau, Zaenal Mutaqin, 
+ Zaher Dirkey,
+
+ 
+Below is the original SynEdit contributor.txt before the branch off of Lazarus SynEdit.
+This file is from SynEdit-1_0_3 2000/11/26
+
+Contributors to the SynEdit project:
+
+    Andre Mens,  Andy Colson,  Anthony Steele,  Arentjan Banck,
+    Bruno Mikkelsen,  Colin Laplace,  Daniel Parnell,  David H. Muir,
+    Eden Kirin,  Erik B. Berry,  Falko Jens Wagner,  James D. Richardson,
+    Johan Visser,  Jordan Russell,  Jonathan Halterman,
+    Lasse Vagsather Karlsen,  Lorant Toth,  Martin Pley,  Mattias Gaertner,
+    Michael Beck,  Michael Hieke,  Morten J. Skovrup,  Primoz Gabrijelcic,
+    Roman Silin,  Satya,  Stefan van As,  Steve Sutherland,  Sven Blankenberg,
+    Tony De Buys,  Woo Young Bum
+
+
+Most of the files in the SynEdit package are based on mwEdit version 0.92a.
+mwEdit was started by Martin Waldenburg in 1998, but is no longer
+actively maintained.
+
+Contributors to the mwEdit project (up to version 0.92a, in the order
+of appearance):
+
+    Martin Waldenburg
+
+    Woo Young Bum,  Angus Johnson,  Michael Trier,  James Jacobson,
+    Thomas Kurz,  Primoz Gabrijelcic,  Michael Beck,  Andy Jeffries,
+    Edward Kreis,  Brad Stowers,  Willo van der Merwe,  Cyrille de Brebisson,
+    Carlos Wijders,  Kees van Spelde,  Bernt Levinsson,  Ted Berg,
+    Igor Shitikov,  Michael Hieke,  Dragan Grbic,  Lucifer,  Olivier Deckmyn,
+    Luiz C. Vaz de Brito,  Hideo Koiso,  Theodoros Bebekis,  Albert Research,
+    Tony de Buys,  Greg Chapman,  Jeff Corbets,  Heedong Lim,
+    Kieran McNamara,  Martijn van der Kooij,  Jan Jacobs,  ArentJan Banck,
+    Alexander Reiter,  xueyu,  Sebastian J. Gross,  Stefan van As,
+    Vladimir Kuznetsov,  David Muir,  Nick Hoddinott,  Hanai Tohru,
+    Winfried Schöttler,  Hiep Ma,  Daniel Rodríguez Herrera,  Nur Ismail,
+    Peter Adam,  Wynand Breytenbach,  Milan Nikolic,  Robert Persson,
+    John T. Truchon,  Igor P. Zenkov,  Odilon Nelson,  Martijn Tonies,
+    Eden Kirin,  Max Horváth,  riceball,  Ewart Nijburg,  Nils Springob,
+    Jeff D. Smith,  Pavel Krehula,  Peter Wolters
+
+$ Id: Contributors.txt,v 1.13 2000/11/26 11:54:05 mghie Exp $
