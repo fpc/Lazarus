@@ -129,9 +129,8 @@ type
     FRowTextOnEnter: TKeyValuePair;
     FLastEditedRow: Integer;
     FUpdatingKeyOptions: Boolean;
-    function GetFixedRows: Integer;
     function GetItemProp(const AKeyOrIndex: Variant): TItemProp;
-    procedure SetFixedRows(AValue: Integer);
+    procedure SetFixedRows(const AValue: Integer); override;
     procedure SetItemProp(const AKeyOrIndex: Variant; AValue: TItemProp);
     procedure StringsChange(Sender: TObject);
     procedure StringsChanging(Sender: TObject);
@@ -183,7 +182,6 @@ type
     procedure MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
     function RestoreCurrentRow: Boolean;
 
-    property FixedRows: Integer read GetFixedRows write SetFixedRows default 1;
     property Modified;
     property Keys[Index: Integer]: string read GetKey write SetKey;
     property Values[const Key: string]: string read GetValue write SetValue;
@@ -928,18 +926,13 @@ begin
     OnStringsChanging(Self);
 end;
 
-function TValueListEditor.GetFixedRows: Integer;
-begin
-  Result := inherited FixedRows;
-end;
-
 procedure TValueListEditor.SetFixedCols(const AValue: Integer);
 begin
   if (AValue in [0,1]) then
     inherited SetFixedCols(AValue);
 end;
 
-procedure TValueListEditor.SetFixedRows(AValue: Integer);
+procedure TValueListEditor.SetFixedRows(const AValue: Integer);
 begin
   if AValue in [0,1] then begin  // No other values are allowed
     if AValue = 0 then           // Typically DisplayOptions are changed directly
