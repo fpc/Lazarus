@@ -301,7 +301,7 @@ type
 
   TLazSynEditNestedFoldsListEntry = record
     FFLags: set of (nfeHasHNode, nfeMaxPrevReached);
-    FGroupEndLevels: Array of Integer;
+    FGroupMinLevels: Array of Integer;
     //OpenCount: Integer;
     LineIdx: TLineIdx;
     HNode: TSynFoldNodeInfo;    // Highlighter Node
@@ -328,6 +328,11 @@ type
     FIncludeOpeningOnLine: Boolean;
     FNestInfo, FOnLineNestInfo: Array of TLazSynEditNestedFoldsListEntry;
     FEvaluationIndex: Integer;
+
+    FPreviousNestInfo: Array of TLazSynEditNestedFoldsListEntry;
+    FPreviousLine, FPreviousEvaluationIndex, FPreviousCount: Integer;
+    FPreviousMergeLine: Integer;
+
     FFoldNodeInfoList: TLazSynFoldNodeInfoList;
     FFoldNodeInfoListHoldCnt: integer;
 
@@ -2957,12 +2962,19 @@ end;
 procedure TLazSynEditNestedFoldsList.SetLine(AValue: TLineIdx);
 begin
   if FLine = AValue then Exit;
+
+  // might be able to re-use old data
+  FPreviousCount := FCount;
+  FPreviousEvaluationIndex := FEvaluationIndex;
+  FPreviousNestInfo := FNestInfo;
+  FPreviousLine := FLine;
+  FNestInfo := nil;
+
   FLine := AValue;
-  // Todo: might be able to re-use old data
   FCount := -1;                          // will trigger InitCount
   //FEvaluationIndex := -1;
   FOpeningOnLineCount := -1;
-  SetLength(FGroupEndLevelsAtEval, 0);   // will trigger InitSubGroupEndLevels
+  FGroupEndLevelsAtEval := nil;   // will trigger InitSubGroupEndLevels
   FGroupCount := -1;
 end;
 
@@ -2975,6 +2987,10 @@ begin
   FEvaluationIndex := -1;
   SetLength(FNestInfo, 0);
   SetLength(FOnLineNestInfo, 0);
+
+  FPreviousCount := -1;
+  FPreviousEvaluationIndex := -1;
+  SetLength(FPreviousNestInfo, 0);
 end;
 
 procedure TLazSynEditNestedFoldsList.ResetFilter;
@@ -3010,6 +3026,9 @@ begin
     SetLength(FGroupEndLevelsAtEval, 1);
     FGroupEndLevelsAtEval[0] := Count - OpeningOnLineCount;
   end;
+  // Warning: storing endlevels, not minlevels
+  FNestInfo[FCount].FGroupMinLevels := copy(FGroupEndLevelsAtEval,0, length(FGroupEndLevelsAtEval));
+  FNestInfo[FCount].LineIdx := Line - 1;
 end;
 
 function TLazSynEditNestedFoldsList.GetHLNode(Index: Integer): TSynFoldNodeInfo;
@@ -3162,9 +3181,10 @@ begin
     EvalIdx := AnIndex;
     CurLine := FNestInfo[EvalIdx].LineIdx;
     while (EvalIdx < FCount-1) and (FNestInfo[EvalIdx+1].LineIdx = CurLine) do inc(EvalIdx);
-    assert(Length(FNestInfo[EvalIdx].FGroupEndLevels) > 0, 'Length(FNestInfo[EvalIdx].FGroupEndLevels)');
+    assert(Length(FNestInfo[EvalIdx+1].FGroupMinLevels) > 0, 'Length(FNestInfo[EvalIdx].FGroupEndLevels)');
 
-    GrpCnt := FNestInfo[EvalIdx].FGroupEndLevels;
+    //TODO keep groupcount allocated on the same mem / instance var
+    GrpCnt := copy(FNestInfo[EvalIdx+1].FGroupMinLevels);
 
     NFilter := [sfaOpenFold];
     if not(sfbIncludeDisabled in FFoldFlags) then Include(NFilter, sfaFold);
@@ -3213,6 +3233,54 @@ var
   CurLine: TLineIdx;
   hl: TSynCustomFoldHighlighter;
   i, c, c1, l: Integer;
+
+  procedure DoMergePrevious;   // TODO: copy nodeinfo if avail
+  var
+    pcnt, c, l, c1: integer;
+  begin
+    pcnt := FPreviousCount - 1;
+    //Debugln(['re using (',pcnt, ' ',FPreviousEvaluationIndex ,') ', FPreviousNestInfo[pcnt].LineIdx,' to ', FPreviousNestInfo[FPreviousEvaluationIndex].LineIdx, ' FEvaluationIndex:',FEvaluationIndex, ' CurLine=',CurLine ]);
+    assert(FPreviousNestInfo[pcnt].LineIdx = CurLine, 'TLazSynEditNestedFoldsList.InitLineInfoForIndex.DoMergePrevious LineIdx = CurLine');
+    while  pcnt >= FPreviousEvaluationIndex do begin
+      while (pcnt > 0) and (pcnt > FPreviousEvaluationIndex) and
+            (FPreviousNestInfo[pcnt].LineIdx = FPreviousNestInfo[pcnt-1].LineIdx)
+      do
+        dec(pcnt);
+      assert(length(FPreviousNestInfo[pcnt].FGroupMinLevels) > 0, 'TLazSynEditNestedFoldsList.InitLineInfoForIndex.DoMergePrevious FGroupEndLevels > 0');
+
+      c := 0;
+      if FFoldGroup = 0 then begin
+        i := FGroupCount;
+        while (i > 0) do begin
+          l := FPreviousNestInfo[pcnt].FGroupMinLevels[i];
+          if (l < FGroupEndLevelsAtEval[i]) then begin
+            c1 := FGroupEndLevelsAtEval[i] - l;
+            FGroupEndLevelsAtEval[i] := l;
+            c := c + c1;
+          end;
+          dec(i);
+        end;
+      end
+      else begin
+        l := FPreviousNestInfo[pcnt].FGroupMinLevels[0];
+        if (l < FGroupEndLevelsAtEval[0]) then begin
+          c := FGroupEndLevelsAtEval[0] - l;
+          FGroupEndLevelsAtEval[0] := l;
+        end;
+      end;
+
+      while c > 0 do begin
+        dec(FEvaluationIndex);
+        FNestInfo[FEvaluationIndex].LineIdx := FPreviousNestInfo[pcnt].LineIdx;
+        FNestInfo[FEvaluationIndex].FFLags:= [];
+        FNestInfo[FEvaluationIndex].FGroupMinLevels := FPreviousNestInfo[pcnt].FGroupMinLevels;
+        dec(c);
+      end;
+
+      dec(pcnt);
+    end;
+  end;
+
 begin
   if HasCount and ((AnIndex >= Count - OpeningOnLineCount) or (AnIndex >= FEvaluationIndex)) then exit;
   assert(FEvaluationIndex > 0, 'TLazSynEditNestedFoldsList.InitLineInfoForIndex already finilhed');
@@ -3220,13 +3288,34 @@ begin
   hl := FHighLighterGetter();
   if hl = nil then exit;
 
+  // prepare previous info.
+  // TODO FLine = FPreviousNestInfo[i].LineIdx or FLine = FPreviousLine;
+  if (FEvaluationIndex = FCount) then begin
+    FPreviousMergeLine := -1;
+    i := FPreviousCount; // + 1 - 1
+    if i > 0 then begin
+      if (i > FPreviousEvaluationIndex) and
+         (FPreviousNestInfo[i].LineIdx = FPreviousNestInfo[i-1].LineIdx)
+      then
+        dec(i);
+      while (i >= 0) and (i >= FPreviousEvaluationIndex) do
+        if FPreviousNestInfo[i].LineIdx >= Line then
+          dec(i)
+        else
+          break;
+      FPreviousCount := i + 1;
+      if (i >= 0) and (i >= FPreviousEvaluationIndex) then
+          FPreviousMergeLine := FPreviousNestInfo[i].LineIdx;
+    end;
+  end;
+
   AquireFoldNodeInfoList(hl);
   try
     if (AnIndex >= Count - OpeningOnLineCount) or (AnIndex >= FEvaluationIndex) then exit;
 
     InitSubGroupEndLevels(hl);
 
-    FNestInfo[FEvaluationIndex-1].FGroupEndLevels := copy(FGroupEndLevelsAtEval,0, length(FGroupEndLevelsAtEval));
+//    FNestInfo[FEvaluationIndex].FGroupMinLevels := copy(FGroupEndLevelsAtEval,0, length(FGroupEndLevelsAtEval));
 
     if (FEvaluationIndex = FCount) then
       CurLine := Line - 1
@@ -3236,6 +3325,12 @@ begin
     inc(CurLine);
     while CurLine > 0 do begin
       dec(CurLine);
+      if CurLine = FPreviousMergeLine then begin
+        FPreviousMergeLine := -1;
+        DoMergePrevious;
+        InitLineInfoForIndex(AnIndex);
+        exit;
+      end;
 
       c := 0;
       if FFoldGroup = 0 then begin
@@ -3265,17 +3360,16 @@ begin
         FNestInfo[FEvaluationIndex].FFLags:= [];
         dec(c);
       end;
+      FNestInfo[FEvaluationIndex].FGroupMinLevels := copy(FGroupEndLevelsAtEval,0, length(FGroupEndLevelsAtEval));
 
       if (AnIndex >= FEvaluationIndex) then Break;
-
-      FNestInfo[FEvaluationIndex-1].FGroupEndLevels := copy(FGroupEndLevelsAtEval,0, length(FGroupEndLevelsAtEval));
     end;
 
   finally
     ReleaseFoldNodeInfoList;
   end;
   //debugln(['TLazSynEditNestedFoldsList.InitLineInfoForIndex FEvaluationIndex=', FEvaluationIndex, '  AnIndex=',AnIndex]);
-  //for i := FCount-1 downto 0 do begin DbgOut([', ',FNestInfo[i].LineIdx]); if length(FNestInfo[i].FGroupEndLevels) > 0 then begin DbgOut(' ('); for c := 0 to length(FNestInfo[i].FGroupEndLevels)-1 do DbgOut([',',FNestInfo[i].FGroupEndLevels[c]]);  DbgOut(') '); end; end; DebugLn();
+  //for i := FCount-1 downto 0 do begin DbgOut([', ',FNestInfo[i].LineIdx]); if length(FNestInfo[i].FGroupMinLevels) > 0 then begin DbgOut(' ('); for c := 0 to length(FNestInfo[i].FGroupMinLevels)-1 do DbgOut([',',FNestInfo[i].FGroupMinLevels[c]]);  DbgOut(') '); end; end; DebugLn();
   assert(CurLine >= 0, 'TLazSynEditNestedFoldsList.InitLineInfoForIndex Curline < 0');
   assert(AnIndex >= FEvaluationIndex, 'TLazSynEditNestedFoldsList.InitLineInfoForIndex Index not found');
 end;
@@ -3284,7 +3378,7 @@ procedure TLazSynEditNestedFoldsList.InitCount(const AHighlighter: TSynCustomFol
 begin
   FCount := AHighlighter.FoldBlockEndLevel(FLine - 1, FFoldGroup, FFoldFlags);
   FEvaluationIndex := FCount;
-  SetLength(FNestInfo, FCount);
+  SetLength(FNestInfo, FCount+1);
 end;
 
 procedure TLazSynEditNestedFoldsList.InitOpeningOnLine(const AHighlighter: TSynCustomFoldHighlighter);

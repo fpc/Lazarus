@@ -11,9 +11,10 @@ unit TestFoldedView;
 interface
 
 uses
-  Classes, SysUtils, testregistry, TestBase, TestHighlightPas, Forms, LCLProc,
-  SynEdit, SynHighlighterPas, SynEditFoldedView, SynEditHighlighterFoldBase,
-  SynGutterCodeFolding, SynEditKeyCmds, SynEditTypes;
+  Classes, SysUtils, math, testregistry, TestBase, TestHighlightPas, Forms,
+  LCLProc, SynEdit, SynHighlighterPas, SynEditFoldedView,
+  SynEditHighlighterFoldBase, SynGutterCodeFolding, SynEditKeyCmds,
+  SynEditTypes;
 
 type
 
@@ -43,6 +44,7 @@ type
     function TestText9: TStringArray;
     function TestText10: TStringArray;
     function TestText11: TStringArray;
+    function TestText12: TStringArray;
     function TestTextHide(ALen: Integer): TStringArray;
     function TestTextHide2(ALen: Integer): TStringArray;
     function TestTextHide3: TStringArray;
@@ -88,30 +90,34 @@ begin
   PushBaseName(AName);
 end;
 
-procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex: integer; AExpectedLines: Array of Integer);
+procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex: integer;
+  AExpectedLines: array of Integer);
 begin
   FoldedView.FoldAtTextIndex(AFoldAtIndex);
   TestFoldedText(AName, AExpectedLines);
 end;
-procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex, AFoldAtColum: integer; AExpectedLines: Array of Integer);
+procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex,
+  AFoldAtColum: integer; AExpectedLines: array of Integer);
 begin
   FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum);
   TestFoldedText(AName, AExpectedLines);
 end;
-procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
-  AExpectedLines: Array of Integer);
+procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex, AFoldAtColum,
+  AFoldAtColCnt: integer; AExpectedLines: array of Integer);
 begin
   FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum, AFoldAtColCnt);
   TestFoldedText(AName, AExpectedLines);
 end;
-procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
-  AFoldAtSkip: Boolean; AExpectedLines: Array of Integer);
+procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex, AFoldAtColum,
+  AFoldAtColCnt: integer; AFoldAtSkip: Boolean; AExpectedLines: array of Integer
+  );
 begin
   FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum, AFoldAtColCnt, AFoldAtSkip);
   TestFoldedText(AName, AExpectedLines);
 end;
-procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
-  AFoldAtSkip: Boolean; AVisibleLines: Integer; AExpectedLines: Array of Integer);
+procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex, AFoldAtColum,
+  AFoldAtColCnt: integer; AFoldAtSkip: Boolean; AVisibleLines: Integer;
+  AExpectedLines: array of Integer);
 begin
   FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum, AFoldAtColCnt, AFoldAtSkip, AVisibleLines);
   TestFoldedText(AName, AExpectedLines);
@@ -125,14 +131,16 @@ begin
   TestFoldedText(AName, AExpectedLines);
 end;
 
-procedure TTestFoldedView.TstUnFoldAtCaret(AName: String; X, Y: integer; AExpectedLines: Array of Integer);
+procedure TTestFoldedView.TstUnFoldAtCaret(AName: String; X, Y: integer;
+  AExpectedLines: array of Integer);
 begin
   SynEdit.CaretXY := Point(X, Y);
   TestFoldedText('UnfoldCaret - '+AName, AExpectedLines);
 end;
 
 // ViewPos is 1 based
-procedure TTestFoldedView.TstTxtIndexToViewPos(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
+procedure TTestFoldedView.TstTxtIndexToViewPos(AName: String;
+  AExpectedPairs: array of Integer; ADoReverse: Boolean);
 var i: Integer;
 begin
   i := 0;
@@ -146,7 +154,8 @@ begin
   end;
 end;
 // ViewPos is 1 based // Reverse of the above
-procedure TTestFoldedView.TstViewPosToTextIndex(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
+procedure TTestFoldedView.TstViewPosToTextIndex(AName: String;
+  AExpectedPairs: array of Integer; ADoReverse: Boolean);
 var i: Integer;
 begin
   i := 0;
@@ -161,7 +170,8 @@ begin
 end;
 
 // ScreenLine is 0 based
-procedure TTestFoldedView.TstTextIndexToScreenLine(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
+procedure TTestFoldedView.TstTextIndexToScreenLine(AName: String;
+  AExpectedPairs: array of Integer; ADoReverse: Boolean);
 var i: Integer;
 begin
   i := 0;
@@ -175,7 +185,8 @@ begin
   end;
 end;
 // ScreenLine is 0 based // Reverse of the above
-procedure TTestFoldedView.TstScreenLineToTextIndex(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
+procedure TTestFoldedView.TstScreenLineToTextIndex(AName: String;
+  AExpectedPairs: array of Integer; ADoReverse: Boolean);
 var i: Integer;
 begin
   i := 0;
@@ -256,7 +267,7 @@ begin
   PopBaseName;
 end;
 
-procedure TTestFoldedView.SetLines(AText: Array of String);
+procedure TTestFoldedView.SetLines(AText: array of String);
 begin
   inherited SetLines(AText);
   FoldedView.TopLine := 1;
@@ -503,6 +514,29 @@ begin
   Result[19] := '//';
   Result[20] := '';
 
+end;
+
+function TTestFoldedView.TestText12: TStringArray;
+begin
+  SetLength(Result, 18);
+  Result[0]  := 'program Project1;';
+  Result[1]  := 'begin';
+  Result[2]  := '';
+  Result[3]  := '  if 1=2 then begin';
+  Result[4]  := '';
+  Result[5]  := '  end else begin;';
+  Result[6]  := '';
+  Result[7]  := '    if 1=3 then begin';
+  Result[8]  := '';
+  Result[9]  := '';
+  Result[10] := '    end;';
+  Result[11] := '';
+  Result[12] := '  end;';
+  Result[13] := '';
+  Result[14] := 'end.';
+  Result[15] := '';
+  Result[16] := '';
+  Result[17] := '';
 end;
 
 function TTestFoldedView.TestTextHide(ALen: Integer): TStringArray;
@@ -1842,17 +1876,25 @@ procedure TTestFoldedView.TestNestedFoldsList;
       FoldGroup, FoldAction);
   end;
 
+var
+  PrepareLine, PrepareMax: integer;
   procedure InitList(const AName: String; AList: TLazSynEditNestedFoldsList;
     ALine, AGroup: Integer; AFlags: TSynFoldBlockFilterFlags;
     AInclOpening: Boolean; AClear: Boolean = True);
+  var
+    i: Integer;
   begin
-    PopPushBaseName(Format('%s (Line=%d / Grp=%d / FLG=%s / IncOpen=%s)', [AName, ALine, AGroup, dbgs(AFlags), dbgs(AInclOpening)]));
+    PopPushBaseName(Format('%s (Line=%d / Grp=%d / FLG=%s / IncOpen=%s / Prep=%d,%d)', [AName, ALine, AGroup, dbgs(AFlags), dbgs(AInclOpening), PrepareLine, PrepareMax]));
     AList.ResetFilter;
     if AClear then AList.Clear;
-    AList.Line := ALine;
     AList.FoldGroup := AGroup;
     AList.FoldFlags := AFlags;
     AList.IncludeOpeningOnLine := AInclOpening;
+    if (PrepareLine >= 0) and (PrepareLine < SynEdit.Lines.Count) then begin
+      AList.Line := PrepareLine;
+      for i := 0 to Min(AList.Count-1, PrepareLine) do AList.NodeLine[i];
+    end;
+    AList.Line := ALine;
   end;
 var
   TheList: TLazSynEditNestedFoldsList;
@@ -1861,13 +1903,15 @@ begin
 // L= *(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?A=(.*)
 // CheckNode(TheList.HLNode[2],  $1, $2,  $3, $4,  $5, $6,  $7, $8,  $9, $10, $11, $12);
 
-  PushBaseName('');
+  PushBaseName(''); // TstSetText();
+  PushBaseName(''); // InitList();
 
   {%region TestText1}
+  For PrepareLine := -1 to 5 do begin
+  For PrepareMax := 1 to Max(1, Min(PrepareLine+1, 3)) do begin
     TstSetText('TestText1', TestText);
     TheList := FoldedView.FoldProvider.NestedFoldsList;
     EnableFolds([cfbtBeginEnd..cfbtNone]);
-    PushBaseName('');
 
     InitList('All Enabled ',  TheList,  2, 0, [], True);
     AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
@@ -2072,10 +2116,13 @@ begin
     end;
 
     PopBaseName;
+  end;
+  end;
   {%endregion TestText1}
 
-
   {%region TestText2}
+  For PrepareLine := -1 to 12 do begin
+  For PrepareMax := 1 to Max(1, Min(PrepareLine+1, 5)) do begin
     TstSetText('TestText2', TestText2);
     TheList := FoldedView.FoldProvider.NestedFoldsList;
     EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtIfThen]);
@@ -2172,10 +2219,13 @@ begin
     CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
 
     PopBaseName;
+  end;
+  end;
   {%endregion TestText2}
 
-
   {%region TestText3}
+  For PrepareLine := -1 to 12 do begin
+  For PrepareMax := 1 to Max(1, Min(PrepareLine+1, 5)) do begin
 
     TstSetText('TestText3', TestText3);
     TheList := FoldedView.FoldProvider.NestedFoldsList;
@@ -2192,7 +2242,7 @@ begin
     CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
 
 
-    PushBaseName('All Enabled - group 1 - line 3');
+    PopPushBaseName('All Enabled - group 1 - line 3');
     TheList.ResetFilter;  TheList.Clear;
     TheList.Line := 3;
     TheList.FoldGroup := 1;
@@ -2202,7 +2252,7 @@ begin
     CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
 
 
-    PushBaseName('All Enabled - group 3 - line 3');
+    PopPushBaseName('All Enabled - group 3 - line 3');
     TheList.ResetFilter;  TheList.Clear;
     TheList.Line := 3;
     TheList.FoldGroup := 3;
@@ -2222,9 +2272,13 @@ begin
     CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
 
     PopBaseName;
+  end;
+  end;
   {%endregion TestText2}
 
   {%region TestText11}
+  For PrepareLine := -1 to 20 do begin
+  For PrepareMax := 1 to Max(1, Min(PrepareLine+1, 5)) do begin
     TstSetText('TestText11', TestText11);
     TheList := FoldedView.FoldProvider.NestedFoldsList;
     EnableFolds([cfbtBeginEnd..cfbtNone]);
@@ -2271,10 +2325,9 @@ begin
     AssertEquals(BaseTestName + 'Cnt', 1, TheList.Count);
     CheckNode(TheList.HLNode[0],  3, 0,   1,  7,  0, 1,  0, 1,  18, 18, FOLDGROUP_IFDEF, [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
 
-
-
-
     PopBaseName;
+  end;
+  end;
   {%endregion TestText11}
 
 
@@ -2293,6 +2346,71 @@ begin
   CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
   PopBaseName;
 
+
+  {%region TestText12}
+  TstSetText('TestText12', TestText12);
+  TheList := FoldedView.FoldProvider.NestedFoldsList;
+  EnableFolds([cfbtBeginEnd..cfbtSlashComment]); // not include IF then ...
+
+  For PrepareLine := -1 to 12 do begin
+  For PrepareMax := 1 to Max(1, Min(PrepareLine+1, 4)) do begin
+  for i := 0 to 16 do begin;
+    InitList('',  TheList,  i, 0, [], False);
+    case i of
+      0:          AssertEquals(BaseTestName + 'Cnt', 0, TheList.Count);
+      1:          AssertEquals(BaseTestName + 'Cnt', 1, TheList.Count);
+      2,3:        AssertEquals(BaseTestName + 'Cnt', 2, TheList.Count);
+      4,5,6,7:    AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
+      8,9,10:     AssertEquals(BaseTestName + 'Cnt', 4, TheList.Count);
+      11,12:      AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
+      13,14:      AssertEquals(BaseTestName + 'Cnt', 2, TheList.Count);
+      15,16:      AssertEquals(BaseTestName + 'Cnt', 0, TheList.Count);
+    end;
+
+    for i1 := TheList.Count-1 downto 0 do begin
+      i2 := -1;
+      case i of
+        1:             case i1 of
+                         0: i2 := 0;
+                       end;
+        2,3, 13,14:    case i1 of
+                         0: i2 := 0;
+                         1: i2 := 1;
+                       end;
+        4,5:           case i1 of
+                         0: i2 := 0;
+                         1: i2 := 1;
+                         2: i2 := 3;
+                       end;
+        6,7, 11,12:    case i1 of
+                         0: i2 := 0;
+                         1: i2 := 1;
+                         2: i2 := 5;
+                       end;
+        8,9,10:        case i1 of
+                         0: i2 := 0;
+                         1: i2 := 1;
+                         2: i2 := 5;
+                         3: i2 := 7;
+                       end;
+      end;
+
+      case i2 of
+        0: CheckNode(TheList.HLNode[i1],  0, 0,  0, 7,  0, 1,  0, 1, 10,10, 1, [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
+        1: CheckNode(TheList.HLNode[i1],  1, 0,  0, 5,  1, 2,  1, 2,  0{1}, 0, 1, [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
+        3: CheckNode(TheList.HLNode[i1],  3, 0, 14,19,  2, 3,  2, 3,  0, 0, 1, [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
+        5: CheckNode(TheList.HLNode[i1],  5, 0, 11,16,  2, 3,  2, 3,  0, 0, 1, [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
+        7: CheckNode(TheList.HLNode[i1],  7, 0, 16,21,  3, 4,  3, 4,  0, 0, 1, [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
+        else AssertTrue(BaseTestName + ' internal ', false);
+      end;
+    end;
+
+  end;
+  end;
+  end;
+  {%endregion TestText12}
+
+  PopBaseName;PopBaseName;
 end;
 
 initialization
