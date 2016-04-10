@@ -2666,12 +2666,13 @@ begin
      min to max-pagesize which would be different from the behaviour on other
      widgetsets.}
     Adjustment := PGtkAdjustment(gtk_adjustment_new(Position, Min,
-      Max + PageSize, SmallChange, LargeChange, PageSize));
+      Max, SmallChange, LargeChange, PageSize));
 
     if (Kind = sbHorizontal) then
       Widget := gtk_hscrollbar_new(Adjustment)
     else
       Widget := gtk_vscrollbar_new(Adjustment);
+    gtk_range_set_update_policy(PGtkRange(Widget), GTK_UPDATE_CONTINUOUS);
   end;
 
   Result := TLCLIntfHandle({%H-}PtrUInt(Widget));
@@ -2702,16 +2703,21 @@ begin
   begin
     Range := GTK_RANGE({%H-}Pointer(Handle));
     {for gtk >= 2.14 use gtk_adjustment_configure}
-    with Range^.adjustment^ do
+    if (gtk_major_version >= 2) and (gtk_minor_version >= 14) then
+      gtk_adjustment_configure(Range^.adjustment, Position, Min, Max, SmallChange, LargeChange, PageSize)
+    else
     begin
-      value := Position;
-      lower := Min;
-      upper := Max + PageSize;
-      step_increment := SmallChange;
-      page_increment := LargeChange;
-      page_size := PageSize;
+      with Range^.adjustment^ do
+      begin
+        value := Position;
+        lower := Min;
+        upper := Max;
+        step_increment := SmallChange;
+        page_increment := LargeChange;
+        page_size := PageSize;
+      end;
+      gtk_adjustment_changed(Range^.adjustment);
     end;
-    gtk_adjustment_changed(Range^.adjustment);
   end;
 end;
 

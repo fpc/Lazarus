@@ -63,6 +63,7 @@ initialization
       pointer(gtk_tree_view_get_grid_lines):=GetProcAddress(gtkhandle,'gtk_tree_view_get_grid_lines');
       pointer(gtk_tree_view_set_grid_lines):=GetProcAddress(gtkhandle,'gtk_tree_view_set_grid_lines');
       pointer(gtk_window_get_group):=GetProcAddress(gtkhandle,'gtk_window_get_group');
+      pointer(gtk_adjustment_configure):=GetProcAddress(gtkhandle,'gtk_adjustment_configure');
       break;
     end;
   end;
