@@ -23,7 +23,7 @@ interface
 
 uses
   // RTL / FCL
-  Classes, TypInfo, SysUtils, types, RtlConsts, StrUtils,
+  Classes, TypInfo, SysUtils, types, RtlConsts,
   // LCL
   LCLType, LCLIntf, LCLProc, Forms, Controls, GraphType, ButtonPanel, Graphics,
   StdCtrls, Buttons, Menus, ExtCtrls, ComCtrls, Dialogs, EditBtn, Grids, ValEdit,
