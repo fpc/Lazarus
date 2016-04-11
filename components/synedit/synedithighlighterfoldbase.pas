@@ -255,6 +255,7 @@ type
 
   TSynCustomHighlighterRange = class
   private
+    // TODO: either reduce to one level, or create subclass for 2nd level
     FCodeFoldStackSize: integer; // EndLevel
     FNestFoldStackSize: integer; // EndLevel
     FMinimumCodeFoldBlockLevel: integer;
@@ -278,7 +279,7 @@ type
     property CodeFoldStackSize: integer read FCodeFoldStackSize; // excl disabled, only IncreaseLevel
     property MinimumCodeFoldBlockLevel: integer
       read FMinimumCodeFoldBlockLevel write FMinimumCodeFoldBlockLevel;
-    property NestFoldStackSize: integer read FCodeFoldStackSize; // all, incl disabled (not IncreaseLevel)
+    property NestFoldStackSize: integer read FNestFoldStackSize; // all, incl disabled (not IncreaseLevel)
     property MinimumNestFoldBlockLevel: integer
       read FMinimumNestFoldBlockLevel; // write FMinimumNestFoldBlockLevel;
     property Top: TSynCustomCodeFoldBlock read FTop;
@@ -939,6 +940,7 @@ procedure TSynCustomFoldHighlighter.SetLine(const NewValue: String;
 begin
   inherited;
   FCodeFoldRange.MinimumCodeFoldBlockLevel := FCodeFoldRange.FCodeFoldStackSize;
+  FCodeFoldRange.FMinimumNestFoldBlockLevel := FCodeFoldRange.NestFoldStackSize;
 end;
 
 procedure TSynCustomFoldHighlighter.DoCurrentLinesChanged;
@@ -1486,6 +1488,13 @@ begin
   else if Pointer(FTop) > Pointer(Range.FTop) then
     Result:= 1
   else
+    Result := FMinimumNestFoldBlockLevel - Range.FMinimumNestFoldBlockLevel;
+  if Result <> 0 then
+    exit;
+  Result := FNestFoldStackSize - Range.FNestFoldStackSize;
+  if Result <> 0 then
+    exit;
+
     Result := FMinimumCodeFoldBlockLevel - Range.FMinimumCodeFoldBlockLevel;
   if Result <> 0 then
     exit;
@@ -1536,7 +1545,9 @@ procedure TSynCustomHighlighterRange.Clear;
 begin
   FRangeType:=nil;
   FCodeFoldStackSize := 0;
+  FNestFoldStackSize := 0;
   FMinimumCodeFoldBlockLevel := 0;
+  FMinimumNestFoldBlockLevel:= 0;
   FTop:=nil;
 end;
 
@@ -1546,12 +1557,16 @@ begin
     FTop := Src.FTop;
     FCodeFoldStackSize := Src.FCodeFoldStackSize;
     FMinimumCodeFoldBlockLevel := Src.FMinimumCodeFoldBlockLevel;
+    FNestFoldStackSize := Src.FNestFoldStackSize;
+    FMinimumNestFoldBlockLevel := Src.FMinimumNestFoldBlockLevel;
     FRangeType := Src.FRangeType;
   end
   else begin
     FTop := nil;
     FCodeFoldStackSize := 0;
+    FNestFoldStackSize := 0;
     FMinimumCodeFoldBlockLevel := 0;
+    FMinimumNestFoldBlockLevel := 0;
     FRangeType := nil;
   end;
 end;
