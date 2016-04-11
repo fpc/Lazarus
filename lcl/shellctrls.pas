@@ -249,6 +249,7 @@ type
 //    property HotTrackStyles;
 //    property HoverTime;
     property LargeImages;
+    property Mask;
     property MultiSelect;
 //    property OwnerData;
 //    property OwnerDraw;
