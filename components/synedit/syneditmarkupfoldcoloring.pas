@@ -30,11 +30,6 @@ If you do not delete the provisions above, a recipient may use your version
 of this file under either the MPL or the GPL.
 
 
-You may retrieve the latest version of this file at the SynEdit home page,
-located at http://SynEdit.SourceForge.net
-
-But to run properly with this file, you need the Lazarus SynEdit LCL >= 1.6
-
 
 Features:
   - paint keywords in multiple colors, depends on fold block level or by config
