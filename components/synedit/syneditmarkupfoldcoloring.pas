@@ -61,7 +61,7 @@ interface
 
 uses
   Classes, SysUtils,Graphics, SynEditMarkup, SynEditMiscClasses, Controls,
-  LCLProc, SynEditHighlighter, SynEditHighlighterFoldBase;
+  LCLProc, SynEditFoldedView, SynEditHighlighter, SynEditHighlighterFoldBase;
 
 type
 
@@ -82,6 +82,7 @@ type
 
   TSynEditMarkupFoldColors = class(TSynEditMarkup)
   private
+    FNestList: TLazSynEditNestedFoldsList;
     FDefaultGroup: integer;
      // Physical Position
     FHighlights : TMarkupFoldColorInfos; //array of TMarkupFoldColorInfo;
@@ -97,12 +98,14 @@ type
     procedure DoMarkupParentCloseFoldAtRow(aRow: Integer);
 
     function GetFoldHighLighter: TSynCustomFoldHighlighter;
+    procedure SetDefaultGroup(AValue: integer);
   protected
     // Notifications about Changes to the text
     procedure DoTextChanged({%H-}StartLine, EndLine, {%H-}ACountDiff: Integer); override; // 1 based
     procedure DoCaretChanged(Sender: TObject); override;
   public
     constructor Create(ASynEdit : TSynEditBase);
+    destructor Destroy; override;
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
                                         const {%H-}AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
@@ -112,12 +115,13 @@ type
                                          out   ANextPhys, ANextLog: Integer); override;
 
     procedure PrepareMarkupForRow(aRow : Integer); override;
-    property DefaultGroup : integer read FDefaultGroup write FDefaultGroup;
+    procedure EndMarkup; override;
+    property DefaultGroup : integer read FDefaultGroup write SetDefaultGroup;
   end;
 
 implementation
 uses
-  SynEdit,SynEditTypes, SynEditFoldedView, SynEditMiscProcs;
+  SynEdit,SynEditTypes, SynEditMiscProcs;
 
   {%region Sorting FoldInfo -fold}
   function CompareFI(Item1, Item2: Pointer): Integer;
@@ -152,6 +156,12 @@ uses
 constructor TSynEditMarkupFoldColors.Create(ASynEdit: TSynEditBase);
 begin
   inherited Create(ASynEdit);
+  FNestList := TLazSynEditNestedFoldsList.Create(@GetFoldHighLighter);
+  FNestList.ResetFilter;
+  FNestList.FoldGroup := FDefaultGroup;//1;//FOLDGROUP_PASCAL;
+  FNestList.FoldFlags :=  [sfbIncludeDisabled]; //[];//
+  FNestList.IncludeOpeningOnLine := True; //False; //
+
   MarkupInfo.Foreground := clGreen;
   MarkupInfo.Background := clNone; //clFuchsia;
   MarkupInfo.Style := [];
@@ -165,6 +175,12 @@ begin
   //Colors[3] := $00D5D500; // $0098CC42; // $00D1D54A; // teal
   Colors[3] := $00FF682A; //blue
   Colors[4] := $00CF00C4; //purple
+end;
+
+destructor TSynEditMarkupFoldColors.Destroy;
+begin
+  FreeAndNil(FNestList);
+  inherited Destroy;
 end;
 
 function TSynEditMarkupFoldColors.GetMarkupAttributeAtRowCol(
@@ -278,7 +294,6 @@ var
 
 var
   y, lvlB,lvlA: Integer;
-  Nest : TLazSynEditNestedFoldsList;
   TmpNode: TSynFoldNodeInfo;
   NestCount : integer;
   procedure Later(var J:integer);
@@ -292,60 +307,50 @@ var
 
 begin
   y := aRow-1;
-  Nest := TLazSynEditNestedFoldsList.Create(@GetFoldHighLighter);
-  Nest.ResetFilter;
-  Nest.Line := y;
-  Nest.FoldGroup := FDefaultGroup;//1;//FOLDGROUP_PASCAL;
-  Nest.FoldFlags :=  [sfbIncludeDisabled]; //[];//
-  Nest.IncludeOpeningOnLine := True; //False; //
-  NestCount := Nest.Count;
+  FNestList.Line := y;
+  NestCount := FNestList.Count;
 
-  try
-    lvl := 0;
-    i := 0;
-    while Allowed(i) do
+  lvl := 0;
+  i := 0;
+  while Allowed(i) do
+  begin
+
+    TmpNode := FNestList.HLNode[i];
+    //find till valid
+    while (sfaInvalid in TmpNode.FoldAction ) and Allowed(i+1) do //(i < FNestList.Count) do
     begin
-
-      TmpNode := Nest.HLNode[i];
-      //find till valid
-      while (sfaInvalid in TmpNode.FoldAction ) and Allowed(i+1) do //(i < Nest.Count) do
-      begin
-        Later(i);
-        TmpNode := Nest.HLNode[i];
-      end;
-      //if not (sfaInvalid in TmpNode.FoldAction) then}
-
-      if (sfaOutline in TmpNode.FoldAction ) then
-      //avoid bug of IncludeOpeningOnLine := False;
-      if (sfaOpen in TmpNode.FoldAction)  and (TmpNode.LineIndex + 1 = aRow) then
-      begin {do nothing here} end
-      else
-      begin
-        lvlB := lvl;
-
-        if ( sfaOutlineForceIndent in TmpNode.FoldAction) then
-          inc(lvl);
-        if ( sfaOutlineMergeParent in TmpNode.FoldAction) then
-          dec(lvl);
-
-        AddVerticalLine(TmpNode);
-        if not( sfaOutlineKeepLevel in TmpNode.FoldAction) then
-          inc(lvl);
-
-        lvlA := lvl;
-
-        with FHighlights[z] do begin
-          LevelBefore := lvlB;
-          LevelAfter  := lvlA;
-        end;
-      end;
-
       Later(i);
-      //break; //debug
+      TmpNode := FNestList.HLNode[i];
+    end;
+    //if not (sfaInvalid in TmpNode.FoldAction) then}
+
+    if (sfaOutline in TmpNode.FoldAction ) then
+    //avoid bug of IncludeOpeningOnLine := False;
+    if (sfaOpen in TmpNode.FoldAction)  and (TmpNode.LineIndex + 1 = aRow) then
+    begin {do nothing here} end
+    else
+    begin
+      lvlB := lvl;
+
+      if ( sfaOutlineForceIndent in TmpNode.FoldAction) then
+        inc(lvl);
+      if ( sfaOutlineMergeParent in TmpNode.FoldAction) then
+        dec(lvl);
+
+      AddVerticalLine(TmpNode);
+      if not( sfaOutlineKeepLevel in TmpNode.FoldAction) then
+        inc(lvl);
+
+      lvlA := lvl;
+
+      with FHighlights[z] do begin
+        LevelBefore := lvlB;
+        LevelAfter  := lvlA;
+      end;
     end;
 
-  finally
-    Nest.Free;
+    Later(i);
+    //break; //debug
   end;
 end;
 
@@ -495,9 +500,22 @@ begin
   FHighlights := SortLeftMostFI(FHighlights);
 end;
 
+procedure TSynEditMarkupFoldColors.EndMarkup;
+begin
+  inherited EndMarkup;
+  FNestList.Clear; // for next markup start
+end;
+
 function TSynEditMarkupFoldColors.GetFoldHighLighter: TSynCustomFoldHighlighter;
 begin
   result := TCustomSynEdit(self.SynEdit).Highlighter as TSynCustomFoldHighlighter;
+end;
+
+procedure TSynEditMarkupFoldColors.SetDefaultGroup(AValue: integer);
+begin
+  if FDefaultGroup = AValue then Exit;
+  FDefaultGroup := AValue;
+  FNestList.FoldGroup := FDefaultGroup;//1;//FOLDGROUP_PASCAL;
 end;
 
 {.$define debug_FC_line_changed}
