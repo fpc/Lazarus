@@ -130,7 +130,6 @@ type
     FLastEditedRow: Integer;
     FUpdatingKeyOptions: Boolean;
     function GetItemProp(const AKeyOrIndex: Variant): TItemProp;
-    procedure SetFixedRows(const AValue: Integer); override;
     procedure SetItemProp(const AKeyOrIndex: Variant; AValue: TItemProp);
     procedure StringsChange(Sender: TObject);
     procedure StringsChanging(Sender: TObject);
@@ -161,6 +160,7 @@ type
     procedure ResetDefaultColWidths; override;
     procedure SetCells(ACol, ARow: Integer; const AValue: string); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
+    procedure SetFixedRows(const AValue: Integer); override;
     procedure SetRowCount(AValue: Integer);
     procedure TitlesChanged(Sender: TObject);
     function ValidateEntry(const ACol,ARow:Integer; const OldValue:string; var NewValue:string): boolean; override;
@@ -966,9 +966,9 @@ begin
     if doColumnTitles in AValue then begin
       if RowCount < 2 then
         {inherited} RowCount := 2;
-      inherited FixedRows := 1;
+      inherited SetFixedRows(1);// don't do FixedRows := 1 here, it wil cause infinite recursion (Issue 0029993)
     end else
-      inherited FixedRows := 0;
+      inherited SetFixedRows(0);
 
   if (doAutoColResize in DisplayOptions) <> (doAutoColResize in AValue) then
     AutoFillColumns := (doAutoColResize in AValue);
