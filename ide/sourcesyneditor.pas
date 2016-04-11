@@ -50,13 +50,15 @@ uses
   // LCL
   Controls, LCLProc, LCLType, Graphics, Menus,
   // synedit
-  SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks, SynEditTypes,
-  SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
-  SynGutterLineOverview, SynEditMarkup, SynEditMarkupGutterMark, SynEditMarkupSpecialLine,
-  SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase, LazSynEditText,
-  SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea, SynEditHighlighter,
-  SynEditHighlighterFoldBase, SynHighlighterPas, SynEditMarkupHighAll, SynEditKeyCmds,
-  SynEditMarkupIfDef, SynEditMiscProcs, SynPluginMultiCaret, SynEditPointClasses,
+  SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
+  SynEditTypes, SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks,
+  SynGutterChanges, SynGutterLineOverview, SynEditMarkup,
+  SynEditMarkupGutterMark, SynEditMarkupSpecialLine, SynEditTextBuffer,
+  SynEditFoldedView, SynTextDrawer, SynEditTextBase, LazSynEditText,
+  SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea,
+  SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterPas,
+  SynEditMarkupHighAll, SynEditKeyCmds, SynEditMarkupIfDef, SynEditMiscProcs,
+  SynPluginMultiCaret, SynEditPointClasses, SynEditMarkupFoldColoring,
   etSrcEditMarks, LazarusIDEStrConsts;
 
 type
@@ -1645,6 +1647,10 @@ begin
 end;
 
 constructor TIDESynEditor.Create(AOwner: TComponent);
+  {$IFDEF SynWithOutlineMarkup}
+var
+  MarkupFoldColors: TSynEditMarkupFoldColors;
+  {$ENDIF}
 begin
   inherited Create(AOwner);
   FUserWordsList := TFPList.Create;
@@ -1659,6 +1665,12 @@ begin
 
   FMarkupForGutterMark := TSynEditMarkupGutterMark.Create(Self, FWordBreaker);
   TSynEditMarkupManager(MarkupMgr).AddMarkUp(FMarkupForGutterMark);
+
+  {$IFDEF SynWithOutlineMarkup}
+  MarkupFoldColors := TSynEditMarkupFoldColors.Create(Self);
+  //MarkupFoldColors.DefaultGroup := 0;
+  TSynEditMarkupManager(MarkupMgr).AddMarkUp(MarkupFoldColors);
+  {$ENDIF}
 
   FMarkupIfDef := TSourceSynEditMarkupIfDef.Create(Self);
   FMarkupIfDef.FoldView := TSynEditFoldedView(FoldedTextBuffer);
