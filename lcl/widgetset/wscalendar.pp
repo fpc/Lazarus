@@ -49,6 +49,7 @@ type
   published
     class function GetDateTime(const ACalendar: TCustomCalendar): TDateTime; virtual;
     class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; virtual;
+    class function GetCurrentView(const ACalendar: TCustomCalendar): TCalendarView; virtual;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); virtual;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; 
       const ADisplaySettings: TDisplaySettings); virtual;
@@ -72,6 +73,12 @@ end;
 class function TWSCustomCalendar.HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart;
 begin
   Result := cpNoWhere;
+end;
+
+class function TWSCustomCalendar.GetCurrentView(const ACalendar: TCustomCalendar
+  ): TCalendarView;
+begin
+  Result := cvMonth;
 end;
 
 class procedure TWSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);

@@ -85,9 +85,11 @@ end;
 procedure TCalendarPopupForm.CalendarDblClick(Sender: TObject);
 var
   P: TPoint;
+  htRes: TCalendarPart;
 begin
   P := Calendar.ScreenToClient(Mouse.CursorPos);
-  if Calendar.HitTest(P) in [cpNoWhere, cpDate] then
+  htRes := Calendar.HitTest(P);
+  if {(htRes = cpNoWhere) or }((htRes = cpDate) and (Calendar.GetCalendarView = cvMonth)) then
     ReturnDate;
 end;
 
@@ -103,7 +105,10 @@ begin
     VK_ESCAPE:
       Close;
     VK_RETURN, VK_SPACE:
-      ReturnDate;
+      if (Calendar.GetCalendarView = cvMonth) then
+        ReturnDate
+      else
+        Handled := False;
     else
       Handled := false;
     end;
