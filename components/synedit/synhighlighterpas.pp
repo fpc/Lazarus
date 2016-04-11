@@ -150,6 +150,10 @@ const
      cfbtIfDef, cfbtRegion,
      cfbtIfThen
     ];
+  PascalNoOutlineRanges: TPascalCodeFoldBlockTypes =
+    [cfbtProgram,cfbtUnit,cfbtUnitSection, cfbtRegion, cfbtProcedure,
+      cfbtVarType,
+      cfbtIfDef, cfbtAnsiComment..cfbtSlashComment];
 
   // restrict cdecl etc to places where they can be.
   // this needs a better parser
@@ -4032,6 +4036,8 @@ begin
     else
       Result.SupportedModes := [fmFold] + m;
   end;
+  if not (TPascalCodeFoldBlockType(Index) in PascalNoOutlineRanges) then
+    Result.SupportedModes := Result.SupportedModes + [fmOutline];
 
   if (TPascalCodeFoldBlockType(Index) in [cfbtIfThen]) then
     m := [];
@@ -4039,6 +4045,10 @@ begin
     Result.Modes := [fmFold, fmHide] + m
   else
     Result.Modes := [fmFold] + m;
+
+  if not (TPascalCodeFoldBlockType(Index) in PascalNoOutlineRanges) then
+    Result.Modes := Result.Modes + [fmOutline];
+
 end;
 
 function TSynPasSyn.CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList;

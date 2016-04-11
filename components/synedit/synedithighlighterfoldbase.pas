@@ -80,6 +80,12 @@ type
 
                      sfaDefaultCollapsed,
                      sfaMarkup,   // This node can be highlighted, by the matching Word-Pair Markup
+                     sfaOutline,  // This node will be higlighted by nested color replacing the token color
+                     sfaOutlineKeepLevel, // Direct children should not increase color dept. (But grandchild can.)  e.g. "if","then" any "procedure"
+                     sfaOutlineMergeParent,// This node want to decrease current color depth. (But Previous sibling increased) e.g. "except", "finally"
+                     sfaOutlineForceIndent, // Node will temporary ignore sfaOutlineKeep. (Next sibling can.) e.g in NESTED "procedure"
+                     sfaOutlineNoColor,     // Node will not painted by nested-coloring, but may increase color (e.g. any "procedure")
+                     sfaOutlineNoLine,      // Node doesn't want to have vertical line. (e.g. "then")
                      sfaInvalid,  // Wrong Index
 
                      // TODO: deprecate
@@ -197,7 +203,7 @@ type
     property Line: TLineIdx read FLine write SetLine;
   end;
 
-  TSynCustomFoldConfigMode = (fmFold, fmHide, fmMarkup);
+  TSynCustomFoldConfigMode = (fmFold, fmHide, fmMarkup, fmOutline);
   TSynCustomFoldConfigModes = set of TSynCustomFoldConfigMode;
 
   { TSynCustomFoldConfig }
@@ -1647,6 +1653,7 @@ begin
   if fmFold   in AValue then FFoldActions := FFoldActions + [sfaFold, sfaFoldFold];
   if fmHide   in AValue then FFoldActions := FFoldActions + [sfaFold, sfaFoldHide];
   if fmMarkup in AValue then FFoldActions := FFoldActions + [sfaMarkup];
+  if fmOutline in AValue then FFoldActions := FFoldActions + [sfaOutline];
   DoOnChange;
 end;
 
