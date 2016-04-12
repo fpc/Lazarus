@@ -3619,6 +3619,23 @@ begin
   //inherited DoInitNode(Node, FinishingABlock, ABlockType, aActions, AIsFold);
   aActions := aActions + [sfaMultiLine];
 
+  if (not FinishingABlock) and  (ABlockType <> nil) then begin
+    if (PasBlockType in [cfbtIfThen,cfbtForDo,cfbtWhileDo,cfbtWithDo]) then
+      Include( aActions, sfaOutlineKeepLevel);
+
+    if (PasBlockType in [cfbtProcedure]) then
+      aActions := aActions + [sfaOutlineKeepLevel,sfaOutlineNoColor];
+
+    //if (PasBlockType in [cfbtProcedure]) and (InProcLevel > 0) then //nested
+    //  aActions := aActions + [sfaOutlineForceIndent];
+
+    if (PasBlockType in [cfbtExcept]) then
+      Include( aActions, sfaOutlineMergeParent);
+
+   // if (PasBlockType in [cfbtIfThen, cfbtClass,cfbtRecord]) then
+    //  aActions := aActions + [sfaOutlineNoLine];
+  end;
+
   Node.LineIndex := LineIndex;
   Node.LogXStart := Run;
   Node.LogXEnd := Run + fStringLen;
