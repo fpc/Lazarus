@@ -435,7 +435,7 @@ type
 const
 
   (* When adding new entries, ensure that resourcestrings are re-assigned in InitLocale *)
-  EditorOptionsFoldInfoPas: Array [0..23] of TEditorOptionsFoldInfo
+  EditorOptionsFoldInfoPas: Array [0..26] of TEditorOptionsFoldInfo
   = (
       (Name:  dlgFoldPasProcedure;     Xml:     'Procedure';
        Index: ord(cfbtProcedure);    Enabled: True),
@@ -490,7 +490,13 @@ const
        Index: ord(cfbtNestedComment);Enabled: True),
 
       (Name:  dlgFoldPasIfThen; Xml:     'IfThen';
-       Index: ord(cfbtIfThen); Enabled: False)
+       Index: ord(cfbtIfThen); Enabled: False),
+      (Name:  dlgFoldPasForDo; Xml:     'ForDo';
+       Index: ord(cfbtForDo); Enabled: False),
+      (Name:  dlgFoldPasWhileDo; Xml:     'WhileDo';
+       Index: ord(cfbtWhileDo); Enabled: False),
+      (Name:  dlgFoldPasWithDo; Xml:     'WithDo';
+       Index: ord(cfbtWithDo); Enabled: False)
     );
 
   EditorOptionsFoldInfoLFM: Array [0..2] of TEditorOptionsFoldInfo
@@ -584,8 +590,8 @@ const
     TEditorOptionsFoldRecord =
     ( (Count:  0; Info: nil), // none
       (Count:  0; Info: nil), // text
-      (Count: 24; Info: @EditorOptionsFoldInfoPas[0]), // Freepas
-      (Count: 24; Info: @EditorOptionsFoldInfoPas[0]), // pas
+      (Count: 27; Info: @EditorOptionsFoldInfoPas[0]), // Freepas
+      (Count: 27; Info: @EditorOptionsFoldInfoPas[0]), // pas
       (Count:  3; Info: @EditorOptionsFoldInfoLFM[0]), // lfm
       (Count:  5; Info: @EditorOptionsFoldInfoXML[0]), // xml
       (Count:  3; Info: @EditorOptionsFoldInfoHTML[0]), // html

@@ -1967,6 +1967,9 @@ resourcestring
   dlgFoldPasProcBeginEnd    = 'Begin/End (procedure)';
   dlgFoldPasNestedComment   = 'Nested Comment';
   dlgFoldPasIfThen          = 'If/Then/Else';
+  dlgFoldPasForDo           = 'For/Do';
+  dlgFoldPasWhileDo         = 'While/Do';
+  dlgFoldPasWithDo          = 'With/Do';
   dlgFoldPasProcedure       = 'Procedure';
   dlgFoldPasUses            = 'Uses';
   dlgFoldPasVarType         = 'Var/Type (global)';
