@@ -76,6 +76,7 @@ type
   TSynJScriptSyn = class(TSynCustomFoldHighlighter{TSynCustomHighLighter})
   private
     FBracketAttri: TSynHighlighterAttributes;
+    FAtLineStart: Boolean;
     fRange: TRangeState;
     fLine: PChar;
     fLineNumber: Integer;
@@ -1560,6 +1561,7 @@ begin
   fLine := PChar(NewValue);
   Run := 0;
   fLineNumber := LineNumber;
+  FAtLineStart := True;
   Next;
 end;
 
@@ -1775,6 +1777,8 @@ begin
     CommentProc
   else
     fProcTable[fLine[Run]];
+  if FAtLineStart and not(FTokenID in [tkSpace, tkComment]) then
+    FAtLineStart := False;
 end;
 
 function TSynJScriptSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
@@ -1879,31 +1883,7 @@ end;
 function TSynJScriptSyn.StartJScriptCodeFoldBlock(
   ABlockType: TJScriptFoldBlockType; OnlyEnabled: Boolean
   ): TSynCustomCodeFoldBlock;
-{var
-  p: PtrInt;
-  FoldBlock, BlockEnabled: Boolean;
-  act: TSynFoldActions;
-  nd: TSynFoldNodeInfo;}
 begin
-  {BlockEnabled := FFoldConfig[ord(ABlockType)].Enabled;
-  if (not BlockEnabled) and OnlyEnabled then
-    exit(nil);
-  FoldBlock := BlockEnabled and (FFoldConfig[ord(ABlockType)].Modes * [fmFold, fmHide] <> []);
-  p := 0;
-
-  if IsCollectingNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
-    act := [sfaOpen, sfaOpenFold]; //TODO: sfaOpenFold not for cfbtIfThen
-    if BlockEnabled then
-      act := act + FFoldConfig[ord(ABlockType)].FoldActions;
-    if not FAtLineStart then
-      act := act - [sfaFoldHide];
-    DoInitNode(nd, False, Pointer(PtrInt(ABlockType)), act, FoldBlock);
-    CollectingNodeInfoList.Add(nd);
-  end;
-
-  if not FoldBlock then
-    p := PtrInt(CountPascalCodeFoldBlockOffset);}
-  //Result:=TSynCustomCodeFoldBlock(StartCodeFoldBlock(p+Pointer(PtrInt(ABlockType)), FoldBlock));
   Result:=StartCodeFoldBlock(Pointer(PtrInt(ABlockType)) );
 end;
 
@@ -1917,6 +1897,8 @@ procedure TSynJScriptSyn.DoInitNode(var Node: TSynFoldNodeInfo;
   AIsFold: Boolean);
 begin
   inherited DoInitNode(Node, FinishingABlock, ABlockType, aActions, AIsFold);
+  if not FAtLineStart then
+    Node.FoldAction := Node.FoldAction - [sfaFoldHide];
   if (ABlockType <> nil) and (TJScriptFoldBlockType(PtrUInt(ABlockType)) = jsbFunction) then
     Include( Node.FoldAction, sfaOutlineKeepLevel);
 end;
