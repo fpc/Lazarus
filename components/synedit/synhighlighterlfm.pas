@@ -262,8 +262,10 @@ function TSynLFMSyn.GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
 begin
   Result := inherited GetFoldConfigInstance(Index);
   Result.Enabled := True;
-  Result.SupportedModes := [fmFold, fmMarkup, fmOutline];
-  Result.Modes := [fmFold, fmMarkup, fmOutline];
+  if TLfmCodeFoldBlockType(Index) in [cfbtLfmObject, cfbtLfmList, cfbtLfmItem] then begin
+    Result.SupportedModes := Result.SupportedModes + [fmMarkup];
+    Result.Modes := Result.Modes + [fmMarkup];
+  end;
 end;
 
 constructor TSynLFMSyn.Create(AOwner: TComponent);
