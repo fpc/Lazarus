@@ -263,6 +263,7 @@ begin
   Result := inherited GetFoldConfigInstance(Index);
   Result.Enabled := True;
   Result.SupportedModes := [fmFold, fmMarkup, fmOutline];
+  Result.Modes := [fmFold, fmMarkup, fmOutline];
 end;
 
 constructor TSynLFMSyn.Create(AOwner: TComponent);
