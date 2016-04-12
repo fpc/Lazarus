@@ -126,6 +126,9 @@ type
     cfbtBorCommand,   // { ... }
     cfbtSlashComment, // //
     cfbtIfThen,
+    cfbtForDo,
+    cfbtWhileDo,
+    cfbtWithDo,
     // Internal type / not configurable
     cfbtCaseElse,     // "else" in case can have multiply statements
     cfbtPackage,
@@ -136,7 +139,7 @@ type
 
 
 const
-  cfbtLastPublic = cfbtIfThen;
+  cfbtLastPublic = cfbtWithDo;
   cfbtFirstPrivate = cfbtCaseElse;
 
   CountPascalCodeFoldBlockOffset: Pointer =
@@ -148,12 +151,12 @@ const
     [cfbtBeginEnd, cfbtTopBeginEnd, cfbtProcedure, cfbtClass, cfbtProgram, cfbtRecord,
      cfbtTry, cfbtExcept, cfbtRepeat, cfbtAsm, cfbtCase, cfbtCaseElse,
      cfbtIfDef, cfbtRegion,
-     cfbtIfThen
+     cfbtIfThen, cfbtForDo,cfbtWhileDo,cfbtWithDo
     ];
   PascalNoOutlineRanges: TPascalCodeFoldBlockTypes =
-    [cfbtProgram,cfbtUnit,cfbtUnitSection, cfbtRegion, cfbtProcedure,
-      cfbtVarType,
-      cfbtIfDef, cfbtAnsiComment..cfbtSlashComment];
+    [cfbtProgram,cfbtUnit,cfbtUnitSection, cfbtRegion, //cfbtProcedure,//=need by nested proc?
+      cfbtVarType, cfbtCaseElse,
+      cfbtIfDef, cfbtAnsiComment,cfbtBorCommand,cfbtSlashComment, cfbtNestedComment];
 
   // restrict cdecl etc to places where they can be.
   // this needs a better parser
@@ -164,7 +167,7 @@ const
 
   PascalStatementBlocks: TPascalCodeFoldBlockTypes =
     [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtTry, cfbtExcept, cfbtRepeat,
-     cfbtCaseElse, cfbtIfThen];
+     cfbtCaseElse, cfbtIfThen, cfbtForDo,cfbtWhileDo,cfbtWithDo ];
 
   PascalFoldTypeCompatibility: Array [TPascalCodeFoldBlockType] of TPascalCodeFoldBlockType =
     ( cfbtBeginEnd,      // Nested
@@ -191,6 +194,9 @@ const
       cfbtNestedComment, //cfbtBorCommand,   // { ... }
       cfbtSlashComment, // //
       cfbtIfThen,
+      cfbtForDo,
+      cfbtWhileDo,
+      cfbtWithDo,
       // Internal type / not configurable
       cfbtCaseElse,
       cfbtPackage,
@@ -896,8 +902,18 @@ begin
 end;
 
 function TSynPasSyn.Func19: TtkTokenKind;
+var pas : TPascalCodeFoldBlockType;
 begin
-  if KeyComp('Do') then Result := tkKey else
+  if KeyComp('Do') then begin
+    Result := tkKey;
+    pas := TopPascalCodeFoldBlockType;
+    if pas in [cfbtForDo, cfbtWhileDo, cfbtWithDo] then
+    begin
+      EndPascalCodeFoldBlock();
+      StartPascalCodeFoldBlock(pas, True);
+    end
+  end
+  else
     if KeyComp('And') then Result := tkKey else Result := tkIdentifier;
 end;
 
@@ -918,8 +934,11 @@ begin
       CodeFoldRange.Add(Pointer(PtrInt(cfbtUses)), false);
     end
     else
-    if (TopPascalCodeFoldBlockType = cfbtCase) then
+    if (TopPascalCodeFoldBlockType = cfbtCase) then begin
+      EndPascalCodeFoldBlock();
+      StartPascalCodeFoldBlock(cfbtCase);
       fRange := fRange + [rsAtCaseLabel];
+    end;
   end
   else Result := tkIdentifier;
 end;
@@ -927,6 +946,7 @@ end;
 function TSynPasSyn.Func23: TtkTokenKind;
 var
   tfb: TPascalCodeFoldBlockType;
+  sl : integer;
 begin
   if KeyComp('End') then begin
     if ((fToIdent<2) or (fLine[fToIdent-1]<>'@'))
@@ -934,12 +954,15 @@ begin
       Result := tkKey;
       fRange := fRange - [rsAsm, rsAfterClassMembers];
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+      sl := fStringLen;
       // there may be more than on block ending here
       tfb := TopPascalCodeFoldBlockType;
-      while (tfb in [cfbtIfThen]) do begin // no semicolon before end
+      fStringLen:=0;
+      while (tfb in [cfbtIfThen,cfbtForDo,cfbtWhileDo,cfbtWithDo]) do begin // no semicolon before end
         EndPascalCodeFoldBlock(True);
         tfb := TopPascalCodeFoldBlockType;
       end;
+      fStringLen := sl;
       if tfb = cfbtRecord then begin
         EndPascalCodeFoldBlock;
       end else if tfb = cfbtUnit then begin
@@ -967,6 +990,11 @@ begin
         EndPascalCodeFoldBlock;
         if TopPascalCodeFoldBlockType = cfbtProgram then
           EndPascalCodeFoldBlock;
+        fStringLen:=0;
+        while (TopPascalCodeFoldBlockType in [{cfbtIfThen,}cfbtForDo,cfbtWhileDo,cfbtWithDo]) do begin // no semicolon after end
+          EndPascalCodeFoldBlock(True);
+        end;
+        fStringLen := sl;
       end else if tfb = cfbtUnitSection then begin
         EndPascalCodeFoldBlockLastLine;
         if TopPascalCodeFoldBlockType = cfbtUnit then // "Unit".."end."
@@ -1104,7 +1132,11 @@ end;
 
 function TSynPasSyn.Func39: TtkTokenKind;
 begin
-  if KeyComp('For') then Result := tkKey else
+  if KeyComp('For') then begin
+    Result := tkKey;
+    StartPascalCodeFoldBlock(cfbtForDo , True);
+  end
+  else
     if KeyComp('Shl') then Result := tkKey else Result := tkIdentifier;
 end;
 
@@ -1129,8 +1161,8 @@ begin
       EndPascalCodeFoldBlock
     else
     if TopPascalCodeFoldBlockType = cfbtCase then begin
-      StartPascalCodeFoldBlock(cfbtCaseElse);
       FTokenIsCaseLabel := True;
+      StartPascalCodeFoldBlock(cfbtCaseElse, True);
     end;
   end
   else if KeyComp('Var') then begin
@@ -1268,7 +1300,11 @@ end;
 function TSynPasSyn.Func57: TtkTokenKind;
 begin
   if KeyComp('Goto') then Result := tkKey else
-    if KeyComp('While') then Result := tkKey else
+    if KeyComp('While') then begin
+      Result := tkKey;
+      StartPascalCodeFoldBlock(cfbtWhileDo , True);
+    end
+    else
       if KeyComp('Xor') then Result := tkKey else Result := tkIdentifier;
 end;
 
@@ -1290,7 +1326,11 @@ end;
 
 function TSynPasSyn.Func60: TtkTokenKind;
 begin
-  if KeyComp('With') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('With') then begin
+    Result := tkKey;
+    StartPascalCodeFoldBlock(cfbtWithDo , True);
+  end
+  else Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func61: TtkTokenKind;
@@ -2922,7 +2962,8 @@ begin
   if (tfb = cfbtClass) and (rsAfterClass in fRange) then
     EndPascalCodeFoldBlock(True);
 
-  while (tfb = cfbtIfThen) do begin
+  fStringLen:=0;
+  while (tfb in [cfbtIfThen,cfbtForDo,cfbtWhileDo,cfbtWithDo]) do begin
     EndPascalCodeFoldBlock(True);
     tfb := TopPascalCodeFoldBlockType;
   end;
@@ -4019,7 +4060,7 @@ var
   m: TSynCustomFoldConfigModes;
 begin
   Result := inherited GetFoldConfigInstance(Index);
-  Result.Enabled := TPascalCodeFoldBlockType(Index) in [cfbtBeginEnd..cfbtIfThen];
+  Result.Enabled := TPascalCodeFoldBlockType(Index) in [cfbtBeginEnd..cfbtLastPublic];
 
   m := [];
   if TPascalCodeFoldBlockType(Index) in PascalWordTripletRanges then
@@ -4028,7 +4069,7 @@ begin
   case TPascalCodeFoldBlockType(Index) of
     cfbtRegion, cfbtNestedComment, cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment:
       Result.SupportedModes := [fmFold, fmHide] + m;
-    cfbtIfThen:
+    cfbtIfThen, cfbtForDo, cfbtWhileDo, cfbtWithDo:
       Result.SupportedModes := m;
     cfbtFirstPrivate..high(TPascalCodeFoldBlockType):
       Result.SupportedModes := [];
@@ -4038,7 +4079,7 @@ begin
   if not (TPascalCodeFoldBlockType(Index) in PascalNoOutlineRanges) then
     Result.SupportedModes := Result.SupportedModes + [fmOutline];
 
-  if (TPascalCodeFoldBlockType(Index) in [cfbtIfThen]) then
+  if (TPascalCodeFoldBlockType(Index) in [cfbtIfThen, cfbtForDo, cfbtWhileDo, cfbtWithDo]) then
     m := [];
   if TPascalCodeFoldBlockType(Index) in [cfbtSlashComment] then
     Result.Modes := [fmFold, fmHide] + m
@@ -4071,7 +4112,7 @@ end;
 
 function TSynPasSyn.GetFoldConfigCount: Integer;
 begin
-  // excluded cfbtNone;
+  // excluded cfbtNone; // maybe ord(cfbtLastPublic)+1 ?
   Result := ord(high(TPascalCodeFoldBlockType)) -
             ord(low(TPascalCodeFoldBlockType))
             - 1;
