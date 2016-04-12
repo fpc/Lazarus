@@ -326,17 +326,17 @@ type
       write FRootCodeFoldBlock;
 
     // Open/Close Folds
-    procedure GetTokenBounds(out LogX1,LogX2: Integer); virtual;
-    function StartCodeFoldBlock(ABlockType: Pointer;
+    function StartCodeFoldBlock(ABlockType: Pointer = nil;
               IncreaseLevel: Boolean = true): TSynCustomCodeFoldBlock; virtual;
     procedure EndCodeFoldBlock(DecreaseLevel: Boolean = True); virtual;
     procedure CollectNodeInfo(FinishingABlock : Boolean; ABlockType: Pointer;
               LevelChanged: Boolean); virtual;
-    procedure DoInitNode(out Node: TSynFoldNodeInfo;
-                       //EndOffs: Integer;
+    procedure DoInitNode(var Node: TSynFoldNodeInfo;
                        FinishingABlock: Boolean;
                        ABlockType: Pointer; aActions: TSynFoldActions;
                        AIsFold: Boolean); virtual;
+    procedure RepairSingleLineNode(var Node: TSynFoldNodeInfo); virtual;
+    procedure GetTokenBounds(out LogX1,LogX2: Integer); virtual;
 
     // Info about Folds
     function CreateFoldNodeInfoList: TLazSynFoldNodeInfoList; virtual;
@@ -347,7 +347,8 @@ type
     function MinimumCodeFoldBlockLevel: integer; virtual;
     function CurrentCodeFoldBlockLevel: integer; virtual;
 
-    property IsCollectingNodeInfo : boolean read FIsCollectingNodeInfo;
+    property IsCollectingNodeInfo : boolean read FIsCollectingNodeInfo write FIsCollectingNodeInfo;
+    property CollectingNodeInfoList : TLazSynFoldNodeInfoList read FCollectingNodeInfoList;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1156,9 +1157,13 @@ begin
 end;
 
 procedure TSynCustomFoldHighlighter.EndCodeFoldBlock(DecreaseLevel: Boolean = True);
+var
+  BlockType: Pointer;
 begin
+  //ABlockType required for detect whether singleline /multiline is being paired
+  BlockType := TopCodeFoldBlockType;
   if FIsCollectingNodeInfo then
-    CollectNodeInfo(True, nil, DecreaseLevel);
+    CollectNodeInfo(True, BlockType, DecreaseLevel);
 
   CodeFoldRange.Pop(DecreaseLevel);
 end;
@@ -1173,46 +1178,44 @@ var
 begin
   if not IsCollectingNodeInfo then exit;
 
-  BlockConfExists := (PtrUInt(ABlockType) < FoldConfigCount);
+  BlockConfExists := (PtrUInt(ABlockType) < FoldConfigCount);  // how about pascal that has blocktype > foldconfigcount?
+  //BlockConfExists := HasFoldConfig(PtrUInt(ABlockType));
   BlockTypeEnabled := False;
   if BlockConfExists then
-    BlockTypeEnabled := FFoldConfig[PtrUInt(ABlockType)].Enabled;
+    BlockTypeEnabled := FoldConfig[PtrUInt(ABlockType)].Enabled;
 
   //Start
   if not FinishingABlock then
   begin
     act := [sfaOpen, sfaOpenFold]; // todo deprecate sfaOpenFold
     if BlockTypeEnabled then
-      act := act + FFoldConfig[PtrUInt(ABlockType)].FoldActions
+      act := act + FoldConfig[PtrUInt(ABlockType)].FoldActions
     else
     if not BlockConfExists then
-      act := act + [sfaFold, sfaFoldFold];
-    DoInitNode(nd, FinishingABlock, ABlockType, act, True);
+      act := act + [sfaFold,sfaFoldFold, sfaMarkup, sfaOutline];
   end
   else
   //Finish
   begin
     act := [sfaClose, sfaCloseFold]; // todo deprecate sfaCloseFold
     if BlockTypeEnabled then
-      act := act + FFoldConfig[PtrUInt(ABlockType)].FoldActions
+      act := act + FoldConfig[PtrUInt(ABlockType)].FoldActions
     else
     if not BlockConfExists then
-      act := act + [sfaFold, sfaFoldFold];
+      act := act + [sfaFold, sfaFoldFold, sfaMarkup, sfaOutline];
     act := act - [sfaFoldFold, sfaFoldHide]; // it is closing tag
-    DoInitNode(nd, FinishingABlock, ABlockType, act, LevelChanged);
   end;
 
+  DoInitNode(nd, FinishingABlock, ABlockType, act, LevelChanged);
   FCollectingNodeInfoList.Add(nd);
 end;
 
-procedure TSynCustomFoldHighlighter.DoInitNode(out Node: TSynFoldNodeInfo;
+procedure TSynCustomFoldHighlighter.DoInitNode(var Node: TSynFoldNodeInfo;
   FinishingABlock: Boolean; ABlockType: Pointer;
   aActions: TSynFoldActions; AIsFold: Boolean);
 var
   OneLine: Boolean;
-  EndOffs, i: Integer;
-  nd: PSynFoldNodeInfo;
-  //LogX1V: integer; //used for vertical line in nested color markup
+  EndOffs: Integer;
   LogX1, LogX2: Integer;
 
 begin
@@ -1232,19 +1235,27 @@ begin
   node.FoldGroup := 1;//FOLDGROUP_PASCAL;
   Node.FoldLvlStart := CodeFoldRange.CodeFoldStackSize; // If "not AIsFold" then the node has no foldlevel of its own
   Node.NestLvlStart := CodeFoldRange.NestFoldStackSize;
-  OneLine := (EndOffs < 0) and (Node.FoldLvlStart > CodeFoldRange.MinimumCodeFoldBlockLevel);
+  OneLine := FinishingABlock and (Node.FoldLvlStart > CodeFoldRange.MinimumCodeFoldBlockLevel);
   Node.NestLvlEnd := Node.NestLvlStart + EndOffs;
   if not (sfaFold in aActions) then
     EndOffs := 0;
   Node.FoldLvlEnd := Node.FoldLvlStart + EndOffs;
-  if OneLine then begin // find opening node
+  if OneLine then  // find opening node
+    RepairSingleLineNode(Node);
+end;
+
+procedure TSynCustomFoldHighlighter.RepairSingleLineNode(var Node: TSynFoldNodeInfo);
+var
+  nd: PSynFoldNodeInfo;
+  i : integer;
+begin
     i := FCollectingNodeInfoList.CountAll - 1;
     nd := FCollectingNodeInfoList.ItemPointer[i];
     while (i >= 0) and
           ( (nd^.FoldType <> node.FoldType) or
             (nd^.FoldGroup <> node.FoldGroup) or
-            (not (sfaOpenFold in nd^.FoldAction)) or
-            (nd^.FoldLvlEnd <> Node.FoldLvlStart)
+            (not (sfaOpenFold in nd^.FoldAction))
+            or (nd^.FoldLvlEnd <> Node.FoldLvlStart)
           )
     do begin
       dec(i);
@@ -1264,8 +1275,6 @@ begin
         Node.FoldAction := Node.FoldAction - [sfaCloseFold, sfaFold, sfaFoldFold];
       end;
     end;
-  end;
-
 end;
 
 procedure TSynCustomFoldHighlighter.CreateRootCodeFoldBlock;

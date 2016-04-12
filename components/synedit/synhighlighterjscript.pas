@@ -54,14 +54,15 @@ interface
 uses
   Graphics,
   SynEditTypes,
-  SynEditHighlighter,
+  SynEditHighlighter,  SynEditHighlighterFoldBase,
   SysUtils, Classes;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSpace,
-    tkString, tkSymbol, tkUnknown, tkNonReservedKey, tkEvent);
+    tkString, tkSymbol, tkBracket, tkUnknown, tkNonReservedKey, tkEvent);
 
   TRangeState = (rsUnknown, rsANSI);
+  TJScriptFoldBlockType = (jsbUnknown, jsbFunction, jsbComment, jsbBracket);
 
   TProcTableProc = procedure of object;
 
@@ -69,8 +70,12 @@ type
   TIdentFuncTableFunc = function: TtkTokenKind of object;
 
 type
-  TSynJScriptSyn = class(TSynCustomHighLighter)
+
+  { TSynJScriptSyn }
+
+  TSynJScriptSyn = class(TSynCustomFoldHighlighter{TSynCustomHighLighter})
   private
+    FBracketAttri: TSynHighlighterAttributes;
     fRange: TRangeState;
     fLine: PChar;
     fLineNumber: Integer;
@@ -247,6 +252,7 @@ type
     procedure StringProc;
     procedure SymbolProc;
     procedure UnknownProc;
+    procedure BracketProc;
     function AltFunc: TtkTokenKind;
     procedure InitIdent;
     function IdentKind(MayBe: PChar): TtkTokenKind;
@@ -255,6 +261,19 @@ type
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: String; override;
     function IsFilterStored: Boolean; override;
+
+    // Open/Close Folds
+    //procedure GetTokenBounds(out LogX1,LogX2: Integer); override;
+    function StartJScriptCodeFoldBlock
+             (ABlockType: TJScriptFoldBlockType;
+              OnlyEnabled: Boolean = False): TSynCustomCodeFoldBlock;
+    procedure FinishJScriptCodeFoldBlock();
+    procedure DoInitNode(var Node: TSynFoldNodeInfo;
+                   FinishingABlock: Boolean;
+                   ABlockType: Pointer; aActions: TSynFoldActions;
+                   AIsFold: Boolean); override;
+
+    function  CurrentJScriptCodeFoldBlockType: TJScriptFoldBlockType;
   public
     class function GetLanguageName: string; override;
   public
@@ -274,6 +293,8 @@ type
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
   published
+    property BracketAttri: TSynHighlighterAttributes read FBracketAttri
+                  write FBracketAttri;
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
       write fCommentAttri;
     property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
@@ -1096,10 +1117,17 @@ begin
 end;
 
 function TSynJScriptSyn.Func102: TtkTokenKind;
+var LRun : integer;
 begin
   if KeyComp('getMonth') then Result := tkNonReservedKey else
     if KeyComp('Function') then Result := tkNonReservedKey else
-      if KeyComp('function') then Result := tkKey else
+      if KeyComp('function') then begin
+        Result := tkKey;
+        LRun := Run;
+        Inc(Run, fStringLen);
+        StartJScriptCodeFoldBlock(jsbFunction);
+        Run := LRun;
+      end else
         if KeyComp('parseInt') then Result := tkNonReservedKey else Result := tkIdentifier;
 end;
 
@@ -1484,7 +1512,8 @@ begin
       #1..#9, #11, #12, #14..#32: fProcTable[I] := @SpaceProc;
       '*': fProcTable[I] := @StarProc;
       '"', #39: fProcTable[I] := @StringProc;
-      '~', '{', '}', ',', '(', ')', '[', ']', '<', '>', ':', '?', ';', '!', '=':
+      '{', '}': fProcTable[I] := @BracketProc;
+      '~', ',', '(', ')', '[', ']', '<', '>', ':', '?', ';', '!', '=':
         fProcTable[I] := @SymbolProc;
     else
       fProcTable[I] := @UnknownProc;
@@ -1494,6 +1523,10 @@ end;
 constructor TSynJScriptSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FBracketAttri := TSynHighlighterAttributes.Create(@SYNS_AttrBrackets, SYNS_XML_AttrBrackets);
+  FBracketAttri.Style := [fsBold];
+  AddAttribute(FBracketAttri);
+
   fCommentAttri := TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
   fCommentAttri.Style := [fsItalic];
   AddAttribute(fCommentAttri);
@@ -1718,6 +1751,23 @@ begin
   fTokenID := tkUnknown;
 end;
 
+procedure TSynJScriptSyn.BracketProc;
+begin
+  inc(Run);
+  fTokenId := tkBracket;
+  if FLine[Run-1] = '{' then
+  begin
+    StartJScriptCodeFoldBlock(jsbBracket);
+  end
+  else
+  if FLine[Run-1] = '}' then
+  begin
+    FinishJScriptCodeFoldBlock();
+    if CurrentJScriptCodeFoldBlockType = jsbFunction then
+      FinishJScriptCodeFoldBlock();
+  end
+end;
+
 procedure TSynJScriptSyn.Next;
 begin
   fTokenPos := Run;
@@ -1748,7 +1798,11 @@ end;
 
 function TSynJScriptSyn.GetRange: Pointer;
 begin
-  Result := Pointer(ptruint(fRange));
+  //Result := Pointer(ptruint(fRange));
+
+  // Store the range first
+  CodeFoldRange.RangeType := Pointer(PtrInt(FRange));
+  Result := inherited GetRange;
 end;
 
 function TSynJScriptSyn.GetToken: String;
@@ -1782,6 +1836,7 @@ begin
     tkSpace: Result := fSpaceAttri;
     tkString: Result := fStringAttri;
     tkSymbol: Result := fSymbolAttri;
+    tkBracket: Result := FBracketAttri;
     tkUnknown: Result := fIdentifierAttri;
     else Result := nil;
   end;
@@ -1799,12 +1854,16 @@ end;
 
 procedure TSynJScriptSyn.ResetRange;
 begin
+  inherited ResetRange;
   fRange := rsUnknown;
 end;
 
 procedure TSynJScriptSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(ptruint(Value));
+  //fRange := TRangeState(ptruint(Value));
+  // must call the SetRange in TSynCustomFoldHighlighter
+  inherited SetRange(Value);
+  FRange := TRangeState(PtrUInt(CodeFoldRange.RangeType));
 end;
 
 function TSynJScriptSyn.GetIdentChars: TSynIdentChars;
@@ -1815,6 +1874,60 @@ end;
 function TSynJScriptSyn.IsFilterStored: Boolean;
 begin
   Result := fDefaultFilter <> SYNS_FilterJScript;
+end;
+
+function TSynJScriptSyn.StartJScriptCodeFoldBlock(
+  ABlockType: TJScriptFoldBlockType; OnlyEnabled: Boolean
+  ): TSynCustomCodeFoldBlock;
+{var
+  p: PtrInt;
+  FoldBlock, BlockEnabled: Boolean;
+  act: TSynFoldActions;
+  nd: TSynFoldNodeInfo;}
+begin
+  {BlockEnabled := FFoldConfig[ord(ABlockType)].Enabled;
+  if (not BlockEnabled) and OnlyEnabled then
+    exit(nil);
+  FoldBlock := BlockEnabled and (FFoldConfig[ord(ABlockType)].Modes * [fmFold, fmHide] <> []);
+  p := 0;
+
+  if IsCollectingNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
+    act := [sfaOpen, sfaOpenFold]; //TODO: sfaOpenFold not for cfbtIfThen
+    if BlockEnabled then
+      act := act + FFoldConfig[ord(ABlockType)].FoldActions;
+    if not FAtLineStart then
+      act := act - [sfaFoldHide];
+    DoInitNode(nd, False, Pointer(PtrInt(ABlockType)), act, FoldBlock);
+    CollectingNodeInfoList.Add(nd);
+  end;
+
+  if not FoldBlock then
+    p := PtrInt(CountPascalCodeFoldBlockOffset);}
+  //Result:=TSynCustomCodeFoldBlock(StartCodeFoldBlock(p+Pointer(PtrInt(ABlockType)), FoldBlock));
+  Result:=StartCodeFoldBlock(Pointer(PtrInt(ABlockType)) );
+end;
+
+procedure TSynJScriptSyn.FinishJScriptCodeFoldBlock;
+begin
+  EndCodeFoldBlock(True);
+end;
+
+procedure TSynJScriptSyn.DoInitNode(var Node: TSynFoldNodeInfo;
+  FinishingABlock: Boolean; ABlockType: Pointer; aActions: TSynFoldActions;
+  AIsFold: Boolean);
+begin
+  inherited DoInitNode(Node, FinishingABlock, ABlockType, aActions, AIsFold);
+  if (ABlockType <> nil) and (TJScriptFoldBlockType(PtrUInt(ABlockType)) = jsbFunction) then
+    Include( Node.FoldAction, sfaOutlineKeepLevel);
+end;
+
+function TSynJScriptSyn.CurrentJScriptCodeFoldBlockType: TJScriptFoldBlockType;
+var p : pointer;
+begin
+  result := jsbUnknown;
+  p := TopCodeFoldBlockType(0);
+  if p <> nil then
+    result := TJScriptFoldBlockType(PtrUInt(p));
 end;
 
 class function TSynJScriptSyn.GetLanguageName: string;

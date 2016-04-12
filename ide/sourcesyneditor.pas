@@ -1647,10 +1647,10 @@ begin
 end;
 
 constructor TIDESynEditor.Create(AOwner: TComponent);
-  {$IFDEF SynWithOutlineMarkup}
+  {.$IFDEF SynWithOutlineMarkup}
 var
   MarkupFoldColors: TSynEditMarkupFoldColors;
-  {$ENDIF}
+  {.$ENDIF}
 begin
   inherited Create(AOwner);
   FUserWordsList := TFPList.Create;
