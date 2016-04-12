@@ -496,7 +496,7 @@ type
 
     // Info about Folds
     function CreateFoldNodeInfoList: TLazSynFoldNodeInfoList; override;
-    procedure InitFoldNodeInfo(AList: TLazSynFoldNodeInfoList; Line: TLineIdx); override;
+    procedure ScanFoldNodeInfo(); override;
     procedure DoInitNode(var Node: TSynFoldNodeInfo;
                        //EndOffs: Integer;
                        FinishingABlock: Boolean;
@@ -3705,28 +3705,25 @@ begin
   Result := TLazSynFoldNodeInfoList.Create;
 end;
 
-procedure TSynPasSyn.InitFoldNodeInfo(AList: TLazSynFoldNodeInfoList; Line: TLineIdx);
+procedure TSynPasSyn.ScanFoldNodeInfo;
 var
   nd: PSynFoldNodeInfo;
   i: Integer;
 begin
   fStringLen := 0;
-  inherited InitFoldNodeInfo(AList, Line);
-
-  IsCollectingNodeInfo := True;
-  try
+  inherited ScanFoldNodeInfo;
 
   fStringLen := 0;
-  i := LastLinePasFoldLevelFix(Line+1, FOLDGROUP_PASCAL, True);  // all pascal nodes (incl. not folded)
+  i := LastLinePasFoldLevelFix(LineIndex+1, FOLDGROUP_PASCAL, True);  // all pascal nodes (incl. not folded)
   while i < 0 do begin
     EndPascalCodeFoldBlock;
     CollectingNodeInfoList.LastItemPointer^.FoldAction :=
       CollectingNodeInfoList.LastItemPointer^.FoldAction + [sfaCloseForNextLine];
     inc(i);
   end;
-  if Line = CurrentLines.Count - 1 then begin
-    // last line, close all folds
-    // Run (for LogXStart) is at line-end
+  if LineIndex = CurrentLines.Count - 1 then begin
+    // last LineIndex, close all folds
+    // Run (for LogXStart) is at LineIndex-end
     i := CollectingNodeInfoList.CountAll;
     while TopPascalCodeFoldBlockType <> cfbtNone do
       EndPascalCodeFoldBlock(True);
@@ -3739,10 +3736,6 @@ begin
       nd^.FoldAction := nd^.FoldAction + [sfaLastLineClose];
       inc(i);
     end;
-  end;
-
-  finally
-    IsCollectingNodeInfo := False;
   end;
 end;
 

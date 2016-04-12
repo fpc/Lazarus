@@ -341,13 +341,14 @@ type
     // Info about Folds
     function CreateFoldNodeInfoList: TLazSynFoldNodeInfoList; virtual;
     function GetFoldNodeInfo(Line: TLineIdx): TLazSynFoldNodeInfoList;
-    procedure InitFoldNodeInfo(AList: TLazSynFoldNodeInfoList; Line: TLineIdx); virtual;
+    procedure ScanFoldNodeInfo(); virtual;
+    procedure InitFoldNodeInfo(AList: TLazSynFoldNodeInfoList; Line: TLineIdx);
 
     // Info about Folds, on currently set line/range (simply forwarding to range
     function MinimumCodeFoldBlockLevel: integer; virtual;
     function CurrentCodeFoldBlockLevel: integer; virtual;
 
-    property IsCollectingNodeInfo : boolean read FIsCollectingNodeInfo write FIsCollectingNodeInfo;
+    property IsCollectingNodeInfo : boolean read FIsCollectingNodeInfo;
     property CollectingNodeInfoList : TLazSynFoldNodeInfoList read FCollectingNodeInfoList;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1101,13 +1102,18 @@ begin
   Result.SetLineClean(Line);
 end;
 
+procedure TSynCustomFoldHighlighter.ScanFoldNodeInfo;
+begin
+  NextToEol;
+end;
+
 procedure TSynCustomFoldHighlighter.InitFoldNodeInfo(AList: TLazSynFoldNodeInfoList; Line: TLineIdx);
 begin
   FIsCollectingNodeInfo := True;
   try
     FCollectingNodeInfoList := TLazSynFoldNodeInfoList(AList);
     StartAtLineIndex(Line);
-    NextToEol;
+    ScanFoldNodeInfo();
   finally
     FIsCollectingNodeInfo := False;
   end;
