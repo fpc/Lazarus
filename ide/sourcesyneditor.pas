@@ -302,8 +302,9 @@ type
     function GetInterfaceLine: Integer;
   protected
     function CreateRangeList({%H-}ALines: TSynEditStringsBase): TSynHighlighterRangeList; override;
-    function StartCodeFoldBlock(ABlockType: Pointer;
-              IncreaseLevel: Boolean = true): TSynCustomCodeFoldBlock; override;
+    function StartCodeFoldBlock(ABlockType: Pointer = nil;
+      IncreaseLevel: Boolean = true; ForceDisabled: Boolean = False
+      ): TSynCustomCodeFoldBlock; override;
   public
     procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
       LineNumber: Integer); override;
@@ -1787,7 +1788,7 @@ begin
 end;
 
 function TIDESynPasSyn.StartCodeFoldBlock(ABlockType: Pointer;
-  IncreaseLevel: Boolean): TSynCustomCodeFoldBlock;
+  IncreaseLevel: Boolean; ForceDisabled: Boolean): TSynCustomCodeFoldBlock;
 begin
   if (ABlockType = Pointer(PtrUInt(cfbtUnitSection))) or
      (ABlockType = Pointer(PtrUInt(cfbtUnitSection)) + {%H-}PtrUInt(CountPascalCodeFoldBlockOffset))
