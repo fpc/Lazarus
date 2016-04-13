@@ -5481,7 +5481,8 @@ end;
 procedure TfrBandView.SetHeight(const AValue: Double);
 begin
   inherited SetHeight(AValue);
-  Parent.dy := Round(Avalue);
+  if Assigned(Parent) then
+    Parent.dy := Round(Avalue);
 end;
 
 procedure TfrBandView.SetVisible(AValue: Boolean);
