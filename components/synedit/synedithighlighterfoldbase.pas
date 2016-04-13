@@ -444,6 +444,8 @@ function AllocateHighlighterRanges(
 
 function dbgs(AFoldActions: TSynFoldActions): String; overload;
 function dbgs(ANode: TSynFoldNodeInfo):string; overload;
+function dbgs(AMode: TSynCustomFoldConfigMode): String; overload;
+function dbgs(AModes: TSynCustomFoldConfigModes): String; overload;
 
 implementation
 
@@ -524,6 +526,25 @@ begin
                         FoldLvlStart, FoldLvlEnd, NestLvlStart, NestLvlEnd,
                         PtrUInt(FoldType), PtrUInt(FoldTypeCompatible), FoldGroup,
                         dbgs(FoldAction)]);
+end;
+
+function dbgs(AMode: TSynCustomFoldConfigMode): String;
+begin
+  WriteStr(Result{%H-}, AMode);
+end;
+
+function dbgs(AModes: TSynCustomFoldConfigModes): String;
+var
+  i: TSynCustomFoldConfigMode;
+  s: string;
+begin
+  Result:='';
+  for i := low(TSynCustomFoldConfigMode) to high(TSynCustomFoldConfigMode) do
+    if i in AModes then begin
+      WriteStr(s{%H-}, i);
+      Result := Result + s + ',';
+    end;
+  if Result <> '' then Result := '[' + copy(Result, 1, Length(Result)-1) + ']';
 end;
 
 { TLazSynFoldNodeInfoList }
