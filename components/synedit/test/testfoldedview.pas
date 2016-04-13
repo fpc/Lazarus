@@ -2125,7 +2125,7 @@ begin
   For PrepareMax := 1 to Max(1, Min(PrepareLine+1, 5)) do begin
     TstSetText('TestText2', TestText2);
     TheList := FoldedView.FoldProvider.NestedFoldsList;
-    EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtIfThen]);
+    EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtIfThen,cfbtForDo,cfbtWhileDo,cfbtWithDo]);
 
     PushBaseName('All Enabled - group 0 - line 1');
     TheList.ResetFilter;  TheList.Clear;
@@ -2229,7 +2229,7 @@ begin
 
     TstSetText('TestText3', TestText3);
     TheList := FoldedView.FoldProvider.NestedFoldsList;
-    EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtIfThen]);
+    EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtIfThen,cfbtForDo,cfbtWhileDo,cfbtWithDo]);
 
     PushBaseName('All Enabled - group 0 - line 3');
     TheList.ResetFilter;  TheList.Clear;

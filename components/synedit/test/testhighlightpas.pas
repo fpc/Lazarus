@@ -178,7 +178,9 @@ begin
     AssertEquals(Format('%s (%d/%d) FoldTypeCompatible', [AName, ALine, AColumn]), PtrUInt(FoldTypeCompatible), PtrUInt(nd.FoldTypeCompatible));
     AssertEquals(Format('%s (%d/%d) FoldGroup:',   [AName, ALine, AColumn]), FoldGroup, nd.FoldGroup);
   end;
-  AssertEquals(Format('%s (%d/%d) FoldAction',   [AName, ALine, AColumn]), FoldActionsToString(FoldAction), FoldActionsToString(nd.FoldAction));
+  AssertEquals(Format('%s (%d/%d) FoldAction',   [AName, ALine, AColumn]),
+    FoldActionsToString(FoldAction),
+    FoldActionsToString(nd.FoldAction - [sfaOutline..sfaOutlineNoLine]));
 end;
 
 procedure TTestBaseHighlighterPas.CheckPasFoldNodeInfo(AName: String; nd: TSynFoldNodeInfo;
