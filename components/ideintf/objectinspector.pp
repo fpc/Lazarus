@@ -920,6 +920,7 @@ begin
   FHighlightColor:=DefHighlightColor;
   FGutterColor:=DefGutterColor;
   FGutterEdgeColor:=DefGutterEdgeColor;
+  FValueDifferBackgrndColor:=DefValueDifferBackgrndColor;
 
   FNameFont:=TFont.Create;
   FNameFont.Color:=DefNameColor;
