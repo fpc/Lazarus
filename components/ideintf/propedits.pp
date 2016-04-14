@@ -6860,9 +6860,6 @@ function IsInteresting(AEditor: TPropertyEditor; const AFilter: TTypeKinds;
 var
   visited: TFPList;
   UpperPropName: String;
-  // RecurseLevel counter is a hack to prevent a recursive loop in IsPropInClass.
-  //  ToDo: Fix the fundamental reason for recursive loop.
-  ClassRecurseLevel: integer;
 
   // check set element names against AFilter
   function IsPropInSet( const ATypeInfo: PTypeInfo ) : Boolean;
@@ -6889,38 +6886,46 @@ var
     end;
   end;
 
-  // check class has property name
+  //check if class has property name
   function IsPropInClass( const ATypeInfo: PTypeInfo ) : Boolean;
   var
     propInfo: PPropInfo;
     propList: PPropList;
     i, propCount: Integer;
+    quSubclass: TFPList;
+    icurClass: Integer = 0;
   begin
-    if ClassRecurseLevel > 10 then
-      DebugLn(['IsInteresting,IsPropInClass: ClassRecurseLevel=', ClassRecurseLevel]);
-    Inc(ClassRecurseLevel);
     Result := False;
-    propCount := GetPropList(ATypeInfo, propList);
-    for i := 0 to propCount - 1 do
+    quSubclass := TFPList.Create;
+    quSubclass.Add(ATypeInfo);
+
+    while icurClass < quSubclass.Count do
     begin
-      propInfo := propList^[i];
-      //if encounter a Set check its elements name.
-      if (propInfo^.PropType^.Kind = tkSet) then
+      propCount := GetPropList(quSubclass.Items[icurClass], propList);
+
+      for i := 0 to propCount - 1 do
       begin
-        Result := IsPropInSet( propInfo^.PropType );
+        propInfo := propList^[i];
+
+        Result := ContainsTextUpper(propInfo^.Name, UpperPropName);
         if Result then break;
+        //if encounter a Set check its elements name.
+        if (propInfo^.PropType^.Kind = tkSet) then
+        begin
+          Result := IsPropInSet(propInfo^.PropType);
+          if Result then break;
+        end;
+        //queue subclasses(only once) to check later.
+        if (propInfo^.PropType^.Kind = tkClass) then
+          if quSubclass.IndexOf(propInfo^.PropType) >= 0 then Continue
+          else  quSubclass.Add(propInfo^.PropType);
       end;
-      // check properties of subclass recursively
-      if (propInfo^.PropType^.Kind = tkClass) and (ClassRecurseLevel < 15) then
-      begin
-        Result := IsPropInClass( propInfo^.PropType );
-        if Result then break;
-      end;
-      Result := ContainsTextUpper( propInfo^.Name, UpperPropName );
-      if result then break;
+      if Assigned(propList) then FreeMem(propList);
+      //no need to check subclasses if result is already true.
+      if Result then break;
+      inc(icurClass);
     end;
-    if Assigned(propList) then
-      FreeMem(propList);
+    quSubclass.Free;
   end;
 
   // Add AForceShow to display T****PropertyEditor when subproperties found.
@@ -6968,13 +6973,10 @@ var
         // if no SubProperties check against filter name
         if (UpperPropName <> '') then
           if (paSubProperties in A.GetAttributes) then
-          begin
-            ClassRecurseLevel := 0;
             Result := ContainsTextUpper(A.GetName, UpperPropName)
                        or IsPropInClass(A.GetPropType)
-          end
           else
-            Result := ContainsTextUpper(A.GetName, UpperPropName );
+            Result := ContainsTextUpper(A.GetName, UpperPropName);
 
         exit;
       end;
