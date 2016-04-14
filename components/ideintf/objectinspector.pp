@@ -1537,6 +1537,8 @@ begin
       try
         if Edit=oiqeShowValue then
           CurRow.Editor.ShowValue
+        else if (FSelection.Count > 0) and (FSelection[0] is TComponent) then
+          CurRow.Editor.Edit(TComponent(FSelection[0]))
         else
           CurRow.Editor.Edit;
       finally

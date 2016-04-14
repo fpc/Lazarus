@@ -289,6 +289,7 @@ type
   private
     FOnSubPropertiesChanged: TNotifyEvent;
     FPropertyHook: TPropertyEditorHook;
+    FOwnerComponent: TComponent;
     FPropCount: Integer;
     FPropList: PInstPropList;
     function GetPrivateDirectory: ansistring;
@@ -302,7 +303,10 @@ type
     procedure Deactivate; virtual;
     function AllEqual: Boolean; virtual;
     function AutoFill: Boolean; virtual;
-    procedure Edit; virtual; // called when clicking on OI property button or double clicking on value
+    // Called when clicking on OI property button or double clicking on value.
+    procedure Edit; virtual;
+    // Needed for method Contraints.OnChange etc.
+    procedure Edit(AOwnerComponent: TComponent);
     procedure ShowValue; virtual; // called when Ctrl-Click on value
     function GetAttributes: TPropertyAttributes; virtual;
     function IsReadOnly: boolean; virtual;
@@ -612,7 +616,7 @@ type
     function GetValue: ansistring; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
-    function GetFormMethodName: shortstring; virtual;
+    function GetFormMethodName: shortstring;
     function GetTrimmedEventName: shortstring;
     class function GetDefaultMethodName(Root, Component: TComponent;
         const RootClassName, ComponentName, PropName: shortstring): shortstring;
@@ -1354,7 +1358,7 @@ type
                         Shift: TShiftState; X, Y: Integer);
     // persistent objects
     function GetObject(const aName: ShortString): TPersistent;
-    function GetObjectName(Instance: TPersistent): ShortString;
+    function GetObjectName(Instance: TPersistent; AOwnerCompName: String): String;
     procedure GetObjectNames(TypeData: PTypeData; const Proc: TGetStrProc);
     procedure ObjectReferenceChanged(Sender: TObject; NewObject: TPersistent);
     // modifing
@@ -2368,6 +2372,13 @@ begin
   finally
     Values.Free;
   end;
+end;
+
+procedure TPropertyEditor.Edit(AOwnerComponent: TComponent);
+begin
+  FOwnerComponent := AOwnerComponent;
+  Edit;
+  FOwnerComponent := Nil;
 end;
 
 procedure TPropertyEditor.ShowValue;
@@ -4336,9 +4347,24 @@ begin
   Result := 2*MaxIdentLength+1; // clasname.methodname
 end;
 
+function TrimNonAscii(const Txt: String): String;
+// ToDo: Find a similar function from FPC libs and use it instead.
+var
+  I: Integer;
+begin
+  Result := Txt;
+  for I := Length(Result) downto 1 do
+    if not (
+            (Result[I] in ['a'..'z', 'A'..'Z', '_']) or
+            (I > 1) and (Result[I] in ['0'..'9'])
+           )
+    then
+      System.Delete(Result, I, 1);
+end;
+
 function TMethodPropertyEditor.GetFormMethodName: shortstring;
 // returns the default name for a new method
-var I: Integer;
+var
   Root: TPersistent;
 begin
   Result:='';
@@ -4354,18 +4380,12 @@ begin
     if Root is TFrame then
       Result := 'Frame'
     else 
-    begin
       Result := ClassNameToComponentName(PropertyHook.GetRootClassName);
-    end;
-  end else begin
-    Result := PropertyHook.GetObjectName(GetComponent(0));
-    for I := Length(Result) downto 1 do
-      if
-        not (
-          (Result[I] in ['a'..'z', 'A'..'Z', '_']) or
-          (I > 1) and (Result[I] in ['0'..'9']))
-      then
-        System.Delete(Result, I, 1);
+  end
+  else begin
+    Assert(Assigned(FOwnerComponent),
+           'TMethodPropertyEditor.GetFormMethodName: FOwnerComponent not assigned.');
+    Result := TrimNonAscii(PropertyHook.GetObjectName(GetComponent(0), FOwnerComponent.Name));
   end;
   if Result = '' then begin
     {raise EPropertyError.CreateRes(@SCannotCreateName);}
@@ -6059,7 +6079,8 @@ begin
     Result:=TPropHookGetObject(FHandlers[htGetObject][i])(aName);
 end;
 
-function TPropertyEditorHook.GetObjectName(Instance: TPersistent): ShortString;
+function TPropertyEditorHook.GetObjectName(Instance: TPersistent;
+  AOwnerCompName: String): String;
 var
   i: Integer;
 begin
@@ -6073,11 +6094,8 @@ begin
       Result:=TComponent(Instance).Name
     else if instance is TCollectionItem then 
       Result:=TCollectionItem(Instance).GetNamePath
-    else begin
-      Result:=Instance.ClassName;
-      if (Length(Result) > 1) and (Result[1] in ['t', 'T']) then
-        system.Delete(Result, 1, 1);
-    end;
+    else
+      Result:=AOwnerCompName + ClassNameToComponentName(Instance.ClassName);
 end;
 
 procedure TPropertyEditorHook.GetObjectNames(TypeData: PTypeData;
