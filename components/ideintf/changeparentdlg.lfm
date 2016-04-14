@@ -1,0 +1,110 @@
+object ChangeParentDlg: TChangeParentDlg
+  Left = 550
+  Height = 386
+  Top = 217
+  Width = 248
+  BorderIcons = [biSystemMenu, biMaximize]
+  Caption = 'ChangeParentDlg'
+  ClientHeight = 386
+  ClientWidth = 248
+  OnClose = FormClose
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.7'
+  object ListFilterEdit: TListFilterEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 21
+    Top = 6
+    Width = 236
+    OnAfterFilter = ListFilterEditAfterFilter
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object ListBox: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ListFilterEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = chShowClasses
+    Left = 6
+    Height = 260
+    Top = 33
+    Width = 236
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    OnDblClick = ListBoxDblClick
+    OnSelectionChange = ListBoxSelectionChange
+    TabOrder = 1
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 354
+    Width = 236
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+  object lblSelectedControls: TLabel
+    AnchorSideLeft.Control = ListBox
+    AnchorSideRight.Control = ListBox
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = lblCurentParents
+    Left = 6
+    Height = 13
+    Top = 319
+    Width = 236
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Bottom = 3
+    Caption = 'lblSelectedControls'
+    ParentColor = False
+    ParentFont = False
+    WordWrap = True
+  end
+  object lblCurentParents: TLabel
+    AnchorSideLeft.Control = ListBox
+    AnchorSideRight.Control = ListBox
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel
+    Left = 6
+    Height = 13
+    Top = 335
+    Width = 236
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'lblCurentParents'
+    ParentColor = False
+    WordWrap = True
+  end
+  object chShowClasses: TCheckBox
+    AnchorSideLeft.Control = ListBox
+    AnchorSideBottom.Control = lblSelectedControls
+    Left = 6
+    Height = 17
+    Top = 299
+    Width = 91
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 3
+    Caption = 'chShowClasses'
+    OnClick = chShowClassesClick
+    TabOrder = 3
+  end
+end
