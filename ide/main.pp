@@ -3478,8 +3478,13 @@ begin
     OnForwardKeyToObjectInspector:=@ForwardKeyToObjectInspector;
     OnShowAnchorEditor:=@OnDesignerShowAnchorEditor;
     OnShowTabOrderEditor:=@OnDesignerShowTabOrderEditor;
+    if Assigned(ObjectInspector1) then
+    begin
+      OnHasParentCandidates:=@ObjectInspector1.HasParentCandidates;
+      OnChangeParent:=@ObjectInspector1.ChangeParent;
+    end;
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
-    ShowComponentCaptions := EnvironmentOptions.ShowComponentCaptions;
+    ShowComponentCaptions:=EnvironmentOptions.ShowComponentCaptions;
   end;
   if AnUnitInfo<>nil then
     AnUnitInfo.LoadedDesigner:=true;

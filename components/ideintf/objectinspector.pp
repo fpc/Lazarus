@@ -777,7 +777,7 @@ type
     function GetActivePropertyGrid: TOICustomPropertyGrid;
     function GetActivePropertyRow: TOIPropertyGridRow;
     function GetCurRowDefaultValue(var DefaultStr: string): Boolean;
-    function GetHasParentCandidates: Boolean;
+    function HasParentCandidates: Boolean;
     procedure ChangeParent;
     procedure HookRefreshPropertyValues;
     procedure ActivateGrid(Grid: TOICustomPropertyGrid);
@@ -4550,7 +4550,7 @@ begin
   Result.Add(FPropertyEditorHook.LookupRoot);
 end;
 
-function TObjectInspectorDlg.GetHasParentCandidates: Boolean;
+function TObjectInspectorDlg.HasParentCandidates: Boolean;
 var
   Candidates: TFPList=nil;
 begin
@@ -5565,7 +5565,7 @@ var
   end;
 
 var
-  b, AtLeastOneComp, CanChangeClass, HasParentCandidates: Boolean;
+  b, AtLeastOneComp, CanChangeClass, HasParentCand: Boolean;
   CurRow: TOIPropertyGridRow;
   Persistent: TPersistent;
   Page: TObjectInspectorPage;
@@ -5580,7 +5580,7 @@ begin
   Persistent := GetSelectedPersistent;
   AtLeastOneComp := False;
   CanChangeClass := False;
-  HasParentCandidates := False;
+  HasParentCand := False;
   // show component editors only for component treeview
   if MainPopupMenu.PopupComponent = ComponentTree then
   begin
@@ -5603,7 +5603,7 @@ begin
       AddZOrderMenuItems;
     // check existing of Change Parent candidates
     if AtLeastOneComp then
-      HasParentCandidates := GetHasParentCandidates;
+      HasParentCand := HasParentCandidates;
   end;
   CutPopupMenuItem.Visible := AtLeastOneComp;
   CopyPopupMenuItem.Visible := AtLeastOneComp;
@@ -5611,8 +5611,8 @@ begin
   DeletePopupMenuItem.Visible := AtLeastOneComp;
   OptionsSeparatorMenuItem2.Visible := AtLeastOneComp;
   ChangeClassPopupmenuItem.Visible := CanChangeClass;
-  ChangeParentPopupmenuItem.Visible := HasParentCandidates;
-  OptionsSeparatorMenuItem3.Visible := CanChangeClass or HasParentCandidates;
+  ChangeParentPopupmenuItem.Visible := HasParentCand;
+  OptionsSeparatorMenuItem3.Visible := CanChangeClass or HasParentCand;
 
   // The editors can do menu actions, for example set defaults and constraints
   CurRow := GetActivePropertyRow;

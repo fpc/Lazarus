@@ -45,11 +45,11 @@ uses
   LazFileUtils, LazFileCache,
   // IDEIntf
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf, IDEImagesIntf,
-  FormEditingIntf, ComponentReg, IDECommands, LazIDEIntf, ProjectIntf, MainIntf,
+  FormEditingIntf, ComponentReg, IDECommands, LazIDEIntf, ProjectIntf,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, EditorOptions, SourceEditor,
   // Designer
-  AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg, AnchorEditor, DesignerProcs,
+  AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, DesignerProcs,
   CustomFormEditor, AskCompNameDlg, ControlSelection, ChangeClassDialog;
 
 type
@@ -74,6 +74,7 @@ type
   TOnComponentAdded = procedure(Sender: TObject; AComponent: TComponent;
                            ARegisteredComponent: TRegisteredComponent) of object;
   TOnForwardKeyToObjectInspector = procedure(Sender: TObject; Key: TUTF8Char) of object;
+  TOnHasParentCandidates = function: Boolean of object;
 
   TDesignerFlag = (
     dfHasSized,
@@ -106,6 +107,8 @@ type
     FFlags: TDesignerFlags;
     FGridColor: TColor;
     FMediator: TDesignerMediator;
+    FOnChangeParent: TProcedureOfObject;
+    FOnHasParentCandidates: TOnHasParentCandidates;
     FOnPastedComponents: TOnPastedComponents;
     FProcessingDesignerEvent: Integer;
     FOnActivated: TNotifyEvent;
@@ -376,6 +379,10 @@ type
     property OnShowTabOrderEditor: TNotifyEvent read FOnShowTabOrderEditor write FOnShowTabOrderEditor;
     property OnForwardKeyToObjectInspector: TOnForwardKeyToObjectInspector read FOnForwardKeyToObjectInspector
                                                                           write FOnForwardKeyToObjectInspector;
+    property OnHasParentCandidates: TOnHasParentCandidates read FOnHasParentCandidates
+                                                          write FOnHasParentCandidates;
+    property OnChangeParent: TProcedureOfObject read FOnChangeParent write FOnChangeParent;
+
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
     property ShowBorderSpacing: boolean read GetShowBorderSpacing write SetShowBorderSpacing;
     property ShowEditorHints: boolean read GetShowEditorHints write SetShowEditorHints;
@@ -3263,10 +3270,8 @@ end;
 
 procedure TDesigner.OnChangeParentMenuClick(Sender: TObject);
 begin
-  Assert(ObjectInspector1.PropertyEditorHook.LookupRoot = LookupRoot,
-         'TDesigner.OnChangeParentMenuClick: LookupRoot mismatch.');
-  if Assigned(ObjectInspector1) then
-    ObjectInspector1.ChangeParent;
+  if Assigned(OnChangeParent) then
+    OnChangeParent();
 end;
 
 procedure TDesigner.OnSnapToGridOptionMenuClick(Sender: TObject);
@@ -3914,8 +3919,8 @@ begin
   DesignerMenuChangeClass.Enabled := CompsAreSelected and (ControlSelection.Count = 1);
   // Disable ViewLFM menu item for virtual units. There is no form file yet.
   DesignerMenuViewLFM.Enabled := not UnitIsVirtual;
-  DesignerMenuChangeParent.Enabled := Assigned(ObjectInspector1)
-                                     and ObjectInspector1.GetHasParentCandidates;
+  DesignerMenuChangeParent.Enabled := Assigned(OnHasParentCandidates)
+                                           and OnHasParentCandidates();
   DesignerMenuSnapToGridOption.Checked := EnvironmentOptions.SnapToGrid;
   DesignerMenuSnapToGuideLinesOption.Checked := EnvironmentOptions.SnapToGuideLines;
 end;
