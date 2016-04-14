@@ -45,7 +45,7 @@ uses
   LazFileUtils, LazFileCache,
   // IDEIntf
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf, IDEImagesIntf,
-  FormEditingIntf, ComponentReg, IDECommands, LazIDEIntf, ProjectIntf,
+  FormEditingIntf, ComponentReg, IDECommands, LazIDEIntf, ProjectIntf, MainIntf,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, EditorOptions, SourceEditor,
   // Designer
@@ -410,7 +410,7 @@ var
   DesignerMenuSelectAll: TIDEMenuCommand;
 
   DesignerMenuChangeClass: TIDEMenuCommand;
-  DesignerMenuChangeParent: TIDEMenuSection;
+  DesignerMenuChangeParent: TIDEMenuCommand;
   DesignerMenuViewLFM: TIDEMenuCommand;
   DesignerMenuSaveAsXML: TIDEMenuCommand;
   DesignerMenuCenterForm: TIDEMenuCommand;
@@ -600,10 +600,8 @@ begin
   DesignerMenuSectionMisc:=RegisterIDEMenuSection(DesignerMenuRoot,'Miscellaneous section');
     DesignerMenuChangeClass:=RegisterIDEMenuCommand(DesignerMenuSectionMisc,
                                                  'Change class',lisDlgChangeClass);
-    DesignerMenuChangeParent:=RegisterIDEMenuSection(DesignerMenuSectionMisc,
-                                                 'Change parent');
-    DesignerMenuChangeParent.ChildrenAsSubMenu:=true;
-    DesignerMenuChangeParent.Caption:=lisChangeParent;
+    DesignerMenuChangeParent:=RegisterIDEMenuCommand(DesignerMenuSectionMisc,
+                                                 'Change parent',lisChangeParent+' ...');
     DesignerMenuViewLFM:=RegisterIDEMenuCommand(DesignerMenuSectionMisc,
                                                 'View LFM',lisViewSourceLfm);
     DesignerMenuSaveAsXML:=RegisterIDEMenuCommand(DesignerMenuSectionMisc,
@@ -3264,43 +3262,11 @@ begin
 end;
 
 procedure TDesigner.OnChangeParentMenuClick(Sender: TObject);
-var
-  Item: TIDEMenuCommand;
-  NewParentName: String;
-  i: Integer;
-  CurControl: TControl;
-  NewParent: TWinControl;
 begin
-  if not (Sender is TIDEMenuCommand) then Exit;
-  Item := TIDEMenuCommand(Sender);
-  NewParentName := Item.Caption;
-  if SysUtils.CompareText(LookupRoot.Name, NewParentName) = 0 then
-    NewParent := TWinControl(LookupRoot)
-  else
-    NewParent := TWinControl(LookupRoot.FindComponent(NewParentName));
-  if (NewParent=nil) or (not (NewParent is TWinControl)) then Exit;
-
-  Form.DisableAlign;
-  try
-    i := ControlSelection.Count - 1;
-    while (i >= 0) do 
-    begin
-      if i < ControlSelection.Count then 
-      begin
-        if ControlSelection[i].IsTControl then
-        begin
-          CurControl := TControl(ControlSelection[i].Persistent);
-          if CurControl.Owner = LookupRoot then
-            CurControl.Parent := NewParent;
-        end;
-      end;
-      dec(i);
-    end;
-  finally
-    if Form <> nil then
-      Form.EnableAlign;
-    ControlSelection.DoChange(True); // request updates since control hierarchi change
-  end;
+  Assert(ObjectInspector1.PropertyEditorHook.LookupRoot = LookupRoot,
+         'TDesigner.OnChangeParentMenuClick: LookupRoot mismatch.');
+  if Assigned(ObjectInspector1) then
+    ObjectInspector1.ChangeParent;
 end;
 
 procedure TDesigner.OnSnapToGridOptionMenuClick(Sender: TObject);
@@ -3886,6 +3852,7 @@ begin
   DesignerMenuSelectAll.OnClick:=@OnSelectAllMenuClick;
 
   DesignerMenuChangeClass.OnClick:=@OnChangeClassMenuClick;
+  DesignerMenuChangeParent.OnClick:=@OnChangeParentMenuClick;
   DesignerMenuViewLFM.OnClick:=@OnViewLFMMenuClick;
   DesignerMenuSaveAsXML.OnClick:=@OnSaveAsXMLMenuClick;
   DesignerMenuCenterForm.OnClick:=@OnCenterFormMenuClick;
@@ -3908,84 +3875,6 @@ var
   SelectionVisible: Boolean;
   SrcFile: TLazProjectFile;
   UnitIsVirtual, DesignerCanCopy: Boolean;
-
-  function GetChangeParentCandidates: TFPList;
-  var
-    i,j: Integer;
-    CurSelected: TSelectedControl;
-    Candidate: TWinControl;
-  begin
-    Result:=TFPList.Create;
-    if ControlSelection.Count=0 then exit;
-    if LookupRootIsSelected then
-      exit; // if the LookupRoot is selected, do not show "change parent"
-    if not (LookupRoot is TWinControl) then
-      exit; // only LCL controls are supported at the moment
-
-    // check if any selected control can be moved
-    i:=ControlSelection.Count-1;
-    while i>=0 do
-    begin
-      CurSelected:=ControlSelection[i];
-      if CurSelected.IsTControl
-      and (TControl(CurSelected.Persistent).Owner=LookupRoot)
-      then
-        // this one can be moved
-        break;
-      dec(i);
-    end;
-    if i<0 then exit;
-
-    // find possible new parents
-    for i := 0 to LookupRoot.ComponentCount - 1 do
-    begin
-      Candidate:=TWinControl(LookupRoot.Components[i]);
-      if not (Candidate is TWinControl) then continue;
-
-      j:=ControlSelection.Count-1;
-      while j>=0 do
-      begin
-        CurSelected:=ControlSelection[j];
-        if CurSelected.IsTControl then begin
-          if CurSelected.Persistent=Candidate then break;
-          if CurSelected.IsTWinControl and
-             TWinControl(CurSelected.Persistent).IsParentOf(Candidate) then
-            break;
-          if not ControlAcceptsStreamableChildComponent(Candidate,
-                            TComponentClass(CurSelected.ClassType),LookupRoot)
-          then
-            break;
-        end;
-        dec(j);
-      end;
-      if j<0 then
-        Result.Add(Candidate);
-    end;
-    Result.Add(LookupRoot);
-  end;
-
-  procedure UpdateChangeParentMenu;
-  var
-    Candidates: TFPList;
-    i: Integer;
-    Item: TIDEMenuItem;
-  begin
-    Candidates:=GetChangeParentCandidates;
-    try
-      DesignerMenuChangeParent.Visible:=Candidates.Count>0;
-      DesignerMenuChangeParent.Clear;
-      for i:=0 to Candidates.Count-1 do
-      begin
-        Item:=TIDEMenuCommand.Create(DesignerMenuChangeParent.Name+'_'+IntToStr(i));
-        DesignerMenuChangeParent.AddLast(Item);
-        Item.Caption:=TWinControl(Candidates[i]).Name;
-        Item.OnClick:=@OnChangeParentMenuClick;
-      end;
-    finally
-      Candidates.Free;
-    end;
-  end;
-  
 begin
   SrcFile:=LazarusIDE.GetProjectFileWithDesigner(Self);
   ControlSelIsNotEmpty:=(ControlSelection.Count>0)
@@ -4025,8 +3914,8 @@ begin
   DesignerMenuChangeClass.Enabled := CompsAreSelected and (ControlSelection.Count = 1);
   // Disable ViewLFM menu item for virtual units. There is no form file yet.
   DesignerMenuViewLFM.Enabled := not UnitIsVirtual;
-  UpdateChangeParentMenu;
-
+  DesignerMenuChangeParent.Enabled := Assigned(ObjectInspector1)
+                                     and ObjectInspector1.GetHasParentCandidates;
   DesignerMenuSnapToGridOption.Checked := EnvironmentOptions.SnapToGrid;
   DesignerMenuSnapToGuideLinesOption.Checked := EnvironmentOptions.SnapToGuideLines;
 end;

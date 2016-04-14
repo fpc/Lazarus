@@ -21,7 +21,7 @@ uses
   PackageIntf, ProjectIntf, ProjectResourcesIntf, PropEdits, PropEditUtils, 
   SrcEditorIntf, StatusBarPropEdit, StringsPropEditDlg, TextTools, 
   TreeViewPropEdit, UnitResources, ProjPackIntf, DBGridColumnsPropEditForm, 
-  ToolBarIntf, LazarusPackageIntf;
+  ToolBarIntf, ChangeParentDlg, LazarusPackageIntf;
 
 implementation
 

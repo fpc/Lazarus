@@ -30,7 +30,7 @@ uses
   // IMPORTANT: the object inspector is a tool and can be used in other programs
   //            too. Don't put Lazarus IDE specific things here.
   // RTL / FCL
-  SysUtils, Types, Classes, TypInfo, FPCanvas,
+  SysUtils, Types, Classes, TypInfo, math, FPCanvas,
   // LCL
   InterfaceBase, LCLType, LCLIntf, Forms, Buttons, Graphics, GraphType, StdCtrls,
   Controls, ComCtrls, ExtCtrls, Menus, Dialogs, Themes, LMessages, LCLProc,
@@ -40,8 +40,9 @@ uses
   // LazUtils
   LazConfigStorage, LazLoggerBase,
   // IdeIntf
-  ObjInspStrConsts, PropEdits, ListViewPropEdit, ImageListEditor, ComponentTreeView,
-  ComponentEditors, IDEImagesIntf, IDEHelpIntf, OIFavoriteProperties, PropEditUtils;
+  IDEImagesIntf, IDEHelpIntf, ObjInspStrConsts,
+  PropEdits, PropEditUtils, ComponentTreeView, OIFavoriteProperties,
+  ListViewPropEdit, ImageListEditor, ComponentEditors, ChangeParentDlg;
 
 const
   OIOptionsFileVersion = 3;
@@ -712,7 +713,7 @@ type
     FOnNodeGetImageIndex: TOnOINodeGetImageEvent;
     procedure CreateTopSplitter;
     procedure CreateBottomSplitter;
-    function GetChangeParentCandidates: TFPList;
+    function GetParentCandidates: TFPList;
     function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
     procedure SetComponentEditor(const AValue: TBaseComponentEditor);
     procedure SetFavorites(const AValue: TOIFavoriteProperties);
@@ -776,6 +777,8 @@ type
     function GetActivePropertyGrid: TOICustomPropertyGrid;
     function GetActivePropertyRow: TOIPropertyGridRow;
     function GetCurRowDefaultValue(var DefaultStr: string): Boolean;
+    function GetHasParentCandidates: Boolean;
+    procedure ChangeParent;
     procedure HookRefreshPropertyValues;
     procedure ActivateGrid(Grid: TOICustomPropertyGrid);
     procedure FocusGrid(Grid: TOICustomPropertyGrid = nil);
@@ -839,9 +842,6 @@ implementation
 
 {$R *.lfm}
 {$R images\ideintf_images.res}
-
-uses
-  math;
 
 const
   DefaultOIPageNames: array[TObjectInspectorPage] of shortstring = (
@@ -4108,9 +4108,9 @@ begin
   AddPopupMenuItem(ChangeClassPopupMenuItem,nil,'ChangeClassPopupMenuItem',
      oisChangeClass,'Change Class of component', '',
      @OnChangeClassPopupmenuItemClick,false,true,true);
-  AddPopupMenuItem(ChangeParentPopupMenuItem,nil,'ChangeParentPopupMenuItem',
-     oisChangeParent,'Change Parent of component', '',
-     Nil,false,true,true);
+  AddPopupMenuItem(ChangeParentPopupMenuItem, nil, 'ChangeParentPopupMenuItem',
+     oisChangeParent+' ...', 'Change Parent of component', '',
+     @DoChangeParentItemClick, False, True, True);
   OptionsSeparatorMenuItem3 := AddSeparatorMenuItem(nil, 'OptionsSeparatorMenuItem3', true);
 
   AddPopupMenuItem(ShowComponentTreePopupMenuItem,nil
@@ -4498,6 +4498,138 @@ begin
       DefaultStr:='';
     end;
   end;
+end;
+
+function TObjectInspectorDlg.GetParentCandidates: TFPList;
+var
+  i, j: Integer;
+  CurSelected: TPersistent;
+  Candidate: TWinControl;
+begin
+  Result := TFPList.Create;
+  if not (FPropertyEditorHook.LookupRoot is TWinControl) then
+    exit; // only LCL controls are supported at the moment
+
+  // check if any selected control can be moved
+  i := Selection.Count-1;
+  while i >= 0 do
+  begin
+    if (Selection[i] is TControl)
+    and (TControl(Selection[i]).Owner = FPropertyEditorHook.LookupRoot)
+    then
+      // this one can be moved
+      break;
+    dec(i);
+  end;
+  if i < 0 then Exit;
+
+  // find possible new parents
+  for i := 0 to TWinControl(FPropertyEditorHook.LookupRoot).ComponentCount-1 do
+  begin
+    Candidate := TWinControl(TWinControl(FPropertyEditorHook.LookupRoot).Components[i]);
+    if not (Candidate is TWinControl) then continue;
+    j := Selection.Count-1;
+    while j >= 0 do
+    begin
+      CurSelected := Selection[j];
+      if CurSelected is TControl then begin
+        if CurSelected = Candidate then break;
+        if (CurSelected is TWinControl) and
+           (TWinControl(CurSelected) = Candidate.Parent) then
+          break;
+        if not ControlAcceptsStreamableChildComponent(Candidate,
+                 TComponentClass(CurSelected.ClassType), FPropertyEditorHook.LookupRoot)
+        then
+          break;
+      end;
+      dec(j);
+    end;
+    if j < 0 then
+      Result.Add(Candidate);
+  end;
+  Result.Add(FPropertyEditorHook.LookupRoot);
+end;
+
+function TObjectInspectorDlg.GetHasParentCandidates: Boolean;
+var
+  Candidates: TFPList=nil;
+begin
+  try
+    Candidates := GetParentCandidates;
+    Result := (Candidates.Count>1);  // single candidate is current parent
+  finally
+    Candidates.Free;
+  end;
+end;
+
+procedure TObjectInspectorDlg.ChangeParent;
+var
+  i: Integer;
+  Control: TControl;
+  NewParentName: String;
+  NewParent: TPersistent;
+  NewSelection: TPersistentSelectionList;
+  Candidates: TFPList = nil;
+begin
+  if (Selection.Count < 1) then Exit;
+
+  try
+    Candidates := GetParentCandidates;
+    if not ShowChangeParentDlg(Selection, Candidates, NewParentName) then
+      Exit;
+  finally
+    Candidates.Free;
+  end;
+
+  if NewParentName = TWinControl(FPropertyEditorHook.LookupRoot).Name then
+    NewParent := FPropertyEditorHook.LookupRoot
+  else
+    NewParent := TWinControl(FPropertyEditorHook.LookupRoot).FindComponent(NewParentName);
+
+  if not (NewParent is TWinControl) then Exit;
+
+  for i := 0 to Selection.Count-1 do
+  begin
+    if not (Selection[i] is TControl) then Continue;
+    Control := TControl(Selection[i]);
+    if Control.Parent = nil then Continue;
+    Control.Parent := TWinControl(NewParent);
+  end;
+
+  // Following code taken from DoZOrderItemClick();
+  // Ensure the order of controls in the OI now reflects the new ZOrder
+  //NewSelection := TPersistentSelectionList.Create;
+  //try
+  //  NewSelection.ForceUpdate:=True;
+  //  NewSelection.Add(Control.Parent);
+  //  SetSelection(NewSelection);
+  //
+  //  NewSelection.Clear;
+  //  NewSelection.ForceUpdate:=True;
+  //  NewSelection.Add(Control);
+  //  SetSelection(NewSelection);
+  //finally
+  //  NewSelection.Free;
+  //end;
+
+  // Ensure the order of controls in the OI now reflects the new ZOrder
+  // (this code based on commented above)
+  NewSelection := TPersistentSelectionList.Create;
+  try
+    NewSelection.ForceUpdate:=True;
+    NewSelection.Add(NewParent);
+    for i:=0 to Selection.Count-1 do
+      NewSelection.Add(Selection.Items[i]);
+    SetSelection(NewSelection);
+
+    NewSelection.ForceUpdate:=True;
+    NewSelection.Delete(0);
+    SetSelection(NewSelection);
+  finally
+    NewSelection.Free;
+  end;
+
+  DoModified(Self);
 end;
 
 procedure TObjectInspectorDlg.SetSelection(const ASelection: TPersistentSelectionList);
@@ -5316,56 +5448,6 @@ begin
 end;
 // ---
 
-function TObjectInspectorDlg.GetChangeParentCandidates: TFPList;
-var
-  i, j: Integer;
-  CurSelected: TPersistent;
-  Candidate: TWinControl;
-begin
-  Result := TFPList.Create;
-  if not (FPropertyEditorHook.LookupRoot is TWinControl) then
-    exit; // only LCL controls are supported at the moment
-
-  // check if any selected control can be moved
-  i := Selection.Count-1;
-  while i >= 0 do
-  begin
-    if (Selection[i] is TControl)
-    and (TControl(Selection[i]).Owner = FPropertyEditorHook.LookupRoot)
-    then
-      // this one can be moved
-      break;
-    dec(i);
-  end;
-  if i < 0 then Exit;
-
-  // find possible new parents
-  for i := 0 to TWinControl(FPropertyEditorHook.LookupRoot).ComponentCount-1 do
-  begin
-    Candidate := TWinControl(TWinControl(FPropertyEditorHook.LookupRoot).Components[i]);
-    if not (Candidate is TWinControl) then continue;
-    j := Selection.Count-1;
-    while j >= 0 do
-    begin
-      CurSelected := Selection[j];
-      if CurSelected is TControl then begin
-        if CurSelected = Candidate then break;
-        if (CurSelected is TWinControl) and
-           (TWinControl(CurSelected) = Candidate.Parent) then
-          break;
-        if not ControlAcceptsStreamableChildComponent(Candidate,
-                 TComponentClass(CurSelected.ClassType), FPropertyEditorHook.LookupRoot)
-        then
-          break;
-      end;
-      dec(j);
-    end;
-    if j < 0 then
-      Result.Add(Candidate);
-  end;
-  Result.Add(FPropertyEditorHook.LookupRoot);
-end;
-
 procedure TObjectInspectorDlg.OnMainPopupMenuPopup(Sender: TObject);
 const
   PropertyEditorMIPrefix = 'PropertyEditorVerbMenuItem';
@@ -5482,27 +5564,6 @@ var
     MainPopupMenu.Items.Insert(ZItem.MenuIndex + 1, Item);
   end;
 
-  function AddChangeParentMenuItems: Boolean;
-  var
-    Item: TMenuItem;
-    Candidates: TFPList;
-    i: Integer;
-  begin
-    Candidates := GetChangeParentCandidates;
-    try
-      Result := Candidates.Count>0;
-      ChangeParentPopupmenuItem.Clear;
-      for i := 0 to Candidates.Count-1 do
-      begin
-        Item := NewItem(TWinControl(Candidates[i]).Name, 0, False, True,
-                        @DoChangeParentItemClick, 0, '');
-        ChangeParentPopupmenuItem.Add(Item);
-      end;
-    finally
-      Candidates.Free;
-    end;
-  end;
-
 var
   b, AtLeastOneComp, CanChangeClass, HasParentCandidates: Boolean;
   CurRow: TOIPropertyGridRow;
@@ -5540,9 +5601,9 @@ begin
     // add Z-Order menu
     if (Selection.Count = 1) and (Selection[0] is TControl) then
       AddZOrderMenuItems;
-    // add Change Parent menu
+    // check existing of Change Parent candidates
     if AtLeastOneComp then
-      HasParentCandidates := AddChangeParentMenuItems;
+      HasParentCandidates := GetHasParentCandidates;
   end;
   CutPopupMenuItem.Visible := AtLeastOneComp;
   CopyPopupMenuItem.Visible := AtLeastOneComp;
@@ -5606,45 +5667,9 @@ begin
 end;
 
 procedure TObjectInspectorDlg.DoChangeParentItemClick(Sender: TObject);
-var
-  i: Integer;
-  Control: TControl;
-  NewParent: TPersistent;
-  NewSelection: TPersistentSelectionList;
 begin
-  if not (Sender is TMenuItem) or (Selection.Count < 1) then Exit;
-  if TMenuItem(Sender).Caption = TWinControl(FPropertyEditorHook.LookupRoot).Name then
-    NewParent := FPropertyEditorHook.LookupRoot
-  else
-    NewParent := TWinControl(FPropertyEditorHook.LookupRoot).FindComponent(TMenuItem(Sender).Caption);
-
-  if not (NewParent is TWinControl) then Exit;
-
-  for i := 0 to Selection.Count-1 do
-  begin
-    if not (Selection[i] is TControl) then Continue;
-    Control := TControl(Selection[i]);
-    if Control.Parent = nil then Continue;
-    Control.Parent := TWinControl(NewParent);
-  end;
-
-  // Following code taken from DoZOrderItemClick();
-  // Ensure the order of controls in the OI now reflects the new ZOrder
-  NewSelection := TPersistentSelectionList.Create;
-  try
-    NewSelection.ForceUpdate:=True;
-    NewSelection.Add(Control.Parent);
-    SetSelection(NewSelection);
-
-    NewSelection.Clear;
-    NewSelection.ForceUpdate:=True;
-    NewSelection.Add(Control);
-    SetSelection(NewSelection);
-  finally
-    NewSelection.Free;
-  end;
-
-  DoModified(Self);
+  if Selection.Count > 0 then
+    ChangeParent;
 end;
 
 procedure TObjectInspectorDlg.DoComponentEditorVerbMenuItemClick(Sender: TObject);
