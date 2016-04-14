@@ -306,7 +306,8 @@ type
     procedure ShowValue; virtual; // called when Ctrl-Click on value
     function GetAttributes: TPropertyAttributes; virtual;
     function IsReadOnly: boolean; virtual;
-    function GetComponent(Index: Integer): TPersistent;// for Delphi compatibility it is called GetComponent instead of GetPersistent
+    // For Delphi compatibility it is called GetComponent instead of GetPersistent
+    function GetComponent(Index: Integer): TPersistent;
     function GetUnitName(Index: Integer = 0): string;
     function GetPropTypeUnitName(Index: Integer = 0): string;
     function GetPropertyPath(Index: integer = 0): string;// e.g. 'TForm1.Color'
@@ -1298,8 +1299,7 @@ type
     function GetNextHandlerIndex(HookType: TPropHookType;
                                  var i: integer): boolean;
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     GetPrivateDirectory: AnsiString;
     constructor Create; overload; deprecated; // use Create(TComponent) instead

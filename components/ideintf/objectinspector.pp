@@ -677,7 +677,7 @@ type
     procedure PropFilterEditAfterFilter(Sender: TObject);
     procedure NoteBookPageChange(Sender: TObject);
   private
-    StateOfHintsOnMainPopupMenu:Boolean;
+    StateOfHintsOnMainPopupMenu: Boolean;
     FFavorites: TOIFavoriteProperties;
     FInfoBoxHeight: integer;
     FOnPropertyHint: TOIPropertyHint;
@@ -1526,11 +1526,13 @@ begin
   OldChangeStep:=fChangeStep;
   CurRow:=Rows[FItemIndex];
   if paDialog in CurRow.Editor.GetAttributes then begin
-    {$IFNDEF DoNotCatchOIExceptions}
+    {$IFnDEF DoNotCatchOIExceptions}
     try
     {$ENDIF}
-      DebugLn(['#################### TOICustomPropertyGrid.DoCallEdit for ',
-               CurRow.Editor.ClassName,' Edit=',Edit=oiqeEdit]);
+      //if FSelection.Count > 0 then
+      //  DebugLn(['# TOICustomPropertyGrid.DoCallEdit for ', CurRow.Editor.ClassName,
+      //           ', Edit=', Edit=oiqeEdit, ', SelectionCount=', FSelection.Count,
+      //           ', SelectionName=', FSelection[0].GetNamePath]);
       Include(FStates,pgsCallingEdit);
       try
         if Edit=oiqeShowValue then
@@ -1540,11 +1542,10 @@ begin
       finally
         Exclude(FStates,pgsCallingEdit);
       end;
-    {$IFNDEF DoNotCatchOIExceptions}
+    {$IFnDEF DoNotCatchOIExceptions}
     except
-      on E: Exception do begin
+      on E: Exception do
         MessageDlg(oisError, E.Message, mtError, [mbOk], 0);
-      end;
     end;
     {$ENDIF}
     // CurRow is now invalid, do not access CurRow
@@ -1554,12 +1555,8 @@ begin
       RefreshPropertyValues;
       exit;
     end;
-
-    // update value
-    RefreshValueEdit;
-
-    //invalidate changed subproperties
-    Invalidate;
+    RefreshValueEdit;       // update value
+    Invalidate;             //invalidate changed subproperties
   end;
 end;
 
