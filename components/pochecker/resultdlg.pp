@@ -150,6 +150,10 @@ begin
     ARect := FitToRect(ARect, Screen.WorkAreaRect);
     BoundsRect := ARect;
   end;
+  if Settings.DisableAntialiasing then
+    LogMemo.Font.Quality := fqNonAntialiased
+  else
+    LogMemo.Font.Quality := fqDefault;
 end;
 
 procedure TResultDlgForm.SaveConfig;

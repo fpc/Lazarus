@@ -18,9 +18,6 @@
     <VersionInfo>
       <StringTable ProductVersion=""/>
     </VersionInfo>
-    <MacroValues Count="1">
-      <Macro1 Name="LCLWidgetType" Value="gtk2"/>
-    </MacroValues>
     <BuildModes Count="2">
       <Item1 Name="Release" Default="True"/>
       <Item2 Name="Debug">
@@ -53,9 +50,6 @@
           </Other>
         </CompilerOptions>
       </Item2>
-      <SharedMatrixOptions Count="1">
-        <Item1 ID="187391036578" Modes="Release" Type="IDEMacro" MacroName="LCLWidgetType" Value="gtk2"/>
-      </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>

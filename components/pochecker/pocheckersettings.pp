@@ -36,11 +36,14 @@ type
     FMainFormGeometry: TRect;
     FGraphFormGeometry: TRect;
     FResultsFormGeometry: TRect;
+    FDisableAntialiasing: Boolean;
+    function GetDisableAntialiasing: Boolean;
     function GetMasterPoList: TStrings;
     function GetMasterPoSelList: TStrings;
     function LoadTestTypes: TPoTestTypes;
     function LoadTestOptions: TPoTestOptions;
     procedure LoadWindowsGeometry;
+    procedure LoadDisableAntiAliasing;
     function LoadExternalEditorName: String;
     function LoadSelectDirectoryFilename: String;
     function LoadOpenDialogFilename: String;
@@ -51,6 +54,7 @@ type
     procedure SaveTestTypes;
     procedure SaveTestOptions;
     procedure SaveWindowsGeometry;
+    procedure SaveDisableAntialiasing;
     procedure SaveExternalEditorName;
     procedure SaveSelectDirectoryFilename;
     procedure SaveOpenDialogFilename;
@@ -79,6 +83,7 @@ type
     property OpenDialogFilename: String read FOpenDialogFilename write FOpenDialogFilename;
     property MainFormGeometry: TRect read FMainFormGeometry write FMainFormGeometry;
     property ResultsFormGeometry: TRect read FResultsFormGeometry write FResultsFormGeometry;
+    property DisableAntialiasing: Boolean read GetDisableAntialiasing;
     property GraphFormGeometry: TRect read FGraphFormGeometry write FGraphFormGeometry;
     property MainFormWindowState: TWindowState read FMainFormWindowState write FMainFormWindowState;
     property ResultsFormWindowState: TWindowState read FResultsFormWindowState write FResultsFormWindowState;
@@ -98,6 +103,9 @@ function GetLocalConfigPath: String;
 {$endif}
 
 implementation
+
+const
+  DEFAULT_DISABLE_ANTIALIASING = true;
 
 function FitToRect(const ARect, FitIn: TRect): TRect;
 begin
@@ -318,6 +326,30 @@ begin
   FGraphFormWindowState := IntToWindowState(FConfig.GetValue(pWindowsGeometry+'MainForm/WindowState/Value', Ord(wsNormal)));
 end;
 
+function TPoCheckerSettings.GetDisableAntialiasing: Boolean;
+var
+  cfg: TConfigStorage;
+  ver: Integer;
+begin
+  {$IFDEF POCHECKERSTANDALONE}
+  Result := FDisableAntialiasing;
+  {$ELSE}
+  cfg := GetIDEConfigStorage('editoroptions.xml', True);
+  ver := cfg.GetValue('EditorOptions/Version', 0);
+  Result := cfg.GetValue('EditorOptions/Display/DisableAntialiasing', ver < 7);
+  FDisableAntiAliasing := Result;
+  cfg.Free;
+  {$ENDIF}
+end;
+
+procedure TPoCheckerSettings.LoadDisableAntialiasing;
+begin
+  {$IFDEF POCHECKERSTANDALONE}
+  FDisableAntialiasing := FConfig.GetValue('General/Display/ResultsForm/DisableAntialiasing',
+      DEFAULT_DISABLE_ANTIALIASING);
+  {$ENDIF}
+end;
+
 function TPoCheckerSettings.LoadExternalEditorName: String;
 begin
   {$IFDEF POCHECKERSTANDALONE}
@@ -452,6 +484,15 @@ begin
   FConfig.SetDeleteValue(pWindowsGeometry+'GraphForm/WindowState/Value',Ord(FGraphFormWindowState), Ord(wsNormal));
 end;
 
+procedure TPoCheckerSettings.SaveDisableAntialiasing;
+begin
+  {$IFDEF POCHECKERSTANDALONE}
+  // Don't use SetDeleteValue to keep the syntax in the file because there is
+  // no gui to modify DisableAntialiasing at the moment.
+  FConfig.SetValue('General/Display/ResultsForm/DisableAntialiasing', FDisableAntialiasing);
+  {$ENDIF}
+end;
+
 procedure TPoCheckerSettings.SaveExternalEditorName;
 begin
   {$IFDEF POCHECKERSTANDALONE}
@@ -536,6 +577,7 @@ begin
   FMainFormWindowState := wsNormal;
   FResultsFormWindowState := wsNormal;
   FGraphFormWindowState := wsNormal;
+  FDisableAntialiasing := DEFAULT_DISABLE_ANTIALIASING;
   FExternalEditorName := '';
   FOpenDialogFilename := '';
   FSelectDirectoryFilename := '';
@@ -594,6 +636,7 @@ begin
     FLangFilterLanguageAbbr := LoadLangFilterLanguageAbbr;
     FLangPath := LoadLangPath;
     LoadWindowsGeometry;
+    LoadDisableAntialiasing;
     LoadMasterPoList(FMasterPoList);
     LoadMasterPoSelList(FMasterPoSelList);
   except
@@ -618,6 +661,7 @@ begin
     SaveLangFilterLanguageAbbr;
     SaveLangPath;
     SaveWindowsGeometry;
+    SaveDisableAntialiasing;
     SaveMasterPoList;
     SaveMasterPoSelList;
     //not used anymore, clear it. Remove this line after a while
