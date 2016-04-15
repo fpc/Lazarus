@@ -14,7 +14,7 @@ interface
 
 uses
   Classes, SysUtils, math, contnrs,
-  fpimage, fpcanvas, laz2_xmlread, laz2_dom, fgl,
+  fpimage, fpcanvas, laz2_xmlread, laz2_dom, fgl, lazfileutils,
   // image data formats
   fpreadpng,
   // HTML can contain SVG
@@ -232,7 +232,8 @@ begin
           else if TvVectorialDocument.GetFormatFromExtension(lAttrValue, False) <> vfUnknown then
           begin
             lEmbVecImg := ADest.AddEmbeddedVectorialDoc();
-            lEmbVecImg.Document.ReadFromFile(lAttrValue);
+            if FileExistsUTF8(lAttrValue) then
+              lEmbVecImg.Document.ReadFromFile(lAttrValue);
           end;
         end;
         'xlink:href':

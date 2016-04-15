@@ -2624,6 +2624,8 @@ var
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
+  if Document.GetPageCount() = 0 then Exit;
+
   lPage := Document.GetPage(0);
   lPageHeight := Round(lPage.Height);
   lPage.GetNaturalRenderPos(lPageHeight, lMulY);
