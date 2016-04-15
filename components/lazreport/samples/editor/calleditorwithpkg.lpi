@@ -26,7 +26,6 @@
           </Target>
           <SearchPaths>
             <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
-            
           </SearchPaths>
           <CompileReasons Run="False"/>
         </CompilerOptions>
@@ -81,7 +80,6 @@
         <ComponentName Value="frmMain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="maincalleditor"/>
       </Unit1>
       <Unit2>
         <Filename Value="custompreview.pas"/>
@@ -98,7 +96,6 @@
     </Target>
     <SearchPaths>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
-      
     </SearchPaths>
     <CompileReasons Run="False"/>
   </CompilerOptions>

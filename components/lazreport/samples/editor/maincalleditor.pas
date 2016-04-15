@@ -172,7 +172,7 @@ var
 
 implementation
 
-uses gettext,translations;
+uses gettext,translations, lazutf8;
 
 {$R *.lfm}
 

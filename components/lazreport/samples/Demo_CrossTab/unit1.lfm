@@ -7,12 +7,12 @@ object Form1: TForm1
   ClientHeight = 368
   ClientWidth = 320
   OnCreate = FormCreate
-  LCLVersion = '1.3'
+  LCLVersion = '1.7'
   object Button1: TButton
     Left = 112
     Height = 25
     Top = 56
-    Width = 92
+    Width = 97
     AutoSize = True
     Caption = 'Design report'
     OnClick = Button1Click
@@ -22,7 +22,7 @@ object Form1: TForm1
     Left = 112
     Height = 25
     Top = 120
-    Width = 84
+    Width = 90
     AutoSize = True
     Caption = 'Show report'
     OnClick = Button2Click
@@ -32,7 +32,7 @@ object Form1: TForm1
     Left = 16
     Height = 15
     Top = 8
-    Width = 130
+    Width = 117
     Caption = 'Croo-tab report demo'
     ParentColor = False
   end
@@ -40,7 +40,7 @@ object Form1: TForm1
     Left = 16
     Height = 15
     Top = 24
-    Width = 245
+    Width = 213
     Caption = 'Report used standart demo from firebird'
     ParentColor = False
   end
@@ -50,7 +50,6 @@ object Form1: TForm1
         Name = 'CUST_NO'
         DataType = ftInteger
         Precision = -1
-        Size = 0
       end    
       item
         Name = 'CUSTOMER'
@@ -62,7 +61,6 @@ object Form1: TForm1
         Name = 'ORDER_YEAR'
         DataType = ftSmallint
         Precision = -1
-        Size = 0
       end    
       item
         Name = 'TOTAL_VALUE'
@@ -83,6 +81,7 @@ object Form1: TForm1
       '  inner join CUSTOMER on (CUSTOMER.CUST_NO =  SALES.CUST_NO)'
       ''
     )
+    Options = []
     Params = <>
     left = 24
     top = 288
@@ -90,11 +89,12 @@ object Form1: TForm1
   object SQLTransaction1: TSQLTransaction
     Active = False
     Database = IBConnection1
+    Options = []
     left = 56
     top = 248
   end
   object IBConnection1: TIBConnection
-    Connected = True
+    Connected = False
     LoginPrompt = False
     DatabaseName = 'employee'
     KeepConnection = False
@@ -103,6 +103,7 @@ object Form1: TForm1
     UserName = 'sysdba'
     CharSet = 'utf8'
     HostName = '127.0.0.1'
+    Options = []
     left = 24
     top = 248
   end
