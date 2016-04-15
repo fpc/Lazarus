@@ -452,6 +452,11 @@ type
 
     // Fields which are output from the rendering process
     EntityCanvasMinXY, EntityCanvasMaxXY: TPoint; // The size utilized in the canvas to draw this entity, in pixels
+
+    // errors
+    Self: TvEntity;
+    Parent: TvEntity;
+    Errors: TStrings;
   end;
 
   TvEntityFeatures = record
@@ -485,8 +490,10 @@ type
     class procedure CalcEntityCanvasMinMaxXY(var ARenderInfo: TvRenderInfo; APointX, APointY: Integer);
     class procedure CalcEntityCanvasMinMaxXY_With2Points(var ARenderInfo: TvRenderInfo; AX1, AY1, AX2, AY2: Integer);
     procedure MergeRenderInfo(var AFrom, ATo: TvRenderInfo);
-    class procedure InitializeRenderInfo(out ARenderInfo: TvRenderInfo);
-    class procedure CopyAndInitDocumentRenderInfo(out ATo: TvRenderInfo; AFrom: TvRenderInfo);
+    class procedure InitializeRenderInfo(out ARenderInfo: TvRenderInfo; ASelf: TvEntity; ACreateObjs: Boolean = False);
+    class procedure FinalizeRenderInfo(var ARenderInfo: TvRenderInfo);
+    class procedure CopyAndInitDocumentRenderInfo(out ATo: TvRenderInfo; AFrom: TvRenderInfo; ACopyMinMax: Boolean = False);
+    function RenderInfo_GenerateParentTree(ARenderInfo: TvRenderInfo): string;
     function CentralizeY_InHeight(ADest: TFPCustomCanvas; AHeight: Double): Double;
     function  GetHeight(ADest: TFPCustomCanvas): Double;
     function  GetWidth(ADest: TFPCustomCanvas): Double;
@@ -2484,7 +2491,7 @@ var
   CurRow: TvTableRow;
   lEntityRenderInfo: TvRenderInfo;
 begin
-  InitializeRenderInfo(ARenderInfo);
+  InitializeRenderInfo(ARenderInfo, Self);
 
   // First calculate the column widths and heights
   CalculateColWidths(ADest);
@@ -2643,6 +2650,8 @@ begin
     ADest.Rectangle(lX_px, lY_px, lX_px+100, lY_px+100);}
   end;
 
+  if (ARenderInfo.Errors <> nil) and (lPage.RenderInfo.Errors <> nil) then
+    ARenderInfo.Errors.AddStrings(lPage.RenderInfo.Errors);
   CalcEntityCanvasMinMaxXY(ARenderInfo, CoordToCanvasX(X), CoordToCanvasY(Y));
   CalcEntityCanvasMinMaxXY(ARenderInfo,
     CoordToCanvasX(X + Document.Width),
@@ -2750,7 +2759,7 @@ var
   CurX_mm: Double = 0.0;
   lEntityRenderInfo: TvRenderInfo;
 begin
-  InitializeRenderInfo(ARenderInfo);
+  InitializeRenderInfo(ARenderInfo, Self);
 
   for i := 0 to GetCellCount()-1 do
   begin
@@ -3518,7 +3527,7 @@ var
   lMulY: Double;
 begin
   Result := True;
-  InitializeRenderInfo(lRenderInfo);
+  InitializeRenderInfo(lRenderInfo, Self);
   APage.GetNaturalRenderPos(APageHeight, lMulY);
   AZoom := Abs(AZoom);
   Render(ADest, lRenderInfo, 0, APageHeight, AZoom, AZoom * lMulY, False);
@@ -3582,26 +3591,62 @@ begin
   CalcEntityCanvasMinMaxXY(ATo, AFrom.EntityCanvasMaxXY.X, AFrom.EntityCanvasMaxXY.Y);
 end;
 
-class procedure TvEntity.InitializeRenderInfo(out ARenderInfo: TvRenderInfo);
+class procedure TvEntity.InitializeRenderInfo(out ARenderInfo: TvRenderInfo; ASelf: TvEntity; ACreateObjs: Boolean);
 begin
   // Don't change these because otherwise we lose the value set by the page
   // See CopyAndInitDocumentRenderInfo
   // ARenderInfo.BackgroundColor := colBlack;
   // ARenderInfo.AdjustPenColorToBackground := True;
   // ARenderInfo.Selected := nil;
+  // ATo.Parent := AFrom.Self;
 
   ARenderInfo.EntityCanvasMinXY := Point(INVALID_RENDERINFO_CANVAS_XY, INVALID_RENDERINFO_CANVAS_XY);
   ARenderInfo.EntityCanvasMaxXY := Point(INVALID_RENDERINFO_CANVAS_XY, INVALID_RENDERINFO_CANVAS_XY);
   ARenderInfo.ForceRenderBlock := False;
+
+  ARenderInfo.Self := ASelf;
+  if ACreateObjs then
+    ARenderInfo.Errors := TStringList.Create;
+end;
+
+class procedure TvEntity.FinalizeRenderInfo(var ARenderInfo: TvRenderInfo);
+begin
+  if ARenderInfo.Errors <> nil then
+    ARenderInfo.Errors.Free;
+  ARenderInfo.Errors := nil;
 end;
 
 class procedure TvEntity.CopyAndInitDocumentRenderInfo(out ATo: TvRenderInfo;
-  AFrom: TvRenderInfo);
+  AFrom: TvRenderInfo; ACopyMinMax: Boolean = False);
 begin
-  InitializeRenderInfo(ATo);
+  InitializeRenderInfo(ATo, nil);
   ATo.AdjustPenColorToBackground := AFrom.AdjustPenColorToBackground;
   ATo.BackgroundColor := AFrom.BackgroundColor;
   ATo.Selected := AFrom.Selected;
+  ATo.Parent := AFrom.Self;
+  ATo.Errors := AFrom.Errors;
+  if ACopyMinMax then
+  begin
+    ATo.EntityCanvasMinXY := AFrom.EntityCanvasMinXY;
+    ATo.EntityCanvasMaxXY := AFrom.EntityCanvasMaxXY;
+  end;
+end;
+
+function TvEntity.RenderInfo_GenerateParentTree(ARenderInfo: TvRenderInfo): string;
+var
+  lCurEntity: TvEntity;
+begin
+  lCurEntity := Self;
+  Result := '';
+  while lCurEntity <> nil do
+  begin
+    if Result <> '' then
+      Result := '->' + Result;
+    Result := lCurEntity.ClassName + Result;
+    if lCurEntity is TvNamedEntity then
+      Result := TvNamedEntity(lCurEntity).Name + ':' + Result;
+    lCurEntity := ARenderInfo.Parent;
+  end;
 end;
 
 function TvEntity.CentralizeY_InHeight(ADest: TFPCustomCanvas; AHeight: Double): Double;
@@ -3674,7 +3719,7 @@ end;
 procedure TvEntity.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double; ADoDraw: Boolean);
 begin
-  InitializeRenderInfo(ARenderInfo);
+  InitializeRenderInfo(ARenderInfo, Self);
 end;
 
 function TvEntity.AdjustColorToBackground(AColor: TFPColor; ARenderInfo: TvRenderInfo): TFPColor;
@@ -3894,6 +3939,7 @@ var
   gvlen: Double;       // length of gradient vector
   gstart: Double;      // Gradient start point (1-dim)
   dir: Integer;
+  lStr: String;
 begin
   if Brush.Kind = bkRadialGradient then
   begin
@@ -4025,7 +4071,17 @@ begin
 
     // Determine color from fraction (pf) of path travelled along gradient vector
     pf := (coord - gstart) * dir / gvlen;
-    ADest.Pen.FPColor := GradientColor(Brush.Gradient_colors, pf);
+    if Length(Brush.Gradient_colors) > 0 then
+    begin
+      ADest.Pen.FPColor := GradientColor(Brush.Gradient_colors, pf);
+    end
+    else
+    begin
+      lStr := RenderInfo_GenerateParentTree(ARenderInfo);
+      if ARenderInfo.Errors <> nil then
+        ARenderInfo.Errors.Add(Format('[%s] Empty Brush.Gradient_colors', [lStr]));
+      ADest.Pen.FPColor := colBlack;
+    end;
 
     // Draw gradient lines between intersection points
     j := 0;
@@ -5554,7 +5610,7 @@ begin
   lText := Value.Text + Format(' F=%d', [ADest.Font.Size]); // for debugging
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
-  InitializeRenderInfo(ARenderInfo);
+  InitializeRenderInfo(ARenderInfo, Self);
 
   // Don't draw anything if we have alpha=zero
   if Font.Color.Alpha = 0 then Exit;
@@ -5702,7 +5758,7 @@ var
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, False);
 
-  InitializeRenderInfo(ARenderInfo);
+  InitializeRenderInfo(ARenderInfo, Self);
        (*
   if not ADoDraw then
   begin
@@ -8147,7 +8203,8 @@ var
   lEntityRenderInfo: TvRenderInfo;
   CurX, CurY, lHeight_px: Integer;
 begin
-  InitializeRenderInfo(ARenderInfo);
+  InitializeRenderInfo(ARenderInfo, Self);
+  InitializeRenderInfo(lEntityRenderInfo, Self);
 
   // Don't call inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
   lEntity := GetFirstEntity();
@@ -8207,6 +8264,7 @@ begin
       lEntity.X := lEntity.X + X + lCurWidth;
       lEntity.Y := lEntity.Y + Y;
 
+      CopyAndInitDocumentRenderInfo(lEntityRenderInfo, ARenderInfo);
       lEntity.Render(ADest, lEntityRenderInfo, ADestX, ADestY + lHeight_px, AMulX, AMulY, ADoDraw);
 
       lEntity.X := OldTextX;
@@ -8350,7 +8408,7 @@ var
   CurX, CurY, lBulletSize, lItemHeight: Double;
   lHeight_px: Integer;
 begin
-  InitializeRenderInfo(ARenderInfo);
+  InitializeRenderInfo(ARenderInfo, Self);
 
   // Don't call inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
@@ -8508,7 +8566,7 @@ var
   //lParagraph: TvParagraph absolute lEntity;
   lEntityRenderInfo: TvRenderInfo;
 begin
-  InitializeRenderInfo(ARenderInfo);
+  InitializeRenderInfo(ARenderInfo, Self);
 
   // Don't call inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
   lEntity := GetFirstEntity();
@@ -8540,10 +8598,13 @@ begin
   inherited Create;
   FOwner := AOwner;
   AdjustPenColorToBackground := true;
+  System.FillChar(RenderInfo, SizeOf(RenderInfo), #0);
+  TvEntity.InitializeRenderInfo(RenderInfo, nil, True);
 end;
 
 destructor TvPage.Destroy;
 begin
+  TvEntity.FinalizeRenderInfo(RenderInfo);
   inherited Destroy;
 end;
 
@@ -8731,7 +8792,6 @@ begin
   Owner := AOwner;
   Clear();
   BackgroundColor := colWhite;
-  System.FillChar(RenderInfo, SizeOf(RenderInfo), #0);
   RenderInfo.BackgroundColor := colWhite;
 end;
 
@@ -9407,7 +9467,9 @@ begin
   WriteLn(':>DrawFPVectorialToCanvas');
   {$endif}
 
-  TvEntity.InitializeRenderInfo(RenderInfo);
+  TvEntity.InitializeRenderInfo(RenderInfo, nil);
+  TvEntity.InitializeRenderInfo(rInfo, nil);
+  TvEntity.CopyAndInitDocumentRenderInfo(rInfo, RenderInfo);
 
   for i := 0 to GetEntitiesCount - 1 do
   begin
@@ -9433,7 +9495,7 @@ begin
     end;
   end;
 
-  RenderInfo := rInfo;
+  TvEntity.CopyAndInitDocumentRenderInfo(RenderInfo, rInfo, True);
 
   {$ifdef FPVECTORIAL_RENDERINFO_VISUALDEBUG}
   ADest.Brush.Style := bsClear;
@@ -9599,7 +9661,8 @@ begin
   WriteLn(':>TvTextPageSequence.Render');
   {$endif}
   CurY_px := ADestY;
-  TvEntity.InitializeRenderInfo(lSumRenderInfo);
+  TvEntity.InitializeRenderInfo(lSumRenderInfo, nil, False);
+  TvEntity.CopyAndInitDocumentRenderInfo(lSumRenderInfo, RenderInfo);
 
   for i := 0 to GetEntitiesCount - 1 do
   begin
@@ -9625,7 +9688,7 @@ begin
       RenderInfo.EntityCanvasMaxXY.X, RenderInfo.EntityCanvasMaxXY.Y);
   end;
 
-  RenderInfo := lSumRenderInfo;
+  TvEntity.CopyAndInitDocumentRenderInfo(RenderInfo, lSumRenderInfo, True);
 
   {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
   WriteLn(':<TvTextPageSequence.Render');
