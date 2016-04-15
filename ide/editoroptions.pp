@@ -416,6 +416,7 @@ type
 
   TEditorOptionsFoldRecord = record
     Count: Integer;
+    HasMarkup: Boolean;
     Info: PEditorOptionsFoldInfoList;
   end;
 
@@ -588,26 +589,26 @@ const
   (* When adding new entries, ensure that resourcestrings are re-assigned in InitLocale *)
   EditorOptionsFoldDefaults: array[TLazSyntaxHighlighter] of
     TEditorOptionsFoldRecord =
-    ( (Count:  0; Info: nil), // none
-      (Count:  0; Info: nil), // text
-      (Count: 27; Info: @EditorOptionsFoldInfoPas[0]), // Freepas
-      (Count: 27; Info: @EditorOptionsFoldInfoPas[0]), // pas
-      (Count:  3; Info: @EditorOptionsFoldInfoLFM[0]), // lfm
-      (Count:  5; Info: @EditorOptionsFoldInfoXML[0]), // xml
-      (Count:  3; Info: @EditorOptionsFoldInfoHTML[0]), // html
-      (Count:  0; Info: nil), // cpp
-      (Count:  0; Info: nil), // perl
-      (Count:  0; Info: nil), // java
-      (Count:  0; Info: nil), // shell
-      (Count:  0; Info: nil), // python
-      (Count:  0; Info: nil), // php
-      (Count:  0; Info: nil), // sql
-      (Count:  0; Info: nil), // jscript
-      (Count:  3; Info: @EditorOptionsFoldInfoDiff[0]), // Diff
-      (Count:  0; Info: nil), // Bat
-      (Count:  0; Info: nil), // Ini
-      (Count:  0; Info: nil), // PO
-      (Count:  0; Info: nil)  // Pike
+    ( (Count:  0; HasMarkup: False; Info: nil), // none
+      (Count:  0; HasMarkup: False; Info: nil), // text
+      (Count: 27; HasMarkup: True; Info: @EditorOptionsFoldInfoPas[0]), // Freepas
+      (Count: 27; HasMarkup: True; Info: @EditorOptionsFoldInfoPas[0]), // pas
+      (Count:  3; HasMarkup: True; Info: @EditorOptionsFoldInfoLFM[0]), // lfm
+      (Count:  5; HasMarkup: True; Info: @EditorOptionsFoldInfoXML[0]), // xml
+      (Count:  3; HasMarkup: True; Info: @EditorOptionsFoldInfoHTML[0]), // html
+      (Count:  0; HasMarkup: False; Info: nil), // cpp
+      (Count:  0; HasMarkup: False; Info: nil), // perl
+      (Count:  0; HasMarkup: False; Info: nil), // java
+      (Count:  0; HasMarkup: False; Info: nil), // shell
+      (Count:  0; HasMarkup: False; Info: nil), // python
+      (Count:  0; HasMarkup: False; Info: nil), // php
+      (Count:  0; HasMarkup: False; Info: nil), // sql
+      (Count:  0; HasMarkup: False; Info: nil), // jscript
+      (Count:  3; HasMarkup: False; Info: @EditorOptionsFoldInfoDiff[0]), // Diff
+      (Count:  0; HasMarkup: False; Info: nil), // Bat
+      (Count:  0; HasMarkup: False; Info: nil), // Ini
+      (Count:  0; HasMarkup: False; Info: nil), // PO
+      (Count:  0; HasMarkup: False; Info: nil)  // Pike
     );
 
 const

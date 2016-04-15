@@ -45,6 +45,8 @@ type
     divKeywords: TDividerBevel;
     divMatchingBrackets: TDividerBevel;
     divWordGroup: TDividerBevel;
+    LanguageComboBox: TComboBox;
+    LanguageLabel: TLabel;
     lblPasStringKeywords: TLabel;
     MarkupColorLink: TLabel;
     MarkupKeyLink: TLabel;
@@ -68,12 +70,20 @@ type
     procedure dropPasStringKeywordsChange(Sender: TObject);
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
     function FoldPage: TEditorCodefoldingOptionsFrame; inline;
+    procedure LanguageComboBoxChange(Sender: TObject);
+    procedure LanguageComboBoxExit(Sender: TObject);
+    procedure LanguageComboBoxKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure MarkupColorLinkClick(Sender: TObject);
     procedure MarkupKeyLinkClick(Sender: TObject);
   private
     { private declarations }
     FDialog: TAbstractOptionsEditorDialog;
-    FKWMathHighLighter: TSynCustomFoldHighlighter;
+    FCurHighlighter: TSrcIDEHighlighter;
+    FCurFoldInfo: TEditorOptionsFoldRecord;
+    function GetHighlighter(SynType: TLazSyntaxHighlighter;
+      CreateIfNotExists: Boolean): TSrcIDEHighlighter;
+
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -156,17 +166,20 @@ end;
 procedure TEditorMarkupOptionsFrame.chkKWGroupsClickCheck(Sender: TObject);
 var
   i, j, idx: Integer;
-  CurFoldInfo: TEditorOptionsFoldRecord;
+  Hl: TSynCustomFoldHighlighter;
 begin
+  if not (assigned(FCurHighlighter) and
+         (FCurHighlighter is TSynCustomFoldHighlighter)) then exit;
+  Hl := TSynCustomFoldHighlighter(FCurHighlighter);
+
   j := 0;
-  CurFoldInfo := EditorOptionsFoldDefaults[lshFreePascal];
-  for i := 0 to CurFoldInfo.Count - 1 do begin
-    idx := CurFoldInfo.Info^[i].Index;
-    if fmMarkup in FKWMathHighLighter.FoldConfig[idx].SupportedModes then begin
+  for i := 0 to FCurFoldInfo.Count - 1 do begin
+    idx := FCurFoldInfo.Info^[i].Index;
+    if fmMarkup in Hl.FoldConfig[idx].SupportedModes then begin
       if chkKWGroups.Checked[j] then
-        FKWMathHighLighter.FoldConfig[idx].Modes := FKWMathHighLighter.FoldConfig[idx].Modes + [fmMarkup]
+        Hl.FoldConfig[idx].Modes := Hl.FoldConfig[idx].Modes + [fmMarkup]
       else
-        FKWMathHighLighter.FoldConfig[idx].Modes := FKWMathHighLighter.FoldConfig[idx].Modes - [fmMarkup];
+        Hl.FoldConfig[idx].Modes := Hl.FoldConfig[idx].Modes - [fmMarkup];
       inc(j);
     end;
   end;
@@ -194,6 +207,48 @@ begin
   Result := TEditorCodefoldingOptionsFrame(FDialog.FindEditor(TEditorCodefoldingOptionsFrame));
 end;
 
+procedure TEditorMarkupOptionsFrame.LanguageComboBoxChange(Sender: TObject);
+var
+  ComboBox: TComboBox absolute Sender;
+begin
+  if ComboBox.Items.IndexOf(ComboBox.Text) >= 0 then
+    LanguageComboBoxExit(Sender);
+end;
+
+procedure TEditorMarkupOptionsFrame.LanguageComboBoxExit(Sender: TObject);
+var
+  ComboBox: TComboBox absolute Sender;
+  tp: TLazSyntaxHighlighter;
+  i, j: Integer;
+  Hl: TSynCustomFoldHighlighter;
+begin
+  tp := EditorOpts.HighlighterList
+          [EditorOpts.HighlighterList.FindByName(ComboBox.Text)].TheType;
+  FCurHighlighter := GetHighlighter(tp, True);
+  FCurFoldInfo := EditorOptionsFoldDefaults[tp];
+
+  chkKWGroups.Clear;
+  if not (assigned(FCurHighlighter) and
+         (FCurHighlighter is TSynCustomFoldHighlighter)) then exit;
+  Hl := TSynCustomFoldHighlighter(FCurHighlighter);
+
+  for i := 0 to FCurFoldInfo.Count - 1 do begin
+    if Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].SupportedModes * [fmMarkup{, fmOutline}] <> [] then begin
+      j := chkKWGroups.Items.Add(FCurFoldInfo.Info^[i].Name);
+      chkKWGroups.Checked[j] :=
+        (Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Modes * [fmMarkup{, fmOutline}] <> []);
+      chkKWGroups.Items.Objects[j] := TObject({%H-}Pointer(PtrUInt(i)));
+    end;
+  end;
+end;
+
+procedure TEditorMarkupOptionsFrame.LanguageComboBoxKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (ssCtrl in Shift) and (Key = VK_S) then
+    LanguageComboBoxExit(Sender);
+end;
+
 procedure TEditorMarkupOptionsFrame.MarkupColorLinkClick(Sender: TObject);
 var
   col: TEditorColorOptionsFrame;
@@ -214,12 +269,22 @@ begin
   col.SelectByIdeCommand(EcToggleMarkupWord);
 end;
 
+function TEditorMarkupOptionsFrame.GetHighlighter(
+  SynType: TLazSyntaxHighlighter; CreateIfNotExists: Boolean
+  ): TSrcIDEHighlighter;
+begin
+  Result := FoldPage.GetHighlighter(SynType, CreateIfNotExists);
+end;
+
 function TEditorMarkupOptionsFrame.GetTitle: String;
 begin
   Result := lisAutoMarkup;
 end;
 
 procedure TEditorMarkupOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+var
+  i: Integer;
+  rf: TEditorOptionsFoldRecord;
 begin
   FDialog := ADialog;
 
@@ -247,11 +312,20 @@ begin
   dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptNone);
 
   divKeyWordGroups.Caption := dlgPasKeywordsMatches;
+
+  with LanguageComboBox.Items do begin
+    BeginUpdate;
+    for i := 0 to EditorOpts.HighlighterList.Count - 1 do begin
+      rf := EditorOptionsFoldDefaults[EditorOpts.HighlighterList[i].TheType];
+      if (rf.Count > 0) and (rf.HasMarkup) then
+        Add(EditorOpts.HighlighterList[i].SynClass.GetLanguageName);
+    end;
+    EndUpdate;
+  end;
 end;
 
 procedure TEditorMarkupOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
-  CurFoldInfo: TEditorOptionsFoldRecord;
   i, j, idx: Integer;
 begin
   with AOptions as TEditorOptions do
@@ -272,16 +346,8 @@ begin
   end;
   AutoDelayTrackBarChange(nil);
 
-  FKWMathHighLighter := TSynCustomFoldHighlighter(FoldPage.GetHighlighter(lshFreePascal, True));
-  CurFoldInfo := EditorOptionsFoldDefaults[lshFreePascal];
-  for i := 0 to CurFoldInfo.Count - 1 do begin
-    idx := CurFoldInfo.Info^[i].Index;
-    if fmMarkup in FKWMathHighLighter.FoldConfig[idx].SupportedModes then begin
-      j := chkKWGroups.Items.Add(CurFoldInfo.Info^[i].Name);
-      chkKWGroups.Checked[j] := fmMarkup in FKWMathHighLighter.FoldConfig[idx].Modes;
-    end;
-  end;
-
+  LanguageComboBox.ItemIndex := 0;
+  LanguageComboBoxExit(LanguageComboBox);
 end;
 
 procedure TEditorMarkupOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
