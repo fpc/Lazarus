@@ -24,6 +24,7 @@ unit fpvectorial;
 {.$define FPVECTORIAL_TOCANVAS_DEBUG}
 {.$define FPVECTORIAL_DEBUG_BLOCKS}
 {.$define FPVECTORIAL_AUTOFIT_DEBUG}
+{.$define FPVECTORIAL_SUPPORT_LAZARUS_1_6}
 // visual debugs
 {.$define FPVECTORIAL_TOCANVAS_ELLIPSE_VISUALDEBUG}
 {.$define FPVECTORIAL_RENDERINFO_VISUALDEBUG}
@@ -4180,6 +4181,7 @@ end;
 procedure TvEntityWithPenAndBrush.DrawNativePolygonBrushRadialGradient(
   ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
   const APoints: TPointsArray; ARect: TRect);
+{$ifndef FPVECTORIAL_SUPPORT_LAZARUS_1_6}
 {$ifdef USE_LCL_CANVAS}
 var
   lLogRadGrad: TLogRadialGradient;
@@ -4200,7 +4202,9 @@ var
   end;
 
 {$endif}
+{$endif}
 begin
+  {$ifndef FPVECTORIAL_SUPPORT_LAZARUS_1_6}
   {$ifdef USE_LCL_CANVAS}
   lLogRadGrad.radCenterX := Gradient_value_to_px(Brush.Gradient_cx, Brush.Gradient_cx_Unit, False);
   lLogRadGrad.radCenterY := Gradient_value_to_px(Brush.Gradient_cy, Brush.Gradient_cy_Unit, False);
@@ -4223,6 +4227,7 @@ begin
   TCanvas(ADest).Brush.Handle := lBrush;
   TCanvas(ADest).Polygon(APoints);
   TCanvas(ADest).Brush.Handle := lOldBrush;
+  {$endif}
   {$endif}
 end;
 
