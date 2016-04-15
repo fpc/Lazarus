@@ -311,6 +311,7 @@ begin
   dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptString);
   dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptNone);
 
+  LanguageLabel.Caption := dlgLang;
   divKeyWordGroups.Caption := dlgPasKeywordsMatches;
 
   with LanguageComboBox.Items do begin
