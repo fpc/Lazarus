@@ -415,7 +415,8 @@ begin
     if CME.IsMasked then
     begin
       Result := CME.ApplyMaskToText(Value);
-      Result := CME.GetTextWithoutMask(Result);
+      //Delphi 7 leaves in the mask regardless of the "MaskSave" value in the specified EditMask
+      //Result := CME.GetTextWithoutMask(Result);
     end
     else
       Result := Value;
