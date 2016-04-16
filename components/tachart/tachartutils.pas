@@ -32,6 +32,7 @@ const
   CHART_COMPONENT_IDE_PAGE = 'Chart';
   PERCENT = 0.01;
   clTAColor = $20000000; // = clDefault, but avoiding dependency on Graphics
+  DEFAULT_FONT_SIZE = 10;
 
 type
   EChartError = class(Exception);

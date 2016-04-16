@@ -59,6 +59,9 @@ type
 
   TChartTransparency = 0..255;
 
+  TScaleItem = (scaleFont, scalePen);
+  TScaleItems = set of TScaleItem;
+
   IChartDrawer = interface
     procedure AddToFontOrientation(ADelta: Integer);
     procedure ClippingStart(const AClipRect: TRect);
@@ -129,6 +132,7 @@ type
     FRightToLeft: Boolean;
     FTransparency: TChartTransparency;
     FXor: Boolean;
+    FScaleItems: TScaleItems;
     function ColorOrMono(AColor: TChartColor): TChartColor; inline;
     function FPColorOrMono(const AColor: TFPColor): TFPColor; inline;
     function GetFontAngle: Double; virtual; abstract;

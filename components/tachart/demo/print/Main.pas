@@ -13,6 +13,7 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    PrintScaledPen: TButton;
     Chart1: TChart;
     Chart1LineSeries1: TLineSeries;
     Panel1: TPanel;
@@ -55,7 +56,7 @@ begin
     if Sender = PrintCanvas then
       Chart1.PaintOnCanvas(Printer.Canvas, r)
     else
-      Chart1.Draw(TPrinterDrawer.Create(Printer), r);
+      Chart1.Draw(TPrinterDrawer.Create(Printer, (Sender = PrintScaledPen)), r);
   finally
     Printer.EndDoc;
   end;

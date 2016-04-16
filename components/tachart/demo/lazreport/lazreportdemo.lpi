@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -44,7 +44,6 @@
       <Unit0>
         <Filename Value="lazreportdemo.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lazreportdemo"/>
       </Unit0>
       <Unit1>
         <Filename Value="Main.pas"/>
@@ -52,7 +51,6 @@
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="Main"/>
       </Unit1>
     </Units>
   </ProjectOptions>
@@ -78,12 +76,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">
