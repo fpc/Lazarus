@@ -86,7 +86,9 @@ resourcestring
   lisNever = 'Never';
   lisAlways = 'Always';
   lisContinue = 'Continue';
+  lisMenuContinue = '&Continue';
   lisBreak = 'Break';
+  lisMenuBreak = '&Break';
   lisExit = 'Exit';
   lisQuit = 'Quit';
   lisBtnQuit = '&Quit';
