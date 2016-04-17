@@ -226,6 +226,7 @@ const
     procedure RealSetText(const AValue: TCaption); override;
     function RealGetText: TCaption; override;
     Function GetTextWithoutMask(Value: TCaption) : TCaption;
+    function GetTextWithoutSpaceChar(Value: TCaption) : TCaption;
     Procedure SetTextApplyMask(Value: TCaption);
     function  GetEditText: string; virtual;
     procedure SetEditText(const AValue: string);
@@ -415,8 +416,9 @@ begin
     if CME.IsMasked then
     begin
       Result := CME.ApplyMaskToText(Value);
-      //Delphi 7 leaves in the mask regardless of the "MaskSave" value in the specified EditMask
-      //Result := CME.GetTextWithoutMask(Result);
+      //Delphi 7 leaves in the mask regardless of the "MaskSave" value in the specified EditMaske
+      //but SpaceChar must be replaced by #32
+      Result := CME.GetTextWithoutSpaceChar(Result);
     end
     else
       Result := Value;
@@ -1559,6 +1561,26 @@ Begin
   end;
   Result := S;
 End;
+
+{
+  Replace al FSPaceChars with #32
+  Leave all mask literals in place
+  Needed by FormatMaskText
+}
+function TCustomMaskEdit.GetTextWithoutSpaceChar(Value: TCaption): TCaption;
+var
+  i: Integer;
+Begin
+  Result := StringReplace(Value, FSpaceChar, #32, [rfReplaceAll]);
+  //FSpaceChar can be used as a literal in the mask, so put it back
+  for i := 1 to FMaskLength do
+  begin
+    if IsLiteral(FMask[i]) and (FMask[i] = FSpaceChar) then
+    begin
+      SetCodePoint(Result, i, FSpaceChar);
+    end;
+  end;
+end;
 
 
 // Respond to Text Changed message
