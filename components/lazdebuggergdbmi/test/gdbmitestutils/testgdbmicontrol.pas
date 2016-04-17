@@ -5,8 +5,8 @@ unit TestGDBMIControl;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  CheckLst, testregistry, fpcunit, GuiTestRunner;
+  Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ExtCtrls, CheckLst, testregistry, fpcunit, GuiTestRunner;
 
 type
 
