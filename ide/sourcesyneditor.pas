@@ -58,7 +58,10 @@ uses
   SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea,
   SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterPas,
   SynEditMarkupHighAll, SynEditKeyCmds, SynEditMarkupIfDef, SynEditMiscProcs,
-  SynPluginMultiCaret, SynEditPointClasses, SynEditMarkupFoldColoring,
+  SynPluginMultiCaret, SynEditPointClasses,
+  {$IFDEF SynWithOutlineMarkup}
+  SynEditMarkupFoldColoring,
+  {$ENDIF}
   etSrcEditMarks, LazarusIDEStrConsts;
 
 type
@@ -1648,10 +1651,10 @@ begin
 end;
 
 constructor TIDESynEditor.Create(AOwner: TComponent);
-  {.$IFDEF SynWithOutlineMarkup}
+{$IFDEF SynWithOutlineMarkup}
 var
   MarkupFoldColors: TSynEditMarkupFoldColors;
-  {.$ENDIF}
+{$ENDIF}
 begin
   inherited Create(AOwner);
   FUserWordsList := TFPList.Create;
