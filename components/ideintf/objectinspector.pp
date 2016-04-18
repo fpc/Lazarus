@@ -4389,9 +4389,10 @@ begin
 end;
 
 procedure TObjectInspectorDlg.FillPersistentComboBox;
-var a:integer;
-  Root:TComponent;
-  OldText:AnsiString;
+var
+  a: integer;
+  Root: TComponent;
+  OldText: AnsiString;
   NewList: TStringList;
 begin
 //writeln('[TObjectInspectorDlg.FillComponentComboBox] A ',FUpdatingAvailComboBox

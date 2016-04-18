@@ -203,7 +203,9 @@ begin
   else
     Root := AComponent.Owner;
 
-  if not ((Root is TControl) and (csOwnedChildrenNotSelectable in TControl(Root).ControlStyle)) then
+  if not ( (Root is TControl)
+       and (csOwnedChildrenNotSelectable in TControl(Root).ControlStyle) )
+  then
     TComponentAccessor(AComponent).GetChildren(@Walk, Root);
   FNode := OldNode;
   FNode.Expanded := True;
@@ -263,9 +265,8 @@ begin
       Exit;
     FComponentList.Clear;
   end
-  else
-  if not NewSelection.ForceUpdate
-    and FComponentList.IsEqual(PropertyEditorHook.LookupRoot, NewSelection) then
+  else if not NewSelection.ForceUpdate
+     and FComponentList.IsEqual(PropertyEditorHook.LookupRoot, NewSelection) then
   begin
     // nodes ok, but maybe node values need update
     UpdateComponentNodesValues;
@@ -573,8 +574,7 @@ begin
     OnComponentGetImageIndex(APersistent, Result);
 end;
 
-procedure TComponentTreeView.SetPropertyEditorHook(
-  const AValue: TPropertyEditorHook);
+procedure TComponentTreeView.SetPropertyEditorHook(const AValue: TPropertyEditorHook);
 begin
   if FPropertyEditorHook=AValue then exit;
   FPropertyEditorHook:=AValue;
