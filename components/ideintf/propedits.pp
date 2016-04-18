@@ -1358,7 +1358,7 @@ type
                         Shift: TShiftState; X, Y: Integer);
     // persistent objects
     function GetObject(const aName: ShortString): TPersistent;
-    function GetObjectName(Instance: TPersistent; AOwnerCompName: String): String;
+    function GetObjectName(Instance: TPersistent; AOwnerComp: TComponent): String;
     procedure GetObjectNames(TypeData: PTypeData; const Proc: TGetStrProc);
     procedure ObjectReferenceChanged(Sender: TObject; NewObject: TPersistent);
     // modifing
@@ -4390,15 +4390,10 @@ begin
     else 
       Result := ClassNameToComponentName(PropertyHook.GetRootClassName);
   end
-  else begin
-    Assert(Assigned(FOwnerComponent),
-           'TMethodPropertyEditor.GetFormMethodName: FOwnerComponent not assigned.');
-    Result := TrimNonAscii(PropertyHook.GetObjectName(GetComponent(0), FOwnerComponent.Name));
-  end;
-  if Result = '' then begin
-    {raise EPropertyError.CreateRes(@SCannotCreateName);}
+  else
+    Result := TrimNonAscii(PropertyHook.GetObjectName(GetComponent(0), FOwnerComponent));
+  if Result = '' then
     exit;
-  end;
   Result := Result + GetTrimmedEventName;
 end;
 
@@ -6088,7 +6083,7 @@ begin
 end;
 
 function TPropertyEditorHook.GetObjectName(Instance: TPersistent;
-  AOwnerCompName: String): String;
+  AOwnerComp: TComponent): String;
 var
   i: Integer;
 begin
@@ -6102,8 +6097,10 @@ begin
       Result:=TComponent(Instance).Name
     else if instance is TCollectionItem then 
       Result:=TCollectionItem(Instance).GetNamePath
-    else
-      Result:=AOwnerCompName + ClassNameToComponentName(Instance.ClassName);
+    else begin
+      Assert(Assigned(AOwnerComp),'TPropertyEditorHook.GetObjectName: AOwnerComp not assigned.');
+      Result:=AOwnerComp.Name + ClassNameToComponentName(Instance.ClassName);
+    end;
 end;
 
 procedure TPropertyEditorHook.GetObjectNames(TypeData: PTypeData;
