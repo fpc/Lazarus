@@ -326,8 +326,6 @@ begin
 end;
 
 procedure TEditorMarkupOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-var
-  i, j, idx: Integer;
 begin
   with AOptions as TEditorOptions do
   begin
