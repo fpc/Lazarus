@@ -1507,12 +1507,6 @@ begin
   finally
     Exclude(FStates,pgsApplyingValue);
   end;
-  if FPropertyEditorHook=nil then
-    Invalidate
-  else
-    FPropertyEditorHook.RefreshPropertyValues;
-  //DebugLn(['TOICustomPropertyGrid.SetRowValue ',CurRow.Name,' ',CurRow.Editor.GetVisualValue,' ',Assigned(FOnModified)]);
-  if Assigned(FOnModified) then FOnModified(Self);
 end;
 
 procedure TOICustomPropertyGrid.DoCallEdit(Edit: TOIQuickEdit);
@@ -1792,21 +1786,18 @@ begin
           FCurrentEdit.Color:=FValueDifferBackgrndColor;
       end;
       FCurrentEdit.Visible:=true;
-      if (FDragging=false) and (FCurrentEdit.Showing)
-      and FCurrentEdit.Enabled
-      and (not NewRow.IsReadOnly)
-      and CanFocus then begin
-        if (Column=oipgcValue) then
-          SetActiveControl(FCurrentEdit);
-      end;
+      if (FDragging=false) and FCurrentEdit.Showing and FCurrentEdit.Enabled
+      and (not NewRow.IsReadOnly) and CanFocus and (Column=oipgcValue)
+      then
+        SetActiveControl(FCurrentEdit);
     end;
     if FCurrentButton<>nil then
       FCurrentButton.Enabled:=not NewRow.IsDisabled;
   end;
-  //DebugLn(['TOICustomPropertyGrid.SetItemIndex Vis=',ValueComboBox.Visible,' Ena=',ValueComboBox.Enabled,' Items.Count=',ValueComboBox.Items.Count ,' Text=',ValueComboBox.Text]);
+  //DebugLn(['TOICustomPropertyGrid.SetItemIndex Vis=',ValueComboBox.Visible,' Ena=',ValueComboBox.Enabled,
+  //         ' Items.Count=',ValueComboBox.Items.Count ,' Text=',ValueComboBox.Text]);
   Exclude(FStates, pgsChangingItemIndex);
   DoSelectionChange;
-  Invalidate;
 end;
 
 function TOICustomPropertyGrid.GetNameRowHeight: Integer;
