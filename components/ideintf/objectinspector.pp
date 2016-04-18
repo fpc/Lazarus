@@ -4398,8 +4398,6 @@ begin
 //,' ',FPropertyEditorHook<>nil,'  ',FPropertyEditorHook.LookupRoot<>nil);
   if FUpdatingAvailComboBox then exit;
   FUpdatingAvailComboBox:=true;
-  Assert(Assigned(ComponentTree), 'TObjectInspectorDlg.FillPersistentComboBox: ComponentTree=nil');
-  ComponentTree.RebuildComponentNodes;  // if ComponentTree<>nil then
   NewList:=TStringList.Create;
   try
     if (FPropertyEditorHook<>nil)

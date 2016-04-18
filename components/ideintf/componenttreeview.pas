@@ -44,6 +44,7 @@ type
     function GetSelection: TPersistentSelectionList;
     procedure SetPropertyEditorHook(const AValue: TPropertyEditorHook);
     procedure SetSelection(const NewSelection: TPersistentSelectionList);
+    procedure UpdateSelected;
   protected
     procedure DoSelectionChanged; override;
     function GetImageFor(APersistent: TPersistent):integer;
@@ -253,6 +254,8 @@ end;
 { TComponentTreeView }
 
 procedure TComponentTreeView.SetSelection(const NewSelection: TPersistentSelectionList);
+var
+  IsNewLookupRoot: Boolean;
 begin
   if (PropertyEditorHook = nil) then
   begin
@@ -268,9 +271,14 @@ begin
     UpdateComponentNodesValues;
     Exit;
   end;
-  FComponentList.LookupRoot := PropertyEditorHook.LookupRoot;
+  IsNewLookupRoot := FComponentList.LookupRoot <> PropertyEditorHook.LookupRoot;
+  if IsNewLookupRoot then
+    FComponentList.LookupRoot := PropertyEditorHook.LookupRoot;
   FComponentList.Selection.Assign(NewSelection);
-  RebuildComponentNodes;
+  if IsNewLookupRoot then
+    RebuildComponentNodes
+  else
+    UpdateSelected;
 end;
 
 procedure TComponentTreeView.DoSelectionChanged;
@@ -670,13 +678,10 @@ var
   end;
 
 var
-  OldExpanded: TTreeNodeExpandedState;
   RootNode: TTreeNode;
   Candidate: TComponentCandidate;
 begin
   BeginUpdate;
-  // save old expanded state and clear
-  OldExpanded:=TTreeNodeExpandedState.Create(Self);
   Items.Clear;
 
   RootObject := nil;
@@ -715,10 +720,6 @@ begin
 
     RootNode.Expand(true);
   end;
-
-  // restore old expanded state
-  OldExpanded.Apply(Self);
-  OldExpanded.Free;
   MakeSelectionVisible;
   EndUpdate;
 end;
@@ -732,6 +733,23 @@ procedure TComponentTreeView.UpdateComponentNodesValues;
     if ANode = nil then Exit;
     APersistent := TPersistent(ANode.Data);
     ANode.Text := CreateNodeCaption(APersistent);
+    UpdateComponentNode(ANode.GetFirstChild);
+    UpdateComponentNode(ANode.GetNextSibling);
+  end;
+
+begin
+  UpdateComponentNode(Items.GetFirstNode);
+end;
+
+procedure TComponentTreeView.UpdateSelected;
+
+  procedure UpdateComponentNode(ANode: TTreeNode);
+  var
+    APersistent: TPersistent;
+  begin
+    if ANode = nil then Exit;
+    APersistent := TPersistent(ANode.Data);
+    ANode.MultiSelected := Selection.IndexOf(APersistent) >= 0;
     UpdateComponentNode(ANode.GetFirstChild);
     UpdateComponentNode(ANode.GetNextSibling);
   end;
