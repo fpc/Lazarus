@@ -529,7 +529,7 @@ type
                                            APersistentClass: TPersistentClass;
                                            AParent: TPersistent): boolean;
     procedure OnPropHookComponentRenamed(AComponent: TComponent);
-    procedure OnPropHookModified(Sender: TObject);
+    procedure OnPropHookModified(Sender: TObject; PropName: ShortString);
     procedure OnPropHookPersistentAdded(APersistent: TPersistent;
                                         Select: boolean);
     procedure OnPropHookPersistentDeleting(APersistent: TPersistent);
@@ -12606,10 +12606,11 @@ begin
     ObjectInspector1.Update;
 end;
 
-procedure TMainIDE.OnPropHookModified(Sender: TObject);
+procedure TMainIDE.OnPropHookModified(Sender: TObject; PropName: ShortString);
 begin
-  // any change of property can cause a change of a display name
-  if ObjectInspector1<>nil then
+  // ToDo: Mark designer as modified with PropName.
+  if (PropName='') and Assigned(ObjectInspector1) then
+    // any change of property can cause a change of a display name
     ObjectInspector1.FillPersistentComboBox;
 end;
 

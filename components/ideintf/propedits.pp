@@ -364,7 +364,7 @@ type
     procedure SetStrValue(const NewValue: AnsiString);
     procedure SetWideStrValue(const NewValue: WideString);
     procedure SetVarValue(const NewValue: Variant);
-    procedure Modified;
+    procedure Modified(PropName: ShortString = '');
     function ValueAvailable: Boolean;
     procedure ListMeasureWidth(const {%H-}AValue: ansistring; {%H-}Index:integer;
                                {%H-}ACanvas:TCanvas; var {%H-}AWidth: Integer); virtual;
@@ -1234,7 +1234,7 @@ type
   TPropHookObjectPropertyChanged = procedure(Sender: TObject;
                                              NewObject: TPersistent) of object;
   // modifing
-  TPropHookModified = procedure(Sender: TObject) of object;
+  TPropHookModified = procedure(Sender: TObject; PropName: ShortString) of object;
   TPropHookRevert = procedure(Instance:TPersistent; PropInfo:PPropInfo) of object;
   TPropHookRefreshPropertyValues = procedure of object;
   // other
@@ -1362,7 +1362,7 @@ type
     procedure GetObjectNames(TypeData: PTypeData; const Proc: TGetStrProc);
     procedure ObjectReferenceChanged(Sender: TObject; NewObject: TPersistent);
     // modifing
-    procedure Modified(Sender: TObject);
+    procedure Modified(Sender: TObject; PropName: ShortString = '');
     procedure Revert(Instance: TPersistent; PropInfo: PPropInfo);
     procedure RefreshPropertyValues;
     // dependencies
@@ -2742,10 +2742,10 @@ begin
     RaiseNoInstance;
 end;
 
-procedure TPropertyEditor.Modified;
+procedure TPropertyEditor.Modified(PropName: ShortString);
 begin
   if PropertyHook <> nil then
-    PropertyHook.Modified(Self);
+    PropertyHook.Modified(Self, PropName);
 end;
 
 procedure TPropertyEditor.SetPropEntry(Index:Integer;
@@ -2757,25 +2757,26 @@ begin
   end;
 end;
 
-procedure TPropertyEditor.SetFloatValue(const NewValue:Extended);
+procedure TPropertyEditor.SetFloatValue(const NewValue: Extended);
 var
-  I:Integer;
+  I: Integer;
   Changed: boolean;
 begin
   Changed:=false;
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do
       Changed:=Changed or (GetFloatProp(Instance,PropInfo)<>NewValue);
-  if Changed then begin
+  if Changed then
     for I:=0 to FPropCount-1 do
-      with FPropList^[I] do SetFloatProp(Instance,PropInfo,NewValue);
-    Modified;
-  end;
+      with FPropList^[I] do begin
+        SetFloatProp(Instance,PropInfo,NewValue);
+        Modified(PropInfo^.Name);
+      end;
 end;
 
-procedure TPropertyEditor.SetMethodValue(const NewValue:TMethod);
+procedure TPropertyEditor.SetMethodValue(const NewValue: TMethod);
 var
-  I:Integer;
+  I: Integer;
   Changed: boolean;
   AMethod: TMethod;
 begin
@@ -2785,32 +2786,34 @@ begin
       AMethod:=LazGetMethodProp(Instance,PropInfo);
       Changed:=Changed or not CompareMem(@AMethod,@NewValue,SizeOf(TMethod));
     end;
-  if Changed then begin
+  if Changed then
     for I:=0 to FPropCount-1 do
-      with FPropList^[I] do LazSetMethodProp(Instance,PropInfo,NewValue);
-    Modified;
-  end;
+      with FPropList^[I] do begin
+        LazSetMethodProp(Instance,PropInfo,NewValue);
+        Modified(PropInfo^.Name);
+      end;
 end;
 
-procedure TPropertyEditor.SetInt64Value(const NewValue:Int64);
+procedure TPropertyEditor.SetInt64Value(const NewValue: Int64);
 var
-  I:Integer;
+  I: Integer;
   Changed: boolean;
 begin
   Changed:=false;
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do
       Changed:=Changed or (GetInt64Prop(Instance,PropInfo)<>NewValue);
-  if Changed then begin
+  if Changed then
     for I:=0 to FPropCount-1 do
-      with FPropList^[I] do SetInt64Prop(Instance,PropInfo,NewValue);
-    Modified;
-  end;
+      with FPropList^[I] do begin
+        SetInt64Prop(Instance,PropInfo,NewValue);
+        Modified(PropInfo^.Name);
+      end;
 end;
 
 procedure TPropertyEditor.SetIntfValue(const NewValue: IInterface);
 var
-  I:Integer;
+  I: Integer;
   Changed: boolean;
 begin
   Changed := False;
@@ -2818,30 +2821,31 @@ begin
     with FPropList^[I] do
       Changed := Changed or (GetInterfaceProp(Instance, PropInfo) <> NewValue);
   if Changed then
-  begin
     for I := 0 to FPropCount - 1 do
-      with FPropList^[I] do SetInterfaceProp(Instance, PropInfo, NewValue);
-    Modified;
-  end;
+      with FPropList^[I] do begin
+        SetInterfaceProp(Instance, PropInfo, NewValue);
+        Modified(PropInfo^.Name);
+      end;
 end;
 
 procedure TPropertyEditor.SetOrdValue(const NewValue: Longint);
 var
-  I:Integer;
+  I: Integer;
   Changed: boolean;
 begin
   Changed := False;
   for I := 0 to FPropCount - 1 do
     with FPropList^[I] do
       Changed := Changed or (GetOrdProp(Instance, PropInfo) <> NewValue);
-  if Changed then begin
+  if Changed then
     for I := 0 to FPropCount - 1 do
-      with FPropList^[I] do SetOrdProp(Instance, PropInfo, NewValue);
-    Modified;
-  end;
+      with FPropList^[I] do begin
+        SetOrdProp(Instance, PropInfo, NewValue);
+        Modified(PropInfo^.Name);
+      end;
 end;
 
-procedure TPropertyEditor.SetPtrValue(const NewValue:Pointer);
+procedure TPropertyEditor.SetPtrValue(const NewValue: Pointer);
 var
   I: Integer;
   Changed: boolean;
@@ -2851,63 +2855,67 @@ begin
     with FPropList^[I] do
       Changed := Changed or (GetOrdProp(Instance, PropInfo) <> PtrInt({%H-}PtrUInt(NewValue)));
   if Changed then
-  begin
     for I := 0 to FPropCount - 1 do
-      with FPropList^[I] do SetOrdProp(Instance, PropInfo, PtrInt({%H-}PtrUInt(NewValue)));
-    Modified;
-  end;
+      with FPropList^[I] do begin
+        SetOrdProp(Instance, PropInfo, PtrInt({%H-}PtrUInt(NewValue)));
+        Modified(PropInfo^.Name);
+      end;
 end;
 
-procedure TPropertyEditor.SetStrValue(const NewValue:AnsiString);
+procedure TPropertyEditor.SetStrValue(const NewValue: AnsiString);
 var
-  I:Integer;
+  I: Integer;
   Changed: boolean;
 begin
   Changed:=false;
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do
       Changed:=Changed or (GetStrProp(Instance,PropInfo)<>NewValue);
-  if Changed then begin
+  if Changed then
     for I:=0 to FPropCount-1 do
-      with FPropList^[I] do SetStrProp(Instance,PropInfo,NewValue);
-    Modified;
-  end;
+      with FPropList^[I] do begin
+        SetStrProp(Instance,PropInfo,NewValue);
+        Modified(PropInfo^.Name);
+      end;
 end;
 
 procedure TPropertyEditor.SetWideStrValue(const NewValue: WideString);
 var
-  I:Integer;
+  I: Integer;
   Changed: boolean;
 begin
   Changed:=false;
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do
       Changed:=Changed or (GetWideStrProp(Instance,PropInfo)<>NewValue);
-  if Changed then begin
+  if Changed then
     for I:=0 to FPropCount-1 do
-      with FPropList^[I] do SetWideStrProp(Instance,PropInfo,NewValue);
-    Modified;
-  end;
+      with FPropList^[I] do begin
+        SetWideStrProp(Instance,PropInfo,NewValue);
+        Modified(PropInfo^.Name);
+      end;
 end;
 
-procedure TPropertyEditor.SetVarValue(const NewValue:Variant);
+procedure TPropertyEditor.SetVarValue(const NewValue: Variant);
 var
-  I:Integer;
+  I: Integer;
   Changed: boolean;
 begin
   Changed:=false;
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do
       Changed:=Changed or (GetVariantProp(Instance,PropInfo)<>NewValue);
-  if Changed then begin
+  if Changed then
     for I:=0 to FPropCount-1 do
-      with FPropList^[I] do SetVariantProp(Instance,PropInfo,NewValue);
-    Modified;
-  end;
+      with FPropList^[I] do begin
+        SetVariantProp(Instance,PropInfo,NewValue);
+        Modified(PropInfo^.Name);
+      end;
 end;
 
 procedure TPropertyEditor.Revert;
-var I:Integer;
+var
+  I: Integer;
 begin
   if PropertyHook<>nil then
     for I:=0 to FPropCount-1 do
@@ -5501,7 +5509,7 @@ begin
     Filter:=GetStrProp(GetComponent(0), 'Filter');
     if ShowModal=mrOk then begin
       SetStrValue(Filter);
-      Modified;
+      Modified('Filter');
     end;
   finally
     Free;
@@ -6119,7 +6127,7 @@ begin
                   Sender,NewObject);
 end;
 
-procedure TPropertyEditorHook.Modified(Sender: TObject);
+procedure TPropertyEditorHook.Modified(Sender: TObject; PropName: ShortString);
 var
   i: Integer;
   AForm: TCustomForm;
@@ -6130,11 +6138,12 @@ var
 begin
   i := GetHandlerCount(htModified);
   while GetNextHandlerIndex(htModified,i) do
-    TPropHookModified(FHandlers[htModified][i])(Sender);
+    TPropHookModified(FHandlers[htModified][i])(Sender, PropName);
 
   if Sender is TPropertyEditor then 
   begin
     // mark the designer form of every selected persistent
+    // ToDo: Use PropName here somehow.
     Editor := TPropertyEditor(Sender);
     List := TFPList.Create;
     try

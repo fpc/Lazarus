@@ -194,7 +194,7 @@ type
     procedure DeleteChildlessShadowAndItem(anExistingSI: TShadowItem);
     procedure DeleteShadowAndItemAndChildren(anExistingSI: TShadowItem);
     procedure InPlaceEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure OnDesignerModified(Sender: TObject);
+    procedure OnDesignerModified(Sender: TObject; PropName: ShortString);
     procedure OnObjectPropertyChanged(Sender: TObject; NewObject: TPersistent);
     procedure OnDesignerRefreshPropertyValues;
     procedure RecursiveCreateShadows(aParentBox: TShadowBox; aMI: TMenuItem);
@@ -1554,7 +1554,7 @@ begin
     UpdateActionsEnabledness;
 end;
 
-procedure TShadowMenu.OnDesignerModified(Sender: TObject);
+procedure TShadowMenu.OnDesignerModified(Sender: TObject; PropName: ShortString);
 var
   i: integer;
   persistent: TPersistent;
