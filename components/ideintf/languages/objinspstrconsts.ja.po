@@ -473,6 +473,14 @@ msgstr "デフォルトイベントの作成"
 msgid "Create new field and add it at current position"
 msgstr "新しいフィールドを作成し、それを現在の位置に加える"
 
+#: objinspstrconsts.oiscurrentparent
+msgid "Current parent"
+msgstr ""
+
+#: objinspstrconsts.oiscurrentparents
+msgid "Current parents"
+msgstr ""
+
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
@@ -756,6 +764,14 @@ msgstr "すべて選択(&S)"
 msgid "Select All Fields"
 msgstr "すべてのフィールドを選択"
 
+#: objinspstrconsts.oisselectedcontrol
+msgid "Selected control"
+msgstr ""
+
+#: objinspstrconsts.oisselectedcontrols
+msgid "Selected controls"
+msgstr ""
+
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
 msgstr "選択されたプロパティ(&S)"
@@ -791,6 +807,10 @@ msgstr "デフォルトに設定: %s"
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
 msgstr "プロパティ値を既定値に設定"
+
+#: objinspstrconsts.oisshowclasses
+msgid "Show classes"
+msgstr ""
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"

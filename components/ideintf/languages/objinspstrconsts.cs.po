@@ -475,6 +475,14 @@ msgstr "Vytvořit výchozí událost"
 msgid "Create new field and add it at current position"
 msgstr "Vytvořit nové pole a přidat je na aktuální pozici"
 
+#: objinspstrconsts.oiscurrentparent
+msgid "Current parent"
+msgstr ""
+
+#: objinspstrconsts.oiscurrentparents
+msgid "Current parents"
+msgstr ""
+
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
@@ -758,6 +766,14 @@ msgstr "Vybrat vše"
 msgid "Select All Fields"
 msgstr "Vybrat všechna pole"
 
+#: objinspstrconsts.oisselectedcontrol
+msgid "Selected control"
+msgstr ""
+
+#: objinspstrconsts.oisselectedcontrols
+msgid "Selected controls"
+msgstr ""
+
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
 msgstr ""
@@ -793,6 +809,10 @@ msgstr "Nastavit na výchozí: %s"
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
 msgstr "Natavit hodnotu vlastnosti jako Výchozí"
+
+#: objinspstrconsts.oisshowclasses
+msgid "Show classes"
+msgstr ""
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"

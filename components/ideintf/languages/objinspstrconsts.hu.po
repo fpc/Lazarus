@@ -473,6 +473,14 @@ msgstr "Alapértelmezett esemény létrehozása"
 msgid "Create new field and add it at current position"
 msgstr "Mező létrehozása és hozzáadása az aktuális helyhez"
 
+#: objinspstrconsts.oiscurrentparent
+msgid "Current parent"
+msgstr ""
+
+#: objinspstrconsts.oiscurrentparents
+msgid "Current parents"
+msgstr ""
+
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
@@ -750,6 +758,14 @@ msgstr "Ö&sszes kijelölése"
 msgid "Select All Fields"
 msgstr "Minden mező kijelölése"
 
+#: objinspstrconsts.oisselectedcontrol
+msgid "Selected control"
+msgstr ""
+
+#: objinspstrconsts.oisselectedcontrols
+msgid "Selected controls"
+msgstr ""
+
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
 msgstr "Kijelölt tulajdonságok"
@@ -785,6 +801,10 @@ msgstr "Beállítás alapértelmezettre: %s"
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
 msgstr "A tulajdonság értéke legyen Alapértelmezett"
+
+#: objinspstrconsts.oisshowclasses
+msgid "Show classes"
+msgstr ""
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
@@ -1582,3 +1602,4 @@ msgstr "Fül mozgatása eggyel balra"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Fül mozgatása eggyel jobbra"
+

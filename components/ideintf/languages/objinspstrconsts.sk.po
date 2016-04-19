@@ -497,6 +497,14 @@ msgstr "Vytvoriť predvolenú udalosť"
 msgid "Create new field and add it at current position"
 msgstr ""
 
+#: objinspstrconsts.oiscurrentparent
+msgid "Current parent"
+msgstr ""
+
+#: objinspstrconsts.oiscurrentparents
+msgid "Current parents"
+msgstr ""
+
 #: objinspstrconsts.oiscutcomponents
 #, fuzzy
 #| msgid "Cut components"
@@ -786,6 +794,14 @@ msgstr ""
 msgid "Select All Fields"
 msgstr ""
 
+#: objinspstrconsts.oisselectedcontrol
+msgid "Selected control"
+msgstr ""
+
+#: objinspstrconsts.oisselectedcontrols
+msgid "Selected controls"
+msgstr ""
+
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
 msgstr ""
@@ -820,6 +836,10 @@ msgstr "Nastaviť na predvolené: %s"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
+msgstr ""
+
+#: objinspstrconsts.oisshowclasses
+msgid "Show classes"
 msgstr ""
 
 #: objinspstrconsts.oisshowcomponenttree

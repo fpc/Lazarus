@@ -673,7 +673,7 @@ type
 
   { TProjectIDEOptions }
 
-  TProjectIDEOptions = class(TAbstractIDEOptions)
+  TProjectIDEOptions = class(TAbstractIDEProjectOptions)
   private
     FProject: TProject;
   public

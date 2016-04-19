@@ -4061,7 +4061,7 @@ end;
 
 procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
 begin
-  ProjectOptionsHelper([TProjectIDEOptions, TProjectCompilerOptions]);
+  ProjectOptionsHelper([TAbstractIDEProjectOptions, TProjectCompilerOptions]);
 end;
 
 procedure TMainIDE.mnuBuildModeClicked(Sender: TObject);
@@ -4829,9 +4829,10 @@ var
   AProject: TProject;
 begin
   //debugln(['TMainIDE.DoProjectOptionsBeforeRead ',DbgSName(Sender)]);
+  if not (Sender is TProjectIDEOptions) then exit;
   ActiveSrcEdit:=nil;
   BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
-  AProject:=(Sender as TProjectIDEOptions).Project;
+  AProject:=TProjectIDEOptions(Sender).Project;
   AProject.BackupSession;
   AProject.BackupBuildModes;
   AProject.UpdateExecutableType;
@@ -4926,7 +4927,8 @@ var
 
 begin
   //debugln(['TMainIDE.DoProjectOptionsAfterWrite ',DbgSName(Sender),' Restore=',Restore]);
-  AProject:=(Sender as TProjectIDEOptions).Project;
+  if not (Sender is TProjectIDEOptions) then exit;
+  AProject:=TProjectIDEOptions(Sender).Project;
   if Restore then
   begin
     AProject.RestoreBuildModes;

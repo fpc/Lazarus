@@ -473,6 +473,14 @@ msgstr "Создать событие по умолчанию"
 msgid "Create new field and add it at current position"
 msgstr "Создать новое поле и вставить его в текущую позицию"
 
+#: objinspstrconsts.oiscurrentparent
+msgid "Current parent"
+msgstr ""
+
+#: objinspstrconsts.oiscurrentparents
+msgid "Current parents"
+msgstr ""
+
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
@@ -750,6 +758,14 @@ msgstr "Вы&делить все"
 msgid "Select All Fields"
 msgstr "Выделить все поля"
 
+#: objinspstrconsts.oisselectedcontrol
+msgid "Selected control"
+msgstr ""
+
+#: objinspstrconsts.oisselectedcontrols
+msgid "Selected controls"
+msgstr ""
+
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
 msgstr "Вы&бранные свойства"
@@ -785,6 +801,10 @@ msgstr "Установить по умолчанию: %s"
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
 msgstr "Установить значение свойства по умолчанию"
+
+#: objinspstrconsts.oisshowclasses
+msgid "Show classes"
+msgstr ""
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
