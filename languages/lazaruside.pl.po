@@ -1850,6 +1850,10 @@ msgstr ""
 msgid "Except/Finally"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfoldpasfordo
+msgid "For/Do"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
 msgstr ""
@@ -1918,6 +1922,14 @@ msgstr ""
 msgctxt "lazarusidestrconsts.dlgfoldpasvartype"
 msgid "Var/Type (global)"
 msgstr "Var/Type (globalne)"
+
+#: lazarusidestrconsts.dlgfoldpaswhiledo
+msgid "While/Do"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpaswithdo
+msgid "With/Do"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfoldxmlcdata
 msgid "CData"
@@ -11880,6 +11892,10 @@ msgstr "Dodaj czujkę ..."
 msgid "Break Lines in Selection"
 msgstr "Łam linie w zaznaczeniu"
 
+#: lazarusidestrconsts.lismenubreak
+msgid "&Break"
+msgstr ""
+
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Zbuduj plik"
@@ -11975,6 +11991,10 @@ msgstr "Konfiguruj \"Buduj Lazarusa\" ..."
 
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
+msgstr ""
+
+#: lazarusidestrconsts.lismenucontinue
+msgid "&Continue"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage

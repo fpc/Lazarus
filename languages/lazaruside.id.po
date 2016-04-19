@@ -1830,6 +1830,10 @@ msgstr ""
 msgid "Except/Finally"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfoldpasfordo
+msgid "For/Do"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
 msgstr ""
@@ -1894,6 +1898,14 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasvartype
 msgid "Var/Type (global)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpaswhiledo
+msgid "While/Do"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpaswithdo
+msgid "With/Do"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldxmlcdata
@@ -11882,6 +11894,10 @@ msgstr "Tambah pengawasan ..."
 msgid "Break Lines in Selection"
 msgstr ""
 
+#: lazarusidestrconsts.lismenubreak
+msgid "&Break"
+msgstr ""
+
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Bangun File"
@@ -11976,6 +11992,10 @@ msgstr "Konfigurasi \"Bangun Lazarus\" ..."
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "Panduan sensitif isi"
+
+#: lazarusidestrconsts.lismenucontinue
+msgid "&Continue"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 #, fuzzy

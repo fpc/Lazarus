@@ -1779,6 +1779,10 @@ msgstr ""
 msgid "Except/Finally"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfoldpasfordo
+msgid "For/Do"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
 msgstr ""
@@ -1843,6 +1847,14 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasvartype
 msgid "Var/Type (global)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpaswhiledo
+msgid "While/Do"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpaswithdo
+msgid "With/Do"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldxmlcdata
@@ -11615,6 +11627,10 @@ msgstr "İzleme ekle ..."
 msgid "Break Lines in Selection"
 msgstr ""
 
+#: lazarusidestrconsts.lismenubreak
+msgid "&Break"
+msgstr ""
+
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Dosyayı Oluştur"
@@ -11709,6 +11725,10 @@ msgstr "\"Lazarus'u Oluştur\"'u Yapılandır ..."
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "Bağlama duyarlı Yardım"
+
+#: lazarusidestrconsts.lismenucontinue
+msgid "&Continue"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 #, fuzzy

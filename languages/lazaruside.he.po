@@ -1858,6 +1858,10 @@ msgstr "צבורי/פרטי"
 msgid "Except/Finally"
 msgstr "קבל/לבסוף"
 
+#: lazarusidestrconsts.dlgfoldpasfordo
+msgid "For/Do"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
 msgstr "{$IfDef}"
@@ -1923,6 +1927,14 @@ msgstr "משתמש ב"
 #: lazarusidestrconsts.dlgfoldpasvartype
 msgid "Var/Type (global)"
 msgstr "משתנה/סוג (גלובלי)"
+
+#: lazarusidestrconsts.dlgfoldpaswhiledo
+msgid "While/Do"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpaswithdo
+msgid "With/Do"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfoldxmlcdata
 msgid "CData"
@@ -12151,6 +12163,10 @@ msgstr "הוסף משגיח ..."
 msgid "Break Lines in Selection"
 msgstr "חתוך את השורה במקום שנבחר"
 
+#: lazarusidestrconsts.lismenubreak
+msgid "&Break"
+msgstr ""
+
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "בנה קובץ"
@@ -12249,6 +12265,10 @@ msgstr "מגדיר \"בנה לזרוס\""
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "עזרה רגישת הקשר"
+
+#: lazarusidestrconsts.lismenucontinue
+msgid "&Continue"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 #, fuzzy

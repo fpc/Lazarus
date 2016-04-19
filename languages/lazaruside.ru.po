@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-04-07 01:18+0300\n"
+"PO-Revision-Date: 2016-04-20 01:29+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1769,6 +1769,10 @@ msgstr "Секции public/private"
 msgid "Except/Finally"
 msgstr "Except/Finally"
 
+#: lazarusidestrconsts.dlgfoldpasfordo
+msgid "For/Do"
+msgstr "For/Do"
+
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
 msgstr "{$IfDef}"
@@ -1834,6 +1838,14 @@ msgstr "Используемые модули"
 #: lazarusidestrconsts.dlgfoldpasvartype
 msgid "Var/Type (global)"
 msgstr "Секции Var/Type (глобальные)"
+
+#: lazarusidestrconsts.dlgfoldpaswhiledo
+msgid "While/Do"
+msgstr "While/Do"
+
+#: lazarusidestrconsts.dlgfoldpaswithdo
+msgid "With/Do"
+msgstr "With/Do"
 
 #: lazarusidestrconsts.dlgfoldxmlcdata
 msgid "CData"
@@ -11491,6 +11503,10 @@ msgstr "Добавить &наблюдение ..."
 msgid "Break Lines in Selection"
 msgstr "Разбить строки в выделенном"
 
+#: lazarusidestrconsts.lismenubreak
+msgid "&Break"
+msgstr "&Остановить"
+
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Собрать файл"
@@ -11571,6 +11587,10 @@ msgstr "Параметры сборки Lazarus ..."
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "Контекстно-зависимая справка"
+
+#: lazarusidestrconsts.lismenucontinue
+msgid "&Continue"
+msgstr "&Продолжить"
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 msgid "Convert Delphi Package to Lazarus Package ..."
