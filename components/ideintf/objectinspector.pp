@@ -4211,7 +4211,7 @@ begin
     Height := 15;
     Top := 7;
     Width := 53;
-    Caption := 'Properties';
+    Caption := oisBtnProperties;
     FocusControl := PropFilterEdit;
   end;
 
