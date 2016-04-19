@@ -1162,9 +1162,9 @@ end;
 
 procedure TCustomControlFilterEdit.FormActivate(Sender: TObject);
 begin
-  fJustActivated:=fParentForm.ActiveControl=Self.Edit;
+  fJustActivated := (fParentForm.ActiveControl=Self.Edit) or Focused or Edit.Focused;
   if fJustActivated then
-    Filter:=Text;
+    Edit.DoEnter;
 end;
 
 procedure TCustomControlFilterEdit.FormDeactivate(Sender: TObject);
@@ -1175,16 +1175,17 @@ end;
 procedure TCustomControlFilterEdit.SetFilter(const AValue: string);
 var
   NewValue: String;
+  UseHintText: Boolean;
 begin
-  if (TextHint<>'') and (AValue=TextHint) then
+  UseHintText := (TextHint<>'') and (AValue=TextHint);
+  if UseHintText then
     NewValue:=''
   else
     NewValue:=AValue;
   Button.Enabled:=NewValue<>'';
-  if (NewValue<>'') or Focused or fJustActivated or (csDesigning in ComponentState) then
-  begin
+  if (not UseHintText) or Focused or fJustActivated or (csDesigning in ComponentState)
+  then
     Text:=NewValue;
-  end;
   if fFilter=NewValue then exit;
   fFilter:=NewValue;
   ApplyFilter;
