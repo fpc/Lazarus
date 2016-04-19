@@ -33,7 +33,7 @@ unit Grids;
 interface
 
 uses
-  Types, Classes, SysUtils, Math, Maps, LCLStrConsts, LCLProc, LCLType, LCLIntf,
+  Types, Classes, SysUtils, TypInfo, Math, Maps, LCLStrConsts, LCLProc, LCLType, LCLIntf,
   LazFileUtils, FPCanvas, Controls, GraphType, Graphics, Forms, DynamicArray,
   LMessages, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes,
   LazUTF8, LazUtf8Classes, Laz2_XMLCfg, LCSVUtils
@@ -11106,11 +11106,17 @@ end;
 { TGridColumnTitle }
 
 procedure TGridColumnTitle.WriteCaption(Writer: TWriter);
+var
+  aStr: string;
+  PropInfo: PPropInfo;
 begin
-  if not FIsDefaultCaption then
-    Writer.WriteString(FCaption)
-  else
-    Writer.WriteString(Caption);
+  if not FIsDefaultCaption then  aStr := FCaption
+  else                           aStr := Caption;
+  if Writer.OnWriteStringProperty<>nil then begin
+    PropInfo := GetPropInfo(Self, 'Caption');
+    Writer.OnWriteStringProperty(Writer, Self, PropInfo, aStr);
+  end;
+  Writer.WriteString(aStr);
 end;
 
 procedure TGridColumnTitle.FontChanged(Sender: TObject);
