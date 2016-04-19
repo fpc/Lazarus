@@ -4042,12 +4042,12 @@ constructor TObjectInspectorDlg.Create(AnOwner: TComponent);
 
 begin
   inherited Create(AnOwner);
-  FEnableHookGetSelection:= true;
-  FPropertyEditorHook:=nil;
+  FEnableHookGetSelection := true;
+  FPropertyEditorHook := nil;
   FInSelection := False;
-  FSelection:=TPersistentSelectionList.Create;
+  FSelection := TPersistentSelectionList.Create;
   FAutoShow := True;
-  FUpdatingAvailComboBox:=false;
+  FUpdatingAvailComboBox := false;
   FDefaultItemHeight := 22;
   ComponentPanelHeight := 160;
   FShowComponentTree := True;
@@ -4167,7 +4167,7 @@ begin
   // ComponentPanel encapsulates TreeFilterEdit and ComponentTree
   ComponentPanel.Constraints.MinHeight := 8;
   ComponentPanel.Visible := FShowComponentTree;
-  CompFilterEdit.FilteredTreeview:=ComponentTree;
+  CompFilterEdit.FilteredTreeview := ComponentTree;
 
   InfoPanel := TPanel.Create(Self);
   with InfoPanel do
@@ -4586,24 +4586,8 @@ begin
     Control.Parent := TWinControl(NewParent);
   end;
 
-  // Following code taken from DoZOrderItemClick();
   // Ensure the order of controls in the OI now reflects the new ZOrder
-  //NewSelection := TPersistentSelectionList.Create;
-  //try
-  //  NewSelection.ForceUpdate:=True;
-  //  NewSelection.Add(Control.Parent);
-  //  SetSelection(NewSelection);
-  //
-  //  NewSelection.Clear;
-  //  NewSelection.ForceUpdate:=True;
-  //  NewSelection.Add(Control);
-  //  SetSelection(NewSelection);
-  //finally
-  //  NewSelection.Free;
-  //end;
-
-  // Ensure the order of controls in the OI now reflects the new ZOrder
-  // (this code based on commented above)
+  // This code is based on DoZOrderItemClick().
   NewSelection := TPersistentSelectionList.Create;
   try
     NewSelection.ForceUpdate:=True;
