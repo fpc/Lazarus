@@ -11112,7 +11112,7 @@ var
 begin
   if not FIsDefaultCaption then  aStr := FCaption
   else                           aStr := Caption;
-  if Writer.OnWriteStringProperty<>nil then begin
+  if Assigned(Writer.OnWriteStringProperty) then begin
     PropInfo := GetPropInfo(Self, 'Caption');
     Writer.OnWriteStringProperty(Writer, Self, PropInfo, aStr);
   end;
