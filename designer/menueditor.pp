@@ -1889,11 +1889,16 @@ begin
   GlobalDesignHook.AddHandlerObjectPropertyChanged(@OnObjectPropertyChanged);
   GlobalDesignHook.AddHandlerModified(@OnDesignerModified);
   GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnDesignerRefreshPropertyValues);
-  Parent := aForm;
-  AutoSize := False;
-  Color := clBtnFace;
-  BorderStyle := bsNone;
-  Align := alClient;
+  DisableAutoSizing;
+  try
+    AutoSize := False;
+    Color := clBtnFace;
+    BorderStyle := bsNone;
+    Align := alClient;
+    Parent := aForm;
+  finally
+    EnableAutoSizing;
+  end;
 end;
 
 destructor TShadowMenu.Destroy;
