@@ -242,9 +242,9 @@ begin
     DebugLn(['  ',i,' ',dbgsName(Items[i])]);
 end;
 
-function TPersistentSelectionList.IsEqual(
- SourceSelectionList:TPersistentSelectionList):boolean;
-var a:integer;
+function TPersistentSelectionList.IsEqual(SourceSelectionList: TPersistentSelectionList): boolean;
+var
+  a: integer;
 begin
   if (SourceSelectionList=nil) and (Count=0) then begin
     Result:=true;

@@ -2236,8 +2236,7 @@ var
     end;
     if not Assigned(NewParent) then exit;
 
-    if not PropertyEditorHook.BeforeAddPersistent(Self,
-                                     NewComponentClass,NewParent)
+    if not PropertyEditorHook.BeforeAddPersistent(Self, NewComponentClass, NewParent)
     then begin
       DebugLn('Note: TDesigner.AddComponent BeforeAddPersistent failed: ComponentClass=',
               NewComponentClass.ClassName,' NewParent=',DbgSName(NewParent));

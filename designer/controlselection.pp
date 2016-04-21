@@ -362,8 +362,7 @@ type
     procedure UpdateRealBounds;
     procedure UpdateParentChildFlags;
     procedure DoDrawMarker(Index: integer; DC: TDesignerDeviceContext);
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-           override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     // snapping
     function CleanGridSizeX: integer;
@@ -2141,9 +2140,9 @@ begin
      end;
 end;
 
-function TControlSelection.GetParentFormRelativeBounds(AComponent: TComponent
-  ): TRect;
-var R:TRect;
+function TControlSelection.GetParentFormRelativeBounds(AComponent: TComponent): TRect;
+var
+  R:TRect;
   P : TPoint;
 begin
   if FMediator <> nil then
@@ -2161,8 +2160,7 @@ begin
   Result:=TSelectedControl(FControls[Index]);
 end;
 
-procedure TControlSelection.SetItems(Index:integer;
-  ASelectedControl:TSelectedControl);
+procedure TControlSelection.SetItems(Index:integer; ASelectedControl:TSelectedControl);
 begin
   FControls[Index]:=ASelectedControl;
 end;
@@ -2290,7 +2288,8 @@ begin
   InvalidateGrabbers;
   InvalidateGuideLines;
   InvalidateMarkers;
-  for i:=0 to FControls.Count-1 do Items[i].Free;
+  for i:=0 to FControls.Count-1 do
+    Items[i].Free;
   FControls.Clear;
   FStates:=FStates+cssSelectionChangeFlags-[cssLookupRootSelected];
   FForm:=nil;

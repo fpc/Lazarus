@@ -4972,7 +4972,7 @@ end;
 
 procedure TMainIDE.ComponentPaletteClassSelected(Sender: TObject);
 begin
-  // code below cant be handled correctly by integrated IDE
+  // code below can't be handled correctly by integrated IDE
   if (IDETabMaster = nil) and (Screen.CustomFormZOrderCount > 1)
   and Assigned(Screen.CustomFormsZOrdered[1].Designer) then
   begin
