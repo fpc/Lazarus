@@ -397,6 +397,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure DoChange(ForceUpdate: Boolean = False);
+    procedure IgnoreUpdate;
     property UpdateLock: integer read FUpdateLock;
 
     // items
@@ -2086,6 +2087,11 @@ begin
     if Assigned(FOnChange) then
       FOnChange(Self, ForceUpdate);
   end;
+end;
+
+procedure TControlSelection.IgnoreUpdate;
+begin
+  FStates := FStates - cssSelectionChangeFlags;
 end;
 
 procedure TControlSelection.DoChangeProperties;

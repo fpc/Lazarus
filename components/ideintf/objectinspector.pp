@@ -739,6 +739,7 @@ type
   private
     FEnableHookGetSelection: boolean;
     FInSelection: Boolean;
+    FRefreshingSelectionCount: integer;
     FOnAutoShow: TNotifyEvent;
     FLastActiveRowName: String;
     function GetComponentPanelHeight: integer;
@@ -752,6 +753,7 @@ type
     procedure OnGridSelectionChange(Sender: TObject);
     function OnGridPropertyHint(Sender: TObject; PointedRow: TOIPropertyGridRow;
       out AHint: string): boolean;
+    procedure FillPersistentComboBox;
     procedure SetAvailComboBoxText;
     procedure HookGetSelection(const ASelection: TPersistentSelectionList);
     procedure HookSetSelection(const ASelection: TPersistentSelectionList);
@@ -771,7 +773,7 @@ type
     procedure SaveChanges;
     procedure RefreshPropertyValues;
     procedure RebuildPropertyLists;
-    procedure FillPersistentComboBox;
+    procedure FillComponentList;
     procedure BeginUpdate;
     procedure EndUpdate;
     function GetActivePropertyGrid: TOICustomPropertyGrid;
@@ -4044,10 +4046,8 @@ begin
   inherited Create(AnOwner);
   FEnableHookGetSelection := true;
   FPropertyEditorHook := nil;
-  FInSelection := False;
   FSelection := TPersistentSelectionList.Create;
   FAutoShow := True;
-  FUpdatingAvailComboBox := false;
   FDefaultItemHeight := 22;
   ComponentPanelHeight := 160;
   FShowComponentTree := True;
@@ -4297,7 +4297,7 @@ begin
         ASelection.Free;
       end;
     end;
-    FillPersistentComboBox;
+    FillComponentList;
     ComponentTree.PropertyEditorHook:=FPropertyEditorHook;
     RefreshSelection;
   end;
@@ -4385,7 +4385,15 @@ begin
     if GridControl[Page]<>nil then
       GridControl[Page].PropEditLookupRootChange;
   CompFilterEdit.Filter:='';
-  FillPersistentComboBox;
+  FillComponentList;
+end;
+
+procedure TObjectInspectorDlg.FillComponentList;
+begin
+  if FShowComponentTree then
+    ComponentTree.RebuildComponentNodes
+  else
+    FillPersistentComboBox;
 end;
 
 procedure TObjectInspectorDlg.FillPersistentComboBox;
@@ -4395,9 +4403,10 @@ var
   OldText: AnsiString;
   NewList: TStringList;
 begin
-//writeln('[TObjectInspectorDlg.FillComponentComboBox] A ',FUpdatingAvailComboBox
-//,' ',FPropertyEditorHook<>nil,'  ',FPropertyEditorHook.LookupRoot<>nil);
-  if FUpdatingAvailComboBox then exit;
+  DebugLn('TObjectInspectorDlg.FillPersistentComboBox: Updating ComboBox with components');
+  Assert(not FUpdatingAvailComboBox,
+         'TObjectInspectorDlg.FillPersistentComboBox: Updating Avail ComboBox');
+  //if FUpdatingAvailComboBox then exit;
   FUpdatingAvailComboBox:=true;
   NewList:=TStringList.Create;
   try
@@ -4607,22 +4616,14 @@ begin
 end;
 
 procedure TObjectInspectorDlg.SetSelection(const ASelection: TPersistentSelectionList);
-var
-  OldInSelection: Boolean;
 begin
   if ASelection<>nil then begin
-    if FSelection.IsEqual(ASelection) then
-    begin
-      if FInSelection then
-        exit; // prevent endless loops
-      if (not ASelection.ForceUpdate) then
-        exit; // nothing changed
-      ASelection.ForceUpdate:=false;
-    end;
+    if FSelection.IsEqual(ASelection) then // Nothing changed or endless loop -> quit.
+      if FInSelection or not ASelection.ForceUpdate then exit;
   end else begin
     if FSelection.Count=0 then exit;
   end;
-  OldInSelection := FInSelection;
+  Assert(not FInSelection, 'TObjectInspectorDlg.SetSelection: Already setting selection.');
   FInSelection := True;
   try
     // ToDo: Clear filter only if a selected node is hidden (Visible=False)
@@ -4636,7 +4637,7 @@ begin
     if Assigned(FOnSelectPersistentsInOI) then
       FOnSelectPersistentsInOI(Self);
   finally
-    FInSelection := OldInSelection;
+    FInSelection := False;
   end;
 end;
 
@@ -4644,10 +4645,12 @@ procedure TObjectInspectorDlg.RefreshSelection;
 var
   Page: TObjectInspectorPage;
 begin
+  if FRefreshingSelectionCount > 0 then Exit; // Prevent a recursive loop.
+  Inc(FRefreshingSelectionCount);
+
   if NoteBook.Page[3].Visible then
   begin
     DoUpdateRestricted;
-    
     // invalidate RestrictedProps
     WidgetSetsRestrictedBox.Invalidate;
     ComponentRestrictedBox.Invalidate;
@@ -4662,6 +4665,7 @@ begin
       OnAutoShow(Self)
     else
       Visible := True;
+  Dec(FRefreshingSelectionCount);
 end;
 
 procedure TObjectInspectorDlg.RefreshComponentTreeSelection;
@@ -5046,6 +5050,7 @@ begin
       CreateTopSplitter
     else
       FreeAndNil(Splitter1);
+    FillComponentList;
   finally
     EndUpdate;
   end;

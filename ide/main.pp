@@ -8803,9 +8803,9 @@ procedure TMainIDE.OnDesignerPersistentDeleted(Sender: TObject; APersistent: TPe
 // important: APersistent was freed, do not access its content, only the pointer
 begin
   if dfDestroyingForm in TDesigner(Sender).Flags then exit;
-  if APersistent=nil then ;
+  //if APersistent=nil then ;
   if ObjectInspector1<>nil then
-    ObjectInspector1.FillPersistentComboBox;
+    ObjectInspector1.FillComponentList;
 end;
 
 procedure TMainIDE.OnPropHookPersistentDeleting(APersistent: TPersistent);
@@ -12613,7 +12613,7 @@ begin
   // ToDo: Mark designer as modified with PropName.
   if (PropName='') and Assigned(ObjectInspector1) then
     // any change of property can cause a change of a display name
-    ObjectInspector1.FillPersistentComboBox;
+    ObjectInspector1.FillComponentList;
 end;
 
 {-------------------------------------------------------------------------------
@@ -12691,14 +12691,13 @@ begin
     CodeToolBoss.CompleteComponent(ActiveUnitInfo.Source,ADesigner.LookupRoot,Ancestor);
   end;
 
-  if ObjectInspector1<>nil then
-    ObjectInspector1.FillPersistentComboBox;
-
   //debugln('TMainIDE.OnPropHookPersistentAdded D ',AComponent.Name,':',AComponent.ClassName,' ',Select);
   // select component
-  if Select then begin
+  if Select then
     TheControlSelection.AssignPersistent(APersistent);
-  end;
+
+  if ObjectInspector1<>nil then
+    ObjectInspector1.FillComponentList;
   {$IFDEF IDE_DEBUG}
   debugln('TMainIDE.OnPropHookPersistentAdded END ',dbgsName(APersistent),' Select=',Select);
   {$ENDIF}

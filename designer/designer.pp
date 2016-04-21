@@ -200,7 +200,6 @@ type
     function DoDeleteSelectedPersistents: boolean;
     procedure DoSelectAll;
     procedure DoDeletePersistent(APersistent: TPersistent; FreeIt: boolean);
-    procedure MarkPersistentForDeletion(APersistent: TPersistent);
     function GetSelectedComponentClass: TRegisteredComponent;
     procedure NudgePosition(DiffX, DiffY: Integer);
     procedure NudgeSize(DiffX, DiffY: Integer);
@@ -685,7 +684,10 @@ begin
   // was FinalizeFreeDesigner
   Include(FFlags, dfDestroyingForm);
   // free or hide the form
+  TheControlSelection.BeginUpdate;
   TheFormEditor.DeleteComponent(FLookupRoot,AFreeComponent);
+  TheControlSelection.IgnoreUpdate;
+  TheControlSelection.EndUpdate;
   DisconnectComponent;
   Free;
 end;
@@ -2339,7 +2341,6 @@ var
       exit;
     end;
 
-    ControlSelection.BeginUpdate;
     // check if start new selection or add/remove:
     NewRubberbandSelection:= (not (ssShift in Shift))
       or (ControlSelection.SelectionForm<>Form);
@@ -2363,7 +2364,6 @@ var
       SelectionChanged:=true;
     end;
     ControlSelection.RubberbandActive:=false;
-    ControlSelection.EndUpdate;
     {$IFDEF VerboseDesigner}
     DebugLn('RubberbandSelect ',DbgS(ControlSelection.Grabbers[0]));
     {$ENDIF}
@@ -2452,6 +2452,7 @@ begin
     if Handled then exit;
   end;
 
+  ControlSelection.BeginUpdate;
   if Button=mbLeft then
   begin
     if SelectedCompClass = nil then
@@ -2520,11 +2521,11 @@ begin
       AddComponent;
     end;
   end
-  else
-  if Button=mbRight then
+  else if Button=mbRight then
   begin
     // right click -> popup menu
     DisableRubberBand;
+    ControlSelection.EndUpdate;
     if EnvironmentOptions.RightClickSelects
     and (not ControlSelection.IsSelected(MouseDownComponent))
     and (Shift - [ssRight] = []) then
@@ -2533,6 +2534,7 @@ begin
     BuildPopupMenu;
     PopupPos := Form.ClientToScreen(MouseUpPos);
     FDesignerPopupMenu.Popup(PopupPos.X, PopupPos.Y);
+    ControlSelection.BeginUpdate;
   end;
 
   DisableRubberBand;
@@ -2543,9 +2545,10 @@ begin
   Exclude(FFlags,dfHasSized);
   MouseDownComponent:=nil;
   MouseDownSender:=nil;
-
   if PropertyEditorHook<>nil then
     PropertyEditorHook.DesignerMouseUp(Sender, Button, Shift, p.X, p.Y);
+
+  ControlSelection.EndUpdate;
 
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseUpOnControl] END');
@@ -2899,7 +2902,11 @@ begin
 
   // mark selected components for deletion
   for i:=0 to ControlSelection.Count-1 do
-    MarkPersistentForDeletion(ControlSelection[i].Persistent);
+  begin
+    APersistent := ControlSelection[i].Persistent;
+    if DeletingPersistent.IndexOf(APersistent) = -1 then
+      DeletingPersistent.Add(APersistent);
+  end;
   // clear selection by selecting the LookupRoot
   SelectOnlyThisComponent(FLookupRoot);
   // delete marked components
@@ -2970,12 +2977,6 @@ begin
     FOnPersistentDeleted(Self,APersistent);
   if Hook<>nil then
     Hook.PersistentDeleted;
-end;
-
-procedure TDesigner.MarkPersistentForDeletion(APersistent: TPersistent);
-begin
-  if DeletingPersistent.IndexOf(APersistent) = -1 then
-    DeletingPersistent.Add(APersistent);
 end;
 
 function TDesigner.GetSelectedComponentClass: TRegisteredComponent;

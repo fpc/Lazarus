@@ -42,8 +42,8 @@ type
     FPropertyEditorHook: TPropertyEditorHook;
     FImageList: TImageList;
     function GetSelection: TPersistentSelectionList;
-    procedure SetPropertyEditorHook(const AValue: TPropertyEditorHook);
-    procedure SetSelection(const NewSelection: TPersistentSelectionList);
+    procedure SetPropertyEditorHook(AValue: TPropertyEditorHook);
+    procedure SetSelection(NewSelection: TPersistentSelectionList);
     procedure UpdateSelected;
   protected
     procedure DoSelectionChanged; override;
@@ -255,9 +255,7 @@ end;
   
 { TComponentTreeView }
 
-procedure TComponentTreeView.SetSelection(const NewSelection: TPersistentSelectionList);
-var
-  IsNewLookupRoot: Boolean;
+procedure TComponentTreeView.SetSelection(NewSelection: TPersistentSelectionList);
 begin
   if (PropertyEditorHook = nil) then
   begin
@@ -272,14 +270,14 @@ begin
     UpdateComponentNodesValues;
     Exit;
   end;
-  IsNewLookupRoot := FComponentList.LookupRoot <> PropertyEditorHook.LookupRoot;
-  if IsNewLookupRoot then
-    FComponentList.LookupRoot := PropertyEditorHook.LookupRoot;
+  FComponentList.LookupRoot := PropertyEditorHook.LookupRoot;
   FComponentList.Selection.Assign(NewSelection);
-  if IsNewLookupRoot then
-    RebuildComponentNodes
-  else
-    UpdateSelected;
+  if NewSelection.ForceUpdate then
+  begin
+    DebugLn('TComponentTreeView.SetSelection: Selection.ForceUpdate encountered.');
+    NewSelection.ForceUpdate:=false;
+  end;
+  UpdateSelected;
 end;
 
 procedure TComponentTreeView.DoSelectionChanged;
@@ -574,11 +572,11 @@ begin
     OnComponentGetImageIndex(APersistent, Result);
 end;
 
-procedure TComponentTreeView.SetPropertyEditorHook(const AValue: TPropertyEditorHook);
+procedure TComponentTreeView.SetPropertyEditorHook(AValue: TPropertyEditorHook);
 begin
   if FPropertyEditorHook=AValue then exit;
   FPropertyEditorHook:=AValue;
-  RebuildComponentNodes;
+  //RebuildComponentNodes;
 end;
 
 function TComponentTreeView.GetSelection: TPersistentSelectionList;
@@ -681,9 +679,9 @@ var
   RootNode: TTreeNode;
   Candidate: TComponentCandidate;
 begin
+  DebugLn('TComponentTreeView.RebuildComponentNodes: Updating TreeView with components');
   BeginUpdate;
   Items.Clear;
-
   RootObject := nil;
   if PropertyEditorHook<>nil then
     RootObject := PropertyEditorHook.LookupRoot;
@@ -738,7 +736,9 @@ procedure TComponentTreeView.UpdateComponentNodesValues;
   end;
 
 begin
+  BeginUpdate;
   UpdateComponentNode(Items.GetFirstNode);
+  EndUpdate;
 end;
 
 procedure TComponentTreeView.UpdateSelected;
@@ -755,7 +755,10 @@ procedure TComponentTreeView.UpdateSelected;
   end;
 
 begin
+  BeginUpdate;
+  Selected := Nil;
   UpdateComponentNode(Items.GetFirstNode);
+  EndUpdate;
 end;
 
 function TComponentTreeView.CreateNodeCaption(APersistent: TPersistent;
