@@ -5284,16 +5284,8 @@ end;
 { TStringsPropertyEditor }
 
 procedure TStringsPropertyEditor.Edit;
-var
-  TheDialog: TStringsPropEditorDlg;
 begin
-  TheDialog := CreateDlg(TStrings(GetObjectValue));
-  try
-    if (TheDialog.ShowModal = mrOK) then 
-      SetPtrValue(TheDialog.Memo.Lines);
-  finally
-    TheDialog.Free;
-  end;
+  raise Exception.Create('TStringsPropertyEditor.Edit: Should not happen.');
 end;
 
 function TStringsPropertyEditor.CreateDlg(s: TStrings): TStringsPropEditorDlg;
