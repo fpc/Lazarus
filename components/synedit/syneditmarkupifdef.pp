@@ -2446,7 +2446,7 @@ end;
 
 function TSynMarkupHighIfDefLinesTree.CreateOpeningList: TLazSynEditNestedFoldsList;
 begin
-  Result := TLazSynEditNestedFoldsList.Create(@GetHighLighterWithLines);
+  Result := TLazSynEditNestedFoldsList.Create(FLines, FHighlighter);
   Result.ResetFilter;
   Result.Clear;
   //Result.Line :=
@@ -3829,12 +3829,14 @@ begin
   if FHighlighter = AValue then Exit;
   FHighlighter := AValue;
   FIfDefTree.Highlighter := AValue;
+  FOuterLines.HighLighter := AValue;
 end;
 
 procedure TSynEditMarkupIfDef.DoBufferChanging(Sender: TObject);
 begin
   FIfDefTree.Clear;
   FIfDefTree.Lines := nil;
+  FOuterLines.Lines := nil;
 end;
 
 procedure TSynEditMarkupIfDef.ValidateMatches;
@@ -3890,6 +3892,7 @@ begin
   //FIfDefTree.Lines  pointing to view => so still valid
   FIfDefTree.Clear;
   FIfDefTree.Lines := Lines;
+  FOuterLines.Lines := Lines;
 
   FLastValidTopLine  := 0;
   FLastValidLastLine := 0;
@@ -3930,6 +3933,7 @@ begin
 
   inherited SetLines(AValue);
   FIfDefTree.Lines := AValue;
+  FOuterLines.Lines := AValue;
 
   if Lines <> nil then begin
     Lines.AddGenericHandler(senrTextBufferChanged, TMethod(@DoBufferChanged));

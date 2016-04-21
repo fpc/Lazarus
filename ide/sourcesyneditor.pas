@@ -1407,6 +1407,7 @@ begin
     ListCnt := 0;
 
     if CaretY >= RealTopLine then begin
+      FTopInfoNestList.Lines := TextBuffer; // in case it changed
       FTopInfoNestList.Line := CaretY-1;
       FTopInfoNestList := FTopInfoNestList;
 
@@ -1640,6 +1641,11 @@ begin
   else
     FMarkupIfDef.Highlighter := nil;
 
+  if Highlighter is TSynCustomFoldHighlighter then
+    FTopInfoNestList.Highlighter := TSynCustomFoldHighlighter(Highlighter)
+  else
+    FTopInfoNestList.Highlighter := nil;
+
   if FUserWordsList = nil then
     exit;
   if Highlighter <> nil then
@@ -1690,7 +1696,7 @@ begin
 //  TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.TextArea.BackgroundColor := clSilver;
   TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.DisplayView := FTopInfoDisplay;
 
-  FTopInfoNestList := TLazSynEditNestedFoldsList.Create(@GetHighlighter);
+  FTopInfoNestList := TLazSynEditNestedFoldsList.Create(TextBuffer);
   FTopInfoNestList.ResetFilter;
   FTopInfoNestList.FoldGroup := FOLDGROUP_PASCAL;
   FTopInfoNestList.FoldFlags := [sfbIncludeDisabled];
