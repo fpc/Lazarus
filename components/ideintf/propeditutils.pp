@@ -224,7 +224,7 @@ var
 begin
   if SourceSelectionList = Self then Exit;
   Clear;
-  if (SourceSelectionList <> nil) and (SourceSelectionList.Count > 0) then
+  if Assigned(SourceSelectionList) then
   begin
     FForceUpdate := SourceSelectionList.ForceUpdate;
     FPersistentList.Count := SourceSelectionList.Count;
