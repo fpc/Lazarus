@@ -83,6 +83,7 @@ GongYu
 Graeme Geldenhuys
 Grzegorz Zakrzewski
 Hakan Kizilhan
+Hans Luijten
 Hans-Joachim Ott
 Hans-Peter Diettrich
 Haruyuki Fujimaki

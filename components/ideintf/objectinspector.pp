@@ -1566,6 +1566,9 @@ begin
   if not GridIsUpdating and IsCurrentEditorAvailable then begin
     CurRow:=Rows[FItemIndex];
     NewValue:=CurRow.Editor.GetVisualValue;
+    {$IFDEF LCLCarbon}
+    NewValue:=StringReplace(NewValue,LineEnding,LineFeedSymbolUTF8,[rfReplaceAll]);
+    {$ENDIF}
     SetCurrentEditValue(NewValue);
   end;
 end;
@@ -3116,7 +3119,11 @@ end;
 function TOICustomPropertyGrid.GetCurrentEditValue: string;
 begin
   if FCurrentEdit=ValueEdit then
+  {$IFDEF LCLCarbon}
+    Result:=StringReplace(ValueEdit.Text,LineFeedSymbolUTF8,LineEnding,[rfReplaceAll])
+  {$ELSE}
     Result:=ValueEdit.Text
+  {$ENDIF}
   else if FCurrentEdit=ValueComboBox then
     Result:=ValueComboBox.Text
   else if FCurrentEdit=ValueCheckBox then
@@ -3146,7 +3153,11 @@ end;
 procedure TOICustomPropertyGrid.SetCurrentEditValue(const NewValue: string);
 begin
   if FCurrentEdit=ValueEdit then
+  {$IFDEF LCLCarbon}
+    ValueEdit.Text:=StringReplace(StringReplace(NewValue,#13,LineEnding,[rfReplaceAll]),LineEnding,LineFeedSymbolUTF8,[rfReplaceAll])
+  {$ELSE}
     ValueEdit.Text:=NewValue
+  {$ENDIF}
   else if FCurrentEdit=ValueComboBox then
   begin
     ValueComboBox.Text:=NewValue;

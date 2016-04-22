@@ -41,6 +41,13 @@ uses
 const
   MaxIdentLength: Byte = 63;
 
+  {$IFDEF LCLCarbon}
+  // LineFeed symbol (UTF8) to maintain linefeeds in multiline text for Carbon TEdit.
+  // In Carbon, linefeeds get stripped from TEdit text, so we replace it temporary with
+  // this symbol which displays correctly a LF symbol in the Object Inspector as well.
+  LineFeedSymbolUTF8 = #226#144#138;
+  {$ENDIF}
+
 type
 
   TPersistentSelectionList = PropEditUtils.TPersistentSelectionList;
@@ -2721,7 +2728,11 @@ end;
 function TPropertyEditor.GetVisualValue: ansistring;
 begin
   if AllEqual then
+    {$IFDEF LCLCarbon}
+    Result:=StringReplace(GetValue,LineEnding,LineFeedSymbolUTF8,[rfReplaceAll])
+    {$ELSE}
     Result:=GetValue
+    {$ENDIF}
   else
     Result:='';
 end;
