@@ -282,9 +282,13 @@ end;
   Creates new menu in Cocoa interface
  ------------------------------------------------------------------------------}
 class function TCocoaWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
+var
+  ns: NSString;
 begin
   //WriteLn(':>[TCocoaWSMenu.CreateHandle]');
-  Result := HMENU(TCocoaMenu.alloc.initWithTitle(NSStringUtf8('')));
+  ns := NSStringUtf8('');
+  Result := HMENU(TCocoaMenu.alloc.initWithTitle(ns));
+  ns.release;
 end;
 
 { TCocoaWSMainMenu }
