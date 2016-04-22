@@ -1009,26 +1009,25 @@ end;
 function TCustomSpeedButton.GetTextSize(Drawing: boolean; PaintRect: TRect): TSize;
 var
   TMP: String;
-  TXTStyle: TTextStyle;
   Flags: Cardinal;
+  DC: HDC;           // ~bk see : TCustomLabel.CalculateSize
+  OldFont: HGDIOBJ;  //               "
 begin
   if FShowCaption and (Caption <> '') then
   begin
     TMP := Caption;
-    TXTStyle := Canvas.TextStyle;
-    TXTStyle.Opaque := False;
-    TXTStyle.Clipping := True;
-    TXTStyle.ShowPrefix := ShowAccelChar;
-    TXTStyle.Alignment := taLeftJustify;
-    TXTStyle.Layout := tlTop;
-    TXTStyle.RightToLeft := UseRightToLeftReading;
-    TXTStyle.SystemFont := Canvas.Font.IsDefault;//Match System Default Style
     DeleteAmpersands(TMP);
-
     Flags := DT_CalcRect;
-    if not TXTStyle.SingleLine then Inc(Flags, DT_WordBreak);
-
-    DrawText(Canvas.Handle, PChar(TMP), Length(TMP), PaintRect, Flags);
+    if not Canvas.TextStyle.SingleLine then
+      Inc(Flags, DT_WordBreak);
+    DC := GetDC(Parent.Handle);
+    try
+      OldFont := SelectObject(DC, HGDIOBJ(Font.Reference.Handle));
+      DrawText(DC, PChar(TMP), Length(TMP), PaintRect, Flags);
+      SelectObject(DC, OldFont);
+    finally
+      ReleaseDC(Parent.Handle, DC);
+    end;
     Result.CY := PaintRect.Bottom - PaintRect.Top;
     Result.CX := PaintRect.Right - PaintRect.Left;
   end
