@@ -235,8 +235,8 @@ type
     ASender: TChartSeries; ADrawer: IChartDrawer; AIndex: Integer;
     ACenter: TPoint) of object;
 
-  TSeriesPointerStyleEvent = function (ASender: TChartSeries;
-    AValueIndex: Integer): TSeriesPointerStyle of object;
+  TSeriesPointerStyleEvent = procedure (ASender: TChartSeries;
+    AValueIndex: Integer; var AStyle: TSeriesPointerStyle) of object;
 
   { TBasicPointSeries }
 
@@ -1105,7 +1105,7 @@ var
   i: Integer;
   p: TDoublePoint;
   ai: TPoint;
-  ps: TSeriesPointerStyle;
+  ps, saved_ps: TSeriesPointerStyle;
 begin
   Assert(Pointer <> nil, 'Series pointer');
   if not Pointer.Visible then exit;
@@ -1116,15 +1116,17 @@ begin
     if Assigned(FOnCustomDrawPointer) then
       FOnCustomDrawPointer(Self, ADrawer, i, ai)
     else begin
-      ps := Pointer.Style;
       if Assigned(FOnGetPointerStyle) then begin
+        saved_ps := Pointer.Style;
+        ps := saved_ps;
+        FOnGetPointerStyle(self, i, ps);
         Pointer.SetOwner(nil);   // avoid recursion
-        Pointer.Style := FOnGetPointerStyle(self, i);
+        Pointer.Style := ps;
       end;
       Pointer.Draw(ADrawer, ai, Source[i]^.Color);
       AfterDrawPointer(ADrawer, i, ai);
       if Assigned(FOnGetPointerStyle) then begin
-        Pointer.Style := ps;
+        Pointer.Style := saved_ps;
         Pointer.SetOwner(ParentChart);
       end;
     end;

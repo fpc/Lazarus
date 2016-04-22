@@ -66,8 +66,8 @@ type
     procedure cbSortedChange(Sender: TObject);
     procedure edEveryNthChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    function lsGetPointerStyleGetPointerStyle(ASender: TChartSeries;
-      AValueIndex: Integer): TSeriesPointerStyle;
+    procedure lsGetPointerStyleGetPointerStyle(ASender: TChartSeries;
+      AValueIndex: Integer; var AStyle: TSeriesPointerStyle);
     procedure lsCustomDrawPointerCustomDrawPointer(ASender: TChartSeries;
       ADrawer: IChartDrawer; AIndex: Integer; ACenter: TPoint);
     procedure PageControl1Change(Sender: TObject);
@@ -190,10 +190,10 @@ begin
   end;
 end;
 
-function TForm1.lsGetPointerStyleGetPointerStyle(ASender: TChartSeries;
-  AValueIndex: Integer): TSeriesPointerStyle;
+procedure TForm1.lsGetPointerStyleGetPointerStyle(ASender: TChartSeries;
+  AValueIndex: Integer; var AStyle: TSeriesPointerStyle);
 begin
-  Result := TSeriesPointerStyle(AValueIndex mod (ord(High(TSeriespointerStyle))+1));
+  AStyle := TSeriesPointerStyle(AValueIndex mod (ord(High(TSeriespointerStyle))+1));
 end;
 
 procedure TForm1.lsCustomDrawPointerCustomDrawPointer(ASender: TChartSeries;
