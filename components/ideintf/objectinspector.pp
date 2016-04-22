@@ -1509,6 +1509,10 @@ begin
   finally
     Exclude(FStates,pgsApplyingValue);
   end;
+  if Assigned(FPropertyEditorHook) then
+    FPropertyEditorHook.RefreshPropertyValues;
+  if Assigned(FOnModified) then
+    FOnModified(Self);
 end;
 
 procedure TOICustomPropertyGrid.DoCallEdit(Edit: TOIQuickEdit);
