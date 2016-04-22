@@ -738,7 +738,7 @@ type
     procedure DoZOrderItemClick(Sender: TObject);
   private
     FEnableHookGetSelection: boolean;
-    FInSelection: Boolean;
+    FSettingSelectionCount: integer;
     FRefreshingSelectionCount: integer;
     FOnAutoShow: TNotifyEvent;
     FLastActiveRowName: String;
@@ -4628,15 +4628,17 @@ end;
 
 procedure TObjectInspectorDlg.SetSelection(const ASelection: TPersistentSelectionList);
 begin
-  if ASelection<>nil then begin
-    if FSelection.IsEqual(ASelection) then // Nothing changed or endless loop -> quit.
-      if FInSelection or not ASelection.ForceUpdate then exit;
-  end else begin
-    if FSelection.Count=0 then exit;
-  end;
-  Assert(not FInSelection, 'TObjectInspectorDlg.SetSelection: Already setting selection.');
-  FInSelection := True;
+  if FSettingSelectionCount > 0 then Exit; // Prevent a recursive loop.
+  Inc(FSettingSelectionCount);
   try
+    if ASelection<>nil then begin
+      // Nothing changed or endless loop -> quit.
+      if FSelection.IsEqual(ASelection) and not ASelection.ForceUpdate then
+        Exit;
+    end else begin
+      if FSelection.Count=0 then
+        Exit;
+    end;
     // ToDo: Clear filter only if a selected node is hidden (Visible=False)
     CompFilterEdit.Filter:='';
     if ASelection<>nil then
@@ -4648,7 +4650,7 @@ begin
     if Assigned(FOnSelectPersistentsInOI) then
       FOnSelectPersistentsInOI(Self);
   finally
-    FInSelection := False;
+    Dec(FSettingSelectionCount);
   end;
 end;
 
