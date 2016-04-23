@@ -150,7 +150,8 @@ type
 
   TGridFlagsOption = (gfEditorUpdateLock, gfNeedsSelectActive, gfEditorTab,
     gfRevEditorTab, gfVisualChange, gfDefRowHeightChanged, gfColumnsLocked,
-    gfEditingDone, gfSizingStarted, gfPainting, gfUpdatingSize, gfClientRectChange);
+    gfEditingDone, gfSizingStarted, gfPainting, gfUpdatingSize, gfClientRectChange,
+    gfAutoEditPending);
   TGridFlags = set of TGridFlagsOption;
 
   TSortOrder = (soAscending, soDescending);
@@ -6116,14 +6117,12 @@ end;
 procedure TCustomGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 
-  function DoAutoEdit: boolean;
+  function CheckAutoEdit: boolean;
   begin
-    result := FAutoEdit and not(csNoFocus in ControlStyle) and EditingAllowed(FCol) and
-      (FGCache.ClickCell.X=Col) and (FGCache.ClickCell.Y=Row);
-    if result then begin
-      SelectEditor;
-      EditorShow(True);
-    end;
+    result := FAutoEdit and not(csNoFocus in ControlStyle) and
+              EditingAllowed(FCol) and (FGCache.ClickCell.X=Col) and (FGCache.ClickCell.Y=Row);
+    if result then
+      GridFlags := GridFlags + [gfAutoEditPending];
   end;
 
 begin
@@ -6241,20 +6240,14 @@ begin
                 CancelSelection;
 
               if not SelectActive then begin
-
-                if not DoAutoEdit then
-                  // delay select active until mouse reachs another cell
-                  // do that only if editor is not shown
-                  GridFlags := GridFlags + [gfNeedsSelectActive]
-                else
-                  exit;
-
+                CheckAutoEdit;
+                GridFlags := GridFlags + [gfNeedsSelectActive];
                 FPivot:=FGCache.ClickCell;
 
               end;
             end;
 
-          end else if DoAutoEdit then begin
+          end else if CheckAutoEDit then begin
             {$ifDef dbgGrid} DebugLnExit('MouseDown (autoedit) EXIT'); {$Endif}
             Exit;
           end;
@@ -6270,6 +6263,7 @@ begin
             end;
           finally
             exclude(fGridFlags, gfEditingDone);
+            fGridState:=gsSelecting;
           end;
 
         end;
@@ -6346,6 +6340,15 @@ var
      result := (Cur.X=FGCache.ClickCell.X) and (Cur.Y=FGCache.ClickCell.Y) and (gz<>gzInvalid);
    end;
 
+   procedure DoAutoEdit;
+   begin
+     if (gfAutoEditPending in GridFlags) and not (ssDouble in Shift) then begin
+       DebugLn('ClickCell:[%d,%d] UpCell:[%d,%d]',[FGCache.ClickCell.x,FGCache.ClickCell.y, Cur.x, Cur.y]);
+       SelectEditor;
+       EditorShow(True);
+     end;
+   end;
+
 begin
   inherited MouseUp(Button, Shift, X, Y);
   {$IfDef dbgGrid}DebugLn('MouseUP INIT');{$Endif}
@@ -6365,15 +6368,19 @@ begin
       end;
 
     gsNormal:
-      if not FixedGrid and IsValidCellClick then
+      if not FixedGrid and IsValidCellClick then begin
+        doAutoEdit;
         CellClick(cur.x, cur.y, Button);
+      end;
 
     gsSelecting:
       begin
         if SelectActive then
           MoveExtend(False, Cur.x, Cur.y)
-        else
+        else begin
+          doAutoEdit;
           CellClick(cur.x, cur.y, Button);
+        end;
       end;
 
     gsColMoving:
@@ -6431,7 +6438,7 @@ begin
 
   end;
 
-  GridFlags := GridFlags - [gfNeedsSelectActive, gfSizingStarted];
+  GridFlags := GridFlags - [gfNeedsSelectActive, gfSizingStarted, gfAutoEditPending];
 
   if IsPushCellActive() then begin
     ResetPushedCell;
