@@ -19,7 +19,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LazConfigStorage, Controls, Forms, BaseIDEIntf,
-  FileUtil, LazIDEIntf, IDEOptionsIntf, ProjectIntf;
+  LazFileUtils, LazIDEIntf, IDEOptionsIntf, ProjectIntf;
 
 resourcestring
   EduRSEducation = 'Education';
@@ -412,7 +412,7 @@ var
   FullFilename: String;
 begin
   FullFilename:=GetFullFilename;
-  if FileExistsUTF8(FullFilename)
+  if FileExists(FullFilename)
   and (FLastSavedChangeStep=TEduOptsRootNode(Root).ChangeStep) then
     Result:=mrOK;
   Result:=SaveToFile(Filename);
