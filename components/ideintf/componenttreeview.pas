@@ -267,6 +267,7 @@ begin
      and FComponentList.IsEqual(PropertyEditorHook.LookupRoot, NewSelection) then
   begin
     // nodes ok, but maybe node values need update
+    DebugLn('TComponentTreeView.SetSelection: Updating component node values.');
     UpdateComponentNodesValues;
     Exit;
   end;
@@ -723,6 +724,7 @@ begin
 end;
 
 procedure TComponentTreeView.UpdateComponentNodesValues;
+// Could be optimised by adding a PropName parameter and searching a node by name.
 
   procedure UpdateComponentNode(ANode: TTreeNode);
   var
