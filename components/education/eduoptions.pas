@@ -412,7 +412,7 @@ var
   FullFilename: String;
 begin
   FullFilename:=GetFullFilename;
-  if FileExists(FullFilename)
+  if FileExistsUTF8(FullFilename)
   and (FLastSavedChangeStep=TEduOptsRootNode(Root).ChangeStep) then
     Result:=mrOK;
   Result:=SaveToFile(Filename);
