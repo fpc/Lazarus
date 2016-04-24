@@ -90,7 +90,10 @@ type
   TfrFrameBorders = set of TfrFrameBorder;
   TfrFrameStyle = (frsSolid,frsDash, frsDot, frsDashDot, frsDashDotDot,frsDouble);
   TfrPageType = (ptReport, ptDialog);   //todo: - remove this
-  TfrReportOption = (roIgnoreFieldNotFound, roIgnoreSymbolNotFound, roHideDefaultFilter, roDontUpgradePreparedReport);
+  TfrReportOption = (roIgnoreFieldNotFound, roIgnoreSymbolNotFound, roHideDefaultFilter,
+                     roDontUpgradePreparedReport, // on saving an old prepared report don't update to current version
+                     roSaveAndRestoreBookmarks    // try to save and later restore dataset bookmarks on building report
+                     );
   TfrReportOptions = set of TfrReportOption;
   TfrObjectType = (otlReportView, otlUIControl);
 
@@ -8548,10 +8551,13 @@ begin
         inc(DetailCount);
     end;
 
-  if Assigned(MasterReport.OnFormPageBookmarks) then
-    MasterReport.OnFormPageBookmarks(MasterReport, true)
-  else
-    BackupBookmarks;
+  if roSaveAndRestoreBookmarks in MasterReport.Options theN
+  begin
+    if Assigned(MasterReport.OnFormPageBookmarks) then
+      MasterReport.OnFormPageBookmarks(MasterReport, true)
+    else
+      BackupBookmarks;
+  end;
 
   HasGroups := Bands[btGroupHeader].Objects.Count > 0;
   {$IFDEF DebugLR}
@@ -8560,10 +8566,14 @@ begin
   {$ENDIF}
   DisableControls;
   DoLoop(1);
-  if Assigned(MasterReport.OnFormPageBookmarks) then
-    MasterReport.OnFormPageBookmarks(MasterReport, false)
-  else
-    RestoreBookmarks; // this also enablecontrols
+
+  if roSaveAndRestoreBookmarks in MasterReport.Options then
+  begin
+    if Assigned(MasterReport.OnFormPageBookmarks) then
+      MasterReport.OnFormPageBookmarks(MasterReport, false)
+    else
+      RestoreBookmarks; // this also enablecontrols
+  end;
   EnableControls;
 
   if Mode = pmNormal then
