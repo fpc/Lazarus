@@ -4628,6 +4628,7 @@ begin
   end;
 
   DoModified(Self);
+  FillComponentList;
 end;
 
 procedure TObjectInspectorDlg.SetSelection(const ASelection: TPersistentSelectionList);
