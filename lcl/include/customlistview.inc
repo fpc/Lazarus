@@ -425,6 +425,7 @@ begin
     DoEndEdit(FEditor.Item, S);
   FEditor.Item := nil;
   FEditor.Visible := False;
+  FEditor.SetBounds(0, 0, 0, 0);
 end;
 
 procedure TCustomListView.ShowEditor;
