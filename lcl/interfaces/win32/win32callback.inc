@@ -815,6 +815,14 @@ begin
   if LMScroll.Pos < High(LMScroll.SmallPos)
   then LMScroll.SmallPos := LMScroll.Pos
   else LMScroll.SmallPos := High(LMScroll.SmallPos);
+
+  if Assigned(lWinControl) and (lWinControl is TCustomListbox) and (LMsg = LM_VSCROLL) then
+  begin
+    // WM_VSCROLL message carries only 16 bits of scroll box position data.
+    // This workaround is needed, to scroll higher than a position value of 65536.
+    WinProcess := False;
+    TCustomListBox(lWinControl).TopIndex := LMScroll.Pos;
+  end;
 end;
 
 // FlashWindowEx is not (yet) in FPC
