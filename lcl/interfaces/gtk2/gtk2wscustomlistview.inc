@@ -1155,10 +1155,10 @@ begin
             ItemRect := IconRect
           else
           begin
-            ItemRect.x += IconRect.width + IconRect.x + 2;
+            ItemRect.x += AWidth + 2;
             ItemRect.y += 2; // offset
-            ItemRect.Width -= IconRect.Width + 2;
-            ItemRect.height -= 2; // offset
+            ItemRect.Width -= AWidth + 2;
+            ItemRect.Height -= 2; // offset
           end;
         end;
 
