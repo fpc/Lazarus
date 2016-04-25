@@ -11038,11 +11038,13 @@ begin
             // Collect header column names to a temporary StringList
             for i := 0 to ColCount-1 do begin
               c := ColumnFromGridColumn(i);
-              if c=nil then
-                HeaderL.Add(Cells[i, 0])
-              else
+              if (c <> nil) then begin
                 if c.Visible or not VisibleColumnsOnly then
-                HeaderL.Add(c.Title.Caption);
+                  HeaderL.Add(c.Title.Caption);
+              end
+              else
+              if not VisibleColumnsOnly then
+                HeaderL.Add(Cells[i, 0]);
             end;
             HeaderL.Delimiter:=ADelimiter;
             Headerl.StrictDelimiter := False; //force quoting of strings that contain whitespace or Delimiter
@@ -11063,8 +11065,6 @@ begin
       if Columns.Enabled and VisibleColumnsOnly then begin
         HeaderL := TStringList.Create;
         try
-        for j := 1 to FixedCols do
-          HeaderL.Add('');
         for j := 0 to ColCount-1 do begin
           c := ColumnFromGridColumn(j);
           if c=nil then Continue;
