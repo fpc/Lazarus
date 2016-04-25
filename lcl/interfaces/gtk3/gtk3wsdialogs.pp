@@ -25,7 +25,7 @@ uses
   LazGtk3, LazGlib2, LazGdk3, LazGObject2, LazPango1,
   // RTL, FCL and LCL
   SysUtils, Classes, Graphics, Controls, Dialogs, ExtDlgs, LCLType,
-  FileUtil, LCLStrConsts, LCLProc, InterfaceBase,
+  LazFileUtils, LCLStrConsts, LCLProc, InterfaceBase,
   // Widgetset
   gtk3int, gtk3widgets,
   WSDialogs;
