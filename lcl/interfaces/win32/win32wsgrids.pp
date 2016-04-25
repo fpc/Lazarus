@@ -56,6 +56,8 @@ begin
   Result:=ACellRect;
   Dec(Result.Right);
   Dec(Result.Bottom);
+  Inc(Result.Left, constCellPadding);
+  Dec(Result.Right, constCellPadding);
   TextHeight := ACanvas.TextHeight(' ');
   case AColumnLayout of
     tlTop: EditorTop:=Result.Top+constCellPadding;
