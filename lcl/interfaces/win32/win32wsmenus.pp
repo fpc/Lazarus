@@ -1438,6 +1438,8 @@ begin
     else
       if AMenuItem.RightJustify then
         fType := fType or MFT_RIGHTJUSTIFY;
+    if AMenuItem.Default then
+      fState := fState or MFS_DEFAULT;
   end;
   CallMenuRes := InsertMenuItemW(ParentMenuHandle, AMenuItem.Parent.VisibleIndexOf(AMenuItem), True, @MenuInfo);
   if not CallMenuRes then
