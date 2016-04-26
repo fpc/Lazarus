@@ -854,8 +854,12 @@ begin
 end;
 
 function lrDateTimeToStr(ADate: TDateTime): string;
+var
+  DF:TFormatSettings;
 begin
-  Result:=FormatDateTime( 'YYYY-MM-DD HH:NN:SS', ADate);
+  DF.DateSeparator:='-';
+  DF.TimeSeparator:=':';
+  Result:=FormatDateTime( 'YYYY-MM-DD HH:NN:SS', ADate, DF);
 end;
 
 function lrStrToDateTime(AValue: string): TDateTime;
