@@ -1807,6 +1807,7 @@ begin
   //         ' Items.Count=',ValueComboBox.Items.Count ,' Text=',ValueComboBox.Text]);
   Exclude(FStates, pgsChangingItemIndex);
   DoSelectionChange;
+  Invalidate;
 end;
 
 function TOICustomPropertyGrid.GetNameRowHeight: Integer;
