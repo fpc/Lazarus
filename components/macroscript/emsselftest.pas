@@ -9,9 +9,9 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, SynEdit, SynEditKeyCmds, LazLoggerBase,
+  Classes, SysUtils, SynEdit, SynEditTypes, SynEditKeyCmds, LazLoggerBase,
   IDECommands, EMScriptClasses, EMScriptMacro, Clipbrd, Dialogs, Controls,
-  uPSCompiler, uPSRuntime, uPSUtils;
+  uPSCompiler, uPSRuntime, uPSUtils, uPSDebugger, uPSR_std, uPSC_std;
 
 type
 
@@ -56,7 +56,7 @@ type TPoint2 = record x,y,a,b,c: Longint; end;
 {%region RegisterSelfTests}
 
 var
-  //TestResultA: integer;
+  TestResultA: integer;
   TestResultInt1, TestResultInt2: integer;
   TestInputInt1, TestInputInt2: integer;
   TestResultBool1, TestResultBool2: boolean;
@@ -67,13 +67,13 @@ var
 function test_ord_mt(AType: TMsgDlgType): Integer;
 begin
   Result := ord(AType);
-  //TestResultA := Result;
+  TestResultA := Result;
 end;
 
 function test_ord_mb(ABtn: TMsgDlgBtn): Integer;
 begin
   Result := ord(ABtn);
-  //TestResultA := Result;
+  TestResultA := Result;
 end;
 
 procedure test_int1(AValue: Integer);
@@ -188,8 +188,6 @@ const
   Decltest_getstr1  = 'function test_getstr1: String;';
   Decltest_getstr2  = 'function test_getstr2: String;';
   Decltest_varstr1  = 'procedure test_varstr1(var AValue: String);';
-
-{$IFnDEF PasMacroNoNativeCalls}
   Functest_ord_mt:    function(AType: TMsgDlgType): Integer = @test_ord_mt;
   Functest_ord_mb:    function(ABtn: TMsgDlgBtn): Integer = @test_ord_mb;
   Proctest_int1:      procedure (AValue: Integer) = @test_int1;
@@ -209,7 +207,9 @@ const
   Proctest_getstr1:   function: String = @test_getstr1;
   Proctest_getstr2:   function: String = @test_getstr2;
   Proctest_varstr1:   procedure (var AValue: String)  = @test_varstr1;
-{$ELSE}
+
+{$IFDEF PasMacroNoNativeCalls}
+const
   Id_test_ord_mb    = 901;
   Id_test_ord_mt    = 902;
   Id_test_int1      = 910;
@@ -238,7 +238,7 @@ var
   s: TbtString;
 begin
   Result := True;
-  case PtrUInt(p.Ext1) of
+  case Longint(p.Ext1) of
     Id_test_ord_mb: begin // test_ord_mb(ABtn: TMsgDlgBtn): Integer;
         if Stack.Count < 2 then raise TEMScriptBadParamException.Create('Invalid param count for "test_ord_mb"');
         Stack.SetInt(-1, test_ord_mb(TMsgDlgBtn(Stack.GetUInt(-2))) );
