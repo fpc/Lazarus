@@ -1781,8 +1781,7 @@ begin
         end
         else begin
           ac.Caption:=lisMenuEditorAddSubmenuRight;
-          ac.Hint:=
-            lisMenuEditorAddASubmenuAtTheRightOfSelectedItem;
+          ac.Hint:=lisMenuEditorAddASubmenuAtTheRightOfSelectedItem;
         end;
       end;
       popItemDelete: ac.Enabled:=(FMenu.Items.Count > 0);

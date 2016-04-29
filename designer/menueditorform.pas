@@ -272,23 +272,23 @@ begin
 
   persist:=GetSelectedMenuComponent(ASelection, isTMenu, isTMenuItem);
   if (persist <> nil) then
-    begin
-      if isTMenu then
-        SetMenu(TMenu(persist), nil)
-      else if isTMenuItem then begin
-        mi:=TMenuItem(persist);
-        tmp:=mi;
-        while (tmp.Parent <> nil) do
-          tmp:=tmp.Parent;
-        mnu:=tmp.Menu;
-        if (mnu = nil) then
-          mnu:=mi.GetParentMenu;
-        if (mnu = FEditedMenu) and (FDesigner.ShadowMenu <> nil) then
-          FDesigner.ShadowMenu.SetSelectedMenuItem(mi, True, False)
-        else if (mnu <> nil) then
-          SetMenu(mnu, mi);
-      end;
-    end
+  begin
+    if isTMenu then
+      SetMenu(TMenu(persist), nil)
+    else if isTMenuItem then begin
+      mi:=TMenuItem(persist);
+      tmp:=mi;
+      while (tmp.Parent <> nil) do
+        tmp:=tmp.Parent;
+      mnu:=tmp.Menu;
+      if (mnu = nil) then
+        mnu:=mi.GetParentMenu;
+      if (mnu = FEditedMenu) and (FDesigner.ShadowMenu <> nil) then
+        FDesigner.ShadowMenu.SetSelectedMenuItem(mi, True, False)
+      else if (mnu <> nil) then
+        SetMenu(mnu, mi);
+    end;
+  end
   else
     SetMenu(nil, nil);
 end;
