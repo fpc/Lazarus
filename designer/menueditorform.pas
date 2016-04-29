@@ -290,7 +290,7 @@ begin
     end;
   end
   else
-    SetMenu(nil, nil);
+    DebugLn('TMenuDesignerForm.OnDesignerSetSelection: Is SetMenu(nil, nil) ever needed here?');
 end;
 
 procedure TMenuDesignerForm.ShowPopupAssignmentsInfo;
@@ -540,7 +540,6 @@ begin
     DisableGUI;
     FDesigner.FreeShadowMenu;
     FEditedMenu:=nil;
-    Application.ProcessMessages;
   end
   else begin
     if (aMenu = FEditedMenu) and (FDesigner.ShadowMenu <> nil) then
