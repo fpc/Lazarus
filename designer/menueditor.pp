@@ -1891,11 +1891,13 @@ begin
     GlobalDesignHook.AddHandlerObjectPropertyChanged(@OnObjectPropertyChanged);
     GlobalDesignHook.AddHandlerModified(@OnDesignerModified);
     GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnDesignerRefreshPropertyValues);
-    AutoSize := False;
     Color := clBtnFace;
     BorderStyle := bsNone;
-    Align := alClient;
+    // Parent must be set before the Align property.
+    // Otherwise ShadowMenu goes on top of ButtonsGroupBox which is Top aligned.
     Parent := aForm;
+    AutoSize := False;
+    Align := alClient;
   finally
     EnableAutoSizing;
   end;
