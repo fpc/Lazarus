@@ -2028,8 +2028,10 @@ begin
   existingSI.RealItem.Parent.Insert(idx, newMI);
   TShadowItem.CreateWithBoxAndItem(FShadowMenu, existingSI.ParentBox, newMI);
   FShadowMenu.UpdateBoxLocationsAndSizes;
+  FShadowMenu.FDesigner.FGui.AddingItem := True;
   GlobalDesignHook.PersistentAdded(newMI, not isSeparator);
-  GlobalDesignHook.Modified(newMI);
+  //GlobalDesignHook.Modified(newMI);
+  FShadowMenu.FDesigner.FGui.AddingItem := False;
   if not isSeparator then
     FShadowMenu.FDesigner.FGui.UpdateStatistics;
   FShadowMenu.UpdateActionsEnabledness;
@@ -2220,8 +2222,7 @@ end;
 procedure TShadowItem.DblClick;
 begin
   inherited DblClick;
-  if not FShadowMenu.OnClickIsAssigned(FRealItem) then
-    FShadowMenu.AddOnClick(nil);
+  FShadowMenu.AddOnClick(nil);
 end;
 
 function TShadowItem.GetHeight: integer;

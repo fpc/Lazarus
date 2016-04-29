@@ -69,6 +69,7 @@ type
     FAcceleratorMenuItemsCount: integer;
     FCaptionedItemsCount: integer;
     FDeepestNestingLevel: integer;
+    FAddingItem: Boolean;
     FGUIEnabled: boolean;
     FIconsCount: integer;
     FUpdateCount: integer;
@@ -102,6 +103,7 @@ type
       aShadowBox: TShadowBoxBase; aPropEditHook: TPropertyEditorHook);
     //property EditedMenu: TMenu read FEditedMenu;
     //property AcceleratorMenuItemsCount: integer read FAcceleratorMenuItemsCount;
+    property AddingItem: Boolean read FAddingItem write FAddingItem;
   end;
 
   TRadioIconGroup = class;
@@ -289,8 +291,8 @@ begin
         SetMenu(mnu, mi);
     end;
   end
-  else
-    DebugLn('TMenuDesignerForm.OnDesignerSetSelection: Is SetMenu(nil, nil) ever needed here?');
+  else if not AddingItem then
+    SetMenu(nil, nil);
 end;
 
 procedure TMenuDesignerForm.ShowPopupAssignmentsInfo;
