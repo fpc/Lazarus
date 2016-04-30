@@ -4498,12 +4498,8 @@ begin
     Result:=GetMissingDependenciesForUnit(UnitFilename,ComponentClassnames,
                                           MissingDependencies);
     if Result<>mrOk then exit;
-    if (UnitNames.Count=0)
-    and ((MissingDependencies=nil) or (MissingDependencies.Count=0)) then begin
-      // no change needed
-      Result:=mrOk;
-      exit;
-    end;
+    if (UnitNames.Count=0)                                   // no change needed
+    and ((MissingDependencies=nil) or (MissingDependencies.Count=0)) then exit;
 
     if not Quiet then begin
       Result:=AskUser;
