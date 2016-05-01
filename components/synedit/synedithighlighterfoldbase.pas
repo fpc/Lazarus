@@ -2444,7 +2444,7 @@ begin
     // add a copy
     Result:=TSynCustomHighlighterRangeClass(Range.ClassType).Create(Range);
     FItems.Add(Result);
-    if FItems.Count mod 32 = 0 then debugln(['FOLDRANGE Count=', FItems.Count]);
+    //if FItems.Count mod 32 = 0 then debugln(['FOLDRANGE Count=', FItems.Count]);
   end;
   //debugln('TSynCustomHighlighterRanges.GetEqual A ',dbgs(Node),' ',dbgs(Result.Compare(Range)),' ',dbgs(Result.CodeFoldStackSize));
 end;
