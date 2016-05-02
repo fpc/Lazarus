@@ -222,6 +222,10 @@ type
     fOnFilterItem: TFilterItemEvent;
     fOnFilterItemEx: TFilterItemExEvent;
     fOnCheckItem: TCheckItemEvent;
+    function DoFilterItem(const ACaption: string; const Item: TObject;
+      const FilterLC: string): Boolean; virtual;
+    function DoDefaultFilterItem(const ACaption: string; const Item: TObject;
+      const FilterLC: string): Boolean; virtual;
     procedure EditKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure EditChange; override;
     procedure EditEnter; override;
@@ -1116,6 +1120,33 @@ end;
 destructor TCustomControlFilterEdit.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TCustomControlFilterEdit.DoDefaultFilterItem(const ACaption: string;
+  const Item: TObject; const FilterLC: string): Boolean;
+begin
+  Result := (FilterLC='') or (Pos(FilterLC,UTF8LowerCase(ACaption))>0);
+end;
+
+function TCustomControlFilterEdit.DoFilterItem(const ACaption: string;
+  const Item: TObject; const FilterLC: string): Boolean;
+var
+  Done: Boolean;
+begin
+  Done := False;
+
+  // Filter with event handler if there is one.
+  if Assigned(fOnFilterItemEx) then
+    Result:=fOnFilterItemEx(ACaption, Item, Done)
+  else
+    Result:=False;
+  // Support also the old filter event without a caption.
+  if (not (Result and Done)) and Assigned(fOnFilterItem) then
+    Result:=fOnFilterItem(Item, Done);
+
+  // Filter by item's caption text if needed.
+  if not (Result or Done) then
+    Result:=DoDefaultFilterItem(ACaption, Item, FilterLC);
 end;
 
 procedure TCustomControlFilterEdit.OnIdle(Sender: TObject; var Done: Boolean);

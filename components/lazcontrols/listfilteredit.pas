@@ -160,27 +160,12 @@ procedure TListFilterEdit.SortAndFilter;
 var
   Origi, i: Integer;
   Capt, FilterLC: string;
-  Pass, Done: Boolean;
 begin
-  Done:=False;
   fSortedData.Clear;
   FilterLC:=UTF8LowerCase(Filter);
   for Origi:=0 to fOriginalData.Count-1 do begin
     Capt:=fOriginalData[Origi];
-
-    // Filter with event handler if there is one.
-    if Assigned(fOnFilterItemEx) then
-      Pass:=fOnFilterItemEx(Capt, fOriginalData.Objects[Origi], Done)
-    else
-      Pass:=False;
-    // Support also the old filter event without a caption.
-    if (not (Pass and Done)) and Assigned(fOnFilterItem) then
-      Pass:=fOnFilterItem(fOriginalData.Objects[Origi], Done);
-
-    // Filter by item's caption text if needed.
-    if not (Pass or Done) then
-      Pass:=(FilterLC='') or (Pos(FilterLC,UTF8LowerCase(Capt))>0);
-    if Pass then begin
+    if DoFilterItem(Capt, fOriginalData.Objects[Origi], FilterLC) then begin
       i:=fSortedData.Count-1;       // Always sort the data.
       while i>=0 do begin
         if CompareFNs(Capt,fSortedData[i])>=0 then break;

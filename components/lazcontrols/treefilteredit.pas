@@ -460,26 +460,14 @@ function TTreeFilterEdit.FilterTree(Node: TTreeNode): Boolean;
 // Filter all tree branches recursively, setting Node.Visible as needed.
 // Returns True if Node or its siblings or child nodes have visible items.
 var
-  Pass, Done: Boolean;
+  Pass: Boolean;
   FilterLC: string;
 begin
   Result:=False;
-  Done:=False;
   FilterLC:=UTF8LowerCase(Filter);
   while Node<>nil do
   begin
-    // Filter with event handler if there is one.
-    if Assigned(fOnFilterItemEx) then
-      Pass:=fOnFilterItemEx(Node.Text, TObject(Node.Data), Done)
-    else
-      Pass:=False;
-    // Support also the old filter event without a caption.
-    if (not (Pass and Done)) and Assigned(fOnFilterItem) then
-      Pass:=fOnFilterItem(TObject(Node.Data), Done);
-
-    // Filter by item's caption text if needed.
-    if not (Pass or Done) then
-      Pass:=(FilterLC='') or (Pos(FilterLC,UTF8LowerCase(Node.Text))>0);
+    Pass := DoFilterItem(Node.Text, TObject(Node.Data), FilterLC);
     if Pass and (fFirstPassedNode=Nil) then
       fFirstPassedNode:=Node;
     // Recursive call for child nodes.

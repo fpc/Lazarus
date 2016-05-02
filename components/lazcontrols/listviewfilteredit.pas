@@ -12,6 +12,7 @@
 unit ListViewFilterEdit;
 
 {$mode objfpc}{$H+}
+{$modeswitch advancedrecords}
 
 interface
 
@@ -24,7 +25,13 @@ type
   //TImageIndexEvent = function (Str: String; Data: TObject;
   //                             var IsEnabled: Boolean): Integer of object;
   TStringArray = array of string;
-  TListViewDataList = specialize TFPGList<TStringArray>;
+  TListViewDataItem = record
+    Data: Pointer;
+    StringArray: TStringArray;
+
+    class operator =(a,b : TListViewDataItem) : Boolean;
+  end;
+  TListViewDataList = specialize TFPGList<TListViewDataItem>;
 
   { TListViewFilterEdit }
 
@@ -40,7 +47,7 @@ type
     fOriginalData: TListViewDataList;
     // Data sorted for viewing.
     fFilteredData: TListViewDataList;
-    function MatchesFilter(aData: TStringArray): Boolean;
+    function MatchesFilter(aData: TListViewDataItem; const FilterLC: string): Boolean;
     procedure SetFilteredListview(const AValue: TCustomListView);
   protected
     procedure MoveTo(AIndex: Integer; ASelect: Boolean);
@@ -73,6 +80,13 @@ var
 
 implementation
 
+{ TListViewDataItem }
+
+class operator TListViewDataItem. = (a, b: TListViewDataItem): Boolean;
+begin
+  Result := (a.Data=b.Data) and (a.StringArray=b.StringArray);
+end;
+
 { TListViewFilterEdit }
 
 constructor TListViewFilterEdit.Create(AOwner: TComponent);
@@ -104,23 +118,25 @@ begin
     Result := -1;
 end;
 
-function ListItem2Data(AItem: TListItem): TStringArray;
+function ListItem2Data(AItem: TListItem): TListViewDataItem;
 var
   i: Integer;
 begin
-  SetLength(Result, AItem.SubItems.Count+1);
-  Result[0] := AItem.Caption;
+  Result.Data := AItem.Data;
+  SetLength(Result.StringArray, AItem.SubItems.Count+1);
+  Result.StringArray[0] := AItem.Caption;
   for i := 0 to AItem.SubItems.Count-1 do
-    Result[i+1] := AItem.SubItems[i];
+    Result.StringArray[i+1] := AItem.SubItems[i];
 end;
 
-procedure Data2ListItem(AData: TStringArray; AItem: TListItem);
+procedure Data2ListItem(AData: TListViewDataItem; AItem: TListItem);
 var
   i: Integer;
 begin
-  AItem.Caption := AData[0];
-  for i := 1 to Length(AData)-1 do
-    AItem.SubItems.Add(AData[i]);
+  AItem.Data := AData.Data;
+  AItem.Caption := AData.StringArray[0];
+  for i := 1 to Length(AData.StringArray)-1 do
+    AItem.SubItems.Add(AData.StringArray[i]);
 end;
 
 procedure TListViewFilterEdit.SetFilteredListview(const AValue: TCustomListView);
@@ -134,23 +150,18 @@ begin
       fOriginalData.Add(ListItem2Data(fFilteredListview.Items[i]));
 end;
 
-function TListViewFilterEdit.MatchesFilter(aData: TStringArray): Boolean;
+function TListViewFilterEdit.MatchesFilter(aData: TListViewDataItem;
+  const FilterLC: string): Boolean;
 var
   i, EndInd: Integer;
-  FilterLC: string;
 begin
-  if Filter='' then
-    Exit(True);
-  FilterLC := UTF8LowerCase(Filter);
   if fByAllFields then
-    EndInd := Pred(Length(aData))
+    EndInd := Pred(Length(aData.StringArray))
   else
     EndInd := 0;
   for i := 0 to EndInd do begin
-    // ToDo: Use OnFilterItemEx event.
-    Result := Pos(FilterLC,UTF8LowerCase(aData[i]))>0;
-    if Result then
-      Exit;
+    if DoFilterItem(aData.StringArray[i], TObject(aData.Data), FilterLC) then
+      Exit(True);
   end;
   Result := False;
 end;
@@ -173,12 +184,14 @@ procedure TListViewFilterEdit.SortAndFilter;
 // Copy data from fOriginalData to fSortedData in sorted order
 var
   Origi: Integer;
-  Data: TStringArray;
+  Data: TListViewDataItem;
+  FilterLC: string;
 begin
   fFilteredData.Clear;
+  FilterLC := UTF8LowerCase(Filter);
   for Origi:=0 to fOriginalData.Count-1 do begin
     Data:=fOriginalData[Origi];
-    if MatchesFilter(Data) then
+    if MatchesFilter(Data, FilterLC) then
       fFilteredData.Add(Data);
   end;
 end;
