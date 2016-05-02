@@ -374,7 +374,7 @@ type
     procedure DoSysCmdRestore;
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
-    function PrepareDoubleBuffer(vDC: HDC; out DoubleBufferBitmapOld: HBITMAP): Boolean;
+    function PrepareDoubleBuffer(out DoubleBufferBitmapOld: HBITMAP): Boolean;
     procedure SetLMCharData(aMsg: Cardinal; UpdateKeyData: Boolean = False);
     procedure SetLMKeyData(aMsg: Cardinal; UpdateKeyData: Boolean = False);
     procedure SetLMessageAndParams(aMsg: Cardinal; ResetWinProcess: Boolean = False);
@@ -463,8 +463,10 @@ begin
     Result := nil;
 end;
 
-function TWindowProcHelper.PrepareDoubleBuffer(vDC: HDC; out DoubleBufferBitmapOld: HBITMAP): Boolean;
+function TWindowProcHelper.PrepareDoubleBuffer(out DoubleBufferBitmapOld: HBITMAP): Boolean;
 // Returns True if BackupBuffer was saved.
+var
+  DC: HDC;
 begin
   Result := CurDoubleBuffer.DC <> 0;
   if Result then
@@ -474,16 +476,18 @@ begin
     BackupBuffer := CurDoubleBuffer;
     FillChar(CurDoubleBuffer, SizeOf(CurDoubleBuffer), 0);
   end;
-  CurDoubleBuffer.DC := Windows.CreateCompatibleDC(vDC);
+  CurDoubleBuffer.DC := Windows.CreateCompatibleDC(0);
 
   GetWindowSize(Window, WindowWidth, WindowHeight);
   if (CurDoubleBuffer.BitmapWidth < WindowWidth) or (CurDoubleBuffer.BitmapHeight < WindowHeight) then
   begin
+    DC := Windows.GetDC(0);
     if CurDoubleBuffer.Bitmap <> 0 then
       Windows.DeleteObject(CurDoubleBuffer.Bitmap);
     CurDoubleBuffer.BitmapWidth := WindowWidth;
     CurDoubleBuffer.BitmapHeight := WindowHeight;
-    CurDoubleBuffer.Bitmap := Windows.CreateCompatibleBitmap(vDC, WindowWidth, WindowHeight);
+    CurDoubleBuffer.Bitmap := Windows.CreateCompatibleBitmap(DC, WindowWidth, WindowHeight);
+    Windows.ReleaseDC(0, DC);
     if RTLLayout then  // change the default layout - LTR - of memory DC
       {if (GetLayout(vDC) and LAYOUT_BITMAPORIENTATIONPRESERVED) > 0 then  // GetLayout is not in win32extra
         SetLayout(CurDoubleBuffer.DC, LAYOUT_RTL or LAYOUT_BITMAPORIENTATIONPRESERVED)
@@ -594,7 +598,10 @@ begin
 
   // check if double buffering is requested
   useDoubleBuffer := (ControlDC = 0) and (lWinControl.DoubleBuffered or ThemeServices.ThemesEnabled);
-  BufferWasSaved := False;
+  if useDoubleBuffer then
+    BufferWasSaved := PrepareDoubleBuffer(DoubleBufferBitmapOld)
+  else
+    BufferWasSaved := False;
 {$ifdef MSG_DEBUG}
   if not useDoubleBuffer then
     DebugLn(MessageStackDepth, ' *painting, but not double buffering');
@@ -616,7 +623,6 @@ begin
       if useDoubleBuffer then
       begin
         RTLLayout := (GetWindowLong(Window, GWL_EXSTYLE) and WS_EX_LAYOUTRTL) = WS_EX_LAYOUTRTL;
-        BufferWasSaved := PrepareDoubleBuffer(DC, DoubleBufferBitmapOld);
 {$ifdef DEBUG_DOUBLEBUFFER}
         ORect.Left := 0;
         ORect.Top := 0;
@@ -641,8 +647,6 @@ begin
     end else begin
       DC := ControlDC;
       PaintRegion := 0;
-      if useDoubleBuffer then
-        BufferWasSaved := PrepareDoubleBuffer(DC, DoubleBufferBitmapOld);
     end;
 
     if ParentPaintWindow <> 0 then
