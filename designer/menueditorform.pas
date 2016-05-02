@@ -669,6 +669,7 @@ var
   s: string;
   method: TMethod;
 begin
+  BeginUpdate;
   if aMenuItem = nil then
   begin
     Caption:=Format(lisMenuEditorEditingSSNoMenuitemSelected,
@@ -686,6 +687,7 @@ begin
     ButtonsGroupBox.Enabled:=True;
     UpdateSubmenuGroupBox(aMenuItem, aShadowBox, aShadowBox.Level=0);
   end;
+  EndUpdate;
 end;
 
 { TRadioIcon }

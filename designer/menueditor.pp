@@ -664,16 +664,13 @@ procedure TShadowMenu.AddOnClick(Sender: TObject);
 var
   compEditor: TDefaultComponentEditor;
 begin
-  if (FSelectedMenuItem <> nil) then begin
-    FDesigner.FGui.BeginUpdate;
-    try
-      compEditor:=TDefaultComponentEditor.Create(FSelectedMenuItem, FEditorDesigner);
-      compEditor.Edit;
-      UpdateSelectedItemInfo;
-    finally
-      compEditor.Free;
-      FDesigner.FGui.EndUpdate;
-    end;
+  if FSelectedMenuItem = nil then Exit;
+  compEditor:=TDefaultComponentEditor.Create(FSelectedMenuItem, FEditorDesigner);
+  try
+    compEditor.Edit;
+    UpdateSelectedItemInfo;
+  finally
+    compEditor.Free;
   end;
 end;
 
