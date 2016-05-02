@@ -211,7 +211,6 @@ begin
   FPages := TUNBPages.Create(FPageList, Self);
 
   ControlStyle := []; // do not add csAcceptsControls
-  TabStop := true;
 
   // Initial size
   lSize := GetControlClassDefaultSize();
