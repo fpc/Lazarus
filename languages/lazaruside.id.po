@@ -10870,43 +10870,63 @@ msgid "Find Incremental"
 msgstr "Cari inkremental"
 
 #: lazarusidestrconsts.liskmgotomarker0
-msgid "Go to marker 0"
+#, fuzzy
+#| msgid "Go to marker 0"
+msgid "Go to bookmark 0"
 msgstr "Pergi ke penanda 0"
 
 #: lazarusidestrconsts.liskmgotomarker1
-msgid "Go to marker 1"
+#, fuzzy
+#| msgid "Go to marker 1"
+msgid "Go to bookmark 1"
 msgstr "Pergi ke penanda 1"
 
 #: lazarusidestrconsts.liskmgotomarker2
-msgid "Go to marker 2"
+#, fuzzy
+#| msgid "Go to marker 2"
+msgid "Go to bookmark 2"
 msgstr "Pergi ke penanda 2"
 
 #: lazarusidestrconsts.liskmgotomarker3
-msgid "Go to marker 3"
+#, fuzzy
+#| msgid "Go to marker 3"
+msgid "Go to bookmark 3"
 msgstr "Pergi ke penanda 3"
 
 #: lazarusidestrconsts.liskmgotomarker4
-msgid "Go to marker 4"
+#, fuzzy
+#| msgid "Go to marker 4"
+msgid "Go to bookmark 4"
 msgstr "Pergi ke penanda 4"
 
 #: lazarusidestrconsts.liskmgotomarker5
-msgid "Go to marker 5"
+#, fuzzy
+#| msgid "Go to marker 5"
+msgid "Go to bookmark 5"
 msgstr "Pergi ke penanda 5"
 
 #: lazarusidestrconsts.liskmgotomarker6
-msgid "Go to marker 6"
+#, fuzzy
+#| msgid "Go to marker 6"
+msgid "Go to bookmark 6"
 msgstr "Pergi ke penanda 6"
 
 #: lazarusidestrconsts.liskmgotomarker7
-msgid "Go to marker 7"
+#, fuzzy
+#| msgid "Go to marker 7"
+msgid "Go to bookmark 7"
 msgstr "Pergi ke penanda 7"
 
 #: lazarusidestrconsts.liskmgotomarker8
-msgid "Go to marker 8"
+#, fuzzy
+#| msgid "Go to marker 8"
+msgid "Go to bookmark 8"
 msgstr "Pergi ke penanda 8"
 
 #: lazarusidestrconsts.liskmgotomarker9
-msgid "Go to marker 9"
+#, fuzzy
+#| msgid "Go to marker 9"
+msgid "Go to bookmark 9"
 msgstr "Pergi ke penanda 9"
 
 #: lazarusidestrconsts.liskmgotosourceeditor1
@@ -11089,43 +11109,63 @@ msgid "Set free Bookmark"
 msgstr "Setel Bookmark bebas"
 
 #: lazarusidestrconsts.liskmsetmarker0
-msgid "Set marker 0"
+#, fuzzy
+#| msgid "Set marker 0"
+msgid "Set bookmark 0"
 msgstr "Set penanda 0"
 
 #: lazarusidestrconsts.liskmsetmarker1
-msgid "Set marker 1"
+#, fuzzy
+#| msgid "Set marker 1"
+msgid "Set bookmark 1"
 msgstr "Set penanda 1"
 
 #: lazarusidestrconsts.liskmsetmarker2
-msgid "Set marker 2"
+#, fuzzy
+#| msgid "Set marker 2"
+msgid "Set bookmark 2"
 msgstr "Set penanda 2"
 
 #: lazarusidestrconsts.liskmsetmarker3
-msgid "Set marker 3"
+#, fuzzy
+#| msgid "Set marker 3"
+msgid "Set bookmark 3"
 msgstr "Set penanda 3"
 
 #: lazarusidestrconsts.liskmsetmarker4
-msgid "Set marker 4"
+#, fuzzy
+#| msgid "Set marker 4"
+msgid "Set bookmark 4"
 msgstr "Set penanda 4"
 
 #: lazarusidestrconsts.liskmsetmarker5
-msgid "Set marker 5"
+#, fuzzy
+#| msgid "Set marker 5"
+msgid "Set bookmark 5"
 msgstr "Set penanda 5"
 
 #: lazarusidestrconsts.liskmsetmarker6
-msgid "Set marker 6"
+#, fuzzy
+#| msgid "Set marker 6"
+msgid "Set bookmark 6"
 msgstr "Set penanda 6"
 
 #: lazarusidestrconsts.liskmsetmarker7
-msgid "Set marker 7"
+#, fuzzy
+#| msgid "Set marker 7"
+msgid "Set bookmark 7"
 msgstr "Set penanda 7"
 
 #: lazarusidestrconsts.liskmsetmarker8
-msgid "Set marker 8"
+#, fuzzy
+#| msgid "Set marker 8"
+msgid "Set bookmark 8"
 msgstr "Set penanda 8"
 
 #: lazarusidestrconsts.liskmsetmarker9
-msgid "Set marker 9"
+#, fuzzy
+#| msgid "Set marker 9"
+msgid "Set bookmark 9"
 msgstr "Set penanda 9"
 
 #: lazarusidestrconsts.liskmstopprogram
@@ -11139,43 +11179,43 @@ msgid "Toggle between Unit and Form"
 msgstr "Toggle antara Unit dan Form"
 
 #: lazarusidestrconsts.liskmtogglemarker0
-msgid "Toggle marker 0"
+msgid "Toggle bookmark 0"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker1
-msgid "Toggle marker 1"
+msgid "Toggle bookmark 1"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker2
-msgid "Toggle marker 2"
+msgid "Toggle bookmark 2"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker3
-msgid "Toggle marker 3"
+msgid "Toggle bookmark 3"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker4
-msgid "Toggle marker 4"
+msgid "Toggle bookmark 4"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker5
-msgid "Toggle marker 5"
+msgid "Toggle bookmark 5"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker6
-msgid "Toggle marker 6"
+msgid "Toggle bookmark 6"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker7
-msgid "Toggle marker 7"
+msgid "Toggle bookmark 7"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker8
-msgid "Toggle marker 8"
+msgid "Toggle bookmark 8"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker9
-msgid "Toggle marker 9"
+msgid "Toggle bookmark 9"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
@@ -12987,6 +13027,10 @@ msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Buka Proyek Terakhir ..."
 
+#: lazarusidestrconsts.lismenuopenunit
+msgid "Open Unit ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupackage
 msgid "Pa&ckage"
 msgstr ""
@@ -14359,6 +14403,10 @@ msgstr "Buka proyek %s?"
 
 #: lazarusidestrconsts.lisopentooloptions
 msgid "Open Tool Options"
+msgstr ""
+
+#: lazarusidestrconsts.lisopenunit
+msgid "Open Unit"
 msgstr ""
 
 #: lazarusidestrconsts.lisopenurl
@@ -20513,7 +20561,9 @@ msgid "Go to Line Number"
 msgstr "Pergi ke nomor baris"
 
 #: lazarusidestrconsts.srkmecgotomarker
-msgid "Go to Marker %d"
+#, fuzzy
+#| msgid "Go to Marker %d"
+msgid "Go to bookmark %d"
 msgstr "Pergi ke Penanda %d"
 
 #: lazarusidestrconsts.srkmecgotoxy
@@ -21043,7 +21093,9 @@ msgid "Set a free Bookmark"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsetmarker
-msgid "Set Marker %d"
+#, fuzzy
+#| msgid "Set Marker %d"
+msgid "Set bookmark %d"
 msgstr "Set Penanda %d"
 
 #: lazarusidestrconsts.srkmecshifttab
@@ -21274,7 +21326,7 @@ msgid "View local variables"
 msgstr "Lihat variabel lokal"
 
 #: lazarusidestrconsts.srkmectogglemarker
-msgid "Toggle Marker %d"
+msgid "Toggle bookmark %d"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemarkupword

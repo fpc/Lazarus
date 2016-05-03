@@ -10942,43 +10942,63 @@ msgid "Find Incremental"
 msgstr "Nájsť narastajúco"
 
 #: lazarusidestrconsts.liskmgotomarker0
-msgid "Go to marker 0"
+#, fuzzy
+#| msgid "Go to marker 0"
+msgid "Go to bookmark 0"
 msgstr "Choď na značku 0"
 
 #: lazarusidestrconsts.liskmgotomarker1
-msgid "Go to marker 1"
+#, fuzzy
+#| msgid "Go to marker 1"
+msgid "Go to bookmark 1"
 msgstr "Choď na značku 1"
 
 #: lazarusidestrconsts.liskmgotomarker2
-msgid "Go to marker 2"
+#, fuzzy
+#| msgid "Go to marker 2"
+msgid "Go to bookmark 2"
 msgstr "Choď na značku 2"
 
 #: lazarusidestrconsts.liskmgotomarker3
-msgid "Go to marker 3"
+#, fuzzy
+#| msgid "Go to marker 3"
+msgid "Go to bookmark 3"
 msgstr "Choď na značku 3"
 
 #: lazarusidestrconsts.liskmgotomarker4
-msgid "Go to marker 4"
+#, fuzzy
+#| msgid "Go to marker 4"
+msgid "Go to bookmark 4"
 msgstr "Choď na značku 4"
 
 #: lazarusidestrconsts.liskmgotomarker5
-msgid "Go to marker 5"
+#, fuzzy
+#| msgid "Go to marker 5"
+msgid "Go to bookmark 5"
 msgstr "Choď na značku 5"
 
 #: lazarusidestrconsts.liskmgotomarker6
-msgid "Go to marker 6"
+#, fuzzy
+#| msgid "Go to marker 6"
+msgid "Go to bookmark 6"
 msgstr "Choď na značku 6"
 
 #: lazarusidestrconsts.liskmgotomarker7
-msgid "Go to marker 7"
+#, fuzzy
+#| msgid "Go to marker 7"
+msgid "Go to bookmark 7"
 msgstr "Choď na značku 7"
 
 #: lazarusidestrconsts.liskmgotomarker8
-msgid "Go to marker 8"
+#, fuzzy
+#| msgid "Go to marker 8"
+msgid "Go to bookmark 8"
 msgstr "Choď na značku 8"
 
 #: lazarusidestrconsts.liskmgotomarker9
-msgid "Go to marker 9"
+#, fuzzy
+#| msgid "Go to marker 9"
+msgid "Go to bookmark 9"
 msgstr "Choď na značku 9"
 
 #: lazarusidestrconsts.liskmgotosourceeditor1
@@ -11161,43 +11181,63 @@ msgid "Set free Bookmark"
 msgstr "Nastaviť voľnú záložku"
 
 #: lazarusidestrconsts.liskmsetmarker0
-msgid "Set marker 0"
+#, fuzzy
+#| msgid "Set marker 0"
+msgid "Set bookmark 0"
 msgstr "Nastaviť značku 0"
 
 #: lazarusidestrconsts.liskmsetmarker1
-msgid "Set marker 1"
+#, fuzzy
+#| msgid "Set marker 1"
+msgid "Set bookmark 1"
 msgstr "Nastaviť značku 1"
 
 #: lazarusidestrconsts.liskmsetmarker2
-msgid "Set marker 2"
+#, fuzzy
+#| msgid "Set marker 2"
+msgid "Set bookmark 2"
 msgstr "Nastaviť značku 2"
 
 #: lazarusidestrconsts.liskmsetmarker3
-msgid "Set marker 3"
+#, fuzzy
+#| msgid "Set marker 3"
+msgid "Set bookmark 3"
 msgstr "Nastaviť značku 3"
 
 #: lazarusidestrconsts.liskmsetmarker4
-msgid "Set marker 4"
+#, fuzzy
+#| msgid "Set marker 4"
+msgid "Set bookmark 4"
 msgstr "Nastaviť značku 4"
 
 #: lazarusidestrconsts.liskmsetmarker5
-msgid "Set marker 5"
+#, fuzzy
+#| msgid "Set marker 5"
+msgid "Set bookmark 5"
 msgstr "Nastaviť značku 5"
 
 #: lazarusidestrconsts.liskmsetmarker6
-msgid "Set marker 6"
+#, fuzzy
+#| msgid "Set marker 6"
+msgid "Set bookmark 6"
 msgstr "Nastaviť značku 6"
 
 #: lazarusidestrconsts.liskmsetmarker7
-msgid "Set marker 7"
+#, fuzzy
+#| msgid "Set marker 7"
+msgid "Set bookmark 7"
 msgstr "Nastaviť značku 7"
 
 #: lazarusidestrconsts.liskmsetmarker8
-msgid "Set marker 8"
+#, fuzzy
+#| msgid "Set marker 8"
+msgid "Set bookmark 8"
 msgstr "Nastaviť značku 8"
 
 #: lazarusidestrconsts.liskmsetmarker9
-msgid "Set marker 9"
+#, fuzzy
+#| msgid "Set marker 9"
+msgid "Set bookmark 9"
 msgstr "Nastaviť značku 9"
 
 #: lazarusidestrconsts.liskmstopprogram
@@ -11211,43 +11251,43 @@ msgid "Toggle between Unit and Form"
 msgstr "Prepnúť medzi Jednotkou a formulárom"
 
 #: lazarusidestrconsts.liskmtogglemarker0
-msgid "Toggle marker 0"
+msgid "Toggle bookmark 0"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker1
-msgid "Toggle marker 1"
+msgid "Toggle bookmark 1"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker2
-msgid "Toggle marker 2"
+msgid "Toggle bookmark 2"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker3
-msgid "Toggle marker 3"
+msgid "Toggle bookmark 3"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker4
-msgid "Toggle marker 4"
+msgid "Toggle bookmark 4"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker5
-msgid "Toggle marker 5"
+msgid "Toggle bookmark 5"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker6
-msgid "Toggle marker 6"
+msgid "Toggle bookmark 6"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker7
-msgid "Toggle marker 7"
+msgid "Toggle bookmark 7"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker8
-msgid "Toggle marker 8"
+msgid "Toggle bookmark 8"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker9
-msgid "Toggle marker 9"
+msgid "Toggle bookmark 9"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
@@ -13071,6 +13111,10 @@ msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Otvoriť nedávny projekt ..."
 
+#: lazarusidestrconsts.lismenuopenunit
+msgid "Open Unit ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupackage
 #, fuzzy
 #| msgid "&Package"
@@ -14452,6 +14496,10 @@ msgstr "Otvoriť projekt %s?"
 
 #: lazarusidestrconsts.lisopentooloptions
 msgid "Open Tool Options"
+msgstr ""
+
+#: lazarusidestrconsts.lisopenunit
+msgid "Open Unit"
 msgstr ""
 
 #: lazarusidestrconsts.lisopenurl
@@ -20662,7 +20710,9 @@ msgid "Go to Line Number"
 msgstr "Choď na riadok číslo"
 
 #: lazarusidestrconsts.srkmecgotomarker
-msgid "Go to Marker %d"
+#, fuzzy
+#| msgid "Go to Marker %d"
+msgid "Go to bookmark %d"
 msgstr "Choď na značku %d"
 
 #: lazarusidestrconsts.srkmecgotoxy
@@ -21190,7 +21240,9 @@ msgid "Set a free Bookmark"
 msgstr "Nastaviť voľnú záložku"
 
 #: lazarusidestrconsts.srkmecsetmarker
-msgid "Set Marker %d"
+#, fuzzy
+#| msgid "Set Marker %d"
+msgid "Set bookmark %d"
 msgstr "Nastav značku %d"
 
 #: lazarusidestrconsts.srkmecshifttab
@@ -21423,7 +21475,7 @@ msgid "View local variables"
 msgstr "Zobraziť lokálne premenné"
 
 #: lazarusidestrconsts.srkmectogglemarker
-msgid "Toggle Marker %d"
+msgid "Toggle bookmark %d"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemarkupword

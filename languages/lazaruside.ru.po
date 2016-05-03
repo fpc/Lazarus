@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-04-20 01:29+0300\n"
+"PO-Revision-Date: 2016-05-04 00:53+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -10516,43 +10516,43 @@ msgid "Find Incremental"
 msgstr "Найти инкрементно"
 
 #: lazarusidestrconsts.liskmgotomarker0
-msgid "Go to marker 0"
+msgid "Go to bookmark 0"
 msgstr "Перейти к закладке 0"
 
 #: lazarusidestrconsts.liskmgotomarker1
-msgid "Go to marker 1"
+msgid "Go to bookmark 1"
 msgstr "Перейти к закладке 1"
 
 #: lazarusidestrconsts.liskmgotomarker2
-msgid "Go to marker 2"
+msgid "Go to bookmark 2"
 msgstr "Перейти к закладке 2"
 
 #: lazarusidestrconsts.liskmgotomarker3
-msgid "Go to marker 3"
+msgid "Go to bookmark 3"
 msgstr "Перейти к закладке 3"
 
 #: lazarusidestrconsts.liskmgotomarker4
-msgid "Go to marker 4"
+msgid "Go to bookmark 4"
 msgstr "Перейти к закладке 4"
 
 #: lazarusidestrconsts.liskmgotomarker5
-msgid "Go to marker 5"
+msgid "Go to bookmark 5"
 msgstr "Перейти к закладке 5"
 
 #: lazarusidestrconsts.liskmgotomarker6
-msgid "Go to marker 6"
+msgid "Go to bookmark 6"
 msgstr "Перейти к закладке 6"
 
 #: lazarusidestrconsts.liskmgotomarker7
-msgid "Go to marker 7"
+msgid "Go to bookmark 7"
 msgstr "Перейти к закладке 7"
 
 #: lazarusidestrconsts.liskmgotomarker8
-msgid "Go to marker 8"
+msgid "Go to bookmark 8"
 msgstr "Перейти к закладке 8"
 
 #: lazarusidestrconsts.liskmgotomarker9
-msgid "Go to marker 9"
+msgid "Go to bookmark 9"
 msgstr "Перейти к закладке 9"
 
 #: lazarusidestrconsts.liskmgotosourceeditor1
@@ -10724,43 +10724,43 @@ msgid "Set free Bookmark"
 msgstr "Установить свободную закладку"
 
 #: lazarusidestrconsts.liskmsetmarker0
-msgid "Set marker 0"
+msgid "Set bookmark 0"
 msgstr "Добавить закладку 0"
 
 #: lazarusidestrconsts.liskmsetmarker1
-msgid "Set marker 1"
+msgid "Set bookmark 1"
 msgstr "Добавить закладку 1"
 
 #: lazarusidestrconsts.liskmsetmarker2
-msgid "Set marker 2"
+msgid "Set bookmark 2"
 msgstr "Добавить закладку 2"
 
 #: lazarusidestrconsts.liskmsetmarker3
-msgid "Set marker 3"
+msgid "Set bookmark 3"
 msgstr "Добавить закладку 3"
 
 #: lazarusidestrconsts.liskmsetmarker4
-msgid "Set marker 4"
+msgid "Set bookmark 4"
 msgstr "Добавить закладку 4"
 
 #: lazarusidestrconsts.liskmsetmarker5
-msgid "Set marker 5"
+msgid "Set bookmark 5"
 msgstr "Добавить закладку 5"
 
 #: lazarusidestrconsts.liskmsetmarker6
-msgid "Set marker 6"
+msgid "Set bookmark 6"
 msgstr "Добавить закладку 6"
 
 #: lazarusidestrconsts.liskmsetmarker7
-msgid "Set marker 7"
+msgid "Set bookmark 7"
 msgstr "Добавить закладку 7"
 
 #: lazarusidestrconsts.liskmsetmarker8
-msgid "Set marker 8"
+msgid "Set bookmark 8"
 msgstr "Добавить закладку 8"
 
 #: lazarusidestrconsts.liskmsetmarker9
-msgid "Set marker 9"
+msgid "Set bookmark 9"
 msgstr "Добавить закладку 9"
 
 #: lazarusidestrconsts.liskmstopprogram
@@ -10772,43 +10772,43 @@ msgid "Toggle between Unit and Form"
 msgstr "Переключиться между модулем и формой"
 
 #: lazarusidestrconsts.liskmtogglemarker0
-msgid "Toggle marker 0"
+msgid "Toggle bookmark 0"
 msgstr "Переключить закладку 0"
 
 #: lazarusidestrconsts.liskmtogglemarker1
-msgid "Toggle marker 1"
+msgid "Toggle bookmark 1"
 msgstr "Переключить закладку 1"
 
 #: lazarusidestrconsts.liskmtogglemarker2
-msgid "Toggle marker 2"
+msgid "Toggle bookmark 2"
 msgstr "Переключить закладку 2"
 
 #: lazarusidestrconsts.liskmtogglemarker3
-msgid "Toggle marker 3"
+msgid "Toggle bookmark 3"
 msgstr "Переключить закладку 3"
 
 #: lazarusidestrconsts.liskmtogglemarker4
-msgid "Toggle marker 4"
+msgid "Toggle bookmark 4"
 msgstr "Переключить закладку 4"
 
 #: lazarusidestrconsts.liskmtogglemarker5
-msgid "Toggle marker 5"
+msgid "Toggle bookmark 5"
 msgstr "Переключить закладку 5"
 
 #: lazarusidestrconsts.liskmtogglemarker6
-msgid "Toggle marker 6"
+msgid "Toggle bookmark 6"
 msgstr "Переключить закладку 6"
 
 #: lazarusidestrconsts.liskmtogglemarker7
-msgid "Toggle marker 7"
+msgid "Toggle bookmark 7"
 msgstr "Переключить закладку 7"
 
 #: lazarusidestrconsts.liskmtogglemarker8
-msgid "Toggle marker 8"
+msgid "Toggle bookmark 8"
 msgstr "Переключить закладку 8"
 
 #: lazarusidestrconsts.liskmtogglemarker9
-msgid "Toggle marker 9"
+msgid "Toggle bookmark 9"
 msgstr "Переключить закладку 9"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
@@ -12499,6 +12499,10 @@ msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Открыть недавний проект"
 
+#: lazarusidestrconsts.lismenuopenunit
+msgid "Open Unit ..."
+msgstr "Открыть модуль ..."
+
 #: lazarusidestrconsts.lismenupackage
 msgid "Pa&ckage"
 msgstr "П&акет"
@@ -13805,6 +13809,10 @@ msgstr "Открыть проект %s?"
 #: lazarusidestrconsts.lisopentooloptions
 msgid "Open Tool Options"
 msgstr "Открыть диалог параметров"
+
+#: lazarusidestrconsts.lisopenunit
+msgid "Open Unit"
+msgstr "Открыть модуль"
 
 #: lazarusidestrconsts.lisopenurl
 msgid "Open URL"
@@ -19606,7 +19614,7 @@ msgid "Go to Line Number"
 msgstr "Перейти к строке с заданным номером"
 
 #: lazarusidestrconsts.srkmecgotomarker
-msgid "Go to Marker %d"
+msgid "Go to bookmark %d"
 msgstr "Перейти к закладке %d"
 
 #: lazarusidestrconsts.srkmecgotoxy
@@ -20110,7 +20118,7 @@ msgid "Set a free Bookmark"
 msgstr "Установить свободную закладку"
 
 #: lazarusidestrconsts.srkmecsetmarker
-msgid "Set Marker %d"
+msgid "Set bookmark %d"
 msgstr "Установить закладку %d"
 
 #: lazarusidestrconsts.srkmecshifttab
@@ -20337,7 +20345,7 @@ msgid "View local variables"
 msgstr "Просмотр локальных переменных"
 
 #: lazarusidestrconsts.srkmectogglemarker
-msgid "Toggle Marker %d"
+msgid "Toggle bookmark %d"
 msgstr "Переключить закладку %d"
 
 #: lazarusidestrconsts.srkmectogglemarkupword

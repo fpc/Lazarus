@@ -11113,43 +11113,63 @@ msgid "Find Incremental"
 msgstr "מצא באופן מתקדם"
 
 #: lazarusidestrconsts.liskmgotomarker0
-msgid "Go to marker 0"
+#, fuzzy
+#| msgid "Go to marker 0"
+msgid "Go to bookmark 0"
 msgstr "לך לסימן 0"
 
 #: lazarusidestrconsts.liskmgotomarker1
-msgid "Go to marker 1"
+#, fuzzy
+#| msgid "Go to marker 1"
+msgid "Go to bookmark 1"
 msgstr "לך לסימן 1"
 
 #: lazarusidestrconsts.liskmgotomarker2
-msgid "Go to marker 2"
+#, fuzzy
+#| msgid "Go to marker 2"
+msgid "Go to bookmark 2"
 msgstr "לך לסימן 2"
 
 #: lazarusidestrconsts.liskmgotomarker3
-msgid "Go to marker 3"
+#, fuzzy
+#| msgid "Go to marker 3"
+msgid "Go to bookmark 3"
 msgstr "לך לסימן 3"
 
 #: lazarusidestrconsts.liskmgotomarker4
-msgid "Go to marker 4"
+#, fuzzy
+#| msgid "Go to marker 4"
+msgid "Go to bookmark 4"
 msgstr "לך לסימן 4"
 
 #: lazarusidestrconsts.liskmgotomarker5
-msgid "Go to marker 5"
+#, fuzzy
+#| msgid "Go to marker 5"
+msgid "Go to bookmark 5"
 msgstr "לך לסימן 5"
 
 #: lazarusidestrconsts.liskmgotomarker6
-msgid "Go to marker 6"
+#, fuzzy
+#| msgid "Go to marker 6"
+msgid "Go to bookmark 6"
 msgstr "לך לסימן 6"
 
 #: lazarusidestrconsts.liskmgotomarker7
-msgid "Go to marker 7"
+#, fuzzy
+#| msgid "Go to marker 7"
+msgid "Go to bookmark 7"
 msgstr "לך לסימן 7"
 
 #: lazarusidestrconsts.liskmgotomarker8
-msgid "Go to marker 8"
+#, fuzzy
+#| msgid "Go to marker 8"
+msgid "Go to bookmark 8"
 msgstr "לך לסימן 8"
 
 #: lazarusidestrconsts.liskmgotomarker9
-msgid "Go to marker 9"
+#, fuzzy
+#| msgid "Go to marker 9"
+msgid "Go to bookmark 9"
 msgstr "לך לסימן 9"
 
 #: lazarusidestrconsts.liskmgotosourceeditor1
@@ -11332,43 +11352,63 @@ msgid "Set free Bookmark"
 msgstr "קבע סימניה חופשית"
 
 #: lazarusidestrconsts.liskmsetmarker0
-msgid "Set marker 0"
+#, fuzzy
+#| msgid "Set marker 0"
+msgid "Set bookmark 0"
 msgstr "קבע סמן 0"
 
 #: lazarusidestrconsts.liskmsetmarker1
-msgid "Set marker 1"
+#, fuzzy
+#| msgid "Set marker 1"
+msgid "Set bookmark 1"
 msgstr "קבע סמן 1"
 
 #: lazarusidestrconsts.liskmsetmarker2
-msgid "Set marker 2"
+#, fuzzy
+#| msgid "Set marker 2"
+msgid "Set bookmark 2"
 msgstr "קבע סמן 2"
 
 #: lazarusidestrconsts.liskmsetmarker3
-msgid "Set marker 3"
+#, fuzzy
+#| msgid "Set marker 3"
+msgid "Set bookmark 3"
 msgstr "קבע סמן 3"
 
 #: lazarusidestrconsts.liskmsetmarker4
-msgid "Set marker 4"
+#, fuzzy
+#| msgid "Set marker 4"
+msgid "Set bookmark 4"
 msgstr "קבע סמן 4"
 
 #: lazarusidestrconsts.liskmsetmarker5
-msgid "Set marker 5"
+#, fuzzy
+#| msgid "Set marker 5"
+msgid "Set bookmark 5"
 msgstr "קבע סמן 5"
 
 #: lazarusidestrconsts.liskmsetmarker6
-msgid "Set marker 6"
+#, fuzzy
+#| msgid "Set marker 6"
+msgid "Set bookmark 6"
 msgstr "קבע סמן 6"
 
 #: lazarusidestrconsts.liskmsetmarker7
-msgid "Set marker 7"
+#, fuzzy
+#| msgid "Set marker 7"
+msgid "Set bookmark 7"
 msgstr "קבע סמן 7"
 
 #: lazarusidestrconsts.liskmsetmarker8
-msgid "Set marker 8"
+#, fuzzy
+#| msgid "Set marker 8"
+msgid "Set bookmark 8"
 msgstr "קבע סמן 8"
 
 #: lazarusidestrconsts.liskmsetmarker9
-msgid "Set marker 9"
+#, fuzzy
+#| msgid "Set marker 9"
+msgid "Set bookmark 9"
 msgstr "קבע סמן 9"
 
 #: lazarusidestrconsts.liskmstopprogram
@@ -11382,43 +11422,63 @@ msgid "Toggle between Unit and Form"
 msgstr "החלף בין יחידה לטופס"
 
 #: lazarusidestrconsts.liskmtogglemarker0
-msgid "Toggle marker 0"
+#, fuzzy
+#| msgid "Toggle marker 0"
+msgid "Toggle bookmark 0"
 msgstr "החלף סמן 0"
 
 #: lazarusidestrconsts.liskmtogglemarker1
-msgid "Toggle marker 1"
+#, fuzzy
+#| msgid "Toggle marker 1"
+msgid "Toggle bookmark 1"
 msgstr "החלף סמן 1"
 
 #: lazarusidestrconsts.liskmtogglemarker2
-msgid "Toggle marker 2"
+#, fuzzy
+#| msgid "Toggle marker 2"
+msgid "Toggle bookmark 2"
 msgstr "החלף סמן 2"
 
 #: lazarusidestrconsts.liskmtogglemarker3
-msgid "Toggle marker 3"
+#, fuzzy
+#| msgid "Toggle marker 3"
+msgid "Toggle bookmark 3"
 msgstr "החלף סמן 3"
 
 #: lazarusidestrconsts.liskmtogglemarker4
-msgid "Toggle marker 4"
+#, fuzzy
+#| msgid "Toggle marker 4"
+msgid "Toggle bookmark 4"
 msgstr "החלף סמן 4"
 
 #: lazarusidestrconsts.liskmtogglemarker5
-msgid "Toggle marker 5"
+#, fuzzy
+#| msgid "Toggle marker 5"
+msgid "Toggle bookmark 5"
 msgstr "החלף סמן 5"
 
 #: lazarusidestrconsts.liskmtogglemarker6
-msgid "Toggle marker 6"
+#, fuzzy
+#| msgid "Toggle marker 6"
+msgid "Toggle bookmark 6"
 msgstr "החלף סמן 6"
 
 #: lazarusidestrconsts.liskmtogglemarker7
-msgid "Toggle marker 7"
+#, fuzzy
+#| msgid "Toggle marker 7"
+msgid "Toggle bookmark 7"
 msgstr "החלף סמן 7"
 
 #: lazarusidestrconsts.liskmtogglemarker8
-msgid "Toggle marker 8"
+#, fuzzy
+#| msgid "Toggle marker 8"
+msgid "Toggle bookmark 8"
 msgstr "החלף סמן 8"
 
 #: lazarusidestrconsts.liskmtogglemarker9
-msgid "Toggle marker 9"
+#, fuzzy
+#| msgid "Toggle marker 9"
+msgid "Toggle bookmark 9"
 msgstr "החלף סמן 9"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
@@ -13268,6 +13328,10 @@ msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
 msgstr "פתח פרויקטים אחרונים ..."
 
+#: lazarusidestrconsts.lismenuopenunit
+msgid "Open Unit ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupackage
 #, fuzzy
 #| msgid "&Package"
@@ -14673,6 +14737,10 @@ msgstr "האם לפתוח את הפרויקט %s?"
 
 #: lazarusidestrconsts.lisopentooloptions
 msgid "Open Tool Options"
+msgstr ""
+
+#: lazarusidestrconsts.lisopenunit
+msgid "Open Unit"
 msgstr ""
 
 #: lazarusidestrconsts.lisopenurl
@@ -21012,7 +21080,8 @@ msgstr "לך לשורה מספר"
 
 #: lazarusidestrconsts.srkmecgotomarker
 #, fuzzy,badformat
-msgid "Go to Marker %d"
+#| msgid "Go to Marker %d"
+msgid "Go to bookmark %d"
 msgstr "לך לסמן d%"
 
 #: lazarusidestrconsts.srkmecgotoxy
@@ -21547,7 +21616,8 @@ msgstr "קבע סימניה חופשית"
 
 #: lazarusidestrconsts.srkmecsetmarker
 #, fuzzy,badformat
-msgid "Set Marker %d"
+#| msgid "Set Marker %d"
+msgid "Set bookmark %d"
 msgstr "קבע סמן d%"
 
 #: lazarusidestrconsts.srkmecshifttab
@@ -21783,7 +21853,8 @@ msgstr "הצג משתנים מקומיים"
 
 #: lazarusidestrconsts.srkmectogglemarker
 #, fuzzy,badformat
-msgid "Toggle Marker %d"
+#| msgid "Toggle Marker %d"
+msgid "Toggle bookmark %d"
 msgstr "החלף סמן d%"
 
 #: lazarusidestrconsts.srkmectogglemarkupword

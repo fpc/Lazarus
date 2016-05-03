@@ -10518,43 +10518,63 @@ msgid "Find Incremental"
 msgstr "Bővített keresés"
 
 #: lazarusidestrconsts.liskmgotomarker0
-msgid "Go to marker 0"
+#, fuzzy
+#| msgid "Go to marker 0"
+msgid "Go to bookmark 0"
 msgstr "Ugrás a 0. megjelöléshez"
 
 #: lazarusidestrconsts.liskmgotomarker1
-msgid "Go to marker 1"
+#, fuzzy
+#| msgid "Go to marker 1"
+msgid "Go to bookmark 1"
 msgstr "Ugrás az 1. megjelöléshez"
 
 #: lazarusidestrconsts.liskmgotomarker2
-msgid "Go to marker 2"
+#, fuzzy
+#| msgid "Go to marker 2"
+msgid "Go to bookmark 2"
 msgstr "Ugrás a 2. megjelöléshez"
 
 #: lazarusidestrconsts.liskmgotomarker3
-msgid "Go to marker 3"
+#, fuzzy
+#| msgid "Go to marker 3"
+msgid "Go to bookmark 3"
 msgstr "Ugrás a 3. megjelöléshez"
 
 #: lazarusidestrconsts.liskmgotomarker4
-msgid "Go to marker 4"
+#, fuzzy
+#| msgid "Go to marker 4"
+msgid "Go to bookmark 4"
 msgstr "Ugrás a 4. megjelöléshez"
 
 #: lazarusidestrconsts.liskmgotomarker5
-msgid "Go to marker 5"
+#, fuzzy
+#| msgid "Go to marker 5"
+msgid "Go to bookmark 5"
 msgstr "Ugrás az 5. megjelöléshez"
 
 #: lazarusidestrconsts.liskmgotomarker6
-msgid "Go to marker 6"
+#, fuzzy
+#| msgid "Go to marker 6"
+msgid "Go to bookmark 6"
 msgstr "Ugrás a 6. megjelöléshez"
 
 #: lazarusidestrconsts.liskmgotomarker7
-msgid "Go to marker 7"
+#, fuzzy
+#| msgid "Go to marker 7"
+msgid "Go to bookmark 7"
 msgstr "Ugrás a 7. megjelöléshez"
 
 #: lazarusidestrconsts.liskmgotomarker8
-msgid "Go to marker 8"
+#, fuzzy
+#| msgid "Go to marker 8"
+msgid "Go to bookmark 8"
 msgstr "Ugrás a 8. megjelöléshez"
 
 #: lazarusidestrconsts.liskmgotomarker9
-msgid "Go to marker 9"
+#, fuzzy
+#| msgid "Go to marker 9"
+msgid "Go to bookmark 9"
 msgstr "Ugrás a 9. megjelöléshez"
 
 #: lazarusidestrconsts.liskmgotosourceeditor1
@@ -10725,43 +10745,63 @@ msgid "Set free Bookmark"
 msgstr "Üres könyvjelző beállítása"
 
 #: lazarusidestrconsts.liskmsetmarker0
-msgid "Set marker 0"
+#, fuzzy
+#| msgid "Set marker 0"
+msgid "Set bookmark 0"
 msgstr "0. jelölés bekacsolása"
 
 #: lazarusidestrconsts.liskmsetmarker1
-msgid "Set marker 1"
+#, fuzzy
+#| msgid "Set marker 1"
+msgid "Set bookmark 1"
 msgstr "1. jelölés bekacsolása"
 
 #: lazarusidestrconsts.liskmsetmarker2
-msgid "Set marker 2"
+#, fuzzy
+#| msgid "Set marker 2"
+msgid "Set bookmark 2"
 msgstr "2. jelölés bekacsolása"
 
 #: lazarusidestrconsts.liskmsetmarker3
-msgid "Set marker 3"
+#, fuzzy
+#| msgid "Set marker 3"
+msgid "Set bookmark 3"
 msgstr "3. jelölés bekacsolása"
 
 #: lazarusidestrconsts.liskmsetmarker4
-msgid "Set marker 4"
+#, fuzzy
+#| msgid "Set marker 4"
+msgid "Set bookmark 4"
 msgstr "4. jelölés bekacsolása"
 
 #: lazarusidestrconsts.liskmsetmarker5
-msgid "Set marker 5"
+#, fuzzy
+#| msgid "Set marker 5"
+msgid "Set bookmark 5"
 msgstr "5. jelölés bekacsolása"
 
 #: lazarusidestrconsts.liskmsetmarker6
-msgid "Set marker 6"
+#, fuzzy
+#| msgid "Set marker 6"
+msgid "Set bookmark 6"
 msgstr "6. jelölés bekacsolása"
 
 #: lazarusidestrconsts.liskmsetmarker7
-msgid "Set marker 7"
+#, fuzzy
+#| msgid "Set marker 7"
+msgid "Set bookmark 7"
 msgstr "7. jelölés bekacsolása"
 
 #: lazarusidestrconsts.liskmsetmarker8
-msgid "Set marker 8"
+#, fuzzy
+#| msgid "Set marker 8"
+msgid "Set bookmark 8"
 msgstr "8. jelölés bekacsolása"
 
 #: lazarusidestrconsts.liskmsetmarker9
-msgid "Set marker 9"
+#, fuzzy
+#| msgid "Set marker 9"
+msgid "Set bookmark 9"
 msgstr "9. jelölés bekacsolása"
 
 #: lazarusidestrconsts.liskmstopprogram
@@ -10773,43 +10813,63 @@ msgid "Toggle between Unit and Form"
 msgstr "Unit és Form közötti váltás"
 
 #: lazarusidestrconsts.liskmtogglemarker0
-msgid "Toggle marker 0"
+#, fuzzy
+#| msgid "Toggle marker 0"
+msgid "Toggle bookmark 0"
 msgstr "0. jelölés ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker1
-msgid "Toggle marker 1"
+#, fuzzy
+#| msgid "Toggle marker 1"
+msgid "Toggle bookmark 1"
 msgstr "1. jelölés ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker2
-msgid "Toggle marker 2"
+#, fuzzy
+#| msgid "Toggle marker 2"
+msgid "Toggle bookmark 2"
 msgstr "2. jelölés ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker3
-msgid "Toggle marker 3"
+#, fuzzy
+#| msgid "Toggle marker 3"
+msgid "Toggle bookmark 3"
 msgstr "3. jelölés ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker4
-msgid "Toggle marker 4"
+#, fuzzy
+#| msgid "Toggle marker 4"
+msgid "Toggle bookmark 4"
 msgstr "4. jelölés ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker5
-msgid "Toggle marker 5"
+#, fuzzy
+#| msgid "Toggle marker 5"
+msgid "Toggle bookmark 5"
 msgstr "5. jelölés ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker6
-msgid "Toggle marker 6"
+#, fuzzy
+#| msgid "Toggle marker 6"
+msgid "Toggle bookmark 6"
 msgstr "6. jelölés ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker7
-msgid "Toggle marker 7"
+#, fuzzy
+#| msgid "Toggle marker 7"
+msgid "Toggle bookmark 7"
 msgstr "7. jelölés ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker8
-msgid "Toggle marker 8"
+#, fuzzy
+#| msgid "Toggle marker 8"
+msgid "Toggle bookmark 8"
 msgstr "8. jelölés ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker9
-msgid "Toggle marker 9"
+#, fuzzy
+#| msgid "Toggle marker 9"
+msgid "Toggle bookmark 9"
 msgstr "9. jelölés ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
@@ -12500,6 +12560,10 @@ msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Legutóbbi projekt megnyitása"
 
+#: lazarusidestrconsts.lismenuopenunit
+msgid "Open Unit ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupackage
 msgid "Pa&ckage"
 msgstr "&Csomag"
@@ -13805,6 +13869,10 @@ msgstr "Megnyitja a(z) %s projektet?"
 #: lazarusidestrconsts.lisopentooloptions
 msgid "Open Tool Options"
 msgstr "Eszközbeállítások megnyitása"
+
+#: lazarusidestrconsts.lisopenunit
+msgid "Open Unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenurl
 msgid "Open URL"
@@ -19606,7 +19674,9 @@ msgid "Go to Line Number"
 msgstr "Ugrás sorszámhoz"
 
 #: lazarusidestrconsts.srkmecgotomarker
-msgid "Go to Marker %d"
+#, fuzzy
+#| msgid "Go to Marker %d"
+msgid "Go to bookmark %d"
 msgstr "Ugrás a(z) %d. jelöléshez"
 
 #: lazarusidestrconsts.srkmecgotoxy
@@ -20110,7 +20180,9 @@ msgid "Set a free Bookmark"
 msgstr "Üres könyvjelző beállítása"
 
 #: lazarusidestrconsts.srkmecsetmarker
-msgid "Set Marker %d"
+#, fuzzy
+#| msgid "Set Marker %d"
+msgid "Set bookmark %d"
 msgstr "%d. jelölő bekapcsolása"
 
 #: lazarusidestrconsts.srkmecshifttab
@@ -20337,7 +20409,9 @@ msgid "View local variables"
 msgstr "Helyi változók megjelenítése"
 
 #: lazarusidestrconsts.srkmectogglemarker
-msgid "Toggle Marker %d"
+#, fuzzy
+#| msgid "Toggle Marker %d"
+msgid "Toggle bookmark %d"
 msgstr "%d. jelölő átkapcsolása"
 
 #: lazarusidestrconsts.srkmectogglemarkupword

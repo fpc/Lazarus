@@ -10793,43 +10793,63 @@ msgid "Find Incremental"
 msgstr "Prieauginė paieška"
 
 #: lazarusidestrconsts.liskmgotomarker0
-msgid "Go to marker 0"
+#, fuzzy
+#| msgid "Go to marker 0"
+msgid "Go to bookmark 0"
 msgstr "Rodyti žymeklį 0"
 
 #: lazarusidestrconsts.liskmgotomarker1
-msgid "Go to marker 1"
+#, fuzzy
+#| msgid "Go to marker 1"
+msgid "Go to bookmark 1"
 msgstr "Rodyti žymeklį 1"
 
 #: lazarusidestrconsts.liskmgotomarker2
-msgid "Go to marker 2"
+#, fuzzy
+#| msgid "Go to marker 2"
+msgid "Go to bookmark 2"
 msgstr "Rodyti žymeklį 2"
 
 #: lazarusidestrconsts.liskmgotomarker3
-msgid "Go to marker 3"
+#, fuzzy
+#| msgid "Go to marker 3"
+msgid "Go to bookmark 3"
 msgstr "Rodyti žymeklį 3"
 
 #: lazarusidestrconsts.liskmgotomarker4
-msgid "Go to marker 4"
+#, fuzzy
+#| msgid "Go to marker 4"
+msgid "Go to bookmark 4"
 msgstr "Rodyti žymeklį 4"
 
 #: lazarusidestrconsts.liskmgotomarker5
-msgid "Go to marker 5"
+#, fuzzy
+#| msgid "Go to marker 5"
+msgid "Go to bookmark 5"
 msgstr "Rodyti žymeklį 5"
 
 #: lazarusidestrconsts.liskmgotomarker6
-msgid "Go to marker 6"
+#, fuzzy
+#| msgid "Go to marker 6"
+msgid "Go to bookmark 6"
 msgstr "Rodyti žymeklį 6"
 
 #: lazarusidestrconsts.liskmgotomarker7
-msgid "Go to marker 7"
+#, fuzzy
+#| msgid "Go to marker 7"
+msgid "Go to bookmark 7"
 msgstr "Rodyti žymeklį 7"
 
 #: lazarusidestrconsts.liskmgotomarker8
-msgid "Go to marker 8"
+#, fuzzy
+#| msgid "Go to marker 8"
+msgid "Go to bookmark 8"
 msgstr "Rodyti žymeklį 8"
 
 #: lazarusidestrconsts.liskmgotomarker9
-msgid "Go to marker 9"
+#, fuzzy
+#| msgid "Go to marker 9"
+msgid "Go to bookmark 9"
 msgstr "Rodyti žymeklį 9"
 
 #: lazarusidestrconsts.liskmgotosourceeditor1
@@ -11000,43 +11020,63 @@ msgid "Set free Bookmark"
 msgstr "Padėti laisvą žymę"
 
 #: lazarusidestrconsts.liskmsetmarker0
-msgid "Set marker 0"
+#, fuzzy
+#| msgid "Set marker 0"
+msgid "Set bookmark 0"
 msgstr "Uždėti žymeklį 0"
 
 #: lazarusidestrconsts.liskmsetmarker1
-msgid "Set marker 1"
+#, fuzzy
+#| msgid "Set marker 1"
+msgid "Set bookmark 1"
 msgstr "Uždėti žymeklį 1"
 
 #: lazarusidestrconsts.liskmsetmarker2
-msgid "Set marker 2"
+#, fuzzy
+#| msgid "Set marker 2"
+msgid "Set bookmark 2"
 msgstr "Uždėti žymeklį 2"
 
 #: lazarusidestrconsts.liskmsetmarker3
-msgid "Set marker 3"
+#, fuzzy
+#| msgid "Set marker 3"
+msgid "Set bookmark 3"
 msgstr "Uždėti žymeklį 3"
 
 #: lazarusidestrconsts.liskmsetmarker4
-msgid "Set marker 4"
+#, fuzzy
+#| msgid "Set marker 4"
+msgid "Set bookmark 4"
 msgstr "Uždėti žymeklį 4"
 
 #: lazarusidestrconsts.liskmsetmarker5
-msgid "Set marker 5"
+#, fuzzy
+#| msgid "Set marker 5"
+msgid "Set bookmark 5"
 msgstr "Uždėti žymeklį 5"
 
 #: lazarusidestrconsts.liskmsetmarker6
-msgid "Set marker 6"
+#, fuzzy
+#| msgid "Set marker 6"
+msgid "Set bookmark 6"
 msgstr "Uždėti žymeklį 6"
 
 #: lazarusidestrconsts.liskmsetmarker7
-msgid "Set marker 7"
+#, fuzzy
+#| msgid "Set marker 7"
+msgid "Set bookmark 7"
 msgstr "Uždėti žymeklį 7"
 
 #: lazarusidestrconsts.liskmsetmarker8
-msgid "Set marker 8"
+#, fuzzy
+#| msgid "Set marker 8"
+msgid "Set bookmark 8"
 msgstr "Uždėti žymeklį 8"
 
 #: lazarusidestrconsts.liskmsetmarker9
-msgid "Set marker 9"
+#, fuzzy
+#| msgid "Set marker 9"
+msgid "Set bookmark 9"
 msgstr "Uždėti žymeklį 9"
 
 #: lazarusidestrconsts.liskmstopprogram
@@ -11048,43 +11088,63 @@ msgid "Toggle between Unit and Form"
 msgstr "Persijungti tarp formos ir modulio"
 
 #: lazarusidestrconsts.liskmtogglemarker0
-msgid "Toggle marker 0"
+#, fuzzy
+#| msgid "Toggle marker 0"
+msgid "Toggle bookmark 0"
 msgstr "Įjungti/išjungti žymeklį 0"
 
 #: lazarusidestrconsts.liskmtogglemarker1
-msgid "Toggle marker 1"
+#, fuzzy
+#| msgid "Toggle marker 1"
+msgid "Toggle bookmark 1"
 msgstr "Įjungti/išjungti žymeklį 1"
 
 #: lazarusidestrconsts.liskmtogglemarker2
-msgid "Toggle marker 2"
+#, fuzzy
+#| msgid "Toggle marker 2"
+msgid "Toggle bookmark 2"
 msgstr "Įjungti/išjungti žymeklį 2"
 
 #: lazarusidestrconsts.liskmtogglemarker3
-msgid "Toggle marker 3"
+#, fuzzy
+#| msgid "Toggle marker 3"
+msgid "Toggle bookmark 3"
 msgstr "Įjungti/išjungti žymeklį 3"
 
 #: lazarusidestrconsts.liskmtogglemarker4
-msgid "Toggle marker 4"
+#, fuzzy
+#| msgid "Toggle marker 4"
+msgid "Toggle bookmark 4"
 msgstr "Įjungti/išjungti žymeklį 4"
 
 #: lazarusidestrconsts.liskmtogglemarker5
-msgid "Toggle marker 5"
+#, fuzzy
+#| msgid "Toggle marker 5"
+msgid "Toggle bookmark 5"
 msgstr "Įjungti/išjungti žymeklį 5"
 
 #: lazarusidestrconsts.liskmtogglemarker6
-msgid "Toggle marker 6"
+#, fuzzy
+#| msgid "Toggle marker 6"
+msgid "Toggle bookmark 6"
 msgstr "Įjungti/išjungti žymeklį 6"
 
 #: lazarusidestrconsts.liskmtogglemarker7
-msgid "Toggle marker 7"
+#, fuzzy
+#| msgid "Toggle marker 7"
+msgid "Toggle bookmark 7"
 msgstr "Įjungti/išjungti žymeklį 7"
 
 #: lazarusidestrconsts.liskmtogglemarker8
-msgid "Toggle marker 8"
+#, fuzzy
+#| msgid "Toggle marker 8"
+msgid "Toggle bookmark 8"
 msgstr "Įjungti/išjungti žymeklį 8"
 
 #: lazarusidestrconsts.liskmtogglemarker9
-msgid "Toggle marker 9"
+#, fuzzy
+#| msgid "Toggle marker 9"
+msgid "Toggle bookmark 9"
 msgstr "Įjungti/išjungti žymeklį 9"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
@@ -12772,6 +12832,10 @@ msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Atverti paskutinį naudotą projektą"
 
+#: lazarusidestrconsts.lismenuopenunit
+msgid "Open Unit ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupackage
 msgid "Pa&ckage"
 msgstr "&Paketas"
@@ -14072,6 +14136,10 @@ msgstr "Atverti projektą %s?"
 
 #: lazarusidestrconsts.lisopentooloptions
 msgid "Open Tool Options"
+msgstr ""
+
+#: lazarusidestrconsts.lisopenunit
+msgid "Open Unit"
 msgstr ""
 
 #: lazarusidestrconsts.lisopenurl
@@ -20247,7 +20315,9 @@ msgid "Go to Line Number"
 msgstr "Rodyti eilutę nurodytu numeriu"
 
 #: lazarusidestrconsts.srkmecgotomarker
-msgid "Go to Marker %d"
+#, fuzzy
+#| msgid "Go to Marker %d"
+msgid "Go to bookmark %d"
 msgstr "Rodyti žymeklį %d"
 
 #: lazarusidestrconsts.srkmecgotoxy
@@ -20761,7 +20831,9 @@ msgid "Set a free Bookmark"
 msgstr "Padėti laisvą žymę"
 
 #: lazarusidestrconsts.srkmecsetmarker
-msgid "Set Marker %d"
+#, fuzzy
+#| msgid "Set Marker %d"
+msgid "Set bookmark %d"
 msgstr "Uždėti žymeklį %d"
 
 #: lazarusidestrconsts.srkmecshifttab
@@ -20988,7 +21060,9 @@ msgid "View local variables"
 msgstr "Rodyti vietinius kintamuosius"
 
 #: lazarusidestrconsts.srkmectogglemarker
-msgid "Toggle Marker %d"
+#, fuzzy
+#| msgid "Toggle Marker %d"
+msgid "Toggle bookmark %d"
 msgstr "Įjungti/išjungti žymeklį %d"
 
 #: lazarusidestrconsts.srkmectogglemarkupword
