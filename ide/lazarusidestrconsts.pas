@@ -295,7 +295,7 @@ resourcestring
   lisMenuNewForm = 'New Form';
   lisMenuNewOther = 'New ...';
   lisMenuOpen = '&Open ...';
-  lisMenuOpenUnit = 'Open Unit...';
+  lisMenuOpenUnit = 'Open Unit ...';
   lisMenuRevert = 'Revert';
   lisPESavePackageAs = 'Save Package As ...';
   lisPkgEditPublishPackage = 'Publish Package';
