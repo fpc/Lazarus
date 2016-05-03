@@ -75,6 +75,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property TabOrder stored False;
+    property TabStop;
     property Visible stored False;
   end;
 
