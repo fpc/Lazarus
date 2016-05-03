@@ -19,7 +19,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LazConfigStorage, Controls, Forms, BaseIDEIntf,
-  FileUtil, LazIDEIntf, IDEOptionsIntf, ProjectIntf;
+  LazFileUtils, LazIDEIntf, IDEOptionsIntf, ProjectIntf;
 
 resourcestring
   EduRSEducation = 'Education';
