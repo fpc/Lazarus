@@ -211,22 +211,7 @@ begin
   for i:=0 to PackageGraph.Count-1 do
     UpdateOnePackage(PackageGraph[i]);
   FilterEdit.InvalidateFilter;
-  //PkgListView.BeginUpdate;
-  //PkgListView.AlphaSort;
-  //PkgListView.EndUpdate;
 end;
-
-//if PkgListView.Items.Count>i then begin
-//  CurListItem:=PkgListView.Items[i];
-//  CurListItem.SubItems[0]:=CurPkg.Version.AsString;
-//  CurListItem.SubItems[1]:=PkgStateToString(CurPkg);
-//end else begin
-  //CurListItem:=PkgListView.Items.Add;
-  //CurListItem.SubItems.Add(CurPkg.Version.AsString);
-  //CurListItem.SubItems.Add(PkgStateToString(CurPkg));
-//end;
-//CurListItem.Caption:=CurPkg.Name;
-
 
 end.
 
