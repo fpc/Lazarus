@@ -195,12 +195,13 @@ procedure TOpenLoadedPackagesDlg.UpdatePackageList;
 
   procedure UpdateOnePackage(aPkg: TLazPackage);
   var
-    Data: TStringArray;
+    Data: TListViewDataItem;
   begin
-    SetLength(Data, 3);
-    Data[0] := aPkg.Name;
-    Data[1] := aPkg.Version.AsString;
-    Data[2] := PkgStateToString(aPkg);
+    Data.Data := nil;
+    SetLength(Data.StringArray, 3);
+    Data.StringArray[0] := aPkg.Name;
+    Data.StringArray[1] := aPkg.Version.AsString;
+    Data.StringArray[2] := PkgStateToString(aPkg);
     FilterEdit.Items.Add(Data);
   end;
 
