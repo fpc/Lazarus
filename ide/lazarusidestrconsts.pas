@@ -67,6 +67,7 @@ resourcestring
   lisDlgEdit = 'Edit ...';
   lisClear = 'Clear';
   lisOpen = 'Open';
+  lisOpenUnit = 'Open Unit';
   lisSave = 'Save';
   lisDlgSave = 'Save ...';
   lisSaveAs = 'Save As';
@@ -294,6 +295,7 @@ resourcestring
   lisMenuNewForm = 'New Form';
   lisMenuNewOther = 'New ...';
   lisMenuOpen = '&Open ...';
+  lisMenuOpenUnit = 'Open Unit...';
   lisMenuRevert = 'Revert';
   lisPESavePackageAs = 'Save Package As ...';
   lisPkgEditPublishPackage = 'Publish Package';

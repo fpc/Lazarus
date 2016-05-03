@@ -83,6 +83,7 @@ type
       //itmFileOpenSave: TIDEMenuSection;
         itmFileOpen: TIDEMenuCommand;
         itmFileRevert: TIDEMenuCommand;
+        itmFileOpenUnit: TIDEMenuCommand;
         //itmFileRecentOpen: TIDEMenuSection;
         itmFileSave: TIDEMenuCommand;
         itmFileSaveAs: TIDEMenuCommand;

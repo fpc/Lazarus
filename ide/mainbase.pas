@@ -987,6 +987,7 @@ begin
     ParentMI:=itmFileOpenSave;
     CreateMenuItem(ParentMI, itmFileOpen, 'itmFileOpen', lisMenuOpen, 'laz_open');
     CreateMenuItem(ParentMI,itmFileRevert,'itmFileRevert',lisMenuRevert, 'menu_file_revert');
+    CreateMenuItem(ParentMI, itmFileOpenUnit, 'itmFileOpenUnit', lisMenuOpenUnit, 'laz_openunit');
     CreateMenuSubSection(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
     CreateMenuItem(ParentMI,itmFileSave,'itmFileSave',lisMenuSave,'laz_save');
     CreateMenuItem(ParentMI,itmFileSaveAs,'itmFileSaveAs',lisMenuSaveAs,'menu_saveas');
@@ -1499,6 +1500,7 @@ begin
     itmFileNewForm.Command:=GetCommand(ecNewForm, TNewFormToolButton);
     itmFileNewOther.Command:=GetCommand(ecNew);
     itmFileOpen.Command:=GetCommand(ecOpen, TOpenFileToolButton);
+    itmFileOpenUnit.Command:=GetCommand(ecOpenUnit);
     itmFileRevert.Command:=GetCommand(ecRevert);
     itmFileSave.Command:=GetCommand(ecSave);
     itmFileSaveAs.Command:=GetCommand(ecSaveAs);

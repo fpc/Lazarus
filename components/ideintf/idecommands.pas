@@ -168,6 +168,7 @@ const
   ecCleanDirectory          = ecFirstLazarus + 212;
   ecRestart                 = ecFirstLazarus + 213;
   ecQuit                    = ecFirstLazarus + 214;
+  ecOpenUnit                = ecFirstLazarus + 215;
 
   // IDE navigation
   ecToggleFormUnit          = ecFirstLazarus + 301;

@@ -195,6 +195,7 @@ type
     procedure mnuNewFormClicked(Sender: TObject);
     procedure mnuNewOtherClicked(Sender: TObject);
     procedure mnuOpenClicked(Sender: TObject);
+    procedure mnuOpenUnitClicked(Sender: TObject);
     procedure mnuOpenRecentClicked(Sender: TObject); override;
     procedure mnuRevertClicked(Sender: TObject);
     procedure mnuSaveClicked(Sender: TObject);
@@ -898,7 +899,7 @@ type
     function DoShowAbstractMethods: TModalResult;
     function DoRemoveEmptyMethods: TModalResult;
     function DoRemoveUnusedUnits: TModalResult;
-    function DoUseUnit: TModalResult;
+    function DoUseUnitDlg(DlgType: TUseUnitDialogType): TModalResult;
     function DoFindOverloads: TModalResult;
     function DoInitIdentCompletion(JumpToError: boolean): boolean;
     function DoShowCodeContext(JumpToError: boolean): boolean;
@@ -2570,6 +2571,7 @@ begin
     itmFileNewForm.OnClick := @mnuNewFormClicked;
     itmFileNewOther.OnClick := @mnuNewOtherClicked;
     itmFileOpen.OnClick := @mnuOpenClicked;
+    itmFileOpenUnit.OnClick := @mnuOpenUnitClicked;
     itmFileRevert.OnClick := @mnuRevertClicked;
     SetRecentFilesMenu;
     itmFileSave.OnClick := @mnuSaveClicked;
@@ -2993,6 +2995,11 @@ begin
   end;
 end;
 
+procedure TMainIDE.mnuOpenUnitClicked(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecOpenUnit);
+end;
+
 procedure TMainIDE.mnuRevertClicked(Sender: TObject);
 begin
   if (SourceEditorManager.ActiveSourceWindowIndex < 0)
@@ -3231,6 +3238,7 @@ begin
         mnuSaveClicked(Self);
     end;
   ecOpen:                     mnuOpenClicked(Self);
+  ecOpenUnit:                 DoUseUnitDlg(udOpenUnit);
   ecSaveAll:                  DoSaveAll([sfCheckAmbiguousFiles]);
   ecQuit:                     mnuQuitClicked(Self);
   ecCompile:
@@ -3277,7 +3285,7 @@ begin
   ecShowAbstractMethods:      DoShowAbstractMethods;
   ecRemoveEmptyMethods:       DoRemoveEmptyMethods;
   ecRemoveUnusedUnits:        DoRemoveUnusedUnits;
-  ecUseUnit:                  DoUseUnit;
+  ecUseUnit:                  DoUseUnitDlg(udUseUnit);
   ecFindOverloads:            DoFindOverloads;
   ecFindBlockOtherEnd:        DoGoToPascalBlockOtherEnd;
   ecFindBlockStart:           DoGoToPascalBlockStart;
@@ -10067,7 +10075,7 @@ begin
   Result:=ShowUnusedUnitsDialog;
 end;
 
-function TMainIDE.DoUseUnit: TModalResult;
+function TMainIDE.DoUseUnitDlg(DlgType: TUseUnitDialogType): TModalResult;
 var
   TempEditor: TSourceEditorInterface;
   DefText: String;
@@ -10084,7 +10092,7 @@ begin
     end;
   end;
 
-  Result:=ShowUseUnitDialog(DefText);
+  Result:=ShowUseUnitDialog(DefText, DlgType);
 end;
 
 function TMainIDE.DoFindOverloads: TModalResult;

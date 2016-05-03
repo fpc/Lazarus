@@ -492,6 +492,7 @@ begin
     ecNewUnit                 : Result:= lisMenuNewUnit;
     ecNewForm                 : Result:= lisMenuNewForm;
     ecOpen                    : Result:= lisMenuOpen;
+    ecOpenUnit                : Result:= lisMenuOpenUnit;
     ecRevert                  : Result:= lisMenuRevert;
     ecSave                    : Result:= lisSave;
     ecSaveAs                  : Result:= lisMenuSaveAs;
@@ -1229,6 +1230,7 @@ begin
   ecNewUnit:             SetSingle(VK_UNKNOWN,[]);
   ecNewForm:             SetSingle(VK_UNKNOWN,[]);
   ecOpen:                SetSingle(VK_O,[XCtrl]);
+  ecOpenUnit:            SetSingle(VK_F12,[ssAlt]);
   ecRevert:              SetSingle(VK_UNKNOWN,[]);
   ecSave:                SetSingle(VK_S,[XCtrl]);
   ecSaveAs:              SetSingle(VK_UNKNOWN,[]);
@@ -1668,6 +1670,7 @@ begin
   ecNewUnit:             SetSingle(VK_UNKNOWN,[]);
   ecNewForm:             SetSingle(VK_UNKNOWN,[]);
   ecOpen:                SetSingle(VK_F3,[]);
+  ecOpenUnit:            SetSingle(VK_F12,[ssAlt]);
   ecRevert:              SetSingle(VK_UNKNOWN,[]);
   ecSave:                SetSingle(VK_F2,[]);
   ecSaveAs:              SetSingle(VK_UNKNOWN,[]);
@@ -2289,6 +2292,7 @@ begin
   ecNewUnit:             SetSingle(VK_UNKNOWN,[]);
   ecNewForm:             SetSingle(VK_UNKNOWN,[]);
   ecOpen:                SetSingle(VK_O,[ssMeta]);
+  ecOpenUnit:            SetSingle(VK_F12,[ssAlt]);
   ecRevert:              SetSingle(VK_UNKNOWN,[]);
   ecSave:                SetSingle(VK_S,[ssMeta]);
   ecSaveAs:              SetSingle(VK_S,[ssMeta,ssShift]);
@@ -2972,6 +2976,7 @@ begin
   AddDefault(C, 'NewUnit', lisKMNewUnit, ecNewUnit);
   AddDefault(C, 'NewForm', lisMenuNewForm, ecNewForm);
   AddDefault(C, 'Open', lisOpen, ecOpen);
+  AddDefault(C, 'OpenUnit', lisOpenUnit, ecOpenUnit);
   AddDefault(C, 'Revert', lisMenuRevert, ecRevert);
   AddDefault(C, 'Save', lisSave, ecSave);
   AddDefault(C, 'SaveAs', lisKMSaveAs, ecSaveAs);

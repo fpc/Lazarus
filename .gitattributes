@@ -6119,6 +6119,7 @@ images/actions/laz_edit.png -text svneol=unset#image/png
 images/actions/laz_export.png -text svneol=unset#image/png
 images/actions/laz_highlighter.png -text svneol=unset#image/png
 images/actions/laz_open.png -text svneol=unset#image/png
+images/actions/laz_openunit.png -text
 images/actions/laz_refresh.png -text svneol=unset#image/png
 images/actions/laz_save.png -text svneol=unset#image/png
 images/actions/laz_set_color_default.png -text svneol=unset#image/png
