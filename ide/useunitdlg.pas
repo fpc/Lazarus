@@ -372,7 +372,7 @@ begin
       s := '';
     if (ProjFile <> Project1.MainUnitInfo) and (s <> '') then
       if not FMainUsedUnits.Find(s, x) then
-        FProjUnits.Add(s);
+        FProjUnits.AddObject(s, ProjFile);
     ProjFile := ProjFile.NextPartOfProject;
   end;
   FProjUnits.Sorted := True;
@@ -440,15 +440,22 @@ end;
 function TUseUnitDialog.SelectedUnitFileName: string;
 var
   CodeBuf: TCodeBuffer;
-  AUnit: string;
+  AObj: TObject;
 begin
   Result := '';
-  AUnit := SelectedUnit;
-  if AUnit='' then
+  if UnitsListBox.ItemIndex < 0 then
     Exit;
-  CodeBuf := CodeToolBoss.FindUnitSource(SourceEditorManager.ActiveEditor.CodeBuffer, AUnit, '');
-  if Assigned(CodeBuf) then
-    Result := CodeBuf.Filename;
+  AObj := UnitsListBox.Items.Objects[UnitsListBox.ItemIndex];
+  if AObj is TIdentifierListItem then
+  begin
+    CodeBuf := CodeToolBoss.FindUnitSource(SourceEditorManager.ActiveEditor.CodeBuffer, TIdentifierListItem(AObj).Identifier, '');
+    if Assigned(CodeBuf) then
+      Result := CodeBuf.Filename;
+  end else
+  if AObj is TUnitInfo then
+  begin
+    Result := TUnitInfo(AObj).Filename;
+  end;
 end;
 
 function TUseUnitDialog.InterfaceSelected: Boolean;
@@ -486,7 +493,7 @@ begin
     curUnit := FProjUnits[i];
     if  not FMainUsedUnits.Find(curUnit, x)
     and not FImplUsedUnits.Find(curUnit, x) then
-      FilterEdit.Items.Add(FProjUnits[i]);
+      FilterEdit.Items.AddObject(FProjUnits[i], FProjUnits.Objects[i]);
   end;
   FilterEdit.InvalidateFilter;
 end;
