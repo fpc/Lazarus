@@ -1756,7 +1756,6 @@ begin
         w := Advance;
     end else
       w := 0;
-    for i := 1 to charlen do
     with result[resultIndex] do
     begin
       x := curX;
@@ -1764,8 +1763,8 @@ begin
       yTop := y+yTopRel;
       yBase := y;
       yBottom := y+yBottomRel;
-      inc(resultIndex);
     end;
+    inc(resultIndex);
     curX += w;
   end;
   with result[resultIndex] do
