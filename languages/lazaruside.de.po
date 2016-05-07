@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-03-20 17:43+0100\n"
+"PO-Revision-Date: 2016-05-05 17:50+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Language: de_DE\n"
-"X-Generator: Poedit 1.8.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -3351,7 +3351,7 @@ msgstr "Executable-Info anzeigen (nur für Win32)"
 
 #: lazarusidestrconsts.dlgshowfilenameincaption
 msgid "Show file name in caption"
-msgstr ""
+msgstr "Dateiname im Titel anzeigen"
 
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"
@@ -5468,7 +5468,7 @@ msgstr "Zeichentabelle"
 
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
-msgstr ""
+msgstr "Alle auswählen"
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
 msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
@@ -5729,7 +5729,7 @@ msgstr "Hier klicken um die Datei zu browsen"
 
 #: lazarusidestrconsts.lisclicktoseethechoices
 msgid "Click to see the choices"
-msgstr ""
+msgstr "Auswahlmöglichkeiten per Klick"
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
 msgid "Click to Select Palette Page"
@@ -8148,11 +8148,11 @@ msgstr "Fehler beim Lesen der Datei: %s"
 
 #: lazarusidestrconsts.lisdiskdiffignorealldiskchanges
 msgid "Ignore all disk changes"
-msgstr ""
+msgstr "Änderungen auf Platte ignorieren"
 
 #: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
 msgid "Reload checked files from disk"
-msgstr ""
+msgstr "Geänderte Dateien neu laden"
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
@@ -9551,7 +9551,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisgroupemptydelete
 msgid "No more breakpoints are assigned to group \"%s\", delete it?"
-msgstr ""
+msgstr "Keine weiteren Haltepunkte sind zur Gruppe \"%s\" zugewiesen, löschen?"
 
 #: lazarusidestrconsts.lisgroupemptydeletemore
 msgid "%sThere are %d more empty groups, delete all?"
@@ -9583,7 +9583,7 @@ msgstr "Lösche Gruppe(n)"
 
 #: lazarusidestrconsts.lisgroupsfordebugoutput
 msgid "Enable or Disable groups of debug output. Valid Options are:"
-msgstr ""
+msgstr "Gruppen von Debuggerausgaben aktivieren oder deaktivieren. Gültige Optionen sind:"
 
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
@@ -9934,7 +9934,7 @@ msgstr "Aus Datei importieren"
 
 #: lazarusidestrconsts.lisimportingbuildmodesnotsupported
 msgid "Importing BuildModes is not supported for packages."
-msgstr ""
+msgstr "Der Import von Erstellmodi wird nicht unterstützt für Packages."
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -10182,7 +10182,7 @@ msgstr "Erzeuge eine einfache Make-Datei anstatt das Package zu kompilieren"
 
 #: lazarusidestrconsts.lisinsufficientencoding
 msgid "Insufficient encoding"
-msgstr ""
+msgstr "Unzureichende Kodierung"
 
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
@@ -10520,64 +10520,44 @@ msgid "Find Incremental"
 msgstr "Inkrementelle Suche"
 
 #: lazarusidestrconsts.liskmgotomarker0
-#, fuzzy
-#| msgid "Go to marker 0"
 msgid "Go to bookmark 0"
-msgstr "Zur 0. Markierung gehen"
+msgstr "Gehe zu Lesezeichen 0"
 
 #: lazarusidestrconsts.liskmgotomarker1
-#, fuzzy
-#| msgid "Go to marker 1"
 msgid "Go to bookmark 1"
-msgstr "Zur 1. Markierung gehen"
+msgstr "Gehe zu Lesezeichen 1"
 
 #: lazarusidestrconsts.liskmgotomarker2
-#, fuzzy
-#| msgid "Go to marker 2"
 msgid "Go to bookmark 2"
-msgstr "Zur 2. Markierung gehen"
+msgstr "Gehe zu Lesezeichen 2"
 
 #: lazarusidestrconsts.liskmgotomarker3
-#, fuzzy
-#| msgid "Go to marker 3"
 msgid "Go to bookmark 3"
-msgstr "Zur 3. Markierung gehen"
+msgstr "Gehe zu Lesezeichen 3"
 
 #: lazarusidestrconsts.liskmgotomarker4
-#, fuzzy
-#| msgid "Go to marker 4"
 msgid "Go to bookmark 4"
-msgstr "Zur 4. Markierung gehen"
+msgstr "Gehe zu Lesezeichen 4"
 
 #: lazarusidestrconsts.liskmgotomarker5
-#, fuzzy
-#| msgid "Go to marker 5"
 msgid "Go to bookmark 5"
-msgstr "Zur 5. Markierung gehen"
+msgstr "Gehe zu Lesezeichen 5"
 
 #: lazarusidestrconsts.liskmgotomarker6
-#, fuzzy
-#| msgid "Go to marker 6"
 msgid "Go to bookmark 6"
-msgstr "Zur 6. Markierung gehen"
+msgstr "Gehe zu Lesezeichen 6"
 
 #: lazarusidestrconsts.liskmgotomarker7
-#, fuzzy
-#| msgid "Go to marker 7"
 msgid "Go to bookmark 7"
-msgstr "Zur 7. Markierung gehen"
+msgstr "Gehe zu Lesezeichen 7"
 
 #: lazarusidestrconsts.liskmgotomarker8
-#, fuzzy
-#| msgid "Go to marker 8"
 msgid "Go to bookmark 8"
-msgstr "Zur 8. Markierung gehen"
+msgstr "Gehe zu Lesezeichen 8"
 
 #: lazarusidestrconsts.liskmgotomarker9
-#, fuzzy
-#| msgid "Go to marker 9"
 msgid "Go to bookmark 9"
-msgstr "Zur 9. Markierung gehen"
+msgstr "Gehe zu Lesezeichen 9"
 
 #: lazarusidestrconsts.liskmgotosourceeditor1
 msgid "Go to source editor 1"
@@ -10747,64 +10727,44 @@ msgid "Set free Bookmark"
 msgstr "Freies Lesezeichen setzen"
 
 #: lazarusidestrconsts.liskmsetmarker0
-#, fuzzy
-#| msgid "Set marker 0"
 msgid "Set bookmark 0"
-msgstr "Markierung 0 setzen"
+msgstr "Lesezeichen 0 setzen"
 
 #: lazarusidestrconsts.liskmsetmarker1
-#, fuzzy
-#| msgid "Set marker 1"
 msgid "Set bookmark 1"
-msgstr "Markierung 1 setzen"
+msgstr "Lesezeichen 1 setzen"
 
 #: lazarusidestrconsts.liskmsetmarker2
-#, fuzzy
-#| msgid "Set marker 2"
 msgid "Set bookmark 2"
-msgstr "Markierung 2 setzen"
+msgstr "Lesezeichen 2 setzen"
 
 #: lazarusidestrconsts.liskmsetmarker3
-#, fuzzy
-#| msgid "Set marker 3"
 msgid "Set bookmark 3"
-msgstr "Markierung 3 setzen"
+msgstr "Lesezeichen 3 setzen"
 
 #: lazarusidestrconsts.liskmsetmarker4
-#, fuzzy
-#| msgid "Set marker 4"
 msgid "Set bookmark 4"
-msgstr "Markierung 4 setzen"
+msgstr "Lesezeichen 4 setzen"
 
 #: lazarusidestrconsts.liskmsetmarker5
-#, fuzzy
-#| msgid "Set marker 5"
 msgid "Set bookmark 5"
-msgstr "Markierung 5 setzen"
+msgstr "Lesezeichen 5 setzen"
 
 #: lazarusidestrconsts.liskmsetmarker6
-#, fuzzy
-#| msgid "Set marker 6"
 msgid "Set bookmark 6"
-msgstr "Markierung 6 setzen"
+msgstr "Lesezeichen 6 setzen"
 
 #: lazarusidestrconsts.liskmsetmarker7
-#, fuzzy
-#| msgid "Set marker 7"
 msgid "Set bookmark 7"
-msgstr "Markierung 7 setzen"
+msgstr "Lesezeichen 7 setzen"
 
 #: lazarusidestrconsts.liskmsetmarker8
-#, fuzzy
-#| msgid "Set marker 8"
 msgid "Set bookmark 8"
-msgstr "Markierung 8 setzen"
+msgstr "Lesezeichen 8 setzen"
 
 #: lazarusidestrconsts.liskmsetmarker9
-#, fuzzy
-#| msgid "Set marker 9"
 msgid "Set bookmark 9"
-msgstr "Markierung 9 setzen"
+msgstr "Lesezeichen 9 setzen"
 
 #: lazarusidestrconsts.liskmstopprogram
 msgid "Stop Program"
@@ -10815,64 +10775,44 @@ msgid "Toggle between Unit and Form"
 msgstr "Zwischen Unit und Form umschalten"
 
 #: lazarusidestrconsts.liskmtogglemarker0
-#, fuzzy
-#| msgid "Toggle marker 0"
 msgid "Toggle bookmark 0"
-msgstr "Markerung 0 umschalten"
+msgstr "Lesezeichen 0 umschalten"
 
 #: lazarusidestrconsts.liskmtogglemarker1
-#, fuzzy
-#| msgid "Toggle marker 1"
 msgid "Toggle bookmark 1"
-msgstr "Markerung 1 umschalten"
+msgstr "Lesezeichen 1 umschalten"
 
 #: lazarusidestrconsts.liskmtogglemarker2
-#, fuzzy
-#| msgid "Toggle marker 2"
 msgid "Toggle bookmark 2"
-msgstr "Markerung 2 umschalten"
+msgstr "Lesezeichen 2 umschalten"
 
 #: lazarusidestrconsts.liskmtogglemarker3
-#, fuzzy
-#| msgid "Toggle marker 3"
 msgid "Toggle bookmark 3"
-msgstr "Markerung 3 umschalten"
+msgstr "Lesezeichen 3 umschalten"
 
 #: lazarusidestrconsts.liskmtogglemarker4
-#, fuzzy
-#| msgid "Toggle marker 4"
 msgid "Toggle bookmark 4"
-msgstr "Markerung 4 umschalten"
+msgstr "Lesezeichen 4 umschalten"
 
 #: lazarusidestrconsts.liskmtogglemarker5
-#, fuzzy
-#| msgid "Toggle marker 5"
 msgid "Toggle bookmark 5"
-msgstr "Markerung 5 umschalten"
+msgstr "Lesezeichen 5 umschalten"
 
 #: lazarusidestrconsts.liskmtogglemarker6
-#, fuzzy
-#| msgid "Toggle marker 6"
 msgid "Toggle bookmark 6"
-msgstr "Markerung 6 umschalten"
+msgstr "Lesezeichen 6 umschalten"
 
 #: lazarusidestrconsts.liskmtogglemarker7
-#, fuzzy
-#| msgid "Toggle marker 7"
 msgid "Toggle bookmark 7"
-msgstr "Markerung 7 umschalten"
+msgstr "Lesezeichen 7 umschalten"
 
 #: lazarusidestrconsts.liskmtogglemarker8
-#, fuzzy
-#| msgid "Toggle marker 8"
 msgid "Toggle bookmark 8"
-msgstr "Markerung 8 umschalten"
+msgstr "Lesezeichen 8 umschalten"
 
 #: lazarusidestrconsts.liskmtogglemarker9
-#, fuzzy
-#| msgid "Toggle marker 9"
 msgid "Toggle bookmark 9"
-msgstr "Markerung 9 umschalten"
+msgstr "Lesezeichen 9 umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
 msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
@@ -11620,7 +11560,7 @@ msgstr "Vergleiche Dateien ..."
 
 #: lazarusidestrconsts.lismenucompilemanymodes
 msgid "Compile many Modes ..."
-msgstr ""
+msgstr "Viele Modi kompilieren ..."
 
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
@@ -12559,7 +12499,7 @@ msgstr "Letzte Projekte ..."
 
 #: lazarusidestrconsts.lismenuopenunit
 msgid "Open Unit ..."
-msgstr ""
+msgstr "Unit öffnen ..."
 
 #: lazarusidestrconsts.lismenupackage
 msgid "Pa&ckage"
@@ -12659,7 +12599,7 @@ msgstr "Start bis &Cursor"
 
 #: lazarusidestrconsts.lismenurunwithoutdebugging
 msgid "Run without Debugging"
-msgstr ""
+msgstr "Start ohne Debugger"
 
 #: lazarusidestrconsts.lismenusave
 msgctxt "lazarusidestrconsts.lismenusave"
@@ -13277,10 +13217,9 @@ msgid "More"
 msgstr "Weiter"
 
 #: lazarusidestrconsts.lismoresub
-#, fuzzy
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More"
-msgstr "Weiter"
+msgstr "Weitere"
 
 #: lazarusidestrconsts.lismove
 msgid "Move"
@@ -13862,7 +13801,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisopenunit
 msgid "Open Unit"
-msgstr ""
+msgstr "Unit öffnen"
 
 #: lazarusidestrconsts.lisopenurl
 msgid "Open URL"
@@ -16231,7 +16170,7 @@ msgstr "Alles speichern"
 
 #: lazarusidestrconsts.lissaveallchecked
 msgid "Save All Checked"
-msgstr ""
+msgstr "Alle ausgewählten speichern"
 
 #: lazarusidestrconsts.lissaveallmodified
 msgid "Save all modified files"
@@ -18289,7 +18228,7 @@ msgstr "Kann XML-Stream nicht in %s%s schreiben. Fehler: %S"
 
 #: lazarusidestrconsts.lisuncheckall
 msgid "Uncheck All"
-msgstr ""
+msgstr "Alle abwählen"
 
 #: lazarusidestrconsts.lisundo
 msgctxt "lazarusidestrconsts.lisundo"
@@ -18428,7 +18367,7 @@ msgstr "Ausgabe für den Aufruf (Parameter -h)"
 
 #: lazarusidestrconsts.lisuse
 msgid "Use"
-msgstr ""
+msgstr "Verwenden"
 
 #: lazarusidestrconsts.lisuseandclose
 msgid "Use and close"
@@ -19666,10 +19605,8 @@ msgid "Go to Line Number"
 msgstr "Zu Zeile springen"
 
 #: lazarusidestrconsts.srkmecgotomarker
-#, fuzzy
-#| msgid "Go to Marker %d"
 msgid "Go to bookmark %d"
-msgstr "Zu Markierung %d gehen"
+msgstr "Gehe zu Lesezeichen %d"
 
 #: lazarusidestrconsts.srkmecgotoxy
 msgid "Goto XY"
@@ -20172,10 +20109,8 @@ msgid "Set a free Bookmark"
 msgstr "Freies Lesezeichen setzen"
 
 #: lazarusidestrconsts.srkmecsetmarker
-#, fuzzy
-#| msgid "Set Marker %d"
 msgid "Set bookmark %d"
-msgstr "Markierung %d setzen"
+msgstr "Lesezeichen %d setzen"
 
 #: lazarusidestrconsts.srkmecshifttab
 msgid "Shift Tab"
@@ -20401,10 +20336,8 @@ msgid "View local variables"
 msgstr "Lokale Variablen anzeigen"
 
 #: lazarusidestrconsts.srkmectogglemarker
-#, fuzzy
-#| msgid "Toggle Marker %d"
 msgid "Toggle bookmark %d"
-msgstr "Marker %d umschalten"
+msgstr "Lesezeichen %d umschalten"
 
 #: lazarusidestrconsts.srkmectogglemarkupword
 msgid "Toggle Current-Word highlight"
@@ -20856,4 +20789,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
