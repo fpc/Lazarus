@@ -175,7 +175,7 @@ type
     class procedure OnShowMethod(const Name: String);
     class procedure OnDesignRefreshPropertyValues;
     class procedure OnModifiedPersistentAdded(APersistent: TPersistent; Select: Boolean);
-    class procedure OnModifiedSender(Sender: TObject);
+    class procedure OnModifiedSender(Sender: TObject; PropName: ShortString);
     class procedure OnModified;
     class procedure DesignerSetFocus;
     class procedure OnDesignMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1494,7 +1494,7 @@ begin
   DesignerSetFocus;
 end;
 
-class procedure TSpartaMainIDE.OnModifiedSender(Sender: TObject);
+class procedure TSpartaMainIDE.OnModifiedSender(Sender: TObject; PropName: ShortString);
 begin
   OnModified;
 end;
