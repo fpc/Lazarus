@@ -3250,7 +3250,7 @@ resourcestring
   srkmCatCmdCmd         = 'Command commands';
   srkmCatMultiCaret     = 'Multi caret commands';
   srkmCatSearchReplace  = 'Text search and replace commands';
-  srkmCatMarker         = 'Text marker commands';
+  srkmCatMarker         = 'Text bookmark commands';
   srkmCatFold           = 'Text folding commands';
   lisKMSetFreeBookmark = 'Set free Bookmark';
   srkmCatCodeTools      = 'CodeTools commands';
