@@ -1107,7 +1107,7 @@ begin
     // Look for package name in all known packages
     PkgFilename:=PackageNamesOrFiles[i];
     if CompareFileExt(PkgFilename,'.lpk')<>0 then begin
-      ErrorMsg+=PkgFilename+' is not a package, so it is not registered.'+LineEnding;
+      ErrorMsg+=PkgFilename+' is not a package (.lpk), so it is not registered.'+LineEnding;
       continue;
     end;
     PkgFilename:=ExpandFileNameUTF8(PkgFilename);
