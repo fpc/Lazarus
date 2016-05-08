@@ -959,8 +959,10 @@ begin
     Result := StartBuilding;
 
   // Auto increment build number
-  if Result and not NoWriteProject then
-  begin
+  if Result and not NoWriteProject
+  and Project1.ProjResources.VersionInfo.UseVersionInfo
+  and Project1.ProjResources.VersionInfo.AutoIncrementBuild
+  then begin
     if FileIsWritable(AFilename) then
     begin
       Project1.ProjResources.DoAfterBuild(CompReason, Project1.IsVirtual);
