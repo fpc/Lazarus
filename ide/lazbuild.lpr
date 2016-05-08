@@ -572,7 +572,7 @@ begin
   // try loading install packages
   PackageGraph.LoadAutoInstallPackages(BuildLazProfiles.StaticAutoInstallPackages);
 
-  // save target directory
+  // create target directory
   TargetDir:=CurProf.TargetDirectory;
   IDEMacros.SubstituteMacros(TargetDir);
   if not ForceDirectory(TargetDir) then begin
@@ -597,7 +597,7 @@ begin
       end;
     end;
 
-    // save configs for 'make'
+    // save list of install packages
     CurResult:=PackageGraph.SaveAutoInstallConfig;
     if CurResult<>mrOk then begin
       if ConsoleVerbosity>=-1 then
@@ -616,7 +616,7 @@ begin
     // create inherited compiler options
     Builder.PackageOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings{%H-});
 
-    // save
+    // save idemake.cfg
     CurResult:=Builder.SaveIDEMakeOptions(BuildLazProfiles.Current,Flags+[blfBackupOldExe]);
     if CurResult<>mrOk then begin
       if ConsoleVerbosity>=-1 then
