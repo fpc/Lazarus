@@ -433,6 +433,8 @@ resourcestring
   SYNS_emcStartSelectTokens        = 'Selection (tokens) ';
   SYNS_emcStartSelectWords         = 'Selection (words)';
   SYNS_emcStartSelectLines         = 'Selection (lines)';
+  SYNS_emcOverViewGutterGotoMark   = 'Jump to Mark (Overview Gutter)';
+  SYNS_emcOverViewGutterScrollTo   = 'Scroll (Overview Gutter)';
 
   SYNS_emcContextMenuCaretMove_opt = '"Move caret, when selection exists", Never, "Click outside", Always';
   SYNS_emcWheelScroll_opt          = 'Speed,"System settings",Lines,Pages,"Pages (less one line)"';

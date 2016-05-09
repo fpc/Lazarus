@@ -796,6 +796,7 @@ type
     FGutterActions: TSynEditMouseActions;
     FGutterActionsFold, FGutterActionsFoldExp, FGutterActionsFoldCol: TSynEditMouseActions;
     FGutterActionsLines: TSynEditMouseActions;
+    FGutterActionsOverView, FGutterActionsOverViewMarks: TSynEditMouseActions;
     FSelectedUserScheme: String;
     // left multi click
     FTextDoubleLeftClick: TMouseOptButtonAction;
@@ -904,6 +905,8 @@ type
     property GutterActionsFoldCol: TSynEditMouseActions read FGutterActionsFoldCol;
     property GutterActionsLines: TSynEditMouseActions read FGutterActionsLines;
     property GutterActionsChanges: TSynEditMouseActions read FGutterActionsChanges;
+    property GutterActionsOverView: TSynEditMouseActions read FGutterActionsOverView;
+    property GutterActionsOverViewMarks: TSynEditMouseActions read FGutterActionsOverViewMarks;
   published
     property GutterLeft: TMouseOptGutterLeftType read FGutterLeft write FGutterLeft
              default moglUpClickAndSelect;
@@ -3291,6 +3294,8 @@ begin
   FGutterActionsFoldCol := TSynEditMouseActions.Create(nil);
   FGutterActionsLines   := TSynEditMouseActions.Create(nil);
   FGutterActionsChanges := TSynEditMouseActions.Create(nil);
+  FGutterActionsOverView:= TSynEditMouseActions.Create(nil);
+  FGutterActionsOverViewMarks:= TSynEditMouseActions.Create(nil);
   FUserSchemes := TQuickStringlist.Create;
   FVersion := 0;
 end;
@@ -3308,6 +3313,8 @@ begin
   FGutterActionsFoldCol.Free;
   FGutterActionsLines.Free;
   FGutterActionsChanges.Free;
+  FGutterActionsOverView.Free;
+  FGutterActionsOverViewMarks.Free;
   inherited Destroy;
 end;
 
@@ -3400,6 +3407,8 @@ begin
   FGutterActionsFoldCol.Clear;
   FGutterActionsLines.Clear;
   FGutterActionsChanges.Clear;
+  FGutterActionsOverView.Clear;
+  FGutterActionsOverViewMarks.Clear;
   //TMouseOptGutterLeftType = (moGLDownClick, moglUpClickAndSelect);
 
   with FGutterActions do begin
@@ -3474,6 +3483,18 @@ begin
     // do not allow selection, over colapse/expand icons. Those may depend cursor pos (e.g. hide selected lines)
     if CDir = cdUp then
       AddCommand(emcNone,              False, mbXLeft,   ccAny,    cdDown, [], []);
+  end;
+
+  with FGutterActionsOverViewMarks do begin
+    R := R - [crLastDownPosSameLine];
+    if R <> [] then
+      R := R + [crAllowFallback];
+    AddCommand(emcOverViewGutterGotoMark, True, mbXLeft, ccAny,  CDir, R, [], [ssShift, ssCtrl, ssAlt]);
+  end;
+  with FGutterActionsOverView do begin
+    if R <> [] then
+      R := R + [crLastDownPosSearchAll];
+    AddCommand(emcOverViewGutterScrollTo, True, mbXLeft, ccAny,  CDir, R, [], [ssShift, ssCtrl, ssAlt]);
   end;
 
 end;
@@ -3762,6 +3783,8 @@ begin
   FGutterActionsFoldCol.Assign(Src.GutterActionsFoldCol);
   FGutterActionsLines.Assign  (Src.GutterActionsLines);
   FGutterActionsChanges.Assign(Src.GutterActionsChanges);
+  FGutterActionsOverView.Assign(Src.GutterActionsOverView);
+  FGutterActionsOverViewMarks.Assign(Src.GutterActionsOverViewMarks);
 end;
 
 procedure TEditorMouseOptions.SetTextCtrlLeftClick(AValue: TMouseOptButtonActionOld);
@@ -3897,7 +3920,9 @@ begin
     Temp.GutterActionsFoldCol.Equals(self.GutterActionsFoldCol) and
     Temp.GutterActionsFoldExp.Equals(self.GutterActionsFoldExp) and
     Temp.GutterActionsLines.Equals  (self.GutterActionsLines) and
-    Temp.GutterActionsChanges.Equals(Self.GutterActionsChanges);
+    Temp.GutterActionsChanges.Equals(Self.GutterActionsChanges) and
+    Temp.GutterActionsOverView.Equals(Self.GutterActionsOverView) and
+    Temp.GutterActionsOverViewMarks.Equals(Self.GutterActionsOverViewMarks);
   Temp.Free;
 end;
 
@@ -4003,6 +4028,8 @@ begin
     LoadMouseAct(aPath + 'GutterFoldCol/', GutterActionsFoldCol);
     LoadMouseAct(aPath + 'GutterLineNum/', GutterActionsLines);
     LoadMouseAct(aPath + 'GutterLineChange/', GutterActionsChanges);
+    LoadMouseAct(aPath + 'GutterOverView/',   GutterActionsOverView);
+    LoadMouseAct(aPath + 'GutterOverViewMarks/',   GutterActionsOverViewMarks);
 
     if Version < 1 then begin
       try
@@ -4062,6 +4089,8 @@ begin
     SaveMouseAct(aPath + 'GutterFoldCol/', GutterActionsFoldCol);
     SaveMouseAct(aPath + 'GutterLineNum/', GutterActionsLines);
     SaveMouseAct(aPath + 'GutterLineChange/', GutterActionsChanges);
+    SaveMouseAct(aPath + 'GutterOverView/',   GutterActionsOverView);
+    SaveMouseAct(aPath + 'GutterOverViewMarks/',GutterActionsOverViewMarks);
   end else begin
     // clear unused entries
     aXMLConfig.DeletePath(aPath + 'Main');
@@ -4115,6 +4144,8 @@ begin
   LoadMouseAct(aPath + 'GutterFoldCol/', GutterActionsFoldCol);
   LoadMouseAct(aPath + 'GutterLineNum/', GutterActionsLines);
   LoadMouseAct(aPath + 'GutterLineChange/', GutterActionsChanges);
+  LoadMouseAct(aPath + 'GutterOverView/',   GutterActionsOverView);
+  LoadMouseAct(aPath + 'GutterOverViewMarks/',GutterActionsOverViewMarks);
 end;
 
 procedure TEditorMouseOptions.ExportToXml(aXMLConfig: TRttiXMLConfig; aPath: String);
@@ -4146,6 +4177,8 @@ begin
   SaveMouseAct(aPath + 'GutterFoldCol/', GutterActionsFoldCol);
   SaveMouseAct(aPath + 'GutterLineNum/', GutterActionsLines);
   SaveMouseAct(aPath + 'GutterLineChange/', GutterActionsChanges);
+  SaveMouseAct(aPath + 'GutterOverView/',   GutterActionsOverView);
+  SaveMouseAct(aPath + 'GutterOverViewMarks/',GutterActionsOverViewMarks);
   MAct.Free;
 end;
 
@@ -5751,6 +5784,10 @@ begin
     else
     if (ASynEdit.Gutter.SeparatorPart <> nil) and (GutterSeparatorIndex >= 2) then
       ASynEdit.Gutter.SeparatorPart.MouseActions.Assign(FUserMouseSettings.GutterActionsChanges);
+    if ASynEdit.RightGutter.LineOverviewPart <> nil then begin
+      ASynEdit.RightGutter.LineOverviewPart.MouseActions.Assign(FUserMouseSettings.GutterActionsOverView);
+      ASynEdit.RightGutter.LineOverviewPart.MouseActionsForMarks.Assign(FUserMouseSettings.GutterActionsOverViewMarks);
+    end;
   finally
     ASynEdit.EndUpdate;
   end;

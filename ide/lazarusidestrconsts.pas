@@ -1737,6 +1737,8 @@ resourcestring
   dlgMouseOptNodeGutterFoldExp = 'Expanded [-]';
   dlgMouseOptNodeGutterLines = 'Line Numbers';
   dlgMouseOptNodeGutterChanges = 'Line Changes';
+  dlgMouseOptNodeGutterLineOverview = 'Overview';
+  dlgMouseOptNodeGutterLineOverviewMarks = 'Overview Mark';
   dlgMouseOptHeadOrder = 'Order';
   dlgMouseOptHeadContext = 'Context';
   dlgMouseOptHeadDesc = 'Action';
