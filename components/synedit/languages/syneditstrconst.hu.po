@@ -483,6 +483,14 @@ msgstr "Aláhúzás,igen,nem"
 msgid "No Action"
 msgstr "Nincs művelet"
 
+#: syneditstrconst.syns_emcoverviewguttergotomark
+msgid "Jump to Mark (Overview Gutter)"
+msgstr ""
+
+#: syneditstrconst.syns_emcoverviewgutterscrollto
+msgid "Scroll (Overview Gutter)"
+msgstr ""
+
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
 msgstr "Kijelölés gyors beillesztése"
@@ -802,3 +810,4 @@ msgstr "<nincs>"
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
 msgstr "Névtelen"
+

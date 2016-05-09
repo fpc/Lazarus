@@ -481,6 +481,14 @@ msgstr "\"קו תחתון\" , כן, לא"
 msgid "No Action"
 msgstr "ללא פעולה"
 
+#: syneditstrconst.syns_emcoverviewguttergotomark
+msgid "Jump to Mark (Overview Gutter)"
+msgstr ""
+
+#: syneditstrconst.syns_emcoverviewgutterscrollto
+msgid "Scroll (Overview Gutter)"
+msgstr ""
+
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
 msgstr "העתקה מהירה של הבחירה"
