@@ -8811,7 +8811,7 @@ procedure TMainIDE.OnDesignerPersistentDeleted(Sender: TObject; APersistent: TPe
 // important: APersistent was freed, do not access its content, only the pointer
 begin
   if dfDestroyingForm in TDesigner(Sender).Flags then exit;
-  //if APersistent=nil then ;
+  if APersistent=nil then ;
   if ObjectInspector1<>nil then
     ObjectInspector1.FillComponentList;
 end;
@@ -12619,6 +12619,7 @@ end;
 procedure TMainIDE.OnPropHookModified(Sender: TObject; PropName: ShortString);
 begin
   // ToDo: Should designer be marked as modified with PropName?
+  if PropName='' then ;
   if Assigned(ObjectInspector1) then
     // Any change of property can cause a change of a display name
     ObjectInspector1.ComponentTree.UpdateComponentNodesValues;
