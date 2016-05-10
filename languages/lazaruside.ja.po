@@ -2684,6 +2684,14 @@ msgstr "折り畳まれている [+]"
 msgid "Expanded [-]"
 msgstr "展開されている [-]"
 
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverview
+msgid "Overview"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverviewmarks
+msgid "Overview Mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptnodegutterlines
 msgid "Line Numbers"
 msgstr "行番号"
@@ -19732,7 +19740,9 @@ msgid "Macros"
 msgstr "マクロ"
 
 #: lazarusidestrconsts.srkmcatmarker
-msgid "Text marker commands"
+#, fuzzy
+#| msgid "Text marker commands"
+msgid "Text bookmark commands"
 msgstr "テキストマーカーコマンド"
 
 #: lazarusidestrconsts.srkmcatmulticaret

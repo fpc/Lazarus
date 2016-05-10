@@ -2767,6 +2767,14 @@ msgstr ""
 msgid "Expanded [-]"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverview
+msgid "Overview"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverviewmarks
+msgid "Overview Mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptnodegutterlines
 msgid "Line Numbers"
 msgstr ""
@@ -20290,7 +20298,9 @@ msgid "Macros"
 msgstr "宏"
 
 #: lazarusidestrconsts.srkmcatmarker
-msgid "Text marker commands"
+#, fuzzy
+#| msgid "Text marker commands"
+msgid "Text bookmark commands"
 msgstr "文本书签命令"
 
 #: lazarusidestrconsts.srkmcatmulticaret

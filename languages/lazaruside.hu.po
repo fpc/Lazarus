@@ -2657,6 +2657,14 @@ msgstr "Összezárt [+]"
 msgid "Expanded [-]"
 msgstr "Kibontotott [-]"
 
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverview
+msgid "Overview"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverviewmarks
+msgid "Overview Mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptnodegutterlines
 msgid "Line Numbers"
 msgstr "Sorszámok"
@@ -19242,7 +19250,9 @@ msgid "Macros"
 msgstr "Makrók"
 
 #: lazarusidestrconsts.srkmcatmarker
-msgid "Text marker commands"
+#, fuzzy
+#| msgid "Text marker commands"
+msgid "Text bookmark commands"
 msgstr "Szöveg megjelölési parancsai"
 
 #: lazarusidestrconsts.srkmcatmulticaret

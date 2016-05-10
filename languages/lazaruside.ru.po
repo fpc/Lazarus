@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-05-04 00:53+0300\n"
+"PO-Revision-Date: 2016-05-11 00:33+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2657,6 +2657,14 @@ msgstr "Свёрнутые [+]"
 #: lazarusidestrconsts.dlgmouseoptnodegutterfoldexp
 msgid "Expanded [-]"
 msgstr "Развёрнутые [-]"
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverview
+msgid "Overview"
+msgstr "Поле обзора"
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverviewmarks
+msgid "Overview Mark"
+msgstr "Маркер в поле обзора"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlines
 msgid "Line Numbers"
@@ -19182,7 +19190,7 @@ msgid "Macros"
 msgstr "Макросы"
 
 #: lazarusidestrconsts.srkmcatmarker
-msgid "Text marker commands"
+msgid "Text bookmark commands"
 msgstr "Команды управления закладками исходного кода"
 
 #: lazarusidestrconsts.srkmcatmulticaret

@@ -2656,6 +2656,14 @@ msgstr "Gefaltet [+]"
 msgid "Expanded [-]"
 msgstr "Entfaltet [-]"
 
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverview
+msgid "Overview"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverviewmarks
+msgid "Overview Mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptnodegutterlines
 msgid "Line Numbers"
 msgstr "Zeilennummern"
@@ -19173,7 +19181,9 @@ msgid "Macros"
 msgstr "Makros"
 
 #: lazarusidestrconsts.srkmcatmarker
-msgid "Text marker commands"
+#, fuzzy
+#| msgid "Text marker commands"
+msgid "Text bookmark commands"
 msgstr "Textmarkierungsbefehle"
 
 #: lazarusidestrconsts.srkmcatmulticaret
@@ -20789,3 +20799,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+

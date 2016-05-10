@@ -2780,6 +2780,14 @@ msgstr "Zwinięte [+]"
 msgid "Expanded [-]"
 msgstr "Rozwinięte [-]"
 
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverview
+msgid "Overview"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverviewmarks
+msgid "Overview Mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptnodegutterlines
 msgid "Line Numbers"
 msgstr "Numery wierszy"
@@ -20042,7 +20050,9 @@ msgid "Macros"
 msgstr "Makra"
 
 #: lazarusidestrconsts.srkmcatmarker
-msgid "Text marker commands"
+#, fuzzy
+#| msgid "Text marker commands"
+msgid "Text bookmark commands"
 msgstr "Znaczniki"
 
 #: lazarusidestrconsts.srkmcatmulticaret

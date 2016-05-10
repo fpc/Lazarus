@@ -2695,6 +2695,14 @@ msgstr "Retraído [+]"
 msgid "Expanded [-]"
 msgstr "Expandido [-]"
 
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverview
+msgid "Overview"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverviewmarks
+msgid "Overview Mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptnodegutterlines
 msgid "Line Numbers"
 msgstr "Números de linha"
@@ -19794,7 +19802,9 @@ msgid "Macros"
 msgstr "Macros"
 
 #: lazarusidestrconsts.srkmcatmarker
-msgid "Text marker commands"
+#, fuzzy
+#| msgid "Text marker commands"
+msgid "Text bookmark commands"
 msgstr "Comandos do Marcador Texto"
 
 #: lazarusidestrconsts.srkmcatmulticaret

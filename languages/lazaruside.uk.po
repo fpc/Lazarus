@@ -2659,6 +2659,14 @@ msgstr "Згорнуто [+]"
 msgid "Expanded [-]"
 msgstr "Розгорнуто [-]"
 
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverview
+msgid "Overview"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverviewmarks
+msgid "Overview Mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptnodegutterlines
 msgid "Line Numbers"
 msgstr "Номери Рядів"
@@ -19253,7 +19261,9 @@ msgid "Macros"
 msgstr "Макроси"
 
 #: lazarusidestrconsts.srkmcatmarker
-msgid "Text marker commands"
+#, fuzzy
+#| msgid "Text marker commands"
+msgid "Text bookmark commands"
 msgstr "Команди маркера тексту"
 
 #: lazarusidestrconsts.srkmcatmulticaret
