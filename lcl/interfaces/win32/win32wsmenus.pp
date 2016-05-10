@@ -1579,7 +1579,7 @@ const
   );
 begin
   MenuHandle := APopupMenu.Handle;
-  if (Screen.ActiveCustomForm<>nil) and Screen.ActiveCustomForm.HandleAllocated then
+  if IsLibrary and (Screen.ActiveCustomForm<>nil) and Screen.ActiveCustomForm.HandleAllocated then
     WinHandle:=Screen.ActiveCustomForm.Handle
   else
     WinHandle:=Win32WidgetSet.AppHandle;
