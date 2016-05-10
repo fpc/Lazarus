@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-05-11 00:33+0300\n"
+"PO-Revision-Date: 2016-05-11 01:07+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -39,7 +39,7 @@ msgstr "Сбросить все параметры"
 
 #: lazarusidestrconsts.dlfmouseresetgutter
 msgid "Reset all gutter settings"
-msgstr "Сбросить все параметры поля слева"
+msgstr "Сбросить все параметры бокового поля"
 
 #: lazarusidestrconsts.dlfmouseresettext
 msgid "Reset all text settings"
@@ -175,7 +175,7 @@ msgstr "Выделять строку при щелчке по её номеру
 #: lazarusidestrconsts.dlfmousesimpleguttersect
 msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
 msgid "Gutter"
-msgstr "Поле слева"
+msgstr "Боковое поле"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
 msgid "Right mouse includes caret move"
@@ -441,7 +441,7 @@ msgstr "Глобальные"
 #: lazarusidestrconsts.dlgaddhiattrgroupgutter
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
 msgid "Gutter"
-msgstr "Поле слева"
+msgstr "Боковое поле"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupifdef
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupifdef"
@@ -468,7 +468,7 @@ msgstr "Текст"
 
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
-msgstr "Линия отделения поля слева"
+msgstr "Линия отделения бокового поля"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
@@ -1991,7 +1991,7 @@ msgstr "Когда компонент выровнен по горизонтал
 #: lazarusidestrconsts.dlggutter
 msgctxt "lazarusidestrconsts.dlggutter"
 msgid "Gutter"
-msgstr "Поле слева"
+msgstr "Боковое поле"
 
 #: lazarusidestrconsts.dlgguttercollapsedcolor
 msgid "Collapsed"
@@ -1999,15 +1999,15 @@ msgstr "Свёрнутый"
 
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
-msgstr "Цвет поля слева"
+msgstr "Цвет бокового поля"
 
 #: lazarusidestrconsts.dlggutteredgecolor
 msgid "Gutter Edge Color"
-msgstr "Цвет границы поля слева"
+msgstr "Цвет границы бокового поля"
 
 #: lazarusidestrconsts.dlggutterseparatorindex
 msgid "Gutter separator index"
-msgstr "Положение отделителя поля слева"
+msgstr "Положение отделителя бокового поля"
 
 #: lazarusidestrconsts.dlghalfpagescroll
 msgid "Half page scroll"
@@ -2640,7 +2640,7 @@ msgstr "Все"
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
 msgid "Gutter"
-msgstr "Поле слева"
+msgstr "Боковое поле"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterchanges
 msgid "Line Changes"
@@ -3368,7 +3368,7 @@ msgstr "Показывать общие сведения"
 
 #: lazarusidestrconsts.dlgshowgutterhints
 msgid "Show gutter hints"
-msgstr "Всплывающие подсказки поля слева"
+msgstr "Всплывающие подсказки бокового поля"
 
 #: lazarusidestrconsts.dlgshowhint
 msgctxt "lazarusidestrconsts.dlgshowhint"
@@ -3675,7 +3675,7 @@ msgstr "Подробность вывода при компиляции"
 
 #: lazarusidestrconsts.dlgvisiblegutter
 msgid "Visible gutter"
-msgstr "Видимое поле слева"
+msgstr "Показывать боковое поле"
 
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
@@ -16507,7 +16507,7 @@ msgstr "Показывать значки для"
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
-msgstr "Показывать поле слева"
+msgstr "Показывать боковое поле"
 
 #: lazarusidestrconsts.lisshowhelp
 msgid "Show help"
