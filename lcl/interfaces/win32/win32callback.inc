@@ -2338,7 +2338,7 @@ begin
       SetLMessageAndParams(Msg, True);
     WM_ACTIVATEAPP:
     begin
-      if Application.MainFormOnTaskBar and not Win32WidgetSet.AppMinimizing then
+      if (Application<>nil) and Application.MainFormOnTaskBar and not Win32WidgetSet.AppMinimizing then
         RestorePopups;
     end;
   else
