@@ -1579,10 +1579,9 @@ const
   );
 begin
   MenuHandle := APopupMenu.Handle;
-  if IsLibrary and (Screen.ActiveCustomForm<>nil) and Screen.ActiveCustomForm.HandleAllocated then
-    WinHandle:=Screen.ActiveCustomForm.Handle
-  else
-    WinHandle:=Win32WidgetSet.AppHandle;
+  WinHandle:=Win32WidgetSet.AppHandle;
+  if (WinHandle=0) and (Screen.ActiveCustomForm<>nil) and Screen.ActiveCustomForm.HandleAllocated then
+    WinHandle:=Screen.ActiveCustomForm.Handle;
   GetWin32WindowInfo(WinHandle)^.PopupMenu := APopupMenu;
   TrackPopupMenuEx(MenuHandle,
     lAlignment[APopupMenu.Alignment, APopupMenu.IsRightToLeft] or lTrackButtons[APopupMenu.TrackButton],
