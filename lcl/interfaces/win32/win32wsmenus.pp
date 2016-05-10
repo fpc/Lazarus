@@ -1565,7 +1565,7 @@ end;
 class procedure TWin32WSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
 var
   MenuHandle: HMENU;
-  AppHandle: HWND;
+  WinHandle: HWND;
 const
   lAlignment: array[TPopupAlignment, Boolean] of DWORD = (
               { left-to-rght } { right-to-left }
@@ -1579,11 +1579,14 @@ const
   );
 begin
   MenuHandle := APopupMenu.Handle;
-  AppHandle := Win32WidgetSet.AppHandle;
-  GetWin32WindowInfo(AppHandle)^.PopupMenu := APopupMenu;
+  if (Screen.ActiveCustomForm<>nil) and Screen.ActiveCustomForm.HandleAllocated then
+    WinHandle:=Screen.ActiveCustomForm.Handle
+  else
+    WinHandle:=Win32WidgetSet.AppHandle;
+  GetWin32WindowInfo(WinHandle)^.PopupMenu := APopupMenu;
   TrackPopupMenuEx(MenuHandle,
     lAlignment[APopupMenu.Alignment, APopupMenu.IsRightToLeft] or lTrackButtons[APopupMenu.TrackButton],
-    X, Y, AppHandle, nil);
+    X, Y, WinHandle, nil);
 end;
 
 end.
