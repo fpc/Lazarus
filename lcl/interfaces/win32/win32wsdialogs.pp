@@ -169,6 +169,7 @@ begin
   Result.ActiveWindow := Windows.GetActiveWindow;
   Result.FocusedWindow := Windows.GetFocus;
   Result.DisabledWindows := Screen.DisableForms(nil);
+  Application.ModalStarted;
 end;
 
 procedure RestoreApplicationState(AState: TApplicationState);
@@ -176,6 +177,7 @@ begin
   Screen.EnableForms(AState.DisabledWindows);
   Windows.SetActiveWindow(AState.ActiveWindow);
   Windows.SetFocus(AState.FocusedWindow);
+  Application.ModalFinished;
 end;
 
 // The size of the OPENFILENAME record depends on the windows version
