@@ -158,3 +158,4 @@ msgstr "Nem sikerült betölteni a futtatható alkalmazást"
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
 msgstr "A hibakereső nem tudta elhelyezni az összes megszakítási pontot az előkészítés folyamán.%0:s Ellenőrizni kell, hogy az összes forráskód hibakeresési információkkal lett-e lefordítva!%0:sAz 'OK'-t választva figyelmen kívül hagyhatja ezt és folytathatja a futtatást."
+

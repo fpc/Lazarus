@@ -9698,7 +9698,7 @@ msgstr "IDE käännetään ja käynnistetään pakettien asennuksen/poistamisen 
 
 #: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
-msgstr "Tervetuloa Lazarukseen.%0:sLöydetyt IDE:n asetukset kuuluvat toiselle Lazarus-asennukselle.%0:sErillisten Lazarus-asennusten ei pitäisi jakaa samoja asetuksia. Se voi johtaa ristiriitoihin eikä Lazarus-asennus enää toimi kunnolla.%0:s%0:sJos on vain yksi asennus ja Lazarus-ohjelma on kopioitu, asetukset voi huoletta päivittää.%0:s%1:s%0:s%0:sValitse:%0:s%0:s* Päivitys-info: Käytä näitä asetuksia ja päivitä ne käytettäväksi Lazaruksen kanssa jatkossa. Vanha asennus ei enää käytä sitä.%0:s* Ohita: Käytä näitä asetuksia, mutta varoita uudelleen jatkossa. Tämä voi johtaa ristiriitaan toisten asennusten kanssa.%0:s* Keskeytä: Poistu nyt. Ongelmat voi sen jälkeen ratkaista käynnistämällä Lazarus oikeiden asetusten kanssa.%0:s%0:sLisätietoa:%0:sNämä asetukset ovat: %2:s%0:sNe kuuluvat Lazarus asennukseen täällä: %3:s%0:sNykyinen IDE käynnistettiin täältä: %4:s%0:s"
+msgstr "Tervetuloa Lazarukseen.%0:sLöydetyt IDE:n asetukset kuuluvat toiselle Lazarus-asennukselle.%0:sEri Lazarus-asennusten ei pitäisi jakaa samoja asetuksia. Se voi johtaa ristiriitoihin eikä Lazarus-asennus enää toimi kunnolla.%0:s%0:sJos on vain yksi asennus ja Lazarus on kopioitu, asetukset voi huoletta päivittää.%0:s%1:s%0:s%0:sValitse:%0:s%0:s* Päivitys-info: Käytä näitä asetuksia ja päivitä ne käytettäväksi Lazaruksen kanssa jatkossa. Vanha asennus ei enää käytä sitä.%0:s* Ohita: Käytä näitä asetuksia, mutta varoita uudelleen jatkossa. Tämä voi johtaa ristiriitaan toisten asennusten kanssa.%0:s* Keskeytä: Poistu nyt. Ongelmat voi sen jälkeen ratkaista käynnistämällä Lazarus oikeiden asetusten kanssa.%0:s%0:sLisätietoa:%0:sNämä asetukset ovat: %2:s%0:sNe kuuluvat Lazarus asennukseen täällä: %3:s%0:sNykyinen IDE käynnistettiin täältä: %4:s%0:s"
 
 #: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
 msgid "Creating Makefile for package %s"
@@ -18560,7 +18560,7 @@ msgstr "Tervetuloa Lazarus IDE:en %s"
 
 #: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
 msgid "Welcome to Lazarus %s%sThere is already a configuration from version %s in%s%s"
-msgstr "Tervetuloa Lazarukseen %s%sAsetukset löytyvät versiosta %s %s%s:ssa"
+msgstr "Tervetuloa Lazarus versioon %s%sVersion %s asetukset löytyvät hakemistosta%s%s"
 
 #: lazarusidestrconsts.liswhatneedsbuilding
 msgid "What needs building"
