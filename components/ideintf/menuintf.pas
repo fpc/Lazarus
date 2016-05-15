@@ -515,11 +515,9 @@ begin
   s:=Caption;
   if (s='') and (Command<>nil) then s:=Command.LocalizedName;
   Result.Caption := s;
+  Result.OnClick := OnClickMethod;
+  Result.OnClickProc := OnClickProc;
   Result.Command := Command;
-  if OnClickMethod<>nil then
-    Result.OnClick := OnClickMethod;
-  if OnClickProc<>nil then
-    Result.OnClickProc := OnClickProc;
   Result.ResourceName := ResourceName;
   Result.UserTag := UserTag;
   Parent.AddLast(Result);
