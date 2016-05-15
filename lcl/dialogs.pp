@@ -25,7 +25,7 @@ uses
   Types, typinfo, Classes, SysUtils, LMessages,
   LResources, LCLIntf, InterfaceBase, LCLStrConsts, LCLType, LCLProc, Forms,
   Controls, Themes, GraphType, Graphics, Buttons, ButtonPanel, StdCtrls,
-  ExtCtrls, LCLClasses, ClipBrd,
+  ExtCtrls, LCLClasses, ClipBrd, Menus,
   // LazUtils
   FileUtil, LazFileUtils;
 
@@ -535,6 +535,17 @@ function DefaultMessageBox(Text, Caption: PChar; Flags: Longint) : Integer;// wi
 function InputBox(const ACaption, APrompt, ADefault : String) : String;
 function PasswordBox(const ACaption, APrompt : String) : String;
 
+type
+  TCustomCopyToClipboardDialog = class(TForm)
+  protected
+    procedure DoCreate; override;
+  public
+    function GetMessageText: string; virtual; abstract;
+  end;
+
+procedure RegisterDialogForCopyToClipboard(const ADlg: TCustomForm);
+procedure DialogCopyToClipboard(Self, Sender: TObject; var Key: Word; Shift: TShiftState);
+
 const
   cInputQueryEditSizePixels: integer = 260; // Edit size in pixels
   cInputQueryEditSizePercents: integer = 25; // Edit size in % of monitor width
@@ -753,6 +764,14 @@ begin
   FCopies:=1;
 end;
 
+{ TCustomCopyToClipboardDialog }
+
+procedure TCustomCopyToClipboardDialog.DoCreate;
+begin
+  inherited DoCreate;
+
+  RegisterDialogForCopyToClipboard(Self);
+end;
 
 initialization
   Forms.MessageBoxFunction := @DefaultMessageBox;
