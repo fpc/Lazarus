@@ -28,7 +28,7 @@ unit ExceptionDlg;
 interface
 
 uses
-  Classes, Forms, StdCtrls, Buttons, LazarusIDEStrConsts;
+  Classes, Forms, Dialogs, StdCtrls, Buttons, LazarusIDEStrConsts;
 
 type
   
@@ -82,6 +82,8 @@ begin
 
   DefaultControl := btnBreak;
   CancelControl := btnContinue;
+
+  RegisterDialogForCopyToClipboard(Self);
 end;
 
 function TIDEExceptionDlg.Execute(AMessage: String; out IgnoreException: Boolean): TModalResult;
