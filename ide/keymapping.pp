@@ -1741,7 +1741,7 @@ begin
   ecStepOverInstr:       SetSingle(VK_F8,[ssAlt]);
   ecStepOut:             SetSingle(VK_F8,[ssShift]);
   ecRunToCursor:         SetSingle(VK_F4,[]);
-  ecStopProgram:         SetSingle(VK_F2,[XCtrl]);
+  ecStopProgram:         SetSingle(VK_F2,[ssCtrl]);
   ecRemoveBreakPoint:    SetSingle(VK_UNKNOWN,[]);
   ecRunParameters:       SetSingle(VK_UNKNOWN,[]);
   ecBuildFile:           SetSingle(VK_UNKNOWN,[]);
