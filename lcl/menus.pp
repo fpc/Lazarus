@@ -447,6 +447,7 @@ function NewItem(const ACaption: string; AShortCut: TShortCut;
                  hCtx: THelpContext; const AName: string): TMenuItem;
 function NewLine: TMenuItem;
 
+function StripHotkey(const Text: string): string;
 
 procedure Register;
 
@@ -543,6 +544,34 @@ function NewLine: TMenuItem;
 begin
   Result := TMenuItem.Create(nil);
   Result.Caption := cLineCaption;
+end;
+
+function StripHotkey(const Text: string): string;
+var
+  I, R: Integer;
+begin
+  SetLength(Result, Length(Text));
+  I := 1;
+  R := 1;
+  while I <= Length(Text) do
+  begin
+    if Text[I] = cHotkeyPrefix then
+    begin
+      if (I < Length(Text)) and (Text[I+1] = cHotkeyPrefix) then
+      begin
+        Result[R] := Text[I];
+        Inc(R);
+        Inc(I, 2);
+      end else
+        Inc(I);
+    end else
+    begin
+      Result[R] := Text[I];
+      Inc(R);
+      Inc(I);
+    end;
+  end;
+  SetLength(Result, R-1);
 end;
 
 procedure Register;
