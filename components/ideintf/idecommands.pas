@@ -1700,22 +1700,21 @@ procedure TIDESpecialCommand.SetCommand(const AValue: TIDECommand);
 begin
   if FCommand = AValue then
     Exit;
-  if FCommand <> nil then
-  begin
-    //DebugLn('TIDEMenuCommand.SetCommand OLD ',ShortCutToText(FCommand.AsShortCut),' FCommand.Name=',FCommand.Name,' Name=',Name,' FCommand=',dbgs(Pointer(FCommand)));
-    if FCommand.OnExecute=OnClick then
-      FCommand.OnExecute:=nil;
-    if FCommand.OnExecuteProc=OnClickProc then
-      FCommand.OnExecuteProc:=nil;
-  end;
   FCommand := AValue;
   if FCommand <> nil then
   begin
-    if FCommand.OnExecute = nil then
-      FCommand.OnExecute := OnClick;
-    if FCommand.OnExecuteProc = nil then
-      FCommand.OnExecuteProc := OnClickProc;
-    //DebugLn('TIDEMenuCommand.SetCommand NEW ',ShortCutToText(FCommand.AsShortCut),' FCommand.Name=',FCommand.Name,' Name=',Name,' FCommand=',dbgs(Pointer(FCommand)));
+    if (FCommand.OnExecute=nil) and (OnClick<>nil) then
+      FCommand.OnExecute := OnClick
+    else
+    if (OnClick=nil) and (FCommand.OnExecute<>nil) then
+      OnClick := FCommand.OnExecute;
+
+    if (FCommand.OnExecuteProc=nil) and (OnClickProc<>nil) then
+      FCommand.OnExecuteProc := OnClickProc
+    else
+    if (OnClickProc=nil) and (FCommand.OnExecuteProc<>nil) then
+      OnClickProc := FCommand.OnExecuteProc;
+
     FCommand.UserAdded(Self);
     FCommand.Change;
   end;
