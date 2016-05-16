@@ -9909,7 +9909,7 @@ msgstr "Importálás fájlból"
 
 #: lazarusidestrconsts.lisimportingbuildmodesnotsupported
 msgid "Importing BuildModes is not supported for packages."
-msgstr ""
+msgstr "Az építési módok importálása nincs támogatva csomagok esetén."
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"

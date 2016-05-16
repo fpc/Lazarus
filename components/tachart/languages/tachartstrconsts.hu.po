@@ -204,3 +204,4 @@ msgstr "Nem sikerült átnevezni a komponenseket: %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Eszközök szerkesztése"
+
