@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-16 07:54+0100\n"
-"PO-Revision-Date: 2015-12-18 09:52+0100\n"
+"PO-Revision-Date: 2016-05-14 10:15+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: \n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.7\n"
 
 #: guitestrunner.rsalltests
 msgid "All Tests"
@@ -17,7 +17,7 @@ msgstr "Tous les tests"
 
 #: guitestrunner.rserrors
 msgid "%s    Errors: %s"
-msgstr "%s Erreurs : %s"
+msgstr "%s    Erreurs : %s"
 
 #: guitestrunner.rsexception
 msgid "Exception: %s"
@@ -68,14 +68,10 @@ msgid "Unit name: %s"
 msgstr "Nom de l'unité : %s"
 
 #: guitestrunner.sactcheckall
-#, fuzzy
-#| msgid "Check all Tests"
 msgid "Select all tests"
 msgstr "Cocher tous les tests"
 
 #: guitestrunner.sactcheckcurrentsuite
-#, fuzzy
-#| msgid "Check the Current Suite"
 msgid "Select current suite"
 msgstr "Cocher l'ensemble en cours"
 
@@ -84,59 +80,47 @@ msgid "Quit"
 msgstr "Quitter"
 
 #: guitestrunner.sactcloseformh
-#, fuzzy
-#| msgid "Quit Testting"
 msgid "Quit testing"
 msgstr "Arrêter les tests"
 
 #: guitestrunner.sactcopyalltoclipboard
 msgid "Copy text to clipboard"
-msgstr ""
+msgstr "Copier le texte dans le presse-papiers"
 
 #: guitestrunner.sactcopyalltoclipboardh
 msgid "Copy the entire text to clipboard"
-msgstr ""
+msgstr "Copie l’ensemble du texte dans le presse-papiers"
 
 #: guitestrunner.sactrunaction
-#, fuzzy
-#| msgid "&Run"
 msgid "&Run all"
-msgstr "&Exécuter"
+msgstr "&Tout exécuter"
 
 #: guitestrunner.sactrunactionh
-#, fuzzy
-#| msgid "Run all checked test(s)"
 msgid "Run all checked tests"
 msgstr "Exécuter tous les tests cochés"
 
 #: guitestrunner.sactrunhighlightedtest
-#, fuzzy
-#| msgid "Run highlighted test"
 msgctxt "guitestrunner.sactrunhighlightedtest"
 msgid "Run selected"
 msgstr "Exécuter le test en surbrillance"
 
 #: guitestrunner.sactrunhighlightedtesth
 msgid "Run selected test"
-msgstr ""
+msgstr "Exécutez le test sélectionné"
 
 #: guitestrunner.sactsaveresults
 msgid "Save results"
-msgstr ""
+msgstr "Enregistrer les résultats"
 
 #: guitestrunner.sactsaveresultsh
 msgid "Save XML results to file"
-msgstr ""
+msgstr "Enregistrer les résultats XML dans un fichier"
 
 #: guitestrunner.sactuncheckall
-#, fuzzy
-#| msgid "Uncheck all tests"
 msgid "Deselect all tests"
 msgstr "Décocher tous les tests"
 
 #: guitestrunner.sactuncheckcurrentsuite
-#, fuzzy
-#| msgid "Uncheck the Current Suite"
 msgid "Deselect current suite"
 msgstr "Décocher l'ensemble en cours"
 
@@ -159,15 +143,15 @@ msgstr "Unité FPC - exécuter le test de l'unité"
 
 #: guitestrunner.smiactions
 msgid "Actions"
-msgstr ""
+msgstr "Actions"
 
 #: guitestrunner.smiedit
 msgid "Edit"
-msgstr ""
+msgstr "Éditer"
 
 #: guitestrunner.smitesttree
 msgid "Test tree"
-msgstr ""
+msgstr "Arborescence du test"
 
 #: guitestrunner.stshresults
 msgid "Results XML"
@@ -176,4 +160,3 @@ msgstr "XML des résultats"
 #: guitestrunner.stshtree
 msgid "Testcase tree"
 msgstr "Arbre des tests"
-
