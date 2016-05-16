@@ -1770,7 +1770,7 @@ msgstr "Except/Finally"
 
 #: lazarusidestrconsts.dlgfoldpasfordo
 msgid "For/Do"
-msgstr ""
+msgstr "For/Do"
 
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
@@ -1840,11 +1840,11 @@ msgstr "Var/Type (globális)"
 
 #: lazarusidestrconsts.dlgfoldpaswhiledo
 msgid "While/Do"
-msgstr ""
+msgstr "While/Do"
 
 #: lazarusidestrconsts.dlgfoldpaswithdo
 msgid "With/Do"
-msgstr ""
+msgstr "With/Do"
 
 #: lazarusidestrconsts.dlgfoldxmlcdata
 msgid "CData"
@@ -2659,11 +2659,11 @@ msgstr "Kibontotott [-]"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlineoverview
 msgid "Overview"
-msgstr ""
+msgstr "Áttekintő"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlineoverviewmarks
 msgid "Overview Mark"
-msgstr ""
+msgstr "Áttekintőbeli jelzés"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlines
 msgid "Line Numbers"
@@ -9940,7 +9940,7 @@ msgstr "Importálás fájlból"
 
 #: lazarusidestrconsts.lisimportingbuildmodesnotsupported
 msgid "Importing BuildModes is not supported for packages."
-msgstr ""
+msgstr "Az építési módok importálása nincs támogatva csomagok esetén."
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -10526,64 +10526,44 @@ msgid "Find Incremental"
 msgstr "Bővített keresés"
 
 #: lazarusidestrconsts.liskmgotomarker0
-#, fuzzy
-#| msgid "Go to marker 0"
 msgid "Go to bookmark 0"
-msgstr "Ugrás a 0. megjelöléshez"
+msgstr "Ugrás a 0. könyvjelzőhöz"
 
 #: lazarusidestrconsts.liskmgotomarker1
-#, fuzzy
-#| msgid "Go to marker 1"
 msgid "Go to bookmark 1"
-msgstr "Ugrás az 1. megjelöléshez"
+msgstr "Ugrás az 1. könyvjelzőhöz"
 
 #: lazarusidestrconsts.liskmgotomarker2
-#, fuzzy
-#| msgid "Go to marker 2"
 msgid "Go to bookmark 2"
-msgstr "Ugrás a 2. megjelöléshez"
+msgstr "Ugrás a 2. könyvjelzőhöz"
 
 #: lazarusidestrconsts.liskmgotomarker3
-#, fuzzy
-#| msgid "Go to marker 3"
 msgid "Go to bookmark 3"
-msgstr "Ugrás a 3. megjelöléshez"
+msgstr "Ugrás a 3. könyvjelzőhöz"
 
 #: lazarusidestrconsts.liskmgotomarker4
-#, fuzzy
-#| msgid "Go to marker 4"
 msgid "Go to bookmark 4"
-msgstr "Ugrás a 4. megjelöléshez"
+msgstr "Ugrás a 4. könyvjelzőhöz"
 
 #: lazarusidestrconsts.liskmgotomarker5
-#, fuzzy
-#| msgid "Go to marker 5"
 msgid "Go to bookmark 5"
-msgstr "Ugrás az 5. megjelöléshez"
+msgstr "Ugrás az 5. könyvjelzőhöz"
 
 #: lazarusidestrconsts.liskmgotomarker6
-#, fuzzy
-#| msgid "Go to marker 6"
 msgid "Go to bookmark 6"
-msgstr "Ugrás a 6. megjelöléshez"
+msgstr "Ugrás a 6. könyvjelzőhöz"
 
 #: lazarusidestrconsts.liskmgotomarker7
-#, fuzzy
-#| msgid "Go to marker 7"
 msgid "Go to bookmark 7"
-msgstr "Ugrás a 7. megjelöléshez"
+msgstr "Ugrás a 7. könyvjelzőhöz"
 
 #: lazarusidestrconsts.liskmgotomarker8
-#, fuzzy
-#| msgid "Go to marker 8"
 msgid "Go to bookmark 8"
-msgstr "Ugrás a 8. megjelöléshez"
+msgstr "Ugrás a 8. könyvjelzőhöz"
 
 #: lazarusidestrconsts.liskmgotomarker9
-#, fuzzy
-#| msgid "Go to marker 9"
 msgid "Go to bookmark 9"
-msgstr "Ugrás a 9. megjelöléshez"
+msgstr "Ugrás a 9. könyvjelzőhöz"
 
 #: lazarusidestrconsts.liskmgotosourceeditor1
 msgid "Go to source editor 1"
@@ -10753,64 +10733,44 @@ msgid "Set free Bookmark"
 msgstr "Üres könyvjelző beállítása"
 
 #: lazarusidestrconsts.liskmsetmarker0
-#, fuzzy
-#| msgid "Set marker 0"
 msgid "Set bookmark 0"
-msgstr "0. jelölés bekacsolása"
+msgstr "0. könyvjelző beállítása"
 
 #: lazarusidestrconsts.liskmsetmarker1
-#, fuzzy
-#| msgid "Set marker 1"
 msgid "Set bookmark 1"
-msgstr "1. jelölés bekacsolása"
+msgstr "1. könyvjelző beállítása"
 
 #: lazarusidestrconsts.liskmsetmarker2
-#, fuzzy
-#| msgid "Set marker 2"
 msgid "Set bookmark 2"
-msgstr "2. jelölés bekacsolása"
+msgstr "2. könyvjelző beállítása"
 
 #: lazarusidestrconsts.liskmsetmarker3
-#, fuzzy
-#| msgid "Set marker 3"
 msgid "Set bookmark 3"
-msgstr "3. jelölés bekacsolása"
+msgstr "3. könyvjelző beállítása"
 
 #: lazarusidestrconsts.liskmsetmarker4
-#, fuzzy
-#| msgid "Set marker 4"
 msgid "Set bookmark 4"
-msgstr "4. jelölés bekacsolása"
+msgstr "4. könyvjelző beállítása"
 
 #: lazarusidestrconsts.liskmsetmarker5
-#, fuzzy
-#| msgid "Set marker 5"
 msgid "Set bookmark 5"
-msgstr "5. jelölés bekacsolása"
+msgstr "5. könyvjelző beállítása"
 
 #: lazarusidestrconsts.liskmsetmarker6
-#, fuzzy
-#| msgid "Set marker 6"
 msgid "Set bookmark 6"
-msgstr "6. jelölés bekacsolása"
+msgstr "6. könyvjelző beállítása"
 
 #: lazarusidestrconsts.liskmsetmarker7
-#, fuzzy
-#| msgid "Set marker 7"
 msgid "Set bookmark 7"
-msgstr "7. jelölés bekacsolása"
+msgstr "7. könyvjelző beállítása"
 
 #: lazarusidestrconsts.liskmsetmarker8
-#, fuzzy
-#| msgid "Set marker 8"
 msgid "Set bookmark 8"
-msgstr "8. jelölés bekacsolása"
+msgstr "8. könyvjelző beállítása"
 
 #: lazarusidestrconsts.liskmsetmarker9
-#, fuzzy
-#| msgid "Set marker 9"
 msgid "Set bookmark 9"
-msgstr "9. jelölés bekacsolása"
+msgstr "9. könyvjelző beállítása"
 
 #: lazarusidestrconsts.liskmstopprogram
 msgid "Stop Program"
@@ -10821,64 +10781,44 @@ msgid "Toggle between Unit and Form"
 msgstr "Unit és Form közötti váltás"
 
 #: lazarusidestrconsts.liskmtogglemarker0
-#, fuzzy
-#| msgid "Toggle marker 0"
 msgid "Toggle bookmark 0"
-msgstr "0. jelölés ki-/bekacsolása"
+msgstr "0. könyvjelző ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker1
-#, fuzzy
-#| msgid "Toggle marker 1"
 msgid "Toggle bookmark 1"
-msgstr "1. jelölés ki-/bekacsolása"
+msgstr "1. könyvjelző ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker2
-#, fuzzy
-#| msgid "Toggle marker 2"
 msgid "Toggle bookmark 2"
-msgstr "2. jelölés ki-/bekacsolása"
+msgstr "2. könyvjelző ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker3
-#, fuzzy
-#| msgid "Toggle marker 3"
 msgid "Toggle bookmark 3"
-msgstr "3. jelölés ki-/bekacsolása"
+msgstr "3. könyvjelző ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker4
-#, fuzzy
-#| msgid "Toggle marker 4"
 msgid "Toggle bookmark 4"
-msgstr "4. jelölés ki-/bekacsolása"
+msgstr "4. könyvjelző ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker5
-#, fuzzy
-#| msgid "Toggle marker 5"
 msgid "Toggle bookmark 5"
-msgstr "5. jelölés ki-/bekacsolása"
+msgstr "5. könyvjelző ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker6
-#, fuzzy
-#| msgid "Toggle marker 6"
 msgid "Toggle bookmark 6"
-msgstr "6. jelölés ki-/bekacsolása"
+msgstr "6. könyvjelző ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker7
-#, fuzzy
-#| msgid "Toggle marker 7"
 msgid "Toggle bookmark 7"
-msgstr "7. jelölés ki-/bekacsolása"
+msgstr "7. könyvjelző ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker8
-#, fuzzy
-#| msgid "Toggle marker 8"
 msgid "Toggle bookmark 8"
-msgstr "8. jelölés ki-/bekacsolása"
+msgstr "8. könyvjelző ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtogglemarker9
-#, fuzzy
-#| msgid "Toggle marker 9"
 msgid "Toggle bookmark 9"
-msgstr "9. jelölés ki-/bekacsolása"
+msgstr "9. könyvjelző ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
 msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
@@ -11574,7 +11514,7 @@ msgstr "Sorok tördelése a kijelölésben"
 
 #: lazarusidestrconsts.lismenubreak
 msgid "&Break"
-msgstr ""
+msgstr "Megszakítás"
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
@@ -11626,7 +11566,7 @@ msgstr "Fájlok összehasonlítása ..."
 
 #: lazarusidestrconsts.lismenucompilemanymodes
 msgid "Compile many Modes ..."
-msgstr ""
+msgstr "Fordítás több módban ..."
 
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
@@ -11659,7 +11599,7 @@ msgstr "Tartalomérzékeny súgó"
 
 #: lazarusidestrconsts.lismenucontinue
 msgid "&Continue"
-msgstr ""
+msgstr "Folytatás"
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 msgid "Convert Delphi Package to Lazarus Package ..."
@@ -12570,7 +12510,7 @@ msgstr "Legutóbbi projekt megnyitása"
 
 #: lazarusidestrconsts.lismenuopenunit
 msgid "Open Unit ..."
-msgstr ""
+msgstr "Unit megnyitása ..."
 
 #: lazarusidestrconsts.lismenupackage
 msgid "Pa&ckage"
@@ -13880,7 +13820,7 @@ msgstr "Eszközbeállítások megnyitása"
 
 #: lazarusidestrconsts.lisopenunit
 msgid "Open Unit"
-msgstr ""
+msgstr "Unit megnyitása"
 
 #: lazarusidestrconsts.lisopenurl
 msgid "Open URL"
@@ -19250,10 +19190,8 @@ msgid "Macros"
 msgstr "Makrók"
 
 #: lazarusidestrconsts.srkmcatmarker
-#, fuzzy
-#| msgid "Text marker commands"
 msgid "Text bookmark commands"
-msgstr "Szöveg megjelölési parancsai"
+msgstr "Könyvjelző parancsok"
 
 #: lazarusidestrconsts.srkmcatmulticaret
 msgid "Multi caret commands"
@@ -19684,10 +19622,8 @@ msgid "Go to Line Number"
 msgstr "Ugrás sorszámhoz"
 
 #: lazarusidestrconsts.srkmecgotomarker
-#, fuzzy
-#| msgid "Go to Marker %d"
 msgid "Go to bookmark %d"
-msgstr "Ugrás a(z) %d. jelöléshez"
+msgstr "Ugrás a(z) %d. könyvjelzőhöz"
 
 #: lazarusidestrconsts.srkmecgotoxy
 msgid "Goto XY"
@@ -20190,10 +20126,8 @@ msgid "Set a free Bookmark"
 msgstr "Üres könyvjelző beállítása"
 
 #: lazarusidestrconsts.srkmecsetmarker
-#, fuzzy
-#| msgid "Set Marker %d"
 msgid "Set bookmark %d"
-msgstr "%d. jelölő bekapcsolása"
+msgstr "%d. könyvjelző beállítása"
 
 #: lazarusidestrconsts.srkmecshifttab
 msgid "Shift Tab"
@@ -20419,10 +20353,8 @@ msgid "View local variables"
 msgstr "Helyi változók megjelenítése"
 
 #: lazarusidestrconsts.srkmectogglemarker
-#, fuzzy
-#| msgid "Toggle Marker %d"
 msgid "Toggle bookmark %d"
-msgstr "%d. jelölő átkapcsolása"
+msgstr "%d. könyvjelző ki-/bekapcsolása"
 
 #: lazarusidestrconsts.srkmectogglemarkupword
 msgid "Toggle Current-Word highlight"

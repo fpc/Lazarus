@@ -475,11 +475,11 @@ msgstr "Mező létrehozása és hozzáadása az aktuális helyhez"
 
 #: objinspstrconsts.oiscurrentparent
 msgid "Current parent"
-msgstr ""
+msgstr "Jelenlegi szülő"
 
 #: objinspstrconsts.oiscurrentparents
 msgid "Current parents"
-msgstr ""
+msgstr "Jelenlegi szülők"
 
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
@@ -760,11 +760,11 @@ msgstr "Minden mező kijelölése"
 
 #: objinspstrconsts.oisselectedcontrol
 msgid "Selected control"
-msgstr ""
+msgstr "Kiválasztott vezérlő"
 
 #: objinspstrconsts.oisselectedcontrols
 msgid "Selected controls"
-msgstr ""
+msgstr "Kiválasztott vezérlők"
 
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
@@ -804,7 +804,7 @@ msgstr "A tulajdonság értéke legyen Alapértelmezett"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
-msgstr ""
+msgstr "Osztályok megjelenítése"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"

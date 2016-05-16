@@ -1550,11 +1550,11 @@ msgstr "[Nincs]"
 
 #: lr_const.snovalidexportfilenamewassupplied
 msgid "No valid export filename was supplied"
-msgstr ""
+msgstr "Nincs megadva érvényes exportálási fájlnév"
 
 #: lr_const.snovalidfilterclasswassupplied
 msgid "No valid filterclass was supplied"
-msgstr ""
+msgstr "Nincs megadva érvényes szűrőosztály"
 
 #: lr_const.sobjectinspector
 msgid "Object inspector"
@@ -2304,11 +2304,11 @@ msgstr "Jelentés &fájl"
 
 #: lr_const.sreportcorruptoldknowversion
 msgid "This report is corrupt, it probably needs \"LRE_OLDV%d_FRF_READ\"=true"
-msgstr ""
+msgstr "Ez a jelentés sérült. Valószínűleg szüksége van erre: \"LRE_OLDV%d_FRF_READ\"=true"
 
 #: lr_const.sreportcorruptunknownversion
 msgid "This report is corrupt, frVersion=%d"
-msgstr ""
+msgstr "Ez a jelentés sérült. frVersion=%d"
 
 #: lr_const.sreportcreatedate
 msgid "Report creation date"

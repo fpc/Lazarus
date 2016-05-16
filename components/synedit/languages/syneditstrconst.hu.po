@@ -485,11 +485,11 @@ msgstr "Nincs művelet"
 
 #: syneditstrconst.syns_emcoverviewguttergotomark
 msgid "Jump to Mark (Overview Gutter)"
-msgstr ""
+msgstr "Ugrás a jelzéshez (Áttekintő hasábköz)"
 
 #: syneditstrconst.syns_emcoverviewgutterscrollto
 msgid "Scroll (Overview Gutter)"
-msgstr ""
+msgstr "Görgetés (Áttekintő hasábköz)"
 
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
