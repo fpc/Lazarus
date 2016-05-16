@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2015-12-19 15:58+0100\n"
+"PO-Revision-Date: 2016-05-14 08:37+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.7\n"
 
 #: le_e_spreadsheet_consts.sallinonepage
 msgid "All in one page"
@@ -49,11 +49,11 @@ msgstr ""
 
 #: le_e_spreadsheet_consts.sexportpagefooter
 msgid "Export page footer"
-msgstr ""
+msgstr "Exporter le pied de page"
 
 #: le_e_spreadsheet_consts.sexportpageheader
 msgid "Export page header"
-msgstr ""
+msgstr "Exporter l'en-tête de page"
 
 #: le_e_spreadsheet_consts.sexportpictures
 msgid "Export pictures"
@@ -61,15 +61,15 @@ msgstr "Exporter les images"
 
 #: le_e_spreadsheet_consts.sexportprintrange
 msgid "Export print range"
-msgstr ""
+msgstr "Exporter la plage d’impression"
 
 #: le_e_spreadsheet_consts.sexportreportsummary
 msgid "Export report summary"
-msgstr ""
+msgstr "Exporter le sommaire du rapport"
 
 #: le_e_spreadsheet_consts.sexportreporttitle
 msgid "Export report title"
-msgstr ""
+msgstr "Exporter le nom du rapport"
 
 #: le_e_spreadsheet_consts.sexportsettings
 msgid "Export settings"
@@ -81,7 +81,7 @@ msgstr "Exporter vers la feuille de calcul"
 
 #: le_e_spreadsheet_consts.sexporturl
 msgid "Export URL"
-msgstr ""
+msgstr "Exporter l'URL"
 
 #: le_e_spreadsheet_consts.sgeneral
 msgid "General"
@@ -97,7 +97,7 @@ msgstr "Fusionner les cellules"
 
 #: le_e_spreadsheet_consts.sonlyonecomponent
 msgid "Only one TlrSpreadSheetExport component allowed."
-msgstr "Seulement un composant \"TlrSpreadSheetExport\" est autorisé."
+msgstr "Seul un composant \"TlrSpreadSheetExport\" est autorisé."
 
 #: le_e_spreadsheet_consts.sopenafterexport
 msgid "Open after export"
@@ -122,4 +122,3 @@ msgstr "Pages :"
 #: le_e_spreadsheet_consts.sreportpagename
 msgid "Report"
 msgstr "Rapport"
-

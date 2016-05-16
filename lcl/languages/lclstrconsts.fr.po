@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"PO-Revision-Date: 2015-12-18 11:32+0100\n"
-"Language-Team: Laurent Jacques <wile64@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
+"PO-Revision-Date: 2016-05-14 09:24+0200\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "POT-Creation-Date: \n"
 "Project-Id-Version: \n"
 "Language: fr\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.7\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser \"%s\" not executable."
@@ -1046,7 +1046,7 @@ msgstr "Poster"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpressaborttok
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Abort to kill the program."
-msgstr ""
+msgstr "%s%sAppuyez sur \"OK\" pour ignorer et risquer une corruption des données.%sAppuyez sur \"Abandonner\" pour achever le programme."
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
@@ -1561,4 +1561,3 @@ msgstr "Taille"
 #: lclstrconsts.sshellctrlstype
 msgid "Type"
 msgstr "Type"
-

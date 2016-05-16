@@ -3,9 +3,9 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-02-16 09:22+0100\n"
+"PO-Revision-Date: 2016-05-14 09:51+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1253,7 +1253,7 @@ msgstr "%d bureau(x) importé(s) avec succès depuis \"%s\""
 
 #: lazarusidestrconsts.dlgdifferentvaluebackgroundcolor
 msgid "Different values background"
-msgstr ""
+msgstr "Valeur différente d'arrière-plan"
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -1772,7 +1772,7 @@ msgstr "Except/Finally"
 
 #: lazarusidestrconsts.dlgfoldpasfordo
 msgid "For/Do"
-msgstr ""
+msgstr "For/Do"
 
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
@@ -1842,11 +1842,11 @@ msgstr "Var/Type (global)"
 
 #: lazarusidestrconsts.dlgfoldpaswhiledo
 msgid "While/Do"
-msgstr ""
+msgstr "While/Do"
 
 #: lazarusidestrconsts.dlgfoldpaswithdo
 msgid "With/Do"
-msgstr ""
+msgstr "With/Do"
 
 #: lazarusidestrconsts.dlgfoldxmlcdata
 msgid "CData"
@@ -2661,11 +2661,11 @@ msgstr "Développé [-]"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlineoverview
 msgid "Overview"
-msgstr ""
+msgstr "Aperçu"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlineoverviewmarks
 msgid "Overview Mark"
-msgstr ""
+msgstr "Marque d'aperçu"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlines
 msgid "Line Numbers"
@@ -3361,7 +3361,7 @@ msgstr "Afficher les informations concernant l'exécutable (Win32 seulement)"
 
 #: lazarusidestrconsts.dlgshowfilenameincaption
 msgid "Show file name in caption"
-msgstr ""
+msgstr "Monter le nom du fichier dans le libellé"
 
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"
@@ -4578,7 +4578,7 @@ msgstr "Si la palette de composants s'étend sur plus de lignes, tous les montre
 
 #: lazarusidestrconsts.lisautocheckmodifiedfiles
 msgid "Automatically check (select) modified files"
-msgstr ""
+msgstr "Cocher (sélectionner) automatiquement les fichiers modifiés"
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -5629,7 +5629,7 @@ msgstr "Une référence circulaire a été détectée"
 
 #: lazarusidestrconsts.lisclass
 msgid "&Class"
-msgstr ""
+msgstr "&Classe"
 
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
@@ -5844,14 +5844,13 @@ msgstr "Navigateur de code"
 
 #: lazarusidestrconsts.liscodecreationdialogcaption
 msgid "Code creation options"
-msgstr ""
+msgstr "Options de création de code"
 
 #: lazarusidestrconsts.liscodecreationdialogclasssection
 msgid "Class section"
-msgstr ""
+msgstr "Section de classe"
 
 #: lazarusidestrconsts.liscodecreationdialoglocation
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscodecreationdialoglocation"
 msgid "Location"
 msgstr "Emplacement"
@@ -8157,11 +8156,11 @@ msgstr "Erreur de lecture du fichier : %s"
 
 #: lazarusidestrconsts.lisdiskdiffignorealldiskchanges
 msgid "Ignore all disk changes"
-msgstr ""
+msgstr "Ignorer tous les changements sur disque"
 
 #: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
 msgid "Reload checked files from disk"
-msgstr ""
+msgstr "Recharger les fichiers cochés depuis le disque"
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
@@ -8252,7 +8251,7 @@ msgstr "Ne plus montrer ce message"
 
 #: lazarusidestrconsts.lisdonotwriteupdatedprojectinfoafterbuild
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
-msgstr ""
+msgstr "Ne pas écrire le fichier d'information du projet mis à jour après la construction. San sspécification, le numéro de construction sera incrémenté s'il est configuré."
 
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
@@ -9675,7 +9674,7 @@ msgstr "Suggestion : vérifiez si deux paquets contiennent une unité du même n
 
 #: lazarusidestrconsts.lishintclickonshowoptionstofindoutwhereinheritedpaths
 msgid "Hint: Click on \"Show Options\" to find out where inherited paths are coming from."
-msgstr ""
+msgstr "Astuce : cliquer sur \"Montrer les options\" pour voir d'où viennent les chemins hérités."
 
 #: lazarusidestrconsts.lishints
 msgid ", Hints: %s"
@@ -9944,7 +9943,7 @@ msgstr "Importer depuis le fichier"
 
 #: lazarusidestrconsts.lisimportingbuildmodesnotsupported
 msgid "Importing BuildModes is not supported for packages."
-msgstr ""
+msgstr "L'importation des modes de construction n'est pas autorisée pour les paquets."
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -10491,7 +10490,7 @@ msgstr "Couper les composants choisis vers le presse-papier"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
 msgid "Default adapted to OS X"
-msgstr ""
+msgstr "Par défaut adapté à OS X"
 
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
@@ -10530,64 +10529,44 @@ msgid "Find Incremental"
 msgstr "Recherche incrémentale"
 
 #: lazarusidestrconsts.liskmgotomarker0
-#, fuzzy
-#| msgid "Go to marker 0"
 msgid "Go to bookmark 0"
-msgstr "Aller au marqueur 0"
+msgstr "Aller au signet 0"
 
 #: lazarusidestrconsts.liskmgotomarker1
-#, fuzzy
-#| msgid "Go to marker 1"
 msgid "Go to bookmark 1"
-msgstr "Aller au marqueur 1"
+msgstr "Aller au signet 1"
 
 #: lazarusidestrconsts.liskmgotomarker2
-#, fuzzy
-#| msgid "Go to marker 2"
 msgid "Go to bookmark 2"
-msgstr "Aller au marqueur 2"
+msgstr "Aller au signet 2"
 
 #: lazarusidestrconsts.liskmgotomarker3
-#, fuzzy
-#| msgid "Go to marker 3"
 msgid "Go to bookmark 3"
-msgstr "Aller au marqueur 3"
+msgstr "Aller au signet 3"
 
 #: lazarusidestrconsts.liskmgotomarker4
-#, fuzzy
-#| msgid "Go to marker 4"
 msgid "Go to bookmark 4"
-msgstr "Aller au marqueur 4"
+msgstr "Aller au signet 4"
 
 #: lazarusidestrconsts.liskmgotomarker5
-#, fuzzy
-#| msgid "Go to marker 5"
 msgid "Go to bookmark 5"
-msgstr "Aller au marqueur 5"
+msgstr "Aller au signet 5"
 
 #: lazarusidestrconsts.liskmgotomarker6
-#, fuzzy
-#| msgid "Go to marker 6"
 msgid "Go to bookmark 6"
-msgstr "Aller au marqueur 6"
+msgstr "Aller au signet 6"
 
 #: lazarusidestrconsts.liskmgotomarker7
-#, fuzzy
-#| msgid "Go to marker 7"
 msgid "Go to bookmark 7"
-msgstr "Aller au marqueur 7"
+msgstr "Aller au signet 7"
 
 #: lazarusidestrconsts.liskmgotomarker8
-#, fuzzy
-#| msgid "Go to marker 8"
 msgid "Go to bookmark 8"
-msgstr "Aller au marqueur 8"
+msgstr "Aller au signet 8"
 
 #: lazarusidestrconsts.liskmgotomarker9
-#, fuzzy
-#| msgid "Go to marker 9"
 msgid "Go to bookmark 9"
-msgstr "Aller au marqueur 9"
+msgstr "Aller au signet 9"
 
 #: lazarusidestrconsts.liskmgotosourceeditor1
 msgid "Go to source editor 1"
@@ -10757,64 +10736,44 @@ msgid "Set free Bookmark"
 msgstr "Placer un signet libre"
 
 #: lazarusidestrconsts.liskmsetmarker0
-#, fuzzy
-#| msgid "Set marker 0"
 msgid "Set bookmark 0"
-msgstr "Placer le marqueur 0"
+msgstr "Placer le signet 0"
 
 #: lazarusidestrconsts.liskmsetmarker1
-#, fuzzy
-#| msgid "Set marker 1"
 msgid "Set bookmark 1"
-msgstr "Placer le marqueur 1"
+msgstr "Placer le signet 1"
 
 #: lazarusidestrconsts.liskmsetmarker2
-#, fuzzy
-#| msgid "Set marker 2"
 msgid "Set bookmark 2"
-msgstr "Placer le marqueur 2"
+msgstr "Placer le signet 2"
 
 #: lazarusidestrconsts.liskmsetmarker3
-#, fuzzy
-#| msgid "Set marker 3"
 msgid "Set bookmark 3"
-msgstr "Placer le marqueur 3"
+msgstr "Placer le signet 3"
 
 #: lazarusidestrconsts.liskmsetmarker4
-#, fuzzy
-#| msgid "Set marker 4"
 msgid "Set bookmark 4"
-msgstr "Placer le marqueur 4"
+msgstr "Placer le signet 4"
 
 #: lazarusidestrconsts.liskmsetmarker5
-#, fuzzy
-#| msgid "Set marker 5"
 msgid "Set bookmark 5"
-msgstr "Placer le marqueur 5"
+msgstr "Placer le signet 5"
 
 #: lazarusidestrconsts.liskmsetmarker6
-#, fuzzy
-#| msgid "Set marker 6"
 msgid "Set bookmark 6"
-msgstr "Placer le marqueur 6"
+msgstr "Placer le signet 6"
 
 #: lazarusidestrconsts.liskmsetmarker7
-#, fuzzy
-#| msgid "Set marker 7"
 msgid "Set bookmark 7"
-msgstr "Placer le marqueur 7"
+msgstr "Placer le signet 7"
 
 #: lazarusidestrconsts.liskmsetmarker8
-#, fuzzy
-#| msgid "Set marker 8"
 msgid "Set bookmark 8"
-msgstr "Placer le marqueur 8"
+msgstr "Placer le signet 8"
 
 #: lazarusidestrconsts.liskmsetmarker9
-#, fuzzy
-#| msgid "Set marker 9"
 msgid "Set bookmark 9"
-msgstr "Placer le marqueur 9"
+msgstr "Placer le signet 9"
 
 #: lazarusidestrconsts.liskmstopprogram
 msgid "Stop Program"
@@ -10825,64 +10784,44 @@ msgid "Toggle between Unit and Form"
 msgstr "Commuter entre l'unité et la fiche"
 
 #: lazarusidestrconsts.liskmtogglemarker0
-#, fuzzy
-#| msgid "Toggle marker 0"
 msgid "Toggle bookmark 0"
-msgstr "Inverser le marqueur 0"
+msgstr "Inverser le signet 0"
 
 #: lazarusidestrconsts.liskmtogglemarker1
-#, fuzzy
-#| msgid "Toggle marker 1"
 msgid "Toggle bookmark 1"
-msgstr "Inverser le marqueur 1"
+msgstr "Inverser le signet 1"
 
 #: lazarusidestrconsts.liskmtogglemarker2
-#, fuzzy
-#| msgid "Toggle marker 2"
 msgid "Toggle bookmark 2"
-msgstr "Inverser le marqueur 2"
+msgstr "Inverser le signet 2"
 
 #: lazarusidestrconsts.liskmtogglemarker3
-#, fuzzy
-#| msgid "Toggle marker 3"
 msgid "Toggle bookmark 3"
-msgstr "Inverser le marqueur 3"
+msgstr "Inverser le signet 3"
 
 #: lazarusidestrconsts.liskmtogglemarker4
-#, fuzzy
-#| msgid "Toggle marker 4"
 msgid "Toggle bookmark 4"
-msgstr "Inverser le marqueur 4"
+msgstr "Inverser le signet 4"
 
 #: lazarusidestrconsts.liskmtogglemarker5
-#, fuzzy
-#| msgid "Toggle marker 5"
 msgid "Toggle bookmark 5"
-msgstr "Inverser le marqueur 5"
+msgstr "Inverser le signet 5"
 
 #: lazarusidestrconsts.liskmtogglemarker6
-#, fuzzy
-#| msgid "Toggle marker 6"
 msgid "Toggle bookmark 6"
-msgstr "Inverser le marqueur 6"
+msgstr "Inverser le signet 6"
 
 #: lazarusidestrconsts.liskmtogglemarker7
-#, fuzzy
-#| msgid "Toggle marker 7"
 msgid "Toggle bookmark 7"
-msgstr "Inverser le marqueur 7"
+msgstr "Inverser le signet 7"
 
 #: lazarusidestrconsts.liskmtogglemarker8
-#, fuzzy
-#| msgid "Toggle marker 8"
 msgid "Toggle bookmark 8"
-msgstr "Inverser le marqueur 8"
+msgstr "Inverser le signet 8"
 
 #: lazarusidestrconsts.liskmtogglemarker9
-#, fuzzy
-#| msgid "Toggle marker 9"
 msgid "Toggle bookmark 9"
-msgstr "Inverser le marqueur 9"
+msgstr "Inverser le signet 9"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
 msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
@@ -11341,7 +11280,7 @@ msgstr "Charger la macro depuis"
 
 #: lazarusidestrconsts.lislocal
 msgid "&Local"
-msgstr ""
+msgstr "&Local"
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -11580,7 +11519,7 @@ msgstr "Couper les lignes dans la sélection"
 
 #: lazarusidestrconsts.lismenubreak
 msgid "&Break"
-msgstr ""
+msgstr "&Coupure"
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
@@ -11632,7 +11571,7 @@ msgstr "Comparer les fichiers..."
 
 #: lazarusidestrconsts.lismenucompilemanymodes
 msgid "Compile many Modes ..."
-msgstr ""
+msgstr "Compiler plusieurs modes..."
 
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
@@ -11641,7 +11580,7 @@ msgstr "Compléter le code"
 
 #: lazarusidestrconsts.lismenucompletecodeinteractive
 msgid "Complete Code (with dialog)"
-msgstr ""
+msgstr "Compléter le code (avec dialogue)"
 
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
@@ -11665,7 +11604,7 @@ msgstr "Aide contextuelle"
 
 #: lazarusidestrconsts.lismenucontinue
 msgid "&Continue"
-msgstr ""
+msgstr "&Continuer"
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 msgid "Convert Delphi Package to Lazarus Package ..."
@@ -12576,7 +12515,7 @@ msgstr "Ouvrir un projet récent"
 
 #: lazarusidestrconsts.lismenuopenunit
 msgid "Open Unit ..."
-msgstr ""
+msgstr "Ouvrir l'unité..."
 
 #: lazarusidestrconsts.lismenupackage
 msgid "Pa&ckage"
@@ -12676,7 +12615,7 @@ msgstr "Exécuter jusqu'au &curseur"
 
 #: lazarusidestrconsts.lismenurunwithoutdebugging
 msgid "Run without Debugging"
-msgstr ""
+msgstr "Exécuter sans débogage"
 
 #: lazarusidestrconsts.lismenusave
 msgctxt "lazarusidestrconsts.lismenusave"
@@ -13890,7 +13829,7 @@ msgstr "Options de l'outil ouvert"
 
 #: lazarusidestrconsts.lisopenunit
 msgid "Open Unit"
-msgstr ""
+msgstr "Ouvrir l'unité"
 
 #: lazarusidestrconsts.lisopenurl
 msgid "Open URL"
@@ -18843,7 +18782,7 @@ msgstr "Vous ne pouvez pas construire Lazarus pendant que vous déboguez ou comp
 
 #: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
 msgid "You can select items by simply pressing underscored letters"
-msgstr ""
+msgstr "Vous pouvez sélectionner les éléments en appuyant simplement sur les lettres soulignées"
 
 #: lazarusidestrconsts.lis_all_
 msgctxt "lazarusidestrconsts.lis_all_"
@@ -19260,10 +19199,8 @@ msgid "Macros"
 msgstr "Macros"
 
 #: lazarusidestrconsts.srkmcatmarker
-#, fuzzy
-#| msgid "Text marker commands"
 msgid "Text bookmark commands"
-msgstr "Commandes des marqueurs"
+msgstr "Commandes des signets"
 
 #: lazarusidestrconsts.srkmcatmulticaret
 msgid "Multi caret commands"
@@ -19694,10 +19631,8 @@ msgid "Go to Line Number"
 msgstr "Aller au numéro de ligne"
 
 #: lazarusidestrconsts.srkmecgotomarker
-#, fuzzy
-#| msgid "Go to Marker %d"
 msgid "Go to bookmark %d"
-msgstr "Aller au marqueur %d"
+msgstr "Aller au signet %d"
 
 #: lazarusidestrconsts.srkmecgotoxy
 msgid "Goto XY"
@@ -20057,7 +19992,7 @@ msgstr "Paramètres d'exécution"
 
 #: lazarusidestrconsts.srkmecrunwithoutdebugging
 msgid "run without debugging"
-msgstr ""
+msgstr "exécuter sans débogage"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
@@ -20200,10 +20135,8 @@ msgid "Set a free Bookmark"
 msgstr "Placer un signet libre"
 
 #: lazarusidestrconsts.srkmecsetmarker
-#, fuzzy
-#| msgid "Set Marker %d"
 msgid "Set bookmark %d"
-msgstr "Définir le marqueur %d"
+msgstr "Définir le signet %d"
 
 #: lazarusidestrconsts.srkmecshifttab
 msgid "Shift Tab"
@@ -20429,10 +20362,8 @@ msgid "View local variables"
 msgstr "Afficher les variables locales"
 
 #: lazarusidestrconsts.srkmectogglemarker
-#, fuzzy
-#| msgid "Toggle Marker %d"
 msgid "Toggle bookmark %d"
-msgstr "Inverser le marqueur %d"
+msgstr "Inverser le signet %d"
 
 #: lazarusidestrconsts.srkmectogglemarkupword
 msgid "Toggle Current-Word highlight"

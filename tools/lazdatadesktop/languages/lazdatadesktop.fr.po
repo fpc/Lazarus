@@ -3,9 +3,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2016-02-07 10:11+0100\n"
+"PO-Revision-Date: 2016-05-14 09:27+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
@@ -453,7 +453,7 @@ msgstr "Connexions"
 
 #: lazdatadeskstr.sld_connectionsdictionaries
 msgid "Connections/Dictionaries"
-msgstr ""
+msgstr "Connexions/Dictionnaires"
 
 #: lazdatadeskstr.sld_connecttoadatabase
 msgid "Connect to a database of type %s"
@@ -664,7 +664,7 @@ msgstr "Nom d'utilisateur"
 
 #: lazdatadeskstr.sld_view
 msgid "View"
-msgstr ""
+msgstr "Vue"
 
 #: lazdatadeskstr.sload
 msgid "Load SQL"
@@ -801,16 +801,12 @@ msgid "Previous"
 msgstr "Précédent"
 
 #: lazdatadeskstr.sql_noconnectionsfound
-#, fuzzy
-#| msgid ""
-#| "No connections or data dictionaries were found.\n"
-#| " Start by creating a new connection or data dictionary\n"
 msgid ""
 "No connections or data dictionaries were found.\n"
 " Start by creating a new connection or data dictionary.\n"
 msgstr ""
 "Connexions ou dictionnaires de données introuvables.\n"
-"Commencez par créer une connexion ou un dictionnaire de données.\n"
+" Commencez par créer une connexion ou un dictionnaire de données.\n"
 
 #: lazdatadeskstr.squery
 msgid "Run query"
@@ -915,4 +911,3 @@ msgstr "Valeur"
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
 msgstr "Un dictionnaire de données est actif. Souhaitez-vous importer dans ce dictionnaire de données ?"
-

@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-13 21:43+0100\n"
-"PO-Revision-Date: 2015-04-28 13:15+0100\n"
+"PO-Revision-Date: 2016-05-14 09:58+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: \n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.7\n"
 
 #: pocheckerconsts.rspochecker
 msgid "PO File Checker"
@@ -89,7 +89,7 @@ msgstr "Polonais"
 
 #: pocheckerconsts.rs_lang_pt
 msgid "Portuguese"
-msgstr ""
+msgstr "Portugais"
 
 #: pocheckerconsts.rs_lang_pt_br
 msgid "Brazilian Portuguese"
@@ -211,7 +211,7 @@ msgstr ""
 
 #: pocheckerconsts.sfindtroublesomefiles
 msgid "Find troublesome files"
-msgstr ""
+msgstr "Trouver des fichiers gênants"
 
 #: pocheckerconsts.sfuzzy
 msgid "Fuzzy"
@@ -267,7 +267,7 @@ msgstr "Remarque : la traduction est floue"
 
 #: pocheckerconsts.snotroublesomepofilesfound
 msgid "No troublesome .po files found."
-msgstr ""
+msgstr "Aucun fichier .po gênant trouvé."
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
@@ -403,11 +403,11 @@ msgstr ""
 
 #: pocheckerconsts.sthefollowingmasterpofilesaddedtothelist
 msgid "The following %s master .po file(s) added to the list:"
-msgstr ""
+msgstr "Le(s) %s fichier(s) .po maître(s) ajouté(s) à la liste :"
 
 #: pocheckerconsts.sthefollowingorphanedpofilesfound
 msgid "The following %s orphaned .po file(s) found:"
-msgstr ""
+msgstr "Le(s) %s fichier(s) .po orphelin(s) détecté(s) :"
 
 #: pocheckerconsts.stotalerrors
 msgid "Total errors found: %d"
@@ -431,7 +431,7 @@ msgstr "Statistiques de traduction par langue :"
 
 #: pocheckerconsts.stroublesomefiles
 msgid "Troublesome files"
-msgstr ""
+msgstr "Fichiers gênants"
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
@@ -444,4 +444,3 @@ msgstr "Désélectionner tous les fichiers"
 #: pocheckerconsts.suntranslated
 msgid "Untranslated"
 msgstr "Non traduit"
-

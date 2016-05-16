@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2015-12-23 22:25+0100\n"
+"PO-Revision-Date: 2016-05-14 09:19+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.7\n"
 
 #: tachartstrconsts.descolor
 msgid "Color"
@@ -101,7 +101,7 @@ msgstr "Mesure des distances"
 
 #: tachartstrconsts.rsfieldseries
 msgid "Vector field series"
-msgstr ""
+msgstr "Séries de champs vectoriels"
 
 #: tachartstrconsts.rsfunctionseries
 msgid "Function series"
@@ -208,4 +208,3 @@ msgstr "Impossible de renommer les composants : %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Éditer les outils"
-
