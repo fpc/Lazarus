@@ -5568,6 +5568,12 @@ begin
     Invalidate;
 end;
 
+procedure TControl.CMChanged(var Message: TLMessage);
+begin
+  if FParent<>nil then
+    FParent.WindowProc(Message);
+end;
+
 procedure TControl.CMSysFontChanged(var Message: TLMessage);
 begin
   if FDesktopFont then

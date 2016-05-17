@@ -116,6 +116,13 @@ type
     Result: LRESULT;
   end;
 
+  TCMChanged = record
+    Msg: Cardinal;
+    Unused: Longint;
+    Child: TControl;
+    Result: Longint;
+  end;
+
   TCMControlListChange = record
     Msg: Cardinal;
     Control: TControl;
@@ -1296,6 +1303,7 @@ type
     procedure WMMove(var Message: TLMMove); message LM_MOVE;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
+    procedure CMChanged(var Message: TLMessage); message CM_CHANGED;
     procedure LMCaptureChanged(var Message: TLMessage); message LM_CaptureChanged;
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
     procedure CMSysFontChanged(var Message: TLMessage); message CM_SYSFONTCHANGED;

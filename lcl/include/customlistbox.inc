@@ -626,6 +626,7 @@ end;
 procedure TCustomListBox.Click;
 begin
   inherited Click;
+  Changed;
 end;
 
 {------------------------------------------------------------------------------

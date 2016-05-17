@@ -596,6 +596,7 @@ end;
 
 procedure TCustomEdit.Change;
 begin
+  Changed;
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
