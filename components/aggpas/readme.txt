@@ -11,7 +11,8 @@
 
  License: 3-clause BSD license - free for open source and commercial software
           or GPL. 
-  with the exception of aggpas/gpc/gpc.pas which has a "not free for commercial use".
+  with the exception of aggpas/gpc/gpc.pas which has a "not free for commercial use",
+  and is not used/compiled by default.
     
 
 ================================================================================
