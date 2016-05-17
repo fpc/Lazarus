@@ -846,7 +846,7 @@ type
     procedure ResetHotCell;
     procedure ResetPushedCell(ResetColRow: boolean=True);
     procedure SaveColumns(cfg: TXMLConfig; Version: integer);
-    function  ScrollToCell(const aCol,aRow: Integer; ForceFullyVisible: Boolean): Boolean;
+    function  ScrollToCell(const aCol,aRow: Integer; const ForceFullyVisible: Boolean = True): Boolean;
     function  ScrollGrid(Relative:Boolean; DCol,DRow: Integer): TPoint;
     procedure SetCol(AValue: Integer);
     procedure SetColWidths(Acol: Integer; Avalue: Integer);
@@ -3312,7 +3312,7 @@ end;
 
 { Scroll the grid until cell[aCol,aRow] is shown }
 function TCustomGrid.ScrollToCell(const aCol, aRow: Integer;
-  ForceFullyVisible: Boolean): Boolean;
+  const ForceFullyVisible: Boolean): Boolean;
 var
   RNew: TRect;
   OldTopLeft:TPoint;
