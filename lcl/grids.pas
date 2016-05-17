@@ -871,7 +871,7 @@ type
     procedure SetTopRow(const AValue: Integer);
     function  StartColSizing(const X, Y: Integer): boolean;
     procedure ChangeCursor(ACursor: Integer = MAXINT);
-    procedure TrySmoothScrollTo(aColDelta, aRowDelta: Integer);
+    function  TrySmoothScrollTo(aColDelta, aRowDelta: Integer): Boolean;
     procedure TryScrollTo(aCol,aRow: Integer; ClearColOff, ClearRowOff: Boolean);
     procedure UpdateCachedSizes;
     procedure UpdateSBVisibility;
@@ -1018,6 +1018,7 @@ type
     function  GetLastVisibleRow: Integer;
     function  GetSelectedColor: TColor; virtual;
     function  GetTitleShowPrefix(Column: Integer): boolean;
+    function  GetPxTopLeft: TPoint;
     function  GetTruncCellHintText(ACol, ARow: Integer): string; virtual;
     function  GridColumnFromColumnIndex(ColumnIndex: Integer): Integer;
     procedure GridMouseWheel(shift: TShiftState; Delta: Integer); virtual;
@@ -1069,6 +1070,7 @@ type
     procedure ScrollBarPage(Which: Integer; aPage: Integer);
     procedure ScrollBarShow(Which: Integer; aValue: boolean);
     function  ScrollBarAutomatic(Which: TScrollStyle): boolean; virtual;
+    procedure ScrollBy(DeltaX, DeltaY: Integer); override;
     procedure SelectEditor; virtual;
     function  SelectCell(ACol, ARow: Integer): Boolean; virtual;
     procedure SetCanvasFont(aFont: TFont);
@@ -2406,6 +2408,12 @@ begin
   result:=fTopLeft.x;
 end;
 
+function TCustomGrid.GetPxTopLeft: TPoint;
+begin
+  Result.x := Integer(PtrUInt(FGCache.AccumWidth[FTopLeft.x]))+FGCache.TLColOff-FGCache.FixedWidth;
+  Result.y := Integer(PtrUInt(FGCache.AccumHeight[FTopLeft.y]))+FGCache.TLRowOff-FGCache.FixedHeight;
+end;
+
 function TCustomGrid.GetColCount: Integer;
 begin
   Result:=FCols.Count;
@@ -3244,6 +3252,33 @@ begin
   end;
 end;
 
+procedure TCustomGrid.ScrollBy(DeltaX, DeltaY: Integer);
+var
+  ScrollArea, ClipArea: TRect;
+  ScrollFlags: Integer;
+begin
+  if (DeltaX=0) and (DeltaY=0) then
+    Exit;
+
+  ScrollFlags := SW_INVALIDATE or SW_ERASE;
+  ScrollArea := ClientRect;
+  if DeltaX<>0 then
+  begin
+    ClipArea := ClientRect;
+    Inc(ClipArea.Left, FGCache.FixedWidth);
+    ScrollWindowEx(Handle, DeltaX, 0, @ScrollArea, @ClipArea, 0, nil, ScrollFlags);
+  end;
+  if DeltaY<>0 then
+  begin
+    ClipArea := ClientRect;
+    Inc(ClipArea.Top, FGCache.FixedHeight);
+    ScrollWindowEx(Handle, 0, DeltaY, @ScrollArea, @ClipArea, 0, nil, ScrollFlags);
+  end;
+
+  CacheVisibleGrid;
+  CalcScrollbarsRange;
+end;
+
 function TCustomGrid.ScrollBarAutomatic(Which: TScrollStyle): boolean;
 begin
   result:=false;
@@ -3459,6 +3494,9 @@ begin
 
   Inc(Result.x, DCol);
   Inc(Result.y, DRow);
+
+  Result.x := Max(FixedCols, Min(Result.x, FGCache.MaxTopLeft.x));
+  Result.y := Max(FixedRows, Min(Result.y, FGCache.MaxTopLeft.y));
 end;
 
 procedure TCustomGrid.TopLeftChanged;
@@ -4407,262 +4445,40 @@ end;
 
 procedure TCustomGrid.WMHScroll(var message: TLMHScroll);
 var
-  C,TL,CTL,aPos, maxPos: Integer;
-  R: TRect;
-  ScrollInfo: TScrollInfo;
-  aCode: Smallint;
-
-  function NextColWidth(aCol: Integer; Delta: Integer): integer;
-  begin
-    repeat
-      result := GetColWidths(aCol);
-      aCol := aCol + Delta;
-    until (Result<>0) or (aCol>=ColCount) or (aCol<0);
-  end;
-
-  function AccumColWidths(Start, Stop: Integer): Integer;
-  var
-    aCol, Incr: Integer;
-  begin
-    Result := 0;
-    if (Stop > Start) then Incr := 1 else Incr := -1;
-    aCol := Start;
-    repeat
-      Result := Result + GetColWidths(aCol);
-      aCol := aCol + Incr;
-    until (aCol >= ColCount) or (aCol < 0) or (aCol = Stop + Incr);
-  end;
-
+  SP: TPoint;
 begin
+  SP := GetPxTopLeft;
 
-  {$IfDef dbgScroll}
-  DebugLn('HSCROLL: Code=%d Position=%d',[message.ScrollCode, message.Pos]);
-  {$Endif}
-
-  if not FGCache.ValidGrid or not HandleAllocated then
-    exit;
-
-  ScrollInfo.cbSize := SizeOf(ScrollInfo);
-  ScrollInfo.fMask := SIF_PAGE or SIF_RANGE;
-  GetScrollInfo(Handle, SB_HORZ, ScrollInfo);
-  maxPos := ScrollInfo.nMax - Max(ScrollInfo.nPage-1, 0);
-
-  aCode := message.ScrollCode;
-  if UseRightToLeftAlignment then begin
-    aPos := (ScrollInfo.nMax-ScrollInfo.nPage)-Message.Pos;
-    case aCode of
-      SB_LINERIGHT: aCode := SB_LINELEFT;
-      SB_LINELEFT: aCode := SB_LINERIGHT;
-      SB_PAGERIGHT: aCode := SB_PAGELEFT;
-      SB_PAGELEFT: aCode := SB_PAGERIGHT;
+  case message.ScrollCode of
+    SB_THUMBPOSITION,
+    SB_THUMBTRACK: begin
+      TrySmoothScrollTo(message.Pos-SP.x, 0);
+      message.Result := 0;
     end;
-    {$IfDef dbgScroll}
-    DebugLn('HSCROLL: (RTL) Code=%d Position=%d',[aCode, aPos]);
-    {$Endif}
-  end else
-    aPos := Message.Pos;
-
-  with FGCache do begin
-    TL:=  Max(integer(PtrUInt(AccumWidth[ MaxTopLeft.X ])) - FixedWidth, GridWidth - ClientWidth);
-    CTL:= integer(PtrUInt(AccumWidth[ FTopLeft.X ])) - FixedWidth + TLColOff;
+    SB_PAGEUP: TrySmoothScrollTo(-(ClientHeight-FGCache.FixedHeight), 0);
+    SB_PAGEDOWN: TrySmoothScrollTo(ClientHeight-FGCache.FixedHeight, 0);
+    SB_LINEUP: TrySmoothScrollTo(-DefaultRowHeight, 0);
+    SB_LINEDOWN: TrySmoothScrollTo(DefaultRowHeight, 0);
   end;
-
-  case aCode of
-    SB_TOP:        C := 0;
-    SB_BOTTOM:
-    begin
-      if not (goSmoothScroll in Options) then
-        TL := TL + 1;
-      C := TL;
-    end;
-      // Scrolls one line left / right
-    SB_LINERIGHT:  C := CTL + NextColWidth( FTopLeft.X, 1);
-    SB_LINELEFT:   C := CTL - NextColWidth( FTopLeft.X - 1, -1);
-      // Scrolls one page of lines up / down
-    SB_PAGERIGHT:  C := min(maxPos, CTL + AccumColWidths(FGCache.FullVisibleGrid.Left, FGCache.FullVisibleGrid.Right));
-    SB_PAGELEFT:   C := CTL - AccumColWidths(FGCache.FullVisibleGrid.Left, FGCache.FullVisibleGrid.Right);
-      // Scrolls to the current scroll bar position
-    SB_THUMBPOSITION:
-      C := aPos;
-    SB_THUMBTRACK:
-      if goThumbTracking in Options then
-        C := aPos
-      else
-        Exit;
-      // Ends scrolling
-    SB_ENDSCROLL:
-      Exit;
-  end;
-
-  {$Ifdef dbgScroll}
-  DebugLn('HSCROLL: C=%d TL=%d CTL=%d',[C,TL,CTL]);
-  {$Endif}
-
-  if C > TL then C := TL else
-  if C < 0 then C := 0;
-
-
-  {$Ifdef dbgScroll}
-  DebugLn('HSCROLL: Pos=%d FixedWidth=%d FTL.x=%d Col=%d',
-    [C,FGCache.FixedWidth, FTopLeft.X, Col]);
-  {$Endif}
-  ScrollBarPosition(SB_HORZ, C);
-  C:= C + FGCache.FixedWidth + GetBorderWidth;
-  {$Ifdef dbgScroll}
-  DebugLn('HSCROLL: NewPosition=%d',[C]);
-  {$Endif}
-  if UseRightToLeftAlignment then
-    C := FlipX(C);
-  //TL:=OffsetToColRow(True, False, C, FGCache.TLColOff);
-  if not OffsetToColRow(True, False, C, TL, FGCache.TLColOff) then begin
-    {$Ifdef dbgScroll}
-    DebugLn('HSCROLL: Offset=INVALID');
-    {$Endif}
-    exit;
-  end;
-  {$Ifdef dbgScroll}
-  DebugLn('HSCROLL: Offset=%d TL=%d TLColOff=%d',[C,TL,FGCache.TLColOff]);
-  {$Endif}
-
-
-  if TL<>FTopLeft.X then begin
-    TryScrollTo(Tl, FTopLeft.Y, False, False);
-  end else
-  if goSmoothScroll in Options then begin
-    CacheVisibleGrid;
-    R.Topleft := Point(FGCache.FixedWidth, 0);
-    R.BottomRight := Point(FGCache.ClientWidth, FGCache.ClientHeight);
-    if not (csCustomPaint in ControlState) then begin
-      if UseRightToLeftAlignment then begin
-        C := FlipX(R.Right);
-        R.Right := FlipX(R.Left)+ 1;
-        R.Left := C + 1;
-      end;
-      InvalidateRect(Handle, @R, false);
-    end;
-  end;
-
-  if EditorMode then
-    EditorPos;
 end;
 
 procedure TCustomGrid.WMVScroll(var message: TLMVScroll);
 var
-  C, TL, CTL: Integer;
-  R: TRect;
-
-  function NextRowHeight(aRow: Integer; Delta: Integer): integer;
-  begin
-    repeat
-      result := GetRowHeights(aRow);
-      aRow := aRow + Delta;
-    until (Result<>0) or (aRow>=RowCount) or (aRow<0);
-  end;
-
-  function AccumRowHeights(Start, Stop: Integer): Integer;
-  var
-    aRow, Incr: Integer;
-  begin
-    Result := 0;
-    if (Stop > Start) then Incr := 1 else Incr := -1;
-    aRow := Start;
-    repeat
-      Result := Result + GetRowHeights(aRow);
-      aRow := aRow + Incr;
-    until (aRow >= RowCount) or (aRow < 0) or (aRow = Stop + Incr);
-  end;
-
+  SP: TPoint;
 begin
-  {$IfDef dbgScroll}
-  DebugLn('VSCROLL: Code=%d Position=%d',[message.ScrollCode, message.Pos]);
-  {$Endif}
-
-  if not FGCache.ValidGrid or not HandleAllocated then
-    exit;
-
-  with FGCache do begin
-    TL:=  Max(integer(PtrUInt(AccumHeight[ MaxTopLeft.Y ])) - FixedHeight, GridHeight - ClientHeight);
-    CTL:= integer(PtrUInt(AccumHeight[ FTopLeft.Y ])) - FixedHeight + TLRowOff;
-  end;
+  SP := GetPxTopLeft;
 
   case message.ScrollCode of
-      // Scrolls to start / end of the text
-    SB_TOP:        C := 0;
-    SB_BOTTOM:
-    begin
-      if not (goSmoothScroll in Options) then
-        TL := TL + 1;
-      C := TL;
+    SB_THUMBPOSITION,
+    SB_THUMBTRACK: begin
+      TrySmoothScrollTo(0, message.Pos-SP.y);
+      message.Result := 0;
     end;
-      // Scrolls one line up / down
-    SB_LINEDOWN:   C := CTL + NextRowHeight(FTopleft.Y, 1);
-    SB_LINEUP:     C := CTL - NextRowHeight(FTopleft.Y-1, -1);
-      // Scrolls one page of lines up / down
-    SB_PAGEDOWN:   begin
-      {$IfDef dbgScroll}
-      debugln('VSCROLL: FGCache.FullVisibleGrid.Top    = ',DbgS(FGCache.FullVisibleGrid.Top));
-      debugln('VSCROLL: FGCache.FullVisibleGrid.Bottom = ',DbgS(FGCache.FullVisibleGrid.Bottom));
-      dbgout('VSCROLL: AccumRowHeights(',DbgS(FGCache.FullVisibleGrid.Top),',',DbgS(FGCache.FullVisibleGrid.Bottom));
-      debugln(') = ',DbgS(AccumRowHeights(FGCache.FullVisibleGrid.Top, FGCache.FullVisibleGrid.Bottom)));
-      debugln('FGCache.ClientHeight = ',DbgS(FGCache.ClientHeight));
-      {$EndIf}
-     C := CTL + AccumRowHeights(FGCache.FullVisibleGrid.Top, FGCache.FullVisibleGrid.Bottom);
-    end;
-    SB_PAGEUP:     C := CTL - AccumRowHeights(FGCache.FullVisibleGrid.Top, FGCache.FullVisibleGrid.Bottom);
-      // Scrolls to the current scroll bar position
-    SB_THUMBPOSITION:
-      C := Message.Pos;
-    SB_THUMBTRACK:
-      if goThumbTracking in Options then
-        C := Message.Pos
-      else
-        Exit;
-      // Ends scrolling
-    SB_ENDSCROLL: Exit;
+    SB_PAGEUP: TrySmoothScrollTo(0, -(ClientHeight-FGCache.FixedHeight));
+    SB_PAGEDOWN: TrySmoothScrollTo(0, ClientHeight-FGCache.FixedHeight);
+    SB_LINEUP: TrySmoothScrollTo(0, -DefaultRowHeight);
+    SB_LINEDOWN: TrySmoothScrollTo(0, DefaultRowHeight);
   end;
-
-  if C > TL then C := TL else
-  if C < 0 then C := 0;
-
-  {$Ifdef dbgScroll}
-  DebugLn('VSCROLL: Pos=%d FixedHeight=%d FTL.y=%d Row=%d',
-    [C,FGCache.FixedHeight, FTopLeft.Y, Row]);
-  {$Endif}
-  ScrollBarPosition(SB_VERT, C);
-  C:= C + FGCache.FixedHeight + GetBorderWidth;
-  {$Ifdef dbgScroll}
-  DebugLn('VSCROLL: NewPosition=%d',[C]);
-  {$Endif}
-  if not OffsetToColRow(False, False, C, TL, FGCache.TLRowOff) then begin
-    {$Ifdef dbgScroll}
-    DebugLn('VSCROLL: Offset=INVALID');
-    {$Endif}
-    exit;
-  end;
-  {$Ifdef dbgScroll}
-  DebugLn('VSCROLL: Offset=%d TL=%d TLRowOff=%d',[C,TL,FGCache.TLRowOff]);
-  {$Endif}
-
-  if not (goSmoothScroll in Options) then
-    FGCache.TLRowOff:=0;
-
-  if TL<>FTopLeft.Y then begin
-    TryScrollTo(FTopLeft.X, Tl, False, False);
-  end else
-  if goSmoothScroll in Options then begin
-    CacheVisibleGrid;
-    with FGCache do
-      R.TopLeft := Point(0,
-        TWSCustomGridClass(WidgetSetClass).InvalidateStartY(FixedHeight, TLRowOff));
-    R.BottomRight:=FGCache.MaxClientXY;
-    if FGcache.MaxClientXY.Y<FGCache.ClientHeight then
-      R.BottomRight.y := FGCache.ClientHeight;
-    if not (csCustomPaint in ControlState) then
-      InvalidateRect(Handle, @R, false);
-  end;
-
-  if EditorMode then
-    EditorPos;
 end;
 
 procedure TCustomGrid.WMKillFocus(var message: TLMKillFocus);
@@ -4789,16 +4605,21 @@ begin
   end;
 end;
 
-procedure TCustomGrid.TrySmoothScrollTo(aColDelta, aRowDelta: Integer);
+function TCustomGrid.TrySmoothScrollTo(aColDelta, aRowDelta: Integer): Boolean;
 var
-  OldTopLeft: TPoint;
+  OldTopLeft, OldTopLeftXY, NewTopLeftXY, OldOff: TPoint;
 begin
+  if (aColDelta=0) and (aRowDelta=0) then
+    Exit(True);
+
+  OldTopLeft := FTopLeft;
+  OldTopLeftXY := GetPxTopLeft;
+  OldOff := Point(FGCache.TLColOff, FGCache.TLRowOff);
+
   Inc(FGCache.TLColOff, aColDelta);
   Inc(FGCache.TLRowOff, aRowDelta);
 
-  OldTopLeft := FTopLeft;
-
-  while (FTopLeft.x < GCache.MaxTopLeft.x) and (FGCache.TLColOff > ColWidths[FTopLeft.x]) do
+  while (FTopLeft.x < GCache.MaxTopLeft.x) and (FGCache.TLColOff >= ColWidths[FTopLeft.x]) do
   begin
     Dec(FGCache.TLColOff, ColWidths[FTopLeft.x]);
     Inc(FTopLeft.x);
@@ -4809,7 +4630,7 @@ begin
     Inc(FGCache.TLColOff, ColWidths[FTopLeft.x]);
   end;
 
-  while (FTopLeft.y < GCache.MaxTopLeft.y) and (FGCache.TLRowOff > RowHeights[FTopLeft.y]) do
+  while (FTopLeft.y < GCache.MaxTopLeft.y) and (FGCache.TLRowOff >= RowHeights[FTopLeft.y]) do
   begin
     Dec(FGCache.TLRowOff, RowHeights[FTopLeft.y]);
     Inc(FTopLeft.y);
@@ -4822,16 +4643,30 @@ begin
 
   FGCache.TLColOff := Max(0, FGCache.TLColOff);
   FGCache.TLRowOff := Max(0, FGCache.TLRowOff);
-  if FTopLeft.x=GCache.MaxTopLeft.x then
+  if FTopLeft.x=FGCache.MaxTopLeft.x then
     FGCache.TLColOff := Min(FGCache.MaxTLOffset.x, FGCache.TLColOff);
-  if FTopLeft.y=GCache.MaxTopLeft.y then
+  if FTopLeft.y=FGCache.MaxTopLeft.y then
     FGCache.TLRowOff := Min(FGCache.MaxTLOffset.y, FGCache.TLRowOff);
 
-  // To-Do: move rect with ScrollBy_WS and invalidate only new (not scrolled) rects
+  if not(goSmoothScroll in Options) then
+  begin
+    FGCache.TLColOff := 0;
+    FGCache.TLRowOff := 0;
+  end;
+
   if not PointIgual(OldTopleft,FTopLeft) then
-    doTopleftChange(False)
-  else
-    VisualChange;
+    TopLeftChanged;
+
+  NewTopLeftXY := GetPxTopLeft;
+  ScrollBy(OldTopLeftXY.x-NewTopLeftXY.x, OldTopLeftXY.y-NewTopLeftXY.y);
+
+  //Result is false if this function failed due to a too high/wide cell (applicable only for goSmoothScroll)
+  Result :=
+       not PointIgual(OldTopLeftXY, NewTopLeftXY)
+    or ((NewTopLeftXY.x = 0) and (aColDelta < 0))
+    or ((FTopLeft.x = FGCache.MaxTopLeft.x) and (FGCache.TLColOff = FGCache.MaxTLOffset.x) and (aColDelta > 0))
+    or ((NewTopLeftXY.y = 0) and (aRowDelta < 0))
+    or ((FTopLeft.y = FGCache.MaxTopLeft.y) and (FGCache.TLRowOff = FGCache.MaxTLOffset.y) and (aRowDelta > 0));
 end;
 
 procedure TCustomGrid.SetGridLineWidth(const AValue: Integer);
@@ -7369,6 +7204,7 @@ begin
       else if FRowAutoInserted and (DRow=-1) then begin
         RowCount:=RowCount-1;
         FRowAutoInserted:=False;
+        ScrollToCell(Col, Row, True);
       end;
     end;
   end;
@@ -7442,7 +7278,8 @@ begin
   DebugLn('TCustomGrid.UpdateHorzScrollbar: Vis=%s Range=%d Page=%d aPos=%d',
     [dbgs(aVisible),aRange, aPage, aPos]);
   {$endif}
-  ScrollBarShow(SB_HORZ, aVisible);
+  if ScrollBarIsVisible(SB_HORZ)<>aVisible then
+    ScrollBarShow(SB_HORZ, aVisible);
   if aVisible then
     ScrollBarRange(SB_HORZ, aRange, aPage, aPos);
 end;
@@ -7454,7 +7291,8 @@ begin
   DebugLn('TCustomGrid.UpdateVertScrollbar: Vis=%s Range=%d Page=%d aPos=%d',
     [dbgs(aVisible),aRange, aPage, aPos]);
   {$endif}
-  ScrollBarShow(SB_VERT, aVisible);
+  if ScrollBarIsVisible(SB_Vert)<>aVisible then
+    ScrollBarShow(SB_VERT, aVisible);
   if aVisible then
     ScrollbarRange(SB_VERT, aRange, aPage, aPos );
 end;
@@ -10141,46 +9979,20 @@ end;
 procedure TCustomDrawGrid.GridMouseWheel(shift: TShiftState; Delta: Integer);
 var
   ScrollCols: boolean;
-  Target: Integer;
-
-  function IsTargetZero: boolean;
-  begin
-    if ScrollCols then
-      result := (ColWidths[Target]=0)
-    else
-      result := (RowHeights[Target]=0);
-  end;
-
-  function TLValue(const AIndex,AMin,AMax: Integer): Integer;
-  begin
-    Target := AIndex+Delta;
-    while InRange(Target,AMin,AMax) and IsTargetZero do begin
-      if Delta>0 then
-        Inc(Target)
-      else
-        Dec(Target);
-    end;
-    result := EnsureRange(Target, AMin, AMax);
-  end;
-
 begin
   if MouseWheelOption=mwCursor then
     inherited GridMouseWheel(shift, Delta)
   else
   if Delta<>0 then begin
     ScrollCols := (ssCtrl in shift);
-    if not (goSmoothScroll in Options) then
+    if ScrollCols then
     begin
-      if ScrollCols then
-        TryScrollTo(TLValue(LeftCol,FixedCols,GCache.MaxTopLeft.x), TopRow, True, False)
-      else
-        TryScrollTo(LeftCol, TLValue(TopRow,FixedRows,GCache.MaxTopLeft.y), False, True);
+      if not TrySmoothScrollTo(Delta*DefaultColWidth, 0) then
+        TryScrollTo(FTopLeft.x+Delta, FTopLeft.y, True, False);
     end else
     begin
-      if ScrollCols then
-        TrySmoothScrollTo(Delta*DefaultColWidth, 0)
-      else
-        TrySmoothScrollTo(0, Delta*DefaultRowHeight*Mouse.WheelScrollLines);
+      if not TrySmoothScrollTo(0, Delta*DefaultRowHeight*Mouse.WheelScrollLines) then
+        TryScrollTo(FTopLeft.x, FTopLeft.y+Delta, False, True); // scroll only 1 line if above scrolling failed (probably due to too high line)
     end;
     if EditorMode then
       EditorPos;
