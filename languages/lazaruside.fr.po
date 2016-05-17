@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-02-16 09:22+0100\n"
+"PO-Revision-Date: 2016-05-17 08:51+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.7\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
@@ -7293,7 +7293,7 @@ msgstr "Veuillez d'abord créer un projet !"
 
 #: lazarusidestrconsts.liscreatedebugandreleasemodes
 msgid "Create Debug and Release modes"
-msgstr ""
+msgstr "Créer les modes de débogage et de production finale"
 
 #: lazarusidestrconsts.liscreatedirectory
 msgid "Create directory?"
@@ -9913,7 +9913,7 @@ msgstr "Importer depuis le fichier"
 
 #: lazarusidestrconsts.lisimportingbuildmodesnotsupported
 msgid "Importing BuildModes is not supported for packages."
-msgstr ""
+msgstr "L'importation des modes de construction n'est pas autorisée pour les paquets."
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -11493,7 +11493,7 @@ msgstr "Créer Lazarus avec le profil : %s"
 
 #: lazarusidestrconsts.lismenubuildmanymodes
 msgid "Build many Modes ..."
-msgstr ""
+msgstr "Créer plusieurs modes..."
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM File in Editor"
