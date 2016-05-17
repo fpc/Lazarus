@@ -871,7 +871,7 @@ type
     procedure SetTopRow(const AValue: Integer);
     function  StartColSizing(const X, Y: Integer): boolean;
     procedure ChangeCursor(ACursor: Integer = MAXINT);
-    function  TrySmoothScrollTo(aColDelta, aRowDelta: Integer): Boolean;
+    function  TrySmoothScrollBy(aColDelta, aRowDelta: Integer): Boolean;
     procedure TryScrollTo(aCol,aRow: Integer; ClearColOff, ClearRowOff: Boolean);
     procedure UpdateCachedSizes;
     procedure UpdateSBVisibility;
@@ -4451,13 +4451,13 @@ begin
   case message.ScrollCode of
     SB_THUMBPOSITION,
     SB_THUMBTRACK: begin
-      TrySmoothScrollTo(message.Pos-SP.x, 0);
+      TrySmoothScrollBy(message.Pos-SP.x, 0);
       message.Result := 0;
     end;
-    SB_PAGEUP: TrySmoothScrollTo(-(ClientHeight-FGCache.FixedHeight), 0);
-    SB_PAGEDOWN: TrySmoothScrollTo(ClientHeight-FGCache.FixedHeight, 0);
-    SB_LINEUP: TrySmoothScrollTo(-DefaultRowHeight, 0);
-    SB_LINEDOWN: TrySmoothScrollTo(DefaultRowHeight, 0);
+    SB_PAGEUP: TrySmoothScrollBy(-(ClientHeight-FGCache.FixedHeight), 0);
+    SB_PAGEDOWN: TrySmoothScrollBy(ClientHeight-FGCache.FixedHeight, 0);
+    SB_LINEUP: TrySmoothScrollBy(-DefaultRowHeight, 0);
+    SB_LINEDOWN: TrySmoothScrollBy(DefaultRowHeight, 0);
   end;
 end;
 
@@ -4470,13 +4470,13 @@ begin
   case message.ScrollCode of
     SB_THUMBPOSITION,
     SB_THUMBTRACK: begin
-      TrySmoothScrollTo(0, message.Pos-SP.y);
+      TrySmoothScrollBy(0, message.Pos-SP.y);
       message.Result := 0;
     end;
-    SB_PAGEUP: TrySmoothScrollTo(0, -(ClientHeight-FGCache.FixedHeight));
-    SB_PAGEDOWN: TrySmoothScrollTo(0, ClientHeight-FGCache.FixedHeight);
-    SB_LINEUP: TrySmoothScrollTo(0, -DefaultRowHeight);
-    SB_LINEDOWN: TrySmoothScrollTo(0, DefaultRowHeight);
+    SB_PAGEUP: TrySmoothScrollBy(0, -(ClientHeight-FGCache.FixedHeight));
+    SB_PAGEDOWN: TrySmoothScrollBy(0, ClientHeight-FGCache.FixedHeight);
+    SB_LINEUP: TrySmoothScrollBy(0, -DefaultRowHeight);
+    SB_LINEDOWN: TrySmoothScrollBy(0, DefaultRowHeight);
   end;
 end;
 
@@ -4604,7 +4604,7 @@ begin
   end;
 end;
 
-function TCustomGrid.TrySmoothScrollTo(aColDelta, aRowDelta: Integer): Boolean;
+function TCustomGrid.TrySmoothScrollBy(aColDelta, aRowDelta: Integer): Boolean;
 var
   OldTopLeft, OldTopLeftXY, NewTopLeftXY, OldOff: TPoint;
 begin
@@ -9986,11 +9986,11 @@ begin
     ScrollCols := (ssCtrl in shift);
     if ScrollCols then
     begin
-      if not TrySmoothScrollTo(Delta*DefaultColWidth, 0) then
+      if not TrySmoothScrollBy(Delta*DefaultColWidth, 0) then
         TryScrollTo(FTopLeft.x+Delta, FTopLeft.y, True, False);
     end else
     begin
-      if not TrySmoothScrollTo(0, Delta*DefaultRowHeight*Mouse.WheelScrollLines) then
+      if not TrySmoothScrollBy(0, Delta*DefaultRowHeight*Mouse.WheelScrollLines) then
         TryScrollTo(FTopLeft.x, FTopLeft.y+Delta, False, True); // scroll only 1 line if above scrolling failed (probably due to too high line)
     end;
     if EditorMode then
