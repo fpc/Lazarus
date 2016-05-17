@@ -1044,7 +1044,7 @@ type
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
-    function  MoveExtend(Relative: Boolean; DCol, DRow: Integer; ForceFullyVisible: Boolean): Boolean;
+    function  MoveExtend(Relative: Boolean; DCol, DRow: Integer; ForceFullyVisible: Boolean = True): Boolean;
     function  MoveNextAuto(const Inverse: boolean): boolean;
     function  MoveNextSelectable(Relative:Boolean; DCol, DRow: Integer): Boolean;
     procedure MoveSelection; virtual;
