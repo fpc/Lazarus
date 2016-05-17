@@ -3254,25 +3254,24 @@ end;
 
 procedure TCustomGrid.ScrollBy(DeltaX, DeltaY: Integer);
 var
-  ScrollArea, ClipArea: TRect;
+  ClipArea: TRect;
   ScrollFlags: Integer;
 begin
   if (DeltaX=0) and (DeltaY=0) then
     Exit;
 
   ScrollFlags := SW_INVALIDATE or SW_ERASE;
-  ScrollArea := ClientRect;
   if DeltaX<>0 then
   begin
     ClipArea := ClientRect;
     Inc(ClipArea.Left, FGCache.FixedWidth);
-    ScrollWindowEx(Handle, DeltaX, 0, @ScrollArea, @ClipArea, 0, nil, ScrollFlags);
+    ScrollWindowEx(Handle, DeltaX, 0, @ClipArea, @ClipArea, 0, nil, ScrollFlags);
   end;
   if DeltaY<>0 then
   begin
     ClipArea := ClientRect;
     Inc(ClipArea.Top, FGCache.FixedHeight);
-    ScrollWindowEx(Handle, 0, DeltaY, @ScrollArea, @ClipArea, 0, nil, ScrollFlags);
+    ScrollWindowEx(Handle, 0, DeltaY, @ClipArea, @ClipArea, 0, nil, ScrollFlags);
   end;
 
   CacheVisibleGrid;
