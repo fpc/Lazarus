@@ -34,15 +34,22 @@ begin
     crIBeam       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.IBeamCursor));
     crSizeNS,
     crVSplit      : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeUpDownCursor));
+    crSizeNESW,
+    crSizeNWSE,
     crSizeWE,
     crHSplit      : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeLeftRightCursor));
     crSizeN       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeUpCursor));
+    crSizeNW,
+    crSizeSW,
     crSizeW       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeLeftCursor));
+    crSizeNE,
+    crSizeSE,
     crSizeE       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeRightCursor));
     crSizeS       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeDownCursor));
     crNo,
     crNoDrop      : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.operationNotAllowedCursor));
     crHandPoint   : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.pointingHandCursor));
+    //crHourGlass,
     crDrag        : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.dragCopyCursor));
   else
     // We answer with Result=0 for crHourGlass because Cocoa does not provide any API
