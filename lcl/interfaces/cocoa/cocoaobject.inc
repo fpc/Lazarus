@@ -570,6 +570,11 @@ begin
   DataType := ADataType;
 end;
 
+destructor TCocoaClipboardData.Destroy;
+begin
+  CocoaFormat.release;
+end;
+
 procedure TAppDelegate.application_openFiles(sender: NSApplication; filenames: NSArray);
 var
   lFiles: array of string;

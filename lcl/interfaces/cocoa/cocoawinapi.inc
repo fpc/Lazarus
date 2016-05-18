@@ -399,11 +399,13 @@ begin
   'text/plain':
   begin
     lNSStr := NSPasteboardTypeString;
+    lNSStr.retain;
     lDataType := ccdtText;
   end;
   'image/png':
   begin
     lNSStr := NSPasteboardTypePNG;
+    lNSStr.retain;
     lDataType := ccdtCocoaStandard;
   end;
   'image/bmp':
