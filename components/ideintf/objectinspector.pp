@@ -1406,7 +1406,10 @@ procedure TOICustomPropertyGrid.SetRowValue(CheckFocus: boolean);
       tkSet:
         Result := Editor.GetSetValueAt(Index,true);
       tkVariant:
-        Result := Editor.GetVarValueAt(Index);
+        if Editor.GetVarValueAt(Index) <> Null then
+          Result := Editor.GetVarValueAt(Index)
+        else
+          Result := '(Null)';
     end;
   end;
 

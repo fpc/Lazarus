@@ -33,8 +33,9 @@ uses
   {$IFDEF Windows}
   Windows,
   {$ENDIF}
-  Classes, SysUtils, Types, RtlConsts, FPCAdds, TypInfo, FileUtil, DynQueue,
-  LCLProc, LCLStrConsts, LazConfigStorage, LazUTF8, LazUTF8Classes;
+  Classes, SysUtils, Types, RtlConsts, TypInfo, variants,
+  DynQueue, LCLProc, LCLStrConsts,
+  LazConfigStorage, FPCAdds, LazUTF8, LazUTF8Classes;
 
 {$DEFINE UseLRS}
 {$DEFINE UseRES}
@@ -295,6 +296,7 @@ type
     procedure WriteString(const Value: String); override;
     procedure WriteWideString(const Value: WideString); override;
     procedure WriteUnicodeString(const Value: UnicodeString); override;
+    procedure WriteVariant(const Value: Variant); override;
 
     property WriteEmptyInheritedChilds: boolean read FWriteEmptyInheritedChilds write FWriteEmptyInheritedChilds;
     property Writer: TWriter read FWriter write FWriter;
@@ -2496,15 +2498,15 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
           end;
         vaSingle: begin
             ASingle:=ReadLRSSingle(Input);
-            OutLn(FloatToStr(ASingle));
+            OutLn(FloatToStr(ASingle) + 's');
           end;
         vaDate: begin
             ADate:=TDateTime(ReadLRSDouble(Input));
-            OutLn(FloatToStr(ADate));
+            OutLn(FloatToStr(ADate) + 'd');
           end;
         vaCurrency: begin
             ACurrency:=ReadLRSCurrency(Input);
-            OutLn(FloatToStr(ACurrency));
+            OutLn(FloatToStr(ACurrency * 10000) + 'c');
           end;
         vaWString,vaUString: begin
             AWideString:=ReadLRSWideString(Input);
@@ -2804,9 +2806,26 @@ var
         end;
       toFloat:
         begin
-          Output.WriteByte(Ord(vaExtended));
           flt := Parser.TokenFloat;
-          WriteLRSExtended(Output,flt);
+          case parser.FloatType of
+            's': begin
+              Output.WriteByte(Ord(vaSingle));
+              WriteLRSSingle(Output,flt);
+            end;
+            'd': begin
+              Output.WriteByte(Ord(vaDate));
+              WriteLRSDouble(Output,flt);
+            end;
+            'c': begin
+              Output.WriteByte(Ord(vaCurrency));
+              WriteLRSCurrency(Output,flt/10000);
+            end;
+            else
+            begin
+              Output.WriteByte(Ord(vaExtended));
+              WriteLRSExtended(Output,flt);
+            end;
+          end;
           ParserNextToken;
         end;
       toString:
@@ -4975,6 +4994,30 @@ begin
   i := Length(Value);
   WriteIntegerContent(i);
   WriteWideStringContent(Value);
+end;
+
+procedure TLRSObjectWriter.WriteVariant(const Value: Variant);
+begin
+  case VarType(Value) of
+    varnull:
+      WriteValue(vaNull);
+    varsmallint, varinteger, varshortint, varint64, varbyte, varword, varlongword, varqword:
+      WriteInteger(Value);
+    varsingle:
+      WriteSingle(Value);
+    vardouble:
+      WriteFloat(Value);
+    vardate:
+      WriteDate(Value);
+    varcurrency:
+      WriteCurrency(Value);
+    varolestr, varstring:
+      WriteString(Value);
+    varboolean:
+      WriteBoolean(Value);
+    else
+      WriteValue(vaNil);
+  end;
 end;
 
 { TLRPositionLinks }

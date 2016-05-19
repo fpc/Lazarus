@@ -23,7 +23,7 @@ interface
 
 uses
   // RTL / FCL
-  Classes, TypInfo, SysUtils, types, RtlConsts,
+  Classes, TypInfo, SysUtils, types, RtlConsts, variants,
   // LCL
   LCLType, LCLIntf, LCLProc, Forms, Controls, GraphType, ButtonPanel, Graphics,
   StdCtrls, Buttons, Menus, ExtCtrls, ComCtrls, Dialogs, EditBtn, Grids, ValEdit,
@@ -2915,7 +2915,8 @@ begin
   Changed:=false;
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do
-      Changed:=Changed or (GetVariantProp(Instance,PropInfo)<>NewValue);
+      Changed:=Changed or (GetVariantProp(Instance,PropInfo)<>NewValue)
+        or (VarType(GetVariantProp(Instance,PropInfo))<>VarType(NewValue));
   if Changed then
     for I:=0 to FPropCount-1 do
       with FPropList^[I] do begin
@@ -4980,6 +4981,111 @@ begin
   SetFloatValue(DT);
 end;
 
+const
+  VarTypeStr: array[0..16] of record
+    VarType: Word;
+    Name: String;
+  end = (
+    (VarType: varempty; Name: 'Unassigned'),
+    (VarType: varnull; Name: 'Null'),
+    (VarType: varsmallint; Name: 'SmallInt'),
+    (VarType: varinteger; Name: 'Integer'),
+    (VarType: varsingle; Name: 'Single'),
+    (VarType: vardouble; Name: 'Double'),
+    (VarType: varcurrency; Name: 'Currency'),
+    (VarType: vardate; Name: 'Date'),
+    (VarType: varolestr; Name: 'OleStr'),
+    (VarType: varboolean; Name: 'Boolean'),
+    (VarType: varshortint; Name: 'ShortInt'),
+    (VarType: varbyte; Name: 'Byte'),
+    (VarType: varword; Name: 'Word'),
+    (VarType: varlongword; Name: 'LongWord'),
+    (VarType: varint64; Name: 'Int64'),
+    (VarType: varqword; Name: 'QWord'),
+    (VarType: varstring; Name: 'String')
+  );
+
+function GetVarTypeName(AVarType: tvartype): String;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := Low(VarTypeStr) to High(VarTypeStr) do
+    if VarTypeStr[I].VarType = AVarType then
+      Exit(VarTypeStr[I].Name);
+end;
+
+function GetVarTypeByName(AName: String): tvartype;
+var
+  I: Integer;
+begin
+  Result := varempty;
+  for I := Low(VarTypeStr) to High(VarTypeStr) do
+    if UpperCase(VarTypeStr[I].Name) = UpperCase(AName) then
+      Exit(VarTypeStr[I].VarType);
+end;
+
+type
+
+  { TVarTypeProperty }
+
+  TVarTypeProperty = class(TNestedProperty)
+    function GetName: shortstring; override;
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+    function GetValue: ansistring; override;
+    procedure SetValue(const NewValue: ansistring); override;
+  end;
+
+{ TVarTypeProperty }
+
+function TVarTypeProperty.GetName: shortstring;
+begin
+  Result := 'Type';
+end;
+
+function TVarTypeProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paValueList];
+end;
+
+procedure TVarTypeProperty.GetValues(Proc: TGetStrProc);
+var
+  I: Integer;
+begin
+  for I := Low(VarTypeStr) to High(VarTypeStr) do
+    Proc(VarTypeStr[I].Name);
+end;
+
+function TVarTypeProperty.GetValue: ansistring;
+begin
+  Result := GetVarTypeName(VarType(GetVarValue));
+  if Result = '' then
+    Result := 'Unknown'; // Is there resourcestring for that?
+end;
+
+procedure TVarTypeProperty.SetValue(const NewValue: ansistring);
+var
+  V: Variant;
+  VT: tvartype;
+begin
+  V := GetVarValue;
+  VT := GetVarTypeByName(NewValue);
+  case VT of
+    varempty:
+      VarClear(V);
+    varnull:
+      V := Null;
+    else
+      try
+        VarCast(V, V, VT);
+      except
+        VarClear(V);
+      end;
+  end;
+  SetVarValue(V);
+end;
+
 { TVariantPropertyEditor }
 
 function TVariantPropertyEditor.GetAttributes: TPropertyAttributes;
@@ -4989,16 +5095,27 @@ end;
 
 procedure TVariantPropertyEditor.GetProperties(Proc:TGetPropEditProc);
 begin
-
+  Proc(TVarTypeProperty.Create(Self));
 end;
 
 function TVariantPropertyEditor.GetValue: string;
 begin
-  Result:='';
+  if VarType(GetVarValue) <> varnull then
+    Result := VarToStrDef(GetVarValue, 'Unknown') // Is there resourcestring for that?
+  else
+    Result := '(Null)';
 end;
 
 procedure TVariantPropertyEditor.SetValue(const Value: string);
+var
+  V: Variant;
 begin
+  try
+    VarCast(V, Value, VarType(GetVarValue));
+  except
+    V := Value;
+  end;
+  SetVarValue(V);
 end;
 
 
@@ -7443,6 +7560,8 @@ begin
   RegisterPropertyEditor(TypeInfo(QWordBool), nil, '', TBoolPropertyEditor);
 
   RegisterPropertyEditor(TypeInfo(IInterface), nil, '', TInterfacePropertyEditor);
+
+  RegisterPropertyEditor(TypeInfo(Variant), nil, '', TVariantPropertyEditor);
 end;
 
 procedure FinalPropEdits;
