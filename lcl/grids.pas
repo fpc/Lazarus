@@ -7154,11 +7154,8 @@ var
   aCol,aRow: Integer;
 begin
   Result := GetDeltaMoveNext(Inverse, ACol, ARow, FAutoAdvance);
-  if result then begin
-    FGCache.TLColOff:=0;
-    FGCache.TLRowOff:=0;
+  if Result then
     MoveNextSelectable(true, aCol, aRow);
-  end;
 end;
 
 function TCustomGrid.MoveNextSelectable(Relative: Boolean; DCol, DRow: Integer
