@@ -817,6 +817,12 @@ begin
             SameText(AEncoding, 'ISO8859-1');
 end;
 
+function Is_UTF8(const AEncoding: String): Boolean;
+begin
+  Result := SameText(AEncoding, 'UTF-8') or
+            SameText(AEncoding, 'UTF8');
+end;
+
 procedure BufAllocate(var ABuffer: TDOMCharBuf; ALength: Integer);
 begin
   ABuffer.MaxLength := ALength;
@@ -1216,7 +1222,7 @@ var
 begin
   Result := True;
   {$IFDEF UseWideString}
-  if (FFixedUCS2 = '') and SameText(AEncoding, 'UTF-8') then
+  if (FFixedUCS2 = '') and Is_UTF8(AEncoding) then
     Exit;
   if FFixedUCS2 <> '' then
   begin
@@ -1228,7 +1234,7 @@ begin
   // TODO: must fail when a byte-based stream is labeled as word-based.
   // see rmt-e2e-61, it now fails but for a completely different reason.
   {$ELSE}
-  if SameText(AEncoding, 'UTF-8') then
+  if IS_UTF8(AEncoding) then
     Exit;
   {$ENDIF}
   FillChar(NewDecoder{%H-}, sizeof(TDecoder), 0);
