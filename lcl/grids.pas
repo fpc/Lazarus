@@ -4451,7 +4451,8 @@ begin
   case message.ScrollCode of
     SB_THUMBPOSITION,
     SB_THUMBTRACK: begin
-      TrySmoothScrollBy(message.Pos-SP.x, 0);
+      if (message.ScrollCode=SB_THUMBPOSITION) or (goThumbTracking in Options) then
+        TrySmoothScrollBy(message.Pos-SP.x, 0);
       message.Result := 0;
     end;
     SB_PAGEUP: TrySmoothScrollBy(-(ClientHeight-FGCache.FixedHeight), 0);
@@ -4459,6 +4460,9 @@ begin
     SB_LINEUP: TrySmoothScrollBy(-DefaultRowHeight, 0);
     SB_LINEDOWN: TrySmoothScrollBy(DefaultRowHeight, 0);
   end;
+
+  if EditorMode then
+    EditorPos;
 end;
 
 procedure TCustomGrid.WMVScroll(var message: TLMVScroll);
@@ -4470,7 +4474,8 @@ begin
   case message.ScrollCode of
     SB_THUMBPOSITION,
     SB_THUMBTRACK: begin
-      TrySmoothScrollBy(0, message.Pos-SP.y);
+      if (message.ScrollCode=SB_THUMBPOSITION) or (goThumbTracking in Options) then
+        TrySmoothScrollBy(0, message.Pos-SP.y);
       message.Result := 0;
     end;
     SB_PAGEUP: TrySmoothScrollBy(0, -(ClientHeight-FGCache.FixedHeight));
@@ -4478,6 +4483,9 @@ begin
     SB_LINEUP: TrySmoothScrollBy(0, -DefaultRowHeight);
     SB_LINEDOWN: TrySmoothScrollBy(0, DefaultRowHeight);
   end;
+
+  if EditorMode then
+    EditorPos;
 end;
 
 procedure TCustomGrid.WMKillFocus(var message: TLMKillFocus);
@@ -4659,7 +4667,7 @@ begin
   NewTopLeftXY := GetPxTopLeft;
   ScrollBy(OldTopLeftXY.x-NewTopLeftXY.x, OldTopLeftXY.y-NewTopLeftXY.y);
 
-  //Result is false if this function failed due to a too high/wide cell (applicable only for goSmoothScroll)
+  //Result is false if this function failed due to a too high/wide cell (applicable only if goSmoothScroll not used)
   Result :=
        not PointIgual(OldTopLeftXY, NewTopLeftXY)
     or ((NewTopLeftXY.x = 0) and (aColDelta < 0))
