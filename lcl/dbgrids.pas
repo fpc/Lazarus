@@ -683,7 +683,7 @@ begin
         end;
       end;
     end; // if HasTitle ...
-  end; // if (Field=nil) or (Field.DisplayWidth=0) 
+  end; // if (Field=nil) or (Field.DisplayWidth=0)
   {$ifdef dbgDBGridExtra}
   DebugLnExit('CalcColumnFieldWidth DONE result=%d', [result]);
   {$endif}
@@ -1223,7 +1223,7 @@ begin
 
     if (edField<>nil) and (edField = SelField) then begin
       {$ifdef dbgDBGrid}
-      DebugLnEnter('%s.UpdateData INIT Field[%s(%s)]=%s', 
+      DebugLnEnter('%s.UpdateData INIT Field[%s(%s)]=%s',
                    [ClassName, edField.Fieldname ,edField.AsString, FTempText]);
       {$endif}
 
@@ -1477,7 +1477,7 @@ var
   C: TColumn;
 begin
   Result := '';
-  if (ARow < FixedRows) then 
+  if (ARow < FixedRows) then
     exit;
   if Assigned(FOnGetCellHint) then begin
     C := ColumnFromGridColumn(ACol) as TColumn;
@@ -1491,7 +1491,7 @@ var
   F: TField;
 begin
   Result := '';
-  if ARow < FixedRows then 
+  if ARow < FixedRows then
     exit;
   F := GetFieldFromGridColumn(ACol);
   if (F <> nil) then
@@ -3584,6 +3584,7 @@ begin
       else
         aPos := FDataLink.DataSet.RecNo - 1; // RecNo is 1 based
       if aPos<0 then aPos:=0;
+      if aRange=0 then aRange:=1; // there's always 1 (new) row
     end else begin
       aRange := 6;
       aPage := 2;
