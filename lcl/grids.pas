@@ -1815,7 +1815,7 @@ begin
   Result := P;
   Result.Y := BidiFlipX(Result.Y, ParentRect, Flip);
 end;
-  
+
 function PointIgual(const P1,P2: TPoint): Boolean;
 begin
   result:=(P1.X=P2.X)and(P1.Y=P2.Y);
@@ -3212,16 +3212,10 @@ function TCustomGrid.ScrollBarIsVisible(Which: Integer): Boolean;
 begin
   Result:=false;
   if HandleAllocated then begin
-    {$IFNDEF MSWINDOWS}
-    Result:= getScrollbarVisible(handle, Which);
-    {$ELSE}
-    // Is up to the widgetset to implement GetScrollbarvisible
-    // FVSbVisible, FHSbVisible are supposed to be update (if used ScrolLBarShow)
-    // how can we know if GetScrollbarVisible is indeed implemented?....
+    // Don't use GetScrollbarvisible from the widgetset - it sends WM_PAINT message (Gtk2). Issue #30160
     if Which = SB_VERT then result := FVSbVisible else
     if Which = SB_HORZ then result := FHsbVisible else
     if Which = SB_BOTH then result := FHsbVisible and FVsbVisible;
-    {$ENDIF}
   end;
 end;
 
@@ -3792,7 +3786,7 @@ var
   w: Integer;
   gds: TGridDrawState;
 begin
-  if ([goCellHints, goTruncCellHints]*Options = []) then 
+  if ([goCellHints, goTruncCellHints]*Options = []) then
     exit;
 
   cell := MouseToCell(APoint);
