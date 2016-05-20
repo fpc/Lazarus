@@ -56,6 +56,7 @@ type
     procedure Polyline(
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
+    procedure PutPixel(AX, AY: Integer; AColor: TChartColor); override;
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
       AStartAngle16Deg, AAngleLength16Deg: Integer);
