@@ -73,6 +73,13 @@ begin
   inherited Destroy;
 end;
 
+function TPage.GetPageIndex: Integer;
+begin
+  if Parent is TNotebook then
+    Result := TNotebook(Parent).IndexOf(Self)
+  else
+    Result := -1;
+end;
 
 
 // included by extctrls.pp
