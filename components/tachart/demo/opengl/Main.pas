@@ -20,6 +20,7 @@ type
     OpenGLControl1: TOpenGLControl;
     RandomChartSource1: TRandomChartSource;
     procedure Chart1AfterPaint(ASender: TChart);
+    procedure FormCreate(Sender: TObject);
     procedure OpenGLControl1Paint(Sender: TObject);
   end;
 
@@ -31,11 +32,25 @@ implementation
 {$R *.lfm}
 
 uses
-  TADrawUtils, TADrawerOpenGL, TADrawerCanvas;
+  glut, TADrawUtils, TADrawerOpenGL in '../../tadraweropengl.pas', TADrawerCanvas;
 
 procedure TForm1.Chart1AfterPaint(ASender: TChart);
 begin
   OpenGLControl1.Invalidate;
+end;
+
+{ Initialization of glut library, needed for text output }
+procedure TForm1.FormCreate(Sender: TObject);
+var
+  CmdCount : Integer;
+  Cmd : Array of Pchar;
+  I: Integer;
+begin
+  CmdCount := Paramcount+1;
+  SetLength(Cmd,CmdCount);
+  for I := 0 to CmdCount - 1 do
+     Cmd[I] := PChar(ParamStr(I));
+  glutInit (@CmdCount,@Cmd);
 end;
 
 procedure TForm1.OpenGLControl1Paint(Sender: TObject);

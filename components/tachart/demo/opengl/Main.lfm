@@ -6,6 +6,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 319
   ClientWidth = 688
+  OnCreate = FormCreate
   LCLVersion = '1.7'
   object OpenGLControl1: TOpenGLControl
     Left = 344
