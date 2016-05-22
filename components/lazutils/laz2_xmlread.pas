@@ -1156,7 +1156,7 @@ begin
       DecodingError('Invalid character in input stream')
     else
     begin
-      Inc(FCharCount, rslt);
+      Inc(FCharCount, Cardinal(rslt));
       FReader.CheckMaxChars;
     end;
   until False;
