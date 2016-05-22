@@ -308,13 +308,7 @@ begin
     if NewSelection.IsEqual(FComponentList.Selection) then
       Exit;
     FComponentList.Selection.Assign(NewSelection);
-    if (NewSelection.Count=1) and
-       (NewSelection[0] is TCustomPage) and
-       (TCustomPage(NewSelection[0]).Parent is TCustomTabControl) then
-    begin
-      TCustomTabControl(TCustomPage(NewSelection[0]).Parent).PageIndex :=
-        TCustomPage(NewSelection[0]).PageIndex;
-    end;
+
     inherited DoSelectionChanged;
   finally
     NewSelection.Free;

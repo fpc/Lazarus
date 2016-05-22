@@ -742,6 +742,7 @@ type
     FRefreshingSelectionCount: integer;
     FOnAutoShow: TNotifyEvent;
     FLastActiveRowName: String;
+    procedure DefSelectionVisibleInDesigner;
     function GetComponentPanelHeight: integer;
     function GetInfoBoxHeight: integer;
     procedure SetEnableHookGetSelection(AValue: boolean);
@@ -4818,6 +4819,7 @@ begin
   if FSelection.IsEqual(ComponentTree.Selection) then exit;
   FSelection.Assign(ComponentTree.Selection);
   RefreshSelection;
+  DefSelectionVisibleInDesigner;
   if Assigned(FOnSelectPersistentsInOI) then
     FOnSelectPersistentsInOI(Self);
 end;
@@ -5218,6 +5220,36 @@ begin
     Align := alTop;
     Top := ComponentPanelHeight;
     Height := 5;
+  end;
+end;
+
+procedure TObjectInspectorDlg.DefSelectionVisibleInDesigner;
+  procedure ShowPage(const aPage: TTabSheet);
+  begin
+    if aPage.Parent is TPageControl then
+      TPageControl(aPage.Parent).PageIndex := aPage.PageIndex;
+  end;
+  procedure ShowPage(const aPage: TPage);
+  begin
+    if aPage.Parent is TNotebook then
+      TNotebook(aPage.Parent).PageIndex := aPage.PageIndex;
+  end;
+var
+  Cnt: TControl;
+begin
+  if (Selection.Count = 0) or (Selection[0] = nil) or not(Selection[0] is TControl) then
+    Exit;
+
+  Cnt := TControl(Selection[0]);
+  while Cnt<>nil do
+  begin
+    if Cnt is TTabSheet then
+      ShowPage(TTabSheet(Cnt))
+    else
+    if Cnt is TPage then
+      ShowPage(TPage(Cnt));
+
+    Cnt := Cnt.Parent;
   end;
 end;
 
