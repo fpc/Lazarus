@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, LCLProc, AvgLvlTree, Dialogs, Controls, ComCtrls,
-  Graphics, ExtCtrls,
+  Graphics, ExtCtrls, LMessages,
   ObjInspStrConsts, PropEdits, PropEditUtils;
   
 type
@@ -286,6 +286,7 @@ var
   ANode: TTreeNode;
   APersistent: TPersistent;
   NewSelection: TPersistentSelectionList;
+  Msg: TLMessage;
 begin
   NewSelection := TPersistentSelectionList.Create;
   try
@@ -308,13 +309,26 @@ begin
     if NewSelection.IsEqual(FComponentList.Selection) then
       Exit;
     FComponentList.Selection.Assign(NewSelection);
-    if (NewSelection.Count=1) and
-       (NewSelection[0] is TCustomPage) and
-       (TCustomPage(NewSelection[0]).Parent is TCustomTabControl) then
+    if (NewSelection.Count=1) then
     begin
-      TCustomTabControl(TCustomPage(NewSelection[0]).Parent).PageIndex :=
-        TCustomPage(NewSelection[0]).PageIndex;
+      ANode := GetFirstMultiSelected;
+      FillChar(Msg{%H-}, SizeOf(Msg), 0);
+      Msg.msg := CM_OBJECTINSPECTORSELECT;
+      while Assigned(ANode) do
+      begin
+        APersistent := TPersistent(ANode.Data);
+        if Assigned(APersistent) then
+        begin
+          if APersistent is TControl then
+            TControl(APersistent).Perform(Msg.msg, Msg.wParam, Msg.lParam)
+          else // support TComponent(s) as well
+            APersistent.Dispatch(Msg);
+        end;
+        Msg.lParam := 1; // see comment at CM_OBJECTINSPECTORSELECT for more info
+        ANode := ANode.Parent;
+      end;
     end;
+
     inherited DoSelectionChanged;
   finally
     NewSelection.Free;

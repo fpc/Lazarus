@@ -42,11 +42,15 @@ type
   TPage = class(TCustomControl)
   private
     FOnBeforeShow: TBeforeShowPageEvent;
+    function GetPageIndex: Integer;
   protected
+    procedure CMObjectInspectorSelect(var Message: TLMessage); message CM_OBJECTINSPECTORSELECT;
     procedure SetParent(AParent: TWinControl); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+  public
+    property PageIndex: Integer read GetPageIndex;
   published
     // Lazarus-specific TPage events
     // OnBeforeShow occurs before a page is displayed, so that
@@ -128,8 +132,8 @@ type
 {    function TabIndexAtClientPos(ClientPos: TPoint): integer;
     function TabRect(AIndex: Integer): TRect;
     function GetImageIndex(ThePageIndex: Integer): Integer; virtual;
-    function IndexOf(APage: TCustomPage): integer;
     function CustomPage(Index: integer): TCustomPage;}
+    function IndexOf(APage: TPage): integer;
   public
     property ActivePage: String read GetActivePage;// write SetActivePage; // should not be published because the read can raise an exception
     property ActivePageComponent: TPage read GetActivePageComponent;// write SetActivePage; // should not be published because the read can raise an exception

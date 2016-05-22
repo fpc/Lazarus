@@ -102,8 +102,9 @@ const
   CM_TABLETOPTIONSCHANGED        = CM_BASE + 87 unimplemented;
   CM_PARENTTABLETOPTIONSCHANGED  = CM_BASE + 88 unimplemented;
   // LCL only
-  CM_APPSHOWBTNGLYPHCHANGED  = CM_BASE + CM_LCLOFFSET + 68;
-  CM_APPSHOWMENUGLYPHCHANGED = CM_BASE + CM_LCLOFFSET + 69;
+  CM_APPSHOWBTNGLYPHCHANGED      = CM_BASE + CM_LCLOFFSET + 68;
+  CM_APPSHOWMENUGLYPHCHANGED     = CM_BASE + CM_LCLOFFSET + 69;
+  CM_OBJECTINSPECTORSELECT       = CM_BASE + CM_LCLOFFSET + 70; // sent when this or a child node is selected in the OI (LParam = 0 for this node, LParam = 1 for a child node)
 
   CN_BASE              = $BC00;
   CN_CHARTOITEM        = CN_BASE + LM_CHARTOITEM;
