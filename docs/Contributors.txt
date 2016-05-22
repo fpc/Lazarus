@@ -129,6 +129,7 @@ Ludo Brands
 Luis R. Hilario B.
 Luis Rodrigues made TChart and misc patches
 Luiz Americo
+Maciej Izak
 Marc Fokker
 Marc Geldon
 Marc Weustink
