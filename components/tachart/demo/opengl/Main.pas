@@ -31,7 +31,7 @@ implementation
 {$R *.lfm}
 
 uses
-  TADrawUtils, TADrawerOpenGL in '..\..\TADrawerOpenGL.pas', TADrawerCanvas;
+  TADrawUtils, TADrawerOpenGL, TADrawerCanvas;
 
 procedure TForm1.Chart1AfterPaint(ASender: TChart);
 begin
