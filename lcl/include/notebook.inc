@@ -154,15 +154,6 @@ begin
   Result := FPageIndex;
 end;
 
-function TNotebook.IndexOf(APage: TPage): integer;
-begin
-  for Result := 0 to PageCount-1 do
-    if Page[Result] = APage then
-      Exit;
-
-  Result := -1;
-end;
-
 procedure TNotebook.InsertPage(APage: TPage; Index: Integer);
 begin
   if FPageList.IndexOf(APage) >= 0 then Exit;

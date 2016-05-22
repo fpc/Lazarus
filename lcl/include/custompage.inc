@@ -195,12 +195,6 @@ begin
     FOnHide(Self);
 end;
 
-procedure TCustomPage.CMObjectInspectorSelect(var Message: TLMessage);
-begin
-  if (Parent is TCustomTabControl) and (csDesigning in ComponentState) then
-    TCustomTabControl(Parent).PageIndex := PageIndex;
-end;
-
 procedure TCustomPage.DoShow;
 begin
   if Assigned(FOnShow) then

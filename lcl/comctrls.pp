@@ -244,7 +244,6 @@ type
     procedure SetParent(AParent: TWinControl); override;
     property Flags: TPageFlags read FFlags write FFlags;
     procedure CMHitTest(var Message: TLMNCHITTEST); message CM_HITTEST;
-    procedure CMObjectInspectorSelect(var Message: TLMessage); message CM_OBJECTINSPECTORSELECT;
     procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
     function GetPageIndex: integer; virtual;
     procedure SetPageIndex(AValue: Integer); virtual;
