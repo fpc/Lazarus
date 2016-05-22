@@ -12,13 +12,12 @@ uses
   TASeries, TASeriesEditor, TASubcomponentsEditor, TATools, TATransformations, 
   TATypes, TADrawUtils, TAMultiSeries, TALegend, TAStyles, TAFuncSeries, 
   TALegendPanel, TARadialSeries, TACustomSource, TAGeometry, TANavigation, 
-  TADrawerCanvas, TADrawerOpenGL, TADrawerSVG, TAIntervalSources, 
-  TAChartAxisUtils, TAChartListbox, TAEnumerators, TADataPointsEditor, 
-  TAChartExtentLink, TAToolEditors, TAMath, TAChartImageList, TAChartTeeChart, 
-  TADataTools, TAAnimatedSource, TATextElements, TAAxisSource, 
-  TASeriesPropEditors, TACustomFuncSeries, TAFitUtils, TAGUIConnector, 
-  TADiagram, TADiagramDrawing, TADiagramLayout, TAChartStrConsts, 
-  LazarusPackageIntf;
+  TADrawerCanvas, TADrawerSVG, TAIntervalSources, TAChartAxisUtils, 
+  TAChartListbox, TAEnumerators, TADataPointsEditor, TAChartExtentLink, 
+  TAToolEditors, TAMath, TAChartImageList, TAChartTeeChart, TADataTools, 
+  TAAnimatedSource, TATextElements, TAAxisSource, TASeriesPropEditors, 
+  TACustomFuncSeries, TAFitUtils, TAGUIConnector, TADiagram, TADiagramDrawing, 
+  TADiagramLayout, TAChartStrConsts, LazarusPackageIntf;
 
 implementation
 
