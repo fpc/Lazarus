@@ -30,6 +30,7 @@ type
     FPenWidth: Integer;
     FPos: TPoint;
     procedure ChartGLColor(AColor: TFPColor);
+    procedure ChartGLPenStyle(APenStyle: TFPPenStyle);
     procedure InternalPolyline(
       const APoints: array of TPoint; AStartIndex, ANumPts, AMode: Integer);
     procedure SetBrush(ABrush: TFPCustomBrush);
@@ -87,6 +88,27 @@ procedure TOpenGLDrawer.ChartGLColor(AColor: TFPColor);
 begin
   with AColor do
     glColor4us(red, green, blue, (255 - FTransparency) shl 8);
+end;
+
+procedure TOpenGLDrawer.ChartGLPenStyle(APenStyle: TFPPenStyle);
+var
+  pattern: Word;
+begin
+  case APenStyle of
+    psClear      : pattern := %0000000000000000;
+    psDot        : pattern := %0011001100110011;
+    psDash       : pattern := %0000000011111111;
+    psDashDot    : pattern := %0001100011111111;
+    psDashDotDot : pattern := %0001101100111111;
+    else
+      glDisable(GL_LINE_STIPPLE);   // --> psSolid
+      exit;
+      // psPattern will render as psSolid because there are differences in
+      // implementations between fpc and lcl.
+      // psInsideFrame will render as psSolid - I don't know what this is...
+  end;
+  glLineStipple(1, pattern);
+  glEnable(GL_LINE_STIPPLE);
 end;
 
 procedure TOpenGLDrawer.ClippingStart(const AClipRect: TRect);
@@ -157,9 +179,8 @@ var
   i: Integer;
 begin
   if FPenStyle = psClear then exit;
-  glBegin(AMode);
   ChartGLColor(FPenColor);
-  glLineWidth(FPenWidth);
+  glBegin(AMode);
   for i := AStartIndex to AStartIndex + ANumPts - 1 do
     glVertex2iv(@APoints[i]);
   glEnd();
@@ -170,7 +191,6 @@ begin
   if FPenStyle = psClear then exit;
   glBegin(GL_LINES);
   ChartGLColor(FPenColor);
-  glLineWidth(FPenWidth);
   glVertex2i(AX1, AY1);
   glVertex2i(AX2, AY2);
   glEnd();
@@ -301,12 +321,15 @@ begin
   FPenWidth := APen.Width;
   FPenColor := APen.FPColor;
   FPenStyle := APen.Style;
+  glLineWidth(FPenWidth);
+  ChartGLPenStyle(FPenStyle);
 end;
 
 procedure TOpenGLDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
 begin
   FPenStyle := AStyle;
   FPenColor := FChartColorToFPColorFunc(AColor);
+  ChartGLPenStyle(AStyle);
 end;
 
 procedure TOpenGLDrawer.SetTransparency(ATransparency: TChartTransparency);

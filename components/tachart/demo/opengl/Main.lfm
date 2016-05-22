@@ -2,16 +2,16 @@ object Form1: TForm1
   Left = 308
   Height = 319
   Top = 132
-  Width = 684
+  Width = 688
   Caption = 'Form1'
   ClientHeight = 319
-  ClientWidth = 684
-  LCLVersion = '1.1'
+  ClientWidth = 688
+  LCLVersion = '1.7'
   object OpenGLControl1: TOpenGLControl
     Left = 344
     Height = 319
     Top = 0
-    Width = 340
+    Width = 344
     Align = alClient
     AutoResizeViewport = True
     OnPaint = OpenGLControl1Paint
@@ -45,7 +45,6 @@ object Form1: TForm1
     OnAfterPaint = Chart1AfterPaint
     Align = alLeft
     Color = clSkyBlue
-    ParentColor = False
     object Chart1LineSeries1: TLineSeries
       LinePen.Color = clBlue
       LinePen.Width = 3

@@ -138,7 +138,6 @@
       </Item24>
       <Item25>
         <Filename Value="tadraweropengl.pas"/>
-        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="TADrawerOpenGL"/>
       </Item25>
       <Item26>
