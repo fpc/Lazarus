@@ -3260,6 +3260,8 @@ type
     FScrollBars: TScrollStyle;
     FScrolledLeft: integer; // horizontal scrolled pixels (hidden pixels at left)
     FScrolledTop: integer;  // vertical scrolled pixels (hidden pixels at top)
+    FSBHorzShowing: ShortInt;
+    FSBVertShowing: ShortInt;
     FSelectedColor: TColor;
     FSelectedFontColor: TColor;
     FSelectedFontColorUsed: boolean;
@@ -3326,6 +3328,7 @@ type
     procedure SetShowButton(Value: Boolean);
     procedure SetShowLines(Value: Boolean);
     procedure SetShowRoot(Value: Boolean);
+    procedure SetShowScrollBar(Which: Integer; AShow: Boolean);
     procedure SetShowSeparators(Value: Boolean);
     procedure SetSortType(Value: TSortType);
     procedure SetStateImages(Value: TCustomImageList);
@@ -3404,6 +3407,7 @@ type
     procedure NodeChanged(Node: TTreeNode; ChangeReason: TTreeNodeChangeReason); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
+    procedure ScrollView(DeltaX, DeltaY: Integer);
     procedure SetDragMode(Value: TDragMode); override;
     procedure SetOptions(NewOptions: TTreeViewOptions); virtual;
     procedure UpdateDefaultItemHeight; virtual;
