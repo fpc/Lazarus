@@ -18110,51 +18110,46 @@ begin
     R := getGeometry;
     W := R.Right - R.Left;
     H := R.Bottom - R.Top;
-    LCLIntf.GetCursorPos(P{%H-});
+    P := R.TopLeft;
     {we must make proper positioning of our hint if
      hint geometry intersects current cursor pos - issue #15882}
-    if PtInRect(R, P) then
+
+    if QDesktopWidget_isVirtualDesktop(QApplication_desktop()) then
+      ScreenNumber := QDesktopWidget_screenNumber(QApplication_desktop(), @P)
+    else
     begin
-      if QDesktopWidget_isVirtualDesktop(QApplication_desktop()) then
-        ScreenNumber := QDesktopWidget_screenNumber(QApplication_desktop(), @P)
+      if Widget <> nil then
+        ScreenNumber := QDesktopWidget_screenNumber(QApplication_desktop(), Widget)
       else
-      begin
-        if Widget <> nil then
-          ScreenNumber := QDesktopWidget_screenNumber(QApplication_desktop(), Widget)
-        else
-          ScreenNumber := 0;
-      end;
-      {$IFDEF DARWIN}
-      QDesktopWidget_availableGeometry(QApplication_desktop() ,@D, ScreenNumber);
-      {$ELSE}
-      QDesktopWidget_screenGeometry(QApplication_desktop() ,@D, ScreenNumber);
-      {$ENDIF}
-
-
-      if (P.X + W > D.Right - D.Left) then
-        P.X := P.X - ((ToolTipOffset) + W);
-
-      if (P.Y + H > D.Bottom - D.Top) then
-        P.Y := P.Y - ((ToolTipOffset * 6) + H);
-
-      if P.Y < D.Top then
-        P.Y := D.Top;
-
-      if (P.X + W > D.Right - D.Left) then
-        P.X := D.Right - D.Left - W;
-
-      if P.X < D.Left then
-        P.X := D.Left;
-
-      if P.Y + H > D.Bottom - D.Top then
-        P.Y := D.Bottom - D.Top - H;
-
-      Pt := getPos;
-      if (P.X >= Pt.X) and (P.X <= Pt.X + W) then
-        move(P.X + ToolTipOffset, P.Y)
-      else
-        move(P.X , P.Y);
+        ScreenNumber := 0;
     end;
+    {$IFDEF DARWIN}
+    QDesktopWidget_availableGeometry(QApplication_desktop() ,@D, ScreenNumber);
+    {$ELSE}
+    QDesktopWidget_screenGeometry(QApplication_desktop() ,@D, ScreenNumber);
+    {$ENDIF}
+
+
+    if (P.X + W > D.Right) then
+      P.X := P.X - ((ToolTipOffset) + W);
+
+    if (P.Y + H > D.Bottom - D.Top) then
+      P.Y := P.Y - ((ToolTipOffset * 6) + H);
+
+    if P.Y < D.Top then
+      P.Y := D.Top;
+
+    if (P.X + W > D.Right) then
+      P.X := D.Right - D.Left - W;
+
+    if P.X < D.Left then
+      P.X := D.Left;
+
+    if P.Y + H > D.Bottom then
+      P.Y := D.Bottom - D.Top - H;
+
+    Pt := getPos;
+    move(P.X , P.Y);
   end;
   inherited setVisible(AVisible);
 end;
