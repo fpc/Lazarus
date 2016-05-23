@@ -63,6 +63,7 @@ type
     CocoaFormat: NSString;  // utilized for ccdtCocoaStandard and ccdtNonStandard
     DataType: TCocoaClipboardDataType;
     constructor Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType);
+    destructor Destroy; override;
   end;
 
   TAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocol)
