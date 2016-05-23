@@ -2982,12 +2982,14 @@ begin
   NewFrm := nil;
   for I := 0 to Screen.CustomFormZOrderCount-1 do
   begin
-    if (Screen.CustomFormsZOrdered[I]<>Frm)
-    and PtInRect(Screen.CustomFormsZOrdered[I].BoundsRect, MousePos) then
-    begin
-      NewFrm := Screen.CustomFormsZOrdered[I];
+    NewFrm := Screen.CustomFormsZOrdered[I];
+    if (NewFrm<>Frm)
+    and PtInRect(NewFrm.BoundsRect, MousePos)
+    and (NewFrm.Perform(WM_NCHITTEST, 0, 0) <> HTTRANSPARENT)
+    then
       Break;
-    end;
+
+    NewFrm := nil;
   end;
   if NewFrm=nil then
     Exit;
