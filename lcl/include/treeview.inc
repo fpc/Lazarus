@@ -4237,7 +4237,6 @@ begin
   if FHintWnd=nil then
     FHintWnd:=THintWindow.Create(Self);
 
-  FHintWnd.Font.Assign(Self.Font);
   Node:=GetNodeAt(X, Y);
   if Node=nil then
   begin
@@ -4266,7 +4265,16 @@ begin
   P:=ClientToScreen(P);
   OffsetRect(R, P.X, P.Y);
 
-  FHintWnd.ActivateHint(R, SText);
+  FHintWnd.Font.Assign(Self.Font);
+  FHintWnd.Font.Color := Screen.HintFont.Color;
+
+  if not FHintWnd.Visible then
+    FHintWnd.ActivateHint(R, SText)
+  else
+  begin
+    FHintWnd.Caption := SText;
+    FHintWnd.SetBounds(R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top);
+  end;
 end;
 
 function TCustomTreeView.GetSelection: TTreeNode;
