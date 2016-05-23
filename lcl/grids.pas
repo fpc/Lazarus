@@ -3257,12 +3257,16 @@ begin
   if DeltaX<>0 then
   begin
     ClipArea := ClientRect;
+    if Flat then
+      InflateRect(ClipArea, -1, -1);
     Inc(ClipArea.Left, FGCache.FixedWidth);
     ScrollWindowEx(Handle, DeltaX, 0, @ClipArea, @ClipArea, 0, nil, ScrollFlags);
   end;
   if DeltaY<>0 then
   begin
     ClipArea := ClientRect;
+    if Flat then
+      InflateRect(ClipArea, -1, -1);
     Inc(ClipArea.Top, FGCache.FixedHeight);
     ScrollWindowEx(Handle, 0, DeltaY, @ClipArea, @ClipArea, 0, nil, ScrollFlags);
   end;
