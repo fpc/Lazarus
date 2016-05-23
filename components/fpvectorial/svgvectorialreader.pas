@@ -175,6 +175,10 @@ type
     class function ReadSpaceSeparatedStrings(AInput: string; AOtherSeparators: string): TStringList;
   end;
 
+var
+  // settings
+  gSVGVecReader_UseTopLeftCoords: Boolean = True;
+
 implementation
 
 const
@@ -3008,7 +3012,8 @@ begin
   // We need to add this hack here, otherwise the Height is added twice
   // to inserted items: Once in the Insert and yet another time in the
   // coordinates of the inserted item!
-  lInsert.Y := lInsert.Y - AData.Height;
+  if not gSVGVecReader_UseTopLeftCoords then
+    lInsert.Y := lInsert.Y - AData.Height;
 
   Result := lInsert;
 end;
@@ -3074,17 +3079,33 @@ var
         sckX:      Result := (Result - ViewBox_Left) * Page_Width / ViewBox_Width;
         sckXDelta,
         sckXSize:  Result := Result * Page_Width / ViewBox_Width;
-        sckY:      Result := Page_Height - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
-        sckYDelta: Result := - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
-        sckYSize:  Result := Result * Page_Height / ViewBox_Height;
+      end;
+      if gSVGVecReader_UseTopLeftCoords then
+      begin
+        case ACoordKind of
+          sckY:      Result := (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
+          sckYDelta,
+          sckYSize:  Result := Result * Page_Height / ViewBox_Height;
+        end;
+      end
+      else
+      begin
+        case ACoordKind of
+          sckY:      Result := Page_Height - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
+          sckYDelta: Result := - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
+          sckYSize:  Result := Result * Page_Height / ViewBox_Height;
+        end;
       end;
       ViewPortApplied := True;
     end
     else
     begin
-      case ACoordKind of
-        sckY:      Result := Page_Height - Result;
-        sckYDelta: Result := - Result;
+      if not gSVGVecReader_UseTopLeftCoords then
+      begin
+        case ACoordKind of
+          sckY:      Result := Page_Height - Result;
+          sckYDelta: Result := - Result;
+        end;
       end;
     end;
   end;
@@ -3190,11 +3211,26 @@ procedure TvSVGVectorialReader.ConvertSVGCoordinatesToFPVCoordinates(
   var ADestX,ADestY: Double; ADoViewBoxAdjust: Boolean = True);
 begin
   ADestX := ASrcX * FLOAT_MILLIMETERS_PER_PIXEL;
-  ADestY := AData.Height - ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
   if ViewBoxAdjustment and ADoViewBoxAdjust then
   begin
     ADestX := (ASrcX - ViewBox_Left) * Page_Width / ViewBox_Width;
-    ADestY := AData.Height - (ASrcY - ViewBox_Top) * Page_Height / ViewBox_Height;
+  end;
+
+  if gSVGVecReader_UseTopLeftCoords then
+  begin
+    ADestY := ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
+    if ViewBoxAdjustment and ADoViewBoxAdjust then
+    begin
+      ADestY := (ASrcY - ViewBox_Top) * Page_Height / ViewBox_Height;
+    end;
+  end
+  else
+  begin
+    ADestY := AData.Height - ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
+    if ViewBoxAdjustment and ADoViewBoxAdjust then
+    begin
+      ADestY := AData.Height - (ASrcY - ViewBox_Top) * Page_Height / ViewBox_Height;
+    end;
   end;
 end;
 
@@ -3203,11 +3239,26 @@ procedure TvSVGVectorialReader.ConvertSVGDeltaToFPVDelta(
   ADestY: Double; ADoViewBoxAdjust: Boolean = True);
 begin
   ADestX := ASrcX * FLOAT_MILLIMETERS_PER_PIXEL;
-  ADestY := - ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
   if ViewBoxAdjustment and ADoViewBoxAdjust then
   begin
     ADestX := ASrcX * Page_Width / ViewBox_Width;
-    ADestY := - ASrcY * Page_Height / ViewBox_Height;
+  end;
+
+  if gSVGVecReader_UseTopLeftCoords then
+  begin
+    ADestY := - ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
+    if ViewBoxAdjustment and ADoViewBoxAdjust then
+    begin
+      ADestY := - ASrcY * Page_Height / ViewBox_Height;
+    end;
+  end
+  else
+  begin
+    ADestY := ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
+    if ViewBoxAdjustment and ADoViewBoxAdjust then
+    begin
+      ADestY := ASrcY * Page_Height / ViewBox_Height;
+    end;
   end;
 end;
 
@@ -3436,7 +3487,7 @@ begin
   // Now process the elements
   // ----------------
   lCurNode := Doc.DocumentElement.FirstChild;
-  lPage := AData.AddPage();
+  lPage := AData.AddPage(gSVGVecReader_UseTopLeftCoords);
   lPage.Width := AData.Width;
   lPage.Height := AData.Height;
   while Assigned(lCurNode) do

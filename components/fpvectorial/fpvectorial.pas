@@ -1440,7 +1440,7 @@ type
     function GetCurrentPageAsVectorial: TvVectorialPage;
     procedure SetCurrentPage(AIndex: Integer);
     procedure SetDefaultPageFormat(AFormat: TvPageFormat);
-    function AddPage(): TvVectorialPage;
+    function AddPage(AUseTopLeftCoords: Boolean = False): TvVectorialPage;
     function AddTextPageSequence(): TvTextPageSequence;
     { Style methods }
     function AddStyle(): TvStyle;
@@ -1465,6 +1465,7 @@ type
   TvPage = class
   protected
     FOwner: TvVectorialDocument;
+    FUseTopLeftCoordinates: Boolean;
   public
     // Document size for page-based documents
     Width, Height: Double; // in millimeters, may be 0 to use TvVectorialDocument defaults
@@ -1502,6 +1503,7 @@ type
       ADoDraw: Boolean = true); virtual; abstract;
     procedure AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight, ARenderHeight: Integer; out ADeltaX, ADeltaY: Integer; out AZoom: Double); virtual;
     procedure GetNaturalRenderPos(var APageHeight: Integer; out AMulY: Double); virtual; abstract;
+    procedure SetNaturalRenderPos(AUseTopLeftCoords: Boolean); virtual;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); virtual; abstract;
   end;
@@ -8765,6 +8767,11 @@ begin
   {$endif}
 end;
 
+procedure TvPage.SetNaturalRenderPos(AUseTopLeftCoords: Boolean);
+begin
+  FUseTopLeftCoordinates := AUseTopLeftCoords;
+end;
+
 { TvVectorialPage }
 
 procedure TvVectorialPage.ClearTmpPath;
@@ -9517,7 +9524,15 @@ end;
 
 procedure TvVectorialPage.GetNaturalRenderPos(var APageHeight: Integer; out AMulY: Double);
 begin
-  AMulY := -1.0;
+  if FUseTopLeftCoordinates then
+  begin
+    APageHeight := 0;
+    AMulY := 1.0;
+  end
+  else
+  begin
+    AMulY := -1.0;
+  end;
 end;
 
 procedure TvVectorialPage.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -10097,11 +10112,12 @@ begin
   end;
 end;
 
-function TvVectorialDocument.AddPage: TvVectorialPage;
+function TvVectorialDocument.AddPage(AUseTopLeftCoords: Boolean = False): TvVectorialPage;
 begin
   Result := TvVectorialPage.Create(Self);
   Result.Width := Width;
   Result.Height := Height;
+  Result.SetNaturalRenderPos(AUseTopLeftCoords);
   FPages.Add(Result);
   if FCurrentPageIndex < 0 then FCurrentPageIndex := FPages.Count-1;
 end;
@@ -10387,15 +10403,26 @@ end;
 
 procedure TvVectorialDocument.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer);
 var
-  i: integer;
+  i, lTmpInt: integer;
   p: TvPage;
   lPageItem: Pointer;
+  lDebugStr: string;
+  lTmpY: Double;
 begin
   for i:=0 to FPages.Count-1 do
   begin
     p := TvPage(FPages[i]);
-    lPageItem := ADestRoutine(Format('Page %d Width=%f Height=%f MinX=%f MaxX=%f MinY=%f MaxY=%f',
-      [i, p.Width, p.Height, p.MinX, p.MaxX, p.MinY, p.MaxY]), APageItem);
+
+    lDebugStr := 'Origin=';
+    p.GetNaturalRenderPos(lTmpInt, lTmpY);
+    if lTmpY > 0 then
+      lDebugStr += 'top-left'
+    else
+      lDebugStr += 'bottom-left';
+
+
+    lPageItem := ADestRoutine(Format('Page %d : %s %s Width=%f Height=%f MinX=%f MaxX=%f MinY=%f MaxY=%f',
+      [i, p.ClassName, lDebugStr, p.Width, p.Height, p.MinX, p.MaxX, p.MinY, p.MaxY]), APageItem);
     p.GenerateDebugTree(ADestRoutine, lPageItem);
   end;
 end;
