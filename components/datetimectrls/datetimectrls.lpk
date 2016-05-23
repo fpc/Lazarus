@@ -3,6 +3,7 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="DateTimeCtrls"/>
+    <Type Value="RunAndDesignTime"/>
     <AddToProjectUsesSection Value="True"/>
     <Author Value="Zoran Vučenović"/>
     <CompilerOptions>
@@ -20,7 +21,7 @@
     <Description Value="TDateTimePicker - the cross-platform control behaving much like VCL's TDateTimePicker. TDBDateTimePicker - the data-aware version of TDateTimePicker"/>
     <License Value="Modified LGPL"/>
     <Version Major="1" Minor="5" Release="1"/>
-    <Files Count="7">
+    <Files Count="4">
       <Item1>
         <Filename Value="datetimepicker.pas"/>
         <UnitName Value="DateTimePicker"/>
@@ -30,28 +31,14 @@
         <UnitName Value="DBDateTimePicker"/>
       </Item2>
       <Item3>
-        <Filename Value="datetimepickerpropedit.pas"/>
-        <UnitName Value="DateTimePickerPropEdit"/>
-      </Item3>
-      <Item4>
-        <Filename Value="datetimecontrolsreg.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="DateTimeControlsReg"/>
-      </Item4>
-      <Item5>
-        <Filename Value="datetimectrls.lrs"/>
-        <Type Value="LRS"/>
-      </Item5>
-      <Item6>
         <Filename Value="calcontrolwrapper.pas"/>
         <UnitName Value="calcontrolwrapper"/>
-      </Item6>
-      <Item7>
+      </Item3>
+      <Item4>
         <Filename Value="lclcalwrapper.pas"/>
         <UnitName Value="lclcalwrapper"/>
-      </Item7>
+      </Item4>
     </Files>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="IDEIntf"/>
