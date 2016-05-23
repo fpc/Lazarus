@@ -4128,6 +4128,12 @@ begin
     Result := FTopItem;
 end;
 
+procedure TCustomTreeView.HintMouseLeave(Sender: TObject);
+begin
+  if FindLCLControl(Mouse.CursorPos)<>Self then
+    FHintWnd.Hide;
+end;
+
 procedure TCustomTreeView.SetTopItem(Value: TTreeNode);
 begin
   if HandleAllocated and (Value <> nil) then
@@ -4235,7 +4241,10 @@ var
   MaxHintWidth: Integer;
 begin
   if FHintWnd=nil then
+  begin
     FHintWnd:=THintWindow.Create(Self);
+    FHintWnd.OnMouseLeave:=@HintMouseLeave;
+  end;
 
   Node:=GetNodeAt(X, Y);
   if Node=nil then
@@ -5528,7 +5537,8 @@ procedure TCustomTreeView.MouseLeave;
 begin
   FStates:=FStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked,
                     tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
-  if Assigned(FHintWnd) then
+  if Assigned(FHintWnd) and FHintWnd.Visible
+  and not PtInRect(ClientRect, ScreenToClient(Mouse.CursorPos)) then
     FHintWnd.Hide;
   inherited MouseLeave;
 end;

@@ -3298,6 +3298,7 @@ type
     function GetShowSeparators: boolean;
     function GetToolTips: boolean;
     function GetTopItem: TTreeNode;
+    procedure HintMouseLeave(Sender: TObject);
     procedure ImageListChange(Sender: TObject);
     procedure OnChangeTimer(Sender: TObject);
     procedure SetAutoExpand(Value: Boolean);
