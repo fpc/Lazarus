@@ -2243,6 +2243,9 @@ var
 
 begin
   Result := False;
+  CheckTransparentWindow({%H-}TLCLIntfHandle(widget), AWinControl);
+  if (widget=nil) or (AWinControl=nil) then
+    Exit;
   EventXY := Point(TruncToInt(Event^.X), TruncToInt(Event^.Y));
   MappedXY := TranslateGdkPointToClientArea(Event^.Window,
                                EventXY,
@@ -2428,6 +2431,9 @@ begin
   Result := False;
 
   AWinControl:=TWinControl(Data);
+  CheckTransparentWindow({%H-}TLCLIntfHandle(widget), AWinControl);
+  if (widget=nil) or (AWinControl=nil) then
+    Exit;
   EventXY:=Point(TruncToInt(Event^.X),TruncToInt(Event^.Y));
   ShiftState := GTKEventStateToShiftState(Event^.State);
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
