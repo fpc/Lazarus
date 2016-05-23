@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils, TypInfo, Types, LCLStrConsts, LCLType, AvgLvlTree,
   LCLProc, GraphType, Graphics, LMessages, LCLIntf, InterfaceBase, ImgList,
-  PropertyStorage, Menus, ActnList, LCLClasses, LResources;
+  PropertyStorage, Menus, ActnList, LCLClasses, LResources, Messages;
 
 {$I controlconsts.inc}
 
@@ -2636,6 +2636,7 @@ procedure GetCursorValues(Proc: TGetStrProc);
 function CursorToIdent(Cursor: Longint; var Ident: string): Boolean;
 function IdentToCursor(const Ident: string; var Cursor: Longint): Boolean;
 
+procedure CheckTransparentWindow(var Handle: THandle; var AWinControl: TWinControl);
 function CheckMouseButtonDownUp(const AWinHandle: THandle; const AWinControl: TWinControl;
   var LastMouse: TLastMouseInfo; const AMousePos: TPoint; const AButton: Byte;
   const AMouseDown: Boolean): Cardinal;
@@ -2955,6 +2956,49 @@ end;
 procedure MoveWindowOrg(dc: hdc; X, Y: Integer);
 begin
   MoveWindowOrgEx(DC,X,Y);
+end;
+
+procedure CheckTransparentWindow(var Handle: THandle; var AWinControl: TWinControl);
+var
+  Frm, NewFrm: TCustomForm;
+  I: Integer;
+  NewControl: TControl;
+  MousePos: TPoint;
+begin
+  if AWinControl=nil then
+    Exit;
+
+  Frm := GetParentForm(AWinControl);
+  if Frm=nil then
+    Exit;
+
+  if Frm.Perform(WM_NCHITTEST, 0, 0) <> HTTRANSPARENT then
+    Exit;
+
+  Handle := 0;
+  AWinControl := nil;
+  MousePos := Mouse.CursorPos;
+
+  NewFrm := nil;
+  for I := 0 to Screen.CustomFormZOrderCount-1 do
+  begin
+    if (Screen.CustomFormsZOrdered[I]<>Frm)
+    and PtInRect(Screen.CustomFormsZOrdered[I].BoundsRect, MousePos) then
+    begin
+      NewFrm := Screen.CustomFormsZOrdered[I];
+      Break;
+    end;
+  end;
+  if NewFrm=nil then
+    Exit;
+
+  NewControl := NewFrm.ControlAtPos(NewFrm.ScreenToClient(MousePos),
+    [capfAllowWinControls, capfRecursive, capfOnlyWinControls]);
+  if (NewControl=nil) or not(NewControl is TWinControl) then
+    Exit;
+
+  AWinControl := TWinControl(NewControl);
+  Handle := AWinControl.Handle;
 end;
 
 function CheckMouseButtonDownUp(const AWinHandle: THandle;
