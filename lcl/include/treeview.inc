@@ -5309,9 +5309,6 @@ begin
       or ((tvoAllowMultiselect in Options) and CursorNode.MultiSelected));
   LogicalX:=X;
 
-  if (FHintWnd<>nil) and FHintWnd.Visible then
-    FHintWnd.Hide;
-
   //change selection on right click
   if (Button = mbRight) and RightClickSelect and//right click
      (([ssDouble, ssTriple, ssQuad] * Shift) = []) and//single or first of a multi click
@@ -5410,6 +5407,8 @@ procedure TCustomTreeView.MouseUp(Button: TMouseButton; Shift: TShiftState;
 var
   aMouseDownNode, aMouseUpNode: TTreeNode;
 begin
+  if (FHintWnd<>nil) and FHintWnd.Visible then // must hide hint window in mouse up to receive redirected mouse up messages
+    FHintWnd.Hide;
   inherited MouseUp(Button, Shift, X, Y);
   if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) then
     exit;
