@@ -2,21 +2,21 @@
   This source is only used to compile and install the package.
  }
 
-unit DateTimeCtrls;
+unit DateTimeCtrlsDsgn;
 
 {$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  DateTimePicker, DBDateTimePicker, calcontrolwrapper, lclcalwrapper, 
-  LazarusPackageIntf;
+  DateTimeControlsReg, DateTimePickerPropEdit, LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
+  RegisterUnit('DateTimeControlsReg', @DateTimeControlsReg.Register);
 end;
 
 initialization
-  RegisterPackage('DateTimeCtrls', @Register);
+  RegisterPackage('DateTimeCtrlsDsgn', @Register);
 end.
