@@ -4274,12 +4274,12 @@ begin
   P:=ClientToScreen(P);
   OffsetRect(R, P.X, P.Y);
 
-  FHintWnd.Font.Assign(Self.Font);
-  FHintWnd.Font.Color := Screen.HintFont.Color;
-
   if not FHintWnd.Visible then
+  begin
+    FHintWnd.Font.Assign(Self.Font);
+    FHintWnd.Font.Color := Screen.HintFont.Color;
     FHintWnd.ActivateHint(R, SText)
-  else
+  end else
   begin
     FHintWnd.Caption := SText;
     FHintWnd.SetBounds(R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top);
