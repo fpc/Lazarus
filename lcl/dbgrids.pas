@@ -3478,7 +3478,7 @@ begin
 
   inherited Options :=
     [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine,
-     goSmoothScroll, goColMoving, goTabs, goEditing, goDrawFocusSelected,
+     goColMoving, goTabs, goEditing, goDrawFocusSelected,
      goColSizing ];
 
   FExtraOptions := [dgeAutoColumns, dgeCheckboxColumn];
