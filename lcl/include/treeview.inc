@@ -4541,6 +4541,7 @@ begin
               (WheelDelta * Mouse.WheelScrollLines * DefaultItemHeight) div 120;
     Result := true;
   end;
+  UpdateTooltip(MousePos.X, MousePos.Y);
 end;
 
 function TCustomTreeView.DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean):LRESULT;
