@@ -1005,6 +1005,7 @@ type
     function  GetImageForCheckBox(const aCol,aRow: Integer;
                                   CheckBoxView: TCheckBoxState): TBitmap; virtual;
     function  GetScrollBarPosition(Which: integer): Integer;
+    function  GetSmoothScroll(Which: Integer): Boolean; virtual;
     procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);virtual;
     procedure GetSBRanges(const HsbVisible,VsbVisible: boolean;
                   out HsbRange,VsbRange,HsbPage,VsbPage,HsbPos,VsbPos:Integer); virtual;
@@ -3295,7 +3296,7 @@ end;
 // those properties.
 function TCustomGrid.GetVisibleGrid: TRect;
 var
-  w: Integer;
+  W, H: Integer;
 begin
 
   if (FTopLeft.X<0)or(FTopLeft.y<0)or(csLoading in ComponentState) then begin
@@ -3310,7 +3311,7 @@ begin
   // Left Margin of next visible Column and Rightmost visible cell
   if ColCount>FixedCols then begin
     W:=GetColWidths(Result.Left) + FGCache.FixedWidth;
-    if goSmoothScroll in Options then
+    if GetSmoothScroll(SB_Horz) then
       W := W - FGCache.TLColOff;
     while (Result.Right<ColCount-1)and(W<FGCache.ClientWidth) do begin
       Inc(Result.Right);
@@ -3324,14 +3325,14 @@ begin
 
   // Top Margin of next visible Row and Bottom most visible cell
   if RowCount>FixedRows then begin
-    W:=GetRowheights(Result.Top) + FGCache.FixedHeight;
-    if goSmoothScroll in Options then
-      W := W - FGCache.TLRowOff;
-    while (Result.Bottom<RowCount-1)and(W<FGCache.ClientHeight) do begin
+    H:=GetRowheights(Result.Top) + FGCache.FixedHeight;
+    if GetSmoothScroll(SB_Vert) then
+      H := H - FGCache.TLRowOff;
+    while (Result.Bottom<RowCount-1)and(H<FGCache.ClientHeight) do begin
       Inc(Result.Bottom);
-      W:=W+GetRowHeights(Result.Bottom);
+      H:=H+GetRowHeights(Result.Bottom);
     end;
-    FGCache.MaxClientXY.Y := W;
+    FGCache.MaxClientXY.Y := H;
   end else begin
     FGCache.MaxClientXY.Y := FGCache.FixedHeight;
     Result.Bottom := Result.Top - 1; // no visible cells here
@@ -3376,14 +3377,14 @@ begin
     if RNew.Right <= FGCache.FixedWidth+GetBorderWidth then
       Xinc := -1              // hidden at the left of fixedwidth line
     else
-    if (RNew.Left >= CWidth) and not (goSmoothScroll in Options) then
+    if (RNew.Left >= CWidth) and not GetSmoothScroll(SB_Horz) then
       Xinc := 1               // hidden at the right of clientwidth line
     else
     if (RNew.Left > FGCache.FixedWidth+GetBorderWidth) and
        (CWidth < RNew.Right) and
        (not (goDontScrollPartCell in Options) or ForceFullyVisible) then
     begin  // hidden / partially visible at the right
-      if not (goSmoothScroll in Options) then
+      if not GetSmoothScroll(SB_Horz) then
         Xinc := 1
       else
       begin
@@ -3396,14 +3397,14 @@ begin
     if RNew.Bottom <= FGCache.FixedHeight+GetBorderWidth then
       Yinc := -1              // hidden at the top of fixedheight line
     else
-    if (RNew.Top >= CHeight) and not (goSmoothScroll in Options) then
+    if (RNew.Top >= CHeight) and not GetSmoothScroll(SB_Vert) then
       YInc := 1               // hidden at the bottom of clientheight line
     else
     if (RNew.Top > FGCache.FixedHeight+GetBorderWidth) and
        (CHeight < RNew.Bottom) and
        (not (goDontScrollPartCell in Options) or ForceFullyVisible) then
     begin  // hidden / partially visible at bottom
-      if not (goSmoothScroll in Options) then
+      if not GetSmoothScroll(SB_Vert) then
         Yinc := 1
       else
       begin
@@ -3459,9 +3460,9 @@ begin
   begin
     RNew:=CellRect(aCol,aRow);
     ResetOffset(
-      not (goSmoothScroll in Options) or
+      not GetSmoothScroll(SB_Horz) or
       (RNew.Left < FGCache.FixedWidth+GetBorderWidth), // partially visible on left
-      (not (goSmoothScroll in Options) or
+      (not GetSmoothScroll(SB_Vert) or
       (RNew.Top < FGCache.FixedHeight+GetBorderWidth))); // partially visible on top
   end;
 end;
@@ -4649,11 +4650,10 @@ begin
   if FTopLeft.y=FGCache.MaxTopLeft.y then
     FGCache.TLRowOff := Min(FGCache.MaxTLOffset.y, FGCache.TLRowOff);
 
-  if not(goSmoothScroll in Options) then
-  begin
+  if not GetSmoothScroll(SB_Horz) then
     FGCache.TLColOff := 0;
+  if not GetSmoothScroll(SB_Vert) then
     FGCache.TLRowOff := 0;
-  end;
 
   if not PointIgual(OldTopleft,FTopLeft) then
     TopLeftChanged;
@@ -4785,7 +4785,7 @@ begin
     HsbRange := 0;
     HsbPos := 0;
     if HsbVisible then begin
-      if not (goSmoothScroll in Options) then begin
+      if not GetSmoothScroll(SB_Horz) then begin
         if (MaxTopLeft.x>=0) and (MaxTopLeft.x<=ColCount-1) then
           HsbRange := integer(PtrUInt(AccumWidth[MaxTopLeft.x]))+ClientWidth-FixedWidth
       end
@@ -4798,7 +4798,7 @@ begin
     VsbRange := 0;
     VsbPos := 0;
     if VsbVisible then begin
-      if not (goSmoothScroll in Options) then begin
+      if not GetSmoothScroll(SB_Vert) then begin
         if (MaxTopLeft.y>=0) and (MaxTopLeft.y<=RowCount-1)  then
           VsbRange := integer(PtrUInt(AccumHeight[MaxTopLeft.y]))+ClientHeight-FixedHeight
       end
@@ -5238,12 +5238,11 @@ begin
     end;
     FullVisibleGrid := VisibleGrid;
     if ValidGrid then begin
-      if goSmoothScroll in Options then begin
-        if TLColOff>0 then
-          FullVisibleGrid.Left := Min(FullVisibleGrid.Left+1, FullVisibleGrid.Right);
-        if TLRowOff>0 then
-          FullVisibleGrid.Top  := Min(FullVisibleGrid.Top+1, FullVisibleGrid.Bottom);
-      end;
+      if GetSmoothScroll(SB_Horz) and (TLColOff>0) then
+        FullVisibleGrid.Left := Min(FullVisibleGrid.Left+1, FullVisibleGrid.Right);
+      if GetSmoothScroll(SB_Vert) and (TLRowOff>0) then
+        FullVisibleGrid.Top  := Min(FullVisibleGrid.Top+1, FullVisibleGrid.Bottom);
+
       CellR := CellRect(FullVisibleGrid.Right, FullVisibleGrid.Bottom);
       if CellR.Right>(ClientWidth+GetBorderWidth) then
         FullVisibleGrid.Right := Max(FullVisibleGrid.Right-1, FullVisibleGrid.Left);
@@ -5283,6 +5282,11 @@ end;
 function TCustomGrid.GetSelection: TGridRect;
 begin
   Result:=FRange;
+end;
+
+function TCustomGrid.GetSmoothScroll(Which: Integer): Boolean;
+begin
+  Result := goSmoothScroll in Options;
 end;
 
 procedure TCustomGrid.SetDefaultDrawing(const AValue: Boolean);
@@ -5584,7 +5588,7 @@ begin
         Index := FTopLeft.X;  // In scrolled view, then begin from FTopLeft col
         if (Index>=0) and (Index<ColCount) then begin
           Offset:=Offset-FixedWidth+integer(PtrUInt(AccumWidth[Index]));
-          if goSmoothScroll in Options then
+          if GetSmoothScroll(SB_Horz) then
             Offset:=Offset+TLColOff;
         end;
         if (Index<0) or (Index>=ColCount) or (Offset>GridWidth-1) then begin
@@ -5669,13 +5673,13 @@ begin
     if IsCol then begin
       if index>=FFixedCols then begin
         StartPos:=StartPos-integer(PtrUInt(AccumWidth[FTopLeft.X])) + FixedWidth;
-        if goSmoothScroll in Options then
+        if GetSmoothScroll(SB_Horz) then
           StartPos := StartPos - TLColOff;
       end;
     end else begin
       if index>=FFixedRows then begin
         StartPos:=StartPos-integer(PtrUInt(AccumHeight[FTopLeft.Y])) + FixedHeight;
-        if goSmoothScroll in Options then
+        if GetSmoothScroll(SB_Vert) then
           StartPos := StartPos - TLRowOff;
       end;
     end;
@@ -7431,7 +7435,7 @@ begin
       FGCache.MaxTopLeft.x:=i
     else
     begin
-      if (goSmoothScroll in Options) then
+      if GetSmoothScroll(SB_Horz) then
       begin
         FGCache.MaxTopLeft.x:=i;
         FGCache.MaxTLOffset.x:=W-FGCache.ScrollWidth;
@@ -7447,7 +7451,7 @@ begin
       FGCache.MaxTopLeft.y:=i
     else
     begin
-      if goSmoothScroll in Options then
+      if GetSmoothScroll(SB_Vert) then
       begin
         FGCache.MaxTopLeft.y:=i;
         FGCache.MaxTLOffset.y:=H-FGCache.ScrollHeight
