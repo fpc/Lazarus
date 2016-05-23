@@ -1413,6 +1413,18 @@ begin
 end;
 
 procedure TApplication.Deactivate(Data: PtrInt);
+  procedure HideHintWindows;
+  var
+    I: Integer;
+    Form: TCustomForm;
+  begin
+    for I := Screen.CustomFormCount-1 downto 0 do
+    begin
+      Form := Screen.CustomForms[I];
+      if Form.Visible and (Form is THintWindow) then
+        Form.Hide;
+    end;
+  end;
 begin
   if (AppDestroying in FFlags) or (not (AppActive in FFlags)) then Exit;
 
@@ -1423,6 +1435,7 @@ begin
   begin
     Exclude(FFlags, AppActive);
     NotifyDeactivateHandler;
+    HideHintWindows;
   end;
 end;
 
