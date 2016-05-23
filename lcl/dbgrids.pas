@@ -428,6 +428,7 @@ type
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; override;
     function  GetIsCellTitle(aCol,aRow: Integer): boolean; override;
     procedure GetSelectedState(AState: TGridDrawState; out IsSelected:boolean); override;
+    function GetSmoothScroll(Which: Integer): Boolean; override;
     function  GetTruncCellHintText(aCol, aRow: Integer): string; override;
     function  GridCanModify: boolean;
     procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);override;
@@ -2957,6 +2958,14 @@ begin
     IsSelected := false;
 end;
 
+function TCustomDBGrid.GetSmoothScroll(Which: Integer): Boolean;
+begin
+  if Which=SB_Vert then
+    Result := False
+  else
+    Result := inherited GetSmoothScroll(Which);
+end;
+
 function TCustomDBGrid.GridCanModify: boolean;
 begin
   result := not ReadOnly and (dgEditing in Options) and not FDataLink.ReadOnly
@@ -3478,7 +3487,7 @@ begin
 
   inherited Options :=
     [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine,
-     goColMoving, goTabs, goEditing, goDrawFocusSelected,
+     goSmoothScroll, goColMoving, goTabs, goEditing, goDrawFocusSelected,
      goColSizing ];
 
   FExtraOptions := [dgeAutoColumns, dgeCheckboxColumn];
