@@ -741,7 +741,7 @@ type
     FOnSelection: TOnSelectEvent;
     FOnTopLeftChanged: TNotifyEvent;
     FUseXORFeatures: boolean;
-    FVSbVisible, FHSbVisible: boolean;
+    FVSbVisible, FHSbVisible: ShortInt; // state: -1 not initialized, 0 hidden, 1 visible
     FDefaultTextStyle: TTextStyle;
     FLastWidth: Integer;
     FTitleFont, FLastFont: TFont;
@@ -3190,9 +3190,7 @@ begin
     {$Ifdef DbgScroll}
     DebugLn('ScrollbarPosition: Which=',SbToStr(Which), ' Value= ',IntToStr(Value));
     {$endif}
-    if Which = SB_VERT then Vis := FVSbVisible else
-    if Which = SB_HORZ then Vis := FHSbVisible
-    else vis := false;
+    Vis := ScrollBarIsVisible(Which);
     FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     if (Which=SB_HORZ) and Vis and UseRightToLeftAlignment then begin
@@ -3214,9 +3212,9 @@ begin
   Result:=false;
   if HandleAllocated then begin
     // Don't use GetScrollbarvisible from the widgetset - it sends WM_PAINT message (Gtk2). Issue #30160
-    if Which = SB_VERT then result := FVSbVisible else
-    if Which = SB_HORZ then result := FHsbVisible else
-    if Which = SB_BOTH then result := FHsbVisible and FVsbVisible;
+    if Which = SB_VERT then result := (FVSbVisible=1) else
+    if Which = SB_HORZ then result := (FHsbVisible=1) else
+    if Which = SB_BOTH then result := (FVSbVisible=1) and (FHsbVisible=1);
   end;
 end;
 
@@ -3242,8 +3240,8 @@ begin
     DebugLn('ScrollbarShow: Which=',SbToStr(Which), ' Avalue=',dbgs(AValue));
     {$endif}
     ShowScrollBar(Handle,Which,aValue);
-    if Which in [SB_BOTH, SB_VERT] then FVSbVisible := AValue else
-    if Which in [SB_BOTH, SB_HORZ] then FHSbVisible := AValue;
+    if Which in [SB_BOTH, SB_VERT] then FVSbVisible := Ord(AValue);
+    if Which in [SB_BOTH, SB_HORZ] then FHSbVisible := Ord(AValue);
   end;
 end;
 
@@ -4568,6 +4566,8 @@ procedure TCustomGrid.CreateWnd;
 begin
   //DebugLn('TCustomGrid.CreateWnd ',DbgSName(Self));
   inherited CreateWnd;
+  FVSbVisible := -1;
+  FHSbVisible := -1;
   CheckPosition;
   VisualChange;
 end;
@@ -7280,7 +7280,7 @@ begin
   DebugLn('TCustomGrid.UpdateHorzScrollbar: Vis=%s Range=%d Page=%d aPos=%d',
     [dbgs(aVisible),aRange, aPage, aPos]);
   {$endif}
-  if ScrollBarIsVisible(SB_HORZ)<>aVisible then
+  if FHSbVisible<>Ord(aVisible) then
     ScrollBarShow(SB_HORZ, aVisible);
   if aVisible then
     ScrollBarRange(SB_HORZ, aRange, aPage, aPos);
@@ -7293,7 +7293,7 @@ begin
   DebugLn('TCustomGrid.UpdateVertScrollbar: Vis=%s Range=%d Page=%d aPos=%d',
     [dbgs(aVisible),aRange, aPage, aPos]);
   {$endif}
-  if ScrollBarIsVisible(SB_Vert)<>aVisible then
+  if FVSbVisible<>Ord(aVisible) then
     ScrollBarShow(SB_VERT, aVisible);
   if aVisible then
     ScrollbarRange(SB_VERT, aRange, aPage, aPos );
@@ -7428,6 +7428,8 @@ var
   W,H: Integer;
 begin
   FGCache.MaxTopLeft:=Point(ColCount-1, RowCount-1);
+  FGCache.MaxTLOffset.x:=0;
+  FGCache.MaxTLOffset.y:=0;
   W:=0;
   for i:=ColCount-1 downto FFixedCols do begin
     W:=W+GetColWidths(i);
@@ -7439,8 +7441,7 @@ begin
       begin
         FGCache.MaxTopLeft.x:=i;
         FGCache.MaxTLOffset.x:=W-FGCache.ScrollWidth;
-      end else
-        FGCache.MaxTLOffset.x:=0;
+      end;
       Break;
     end;
   end;
@@ -7455,8 +7456,7 @@ begin
       begin
         FGCache.MaxTopLeft.y:=i;
         FGCache.MaxTLOffset.y:=H-FGCache.ScrollHeight
-      end else
-        FGCache.MaxTLOffset.y:=0;
+      end;
       Break;
     end;
   end;
@@ -8961,6 +8961,9 @@ begin
   FGCache.AccumHeight:=TList.Create;
   FGCache.ClickCell := point(-1, -1);
   inherited Create(AOwner);
+
+  FVSbVisible := -1;
+  FHSbVisible := -1;
 
   FColumns := CreateColumns;
 
