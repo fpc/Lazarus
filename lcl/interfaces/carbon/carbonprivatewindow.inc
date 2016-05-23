@@ -81,15 +81,8 @@ const
 // helper functions used commonly
 //
   function GetMousePoint: TPoint;
-  var
-    MousePoint: HIPoint;
   begin
-    Result:=Classes.Point(0,0); // Force sane value if mouse location not found
-    if OSError(
-      GetEventParameter(AEvent, kEventParamWindowMouseLocation, typeHIPoint, nil,
-        SizeOf(MousePoint), nil, @MousePoint),
-      SName, SGetEvent, 'kEventParamWindowMouseLocation') then Exit;
-    Result:=Widget.GetWindowRelativePos(Trunc(MousePoint.X), Trunc(MousePoint.Y));
+    Result:=Widget.LCLObject.ScreenToClient(Mouse.CursorPos);
   end;
 
   function GetMouseWheelDelta: Integer;
@@ -146,7 +139,7 @@ const
     MouseButton := GetCarbonMouseButton(AEvent);
     MousePoint := GetMousePoint;
 
-    Msg^.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(AWidget), Widget.LCLObject, LastMouse,
+    Msg^.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(Widget), Widget.LCLObject, LastMouse,
       Widget.LCLObject.ClientToScreen(MousePoint), MouseButton, True);
     //debugln('HandleMouseDownEvent CliCount=',dbgs(ClickCount),' MouseButton=',dbgs(MouseButton),' Pos=',dbgs(MousePoint));
 
@@ -180,7 +173,7 @@ const
     MouseButton := GetCarbonMouseButton(AEvent);
     MousePoint := GetMousePoint;
     
-    Msg^.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(AWidget), Widget.LCLObject, LastMouse,
+    Msg^.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(Widget), Widget.LCLObject, LastMouse,
       Widget.LCLObject.ClientToScreen(MousePoint), MouseButton, False);
 
     Msg^.XPos := MousePoint.X;
@@ -255,6 +248,7 @@ var
   DesignPt: HIPoint;
   ViewPart: HIViewPartCode;
   lTmpWidget: TCarbonWidget;
+  LCLObj: TWinControl;
 begin
   Result := EventNotHandledErr;
   Postpone := False;
@@ -285,6 +279,11 @@ begin
     Widget := lTmpWidget;
   end;
   if Widget = nil then Exit;
+
+  LCLObj := Widget.LCLObject;
+  CheckTransparentWindow(TLCLIntfHandle(Widget), LCLObj);
+  if (Widget=nil) or (LCLObj=nil) then
+    Exit;
 
   FillChar(Msg{%H-}, SizeOf(Msg), 0);
   
