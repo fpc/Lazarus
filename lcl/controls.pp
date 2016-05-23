@@ -176,7 +176,7 @@ type
   TCaption = TTranslateString;
   TCursor = -32768..32767;
 
-  TFormStyle = (fsNormal, fsMDIChild, fsMDIForm, fsStayOnTop, fsSplash, fsSystemStayOnTop);
+  TFormStyle = (fsNormal, fsMDIChild, fsMDIForm, fsStayOnTop, fsSplash, fsSystemStayOnTop, fsIgnoreMouseEvents);
   TFormBorderStyle = (bsNone, bsSingle, bsSizeable, bsDialog, bsToolWindow,
                       bsSizeToolWin);
   TBorderStyle = bsNone..bsSingle;
@@ -2972,7 +2972,7 @@ begin
   if Frm=nil then
     Exit;
 
-  if Frm.Perform(WM_NCHITTEST, 0, 0) <> HTTRANSPARENT then
+  if Frm.FormStyle <> fsIgnoreMouseEvents then
     Exit;
 
   Handle := 0;
@@ -2985,7 +2985,7 @@ begin
     NewFrm := Screen.CustomFormsZOrdered[I];
     if (NewFrm<>Frm)
     and PtInRect(NewFrm.BoundsRect, MousePos)
-    and (NewFrm.Perform(WM_NCHITTEST, 0, 0) <> HTTRANSPARENT)
+    and (NewFrm.FormStyle <> fsIgnoreMouseEvents)
     then
       Break;
 

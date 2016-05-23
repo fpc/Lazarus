@@ -728,6 +728,14 @@ begin
   Application.QueueAsyncCall(@Moved, 0)
 end;
 
+procedure TCustomForm.WMNCHitTest(var Message: TLMessage);
+begin
+  if FormStyle=fsIgnoreMouseEvents then
+    Message.Result := HTTRANSPARENT
+  else
+    inherited;
+end;
+
 procedure TCustomForm.Moved(Data: PtrInt);
 begin
   if WindowState = wsNormal then
@@ -1949,10 +1957,10 @@ Begin
   FFormStyle := Value;
   Include(FFormState, fsFormStyleChanged);
 
-  if FFormStyle = fsSplash then
+  if FFormStyle in [fsSplash, fsIgnoreMouseEvents] then
     BorderStyle := bsNone
   else
-  if OldFormStyle = fsSplash then
+  if OldFormStyle in [fsSplash, fsIgnoreMouseEvents] then
     BorderStyle := bsSizeable;
   if HandleAllocated then
     TWSCustomFormClass(WidgetSetClass).SetFormStyle(Self, Value, OldFormStyle);
