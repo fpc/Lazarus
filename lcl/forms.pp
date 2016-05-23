@@ -883,6 +883,9 @@ type
     class function GetControlClassDefaultSize: TSize; override;
   public
     property OnMouseDown;  // Public access may be needed.
+    property OnMouseUp;
+    property OnMouseMove;
+    property OnMouseLeave;
     property Alignment: TAlignment read FAlignment write FAlignment;
     property HintRect: TRect read FHintRect write FHintRect;
     property HintRectAdjust: TRect read FHintRect write SetHintRectAdjust;
