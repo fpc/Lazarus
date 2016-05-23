@@ -215,11 +215,19 @@ procedure THintWindow.ActivateHint(const AHint: String);
 // Shows simple text hint.
 begin
   if FActivating then exit;
+
+  if Visible and (Caption=AHint)
+  and EqualRect(FHintRect, BoundsRect) then
+  begin
+    FActivating := FActivating;
+    Exit; // nothing changed, exit -> don't flicker
+  end;
+
   FActivating := True;
   try
     Assert(ControlCount = 0, 'THintWindow.ActivateRendered: ControlCount > 0');
     if Caption<>AHint then
-      Invalidate;
+      Hide; // reduce flicker and start animation if hint changed
     Caption := AHint;
     ActivateSub;
   finally
