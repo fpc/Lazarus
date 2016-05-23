@@ -18108,15 +18108,11 @@ begin
 end;
 
 procedure TQtHintWindow.setVisible(AVisible: Boolean);
-const
-  ToolTipOffset = 4;
 var
   D: TRect;
   R: TRect;
-  P: TPoint;
   Pt: TQtPoint;
   ScreenNumber: integer;
-  W,H: integer;
 begin
   // must use ClassType comparision here since qt is buggy about hints.#16551
   if AVisible and
@@ -18124,14 +18120,13 @@ begin
       (LCLObject.InheritsFrom(THintWindow))) then
   begin
     R := getGeometry;
-    W := R.Right - R.Left;
-    H := R.Bottom - R.Top;
-    P := R.TopLeft;
-    {we must make proper positioning of our hint if
-     hint geometry intersects current cursor pos - issue #15882}
 
     if QDesktopWidget_isVirtualDesktop(QApplication_desktop()) then
-      ScreenNumber := QDesktopWidget_screenNumber(QApplication_desktop(), @P)
+    begin
+      Pt.x := R.Left;
+      Pt.y := R.Top;
+      ScreenNumber := QDesktopWidget_screenNumber(QApplication_desktop(), @Pt);
+    end
     else
     begin
       if Widget <> nil then
@@ -18145,27 +18140,21 @@ begin
     QDesktopWidget_screenGeometry(QApplication_desktop() ,@D, ScreenNumber);
     {$ENDIF}
 
+    // place hint window within monitor rect
+    if R.Right-R.Left > D.Right-D.Left then // check width
+      R.Right := R.Left + D.Right-D.Left;
+    if R.Bottom-R.Top > D.Bottom-D.Top then // check height
+      R.Bottom := R.Top + D.Bottom-D.Top;
+    if R.Left < D.Left then
+      OffsetRect(R, D.Left-R.Left, 0);
+    if R.Top < D.Top then
+      OffsetRect(R, 0, D.Top-R.Top);
+    if (R.Right > D.Right) then
+      OffsetRect(R, D.Right-R.Right, 0);
+    if (R.Bottom > D.Bottom) then
+      OffsetRect(R, 0, D.Bottom-R.Bottom);
 
-    if (P.X + W > D.Right) then
-      P.X := P.X - ((ToolTipOffset) + W);
-
-    if (P.Y + H > D.Bottom - D.Top) then
-      P.Y := P.Y - ((ToolTipOffset * 6) + H);
-
-    if P.Y < D.Top then
-      P.Y := D.Top;
-
-    if (P.X + W > D.Right) then
-      P.X := D.Right - D.Left - W;
-
-    if P.X < D.Left then
-      P.X := D.Left;
-
-    if P.Y + H > D.Bottom then
-      P.Y := D.Bottom - D.Top - H;
-
-    Pt := getPos;
-    move(P.X , P.Y);
+    move(R.Left, R.Top);
   end;
   inherited setVisible(AVisible);
 end;
