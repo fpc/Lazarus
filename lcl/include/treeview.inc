@@ -4278,12 +4278,8 @@ begin
   begin
     FHintWnd.Font.Assign(Self.Font);
     FHintWnd.Font.Color := Screen.HintFont.Color;
-    FHintWnd.ActivateHint(R, SText)
-  end else
-  begin
-    FHintWnd.Caption := SText;
-    FHintWnd.SetBounds(R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top);
   end;
+  FHintWnd.ActivateHint(R, SText)
 end;
 
 function TCustomTreeView.GetSelection: TTreeNode;
