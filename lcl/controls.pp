@@ -1862,7 +1862,8 @@ type
     capfAllowWinControls,// include TWinControls
     capfOnlyClientAreas, // use the client areas, not the whole child area
     capfRecursive,       // search recursively in grand childrens
-    capfHasScrollOffset  // do not add the scroll offset to Pos (already included)
+    capfHasScrollOffset, // do not add the scroll offset to Pos (already included)
+    capfOnlyWinControls  // include only TWinControls (ignore TControls)
     );
   TControlAtPosFlags = set of TControlAtPosFlag;
 

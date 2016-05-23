@@ -5199,7 +5199,7 @@ begin
         and GetControlAtPos(TControl(FControls[I])) then
           Break;
     // check controls
-    if (LControl = nil) then
+    if (LControl = nil) and not(capfOnlyWinControls in Flags) then
       for I := FControls.Count - 1 downto 0 do
         if (not (TObject(FControls[i]) is TWinControl))
         and GetControlAtPos(TControl(FControls[I])) then
