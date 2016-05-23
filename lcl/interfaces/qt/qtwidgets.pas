@@ -3865,11 +3865,27 @@ var
   MousePos: TQtPoint;
   Modifiers: QtKeyboardModifiers;
   ModifierState: PtrInt;
+  TrgHandle: TQtWidget;
+  TrgControl: TWinControl;
   {$IFDEF DARWIN}
   CCtl: TQtAbstractScrollArea;
   {$ENDIF}
 begin
   Result := False;
+
+  TrgHandle := Self;
+  TrgControl := LCLObject;
+  CheckTransparentWindow(TLCLIntfHandle(TrgHandle), TrgControl);
+  if (TrgHandle=nil) or (TrgControl=nil) then
+  begin
+    Exit;
+  end else
+  if (TrgHandle<>Self) then
+  begin
+    Result := TQtWidget(TrgHandle).SlotMouseWheel(Sender, Event);
+    Exit;
+  end;
+
   if not CanSendLCLMessage then
     exit;
 
