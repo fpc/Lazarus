@@ -3521,18 +3521,32 @@ end;
 function TQtWidget.SlotMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   Msg: TLMMouse;
-  MousePos: TQtPoint;
   MButton: QTMouseButton;
   Modifiers: QtKeyboardModifiers;
   SaveWidget: QWidgetH;
   LazButton: Byte;
   LazPos: TPoint;
+  TrgHandle: TQtWidget;
+  TrgControl: TWinControl;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotMouse');
   {$endif}
 
   Result := False; // allow qt to handle message
+
+  TrgHandle := Self;
+  TrgControl := LCLObject;
+  CheckTransparentWindow(TLCLIntfHandle(TrgHandle), TrgControl);
+  if (TrgHandle=nil) or (TrgControl=nil) then
+  begin
+    Exit;
+  end else
+  if (TrgHandle<>Self) then
+  begin
+    Result := TQtWidget(TrgHandle).SlotMouse(Sender, Event);
+    Exit;
+  end;
 
   if not CanSendLCLMessage then
     exit(True);
@@ -3545,17 +3559,15 @@ begin
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
   
-  MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
-  OffsetMousePos(@MousePos);
+  LazPos := LCLObject.ScreenToClient(Mouse.CursorPos);
 
   Modifiers := QInputEvent_modifiers(QInputEventH(Event));
   Msg.Keys := QtKeyModifiersToKeyState(Modifiers, False, nil);
 
-  Msg.XPos := SmallInt(MousePos.X);
-  Msg.YPos := SmallInt(MousePos.Y);
+  Msg.XPos := SmallInt(LazPos.X);
+  Msg.YPos := SmallInt(LazPos.Y);
   
   MButton := QMouseEvent_Button(QMouseEventH(Event));
-  LazPos := Point(MousePos.X, MousePos.Y);
   Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
   case MButton of
     QtLeftButton: LazButton := 1;
