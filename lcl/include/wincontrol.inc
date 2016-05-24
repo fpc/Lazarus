@@ -5329,15 +5329,6 @@ begin
         Message.Result:=0;
       end;
 
-    LM_NCHITTEST:
-      begin
-        inherited WndPRoc(Message);
-        if (Message.Result = HTTRANSPARENT) and
-           Assigned(ControlAtPos(ScreenToClient(SmallPointToPoint(TLMNCHitTest(Message).Pos)), False)) then
-          Message.Result := HTCLIENT;
-        Exit;
-      end;
-
     // exclude only LM_MOUSEENTER, LM_MOUSELEAVE
     LM_MOUSEFIRST..LM_MOUSELAST,
     LM_MOUSEFIRST2..LM_RBUTTONQUADCLK,
