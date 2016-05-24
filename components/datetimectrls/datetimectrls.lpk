@@ -41,7 +41,7 @@
     </Files>
     <RequiredPkgs Count="1">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="LCLBase"/>
       </Item1>
     </RequiredPkgs>
     <UsageOptions>
