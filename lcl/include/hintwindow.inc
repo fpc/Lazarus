@@ -30,7 +30,7 @@ begin
   Canvas.Font := Screen.HintFont;
   Canvas.Brush.Style := bsClear;
   FAlignment := taLeftJustify;
-  FormStyle := fsIgnoreMouseEvents;
+  BorderStyle := bsNone;
   Caption := '';
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
@@ -67,6 +67,11 @@ class procedure THintWindow.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterHintWindow;
+end;
+
+procedure THintWindow.WMNCHitTest(var Message: TLMessage);
+begin
+  Message.Result := HTTRANSPARENT;
 end;
 
 procedure THintWindow.DoShowWindow;

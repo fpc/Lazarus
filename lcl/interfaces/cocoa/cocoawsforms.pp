@@ -222,7 +222,7 @@ begin
   win.setLevel(HintWindowLevel);
   TCocoaPanel(win).callback := TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
-  if Form.FormStyle=fsIgnoreMouseEvents then
+  if AWinControl.Perform(WM_NCHITTEST, 0, 0)=HTTRANSPARENT then
     win.setIgnoresMouseEvents(True)
   else
     win.setAcceptsMouseMovedEvents(True);
@@ -480,7 +480,7 @@ var
     win.setTitle(ns);
     ns.release;
     win.setAcceptsMouseMovedEvents(True);
-    if Form.FormStyle=fsIgnoreMouseEvents then
+    if AWinControl.Perform(WM_NCHITTEST, 0, 0)=HTTRANSPARENT then
       win.setIgnoresMouseEvents(True);
 
     cnt.callback := TCocoaWindow(win).callback;

@@ -508,7 +508,6 @@ type
     procedure CMActivate(var Message: TLMessage); message CM_ACTIVATE;
     procedure CMDeactivate(var Message: TLMessage); message CM_DEACTIVATE;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
-    procedure WMNCHitTest(var Message: TLMessage); message LM_NCHITTEST;
   protected
     FActionLists: TList; // keep this TList for Delphi compatibility
     FFormBorderStyle: TFormBorderStyle;
@@ -859,6 +858,7 @@ type
     procedure SetHintRectAdjust(AValue: TRect);
   protected
     class procedure WSRegisterClass; override;
+    procedure WMNCHitTest(var Message: TLMessage); message LM_NCHITTEST;
     procedure ActivateSub;
     procedure DoShowWindow; override;
     procedure UpdateRegion;

@@ -2214,7 +2214,7 @@ begin
   if (FMainForm = nil)
   and (FCreatingForm=AForm)
   and (not (AppDestroying in FFlags))
-  and not (AForm.FormStyle in [fsMDIChild, fsSplash, fsIgnoreMouseEvents])
+  and not (AForm.FormStyle in [fsMDIChild, fsSplash])
   then
     FMainForm := AForm;
 end;
