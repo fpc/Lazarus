@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils, TypInfo, Types, LCLStrConsts, LCLType, AvgLvlTree,
   LCLProc, GraphType, Graphics, LMessages, LCLIntf, InterfaceBase, ImgList,
-  PropertyStorage, Menus, ActnList, LCLClasses, LResources, Messages;
+  PropertyStorage, Menus, ActnList, LCLClasses, LResources;
 
 {$I controlconsts.inc}
 
@@ -2965,14 +2965,12 @@ var
   NewControl: TControl;
   MousePos: TPoint;
 begin
-  if AWinControl=nil then
+  if (AWinControl=nil) or not(AWinControl is TCustomForm) then
     Exit;
 
-  Frm := GetParentForm(AWinControl);
-  if Frm=nil then
-    Exit;
+  Frm := TCustomForm(AWinControl);
 
-  if Frm.Perform(WM_NCHITTEST, 0, 0) <> HTTRANSPARENT then
+  if Frm.Perform(LM_NCHITTEST, 0, 0) <> HTTRANSPARENT then
     Exit;
 
   Handle := 0;
@@ -2985,7 +2983,7 @@ begin
     NewFrm := Screen.CustomFormsZOrdered[I];
     if (NewFrm<>Frm)
     and PtInRect(NewFrm.BoundsRect, MousePos)
-    and (NewFrm.Perform(WM_NCHITTEST, 0, 0) <> HTTRANSPARENT)
+    and (NewFrm.Perform(LM_NCHITTEST, 0, 0) <> HTTRANSPARENT)
     then
       Break;
 
