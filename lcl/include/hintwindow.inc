@@ -95,7 +95,7 @@ begin
   if not HandleAllocated then
     Exit;
 
-  if UseThemes then
+  if UseBGThemes then
   begin
     Details := ThemeServices.GetElementDetails(tttStandardNormal);
     ARect := ClientRect;
@@ -106,13 +106,18 @@ begin
     SetWindowRgn(Handle, 0, False);
 end;
 
+function THintWindow.UseFGThemes: Boolean;
+begin
+  Result := (Font.Size = 0) and (Font.Name = '') and (Font.Color = clInfoText);
+end;
+
 procedure THintWindow.SetColor(Value: TColor);
 begin
   inherited SetColor(Value);
   UpdateRegion;
 end;
 
-function THintWindow.UseThemes: Boolean;
+function THintWindow.UseBGThemes: Boolean;
 begin
   Result := (Color = clInfoBk) or (Color = clDefault);
 end;
@@ -157,37 +162,38 @@ begin
 end;
 
 procedure THintWindow.Paint;
-
-  procedure DrawWithThemes(ARect: TRect);
-  var
-    Details: TThemedElementDetails;
-  begin
-    // draw using themes
-    Details := ThemeServices.GetElementDetails(tttStandardNormal);
-    ThemeServices.DrawElement(Canvas.Handle, Details, ARect);
-//    ARect := ThemeServices.ContentRect(Canvas.Handle, Details, ARect);
-    InflateRect(ARect, -2 * HintBorderWidth, -2 * HintBorderWidth);
-    ThemeServices.DrawText(Canvas, Details, Caption, ARect, GetDrawTextFlags, 0);
-  end;
-
-  procedure DrawNormal(ARect: TRect);
-  begin
-    Canvas.Brush.Color := Color;
-    Canvas.Pen.Width := 1;
-    Canvas.FillRect(ARect);
-    DrawEdge(Canvas.Handle, ARect, BDR_RAISEDOUTER, BF_RECT);
-    InflateRect(ARect, -2 * HintBorderWidth, -2 * HintBorderWidth);
-    DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(Caption),
-      Length(Caption), ARect, GetDrawTextFlags);
-  end;
-
+var
+  ThemeBG, ThemeFG: Boolean;
+  Details: TThemedElementDetails;
+  ARect: TRect;
 begin
   if ControlCount > 0 then
     inherited Paint         // The window has a custom control.
-  else if UseThemes then
-    DrawWithThemes(ClientRect)
   else
-    DrawNormal(ClientRect);
+  begin
+    ThemeBG := UseBGThemes;
+    ThemeFG := UseFGThemes;
+    ARect := ClientRect;
+
+    if ThemeBG or ThemeFG then
+      Details := ThemeServices.GetElementDetails(tttStandardNormal);
+
+    if ThemeBG then
+      ThemeServices.DrawElement(Canvas.Handle, Details, ARect)
+    else
+    begin
+      Canvas.Brush.Color := Color;
+      Canvas.Pen.Width := 1;
+      Canvas.FillRect(ARect);
+      DrawEdge(Canvas.Handle, ARect, BDR_RAISEDOUTER, BF_RECT);
+    end;
+    InflateRect(ARect, -2 * HintBorderWidth, -2 * HintBorderWidth);
+    if ThemeFG then
+      ThemeServices.DrawText(Canvas, Details, Caption, ARect, GetDrawTextFlags, 0)
+    else
+      DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(Caption),
+        Length(Caption), ARect, GetDrawTextFlags);
+  end;
 end;
 
 procedure THintWindow.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
@@ -268,7 +274,7 @@ begin
   Flags := DT_CALCRECT or DT_NOPREFIX or DT_WORDBREAK;
   if UseRightToLeftAlignment then Flags := Flags or DT_RTLREADING;
   uh := Canvas.GetUpdatedHandle([csFontValid]);
-  if UseThemes then
+  if UseFGThemes then
     Result := ThemeServices.GetTextExtent(uh,
       ThemeServices.GetElementDetails(tttStandardNormal), AHint, Flags, @Result)
   else

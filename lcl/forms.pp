@@ -863,7 +863,8 @@ type
     procedure DoShowWindow; override;
     procedure UpdateRegion;
     procedure SetColor(Value: TColor); override;
-    function UseThemes: Boolean;
+    function UseBGThemes: Boolean;
+    function UseFGThemes: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
