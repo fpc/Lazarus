@@ -311,21 +311,17 @@ msgstr ""
 "nell'editor esterno\n"
 "\"%s\"\n"
 
-#: pocheckerconsts.sopenfile
-msgid "Open file %s in Ide Editor?"
-msgstr "Aprire il file %s nell'Editor?"
-
-#: pocheckerconsts.sopenfileexternal
-msgid ""
-"Open file:\n"
-"\"%s\"\n"
-"in external editor:\n"
-"\"%s\"?\n"
+#: pocheckerconsts.sopenfileinexternaleditor
+msgid "Open file in external editor"
 msgstr ""
-"Aprire il file:\n"
-"\"%s\"\n"
-"nell'editor esterno:\n"
-"\"%s\"?\n"
+
+#: pocheckerconsts.sopenfileinideeditor
+msgid "Open file in IDE editor"
+msgstr ""
+
+#: pocheckerconsts.sopenfileinsystempoeditor
+msgid "Open file in system PO editor"
+msgstr ""
 
 #: pocheckerconsts.soriginal
 msgid "Original"

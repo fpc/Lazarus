@@ -11,7 +11,7 @@ object GraphStatForm: TGraphStatForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  LCLVersion = '1.3'
+  LCLVersion = '1.7'
   object LegendPanel: TPanel
     Left = 0
     Height = 80
@@ -96,5 +96,23 @@ object GraphStatForm: TGraphStatForm
     ViewStyle = vsIcon
     OnMouseMove = ListViewMouseMove
     OnMouseUp = ListViewMouseUp
+  end
+  object ContextPopupMenu: TPopupMenu
+    left = 453
+    top = 66
+    object POEditorMenuItem: TMenuItem
+      Caption = 'Open file in system PO editor'
+      OnClick = POEditorMenuItemClick
+    end
+    object ExtEditorMenuItem: TMenuItem
+      Caption = 'Open file in external editor'
+      Visible = False
+      OnClick = ExtEditorMenuItemClick
+    end
+    object IDEEditorMenuItem: TMenuItem
+      Caption = 'Open file in IDE editor'
+      Visible = False
+      OnClick = IDEEditorMenuItemClick
+    end
   end
 end

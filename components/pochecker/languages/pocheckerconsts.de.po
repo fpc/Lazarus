@@ -309,21 +309,17 @@ msgstr ""
 "nicht in externem Editor\n"
 "\"%s\" öffnen\n"
 
-#: pocheckerconsts.sopenfile
-msgid "Open file %s in Ide Editor?"
-msgstr "Datei %s im IDE-Editor öffnen?"
-
-#: pocheckerconsts.sopenfileexternal
-msgid ""
-"Open file:\n"
-"\"%s\"\n"
-"in external editor:\n"
-"\"%s\"?\n"
+#: pocheckerconsts.sopenfileinexternaleditor
+msgid "Open file in external editor"
 msgstr ""
-"Datei:\n"
-"\"%s\"\n"
-"in externem Editor:\n"
-"\"%s\" öffnen?\n"
+
+#: pocheckerconsts.sopenfileinideeditor
+msgid "Open file in IDE editor"
+msgstr ""
+
+#: pocheckerconsts.sopenfileinsystempoeditor
+msgid "Open file in system PO editor"
+msgstr ""
 
 #: pocheckerconsts.soriginal
 msgid "Original"
@@ -444,3 +440,4 @@ msgstr "Alle Dateien abwählen"
 #: pocheckerconsts.suntranslated
 msgid "Untranslated"
 msgstr "Nicht übersetzt"
+

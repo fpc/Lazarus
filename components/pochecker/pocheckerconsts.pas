@@ -51,14 +51,13 @@ resourcestring
               '%3d UnTranslated (%3.1f%%)' + LineEnding +
               '%3d Fuzzy (%3.1f%%)' + LineEnding +
               '%d Error(s) in Selected Tests';
-  sOpenFile = 'Open file %s in Ide Editor?';
-  sOpenFileExternal = 'Open file:' + LineEnding + '"%s"' +
-                      LineEnding + 'in external editor:' +
-                      LineEnding + '"%s"?';
   SOpenFail = 'Unable to open file:' + LineEnding +  '"%s"';
   SOpenFailExternal = 'Unable to open file' + LineEnding +
                       '"%s"' + LineEnding + 'in external editor' + LineEnding + '"%s"';
   sCreatingIconXofY = 'Creating icon nr. %d of %d';
+  sOpenFileInSystemPOEditor = 'Open file in system PO editor';
+  sOpenFileInExternalEditor = 'Open file in external editor';
+  sOpenFileInIDEEditor = 'Open file in IDE editor';
 
   //PoFamiles
   sOriginal = 'Original';

@@ -309,21 +309,17 @@ msgstr ""
 "во внешнем редакторе\n"
 "\"%s\"\n"
 
-#: pocheckerconsts.sopenfile
-msgid "Open file %s in Ide Editor?"
-msgstr "Открыть файл %s в редакторе IDE?"
+#: pocheckerconsts.sopenfileinexternaleditor
+msgid "Open file in external editor"
+msgstr "Открыть файл во внешнем редакторе"
 
-#: pocheckerconsts.sopenfileexternal
-msgid ""
-"Open file:\n"
-"\"%s\"\n"
-"in external editor:\n"
-"\"%s\"?\n"
-msgstr ""
-"Открыть файл:\n"
-"\"%s\"\n"
-"во внешнем редакторе:\n"
-"\"%s\"?\n"
+#: pocheckerconsts.sopenfileinideeditor
+msgid "Open file in IDE editor"
+msgstr "Открыть файл в редакторе IDE"
+
+#: pocheckerconsts.sopenfileinsystempoeditor
+msgid "Open file in system PO editor"
+msgstr "Открыть файл в системном редакторе файлов PO"
 
 #: pocheckerconsts.soriginal
 msgid "Original"

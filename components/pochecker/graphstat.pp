@@ -11,8 +11,8 @@ uses
   {$else}
   Process, Utf8Process,
   {$endif}
-  ExtCtrls, PoFamilies, PoCheckerConsts, LCLProc, StdCtrls, ComCtrls,
-  PoCheckerSettings;
+  ExtCtrls, PoFamilies, PoCheckerConsts, LCLProc, StdCtrls, ComCtrls, Menus,
+  PoCheckerSettings, LCLIntf;
 
 
 type
@@ -20,6 +20,10 @@ type
   { TGraphStatForm }
 
   TGraphStatForm = class(TForm)
+    POEditorMenuItem: TMenuItem;
+    ExtEditorMenuItem: TMenuItem;
+    IDEEditorMenuItem: TMenuItem;
+    ContextPopupMenu: TPopupMenu;
     StatusLabel: TLabel;
     ListView: TListView;
     TranslatedLabel: TLabel;
@@ -29,28 +33,32 @@ type
     TranslatedShape: TShape;
     UnTranslatedShape: TShape;
     FuzzyShape: TShape;
+    procedure ExtEditorMenuItemClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure IDEEditorMenuItemClick(Sender: TObject);
     procedure ListViewMouseMove(Sender: TObject; {%H-}Shift: TShiftState; X,
       Y: Integer);
     procedure ListViewMouseUp(Sender: TObject; {%H-}Button: TMouseButton;
       {%H-}Shift: TShiftState; X, Y: Integer);
+    procedure POEditorMenuItemClick(Sender: TObject);
   private
     { private declarations }
     FPoFamilyStats: TPoFamilyStats;
     FImgList: TImageList;
     FOldHintHidePause: Integer;
     FSettings: TPoCheckerSettings;
+    Fn: string;
     procedure LoadConfig;
     Procedure SaveConfig;
     function CreateBitmap(AStat: TStat): TBitmap;
     procedure AddToListView(AStat: TStat; ABmp: TBitmap);
     procedure DrawGraphs(Cnt: PtrInt);
-    procedure MaybeOpenInLazIDE(const Fn: String);
-    procedure MaybeOpenInExternalEditor(const {%H-}Fn: String);
+    procedure MaybeOpenInLazIDE;
+    procedure MaybeOpenInExternalEditor;
   public
     { public declarations }
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
@@ -97,7 +105,18 @@ begin
   Application.HintHidePause := 5000;
   LoadConfig;
   WindowState := Settings.GraphFormWindowState;
+  {$ifdef pocheckerstandalone}
+  if Settings.ExternalEditorName <> '' then
+    ExtEditorMenuItem.Visible := true;
+  {$else}
+  IDEEditorMenuItem.Visible := true;
+  {$endif}
   Application.QueueAsyncCall(@DrawGraphs, FPoFamilyStats.Count);
+end;
+
+procedure TGraphStatForm.IDEEditorMenuItemClick(Sender: TObject);
+begin
+  MaybeOpenInLazIDE;
 end;
 
 procedure TGraphStatForm.ListViewMouseMove(Sender: TObject; Shift: TShiftState;
@@ -130,22 +149,23 @@ var
   anItem: TListItem;
   anIndex: Integer;
   AStat: TStat;
+  CurrScreenPoint: TPoint;
 begin
   anItem := Listview.GetItemAt(X, Y);
-  {$ifdef pocheckerstandalone}
-  if Assigned(anItem) and (Settings.ExternalEditorName <> '') then
-  {$else}
   if Assigned(anItem) then
-  {$endif}
   begin
     anIndex := anItem.Index;
     AStat := FPoFamilyStats.Items[anIndex];
-    {$ifdef pocheckerstandalone}
-    MaybeOpenInExternalEditor(AStat.PoName);
-    {$else}
-    MaybeOpenInLazIDE(AStat.PoName);
-    {$endif}
+    Fn := AStat.PoName;
+    CurrScreenPoint := ListView.ClientToScreen(Point(X, Y));
+    ContextPopupMenu.PopUp(CurrScreenPoint.X, CurrScreenPoint.Y);
   end;
+end;
+
+procedure TGraphStatForm.POEditorMenuItemClick(Sender: TObject);
+begin
+  if OpenDocument(Fn) = false then
+    ShowMessage(Format(SOpenFail,[Fn]));
 end;
 
 procedure TGraphStatForm.LoadConfig;
@@ -179,6 +199,9 @@ begin
   TranslatedLabel.Caption := sTranslated;
   UntranslatedLabel.Caption := sUnTranslated;
   FuzzyLabel.Caption := sFuzzy;
+  POEditorMenuItem.Caption := sOpenFileInSystemPOEditor;
+  ExtEditorMenuItem.Caption := sOpenFileInExternalEditor;
+  IDEEditorMenuItem.Caption := sOpenFileInIDEEditor;
   TranslatedShape.Brush.Color := clTranslated;
   UnTranslatedShape.Brush.Color := clUntranslated;
   FuzzyShape.Brush.Color := clFuzzy;
@@ -196,6 +219,11 @@ procedure TGraphStatForm.FormActivate(Sender: TObject);
 begin
   //Doing this in TGraphStatForm.FormShow results in icons disappearing in Linux GTK2
   //DrawGraphs;
+end;
+
+procedure TGraphStatForm.ExtEditorMenuItemClick(Sender: TObject);
+begin
+  MaybeOpenInExternalEditor;
 end;
 
 procedure TGraphStatForm.FormDestroy(Sender: TObject);
@@ -322,40 +350,36 @@ begin
   end;
 end;
 
-procedure TGraphStatForm.MaybeOpenInExternalEditor(const Fn: String);
+procedure TGraphStatForm.MaybeOpenInExternalEditor;
 {$ifdef POCHECKERSTANDALONE}
 var
   Proc: TProcessUtf8;
 {$endif}
 begin
   {$ifdef POCHECKERSTANDALONE}
-  if MessageDlg('PoChecker',Format(sOpenFileExternal,[Fn,Settings.ExternalEditorName]),
-     mtConfirmation,mbOKCancel,0) = mrOk then
-  begin
-    Proc := TProcessUtf8.Create(nil);
+  Proc := TProcessUtf8.Create(nil);
+  try
+    Proc.Options := [];
+    Proc.Executable := Settings.ExternalEditorName;
+    Proc.Parameters.Add(Fn);
     try
-      Proc.Options := [];
-      Proc.Executable := Settings.ExternalEditorName;
-      Proc.Parameters.Add(Fn);
-      try
-        Proc.Execute;
-      except
-        on E: EProcess do
-        begin
-          debugln('TGraphStatForm.ListViewMouseUp:');
-          debugln('  Exception occurred of type ',E.ClassName);
-          debugln('  Message: ',E.Message);
-          ShowMessage(Format(SOpenFailExternal,[Fn,Settings.ExternalEditorName]));
-        end;
+      Proc.Execute;
+    except
+      on E: EProcess do
+      begin
+        debugln('TGraphStatForm.ListViewMouseUp:');
+        debugln('  Exception occurred of type ',E.ClassName);
+        debugln('  Message: ',E.Message);
+        ShowMessage(Format(SOpenFailExternal,[Fn,Settings.ExternalEditorName]));
       end;
-    finally
-      Proc.Free;
     end;
+  finally
+    Proc.Free;
   end;
   {$endif}
 end;
 
-procedure TGraphStatForm.MaybeOpenInLazIDE(const Fn: String);
+procedure TGraphStatForm.MaybeOpenInLazIDE;
 {$ifndef POCHECKERSTANDALONE}
 var
   mr: TModalResult;
@@ -367,14 +391,11 @@ begin
   PageIndex:= -1;
   WindowIndex:= -1;
   OpenFlags:= [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros];
-  if MessageDlg('PoChecker',Format(sOpenFile,[Fn]), mtConfirmation,mbOKCancel,0) = mrOk then
-  begin
-    mr := LazarusIde.DoOpenEditorFile(Fn,PageIndex,WindowIndex,OpenFlags);
-    if mr = mrOk then
-      ModalResult:= mrOpenEditorFile //To let caller know what we want to do
-    else
-      ShowMessage(Format(SOpenFail,[Fn]));
-  end;
+  mr := LazarusIde.DoOpenEditorFile(Fn,PageIndex,WindowIndex,OpenFlags);
+  if mr = mrOk then
+    ModalResult:= mrOpenEditorFile //To let caller know what we want to do
+  else
+    ShowMessage(Format(SOpenFail,[Fn]));
   {$endif}
 end;
 
