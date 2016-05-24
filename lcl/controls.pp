@@ -2960,45 +2960,54 @@ end;
 
 procedure CheckTransparentWindow(var Handle: THandle; var AWinControl: TWinControl);
 var
-  Frm, NewFrm: TCustomForm;
+  NewFrm: TCustomForm;
   I: Integer;
-  NewControl: TControl;
+  NewWinControl: TWinControl;
+  LastFrm, NewFrmControl: TControl;
   MousePos: TPoint;
+  MsgParam: LPARAM;
 begin
-  if (AWinControl=nil) or not(AWinControl is TCustomForm) then
-    Exit;
-
-  Frm := TCustomForm(AWinControl);
-
-  if Frm.Perform(LM_NCHITTEST, 0, 0) <> HTTRANSPARENT then
-    Exit;
-
-  Handle := 0;
-  AWinControl := nil;
+  NewWinControl := AWinControl;
   MousePos := Mouse.CursorPos;
-
-  NewFrm := nil;
-  for I := 0 to Screen.CustomFormZOrderCount-1 do
+  MsgParam := MakeLParam(Word(MousePos.x), Word(MousePos.y));
+  I := 0;
+  while Assigned(NewWinControl)
+  and (NewWinControl.Perform(LM_NCHITTEST, 0, MsgParam) = HTTRANSPARENT) do
   begin
-    NewFrm := Screen.CustomFormsZOrdered[I];
-    if (NewFrm<>Frm)
-    and PtInRect(NewFrm.BoundsRect, MousePos)
-    and (NewFrm.Perform(LM_NCHITTEST, 0, 0) <> HTTRANSPARENT)
-    then
-      Break;
-
-    NewFrm := nil;
+    if NewWinControl.Parent=nil then
+    begin // search underlying forms
+      LastFrm := NewWinControl;
+      NewWinControl := nil;
+      while I < Screen.CustomFormZOrderCount do
+      begin
+        NewFrm := Screen.CustomFormsZOrdered[I];
+        Inc(I);
+        if (NewFrm<>NewWinControl)
+        and PtInRect(NewFrm.BoundsRect, MousePos) then
+        begin
+          NewFrmControl := NewFrm.ControlAtPos(NewFrm.ScreenToClient(MousePos),
+            [capfAllowWinControls, capfRecursive, capfOnlyWinControls]);
+          if (NewFrmControl<>nil) and (NewFrmControl is TWinControl) then
+            NewWinControl := TWinControl(NewFrmControl)
+          else
+            NewWinControl := NewFrm;
+          Break;
+        end;
+      end;
+    end else // search parent controls. todo (if really needed): search underlying controls within the same parent
+      NewWinControl := NewWinControl.Parent;
   end;
-  if NewFrm=nil then
-    Exit;
 
-  NewControl := NewFrm.ControlAtPos(NewFrm.ScreenToClient(MousePos),
-    [capfAllowWinControls, capfRecursive, capfOnlyWinControls]);
-  if (NewControl=nil) or not(NewControl is TWinControl) then
-    Exit;
-
-  AWinControl := TWinControl(NewControl);
-  Handle := AWinControl.Handle;
+  if NewWinControl<>nil then
+  begin
+    AWinControl := NewWinControl;
+    Handle := AWinControl.Handle;
+  end else
+  begin
+    // if no overlayed control was found, eat the message
+    Handle := 0;
+    AWinControl := nil;
+  end;
 end;
 
 function CheckMouseButtonDownUp(const AWinHandle: THandle;
