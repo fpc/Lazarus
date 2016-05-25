@@ -69,6 +69,7 @@ type
     procedure MouseUp(APoint: TPoint); virtual;
     procedure MouseWheelDown(APoint: TPoint); virtual;
     procedure MouseWheelUp(APoint: TPoint); virtual;
+    function PopupMenuConflict: Boolean; override;
     procedure PrepareDrawingModePen(ADrawer: IChartDrawer; APen: TFPCustomPen);
     procedure RestoreCursor;
     procedure SetCursor;
@@ -836,6 +837,21 @@ end;
 procedure TChartTool.MouseWheelUp(APoint: TPoint);
 begin
   Unused(APoint);
+end;
+
+function TChartTool.PopupMenuConflict: Boolean;
+var
+  P: TPoint;
+begin
+  Result := false;
+  if Shift = [ssRight] then begin
+    P := Mouse.CursorPos;
+    if (P.X = FStartMousePos.X) then
+      exit;
+    if (P.Y = FStartMousePos.Y) then
+      exit;
+    Result := true;
+  end;
 end;
 
 procedure TChartTool.PrepareDrawingModePen(
