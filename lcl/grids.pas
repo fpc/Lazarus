@@ -2411,8 +2411,19 @@ end;
 
 function TCustomGrid.GetPxTopLeft: TPoint;
 begin
-  Result.x := Integer(PtrUInt(FGCache.AccumWidth[FTopLeft.x]))+FGCache.TLColOff-FGCache.FixedWidth;
-  Result.y := Integer(PtrUInt(FGCache.AccumHeight[FTopLeft.y]))+FGCache.TLRowOff-FGCache.FixedHeight;
+  if FTopLeft.x < FGCache.AccumWidth.Count then
+    Result.x := Integer(PtrUInt(FGCache.AccumWidth[FTopLeft.x]))+FGCache.TLColOff-FGCache.FixedWidth
+  else if FTopLeft.x > 0 then
+    Result.x := FGCache.GridWidth+FGCache.TLColOff-FGCache.FixedWidth
+  else
+    Result.x := 0;
+
+  if FTopLeft.y < FGCache.AccumHeight.Count then
+    Result.y := Integer(PtrUInt(FGCache.AccumHeight[FTopLeft.y]))+FGCache.TLRowOff-FGCache.FixedHeight
+  else if FTopLeft.y > 0 then
+    Result.y := FGCache.GridHeight+FGCache.TLRowOff-FGCache.FixedHeight
+  else
+    Result.y := 0;
 end;
 
 function TCustomGrid.GetColCount: Integer;
