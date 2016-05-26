@@ -151,14 +151,17 @@ var
   AStat: TStat;
   CurrScreenPoint: TPoint;
 begin
-  anItem := Listview.GetItemAt(X, Y);
-  if Assigned(anItem) then
+  if Button = mbRight then
   begin
-    anIndex := anItem.Index;
-    AStat := FPoFamilyStats.Items[anIndex];
-    Fn := AStat.PoName;
-    CurrScreenPoint := ListView.ClientToScreen(Point(X, Y));
-    ContextPopupMenu.PopUp(CurrScreenPoint.X, CurrScreenPoint.Y);
+    anItem := Listview.GetItemAt(X, Y);
+    if Assigned(anItem) then
+    begin
+      anIndex := anItem.Index;
+      AStat := FPoFamilyStats.Items[anIndex];
+      Fn := AStat.PoName;
+      CurrScreenPoint := ListView.ClientToScreen(Point(X, Y));
+      ContextPopupMenu.PopUp(CurrScreenPoint.X, CurrScreenPoint.Y);
+    end;
   end;
 end;
 
