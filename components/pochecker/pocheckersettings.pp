@@ -321,9 +321,9 @@ begin
   FConfig.GetValue(pWindowsGeometry+'MainForm/Value',FMainFormGeometry,DefaultRect);
   FMainFormWindowState := IntToWindowState(FConfig.GetValue(pWindowsGeometry+'MainForm/WindowState/Value', Ord(wsNormal)));
   FConfig.GetValue(pWindowsGeometry+'ResultsForm/Value',FResultsFormGeometry,DefaultRect);
-  FResultsFormWindowState := IntToWindowState(FConfig.GetValue(pWindowsGeometry+'MainForm/WindowState/Value', Ord(wsNormal)));
+  FResultsFormWindowState := IntToWindowState(FConfig.GetValue(pWindowsGeometry+'ResultsForm/WindowState/Value', Ord(wsNormal)));
   FConfig.GetValue(pWindowsGeometry+'GraphForm/Value',FGraphFormGeometry,DefaultRect);
-  FGraphFormWindowState := IntToWindowState(FConfig.GetValue(pWindowsGeometry+'MainForm/WindowState/Value', Ord(wsNormal)));
+  FGraphFormWindowState := IntToWindowState(FConfig.GetValue(pWindowsGeometry+'GraphForm/WindowState/Value', Ord(wsNormal)));
 end;
 
 function TPoCheckerSettings.GetDisableAntialiasing: Boolean;
