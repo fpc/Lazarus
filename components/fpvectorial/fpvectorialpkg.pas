@@ -12,9 +12,9 @@ uses
   avisocncgcodewriter, avisocncgcodereader, cdrvectorialreader, 
   dxfvectorialreader, epsvectorialreader, lasvectorialreader, 
   lazvectorialreader, mathmlvectorialreader, odgvectorialreader, 
-  rawvectorialreadwrite, svgvectorialreader, svgvectorialwriter, 
+  rawvectorialreadwrite, svgvectorialreader_rsvg, svgvectorialwriter, 
   svgzvectorialreader, odtvectorialwriter, docxvectorialwriter, 
-  htmlvectorialreader;
+  htmlvectorialreader, svgvectorialreader;
 
 implementation
 

@@ -9,7 +9,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="21">
+    <Files Count="22">
       <Item1>
         <Filename Value="fpvectorial.pas"/>
         <UnitName Value="fpvectorial"/>
@@ -71,8 +71,8 @@
         <UnitName Value="rawvectorialreadwrite"/>
       </Item15>
       <Item16>
-        <Filename Value="svgvectorialreader.pas"/>
-        <UnitName Value="svgvectorialreader"/>
+        <Filename Value="svgvectorialreader_rsvg.pas"/>
+        <UnitName Value="svgvectorialreader_rsvg"/>
       </Item16>
       <Item17>
         <Filename Value="svgvectorialwriter.pas"/>
@@ -94,6 +94,10 @@
         <Filename Value="htmlvectorialreader.pas"/>
         <UnitName Value="htmlvectorialreader"/>
       </Item21>
+      <Item22>
+        <Filename Value="svgvectorialreader.pas"/>
+        <UnitName Value="svgvectorialreader"/>
+      </Item22>
     </Files>
     <RequiredPkgs Count="2">
       <Item1>

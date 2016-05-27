@@ -481,6 +481,7 @@ type
     X, Y, Z: Double;
     constructor Create(APage: TvPage); virtual;
     procedure Clear; virtual;
+    procedure SetPage(APage: TvPage); virtual;
     // in CalculateBoundingBox always remember to treat correctly the case of ADest=nil!!!
     // This cased is utilized to guess the size of a document even before getting a canvas to draw at
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; out ALeft, ATop, ARight, ABottom: Double); virtual;
@@ -530,6 +531,7 @@ type
   public
     Name: string;
     constructor Create(APage: TvPage); override;
+    procedure SetPage(APage: TvPage); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
@@ -878,6 +880,7 @@ type
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; out ALeft, ATop, ARight, ABottom: Double); override;
     procedure CreateRGB888Image(AWidth, AHeight: Cardinal);
     procedure CreateImageFromFile(AFilename: string);
+    procedure CreateImageFromStream(AStream: TStream; Handler:TFPCustomImageReader);
     procedure InitializeWithConvertionOf3DPointsToHeightMap(APage: TvVectorialPage; AWidth, AHeight: Integer);
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
@@ -1731,8 +1734,8 @@ begin
   begin
     if GvVectorialFormats[i].Format = AFormat then
     begin
-      if GvVectorialFormats[i].ReaderRegistered then
-       raise Exception.Create('RegisterVectorialReader: Reader class for format ' {+ AFormat} + ' already registered.');
+      //if GvVectorialFormats[i].ReaderRegistered then
+       //raise Exception.Create('RegisterVectorialReader: Reader class for format ' {+ AFormat} + ' already registered.');
 
       GvVectorialFormats[i].ReaderRegistered := True;
       GvVectorialFormats[i].ReaderClass := AReaderClass;
@@ -3514,6 +3517,11 @@ begin
   Z := 0.0;
 end;
 
+procedure TvEntity.SetPage(APage: TvPage);
+begin
+
+end;
+
 procedure TvEntity.CalculateBoundingBox(ADest: TFPCustomCanvas;
   out ALeft, ATop, ARight, ABottom: Double);
 begin
@@ -3792,6 +3800,11 @@ end;
 constructor TvNamedEntity.Create(APage: TvPage);
 begin
   inherited Create(APage);
+  FPage := APage;
+end;
+
+procedure TvNamedEntity.SetPage(APage: TvPage);
+begin
   FPage := APage;
 end;
 
@@ -6850,6 +6863,25 @@ begin
 {$endif}
 end;
 
+procedure TvRasterImage.CreateImageFromStream(AStream: TStream; Handler:TFPCustomImageReader);
+{$ifdef USE_LCL_CANVAS}
+var
+  AImage: TLazIntfImage;
+  lRawImage: TRawImage;
+{$endif}
+begin
+{$ifdef USE_LCL_CANVAS}
+  lRawImage.Init;
+  lRawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(0,0);
+  lRawImage.CreateData(false);
+  AImage := TLazIntfImage.Create(0,0);
+  AImage.SetRawImage(lRawImage);
+  AImage.LoadFromStream(AStream, Handler);
+
+  RasterImage := AImage;
+{$endif}
+end;
+
 procedure TvRasterImage.InitializeWithConvertionOf3DPointsToHeightMap(APage: TvVectorialPage; AWidth, AHeight: Integer);
 var
   lEntity: TvEntity;
@@ -7847,6 +7879,7 @@ end;
 function TvEntityWithSubEntities.AddEntity(AEntity: TvEntity): Integer;
 begin
   //AEntity.Parent := Self;
+  AEntity.SetPage(Self.FPage);
   Result := FElements.Add(AEntity);
 end;
 
@@ -8957,6 +8990,7 @@ end;
 }
 function TvVectorialPage.AddEntity(AEntity: TvEntity): Integer;
 begin
+  AEntity.SetPage(Self);
   if FCurrentLayer = nil then
   begin
     Result := FEntities.Count;
@@ -9624,6 +9658,7 @@ end;
 
 function TvTextPageSequence.AddEntity(AEntity: TvEntity): Integer;
 begin
+  AEntity.SetPage(Self);
   Result := MainText.AddEntity(AEntity);
 end;
 
