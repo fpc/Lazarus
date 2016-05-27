@@ -373,7 +373,7 @@ begin
           end;
           SW_PARENTOPENING:
           begin
-            if Info^.RestoreState <> 0 then
+            if (Info^.RestoreState <> 0) and WinControl.Visible then
             begin
               Windows.ShowWindowAsync(Window, Info^.RestoreState);
               Info^.RestoreState := 0;

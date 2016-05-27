@@ -1743,7 +1743,10 @@ begin
     else
       Flags := SW_SHOWNOACTIVATE;
     Windows.ShowWindow(Win32WidgetSet.AppHandle, Flags);
-  end;
+  end
+  else
+  if Assigned(lWinControl) and (WParam <> 0) and not lWinControl.Visible then
+    WinProcess := false;
 end;
 
 procedure TWindowProcHelper.DoMsgSysKey(aMsg: Cardinal);
