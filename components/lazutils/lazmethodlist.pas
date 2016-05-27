@@ -1,6 +1,7 @@
 unit LazMethodList;
 
 {$mode objfpc}{$H+}
+{$modeswitch advancedrecords}
 
 interface
 
@@ -11,6 +12,19 @@ type
   { TMethodList - array of TMethod }
 
   TMethodList = class
+  private type
+    TItemsEnumerator = record
+    private
+      Owner: TMethodList;
+      Index: Integer;
+      Reverse: Boolean;
+      function GetCurrent: TMethod;
+    public
+      procedure Init(AOwner: TMethodList; AReverse: Boolean);
+      function MoveNext: Boolean;
+      function GetEnumerator: TItemsEnumerator;
+      property Current: TMethod read GetCurrent;
+    end;
   private
     FAllowDuplicates: boolean;
     FItems: ^TMethod;
@@ -33,6 +47,8 @@ type
     procedure Move(OldIndex, NewIndex: integer);
     procedure RemoveAllMethodsOfObject(const AnObject: TObject);
     procedure CallNotifyEvents(Sender: TObject); // calls from Count-1 downto 0, all methods must be TNotifyEvent
+    function GetReversedEnumerator: TItemsEnumerator;
+    function GetEnumerator: TItemsEnumerator;
   public
     property Items[Index: integer]: TMethod read GetItems write SetItems; default;
     property AllowDuplicates: boolean read FAllowDuplicates write SetAllowDuplicates; // default false, changed in Lazarus 1.3
@@ -40,11 +56,52 @@ type
 
 implementation
 
+{ TMethodList.TItemsEnumerator }
+
+function TMethodList.TItemsEnumerator.GetCurrent: TMethod;
+begin
+  Result := Owner[Index];
+end;
+
+function TMethodList.TItemsEnumerator.GetEnumerator: TItemsEnumerator;
+begin
+  Result := Self;
+end;
+
+procedure TMethodList.TItemsEnumerator.Init(AOwner: TMethodList;
+  AReverse: Boolean);
+begin
+  Owner := AOwner;
+  Reverse := AReverse;
+  if Reverse then
+    Index := AOwner.Count
+  else
+    Index := -1;
+end;
+
+function TMethodList.TItemsEnumerator.MoveNext: Boolean;
+begin
+  if Reverse then
+  begin
+    Dec(Index);
+    Result := Index >= 0;
+  end else
+  begin
+    Inc(Index);
+    Result := Index < Owner.Count;
+  end;
+end;
+
 { TMethodList }
 
 function TMethodList.GetItems(Index: integer): TMethod;
 begin
   Result:=FItems[Index];
+end;
+
+function TMethodList.GetReversedEnumerator: TItemsEnumerator;
+begin
+  Result.Init(Self, True);
 end;
 
 procedure TMethodList.SetAllowDuplicates(AValue: boolean);
@@ -103,6 +160,11 @@ destructor TMethodList.Destroy;
 begin
   ReAllocMem(FItems,0);
   inherited Destroy;
+end;
+
+function TMethodList.GetEnumerator: TItemsEnumerator;
+begin
+  Result.Init(Self, False);
 end;
 
 function TMethodList.Count: integer;
