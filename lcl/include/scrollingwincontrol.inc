@@ -115,8 +115,15 @@ begin
   if NeededClientH>0 then
     NeededClientH-=FrameHeight;
 
-  HorzScrollBar.InternalSetRange(NeededClientW);
-  VertScrollBar.InternalSetRange(NeededClientH);
+  if HorzScrollBar.Visible then
+    HorzScrollBar.InternalSetRange(NeededClientW)
+  else
+    HorzScrollBar.InternalSetRange(0);
+
+  if VertScrollBar.Visible then
+    VertScrollBar.InternalSetRange(NeededClientH)
+  else
+    VertScrollBar.InternalSetRange(0);
 end;
 
 class function TScrollingWinControl.GetControlClassDefaultSize: TSize;
@@ -161,23 +168,6 @@ begin
 end;
 
 procedure TScrollingWinControl.ComputeScrollbars;
-// true if something has changed
-// update Page, AutoRange
-
-  {procedure trav(aControl: TControl; Prefix: string);
-  var
-    w: integer;
-    h: integer;
-    i: Integer;
-  begin
-    if not aControl.IsVisible then exit;
-    aControl.GetPreferredSize(w,h,true,true);
-    debugln([Prefix,'W ',DbgSName(aControl),' ',dbgs(aControl.BoundsRect),' Pref=',w,'x',h]);
-    if aControl is TWinControl then
-      for i:=0 to TWinControl(aControl).ControlCount-1 do
-        trav(TWinControl(aControl).Controls[i],Prefix+'  ');
-  end;}
-
   procedure UpdateBar(aBar: TControlScrollBar; aClientSize: integer);
   begin
     // page (must be smaller than Range but at least 1)
