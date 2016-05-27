@@ -211,9 +211,9 @@ msgstr ""
 msgid "Find troublesome files"
 msgstr ""
 
-#: pocheckerconsts.sfuzzy
-msgid "Fuzzy"
-msgstr "Confuso"
+#: pocheckerconsts.sfuzzystringstotal
+msgid "Fuzzy strings (total: %s)"
+msgstr ""
 
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
@@ -407,13 +407,25 @@ msgstr ""
 msgid "Total errors found: %d"
 msgstr "Total de errores encontrados: %d"
 
+#: pocheckerconsts.stotalfuzzystrings
+msgid "Total fuzzy strings: %s"
+msgstr ""
+
+#: pocheckerconsts.stotaltranslatedstrings
+msgid "Total translated strings: %s"
+msgstr ""
+
+#: pocheckerconsts.stotaluntranslatedstrings
+msgid "Total untranslated strings: %s"
+msgstr ""
+
 #: pocheckerconsts.stotalwarnings
 msgid "Total warnings found: %d"
 msgstr "Total de avisos encontrados: %d"
 
-#: pocheckerconsts.stranslated
-msgid "Translated"
-msgstr "Traducido"
+#: pocheckerconsts.stranslatedstringstotal
+msgid "Translated strings (total: %s)"
+msgstr ""
 
 #: pocheckerconsts.stranslation
 msgid "Translation"
@@ -435,7 +447,7 @@ msgstr "&Deseleccionar Todo"
 msgid "Unselect all files"
 msgstr "Deseleccionar todos los ficheros"
 
-#: pocheckerconsts.suntranslated
-msgid "Untranslated"
-msgstr "Sin traducción"
+#: pocheckerconsts.suntranslatedstringstotal
+msgid "Untranslated strings (total: %s)"
+msgstr ""
 

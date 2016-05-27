@@ -213,9 +213,9 @@ msgstr ""
 msgid "Find troublesome files"
 msgstr "Aggasztó fájlok keresése"
 
-#: pocheckerconsts.sfuzzy
-msgid "Fuzzy"
-msgstr "Bizonytalan"
+#: pocheckerconsts.sfuzzystringstotal
+msgid "Fuzzy strings (total: %s)"
+msgstr ""
 
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
@@ -409,13 +409,25 @@ msgstr "A következő %s elárvult .po fájl található:"
 msgid "Total errors found: %d"
 msgstr "Összes megtalált hiba: %d"
 
+#: pocheckerconsts.stotalfuzzystrings
+msgid "Total fuzzy strings: %s"
+msgstr ""
+
+#: pocheckerconsts.stotaltranslatedstrings
+msgid "Total translated strings: %s"
+msgstr ""
+
+#: pocheckerconsts.stotaluntranslatedstrings
+msgid "Total untranslated strings: %s"
+msgstr ""
+
 #: pocheckerconsts.stotalwarnings
 msgid "Total warnings found: %d"
 msgstr "Összes figyelmeztetés: %d"
 
-#: pocheckerconsts.stranslated
-msgid "Translated"
-msgstr "Lefordítva"
+#: pocheckerconsts.stranslatedstringstotal
+msgid "Translated strings (total: %s)"
+msgstr ""
 
 #: pocheckerconsts.stranslation
 msgid "Translation"
@@ -437,7 +449,7 @@ msgstr "Kijelölések törlése"
 msgid "Unselect all files"
 msgstr "Kijelölés megszüntetése"
 
-#: pocheckerconsts.suntranslated
-msgid "Untranslated"
-msgstr "Nincs lefordítva"
+#: pocheckerconsts.suntranslatedstringstotal
+msgid "Untranslated strings (total: %s)"
+msgstr ""
 

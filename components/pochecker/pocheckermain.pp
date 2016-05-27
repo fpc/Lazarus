@@ -583,6 +583,7 @@ var
   TestTypes: TPoTestTypes;
   TestOptions: TPoTestOptions;
   ErrorCount, WarningCount: integer;
+  TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount: Integer;
   SL: TStrings;
   ResultDlg: TResultDlgForm;
   mr: TModalResult;
@@ -601,7 +602,7 @@ begin
   try
     PoFamilyList.TestTypes := TestTypes;
     PoFamilyList.TestOptions := TestOptions;
-    PoFamilyList.RunTests(ErrorCount, WarningCount, SL);
+    PoFamilyList.RunTests(ErrorCount, WarningCount, TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount, SL);
     //debugln('RunSelectedTests: ', Format(sTotalErrors, [ErrorCount]));
     //debugln('                  ', Format(sTotalWarnings, [WarningCount]));
     if (ErrorCount > 0) or (WarningCount > 0) or
@@ -609,8 +610,15 @@ begin
     begin
       SL.Add(Format(sTotalErrors, [ErrorCount]));
       SL.Add(Format(sTotalWarnings, [WarningCount]));
+      SL.Add(Format(sTotalUntranslatedStrings, [IntToStr(TotalUntranslatedCount)]));
+      SL.Add(Format(sTotalFuzzyStrings, [IntToStr(TotalFuzzyCount)]));
+      SL.Add('');
+      SL.Add(Format(sTotalTranslatedStrings, [IntToStr(TotalTranslatedCount)]));
       ResultDlg := TResultDlgForm.Create(nil);
       try
+        ResultDlg.FTotalTranslated := TotalTranslatedCount;
+        ResultDlg.FTotalUntranslated := TotalUntranslatedCount;
+        ResultDlg.FTotalFuzzy := TotalFuzzyCount;
         ResultDlg.Log.Assign(SL);
         FreeAndNil(SL);                 //No need to keep 2 copies of this data
         if (pttCheckStatistics in TestTypes) then

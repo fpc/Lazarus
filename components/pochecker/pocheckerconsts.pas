@@ -30,6 +30,9 @@ resourcestring
 
   sTotalErrors = 'Total errors found: %d';
   sTotalWarnings = 'Total warnings found: %d';
+  sTotalUntranslatedStrings = 'Total untranslated strings: %s';
+  sTotalFuzzyStrings = 'Total fuzzy strings: %s';
+  sTotalTranslatedStrings = 'Total translated strings: %s';
   sNoErrorsFound = 'No errors found';
   sCurrentTest = 'Test: %s on %s';
   sNoTestSelected = 'There are no tests selected.';
@@ -44,9 +47,9 @@ resourcestring
 
   //Graphical summary form
   sGrapStatFormCaption = 'Graphical summary';
-  sTranslated = 'Translated';
-  sUntranslated = 'Untranslated';
-  sFuzzy = 'Fuzzy';
+  sTranslatedStringsTotal = 'Translated strings (total: %s)';
+  sUntranslatedStringsTotal = 'Untranslated strings (total: %s)';
+  sFuzzyStringsTotal = 'Fuzzy strings (total: %s)';
   sStatHint = '%3d Translated (%3.1f%%)' + LineEnding +
               '%3d UnTranslated (%3.1f%%)' + LineEnding +
               '%3d Fuzzy (%3.1f%%)' + LineEnding +

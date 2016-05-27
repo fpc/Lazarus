@@ -213,9 +213,9 @@ msgstr ""
 msgid "Find troublesome files"
 msgstr "Найти проблемные файлы"
 
-#: pocheckerconsts.sfuzzy
-msgid "Fuzzy"
-msgstr "Неточные переводы"
+#: pocheckerconsts.sfuzzystringstotal
+msgid "Fuzzy strings (total: %s)"
+msgstr "Неточные переводы (всего: %s)"
 
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
@@ -409,13 +409,25 @@ msgstr "Найдены файлы переводов PO (%s шт.) без соо
 msgid "Total errors found: %d"
 msgstr "Всего найдено ошибок: %d"
 
+#: pocheckerconsts.stotalfuzzystrings
+msgid "Total fuzzy strings: %s"
+msgstr "Всего неточных переводов: %s"
+
+#: pocheckerconsts.stotaltranslatedstrings
+msgid "Total translated strings: %s"
+msgstr "Всего переведённых строк: %s"
+
+#: pocheckerconsts.stotaluntranslatedstrings
+msgid "Total untranslated strings: %s"
+msgstr "Всего непереведённых строк: %s"
+
 #: pocheckerconsts.stotalwarnings
 msgid "Total warnings found: %d"
 msgstr "Всего найдено предупреждений: %d"
 
-#: pocheckerconsts.stranslated
-msgid "Translated"
-msgstr "Переведённые строки"
+#: pocheckerconsts.stranslatedstringstotal
+msgid "Translated strings (total: %s)"
+msgstr "Переведённые строки (всего: %s)"
 
 #: pocheckerconsts.stranslation
 msgid "Translation"
@@ -437,7 +449,7 @@ msgstr "&Снять выбор"
 msgid "Unselect all files"
 msgstr "Снять выбор файлов"
 
-#: pocheckerconsts.suntranslated
-msgid "Untranslated"
-msgstr "Непереведённые строки"
+#: pocheckerconsts.suntranslatedstringstotal
+msgid "Untranslated strings (total: %s)"
+msgstr "Непереведённые строки (всего: %s)"
 

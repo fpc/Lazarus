@@ -199,9 +199,6 @@ end;
 procedure TGraphStatForm.FormCreate(Sender: TObject);
 begin
   Caption := sGrapStatFormCaption;
-  TranslatedLabel.Caption := sTranslated;
-  UntranslatedLabel.Caption := sUnTranslated;
-  FuzzyLabel.Caption := sFuzzy;
   POEditorMenuItem.Caption := sOpenFileInSystemPOEditor;
   ExtEditorMenuItem.Caption := sOpenFileInExternalEditor;
   IDEEditorMenuItem.Caption := sOpenFileInIDEEditor;
@@ -336,7 +333,7 @@ begin
       Bmp := CreateBitmap(AStat);
       AddToListView(AStat, Bmp);
 
-      //if there are many icns to draw, occasionally update the ListView as visual feedback
+      //if there are many icons to draw, occasionally update the ListView as visual feedback
       if (((Index + 1) mod 25) = 0) then
       begin
         ListView.EndUpdate;

@@ -38,6 +38,11 @@ type
     procedure LoadConfig;
     procedure SaveConfig;
   public
+    // The following fields keep translation statistics calculated during tests performing.
+    // They will allow to not calculate these values again in GraphStat form.
+    FTotalTranslated: Integer;
+    FTotalUntranslated: Integer;
+    FTotalFuzzy: Integer;
     property Log: TStringList read FLog write FLog;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
     property Settings: TPoCheckerSettings read FSettings write FSettings;
@@ -60,6 +65,9 @@ begin
   SaveBtn.Caption := sSaveCaption;
   CopyBtn.Caption := sCopyCaption;
   GraphStatBtn.Caption := sShowStatGraph;
+  FTotalTranslated := 0;
+  FTotalUntranslated := 0;
+  FTotalFuzzy := 0;
 end;
 
 procedure TResultDlgForm.FormClose(Sender: TObject;
@@ -107,6 +115,14 @@ begin
   try
     GraphStatForm.PoFamilyStats := Self.PoFamilyStats;
     GraphStatForm.Settings := Self.Settings;
+
+    GraphStatForm.TranslatedLabel.Caption := Format(sTranslatedStringsTotal, [
+      IntToStr(FTotalTranslated)]);
+    GraphStatForm.UnTranslatedLabel.Caption := Format(sUntranslatedStringsTotal
+      , [IntToStr(FTotalUntranslated)]);
+    GraphStatForm.FuzzyLabel.Caption := Format(sFuzzyStringsTotal, [IntToStr(
+      FTotalFuzzy)]);
+
     mr := GraphStatForm.ShowModal;
     if mr = mrOpenEditorFile then ModalResult := mr; // To inform pocheckermain
   finally
@@ -121,7 +137,7 @@ begin
     try
       LogMemo.Lines.SaveToFile(SaveDialog.FileName);
     except
-      on E: EStreamError do MessageDlg('Po-checker',Format(sSaveError,[SaveDialog.FileName]),mtError, [mbOk],0);
+      on E: EStreamError do MessageDlg('POChecker',Format(sSaveError,[SaveDialog.FileName]),mtError, [mbOk],0);
     end;
   end;
 end;
@@ -133,7 +149,7 @@ begin
     try
       LogMemo.Lines.SaveToFile(SaveDialog.FileName);
     except
-      MessageDlg('Po-checker',Format(sSaveError,[SaveDialog.FileName]), mtError, [mbOk], 0);
+      MessageDlg('POChecker',Format(sSaveError,[SaveDialog.FileName]), mtError, [mbOk], 0);
     end;
   end;
 end;

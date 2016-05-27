@@ -36,7 +36,7 @@ type
     destructor Destroy; override;
     procedure Add(PoFamily: TPofamily);
     function Count: Integer;
-    procedure RunTests(out ErrorCount, WarningCount: Integer; ErrorLog: TStrings);
+    procedure RunTests(out ErrorCount, WarningCount, TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount: Integer; ErrorLog: TStrings);
     property Items[Index: Integer]: TPoFamily read GetItem; // write SetItem;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats;
     property TestTypes: TPoTestTypes read FTestTypes write FTestTypes;
@@ -116,10 +116,11 @@ begin
   Result := FList.Count;
 end;
 
-procedure TPoFamilyList.RunTests(out ErrorCount, WarningCount: Integer;
+procedure TPoFamilyList.RunTests(out ErrorCount, WarningCount, TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount: Integer;
   ErrorLog: TStrings);
 var
   Index, ThisErrorCount, ThisWarningCount: Integer;
+  ThisTranslatedCount, ThisUntranslatedCount, ThisFuzzyCount: Integer;
   PoFamily: TPoFamily;
   //ThisLog: TStringList;
 begin
@@ -131,6 +132,9 @@ begin
   //ThisLog := TStringList.Create;
   ErrorCount := NoError;
   WarningCount := NoError;
+  TotalTranslatedCount := 0;
+  TotalUntranslatedCount := 0;
+  TotalFuzzyCount := 0;
   FPoFamilyStats.Clear;
   try
     for Index := 0 to FList.Count - 1 do
@@ -140,10 +144,13 @@ begin
       PoFamily.OnTestEnd := FOnTestEnd;
       PoFamily.TestTypes := FTesttypes;
       PoFamily.TestOptions := FTestOptions;
-      PoFamily.RunTests(ThisErrorCount, ThisWarningCount, ErrorLog);
+      PoFamily.RunTests(ThisErrorCount, ThisWarningCount, ThisTranslatedCount, ThisUntranslatedCount, ThisFuzzyCount, ErrorLog);
       PoFamily.PoFamilyStats.AddItemsTo(FPoFamilyStats);
       ErrorCount := ErrorCount + ThisErrorCount;
       WarningCount := WarningCount + ThisWarningCount;
+      TotalTranslatedCount := TotalTranslatedCount + ThisTranslatedCount;
+      TotalUntranslatedCount := TotalUntranslatedCount + ThisUntranslatedCount;
+      TotalFuzzyCount := TotalFuzzyCount + ThisFuzzyCount;
       //ThisLog.AddStrings(ErrorLog)
 
     end;
