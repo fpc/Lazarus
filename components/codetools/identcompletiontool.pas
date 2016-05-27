@@ -414,7 +414,7 @@ type
     procedure FindCollectionContext(Params: TFindDeclarationParams;
       IdentStartPos: integer; CursorNode: TCodeTreeNode;
       out ExprType: TExpressionType; out ContextExprStartPos: LongInt;
-      out StartInSubContext: Boolean);
+      out StartInSubContext, HasInheritedKeyword: Boolean);
     function CollectAllContexts(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
     procedure AddCollectionContext(Tool: TFindDeclarationTool;
@@ -2045,18 +2045,18 @@ end;
 
 procedure TIdentCompletionTool.FindCollectionContext(
   Params: TFindDeclarationParams; IdentStartPos: integer;
-  CursorNode: TCodeTreeNode;
-  out ExprType: TExpressionType;
-  out ContextExprStartPos: LongInt;
-  out StartInSubContext: Boolean);
+  CursorNode: TCodeTreeNode; out ExprType: TExpressionType; out
+  ContextExprStartPos: LongInt; out StartInSubContext,
+  HasInheritedKeyword: Boolean);
 
   function GetContextExprStartPos(IdentStartPos: integer;
     ContextNode: TCodeTreeNode): integer;
   begin
     MoveCursorToCleanPos(IdentStartPos);
     ReadPriorAtom;
+    HasInheritedKeyword := UpAtomIs('INHERITED');
     if (CurPos.Flag=cafPoint)
-    or UpAtomIs('INHERITED') then begin
+    or HasInheritedKeyword then begin
       Result:=FindStartOfTerm(IdentStartPos,NodeTermInType(ContextNode));
       if Result<ContextNode.StartPos then
         Result:=ContextNode.StartPos;
@@ -2576,7 +2576,7 @@ var
   StartPosOfVariable: LongInt;
   CursorContext: TFindContext;
   IdentStartXY: TCodeXYPosition;
-  InFrontOfDirective: Boolean;
+  InFrontOfDirective, HasInheritedKeyword: Boolean;
   ExprType: TExpressionType;
   IdentifierPath: string;
   
@@ -2675,12 +2675,15 @@ begin
         GatherSourceNames(GatherContext);
       end else begin
         FindCollectionContext(Params,IdentStartPos,CursorNode,
-                             ExprType,ContextExprStartPos,StartInSubContext);
+                             ExprType,ContextExprStartPos,StartInSubContext,
+                             HasInheritedKeyword);
         //debugln(['TIdentCompletionTool.GatherIdentifiers FindCollectionContext ',ExprTypeToString(ExprType)]);
 
         GatherContext := ExprType.Context;
+        if GatherContext.Node<>nil then
+          DebugLn('%d:%d', [GatherContext.Node.StartPos, GatherContext.Node.EndPos]);
         // find class and ancestors if existing (needed for protected identifiers)
-        if GatherContext.Tool = Self then
+        if (GatherContext.Tool = Self) or HasInheritedKeyword then
         begin
           FindContextClassAndAncestorsAndExtendedClassOfHelper(IdentStartXY, FICTClassAndAncestorsAndExtClassOfHelper);
         end;
@@ -2981,7 +2984,7 @@ var
     VarNameAtom, ProcNameAtom: TAtomPosition;
     ParameterIndex: integer;
     ContextExprStartPos: LongInt;
-    StartInSubContext: Boolean;
+    StartInSubContext, HasInheritedKeyword: Boolean;
     ExprType: TExpressionType;
   begin
     Result:=false;
@@ -3022,7 +3025,8 @@ var
       CurrentIdentifierContexts.EndPos:=SrcLen+1;
 
     FindCollectionContext(Params,ProcNameAtom.StartPos,CursorNode,
-                          ExprType,ContextExprStartPos,StartInSubContext);
+                          ExprType,ContextExprStartPos,StartInSubContext,
+                          HasInheritedKeyword);
 
     if ContextExprStartPos=0 then ;
     {$IFDEF VerboseCodeContext}
