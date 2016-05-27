@@ -4662,7 +4662,6 @@ docs/SVN.txt svneol=native#text/plain
 docs/acknowledgements.txt svneol=native#text/plain
 docs/additionalmsghelp.xml svneol=native#text/plain
 docs/booth/ProdProgEntwMitOpenSourceSystems2007.odp -text
-docs/contributors.utf8 svneol=native#text/plain
 docs/diagrams/customdrawn_diagram.odg -text
 docs/html/Makefile svneol=native#text/plain
 docs/html/README.txt svneol=native#text/plain

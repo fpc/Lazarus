@@ -1,7 +1,7 @@
 #The following people contributed to Lazarus:
 
 A. J. Venter
-Aleksey Lagunov
+Алексей Лагунов
 Alexander Grau
 Alexander S. Klenin
 Alexander Shiyan
@@ -15,7 +15,7 @@ Andrew Haines
 Andrew Johnson
 Anton A. Panferov
 Anton Kavalenka
-Antonio Galvao
+Antônio Galvão
 Arnold Bosch
 Attila Tamás - Hungarian translation
 August Klein
@@ -29,7 +29,7 @@ Bernd Engelhardt
 Bernd Kreuss
 Bernd Mueller
 Bob Wingard
-Boguslaw Brandys
+Bogusław Brandys
 Boian Mitov
 Boris Arko
 Boris Glavin
@@ -58,7 +58,7 @@ Denis Golovan
 Denis Kozlov
 Denis Volodarsky
 Derit Agustin
-Diogo Picarra
+Diogo Piçarra
 Dirk Schiphorst
 Dmitry Boyarintsev
 Dominique Louis
@@ -72,7 +72,7 @@ Ezik Shlomi
 Fabrizio Fellini
 Fathony Luthfillah (x2nie)
 Felipe Monteiro de Carvalho
-Flavio Etrusco
+Flávio Etrusco
 Florian Koeberle
 Francisco Manuel
 Gerard Visent
@@ -102,7 +102,7 @@ Jeffrey A. Wormsley
 Jeroen van Idekinge
 Jesus Reyes
 JiXian Yang
-Joerg Braun - German translation
+Jörg Braun - German translation
 Johannes Muller
 Jonas Maebe
 Joost van der Sluis
@@ -110,9 +110,9 @@ Jose Alonso Cardenas M.
 José Martínez - Spanish translation
 Jose Mejuto
 Jouke Rensma
-Juan Salvador Perez García
+Juan Salvador Pérez García
 Juha Manninen
-Junior Goncalves
+Júnior Gonçalves
 Justin Smyth
 Karl Brandt
 Keith Bowes
@@ -127,8 +127,8 @@ Luca Olivetti
 Lucas Martin
 Ludo Brands
 Luis R. Hilario B.
-Luis Rodrigues made TChart and misc patches
-Luiz Americo
+Luís Rodrigues
+Luiz Américo
 Maciej Izak
 Marc Fokker
 Marc Geldon
@@ -142,12 +142,12 @@ Markus Muller
 Martin Friebe
 Martin Patik
 Martin Smat
-Marton Papp
+Márton Papp
 Martyn Ranyard
 Massimo Magnano
 Massimo Soricetti
 Matthijs Willemstein
-Mattias Gaertner
+Mattias Gärtner
 Mattias Hansson
 Maxim Ganetsky
 Mazen Neifer
@@ -187,7 +187,7 @@ Sandro Cumerlato
 Sean McIlwain
 Sebastian Gasiorek
 Seppo Suutarla - Finnish translation
-Sergio Marcelo
+Sérgio Marcelo
 Shane Miller
 Sileno Goedicke
 Silvio Clecio
@@ -201,11 +201,11 @@ Theo Lustenberger
 Tim P. Launchbury
 Tobias Giesen
 Tom Lisjac
-Tomas Gregorovic
+Tomáš Gregorovič
 Tomasz Wieckowski
 Tony Maro
 Vaclav Valicek
-Valdas Jankunas
+Valdas Jankūnas
 Valdinilson Lourenço da Cunha
 Vasily I. Volchenko
 Vincent Beuselinck
@@ -224,6 +224,6 @@ Zaenal Mutaqin
 Zaher Dirkey
 Zdravko Gabrovski
 Zeljan Rikalo
-Zilvinas Ledas
+Žilvinas Ledas
 
 #and special thanks to the FPC team.
