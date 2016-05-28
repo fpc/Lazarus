@@ -63,8 +63,8 @@ type
 
     function UpdateResources(AResources: TAbstractProjectResources;
                              const MainFilename: string): Boolean; override;
-    procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; Path: String); override;
-    procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; Path: String); override;
+    procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; const Path: String); override;
+    procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; const Path: String); override;
 
     function SaveIconFile: Boolean;
 
@@ -164,12 +164,12 @@ begin
   AResources.AddSystemResource(ARes);
 end;
 
-procedure TProjectIcon.WriteToProjectFile(AConfig: TObject; Path: String);
+procedure TProjectIcon.WriteToProjectFile(AConfig: TObject; const Path: String);
 begin
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/Icon/Value', BoolToStr(IsEmpty), BoolToStr(true));
 end;
 
-procedure TProjectIcon.ReadFromProjectFile(AConfig: TObject; Path: String);
+procedure TProjectIcon.ReadFromProjectFile(AConfig: TObject; const Path: String);
 begin
   with TXMLConfig(AConfig) do
   begin

@@ -31,8 +31,8 @@ type
     procedure DoAfterBuild({%H-}AResources: TAbstractProjectResources; {%H-}AReason: TCompileReason; {%H-}SaveToTestDir: boolean); virtual;
     procedure DoBeforeBuild({%H-}AResources: TAbstractProjectResources; {%H-}AReason: TCompileReason; {%H-}SaveToTestDir: boolean); virtual;
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; virtual; abstract;
-    procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; Path: String); virtual; abstract;
-    procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; Path: String); virtual; abstract;
+    procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; const Path: String); virtual; abstract;
+    procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; const Path: String); virtual; abstract;
 
     property Modified: boolean read FModified write SetModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
