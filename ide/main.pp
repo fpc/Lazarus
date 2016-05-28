@@ -8502,6 +8502,8 @@ begin
   end;
 
   if SearchedFilename<>'' then begin
+    // save last jump point (must be before editor change)
+    SourceEditorManager.AddJumpPointClicked(Self);
     // open the file in the source editor
     AnUnitInfo := nil;
     if Project1<>nil then
@@ -8517,7 +8519,6 @@ begin
       Result:=(DoOpenEditorFile(SearchedFilename,-1,-1,OpenFlags)=mrOk);
     if Result then begin
       // set caret position
-      SourceEditorManager.AddJumpPointClicked(Self);
       SrcEdit:=SourceEditorManager.ActiveEditor;
       if LogCaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
         LogCaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
