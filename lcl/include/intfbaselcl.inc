@@ -569,18 +569,26 @@ function TWidgetSet.RadialArc(DC: HDC;
   left, top, right, bottom, sx, sy, ex, ey: Integer): Boolean;
 var
   A1, A2: Extended;
+  A2i : integer;
 begin
   Coords2Angles(left, top, right-left, bottom-top, sx, sy, ex, ey, A1, A2);
-  Result := Arc(DC, left, top, right, bottom, RoundToInt(A1), RoundToInt(A2));
+  A2i := RoundToInt(A2);
+  if A2i = 0 then
+    A2i := 5760;
+  Result := Arc(DC, left, top, right, bottom, RoundToInt(A1), A2i);
 end;
 
 function TWidgetSet.RadialChord(DC: HDC;
   x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
 var
   A1, A2: Extended;
+  A2i : integer;
 Begin
   Coords2Angles(x1, y1, x2-x1, y2-y1, sx, sy, ex, ey, A1, A2);
-  Result := AngleChord(DC, x1, y1, x2, y2, RoundToInt(A1), RoundToInt(A2));
+  A2i := RoundToInt(A2);
+  if A2i = 0 then
+    A2i := 5760;
+  Result := AngleChord(DC, x1, y1, x2, y2, RoundToInt(A1), A2i);
 End;
 
 function TWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2,
