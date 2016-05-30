@@ -2008,32 +2008,34 @@ begin
   FAutoHideHintTimer.Enabled := False;
   if HintIsVisible then begin
     Cur := Mouse.CursorPos; // Desktop coordinates
-    if not IsRectEmpty(FScreenRect) then
+
+    hw := CurHintWindow;
+    OkX := ( (FAutoHintMousePos.x <= hw.Left) and
+             (Cur.x > FAutoHintMousePos.x) and (Cur.x <= hw.Left + hw.Width)
+           ) or
+           ( (FAutoHintMousePos.x >= hw.Left + hw.Width) and
+             (Cur.x < FAutoHintMousePos.x) and (Cur.x >= hw.Left)
+           ) or
+           ( (Cur.x >= hw.Left) and (Cur.x <= hw.Left + hw.Width) );
+    OkY := ( (FAutoHintMousePos.y <= hw.Top) and
+             (Cur.y > FAutoHintMousePos.y) and (Cur.y <= hw.Top + hw.Height)
+           ) or
+           ( (FAutoHintMousePos.y >= hw.Top + hw.Height) and
+             (Cur.y < FAutoHintMousePos.y) and (Cur.y >= hw.Top)
+           ) or
+           ( (Cur.y >= hw.Top) and (Cur.y <= hw.Top + hw.Height) );
+
+    // Update FAutoHintMousePos, if outside the HintWin, and new CurPos is closer to HintWin
+    if OkX then FAutoHintMousePos.x := Cur.x;
+    if OkY then FAutoHintMousePos.y := Cur.y;
+
+    if (not IsRectEmpty(FScreenRect)) and PtInRect(FScreenRect, Cur) then
     begin
-      if PtInRect(FScreenRect, Cur) then
+      // Do not close, if mouse still over the same word, that triggered the hint
         Exit;
     end else
     begin
-      hw := CurHintWindow;
-      Cur := Mouse.CursorPos; // Desktop coordinates
-      OkX := ( (FAutoHintMousePos.x <= hw.Left) and
-               (Cur.x > FAutoHintMousePos.x) and (Cur.x <= hw.Left + hw.Width)
-             ) or
-             ( (FAutoHintMousePos.x >= hw.Left + hw.Width) and
-               (Cur.x < FAutoHintMousePos.x) and (Cur.x >= hw.Left)
-             ) or
-             ( (Cur.x >= hw.Left) and (Cur.x <= hw.Left + hw.Width) );
-      OkY := ( (FAutoHintMousePos.y <= hw.Top) and
-               (Cur.y > FAutoHintMousePos.y) and (Cur.y <= hw.Top + hw.Height)
-             ) or
-             ( (FAutoHintMousePos.y >= hw.Top + hw.Height) and
-               (Cur.y < FAutoHintMousePos.y) and (Cur.y >= hw.Top)
-             ) or
-             ( (Cur.y >= hw.Top) and (Cur.y <= hw.Top + hw.Height) );
-
-      if OkX then FAutoHintMousePos.x := Cur.x;
-      if OkY then FAutoHintMousePos.y := Cur.y;
-
+      // Do not close if mouse moves towards the hint. Allow mouse to enter hint
       OkX := OkX or
              ( (FAutoHintMousePos.x <= hw.Left + MaxJitter) and
                (Cur.x > FAutoHintMousePos.x - MaxJitter) and (Cur.x <= hw.Left + hw.Width + MaxJitter)
