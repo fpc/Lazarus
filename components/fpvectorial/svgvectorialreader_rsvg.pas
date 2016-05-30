@@ -131,7 +131,7 @@ begin
   FRSVG_CMD := ExtractFilePath(paramstr(0))+'rsvg-convert.exe';
   {$endif}
   {$if defined(Unix) and not defined(darwin)}
-  FRSVG_CMD := 'rsvg-convert';
+  FRSVG_CMD := '/usr/bin/rsvg-convert';
   {$endif}
 end;
 

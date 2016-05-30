@@ -2604,8 +2604,8 @@ begin
   UpdateDocumentSize();
   ALeft := X;
   ATop := Y;
-  ARight := X + Document.Width;
-  ABottom := Y + Document.Height;
+  ARight := X + GetWidth();
+  ABottom := Y + GetHeight();
 end;
 
 procedure TvEmbeddedVectorialDoc.Render(ADest: TFPCustomCanvas;
@@ -2634,12 +2634,17 @@ begin
   lPage := Document.GetPage(0);
   lPageHeight := Round(lPage.Height);
   lPage.GetNaturalRenderPos(lPageHeight, lMulY);
+
+  UpdateDocumentSize();
   lX_px := CoordToCanvasX(X);
   lY_px := CoordToCanvasY(Y);
 
-  UpdateDocumentSize();
-  lWidth_px := Abs(lX_px - CoordToCanvasX(X+GetWidth()));
-  lHeight_px := Abs(lY_px - CoordToCanvasY(Y+GetHeight()));
+  // Ignore MulX/MulY here so that it doesn't affect AutoFit, this fixes an
+  // issue where embeded svg in html was getting out of proportion if the zoom
+  // was different than 1.0
+  // Calculate the standard zoom (zoom with mulx=1.0)
+  lWidth_px := Round(GetWidth());
+  lHeight_px := Round(GetHeight());
   lPage.AutoFit(ADest, lWidth_px, lHeight_px, lHeight_px, lDeltaX, lDeltaY, lZoom);
   lZoom := Abs(lZoom);
   lX_px += lDeltaX;
@@ -2648,6 +2653,9 @@ begin
   begin
     lY_px := lY_px + lHeight_px;
   end;
+  // recalculate lWidth_px/height considering now mulx/muly
+  lWidth_px := Abs(CoordToCanvasX(GetWidth()));
+  lHeight_px := Abs(CoordToCanvasY(GetHeight()));
 
   if ADoDraw then
   begin
