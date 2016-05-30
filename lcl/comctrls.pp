@@ -1178,7 +1178,7 @@ type
     FVisible: Boolean;
     FWidth: TWidth;
     FImageIndex: TImageIndex;
-    FTag: Integer;
+    FTag: PtrInt;
     function GetWidth: TWidth;
     procedure WSCreateColumn;
     procedure WSDestroyColumn;
@@ -1208,7 +1208,7 @@ type
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property MaxWidth: TWidth read FMaxWidth write SetMaxWidth default 0;
     property MinWidth: TWidth read FMinWidth write SetMinWidth default 0;
-    property Tag: Integer read FTag write FTag default 0;
+    property Tag: PtrInt read FTag write FTag default 0;
     property Visible: Boolean read FVisible write SetVisible default true;
     property Width: TWidth read GetWidth write SetWidth default 50;
   end;
