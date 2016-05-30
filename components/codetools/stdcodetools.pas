@@ -1782,6 +1782,21 @@ var
       end;
     end;
 
+    function FindProceduresInHelper(Node: TCodeTreeNode): boolean;
+    begin
+      Result := False;
+      Node := Node.FirstChild;
+      while (Node<>nil) and (Node.Desc <> ctnEndPoint) do
+      begin
+        if (Node.Desc = ctnProcedure) and (Node.FirstChild<>nil) then
+        begin
+          if IsIdentifierUsed(Node.FirstChild.StartPos) then
+            Exit(True);
+        end;
+        Node:=Node.Next;
+      end;
+    end;
+
   var
     Node: TCodeTreeNode;
   begin
@@ -1789,6 +1804,8 @@ var
     Node:=IntfNode.FirstChild;
     while Node<>nil do begin
       case Node.Desc of
+      ctnTypeHelper, ctnRecordHelper, ctnClassHelper:
+        if FindProceduresInHelper(Node) then exit;
       ctnEnumIdentifier:
         if IsIdentifierUsed(Node.StartPos) then exit;
       ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnGenericName:
