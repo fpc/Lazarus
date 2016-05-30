@@ -449,7 +449,7 @@ begin
   HorzScrollBar.Tracking := True;
   VertScrollBar.Tracking := True;
   HorzScrollBar.Increment := TPackageTabButton.GetControlClassDefaultSize.cy;
-  VertScrollBar.Increment := TPackageTabButton.GetControlClassDefaultSize.cy;
+  VertScrollBar.Increment := TPackageTabButton.GetControlClassDefaultSize.cy * Mouse.WheelScrollLines;
   HorzScrollBar.Visible := False;
 end;
 
