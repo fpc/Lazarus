@@ -38,11 +38,12 @@ type
     procedure LoadConfig;
     procedure SaveConfig;
   public
-    // The following fields keep translation statistics calculated during tests performing.
-    // They will allow to not calculate these values again in GraphStat form.
+    // The following fields keep translation statistics calculated when tests were performed.
+    // They will allow to avoid recalculation of these values in GraphStat form.
     FTotalTranslated: Integer;
     FTotalUntranslated: Integer;
     FTotalFuzzy: Integer;
+    FTotalPercTranslated: Double;
     property Log: TStringList read FLog write FLog;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
     property Settings: TPoCheckerSettings read FSettings write FSettings;
@@ -117,7 +118,7 @@ begin
     GraphStatForm.Settings := Self.Settings;
 
     GraphStatForm.TranslatedLabel.Caption := Format(sTranslatedStringsTotal, [
-      IntToStr(FTotalTranslated)]);
+      IntToStr(FTotalTranslated), FTotalPercTranslated]);
     GraphStatForm.UnTranslatedLabel.Caption := Format(sUntranslatedStringsTotal
       , [IntToStr(FTotalUntranslated)]);
     GraphStatForm.FuzzyLabel.Caption := Format(sFuzzyStringsTotal, [IntToStr(

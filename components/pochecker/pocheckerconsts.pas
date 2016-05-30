@@ -32,7 +32,7 @@ resourcestring
   sTotalWarnings = 'Total warnings found: %d';
   sTotalUntranslatedStrings = 'Total untranslated strings: %s';
   sTotalFuzzyStrings = 'Total fuzzy strings: %s';
-  sTotalTranslatedStrings = 'Total translated strings: %s';
+  sTotalTranslatedStrings = 'Total translated strings: %s (%.1f%%)';
   sNoErrorsFound = 'No errors found';
   sCurrentTest = 'Test: %s on %s';
   sNoTestSelected = 'There are no tests selected.';
@@ -47,13 +47,13 @@ resourcestring
 
   //Graphical summary form
   sGrapStatFormCaption = 'Graphical summary';
-  sTranslatedStringsTotal = 'Translated strings (total: %s)';
+  sTranslatedStringsTotal = 'Translated strings (total: %s [%.1f%%])';
   sUntranslatedStringsTotal = 'Untranslated strings (total: %s)';
   sFuzzyStringsTotal = 'Fuzzy strings (total: %s)';
-  sStatHint = '%3d Translated (%3.1f%%)' + LineEnding +
-              '%3d UnTranslated (%3.1f%%)' + LineEnding +
-              '%3d Fuzzy (%3.1f%%)' + LineEnding +
-              '%d Error(s) in Selected Tests';
+  sStatHint = 'Translated: %d (%.1f%%)' + LineEnding +
+              'Untranslated: %d (%.1f%%)' + LineEnding +
+              'Fuzzy: %d (%.1f%%)' + LineEnding +
+              'Errors in selected tests: %d';
   SOpenFail = 'Unable to open file:' + LineEnding +  '"%s"';
   SOpenFailExternal = 'Unable to open file' + LineEnding +
                       '"%s"' + LineEnding + 'in external editor' + LineEnding + '"%s"';
@@ -95,9 +95,9 @@ resourcestring
   sDuplicateOriginals = 'The (untranslated) value "%s" is used for more than 1 entry:';
 
   sDuplicateLineNrWithValue = '[Line %d] %s';
-  sPercTranslated = '%s: %4.1f%% translated strings.';
-  sPercUntranslated = '%s: %4.1f%% untranslated strings.';
-  sPercFuzzy = '%s: %4.1f%% fuzzy strings.';
+  sPercTranslated = '%s: %5.1f%% translated strings.';
+  sPercUntranslated = '%s: %5.1f%% untranslated strings.';
+  sPercFuzzy = '%s: %5.1f%% fuzzy strings.';
 
   sFindTroublesomeFiles = 'Find troublesome files';
   sNoTroublesomePoFilesFound = 'No troublesome .po files found.';

@@ -319,20 +319,20 @@ msgstr "原文"
 
 #: pocheckerconsts.spercfuzzy
 #, fuzzy,badformat
-#| msgid "Fuzzy strings: %2.0f%%."
-msgid "%s: %4.1f%% fuzzy strings."
+#| msgid "%s: %4.1f%% fuzzy strings."
+msgid "%s: %5.1f%% fuzzy strings."
 msgstr "未確定文字列：%2.0f%%"
 
 #: pocheckerconsts.sperctranslated
 #, fuzzy,badformat
-#| msgid "Translated strings: %2.0f%%."
-msgid "%s: %4.1f%% translated strings."
+#| msgid "%s: %4.1f%% translated strings."
+msgid "%s: %5.1f%% translated strings."
 msgstr "翻訳された文字列：%2.0f%%"
 
 #: pocheckerconsts.spercuntranslated
 #, fuzzy,badformat
-#| msgid "Untranslated strings: %2.0f%%."
-msgid "%s: %4.1f%% untranslated strings."
+#| msgid "%s: %4.1f%% untranslated strings."
+msgid "%s: %5.1f%% untranslated strings."
 msgstr "未翻訳文字列：%2.0f%%"
 
 #: pocheckerconsts.sresults
@@ -387,10 +387,10 @@ msgstr ""
 
 #: pocheckerconsts.sstathint
 msgid ""
-"%3d Translated (%3.1f%%)\n"
-"%3d UnTranslated (%3.1f%%)\n"
-"%3d Fuzzy (%3.1f%%)\n"
-"%d Error(s) in Selected Tests\n"
+"Translated: %d (%.1f%%)\n"
+"Untranslated: %d (%.1f%%)\n"
+"Fuzzy: %d (%.1f%%)\n"
+"Errors in selected tests: %d\n"
 msgstr ""
 
 #: pocheckerconsts.sthefollowingmasterpofilesaddedtothelist
@@ -412,7 +412,7 @@ msgid "Total fuzzy strings: %s"
 msgstr ""
 
 #: pocheckerconsts.stotaltranslatedstrings
-msgid "Total translated strings: %s"
+msgid "Total translated strings: %s (%.1f%%)"
 msgstr ""
 
 #: pocheckerconsts.stotaluntranslatedstrings
@@ -424,7 +424,7 @@ msgid "Total warnings found: %d"
 msgstr "警告の総数：%d"
 
 #: pocheckerconsts.stranslatedstringstotal
-msgid "Translated strings (total: %s)"
+msgid "Translated strings (total: %s [%.1f%%])"
 msgstr ""
 
 #: pocheckerconsts.stranslation

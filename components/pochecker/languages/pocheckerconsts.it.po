@@ -328,15 +328,21 @@ msgid "Original"
 msgstr "Originale"
 
 #: pocheckerconsts.spercfuzzy
-msgid "%s: %4.1f%% fuzzy strings."
+#, fuzzy
+#| msgid "%s: %4.1f%% fuzzy strings."
+msgid "%s: %5.1f%% fuzzy strings."
 msgstr "%s: %4.1f%% stringhe incerte."
 
 #: pocheckerconsts.sperctranslated
-msgid "%s: %4.1f%% translated strings."
+#, fuzzy
+#| msgid "%s: %4.1f%% translated strings."
+msgid "%s: %5.1f%% translated strings."
 msgstr "%s: %4.1f%% stringhe tradotte."
 
 #: pocheckerconsts.spercuntranslated
-msgid "%s: %4.1f%% untranslated strings."
+#, fuzzy
+#| msgid "%s: %4.1f%% untranslated strings."
+msgid "%s: %5.1f%% untranslated strings."
 msgstr "%s: %4.1f%% stringhe non tradotte."
 
 #: pocheckerconsts.sresults
@@ -388,11 +394,17 @@ msgid "Show statistics graph"
 msgstr "Mostra il grafico"
 
 #: pocheckerconsts.sstathint
+#, fuzzy
+#| msgid ""
+#| "%d Translated (%.1f%%)\n"
+#| "%d UnTranslated (%.1f%%)\n"
+#| "%d Fuzzy (%.1f%%)\n"
+#| "%d Error(s) in Selected Tests\n"
 msgid ""
-"%3d Translated (%3.1f%%)\n"
-"%3d UnTranslated (%3.1f%%)\n"
-"%3d Fuzzy (%3.1f%%)\n"
-"%d Error(s) in Selected Tests\n"
+"Translated: %d (%.1f%%)\n"
+"Untranslated: %d (%.1f%%)\n"
+"Fuzzy: %d (%.1f%%)\n"
+"Errors in selected tests: %d\n"
 msgstr ""
 "%3d Tradotte (%3.1f%%)\n"
 "%3d Non tradotte (%3.1f%%)\n"
@@ -416,7 +428,7 @@ msgid "Total fuzzy strings: %s"
 msgstr ""
 
 #: pocheckerconsts.stotaltranslatedstrings
-msgid "Total translated strings: %s"
+msgid "Total translated strings: %s (%.1f%%)"
 msgstr ""
 
 #: pocheckerconsts.stotaluntranslatedstrings
@@ -428,7 +440,7 @@ msgid "Total warnings found: %d"
 msgstr "Totale avvertimenti: %d"
 
 #: pocheckerconsts.stranslatedstringstotal
-msgid "Translated strings (total: %s)"
+msgid "Translated strings (total: %s [%.1f%%])"
 msgstr ""
 
 #: pocheckerconsts.stranslation

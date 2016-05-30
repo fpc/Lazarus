@@ -584,6 +584,7 @@ var
   TestOptions: TPoTestOptions;
   ErrorCount, WarningCount: integer;
   TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount: Integer;
+  TotalPercTranslated: Double;
   SL: TStrings;
   ResultDlg: TResultDlgForm;
   mr: TModalResult;
@@ -608,17 +609,19 @@ begin
     if (ErrorCount > 0) or (WarningCount > 0) or
       (pttCheckStatistics in TestTypes) then
     begin
+      TotalPercTranslated := 100 * TotalTranslatedCount / (TotalTranslatedCount + TotalUntranslatedCount + TotalFuzzyCount);
       SL.Add(Format(sTotalErrors, [ErrorCount]));
       SL.Add(Format(sTotalWarnings, [WarningCount]));
       SL.Add(Format(sTotalUntranslatedStrings, [IntToStr(TotalUntranslatedCount)]));
       SL.Add(Format(sTotalFuzzyStrings, [IntToStr(TotalFuzzyCount)]));
       SL.Add('');
-      SL.Add(Format(sTotalTranslatedStrings, [IntToStr(TotalTranslatedCount)]));
+      SL.Add(Format(sTotalTranslatedStrings, [IntToStr(TotalTranslatedCount), TotalPercTranslated]));
       ResultDlg := TResultDlgForm.Create(nil);
       try
         ResultDlg.FTotalTranslated := TotalTranslatedCount;
         ResultDlg.FTotalUntranslated := TotalUntranslatedCount;
         ResultDlg.FTotalFuzzy := TotalFuzzyCount;
+        ResultDlg.FTotalPercTranslated := TotalPercTranslated;
         ResultDlg.Log.Assign(SL);
         FreeAndNil(SL);                 //No need to keep 2 copies of this data
         if (pttCheckStatistics in TestTypes) then
