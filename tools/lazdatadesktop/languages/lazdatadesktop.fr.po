@@ -911,3 +911,4 @@ msgstr "Valeur"
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
 msgstr "Un dictionnaire de données est actif. Souhaitez-vous importer dans ce dictionnaire de données ?"
+

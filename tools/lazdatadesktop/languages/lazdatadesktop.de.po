@@ -451,9 +451,9 @@ msgctxt "lazdatadeskstr.sld_connections"
 msgid "Connections"
 msgstr "Verbindungen"
 
-#: lazdatadeskstr.sld_connectiontype
-msgid "Connection type"
-msgstr "Verbindungstyp"
+#: lazdatadeskstr.sld_connectionsdictionaries
+msgid "Connections/Dictionaries"
+msgstr ""
 
 #: lazdatadeskstr.sld_connecttoadatabase
 msgid "Connect to a database of type %s"
@@ -662,6 +662,10 @@ msgstr "Existierende Tabellen aktualisieren"
 msgid "Username"
 msgstr "Benutzername"
 
+#: lazdatadeskstr.sld_view
+msgid "View"
+msgstr ""
+
 #: lazdatadeskstr.sload
 msgid "Load SQL"
 msgstr "SQL laden"
@@ -797,9 +801,13 @@ msgid "Previous"
 msgstr "Zurück"
 
 #: lazdatadeskstr.sql_noconnectionsfound
+#, fuzzy
+#| msgid ""
+#| "No connections or data dictionaries were found.\n"
+#| " Start by creating a new connection or data dictionary\n"
 msgid ""
 "No connections or data dictionaries were found.\n"
-" Start by creating a new connection or data dictionary\n"
+" Start by creating a new connection or data dictionary.\n"
 msgstr ""
 "Keine Verbindungen oder Data Dictionarys wurden gefunden.\n"
 " Beginnen Sie mit der Erzeugung einer neuen Verbindung oder eines Data Dictionary\n"
@@ -857,6 +865,7 @@ msgid "Sequence"
 msgstr "Sequenz"
 
 #: lazdatadeskstr.ssqlerrorcode
+#, fuzzy,badformat
 msgid "SQL Error code: %d"
 msgstr "SQL-Fehlercode: %s"
 
@@ -907,3 +916,4 @@ msgstr "Wert"
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
 msgstr "Es ist ein Datadictionary aktiv. Soll in dieses Datadictionary importiert werden?"
+
