@@ -196,6 +196,7 @@ begin
   if not IDEMacros.SubstituteMacros(Result) then
     debugln(['TResourceItem.GetRealFileName failed FileName="', FileName, '"']);
   Result := TrimFilename(Result);
+  ForcePathDelims(Result);
   if not FilenameIsAbsolute(Result) then
     Result := TrimFilename(AppendPathDelim(ProjectDirectory) + Result);
 end;
