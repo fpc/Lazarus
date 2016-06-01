@@ -3526,6 +3526,7 @@ var
   SaveWidget: QWidgetH;
   LazButton: Byte;
   LazPos: TPoint;
+  MousePos: TQtPoint;
   TrgHandle: TQtWidget;
   TrgControl: TWinControl;
 begin
@@ -3558,8 +3559,11 @@ begin
   // idea of multi click implementation is taken from gtk
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
-  
-  LazPos := LCLObject.ScreenToClient(Mouse.CursorPos);
+
+  MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+  OffsetMousePos(@MousePos);
+
+  LazPos := Point(MousePos.X, MousePos.Y);
 
   Modifiers := QInputEvent_modifiers(QInputEventH(Event));
   Msg.Keys := QtKeyModifiersToKeyState(Modifiers, False, nil);
