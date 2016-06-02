@@ -11,8 +11,8 @@ uses
   {$else}
   Process, Utf8Process,
   {$endif}
-  ExtCtrls, PoFamilies, PoCheckerConsts, LCLProc, StdCtrls, ComCtrls, Menus,
-  PoCheckerSettings, LCLIntf;
+  ExtCtrls, PoFamilies, PoFamilyLists, PoCheckerConsts, LCLProc, StdCtrls, ComCtrls, Menus,
+  PoCheckerSettings, LCLIntf, Translations;
 
 
 type
@@ -20,6 +20,10 @@ type
   { TGraphStatForm }
 
   TGraphStatForm = class(TForm)
+    Separator1MenuItem: TMenuItem;
+    RefreshCurrMenuItem: TMenuItem;
+    RefreshAllMenuItem: TMenuItem;
+    Separator2MenuItem: TMenuItem;
     POEditorMenuItem: TMenuItem;
     ExtEditorMenuItem: TMenuItem;
     IDEEditorMenuItem: TMenuItem;
@@ -42,16 +46,20 @@ type
     procedure IDEEditorMenuItemClick(Sender: TObject);
     procedure ListViewMouseMove(Sender: TObject; {%H-}Shift: TShiftState; X,
       Y: Integer);
-    procedure ListViewMouseUp(Sender: TObject; {%H-}Button: TMouseButton;
-      {%H-}Shift: TShiftState; X, Y: Integer);
+    procedure ListViewMouseUp(Sender: TObject; Button: TMouseButton; Shift:
+      TShiftState; X, Y: Integer);
     procedure POEditorMenuItemClick(Sender: TObject);
+    procedure RefreshAllMenuItemClick(Sender: TObject);
+    procedure RefreshCurrMenuItemClick(Sender: TObject);
   private
     { private declarations }
+    FPoFamilyList: TPoFamilyList;
     FPoFamilyStats: TPoFamilyStats;
     FImgList: TImageList;
     FOldHintHidePause: Integer;
     FSettings: TPoCheckerSettings;
     Fn: string;
+    CurrentMasterPoFile: string;
     procedure LoadConfig;
     Procedure SaveConfig;
     function CreateBitmap(AStat: TStat): TBitmap;
@@ -59,8 +67,11 @@ type
     procedure DrawGraphs(Cnt: PtrInt);
     procedure MaybeOpenInLazIDE;
     procedure MaybeOpenInExternalEditor;
+    procedure RefreshTranslations(All: boolean);
+    procedure ConfigureContextPopUp(AdvancedMode: boolean);
   public
     { public declarations }
+    property PoFamilyList: TPoFamilyList read FPoFamilyList write FPoFamilyList;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
     property Settings: TPoCheckerSettings read FSettings write FSettings;
   end;
@@ -105,12 +116,6 @@ begin
   Application.HintHidePause := 5000;
   LoadConfig;
   WindowState := Settings.GraphFormWindowState;
-  {$ifdef pocheckerstandalone}
-  if Settings.ExternalEditorName <> '' then
-    ExtEditorMenuItem.Visible := true;
-  {$else}
-  IDEEditorMenuItem.Visible := true;
-  {$endif}
   Application.QueueAsyncCall(@DrawGraphs, FPoFamilyStats.Count);
 end;
 
@@ -159,6 +164,9 @@ begin
       anIndex := anItem.Index;
       AStat := FPoFamilyStats.Items[anIndex];
       Fn := AStat.PoName;
+      CurrentMasterPoFile := ExtractMasterNameFromChildName(AStat.PoName);
+      //todo: replace "true" with "ssShift in Shift" when bug 30234 gets fixed
+      ConfigureContextPopUp(true);
       CurrScreenPoint := ListView.ClientToScreen(Point(X, Y));
       ContextPopupMenu.PopUp(CurrScreenPoint.X, CurrScreenPoint.Y);
     end;
@@ -169,6 +177,80 @@ procedure TGraphStatForm.POEditorMenuItemClick(Sender: TObject);
 begin
   if OpenDocument(Fn) = false then
     ShowMessage(Format(SOpenFail,[Fn]));
+end;
+
+procedure TGraphStatForm.RefreshAllMenuItemClick(Sender:
+  TObject);
+begin
+  RefreshTranslations(true);
+end;
+
+procedure TGraphStatForm.RefreshCurrMenuItemClick(Sender: TObject);
+begin
+  RefreshTranslations(false);
+end;
+
+procedure TGraphStatForm.RefreshTranslations(All: boolean);
+var
+  i: integer;
+  AbortUpdate: boolean;
+begin
+  //"All" parameter defines if we refresh current family only (false) or all families (true)
+  StatusLabel.Visible := true;
+  RefreshCurrMenuItem.Enabled := false;
+  RefreshAllMenuItem.Enabled := false;
+  try
+    AbortUpdate := false;
+    i := 0;
+    while (i<PoFamilyList.Count) and (AbortUpdate=false) do
+    begin
+      try
+        if All=true then
+          StatusLabel.Caption := Format(sProcessingTranslationFamilyOf, [
+            IntToStr(i), IntToStr(PoFamilyList.Count)])
+        else
+          StatusLabel.Caption := sProcessingTranslationFamily;
+        StatusLabel.Repaint;
+        if All=true then
+        begin
+          UpdatePoFileTranslations(PoFamilyList.Items[i].MasterName);
+          inc(i);
+        end
+        else
+        begin
+          UpdatePoFileTranslations(CurrentMasterPoFile);
+          AbortUpdate := true;
+        end;
+      except
+        on E: EPOFileError do
+          if MessageDlg('POChecker', Format(
+            sCannotWriteFileYouCanPressRetryToRefreshThisTransl, [LineEnding,
+            E.ResFileName, LineEnding, LineEnding]), mtError, [mbRetry, mbAbort
+            ], 0) = mrAbort then
+            AbortUpdate := true;
+      end;
+    end;
+  finally
+    StatusLabel.Visible := false;
+    RefreshCurrMenuItem.Enabled := true;
+    RefreshAllMenuItem.Enabled := true;
+  end;
+end;
+
+procedure TGraphStatForm.ConfigureContextPopUp(AdvancedMode: boolean);
+begin
+  //POEditorMenuItem is always shown, others only in advanced mode
+  Separator1MenuItem.Visible := AdvancedMode;
+  //ExtEditorMenuItem and IDEEditorMenuItem are invisible by default
+  {$ifdef pocheckerstandalone}
+  if Settings.ExternalEditorName <> '' then
+    ExtEditorMenuItem.Visible := AdvancedMode;
+  {$else}
+  IDEEditorMenuItem.Visible := AdvancedMode;
+  {$endif}
+  Separator2MenuItem.Visible := AdvancedMode;
+  RefreshCurrMenuItem.Visible := AdvancedMode;
+  RefreshAllMenuItem.Visible := AdvancedMode;
 end;
 
 procedure TGraphStatForm.LoadConfig;
@@ -202,6 +284,8 @@ begin
   POEditorMenuItem.Caption := sOpenFileInSystemPOEditor;
   ExtEditorMenuItem.Caption := sOpenFileInExternalEditor;
   IDEEditorMenuItem.Caption := sOpenFileInIDEEditor;
+  RefreshCurrMenuItem.Caption := sRefreshCurrentTranslationFamily;
+  RefreshAllMenuItem.Caption := sRefreshAllTranslationFamilies;
   TranslatedShape.Brush.Color := clTranslated;
   UnTranslatedShape.Brush.Color := clUntranslated;
   FuzzyShape.Brush.Color := clFuzzy;

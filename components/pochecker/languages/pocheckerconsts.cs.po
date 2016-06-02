@@ -133,6 +133,10 @@ msgstr ""
 "pro vybraný soubor\n"
 "%s\n"
 
+#: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
+msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
+msgstr ""
+
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
 msgid "Check for duplicate untranslated values"
 msgstr "Zkontrolovat výskyt duplicitních nepřeložených hodnot"
@@ -336,6 +340,22 @@ msgstr "Přeloženo:          %2.0f%%."
 #| msgid "%s: %4.1f%% untranslated strings."
 msgid "%s: %5.1f%% untranslated strings."
 msgstr "Nepřeloženo:       %2.0f%%."
+
+#: pocheckerconsts.sprocessingtranslationfamily
+msgid "Processing translation family..."
+msgstr ""
+
+#: pocheckerconsts.sprocessingtranslationfamilyof
+msgid "Processing translation family %s of %s"
+msgstr ""
+
+#: pocheckerconsts.srefreshalltranslationfamilies
+msgid "Refresh all translation families"
+msgstr ""
+
+#: pocheckerconsts.srefreshcurrenttranslationfamily
+msgid "Refresh current translation family"
+msgstr ""
 
 #: pocheckerconsts.sresults
 msgid "Results"

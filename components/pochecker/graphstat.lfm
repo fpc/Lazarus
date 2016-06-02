@@ -104,6 +104,9 @@ object GraphStatForm: TGraphStatForm
       Caption = 'Open file in system PO editor'
       OnClick = POEditorMenuItemClick
     end
+    object Separator1MenuItem: TMenuItem
+      Caption = '-'
+    end
     object ExtEditorMenuItem: TMenuItem
       Caption = 'Open file in external editor'
       Visible = False
@@ -113,6 +116,17 @@ object GraphStatForm: TGraphStatForm
       Caption = 'Open file in IDE editor'
       Visible = False
       OnClick = IDEEditorMenuItemClick
+    end
+    object Separator2MenuItem: TMenuItem
+      Caption = '-'
+    end
+    object RefreshCurrMenuItem: TMenuItem
+      Caption = 'Refresh current translation family'
+      OnClick = RefreshCurrMenuItemClick
+    end
+    object RefreshAllMenuItem: TMenuItem
+      Caption = 'Refresh all translation families'
+      OnClick = RefreshAllMenuItemClick
     end
   end
 end

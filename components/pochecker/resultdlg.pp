@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, Buttons, ClipBrd, LCLType, LCLProc, SynEdit, SynHighlighterPo,
-  PoFamilies, GraphStat, PoCheckerConsts, PoCheckerSettings;
+  PoFamilies, PoFamilyLists, GraphStat, PoCheckerConsts, PoCheckerSettings;
 
 type
 
@@ -32,6 +32,7 @@ type
     procedure SaveBtnClick(Sender: TObject);
   private
     PoHL: TSynPoSyn;
+    FPoFamilyList: TPoFamilyList;
     FPoFamilyStats: TPoFamilyStats;
     FSettings: TPoCheckerSettings;
     procedure SaveToFile;
@@ -45,6 +46,7 @@ type
     FTotalFuzzy: Integer;
     FTotalPercTranslated: Double;
     property Log: TStringList read FLog write FLog;
+    property PoFamilyList: TPoFamilyList read FPoFamilyList write FPoFamilyList;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
     property Settings: TPoCheckerSettings read FSettings write FSettings;
   end; 
@@ -114,6 +116,7 @@ var
 begin
   GraphStatForm := TGraphStatForm.Create(nil);
   try
+    GraphStatForm.PoFamilyList := Self.PoFamilyList;
     GraphStatForm.PoFamilyStats := Self.PoFamilyStats;
     GraphStatForm.Settings := Self.Settings;
 

@@ -131,6 +131,10 @@ msgstr ""
 "a kiválasztott fájlhoz:\n"
 "%s\n"
 
+#: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
+msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
+msgstr ""
+
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
 msgid "Check for duplicate untranslated values"
 msgstr "Lefordítatlan szövegek ismétlődésének ellenőrzése"
@@ -342,6 +346,22 @@ msgstr "%s: %4.1f%% lefordított szöveg."
 #| msgid "%s: %4.1f%% untranslated strings."
 msgid "%s: %5.1f%% untranslated strings."
 msgstr "%s: %4.1f%% lefordítatlan szöveg."
+
+#: pocheckerconsts.sprocessingtranslationfamily
+msgid "Processing translation family..."
+msgstr ""
+
+#: pocheckerconsts.sprocessingtranslationfamilyof
+msgid "Processing translation family %s of %s"
+msgstr ""
+
+#: pocheckerconsts.srefreshalltranslationfamilies
+msgid "Refresh all translation families"
+msgstr ""
+
+#: pocheckerconsts.srefreshcurrenttranslationfamily
+msgid "Refresh current translation family"
+msgstr ""
 
 #: pocheckerconsts.sresults
 msgid "Results"

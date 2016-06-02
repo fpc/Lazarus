@@ -131,6 +131,10 @@ msgstr ""
 "für die gewählte Datei file\n"
 "%s nicht finden\n"
 
+#: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
+msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
+msgstr ""
+
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
 msgid "Check for duplicate untranslated values"
 msgstr "Prüfung auf mehrfache, nicht übersetzte Werte"
@@ -213,9 +217,9 @@ msgstr ""
 msgid "Find troublesome files"
 msgstr "Störende Dateien finden"
 
-#: pocheckerconsts.sfuzzy
-msgid "Fuzzy"
-msgstr "Ungeklärt"
+#: pocheckerconsts.sfuzzystringstotal
+msgid "Fuzzy strings (total: %s)"
+msgstr ""
 
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
@@ -326,16 +330,38 @@ msgid "Original"
 msgstr "Original"
 
 #: pocheckerconsts.spercfuzzy
-msgid "%s: %4.1f%% fuzzy strings."
+#, fuzzy
+#| msgid "%s: %4.1f%% fuzzy strings."
+msgid "%s: %5.1f%% fuzzy strings."
 msgstr "%s: %4.1f%% ungeklärte Zeichenketten."
 
 #: pocheckerconsts.sperctranslated
-msgid "%s: %4.1f%% translated strings."
+#, fuzzy
+#| msgid "%s: %4.1f%% translated strings."
+msgid "%s: %5.1f%% translated strings."
 msgstr "%s: %4.1f%% übersetzte Zeichenketten."
 
 #: pocheckerconsts.spercuntranslated
-msgid "%s: %4.1f%% untranslated strings."
+#, fuzzy
+#| msgid "%s: %4.1f%% untranslated strings."
+msgid "%s: %5.1f%% untranslated strings."
 msgstr "%s: %4.1f%% nicht übersetzte Zeichenketten."
+
+#: pocheckerconsts.sprocessingtranslationfamily
+msgid "Processing translation family..."
+msgstr ""
+
+#: pocheckerconsts.sprocessingtranslationfamilyof
+msgid "Processing translation family %s of %s"
+msgstr ""
+
+#: pocheckerconsts.srefreshalltranslationfamilies
+msgid "Refresh all translation families"
+msgstr ""
+
+#: pocheckerconsts.srefreshcurrenttranslationfamily
+msgid "Refresh current translation family"
+msgstr ""
 
 #: pocheckerconsts.sresults
 msgid "Results"
@@ -386,11 +412,17 @@ msgid "Show statistics graph"
 msgstr "Zeige Statistik-Graphik"
 
 #: pocheckerconsts.sstathint
+#, fuzzy
+#| msgid ""
+#| "%3d Translated (%3.1f%%)\n"
+#| "%3d UnTranslated (%3.1f%%)\n"
+#| "%3d Fuzzy (%3.1f%%)\n"
+#| "%d Error(s) in Selected Tests\n"
 msgid ""
-"%3d Translated (%3.1f%%)\n"
-"%3d UnTranslated (%3.1f%%)\n"
-"%3d Fuzzy (%3.1f%%)\n"
-"%d Error(s) in Selected Tests\n"
+"Translated: %d (%.1f%%)\n"
+"Untranslated: %d (%.1f%%)\n"
+"Fuzzy: %d (%.1f%%)\n"
+"Errors in selected tests: %d\n"
 msgstr ""
 "%3d übersetzt (%3.1f%%)\n"
 "%3d nicht übersetzt (%3.1f%%)\n"
@@ -409,13 +441,25 @@ msgstr "Folgende %s verwaiste .po-Datei(en) gefunden:"
 msgid "Total errors found: %d"
 msgstr "Insgesamt %d Fehler gefunden"
 
+#: pocheckerconsts.stotalfuzzystrings
+msgid "Total fuzzy strings: %s"
+msgstr ""
+
+#: pocheckerconsts.stotaltranslatedstrings
+msgid "Total translated strings: %s (%.1f%%)"
+msgstr ""
+
+#: pocheckerconsts.stotaluntranslatedstrings
+msgid "Total untranslated strings: %s"
+msgstr ""
+
 #: pocheckerconsts.stotalwarnings
 msgid "Total warnings found: %d"
 msgstr "Insgesamt %d Warnungen gefunden"
 
-#: pocheckerconsts.stranslated
-msgid "Translated"
-msgstr "Übersetzt"
+#: pocheckerconsts.stranslatedstringstotal
+msgid "Translated strings (total: %s [%.1f%%])"
+msgstr ""
 
 #: pocheckerconsts.stranslation
 msgid "Translation"
@@ -437,6 +481,7 @@ msgstr "Alle abwählen"
 msgid "Unselect all files"
 msgstr "Alle Dateien abwählen"
 
-#: pocheckerconsts.suntranslated
-msgid "Untranslated"
-msgstr "Nicht übersetzt"
+#: pocheckerconsts.suntranslatedstringstotal
+msgid "Untranslated strings (total: %s)"
+msgstr ""
+

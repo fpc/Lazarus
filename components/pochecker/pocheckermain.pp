@@ -625,9 +625,15 @@ begin
         ResultDlg.Log.Assign(SL);
         FreeAndNil(SL);                 //No need to keep 2 copies of this data
         if (pttCheckStatistics in TestTypes) then
-          ResultDlg.PoFamilyStats := PoFamilyList.PoFamilyStats
+        begin
+          ResultDlg.PoFamilyList := PoFamilyList;
+          ResultDlg.PoFamilyStats := PoFamilyList.PoFamilyStats;
+        end
         else
+        begin
+          ResultDlg.PoFamilyList := nil;
           ResultDlg.PoFamilyStats := nil;
+        end;
         ResultDlg.Settings := FPoCheckerSettings;
         mr := ResultDlg.ShowModal;
       finally

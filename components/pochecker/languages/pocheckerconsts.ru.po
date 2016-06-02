@@ -131,6 +131,10 @@ msgstr ""
 "для выбранного файла\n"
 "%s\n"
 
+#: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
+msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
+msgstr "Невозможно записать файл%s%s%s%sВы можете нажать \"Повтор\", чтобы снова попытаться обновить это семейство переводов и продолжить далее."
+
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
 msgid "Check for duplicate untranslated values"
 msgstr "Поиск дублирующихся непереведённых строк"
@@ -336,6 +340,22 @@ msgstr "%s: %5.1f%% переведённых строк."
 #: pocheckerconsts.spercuntranslated
 msgid "%s: %5.1f%% untranslated strings."
 msgstr "%s: %5.1f%% непереведённых строк."
+
+#: pocheckerconsts.sprocessingtranslationfamily
+msgid "Processing translation family..."
+msgstr "Обработка семейства переводов..."
+
+#: pocheckerconsts.sprocessingtranslationfamilyof
+msgid "Processing translation family %s of %s"
+msgstr "Обработка семейства переводов %s из %s"
+
+#: pocheckerconsts.srefreshalltranslationfamilies
+msgid "Refresh all translation families"
+msgstr "Обновить все семейства переводов"
+
+#: pocheckerconsts.srefreshcurrenttranslationfamily
+msgid "Refresh current translation family"
+msgstr "Обновить текущее семейство переводов"
 
 #: pocheckerconsts.sresults
 msgid "Results"

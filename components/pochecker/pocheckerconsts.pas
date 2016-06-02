@@ -61,6 +61,13 @@ resourcestring
   sOpenFileInSystemPOEditor = 'Open file in system PO editor';
   sOpenFileInExternalEditor = 'Open file in external editor';
   sOpenFileInIDEEditor = 'Open file in IDE editor';
+  sRefreshCurrentTranslationFamily = 'Refresh current translation family';
+  sRefreshAllTranslationFamilies = 'Refresh all translation families';
+  sProcessingTranslationFamilyOf = 'Processing translation family %s of %s';
+  sProcessingTranslationFamily = 'Processing translation family...';
+  sCannotWriteFileYouCanPressRetryToRefreshThisTransl = 'Cannot write file%'
+    +'s%s%s%sYou can press "Retry" to refresh this translation family again and '
+    +'continue.';
 
   //PoFamiles
   sOriginal = 'Original';
