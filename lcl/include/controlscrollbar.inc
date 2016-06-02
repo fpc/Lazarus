@@ -312,8 +312,12 @@ begin
     NewPos := 0;
   if NewPos > FRange then
     NewPos := FRange;
-  InvalidateScrollInfo;
-  SetPosition(NewPos);
+  if NewPos<>FPosition then
+  begin
+    InvalidateScrollInfo;
+    SetPosition(NewPos);
+    Message.Result := 1;
+  end;
 end;
 
 procedure TControlScrollBar.ControlUpdateScrollBars;
