@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-05-05 17:50+0200\n"
+"PO-Revision-Date: 2016-05-26 20:40+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -2658,11 +2658,11 @@ msgstr "Entfaltet [-]"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlineoverview
 msgid "Overview"
-msgstr ""
+msgstr "Übersicht"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlineoverviewmarks
 msgid "Overview Mark"
-msgstr ""
+msgstr "Übersichtsmarkierung"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlines
 msgid "Line Numbers"
@@ -12059,7 +12059,7 @@ msgstr "Angezeigtes Menü als neue Vorlage speichern"
 
 #: lazarusidestrconsts.lismenueditorsconflictswiths
 msgid "%s conflicts with %s"
-msgstr ""
+msgstr "%s ist im Konflikt mit %s"
 
 #: lazarusidestrconsts.lismenueditorseparators
 msgid "Se&parators"
@@ -12176,7 +12176,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditortsclistgetscanlistcompnameinvalidindexdforfscanlis
 msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"
-msgstr ""
+msgstr "TSCList.GetScanListCompName: ungültiger Index %d für FScanList"
 
 #: lazarusidestrconsts.lismenueditoryouhavetochangetheshortcutfromsstoavoidaconflict
 msgid ""
@@ -19181,10 +19181,8 @@ msgid "Macros"
 msgstr "Makros"
 
 #: lazarusidestrconsts.srkmcatmarker
-#, fuzzy
-#| msgid "Text marker commands"
 msgid "Text bookmark commands"
-msgstr "Textmarkierungsbefehle"
+msgstr "Lesezeichen-Befehle"
 
 #: lazarusidestrconsts.srkmcatmulticaret
 msgid "Multi caret commands"
@@ -20799,4 +20797,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
