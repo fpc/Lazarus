@@ -1637,6 +1637,7 @@ begin
       Exit(True);
     // the mousewheel message is for us
     Msg := LM_MOUSEWHEEL;
+    // important: LM_MOUSEWHEEL needs client coordinates (windows WM_MOUSEWHEEL are screen coordinates)
     Windows.ScreenToClient(TargetWindow, P);
     X := P.X;
     Y := P.Y;

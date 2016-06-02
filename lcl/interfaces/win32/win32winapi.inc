@@ -161,40 +161,28 @@ var
   procedure CallMouseWheelHandler;
   var
     ScrollInfo: Windows.tagScrollInfo;
-    WParam: Windows.WParam;
+    SystemWParam: Windows.WParam;
     ScrollMsg, ScrollBar: dword;
     ScrollOffset: integer;
     Pos: TPoint;
-    MouseMessage: TLMMouseEvent;
+    MMessage: PLMMouseEvent;
     SW: TScrollingWinControl;
     SB: TControlScrollBar;
   begin
     if not TWinControl(Sender).HandleAllocated then
       exit;
 
-    // why coords are client? - they must be screen
-    with TLMMouseEvent(Message) do
-    begin
-      Pos.X := X;
-      Pos.Y := Y;
-    end;
+    // important: LM_MOUSEWHEEL needs client coordinates (windows WM_MOUSEWHEEL are screen coordinates)
+    // do not modify original message
+    MMessage := @TLMMouseEvent(Message);
+    Pos.X := MMessage^.X;
+    Pos.Y := MMessage^.Y;
     ClientToScreen(Handle, Pos);
-    WParam := Windows.WParam(Longint(PointToSmallPointNoChecks(Pos)));
-    with TLMMouseEvent(Message) do
-    begin
-      {$PUSH}
-      {$R-}{$Q-} // no range, no overflow checks
-      X := Pos.X;
-      Y := Pos.Y;
-      {$POP}
-    end;
+    SystemWParam := Windows.WParam(Longint(PointToSmallPointNoChecks(Pos)));
 
-    with TLMessage(Message) do
-    begin
-      Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
-      // Windows handled it, so exit here.
-      if Result<>0 then exit;
-    end;
+    MMessage^.Result := CallDefaultWindowProc(Handle, MMessage^.Msg, SystemWParam, TLMessage(Message).LParam);
+    // Windows handled it, so exit here.
+    if MMessage^.Result<>0 then exit;
 
     // send scroll message
     FillChar(ScrollInfo, sizeof(ScrollInfo), #0);
@@ -202,7 +190,7 @@ var
     ScrollInfo.fMask := SIF_PAGE or SIF_POS or SIF_RANGE;
     // if mouse is over horizontal scrollbar, scroll horizontally
 
-    if Windows.SendMessage(Handle, WM_NCHITTEST, 0, WParam) = HTHSCROLL then
+    if Windows.SendMessage(Handle, WM_NCHITTEST, 0, SystemWParam) = HTHSCROLL then
     begin
       ScrollBar := SB_HORZ;
       ScrollMsg := WM_HSCROLL;
@@ -214,33 +202,31 @@ var
     if Windows.GetScrollInfo(Handle, ScrollBar, ScrollInfo)
     and (Int64(ScrollInfo.nPage) < Int64(ScrollInfo.nMax)) then
     begin
-      MouseMessage := TLMMouseEvent(Message);
+      if Mouse.WheelScrollLines < 0 then
+        // -1 means, scroll one page
+        ScrollOffset := (MMessage^.WheelDelta * integer(ScrollInfo.nPage)) div 120
+      else
+      if Sender is TScrollingWinControl then // support scrollbar increment
       begin
-        if Mouse.WheelScrollLines < 0 then
-          // -1 means, scroll one page
-          ScrollOffset := (MouseMessage.WheelDelta * integer(ScrollInfo.nPage)) div 120
+        SW := TScrollingWinControl(Sender);
+        if ScrollBar = SB_Horz then
+          SB := SW.HorzScrollBar
         else
-        if Sender is TScrollingWinControl then // support scrollbar increment
-        begin
-          SW := TScrollingWinControl(Sender);
-          if ScrollBar = SB_Horz then
-            SB := SW.HorzScrollBar
-          else
-            SB := SW.VertScrollBar;
-          ScrollOffset :=
-            (Min(High(MouseMessage.WheelDelta), Max(Low(MouseMessage.WheelDelta),
-              (SB.Increment * MouseMessage.WheelDelta))) div 120);
-        end else
-          ScrollOffset := (MouseMessage.WheelDelta * Mouse.WheelScrollLines) div 120;
+          SB := SW.VertScrollBar;
+        ScrollOffset :=
+          (Min(High(MMessage^.WheelDelta), Max(Low(MMessage^.WheelDelta),
+            (SB.Increment * MMessage^.WheelDelta))) div 120);
+      end else
+        ScrollOffset := (MMessage^.WheelDelta * Mouse.WheelScrollLines) div 120;
 
-        WParam := Windows.WParam(ScrollInfo.nPos - ScrollOffset);
-        if WParam > ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1 then
-          WParam := ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1;
-        if WParam < ScrollInfo.nMin then
-          WParam := ScrollInfo.nMin;
-        WParam := SB_THUMBPOSITION or (WParam shl 16);
-      end;
-      Windows.PostMessage(Handle, ScrollMsg, WParam, HWND(nil));
+      SystemWParam := Windows.WParam(ScrollInfo.nPos - ScrollOffset);
+      if SystemWParam > ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1 then
+        SystemWParam := ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1;
+      if SystemWParam < ScrollInfo.nMin then
+        SystemWParam := ScrollInfo.nMin;
+      SystemWParam := SB_THUMBPOSITION or (SystemWParam shl 16);
+
+      Windows.PostMessage(Handle, ScrollMsg, SystemWParam, HWND(nil));
     end else
     if (TControl(Sender).Parent <> nil) then
       TControl(Sender).Parent.WindowProc(TLMessage(Message));
