@@ -3560,10 +3560,10 @@ begin
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
-  MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+  MousePos := QMouseEvent_globalPos(QMouseEventH(Event))^;
   OffsetMousePos(@MousePos);
 
-  LazPos := Point(MousePos.X, MousePos.Y);
+  LazPos := LCLObject.ScreenToClient(Point(MousePos.X, MousePos.Y));
 
   Modifiers := QInputEvent_modifiers(QInputEventH(Event));
   Msg.Keys := QtKeyModifiersToKeyState(Modifiers, False, nil);
