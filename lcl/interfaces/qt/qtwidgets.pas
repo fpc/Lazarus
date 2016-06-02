@@ -3565,6 +3565,14 @@ begin
 
   LazPos := LCLObject.ScreenToClient(Point(MousePos.X, MousePos.Y));
 
+  if (LCLObject is TScrollingWinControl) and
+    TScrollingWinControl(LCLObject).VertScrollbar.Visible then
+      dec(LazPos.Y, TScrollingWinControl(LCLObject).VertScrollBar.Position);
+
+  if (LCLObject is TScrollingWinControl) and
+    TScrollingWinControl(LCLObject).HorzScrollBar.Visible then
+      dec(LazPos.X, TScrollingWinControl(LCLObject).HorzScrollBar.Position);
+
   Modifiers := QInputEvent_modifiers(QInputEventH(Event));
   Msg.Keys := QtKeyModifiersToKeyState(Modifiers, False, nil);
 
