@@ -3587,7 +3587,6 @@ begin
   Msg.YPos := SmallInt(LazPos.Y);
   
   MButton := QMouseEvent_Button(QMouseEventH(Event));
-  Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
   case MButton of
     QtLeftButton: LazButton := 1;
     QtRightButton: LazButton := 2;
