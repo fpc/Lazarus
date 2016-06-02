@@ -2122,6 +2122,9 @@ begin
       else
         setFocusPolicy(QtClickFocus);
     end;
+    if not(LCLObject is TCustomForm) // ToDo: use native approach also for forms
+    and (LCLObject.Perform(LM_NCHITTEST, 0, 0) = HTTRANSPARENT) then
+      setAttribute(QtWA_TransparentForMouseEvents);
   end;
 
   if (csDesigning in LCLObject.ComponentState) and not
@@ -3538,14 +3541,18 @@ begin
 
   TrgHandle := Self;
   TrgControl := LCLObject;
-  CheckTransparentWindow(TLCLIntfHandle(TrgHandle), TrgControl);
+  if LCLObject is TCustomForm then // ToDo: use native approach also for forms
+    CheckTransparentWindow(TLCLIntfHandle(TrgHandle), TrgControl);
   if (TrgHandle=nil) or (TrgControl=nil) then
   begin
     Exit;
   end else
-  if (TrgHandle<>Self) then
+  if (TrgControl<>LCLObject) then
   begin
-    Result := TQtWidget(TrgHandle).SlotMouse(Sender, Event);
+    if TrgHandle is TQtCustomControl then
+      Result := TQtCustomControl(TrgHandle).viewport.SlotMouse(TQtCustomControl(TrgHandle).viewportWidget, Event)
+    else
+      Result := TrgHandle.SlotMouse(TrgHandle.Widget, Event);
     Exit;
   end;
 
@@ -3887,14 +3894,18 @@ begin
 
   TrgHandle := Self;
   TrgControl := LCLObject;
-  CheckTransparentWindow(TLCLIntfHandle(TrgHandle), TrgControl);
+  if LCLObject is TCustomForm then // ToDo: use native approach also for forms
+    CheckTransparentWindow(TLCLIntfHandle(TrgHandle), TrgControl);
   if (TrgHandle=nil) or (TrgControl=nil) then
   begin
     Exit;
   end else
-  if (TrgHandle<>Self) then
+  if (TrgControl<>LCLObject) then
   begin
-    Result := TQtWidget(TrgHandle).SlotMouseWheel(Sender, Event);
+    if TrgHandle is TQtCustomControl then
+      Result := TQtCustomControl(TrgHandle).viewport.SlotMouseWheel(TQtCustomControl(TrgHandle).viewportWidget, Event)
+    else
+      Result := TrgHandle.SlotMouse(TrgHandle.Widget, Event);
     Exit;
   end;
 
