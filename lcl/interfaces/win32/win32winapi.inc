@@ -226,9 +226,9 @@ var
         SystemWParam := ScrollInfo.nMin;
       SystemWParam := SB_THUMBPOSITION or (SystemWParam shl 16);
 
-      Windows.PostMessage(Handle, ScrollMsg, SystemWParam, HWND(nil));
-    end else
-    if (TControl(Sender).Parent <> nil) then
+      MMessage^.Result := Windows.SendMessage(Handle, ScrollMsg, SystemWParam, HWND(nil));
+    end;
+    if (MMessage^.Result = 0) and (TControl(Sender).Parent <> nil) then
       TControl(Sender).Parent.WindowProc(TLMessage(Message));
   end;
 
