@@ -30,3 +30,4 @@ msgstr "\"lhelp\" absent"
 #: lazchmhelp.help_unabletofindthelhelpviewerpleasecompilethelhelppro
 msgid "Unable to find the lhelp viewer:%s%s%sPlease compile the lhelp project:%s%s"
 msgstr "Impossible de trouver l'afficheur d'aide \"lhelp\" :%s%s%sVeuillez compiler le projet \"lhelp\" :%s%s"
+
