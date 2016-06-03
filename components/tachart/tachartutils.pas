@@ -300,6 +300,7 @@ const
     (coords: (Infinity, Infinity, NegInfinity, NegInfinity));
   CASE_OF_TWO: array [Boolean, Boolean] of TCaseOfTwo =
     ((cotNone, cotSecond), (cotFirst, cotBoth));
+  ORIENTATION_UNITS_PER_DEG = 10;
 
 function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 
@@ -355,9 +356,6 @@ implementation
 
 uses
   StrUtils, TypInfo, TAChartStrConsts;
-
-const
-  ORIENTATION_UNITS_PER_DEG = 10;
 
 function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 begin
