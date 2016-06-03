@@ -610,6 +610,7 @@ begin
         if FFonts[i].Styles = TempStyles then
         begin
           DuplicateStyle:= true;
+          inc(StyleNumber);
           break;
         end;
     until not DuplicateStyle;
