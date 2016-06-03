@@ -139,7 +139,7 @@ type
     constructor Create; virtual; abstract;
     procedure Clear; virtual; abstract;
     procedure BeginUpdate; virtual; abstract;
-    procedure AddFolder(AFolder: string); virtual; abstract;
+    procedure AddFolder(AFolder: string; AIncludeSubdirs: Boolean = false); virtual; abstract;
     procedure RemoveFolder(AFolder: string); virtual; abstract;
     function AddFile(AFilename: string): TCustomFontCollectionItem; virtual; abstract;
     function RemoveFile(AFilename: string): boolean; virtual; abstract;

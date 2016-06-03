@@ -109,7 +109,7 @@ type
     constructor Create; override;
     procedure Clear; override;
     procedure BeginUpdate; override;
-    procedure AddFolder(AFolder: string); override;
+    procedure AddFolder(AFolder: string; AIncludeSubdirs: Boolean = false); override;
     procedure RemoveFolder(AFolder: string); override;
     function AddFile(AFilename: string): TCustomFontCollectionItem; override;
     function RemoveFile(AFilename: string): boolean; override;
@@ -123,6 +123,9 @@ type
 procedure SetDefaultFreeTypeFontCollection(ACollection : TCustomFreeTypeFontCollection);
 
 implementation
+
+uses
+  FileUtil;
 
 const
   //one of these files will be used as a default font
@@ -893,10 +896,11 @@ begin
   inc(FUpdateCount);
 end;
 
-procedure TFreeTypeFontCollection.AddFolder(AFolder: string);
-var sr: TSearchRec;
-    files: TStringList;
-    i: integer;
+procedure TFreeTypeFontCollection.AddFolder(AFolder: string;
+  AIncludeSubdirs: Boolean = false);
+var
+  files: TStringList;
+  i: integer;
 begin
   AFolder := ExpandFileName(AFolder);
   if (length(AFolder) <> 0) and (AFolder[length(AFolder)] <> PathDelim) then
@@ -905,12 +909,7 @@ begin
   files := TStringList.Create;
   BeginUpdate;
   try
-    if FindFirst(AFolder+'*.ttf',faAnyfile,sr) = 0 then
-    repeat
-      if sr.Attr and (faDirectory+faVolumeId) = 0 then
-        files.Add(AFolder+sr.Name);
-    until FindNext(sr) <> 0;
-
+    FindAllFiles(files, AFolder, '*.ttf', AIncludeSubdirs);
     files.Sort;
     for i := 0 to files.Count-1 do
       AddFile(files[i]);
