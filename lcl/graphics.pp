@@ -60,7 +60,7 @@ type
   TFontPitch = (fpDefault, fpVariable, fpFixed);
   TFontName = string;
   TFontDataName = string[LF_FACESIZE -1];
-  TFontStyle = (fsBold, fsItalic, fsStrikeOut, fsUnderline);
+  TFontStyle = (fsBold, fsItalic, fsUnderline, fsStrikeOut);
   TFontStyles = set of TFontStyle;
   TFontStylesbase = set of TFontStyle;
   TFontCharSet = 0..255;
