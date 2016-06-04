@@ -7473,8 +7473,8 @@ begin
       {$IFDEF QTSCROLLABLEFORMS}
       QEventMouseMove: // issue #29159
       begin
-        if IsMdiChild or
-          (Assigned(LCLObject) and (csDesigning in LCLObject.ComponentState)) then
+        if (Self is TQtHintWindow) or (IsMdiChild or
+          (Assigned(LCLObject) and (csDesigning in LCLObject.ComponentState))) then
           Result := inherited EventFilter(Sender, Event)
         else
           Result := False;
