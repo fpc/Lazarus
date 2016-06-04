@@ -7603,18 +7603,16 @@ begin
   if (Obj=nil) or (Obj is TPersistent) then
   begin
     FSelectedObject:=Obj;
-    if Obj=nil then
-      fPropertyGrid.Selection := nil
-    else
-    begin
-      fcboxObjList.ItemIndex := fcboxObjList.Items.IndexOfObject(Obj);
-      NewSel := TPersistentSelectionList.Create;
-      try
+    NewSel := TPersistentSelectionList.Create;
+    try
+      if Obj<>nil then
+      begin
+        fcboxObjList.ItemIndex := fcboxObjList.Items.IndexOfObject(Obj);
         NewSel.Add(TfrView(Obj));
-        fPropertyGrid.Selection := NewSel;
-      finally
-        NewSel.Free;
       end;
+      fPropertyGrid.Selection := NewSel
+    finally
+      NewSel.Free;
     end;
   end
   else
