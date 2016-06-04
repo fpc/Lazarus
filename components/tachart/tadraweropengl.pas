@@ -705,7 +705,9 @@ end;
 procedure TOpenGLDrawer.SetFont(AFont: TFPCustomFont);
 begin
   FFontName := AFont.Name;
+  if Sametext(FFontName, 'default') then FFontName := 'Arial';
   FFontSize := AFont.Size;
+  if FFontSize = 0 then FFontSize := 10;
   FFontStyle := 0;
   if AFont.Bold then inc(FFontStyle, 1);
   if AFont.Italic then inc(FFontStyle, 2);
