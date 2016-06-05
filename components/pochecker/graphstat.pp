@@ -165,8 +165,7 @@ begin
       AStat := FPoFamilyStats.Items[anIndex];
       Fn := AStat.PoName;
       CurrentMasterPoFile := ExtractMasterNameFromChildName(AStat.PoName);
-      //todo: replace "true" with "ssShift in Shift" when bug 30234 gets fixed
-      ConfigureContextPopUp(true);
+      ConfigureContextPopUp(ssShift in Shift);
       CurrScreenPoint := ListView.ClientToScreen(Point(X, Y));
       ContextPopupMenu.PopUp(CurrScreenPoint.X, CurrScreenPoint.Y);
     end;
