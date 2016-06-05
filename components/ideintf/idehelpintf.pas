@@ -18,7 +18,7 @@ interface
 
 uses
   Classes, SysUtils, types, LCLProc, Forms, Controls, HelpIntfs, LazHelpIntf,
-  TextTools;
+  LMessages, LCLType, TextTools;
 
 type
   { THelpDBIRegExprMessage
@@ -140,6 +140,11 @@ type
     function(Owner: TComponent): TAbstractIDEHTMLProvider;
 
 
+  TSolidHintWindowRendered = class(THintWindowRendered)
+  protected
+    procedure WMNCHitTest(var Message: TLMessage); message LM_NCHITTEST;
+  end;
+
   { THintWindowManager }
 
   THintWindowManager = class
@@ -194,6 +199,13 @@ var
   IDEDirectiveHelpPrefix: string = 'IDEDirective_';
 
 implementation
+
+{ TSolidHintWindowRendered }
+
+procedure TSolidHintWindowRendered.WMNCHitTest(var Message: TLMessage);
+begin
+  Message.Result := HTCLIENT;
+end;
 
 { THelpDBIRegExprMessage }
 
@@ -289,7 +301,7 @@ function THintWindowManager.HintRenderWindow: THintWindowRendered;
 begin
   if FHintRenderW = nil then
   begin
-    FHintRenderW := THintWindowRendered.Create(Nil);
+    FHintRenderW := TSolidHintWindowRendered.Create(Nil);
     FHintRenderW.AutoHide := FAutoHide;
     FHintRenderW.HideInterval := FHideInterval;
     FHintRenderW.OnMouseDown := FOnMouseDown;
