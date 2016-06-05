@@ -180,10 +180,6 @@ var
     ClientToScreen(Handle, Pos);
     SystemWParam := Windows.WParam(Longint(PointToSmallPointNoChecks(Pos)));
 
-    MMessage^.Result := CallDefaultWindowProc(Handle, MMessage^.Msg, SystemWParam, TLMessage(Message).LParam);
-    // Windows handled it, so exit here.
-    if MMessage^.Result<>0 then exit;
-
     // send scroll message
     FillChar(ScrollInfo, sizeof(ScrollInfo), #0);
     ScrollInfo.cbSize := sizeof(ScrollInfo);
