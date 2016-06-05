@@ -1551,6 +1551,11 @@ begin
   LMMouse.XPos := GET_X_LPARAM(LParam);
   LMMouse.YPos := GET_Y_LPARAM(LParam);
   LMMouse.Keys := WParam;
+  if (lWinControl is TCustomListView) then // workaround #30234
+    case Msg of
+      WM_LBUTTONUP, WM_RBUTTONUP, WM_MBUTTONUP, WM_XBUTTONUP:
+        LMMouse.Keys := LMMouse.Keys or ShiftStateToKeys(KeyboardStateToShiftState);
+    end;
   case LastMouse.ClickCount of
     2: LMMouse.Keys := LMMouse.Keys or MK_DOUBLECLICK;
     3: LMMouse.Keys := LMMouse.Keys or MK_TRIPLECLICK;

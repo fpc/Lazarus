@@ -33,7 +33,7 @@ uses
   Translations, Controls, Buttons,
   LCLIntf, LclProc, LazUTF8, LCLType, LMessages,
   Forms, Dialogs, GraphMath, GraphType, InterfaceBase,
-  StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl,
+  StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl, ComCtrls,
   MultiMon, Themes{, Win32Debug};
 
 const
