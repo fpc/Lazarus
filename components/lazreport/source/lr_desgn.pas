@@ -4189,7 +4189,6 @@ var
   t: TfrView;
 begin
   AddUndoAction(acDelete);
-  GetRegion; // JRA 3
   PageView.NPEraseSelection;
   for i := Objects.Count - 1 downto 0 do
   begin
