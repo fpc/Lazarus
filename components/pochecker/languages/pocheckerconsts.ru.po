@@ -213,10 +213,6 @@ msgstr ""
 "Следующие несуществующие файлы были удалены из списка:\n"
 "%s\n"
 
-#: pocheckerconsts.sfindtroublesomefiles
-msgid "Find troublesome files"
-msgstr "Найти проблемные файлы"
-
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
 msgstr "Неточные переводы (всего: %s)"
@@ -268,10 +264,6 @@ msgstr "Не выбрано ни одного теста."
 #: pocheckerconsts.snotetranslationisfuzzy
 msgid "Note: translation is fuzzy"
 msgstr "Внимание: перевод неточен"
-
-#: pocheckerconsts.snotroublesomepofilesfound
-msgid "No troublesome .po files found."
-msgstr "Проблемных файлов переводов PO не найдено."
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
@@ -416,10 +408,6 @@ msgstr ""
 "Непереведённых строк: %d (%.1f%%)\n"
 "Неточных переводов: %d (%.1f%%)\n"
 "Ошибок в выбранных тестах: %d\n"
-
-#: pocheckerconsts.sthefollowingmasterpofilesaddedtothelist
-msgid "The following %s master .po file(s) added to the list:"
-msgstr "Нижеприведённые главные файлы переводов PO (%s шт.) добавлены в список:"
 
 #: pocheckerconsts.sthefollowingorphanedpofilesfound
 msgid "The following %s orphaned .po file(s) found:"

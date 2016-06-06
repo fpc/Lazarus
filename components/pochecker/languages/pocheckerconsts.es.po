@@ -211,10 +211,6 @@ msgstr ""
 "Los siguientes ficheros que ya no existen fueron removidos de la lista:\n"
 "%s\n"
 
-#: pocheckerconsts.sfindtroublesomefiles
-msgid "Find troublesome files"
-msgstr ""
-
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
 msgstr ""
@@ -266,10 +262,6 @@ msgstr "No existen pruebas seleccionadas."
 #: pocheckerconsts.snotetranslationisfuzzy
 msgid "Note: translation is fuzzy"
 msgstr "Nota: la traducción es confusa (fuzzy)"
-
-#: pocheckerconsts.snotroublesomepofilesfound
-msgid "No troublesome .po files found."
-msgstr ""
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
@@ -426,10 +418,6 @@ msgstr ""
 "%3d No traducido (%3.1f%%)\n"
 "%3d Confuso (%3.1f%%)\n"
 "%d Error(es) en el Test Seleccionado\n"
-
-#: pocheckerconsts.sthefollowingmasterpofilesaddedtothelist
-msgid "The following %s master .po file(s) added to the list:"
-msgstr ""
 
 #: pocheckerconsts.sthefollowingorphanedpofilesfound
 msgid "The following %s orphaned .po file(s) found:"

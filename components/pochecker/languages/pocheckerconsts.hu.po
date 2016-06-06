@@ -213,10 +213,6 @@ msgstr ""
 "A következő nem létező fájlok el lettek távolítva a listából:\n"
 "%s\n"
 
-#: pocheckerconsts.sfindtroublesomefiles
-msgid "Find troublesome files"
-msgstr "Aggasztó fájlok keresése"
-
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
 msgstr ""
@@ -268,10 +264,6 @@ msgstr "Egy teszt sincs teszt kiválasztva."
 #: pocheckerconsts.snotetranslationisfuzzy
 msgid "Note: translation is fuzzy"
 msgstr "Megjegyzés: a fordítás bizonytalan"
-
-#: pocheckerconsts.snotroublesomepofilesfound
-msgid "No troublesome .po files found."
-msgstr "Nincsenek aggasztó .po fájlok"
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
@@ -428,10 +420,6 @@ msgstr ""
 "%3d nincs lefordítva (%3.1f%%)\n"
 "%3d bizonytalan (%3.1f%%)\n"
 "%d hiba a kiválasztott tesztekben\n"
-
-#: pocheckerconsts.sthefollowingmasterpofilesaddedtothelist
-msgid "The following %s master .po file(s) added to the list:"
-msgstr "A következő %s mester .po fájl hozzá lett adva a listához:"
 
 #: pocheckerconsts.sthefollowingorphanedpofilesfound
 msgid "The following %s orphaned .po file(s) found:"

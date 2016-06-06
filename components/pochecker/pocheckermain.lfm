@@ -13,7 +13,7 @@ object PoCheckerForm: TPoCheckerForm
   OnDestroy = FormDestroy
   OnShow = FormShow
   ShowInTaskBar = stAlways
-  LCLVersion = '1.3'
+  LCLVersion = '1.7'
   Visible = True
   object TestListBox: TCheckListBox
     AnchorSideLeft.Control = SelectTestLabel
@@ -21,7 +21,7 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideTop.Side = asrBottom
     Left = 201
     Height = 118
-    Top = 27
+    Top = 29
     Width = 436
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -34,7 +34,7 @@ object PoCheckerForm: TPoCheckerForm
       'sCheckForDuplicateUntranslatedValues'
       'sCheckStatistics'
     )
-    ItemHeight = 19
+    ItemHeight = 17
     TabOrder = 3
     Data = {
       06000000000000000000
@@ -44,9 +44,9 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideLeft.Control = OpenBtn
     AnchorSideLeft.Side = asrBottom
     Left = 201
-    Height = 13
+    Height = 15
     Top = 8
-    Width = 82
+    Width = 93
     BorderSpacing.Left = 9
     Caption = 'Select test types'
     Font.Style = [fsBold]
@@ -61,7 +61,7 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideBottom.Control = ScanDirBtn
     Left = 8
     Height = 50
-    Top = 27
+    Top = 29
     Width = 184
     BorderSpacing.Bottom = 10
     Caption = '&Open a po-file'
@@ -111,7 +111,7 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideRight.Side = asrBottom
     Left = 8
     Height = 50
-    Top = 147
+    Top = 149
     Width = 184
     BorderSpacing.Top = 5
     Caption = '&Run Selected Tests'
@@ -122,9 +122,9 @@ object PoCheckerForm: TPoCheckerForm
   end
   object NoErrLabel: TLabel
     Left = 8
-    Height = 23
-    Top = 453
-    Width = 145
+    Height = 25
+    Top = 451
+    Width = 146
     Anchors = [akLeft, akBottom]
     Caption = 'No errors found'
     Font.Color = clGreen
@@ -139,8 +139,8 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideTop.Side = asrBottom
     Left = 201
     Height = 25
-    Top = 151
-    Width = 99
+    Top = 153
+    Width = 117
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Select Basic Tests'
@@ -152,10 +152,10 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideLeft.Control = SelectBasicTestsBtn
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = SelectBasicTestsBtn
-    Left = 304
+    Left = 322
     Height = 25
-    Top = 151
-    Width = 85
+    Top = 153
+    Width = 104
     AutoSize = True
     BorderSpacing.Left = 4
     Caption = 'Select All Tests'
@@ -167,10 +167,10 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideLeft.Control = SelectAllTestsBtn
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = SelectAllTestsBtn
-    Left = 393
+    Left = 430
     Height = 25
-    Top = 151
-    Width = 97
+    Top = 153
+    Width = 118
     AutoSize = True
     BorderSpacing.Left = 4
     Caption = 'Unselect All Tests'
@@ -183,17 +183,17 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideTop.Control = SelectBasicTestsBtn
     AnchorSideTop.Side = asrBottom
     Left = 201
-    Height = 22
-    Top = 182
-    Width = 147
+    Height = 19
+    Top = 184
+    Width = 152
     BorderSpacing.Top = 6
     Caption = 'sIgnoreFuzzyTranslations'
     TabOrder = 7
   end
   object StatusBar: TStatusBar
     Left = 0
-    Height = 17
-    Top = 496
+    Height = 23
+    Top = 490
     Width = 644
     Panels = <>
   end
@@ -206,7 +206,7 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideBottom.Control = RunBtn
     Left = 8
     Height = 50
-    Top = 87
+    Top = 89
     Width = 184
     BorderSpacing.Top = 5
     BorderSpacing.Bottom = 10
@@ -257,8 +257,8 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = NoErrLabel
     Left = 8
-    Height = 186
-    Top = 209
+    Height = 185
+    Top = 208
     Width = 629
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 5
@@ -272,7 +272,6 @@ object PoCheckerForm: TPoCheckerForm
     Sorted = True
     Style = lbOwnerDrawFixed
     TabOrder = 8
-    TopIndex = -1
   end
   object LangFilter: TComboBox
     AnchorSideLeft.Control = MasterPoListBox
@@ -280,12 +279,12 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideRight.Control = TestListBox
     AnchorSideRight.Side = asrBottom
     Left = 8
-    Height = 25
-    Top = 399
+    Height = 23
+    Top = 400
     Width = 629
     Anchors = [akLeft, akRight]
     BorderSpacing.Top = 5
-    ItemHeight = 0
+    ItemHeight = 15
     ItemIndex = 0
     Items.Strings = (
       'All languages'
@@ -325,8 +324,8 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideBottom.Control = NoErrLabel
     Left = 8
     Height = 25
-    Top = 428
-    Width = 37
+    Top = 426
+    Width = 53
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Top = 10
@@ -338,10 +337,10 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideLeft.Control = SelectAllMasterFilesBtn
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = NoErrLabel
-    Left = 136
+    Left = 167
     Height = 25
-    Top = 428
-    Width = 93
+    Top = 426
+    Width = 110
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 5
@@ -354,27 +353,16 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideLeft.Control = ClearMasterFilesBtn
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = NoErrLabel
-    Left = 50
+    Left = 66
     Height = 25
-    Top = 428
-    Width = 81
+    Top = 426
+    Width = 96
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 5
     Caption = 'Select all files'
     OnClick = SelectAllMasterFilesBtnClick
     TabOrder = 11
-  end
-  object FindTroublesomeFilesBtn: TButton
-    Left = 514
-    Height = 25
-    Top = 428
-    Width = 121
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    Caption = 'Find troublesome files'
-    OnClick = FindTroublesomeFilesBtnClick
-    TabOrder = 14
   end
   object OpenDialog: TOpenDialog
     Filter = 'po-files (*.po)|*.po|all files|*'

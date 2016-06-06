@@ -210,10 +210,6 @@ msgid ""
 "%s\n"
 msgstr ""
 
-#: pocheckerconsts.sfindtroublesomefiles
-msgid "Find troublesome files"
-msgstr ""
-
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
 msgstr ""
@@ -264,10 +260,6 @@ msgstr "Nenhum teste selecionado."
 
 #: pocheckerconsts.snotetranslationisfuzzy
 msgid "Note: translation is fuzzy"
-msgstr ""
-
-#: pocheckerconsts.snotroublesomepofilesfound
-msgid "No troublesome .po files found."
 msgstr ""
 
 #: pocheckerconsts.snrerrorsfound
@@ -404,10 +396,6 @@ msgid ""
 "Untranslated: %d (%.1f%%)\n"
 "Fuzzy: %d (%.1f%%)\n"
 "Errors in selected tests: %d\n"
-msgstr ""
-
-#: pocheckerconsts.sthefollowingmasterpofilesaddedtothelist
-msgid "The following %s master .po file(s) added to the list:"
 msgstr ""
 
 #: pocheckerconsts.sthefollowingorphanedpofilesfound
