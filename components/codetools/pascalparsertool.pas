@@ -1195,12 +1195,13 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
 
  proc specifiers without parameters:
    stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline,
-   compilerproc, rtlproc, noreturn
+   rtlproc, noreturn
 
  proc specifiers with parameters:
    message <id or number>
    dispid <id>
    enumerator <id>
+   compilerproc[:name]
    }
 var IsFunction, HasForwardModifier: boolean;
   ParseAttr: TParseProcHeadAttributes;
@@ -1654,6 +1655,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    [internconst:in_const_round, external name 'FPC_ROUND'];
    dispid <id>;
    enumerator <id>
+   compilerproc[:id]
 }
 
   procedure RaiseKeyWordExampleExpected;
@@ -1852,6 +1854,14 @@ begin
       if CurPos.Flag=cafEND then begin
         UndoReadNextAtom;
         exit;
+      end;
+    end else if UpAtomIs('COMPILERPROC') then begin
+      ReadNextAtom;
+      if CurPos.Flag=cafColon then begin
+        // e.g. compilerproc:fpc_in_delete_x_y_z;
+        ReadNextAtom;
+        AtomIsIdentifierSaveE;
+        ReadNextAtom;
       end;
     end else begin
       // read specifier without parameters
