@@ -281,10 +281,6 @@ msgstr "%s: %d Elemente"
 msgid "Found %d warnings."
 msgstr "%d Warnungen gefunden."
 
-#: pocheckerconsts.sopenapofile
-msgid "&Open a po-file"
-msgstr "p&o-Datei öffnen"
-
 #: pocheckerconsts.sopenfail
 msgid ""
 "Unable to open file:\n"

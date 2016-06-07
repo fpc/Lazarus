@@ -281,10 +281,6 @@ msgstr "%s: %d elem"
 msgid "Found %d warnings."
 msgstr "%d figyelmeztetés."
 
-#: pocheckerconsts.sopenapofile
-msgid "&Open a po-file"
-msgstr "PO fájl megnyitása"
-
 #: pocheckerconsts.sopenfail
 msgid ""
 "Unable to open file:\n"

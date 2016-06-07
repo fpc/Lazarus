@@ -281,10 +281,6 @@ msgstr "%s: %d položek"
 msgid "Found %d warnings."
 msgstr "Nalezeno %d varování"
 
-#: pocheckerconsts.sopenapofile
-msgid "&Open a po-file"
-msgstr "&Otevřít PO  soubor"
-
 #: pocheckerconsts.sopenfail
 msgid ""
 "Unable to open file:\n"

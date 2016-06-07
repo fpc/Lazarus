@@ -281,10 +281,6 @@ msgstr "%s: elementų - %d"
 msgid "Found %d warnings."
 msgstr "Rasta perspėjimų: %d."
 
-#: pocheckerconsts.sopenapofile
-msgid "&Open a po-file"
-msgstr "At&verti PO failą"
-
 #: pocheckerconsts.sopenfail
 msgid ""
 "Unable to open file:\n"

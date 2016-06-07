@@ -260,10 +260,6 @@ msgstr ""
 msgid "Found %d warnings."
 msgstr ""
 
-#: pocheckerconsts.sopenapofile
-msgid "&Open a po-file"
-msgstr ""
-
 #: pocheckerconsts.sopenfail
 msgid ""
 "Unable to open file:\n"

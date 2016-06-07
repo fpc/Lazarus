@@ -14,7 +14,6 @@ resourcestring
   sUnselectAllTests = '&Unselect All';
   sGUIPoFileCheckingTool = 'GUI Po-file checking tool';
   sSelectTestTypes = 'Select test types';
-  sOpenAPoFile = '&Open a po-file';
   sScanDir = 'Scan a folder';
   sRunSelectedTests = '&Run Selected Tests';
   sClearListBox = 'Clear';

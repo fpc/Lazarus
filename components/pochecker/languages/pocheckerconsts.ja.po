@@ -279,10 +279,6 @@ msgstr "%s: %d 項目"
 msgid "Found %d warnings."
 msgstr "%d 個の警告が見つかりました。"
 
-#: pocheckerconsts.sopenapofile
-msgid "&Open a po-file"
-msgstr "po ファイルを開く(&O)"
-
 #: pocheckerconsts.sopenfail
 msgid ""
 "Unable to open file:\n"

@@ -278,10 +278,6 @@ msgstr "%s: %d ел-тів"
 msgid "Found %d warnings."
 msgstr "Виявлено %d попереджень."
 
-#: pocheckerconsts.sopenapofile
-msgid "&Open a po-file"
-msgstr "&Відкрити po-файл"
-
 #: pocheckerconsts.sopenfail
 msgid ""
 "Unable to open file:\n"
