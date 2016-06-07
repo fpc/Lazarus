@@ -25,15 +25,17 @@ object ResultDlgForm: TResultDlgForm
     ClientWidth = 742
     TabOrder = 1
     object CloseBtn: TBitBtn
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 657
+      Left = 644
       Height = 26
       Top = 12
-      Width = 75
-      Anchors = [akRight]
+      Width = 92
+      Anchors = [akTop, akRight]
       AutoSize = True
-      BorderSpacing.Right = 10
+      BorderSpacing.Right = 6
       Cancel = True
       DefaultCaption = True
       Kind = bkClose
@@ -41,14 +43,17 @@ object ResultDlgForm: TResultDlgForm
       TabOrder = 3
     end
     object SaveBtn: TBitBtn
+      AnchorSideTop.Control = CloseBtn
       AnchorSideRight.Control = CloseBtn
-      Left = 544
+      AnchorSideBottom.Control = CloseBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 535
       Height = 26
       Top = 12
       Width = 103
-      Anchors = [akRight]
+      Anchors = [akTop, akRight, akBottom]
       AutoSize = True
-      BorderSpacing.Around = 10
+      BorderSpacing.Right = 6
       Caption = '&Save to file'
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
@@ -90,14 +95,17 @@ object ResultDlgForm: TResultDlgForm
       TabOrder = 2
     end
     object CopyBtn: TBitBtn
+      AnchorSideTop.Control = CloseBtn
       AnchorSideRight.Control = SaveBtn
-      Left = 393
+      AnchorSideBottom.Control = CloseBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 388
       Height = 26
       Top = 12
       Width = 141
-      Anchors = [akRight]
+      Anchors = [akTop, akRight, akBottom]
       AutoSize = True
-      BorderSpacing.Around = 10
+      BorderSpacing.Right = 6
       Caption = 'Copy to clipboard'
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
@@ -139,13 +147,17 @@ object ResultDlgForm: TResultDlgForm
       TabOrder = 1
     end
     object GraphStatBtn: TBitBtn
+      AnchorSideTop.Control = CloseBtn
       AnchorSideRight.Control = CopyBtn
-      Left = 226
+      AnchorSideBottom.Control = CloseBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 225
       Height = 26
       Top = 12
       Width = 157
-      Anchors = [akRight]
+      Anchors = [akTop, akRight, akBottom]
       AutoSize = True
+      BorderSpacing.Right = 6
       Caption = 'Show statistics graph'
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
