@@ -38,13 +38,17 @@ type
   { TPoCheckerForm }
 
   TPoCheckerForm = class(TForm)
+    TBImageList: TImageList;
     SelectAllMasterFilesBtn: TButton;
     SelectDirectoryDialog: TSelectDirectoryDialog;
+    MainToolBar: TToolBar;
+    ScanDirToolButton: TToolButton;
+    Div1ToolButton: TToolButton;
+    RunToolButton: TToolButton;
     UnselectAllMasterFilesBtn: TButton;
     ClearMasterFilesBtn: TButton;
     LangFilter: TComboBox;
     MasterPoListBox: TListBox;
-    ScanDirBtn: TBitBtn;
     StatusBar: TStatusBar;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure MasterPoListBoxResize(Sender: TObject);
@@ -54,7 +58,8 @@ type
     procedure MasterPoListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
     procedure MasterPoListBoxSelectionChange(Sender: TObject; User: boolean);
-    procedure ScanDirBtnClick(Sender: TObject);
+    procedure RunToolButtonClick(Sender: TObject);
+    procedure ScanDirToolButtonClick(Sender: TObject);
     procedure SelectAllMasterFilesBtnClick(Sender: TObject);
     procedure UnselectAllMasterFilesBtnClick(Sender: TObject);
   private
@@ -95,13 +100,11 @@ type
     SelectAllTestsBtn: TButton;
     SelectBasicTestsBtn: TButton;
     NoErrLabel: TLabel;
-    RunBtn: TBitBtn;
     Button3: TButton;
     SelectTestLabel: TLabel;
     TestListBox: TCheckListBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure RunBtnClick(Sender: TObject);
     procedure SelectAllTestsBtnClick(Sender: TObject);
     procedure SelectBasicTestsBtnClick(Sender: TObject);
     procedure UnselectAllTestsBtnClick(Sender: TObject);
@@ -152,27 +155,6 @@ begin
     PoFamilyList.Free;
   if Assigned(FPoCheckerSettings) then
     FPoCheckerSettings.Free;
-end;
-
-procedure TPoCheckerForm.RunBtnClick(Sender: TObject);
-var
-  AMasterList: TStringList;
-  LangIdx: Integer;
-  ALangID: TLangID;
-begin
-  LangIdx := LangFilter.ItemIndex;
-  ALangID := LangFilterIndexToLangID(LangIdx);
-  AMasterList := GetSelectedMasterFiles;
-  try
-    if TryCreatePoFamilyList(AMasterList, ALangID) then
-      RunSelectedTests
-    else
-    begin
-      if Assigned(PoFamilyList) then FreeAndNil(PoFamilyList);
-    end;
-  finally
-    AMasterList.Free;
-  end;
 end;
 
 procedure TPoCheckerForm.SelectAllTestsBtnClick(Sender: TObject);
@@ -265,7 +247,28 @@ begin
   SelectAllMasterFilesBtn.Enabled := (MasterPoListBox.Items.Count > 0);
 end;
 
-procedure TPoCheckerForm.ScanDirBtnClick(Sender: TObject);
+procedure TPoCheckerForm.RunToolButtonClick(Sender: TObject);
+var
+  AMasterList: TStringList;
+  LangIdx: Integer;
+  ALangID: TLangID;
+begin
+  LangIdx := LangFilter.ItemIndex;
+  ALangID := LangFilterIndexToLangID(LangIdx);
+  AMasterList := GetSelectedMasterFiles;
+  try
+    if TryCreatePoFamilyList(AMasterList, ALangID) then
+      RunSelectedTests
+    else
+    begin
+      if Assigned(PoFamilyList) then FreeAndNil(PoFamilyList);
+    end;
+  finally
+    AMasterList.Free;
+  end;
+end;
+
+procedure TPoCheckerForm.ScanDirToolButtonClick(Sender: TObject);
 begin
   if SelectDirectoryDialog.Execute then
   begin
@@ -564,7 +567,7 @@ begin
   NoErrLabel.Visible := False;
   if HasSelection then
   begin
-    RunBtn.Enabled := True;
+    RunToolButton.Enabled := True;
     TestListBox.Enabled := True;
     SelectAllTestsBtn.Enabled := True;
     SelectBasicTestsBtn.Enabled := True;
@@ -574,7 +577,7 @@ begin
   end
   else
   begin
-    RunBtn.Enabled := False;
+    RunToolButton.Enabled := False;
     TestListBox.Enabled := False;
     SelectAllTestsBtn.Enabled := False;
     SelectBasicTestsBtn.Enabled := False;
@@ -894,8 +897,8 @@ begin
   SelectTestLabel.Caption := sSelectTestTypes;
   //FindAllPOsCheckBox.Caption := sFindAllTranslatedPoFiles;
   IgnoreFuzzyCheckBox.Caption := sIgnoreFuzzyTranslations;
-  ScanDirBtn.Caption := sScanDir;
-  RunBtn.Caption := sRunSelectedTests;
+  ScanDirToolButton.Caption := sScanDir;
+  RunToolButton.Caption := sRunSelectedTests;
   ClearMasterFilesBtn.Caption := sClearListBox;
   UnselectAllMasterFilesBtn.Caption := sUnselectListBox;
   SelectAllMasterFilesBtn.Caption := sSelectAllListBox;
