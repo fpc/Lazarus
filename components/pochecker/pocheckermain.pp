@@ -46,6 +46,7 @@ type
     MasterPoListBox: TListBox;
     ScanDirBtn: TBitBtn;
     StatusBar: TStatusBar;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure MasterPoListBoxResize(Sender: TObject);
     procedure ClearMasterFilesBtnClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -153,7 +154,6 @@ procedure TPoCheckerForm.FormDestroy(Sender: TObject);
 begin
   if Assigned(PoFamilyList) then
     PoFamilyList.Free;
-  SaveConfig;
   if Assigned(FPoCheckerSettings) then
     FPoCheckerSettings.Free;
 end;
@@ -254,6 +254,12 @@ begin
   LangFilter.Top := ATop + 5;
 end;
 
+procedure TPoCheckerForm.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  SaveConfig;
+end;
+
 procedure TPoCheckerForm.ClearMasterFilesBtnClick(Sender: TObject);
 begin
   MasterPoListBox.Clear;
@@ -263,6 +269,7 @@ end;
 procedure TPoCheckerForm.FormShow(Sender: TObject);
 begin
   WindowState := FPoCheckerSettings.MainFormWindowState;
+  SetSelectedMasterFiles(FPoCheckerSettings.MasterPoSelList);
 end;
 
 procedure TPoCheckerForm.MasterPoListBoxDrawItem(Control: TWinControl;
@@ -739,7 +746,6 @@ begin
   ID := LangAbbrToLangId(Abbr);
   LangFilter.ItemIndex := LangIdToLangFilterIndex(ID);
   AddToMasterPoList(FPoCheckerSettings.MasterPoList);
-  SetSelectedMasterFiles(FPoCheckerSettings.MasterPoSelList);
 end;
 
 procedure TPoCheckerForm.SaveConfig;

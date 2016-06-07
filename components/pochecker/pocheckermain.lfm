@@ -9,6 +9,7 @@ object PoCheckerForm: TPoCheckerForm
   ClientWidth = 644
   Constraints.MinHeight = 450
   Constraints.MinWidth = 600
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
@@ -34,7 +35,7 @@ object PoCheckerForm: TPoCheckerForm
       'sCheckForDuplicateUntranslatedValues'
       'sCheckStatistics'
     )
-    ItemHeight = 17
+    ItemHeight = 21
     TabOrder = 3
     Data = {
       06000000000000000000
@@ -46,7 +47,7 @@ object PoCheckerForm: TPoCheckerForm
     Left = 201
     Height = 15
     Top = 8
-    Width = 93
+    Width = 124
     BorderSpacing.Left = 9
     Caption = 'Select test types'
     Font.Style = [fsBold]
@@ -122,9 +123,9 @@ object PoCheckerForm: TPoCheckerForm
   end
   object NoErrLabel: TLabel
     Left = 8
-    Height = 25
-    Top = 451
-    Width = 146
+    Height = 22
+    Top = 454
+    Width = 170
     Anchors = [akLeft, akBottom]
     Caption = 'No errors found'
     Font.Color = clGreen
@@ -138,9 +139,9 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideTop.Control = TestListBox
     AnchorSideTop.Side = asrBottom
     Left = 201
-    Height = 25
+    Height = 27
     Top = 153
-    Width = 117
+    Width = 128
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Select Basic Tests'
@@ -152,10 +153,10 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideLeft.Control = SelectBasicTestsBtn
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = SelectBasicTestsBtn
-    Left = 322
-    Height = 25
+    Left = 333
+    Height = 27
     Top = 153
-    Width = 104
+    Width = 110
     AutoSize = True
     BorderSpacing.Left = 4
     Caption = 'Select All Tests'
@@ -167,10 +168,10 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideLeft.Control = SelectAllTestsBtn
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = SelectAllTestsBtn
-    Left = 430
-    Height = 25
+    Left = 447
+    Height = 27
     Top = 153
-    Width = 118
+    Width = 127
     AutoSize = True
     BorderSpacing.Left = 4
     Caption = 'Unselect All Tests'
@@ -183,17 +184,17 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideTop.Control = SelectBasicTestsBtn
     AnchorSideTop.Side = asrBottom
     Left = 201
-    Height = 19
-    Top = 184
-    Width = 152
+    Height = 22
+    Top = 186
+    Width = 186
     BorderSpacing.Top = 6
     Caption = 'sIgnoreFuzzyTranslations'
     TabOrder = 7
   end
   object StatusBar: TStatusBar
     Left = 0
-    Height = 23
-    Top = 490
+    Height = 19
+    Top = 494
     Width = 644
     Panels = <>
   end
@@ -257,8 +258,8 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = NoErrLabel
     Left = 8
-    Height = 185
-    Top = 208
+    Height = 183
+    Top = 213
     Width = 629
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 5
@@ -272,6 +273,7 @@ object PoCheckerForm: TPoCheckerForm
     Sorted = True
     Style = lbOwnerDrawFixed
     TabOrder = 8
+    TopIndex = -1
   end
   object LangFilter: TComboBox
     AnchorSideLeft.Control = MasterPoListBox
@@ -279,12 +281,12 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideRight.Control = TestListBox
     AnchorSideRight.Side = asrBottom
     Left = 8
-    Height = 23
-    Top = 400
+    Height = 25
+    Top = 399
     Width = 629
     Anchors = [akLeft, akRight]
     BorderSpacing.Top = 5
-    ItemHeight = 15
+    ItemHeight = 0
     ItemIndex = 0
     Items.Strings = (
       'All languages'
@@ -323,9 +325,9 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = NoErrLabel
     Left = 8
-    Height = 25
-    Top = 426
-    Width = 53
+    Height = 27
+    Top = 427
+    Width = 46
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Top = 10
@@ -338,9 +340,9 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = NoErrLabel
     Left = 167
-    Height = 25
-    Top = 426
-    Width = 110
+    Height = 27
+    Top = 427
+    Width = 120
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 5
@@ -353,10 +355,10 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideLeft.Control = ClearMasterFilesBtn
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = NoErrLabel
-    Left = 66
-    Height = 25
-    Top = 426
-    Width = 96
+    Left = 59
+    Height = 27
+    Top = 427
+    Width = 103
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 5
