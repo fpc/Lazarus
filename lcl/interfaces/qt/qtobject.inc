@@ -1887,7 +1887,7 @@ var
   WStr: WideString;
 begin
   QObject_objectName(QApplication_style, @WStr);
-  Result := UTF8ToUTF16(WStr);
+  Result := UTF16ToUTF8(WStr);
 end;
 
 //------------------------------------------------------------------------

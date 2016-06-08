@@ -57,7 +57,7 @@ begin
   {$endif}
   Result := IsValidDC(DC);
   if Result then
-    QPainter_drawChord(TQtDeviceContext(DC).Widget, x1, y1, x2, y2, Angle1, Angle2);
+    QPainter_drawChord(TQtDeviceContext(DC).Widget, x1, y1, x2 - x1, y2 - y1, Angle1, Angle2);
 end;
 
 {------------------------------------------------------------------------------
