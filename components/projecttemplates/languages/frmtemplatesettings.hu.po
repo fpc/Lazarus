@@ -18,3 +18,4 @@ msgstr "Könyvtár sablonokkal:"
 #: frmtemplatesettings.stitle
 msgid "Project templates settings"
 msgstr "Projekt sablonok beállításai"
+

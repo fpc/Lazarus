@@ -18,3 +18,4 @@ msgstr "Változat: %.2f"
 #: iputils.sshortversion
 msgid "v%.2f"
 msgstr "v%.2f"
+

@@ -25,3 +25,4 @@ msgstr "Opzioni della classe Thread"
 #: threadoptionsdialog.sthreadnamelabelcaption
 msgid "Thread Class Name"
 msgstr "Nome della classe Thread"
+

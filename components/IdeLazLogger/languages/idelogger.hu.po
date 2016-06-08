@@ -22,3 +22,4 @@ msgstr "Naplózás"
 #: idelogger.ideloggermenucaption
 msgid "Logging ..."
 msgstr "Naplózás ..."
+

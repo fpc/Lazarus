@@ -71,6 +71,7 @@ msgid "Field type not recognized."
 msgstr "Feldtyp nicht erkannt"
 
 #: sqlitecompstrings.stablename
+#, fuzzy,badformat
 msgid "Table Name: %s"
 msgstr "Tabellenname"
 

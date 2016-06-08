@@ -95,17 +95,14 @@ msgid "LazarusSVN Commit"
 msgstr "Enviar LazarusSVN"
 
 #: svnclasses.rslazarussvndiff
-#| msgid "%s - LazarusSVN Diff..."
 msgid "%s - LazarusSVN Diff ..."
 msgstr "%s - LazarusSVN Diff ..."
 
 #: svnclasses.rslazarussvnlog
-#| msgid "%s - LazarusSVN Log..."
 msgid "%s - LazarusSVN Log ..."
 msgstr "%s - LazarusSVN Log ..."
 
 #: svnclasses.rslazarussvnupdate
-#| msgid "%s - LazarusSVN Update..."
 msgid "%s - LazarusSVN Update ..."
 msgstr "%s - LazarusSVN Atualizar ..."
 
@@ -151,8 +148,7 @@ msgstr "Projeto está ativo"
 
 #: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
 msgid "Project is not active in SVN settings, please activate first."
-msgstr ""
-"Projeto não está ativo nas configurações do SVN, favor ativar primeiro."
+msgstr "Projeto não está ativo nas configurações do SVN, favor ativar primeiro."
 
 #: svnclasses.rsprojectname
 msgid "Project name"
@@ -199,22 +195,18 @@ msgid "Show diff"
 msgstr "Exibir diferenças"
 
 #: svnclasses.rsshowdiffbase
-#| msgid "Show diff of local changes"
 msgid "Show Diff of Local Changes"
 msgstr "Exibir diferenças das alterações locais"
 
 #: svnclasses.rsshowdiffcountrev
-#| msgid "Show last X commits"
 msgid "Show Last X Commits"
 msgstr "Exibir últimos X envios"
 
 #: svnclasses.rsshowdiffhead
-#| msgid "Show diff against HEAD"
 msgid "Show Diff Against HEAD"
 msgstr "Exibir diferenças contra HEAD"
 
 #: svnclasses.rsshowdiffprev
-#| msgid "Show diff against previous version"
 msgid "Show Diff Against Previous Version"
 msgstr "Exibir diferenças contra versão prévia"
 
@@ -241,3 +233,4 @@ msgstr "Atualizar"
 #: svnclasses.rsupdated
 msgid "Updated"
 msgstr "Atualizado"
+

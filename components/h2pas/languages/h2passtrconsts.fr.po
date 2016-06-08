@@ -622,3 +622,4 @@ msgstr "Erreur d'écriture"
 #: h2passtrconsts.h2pxhandlesys__trapofthepalmosheaderfiles
 msgid "-x  Handle SYS__TRAP of the PalmOS header files"
 msgstr "-x Gérer SYS-TRAP des fichiers d'en-tête de PalmOS"
+

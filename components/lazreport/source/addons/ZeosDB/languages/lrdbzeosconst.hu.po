@@ -30,3 +30,4 @@ msgstr "Paraméter értéke"
 #: lrdbzeosconst.slreditparamsform_selectexpresion
 msgid "Select expresion"
 msgstr "Kifejezés választása"
+

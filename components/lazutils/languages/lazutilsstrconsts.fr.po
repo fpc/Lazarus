@@ -166,3 +166,4 @@ msgstr "Impossible de créer le répertoire de configuration \"%s\""
 #: lazutilsstrconsts.lrsvarnoconversion
 msgid "Conversion from %s to %s not possible"
 msgstr "Conversion de %s vers %s impossible"
+

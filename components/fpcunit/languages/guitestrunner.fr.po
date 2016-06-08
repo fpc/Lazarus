@@ -160,3 +160,4 @@ msgstr "XML des résultats"
 #: guitestrunner.stshtree
 msgid "Testcase tree"
 msgstr "Arbre des tests"
+

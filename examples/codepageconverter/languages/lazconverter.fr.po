@@ -52,3 +52,4 @@ msgstr "Retirer de la conversion"
 #: tlazconverterform.selectdirectorydialog1.title
 msgid "Select Directory"
 msgstr "Choisir un répertoire"
+

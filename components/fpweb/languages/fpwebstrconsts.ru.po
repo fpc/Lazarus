@@ -17,7 +17,6 @@ msgid "CSS file"
 msgstr "Файл CSS"
 
 #: fpwebstrconsts.scssfiledesc
-#| msgid "Create new CSS file..."
 msgctxt "fpwebstrconsts.scssfiledesc"
 msgid "Create new CSS file ..."
 msgstr "Создать новый файл CSS ..."
@@ -35,7 +34,6 @@ msgid "&Directory"
 msgstr "&Каталог"
 
 #: fpwebstrconsts.senteryoutext
-#| msgid "Enter your text..."
 msgctxt "fpwebstrconsts.senteryoutext"
 msgid "Enter your text ..."
 msgstr "Введите текст ..."
@@ -67,7 +65,6 @@ msgid "HTML file"
 msgstr "Файл HTML"
 
 #: fpwebstrconsts.shtmlfiledesc
-#| msgid "Create new HTML file..."
 msgctxt "fpwebstrconsts.shtmlfiledesc"
 msgid "Create new HTML file ..."
 msgstr "Создать новый файл HTML ..."
@@ -126,7 +123,6 @@ msgid "Border width"
 msgstr "Ширина границы"
 
 #: fpwebstrconsts.shtmltableformcaption
-#| msgid "New HTML table..."
 msgctxt "fpwebstrconsts.shtmltableformcaption"
 msgid "New HTML table ..."
 msgstr "Новая таблица HTML ..."
@@ -175,7 +171,6 @@ msgid "Submit"
 msgstr "Отправить"
 
 #: fpwebstrconsts.shtmltagproperty
-#| msgid "Tag property: "
 msgid "Tag property: %s"
 msgstr "Свойства тега: %s"
 
@@ -192,7 +187,6 @@ msgid "Javascript file"
 msgstr "Файл JavaScript"
 
 #: fpwebstrconsts.sjsfiledesc
-#| msgid "Create new javascript file..."
 msgid "Create new javascript file ..."
 msgstr "Создать новый файл JavaScript ..."
 
@@ -214,12 +208,10 @@ msgid "Insert CheckBox control"
 msgstr "Вставить флажок"
 
 #: fpwebstrconsts.smihtmlformfieldset
-#| msgid "Insert FieldSet"
 msgid "Insert HTML FIELDSET tag"
 msgstr "Вставить тег HTML FIELDSET"
 
 #: fpwebstrconsts.smihtmlformlegend
-#| msgid "Insert Legend"
 msgid "Insert HTML LEGEND tag"
 msgstr "Вставить тег HTML LEGEND"
 
@@ -250,7 +242,6 @@ msgid "Insert new line"
 msgstr "Вставить новую строку"
 
 #: fpwebstrconsts.smihtmlinsertcolor
-#| msgid "Insert HTML Color"
 msgctxt "fpwebstrconsts.smihtmlinsertcolor"
 msgid "Insert HTML color value"
 msgstr "Вставить значение цвета HTML"
@@ -261,7 +252,6 @@ msgid "Insert HTML comment"
 msgstr "Вставить комментарий HTML"
 
 #: fpwebstrconsts.smihtmlinsertdivblock
-#| msgid "Insert DIV Block"
 msgid "Insert HTML DIV tag"
 msgstr "Вставить тег HTML DIV"
 
@@ -301,7 +291,6 @@ msgid "Insert image"
 msgstr "Вставить изображение"
 
 #: fpwebstrconsts.smihtmlinsertinput
-#| msgid "Insert HTML Input tag"
 msgctxt "fpwebstrconsts.smihtmlinsertinput"
 msgid "Insert HTML INPUT tag"
 msgstr "Вставить тег HTML INPUT"
@@ -329,12 +318,10 @@ msgid "Insert Non Breaking Space"
 msgstr "Вставить неразрывный пробел"
 
 #: fpwebstrconsts.smihtmlinsertpre
-#| msgid "Insert Pre"
 msgid "Insert HTML PRE tag"
 msgstr "Вставить тег HTML PRE"
 
 #: fpwebstrconsts.smihtmlinsertspantext
-#| msgid "Insert Span Text"
 msgid "Insert HTML SPAN tag"
 msgstr "Вставить тег HTML SPAN"
 
@@ -386,7 +373,6 @@ msgid "Standard"
 msgstr "Стандартные"
 
 #: fpwebstrconsts.smihtmlstyle
-#| msgid "Style"
 msgctxt "fpwebstrconsts.smihtmlstyle"
 msgid "Styles"
 msgstr "Стили"
@@ -451,3 +437,4 @@ msgstr "&Зарегистрировать расположение файлов 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"
 msgstr "Обслуживать запросы в потоках &исполнения"
+

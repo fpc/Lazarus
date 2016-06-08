@@ -105,3 +105,4 @@ msgstr "Repository remoto"
 #: fppkg_const.rsshowlazaruspackagemanager
 msgid "Show Lazarus Package Manager"
 msgstr "Mostra il gestore di pacchetti di Lazarus"
+

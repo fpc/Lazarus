@@ -16,7 +16,6 @@ msgid "Cancel"
 msgstr "Atsisakyti"
 
 #: messagecomposer.rsok
-#| msgid "Ok"
 msgid "OK"
 msgstr "Tinka"
 
@@ -73,23 +72,19 @@ msgid "\"If\" result"
 msgstr "„If“ rezultatas"
 
 #: messagecomposer.skindofmessage
-#| msgid "KIND OF MESSAGE"
 msgid "Kind of message"
 msgstr "Pranešimo tipas"
 
 #: messagecomposer.smaskinput
-#| msgid "Mask Input"
 msgid "Mask input"
 msgstr "Įvestis pagal kaukę"
 
 #: messagecomposer.smessagecomposercaption
-#| msgid "Message Composer ..."
 msgctxt "messagecomposer.smessagecomposercaption"
 msgid "Message Composer"
 msgstr "Pranešimų rengyklė"
 
 #: messagecomposer.smessagecomposermenucaption
-#| msgid "Message Composer ..."
 msgctxt "messagecomposer.smessagecomposermenucaption"
 msgid "Message Composer ..."
 msgstr "Pranešimų rengyklė ..."
@@ -103,7 +98,6 @@ msgid "The message to be shown"
 msgstr "Rodomas pranešimas"
 
 #: messagecomposer.snotimplementedyet
-#| msgid "Not Implemented Yet"
 msgid "Not implemented yet"
 msgstr "Dar neįgyvendinta"
 
@@ -112,7 +106,6 @@ msgid "Text asking the user for input"
 msgstr "Tekstas, kviečiantis įvesti"
 
 #: messagecomposer.ssourcewrapper
-#| msgid "SOURCE WRAPPER"
 msgid "Source wrapper"
 msgstr "Pirminio kodo formuotojas"
 

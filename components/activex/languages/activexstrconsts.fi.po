@@ -40,3 +40,4 @@ msgstr "Valitse kansio tallennettavalle paketille %sP.lpk"
 #: activexstrconsts.axtypelibraryfilestlbdllexeocxolbtlbdllexeocxolballf
 msgid "Type library files (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*.olb|All Files (*.*)|*.*"
 msgstr "Tyyppikirjasto tiedostot (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*.olb|All Files (*.*)|*.*"
+

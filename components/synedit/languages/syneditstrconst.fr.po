@@ -810,3 +810,4 @@ msgstr "<aucun>"
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
 msgstr "Sans titre"
+

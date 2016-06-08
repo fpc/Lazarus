@@ -737,3 +737,4 @@ msgstr "Production de la documentation avec la commande :"
 #: lazdemsg.swarnifnodocumentationnodefound
 msgid "Warn if no documentation node found"
 msgstr "Avertir si aucun noeud de documentation n'est trouvé"
+

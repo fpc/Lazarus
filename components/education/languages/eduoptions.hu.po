@@ -212,3 +212,4 @@ msgstr "Látható komponensek"
 #: eduoptions.ersvisiblespeedbuttons
 msgid "Visible SpeedButtons"
 msgstr "Látható gyorsgombok"
+

@@ -115,3 +115,4 @@ msgstr "Jeu graphique Win32/Win64"
 #: reconstsunit.swincewidgetset
 msgid "WinCE widget set"
 msgstr "Jeu graphique WinCE"
+

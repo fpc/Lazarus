@@ -14,7 +14,6 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #: messagecomposer.rsok
-#| msgid "Ok"
 msgid "OK"
 msgstr "OK"
 
@@ -71,23 +70,19 @@ msgid "\"If\" result"
 msgstr "resultado \"If\""
 
 #: messagecomposer.skindofmessage
-#| msgid "KIND OF MESSAGE"
 msgid "Kind of message"
 msgstr "Tipo de mensagem"
 
 #: messagecomposer.smaskinput
-#| msgid "Mask Input"
 msgid "Mask input"
 msgstr "Máscara de entrada"
 
 #: messagecomposer.smessagecomposercaption
-#| msgid "Message Composer ..."
 msgctxt "messagecomposer.smessagecomposercaption"
 msgid "Message Composer"
 msgstr "Compositor Mensagens ..."
 
 #: messagecomposer.smessagecomposermenucaption
-#| msgid "Message Composer ..."
 msgctxt "messagecomposer.smessagecomposermenucaption"
 msgid "Message Composer ..."
 msgstr "Compositor Mensagens ..."
@@ -101,7 +96,6 @@ msgid "The message to be shown"
 msgstr "A mensagem à ser mostrada"
 
 #: messagecomposer.snotimplementedyet
-#| msgid "Not Implemented Yet"
 msgid "Not implemented yet"
 msgstr "Ainda não implementado"
 

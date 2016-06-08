@@ -234,3 +234,4 @@ msgstr "Mise à jour"
 #: svnclasses.rsupdated
 msgid "Updated"
 msgstr "Mis à jour"
+

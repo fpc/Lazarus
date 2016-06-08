@@ -112,3 +112,4 @@ msgstr "Code source englobant"
 #: messagecomposer.svaluevar
 msgid "Value (var)"
 msgstr "Valeur (\"var\")"
+

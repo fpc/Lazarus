@@ -13,7 +13,7 @@ msgstr ""
 "X-Generator: Virtaal 0.7.1\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Вільна сторона роздільника не повинна бути заякорена: Вузол=%s%s%s Тип=%s Якорі[%s]=%s%s%s"
@@ -31,25 +31,25 @@ msgid "Anchor Docking Layout"
 msgstr "Схема Стикування Якорів"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Якір не є роздільником: Вузол=%s%s%s Якорі[%s]=%s%s%s"
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Якір не знайдено: Вузол=%s%s%s Якорі[%s]=%s%s%s"
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "ЯКір до неправильної сторони роздільника: Вузол=%s%s%s Якорі[%s]=%s%s%s"
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgstr "Сторінка не повинна бути заякорена: Вузол=%s%s%s Батько=%s ТипБатька=%s Якорі[%s]=%s%s%s"
@@ -71,7 +71,7 @@ msgid "control is already a docksite"
 msgstr "об'єкт вже є областю стикування"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Custom dock site %s%s%s can have only one site."
 msgid "Custom dock site \"%s\" can have only one site."
 msgstr "Користув. область стикування %s%s%s може мати лише одну область."
@@ -85,7 +85,6 @@ msgid "Docking options"
 msgstr "Параметри стикування"
 
 #: anchordockstr.adrsdraganddockc
-#| msgid "Use the mouse to drag and dock window \"%c\""
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Викор. мишку для перетягування і стикування вікна \"%s\""
 
@@ -222,7 +221,7 @@ msgid "No captions for floating sites"
 msgstr "Не показувати назви плаваючих областей"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "No children allowed for Node=%s%s%s Type=%s"
 msgid "No children allowed for Node=\"%s\" Type=%s"
 msgstr "Не дозволено мати потомків для Вузла=%s%s%s Тип=%s"

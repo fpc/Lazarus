@@ -16,7 +16,6 @@ msgid "New project from template"
 msgstr "Naujas projektas pagal šabloną"
 
 #: idetemplateproject.sprojecttemplatesettings
-#| msgid "Project templates options"
 msgid "Project templates options ..."
 msgstr "Projekto šablono parinktys…"
 

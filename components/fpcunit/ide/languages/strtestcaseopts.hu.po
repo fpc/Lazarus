@@ -39,3 +39,4 @@ msgstr "Nevek"
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "Alapértelmezett teszt neve"
+

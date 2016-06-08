@@ -18,12 +18,10 @@ msgid "Find more information on the web at: %s"
 msgstr "Более подробные сведения можно получить в сети по адресу: %s"
 
 #: jcfuiconsts.lisaboutthisprogramisopensource
-#| msgid "This program is open source software. It is released under the Mozilla Public licence (MPL).  http://www.mozilla.org/MPL"
 msgid "This program is open source software. It is released under the Mozilla Public Licence (MPL).  http://www.mozilla.org/MPL"
 msgstr "Это программное обеспечение с открытым исходным кодом. Оно распространяется на условиях Mozilla Public Licence (MPL).  http://www.mozilla.org/MPL"
 
 #: jcfuiconsts.lisaboutthisprogramisstillunderdevelopment
-#| msgid "This program is still under development.  In spite of thorough testing and removal of reported bugs, no guarantees are given. Please make backups, or better yet use a source control system."
 msgid "This program is still under development. In spite of thorough testing and removal of reported bugs, no guarantees are given. Please make backups, or better yet use a source control system."
 msgstr "Эта программа находится в стадии разработки. Несмотря на тщательное тестирование и устранение обнаруженных ошибок, гарантий её корректной работы не даётся. Делайте резервные копии, а ещё лучше - используйте систему контроля версий."
 
@@ -132,7 +130,6 @@ msgid "After procedure header"
 msgstr "После заголовка процедуры"
 
 #: jcfuiconsts.lisblatstartandendofbeginendblock
-#| msgid "At start and end of begin...end block"
 msgid "At start and end of Begin...End block"
 msgstr "В начале и конце блока Begin...End"
 
@@ -508,7 +505,6 @@ msgid "JCF Format Settings"
 msgstr "Форматирование кода JEDI"
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
-#| msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project."
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
 msgstr "Форматирование кода JEDI для %sВы действительно хотите форматировать все (%s) файлы в проекте?"
 

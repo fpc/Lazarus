@@ -2613,3 +2613,4 @@ msgstr "Retour automatique à la ligne"
 #: lr_const.syes
 msgid "Yes"
 msgstr "Oui"
+

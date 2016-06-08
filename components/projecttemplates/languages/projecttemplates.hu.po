@@ -30,3 +30,4 @@ msgstr "A fájl másolása nem sikerült innen: \"%s\", ide: \"%s\""
 #: projecttemplates.serrnosuchtemplate
 msgid "\"%s\": No such template."
 msgstr "\"%s\": Nincs ilyen sablon."
+

@@ -883,3 +883,4 @@ msgstr "var ist nur in Generics erlaubt, Ende der Klasse nicht gefunden"
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"
 msgstr "\"%s\" nicht gefunden"
+

@@ -42,3 +42,4 @@ msgstr "Érték"
 #: frmtemplatevariables.svariable
 msgid "Variable"
 msgstr "Változó"
+

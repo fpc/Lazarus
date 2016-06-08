@@ -208,3 +208,4 @@ msgstr "Impossible de renommer les composants : %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Éditer les outils"
+

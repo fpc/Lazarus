@@ -51,3 +51,4 @@ msgstr "Le paquet \"EditorMacroScript\" (macros \"pascalscript\") a détecté un
 #: emsstrings.emsstatustitle
 msgid "Status"
 msgstr "État"
+
