@@ -4,10 +4,12 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: uk\n"
+"X-Generator: Poedit 1.6.4\n"
 
 #: heaptrcview.rsdtimes
 msgid " (%d times)"
@@ -15,13 +17,11 @@ msgstr " (%d разів)"
 
 #: heaptrcview.rserrorparse
 msgid "Error while parsing trace file"
-msgstr "Помилка розбору файлу стека викликів"
+msgstr "Помилка розбору файлу трасування"
 
 #: heaptrcview.rsleakview
-#, fuzzy
-#| msgid "Find source lines for leak/stack-traces"
 msgid "Leaks and Traces"
-msgstr "Перегляд витоків пам'яті"
+msgstr "Витоки і трасування"
 
 #: heaptrcview.sbtnclipbrd
 msgid "Paste Clipboard"
@@ -29,7 +29,7 @@ msgstr "Вставити з буфера обміну"
 
 #: heaptrcview.sbtnresolve
 msgid "Resolve"
-msgstr ""
+msgstr "Розв'язати"
 
 #: heaptrcview.sbtnupdate
 msgid "Update"
@@ -44,18 +44,16 @@ msgid "Stay on top"
 msgstr "Поверх інших вікон"
 
 #: heaptrcview.sfrmcap
-#, fuzzy
-#| msgid "LeakView - HeapTrc output viewer"
 msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
-msgstr "LeakView - програма перегляду виводу HeapTrc"
+msgstr "Витоки і трасування - програма перегляду виводу HeapTrc і зворотного трасування GDB"
 
 #: heaptrcview.sfrmselectfilewithdebuginfo
 msgid "Select file with debug info"
-msgstr ""
+msgstr "Виберіть файл зі зневаджувальною інформацією"
 
 #: heaptrcview.sfrmselecttrcfile
 msgid "Select file with trace log"
-msgstr ""
+msgstr "Виберіть файл з журналом трасування"
 
 #: heaptrcview.slbltrace
 msgid ".trc file"
@@ -79,15 +77,13 @@ msgstr "Витік: %d байт(ів)"
 
 #: heaptrcview.strleakingblockscount
 msgid "Leaking Blocks Count: %d"
-msgstr "К-сть втрачених блоків пам'яті: %d"
+msgstr "К-сть втрачених блоків: %d"
 
 #: heaptrcview.strleakingmemsize
 msgid "Leaking Mem Size: %d"
-msgstr "Розмір втраченої пам'яті: %d"
+msgstr "Обсяг втраченої пам'яті: %d"
 
 #: heaptrcview.strtotalmemalloc
-#, fuzzy
-#| msgid "Total Mem alloced: %d"
 msgid "Total Mem allocated: %d"
-msgstr "Розмір виділеної пам'яті: %d"
+msgstr "Всього виділено пам'яті: %d"
 

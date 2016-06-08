@@ -4,10 +4,12 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: uk\n"
+"X-Generator: Poedit 1.6.4\n"
 
 #: reglazdaemon.sdaemonappdescr
 msgid "Daemon (service) application is a non-gui application that runs in the background."
@@ -23,15 +25,15 @@ msgstr "Програми-демони (служби)"
 
 #: reglazdaemon.sdaemondescr
 msgid "Daemon Module for inclusion in a daemon application"
-msgstr "Модуль демона для включення в програму-демон"
+msgstr "Модуль демона для включення у програму-демон"
 
 #: reglazdaemon.sdaemonmapperdescr
 msgid ""
 "Daemon mapper for inclusion in a daemon application.\n"
 "Only one daemon mapper may exist in a daemon application.\n"
 msgstr ""
-"Засіб прив'язки демонів для включення в програму-демон.\n"
-"У програмі-демоні може бути лише один екземпляр засобу прив'язки демонів.\n"
+"Засіб прив'язки демонів для включення у програму-демон.\n"
+"У програмі-демоні може бути лише один примірник засобу прив'язки демонів.\n"
 
 #: reglazdaemon.sdaemonmappername
 msgid "Daemon mapper"
