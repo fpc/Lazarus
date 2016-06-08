@@ -23,10 +23,11 @@ unit LazUTF8;
 interface
 
 uses
-  {$IFDEF UTF8_RTL}
   {$ifdef unix}
-  cwstring, // UTF8 RTL on Unix requires this. Must be used although it pulls in clib.
+  // WideCompare* functions on Unix requires this. Must be used although it pulls in clib.
+  cwstring,
   {$endif}
+  {$IFDEF UTF8_RTL}
   FPCAdds,
   {$ENDIF}
   {$ifdef windows}
