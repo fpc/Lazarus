@@ -902,3 +902,4 @@ msgstr "Avertissements"
 #: jcfuiconsts.liswarningswarningson
 msgid "&Warnings On"
 msgstr "&Avertissements actifs"
+

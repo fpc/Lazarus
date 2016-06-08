@@ -38,3 +38,4 @@ msgstr "FPCUnit teszt%sEgy unit, amely FPCUnit tesztet tartalmaz."
 #: fpcunitlazideintf.swriteyourowntest
 msgid "Write your own test"
 msgstr "Saját teszt írása"
+

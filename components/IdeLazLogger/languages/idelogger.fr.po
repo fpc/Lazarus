@@ -22,3 +22,4 @@ msgstr "Journalisation"
 #: idelogger.ideloggermenucaption
 msgid "Logging ..."
 msgstr "Journalisation..."
+

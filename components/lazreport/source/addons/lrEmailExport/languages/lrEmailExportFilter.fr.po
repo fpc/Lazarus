@@ -83,3 +83,4 @@ msgstr "Texte"
 #: lremailexportfilter.susemailprogram
 msgid "Use mail program"
 msgstr "Utiliser l'application de messagerie"
+

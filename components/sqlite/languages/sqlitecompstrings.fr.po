@@ -17,12 +17,8 @@ msgid "Add"
 msgstr "Ajouter"
 
 #: sqlitecompstrings.satablenamedalreadyexistsareyousureyouwanttoreplace
-msgid ""
-"A Table named \"%s\" already exists. Are you sure you want to replace this "
-"table?%sAll data stored will be lost."
-msgstr ""
-"Une table nommée \"%s\" existe déjà. Êtes-vous sur de vouloir remplacer "
-"cette table ? %s Toutes les données enregistrées seront perdues."
+msgid "A Table named \"%s\" already exists. Are you sure you want to replace this table?%sAll data stored will be lost."
+msgstr "Une table nommée \"%s\" existe déjà. Êtes-vous sur de vouloir remplacer cette table ? %s Toutes les données enregistrées seront perdues."
 
 #: sqlitecompstrings.sclose
 msgid "Close"
@@ -50,9 +46,7 @@ msgstr "Type du champ"
 
 #: sqlitecompstrings.sfilenamenotsetitsnotpossibletocreateeditatable
 msgid "File name not set: it's not possible to create/edit a table."
-msgstr ""
-"Le nom du fichier n'est pas renseigné : impossible de créer ou de modifier "
-"la table."
+msgstr "Le nom du fichier n'est pas renseigné : impossible de créer ou de modifier la table."
 
 #: sqlitecompstrings.sfilepath
 msgid "File Path: %s"
@@ -84,6 +78,5 @@ msgstr "Nom de la table : %s"
 
 #: sqlitecompstrings.stablenamenotsetitsnotpossibletocreateeditatable
 msgid "Table name not set: it's not possible to create/edit a table."
-msgstr ""
-"Le nom de la table n'est pas renseigné : impossible de créer ou de "
-"modifier la table."
+msgstr "Le nom de la table n'est pas renseigné : impossible de créer ou de modifier la table."
+

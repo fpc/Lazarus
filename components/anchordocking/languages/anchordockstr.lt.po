@@ -13,7 +13,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Laisvoji skyriklio kraštinė neturi būti pririšta: mazgas = %s%s%s, tipas = %s, prieraišos[%s] = %s%s%s"
@@ -31,25 +31,25 @@ msgid "Anchor Docking Layout"
 msgstr "Prieraišų pritvirtinimų maketas"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Prieraiša nėra skyriklis: mazgas = %s%s%s, prieraišos[%s] = %s%s%s"
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Prieraiša nerasta: mazgas = %s%s%s, prieraišos[%s] = %s%s%s"
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Prieraiša netinka skyriklio kraštinei: mazgas = %s%s%s, prieraišos[%s]=%s%s%s"
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgstr "Lapas turi būti be prieraišų: mazgas = %s%s%s, tėvas = %s, tėvo tipas = %s, prieraišos[%s] = %s%s%s"
@@ -71,7 +71,7 @@ msgid "control is already a docksite"
 msgstr "Valdiklis jau yra vieta pritvirtinimui"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Custom dock site %s%s%s can have only one site."
 msgid "Custom dock site \"%s\" can have only one site."
 msgstr "Savoje pritvirtinimo vietoje %s%s%s gali būti tik viena vieta pritvirtinimui."
@@ -85,7 +85,6 @@ msgid "Docking options"
 msgstr "Pritvirtinimo parinktys"
 
 #: anchordockstr.adrsdraganddockc
-#| msgid "Use the mouse to drag and dock window \"%c\""
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Langas „%s“ tempiamas ir pritvirtinamas naudojant pelę"
 
@@ -222,7 +221,7 @@ msgid "No captions for floating sites"
 msgstr "Nerodyti antraščių plaukiojančioms vietoms pritvirtinimui"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "No children allowed for Node=%s%s%s Type=%s"
 msgid "No children allowed for Node=\"%s\" Type=%s"
 msgstr "Vaikai negalimi mazge = %s%s%s, tipas=%s"

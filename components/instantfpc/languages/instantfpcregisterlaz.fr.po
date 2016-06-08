@@ -26,3 +26,4 @@ msgstr "%s%sProgramme en un seul fichier exécuté par \"InstantFPC\"."
 #: instantfpcregisterlaz.rssinglefilepr
 msgid "%s%sSingle file program using InstantFPC to compile and execute"
 msgstr "%s%sProgramme en un seul fichier utilisant \"InstantFPC\" pour se compiler et se lancer."
+

@@ -16,7 +16,6 @@ msgid "CSS file"
 msgstr "CSS-Datei"
 
 #: fpwebstrconsts.scssfiledesc
-#| msgid "Create new CSS file..."
 msgctxt "fpwebstrconsts.scssfiledesc"
 msgid "Create new CSS file ..."
 msgstr "Erzeuge neue CSS-Datei..."
@@ -65,7 +64,6 @@ msgid "HTML file"
 msgstr "HTML-Datei"
 
 #: fpwebstrconsts.shtmlfiledesc
-#| msgid "Create new HTML file..."
 msgctxt "fpwebstrconsts.shtmlfiledesc"
 msgid "Create new HTML file ..."
 msgstr "Erzeuge neue HTML-Datei ..."
@@ -124,7 +122,6 @@ msgid "Border width"
 msgstr ""
 
 #: fpwebstrconsts.shtmltableformcaption
-#| msgid "New HTML table..."
 msgctxt "fpwebstrconsts.shtmltableformcaption"
 msgid "New HTML table ..."
 msgstr "Neue HTML-Tabelle ..."
@@ -189,7 +186,6 @@ msgid "Javascript file"
 msgstr "Javascript-Datei"
 
 #: fpwebstrconsts.sjsfiledesc
-#| msgid "Create new javascript file..."
 msgid "Create new javascript file ..."
 msgstr "Erzeuge neue Javascript-Datei ..."
 
@@ -245,7 +241,6 @@ msgid "Insert new line"
 msgstr "Neue Zeile einfügen"
 
 #: fpwebstrconsts.smihtmlinsertcolor
-#| msgid "Insert HTML Color"
 msgctxt "fpwebstrconsts.smihtmlinsertcolor"
 msgid "Insert HTML color value"
 msgstr "HTML-Farbe einfügen"
@@ -377,7 +372,6 @@ msgid "Standard"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlstyle
-#| msgid "Style"
 msgctxt "fpwebstrconsts.smihtmlstyle"
 msgid "Styles"
 msgstr "Stile"

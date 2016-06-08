@@ -38,3 +38,4 @@ msgstr "Noms"
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "Nom de test par défaut"
+

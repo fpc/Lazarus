@@ -18,3 +18,4 @@ msgstr "Pascal unit egy TThread alosztállyal."
 #: reglazthread.sthreadname
 msgid "Thread Object"
 msgstr "Szál objektum"
+

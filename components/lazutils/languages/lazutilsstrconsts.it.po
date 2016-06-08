@@ -13,14 +13,12 @@ msgstr ""
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr ""
-"un componente directory in %s non esiste o è un link simbolico non valido"
+msgstr "un componente directory in %s non esiste o è un link simbolico non valido"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr ""
-"un componente directory in %s non esiste o è un link simbolico non valido"
+msgstr "un componente directory in %s non esiste o è un link simbolico non valido"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory"
@@ -166,3 +164,4 @@ msgstr "Impossibile creare la cartella di configurazione \"%s\""
 #: lazutilsstrconsts.lrsvarnoconversion
 msgid "Conversion from %s to %s not possible"
 msgstr "Conversione da %s a %s impossibile"
+

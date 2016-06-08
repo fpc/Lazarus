@@ -42,3 +42,4 @@ msgstr "Csomag megnyitása"
 #: packagetabsstr.sother
 msgid "Other"
 msgstr "Egyéb"
+

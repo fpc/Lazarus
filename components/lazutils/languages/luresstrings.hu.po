@@ -19,3 +19,4 @@ msgstr "a(z) \"%s\" fájl nem létezik"
 #: luresstrings.ctsfileisnotexecutable
 msgid "%s is not executable"
 msgstr "a(z) %s nem futtatható"
+

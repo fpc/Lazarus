@@ -98,3 +98,4 @@ msgstr "Module Web"
 #: weblazideintf.rswebmoduleada
 msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
 msgstr "Module Web%sUn module de données pour applications WEB (HTTP)."
+

@@ -14,7 +14,6 @@ msgid "Cancel"
 msgstr "Отмена"
 
 #: messagecomposer.rsok
-#| msgid "Ok"
 msgid "OK"
 msgstr "ОК"
 
@@ -71,23 +70,19 @@ msgid "\"If\" result"
 msgstr "Результат \"If\""
 
 #: messagecomposer.skindofmessage
-#| msgid "KIND OF MESSAGE"
 msgid "Kind of message"
 msgstr "Тип сообщения"
 
 #: messagecomposer.smaskinput
-#| msgid "Mask Input"
 msgid "Mask input"
 msgstr "Маскировать ввод"
 
 #: messagecomposer.smessagecomposercaption
-#| msgid "Message Composer ..."
 msgctxt "messagecomposer.smessagecomposercaption"
 msgid "Message Composer"
 msgstr "Составитель сообщений"
 
 #: messagecomposer.smessagecomposermenucaption
-#| msgid "Message Composer ..."
 msgctxt "messagecomposer.smessagecomposermenucaption"
 msgid "Message Composer ..."
 msgstr "Составитель сообщений ..."
@@ -101,7 +96,6 @@ msgid "The message to be shown"
 msgstr "Отображаемое сообщение"
 
 #: messagecomposer.snotimplementedyet
-#| msgid "Not Implemented Yet"
 msgid "Not implemented yet"
 msgstr "Ещё не реализовано"
 
@@ -110,7 +104,6 @@ msgid "Text asking the user for input"
 msgstr "Текст запроса на ввод пользователем"
 
 #: messagecomposer.ssourcewrapper
-#| msgid "SOURCE WRAPPER"
 msgid "Source wrapper"
 msgstr "Вызывающий исходный код"
 

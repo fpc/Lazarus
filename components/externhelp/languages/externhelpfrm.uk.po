@@ -1,4 +1,3 @@
- Igor Paliychuk <mansonigor@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
@@ -66,7 +65,6 @@ msgid "Include sub directories"
 msgstr "Включити підтеки"
 
 #: externhelpfrm.ehrsmacrofy
-#| msgid "Macrofy"
 msgid "Use macros"
 msgstr "Використати макрос"
 

@@ -96,17 +96,14 @@ msgid "LazarusSVN Commit"
 msgstr "LazarusSVN nusiuntimas"
 
 #: svnclasses.rslazarussvndiff
-#| msgid "%s - LazarusSVN Diff..."
 msgid "%s - LazarusSVN Diff ..."
 msgstr "%s - LazarusSVN skirtumai…"
 
 #: svnclasses.rslazarussvnlog
-#| msgid "%s - LazarusSVN Log..."
 msgid "%s - LazarusSVN Log ..."
 msgstr "%s - LazarusSVN žurnalas…"
 
 #: svnclasses.rslazarussvnupdate
-#| msgid "%s - LazarusSVN Update..."
 msgid "%s - LazarusSVN Update ..."
 msgstr "%s - LazarusSVN naujinimas…"
 
@@ -203,7 +200,6 @@ msgid "Show Diff of Local Changes"
 msgstr "Rodyti skirtumus tarp vietinių pakeitimų"
 
 #: svnclasses.rsshowdiffcountrev
-#| msgid "Show last X commits"
 msgid "Show Last X Commits"
 msgstr "Rodyti paskutiniuosius X nusiuntimus"
 

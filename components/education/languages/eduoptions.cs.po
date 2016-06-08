@@ -39,10 +39,8 @@ msgid "Add to %sNew ...%s dialog"
 msgstr "Přidat do dialogu %sNový ...%s"
 
 #: eduoptions.ersasimpleprogramonlyonefileiscreatedandaddedtothecur
-msgid ""
-"A simple program. Only one file is created and added to the current project."
-msgstr ""
-"Jednoduchý program. Pouze jeden soubor je vytvořen a přidán do projektu."
+msgid "A simple program. Only one file is created and added to the current project."
+msgstr "Jednoduchý program. Pouze jeden soubor je vytvořen a přidán do projektu."
 
 #: eduoptions.erseducomppalettetitle
 msgid "Component palette"
@@ -183,12 +181,8 @@ msgid "Source"
 msgstr "Zdrojový kód"
 
 #: eduoptions.erssttexteventsext
-msgid ""
-"OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, "
-"OnFormCreate"
-msgstr ""
-"OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, "
-"OnFormCreate"
+msgid "OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate"
+msgstr "OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate"
 
 #: eduoptions.erssttexteventsfull
 msgid "All Events available"
@@ -199,28 +193,16 @@ msgid "OnClick, OnChange, OnMouseMove"
 msgstr "OnClick, OnChange, OnMouseMove"
 
 #: eduoptions.erssttextpropsext
-msgid ""
-"Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, "
-"WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, "
-"RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-"
-"Properties"
-msgstr ""
-"Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, "
-"WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, "
-"RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-"
-"Properties"
+msgid "Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-Properties"
+msgstr "Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-Properties"
 
 #: eduoptions.erssttextpropsfull
 msgid "All Properties available"
 msgstr "Všechny dostupné vlastnosti."
 
 #: eduoptions.erssttextpropsmin
-msgid ""
-"Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, "
-"Width, MaxLength, Picture, Columns"
-msgstr ""
-"Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, "
-"Width, MaxLength, Picture, Columns"
+msgid "Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, Width, MaxLength, Picture, Columns"
+msgstr "Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, Width, MaxLength, Picture, Columns"
 
 #: eduoptions.ersvisiblecomponents
 msgid "Visible components"
@@ -229,3 +211,4 @@ msgstr "Viditelné komponenty"
 #: eduoptions.ersvisiblespeedbuttons
 msgid "Visible SpeedButtons"
 msgstr "Viditelné SpeedButtony"
+

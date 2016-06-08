@@ -159,3 +159,4 @@ msgstr "Impossible de charger l'exécutable de l'application"
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
 msgstr "Le débogueur a été incapable de mettre les points d'arrêt pendant l'initialisation. %0:sVeuillez vérifier si toutes les fichiers sources ont été compilés avec \"debug-info\". %0:sAppuyez sur \"OK\" pour ignorer cela et continuer."
+

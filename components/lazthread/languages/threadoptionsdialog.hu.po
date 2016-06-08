@@ -26,3 +26,4 @@ msgstr "Szál-osztály beállításai"
 #: threadoptionsdialog.sthreadnamelabelcaption
 msgid "Thread Class Name"
 msgstr "Szál-osztály neve"
+

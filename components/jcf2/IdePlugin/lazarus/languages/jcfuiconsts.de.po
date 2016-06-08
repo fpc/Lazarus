@@ -410,6 +410,7 @@ msgid "Word list:"
 msgstr "Wortliste:"
 
 #: jcfuiconsts.lisfrfilesdatefilewritten
+#, fuzzy,badformat
 msgid "Date file written: %s"
 msgstr "Dateidatum:"
 
@@ -438,6 +439,7 @@ msgid "Format file is %s"
 msgstr "Format-Datei ist %s"
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
+#, fuzzy,badformat
 msgid "Version that wrote this file: %s"
 msgstr "Version, die die Datei geschrieben hat:"
 

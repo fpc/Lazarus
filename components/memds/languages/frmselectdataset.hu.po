@@ -46,3 +46,4 @@ msgstr "Adatkészlet létrehozása"
 #: frmselectdataset.sokbtn
 msgid "OK"
 msgstr "OK"
+

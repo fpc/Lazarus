@@ -30,3 +30,4 @@ msgstr "JSON-RPC kezelők regisztrálása az előállítóban"
 #: frmrpcmoduleoptions.sregisterwebm
 msgid "Register web module"
 msgstr "Web modul regisztrálása"
+

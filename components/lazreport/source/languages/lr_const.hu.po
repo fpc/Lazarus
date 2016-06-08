@@ -2596,3 +2596,4 @@ msgstr "Sortörés"
 #: lr_const.syes
 msgid "Yes"
 msgstr "Igen"
+

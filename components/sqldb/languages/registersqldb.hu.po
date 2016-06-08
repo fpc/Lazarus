@@ -38,3 +38,4 @@ msgstr "Ide kell írni az SQL utasításokat"
 #: registersqldb.ssqlstringspropertyeditordlgtitle
 msgid "Editing %s"
 msgstr "%s szerkesztése"
+

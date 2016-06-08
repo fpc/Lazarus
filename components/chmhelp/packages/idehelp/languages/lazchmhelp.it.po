@@ -28,6 +28,5 @@ msgstr "lhelp mancante"
 
 #: lazchmhelp.help_unabletofindthelhelpviewerpleasecompilethelhelppro
 msgid "Unable to find the lhelp viewer:%s%s%sPlease compile the lhelp project:%s%s"
-msgstr ""
-"Impossibile trovare il visualizzatore lhelp:%s%s%sCompilare con il progetto "
-"lhelp:%s%s"
+msgstr "Impossibile trovare il visualizzatore lhelp:%s%s%sCompilare con il progetto lhelp:%s%s"
+

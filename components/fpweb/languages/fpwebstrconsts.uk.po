@@ -17,7 +17,6 @@ msgid "CSS file"
 msgstr "Файл CSS"
 
 #: fpwebstrconsts.scssfiledesc
-#| msgid "Create new CSS file..."
 msgid "Create new CSS file ..."
 msgstr "Створити новий файл CSS ..."
 
@@ -34,7 +33,6 @@ msgid "&Directory"
 msgstr "&Директорія"
 
 #: fpwebstrconsts.senteryoutext
-#| msgid "Enter your text..."
 msgid "Enter your text ..."
 msgstr "Введіть текст ..."
 
@@ -63,7 +61,6 @@ msgid "HTML file"
 msgstr "Файл HTML"
 
 #: fpwebstrconsts.shtmlfiledesc
-#| msgid "Create new HTML file..."
 msgid "Create new HTML file ..."
 msgstr "Створити новий файл HTML ..."
 
@@ -120,7 +117,6 @@ msgid "Border width"
 msgstr "Ширина межі"
 
 #: fpwebstrconsts.shtmltableformcaption
-#| msgid "New HTML table..."
 msgid "New HTML table ..."
 msgstr "Нова таблиця HTML ..."
 
@@ -177,7 +173,6 @@ msgid "Javascript file"
 msgstr "Файл Javascript"
 
 #: fpwebstrconsts.sjsfiledesc
-#| msgid "Create new javascript file..."
 msgid "Create new javascript file ..."
 msgstr "Створити новий файл javascript ..."
 

@@ -17,3 +17,4 @@ msgstr "Una unit Pascal con una classe derivata da TThread"
 #: reglazthread.sthreadname
 msgid "Thread Object"
 msgstr "Oggetto Thread"
+

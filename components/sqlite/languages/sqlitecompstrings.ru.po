@@ -58,7 +58,6 @@ msgid "It was not possible to create the table."
 msgstr "Не удалось создать таблицу."
 
 #: sqlitecompstrings.snofieldsaddedtablewillnotbecreated
-#| msgid "No fields added - Table will not be created"
 msgid "No fields added. Table will not be created."
 msgstr "Не добавлены поля. Таблица не будет создана."
 

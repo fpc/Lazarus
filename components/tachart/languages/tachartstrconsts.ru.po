@@ -204,3 +204,4 @@ msgstr "Невозможно переименовать компоненты: %s
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Редактор средств диаграмм"
+

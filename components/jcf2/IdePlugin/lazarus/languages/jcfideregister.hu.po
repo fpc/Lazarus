@@ -50,3 +50,4 @@ msgstr "Regisztrációs beállítások"
 #: jcfideregister.format_settings_menu
 msgid "&Format Settings"
 msgstr "Formázás beállításai"
+

@@ -15,7 +15,6 @@ msgid "New project from template"
 msgstr "Neues Projekt aus Vorlage"
 
 #: idetemplateproject.sprojecttemplatesettings
-#| msgid "Project templates options"
 msgid "Project templates options ..."
 msgstr "Optionen für Projektvorlagen"
 

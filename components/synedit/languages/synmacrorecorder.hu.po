@@ -26,3 +26,4 @@ msgstr "Rögzítés közben nem lehet makrót rögzíteni"
 #: synmacrorecorder.scannotresume
 msgid "Can only resume when paused"
 msgstr "Csak szüneteltetés közben lehet folytatni"
+

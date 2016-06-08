@@ -38,7 +38,6 @@ msgid "Tables"
 msgstr "Таблицы"
 
 #: sqlstringspropertyeditordlg.sqlsyntaxok
-#| msgid "No syntax errors in SQL statement."
 msgid "No syntax errors in SQL statement found."
 msgstr "В выражении SQL синтаксических ошибок не найдено."
 
@@ -59,12 +58,10 @@ msgid "Save SQL code ..."
 msgstr "Сохранить код SQL ..."
 
 #: sqlstringspropertyeditordlg.ssqlerror
-#| msgid "SQL Error"
 msgid "Probable SQL error"
 msgstr "Возможная ошибка SQL"
 
 #: sqlstringspropertyeditordlg.ssqlok
-#| msgid "SQL OK"
 msgid "Quick SQL check OK"
 msgstr "Быстрая проверка кода SQL прошла успешно"
 

@@ -112,3 +112,4 @@ msgstr "Forrás kialakítása"
 #: messagecomposer.svaluevar
 msgid "Value (var)"
 msgstr "Érték (var)"
+

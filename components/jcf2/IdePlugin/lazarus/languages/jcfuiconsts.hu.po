@@ -902,3 +902,4 @@ msgstr "Figyelmeztetések"
 #: jcfuiconsts.liswarningswarningson
 msgid "&Warnings On"
 msgstr "Figyelmeztetések bekapcsolva"
+

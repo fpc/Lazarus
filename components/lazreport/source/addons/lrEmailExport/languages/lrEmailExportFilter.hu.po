@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
@@ -83,3 +82,4 @@ msgstr "Szöveg"
 #: lremailexportfilter.susemailprogram
 msgid "Use mail program"
 msgstr "Levelező program használata"
+
