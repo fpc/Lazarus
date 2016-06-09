@@ -80,6 +80,18 @@ type
     property Backend: TlrCairoBackend read fBackend write fBackend;
   end;
 
+  { TlrCairoPDFExportFilter }
+
+  TlrCairoPDFExportFilter = class(TlrCairoExportFilter)
+    constructor Create(AStream: TStream); override;
+  end;
+
+  { TlrCairoPSExportFilter }
+
+  TlrCairoPSExportFilter = class(TlrCairoExportFilter)
+    constructor Create(AStream: TStream); override;
+  end;
+
 implementation
 uses LR_Utils;
 
@@ -97,6 +109,22 @@ function cairo_surface_set_mime_data(surface:Pcairo_surface_t; mime_type:Pchar; 
 function rtrunc(value: extended): Integer;
 begin
   result := trunc(value + 0.5);
+end;
+
+{ TlrCairoPSExportFilter }
+
+constructor TlrCairoPSExportFilter.Create(AStream: TStream);
+begin
+  inherited Create(AStream);
+  Backend := cePS;
+end;
+
+{ TlrCairoPDFExportFilter }
+
+constructor TlrCairoPDFExportFilter.Create(AStream: TStream);
+begin
+  inherited Create(AStream);
+  Backend := cePDF;
 end;
 
 { TlrCairoExportFilter }
@@ -848,7 +876,7 @@ begin
 end;
 
 initialization
-    frRegisterExportFilter(TlrCairoExportFilter, 'Cairo PDF (*.pdf)', '*.pdf');
-    frRegisterExportFilter(TlrCairoExportFilter, 'Cairo Postscript (*.ps)', '*.ps');
+    frRegisterExportFilter(TlrCairoPDFExportFilter, 'Cairo PDF (*.pdf)', '*.pdf');
+    frRegisterExportFilter(TlrCairoPSExportFilter, 'Cairo Postscript (*.ps)', '*.ps');
 
 end.
