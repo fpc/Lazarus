@@ -1407,6 +1407,8 @@ begin
     end;
   end;
   FExtList.Free;
+
+  ScrollBox1.Invalidate;
 end;
 
 procedure TfrPreviewForm.PrintBtnClick(Sender: TObject);
