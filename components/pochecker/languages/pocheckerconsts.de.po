@@ -213,10 +213,6 @@ msgstr ""
 "Die folgenden nicht mehr existierenden Dateien wurden entfernt aus der Liste:\n"
 "%s\n"
 
-#: pocheckerconsts.sfindtroublesomefiles
-msgid "Find troublesome files"
-msgstr "Störende Dateien finden"
-
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
 msgstr "Ungeklärte Zeichenketten (insgesamt: %s)"
@@ -269,10 +265,6 @@ msgstr "Es wurden keine Tests ausgewählt."
 msgid "Note: translation is fuzzy"
 msgstr "Notiz: Übersetzung ist ungeklärt"
 
-#: pocheckerconsts.snotroublesomepofilesfound
-msgid "No troublesome .po files found."
-msgstr "Keine störenden .po-Dateien gefunden."
-
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
 msgstr "%d Fehler gefunden."
@@ -288,10 +280,6 @@ msgstr "%s: %d Elemente"
 #: pocheckerconsts.snrwarningsfound
 msgid "Found %d warnings."
 msgstr "%d Warnungen gefunden."
-
-#: pocheckerconsts.sopenapofile
-msgid "&Open a po-file"
-msgstr "p&o-Datei öffnen"
 
 #: pocheckerconsts.sopenfail
 msgid ""
@@ -417,10 +405,6 @@ msgstr ""
 "Ungeklärt: %d (%.1f%%)\n"
 "Fehler in den gewählten Tests: %d\n"
 
-#: pocheckerconsts.sthefollowingmasterpofilesaddedtothelist
-msgid "The following %s master .po file(s) added to the list:"
-msgstr "Folgende %s Master-.po-Datei(en) zur Liste hinzugefügt:"
-
 #: pocheckerconsts.sthefollowingorphanedpofilesfound
 msgid "The following %s orphaned .po file(s) found:"
 msgstr "Folgende %s verwaiste .po-Datei(en) gefunden:"
@@ -472,3 +456,4 @@ msgstr "Alle Dateien abwählen"
 #: pocheckerconsts.suntranslatedstringstotal
 msgid "Untranslated strings (total: %s)"
 msgstr "Nicht übersetzte Zeichenketten (insgesamt: %s)"
+
