@@ -1333,15 +1333,22 @@ end;
 procedure TSynEditStringList.EditLineBreak(LogX, LogY: Integer);
 var
   s: string;
+  Y1, Y2: Integer;
 begin
   IncIsInEditAction;
   if Count = 0 then Add('');
   s := Strings[LogY - 1];
+  Y1 := LogY;
   if LogX - 1 < length(s) then
-    Strings[LogY - 1] := copy(s, 1, LogX - 1);
+    Strings[LogY - 1] := copy(s, 1, LogX - 1)
+  else
+    inc(Y1);
   Insert(LogY, copy(s, LogX, length(s)));
   CurUndoList.AddChange(TSynEditUndoTxtLineBreak.Create(LogY));
-  MarkModified(LogY, LogY + 1);
+  Y2 := LogY;
+  if LogX > 1 then
+    inc(Y2);
+  MarkModified(Y1, Y2);
   SendNotification(senrEditAction, self, LogY, 1, LogX, 0, '');
   DecIsInEditAction;
 end;

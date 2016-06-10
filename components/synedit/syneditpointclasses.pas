@@ -1981,13 +1981,13 @@ var
         FLines.EditInsert(LogCaretXY.X, LogCaretXY.Y, Value);
         FInternalCaret.BytePos := FInternalCaret.BytePos + Length(Value);
       end else begin
+        FLines.EditLineBreak(LogCaretXY.X, LogCaretXY.Y);
         if (P <> Start) or (LogCaretXY.X > 1 + length(FLines[ToIdx(LogCaretXY.Y)])) then begin
           SetString(Str, Value, P - Start);
           FLines.EditInsert(LogCaretXY.X, LogCaretXY.Y, Str);
         end
         else
           Str := '';
-        FLines.EditLineBreak(LogCaretXY.X + (P - Start), LogCaretXY.Y);
         Result :=  CountLines(P);
         if Result > 1 then
           FLines.EditLinesInsert(LogCaretXY.Y + 1, Result - 1);
