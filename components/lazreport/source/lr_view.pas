@@ -1385,7 +1385,6 @@ begin
       else
       begin
         Index := PtrInt(fExtList.Objects[Index]);
-        WriteLn('Exporting ',SaveDialog.FileName,' with ', ExportFilters[Index].FilterDesc);
         ExportToWithFilterIndex(Index, SaveDialog.FileName);
       end;
     end;
