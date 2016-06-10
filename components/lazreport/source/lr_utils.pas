@@ -20,7 +20,7 @@ uses
   {$IFDEF WIN32}
   Windows,
   {$ENDIF}
-  LCLType, LCLIntf, LConvEncoding, LazFileUtils, LazUTF8;
+  LCLType, LCLIntf, LConvEncoding, LazFileUtils, LazUTF8, LazLogger;
 
 type
   TUTF8Item=packed record
@@ -749,7 +749,6 @@ end;
 **}
 function frTypeObjectToStr(ot : Byte): string;
 begin
-  Result:='undef';
   Case ot of
     gtMemo     : result:='gtMemo';
     gtPicture  : result:='gtPicture';
@@ -757,6 +756,7 @@ begin
     gtSubReport: result:='gtSubReport';
     gtLine     : result:='gtLine';
     gtAddIn    : result:='gtAddIn';
+    else         result:='undef ('+IntTostr(ot)+')';
   end;
 end;
 
