@@ -8,7 +8,7 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 "Language: de\n"
 
 #: lazdatadeskstr.eoaddterminator
@@ -453,7 +453,7 @@ msgstr "Verbindungen"
 
 #: lazdatadeskstr.sld_connectionsdictionaries
 msgid "Connections/Dictionaries"
-msgstr ""
+msgstr "Verbindungen/Dictionarys"
 
 #: lazdatadeskstr.sld_connecttoadatabase
 msgid "Connect to a database of type %s"
@@ -801,16 +801,12 @@ msgid "Previous"
 msgstr "Zurück"
 
 #: lazdatadeskstr.sql_noconnectionsfound
-#, fuzzy
-#| msgid ""
-#| "No connections or data dictionaries were found.\n"
-#| " Start by creating a new connection or data dictionary\n"
 msgid ""
 "No connections or data dictionaries were found.\n"
 " Start by creating a new connection or data dictionary.\n"
 msgstr ""
 "Keine Verbindungen oder Data Dictionarys wurden gefunden.\n"
-" Beginnen Sie mit der Erzeugung einer neuen Verbindung oder eines Data Dictionary\n"
+" Beginnen Sie mit der Erzeugung einer neuen Verbindung oder eines Data Dictionary.\n"
 
 #: lazdatadeskstr.squery
 msgid "Run query"
@@ -865,9 +861,8 @@ msgid "Sequence"
 msgstr "Sequenz"
 
 #: lazdatadeskstr.ssqlerrorcode
-#, fuzzy,badformat
 msgid "SQL Error code: %d"
-msgstr "SQL-Fehlercode: %s"
+msgstr "SQL-Fehlercode: %d"
 
 #: lazdatadeskstr.ssqlexecutedok
 msgid "%s : Statement executed succesfully."
@@ -916,4 +911,3 @@ msgstr "Wert"
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
 msgstr "Es ist ein Datadictionary aktiv. Soll in dieses Datadictionary importiert werden?"
-
