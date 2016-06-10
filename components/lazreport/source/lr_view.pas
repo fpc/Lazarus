@@ -1368,7 +1368,7 @@ begin
       FilterInfo := ExportFilters[i];
       if FilterInfo.Enabled then
       begin
-        FExtList.AddObject(FilterInfo.FilterExt, TObject(PtrInt(i)));
+        FExtList.AddObject(FilterInfo.FilterExt, TObject(PtrInt(i+1)));
         if FilterStr <> '' then
           FilterStr := FilterStr + '|';
         FilterStr := FilterStr + FilterInfo.FilterDesc + '|' + FilterInfo.FilterExt;
@@ -1384,7 +1384,7 @@ begin
         SaveToFile(SaveDialog.Filename) // using .frp
       else
       begin
-        Index := PtrInt(fExtList.Objects[Index]);
+        Index := PtrInt(fExtList.Objects[Index])-1;
         ExportToWithFilterIndex(Index, SaveDialog.FileName);
       end;
     end;
