@@ -150,8 +150,8 @@ type
     procedure ReadPOText(AStream: TStream);
   public
     constructor Create(Full:Boolean=True);  //when loading from internal resource Full needs to be False
-    constructor Create(const AFilename: String; Full:boolean=false);
-    constructor Create(AStream: TStream; Full:boolean=false);
+    constructor Create(const AFilename: String; Full: boolean=false; AllowChangeFuzzyFlag: boolean=true);
+    constructor Create(AStream: TStream; Full: boolean=false; AllowChangeFuzzyFlag: boolean=true);
     destructor Destroy; override;
     procedure ReadPOText(const Txt: string);
     procedure Add(const Identifier, OriginalValue, TranslatedValue, Comments,
@@ -181,7 +181,7 @@ type
     property Items: TFPList read FItems;
     // used by pochecker /pohelper
   public
-    procedure CheckFormatArguments;
+    procedure CheckFormatArguments(AllowChangeFuzzyFlag: boolean=true);
     procedure CleanUp; { removes previous ID from non-fuzzy entries
                          and badformat flags if appropriate }
     property PoName: String read FPoName;
@@ -761,14 +761,14 @@ begin
   FOriginalToItem:=TStringHashList.Create(true);
 end;
 
-constructor TPOFile.Create(const AFilename: String; Full:boolean=False);
+constructor TPOFile.Create(const AFilename: String; Full: boolean=false; AllowChangeFuzzyFlag: boolean=true);
 var
   f: TStream;
 begin
   FPoName := AFilename;
   f := TFileStreamUTF8.Create(AFilename, fmOpenRead or fmShareDenyNone);
   try
-    Create(f, Full);
+    Create(f, Full, AllowChangeFuzzyFlag);
     if FHeader=nil then
       CreateHeader;
   finally
@@ -776,7 +776,7 @@ begin
   end;
 end;
 
-constructor TPOFile.Create(AStream: TStream; Full:boolean=false);
+constructor TPOFile.Create(AStream: TStream; Full: boolean=false; AllowChangeFuzzyFlag: boolean=true);
 begin
   Create;
 
@@ -785,8 +785,11 @@ begin
   ReadPOText(AStream);
 
   {$IFDEF CHECK_FORMAT}
-  CheckFormatArguments; // Verify that translation will not generate crashes
-  CleanUp; // Remove leftover badformat flags and keep only real ones
+  //AllowChangeFuzzyFlag allows not to change fuzzy flag for items with bad format arguments,
+  //so there can be arguments with only badformat flag set. This is needed for POChecker.
+  CheckFormatArguments(AllowChangeFuzzyFlag); // Verify that translation will not generate crashes
+  if AllowChangeFuzzyFlag then
+    CleanUp; // Remove leftover badformat flags and keep only real ones
   {$ENDIF}
 end;
 
@@ -1709,7 +1712,7 @@ begin
   end;
 end;
 
-procedure TPOFile.CheckFormatArguments;
+procedure TPOFile.CheckFormatArguments(AllowChangeFuzzyFlag: boolean=true);
 var
   I: Integer;
   aPoItem: TPOFileItem;
@@ -1725,7 +1728,7 @@ begin
     if (pos('%',aPoItem.Original) <> 0) or (pos('%',aPoItem.Translation) <> 0) then begin
       if not CompareFormatArgs(aPoItem.Original,aPoItem.Translation) then begin
         inc(FNrErrors);
-        if not isFuzzy then begin
+        if (not isFuzzy) and AllowChangeFuzzyFlag then begin
           aPoItem.ModifyFlag(sFuzzyFlag,true);
           inc(FNrFuzzy);
           dec(FNrTranslated);
@@ -1733,6 +1736,12 @@ begin
         end;
         if not isBadFormat then begin
           aPoItem.ModifyFlag(sBadFormatFlag,true);
+          FModified := true;
+        end;
+      end
+      else begin //remove badformat flag (if present) from correct item
+        if isBadFormat then begin
+          aPoItem.ModifyFlag(sBadFormatFlag,False);
           FModified := true;
         end;
       end;
