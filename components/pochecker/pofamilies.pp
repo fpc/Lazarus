@@ -448,7 +448,7 @@ begin
   FMaster.Free;
   FMaster := nil;
   FMasterName := '';
-  if (AValue <> '') then FMaster := TPOFile.Create(AValue, True);
+  if (AValue <> '') then FMaster := TPOFile.Create(AValue, True, False);
   FMasterName := AValue;
 end;
 
@@ -479,7 +479,7 @@ begin
   FChild.Free;
   FChild := nil;
   FChildName := '';
-  if (AValue <> '') then FChild := TPOFile.Create(AValue, True);
+  if (AValue <> '') then FChild := TPOFile.Create(AValue, True, False);
   FChildName := AValue;
 end;
 
@@ -497,13 +497,13 @@ constructor TPoFamily.Create(const AMasterName, AChildName: String);
 begin
   if (AMasterName <> '') then
   begin
-    FMaster := TPOFile.Create(AMasterName, True);
+    FMaster := TPOFile.Create(AMasterName, True, False);
     FMasterName := AMasterName;
     //debugln('TPoFamily.Create: created ',FMasterName);
   end;
   if (AChildName <> '') then
   begin
-    FChild := TPOFile.Create(AChildName, True);
+    FChild := TPOFile.Create(AChildName, True, False);
     FChildName := AChildName;
     //debugln('TPoFamily.Create: created ',FChildName);
   end;
