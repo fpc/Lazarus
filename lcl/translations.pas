@@ -182,8 +182,7 @@ type
     // used by pochecker /pohelper
   public
     procedure CheckFormatArguments(AllowChangeFuzzyFlag: boolean=true);
-    procedure CleanUp; { removes previous ID from non-fuzzy entries
-                         and badformat flags if appropriate }
+    procedure CleanUp; // removes previous ID from non-fuzzy entries
     property PoName: String read FPoName;
     property PoRename: String write FPoName;
     property NrTranslated: Integer read FNrTranslated;
@@ -789,7 +788,7 @@ begin
   //so there can be arguments with only badformat flag set. This is needed for POChecker.
   CheckFormatArguments(AllowChangeFuzzyFlag); // Verify that translation will not generate crashes
   if AllowChangeFuzzyFlag then
-    CleanUp; // Remove leftover badformat flags and keep only real ones
+    CleanUp; // Removes previous ID from non-fuzzy entries (not needed for POChecker)
   {$ENDIF}
 end;
 
