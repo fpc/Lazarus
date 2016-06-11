@@ -1758,26 +1758,18 @@ end;
 
 procedure TPOFile.CleanUp;
 var
-  I: Integer;
+  i: Integer;
   aPoItem: TPOFileItem;
   isFuzzy: boolean;
-  isBadFormat: boolean;
 begin
-  for I := 0 to FItems.Count -1 do begin
-    aPoItem := TPOFileItem(FItems.Items[I]);
-    isFuzzy     := pos(sFuzzyFlag,aPoItem.Flags) <> 0;
-    isBadFormat := pos(sBadFormatFlag,aPoItem.Flags) <> 0;
-    if not isFuzzy then begin
+  for i := 0 to FItems.Count -1 do begin
+    aPoItem := TPOFileItem(FItems.Items[i]);
+    isFuzzy := pos(sFuzzyFlag,aPoItem.Flags) <> 0;
+    if not isFuzzy then
       // remove PreviousID from non-fuzzy Items
-      if (aPoItem.PreviousID <> '') then begin
+      if aPoItem.PreviousID <> '' then begin
         aPoItem.PreviousID := '';
         FModified := true;
-        end;
-      // remove badformat flag from non-fuzzy Items
-      if isBadFormat and FFormatChecked then begin
-        aPoItem.ModifyFlag(sBadFormatFlag,false);
-        FModified := true;
-        end;
       end;
     // is Context of some use ?
     {if aPoItem.Context = '' then begin
