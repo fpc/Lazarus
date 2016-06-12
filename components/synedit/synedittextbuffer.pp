@@ -1345,9 +1345,10 @@ begin
     inc(Y1);
   Insert(LogY, copy(s, LogX, length(s)));
   CurUndoList.AddChange(TSynEditUndoTxtLineBreak.Create(LogY));
-  Y2 := LogY;
   if LogX > 1 then
-    inc(Y2);
+    Y2 := LogY + 1
+  else
+    Y2 := Y1;
   MarkModified(Y1, Y2);
   SendNotification(senrEditAction, self, LogY, 1, LogX, 0, '');
   DecIsInEditAction;
