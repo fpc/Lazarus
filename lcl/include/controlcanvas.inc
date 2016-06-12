@@ -99,9 +99,7 @@ begin
       else
         WinControl := FControl.Parent;
       WinControl.HandleNeeded;
-    end;
-    if FDeviceContext = 0 then
-    begin
+
       // store the handle locally since  we need it to check (and do not
       // want to fire creation events)
       FDeviceContext := FControl.GetDeviceContext(FWindowHandle);
