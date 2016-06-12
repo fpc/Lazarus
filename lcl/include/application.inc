@@ -2003,7 +2003,7 @@ procedure TApplication.IntfSettingsChange;
 begin
   if FUpdateFormatSettings then
   begin
-  {$ifdef win32}
+  {$ifdef windows}
     {$ifdef DisableUTF8RTL}
       GetFormatSettings;
     {$else}
