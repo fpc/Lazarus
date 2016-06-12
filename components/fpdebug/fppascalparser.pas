@@ -164,9 +164,9 @@ type
     property LastItem: TFpPascalExpressionPart read GetLastItem write SetLastItem;
   end;
 
-  { TFpPascalExpressionPartIdentifer }
+  { TFpPascalExpressionPartIdentifier }
 
-  TFpPascalExpressionPartIdentifer = class(TFpPascalExpressionPartContainer)
+  TFpPascalExpressionPartIdentifier = class(TFpPascalExpressionPartContainer)
   protected
     function DoGetIsTypeCast: Boolean; override;
     function DoGetResultValue: TFpDbgValue; override;
@@ -1378,14 +1378,14 @@ begin
     Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
 end;
 
-{ TFpPascalExpressionPartIdentifer }
+{ TFpPascalExpressionPartIdentifier }
 
-function TFpPascalExpressionPartIdentifer.DoGetIsTypeCast: Boolean;
+function TFpPascalExpressionPartIdentifier.DoGetIsTypeCast: Boolean;
 begin
   Result := (ResultValue <> nil) and (ResultValue.DbgSymbol <> nil) and (ResultValue.DbgSymbol.SymbolType = stType);
 end;
 
-function TFpPascalExpressionPartIdentifer.DoGetResultValue: TFpDbgValue;
+function TFpPascalExpressionPartIdentifier.DoGetResultValue: TFpDbgValue;
 var
   s: String;
   tmp: TFpDbgValueConstAddress;
@@ -1511,7 +1511,7 @@ var
         end;
     end;
     if NewPart = nil then
-      NewPart := TFpPascalExpressionPartIdentifer.Create(Self, CurPtr, TokenEndPtr-1);
+      NewPart := TFpPascalExpressionPartIdentifier.Create(Self, CurPtr, TokenEndPtr-1);
   end;
 
   procedure HandleDot;
@@ -2306,7 +2306,7 @@ begin
     Result := (inherited IsValidNextPart(APart))
   else
     Result := (inherited IsValidNextPart(APart)) and
-              ( (APart is TFpPascalExpressionPartIdentifer) or
+              ( (APart is TFpPascalExpressionPartIdentifier) or
                 (APart is TFpPascalExpressionPartOperatorMakeRef)
               );
 end;
@@ -2884,7 +2884,7 @@ function TFpPascalExpressionPartOperatorMemberOf.IsValidNextPart(APart: TFpPasca
 begin
   Result := inherited IsValidNextPart(APart);
   if not HasAllOperands then
-    Result := Result and (APart is TFpPascalExpressionPartIdentifer);
+    Result := Result and (APart is TFpPascalExpressionPartIdentifier);
 end;
 
 function TFpPascalExpressionPartOperatorMemberOf.DoGetResultValue: TFpDbgValue;
