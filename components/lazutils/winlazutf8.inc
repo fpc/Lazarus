@@ -364,76 +364,61 @@ end;
 
 function GetLocaleCharUTF8(aLocaleID, aLCType: Longint; Def: Char): Char;
 var
-  Buf: array[0..3] of WChar; // sdate allows 4 chars.
-  GLI: LongInt;
+  Buf: array[0..3] of WideChar; // sdate allows 4 chars (3+ending #0)
+  GLI, I: LongInt;
+  WRes: WideChar;
 begin
   //Use Widestring Api so it works on WinCE as well
-  GLI := GetLocaleInfoW(aLocaleID, aLCType, Buf, sizeof(buf));
-  if (GLI > 0)  and (ord(Buf[0])<128) then
-    Result := Buf[0]
-  else begin
-    Result := Def;
-    {
-    case Buf[0] of
-    #$C2:
-      case Buf[1] of
-      #$A0: Result:=' '; // non breakable space
-      #$B7: Result:='.'; // middle stop
-      end;
-    #$CB:
-      if Buf[1]=#$99 then Result:=''''; // dot above, italian handwriting
-    #$D9:
-      case Buf[1] of
-      #$AB: Result:=','; // arabic decimal separator, persian thousand separator
-      #$AC: Result:=''''; // arabic thousand separator
-      end;
-    #$E2:
-      case Buf[1] of
-      #$80:
-        case Buf[2] of
-        #$82, // long space
-        #$83, // long space
-        #$89, // thin space
-        #$AF: // narrow non breakable space
-          Result := ' ';
-        #$94: Result := '-'; // persian decimal mark
-        end;
-      #$8E: if Buf[2]=#$96 then Result := ''''; // codepoint 9110 decimal separator
+  GLI := GetLocaleInfoW(aLocaleID, aLCType, Buf, Length(Buf)); // GLI is char count with the ending #0 char
+  if GLI > 2 then
+  begin // more than 2 chars -> try to find first non-space character
+    for I := 0 to GLI-2 do
+    begin
+      WRes := Buf[I];
+      case Buf[I] of
+        #32, #$00A0, #$2002, #$2003, #$2009, #$202F: begin end;// go over spaces
+      else
+        Break; // stop at non-space
       end;
     end;
+  end else
+  if GLI = 2 then // 1 char
+    WRes := Buf[0]
+  else
+    WRes := Def;
+
+  case WRes of
+    #0..#127: Result := WRes;// ASCII - OK
+    #$00A0: Result := ' ';   // non breakable space
+    #$00B7: Result := '.';   // middle stop
+    #$02D9: Result := '''';  // dot above, italian handwriting
+    #$066B: Result := ',';   // arabic decimal separator, persian thousand separator
+    #$066C: Result := '''';  // arabic thousand separator
+    #$2002: Result := ' ';   // long space
+    #$2003: Result := ' ';   // long space
+    #$2009: Result := ' ';   // thin space
+    #$202F: Result := ' ';   // narrow non breakable space
+    #$2014: Result := '-';   // persian decimal mark
+    #$2396: Result := '''';  // codepoint 9110 decimal separator
+    { Utf8        Utf16
+      C2 A0    -> 00A0
+      C2 B7    -> 00B7
+      CB 99    -> 02D9
+      D9 AB    -> 066B
+      D9 AC    -> 066C
+      E2 80 82 -> 2002
+      E2 80 83 -> 2003
+      E2 80 89 -> 2009
+      E2 80 AF -> 202F
+      E2 80 94 -> 2014
+      E2 8E 96 -> 2396
     }
-    if (GLI = 1) then begin
-      case Buf[0] of
-        #$00A0: Result := ' ';   // non breakable space
-        #$00B7: Result := '.';   // middle stop
-        #$02D9: Result := '''';  // dot above, italian handwriting
-        #$066B: Result := ',';   // arabic decimal separator, persian thousand separator
-        #$066C: Result := '''';  // arabic thousand separator
-        #$2002: Result := ' ';   // long space
-        #$2003: Result := ' ';   // long space
-        #$2009: Result := ' ';   // thin space
-        #$202F: Result := ' ';   // narrow non breakable space
-        #$2014: Result := '-';   // persian decimal mark
-        #$2396: Result := '''';  // codepoint 9110 decimal separator
-        { Utf8        Utf16
-          C2 A0    -> 00A0
-          C2 B7    -> 00B7
-          CB 99    -> 02D9
-          D9 AB    -> 066B
-          D9 AC    -> 066C
-          E2 80 82 -> 2002
-          E2 80 83 -> 2003
-          E2 80 89 -> 2009
-          E2 80 AF -> 202F
-          E2 80 94 -> 2014
-          E2 8E 96 -> 2396
-        }
-      end;  //case
-    end;  //GLI = 1
-  end;
+  else // unicode character -> we need default ASCII char
+    Result := Def;
+  end;  //case
 end;
 
-procedure GetFormatSettingsUTF8(LCID: Integer; var aFormatSettings: TFormatSettings);
+procedure GetLocaleFormatSettingsUTF8(LCID: Integer; var aFormatSettings: TFormatSettings);
 var
   HF  : Shortstring;
   LID : Windows.LCID;
@@ -478,6 +463,15 @@ begin
     CurrencyDecimals:=StrToIntDef(GetLocaleStr(LID, LOCALE_ICURRDIGITS, '0'), 0);
     ListSeparator := GetLocaleCharUTF8(LID, LOCALE_SLIST, ',');
   end;
+end;
+
+procedure GetFormatSettingsUTF8;
+begin
+  {$ifndef wince}
+  GetLocaleFormatSettingsUTF8(GetThreadLocale, FormatSettings);
+  {$else}
+  GetLocaleFormatSettingsUTF8(GetUserDefaultLCID, FormatSettings);
+  {$endif}
 end;
 
 function UTF8StrCompAnsiString(S1, S2: PChar): PtrInt;
@@ -541,11 +535,7 @@ begin
     end;
   end;
   {$IFDEF UTF8_RTL}
-  {$ifndef wince}
-  GetFormatSettingsUTF8(GetThreadLocale,FormatSettings);
-  {$else}
-  GetFormatSettingsUTF8(GetUserDefaultLCID ,FormatSettings);
-  {$endif}
+  GetFormatSettingsUTF8;
   widestringmanager.UpperAnsiStringProc:=@UTF8UpperString;
   widestringmanager.LowerAnsiStringProc:=@UTF8LowerString;
   widestringmanager.CompareStrAnsiStringProc:=@UTF8CompareStr;

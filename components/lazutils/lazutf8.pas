@@ -62,6 +62,9 @@ function UTF8ToWinCP(const s: string): string; {$ifdef WinCe}inline;{$endif}
 
 function ParamStrUTF8(Param: Integer): string;
 
+procedure GetFormatSettingsUTF8;
+procedure GetLocaleFormatSettingsUTF8(LCID: Integer; var aFormatSettings: TFormatSettings);
+
 function GetEnvironmentStringUTF8(Index: Integer): string;
 function GetEnvironmentVariableUTF8(const EnvVar: string): String;
 
