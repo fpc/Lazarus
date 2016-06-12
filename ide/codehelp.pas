@@ -3000,7 +3000,7 @@ function TCodeHelpManager.SourceToFPDocHint(Src: string; NestedComments: boolean
   begin
     case TokenID of
     tkComment: Result:='comment';
-    tkIdentifier: Result:='identifer';
+    tkIdentifier: Result:='identifier';
     tkKey: Result:='keyword';
     tkNumber: Result:='number';
     tkString: Result:='string';

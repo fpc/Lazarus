@@ -2074,7 +2074,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TUTF8Parser.TokenComponentIdent">
-        <short>Parses an (possibly) qualified identifer, after a symbol has been parsed.</short>
+        <short>Parses an (possibly) qualified identifier, after a symbol has been parsed.</short>
         <descr/>
         <seealso/>
         <errors>EParserError when Token is not toSymbol.

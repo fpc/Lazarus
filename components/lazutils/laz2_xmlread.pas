@@ -2798,7 +2798,7 @@ begin
           SkipWhitespace;
           CheckName([cnToken]);
           if not AttDef.AddEnumToken(FName.Buffer, FName.Length) then
-            ValidationError('Duplicate token in enumerated attibute declaration', [], FName.Length);
+            ValidationError('Duplicate token in enumerated attribute declaration', [], FName.Length);
           SkipWhitespace;
         until not CheckForChar('|');
         ExpectChar(')');
