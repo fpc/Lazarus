@@ -3514,7 +3514,7 @@ function TFindDeclarationTool.FindIdentifierInContext(
   Params: TFindDeclarationParams; var IdentFoundResult: TIdentifierFoundResult
   ): boolean;
 { searches an identifier in context node
-  It does not care about code in front of the identifier like 'a.Identifer'.
+  It does not care about code in front of the identifier like 'a.Identifier'.
   
   Params:
     Identifier

@@ -2255,8 +2255,8 @@ begin
 
   // BinaryOperator...
   //   foo
-  //   Identifer
-  // "Identifer" can hane a binary-op next. But it must be applied to the parent.
+  //   Identifier
+  // "Identifier" can hane a binary-op next. But it must be applied to the parent.
   // So it is not valid here.
   // If new operator has a higher precedence, it go down to the child again and replace it
   if (APrevPart.Parent <> nil) and (APrevPart.Parent.HasPrecedence) then
@@ -2403,8 +2403,8 @@ begin
 
   // BinaryOperator...
   //   foo
-  //   Identifer
-  // "Identifer" can hane a binary-op next. But it must be applied to the parent.
+  //   Identifier
+  // "Identifier" can hane a binary-op next. But it must be applied to the parent.
   // So it is not valid here.
   // If new operator has a higher precedence, it go down to the child again and replace it
   if (APrevPart.Parent <> nil) and (APrevPart.Parent is TFpPascalExpressionPartOperator) then
