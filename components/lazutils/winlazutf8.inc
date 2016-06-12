@@ -346,7 +346,6 @@ begin
 end;
 {$endif}
 
-{$IFDEF UTF8_RTL}
 function GetLocaleStr(aLocaleID, aLCType: Longint; const Def: string): String;
 var
   L: Integer;
@@ -474,6 +473,7 @@ begin
   {$endif}
 end;
 
+{$IFDEF UTF8_RTL}
 function UTF8StrCompAnsiString(S1, S2: PChar): PtrInt;
 begin
   Result:=UTF8CompareStrP(S1,S2);
