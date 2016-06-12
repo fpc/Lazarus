@@ -1506,7 +1506,11 @@ begin
 
   // set TypeData (PropCount is the total number of properties, including ancestors)
   NewTypeData^.ClassType:=TClass(NewVMT);
+  {$IF FPC_FULLVERSION>30000}
+  NewTypeData^.ParentInfoRef:=AncestorClass.ClassInfo;
+  {$ELSE}
   NewTypeData^.ParentInfo:=AncestorClass.ClassInfo;
+  {$ENDIF}
   NewTypeData^.PropCount:=GetTypeData(NewTypeData^.ParentInfo)^.PropCount;
   NewTypeData^.UnitName:=NewUnitName;
   AddedPropCount:=GetTypeDataPropCountAddr(NewTypeData);
