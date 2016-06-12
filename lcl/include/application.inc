@@ -2002,9 +2002,15 @@ end;
 procedure TApplication.IntfSettingsChange;
 begin
   if FUpdateFormatSettings then
+  begin
   {$ifdef win32}
-    GetFormatSettings
+    {$ifdef DisableUTF8RTL}
+      GetFormatSettings;
+    {$else}
+      GetFormatSettingsUTF8;
+    {$endif}
   {$endif};
+  end;
 end;
 
 procedure TApplication.IntfThemeOptionChange(AThemeServices: TThemeServices;
