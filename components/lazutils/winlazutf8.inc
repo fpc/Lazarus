@@ -371,7 +371,7 @@ begin
   //Use Widestring Api so it works on WinCE as well
   GLI := GetLocaleInfoW(aLocaleID, aLCType, Buf, Length(Buf)); // GLI is char count with the ending #0 char
   if GLI > 2 then
-  begin // more than 2 chars -> try to find first non-space character
+  begin // more than 1 char -> try to find first non-space character
     for I := 0 to GLI-2 do
     begin
       WRes := Buf[I];
