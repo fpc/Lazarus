@@ -4696,6 +4696,7 @@ end;
 procedure TCustomGrid.UpdateCachedSizes;
 var
   i: Integer;
+  TLChanged: Boolean;
 begin
   if AutoFillColumns then
     InternalAutoFillColumns;
@@ -4726,6 +4727,22 @@ begin
   FGCache.ScrollWidth := FGCache.ClientWidth-FGCache.FixedWidth;
   FGCache.ScrollHeight := FGCache.ClientHeight-FGCache.FixedHeight;
   CalcMaxTopLeft;
+
+  TLChanged := False;
+  if fTopLeft.y > FGCache.MaxTopLeft.y then
+  begin
+    fTopLeft.y := FGCache.MaxTopLeft.y;
+    TLChanged := True;
+  end;
+  if fTopLeft.x > FGCache.MaxTopLeft.x then
+  begin
+    fTopLeft.x := FGCache.MaxTopLeft.x;
+    TLChanged := True;
+  end;
+  FGCache.TLRowOff := Min(FGCache.TLRowOff, FGCache.MaxTLOffset.y);
+  FGCache.TLColOff := Min(FGCache.TLColOff, FGCache.MaxTLOffset.x);
+  if TLChanged then
+    TopLeftChanged;
 
   {$ifdef dbgVisualChange}
   DebugLn('TCustomGrid.updateCachedSizes: ');
