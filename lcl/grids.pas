@@ -4733,10 +4733,20 @@ begin
   begin
     fTopLeft.y := FGCache.MaxTopLeft.y;
     TLChanged := True;
+  end else
+  if FTopLeft.y < FixedRows then
+  begin
+    fTopLeft.y := FixedRows;
+    TLChanged := True;
   end;
   if fTopLeft.x > FGCache.MaxTopLeft.x then
   begin
     fTopLeft.x := FGCache.MaxTopLeft.x;
+    TLChanged := True;
+  end else
+  if FTopLeft.x < FixedCols then
+  begin
+    fTopLeft.x := FixedCols;
     TLChanged := True;
   end;
   FGCache.TLRowOff := Min(FGCache.TLRowOff, FGCache.MaxTLOffset.y);
