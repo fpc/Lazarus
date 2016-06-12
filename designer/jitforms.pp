@@ -1506,7 +1506,7 @@ begin
 
   // set TypeData (PropCount is the total number of properties, including ancestors)
   NewTypeData^.ClassType:=TClass(NewVMT);
-  {$IF FPC_FULLVERSION>30000}
+  {$IF FPC_FULLVERSION>=30100}
   NewTypeData^.ParentInfoRef:=AncestorClass.ClassInfo;
   {$ELSE}
   NewTypeData^.ParentInfo:=AncestorClass.ClassInfo;
