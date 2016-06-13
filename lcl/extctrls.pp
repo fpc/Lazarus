@@ -1021,10 +1021,12 @@ type
     FBevelWidth : TBevelWidth;
     FAlignment : TAlignment;
     FFullRepaint: Boolean;
+    FWordWrap: Boolean;
     procedure SetAlignment(const Value : TAlignment);
     procedure SetBevelInner(const Value: TPanelBevel);
     procedure SetBevelOuter(const Value: TPanelBevel);
     procedure SetBevelWidth(const Value: TBevelWidth);
+    procedure SetWordwrap(const Value: Boolean);
   protected
     class procedure WSRegisterClass; override;
     procedure AdjustClientRect(var aRect: TRect); override;
@@ -1035,6 +1037,7 @@ type
     procedure RealSetText(const Value: TCaption); override;
     procedure Paint; override;
     procedure UpdateParentColorChange;
+    property WordWrap: Boolean read FWordwrap write SetWordwrap default false;
   public
     constructor Create(TheOwner: TComponent); override;
     property Align default alNone;
@@ -1087,6 +1090,7 @@ type
     property TabStop;
     property UseDockManager default True;
     property Visible;
+    property Wordwrap;
     property OnClick;
     property OnContextPopup;
     property OnDockDrop;
