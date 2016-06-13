@@ -140,9 +140,14 @@ type
     function(Owner: TComponent): TAbstractIDEHTMLProvider;
 
 
+  { TSolidHintWindowRendered }
+
   TSolidHintWindowRendered = class(THintWindowRendered)
   protected
     procedure WMNCHitTest(var Message: TLMessage); message LM_NCHITTEST;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+  public
+    constructor Create(AOwner: TComponent); override;
   end;
 
   { THintWindowManager }
@@ -205,6 +210,22 @@ implementation
 procedure TSolidHintWindowRendered.WMNCHitTest(var Message: TLMessage);
 begin
   Message.Result := HTCLIENT;
+end;
+
+procedure TSolidHintWindowRendered.KeyDown(var Key: Word; Shift: TShiftState);
+Var
+  AOldKey : Word;
+begin
+  AOldKey := Key;
+  inherited KeyDown(Key, Shift);
+  if AOldKey=VK_ESCAPE then
+    Hide;
+end;
+
+constructor TSolidHintWindowRendered.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  KeyPreview := True;
 end;
 
 { THelpDBIRegExprMessage }
