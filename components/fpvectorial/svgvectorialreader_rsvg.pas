@@ -41,6 +41,9 @@ type
     procedure ReadFromXML(Doc: TXMLDocument; AData: TvVectorialDocument); override;
   end;
 
+var
+  gSVGVecReader_RSVG_Path: string = '';
+
 implementation
 
 { TvSVGVectorialReader_RSVG }
@@ -59,6 +62,8 @@ begin
   Result := TvRasterImage.Create(nil);
   AProcess := TProcessUTF8.Create(nil);
   try
+    if gSVGVecReader_RSVG_Path <> '' then FRSVG_CMD := gSVGVecReader_RSVG_Path;
+
     if not FileExistsUTF8(FRSVG_CMD) then
       raise Exception.Create('TvSVGVectorialReader_RSVG: rsvg-convert.exe not found: ' + FRSVG_CMD);
 

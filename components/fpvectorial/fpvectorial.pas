@@ -5624,7 +5624,7 @@ var
   i: Integer;
   //
   pt, refPt: TPoint;
-  LowerDimY: Double;
+  LowerDimY, UpperDimY, CurDimY: Double;
   XAnchorAdjustment: Integer;
   lLongestLine, lLineWidth, lFontSizePx, lFontDescenderPx: Integer;
   lText: string;
@@ -5685,14 +5685,13 @@ begin
   end;
 
   // Begin first line at reference point and grow downwards.
-  lowerDimY := IfThen(AMulY < 0, refPt.Y - (lTextSize.CY - lDescender), refPt.Y);
-{
+  // ...
   // We need to keep the order of lines drawing correct regardless of
   // the drawing direction
-  if AMulY < 0 then
-    lowerDim.Y := refPt.Y + lFontSizePx * (1 + LINE_SPACING) * Value.Count * AMulY else
-    lowerDim.Y := refPt.Y;
- }
+  lowerDimY := refPt.Y - (lTextSize.CY - lDescender); // lowerDim.Y := refPt.Y + lFontSizePx * (1 + LINE_SPACING) * Value.Count * AMulY
+  upperDimY := refPt.Y;
+  curDimY := IfThen(AMulY < 0, lowerDimY, upperDimY);
+
   // TvText supports multiple lines
   for i := 0 to Value.Count - 1 do
   begin
@@ -5701,7 +5700,7 @@ begin
       Render_NextText_X := refPt.X + XAnchorAdjustment;
 
     // Start point of text, rotated around the reference point
-    pt := Point(round(Render_NextText_X), round(LowerDimY));  // before rotation
+    pt := Point(round(Render_NextText_X), round(curDimY));  // before rotation
     pt := Rotate2dPoint(pt, refPt, -Phi);                      // after rotation
 
     // Paint line
@@ -5718,13 +5717,15 @@ begin
     if (lText = '') then
       lTextSize.cy := ACanvas.TextHeight(STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE);
     // other end of the text
-    pt := Point(round(Render_NextText_X) + lTextWidth, round(LowerDimY) + lTextSize.cy );
+    pt := Point(round(Render_NextText_X) + lTextWidth, round(curDimY) + lTextSize.cy );
     pt := Rotate2dPoint(pt, refPt, -Phi);
     CalcEntityCanvasMinMaxXY(ARenderInfo, pt.x, pt.y);
 
     // Prepare next line
     Render_NextText_X := Render_NextText_X + lTextWidth;
-    LowerDimY := LowerdimY - (lFontSizePx * (1 + LINE_SPACING) * AMulY);
+    curDimY := IfThen(AMulY < 0,
+      curDimY - (lFontSizePx * (1 + LINE_SPACING) * AMulY),
+      curDimY + (lFontSizePx * (1 + LINE_SPACING) * AMulY));
   end;
 end;
 
@@ -8286,7 +8287,8 @@ begin
       CurX := CoordToCanvasX(lText.X + X + lCurWidth, ADestX, AMulX);
       lText.X := 0;
       lText.Y := 0;
-      CurY := CoordToCanvasY(lText.Y + Y, ADestY, AMulY) + lHeight_px;
+      CurY := CoordToCanvasY(lText.Y + Y, ADestY, AMulY);
+      if AMulY < 0 then CurY += lHeight_px; // to keep the position in case of inversed drawing
       lText.Render_Use_NextText_X := not lFirstText;
       if lText.Render_Use_NextText_X then
         lText.Render_NextText_X := lPrevText.Render_NextText_X;
