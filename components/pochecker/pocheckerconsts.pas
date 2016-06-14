@@ -20,7 +20,6 @@ resourcestring
   sUnselectListBox = 'Unselect all files';
   sSelectAllListBox = 'Select all files';
   sAllLanguages = 'All Languages';
-  sCannotFindMaster = 'Cannot find master po file:' + LineEnding + '%s' + LineEnding + 'for selected file' + LineEnding + '%s';
   //sNotAProperFileName = 'Selected filename' + LineEnding + '%s' + LineEnding + 'does not seem to be a proper name for a po-file';
   sFilesNotFoundAndRemoved = 'The following non-existent files were removed from the list:' + LineEnding + '%s';
   sNoFilesLeftToCheck = 'There are no files left to check.';
@@ -106,6 +105,8 @@ resourcestring
   sPercFuzzy = '%s: %5.1f%% fuzzy strings.';
 
   sTheFollowingOrphanedPoFileSFound = 'The following %s orphaned .po file(s) found:';
+  sTheFollowingMissingMasterPoFileSWereRemoved = 'The following %s '
+    +'missing master .po file(s) were removed from the list:';
   sTroublesomeFiles = 'Troublesome files';
 
 const

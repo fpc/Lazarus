@@ -119,18 +119,6 @@ msgstr "Chinesisch, vereinfacht"
 msgid "All Languages"
 msgstr "Alle Sprachen"
 
-#: pocheckerconsts.scannotfindmaster
-msgid ""
-"Cannot find master po file:\n"
-"%s\n"
-"for selected file\n"
-"%s\n"
-msgstr ""
-"Kann die Master-po-Datei:\n"
-"%s\n"
-"für die gewählte Datei file\n"
-"%s nicht finden\n"
-
 #: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
 msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
 msgstr "Kann Datei%s%s%s%snicht schreiben. Sie können auf \"Wiederholen\" klicken, um diese Übersetzungsfamilie erneut zu aktualisieren und fortzusetzen."
@@ -404,6 +392,10 @@ msgstr ""
 "Nicht übersetzt: %d (%.1f%%)\n"
 "Ungeklärt: %d (%.1f%%)\n"
 "Fehler in den gewählten Tests: %d\n"
+
+#: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
+msgid "The following %s missing master .po file(s) were removed from the list:"
+msgstr ""
 
 #: pocheckerconsts.sthefollowingorphanedpofilesfound
 msgid "The following %s orphaned .po file(s) found:"

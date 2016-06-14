@@ -109,14 +109,6 @@ msgstr ""
 msgid "All Languages"
 msgstr ""
 
-#: pocheckerconsts.scannotfindmaster
-msgid ""
-"Cannot find master po file:\n"
-"%s\n"
-"for selected file\n"
-"%s\n"
-msgstr ""
-
 #: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
 msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
 msgstr ""
@@ -370,6 +362,10 @@ msgid ""
 "Untranslated: %d (%.1f%%)\n"
 "Fuzzy: %d (%.1f%%)\n"
 "Errors in selected tests: %d\n"
+msgstr ""
+
+#: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
+msgid "The following %s missing master .po file(s) were removed from the list:"
 msgstr ""
 
 #: pocheckerconsts.sthefollowingorphanedpofilesfound

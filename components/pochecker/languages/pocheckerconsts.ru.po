@@ -119,18 +119,6 @@ msgstr "Китайский (упрощённый)"
 msgid "All Languages"
 msgstr "Все языки"
 
-#: pocheckerconsts.scannotfindmaster
-msgid ""
-"Cannot find master po file:\n"
-"%s\n"
-"for selected file\n"
-"%s\n"
-msgstr ""
-"Невозможно найти главный файл PO:\n"
-"%s\n"
-"для выбранного файла\n"
-"%s\n"
-
 #: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
 msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
 msgstr "Невозможно записать файл%s%s%s%sВы можете нажать \"Повтор\", чтобы снова попытаться обновить это семейство переводов и продолжить далее."
@@ -404,6 +392,10 @@ msgstr ""
 "Непереведённых строк: %d (%.1f%%)\n"
 "Неточных переводов: %d (%.1f%%)\n"
 "Ошибок в выбранных тестах: %d\n"
+
+#: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
+msgid "The following %s missing master .po file(s) were removed from the list:"
+msgstr "Следующие несуществующие главные файлы PO (%s шт.) были удалены из списка:"
 
 #: pocheckerconsts.sthefollowingorphanedpofilesfound
 msgid "The following %s orphaned .po file(s) found:"

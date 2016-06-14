@@ -370,7 +370,7 @@ end;
 
 procedure TPoCheckerForm.ScanDirectory(ADir: String);
 var
-  SL, ML, OL: TStringList;
+  SL, ML, OL, CurFiles, MissingFiles: TStringList;
   i: Integer;
   S, Mn: String;
   Cur: TCursor;
@@ -382,6 +382,20 @@ begin
     ML := TStringList.Create;
     OL := TStringList.Create;
     SL := FindAllFiles(ADir, '*.po', True);
+    // first we check if all already present master .po files exist and remove them if not
+    CurFiles := TStringList.Create;
+    MissingFiles := TStringList.Create;
+    CurFiles.Assign(MasterPoListBox.Items);
+    i := 0;
+    while i < CurFiles.Count do
+    begin
+      if not FileExistsUTF8(CurFiles[i]) then
+      begin
+        MissingFiles.Add(CurFiles[i]);
+        MasterPoListBox.Items.Delete(MasterPoListBox.Items.IndexOf(CurFiles[i]));
+      end;
+      Inc(i);
+    end;
     for i := 0 to SL.Count - 1 do // we must check master .po files in a separate round first
     begin
       S := SL[i];
@@ -400,12 +414,26 @@ begin
           OL.Add(S);
       end;
     end;
-    if OL.Count > 0 then
-      MemoDlg(sTroublesomeFiles, Format(sTheFollowingOrphanedPoFileSFound, [IntToStr(OL.Count)]) + LineEnding + OL.Text);
+    if (OL.Count > 0) or (MissingFiles.Count > 0) then
+    begin
+      S := '';
+      if OL.Count > 0 then
+      begin
+        S := Format(sTheFollowingOrphanedPoFileSFound, [IntToStr(OL.Count)]) + LineEnding + OL.Text;
+        if MissingFiles.Count > 0 then
+          S := S + LineEnding;
+      end;
+      if MissingFiles.Count > 0 then
+        S := S + Format(sTheFollowingMissingMasterPoFileSWereRemoved, [
+          IntToStr(MissingFiles.Count)]) + LineEnding + MissingFiles.Text;
+      MemoDlg(sTroublesomeFiles, S);
+    end;
     UpdateGUI(MasterPoListBox.SelCount > 0);
   finally
     ML.Free;
     OL.Free;
+    CurFiles.Free;
+    MissingFiles.Free;
     SL.Free;
     StatusBar.SimpleText := '';
     Screen.Cursor := Cur;
