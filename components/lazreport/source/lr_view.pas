@@ -10,15 +10,6 @@
 
 unit LR_View;
 
-(*
-Notes
-  Not implemented because TMetaFile not exists :
-  
-  procedure TfrPreviewForm.FindText;
-  procedure TfrPreviewForm.FindInEMF(emf: TMetafile);
-
-*)
-
 interface
 
 {$I LR_Vers.inc}
@@ -1485,85 +1476,6 @@ begin
 
   end;
 end;
-
-//**
-(*
-function EnumEMFRecordsProc(DC: HDC; HandleTable: PHandleTable;
-  EMFRecord: PEnhMetaRecord; nObj: Integer; OptData: Pointer): Bool; stdcall;
-var
-  Typ: Byte;
-  s: String;
-  t: TEMRExtTextOut;
-begin
-  Result := True;
-  Typ := EMFRecord^.iType;
-  if Typ in [83, 84] then
-  begin
-    t := PEMRExtTextOut(EMFRecord)^;
-    s := WideCharLenToString(PWideChar(PChar(EMFRecord) + t.EMRText.offString),
-      t.EMRText.nChars);
-    if not CurPreview.CaseSensitive then s := AnsiUpperCase(s);
-    CurPreview.StrFound := Pos(CurPreview.FindStr, s) <> 0;
-    if CurPreview.StrFound and (RecordNum >= CurPreview.LastFoundObject) then
-    begin
-      CurPreview.StrBounds := t.rclBounds;
-      Result := False;
-    end;
-  end;
-  Inc(RecordNum);
-end;
-*)
-{
-procedure TfrPreviewForm.FindInEMF(emf: TMetafile);
-begin
-  CurPreview := Self;
-  RecordNum := 0;
-  EnumEnhMetafile(0, emf.Handle, @EnumEMFRecordsProc, nil, Rect(0, 0, 0, 0));
-end;
-
-procedure TfrPreviewForm.FindText;
-var
-  EMF: TMetafile;
-  EMFCanvas: TMetafileCanvas;
-  PageInfo: PfrPageInfo;
-begin
-  PaintAllowed := False;
-  StrFound := False;
-  while LastFoundPage < TfrEMFPages(EMFPages).Count do
-  begin
-    PageInfo := TfrEMFPages(EMFPages)[LastFoundPage];
-    EMF := TMetafile.Create;
-    EMF.Width := PageInfo.PrnInfo.PgW;
-    EMF.Height := PageInfo.PrnInfo.PgH;
-    EMFCanvas := TMetafileCanvas.Create(EMF, 0);
-    PageInfo.Visible := True;
-    TfrEMFPages(EMFPages).Draw(LastFoundPage, EMFCanvas,
-      Rect(0, 0, PageInfo.PrnInfo.PgW, PageInfo.PrnInfo.PgH));
-    EMFCanvas.Free;
-
-    FindInEMF(EMF);
-    EMF.Free;
-    if StrFound then
-    begin
-      CurPage := LastFoundPage + 1;
-      ShowPageNum;
-      VScrollBar.Position := PageInfo.r.Top + Round(StrBounds.Top * per) - 10;
-      HScrollBar.Position := PageInfo.r.Left + Round(StrBounds.Left * per) - 10;
-      LastFoundObject := RecordNum;
-      break;
-    end
-    else
-    begin
-      PageInfo.Visible := False;
-      TfrEMFPages(EMFPages).Draw(LastFoundPage, EMFCanvas,
-        Rect(0, 0, PageInfo.PrnInfo.PgW, PageInfo.PrnInfo.PgH));
-    end;
-    LastFoundObject := 0;
-    Inc(LastFoundPage);
-  end;
-  PaintAllowed := True;
-end;
-}
 
 procedure TfrPreviewForm.FindText;
 begin

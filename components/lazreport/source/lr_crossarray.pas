@@ -70,6 +70,7 @@ type
     FBookmark:TBookMark;
   public
     procedure SaveBookmark(Ds: TDataset);
+    procedure GotoBookmark;
     function IsBookmarkValid: boolean;
     destructor destroy; override;
   end;
@@ -235,6 +236,11 @@ begin
     FDataset.FreeBookmark(FBookmark);
   FDataset := Ds;
   FBookmark := FDataset.GetBookmark;
+end;
+
+procedure TExItem.GotoBookmark;
+begin
+  FDataset.Bookmark := FBookmark;
 end;
 
 function TExItem.IsBookmarkValid: boolean;

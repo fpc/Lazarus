@@ -103,11 +103,14 @@ type
   TlrRestriction = (lrrDontModify,  lrrDontSize, lrrDontMove, lrrDontDelete);
   TlrRestrictions = set of TlrRestriction;
 
-  TfrView = class;
-  TfrBand = class;
-  TfrPage = class;
+  TfrObject = class;
+  TfrView   = class;
+  TfrBand   = class;
+  TfrPage   = class;
   TfrReport = class;
-  TfrExportFilter = class;
+  TfrExportFilter  = class;
+  TfrMemoStrings   = class;
+  TfrScriptStrings = class;
 
   TDetailEvent = procedure(const ParName: String; var ParValue: Variant) of object;
   TEnterRectEvent = procedure(Memo: TStringList; View: TfrView) of object;
@@ -123,8 +126,9 @@ type
   TManualBuildEvent = procedure(Page: TfrPage) of object;
   TObjectClickEvent = procedure(View: TfrView) of object;
   TMouseOverObjectEvent = procedure(View: TfrView; var ACursor: TCursor) of object;
-  TPrintReportEvent = procedure(sender: TfrReport) of object;
-  TFormPageBookmarksEvent = procedure(sender: TfrReport; Backup: boolean) of object;
+  TPrintReportEvent = procedure(Sender: TfrReport) of object;
+  TFormPageBookmarksEvent = procedure(Sender: TfrReport; Backup: boolean) of object;
+  TExecScriptEvent = procedure(frObject:TfrObject; AScript:TfrScriptStrings) of object;
 
   TfrHighlightAttr = packed record
     FontStyle: Word;
@@ -180,7 +184,7 @@ type
 
   { TfrObject }
 
-  TfrObject = Class(TPersistent)
+  TfrObject = class(TPersistent)
   private
     fMemo   : TfrMemoStrings;
     fName   : string;
@@ -193,8 +197,9 @@ type
   protected
     FDesignOptions:TlrDesignOptions;
     BaseName  : String;
-    OwnerPage:TfrPage;
-    
+    OwnerPage : TfrPage;
+    FOnExecScriptEvent : TExecScriptEvent;
+
     function GetSaveProperty(const Prop : String; aObj : TPersistent=nil) : string;
     procedure RestoreProperty(const Prop,aValue : String; aObj : TPersistent=nil);
     procedure SetName(const AValue: string); virtual;
@@ -212,6 +217,7 @@ type
     procedure SetVisible(AValue: Boolean);virtual;
     function GetText:string;virtual;
     procedure SetText(AValue:string);virtual;
+    procedure InternalExecScript;virtual;
   public
     x, y, dx, dy: Integer;
 
@@ -475,6 +481,7 @@ type
     procedure ResetLastValue; override;
 
     procedure DoRunScript(AScript: TfrScriptStrings);
+
     procedure DoOnClick;
     procedure DoMouseEnter;
     procedure DoMouseLeave;
@@ -2850,7 +2857,8 @@ begin
   BeginDraw(Canvas);
   Memo1.Assign(Memo);
   CurReport.InternalOnEnterRect(Memo1, Self);
-  frInterpretator.DoScript(Script);
+  //frInterpretator.DoScript(Script);
+  InternalExecScript;
   if not Visible then Exit;
 
   Stream.Write(Typ, 1);
@@ -4378,7 +4386,8 @@ begin
   BeginDraw(TempBmp.Canvas);
   Streaming := True;
   if DrawMode = drAll then
-    frInterpretator.DoScript(Script);
+    InternalExecScript;
+    //frInterpretator.DoScript(Script);
 
   CanExpandVar := True;
   if (DrawMode = drAll) and (Assigned(CurReport.OnEnterRect) or
@@ -4479,7 +4488,9 @@ begin
   Result := 0;
   DrawMode := drAfterCalcHeight;
   BeginDraw(TempBmp.Canvas);
-  frInterpretator.DoScript(Script);
+  //frInterpretator.DoScript(Script);
+  InternalExecScript;
+
   if not Visible then Exit;
   {$IFDEF DebugLR}
   DebugLnEnter('TfrMemoView.CalcHeight %s INIT',[ViewInfo(Self)]);
@@ -10102,6 +10113,7 @@ var
   D: TfrTDataSet;
   F: TfrTField;
   s1: String;
+  aCursr: Longint;
 
   function MasterBand: TfrBand;
   begin
@@ -10197,6 +10209,12 @@ begin
             begin
               aValue := Title;
               Exit;
+            end
+            else
+            if IdentToCursor(S, aCursr) then
+            begin
+              aValue:=aCursr;
+              exit;
             end;
             if s <> SubValue then
             begin
@@ -12907,6 +12925,14 @@ begin
   fMemo.Text:=AValue;
 end;
 
+procedure TfrObject.InternalExecScript;
+begin
+  if Assigned(FOnExecScriptEvent) then
+    FOnExecScriptEvent(Self, Script)
+  else
+    frInterpretator.DoScript(Script);
+end;
+
 procedure TfrObject.SetWidth(AValue: Integer);
 begin
   DX:=AValue;
@@ -13048,6 +13074,7 @@ begin
     Memo.Assign(TfrObject(Source).Memo);
     Script.Assign(TfrObject(Source).Script);
     Visible:=TfrObject(Source).Visible;
+    FOnExecScriptEvent:=TfrObject(Source).FOnExecScriptEvent;
   end;
 end;
 

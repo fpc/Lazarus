@@ -41,7 +41,8 @@ type
     procedure SetValue(const {%H-}Name: String; {%H-}Value: Variant); virtual;
     procedure DoFunction(const {%H-}name: String; {%H-}p1, {%H-}p2, {%H-}p3: Variant;
                          var {%H-}val: Variant); virtual;
-    procedure PrepareScript(MemoFrom, MemoTo, MemoErr: TStringList); virtual;
+    //procedure PrepareScript(MemoFrom, MemoTo, MemoErr: TStringList); virtual;
+    procedure PrepareScript(MemoFrom, MemoTo, MemoErr: TStrings); virtual;
     procedure DoScript(Memo: TStringList); virtual;
   end;
 
@@ -70,7 +71,7 @@ type
 
 implementation
 
-uses Variants;
+uses Variants, LR_Const;
 
 type
   LRec = record
@@ -285,7 +286,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TfrInterpretator.PrepareScript(MemoFrom, MemoTo, MemoErr: TStringList);
+//procedure TfrInterpretator.PrepareScript(MemoFrom, MemoTo, MemoErr: TStringList);
+procedure TfrInterpretator.PrepareScript(MemoFrom, MemoTo, MemoErr: TStrings);
 var
   i, j, lastp: Integer;
   s, bs: String;
@@ -355,7 +357,7 @@ procedure DoFuncId; forward;
       if c = 0 then break;
       Inc(i);
     end;
-    MemoErr.Add('Line ' + IntToStr(i + 1) + '/' + IntToStr(j - 1) + ': ' + s);
+    MemoErr.Add(Format('%s %d/%d: %s', [sErrLine, i+1, j-1, s]));
   end;
 
   procedure ProcessBrackets(var i: Integer);
@@ -403,7 +405,7 @@ procedure DoFuncId; forward;
     if Pos('END', bs) = 1 then
       cur := cur - Length(bs) + 3
     else
-      AddError('Expected ";" or "end"');
+      AddError(sErrExpectedEnd);
   end;
 
   procedure DoIf;
@@ -436,7 +438,7 @@ procedure DoFuncId; forward;
         cur := nsm;
       end;
     end
-    else AddError('Expected "then"');
+    else AddError(sErrExpectedThen);
   end;
 
   procedure DoRepeat;
@@ -461,7 +463,7 @@ procedure DoFuncId; forward;
       DoExpression;
       MemoTo.Add(ttIf + Chr(nl) + Chr(nl div 256) + CopyArr(nsm, cur - nsm));
     end
-     else AddError('Expected ";" or "until"');
+     else AddError(sErrExpectedUntil);
   end;
 
   procedure DoWhile;
@@ -484,7 +486,7 @@ procedure DoFuncId; forward;
       MemoTo[nl] := bs;
     end
     else
-      AddError('Expected "do"');
+      AddError(sErrExpectedDO);
   end;
 
   procedure DoGoto;
@@ -495,7 +497,7 @@ procedure DoFuncId; forward;
     nsm := cur;
     lastp := cur;
     DoDigit;
-    if Error then AddError('Label in goto must be a number');
+    if Error then AddError(sErrLabelGoto);
     MemoTo.Add(ttGoto + Trim(CopyArr(nsm, cur - nsm)));
   end;
 
@@ -532,7 +534,7 @@ procedure DoFuncId; forward;
       MemoTo.Add(s);
     end
     else
-      AddError('Expected ":="');
+      AddError(sErrExpectedAssign);
   end;
   {-------------------------------------}
   procedure DoExpression;
@@ -614,7 +616,7 @@ procedure DoFuncId; forward;
       SkipSpace;
       lastp := cur;
       if buf^[cur] = ')' then Inc(cur)
-      else AddError('Expected ")"');
+      else AddError(sErrExpectedClosingBracket1);
     end
     else
     if (bs<>'') and (bs[1] = '[') then
@@ -624,7 +626,7 @@ procedure DoFuncId; forward;
       SkipSpace;
       lastp := cur;
       if buf^[cur] = ']' then Inc(cur)
-      else AddError('Expected "]"');
+      else AddError(sErrExpectedClosingBracket2);
     end
     else
     if (bs<>'') and ((bs[1] = '+') or (bs[1] = '-')) then
@@ -738,7 +740,7 @@ procedure DoFuncId; forward;
         goto 1;
       end
       else if buf^[cur] = ')' then Inc(cur)
-      else AddError('Expected "," or ")"');
+      else AddError(sErrExpectedComma);
     end;
   end;
 
@@ -778,7 +780,7 @@ procedure DoFuncId; forward;
         MemoTo[nl] := bs;
       end
       else
-        AddError('Need "do" here');
+        AddError(sErrNeedDo);
     end
     else
     if S = 'DOWNTO' then
@@ -802,10 +804,10 @@ procedure DoFuncId; forward;
         MemoTo[nl] := bs;
       end
       else
-        AddError('Need "do" here');
+        AddError(sErrNeedDo);
     end
     else
-      AddError('Need "to" here');
+      AddError(sErrNeedTo);
   end;
 
 

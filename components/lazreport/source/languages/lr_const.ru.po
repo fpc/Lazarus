@@ -633,6 +633,54 @@ msgstr "П&еременная"
 msgid "&Word wrap"
 msgstr "&Перенос слов"
 
+#: lr_const.serrexpectedassign
+msgid "Expected \":=\""
+msgstr "Ожидается \":=\""
+
+#: lr_const.serrexpectedclosingbracket1
+msgid "Expected \")\""
+msgstr "Ожидается \")\""
+
+#: lr_const.serrexpectedclosingbracket2
+msgid "Expected \"]\""
+msgstr "Ожидается \"]\""
+
+#: lr_const.serrexpectedcomma
+msgid "Expected \",\" or \")\""
+msgstr "Ожидается \",\" или \")\""
+
+#: lr_const.serrexpecteddo
+msgid "Expected \"do\""
+msgstr "Ожидается \"do\""
+
+#: lr_const.serrexpectedend
+msgid "Expected \";\" or \"end\""
+msgstr "Ожидается \";\" или \"end\""
+
+#: lr_const.serrexpectedthen
+msgid "Expected \"then\""
+msgstr "Ожидается \"then\""
+
+#: lr_const.serrexpecteduntil
+msgid "Expected \";\" or \"until\""
+msgstr "Ожидается \";\" или \"until\""
+
+#: lr_const.serrlabelgoto
+msgid "Label in goto must be a number"
+msgstr "Метка в goto должна быть числом"
+
+#: lr_const.serrline
+msgid "Line"
+msgstr "Строка"
+
+#: lr_const.serrneeddo
+msgid "Need \"do\" here"
+msgstr "Здесь необходимо \"do\""
+
+#: lr_const.serrneedto
+msgid "Need \"to\" here"
+msgstr "Здесь необходимо \"to\""
+
 #: lr_const.serror
 msgid "Error"
 msgstr "Ошибка"

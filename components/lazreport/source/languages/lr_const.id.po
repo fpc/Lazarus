@@ -641,6 +641,54 @@ msgstr "&Variabel"
 msgid "&Word wrap"
 msgstr "&Gulung"
 
+#: lr_const.serrexpectedassign
+msgid "Expected \":=\""
+msgstr ""
+
+#: lr_const.serrexpectedclosingbracket1
+msgid "Expected \")\""
+msgstr ""
+
+#: lr_const.serrexpectedclosingbracket2
+msgid "Expected \"]\""
+msgstr ""
+
+#: lr_const.serrexpectedcomma
+msgid "Expected \",\" or \")\""
+msgstr ""
+
+#: lr_const.serrexpecteddo
+msgid "Expected \"do\""
+msgstr ""
+
+#: lr_const.serrexpectedend
+msgid "Expected \";\" or \"end\""
+msgstr ""
+
+#: lr_const.serrexpectedthen
+msgid "Expected \"then\""
+msgstr ""
+
+#: lr_const.serrexpecteduntil
+msgid "Expected \";\" or \"until\""
+msgstr ""
+
+#: lr_const.serrlabelgoto
+msgid "Label in goto must be a number"
+msgstr ""
+
+#: lr_const.serrline
+msgid "Line"
+msgstr ""
+
+#: lr_const.serrneeddo
+msgid "Need \"do\" here"
+msgstr ""
+
+#: lr_const.serrneedto
+msgid "Need \"to\" here"
+msgstr ""
+
 #: lr_const.serror
 msgid "Error"
 msgstr "Salah"

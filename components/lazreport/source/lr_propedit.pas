@@ -12,18 +12,20 @@ type
   { TPropEditor }
 
   TPropEditor = class(TForm)
+  protected
+    FView: TfrView;
   public
-    View: TfrView;
-
-    function ShowEditor: TModalResult; virtual;
+    function ShowEditor(AView: TfrView): TModalResult; virtual;
+    property View: TfrView read FView;
   end;
 
 implementation
 
 { TPropEditor }
 
-function TPropEditor.ShowEditor: TModalResult;
+function TPropEditor.ShowEditor(AView: TfrView): TModalResult;
 begin
+  FView:=AView;
   Result := ShowModal;
 end;
 

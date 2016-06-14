@@ -1,50 +1,50 @@
 object frDesOptionsForm: TfrDesOptionsForm
   Left = 399
-  Height = 428
+  Height = 453
   Top = 216
   Width = 422
   ActiveControl = PageControl1
   Caption = 'Options'
-  ClientHeight = 428
+  ClientHeight = 453
   ClientWidth = 422
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.3'
+  LCLVersion = '1.5'
   object PageControl1: TPageControl
     Left = 0
-    Height = 375
+    Height = 399
     Top = 0
     Width = 422
-    ActivePage = TabSheet1
+    ActivePage = Tab1
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object Tab1: TTabSheet
       Caption = 'Designer'
-      ClientHeight = 344
-      ClientWidth = 418
+      ClientHeight = 360
+      ClientWidth = 416
       object GroupBox1: TGroupBox
         AnchorSideLeft.Control = Tab1
         AnchorSideTop.Control = Tab1
         AnchorSideRight.Control = Label5
         Left = 6
-        Height = 87
+        Height = 91
         Top = 6
-        Width = 197
+        Width = 196
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Grid'
-        ClientHeight = 64
-        ClientWidth = 193
+        ClientHeight = 68
+        ClientWidth = 192
         TabOrder = 0
         object CB1: TCheckBox
           AnchorSideLeft.Control = GroupBox1
           AnchorSideTop.Control = GroupBox1
           Left = 6
-          Height = 23
+          Height = 25
           Top = 6
-          Width = 88
+          Width = 89
           HelpContext = 66
           BorderSpacing.Around = 6
           Caption = '&Show grid'
@@ -55,9 +55,9 @@ object frDesOptionsForm: TfrDesOptionsForm
           AnchorSideTop.Control = CB1
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 23
-          Top = 35
-          Width = 101
+          Height = 25
+          Top = 37
+          Width = 102
           HelpContext = 75
           BorderSpacing.Around = 6
           Caption = 'Align to &grid'
@@ -70,24 +70,24 @@ object frDesOptionsForm: TfrDesOptionsForm
         AnchorSideTop.Control = Tab1
         AnchorSideRight.Control = Tab1
         AnchorSideRight.Side = asrBottom
-        Left = 216
-        Height = 87
+        Left = 215
+        Height = 91
         Top = 6
-        Width = 196
+        Width = 195
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Object moving'
-        ClientHeight = 64
-        ClientWidth = 192
+        ClientHeight = 68
+        ClientWidth = 191
         TabOrder = 1
         object RB4: TRadioButton
           AnchorSideLeft.Control = GroupBox2
           AnchorSideTop.Control = GroupBox2
           Left = 6
-          Height = 23
+          Height = 25
           Top = 6
-          Width = 63
+          Width = 64
           HelpContext = 84
           BorderSpacing.Around = 6
           Caption = 'S&hape'
@@ -100,9 +100,9 @@ object frDesOptionsForm: TfrDesOptionsForm
           AnchorSideTop.Control = RB4
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 23
-          Top = 35
-          Width = 84
+          Height = 25
+          Top = 37
+          Width = 85
           HelpContext = 94
           BorderSpacing.Around = 6
           Caption = '&Contents'
@@ -116,24 +116,24 @@ object frDesOptionsForm: TfrDesOptionsForm
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = Tab1
         AnchorSideRight.Side = asrBottom
-        Left = 216
-        Height = 116
-        Top = 99
-        Width = 196
+        Left = 215
+        Height = 122
+        Top = 103
+        Width = 195
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Report units'
-        ClientHeight = 93
-        ClientWidth = 192
+        ClientHeight = 99
+        ClientWidth = 191
         TabOrder = 2
         object RB6: TRadioButton
           AnchorSideLeft.Control = GroupBox3
           AnchorSideTop.Control = GroupBox3
           Left = 6
-          Height = 23
+          Height = 25
           Top = 6
-          Width = 62
+          Width = 63
           HelpContext = 102
           BorderSpacing.Around = 6
           Caption = '&Pixels'
@@ -146,9 +146,9 @@ object frDesOptionsForm: TfrDesOptionsForm
           AnchorSideTop.Control = RB6
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 23
-          Top = 35
-          Width = 47
+          Height = 25
+          Top = 37
+          Width = 48
           HelpContext = 112
           BorderSpacing.Around = 6
           Caption = '&MM'
@@ -159,9 +159,9 @@ object frDesOptionsForm: TfrDesOptionsForm
           AnchorSideTop.Control = RB7
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 23
-          Top = 64
-          Width = 65
+          Height = 25
+          Top = 68
+          Width = 66
           HelpContext = 121
           BorderSpacing.Around = 6
           Caption = '&Inches'
@@ -174,23 +174,23 @@ object frDesOptionsForm: TfrDesOptionsForm
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = Label5
         Left = 12
-        Height = 116
-        Top = 99
-        Width = 191
+        Height = 122
+        Top = 103
+        Width = 190
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Grid size'
-        ClientHeight = 93
-        ClientWidth = 187
+        ClientHeight = 99
+        ClientWidth = 186
         TabOrder = 3
         object RB1: TRadioButton
           AnchorSideLeft.Control = GroupBox4
           AnchorSideTop.Control = GroupBox4
           Left = 6
-          Height = 23
+          Height = 25
           Top = 6
-          Width = 74
+          Width = 75
           HelpContext = 131
           BorderSpacing.Around = 6
           Caption = '&4 pixels'
@@ -203,9 +203,9 @@ object frDesOptionsForm: TfrDesOptionsForm
           AnchorSideTop.Control = RB1
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 23
-          Top = 35
-          Width = 74
+          Height = 25
+          Top = 37
+          Width = 75
           HelpContext = 141
           BorderSpacing.Around = 6
           Caption = '&8 pixels'
@@ -216,9 +216,9 @@ object frDesOptionsForm: TfrDesOptionsForm
           AnchorSideTop.Control = RB2
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 23
-          Top = 64
-          Width = 130
+          Height = 25
+          Top = 68
+          Width = 131
           HelpContext = 151
           BorderSpacing.Around = 6
           Caption = '&18 pixels (5mm)'
@@ -232,23 +232,23 @@ object frDesOptionsForm: TfrDesOptionsForm
         AnchorSideRight.Control = Tab1
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 116
-        Top = 221
-        Width = 406
+        Height = 122
+        Top = 231
+        Width = 404
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Other'
-        ClientHeight = 93
-        ClientWidth = 402
+        ClientHeight = 99
+        ClientWidth = 400
         TabOrder = 4
         object CB3: TCheckBox
           AnchorSideLeft.Control = GroupBox5
           AnchorSideTop.Control = GroupBox5
           Left = 6
-          Height = 23
+          Height = 25
           Top = 6
-          Width = 129
+          Width = 130
           HelpContext = 161
           BorderSpacing.Around = 6
           Caption = 'Colored &buttons'
@@ -260,9 +260,9 @@ object frDesOptionsForm: TfrDesOptionsForm
           AnchorSideTop.Control = CB3
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 23
-          Top = 35
-          Width = 143
+          Height = 25
+          Top = 37
+          Width = 144
           HelpContext = 171
           BorderSpacing.Around = 6
           Caption = '&Editing after insert'
@@ -273,19 +273,40 @@ object frDesOptionsForm: TfrDesOptionsForm
           AnchorSideTop.Control = CB4
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 23
-          Top = 64
-          Width = 133
+          Height = 25
+          Top = 68
+          Width = 134
           BorderSpacing.Around = 6
           Caption = 'Show band &titles'
           TabOrder = 2
+        end
+        object CheckBox2: TCheckBox
+          AnchorSideLeft.Control = Label6
+          AnchorSideTop.Control = GroupBox5
+          Left = 206
+          Height = 25
+          Top = 6
+          Width = 140
+          BorderSpacing.Around = 6
+          Caption = 'Use inplace editor'
+          TabOrder = 3
+        end
+        object Label6: TLabel
+          AnchorSideLeft.Control = GroupBox5
+          AnchorSideLeft.Side = asrCenter
+          AnchorSideTop.Control = GroupBox5
+          Left = 200
+          Height = 1
+          Top = 0
+          Width = 1
+          ParentColor = False
         end
       end
       object Label5: TLabel
         AnchorSideLeft.Control = Tab1
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = Tab1
-        Left = 209
+        Left = 208
         Height = 1
         Top = 0
         Width = 1
@@ -294,31 +315,31 @@ object frDesOptionsForm: TfrDesOptionsForm
     end
     object TabSheet1: TTabSheet
       Caption = 'Editor'
-      ClientHeight = 344
-      ClientWidth = 418
+      ClientHeight = 360
+      ClientWidth = 416
       object GroupBox6: TGroupBox
         AnchorSideLeft.Control = TabSheet1
         AnchorSideTop.Control = TabSheet1
         AnchorSideRight.Control = TabSheet1
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 153
+        Height = 157
         Top = 6
-        Width = 406
+        Width = 404
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Memo editor'
-        ClientHeight = 130
-        ClientWidth = 402
+        ClientHeight = 134
+        ClientWidth = 400
         TabOrder = 0
         object RadioButton1: TRadioButton
           AnchorSideLeft.Control = GroupBox6
           AnchorSideTop.Control = GroupBox6
           Left = 6
-          Height = 23
+          Height = 25
           Top = 6
-          Width = 180
+          Width = 181
           BorderSpacing.Around = 6
           Caption = 'Use Memo font settings'
           Checked = True
@@ -331,9 +352,9 @@ object frDesOptionsForm: TfrDesOptionsForm
           AnchorSideTop.Control = RadioButton1
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 23
-          Top = 35
-          Width = 171
+          Height = 25
+          Top = 37
+          Width = 172
           BorderSpacing.Around = 6
           Caption = 'Use fixed font settings'
           OnClick = RadioButton1Change
@@ -346,8 +367,8 @@ object frDesOptionsForm: TfrDesOptionsForm
           AnchorSideRight.Control = SpinEdit1
           Left = 6
           Height = 33
-          Top = 91
-          Width = 282
+          Top = 95
+          Width = 280
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 6
           BorderSpacing.Right = 6
@@ -362,7 +383,7 @@ object frDesOptionsForm: TfrDesOptionsForm
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 21
-          Top = 64
+          Top = 68
           Width = 69
           BorderSpacing.Around = 6
           Caption = 'Font name'
@@ -372,9 +393,9 @@ object frDesOptionsForm: TfrDesOptionsForm
           AnchorSideLeft.Control = SpinEdit1
           AnchorSideTop.Control = RadioButton2
           AnchorSideTop.Side = asrBottom
-          Left = 300
+          Left = 298
           Height = 21
-          Top = 64
+          Top = 68
           Width = 59
           BorderSpacing.Around = 6
           Caption = 'Font size'
@@ -385,9 +406,9 @@ object frDesOptionsForm: TfrDesOptionsForm
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = GroupBox6
           AnchorSideRight.Side = asrBottom
-          Left = 294
+          Left = 292
           Height = 31
-          Top = 91
+          Top = 95
           Width = 102
           Anchors = [akTop, akRight]
           BorderSpacing.Top = 6
@@ -404,14 +425,14 @@ object frDesOptionsForm: TfrDesOptionsForm
         AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 95
-        Top = 165
-        Width = 406
+        Top = 169
+        Width = 404
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Script editor'
         ClientHeight = 72
-        ClientWidth = 402
+        ClientWidth = 400
         TabOrder = 1
         object Label3: TLabel
           AnchorSideLeft.Control = GroupBox7
@@ -432,7 +453,7 @@ object frDesOptionsForm: TfrDesOptionsForm
           Left = 6
           Height = 33
           Top = 33
-          Width = 282
+          Width = 280
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 6
           BorderSpacing.Right = 6
@@ -444,7 +465,7 @@ object frDesOptionsForm: TfrDesOptionsForm
         object Label4: TLabel
           AnchorSideLeft.Control = SpinEdit2
           AnchorSideTop.Control = GroupBox7
-          Left = 300
+          Left = 298
           Height = 21
           Top = 6
           Width = 59
@@ -457,7 +478,7 @@ object frDesOptionsForm: TfrDesOptionsForm
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = GroupBox7
           AnchorSideRight.Side = asrBottom
-          Left = 294
+          Left = 292
           Height = 31
           Top = 33
           Width = 102
@@ -473,9 +494,9 @@ object frDesOptionsForm: TfrDesOptionsForm
         AnchorSideTop.Control = GroupBox7
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 23
-        Top = 266
-        Width = 156
+        Height = 25
+        Top = 270
+        Width = 157
         BorderSpacing.Around = 6
         Caption = 'Use syntax highlight'
         TabOrder = 2
@@ -484,8 +505,8 @@ object frDesOptionsForm: TfrDesOptionsForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 41
-    Top = 381
+    Height = 42
+    Top = 405
     Width = 410
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

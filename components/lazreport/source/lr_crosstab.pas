@@ -146,6 +146,8 @@ type
 
     procedure OnPrintColumn(ColNo: Integer; var AWidth: Integer);
     procedure OnEnterRect(AMemo: TStringList; AView: TfrView);
+    procedure OnExecScript(frObject:TfrObject; AScript:TfrScriptStrings);
+
     procedure SetRowTitleCell(AValue: TlrCrossDesignView);
     procedure SetRowTotalCell(AValue: TlrCrossDesignView);
     procedure SetTotalCHCell(AValue: TlrCrossDesignView);
@@ -226,6 +228,7 @@ type
     constructor Create(AOwnerPage:TfrPage); override;
   end;
 
+  TlrHackObject = class(TfrObject);
 
 { TlrCrossDesignDataView }
 
@@ -330,6 +333,7 @@ end;
 
 begin
   DoneCrossData;
+
   FData:=nil;
   FD:=nil;
   FR:=nil;
@@ -378,6 +382,7 @@ begin
   P:=FData.GetBookmark;
   FData.DisableControls;
   try
+
     FData.First;
     while not FData.EOF do
     begin
@@ -397,7 +402,7 @@ begin
         FExVarArray.Cell[FC.Value, FR.Value]:=FD.DisplayText;
 
       ExItem:=FExVarArray.CellData[FC.Value, FR.Value];
-      if Assigned(ExItem) then
+      if Assigned(ExItem) and not ExItem.IsBookmarkValid then
         ExItem.SaveBookmark(FData);
       FData.Next;
     end;
@@ -573,7 +578,7 @@ begin
 
     ExItem:=FExVarArray.CellData[SC, SR];
     if Assigned(ExItem) and ExItem.IsBookmarkValid then
-      ExItem.SaveBookmark(FData);
+      ExItem.GotoBookmark;
   end
   else
   if S = '-RowTitle-' then
@@ -689,6 +694,43 @@ begin
 //  DX:=10 + 22 * 3;
 end;
 
+procedure TlrCrossView.OnExecScript(frObject: TfrObject;
+  AScript: TfrScriptStrings);
+var
+  M:TfrMemoView;
+  S: String;
+
+  ColNo: Integer;
+  RecNo: Integer;
+  V, SC, SR : Variant;
+  ExItem:TExItem;
+
+begin
+  ColNo:=FBandCrossRowRT.Parent.DataSet.RecNo;
+  RecNo:=FBandDataRowRT.Parent.DataSet.RecNo;
+
+  M:=TfrMemoView(frObject);
+  S:= M.Memo[0];
+  if S='-Cell-' then
+  begin
+    SC:=FExVarArray.ColHeader[ColNo];
+    SR:=FExVarArray.RowHeader[RecNo];
+
+    ExItem:=FExVarArray.CellData[SC, SR];
+    if Assigned(ExItem) and ExItem.IsBookmarkValid then
+    begin
+      frVariables['CrossViewIsEmpty']:=false;
+      ExItem.GotoBookmark;
+    end
+    else
+      frVariables['CrossViewIsEmpty']:=true;
+
+
+
+    frInterpretator.DoScript(AScript);
+  end
+end;
+
 procedure TlrCrossView.Print(Stream: TStream);
 var
   FPage : TlrCrossPage;
@@ -796,6 +838,7 @@ begin
   FView.Assign(FDataCell);
   FView.SetBounds(FXPos, FYPos, FDataCell.DX, FDataCell.dy);
   FView.Memo.Text:='-Cell-';
+  TlrHackObject(FView).FOnExecScriptEvent:=@OnExecScript;
 
   if FShowRowTotal or FShowGrandTotal then
   begin

@@ -39,6 +39,7 @@ type
   end;
 
 function GetBrackedVariable(s: String; var i: integer; out j: Integer): String;
+function ExtractString(const S:string):string;
 
 implementation
 
@@ -55,6 +56,40 @@ const
   ttUnMinus = #9; ttUnPlus = #10; ttStr = #11;
   ttNot = #12; ttMod = #13; ttRound = #14;
 
+function ExtractString(const S:string):string;
+var
+  i: Integer;
+  FInStr:boolean;
+begin
+  Result:='';
+  FInStr:=false;
+//  if S=#$27#$27 then exit;
+  i:=1;
+  while i<=Length(S) do
+  begin
+    if (S[i]='''') then
+    begin
+      if FInStr then
+      begin
+        if I < Length(S) then
+        begin
+          if S[i+1] = '''' then
+          begin
+            Result:=Result + '''';
+            Inc(i);
+          end
+          else
+            FInStr:=false;
+      end;
+      end
+      else
+        FInStr:=true;
+    end
+    else
+      Result:=Result + S[i];
+    Inc(i);
+  end;
+end;
 
 function GetBrackedVariable(s: String; var i: integer; out j: Integer): String;
 var
@@ -201,10 +236,10 @@ begin
         begin
           if s[i] = '''' then
           begin
-            s1 := GetString(s, i);
-            s1 := Copy(s1, 2, Length(s1) - 2);
+            s1 := ExtractString(GetString(s, i));
+{            s1 := Copy(s1, 2, Length(s1) - 2);
             while Pos('''' + '''', s1) <> 0 do
-              Delete(s1, Pos('''' + '''', s1), 1);
+              Delete(s1, Pos('''' + '''', s1), 1);}
             nm[st] := s1;
             k := i;
           end

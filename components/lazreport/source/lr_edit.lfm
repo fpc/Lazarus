@@ -10,23 +10,22 @@ object frEditorForm: TfrEditorForm
   ClientWidth = 589
   Font.Color = clBlack
   KeyPreview = True
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
-  OnHide = FormHide
   OnKeyDown = FormKeyDown
-  OnResize = FormResize
   OnShow = FormShow
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '1.3'
+  LCLVersion = '1.7'
   object Panel2: TPanel
     Left = 0
-    Height = 53
-    Top = 383
+    Height = 52
+    Top = 384
     Width = 589
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 53
+    ClientHeight = 52
     ClientWidth = 589
     FullRepaint = False
     TabOrder = 0
@@ -34,7 +33,7 @@ object frEditorForm: TfrEditorForm
       AnchorSideTop.Control = Panel2
       AnchorSideRight.Control = Button2
       Left = 475
-      Height = 41
+      Height = 40
       Top = 4
       Width = 38
       HelpContext = 40
@@ -52,7 +51,7 @@ object frEditorForm: TfrEditorForm
       AnchorSideRight.Control = Panel2
       AnchorSideRight.Side = asrBottom
       Left = 519
-      Height = 41
+      Height = 40
       Top = 4
       Width = 64
       HelpContext = 50
@@ -69,7 +68,7 @@ object frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = Panel2
       AnchorSideTop.Control = Panel2
       Left = 6
-      Height = 41
+      Height = 40
       Top = 4
       Width = 71
       HelpContext = 60
@@ -86,9 +85,9 @@ object frEditorForm: TfrEditorForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel2
       Left = 83
-      Height = 41
+      Height = 40
       Top = 4
-      Width = 70
+      Width = 71
       HelpContext = 70
       Anchors = [akLeft, akBottom]
       AutoSize = True
@@ -102,8 +101,8 @@ object frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = Button6
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel2
-      Left = 241
-      Height = 41
+      Left = 242
+      Height = 40
       Top = 4
       Width = 66
       HelpContext = 110
@@ -119,8 +118,8 @@ object frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = Button4
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel2
-      Left = 159
-      Height = 41
+      Left = 160
+      Height = 40
       Top = 4
       Width = 76
       HelpContext = 70
@@ -136,7 +135,7 @@ object frEditorForm: TfrEditorForm
   object ScriptPanel: TPanel
     Left = 0
     Height = 152
-    Top = 231
+    Top = 232
     Width = 589
     Align = alBottom
     BevelOuter = bvNone
@@ -146,7 +145,7 @@ object frEditorForm: TfrEditorForm
     TabOrder = 1
     object Label2: TLabel
       Left = 4
-      Height = 21
+      Height = 20
       Top = 0
       Width = 38
       Caption = 'S&cript'
@@ -169,7 +168,7 @@ object frEditorForm: TfrEditorForm
       OnEnter = M1Enter
       BookMarkOptions.Xoffset = 2
       Gutter.Color = 13605511
-      Gutter.Width = 57
+      Gutter.Width = 55
       Gutter.MouseActions = <      
         item
           ClickCount = ccAny
@@ -591,7 +590,6 @@ object frEditorForm: TfrEditorForm
         'End'
       )
       VisibleSpecialChars = [vscSpace, vscTabAtLast]
-      SelectedColor.FrameEdges = sfeAround
       SelectedColor.BackPriority = 50
       SelectedColor.ForePriority = 50
       SelectedColor.FramePriority = 50
@@ -599,23 +597,17 @@ object frEditorForm: TfrEditorForm
       SelectedColor.ItalicPriority = 50
       SelectedColor.UnderlinePriority = 50
       SelectedColor.StrikeOutPriority = 50
-      IncrementColor.FrameEdges = sfeAround
-      HighlightAllColor.FrameEdges = sfeAround
       BracketHighlightStyle = sbhsBoth
       BracketMatchColor.Background = clNone
       BracketMatchColor.Foreground = clNone
-      BracketMatchColor.FrameEdges = sfeAround
       BracketMatchColor.Style = [fsBold]
       FoldedCodeColor.Background = clNone
       FoldedCodeColor.Foreground = clGray
       FoldedCodeColor.FrameColor = clGray
-      FoldedCodeColor.FrameEdges = sfeAround
       MouseLinkColor.Background = clNone
       MouseLinkColor.Foreground = clBlue
-      MouseLinkColor.FrameEdges = sfeAround
       LineHighlightColor.Background = clNone
       LineHighlightColor.Foreground = clNone
-      LineHighlightColor.FrameEdges = sfeAround
       inline TSynGutterPartList
         object TSynGutterMarks
           AutoSize = False
@@ -623,11 +615,10 @@ object frEditorForm: TfrEditorForm
           MouseActions = <>
         end
         object TSynGutterLineNumber
-          Width = 19
+          Width = 17
           MouseActions = <>
           MarkupInfo.Background = clNone
           MarkupInfo.Foreground = clNone
-          MarkupInfo.FrameEdges = sfeAround
           DigitCount = 2
           ShowOnlyLineNumbersMultiplesOf = 1
           ZeroStart = False
@@ -644,7 +635,6 @@ object frEditorForm: TfrEditorForm
           MouseActions = <>
           MarkupInfo.Background = clWhite
           MarkupInfo.Foreground = clGray
-          MarkupInfo.FrameEdges = sfeAround
         end
         object TSynGutterCodeFolding
           MouseActions = <          
@@ -675,7 +665,6 @@ object frEditorForm: TfrEditorForm
             end>
           MarkupInfo.Background = clWhite
           MarkupInfo.Foreground = clGray
-          MarkupInfo.FrameEdges = sfeAround
           MouseActionsExpanded = <          
             item
               ClickCount = ccAny
@@ -704,7 +693,7 @@ object frEditorForm: TfrEditorForm
   object MemoPanel: TPanel
     Left = 0
     Height = 185
-    Top = 37
+    Top = 38
     Width = 589
     Align = alClient
     BevelOuter = bvNone
@@ -721,8 +710,8 @@ object frEditorForm: TfrEditorForm
       AnchorSideBottom.Control = MemoPanel
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 152
-      Top = 33
+      Height = 153
+      Top = 32
       Width = 589
       Anchors = [akTop, akLeft, akRight, akBottom]
       OnEnter = M1Enter
@@ -735,7 +724,7 @@ object frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = MemoPanel
       AnchorSideTop.Control = MemoPanel
       Left = 6
-      Height = 21
+      Height = 20
       Top = 6
       Width = 40
       BorderSpacing.Around = 6
@@ -747,7 +736,7 @@ object frEditorForm: TfrEditorForm
     Cursor = crVSplit
     Left = 0
     Height = 9
-    Top = 222
+    Top = 223
     Width = 589
     Align = alBottom
     Anchors = [akLeft, akBottom]
@@ -760,23 +749,23 @@ object frEditorForm: TfrEditorForm
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     Left = 0
-    Height = 37
+    Height = 38
     Top = 0
     Width = 589
     Align = alTop
     AutoSize = True
     BevelOuter = bvLowered
-    ClientHeight = 37
+    ClientHeight = 38
     ClientWidth = 589
     FullRepaint = False
     TabOrder = 4
     object CB1: TCheckBox
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel3
-      Left = 4
-      Height = 23
+      Left = 7
+      Height = 24
       Top = 7
-      Width = 61
+      Width = 62
       HelpContext = 80
       BorderSpacing.Around = 6
       Caption = '&Script'
@@ -787,10 +776,10 @@ object frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = CB1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel3
-      Left = 71
-      Height = 23
+      Left = 75
+      Height = 24
       Top = 7
-      Width = 74
+      Width = 75
       HelpContext = 90
       BorderSpacing.Around = 6
       Caption = '&Big font'
@@ -801,10 +790,10 @@ object frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = CB2
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel3
-      Left = 151
-      Height = 23
+      Left = 156
+      Height = 24
       Top = 7
-      Width = 94
+      Width = 95
       HelpContext = 100
       BorderSpacing.Around = 6
       Caption = '&Word wrap'
@@ -816,20 +805,9 @@ object frEditorForm: TfrEditorForm
     DefaultFilter = '(TSynHighlighterAttributes)'
     Enabled = False
     AsmAttri.Foreground = 5812813
-    AsmAttri.FrameEdges = sfeAround
     CommentAttri.Foreground = 13461314
-    CommentAttri.FrameEdges = sfeAround
-    IDEDirectiveAttri.FrameEdges = sfeAround
-    IdentifierAttri.FrameEdges = sfeAround
-    KeyAttri.FrameEdges = sfeAround
     NumberAttri.Foreground = clRed
-    NumberAttri.FrameEdges = sfeAround
-    SpaceAttri.FrameEdges = sfeAround
     StringAttri.Foreground = 15226932
-    StringAttri.FrameEdges = sfeAround
-    SymbolAttri.FrameEdges = sfeAround
-    CaseLabelAttri.FrameEdges = sfeAround
-    DirectiveAttri.FrameEdges = sfeAround
     CompilerMode = pcmDelphi
     NestedComments = False
     left = 228
