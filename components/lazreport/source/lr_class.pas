@@ -2240,7 +2240,8 @@ begin
   Result:=-1;
   AFilterExt:=UTF8UpperCase(AFilterExt);
   for i:=0 to FList.Count-1 do
-    if (TExportFilterItem(FList[i]).FClassRef = AClassRef) and (TExportFilterItem(FList[i]).FilterExt = AFilterExt) then
+    if (TExportFilterItem(FList[i]).FClassRef = AClassRef) and
+       (UTF8UpperCase(TExportFilterItem(FList[i]).FilterExt) = AFilterExt) then
     begin
       Result:=i;
       exit;
