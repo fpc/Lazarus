@@ -233,27 +233,30 @@ begin
   if attachedAppleMenuItems then Exit;
   if not hasSubmenu() then Exit;
 
-  nsCharCode := NSStringUtf8('');
   // Separator
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
   // Hide App
   ns := NSStringUtf8('Hide ' + Application.Title);
+  nsCharCode := NSStringUtf8('h');
   item := TCocoaMenuItem_HideApp.alloc.initWithTitle_action_keyEquivalent(ns,
     objcselector('lclItemSelected:'), nsCharCode);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
   item.setTarget(item);
+  // release mem
+  nsCharCode.release;
   ns.release;
   // Separator
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
   // Quit
   ns := NSStringUtf8('Quit');
+  nsCharCode := NSStringUtf8('q');
   item := TCocoaMenuItem_Quit.alloc.initWithTitle_action_keyEquivalent(ns,
     objcselector('lclItemSelected:'), nsCharCode);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
   item.setTarget(item);
-  ns.release;
   // release mem
   nsCharCode.release;
+  ns.release;
 
   attachedAppleMenuItems := True;
 end;
