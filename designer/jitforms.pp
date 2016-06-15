@@ -417,11 +417,11 @@ function GetVMTSize(AClass: TClass): integer;
 var
   p: PPointer;
 begin
-  Result:=10000;
+  Result:=100000;
   if AClass=nil then exit;
   p:=PPointer(pointer(AClass)+vmtMethodStart);
   Result:=vmtMethodStart;
-  while (p^<>nil) and (Result<10000) do begin
+  while (p^<>nil) and (Result<100000) do begin
     inc(p);
     inc(Result,SizeOf(Pointer));
   end;
@@ -645,26 +645,6 @@ begin
   Result := Result+'}';
 end;
 
-function CalculateTypeDataSize(PropInfoCount: integer): integer;
-begin
-  Result := SizeOf(TTypeData) + 2; // TTypeData + one word for new prop count
-  // Actually the size depends on the UnitName. But SizeOf(TTypeData) already
-  // uses the maximum size of the shortstring.
-  {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
-  if Result and (SizeOf(Pointer) - 1) <> 0 then
-    Inc(Result, SizeOf(Pointer)); // a few bytes too much, but at least enough
-  {$endif}
-  inc(Result,PropInfoCount*SizeOf(TPropInfo));
-end;
-
-function GetTypeDataPropCountAddr(TypeData: PTypeData): PWord;
-begin
-  Result:=PWord(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
-  {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
-  Result := Align(Result, SizeOf(Pointer));
-  {$endif}
-end;
-
 function GetJITMethod(const aMethod: TMethod; out aJITMethod: TJITMethod
   ): boolean;
 begin
@@ -687,15 +667,36 @@ begin
   Result:=CompareText(JITMethod1.TheMethodName,JITMethod2.TheMethodName);
 end;
 
+function CalculateTypeDataSize(PropInfoCount: integer): integer;
+begin
+  Result := SizeOf(TTypeData) + 2; // TTypeData + one word for new prop count
+  // Actually the size depends on the UnitName. But SizeOf(TTypeData) already
+  // uses the maximum size of the shortstring.
+  {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
+  if Result and (SizeOf(Pointer) - 1) <> 0 then
+    Inc(Result, SizeOf(Pointer)); // a few bytes too much, but at least enough
+  {$endif}
+  inc(Result,PropInfoCount*SizeOf(TPropInfo));
+end;
+
 function CalculateTypeInfoSize(const AClassName: shortstring;
   PropInfoCount: integer): integer;
 begin
-  Result := SizeOf(TTypeKind) + 1 + length(AClassName)
+  Result := SizeOf(TTypeKind)
+           + 1 + length(AClassName)  // packed shortstring: length byte + chars
            + CalculateTypeDataSize(PropInfoCount);
   {$warnings off}
   if SizeOf(TTypeKind)<>1 then
     raise Exception.Create('CalculateTypeInfoSize SizeOf(TTypeInfo^.Kind)<>1');
   {$warnings on}
+end;
+
+function GetTypeDataPropCountAddr(TypeData: PTypeData): PWord;
+begin
+  Result:=PWord(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
+  {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
+  Result := Align(Result, SizeOf(Pointer));
+  {$endif}
 end;
 
 //------------------------------------------------------------------------------
@@ -1507,7 +1508,8 @@ begin
   // set TypeData (PropCount is the total number of properties, including ancestors)
   NewTypeData^.ClassType:=TClass(NewVMT);
   {$IF FPC_FULLVERSION>=30100}
-  NewTypeData^.ParentInfoRef:=AncestorClass.ClassInfo;
+  GetMem(NewTypeData^.ParentInfoRef,SizeOf(Pointer));
+  NewTypeData^.ParentInfoRef^:=AncestorClass.ClassInfo;
   {$ELSE}
   NewTypeData^.ParentInfo:=AncestorClass.ClassInfo;
   {$ENDIF}
@@ -1551,32 +1553,45 @@ procedure TJITComponentList.FreeJITClass(var AClass: TClass);
   end;
 
 var
-  OldVMT: Pointer;
-  ClassNamePShortString: Pointer;
+  OldVMT, ClassNamePShortString: Pointer;
   OldFieldTable: PFieldTable;
   OldTypeInfo: PTypeInfo;
   OldMethodTable: PMethodNameTable;
+  {$IF FPC_FULLVERSION>=30100}
+  OldTypeData: PTypeData;
+  {$ENDIF}
 begin
   // free TJITMethods
   JITMethods.DeleteAllOfClass(AClass);
 
   OldVMT:=Pointer(AClass);
+
   // free methodtable
   OldMethodTable:=PMethodNameTable((OldVMT+vmtMethodTable)^);
   if Assigned(OldMethodTable) then begin
     FreeMethodTableEntries(OldMethodTable);
     FreeMem(OldMethodTable);
   end;
+
   // free classname
-  ClassNamePShortString:=Pointer(Pointer(OldVMT+vmtClassName)^);
+  ClassNamePShortString:=Pointer((OldVMT+vmtClassName)^);
   FreeMem(ClassNamePShortString);
+
   // free field table
-  OldFieldTable:=PFieldTable(Pointer(OldVMT+vmtFieldTable)^);
+  OldFieldTable:=PFieldTable((OldVMT+vmtFieldTable)^);
   ReallocMem(OldFieldTable^.ClassTable,0);
   FreeMem(OldFieldTable);
+
   // free typeinfo
-  OldTypeInfo:=PTypeInfo(Pointer(OldVMT+vmtTypeInfo)^);
+  OldTypeInfo:=PTypeInfo((OldVMT+vmtTypeInfo)^);
+  {$IF FPC_FULLVERSION>=30100}
+  // free ParentInfoRef
+  OldTypeData:=GetTypeData(OldTypeInfo);
+  FreeMem(OldTypeData^.ParentInfoRef);
+  OldTypeData^.ParentInfoRef:=nil;
+  {$ENDIF}
   FreeMem(OldTypeInfo);
+
   // free vmt
   FreeMem(OldVMT);
   AClass:=nil;
