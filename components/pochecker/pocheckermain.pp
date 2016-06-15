@@ -418,14 +418,14 @@ begin
     begin
       S := '';
       if OL.Count > 0 then
-      begin
         S := Format(sTheFollowingOrphanedPoFileSFound, [IntToStr(OL.Count)]) + LineEnding + OL.Text;
-        if MissingFiles.Count > 0 then
-          S := S + LineEnding;
-      end;
       if MissingFiles.Count > 0 then
+      begin
+        if S <> '' then
+          S := S + LineEnding;
         S := S + Format(sTheFollowingMissingMasterPoFileSWereRemoved, [
           IntToStr(MissingFiles.Count)]) + LineEnding + MissingFiles.Text;
+      end;
       MemoDlg(sTroublesomeFiles, S);
     end;
     UpdateGUI(MasterPoListBox.SelCount > 0);
@@ -593,26 +593,13 @@ end;
 procedure TPoCheckerForm.UpdateGUI(HasSelection: Boolean);
 begin
   NoErrLabel.Visible := False;
-  if HasSelection then
-  begin
-    RunToolButton.Enabled := True;
-    TestListBox.Enabled := True;
-    SelectAllTestsBtn.Enabled := True;
-    SelectBasicTestsBtn.Enabled := True;
-    UnselectAllTestsBtn.Enabled := True;
-    UnselectAllMasterFilesBtn.Enabled := True;
-    IgnoreFuzzyCheckBox.Enabled := True;
-  end
-  else
-  begin
-    RunToolButton.Enabled := False;
-    TestListBox.Enabled := False;
-    SelectAllTestsBtn.Enabled := False;
-    SelectBasicTestsBtn.Enabled := False;
-    UnselectAllTestsBtn.Enabled := False;
-    UnselectAllMasterFilesBtn.Enabled := False;
-    IgnoreFuzzyCheckBox.Enabled := False;
-  end;
+  RunToolButton.Enabled := HasSelection;
+  TestListBox.Enabled := HasSelection;
+  SelectAllTestsBtn.Enabled := HasSelection;
+  SelectBasicTestsBtn.Enabled := HasSelection;
+  UnselectAllTestsBtn.Enabled := HasSelection;
+  UnselectAllMasterFilesBtn.Enabled := HasSelection;
+  IgnoreFuzzyCheckBox.Enabled := HasSelection;
   ClearMasterFilesBtn.Enabled := (MasterPoListBox.Items.Count > 0);
   SelectAllMasterFilesBtn.Enabled := (MasterPoListBox.Items.Count > 0);
 end;
