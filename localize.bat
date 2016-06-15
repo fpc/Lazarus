@@ -83,18 +83,6 @@ echo on
 :SkipLazDoc
 @echo.
 
-@echo Updating LazExplorer
-@set LazExplorer_RSJ=examples\lazresexplorer\lib\%ArchOS%\reconstsunit.rsj
-@if exist %LazExplorer_RSJ% goto LazExplorer_update
-@echo RSJ file NOT found. Searching for RST.
-@set LazExplorer_RSJ=examples\lazresexplorer\lib\%ArchOS%\reconstsunit.rst
-@if not exist %LazExplorer_RSJ% goto SkipLazExplorer
-:LazExplorer_update
-@tools\updatepofiles %LazExplorer_RSJ% examples\lazresexplorer\languages\resexplorer.po
-@echo Translation file %LazExplorer_RSJ% found.
-:SkipLazExplorer
-@echo.
-
 @echo Updating LazReport editor sample
 @set LREditor_RSJ=components\lazreport\samples\editor\maincalleditor.rsj
 @if exist %LREditor_RSJ% goto LREditor_update

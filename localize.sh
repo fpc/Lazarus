@@ -38,7 +38,6 @@ RSTFILES=(
   ". debuggerstrconst"
   "components/lazreport/samples/editor maincalleditor calleditorwithpkg"
   "doceditor lazdemsg lazde"
-  "examples/lazresexplorer reconstsunit resexplorer"
   "tools/lazdatadesktop lazdatadeskstr lazdatadesktop"
 )
 
