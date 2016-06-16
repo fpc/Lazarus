@@ -242,8 +242,9 @@ begin
   Separator1MenuItem.Visible := AdvancedMode;
   //ExtEditorMenuItem and IDEEditorMenuItem are invisible by default
   {$ifdef pocheckerstandalone}
+  ExtEditorMenuItem.Visible := AdvancedMode;
   if Settings.ExternalEditorName <> '' then
-    ExtEditorMenuItem.Visible := AdvancedMode;
+    ExtEditorMenuItem.Enabled := true;
   {$else}
   IDEEditorMenuItem.Visible := AdvancedMode;
   {$endif}

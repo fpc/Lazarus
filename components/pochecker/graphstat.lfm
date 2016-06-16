@@ -109,6 +109,7 @@ object GraphStatForm: TGraphStatForm
     end
     object ExtEditorMenuItem: TMenuItem
       Caption = 'Open file in external editor'
+      Enabled = False
       Visible = False
       OnClick = ExtEditorMenuItemClick
     end
