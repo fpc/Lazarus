@@ -3159,7 +3159,7 @@ begin
   FSBHorzShowing:=-1;
   TabStop := True;
   ParentColor := False;
-  FBackgroundColor := clWindow;
+  //FBackgroundColor := clWindow;
   FDefItemHeight := 20;
   FExpandSignType := tvestTheme;
   UpdateExpandSignSize;
@@ -3430,8 +3430,8 @@ end;
 
 procedure TCustomTreeView.SetBackgroundColor(Value: TColor);
 begin
-  if FBackgroundColor<>Value then begin
-    FBackgroundColor:=Value;
+  if Color<>Value then begin
+    Color:=Value;
     Invalidate;
   end;
 end;
@@ -4637,10 +4637,10 @@ begin
         SpaceRect.Top := Node.Top + Node.Height - FScrolledTop + BorderWidth;
       //if Node<>nil then DebugLn('BottomItem=',BottomItem.text) else DebugLn('NO BOTTOMITEM!!!!!!!!!');
       // TWinControl(Parent).InvalidateRect(Self,SpaceRect,true);
-      if (FBackgroundColor <> clNone) and (SpaceRect.Top < SpaceRect.Bottom) then
+      if (Color <> clNone) and (SpaceRect.Top < SpaceRect.Bottom) then
       begin
         //DebugLn('  SpaceRect=',SpaceRect.Left,',',SpaceRect.Top,',',SpaceRect.Right,',',SpaceRect.Bottom);
-        Brush.Color := FBackgroundColor;
+        Brush.Color := Color;
         FillRect(SpaceRect);
       end;
       // draw border
@@ -4978,31 +4978,36 @@ var
   procedure DrawBackground(IsSelected: Boolean; ARect: TRect);
   var
     Details: TThemedElementDetails;
-    CurBackgroundColor: TColor;
+    CurBackgroundColor,bclr: TColor;
   begin
-    if (tvoRowSelect in Options) and IsSelected then
-      if tvoThemedDraw in Options then
-      begin
-        if tvoFocusedPainting in FStates then
-          Details := ThemeServices.GetElementDetails(ttItemSelected)
-        else
-          Details := ThemeServices.GetElementDetails(ttItemSelectedNotFocus);
-        if ThemeServices.HasTransparentParts(Details) then
+    bclr:=Canvas.Brush.Color;
+    try
+      if (tvoRowSelect in Options) and IsSelected then
+        if tvoThemedDraw in Options then
         begin
-          Canvas.Brush.Color := BackgroundColor;
-          Canvas.FillRect(ARect);
-        end;
-        ThemeServices.DrawElement(Canvas.Handle, Details, ARect, nil);
-        Exit;
-      end
+          if tvoFocusedPainting in FStates then
+            Details := ThemeServices.GetElementDetails(ttItemSelected)
+          else
+            Details := ThemeServices.GetElementDetails(ttItemSelectedNotFocus);
+          if ThemeServices.HasTransparentParts(Details) then
+          begin
+            Canvas.Brush.Color := Color;
+            Canvas.FillRect(ARect);
+          end;
+          ThemeServices.DrawElement(Canvas.Handle, Details, ARect, nil);
+          Exit;
+        end
+        else
+          CurBackgroundColor := FSelectedColor
       else
-        CurBackgroundColor := FSelectedColor
-    else
-      CurBackgroundColor := FBackgroundColor;
-    if CurBackgroundColor <> clNone then
-    begin
-      Canvas.Brush.Color := CurBackgroundColor;
-      Canvas.FillRect(ARect);
+        CurBackgroundColor := Color;
+      if CurBackgroundColor <> clNone then
+      begin
+        Canvas.Brush.Color := CurBackgroundColor;
+        Canvas.FillRect(ARect);
+      end;
+    finally
+      Canvas.Brush.Color := bclr;
     end;
   end;
 
@@ -5055,6 +5060,7 @@ begin
     Exit;
   NodeSelected := (Node.Selected) or (Node.MultiSelected);
   Canvas.Font.Color := Font.Color;
+  Canvas.Brush.Color := Color;
   PaintImages := True;
   if IsCustomDrawn(dtItem, cdPrePaint) then
   begin
