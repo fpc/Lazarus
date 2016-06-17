@@ -1905,6 +1905,37 @@ begin
     else
       Result := 0;
   end;
+
+  // NSApp.currentEvent.modifierFlags doesn't work before events start coming,
+  // see bug 29272 and GetCurrentEventButtonState is supported in 64-bits
+  case nVirtKey of
+  VK_MENU:
+    if (GetCurrentEventKeyModifiers() and optionKey) > 0 then
+      // the ssAlt/VK_MENU is mapped to optionKey under MacOS
+      Result := StateDown;
+  VK_SHIFT:
+    if (GetCurrentEventKeyModifiers() and shiftKey) > 0 then
+      Result := StateDown;
+  VK_CONTROL:
+    if (GetCurrentEventKeyModifiers() and controlKey) > 0 then
+      // the ssCtrl/VK_CONTROL is mapped to controlKey under MacOS
+      Result := StateDown;
+  VK_LWIN, VK_RWIN:
+    // distinguish left and right
+    if (GetCurrentEventKeyModifiers() and cmdKey) > 0 then
+      // the ssMeta/VK_LWIN is mapped to cmdKey under MacOS
+      Result := StateDown;
+  VK_LBUTTON:
+    if (GetCurrentEventButtonState() and $01) > 0 then Result := StateDown;
+  VK_RBUTTON:
+    if (GetCurrentEventButtonState() and $02) > 0 then Result := StateDown;
+  VK_MBUTTON:
+    if (GetCurrentEventButtonState() and $04) > 0 then Result := StateDown;
+  VK_XBUTTON1:
+    if (GetCurrentEventButtonState() and $08) > 0 then Result := StateDown;
+  VK_XBUTTON2:
+    if (GetCurrentEventButtonState() and $10) > 0 then Result := StateDown;
+  end;
 end;
 
 function TCocoaWidgetSet.SelectObject(ADC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
