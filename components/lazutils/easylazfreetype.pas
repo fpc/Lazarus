@@ -1,16 +1,24 @@
+{
+ *****************************************************************************
+  This file is part of LazUtils.
+
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
+ *****************************************************************************
+
+  Bug list :
+
+ - Characters parts may not be well translated, for example i with accent.
+ - Encoding is ok for ASCII but is mixed up for extended characters
+
+ to do :
+
+ - multiple font loading
+ - font face cache
+ - font style
+ - text rotation
+}
 unit EasyLazFreeType;
-
-{ bug list :
-
-- Characters parts may not be well translated, for example i with accent.
-- Encoding is ok for ASCII but is mixed up for extended characters
-
-to do :
-
-- multiple font loading
-- font face cache
-- font style
-- text rotation }
 
 {$mode objfpc}{$H+}
 

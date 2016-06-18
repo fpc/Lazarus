@@ -1,18 +1,12 @@
 {
- /***************************************************************************
-                            LazUtilsStrConsts.pas
-                            ----------------
-     This unit contains all resource strings from LazUtils
-
-
- ***************************************************************************/
-
  *****************************************************************************
-  This file is part of the Lazarus Component Library (LCL)
+  This file is part of LazUtils.
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
  *****************************************************************************
+
+  This unit contains all resource strings from LazUtils.
 }
 unit LazUtilsStrConsts;
 

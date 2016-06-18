@@ -1,10 +1,8 @@
 {
-  This file is based on the FCL unit xmlread svn revision 15251.
-  Converted to use UTF8 instead of widestrings by Mattias Gaertner.
-}
-{
  **********************************************************************
-  This file is part of the Free Component Library
+  This file is part of LazUtils.
+  It is copied from FCL unit xmlread svn revision 15251 and adapted to use
+  UTF8 instead of widestrings by Mattias Gaertner.
 
   See the file COPYING.FPC, included in this distribution,
   for details about the license.

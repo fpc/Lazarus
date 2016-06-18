@@ -1,3 +1,14 @@
+{
+ **********************************************************************
+  This file is part of LazUtils.
+  It is copied from Free Component Library.
+
+  See the file COPYING.FPC, included in this distribution,
+  for details about the license.
+ **********************************************************************
+
+}
+
 unit Laz_XMLRead;
 
 {$MODE objfpc}{$H+}

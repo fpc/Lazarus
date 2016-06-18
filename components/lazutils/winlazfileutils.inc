@@ -1,7 +1,6 @@
 {%MainUnit lazfileutils.pas}
 
 
-
 function ReadAllLinks(const Filename: string;
                       ExceptionOnError: boolean): string;
 begin
@@ -15,7 +14,6 @@ begin
   if OnError=pfeEmpty then ;
   Result:=Filename;
 end;
-
 
 
 // ******** Start of WideString specific implementations ************

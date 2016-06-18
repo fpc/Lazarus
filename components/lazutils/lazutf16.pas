@@ -1,10 +1,6 @@
 {
- /***************************************************************************
-                                  lazutf16.pas
- ***************************************************************************/
-
  *****************************************************************************
-  This file is part of LazUtils
+  This file is part of LazUtils.
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
@@ -14,11 +10,10 @@
   although it might also include routines for other encodings.
 
   A UTF-16 based implementation for LowerCase, for example, is faster in WideString
-  and UnicodeString then the default UTF-8 implementation
+  and UnicodeString then the default UTF-8 implementation.
 
   Currently this unit includes only UTF8LowerCaseViaTables which is based on a
-  UTF-16 table, but it might be extended to include various UTF-16 routines
-
+  UTF-16 table, but it might be extended to include various UTF-16 routines.
 }
 unit lazutf16;
 

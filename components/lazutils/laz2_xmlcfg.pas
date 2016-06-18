@@ -1,6 +1,8 @@
 {
-  This file was part of the Free Component Library and was adapted to use UTF8
-  strings instead of widestrings.
+ **********************************************************************
+  This file is part of LazUtils.
+  It is copied from Free Component Library and adapted to use
+  UTF8 strings instead of widestrings.
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.

@@ -1,15 +1,14 @@
 {%MainUnit ../lconvencoding.pp}
 
-{******************************************************************************
-                         Asian Unicode Conversion Tables
- ******************************************************************************
-
+{
  *****************************************************************************
-  This file is part of the Lazarus Component Library (LCL)
+  This file is part of LazUtils.
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
  *****************************************************************************
+
+  Asian Unicode Conversion Tables
 }
 type  
 CP936Arr = array[0..22046] of word;

@@ -1,18 +1,12 @@
 {
- /***************************************************************************
-                               LazListClasses.pas
-                               ---------------
-                   Initial Revision  : May 2015
-
-
- ***************************************************************************/
-
  *****************************************************************************
-  This file is part of the Lazarus Component Library (LCL)
+  This file is part of LazUtils.
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
  *****************************************************************************
+
+ Initial Revision  : May 2015
 }
 
 unit LazListClasses;
