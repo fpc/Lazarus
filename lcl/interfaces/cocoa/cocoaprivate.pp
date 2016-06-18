@@ -1768,8 +1768,10 @@ end;
 
 procedure TCocoaButton.mouseDown(event: NSEvent);
 begin
-  if not callback.MouseUpDownEvent(event) then
-    inherited mouseDown(event);
+  callback.MouseUpDownEvent(event);
+  // We need to call the inherited regardless of the result of the call to
+  // MouseUpDownEvent otherwise mouse clicks don't work, see bug 30131
+  inherited mouseDown(event);
 end;
 
 procedure TCocoaButton.mouseDragged(event: NSEvent);
