@@ -703,10 +703,20 @@ begin
   Result := objc_msgSend_fpret(Handle, sel_registerName(PChar(StrNSString_doubleValue)), []);
 end;
 
+{$ifdef CPU64}
+function NSString.floatValue: Single;
+var
+  val: LongWord;
+begin
+  val := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSString_floatValue)), []));
+  Result := PSingle(@val)^;
+end;
+{$else}
 function NSString.floatValue: Single;
 begin
   Result := Single(objc_msgSend(Handle, sel_registerName(PChar(StrNSString_floatValue)), []));
 end;
+{$endif}
 
 function NSString.intValue: Integer;
 begin

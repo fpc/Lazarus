@@ -213,6 +213,11 @@ begin
 end;
 
 procedure NSObject.AddMethod(aName, aParameters: string; aPointer: Pointer);
+{$ifdef CPU64}
+begin
+  class_addMethod(ClassId, sel_registerName(PChar(aName)), IMP(aPointer), PChar(aParameters));
+end;
+{$else}
 var
   method_list: Pobjc_method_list;
 begin
@@ -224,6 +229,7 @@ begin
   method_list^.method_list[0].method_imp := IMP(aPointer);
   class_addMethods(ClassId, method_list);
 end;
+{$endif}
 
 function NSObject.CreateClassDefinition(const name, superclassName: string): Boolean;
 var
@@ -238,6 +244,13 @@ begin
 
   if (objc_lookUpClass (PChar(name)) <> nil) then Exit(False);
 
+  {$ifdef CPU64}
+  new_class := objc_allocateClassPair(super_class, PChar(name), 0);
+  if new_class = nil then Exit(False);
+
+  //meta_class = object_getClass(new_class);
+  objc_registerClassPair(new_class);
+  {$else}
   // Find the root class
   //
   root_class := super_class;
@@ -291,6 +304,7 @@ begin
   // Finally, register the class with the runtime.
   //
   objc_addClass( new_class );
+  {$endif}
 
   Result := True;
 end;

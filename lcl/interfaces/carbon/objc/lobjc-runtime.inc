@@ -177,7 +177,12 @@ function objc_getClasses(): Pointer; cdecl; external;
 
 function objc_lookUpClass(const name: PChar): id; cdecl; external;
 function objc_getRequiredClass(const name: PChar): id; cdecl; external;
+{$ifdef CPU64}
+function objc_allocateClassPair(superclass: _Class; const name: PChar; extraBytes: size_t): _Class; cdecl; external;
+procedure objc_registerClassPair(myClass: _Class); cdecl; external;
+{$else}
 procedure objc_addClass(myClass: _Class); cdecl; external;
+{$endif}
 
 { customizing the error handling for objc_getClass/objc_getMetaClass }
 
