@@ -100,14 +100,16 @@ begin
         WinControl := FControl.Parent;
       WinControl.HandleNeeded;
 
-      // This assertion reveals a regression in r52495 "lcl: TControlCanvas: simplify"
-      // Was:  if FDeviceContext = 0 then
-      Assert(FDeviceContext = 0, 'TControlCanvas.CreateHandle: FDeviceContext = '
-                                + IntToStr(FDeviceContext));
-
-      // store the handle locally since  we need it to check (and do not
-      // want to fire creation events)
-      FDeviceContext := FControl.GetDeviceContext(FWindowHandle);
+      // important: keep the condition here again because
+      // CreateWnd (called via WinControl.HandleNeeded above) could execute
+      // this function again and thus allocate FDeviceContext twice
+      // resulting in a memory leak
+      if FDeviceContext = 0 then
+      begin
+        // store the handle locally since  we need it to check (and do not
+        // want to fire creation events)
+        FDeviceContext := FControl.GetDeviceContext(FWindowHandle);
+      end;
     end;
     Handle := FDeviceContext;
   end;
