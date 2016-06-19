@@ -49,7 +49,7 @@ type
   TCocoaTimerObject = objcclass(NSObject)
     func: TWSTimerProc;
     procedure timerEvent; message 'timerEvent';
-    class function initWithFunc(afunc: TWSTimerProc): TCocoaTimerObject; message 'initWithFunc:';
+    class function newWithFunc(afunc: TWSTimerProc): TCocoaTimerObject; message 'newWithFunc:';
   end;
 
   TCocoaClipboardDataType = (ccdtText,
@@ -113,6 +113,9 @@ type
       EscapeResult: Longint): Longint; override;
     function GetAppHandle: THandle; override;
     function CreateThemeServices: TThemeServices; override;
+
+    procedure SendCheckSynchronizeMessage;
+    procedure OnWakeMainThread(Sender: TObject);
   public
     // modal session
     CurModalForm: TCustomForm;
@@ -137,8 +140,8 @@ type
 
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;
-    function PrepareUserEventInfo(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): NSMutableDictionary;
-    function PrepareUserEvent(Handle: HWND; Info: NSDictionary): NSEvent;
+    function NewUserEventInfo(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): NSMutableDictionary;
+    function PrepareUserEvent(Handle: HWND; Info: NSDictionary; NeedsResult: Boolean): NSEvent;
 
     procedure InitStockItems;
     procedure FreeStockItems;

@@ -1718,10 +1718,10 @@ begin
   Result := Handle <> 0;
   if Result then
   begin
-    Info := PrepareUserEventInfo(Handle, Msg, WParam, LParam);
+    Info := NewUserEventInfo(Handle, Msg, WParam, LParam);
     // if we will want a postmessage using notification center
     // NSDistributedNotificationCenter.defaultCenter.postNotificationName_object_userInfo_deliverImmediately(NSMessageNotification, nil, Info, False);
-    Event := PrepareUserEvent(Handle, Info);
+    Event := PrepareUserEvent(Handle, Info, False);
     NSApp.postEvent_atStart(Event, False);
   end;
 end;
@@ -2016,10 +2016,11 @@ var
 begin
   if Handle <> 0 then
   begin
-    Info := PrepareUserEventInfo(Handle, Msg, WParam, LParam);
-    Event := PrepareUserEvent(Handle, Info);
+    Info := NewUserEventInfo(Handle, Msg, WParam, LParam);
+    Event := PrepareUserEvent(Handle, Info, True);
     NSApp.sendEvent(Event);
     Result := NSNumber(Info.objectForKey(NSMessageResult)).integerValue;
+    Info.Release;
   end;
 end;
 

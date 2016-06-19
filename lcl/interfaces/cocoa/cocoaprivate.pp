@@ -1155,7 +1155,7 @@ var
   Msg: Cardinal;
   WP: WParam;
   LP: LParam;
-  Result: NSNumber;
+  ResultCode: NSNumber;
   Obj: NSObject;
 begin
   if event.type_ = NSApplicationDefined then
@@ -1169,13 +1169,16 @@ begin
       Msg := NSNumber(Message.objectForKey(NSMessageMsg)).unsignedLongValue;
       WP := NSNumber(Message.objectForKey(NSMessageWParam)).integerValue;
       LP := NSNumber(Message.objectForKey(NSMessageLParam)).integerValue;
-      // deliver message and set result
       Obj := NSObject(Handle);
+      // deliver message and set result if response requested
       // todo: check that Obj is still a valid NSView/NSWindow
-      Result := NSNumber.numberWithInteger(Obj.lclDeliverMessage(Msg, WP, LP));
-      Message.setObject_forKey(Result, NSMessageResult);
-      Result.release;
-    end;
+      ResultCode := NSNumber.numberWithInteger(Obj.lclDeliverMessage(Msg, WP, LP));
+      if event.data2 <> 0 then
+        Message.setObject_forKey(ResultCode, NSMessageResult)
+      else
+        Message.release;
+      //ResultCode.release;                   // will be auto-released
+     end;
   end
   else
     inherited sendEvent(event);
@@ -1395,7 +1398,7 @@ var
   Msg: Cardinal;
   WP: WParam;
   LP: LParam;
-  Result: NSNumber;
+  ResultCode: NSNumber;
   Obj: NSObject;
 begin
   if event.type_ = NSApplicationDefined then
@@ -1409,12 +1412,15 @@ begin
       Msg := NSNumber(Message.objectForKey(NSMessageMsg)).unsignedLongValue;
       WP := NSNumber(Message.objectForKey(NSMessageWParam)).integerValue;
       LP := NSNumber(Message.objectForKey(NSMessageLParam)).integerValue;
-      // deliver message and set result
+      // deliver message and set result if response requested
       Obj := NSObject(Handle);
       // todo: check that Obj is still a valid NSView/NSWindow
-      Result := NSNumber.numberWithInteger(Obj.lclDeliverMessage(Msg, WP, LP));
-      Message.setObject_forKey(Result, NSMessageResult);
-      Result.release;
+      ResultCode := NSNumber.numberWithInteger(Obj.lclDeliverMessage(Msg, WP, LP));
+      if event.data2 <> 0 then
+        Message.setObject_forKey(ResultCode, NSMessageResult)
+      else
+        Message.release;
+      //ResultCode.release;               // will be auto-released
     end;
   end
   else
