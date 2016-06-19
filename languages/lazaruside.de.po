@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-05-26 20:40+0200\n"
+"PO-Revision-Date: 2016-06-19 18:06+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -105,15 +105,15 @@ msgstr "Text markieren"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselectbyline
 msgid "Select text (lines)"
-msgstr ""
+msgstr "Text auswählen (Zeilen)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselectbytoken
 msgid "Select text (tokens)"
-msgstr ""
+msgstr "Text auswählen (Zeichen)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselectbyword
 msgid "Select text (words)"
-msgstr ""
+msgstr "Text auswählen (Wörter)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselectcolumn
 msgid "Select text (Column mode)"
@@ -5849,7 +5849,6 @@ msgid "Class section"
 msgstr ""
 
 #: lazarusidestrconsts.liscodecreationdialoglocation
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscodecreationdialoglocation"
 msgid "Location"
 msgstr "Position"
@@ -10335,7 +10334,7 @@ msgstr "Zum Fehler springen"
 
 #: lazarusidestrconsts.lisjumptoerroratidentifiercompletion
 msgid "When an error in the sources is found at identifier completion, jump to it."
-msgstr ""
+msgstr "Wenn ein Fehler in den Quellen bei der Bezeichnervervollständigung gefunden wird, springe dorthin."
 
 #: lazarusidestrconsts.lisjumptoprocedure
 msgid "Jump to procedure %s"
@@ -11577,7 +11576,7 @@ msgstr "Quelltext vervollständigen"
 
 #: lazarusidestrconsts.lismenucompletecodeinteractive
 msgid "Complete Code (with dialog)"
-msgstr ""
+msgstr "Codevervollständigung (mit Dialog)"
 
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
@@ -12383,7 +12382,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenujumptointerface
 msgid "Jump to Interface"
-msgstr ""
+msgstr "Springe zum Interface"
 
 #: lazarusidestrconsts.lismenujumptointerfaceuses
 msgid "Jump to Interface uses"
@@ -17701,7 +17700,7 @@ msgstr "Baum muß aktualisiert werden"
 
 #: lazarusidestrconsts.listwomovedfileswillhavethesamefilenamein
 msgid "Two moved files will have the same file name:%s%s%s%s%sin %s"
-msgstr ""
+msgstr "Zwei verschobene Dateien werden den selben Dateinamen haben:%s%s%s%s%sin %s"
 
 #: lazarusidestrconsts.listypes
 msgid "Types (not removed if no replacement)"
@@ -18245,7 +18244,7 @@ msgstr "Zurücknehmen"
 
 #: lazarusidestrconsts.lisuninstall
 msgid "Uninstall %s"
-msgstr ""
+msgstr "Deinstalliere %s"
 
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
@@ -20797,4 +20796,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-

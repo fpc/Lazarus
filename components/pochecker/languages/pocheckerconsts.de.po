@@ -395,7 +395,7 @@ msgstr ""
 
 #: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
 msgid "The following %s missing master .po file(s) were removed from the list:"
-msgstr ""
+msgstr "Die folgende(n) %s fehlende(n) Original-.po-Datei(en) wurde(n) von der Liste entfernt:"
 
 #: pocheckerconsts.sthefollowingorphanedpofilesfound
 msgid "The following %s orphaned .po file(s) found:"
@@ -448,4 +448,3 @@ msgstr "Alle Dateien abwählen"
 #: pocheckerconsts.suntranslatedstringstotal
 msgid "Untranslated strings (total: %s)"
 msgstr "Nicht übersetzte Zeichenketten (insgesamt: %s)"
-
