@@ -637,6 +637,8 @@ begin
 end;
 
 function TCocoaWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
+const
+  SName = 'TCocoaWidgetSet.DeleteObject';
 var
   gdi: TCocoaGDIObject;
 begin
@@ -647,12 +649,26 @@ begin
   gdi := CheckGDIOBJ(GdiObject);
 
   if not Assigned(gdi) then
+  begin
+    DebugLn(SName, ' Error - GDIObject: ' +  DbgSName(gdi) + ' is unknown!');
     Exit;
+  end;
 
   if gdi.Global then
+  begin
+    // global brushes can be cached, so just exit here since we will free the resource later on
+    //DebugLn(SName, ' Error - GDIObject: ' +  DbgSName(gdi) + ' is global!');
     Exit;
+  end;
 
-  if gdi.RefCount = 0 then gdi.Destroy;
+  if gdi.RefCount <> 1 then
+  begin
+    DebugLn(SName, 'Error - GDIObject: ' + DbgSName(gdi) + ' is still selected!');
+    Exit;
+  end;
+
+  gdi.Destroy;
+  Result := True;
 end;
 
 function TCocoaWidgetSet.DestroyCaret(Handle: HWND): Boolean;
@@ -1953,6 +1969,7 @@ begin
   dc:=CheckDC(ADC);
   gdi:=CheckGDIOBJ(GDIObj);
   if not Assigned(dc) then Exit;
+  if not Assigned(gdi) then Exit;
 
   if gdi is TCocoaBrush then
   begin // select brush
@@ -1979,10 +1996,12 @@ begin
     end;
     Result := HBITMAP(TCocoaBitmapContext(dc).Bitmap);
     TCocoaBitmapContext(dc).Bitmap := TCocoaBitmap(gdi);
+  end
+  else
+  begin
+    DebugLn(SName + ' Error - Unknown Object Type ' + DbgSName(gdi));
+    Exit;
   end;
-
-  if Result<>0 then TCocoaGDIObject(Result).Release;
-  if Assigned(gdi) then gdi.AddRef;
 
   {$IFDEF VerboseWinAPI}
     DebugLn(Format('TCocoaWidgetSet.SelectObject Result: %x', [Result]));

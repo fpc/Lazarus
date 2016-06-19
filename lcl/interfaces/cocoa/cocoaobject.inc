@@ -106,9 +106,9 @@ begin
   NSMessageLParam := NSStringUTF8('LPARAM');
   NSMessageResult := NSStringUTF8('RESULT');
 
-  DefaultBrush := TCocoaBrush.CreateDefault;
-  DefaultPen := TCocoaPen.CreateDefault;
-  DefaultFont := TCocoaFont.CreateDefault;
+  DefaultBrush := TCocoaBrush.CreateDefault(True);
+  DefaultPen := TCocoaPen.CreateDefault(True);
+  DefaultFont := TCocoaFont.CreateDefault(True);
   DefaultBitmap := TCocoaBitmap.CreateDefault;
   DefaultContext := TCocoaBitmapContext.Create;
   DefaultContext.Bitmap := DefaultBitmap;
@@ -148,6 +148,14 @@ begin
   // Need to destroy the caret here.. or CustomTimer must be verified.
   // or CocoaCaret should not use TTimer at all (use raw cocoa timer)
   DestroyGlobalCaret;
+
+  NSApp.terminate(nil);            // XXX check this releases objects
+
+  NSMessageWnd.release;
+  NSMessageMsg.release;
+  NSMessageWParam.release;
+  NSMessageLParam.release;
+  NSMessageResult.release;
 
   CocoaWidgetSet := nil;
 end;
