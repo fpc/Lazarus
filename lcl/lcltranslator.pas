@@ -96,6 +96,7 @@ var
   var
     LangShortID: string;
     AppDir,LCFileName,FullLCFileName: String;
+    absoluteDir: Boolean;
   begin
     DefaultLang := LangID;
 
@@ -107,8 +108,12 @@ var
 
       if Dir<>'' then
       begin
-        Result := AppDir + Dir + DirectorySeparator + LangID +
-          DirectorySeparator + LCFileName;
+        Dir := AppendPathDelim(Dir);
+        absoluteDir := FilenameIsWinAbsolute(Dir) or FilenameIsUnixAbsolute(Dir);
+        if absoluteDir then
+          Result := Dir + LangID + DirectorySeparator + LCFileName
+        else
+          Result := AppDir + Dir + LangID + DirectorySeparator + LCFileName;
         if FileExistsUTF8(Result) then
           exit;
       end;
@@ -145,8 +150,10 @@ var
 
       if Dir<>'' then
       begin
-        Result := AppDir + Dir + DirectorySeparator +
-          LangShortID + DirectorySeparator + LCFileName;
+        if absoluteDir then
+          Result := Dir + LangShortID + DirectorySeparator + LCFileName
+        else
+          Result := AppDir + Dir + LangShortID + DirectorySeparator + LCFileName;
         if FileExistsUTF8(Result) then
           exit;
       end;
@@ -176,7 +183,10 @@ var
       try
         if Dir<>'' then
         begin
-          Result := AppDir + Dir + DirectorySeparator + FullLCFileName;
+          if absoluteDir then
+            Result := Dir + FullLCFileName
+          else
+            Result := AppDir + Dir + FullLCFileName;
           if FileExistsUTF8(Result) then
             exit;
         end;
@@ -207,7 +217,10 @@ var
 
       if Dir<>'' then
       begin
-        Result := AppDir + Dir + DirectorySeparator + FullLCFileName;
+        if absoluteDir then
+          Result := Dir + FullLCFileName
+        else
+          Result := AppDir + Dir + FullLCFileName;
         if FileExistsUTF8(Result) then
           exit;
       end;
