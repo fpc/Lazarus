@@ -579,8 +579,7 @@ type
     procedure ClearMissingIncludeFiles;
 
     // code macros
-    procedure AddMacroValue(MacroName: PChar;
-                            ValueStart, ValueEnd: integer);
+    procedure AddMacroValue(MacroName: PChar; ValueStart, ValueEnd: integer);
     procedure ClearMacros;
     function IndexOfMacro(MacroName: PChar; InsertPos: boolean): integer;
     procedure AddMacroSource(MacroID: integer);
@@ -701,33 +700,26 @@ type
     // properties
     property OnGetSource: TOnGetSource read FOnGetSource write FOnGetSource;
     property OnLoadSource: TOnLoadSource read FOnLoadSource write FOnLoadSource;
-    property OnDeleteSource: TOnDeleteSource
-                                     read FOnDeleteSource write FOnDeleteSource;
+    property OnDeleteSource: TOnDeleteSource read FOnDeleteSource write FOnDeleteSource;
     property OnGetSourceStatus: TOnGetSourceStatus
                                read FOnGetSourceStatus write FOnGetSourceStatus;
-    property OnGetFileName: TOnGetFileName
-                                       read FOnGetFileName write FOnGetFileName;
+    property OnGetFileName: TOnGetFileName read FOnGetFileName write FOnGetFileName;
     property OnCheckFileOnDisk: TOnCheckFileOnDisk
                                read FOnCheckFileOnDisk write FOnCheckFileOnDisk;
     property OnGetInitValues: TOnGetInitValues
                                    read FOnGetInitValues write FOnGetInitValues;
-    property OnIncludeCode: TOnIncludeCode
-                                       read FOnIncludeCode write FOnIncludeCode;
-    property OnProgress: TLinkScannerProgress
-                                             read FOnProgress write FOnProgress;
+    property OnIncludeCode: TOnIncludeCode read FOnIncludeCode write FOnIncludeCode;
+    property OnProgress: TLinkScannerProgress read FOnProgress write FOnProgress;
     property IgnoreMissingIncludeFiles: boolean read GetIgnoreMissingIncludeFiles
                                              write SetIgnoreMissingIncludeFiles;
-    property InitialValues: TExpressionEvaluator
-                                             read FInitValues write FInitValues;
+    property InitialValues: TExpressionEvaluator read FInitValues write FInitValues;
     property MainCode: pointer read FMainCode write SetMainCode;
     property IncludeFileIsMissing: boolean read GetIncludeFileIsMissing;
     property NestedComments: boolean read FNestedComments;
-    property CompilerMode: TCompilerMode
-                                       read FCompilerMode write SetCompilerMode;
+    property CompilerMode: TCompilerMode read FCompilerMode write SetCompilerMode;
     property CompilerModeSwitches: TCompilerModeSwitches
                          read FCompilerModeSwitches write FCompilerModeSwitches;
-    property PascalCompiler: TPascalCompiler
-                                     read FPascalCompiler write FPascalCompiler;
+    property PascalCompiler: TPascalCompiler read FPascalCompiler write FPascalCompiler;
     property ScanTill: TLinkScannerRange read FScanTill write SetScanTill;
         
     procedure Clear;
@@ -4200,8 +4192,7 @@ begin
   FreeAndNil(FMissingIncludeFiles);
 end;
 
-procedure TLinkScanner.AddMacroValue(MacroName: PChar; ValueStart,
-  ValueEnd: integer);
+procedure TLinkScanner.AddMacroValue(MacroName: PChar; ValueStart, ValueEnd: integer);
 var
   i: LongInt;
   Macro: PSourceLinkMacro;

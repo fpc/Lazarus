@@ -2945,8 +2945,7 @@ begin
       CurPos.StartPos:=-1;
     end else begin
       CurPos.StartPos:=-1;
-      ErrMsg:=Format(ctsNeededByMode, [CompilerModeNames[Scanner.CompilerMode]]
-        );
+      ErrMsg:=Format(ctsNeededByMode, [CompilerModeNames[Scanner.CompilerMode]]);
     end;
     if CompiledFilename<>'' then begin
       // there is a compiled unit, only the source was not found
