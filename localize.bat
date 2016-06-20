@@ -71,18 +71,6 @@ echo on
 :SkipLazDataDesktop
 @echo.
 
-@echo Updating LazDoc
-@set LazDoc_RSJ=doceditor\units\%ArchOS%\lazdemsg.rsj
-@if exist %LazDoc_RSJ% goto LazDoc_update
-@echo RSJ file NOT found. Searching for RST.
-@set LazDoc_RSJ=doceditor\units\%ArchOS%\lazdemsg.rst
-@if not exist %LazDoc_RSJ% goto SkipLazDoc
-:LazDoc_update
-@tools\updatepofiles %LazDoc_RSJ% doceditor\languages\lazde.po
-@echo Translation file %LazDoc_RSJ% found.
-:SkipLazDoc
-@echo.
-
 @goto Exit
 
 :Exit_Error

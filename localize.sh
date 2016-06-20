@@ -36,7 +36,6 @@ fi
 RSTFILES=(
   ". lazarusidestrconsts lazaruside"
   ". debuggerstrconst"
-  "doceditor lazdemsg lazde"
   "tools/lazdatadesktop lazdatadeskstr lazdatadesktop"
 )
 
@@ -62,4 +61,3 @@ for idx in ${!RSTFILES[@]}; do
 done
 
 exit 0
-
