@@ -115,15 +115,6 @@ msgctxt "maincalleditor.certhumbnails"
 msgid "Thumbnails"
 msgstr "Ескізи"
 
-#: tfrmcustompreview.frmcustompreview.caption
-msgid "frmCustomPreview"
-msgstr "frmCustomPreview"
-
-#: tfrmcustompreview.frpreview1.caption
-msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
-msgid "frPreview1"
-msgstr "frPreview1"
-
 #: tfrmmain.accclose.caption
 msgid "Close"
 msgstr "Закрити"

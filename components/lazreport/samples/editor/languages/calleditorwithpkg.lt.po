@@ -117,15 +117,6 @@ msgctxt "maincalleditor.certhumbnails"
 msgid "Thumbnails"
 msgstr "Miniatiūros"
 
-#: tfrmcustompreview.frmcustompreview.caption
-msgid "frmCustomPreview"
-msgstr "frmSavaPerziura"
-
-#: tfrmcustompreview.frpreview1.caption
-msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
-msgid "frPreview1"
-msgstr "frPerziura1"
-
 #: tfrmmain.accclose.caption
 msgid "Close"
 msgstr "Užverti"
