@@ -31,7 +31,7 @@ uses
   LR_DBSet, IniFiles, LR_PGrid, Menus, ComCtrls, ActnList, Lr_e_txt, Lr_e_htm,
   LR_E_CSV, LR_DSet, LR_BarC, LR_RRect, LR_Shape, LR_ChBox, lconvencoding,
   lr_e_gen, lr_utils, LCLProc, ExtCtrls, custompreview, LR_Pars, LR_e_htmldiv,
-  lrAddFunctionLibrary, LazLogger;
+  lrAddFunctionLibrary, LazLogger, LazFileUtils;
 
 type
 
