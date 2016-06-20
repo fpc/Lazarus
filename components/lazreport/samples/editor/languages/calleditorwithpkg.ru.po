@@ -81,10 +81,6 @@ msgstr "Новый отчёт"
 msgid "none"
 msgstr "нет"
 
-#: maincalleditor.cernotimplemented
-msgid "This feature is not yet implemented!"
-msgstr "Эта функция ещё не реализована!"
-
 #: maincalleditor.ceropenreport
 msgid "Open report"
 msgstr "Открыть отчёт"

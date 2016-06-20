@@ -83,10 +83,6 @@ msgstr "Új jelentés"
 msgid "none"
 msgstr "semmi"
 
-#: maincalleditor.cernotimplemented
-msgid "This feature is not yet implemented!"
-msgstr "Ez a lehetőség még nincs megvalósítva!"
-
 #: maincalleditor.ceropenreport
 msgid "Open report"
 msgstr "Jelentés megnyitása"

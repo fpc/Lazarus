@@ -73,10 +73,6 @@ msgstr ""
 msgid "none"
 msgstr ""
 
-#: maincalleditor.cernotimplemented
-msgid "This feature is not yet implemented!"
-msgstr ""
-
 #: maincalleditor.ceropenreport
 msgid "Open report"
 msgstr ""

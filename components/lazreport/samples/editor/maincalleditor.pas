@@ -183,7 +183,6 @@ resourcestring
   cerPreviewReport  = 'Preview report';
   cerPrintReport    = 'Print report';
   cerPrintGrid      = 'Print grid';
-  cerNotImplemented = 'This feature is not yet implemented!';
   cerPrepareFailed  = 'PrepareReport Failed!';
   cerIndex          = 'Index';
   cerNone           = 'none';

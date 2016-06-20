@@ -85,6 +85,7 @@
         <Filename Value="custompreview.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmCustomPreview"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit2>
     </Units>
