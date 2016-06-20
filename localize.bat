@@ -83,18 +83,6 @@ echo on
 :SkipLazDoc
 @echo.
 
-@echo Updating LazReport editor sample
-@set LREditor_RSJ=components\lazreport\samples\editor\maincalleditor.rsj
-@if exist %LREditor_RSJ% goto LREditor_update
-@echo RSJ file NOT found. Searching for RST.
-@set LREditor_RSJ=components\lazreport\samples\editor\maincalleditor.rst
-@if not exist %LREditor_RSJ% goto SkipLREditor
-:LREditor_update
-@tools\updatepofiles %LREditor_RSJ% components\lazreport\samples\editor\languages\calleditorwithpkg.po
-@echo Translation file %LREditor_RSJ% found.
-:SkipLREditor
-@echo.
-
 @goto Exit
 
 :Exit_Error
