@@ -31,44 +31,47 @@ implementation
 
 {$R *.lfm}
 
-function SyntaxModeToCaption(const Mode: string): string;
+const
+  // CompilerMode names to be shown after -M...
+  CompilerModesPretty: array[TCompilerMode] of shortstring = (
+      'fpc', 'Delphi', 'DelphiUnicode', 'gpc', 'tp', 'ObjFPC', 'MacPas', 'iso'
+    );
+  // CompilerMode descriptions.
+  CompilerModesDescr: array[TCompilerMode] of shortstring = (
+      'Free Pascal', 'Delphi', 'Delphi Unicode', 'GNU Pascal', 'Turbo Pascal',
+      'Object Pascal', 'Mac Pascal', 'ISO/IEC 7185 Pascal'
+    );
+
+function SyntaxModeToCaption(const ModeStr: string): string;
+var
+  cm: TCompilerMode;
 begin
-  if CompareText(Mode, 'ObjFPC') = 0 then
-    Result := lisObjectPascalDefault + ' (-Mobjfpc)'
-  else if CompareText(Mode, 'Delphi') = 0 then
-    Result := 'Delphi (-Mdelphi)'
-  else if CompareText(Mode, 'DelphiUnicode') = 0 then
-    Result := 'DelphiUnicode (-Mdelphiunicode)'
-  else if CompareText(Mode, 'tp') = 0 then
-    Result := 'Turbo Pascal (-Mtp)'
-  else if CompareText(Mode, 'fpc') = 0 then
-    Result := 'Free Pascal (-Mfpc)'
-  else if CompareText(Mode, 'macpas') = 0 then
-    Result := 'Mac Pascal (-Mmacpas)'
-  else if CompareText(Mode, 'iso') = 0 then
-    Result := 'ISO/IEC 7185 Pascal (-Miso)'
-  else
-    Result := '';
+  Result := '';
+  for cm := Low(TCompilerMode) to High(TCompilerMode) do
+    if CompareText(ModeStr, CompilerModeNames[cm]) = 0 then
+    begin
+      if cm = cmOBJFPC then
+        Result := lisObjectPascalDefault  // Is this needed?
+      else
+        Result := CompilerModesDescr[cm];
+      Result := Result + ' (-M' + CompilerModesPretty[cm] + ')';
+      Break;
+    end;
 end;
 
 function CaptionToSyntaxMode(const Caption: string): string;
+var
+  cm: TCompilerMode;
 begin
-  if Pos('-Mdelphi', Caption) > 0 then
-    Result := 'Delphi'
-  else if Pos('-Mdelphiunicode', Caption) > 0 then
-    Result := 'delphiunicode'
-  else if Pos('-Mfpc', Caption) > 0 then
-    Result := 'fpc'
-  else if Pos('-Mtp', Caption) > 0 then
-    Result := 'tp'
-  else if Pos('-Mmacpas', Caption) > 0 then
-    Result := 'macpas'
-  else if Pos('-Miso', Caption) > 0 then
-    Result := 'iso'
-  else
-    Result := 'ObjFPC';
+  Result := 'ObjFPC';
+  // Some modes would go wrong if iterated forward, thus iterate backwards.
+  for cm := High(TCompilerMode) downto Low(TCompilerMode) do
+    if Pos('-M' + CompilerModesPretty[cm], Caption) > 0 then
+    begin
+      Result := CompilerModesPretty[cm];
+      Break;
+    end;
 end;
-
 
 { TCompilerParsingOptionsFrame }
 
