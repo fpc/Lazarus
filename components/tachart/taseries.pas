@@ -1024,8 +1024,8 @@ var
       TAGeometry.NormalizeRect(imageBar);
 
       // Draw a line instead of an empty rectangle.
-      if Bottom = Top then Dec(Top);
-      if Left = Right then Inc(Right);
+   //   if Bottom = Top then Dec(Top);
+   //   if Left = Right then Inc(Right);
     end;
     DrawBar(imageBar);
   end;
