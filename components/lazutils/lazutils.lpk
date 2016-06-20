@@ -135,7 +135,7 @@
       </Item29>
       <Item30>
         <Filename Value="lazutf16.pas"/>
-        <UnitName Value="lazutf16"/>
+        <UnitName Value="lazUTF16"/>
       </Item30>
       <Item31>
         <Filename Value="lazutf8sysutils.pas"/>

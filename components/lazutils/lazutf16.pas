@@ -15,7 +15,7 @@
   Currently this unit includes only UTF8LowerCaseViaTables which is based on a
   UTF-16 table, but it might be extended to include various UTF-16 routines.
 }
-unit lazutf16;
+unit LazUTF16;
 
 {$mode objfpc}{$H+}
 
