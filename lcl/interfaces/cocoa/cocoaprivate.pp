@@ -2760,8 +2760,9 @@ end;
 
 procedure TCocoaListBox.mouseDown(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited mouseDown(event);
+  if Assigned(callback) then callback.MouseUpDownEvent(event);
+  // Always call inherited, otherwise clicking stops working, see bug 30297
+  inherited mouseDown(event);
 end;
 
 procedure TCocoaListBox.rightMouseDown(event: NSEvent);
