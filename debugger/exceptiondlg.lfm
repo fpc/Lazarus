@@ -28,6 +28,7 @@ object IDEExceptionDlg: TIDEExceptionDlg
   end
   object cbIgnoreExceptionType: TCheckBox
     AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = btnBreak
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 19
