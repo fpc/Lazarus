@@ -875,11 +875,25 @@ end;
 
 function TfrPreviewForm.ExportToWithFilterIndex(AFilterIndex: Integer;
   const AFileName: string):boolean;
+var
+  S, S1:string;
+  i: SizeInt;
 begin
   if (AFilterIndex<0) or (AFilterIndex>=ExportFilters.Count) then
     raise exception.Create(sExportFilterIndexError);
   ConnectBack;
-  TfrReport(Doc).ExportTo(ExportFilters[AFilterIndex].ClassRef, AFileName);
+
+  S:=Trim(AFileName);
+  if (S <> '') and (ExtractFileExt(S) = '') and (S[Length(S)]<>'.') then
+  begin
+    S1:=ExportFilters[AFilterIndex].FilterExt;
+    i:=Pos('.', S1);
+    if i>0 then
+      Delete(S1, 1, i-1);
+    S:=S+S1;
+  end;
+
+  TfrReport(Doc).ExportTo(ExportFilters[AFilterIndex].ClassRef, S);
   Connect(Doc);
   Result:=true;
 end;
