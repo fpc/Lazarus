@@ -585,13 +585,6 @@ end;
 
 { TCocoaWSPopupMenu }
 
-function LCLCoordsToCocoa(AControl: TControl; X, Y: Integer): NSPoint;
-begin
-  Result.x := X;
-  Result.y := Screen.Height - Y;
-  if AControl <> nil then Result.y := Result.y - AControl.Height;
-end;
-
 {------------------------------------------------------------------------------
   Method:  TCocoaWSPopupMenu.Popup
   Params:  APopupMenu - LCL popup menu

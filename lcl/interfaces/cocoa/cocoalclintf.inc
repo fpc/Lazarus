@@ -208,7 +208,13 @@ var
   messageText: NSString;
   I: Integer;
   aButton: NSButton;
+  Str: string;
 begin
+  {Str := 'TCocoaWidgetSet.PromptUser DialogCaption: ' + DialogCaption +
+    ' DialogMessage: ' + DialogMessage + ' DialogType: ' + DbgS(DialogType) +
+    ' ButtonCount: ' + DbgS(ButtonCount) + ' DefaultIndex: ' +
+    DbgS(DefaultIndex) + ' EscapeResult: ' + DbgS(EscapeResult);
+  Result := -1;}
   {$IFDEF VerboseLCLIntf}
     DebugLn('TCocoaWidgetSet.PromptUser DialogCaption: ' + DialogCaption +
       ' DialogMessage: ' + DialogMessage + ' DialogType: ' + DbgS(DialogType) +

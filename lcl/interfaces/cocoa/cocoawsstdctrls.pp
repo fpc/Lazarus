@@ -94,22 +94,22 @@ type
   TCocoaWSCustomListBox = class(TWSCustomListBox)
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    {class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;  }
+    class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
-   { class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
-    class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;}
+    class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
-    {class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
 
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
-    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
+    //class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     //class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
-    class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
-    class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
-    class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;}
+    {class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
+    class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;}
+    class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
   end;
 
   { TCocoaWSCustomEdit }
@@ -1157,6 +1157,7 @@ class function TCocoaWSCustomListBox.CreateHandle(const AWinControl:TWinControl;
 var
   list    : TCocoaListBox;
   scroll  : TCocoaScrollView;
+  lclListBox: TCustomListBox absolute AWinControl;
 begin
   list := NSView(TCocoaListBox.alloc).lclInitWithCreateParams(AParams);
   if not Assigned(list) then
@@ -1170,7 +1171,7 @@ begin
   list.setHeaderView(nil);
   list.setDataSource(list);
   list.setDelegate(list);
-
+  list.setAllowsMultipleSelection(lclListBox.MultiSelect);
 
   scroll := EmbedInScrollView(list);
   if not Assigned(scroll) then
@@ -1185,52 +1186,127 @@ begin
   Result := TLCLIntfHandle(scroll);
 end;
 
-class function TCocoaWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox):TStrings;
+class function TCocoaWSCustomListBox.GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer;
 var
-  view : TCocoaListBox;
+  list: TCocoaListBox;
+  lPoint: NSPoint;
 begin
-  view:=GetListBox(ACustomListBox);
-  if not Assigned(view) then
-    Result:=nil
-  else
-    Result:=view.list;
+  list := GetListBox(ACustomListBox);
+  if not Assigned(list) then Exit();
+  lPoint := LCLCoordsToCocoa(ACustomListBox, X, Y);
+  Result := list.rowAtPoint(lPoint);
 end;
 
 class function TCocoaWSCustomListBox.GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean;
-var view : TCocoaListBox;
-    r:NSRect;
+var
+  view: TCocoaListBox;
+  r:NSRect;
 begin
   Result := False;
 
-  view:=GetListBox(ACustomListBox);
-  if not Assigned(view) then
-    begin
-    Result:=false;
-    exit;
-    end;
+  view := GetListBox(ACustomListBox);
+  if not Assigned(view) then Exit(False);
 
   r:=view.frameOfCellAtColumn_row(0,index);
   Arect:=NSRectToRect(r);
   Result := True;
-
 end;
 
 class function TCocoaWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
 var
-  view : TCocoaListBox;
+  view: TCocoaListBox;
   indexset: NSIndexSet;
 begin
-
   view:=GetListBox(ACustomListBox);
-  if not Assigned(view) then
-    begin
-    Result:=-1;
-    exit;
-    end;
+  if not Assigned(view) then Exit(-1);
 
   indexset:=view.selectedRowIndexes();
   result:=indexset.firstIndex;
+end;
 
+class function TCocoaWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
+var
+  view: TCocoaListBox;
+  selection: NSIndexSet;
+begin
+  view := GetListBox(ACustomListBox);
+  if not Assigned(view) then Exit(0);
+  selection := view.selectedRowIndexes();
+  Result := selection.count();
+end;
+
+
+class function TCocoaWSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
+var
+  view: TCocoaListBox;
+  selection: NSIndexSet;
+begin
+  view := GetListBox(ACustomListBox);
+  if not Assigned(view) then Exit(False);
+  if AIndex < 0 then Exit(False);
+  selection := view.selectedRowIndexes();
+  Result := selection.containsIndex(AIndex);
+end;
+
+class function TCocoaWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox):TStrings;
+var
+  view: TCocoaListBox;
+begin
+  view := GetListBox(ACustomListBox);
+  if not Assigned(view) then Exit(nil);
+  Result := view.list;
+end;
+
+class function TCocoaWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
+var
+  view: TCocoaListBox;
+  visibleRect: NSRect;
+  visibleRange: NSRange;
+begin
+  view := GetListBox(ACustomListBox);
+  if not Assigned(view) then Exit(-1);
+  visibleRect := view.visibleRect();
+  visibleRange := view.rowsInRect(visibleRect);
+  Result := visibleRange.location;
+end;
+
+class procedure TCocoaWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
+var
+  list: TCocoaListBox;
+begin
+  list := GetListBox(ACustomListBox);
+  if not Assigned(list) then Exit();
+  if ASelected then
+    list.selectRow_byExtendingSelection(AIndex, True)
+  else
+    list.deselectRow(AIndex);
+end;
+
+class procedure TCocoaWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
+var
+  list: TCocoaListBox;
+begin
+  list := GetListBox(ACustomListBox);
+  if not Assigned(list) then Exit();
+  list.selectRow_byExtendingSelection(AIndex, False);
+end;
+
+class procedure TCocoaWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean);
+var
+  list: TCocoaListBox;
+begin
+  list := GetListBox(ACustomListBox);
+  if not Assigned(list) then Exit();
+  list.setAllowsMultipleSelection(AMultiSelect);
+end;
+
+class procedure TCocoaWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
+var
+  view: TCocoaListBox;
+begin
+  view := GetListBox(ACustomListBox);
+  if not Assigned(view) then Exit();
+  view.scrollRowToVisible(NewTopIndex);
 end;
 
 end.
