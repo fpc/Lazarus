@@ -59,18 +59,6 @@ echo on
 :SkipDBGD
 @echo.
 
-@echo Updating LazDataDesktop
-@set LazDataDesktop_RSJ=tools\lazdatadesktop\lib\%ArchOS%\lazdatadeskstr.rsj
-@if exist %LazDataDesktop_RSJ% goto LazDataDesktop_update
-@echo RSJ file NOT found. Searching for RST.
-@set LazDataDesktop_RSJ=tools\lazdatadesktop\lib\%ArchOS%\lazdatadeskstr.rst
-@if not exist %LazDataDesktop_RSJ% goto SkipLazDataDesktop
-:LazDataDesktop_update
-@tools\updatepofiles %LazDataDesktop_RSJ% tools\lazdatadesktop\languages\lazdatadesktop.po
-@echo Translation file %LazDataDesktop_RSJ% found.
-:SkipLazDataDesktop
-@echo.
-
 @goto Exit
 
 :Exit_Error

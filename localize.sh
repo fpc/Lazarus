@@ -36,7 +36,6 @@ fi
 RSTFILES=(
   ". lazarusidestrconsts lazaruside"
   ". debuggerstrconst"
-  "tools/lazdatadesktop lazdatadeskstr lazdatadesktop"
 )
 
 set -x
