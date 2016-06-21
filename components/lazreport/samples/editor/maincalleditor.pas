@@ -31,7 +31,7 @@ uses
   LR_DBSet, IniFiles, LR_PGrid, Menus, ComCtrls, ActnList, Lr_e_txt, Lr_e_htm,
   LR_E_CSV, LR_DSet, LR_BarC, LR_RRect, LR_Shape, LR_ChBox, lconvencoding,
   lr_e_gen, lr_utils, LCLProc, ExtCtrls, custompreview, LR_Pars, LR_e_htmldiv,
-  lrAddFunctionLibrary, LazLogger, LazFileUtils;
+  lrAddFunctionLibrary, LazLogger, LazFileUtils, LCLTranslator;
 
 type
 
@@ -621,6 +621,7 @@ begin
   TranslateUnitResourceStrings('Lr_const','../../source/languages/lr_const.%s.po', Lang,FallbackLang);
   TranslateUnitResourceStrings('lr_add_function_const','../../source/addons/addfunction/languages/lr_add_function_const.%s.po'
      ,Lang,FallbackLang);
+  SetDefaultLang(Lang); // needed to translate strings extracted from forms
 end;
 
 initialization
