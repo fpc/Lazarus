@@ -2516,6 +2516,7 @@ components/lazreport/samples/editor/calleditorwithpkg.res -text
 components/lazreport/samples/editor/csvtest.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/editor/cuadros.lrf svneol=native#text/xml
 components/lazreport/samples/editor/custompreview.lfm svneol=native#text/plain
+components/lazreport/samples/editor/custompreview.lrt svneol=native#text/plain
 components/lazreport/samples/editor/custompreview.pas svneol=native#text/pascal
 components/lazreport/samples/editor/db/companies.dbf -text
 components/lazreport/samples/editor/db/countries.dbf -text
@@ -2534,6 +2535,7 @@ components/lazreport/samples/editor/languages/calleditorwithpkg.pt_BR.po svneol=
 components/lazreport/samples/editor/languages/calleditorwithpkg.ru.po svneol=native#text/plain
 components/lazreport/samples/editor/languages/calleditorwithpkg.uk.po svneol=native#text/plain
 components/lazreport/samples/editor/maincalleditor.lfm svneol=native#text/plain
+components/lazreport/samples/editor/maincalleditor.lrt svneol=native#text/plain
 components/lazreport/samples/editor/maincalleditor.pas svneol=native#text/pascal
 components/lazreport/samples/editor/masterdetail.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/editor/multisize.lrf svneol=native#text/xml
