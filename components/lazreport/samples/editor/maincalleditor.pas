@@ -303,6 +303,7 @@ begin
   try
     TheReport.Preview := F.frPreview1;
     TheReport.ShowReport;
+    F.Caption := accCustomPreview.Caption;
     F.ShowModal;
   finally
     TheReport.Preview := nil;
