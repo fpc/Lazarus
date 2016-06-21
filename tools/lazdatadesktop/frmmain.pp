@@ -1886,14 +1886,7 @@ begin
   LangID1 := Application.GetOptionValue('language');
   LangID2 := '';
   if Trim(LangId1) = '' then
-  begin
     LazGetLanguageIDs(LangID1,LangID2);
-    if LangID2 = 'pt' then
-    begin
-       LangID1 := 'pb';
-       LangID2 := '';
-    end;
-  end;
   TranslateUnitResourceStrings('sdb_consts',basedir+
                'components/dbexport/languages/sdb_consts'+ext, LangID1,LangID2);
   TranslateUnitResourceStrings('ldd_consts',basedir+
