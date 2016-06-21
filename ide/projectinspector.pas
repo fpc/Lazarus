@@ -652,9 +652,9 @@ begin
   if LazProject.EnableI18N and LazProject.EnableI18NForLFM
   and (HasLFMCount>0) then begin
     AddPopupMenuItem(lisEnableI18NForLFM,
-      @EnableI18NForLFMMenuItemClick, DisabledI18NForLFMCount<HasLFMCount);
+      @EnableI18NForLFMMenuItemClick, DisabledI18NForLFMCount>0);
     AddPopupMenuItem(lisDisableI18NForLFM,
-      @DisableI18NForLFMMenuItemClick, DisabledI18NForLFMCount>0);
+      @DisableI18NForLFMMenuItemClick, DisabledI18NForLFMCount<HasLFMCount);
   end;
 
   // Required packages section
