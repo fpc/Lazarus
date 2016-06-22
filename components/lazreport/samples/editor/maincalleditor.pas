@@ -603,7 +603,6 @@ end;
 procedure TfrmMain.SaveConfig;
 var
   ini: TIniFile;
-  s: string;
 begin
   ini := TIniFile.Create(GetDataPath+'config.ini');
   ini.WriteString('General', 'LastReport', fCurReport);
@@ -618,11 +617,10 @@ var
 begin
   GetLanguageIDs(Lang,FallbackLang); // in unit gettext
   TranslateUnitResourceStrings('LCLStrConsts','../../../../lcl/languages/lclstrconsts.%s.po', Lang,FallbackLang);
-  TranslateUnitResourceStrings('MainCallEditor','languages/calleditorwithpkg.%s.po', Lang,FallbackLang);
   TranslateUnitResourceStrings('Lr_const','../../source/languages/lr_const.%s.po', Lang,FallbackLang);
   TranslateUnitResourceStrings('lr_add_function_const','../../source/addons/addfunction/languages/lr_add_function_const.%s.po'
      ,Lang,FallbackLang);
-  SetDefaultLang(Lang); // needed to translate strings extracted from forms
+  SetDefaultLang(Lang, '', false); // needed to translate strings extracted from forms
 end;
 
 initialization
