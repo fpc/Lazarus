@@ -259,17 +259,8 @@ end;
   Changes the application title
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppSetTitle(const ATitle: string);
-var
-  ns: NSString;
 begin
-  if not Assigned(NSApp.dockTile) then Exit;
-  //todo: setBadgeLabel is for 10.5 only, should be removed
-  if NSApp.dockTile.respondsToSelector_(objcselector('setBadgeLabel:')) then
-  begin
-    ns := NSStringUtf8(ATitle);
-    NSApp.dockTile.setBadgeLabel(ns);
-    ns.release;
-  end;
+  // There is no way to change the dock title
 end;
 
 function TCocoaWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
