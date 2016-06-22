@@ -1239,8 +1239,9 @@ procedure TIDEHelpManager.RegisterIDEHelpDatabases;
                    'RTL - Free Pascal Run Time Library Units',
                    'file://index.html');
     HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);// once as TOC
-    DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(FPCSrcDir)/rtl',
-                                   '*.pp;*.pas',true);// and once as normal page
+    DirItem:=THelpDBISourceDirectories.Create(FPDocNode,'$(FPCSrcDir)',
+          'rtl;packages/rtl-console/src;packages/rtl-extra/src;packages/rtl-objpas/src;packages/rtl-unicode/src',
+          '*.pp;*.pas',true);// and once as normal page
     HTMLHelp.RegisterItem(DirItem);
   end;
 
