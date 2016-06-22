@@ -5111,7 +5111,7 @@ var
   V: Variant;
 begin
   try
-    VarCast(V, Value, VarType(GetVarValue));
+    VarCast(V{%H-}, Value, VarType(GetVarValue));
   except
     V := Value;
   end;
