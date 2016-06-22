@@ -198,6 +198,7 @@ type
     FSize: Integer;
     FStyle: TCocoaFontStyle;
     FAntialiased: Boolean;
+    FIsSystemFont: Boolean;
   public
     constructor CreateDefault(AGlobal: Boolean = False);
     constructor Create(const ALogFont: TLogFont; AFontName: String; AGlobal: Boolean = False); reintroduce; overload;
@@ -533,6 +534,7 @@ constructor TCocoaFont.CreateDefault(AGlobal: Boolean = False);
 var Pool: NSAutoreleasePool;
 begin
   Pool := NSAutoreleasePool.alloc.init;
+  FIsSystemFont := True;
   Create(NSFont.systemFontOfSize(0), AGlobal);
   Pool.release;
 end;
@@ -545,14 +547,23 @@ var
   Pool: NSAutoreleasePool;
   Win32Weight, LoopCount: Integer;
   CocoaWeight: NSInteger;
+  FTmpFont: NSFont;
 begin
   inherited Create(AGlobal);
 
   Pool := NSAutoreleasePool.alloc.init;
 
   FName := AFontName;
-  if FName = 'default' then
-    FName := NSStringToString(NSFont.systemFontOfSize(0).familyName);
+
+  // If we are using a "systemFont" font we need this complex shuffling,
+  // because otherwise the result is wrong in Mac OS X 10.11, see bug 30300
+  // Code used for 10.10 or inferior:
+  // FName := NSStringToString(NSFont.systemFontOfSize(0).familyName);
+  if AnsiCompareText(FName, 'default') = 0 then
+  begin
+    FTmpFont := NSFont.fontWithName_size(NSFont.systemFontOfSize(0).fontDescriptor.postscriptName, 0);
+    FName := NSStringToString(FTmpFont.familyName);
+  end;
 
   if ALogFont.lfHeight = 0 then
     FSize := Round(NSFont.systemFontSize)
@@ -571,15 +582,16 @@ begin
   if ALogFont.lfStrikeOut > 0 then
     include(FStyle, cfs_StrikeOut);
 
+  // If this is not a "systemFont" Create the font ourselves
   FontName := NSStringUTF8(FName);
   Attributes := NSDictionary.dictionaryWithObjectsAndKeys(
         FontName, NSFontFamilyAttribute,
         NSNumber.numberWithFloat(FSize), NSFontSizeAttribute,
         nil);
   FontName.release;
-
   Descriptor := NSFontDescriptor.fontDescriptorWithFontAttributes(Attributes);
   FFont := NSFont.fontWithDescriptor_textTransform(Descriptor, nil);
+
   if FFont = nil then
   begin
     // fallback to system font if not found (at least we can try to apply some of the other traits)
@@ -593,7 +605,10 @@ begin
     Descriptor := NSFontDescriptor.fontDescriptorWithFontAttributes(Attributes);
     FFont := NSFont.fontWithDescriptor_textTransform(Descriptor, nil);
     if FFont = nil then
+    begin
+      Pool.release;
       exit;
+    end;
   end;
 
   // we could use NSFontTraitsAttribute to request the desired font style (Bold/Italic)
@@ -610,7 +625,7 @@ begin
   end;
   if Win32Weight <> FW_DONTCARE then
   begin
-    // currently if we request the desired waight by Attributes we may get a nil font
+    // currently if we request the desired weight by Attributes we may get a nil font
     // so we need to get font weight and to convert it to lighter/heavier
     LoopCount := 0;
     repeat
@@ -2065,6 +2080,7 @@ var
   Adjustments: array of NSSize;
   I: Integer;
   A: Single;
+  lNSFont: NSFont;
 begin
   result := False;
   if not Assigned(Font) then
@@ -2072,20 +2088,21 @@ begin
 
   FillChar(TM, SizeOf(TM), 0);
 
-  TM.tmAscent := Round(Font.Font.ascender);
-  TM.tmDescent := -Round(Font.Font.descender);
+  lNSFont := Font.Font;
+  TM.tmAscent := Round(lNSFont.ascender);
+  TM.tmDescent := -Round(lNSFont.descender);
   TM.tmHeight := TM.tmAscent + TM.tmDescent;
 
-  TM.tmInternalLeading := Round(Font.Font.leading);
+  TM.tmInternalLeading := Round(lNSFont.leading);
   TM.tmExternalLeading := 0;
 
-  TM.tmMaxCharWidth := Round(Font.Font.maximumAdvancement.width);
+  TM.tmMaxCharWidth := Round(lNSFont.maximumAdvancement.width);
   FText.SetText('WMTigq[_|^', 10);
   Glyphs := FText.GetGlyphs;
   if Length(Glyphs) > 0 then
   begin
     SetLength(Adjustments, Length(Glyphs));
-    Font.Font.getAdvancements_forGlyphs_count(@Adjustments[0], @Glyphs[0], Length(Glyphs));
+    lNSFont.getAdvancements_forGlyphs_count(@Adjustments[0], @Glyphs[0], Length(Glyphs));
     A := 0;
     for I := 0 to High(Adjustments) do
       A := A + Adjustments[I].width;

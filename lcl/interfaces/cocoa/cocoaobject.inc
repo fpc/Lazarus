@@ -191,21 +191,13 @@ begin
   // or CocoaCaret should not use TTimer at all (use raw cocoa timer)
   DestroyGlobalCaret;
 
-  NSApp.terminate(nil);            // XXX check this releases objects
-
   NSMessageWnd.release;
   NSMessageMsg.release;
   NSMessageWParam.release;
   NSMessageLParam.release;
   NSMessageResult.release;
 
-  NSApp.terminate(nil);            // XXX check this releases objects
-
-  NSMessageWnd.release;
-  NSMessageMsg.release;
-  NSMessageWParam.release;
-  NSMessageLParam.release;
-  NSMessageResult.release;
+  // NSApp.terminate(nil);   // causes app to quit immediately, which is undesirable
 
   CocoaWidgetSet := nil;
 end;
@@ -219,7 +211,7 @@ procedure TCocoaWidgetSet.AppTerminate;
 begin
   if FTerminating then Exit;
   // TODO: Check if there is more cleanup to do here
-  // NSApp.terminate(nil);   // causes app to quit directly
+  // NSApp.terminate(nil);   // causes app to quit immediately, which is undesirable
 end;
 
 {------------------------------------------------------------------------------
