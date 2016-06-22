@@ -4500,7 +4500,6 @@ procedure TCustomGrid.WMKillFocus(var message: TLMKillFocus);
 begin
   if csDestroying in ComponentState then
     exit;
-  debugln(['TCustomGrid.WMKillFocus BBB1 ',DbgSName(Self)]);
   {$ifdef dbgGrid}
   DbgOut('*** grid.WMKillFocus, FocusedWnd=%x WillFocus=',[Message.FocusedWnd]);
   if EditorMode and (Message.FocusedWnd = FEditor.Handle) then
@@ -4519,7 +4518,6 @@ end;
 
 procedure TCustomGrid.WMSetFocus(var message: TLMSetFocus);
 begin
-  debugln(['TCustomGrid.WMSetFocus BBB2 ',DbgSName(Self)]);
   {$ifdef dbgGrid}
   DbgOut('*** grid.WMSetFocus, FocusedWnd=', dbgs(Message.FocusedWnd),'[',dbgs(pointer(Message.FocusedWnd)),'] ');
   if EditorMode and (Message.FocusedWnd = FEditor.Handle) then
