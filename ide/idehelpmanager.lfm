@@ -27,6 +27,7 @@ object HelpSelectorDialog: THelpSelectorDialog
       Width = 484
       Align = alClient
       DefaultItemHeight = 18
+      ReadOnly = True
       TabOrder = 0
       OnDblClick = NodesTreeViewDblClick
       OnSelectionChanged = NodesTreeViewSelectionChanged
