@@ -9584,9 +9584,9 @@ begin
         end
         else if (CompareIdentifiers(IdentPos,'COPY')=0) then
         begin
-          if (ParamList.Count<>3) or (Scanner.Values.IsDefined('VER1_0')) then
+          if (ParamList.Count<1) or (ParamList.Count>3) or (Scanner.Values.IsDefined('VER1_0')) then
             exit;
-          Result.Desc:=xtString;
+          Result:=ParamList.Items[0]; // Copy sets the result based on the first parameter (can be any kind of string or array)
         end
         else if (CompareIdentifiers(IdentPos,'OBJCSELECTOR')=0) then
         begin
