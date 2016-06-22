@@ -2206,6 +2206,8 @@ end;
 
 function CreateFPCSourceTemplate(FPCSrcDir: string; Owner: TObject
   ): TDefineTemplate;
+const
+  RTLPkgDirs: array[1..4] of string = ('rtl-console','rtl-extra','rtl-objpas','rtl-unicode');
 var
   Dir, SrcOS, SrcOS2, aTargetCPU,
   IncPathMacro: string;
@@ -2273,7 +2275,7 @@ var
   PkgExtraGraphDir: TDefineTemplate;
   PkgExtraAMunitsDir: TDefineTemplate;
   FCLSubSrcDir: TDefineTemplate;
-  FCLSubDir: TDefineTemplate;
+  FCLSubDir, SubPkgDir: TDefineTemplate;
   Ok: Boolean;
 begin
   {$IFDEF VerboseFPCSrcScan}
@@ -2389,7 +2391,6 @@ begin
       ExternalMacroStart+'SrcPath',s,da_DefineRecurse));
     RTLDir.AddChild(RTLOSDir);
 
-
     // fcl
     FCLDir:=TDefineTemplate.Create('FCL',ctsFreePascalComponentLibrary,'','fcl',
         da_Directory);
@@ -2420,6 +2421,16 @@ begin
     PackagesDir:=TDefineTemplate.Create('Packages',ctsPackageDirectories,'',
        'packages',da_Directory);
     MainDir.AddChild(PackagesDir);
+
+    // packages/rtl-*
+    for s in RTLPkgDirs do begin
+      SubPkgDir:=TDefineTemplate.Create(s,s,'',s,da_Directory);
+      PackagesDir.AddChild(SubPkgDir);
+      SubPkgDir.AddChild(TDefineTemplate.Create('Include Path',
+        Format(ctsIncludeDirectoriesPlusDirs,['inc']),
+        IncludePathMacroName,
+        d(DefinePathMacro+'/inc'),da_DefineRecurse));
+    end;
 
     // packages/fcl-base
     FCLBaseDir:=TDefineTemplate.Create('FCL-base',
