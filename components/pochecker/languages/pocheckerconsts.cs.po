@@ -14,7 +14,9 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: pocheckerconsts.rspochecker
-msgid "PO File Checker"
+#, fuzzy
+#| msgid "PO File Checker"
+msgid "Check PO Files ..."
 msgstr "PO File Checker"
 
 #: pocheckerconsts.rs_lang_af_za

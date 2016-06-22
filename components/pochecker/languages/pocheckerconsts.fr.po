@@ -12,7 +12,9 @@ msgstr ""
 "X-Generator: Poedit 1.8.7\n"
 
 #: pocheckerconsts.rspochecker
-msgid "PO File Checker"
+#, fuzzy
+#| msgid "PO File Checker"
+msgid "Check PO Files ..."
 msgstr "Vérificateur de fichiers PO"
 
 #: pocheckerconsts.rs_lang_af_za

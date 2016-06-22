@@ -8,7 +8,7 @@ Uses Controls;
 
 resourcestring
   //Main form
-  rsPoChecker = 'PO File Checker';
+  rsPoChecker = 'Check PO Files ...';
   sSelectBasicTests = 'Select &Basic';
   sSelectAllTests = 'Select &All';
   sUnselectAllTests = '&Unselect All';

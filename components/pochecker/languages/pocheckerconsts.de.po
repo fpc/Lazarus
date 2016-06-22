@@ -12,7 +12,9 @@ msgstr ""
 "Language: de\n"
 
 #: pocheckerconsts.rspochecker
-msgid "PO File Checker"
+#, fuzzy
+#| msgid "PO File Checker"
+msgid "Check PO Files ..."
 msgstr "po-Datei-Prüfer"
 
 #: pocheckerconsts.rs_lang_af_za
@@ -448,3 +450,4 @@ msgstr "Alle Dateien abwählen"
 #: pocheckerconsts.suntranslatedstringstotal
 msgid "Untranslated strings (total: %s)"
 msgstr "Nicht übersetzte Zeichenketten (insgesamt: %s)"
+

@@ -10,7 +10,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 
 #: pocheckerconsts.rspochecker
-msgid "PO File Checker"
+#, fuzzy
+#| msgid "PO File Checker"
+msgid "Check PO Files ..."
 msgstr "Comprobador de archivos de PO"
 
 #: pocheckerconsts.rs_lang_af_za

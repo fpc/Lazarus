@@ -14,7 +14,9 @@ msgstr ""
 "X-Generator: Virtaal 0.6.1\n"
 
 #: pocheckerconsts.rspochecker
-msgid "PO File Checker"
+#, fuzzy
+#| msgid "PO File Checker"
+msgid "Check PO Files ..."
 msgstr "Verificatore di files PO"
 
 #: pocheckerconsts.rs_lang_af_za
