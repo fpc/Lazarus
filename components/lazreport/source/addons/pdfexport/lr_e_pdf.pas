@@ -488,7 +488,7 @@ begin
         PRTLabel.FontSize := memo.Font.Size;
         PRTLabel.FontBold := fsBold in memo.Font.Style;
         PRTLabel.FontItalic := fsItalic in memo.Font.Style;
-        PRTLabel.FontColor := memo.Font.Color;
+        PRTLabel.FontColor := ColorToRGB(memo.Font.Color);
         PRTLabel.FontUnderline := fsUnderline in memo.Font.Style;
         PRTLabel.Angle:= memo.Angle;
         PRTLabel.AlignJustified :=  memo.Justify and not memo.LastLine;
