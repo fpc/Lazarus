@@ -1248,6 +1248,7 @@ begin
     Add('DEFAULT'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DELETE'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INITIALIZE'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INSERT'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FINALIZE'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COPY'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SIZEOF'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
