@@ -1068,10 +1068,12 @@ begin
         begin
           DBTVNode:=NodesTreeView.Items.AddChild(nil,DB.ID);
           DBTVNode.ImageIndex:=FImgIndexDB;
+          DBTVNode.SelectedIndex:=FImgIndexDB;
         end;
 
         TVNode:=NodesTreeView.Items.AddChild(DBTVNode,NodeQuery.AsString);
         TVNode.ImageIndex:=FImgIndexNode;
+        TVNode.SelectedIndex:=FImgIndexNode;
         TVNode.Data:=NodeQuery;
 
         DBTVNode.Expand(true);
