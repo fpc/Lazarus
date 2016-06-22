@@ -67,6 +67,9 @@ function ProgramDirectory(BundleRoot: boolean): string;
 
 implementation
 
+uses
+  LazFileUtils, LazUTF8;
+
 {$R htmfileexp1.lfm}
 {$R defaultimage.res}
 

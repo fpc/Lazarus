@@ -80,7 +80,7 @@ implementation
 {$R defaultimage.res}
 
 uses
-  IpUtils;
+  IpUtils, LazFileUtils;
 
 {--------------------------------------}
 {-PRIVATE----------}
