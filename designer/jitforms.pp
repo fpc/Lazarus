@@ -1507,7 +1507,7 @@ begin
 
   // set TypeData (PropCount is the total number of properties, including ancestors)
   NewTypeData^.ClassType:=TClass(NewVMT);
-  {$IF FPC_FULLVERSION>=30200}
+  {$IF FPC_FULLVERSION>=30100}
   GetMem(NewTypeData^.ParentInfoRef,SizeOf(Pointer));
   NewTypeData^.ParentInfoRef^:=AncestorClass.ClassInfo;
   {$ELSE}
@@ -1584,7 +1584,7 @@ begin
 
   // free typeinfo
   OldTypeInfo:=PTypeInfo((OldVMT+vmtTypeInfo)^);
-  {$IF FPC_FULLVERSION>=30200}
+  {$IF FPC_FULLVERSION>=30100}
   // free ParentInfoRef
   OldTypeData:=GetTypeData(OldTypeInfo);
   FreeMem(OldTypeData^.ParentInfoRef);
