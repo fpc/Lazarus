@@ -72,7 +72,8 @@ type
     dgTruncCellHints,                   // show cell hints if cell text is too long
     dgCellEllipsis,                     // show ... if cell text is truncated
     dgRowHighlight,                     // Highlight current row
-    dgThumbTracking
+    dgThumbTracking,
+    dgDblClickAutoSize                  // dblclicking columns borders (on hdrs) resize col.
   );
   TDbGridOptions = set of TDbGridOption;
 
@@ -369,9 +370,11 @@ type
     procedure ClearSelection(selCurrent:boolean=false);
     function  NeedAutoSizeColumns: boolean;
     procedure RenewColWidths;
+    procedure InternalAutoSizeColumn(aCol: Integer; aCanvas: TCanvas; aDatalinkActive: Boolean);
   protected
     procedure AddAutomaticColumns;
     procedure AssignTo(Dest: TPersistent); override;
+    procedure AutoAdjustColumn(aCol: Integer); override;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
     procedure BeginLayout;
     procedure CellClick(const aCol,aRow: Integer; const Button:TMouseButton); override;
@@ -1147,6 +1150,11 @@ begin
     else
       Exclude(OldOptions, goRowHighlight);
 
+    if dgDblClickAutoSize in FOptions then
+      Include(OldOptions, goDblClickAutoSize)
+    else
+      Exclude(OldOptions, goDblClickAutoSize);
+
     if (dgIndicator in ChangedOptions) then begin
       if (dgIndicator in FOptions) then
         FixedCols := FixedCols + 1
@@ -1768,16 +1776,40 @@ begin
     inherited AssignTo(Dest);
 end;
 
+procedure TCustomDBGrid.AutoAdjustColumn(aCol: Integer);
+var
+  DatalinkActive: Boolean;
+  CurActiveRecord: Integer;
+  tmpCanvas: TCanvas;
+begin
+  BeginLayout;
+
+  DatalinkActive := FDatalink.Active;
+  if DatalinkActive then
+    CurActiveRecord := FDatalink.ActiveRecord;
+
+  tmpCanvas := GetWorkingCanvas(Canvas);
+  try
+
+    InternalAutoSizeColumn(aCol,tmpCanvas,DatalinkActive);
+
+  finally
+    if TmpCanvas<>Canvas then
+      FreeWorkingCanvas(tmpCanvas);
+
+    if DatalinkActive then
+      FDatalink.ActiveRecord := CurActiveRecord;
+
+    EndLayout;
+  end;
+end;
+
 procedure TCustomDBGrid.UpdateAutoSizeColumns;
 var
-  ACol,ARow,w: Integer;
+  ACol: Integer;
   DatalinkActive: boolean;
   CurActiveRecord: Integer;
-  Field: TField;
-  ColWidth: Integer;
   tmpCanvas: TCanvas;
-  C: TGridColumn;
-  s: string;
 begin
   if gsAutoSized in GridStatus then
     exit;
@@ -1790,45 +1822,10 @@ begin
 
   tmpCanvas := GetWorkingCanvas(Canvas);
   try
-    for aCol:=FixedCols to ColCount-1 do begin
 
-      Field := GetFieldFromGridColumn(ACol);
-      C := ColumnFromGridColumn(ACol);
+    for aCol:=FixedCols to ColCount-1 do
+      InternalAutoSizeColumn(ACol,tmpCanvas,DatalinkActive);
 
-      if (C<>nil) and (C.Title<>nil) then begin
-        tmpCanvas.Font := C.Title.Font;
-        ColWidth := tmpCanvas.TextWidth(trim(C.Title.Caption));
-        tmpCanvas.Font := C.Font;
-      end else begin
-        if (Field<>nil) then begin
-          tmpCanvas.Font := TitleFont;
-          ColWidth := tmpCanvas.TextWidth(Field.FieldName);
-        end
-        else
-          ColWidth := 0;
-        tmpCanvas.Font := Font;
-      end;
-
-      if (Field<>nil) and DatalinkActive then
-        for ARow := FixedRows to RowCount-1 do begin
-
-          FDatalink.ActiveRecord := ARow - FixedRows;
-
-          if Field.dataType<>ftBlob then
-            s := trim(Field.DisplayText)
-          else
-            s := '(blob)';
-          w := tmpCanvas.TextWidth(s);
-          if w>ColWidth then
-            ColWidth := w;
-
-        end;
-
-      if ColWidth=0 then
-        ColWidth := GetColumnWidth(ACol);
-
-      ColWidths[ACol] := ColWidth + 15;
-    end;
   finally
     if TmpCanvas<>Canvas then
       FreeWorkingCanvas(tmpCanvas);
@@ -3638,6 +3635,53 @@ procedure TCustomDBGrid.RenewColWidths;
 begin
   FDefaultColWidths := True;
   exclude(FGridStatus, gsAutoSized);
+end;
+
+procedure TCustomDBGrid.InternalAutoSizeColumn(aCol: Integer; aCanvas: TCanvas; aDatalinkActive: Boolean);
+var
+  Field: TField;
+  C: TGridColumn;
+  ColWidth: Integer;
+  ARow,w: Integer;
+  s: string;
+
+begin
+  Field := GetFieldFromGridColumn(ACol);
+  C := ColumnFromGridColumn(ACol);
+
+  if (C<>nil) and (C.Title<>nil) then begin
+    aCanvas.Font := C.Title.Font;
+    ColWidth := aCanvas.TextWidth(trim(C.Title.Caption));
+    aCanvas.Font := C.Font;
+  end else begin
+    if (Field<>nil) then begin
+      aCanvas.Font := TitleFont;
+      ColWidth := aCanvas.TextWidth(Field.FieldName);
+    end
+    else
+      ColWidth := 0;
+    aCanvas.Font := Font;
+  end;
+
+  if (Field<>nil) and aDatalinkActive then
+    for ARow := FixedRows to RowCount-1 do begin
+
+      FDatalink.ActiveRecord := ARow - FixedRows;
+
+      if Field.dataType<>ftBlob then
+        s := trim(Field.DisplayText)
+      else
+        s := '(blob)';
+      w := aCanvas.TextWidth(s);
+      if w>ColWidth then
+        ColWidth := w;
+
+    end;
+
+  if ColWidth=0 then
+    ColWidth := GetColumnWidth(ACol);
+
+  ColWidths[ACol] := ColWidth + 15;
 end;
 
 destructor TCustomDBGrid.Destroy;
