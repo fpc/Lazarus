@@ -6324,7 +6324,6 @@ var
    procedure DoAutoEdit;
    begin
      if (gfAutoEditPending in GridFlags) and not (ssDouble in Shift) then begin
-       DebugLn('ClickCell:[%d,%d] UpCell:[%d,%d]',[FGCache.ClickCell.x,FGCache.ClickCell.y, Cur.x, Cur.y]);
        SelectEditor;
        EditorShow(True);
      end;
