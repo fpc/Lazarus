@@ -96,7 +96,7 @@ begin
   end
   else
   begin
-    Sender.Canvas.Brush.Color := Sender.BackgroundColor;
+    Sender.Canvas.Brush.Color := Sender.Color;
     Sender.Canvas.Font.Color := Sender.Font.Color;
   end;
   NodeRect := Node.DisplayRect(True);
