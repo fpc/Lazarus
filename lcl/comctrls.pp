@@ -3210,7 +3210,7 @@ type
   TCustomTreeView = class(TCustomControl)
   private
     FAccessibilityOn: Boolean;
-    FBackgroundColor: TColor;
+//    FBackgroundColor: TColor;
     FBottomItem: TTreeNode;
     FCallingOnChange: Boolean;
     FEditingItem: TTreeNode;
@@ -3280,6 +3280,7 @@ type
     FHintWnd: THintWindow;
     procedure CanvasChanged(Sender: TObject);
     function GetAutoExpand: boolean;
+    function GetBackgroundColor: TColor;
     function GetBottomItem: TTreeNode;
     function GetDropTarget: TTreeNode;
     function GetHideSelection: boolean;
@@ -3298,6 +3299,7 @@ type
     function GetShowSeparators: boolean;
     function GetToolTips: boolean;
     function GetTopItem: TTreeNode;
+    function IsStoredBackgroundColor: Boolean;
     procedure HintMouseLeave(Sender: TObject);
     procedure ImageListChange(Sender: TObject);
     procedure OnChangeTimer(Sender: TObject);
@@ -3526,8 +3528,9 @@ type
     procedure MoveHome(ASelect: Boolean = False);
     procedure MoveEnd(ASelect: Boolean = False);
   public
-    property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor default clWindow;
+    property BackgroundColor: TColor read GetBackgroundColor write SetBackgroundColor stored IsStoredBackgroundColor;
     property BorderWidth default 0;
+    property Color default clWindow;
     property BottomItem: TTreeNode read GetBottomItem write SetBottomItem;
     property DefaultItemHeight: integer read FDefItemHeight write SetDefaultItemHeight default 20;
     property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;

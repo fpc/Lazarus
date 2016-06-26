@@ -3155,11 +3155,13 @@ begin
                                + [csDisplayDragImage, csReflector];
   Width := 121;
   Height := 97;
+  Color := clWindow;
+
   FSBVertShowing:=-1;
   FSBHorzShowing:=-1;
   TabStop := True;
   ParentColor := False;
-  //FBackgroundColor := clWindow;
+//  FBackgroundColor := clWindow;
   FDefItemHeight := 20;
   FExpandSignType := tvestTheme;
   UpdateExpandSignSize;
@@ -4134,6 +4136,11 @@ begin
     FHintWnd.Hide;
 end;
 
+function TCustomTreeView.IsStoredBackgroundColor: Boolean;
+begin
+  result := Color <> clWindow;
+end;
+
 procedure TCustomTreeView.SetTopItem(Value: TTreeNode);
 begin
   if HandleAllocated and (Value <> nil) then
@@ -4388,6 +4395,11 @@ end;
 function TCustomTreeView.GetAutoExpand: boolean;
 begin
   Result:=(tvoAutoExpand in FOptions);
+end;
+
+function TCustomTreeView.GetBackgroundColor: TColor;
+begin
+  Result := Color;
 end;
 
 function TCustomTreeView.GetBottomItem: TTreeNode;
