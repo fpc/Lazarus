@@ -9,6 +9,14 @@
 			<short>Button color cannot be changed</short>
 			<descr>It is impossible to implement without making them owner drawn.</descr>
 		</issue>
+		<issue name="TCheckBox.Color">
+			<short>Check box color cannot be changed</short>
+			<descr>It is impossible to implement without making them owner drawn.</descr>
+		</issue>
+		<issue name="TRadioButton.Color">
+			<short>Radio button color cannot be changed</short>
+			<descr>It is impossible to implement without making them owner drawn.</descr>
+		</issue>
 		<issue name="TBitBtn.Color">
 			<short>Bitmap button color cannot be changed</short>
 			<descr>It is impossible to implement without making them owner drawn.</descr>
