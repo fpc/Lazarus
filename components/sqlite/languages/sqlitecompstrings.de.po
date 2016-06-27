@@ -8,7 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"Language: de\n"
 
 #: sqlitecompstrings.sadd
 msgid "Add"
@@ -71,11 +72,9 @@ msgid "Field type not recognized."
 msgstr "Feldtyp nicht erkannt"
 
 #: sqlitecompstrings.stablename
-#, fuzzy,badformat
 msgid "Table Name: %s"
-msgstr "Tabellenname"
+msgstr "Tabellenname: %s"
 
 #: sqlitecompstrings.stablenamenotsetitsnotpossibletocreateeditatable
 msgid "Table name not set: it's not possible to create/edit a table."
 msgstr "Ohne einen Tabellennamen kann die Tabelle nicht erstellt/bearbeitet werden."
-

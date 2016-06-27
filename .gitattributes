@@ -3218,6 +3218,7 @@ components/opengl/openglcontext.pas svneol=native#text/plain
 components/opengl/openglcontext.res -text
 components/opengl/topenglcontrol.xpm svneol=native#text/plain
 components/packagetabs/README.txt svneol=native#text/plain
+components/packagetabs/languages/packagetabsstr.de.po svneol=native#text/plain
 components/packagetabs/languages/packagetabsstr.fr.po svneol=native#text/plain
 components/packagetabs/languages/packagetabsstr.hu.po svneol=native#text/plain
 components/packagetabs/languages/packagetabsstr.po svneol=native#text/plain

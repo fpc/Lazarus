@@ -1,0 +1,45 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: de\n"
+
+#: packagetabsstr.saddtoproject
+msgid "Add To Project"
+msgstr "Zum Projekt hinzufügen"
+
+#: packagetabsstr.scloneto
+msgid "Clone To"
+msgstr "Klonen zu"
+
+#: packagetabsstr.scopyfilepathtoclipboard
+msgid "Copy File Path To Clipboard"
+msgstr "Dateipfad in Zwischenablage kopieren"
+
+#: packagetabsstr.sfindinotherwindow
+msgid "Find In Other Window"
+msgstr "In anderem Fenster finden"
+
+#: packagetabsstr.smoveto
+msgid "Move To"
+msgstr "Verschieben zu"
+
+#: packagetabsstr.snewwindow
+msgid "New Window"
+msgstr "Neues Fenster"
+
+#: packagetabsstr.sopenpackage
+msgid "Open package"
+msgstr "Package öffnen"
+
+#: packagetabsstr.sother
+msgid "Other"
+msgstr "Andere"
