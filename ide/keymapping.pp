@@ -637,6 +637,7 @@ begin
     ecCloseProject            : Result:= lisMenuCloseProject;
     ecSaveProject             : Result:= lisMenuSaveProject;
     ecSaveProjectAs           : Result:= lisMenuSaveProjectAs;
+    ecProjectResaveFormsWithI18n: Result:= lisMenuResaveFormsWithI18n;
     ecPublishProject          : Result:= lisMenuPublishProject;
     ecProjectInspector        : Result:= lisMenuProjectInspector;
     ecAddCurUnitToProj        : Result:= lisMenuAddToProject;
@@ -1277,6 +1278,7 @@ begin
   ecCloseProject:        SetSingle(VK_UNKNOWN,[]);
   ecSaveProject:         SetSingle(VK_UNKNOWN,[]);
   ecSaveProjectAs:       SetSingle(VK_UNKNOWN,[]);
+  ecProjectResaveFormsWithI18n: SetSingle(VK_UNKNOWN,[]);
   ecPublishProject:      SetSingle(VK_UNKNOWN,[]);
   ecProjectInspector:    SetSingle(VK_UNKNOWN,[]);
   ecAddCurUnitToProj:    SetSingle(VK_F11,[ssShift]);
@@ -1714,6 +1716,7 @@ begin
   ecCloseProject:        SetSingle(VK_UNKNOWN,[]);
   ecSaveProject:         SetSingle(VK_UNKNOWN,[]);
   ecSaveProjectAs:       SetSingle(VK_UNKNOWN,[]);
+  ecProjectResaveFormsWithI18n: SetSingle(VK_UNKNOWN,[]);
   ecPublishProject:      SetSingle(VK_UNKNOWN,[]);
   ecProjectInspector:    SetSingle(VK_UNKNOWN,[]);
   ecAddCurUnitToProj:    SetSingle(VK_F11,[ssShift]);
@@ -2339,6 +2342,7 @@ begin
   ecCloseProject:        SetSingle(VK_UNKNOWN,[]);
   ecSaveProject:         SetSingle(VK_UNKNOWN,[]);
   ecSaveProjectAs:       SetSingle(VK_UNKNOWN,[]);
+  ecProjectResaveFormsWithI18n: SetSingle(VK_UNKNOWN,[]);
   ecPublishProject:      SetSingle(VK_UNKNOWN,[]);
   ecProjectInspector:    SetSingle(VK_UNKNOWN,[]);
   ecAddCurUnitToProj:    SetSingle(VK_A,[ssAlt,ssMeta]);
@@ -3025,6 +3029,8 @@ begin
   AddDefault(C, 'Close project', lisKMCloseProject, ecCloseProject);
   AddDefault(C, 'Save project', lisKMSaveProject, ecSaveProject);
   AddDefault(C, 'Save project as', lisKMSaveProjectAs, ecSaveProjectAs);
+  AddDefault(C, 'Resave forms with i18n', lisMenuResaveFormsWithI18n,
+    ecProjectResaveFormsWithI18n);
   AddDefault(C, 'Publish project', lisKMPublishProject, ecPublishProject);
   AddDefault(C, 'Project Inspector', lisMenuProjectInspector, ecProjectInspector);
   AddDefault(C, 'Add editor file to Project', lisMenuAddToProject, ecAddCurUnitToProj);

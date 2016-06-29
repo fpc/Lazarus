@@ -302,6 +302,7 @@ const
   ecViewProjectSource       = ecFirstLazarus + 512;
   ecProjectOptions          = ecFirstLazarus + 513;
   ecProjectChangeBuildMode  = ecFirstLazarus + 514;
+  ecProjectResaveFormsWithI18n = ecFirstLazarus + 515;
 
   // package menu
   ecOpenPackage             = ecFirstLazarus + 600;
@@ -1906,7 +1907,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..314] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..315] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -2155,6 +2156,7 @@ const
     (Value: ecViewProjectSource;                      Name: 'ecViewProjectSource'),
     (Value: ecProjectOptions;                         Name: 'ecProjectOptions'),
     (Value: ecProjectChangeBuildMode;                 Name: 'ecProjectChangeBuildMode'),
+    (Value: ecProjectResaveFormsWithI18n;             Name: 'ecProjectResaveFormsWithI18n'),
 
   // package menu
     (Value: ecOpenPackage;                            Name: 'ecOpenPackage'),

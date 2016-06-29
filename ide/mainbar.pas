@@ -263,6 +263,7 @@ type
       //itmProjectSaveSection: TIDEMenuSection;
         itmProjectSave: TIDEMenuCommand;
         itmProjectSaveAs: TIDEMenuCommand;
+        itmProjectResaveFormsWithI18n: TIDEMenuCommand;
         itmProjectPublish: TIDEMenuCommand;
       //itmProjectWindowSection: TIDEMenuSection;
         itmProjectInspector: TIDEMenuCommand;

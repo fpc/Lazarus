@@ -1266,6 +1266,8 @@ begin
     ParentMI:=itmProjectSaveSection;
     CreateMenuItem(ParentMI,itmProjectSave,'itmProjectSave',lisMenuSaveProject, 'menu_project_save');
     CreateMenuItem(ParentMI,itmProjectSaveAs,'itmProjectSaveAs',lisMenuSaveProjectAs, 'menu_project_saveas');
+    CreateMenuItem(ParentMI, itmProjectResaveFormsWithI18n, 'itmProjectResaveFo'
+      +'rmsWithI18n', lisMenuResaveFormsWithI18n);
     CreateMenuItem(ParentMI,itmProjectPublish,'itmProjectPublish',lisMenuPublishProject);
 
     CreateMenuSeparatorSection(mnuProject,itmProjectWindowSection,'itmProjectWindowSection');
@@ -1646,6 +1648,7 @@ begin
     itmProjectClose.Command:=GetCommand(ecCloseProject);
     itmProjectSave.Command:=GetCommand(ecSaveProject);
     itmProjectSaveAs.Command:=GetCommand(ecSaveProjectAs);
+    itmProjectResaveFormsWithI18n.Command:=GetCommand(ecProjectResaveFormsWithI18n);
     itmProjectPublish.Command:=GetCommand(ecPublishProject);
     itmProjectInspector.Command:=GetCommand(ecProjectInspector);
     itmProjectOptions.Command:=GetCommand(ecProjectOptions);

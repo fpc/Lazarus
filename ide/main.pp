@@ -316,6 +316,7 @@ type
     procedure mnuCloseProjectClicked(Sender: TObject);
     procedure mnuSaveProjectClicked(Sender: TObject);
     procedure mnuSaveProjectAsClicked(Sender: TObject);
+    procedure mnuProjectResaveFormsWithI18n(Sender: TObject);
     procedure mnuPublishProjectClicked(Sender: TObject);
     procedure mnuProjectInspectorClicked(Sender: TObject);
     procedure mnuAddToProjectClicked(Sender: TObject);
@@ -2719,6 +2720,7 @@ begin
     itmProjectClose.OnClick := @mnuCloseProjectClicked;
     itmProjectSave.OnClick := @mnuSaveProjectClicked;
     itmProjectSaveAs.OnClick := @mnuSaveProjectAsClicked;
+    itmProjectResaveFormsWithI18n.OnClick := @mnuProjectResaveFormsWithI18n;
     itmProjectPublish.OnClick := @mnuPublishProjectClicked;
     itmProjectInspector.OnClick := @mnuProjectInspectorClicked;
     itmProjectOptions.OnClick := @mnuProjectOptionsClicked;
@@ -4019,6 +4021,29 @@ end;
 procedure TMainIDE.mnuSaveProjectAsClicked(Sender: TObject);
 begin
   DoSaveProject([sfSaveAs]);
+end;
+
+procedure TMainIDE.mnuProjectResaveFormsWithI18n(Sender: TObject);
+var
+  AnUnitInfo: TUnitInfo;
+  LFMFileName: string;
+begin
+  AnUnitInfo:=Project1.FirstPartOfProject;
+  while AnUnitInfo<>nil do
+  begin
+    if FileNameIsPascalSource(AnUnitInfo.Filename) then
+    begin
+      LFMFileName:=AnUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(AnUnitInfo.Filename,true);
+      if FileExistsCached(LFMFileName) and (not AnUnitInfo.DisableI18NForLFM) then
+        if LazarusIDE.DoOpenEditorFile(AnUnitInfo.Filename,-1,-1,[ofAddToRecent])=mrOk then
+        begin
+          AnUnitInfo.Modified:=true;
+          LazarusIDE.DoSaveEditorFile(AnUnitInfo.Filename,[]);
+          //DebugLn(['TMainIDE.mnuProjectResaveFormsWithI18n Resaving form "',AnUnitInfo.Filename,'"']);
+        end;
+    end;
+    AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+  end;
 end;
 
 procedure TMainIDE.mnuPublishProjectClicked(Sender: TObject);
@@ -5416,6 +5441,9 @@ begin
   MainIDEBar.itmFileSave.Enabled := ((SrcEdit<>nil) and SrcEdit.Modified)
                               or ((AnUnitInfo<>nil) and AnUnitInfo.IsVirtual);
   MainIDEBar.itmFileExportHtml.Enabled := (SrcEdit<>nil);
+  MainIDEBar.itmProjectResaveFormsWithI18n.Enabled := (Project1<>nil) and (not Project1.IsVirtual)
+                                                      and (Project1.EnableI18N)
+                                                      and (Project1.EnableI18NForLFM);
   if UpdateSaveAll then
     MainIDEBar.itmFileSaveAll.Enabled := MainIDEBar.itmProjectSave.Enabled;
 end;
