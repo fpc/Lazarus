@@ -1204,7 +1204,7 @@ type
 
     { Exposed procs }
     procedure AdjustInnerCellRect(var ARect: TRect);
-    procedure AutoAdjustColumns;
+    procedure AutoAdjustColumns; virtual;
     procedure BeginUpdate;
     function  CellRect(ACol, ARow: Integer): TRect;
     function  CellToGridZone(aCol,aRow: Integer): TGridZone;

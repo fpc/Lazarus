@@ -495,7 +495,8 @@ type
     property OnUserCheckboxState: TDbGridCheckboxStateEvent read FOnCheckboxState write FOnCheckboxState;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure AutoSizeColumns;
+    procedure AutoAdjustColumns; override;
+    procedure AutoSizeColumns; deprecated 'This method will be deleted in 1.8. Use AutoAdjustColumns';
     procedure InitiateAction; override;
     procedure DefaultDrawColumnCell(const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
     function  EditorByStyle(Style: TColumnButtonStyle): TWinControl; override;
@@ -3496,10 +3497,15 @@ begin
   AllowOutboundEvents := false;
 end;
 
+procedure TCustomDBGrid.AutoAdjustColumns;
+begin
+  Exclude(FGridStatus, gsAutoSized);
+  UpdateAutoSizeColumns;
+end;
+
 procedure TCustomDBGrid.AutoSizeColumns;
 begin
-  RenewColWidths;
-  LayoutChanged;
+  AutoAdjustColumns;
 end;
 
 procedure TCustomDBGrid.InitiateAction;
