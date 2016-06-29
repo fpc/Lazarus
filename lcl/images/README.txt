@@ -29,3 +29,5 @@ When you are adding images to the LCL add information about their origin here in
 Please use Tango icons whenever possible because they are SVG and exist in various PNG resolutions - it will make updating LCL icons for high-DPI easy in the future.
 You can download Tango icons from https://packages.debian.org/sid/tango-icon-theme or directly http://http.debian.net/debian/pool/main/t/tango-icon-theme/tango-icon-theme_0.8.90.orig.tar.gz
 Use supplied ready-to-go PNGs in the needed resolution.
+
+Please note that policy for Lazarus images is different (less strict). See images/README.txt for info about Lazarus icon policy.
