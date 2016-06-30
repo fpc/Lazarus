@@ -3391,6 +3391,7 @@ resourcestring
   lisLazBuildManageProfiles ='Manage Build Profiles';
   lisLazBuildProfile ='Profile to build';
   lisLazBuildErrorWritingFile = 'Error writing file';
+  lisCannotWriteFile = 'Cannot write file %s';
   lisLazBuildUnableToWriteFile = 'Unable to write file "%s":%s';
   lisLazBuildNormalIDE = 'Normal IDE';
   lisLazBuildDebugIDE = 'Debug IDE';
@@ -4138,6 +4139,7 @@ resourcestring
   lisPkgMangUnableToWriteStateFileOfPackageError = 'Unable to write state '
     +'file "%s"%sof package %s.%sError: %s';
   lisPkgMangErrorReadingFile = 'Error reading file';
+  lisCannotReadFile = 'Cannot read file %s';
   lisProjMangUnableToReadStateFileOfProjectError = 'Unable to read state '
     +'file %s of project %s%sError: %s';
   lisPkgMangUnableToReadStateFileOfPackageError = 'Unable to read state file '
