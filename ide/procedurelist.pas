@@ -81,6 +81,8 @@ type
     FCaret: TCodeXYPosition;
     FMainFilename: string;
     FNewTopLine: integer;
+    FImageIdxProcedure: Integer;
+    FImageIdxFunction: Integer;
     { Initialise GUI }
     procedure SetupGUI;
     { Move editors focus to selected method. }
@@ -179,16 +181,47 @@ begin
     PFilter := PChar(SubStr);
     repeat
       c := Src^;
+
+      if PFilter^ = '.' then
+      begin
+        Inc(PFilter);
+        if PFilter^ = #0 then
+          exit(true);
+        repeat
+          inc(Src);
+          c := Src^;
+          if c = '.' then
+          begin
+            Inc(Src);
+            break;
+          end;
+        until c = #0;
+      end;
+
       if c <> #0 then
       begin
         if UpChars[Src^] = UpChars[PFilter^] then
         begin
           i := 1;
-          while (UpChars[Src[i]] = UpChars[PFilter[i]]) and (PFilter[i] <> #0) do
+          while (UpChars[Src[i]] = UpChars[PFilter[i]]) and not ((PFilter[i] = #0) or (PFilter[i] = '.')) do
             inc(i);
           if PFilter[i] = #0 then
           begin
             exit(true);
+          end
+          else
+          if PFilter[i] = '.' then
+          begin
+            PFilter := PChar(Copy(SubStr, i+2, Length(SubStr)-(i+1)));
+            if PFilter^ = #0 then
+              exit(true);
+            while true do
+            begin
+              inc(Src);
+              c := Src^;
+              if (c = #0) or (c = '.') then
+                break;
+            end;
           end;
         end;
       end
@@ -278,9 +311,10 @@ begin
   tbFilterAny.ImageIndex   := IDEImages.LoadImage(16, 'item_filter');
   tbFilterStart.ImageIndex := IDEImages.LoadImage(16, 'item_filter');
 
+  LV.SmallImages      := IDEImages.Images_16;
   LV.Column[0].Width  := 20;
   LV.Column[1].Width  := 300;
-  LV.Column[2].Width  := 100;
+  LV.Column[2].Width  := 110;
   LV.Column[3].Width  := 60;
   
   LV.ReadOnly         := True;
@@ -288,8 +322,10 @@ begin
   LV.SortColumn       := 1;
   LV.SortType         := stText;
   LV.HideSelection    := False;
-  
   LV.Items.Clear;
+
+  FImageIdxProcedure  := IDEImages.LoadImage(16, 'ce_procedure');
+  FImageIdxFunction   := IDEImages.LoadImage(16, 'ce_function');;
 
   cbObjects.Style     := csDropDownList;
   cbObjects.Sorted    := True;
@@ -448,14 +484,24 @@ procedure TProcedureListForm.AddToListView(pCodeTool: TCodeTool; pNode: TCodeTre
 var
   lItem: TListItem;
   lNodeText: string;
-  lType: string;
   lCaret: TCodeXYPosition;
   FSearchAll: boolean;
+  lAttr: TProcHeadAttributes;
 begin
   FSearchAll := cbObjects.Text = lisPListAll;
-  lNodeText := pCodeTool.ExtractProcHead(pNode,
-      [phpWithoutClassKeyword, phpWithoutParamList, phpWithoutBrackets,
-       phpWithoutSemicolon, phpWithoutClassName]);
+
+  if FSearchAll and tbFilterAny.Down then
+  begin
+    lAttr := [phpWithoutClassKeyword, phpWithoutParamList, phpWithoutBrackets,
+       phpWithoutSemicolon, phpAddClassName];
+  end
+  else
+  begin
+    lAttr := [phpWithoutClassKeyword, phpWithoutParamList, phpWithoutBrackets,
+       phpWithoutSemicolon, phpWithoutClassName];
+  end;
+
+  lNodeText := pCodeTool.ExtractProcHead(pNode, lAttr);
 
   { Must we add this pNode or not? }
   if not PassFilter(FSearchAll, lNodeText, edMethods.Text, pCodeTool, pNode) then
@@ -471,12 +517,9 @@ begin
 
   { type }
   lNodeText := pCodeTool.ExtractProcHead(pNode,
-      [phpWithStart, phpWithoutParamList, phpWithoutBrackets, phpWithoutSemicolon]);
-  if Pos('procedure', lNodeText) > 0 then
-    lType := 'Procedure'
-  else
-    lType := 'Function';
-  lItem.SubItems.Add(lType);
+      [phpWithStart, phpWithoutParamList, phpWithoutBrackets, phpWithoutSemicolon,
+        phpWithoutClassName, phpWithoutName]);
+  lItem.SubItems.Add(lNodeText);
   
   { line number }
   if pCodeTool.CleanPosToCaret(pNode.StartPos, lCaret) then
@@ -491,6 +534,11 @@ begin
                    phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
                    phpWithOfObject,phpWithCallingSpecs,phpWithProcModifiers]);
   lItem.SubItems.Add(lNodeText);
+
+  if Pos('procedure', LowerCase(lNodeText)) > 0 then
+    lItem.ImageIndex := FImageIdxProcedure
+  else
+    lItem.ImageIndex := FImageIdxFunction;
 end;
 
 
@@ -521,14 +569,26 @@ begin
     else
       Result := ClassMatches;
   end
-  else if not pSearchAll and tbFilterStart.Down
-  and SameText(pSearchStr, Copy(pProcName, 1, Length(pSearchStr))) then
-    Result := True
-  else if not pSearchAll and tbFilterAny.Down and ClassMatches
-  and FilterFits(pSearchStr, pProcName) then
-    Result := True
-  else if pSearchAll and FilterFits(pSearchStr, pProcName) then
-    Result := True;
+  else
+  if not pSearchAll and tbFilterStart.Down then
+  begin
+    Result := ClassMatches and SameText(pSearchStr, Copy(pProcName, 1, Length(pSearchStr)));
+  end
+  else
+  if not pSearchAll and tbFilterAny.Down then
+  begin
+    Result := ClassMatches and FilterFits(pSearchStr, pProcName);
+  end
+  else
+  if pSearchAll and tbFilterStart.Down then
+  begin
+    Result := SameText(pSearchStr, Copy(pProcName, 1, Length(pSearchStr)));
+  end
+  else
+  if pSearchAll then
+  begin
+    Result := FilterFits(pSearchStr, pProcName);
+  end;
 end;
 
 
