@@ -174,8 +174,9 @@ begin
     AssertEquals(Format('%s (%d/%d) FoldLvlEnd',   [AName, ALine, AColumn]), FoldLvlEnd, nd.FoldLvlEnd);
     AssertEquals(Format('%s (%d/%d) NestLvlStart', [AName, ALine, AColumn]), NestLvlStart, nd.NestLvlStart);
     AssertEquals(Format('%s (%d/%d) NestLvlEnd',   [AName, ALine, AColumn]), NestLvlEnd, nd.NestLvlEnd);
-    AssertEquals(Format('%s (%d/%d) FoldType',     [AName, ALine, AColumn]), PtrUInt(FoldType), PtrUInt(nd.FoldType));
-    AssertEquals(Format('%s (%d/%d) FoldTypeCompatible', [AName, ALine, AColumn]), PtrUInt(FoldTypeCompatible), PtrUInt(nd.FoldTypeCompatible));
+    AssertEquals(Format('%s (%d/%d) FoldType',     [AName, ALine, AColumn]), PtrInt(FoldType), PtrInt(nd.FoldType));
+    AssertEquals(Format('%s (%d/%d) FoldTypeCompatible', [AName, ALine, AColumn]),
+                       PtrInt(FoldTypeCompatible), PtrInt(nd.FoldTypeCompatible));
     AssertEquals(Format('%s (%d/%d) FoldGroup:',   [AName, ALine, AColumn]), FoldGroup, nd.FoldGroup);
   end;
   AssertEquals(Format('%s (%d/%d) FoldAction',   [AName, ALine, AColumn]),

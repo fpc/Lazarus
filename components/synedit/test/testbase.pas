@@ -6,8 +6,9 @@ unit TestBase;
 interface
 
 uses
-  Classes, SysUtils, Forms, fpcunit, SynEdit, LCLType, LCLProc, math,
-  SynEditTypes, SynEditPointClasses, SynEditKeyCmds, LazSynTextArea, SynEditMarkup, Clipbrd;
+  Classes, SysUtils, math, fpcunit,
+  Forms, LCLType, LCLProc, Clipbrd, LazUTF8,
+  SynEdit, SynEditTypes, SynEditPointClasses, SynEditKeyCmds, LazSynTextArea, SynEditMarkup;
 
 type
 

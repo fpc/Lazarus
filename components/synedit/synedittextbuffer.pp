@@ -1092,7 +1092,7 @@ begin
   // UTF8 handing of chars
   Result := ALogicalPos;
   l := length(ALine);
-  if ACount > 0 then begin;
+  if ACount > 0 then begin
     while (Result < l) and (ACount > 0) do begin
       inc(Result);
       if (ALine[Result] in [#0..#127, #192..#255]) and
