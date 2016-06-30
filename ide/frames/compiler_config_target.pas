@@ -209,12 +209,11 @@ begin
     if not GlobalMacroList.SubstituteStr(aTargetOS) then
       raise Exception.CreateFmt('Cannot substitute macro "%s".', [aTargetOS]);
   end;
-  // Now hide/show the whole GroupBox because there is only one setting.
-  grbTargetOptions.Visible := AnsiStartsText('Win', aTargetOS);
-  if grbTargetOptions.Visible then
-    CurrentWidgetTypeLabel.AnchorSideTop.Control := grbTargetOptions
+
+  if AnsiStartsText('Win', aTargetOS) then
+    chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG, active)'
   else
-    CurrentWidgetTypeLabel.AnchorSideTop.Control := grbTargetPlatform;
+    chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG, inactive)';
 end;
 
 procedure TCompilerConfigTargetFrame.UpdateByTargetCPU(aTargetCPU: string);
