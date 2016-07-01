@@ -36,11 +36,13 @@ unit ProcedureList;
 {$mode objfpc}{$H+}
 
 interface
+
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ExtCtrls, StdCtrls,
-  CodeTree, CodeToolManager, CodeCache,
-  IDEImagesIntf;
+  Classes, SysUtils,
+  LCLType, Forms, Controls, Dialogs, ComCtrls, ExtCtrls, StdCtrls, Clipbrd,
+  CodeTree, CodeToolManager, CodeCache, PascalParserTool, KeywordFuncLists,
+  LazIDEIntf, IDEImagesIntf, SrcEditorIntf,
+  LazarusIDEStrConsts;
 
 type
   { TProcedureListForm }
@@ -100,24 +102,11 @@ type
   end; 
 
 
-
 procedure ExecuteProcedureList(Sender: TObject);
 
 implementation
 
 {$R *.lfm}
-
-uses
-  SrcEditorIntf
-  ,PascalParserTool
-  ,KeywordFuncLists
-  ,LCLType
-  ,LazIDEIntf
-  ,IDECommands
-  ,Clipbrd
-  ,LazarusIDEStrConsts
-  ;
-
 
 const
   cAbout =
