@@ -1338,8 +1338,6 @@ begin
       for I := dtpHour to dtpMiliSec do
         if not (I in FEffectiveHideDateTimeParts) then begin
           Inc(TimeParts);
-          if TimeParts > 1 then
-            Inc(FTimeWidth, FTimeSeparatorWidth);
 
           if I = dtpMiliSec then
             FTimeWidth := FTimeWidth + 3 * FDigitWidth
