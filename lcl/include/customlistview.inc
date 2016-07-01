@@ -342,11 +342,9 @@ begin
               if not OwnerData and (FSelected = Item) then
                 InvalidateSelected
               else if OwnerData and (nm^.iItem=FSelectedIdx) then
-              begin
-                FSelectedIdx:=-1;
                 InvalidateSelected;
-              end;
-              DoSelectItem(Item, False);
+              if nm^.iItem > -1 then
+                DoSelectItem(Item, False);
             end else
             begin
               FSelected := Item;
@@ -356,7 +354,8 @@ begin
                 FSelectedIdx:=nm^.iItem;
               end;
               //DebugLn('TCustomListView.CNNotify FSelected=',dbgs(FSelected));
-              DoSelectItem(Item, True);
+              if nm^.iItem > -1 then
+                DoSelectItem(Item, True);
             end;
           end;
         end;
