@@ -6993,14 +6993,17 @@ begin
       if not FEditorKey and (Shift = [ssShift]) then
         doCutToClipboard;
     VK_DELETE:
-      if not FEditorKey and EditingAllowed(FCol)
-      and (Editor is TCustomEdit) and not (csDesigning in ComponentState)
-      then begin
-        EditorShow(False);
-        TCustomEdit(Editor).Text:='';
-        InvalidateCell(FCol,FRow,True);
-        EditorShow(True);
-        Key := 0;
+      if not FEditorKey and EditingAllowed(FCol) and
+         not (csDesigning in ComponentState) then begin
+        if Editor=nil then
+          SelectEditor;
+        if Editor is TCustomEdit then begin
+          EditorShow(False);
+          TCustomEdit(Editor).Text:='';
+          InvalidateCell(FCol,FRow,True);
+          EditorShow(True);
+          Key := 0;
+        end;
       end;
   end;
   if FEditorKey and (not PreserveRowAutoInserted) then
