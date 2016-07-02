@@ -1557,7 +1557,7 @@ var
 begin
   if (AValue<>nil) and (AValue.ListView<>Self) then
     raise Exception.Create('Item does not belong to this listview');
-  if FSelected = AValue then Exit;
+  if (not FOwnerData) and (FSelected = AValue) then Exit;
   //DebugLn('TCustomListView.SetSelection FSelected=',dbgs(FSelected));
   if AValue = nil then
   begin
