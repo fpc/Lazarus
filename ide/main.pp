@@ -4050,8 +4050,8 @@ begin
           begin
             ReadSaveFailFlag:=true;
             if (WriteStatus=mrAbort) or
-              (IDEMessageDialog(lisLazBuildErrorWritingFile, Format(
-                lisCannotWriteFile, [AnUnitInfo.Filename]), mtError, [
+              (IDEMessageDialog(lisErrorSavingForm, Format(lisCannotSaveForm, [
+                AnUnitInfo.Filename]), mtError, [
                 mbRetry, mbAbort])=mrAbort) then
                 AbortFlag:=true;
           end;
@@ -4060,8 +4060,8 @@ begin
         begin
           ReadSaveFailFlag:=true;
           if (OpenStatus=mrAbort) or
-            (IDEMessageDialog(lisPkgMangErrorReadingFile, Format(
-              lisCannotReadFile, [AnUnitInfo.Filename]), mtError, [mbRetry,
+            (IDEMessageDialog(lisErrorOpeningForm, Format(lisCannotOpenForm, [
+              AnUnitInfo.Filename]), mtError, [mbRetry,
               mbAbort])=mrAbort) then
               AbortFlag:=true;
         end;
