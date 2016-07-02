@@ -823,10 +823,10 @@ begin
         ConflictName:=GetCategoryAndName;
         if ct=ctConflictKeyA then
           ConflictName:=ConflictName
-                    +' ('+KeyAndShiftStateToEditorKeyString(ShortcutA)
+                    +' ('+KeyAndShiftStateToEditorKeyString(ShortcutA)+')'
         else
           ConflictName:=ConflictName
-                   +' ('+KeyAndShiftStateToEditorKeyString(ShortcutB);
+                   +' ('+KeyAndShiftStateToEditorKeyString(ShortcutB)+')';
         case IDEMessageDialog(lisPEConflictFound,
            Format(lisTheKeyIsAlreadyAssignedToRemoveTheOldAssignmentAnd,
                   [KeyAndShiftStateToKeyString(Key,Shift), LineEnding,

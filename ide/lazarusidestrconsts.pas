@@ -309,9 +309,9 @@ resourcestring
   lisDiscardChangesAll = 'Discard all changes';
   lisDoNotCloseTheProject = 'Do not close the project';
   lisErrorSavingForm = 'Error saving form';
-  lisCannotSaveForm = 'Cannot save form %s';
+  lisCannotSaveForm = 'Cannot save form "%s".';
   lisErrorOpeningForm = 'Error opening form';
-  lisCannotOpenForm = 'Cannot open form %s';
+  lisCannotOpenForm = 'Cannot open form "%s".';
   lisConvert = 'Convert';
   lisPLDShowGlobalLinksIn = 'Show global links in ';
   lisPLDShowUserLinksIn = 'Show user links in ';
@@ -2851,9 +2851,8 @@ resourcestring
   srkmCommand  = 'Command:';
   lisKeyOr2KeySequence = 'Key (or 2 key sequence)';
   lisTheKeyIsAlreadyAssignedToRemoveTheOldAssignmentAnd = 'The key %s'
-    +'%sis already assigned to %s.'
-    +'%sRemove the old assignment and assign the key to the new function'
-    +'%s%s?';
+    +' is already assigned to %s%s.'
+    +'%s%sRemove the old assignment and assign the key to the new function %s?';
   lisAlternativeKeyOr2KeySequence = 'Alternative key (or 2 key sequence)';
   srkmConflic  = 'Conflict ';
   lisThereAreNoConflictingKeys = 'There are no conflicting keys.';

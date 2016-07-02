@@ -1486,7 +1486,7 @@ function TIDECommand.GetCategoryAndName: string;
 begin
   Result:='"'+GetLocalizedName+'"';
   if Category<>nil then
-    Result:=Result+' in "'+Category.Description+'"';
+    Result:='"'+Category.Description+'" -> '+Result;
 end;
 
 function TIDECommand.Execute(Sender: TObject): boolean;
