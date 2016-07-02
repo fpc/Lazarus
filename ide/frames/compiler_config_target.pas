@@ -207,13 +207,14 @@ begin
   begin
     aTargetOS := '$(TargetOS)';
     if not GlobalMacroList.SubstituteStr(aTargetOS) then
-      raise Exception.CreateFmt('Cannot substitute macro "%s".', [aTargetOS]);
+      raise Exception.CreateFmt(lisCannotSubstituteMacroS, [aTargetOS]);
   end;
 
   if AnsiStartsText('Win', aTargetOS) then
-    chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG, active)'
+    chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG)'
   else
-    chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG, inactive)';
+    chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG, '+
+      lisOptionValueIgnored+')';
 end;
 
 procedure TCompilerConfigTargetFrame.UpdateByTargetCPU(aTargetCPU: string);
@@ -226,7 +227,7 @@ begin
   begin
     aTargetCPU := '$(TargetCPU)';
     if not GlobalMacroList.SubstituteStr(aTargetCPU) then
-      raise Exception.CreateFmt('Cannot substitute macro "%s".', [aTargetCPU]);
+      raise Exception.CreateFmt(lisCannotSubstituteMacroS, [aTargetCPU]);
   end;
 
   // Update selection list for target processor

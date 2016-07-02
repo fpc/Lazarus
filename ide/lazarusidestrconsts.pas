@@ -2265,6 +2265,8 @@ resourcestring
   dlgLinkSmart = 'Link smart';
   dlgPassOptsLinker = 'Pass options to linker with "-k", delimiter is space';
   dlgWin32GUIApp = 'Win32 gui application';
+  lisOptionValueIgnored = 'ignored';
+  lisCannotSubstituteMacroS = 'Cannot substitute macro "%s".';
   dlgTargetSpecificOptions = 'Target-specific options';
   dlgVerbosity = 'Verbosity during compilation:';
   dlgCOShowErr = 'Show errors';
