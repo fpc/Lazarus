@@ -5043,6 +5043,18 @@ msgstr "Lazarusのスターターが見つかりません:%s%s"
 msgid "Cannot find unit %s"
 msgstr ""
 
+#: lazarusidestrconsts.liscannotopenform
+msgid "Cannot open form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsaveform
+msgid "Cannot save form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsubstitutemacros
+msgid "Cannot substitute macro \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
 msgstr "デバッグ中あるいはコンパイル中はテストできません"
@@ -8921,6 +8933,10 @@ msgstr "コンポーネントの命名でエラー"
 msgid "Error opening component"
 msgstr "コンポーネントを開く際にエラー"
 
+#: lazarusidestrconsts.liserroropeningform
+msgid "Error opening form"
+msgstr ""
+
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr "lfmコンポーネントストリームの構文解析中にエラー"
@@ -8950,6 +8966,10 @@ msgstr "エラー"
 
 #: lazarusidestrconsts.liserrors2
 msgid ", Errors: %s"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorsavingform
+msgid "Error saving form"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -12826,6 +12846,10 @@ msgctxt "lazarusidestrconsts.lismenureportingbug"
 msgid "Reporting a Bug"
 msgstr "不具合(バグ)を報告"
 
+#: lazarusidestrconsts.lismenuresaveformswithi18n
+msgid "Resave forms with i18n"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC Source Directory"
 msgstr "FPCソースディレクトリを再スキャン"
@@ -14076,6 +14100,10 @@ msgstr "オプション"
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "オプションが変更されたので、-Bでクリーン再コンパイルしています"
+
+#: lazarusidestrconsts.lisoptionvalueignored
+msgid "ignored"
+msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -17608,8 +17636,8 @@ msgstr "その識別子はユニットです。ファイル - 名前を付けて
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
 #, fuzzy,badformat
-#| msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
-msgid "The key %s%sis already assigned to %s.%sRemove the old assignment and assign the key to the new function%s%s?"
+#| msgid "The key %sis already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
+msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgstr "キー%s%sは素手に%sに割り当てられています。.%s%s古い割り当てを削除し、そのキーを関数%s%sに割り当てますか？"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists

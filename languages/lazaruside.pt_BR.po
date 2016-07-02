@@ -5060,6 +5060,18 @@ msgstr "Não é possível localizar o iniciador do Lazarus:%s%s"
 msgid "Cannot find unit %s"
 msgstr ""
 
+#: lazarusidestrconsts.liscannotopenform
+msgid "Cannot open form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsaveform
+msgid "Cannot save form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsubstitutemacros
+msgid "Cannot substitute macro \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
 msgstr "Impossível testar o compilador enquanto estiver compilando ou depurando."
@@ -8959,6 +8971,10 @@ msgstr "Erro ao nomear componente"
 msgid "Error opening component"
 msgstr "Erro abrindo componente"
 
+#: lazarusidestrconsts.liserroropeningform
+msgid "Error opening form"
+msgstr ""
+
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr "Erro na análise do fluxo de componente no arquivo LFM."
@@ -8988,6 +9004,10 @@ msgstr "Erros"
 
 #: lazarusidestrconsts.liserrors2
 msgid ", Errors: %s"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorsavingform
+msgid "Error saving form"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -12864,6 +12884,10 @@ msgctxt "lazarusidestrconsts.lismenureportingbug"
 msgid "Reporting a Bug"
 msgstr "Reportando uma falha (\"bug\")"
 
+#: lazarusidestrconsts.lismenuresaveformswithi18n
+msgid "Resave forms with i18n"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC Source Directory"
 msgstr "Reexaminar diretório dos fontes do FPC"
@@ -14116,6 +14140,10 @@ msgstr "Opções"
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "Opções alteradas, recompilando após limpeza com -B"
+
+#: lazarusidestrconsts.lisoptionvalueignored
+msgid "ignored"
+msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -17656,8 +17684,8 @@ msgstr "O identificador é uma unidade. Favor usar Salvar Arquivo como função 
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
 #, fuzzy,badformat
-#| msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
-msgid "The key %s%sis already assigned to %s.%sRemove the old assignment and assign the key to the new function%s%s?"
+#| msgid "The key %sis already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
+msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgstr "A tecla %s%sjá está atribuída para %s;%s%sRemover a atribuição antiga e atribuir a tecla para a nova função%s%s?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists

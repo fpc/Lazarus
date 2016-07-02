@@ -5088,6 +5088,18 @@ msgstr "Nepavyko rasti Lazarus startuotojo:%s%s"
 msgid "Cannot find unit %s"
 msgstr ""
 
+#: lazarusidestrconsts.liscannotopenform
+msgid "Cannot open form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsaveform
+msgid "Cannot save form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsubstitutemacros
+msgid "Cannot substitute macro \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
 msgstr ""
@@ -8994,6 +9006,10 @@ msgstr "Įvyko klaida komponentei suteikiant pavadinimą"
 msgid "Error opening component"
 msgstr "Klaida atveriant komponentę"
 
+#: lazarusidestrconsts.liserroropeningform
+msgid "Error opening form"
+msgstr ""
+
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr "Įvyko klaida analizuojant lfm komponentės srautą."
@@ -9023,6 +9039,10 @@ msgstr "Klaidos"
 
 #: lazarusidestrconsts.liserrors2
 msgid ", Errors: %s"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorsavingform
+msgid "Error saving form"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -12911,6 +12931,10 @@ msgctxt "lazarusidestrconsts.lismenureportingbug"
 msgid "Reporting a Bug"
 msgstr "Pranešti apie ydą"
 
+#: lazarusidestrconsts.lismenuresaveformswithi18n
+msgid "Resave forms with i18n"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC Source Directory"
 msgstr "Peržvelgti FPC pirminio kodo aplanką"
@@ -14167,6 +14191,10 @@ msgstr "Parinktys"
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "Parinktys pakito, kompiliuojama švariai iš naujo naudojant „-B“"
+
+#: lazarusidestrconsts.lisoptionvalueignored
+msgid "ignored"
+msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -17731,8 +17759,8 @@ msgstr "Identifikatorius yra modulis. Pakeiskite failo pavadinimą parinkę meni
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
 #, fuzzy,badformat
-#| msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
-msgid "The key %s%sis already assigned to %s.%sRemove the old assignment and assign the key to the new function%s%s?"
+#| msgid "The key %sis already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
+msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgstr "Klavišas %s%syra paskirtas funkcijai %s.%s%sPašalinti esamą paskyrimą ir klavišą paskirti naujajai funkcijai%s%s?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists

@@ -4944,6 +4944,18 @@ msgstr "A Lazarus indító nem található:%s%s"
 msgid "Cannot find unit %s"
 msgstr "Nem található a unit: %s"
 
+#: lazarusidestrconsts.liscannotopenform
+msgid "Cannot open form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsaveform
+msgid "Cannot save form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsubstitutemacros
+msgid "Cannot substitute macro \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
 msgstr "Nem tesztelhető a fordító hibakeresés vagy fordítás közben."
@@ -8747,6 +8759,10 @@ msgstr "Hiba a komponens elnevezése közben"
 msgid "Error opening component"
 msgstr "Hiba a komponens megnyitása közben"
 
+#: lazarusidestrconsts.liserroropeningform
+msgid "Error opening form"
+msgstr ""
+
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr "Hiba .lfm komponens folyam elemzése közben."
@@ -8775,6 +8791,10 @@ msgstr "Hibák"
 #: lazarusidestrconsts.liserrors2
 msgid ", Errors: %s"
 msgstr ", Hibák: %s"
+
+#: lazarusidestrconsts.liserrorsavingform
+msgid "Error saving form"
+msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
@@ -12579,6 +12599,10 @@ msgctxt "lazarusidestrconsts.lismenureportingbug"
 msgid "Reporting a Bug"
 msgstr "Hiba jelentése"
 
+#: lazarusidestrconsts.lismenuresaveformswithi18n
+msgid "Resave forms with i18n"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC Source Directory"
 msgstr "Az FPC forráskönyvtárak ellenőrzése"
@@ -13838,6 +13862,10 @@ msgstr "Beállítások"
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "A beállítások megváltoztak, tiszta újrafordítás -B használatával"
+
+#: lazarusidestrconsts.lisoptionvalueignored
+msgid "ignored"
+msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -17178,7 +17206,9 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr "Az azonosító egy unit. Használja a Fájl -> Mentés másként menüpontot unit átnevezéshez!"
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-msgid "The key %s%sis already assigned to %s.%sRemove the old assignment and assign the key to the new function%s%s?"
+#, fuzzy
+#| msgid "The key %sis already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
+msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgstr "A(z) %s%sbillentyű már hozzá van rendelve a(z) %s funkcióhoz.%sEltávolítja a régebbi hozzárendelést és hozzárendeli a billentyűt a(z) %s%s új művelethez?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists

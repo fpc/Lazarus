@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-05-11 01:07+0300\n"
+"PO-Revision-Date: 2016-07-02 17:15+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4945,6 +4945,18 @@ msgstr "Невозможно найти программу запуска Lazaru
 msgid "Cannot find unit %s"
 msgstr "Невозможно найти модуль %s"
 
+#: lazarusidestrconsts.liscannotopenform
+msgid "Cannot open form \"%s\"."
+msgstr "Невозможно открыть форму \"%s\"."
+
+#: lazarusidestrconsts.liscannotsaveform
+msgid "Cannot save form \"%s\"."
+msgstr "Невозможно сохранить форму \"%s\"."
+
+#: lazarusidestrconsts.liscannotsubstitutemacros
+msgid "Cannot substitute macro \"%s\"."
+msgstr "Невозможно раскрыть макрос \"%s\"."
+
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
 msgstr "Проверка компилятора невозможна во время отладки или компиляции."
@@ -8745,6 +8757,10 @@ msgstr "Ошибка при именовании компонента"
 msgid "Error opening component"
 msgstr "Ошибка при открытии компонента"
 
+#: lazarusidestrconsts.liserroropeningform
+msgid "Error opening form"
+msgstr "Ошибка открытия формы"
+
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr "Ошибка анализа потока компонента LFM."
@@ -8773,6 +8789,10 @@ msgstr "Ошибки"
 #: lazarusidestrconsts.liserrors2
 msgid ", Errors: %s"
 msgstr ", ошибок: %s"
+
+#: lazarusidestrconsts.liserrorsavingform
+msgid "Error saving form"
+msgstr "Ошибка сохранения формы"
 
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
@@ -12578,6 +12598,10 @@ msgctxt "lazarusidestrconsts.lismenureportingbug"
 msgid "Reporting a Bug"
 msgstr "Сообщить об ошибке"
 
+#: lazarusidestrconsts.lismenuresaveformswithi18n
+msgid "Resave forms with i18n"
+msgstr "Пересохранить формы с включённой поддержкой i18n"
+
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC Source Directory"
 msgstr "Пересмотреть каталог исходного кода FPC"
@@ -13838,6 +13862,10 @@ msgstr "Параметры"
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "Параметры были изменены, перекомпиляция с очисткой (ключ -B)"
+
+#: lazarusidestrconsts.lisoptionvalueignored
+msgid "ignored"
+msgstr "игнорируется"
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -17178,8 +17206,8 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr "Идентификатор является модулем. Для его переименования используйте функцию Файл -> Сохранить как."
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-msgid "The key %s%sis already assigned to %s.%sRemove the old assignment and assign the key to the new function%s%s?"
-msgstr "Клавиша %s%sуже назначена для %s.%sУдалить старую ассоциацию и назначить клавишу для новой функции%s%s?"
+msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
+msgstr "Клавиша %s уже назначена для %s%s.%s%sУдалить старую ассоциацию и назначить клавишу для новой функции %s?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
 msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%sSee Project -> Project Options -> Application for settings."

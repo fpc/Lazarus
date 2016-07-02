@@ -4946,6 +4946,18 @@ msgstr "Неможливо знайти пускач Lazarus:%s%s"
 msgid "Cannot find unit %s"
 msgstr "Не вдалось знайти модуль %s"
 
+#: lazarusidestrconsts.liscannotopenform
+msgid "Cannot open form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsaveform
+msgid "Cannot save form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsubstitutemacros
+msgid "Cannot substitute macro \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
 msgstr "Неможливо тестувати компілятор при зневаджуванні чи компілюванні."
@@ -8751,6 +8763,10 @@ msgstr "Помилка при називанні компонента"
 msgid "Error opening component"
 msgstr "Помилка відкриття компонента"
 
+#: lazarusidestrconsts.liserroropeningform
+msgid "Error opening form"
+msgstr ""
+
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr "Помилка аналізу потоку lfm компонента"
@@ -8779,6 +8795,10 @@ msgstr "Помилки"
 #: lazarusidestrconsts.liserrors2
 msgid ", Errors: %s"
 msgstr ", Помилок: %s"
+
+#: lazarusidestrconsts.liserrorsavingform
+msgid "Error saving form"
+msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
@@ -12642,6 +12662,10 @@ msgctxt "lazarusidestrconsts.lismenureportingbug"
 msgid "Reporting a Bug"
 msgstr "Повідомити про ваду"
 
+#: lazarusidestrconsts.lismenuresaveformswithi18n
+msgid "Resave forms with i18n"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC Source Directory"
 msgstr "Переглянути теку кодів FPC"
@@ -13893,6 +13917,10 @@ msgstr "Параметри"
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "Опції змінені, перезбираю начисто з -B"
+
+#: lazarusidestrconsts.lisoptionvalueignored
+msgid "ignored"
+msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -17245,7 +17273,9 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr "Ідентифікатор є модулем. Для його перейменування використайте функцію Файл - Зберегти як."
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-msgid "The key %s%sis already assigned to %s.%sRemove the old assignment and assign the key to the new function%s%s?"
+#, fuzzy
+#| msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function %s?"
+msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgstr "Клавіша %s%sвже призначена для %s.%sВидалити стару асоціацію і призначити клавішу для нової функції%s%s?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists

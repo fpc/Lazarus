@@ -5147,6 +5147,18 @@ msgstr "No es pot trobar l'iniciador del Lazarus:%s%s"
 msgid "Cannot find unit %s"
 msgstr ""
 
+#: lazarusidestrconsts.liscannotopenform
+msgid "Cannot open form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsaveform
+msgid "Cannot save form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsubstitutemacros
+msgid "Cannot substitute macro \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
 msgstr ""
@@ -9006,6 +9018,10 @@ msgstr ""
 msgid "Error opening component"
 msgstr ""
 
+#: lazarusidestrconsts.liserroropeningform
+msgid "Error opening form"
+msgstr ""
+
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr ""
@@ -9033,6 +9049,10 @@ msgstr "Errors"
 
 #: lazarusidestrconsts.liserrors2
 msgid ", Errors: %s"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorsavingform
+msgid "Error saving form"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -12963,6 +12983,10 @@ msgctxt "lazarusidestrconsts.lismenureportingbug"
 msgid "Reporting a Bug"
 msgstr ""
 
+#: lazarusidestrconsts.lismenuresaveformswithi18n
+msgid "Resave forms with i18n"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 #, fuzzy
 #| msgid "Rescan FPC source directory"
@@ -14274,6 +14298,10 @@ msgstr "Opcions"
 
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
+msgstr ""
+
+#: lazarusidestrconsts.lisoptionvalueignored
+msgid "ignored"
 msgstr ""
 
 #: lazarusidestrconsts.lisor
@@ -17813,7 +17841,7 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr ""
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-msgid "The key %s%sis already assigned to %s.%sRemove the old assignment and assign the key to the new function%s%s?"
+msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgstr ""
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists

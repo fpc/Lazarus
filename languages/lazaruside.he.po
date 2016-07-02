@@ -5268,6 +5268,18 @@ msgstr "לא יכול למצוא את מאתחל לזארוס: s%s%"
 msgid "Cannot find unit %s"
 msgstr ""
 
+#: lazarusidestrconsts.liscannotopenform
+msgid "Cannot open form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsaveform
+msgid "Cannot save form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsubstitutemacros
+msgid "Cannot substitute macro \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
 msgstr ""
@@ -9271,6 +9283,10 @@ msgstr "שגיאה בנתינת שם לרכיב"
 msgid "Error opening component"
 msgstr "שגיאה בפתיחת רכיב"
 
+#: lazarusidestrconsts.liserroropeningform
+msgid "Error opening form"
+msgstr ""
+
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr "שגיאה בפרוש רכיב lfm של הזרימה"
@@ -9301,6 +9317,10 @@ msgstr "שגיאות"
 
 #: lazarusidestrconsts.liserrors2
 msgid ", Errors: %s"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorsavingform
+msgid "Error saving form"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -13421,6 +13441,10 @@ msgctxt "lazarusidestrconsts.lismenureportingbug"
 msgid "Reporting a Bug"
 msgstr "דיווח באגים ..."
 
+#: lazarusidestrconsts.lismenuresaveformswithi18n
+msgid "Resave forms with i18n"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 #, fuzzy
 #| msgid "Rescan FPC source directory"
@@ -14768,6 +14792,10 @@ msgstr "אפשרויות"
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "אפשרויות השתנו, הדר (נקי) מחדש עם הפרמטר  -B"
+
+#: lazarusidestrconsts.lisoptionvalueignored
+msgid "ignored"
+msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -18436,8 +18464,8 @@ msgstr "המזהה הוא יחידה. השתמש ב File - Save כאמצעי ל�
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
 #, fuzzy,badformat
-#| msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
-msgid "The key %s%sis already assigned to %s.%sRemove the old assignment and assign the key to the new function%s%s?"
+#| msgid "The key %sis already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
+msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgstr "המקש %s% כבר מוקצה ל s%. להסיר את ההקצאה הישנה למקש עבור הפונקציה החדשה?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists

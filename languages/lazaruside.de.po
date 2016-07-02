@@ -4944,6 +4944,18 @@ msgstr "Kann Lazarus-Starter %s%s nicht finden"
 msgid "Cannot find unit %s"
 msgstr "Kann Unit %s nicht finden"
 
+#: lazarusidestrconsts.liscannotopenform
+msgid "Cannot open form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsaveform
+msgid "Cannot save form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsubstitutemacros
+msgid "Cannot substitute macro \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
 msgstr "Kann den Compiler nicht testen während des Debuggens oder Kompilierens."
@@ -8748,6 +8760,10 @@ msgstr "Fehler beim Benennen der Komponente"
 msgid "Error opening component"
 msgstr "Fehler beim Öffnen der Komponente"
 
+#: lazarusidestrconsts.liserroropeningform
+msgid "Error opening form"
+msgstr ""
+
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr "Fehler beim Parsen des lfm-Komponenten-Streams."
@@ -8776,6 +8792,10 @@ msgstr "Fehler"
 #: lazarusidestrconsts.liserrors2
 msgid ", Errors: %s"
 msgstr ", Fehler: %s"
+
+#: lazarusidestrconsts.liserrorsavingform
+msgid "Error saving form"
+msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
@@ -12575,6 +12595,10 @@ msgctxt "lazarusidestrconsts.lismenureportingbug"
 msgid "Reporting a Bug"
 msgstr "Fehler melden ..."
 
+#: lazarusidestrconsts.lismenuresaveformswithi18n
+msgid "Resave forms with i18n"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC Source Directory"
 msgstr "FPC-Quelltextverzeichnis neu einlesen"
@@ -13826,6 +13850,10 @@ msgstr "Einstellungen"
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "Einstellungen geändert, sauberes Neucompilieren mit -B"
+
+#: lazarusidestrconsts.lisoptionvalueignored
+msgid "ignored"
+msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -17168,7 +17196,9 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr "Der Bezeichner ist eine Unit. Bitte benennen sie eine Unit mit Datei -> Speichern unter ... um"
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-msgid "The key %s%sis already assigned to %s.%sRemove the old assignment and assign the key to the new function%s%s?"
+#, fuzzy
+#| msgid "The key %sis already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
+msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgstr "Die Taste %s%sist bereits %s zugewiesen.%sDie alte Zuweisung entfernen und der Taste die neue Funktion%s%s zuordnen?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
