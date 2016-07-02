@@ -721,8 +721,8 @@ type
     FOnPrepareCanvas: TOnPrepareCanvasEvent;
     FOnSelectEditor: TSelectEditorEvent;
     FOnValidateEntry: TValidateEntryEvent;
-    FGridLineColor: TColor;
-    FFixedcolor, FFixedHotColor, FFocusColor, FSelectedColor: TColor;
+    FGridLineColor, FFixedGridLineColor: TColor;
+    FFixedColor, FFixedHotColor, FFocusColor, FSelectedColor: TColor;
     FFocusRectVisible: boolean;
     FCols,FRows: TList;
     FsaveOptions: TSaveOptions;
@@ -857,6 +857,7 @@ type
     procedure SetEditor(AValue: TWinControl);
     procedure SetFocusColor(const AValue: TColor);
     procedure SetGridLineColor(const AValue: TColor);
+    procedure SetFixedGridLineColor(const AValue: TColor);
     procedure SetGridLineStyle(const AValue: TPenStyle);
     procedure SetGridLineWidth(const AValue: Integer);
     procedure SetLeftCol(const AValue: Integer);
@@ -1136,6 +1137,7 @@ type
     property FixedCols: Integer read FFixedCols write SetFixedCols default 1;
     property FixedRows: Integer read FFixedRows write SetFixedRows default 1;
     property FixedColor: TColor read GetFixedColor write SetFixedcolor default clBtnFace;
+    property FixedGridLineColor: TColor read FFixedGridLineColor write SetFixedGridLineColor default cl3DDKShadow;
     property FixedHotColor: TColor read FFixedHotColor write FFixedHotColor default cl3DLight;
     property Flat: Boolean read FFlat write SetFlat default false;
     property FocusColor: TColor read FFocusColor write SetFocusColor;
@@ -1332,6 +1334,7 @@ type
     property ExtendedColSizing;
     property AltColorStartNormal;
     property FastEditing;
+    property FixedGridLineColor;
     property FocusColor;
     property FocusRectVisible;
     property GridHeight;
@@ -2556,6 +2559,13 @@ procedure TCustomGrid.SetGridLineColor(const AValue: TColor);
 begin
   if FGridLineColor=AValue then exit;
   FGridLineColor:=AValue;
+  Invalidate;
+end;
+
+procedure TCustomGrid.SetFixedGridLineColor(const AValue: TColor);
+begin
+  if FFixedGridLineColor=AValue then exit;
+  FFixedGridLineColor:=AValue;
   Invalidate;
 end;
 
@@ -4261,8 +4271,10 @@ begin
             end;
           end;
         end;
+        Pen.Color := cl3DDKShadow;
+      end else begin
+        Pen.Color := FFixedGridLineColor;
       end;
-      Pen.Color := cl3DDKShadow;
     end else begin
       Dv := goVertLine in Options;
       Dh := goHorzLine in Options;
@@ -9028,6 +9040,7 @@ begin
   FDefColWidth:=DEFCOLWIDTH;
   FDefRowHeight:=GetDefaultRowHeight;
   FGridLineColor:=clSilver;
+  FFixedGridLineColor := cl3DDKShadow;
   FGridLineStyle:=psSolid;
   FGridLineWidth := 1;
   fFocusColor:=clRed;
