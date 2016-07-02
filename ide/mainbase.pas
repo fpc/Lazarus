@@ -1560,9 +1560,11 @@ begin
     itmJumpToImplementationUses.Command:=GetCommand(ecJumpToImplementationUses, TJumpToSectionToolButton);
     itmJumpToInitialization.Command:=GetCommand(ecJumpToInitialization, TJumpToSectionToolButton);
     GetCmdAndBtn(ecJumpToProcedureHeader, xBtnItem);
+    xBtnItem.Caption := lisMenuJumpToProcedureHeader;
     xBtnItem.OnClick := @SourceEditorManager.JumpToProcedureHeaderClicked;
     xBtnItem.ImageIndex := IDEImages.LoadImage(16, 'menu_jumpto_procedureheader');
     GetCmdAndBtn(ecJumpToProcedureBegin, xBtnItem);
+    xBtnItem.Caption := lisMenuJumpToProcedureBegin;
     xBtnItem.ImageIndex := IDEImages.LoadImage(16, 'menu_jumpto_procedurebegin');
     xBtnItem.OnClick := @SourceEditorManager.JumpToProcedureBeginClicked;
     itmFindBlockOtherEnd.Command:=GetCommand(ecFindBlockOtherEnd);
@@ -1658,6 +1660,7 @@ begin
     itmProjectViewForms.Command:=GetCommand(ecViewProjectForms);
     itmProjectViewSource.Command:=GetCommand(ecViewProjectSource);
     GetCmdAndBtn(ecProjectChangeBuildMode, xBtnItem);
+    xBtnItem.Caption := lisChangeBuildMode;
     xBtnItem.ToolButtonClass:=TSetBuildModeToolButton;
     xBtnItem.ImageIndex := IDEImages.LoadImage(16, 'menu_compiler_options');
     xBtnItem.OnClick := @mnuBuildModeClicked;
