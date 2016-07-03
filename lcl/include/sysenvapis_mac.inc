@@ -1,5 +1,18 @@
 {%MainUnit ../lclintf.pas}
 
+
+function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
+begin
+  // open command launches url in the appropriate browser under Mac OS X
+  FindBrowserExecutable('open', ABrowser);
+  AParams := '"%s"';
+  Result := (ABrowser <> '');
+  if not Result then
+  begin
+    Result := FindPredefinedBrowser(ABrowser, AParams);
+  end;
+end;
+
 // Open a given URL with the default browser
 function OpenURL(AURL: String): Boolean;
 var
