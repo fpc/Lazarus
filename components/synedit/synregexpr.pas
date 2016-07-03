@@ -554,7 +554,7 @@ const
 
 function ExecRegExpr (const ARegExpr, AInputStr : RegExprString) : boolean;
 // true if string AInputString match regular expression ARegExpr
-// ! will raise exeption if syntax errors in ARegExpr
+// ! will raise exception if syntax errors in ARegExpr
 
 procedure SplitRegExpr (const ARegExpr, AInputStr : RegExprString; APieces : TStrings);
 // Split AInputStr into APieces by r.e. ARegExpr occurencies

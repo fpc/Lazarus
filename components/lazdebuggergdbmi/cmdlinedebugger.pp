@@ -360,7 +360,7 @@ begin
     except
       on E: Exception do begin
         FOutputBuf := E.Message;
-        DebugLn('Exeption while executing debugger: ', FOutputBuf);
+        DebugLn('Exception while executing debugger: ', FOutputBuf);
       end;
     end;
   end;
@@ -376,7 +376,7 @@ begin
   try
     FreeAndNil(FDbgProcess);
   except
-    on E: Exception do DebugLn('Exeption while freeing debugger: ', E.Message);
+    on E: Exception do DebugLn('Exception while freeing debugger: ', E.Message);
   end;
 end;
 
