@@ -697,6 +697,7 @@ type
     FFastEditing: boolean;
     FAltColorStartNormal: boolean;
     FFlat: Boolean;
+    FOnAfterSelection: TOnSelectEvent;
     FOnLoadColumn: TSaveColumnEvent;
     FOnSaveColumn: TSaveColumnEvent;
     FRangeSelectMode: TRangeSelectMode;
@@ -888,6 +889,7 @@ type
     procedure AddSelectedRange;
     procedure AdjustClientRect(var ARect: TRect); override;
     procedure AdjustEditorBounds(NewCol,NewRow:Integer); virtual;
+    procedure AfterMoveSelection(const prevCol,prevRow: Integer); virtual;
     procedure AssignTo(Dest: TPersistent); override;
     procedure AutoAdjustColumn(aCol: Integer); virtual;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); virtual;
@@ -1176,6 +1178,7 @@ type
     property VisibleColCount: Integer read GetVisibleColCount stored false;
     property VisibleRowCount: Integer read GetVisibleRowCount stored false;
 
+    property OnAfterSelection: TOnSelectEvent read FOnAfterSelection write FOnAfterSelection;
     property OnBeforeSelection: TOnSelectEvent read FOnBeforeSelection write FOnBeforeSelection;
     property OnCheckboxToggled: TToggledcheckboxEvent read FOnCheckboxToggled write FOnCheckboxToggled;
     property OnCompareCells: TOnCompareCells read FOnCompareCells write FOnCompareCells;
@@ -1395,6 +1398,7 @@ type
     property VisibleColCount;
     property VisibleRowCount;
 
+    property OnAfterSelection;
     property OnBeforeSelection;
     property OnClick;
     property OnColRowDeleted: TgridOperationEvent read FOnColRowDeleted write FOnColRowDeleted;
@@ -1501,6 +1505,7 @@ type
     property VisibleColCount;
     property VisibleRowCount;
 
+    property OnAfterSelection;
     property OnBeforeSelection;
     property OnCheckboxToggled;
     property OnClick;
@@ -1721,6 +1726,7 @@ type
     property VisibleColCount;
     property VisibleRowCount;
 
+    property OnAfterSelection;
     property OnBeforeSelection;
     property OnChangeBounds;
     property OnCheckboxToggled;
@@ -2852,6 +2858,12 @@ begin
   SetColRow(NewCol,NewRow);
   if EditorMode then
     EditorPos;
+end;
+
+procedure TCustomGrid.AfterMoveSelection(const prevCol, prevRow: Integer);
+begin
+  if Assigned(OnAfterSelection) then
+    OnAfterSelection(Self, prevCol, prevRow);
 end;
 
 procedure TCustomGrid.AssignTo(Dest: TPersistent);
@@ -7164,6 +7176,7 @@ function TCustomGrid.MoveExtend(Relative: Boolean; DCol, DRow: Integer;
   ForceFullyVisible: Boolean): Boolean;
 var
   OldRange: TRect;
+  prevCol, prevRow: Integer;
 begin
   Result:=TryMoveSelection(Relative,DCol,DRow);
   if (not Result) then Exit;
@@ -7175,6 +7188,8 @@ begin
   BeforeMoveSelection(DCol,DRow);
 
   OldRange := FRange;
+  PrevRow := FRow;
+  PrevCol := FCol;
 
   if goRowSelect in Options then
     FRange:=Rect(FFixedCols, DRow, Colcount-1, DRow)
@@ -7207,6 +7222,8 @@ begin
       EditorHide;
     EditorShow(true);
   end;
+
+  AfterMoveSelection(PrevCol,PrevRow);
 
   {$IfDef dbgGrid}DebugLnExit('MoveExtend END FCol= ',IntToStr(FCol), ' FRow= ',IntToStr(FRow));{$Endif}
 end;
