@@ -4168,6 +4168,7 @@ begin
   if not HandleAllocated or (Items.FUpdateCount>0) then
     exit;
 
+  //DebugLn('* TCustomTreeView.UpdateScrollbars Enter *');
   if ScrolledLeft>GetMaxScrollLeft then ScrolledLeft:=GetMaxScrollLeft;
   if ScrolledTop>GetMaxScrollTop then ScrolledTop:=GetMaxScrollTop;
   Exclude(FStates,tvsScrollbarChanged);
@@ -4183,25 +4184,23 @@ begin
     ScrollInfo.nPage := Max(1,(ClientWidth-ScrollBarWidth)-2*BorderWidth);
     ScrollInfo.nMax := Max(1,GetMaxScrollLeft+integer(ScrollInfo.nPage)-1);
     ScrollInfo.nPos := Max(FScrolledLeft,0);
-    //DebugLn(['TCustomTreeView.UpdateScrollbars nPage=',ScrollInfo.nPage,',nMax=',ScrollInfo.nMax,' fScrollBars=',ord(fScrollBars)]);
     if not CompareMem(@ScrollInfo,@FLastHorzScrollInfo,SizeOf(TScrollInfo))
     then begin
       if (fScrollBars in [ssAutoBoth, ssAutoHorizontal])
       and (ScrollInfo.nPage>=cardinal(ScrollInfo.nMax)) then begin
+        //DebugLn(['TCustomTreeView.UpdateScrollbars Hide Horizontal.']);
         FLastHorzScrollInfo.cbSize:=0;
         SetShowScrollBar(SB_HORZ, false);
       end else begin
+        //DebugLn(['TCustomTreeView.UpdateScrollbars Show Horizontal: nMin=',ScrollInfo.nMin,
+        //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
+        //' nPos=',ScrollInfo.nPos,' GetMaxScrollLeft=',GetMaxScrollLeft,
+        //' ClientW=',ClientWidth, ' MaxRight=',FMaxRight]);
         FLastHorzScrollInfo:=ScrollInfo;
         SetShowScrollBar(SB_HORZ, true);
         SetScrollInfo(Handle, SB_HORZ, ScrollInfo, true);
       end;
     end;
-    //DebugLn('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] nMin=',ScrollInfo.nMin,
-    //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
-    //' nPos=',ScrollInfo.nPos,' GetMaxScrollLeft=',GetMaxScrollLeft,
-    //' ClientW=',ClientWidth,
-    //' MaxRight=',FMaxRight
-    //);
   end else begin
     FLastHorzScrollInfo.cbSize:=0;
     SetShowScrollBar(SB_HORZ,false);
@@ -4221,19 +4220,20 @@ begin
     then begin
       if (fScrollBars in [ssAutoBoth, ssAutoVertical])
       and (ScrollInfo.nPage>=cardinal(ScrollInfo.nMax)) then begin
+        //DebugLn(['TCustomTreeView.UpdateScrollbars Hide Vertical.']);
         FLastVertScrollInfo.cbSize:=0;
         SetShowScrollBar(SB_VERT, false);
       end else begin
+        //DebugLn(['TCustomTreeView.UpdateScrollbars Show Vertical: nMin=',ScrollInfo.nMin,
+        //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
+        //' nPos=',ScrollInfo.nPos,' GetMaxScrollLeft=',GetMaxScrollTop,
+        //' ClientH=',ClientHeight]);
         FLastVertScrollInfo:=ScrollInfo;
         SetShowScrollBar(SB_VERT, true);
         SetScrollInfo(Handle, SB_VERT, ScrollInfo, true);
       end;
     end;
-    //DebugLn('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] Vert On nMin=',dbgs(ScrollInfo.nMin),
-    //' nMax=',dbgs(ScrollInfo.nMax),' nPage=',dbgs(ScrollInfo.nPage),
-    //' nPos=',dbgs(ScrollInfo.nPos),' GetMaxScrollTop=',dbgs(GetMaxScrollTop));
   end else begin
-    //DebugLn('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] Vert Off ');
     FLastVertScrollInfo.cbSize:=0;
     SetShowScrollBar(SB_VERT,false);
   end;
