@@ -43,8 +43,8 @@ type
   TScrollCode = (
     // !!! Beware. The position of these enums must correspond to the SB_xxx
     // values in LCLType  (Delphi compatibility, not our decision)
-    // MWE: Don't know it this still is a requirement
-    //      afaik have I remeved all casts from the LCL
+    // MWE: Don't know if this still is a requirement
+    //      afaik have I removed all casts from the LCL
     scLineUp,   // = SB_LINEUP
     scLineDown, // = SB_LINEDOWN
     scPageUp,   // = SB_PAGEUP
