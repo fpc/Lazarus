@@ -30,13 +30,18 @@ unit AddToPackageDlg;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Buttons, ExtDlgs,
-  StdCtrls, ExtCtrls, Dialogs, ComCtrls, ButtonPanel, AVL_Tree, FileUtil, LazFileUtils,
+  Math, Classes, SysUtils, AVL_Tree,
+  // LCL
+  LCLProc, LCLType, Forms, Controls, Buttons, ExtDlgs, StdCtrls, ExtCtrls,
+  Dialogs, ComCtrls, ButtonPanel,
+  ListFilterEdit,
+  // LazUtils
+  FileUtil, LazFileUtils,
   // IDEIntf
-  NewItemIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, IDEDialogs,
+  NewItemIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, ComponentReg, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, InputHistory, IDEDefs, IDEProcs, EnvironmentOpts,
-  PackageSystem, PackageDefs, ComponentReg, ListFilterEdit, AddDirToPkgDlg;
+  LazarusIDEStrConsts, InputHistory, IDEDefs, EnvironmentOpts,
+  PackageSystem, PackageDefs, AddDirToPkgDlg;
   
 type
   TAddToPkgType = (
