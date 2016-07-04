@@ -273,8 +273,8 @@ begin
   ToolBarOpts.Break := False;
   with ToolBarOpts.ButtonNames do
   begin
-    Add('NewForm');
     Add('NewUnit');
+    Add('NewForm');
     Add(cIDEToolbarDivider);
     Add('Open');
     Add('Save');
