@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-07-02 17:15+0300\n"
+"PO-Revision-Date: 2016-07-05 01:19+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -15413,11 +15413,11 @@ msgstr "Неверная версия"
 
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
-msgstr "Макс. версия (по выбору):"
+msgstr "Максимальная версия (необязательна):"
 
 #: lazarusidestrconsts.lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
-msgstr "Миним. версия (по выбору):"
+msgstr "Минимальная версия (необязательна):"
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"
