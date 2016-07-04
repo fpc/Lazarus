@@ -2585,12 +2585,12 @@ begin
   if FOptions=AValue then exit;
   FOptions:=AValue;
   UpdateSelectionRange;
-  if goAlwaysShowEditor in Options then begin
+  if goEditing in Options then
     SelectEditor;
-    EditorShow(true);
-  end else begin
+  if goAlwaysShowEditor in Options then
+    EditorShow(true)
+  else
     EditorHide;
-  end;
   if goAutoAddRowsSkipContentCheck in Options then
     FRowAutoInserted := False;
   VisualChange;
