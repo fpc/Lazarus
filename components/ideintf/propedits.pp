@@ -40,6 +40,7 @@ uses
 
 const
   MaxIdentLength: Byte = 63;
+  CheckBoxThemedLeftOffs = 3;
 
   {$IFDEF LCLCarbon}
   // LineFeed symbol (UTF8) to maintain linefeeds in multiline text for Carbon TEdit.
@@ -303,6 +304,8 @@ type
   protected
     // Draw Checkbox for Boolean and Set element editors.
     function DrawCheckbox(ACanvas: TCanvas; const ARect: TRect; IsTrue: Boolean): TRect;
+    function DrawCheckValue(ACanvas: TCanvas; const ARect: TRect;
+      AState: TPropEditDrawState; IsTrue: Boolean): TRect;
   public
     constructor Create(Hook:TPropertyEditorHook; APropCount:Integer); virtual;
     destructor Destroy; override;
@@ -2405,6 +2408,7 @@ function TPropertyEditor.DrawCheckbox(ACanvas: TCanvas; const ARect: TRect;
 var
   Details: TThemedElementDetails;
   Check: TThemedButton;
+  BRect: TRect;
   Sz: TSize;
   TopMargin: Integer;
   VisVal: String;
@@ -2420,16 +2424,53 @@ begin
   Details := ThemeServices.GetElementDetails(Check);
   Sz := ThemeServices.GetDetailSize(Details);
   TopMargin := (ARect.Bottom - ARect.Top - Sz.cy) div 2;
-  Result := ARect;
-  Inc(Result.Top, TopMargin);
+  BRect := ARect;
   // Left varies by widgetset and theme etc. Real Checkbox itself has a left margin.
-  Inc(Result.Left, 2);                // ToDo: How to find out the real margin?
-  Result.Right := Result.Left + Sz.cx;
-  Result.Bottom := Result.Top + Sz.cy;
-  ThemeServices.DrawElement(ACanvas.Handle, Details, Result, nil);
+  Inc(BRect.Left, 3);                // ToDo: How to find out the real margin?
+  Result := BRect;                   // Result Rect will be used for text.
+  Inc(BRect.Top, TopMargin);
+  BRect.Right := BRect.Left + Sz.cx;
+  BRect.Bottom := BRect.Top + Sz.cy;
+  ThemeServices.DrawElement(ACanvas.Handle, Details, BRect, nil);
   // Text will be written after the box.
-  Result := ARect;
   Inc(Result.Left, Sz.cx + 4);
+end;
+
+function TPropertyEditor.DrawCheckValue(ACanvas: TCanvas; const ARect: TRect;
+                           AState: TPropEditDrawState; IsTrue: Boolean): TRect;
+// Draws Boolean value as text or Checkbox depending on user setting from PropertyHook.
+// Uses either theme services (func DrawCheckbox) or TCheckBoxThemed depending
+//  on UseOINormalCheckBox define.
+// Returns Rect for textual part if it must be drawn, otherwise Result.Top = -100.
+{$IFnDEF UseOINormalCheckBox}
+var
+  BRect: TRect;
+  VisVal: string;
+  stat: TCheckBoxState;
+{$ENDIF}
+begin
+  Result.Top := 0;
+  if FPropertyHook.GetCheckboxForBoolean then
+  begin                         // Checkbox for Booleans.
+  {$IFnDEF UseOINormalCheckBox}
+    Result.Top := -100;         // No need to call PropDrawValue further.
+    BRect := ARect;
+    Inc(BRect.Left, CheckBoxThemedLeftOffs);
+    VisVal := GetVisualValue;
+    if (VisVal = '') or (VisVal = oisMixed) then
+      stat := cbGrayed
+    else if VisVal = '(True)' then
+      stat := cbChecked
+    else
+      stat := cbUnchecked;
+    TCheckBoxThemed.PaintSelf(ACanvas, VisVal, BRect, stat, False, False, False,
+                              False, taRightJustify);
+  {$ELSE}
+    Result := DrawCheckbox(ACanvas, ARect, IsTrue);
+  {$ENDIF}
+  end
+  else
+    Result := ARect;           // Classic Combobox for Booleans.
 end;
 
 function TPropertyEditor.GetAttributes: TPropertyAttributes;
@@ -3505,29 +3546,8 @@ procedure TBoolPropertyEditor.PropDrawValue(ACanvas: TCanvas; const ARect: TRect
                                             AState: TPropEditDrawState);
 var
   TxtRect: TRect;
-  {$IFnDEF UseOINormalCheckBox}
-  VisVal: string;
-  stat: TCheckBoxState;
-  {$ENDIF}
 begin
-  if FPropertyHook.GetCheckboxForBoolean then
-  begin                         // Checkbox for Booleans.
-  {$IFnDEF UseOINormalCheckBox}
-    TxtRect.Top := -100;        // Don't call inherited PropDrawValue
-    VisVal := GetVisualValue;
-    if (VisVal = '') or (VisVal = oisMixed) then
-      stat := cbGrayed
-    else if VisVal = '(True)' then
-      stat := cbChecked
-    else
-      stat := cbUnchecked;
-    TCheckBoxThemed.PaintSelf(ACanvas, VisVal, ARect, stat, False, False, False, False, taRightJustify);
-  {$ELSE}
-    TxtRect := DrawCheckbox(ACanvas, ARect, GetOrdValue<>0);
-  {$ENDIF}
-  end
-  else
-    TxtRect := ARect;           // Classic Combobox for Booleans.
+  TxtRect := DrawCheckValue(ACanvas, ARect, AState, GetOrdValue<>0);
   if TxtRect.Top <> -100 then
     inherited PropDrawValue(ACanvas, TxtRect, AState);
 end;
@@ -3757,8 +3777,7 @@ end;
 function TSetElementPropertyEditor.GetVisualValue: ansistring;
 begin
   Result := inherited GetVisualValue;
-  if Result = '' then
-    Result := oisMixed;
+  Assert(Result <> '', 'TSetElementPropertyEditor.GetVisualValue: Result="".');
 end;
 
 procedure TSetElementPropertyEditor.GetValues(Proc: TGetStrProc);
@@ -3799,14 +3818,10 @@ var
   S: TIntegerSet;
   TxtRect: TRect;
 begin
-  if FPropertyHook.GetCheckboxForBoolean then
-  begin
-    Integer(S) := GetOrdValue;
-    TxtRect := DrawCheckbox(ACanvas, ARect, FElement in S);
-  end
-  else
-    TxtRect := ARect;
-  inherited PropDrawValue(ACanvas, TxtRect, AState);
+  Integer(S) := GetOrdValue;
+  TxtRect := DrawCheckValue(ACanvas, ARect, AState, FElement in S);
+  if TxtRect.Top <> -100 then
+    inherited PropDrawValue(ACanvas, TxtRect, AState);
 end;
 
 { TSetPropertyEditor }

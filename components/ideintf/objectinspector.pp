@@ -2726,9 +2726,6 @@ begin
       // resize the edit component
       if (FCurrentEdit is TEdit) or (FCurrentEdit is TComboBox) then
       begin
-        {$IFnDEF LCLGTK2}
-        Dec(EditCompRect.Left);
-        {$ENDIF}
         Dec(EditCompRect.Top);
       {$IFDEF UseOINormalCheckBox}
       end
@@ -2736,7 +2733,11 @@ begin
       begin
         with EditCompRect do  // Align "normal" CheckBox to the middle vertically
           Inc(Top, (Bottom - Top - ValueCheckBox.Height) div 2);
-        Inc(EditCompRect.Left);  // and move it a little right.
+      {$ELSE}
+      end
+      else if FCurrentEdit is TCheckBoxThemed then
+      begin             // Move right as much as in TPropertyEditor.DrawCheckValue.
+        Inc(EditCompRect.Left, CheckBoxThemedLeftOffs);
       {$ENDIF}
       end;
       //debugln('TOICustomPropertyGrid.AlignEditComponents A ',dbgsName(FCurrentEdit),' ',dbgs(EditCompRect));
