@@ -371,6 +371,7 @@ type
     function  NeedAutoSizeColumns: boolean;
     procedure RenewColWidths;
     procedure InternalAutoSizeColumn(aCol: Integer; aCanvas: TCanvas; aDatalinkActive: Boolean);
+    procedure DoHeaderClick(Index: Integer);
   protected
     procedure AddAutomaticColumns;
     procedure AssignTo(Dest: TPersistent); override;
@@ -822,6 +823,17 @@ begin
   ColCount := OldFixedCols + 1;
   if dgIndicator in Options then
     ColWidths[0]:=12;
+end;
+
+procedure TCustomDBGrid.DoHeaderClick(Index: Integer);
+var
+  Column: TColumn;
+begin
+  if Assigned(OnTitleClick) then begin
+    Column := TColumn(ColumnFromGridColumn(Index));
+    if Column <> nil then
+      OnTitleClick(Column);
+  end;
 end;
 
 function TCustomDBGrid.GetColumns: TDBGridColumns;
@@ -2175,17 +2187,12 @@ begin
 end;
 
 procedure TCustomDBGrid.HeaderClick(IsColumn: Boolean; index: Integer);
-var
-  Column: TColumn;
 begin
   {$ifdef dbgDBGrid}
   DebugLn('%s.HeaderClick', [ClassName]);
   {$endif}
-  if Assigned(OnTitleClick) and IsColumn then begin
-    Column := TColumn(ColumnFromGridColumn(Index));
-    if Column<>nil then
-      OnTitleClick(Column);
-  end;
+  if IsColumn then
+    DoHeaderClick(Index);
 end;
 
 procedure TCustomDBGrid.KeyDown(var Key: Word; Shift: TShiftState);
@@ -2807,16 +2814,18 @@ begin
   if Button<>mbLeft then
     exit;
 
-  if (aCol>=FirstGridColumn)and(aRow>=FixedRows) then
-  begin
-    if IsColumnVisible(aCol) and
-       (ColumnEditorStyle(ACol, SelectedField) = cbsCheckboxColumn) then begin
-      // react only if overriden editor is hidden
-      if (Editor=nil) or not EditorMode then
-        SwapCheckBox
-    end;
-    if Assigned(OnCellClick) then
-      OnCellClick(TColumn(ColumnFromGridColumn(aCol)));
+  if (aCol>=FirstGridColumn) then begin
+    if (aRow>=FixedRows) then begin
+      if IsColumnVisible(aCol) and
+         (ColumnEditorStyle(ACol, SelectedField) = cbsCheckboxColumn) then begin
+        // react only if overriden editor is hidden
+        if (Editor=nil) or not EditorMode then
+          SwapCheckBox
+      end;
+      if Assigned(OnCellClick) then
+        OnCellClick(TColumn(ColumnFromGridColumn(aCol)));
+    end else
+      DoHeaderClick(aCol)
   end;
 end;
 
