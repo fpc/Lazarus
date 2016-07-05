@@ -12600,8 +12600,6 @@ msgid "Reporting a Bug"
 msgstr "Hiba jelentése"
 
 #: lazarusidestrconsts.lismenuresaveformswithi18n
-#, fuzzy
-#| msgid "Resave forms with i18n"
 msgid "Resave forms with enabled i18n"
 msgstr "Form-ok újramentése i18n támogatással"
 
