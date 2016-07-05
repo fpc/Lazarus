@@ -2407,8 +2407,8 @@ begin
     end;
     WM_NCPAINT:
     begin
-      if (lWinControl <> nil) and TWin32ThemeServices(ThemeServices).ThemesEnabled and
-         not (lWinControl is TCustomForm) and (lWinControl is TCustomControl) then
+      if TWin32ThemeServices(ThemeServices).ThemesEnabled and
+        (lWinControl is TCustomControl) and not (lWinControl is TCustomForm) then
       begin
         TWin32ThemeServices(ThemeServices).PaintBorder(lWinControl, True);
         LMessage.Result := 0;
