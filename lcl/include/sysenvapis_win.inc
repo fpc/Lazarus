@@ -3,78 +3,113 @@
 {$I ../../components/lazutils/lazutils_defines.inc} //LCL depends on LazUtils, so this is OK
 
 {$IFnDEF WinCE}
+const
+  ASSOCSTR_COMMAND = 1;
+  //ASSOCSTR_EXECUTABLE = 2;
+  //ASSOCSTR_FRIENDLYDOCNAME = 3;
+  //ASSOCSTR_FRIENDLYAPPNAME = 4;
+  //ASSOCSTR_NOOPEN = 5;
+  //ASSOCSTR_SHELLNEWVALUE = 6;
+  //ASSOCSTR_DDECOMMAND = 7;
+  //ASSOCSTR_DDEIFEXEC = 8;
+  //ASSOCSTR_DDEAPPLICATION = 9;
+  //ASSOCSTR_DDETOPIC = 10;
+  //ASSOCSTR_INFOTIP = 11;
+  //ASSOCSTR_QUICKTIP = 12;
+  //ASSOCSTR_TILEINFO = 13;
+  //ASSOCSTR_CONTENTTYPE = 14;
+  //ASSOCSTR_DEFAULTICON = 15;
+  //ASSOCSTR_SHELLEXTENSION = 16;
+  //ASSOCSTR_DROPTARGET = 17;
+  //ASSOCSTR_DELEGATEEXECUTE = 18;
+  //ASSOCSTR_SUPPORTED_URI_PROTOCOLS = 19;
+  //ASSOCSTR_PROGID = 20;
+  //ASSOCSTR_APPID = 21;
+  //ASSOCSTR_APPPUBLISHER = 22;
+  //ASSOCSTR_APPICONREFERENCE = 23;
+  //ASSOCSTR_MAX = ;
+
+  //ASSOCF_NONE                  = $00000000;
+  //ASSOCF_INIT_NOREMAPCLSID     = $00000001;
+  //ASSOCF_INIT_BYEXENAME        = $00000002;
+  //ASSOCF_OPEN_BYEXENAME        = $00000002;
+  //ASSOCF_INIT_DEFAULTTOSTAR    = $00000004;
+  //ASSOCF_INIT_DEFAULTTOFOLDER  = $00000008;
+  //ASSOCF_NOUSERSETTINGS        = $00000010;
+  ASSOCF_NOTRUNCATE            = $00000020;
+  //ASSOCF_VERIFY                = $00000040;
+  //ASSOCF_REMAPRUNDLL           = $00000080;
+  //ASSOCF_NOFIXUPS              = $00000100;
+  //ASSOCF_IGNOREBASECLASS       = $00000200;
+  //ASSOCF_INIT_IGNOREUNKNOWN    = $00000400;
+  //ASSOCF_INIT_FIXED_PROGID     = $00000800;
+  //ASSOCF_IS_PROTOCOL           = $00001000;
+  //ASSOCF_INIT_FOR_FILE         = $00002000;
+
+
+
 function AssocQueryStringW(Flags: Integer; Str: Integer; pszAssoc, pszExtra, pszOut: PWChar;
   var pcchOut: DWORD): HRESULT; stdcall; external 'shlwapi.dll' name 'AssocQueryStringW';
 
-function AssocQueryStringA(Flags: Integer; Str: Integer; pszAssoc, pszExtra, pszOut: PChar;
-  var pcchOut: DWORD): HRESULT; stdcall; external 'shlwapi.dll' name 'AssocQueryStringA';
 
 function GetDefaultBrowserWide: WideString;
 const
-  ASSOCF_NOTRUNCATE = $00000020;
-  ASSOCSTR_EXECUTABLE = 2;
   Extension = '.htm';
 var
   BufSize: DWORD;
 begin
   BufSize := MAX_PATH;
   SetLength(Result, BufSize);
-  if AssocQueryStringW(ASSOCF_NOTRUNCATE, ASSOCSTR_EXECUTABLE, PWChar(Extension), 'open', PWChar(Result), BufSize) = S_OK then
+  if AssocQueryStringW(ASSOCF_NOTRUNCATE, ASSOCSTR_COMMAND, PWChar(Extension), 'open', PWChar(Result), BufSize) = S_OK then
     SetLength(Result, BufSize - 1)
   else
     Result := '';
 end;
 
-function GetDefaultBrowserAnsi: AnsiString;
-const
-  ASSOCF_NOTRUNCATE = $00000020;
-  ASSOCSTR_EXECUTABLE = 2;
-  Extension = '.htm';
+
+procedure ExtractBrowserAndParamsWide(const S: WideString; out ABrowser, AParams: WideString);
 var
-  BufSize: DWORD;
+  P: Integer;
 begin
-  BufSize := MAX_PATH;
-  SetLength(Result, BufSize);
-  if AssocQueryStringA(ASSOCF_NOTRUNCATE, ASSOCSTR_EXECUTABLE, PChar(Extension), 'open', PChar(Result), BufSize) = S_OK then
-    SetLength(Result, BufSize - 1)
+  ABrowser := S;
+  AParams := '%s';
+  if length(S) < 4 then Exit; //minimal executable name: a.exe
+  if S[1] = '"' then
+  begin
+    P := 2;
+    while (P <= length(S)) and (S[P] <> '"') do Inc(P);
+    if P > length(S) then Exit;  //malformed string: "abc foo bar
+    ABrowser := Copy(S, 1, P);
+    AParams := Trim(Copy(S, P+1, MaxInt));
+  end
   else
-    Result := '';
+  begin
+    P := Pos(#32,S);
+    if (P = 0) then
+    begin
+      ABrowser := S;
+      AParams := '"%s"';
+    end
+    else
+    begin
+      ABrowser := Copy(S, 1, P-1);
+      AParams := Trim(Copy(S, P+1, MaxInt));
+    end;
+  end;
+  AParams := Utf16StringReplace(AParams, '%1', '%s', []);
 end;
 {$ENDIF WinCE}
-
-function FindDefaultBrowserAnsi(out ABrowser, AParams: String): Boolean;
-begin
-  ABrowser := '';
-  {$IFnDEF WinCE}
-  ABrowser := GetDefaultBrowserAnsi;
-  AParams := '"%s"';
-  if (ABrowser = '') then
-  begin
-    if FindBrowserExecutable('rundll32', ABrowser) then
-      AParams := 'url.dll,FileProtocolHandler %s';
-  end;
-  {$ENDIF}
-  Result := (ABrowser <> '');
-  if not Result then
-  begin
-    Result := FindPredefinedBrowser(ABrowser, AParams);
-  end;
-end;
-
-function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
-begin
-  Result := FindDefaultBrowserAnsi(ABrowser, AParams);
-end;
 
 function FindDefaultBrowserWide(out ABrowser, AParams: WideString): Boolean;
 var
   AnsiBrowser, AnsiParams: String;
+  QueryRes: WideString;
 begin
   ABrowser := '';
-  {$IFnDEF WinCE}
-  ABrowser := GetDefaultBrowserWide;
   AParams := '"%s"';
-  if (ABrowser = '') then
+  {$IFnDEF WinCE}
+  QueryRes := GetDefaultBrowserWide;
+  if (QueryRes = '') then
   begin
     if FindBrowserExecutable('rundll32', AnsiBrowser) then
     begin
@@ -84,8 +119,10 @@ begin
       {$else}
       ABrowser := WideString(AnsiBrowser);
       {$ENDIF ACP_RTL}
-    end;
-  end;
+    end
+  end
+  else
+    ExtractBrowserAndParamsWide(QueryRes, ABrowser, AParams);
   {$ENDIF}
   Result := (ABrowser <> '');
   if not Result then
@@ -103,6 +140,26 @@ begin
     end;
   end;
 end;
+
+function FindDefaultBrowserUtf8(out ABrowser, AParams: String): Boolean;
+var
+  QueryRes: String;
+  WideBrowser, WideParams: WideString;
+begin
+  Result := FindDefaultBrowserWide(WideBrowser, WideParams);
+  ABrowser := Utf16ToUtf8(WideBrowser);
+  AParams := Utf16ToUtf8(WideParams);
+end;
+
+function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
+begin
+  Result := FindDefaultBrowserUtf8(ABrowser, AParams);
+  {$IFDEF ACP_RTL}
+  ABrowser := Utf8ToWinCp(ABrowser);
+  AParams := Utf8ToWinCp(AParams);
+  {$ENDIF ACP_RTL}
+end;
+
 
 
 function FindDefaultBrowserAndOpenUrl(AURL: String): Boolean;

@@ -47,7 +47,7 @@ unit LCLIntf;
 interface
 
 uses
-  {$IFDEF Windows}Windows, ShellApi,{$ENDIF}
+  {$IFDEF Windows}Windows, ShellApi, LazUtf16,{$ENDIF}
   {$IFDEF UNIX}Unix, {$ENDIF}
   {$IFDEF Darwin}MacOSAll, CocoaAll,{$ENDIF}
   Math, Classes, SysUtils, Types, LCLType, LCLProc, GraphType, InterfaceBase,
