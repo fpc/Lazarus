@@ -24,7 +24,7 @@ uses
 
   LCLType,LCLIntf,LCLProc,GraphType,Printers, ActnList,
 
-  ObjectInspector, PropEdits,
+  ObjectInspector, PropEdits, GraphPropEdits,
   
   LR_Class, LR_Color,LR_Edit;
 
