@@ -113,7 +113,7 @@ begin
   begin
     if FindBrowserExecutable('rundll32', AnsiBrowser) then
     begin
-      AParams := 'url.dll,FileProtocolHandler %s';
+      AParams := 'url.dll,FileProtocolHandler "%s"';
       {$IFnDEF ACP_RTL}
       ABrowser := Utf8ToUTF16(AnsiBrowser);
       {$else}
@@ -160,7 +160,32 @@ begin
   {$ENDIF ACP_RTL}
 end;
 
+{$IFnDEF WinCE}
+function IsFileUriScheme(const AURL: String): Boolean;
+const
+  FileURIScheme = 'file://';
+begin
+  Result := (CompareText(Copy(AURL,1,Length(FileURIScheme)), FileURIScheme) = 0);
+end;
 
+function IsHtmlWithAnchor(AURL: String): Boolean;
+var
+  AnchorPos, HtmlPos: SizeInt;
+begin
+  Result := False;
+  //Anchor will be defined by last '#' in AURL;
+  AnchorPos := Length(AURL);
+  while (AnchorPos < 0) and (AURL[AnchorPos] <> '#') do Dec(AnchorPos);
+  if (AnchorPos > 0) then
+  begin
+    AURL := UpperCase(AURL); //don't care about UTF8
+    HtmlPos := Pos('.HTM', AURL);
+    if (HtmlPos = 0) then HtmlPos := Pos('.HTML', AURL);
+    Result := (HtmlPos > 0) and (AnchorPos > HtmlPos);
+  end;
+end;
+
+{$ENDIF WinCE}
 
 function FindDefaultBrowserAndOpenUrl(AURL: String): Boolean;
 var
@@ -174,6 +199,9 @@ begin
   begin
     if (Pos('%s', AParams) > 0) then
     begin
+      //at least FireFox does not like -url -osint "%s" for local files, it wants "%s"
+      if IsFileUriScheme(AURL) and IsHtmlWithAnchor(AURL) then
+        AParams := '"%s"';
       {$IFnDEF ACP_RTL}
       AParamsUtf8 := Utf16ToUtf8(AParams);
       {$ELSE}
@@ -192,9 +220,6 @@ begin
       {$ELSE}
       AParams := WideString(AURL);
       {$ENDIF ACP_RTL}
-    //this happens if ABrowser is rundll.exe
-    if (Pos(#32, AParams) > 0) and (AParams[1] <> '"')
-      then AParams := '"' + AParams + '"';
     H := ShellExecuteW(0, 'open', PWChar(ABrowser), PWChar(AParams), nil, SW_SHOWNORMAL);
   end
   else
@@ -218,25 +243,6 @@ var
   ws: WideString;
   ans: AnsiString;
   IsFileUriWithSpaces, IsFileURI: Boolean;
-const
-  FileURIScheme = 'file://';
-
-  function IsHtmlWithAnchor(S: String): Boolean;
-  var
-    AnchorPos, HtmlPos: SizeInt;
-  begin
-    Result := False;
-    //Anchor will be defined by last '#' in AURL;
-    AnchorPos := Length(AURL);
-    while (AnchorPos < 0) and (S[AnchorPos] <> '#') do Dec(AnchorPos);
-    if (AnchorPos > 0) then
-    begin
-      S := UpperCase(S); //don't care about UTF8
-      HtmlPos := Pos('.HTM', S);
-      if (HtmlPos = 0) then HtmlPos := Pos('.HTML', S);
-      Result := (HtmlPos > 0) and (AnchorPos > HtmlPos);
-    end;
-  end;
 {$ENDIF}
 begin
   Result := False;
@@ -249,7 +255,7 @@ begin
   Info.lpFile := PWideChar(UTF8Decode(AURL));
   Result := ShellExecuteEx(@Info);
   {$ELSE}
-  IsFileURI := (CompareText(Copy(AURL,1,Length(FileURIScheme)), FileURIScheme) = 0);
+  IsFileURI := IsFileUriScheme(AURL);
   //Html FileURI's that have a local anchor cannot be opened via a direct call to ShellExecute,
   //in that case we need to find the actual default browser and execute that.
   //Notice that this will still fail to open the html at the correct anchor
