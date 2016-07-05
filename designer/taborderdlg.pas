@@ -44,9 +44,9 @@ type
     ArrowUp: TSpeedButton;
     ItemTreeview: TTreeView;
     SortByPositionButton: TBitBtn;
+    procedure ItemTreeviewSelectionChanged(Sender: TObject);
     procedure SortByPositionButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure ItemTreeviewClick(Sender: TObject);
     procedure TabOrderDialogCreate(Sender: TObject);
     procedure UpSpeedbuttonClick(Sender: TObject);
     procedure DownSpeedbuttonClick(Sender: TObject);
@@ -199,9 +199,18 @@ begin
   CheckButtonsEnabled;
 end;
 
-procedure TTabOrderDialog.ItemTreeviewClick(Sender: TObject);
+procedure TTabOrderDialog.ItemTreeviewSelectionChanged(Sender: TObject);
+var
+  Node: TTreeNode;
 begin
-  CheckButtonsEnabled;
+  if FUpdating then Exit;
+  Node := ItemTreeview.Selected;
+  if Assigned(Node) then begin
+    FUpdating := True;
+    GlobalDesignHook.SelectOnlyThis(TPersistent(Node.Data));
+    FUpdating := False;
+    CheckButtonsEnabled;
+  end;
 end;
 
 procedure TTabOrderDialog.UpSpeedbuttonClick(Sender: TObject);
@@ -409,6 +418,8 @@ var
   Node: TTreeNode;
 begin
   // ToDo: support also multiply selections.
+  if FUpdating then Exit;
+  FUpdating := True;
   ItemTreeview.BeginUpdate;
   Node := ItemTreeview.Items.GetFirstNode;
   while Assigned(Node) do begin
@@ -420,9 +431,10 @@ begin
         Break;
       end;
     end;
-    Node:=Node.GetNext;
+    Node := Node.GetNext;
   end;
   ItemTreeview.EndUpdate;
+  FUpdating := False;
   CheckButtonsEnabled;
 end;
 

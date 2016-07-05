@@ -9,7 +9,7 @@ object TabOrderDialog: TTabOrderDialog
   ClientWidth = 310
   OnCreate = TabOrderDialogCREATE
   OnShow = FormShow
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.7'
   Visible = True
   object ArrowUp: TSpeedButton
     AnchorSideRight.Control = Owner
@@ -20,7 +20,6 @@ object TabOrderDialog: TTabOrderDialog
     Width = 25
     Anchors = [akTop, akRight]
     BorderSpacing.Around = 6
-    NumGlyphs = 0
     OnClick = UpSpeedbuttonCLICK
     ShowHint = True
     ParentShowHint = False
@@ -34,7 +33,6 @@ object TabOrderDialog: TTabOrderDialog
     Width = 25
     Anchors = [akTop, akRight]
     BorderSpacing.Around = 6
-    NumGlyphs = 0
     OnClick = DownSpeedbuttonCLICK
     ShowHint = True
     ParentShowHint = False
@@ -48,13 +46,12 @@ object TabOrderDialog: TTabOrderDialog
     Width = 267
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    DefaultItemHeight = 16
     HideSelection = False
     ReadOnly = True
     RightClickSelect = True
     TabOrder = 0
-    OnClick = ItemTreeviewClick
     OnKeyDown = ItemTreeviewKeyDown
+    OnSelectionChanged = ItemTreeviewSelectionChanged
     Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
   object SortByPositionButton: TBitBtn
