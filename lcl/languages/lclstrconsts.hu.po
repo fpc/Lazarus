@@ -891,7 +891,7 @@ msgstr "Mégsem"
 
 #: lclstrconsts.rsmbclose
 msgid "&Close"
-msgstr "Be&zár"
+msgstr "Be&zárás"
 
 #: lclstrconsts.rsmbhelp
 msgid "&Help"

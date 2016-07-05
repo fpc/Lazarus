@@ -12,10 +12,8 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 
 #: pocheckerconsts.rspochecker
-#, fuzzy
-#| msgid "PO File Checker"
 msgid "Check PO Files ..."
-msgstr "PO Fájl Ellenőrző"
+msgstr "PO fájlok ellenőrzése ..."
 
 #: pocheckerconsts.rs_lang_af_za
 msgid "Afrikaans"
@@ -123,7 +121,7 @@ msgstr "Minden nyelv"
 
 #: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
 msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
-msgstr ""
+msgstr "Nem lehet írni a fájlt:%s%s%s%sAz \"Újra\" gombot megnyomva ismét frissítheti ezt a fordításcsaládot és folytathatja."
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
 msgid "Check for duplicate untranslated values"
@@ -205,7 +203,7 @@ msgstr ""
 
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
-msgstr ""
+msgstr "Bizonytalan szövegek (összesen: %s)"
 
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
@@ -293,53 +291,47 @@ msgstr ""
 
 #: pocheckerconsts.sopenfileinexternaleditor
 msgid "Open file in external editor"
-msgstr ""
+msgstr "Megnyitás külső szerkesztőben"
 
 #: pocheckerconsts.sopenfileinideeditor
 msgid "Open file in IDE editor"
-msgstr ""
+msgstr "Megnyitás az IDE szerkesztőjében"
 
 #: pocheckerconsts.sopenfileinsystempoeditor
 msgid "Open file in system PO editor"
-msgstr ""
+msgstr "Megnyitás a rendszer PO szerkesztőjében"
 
 #: pocheckerconsts.soriginal
 msgid "Original"
 msgstr "Eredeti"
 
 #: pocheckerconsts.spercfuzzy
-#, fuzzy
-#| msgid "%s: %4.1f%% fuzzy strings."
 msgid "%s: %5.1f%% fuzzy strings."
-msgstr "%s: %4.1f%% bizonytalan szöveg."
+msgstr "%s: %5.1f%% bizonytalan szöveg."
 
 #: pocheckerconsts.sperctranslated
-#, fuzzy
-#| msgid "%s: %4.1f%% translated strings."
 msgid "%s: %5.1f%% translated strings."
-msgstr "%s: %4.1f%% lefordított szöveg."
+msgstr "%s: %5.1f%% lefordított szöveg."
 
 #: pocheckerconsts.spercuntranslated
-#, fuzzy
-#| msgid "%s: %4.1f%% untranslated strings."
 msgid "%s: %5.1f%% untranslated strings."
-msgstr "%s: %4.1f%% lefordítatlan szöveg."
+msgstr "%s: %5.1f%% lefordítatlan szöveg."
 
 #: pocheckerconsts.sprocessingtranslationfamily
 msgid "Processing translation family..."
-msgstr ""
+msgstr "Fordításcsalád feldolgozása..."
 
 #: pocheckerconsts.sprocessingtranslationfamilyof
 msgid "Processing translation family %s of %s"
-msgstr ""
+msgstr "Fordításcsalád feldolgozása: %s / %s"
 
 #: pocheckerconsts.srefreshalltranslationfamilies
 msgid "Refresh all translation families"
-msgstr ""
+msgstr "Minden fordításcsalád frissítése"
 
 #: pocheckerconsts.srefreshcurrenttranslationfamily
 msgid "Refresh current translation family"
-msgstr ""
+msgstr "Aktuális fordításcsalád frissítése"
 
 #: pocheckerconsts.sresults
 msgid "Results"
@@ -390,26 +382,20 @@ msgid "Show statistics graph"
 msgstr "Statisztika grafikus megjelenítése"
 
 #: pocheckerconsts.sstathint
-#, fuzzy
-#| msgid ""
-#| "%d Translated (%.1f%%)\n"
-#| "%d UnTranslated (%.1f%%)\n"
-#| "%d Fuzzy (%.1f%%)\n"
-#| "%d Error(s) in Selected Tests\n"
 msgid ""
 "Translated: %d (%.1f%%)\n"
 "Untranslated: %d (%.1f%%)\n"
 "Fuzzy: %d (%.1f%%)\n"
 "Errors in selected tests: %d\n"
 msgstr ""
-"%3d lefordítva (%3.1f%%)\n"
-"%3d nincs lefordítva (%3.1f%%)\n"
-"%3d bizonytalan (%3.1f%%)\n"
-"%d hiba a kiválasztott tesztekben\n"
+"Lefordítva: %d (%.1f%%)\n"
+"Nincs lefordítva: %d (%.1f%%)\n"
+"Bizonytalan: %d (%.1f%%)\n"
+"Hibák száma a kiválasztott tesztekben: %d\n"
 
 #: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
 msgid "The following %s missing master .po file(s) were removed from the list:"
-msgstr ""
+msgstr "A következő %s hiányzó mester .po fájl el lett távolítva a listából:"
 
 #: pocheckerconsts.sthefollowingorphanedpofilesfound
 msgid "The following %s orphaned .po file(s) found:"
@@ -421,15 +407,15 @@ msgstr "Összes megtalált hiba: %d"
 
 #: pocheckerconsts.stotalfuzzystrings
 msgid "Total fuzzy strings: %s"
-msgstr ""
+msgstr "Összes bizonytalan szöveg: %s"
 
 #: pocheckerconsts.stotaltranslatedstrings
 msgid "Total translated strings: %s (%.1f%%)"
-msgstr ""
+msgstr "Összes lefordított szöveg: %s (%.1f%%)"
 
 #: pocheckerconsts.stotaluntranslatedstrings
 msgid "Total untranslated strings: %s"
-msgstr ""
+msgstr "Összes lefordítatlan szöveg: %s"
 
 #: pocheckerconsts.stotalwarnings
 msgid "Total warnings found: %d"
@@ -437,7 +423,7 @@ msgstr "Összes figyelmeztetés: %d"
 
 #: pocheckerconsts.stranslatedstringstotal
 msgid "Translated strings (total: %s [%.1f%%])"
-msgstr ""
+msgstr "Lefordított szövegek (összesen: %s [%.1f%%])"
 
 #: pocheckerconsts.stranslation
 msgid "Translation"
@@ -461,5 +447,5 @@ msgstr "Kijelölés megszüntetése"
 
 #: pocheckerconsts.suntranslatedstringstotal
 msgid "Untranslated strings (total: %s)"
-msgstr ""
+msgstr "Lefordítatlan szövegek (összesen: %s)"
 

@@ -4946,15 +4946,15 @@ msgstr "Nem található a unit: %s"
 
 #: lazarusidestrconsts.liscannotopenform
 msgid "Cannot open form \"%s\"."
-msgstr ""
+msgstr "A(z) \"%s\" form nem nyitható meg."
 
 #: lazarusidestrconsts.liscannotsaveform
 msgid "Cannot save form \"%s\"."
-msgstr ""
+msgstr "A(z) \"%s\" form nem menthető."
 
 #: lazarusidestrconsts.liscannotsubstitutemacros
 msgid "Cannot substitute macro \"%s\"."
-msgstr ""
+msgstr "A(z) \"%s\" makrót nem lehet behelyettesíteni."
 
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
@@ -8761,7 +8761,7 @@ msgstr "Hiba a komponens megnyitása közben"
 
 #: lazarusidestrconsts.liserroropeningform
 msgid "Error opening form"
-msgstr ""
+msgstr "Hiba a form megnyitásakor"
 
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
@@ -8794,7 +8794,7 @@ msgstr ", Hibák: %s"
 
 #: lazarusidestrconsts.liserrorsavingform
 msgid "Error saving form"
-msgstr ""
+msgstr "Hiba a form mentésekor"
 
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
@@ -9715,7 +9715,7 @@ msgstr "Átlépni"
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
-msgstr "Tipp: A \"ResourceString létrehozása\" funkció egy karakterlánc konstanst vár.%sVálassza ki a kifejezést és próbálja újra!"
+msgstr "Tipp: A \"ResourceString létrehozása\" művelethez egy karakterlánc konstansra van szükség.%sVálassza ki a kifejezést és próbálja újra!"
 
 #: lazarusidestrconsts.lishinttoggleformunit
 msgid "Toggle Form/Unit"
@@ -10240,7 +10240,7 @@ msgstr "Érvénytelen kifejezés:%s%s%s%s"
 
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
-msgstr "Érvénytelen kifejezés.%sTipp: A \"ResourceString létrehozása\" funkció egy karakterlánc konstanst vár egyetlen fájlban. Válassza ki a kifejezést és próbálja újra!"
+msgstr "Érvénytelen kifejezés.%sTipp: A \"ResourceString létrehozása\" művelethez egy karakterlánc konstansra van szükség egyetlen fájlban. Válassza ki a kifejezést és próbálja újra!"
 
 #: lazarusidestrconsts.lisinvalidfilter
 msgid "Invalid filter"
@@ -12600,8 +12600,10 @@ msgid "Reporting a Bug"
 msgstr "Hiba jelentése"
 
 #: lazarusidestrconsts.lismenuresaveformswithi18n
+#, fuzzy
+#| msgid "Resave forms with i18n"
 msgid "Resave forms with enabled i18n"
-msgstr ""
+msgstr "Form-ok újramentése i18n támogatással"
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC Source Directory"
@@ -13865,7 +13867,7 @@ msgstr "A beállítások megváltoztak, tiszta újrafordítás -B használatáva
 
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
-msgstr ""
+msgstr "kihagyva"
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -17206,10 +17208,8 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr "Az azonosító egy unit. Használja a Fájl -> Mentés másként menüpontot unit átnevezéshez!"
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-#, fuzzy
-#| msgid "The key %sis already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
-msgstr "A(z) %s%sbillentyű már hozzá van rendelve a(z) %s funkcióhoz.%sEltávolítja a régebbi hozzárendelést és hozzárendeli a billentyűt a(z) %s%s új művelethez?"
+msgstr "A(z) %s billentyű már hozzá van rendelve a(z) %s%s művelethez.%s%sEltávolítja a régebbi hozzárendelést és hozzárendeli a billentyűt az %s művelethez?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
 msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%sSee Project -> Project Options -> Application for settings."
@@ -17525,7 +17525,7 @@ msgstr "Ez a komponens már tartalmaz egy osztályt %s névvel."
 
 #: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
 msgid "This function needs an open .lfm file in the source editor."
-msgstr "Ehhez a funkcióhoz szükség van egy megnyitott .lfm fájlra a forráskódszerkesztőben."
+msgstr "Ehhez a művelethez szükség van egy megnyitott .lfm fájlra a forráskódszerkesztőben."
 
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
