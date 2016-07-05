@@ -12885,7 +12885,7 @@ msgid "Reporting a Bug"
 msgstr "Reportando uma falha (\"bug\")"
 
 #: lazarusidestrconsts.lismenuresaveformswithi18n
-msgid "Resave forms with i18n"
+msgid "Resave forms with enabled i18n"
 msgstr ""
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory

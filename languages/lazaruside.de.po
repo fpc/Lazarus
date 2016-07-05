@@ -12596,7 +12596,7 @@ msgid "Reporting a Bug"
 msgstr "Fehler melden ..."
 
 #: lazarusidestrconsts.lismenuresaveformswithi18n
-msgid "Resave forms with i18n"
+msgid "Resave forms with enabled i18n"
 msgstr ""
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory

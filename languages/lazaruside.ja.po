@@ -12847,7 +12847,7 @@ msgid "Reporting a Bug"
 msgstr "不具合(バグ)を報告"
 
 #: lazarusidestrconsts.lismenuresaveformswithi18n
-msgid "Resave forms with i18n"
+msgid "Resave forms with enabled i18n"
 msgstr ""
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory

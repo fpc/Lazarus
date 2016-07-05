@@ -483,7 +483,7 @@ resourcestring
   lisMenuOpenRecentProject = 'Open Recent Project';
   lisMenuSaveProject = 'Save Project';
   lisMenuSaveProjectAs = 'Save Project As ...';
-  lisMenuResaveFormsWithI18n = 'Resave forms with i18n';
+  lisMenuResaveFormsWithI18n = 'Resave forms with enabled i18n';
   lisMenuPublishProject = 'Publish Project ...';
   lisPublishProject = 'Publish Project';
   lisMenuProjectInspector = 'Project Inspector';
