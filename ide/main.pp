@@ -4668,7 +4668,7 @@ procedure TMainIDE.DoLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptio
 begin
   if ConsoleVerbosity>0 then
     DebugLn(['Hint: (lazarus) TMainIDE.OnLoadIDEOptions: ', AOptions.ClassName]);
-  // ToDo: Figure out why this is not called.
+  // ToDo: Figure out why this is not called with TEnvironmentOptions.
   if AOptions is TEnvironmentOptions then
     LoadDesktopSettings(AOptions as TEnvironmentOptions);
 end;
@@ -4677,7 +4677,7 @@ procedure TMainIDE.DoSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptio
 begin
   if ConsoleVerbosity>0 then
     DebugLn(['Hint: (lazarus) TMainIDE.OnSaveIDEOptions: ', AOptions.ClassName]);
-  // ToDo: Figure out why this is not called.
+  // ToDo: Figure out why this is not called with TEnvironmentOptions.
   if AOptions is TEnvironmentOptions then
     SaveDesktopSettings(AOptions as TEnvironmentOptions);
 end;
