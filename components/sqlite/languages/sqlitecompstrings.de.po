@@ -78,3 +78,4 @@ msgstr "Tabellenname: %s"
 #: sqlitecompstrings.stablenamenotsetitsnotpossibletocreateeditatable
 msgid "Table name not set: it's not possible to create/edit a table."
 msgstr "Ohne einen Tabellennamen kann die Tabelle nicht erstellt/bearbeitet werden."
+

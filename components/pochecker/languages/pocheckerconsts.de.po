@@ -448,3 +448,4 @@ msgstr "Alle Dateien abwählen"
 #: pocheckerconsts.suntranslatedstringstotal
 msgid "Untranslated strings (total: %s)"
 msgstr "Nicht übersetzte Zeichenketten (insgesamt: %s)"
+
