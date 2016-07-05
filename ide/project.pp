@@ -5082,7 +5082,8 @@ end;
 
 procedure TProject.SetActiveBuildMode(const AValue: TProjectBuildMode);
 begin
-  if FActiveBuildMode=AValue then exit;
+  // Must be set even if FActiveBuildMode=AValue. Modes may be added and deleted,
+  //  the same old address can be used by a new mode.
   FActiveBuildMode:=AValue;
   if FActiveBuildMode<>nil then
     FLazCompilerOptions:=FActiveBuildMode.CompilerOptions
