@@ -185,9 +185,8 @@ begin
   end;
 end;
 
-{$ENDIF WinCE}
 
-function FindDefaultBrowserAndOpenUrl(AURL: String; IsFileURI: Boolean=False; IsLocalWithAnchor: Boolean=False): Boolean;
+function FindDefaultBrowserAndOpenUrl(AURL: String; IsFileURI: Boolean=False{; IsLocalWithAnchor: Boolean=False}): Boolean;
 var
   ABrowser, AParams: WideString;
   H: HINST;
@@ -199,9 +198,13 @@ begin
   begin
     if (Pos('%s', AParams) > 0) then
     begin
+      //MS IE returns quoted or unquoted %s, depending on version and OS
+      //file:// needs to be quoted if filename contains spaces
+      if (Pos('"%s"', AParams) = 0) and IsFileUri then
+        AURL := '"'+ AURL + '"';
       //at least FireFox does not like -url -osint "%s" for local files, it wants "%s"
-      if IsFileUri and IsLocalWithAnchor then
-        AParams := '"%s"';
+      //if IsFileUri and IsLocalWithAnchor then
+      //  AParams := '"%s"';
       {$IFnDEF ACP_RTL}
       AParamsUtf8 := Utf16ToUtf8(AParams);
       {$ELSE}
@@ -215,13 +218,22 @@ begin
       {$ENDIF ACP_RTL}
     end
     else
+    begin
+      //file:// needs to be quoted if filename contains spaces
+      if IsFileURI and (Pos(#32, AURL) > 0) then
+        AURL := '"' + AURL + '"';
       {$IFnDEF ACP_RTL}
       AParams := Utf8ToUtf16(AURL);
       {$ELSE}
       AParams := WideString(AURL);
       {$ENDIF ACP_RTL}
+    end;
+
+    debugln('FindDefaultBrowserAndOpenUrl:');
+    debugln(['  ABrowser = ',ABrowser]);
+    debugln(['  AParams  = ',AParams]);
     H := ShellExecuteW(0, 'open', PWChar(ABrowser), PWChar(AParams), nil, SW_SHOWNORMAL);
-  end
+  end  //FindDefaultBrowserWide
   else
   begin
     {$IFnDEF ACP_RTL}
@@ -233,6 +245,7 @@ begin
   end;
   Result := (H > 32);
 end;
+{$ENDIF WinCE}
 
 // Open a given URL with whatever Windows thinks is appropriate
 function OpenURL(AURL: String): Boolean;
@@ -262,7 +275,7 @@ begin
   //if FindDefaultBrowserWide returns 'rundll.exe'
   //See: issue #0030326 and related
   if IsFileURI and IsHtmlWithAnchor(AURL) then
-    Result := FindDefaultBrowserAndOpenURL(AURL, True, True)
+    Result := FindDefaultBrowserAndOpenURL(AURL, True{, True})
   else
   begin
     //Urls that start with file:// are allowed to contain spaces and should be quoted
