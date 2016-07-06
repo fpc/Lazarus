@@ -187,7 +187,7 @@ end;
 
 {$ENDIF WinCE}
 
-function FindDefaultBrowserAndOpenUrl(AURL: String): Boolean;
+function FindDefaultBrowserAndOpenUrl(AURL: String; IsFileURI: Boolean=False; IsLocalWithAnchor: Boolean=False): Boolean;
 var
   ABrowser, AParams: WideString;
   H: HINST;
@@ -200,7 +200,7 @@ begin
     if (Pos('%s', AParams) > 0) then
     begin
       //at least FireFox does not like -url -osint "%s" for local files, it wants "%s"
-      if IsFileUriScheme(AURL) and IsHtmlWithAnchor(AURL) then
+      if IsFileUri and IsLocalWithAnchor then
         AParams := '"%s"';
       {$IFnDEF ACP_RTL}
       AParamsUtf8 := Utf16ToUtf8(AParams);
@@ -262,7 +262,7 @@ begin
   //if FindDefaultBrowserWide returns 'rundll.exe'
   //See: issue #0030326 and related
   if IsFileURI and IsHtmlWithAnchor(AURL) then
-    Result := FindDefaultBrowserAndOpenURL(AURL)
+    Result := FindDefaultBrowserAndOpenURL(AURL, True, True)
   else
   begin
     //Urls that start with file:// are allowed to contain spaces and should be quoted
