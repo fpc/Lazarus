@@ -91,7 +91,7 @@ type
     procedure AddToProjectDialogClose(Sender: TObject;
                                       var {%H-}CloseAction: TCloseAction);
     procedure AddToProjectDialogShow(Sender: TObject);
-    procedure DependPkgNameListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure DependPkgNameListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure FilesDirButtonClick(Sender: TObject);
     procedure FilesListViewSelectItem(Sender: TObject; {%H-}Item: TListItem;
       {%H-}Selected: Boolean);

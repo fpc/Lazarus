@@ -129,7 +129,7 @@ type
     procedure ComponentUnitFileBrowseButtonClick(Sender: TObject);
     procedure ComponentUnitFileShortenButtonClick(Sender: TObject);
     procedure ComponentUnitNameEditChange(Sender: TObject);
-    procedure DependPkgNameListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure DependPkgNameListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure FilesAddButtonClick(Sender: TObject);
     procedure FilesDeleteButtonClick(Sender: TObject);
     procedure FilesDirButtonClick(Sender: TObject);
