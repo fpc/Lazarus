@@ -1768,6 +1768,22 @@ type
       Add(IsKeyWordMethodSpecifier.GetItem(i).KeyWord+';');
   end;
 
+  procedure AddProcSpecifiers;
+  var
+    i: Integer;
+  begin
+    for i:=0 to IsKeyWordProcedureSpecifier.Count-1 do
+      Add(IsKeyWordProcedureSpecifier.GetItem(i).KeyWord+';');
+  end;
+
+  procedure AddProcTypeSpecifiers;
+  var
+    i: Integer;
+  begin
+    for i:=0 to IsKeyWordProcedureTypeSpecifier.Count-1 do
+      Add(IsKeyWordProcedureTypeSpecifier.GetItem(i).KeyWord+';');
+  end;
+
 var
   Node: TCodeTreeNode;
   SubNode: TCodeTreeNode;
@@ -1822,10 +1838,6 @@ begin
           if SubNode.Desc=ctnProperty then begin
             CheckProperty(SubNode);
           end;
-        end;
-        if NodeInFront<>nil then begin
-          if NodeInFront.Desc in [ctnProcedure,ctnProcedureHead] then
-            AddMethodSpecifiers;
         end;
       end;
 
@@ -1933,6 +1945,24 @@ begin
     ctnProperty:
       CheckProperty(Node);
 
+    end;
+
+    if NodeInFront<>nil then begin
+      if NodeInFront.Desc=ctnProcedureHead then begin
+        // procedure head postfix modifiers
+        case Node.Desc of
+        ctnClass,ctnObject,ctnObjCCategory,ctnObjCClass,
+        ctnClassHelper, ctnRecordHelper, ctnTypeHelper,
+        ctnClassPrivate,ctnClassProtected,ctnClassPublic,ctnClassPublished:
+          AddMethodSpecifiers;
+        else
+          //debugln(['TIdentCompletionTool.GatherContextKeywords ',NodeInFront.Parent.DescAsString]);
+          if NodeInFront.Parent.Desc=ctnProcedure then
+            AddProcSpecifiers
+          else if NodeInFront.Parent.Desc=ctnProcedureType then
+            AddProcTypeSpecifiers;
+        end;
+      end;
     end;
   except
     // ignore parser errors
