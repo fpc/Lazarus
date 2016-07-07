@@ -1773,7 +1773,7 @@ var
   SubNode: TCodeTreeNode;
   NodeInFront: TCodeTreeNode;
   p: Integer;
-  NodeBehind: TCodeTreeNode;
+  NodeBehind, LastChild: TCodeTreeNode;
 begin
   try
     Node:=Context.Node;
@@ -1813,17 +1813,18 @@ begin
         if (Node.Desc=ctnRecordType) or (Node.Parent.Desc=ctnRecordType) then begin
           Add('case');
         end;
-        if (Node.LastChild<>nil) and (CleanPos>Node.LastChild.StartPos)
-        and (Node.LastChild.EndPos>Node.LastChild.StartPos)
-        and (Node.LastChild.EndPos<Srclen) then begin
+        LastChild:=Node.LastChild;
+        if (LastChild<>nil) and (CleanPos>LastChild.StartPos)
+        and (LastChild.EndPos>LastChild.StartPos)
+        and (LastChild.EndPos<Srclen) then begin
           //debugln(['TIdentCompletionTool.GatherContextKeywords end of class section ',dbgstr(copy(Src,Node.LastChild.EndPos-10,10))]);
-          SubNode:=Node.LastChild;
+          SubNode:=LastChild;
           if SubNode.Desc=ctnProperty then begin
             CheckProperty(SubNode);
           end;
         end;
         if NodeInFront<>nil then begin
-          if NodeInFront.Desc=ctnProcedure then
+          if NodeInFront.Desc in [ctnProcedure,ctnProcedureHead] then
             AddMethodSpecifiers;
         end;
       end;
