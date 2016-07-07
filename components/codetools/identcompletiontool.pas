@@ -1950,18 +1950,19 @@ begin
     if NodeInFront<>nil then begin
       if NodeInFront.Desc=ctnProcedureHead then begin
         // procedure head postfix modifiers
-        case Node.Desc of
-        ctnClass,ctnObject,ctnObjCCategory,ctnObjCClass,
-        ctnClassHelper, ctnRecordHelper, ctnTypeHelper,
-        ctnClassPrivate,ctnClassProtected,ctnClassPublic,ctnClassPublished:
-          AddMethodSpecifiers;
-        else
-          //debugln(['TIdentCompletionTool.GatherContextKeywords ',NodeInFront.Parent.DescAsString]);
-          if NodeInFront.Parent.Desc=ctnProcedure then
-            AddProcSpecifiers
-          else if NodeInFront.Parent.Desc=ctnProcedureType then
-            AddProcTypeSpecifiers;
-        end;
+        //debugln(['TIdentCompletionTool.GatherContextKeywords NodeInFront.Parent=',NodeInFront.Parent.DescAsString]);
+        if NodeInFront.Parent.Desc=ctnProcedure then begin
+          //debugln(['TIdentCompletionTool.GatherContextKeywords NodeInFront.Parent.Parent=',NodeInFront.Parent.Parent.DescAsString]);
+          case NodeInFront.Parent.Parent.Desc of
+          ctnClass,ctnObject,ctnObjCCategory,ctnObjCClass,
+          ctnClassHelper, ctnRecordHelper, ctnTypeHelper,
+          ctnClassPrivate,ctnClassProtected,ctnClassPublic,ctnClassPublished:
+            AddMethodSpecifiers;
+          else
+            AddProcSpecifiers;
+          end;
+        end else if NodeInFront.Parent.Desc=ctnProcedureType then
+          AddProcTypeSpecifiers;
       end;
     end;
   except
