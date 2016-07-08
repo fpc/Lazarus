@@ -24,7 +24,7 @@ const
   //ASSOCSTR_DELEGATEEXECUTE = 18;
   //ASSOCSTR_SUPPORTED_URI_PROTOCOLS = 19;
   //ASSOCSTR_PROGID = 20;
-  //ASSOCSTR_APPID = 21;
+  ASSOCSTR_APPID = 21;
   //ASSOCSTR_APPPUBLISHER = 22;
   //ASSOCSTR_APPICONREFERENCE = 23;
   //ASSOCSTR_MAX = ;
@@ -46,13 +46,52 @@ const
   //ASSOCF_IS_PROTOCOL           = $00001000;
   //ASSOCF_INIT_FOR_FILE         = $00002000;
 
-
+const
+  //List of WinAppBrwosers (Win 10) that are capable of handling local filenames with anchors
+  //Strings must be in uppercase
+  //The string must be the "easy part" that can be detected in a AppUserModelID like
+  //shell:AppsFolder\Microsoft.MicrosoftEdge_8wekyb3d8bbwe!MicrosoftEdge
+  //Currently Edge is the only one that can handle this, but others may follow
+  CapableWinAppBrowsers: Array[1..1] of WideString = (
+    'MICROSOFTEDGE'
+    );
 
 function AssocQueryStringW(Flags: Integer; Str: Integer; pszAssoc, pszExtra, pszOut: PWChar;
   var pcchOut: DWORD): HRESULT; stdcall; external 'shlwapi.dll' name 'AssocQueryStringW';
 
+function IsLaunchWinApp(ABrowser: WideString): Boolean;
+begin
+  Result := (Pos('LAUNCHWINAPP.EXE', WideUpperCase(ABrowser)) > 0)
+end;
 
-function GetDefaultBrowserWide: WideString;
+//not every AppUserModelID we retrieve using GetDefaultBrowserWideByAppID
+//accepts paramters (e.g. the URL)
+function LaunchWinAppBrowserCanHandleParams(ABrowser: WideString): Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  for i := Low(CapableWinAppBrowsers) to High(CapableWinAppBrowsers) do
+    if (Pos(CapableWinAppBrowsers[i], WideUpperCase(ABrowser)) > 0) then Exit(True);
+end;
+
+function GetDefaultBrowserWideByAppID: WideString;
+const
+  Extension = '.htm';
+var
+  BufSize: DWORD;
+begin
+  BufSize := MAX_PATH;
+  SetLength(Result, BufSize);
+  if AssocQueryStringW(ASSOCF_NOTRUNCATE, ASSOCSTR_APPID, PWChar(Extension), 'open', PWChar(Result), BufSize) = S_OK then
+    SetLength(Result, BufSize - 1)
+  else
+    Result := '';
+  if (Result <> '') then
+    Result := 'shell:AppsFolder\' + Result;
+end;
+
+function GetDefaultBrowserWideByCmd: WideString;
 const
   Extension = '.htm';
 var
@@ -103,12 +142,12 @@ end;
 function FindDefaultBrowserWide(out ABrowser, AParams: WideString): Boolean;
 var
   AnsiBrowser, AnsiParams: String;
-  QueryRes: WideString;
+  QueryRes, SavedBrowser, SavedParams: WideString;
 begin
   ABrowser := '';
   AParams := '"%s"';
   {$IFnDEF WinCE}
-  QueryRes := GetDefaultBrowserWide;
+  QueryRes := GetDefaultBrowserWideByCmd;
   if (QueryRes = '') then
   begin
     if FindBrowserExecutable('rundll32', AnsiBrowser) then
@@ -122,7 +161,26 @@ begin
     end
   end
   else
+  begin
     ExtractBrowserAndParamsWide(QueryRes, ABrowser, AParams);
+    // On Windows 10, the default loading of files is done by LaunchWinApp. It calls
+    // the linked default program. We have to find it and use it, without quotation marks!
+    // See http://bugs.freepascal.org/view.php?id=30326
+    // Till now, only Edge is working correct
+    if IsLaunchWinApp(ABrowser) then
+    begin
+      SavedBrowser := ABrowser;
+      SavedParams := AParams;
+      ABrowser := GetDefaultBrowserWideByAppID;
+      if LaunchWinAppBrowserCanHandleParams(ABrowser) then
+        AParams := '%s' //Edge seems to require that AParams is NOT double quoted
+      else
+      begin // not MS Edge (or compatible w.r.t. arguments)
+        ABrowser := SavedBrowser;
+        AParams  := SavedParams;
+      end;
+    end;
+  end;
   {$ENDIF}
   Result := (ABrowser <> '');
   if not Result then
@@ -185,7 +243,8 @@ begin
   end;
 end;
 
-
+//Currently only used to open a local html file with a specified anchor
+//but in theory should be able to handle all URL's
 function FindDefaultBrowserAndOpenUrl(AURL: String; IsFileURI: Boolean=False{; IsLocalWithAnchor: Boolean=False}): Boolean;
 var
   ABrowser, AParams: WideString;
@@ -200,7 +259,7 @@ begin
     begin
       //MS IE returns quoted or unquoted %s, depending on version and OS
       //file:// needs to be quoted if filename contains spaces
-      if (Pos('"%s"', AParams) = 0) and IsFileUri then
+      if (Pos('"%s"', AParams) = 0) and IsFileUri and (not LaunchWinAppBrowserCanHandleParams(ABrowser)) then
         AURL := '"'+ AURL + '"';
       //at least FireFox does not like -url -osint "%s" for local files, it wants "%s"
       //if IsFileUri and IsLocalWithAnchor then
@@ -220,7 +279,7 @@ begin
     else
     begin
       //file:// needs to be quoted if filename contains spaces
-      if IsFileURI and (Pos(#32, AURL) > 0) then
+      if IsFileURI and (Pos(#32, AURL) > 0) {and (not LaunchWinAppBrowserCanHandleParams(ABrowser))} then
         AURL := '"' + AURL + '"';
       {$IFnDEF ACP_RTL}
       AParams := Utf8ToUtf16(AURL);
@@ -229,9 +288,9 @@ begin
       {$ENDIF ACP_RTL}
     end;
 
-    debugln('FindDefaultBrowserAndOpenUrl:');
-    debugln(['  ABrowser = ',ABrowser]);
-    debugln(['  AParams  = ',AParams]);
+    //debugln('FindDefaultBrowserAndOpenUrl:');
+    //debugln(['  ABrowser = ',ABrowser]);
+    //debugln(['  AParams  = ',AParams]);
     H := ShellExecuteW(0, 'open', PWChar(ABrowser), PWChar(AParams), nil, SW_SHOWNORMAL);
   end  //FindDefaultBrowserWide
   else
