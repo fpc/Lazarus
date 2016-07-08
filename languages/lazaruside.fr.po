@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-05-14 09:51+0200\n"
+"PO-Revision-Date: 2016-07-08 14:10+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 1.8.8\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
@@ -4948,15 +4948,15 @@ msgstr "Impossible de trouver l'unité %s"
 
 #: lazarusidestrconsts.liscannotopenform
 msgid "Cannot open form \"%s\"."
-msgstr ""
+msgstr "Impossible d'ouvrir la fiche \"%s\"."
 
 #: lazarusidestrconsts.liscannotsaveform
 msgid "Cannot save form \"%s\"."
-msgstr ""
+msgstr "Impossible de sauvegarder la fiche \"%s\"."
 
 #: lazarusidestrconsts.liscannotsubstitutemacros
 msgid "Cannot substitute macro \"%s\"."
-msgstr ""
+msgstr "Impossible de remplacer la macro \"%s\"."
 
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
@@ -8763,7 +8763,7 @@ msgstr "Erreur d'ouverture du composant"
 
 #: lazarusidestrconsts.liserroropeningform
 msgid "Error opening form"
-msgstr ""
+msgstr "Erreur à l'ouverture de la fiche"
 
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
@@ -8796,7 +8796,7 @@ msgstr " - Erreurs : %s"
 
 #: lazarusidestrconsts.liserrorsavingform
 msgid "Error saving form"
-msgstr ""
+msgstr "Erreur de sauvegarde de la fiche"
 
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
@@ -12606,7 +12606,7 @@ msgstr "Signaler un bogue"
 
 #: lazarusidestrconsts.lismenuresaveformswithi18n
 msgid "Resave forms with enabled i18n"
-msgstr ""
+msgstr "Réenregistrement des fiches avec i18n activé"
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC Source Directory"
@@ -13874,7 +13874,7 @@ msgstr "Les options ont changé ; nettoyage et recompilation avec -B"
 
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
-msgstr ""
+msgstr "Ignoré"
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -17215,10 +17215,8 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr "L'identificateur est une unité. Veuillez utiliser la commande \"Fichier\" - \"Enregistrer sous\" afin de renommer une unité."
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-#, fuzzy
-#| msgid "The key %sis already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
-msgstr "La touche %s%s est déjà attribuée à %s.%sVoulez-vous retirer l'ancienne affectation et affecter la touche à la nouvelle fonction %s%s ?"
+msgstr "La touche %s est déjà attribuée à %s%s.%s%sVoulez-vous retirer l'ancienne affectation et affecter la touche à la nouvelle fonction %s ?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
 msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%sSee Project -> Project Options -> Application for settings."

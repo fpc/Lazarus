@@ -2,11 +2,11 @@ msgid ""
 msgstr ""
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
-"PO-Revision-Date: 2016-05-14 10:03+0200\n"
+"PO-Revision-Date: 2016-07-08 14:14+0200\n"
 "Project-Id-Version: lazreport\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 1.8.8\n"
 "MIME-Version: 1.0\n"
 "Project-Id-Version: lazreport\n"
 "POT-Creation-Date: \n"
@@ -636,51 +636,51 @@ msgstr "&Mots entiers"
 
 #: lr_const.serrexpectedassign
 msgid "Expected \":=\""
-msgstr ""
+msgstr "\":=\" attendu"
 
 #: lr_const.serrexpectedclosingbracket1
 msgid "Expected \")\""
-msgstr ""
+msgstr "\")\" attendu"
 
 #: lr_const.serrexpectedclosingbracket2
 msgid "Expected \"]\""
-msgstr ""
+msgstr "\"]\" attendu"
 
 #: lr_const.serrexpectedcomma
 msgid "Expected \",\" or \")\""
-msgstr ""
+msgstr "\",\" ou \")\" attendu"
 
 #: lr_const.serrexpecteddo
 msgid "Expected \"do\""
-msgstr ""
+msgstr "\"do\" attendu"
 
 #: lr_const.serrexpectedend
 msgid "Expected \";\" or \"end\""
-msgstr ""
+msgstr "\";\" ou \"end\" attendu"
 
 #: lr_const.serrexpectedthen
 msgid "Expected \"then\""
-msgstr ""
+msgstr "\"then\" attendu"
 
 #: lr_const.serrexpecteduntil
 msgid "Expected \";\" or \"until\""
-msgstr ""
+msgstr "\";\" ou \"until\" attendu"
 
 #: lr_const.serrlabelgoto
 msgid "Label in goto must be a number"
-msgstr ""
+msgstr "L'étiquette pour \"Goto\" doit être un nombre"
 
 #: lr_const.serrline
 msgid "Line"
-msgstr ""
+msgstr "Ligne"
 
 #: lr_const.serrneeddo
 msgid "Need \"do\" here"
-msgstr ""
+msgstr "\"do\" nécessaire ici"
 
 #: lr_const.serrneedto
 msgid "Need \"to\" here"
-msgstr ""
+msgstr "\"to\" nécessaire ici"
 
 #: lr_const.serror
 msgid "Error"
