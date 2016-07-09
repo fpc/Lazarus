@@ -144,8 +144,8 @@ end;
 procedure TNoteBookStringsTabControl.CreateHandle;
 begin
   inherited CreateHandle;
-  if FHandelCreated <> nil then
-    FHandelCreated(self);
+  if FHandleCreated <> nil then
+    FHandleCreated(self);
 end;
 
 class procedure TNoteBookStringsTabControl.WSRegisterClass;
@@ -291,7 +291,7 @@ begin
   FNoteBook.OnGetImageIndex := @NBGetImageIndex;
   FNoteBook.OnChanging := @NBChanging;
   FNoteBook.OnChange := @NBPageChanged;
-  TNoteBookStringsTabControl(FNoteBook).FHandelCreated := @NBHandleCreated;
+  TNoteBookStringsTabControl(FNoteBook).FHandleCreated := @NBHandleCreated;
   TabControlBoundsChange;
 end;
 
