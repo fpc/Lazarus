@@ -2350,6 +2350,11 @@ begin
       if (Application<>nil) and Application.MainFormOnTaskBar and not Win32WidgetSet.AppMinimizing then
         RestorePopups;
     end;
+    WM_DISPLAYCHANGE:
+    begin
+      if Application.MainFormHandle = Window then
+        Screen.UpdateMonitors;
+    end;
   else
     // pass along user defined messages
     if Msg >= WM_USER then
