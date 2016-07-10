@@ -3647,7 +3647,6 @@ components/sqlite/languages/sqlitecompstrings.fr.po svneol=native#text/plain
 components/sqlite/languages/sqlitecompstrings.hu.po svneol=native#text/plain
 components/sqlite/languages/sqlitecompstrings.po svneol=native#text/plain
 components/sqlite/languages/sqlitecompstrings.ru.po svneol=native#text/plain
-components/sqlite/lib/README.txt svneol=native#text/plain
 components/sqlite/registersqlite.pas svneol=native#text/plain
 components/sqlite/registersqlite3.pas svneol=native#text/plain
 components/sqlite/sqlite3icon.res -text

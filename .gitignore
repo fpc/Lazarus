@@ -125,8 +125,6 @@ components/sqldb/lib/*.bak
 components/sqldb/lib/units
 components/sqldb/units
 components/sqlite/*.bak
-components/sqlite/lib/*.bak
-components/sqlite/lib/units
 components/sqlite/units
 components/synedit/*.bak
 components/synedit/design/*.bak
