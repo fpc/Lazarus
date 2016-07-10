@@ -3707,7 +3707,7 @@ type
   TWordBreaks = string;
 
 const
-  gl : string = 'АЕЁИОУЫЭЮЯаеёиоуыэюя';
+  gl : string = '�?Е�?ИОУЫЭЮЯаеёиоуы�?ю�?';
   r_sogl :string = 'ЪЬьъ';
 
 function BreakWord(s: string): TWordBreaks;
@@ -10254,6 +10254,7 @@ function ProcessObjMethods(Method:string):boolean;
 var
   ObjName:string;
   Obj:TfrObject;
+  Page:TfrPage;
   i, j:integer;
 begin
   Result:=false;
@@ -10262,19 +10263,20 @@ begin
 
   for i:=0 to CurReport.Pages.Count - 1 do
   begin
-    if UpperCase(CurReport.Pages[i].Name) = ObjName then
+    Page := CurReport.Pages[i];
+    if UpperCase(Page.Name) = ObjName then
     begin
       // PageName.ObjName.Method
-      Obj:=CurReport.Pages[i];
-
+      Obj:=Page;
+      
       if Method<>'' then
       begin
         ObjName:=Copy2SymbDel(Method, '.');
-        for j:=0 to CurReport.Pages[i].Objects.Count - 1  do
+        for j:=0 to Page.Objects.Count - 1  do
         begin
-          if UpperCase(TfrObject(CurReport.Pages[i].Objects[j]).Name) = ObjName then
+          if UpperCase(TfrObject(Page.Objects[j]).Name) = ObjName then
           begin
-            Obj:=TfrObject(CurReport.Pages[i].Objects[j]);
+            Obj:=TfrObject(Page.Objects[j]);
             break;
           end;
         end;
@@ -10284,11 +10286,11 @@ begin
     end
     else
     begin
-      for j:=0 to CurReport.Pages[i].Objects.Count - 1  do
+      for j:=0 to Page.Objects.Count - 1  do
       begin
-        if UpperCase(TfrObject(CurReport.Pages[i].Objects[j]).Name) = ObjName then
+        if UpperCase(TfrObject(Page.Objects[j]).Name) = ObjName then
         begin
-            Obj:=TfrObject(CurReport.Pages[i].Objects[j]);
+            Obj:=TfrObject(Page.Objects[j]);
             break;
         end;
       end;
