@@ -2,6 +2,7 @@
 components/*.bak
 components/anchordocking/*.bak
 components/anchordocking/units
+components/cairocanvas/lib
 components/chmhelp/*.bak
 components/chmhelp/democontrol/*.bak
 components/chmhelp/democontrol/units
