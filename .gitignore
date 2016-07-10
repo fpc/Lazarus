@@ -379,6 +379,10 @@ examples/codetools/jumptoimplementation/units
 examples/codetools/units
 examples/componentstreaming/*.bak
 examples/componentstreaming/units
+examples/dbeditmask/*.db
+examples/dbeditmask/*.exe
+examples/dbeditmask/*.lps
+examples/dbeditmask/lib
 examples/designerbaseclass/*.bak
 examples/designerbaseclass/example/*.bak
 examples/designerbaseclass/example/units
