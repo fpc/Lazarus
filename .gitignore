@@ -33,6 +33,7 @@ components/customform/demo/units
 components/customform/lib/*.bak
 components/customform/lib/units
 components/customform/units
+components/debuggerintf/lib
 components/fpcunit/*.bak
 components/fpcunit/console/*.bak
 components/fpcunit/console/units
@@ -49,6 +50,7 @@ components/fpdebug/app/fpdd/*.bak
 components/fpdebug/app/fpdd/units
 components/fpdebug/test/*.bak
 components/fpdebug/test/units
+components/fpweb/lib
 components/h2pas/*.bak
 components/h2pas/languages/*.bak
 components/h2pas/languages/units
@@ -61,6 +63,18 @@ components/images/*.bak
 components/images/examples/*.bak
 components/images/examples/units
 components/images/units
+components/lazcontrols/design/lib
+components/lazcontrols/lib
+components/lazdebuggergdbmi/lib
+components/lazreport/samples/ChildBand_Example/lib
+components/lazreport/source/addons/DialogControls/lib
+components/lazreport/source/addons/SqlDB/lib
+components/lazreport/source/addons/TDbfDB/lib
+components/lazreport/source/addons/lrcodereport/lib
+components/lazreport/source/addons/lrspreadsheetexport/lib
+components/lazreport/source/addons/pdfexport/lib
+components/lazreport/source/lib
+components/lazutils/lib
 components/macfiles/*.bak
 components/macfiles/examples/*.bak
 components/macfiles/examples/units
@@ -84,6 +98,7 @@ components/printers/design/languages/units
 components/printers/design/printers4lazidetest/*.bak
 components/printers/design/printers4lazidetest/units
 components/printers/design/units
+components/printers/lib
 components/printers/samples/*.bak
 components/printers/samples/dialogs/*.bak
 components/printers/samples/dialogs/units
@@ -104,8 +119,10 @@ components/projecttemplates/units
 components/rtticontrols/*.bak
 components/rtticontrols/examples/*.bak
 components/rtticontrols/examples/units
+components/rtticontrols/lib
 components/rtticontrols/units
 components/rx/*.bak
+components/rx/lib
 components/rx/units
 components/sdf/*.bak
 components/sdf/units
@@ -116,6 +133,7 @@ components/simpleideintf/examples/files/units
 components/simpleideintf/examples/units
 components/simpleideintf/units
 components/sqldb/*.bak
+components/sqldb/lib
 components/sqldb/units
 components/sqlite/*.bak
 components/sqlite/lib
@@ -289,6 +307,7 @@ components/tachart/tutorials/mandelbrot/lib
 components/tdbf/*.bak
 components/tdbf/languages/*.bak
 components/tdbf/languages/units
+components/tdbf/lib
 components/tdbf/units
 components/turbopower_ipro/*.bak
 components/turbopower_ipro/languages/*.bak
