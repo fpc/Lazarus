@@ -240,7 +240,7 @@ end;
 
 procedure TExItem.GotoBookmark;
 begin
-  FDataset.Bookmark := FBookmark;
+  FDataset.GotoBookmark(FBookmark);
 end;
 
 function TExItem.IsBookmarkValid: boolean;

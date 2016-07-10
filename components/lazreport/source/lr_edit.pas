@@ -310,7 +310,7 @@ begin
     frInterpretator.PrepareScript(M2.Lines, sl1, sl2);
     if sl2.Count > 0 then
     begin
-      ErrorPosition(Copy(sl2.Text, Length(sErrLine)+1));
+      ErrorPosition(Copy(sl2.Text, Length(sErrLine)+1, Length(sl2.Text)));
       ShowMessage(sl2.Text);
       Result:=false;
     end;
