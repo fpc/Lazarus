@@ -14,7 +14,7 @@ interface
 
 {$I LR_Vers.inc}
 
-uses Classes, SysUtils, Graphics, LR_Pars;
+uses Classes, SysUtils, LR_Pars;
 
 type
   TCharArray = array [0..31999] of Char;
@@ -198,7 +198,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-function Remain(S: String; From: Integer): String;
+function Remain(const S: String; From: Integer): String;
 begin
   Result := Copy(s, From, Length(s) - 1);
 end;
@@ -315,7 +315,7 @@ procedure DoFuncId; forward;
     Result := MemoTo.Count;
   end;
 
-  procedure AddLabel(s: String; n: Integer);
+  procedure AddLabel(const s: String; n: Integer);
   var
     i: Integer;
     f: Boolean;
@@ -331,7 +331,7 @@ procedure DoFuncId; forward;
     end;
   end;
 
-  procedure AddError(s: String);
+  procedure AddError(const s: String);
   var
     i, j, c: Integer;
     s1: String;
