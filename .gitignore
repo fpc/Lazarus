@@ -104,8 +104,6 @@ components/projecttemplates/units
 components/rtticontrols/*.bak
 components/rtticontrols/examples/*.bak
 components/rtticontrols/examples/units
-components/rtticontrols/lib/*.bak
-components/rtticontrols/lib/units
 components/rtticontrols/units
 components/rx/*.bak
 components/rx/units
