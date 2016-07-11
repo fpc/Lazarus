@@ -3707,7 +3707,7 @@ type
   TWordBreaks = string;
 
 const
-  gl : string = '�?Е�?ИОУЫЭЮЯаеёиоуы�?ю�?';
+  gl : string = 'АЕЁИОУЫЭЮЯаеёиоуыэюя';
   r_sogl :string = 'ЪЬьъ';
 
 function BreakWord(s: string): TWordBreaks;
