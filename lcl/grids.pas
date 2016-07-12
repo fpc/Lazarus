@@ -779,6 +779,8 @@ type
     procedure CheckCount(aNewColCount, aNewRowCount: Integer; FixEditor: boolean=true);
     procedure CheckIndex(IsColumn: Boolean; Index: Integer);
     function  CheckTopLeft(aCol,aRow: Integer; CheckCols,CheckRows: boolean): boolean;
+    function  GetQuickColRow: TPoint;
+    procedure SetQuickColRow(AValue: TPoint);
     function  IsCellButtonColumn(ACell: TPoint): boolean;
     function  GetSelectedColumn: TGridColumn;
     function  IsDefRowHeightStored: boolean;
@@ -1079,7 +1081,7 @@ type
     function  SelectCell(ACol, ARow: Integer): Boolean; virtual;
     procedure SetCanvasFont(aFont: TFont);
     procedure SetColor(Value: TColor); override;
-    procedure SetColRow(const ACol,ARow: Integer);
+    procedure SetColRow(const ACol,ARow: Integer; withEvents: boolean = false);
     procedure SetEditText(ACol, ARow: Longint; const Value: string); virtual;
     procedure SetBorderStyle(NewStyle: TBorderStyle); override;
     procedure SetFixedcolor(const AValue: TColor); virtual;
@@ -1117,6 +1119,7 @@ type
     property CellHintPriority: TCellHintPriority read FCellHintPriority write FCellHintPriority default chpTruncOnly;
     property Col: Integer read FCol write SetCol;
     property ColCount: Integer read GetColCount write SetColCount default 5;
+    property ColRow: TPoint read GetQuickColRow write SetQuickColRow;
     property ColumnClickSorts: boolean read FColumnClickSorts write SetColumnClickSorts default false;
     property Columns: TGridColumns read GetColumns write SetColumns stored IsColumnsStored;
     property ColWidths[aCol: Integer]: Integer read GetColWidths write SetColWidths;
@@ -1331,6 +1334,7 @@ type
     property Canvas;
     property Col;
     property ColWidths;
+    property ColRow;
     property Editor;
     property EditorBorderStyle;
     property EditorMode;
@@ -3917,11 +3921,16 @@ begin
   inherited SetColor(Value);
 end;
 
-procedure TCustomGrid.SetColRow(const ACol, ARow: Integer);
+procedure TCustomGrid.SetColRow(const ACol, ARow: Integer; withEvents: boolean);
 begin
-  FCol := ACol;
-  FRow := ARow;
-  UpdateSelectionRange;
+  if withEvents then begin
+    MoveExtend(false, aCol, aRow, true);
+    Click;
+  end else begin
+    FCol := ACol;
+    FRow := ARow;
+    UpdateSelectionRange;
+  end;
 end;
 
 procedure TCustomGrid.DrawBorder;
@@ -5025,6 +5034,20 @@ begin
     doTopleftChange(False)
 end;
 
+function TCustomGrid.GetQuickColRow: TPoint;
+begin
+  result.x := Col;
+  result.y := Row;
+end;
+
+procedure TCustomGrid.SetQuickColRow(AValue: TPoint);
+begin
+  if (AValue.x=FCol) and (AValue.y=FRow) then Exit;
+  if not AllowOutboundEvents then
+    CheckLimitsWithError(AValue.x, AValue.y);
+  SetColRow(aValue.x, aValue.y, true);
+end;
+
 procedure TCustomGrid.doPushCell;
 begin
   with FGCache do
@@ -5874,7 +5897,7 @@ end;
 
 procedure TCustomGrid.DoOPExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
 var
-  ColRow: integer;
+  aColRow: integer;
 begin
 
   if IsColumn and Columns.Enabled then begin
@@ -5892,20 +5915,20 @@ begin
 
   // adjust editor bounds
   if IsColumn then
-    ColRow := FCol
+    aColRow := FCol
   else
-    ColRow := FRow;
+    aColRow := FRow;
 
-  if Between(ColRow, Index, WithIndex) then begin
-    if ColRow=Index then
-      ColRow:=WithIndex
+  if Between(aColRow, Index, WithIndex) then begin
+    if aColRow=Index then
+      aColRow:=WithIndex
     else
-    if ColRow=WithIndex then
-      ColRow:=Index;
+    if aColRow=WithIndex then
+      aColRow:=Index;
     if IsColumn then
-      AdjustEditorBounds(ColRow, FRow)
+      AdjustEditorBounds(aColRow, FRow)
     else
-      AdjustEditorBounds(FCol, ColRow);
+      AdjustEditorBounds(FCol, aColRow);
   end;
 
   // adjust sort column
@@ -5979,7 +6002,7 @@ end;
 procedure TCustomGrid.DoOPMoveColRow(IsColumn: Boolean; FromIndex,
   ToIndex: Integer);
 var
-  ColRow: Integer;
+  aColRow: Integer;
 begin
   if FromIndex=ToIndex then
     exit;
@@ -6007,21 +6030,21 @@ begin
 
   // adjust editor bounds
   if IsColumn then
-    ColRow:=FCol
+    aColRow:=FCol
   else
-    ColRow:=FRow;
-  if Between(ColRow, FromIndex, ToIndex) then begin
-    if ColRow=FromIndex then
-      ColRow := ToIndex
+    aColRow:=FRow;
+  if Between(aColRow, FromIndex, ToIndex) then begin
+    if aColRow=FromIndex then
+      aColRow := ToIndex
     else
-    if FromIndex<ColRow then
-      ColRow := ColRow-1
+    if FromIndex<aColRow then
+      aColRow := aColRow-1
     else
-      ColRow := ColRow+1;
+      aColRow := aColRow+1;
     if IsColumn then
-      AdjustEditorBounds(ColRow, FRow)
+      AdjustEditorBounds(aColRow, FRow)
     else
-      AdjustEditorBounds(FCol, ColRow);
+      AdjustEditorBounds(FCol, aColRow);
   end;
 
   // adjust sorted column
