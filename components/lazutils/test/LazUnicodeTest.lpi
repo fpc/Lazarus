@@ -33,14 +33,11 @@
               <SyntaxMode Value="Delphi"/>
             </SyntaxOptions>
           </Parsing>
-          <Other>
-            <CustomOptions Value="-dUseUTF16"/>
-            <OtherDefines Count="1">
-              <Define0 Value="UseUTF16"/>
-            </OtherDefines>
-          </Other>
         </CompilerOptions>
       </Item2>
+      <SharedMatrixOptions Count="1">
+        <Item1 ID="198079834062" Modes="UTF16" Value="-dUseUTF16"/>
+      </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
