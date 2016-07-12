@@ -126,8 +126,8 @@ type
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;}
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
-    {class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
-    class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;}
+    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
   end;
   
   { TCocoaWSCustomMemo }
@@ -221,7 +221,7 @@ type
   TCocoaWSCustomStaticText = class(TWSCustomStaticText)
   private
   protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 //    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
   end;
@@ -593,6 +593,35 @@ begin
 //  NSTextField(ACustomEdit.Handle).setEditable(not NewReadOnly);
 end;
 
+class procedure TCocoaWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
+var
+  lHandle: TCocoaTextField;
+  curEditor:  NSText;
+  lRange: NSRange;
+begin
+  lHandle := TCocoaTextField(ACustomEdit.Handle);
+  if not Assigned(lHandle) then Exit;
+  curEditor := NSText(lHandle.currentEditor);
+  if not Assigned(curEditor) then Exit;
+  lRange := curEditor.selectedRange;
+  lRange.location := NewStart;
+  curEditor.setSelectedRange(lRange);
+end;
+
+class procedure TCocoaWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+var
+  lHandle: TCocoaTextField;
+  curEditor:  NSText;
+  lRange: NSRange;
+begin
+  lHandle := TCocoaTextField(ACustomEdit.Handle);
+  if not Assigned(lHandle) then Exit;
+  curEditor := NSText(lHandle.currentEditor);
+  if not Assigned(curEditor) then Exit;
+  lRange := curEditor.selectedRange;
+  lRange.length := NewLength;
+  curEditor.setSelectedRange(lRange);
+end;
 
 type
 
