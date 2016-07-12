@@ -48,11 +48,11 @@ uses
   function CodePointCopy(const s: string; StartCharIndex, CharCount: NativeInt): string;
   function CodePointLength(const s: string): NativeInt;
   function CodePointPos(const SearchForText, SearchInText: string; StartPos: NativeInt = 1): NativeInt;
-  function CodeUnitCount(p: PChar): integer;
+  function CodePointSize(p: PChar): integer;
   function IsCombining(const AChar: PChar): Boolean;
 
-  function CodePointToWinCP(const s: string): AnsiString;
-  function WinCPToCodePoint(const s: AnsiString): string;
+  function UnicodeToWinCP(const s: string): AnsiString;
+  function WinCPToUnicode(const s: AnsiString): string;
 
 type
   // Base class for CodePoint and Character enumerators.
@@ -143,6 +143,7 @@ end;
 //---
 
 function CodePointCopy(const s: string; StartCharIndex, CharCount: NativeInt): string;
+// Copy CharCount CodePoints from s, starting from StartCharIndex'th CodePoints.
 begin
   {$IFDEF ReallyUseUTF16}
   Result := UTF16Copy(s, StartCharIndex, CharCount);
@@ -152,6 +153,7 @@ begin
 end;
 
 function CodePointLength(const s: string): NativeInt;
+// Number of CodePoints in s.
 begin
   {$IFDEF ReallyUseUTF16}
   Result := UTF16Length(s);
@@ -161,6 +163,7 @@ begin
 end;
 
 function CodePointPos(const SearchForText, SearchInText: string; StartPos: NativeInt = 1): NativeInt;
+// Position of SearchForText in CodePoints.
 begin
   {$IFDEF ReallyUseUTF16}
   Result := UTF16Pos(SearchForText, SearchInText, StartPos);
@@ -169,7 +172,8 @@ begin
   {$ENDIF}
 end;
 
-function CodeUnitCount(p: PChar): integer;
+function CodePointSize(p: PChar): integer;
+// Returns the number of CodeUnits in one CodePoint pointed by p.
 begin
   {$IFDEF ReallyUseUTF16}
   if TCharacter.IsHighSurrogate(p^) then
@@ -192,7 +196,8 @@ begin
   {$ENDIF}
 end;
 
-function CodePointToWinCP(const s: string): AnsiString;
+function UnicodeToWinCP(const s: string): AnsiString;
+// Convert s to Windows system codepage. The Unicode encoding of s depends on mode.
 begin
   {$IFDEF ReallyUseUTF16}
   {$IFDEF FPC}
@@ -206,7 +211,8 @@ begin
   {$ENDIF}
 end;
 
-function WinCPToCodePoint(const s: AnsiString): string;
+function WinCPToUnicode(const s: AnsiString): string;
+// Convert Windows system codepage s to Unicode (encoding depends on mode).
 begin
   {$IFDEF ReallyUseUTF16}
   {$IFDEF FPC}
@@ -234,7 +240,7 @@ function TCodePointEnumerator.MoveNext: Boolean;
 begin
   if fCurrentPos < fEndPos then
   begin
-    fCurrentCodeUnitCount := CodeUnitCount(fCurrentPos);
+    fCurrentCodeUnitCount := CodePointSize(fCurrentPos);
     SetLength(fCurrent, fCurrentCodeUnitCount);
     Move(fCurrentPos^, fCurrent[1], fCurrentCodeUnitCount*SizeOf(Char));
     inc(fCurrentPos, fCurrentCodeUnitCount);
@@ -255,7 +261,7 @@ begin
     fCurrentCodePointCount := 0;
     NextCP := fCurrentPos;
     repeat
-      NextCUCount := CodeUnitCount(NextCP); // Prepare for combining diacritical marks.
+      NextCUCount := CodePointSize(NextCP); // Prepare for combining diacritical marks.
       Inc(NextCP, NextCUCount); // Prepare for combining diacritical marks.
       Inc(fCurrentCodePointCount);
     until not IsCombining(NextCP);
