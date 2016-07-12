@@ -8,17 +8,17 @@ unit LazUtils;
 interface
 
 uses
-  Laz2_DOM, Laz2_XMLCfg, laz2_XMLRead, laz2_xmlutils, laz2_XMLWrite, Laz_DOM,
-  Laz_XMLCfg, Laz_XMLRead, Laz_XMLStreaming, Laz_XMLWrite, LazFileUtils,
-  LazFileCache, LazUTF8, LazDbgLog, PasWString, FileUtil, LazUTF8Classes,
-  Masks, LazUtilsStrConsts, LConvEncoding, LazUTF16, LazUTF8SysUtils,
-  LazMethodList, AvgLvlTree, LazLogger, LazFreeType, TTCache, TTCalc, TTCMap,
-  TTDebug, TTError, TTFile, TTGLoad, TTInterp, TTLoad, TTMemory, TTObjs,
-  TTProfile, TTRASTER, TTTables, TTTypes, EasyLazFreeType, LazLoggerBase,
-  LazLoggerDummy, LazClasses, LazFreeTypeFontCollection, LazConfigStorage,
-  UTF8Process, laz2_xpath, LazLoggerProfiling, FPCAdds, LazUtilities,
-  lazfglhash, lcsvutils, lazCollections, LazListClasses,
-  LazFreeTypeFPImageDrawer, LookupStringList, LazarusPackageIntf;
+  Laz2_DOM, Laz2_XMLCfg, laz2_XMLRead, laz2_xmlutils, laz2_XMLWrite, Laz_DOM, 
+  Laz_XMLCfg, Laz_XMLRead, Laz_XMLStreaming, Laz_XMLWrite, LazFileUtils, 
+  LazFileCache, LazUTF8, LazDbgLog, PasWString, FileUtil, LazUTF8Classes, 
+  Masks, LazUtilsStrConsts, LConvEncoding, LazUTF16, LazUTF8SysUtils, 
+  LazMethodList, AvgLvlTree, LazLogger, LazFreeType, TTCache, TTCalc, TTCMap, 
+  TTDebug, TTError, TTFile, TTGLoad, TTInterp, TTLoad, TTMemory, TTObjs, 
+  TTProfile, TTRASTER, TTTables, TTTypes, EasyLazFreeType, LazLoggerBase, 
+  LazLoggerDummy, LazClasses, LazFreeTypeFontCollection, LazConfigStorage, 
+  UTF8Process, laz2_xpath, LazLoggerProfiling, FPCAdds, LazUtilities, 
+  lazfglhash, lcsvutils, lazCollections, LazListClasses, 
+  LazFreeTypeFPImageDrawer, LookupStringList, LazUnicode, LazarusPackageIntf;
 
 implementation
 
