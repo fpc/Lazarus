@@ -1339,7 +1339,7 @@ var
           Rectangle(LeftMargin, TopMargin, RightMargin, BottomMargin);
         if ColCount > 1 then
         begin
-          ColWidth := (RightMargin - LeftMargin) div ColCount;
+          ColWidth := (RightMargin - LeftMargin - (ColCount-1)*ColGap) div ColCount;
           Pen.Style := psDot;
           j := LeftMargin;
           for i := 1 to ColCount do

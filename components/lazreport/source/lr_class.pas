@@ -7876,7 +7876,7 @@ begin
   end;
 
   if ColCount = 0 then ColCount := 1;
-  ColWidth := (RightMargin - LeftMargin) div ColCount;
+  ColWidth := (RightMargin - LeftMargin - (ColCount-1)*ColGap) div ColCount;
 end;
 
 procedure TfrPage.PrepareObjects;
