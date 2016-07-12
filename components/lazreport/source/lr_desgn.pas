@@ -539,6 +539,7 @@ type
     FCurDocName, FCaption: String;
     fCurDocFileType: Integer;
     ShapeMode: TfrShapeMode;
+    FReportPopupPoint: TPoint;
     
     {$IFDEF StdOI}
     ObjInsp  : TObjectInspector;
@@ -5864,35 +5865,35 @@ end;
 
 procedure TfrDesignerForm.PstBClick(Sender: TObject); //paste
 var
-  i, minx, miny: Integer;
+  i, minx, miny, xoffset, yoffset: Integer;
   t, t1: TfrView;
-  S: String;
-  P: TObject;
 begin
   Unselect;
   SelNum := 0;
-  minx := 32767; miny := 32767;
-  with ClipBd do
-  for i := 0 to Count-1 do
+  minx := 32767;
+  miny := 32767;
+  xoffset := FReportPopupPoint.x;
+  yoffset := FReportPopupPoint.y;
+  for i := 0 to ClipBd.Count-1 do
   begin
-    t := TfrView(Items[i]);
+    t := TfrView(ClipBd[i]);
     if t.x < minx then minx := t.x;
     if t.y < miny then miny := t.y;
   end;
   for i := 0 to ClipBd.Count - 1 do
   begin
-    t := TfrView(ClipBd.Items[i]);
+    t := TfrView(ClipBd[i]);
     if t.Typ = gtBand then
       if not (TfrBandView(t).BandType in [btMasterHeader..btSubDetailFooter,
                                           btGroupHeader, btGroupFooter]) and
         frCheckBand(TfrBandView(t).BandType) then
         continue;
+    t.x := t.x - minx + xoffset;
     if PageView.Left < 0 then
-      t.x := t.x - minx + ((-PageView.Left) div GridSize * GridSize) else
-      t.x := t.x - minx;
+      t.x := t.x + ((-PageView.Left) div GridSize * GridSize);
+    t.y := t.y - miny + yoffset;
     if PageView.Top < 0 then
-      t.y := t.y - miny + ((-PageView.Top) div GridSize * GridSize) else
-      t.y := t.y - miny;
+      t.y := t.y + ((-PageView.Top) div GridSize * GridSize);
     Inc(SelNum);
     t1 := frCreateObject(t.Typ, t.ClassName, Page);
     t1.Assign(t);
@@ -6299,6 +6300,7 @@ var
   t, t1: TfrView;
   fl: Boolean;
 begin
+  FReportPopupPoint := PageView.ScreenToClient(Popup1.PopupPoint);
   DeleteMenuItems(N2.Parent);
   EnableControls;
 
