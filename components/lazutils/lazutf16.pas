@@ -17,24 +17,40 @@
 }
 unit LazUTF16;
 
-{$mode objfpc}{$H+}
+{$IFDEF FPC}
+ {$mode objfpc}{$H+}
+{$ENDIF}
 
 interface
 
 uses
-  Classes, SysUtils, lazutf8;
+  Classes, SysUtils
+{$IFDEF FPC}
+  ,lazutf8
+{$ENDIF}
+  ;
+
+{$IFnDEF FPC}
+type
+  PtrInt = NativeInt;
+{$ENDIF}
 
 function UTF16CharacterLength(p: PWideChar): integer;
-function UTF16Length(const s: widestring): PtrInt;
-function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
+function UTF16Length(const s: widestring): PtrInt; overload;
+function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt; overload;
+function UTF16Copy(const s: UnicodeString; StartCharIndex, CharCount: PtrInt): Unicodestring;
+function UTF16CharStart(P: PWideChar; Len, CharIndex: PtrInt): PWideChar;
+function UTF16Pos(const SearchForText, SearchInText: UnicodeString; StartPos: PtrInt = 1): PtrInt;
 function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF16(u: cardinal): widestring;
 function IsUTF16CharValid(AChar, ANextChar: WideChar): Boolean;
 function IsUTF16StringValid(AWideStr: widestring): Boolean;
-function Utf16StringReplace(const S, OldPattern, NewPattern: WideString;  Flags: TReplaceFlags): WideString;
+function Utf16StringReplace(const S, OldPattern, NewPattern: WideString; Flags: TReplaceFlags): WideString;
 
 function UnicodeLowercase(u: cardinal): cardinal;
+{$IFDEF FPC}
 function UTF8LowerCaseViaTables(const s: string): string;
+{$ENDIF}
 
 implementation
 
@@ -67,6 +83,107 @@ begin
     CharLen:=UTF16CharacterLength(p);
     inc(p,CharLen);
     dec(WordCount,CharLen);
+  end;
+end;
+
+function UTF16Copy(const s: UnicodeString; StartCharIndex, CharCount: PtrInt): Unicodestring;
+// returns substring
+var
+  StartPos: PWideChar;
+  EndPos: PWideChar;
+  MaxBytes: PtrInt;
+begin
+  StartPos:=UTF16CharStart(PWideChar(s),length(s),StartCharIndex-1);
+  if StartPos=nil then
+    Result:=''
+  else begin
+    MaxBytes:=PtrInt(PWideChar(s)+length(s)-StartPos);
+    EndPos:=UTF16CharStart(StartPos,MaxBytes,CharCount);
+    if EndPos=nil then
+      Result:=copy(s,StartPos-PWideChar(s)+1,MaxBytes)
+    else
+      Result:=copy(s,StartPos-PWideChar(s)+1,EndPos-StartPos);
+  end;
+end;
+
+function UTF16CharStart(P: PWideChar; Len, CharIndex: PtrInt): PWideChar;
+// Len is the length in words of P.
+// CharIndex is the position of the desired UnicodeChar (starting at 0).
+var
+  CharLen: LongInt;
+begin
+  Result:=P;
+  if Result=nil then Exit;
+  while (CharIndex>0) and (Len>0) do
+  begin
+    CharLen:=UTF16CharacterLength(Result);
+    dec(Len,CharLen);
+    dec(CharIndex);
+    inc(Result,CharLen);
+  end;
+  if (CharIndex<>0) or (Len<0) then
+    Result:=nil;
+end;
+
+function IndexOfWideChar(Const Buf: PWideChar; Len: PtrInt; b: WideChar): PtrInt;
+begin
+  for Result:=0 to len-1 do
+    if buf[Result]=b then
+      Exit;
+  Result:=-1;
+end;
+
+// Helper used by UTF16Pos
+function UTF16PosP(SearchForText: PWideChar; SearchForTextLen: PtrInt;
+  SearchInText: PWideChar; SearchInTextLen: PtrInt): PWideChar;
+// returns the position where SearchInText starts in SearchForText
+// returns nil if not found
+var
+  p: PtrInt;
+begin
+  Result:=nil;
+  if (SearchForText=nil) or (SearchForTextLen=0) or (SearchInText=nil) then
+    exit;
+  while SearchInTextLen>0 do begin
+    p:=IndexOfWideChar(SearchInText,SearchInTextLen,SearchForText^);
+    if p<0 then exit;
+    inc(SearchInText, p);
+    dec(SearchInTextLen, p);
+    if SearchInTextLen<SearchForTextLen then exit;
+    if CompareMem(SearchInText,SearchForText,SearchForTextLen * 2) then
+      exit(SearchInText);
+    inc(SearchInText);
+    dec(SearchInTextLen);
+  end;
+end;
+
+function UTF16Pos(const SearchForText, SearchInText: UnicodeString; StartPos: PtrInt = 1): PtrInt;
+// returns the character index, where the SearchForText starts in SearchInText
+// an optional StartPos can be given (in UTF-16 codepoints, not in word)
+// returns 0 if not found
+var
+  i: PtrInt;
+  p: PWideChar;
+  StartPosP: PWideChar;
+begin
+  Result:=0;
+  if StartPos=1 then
+  begin
+    i:=System.Pos(SearchForText,SearchInText);
+    if i>0 then
+      Result:=UTF16Length(PWideChar(SearchInText),i-1)+1;
+  end
+  else if StartPos>1 then
+  begin
+    // skip
+    StartPosP:=UTF16CharStart(PWideChar(SearchInText),Length(SearchInText),StartPos-1);
+    if StartPosP=nil then exit;
+    // search
+    p:=UTF16PosP(PWideChar(SearchForText),length(SearchForText),
+                StartPosP,length(SearchInText)+PWideChar(SearchInText)-StartPosP);
+    // get UTF-8 position
+    if p=nil then exit;
+    Result:=StartPos+UTF16Length(StartPosP,p-StartPosP);
   end;
 end;
 
@@ -138,7 +255,7 @@ begin
   end;
 end;
 
-//Same as SysUtil.StringReplace but for WideStrings/UncodeStrings, since it's not available in fpc yet
+//Same as SysUtil.StringReplace but for WideStrings/UnicodeStrings, since it's not available in fpc yet
 function Utf16StringReplace(const S, OldPattern, NewPattern: WideString;  Flags: TReplaceFlags): WideString;
 var
   Srch, OldP, RemS: WideString; // Srch and OldP can contain WideUpperCase versions of S,OldPattern
@@ -897,8 +1014,7 @@ begin
   end;
 end;
 
-
-
+{$IFDEF FPC}
 function UTF8LowercaseDynLength(const s: string): string;
 var
   Buf: shortstring;
@@ -1014,6 +1130,7 @@ begin
     end;
   until false;
 end;
+{$ENDIF}
 
 initialization
   InitUnicodeTables;
