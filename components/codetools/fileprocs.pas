@@ -45,7 +45,7 @@ uses
   CodeToolsStrConsts,
   // LazUtils
   LazUtilities,
-  {$IFNDEF DisableWrapperFunctions}
+  {$IFDEF EnableWrapperFunctions}
   LazDbgLog,
   {$ENDIF}
   LazLogger, LazUTF8, LazFileCache,
@@ -88,7 +88,7 @@ type
   TCTFileAgeTime = longint;
   PCTFileAgeTime = ^TCTFileAgeTime;
 
-{$IFnDEF DisableWrapperFunctions}
+{$IFDEF EnableWrapperFunctions}
 // *** Wrappers for LazUTF8 ***
 function UTF8ToSys(const s: string): string; inline; deprecated 'Use the function in LazUTF8 unit';
 function SysToUTF8(const s: string): string; inline; deprecated 'Use the function in LazUTF8 unit';
@@ -184,7 +184,7 @@ function MemSizeString(const s: string): PtrUInt; inline; deprecated 'Use the fu
 function MemSizeFPList(const List: TFPList): PtrUInt; inline; deprecated 'Use the function in LazDbgLog unit';
 function GetStringRefCount(const s: string): PtrInt; inline; deprecated 'Use the function in LazDbgLog unit';
 
-{$ENDIF DisableWrapperFunctions}
+{$ENDIF EnableWrapperFunctions}
 
 // file operations
 function FileDateToDateTimeDef(aFileDate: TCTFileAgeTime; const Default: TDateTime = 0): TDateTime;
@@ -373,7 +373,7 @@ uses
   Unix;
 {$ENDIF}
 
-{$IFnDEF DisableWrapperFunctions}
+{$IFDEF EnableWrapperFunctions}
 // LazUTF8
 function UTF8ToSys(const s: string): string;
 begin
@@ -759,7 +759,7 @@ begin
   Result:=LazDbgLog.GetStringRefCount(s);
 end;
 
-{$ENDIF DisableWrapperFunctions}
+{$ENDIF EnableWrapperFunctions}
 
 procedure CTIncreaseChangeStamp(var ChangeStamp: integer);
 begin
