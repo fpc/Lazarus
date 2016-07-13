@@ -235,7 +235,7 @@ begin
     for i:=0 to Files.Count-1 do begin
       RSTFilename:=RSTDirectory+Files[i];
       Ext:=LowerCase(ExtractFileExt(RSTFilename));
-      if (Ext<>'.rst') and (Ext<>'.lrt') and (Ext<>'.rsj') then
+      if (Ext<>'.rst') and (Ext<>'.rsj') and (Ext<>'.lrj') then
         continue;
       if POFilename='' then
         OutputFilename:=PODirectory+ChangeFileExt(Files[i],'.po')
@@ -258,13 +258,13 @@ begin
       end else begin
         // there is already a source file for this .po file
         //debugln(['ConvertRSTFiles found another source: ',RSTFilename]);
-        if (Ext='.rsj') or (Ext='.rst') then begin
+        if (Ext='.rsj') or (Ext='.rst') or (Ext='.lrj') then begin
           // rsj are created by FPC 2.7.1+, rst by older => use only the newest
           for j:=Item^.RSTFileList.Count-1 downto 0 do begin
             OtherRSTFilename:=Item^.RSTFileList[j];
             //debugln(['ConvertRSTFiles old: ',OtherRSTFilename]);
             OtherExt:=LowerCase(ExtractFileExt(OtherRSTFilename));
-            if (OtherExt='.rsj') or (OtherExt='.rst') then begin
+            if (OtherExt='.rsj') or (OtherExt='.rst') or (OtherExt='.lrj') then begin
               if FileAgeCached(RSTFilename)<=FileAgeCached(OtherRSTFilename) then
               begin
                 // this one is older => skip
@@ -376,11 +376,11 @@ begin
       BasePOFile.ReadPOText(POBuf.Source);
     BasePOFile.Tag:=1;
 
-    // Update po file with lrt or/and rst/rsj files
+    // Update po file with lrj or/and rst/rsj files
     for i:=0 to SrcFiles.Count-1 do begin
       Filename:=SrcFiles[i];
-      if CompareFileExt(Filename,'.lrt',false)=0 then
-        FileType:=stLrt
+      if CompareFileExt(Filename,'.lrj',false)=0 then
+        FileType:=stLrj
       else if CompareFileExt(Filename,'.rst',false)=0 then
         FileType:=stRst
       else if CompareFileExt(Filename,'.rsj',false)=0 then

@@ -4138,7 +4138,7 @@ var
   POFileAge: LongInt;
   POFileAgeValid: Boolean;
   POOutDir: String;
-  LRTFilename: String;
+  LRJFilename: String;
   UnitOutputDir: String;
   RSTFilename: String;
   RSJFilename: String;
@@ -4188,11 +4188,11 @@ begin
       if (AProject.MainFilename<>CurFilename)
       and (not FilenameIsPascalUnit(CurFilename)) then
         continue;
-      // check .lrt file
-      LRTFilename:=ChangeFileExt(CurFilename,'.lrt');
-      if FileExistsCached(LRTFilename)
-      and ((not POFileAgeValid) or (FileAgeCached(LRTFilename)>POFileAge)) then
-        Files[LRTFilename]:=nil;
+      // check .lrj file
+      LRJFilename:=ChangeFileExt(CurFilename,'.lrj');
+      if FileExistsCached(LRJFilename)
+      and ((not POFileAgeValid) or (FileAgeCached(LRJFilename)>POFileAge)) then
+        Files[LRJFilename]:=nil;
       // check .rst/.rsj file
       RSTFilename:=ChangeFileExt(CurFilename,'.rst');
       RSJFilename:=ChangeFileExt(CurFilename,'.rsj');

@@ -92,7 +92,7 @@ uses
 
 type
   TStringsType = (
-    stLrt, // Lazarus resource string table
+    stLrj, // Lazarus resource string table in JSON format
     stRst, // FPC resource string table (before FPC 2.7.1)
     stRsj  // FPC resource string table in JSON format (since FPC 2.7.1)
     );
@@ -533,10 +533,10 @@ begin
       BasePOFile := TPOFile.Create;
     BasePOFile.Tag:=1;
 
-    // Update po file with lrt,rst/rsj of RSTFiles
+    // Update po file with lrj, rst/rsj of RSTFiles
     for i:=0 to RSTFiles.Count-1 do begin
       Filename:=RSTFiles[i];
-      if (CompareFileExt(Filename,'.lrt')=0) or
+      if (CompareFileExt(Filename,'.lrj')=0) or
          (CompareFileExt(Filename,'.rst')=0) or
          (CompareFileExt(Filename,'.rsj')=0) then
         try
@@ -545,14 +545,13 @@ begin
           InputLines.Clear;
           InputLines.LoadFromFile(FileName);
 
-          if CompareFileExt(Filename,'.lrt')=0 then
-            BasePOFile.UpdateStrings(InputLines, stLrt)
+          if CompareFileExt(Filename,'.lrj')=0 then
+            BasePOFile.UpdateStrings(InputLines, stLrj)
           else
-          if CompareFileExt(Filename,'.rsj')=0 then
-            BasePOFile.UpdateStrings(InputLines, stRsj)
-          else
-            BasePOFile.UpdateStrings(InputLines, stRst);
-
+            if CompareFileExt(Filename,'.rsj')=0 then
+              BasePOFile.UpdateStrings(InputLines, stRsj)
+            else
+              BasePOFile.UpdateStrings(InputLines, stRst);
         except
           on Ex: Exception do begin
             E := EPOFileError.Create(Ex.Message);
@@ -1406,8 +1405,8 @@ var
 begin
   ClearModuleList;
   UntagAll;
-  if SType = stRsj then
-    // .rsj file
+  if (SType = stLrj) or (SType = stRsj) then
+    // .lrj/.rsj file
     UpdateFromRSJ
   else
   begin
@@ -1424,15 +1423,7 @@ begin
 
       if n=0 then
         // empty line
-      else
-      if SType=stLrt then begin
-        // .lrt file
-        p:=Pos('=',Line);
-        Value :=copy(Line,p+1,n-p); //if p=0, that's OK, all the string
-        Identifier:=copy(Line,1,p-1);
-        UpdateItem(Identifier, Value);
-
-      end else begin
+      else begin
         // .rst file
         if Line[1]='#' then begin
           // rst file: comment

@@ -47,7 +47,7 @@ uses
   CodeToolsStructs, ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool,
   BasicCodeTools, SynEdit, UnitResources, IDEExternToolIntf, ObjectInspector,
   PublishModule, etMessagesWnd,
-  FormEditingIntf;
+  FormEditingIntf, fpjson;
 
 type
 
@@ -4782,34 +4782,146 @@ begin
 end;
 
 type
-  TLRTGrubber = class(TObject)
+  TTranslateStringItem = record
+    Name: String;
+    Value: String;
+  end;
+
+  TTranslateStrings = class
   private
-    FGrubbed: TStrings;
+    FList: array of TTranslateStringItem;
+    function CalcHash(const S: string): Cardinal;
+    function GetSourceBytes(const S: string): string;
+    function GetValue(const S: string): string;
+  public
+    destructor Destroy; override;
+    procedure Add(const AName, AValue: String);
+    function Count: Integer;
+    function Text: String;
+  end;
+
+  TLRJGrubber = class(TObject)
+  private
+    FGrubbed: TTranslateStrings;
     FWriter: TWriter;
   public
     constructor Create(TheWriter: TWriter);
     destructor Destroy; override;
     procedure Grub(Sender: TObject; const Instance: TPersistent;
                    PropInfo: PPropInfo; var Content: string);
-    property Grubbed: TStrings read FGrubbed;
+    property Grubbed: TTranslateStrings read FGrubbed;
     property Writer: TWriter read FWriter write FWriter;
   end;
 
-constructor TLRTGrubber.Create(TheWriter: TWriter);
+function TTranslateStrings.CalcHash(const S: string): Cardinal;
+var
+  g: Cardinal;
+  i: Longint;
+begin
+  Result:=0;
+  for i:=1 to Length(s) do
+  begin
+    Result:=Result shl 4;
+    inc(Result,Ord(S[i]));
+    g:=Result and ($f shl 28);
+    if g<>0 then
+     begin
+       Result:=Result xor (g shr 24);
+       Result:=Result xor g;
+     end;
+  end;
+  If Result=0 then
+    Result:=$ffffffff;
+end;
+
+function TTranslateStrings.GetSourceBytes(const S: string): string;
+var
+  i, l: Integer;
+begin
+  Result:='';
+  l:=Length(S);
+  for i:=1 to l do
+  begin
+    Result:=Result+IntToStr(Ord(S[i]));
+    if i<>l then
+     Result:=Result+',';
+  end;
+end;
+
+function TTranslateStrings.GetValue(const S: string): string;
+var
+  i, l: Integer;
+  jsonstr: string;
+begin
+  Result:='';
+  jsonstr:=StringToJSONString(S);
+  l:=Length(jsonstr);
+  for i:=1 to l do
+  begin
+    if (Ord(jsonstr[i])<32) or (Ord(jsonstr[i])>=127) then
+      Result:=Result+'\u'+HexStr(Ord(jsonstr[i]), 4)
+    else
+      Result:=Result+jsonstr[i];
+  end;
+end;
+
+destructor TTranslateStrings.Destroy;
+begin
+  SetLength(FList,0);
+end;
+
+procedure TTranslateStrings.Add(const AName, AValue: String);
+begin
+  SetLength(FList,Length(FList)+1);
+  with FList[High(FList)] do
+  begin
+    Name:=AName;
+    Value:=AValue;
+  end;
+end;
+
+function TTranslateStrings.Count: Integer;
+begin
+  Result:=Length(FList);
+end;
+
+function TTranslateStrings.Text: String;
+var
+  i: Integer;
+  R: TTranslateStringItem;
+begin
+  Result:='';
+  if Length(FList)=0 then Exit;
+  Result:='{"version":1,"strings":['+LineEnding;
+  for i:=Low(FList) to High(FList) do
+  begin
+    R:=TTranslateStringItem(FList[i]);
+    Result:=Result+'{"hash":'+IntToStr(CalcHash(R.Value))+',"name":"'+R.Name+
+      '","sourcebytes":['+GetSourceBytes(R.Value)+
+      '],"value":"'+GetValue(R.Value)+'"}';
+    if i<High(FList) then
+      Result:=Result+','+LineEnding
+    else
+      Result:=Result+LineEnding;
+  end;
+  Result:=Result+']}'+LineEnding;
+end;
+
+constructor TLRJGrubber.Create(TheWriter: TWriter);
 begin
   inherited Create;
-  FGrubbed:=TStringList.Create;
+  FGrubbed:=TTranslateStrings.Create;
   FWriter:=TheWriter;
   FWriter.OnWriteStringProperty:=@Grub;
 end;
 
-destructor TLRTGrubber.Destroy;
+destructor TLRJGrubber.Destroy;
 begin
   FGrubbed.Free;
   inherited Destroy;
 end;
 
-procedure TLRTGrubber.Grub(Sender: TObject; const Instance: TPersistent;
+procedure TLRJGrubber.Grub(Sender: TObject; const Instance: TPersistent;
   PropInfo: PPropInfo; var Content: string);
 var
   LRSWriter: TLRSObjectWriter;
@@ -4824,8 +4936,7 @@ begin
   end else begin
     Path:=Instance.ClassName+'.'+PropInfo^.Name;
   end;
-  FGrubbed.Add(Uppercase(Path)+'='+Content);
-  //DebugLn(['TLRTGrubber.Grub "',FGrubbed[FGrubbed.Count-1],'"']);
+  FGrubbed.Add(LowerCase(Path),Content);
 end;
 
 function TLazSourceFileManager.SaveUnitComponent(AnUnitInfo: TUnitInfo;
@@ -4869,8 +4980,8 @@ var
   ACaption, AText: string;
   CompResourceCode, LFMFilename, TestFilename: string;
   ADesigner: TIDesigner;
-  Grubber: TLRTGrubber;
-  LRTFilename: String;
+  Grubber: TLRJGrubber;
+  LRJFilename: String;
   AncestorUnit: TUnitInfo;
   Ancestor: TComponent;
   HasI18N: Boolean;
@@ -4929,10 +5040,10 @@ begin
         try
           BinCompStream.Position:=0;
           Writer:=AnUnitInfo.UnitResourceFileformat.CreateWriter(BinCompStream,DestroyDriver);
-          // used to save lrt files
+          // used to save lrj files
           HasI18N:=IsI18NEnabled(UnitOwners);
           if HasI18N then
-            Grubber:=TLRTGrubber.Create(Writer);
+            Grubber:=TLRJGrubber.Create(Writer);
           Writer.OnWriteMethodProperty:=@FormEditor1.WriteMethodPropertyEvent;
           //DebugLn(['TLazSourceFileManager.SaveUnitComponent AncestorInstance=',dbgsName(AncestorInstance)]);
           Writer.OnFindAncestor:=@FormEditor1.WriterFindAncestor;
@@ -5101,15 +5212,15 @@ begin
       // Now the most important file (.lfm) is saved.
       // Now save the secondary files
 
-      // save the .lrt file containing the list of all translatable strings of
+      // save the .lrj file containing the list of all translatable strings of
       // the component
       if ComponentSavingOk
       and (Grubber<>nil) and (Grubber.Grubbed.Count>0)
       and (not (sfSaveToTestDir in Flags))
       and (not AnUnitInfo.IsVirtual) then begin
-        LRTFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lrt');
-        DebugLn(['TLazSourceFileManager.SaveUnitComponent save lrt: ',LRTFilename]);
-        Result:=SaveStringToFile(LRTFilename,Grubber.Grubbed.Text,
+        LRJFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lrj');
+        DebugLn(['TLazSourceFileManager.SaveUnitComponent save lrj: ',LRJFilename]);
+        Result:=SaveStringToFile(LRJFilename,Grubber.Grubbed.Text,
                                  [mbIgnore,mbAbort],AnUnitInfo.Filename);
         if (Result<>mrOk) and (Result<>mrIgnore) then exit;
       end;
