@@ -191,7 +191,8 @@ type
     cmsFinalFields,        { allows declaring fields as "final", which means they must be initialised
                              in the (class) constructor and are constant from then on (same as final
                              fields in Java) }
-    cmsDefault_unicodestring, { ? see http://wiki.freepascal.org/FPC_JVM/Language }
+    cmsDefault_unicodestring, { makes the default string type in $h+ mode unicodestring rather than
+                                ansistring; similarly, char becomes unicodechar rather than ansichar }
     cmsTypeHelpers,
     cmsBlocks
     );
@@ -3410,7 +3411,6 @@ begin
       if CompareUpToken(CompilerModeNames[AMode],Src,ValStart,SrcPos) then
       begin
         CompilerMode:=AMode;
-        Values.Variables[CompilerModeVars[AMode]]:='1';
         ModeValid:=true;
         break;
       end;
@@ -3440,12 +3440,20 @@ begin
     then begin
       Result:=true;
       s:=[ModeSwitch];
-      if ModeSwitch=cmsObjectiveC2 then
-        Include(s,cmsObjectiveC1);
-      if (SrcPos<=SrcLen) and (Src[SrcPos]='-') then
-        FCompilerModeSwitches:=FCompilerModeSwitches-s
-      else
+      case ModeSwitch of
+      cmsObjectiveC2: Include(s,cmsObjectiveC1);
+      end;
+      if (SrcPos<=SrcLen) and (Src[SrcPos]='-') then begin
+        FCompilerModeSwitches:=FCompilerModeSwitches-s;
+        case ModeSwitch of
+        cmsDefault_unicodestring:  Values.Undefine('FPC_UNICODESTRINGS');
+        end;
+      end else begin
         FCompilerModeSwitches:=FCompilerModeSwitches+s;
+        case ModeSwitch of
+        cmsDefault_unicodestring:  Values.Variables['FPC_UNICODESTRINGS'] := '1';
+        end;
+      end;
       exit;
     end;
   end;
@@ -4498,9 +4506,11 @@ end;
 procedure TLinkScanner.SetCompilerMode(const AValue: TCompilerMode);
 begin
   if FCompilerMode=AValue then exit;
+  Values.Undefine(CompilerModeVars[FCompilerMode]);
   FCompilerMode:=AValue;
   FCompilerModeSwitches:=DefaultCompilerModeSwitches[CompilerMode];
   FNestedComments:=cmsNested_comment in CompilerModeSwitches;
+  Values.Variables[CompilerModeVars[FCompilerMode]]:='1';
 end;
 
 procedure TLinkScanner.SetDirectiveValueWithSequence(
