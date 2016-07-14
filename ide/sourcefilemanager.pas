@@ -4851,17 +4851,18 @@ end;
 function TTranslateStrings.GetValue(const S: string): string;
 var
   i, l: Integer;
-  jsonstr: string;
+  jsonstr: unicodestring;
 begin
   Result:='';
-  jsonstr:=StringToJSONString(S);
+  //input string is assumed to be in UTF-8 encoding
+  jsonstr:=UTF8ToUTF16(StringToJSONString(S));
   l:=Length(jsonstr);
   for i:=1 to l do
   begin
     if (Ord(jsonstr[i])<32) or (Ord(jsonstr[i])>=127) then
       Result:=Result+'\u'+HexStr(Ord(jsonstr[i]), 4)
     else
-      Result:=Result+jsonstr[i];
+      Result:=Result+Char(jsonstr[i]);
   end;
 end;
 
