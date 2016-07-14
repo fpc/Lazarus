@@ -395,7 +395,7 @@ begin
       begin
         AddToListView(lCodeTool, lNode);
       end;
-      lNode := lNode.NextBrother;
+      lNode := lNode.Next;
     end;
   finally
     if LV.Items.Count > 0 then
@@ -479,7 +479,7 @@ begin
   if FSearchAll and tbFilterAny.Down then
   begin
     lAttr := [phpWithoutClassKeyword, phpWithoutParamList, phpWithoutBrackets,
-       phpWithoutSemicolon, phpAddClassName];
+       phpWithoutSemicolon, phpAddClassName, phpAddParentProcs];
   end
   else
   begin
@@ -498,7 +498,7 @@ begin
 
   { procedure name }
   lNodeText := pCodeTool.ExtractProcHead(pNode,
-      [phpWithoutParamList, phpWithoutBrackets, phpWithoutSemicolon]);
+      [phpAddParentProcs, phpWithoutParamList, phpWithoutBrackets, phpWithoutSemicolon]);
   lItem.SubItems.Add(lNodeText);
 
   { type }
@@ -516,7 +516,7 @@ begin
   
   { full procedure name used in statusbar }
   lNodeText := pCodeTool.ExtractProcHead(pNode,
-                  [phpWithStart,phpWithVarModifiers,
+                  [phpWithStart,phpAddParentProcs,phpWithVarModifiers,
                    phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
                    phpWithOfObject,phpWithCallingSpecs,phpWithProcModifiers]);
   lItem.SubItems.Add(lNodeText);
