@@ -586,8 +586,19 @@ var
   IsFunction: Boolean;
   IsOperator: Boolean;
   EndPos: Integer;
+  ParentNode: TCodeTreeNode;
 const
   SemiColon : char = ';';
+
+  procedure PrependName(const Prepend: string; var aPath: string);
+  begin
+    if Prepend='' then exit;
+    if aPath<>'' then
+      aPath:=Prepend+'.'+aPath
+    else
+      aPath:=Prepend;
+  end;
+
 begin
   Result:='';
   ExtractProcHeadPos:=phepNone;
@@ -596,14 +607,27 @@ begin
     ProcNode:=ProcNode.Parent;
     if ProcNode=nil then exit;
   end;
-  if (ProcNode.Desc<>ctnProcedure) and (ProcNode.Desc<>ctnProcedureType) then
+  if ProcNode.Desc=ctnProcedure then
+    IsProcType:=false
+  else if ProcNode.Desc=ctnProcedureType then
+    IsProcType:=true
+  else
     exit;
-  IsProcType:=(ProcNode.Desc=ctnProcedureType);
+
+  TheClassName:='';
+
+  if (phpAddParentProcs in Attr) and (ProcNode.Parent.Desc=ctnProcedure) then begin
+    // local proc
+    ParentNode:=ProcNode.Parent;
+    while ParentNode.Desc=ctnProcedure do begin
+      PrependName(ExtractProcName(ParentNode,Attr*[phpInUpperCase]),TheClassName);
+      ParentNode:=ParentNode.Parent;
+    end;
+  end;
 
   // build full class name
-  TheClassName:='';
   if ([phpAddClassname,phpWithoutClassName]*Attr=[phpAddClassName]) then
-    TheClassName:=ExtractClassName(ProcNode,phpInUpperCase in Attr,true);
+    PrependName(ExtractClassName(ProcNode,phpInUpperCase in Attr,true),TheClassName);
 
   // reparse the clean source
   InitExtraction;

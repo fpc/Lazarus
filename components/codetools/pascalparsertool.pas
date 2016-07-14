@@ -52,6 +52,7 @@ type
     phpWithStart,          // proc keyword e.g. 'function', 'class procedure'
     phpWithoutClassKeyword,// without 'class' proc keyword
     phpAddClassName,       // extract/add 'ClassName.'
+    phpAddParentProcs,     // add 'ProcName.' for nested procs
     phpWithoutClassName,   // skip classname
     phpWithoutName,        // skip function name
     phpWithoutGenericParams,// skip <> after proc name
