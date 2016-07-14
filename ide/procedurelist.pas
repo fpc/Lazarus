@@ -379,24 +379,27 @@ begin
         or (lCodeTool.Tree.Root = nil) then
       Exit; //==>
 
-    { Find the starting point }
-    lNode := lCodeTool.FindImplementationNode;
-    if lNode = nil then
+    if Assigned(lCodeTool.Tree) then
     begin
-      { fall back - guess we are working with a program or there is a syntax error }
-      lNode := lCodeTool.Tree.Root;
-    end;
-
-    { populate the listview here }
-    lNode := lNode.FirstChild;
-    while lNode <> nil do
-    begin
-      if lNode.Desc = ctnProcedure then
+      { Find the starting point }
+      lNode := lCodeTool.FindImplementationNode;
+      if lNode = nil then
       begin
-        AddToListView(lCodeTool, lNode);
+        { fall back - guess we are working with a program unit }
+        lNode := lCodeTool.Tree.Root;
       end;
-      lNode := lNode.NextBrother;
-    end;
+
+      { populate the listview here }
+      lNode := lNode.FirstChild;
+      while lNode <> nil do
+      begin
+        if lNode.Desc = ctnProcedure then
+        begin
+          AddToListView(lCodeTool, lNode);
+        end;
+        lNode := lNode.NextBrother;
+      end;
+    end;  { if }
   finally
     if LV.Items.Count > 0 then
     begin
