@@ -100,6 +100,8 @@ components/printers/design/printers4lazidetest/*.bak
 components/printers/design/printers4lazidetest/units
 components/printers/design/units
 components/printers/lib
+components/printers/lib/*.bak
+components/printers/lib/units
 components/printers/samples/*.bak
 components/printers/samples/dialogs/*.bak
 components/printers/samples/dialogs/units
@@ -121,9 +123,13 @@ components/rtticontrols/*.bak
 components/rtticontrols/examples/*.bak
 components/rtticontrols/examples/units
 components/rtticontrols/lib
+components/rtticontrols/lib/*.bak
+components/rtticontrols/lib/units
 components/rtticontrols/units
 components/rx/*.bak
 components/rx/lib
+components/rx/lib/*.bak
+components/rx/lib/units
 components/rx/units
 components/sdf/*.bak
 components/sdf/units
@@ -135,9 +141,13 @@ components/simpleideintf/examples/units
 components/simpleideintf/units
 components/sqldb/*.bak
 components/sqldb/lib
+components/sqldb/lib/*.bak
+components/sqldb/lib/units
 components/sqldb/units
 components/sqlite/*.bak
 components/sqlite/lib
+components/sqlite/lib/*.bak
+components/sqlite/lib/units
 components/sqlite/units
 components/synedit/*.bak
 components/synedit/design/*.bak

@@ -3537,6 +3537,7 @@ components/rtticontrols/ttiradiogroup.png -text svneol=unset#image/png
 components/rtticontrols/ttispinedit.png -text svneol=unset#image/png
 components/rtticontrols/ttitrackbar.png -text svneol=unset#image/png
 components/rx/apputils.pp svneol=native#text/pascal
+components/rx/lib/README.txt svneol=native#text/plain
 components/rx/mrulist.pp svneol=native#text/pascal
 components/rx/mrulist.res -text
 components/rx/placement.pp svneol=native#text/pascal
@@ -3649,6 +3650,7 @@ components/sqlite/languages/sqlitecompstrings.fr.po svneol=native#text/plain
 components/sqlite/languages/sqlitecompstrings.hu.po svneol=native#text/plain
 components/sqlite/languages/sqlitecompstrings.po svneol=native#text/plain
 components/sqlite/languages/sqlitecompstrings.ru.po svneol=native#text/plain
+components/sqlite/lib/README.txt svneol=native#text/plain
 components/sqlite/registersqlite.pas svneol=native#text/plain
 components/sqlite/registersqlite3.pas svneol=native#text/plain
 components/sqlite/sqlite3icon.res -text
