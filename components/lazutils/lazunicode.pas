@@ -17,15 +17,11 @@ unit LazUnicode;
 
 {$IFDEF FPC}
  {$mode objfpc}{$H+}
- {$IF FPC_FULLVERSION < 30000}
-  {$ERROR needs at least FPC 3.0}
- {$ENDIF}
 {$ENDIF}
 
 // For testing the UTF16 version.
 {$IF DEFINED(FPC) and DEFINED(UseUTF16)}
  {$ModeSwitch UnicodeStrings}   // Sets also FPC_UNICODESTRINGS ...
- {$DEFINE FPC_UNICODESTRINGS}   // but Lazarus editor hi-lighting doesn't know it.
 {$ENDIF}
 
 {$IF DEFINED(FPC_UNICODESTRINGS) or not DEFINED(FPC)}
