@@ -128,7 +128,7 @@ begin
     kWindowCompositingAttribute or
     kWindowStandardDocumentAttributes or
 //    kWindowLiveResizeAttribute or
-    kWindowStandardHandlerAttribute,
+    kWindowStandardHandlerAttribute or kWindowFrameworkScaledAttribute,
     R, W
   );
   if W = nil then Exit;

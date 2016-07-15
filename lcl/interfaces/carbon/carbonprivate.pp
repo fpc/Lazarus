@@ -428,7 +428,7 @@ begin
   if OSError(
     CreateNewWindow(kHelpWindowClass,
       kWindowCompositingAttribute or
-      kWindowHideOnSuspendAttribute or kWindowStandardHandlerAttribute,
+      kWindowHideOnSuspendAttribute or kWindowStandardHandlerAttribute or kWindowFrameworkScaledAttribute,
       ParamsToCarbonRect(AParams), AWindow{%H-}),
     Self, SCreateWidget, 'CreateNewWindow') then RaiseCreateWidgetError(LCLObject);
 
