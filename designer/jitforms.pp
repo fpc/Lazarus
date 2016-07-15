@@ -1505,6 +1505,9 @@ begin
   System.Move(NewClassName[0],NewTypeInfo^.Name[0],length(NewClassName)+1);
   NewTypeData:=GetTypeData(NewTypeInfo);
 
+  // copy vmtIntfTable
+  Pointer(Pointer(NewVMT+vmtIntfTable)^):=Pointer(Pointer(Pointer(AncestorClass)+vmtIntfTable)^);
+
   // set TypeData (PropCount is the total number of properties, including ancestors)
   NewTypeData^.ClassType:=TClass(NewVMT);
   {$IF FPC_FULLVERSION>=30100}
