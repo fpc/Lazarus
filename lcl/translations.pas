@@ -1147,6 +1147,7 @@ end;
 function TPOFile.Translate(const Identifier, OriginalValue: String): String;
 var
   Item: TPOFileItem;
+  l: Integer;
 begin
   Item:=TPOFileItem(FIdentifierLowToItem[lowercase(Identifier)]);
   if Item=nil then
@@ -1166,6 +1167,19 @@ begin
     if Result='' then RaiseGDBException('TPOFile.Translate Inconsistency');
   end else
     Result:=OriginalValue;
+  //Remove lineending at the end of the string if present.
+  //This is the case e.g. for multiline string and not desired when assigning e.g. to
+  //Caption property (can negatively affect form layout). In other cases it should not matter.
+  l:=Length(Result);
+  if l>1 then
+  begin
+    if RightStr(Result,2)=#13#10 then
+      if l>2 then //do not leave the string empty
+        SetLength(Result,l-2)
+    else
+      if (Result[l]=#13) or (Result[l]=#10) then
+        SetLength(Result,l-1);
+  end;
 end;
 
 procedure TPOFile.Report;
