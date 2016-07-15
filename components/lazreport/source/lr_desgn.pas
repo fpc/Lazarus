@@ -4022,6 +4022,15 @@ var
       pStep := aValue;
   end;
 
+  procedure CheckPastePoint;
+  var
+    P: TPoint;
+  begin
+    P := PageView.ScreenToClient(Mouse.CursorPos);
+    if PtInRect(PageView.ClientRect, p) then
+      FReportPopupPoint := p;
+  end;
+
 begin
   {$IFNDEF EXTOI}
   if (ActiveControl<>nil) and (ActiveControl.Parent=ObjInsp.fPropertyGrid) then
@@ -4069,6 +4078,9 @@ begin
     GridAlign := not GridAlign;
     Key := 0;
   end;
+  if (Chr(Key) = 'V') and (ssCtrl in Shift) and PasteEnabled then
+    CheckPastePoint;
+
   if CutEnabled then
     if (Key = VK_DELETE) and (ssShift in Shift) then CutBClick(Self);
   if CopyEnabled then
