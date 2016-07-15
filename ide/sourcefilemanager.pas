@@ -4930,6 +4930,7 @@ begin
   if not Assigned(Instance) then exit;
   if not Assigned(PropInfo) then exit;
   if SysUtils.CompareText(PropInfo^.PropType^.Name,'TTRANSLATESTRING')<>0 then exit;
+  if (SysUtils.CompareText(Instance.ClassName,'TMENUITEM')=0) and (Content='-') then exit;
   if Writer.Driver is TLRSObjectWriter then begin
     LRSWriter:=TLRSObjectWriter(Writer.Driver);
     Path:=LRSWriter.GetStackPath;
