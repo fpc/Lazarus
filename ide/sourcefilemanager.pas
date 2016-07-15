@@ -4240,11 +4240,10 @@ begin
     if not Ok then Exit(False);
     for i:=0 to Project1.BuildModes.Count-1 do
       if (FListForm=Nil) or FListForm.CheckListBox1.Checked[i] then
-        with Project1.BuildModes[i].CompilerOptions do
-          if IsIncludeFile then
-            IncludePath:=MergeSearchPaths(IncludePath,aPath)
-          else
-            OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,aPath);
+        if IsIncludeFile then
+          Project1.BuildModes[i].CompilerOptions.MergeToIncludePaths(aPath)
+        else
+          Project1.BuildModes[i].CompilerOptions.MergeToUnitPaths(aPath);
   finally
     FListForm.Free;
   end;
@@ -5578,20 +5577,15 @@ begin
       //DebugLn('TLazSourceFileManager.RenameUnit OldFilePath="',OldFilePath,'" SourceDirs="',Project1.SourceDirectories.CreateSearchPathFromAllFiles,'"');
       if (SearchDirectoryInSearchPath(
         Project1.SourceDirectories.CreateSearchPathFromAllFiles,OldFilePath,1)<1)
-      then begin
+      then
         //DebugLn('TLazSourceFileManager.RenameUnit OldFilePath="',OldFilePath,'" UnitPath="',Project1.CompilerOptions.GetUnitPath(false),'"');
-        if (SearchDirectoryInSearchPath(
-                     Project1.CompilerOptions.GetUnitPath(false),OldFilePath,1)<1)
-        then begin
+        if (SearchDirectoryInSearchPath(Project1.CompilerOptions.GetUnitPath(false),OldFilePath,1)<1)
+        then
           if IDEMessageDialog(lisCleanUpUnitPath,
               Format(lisTheDirectoryIsNoLongerNeededInTheUnitPathRemoveIt,[OldFilePath,LineEnding]),
-              mtConfirmation,[mbYes,mbNo])=mrYes then
-          begin
-            Project1.CompilerOptions.OtherUnitFiles:=
-              RemoveSearchPaths(Project1.CompilerOptions.OtherUnitFiles, OldUnitPath);
-          end;
-        end;
-      end;
+              mtConfirmation,[mbYes,mbNo])=mrYes
+          then
+            Project1.CompilerOptions.RemoveFromUnitPaths(OldUnitPath);
     end;
 
     // delete old pas, .pp, .ppu

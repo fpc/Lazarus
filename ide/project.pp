@@ -4835,8 +4835,7 @@ end;
 
 procedure TProject.AddSrcPath(const SrcPathAddition: string);
 begin
-  CompilerOptions.SrcPath:=MergeSearchPaths(CompilerOptions.SrcPath,
-                                            GetForcedPathDelims(SrcPathAddition));
+  CompilerOptions.MergeToSrcPath( GetForcedPathDelims(SrcPathAddition) );
 end;
 
 function TProject.GetSourceDirs(WithProjectDir, WithoutOutputDir: boolean): string;
@@ -4875,15 +4874,12 @@ begin
 end;
 
 procedure TProject.AutoAddOutputDirToIncPath;
-var
-  IncPath: String;
 begin
   if pfLRSFilesInOutputDirectory in Flags then begin
     // the .lrs files are auto created in the output directory
     // => make sure the project output directory is in the include path
-    IncPath:=CompilerOptions.IncludePath;
-    if SearchDirectoryInSearchPath(IncPath,'$(ProjOutDir)')<1 then
-      CompilerOptions.IncludePath:=MergeSearchPaths(IncPath,';$(ProjOutDir)');
+    if SearchDirectoryInSearchPath(CompilerOptions.IncludePath,'$(ProjOutDir)')<1 then
+      CompilerOptions.MergeToIncludePaths(';$(ProjOutDir)');
   end;
 end;
 

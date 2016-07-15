@@ -366,8 +366,7 @@ begin
       Format(lisExtendUnitSearchPathOfProjectWith, [#13, NewUnitPaths]),
       mtConfirmation, [mbYes, mbNo, mbCancel]);
     case r of
-    mrYes: AProject.CompilerOptions.OtherUnitFiles:=
-      MergeSearchPaths(AProject.CompilerOptions.OtherUnitFiles,NewUnitPaths);
+    mrYes: AProject.CompilerOptions.MergeToUnitPaths(NewUnitPaths);
     mrNo: ;
     else exit(false);
     end;
@@ -389,8 +388,7 @@ begin
       Format(lisExtendIncludeFilesSearchPathOfProjectWith, [#13, NewIncPaths]),
       mtConfirmation, [mbYes, mbNo, mbCancel]);
     case r of
-    mrYes: AProject.CompilerOptions.IncludePath:=
-      MergeSearchPaths(AProject.CompilerOptions.IncludePath,NewIncPaths);
+    mrYes: AProject.CompilerOptions.MergeToIncludePaths(NewIncPaths);
     mrNo: ;
     else exit(false);
     end;

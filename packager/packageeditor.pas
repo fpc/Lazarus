@@ -2977,15 +2977,12 @@ begin
       exit;
     end;
     // add path
-    with LazPackage.CompilerOptions do
-      OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,ShortDirectory);
+    LazPackage.CompilerOptions.MergeToUnitPaths(ShortDirectory);
   end;
-  if IncPathPos<1 then begin
+  if IncPathPos<1 then
     // the unit is in unitpath, but the include file not in the incpath
     // -> auto extend the include path
-    with LazPackage.CompilerOptions do
-      IncludePath:=MergeSearchPaths(IncludePath,ShortIncDirectory);
-  end;
+    LazPackage.CompilerOptions.MergeToIncludePaths(ShortIncDirectory);
 end;
 
 procedure TPackageEditorForm.ExtendIncPathForNewIncludeFile(
@@ -3021,8 +3018,7 @@ begin
     exit;
   end;
   // add path
-  with LazPackage.CompilerOptions do
-    IncludePath:=MergeSearchPaths(IncludePath,ShortDirectory);
+  LazPackage.CompilerOptions.MergeToIncludePaths(ShortDirectory);
 end;
 
 function TPackageEditorForm.ExtendUnitSearchPath(NewUnitPaths: string): boolean;

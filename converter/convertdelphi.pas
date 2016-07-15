@@ -1186,13 +1186,11 @@ var
 
   procedure AddSearchPath(const SearchPath: string);
   begin
-    with fProjPack.BaseCompilerOptions do begin
-      IncludePath:=MergeSearchPaths(IncludePath,SearchPath);
-      Libraries:=MergeSearchPaths(Libraries,SearchPath);
-      OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,SearchPath);
-      ObjectPath:=MergeSearchPaths(ObjectPath,SearchPath);
-      DebugPath:=MergeSearchPaths(DebugPath,SearchPath);
-    end;
+    fProjPack.BaseCompilerOptions.MergeToIncludePaths(SearchPath);
+    fProjPack.BaseCompilerOptions.MergeToLibraryPaths(SearchPath);
+    fProjPack.BaseCompilerOptions.MergeToUnitPaths(SearchPath);
+    fProjPack.BaseCompilerOptions.MergeToObjectPath(SearchPath);
+    fProjPack.BaseCompilerOptions.MergeToDebugPath(SearchPath);
   end;
 
 var
@@ -1218,8 +1216,7 @@ begin
       // debug source dirs
       DebugSourceDirs:=ReadSearchPath('Directories','DebugSourceDirs');
       if DebugSourceDirs<>'' then
-        with fProjPack.BaseCompilerOptions do
-          DebugPath:=MergeSearchPaths(DebugPath,DebugSourceDirs);
+        fProjPack.BaseCompilerOptions.MergeToDebugPath(DebugSourceDirs);
 
       // packages
       ReadDelphiPackages;
@@ -1259,11 +1256,10 @@ begin
         if (c='U') or (c='I') then begin
           s:=ExpandDelphiSearchPath(copy(Line,4,length(Line)-4), Self);
           if s<>'' then
-            with fProjPack.BaseCompilerOptions do
-              case c of
-                'U': OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,s);
-                'I': IncludePath:=MergeSearchPaths(IncludePath,s);
-              end;
+            case c of
+              'U': fProjPack.BaseCompilerOptions.MergeToUnitPaths(s);
+              'I': fProjPack.BaseCompilerOptions.MergeToIncludePaths(s);
+            end;
         end
       end;
     finally
@@ -1333,11 +1329,8 @@ function TConvertDelphiProjPack.DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): 
       mUnit:=AUsedUnits.MissingUnits[i];
       sUnitPath:=GetCachedUnitPath(mUnit);
       if sUnitPath<>'' then begin
-        // Found from cached paths: add unit path to project's settings.
-        with fProjPack.BaseCompilerOptions do begin
-          OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,sUnitPath);
-          IncludePath:=MergeSearchPaths(IncludePath,sUnitPath);
-        end;
+        fProjPack.BaseCompilerOptions.MergeToUnitPaths(sUnitPath);
+        fProjPack.BaseCompilerOptions.MergeToIncludePaths(sUnitPath);
         // Rename a unit with different casing if needed.
         RealFileName:=fCachedRealFileNames[UpperCase(mUnit)];
         RealUnitName:=ExtractFileNameOnly(RealFileName);
@@ -1633,11 +1626,8 @@ begin
       end;
     finally
       AllPath:=fUnitSearchPaths.DelimitedText;
-      // Set unit and include paths for project
-      with LazProject.CompilerOptions do begin
-        OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,AllPath);
-        IncludePath:=MergeSearchPaths(IncludePath,AllPath);
-      end;
+      LazProject.CompilerOptions.MergeToUnitPaths(AllPath);
+      LazProject.CompilerOptions.MergeToIncludePaths(AllPath);
       // Clear caches
       LazProject.DefineTemplates.SourceDirectoriesChanged;
     end;
