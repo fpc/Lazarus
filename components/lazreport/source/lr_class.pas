@@ -91,8 +91,9 @@ type
   TfrFrameStyle = (frsSolid,frsDash, frsDot, frsDashDot, frsDashDotDot,frsDouble);
   TfrPageType = (ptReport, ptDialog);   //todo: - remove this
   TfrReportOption = (roIgnoreFieldNotFound, roIgnoreSymbolNotFound, roHideDefaultFilter,
-                     roDontUpgradePreparedReport, // on saving an old prepared report don't update to current version
-                     roSaveAndRestoreBookmarks    // try to save and later restore dataset bookmarks on building report
+                     roDontUpgradePreparedReport,   // on saving an old prepared report don't update to current version
+                     roSaveAndRestoreBookmarks,     // try to save and later restore dataset bookmarks on building report
+                     roPageHeaderBeforeReportTitle  // PageHeader band is printed before ReportTitle band
                      );
   TfrReportOptions = set of TfrReportOption;
   TfrObjectType = (otlReportView, otlUIControl);
@@ -8543,12 +8544,15 @@ begin
     {$IFDEF DebugLR}
     DebugLn('XAdjust=%d CurY=%d sfPage=%d',[XAdjust,CurY,sfpage]);
     {$ENDIF}
-    ShowBand(Bands[btReportTitle]);
+    if not (roPageHeaderBeforeReportTitle in MasterReport.Options) then
+      ShowBand(Bands[btReportTitle]);
     if PageNo = sfPage then // check if new page was formed
     begin
       if BandExists(Bands[btPageHeader]) and
         ((Bands[btPageHeader].Flags and flBandOnFirstPage) <> 0) then
         ShowBand(Bands[btPageHeader]);
+      if roPageHeaderBeforeReportTitle in MasterReport.Options then
+        ShowBand(Bands[btReportTitle]);
       if not RowsLayout then
         ShowBand(Bands[btColumnHeader]);
     end;
