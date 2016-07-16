@@ -1252,12 +1252,12 @@ end;
 
 function TProjectInspectorForm.ExtendIncSearchPath(NewIncPaths: string): boolean;
 begin
-  Result:=MainIDEInterface.ExtendProjectIncSearchPath(LazProject,NewIncPaths);
+  Result:=LazProject.ExtendIncSearchPath(NewIncPaths);
 end;
 
 function TProjectInspectorForm.ExtendUnitSearchPath(NewUnitPaths: string): boolean;
 begin
-  Result:=MainIDEInterface.ExtendProjectUnitSearchPath(LazProject,NewUnitPaths);
+  Result:=LazProject.ExtendUnitSearchPath(NewUnitPaths);
 end;
 
 function TProjectInspectorForm.FilesBaseDirectory: string;
