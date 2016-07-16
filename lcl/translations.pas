@@ -88,7 +88,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, LazFileUtils, StringHashList, AvgLvlTree,
   LConvEncoding, LazUTF8, LazUTF8Classes,
-  {$IF FPC_FULLVERSION>=30101}jsonscanner,{$ENDIF} jsonparser, fpjson;
+  {$IF FPC_FULLVERSION>=30001}jsonscanner,{$ENDIF} jsonparser, fpjson;
 
 type
   TStringsType = (
@@ -1373,7 +1373,7 @@ var
     K, L: Integer;
     Data: TJSONData;
   begin
-    Parser := TJSONParser.Create(InputLines.Text{$IF FPC_FULLVERSION>=30101},jsonscanner.DefaultOptions{$ENDIF});
+    Parser := TJSONParser.Create(InputLines.Text{$IF FPC_FULLVERSION>=30001},jsonscanner.DefaultOptions{$ENDIF});
     try
       JsonData := Parser.Parse as TJSONObject;
       try
