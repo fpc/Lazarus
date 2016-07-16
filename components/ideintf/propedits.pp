@@ -305,7 +305,7 @@ type
     // Draw Checkbox for Boolean and Set element editors.
     function DrawCheckbox(ACanvas: TCanvas; const ARect: TRect; IsTrue: Boolean): TRect;
     function DrawCheckValue(ACanvas: TCanvas; const ARect: TRect;
-      AState: TPropEditDrawState; IsTrue: Boolean): TRect;
+      {%H-}AState: TPropEditDrawState; {%H-}IsTrue: Boolean): TRect;
   public
     constructor Create(Hook:TPropertyEditorHook; APropCount:Integer); virtual;
     destructor Destroy; override;
