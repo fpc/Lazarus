@@ -645,6 +645,9 @@ begin
         Windows.DeleteObject(PaintRegion);
       end;
     end else begin
+      FillChar(PS, SizeOf(PS), 0);
+      PS.hdc := ControlDC;
+      Windows.GetUpdateRect(Window, @PS.rcPaint, False);
       DC := ControlDC;
       PaintRegion := 0;
     end;
