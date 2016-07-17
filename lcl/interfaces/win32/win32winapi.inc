@@ -1111,7 +1111,17 @@ begin
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
   W := UTF8ToUTF16(s);
   len := Length(W);
+  if (Flags and DT_MODIFYSTRING <> 0) then
+    SetLength(W, len+4);
   Result := Windows.DrawTextW(DC, PWideChar(W), len, @Rect, Flags);
+  if (Flags and DT_MODIFYSTRING <> 0) then
+  begin
+    s := UTF16ToUTF8(W);
+    if s<>'' then
+      Move(s[1], Str^, Length(s)+1) // the programmer has to make sure there's enough space in Str
+    else
+      Str^ := #0;
+  end;
 
 
   // Theoretically, we need to augment the returned rect by the text overhang
