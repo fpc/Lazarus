@@ -9689,6 +9689,7 @@ begin
     VK_ESCAPE:
       begin
         doGridKeyDown;
+        SetEditText(FGrid.FEditorOldValue);
         FGrid.EditorHide;
       end;
     else
