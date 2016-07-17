@@ -4527,10 +4527,10 @@ begin
     result := 0
   else
   if b1=nil then
-    result := -1
+    result := 1
   else
   if b2=nil then
-    result := 1
+    result := -1
   else begin
     // Note: Tds(ds).bookmarksize is set at creation of TDataSet and does not change
     result := CompareMemRange(b1,b2,Tds(ds).bookmarksize);
