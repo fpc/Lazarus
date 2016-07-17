@@ -3880,7 +3880,7 @@ begin
   if (txt <> '') and not EditorMode and not (csDesigning in ComponentState) then begin
     Hint := txt;
     //set Application.Hint as well (issue #0026957)
-    Application.Hint := AppHint;
+    Application.Hint := GetLongHint(AppHint);
     Application.ActivateHint(APoint, true);
   end else
     HideCellHintWindow;
