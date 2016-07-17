@@ -304,7 +304,6 @@ type
     FWindowHandle: HWND;
     procedure SetControl(AControl: TControl);
   protected
-    procedure SetHandle(NewHandle: HDC); override;
     procedure CreateHandle; override;
     function GetDefaultColor(const ADefaultColorType: TDefaultColorType): TColor; override;
   public
