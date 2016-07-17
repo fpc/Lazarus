@@ -3404,7 +3404,8 @@ begin
                   sTemplFile + ' (*.frt)|*.frt|' +
                   sLazFormFile + ' (*.lrf)|*.lrf|' +
                   sLazTemplateFile + ' (*.lrt)|*.lrt';
-      InitialDir:=ExtractFilePath(ParamStrUTF8(0));
+      if InitialDir='' then
+        InitialDir:=ExtractFilePath(ParamStrUTF8(0));
       FileName := CurDocName;
       FilterIndex := 3;
       if Execute then
