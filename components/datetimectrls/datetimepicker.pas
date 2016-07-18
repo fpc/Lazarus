@@ -46,7 +46,8 @@ uses
   clocale, // needed to initialize default locale settings on Linux.
   {$endif}
   Classes, SysUtils, Controls, LCLType, Graphics, Math, StdCtrls, Buttons,
-  ExtCtrls, Forms, ComCtrls, Types, LMessages, LazUTF8, CalControlWrapper;
+  ExtCtrls, Forms, ComCtrls, Types, LMessages, Calendar, LazUTF8, LCLIntf,
+  Themes, CalControlWrapper;
 
 const
   { We will deal with the NullDate value the special way. It will be especially
@@ -110,7 +111,7 @@ type
            // course, it makes a difference only when TimeFormat is set to tf12)
 
   TArrowShape = (asClassicSmaller, asClassicLarger, asModernSmaller,
-                                           asModernLarger, asYetAnotherShape);
+    asModernLarger, asYetAnotherShape, asTheme);
 
   TDTDateMode = (dmComboBox, dmUpDown, dmNone);
 
@@ -192,6 +193,7 @@ type
     function GetDate: TDate;
     function GetDateTime: TDateTime;
     function GetDroppedDown: Boolean;
+    function GetFlatButton: Boolean;
     function GetShowCheckBox: Boolean;
     function GetTime: TTime;
     procedure SetArrowShape(const AValue: TArrowShape);
@@ -203,6 +205,7 @@ type
     procedure CheckTextEnabled;
     procedure SetDateDisplayOrder(const AValue: TDateDisplayOrder);
     procedure SetDateMode(const AValue: TDTDateMode);
+    procedure SetFlatButton(const AValue: Boolean);
     procedure SetHideDateTimeParts(AValue: TDateTimeParts);
     procedure SetKind(const AValue: TDateTimeKind);
     procedure SetLeadingZeros(const AValue: Boolean);
@@ -247,6 +250,7 @@ type
     procedure SetHMSMs(const AValue: THMSMs);
     procedure UpdateIfUserChangedText;
     function GetSelectedText: String;
+    procedure AdjustSelection;
     procedure AdjustEffectiveCenturyFrom;
     procedure AdjustEffectiveDateDisplayOrder;
     procedure AdjustEffectiveHideDateTimeParts;
@@ -329,7 +333,6 @@ type
     procedure Change; virtual;
     procedure DoDropDown; virtual;
     procedure DoCloseUp; virtual;
-    procedure DrawArrowButtonGlyph; virtual;
 
     property BorderStyle default bsSingle;
     property AutoSize default True;
@@ -361,7 +364,7 @@ type
              read GetShowCheckBox write SetShowCheckBox default False;
     property Checked: Boolean read GetChecked write SetChecked default True;
     property ArrowShape: TArrowShape
-             read FArrowShape write SetArrowShape default asModernSmaller;
+             read FArrowShape write SetArrowShape default asTheme;
     property Kind: TDateTimeKind
              read FKind write SetKind;
     property DateSeparator: String
@@ -389,6 +392,7 @@ type
              read FShowMonthNames write SetShowMonthNames default False;
     property DroppedDown: Boolean read GetDroppedDown;
     property CalAlignment: TDTCalAlignment read FCalAlignment write SetCalAlignment default dtaDefault;
+    property FlatButton: Boolean read GetFlatButton write SetFlatButton default False;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -460,6 +464,7 @@ type
     property MonthNames;
     property ShowMonthNames;
     property CalAlignment;
+    property FlatButton;
 // events:
     property OnChange;
     property OnCheckBoxChange;
@@ -521,6 +526,34 @@ end;
 
 type
 
+  { TDTUpDown }
+
+{ The two buttons contained by UpDown control are never disabled in original
+  UpDown class. This class is defined here to override this behaviour. }
+  TDTUpDown = class(TCustomUpDown)
+  private
+    DTPicker: TCustomDateTimePicker;
+  protected
+    procedure SetEnabled(Value: Boolean); override;
+    procedure CalculatePreferredSize(var PreferredWidth,
+                  PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    procedure WndProc(var Message: TLMessage); override;
+  end;
+
+  { TDTSpeedButton }
+
+  TDTSpeedButton = class(TCustomSpeedButton)
+  private
+    DTPicker: TCustomDateTimePicker;
+  protected
+    procedure CalculatePreferredSize(var PreferredWidth,
+                  PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+      override;
+  public
+    procedure Paint; override;
+  end;
+
   { TDTCalendarForm }
 
   TDTCalendarForm = class(TForm)
@@ -540,8 +573,7 @@ type
     procedure CalendarKeyDown(Sender: TObject; var Key: Word;
                                       Shift: TShiftState);
     procedure CalendarResize(Sender: TObject);
-    procedure CalendarMouseUp(Sender: TObject; Button: TMouseButton;
-                                      Shift: TShiftState; X, Y: Integer);
+    procedure CalendarClick(Sender: TObject);
     procedure VisibleOfParentChanged(Sender: TObject);
 
   protected
@@ -550,6 +582,7 @@ type
     procedure DoClose(var CloseAction: TCloseAction); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
+    procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
   public
     constructor CreateNewDTCalendarForm(AOwner: TComponent;
                   ADTPicker: TCustomDateTimePicker);
@@ -666,14 +699,16 @@ end;
 procedure TDTCalendarForm.CalendarKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  case Key of
-    VK_ESCAPE:
-      CloseCalendarForm;
+  if (not(Cal.GetCalendarControl is TCustomCalendar))
+       or (TCustomCalendar(Cal.GetCalendarControl).GetCalendarView = cvMonth) then
+    case Key of
+      VK_ESCAPE:
+        CloseCalendarForm;
 
-    VK_RETURN, VK_SPACE:
-      CloseCalendarForm(True);
+      VK_RETURN, VK_SPACE:
+        CloseCalendarForm(True);
 
-  end;
+    end;
 end;
 
 procedure TDTCalendarForm.CalendarResize(Sender: TObject);
@@ -681,11 +716,13 @@ begin
   AdjustCalendarFormSize;
 end;
 
-procedure TDTCalendarForm.CalendarMouseUp(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TDTCalendarForm.CalendarClick(Sender: TObject);
+var
+  P: TPoint;
 begin
-  if Cal.AreCoordinatesOnDate(X, Y) then
-    CloseCalendarForm(True);
+  P := Cal.GetCalendarControl.ScreenToClient(Mouse.CursorPos);
+  if Cal.AreCoordinatesOnDate(P.x, P.y) then
+     CloseCalendarForm(True);
 
 end;
 
@@ -696,6 +733,17 @@ procedure TDTCalendarForm.VisibleOfParentChanged(Sender: TObject);
 begin
   SetClosingCalendarForm;
   Release;
+end;
+
+procedure TDTCalendarForm.WMActivate(var Message: TLMActivate);
+var
+  PP: HWND;
+begin
+  inherited;
+
+  PP := LCLIntf.GetParent(Handle);
+  if (PP<>0) then
+    SendMessage(PP, LM_NCACTIVATE, Ord(Message.Active <> WA_INACTIVE), 0);
 end;
 
 procedure TDTCalendarForm.Notification(AComponent: TComponent;
@@ -732,11 +780,6 @@ begin
 
   inherited DoClose(CloseAction);
 end;
-
-type
-  { To be able to access TControl's protected members,
-    we derive our class TDTControl from TControl: }
-  TDTControl = class(TControl);
 
 constructor TDTCalendarForm.CreateNewDTCalendarForm(AOwner: TComponent;
   ADTPicker: TCustomDateTimePicker);
@@ -797,7 +840,7 @@ begin
     Cal.SetDate(DTPicker.Date);
 
   Cal.GetCalendarControl.OnResize := @CalendarResize;
-  TDTControl(Cal.GetCalendarControl).OnMouseUp := @CalendarMouseUp;
+  Cal.GetCalendarControl.OnClick := @CalendarClick;
   if Cal.GetCalendarControl is TWinControl then begin
     TWinControl(Cal.GetCalendarControl).OnKeyDown := @CalendarKeyDown;
     TWinControl(Cal.GetCalendarControl).TabStop := True;
@@ -817,7 +860,7 @@ begin
 
   if Assigned(Cal) then begin
     Cal.GetCalendarControl.OnResize := nil;
-    TDTControl(Cal.GetCalendarControl).OnMouseUp := nil;
+    Cal.GetCalendarControl.OnClick := nil;
     if Cal.GetCalendarControl is TWinControl then
       TWinControl(Cal.GetCalendarControl).OnKeyDown := nil;
     Cal.Free;
@@ -871,8 +914,10 @@ begin
     PreviousEffectiveDDO := FEffectiveDateDisplayOrder;
     FDateDisplayOrder := AValue;
     AdjustEffectiveDateDisplayOrder;
-    if FEffectiveDateDisplayOrder <> PreviousEffectiveDDO then
+    if FEffectiveDateDisplayOrder <> PreviousEffectiveDDO then begin
+      AdjustSelection;
       UpdateDate;
+    end;
   end;
 end;
 
@@ -982,6 +1027,7 @@ begin
       FDateTime := NullDate
     else
       FDateTime := AValue;
+    Change;
   end;
   UpdateDate;
 end;
@@ -1292,8 +1338,6 @@ begin
       for I := dtpHour to dtpMiliSec do
         if not (I in FEffectiveHideDateTimeParts) then begin
           Inc(TimeParts);
-          if TimeParts > 1 then
-            Inc(FTimeWidth, FTimeSeparatorWidth);
 
           if I = dtpMiliSec then
             FTimeWidth := FTimeWidth + 3 * FDigitWidth
@@ -1609,6 +1653,13 @@ begin
     Result := FTimeText[TDateTimePart(FSelectedTextPart - 1)];
 end;
 
+procedure TCustomDateTimePicker.AdjustSelection;
+begin
+  if GetDateTimePartFromTextPart(FSelectedTextPart) in
+                   FEffectiveHideDateTimeParts then
+    MoveSelectionLR(False);
+end;
+
 procedure TCustomDateTimePicker.AdjustEffectiveCenturyFrom;
 var
   Y1, Y2, M, D: Word;
@@ -1787,10 +1838,7 @@ begin
 
   if FEffectiveHideDateTimeParts
                           <> PreviousEffectiveHideDateTimeParts then begin
-    if GetDateTimePartFromTextPart(FSelectedTextPart) in
-                     FEffectiveHideDateTimeParts then
-      MoveSelectionLR(False);
-
+    AdjustSelection;
     FRecalculatingTextSizesNeeded := True;
     UpdateShowArrowButton;
     UpdateDate;
@@ -2867,6 +2915,14 @@ begin
   end;
 end;
 
+procedure TCustomDateTimePicker.SetFlatButton(const AValue: Boolean);
+begin
+  if FlatButton=AValue then
+    Exit;
+  if FArrowButton<>nil then
+    FArrowButton.Flat := AValue;
+end;
+
 procedure TCustomDateTimePicker.SetAutoSize(Value: Boolean);
 begin
   if AutoSize <> Value then begin
@@ -3238,52 +3294,6 @@ begin
   Result := (not Assigned(FCheckBox)) or (FCheckBox.State = cbChecked);
 end;
 
-{ DrawArrowButtonGlyph
- ----------------------
- Draws the arrow shape on button (when DateMode dmComboBox is set). }
-procedure TCustomDateTimePicker.DrawArrowButtonGlyph;
-const
-  ArrowColor = TColor($8D665A);
-begin
-// First I ment to put arrow images in a lrs file. In my opinion, however, that
-// wouldn't be an elegant option for so simple shapes.
-
-  if Assigned(FArrowButton) then begin
-    FArrowButton.Glyph.SetSize(9, 6);
-    FArrowButton.Glyph.Canvas.Brush.Style := bsSolid;
-    FArrowButton.Glyph.Canvas.Brush.Color := clSkyBlue;
-    FArrowButton.Glyph.Canvas.FillRect(0, 0, 9, 6);
-    FArrowButton.Glyph.Canvas.Pen.Color := ArrowColor;
-    FArrowButton.Glyph.Canvas.Brush.Color := FArrowButton.Glyph.Canvas.Pen.Color;
-
-{ Let's draw shape of the arrow on the button: }
-    case FArrowShape of
-      asClassicLarger:
-        { triangle: }
-        FArrowButton.Glyph.Canvas.Polygon([Point(0, 1), Point(8, 1),
-                                                        Point(4, 5)]);
-      asClassicSmaller:
-        { triangle -- smaller variant:  }
-        FArrowButton.Glyph.Canvas.Polygon([Point(1, 2), Point(7, 2),
-                                                        Point(4, 5)]);
-      asModernLarger:
-        { modern: }
-        FArrowButton.Glyph.Canvas.Polygon([Point(0, 1), Point(1, 0),
-                          Point(4, 3), Point(7, 0), Point(8, 1), Point(4, 5)]);
-      asModernSmaller:
-        { modern -- smaller variant:    }
-        FArrowButton.Glyph.Canvas.Polygon([Point(1, 2), Point(2, 1),
-                          Point(4, 3), Point(6, 1), Point(7, 2), Point(4, 5)]);
-      asYetAnotherShape:
-        { something in between, not very pretty:  }
-        FArrowButton.Glyph.Canvas.Polygon([Point(0, 1), Point(1, 0),
-              Point(2, 1), Point(6, 1),Point(7, 0), Point(8, 1), Point(4, 5)]);
-    end;
-
-    FArrowButton.Glyph.Mask(clSkyBlue);
-  end;
-end;
-
 function TCustomDateTimePicker.AreSeparatorsStored: Boolean;
 begin
   Result := not FUseDefaultSeparators;
@@ -3310,6 +3320,14 @@ begin
   Result := Assigned(FCalendarForm);
 end;
 
+function TCustomDateTimePicker.GetFlatButton: Boolean;
+begin
+  if FArrowButton<>nil then
+    Result := FArrowButton.Flat
+  else
+    Result := False;
+end;
+
 function TCustomDateTimePicker.GetShowCheckBox: Boolean;
 begin
   Result := Assigned(FCheckBox);
@@ -3328,7 +3346,8 @@ begin
   if FArrowShape = AValue then Exit;
 
   FArrowShape := AValue;
-  DrawArrowButtonGlyph;
+  if FArrowButton<>nil then
+    FArrowButton.Invalidate;
 end;
 
 const
@@ -3446,34 +3465,6 @@ begin
 
 end;
 
-type
-
-  { TDTUpDown }
-
-{ The two buttons contained by UpDown control are never disabled in original
-  UpDown class. This class is defined here to override this behaviour. }
-  TDTUpDown = class(TCustomUpDown)
-  private
-    DTPicker: TCustomDateTimePicker;
-  protected
-    procedure SetEnabled(Value: Boolean); override;
-    procedure CalculatePreferredSize(var PreferredWidth,
-                  PreferredHeight: integer; WithThemeSpace: Boolean); override;
-    procedure WndProc(var Message: TLMessage); override;
-  end;
-
-  { TDTSpeedButton }
-
-  TDTSpeedButton = class(TCustomSpeedButton)
-  private
-    DTPicker: TCustomDateTimePicker;
-  protected
-    procedure CalculatePreferredSize(var PreferredWidth,
-                  PreferredHeight: integer; WithThemeSpace: Boolean); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-      override;
-  end;
-
 { TDTUpDown }
 
 { When our UpDown control gets enabled/disabled, the two its buttons' Enabled
@@ -3558,6 +3549,64 @@ begin
   end;
 end;
 
+procedure TDTSpeedButton.Paint;
+  procedure DrawDropDownArrow(const Canvas: TCanvas; const DropDownButtonRect: TRect);
+  var
+    Details: TThemedElementDetails;
+    ArrowState: TThemedToolBar;
+  begin
+    if Enabled then
+      ArrowState := ttbSplitButtonDropDownNormal
+    else
+      ArrowState := ttbSplitButtonDropDownDisabled;
+    Details := ThemeServices.GetElementDetails(ArrowState);
+    ThemeServices.DrawElement(Canvas.Handle, Details, DropDownButtonRect);
+  end;
+const
+  ArrowColor = TColor($8D665A);
+var
+  X, Y: Integer;
+begin
+  inherited Paint;
+
+  // First I ment to put arrow images in a lrs file. In my opinion, however, that
+  // wouldn't be an elegant option for so simple shapes.
+
+  Canvas.Brush.Style := bsSolid;
+  Canvas.Pen.Color := ArrowColor;
+  Canvas.Brush.Color := Canvas.Pen.Color;
+
+  X := (Width-9) div 2;
+  Y := (Height-6) div 2;
+
+{ Let's draw shape of the arrow on the button: }
+  case DTPicker.FArrowShape of
+    asTheme:
+      DrawDropDownArrow(Canvas, Rect(0, 0, Width, Height));
+
+    asClassicLarger:
+      { triangle: }
+      Canvas.Polygon([Point(X+0, Y+1), Point(X+8, Y+1),
+                                                      Point(X+4, Y+5)]);
+    asClassicSmaller:
+      { triangle -- smaller variant:  }
+      Canvas.Polygon([Point(X+1, Y+2), Point(X+7, Y+2),
+                                                      Point(X+4, Y+5)]);
+    asModernLarger:
+      { modern: }
+      Canvas.Polygon([Point(X+0, Y+1), Point(X+1, Y+0),
+                        Point(X+4, Y+3), Point(X+7, Y+0), Point(X+8, Y+1), Point(X+4, Y+5)]);
+    asModernSmaller:
+      { modern -- smaller variant:    }
+      Canvas.Polygon([Point(X+1, Y+2), Point(X+2, Y+1),
+                        Point(X+4, Y+3), Point(X+6, Y+1), Point(X+7, Y+2), Point(X+4, Y+5)]);
+    asYetAnotherShape:
+      { something in between, not very pretty:  }
+      Canvas.Polygon([Point(X+0, Y+1), Point(X+1, Y+0),
+            Point(X+2, Y+1), Point(X+6, Y+1),Point(X+7, Y+0), Point(X+8, Y+1), Point(X+4, Y+5)]);
+  end;
+end;
+
 procedure TCustomDateTimePicker.UpdateShowArrowButton;
 
   procedure CreateArrowBtn;
@@ -3571,8 +3620,6 @@ procedure TCustomDateTimePicker.UpdateShowArrowButton;
                                             [csNoFocus, csNoDesignSelectable];
       TDTSpeedButton(FArrowButton).DTPicker := Self;
       FArrowButton.SetBounds(0, 0, DefaultArrowButtonWidth, 1);
-
-      DrawArrowButtonGlyph;
 
       FArrowButton.Parent := Self;
       FAllowDroppingCalendar := True;
@@ -3665,7 +3712,7 @@ begin
   FCorrectedValue := 0;
   FChangeInRecursiveCall := False;
   FNoEditingDone := 0;
-  FArrowShape := asModernSmaller;
+  FArrowShape := asTheme;
   FAllowDroppingCalendar := True;
 
   FOnDropDown := nil;

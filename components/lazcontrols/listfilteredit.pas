@@ -68,14 +68,7 @@ type
 var
   ListFilterGlyph: TBitmap;
 
-procedure Register;
-
 implementation
-
-procedure Register;
-begin
-  RegisterComponents('LazControls',[TListFilterEdit]);
-end;
 
 { TListBoxFilterEdit }
 
@@ -166,29 +159,19 @@ procedure TListFilterEdit.SortAndFilter;
 // Copy data from fOriginalData to fSortedData in sorted order
 var
   Origi, i: Integer;
-  s, FilterLC: string;
-  Pass, Done: Boolean;
+  Capt, FilterLC: string;
 begin
-  Done:=False;
   fSortedData.Clear;
-  FilterLC := UTF8LowerCase(Filter);
+  FilterLC:=UTF8LowerCase(Filter);
   for Origi:=0 to fOriginalData.Count-1 do begin
-    s:=fOriginalData[Origi];
-    // Filter with event handler if there is one.
-    if Assigned(OnFilterItem) then
-      Pass:=OnFilterItem(fOriginalData.Objects[Origi], Done)
-    else
-      Pass:=False;
-    // Filter by item's title text if needed.
-    if not (Pass or Done) then
-      Pass:=(FilterLC='') or (Pos(FilterLC,UTF8LowerCase(s))>0);
-    if Pass then begin
+    Capt:=fOriginalData[Origi];
+    if DoFilterItem(Capt, fOriginalData.Objects[Origi], FilterLC) then begin
       i:=fSortedData.Count-1;       // Always sort the data.
       while i>=0 do begin
-        if CompareFNs(s,fSortedData[i])>=0 then break;
+        if CompareFNs(Capt,fSortedData[i])>=0 then break;
         dec(i);
       end;
-      fSortedData.InsertObject(i+1, s, fOriginalData.Objects[Origi]);
+      fSortedData.InsertObject(i+1, Capt, fOriginalData.Objects[Origi]);
     end;
   end;
 end;
@@ -325,9 +308,12 @@ begin
       fFilteredListbox.ItemIndex := AIndex;
       for i := Min(AIndex+1, xSelStart+1) to Max(AIndex-1, xSelEnd-1) do
         fFilteredListbox.Selected[i] := True;
+      //Win32 sets ItemIndex to the last Selected[?] := True - in contrast to Gtk2 -> set selected again to work on all widgetsets
+       fFilteredListbox.Selected[AIndex] := True;
     end else
     begin
       fFilteredListbox.ItemIndex := AIndex;
+      fFilteredListbox.Selected[AIndex] := True;
     end;
     Assert(fFilteredListbox.ItemFullyVisible(AIndex), 'TListFilterEdit.MoveTo: Item not fully visible');
 {    if not fFilteredListbox.ItemFullyVisible(AIndex) then

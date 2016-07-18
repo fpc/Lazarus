@@ -18,3 +18,4 @@ msgstr "il file \"%s\" non esiste"
 #: luresstrings.ctsfileisnotexecutable
 msgid "%s is not executable"
 msgstr "%s non è eseguibile"
+

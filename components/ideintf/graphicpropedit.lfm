@@ -1,7 +1,7 @@
 object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
-  Left = 277
+  Left = 389
   Height = 381
-  Top = 147
+  Top = 166
   Width = 436
   ActiveControl = LoadButton
   Caption = 'Load Image Dialog'
@@ -11,38 +11,37 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
   Constraints.MinWidth = 200
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.7'
   object GroupBox1: TGroupBox
     Left = 6
-    Height = 337
+    Height = 334
     Top = 6
     Width = 424
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'Picture'
-    ClientHeight = 319
+    ClientHeight = 315
     ClientWidth = 420
     TabOrder = 0
     object ScrollBox: TScrollBox
       AnchorSideRight.Control = GroupBox1
       AnchorSideBottom.Control = GroupBox1
       Left = 6
-      Height = 307
+      Height = 303
       Top = 6
       Width = 322
-      HorzScrollBar.Page = 318
+      HorzScrollBar.Page = 100
       HorzScrollBar.Tracking = True
-      VertScrollBar.Page = 303
+      VertScrollBar.Page = 100
       VertScrollBar.Tracking = True
       Align = alClient
       BorderSpacing.Around = 6
-      ClientHeight = 303
-      ClientWidth = 318
-      Color = clWindow
-      ParentColor = False
+      ClientHeight = 301
+      ClientWidth = 320
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
+      OnResize = ScrollBoxResize
       object ImagePreview: TImage
         Left = 0
         Height = 100
@@ -50,70 +49,100 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
         Width = 100
         AutoSize = True
         Center = True
+        OnPaintBackground = ImagePreviewPaintBackground
       end
     end
     object LoadSaveBtnPanel: TPanel
       Left = 334
-      Height = 319
+      Height = 315
       Top = 0
       Width = 86
       Align = alRight
       BevelOuter = bvNone
-      ClientHeight = 319
+      ClientHeight = 315
       ClientWidth = 86
       TabOrder = 1
       object LoadButton: TButton
         Left = 6
-        Height = 25
+        Height = 29
         Top = 6
         Width = 74
         Action = FileOpenAction
         Align = alTop
+        AutoSize = True
         BorderSpacing.Around = 6
         TabOrder = 0
       end
       object SaveButton: TButton
+        AnchorSideLeft.Control = LoadButton
+        AnchorSideTop.Control = LoadButton
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = LoadButton
+        AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 25
-        Top = 37
+        Height = 29
+        Top = 41
         Width = 74
         Action = FileSaveAction
         Align = alTop
+        AutoSize = True
         BorderSpacing.Around = 6
         TabOrder = 1
       end
       object ClearButton: TButton
+        AnchorSideLeft.Control = LoadButton
+        AnchorSideTop.Control = SaveButton
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = LoadButton
+        AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 25
-        Top = 68
+        Height = 29
+        Top = 76
         Width = 74
         Action = ClearAction
         Align = alTop
+        AutoSize = True
         BorderSpacing.Around = 6
         TabOrder = 2
       end
       object CopyButton: TButton
+        AnchorSideLeft.Control = LoadButton
+        AnchorSideTop.Control = ClearButton
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = LoadButton
+        AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 25
-        Top = 112
+        Height = 29
+        Top = 111
         Width = 74
         Action = CopyAction
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Top = 6
         TabOrder = 3
       end
       object PasteButton: TButton
+        AnchorSideLeft.Control = LoadButton
+        AnchorSideTop.Control = CopyButton
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = LoadButton
+        AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 25
-        Top = 143
+        Height = 29
+        Top = 146
         Width = 74
         Action = PasteAction
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Top = 6
         TabOrder = 4
       end
     end
   end
   object OkCancelButtonPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 349
+    Height = 29
+    Top = 346
     Width = 424
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

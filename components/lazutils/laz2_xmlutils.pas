@@ -1,6 +1,7 @@
 {
  **********************************************************************
-  This file is part of the Free Component Library
+  This file is part of LazUtils.
+  It is copied and modified from a file in Free Component Library.
 
   See the file COPYING.FPC, included in this distribution,
   for details about the license.

@@ -1572,10 +1572,10 @@ end;
 function CpuNameToPtrSize(const CpuName: String): Integer;
 begin
   //'x86', 'i386', 'i486', 'i586', 'i686',
-  //'ia64', 'x86_64', 'powerpc',
+  //'ia64', 'x86_64', 'powerpc', aarch64
   //'sparc', 'arm'
   Result := 4;
-  if (LowerCase(CpuName) = 'ia64') or (LowerCase(CpuName) = 'x86_64')
+  if (LowerCase(CpuName) = 'ia64') or (LowerCase(CpuName) = 'x86_64') or (LowerCase(CpuName) = 'aarch64')
   then Result := 8;
 end;
 
@@ -2202,7 +2202,9 @@ begin
     'mach-o-be',
     'mach-o-le',
     'pei-arm-little',
-    'pei-arm-big'
+    'pei-arm-big',
+    'elf64-littleaarch64',
+    'elf64-bigaarch64'
   ], True, False) of
     0..3: TargetInfo^.TargetCPU := 'x86';
     4: TargetInfo^.TargetCPU := 'x86_64'; //TODO: should we check, PtrSize must be 8, but what if not?
@@ -2242,6 +2244,13 @@ begin
       TargetInfo^.TargetIsBE := True;
       TargetInfo^.TargetCPU := 'arm';
     end;
+    10: begin
+      TargetInfo^.TargetCPU := 'aarch64';
+    end;
+    11: begin
+      TargetInfo^.TargetIsBE := True;
+      TargetInfo^.TargetCPU := 'aarch64';
+    end;
   else
     // Unknown filetype, use GDB cpu
     DebugLn(DBG_WARNINGS, '[WARNING] [Debugger.TargetInfo] Unknown FileType: %s, using GDB cpu', [AFileType]);
@@ -2256,7 +2265,7 @@ begin
   case StringCase(TargetInfo^.TargetCPU, [
     'x86', 'i386', 'i486', 'i586', 'i686',
     'ia64', 'x86_64', 'powerpc',
-    'sparc', 'arm'
+    'sparc', 'arm', 'aarch64'
   ], True, False) of
     0..4: begin // x86
       TargetInfo^.TargetRegisters[0] := '$eax';
@@ -2307,6 +2316,14 @@ begin
       TargetInfo^.TargetRegisters[0] := '$r0';
       TargetInfo^.TargetRegisters[1] := '$r1';
       TargetInfo^.TargetRegisters[2] := '$r2';
+    end;
+    10: begin // aarch64
+      //TargetInfo^.TargetRegisters[0] := '$r0';
+      //TargetInfo^.TargetRegisters[1] := '$r1';
+      //TargetInfo^.TargetRegisters[2] := '$r2';
+      TargetInfo^.TargetRegisters[0] := '$x0';
+      TargetInfo^.TargetRegisters[1] := '$x1';
+      TargetInfo^.TargetRegisters[2] := '$x2';
     end;
   else
     TargetInfo^.TargetRegisters[0] := '';

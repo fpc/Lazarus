@@ -153,8 +153,7 @@ begin
   StoreIDEFileDialog(SelectDirectoryDialog);
 end;
 
-procedure TLazFindInFilesDialog.FormClose(Sender: TObject;
-  var CloseAction: TCloseAction);
+procedure TLazFindInFilesDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;

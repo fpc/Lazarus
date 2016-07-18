@@ -31,6 +31,9 @@ implementation
 
 {$R *.lfm}
 
+uses
+  Math, Printers, TADrawUtils, TADrawerCanvas;
+
 { TForm1 }
 
 procedure TForm1.btnShowReportClick(Sender: TObject);
@@ -47,16 +50,19 @@ procedure TForm1.frReport1EnterRect(Memo: TStringList; View: TfrView);
 var
   bmp: TBitmap;
   pv: TfrPictureView;
+  factor: Double;
 begin
   if Memo.Count = 0 then exit;
   if (Memo[0] = 'Chart1') and (View is TfrPictureView) then begin
     pv := View as TfrPictureView;
+    factor := Max(Printer.XDpi, Printer.YDpi) / Screen.PixelsPerInch;
     bmp := TBitmap.Create;
     try
-      bmp.Width := Round(pv.Width);
-      bmp.Height := Round(pv.Height);
-      Chart1.PaintOnCanvas(
-        bmp.Canvas, Rect(0, 0, bmp.Width, bmp.Height));
+      bmp.Width := Round(pv.Width * factor);
+      bmp.Height := Round(pv.Height * factor);
+      Chart1.Draw(
+        TScaledCanvasDrawer.Create(bmp.Canvas, factor, [scaleFont, scalePen]),
+        Rect(0, 0, bmp.Width, bmp.Height));
       pv.Picture.Bitmap.Assign(bmp);
     finally
       bmp.Free;

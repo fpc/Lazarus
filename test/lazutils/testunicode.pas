@@ -3,7 +3,7 @@ program TestUnicode;
 {$mode objfpc}{$H+}
 
 uses
-  sysutils, lazutf8, lazutf16;
+  sysutils, LazUTF8, LazUTF16;
 
 procedure WriteStringHex(Str: utf8string);
 var

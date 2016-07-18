@@ -67,6 +67,7 @@ resourcestring
   lisDlgEdit = 'Edit ...';
   lisClear = 'Clear';
   lisOpen = 'Open';
+  lisOpenUnit = 'Open Unit';
   lisSave = 'Save';
   lisDlgSave = 'Save ...';
   lisSaveAs = 'Save As';
@@ -86,7 +87,9 @@ resourcestring
   lisNever = 'Never';
   lisAlways = 'Always';
   lisContinue = 'Continue';
+  lisMenuContinue = '&Continue';
   lisBreak = 'Break';
+  lisMenuBreak = '&Break';
   lisExit = 'Exit';
   lisQuit = 'Quit';
   lisBtnQuit = '&Quit';
@@ -200,6 +203,9 @@ resourcestring
   lisMaximumNumberOfThreadsForCompilingInParallelDefaul = 'Maximum number of '
     +'threads for compiling in parallel. Default is 0, which guesses the '
     +'number of cores in the system.';
+  lisDoNotWriteUpdatedProjectInfoAfterBuild = 'Do not write updated project '+
+    'info file after build. If not specified, build number will be incremented '+
+    'if configured.';
 
   // component palette
   lisSelectionTool = 'Selection tool';
@@ -289,6 +295,7 @@ resourcestring
   lisMenuNewForm = 'New Form';
   lisMenuNewOther = 'New ...';
   lisMenuOpen = '&Open ...';
+  lisMenuOpenUnit = 'Open Unit ...';
   lisMenuRevert = 'Revert';
   lisPESavePackageAs = 'Save Package As ...';
   lisPkgEditPublishPackage = 'Publish Package';
@@ -301,6 +308,10 @@ resourcestring
   lisDiscardChanges = 'Discard changes';
   lisDiscardChangesAll = 'Discard all changes';
   lisDoNotCloseTheProject = 'Do not close the project';
+  lisErrorSavingForm = 'Error saving form';
+  lisCannotSaveForm = 'Cannot save form "%s".';
+  lisErrorOpeningForm = 'Error opening form';
+  lisCannotOpenForm = 'Cannot open form "%s".';
   lisConvert = 'Convert';
   lisPLDShowGlobalLinksIn = 'Show global links in ';
   lisPLDShowUserLinksIn = 'Show user links in ';
@@ -472,6 +483,7 @@ resourcestring
   lisMenuOpenRecentProject = 'Open Recent Project';
   lisMenuSaveProject = 'Save Project';
   lisMenuSaveProjectAs = 'Save Project As ...';
+  lisMenuResaveFormsWithI18n = 'Resave forms with enabled i18n';
   lisMenuPublishProject = 'Publish Project ...';
   lisPublishProject = 'Publish Project';
   lisMenuProjectInspector = 'Project Inspector';
@@ -487,7 +499,7 @@ resourcestring
   lisBFBuildCommand = 'Build Command';
   lisMenuQuickCompile = 'Quick Compile';
   lisMenuCleanUpAndBuild = 'Clean up and Build ...';
-  lisMenuBuildManyModes = 'Build many Modes ...';
+  lisMenuCompileManyModes = 'Compile many Modes ...';
   lisMenuAbortBuild = 'Abort Build';
   lisMenuProjectRun = '&Run';
   lisBFAlwaysBuildBeforeRun = 'Always build before run';
@@ -517,6 +529,7 @@ resourcestring
   lisMenuResetDebugger = 'Reset Debugger';
   lisMenuRunParameters = 'Run &Parameters ...';
   lisMenuBuildFile = 'Build File';
+  lisMenuRunWithoutDebugging = 'Run without Debugging';
   lisMenuRunFile = 'Run File';
   lisKMConfigBuildFile = 'Config "Build File"';
   lisKMInspect = 'Inspect';
@@ -1005,6 +1018,7 @@ resourcestring
 
   lisIECOErrorOpeningXml = 'Error opening XML';
   lisIECOErrorOpeningXmlFile = 'Error opening XML file "%s":%s%s';
+  lisImportingBuildModesNotSupported = 'Importing BuildModes is not supported for packages.';
   lisSuccessfullyImportedBuildModes = 'Successfully imported %d BuildModes from "%s".';
   lisSuccessfullyExportedBuildModes = 'Successfully exported %d BuildModes to "%s".';
   lisSuccessfullyImportedCompilerOptions = 'Successfully imported compiler options from "%s".';
@@ -1186,7 +1200,7 @@ resourcestring
   // Options dialog
   dlgIDEOptions = 'IDE Options';
   dlgBakNoSubDirectory = '(no subdirectory)';
-  dlgEOFocusMessagesAfterCompilation = 'Focus messages after compilation';
+  dlgEOFocusMessagesAtCompilation = 'Focus messages at compilation';
   lisMaximumParallelProcesses0MeansDefault = 'Maximum parallel processes, 0 '
     +'means default (%s)';
   lisShowFPCMessageLinesCompiled = 'Show FPC message "lines compiled"';
@@ -1195,6 +1209,7 @@ resourcestring
   lisMessagesWindow = 'Messages Window';
   lisCheckForDiskFileChangesViaContent = 'Check for disk file changes via content '
     +'rather than timestamp';
+  lisAutoCheckModifiedFiles = 'Automatically check (select) modified files';
   lisSlowerButMoreAccurate = 'Slower but more accurate.';
 
   // Search dialog
@@ -1234,6 +1249,7 @@ resourcestring
   lisKMLazarusDefault = 'Lazarus (default)';
   lisKMMacOSXApple = 'Mac OS X (Apple style)';
   lisKMMacOSXLaz = 'Mac OS X (Lazarus style)';
+  lisKMDefaultToOSX = 'Default adapted to OS X';
   lisPEFilename = 'Filename:';
   lisPEUnitname = 'Unitname:';
   lisPVUTheUnitnameIsUsedWhenTheIDEExtendsUsesClauses = 'The unitname is used '
@@ -1444,13 +1460,14 @@ resourcestring
   lisToolHeaderScrolledUp = 'Tool Header: Scrolled up';
   dlgSubPropColor = 'SubProperties';
   dlgReferenceColor = 'Reference';
-  dlgValueColor = 'Value';
   lisAllBuildModes = '<All build modes>';
   lisNameOfActiveBuildMode = 'Name of active build mode';
   dlfReadOnlyColor = 'Read Only';
   dlgHighlightColor = 'Highlight Color';
   dlgHighlightFontColor = 'Highlight Font Color';
+  dlgValueColor = 'Value';
   dlgDefValueColor = 'Default Value';
+  dlgDifferentValueBackgroundColor = 'Different values background';
   dlgPropNameColor = 'Property Name';
   dlgGutterEdgeColor = 'Gutter Edge Color';
 
@@ -1575,6 +1592,7 @@ resourcestring
   lisShowSpecialCharacters = 'Show special characters';
   dlgCloseButtonsNotebook = 'Show close buttons in notebook';
   dlgCtrlMiddleTabCloseOtherPages = 'Ctrl-middle-click on tab closes all others';
+  dlgShowFileNameInCaption = 'Show file name in caption';
   dlgSourceEditTabMultiLine = 'Multiline tabs';
   dlgHideSingleTabInNotebook = 'Hide tab in single page windows';
   dlgTabNumbersNotebook = 'Show tab numbers in notebook';
@@ -1724,6 +1742,8 @@ resourcestring
   dlgMouseOptNodeGutterFoldExp = 'Expanded [-]';
   dlgMouseOptNodeGutterLines = 'Line Numbers';
   dlgMouseOptNodeGutterChanges = 'Line Changes';
+  dlgMouseOptNodeGutterLineOverview = 'Overview';
+  dlgMouseOptNodeGutterLineOverviewMarks = 'Overview Mark';
   dlgMouseOptHeadOrder = 'Order';
   dlgMouseOptHeadContext = 'Context';
   dlgMouseOptHeadDesc = 'Action';
@@ -1958,6 +1978,9 @@ resourcestring
   dlgFoldPasProcBeginEnd    = 'Begin/End (procedure)';
   dlgFoldPasNestedComment   = 'Nested Comment';
   dlgFoldPasIfThen          = 'If/Then/Else';
+  dlgFoldPasForDo           = 'For/Do';
+  dlgFoldPasWhileDo         = 'While/Do';
+  dlgFoldPasWithDo          = 'With/Do';
   dlgFoldPasProcedure       = 'Procedure';
   dlgFoldPasUses            = 'Uses';
   dlgFoldPasVarType         = 'Var/Type (global)';
@@ -2094,6 +2117,7 @@ resourcestring
   dlgCenterCursorLine = 'Center cursor line';
   dlgCursorBeyondEOL = 'Cursor beyond EOL';
   dlgSkipForwardClassDeclarations = 'Skip forward class declarations';
+  dlgJumpToMethodBody = 'Jump directly to method body';
   dlgInsertClassParts = 'Insert class parts';
   lisClassCompletion = 'Class Completion';
   dlgAlphabetically = 'Alphabetically';
@@ -2241,6 +2265,8 @@ resourcestring
   dlgLinkSmart = 'Link smart';
   dlgPassOptsLinker = 'Pass options to linker with "-k", delimiter is space';
   dlgWin32GUIApp = 'Win32 gui application';
+  lisOptionValueIgnored = 'ignored';
+  lisCannotSubstituteMacroS = 'Cannot substitute macro "%s".';
   dlgTargetSpecificOptions = 'Target-specific options';
   dlgVerbosity = 'Verbosity during compilation:';
   dlgCOShowErr = 'Show errors';
@@ -2395,6 +2421,8 @@ resourcestring
   lisSAMUnableToShowAbstractMethodsOfTheCurrentClassBecaus = 'Unable to show '
     +'abstract methods of the current class, because';
   lisCCOWarningCaption = 'Warning';
+  lisHintClickOnShowOptionsToFindOutWhereInheritedPaths = 'Hint: Click on "'
+    +'Show Options" to find out where inherited paths are coming from.';
   lisFileNotFound5 = 'File not found:%s%s';
   lisMovingTheseUnitsWillBreakTheirUsesSectionsSeeMessa = 'Moving these units '
     +'will break their uses sections. See Messages window for details.';
@@ -2466,6 +2494,10 @@ resourcestring
     +'this for individual forms via the package editor';
   lisYouCanDisableThisForIndividualFormsViaThePopupMenu = 'You can disable '
     +'this for individual forms via the popup menu in the project inspector';
+  rsI18nExcluded = 'Excluded';
+  rsI18nIdentifiers = 'Identifiers:';
+  rsI18nOriginals = 'Originals:';
+  rsI18nForceUpdatePoFilesOnNextCompile = 'Force update PO files on next compile';
 
   rsIncludeVersionInfoInExecutable = 'Include version info in executable';
   rsIncludeVersionInfoHint = 'Version info is stored if the executable format supports it.';
@@ -2819,9 +2851,8 @@ resourcestring
   srkmCommand  = 'Command:';
   lisKeyOr2KeySequence = 'Key (or 2 key sequence)';
   lisTheKeyIsAlreadyAssignedToRemoveTheOldAssignmentAnd = 'The key %s'
-    +'%sis already assigned to %s.'
-    +'%sRemove the old assignment and assign the key to the new function'
-    +'%s%s?';
+    +' is already assigned to %s%s.'
+    +'%s%sRemove the old assignment and assign the key to the new function %s?';
   lisAlternativeKeyOr2KeySequence = 'Alternative key (or 2 key sequence)';
   srkmConflic  = 'Conflict ';
   lisThereAreNoConflictingKeys = 'There are no conflicting keys.';
@@ -2950,39 +2981,39 @@ resourcestring
   srkmecClearAllBookmark      = 'Clear all Bookmarks';
   srkmecPrevBookmark          = 'Previous Bookmark';
   srkmecNextBookmark          = 'Next Bookmark';
-  lisKMGoToMarker0 = 'Go to marker 0';
-  lisKMGoToMarker1 = 'Go to marker 1';
-  lisKMGoToMarker2 = 'Go to marker 2';
-  lisKMGoToMarker3 = 'Go to marker 3';
-  lisKMGoToMarker4 = 'Go to marker 4';
-  lisKMGoToMarker5 = 'Go to marker 5';
-  lisKMGoToMarker6 = 'Go to marker 6';
-  lisKMGoToMarker7 = 'Go to marker 7';
-  lisKMGoToMarker8 = 'Go to marker 8';
-  lisKMGoToMarker9 = 'Go to marker 9';
-  lisKMSetMarker0 = 'Set marker 0';
-  lisKMSetMarker1 = 'Set marker 1';
-  lisKMSetMarker2 = 'Set marker 2';
-  lisKMSetMarker3 = 'Set marker 3';
-  lisKMSetMarker4 = 'Set marker 4';
-  lisKMSetMarker5 = 'Set marker 5';
-  lisKMSetMarker6 = 'Set marker 6';
-  lisKMSetMarker7 = 'Set marker 7';
-  lisKMSetMarker8 = 'Set marker 8';
-  lisKMSetMarker9 = 'Set marker 9';
-  lisKMToggleMarker0 = 'Toggle marker 0';
-  lisKMToggleMarker1 = 'Toggle marker 1';
-  lisKMToggleMarker2 = 'Toggle marker 2';
-  lisKMToggleMarker3 = 'Toggle marker 3';
-  lisKMToggleMarker4 = 'Toggle marker 4';
-  lisKMToggleMarker5 = 'Toggle marker 5';
-  lisKMToggleMarker6 = 'Toggle marker 6';
-  lisKMToggleMarker7 = 'Toggle marker 7';
-  lisKMToggleMarker8 = 'Toggle marker 8';
-  lisKMToggleMarker9 = 'Toggle marker 9';
-  srkmecGotoMarker            = 'Go to Marker %d';
-  srkmecSetMarker             = 'Set Marker %d';
-  srkmecToggleMarker          = 'Toggle Marker %d';
+  lisKMGoToMarker0 = 'Go to bookmark 0';
+  lisKMGoToMarker1 = 'Go to bookmark 1';
+  lisKMGoToMarker2 = 'Go to bookmark 2';
+  lisKMGoToMarker3 = 'Go to bookmark 3';
+  lisKMGoToMarker4 = 'Go to bookmark 4';
+  lisKMGoToMarker5 = 'Go to bookmark 5';
+  lisKMGoToMarker6 = 'Go to bookmark 6';
+  lisKMGoToMarker7 = 'Go to bookmark 7';
+  lisKMGoToMarker8 = 'Go to bookmark 8';
+  lisKMGoToMarker9 = 'Go to bookmark 9';
+  lisKMSetMarker0 = 'Set bookmark 0';
+  lisKMSetMarker1 = 'Set bookmark 1';
+  lisKMSetMarker2 = 'Set bookmark 2';
+  lisKMSetMarker3 = 'Set bookmark 3';
+  lisKMSetMarker4 = 'Set bookmark 4';
+  lisKMSetMarker5 = 'Set bookmark 5';
+  lisKMSetMarker6 = 'Set bookmark 6';
+  lisKMSetMarker7 = 'Set bookmark 7';
+  lisKMSetMarker8 = 'Set bookmark 8';
+  lisKMSetMarker9 = 'Set bookmark 9';
+  lisKMToggleMarker0 = 'Toggle bookmark 0';
+  lisKMToggleMarker1 = 'Toggle bookmark 1';
+  lisKMToggleMarker2 = 'Toggle bookmark 2';
+  lisKMToggleMarker3 = 'Toggle bookmark 3';
+  lisKMToggleMarker4 = 'Toggle bookmark 4';
+  lisKMToggleMarker5 = 'Toggle bookmark 5';
+  lisKMToggleMarker6 = 'Toggle bookmark 6';
+  lisKMToggleMarker7 = 'Toggle bookmark 7';
+  lisKMToggleMarker8 = 'Toggle bookmark 8';
+  lisKMToggleMarker9 = 'Toggle bookmark 9';
+  srkmecGotoMarker   = 'Go to bookmark %d';
+  srkmecSetMarker    = 'Set bookmark %d';
+  srkmecToggleMarker = 'Toggle bookmark %d';
 
   // sourcenotebook
   lisKMToggleBetweenUnitAndForm = 'Toggle between Unit and Form';
@@ -3101,8 +3132,8 @@ resourcestring
 
   // codetools
   srkmecWordCompletion            = 'Word Completion';
-  srkmecCompletecode              = 'Complete Code';
   lisMenuCompleteCode             = 'Complete Code';
+  lisMenuCompleteCodeInteractive  = 'Complete Code (with dialog)';
   lisUseUnit                      = 'Add Unit to Uses Section';
   lisMenuUseUnit                  = 'Add Unit to Uses Section ...';
   srkmecShowCodeContext           = 'Show Code Context';
@@ -3174,6 +3205,7 @@ resourcestring
   srkmecCleanUpAndBuild           = 'clean up and build';
   srkmecBuildManyModes            = 'build many modes';
   srkmecAbortBuild                = 'abort build';
+  srkmecRunWithoutDebugging       = 'run without debugging';
   srkmecRun                       = 'run program';
   srkmecPause                     = 'pause program';
   srkmecShowExecutionPoint        = 'show execution point';
@@ -3226,7 +3258,7 @@ resourcestring
   srkmCatCmdCmd         = 'Command commands';
   srkmCatMultiCaret     = 'Multi caret commands';
   srkmCatSearchReplace  = 'Text search and replace commands';
-  srkmCatMarker         = 'Text marker commands';
+  srkmCatMarker         = 'Text bookmark commands';
   srkmCatFold           = 'Text folding commands';
   lisKMSetFreeBookmark = 'Set free Bookmark';
   srkmCatCodeTools      = 'CodeTools commands';
@@ -3655,8 +3687,13 @@ resourcestring
   lisTheApplicationBundleWasCreatedFor = 'The Application Bundle was created for "%s"';
 
   //codetools ChooseClassSectionDlg
-  lisChooseClassSectionDlgForMethodCaption = 'Insert new method to section';
-  lisEventMethodSectionLabel = 'Insert new event methods to section';
+  lisCodeCreationDialogCaption = 'Code creation options';
+  lisCodeCreationDialogLocation = 'Location';
+  lisLocal = '&Local';
+  lisClass = '&Class';
+  lisYouCanSelectItemsBySimplyPressingUnderscoredLetter = 'You can select '
+    +'items by simply pressing underscored letters';
+  lisCodeCreationDialogClassSection = 'Class section';
 
   // diff dialog
   lisDiffDlgFile1 = 'File1';
@@ -3960,8 +3997,8 @@ resourcestring
   lisDiskDiffSomeFilesHaveChangedOnDisk = 'Some files have changed on disk:';
   lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff = 'Click on one of the '
     +'above items to see the diff';
-  lisDiskDiffRevertAll = 'Reload from disk';
-  lisDiskDiffIgnoreDiskChanges = 'Ignore disk changes';
+  lisDiskDiffReloadCheckedFilesFromDisk = 'Reload checked files from disk';
+  lisDiskDiffIgnoreAllDiskChanges = 'Ignore all disk changes';
   
   // edit define tree
   lisEdtDefCurrentProject = 'Current Project';
@@ -4712,7 +4749,6 @@ resourcestring
   lisMenuEditorComponentIsUnexpectedKind = 'Component is unexpected kind';
   lisMenuEditorComponentIsUnnamed = 'Component is unnamed';
   lisMenuEditorConflictResolutionComplete = '<conflict resolution complete>';
-  lisMenuEditorDDItems = '%d (%d items)';
   lisMenuEditorDeleteItem = '&Delete item';
   lisMenuEditorDeepestNestedMenuLevelS = 'Deepest nested menu level: %s';
   lisMenuEditorDeleteMenuTemplate = '&Delete menu template ...';
@@ -4732,7 +4768,6 @@ resourcestring
   lisMenuEditorFurtherShortcutConflict = 'Further shortcut conflict';
   lisMenuEditorGetHelpToUseThisEditor = 'Get help to use this editor';
   lisMenuEditorGrabKey = '&Grab key';
-  lisMenuEditorGroupIndexMenuItems = 'GroupIndex,MenuItems';
   lisMenuEditorInadequateDescription = 'Inadequate Description';
   lisMenuEditorInsertMenuTemplateIntoRootOfS = 'Insert menu template into root of %s';
   lisMenuEditorInsertSelectedMenuTemplate = 'Insert selected menu template';
@@ -4774,16 +4809,13 @@ resourcestring
   lisMenuEditorSaveMenuShownAsANewTemplate = 'Save menu shown as a new template';
   lisMenuEditorSConflictsWithS = '%s conflicts with %s';
   lisMenuEditorSeParators = 'Se&parators';
-  lisMenuEditorShortcutConflictsFoundInitiallyD = 'Shortcut conflicts found initially: %d';
+  lisMenuEditorConflictsFoundInitiallyD = 'Conflicts found initially: %d';
   lisMenuEditorShortcutNotYetChanged = 'Shortcut not yet changed';
-  lisMenuEditorShortcutPropertyWithShortcut = 'Shortcut,Property with shortcut';
-  lisMenuEditorShortcutPropertyWithShortcutAccelerator = 'Shortcut,Property '
-    +'with shortcut/accelerator';
+  lisMenuEditorShortcutSourceProperty = 'Shortcut,Source Property';
   lisMenuEditorShortcuts = 'Shortcuts';
   lisMenuEditorShortcUts2 = 'Shortc&uts';
   lisMenuEditorShortcutsAndAcceleratorKeys = 'Shortcuts and Accelerator keys';
-  lisMenuEditorShortcutsAssociatedWithMenusAndActionsD = 'Shortcuts associated '
-    +'with Menus and Actions (%d)';
+  lisMenuEditorShortcutsD = 'Shortcuts (%d)';
   lisMenuEditorShortcutsDAndAcceleratorKeysD = 'Shortcuts (%d) and Accelerator keys (%d)';
   lisMenuEditorShortcutsUsedInS = 'Shortcuts used in %s';
   lisMenuEditorShortcutsUsedInSD = 'Shortcuts used in %s (%d)';
@@ -4797,7 +4829,6 @@ resourcestring
     +'widgetsets do not allow separators in the main menubar';
   lisMenuEditorSShortcuts = '%s: Shortcuts';
   lisMenuEditorSShortcutsAndAcceleratorKeys = '%s: Shortcuts and accelerator keys';
-  lisMenuEditorSShortcutSummary = '%s: Shortcut summary';
   lisMenuEditorSSSOnClickS = '%s.%s.%s - OnClick: %s';
   lisMenuEditorStandardTemplates = 'Standard templates';
   lisMenuEditorAddMenuItem = 'Add menu item';
@@ -5432,10 +5463,6 @@ resourcestring
   lisUseAnsistrings = 'Use Ansistrings';
   lisDoNotShowThisDialogForThisProject = 'Do not show this dialog for this project';
   lisObjectPascalDefault = 'Object Pascal - default';
-  lisDelphi = 'Delphi';
-  lisTurboPascal = 'Turbo Pascal';
-  lisMacPascal = 'Mac Pascal';
-  lisFreePascal = 'Free Pascal';
   lisVerifyMethodCalls = 'Verify method calls';
   lisToggleShowingFilenamesWithFullPathOrWithRelativePa = 'Toggle showing '
     +'filenames with full path or with relative path';
@@ -5800,9 +5827,6 @@ resourcestring
   lisConvDelphiRepairingFormFiles = '*** Fixing used units and Repairing form files ***';
   lisConvDelphiConvertingProjPackUnits = '*** Converting unit files belonging to project/package ***';
   lisConvDelphiConvertingFoundUnits = '*** Converting unit files found during conversion ***';
-  lisConvDelphiRepairingFormFile = '* Repairing form file %s *';
-  lisConvDelphiConvertingFile = '* Converting file %s *';
-  lisConvDelphiFixingUsedUnits = '* Fixing used units for file %s *';
   lisConvDelphiChangedEncodingToUTF8 = 'Changed encoding from %s to UTF-8';
   lisConvDelphiAllSubDirsScanned = 'All sub-directories will be scanned for unit files';
   lisConvDelphiMissingIncludeFile = '%s(%s,%s) missing include file';
@@ -5997,6 +6021,8 @@ resourcestring
   lisCleanUpAndBuildProject = 'Clean up and build project';
   lisBuildFollowingModes = 'Build the following modes';
   lisSelectedModesWereBuilt  = 'Selected %d modes were successfully built.';
+
+  // Clean Build Project Dialog
   lisProjectOutputDirectory = 'Project output directory';
   lisProjectSourceDirectories = 'Project source directories';
   lisPackageOutputDirectories = 'Package output directories';
@@ -6005,6 +6031,7 @@ resourcestring
   lisCleanUpAndBuild = 'Clean up and build';
   lisCBPFiles = '%s (%s files)';
   lisCBPReallyDeleteSourceFiles = 'Really delete %s source files%s%s';
+
   lisChangesWereNotSaved = 'Changes were not saved';
   lisDoYouStillWantToOpenAnotherProject = 'Do you still want to open another project?';
   lisDiscardChangesAndOpenProject = 'Discard changes and open project';

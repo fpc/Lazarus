@@ -1,4 +1,4 @@
-{%MainUnit ../dbctrls.pas}
+{%MainUnit ../dbctrls.pp}
 {
  *****************************************************************************
   This file is part of the Lazarus Component Library (LCL)
@@ -8,7 +8,7 @@
  *****************************************************************************
 }
 
-// included by dbctrls.pas
+// included by dbctrls.pp
 
 { TDBComboBox }
 

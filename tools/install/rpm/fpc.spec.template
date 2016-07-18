@@ -89,6 +89,18 @@ make distclean all FPC=${STARTPP}
 %install 
 rm -rf %{buildroot}
 FPCMAKE=`pwd`/utils/fpcm/fpcmake
+if [ -f "$FPCMAKE" ]; then
+    echo found fpcmake: $FPCMAKE
+else
+    FPCMAKE=`pwd`/utils/fpcm/bin/*-linux/fpcmake
+    FPCMAKE=`echo $FPCMAKE`
+fi
+if [ -f "$FPCMAKE" ]; then
+    echo found fpcmake: $FPCMAKE
+else
+    echo Error: fpcmake not found: $FPCMAKE
+    exit 1
+fi
 DATA2INC=`pwd`/utils/data2inc
 NEWPP=`pwd`/compiler/%{ppcname}
 FPCVERSION=`${NEWPP} -iV`
@@ -134,7 +146,7 @@ rm -rf %{buildroot}%{_libdir}/%{name}/lexyacc
 rm -rf %{buildroot}%{_defaultdocdir}/fpc-libc-*
 rm -rf %{buildroot}%{_defaultdocdir}/fpc-symbolic-*
 # 2.7.1 ignores the INSTALL_DOC variable and writes some files directly to /usr/share/doc
-rm -rf %{buildroot}/usr/share/doc/fpc-symbolic-*
+rm -rf %{buildroot}/usr/share/doc/fpc-*
 
 %clean
 rm -rf %{buildroot}
@@ -167,7 +179,7 @@ rm -rf %{buildroot}
 %{_datadir}/fpcsrc
 
 %changelog
-* Tue Jul 28 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-1
+* Thu Jul 28 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-1
 - Added some requirements
 - Added COPYING-info to %%doc
 
@@ -176,7 +188,7 @@ rm -rf %{buildroot}
 - Silenced post-script
 - disabled the debuginfo-package
 
-* Sat Jun 5 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-0.5
+* Sun Jun 5 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-0.5
 - Added doc-subpackage
 - Added src-subpackage
 

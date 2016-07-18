@@ -1270,6 +1270,10 @@ msgstr ""
 msgid "%d desktop(s) successfully imported from \"%s\""
 msgstr ""
 
+#: lazarusidestrconsts.dlgdifferentvaluebackgroundcolor
+msgid "Different values background"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
 msgstr "Kryptis"
@@ -1560,9 +1564,9 @@ msgctxt "lazarusidestrconsts.dlgenvtype"
 msgid "Type"
 msgstr "Tipas"
 
-#: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
-msgid "Focus messages after compilation"
-msgstr "Kompiliacijai pasibaigus, rodyti pranešimų langą"
+#: lazarusidestrconsts.dlgeofocusmessagesatcompilation
+msgid "Focus messages at compilation"
+msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -1806,6 +1810,10 @@ msgstr "public/private"
 msgid "Except/Finally"
 msgstr "Except/Finally"
 
+#: lazarusidestrconsts.dlgfoldpasfordo
+msgid "For/Do"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
 msgstr "{$IfDef}"
@@ -1871,6 +1879,14 @@ msgstr "Uses"
 #: lazarusidestrconsts.dlgfoldpasvartype
 msgid "Var/Type (global)"
 msgstr "Var/Type (global)"
+
+#: lazarusidestrconsts.dlgfoldpaswhiledo
+msgid "While/Do"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpaswithdo
+msgid "With/Do"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfoldxmlcdata
 msgid "CData"
@@ -2198,6 +2214,10 @@ msgstr "Intervalas sekundėmis"
 #: lazarusidestrconsts.dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Šokinėjimas (pvz. tarp metodų)"
+
+#: lazarusidestrconsts.dlgjumptomethodbody
+msgid "Jump directly to method body"
+msgstr ""
 
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
@@ -2688,6 +2708,14 @@ msgstr "Suskleista [+]"
 #: lazarusidestrconsts.dlgmouseoptnodegutterfoldexp
 msgid "Expanded [-]"
 msgstr "Išskleista [–]"
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverview
+msgid "Overview"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverviewmarks
+msgid "Overview Mark"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlines
 msgid "Line Numbers"
@@ -3391,6 +3419,10 @@ msgstr "Rodyti viską"
 msgid "Show executable info (Win32 only)"
 msgstr "Rodyti vykdomosios bylos informaciją (tik Win32)"
 
+#: lazarusidestrconsts.dlgshowfilenameincaption
+msgid "Show file name in caption"
+msgstr ""
+
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"
 msgstr "Rodyti pagrindinę informaciją"
@@ -3861,6 +3893,7 @@ msgid "View Snapshots"
 msgstr "Rodyti momentines kopijas"
 
 #: lazarusidestrconsts.histdlgcolumnloc
+msgctxt "lazarusidestrconsts.histdlgcolumnloc"
 msgid "Location"
 msgstr "Vieta"
 
@@ -4672,6 +4705,10 @@ msgstr ""
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr ""
 
+#: lazarusidestrconsts.lisautocheckmodifiedfiles
+msgid "Automatically check (select) modified files"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Automatinis baigimas: išjungtas"
@@ -5049,6 +5086,18 @@ msgstr "Nepavyko rasti Lazarus startuotojo:%s%s"
 
 #: lazarusidestrconsts.liscannotfindunit
 msgid "Cannot find unit %s"
+msgstr ""
+
+#: lazarusidestrconsts.liscannotopenform
+msgid "Cannot open form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsaveform
+msgid "Cannot save form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsubstitutemacros
+msgid "Cannot substitute macro \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
@@ -5663,10 +5712,6 @@ msgstr "Parinkite FPC pranešimo failą"
 msgid "Choose a Pascal file for indentation examples"
 msgstr "Lygiavimo pavyzdžiams parinkite paskalio failą"
 
-#: lazarusidestrconsts.lischooseclasssectiondlgformethodcaption
-msgid "Insert new method to section"
-msgstr ""
-
 #: lazarusidestrconsts.lischoosecompilerexecutable
 msgid "Choose compiler executable (%s)"
 msgstr ""
@@ -5746,6 +5791,10 @@ msgstr "Nurodykite aplanką testams"
 #: lazarusidestrconsts.liscirculardependencydetected
 msgid "Circular dependency detected"
 msgstr "Aptiktas priklausomybių ratas"
+
+#: lazarusidestrconsts.lisclass
+msgid "&Class"
+msgstr ""
 
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
@@ -5963,6 +6012,20 @@ msgstr "Kodas"
 msgctxt "lazarusidestrconsts.liscodebrowser"
 msgid "Code Browser"
 msgstr "Kodo naršyklė"
+
+#: lazarusidestrconsts.liscodecreationdialogcaption
+msgid "Code creation options"
+msgstr ""
+
+#: lazarusidestrconsts.liscodecreationdialogclasssection
+msgid "Class section"
+msgstr ""
+
+#: lazarusidestrconsts.liscodecreationdialoglocation
+#, fuzzy
+msgctxt "lazarusidestrconsts.liscodecreationdialoglocation"
+msgid "Location"
+msgstr "Vieta"
 
 #: lazarusidestrconsts.liscodeexplorer
 msgctxt "lazarusidestrconsts.liscodeexplorer"
@@ -6917,10 +6980,6 @@ msgstr "Konvertuoti Delphi projektą"
 msgid "Convert Delphi unit"
 msgstr "Konvertuoti Delphi modulį"
 
-#: lazarusidestrconsts.lisconvdelphiconvertingfile
-msgid "* Converting file %s *"
-msgstr "* Konvertuojamas failas „%s“ *"
-
 #: lazarusidestrconsts.lisconvdelphiconvertingfoundunits
 msgid "*** Converting unit files found during conversion ***"
 msgstr ""
@@ -6950,10 +7009,6 @@ msgstr "Nepavyko konvertuoti modulį%s%s%s"
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
 msgstr "Modulio „%s“ pavadinime raidžių registras pakeistas į „%s“."
-
-#: lazarusidestrconsts.lisconvdelphifixingusedunits
-msgid "* Fixing used units for file %s *"
-msgstr "* Faile „%s“ tvarkomi naudojami moduliai  *"
 
 #: lazarusidestrconsts.lisconvdelphifoundallunitfiles
 msgid "Found all unit files"
@@ -6986,10 +7041,6 @@ msgstr "Modulis „%s“ neįtraukiamas į projektą"
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
 msgid "Removed unit \"%s\" in uses section."
 msgstr "Modulis „%s“ pašalintas iš naudojamųjų modulių sekcijos."
-
-#: lazarusidestrconsts.lisconvdelphirepairingformfile
-msgid "* Repairing form file %s *"
-msgstr "* Taisomas formos failas „%s“ *"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 #, fuzzy
@@ -8153,10 +8204,6 @@ msgstr "Nepavyko ištrinti failą %s%s%s."
 msgid "Delimiter is semicolon."
 msgstr ""
 
-#: lazarusidestrconsts.lisdelphi
-msgid "Delphi"
-msgstr "Delphi"
-
 #: lazarusidestrconsts.lisdelphicompatibleresources
 msgid "Delphi compatible resources. Recommended."
 msgstr ""
@@ -8346,13 +8393,13 @@ msgstr "Spustelėjus ant elemento bus parodytas jo diff"
 msgid "Error reading file: %s"
 msgstr "Klaida skaitant failą: %s"
 
-#: lazarusidestrconsts.lisdiskdiffignorediskchanges
-msgid "Ignore disk changes"
-msgstr "Ignoruoti pasikeitimus diske"
+#: lazarusidestrconsts.lisdiskdiffignorealldiskchanges
+msgid "Ignore all disk changes"
+msgstr ""
 
-#: lazarusidestrconsts.lisdiskdiffrevertall
-msgid "Reload from disk"
-msgstr "Įkelti iš naujo"
+#: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
+msgid "Reload checked files from disk"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
@@ -8444,6 +8491,10 @@ msgstr "Šiam projektui nerodyti šio dialogo"
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
 msgstr "Daugiau neberodyti šio pranešimo"
+
+#: lazarusidestrconsts.lisdonotwriteupdatedprojectinfoafterbuild
+msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
+msgstr ""
 
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
@@ -8955,6 +9006,10 @@ msgstr "Įvyko klaida komponentei suteikiant pavadinimą"
 msgid "Error opening component"
 msgstr "Klaida atveriant komponentę"
 
+#: lazarusidestrconsts.liserroropeningform
+msgid "Error opening form"
+msgstr ""
+
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr "Įvyko klaida analizuojant lfm komponentės srautą."
@@ -8984,6 +9039,10 @@ msgstr "Klaidos"
 
 #: lazarusidestrconsts.liserrors2
 msgid ", Errors: %s"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorsavingform
+msgid "Error saving form"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -9026,10 +9085,6 @@ msgstr "Įvykių žurnalo parinktys…"
 #: lazarusidestrconsts.liseventlogsavetofile
 msgid "Save Events to File"
 msgstr "Įvykius įrašyti į failą"
-
-#: lazarusidestrconsts.liseventmethodsectionlabel
-msgid "Insert new event methods to section"
-msgstr ""
 
 #: lazarusidestrconsts.liseventslogaddcomment
 msgid "Add Comment ..."
@@ -9660,10 +9715,6 @@ msgstr "Ieškoti a&tgal"
 msgid "freeing buffer lines: %s"
 msgstr ""
 
-#: lazarusidestrconsts.lisfreepascal
-msgid "Free Pascal"
-msgstr "Free Pascal"
-
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
 msgstr ""
@@ -9893,6 +9944,10 @@ msgstr ""
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Užuomina: Tikrinti ar du paketai turi modulius tuo pačiu pavadinimu."
+
+#: lazarusidestrconsts.lishintclickonshowoptionstofindoutwhereinheritedpaths
+msgid "Hint: Click on \"Show Options\" to find out where inherited paths are coming from."
+msgstr ""
 
 #: lazarusidestrconsts.lishints
 msgid ", Hints: %s"
@@ -10164,6 +10219,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"
+msgstr ""
+
+#: lazarusidestrconsts.lisimportingbuildmodesnotsupported
+msgid "Importing BuildModes is not supported for packages."
 msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
@@ -10721,6 +10780,10 @@ msgstr "Kopijuoti pažymėtas komponentes į iškarpinę"
 msgid "Cut selected Components to clipboard"
 msgstr "Iškirpti pažymėtas komponentes į iškarpinę"
 
+#: lazarusidestrconsts.liskmdefaulttoosx
+msgid "Default adapted to OS X"
+msgstr ""
+
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
 msgstr "Pašalinti paskutinį simbolį"
@@ -10758,43 +10821,63 @@ msgid "Find Incremental"
 msgstr "Prieauginė paieška"
 
 #: lazarusidestrconsts.liskmgotomarker0
-msgid "Go to marker 0"
+#, fuzzy
+#| msgid "Go to marker 0"
+msgid "Go to bookmark 0"
 msgstr "Rodyti žymeklį 0"
 
 #: lazarusidestrconsts.liskmgotomarker1
-msgid "Go to marker 1"
+#, fuzzy
+#| msgid "Go to marker 1"
+msgid "Go to bookmark 1"
 msgstr "Rodyti žymeklį 1"
 
 #: lazarusidestrconsts.liskmgotomarker2
-msgid "Go to marker 2"
+#, fuzzy
+#| msgid "Go to marker 2"
+msgid "Go to bookmark 2"
 msgstr "Rodyti žymeklį 2"
 
 #: lazarusidestrconsts.liskmgotomarker3
-msgid "Go to marker 3"
+#, fuzzy
+#| msgid "Go to marker 3"
+msgid "Go to bookmark 3"
 msgstr "Rodyti žymeklį 3"
 
 #: lazarusidestrconsts.liskmgotomarker4
-msgid "Go to marker 4"
+#, fuzzy
+#| msgid "Go to marker 4"
+msgid "Go to bookmark 4"
 msgstr "Rodyti žymeklį 4"
 
 #: lazarusidestrconsts.liskmgotomarker5
-msgid "Go to marker 5"
+#, fuzzy
+#| msgid "Go to marker 5"
+msgid "Go to bookmark 5"
 msgstr "Rodyti žymeklį 5"
 
 #: lazarusidestrconsts.liskmgotomarker6
-msgid "Go to marker 6"
+#, fuzzy
+#| msgid "Go to marker 6"
+msgid "Go to bookmark 6"
 msgstr "Rodyti žymeklį 6"
 
 #: lazarusidestrconsts.liskmgotomarker7
-msgid "Go to marker 7"
+#, fuzzy
+#| msgid "Go to marker 7"
+msgid "Go to bookmark 7"
 msgstr "Rodyti žymeklį 7"
 
 #: lazarusidestrconsts.liskmgotomarker8
-msgid "Go to marker 8"
+#, fuzzy
+#| msgid "Go to marker 8"
+msgid "Go to bookmark 8"
 msgstr "Rodyti žymeklį 8"
 
 #: lazarusidestrconsts.liskmgotomarker9
-msgid "Go to marker 9"
+#, fuzzy
+#| msgid "Go to marker 9"
+msgid "Go to bookmark 9"
 msgstr "Rodyti žymeklį 9"
 
 #: lazarusidestrconsts.liskmgotosourceeditor1
@@ -10965,43 +11048,63 @@ msgid "Set free Bookmark"
 msgstr "Padėti laisvą žymę"
 
 #: lazarusidestrconsts.liskmsetmarker0
-msgid "Set marker 0"
+#, fuzzy
+#| msgid "Set marker 0"
+msgid "Set bookmark 0"
 msgstr "Uždėti žymeklį 0"
 
 #: lazarusidestrconsts.liskmsetmarker1
-msgid "Set marker 1"
+#, fuzzy
+#| msgid "Set marker 1"
+msgid "Set bookmark 1"
 msgstr "Uždėti žymeklį 1"
 
 #: lazarusidestrconsts.liskmsetmarker2
-msgid "Set marker 2"
+#, fuzzy
+#| msgid "Set marker 2"
+msgid "Set bookmark 2"
 msgstr "Uždėti žymeklį 2"
 
 #: lazarusidestrconsts.liskmsetmarker3
-msgid "Set marker 3"
+#, fuzzy
+#| msgid "Set marker 3"
+msgid "Set bookmark 3"
 msgstr "Uždėti žymeklį 3"
 
 #: lazarusidestrconsts.liskmsetmarker4
-msgid "Set marker 4"
+#, fuzzy
+#| msgid "Set marker 4"
+msgid "Set bookmark 4"
 msgstr "Uždėti žymeklį 4"
 
 #: lazarusidestrconsts.liskmsetmarker5
-msgid "Set marker 5"
+#, fuzzy
+#| msgid "Set marker 5"
+msgid "Set bookmark 5"
 msgstr "Uždėti žymeklį 5"
 
 #: lazarusidestrconsts.liskmsetmarker6
-msgid "Set marker 6"
+#, fuzzy
+#| msgid "Set marker 6"
+msgid "Set bookmark 6"
 msgstr "Uždėti žymeklį 6"
 
 #: lazarusidestrconsts.liskmsetmarker7
-msgid "Set marker 7"
+#, fuzzy
+#| msgid "Set marker 7"
+msgid "Set bookmark 7"
 msgstr "Uždėti žymeklį 7"
 
 #: lazarusidestrconsts.liskmsetmarker8
-msgid "Set marker 8"
+#, fuzzy
+#| msgid "Set marker 8"
+msgid "Set bookmark 8"
 msgstr "Uždėti žymeklį 8"
 
 #: lazarusidestrconsts.liskmsetmarker9
-msgid "Set marker 9"
+#, fuzzy
+#| msgid "Set marker 9"
+msgid "Set bookmark 9"
 msgstr "Uždėti žymeklį 9"
 
 #: lazarusidestrconsts.liskmstopprogram
@@ -11013,43 +11116,63 @@ msgid "Toggle between Unit and Form"
 msgstr "Persijungti tarp formos ir modulio"
 
 #: lazarusidestrconsts.liskmtogglemarker0
-msgid "Toggle marker 0"
+#, fuzzy
+#| msgid "Toggle marker 0"
+msgid "Toggle bookmark 0"
 msgstr "Įjungti/išjungti žymeklį 0"
 
 #: lazarusidestrconsts.liskmtogglemarker1
-msgid "Toggle marker 1"
+#, fuzzy
+#| msgid "Toggle marker 1"
+msgid "Toggle bookmark 1"
 msgstr "Įjungti/išjungti žymeklį 1"
 
 #: lazarusidestrconsts.liskmtogglemarker2
-msgid "Toggle marker 2"
+#, fuzzy
+#| msgid "Toggle marker 2"
+msgid "Toggle bookmark 2"
 msgstr "Įjungti/išjungti žymeklį 2"
 
 #: lazarusidestrconsts.liskmtogglemarker3
-msgid "Toggle marker 3"
+#, fuzzy
+#| msgid "Toggle marker 3"
+msgid "Toggle bookmark 3"
 msgstr "Įjungti/išjungti žymeklį 3"
 
 #: lazarusidestrconsts.liskmtogglemarker4
-msgid "Toggle marker 4"
+#, fuzzy
+#| msgid "Toggle marker 4"
+msgid "Toggle bookmark 4"
 msgstr "Įjungti/išjungti žymeklį 4"
 
 #: lazarusidestrconsts.liskmtogglemarker5
-msgid "Toggle marker 5"
+#, fuzzy
+#| msgid "Toggle marker 5"
+msgid "Toggle bookmark 5"
 msgstr "Įjungti/išjungti žymeklį 5"
 
 #: lazarusidestrconsts.liskmtogglemarker6
-msgid "Toggle marker 6"
+#, fuzzy
+#| msgid "Toggle marker 6"
+msgid "Toggle bookmark 6"
 msgstr "Įjungti/išjungti žymeklį 6"
 
 #: lazarusidestrconsts.liskmtogglemarker7
-msgid "Toggle marker 7"
+#, fuzzy
+#| msgid "Toggle marker 7"
+msgid "Toggle bookmark 7"
 msgstr "Įjungti/išjungti žymeklį 7"
 
 #: lazarusidestrconsts.liskmtogglemarker8
-msgid "Toggle marker 8"
+#, fuzzy
+#| msgid "Toggle marker 8"
+msgid "Toggle bookmark 8"
 msgstr "Įjungti/išjungti žymeklį 8"
 
 #: lazarusidestrconsts.liskmtogglemarker9
-msgid "Toggle marker 9"
+#, fuzzy
+#| msgid "Toggle marker 9"
+msgid "Toggle bookmark 9"
 msgstr "Įjungti/išjungti žymeklį 9"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
@@ -11501,6 +11624,10 @@ msgstr "Nepavyko įkelti %s."
 msgid "Load macro from"
 msgstr "Makrokomandą įkelti iš"
 
+#: lazarusidestrconsts.lislocal
+msgid "&Local"
+msgstr ""
+
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "Vietiniai kintamieji"
@@ -11559,10 +11686,6 @@ msgstr ""
 #| msgid "lrs include files"
 msgid "Lazarus resources (.lrs) include files"
 msgstr "Įterpimo „lrs“ failai"
-
-#: lazarusidestrconsts.lismacpascal
-msgid "Mac Pascal"
-msgstr "Mac Pascal"
 
 #: lazarusidestrconsts.lismacro
 msgid "Macro %s"
@@ -11744,6 +11867,10 @@ msgstr "Pridėti &stebimąjį…"
 msgid "Break Lines in Selection"
 msgstr "Laužyti eilutes pažymėtoje srityje"
 
+#: lazarusidestrconsts.lismenubreak
+msgid "&Break"
+msgstr ""
+
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Daryti failą"
@@ -11755,10 +11882,6 @@ msgstr "Daryti Lazarus naudojant veikiamąjį profilį"
 #: lazarusidestrconsts.lismenubuildlazarusprof
 msgid "Build Lazarus with Profile: %s"
 msgstr "Lazarus daryti naudojant profilį: %s"
-
-#: lazarusidestrconsts.lismenubuildmanymodes
-msgid "Build many Modes ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM File in Editor"
@@ -11798,10 +11921,18 @@ msgstr "Uždėti komentarą pažymėtajam"
 msgid "Compare files ..."
 msgstr ""
 
+#: lazarusidestrconsts.lismenucompilemanymodes
+msgid "Compile many Modes ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "Užbaigti kodą"
+
+#: lazarusidestrconsts.lismenucompletecodeinteractive
+msgid "Complete Code (with dialog)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
@@ -11822,6 +11953,10 @@ msgstr "Derinti „Daryti Lazarus“…"
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "Kontekstinis žinynas"
+
+#: lazarusidestrconsts.lismenucontinue
+msgid "&Continue"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 msgid "Convert Delphi Package to Lazarus Package ..."
@@ -12031,8 +12166,8 @@ msgstr ""
 msgid "<conflict resolution complete>"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditordditems
-msgid "%d (%d items)"
+#: lazarusidestrconsts.lismenueditorconflictsfoundinitiallyd
+msgid "Conflicts found initially: %d"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditordeepestnestedmenulevels
@@ -12111,10 +12246,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorgroupindexmenuitems
-msgid "GroupIndex,MenuItems"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
@@ -12295,24 +12426,12 @@ msgstr ""
 msgid "%s.GroupIndex: %d"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorshortcutconflictsfoundinitiallyd
-msgid "Shortcut conflicts found initially: %d"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditorshortcutitemss
 msgid "Shortcut items: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutnotyetchanged
 msgid "Shortcut not yet changed"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorshortcutpropertywithshortcut
-msgid "Shortcut,Property with shortcut"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorshortcutpropertywithshortcutaccelerator
-msgid "Shortcut,Property with shortcut/accelerator"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcuts
@@ -12327,12 +12446,16 @@ msgstr ""
 msgid "Shortcuts and Accelerator keys"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorshortcutsassociatedwithmenusandactionsd
-msgid "Shortcuts associated with Menus and Actions (%d)"
+#: lazarusidestrconsts.lismenueditorshortcutsd
+msgid "Shortcuts (%d)"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutsdandacceleratorkeysd
 msgid "Shortcuts (%d) and Accelerator keys (%d)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshortcutsourceproperty
+msgid "Shortcut,Source Property"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutsusedins
@@ -12375,10 +12498,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsshortcutsandacceleratorkeys
 msgid "%s: Shortcuts and accelerator keys"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorsshortcutsummary
-msgid "%s: Shortcut summary"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsssonclicks
@@ -12741,6 +12860,10 @@ msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Atverti paskutinį naudotą projektą"
 
+#: lazarusidestrconsts.lismenuopenunit
+msgid "Open Unit ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupackage
 msgid "Pa&ckage"
 msgstr "&Paketas"
@@ -12808,6 +12931,10 @@ msgctxt "lazarusidestrconsts.lismenureportingbug"
 msgid "Reporting a Bug"
 msgstr "Pranešti apie ydą"
 
+#: lazarusidestrconsts.lismenuresaveformswithi18n
+msgid "Resave forms with enabled i18n"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC Source Directory"
 msgstr "Peržvelgti FPC pirminio kodo aplanką"
@@ -12838,6 +12965,10 @@ msgstr "Startavimo &parametrai…"
 #| msgid "Run to &Cursor"
 msgid "Step over to &Cursor"
 msgstr "Startuoti iki ž&ymeklio"
+
+#: lazarusidestrconsts.lismenurunwithoutdebugging
+msgid "Run without Debugging"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusave
 msgctxt "lazarusidestrconsts.lismenusave"
@@ -14039,6 +14170,10 @@ msgstr "Atverti projektą %s?"
 msgid "Open Tool Options"
 msgstr ""
 
+#: lazarusidestrconsts.lisopenunit
+msgid "Open Unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisopenurl
 msgid "Open URL"
 msgstr ""
@@ -14056,6 +14191,10 @@ msgstr "Parinktys"
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "Parinktys pakito, kompiliuojama švariai iš naujo naudojant „-B“"
+
+#: lazarusidestrconsts.lisoptionvalueignored
+msgid "ignored"
+msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -17620,8 +17759,8 @@ msgstr "Identifikatorius yra modulis. Pakeiskite failo pavadinimą parinkę meni
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
 #, fuzzy,badformat
-#| msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
-msgid "The key %s%sis already assigned to %s.%sRemove the old assignment and assign the key to the new function%s%s?"
+#| msgid "The key %sis already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
+msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgstr "Klavišas %s%syra paskirtas funkcijai %s.%s%sPašalinti esamą paskyrimą ir klavišą paskirti naujajai funkcijai%s%s?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
@@ -18215,10 +18354,6 @@ msgstr ""
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Medį būtina naujinti"
-
-#: lazarusidestrconsts.listurbopascal
-msgid "Turbo Pascal"
-msgstr "Turbo Pascal"
 
 #: lazarusidestrconsts.listwomovedfileswillhavethesamefilenamein
 msgid "Two moved files will have the same file name:%s%s%s%s%sin %s"
@@ -19359,6 +19494,10 @@ msgstr ""
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Derinimo ar kompiliavimo metu negalima daryti Lazarus."
 
+#: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
+msgid "You can select items by simply pressing underscored letters"
+msgstr ""
+
 #: lazarusidestrconsts.lis_all_
 #, fuzzy
 msgctxt "lazarusidestrconsts.lis_all_"
@@ -19488,9 +19627,25 @@ msgstr "Sąrašą filtruoti naudojant tekstą"
 msgid "Found, but not listed here: "
 msgstr "Rastas, tačiau neįtrauktas į šį sąrašą:"
 
+#: lazarusidestrconsts.rsi18nexcluded
+msgid "Excluded"
+msgstr ""
+
+#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextcompile
+msgid "Force update PO files on next compile"
+msgstr ""
+
+#: lazarusidestrconsts.rsi18nidentifiers
+msgid "Identifiers:"
+msgstr ""
+
 #: lazarusidestrconsts.rsi18noptions
 msgid "i18n Options"
 msgstr "Internacionalizacijos nuostatos"
+
+#: lazarusidestrconsts.rsi18noriginals
+msgid "Originals:"
+msgstr ""
 
 #: lazarusidestrconsts.rsincludeversioninfohint
 msgid "Version info is stored if the executable format supports it."
@@ -19761,7 +19916,9 @@ msgid "Macros"
 msgstr "Makrokomandos"
 
 #: lazarusidestrconsts.srkmcatmarker
-msgid "Text marker commands"
+#, fuzzy
+#| msgid "Text marker commands"
+msgid "Text bookmark commands"
 msgstr "Teksto žymeklio komandos"
 
 #: lazarusidestrconsts.srkmcatmulticaret
@@ -20019,11 +20176,6 @@ msgstr "Stulpelių žymėjimo veiksena"
 msgid "compile program/project"
 msgstr "Kompiliuoti programą/projektą"
 
-#: lazarusidestrconsts.srkmeccompletecode
-msgctxt "lazarusidestrconsts.srkmeccompletecode"
-msgid "Complete Code"
-msgstr "Užbaigti kodą"
-
 #: lazarusidestrconsts.srkmecconfigbuildfile
 msgid "config build file"
 msgstr "Derinti failo darytuvę"
@@ -20201,7 +20353,9 @@ msgid "Go to Line Number"
 msgstr "Rodyti eilutę nurodytu numeriu"
 
 #: lazarusidestrconsts.srkmecgotomarker
-msgid "Go to Marker %d"
+#, fuzzy
+#| msgid "Go to Marker %d"
+msgid "Go to bookmark %d"
 msgstr "Rodyti žymeklį %d"
 
 #: lazarusidestrconsts.srkmecgotoxy
@@ -20566,6 +20720,10 @@ msgstr "startuoti failą"
 msgid "run parameters"
 msgstr "starto parametrai"
 
+#: lazarusidestrconsts.srkmecrunwithoutdebugging
+msgid "run without debugging"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
 msgstr "Slinkti žemyn per vieną eilutę"
@@ -20711,7 +20869,9 @@ msgid "Set a free Bookmark"
 msgstr "Padėti laisvą žymę"
 
 #: lazarusidestrconsts.srkmecsetmarker
-msgid "Set Marker %d"
+#, fuzzy
+#| msgid "Set Marker %d"
+msgid "Set bookmark %d"
 msgstr "Uždėti žymeklį %d"
 
 #: lazarusidestrconsts.srkmecshifttab
@@ -20938,7 +21098,9 @@ msgid "View local variables"
 msgstr "Rodyti vietinius kintamuosius"
 
 #: lazarusidestrconsts.srkmectogglemarker
-msgid "Toggle Marker %d"
+#, fuzzy
+#| msgid "Toggle Marker %d"
+msgid "Toggle bookmark %d"
 msgstr "Įjungti/išjungti žymeklį %d"
 
 #: lazarusidestrconsts.srkmectogglemarkupword

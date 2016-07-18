@@ -54,6 +54,10 @@ type
     procedure setShouldAntialias(antialias: Boolean); message 'setShouldAntialias:';
   end;
 
+  NSEventFix = objccategory external (NSEvent)
+    class function modifierFlags_: NSUInteger; message 'modifierFlags';
+  end;
+
   {// private since 10.5, doesn't seam to do anything in 10.10
   NSApplicationSetAppleMenu = objccategory external(NSApplication)
     procedure setAppleMenu(AMenu: NSMenu); message 'setAppleMenu:';

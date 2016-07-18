@@ -39,7 +39,7 @@ uses
   SysUtils, Classes, Controls, Forms, LCLProc, LazLoggerBase,
   IDEWindowIntf, DebuggerStrConst,
   ComCtrls, Debugger, DebuggerDlg, Menus, ClipBrd, ExtCtrls, StdCtrls,
-  ActnList, IDEImagesIntf, IDECommands;
+  ActnList, IDEImagesIntf, IDECommands, EnvironmentOpts;
 
 type
 
@@ -193,11 +193,6 @@ begin
   ThreadsNotification.OnCurrent    := @CallStackChanged;
   SnapshotNotification.OnCurrent   := @CallStackChanged;
 
-  FViewLimit := 10;
-  FViewCount := 10;
-  FViewStart := 0;
-  FInUpdateView := False;
-  actViewLimit.Caption := popLimit10.Caption;
   actToggleBreakPoint.ShortCut := IDECommandList.FindIDECommand(ecToggleBreakPoint).AsShortCut;
 
   for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
@@ -589,6 +584,7 @@ begin
   if FViewCount = TMenuItem(Sender).Tag then Exit;
   FViewCount := TMenuItem(Sender).Tag;
   ViewLimit := FViewCount;
+  EnvironmentOptions.DebuggerConfig.DlgCallStackConfig.ViewCount := FViewCount;
   actViewLimit.Caption := TMenuItem(Sender).Caption;
 end;
 
@@ -728,13 +724,13 @@ end;
 procedure TCallStackDlg.FormCreate(Sender: TObject);
 var
   i: integer;
+  curPopLimit: TMenuItem;
 begin
   Caption := lisMenuViewCallStack;
   ToolButtonPower.Caption := lisDbgWinPower;
   ToolButtonPower.Hint := lisDbgWinPowerHint;
   for i:= 0 to mnuLimit.Items.Count-1 do
     mnuLimit.Items[i].Caption:= Format(lisMaxS, [mnuLimit.Items[i].Tag]);
-  actViewLimit.Caption := mnuLimit.Items[0].Caption;
   actViewMore.Caption := lisMore;
   actViewTop.Caption := lisCSTop;
   actViewBottom.Caption := lisCSBottom;
@@ -744,6 +740,23 @@ begin
   actToggleBreakPoint.Caption := uemToggleBreakpoint;
   actSetCurrent.Caption := lisCurrent;
   actCopyAll.Caption := lisCopyAll;
+
+  FViewCount := EnvironmentOptions.DebuggerConfig.DlgCallStackConfig.ViewCount;
+  curPopLimit := nil;
+  for i := 0 to mnuLimit.Items.Count-1 do
+    if mnuLimit.Items[i].Tag = FViewCount then
+    begin
+      curPopLimit := mnuLimit.Items[i];
+      Break;
+    end;
+  if curPopLimit=nil then
+    curPopLimit := popLimit10;
+  FViewCount := curPopLimit.Tag;
+  FViewLimit := FViewCount;
+  FViewStart := 0;
+  FInUpdateView := False;
+  actViewLimit.Caption := curPopLimit.Caption;
+  ToolButtonMax.Caption := actViewLimit.Caption;
 
   lvCallStack.Columns[1].Caption:= lisIndex;
   lvCallStack.Columns[2].Caption:= histdlgColumnLoc;

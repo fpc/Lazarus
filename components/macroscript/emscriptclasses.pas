@@ -130,7 +130,7 @@ end;
 
 function HandleEcCommandFoo({%H-}Caller: TPSExec; p: TPSExternalProcRec; {%H-}Global, Stack: TPSStack): Boolean;
 var
-  i: PtrUInt;
+  i: integer;
   pt: TPoint;
   e: TEMSTPSExec;
 begin
@@ -173,7 +173,7 @@ var
 begin
   i := 0;
   if not IdentToEditorCommand(s, i) then exit;
-  RegisterFunctionName(UpperCase(s), @HandleEcCommandFoo, self, Pointer(PtrInt(i)));
+  RegisterFunctionName(UpperCase(s), @HandleEcCommandFoo, self, Pointer(PtrUInt(i)));
 end;
 
 procedure TEMSTPSExec.AddFuncToExec;
@@ -232,7 +232,6 @@ const
   DeclInputBox          = 'Function InputBox(ACaption, APrompt, ADefault: string): string';
   DeclInputQuery        = 'Function InputQuery(ACaption, APrompt: string; var Value: string): Boolean';
 
-  {$IFnDEF PasMacroNoNativeCalls}
   FuncMessageDlg:        function(Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer = @EMS_MessageDlg;
   FuncMessageDlgPos:     function(Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer = @EMS_MessageDlgPos;
   FuncMessageDlgPosHelp: function(Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer; HelpFileName: string): Integer = @EMS_MessageDlgPosHelp;
@@ -240,9 +239,9 @@ const
   FuncShowMessagePos:    procedure(Msg: string; X, Y: Integer) = @EMS_ShowMessagePos;
   FuncInputBox:          function(ACaption, APrompt, ADefault: string): string = @EMS_InputBox;
   FuncInputQuery:        function(ACaption, APrompt: string; var Value : string): Boolean = @EMS_InputQuery;
-  FuncPoint: function(AX, AY: Integer): {$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF} = @EMS_Point; // @Classes.Point;
-  {$ENDIF}
+
   DeclPoint = 'function Point(AX, AY: Integer): TPoint;';
+  FuncPoint: function(AX, AY: Integer): {$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF} = @EMS_Point; // @Classes.Point;
 
 procedure CompRegisterBasics(AComp: TPSPascalCompiler);
   procedure AddConst(const Name, FType: TbtString; I: Integer);
@@ -306,6 +305,7 @@ end;
 function GetVarPointFromStack(Stack: TPSStack; Idx: Integer): PPoint;
 var
   res: PPSVariant;
+  data: Pointer;
   typerec: TPSTypeRec;
 begin
   if Idx < 0 then Idx := Idx + Stack.Count;
@@ -347,12 +347,14 @@ end;
 function ExecBasicHandler({%H-}Caller: TPSExec; p: TPSExternalProcRec;
   {%H-}Global, Stack: TPSStack): Boolean;
 var
+  res: PPSVariant;
   data: Pointer;
   temp: TPSVariantIFC;
   s: String;
+  typerec: TPSTypeRec;
 begin
   Result := True;
-  case PtrUInt(p.Ext1) of
+  case Longint(p.Ext1) of
     0: begin // POINT()
         if Stack.Count < 3 then raise TEMScriptBadParamException.Create('Invalid param count for "Point"');;
         data := GetVarPointFromStack(Stack, -1);

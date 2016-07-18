@@ -31,3 +31,4 @@ msgstr "Valeur du paramètre"
 #: lrdbzeosconst.slreditparamsform_selectexpresion
 msgid "Select expresion"
 msgstr "Expression de sélection"
+

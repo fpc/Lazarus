@@ -104,9 +104,9 @@ begin
   Application.{%H-}MainFormOnTaskBar := False;
   {$ENDIF}
 
-  {$IF (FPC_FULLVERSION >= 30101) AND DEFINED(MSWINDOWS) AND DECLARED(useheaptrace)}
+  {$IF DEFINED(MSWINDOWS) AND DECLARED(GlobalSkipIfNoLeaks)}
   // don't show empty heaptrc output dialog on windows
-  heaptrc.GlobalSkipIfNoLeaks := True;
+  GlobalSkipIfNoLeaks := True;
   {$ENDIF}
 
   Application.Initialize;

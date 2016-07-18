@@ -13,20 +13,19 @@ unit frmSelectProps;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ObjInspStrConsts, IDEWindowIntf, Buttons, ExtCtrls, TypInfo,
-  RTTIUtils;
+  Classes, SysUtils, RTTIUtils, TypInfo,
+  Forms, StdCtrls, Buttons, ExtCtrls, ButtonPanel,
+  IDEWindowIntf, ObjInspStrConsts;
 
 type
 
   { TSelectPropertiesForm }
 
   TSelectPropertiesForm = class(TForm)
-    BAdd: TButton;
-    BDelete: TButton;
-    BClear: TButton;
-    BOK: TButton;
-    BCancel: TButton;
+    BAdd: TBitBtn;
+    BClear: TBitBtn;
+    BDelete: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     LLBSelected: TLabel;
     LBComponents: TListBox;
     LComponents: TLabel;
@@ -75,10 +74,8 @@ implementation
 procedure TSelectPropertiesForm.SetPropComponent(const AValue: TComponent);
 begin
   if FPropComponent=AValue then exit;
-    begin
-    FPropComponent:=AValue;
-    ShowComponents;
-    end
+  FPropComponent:=AValue;
+  ShowComponents;
 end;
 
 procedure TSelectPropertiesForm.LBComponentsSelectionChange(Sender: TObject;
@@ -101,10 +98,11 @@ end;
 procedure TSelectPropertiesForm.SelectPropertiesFormCreate(Sender: TObject);
 begin
   BAdd.Caption:=ilesAdd;
+  BAdd.LoadGlyphFromResourceName(HInstance, 'laz_add');
   BDelete.Caption:=oisDelete;
+  BDelete.LoadGlyphFromResourceName(HInstance, 'laz_delete');
   BClear.Caption:=oisClear;
-  BOK.Caption:=oisOk;
-  BCancel.Caption:=oiStdActDataSetCancel1Hint;
+  BClear.LoadGlyphFromResourceName(HInstance, 'menu_clean');
   LComponents.Caption:=oisBtnComponents;
   LProperties.Caption:=oisBtnProperties;
   LLBSelected.Caption:=oisSelectedProperties;

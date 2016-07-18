@@ -86,6 +86,7 @@ begin
     Add(lisKMClassic);
     Add(lisKMMacOSXApple);
     Add(lisKMMacOSXLaz);
+    Add(lisKMDefaultToOSX);
     // do not add custom
   end;
 end;

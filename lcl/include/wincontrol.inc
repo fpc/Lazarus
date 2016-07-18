@@ -4702,8 +4702,11 @@ begin
     if MouseMessage.Msg = LM_MOUSEWHEEL then
     begin
       MouseEventMessage := TLMMouseEvent(TheMessage);
+      {$PUSH}
+      {$R-}{$Q-} // no range, no overflow checks
       MouseEventMessage.X := P.X;
       MouseEventMessage.Y := P.Y;
+      {$POP}
       Control.Dispatch(MouseEventMessage);
       MouseMessage.Result := MouseEventMessage.Result;
       Result := (MouseMessage.Result <> 0);
@@ -4711,7 +4714,7 @@ begin
     else
     begin
       MouseMessage.Result := Control.Perform(MouseMessage.Msg, WParam(MouseMessage.Keys),
-                             LParam(Integer(PointToSmallPoint(P))));
+                             LParam(Integer(PointToSmallPointNoChecks(P))));
       Result := True;
     end;
   end;
@@ -5133,7 +5136,7 @@ var
               (Enabled or (capfAllowDisabled in Flags))
               and
               (Perform(CM_HITTEST, 0,
-                       LParam(Integer(PointToSmallPoint(ControlPos)))) <> 0)
+                       LParam(Integer(PointToSmallPointNoChecks(ControlPos)))) <> 0)
              )
             );
       {$IFDEF VerboseMouseBugfix}
@@ -5196,7 +5199,7 @@ begin
         and GetControlAtPos(TControl(FControls[I])) then
           Break;
     // check controls
-    if (LControl = nil) then
+    if (LControl = nil) and not(capfOnlyWinControls in Flags) then
       for I := FControls.Count - 1 downto 0 do
         if (not (TObject(FControls[i]) is TWinControl))
         and GetControlAtPos(TControl(FControls[I])) then
@@ -5324,15 +5327,6 @@ begin
           Exit;
         end;
         Message.Result:=0;
-      end;
-
-    LM_NCHITTEST:
-      begin
-        inherited WndPRoc(Message);
-        if (Message.Result = HTTRANSPARENT) and
-           Assigned(ControlAtPos(ScreenToClient(SmallPointToPoint(TLMNCHitTest(Message).Pos)), False)) then
-          Message.Result := HTCLIENT;
-        Exit;
       end;
 
     // exclude only LM_MOUSEENTER, LM_MOUSELEAVE

@@ -32,6 +32,7 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
+    procedure SetXCount(AValue: Cardinal); override;
     procedure SetYCount(AValue: Cardinal); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -292,10 +293,16 @@ begin
   Notify;
 end;
 
+procedure TIntervalChartSource.SetXCount(AValue: Cardinal);
+begin
+  Unused(AValue);
+  raise EXCountError.Create('Cannot set XCount');
+end;
+
 procedure TIntervalChartSource.SetYCount(AValue: Cardinal);
 begin
   Unused(AValue);
-  raise EYCountError.Create('Can not set YCount');
+  raise EYCountError.Create('Cannot set YCount');
 end;
 
 procedure TIntervalChartSource.ValuesInRange(

@@ -1,20 +1,21 @@
 { This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+  This source is only used to compile and install the package.
  }
 
-unit cocoa_pkg; 
+unit cocoa_pkg;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  appkit, foundation, lobjc, LazarusPackageIntf; 
+  appkit, foundation, objc, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-end; 
+end;
 
 initialization
-  RegisterPackage('cocoa_pkg', @Register); 
+  RegisterPackage('cocoa_pkg', @Register);
 end.

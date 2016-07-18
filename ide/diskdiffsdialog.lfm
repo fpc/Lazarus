@@ -1,33 +1,33 @@
 object DiskDiffsDlg: TDiskDiffsDlg
   Left = 314
-  Height = 354
+  Height = 353
   Top = 351
   Width = 600
   ActiveControl = FilesListBox
   Caption = 'DiskDiffsDlg'
-  ClientHeight = 354
+  ClientHeight = 353
   ClientWidth = 600
   KeyPreview = True
   OnClose = FormClose
-  OnKeyDown = DiskDiffsDlgKeyDown
   Position = poScreenCenter
-  LCLVersion = '1.5'
-  object FilesListBox: TListBox
+  LCLVersion = '1.7'
+  object FilesListBox: TCheckListBox
     Left = 6
     Height = 86
     Top = 6
-    Width = 594
+    Width = 588
     Align = alTop
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
     ItemHeight = 0
-    OnSelectionChange = FilesListBoxSelectionChange
+    OnClick = FilesListBoxClick
     TabOrder = 0
   end
   inline DiffSynEdit: TSynEdit
     AnchorSideBottom.Control = CheckDiskChangesWithLoadingCheckBox
     Left = 6
-    Height = 193
+    Height = 167
     Top = 97
     Width = 588
     Align = alTop
@@ -40,7 +40,7 @@ object DiskDiffsDlg: TDiskDiffsDlg
     Font.Quality = fqNonAntialiased
     ParentColor = False
     ParentFont = False
-    TabOrder = 1
+    TabOrder = 2
     BookMarkOptions.Xoffset = -18
     Gutter.Visible = False
     Gutter.Width = 59
@@ -573,43 +573,43 @@ object DiskDiffsDlg: TDiskDiffsDlg
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 17
-    Top = 296
-    Width = 216
-    Anchors = [akLeft, akBottom]
+    Height = 19
+    Top = 270
+    Width = 241
+    Anchors = [akLeft]
     BorderSpacing.Around = 6
     Caption = 'CheckDiskChangesWithLoadingCheckBox'
-    TabOrder = 2
+    TabOrder = 3
   end
   object BtnPanel: TPanel
     Left = 0
-    Height = 35
-    Top = 319
+    Height = 37
+    Top = 316
     Width = 600
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 35
+    ClientHeight = 37
     ClientWidth = 600
-    TabOrder = 4
-    object RevertAllButton: TButton
-      Left = 492
-      Height = 23
+    TabOrder = 5
+    object RevertButton: TButton
+      Left = 499
+      Height = 25
       Top = 6
-      Width = 102
+      Width = 95
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
-      Caption = 'RevertAllButton'
+      Caption = 'RevertButton'
       Default = True
-      ModalResult = 10
+      ModalResult = 6
       TabOrder = 1
     end
     object IgnoreDiskChangesButton: TButton
-      Left = 335
-      Height = 23
+      Left = 329
+      Height = 25
       Top = 6
-      Width = 151
+      Width = 164
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -617,6 +617,20 @@ object DiskDiffsDlg: TDiskDiffsDlg
       ModalResult = 5
       TabOrder = 0
     end
+  end
+  object AutoCheckModifiedFilesCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CheckDiskChangesWithLoadingCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = BtnPanel
+    Left = 6
+    Height = 15
+    Top = 295
+    Width = 202
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'AutoCheckModifiedFilesCheckBox'
+    TabOrder = 4
   end
   object SynDiffSyn1: TSynDiffSyn
     Enabled = False

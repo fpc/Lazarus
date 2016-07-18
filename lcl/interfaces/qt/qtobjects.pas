@@ -273,11 +273,13 @@ type
 
   TQtBrush = class(TQtResource)
   private
+    FRadialGradient: QRadialGradientH;
     function getStyle: QtBrushStyle;
     procedure setStyle(style: QtBrushStyle);
   public
     FHandle: QBrushH;
     constructor Create(CreateHandle: Boolean); virtual;
+    constructor CreateWithRadialGradient(ALogBrush: TLogRadialGradient);
     destructor Destroy; override;
     function getColor: PQColor;
     function GetLBStyle(out AStyle: LongWord; out AHatch: PtrUInt): Boolean;
@@ -1802,6 +1804,28 @@ begin
   FShared := False;
   FSelected := False;
   QtGDIObjects.AddGDIObject(Self);
+end;
+
+constructor TQtBrush.CreateWithRadialGradient(ALogBrush: TLogRadialGradient);
+var
+  i: Integer;
+  lColor: PQColor;
+  lR, lG, lB, lA: Double;
+begin
+  FRadialGradient := QRadialGradient_create(
+    ALogBrush.radCenterX, ALogBrush.radCenterY, ALogBrush.radCenterY,
+    ALogBrush.radFocalX, ALogBrush.radFocalY);
+  for i := 0 to Length(ALogBrush.radStops) - 1 do
+  begin
+    lR := ALogBrush.radStops[i].radColorR / $FFFF;
+    lG := ALogBrush.radStops[i].radColorG / $FFFF;
+    lB := ALogBrush.radStops[i].radColorB / $FFFF;
+    lA := ALogBrush.radStops[i].radColorA / $FFFF;
+    QColor_fromRgbF(lColor, lR, lG, lB, lA);
+    QGradient_setColorAt(FRadialGradient, ALogBrush.radStops[i].radPosition, lColor);
+  end;
+
+  FHandle := QBrush_create(FRadialGradient);
 end;
 
 {------------------------------------------------------------------------------
@@ -3412,6 +3436,7 @@ var
   ScaledImage: QImageH;
   ScaledMask: QImageH;
   NewRect: TRect;
+  ARenderHint: Boolean;
 
   function NeedScaling: boolean;
   var
@@ -3546,8 +3571,9 @@ begin
         ScaledImage := QImage_create();
         try
           QImage_copy(Image, ScaledImage, 0, 0, QImage_width(Image), QImage_height(Image));
+          // use smooth transformation when scaling image. issue #29883
           QImage_scaled(ScaledImage, ScaledImage, LocalRect.Right - LocalRect.Left,
-            LocalRect.Bottom - LocalRect.Top);
+            LocalRect.Bottom - LocalRect.Top, QtIgnoreAspectRatio, QtSmoothTransformation);
           NewRect := sourceRect^;
           NewRect.Right := (LocalRect.Right - LocalRect.Left) + sourceRect^.Left;
           NewRect.Bottom := (LocalRect.Bottom - LocalRect.Top) + sourceRect^.Top;
@@ -3556,7 +3582,15 @@ begin
           QImage_destroy(ScaledImage);
         end;
       end else
+      begin
+        // smooth a bit. issue #29883
+        ARenderHint := QPainter_testRenderHint(Widget, QPainterSmoothPixmapTransform);
+        if (QImage_format(image) = QImageFormat_ARGB32) and (flags = QtAutoColor) and
+          not EqualRect(LocalRect, sourceRect^) then
+            QPainter_setRenderHint(Widget, QPainterSmoothPixmapTransform, True);
         QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
+        QPainter_setRenderHint(Widget, QPainterSmoothPixmapTransform, ARenderHint);
+      end;
     end;
   end;
 end;

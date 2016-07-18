@@ -212,3 +212,4 @@ msgstr "Composants visibles"
 #: eduoptions.ersvisiblespeedbuttons
 msgid "Visible SpeedButtons"
 msgstr "Boutons rapides visibles"
+

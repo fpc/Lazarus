@@ -2,20 +2,21 @@
   This source is only used to compile and install the package.
  }
 
-unit TurboPowerIProDsgn; 
+unit TurboPowerIProDsgn;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-   IPIDEHTMLControl, LazarusPackageIntf;
+  IPIDEHTMLControl, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('IPIDEHTMLControl', @IPIDEHTMLControl.Register); 
-end; 
+  RegisterUnit('IPIDEHTMLControl', @IPIDEHTMLControl.Register);
+end;
 
 initialization
-  RegisterPackage('TurboPowerIProDsgn', @Register); 
+  RegisterPackage('TurboPowerIProDsgn', @Register);
 end.

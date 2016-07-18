@@ -288,10 +288,11 @@ begin
         else
         begin
           Node := InheritanceTree.Items.AddChildObject(Node, ClssName, Comp);
-          CurIcon := nil;
-          if (Comp is TPkgComponent) then
-          CurIcon := TPkgComponent(Comp).Icon;
-          if CurIcon <> nil then
+          if Comp is TPkgComponent then
+            CurIcon := TPkgComponent(Comp).Icon
+          else
+            CurIcon := nil;
+          if Assigned(CurIcon) then
           begin
             Node.ImageIndex := imInheritance.Add(CurIcon, nil);
             Node.SelectedIndex := Node.ImageIndex;
@@ -346,10 +347,11 @@ begin
         AListNode := ListTree.Items.AddChildObject(Nil, Comps[j], Comp);
         // Palette layout item
         APaletteNode := PalletteTree.Items.AddChildObject(ParentNode, Comps[j], Comp);
-        CurIcon := nil;
-        if (Comp is TPkgComponent) then
-          CurIcon := TPkgComponent(Comp).Icon;
-        if CurIcon <> nil then
+        if Comp is TPkgComponent then
+          CurIcon := TPkgComponent(Comp).Icon
+        else
+          CurIcon := nil;
+        if Assigned(CurIcon) then
         begin
           AListNode.ImageIndex := imListPalette.Add(CurIcon, nil);
           AListNode.SelectedIndex := AListNode.ImageIndex;
@@ -454,7 +456,6 @@ begin
   FActiveTree.EndUpdate;
   FPageControlChange := False;
 end;
-
 
 procedure TComponentListForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin

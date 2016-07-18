@@ -473,6 +473,7 @@ var
   lBaseWindowOrg: TPoint;
   lControlStateEx: TCDControlStateEx;
   lDrawControl: Boolean;
+  lRegion:TLazRegionWithChilds;
 begin
   Result := False;
 
@@ -504,7 +505,9 @@ begin
   ACanvas.Clipping := True;
   ACDWinControl.Region.Rect := Bounds(lBaseWindowOrg.X, lBaseWindowOrg.Y - ACDForm.ScrollY,
     lWinControl.Width, lWinControl.Height);
-  ACanvas.ClipRegion := ACDWinControl.Region;
+  lRegion := TLazRegionWithChilds.Create;
+  lRegion.Assign(ACDWinControl.Region);
+  ACanvas.ClipRegion := lRegion;
 
   lControlCanvas := ACanvas;
 

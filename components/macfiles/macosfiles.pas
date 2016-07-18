@@ -2,19 +2,20 @@
   This source is only used to compile and install the package.
  }
 
-unit MacOSFiles; 
+unit MacOSFiles;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-   MacApplicationRes, LazarusPackageIntf;
+  MacApplicationRes, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-end; 
+end;
 
 initialization
-  RegisterPackage('MacOSFiles', @Register); 
+  RegisterPackage('MacOSFiles', @Register);
 end.

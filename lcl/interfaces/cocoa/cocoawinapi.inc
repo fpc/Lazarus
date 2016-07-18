@@ -399,11 +399,13 @@ begin
   'text/plain':
   begin
     lNSStr := NSPasteboardTypeString;
+    lNSStr.retain;
     lDataType := ccdtText;
   end;
   'image/png':
   begin
     lNSStr := NSPasteboardTypePNG;
+    lNSStr.retain;
     lDataType := ccdtCocoaStandard;
   end;
   'image/bmp':
@@ -635,6 +637,8 @@ begin
 end;
 
 function TCocoaWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
+const
+  SName = 'TCocoaWidgetSet.DeleteObject';
 var
   gdi: TCocoaGDIObject;
 begin
@@ -645,12 +649,26 @@ begin
   gdi := CheckGDIOBJ(GdiObject);
 
   if not Assigned(gdi) then
+  begin
+    DebugLn(SName, ' Error - GDIObject: ' +  DbgSName(gdi) + ' is unknown!');
     Exit;
+  end;
 
   if gdi.Global then
+  begin
+    // global brushes can be cached, so just exit here since we will free the resource later on
+    //DebugLn(SName, ' Error - GDIObject: ' +  DbgSName(gdi) + ' is global!');
     Exit;
+  end;
 
-  if gdi.RefCount = 0 then gdi.Destroy;
+  if gdi.RefCount <> 1 then
+  begin
+    DebugLn(SName, 'Error - GDIObject: ' + DbgSName(gdi) + ' is still selected!');
+    Exit;
+  end;
+
+  gdi.Destroy;
+  Result := True;
 end;
 
 function TCocoaWidgetSet.DestroyCaret(Handle: HWND): Boolean;
@@ -1700,10 +1718,10 @@ begin
   Result := Handle <> 0;
   if Result then
   begin
-    Info := PrepareUserEventInfo(Handle, Msg, WParam, LParam);
+    Info := NewUserEventInfo(Handle, Msg, WParam, LParam);
     // if we will want a postmessage using notification center
     // NSDistributedNotificationCenter.defaultCenter.postNotificationName_object_userInfo_deliverImmediately(NSMessageNotification, nil, Info, False);
-    Event := PrepareUserEvent(Handle, Info);
+    Event := PrepareUserEvent(Handle, Info, False);
     NSApp.postEvent_atStart(Event, False);
   end;
 end;
@@ -1874,7 +1892,9 @@ const
 var
   Modifiers: NSUInteger;
 begin
-  Modifiers := NSApp.currentEvent.modifierFlags;
+  // NSApp.currentEvent.modifierFlags doesn't work before events start coming,
+  // see bug 29272 and http://lists.apple.com/archives/cocoa-dev/2010/Feb/msg00105.html
+  Modifiers := NSEvent.modifierFlags_();
   case nVirtKey of
     VK_MENU,
     VK_LMENU:
@@ -1920,6 +1940,7 @@ begin
   dc:=CheckDC(ADC);
   gdi:=CheckGDIOBJ(GDIObj);
   if not Assigned(dc) then Exit;
+  if not Assigned(gdi) then Exit;
 
   if gdi is TCocoaBrush then
   begin // select brush
@@ -1946,10 +1967,12 @@ begin
     end;
     Result := HBITMAP(TCocoaBitmapContext(dc).Bitmap);
     TCocoaBitmapContext(dc).Bitmap := TCocoaBitmap(gdi);
+  end
+  else
+  begin
+    DebugLn(SName + ' Error - Unknown Object Type ' + DbgSName(gdi));
+    Exit;
   end;
-
-  if Result<>0 then TCocoaGDIObject(Result).Release;
-  if Assigned(gdi) then gdi.AddRef;
 
   {$IFDEF VerboseWinAPI}
     DebugLn(Format('TCocoaWidgetSet.SelectObject Result: %x', [Result]));
@@ -1964,10 +1987,11 @@ var
 begin
   if Handle <> 0 then
   begin
-    Info := PrepareUserEventInfo(Handle, Msg, WParam, LParam);
-    Event := PrepareUserEvent(Handle, Info);
+    Info := NewUserEventInfo(Handle, Msg, WParam, LParam);
+    Event := PrepareUserEvent(Handle, Info, True);
     NSApp.sendEvent(Event);
     Result := NSNumber(Info.objectForKey(NSMessageResult)).integerValue;
+    Info.Release;
   end;
 end;
 

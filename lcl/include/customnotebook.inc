@@ -887,10 +887,7 @@ end;
 
 function TCustomTabControl.GetListClass: TNBBasePagesClass;
 begin
-  if FUnPaged then // TODO move to inherited / not used / never set
-    Result := TNBNoPages
-  else
-    Result := TNBPages;
+  Result := TNBPages;
 end;
 
 class procedure TCustomTabControl.WSRegisterClass;

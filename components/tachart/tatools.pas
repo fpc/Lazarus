@@ -69,6 +69,7 @@ type
     procedure MouseUp(APoint: TPoint); virtual;
     procedure MouseWheelDown(APoint: TPoint); virtual;
     procedure MouseWheelUp(APoint: TPoint); virtual;
+    function PopupMenuConflict: Boolean; override;
     procedure PrepareDrawingModePen(ADrawer: IChartDrawer; APen: TFPCustomPen);
     procedure RestoreCursor;
     procedure SetCursor;
@@ -437,6 +438,8 @@ type
     FOnDrag: TDataPointDragEvent;
     FOnDragStart: TDataPointDragEvent;
     FOrigin: TDoublePoint;
+    FKeepDistance: Boolean;
+    FDistance: TDoublePoint;
   strict protected
     procedure Cancel; override;
   public
@@ -448,6 +451,7 @@ type
   published
     property ActiveCursor default crSizeAll;
     property EscapeCancels default true;
+    property KeepDistance: Boolean read FKeepDistance write FKeepDistance default false;
     property OnDrag: TDataPointDragEvent read FOnDrag write FOnDrag;
     property OnDragStart: TDataPointDragEvent
       read FOnDragStart write FOnDragStart;
@@ -833,6 +837,21 @@ end;
 procedure TChartTool.MouseWheelUp(APoint: TPoint);
 begin
   Unused(APoint);
+end;
+
+function TChartTool.PopupMenuConflict: Boolean;
+var
+  P: TPoint;
+begin
+  Result := false;
+  if Shift = [ssRight] then begin
+    P := Mouse.CursorPos;
+    if (P.X = FStartMousePos.X) then
+      exit;
+    if (P.Y = FStartMousePos.Y) then
+      exit;
+    Result := true;
+  end;
 end;
 
 procedure TChartTool.PrepareDrawingModePen(
@@ -1334,12 +1353,14 @@ var
   ext: TDoubleRect;
 begin
   ext := FChart.LogicalExtent;
-  center := FChart.ImageToGraph(APoint);
   sz := ext.b - ext.a;
-  if FixedPoint and (sz.X <> 0) and (sz.Y <> 0) then
-    ratio := (center - ext.a) / sz
-  else
+  if FixedPoint and (sz.X <> 0) and (sz.Y <> 0) then begin
+    center := FChart.ImageToGraph(APoint);
+    ratio := (center - ext.a) / sz;
+  end else begin
+    center := DoublePoint((ext.a.x + ext.b.X) / 2, (ext.a.y + ext.b.y) / 2);
     ratio := DoublePoint(0.5, 0.5);
+  end;
   ext.a := center - sz * ratio / AFactor;
   ext.b := center + sz * (DoublePoint(1, 1) - ratio) / AFactor;
   DoZoom(ext, false);
@@ -1688,8 +1709,9 @@ begin
   FindNearestPoint(APoint);
   if FSeries = nil then exit;
   FOrigin := NearestGraphPoint;
+  p := FChart.ImageToGraph(APoint);
+  FDistance := p - FOrigin;
   if Assigned(OnDragStart) then begin
-    p := FChart.ImageToGraph(APoint);
     OnDragStart(Self, p);
     if Toolset.FIsHandled then exit;
   end;
@@ -1707,6 +1729,7 @@ begin
     OnDrag(Self, p);
     if Toolset.FIsHandled then exit;
   end;
+  if FKeepDistance then p := p - FDistance;
   FSeries.MovePoint(FPointIndex, p);
   Handled;
 end;

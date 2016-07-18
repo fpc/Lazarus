@@ -1,6 +1,7 @@
 {
  **********************************************************************
-  This file is based on the FCL unit xmlwrite svn revision 15251.
+  This file is part of LazUtils.
+  It is based on the FCL unit xmlwrite svn revision 15251.
 
   See the file COPYING.FPC, included in this distribution,
   for details about the license.

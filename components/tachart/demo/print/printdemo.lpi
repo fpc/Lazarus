@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -31,7 +31,7 @@
     <RequiredPackages Count="5">
       <Item1>
         <PackageName Value="LCLBase"/>
-        <MinVersion Major="1" Valid="True" Release="1"/>
+        <MinVersion Major="1" Release="1" Valid="True"/>
       </Item1>
       <Item2>
         <PackageName Value="LCL"/>
@@ -52,14 +52,13 @@
       <Unit0>
         <Filename Value="printdemo.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="printdemo"/>
       </Unit0>
       <Unit1>
         <Filename Value="Main.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="Main"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\..\taprint.pas"/>
@@ -69,7 +68,7 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
       <Filename Value="printdemo"/>
@@ -85,12 +84,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">

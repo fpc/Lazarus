@@ -482,6 +482,14 @@ msgstr "Sublinhado,sim,não"
 msgid "No Action"
 msgstr "Sem Ação"
 
+#: syneditstrconst.syns_emcoverviewguttergotomark
+msgid "Jump to Mark (Overview Gutter)"
+msgstr ""
+
+#: syneditstrconst.syns_emcoverviewgutterscrollto
+msgid "Scroll (Overview Gutter)"
+msgstr ""
+
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
 msgstr "Colar Seleção Rapidamente"

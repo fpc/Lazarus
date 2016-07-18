@@ -1,4 +1,4 @@
-object MenuDesigner: TMenuDesigner
+object MenuDesignerForm: TMenuDesignerForm
   Left = 504
   Height = 400
   Top = 291
@@ -161,7 +161,6 @@ object MenuDesigner: TMenuDesigner
         Top = 6
         Width = 168
         Anchors = [akTop, akLeft, akRight]
-        AutoSize = False
         BorderSpacing.Left = 6
         BorderSpacing.Around = 6
         Caption = 'CaptionedItemsCountLabel'
@@ -181,7 +180,6 @@ object MenuDesigner: TMenuDesigner
         Top = 27
         Width = 168
         Anchors = [akTop, akLeft, akRight]
-        AutoSize = False
         BorderSpacing.Left = 6
         BorderSpacing.Around = 6
         Caption = 'ShortcutItemsCountLabel'
@@ -201,7 +199,6 @@ object MenuDesigner: TMenuDesigner
         Top = 48
         Width = 168
         Anchors = [akTop, akLeft, akRight]
-        AutoSize = False
         BorderSpacing.Left = 6
         BorderSpacing.Around = 6
         Caption = 'DeepestNestingLevelLabel'
@@ -221,7 +218,6 @@ object MenuDesigner: TMenuDesigner
         Top = 69
         Width = 168
         Anchors = [akTop, akLeft, akRight]
-        AutoSize = False
         BorderSpacing.Left = 6
         BorderSpacing.Around = 6
         Caption = 'IconCountLabel'
@@ -241,7 +237,6 @@ object MenuDesigner: TMenuDesigner
         Top = 90
         Width = 168
         Anchors = [akTop, akLeft, akRight]
-        AutoSize = False
         BorderSpacing.Left = 6
         BorderSpacing.Bottom = 6
         BorderSpacing.Around = 6
@@ -280,6 +275,7 @@ object MenuDesigner: TMenuDesigner
       Top = 254
       Width = 190
       Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'SubmenuGroupBox'
       ClientHeight = 44

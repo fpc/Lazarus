@@ -2,16 +2,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-06-01 12:06+0200\n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"PO-Revision-Date: 2016-05-27 13:42+0200\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: uk\n"
+"X-Generator: Poedit 1.6.4\n"
 
 #: frmtemplatevariables.screateindir
 msgid "Create in &directory:"
-msgstr "Створити в &директорії:"
+msgstr "Створити у &теці:"
 
 #: frmtemplatevariables.sdescription
 msgid "Description"
@@ -19,7 +21,7 @@ msgstr "Опис"
 
 #: frmtemplatevariables.snameforproject
 msgid "&Name for new project:"
-msgstr "&Ім'я нового проекту:"
+msgstr "&Назва нового проекту:"
 
 #: frmtemplatevariables.snoadditionalvars
 msgid "This project has no additional variables."

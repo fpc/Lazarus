@@ -626,6 +626,7 @@ end;
 procedure TCustomListBox.Click;
 begin
   inherited Click;
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -653,6 +654,24 @@ begin
     if (i>=0) and (i<Count) then
       Selected[i] := true;
   end;
+end;
+
+procedure TCustomListBox.DeleteSelected;
+var
+  i: Integer;
+begin
+  if MultiSelect then
+  begin
+    i := Items.Count;
+    while i > 0 do
+    begin
+      dec(i);
+      if Selected[i] then
+        FItems.Delete(i);
+    end;
+  end else
+    if ItemIndex>=0 then
+      Items.Delete(ItemIndex);
 end;
 
 {------------------------------------------------------------------------------

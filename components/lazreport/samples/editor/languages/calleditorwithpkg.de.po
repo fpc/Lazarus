@@ -84,10 +84,6 @@ msgstr "Neuer Report"
 msgid "none"
 msgstr "keiner"
 
-#: maincalleditor.cernotimplemented
-msgid "This feature is not yet implemented!"
-msgstr "Diese Funktion ist noch nicht implementiert!"
-
 #: maincalleditor.ceropenreport
 msgid "Open report"
 msgstr "Report öffnen"
@@ -116,15 +112,6 @@ msgstr "Report drucken"
 msgctxt "maincalleditor.certhumbnails"
 msgid "Thumbnails"
 msgstr "Vorschaubilder"
-
-#: tfrmcustompreview.frmcustompreview.caption
-msgid "frmCustomPreview"
-msgstr ""
-
-#: tfrmcustompreview.frpreview1.caption
-msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
-msgid "frPreview1"
-msgstr ""
 
 #: tfrmmain.accclose.caption
 msgid "Close"

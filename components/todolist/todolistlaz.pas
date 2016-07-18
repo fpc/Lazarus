@@ -2,8 +2,9 @@
   This source is only used to compile and install the package.
  }
 
-unit ToDoListLaz; 
+unit ToDoListLaz;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
@@ -11,11 +12,11 @@ uses
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('ToDoDlg', @ToDoDlg.Register); 
-end; 
+  RegisterUnit('ToDoDlg', @ToDoDlg.Register);
+end;
 
 initialization
-  RegisterPackage('ToDoListLaz', @Register); 
+  RegisterPackage('ToDoListLaz', @Register);
 end.

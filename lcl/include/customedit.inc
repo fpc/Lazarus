@@ -109,6 +109,11 @@ begin
   Result := UTF8Copy(Text, SelStart + 1, SelLength)
 end;
 
+function TCustomEdit.GetTextHint: TTranslateString;
+begin
+  Result := FTextHint;
+end;
+
 procedure TCustomEdit.Loaded;
 begin
   inherited Loaded;
@@ -362,9 +367,21 @@ begin
   FModified := Value;
 end;
 
+function TCustomEdit.GetPasswordChar: Char;
+begin
+  if FTextHintShowing then
+    Result := FSavedPasswordChar
+  else
+    Result := FPasswordChar;
+end;
 
 procedure TCustomEdit.SetPasswordChar(const AValue: Char);
 begin
+  if FTextHintShowing and (not FSettingTextHint) and (FSavedPasswordChar<>AValue) then
+  begin
+    FSavedPasswordChar := AValue;
+    Exit;
+  end;
   if FPasswordChar=AValue then exit;
 
   FPasswordChar:=AValue;
@@ -579,6 +596,7 @@ end;
 
 procedure TCustomEdit.Change;
 begin
+  Changed;
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
@@ -642,6 +660,7 @@ begin
     FSavedFontColor := Font.Color;
     FSavedFontStyle := Font.Style;
     FSavedParentFont := ParentFont;
+    FSavedPasswordChar := PasswordChar;
   end;
   FTextHintShowing := True;
   OldModified := Modified;
@@ -651,6 +670,7 @@ begin
     inherited RealSetText(FTextHint);
     Font.Color := FTextHintFontColor;
     Font.Style := FTextHintFontStyle;
+    PasswordChar := #0;
   finally
     FSettingTextHint := False;
     Modified := OldModified;
@@ -667,6 +687,7 @@ begin
     Font.Color := FSavedFontColor;
     Font.Style := FSavedFontStyle;
     ParentFont := FSavedParentFont;
+    PasswordChar := FSavedPasswordChar;
     FTextHintShowing := False;
     FSettingTextHint := True;
     inherited RealSetText('');

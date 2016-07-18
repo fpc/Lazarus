@@ -1,12 +1,16 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2012-04-23 10:52+0300\n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"PO-Revision-Date: 2016-06-07 10:47+0200\n"
+"Last-Translator: \n"
 "Language: uk\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Virtaal 0.7.1\n"
+"X-Generator: Poedit 1.6.4\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
 
 #: debuggerstrconst.drsbreakpointcolwidthaction
 msgid "Action column"
@@ -31,7 +35,7 @@ msgstr "Графа рядка"
 
 #: debuggerstrconst.drsbreakpointcolwidthpasscount
 msgid "Pass-count column"
-msgstr "Графа проходу"
+msgstr "Графа числа проходів"
 
 #: debuggerstrconst.drscolwidthbrkpointimg
 msgid "Break indication column"
@@ -43,7 +47,7 @@ msgstr "Графа виразу"
 
 #: debuggerstrconst.drscolwidthfunc
 msgid "Function name column"
-msgstr "Графа імені функції"
+msgstr "Графа назви функції"
 
 #: debuggerstrconst.drscolwidthindex
 msgid "Index column"
@@ -72,7 +76,7 @@ msgstr "Графа значення"
 
 #: debuggerstrconst.drsevalhistorynone
 msgid "No history kept"
-msgstr ""
+msgstr "Немає збереженої історії"
 
 #: debuggerstrconst.drshistorycolwidthcurrent
 msgid "Current column"
@@ -88,7 +92,7 @@ msgstr "Графа часу"
 
 #: debuggerstrconst.drsinspectcolwidthdataclass
 msgid "Data class column"
-msgstr ""
+msgstr "Графа класу даних"
 
 #: debuggerstrconst.drsinspectcolwidthdataname
 msgid "Data name column"
@@ -104,7 +108,7 @@ msgstr "Графа значення даних"
 
 #: debuggerstrconst.drsinspectcolwidthdatavisibility
 msgid "Data visibility column"
-msgstr ""
+msgstr "Графа видимості даних"
 
 #: debuggerstrconst.drsinspectcolwidthmethaddress
 msgid "Method address column"
@@ -132,21 +136,21 @@ msgstr "Викор. тип екземпляра класу"
 
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"
-msgstr ""
+msgstr "Панель огляду"
 
 #: debuggerstrconst.dsrevalhistorydown
 msgid "Append result at bottom of history"
-msgstr ""
+msgstr "Додавати результати внизу історії"
 
 #: debuggerstrconst.dsrevalhistoryup
 msgid "Insert result at top of history"
-msgstr ""
+msgstr "Вставляти результат вгорі історії"
 
 #: debuggerstrconst.synfnewvalueisempty
 msgid "\"New value\" is empty."
-msgstr ""
+msgstr "\"Нове значення\" порожнє."
 
 #: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
 msgid "The debugger was not able to modify the value."
-msgstr ""
+msgstr "Зневаджувач не зміг змінити значення."
 

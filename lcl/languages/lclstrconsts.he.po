@@ -1089,10 +1089,9 @@ msgstr "מפת פיקסלים ברת ניידות"
 msgid "Post"
 msgstr "אחרי"
 
-#: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
-#, fuzzy,badformat
-msgid "%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
-msgstr "לחץ אישור להתעלמות וסיכון של השחתת מידע. לחץ ביטול כדי להרוג את התכנית."
+#: lclstrconsts.rspressoktoignoreandriskdatacorruptionpressaborttok
+msgid "%s%sPress OK to ignore and risk data corruption.%sPress Abort to kill the program."
+msgstr ""
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"

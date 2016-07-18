@@ -68,7 +68,7 @@ begin
   PageIndex := Windows.SendMessage(TabControlHandle, TCM_GETCURSEL, 0, 0);
   PageIndex := TabControl.TabToPageIndex(PageIndex);
 
-  if TabControl.IsUnpaged then
+  if (TabControl is TTabControl) then
     exit(PageIndex);
 
   if PageIndex = -1 then
@@ -337,7 +337,7 @@ begin
     // but on windows page handle is differ from tab and thus allocation can be
     // postponed, but this cause problems with event handling like bug #0012434
     // so to overcome such problems we need to allocate this handle
-    if not ATabControl.IsUnpaged then
+    if not (ATabControl is TTabControl) then
       AChild.HandleNeeded;
     if ShowTabs then
     begin
@@ -620,7 +620,7 @@ begin
 
   SendMessage(TabControlHandle, TCM_SETCURSEL, Windows.WParam(NewRealIndex), 0);
 
-  if ATabControl.IsUnpaged then
+  if (ATabControl is TTabControl) then
     exit; //all done
 
   if not (csDestroying in ATabControl.ComponentState) then

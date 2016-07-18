@@ -25,7 +25,7 @@ uses
   Types, typinfo, Classes, SysUtils, LMessages,
   LResources, LCLIntf, InterfaceBase, LCLStrConsts, LCLType, LCLProc, Forms,
   Controls, Themes, GraphType, Graphics, Buttons, ButtonPanel, StdCtrls,
-  ExtCtrls, LCLClasses, ClipBrd,
+  ExtCtrls, LCLClasses, ClipBrd, Menus,
   // LazUtils
   FileUtil, LazFileUtils;
 
@@ -120,7 +120,6 @@ type
     procedure SetFilterIndex(const AValue: Integer);
   protected
     class procedure WSRegisterClass; override;
-    function DoExecute: boolean; override;
     function GetFilterIndex: Integer; virtual;
     procedure SetFileName(const Value: String); virtual;
     procedure SetFilter(const Value: String); virtual;
@@ -129,7 +128,6 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure DoTypeChange; virtual;
-    function Execute: boolean; override;
     property Files: TStrings read FFiles;
     property HistoryList: TStrings read FHistoryList write SetHistoryList;
     procedure IntfFileTypeChanged(NewFilterIndex: Integer);
@@ -423,7 +421,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure CloseDialog;
-    function Execute: Boolean;override;
+    function Execute: Boolean; override;
     property Left: Integer read GetLeft write SetLeft;
     property Position: TPoint read GetPosition write SetPosition;
     property Top: Integer read GetTop write SetTop;
@@ -536,6 +534,17 @@ function DefaultMessageBox(Text, Caption: PChar; Flags: Longint) : Integer;// wi
 
 function InputBox(const ACaption, APrompt, ADefault : String) : String;
 function PasswordBox(const ACaption, APrompt : String) : String;
+
+type
+  TCustomCopyToClipboardDialog = class(TForm)
+  protected
+    procedure DoCreate; override;
+  public
+    function GetMessageText: string; virtual; abstract;
+  end;
+
+procedure RegisterDialogForCopyToClipboard(const ADlg: TCustomForm);
+procedure DialogCopyToClipboard(Self, Sender: TObject; var Key: Word; Shift: TShiftState);
 
 const
   cInputQueryEditSizePixels: integer = 260; // Edit size in pixels
@@ -755,6 +764,14 @@ begin
   FCopies:=1;
 end;
 
+{ TCustomCopyToClipboardDialog }
+
+procedure TCustomCopyToClipboardDialog.DoCreate;
+begin
+  inherited DoCreate;
+
+  RegisterDialogForCopyToClipboard(Self);
+end;
 
 initialization
   Forms.MessageBoxFunction := @DefaultMessageBox;

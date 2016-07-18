@@ -17,3 +17,4 @@ msgstr "Eine Pascal-Unit mit einer Unterklasse der TThread-Klasse."
 #: reglazthread.sthreadname
 msgid "Thread Object"
 msgstr "Thread-Objekt"
+

@@ -54,8 +54,8 @@ type
     class procedure WSRegisterClass; override;
     procedure CreatePreviewControl; virtual;
     procedure InitPreviewControl; virtual;
+    function DoExecute: boolean; override;
   public
-    function Execute: boolean; override;
     constructor Create(TheOwner: TComponent); override;
     property PreviewFileControl: TPreviewFileControl read FPreviewFileControl;
   end;
@@ -290,10 +290,10 @@ begin
   FPreviewFileControl.Name:='PreviewFileControl';
 end;
 
-function TPreviewFileDialog.Execute: boolean;
+function TPreviewFileDialog.DoExecute: boolean;
 begin
   CreatePreviewControl;
-  Result:=inherited Execute;
+  Result:=inherited DoExecute;
 end;
 
 constructor TPreviewFileDialog.Create(TheOwner: TComponent);
@@ -667,9 +667,12 @@ procedure TCalendarDialog.CalendarDblClick(Sender: TObject);
 var
   CalendarForm: TForm;
   P: TPoint;
+  htRes: TCalendarPart;
 begin
   P := FCalendar.ScreenToClient(Mouse.CursorPos);
-  if FCalendar.HitTest(P) in [cpNoWhere, cpDate] then
+  //if FCalendar.HitTest(P) in [cpNoWhere, cpDate] then
+  htRes := FCalendar.HitTest(P);
+  if {(htRes = cpNoWhere) or }((htRes = cpDate) and (FCalendar.GetCalendarView = cvMonth)) then
   begin
     GetNewDate(Sender);
     CalendarForm:=TForm(TComponent(Sender).Owner);

@@ -14,3 +14,4 @@ msgstr ""
 #: synunidesigner.sunifiledescription
 msgid "UniHighlighter Syntax"
 msgstr "UniHighlighter szintaxiskiemelés"
+

@@ -18,3 +18,4 @@ msgstr "Une unité Pascal avec un descendant de la classe \"TThread\"."
 #: reglazthread.sthreadname
 msgid "Thread Object"
 msgstr "Objet tâche"
+

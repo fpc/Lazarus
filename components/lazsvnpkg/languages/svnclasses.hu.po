@@ -234,3 +234,4 @@ msgstr "Frissítés"
 #: svnclasses.rsupdated
 msgid "Updated"
 msgstr "Frissítve"
+

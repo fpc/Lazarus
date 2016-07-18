@@ -11,8 +11,8 @@ uses
   {$else}
   Process, Utf8Process,
   {$endif}
-  ExtCtrls, PoFamilies, PoCheckerConsts, LCLProc, StdCtrls, ComCtrls,
-  PoCheckerSettings;
+  ExtCtrls, PoFamilies, PoFamilyLists, PoCheckerConsts, LCLProc, StdCtrls, ComCtrls, Menus,
+  PoCheckerSettings, LCLIntf, Translations;
 
 
 type
@@ -20,6 +20,14 @@ type
   { TGraphStatForm }
 
   TGraphStatForm = class(TForm)
+    Separator1MenuItem: TMenuItem;
+    RefreshCurrMenuItem: TMenuItem;
+    RefreshAllMenuItem: TMenuItem;
+    Separator2MenuItem: TMenuItem;
+    POEditorMenuItem: TMenuItem;
+    ExtEditorMenuItem: TMenuItem;
+    IDEEditorMenuItem: TMenuItem;
+    ContextPopupMenu: TPopupMenu;
     StatusLabel: TLabel;
     ListView: TListView;
     TranslatedLabel: TLabel;
@@ -29,30 +37,41 @@ type
     TranslatedShape: TShape;
     UnTranslatedShape: TShape;
     FuzzyShape: TShape;
+    procedure ExtEditorMenuItemClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure IDEEditorMenuItemClick(Sender: TObject);
     procedure ListViewMouseMove(Sender: TObject; {%H-}Shift: TShiftState; X,
       Y: Integer);
-    procedure ListViewMouseUp(Sender: TObject; {%H-}Button: TMouseButton;
-      {%H-}Shift: TShiftState; X, Y: Integer);
+    procedure ListViewMouseUp(Sender: TObject; Button: TMouseButton; Shift:
+      TShiftState; X, Y: Integer);
+    procedure POEditorMenuItemClick(Sender: TObject);
+    procedure RefreshAllMenuItemClick(Sender: TObject);
+    procedure RefreshCurrMenuItemClick(Sender: TObject);
   private
     { private declarations }
+    FPoFamilyList: TPoFamilyList;
     FPoFamilyStats: TPoFamilyStats;
     FImgList: TImageList;
     FOldHintHidePause: Integer;
     FSettings: TPoCheckerSettings;
+    Fn: string;
+    CurrentMasterPoFile: string;
     procedure LoadConfig;
     Procedure SaveConfig;
     function CreateBitmap(AStat: TStat): TBitmap;
     procedure AddToListView(AStat: TStat; ABmp: TBitmap);
     procedure DrawGraphs(Cnt: PtrInt);
-    procedure MaybeOpenInLazIDE(const Fn: String);
-    procedure MaybeOpenInExternalEditor(const {%H-}Fn: String);
+    procedure MaybeOpenInLazIDE;
+    procedure MaybeOpenInExternalEditor;
+    procedure RefreshTranslations(All: boolean);
+    procedure ConfigureContextPopUp(AdvancedMode: boolean);
   public
     { public declarations }
+    property PoFamilyList: TPoFamilyList read FPoFamilyList write FPoFamilyList;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
     property Settings: TPoCheckerSettings read FSettings write FSettings;
   end;
@@ -100,6 +119,11 @@ begin
   Application.QueueAsyncCall(@DrawGraphs, FPoFamilyStats.Count);
 end;
 
+procedure TGraphStatForm.IDEEditorMenuItemClick(Sender: TObject);
+begin
+  MaybeOpenInLazIDE;
+end;
+
 procedure TGraphStatForm.ListViewMouseMove(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
 var
@@ -130,22 +154,103 @@ var
   anItem: TListItem;
   anIndex: Integer;
   AStat: TStat;
+  CurrScreenPoint: TPoint;
 begin
-  anItem := Listview.GetItemAt(X, Y);
-  {$ifdef pocheckerstandalone}
-  if Assigned(anItem) and (Settings.ExternalEditorName <> '') then
-  {$else}
-  if Assigned(anItem) then
-  {$endif}
+  if Button = mbRight then
   begin
-    anIndex := anItem.Index;
-    AStat := FPoFamilyStats.Items[anIndex];
-    {$ifdef pocheckerstandalone}
-    MaybeOpenInExternalEditor(AStat.PoName);
-    {$else}
-    MaybeOpenInLazIDE(AStat.PoName);
-    {$endif}
+    anItem := Listview.GetItemAt(X, Y);
+    if Assigned(anItem) then
+    begin
+      anIndex := anItem.Index;
+      AStat := FPoFamilyStats.Items[anIndex];
+      Fn := AStat.PoName;
+      CurrentMasterPoFile := ExtractMasterNameFromChildName(AStat.PoName);
+      ConfigureContextPopUp(ssShift in Shift);
+      CurrScreenPoint := ListView.ClientToScreen(Point(X, Y));
+      ContextPopupMenu.PopUp(CurrScreenPoint.X, CurrScreenPoint.Y);
+    end;
   end;
+end;
+
+procedure TGraphStatForm.POEditorMenuItemClick(Sender: TObject);
+begin
+  if OpenDocument(Fn) = false then
+    ShowMessage(Format(SOpenFail,[Fn]));
+end;
+
+procedure TGraphStatForm.RefreshAllMenuItemClick(Sender:
+  TObject);
+begin
+  RefreshTranslations(true);
+end;
+
+procedure TGraphStatForm.RefreshCurrMenuItemClick(Sender: TObject);
+begin
+  RefreshTranslations(false);
+end;
+
+procedure TGraphStatForm.RefreshTranslations(All: boolean);
+var
+  i: integer;
+  AbortUpdate: boolean;
+begin
+  //"All" parameter defines if we refresh current family only (false) or all families (true)
+  StatusLabel.Visible := true;
+  RefreshCurrMenuItem.Enabled := false;
+  RefreshAllMenuItem.Enabled := false;
+  try
+    AbortUpdate := false;
+    i := 0;
+    while (i<PoFamilyList.Count) and (AbortUpdate=false) do
+    begin
+      try
+        if All=true then
+          StatusLabel.Caption := Format(sProcessingTranslationFamilyOf, [
+            IntToStr(i), IntToStr(PoFamilyList.Count)])
+        else
+          StatusLabel.Caption := sProcessingTranslationFamily;
+        StatusLabel.Repaint;
+        if All=true then
+        begin
+          UpdatePoFileTranslations(PoFamilyList.Items[i].MasterName);
+          inc(i);
+        end
+        else
+        begin
+          UpdatePoFileTranslations(CurrentMasterPoFile);
+          AbortUpdate := true;
+        end;
+      except
+        on E: EPOFileError do
+          if MessageDlg('POChecker', Format(
+            sCannotWriteFileYouCanPressRetryToRefreshThisTransl, [LineEnding,
+            E.ResFileName, LineEnding, LineEnding]), mtError, [mbRetry, mbAbort
+            ], 0) = mrAbort then
+            AbortUpdate := true;
+      end;
+    end;
+  finally
+    StatusLabel.Visible := false;
+    RefreshCurrMenuItem.Enabled := true;
+    RefreshAllMenuItem.Enabled := true;
+  end;
+end;
+
+procedure TGraphStatForm.ConfigureContextPopUp(AdvancedMode: boolean);
+begin
+  //POEditorMenuItem is always shown, others only in advanced mode
+  Separator1MenuItem.Visible := AdvancedMode;
+  //ExtEditorMenuItem and IDEEditorMenuItem are invisible by default
+  {$ifdef pocheckerstandalone}
+  ExtEditorMenuItem.Visible := AdvancedMode;
+  if Settings.ExternalEditorName <> '' then
+    ExtEditorMenuItem.Enabled := true;
+  {$else}
+  IDEEditorMenuItem.Visible := AdvancedMode;
+  {$endif}
+  Separator2MenuItem.Visible := AdvancedMode;
+  RefreshCurrMenuItem.Visible := AdvancedMode;
+  RefreshAllMenuItem.Visible := AdvancedMode;
 end;
 
 procedure TGraphStatForm.LoadConfig;
@@ -176,9 +281,11 @@ end;
 procedure TGraphStatForm.FormCreate(Sender: TObject);
 begin
   Caption := sGrapStatFormCaption;
-  TranslatedLabel.Caption := sTranslated;
-  UntranslatedLabel.Caption := sUnTranslated;
-  FuzzyLabel.Caption := sFuzzy;
+  POEditorMenuItem.Caption := sOpenFileInSystemPOEditor;
+  ExtEditorMenuItem.Caption := sOpenFileInExternalEditor;
+  IDEEditorMenuItem.Caption := sOpenFileInIDEEditor;
+  RefreshCurrMenuItem.Caption := sRefreshCurrentTranslationFamily;
+  RefreshAllMenuItem.Caption := sRefreshAllTranslationFamilies;
   TranslatedShape.Brush.Color := clTranslated;
   UnTranslatedShape.Brush.Color := clUntranslated;
   FuzzyShape.Brush.Color := clFuzzy;
@@ -196,6 +303,11 @@ procedure TGraphStatForm.FormActivate(Sender: TObject);
 begin
   //Doing this in TGraphStatForm.FormShow results in icons disappearing in Linux GTK2
   //DrawGraphs;
+end;
+
+procedure TGraphStatForm.ExtEditorMenuItemClick(Sender: TObject);
+begin
+  MaybeOpenInExternalEditor;
 end;
 
 procedure TGraphStatForm.FormDestroy(Sender: TObject);
@@ -305,7 +417,7 @@ begin
       Bmp := CreateBitmap(AStat);
       AddToListView(AStat, Bmp);
 
-      //if there are many icns to draw, occasionally update the ListView as visual feedback
+      //if there are many icons to draw, occasionally update the ListView as visual feedback
       if (((Index + 1) mod 25) = 0) then
       begin
         ListView.EndUpdate;
@@ -322,40 +434,36 @@ begin
   end;
 end;
 
-procedure TGraphStatForm.MaybeOpenInExternalEditor(const Fn: String);
+procedure TGraphStatForm.MaybeOpenInExternalEditor;
 {$ifdef POCHECKERSTANDALONE}
 var
   Proc: TProcessUtf8;
 {$endif}
 begin
   {$ifdef POCHECKERSTANDALONE}
-  if MessageDlg('PoChecker',Format(sOpenFileExternal,[Fn,Settings.ExternalEditorName]),
-     mtConfirmation,mbOKCancel,0) = mrOk then
-  begin
-    Proc := TProcessUtf8.Create(nil);
+  Proc := TProcessUtf8.Create(nil);
+  try
+    Proc.Options := [];
+    Proc.Executable := Settings.ExternalEditorName;
+    Proc.Parameters.Add(Fn);
     try
-      Proc.Options := [];
-      Proc.Executable := Settings.ExternalEditorName;
-      Proc.Parameters.Add(Fn);
-      try
-        Proc.Execute;
-      except
-        on E: EProcess do
-        begin
-          debugln('TGraphStatForm.ListViewMouseUp:');
-          debugln('  Exception occurred of type ',E.ClassName);
-          debugln('  Message: ',E.Message);
-          ShowMessage(Format(SOpenFailExternal,[Fn,Settings.ExternalEditorName]));
-        end;
+      Proc.Execute;
+    except
+      on E: EProcess do
+      begin
+        debugln('TGraphStatForm.ListViewMouseUp:');
+        debugln('  Exception occurred of type ',E.ClassName);
+        debugln('  Message: ',E.Message);
+        ShowMessage(Format(SOpenFailExternal,[Fn,Settings.ExternalEditorName]));
       end;
-    finally
-      Proc.Free;
     end;
+  finally
+    Proc.Free;
   end;
   {$endif}
 end;
 
-procedure TGraphStatForm.MaybeOpenInLazIDE(const Fn: String);
+procedure TGraphStatForm.MaybeOpenInLazIDE;
 {$ifndef POCHECKERSTANDALONE}
 var
   mr: TModalResult;
@@ -367,14 +475,11 @@ begin
   PageIndex:= -1;
   WindowIndex:= -1;
   OpenFlags:= [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros];
-  if MessageDlg('PoChecker',Format(sOpenFile,[Fn]), mtConfirmation,mbOKCancel,0) = mrOk then
-  begin
-    mr := LazarusIde.DoOpenEditorFile(Fn,PageIndex,WindowIndex,OpenFlags);
-    if mr = mrOk then
-      ModalResult:= mrOpenEditorFile //To let caller know what we want to do
-    else
-      ShowMessage(Format(SOpenFail,[Fn]));
-  end;
+  mr := LazarusIde.DoOpenEditorFile(Fn,PageIndex,WindowIndex,OpenFlags);
+  if mr = mrOk then
+    ModalResult:= mrOpenEditorFile //To let caller know what we want to do
+  else
+    ShowMessage(Format(SOpenFail,[Fn]));
   {$endif}
 end;
 

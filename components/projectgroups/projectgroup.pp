@@ -1324,7 +1324,7 @@ end;
 function TIDECompileTarget.ProjectAction(AAction: TPGTargetAction;
   StartBuildMode: string): TPGActionResult;
 var
-  F: TProjectBuildFlags;
+  R: TCompileReason;
   i: Integer;
   aMode: TPGBuildMode;
   aProject: TLazProject;
@@ -1361,9 +1361,9 @@ begin
          // save project
          if LazarusIDE.DoSaveProject([])<>mrOk then exit;
 
-         F:=[];
+         R:= crCompile;
          if (AAction=taCompileClean) then
-           Include(F,pbfCleanCompile);
+           R:= crBuild;
          if BuildModeCount>1 then begin
            i:=0;
            if StartBuildMode<>'' then begin
@@ -1383,7 +1383,7 @@ begin
                exit;
              end;
              // compile project in active buildmode
-             if LazarusIDE.DoBuildProject(crCompile,F)<>mrOk then
+             if LazarusIDE.DoBuildProject(R,[])<>mrOk then
                exit;
              if (StartBuildMode<>'') and (AAction<>taCompileFromHere) then
                exit(arOK);
@@ -1391,7 +1391,7 @@ begin
            end;
          end else begin
            // compile default buildmode
-           if LazarusIDE.DoBuildProject(crCompile,F)<>mrOk then
+           if LazarusIDE.DoBuildProject(R,[])<>mrOk then
              exit;
          end;
          Result:=arOK;

@@ -68,11 +68,15 @@ msgid "Unit name: %s"
 msgstr "Modulio pavadinimas: %s"
 
 #: guitestrunner.sactcheckall
-msgid "Check all Tests"
+#, fuzzy
+#| msgid "Check all Tests"
+msgid "Select all tests"
 msgstr "Tikrinti visus testavimus"
 
 #: guitestrunner.sactcheckcurrentsuite
-msgid "Check the Current Suite"
+#, fuzzy
+#| msgid "Check the Current Suite"
+msgid "Select current suite"
 msgstr "Tikrinti veikiamąjį komplektą"
 
 #: guitestrunner.sactcloseform
@@ -80,28 +84,60 @@ msgid "Quit"
 msgstr "Baigti darbą"
 
 #: guitestrunner.sactcloseformh
-msgid "Quit Testting"
+#, fuzzy
+#| msgid "Quit Testting"
+msgid "Quit testing"
 msgstr "Baigti testavimą"
 
+#: guitestrunner.sactcopyalltoclipboard
+msgid "Copy text to clipboard"
+msgstr ""
+
+#: guitestrunner.sactcopyalltoclipboardh
+msgid "Copy the entire text to clipboard"
+msgstr ""
+
 #: guitestrunner.sactrunaction
-msgid "&Run"
+#, fuzzy
+#| msgid "&Run"
+msgid "&Run all"
 msgstr "&Vykdyti"
 
 #: guitestrunner.sactrunactionh
-msgid "Run all checked test(s)"
+#, fuzzy
+#| msgid "Run all checked test(s)"
+msgid "Run all checked tests"
 msgstr "Vykdyti parinktus testavimus"
 
 #: guitestrunner.sactrunhighlightedtest
+#, fuzzy
+#| msgid "Run highlighted test"
 msgctxt "guitestrunner.sactrunhighlightedtest"
-msgid "Run highlighted test"
+msgid "Run selected"
 msgstr "Vykdyti pažymėtus testavimus"
 
+#: guitestrunner.sactrunhighlightedtesth
+msgid "Run selected test"
+msgstr ""
+
+#: guitestrunner.sactsaveresults
+msgid "Save results"
+msgstr ""
+
+#: guitestrunner.sactsaveresultsh
+msgid "Save XML results to file"
+msgstr ""
+
 #: guitestrunner.sactuncheckall
-msgid "Uncheck all tests"
+#, fuzzy
+#| msgid "Uncheck all tests"
+msgid "Deselect all tests"
 msgstr "Naikinti testavimų žymėjimą"
 
 #: guitestrunner.sactuncheckcurrentsuite
-msgid "Uncheck the Current Suite"
+#, fuzzy
+#| msgid "Uncheck the Current Suite"
+msgid "Deselect current suite"
 msgstr "Naikinti žymėjimą veikiamajame komplekte"
 
 #: guitestrunner.sbtnclose
@@ -121,27 +157,17 @@ msgstr "Vykdyti pažymėtus testavimus"
 msgid "FPCUnit - run unit test"
 msgstr "FPCUnit – modulio testavimas"
 
-#: guitestrunner.smicopy
-msgid "&Copy"
-msgstr "&Kopijuoti"
+#: guitestrunner.smiactions
+msgid "Actions"
+msgstr ""
 
-#: guitestrunner.smicopyclipbrd
-msgid "Copy to clipboard"
-msgstr "Kopijuoti į iškarpinę"
+#: guitestrunner.smiedit
+msgid "Edit"
+msgstr ""
 
-#: guitestrunner.smicut
-msgid "C&ut"
-msgstr "Iš&kirpti"
-
-#: guitestrunner.smiruntest
-#, fuzzy
-#| msgid "  &Run all selected (checked) tests"
-msgid "&Run all selected (checked) tests"
-msgstr "  &Vykdyti parinktus testavimus"
-
-#: guitestrunner.smishowfail
-msgid "Copy message to clipboard"
-msgstr "Pranešimą kopijuoti į iškarpinę"
+#: guitestrunner.smitesttree
+msgid "Test tree"
+msgstr ""
 
 #: guitestrunner.stshresults
 msgid "Results XML"

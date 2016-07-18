@@ -1092,7 +1092,7 @@ begin
   // UTF8 handing of chars
   Result := ALogicalPos;
   l := length(ALine);
-  if ACount > 0 then begin;
+  if ACount > 0 then begin
     while (Result < l) and (ACount > 0) do begin
       inc(Result);
       if (ALine[Result] in [#0..#127, #192..#255]) and
@@ -1333,15 +1333,23 @@ end;
 procedure TSynEditStringList.EditLineBreak(LogX, LogY: Integer);
 var
   s: string;
+  Y1, Y2: Integer;
 begin
   IncIsInEditAction;
   if Count = 0 then Add('');
   s := Strings[LogY - 1];
+  Y1 := LogY;
   if LogX - 1 < length(s) then
-    Strings[LogY - 1] := copy(s, 1, LogX - 1);
+    Strings[LogY - 1] := copy(s, 1, LogX - 1)
+  else
+    inc(Y1);
   Insert(LogY, copy(s, LogX, length(s)));
   CurUndoList.AddChange(TSynEditUndoTxtLineBreak.Create(LogY));
-  MarkModified(LogY, LogY + 1);
+  if LogX > 1 then
+    Y2 := LogY + 1
+  else
+    Y2 := Y1;
+  MarkModified(Y1, Y2);
   SendNotification(senrEditAction, self, LogY, 1, LogX, 0, '');
   DecIsInEditAction;
 end;

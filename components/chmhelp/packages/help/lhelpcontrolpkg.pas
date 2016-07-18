@@ -4,6 +4,7 @@
 
 unit lhelpcontrolpkg;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
@@ -19,3 +20,4 @@ end;
 initialization
   RegisterPackage('lhelpcontrolpkg', @Register);
 end.
+

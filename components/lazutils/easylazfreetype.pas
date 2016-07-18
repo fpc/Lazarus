@@ -1,16 +1,24 @@
+{
+ *****************************************************************************
+  This file is part of LazUtils.
+
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
+ *****************************************************************************
+
+  Bug list :
+
+ - Characters parts may not be well translated, for example i with accent.
+ - Encoding is ok for ASCII but is mixed up for extended characters
+
+ to do :
+
+ - multiple font loading
+ - font face cache
+ - font style
+ - text rotation
+}
 unit EasyLazFreeType;
-
-{ bug list :
-
-- Characters parts may not be well translated, for example i with accent.
-- Encoding is ok for ASCII but is mixed up for extended characters
-
-to do :
-
-- multiple font loading
-- font face cache
-- font style
-- text rotation }
 
 {$mode objfpc}{$H+}
 
@@ -139,9 +147,9 @@ type
     constructor Create; virtual; abstract;
     procedure Clear; virtual; abstract;
     procedure BeginUpdate; virtual; abstract;
-    procedure AddFolder(AFolder: string); virtual; abstract;
+    procedure AddFolder(AFolder: string; AIncludeSubdirs: Boolean = false); virtual; abstract;
     procedure RemoveFolder(AFolder: string); virtual; abstract;
-    function AddFile(AFilename: string): boolean; virtual; abstract;
+    function AddFile(AFilename: string): TCustomFontCollectionItem; virtual; abstract;
     function RemoveFile(AFilename: string): boolean; virtual; abstract;
     function AddStream(AStream: TStream; AOwned: boolean): boolean; virtual; abstract;
     procedure EndUpdate; virtual; abstract;
@@ -1756,7 +1764,6 @@ begin
         w := Advance;
     end else
       w := 0;
-    for i := 1 to charlen do
     with result[resultIndex] do
     begin
       x := curX;
@@ -1764,8 +1771,8 @@ begin
       yTop := y+yTopRel;
       yBase := y;
       yBottom := y+yBottomRel;
-      inc(resultIndex);
     end;
+    inc(resultIndex);
     curX += w;
   end;
   with result[resultIndex] do

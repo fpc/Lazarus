@@ -299,7 +299,10 @@ const
   emcStartSelectWords         =  TSynEditorMouseCommand(28);    // Start BlockSelection, wordwise
   emcStartSelectLines         =  TSynEditorMouseCommand(29);    // Start BlockSelection, linewise (but not line mode)
 
-  emcMax = 29;
+  emcOverViewGutterGotoMark   = TSynEditorMouseCommand(30);
+  emcOverViewGutterScrollTo   = TSynEditorMouseCommand(31);
+
+  emcMax = 31;
 
   emcPluginFirstSyncro     = 19000;
   emcPluginFirstMultiCaret = 19010;
@@ -362,7 +365,7 @@ const
 implementation
 
 const
-  SynMouseCommandNames: array [0..28] of TIdentMapEntry = (
+  SynMouseCommandNames: array [0..30] of TIdentMapEntry = (
     (Value: emcNone;                  Name: 'emcNone'),
     (Value: emcStartSelections;       Name: 'emcStartSelections'),
     (Value: emcStartColumnSelections; Name: 'emcStartColumnSelections'),
@@ -400,7 +403,10 @@ const
 
     (Value: emcStartSelectTokens;     Name: 'emcStartSelectTokens'),
     (Value: emcStartSelectWords;      Name: 'emcStartSelectWords'),
-    (Value: emcStartSelectLines;      Name: 'emcStartSelectLines')
+    (Value: emcStartSelectLines;      Name: 'emcStartSelectLines'),
+
+    (Value: emcOverViewGutterGotoMark;Name: 'emcOverViewGutterGotoMark'),
+    (Value: emcOverViewGutterScrollTo;Name: 'emcOverViewGutterScrollTo')
 
   );
 
@@ -461,6 +467,9 @@ begin
     emcStartSelectTokens:     Result := SYNS_emcStartSelectTokens;
     emcStartSelectWords:      Result := SYNS_emcStartSelectWords;
     emcStartSelectLines:      Result := SYNS_emcStartSelectLines;
+
+    emcOverViewGutterGotoMark: Result := SYNS_emcOverViewGutterGotoMark;
+    emcOverViewGutterScrollTo: Result := SYNS_emcOverViewGutterScrollTo;
 
     else begin
       Result := '';

@@ -131,6 +131,7 @@ type
     property Kind: TScrollBarKind read FKind;
     function GetOtherScrollBar: TControlScrollBar;
     property Size: integer read GetSize stored False;
+    function ControlSize: integer; // return for vertical scrollbar the control width
     function ClientSize: integer; // return for vertical scrollbar the clientwidth
     function ClientSizeWithBar: integer; // return for vertical scrollbar the clientwidth with the bar, even if Visible=false
     function ClientSizeWithoutBar: integer; // return for vertical scrollbar the clientwidth without the bar, even if Visible=true
@@ -167,7 +168,6 @@ type
     procedure WMSize(var Message: TLMSize); message LM_Size;
     procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
-    procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
     procedure ComputeScrollbars; virtual;
     procedure SetAutoScroll(Value: Boolean); virtual;
     procedure Loaded; override;
@@ -389,7 +389,7 @@ type
   );
 
   TPopupMode = (
-    pmNone,     // modal: popup to mainform/taskbar window; non-modal: no window parent
+    pmNone,     // modal: popup to active form or if not available, to main form; non-modal: no window parent
     pmAuto,     // modal & non-modal: popup to active form or if not available, to main form
     pmExplicit  // modal & non-modal: popup to PopupParent or if not available, to main form
   );
@@ -659,6 +659,7 @@ type
       write FDefaultMonitor default dmActiveForm;
     property Designer: TIDesigner read FDesigner write FDesigner;
     property DesignTimeDPI: Integer read FDesignTimeDPI write FDesignTimeDPI;
+    property EffectiveShowInTaskBar: TShowInTaskBar read GetEffectiveShowInTaskBar;
     property FormState: TFormState read FFormState;
     property FormStyle: TFormStyle read FFormStyle write SetFormStyle
                                    default fsNormal;
@@ -862,7 +863,8 @@ type
     procedure DoShowWindow; override;
     procedure UpdateRegion;
     procedure SetColor(Value: TColor); override;
-    function UseThemes: Boolean;
+    function UseBGThemes: Boolean;
+    function UseFGThemes: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -882,6 +884,9 @@ type
     class function GetControlClassDefaultSize: TSize; override;
   public
     property OnMouseDown;  // Public access may be needed.
+    property OnMouseUp;
+    property OnMouseMove;
+    property OnMouseLeave;
     property Alignment: TAlignment read FAlignment write FAlignment;
     property HintRect: TRect read FHintRect write FHintRect;
     property HintRectAdjust: TRect read FHintRect write SetHintRectAdjust;
@@ -1338,6 +1343,7 @@ type
     FRestoreStayOnTop: TList;
     FTaskBarBehavior: TTaskBarBehavior;
     FUpdateFormatSettings: Boolean;
+    FRemoveStayOnTopCounter: Integer;
     procedure DoOnIdleEnd;
     function GetActive: boolean;
     function GetCurrentHelpFile: string;
@@ -1724,6 +1730,7 @@ type
 
 function KeysToShiftState(Keys: PtrUInt): TShiftState;
 function KeyDataToShiftState(KeyData: PtrInt): TShiftState;
+function KeyboardStateToShiftState: TShiftState;
 function ShiftStateToKeys(ShiftState: TShiftState): PtrUInt;
 
 function WindowStateToStr(const State: TWindowState): string;
@@ -1739,8 +1746,7 @@ function SaveFocusState: TFocusState;
 procedure RestoreFocusState(FocusState: TFocusState);
 
 type
-  TGetDesignerFormEvent =
-    function(APersistent: TPersistent): TCustomForm of object;
+  TGetDesignerFormEvent = function(APersistent: TPersistent): TCustomForm of object;
   TIsFormDesignFunction = function(AForm: TWinControl): boolean;
 
 var
@@ -1770,8 +1776,7 @@ var
   RequireDerivedFormResource: Boolean = False;
 
 type
-  TMessageBoxFunction =
-    function(Text, Caption : PChar; Flags : Longint) : Integer;
+  TMessageBoxFunction = function(Text, Caption : PChar; Flags : Longint) : Integer;
 var
   MessageBoxFunction: TMessageBoxFunction = nil;
 
@@ -1874,8 +1879,22 @@ begin
   if Keys and MK_MButton <> 0 then Include(Result, ssMiddle);
   if Keys and MK_XBUTTON1 <> 0 then Include(Result, ssExtra1);
   if Keys and MK_XBUTTON2 <> 0 then Include(Result, ssExtra2);
+  if Keys and MK_DOUBLECLICK <> 0 then Include(Result, ssDouble);
+  if Keys and MK_TRIPLECLICK <> 0 then Include(Result, ssTriple);
+  if Keys and MK_QUADCLICK <> 0 then Include(Result, ssQuad);
+
   if GetKeyState(VK_MENU) < 0 then Include(Result, ssAlt);
   if (GetKeyState(VK_LWIN) < 0) or (GetKeyState(VK_RWIN) < 0) then Include(Result, ssMeta);
+end;
+
+function KeyboardStateToShiftState: TShiftState;
+begin
+  Result := [];
+  if GetKeyState(VK_SHIFT) < 0 then Include(Result, ssShift);
+  if GetKeyState(VK_CONTROL) < 0 then Include(Result, ssCtrl);
+  if GetKeyState(VK_MENU) < 0 then Include(Result, ssAlt);
+  if (GetKeyState(VK_LWIN) < 0) or
+     (GetKeyState(VK_RWIN) < 0) then Include(Result, ssMeta);
 end;
 
 function KeyDataToShiftState(KeyData: PtrInt): TShiftState;
@@ -1893,6 +1912,9 @@ begin
   if ssMiddle in ShiftState then Result := Result or MK_MBUTTON;
   if ssExtra1 in ShiftState then Result := Result or MK_XBUTTON1;
   if ssExtra2 in ShiftState then Result := Result or MK_XBUTTON2;
+  if ssDouble in ShiftState then Result := Result or MK_DOUBLECLICK;
+  if ssTriple in ShiftState then Result := Result or MK_TRIPLECLICK;
+  if ssQuad   in ShiftState then Result := Result or MK_QUADCLICK;
 end;
 
 function WindowStateToStr(const State: TWindowState): string;

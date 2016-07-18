@@ -19,3 +19,4 @@ msgstr "&Répertoires avec modèles :"
 #: frmtemplatesettings.stitle
 msgid "Project templates settings"
 msgstr "Paramètres des modèles de projet"
+

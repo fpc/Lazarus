@@ -195,16 +195,24 @@ begin
 end;
 
 procedure TDBEdit.WMSetFocus(var Message: TLMSetFocus);
+var
+  EditOnFocus: Boolean;
 begin
+  // update text before inherited so DoEnter has the new text
+  if not FFocusedDisplay then
+  begin
+    FFocusedDisplay := True;
+    // some widgetsets do not notify clipboard actions properly. Put at edit state at entry
+    EditOnFocus := WidgetSet.GetLCLCapability(lcReceivesLMClearCutCopyPasteReliably) = LCL_CAPABILITY_NO;
+    if EditOnFocus then
+    begin
+      if FDataLink.Edit then
+        RestoreMask(FDataLink.Field.Text);
+    end
+    else
+      FDataLink.Reset;
+  end;
   inherited WMSetFocus(Message);
-  // some widgetsets do not notify clipboard actions properly. Put at edit state at entry
-  if FFocusedDisplay then
-    exit;
-  FFocusedDisplay := true;
-  if WidgetSet.GetLCLCapability(lcReceivesLMClearCutCopyPasteReliably) = LCL_CAPABILITY_YES then
-    FDataLink.Reset
-  else
-    FDataLink.Edit;
 end;
 
 procedure TDBEdit.WMKillFocus(var Message: TLMKillFocus);

@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2015-12-19 15:58+0100\n"
+"PO-Revision-Date: 2016-05-14 09:27+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.7\n"
 
 #: lazdatadeskstr.eoaddterminator
 msgid "Add terminator"
@@ -38,6 +38,10 @@ msgstr "Ignorer les clés étrangères"
 #: lazdatadeskstr.eouseoldinwhereparams
 msgid "Use OLD prefix in where parameters"
 msgstr "Utiliser le préfixe ANCIEN pour les paramètres WHERE"
+
+#: lazdatadeskstr.sabortscript
+msgid "Abort the script"
+msgstr "Interrompre le script"
 
 #: lazdatadeskstr.sclose
 msgid "Close result"
@@ -123,9 +127,29 @@ msgstr "Ignorer les changements"
 msgid "Engine"
 msgstr "Moteur"
 
+#: lazdatadeskstr.serrcommitnotsupported
+msgid "COMMIT Not supported yet"
+msgstr "COMMIT non implémenté à ce jour"
+
+#: lazdatadeskstr.serrinscript
+msgid "Error in SQL script"
+msgstr "Erreur dans le script SQL"
+
+#: lazdatadeskstr.serrinscriptchoice
+msgid ""
+"An error occurred in the SQL script.\n"
+"How would you like to continue ?\n"
+msgstr ""
+"Une erreur est survenue dans le script SQL.\n"
+"Comment souhaitez-vous poursuivre ?\n"
+
 #: lazdatadeskstr.serrnoengine
 msgid "No database engine !"
 msgstr "Aucun moteur de base de données !"
+
+#: lazdatadeskstr.serrorexecutingsql
+msgid "Error executing SQL statement:"
+msgstr "Erreur à l'exécution du script SQL :"
 
 #: lazdatadeskstr.serrselectfields
 msgid "No fields selected. Please select some fields"
@@ -135,6 +159,10 @@ msgstr "Aucun champ sélectionné. Veuillez sélectionner certains champs"
 msgid "No table selected. Please select a table"
 msgstr "Aucune table sélectionnée. Veuillez sélectionner une table"
 
+#: lazdatadeskstr.serrunknowndirective
+msgid "Unknown directive: %s (args: %s)"
+msgstr "Directive inconnue : %s (params : %s)"
+
 #: lazdatadeskstr.serrunknowntype
 msgid "Unknown object type: %d"
 msgstr "Type d'objet inconnu : %d"
@@ -142,6 +170,18 @@ msgstr "Type d'objet inconnu : %d"
 #: lazdatadeskstr.sexecute
 msgid "Execute SQL"
 msgstr "Exécuter SQL"
+
+#: lazdatadeskstr.sexecutingsqlstatement
+msgid "%s : Executing SQL statement:"
+msgstr "%s : Exécution de l'instruction SQL :"
+
+#: lazdatadeskstr.sexecutingsqlstatementcount
+msgid "%s : Executing script SQL statement nr. %d:"
+msgstr "%s : Exécution de l'instruction n° %d du script SQL :"
+
+#: lazdatadeskstr.sexecutiontime
+msgid "Execution time: %s"
+msgstr "Temps d'exécution : %s"
 
 #: lazdatadeskstr.sexport
 msgid "Export data"
@@ -411,9 +451,13 @@ msgctxt "lazdatadeskstr.sld_connections"
 msgid "Connections"
 msgstr "Connexions"
 
+#: lazdatadeskstr.sld_connectionsdictionaries
+msgid "Connections/Dictionaries"
+msgstr "Connexions/Dictionnaires"
+
 #: lazdatadeskstr.sld_connecttoadatabase
-msgid "Connect to a database"
-msgstr "Se connecter à une base de données"
+msgid "Connect to a database of type %s"
+msgstr "Se connecter à une base de données de type %s"
 
 #: lazdatadeskstr.sld_createfulltablecreationsql
 msgid "Create full table creation SQL"
@@ -436,6 +480,10 @@ msgstr "&Supprimer"
 #: lazdatadeskstr.sld_dictionaries
 msgid "Dictionaries"
 msgstr "Dictionnaires"
+
+#: lazdatadeskstr.sld_firststart
+msgid "First start of database desktop"
+msgstr "Premier démarrage du bureau de la base"
 
 #: lazdatadeskstr.sld_fromconnection
 msgid "From connection"
@@ -473,6 +521,10 @@ msgstr "&Champs de clé"
 msgid "Lazarus Database Desktop"
 msgstr "Bureau de base de données Lazarus"
 
+#: lazdatadeskstr.sld_legacyview
+msgid "Legacy List View"
+msgstr "Vue de l'héritage"
+
 #: lazdatadeskstr.sld_linelength
 msgid "Line Length"
 msgstr "Longueur de la ligne"
@@ -504,8 +556,8 @@ msgstr "&OK"
 
 #: lazdatadeskstr.sld_opendatadictionaryfilter
 msgctxt "lazdatadeskstr.sld_opendatadictionaryfilter"
-msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
-msgstr "Fichiers dictionnaires de données | * .fpd | fichiers INI | * .ini | Tous les fichiers |. * *"
+msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
+msgstr "Fichiers dictionnaires de données (ffd)|* .fpd |fichiers INI|* .ini |Tous les fichiers |. * *"
 
 #: lazdatadeskstr.sld_opendatadictionarytitle
 msgid "Open data dictionary"
@@ -535,8 +587,8 @@ msgstr "Dernier utilisé"
 
 #: lazdatadeskstr.sld_savefileasfilter
 msgctxt "lazdatadeskstr.sld_savefileasfilter"
-msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
-msgstr "Fichiers dictionnaires de données | * .fpd | fichiers INI | * .ini | Tous les fichiers |. * *"
+msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
+msgstr "Fichiers dictionnaires de données (ffd)|* .fpd |fichiers INI|* .ini |Tous les fichiers |. * *"
 
 #: lazdatadeskstr.sld_savefileastitle
 msgid "Save file as"
@@ -566,6 +618,22 @@ msgstr "Choisir/Mettre à jour/Insérer des champs"
 msgid "-"
 msgstr "-"
 
+#: lazdatadeskstr.sld_startempty
+msgid "Thanks, I know what to do"
+msgstr "Merci. Je sais quoi faire"
+
+#: lazdatadeskstr.sld_startnewconnection
+msgid "Create new connection"
+msgstr "Créer une nouvelle connexion"
+
+#: lazdatadeskstr.sld_startnewdict
+msgid "Start new dictionary"
+msgstr "Démarrer un nouveau dictionnaire"
+
+#: lazdatadeskstr.sld_succesconnecting
+msgid "Connection established successfully!"
+msgstr "Connexion établie avec succès !"
+
 #: lazdatadeskstr.sld_table
 msgid "Ta&ble"
 msgstr "Ta&ble"
@@ -573,6 +641,14 @@ msgstr "Ta&ble"
 #: lazdatadeskstr.sld_tableandfields
 msgid "Tables and &Fields"
 msgstr "Tables and &Champs"
+
+#: lazdatadeskstr.sld_testconnection
+msgid "Test connection"
+msgstr "Vérifier la connexion"
+
+#: lazdatadeskstr.sld_unknowntype
+msgid "Unknown type"
+msgstr "Type inconnu"
 
 #: lazdatadeskstr.sld_update
 msgid "&Update"
@@ -585,6 +661,10 @@ msgstr "Mettre à jour les tables existantes"
 #: lazdatadeskstr.sld_username
 msgid "Username"
 msgstr "Nom d'utilisateur"
+
+#: lazdatadeskstr.sld_view
+msgid "View"
+msgstr "Vue"
 
 #: lazdatadeskstr.sload
 msgid "Load SQL"
@@ -720,9 +800,29 @@ msgstr "Paramètre"
 msgid "Previous"
 msgstr "Précédent"
 
+#: lazdatadeskstr.sql_noconnectionsfound
+msgid ""
+"No connections or data dictionaries were found.\n"
+" Start by creating a new connection or data dictionary.\n"
+msgstr ""
+"Connexions ou dictionnaires de données introuvables.\n"
+" Commencez par créer une connexion ou un dictionnaire de données.\n"
+
 #: lazdatadeskstr.squery
 msgid "Run query"
 msgstr "Exécuter la requête"
+
+#: lazdatadeskstr.sreadyforsql
+msgid "Ready to execute SQL statements"
+msgstr "Prêt à exécuter des instructions SQL"
+
+#: lazdatadeskstr.srecordsfetched
+msgid "Records fetched: %d"
+msgstr "Enregistrements récupérés : %d"
+
+#: lazdatadeskstr.sretrystatement
+msgid "Retry the statement"
+msgstr "Réessayer le script"
 
 #: lazdatadeskstr.srowsaffected
 msgid "Query executed successfully: %d rows affected."
@@ -736,6 +836,18 @@ msgstr "Enregistrer du code SQL"
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
+#: lazdatadeskstr.sscriptaborted
+msgid "Script was aborted after %d statements"
+msgstr "Le script a été interrompu après %d instructions"
+
+#: lazdatadeskstr.sscriptcompleted
+msgid "Executed %d statements from script"
+msgstr "%d instructions exécutées à partir du script"
+
+#: lazdatadeskstr.sscripterrorcount
+msgid "%d script statements resulted in errors"
+msgstr "%d instructions de script ayant provoqué des erreurs"
+
 #: lazdatadeskstr.sselectdbfdir
 msgid "Select a directory with DBF files"
 msgstr "Choisir un répertoire avec des fichiers DBF"
@@ -748,9 +860,29 @@ msgstr "Objet sélectionné"
 msgid "Sequence"
 msgstr "Séquence"
 
+#: lazdatadeskstr.ssqlerrorcode
+msgid "SQL Error code: %d"
+msgstr "Code d'erreur SQL : %d"
+
+#: lazdatadeskstr.ssqlexecutedok
+msgid "%s : Statement executed succesfully."
+msgstr "%s : instruction exécutée avec succès."
+
 #: lazdatadeskstr.ssqlfilters
 msgid "SQL files|*.sql|All files|*.*"
 msgstr "Fichiers SQL |*.sql|Tous les fichiers|*.*"
+
+#: lazdatadeskstr.ssqlstatus
+msgid "SQL State: %s"
+msgstr "État SQL : %s"
+
+#: lazdatadeskstr.sstopnoerror
+msgid "Continue, ignore all errors"
+msgstr "Continuer en ignorant toutes les erreurs"
+
+#: lazdatadeskstr.sstoponnexterror
+msgid "Continue, stop on the next error"
+msgstr "Continuer et arrêter à la prochaine erreur"
 
 #: lazdatadeskstr.stable
 msgid "Table"

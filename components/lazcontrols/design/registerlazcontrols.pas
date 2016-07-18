@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, ExtendedTabControls, ComponentEditors, ObjInspStrConsts, PropEdits,
-  ComCtrls;
+  ComCtrls, CheckBoxThemed, DividerBevel, ExtendedNotebook, ListFilterEdit,
+  ListViewFilterEdit, LvlGraphCtrl, ShortPathEdit, SpinEx, TreeFilterEdit;
 
 type
 
@@ -25,9 +26,15 @@ procedure Register;
 
 implementation
 
+{$R ../lazcontrols.res}
+
 procedure Register;
 begin
-  RegisterComponents('LazControls',[TExtendedTabControl]);
+  RegisterComponents('LazControls', [TCheckBoxThemed,
+    TDividerBevel, TExtendedNotebook, TListFilterEdit, TListViewFilterEdit,
+    TLvlGraphControl, TShortPathEdit, TSpinEditEx, TFloatSpinEditEx,
+    TTreeFilterEdit, TExtendedTabControl]);
+  //RegisterPropertyEditor(TypeInfo(TCaption), TCheckBoxThemed, 'Caption', TStringMultilinePropertyEditor);
   RegisterNoIcon([TExtendedTabToolbar, TExtendedTabToolButton, TExtendedTabSheet]);
   RegisterComponentEditor(TExtendedTabControl, TExtendedTabControlComponentEditor);
 end;

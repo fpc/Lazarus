@@ -12,6 +12,7 @@ actions/laz_delete.png
 actions/laz_edit.png
 actions/laz_highlighter.png
 actions/laz_open.png
+actions/laz_openunit.png
 actions/laz_refresh.png
 actions/laz_save.png
 actions/laz_set_color_default.png
@@ -77,6 +78,7 @@ menu/menu_redo.png
 menu/menu_reportingbug.png
 menu/menu_reset_debugger.png
 menu/menu_run.png
+menu/menu_run_withoutdebugging.png
 menu/menu_run_cursor.png
 menu/menu_run_file.png
 menu/menu_run_parameters.png

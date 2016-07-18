@@ -36,18 +36,14 @@ fi
 RSTFILES=(
   ". lazarusidestrconsts lazaruside"
   ". debuggerstrconst"
-  "components/lazreport/samples/editor maincalleditor calleditorwithpkg"
-  "doceditor lazdemsg lazde"
-  "examples/lazresexplorer reconstsunit resexplorer"
-  "tools/lazdatadesktop lazdatadeskstr lazdatadesktop"
 )
 
 set -x
 
 for idx in ${!RSTFILES[@]}; do
   LINE=(${RSTFILES[idx]})
-  RSTDIR=${LINE[0]}  
-  RSTFILE=${LINE[1]}  
+  RSTDIR=${LINE[0]}
+  RSTFILE=${LINE[1]}
   POFILE=${LINE[2]:-$RSTFILE}
    
   RST=$(find $RSTDIR -name $RSTFILE.$RSEXT)
@@ -64,4 +60,3 @@ for idx in ${!RSTFILES[@]}; do
 done
 
 exit 0
-

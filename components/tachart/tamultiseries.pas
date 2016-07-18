@@ -16,7 +16,7 @@ interface
 
 uses
   Classes, Graphics,
-  TAChartUtils, TACustomSeries, TADrawUtils, TALegend;
+  TAChartUtils, TATypes, TACustomSeries, TADrawUtils, TALegend;
 
 const
   DEF_BOX_WIDTH = 50;
@@ -185,6 +185,43 @@ type
     property Source;
   end;
 
+  TFieldSeries = class(TBasicPointSeries)
+  private
+    FArrow: TChartArrow;
+    FPen: TPen;
+    procedure SetArrow(AValue: TChartArrow);
+    procedure SetPen(AValue: TPen);
+  protected
+    procedure AfterAdd; override;
+    procedure DrawVector(ADrawer: IChartDrawer; AStartPt, AEndPt: TDoublePoint;
+      APen: TPen);
+    function GetColor(AIndex: Integer): TColor; inline;
+    function GetVectorPoints(AIndex: Integer;
+      out AStartPt, AEndPt: TDoublePoint): Boolean; inline;
+  public
+    procedure Assign(ASource: TPersistent); override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    function AddVector(AX, AY, AVectorX, AVectorY: Double; AXLabel: String = '';
+      AColor: TColor = clTAColor): Integer; //inline;
+    function GetVector(AIndex: Integer): TDoublePoint; inline;
+    procedure SetVector(AIndex: Integer; const AValue: TDoublePoint); inline;
+
+    procedure Draw(ADrawer: IChartDrawer); override;
+    function Extent: TDoubleRect; override;
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
+    function GetNearestPoint(const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; override;
+    procedure NormalizeVectors(ALength: Double);
+
+  published
+    property Arrow: TChartArrow read FArrow write SetArrow;
+    property AxisIndexX;
+    property AxisIndexY;
+    property Pen: TPen read FPen write SetPen;
+    property Source;
+  end;
 
 implementation
 
@@ -215,6 +252,14 @@ type
     FWhiskersWidth: Integer;
   public
     constructor Create(ASeries: TBoxAndWhiskerSeries; const AText: String);
+    procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
+  end;
+
+  TLegendItemField = class(TLegendItemLine)
+  strict private
+    FArrow: TChartArrow;
+  public
+    constructor Create(APen: TPen; AArrow: TChartArrow; const AText: String);
     procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
   end;
 
@@ -338,6 +383,39 @@ begin
   ADrawer.Rectangle(symbol[4]);
   ADrawer.Pen := FMedianPen;
   ADrawer.Line(symbol[5].TopLeft, symbol[5].BottomRight);
+end;
+
+{ TLegendItemField }
+
+constructor TLegendItemField.Create(APen: TPen; AArrow: TChartArrow;
+  const AText: String);
+begin
+  inherited Create(APen, AText);
+  FArrow := AArrow;
+end;
+
+procedure TLegendItemField.Draw(ADrawer: IChartDrawer; const ARect: TRect);
+var
+  y: Integer;
+  len: Double;
+  arr: TChartArrow;
+begin
+  inherited Draw(ADrawer, ARect);
+  if (FPen = nil) or (FArrow = nil) or not FArrow.Visible then
+    exit;
+  len := (ARect.Right - ARect.Left) * 0.01;
+  arr := TChartArrow.Create(nil);
+  try
+    arr.Assign(FArrow);
+    arr.SetOwner(nil);
+    arr.BaseLength := round(FArrow.BaseLength * len);
+    arr.Length := round(FArrow.Length * len);
+    arr.Width := round(FArrow.Width * len);
+    y := (ARect.Top + ARect.Bottom) div 2;
+    arr.Draw(ADrawer, Point(ARect.Right, y), 0, FPen);
+  finally
+    arr.Free;
+  end;
 end;
 
 
@@ -939,9 +1017,244 @@ begin
 end;
 
 
+{ TFieldSeries }
+
+constructor TFieldSeries.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  ListSource.XCount := 2;
+  ListSource.YCount := 2;
+  FArrow := TChartArrow.Create(ParentChart);
+  FArrow.Length := 20;
+  FArrow.Width := 10;
+  FArrow.Visible := true;
+  FPen := TPen.Create;
+  FPen.OnChange := @StyleChanged;
+end;
+
+destructor TFieldSeries.Destroy;
+begin
+  FreeAndNil(FArrow);
+  FreeAndNil(FPen);
+  inherited;
+end;
+
+function TFieldSeries.AddVector(AX, AY, AVectorX, AVectorY: Double;
+  AXLabel: String = ''; AColor: TColor = clTAColor): Integer;
+begin
+  Result := AddXY(AX, AY, AXLabel, AColor);
+  SetVector(Result, DoublePoint(AVectorX, AVectorY));
+end;
+
+procedure TFieldSeries.AfterAdd;
+begin
+  inherited;
+  FArrow.SetOwner(ParentChart);
+end;
+
+procedure TFieldSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TFieldSeries then
+    with TFieldSeries(ASource) do begin
+      Self.FArrow.Assign(FArrow);
+      Self.FPen := FPen;
+    end;
+  inherited Assign(ASource);
+end;
+
+procedure TFieldSeries.Draw(ADrawer: IChartDrawer);
+var
+  ext: TDoubleRect;
+  i: Integer;
+  p1, p2: TDoublePoint;
+  lPen: TPen;
+begin
+  with Extent do begin
+    ext.a := AxisToGraph(a);
+    ext.b := AxisToGraph(b);
+  end;
+  NormalizeRect(ext);
+  // Do not draw anything if the series extent does not intersect CurrentExtent.
+  if not RectIntersectsRect(ext, ParentChart.CurrentExtent) then exit;
+
+  lPen := TPen.Create;
+  lPen.Assign(FPen);
+
+  if (AxisIndexX < 0) and (AxisIndexY < 0) then begin
+    // Optimization: bypass transformations in the default case
+    for i := 0 to Count - 1 do
+      if GetVectorPoints(i, p1, p2) then begin
+        lPen.Color := GetColor(i);
+        DrawVector(ADrawer, p1, p2, lPen);
+      end;
+  end else begin
+    for i := 0 to Count - 1 do
+      if GetVectorPoints(i, p1, p2) then begin
+        p1 := DoublePoint(AxisToGraphX(p1.X), AxisToGraphY(p1.Y));
+        p2 := DoublePoint(AxisToGraphX(p2.X), AxisToGraphY(p2.Y));
+        lPen.Color := GetColor(i);
+        DrawVector(ADrawer, p1, p2, lPen);
+      end;
+  end;
+
+  lPen.Free;
+end;
+
+procedure TFieldSeries.DrawVector(ADrawer: IChartDrawer;
+  AStartPt, AEndPt: TDoublePoint; APen: TPen);
+var
+  p1, p2: TPoint;
+  arr: TChartArrow;
+  len: Double;
+begin
+  p1 := ParentChart.GraphToImage(AStartPt);
+  p2 := ParentChart.GraphToImage(AEndPt);
+  ADrawer.Pen := APen;
+  ADrawer.Line(p1.x, p1.y, p2.x, p2.y);
+  if FArrow.Visible then begin
+    len := sqrt(sqr(p2.x - p1.x) + sqr(p2.y - p1.y)) * 0.01;
+    arr := TChartArrow.Create(nil);
+    arr.Assign(FArrow);
+    arr.SetOwner(nil);  // avoid repainting due to next commands
+    arr.BaseLength := round(FArrow.BaseLength * len);
+    arr.Length := round(FArrow.Length * len);
+    arr.Width := round(FArrow.Width * len);
+    arr.Draw(ADrawer, p2, arctan2(p2.y-p1.y, p2.x-p1.x), APen);
+    arr.Free;
+  end;
+end;
+
+function TFieldSeries.Extent: TDoubleRect;
+var
+  p1, p2: TDoublePoint;
+  i: Integer;
+begin
+  Result := Source.Extent;
+  for i := 0 to Source.Count - 1 do
+    if GetVectorPoints(i, p1, p2) then begin
+      UpdateMinMax(p1.X, Result.a.X, Result.b.X);
+      UpdateMinMax(p2.X, Result.a.X, Result.b.X);
+      UpdateMinMax(p1.Y, Result.a.Y, Result.b.Y);
+      UpdateMinMax(p2.Y, Result.a.Y, Result.b.Y);
+    end;
+end;
+
+function TFieldSeries.GetColor(AIndex: Integer): TColor;
+begin
+  with Source.Item[AIndex]^ do
+    Result := TColor(IfThen(Color = clTAColor, FPen.Color, Color));
+end;
+
+procedure TFieldSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  AItems.Add(TLegendItemField.Create(FPen, FArrow, LegendTextSingle));
+end;
+
+function TFieldSeries.GetNearestPoint(const AParams: TNearestPointParams;
+  out AResults: TNearestPointResults): Boolean;
+var
+  dist, i: Integer;
+  pt1, pt2: TPoint;
+  sp1, sp2: TDoublePoint;
+  R: TRect;
+begin
+  AResults.FDist := Sqr(AParams.FRadius) + 1;
+  AResults.FIndex := -1;
+  for i := 0 to Count - 1 do begin
+    if not GetVectorPoints(i, sp1, sp2) then
+      Continue;
+    // End points of the vector arrow
+    pt1 := ParentChart.GraphToImage(AxisToGraph(sp1));
+    pt2 := ParentChart.GraphToImage(AxisToGraph(sp2));
+    // At first we check if the point is in the rect spanned by the vector.
+    R := Rect(pt1.x, pt1.y, pt2.x, pt2.y);
+    NormalizeRect(R);
+    R.TopLeft := R.TopLeft - Point(AParams.FRadius, AParams.FRadius);
+    R.BottomRight := R.BottomRight + Point(AParams.FRadius, AParams.FRadius);
+    if not IsPointInRect(AParams.FPoint, R) then continue;
+    // Calculate distance of point from line
+    dist := PointLineDist(AParams.FPoint, pt1, pt2);
+    if dist >= AParams.FRadius then continue;
+    AResults.FDist := dist;
+    AResults.FIndex := i;
+    AResults.FImg := (pt1 + pt2) div 2;
+    AResults.FValue := Source.Item[i]^.Point;
+    break;
+  end;
+  Result := AResults.FIndex >= 0;
+end;
+
+function TFieldSeries.GetVector(AIndex: Integer): TDoublePoint;
+begin
+  with Source.Item[AIndex]^ do
+    Result := DoublePoint(XList[0], YList[0]);
+end;
+
+function TFieldSeries.GetVectorPoints(AIndex: Integer;
+  out AStartPt, AEndPt: TDoublePoint): Boolean;
+var
+  dx, dy: Double;
+begin
+  with Source.Item[AIndex]^ do begin
+    if isNaN(X) or IsNaN(Y) or IsNaN(XList[0]) or IsNaN(YList[0]) then
+      exit(false)
+    else begin
+      dx := XList[0] * 0.5;
+      dy := YList[0] * 0.5;
+      AStartPt := DoublePoint(X - dx, Y - dy);
+      AEndPt := DoublePoint(X + dx, Y + dy);
+      Result := true;
+    end;
+  end;
+end;
+
+procedure TFieldSeries.NormalizeVectors(ALength: Double);
+var
+  factor, maxlen, len: Double;
+  i: Integer;
+  v: TDoublePoint;
+begin
+  maxLen := 0;
+  for i := 0 to Count - 1 do begin
+    v := GetVector(i);
+    len := v.x * v.x + v.y * v.y;
+    len := sqrt(v.x*v.x + v.y*v.y);
+//    len := sqrt(sqr(v.x) + sqr(v.y));
+    maxLen := Max(len, maxlen);
+  end;
+  if maxLen = 0 then
+    exit;
+  factor := ALength / maxLen;
+  for i := 0 to Count - 1 do begin
+    v := GetVector(i);
+    SetVector(i, v*factor);
+  end;
+end;
+
+procedure TFieldSeries.SetArrow(AValue: TChartArrow);
+begin
+  FArrow.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TFieldSeries.SetPen(AValue: TPen);
+begin
+  FPen.Assign(AValue);
+end;
+
+procedure TFieldSeries.SetVector(AIndex: Integer; const AValue: TDoublePoint);
+begin
+  with ListSource.Item[AIndex]^ do begin
+    XList[0] := AValue.X;
+    YList[0] := AValue.Y;
+  end;
+end;
+
+
 initialization
   RegisterSeriesClass(TBubbleSeries, @rsBubbleSeries);
   RegisterSeriesClass(TBoxAndWhiskerSeries, @rsBoxAndWhiskerSeries);
   RegisterSeriesClass(TOpenHighLowCloseSeries, @rsOpenHighLowCloseSeries);
+  RegisterSeriesClass(TFieldSeries, @rsFieldSeries);
 
 end.

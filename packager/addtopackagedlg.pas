@@ -30,13 +30,18 @@ unit AddToPackageDlg;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Buttons, ExtDlgs,
-  StdCtrls, ExtCtrls, Dialogs, ComCtrls, ButtonPanel, AVL_Tree, FileUtil, LazFileUtils,
+  Math, Classes, SysUtils, AVL_Tree,
+  // LCL
+  LCLProc, LCLType, Forms, Controls, Buttons, ExtDlgs, StdCtrls, ExtCtrls,
+  Dialogs, ComCtrls, ButtonPanel,
+  ListFilterEdit,
+  // LazUtils
+  FileUtil, LazFileUtils,
   // IDEIntf
-  NewItemIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, IDEDialogs,
+  NewItemIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, ComponentReg, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, InputHistory, IDEDefs, IDEProcs, EnvironmentOpts,
-  PackageSystem, PackageDefs, ComponentReg, AddDirToPkgDlg;
+  LazarusIDEStrConsts, InputHistory, IDEDefs, EnvironmentOpts,
+  PackageSystem, PackageDefs, AddDirToPkgDlg;
   
 type
   TAddToPkgType = (
@@ -98,13 +103,14 @@ type
     DependMaxVersionLabel: TLabel;
     DependMinVersionEdit: TEdit;
     DependMinVersionLabel: TLabel;
-    DependPkgNameComboBox: TComboBox;
     DependPkgNameLabel: TLabel;
     FilesDeleteButton: TBitBtn;
     FilesDirButton: TBitBtn;
     FilesListView: TListView;
     FilesShortenButton: TBitBtn;
     LabelIconInfo: TLabel;
+    DependPkgNameListBox: TListBox;
+    DependPkgNameFilter: TListFilterEdit;
     NewComponentPage: TTabSheet;
     NewDepPanel: TPanel;
     NewRequirementPage: TTabSheet;
@@ -123,7 +129,7 @@ type
     procedure ComponentUnitFileBrowseButtonClick(Sender: TObject);
     procedure ComponentUnitFileShortenButtonClick(Sender: TObject);
     procedure ComponentUnitNameEditChange(Sender: TObject);
-    procedure DependPkgNameComboBoxChange(Sender: TObject);
+    procedure DependPkgNameListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure FilesAddButtonClick(Sender: TObject);
     procedure FilesDeleteButtonClick(Sender: TObject);
     procedure FilesDirButtonClick(Sender: TObject);
@@ -584,7 +590,7 @@ begin
   CheckNewCompOk;
 end;
 
-procedure TAddToPackageDlg.DependPkgNameComboBoxChange(Sender: TObject);
+procedure TAddToPackageDlg.DependPkgNameListBoxSelectionChange(Sender: TObject; User: boolean);
 begin
   CheckNewReqOk;
 end;
@@ -926,14 +932,13 @@ begin
       NewDependency.Flags:=NewDependency.Flags+[pdfMaxVersion];
     end;
     
-    NewDependency.PackageName:=DependPkgNameComboBox.Text;
-    if CheckAddingDependency(LazPackage,NewDependency,false,true)<>mrOk then exit;
+    NewDependency.PackageName:=DependPkgNameListBox.Items[DependPkgNameListBox.ItemIndex];
+    ModalResult:=CheckAddingDependency(LazPackage,NewDependency,false,true);
+    if ModalResult<>mrOk then exit;
 
     // ok
     Params.Dependency:=NewDependency;
     NewDependency:=nil;
-
-    ModalResult:=mrOk;
   finally
     NewDependency.Free;
   end;
@@ -982,7 +987,7 @@ end;
 
 function TAddToPackageDlg.CheckNewReqOk: Boolean;
 begin
-  Result:=(DependPkgNameComboBox.Text<>'');
+  Result:=DependPkgNameListBox.ItemIndex>-1;
   ButtonPanel1.OKButton.Enabled:=Result;
 end;
 
@@ -1054,7 +1059,6 @@ end;
 procedure TAddToPackageDlg.SetupAddDependencyPage;
 begin
   DependPkgNameLabel.Caption:=lisProjAddPackageName;
-  DependPkgNameComboBox.Text:='';
   DependMinVersionLabel.Caption:=lisProjAddMinimumVersionOptional;
   DependMinVersionEdit.Text:='';
   DependMaxVersionLabel.Caption:=lisProjAddMaximumVersionOptional;
@@ -1297,7 +1301,8 @@ begin
       sl.Add(PkgName);
     ANode:=fPackages.FindSuccessor(ANode);
   end;
-  DependPkgNameComboBox.Items.Assign(sl);
+  DependPkgNameFilter.Items.Assign(sl);
+  DependPkgNameFilter.InvalidateFilter;
   sl.Free;
 end;
 

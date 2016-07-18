@@ -99,6 +99,10 @@ const
   FONTSIZESVALUSARRAY : array[0..6] of integer = (8,10,12,14,18,24,36);
   MAXWORDS = 65536;
 
+  ZOOM_TO_FIT = 0;
+  ZOOM_TO_FIT_WIDTH = -1;
+  ZOOM_TO_FIT_HEIGHT = -2;
+
 type
   {$IFDEF IP_LAZARUS}
   TIpEnumItemsMethod = TLCLEnumItemsMethod;
@@ -1711,6 +1715,8 @@ type
     property Align : TIpHtmlVAlignment2 read FAlign write FAlign;
   end;
 
+  TIpHtmlRenderDevice = (rdScreen, rdPrinter, rdPreview);
+
   TWriteCharProvider = procedure(C : AnsiChar) of object;
 
   TIpHtmlDataGetImageEvent =
@@ -1780,6 +1786,7 @@ type
     FCanPaint : Boolean;
     FMarginHeight: Integer;
     FMarginWidth: Integer;
+    FRenderDev: TIpHtmlRenderDevice;
     {$IFDEF IP_LAZARUS}
     FCSS: TCSSGlobalProps;
     FDocCharset: string;
@@ -1800,8 +1807,10 @@ type
     TokenBuffer : TIpHtmlToken;
     FPageRect : TRect;
     HaveToken : Boolean;
-    FPageViewRect : TRect; {the current section of the page}
     FClientRect : TRect;   {the coordinates of the paint rectangle}
+    FPageViewRect : TRect; {the current section of the page}
+    FPageViewBottom : Integer; {the lower end of the page, may be different from PageViewRect.Bottom }
+    FPageViewTop: Integer; { the upper end of the page }
     DefaultProps : TIpHtmlProps;
     Body : TIpHtmlNodeBODY;
     FTitleNode : TIpHtmlNodeTITLE;
@@ -2066,7 +2075,10 @@ type
     procedure AddRect(const R: TRect; AElement: PIpHtmlElement; ABlock: TIpHtmlNodeBlock);
     procedure LoadFromStream(S : TStream);
     procedure Render(TargetCanvas: TCanvas; TargetPageRect : TRect;
-      UsePaintBuffer: Boolean; const TopLeft: TPoint);
+      UsePaintBuffer: Boolean; const TopLeft: TPoint); overload;
+    procedure Render(TargetCanvas: TCanvas; TargetPageRect: TRect;
+      APageTop, APageBottom: Integer; UsePaintBuffer: Boolean;
+      const TopLeft: TPoint); overload;
     {$IFDEF IP_LAZARUS_DBG}
     procedure DebugChild(Node: TIpHtmlNode; const UserData: Pointer);
     procedure DebugAll;
@@ -2085,12 +2097,15 @@ type
     property TitleNode : TIpHtmlNodeTITLE read FTitleNode;
     property PageHeight : Integer read FPageHeight;
     property PageViewRect : TRect read FPageViewRect;
+    property PageViewBottom: Integer read FPageViewBottom;
+    property PageViewTop: Integer read FPageViewTop;
     property ClientRect : TRect read FClientRect;
     property ControlsCount: integer read getControlCount;
     property Controls[i:integer]: TIpHtmlNode read getControl;
     property FrameSet : TIpHtmlNodeFRAMESET read FCurFrameSet;
     property FactBAParag: Real read FFactBAParag write FFactBAParag;
     property MouseLastPoint : TPoint read FMouseLastPoint;
+    property RenderDevice: TIpHtmlRenderDevice read FRenderDev;
   end;
 
   {$IFNDEF IP_LAZARUS}
@@ -2235,6 +2250,7 @@ type
     PrintWidth, PrintHeight: Integer;
     PrintTopLeft: TPoint;
     PageCount: Integer;
+    function PreviewAntiAliasingMode: TAntiAliasingMode;
     {$ENDIF}
     procedure InvalidateSize;
     property Hyper : TIpHtml read FHyper write SetHtml;
@@ -2325,7 +2341,7 @@ type
     function HaveSelection: Boolean;
     function FindFrame(const FrameName: string): TIpHtmlFrame;
     procedure MakeAnchorVisible(const URL: string);
-    procedure Scroll(Action: TIpScrollAction);
+    function Scroll(Action: TIpScrollAction; ADistance: Integer = 100): Boolean;
     procedure Home;
     function IsExternal(const URL: string): Boolean;
     procedure SetHtml(NewHtml : TIpHtml);
@@ -2333,6 +2349,7 @@ type
     function getFrame(i: integer): TIpHtmlFrame;
     procedure InternalFreeFrames;
     procedure InternalCreateFrames;
+    procedure RemoveDataProvider;
   public
     constructor Create(Viewer: TIpHtmlCustomPanel; Parent: TCustomPanel;
       DataProvider : TIpAbstractHtmlDataProvider; FlagErrors, NoScroll: Boolean;
@@ -2393,19 +2410,53 @@ type
   TIpHtmlControlEvent2 = procedure(Sender: TIpHtmlCustomPanel;
     Frame: TIpHtmlFrame; Html: TIpHtml; Node: TIpHtmlNodeControl; var cancel: boolean) of object;
 
+  TIpHtmlPreviewSettings = class(TPersistent)
+  private
+    FAntiAliasingMode: TAntiAliasingMode;
+    FPosition: TPosition;
+    FMaximized: Boolean;
+    FLeft: Integer;
+    FTop: Integer;
+    FWidth: Integer;
+    FHeight: Integer;
+    FZoom: Integer;
+  public
+    constructor Create;
+  published
+    property AntiAliasingMode: TAntiAliasingMode
+      read FAntiAliasingMode write FAntiAliasingMode default amDontCare;
+    property Position: TPosition
+      read FPosition write FPosition default poScreenCenter;
+    property Maximized: Boolean
+      read FMaximized write FMaximized default false;
+    property Left: Integer
+      read FLeft write FLeft;
+    property Top: Integer
+      read FTop write FTop;
+    property Width: Integer
+      read FWidth write FWidth;
+    property Height: Integer
+      read FHeight write FHeight;
+    property Zoom: integer
+      read FZoom write FZoom default 100;
+  end;
+
   TIpHtmlPrintSettings = class(TPersistent)
   private
+    FPreview: TIpHtmlPreviewSettings;
     FMarginTop: Double;
     FMarginLeft: Double;
     FMarginBottom: Double;
     FMarginRight: Double;
   public
     constructor Create;
+    destructor Destroy; override;
   published
     property MarginLeft: Double read FMarginLeft write FMarginLeft;
     property MarginTop: Double read FMarginTop write FMarginTop;
     property MarginRight: Double read FMarginRight write FMarginRight;
     property MarginBottom: Double read FMarginBottom write FMarginBottom;
+    property Preview: TIpHtmlPreviewSettings read FPreview write FPreview;
   end;
 
   { TIpHtmlCustomPanel }
@@ -2426,6 +2477,7 @@ type
     FPrintSettings: TIpHtmlPrintSettings;
     FFactBAParag: Real;
     FWantTabs: Boolean;
+    FScrollDist: Integer;
     procedure SetDataProvider(const AValue: TIpAbstractHtmlDataProvider);
     procedure SetFactBAParag(const Value: Real);
     function FactBAParagNotIs1: Boolean;
@@ -2512,7 +2564,7 @@ type
     procedure MouseWheelHandler(Var Message: TMessage); Override;
     {$ENDIF}
     procedure OpenURL(const URL: string);
-    procedure Scroll(Action: TIpScrollAction);
+    function Scroll(Action: TIpScrollAction; ADistance: Integer = 100): Boolean;
     procedure SelectAll;
     procedure DeselectAll;
     procedure SetHtml(NewHtml : TIpHtml);
@@ -2541,6 +2593,7 @@ type
     property MarginHeight: Integer read FMarginHeight write FMarginHeight default 10;
     property MarginWidth: Integer read FMarginWidth write FMarginWidth default 10;
     property PrintSettings: TIpHtmlPrintSettings read FPrintSettings write FPrintSettings;
+    property ScrollDist: Integer read FScrollDist write FScrollDist default 100;
     property ShowHints: Boolean read FShowHints write FShowHints default True;
     property TextColor: TColor read FTextColor write FTextColor default clBlack;
     property Title: string read GetTitle;
@@ -2587,6 +2640,7 @@ type
     property PrintSettings;
     property MarginHeight;
     property MarginWidth;
+    property ScrollDist;
     property ShowHints;
     property TabOrder;
     property TabStop;
@@ -2656,6 +2710,8 @@ type
     property FlagErrors;
   end;
 
+  TIdFindNodeCriteria = function(ACurrNode: TIpHtmlNodeCore; const AParamStr: string): Boolean;
+
 const
   NAnchorChar = #3 ; {character used to represent an Anchor }
 var
@@ -2683,6 +2739,9 @@ function dbgs(et: TElementType): string; overload;
 function GetNextSiblingNode(ANode: TIpHtmlNode): TIpHtmlNode;
 function GetPrevSiblingNode(ANode: TIpHtmlNode): TIpHtmlNode;
 function GetParentNodeOfClass(ANode: TIpHtmlNode; AClass: TIpHtmlNodeClass): TIpHtmlNode;
+function FindNode(ANode: TIpHtmlNode; ACriteria: TIdFindNodeCriteria; const AParamStr: string): TIpHtmlNodeCore;
+function FindNodeByElemId(ANode: TIpHtmlNode; const AElemId: string): TIpHtmlNodeCore;
+function FindNodeByElemClass(ANode: TIpHtmlNode; const AElemClass: string): TIpHtmlNodeCore;
 
 procedure Register;
 
@@ -2876,6 +2935,56 @@ begin
     Result := Result.FParentNode;
 end;
 
+function FindNode(ANode: TIpHtmlNode; ACriteria: TIdFindNodeCriteria; const AParamStr: string): TIpHtmlNodeCore;
+var
+  I: Integer;
+  VNode: TIpHtmlNodeMulti;
+  VPrevNode, VNextNode: TIpHtmlNode;
+begin
+  if not Assigned(ANode) or not (ANode is TIpHtmlNodeMulti) then
+    Exit(nil);
+  VNode := ANode as TIpHtmlNodeMulti;
+  if VNode.ChildCount < 1 then
+    Exit(nil);
+  for I := 0 to Pred(VNode.ChildCount) do
+  begin
+    VPrevNode := VNode.ChildNode[I];
+    VNextNode := FindNode(VPrevNode, ACriteria, AParamStr);
+    if not Assigned(VNextNode) then
+      VNextNode := VPrevNode;
+    if VNextNode is TIpHtmlNodeCore then
+    begin
+      Result := VNextNode as TIpHtmlNodeCore;
+      if ACriteria(Result, AParamStr) then
+        Exit;
+    end;
+  end;
+  Result := nil;
+end;
+
+function Criteria_FindNodeByElemId(ACurrNode: TIpHtmlNodeCore; const AParamStr: string): Boolean;
+begin
+  if ACurrNode.Id = AParamStr then
+    Exit(True);
+  Result := False;
+end;
+
+function FindNodeByElemId(ANode: TIpHtmlNode; const AElemId: string): TIpHtmlNodeCore;
+begin
+  Result := FindNode(ANode, Criteria_FindNodeByElemId, AElemId);
+end;
+
+function Criteria_FindNodeByElemClass(ACurrNode: TIpHtmlNodeCore; const AParamStr: string): Boolean;
+begin
+  if ACurrNode.ClassId = AParamStr then
+    Exit(True);
+  Result := False;
+end;
+
+function FindNodeByElemClass(ANode: TIpHtmlNode; const AElemClass: string): TIpHtmlNodeCore;
+begin
+  Result := FindNode(ANode, Criteria_FindNodeByElemClass, AElemClass);
+end;
 
 procedure Register;
 begin
@@ -7865,12 +7974,12 @@ end;
 
 function TIpHtml.getControlCount:integer;
 begin
-     result := FControlList.Count;
+  result := FControlList.Count;
 end;
 
 function TIpHtml.getControl(i:integer):TIpHtmlNode;
 begin
-     result := FControlList[i];
+  result := FControlList[i];
 end;
 
 procedure TIpHtml.PaintSelection;
@@ -8016,8 +8125,15 @@ begin
 end;
 {$ENDIF}
 
-procedure TIpHtml.Render(TargetCanvas: TCanvas; TargetPageRect : TRect;
+procedure TIpHtml.Render(TargetCanvas: TCanvas; TargetPageRect: TRect;
   UsePaintBuffer: Boolean; const TopLeft: TPoint);
+begin
+  Render(TargetCanvas, TargetPageRect, TargetPageRect.Top, TargetPageRect.Bottom,
+    UsePaintBuffer, TopLeft);
+end;
+
+procedure TIpHtml.Render(TargetCanvas: TCanvas; TargetPageRect: TRect;
+  APageTop, APageBottom: Integer; UsePaintBuffer: Boolean; const TopLeft: TPoint);
 var
   i : Integer;
 begin
@@ -8048,10 +8164,17 @@ begin
         if Painters <> nil then
           PaintStop;
  {$ENDIF}
-  for i := 0 to Pred(FControlList.Count) do
+
+ for i := 0 to Pred(FControlList.Count) do
     TIpHtmlNode(FControlList[i]).UnmarkControl;
   SetDefaultProps;
   FPageViewRect := TargetPageRect;
+  { Note: In Preview mode the page is tiled of "mini-pages" sized PageViewRect.
+    The lower end of the "real" page is given by PageViewBottom. We set here
+    its default. The value needed for the preview will be set there. }
+  FPageViewBottom := APageBottom;
+  FPageViewTop := APageTop;
+
   if UsePaintBuffer then begin
     if (PaintBuffer = nil)
     or (PaintBufferBitmap.Width <> FClientRect.Right)
@@ -11344,19 +11467,19 @@ var
 
   procedure setCommonProperties;
   begin
-      FControl.Visible := False;
-      FControl.Parent := Parent;
-      adjustFromCss;
-      aCanvas.Font.Size := FControl.Font.Size;
+    FControl.Parent := Parent;
+    FControl.Visible := False;
+    AdjustFromCss;
+    aCanvas.Font.Size := FControl.Font.Size;
   end;
 
-  procedure setWidhtHeight(iSize, iTopPlus, iSidePlus: integer);
+  procedure SetWidthHeight(iSize, iTopPlus, iSidePlus: integer);
   begin
-        if iSize <> -1 then
-          FControl.Width := iSize * aCanvas.TextWidth('0') + iSidePlus
-        else
-          FControl.Width := 20 * aCanvas.TextWidth('0')  + iSidePlus;
-        FControl.Height := aCanvas.TextHeight('Wy') + iTopPlus;
+    if iSize <> -1 then
+      FControl.Width := iSize * aCanvas.TextWidth('0') + iSidePlus
+    else
+      FControl.Width := 20 * aCanvas.TextWidth('0')  + iSidePlus;
+    FControl.Height := aCanvas.TextHeight('Wy') + iTopPlus;
   end;
 
 begin
@@ -11369,9 +11492,10 @@ begin
       FControl := TEdit.Create(Parent);
       setCommonProperties;
       with TEdit(FControl) do begin
+        Color := Brush.Color;
         Text := Value;
         MaxLength := Self.MaxLength;
-        setWidhtHeight(Self.Size, 8, 0);
+        SetWidthHeight(Self.Size, 8, 0);
         Enabled := not Self.Disabled;
         ReadOnly := Self.ReadOnly;
         OnChange := ButtonClick;
@@ -11383,9 +11507,10 @@ begin
       FControl := TEdit.Create(Parent);
       setCommonProperties;
       with TEdit(FControl) do begin
+        Color := Brush.Color;
         Text := Value;
         MaxLength := Self.MaxLength;
-        setWidhtHeight(1, 8, 0);
+        SetWidthHeight(Self.Size, 8, 0);
         Enabled := not Self.Disabled;
         ReadOnly := Self.ReadOnly;
         PasswordChar := '*';
@@ -11398,7 +11523,8 @@ begin
       FControl := TCheckBox.Create(Parent);
       setCommonProperties;
       with TCheckBox(FControl) do begin
-        setWidhtHeight(1, 8, 0);
+        Color := Brush.Color;
+        SetWidthHeight(1, 8, 0);
         Checked := Self.Checked;
         Enabled := not Self.Disabled and not Self.Readonly;
         OnClick := ButtonClick;
@@ -11419,7 +11545,8 @@ begin
 {$ELSE}
       with THtmlRadioButton(FControl) do begin
 {$ENDIF}
-        setWidhtHeight(1, 8, 0);
+        Color := Brush.Color;
+        SetWidthHeight(1, 8, 0);
         Checked := Self.Checked;
         Enabled := not Self.Disabled and not Self.Readonly;
         OnClick := ButtonClick;
@@ -11435,6 +11562,7 @@ begin
           Caption := Self.Value
         else
           Caption := SHtmlDefSubmitCaption;
+        Color := Brush.Color;
         Width := aCanvas.TextWidth(Caption) + 40;
         Height := aCanvas.TextHeight(Caption) + 10;
         Enabled := not Self.Disabled and not Self.Readonly;
@@ -11450,6 +11578,7 @@ begin
           Caption := Self.Value
         else
           Caption := SHtmlDefResetCaption;
+        Color := Brush.Color;
         Width := aCanvas.TextWidth(Caption) + 40;
         Height := aCanvas.TextHeight(Caption) + 10;
         Enabled := not Self.Disabled and not Self.Readonly;
@@ -11481,6 +11610,7 @@ begin
       FFileEdit := TEdit.Create(Parent);
       with FFileEdit do begin
         Parent := FControl;
+        Color := Brush.Color;
         Left := 1;
         Top := 1;
         Width := FControl.Width - FFileSelect.Width;
@@ -11535,18 +11665,10 @@ begin
   end;
 }
   inherited;
-{$IFDEF VERSION3ONLY}
-  if FControl is TRadioButton then begin
-{$ELSE}
-  if FControl is THtmlRadioButton then begin
-{$ENDIF}
-    if Props.BgColor <> -1 then
-{$IFDEF VERSION3ONLY}
-      TRadioButton(FControl).Color := Props.BgColor;
-{$ELSE}
-      THtmlRadioButton(FControl).Color := Props.BgColor;
-{$ENDIF}
-  end;
+  if (Props.BgColor <> -1) and (
+    (FControl is {$IFDEF VERSION3ONLY}TRadioButton{$ELSE}THtmlRadioButton{$ENDIF}) or
+    (FControl is TCustomEdit)) then
+    FControl.Color := Props.BgColor;
 end;
 
 procedure TIpHtmlNodeINPUT.ImageChange(NewPicture: TPicture);
@@ -11684,6 +11806,7 @@ constructor TIpHtmlNodeINPUT.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
   FElementName := 'input';
+  Props.BgColor := clWhite;
 end;
 
 destructor TIpHtmlNodeINPUT.Destroy;
@@ -13162,22 +13285,22 @@ begin
   end
   else if key = VK_UP then // up
   begin
-    TIpHtmlCustomPanel(Owner).Scroll(hsaUp);
+    TIpHtmlCustomPanel(Owner).Scroll(hsaUp, TIpHtmlCustomPanel(Owner).ScrollDist);
     Key := 0
   end
   else if key = VK_DOWN then // down
   begin
-    TIpHtmlCustomPanel(Owner).Scroll(hsaDown);
+    TIpHtmlCustomPanel(Owner).Scroll(hsaDown, TIpHtmlCustomPanel(Owner).ScrollDist);
     Key := 0
   end
   else if key = VK_LEFT then // left
   begin
-    TIpHtmlCustomPanel(Owner).Scroll(hsaLeft);
+    TIpHtmlCustomPanel(Owner).Scroll(hsaLeft, TIpHtmlCustomPanel(Owner).ScrollDist);
     Key := 0
   end
   else if key = VK_RIGHT then // right
   begin
-    TIpHtmlCustomPanel(Owner).Scroll(hsaRight);
+    TIpHtmlCustomPanel(Owner).Scroll(hsaRight, TIpHtmlCustomPanel(Owner).ScrollDist);
     Key := 0
   end
   else if key = VK_HOME then // home
@@ -13237,21 +13360,25 @@ end;
 
 procedure TIpHtmlInternalPanel.Paint;
 var
-  CR : TRect;
+  CR: TRect;
 begin
   CR := GetClientRect;
-  if not ScaleBitmaps {printing}
-  and (Hyper <> nil) then begin
+  if not ScaleBitmaps {printing} and (Hyper <> nil) then
+  begin
     // update layout
     GetPageRect;
     // render
     Hyper.Render(Canvas,
       Rect(
         ViewLeft, ViewTop,
-          ViewLeft + (CR.Right - CR.Left),
-          ViewTop + (CR.Bottom - CR.Top)),
-          True,
-          Point(0, 0))
+        ViewLeft + (CR.Right - CR.Left),
+        ViewTop + (CR.Bottom - CR.Top)
+      ),
+      ViewTop,
+      ViewTop + (CR.Bottom - CR.Top),
+      True,
+      Point(0, 0)
+    )
   end
   else
     Canvas.FillRect(CR);
@@ -13263,6 +13390,11 @@ begin
 end;
 
 {$IFDEF Html_Print}
+function TIpHtmlInternalPanel.PreviewAntiAliasingMode: TAntiAliasingMode;
+begin
+  Result := HTMLPanel.PrintSettings.Preview.AntiAliasingMode;
+end;
+
 procedure TIpHtmlInternalPanel.BeginPrint;
 begin
   if InPrint = 0 then begin
@@ -13355,8 +13487,10 @@ procedure TIpHtmlInternalPanel.PrintPages(FromPage, ToPage: Integer);
 var
   CR : TRect;
   i : Integer;
+  oldRD: TIpHtmlRenderDevice;
 begin
   if (Hyper <> nil) then begin
+    oldRD := Hyper.RenderDevice;
     Printer.Refresh;
     BeginPrint;
     Printer.BeginDoc;
@@ -13365,6 +13499,7 @@ begin
       for i := FromPage to ToPage do begin
         CR.Top := (i - 1) * PrintHeight;
         CR.Bottom := Cr.Top + PrintHeight;
+        Hyper.FRenderDev := rdPrinter;
         Hyper.Render(Printer.Canvas, CR, False, PrintTopLeft);
         if i < ToPage then
           Printer.NewPage;
@@ -13376,25 +13511,58 @@ begin
       else
         Printer.Abort;
       EndPrint;
+      Hyper.FRenderDev := oldRD;
     end;
   end;
 end;
 
 procedure TIpHtmlInternalPanel.PrintPreview;
+var
+  preview: TIpHtmlPreview;
+  p: TPosition;
+  oldRD: TIpHtmlRenderDevice;
 begin
   if (Hyper <> nil) then begin
+    oldRD := Hyper.RenderDevice;
     BeginPrint;
     try
 
-      with TIpHTMLPreview.Create(Application) do
+      preview := TIpHTMLPreview.Create(Application);
+      with preview do
         try
+          p := HTMLPanel.PrintSettings.Preview.Position;
+          if not (p in [poDefault, poDefaultSizeOnly]) then begin
+            Width := HTMLPanel.PrintSettings.Preview.Width;
+            Height := HTMLPanel.PrintSettings.Preview.Height;
+          end;
+          if (p = poDesigned) or (p = poDefaultSizeOnly) then begin
+            Left := HTMLPanel.PrintSettings.Preview.Left;
+            Top := HTMLPanel.PrintSettings.Preview.Top;
+          end;
+          Position := p;
+          if HTMLPanel.PrintSettings.Preview.Maximized then
+            WindowState := wsMaximized else
+            WindowState := wsNormal;
           lblMaxPage.Caption := IntToStr(PageCount);
           FCurPage := 1;
           HTML := Hyper;
           ScaleFonts := True;
           try
             OwnerPanel := Self;
+            Zoom := HTMLPanel.PrintSettings.Preview.Zoom;
+            Hyper.FRenderDev := rdPreview;
             ShowModal;
+            HTMLPanel.PrintSettings.Preview.Maximized := (WindowState = wsMaximized);
+            if (WindowState = wsNormal) then begin
+              if (p = poDesigned) or (p = poDefaultSizeOnly) then begin
+                HTMLPanel.PrintSettings.Preview.Left := Left;
+                HTMLPanel.PrintSettings.Preview.Top := Top;
+              end;
+              if not (p in [poDefault, poDefaultSizeOnly]) then begin
+                HTMLPanel.PrintSettings.Preview.Width := Width;
+                HTMLPanel.PrintSettings.Preview.Height := Height;
+              end;
+            end;
           finally
             ScaleFonts := False;
           end;
@@ -13404,6 +13572,7 @@ begin
 
     finally
       EndPrint;
+      Hyper.FRenderDev := oldRD;
     end;
   end;
 end;
@@ -14473,7 +14642,9 @@ begin
   FViewer.ControlCreate(Self, Sender, Node);
 end;
 
-procedure TIpHtmlFrame.Scroll(Action: TIpScrollAction);
+{ Returns false if view rect was not changed }
+function TIpHtmlFrame.Scroll(Action: TIpScrollAction;
+  ADistance: Integer = 100): Boolean;
 var
   R : TRect;
   H, W : Integer;
@@ -14512,7 +14683,8 @@ begin
     end;
   hsaLeft :
     begin
-      OffsetRect(R, -100, 0);
+      Result := FHtml.FPageViewRect.Left > 0;
+      OffsetRect(R, -ADistance, 0);
       if R.Left < 0 then begin
         R.Left := 0;
         R.Right := R.Left + W;
@@ -14520,7 +14692,8 @@ begin
     end;
   hsaRight :
     begin
-      OffsetRect(R, 100, 0);
+      Result := FHtml.FPageViewRect.Right < FHtml.FPageRect.Right;
+      OffsetRect(R, ADistance, 0);
       if R.Right > FHtml.FPageRect.Right then begin
         R.Bottom := FHtml.FPageRect.Right;
         R.Left := R.Right - W;
@@ -14528,7 +14701,8 @@ begin
     end;
   hsaUp :
     begin
-      OffsetRect(R, 0, -100);
+      Result := FHtml.FPageViewRect.Top > 0;
+      OffsetRect(R, 0, -ADistance);
       if R.Top < 0 then begin
         R.Top := 0;
         R.Bottom := R.Top + H;
@@ -14536,7 +14710,8 @@ begin
     end;
   hsaDown :
     begin
-      OffsetRect(R, 0, 100);
+      Result := FHtml.FPageViewRect.Bottom < FHtml.FPageRect.Bottom;
+      OffsetRect(R, 0, ADistance);
       if R.Bottom > FHtml.FPageRect.Bottom then begin
         R.Bottom := FHtml.FPageRect.Bottom;
         R.Top := R.Bottom - H;
@@ -14556,6 +14731,16 @@ function TIpHtmlFrame.getFrame(i: integer): TIpHtmlFrame;
 begin
      result := FFrames[i];
 end;
+
+procedure TIpHtmlFrame.RemoveDataProvider;
+var
+  i: Integer;
+begin
+  FDataProvider := nil;
+  for i:=0 to High(FFrames) do
+    if FFrames[i] <> nil then FFrames[i].FDataProvider := nil;
+end;
+
 
 { TIpHtmlNvFrame }
 
@@ -14868,6 +15053,7 @@ begin
   FPrintSettings := TIpHtmlPrintSettings.Create;
   FFactBAParag := 1;
   FWantTabs := True;
+  FScrollDist := 100;
 end;
 
 destructor TIpHtmlCustomPanel.Destroy;
@@ -15042,6 +15228,8 @@ begin
   if (Operation = opRemove) then
     if (AComponent = DataProvider) then begin
       DataProvider := nil;
+      if Assigned(FMasterFrame) then
+        FMasterFrame.RemoveDataProvider;
     end;
   inherited Notification(AComponent, Operation);
 end;
@@ -15304,11 +15492,12 @@ begin
     Result := Size(0, 0);
 end;
 
-procedure TIpHtmlCustomPanel.Scroll(Action: TIpScrollAction);
+function TIpHtmlCustomPanel.Scroll(Action: TIpScrollAction;
+  ADistance: Integer = 100): Boolean;
 begin
   if FMasterFrame <> nil then
-    FMasterFrame.Scroll(Action);
-end;                    
+    Result := FMasterFrame.Scroll(Action, ADistance);
+end;
 
 procedure TIpHtmlCustomPanel.WMGetDlgCode(var Msg: TMessage);
 begin
@@ -15773,15 +15962,35 @@ begin
     Result := nil;
 end;
 
+{ TIpHtmlPreviewSettings }
+
+constructor TIpHtmlPreviewSettings.Create;
+begin
+  inherited;
+  FPosition := poScreenCenter;
+  FZoom := 100;
+  FWidth := Screen.Width * 3 div 4;
+  FHeight := Screen.Height * 3 div 4;
+  FLeft := Screen.Width div 4;
+  FTop := Screen.Height div 4;
+end;
+
 { TIpHtmlPrintSettings }
 
 constructor TIpHtmlPrintSettings.Create;
 begin
   inherited;
+  FPreview := TIpHtmlPreviewSettings.Create;
   FMarginLeft := DEFAULT_PRINTMARGIN;
   FMarginTop := DEFAULT_PRINTMARGIN;
   FMarginRight := DEFAULT_PRINTMARGIN;
   FMarginBottom := DEFAULT_PRINTMARGIN;
+end;
+
+destructor TIpHtmlPrintSettings.Destroy;
+begin
+  FPreview.Free;
+  inherited;
 end;
 
 { TIpHtmlNodeTH }

@@ -164,11 +164,33 @@ end;
   Minimizes the whole application to the taskbar
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppMinimize;
+var
+  AForm: TCustomForm;
+  i: Integer;
 begin
-  if Assigned(Application) and Application.MainFormOnTaskBar then
-    Windows.SendMessage(Application.MainFormHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0)
+  FAppMinimizing := True;
+  // issue #26463
+  if Assigned(Application) and Application.MainFormOnTaskBar
+  and Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+  begin
+    HidePopups(Application.MainFormHandle);
+    Application.MainForm.WindowState := wsMinimized;
+  end
   else
-    Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0)
+  if Assigned(Application) and (Application.ModalLevel > 0) then
+  begin
+    for i := Screen.CustomFormZOrderCount - 1 downto 0 do
+    begin
+      AForm := Screen.CustomFormsZOrdered[i];
+      if AForm.HandleAllocated and AForm.Visible and (fsModal in AForm.FormState) then
+        ShowWindow(AForm.Handle, SW_SHOWMINIMIZED);
+    end;
+    ShowWindow(Win32WidgetSet.AppHandle, SW_SHOWMINNOACTIVE);
+  end
+  else
+    Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+
+  FAppMinimizing := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -179,9 +201,32 @@ end;
   Restore minimized whole application from taskbar
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppRestore;
+var
+  AForm: TCustomForm;
+  i: Integer;
 begin
-  if Assigned(Application) and Application.MainFormOnTaskBar then
-    Windows.SendMessage(Application.MainFormHandle, WM_SYSCOMMAND, SC_RESTORE, 0)
+  // issue #26463
+  if Assigned(Application) and Application.MainFormOnTaskBar
+  and Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+  begin
+    ShowWindow(Application.MainForm.Handle, SW_RESTORE);
+    RestorePopups;
+    if (Screen.ActiveControl<>nil) and Screen.ActiveControl.HandleAllocated then
+      SetFocus(Screen.ActiveControl.Handle);
+  end
+  else
+  if Assigned(Application) and (Application.ModalLevel > 0) then
+  begin
+    for i := Screen.CustomFormZOrderCount - 1 downto 0 do
+    begin
+      AForm := Screen.CustomFormsZOrdered[i];
+      if AForm.HandleAllocated and AForm.Visible and (fsModal in AForm.FormState) then
+      begin
+        ShowWindow(AForm.Handle, SW_RESTORE);
+      end;
+    end;
+    ShowWindow(FAppHandle, SW_RESTORE);
+  end
   else
     Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_RESTORE, 0);
 end;
@@ -198,13 +243,20 @@ procedure TWin32WidgetSet.AppBringToFront;
 var
   Window: HWND;
 begin
-  if Assigned(Screen) and Assigned(Screen.ActiveCustomForm) and Screen.ActiveCustomForm.HandleAllocated then
-    Window := Screen.ActiveCustomForm.Handle
+  if Application.MainFormOnTaskBar and (Application.MainFormHandle<>0) then
+    Window := GetLastActivePopup(Application.MainFormHandle)
   else
-  if Assigned(Application) and Application.MainFormOnTaskBar then
-    Window := Application.MainFormHandle
-  else
-    Window := FAppHandle;
+    Window := GetLastActivePopup(AppHandle);
+  if not((Window <> 0) and IsWindowVisible(Window) and IsWindowEnabled(Window)) then
+  begin
+    if Assigned(Screen) and Assigned(Screen.ActiveCustomForm) and Screen.ActiveCustomForm.HandleAllocated then
+      Window := Screen.ActiveCustomForm.Handle
+    else
+    if Assigned(Application) and Application.MainFormOnTaskBar then
+      Window := Application.MainFormHandle
+    else
+      Window := FAppHandle;
+  end;
   if (Window <> 0) and IsWindowVisible(Window) and IsWindowEnabled(Window) then
     Windows.SetForegroundWindow(Window);
 end;

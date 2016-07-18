@@ -239,6 +239,8 @@ var
   MainBuildBoss: TBuildManager = nil;
   TheCompiler: TCompiler = nil;
 
+procedure RunBootHandlers(ht: TLazarusIDEBootHandlerType);external name 'ideintf_LazIDEIntf_RunBootHandlers';
+
 implementation
 
 type

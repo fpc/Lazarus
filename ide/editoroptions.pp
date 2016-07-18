@@ -416,6 +416,7 @@ type
 
   TEditorOptionsFoldRecord = record
     Count: Integer;
+    HasMarkup: Boolean;
     Info: PEditorOptionsFoldInfoList;
   end;
 
@@ -435,7 +436,7 @@ type
 const
 
   (* When adding new entries, ensure that resourcestrings are re-assigned in InitLocale *)
-  EditorOptionsFoldInfoPas: Array [0..23] of TEditorOptionsFoldInfo
+  EditorOptionsFoldInfoPas: Array [0..26] of TEditorOptionsFoldInfo
   = (
       (Name:  dlgFoldPasProcedure;     Xml:     'Procedure';
        Index: ord(cfbtProcedure);    Enabled: True),
@@ -490,7 +491,13 @@ const
        Index: ord(cfbtNestedComment);Enabled: True),
 
       (Name:  dlgFoldPasIfThen; Xml:     'IfThen';
-       Index: ord(cfbtIfThen); Enabled: False)
+       Index: ord(cfbtIfThen); Enabled: False),
+      (Name:  dlgFoldPasForDo; Xml:     'ForDo';
+       Index: ord(cfbtForDo); Enabled: False),
+      (Name:  dlgFoldPasWhileDo; Xml:     'WhileDo';
+       Index: ord(cfbtWhileDo); Enabled: False),
+      (Name:  dlgFoldPasWithDo; Xml:     'WithDo';
+       Index: ord(cfbtWithDo); Enabled: False)
     );
 
   EditorOptionsFoldInfoLFM: Array [0..2] of TEditorOptionsFoldInfo
@@ -582,26 +589,26 @@ const
   (* When adding new entries, ensure that resourcestrings are re-assigned in InitLocale *)
   EditorOptionsFoldDefaults: array[TLazSyntaxHighlighter] of
     TEditorOptionsFoldRecord =
-    ( (Count:  0; Info: nil), // none
-      (Count:  0; Info: nil), // text
-      (Count: 24; Info: @EditorOptionsFoldInfoPas[0]), // Freepas
-      (Count: 24; Info: @EditorOptionsFoldInfoPas[0]), // pas
-      (Count:  3; Info: @EditorOptionsFoldInfoLFM[0]), // lfm
-      (Count:  5; Info: @EditorOptionsFoldInfoXML[0]), // xml
-      (Count:  3; Info: @EditorOptionsFoldInfoHTML[0]), // html
-      (Count:  0; Info: nil), // cpp
-      (Count:  0; Info: nil), // perl
-      (Count:  0; Info: nil), // java
-      (Count:  0; Info: nil), // shell
-      (Count:  0; Info: nil), // python
-      (Count:  0; Info: nil), // php
-      (Count:  0; Info: nil), // sql
-      (Count:  0; Info: nil), // jscript
-      (Count:  3; Info: @EditorOptionsFoldInfoDiff[0]), // Diff
-      (Count:  0; Info: nil), // Bat
-      (Count:  0; Info: nil), // Ini
-      (Count:  0; Info: nil), // PO
-      (Count:  0; Info: nil)  // Pike
+    ( (Count:  0; HasMarkup: False; Info: nil), // none
+      (Count:  0; HasMarkup: False; Info: nil), // text
+      (Count: 27; HasMarkup: True; Info: @EditorOptionsFoldInfoPas[0]), // Freepas
+      (Count: 27; HasMarkup: True; Info: @EditorOptionsFoldInfoPas[0]), // pas
+      (Count:  3; HasMarkup: True; Info: @EditorOptionsFoldInfoLFM[0]), // lfm
+      (Count:  5; HasMarkup: True; Info: @EditorOptionsFoldInfoXML[0]), // xml
+      (Count:  3; HasMarkup: True; Info: @EditorOptionsFoldInfoHTML[0]), // html
+      (Count:  0; HasMarkup: False; Info: nil), // cpp
+      (Count:  0; HasMarkup: False; Info: nil), // perl
+      (Count:  0; HasMarkup: False; Info: nil), // java
+      (Count:  0; HasMarkup: False; Info: nil), // shell
+      (Count:  0; HasMarkup: False; Info: nil), // python
+      (Count:  0; HasMarkup: False; Info: nil), // php
+      (Count:  0; HasMarkup: False; Info: nil), // sql
+      (Count:  0; HasMarkup: False; Info: nil), // jscript
+      (Count:  3; HasMarkup: False; Info: @EditorOptionsFoldInfoDiff[0]), // Diff
+      (Count:  0; HasMarkup: False; Info: nil), // Bat
+      (Count:  0; HasMarkup: False; Info: nil), // Ini
+      (Count:  0; HasMarkup: False; Info: nil), // PO
+      (Count:  0; HasMarkup: False; Info: nil)  // Pike
     );
 
 const
@@ -789,6 +796,7 @@ type
     FGutterActions: TSynEditMouseActions;
     FGutterActionsFold, FGutterActionsFoldExp, FGutterActionsFoldCol: TSynEditMouseActions;
     FGutterActionsLines: TSynEditMouseActions;
+    FGutterActionsOverView, FGutterActionsOverViewMarks: TSynEditMouseActions;
     FSelectedUserScheme: String;
     // left multi click
     FTextDoubleLeftClick: TMouseOptButtonAction;
@@ -897,6 +905,8 @@ type
     property GutterActionsFoldCol: TSynEditMouseActions read FGutterActionsFoldCol;
     property GutterActionsLines: TSynEditMouseActions read FGutterActionsLines;
     property GutterActionsChanges: TSynEditMouseActions read FGutterActionsChanges;
+    property GutterActionsOverView: TSynEditMouseActions read FGutterActionsOverView;
+    property GutterActionsOverViewMarks: TSynEditMouseActions read FGutterActionsOverViewMarks;
   published
     property GutterLeft: TMouseOptGutterLeftType read FGutterLeft write FGutterLeft
              default moglUpClickAndSelect;
@@ -1386,6 +1396,7 @@ type
     // Multi window
     FMultiWinEditAccessOrder: TEditorOptionsEditAccessOrderList;
     FCtrlMiddleTabClickClosesOthers: Boolean;
+    FShowFileNameInCaption: Boolean;
 
     // Comment Continue
     FAnsiCommentContinueEnabled: Boolean;
@@ -1626,6 +1637,9 @@ type
     // Multi window
     property CtrlMiddleTabClickClosesOthers: Boolean
       read FCtrlMiddleTabClickClosesOthers write FCtrlMiddleTabClickClosesOthers default True;
+
+    property ShowFileNameInCaption: Boolean
+      read FShowFileNameInCaption write FShowFileNameInCaption default False;
 
     // Commend Continue
     property AnsiCommentContinueEnabled: Boolean
@@ -3280,6 +3294,8 @@ begin
   FGutterActionsFoldCol := TSynEditMouseActions.Create(nil);
   FGutterActionsLines   := TSynEditMouseActions.Create(nil);
   FGutterActionsChanges := TSynEditMouseActions.Create(nil);
+  FGutterActionsOverView:= TSynEditMouseActions.Create(nil);
+  FGutterActionsOverViewMarks:= TSynEditMouseActions.Create(nil);
   FUserSchemes := TQuickStringlist.Create;
   FVersion := 0;
 end;
@@ -3297,6 +3313,8 @@ begin
   FGutterActionsFoldCol.Free;
   FGutterActionsLines.Free;
   FGutterActionsChanges.Free;
+  FGutterActionsOverView.Free;
+  FGutterActionsOverViewMarks.Free;
   inherited Destroy;
 end;
 
@@ -3389,6 +3407,8 @@ begin
   FGutterActionsFoldCol.Clear;
   FGutterActionsLines.Clear;
   FGutterActionsChanges.Clear;
+  FGutterActionsOverView.Clear;
+  FGutterActionsOverViewMarks.Clear;
   //TMouseOptGutterLeftType = (moGLDownClick, moglUpClickAndSelect);
 
   with FGutterActions do begin
@@ -3463,6 +3483,18 @@ begin
     // do not allow selection, over colapse/expand icons. Those may depend cursor pos (e.g. hide selected lines)
     if CDir = cdUp then
       AddCommand(emcNone,              False, mbXLeft,   ccAny,    cdDown, [], []);
+  end;
+
+  with FGutterActionsOverViewMarks do begin
+    R := R - [crLastDownPosSameLine];
+    if R <> [] then
+      R := R + [crAllowFallback];
+    AddCommand(emcOverViewGutterGotoMark, True, mbXLeft, ccAny,  CDir, R, [], [ssShift, ssCtrl, ssAlt]);
+  end;
+  with FGutterActionsOverView do begin
+    if R <> [] then
+      R := R + [crLastDownPosSearchAll];
+    AddCommand(emcOverViewGutterScrollTo, True, mbXLeft, ccAny,  CDir, R, [], [ssShift, ssCtrl, ssAlt]);
   end;
 
 end;
@@ -3751,6 +3783,8 @@ begin
   FGutterActionsFoldCol.Assign(Src.GutterActionsFoldCol);
   FGutterActionsLines.Assign  (Src.GutterActionsLines);
   FGutterActionsChanges.Assign(Src.GutterActionsChanges);
+  FGutterActionsOverView.Assign(Src.GutterActionsOverView);
+  FGutterActionsOverViewMarks.Assign(Src.GutterActionsOverViewMarks);
 end;
 
 procedure TEditorMouseOptions.SetTextCtrlLeftClick(AValue: TMouseOptButtonActionOld);
@@ -3886,7 +3920,9 @@ begin
     Temp.GutterActionsFoldCol.Equals(self.GutterActionsFoldCol) and
     Temp.GutterActionsFoldExp.Equals(self.GutterActionsFoldExp) and
     Temp.GutterActionsLines.Equals  (self.GutterActionsLines) and
-    Temp.GutterActionsChanges.Equals(Self.GutterActionsChanges);
+    Temp.GutterActionsChanges.Equals(Self.GutterActionsChanges) and
+    Temp.GutterActionsOverView.Equals(Self.GutterActionsOverView) and
+    Temp.GutterActionsOverViewMarks.Equals(Self.GutterActionsOverViewMarks);
   Temp.Free;
 end;
 
@@ -3992,6 +4028,8 @@ begin
     LoadMouseAct(aPath + 'GutterFoldCol/', GutterActionsFoldCol);
     LoadMouseAct(aPath + 'GutterLineNum/', GutterActionsLines);
     LoadMouseAct(aPath + 'GutterLineChange/', GutterActionsChanges);
+    LoadMouseAct(aPath + 'GutterOverView/',   GutterActionsOverView);
+    LoadMouseAct(aPath + 'GutterOverViewMarks/',   GutterActionsOverViewMarks);
 
     if Version < 1 then begin
       try
@@ -4051,6 +4089,8 @@ begin
     SaveMouseAct(aPath + 'GutterFoldCol/', GutterActionsFoldCol);
     SaveMouseAct(aPath + 'GutterLineNum/', GutterActionsLines);
     SaveMouseAct(aPath + 'GutterLineChange/', GutterActionsChanges);
+    SaveMouseAct(aPath + 'GutterOverView/',   GutterActionsOverView);
+    SaveMouseAct(aPath + 'GutterOverViewMarks/',GutterActionsOverViewMarks);
   end else begin
     // clear unused entries
     aXMLConfig.DeletePath(aPath + 'Main');
@@ -4104,6 +4144,8 @@ begin
   LoadMouseAct(aPath + 'GutterFoldCol/', GutterActionsFoldCol);
   LoadMouseAct(aPath + 'GutterLineNum/', GutterActionsLines);
   LoadMouseAct(aPath + 'GutterLineChange/', GutterActionsChanges);
+  LoadMouseAct(aPath + 'GutterOverView/',   GutterActionsOverView);
+  LoadMouseAct(aPath + 'GutterOverViewMarks/',GutterActionsOverViewMarks);
 end;
 
 procedure TEditorMouseOptions.ExportToXml(aXMLConfig: TRttiXMLConfig; aPath: String);
@@ -4135,6 +4177,8 @@ begin
   SaveMouseAct(aPath + 'GutterFoldCol/', GutterActionsFoldCol);
   SaveMouseAct(aPath + 'GutterLineNum/', GutterActionsLines);
   SaveMouseAct(aPath + 'GutterLineChange/', GutterActionsChanges);
+  SaveMouseAct(aPath + 'GutterOverView/',   GutterActionsOverView);
+  SaveMouseAct(aPath + 'GutterOverViewMarks/',GutterActionsOverViewMarks);
   MAct.Free;
 end;
 
@@ -4549,6 +4593,7 @@ begin
 
   // Multi window
   FCtrlMiddleTabClickClosesOthers := True;
+  FShowFileNameInCaption := False;
 
   // Comment
   FAnsiCommentContinueEnabled := False;
@@ -4765,6 +4810,9 @@ begin
     FMarkupCurWordNoTimer :=
       XMLConfig.GetValue(
       'EditorOptions/Display/MarkupCurrentWord/NoTimer', False);
+    FShowFileNameInCaption :=
+      XMLConfig.GetValue(
+      'EditorOptions/Display/ShowFileNameInCaption', False);
 
     // Code Tools options
     fAutoBlockCompletion :=
@@ -4952,6 +5000,8 @@ begin
       FMarkupCurWordTrim, True);
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/NoTimer',
       FMarkupCurWordNoTimer, False);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/ShowFileNameInCaption',
+        FShowFileNameInCaption, False);
 
     // Code Tools options
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoBlockCompletion'
@@ -5734,6 +5784,10 @@ begin
     else
     if (ASynEdit.Gutter.SeparatorPart <> nil) and (GutterSeparatorIndex >= 2) then
       ASynEdit.Gutter.SeparatorPart.MouseActions.Assign(FUserMouseSettings.GutterActionsChanges);
+    if ASynEdit.RightGutter.LineOverviewPart <> nil then begin
+      ASynEdit.RightGutter.LineOverviewPart.MouseActions.Assign(FUserMouseSettings.GutterActionsOverView);
+      ASynEdit.RightGutter.LineOverviewPart.MouseActionsForMarks.Assign(FUserMouseSettings.GutterActionsOverViewMarks);
+    end;
   finally
     ASynEdit.EndUpdate;
   end;

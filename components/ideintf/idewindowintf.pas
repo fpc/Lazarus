@@ -2019,8 +2019,7 @@ begin
     raise Exception.Create('TIDEWindowDefaultLayout.CheckBoundValue: expected number, but '+s+' found');
 end;
 
-procedure TIDEWindowCreator.GetDefaultBounds(AForm: TCustomForm; out
-  DefBounds: TRect);
+procedure TIDEWindowCreator.GetDefaultBounds(AForm: TCustomForm; out DefBounds: TRect);
 var
   aRight: LongInt;
   aBottom: LongInt;
@@ -2146,8 +2145,7 @@ end;
 
 { TIDEWindowCreatorList }
 
-function TIDEWindowCreatorList.GetItems(Index: integer
-  ): TIDEWindowCreator;
+function TIDEWindowCreatorList.GetItems(Index: integer): TIDEWindowCreator;
 begin
   Result:=TIDEWindowCreator(fItems[Index]);
 end;
@@ -2188,21 +2186,18 @@ begin
   Result:=fItems.Count;
 end;
 
-function TIDEWindowCreatorList.Add(aLayout: TIDEWindowCreator
-  ): integer;
+function TIDEWindowCreatorList.Add(aLayout: TIDEWindowCreator): integer;
 begin
   ErrorIfFormExists(aLayout.FormName);
   Result:=fItems.Add(aLayout);
 end;
 
-procedure TIDEWindowCreatorList.AddLayoutChangedHandler(
-  const aEvent: TNotifyEvent);
+procedure TIDEWindowCreatorList.AddLayoutChangedHandler(const aEvent: TNotifyEvent);
 begin
   FOnLayoutChanged.Add(TMethod(aEvent));
 end;
 
-function TIDEWindowCreatorList.Add(aFormName: string
-  ): TIDEWindowCreator;
+function TIDEWindowCreatorList.Add(aFormName: string): TIDEWindowCreator;
 begin
   ErrorIfFormExists(aFormName);
   Result:=TIDEWindowCreator.Create(aFormName);

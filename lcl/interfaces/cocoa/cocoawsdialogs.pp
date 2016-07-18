@@ -124,6 +124,7 @@ var
   Extensions: TParseStringList;
   extension: string;
   LocalPool: NSAutoReleasePool;
+  ns: NSString;
 begin
 
   {$IFDEF VerboseWSClass}
@@ -173,7 +174,11 @@ begin
   begin
     nsfilter := NSMutableArray.alloc.init;
     for i := 0 to Filters.Count - 1 do
-      nsfilter.addObject(NSStringUtf8(Filters.Strings[i]));
+    begin
+      ns := NSStringUtf8(Filters.Strings[i]);
+      nsfilter.addObject(ns);
+      ns.release;
+    end;
   end;
 
   Filters.Free;
@@ -228,6 +233,9 @@ begin
       FileDialog.UserChoice := mrOk;
     end;
   end;
+
+  if nsfilter <> nil then
+    nsfilter.release;
 
   // release everything
   LocalPool.Release;

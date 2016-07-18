@@ -596,7 +596,7 @@ begin
 
   if OSError(
     CreateNewWindow(kModalWindowClass,
-      kWindowCompositingAttribute or kWindowStandardHandlerAttribute, GetCarbonRect(0, 0, 0, 0), Dialog{%H-}),
+      kWindowCompositingAttribute or kWindowStandardHandlerAttribute or kWindowFrameworkScaledAttribute, GetCarbonRect(0, 0, 0, 0), Dialog{%H-}),
     Self, SShowModal, 'CreateNewWindow') then Exit;
     
   try

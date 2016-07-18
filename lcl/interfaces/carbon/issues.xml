@@ -68,7 +68,10 @@ After obtaining a CGImageRef, the next step to implement the RawImage_fromDevice
 			<short>Memo WordWrap property when is disabled, does not allow to scroll text horizontally</short>
 		</issue>
 		<issue name="TListBox.Columns">
-			<short>List box Columns property is not supported</short>
+			<short>Listbox Columns property is not supported</short>
+		</issue>
+		<issue name="TListBox.ItemHeight">
+			<short>Listbox ItemHeight property is not supported</short>
 		</issue>
 		<issue name="TCheckBox.Alignment">
 			<short>CheckBox Alignment property is not supported</short>
@@ -129,5 +132,14 @@ After obtaining a CGImageRef, the next step to implement the RawImage_fromDevice
 		<issue name="TTabControl.MultiLine">
 			<short>MultiLine property is not supported</short>
 		</issue>
+		<issue name="TMenu.OwnerDraw">
+			<short>not supported</short>
+		</issue>		
+		<issue name="TMenu.OnDrawItem">
+			<short>not supported</short>
+		</issue>		
+		<issue name="TMenu.OnMeasureItem">
+			<short>not supported</short>
+		</issue>		
 	</widgetset>
 </package>

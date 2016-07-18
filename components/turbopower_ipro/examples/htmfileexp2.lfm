@@ -8,9 +8,11 @@ object FHtmFileExp2: TFHtmFileExp2
   ClientHeight = 327
   ClientWidth = 569
   OnCreate = FormCreate
-  LCLVersion = '0.9.25'
+  LCLVersion = '1.7'
   object P_Top: TPanel
+    Left = 0
     Height = 42
+    Top = 0
     Width = 569
     Align = alTop
     ClientHeight = 42
@@ -21,7 +23,6 @@ object FHtmFileExp2: TFHtmFileExp2
       Height = 25
       Top = 8
       Width = 25
-      Color = clBtnFace
       Enabled = False
       Glyph.Data = {
         36060000424D3606000000000000360400002800000020000000100000000100
@@ -83,7 +84,6 @@ object FHtmFileExp2: TFHtmFileExp2
       Height = 25
       Top = 8
       Width = 25
-      Color = clBtnFace
       Enabled = False
       Glyph.Data = {
         36060000424D3606000000000000360400002800000020000000100000000100

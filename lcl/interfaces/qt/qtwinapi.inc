@@ -57,7 +57,7 @@ begin
   {$endif}
   Result := IsValidDC(DC);
   if Result then
-    QPainter_drawChord(TQtDeviceContext(DC).Widget, x1, y1, x2, y2, Angle1, Angle2);
+    QPainter_drawChord(TQtDeviceContext(DC).Widget, x1, y1, x2 - x1, y2 - y1, Angle1, Angle2);
 end;
 
 {------------------------------------------------------------------------------
@@ -458,6 +458,23 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI CreateBrushIndirect] Result: ', dbghex(Result));
   {$endif}
+end;
+
+{------------------------------------------------------------------------------
+  Function:  CreateBrushWithRadialGradient
+  Params:  none
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreateBrushWithRadialGradient(const LogBrush: TLogRadialGradient): HBRUSH;
+var
+  QtBrush: TQtBrush;
+begin
+  Result := 0;
+
+  QtBrush := TQtBrush.CreateWithRadialGradient(LogBrush);
+  Result := HBRUSH(QtBrush);
+  if Result = 0 then
+    DebugLn('TQtWidgetSet.CreateBrushWithRadialGradient: Failed');
 end;
 
 function TQtWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; Width, Height: Integer): Boolean;
@@ -3916,7 +3933,15 @@ begin
       end;
     SM_CXBORDER, SM_CYBORDER:
       begin
-        // size of frame around controls
+        //The height of a window border, in pixels
+        {$IFDEF QtUseAccurateFrame}
+        if (nIndex = SM_CYBORDER) and (WSFrameMargins.Top > 0) then
+          Result := WSFrameMargins.Bottom
+        else
+        if (nIndex = SM_CXBORDER) and (WSFrameMargins.Top > 0) then
+          Result := WSFrameMargins.Left
+        else
+        {$ENDIF}
         Result := GetPixelMetric(QStylePM_DefaultFrameWidth, nil, nil);
       end;
     SM_CXCURSOR:
@@ -4094,6 +4119,11 @@ begin
       end;
     SM_CYCAPTION:
       begin
+        {$IFDEF QtUseAccurateFrame}
+        if WSFrameMargins.Top > 0 then
+          Result := WSFrameMargins.Top
+        else
+        {$ENDIF}
         Result := GetPixelMetric(QStylePM_TitleBarHeight, nil, nil);
       end;
     SM_CYKANJIWINDOW:
@@ -4494,12 +4524,19 @@ begin
   Result := 0;
   if not IsValidHandle(Handle) then
     exit;
+
+  {$IFDEF QTUSEACCURATEFRAME}
+  if TQtWidget(Handle).IsFramedWidget then
+  begin
+    ARect := TQtWidget(Handle).getFrameGeometry;
+    exit(-1);
+  end;
+  {$ENDIF}
   APos := QtPoint(0,0);
   QWidget_mapToGlobal(TQtWidget(Handle).Widget, @APos, @APos);
 
   R := TQtWidget(Handle).getFrameGeometry;
   ARect := Bounds(APos.X,APos.Y,R.Right-R.Left,R.Bottom-R.Top);
-
   Result := -1;
 end;
 
@@ -4509,7 +4546,7 @@ end;
   Returns: true on success
 
   returns the current widget Left, Top, relative to the client origin of its
-  parent
+  parent. Top level form returns 0,0 when we use accurate frames.
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetWindowRelativePosition(Handle: hwnd; var Left,
   Top: Integer): boolean;
@@ -4536,18 +4573,22 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer
   ): boolean;
+var
+  ASize: TSize;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetWindowSize]');
   {$endif}
   if Handle = 0 then
     Exit(False);
-
-  with TQtWidget(Handle).getSize do
-  begin
-    Height := cy;
-    Width := cx;
-  end;
+  {$IFDEF QTUSEACCURATEFRAME}
+  if TQtWidget(Handle).IsFramedWidget then
+    ASize := TQtWidget(handle).getFrameSize
+  else
+  {$ENDIF}
+  ASize := TQtWidget(Handle).getSize;
+  Height := ASize.cy;
+  Width := ASize.cx;
 
   Result := True;
 
@@ -4994,19 +5035,146 @@ begin
 end;
 
 function TQtWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
+const
+  ButtonToQtButton: array[1..4] of QMessageBoxStandardButton = (
+   QMessageBoxOk, QMessageBoxYes, QMessageBoxNo, QMessageBoxCancel);
+
+
+  function IconToMessageType(AType: cardinal): QMessageBoxIcon;
+  begin
+    Result := QMessageBoxNoIcon;
+    case AType of
+      1: Result := QMessageBoxInformation;
+      2: Result := QMessageBoxQuestion;
+      3: Result := QMessageBoxCritical;
+      4: Result := QMessageBoxWarning;
+    end;
+  end;
+
+  function ButtonToQtButtons(AType: cardinal): QMessageBoxStandardButtons;
+  begin
+    Result := QMessageBoxNoButton;
+    case AType of
+      0: Result := QMessageBoxOk;
+      1: Result := QMessageBoxOk or QMessageBoxCancel;
+      2: Result := QMessageBoxAbort or QMessageBoxRetry or QMessageBoxIgnore;
+      3: Result := QMessageBoxYes or QMessageBoxNo or QMessageBoxCancel;
+      4: Result := QMessageBoxYes or QMessageBoxNo;
+      5: Result := QMessageBoxRetry or QMessageBoxCancel;
+      6: Result := QMessageBoxCancel or QMessageBoxRetry or QMessageBoxApply; // not supported by lcl
+      else
+      begin
+        DebugLn(Format('WARNING: TQtWidgetSet.MessageBox() invalid message box type %d',[AType]));
+      end;
+    end;
+  end;
+
+  function ButtonToQtDefButton(AType: cardinal; ADefButton: cardinal): QMessageBoxStandardButton;
+  begin
+    Result := QMessageBoxNoButton;
+    case AType of
+      0: Result := QMessageBoxOk;
+      1:
+      begin
+        if ADefButton = 2 then
+          Result := QMessageBoxCancel
+        else
+          Result := QMessageBoxOk;
+      end;
+      2:
+      begin
+        if ADefButton = 3 then
+          Result := QMessageBoxIgnore
+        else
+        if ADefButton = 2 then
+          Result := QMessageBoxRetry
+        else
+          Result := QMessageBoxAbort;
+      end;
+      3:
+      begin
+        if ADefButton = 3 then
+          Result := QMessageBoxCancel
+        else
+        if ADefButton = 2 then
+          Result := QMessageBoxNo
+        else
+          Result := QMessageBoxYes;
+      end;
+      4:
+      begin
+        if ADefButton = 2 then
+          Result := QMessageBoxNo
+        else
+          Result := QMessageBoxYes;
+      end;
+      5:
+      begin
+        if ADefButton = 2 then
+          Result := QMessageBoxCancel
+        else
+          Result := QMessageBoxRetry;
+      end;
+      6:
+      begin
+        if ADefButton = 3 then
+          Result := QMessageBoxCancel
+        else
+        if ADefButton = 2 then
+          Result := QMessageBoxRetry
+        else
+          Result := QMessageBoxApply;
+      end;
+      else
+        DebugLn(Format('WARNING: TQtWidgetSet.MessageBox() invalid message box type %d',[AType]));
+    end;
+  end;
+
+  function QtButtonToResult(AResult: integer): integer;
+  begin
+    Result := 0;
+    case AResult of
+      QMessageBoxOk, QMessageBoxApply: Result := ID_OK;
+      QMessageBoxCancel: Result := ID_CANCEL;
+      QMessageBoxAbort: Result := ID_ABORT;
+      QMessageBoxRetry: Result := ID_RETRY;
+      QMessageBoxIgnore: Result := ID_IGNORE;
+      QMessageBoxYes: Result := ID_YES;
+      QMessageBoxNo: Result := ID_NO;
+      QMessageBoxClose: Result := ID_CLOSE;
+      QMessageBoxHelp: Result := ID_HELP;
+    end;
+  end;
 var
   Str: WideString;
   TitleStr: WideString;
-  OkStr: WideString;
+  //OkStr: WideString;
+  AParent: QWidgetH;
+  DialogType, DefButton, DefIcon : Cardinal;
 begin
-  //TODO: Finish full implementation of MessageBox
-  Str := GetUtf8String('TQtWidgetSet.MessageBox - not implemented');
+  Result := 0;
+  Str := GetUtf8String(lpText);
   TitleStr := GetUtf8String(lpCaption);
-  OkStr := GetUtf8String('Ok');
+  //TODO: TRANSLATIONS for buttons text, use TQtMessageBox
   if HWND <> 0 then
-    Result := QMessageBox_information(TQtWidget(hWnd).Widget, @Str, @TitleStr, @OkStr)
+    AParent := TQtWidget(Hwnd).Widget
   else
-    Result := QMessageBox_information(nil, @Str, @TitleStr, @OkStr);
+    AParent := nil;
+  DefButton:= ((uType and $00000300) shr 8) + 1;
+  DialogType:= (uType and $0000000F);
+  DefIcon := (uType and $000000FF) shr 4;
+  case IconToMessageType(DefIcon) of
+    QMessageBoxInformation: Result := QMessageBox_information(AParent, @TitleStr, @Str, ButtonToQtButtons(DialogType), ButtonToQtDefButton(DialogType, DefButton));
+    QMessageBoxQuestion: Result := QMessageBox_question(AParent, @TitleStr, @Str, ButtonToQtButtons(DialogType), ButtonToQtDefButton(DialogType, DefButton));
+    QMessageBoxCritical: Result := QMessageBox_critical(AParent, @TitleStr, @Str, ButtonToQtButtons(DialogType), ButtonToQtDefButton(DialogType, DefButton));
+    QMessageBoxWarning: Result := QMessageBox_warning(AParent, @TitleStr, @Str, ButtonToQtButtons(DialogType), ButtonToQtDefButton(DialogType, DefButton));
+    else
+    begin
+      DebugLn('WARNING: TQtWidgetSet.MessageBox() unspecified dialog type.');
+      Result := QMessageBox_information(AParent, @Str, @TitleStr, ButtonToQtButtons(DialogType), ButtonToQtButton[DefButton]);
+    end;
+  end;
+  Result := QtButtonToResult(Result);
 end;
 
 {------------------------------------------------------------------------------
@@ -5058,6 +5226,23 @@ begin
     else
       Result := SIMPLEREGION;
   end;
+end;
+
+function TQtWidgetSet.PaintRgn(DC: HDC; RGN: HRGN): Boolean;
+var
+  APath: QPainterPathH;
+begin
+  Result := False;
+  if not IsValidDC(DC) or not IsValidGDIObject(RGN) then
+    exit;
+  if TQtRegion(RGN).FHandle = nil then
+    exit;
+  APath := QPainterPath_create;
+  QPainterPath_addRegion(APath, TQtRegion(RGN).FHandle);
+  QPainterPath_closeSubpath(APath);
+  QPainter_fillPath(TQtDeviceContext(DC).Widget, APath, QPainter_brush(TQtDeviceContext(DC).Widget));
+  QPainterPath_destroy(APath);
+  Result := True;
 end;
 
 function TQtWidgetSet.PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;

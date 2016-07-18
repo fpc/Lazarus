@@ -101,9 +101,11 @@ type
   TBasicChartTool = class(TIndexedComponent)
   strict protected
     FChart: TChart;
+    FStartMousePos: TPoint;
 
     procedure Activate; virtual;
     procedure Deactivate; virtual;
+    function PopupMenuConflict: Boolean; virtual;
   public
     property Chart: TChart read FChart;
   end;
@@ -268,6 +270,8 @@ type
     procedure VisitSources(
       AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData);
   protected
+    FDisablePopupMenu: Boolean;
+    procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); override;
     function DoMouseWheel(
       AShift: TShiftState; AWheelDelta: Integer;
       AMousePos: TPoint): Boolean; override;
@@ -435,6 +439,7 @@ type
 
   published
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -460,7 +465,7 @@ implementation
 
 uses
   Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, TADrawerCanvas,
-  TAGeometry, TAMath, Types;
+  TAGeometry, TAMath, TAStyles, Types;
 
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
@@ -791,6 +796,12 @@ begin
   end;
   if AxisVisible then
     AxisList.Draw(MaxInt, axisIndex);
+end;
+
+procedure TChart.DoContextPopup(MousePos: TPoint; var Handled: Boolean);
+begin
+  if FDisablePopupMenu then Handled := true;
+  inherited;
 end;
 
 function TChart.DoMouseWheel(
@@ -1250,11 +1261,19 @@ begin
 end;
 
 procedure TChart.Notification(AComponent: TComponent; AOperation: TOperation);
+var
+  ax: TChartAxis;
 begin
   if (AOperation = opRemove) and (AComponent = Toolset) then
     FToolset := nil
   else if (AOperation = opRemove) and (AComponent = GUIConnector) then
-    GUIConnector := nil;
+    GUIConnector := nil
+  else if (AOperation = opRemove) and (AComponent is TChartStyles) then begin
+    for ax in FAxisList do
+      if ax.Marks.Stripes = AComponent then
+        ax.Marks.Stripes := nil;
+  end;
+
   inherited Notification(AComponent, AOperation);
 end;
 
@@ -1865,12 +1884,21 @@ procedure TBasicChartTool.Activate;
 begin
   FChart.FActiveToolIndex := Index;
   FChart.MouseCapture := true;
+  FChart.FDisablePopupMenu := false;
+  FStartMousePos := Mouse.CursorPos;
 end;
 
 procedure TBasicChartTool.Deactivate;
 begin
   FChart.MouseCapture := false;
   FChart.FActiveToolIndex := -1;
+  if PopupMenuConflict then
+    FChart.FDisablePopupMenu := true;
+end;
+
+function TBasicChartTool.PopupMenuConflict: Boolean;
+begin
+  Result := false;
 end;
 
 procedure SkipObsoleteChartProperties;

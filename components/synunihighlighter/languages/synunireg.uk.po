@@ -2,16 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-06-04 22:37+0200\n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"PO-Revision-Date: 2016-05-27 09:49+0200\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: uk\n"
+"X-Generator: Poedit 1.6.4\n"
 
 #: synunireg.sedituni
-#, fuzzy
-#| msgid "Edit..."
 msgid "Edit ..."
-msgstr "Редагувати..."
+msgstr "Змінити ..."
 

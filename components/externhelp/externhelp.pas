@@ -2,8 +2,9 @@
   This source is only used to compile and install the package.
  }
 
-unit ExternHelp; 
+unit ExternHelp;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
@@ -11,11 +12,11 @@ uses
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('ExternHelpFrm', @ExternHelpFrm.Register); 
-end; 
+  RegisterUnit('ExternHelpFrm', @ExternHelpFrm.Register);
+end;
 
 initialization
-  RegisterPackage('ExternHelp', @Register); 
+  RegisterPackage('ExternHelp', @Register);
 end.

@@ -1,0 +1,142 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: glazresmain.cbtncancel
+msgid "Cancel"
+msgstr "Mégse"
+
+#: glazresmain.defilter
+msgctxt "glazresmain.defilter"
+msgid "Lazarus Resource Files|*.lrs|All Files|*"
+msgstr "Lazarus erőforrásfájlok|*.lrs|Minden fájl|*"
+
+#: glazresmain.desaveresourcefileas
+msgctxt "glazresmain.desaveresourcefileas"
+msgid "Save resourcefile as"
+msgstr "Erőforrásfájl mentése"
+
+#: glazresmain.errconverttotext
+msgid "ERROR: unable to convert Delphi form to text: \"%s\""
+msgstr "HIBA: A Delphi form nem alakítható át szöveggé: \"%s\""
+
+#: glazresmain.errcreate
+msgid "ERROR: Cannot create \"%s\""
+msgstr "HIBA: Nem hozható létre: \"%s\""
+
+#: glazresmain.errfileisresource
+msgid "ERROR: Cannot add resource file to itself (\"%s\")"
+msgstr "HIBA: Az erőforrás nem építhető önmagába (\"%s\")"
+
+#: glazresmain.errfilenotfound
+msgid "ERROR: File not found: \"%s\""
+msgstr "HIBA: a fájl nem található: \"%s\""
+
+#: glazresmain.errnoresourcename
+msgid "ERROR: No resourcename found for \"%s\""
+msgstr "HIBA: Nem találhatók erőforrások ehhez: \"%s\""
+
+#: glazresmain.errread
+msgid "ERROR: Cannot read from \"%s\""
+msgstr "HIBA: Nem lehet olvasni innen: \"%s\""
+
+#: glazresmain.msgcreatinglrs
+msgid "Creating \"%s\""
+msgstr "„%s” létrehozása"
+
+#: glazresmain.msgprocessing
+msgid "Processing \"%s\""
+msgstr "\"%s\" feldolgozása"
+
+#: glazresmain.msgresourcenametype
+msgid " Resource name = \"%s\", Type = \"%s\""
+msgstr " Erőforrás neve = \"%s\", típusa = \"%s\""
+
+#: glazresmain.msgsuccess
+msgid ""
+"Done.\n"
+"Number of resources added: %d.\n"
+msgstr ""
+"Kész.\n"
+"Hozzáadott erőforrások száma: %d\n"
+
+#: glazresmain.msgwrongext
+msgid "Filename does not have the required extension: fix it?"
+msgstr "A fájl kiterjesztése nem megfelelő. Javítás?"
+
+#: glazresmain.odopenexistingfile
+msgctxt "glazresmain.odopenexistingfile"
+msgid "Open existing file"
+msgstr "Létező fájl megnyitása"
+
+#: glazresmain.opdfilter
+msgctxt "glazresmain.opdfilter"
+msgid "Graphic (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|Cursor (*.cur)|*.cur|Icon (*.ico)|*.ico|Mac OS X Icon (*.icns)|*.icns|Joint Picture Expert Group (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|Tagged Image File Format (*.tif;*.tiff)|*.tif;*.tiff|Graphics Interchange Format (*.gif)|*.gif|Portable PixMap (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|Animated GIF (*.gif)|*.gif|TGA Image File (*.tga)|*.tga|"
+msgstr "Grafika (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitképek (*.bmp)|*.bmp|Kurzor (*.cur)|*.cur|Ikon (*.ico)|*.ico|Mac OS X Ikon (*.icns)|*.icns|Joint Picture Expert Group (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|Tagged Image File Format (*.tif;*.tiff)|*.tif;*.tiff|Graphics Interchange Format (*.gif)|*.gif|Portable PixMap (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|Animált GIF (*.gif)|*.gif|TGA képfájl (*.tga)|*.tga|"
+
+#: glazresmain.opdfilterall
+msgid "All files"
+msgstr "Minden fájl"
+
+#: glazresmain.opdopenexistingpicture
+msgctxt "glazresmain.opdopenexistingpicture"
+msgid "Open existing picture"
+msgstr "Létező kép megnyitása"
+
+#: tglazresform.addanybtn.hint
+msgid "Add (any kind of) files to the list"
+msgstr "Fájlok hozzáadása a listához (bármilyen típusú)"
+
+#: tglazresform.addimgbtn.hint
+msgid "Add images to the list"
+msgstr "Képek hozzáadása a listához"
+
+#: tglazresform.caption
+msgid "LRS Builder"
+msgstr "LRS építő"
+
+#: tglazresform.clearbtn.caption
+msgid "Clear"
+msgstr "Kiürítés"
+
+#: tglazresform.clearbtn.hint
+msgid "Cleare the entire list"
+msgstr "A lista kiürítése"
+
+#: tglazresform.closebtn.hint
+msgid "Exit the program"
+msgstr "Kilépés a programból"
+
+#: tglazresform.deletebtn.hint
+msgid "Delete selected files from the list"
+msgstr "Kiválasztott fájlok törlése a listából"
+
+#: tglazresform.fileslabel.caption
+msgid "Files to include"
+msgstr "Beemelendő fájlok"
+
+#: tglazresform.lrslabel.caption
+msgid "Lazarus Resource Filename"
+msgstr "Lazarus erőforrásfájl neve"
+
+#: tglazresform.messageslabel.caption
+msgid "Messages"
+msgstr "Üzenetek"
+
+#: tglazresform.startbtn.caption
+msgid "Create LRS"
+msgstr "LRS létrehozása"
+
+#: tglazresform.startbtn.hint
+msgid "Create the output LRS file"
+msgstr "Az LRS kimeneti fájl létrehozása"
+

@@ -94,6 +94,11 @@ begin
   Result := WidgetSet.CreateBrushIndirect(LogBrush);
 end;
 
+function CreateBrushWithRadialGradient(const LogBrush: TLogRadialGradient): HBRUSH;
+begin
+  Result := WidgetSet.CreateBrushWithRadialGradient(LogBrush);
+end;
+
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean;
 begin
   Result := WidgetSet.CreateCaret(Handle, Bitmap, width, Height);
@@ -1525,6 +1530,21 @@ function PointtoSmallPoint(const P : TPoint) : TSmallPoint; inline;
 begin
   Result.X := P.X;
   Result.Y := P.Y;
+end;
+
+{------------------------------------------------------------------------------
+  Function: PointToSmallPointNoChecks
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function PointToSmallPointNoChecks(const P : TPoint) : TSmallPoint; inline;
+begin
+  {$PUSH}
+  {$R-}{$Q-} // no range, no overflow checks
+  Result.X := P.X;
+  Result.Y := P.Y;
+  {$POP}
 end;
 
 {------------------------------------------------------------------------------

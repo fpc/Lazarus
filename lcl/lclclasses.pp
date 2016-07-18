@@ -122,7 +122,7 @@ destructor TLCLComponent.Destroy;
 begin
   {$IFNDEF DisableChecks}
   if FLCLRefCount>0 then
-    DebugLn(['WARNING: TLCLComponent.Destroy with LCLRefCount>0. Hint: Maybe the component is processing an event?']);
+    DebugLn(['WARNING: ' + ClassName + '.Destroy with LCLRefCount>0. Hint: Maybe the component is processing an event?']);
   {$ENDIF}
   {$IFDEF DebugLCLComponents}
   //DebugLn('TLCLComponent.Destroy ',DbgSName(Self));

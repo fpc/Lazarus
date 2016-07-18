@@ -70,6 +70,7 @@ type
     fLazarusDirInCfg: string;
     fLazarusDirOverride : String;
     FMaxProcessCount: integer;
+    FNoWriteProject: Boolean;
     fOSOverride: String;
     FPackageAction: TPkgAction;
     FPkgGraphVerbosity: TPkgVerbosityFlags;
@@ -172,6 +173,7 @@ type
     property LazarusDirOverride: String read fLazarusDirOverride write fLazarusDirOverride;
     property BuildModeOverride: String read FBuildModeOverride write FBuildModeOverride;
     property MaxProcessCount: integer read FMaxProcessCount write FMaxProcessCount;
+    property NoWriteProject: boolean read FNoWriteProject write FNoWriteProject;
     property PkgGraphVerbosity: TPkgVerbosityFlags read FPkgGraphVerbosity write FPkgGraphVerbosity;
   end;
 
@@ -570,7 +572,7 @@ begin
   // try loading install packages
   PackageGraph.LoadAutoInstallPackages(BuildLazProfiles.StaticAutoInstallPackages);
 
-  // save target directory
+  // create target directory
   TargetDir:=CurProf.TargetDirectory;
   IDEMacros.SubstituteMacros(TargetDir);
   if not ForceDirectory(TargetDir) then begin
@@ -595,7 +597,7 @@ begin
       end;
     end;
 
-    // save configs for 'make'
+    // save list of install packages
     CurResult:=PackageGraph.SaveAutoInstallConfig;
     if CurResult<>mrOk then begin
       if ConsoleVerbosity>=-1 then
@@ -614,7 +616,7 @@ begin
     // create inherited compiler options
     Builder.PackageOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings{%H-});
 
-    // save
+    // save idemake.cfg
     CurResult:=Builder.SaveIDEMakeOptions(BuildLazProfiles.Current,Flags+[blfBackupOldExe]);
     if CurResult<>mrOk then begin
       if ConsoleVerbosity>=-1 then
@@ -693,6 +695,8 @@ end;
 
 procedure TLazBuildApplication.DoCreateMakefile(APackage: TLazPackage);
 begin
+  if ConsoleVerbosity>0 then
+    debugln(['Hint: (lazarus) [TLazBuildApplication.DoCreateMakefile] ',APackage.Filename]);
   PackageGraph.WriteMakeFile(APackage);
 end;
 
@@ -755,8 +759,8 @@ var
   CompilePolicy: TPackageUpdatePolicy;
   i,MatchCount: Integer;
   CompileHint: String;
+  CompReason: TCompileReason;
   NeedBuildAllFlag: Boolean;
-  SubResult: TModalResult;
   MatrixOption: TBuildMatrixOption;
   ModeMask: TMask;
   CurResult: Boolean;
@@ -803,6 +807,23 @@ var
     WorkingDir:=Project1.ProjectDirectory;
     SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
 
+    NeedBuildAllFlag:=false;
+    CompileHint:='';
+    if (CompReason in Project1.CompilerOptions.CompileReasons) then begin
+      // only check if NeedBuildAllFlag will be set
+      MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1, NeedBuildAllFlag,CompileHint);
+    end;
+
+    // execute compilation tool 'Before'
+    ToolBefore:=TProjectCompilationToolOptions(
+                                      Project1.CompilerOptions.ExecuteBefore);
+    if (CompReason in ToolBefore.CompileReasons) then begin
+      if ToolBefore.Execute(Project1.ProjectDirectory,
+        lisProject2+lisExecutingCommandBefore, CompileHint)<>mrOk
+      then
+        Error(ErrorBuildFailed,'failed "tool before" of project '+AFilename);
+    end;
+
     // create unit output directory
     UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
     if not ForceDirectory(UnitOutputDirectory) then
@@ -814,9 +835,6 @@ var
     if not ForceDirectory(TargetExeDir) then
       Error(ErrorBuildFailed,'Unable to create project target directory '+TargetExeDir);
 
-    // update all lrs files
-    MainBuildBoss.UpdateProjectAutomaticFiles('');
-
     // create LazBuildApp bundle
     if Project1.UseAppBundle and (Project1.MainUnitID>=0)
     and (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
@@ -826,6 +844,9 @@ var
       if not (CreateAppBundleSymbolicLink(TargetExeName) in [mrOk,mrIgnore]) then
         Error(ErrorBuildFailed,'Unable to create application bundle symbolic link for '+TargetExeName);
     end;
+
+    // update all lrs files
+    MainBuildBoss.UpdateProjectAutomaticFiles('');
 
     // regenerate resources
     if not Project1.ProjResources.Regenerate(SrcFileName, False, True, '') then
@@ -844,39 +865,7 @@ var
     CompilerParams:=Project1.CompilerOptions.MakeOptionsString([ccloAbsolutePaths])
                                            +' '+PrepareCmdLineOption(SrcFilename);
 
-    NeedBuildAllFlag:=false;
-    CompileHint:='';
-    if (crCompile in Project1.CompilerOptions.CompileReasons) then begin
-      // check if project is already uptodate
-      SubResult:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1,
-                                                  NeedBuildAllFlag,CompileHint);
-      if (not BuildAll)
-      and (not (pfAlwaysBuild in Project1.Flags)) then begin
-        if SubResult=mrNo then begin
-          if ConsoleVerbosity>=0 then
-            debugln(['Hint: (lazarus) [TLazBuildApplication.BuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to do']);
-          exit(true);
-        end;
-        if SubResult<>mrYes then
-        begin
-          if ConsoleVerbosity>=0 then
-            debugln(['Hint: (lazarus) [TLazBuildApplication.BuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
-          exit(false);
-        end;
-      end;
-    end;
-
-    // execute compilation tool 'Before'
-    ToolBefore:=TProjectCompilationToolOptions(
-                                      Project1.CompilerOptions.ExecuteBefore);
-    if (crCompile in ToolBefore.CompileReasons) then begin
-      if ToolBefore.Execute(Project1.ProjectDirectory,
-        lisProject2+lisExecutingCommandBefore, CompileHint)<>mrOk
-      then
-        Error(ErrorBuildFailed,'failed "tool before" of project '+AFilename);
-    end;
-
-    if (crCompile in Project1.CompilerOptions.CompileReasons) then begin
+    if (CompReason in Project1.CompilerOptions.CompileReasons) then begin
       // compile
       // write state file to avoid building clean every time
       if Project1.SaveStateFile(CompilerFilename,CompilerParams,false)<>mrOk then
@@ -894,7 +883,7 @@ var
     // execute compilation tool 'After'
     ToolAfter:=TProjectCompilationToolOptions(
                                        Project1.CompilerOptions.ExecuteAfter);
-    if (crCompile in ToolAfter.CompileReasons) then begin
+    if (CompReason in ToolAfter.CompileReasons) then begin
       if ToolAfter.Execute(Project1.ProjectDirectory,
         lisProject2+lisExecutingCommandAfter,CompileHint)<>mrOk
       then
@@ -915,6 +904,11 @@ begin
   
   if Project1.MainUnitInfo=nil then
     Error(ErrorBuildFailed,'project has no main unit');
+
+  if BuildAll then
+    CompReason:= crBuild
+  else
+    CompReason:= crCompile;
 
   // first override build mode
   if (BuildModeOverride<>'') then
@@ -965,15 +959,19 @@ begin
     Result := StartBuilding;
 
   // Auto increment build number
-  if Result then
-  begin
-    with Project1.ProjResources.VersionInfo do
+  if Result and not NoWriteProject
+  and Project1.ProjResources.VersionInfo.UseVersionInfo
+  and Project1.ProjResources.VersionInfo.AutoIncrementBuild
+  then begin
+    if FileIsWritable(AFilename) then
     begin
-      if UseVersionInfo and AutoIncrementBuild then
-      begin
-        BuildNr := BuildNr + 1;
-        Project1.WriteProject(Project1.PublishOptions.WriteFlags,AFileName,EnvironmentOptions.BuildMatrixOptions);
-      end;
+      Project1.ProjResources.DoAfterBuild(CompReason, Project1.IsVirtual);
+      Project1.WriteProject(Project1.PublishOptions.WriteFlags,AFileName,EnvironmentOptions.BuildMatrixOptions)
+    end
+    else
+    begin
+      if ConsoleVerbosity>=-1 then
+        DebugLn('Error: (lazarus) Project1.WriteProject skipped for read-only ',SrcFilename);
     end;
   end;
 end;
@@ -1111,7 +1109,7 @@ begin
     // Look for package name in all known packages
     PkgFilename:=PackageNamesOrFiles[i];
     if CompareFileExt(PkgFilename,'.lpk')<>0 then begin
-      ErrorMsg+=PkgFilename+' is not a package, so it is not registered.'+LineEnding;
+      ErrorMsg+=PkgFilename+' is not a package (.lpk), so it is not registered.'+LineEnding;
       continue;
     end;
     PkgFilename:=ExpandFileNameUTF8(PkgFilename);
@@ -1564,6 +1562,7 @@ begin
     LongOptions.Add('lazarusdir:');
     LongOptions.Add('create-makefile');
     LongOptions.Add('max-process-count:');
+    LongOptions.Add('no-write-project');
     ErrorMsg:=RepairedCheckOptions('lBrdq',LongOptions,Options,NonOptions);
     if ErrorMsg<>'' then begin
       writeln(ErrorMsg);
@@ -1726,6 +1725,13 @@ begin
         writeln('Parameter: max-process-count=',MaxProcessCount);
     end;
 
+    if HasOption('no-write-project') then
+    begin
+      NoWriteProject := true;
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: no-write-project');
+    end;
+
     if HasOption('create-makefile') then
     begin
       CreateMakefile := true;
@@ -1833,6 +1839,9 @@ begin
   writeln('');
   writeln('--max-process-count=<count>');
   w(space+lisMaximumNumberOfThreadsForCompilingInParallelDefaul);
+  writeln('');
+  writeln('--no-write-project');
+  w(space+lisDoNotWriteUpdatedProjectInfoAfterBuild);
   writeln('');
 end;
 

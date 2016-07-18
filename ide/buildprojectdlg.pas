@@ -37,7 +37,7 @@ uses
   IDEDialogs, IDEImagesIntf, PackageIntf,
   // IDE
   PackageDefs, PackageSystem, InputHistory, LazarusIDEStrConsts, Project,
-  IDEProcs;
+  EnvironmentOpts, IDEProcs;
 
 type
   TBuildProjectDialogItem = class
@@ -160,6 +160,11 @@ procedure TCleanBuildProjectDialog.FormClose(Sender: TObject;
   end;
 
 begin
+  EnvironmentOptions.CleanBuildProjOut:=ProjOutCheckBox.Checked;
+  EnvironmentOptions.CleanBuildProjSrc:=ProjSrcCheckBox.Checked;
+  EnvironmentOptions.CleanBuildPkgOut :=PkgOutCheckBox.Checked;
+  EnvironmentOptions.CleanBuildPkgSrc :=PkgSrcCheckBox.Checked;
+
   FProject.CleanOutputFileMask:=ProjOutMaskComboBox.Text;
   FProject.CleanSourcesFileMask:=ProjSrcMaskComboBox.Text;
   InputHistories.CleanOutputFileMask:=PkgOutMaskComboBox.Text;
@@ -587,6 +592,11 @@ begin
   PkgOutMaskComboBox.Text:=InputHistories.CleanOutputFileMask;
   PkgSrcMaskComboBox.Items.Assign(List);
   PkgSrcMaskComboBox.Text:=InputHistories.CleanSourcesFileMask;
+
+  ProjOutCheckBox.Checked:=EnvironmentOptions.CleanBuildProjOut;
+  ProjSrcCheckBox.Checked:=EnvironmentOptions.CleanBuildProjSrc;
+  PkgOutCheckBox.Checked :=EnvironmentOptions.CleanBuildPkgOut;
+  PkgSrcCheckBox.Checked :=EnvironmentOptions.CleanBuildPkgSrc;
 
   if AProject.CompilerOptions.UnitOutputDirectory='' then begin
     ProjOutCheckBox.Enabled:=false;

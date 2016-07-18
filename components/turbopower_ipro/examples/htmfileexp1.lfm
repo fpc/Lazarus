@@ -1,43 +1,51 @@
 object FHtmFileExp1: TFHtmFileExp1
-  Left = 454
-  Height = 327
-  Top = 373
-  Width = 569
+  Left = 312
+  Height = 567
+  Top = 217
+  Width = 777
   ActiveControl = B_OpenHTMLFile
   Caption = 'Example 1 for turbopower: HTM File Explorer'
-  ClientHeight = 327
-  ClientWidth = 569
+  ClientHeight = 567
+  ClientWidth = 777
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '0.9.25'
+  LCLVersion = '1.7'
   object IpHtmlPanel1: TIpHtmlPanel
-    Height = 285
+    Left = 0
+    Height = 525
     Top = 42
-    Width = 569
+    Width = 777
     Align = alClient
     FixedTypeface = 'Courier New'
     DefaultTypeFace = 'default'
     DefaultFontSize = 12
     FactBAParag = 0.5
+    FlagErrors = False
     PrintSettings.MarginLeft = 0.5
     PrintSettings.MarginTop = 0.5
     PrintSettings.MarginRight = 0.5
     PrintSettings.MarginBottom = 0.5
+    PrintSettings.Preview.Left = 480
+    PrintSettings.Preview.Top = 270
+    PrintSettings.Preview.Width = 1440
+    PrintSettings.Preview.Height = 810
+    TabOrder = 1
     OnHotClick = IpHtmlPanel1HotClick
   end
   object P_Top: TPanel
+    Left = 0
     Height = 42
-    Width = 569
+    Top = 0
+    Width = 777
     Align = alTop
     ClientHeight = 42
-    ClientWidth = 569
+    ClientWidth = 777
     TabOrder = 0
     object SB_GoBackward: TSpeedButton
       Left = 176
       Height = 25
       Top = 8
       Width = 25
-      Color = clBtnFace
       Enabled = False
       Glyph.Data = {
         36060000424D3606000000000000360400002800000020000000100000000100
@@ -99,7 +107,6 @@ object FHtmFileExp1: TFHtmFileExp1
       Height = 25
       Top = 8
       Width = 25
-      Color = clBtnFace
       Enabled = False
       Glyph.Data = {
         36060000424D3606000000000000360400002800000020000000100000000100
@@ -170,7 +177,7 @@ object FHtmFileExp1: TFHtmFileExp1
   object OpenDialog1: TOpenDialog
     Filter = 'Web Pages|*.html;*.htm'
     FilterIndex = 0
-    left = 26
-    top = 93
+    left = 48
+    top = 80
   end
 end

@@ -47,9 +47,29 @@ msgstr ""
 "Введите номера и/или диапазоны страниц,\n"
 "разделённые запятыми. Например, 1,3,5-12\n"
 
+#: le_e_spreadsheet_consts.sexportpagefooter
+msgid "Export page footer"
+msgstr "Экспортировать нижний колонтитул"
+
+#: le_e_spreadsheet_consts.sexportpageheader
+msgid "Export page header"
+msgstr "Экспортировать верхний колонтитул"
+
 #: le_e_spreadsheet_consts.sexportpictures
 msgid "Export pictures"
 msgstr "Экспортировать изображения"
+
+#: le_e_spreadsheet_consts.sexportprintrange
+msgid "Export print range"
+msgstr "Экспортировать диапазон печати"
+
+#: le_e_spreadsheet_consts.sexportreportsummary
+msgid "Export report summary"
+msgstr "Экспортировать итог отчёта"
+
+#: le_e_spreadsheet_consts.sexportreporttitle
+msgid "Export report title"
+msgstr "Экспортировать заголовок отчёта"
 
 #: le_e_spreadsheet_consts.sexportsettings
 msgid "Export settings"
@@ -58,6 +78,10 @@ msgstr "Параметры экспорта"
 #: le_e_spreadsheet_consts.sexporttospreadsheet
 msgid "Export to spreadsheet"
 msgstr "Экспорт в электронную таблицу"
+
+#: le_e_spreadsheet_consts.sexporturl
+msgid "Export URL"
+msgstr "Экспортировать адреса URL"
 
 #: le_e_spreadsheet_consts.sgeneral
 msgid "General"
@@ -89,7 +113,7 @@ msgstr "Страница %d"
 
 #: le_e_spreadsheet_consts.spagerange
 msgid "Page range"
-msgstr "Диапазон страниц"
+msgstr "Диапазон печати"
 
 #: le_e_spreadsheet_consts.spages
 msgid "Pages:"

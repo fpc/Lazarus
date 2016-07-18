@@ -130,7 +130,7 @@ type
 implementation
 
 uses qtint, LCLIntf
-  {$IFDEF VerboseQtResize}, LCLProc{$ENDIF}
+  {$IF DEFINED(VerboseQtResize) OR DEFINED(DEBUGQTUSEACCURATEFRAME)}, LCLProc{$ENDIF}
   ;
 
 {------------------------------------------------------------------------------
@@ -199,6 +199,11 @@ begin
   {$IFDEF HASX11}
   if (QtVersionMajor = 4) and (QtVersionMinor >= 6) then
     QCoreApplication_setAttribute(QtAA_ImmediateWidgetCreation, False);
+  {$ENDIF}
+
+  {$IFDEF QtUseAccurateFrame}
+  if QtMainWindow.IsFramedWidget then
+    QtMainWindow.FrameMargins := QtWidgetSet.WSFrameMargins;
   {$ENDIF}
 
   // Sets Various Events
@@ -436,6 +441,8 @@ begin
       // qt doesn't modal windows as QtTool.see issue #18709
       if (TForm(AWinControl).BorderStyle in [bsToolWindow, bsSizeToolWin]) then
         QWidget_setWindowFlags(Widget.Widget, QtDialog);
+      if QApplication_activeModalWidget <> nil then
+        QWidget_setParent(Widget.Widget, QApplication_activeModalWidget);
       {$endif}
 
       {$ifdef HASX11}
@@ -942,26 +949,38 @@ var
   ASize: TSize;
 begin
   Result := False;
-  if AWinControl.HandleAllocated and
-     TQtMainWindow(AWinControl.Handle).testAttribute(QtWA_PendingResizeEvent) then
+  if AWinControl.HandleAllocated then
   begin
-    if Assigned(TCustomForm(AWinControl).Menu) then
+    {$IFDEF QTUSEACCURATEFRAME}
+    if TQtMainWindow(AWinControl.Handle).IsFramedWidget then
     begin
-      AWin := TQtMainWindow(AWinControl.Handle);
-      if Assigned(AWin.MenuBar) then
+      AClientRect := TQtMainWindow(AWinControl.Handle).getClientBounds;
+      {$IFDEF DEBUGQTUSEACCURATEFRAME}
+      DebugLn(Format('******TQtWSCustomForm.GetDefaultClientRect(%s): %s LCL l %d t %d w %d h %d',[dbgsName(AWinControl), dbgs(AClientRect), ALeft, ATop, aWidth, AHeight]));
+      {$ENDIF}
+      Result := True;
+    end else
+    {$ENDIF}
+    if TQtMainWindow(AWinControl.Handle).testAttribute(QtWA_PendingResizeEvent) then
+    begin
+      if Assigned(TCustomForm(AWinControl).Menu) then
       begin
-        AWin.MenuBar.sizeHint(@ASize);
-        // geometry isn't updated yet
-        if ASize.cy < 10 then
-          ASize.cy := 0;
-        // we must use real geometry, and then exclude menubar height.
-        aClientRect := AWin.getGeometry;
-        OffsetRect(aClientRect, -aClientRect.Left, -aClientRect.Top);
-        dec(AClientRect.Bottom, ASize.cy);
-        {$IFDEF VerboseQtResize}
-        DebugLn('TQtWSCustomForm.getDefaultClientRect ',dbgsName(AWinControl),' ',dbgs(AWin.getClientBounds),' mnuBarHeight ',dbgs(AWin.MenuBar.getHeight),' ASize=',dbgs(ASize),' FINAL=',dbgs(AClientRect));
-        {$ENDIF}
-        Result := True;
+        AWin := TQtMainWindow(AWinControl.Handle);
+        if Assigned(AWin.MenuBar) then
+        begin
+          AWin.MenuBar.sizeHint(@ASize);
+          // geometry isn't updated yet
+          if ASize.cy < 10 then
+            ASize.cy := 0;
+          // we must use real geometry, and then exclude menubar height.
+          aClientRect := AWin.getGeometry;
+          OffsetRect(aClientRect, -aClientRect.Left, -aClientRect.Top);
+          dec(AClientRect.Bottom, ASize.cy);
+          {$IFDEF VerboseQtResize}
+          DebugLn('TQtWSCustomForm.getDefaultClientRect ',dbgsName(AWinControl),' ',dbgs(AWin.getClientBounds),' mnuBarHeight ',dbgs(AWin.MenuBar.getHeight),' ASize=',dbgs(ASize),' FINAL=',dbgs(AClientRect));
+          {$ENDIF}
+          Result := True;
+        end;
       end;
     end;
   end;

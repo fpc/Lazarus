@@ -11,7 +11,6 @@
       <Title Value="browser"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
-      <Icon Value="0"/>
     </General>
     <i18n>
       <EnableI18N LFM="False"/>
@@ -50,9 +49,10 @@
         <ComponentName Value="frMain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
+        <CursorPos X="20" Y="16"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
     </Units>
   </ProjectOptions>

@@ -4,6 +4,7 @@
 
 unit allsynedit;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
@@ -30,7 +31,8 @@ uses
   LazSynTextArea, SynRegExpr, SynTextDrawer, SynEditMarkupGutterMark, 
   SynHighlighterBat, SynHighlighterIni, SynEditMarkupSpecialChar, 
   SynEditTextDoubleWidthChars, SynEditTextSystemCharWidth, SynEditMarkupIfDef, 
-  SynPluginMultiCaret, synhighlighterpike, LazarusPackageIntf;
+  SynPluginMultiCaret, synhighlighterpike, SynEditMarkupFoldColoring, 
+  LazarusPackageIntf;
 
 implementation
 

@@ -106,7 +106,7 @@ const
   VirtualTempDir='TEMPORARYDIRECTORY';
   
   // FPC operating systems and processor types
-  FPCOperatingSystemNames: array[1..33] of shortstring =(
+  FPCOperatingSystemNames: array[1..34] of shortstring =(
      'linux',
      'win32','win64','wince',
      'darwin','macos',
@@ -134,9 +134,10 @@ const
      'solaris',
      'symbian',
      'watcom',
-     'wdosx'
+     'wdosx',
+     'wii'
     );
-  FPCOperatingSystemCaptions: array[1..33] of shortstring =(
+  FPCOperatingSystemCaptions: array[1..34] of shortstring =(
      'AIX',
      'Amiga',
      'Android',
@@ -169,7 +170,8 @@ const
      'wdosx',
      'Win32',
      'Win64',
-     'WinCE'
+     'WinCE',
+     'Wii'
     );
 
   FPCOperatingSystemAlternativeNames: array[1..2] of shortstring =(
@@ -179,7 +181,7 @@ const
       'bsd', 'linux' // see GetDefaultSrcOS2ForTargetOS
     );
   FPCProcessorNames: array[1..12] of shortstring =(
-      'a64',
+      'aarch64',
       'arm',
       'avr',
       'i386',
@@ -2205,6 +2207,8 @@ end;
 
 function CreateFPCSourceTemplate(FPCSrcDir: string; Owner: TObject
   ): TDefineTemplate;
+const
+  RTLPkgDirs: array[1..4] of string = ('rtl-console','rtl-extra','rtl-objpas','rtl-unicode');
 var
   Dir, SrcOS, SrcOS2, aTargetCPU,
   IncPathMacro: string;
@@ -2272,7 +2276,7 @@ var
   PkgExtraGraphDir: TDefineTemplate;
   PkgExtraAMunitsDir: TDefineTemplate;
   FCLSubSrcDir: TDefineTemplate;
-  FCLSubDir: TDefineTemplate;
+  FCLSubDir, SubPkgDir: TDefineTemplate;
   Ok: Boolean;
 begin
   {$IFDEF VerboseFPCSrcScan}
@@ -2388,7 +2392,6 @@ begin
       ExternalMacroStart+'SrcPath',s,da_DefineRecurse));
     RTLDir.AddChild(RTLOSDir);
 
-
     // fcl
     FCLDir:=TDefineTemplate.Create('FCL',ctsFreePascalComponentLibrary,'','fcl',
         da_Directory);
@@ -2419,6 +2422,16 @@ begin
     PackagesDir:=TDefineTemplate.Create('Packages',ctsPackageDirectories,'',
        'packages',da_Directory);
     MainDir.AddChild(PackagesDir);
+
+    // packages/rtl-*
+    for s in RTLPkgDirs do begin
+      SubPkgDir:=TDefineTemplate.Create(s,s,'',s,da_Directory);
+      PackagesDir.AddChild(SubPkgDir);
+      SubPkgDir.AddChild(TDefineTemplate.Create('Include Path',
+        Format(ctsIncludeDirectoriesPlusDirs,['inc']),
+        IncludePathMacroName,
+        d(DefinePathMacro+'/inc'),da_DefineRecurse));
+    end;
 
     // packages/fcl-base
     FCLBaseDir:=TDefineTemplate.Create('FCL-base',
@@ -3001,8 +3014,8 @@ begin
     Result:=Result+'x64'
   else if SysUtils.CompareText(TargetCPU,'ia64')=0 then
     Result:=Result+'ia64'
-  else if SysUtils.CompareText(TargetCPU,'a64')=0 then
-    Result:=Result+'a64'
+  else if SysUtils.CompareText(TargetCPU,'aarch64')=0 then
+    Result:=Result+'aarch64'
   else
     Result:='fpc';
   Result:=Result+ExeExt;
@@ -3088,7 +3101,7 @@ begin
     'x86_64' : Intel_x86_64;
     'mipsel','mips' : Mips;
     'jvm'    : ;
-    'a64'    : ;
+    'aarch64': ;
   end;
 end;
 

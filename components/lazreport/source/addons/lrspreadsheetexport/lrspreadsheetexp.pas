@@ -39,7 +39,7 @@ unit lrSpreadSheetExp;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, le_e_spreadsheet_types;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, le_e_spreadsheet_types, LR_Class;
 
 type
 
@@ -47,9 +47,13 @@ type
 
   TlrSpreadSheetExport = class(TComponent)
   private
+    FBandTypes: TfrBandTypes;
     FDataGrouping: TlreDataGrouping;
     FDataGroupingChunks: integer;
     FDeleteEmptyRow: boolean;
+    FExportImages: boolean;
+    FExportPrintRange: boolean;
+    FExportURL: boolean;
     FMergeCell: boolean;
     FOpenAfterExport: boolean;
     FShowSetupForm: boolean;
@@ -66,6 +70,10 @@ type
     property DeleteEmptyRow:boolean read FDeleteEmptyRow write FDeleteEmptyRow;
     property MergeCell:boolean read FMergeCell write FMergeCell;
     property ShowSetupForm:boolean read FShowSetupForm write FShowSetupForm;
+    property ExportURL:boolean read FExportURL write FExportURL default false;
+    property ExportPrintRange:boolean read FExportPrintRange write FExportPrintRange default false;
+    property BandTypes:TfrBandTypes read FBandTypes write FBandTypes;
+    property ExportImages:boolean read FExportImages write FExportImages;
   end;
 
 procedure Register;
@@ -97,7 +105,10 @@ begin
   FOpenAfterExport:=true;
   FMergeCell:=true;
   FDeleteEmptyRow:=false;
+  FExportURL:=false;
+  FExportPrintRange:=false;
   FShowSetupForm:=true;
+  FBandTypes:=[btReportTitle..btNone];
 end;
 
 destructor TlrSpreadSheetExport.Destroy;

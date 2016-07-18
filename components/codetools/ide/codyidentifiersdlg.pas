@@ -233,7 +233,7 @@ type
 
   TQuickFixIdentifierNotFoundShowDictionary = class(TMsgQuickFix)
   public
-    function IsApplicable(Msg: TMessageLine; out Identifer: string): boolean;
+    function IsApplicable(Msg: TMessageLine; out Identifier: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
@@ -367,11 +367,11 @@ end;
 { TQuickFixIdentifierNotFoundShowDictionary }
 
 function TQuickFixIdentifierNotFoundShowDictionary.IsApplicable(
-  Msg: TMessageLine; out Identifer: string): boolean;
+  Msg: TMessageLine; out Identifier: string): boolean;
 var
   Dummy: string;
 begin
-  Result:=IDEFPCParser.MsgLineIsId(Msg,5000,Identifer,Dummy);
+  Result:=IDEFPCParser.MsgLineIsId(Msg,5000,Identifier,Dummy);
 end;
 
 procedure TQuickFixIdentifierNotFoundShowDictionary.CreateMenuItems(

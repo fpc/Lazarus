@@ -12,12 +12,10 @@
 function TShortCutList.Add(const S: String): Integer;
 var
   ShortCut: TShortCut;
-  p: Pointer;
 begin
   Result := inherited Add(S);
   ShortCut := TextToShortCut(S);
-  p := Pointer(PtrUInt(ShortCut));
-  Objects[Result] := TObject(p);
+  Objects[Result] := TObject(PtrUInt(ShortCut));
 end;
 
 function TShortCutList.GetShortCuts(Index: Integer): TShortCut;

@@ -484,7 +484,7 @@ end;
 destructor TDbgCallstackEntry.Destroy;
 begin
   FreeAndNil(FRegisterValueList);
-  FreeAndNil(FSymbol);
+  ReleaseRefAndNil(FSymbol);
   inherited Destroy;
 end;
 

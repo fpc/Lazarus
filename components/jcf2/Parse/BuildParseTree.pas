@@ -4836,7 +4836,7 @@ begin
   lc := fcTokenList.FirstSolidToken;
 
   if not IdentifierNext(peStrictness) then
-    raise TEParseError.Create('Expected identifer', lc);
+    raise TEParseError.Create('Expected identifier', lc);
 
   PushNode(nIdentifier);
   Recognise(IdentiferTokens);
@@ -4867,7 +4867,7 @@ var
   lbMore: boolean;
 begin
   if not (IdentifierNext(idAllowDirectives)) then
-    raise TEParseError.Create('Expected identifer', fcTokenList.FirstSolidToken);
+    raise TEParseError.Create('Expected identifier', fcTokenList.FirstSolidToken);
 
   // a method name is an identifier
   PushNode(nIdentifier);
@@ -5079,7 +5079,7 @@ begin
   lc := fcTokenList.FirstSolidToken;
 
   if not (lc.TokenType in IdentiferTokens + [ttAtSign]) then
-    raise TEParseError.Create('Expected asm identifer', lc);
+    raise TEParseError.Create('Expected asm identifier', lc);
 
   while (lc.TokenType in IdentiferTokens + [ttAtSign]) do
   begin

@@ -1,22 +1,22 @@
-{  This file was automatically created by Lazarus. Do not edit!
-  This source is only used to compile and install
-  the package filefindlaz 1.0.2.
+{ This file was automatically created by Lazarus. Do not edit!
+  This source is only used to compile and install the package.
  }
 
-unit filefindlaz; 
+unit filefindlaz;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  FileFind, LazarusPackageIntf; 
+  FileFind, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('FileFind', @FileFind.Register); 
-end; 
+  RegisterUnit('FileFind', @FileFind.Register);
+end;
 
 initialization
-  RegisterPackage('filefindlaz', @Register); 
+  RegisterPackage('filefindlaz', @Register);
 end.

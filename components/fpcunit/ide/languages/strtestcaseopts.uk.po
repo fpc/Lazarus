@@ -4,10 +4,12 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: uk\n"
+"X-Generator: Poedit 1.6.4\n"
 
 #: strtestcaseopts.sbtncreate
 msgid "Create unit"
@@ -15,15 +17,15 @@ msgstr "Створити модуль"
 
 #: strtestcaseopts.schksetup
 msgid "Create Setup Method"
-msgstr "Створити Налаштувальний Метод"
+msgstr "Створити налаштувальний метод"
 
 #: strtestcaseopts.schktear
 msgid "Create TearDown method"
-msgstr "Створити Метод Демонтажу"
+msgstr "Створити метод демонтажу"
 
 #: strtestcaseopts.sfrmtest
 msgid "TestCase Options"
-msgstr "Параметри Тесту"
+msgstr "Параметри тесту"
 
 #: strtestcaseopts.sgrpfixture
 msgid "Fixture"
@@ -31,9 +33,9 @@ msgstr "Пристосування"
 
 #: strtestcaseopts.sgrpnames
 msgid "Names"
-msgstr "Імена"
+msgstr "Назви"
 
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
-msgstr "Ім'я тесту за замовчуванням"
+msgstr "Типова назва тесту"
 

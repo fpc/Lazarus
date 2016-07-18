@@ -37,15 +37,19 @@ type
   TPage = class;
 
   TBeforeShowPageEvent = procedure (ASender: TObject; ANewPage: TPage; ANewIndex: Integer) of object;
+  TImagePaintBackgroundEvent = procedure (ASender: TObject; ACanvas: TCanvas; ARect: TRect) of object;
 
   TPage = class(TCustomControl)
   private
     FOnBeforeShow: TBeforeShowPageEvent;
+    function GetPageIndex: Integer;
   protected
     procedure SetParent(AParent: TWinControl); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+  public
+    property PageIndex: Integer read GetPageIndex;
   published
     // Lazarus-specific TPage events
     // OnBeforeShow occurs before a page is displayed, so that
@@ -75,6 +79,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property TabOrder stored False;
+    property TabStop;
     property Visible stored False;
   end;
 
@@ -126,8 +131,8 @@ type
 {    function TabIndexAtClientPos(ClientPos: TPoint): integer;
     function TabRect(AIndex: Integer): TRect;
     function GetImageIndex(ThePageIndex: Integer): Integer; virtual;
-    function IndexOf(APage: TCustomPage): integer;
     function CustomPage(Index: integer): TCustomPage;}
+    function IndexOf(APage: TPage): integer;
   public
     property ActivePage: String read GetActivePage;// write SetActivePage; // should not be published because the read can raise an exception
     property ActivePageComponent: TPage read GetActivePageComponent;// write SetActivePage; // should not be published because the read can raise an exception
@@ -481,8 +486,11 @@ type
   private
     FAntialiasingMode: TAntialiasingMode;
     FOnPictureChanged: TNotifyEvent;
+    FOnPaintBackground: TImagePaintBackgroundEvent;
     FPicture: TPicture;
     FCenter: Boolean;
+    FKeepOriginXWhenClipped: Boolean;
+    FKeepOriginYWhenClipped: Boolean;
     FProportional: Boolean;
     FTransparent: Boolean;
     FStretch: Boolean;
@@ -492,6 +500,8 @@ type
     procedure SetAntialiasingMode(AValue: TAntialiasingMode);
     procedure SetPicture(const AValue: TPicture);
     procedure SetCenter(const AValue : Boolean);
+    procedure SetKeepOriginX(AValue: Boolean);
+    procedure SetKeepOriginY(AValue: Boolean);
     procedure SetProportional(const AValue: Boolean);
     procedure SetStretch(const AValue : Boolean);
     procedure SetTransparent(const AValue : Boolean);
@@ -514,6 +524,8 @@ type
     property Align;
     property AutoSize;
     property Center: Boolean read FCenter write SetCenter default False;
+    property KeepOriginXWhenClipped: Boolean read FKeepOriginXWhenClipped write SetKeepOriginX default False;
+    property KeepOriginYWhenClipped: Boolean read FKeepOriginYWhenClipped write SetKeepOriginY default False;
     property Constraints;
     property Picture: TPicture read FPicture write SetPicture;
     property Visible;
@@ -530,6 +542,7 @@ type
     property Transparent: Boolean read FTransparent write SetTransparent default False;
     property Proportional: Boolean read FProportional write SetProportional default False;
     property OnPictureChanged: TNotifyEvent read FOnPictureChanged write FOnPictureChanged;
+    property OnPaintBackground: TImagePaintBackgroundEvent read FOnPaintBackground write FOnPaintBackground;
   end;
 
 
@@ -543,6 +556,8 @@ type
     property AutoSize;
     property BorderSpacing;
     property Center;
+    property KeepOriginXWhenClipped;
+    property KeepOriginYWhenClipped;
     property Constraints;
     property DragCursor;
     property DragMode;
@@ -563,6 +578,7 @@ type
     property OnMouseWheelUp;
     property OnPaint;
     property OnPictureChanged;
+    property OnPaintBackground;
     property OnResize;
     property OnStartDrag;
     property ParentShowHint;
@@ -1005,10 +1021,12 @@ type
     FBevelWidth : TBevelWidth;
     FAlignment : TAlignment;
     FFullRepaint: Boolean;
+    FWordWrap: Boolean;
     procedure SetAlignment(const Value : TAlignment);
     procedure SetBevelInner(const Value: TPanelBevel);
     procedure SetBevelOuter(const Value: TPanelBevel);
     procedure SetBevelWidth(const Value: TBevelWidth);
+    procedure SetWordwrap(const Value: Boolean);
   protected
     class procedure WSRegisterClass; override;
     procedure AdjustClientRect(var aRect: TRect); override;
@@ -1019,6 +1037,7 @@ type
     procedure RealSetText(const Value: TCaption); override;
     procedure Paint; override;
     procedure UpdateParentColorChange;
+    property WordWrap: Boolean read FWordwrap write SetWordwrap default false;
   public
     constructor Create(TheOwner: TComponent); override;
     property Align default alNone;
@@ -1071,6 +1090,7 @@ type
     property TabStop;
     property UseDockManager default True;
     property Visible;
+    property Wordwrap;
     property OnClick;
     property OnContextPopup;
     property OnDockDrop;
@@ -1155,8 +1175,10 @@ type
     FControlList: TFlowPanelControlList;
     FAutoWrap: Boolean;
     FFlowStyle: TFlowStyle;
+    FFlowLayout: TTextLayout;
     procedure SetAutoWrap(const AAutoWrap: Boolean);
     procedure SetControlList(const AControlList: TFlowPanelControlList);
+    procedure SetFlowLayout(const aFlowLayout: TTextLayout);
     procedure SetFlowStyle(const AFlowStyle: TFlowStyle);
   protected
     procedure CMControlChange(var Message: TCMControlChange); message CM_CONTROLCHANGE;
@@ -1175,6 +1197,7 @@ type
     property AutoWrap: Boolean read FAutoWrap write SetAutoWrap;
     property ControlList: TFlowPanelControlList read FControlList write SetControlList;
     property FlowStyle: TFlowStyle read FFlowStyle write SetFlowStyle;
+    property FlowLayout: TTextLayout read FFlowLayout write SetFlowLayout;
   end;
 
   TFlowPanel = class(TCustomFlowPanel)
@@ -1201,6 +1224,7 @@ type
     property DragKind;
     property DragMode;
     property Enabled;
+    property FlowLayout;
     property FlowStyle;
     property FullRepaint;
     property Font;

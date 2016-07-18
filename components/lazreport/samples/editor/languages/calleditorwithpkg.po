@@ -1,8 +1,5 @@
 msgid ""
-msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: maincalleditor.ceractivereport
 msgid "Active report: %s"
@@ -76,10 +73,6 @@ msgstr ""
 msgid "none"
 msgstr ""
 
-#: maincalleditor.cernotimplemented
-msgid "This feature is not yet implemented!"
-msgstr ""
-
 #: maincalleditor.ceropenreport
 msgid "Open report"
 msgstr ""
@@ -107,15 +100,6 @@ msgstr ""
 #: maincalleditor.certhumbnails
 msgctxt "maincalleditor.certhumbnails"
 msgid "Thumbnails"
-msgstr ""
-
-#: tfrmcustompreview.frmcustompreview.caption
-msgid "frmCustomPreview"
-msgstr ""
-
-#: tfrmcustompreview.frpreview1.caption
-msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
-msgid "frPreview1"
 msgstr ""
 
 #: tfrmmain.accclose.caption

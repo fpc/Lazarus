@@ -259,7 +259,7 @@ type
     function AddDependencyToUnitOwners(const OwnedFilename,
                               RequiredUnitname: string): TModalResult; override;
     function RedirectPackageDependency(APackage: TIDEPackage): TIDEPackage; override;
-    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList); override;
+    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList; IgnoreModifiedFlag: boolean = False); override;
     function RevertPackages(APackageList: TStringList): TModalResult; override;
 
     // project
@@ -4498,12 +4498,8 @@ begin
     Result:=GetMissingDependenciesForUnit(UnitFilename,ComponentClassnames,
                                           MissingDependencies);
     if Result<>mrOk then exit;
-    if (UnitNames.Count=0)
-    and ((MissingDependencies=nil) or (MissingDependencies.Count=0)) then begin
-      // no change needed
-      Result:=mrOk;
-      exit;
-    end;
+    if (UnitNames.Count=0)                                   // no change needed
+    and ((MissingDependencies=nil) or (MissingDependencies.Count=0)) then exit;
 
     if not Quiet then begin
       Result:=AskUser;
@@ -4960,8 +4956,7 @@ begin
   Result:=nil;
 end;
 
-function TPkgManager.ShowFindInPackageFilesDlg(APackage: TLazPackage
-  ): TModalResult;
+function TPkgManager.ShowFindInPackageFilesDlg(APackage: TLazPackage): TModalResult;
 var
   Dlg: TLazFindInFilesDialog;
 begin
@@ -5004,10 +4999,11 @@ begin
   end;
 end;
 
-procedure TPkgManager.GetPackagesChangedOnDisk(out ListOfPackages: TStringList);
+procedure TPkgManager.GetPackagesChangedOnDisk(out ListOfPackages: TStringList;
+  IgnoreModifiedFlag: boolean);
 begin
   if PackageGraph=nil then exit;
-  PackageGraph.GetPackagesChangedOnDisk(ListOfPackages);
+  PackageGraph.GetPackagesChangedOnDisk(ListOfPackages, IgnoreModifiedFlag);
 end;
 
 function TPkgManager.RevertPackages(APackageList: TStringList): TModalResult;

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, Buttons, ClipBrd, LCLType, LCLProc, SynEdit, SynHighlighterPo,
-  PoFamilies, GraphStat, PoCheckerConsts, PoCheckerSettings;
+  PoFamilies, PoFamilyLists, GraphStat, PoCheckerConsts, PoCheckerSettings;
 
 type
 
@@ -32,13 +32,21 @@ type
     procedure SaveBtnClick(Sender: TObject);
   private
     PoHL: TSynPoSyn;
+    FPoFamilyList: TPoFamilyList;
     FPoFamilyStats: TPoFamilyStats;
     FSettings: TPoCheckerSettings;
     procedure SaveToFile;
     procedure LoadConfig;
     procedure SaveConfig;
   public
+    // The following fields keep translation statistics calculated when tests were performed.
+    // They will allow to avoid recalculation of these values in GraphStat form.
+    FTotalTranslated: Integer;
+    FTotalUntranslated: Integer;
+    FTotalFuzzy: Integer;
+    FTotalPercTranslated: Double;
     property Log: TStringList read FLog write FLog;
+    property PoFamilyList: TPoFamilyList read FPoFamilyList write FPoFamilyList;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
     property Settings: TPoCheckerSettings read FSettings write FSettings;
   end; 
@@ -60,6 +68,9 @@ begin
   SaveBtn.Caption := sSaveCaption;
   CopyBtn.Caption := sCopyCaption;
   GraphStatBtn.Caption := sShowStatGraph;
+  FTotalTranslated := 0;
+  FTotalUntranslated := 0;
+  FTotalFuzzy := 0;
 end;
 
 procedure TResultDlgForm.FormClose(Sender: TObject;
@@ -105,8 +116,17 @@ var
 begin
   GraphStatForm := TGraphStatForm.Create(nil);
   try
+    GraphStatForm.PoFamilyList := Self.PoFamilyList;
     GraphStatForm.PoFamilyStats := Self.PoFamilyStats;
     GraphStatForm.Settings := Self.Settings;
+
+    GraphStatForm.TranslatedLabel.Caption := Format(sTranslatedStringsTotal, [
+      IntToStr(FTotalTranslated), FTotalPercTranslated]);
+    GraphStatForm.UnTranslatedLabel.Caption := Format(sUntranslatedStringsTotal
+      , [IntToStr(FTotalUntranslated)]);
+    GraphStatForm.FuzzyLabel.Caption := Format(sFuzzyStringsTotal, [IntToStr(
+      FTotalFuzzy)]);
+
     mr := GraphStatForm.ShowModal;
     if mr = mrOpenEditorFile then ModalResult := mr; // To inform pocheckermain
   finally
@@ -121,7 +141,7 @@ begin
     try
       LogMemo.Lines.SaveToFile(SaveDialog.FileName);
     except
-      on E: EStreamError do MessageDlg('Po-checker',Format(sSaveError,[SaveDialog.FileName]),mtError, [mbOk],0);
+      on E: EStreamError do MessageDlg('POChecker',Format(sSaveError,[SaveDialog.FileName]),mtError, [mbOk],0);
     end;
   end;
 end;
@@ -133,7 +153,7 @@ begin
     try
       LogMemo.Lines.SaveToFile(SaveDialog.FileName);
     except
-      MessageDlg('Po-checker',Format(sSaveError,[SaveDialog.FileName]), mtError, [mbOk], 0);
+      MessageDlg('POChecker',Format(sSaveError,[SaveDialog.FileName]), mtError, [mbOk], 0);
     end;
   end;
 end;
@@ -150,6 +170,10 @@ begin
     ARect := FitToRect(ARect, Screen.WorkAreaRect);
     BoundsRect := ARect;
   end;
+  if Settings.DisableAntialiasing then
+    LogMemo.Font.Quality := fqNonAntialiased
+  else
+    LogMemo.Font.Quality := fqDefault;
 end;
 
 procedure TResultDlgForm.SaveConfig;

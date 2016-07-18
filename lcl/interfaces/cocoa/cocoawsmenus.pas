@@ -233,27 +233,30 @@ begin
   if attachedAppleMenuItems then Exit;
   if not hasSubmenu() then Exit;
 
-  nsCharCode := NSStringUtf8('');
   // Separator
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
   // Hide App
   ns := NSStringUtf8('Hide ' + Application.Title);
+  nsCharCode := NSStringUtf8('h');
   item := TCocoaMenuItem_HideApp.alloc.initWithTitle_action_keyEquivalent(ns,
     objcselector('lclItemSelected:'), nsCharCode);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
   item.setTarget(item);
+  // release mem
+  nsCharCode.release;
   ns.release;
   // Separator
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
   // Quit
   ns := NSStringUtf8('Quit');
+  nsCharCode := NSStringUtf8('q');
   item := TCocoaMenuItem_Quit.alloc.initWithTitle_action_keyEquivalent(ns,
     objcselector('lclItemSelected:'), nsCharCode);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
   item.setTarget(item);
-  ns.release;
   // release mem
   nsCharCode.release;
+  ns.release;
 
   attachedAppleMenuItems := True;
 end;
@@ -282,9 +285,13 @@ end;
   Creates new menu in Cocoa interface
  ------------------------------------------------------------------------------}
 class function TCocoaWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
+var
+  ns: NSString;
 begin
   //WriteLn(':>[TCocoaWSMenu.CreateHandle]');
-  Result := HMENU(TCocoaMenu.alloc.initWithTitle(NSStringUtf8('')));
+  ns := NSStringUtf8('');
+  Result := HMENU(TCocoaMenu.alloc.initWithTitle(ns));
+  ns.release;
 end;
 
 { TCocoaWSMainMenu }
@@ -602,7 +609,7 @@ begin
 
     // New method for 10.6+
     TCocoaMenu(APopupMenu.Handle).popUpMenuPositioningItem_atLocation_inView(
-      nil, GetNSPoint(X, Y), nil);
+      nil, LCLCoordsToCocoa(nil, X, Y), nil);
 
     APopupMenu.Close; // notify LCL popup menu
   end;

@@ -13,12 +13,10 @@ type
 
   { TPromptDialog }
 
-  TPromptDialog = class(TForm)
+  TPromptDialog = class(TCustomCopyToClipboardDialog)
   private
     FCancelKind: TBitBtnKind;
     function CreateButtons(AVerticalLayout: Boolean; ASpacing: Integer): Integer;
-  protected
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   public
     IsSmallDevice: Boolean;
   
@@ -38,6 +36,7 @@ type
     constructor CreateMessageDialog(const ACaption, aMsg: string;
       DialogType: Longint; TheButtons: PLongint; ButtonCount, DefaultIndex : Longint);
     destructor Destroy; override;
+    function GetMessageText: string; override;
   end;
 
 
@@ -91,16 +90,6 @@ begin
     DefaultButton.Default := True;
 end;
 
-procedure TPromptDialog.KeyDown(var Key: Word; Shift: TShiftState);
-begin
-  inherited KeyDown(Key, Shift);
-  if (Shift = [ssModifier]) and (Key = VK_C) then
-  begin
-    Key := 0;
-    ClipBoard.AsText := MSG;
-  end;
-end;
-
 procedure TPromptDialog.Paint;
 var
   UseMaskHandle: HBitmap;
@@ -130,7 +119,6 @@ var
   curKind: TBitBtnKind;
 begin
   inherited CreateNew(nil, 1);
-  KeyPreview := True; //needed for capturing Ctrl+C in KeyDown
   IsSmallDevice := (Screen.Width <= 300);
 
   AutoScroll := False;
@@ -215,6 +203,11 @@ destructor TPromptDialog.Destroy;
 begin
   FBitmap.Free;
   inherited destroy;
+end;
+
+function TPromptDialog.GetMessageText: string;
+begin
+  Result := MSG;
 end;
 
 procedure TPromptDialog.LayoutDialog;
@@ -544,7 +537,7 @@ type
 
   { TQuestionDlg }
 
-  TQuestionDlg = class(TForm)
+  TQuestionDlg = class(TCustomCopyToClipboardDialog)
   private
     FButtons: TList;
     FBitmap: TCustomBitmap;
@@ -563,6 +556,7 @@ type
     procedure Paint; override;
     procedure LayoutDialog;
     function ShowModal: TModalResult; override;
+    function GetMessageText: string; override;
   end;
 
 { TQuestionDlg }
@@ -861,6 +855,11 @@ begin
   FreeAndNil(FButtons);
   FreeAndNil(FBitmap);
   inherited Destroy;
+end;
+
+function TQuestionDlg.GetMessageText: string;
+begin
+  Result := MessageTxt;
 end;
 
 procedure TQuestionDlg.KeyDown(var Key: Word; Shift: TShiftState);

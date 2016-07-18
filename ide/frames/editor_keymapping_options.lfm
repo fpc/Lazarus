@@ -103,6 +103,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
       Top = 248
       Width = 459
       Align = alBottom
+      OnMoved = KeyMapSplitterMoved
       ResizeAnchor = akBottom
     end
     object TreeView: TTreeView

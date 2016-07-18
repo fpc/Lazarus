@@ -9,26 +9,28 @@ inherited MainForm: TMainForm
   OnCreate = FormCreate
   object Label1: TLabel[0]
     Left = 14
-    Height = 13
+    Height = 15
     Top = 16
-    Width = 76
+    Width = 83
     Caption = 'Select language'
     FocusControl = CbLanguage
     ParentColor = False
   end
   object CbLanguage: TComboBox[1]
     Left = 136
-    Height = 21
+    Height = 23
     Top = 13
     Width = 100
-    ItemHeight = 13
+    ItemHeight = 15
     Items.Strings = (
-      'de - Deutsch'
+      'de - deutsch'
       'en - English'
       'es - Español'
       'fr - Français'
       'he - Hebrew'
-      'ru - Russian'
+      'hu - magyar'
+      'it - Italiano'
+      'ru - русский'
     )
     OnChange = CbLanguageChange
     Style = csDropDownList
@@ -57,7 +59,7 @@ inherited MainForm: TMainForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 79
+    ClientHeight = 77
     ClientWidth = 214
     Items.Strings = (
       'beer'
@@ -85,9 +87,9 @@ inherited MainForm: TMainForm
   end
   object LblCurrentSelection: TLabel[6]
     Left = 18
-    Height = 13
+    Height = 15
     Top = 154
-    Width = 86
+    Width = 95
     Caption = 'No drink selected.'
     ParentColor = False
   end

@@ -185,7 +185,7 @@ type
     procedure OnProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
     procedure EnableI18NForSelectedLFM(TheEnable: boolean);
   protected
-    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure IdleHandler(Sender: TObject; var {%H-}Done: Boolean);
   public
     constructor Create(TheOwner: TComponent); override;
@@ -652,9 +652,9 @@ begin
   if LazProject.EnableI18N and LazProject.EnableI18NForLFM
   and (HasLFMCount>0) then begin
     AddPopupMenuItem(lisEnableI18NForLFM,
-      @EnableI18NForLFMMenuItemClick, DisabledI18NForLFMCount<HasLFMCount);
+      @EnableI18NForLFMMenuItemClick, DisabledI18NForLFMCount>0);
     AddPopupMenuItem(lisDisableI18NForLFM,
-      @DisableI18NForLFMMenuItemClick, DisabledI18NForLFMCount>0);
+      @DisableI18NForLFMMenuItemClick, DisabledI18NForLFMCount<HasLFMCount);
   end;
 
   // Required packages section
@@ -1191,7 +1191,7 @@ begin
   end;
 end;
 
-procedure TProjectInspectorForm.KeyUp(var Key: Word; Shift: TShiftState);
+procedure TProjectInspectorForm.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
   ExecuteIDEShortCut(Self,Key,Shift,nil);
@@ -1252,12 +1252,12 @@ end;
 
 function TProjectInspectorForm.ExtendIncSearchPath(NewIncPaths: string): boolean;
 begin
-  Result:=MainIDEInterface.ExtendProjectIncSearchPath(LazProject,NewIncPaths);
+  Result:=LazProject.ExtendIncSearchPath(NewIncPaths);
 end;
 
 function TProjectInspectorForm.ExtendUnitSearchPath(NewUnitPaths: string): boolean;
 begin
-  Result:=MainIDEInterface.ExtendProjectUnitSearchPath(LazProject,NewUnitPaths);
+  Result:=LazProject.ExtendUnitSearchPath(NewUnitPaths);
 end;
 
 function TProjectInspectorForm.FilesBaseDirectory: string;

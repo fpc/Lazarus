@@ -483,6 +483,14 @@ msgstr "Pabraukti,taip,ne"
 msgid "No Action"
 msgstr "Jokio veiksmo"
 
+#: syneditstrconst.syns_emcoverviewguttergotomark
+msgid "Jump to Mark (Overview Gutter)"
+msgstr ""
+
+#: syneditstrconst.syns_emcoverviewgutterscrollto
+msgid "Scroll (Overview Gutter)"
+msgstr ""
+
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
 msgstr "Spartusis atrankos įdėjimas"

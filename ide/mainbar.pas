@@ -83,6 +83,7 @@ type
       //itmFileOpenSave: TIDEMenuSection;
         itmFileOpen: TIDEMenuCommand;
         itmFileRevert: TIDEMenuCommand;
+        itmFileOpenUnit: TIDEMenuCommand;
         //itmFileRecentOpen: TIDEMenuSection;
         itmFileSave: TIDEMenuCommand;
         itmFileSaveAs: TIDEMenuCommand;
@@ -203,7 +204,7 @@ type
         itmSourceToggleComment: TIDEMenuCommand;
         itmSourceEncloseBlock: TIDEMenuCommand;
         itmSourceEncloseInIFDEF: TIDEMenuCommand;
-        itmSourceCompleteCode: TIDEMenuCommand;
+        itmSourceCompleteCodeInteractive: TIDEMenuCommand;
         itmSourceUseUnit: TIDEMenuCommand;
       //itmSourceCodeToolChecks: TIDEMenuSection;
         itmSourceSyntaxCheck: TIDEMenuCommand;
@@ -262,6 +263,7 @@ type
       //itmProjectSaveSection: TIDEMenuSection;
         itmProjectSave: TIDEMenuCommand;
         itmProjectSaveAs: TIDEMenuCommand;
+        itmProjectResaveFormsWithI18n: TIDEMenuCommand;
         itmProjectPublish: TIDEMenuCommand;
       //itmProjectWindowSection: TIDEMenuSection;
         itmProjectInspector: TIDEMenuCommand;
@@ -284,6 +286,7 @@ type
         itmRunMenuBuildManyModes: TIDEMenuCommand;
         itmRunMenuAbortBuild: TIDEMenuCommand;
       //itmRunnning: TIDEMenuSection;
+        itmRunMenuRunWithoutDebugging: TIDEMenuCommand;
         itmRunMenuRun: TIDEMenuCommand;
         itmRunMenuPause: TIDEMenuCommand;
         itmRunMenuShowExecutionPoint: TIDEMenuCommand;
@@ -818,6 +821,7 @@ procedure TMainIDEBar.AllowCompilation(aAllow: Boolean);
 // Enables or disables IDE GUI controls associated with compiling and building.
 // Does it interfere with DebugBoss.UpdateButtonsAndMenuItems? Maybe should be refactored and combined.
 begin
+  itmRunMenuRunWithoutDebugging.Enabled:=aAllow;
   itmRunMenuRun.Enabled:=aAllow;
   itmRunMenuCompile.Enabled:=aAllow;
   itmRunMenuBuild.Enabled:=aAllow;

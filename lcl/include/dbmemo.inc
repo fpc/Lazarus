@@ -255,4 +255,4 @@ begin
             (FDataLink <> nil) and FDataLink.UpdateAction(AAction);
 end;
 
-// included by dbctrls.pas
+// included by dbctrls.pp

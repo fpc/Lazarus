@@ -28,7 +28,7 @@ unit ExceptionDlg;
 interface
 
 uses
-  Classes, Forms, StdCtrls, Buttons, LazarusIDEStrConsts;
+  Classes, Forms, Dialogs, StdCtrls, Buttons, LazarusIDEStrConsts;
 
 type
   
@@ -73,12 +73,17 @@ constructor TIDEExceptionDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Caption := lisExceptionDialog;
-  btnBreak.Caption := lisBreak;
-  btnContinue.Caption := lisContinue;
+  btnBreak.Caption := lisMenuBreak;
+  btnContinue.Caption := lisMenuContinue;
   cbIgnoreExceptionType.Caption := lisIgnoreExceptionType;
 
   btnBreak.LoadGlyphFromResourceName(HInstance, 'menu_pause');
   btnContinue.LoadGlyphFromResourceName(HInstance, 'menu_run');
+
+  DefaultControl := btnBreak;
+  CancelControl := btnContinue;
+
+  RegisterDialogForCopyToClipboard(Self);
 end;
 
 function TIDEExceptionDlg.Execute(AMessage: String; out IgnoreException: Boolean): TModalResult;

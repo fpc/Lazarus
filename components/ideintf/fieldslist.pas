@@ -72,7 +72,7 @@ var
   PreActive: boolean;
   FieldDef: TFieldDef;
 
-  function FieldNameToPascalIdentifer(const AName: string): string;
+  function FieldNameToPascalIdentifier(const AName: string): string;
   var
     i : integer;
   begin
@@ -102,7 +102,7 @@ var
       if CompareText(Owner.Components[j].Name, AName) = 0 then
       begin
         Result := FDesigner.CreateUniqueComponentName(LinkDataset.Name +
-          FieldNameToPascalIdentifer(NewField.FieldName));
+          FieldNameToPascalIdentifier(NewField.FieldName));
         exit;
       end;
     end;
@@ -125,7 +125,7 @@ begin
             Continue;
           NewField := FieldDef.CreateField(LinkDataset.Owner);
           NewField.Name := CreateFieldName(LinkDataset.Owner, LinkDataset.Name +
-            FieldNameToPascalIdentifer(NewField.FieldName));
+            FieldNameToPascalIdentifier(NewField.FieldName));
           FDesigner.PropertyEditorHook.PersistentAdded(NewField, True);
           fModified := True;
         end;

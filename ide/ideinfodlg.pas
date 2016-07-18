@@ -30,9 +30,11 @@ unit IDEInfoDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls,
-  LCLProc, LazFileUtils, LazUTF8, IDEHelpIntf, IDEWindowIntf, LazIDEIntf,
-  LazHelpIntf, LazHelpHTML, ButtonPanel, DefineTemplates, CodeToolManager,
+  Classes, SysUtils, LazFileUtils, LazUTF8,
+  CodeToolManager, DefineTemplates,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls,
+  LCLProc, ButtonPanel, LazHelpHTML, LazHelpIntf,
+  IDEHelpIntf, IDEWindowIntf, LazIDEIntf, IDEExternToolIntf,
   EnvironmentOpts, AboutFrm, LazConf, LazarusIDEStrConsts, Project,
   SourceEditor, InitialSetupProc, PackageSystem, PackageDefs;
 
@@ -42,6 +44,7 @@ type
 
   TIDEInfoDialog = class(TForm)
     ButtonPanel1: TButtonPanel;
+    ExtToolMemo: TMemo;
     GeneralMemo: TMemo;
     HelpMemo: TMemo;
     ModifiedMemo: TMemo;
@@ -49,6 +52,7 @@ type
     GeneralTabSheet: TTabSheet;
     ModifiedTabSheet: TTabSheet;
     HelpTabSheet: TTabSheet;
+    ExtToolTabSheet: TTabSheet;
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
   private
@@ -66,10 +70,13 @@ type
     procedure GatherHelpViewers(sl: TStrings);
     procedure GatherHelpDB(Prefix: string; const HelpDB: THelpDatabase; const sl: TStrings);
     procedure GatherHelpViewer(Prefix: string; const Viewer: THelpViewer; const sl: TStrings);
+    // external tools
+    procedure GatherExternalTools(sl: TStrings);
   public
     procedure UpdateGeneralMemo;
     procedure UpdateModifiedMemo;
     procedure UpdateHelpMemo;
+    procedure UpdateExternalTools;
   end;
 
 var
@@ -103,6 +110,7 @@ begin
   UpdateGeneralMemo;
   UpdateModifiedMemo;
   UpdateHelpMemo;
+  UpdateExternalTools;
   PageControl1.PageIndex:=0;
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
@@ -190,6 +198,43 @@ begin
       sl.Add(Prefix+'  '+Viewer.SupportedMimeTypes[i]);
   end;
   sl.Add('');
+end;
+
+procedure TIDEInfoDialog.GatherExternalTools(sl: TStrings);
+var
+  i, j: Integer;
+  Tool: TAbstractExternalTool;
+  View: TExtToolView;
+  Parser: TExtToolParser;
+begin
+  sl.Add('External Tools: '+IntToStr(ExternalToolList.Count));
+  for i:=0 to ExternalToolList.Count-1 do begin
+    Tool:=ExternalToolList[i];
+    sl.Add('Tool '+IntToStr(i)+'/'+IntToStr(ExternalToolList.Count)
+      +' ParserCount='+IntToStr(Tool.ParserCount)+' ViewCount='+IntToStr(Tool.ViewCount));
+    sl.Add('  Stage='+dbgs(Tool.Stage));
+    sl.Add('  Process.Active='+dbgs(Tool.Process.Active));
+    sl.Add('  Process.Executable='+AnsiQuotedStr(Tool.Process.Executable,'"'));
+    sl.Add('  Process.CurrentDirectory='+AnsiQuotedStr(Tool.Process.CurrentDirectory,'"'));
+    sl.Add('  Process.Running='+dbgs(Tool.Process.Running));
+    sl.Add('  CmdLineParams='+AnsiQuotedStr(Tool.CmdLineParams,'"'));
+    sl.Add('  ErrorMessage='+AnsiQuotedStr(Tool.ErrorMessage,'"'));
+    sl.Add('  ExitStatus='+IntToStr(Tool.ExitStatus));
+    sl.Add('  Terminated='+dbgs(Tool.Terminated));
+    sl.Add('  ReadStdOutBeforeErr='+dbgs(Tool.ReadStdOutBeforeErr));
+    sl.Add('  WorkerDirectory='+AnsiQuotedStr(Tool.WorkerDirectory,'"'));
+
+    for j:=0 to Tool.ViewCount-1 do begin
+      Parser:=Tool.Parsers[j];
+      sl.Add('   Parser '+IntToStr(j)+'/'+IntToStr(Tool.ParserCount)+' '+Parser.ClassName);
+    end;
+
+    for j:=0 to Tool.ViewCount-1 do begin
+      View:=Tool.Views[j];
+      sl.Add('   View '+IntToStr(j)+'/'+IntToStr(Tool.ViewCount)+' '+AnsiQuotedStr(View.Caption,'"'));
+    end;
+    sl.Add('');
+  end;
 end;
 
 procedure TIDEInfoDialog.GatherIDEVersion(sl: TStrings);
@@ -434,6 +479,19 @@ begin
     GatherHelpDatabases(sl);
     GatherHelpViewers(sl);
     HelpMemo.Lines.Assign(sl);
+  finally
+    sl.Free;
+  end;
+end;
+
+procedure TIDEInfoDialog.UpdateExternalTools;
+var
+  sl: TStringList;
+begin
+  sl:=TStringList.Create;
+  try
+    GatherExternalTools(sl);
+    ExtToolMemo.Lines.Assign(sl);
   finally
     sl.Free;
   end;

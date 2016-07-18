@@ -1270,7 +1270,8 @@ var
   X, Y: integer;
   p: TPosition;
   AForm: TCustomForm;
-  RealRect: TRect;
+  RealRect, AFormRealRect: TRect;
+  AFormRealWidth, AFormRealHeight: Integer;
 begin
   if (Parent <> nil) or (ParentWindow <> 0) then exit;
 
@@ -1323,8 +1324,17 @@ begin
             Y := (AForm.ClientHeight - RealHeight) div 2;
           end else
           begin
-            X := ((AForm.Width - RealWidth) div 2) + AForm.Left;
-            Y := ((AForm.Height - RealHeight) div 2) + AForm.Top;
+            if AForm.HandleAllocated and (GetWindowRect(AForm.Handle, AFormRealRect) <> 0) then
+            begin // success
+              AFormRealWidth := AFormRealRect.Right-AFormRealRect.Left;
+              AFormRealHeight := AFormRealRect.Bottom-AFormRealRect.Top;
+            end else
+            begin // error
+              AFormRealWidth := AForm.Width;
+              AFormRealHeight := AForm.Height;
+            end;
+            X := ((AFormRealWidth - RealWidth) div 2) + AForm.Left;
+            Y := ((AFormRealHeight - RealHeight) div 2) + AForm.Top;
           end;
         end;
       end;
@@ -1486,15 +1496,16 @@ begin
      (PopupMode in [pmAuto, pmExplicit]) // set WndParent of non-modal windows only for pmAuto, pmExplicit
   then
   begin
-    case PopupMode of
-      pmAuto:
-      begin
-        Result := Screen.ActiveForm;
-        if (Result<>nil) and (Result.FormStyle = fsSplash) then // ignore fsSplash
-          Result := nil;
-      end;
-      pmExplicit: Result := PopupParent;
-    end;
+    if (PopupMode = pmAuto)
+    or ((PopupMode = pmNone) and (fsModal in FormState)) then
+    begin
+      Result := Screen.ActiveForm;
+      if (Result<>nil) and (Result.FormStyle = fsSplash) then // ignore fsSplash
+        Result := nil;
+    end else
+    if (PopupMode = pmExplicit) then
+      Result := PopupParent;
+
     if (Result = nil) or not Result.HandleAllocated then
       Result := Application.MainForm;
   end;
@@ -2900,6 +2911,8 @@ begin
   Application.ModalStarted;
   try
     Include(FFormState, fsModal);
+    if (PopupMode = pmNone) and HandleAllocated then
+      RecreateWnd(Self); // need to refresh handle for pmNone because ParentWindow changes if (fsModal in FFormState) - see GetRealPopupParent
     ActiveWindow := GetActiveWindow;
     SavedFocusState := SaveFocusState;
     SavedCursor := Screen.Cursor;
@@ -2968,6 +2981,8 @@ begin
       if LCLIntf.IsWindow(ActiveWindow) then
         SetActiveWindow(ActiveWindow);
       Exclude(FFormState, fsModal);
+      if ((PopupMode = pmNone) and HandleAllocated) and not (csDestroying in ComponentState) then
+        RecreateWnd(Self); // need to refresh handle for pmNone because ParentWindow changes if (fsModal in FFormState) - see GetRealPopupParent
     end;
   finally
     Application.ModalFinished;

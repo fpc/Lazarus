@@ -342,11 +342,9 @@ begin
               if not OwnerData and (FSelected = Item) then
                 InvalidateSelected
               else if OwnerData and (nm^.iItem=FSelectedIdx) then
-              begin
-                FSelectedIdx:=-1;
                 InvalidateSelected;
-              end;
-              DoSelectItem(Item, False);
+              if nm^.iItem > -1 then
+                DoSelectItem(Item, False);
             end else
             begin
               FSelected := Item;
@@ -356,7 +354,8 @@ begin
                 FSelectedIdx:=nm^.iItem;
               end;
               //DebugLn('TCustomListView.CNNotify FSelected=',dbgs(FSelected));
-              DoSelectItem(Item, True);
+              if nm^.iItem > -1 then
+                DoSelectItem(Item, True);
             end;
           end;
         end;
@@ -425,6 +424,7 @@ begin
     DoEndEdit(FEditor.Item, S);
   FEditor.Item := nil;
   FEditor.Visible := False;
+  FEditor.SetBounds(0, 0, 0, 0);
 end;
 
 procedure TCustomListView.ShowEditor;
@@ -1057,6 +1057,7 @@ end;
 procedure TCustomListView.BeginUpdate;
 begin
   Inc(FUpdateCount);
+  Include(FFlags, lffPreparingSorting);
   if (FUpdateCount = 1) and HandleAllocated
   then TWSCustomListViewClass(WidgetSetClass).BeginUpdate(Self);
 end;
@@ -1082,6 +1083,7 @@ begin
   then RaiseGDBException('TCustomListView.EndUpdate FUpdateCount=0');
   
   Dec(FUpdateCount);
+  if FUpdateCount=0 then Exclude(FFlags, lffPreparingSorting);
   if (FUpdateCount = 0) and HandleAllocated
   then TWSCustomListViewClass(WidgetSetClass).EndUpdate(Self);
 end;
@@ -1107,7 +1109,7 @@ end;
 function TCustomListView.FindCaption(StartIndex: Integer; Value: string;
   Partial, Inclusive, Wrap: Boolean; PartStart: Boolean = True): TListItem;
 begin
-  Result := FListItems.FindCaption(StartIndex, Value, Partial, Inclusive, Wrap);
+  Result := FListItems.FindCaption(StartIndex, Value, Partial, Inclusive, Wrap, PartStart);
 end;
 
 function TCustomListView.FindData(StartIndex: Integer; Value: Pointer;
@@ -1555,7 +1557,7 @@ var
 begin
   if (AValue<>nil) and (AValue.ListView<>Self) then
     raise Exception.Create('Item does not belong to this listview');
-  if FSelected = AValue then Exit;
+  if (not FOwnerData) and (FSelected = AValue) then Exit;
   //DebugLn('TCustomListView.SetSelection FSelected=',dbgs(FSelected));
   if AValue = nil then
   begin

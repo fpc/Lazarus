@@ -1,16 +1,14 @@
 {%MainUnit ../lconvencoding.pp}
 
-{******************************************************************************
-                               Asian Unicode Functions
- ******************************************************************************
-
+{
  *****************************************************************************
-  This file is part of the Lazarus Component Library (LCL)
+  This file is part of LazUtils.
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
  *****************************************************************************
 
+  Asian Unicode Functions.
   The clipboard is able to work with the windows and gtk behaviour/features.
 }
 

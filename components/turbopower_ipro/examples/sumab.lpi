@@ -2,65 +2,69 @@
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
+    <PathDelim Value="\"/>
     <General>
       <Flags>
-        <LRSInOutputDirectory Value="False"/>
+        <SaveOnlyProjectUnits Value="True"/>
       </Flags>
-      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
-      <Title Value="TestXMLReder"/>
+      <Title Value="sumab"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
     </General>
+    <i18n>
+      <EnableI18N LFM="False"/>
+    </i18n>
     <VersionInfo>
       <StringTable ProductVersion=""/>
     </VersionInfo>
-    <BuildModes Count="1">
-      <Item1 Name="default" Default="True"/>
+    <BuildModes Count="1" Active="Default">
+      <Item1 Name="Default" Default="True"/>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
-      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
-      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="test.xml"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="TurboPowerIPro"/>
       </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
-        <Filename Value="TestXMLReder.lpr"/>
+        <Filename Value="sumab.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestXMLReder"/>
+        <UsageCount Value="20"/>
       </Unit0>
       <Unit1>
-        <Filename Value="testxmlreaderunit.pas"/>
+        <Filename Value="sumabfrm.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="XMLRederForm"/>
+        <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="TestXMLReaderUnit"/>
+        <IsVisibleTab Value="True"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
       </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
+    <PathDelim Value="\"/>
     <Target>
-      <Filename Value="TestXMLReder"/>
+      <Filename Value="sumab"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
       <Options>
@@ -69,9 +73,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">

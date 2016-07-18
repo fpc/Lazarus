@@ -169,6 +169,7 @@ var
   WindowInfoAtom: ATOM;
   ChangedMenus: TFPList; // list of HWNDs which menus needs to be redrawn
   WindowsVersion: TWindowsVersion = wvUnknown;
+  ComCtlVersion: Cardinal = 0; //initialized in Win32Extra
 
 
 implementation

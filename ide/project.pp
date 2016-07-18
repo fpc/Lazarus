@@ -345,7 +345,7 @@ type
     function GetFileOwner: TObject; override;
     function GetFileOwnerName: string; override;
 
-    function ChangedOnDisk(CompareOnlyLoadSaveTime: boolean): boolean;
+    function ChangedOnDisk(CompareOnlyLoadSaveTime: boolean; IgnoreModifiedFlag: boolean = False): boolean;
     function IsAutoRevertLocked: boolean;
     function IsReverting: boolean;
     function IsMainUnit: boolean;
@@ -673,7 +673,7 @@ type
 
   { TProjectIDEOptions }
 
-  TProjectIDEOptions = class(TAbstractIDEOptions)
+  TProjectIDEOptions = class(TAbstractIDEProjectOptions)
   private
     FProject: TProject;
   public
@@ -720,6 +720,9 @@ type
     FDefineTemplates: TProjectDefineTemplates;
     fDestroying: boolean;
     FEnableI18N: boolean;
+    FI18NExcludedIdentifiers: TStrings;
+    FI18NExcludedOriginals: TStrings;
+    FForceUpdatePoFiles: Boolean;
     fFirst, fLast: array[TUnitInfoList] of TUnitInfo;
     FFirstRemovedDependency: TPkgDependency;
     FFirstRequiredDependency: TPkgDependency;
@@ -882,7 +885,7 @@ type
     function SomeDataModified(Verbose: boolean = false): boolean;
     function SomeSessionModified(Verbose: boolean = false): boolean;
     procedure MainSourceFilenameChanged;
-    procedure GetUnitsChangedOnDisk(var AnUnitList: TFPList);
+    procedure GetUnitsChangedOnDisk(var AnUnitList: TFPList; IgnoreModifiedFlag: boolean = False);
     function HasProjectInfoFileChangedOnDisk: boolean;
     procedure IgnoreProjectInfoFileOnDisk;
     function ReadProject(const NewProjectInfoFile: string;
@@ -1011,6 +1014,8 @@ type
     function GetStateFilename: string;
     function GetCompileSourceFilename: string;
     procedure AutoAddOutputDirToIncPath;
+    function ExtendUnitSearchPath(NewUnitPaths: string): boolean;
+    function ExtendIncSearchPath(NewIncPaths: string): boolean;
 
     // compile state file
     function LoadStateFile(IgnoreErrors: boolean): TModalResult;
@@ -1047,6 +1052,9 @@ type
     property Destroying: boolean read fDestroying;
     property EnableI18N: boolean read FEnableI18N write SetEnableI18N;
     property EnableI18NForLFM: boolean read FEnableI18NForLFM write SetEnableI18NForLFM;
+    property I18NExcludedIdentifiers: TStrings read FI18NExcludedIdentifiers;
+    property I18NExcludedOriginals: TStrings read FI18NExcludedOriginals;
+    property ForceUpdatePoFiles: Boolean read FForceUpdatePoFiles write FForceUpdatePoFiles;
     property FirstAutoRevertLockedUnit: TUnitInfo read GetFirstAutoRevertLockedUnit;
     property FirstLoadedUnit: TUnitInfo read GetFirstLoadedUnit;
     property FirstPartOfProject: TUnitInfo read GetFirstPartOfProject;
@@ -2065,9 +2073,10 @@ begin
   Result:=FRevertLockCount>0;
 end;
 
-function TUnitInfo.ChangedOnDisk(CompareOnlyLoadSaveTime: boolean): boolean;
+function TUnitInfo.ChangedOnDisk(CompareOnlyLoadSaveTime: boolean;
+  IgnoreModifiedFlag: boolean): boolean;
 begin
-  Result:=(Source<>nil) and Source.FileOnDiskHasChanged;
+  Result:=(Source<>nil) and Source.FileOnDiskHasChanged(IgnoreModifiedFlag);
   //if Result then debugln(['TUnitInfo.ChangedOnDisk ',Filename,' FileAgeCached=',FileAgeCached(Source.Filename)]);
   if Result
   and (not CompareOnlyLoadSaveTime)
@@ -2664,6 +2673,10 @@ begin
   Title := '';
   FUnitList := TFPList.Create;  // list of TUnitInfo
   FOtherDefines := TStringList.Create;
+  FEnableI18N := False;
+  FEnableI18NForLFM := True;
+  FI18NExcludedIdentifiers := TStringList.Create;
+  FI18NExcludedOriginals := TStringList.Create;
 
   FResources := TProjectResources.Create(Self);
   ProjResources.OnModified := @EmbeddedObjectModified;
@@ -2686,6 +2699,8 @@ begin
   FreeAndNil(FAllEditorsInfoList);
   FreeThenNil(FResources);
   FreeThenNil(FBookmarks);
+  FreeThenNil(FI18NExcludedOriginals);
+  FreeThenNil(FI18NExcludedIdentifiers);
   FreeThenNil(FOtherDefines);
   FreeThenNil(FUnitList);
   FreeThenNil(FJumpHistory);
@@ -2861,6 +2876,8 @@ begin
     EnableI18NForLFM := FXMLConfig.GetValue(Path+'i18n/EnableI18N/LFM', True);
     POOutputDirectory := SwitchPathDelims(
          FXMLConfig.GetValue(Path+'i18n/OutDir/Value', ''),fPathDelimChanged);
+    LoadStringList(FXMLConfig, FI18NExcludedIdentifiers, Path+'i18n/ExcludedIdentifiers/');
+    LoadStringList(FXMLConfig, FI18NExcludedOriginals, Path+'i18n/ExcludedOriginals/');
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
 
@@ -3150,6 +3167,9 @@ begin
   FXMLConfig.SetDeleteValue(Path+'i18n/OutDir/Value',
      SwitchPathDelims(CreateRelativePath(POOutputDirectory,ProjectDirectory),
                       fCurStorePathDelim), '');
+  SaveStringList(FXMLConfig, FI18NExcludedIdentifiers, Path+'i18n/ExcludedIdentifiers/');
+  SaveStringList(FXMLConfig, FI18NExcludedOriginals, Path+'i18n/ExcludedOriginals/');
+
   // Resources
   ProjResources.WriteToProjectFile(FXMLConfig, Path);
   // save custom data
@@ -3617,6 +3637,8 @@ begin
   FAutoOpenDesignerFormsDisabled := false;
   FEnableI18N:=false;
   FEnableI18NForLFM:=true;
+  FI18NExcludedOriginals.Clear;
+  FI18NExcludedIdentifiers.Clear;
   FBookmarks.Clear;
   ClearBuildModes;
   FDefineTemplates.Clear;
@@ -4343,7 +4365,8 @@ begin
   ExtendPath(SrcPathMacroName,CompilerOptions.SrcPath);
 end;
 
-procedure TProject.GetUnitsChangedOnDisk(var AnUnitList: TFPList);
+procedure TProject.GetUnitsChangedOnDisk(var AnUnitList: TFPList;
+  IgnoreModifiedFlag: boolean);
 var
   AnUnitInfo: TUnitInfo;
 begin
@@ -4351,7 +4374,7 @@ begin
   AnUnitInfo:=fFirst[uilAutoRevertLocked];
   while (AnUnitInfo<>nil) do begin
     if (AnUnitInfo.Source<>nil)
-    and AnUnitInfo.ChangedOnDisk(false) then begin
+    and AnUnitInfo.ChangedOnDisk(false, IgnoreModifiedFlag) then begin
       if AnUnitList=nil then
         AnUnitList:=TFPList.Create;
       AnUnitList.Add(AnUnitInfo);
@@ -4814,8 +4837,7 @@ end;
 
 procedure TProject.AddSrcPath(const SrcPathAddition: string);
 begin
-  CompilerOptions.SrcPath:=MergeSearchPaths(CompilerOptions.SrcPath,
-                                            GetForcedPathDelims(SrcPathAddition));
+  CompilerOptions.MergeToSrcPath( GetForcedPathDelims(SrcPathAddition) );
 end;
 
 function TProject.GetSourceDirs(WithProjectDir, WithoutOutputDir: boolean): string;
@@ -4854,16 +4876,55 @@ begin
 end;
 
 procedure TProject.AutoAddOutputDirToIncPath;
-var
-  IncPath: String;
 begin
   if pfLRSFilesInOutputDirectory in Flags then begin
     // the .lrs files are auto created in the output directory
     // => make sure the project output directory is in the include path
-    IncPath:=CompilerOptions.IncludePath;
-    if SearchDirectoryInSearchPath(IncPath,'$(ProjOutDir)')<1 then
-      CompilerOptions.IncludePath:=MergeSearchPaths(IncPath,';$(ProjOutDir)');
+    if SearchDirectoryInSearchPath(CompilerOptions.IncludePath,'$(ProjOutDir)')<1 then
+      CompilerOptions.MergeToIncludePaths(';$(ProjOutDir)');
   end;
+end;
+
+function TProject.ExtendUnitSearchPath(NewUnitPaths: string): boolean;
+var
+  CurUnitPaths: String;
+  r: TModalResult;
+begin
+  CurUnitPaths:=CompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
+  NewUnitPaths:=RemoveSearchPaths(NewUnitPaths,CurUnitPaths);
+  if NewUnitPaths<>'' then begin
+    NewUnitPaths:=CreateRelativeSearchPath(NewUnitPaths,ProjectDirectory);
+    r:=IDEMessageDialog(lisExtendUnitPath,
+      Format(lisExtendUnitSearchPathOfProjectWith, [#13, NewUnitPaths]),
+      mtConfirmation, [mbYes, mbNo, mbCancel]);
+    case r of
+    mrYes: CompilerOptions.MergeToUnitPaths(NewUnitPaths);
+    mrNo: ;
+    else exit(false);
+    end;
+  end;
+  Result:=true;
+end;
+
+function TProject.ExtendIncSearchPath(NewIncPaths: string): boolean;
+var
+  CurIncPaths: String;
+  r: TModalResult;
+begin
+  CurIncPaths:=CompilerOptions.ParsedOpts.GetParsedValue(pcosIncludePath);
+  NewIncPaths:=RemoveSearchPaths(NewIncPaths,CurIncPaths);
+  if NewIncPaths<>'' then begin
+    NewIncPaths:=CreateRelativeSearchPath(NewIncPaths,ProjectDirectory);
+    r:=IDEMessageDialog(lisExtendIncludePath,
+      Format(lisExtendIncludeFilesSearchPathOfProjectWith, [#13, NewIncPaths]),
+      mtConfirmation, [mbYes, mbNo, mbCancel]);
+    case r of
+    mrYes: CompilerOptions.MergeToIncludePaths(NewIncPaths);
+    mrNo: ;
+    else exit(false);
+    end;
+  end;
+  Result:=true;
 end;
 
 function TProject.LoadStateFile(IgnoreErrors: boolean): TModalResult;
@@ -5061,7 +5122,8 @@ end;
 
 procedure TProject.SetActiveBuildMode(const AValue: TProjectBuildMode);
 begin
-  if FActiveBuildMode=AValue then exit;
+  // Must be set even if FActiveBuildMode=AValue. Modes may be added and deleted,
+  //  the same old address can be used by a new mode.
   FActiveBuildMode:=AValue;
   if FActiveBuildMode<>nil then
     FLazCompilerOptions:=FActiveBuildMode.CompilerOptions

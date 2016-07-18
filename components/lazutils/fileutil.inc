@@ -11,7 +11,7 @@
  *****************************************************************************
 }
  
-{$IFnDEF DisableWrapperFunctions}
+{$IFDEF EnableWrapperFunctions}
 function NeedRTLAnsi: boolean;
 begin
   Result := LazUtf8.NeedRTLAnsi;
@@ -340,7 +340,7 @@ begin
 end;
 {$ENDIF}
 
-{$ENDIF DisableWrapperFunctions}
+{$ENDIF EnableWrapperFunctions}
 
 // ToDo: For ExpandUNCFileNameUTF8
 //
@@ -696,8 +696,6 @@ end;
 function CopyDirTree(const SourceDir, TargetDir: string; Flags: TCopyFileFlags=[]): Boolean;
 var
   Searcher: TCopyDirTree;
-  RelPath: String;
-  B: Boolean;
 begin
   Result:=False;
   Searcher:=TCopyDirTree.Create;
@@ -710,10 +708,15 @@ begin
     Searcher.FTargetDir:=LazFileUtils.TrimFilename(SetDirSeparators(TargetDir));
 
     // Don't even try to copy to a subdirectory of SourceDir.
-    B := TryCreateRelativePath(LazFileUtils.ExpandFilenameUtf8(Searcher.FSourceDir),
-      LazFileUtils.ExpandFilenameUtf8(Searcher.FTargetDir), False, True, RelPath);
-    if B and ((Copy(RelPath,1,2) = '..') or (RelPath = '')) then Exit;
-
+    {$ifdef CaseInsensitiveFilenames}
+      {$ifdef ACP_RTL}
+      if AnsiStartsText(Searcher.FSourceDir, Searcher.FTargetDir) then Exit;
+      {$else ACP_RTL}
+      if Utf8StartsText(Searcher.FSourceDir, Searcher.FTargetDir) then Exit;
+      {$endif}
+    {$ELSE}
+      if AnsiStartsStr(Searcher.FSourceDir, Searcher.FTargetDir) then Exit;
+    {$ENDIF}
     Searcher.Search(SourceDir);
     Result:=Searcher.FCopyFailedCount=0;
   finally

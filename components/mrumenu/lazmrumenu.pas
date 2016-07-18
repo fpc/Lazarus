@@ -2,8 +2,9 @@
   This source is only used to compile and install the package.
  }
 
-unit lazmrumenu; 
+unit lazmrumenu;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
@@ -11,11 +12,11 @@ uses
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('reglazmru', @reglazmru.Register); 
-end; 
+  RegisterUnit('reglazmru', @reglazmru.Register);
+end;
 
 initialization
-  RegisterPackage('lazmrumenu', @Register); 
+  RegisterPackage('lazmrumenu', @Register);
 end.

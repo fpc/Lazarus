@@ -72,7 +72,8 @@ type
     dgTruncCellHints,                   // show cell hints if cell text is too long
     dgCellEllipsis,                     // show ... if cell text is truncated
     dgRowHighlight,                     // Highlight current row
-    dgThumbTracking
+    dgThumbTracking,
+    dgDblClickAutoSize                  // dblclicking columns borders (on hdrs) resize col.
   );
   TDbGridOptions = set of TDbGridOption;
 
@@ -369,9 +370,12 @@ type
     procedure ClearSelection(selCurrent:boolean=false);
     function  NeedAutoSizeColumns: boolean;
     procedure RenewColWidths;
+    procedure InternalAutoSizeColumn(aCol: Integer; aCanvas: TCanvas; aDatalinkActive: Boolean);
+    procedure DoHeaderClick(Index: Integer);
   protected
     procedure AddAutomaticColumns;
     procedure AssignTo(Dest: TPersistent); override;
+    procedure AutoAdjustColumn(aCol: Integer); override;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
     procedure BeginLayout;
     procedure CellClick(const aCol,aRow: Integer; const Button:TMouseButton); override;
@@ -428,6 +432,7 @@ type
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; override;
     function  GetIsCellTitle(aCol,aRow: Integer): boolean; override;
     procedure GetSelectedState(AState: TGridDrawState; out IsSelected:boolean); override;
+    function GetSmoothScroll(Which: Integer): Boolean; override;
     function  GetTruncCellHintText(aCol, aRow: Integer): string; override;
     function  GridCanModify: boolean;
     procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);override;
@@ -491,7 +496,8 @@ type
     property OnUserCheckboxState: TDbGridCheckboxStateEvent read FOnCheckboxState write FOnCheckboxState;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure AutoSizeColumns;
+    procedure AutoAdjustColumns; override;
+    procedure AutoSizeColumns; deprecated 'This method will be deleted in 1.8. Use AutoAdjustColumns';
     procedure InitiateAction; override;
     procedure DefaultDrawColumnCell(const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
     function  EditorByStyle(Style: TColumnButtonStyle): TWinControl; override;
@@ -683,7 +689,7 @@ begin
         end;
       end;
     end; // if HasTitle ...
-  end; // if (Field=nil) or (Field.DisplayWidth=0) 
+  end; // if (Field=nil) or (Field.DisplayWidth=0)
   {$ifdef dbgDBGridExtra}
   DebugLnExit('CalcColumnFieldWidth DONE result=%d', [result]);
   {$endif}
@@ -817,6 +823,17 @@ begin
   ColCount := OldFixedCols + 1;
   if dgIndicator in Options then
     ColWidths[0]:=12;
+end;
+
+procedure TCustomDBGrid.DoHeaderClick(Index: Integer);
+var
+  Column: TColumn;
+begin
+  if Assigned(OnTitleClick) then begin
+    Column := TColumn(ColumnFromGridColumn(Index));
+    if Column <> nil then
+      OnTitleClick(Column);
+  end;
 end;
 
 function TCustomDBGrid.GetColumns: TDBGridColumns;
@@ -1146,6 +1163,11 @@ begin
     else
       Exclude(OldOptions, goRowHighlight);
 
+    if dgDblClickAutoSize in FOptions then
+      Include(OldOptions, goDblClickAutoSize)
+    else
+      Exclude(OldOptions, goDblClickAutoSize);
+
     if (dgIndicator in ChangedOptions) then begin
       if (dgIndicator in FOptions) then
         FixedCols := FixedCols + 1
@@ -1223,7 +1245,7 @@ begin
 
     if (edField<>nil) and (edField = SelField) then begin
       {$ifdef dbgDBGrid}
-      DebugLnEnter('%s.UpdateData INIT Field[%s(%s)]=%s', 
+      DebugLnEnter('%s.UpdateData INIT Field[%s(%s)]=%s',
                    [ClassName, edField.Fieldname ,edField.AsString, FTempText]);
       {$endif}
 
@@ -1477,7 +1499,7 @@ var
   C: TColumn;
 begin
   Result := '';
-  if (ARow < FixedRows) then 
+  if (ARow < FixedRows) then
     exit;
   if Assigned(FOnGetCellHint) then begin
     C := ColumnFromGridColumn(ACol) as TColumn;
@@ -1491,7 +1513,7 @@ var
   F: TField;
 begin
   Result := '';
-  if ARow < FixedRows then 
+  if ARow < FixedRows then
     exit;
   F := GetFieldFromGridColumn(ACol);
   if (F <> nil) then
@@ -1767,16 +1789,40 @@ begin
     inherited AssignTo(Dest);
 end;
 
+procedure TCustomDBGrid.AutoAdjustColumn(aCol: Integer);
+var
+  DatalinkActive: Boolean;
+  CurActiveRecord: Integer;
+  tmpCanvas: TCanvas;
+begin
+  BeginLayout;
+
+  DatalinkActive := FDatalink.Active;
+  if DatalinkActive then
+    CurActiveRecord := FDatalink.ActiveRecord;
+
+  tmpCanvas := GetWorkingCanvas(Canvas);
+  try
+
+    InternalAutoSizeColumn(aCol,tmpCanvas,DatalinkActive);
+
+  finally
+    if TmpCanvas<>Canvas then
+      FreeWorkingCanvas(tmpCanvas);
+
+    if DatalinkActive then
+      FDatalink.ActiveRecord := CurActiveRecord;
+
+    EndLayout;
+  end;
+end;
+
 procedure TCustomDBGrid.UpdateAutoSizeColumns;
 var
-  ACol,ARow,w: Integer;
+  ACol: Integer;
   DatalinkActive: boolean;
   CurActiveRecord: Integer;
-  Field: TField;
-  ColWidth: Integer;
   tmpCanvas: TCanvas;
-  C: TGridColumn;
-  s: string;
 begin
   if gsAutoSized in GridStatus then
     exit;
@@ -1789,45 +1835,10 @@ begin
 
   tmpCanvas := GetWorkingCanvas(Canvas);
   try
-    for aCol:=FixedCols to ColCount-1 do begin
 
-      Field := GetFieldFromGridColumn(ACol);
-      C := ColumnFromGridColumn(ACol);
+    for aCol:=FixedCols to ColCount-1 do
+      InternalAutoSizeColumn(ACol,tmpCanvas,DatalinkActive);
 
-      if (C<>nil) and (C.Title<>nil) then begin
-        tmpCanvas.Font := C.Title.Font;
-        ColWidth := tmpCanvas.TextWidth(trim(C.Title.Caption));
-        tmpCanvas.Font := C.Font;
-      end else begin
-        if (Field<>nil) then begin
-          tmpCanvas.Font := TitleFont;
-          ColWidth := tmpCanvas.TextWidth(Field.FieldName);
-        end
-        else
-          ColWidth := 0;
-        tmpCanvas.Font := Font;
-      end;
-
-      if (Field<>nil) and DatalinkActive then
-        for ARow := FixedRows to RowCount-1 do begin
-
-          FDatalink.ActiveRecord := ARow - FixedRows;
-
-          if Field.dataType<>ftBlob then
-            s := trim(Field.DisplayText)
-          else
-            s := '(blob)';
-          w := tmpCanvas.TextWidth(s);
-          if w>ColWidth then
-            ColWidth := w;
-
-        end;
-
-      if ColWidth=0 then
-        ColWidth := GetColumnWidth(ACol);
-
-      ColWidths[ACol] := ColWidth + 15;
-    end;
   finally
     if TmpCanvas<>Canvas then
       FreeWorkingCanvas(tmpCanvas);
@@ -2176,17 +2187,12 @@ begin
 end;
 
 procedure TCustomDBGrid.HeaderClick(IsColumn: Boolean; index: Integer);
-var
-  Column: TColumn;
 begin
   {$ifdef dbgDBGrid}
   DebugLn('%s.HeaderClick', [ClassName]);
   {$endif}
-  if Assigned(OnTitleClick) and IsColumn then begin
-    Column := TColumn(ColumnFromGridColumn(Index));
-    if Column<>nil then
-      OnTitleClick(Column);
-  end;
+  if IsColumn then
+    DoHeaderClick(Index);
 end;
 
 procedure TCustomDBGrid.KeyDown(var Key: Word; Shift: TShiftState);
@@ -2808,17 +2814,19 @@ begin
   if Button<>mbLeft then
     exit;
 
-  if (aCol>=FirstGridColumn)and(aRow>=FixedRows) then
-  begin
-    if IsColumnVisible(aCol) and
-       (ColumnEditorStyle(ACol, SelectedField) = cbsCheckboxColumn) then begin
-      // react only if overriden editor is hidden
-      if (Editor=nil) or not EditorMode then
-        SwapCheckBox
-    end;
+  if (aCol>=FirstGridColumn) then begin
+    if (aRow>=FixedRows) then begin
+      if IsColumnVisible(aCol) and
+         (ColumnEditorStyle(ACol, SelectedField) = cbsCheckboxColumn) then begin
+        // react only if overriden editor is hidden
+        if (Editor=nil) or not EditorMode then
+          SwapCheckBox
+      end;
+      if Assigned(OnCellClick) then
+        OnCellClick(TColumn(ColumnFromGridColumn(aCol)));
+    end else
+      DoHeaderClick(aCol)
   end;
-  if Assigned(OnCellClick) then
-    OnCellClick(TColumn(ColumnFromGridColumn(aCol)));
 end;
 
 procedure TCustomDBGrid.EndLayout;
@@ -2955,6 +2963,14 @@ begin
   inherited GetSelectedState(AState, IsSelected);
   if IsSelected and not Self.Focused and not(dgAlwaysShowSelection in Options) then
     IsSelected := false;
+end;
+
+function TCustomDBGrid.GetSmoothScroll(Which: Integer): Boolean;
+begin
+  if Which=SB_Vert then
+    Result := False
+  else
+    Result := inherited GetSmoothScroll(Which);
 end;
 
 function TCustomDBGrid.GridCanModify: boolean;
@@ -3381,6 +3397,7 @@ end;
 procedure TCustomDBGrid.UpdateActive;
 var
   PrevRow: Integer;
+  NewRow: Integer;
 begin
   if (csDestroying in ComponentState) or
     (FDatalink=nil) or (not FDatalink.Active) or
@@ -3391,7 +3408,10 @@ begin
   		[ClassName, Name, FDataLink.ActiveRecord, FixedRows, Row]);
   {$endif}
   PrevRow := Row;
-  Row:= FixedRows + FDataLink.ActiveRecord;
+  NewRow:= FixedRows + FDataLink.ActiveRecord;
+  if NewRow>RowCount-1 then
+    NewRow := RowCount-1;
+  Row := NewRow;
   if PrevRow<>Row then
     InvalidateCell(0, PrevRow);//(InvalidateRow(PrevRow);
   InvalidateRow(Row);
@@ -3483,12 +3503,18 @@ begin
 
   // What a dilema!, we need ssAutoHorizontal and ssVertical!!!
   ScrollBars:=ssBoth;
+  AllowOutboundEvents := false;
+end;
+
+procedure TCustomDBGrid.AutoAdjustColumns;
+begin
+  Exclude(FGridStatus, gsAutoSized);
+  UpdateAutoSizeColumns;
 end;
 
 procedure TCustomDBGrid.AutoSizeColumns;
 begin
-  RenewColWidths;
-  LayoutChanged;
+  AutoAdjustColumns;
 end;
 
 procedure TCustomDBGrid.InitiateAction;
@@ -3579,6 +3605,7 @@ begin
       else
         aPos := FDataLink.DataSet.RecNo - 1; // RecNo is 1 based
       if aPos<0 then aPos:=0;
+      if aRange=0 then aRange:=1; // there's always 1 (new) row
     end else begin
       aRange := 6;
       aPage := 2;
@@ -3623,6 +3650,53 @@ procedure TCustomDBGrid.RenewColWidths;
 begin
   FDefaultColWidths := True;
   exclude(FGridStatus, gsAutoSized);
+end;
+
+procedure TCustomDBGrid.InternalAutoSizeColumn(aCol: Integer; aCanvas: TCanvas; aDatalinkActive: Boolean);
+var
+  Field: TField;
+  C: TGridColumn;
+  ColWidth: Integer;
+  ARow,w: Integer;
+  s: string;
+
+begin
+  Field := GetFieldFromGridColumn(ACol);
+  C := ColumnFromGridColumn(ACol);
+
+  if (C<>nil) and (C.Title<>nil) then begin
+    aCanvas.Font := C.Title.Font;
+    ColWidth := aCanvas.TextWidth(trim(C.Title.Caption));
+    aCanvas.Font := C.Font;
+  end else begin
+    if (Field<>nil) then begin
+      aCanvas.Font := TitleFont;
+      ColWidth := aCanvas.TextWidth(Field.FieldName);
+    end
+    else
+      ColWidth := 0;
+    aCanvas.Font := Font;
+  end;
+
+  if (Field<>nil) and aDatalinkActive then
+    for ARow := FixedRows to RowCount-1 do begin
+
+      FDatalink.ActiveRecord := ARow - FixedRows;
+
+      if Field.dataType<>ftBlob then
+        s := trim(Field.DisplayText)
+      else
+        s := '(blob)';
+      w := aCanvas.TextWidth(s);
+      if w>ColWidth then
+        ColWidth := w;
+
+    end;
+
+  if ColWidth=0 then
+    ColWidth := GetColumnWidth(ACol);
+
+  ColWidths[ACol] := ColWidth + 15;
 end;
 
 destructor TCustomDBGrid.Destroy;
@@ -4453,10 +4527,10 @@ begin
     result := 0
   else
   if b1=nil then
-    result := -1
+    result := 1
   else
   if b2=nil then
-    result := 1
+    result := -1
   else begin
     // Note: Tds(ds).bookmarksize is set at creation of TDataSet and does not change
     result := CompareMemRange(b1,b2,Tds(ds).bookmarksize);

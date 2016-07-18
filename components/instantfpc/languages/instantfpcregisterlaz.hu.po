@@ -26,3 +26,4 @@ msgstr "%s%sEgy fájlból álló Free Pascal program az InstantFPC által futtat
 #: instantfpcregisterlaz.rssinglefilepr
 msgid "%s%sSingle file program using InstantFPC to compile and execute"
 msgstr "%s%sEgy fájlból álló program, mely az InstantFPC által lesz lefordítva és futtatva"
+

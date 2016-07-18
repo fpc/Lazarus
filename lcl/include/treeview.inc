@@ -3155,9 +3155,13 @@ begin
                                + [csDisplayDragImage, csReflector];
   Width := 121;
   Height := 97;
+  Color := clWindow;
+
+  FSBVertShowing:=-1;
+  FSBHorzShowing:=-1;
   TabStop := True;
   ParentColor := False;
-  FBackgroundColor := clWindow;
+//  FBackgroundColor := clWindow;
   FDefItemHeight := 20;
   FExpandSignType := tvestTheme;
   UpdateExpandSignSize;
@@ -3208,6 +3212,8 @@ end;
 procedure TCustomTreeView.CreateWnd;
 begin
   Exclude(FStates,tvsStateChanging);
+  FSBHorzShowing:=-1;
+  FSBVertShowing:=-1;
   inherited CreateWnd;
 end;
 
@@ -3376,27 +3382,32 @@ begin
 end;
 
 procedure TCustomTreeView.SetScrolledLeft(AValue: integer);
+var
+  OldScrolledLeft: Integer;
 begin
+  OldScrolledLeft := FScrolledLeft;
   if AValue<0 then AValue:=0;
   if AValue=FScrolledLeft then exit;
   if AValue>GetMaxScrollLeft then AValue:=GetMaxScrollLeft;
   if AValue=FScrolledLeft then exit;
   EndEditing(true);
   FScrolledLeft:=AValue;
-  Include(FStates,tvsScrollbarChanged);
-  Invalidate;
+  ScrollView(OldScrolledLeft-FScrolledLeft, 0);
 end;
 
 procedure TCustomTreeView.SetScrolledTop(AValue: integer);
+var
+  OldScrolledTop: Integer;
 begin
+  OldScrolledTop:=FScrolledTop;
   if FScrolledTop=AValue then exit;
   if AValue<0 then AValue:=0;
   if AValue>GetMaxScrollTop then AValue:=GetMaxScrollTop;
   if AValue=FScrolledTop then exit;
   EndEditing(true);
   FScrolledTop:=AValue;
-  FStates:=FStates+[tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate,tvsScrollbarChanged];
-  Invalidate;
+  FStates:=FStates+[tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate];
+  ScrollView(0, OldScrolledTop-FScrolledTop);
 end;
 
 procedure TCustomTreeView.SetToolTips(Value: Boolean);
@@ -3421,8 +3432,8 @@ end;
 
 procedure TCustomTreeView.SetBackgroundColor(Value: TColor);
 begin
-  if FBackgroundColor<>Value then begin
-    FBackgroundColor:=Value;
+  if Color<>Value then begin
+    Color:=Value;
     Invalidate;
   end;
 end;
@@ -3655,6 +3666,19 @@ begin
       Exclude(FOptions,tvoShowRoot);
     Invalidate;
   end;
+end;
+
+procedure TCustomTreeView.SetShowScrollBar(Which: Integer; AShow: Boolean);
+begin
+  if ((Which in [SB_Horz, SB_BOTH]) and (FSBHorzShowing<>Ord(AShow)))
+  or ((Which in [SB_Vert, SB_BOTH]) and (FSBVertShowing<>Ord(AShow)))
+  then
+    ShowScrollBar(Handle, Which, AShow);
+
+  if Which in [SB_Horz, SB_BOTH] then
+    FSBHorzShowing:=Ord(AShow);
+  if Which in [SB_Vert, SB_BOTH] then
+    FSBVertShowing:=Ord(AShow);
 end;
 
 procedure TCustomTreeView.SetShowSeparators(Value: Boolean);
@@ -4106,6 +4130,17 @@ begin
     Result := FTopItem;
 end;
 
+procedure TCustomTreeView.HintMouseLeave(Sender: TObject);
+begin
+  if FindLCLControl(Mouse.CursorPos)<>Self then
+    FHintWnd.Hide;
+end;
+
+function TCustomTreeView.IsStoredBackgroundColor: Boolean;
+begin
+  result := Color <> clWindow;
+end;
+
 procedure TCustomTreeView.SetTopItem(Value: TTreeNode);
 begin
   if HandleAllocated and (Value <> nil) then
@@ -4133,6 +4168,7 @@ begin
   if not HandleAllocated or (Items.FUpdateCount>0) then
     exit;
 
+  //DebugLn('* TCustomTreeView.UpdateScrollbars Enter *');
   if ScrolledLeft>GetMaxScrollLeft then ScrolledLeft:=GetMaxScrollLeft;
   if ScrolledTop>GetMaxScrollTop then ScrolledTop:=GetMaxScrollTop;
   Exclude(FStates,tvsScrollbarChanged);
@@ -4148,28 +4184,26 @@ begin
     ScrollInfo.nPage := Max(1,(ClientWidth-ScrollBarWidth)-2*BorderWidth);
     ScrollInfo.nMax := Max(1,GetMaxScrollLeft+integer(ScrollInfo.nPage)-1);
     ScrollInfo.nPos := Max(FScrolledLeft,0);
-    //DebugLn(['TCustomTreeView.UpdateScrollbars nPage=',ScrollInfo.nPage,',nMax=',ScrollInfo.nMax,' fScrollBars=',ord(fScrollBars)]);
     if not CompareMem(@ScrollInfo,@FLastHorzScrollInfo,SizeOf(TScrollInfo))
     then begin
       if (fScrollBars in [ssAutoBoth, ssAutoHorizontal])
       and (ScrollInfo.nPage>=cardinal(ScrollInfo.nMax)) then begin
+        //DebugLn(['TCustomTreeView.UpdateScrollbars Hide Horizontal.']);
         FLastHorzScrollInfo.cbSize:=0;
-        ShowScrollBar(Handle, SB_HORZ, false);
+        SetShowScrollBar(SB_HORZ, false);
       end else begin
+        //DebugLn(['TCustomTreeView.UpdateScrollbars Show Horizontal: nMin=',ScrollInfo.nMin,
+        //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
+        //' nPos=',ScrollInfo.nPos,' GetMaxScrollLeft=',GetMaxScrollLeft,
+        //' ClientW=',ClientWidth, ' MaxRight=',FMaxRight]);
         FLastHorzScrollInfo:=ScrollInfo;
-        ShowScrollBar(Handle, SB_HORZ, true);
+        SetShowScrollBar(SB_HORZ, true);
         SetScrollInfo(Handle, SB_HORZ, ScrollInfo, true);
       end;
     end;
-    //DebugLn('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] nMin=',ScrollInfo.nMin,
-    //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
-    //' nPos=',ScrollInfo.nPos,' GetMaxScrollLeft=',GetMaxScrollLeft,
-    //' ClientW=',ClientWidth,
-    //' MaxRight=',FMaxRight
-    //);
   end else begin
     FLastHorzScrollInfo.cbSize:=0;
-    ShowScrollBar(Handle,SB_HORZ,false);
+    SetShowScrollBar(SB_HORZ,false);
   end;
 
   if fScrollBars in [ssBoth, ssVertical, ssAutoBoth, ssAutoVertical] then begin
@@ -4186,35 +4220,38 @@ begin
     then begin
       if (fScrollBars in [ssAutoBoth, ssAutoVertical])
       and (ScrollInfo.nPage>=cardinal(ScrollInfo.nMax)) then begin
+        //DebugLn(['TCustomTreeView.UpdateScrollbars Hide Vertical.']);
         FLastVertScrollInfo.cbSize:=0;
-        ShowScrollBar(Handle, SB_VERT, false);
+        SetShowScrollBar(SB_VERT, false);
       end else begin
+        //DebugLn(['TCustomTreeView.UpdateScrollbars Show Vertical: nMin=',ScrollInfo.nMin,
+        //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
+        //' nPos=',ScrollInfo.nPos,' GetMaxScrollLeft=',GetMaxScrollTop,
+        //' ClientH=',ClientHeight]);
         FLastVertScrollInfo:=ScrollInfo;
-        ShowScrollBar(Handle, SB_VERT, true);
+        SetShowScrollBar(SB_VERT, true);
         SetScrollInfo(Handle, SB_VERT, ScrollInfo, true);
       end;
     end;
-    //DebugLn('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] Vert On nMin=',dbgs(ScrollInfo.nMin),
-    //' nMax=',dbgs(ScrollInfo.nMax),' nPage=',dbgs(ScrollInfo.nPage),
-    //' nPos=',dbgs(ScrollInfo.nPos),' GetMaxScrollTop=',dbgs(GetMaxScrollTop));
   end else begin
-    //DebugLn('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] Vert Off ');
     FLastVertScrollInfo.cbSize:=0;
-    ShowScrollBar(Handle,SB_VERT,false);
+    SetShowScrollBar(SB_VERT,false);
   end;
 end;
 
 procedure TCustomTreeView.UpdateTooltip(X, Y: integer);
-const
-  cMaxHintWidth = 800; //some guess value
 var
   Node: TTreeNode;
   P: TPoint;
-  R: TRect;
+  R, TextRect, IntRect: TRect;
   SText: string;
+  MaxHintWidth: Integer;
 begin
   if FHintWnd=nil then
+  begin
     FHintWnd:=THintWindow.Create(Self);
+    FHintWnd.OnMouseLeave:=@HintMouseLeave;
+  end;
 
   Node:=GetNodeAt(X, Y);
   if Node=nil then
@@ -4223,24 +4260,33 @@ begin
     exit;
   end;
 
-  //DisplayTextRight is increased by Indent/2 for l/r sides
-  if Node.DisplayTextRight - Indent div 4 < ClientWidth then
+  R := GetParentForm(Self).Monitor.WorkareaRect;
+  MaxHintWidth := R.Right-R.Left;
+
+  TextRect := Rect(Node.DisplayTextLeft, Node.Top, Node.DisplayTextRight, Node.Top + Node.Height);
+  OffsetRect(TextRect, 0, -ScrolledTop);
+
+  if not PtInRect(TextRect, Point(X, Y))
+  or (IntersectRect(IntRect, TextRect, ClientRect)
+      and EqualRect(IntRect, TextRect)) then
   begin
     FHintWnd.Hide;
     exit;
   end;
 
   SText:=Node.Text;
-  R:=FHintWnd.CalcHintRect(cMaxHintWidth, SText, nil);
+  R:=FHintWnd.CalcHintRect(MaxHintWidth, SText, nil);
 
-  //show hint at edge of control, to not overlap node, to allow click node,
-  //also hint fontsize <> control fontsize
-  P:=Point(ClientWidth, Node.Top-ScrolledTop);
+  P:=Point(TextRect.Left-1, TextRect.Top-3);
   P:=ClientToScreen(P);
   OffsetRect(R, P.X, P.Y);
 
-  FHintWnd.ActivateHint(R, SText);
-  FHintWnd.Invalidate; //for Windows
+  if not FHintWnd.Visible then
+  begin
+    FHintWnd.Font.Assign(Self.Font);
+    FHintWnd.Font.Color := Screen.HintFont.Color;
+  end;
+  FHintWnd.ActivateHint(R, SText)
 end;
 
 function TCustomTreeView.GetSelection: TTreeNode;
@@ -4349,6 +4395,11 @@ end;
 function TCustomTreeView.GetAutoExpand: boolean;
 begin
   Result:=(tvoAutoExpand in FOptions);
+end;
+
+function TCustomTreeView.GetBackgroundColor: TColor;
+begin
+  Result := Color;
 end;
 
 function TCustomTreeView.GetBottomItem: TTreeNode;
@@ -4498,6 +4549,7 @@ begin
               (WheelDelta * Mouse.WheelScrollLines * DefaultItemHeight) div 120;
     Result := true;
   end;
+  UpdateTooltip(MousePos.X, MousePos.Y);
 end;
 
 function TCustomTreeView.DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean):LRESULT;
@@ -4597,10 +4649,10 @@ begin
         SpaceRect.Top := Node.Top + Node.Height - FScrolledTop + BorderWidth;
       //if Node<>nil then DebugLn('BottomItem=',BottomItem.text) else DebugLn('NO BOTTOMITEM!!!!!!!!!');
       // TWinControl(Parent).InvalidateRect(Self,SpaceRect,true);
-      if (FBackgroundColor <> clNone) and (SpaceRect.Top < SpaceRect.Bottom) then
+      if (Color <> clNone) and (SpaceRect.Top < SpaceRect.Bottom) then
       begin
         //DebugLn('  SpaceRect=',SpaceRect.Left,',',SpaceRect.Top,',',SpaceRect.Right,',',SpaceRect.Bottom);
-        Brush.Color := FBackgroundColor;
+        Brush.Color := Color;
         FillRect(SpaceRect);
       end;
       // draw border
@@ -4938,31 +4990,36 @@ var
   procedure DrawBackground(IsSelected: Boolean; ARect: TRect);
   var
     Details: TThemedElementDetails;
-    CurBackgroundColor: TColor;
+    CurBackgroundColor,bclr: TColor;
   begin
-    if (tvoRowSelect in Options) and IsSelected then
-      if tvoThemedDraw in Options then
-      begin
-        if tvoFocusedPainting in FStates then
-          Details := ThemeServices.GetElementDetails(ttItemSelected)
-        else
-          Details := ThemeServices.GetElementDetails(ttItemSelectedNotFocus);
-        if ThemeServices.HasTransparentParts(Details) then
+    bclr:=Canvas.Brush.Color;
+    try
+      if (tvoRowSelect in Options) and IsSelected then
+        if tvoThemedDraw in Options then
         begin
-          Canvas.Brush.Color := BackgroundColor;
-          Canvas.FillRect(ARect);
-        end;
-        ThemeServices.DrawElement(Canvas.Handle, Details, ARect, nil);
-        Exit;
-      end
+          if tvoFocusedPainting in FStates then
+            Details := ThemeServices.GetElementDetails(ttItemSelected)
+          else
+            Details := ThemeServices.GetElementDetails(ttItemSelectedNotFocus);
+          if ThemeServices.HasTransparentParts(Details) then
+          begin
+            Canvas.Brush.Color := Color;
+            Canvas.FillRect(ARect);
+          end;
+          ThemeServices.DrawElement(Canvas.Handle, Details, ARect, nil);
+          Exit;
+        end
+        else
+          CurBackgroundColor := FSelectedColor
       else
-        CurBackgroundColor := FSelectedColor
-    else
-      CurBackgroundColor := FBackgroundColor;
-    if CurBackgroundColor <> clNone then
-    begin
-      Canvas.Brush.Color := CurBackgroundColor;
-      Canvas.FillRect(ARect);
+        CurBackgroundColor := Color;
+      if CurBackgroundColor <> clNone then
+      begin
+        Canvas.Brush.Color := CurBackgroundColor;
+        Canvas.FillRect(ARect);
+      end;
+    finally
+      Canvas.Brush.Color := bclr;
     end;
   end;
 
@@ -5015,6 +5072,7 @@ begin
     Exit;
   NodeSelected := (Node.Selected) or (Node.MultiSelected);
   Canvas.Font.Color := Font.Color;
+  Canvas.Brush.Color := Color;
   PaintImages := True;
   if IsCustomDrawn(dtItem, cdPrePaint) then
   begin
@@ -5373,6 +5431,8 @@ procedure TCustomTreeView.MouseUp(Button: TMouseButton; Shift: TShiftState;
 var
   aMouseDownNode, aMouseUpNode: TTreeNode;
 begin
+  if (FHintWnd<>nil) and FHintWnd.Visible then // must hide hint window in mouse up to receive redirected mouse up messages
+    FHintWnd.Hide;
   inherited MouseUp(Button, Shift, X, Y);
   if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) then
     exit;
@@ -5492,7 +5552,8 @@ procedure TCustomTreeView.MouseLeave;
 begin
   FStates:=FStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked,
                     tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
-  if Assigned(FHintWnd) then
+  if Assigned(FHintWnd) and FHintWnd.Visible
+  and not PtInRect(ClientRect, ScreenToClient(Mouse.CursorPos)) then
     FHintWnd.Hide;
   inherited MouseLeave;
 end;
@@ -5607,6 +5668,20 @@ begin
     finally
       Free;
   end;
+end;
+
+procedure TCustomTreeView.ScrollView(DeltaX, DeltaY: Integer);
+var
+  ScrollArea: TRect;
+  ScrollFlags: Integer;
+begin
+  if (DeltaX=0) and (DeltaY=0) then
+    Exit;
+
+  Include(FStates,tvsScrollbarChanged);
+  ScrollFlags := SW_INVALIDATE or SW_ERASE;
+  ScrollArea := ClientRect;
+  ScrollWindowEx(Handle, DeltaX, DeltaY, @ScrollArea, @ScrollArea, 0, nil, ScrollFlags);
 end;
 
 procedure TCustomTreeView.WMVScroll(var Msg: TLMScroll);

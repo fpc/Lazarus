@@ -50,17 +50,6 @@
  *      zero its main fields (essentially the pointers and array
  *      sizes found in the root fields).
  *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
  ******************************************************************)
 
 unit TTCache;

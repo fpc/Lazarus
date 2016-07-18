@@ -34,7 +34,6 @@ endif
 .PHONY: all
 
 all:
-        echo $(LAZARUS_LIBPATHS)
         $(MAKE) --assume-new=lazres.pp lazres$(EXEEXT)
         $(MAKE) --assume-new=svn2revisioninc.pas svn2revisioninc$(EXEEXT)
         $(MAKE) --assume-new=updatepofiles.pas updatepofiles$(EXEEXT)

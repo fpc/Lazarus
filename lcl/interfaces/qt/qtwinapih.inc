@@ -45,6 +45,7 @@ function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; ove
 function CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;  override;
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
+function CreateBrushWithRadialGradient(const LogBrush: TLogRadialGradient): HBRUSH; override;
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; Width, Height : Integer) : Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
@@ -157,6 +158,7 @@ function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 
 function OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer; override;
 
+function PaintRgn(DC: HDC; RGN: HRGN): Boolean; override;
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; override;
 function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: boolean): boolean; override;
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean; override;

@@ -1,18 +1,12 @@
 {
- /***************************************************************************
-                               UTF8Process.pp
-                               ---------------
-                   Initial Revision  : Tue Dec 06 09:00:00 CET 2005
-
-
- ***************************************************************************/
-
  *****************************************************************************
-  This file is part of the Lazarus Component Library (LCL)
+  This file is part of LazUtils.
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
  *****************************************************************************
+
+ Initial Revision  : Tue Dec 06 09:00:00 CET 2005
 }
 
 unit UTF8Process;

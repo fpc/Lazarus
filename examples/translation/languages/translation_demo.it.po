@@ -93,26 +93,10 @@ msgstr "Alcune voci"
 msgid "Please select"
 msgstr "Scegliere"
 
-#: tform2.lblmoney.caption
-msgid "LblMoney"
-msgstr "LblMoney"
-
-#: tform2.lblsum.caption
-msgid "LblSum"
-msgstr "LblSum"
-
-#: tform2.lbltodayis.caption
-msgid "LblTodayIs"
-msgstr "LblTodayIs"
-
 #: tform2.radiogroup.caption
 msgctxt "TFORM2.RADIOGROUP.CAPTION"
 msgid "Single item"
 msgstr "Singola voce"
-
-#: tlocalizedform.caption
-msgid "LocalizedForm"
-msgstr "LocalizedForm"
 
 #: tmainform.button1.caption
 msgctxt "TMAINFORM.BUTTON1.CAPTION"

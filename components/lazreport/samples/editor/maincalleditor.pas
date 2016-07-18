@@ -31,7 +31,7 @@ uses
   LR_DBSet, IniFiles, LR_PGrid, Menus, ComCtrls, ActnList, Lr_e_txt, Lr_e_htm,
   LR_E_CSV, LR_DSet, LR_BarC, LR_RRect, LR_Shape, LR_ChBox, lconvencoding,
   lr_e_gen, lr_utils, LCLProc, ExtCtrls, custompreview, LR_Pars, LR_e_htmldiv,
-  lrAddFunctionLibrary, LazLogger;
+  lrAddFunctionLibrary, LazLogger, LazFileUtils, LCLTranslator;
 
 type
 
@@ -172,7 +172,7 @@ var
 
 implementation
 
-uses gettext,translations;
+uses gettext,translations, lazutf8;
 
 {$R *.lfm}
 
@@ -183,7 +183,6 @@ resourcestring
   cerPreviewReport  = 'Preview report';
   cerPrintReport    = 'Print report';
   cerPrintGrid      = 'Print grid';
-  cerNotImplemented = 'This feature is not yet implemented!';
   cerPrepareFailed  = 'PrepareReport Failed!';
   cerIndex          = 'Index';
   cerNone           = 'none';
@@ -304,6 +303,7 @@ begin
   try
     TheReport.Preview := F.frPreview1;
     TheReport.ShowReport;
+    F.Caption := accCustomPreview.Caption;
     F.ShowModal;
   finally
     TheReport.Preview := nil;
@@ -603,7 +603,6 @@ end;
 procedure TfrmMain.SaveConfig;
 var
   ini: TIniFile;
-  s: string;
 begin
   ini := TIniFile.Create(GetDataPath+'config.ini');
   ini.WriteString('General', 'LastReport', fCurReport);
@@ -618,10 +617,10 @@ var
 begin
   GetLanguageIDs(Lang,FallbackLang); // in unit gettext
   TranslateUnitResourceStrings('LCLStrConsts','../../../../lcl/languages/lclstrconsts.%s.po', Lang,FallbackLang);
-  TranslateUnitResourceStrings('MainCallEditor','languages/calleditorwithpkg.%s.po', Lang,FallbackLang);
   TranslateUnitResourceStrings('Lr_const','../../source/languages/lr_const.%s.po', Lang,FallbackLang);
   TranslateUnitResourceStrings('lr_add_function_const','../../source/addons/addfunction/languages/lr_add_function_const.%s.po'
      ,Lang,FallbackLang);
+  SetDefaultLang(Lang, '', false); // needed to translate strings extracted from forms
 end;
 
 initialization

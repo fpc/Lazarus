@@ -44,9 +44,9 @@ type
     ArrowUp: TSpeedButton;
     ItemTreeview: TTreeView;
     SortByPositionButton: TBitBtn;
+    procedure ItemTreeviewSelectionChanged(Sender: TObject);
     procedure SortByPositionButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure ItemTreeviewClick(Sender: TObject);
     procedure TabOrderDialogCreate(Sender: TObject);
     procedure UpSpeedbuttonClick(Sender: TObject);
     procedure DownSpeedbuttonClick(Sender: TObject);
@@ -199,9 +199,18 @@ begin
   CheckButtonsEnabled;
 end;
 
-procedure TTabOrderDialog.ItemTreeviewClick(Sender: TObject);
+procedure TTabOrderDialog.ItemTreeviewSelectionChanged(Sender: TObject);
+var
+  Node: TTreeNode;
 begin
-  CheckButtonsEnabled;
+  if FUpdating then Exit;
+  Node := ItemTreeview.Selected;
+  if Assigned(Node) then begin
+    FUpdating := True;
+    GlobalDesignHook.SelectOnlyThis(TPersistent(Node.Data));
+    FUpdating := False;
+    CheckButtonsEnabled;
+  end;
 end;
 
 procedure TTabOrderDialog.UpSpeedbuttonClick(Sender: TObject);
@@ -355,35 +364,34 @@ var
   LookupRoot: TPersistent;
   Candidates: TAvgLvlTree;
 begin
-  if IsVisible and not FUpdating then
-  begin
-    FUpdating := true;
-    ItemTreeview.BeginUpdate;
-    try
-      ItemTreeview.Items.Clear;
-      LookupRoot := GlobalDesignHook.LookupRoot;
-      if Assigned(LookupRoot) and (LookupRoot is TWinControl) then begin
-        Candidates := TAvgLvlTree.Create;
-        try
-          CreateCandidates(TComponent(LookupRoot), Candidates);
-          CreateNodes(TWinControl(LookupRoot), nil, Candidates);
-        finally
-          Candidates.Free;
-        end;
-        Caption := Format(lisTabOrderOf, [TWinControl(LookupRoot).Name]);
-      end else
-        Caption := lisMenuViewTabOrder;
-    finally
-      ItemTreeview.EndUpdate;
-      FUpdating := false;
-    end;
+  if not IsVisible then Exit;
+  ItemTreeview.BeginUpdate;
+  try
+    ItemTreeview.Items.Clear;
+    LookupRoot := GlobalDesignHook.LookupRoot;
+    if Assigned(LookupRoot) and (LookupRoot is TWinControl) then begin
+      Candidates := TAvgLvlTree.Create;
+      try
+        CreateCandidates(TComponent(LookupRoot), Candidates);
+        CreateNodes(TWinControl(LookupRoot), nil, Candidates);
+      finally
+        Candidates.Free;
+      end;
+      Caption := Format(lisTabOrderOf, [TWinControl(LookupRoot).Name]);
+    end else
+      Caption := lisMenuViewTabOrder;
+  finally
+    ItemTreeview.EndUpdate;
   end;
 end;
 
 procedure TTabOrderDialog.OnSomethingChanged;
 begin
+  if FUpdating then Exit;
+  FUpdating := true;
   RefreshTree;
   CheckButtonsEnabled;
+  FUpdating := false;
 end;
 
 procedure TTabOrderDialog.OnPersistentAdded(APersistent: TPersistent; Select: boolean);
@@ -404,25 +412,37 @@ end;
 
 procedure TTabOrderDialog.OnSetSelection(const ASelection: TPersistentSelectionList);
 // Select item also in TreeView when selection in Designer changes.
+
+  function FindSelection: TTreeNode;
+  var
+    Node: TTreeNode;
+  begin
+    Node := ItemTreeview.Items.GetFirstNode;
+    while Assigned(Node) do
+    begin
+      if Assigned(Node.Data)
+      and (ASelection.IndexOf(TPersistent(Node.Data)) >= 0) then
+        Exit(Node);
+      Node := Node.GetNext;
+    end;
+    Result := Nil;
+  end;
+
 var
-  Ctrl: TPersistent;
   Node: TTreeNode;
 begin
   // ToDo: support also multiply selections.
-  ItemTreeview.BeginUpdate;
-  Node := ItemTreeview.Items.GetFirstNode;
-  while Assigned(Node) do begin
-    if Assigned(Node.Data) then begin
-      Ctrl := TPersistent(Node.Data);
-      Assert(Ctrl is TWinControl);
-      if ASelection.IndexOf(Ctrl) >= 0 then begin
-        ItemTreeview.Selected := Node;
-        Break;
-      end;
-    end;
-    Node:=Node.GetNext;
+  if FUpdating then Exit;
+  FUpdating := True;
+  Node := FindSelection;
+  if Node = Nil then
+  begin           // Changing TabSheet in a PageControl does not trigger handlers
+    RefreshTree;  //  thus selection is not found -> refresh tree and try again.
+    Node := FindSelection;
   end;
-  ItemTreeview.EndUpdate;
+  if Assigned(Node) then
+    ItemTreeview.Selected := Node;
+  FUpdating := False;
   CheckButtonsEnabled;
 end;
 

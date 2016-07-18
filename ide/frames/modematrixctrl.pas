@@ -1472,6 +1472,8 @@ constructor TGroupedMatrixControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
+  MouseWheelOption := mwGrid;
+
   FMatrix:=TGroupedMatrix.Create(Self);
   fUndoItems:=TObjectList.Create(true);
   fRedoItems:=TObjectList.Create(true);

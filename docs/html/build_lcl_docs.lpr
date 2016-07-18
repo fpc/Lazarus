@@ -437,8 +437,6 @@ var
 begin
   if ord(Step)>=ord(frsOutDirCreated) then
     raise Exception.Create('TFPDocRun.CreateOuputDir not again');
-  if ord(Step)<ord(frsFilesGathered) then
-    FindSourceFiles;
 
   if Not DirectoryExistsUTF8(OutDir) then
   begin
@@ -446,6 +444,9 @@ begin
     if not CreateDirUTF8(OutDir) then
       raise Exception.Create('unable to create directory "'+OutDir+'"');
   end;
+
+  if ord(Step)<ord(frsFilesGathered) then
+    FindSourceFiles;
 
   if (OutFormat='chm') and (CSSFile<>'') then
   begin
@@ -478,7 +479,7 @@ begin
     writeln('Not executing, simulation ended. Stop');
     Halt(0);
   end;
-  {$IFDEF MSWINDOWS}fpdoc := ChangeFileExt(fpdoc,'.exe');{$ENDIF}
+  {$IFDEF MSWINDOWS}FPDocExe := ChangeFileExt(FPDocExe,'.exe');{$ENDIF}
   if not FileInEnvPATH(FPDocExe) then
   begin
     WriteLn('Error: fpdoc ('+FPDocExe+') cannot be found. Please add its location to the PATH ',

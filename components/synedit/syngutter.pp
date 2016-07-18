@@ -8,7 +8,7 @@ uses
   SysUtils, Classes, Controls, Graphics, LCLType, LCLIntf, LCLProc, Menus,
   SynEditMarks, SynEditTypes, SynEditMiscClasses, SynEditMiscProcs, LazSynTextArea,
   SynTextDrawer, SynGutterBase, SynGutterLineNumber, SynGutterCodeFolding,
-  SynGutterMarks, SynGutterChanges, SynEditMouseCmds;
+  SynGutterMarks, SynGutterChanges, SynEditMouseCmds, SynGutterLineOverview;
 
 type
 
@@ -53,6 +53,7 @@ type
     Function ChangesPart(Index: Integer = 0): TSynGutterChanges;
     Function MarksPart(Index: Integer = 0): TSynGutterMarks;
     Function SeparatorPart(Index: Integer = 0): TSynGutterSeparator;
+    Function LineOverviewPart(Index: Integer = 0): TSynGutterLineOverview;
   published
     property AutoSize;
     property Color;
@@ -379,6 +380,11 @@ end;
 function TSynGutter.SeparatorPart(Index: Integer = 0): TSynGutterSeparator;
 begin
   Result := TSynGutterSeparator(Parts.ByClass[TSynGutterSeparator, Index]);
+end;
+
+function TSynGutter.LineOverviewPart(Index: Integer): TSynGutterLineOverview;
+begin
+  Result := TSynGutterLineOverview(Parts.ByClass[TSynGutterLineOverview, Index]);
 end;
 
 { TSynGutterSeparator }

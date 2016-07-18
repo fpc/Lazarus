@@ -122,7 +122,7 @@ type
     procedure OpenHiddenModifiedPackages; virtual; abstract;
 
     // package graph
-    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList); virtual; abstract;
+    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList; IgnoreModifiedFlag: boolean = False); virtual; abstract;
     function RevertPackages(APackageList: TStringList // list of TLazPackage and alternative lpk file name
         ): TModalResult; virtual; abstract;
     function CheckUserSearchPaths(aCompilerOptions: TBaseCompilerOptions): TModalResult; virtual; abstract;

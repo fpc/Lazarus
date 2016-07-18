@@ -987,6 +987,7 @@ begin
     ParentMI:=itmFileOpenSave;
     CreateMenuItem(ParentMI, itmFileOpen, 'itmFileOpen', lisMenuOpen, 'laz_open');
     CreateMenuItem(ParentMI,itmFileRevert,'itmFileRevert',lisMenuRevert, 'menu_file_revert');
+    CreateMenuItem(ParentMI, itmFileOpenUnit, 'itmFileOpenUnit', lisMenuOpenUnit, 'laz_openunit');
     CreateMenuSubSection(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
     CreateMenuItem(ParentMI,itmFileSave,'itmFileSave',lisMenuSave,'laz_save');
     CreateMenuItem(ParentMI,itmFileSaveAs,'itmFileSaveAs',lisMenuSaveAs,'menu_saveas');
@@ -1174,7 +1175,7 @@ begin
     CreateMenuItem(ParentMI,itmSourceToggleComment,'itmSourceToggleComment',lisMenuToggleComment, 'menu_comment');
     CreateMenuItem(ParentMI,itmSourceEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
     CreateMenuItem(ParentMI,itmSourceEncloseInIFDEF,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF);
-    CreateMenuItem(ParentMI,itmSourceCompleteCode,'itmSourceCompleteCode',lisMenuCompleteCode);
+    CreateMenuItem(ParentMI,itmSourceCompleteCodeInteractive,'itmSourceCompleteCodeInteractive',lisMenuCompleteCodeInteractive);
     CreateMenuItem(ParentMI,itmRefactorInvertAssignment,'itmInvertAssignment',uemInvertAssignment);
     CreateMenuItem(ParentMI,itmSourceUseUnit,'itmSourceUseUnit',lisMenuUseUnit);
     // Refactor
@@ -1265,6 +1266,8 @@ begin
     ParentMI:=itmProjectSaveSection;
     CreateMenuItem(ParentMI,itmProjectSave,'itmProjectSave',lisMenuSaveProject, 'menu_project_save');
     CreateMenuItem(ParentMI,itmProjectSaveAs,'itmProjectSaveAs',lisMenuSaveProjectAs, 'menu_project_saveas');
+    CreateMenuItem(ParentMI, itmProjectResaveFormsWithI18n, 'itmProjectResaveFo'
+      +'rmsWithI18n', lisMenuResaveFormsWithI18n);
     CreateMenuItem(ParentMI,itmProjectPublish,'itmProjectPublish',lisMenuPublishProject);
 
     CreateMenuSeparatorSection(mnuProject,itmProjectWindowSection,'itmProjectWindowSection');
@@ -1293,11 +1296,12 @@ begin
     CreateMenuItem(ParentMI,itmRunMenuBuild,'itmRunMenuBuild',lisBuild,'menu_build_all');
     CreateMenuItem(ParentMI,itmRunMenuQuickCompile,'itmRunMenuQuickCompile',lisMenuQuickCompile,'menu_quick_compile');
     CreateMenuItem(ParentMI,itmRunMenuCleanUpAndBuild,'itmRunMenuCleanUpAndBuild',lisMenuCleanUpAndBuild,'menu_build');
-    CreateMenuItem(ParentMI,itmRunMenuBuildManyModes,'itmRunMenuBuildManyModes',lisMenuBuildManyModes,'menu_build_all');
+    CreateMenuItem(ParentMI,itmRunMenuBuildManyModes,'itmRunMenuBuildManyModes',lisMenuCompileManyModes,'menu_build_all');
     CreateMenuItem(ParentMI,itmRunMenuAbortBuild,'itmRunMenuAbortBuild',lisMenuAbortBuild,'menu_abort_build');
 
     CreateMenuSeparatorSection(mnuRun,itmRunnning,'itmRunnning');
     ParentMI:=itmRunnning;
+    CreateMenuItem(ParentMI,itmRunMenuRunWithoutDebugging,'itmRunMenuRunWithoutDebugging',lisMenuRunWithoutDebugging,'menu_run_withoutdebugging');
     CreateMenuItem(ParentMI,itmRunMenuRun,'itmRunMenuRun',lisMenuProjectRun,'menu_run');
     CreateMenuItem(ParentMI,itmRunMenuPause,'itmRunMenuPause',lisPause,'menu_pause', False);
     CreateMenuItem(ParentMI,itmRunMenuShowExecutionPoint,'itmRunMenuShowExecutionPoint',
@@ -1498,6 +1502,7 @@ begin
     itmFileNewForm.Command:=GetCommand(ecNewForm, TNewFormToolButton);
     itmFileNewOther.Command:=GetCommand(ecNew);
     itmFileOpen.Command:=GetCommand(ecOpen, TOpenFileToolButton);
+    itmFileOpenUnit.Command:=GetCommand(ecOpenUnit);
     itmFileRevert.Command:=GetCommand(ecRevert);
     itmFileSave.Command:=GetCommand(ecSave);
     itmFileSaveAs.Command:=GetCommand(ecSaveAs);
@@ -1555,9 +1560,11 @@ begin
     itmJumpToImplementationUses.Command:=GetCommand(ecJumpToImplementationUses, TJumpToSectionToolButton);
     itmJumpToInitialization.Command:=GetCommand(ecJumpToInitialization, TJumpToSectionToolButton);
     GetCmdAndBtn(ecJumpToProcedureHeader, xBtnItem);
+    xBtnItem.Caption := lisMenuJumpToProcedureHeader;
     xBtnItem.OnClick := @SourceEditorManager.JumpToProcedureHeaderClicked;
     xBtnItem.ImageIndex := IDEImages.LoadImage(16, 'menu_jumpto_procedureheader');
     GetCmdAndBtn(ecJumpToProcedureBegin, xBtnItem);
+    xBtnItem.Caption := lisMenuJumpToProcedureBegin;
     xBtnItem.ImageIndex := IDEImages.LoadImage(16, 'menu_jumpto_procedurebegin');
     xBtnItem.OnClick := @SourceEditorManager.JumpToProcedureBeginClicked;
     itmFindBlockOtherEnd.Command:=GetCommand(ecFindBlockOtherEnd);
@@ -1590,7 +1597,7 @@ begin
     itmSourceToggleComment.Command:=GetCommand(ecToggleComment);
     itmSourceEncloseBlock.Command:=GetCommand(ecSelectionEnclose);
     itmSourceEncloseInIFDEF.Command:=GetCommand(ecSelectionEncloseIFDEF);
-    itmSourceCompleteCode.Command:=GetCommand(ecCompleteCode);
+    itmSourceCompleteCodeInteractive.Command:=GetCommand(ecCompleteCodeInteractive);
     itmSourceUseUnit.Command:=GetCommand(ecUseUnit);
 
     itmSourceSyntaxCheck.Command:=GetCommand(ecSyntaxCheck);
@@ -1643,6 +1650,7 @@ begin
     itmProjectClose.Command:=GetCommand(ecCloseProject);
     itmProjectSave.Command:=GetCommand(ecSaveProject);
     itmProjectSaveAs.Command:=GetCommand(ecSaveProjectAs);
+    itmProjectResaveFormsWithI18n.Command:=GetCommand(ecProjectResaveFormsWithI18n);
     itmProjectPublish.Command:=GetCommand(ecPublishProject);
     itmProjectInspector.Command:=GetCommand(ecProjectInspector);
     itmProjectOptions.Command:=GetCommand(ecProjectOptions);
@@ -1652,6 +1660,7 @@ begin
     itmProjectViewForms.Command:=GetCommand(ecViewProjectForms);
     itmProjectViewSource.Command:=GetCommand(ecViewProjectSource);
     GetCmdAndBtn(ecProjectChangeBuildMode, xBtnItem);
+    xBtnItem.Caption := lisChangeBuildMode;
     xBtnItem.ToolButtonClass:=TSetBuildModeToolButton;
     xBtnItem.ImageIndex := IDEImages.LoadImage(16, 'menu_compiler_options');
     xBtnItem.OnClick := @mnuBuildModeClicked;
@@ -1663,6 +1672,7 @@ begin
     itmRunMenuCleanUpAndBuild.Command:=GetCommand(ecCleanUpAndBuild);
     itmRunMenuBuildManyModes.Command:=GetCommand(ecBuildManyModes);
     itmRunMenuAbortBuild.Command:=GetCommand(ecAbortBuild);
+    itmRunMenuRunWithoutDebugging.Command:=GetCommand(ecRunWithoutDebugging);
     itmRunMenuRun.Command:=GetCommand(ecRun);
     itmRunMenuPause.Command:=GetCommand(ecPause);
     itmRunMenuStepInto.Command:=GetCommand(ecStepInto);

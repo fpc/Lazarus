@@ -309,3 +309,4 @@ msgstr "BoutonOutil1"
 #: tmainform.toolbutton4.caption
 msgid "ToolButton4"
 msgstr "BoutonOutil4"
+

@@ -32,6 +32,8 @@ begin
     DebugLn('TCocoaWidgetSet.AppInit');
   {$ENDIF}
 
+  WakeMainThread := @OnWakeMainThread;
+
   { Creates the application NSApp object }
   FNSApp := NSApplication.sharedApplication;
   FNSApp_Delegate := TAppDelegate.alloc.init;
@@ -40,6 +42,32 @@ begin
   // Sandboxing
   lDict := NSProcessInfo.processInfo.environment;
   SandboxingOn := lDict.valueForKey(NSStr('APP_SANDBOX_CONTAINER_ID')) <> nil;
+end;
+
+procedure TCocoaWidgetSet.SendCheckSynchronizeMessage;
+var
+  Event: NSEvent;
+begin
+  Event := NSEvent.otherEventWithType_location_modifierFlags_timestamp_windowNumber_context_subtype_data1_data2(
+    NSApplicationDefined,
+    NSZeroPoint,
+    0,
+    GetCurrentEventTime,
+    0,
+    nil,
+    LCLEventSubTypeMessage,
+    LM_NULL,
+    AppHandle);
+  NSApp.postEvent_atStart(Event, False);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCocoaWidgetSet.OnWakeMainThread
+  Params:  Sender
+ ------------------------------------------------------------------------------}
+procedure TCocoaWidgetSet.OnWakeMainThread(Sender: TObject);
+begin
+   SendCheckSynchronizeMessage;
 end;
 
 {------------------------------------------------------------------------------
@@ -63,11 +91,19 @@ var
   event: NSEvent;
   pool:NSAutoReleasePool;
 begin
-  pool := NSAutoreleasePool.alloc.init;
-  event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, nil, NSDefaultRunLoopMode, true);
-  NSApp.sendEvent(event);
-  NSApp.updateWindows;
-  pool.release;
+  repeat
+    pool := NSAutoreleasePool.alloc.init;
+    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, nil, NSDefaultRunLoopMode, true);
+    if event <> nil then
+    begin
+      if (event.type_ = NSApplicationDefined) and (event.subtype = LCLEventSubTypeMessage) and (event.data1 = LM_NULL) and (event.data2 = AppHandle) then
+        CheckSynchronize
+      else
+        NSApp.sendEvent(event);
+      NSApp.updateWindows;
+    end;
+    pool.release;
+  until event = nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -82,8 +118,14 @@ var
 begin
   pool := NSAutoreleasePool.alloc.init;
   event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, NSDate.distantFuture, NSDefaultRunLoopMode, true);
-  NSApp.sendEvent(event);
-  NSApp.updateWindows;
+  if event <> nil then
+  begin
+    if (event.type_ = NSApplicationDefined) and (event.subtype = LCLEventSubTypeMessage) and (event.data1 = LM_NULL) and (event.data2 = AppHandle) then
+      CheckSynchronize
+    else
+      NSApp.sendEvent(event);
+    NSApp.updateWindows;
+  end;
   pool.release;
 end;
 
@@ -106,9 +148,9 @@ begin
   NSMessageLParam := NSStringUTF8('LPARAM');
   NSMessageResult := NSStringUTF8('RESULT');
 
-  DefaultBrush := TCocoaBrush.CreateDefault;
-  DefaultPen := TCocoaPen.CreateDefault;
-  DefaultFont := TCocoaFont.CreateDefault;
+  DefaultBrush := TCocoaBrush.CreateDefault(True);
+  DefaultPen := TCocoaPen.CreateDefault(True);
+  DefaultFont := TCocoaFont.CreateDefault(True);
   DefaultBitmap := TCocoaBitmap.CreateDefault;
   DefaultContext := TCocoaBitmapContext.Create;
   DefaultContext.Bitmap := DefaultBitmap;
@@ -149,6 +191,14 @@ begin
   // or CocoaCaret should not use TTimer at all (use raw cocoa timer)
   DestroyGlobalCaret;
 
+  NSMessageWnd.release;
+  NSMessageMsg.release;
+  NSMessageWParam.release;
+  NSMessageLParam.release;
+  NSMessageResult.release;
+
+  // NSApp.terminate(nil);   // causes app to quit immediately, which is undesirable
+
   CocoaWidgetSet := nil;
 end;
 
@@ -161,7 +211,7 @@ procedure TCocoaWidgetSet.AppTerminate;
 begin
   if FTerminating then Exit;
   // TODO: Check if there is more cleanup to do here
-  // NSApp.terminate(nil);   // causes app to quit directly
+  // NSApp.terminate(nil);   // causes app to quit immediately, which is undesirable
 end;
 
 {------------------------------------------------------------------------------
@@ -209,17 +259,8 @@ end;
   Changes the application title
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppSetTitle(const ATitle: string);
-var
-  ns: NSString;
 begin
-  if not Assigned(NSApp.dockTile) then Exit;
-  //todo: setBadgeLabel is for 10.5 only, should be removed
-  if NSApp.dockTile.respondsToSelector_(objcselector('setBadgeLabel:')) then
-  begin
-    ns := NSStringUtf8(ATitle);
-    NSApp.dockTile.setBadgeLabel(ns);
-    ns.release;
-  end;
+  // There is no way to change the dock title
 end;
 
 function TCocoaWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
@@ -252,7 +293,7 @@ begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.CreateTimer');
   {$ENDIF}
-  user:=TCocoaTimerObject.initWithFunc(TimerFunc);
+  user:=TCocoaTimerObject.newWithFunc(TimerFunc);
 
   timer:=NSTimer.timerWithTimeInterval_target_selector_userInfo_repeats(
     Interval/1000, user, objcselector(user.timerEvent), user, True);
@@ -283,7 +324,7 @@ begin
   NSTimer(obj).invalidate;
 end;
 
-function TCocoaWidgetSet.PrepareUserEventInfo(Handle: HWND; Msg: Cardinal;
+function TCocoaWidgetSet.NewUserEventInfo(Handle: HWND; Msg: Cardinal;
   wParam: WParam; lParam: LParam): NSMutableDictionary;
 var
   LocalPool: NSAutoReleasePool;
@@ -311,7 +352,7 @@ begin
   LocalPool.release;
 end;
 
-function TCocoaWidgetSet.PrepareUserEvent(Handle: HWND; Info: NSDictionary): NSEvent;
+function TCocoaWidgetSet.PrepareUserEvent(Handle: HWND; Info: NSDictionary; NeedsResult: Boolean): NSEvent;
 var
   Obj: NSObject;
   Win: NSWindow;
@@ -334,7 +375,7 @@ begin
     nil,
     LCLEventSubTypeMessage,
     NSInteger(Info),
-    0);
+    NSInteger(NeedsResult));
 end;
 
 procedure TCocoaWidgetSet.InitStockItems;
@@ -555,7 +596,7 @@ begin
   if Assigned(@func) then func;
 end;
 
-class function TCocoaTimerObject.initWithFunc(afunc: TWSTimerProc): TCocoaTimerObject;
+class function TCocoaTimerObject.newWithFunc(afunc: TWSTimerProc): TCocoaTimerObject;
 begin
   Result:=alloc;
   Result.func:=afunc;
@@ -568,6 +609,11 @@ begin
   MimeType := AMimeType;
   CocoaFormat := ACocoaFormat;
   DataType := ADataType;
+end;
+
+destructor TCocoaClipboardData.Destroy;
+begin
+  CocoaFormat.release;
 end;
 
 procedure TAppDelegate.application_openFiles(sender: NSApplication; filenames: NSArray);

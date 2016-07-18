@@ -46,7 +46,7 @@ const
   flBandOnFirstPage        = $10;
   flBandOnLastPage         = $20;
   flBandRepeatHeader       = $40;
-  flBandPrintChildIfNotVisible = $80;
+  flBandPrintChildIfNotVisible = $100;
 
   flPictCenter             = 2;
   flPictRatio              = 4;
@@ -90,7 +90,11 @@ type
   TfrFrameBorders = set of TfrFrameBorder;
   TfrFrameStyle = (frsSolid,frsDash, frsDot, frsDashDot, frsDashDotDot,frsDouble);
   TfrPageType = (ptReport, ptDialog);   //todo: - remove this
-  TfrReportOption = (roIgnoreFieldNotFound, roIgnoreSymbolNotFound, roHideDefaultFilter);
+  TfrReportOption = (roIgnoreFieldNotFound, roIgnoreSymbolNotFound, roHideDefaultFilter,
+                     roDontUpgradePreparedReport,   // on saving an old prepared report don't update to current version
+                     roSaveAndRestoreBookmarks,     // try to save and later restore dataset bookmarks on building report
+                     roPageHeaderBeforeReportTitle  // PageHeader band is printed before ReportTitle band
+                     );
   TfrReportOptions = set of TfrReportOption;
   TfrObjectType = (otlReportView, otlUIControl);
 
@@ -100,11 +104,14 @@ type
   TlrRestriction = (lrrDontModify,  lrrDontSize, lrrDontMove, lrrDontDelete);
   TlrRestrictions = set of TlrRestriction;
 
-  TfrView = class;
-  TfrBand = class;
-  TfrPage = class;
+  TfrObject = class;
+  TfrView   = class;
+  TfrBand   = class;
+  TfrPage   = class;
   TfrReport = class;
-  TfrExportFilter = class;
+  TfrExportFilter  = class;
+  TfrMemoStrings   = class;
+  TfrScriptStrings = class;
 
   TDetailEvent = procedure(const ParName: String; var ParValue: Variant) of object;
   TEnterRectEvent = procedure(Memo: TStringList; View: TfrView) of object;
@@ -120,8 +127,9 @@ type
   TManualBuildEvent = procedure(Page: TfrPage) of object;
   TObjectClickEvent = procedure(View: TfrView) of object;
   TMouseOverObjectEvent = procedure(View: TfrView; var ACursor: TCursor) of object;
-  TPrintReportEvent = procedure(sender: TfrReport) of object;
-  TFormPageBookmarksEvent = procedure(sender: TfrReport; Backup: boolean) of object;
+  TPrintReportEvent = procedure(Sender: TfrReport) of object;
+  TFormPageBookmarksEvent = procedure(Sender: TfrReport; Backup: boolean) of object;
+  TExecScriptEvent = procedure(frObject:TfrObject; AScript:TfrScriptStrings) of object;
 
   TfrHighlightAttr = packed record
     FontStyle: Word;
@@ -177,7 +185,7 @@ type
 
   { TfrObject }
 
-  TfrObject = Class(TPersistent)
+  TfrObject = class(TPersistent)
   private
     fMemo   : TfrMemoStrings;
     fName   : string;
@@ -190,8 +198,9 @@ type
   protected
     FDesignOptions:TlrDesignOptions;
     BaseName  : String;
-    OwnerPage:TfrPage;
-    
+    OwnerPage : TfrPage;
+    FOnExecScriptEvent : TExecScriptEvent;
+
     function GetSaveProperty(const Prop : String; aObj : TPersistent=nil) : string;
     procedure RestoreProperty(const Prop,aValue : String; aObj : TPersistent=nil);
     procedure SetName(const AValue: string); virtual;
@@ -209,6 +218,7 @@ type
     procedure SetVisible(AValue: Boolean);virtual;
     function GetText:string;virtual;
     procedure SetText(AValue:string);virtual;
+    procedure InternalExecScript;virtual;
   public
     x, y, dx, dy: Integer;
 
@@ -472,6 +482,7 @@ type
     procedure ResetLastValue; override;
 
     procedure DoRunScript(AScript: TfrScriptStrings);
+
     procedure DoOnClick;
     procedure DoMouseEnter;
     procedure DoMouseLeave;
@@ -570,6 +581,7 @@ type
     function  GetTitleRect: TRect;
     function  TitleSize: Integer;
     procedure CalcTitleSize;
+    procedure FixPrintChildIfNotVisible;
   protected
     procedure SetHeight(const AValue: Double); override;
     procedure SetVisible(AValue: Boolean);override;
@@ -1021,6 +1033,7 @@ type
     procedure SaveToStream(AStream: TStream);
     procedure SavePageToStream(PageNo:Integer; AStream: TStream);
     procedure SaveToXML({%H-}XML: TLrXMLConfig; const {%H-}Path: String);
+    procedure UpgradeToCurrentVersion;
     property Pages[Index: Integer]: PfrPageInfo read GetPages; default;
     property Count: Integer read GetCount;
   end;
@@ -1455,13 +1468,16 @@ function FindObjectProps(AObjStr:string; out frObj:TfrObject; out PropName:strin
 
 const
   lrTemplatePath = 'LazReportTemplate/';
-  frCurrentVersion = 29;
+  frCurrentVersion = 31;
     // version 2.5: lazreport: added to binary stream ParentBandType variable
     //                         on TfrView, used to extend export facilities
     // version 2.6: lazreport: added to binary stream Tag property on TfrView
     // version 2.7: lazreport: added to binary stream FOnClick, FOnMouseEnter, FOnMouseLeave, FCursor property on TfrMemoView
-    // version 2.8. lazreport: added support for child bands
-    // version 2.9. lazreport: added support LineSpacing and GapX, GapY
+    // version 2.8: lazreport: added support for child bands
+    // version 2.9: lazreport: added support LineSpacing and GapX, GapY
+    // version 3.0: lazreport: decoupled flHideZeros and flBandPrintChildIfNotVisible
+    // version 3.1: lazreport: Save Restrictions to stream
+
 
   frSpecCount = 9;
   frSpecFuncs: Array[0..frSpecCount - 1] of String = ('PAGE#', '',
@@ -1583,6 +1599,7 @@ var
   FRE_COMPATIBLE_READ: Boolean = False;
 {$ENDIF}
   LRE_OLDV25_FRF_READ: Boolean = False;  // read broken frf v25 reports, bug 25037
+  LRE_OLDV28_FRF_READ: Boolean = False;  // read frf v28 (lazarus 1.4.4) reports, bug 29966
 
   // variables used through report building
   TempBmp: TBitmap;            // temporary bitmap used by TfrMemoView
@@ -1660,7 +1677,10 @@ end;
 
 function ViewInfo(View: TfrView): string;
 begin
-  result := format('"%s":%s typ=%s',[View.Name, dbgsname(View), frTypeObjectToStr(View.Typ)]);
+  if View=nil then
+    result := 'View is nil'
+  else
+    result := format('"%s":%s typ=%s',[View.Name, dbgsname(View), frTypeObjectToStr(View.Typ)]);
 end;
 
 function ViewInfoDim(View: TfrView): string;
@@ -2228,7 +2248,8 @@ begin
   Result:=-1;
   AFilterExt:=UTF8UpperCase(AFilterExt);
   for i:=0 to FList.Count-1 do
-    if (TExportFilterItem(FList[i]).FClassRef = AClassRef) and (TExportFilterItem(FList[i]).FilterExt = AFilterExt) then
+    if (TExportFilterItem(FList[i]).FClassRef = AClassRef) and
+       (UTF8UpperCase(TExportFilterItem(FList[i]).FilterExt) = AFilterExt) then
     begin
       Result:=i;
       exit;
@@ -2837,7 +2858,8 @@ begin
   BeginDraw(Canvas);
   Memo1.Assign(Memo);
   CurReport.InternalOnEnterRect(Memo1, Self);
-  frInterpretator.DoScript(Script);
+  //frInterpretator.DoScript(Script);
+  InternalExecScript;
   if not Visible then Exit;
 
   Stream.Write(Typ, 1);
@@ -2955,6 +2977,10 @@ begin
       Stream.Read(FGapY, SizeOf(FGapX));
     end;
 
+    if frVersion >= 30 then
+    begin
+      Stream.Read(FRestrictions, SizeOf(TlrRestrictions));
+    end;
   end;
   {$IFDEF DebugLR}
   DebugLn('%s.TfrView.LoadFromStream end Position=%d',[name, Stream.Position]);
@@ -3082,6 +3108,9 @@ begin
 
     Stream.Write(FGapX, SizeOf(FGapX));
     Stream.Write(FGapY, SizeOf(FGapX));
+
+    Stream.Write(FRestrictions, SizeOf(TlrRestrictions));
+
   end;
   {$IFDEF DebugLR}
   Debugln('%s.SaveToStream end',[name]);
@@ -3262,6 +3291,9 @@ end;
 
 procedure TfrView.SetDataField(AValue: string);
 begin
+  if (AValue <> '') and (AValue[1]<>'[') then
+    AValue:='[' + AValue + ']';
+
   if Memo.Count = 0 then
     Memo.Add(AValue)
   else
@@ -3282,6 +3314,9 @@ begin
     Result:=Memo[0]
   else
     Result:='';
+
+  if Result <> '' then
+    Result:=lrGetUnBrackedStr(Result);
 end;
 
 function TfrView.GetStretched: Boolean;
@@ -3738,8 +3773,8 @@ var
     {$ENDIF}
     SMemo.Add(str + Chr(w div 256) + Chr(w mod 256));
     Inc(size, size1);
-    //!!
-    maxWidth := dx - InternalGapX - InternalGapX;
+    if Angle=0 then
+      maxWidth := dx - InternalGapX - InternalGapX;
   end;
 
   procedure WrapLine(const s: String);
@@ -4352,7 +4387,8 @@ begin
   BeginDraw(TempBmp.Canvas);
   Streaming := True;
   if DrawMode = drAll then
-    frInterpretator.DoScript(Script);
+    InternalExecScript;
+    //frInterpretator.DoScript(Script);
 
   CanExpandVar := True;
   if (DrawMode = drAll) and (Assigned(CurReport.OnEnterRect) or
@@ -4453,7 +4489,9 @@ begin
   Result := 0;
   DrawMode := drAfterCalcHeight;
   BeginDraw(TempBmp.Canvas);
-  frInterpretator.DoScript(Script);
+  //frInterpretator.DoScript(Script);
+  InternalExecScript;
+
   if not Visible then Exit;
   {$IFDEF DebugLR}
   DebugLnEnter('TfrMemoView.CalcHeight %s INIT',[ViewInfo(Self)]);
@@ -4565,7 +4603,10 @@ begin
       frReadMemo(Stream, FOnMouseEnter);
       frReadMemo(Stream, FOnMouseLeave);
       FDetailReport:=frReadString(Stream);
-      Stream.Read(FParagraphGap, SizeOf(FParagraphGap));
+      if LRE_OLDV28_FRF_READ and (frVersion=28) then
+        //
+      else
+        Stream.Read(FParagraphGap, SizeOf(FParagraphGap));
     end;
 
     if frVersion >= 29 then
@@ -5087,6 +5128,7 @@ begin
     fDataSetStr:=ReadString(Stream);
     if frVersion>=28 then
       fChild :=ReadString(Stream);
+    fixPrintChildIfNotVisible;
   end else
   begin
     if StreamMode=smDesigning then begin
@@ -5104,6 +5146,7 @@ begin
   FCondition := XML.GetValue(Path+'Condition/Value', ''); // todo chk
   FDatasetStr := XML.GetValue(Path+'DatasetStr/Value', ''); // todo chk
   FChild := XML.GetValue(Path+'Child/Value', '');
+  FixPrintChildIfNotVisible;
 end;
 
 procedure TfrBandView.SaveToStream(Stream: TStream);
@@ -5465,10 +5508,20 @@ begin
   end;
 end;
 
+procedure TfrBandView.FixPrintChildIfNotVisible;
+begin
+  if ((frVersion=28) or (frVersion=29)) and (flags and $80 <> 0) then
+  begin
+    flags := flags and not $80;
+    flags := flags or flBandPrintChildIfNotVisible;
+  end;
+end;
+
 procedure TfrBandView.SetHeight(const AValue: Double);
 begin
   inherited SetHeight(AValue);
-  Parent.dy := Round(Avalue);
+  if Assigned(Parent) then
+    Parent.dy := Round(Avalue);
 end;
 
 procedure TfrBandView.SetVisible(AValue: Boolean);
@@ -7824,7 +7877,7 @@ begin
   end;
 
   if ColCount = 0 then ColCount := 1;
-  ColWidth := (RightMargin - LeftMargin) div ColCount;
+  ColWidth := (RightMargin - LeftMargin - (ColCount-1)*ColGap) div ColCount;
 end;
 
 procedure TfrPage.PrepareObjects;
@@ -8491,12 +8544,15 @@ begin
     {$IFDEF DebugLR}
     DebugLn('XAdjust=%d CurY=%d sfPage=%d',[XAdjust,CurY,sfpage]);
     {$ENDIF}
-    ShowBand(Bands[btReportTitle]);
+    if not (roPageHeaderBeforeReportTitle in MasterReport.Options) then
+      ShowBand(Bands[btReportTitle]);
     if PageNo = sfPage then // check if new page was formed
     begin
       if BandExists(Bands[btPageHeader]) and
         ((Bands[btPageHeader].Flags and flBandOnFirstPage) <> 0) then
         ShowBand(Bands[btPageHeader]);
+      if roPageHeaderBeforeReportTitle in MasterReport.Options then
+        ShowBand(Bands[btReportTitle]);
       if not RowsLayout then
         ShowBand(Bands[btColumnHeader]);
     end;
@@ -8511,10 +8567,13 @@ begin
         inc(DetailCount);
     end;
 
-  if Assigned(MasterReport.OnFormPageBookmarks) then
-    MasterReport.OnFormPageBookmarks(MasterReport, true)
-  else
-    BackupBookmarks;
+  if roSaveAndRestoreBookmarks in MasterReport.Options theN
+  begin
+    if Assigned(MasterReport.OnFormPageBookmarks) then
+      MasterReport.OnFormPageBookmarks(MasterReport, true)
+    else
+      BackupBookmarks;
+  end;
 
   HasGroups := Bands[btGroupHeader].Objects.Count > 0;
   {$IFDEF DebugLR}
@@ -8523,10 +8582,14 @@ begin
   {$ENDIF}
   DisableControls;
   DoLoop(1);
-  if Assigned(MasterReport.OnFormPageBookmarks) then
-    MasterReport.OnFormPageBookmarks(MasterReport, false)
-  else
-    RestoreBookmarks; // this also enablecontrols
+
+  if roSaveAndRestoreBookmarks in MasterReport.Options then
+  begin
+    if Assigned(MasterReport.OnFormPageBookmarks) then
+      MasterReport.OnFormPageBookmarks(MasterReport, false)
+    else
+      RestoreBookmarks; // this also enablecontrols
+  end;
   EnableControls;
 
   if Mode = pmNormal then
@@ -9142,9 +9205,17 @@ begin
       else
         s := '';
       t := frCreateObject(b, s, P^.Page);
-      t.StreamMode := smPrinting;
-      t.LoadFromStream(Stream);
-      t.StreamMode := smDesigning;
+      try
+        t.StreamMode := smPrinting;
+        t.LoadFromStream(Stream);
+        t.StreamMode := smDesigning;
+      except
+        if frVersion in [25, 28] then
+          ShowMessage(format(sReportCorruptOldKnowVersion,[frVersion]))
+        else
+          ShowMessage(format(sReportCorruptUnknownVersion,[frVersion]));
+        break;
+      end;
 //      Page.Objects.Add(t);
     end;
   end;
@@ -9527,6 +9598,16 @@ end;
 procedure TfrEMFPages.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   // Todo
+end;
+
+procedure TfrEMFPages.UpgradeToCurrentVersion;
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do begin
+    ObjectsToPage(i);
+    PageToObjects(i);
+  end;
 end;
 
 {-----------------------------------------------------------------------}
@@ -10036,6 +10117,7 @@ var
   D: TfrTDataSet;
   F: TfrTField;
   s1: String;
+  aCursr: Longint;
 
   function MasterBand: TfrBand;
   begin
@@ -10131,6 +10213,12 @@ begin
             begin
               aValue := Title;
               Exit;
+            end
+            else
+            if IdentToCursor(S, aCursr) then
+            begin
+              aValue:=aCursr;
+              exit;
             end;
             if s <> SubValue then
             begin
@@ -10150,8 +10238,8 @@ begin
       end;
     end;
   end;
-
-  if Assigned(CurView) and (CurView.Flags and flHideZeros <> 0) then
+  //check if CurView is TfrBandView to avoid clash with flBandPrintChildIfNotVisible. Issue 29313
+  if Assigned(CurView) and ((CurView.Flags and flHideZeros <> 0) and not (CurView is TfrBandView)) then
   begin
     if TVarData(aValue).VType in [varSmallInt, varInteger, varCurrency,
        varDecimal, varShortInt, varByte, varWord, varLongWord, varInt64,
@@ -10170,6 +10258,7 @@ function ProcessObjMethods(Method:string):boolean;
 var
   ObjName:string;
   Obj:TfrObject;
+  Page:TfrPage;
   i, j:integer;
 begin
   Result:=false;
@@ -10178,19 +10267,20 @@ begin
 
   for i:=0 to CurReport.Pages.Count - 1 do
   begin
-    if UpperCase(CurReport.Pages[i].Name) = ObjName then
+    Page := CurReport.Pages[i];
+    if UpperCase(Page.Name) = ObjName then
     begin
       // PageName.ObjName.Method
-      Obj:=CurReport.Pages[i];
-
+      Obj:=Page;
+      
       if Method<>'' then
       begin
         ObjName:=Copy2SymbDel(Method, '.');
-        for j:=0 to CurReport.Pages[i].Objects.Count - 1  do
+        for j:=0 to Page.Objects.Count - 1  do
         begin
-          if UpperCase(TfrObject(CurReport.Pages[i].Objects[j]).Name) = ObjName then
+          if UpperCase(TfrObject(Page.Objects[j]).Name) = ObjName then
           begin
-            Obj:=TfrObject(CurReport.Pages[i].Objects[j]);
+            Obj:=TfrObject(Page.Objects[j]);
             break;
           end;
         end;
@@ -10200,11 +10290,11 @@ begin
     end
     else
     begin
-      for j:=0 to CurReport.Pages[i].Objects.Count - 1  do
+      for j:=0 to Page.Objects.Count - 1  do
       begin
-        if UpperCase(TfrObject(CurReport.Pages[i].Objects[j]).Name) = ObjName then
+        if UpperCase(TfrObject(Page.Objects[j]).Name) = ObjName then
         begin
-            Obj:=TfrObject(CurReport.Pages[i].Objects[j]);
+            Obj:=TfrObject(Page.Objects[j]);
             break;
         end;
       end;
@@ -10586,6 +10676,8 @@ var
   Stream: TFileStreamUtf8;
 begin
   Stream := TFileStreamUtf8.Create(FName, fmCreate);
+  if not CanRebuild and not (roDontUpgradePreparedReport in Options) then
+    EMFPages.UpgradeToCurrentVersion;
   EMFPages.SaveToStream(Stream);
   Stream.Free;
 end;
@@ -10970,52 +11062,52 @@ begin
   if (aFileName='') and (fDefExportFileName<>'') then
     aFileName := fDefExportFileName;
 
-  if FilterClass=nil then begin
-    raise Exception.Create('No valid filterclass was supplied');
-  end;
+  if FilterClass=nil then
+    raise Exception.Create(sNoValidFilterClassWasSupplied);
 
-  if aFilename='' then begin
-    raise Exception.create('No valid export filename was supplied');
-  end;
+  if Trim(aFilename) = '' then
+    raise Exception.create(sNoValidExportFilenameWasSupplied);
 
   ExportStream := TFileStreamUtf8.Create(aFileName, fmCreate);
   FCurrentFilter := FilterClass.Create(ExportStream);
+  try
+    CurReport := Self;
+    MasterReport := Self;
 
-  CurReport := Self;
-  MasterReport := Self;
+    FCurrentFilter.OnSetup:=CurReport.OnExportFilterSetup;
 
-  FCurrentFilter.OnSetup:=CurReport.OnExportFilterSetup;
-
-  if FCurrentFilter.Setup then
-  begin
-    FCurrentFilter.OnBeginDoc;
-
-    SavedAllPages := EMFPages.Count;
-
-    if FCurrentFilter.UseProgressbar then
-    with frProgressForm do
+    if FCurrentFilter.Setup then
     begin
-      s := sReportPreparing;
-      if Title = '' then
-        Caption := s
-      else
-        Caption := s + ' - ' + Title;
-      FirstCaption := sPagePreparing;
-      Label1.Caption := FirstCaption + '  1';
-      OnBeforeModal := @ExportBeforeModal;
-      Show_Modal(Self);
-    end else
-      ExportBeforeModal(nil);
+      FCurrentFilter.OnBeginDoc;
 
-    fDefExportFilterClass := FCurrentFilter.ClassName;
-    fDefExportFileName := aFileName;
-    Result:=true;
-  end
-  else
-    Result:=false;
-  //is necessary to destroy the file stream before calling FCurrentFilter.AfterExport
-  //to ensure the exported file is properly written to the file system
-  ExportStream.Free;
+      SavedAllPages := EMFPages.Count;
+
+      if FCurrentFilter.UseProgressbar then
+      with frProgressForm do
+      begin
+        s := sReportPreparing;
+        if Title = '' then
+          Caption := s
+        else
+          Caption := s + ' - ' + Title;
+        FirstCaption := sPagePreparing;
+        Label1.Caption := FirstCaption + '  1';
+        OnBeforeModal := @ExportBeforeModal;
+        Show_Modal(Self);
+      end else
+        ExportBeforeModal(nil);
+
+      fDefExportFilterClass := FCurrentFilter.ClassName;
+      fDefExportFileName := aFileName;
+      Result:=true;
+    end
+    else
+      Result:=false;
+  finally
+    //is necessary to destroy the file stream before calling FCurrentFilter.AfterExport
+    //to ensure the exported file is properly written to the file system
+    ExportStream.Free;
+  end;
   FCurrentFilter.Stream := nil;
 
   if Result then
@@ -12268,7 +12360,8 @@ var
   end;
 
 begin
-  if List.Find(funName, i) then
+  i:=List.IndexOf(funName);
+  if i>=0 then
     AddDesc(List)
   else
   begin
@@ -12515,16 +12608,26 @@ begin
       DebugLn('CurBand=%s CurBand.View=%s AggrBand=%s',
         [BandInfo(CurBand),dbgsName(CurBand.View),BandInfo(AggrBand)]);
       {$ENDIF}
-      s1 := Trim(string(p2));
-      if s1 = '' then begin
-        if (dk=dkCount) and (p1+''<>'') then
-          s1 := p1
-        else
+      if dk <> dkCount then begin
+        // p1 = field
+        // p2 = data band
+        // p3 = InvisibleToo
+        s1 := trim(string(p2));
+        if s1='' then
           s1 := CurBand.View.Name;
-      end;
-      if dk <> dkCount then
-        s2 := Trim(string(p3)) else
+        s2 := Trim(string(p3))
+      end
+      else begin
+        // p1 = data band
+        // p2 = InvisibleToo
+        s1 := Trim(string(p1));
         s2 := Trim(string(p2));
+        if s2<>'1' then
+          s2 := '0';
+      end;
+      // s1 = data band
+      // s2 = '1' o '0' (1 means process invisible records too)
+
       if (AggrBand.Typ in [btPageFooter, btMasterFooter, btDetailFooter,
         btSubDetailFooter, btGroupFooter, btCrossFooter, btReportSummary]) and
          ((s2 = '1') or ((s2 <> '1') and CurBand.Visible)) then
@@ -12828,6 +12931,14 @@ begin
   fMemo.Text:=AValue;
 end;
 
+procedure TfrObject.InternalExecScript;
+begin
+  if Assigned(FOnExecScriptEvent) then
+    FOnExecScriptEvent(Self, Script)
+  else
+    frInterpretator.DoScript(Script);
+end;
+
 procedure TfrObject.SetWidth(AValue: Integer);
 begin
   DX:=AValue;
@@ -12969,6 +13080,7 @@ begin
     Memo.Assign(TfrObject(Source).Memo);
     Script.Assign(TfrObject(Source).Script);
     Visible:=TfrObject(Source).Visible;
+    FOnExecScriptEvent:=TfrObject(Source).FOnExecScriptEvent;
   end;
 end;
 

@@ -152,6 +152,7 @@ const
   ecUseUnit                 = ecFirstLazarus + 122;
   ecFindOverloads           = ecFirstLazarus + 123;
   ecFindUsedUnitRefs        = ecFirstLazarus + 124;
+  ecCompleteCodeInteractive = ecFirstLazarus + 125;
 
   // file menu
   ecNew                     = ecFirstLazarus + 201;
@@ -167,6 +168,7 @@ const
   ecCleanDirectory          = ecFirstLazarus + 212;
   ecRestart                 = ecFirstLazarus + 213;
   ecQuit                    = ecFirstLazarus + 214;
+  ecOpenUnit                = ecFirstLazarus + 215;
 
   // IDE navigation
   ecToggleFormUnit          = ecFirstLazarus + 301;
@@ -255,6 +257,7 @@ const
   ecCleanUpAndBuild         = ecFirstLazarus + 403;
   ecBuildManyModes          = ecFirstLazarus + 404;
   ecAbortBuild              = ecFirstLazarus + 405;
+  ecRunWithoutDebugging     = ecFirstLazarus + 409;
   ecRun                     = ecFirstLazarus + 410;
   ecPause                   = ecFirstLazarus + 411;
   ecStepInto                = ecFirstLazarus + 412;
@@ -299,6 +302,7 @@ const
   ecViewProjectSource       = ecFirstLazarus + 512;
   ecProjectOptions          = ecFirstLazarus + 513;
   ecProjectChangeBuildMode  = ecFirstLazarus + 514;
+  ecProjectResaveFormsWithI18n = ecFirstLazarus + 515;
 
   // package menu
   ecOpenPackage             = ecFirstLazarus + 600;
@@ -1418,6 +1422,8 @@ end;
 
 destructor TIDECommand.Destroy;
 begin
+  if Category <> nil then
+    Category := nil;
   FUsers.Free;
   inherited Destroy;
 end;
@@ -1480,7 +1486,7 @@ function TIDECommand.GetCategoryAndName: string;
 begin
   Result:='"'+GetLocalizedName+'"';
   if Category<>nil then
-    Result:=Result+' in "'+Category.Description+'"';
+    Result:='"'+Category.Description+'" -> '+Result;
 end;
 
 function TIDECommand.Execute(Sender: TObject): boolean;
@@ -1695,22 +1701,21 @@ procedure TIDESpecialCommand.SetCommand(const AValue: TIDECommand);
 begin
   if FCommand = AValue then
     Exit;
-  if FCommand <> nil then
-  begin
-    //DebugLn('TIDEMenuCommand.SetCommand OLD ',ShortCutToText(FCommand.AsShortCut),' FCommand.Name=',FCommand.Name,' Name=',Name,' FCommand=',dbgs(Pointer(FCommand)));
-    if FCommand.OnExecute=OnClick then
-      FCommand.OnExecute:=nil;
-    if FCommand.OnExecuteProc=OnClickProc then
-      FCommand.OnExecuteProc:=nil;
-  end;
   FCommand := AValue;
   if FCommand <> nil then
   begin
-    if FCommand.OnExecute = nil then
-      FCommand.OnExecute := OnClick;
-    if FCommand.OnExecuteProc = nil then
-      FCommand.OnExecuteProc := OnClickProc;
-    //DebugLn('TIDEMenuCommand.SetCommand NEW ',ShortCutToText(FCommand.AsShortCut),' FCommand.Name=',FCommand.Name,' Name=',Name,' FCommand=',dbgs(Pointer(FCommand)));
+    if (FCommand.OnExecute=nil) and (OnClick<>nil) then
+      FCommand.OnExecute := OnClick
+    else
+    if (OnClick=nil) and (FCommand.OnExecute<>nil) then
+      OnClick := FCommand.OnExecute;
+
+    if (FCommand.OnExecuteProc=nil) and (OnClickProc<>nil) then
+      FCommand.OnExecuteProc := OnClickProc
+    else
+    if (OnClickProc=nil) and (FCommand.OnExecuteProc<>nil) then
+      OnClickProc := FCommand.OnExecuteProc;
+
     FCommand.UserAdded(Self);
     FCommand.Change;
   end;
@@ -1902,7 +1907,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..312] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..315] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -2004,6 +2009,7 @@ const
     (Value: ecUseUnit;                                Name: 'ecUseUnit'),
     (Value: ecFindOverloads;                          Name: 'ecFindOverloads'),
     (Value: ecFindUsedUnitRefs;                       Name: 'ecFindUsedUnitRefs'),
+    (Value: ecCompleteCodeInteractive;                Name: 'ecCompleteCodeInteractive'),
 
   // file menu
     (Value: ecNew;                                    Name: 'ecNew'),
@@ -2105,6 +2111,7 @@ const
     (Value: ecQuickCompile;                           Name: 'ecQuickCompile'),
     (Value: ecCleanUpAndBuild;                        Name: 'ecCleanUpAndBuild'),
     (Value: ecAbortBuild;                             Name: 'ecAbortBuild'),
+    (Value: ecRunWithoutDebugging;                    Name: 'ecRunWithoutDebugging'),
     (Value: ecRun;                                    Name: 'ecRun'),
     (Value: ecPause;                                  Name: 'ecPause'),
     (Value: ecStepInto;                               Name: 'ecStepInto'),
@@ -2149,6 +2156,7 @@ const
     (Value: ecViewProjectSource;                      Name: 'ecViewProjectSource'),
     (Value: ecProjectOptions;                         Name: 'ecProjectOptions'),
     (Value: ecProjectChangeBuildMode;                 Name: 'ecProjectChangeBuildMode'),
+    (Value: ecProjectResaveFormsWithI18n;             Name: 'ecProjectResaveFormsWithI18n'),
 
   // package menu
     (Value: ecOpenPackage;                            Name: 'ecOpenPackage'),

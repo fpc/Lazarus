@@ -48,13 +48,16 @@ uses
   Windows,
   {$ENDIF}
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, IpHtml;
+  StdCtrls, ExtCtrls, Spin, IpHtml;
 
 resourcestring
   rsIpHTMLPreviewPrintPreview = 'Print preview';
   rsIpHTMLPreviewPrint = 'Print';
   rsIpHTMLPreviewZoom = 'Zoom:';
   rsIpHTMLPreviewClose = 'Close';
+  rsIpHTMLPreviewFitAll = 'Fit all';
+  rsIpHTMLPreviewFitWidth = 'Width';
+  rsIpHTMLPreviewFitHeight = 'Height';
   rsIpHTMLPreviewPage = 'Page:';
   rsIpHTMLPreviewOf = 'of';
   rsIpHTMLPreviewSelectPrinter = 'Select printer ...';
@@ -64,23 +67,15 @@ type
   { TIpHTMLPreview }
 
   TIpHTMLPreview = class(TForm)
+    btnFitHeight: TButton;
+    btnFitWidth: TButton;
+    btnFit: TButton;
     btnSelectPrinter: TButton;
     Label3: TLabel;
-    ZoomCombo: TComboBox;
     PaperPanel: TPanel;
     PaintBox1: TPaintBox;
-    procedure btnNextClick(Sender: TObject);
-    procedure btnLastClick(Sender: TObject);
-    procedure btnSelectPrinterClick(Sender: TObject);
-    procedure edtPageChange(Sender: TObject);
-    procedure btnPrintClick(Sender: TObject);
-    procedure PaintBox1Paint(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
-    procedure ZoomComboChange(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure FormResize(Sender: TObject);
-  published
-    Panel1: TPanel;
+    edtZoom: TSpinEdit;
+    ToolbarPanel: TPanel;
     btnPrint: TButton;
     btnFirst: TButton;
     btnPrev: TButton;
@@ -92,31 +87,48 @@ type
     Label2: TLabel;
     lblMaxPage: TLabel;
     ScrollBox1: TScrollBox;
-    procedure FormShow(Sender: TObject);
     procedure btnFirstClick(Sender: TObject);
+    procedure btnFitClick(Sender: TObject);
+    procedure btnFitHeightClick(Sender: TObject);
+    procedure btnFitWidthClick(Sender: TObject);
+    procedure btnLastClick(Sender: TObject);
+    procedure btnNextClick(Sender: TObject);
     procedure btnPrevClick(Sender: TObject);
-    procedure SetCurPage(const Value: Integer);
-  protected
-    FClipRect, SourceRect: TRect;
+    procedure btnPrintClick(Sender: TObject);
+    procedure btnSelectPrinterClick(Sender: TObject);
+    procedure edtPageChange(Sender: TObject);
+    procedure edtZoomChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure PaintBox1Paint(Sender: TObject);
+  private
+    SourceRect: TRect;
     Scratch: TBitmap;
     FScale: double;
     FZoom: Integer;
+    FZoomToFit: Integer;
+    FLockZoomUpdate: Integer;
+    procedure SetCurPage(const Value: Integer);
     procedure SetZoom(const Value: Integer);
-    procedure ResizeCanvas;
-    procedure ScaleSourceRect;
+  protected
     procedure AlignPaintBox;
     procedure Render;
+    procedure ResizeCanvas;
+//    procedure ScaleSourceRect;
+    procedure UpdateBtnStates;
   public
     FCurPage: Integer;
     HTML : TIpHtml;
     PageRect: TRect;
     OwnerPanel: TIpHtmlInternalPanel;
-    property ClipRect: TRect read FClipRect write FClipRect;
-    property CurPage: Integer read FCurPage write SetCurPage;
     procedure RenderPage(PageNo: Integer);
-    property Zoom: Integer read FZoom write SetZoom;
+    property CurPage: Integer read FCurPage write SetCurPage;
     property Scale: double read FScale;
+    property Zoom: Integer read FZoom write SetZoom;
   end;
+
 
 implementation
 
@@ -132,22 +144,31 @@ uses
 const
   SCRATCH_WIDTH = 800; //640;
   SCRATCH_HEIGHT = 600; //480;
+  ZOOM_FACTOR = 1.1;
 
-procedure TIpHTMLPreview.FormShow(Sender: TObject);
+function ScaleRect(ARect: TRect; AFactor: Double): TRect;
 begin
-  Zoom := 100;
-  RenderPage(CurPage);
+  Result.Left := round(ARect.Left * AFactor);
+  Result.Top := round(ARect.Top * AFactor);
+  Result.Right := round(ARect.Right * AFactor);
+  Result.Bottom := round(ARect.Bottom * AFactor);
 end;
 
-procedure TIpHTMLPreview.RenderPage(PageNo: Integer);
+procedure TIpHTMLPreview.AlignPaintBox;
 var
-  CR : TRect;
+  sb: Integer;
 begin
-  CR := Rect(0, 0, OwnerPanel.PrintWidth, 0);
-  CR.Top := (PageNo - 1) * OwnerPanel.PrintHeight;
-  CR.Bottom := Cr.Top + OwnerPanel.PrintHeight;
-  PageRect := CR;
-  PaintBox1.Invalidate;
+  sb := GetSystemMetrics(SM_CXVSCROLL);
+  if PaperPanel.Width < ClientWidth - sb then
+    PaperPanel.Left := (ClientWidth - sb - PaperPanel.Width) div 2
+  else
+    PaperPanel.Left := 0;
+
+  sb := GetSystemMetrics(SM_CXHSCROLL);
+  if PaperPanel.Height < ClientHeight - sb - ToolbarPanel.Height then
+    PaperPanel.Top := (ClientHeight - sb - ToolbarPanel.Height - PaperPanel.Height) div 2
+  else
+    PaperPanel.Top := 0;
 end;
 
 procedure TIpHTMLPreview.btnFirstClick(Sender: TObject);
@@ -155,25 +176,19 @@ begin
   CurPage := 1;
 end;
 
-procedure TIpHTMLPreview.btnPrevClick(Sender: TObject);
+procedure TIpHTMLPreview.btnFitClick(Sender: TObject);
 begin
-  CurPage := CurPage - 1;
+  SetZoom(ZOOM_TO_FIT);
 end;
 
-procedure TIpHTMLPreview.SetCurPage(const Value: Integer);
+procedure TIpHTMLPreview.btnFitHeightClick(Sender: TObject);
 begin
-  if (Value <> FCurPage)
-  and (Value >= 1)
-  and (Value <= OwnerPanel.PageCount) then begin
-    FCurPage := Value;
-    RenderPage(Value);
-    edtPage.Text := IntToStr(CurPage);
-  end;
+  SetZoom(ZOOM_TO_FIT_HEIGHT);
 end;
 
-procedure TIpHTMLPreview.btnNextClick(Sender: TObject);
+procedure TIpHTMLPreview.btnFitWidthClick(Sender: TObject);
 begin
-  CurPage := CurPage + 1;
+  SetZoom(ZOOM_TO_FIT_WIDTH);
 end;
 
 procedure TIpHTMLPreview.btnLastClick(Sender: TObject);
@@ -181,16 +196,21 @@ begin
   CurPage := OwnerPanel.PageCount;
 end;
 
+procedure TIpHTMLPreview.btnNextClick(Sender: TObject);
+begin
+  CurPage := CurPage + 1;
+end;
+
+procedure TIpHTMLPreview.btnPrevClick(Sender: TObject);
+begin
+  CurPage := CurPage - 1;
+end;
+
 procedure TIpHTMLPreview.btnSelectPrinterClick(Sender: TObject);
 begin
   if OwnerPanel <> nil then
     if OwnerPanel.SelectPrinterDlg then
       SetZoom(Zoom); {force recalc of preview sizes}
-end;
-
-procedure TIpHTMLPreview.edtPageChange(Sender: TObject);
-begin
-  CurPage := StrToInt(edtPage.Text);
 end;
 
 procedure TIpHTMLPreview.btnPrintClick(Sender: TObject);
@@ -206,86 +226,23 @@ begin
   end;
 end;
 
-procedure TIpHTMLPreview.ScaleSourceRect;
+procedure TIpHTMLPreview.edtPageChange(Sender: TObject);
 begin
-  SourceRect.Left := round(SourceRect.Left / Scale);
-  SourceRect.Top := round(SourceRect.Top / Scale);
-  SourceRect.Right := round(SourceRect.Right / Scale);
-  SourceRect.Bottom := round(SourceRect.Bottom / Scale);
+  CurPage := StrToInt(edtPage.Text);
 end;
 
-procedure TIpHTMLPreview.Render;
+procedure TIpHTMLPreview.edtZoomChange(Sender: TObject);
 var
-  TTop, TLeft,
-  WindowTop, WindowLeft: Integer;
-  R: TRect;
+  newZoom: Double;
 begin
-  {GDI won't let us create a bitmap for a whole page
-   since it would become too big for large resolutions,
-   so we have to do banding by hand}
-
-  Screen.Cursor := crHourglass;
-  try
-    PaintBox1.Canvas.Brush.Color := clWhite;
-    PaintBox1.Canvas.FillRect(PaintBox1.Canvas.ClipRect);
-    WindowTop := SourceRect.Top;
-    TTop := 0;
-    while WindowTop < SourceRect.Bottom do begin
-      WindowLeft := SourceRect.Left;
-      TLeft := 0;
-      while WindowLeft < SourceRect.Right do begin
-        R.Left := WindowLeft;
-        R.Top := WindowTop;
-        R.Right := R.Left + SCRATCH_WIDTH + 1;
-        R.Bottom := R.Top + SCRATCH_HEIGHT + 1;
-
-        HTML.Render(Scratch.Canvas, R, False, Point(0, 0));
-
-        R.Left := PaintBox1.Canvas.ClipRect.Left + round(TLeft * Scale);
-        R.Top := PaintBox1.Canvas.ClipRect.Top + round(TTop * Scale);
-        R.Right := R.Left + round(SCRATCH_WIDTH * Scale) + 1;
-        R.Bottom := R.Top + round(SCRATCH_HEIGHT * Scale) + 1;
-
-        PaintBox1.Canvas.StretchDraw(R, Scratch);
-
-        inc(WindowLeft, SCRATCH_WIDTH);
-        inc(TLeft, SCRATCH_WIDTH);
-      end;
-      inc(WindowTop, SCRATCH_HEIGHT);
-      inc(TTop, SCRATCH_HEIGHT);
-    end;
-  finally
-    Screen.Cursor := crDefault;
-  end;
-end;
-
-procedure TIpHTMLPreview.PaintBox1Paint(Sender: TObject);
-begin
-  SourceRect := PaintBox1.Canvas.ClipRect;
-  ScaleSourceRect;
-  ClipRect := SourceRect;
-  OffsetRect(SourceRect, 0, PageRect.Top);
-  Render;
-end;
-
-procedure TIpHTMLPreview.FormDestroy(Sender: TObject);
-begin
-  Scratch.Free;
-end;
-
-procedure TIpHTMLPreview.ZoomComboChange(Sender: TObject);
-var
-  S: string;
-begin
-  with ZoomCombo do
-    S := Items[ItemIndex];
-  Zoom := StrToInt(copy(S, 1, length(S) - 1));
+  if (FLockZoomUpdate = 0) and TryStrToFloat(edtZoom.Text, newZoom) then
+    SetZoom(Round(newZoom));
 end;
 
 procedure TIpHTMLPreview.FormCreate(Sender: TObject);
 begin
-  ZoomCombo.ItemIndex := 4;
   FZoom := 100;
+  FZoomToFit := ZOOM_TO_FIT;
   Scratch := TBitmap.Create;
   Scratch.Width := SCRATCH_WIDTH;
   Scratch.Height := SCRATCH_HEIGHT;
@@ -297,39 +254,126 @@ begin
   btnClose.Caption := rsIpHTMLPreviewClose;
   Label1.Caption := rsIpHTMLPreviewPage;
   Label2.Caption := rsIpHTMLPreviewOf;
-  btnSelectPrinter.Caption := rsIpHTMLPreviewSelectPrinter
+  btnSelectPrinter.Caption := rsIpHTMLPreviewSelectPrinter;
+  btnFit.Caption := rsIpHTMLPreviewFitAll;
+  btnFitWidth.Caption := rsIpHTMLPreviewFitWidth;
+  btnFitHeight.Caption := rsIpHTMLPreviewFitHeight;
 end;
 
-procedure TIpHTMLPreview.SetZoom(const Value: Integer);
-var
-  Scale1, Scale2, Scale0: double;
-  {$IFDEF IP_LAZARUS}
-  ClientHeightDbl, ClientWidthDbl: double;
-  {$ENDIF}
+procedure TIpHTMLPreview.FormDestroy(Sender: TObject);
 begin
-  FZoom := Value;
-  {$IFDEF IP_LAZARUS}
-  ClientHeightDbl := ClientHeight;
-  ClientWidthDbl := ClientWidth;
-  if Printer.PageHeight>0 then
-    Scale1 := ClientHeightDbl/Printer.PageHeight
+  Scratch.Free;
+end;
+
+procedure TIpHTMLPreview.FormResize(Sender: TObject);
+begin
+  if (FZoomToFit <= 0) and (OwnerPanel <> nil) then
+    SetZoom(FZoomToFit)  {force recalc of preview sizes}
   else
-    Scale1 := ClientHeightDbl/500;
-  if Printer.PageWidth>0 then
-    Scale2 := ClientWidthDbl/ Printer.PageWidth
-  else
-    Scale2 := ClientWidthDbl/ 500;
-  {$ELSE}
-  Scale1 := ClientHeight/ Printer.PageHeight; //JMN
-  Scale2 := ClientWidth/ Printer.PageWidth; //JMN
-  {$ENDIF}
-  if Scale1 < Scale2 then
-    Scale0 := Scale1
-  else
-    Scale0 := Scale2;
-  FScale := Scale0 * FZoom / 100;
-  ResizeCanvas;
-  AlignPaintBox;
+    AlignPaintbox;
+end;
+
+procedure TIpHTMLPreview.FormShow(Sender: TObject);
+begin
+  UpdateBtnStates;
+  RenderPage(CurPage);
+end;
+
+procedure TIpHTMLPreview.PaintBox1Paint(Sender: TObject);
+begin
+  SourceRect := ScaleRect(PaintBox1.Canvas.ClipRect, 1.0/Scale);
+  OffsetRect(SourceRect, 0, PageRect.Top);
+  Render;
+end;
+
+procedure TIpHTMLPreview.Render;
+var
+  TileTop, TileLeft,
+  WindowTop, WindowLeft: Integer;
+  R, Rscr: TRect;
+begin
+  {GDI won't let us create a bitmap for a whole page
+   since it would become too big for large resolutions,
+   so we have to do banding by hand}
+
+  Screen.Cursor := crHourglass;
+  try
+    Application.ProcessMessages;
+    PaintBox1.Canvas.Brush.Color := clWhite;
+    PaintBox1.Canvas.FillRect(PaintBox1.Canvas.ClipRect);
+    PaintBox1.Canvas.AntialiasingMode := OwnerPanel.PreviewAntiAliasingMode;
+    WindowTop := SourceRect.Top;
+    TileTop := 0;
+    while WindowTop < SourceRect.Bottom do begin
+      WindowLeft := SourceRect.Left;
+      TileLeft := 0;
+      while WindowLeft < SourceRect.Right do begin
+        R.Left := WindowLeft;
+        R.Top := WindowTop;
+        R.Right := R.Left + SCRATCH_WIDTH + 1;
+        R.Bottom := R.Top + SCRATCH_HEIGHT + 1;
+        Rscr := R;
+        if R.Bottom - SourceRect.Top > OwnerPanel.PrintHeight then begin
+          Scratch.Canvas.FillRect(0, 0, R.Right-R.Left, R.Bottom-R.Top);
+          R.Bottom := SourceRect.Top + OwnerPanel.PrintHeight;
+        end;
+
+        HTML.Render(Scratch.Canvas, R, PageRect.Top, PageRect.Bottom, False, Point(0, 0));
+
+        OffsetRect(RScr, 0, -PageRect.Top);
+        Rscr := ScaleRect(Rscr, Scale);
+        PaintBox1.Canvas.StretchDraw(Rscr, Scratch);
+
+        inc(WindowLeft, SCRATCH_WIDTH);
+        inc(TileLeft, SCRATCH_WIDTH);
+      end;
+      inc(WindowTop, SCRATCH_HEIGHT);
+      inc(TileTop, SCRATCH_HEIGHT);
+    end;
+  finally
+    Screen.Cursor := crDefault;
+  end;
+
+(*
+  This is an untiled version ...
+var
+  R: TRect;
+begin
+  // Render to single "scratch" bitmap which has the original print size and
+  // then is stretch-drawn into the preview paintbox.
+  Screen.Cursor := crHourglass;
+  try
+    Application.ProcessMessages;
+    Paintbox1.Canvas.Brush.Color := clWhite;
+    Paintbox1.Canvas.FillRect(Paintbox1.Canvas.ClipRect);
+    PaintBox1.Canvas.AntialiasingMode := OwnerPanel.PreviewAntiAliasingMode;
+    Scratch.Clear;
+    Scratch.Width := SourceRect.Right - SourceRect.Left;
+    Scratch.Height := SourceRect.Bottom - SourceRect.Top;
+
+    // probably not needed
+    Scratch.Canvas.Brush.Color := clWhite;
+    Scratch.Canvas.FillRect(SourceRect);
+
+    HTML.Render(Scratch.Canvas, SourceRect, PageRect.Top, PageRect.Bottom, False, Point(0, 0));
+
+    R := Paintbox1.Canvas.ClipRect;
+    PaintBox1.Canvas.StretchDraw(R, Scratch);
+  finally
+    Screen.Cursor := crDefault;
+  end;
+*)
+end;
+
+procedure TIpHTMLPreview.RenderPage(PageNo: Integer);
+var
+  CR : TRect;
+begin
+  CR := Rect(0, 0, OwnerPanel.PrintWidth, 0);
+  CR.Top := (PageNo - 1) * OwnerPanel.PrintHeight;
+  CR.Bottom := Cr.Top + OwnerPanel.PrintHeight;
+  PageRect := CR;
+  PaintBox1.Invalidate;
 end;
 
 procedure TIpHTMLPreview.ResizeCanvas;
@@ -337,11 +381,11 @@ begin
   ScrollBox1.HorzScrollBar.Position := 0;
   ScrollBox1.VertScrollBar.Position := 0;
   {$IFDEF IP_LAZARUS}
-  if Printer.PageHeight>0 then
+  if Printer.PageHeight > 0 then
     PaperPanel.Height := round(Printer.PageHeight * Scale)
   else
     PaperPanel.Height := round(500 * Scale);
-  if Printer.PageWidth>0 then
+  if Printer.PageWidth > 0 then
     PaperPanel.Width := round(Printer.PageWidth * Scale)
   else
     PaperPanel.Width := round(500 * Scale);
@@ -349,29 +393,73 @@ begin
   PaperPanel.Width := round(Printer.PageWidth * Scale);
   PaperPanel.Height := round(Printer.PageHeight * Scale);
   {$ENDIF}
-  PaintBox1.Width := round(OwnerPanel.PrintWidth * Scale);
-  PaintBox1.Height := round(OwnerPanel.PrintHeight * Scale);
+
   PaintBox1.Left := round(OwnerPanel.PrintTopLeft.x * Scale);
   PaintBox1.Top := round(OwnerPanel.PrintTopLeft.y * Scale);
+  Paintbox1.Width := PaperPanel.Width - Paintbox1.Left;
+  Paintbox1.Height := PaperPanel.Height - Paintbox1.top;
+
   AlignPaintBox;
 end;
 
-procedure TIpHTMLPreview.AlignPaintBox;
+procedure TIpHTMLPreview.SetCurPage(const Value: Integer);
 begin
-  if PaperPanel.Width < ClientWidth then
-    PaperPanel.Left := ClientWidth div 2 - (PaperPanel.Width div 2)
-  else
-    PaperPanel.Left := 0;
-  if PaperPanel.Height < ClientHeight then
-    PaperPanel.Top := ClientHeight div 2 - (PaperPanel.Height div 2)
-  else
-    PaperPanel.Top := 0;
+  if (Value <> FCurPage) and (Value >= 1) and (Value <= OwnerPanel.PageCount) then
+  begin
+    FCurPage := Value;
+    RenderPage(Value);
+    edtPage.Text := IntToStr(CurPage);
+    UpdateBtnStates;
+  end;
 end;
 
-procedure TIpHTMLPreview.FormResize(Sender: TObject);
+procedure TIpHTMLPreview.SetZoom(const Value: Integer);
+var
+  ClientHeightDbl, ClientWidthDbl: Double;
+  PrnPgHeight, PrnPgWidth: Double;
+  scaleW, scaleH: Integer;
+  sb: Integer;
 begin
-  if OwnerPanel<>nil then
-    SetZoom(Zoom); {force recalc of preview sizes}
+  FZoomToFit := Value;
+
+  // Available client area in inches, without scrollbars
+  sb := GetSystemMetrics(SM_CXHSCROLL);
+  ClientHeightDbl := (ClientHeight - sb - ToolbarPanel.Height) / ScreenInfo.PixelsPerInchY;
+  sb := GetSystemMetrics(SM_CXVSCROLL);
+  ClientWidthDbl := (ClientWidth - sb)/ ScreenInfo.PixelsPerInchX;
+
+  // Printer page size in inches
+  PrnPgHeight := Printer.PageHeight / Printer.YDpi;
+  PrnPgWidth := Printer.PageWidth / Printer.XDpi;
+
+  case Value of
+    ZOOM_TO_FIT:
+      begin
+        scaleW := round(ClientWidthDbl / PrnPgWidth * 100);
+        scaleH := round(ClientHeightDbl / PrnPgHeight * 100);
+        if scaleW < scaleH then FZoom := scaleW else FZoom := scaleH;
+      end;
+    ZOOM_TO_FIT_WIDTH:
+      FZoom := round(ClientWidthDbl / PrnPgWidth  * 100);
+    ZOOM_TO_FIT_HEIGHT:
+      FZoom := round(ClientHeightDbl / PrnPgHeight  * 100);
+    else
+      FZoom := Value;
+  end;
+  inc(FLockZoomUpdate);
+  edtZoom.Value := FZoom;
+  dec(FLockZoomUpdate);
+  FScale := ScreenInfo.PixelsPerInchX / Printer.XDpi * FZoom * 0.01;
+
+  ResizeCanvas;
+end;
+
+procedure TIpHtmlPreview.UpdateBtnStates;
+begin
+  btnFirst.Enabled := (FCurPage > 1);
+  btnPrev.Enabled := (FCurPage > 1);
+  btnNext.Enabled := (FCurPage < OwnerPanel.PageCount);
+  btnLast.Enabled := (FCurPage < OwnerPanel.PageCount);
 end;
 
 end.

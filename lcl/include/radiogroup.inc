@@ -39,6 +39,7 @@ begin
     FRadioGroup.UpdateAll
   else
     FRadioGroup.UpdateInternalObjectList;
+  FRadioGroup.FLastClickedItemIndex := FRadioGroup.FItemIndex;
 end;
 
 constructor TRadioGroupStringList.Create(TheRadioGroup: TCustomRadioGroup);

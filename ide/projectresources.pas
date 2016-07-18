@@ -100,15 +100,15 @@ type
     procedure Clear;
     function Regenerate(const MainFileName: String;
                         UpdateSource, PerformSave: boolean;
-                        SaveToTestDir: string): Boolean;
+                        const SaveToTestDir: string): Boolean;
     function RenameDirectives(const CurFileName, NewFileName: String): Boolean;
     procedure DeleteResourceBuffers;
 
     function HasSystemResources: Boolean;
     function HasLazarusResources: Boolean;
 
-    procedure WriteToProjectFile(AConfig: TXMLConfig; Path: String);
-    procedure ReadFromProjectFile(AConfig: TXMLConfig; Path: String; ReadAll: Boolean);
+    procedure WriteToProjectFile(AConfig: TXMLConfig; const Path: String);
+    procedure ReadFromProjectFile(AConfig: TXMLConfig; const Path: String; ReadAll: Boolean);
 
     property Modified: Boolean read FModified write SetModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
@@ -506,8 +506,8 @@ begin
   FMessages.Clear;
 end;
 
-function TProjectResources.Regenerate(const MainFileName: String;
-  UpdateSource, PerformSave: boolean; SaveToTestDir: string): Boolean;
+function TProjectResources.Regenerate(const MainFileName: String; UpdateSource,
+  PerformSave: boolean; const SaveToTestDir: string): Boolean;
 begin
   //DebugLn(['TProjectResources.Regenerate MainFilename=',MainFilename,' UpdateSource=',UpdateSource,' PerformSave=',PerformSave]);
   //DumpStack;
@@ -558,7 +558,8 @@ begin
   Result := FLazarusResources.Count > 0;
 end;
 
-procedure TProjectResources.WriteToProjectFile(AConfig: TXMLConfig; Path: String);
+procedure TProjectResources.WriteToProjectFile(AConfig: TXMLConfig;
+  const Path: String);
 var
   i: integer;
 begin
@@ -567,7 +568,8 @@ begin
     FResources[i].WriteToProjectFile(AConfig, Path);
 end;
 
-procedure TProjectResources.ReadFromProjectFile(AConfig: TXMLConfig; Path: String; ReadAll: Boolean);
+procedure TProjectResources.ReadFromProjectFile(AConfig: TXMLConfig;
+  const Path: String; ReadAll: Boolean);
 var
   i: integer;
 begin

@@ -30,10 +30,10 @@ unit EditBtn;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, LCLStrConsts, Types, LCLType, LMessages,
-  Graphics, Controls, Forms, LazFileUtils, Dialogs, StdCtrls, Buttons, Calendar,
-  ExtDlgs, GroupedEdit, CalendarPopup, MaskEdit, Menus, StrUtils, DateUtils,
-  TimePopup, CalcForm;
+  Classes, SysUtils, LCLProc, LResources, LCLStrConsts, Types, LCLType,
+  LMessages, Graphics, Controls, Forms, LazFileUtils, LazUTF8, Dialogs,
+  StdCtrls, Buttons, Calendar, ExtDlgs, GroupedEdit, CalendarPopup, MaskEdit,
+  Menus, StrUtils, DateUtils, TimePopup, CalcForm;
 
 const
   NullDate: TDateTime = 0;
@@ -189,6 +189,7 @@ type
   // Done=False means the data should also be filtered by its title string.
   // Done=True means no other filtering is needed.
   TFilterItemEvent = function (Item: TObject; out Done: Boolean): Boolean of object;
+  TFilterItemExEvent = function (ACaption: string;Item: TObject; out Done: Boolean): Boolean of object;
 
   // Can be used only for items that have a checkbox. Returns true if checked.
   TCheckItemEvent = function (Item: TObject): Boolean of object;
@@ -219,7 +220,12 @@ type
     fIsFirstUpdate: Boolean;
     fSelectedPart: TObject;         // Select this node on next update
     fOnFilterItem: TFilterItemEvent;
+    fOnFilterItemEx: TFilterItemExEvent;
     fOnCheckItem: TCheckItemEvent;
+    function DoFilterItem(const ACaption: string; const Item: TObject;
+      const FilterLC: string): Boolean; virtual;
+    function DoDefaultFilterItem(const ACaption: string; const Item: TObject;
+      const FilterLC: string): Boolean; virtual;
     procedure EditKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure EditChange; override;
     procedure EditEnter; override;
@@ -252,6 +258,8 @@ type
   published
     property OnAfterFilter: TNotifyEvent read fOnAfterFilter write fOnAfterFilter;
     property OnFilterItem: TFilterItemEvent read fOnFilterItem write fOnFilterItem;
+      deprecated 'Use OnFilterItemEx with a caption parameter instead.';
+    property OnFilterItemEx: TFilterItemExEvent read fOnFilterItemEx write fOnFilterItemEx;
     property OnCheckItem: TCheckItemEvent read fOnCheckItem write fOnCheckItem;
     property UseFormActivate: Boolean read fUseFormActivate write SetUseFormActivate default False;
     // TEditButton properties.
@@ -277,6 +285,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property Glyph;
     property Layout;
     property MaxLength;
     property ParentBidiMode;
@@ -374,7 +383,7 @@ type
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property DirectInput;
-    // property Glyph;
+    property Glyph;
     property NumGlyphs;
     property Flat;
     property FocusOnButtonClick;
@@ -468,7 +477,7 @@ type
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property DirectInput;
-    // property Glyph;
+    property Glyph;
     property NumGlyphs;
     property Flat;
     property FocusOnButtonClick;
@@ -563,7 +572,7 @@ type
     procedure ButtonClick; override;
     procedure EditDblClick; override;
     procedure SetDirectInput(AValue: Boolean); override;
-    procedure SetText(AValue: TCaption); override;
+    procedure RealSetText(const AValue: TCaption); override;
     procedure SetDateMask; virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -757,6 +766,9 @@ type
     FDialogTitle: String;
     FCalculatorLayout: TCalculatorLayout;
     FOnAcceptValue: TAcceptValueEvent;
+    FDialogPosition: TPosition;
+    FDialogLeft: Integer;
+    FDialogTop: Integer;
     function GetAsFloat: Double;
     function GetAsInteger: Integer;
     procedure SetAsFloat(const AValue: Double);
@@ -784,8 +796,11 @@ type
     property ButtonHint;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
+    property DialogPosition: TPosition read FDialogPosition write FDialogPosition default poScreenCenter;
+    property DialogTop: Integer read FDialogTop write FDialogTop;
+    property DialogLeft: Integer read FDialogLeft write FDialogLeft;
     property DirectInput;
-    // property Glyph;
+    property Glyph;
     property NumGlyphs;
     property Flat;
     property FocusOnButtonClick;
@@ -1030,8 +1045,11 @@ end;
 
 procedure TCustomEditButton.CheckButtonVisible;
 begin
-  If Assigned(Button) then
+  if Assigned(Button) then
+  begin
     Button.Visible := CalcButtonVisible;
+    UpdateSpacing;
+  end;
 end;
 
 procedure TCustomEditButton.ButtonClick;
@@ -1104,6 +1122,33 @@ begin
   inherited Destroy;
 end;
 
+function TCustomControlFilterEdit.DoDefaultFilterItem(const ACaption: string;
+  const Item: TObject; const FilterLC: string): Boolean;
+begin
+  Result := (FilterLC='') or (Pos(FilterLC,UTF8LowerCase(ACaption))>0);
+end;
+
+function TCustomControlFilterEdit.DoFilterItem(const ACaption: string;
+  const Item: TObject; const FilterLC: string): Boolean;
+var
+  Done: Boolean;
+begin
+  Done := False;
+
+  // Filter with event handler if there is one.
+  if Assigned(fOnFilterItemEx) then
+    Result:=fOnFilterItemEx(ACaption, Item, Done)
+  else
+    Result:=False;
+  // Support also the old filter event without a caption.
+  if (not (Result and Done)) and Assigned(fOnFilterItem) then
+    Result:=fOnFilterItem(Item, Done);
+
+  // Filter by item's caption text if needed.
+  if not (Result or Done) then
+    Result:=DoDefaultFilterItem(ACaption, Item, FilterLC);
+end;
+
 procedure TCustomControlFilterEdit.OnIdle(Sender: TObject; var Done: Boolean);
 begin
   if fNeedUpdate then
@@ -1148,9 +1193,9 @@ end;
 
 procedure TCustomControlFilterEdit.FormActivate(Sender: TObject);
 begin
-  fJustActivated:=fParentForm.ActiveControl=Self.Edit;
+  fJustActivated := (fParentForm.ActiveControl=Self.Edit) or Focused or Edit.Focused;
   if fJustActivated then
-    Filter:=Text;
+    Edit.DoEnter;
 end;
 
 procedure TCustomControlFilterEdit.FormDeactivate(Sender: TObject);
@@ -1161,16 +1206,17 @@ end;
 procedure TCustomControlFilterEdit.SetFilter(const AValue: string);
 var
   NewValue: String;
+  UseHintText: Boolean;
 begin
-  if (TextHint<>'') and (AValue=TextHint) then
+  UseHintText := (TextHint<>'') and (AValue=TextHint);
+  if UseHintText then
     NewValue:=''
   else
     NewValue:=AValue;
   Button.Enabled:=NewValue<>'';
-  if (NewValue<>'') or Focused or fJustActivated or (csDesigning in ComponentState) then
-  begin
+  if (not UseHintText) or Focused or fJustActivated or (csDesigning in ComponentState)
+  then
     Text:=NewValue;
-  end;
   if fFilter=NewValue then exit;
   fFilter:=NewValue;
   ApplyFilter;
@@ -1583,7 +1629,7 @@ begin
   if ADate = NullDate then
     ADate := SysUtils.Date;
   ShowCalendarPopup(PopupOrigin, ADate, CalendarDisplaySettings,
-                    @CalendarPopupReturnDate, @CalendarPopupShowHide);
+                    @CalendarPopupReturnDate, @CalendarPopupShowHide, self);
   //Do this after the dialog, otherwise it just looks silly
   if FocusOnButtonClick then FocusAndMaybeSelectAll;
 end;
@@ -1605,7 +1651,7 @@ begin
   SetDate(FDate);
 end;
 
-procedure TDateEdit.SetText(AValue: TCaption);
+procedure TDateEdit.RealSetText(const AValue: TCaption);
 begin
   if (not DirectInput) and not FUpdatingDate then
   begin
@@ -1615,9 +1661,9 @@ begin
       FDate := TextToDate(AValue, SysUtils.Date)
     else
       FDate := TextToDate(AValue, NullDate);
-    AValue := DateToText(FDate);
-  end;
-  inherited SetText(AValue);
+    inherited RealSetText(DateToText(FDate));
+  end else
+    inherited RealSetText(AValue);
 end;
 
 procedure TDateEdit.SetDateMask;
@@ -2078,7 +2124,8 @@ begin
   ATime := GetTime;
   if ATime = NullDate then
     ATime := SysUtils.Time;
-  ShowTimePopup(PopupOrigin, ATime, Self.DoubleBuffered, @TimePopupReturnTime, @TimePopupShowHide, FSimpleLayout);
+  ShowTimePopup(PopupOrigin, ATime, Self.DoubleBuffered,
+    @TimePopupReturnTime, @TimePopupShowHide, FSimpleLayout, self);
 end;
 
 function TTimeEdit.TryParseInput(AInput: String; out ParseResult: TDateTime): Boolean;
@@ -2186,12 +2233,17 @@ procedure TCalcEdit.RunDialog;
 var
   D : Double;
   B : Boolean;
+  Dlg: TCalculatorForm;
 begin
   D:=AsFloat;
-  with CreateCalculatorForm(Self,FCalculatorLayout,0) do
+  Dlg := CreateCalculatorForm(Self,FCalculatorLayout,0);
+  with Dlg do
     try
       Caption:=DialogTitle;
       Value:=D;
+      Dlg.Top := FDialogTop;
+      Dlg.Left := FDialogLeft;
+      Dlg.Position := FDialogPosition;
       if (ShowModal=mrOK) then
       begin
         D:=Value;
@@ -2209,7 +2261,8 @@ end;
 constructor TCalcEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FdialogTitle:=rsCalculator;
+  FDialogTitle:=rsCalculator;
+  FDialogPosition := poScreenCenter;
 end;
 
 

@@ -37,6 +37,7 @@ Type
 procedure TUpDownButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
+  inherited MouseDown(Button, Shift, X, Y);
   if Button = mbLeft then begin
     With FUpDown do begin
       FMouseTimerEvent := @Self.Click;
@@ -57,6 +58,7 @@ end;
 procedure TUpDownButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
+  inherited MouseUp(Button, Shift, X, Y);
   With FUpDown do
     If Assigned(FMouseTimer) then begin
       FreeAndNil(FMouseTimer);
@@ -129,7 +131,6 @@ var
   j : integer;
 begin
   Inherited Paint;
-
   if Enabled then
     Canvas.Pen.Color := clBtnText //Not perfect, but it works
   else
@@ -482,6 +483,14 @@ begin
   Result := FPosition;
 end;
 
+function TCustomUpDown.GetFlat: Boolean;
+begin
+  if FMinBtn<>nil then
+    Result := (FMinBtn as TSpeedButton).Flat
+  else
+    Result := False;
+end;
+
 procedure TCustomUpDown.SetMin(Value: SmallInt);
 begin
   if Value <> FMin then
@@ -546,6 +555,14 @@ procedure TCustomUpDown.SetThousands(Value: Boolean);
 begin
   if Value <> FThousands then
     FThousands := Value;
+end;
+
+procedure TCustomUpDown.SetFlat(Value: Boolean);
+begin
+  if Flat = Value then Exit;
+
+  (FMinBtn as TSpeedButton).Flat := Value;
+  (FMaxBtn as TSpeedButton).Flat := Value;
 end;
 
 procedure TCustomUpDown.SetWrap(Value: Boolean);

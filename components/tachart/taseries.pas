@@ -215,8 +215,6 @@ type
     property LineType: TLineType
       read FLineType write SetLineType default ltFromPrevious;
     property MarkPositions;
-    property OnDrawPointer: TSeriesPointerDrawEvent
-      read FOnDrawPointer write FOnDrawPointer;
     property Pointer;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clBlack;
@@ -227,6 +225,11 @@ type
     property Source;
     property Styles;
     property UseReticule default true;
+    // Events
+    property OnDrawPointer: TSeriesPointerDrawEvent
+      read FOnDrawPointer write FOnDrawPointer; deprecated 'Use OnCustomDrawPointer';
+    property OnCustomDrawPointer;
+    property OnGetPointerStyle;
   end;
 
   // 'TSerie' alias is for compatibility with older versions of TAChart.
@@ -1021,8 +1024,8 @@ var
       TAGeometry.NormalizeRect(imageBar);
 
       // Draw a line instead of an empty rectangle.
-      if Bottom = Top then Dec(Top);
-      if Left = Right then Inc(Right);
+   //   if Bottom = Top then Dec(Top);
+   //   if Left = Right then Inc(Right);
     end;
     DrawBar(imageBar);
   end;

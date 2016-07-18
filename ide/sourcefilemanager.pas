@@ -47,7 +47,7 @@ uses
   CodeToolsStructs, ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool,
   BasicCodeTools, SynEdit, UnitResources, IDEExternToolIntf, ObjectInspector,
   PublishModule, etMessagesWnd,
-  FormEditingIntf;
+  FormEditingIntf, fpjson;
 
 type
 
@@ -2153,7 +2153,6 @@ begin
     // show form and select form
     if NewUnitInfo.Component<>nil then begin
       // show form
-      IDEWindowCreators.ShowForm(DefaultObjectInspectorName,false);
       MainIDE.DoShowDesignerFormOfCurrentSrc(False);
     end else begin
       MainIDE.DisplayState:= dsSource;
@@ -2986,7 +2985,7 @@ end;
 
 function TLazSourceFileManager.CheckFilesOnDisk(Instantaneous: boolean): TModalResult;
 var
-  AnUnitList: TFPList; // list of TUnitInfo
+  AnUnitList, AIgnoreList: TFPList; // list of TUnitInfo
   APackageList: TStringList; // list of alternative lpkfilename and TLazPackage
   i: integer;
   CurUnit: TUnitInfo;
@@ -3005,7 +3004,9 @@ begin
   FCheckingFilesOnDisk:=true;
   AnUnitList:=nil;
   APackageList:=nil;
+  AIgnoreList:=nil;
   try
+    AIgnoreList := TFPList.Create;
     InvalidateFileStateCache;
 
     if Project1.HasProjectInfoFileChangedOnDisk then begin
@@ -3020,11 +3021,11 @@ begin
       exit(mrOk);
     end;
 
-    Project1.GetUnitsChangedOnDisk(AnUnitList);
-    PkgBoss.GetPackagesChangedOnDisk(APackageList);
+    Project1.GetUnitsChangedOnDisk(AnUnitList, True);
+    PkgBoss.GetPackagesChangedOnDisk(APackageList, True);
     if (AnUnitList=nil) and (APackageList=nil) then exit;
-    Result:=ShowDiskDiffsDialog(AnUnitList,APackageList);
-    if Result in [mrYesToAll] then
+    Result:=ShowDiskDiffsDialog(AnUnitList,APackageList,AIgnoreList);
+    if Result in [mrYes,mrYesToAll] then
       Result:=mrOk;
 
     // reload units
@@ -3032,7 +3033,9 @@ begin
       for i:=0 to AnUnitList.Count-1 do begin
         CurUnit:=TUnitInfo(AnUnitList[i]);
         //DebugLn(['TLazSourceFileManager.CheckFilesOnDisk revert ',CurUnit.Filename,' EditorIndex=',CurUnit.EditorIndex]);
-        if Result=mrOk then begin
+        if (Result=mrOk)
+        and (AIgnoreList.IndexOf(CurUnit)<0) then // ignore current
+        begin
           if CurUnit.OpenEditorInfoCount > 0 then begin
             // Revert one Editor-View, the others follow
             Result:=OpenEditorFile(CurUnit.Filename, CurUnit.OpenEditorInfo[0].PageIndex,
@@ -3054,14 +3057,21 @@ begin
     end;
 
     // reload packages
-    Result:=PkgBoss.RevertPackages(APackageList);
-    if Result<>mrOk then exit;
+    if APackageList<>nil then
+    begin
+      for i:=APackageList.Count-1 downto 0 do
+        if AIgnoreList.IndexOf(APackageList.Objects[i])>=0 then
+          APackageList.Delete(i);
+      Result:=PkgBoss.RevertPackages(APackageList);
+      if Result<>mrOk then exit;
+    end;
 
     Result:=mrOk;
   finally
     FCheckingFilesOnDisk:=false;
     AnUnitList.Free;
     APackageList.Free;
+    AIgnoreList.Free;
   end;
 end;
 
@@ -4230,11 +4240,10 @@ begin
     if not Ok then Exit(False);
     for i:=0 to Project1.BuildModes.Count-1 do
       if (FListForm=Nil) or FListForm.CheckListBox1.Checked[i] then
-        with Project1.BuildModes[i].CompilerOptions do
-          if IsIncludeFile then
-            IncludePath:=MergeSearchPaths(IncludePath,aPath)
-          else
-            OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,aPath);
+        if IsIncludeFile then
+          Project1.BuildModes[i].CompilerOptions.MergeToIncludePaths(aPath)
+        else
+          Project1.BuildModes[i].CompilerOptions.MergeToUnitPaths(aPath);
   finally
     FListForm.Free;
   end;
@@ -4261,7 +4270,7 @@ var
     DebugLn('');
     DebugLn(Format('Building mode %d: %s ...', [ModeCnt, Project1.ActiveBuildMode.Identifier]));
     DebugLn('');
-    Result := MainIDE.DoBuildProject(crBuild, [], LastMode) = mrOK;
+    Result := MainIDE.DoBuildProject(crCompile, [], LastMode) = mrOK;
   end;
 
 var
@@ -4772,34 +4781,147 @@ begin
 end;
 
 type
-  TLRTGrubber = class(TObject)
+  TTranslateStringItem = record
+    Name: String;
+    Value: String;
+  end;
+
+  TTranslateStrings = class
   private
-    FGrubbed: TStrings;
+    FList: array of TTranslateStringItem;
+    function CalcHash(const S: string): Cardinal;
+    function GetSourceBytes(const S: string): string;
+    function GetValue(const S: string): string;
+  public
+    destructor Destroy; override;
+    procedure Add(const AName, AValue: String);
+    function Count: Integer;
+    function Text: String;
+  end;
+
+  TLRJGrubber = class(TObject)
+  private
+    FGrubbed: TTranslateStrings;
     FWriter: TWriter;
   public
     constructor Create(TheWriter: TWriter);
     destructor Destroy; override;
     procedure Grub(Sender: TObject; const Instance: TPersistent;
                    PropInfo: PPropInfo; var Content: string);
-    property Grubbed: TStrings read FGrubbed;
+    property Grubbed: TTranslateStrings read FGrubbed;
     property Writer: TWriter read FWriter write FWriter;
   end;
 
-constructor TLRTGrubber.Create(TheWriter: TWriter);
+function TTranslateStrings.CalcHash(const S: string): Cardinal;
+var
+  g: Cardinal;
+  i: Longint;
+begin
+  Result:=0;
+  for i:=1 to Length(s) do
+  begin
+    Result:=Result shl 4;
+    inc(Result,Ord(S[i]));
+    g:=Result and ($f shl 28);
+    if g<>0 then
+     begin
+       Result:=Result xor (g shr 24);
+       Result:=Result xor g;
+     end;
+  end;
+  If Result=0 then
+    Result:=$ffffffff;
+end;
+
+function TTranslateStrings.GetSourceBytes(const S: string): string;
+var
+  i, l: Integer;
+begin
+  Result:='';
+  l:=Length(S);
+  for i:=1 to l do
+  begin
+    Result:=Result+IntToStr(Ord(S[i]));
+    if i<>l then
+     Result:=Result+',';
+  end;
+end;
+
+function TTranslateStrings.GetValue(const S: string): string;
+var
+  i, l: Integer;
+  jsonstr: unicodestring;
+begin
+  Result:='';
+  //input string is assumed to be in UTF-8 encoding
+  jsonstr:=UTF8ToUTF16(StringToJSONString(S));
+  l:=Length(jsonstr);
+  for i:=1 to l do
+  begin
+    if (Ord(jsonstr[i])<32) or (Ord(jsonstr[i])>=127) then
+      Result:=Result+'\u'+HexStr(Ord(jsonstr[i]), 4)
+    else
+      Result:=Result+Char(jsonstr[i]);
+  end;
+end;
+
+destructor TTranslateStrings.Destroy;
+begin
+  SetLength(FList,0);
+end;
+
+procedure TTranslateStrings.Add(const AName, AValue: String);
+begin
+  SetLength(FList,Length(FList)+1);
+  with FList[High(FList)] do
+  begin
+    Name:=AName;
+    Value:=AValue;
+  end;
+end;
+
+function TTranslateStrings.Count: Integer;
+begin
+  Result:=Length(FList);
+end;
+
+function TTranslateStrings.Text: String;
+var
+  i: Integer;
+  R: TTranslateStringItem;
+begin
+  Result:='';
+  if Length(FList)=0 then Exit;
+  Result:='{"version":1,"strings":['+LineEnding;
+  for i:=Low(FList) to High(FList) do
+  begin
+    R:=TTranslateStringItem(FList[i]);
+    Result:=Result+'{"hash":'+IntToStr(CalcHash(R.Value))+',"name":"'+R.Name+
+      '","sourcebytes":['+GetSourceBytes(R.Value)+
+      '],"value":"'+GetValue(R.Value)+'"}';
+    if i<High(FList) then
+      Result:=Result+','+LineEnding
+    else
+      Result:=Result+LineEnding;
+  end;
+  Result:=Result+']}'+LineEnding;
+end;
+
+constructor TLRJGrubber.Create(TheWriter: TWriter);
 begin
   inherited Create;
-  FGrubbed:=TStringList.Create;
+  FGrubbed:=TTranslateStrings.Create;
   FWriter:=TheWriter;
   FWriter.OnWriteStringProperty:=@Grub;
 end;
 
-destructor TLRTGrubber.Destroy;
+destructor TLRJGrubber.Destroy;
 begin
   FGrubbed.Free;
   inherited Destroy;
 end;
 
-procedure TLRTGrubber.Grub(Sender: TObject; const Instance: TPersistent;
+procedure TLRJGrubber.Grub(Sender: TObject; const Instance: TPersistent;
   PropInfo: PPropInfo; var Content: string);
 var
   LRSWriter: TLRSObjectWriter;
@@ -4808,14 +4930,14 @@ begin
   if not Assigned(Instance) then exit;
   if not Assigned(PropInfo) then exit;
   if SysUtils.CompareText(PropInfo^.PropType^.Name,'TTRANSLATESTRING')<>0 then exit;
+  if (SysUtils.CompareText(Instance.ClassName,'TMENUITEM')=0) and (Content='-') then exit;
   if Writer.Driver is TLRSObjectWriter then begin
     LRSWriter:=TLRSObjectWriter(Writer.Driver);
     Path:=LRSWriter.GetStackPath;
   end else begin
     Path:=Instance.ClassName+'.'+PropInfo^.Name;
   end;
-  FGrubbed.Add(Uppercase(Path)+'='+Content);
-  //DebugLn(['TLRTGrubber.Grub "',FGrubbed[FGrubbed.Count-1],'"']);
+  FGrubbed.Add(LowerCase(Path),Content);
 end;
 
 function TLazSourceFileManager.SaveUnitComponent(AnUnitInfo: TUnitInfo;
@@ -4859,8 +4981,8 @@ var
   ACaption, AText: string;
   CompResourceCode, LFMFilename, TestFilename: string;
   ADesigner: TIDesigner;
-  Grubber: TLRTGrubber;
-  LRTFilename: String;
+  Grubber: TLRJGrubber;
+  LRJFilename: String;
   AncestorUnit: TUnitInfo;
   Ancestor: TComponent;
   HasI18N: Boolean;
@@ -4919,10 +5041,10 @@ begin
         try
           BinCompStream.Position:=0;
           Writer:=AnUnitInfo.UnitResourceFileformat.CreateWriter(BinCompStream,DestroyDriver);
-          // used to save lrt files
+          // used to save lrj files
           HasI18N:=IsI18NEnabled(UnitOwners);
           if HasI18N then
-            Grubber:=TLRTGrubber.Create(Writer);
+            Grubber:=TLRJGrubber.Create(Writer);
           Writer.OnWriteMethodProperty:=@FormEditor1.WriteMethodPropertyEvent;
           //DebugLn(['TLazSourceFileManager.SaveUnitComponent AncestorInstance=',dbgsName(AncestorInstance)]);
           Writer.OnFindAncestor:=@FormEditor1.WriterFindAncestor;
@@ -5091,15 +5213,15 @@ begin
       // Now the most important file (.lfm) is saved.
       // Now save the secondary files
 
-      // save the .lrt file containing the list of all translatable strings of
+      // save the .lrj file containing the list of all translatable strings of
       // the component
       if ComponentSavingOk
       and (Grubber<>nil) and (Grubber.Grubbed.Count>0)
       and (not (sfSaveToTestDir in Flags))
       and (not AnUnitInfo.IsVirtual) then begin
-        LRTFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lrt');
-        DebugLn(['TLazSourceFileManager.SaveUnitComponent save lrt: ',LRTFilename]);
-        Result:=SaveStringToFile(LRTFilename,Grubber.Grubbed.Text,
+        LRJFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lrj');
+        DebugLn(['TLazSourceFileManager.SaveUnitComponent save lrj: ',LRJFilename]);
+        Result:=SaveStringToFile(LRJFilename,Grubber.Grubbed.Text,
                                  [mbIgnore,mbAbort],AnUnitInfo.Filename);
         if (Result<>mrOk) and (Result<>mrIgnore) then exit;
       end;
@@ -5456,20 +5578,15 @@ begin
       //DebugLn('TLazSourceFileManager.RenameUnit OldFilePath="',OldFilePath,'" SourceDirs="',Project1.SourceDirectories.CreateSearchPathFromAllFiles,'"');
       if (SearchDirectoryInSearchPath(
         Project1.SourceDirectories.CreateSearchPathFromAllFiles,OldFilePath,1)<1)
-      then begin
+      then
         //DebugLn('TLazSourceFileManager.RenameUnit OldFilePath="',OldFilePath,'" UnitPath="',Project1.CompilerOptions.GetUnitPath(false),'"');
-        if (SearchDirectoryInSearchPath(
-                     Project1.CompilerOptions.GetUnitPath(false),OldFilePath,1)<1)
-        then begin
+        if (SearchDirectoryInSearchPath(Project1.CompilerOptions.GetUnitPath(false),OldFilePath,1)<1)
+        then
           if IDEMessageDialog(lisCleanUpUnitPath,
               Format(lisTheDirectoryIsNoLongerNeededInTheUnitPathRemoveIt,[OldFilePath,LineEnding]),
-              mtConfirmation,[mbYes,mbNo])=mrYes then
-          begin
-            Project1.CompilerOptions.OtherUnitFiles:=
-              RemoveSearchPaths(Project1.CompilerOptions.OtherUnitFiles, OldUnitPath);
-          end;
-        end;
-      end;
+              mtConfirmation,[mbYes,mbNo])=mrYes
+          then
+            Project1.CompilerOptions.RemoveFromUnitPaths(OldUnitPath);
     end;
 
     // delete old pas, .pp, .ppu
@@ -6057,7 +6174,6 @@ begin
     MainIDE.DisplayState := dsForm;
     GlobalDesignHook.LookupRoot := NewComponent;
     TheControlSelection.AssignPersistent(NewComponent);
-    IDEWindowCreators.ShowForm(DefaultObjectInspectorName,false);
   end;
 
   // show new form

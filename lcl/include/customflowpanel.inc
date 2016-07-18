@@ -154,6 +154,41 @@ end;
 
 procedure TCustomFlowPanel.AlignControls(AControl: TControl;
   var RemainingClientRect: TRect);
+
+var
+  xNewBounds: array of TRect; // right=width, bottom=height
+
+  procedure AlignLayout(const BStartControl, BEndControl, BTopLeft, BSize: Integer);
+  var
+    I: Integer;
+    xControl: TControl;
+    xConBS: TControlBorderSpacing;
+  begin
+    if FFlowLayout = tlTop then
+      Exit;
+
+    for I := BStartControl to BEndControl do
+    begin
+      xControl := FControlList[I].Control;
+      if not xControl.Visible and not (csDesigning in ComponentState) then
+        Continue;
+
+      xConBS := xControl.BorderSpacing;
+      if FFlowStyle in [fsLeftRightTopBottom, fsLeftRightBottomTop, fsRightLeftTopBottom, fsRightLeftBottomTop] then
+      begin
+        case FFlowLayout of
+          tlCenter: xNewBounds[I].Top := BTopLeft + (BSize - xConBS.ControlHeight) div 2 + xConBS.Top + xConBS.Around;
+          tlBottom: xNewBounds[I].Top := BTopLeft + BSize - xControl.Height - xConBS.Bottom - xConBS.Around;
+        end;
+      end else
+      begin
+        case FFlowLayout of
+          tlCenter: xNewBounds[I].Left := BTopLeft + (BSize - xConBS.ControlWidth) div 2 + xConBS.Left + xConBS.Around;
+          tlBottom: xNewBounds[I].Left := BTopLeft + BSize - xControl.Width - xConBS.Right - xConBS.Around;
+        end;
+      end;
+    end;
+  end;
 const
   cXIncDir:     array[TFlowStyle] of Integer = (1, -1,  1, -1,  1,  1, -1, -1);
   cYIncDir:     array[TFlowStyle] of Integer = (1,  1, -1, -1,  1, -1,  1, -1);
@@ -161,7 +196,7 @@ const
   cXDeltaConst: array[TFlowStyle] of Integer = (0,  0,  0,  0,  0,  0, -1, -1);
 var
   I, L: Integer;
-  xMaxHeight, xMaxWidth: Integer;
+  xMaxHeight, xMaxWidth, xRowStart: Integer;
   xPosition: TPoint;
   xSize, xGroupSize: TSize;
   xControl: TControl;
@@ -191,7 +226,9 @@ begin
         xPosition := RemainingClientRect.BottomRight;
     end;
 
-    for I := 0 to FControlList.Count - 1 do
+    xRowStart := 0;
+    SetLength(xNewBounds, FControlList.Count);
+    for I := 0 to FControlList.Count-1 do
     begin
       xControl := FControlList[I].Control;
       xConBS := xControl.BorderSpacing;
@@ -227,8 +264,10 @@ begin
           if (xMaxHeight > 0) and FAutoWrap and not xForbidWrap
           and (xForceWrap or (xPosition.X + xGroupSize.cx >= RemainingClientRect.Right)) then
           begin
+            AlignLayout(xRowStart, I-1, xPosition.Y, xMaxHeight);
             Inc(xPosition.Y, xMaxHeight * cYIncDir[FFlowStyle]);
             xMaxHeight := 0;
+            xRowStart := I;
             xPosition.X := RemainingClientRect.Left;
           end;
         fsRightLeftTopBottom,
@@ -238,8 +277,10 @@ begin
             if (xMaxHeight > 0) and FAutoWrap and not xForbidWrap
             and (xForceWrap or (xPosition.X <= 0)) then
             begin
+              AlignLayout(xRowStart, I-1, xPosition.Y, xMaxHeight);
               Inc(xPosition.Y, xMaxHeight * cYIncDir[FFlowStyle]);
               xMaxHeight := 0;
+              xRowStart := I;
               xPosition.X := RemainingClientRect.Right - xSize.cx;
             end;
           end;
@@ -248,8 +289,10 @@ begin
           if (xMaxWidth > 0) and FAutoWrap and not xForbidWrap
           and (xForceWrap or (xPosition.Y + xGroupSize.cy >= RemainingClientRect.Bottom)) then
           begin
+            AlignLayout(xRowStart, I-1, xPosition.X, xMaxWidth);
             Inc(xPosition.X, xMaxWidth * cXIncDir[FFlowStyle]);
             xMaxWidth := 0;
+            xRowStart := I;
             xPosition.Y := RemainingClientRect.Top;
           end;
         fsBottomTopLeftRight,
@@ -259,8 +302,10 @@ begin
             if (xMaxWidth > 0) and FAutoWrap and not xForbidWrap
             and (xForceWrap or (xPosition.Y <= 0)) then
             begin
+              AlignLayout(xRowStart, I-1, xPosition.X, xMaxWidth);
               Inc(xPosition.X, xMaxWidth * cXIncDir[FFlowStyle]);
               xMaxWidth := 0;
+              xRowStart := I;
               xPosition.Y := RemainingClientRect.Bottom - xSize.cy;
             end;
           end;
@@ -269,7 +314,7 @@ begin
         xMaxHeight := xSize.cy;
       if xSize.cx > xMaxWidth then
         xMaxWidth := xSize.cx;
-      xControl.SetBounds(
+      xNewBounds[I] := Rect(
         xPosition.X + xConBS.Left + xConBS.Around + cXDeltaConst[FFlowStyle] * xSize.cx,
         xPosition.Y + xConBS.Top + xConBS.Around + cYDeltaConst[FFlowStyle] * xSize.cy,
         xSize.cx - (xConBS.Left + xConBS.Right + xConBS.Around*2),
@@ -278,6 +323,23 @@ begin
         Inc(xPosition.X, xSize.cx * cXIncDir[FFlowStyle])
       else if FFlowStyle in [fsTopBottomLeftRight, fsTopBottomRightLeft] then
         Inc(xPosition.Y, xSize.cy + cYIncDir[FFlowStyle]);
+    end;
+
+    if FFlowStyle in [fsLeftRightTopBottom, fsLeftRightBottomTop, fsRightLeftTopBottom, fsRightLeftBottomTop] then
+      AlignLayout(xRowStart, FControlList.Count-1, xPosition.Y, xMaxHeight)
+    else
+      AlignLayout(xRowStart, FControlList.Count-1, xPosition.X, xMaxWidth);
+
+    for I := 0 to FControlList.Count-1 do
+    begin
+      xControl := FControlList[I].Control;
+      xConBS := xControl.BorderSpacing;
+      if not xControl.Visible and not (csDesigning in ComponentState) then
+        continue;
+
+      xControl.SetBounds(
+        xNewBounds[I].Left, xNewBounds[I].Top,
+        xNewBounds[I].Right, xNewBounds[I].Bottom); // right=width, bottom=height
     end;
   finally
     EnableAlign;
@@ -371,6 +433,14 @@ procedure TCustomFlowPanel.SetControlList(
   const AControlList: TFlowPanelControlList);
 begin
   FControlList.Assign(AControlList);
+end;
+
+procedure TCustomFlowPanel.SetFlowLayout(const aFlowLayout: TTextLayout);
+begin
+  if FFlowLayout = aFlowLayout then Exit;
+  FFlowLayout := aFlowLayout;
+
+  ReAlign;
 end;
 
 procedure TCustomFlowPanel.SetFlowStyle(const AFlowStyle: TFlowStyle);

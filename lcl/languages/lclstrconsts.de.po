@@ -1047,9 +1047,9 @@ msgstr "Portable Pixmap"
 msgid "Post"
 msgstr "Übertragen"
 
-#: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
-msgid "%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
-msgstr "%s%sOk übergeht und riskiert Dateninkonsistenz.%sMit Abbrechen wird das Programm abgebrochen."
+#: lclstrconsts.rspressoktoignoreandriskdatacorruptionpressaborttok
+msgid "%s%sPress OK to ignore and risk data corruption.%sPress Abort to kill the program."
+msgstr ""
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"

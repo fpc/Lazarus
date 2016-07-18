@@ -170,8 +170,7 @@ type
     function GetActiveFilter: TLMsgViewFilter; inline;
     function GetHeaderBackground(aToolState: TLMVToolState): TColor;
     function GetSelectedLine: integer;
-    function GetUrgencyStyles(Urgency: TMessageLineUrgency
-      ): TMsgCtrlUrgencyStyle;
+    function GetUrgencyStyles(Urgency: TMessageLineUrgency): TMsgCtrlUrgencyStyle;
     function GetViews(Index: integer): TLMsgWndView;
     procedure OnViewChanged(Sender: TObject); // (main thread)
     procedure MsgUpdateTimerTimer(Sender: TObject);
@@ -3581,7 +3580,8 @@ begin
     if not (CurMark is TETMark) then continue;
     Msg:=CurMark.MsgLine;
     CurHint:=MessagesCtrl.UrgencyToStr(Msg.Urgency)+': '+Msg.Msg;
-    if HintStr<>'' then HintStr:=HintStr+LineEnding;
+    if HintStr<>'' then
+      HintStr:=HintStr+LineEnding;
     HintStr:=HintStr+CurHint;
   end;
 end;

@@ -1,4 +1,4 @@
-{%MainUnit ../dbctrls.pas}
+{%MainUnit ../dbctrls.pp}
 {
  *****************************************************************************
   This file is part of the Lazarus Component Library (LCL)
@@ -179,4 +179,4 @@ begin
   inherited Destroy;
 end;
 
-// included by dbctrls.pas
+// included by dbctrls.pp

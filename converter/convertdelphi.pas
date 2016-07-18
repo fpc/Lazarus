@@ -39,7 +39,7 @@ uses
   // LazUtils
   LConvEncoding, FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes,
   // IDEIntf
-  ComponentReg, LazIDEIntf, PackageIntf, ProjectIntf, IDEDialogs,
+  ComponentReg, LazIDEIntf, PackageIntf, ProjectIntf, IDEDialogs, IDEExternToolIntf,
   // IDE
   IDEProcs, DialogProcs, EditorOptions, CompilerOptions,
   ProjPackBase, Project, ProjectDefs, PackageDefs, PackageSystem, PackageEditor,
@@ -461,7 +461,8 @@ begin
   fLazFileExt:='';
   fUnitInfo:=nil;
   if not LazarusIDE.BeginCodeTools then
-    fOwnerConverter.fSettings.AddLogLine(lisConvDelphiBeginCodeToolsFailed);
+    fOwnerConverter.fSettings.AddLogLine(mluFatal,
+      lisConvDelphiBeginCodeToolsFailed, fLazUnitFilename);
   fCTLink:=Nil;                     // Will be created later.
   fUsedUnitsTool:=Nil;
 end;
@@ -490,8 +491,6 @@ function TDelphiUnit.CopyAndLoadFile: TModalResult;
 var
   CodeOk, CodeFixed: Boolean;
 begin
-  fOwnerConverter.fSettings.AddLogLine(Format(lisConvDelphiConvertingFile,
-                                              [fOrigUnitFilename]));
   // Convert unit in place. File must be writable.
   Result:=CheckFileIsWritable(fOrigUnitFilename,[mbAbort]);
   if Result<>mrOK then exit;
@@ -509,8 +508,9 @@ begin
   if Result<>mrOK then exit;
   // Change encoding to UTF-8
   if fPascalBuffer.DiskEncoding<>EncodingUTF8 then begin
-    fOwnerConverter.fSettings.AddLogLine(Format(lisConvDelphiChangedEncodingToUTF8,
-                                                [fPascalBuffer.DiskEncoding]));
+    fOwnerConverter.fSettings.AddLogLine(mluNote,
+      Format(lisConvDelphiChangedEncodingToUTF8, [fPascalBuffer.DiskEncoding]),
+      fLazUnitFilename);
     fPascalBuffer.DiskEncoding:=EncodingUTF8; // Takes effect when buffer is saved.
   end;
   // Create a shared link for codetools.
@@ -556,33 +556,40 @@ var
 begin
   Result:=mrOK;
   fLFMBuffer:=nil;
-  if ADfmFilename<>'' then begin
+  if ADfmFilename<>'' then
+  begin
     Result:=LazarusIDE.DoCloseEditorFile(ADfmFilename,[cfSaveFirst]);
+    if Result<>mrOK then exit;
+    // Save before using .dfm.
+    Result:=fOwnerConverter.fSettings.MaybeBackupFile(ADfmFilename);
     if Result<>mrOK then exit;
   end;
   if fOwnerConverter.fSettings.SameDfmFile then
     LfmFilename:=ADfmFilename
-  else
-    with fOwnerConverter do begin
-      // Create a form file name based on the unit file name.
-      LfmFilename:=fSettings.DelphiToLazFilename(fOrigUnitFilename, '.lfm',
-                                                 cdtlufRenameLowercase in fFlags);
-      if ADfmFilename<>'' then begin
-        if FileExistsUTF8(LfmFilename) then
-          if (FileAgeUTF8(LfmFilename)<FileAgeUTF8(ADfmFilename)) then
-            DeleteFileUTF8(LfmFilename); // .lfm is older than .dfm -> remove .lfm
-        if not FileExistsUTF8(LfmFilename) then begin
-          // TODO: update project
-          if fSettings.SupportDelphi and not fSettings.SameDfmFile then
-            Result:=CopyFileWithErrorDialogs(ADfmFilename,LfmFilename,[mbAbort])
-          else
-            Result:=fSettings.RenameFile(ADfmFilename,LfmFilename);
-          if Result<>mrOK then exit;
-        end;
+  else begin
+    // Create a form file name based on the unit file name.
+    with fOwnerConverter.fSettings do
+      LfmFilename:=DelphiToLazFilename(fOrigUnitFilename, '.lfm',
+                                       cdtlufRenameLowercase in fFlags);
+    if ADfmFilename<>'' then
+    begin
+      if FileExistsUTF8(LfmFilename) then
+        if (FileAgeUTF8(LfmFilename)<FileAgeUTF8(ADfmFilename)) then
+          DeleteFileUTF8(LfmFilename); // .lfm is older than .dfm -> remove .lfm
+      if not FileExistsUTF8(LfmFilename) then
+      begin
+        // TODO: update project
+        if fOwnerConverter.fSettings.SupportDelphi then
+          Result:=CopyFileWithErrorDialogs(ADfmFilename, LfmFilename, [mbAbort])
+        else
+          Result:=RenameFileWithErrorDialogs(ADfmFilename, LfmFilename, [mbAbort]);
+        if Result<>mrOK then exit;
       end;
     end;
+  end;
   // Convert Unit .dfm file to .lfm file (without context type checking)
-  if FileExistsUTF8(LfmFilename) then begin
+  if FileExistsUTF8(LfmFilename) then
+  begin
     DFMConverter:=TDFMConverter.Create;
     try
       DFMConverter.Settings:=fOwnerConverter.fSettings;
@@ -595,17 +602,18 @@ begin
     Result:=LoadCodeBuffer(TempLFMBuffer,LfmFilename,
                            [lbfCheckIfText,lbfUpdateFromDisk],true);
     // Change encoding to UTF-8
-    if TempLFMBuffer.DiskEncoding<>EncodingUTF8 then begin
-      fOwnerConverter.fSettings.AddLogLine(Format(lisConvDelphiChangedEncodingToUTF8,
-                                                  [TempLFMBuffer.DiskEncoding]));
+    if TempLFMBuffer.DiskEncoding<>EncodingUTF8 then
+    begin
+      fOwnerConverter.fSettings.AddLogLine(mluNote,
+        Format(lisConvDelphiChangedEncodingToUTF8, [TempLFMBuffer.DiskEncoding]),
+        fLazUnitFilename);
       TempLFMBuffer.DiskEncoding:=EncodingUTF8;
       TempLFMBuffer.Save;
     end;
     // Read form file code in.
-    if not fOwnerConverter.fSettings.SameDfmFile then begin
+    if not fOwnerConverter.fSettings.SameDfmFile then
       Result:=LoadCodeBuffer(fLFMBuffer,LfmFilename,
                              [lbfCheckIfText,lbfUpdateFromDisk],true);
-    end;
   end;
 end;
 
@@ -668,8 +676,6 @@ var
 begin
   // Fix the LFM file and the pascal unit, updates fPascalBuffer and fLFMBuffer.
   if fLFMBuffer<>nil then begin
-    fOwnerConverter.fSettings.AddLogLine(Format(lisConvDelphiRepairingFormFile,
-                                                [fLFMBuffer.Filename]));
     LfmFixer:=TLFMFixer.Create(fCTLink,fLFMBuffer);
     try
       LfmFixer.Settings:=fOwnerConverter.fSettings;
@@ -691,8 +697,6 @@ begin
     if Result<>mrOK then exit;
   end;
   // After other changes: add, remove, fix and comment out units in uses sections.
-  fOwnerConverter.fSettings.AddLogLine(Format(lisConvDelphiFixingUsedUnits,
-                                              [fOrigUnitFilename]));
   Result:=fUsedUnitsTool.ConvertUsed;
   if Result<>mrOK then exit;
   Result:=mrOK;
@@ -773,6 +777,7 @@ begin
     if CodeTool.FixIncludeFilenames(Code,SrcCache,FoundIncludeFiles,MissingIncludeFilesCodeXYPos)
     then begin
       if Assigned(FoundIncludeFiles) then begin
+        // List the include files in log.
         Msg:=lisConvRepairingIncludeFiles;
         for i:=0 to FoundIncludeFiles.Count-1 do begin
           fSettings.MaybeBackupFile(FoundIncludeFiles[i]);
@@ -781,7 +786,7 @@ begin
             Msg:=Msg+'; ';
           Msg:=Msg+s;
         end;
-        fSettings.AddLogLine(Msg);
+        fSettings.AddLogLine(mluNote, Msg, fLazUnitFilename);
       end;
     end
     else begin
@@ -790,7 +795,7 @@ begin
           CodePos:=PCodeXYPosition(MissingIncludeFilesCodeXYPos[i]);
           Msg:=Format(lisConvDelphiMissingIncludeFile,
                  [CodePos^.Code.Filename,IntToStr(CodePos^.y),IntToStr(CodePos^.x)]);
-          fSettings.AddLogLine(Msg);
+          fSettings.AddLogLine(mluError, Msg, fLazUnitFilename);
         end;
       end;
       fErrorMsg:=Format(lisConvProblemsFixingIncludeFile, [fOrigUnitFilename]);
@@ -855,13 +860,13 @@ function TConvertDelphiPBase.EndConvert(AStatus: TModalResult): Boolean;
 begin
   // Show ending message
   if AStatus=mrOK then
-    fSettings.AddLogLine(lisConvDelphiConversionReady)
+    fSettings.AddLogLine(mluImportant, lisConvDelphiConversionReady)
   else begin
     if fErrorMsg<>'' then
-      fSettings.AddLogLine(Format(lisConvDelphiError,[fErrorMsg]))
+      fSettings.AddLogLine(mluError, Format(lisConvDelphiError,[fErrorMsg]))
     else if CodeToolBoss.ErrorMessage<>'' then
-      fSettings.AddLogLine(Format(lisConvDelphiError,[CodeToolBoss.ErrorMessage]));
-    fSettings.AddLogLine(lisConvDelphiConversionAborted);
+      fSettings.AddLogLine(mluError, Format(lisConvDelphiError,[CodeToolBoss.ErrorMessage]));
+    fSettings.AddLogLine(mluFatal, lisConvDelphiConversionAborted);
   end;
   // Save log messages to file.
   Result:=fSettings.SaveLog;
@@ -910,7 +915,7 @@ begin
       for i:=0 to fSettings.MainFilenames.Count-1 do begin
         Application.ProcessMessages;
         if i>0 then
-          fSettings.AddLogLine('');
+          fSettings.AddLogLine(mluImportant, '');
         DelphiUnit:=TDelphiUnit.Create(Self, fSettings.MainFilenames[i], []);
         with DelphiUnit do
         try
@@ -1024,7 +1029,7 @@ begin
     EndTime:=Now;
     s:=FormatDateTime('hh:nn:ss', EndTime-StartTime);
     if (Result<>mrAbort) and (s<>'00:00:00') then
-      fSettings.AddLogLine(Format(lisConvDelphiConversionTook, [s]));
+      fSettings.AddLogLine(mluProgress, Format(lisConvDelphiConversionTook,[s]));
     EndConvert(Result);
   end;
 end;
@@ -1088,8 +1093,8 @@ var
   i: Integer;
 begin
   if not fSettings.SameDfmFile then begin
-    fSettings.AddLogLine('');
-    fSettings.AddLogLine(lisConvDelphiRepairingFormFiles);
+    fSettings.AddLogLine(mluImportant, '');
+    fSettings.AddLogLine(mluImportant, lisConvDelphiRepairingFormFiles);
     DebugLn('');
     DebugLn('TConvertDelphiProjPack.ConvertAllFormFiles: '+lisConvDelphiRepairingFormFiles);
   end;
@@ -1156,7 +1161,9 @@ var
     if System.Pos(';'+lowercase(DelphiPkgName)+';',
                   ';'+lowercase(DelphiPkgNames)+';')>0 then begin
       fProjPack.AddPackageDependency(LazarusPkgName);
-      fSettings.AddLogLine(Format(lisConvDelphiAddedPackageDependency,[LazarusPkgName]));
+      fSettings.AddLogLine(mluNote,
+        Format(lisConvDelphiAddedPackageDependency,[LazarusPkgName]),
+        fLazPMainFilename);
     end;
   end;
 
@@ -1179,13 +1186,11 @@ var
 
   procedure AddSearchPath(const SearchPath: string);
   begin
-    with fProjPack.BaseCompilerOptions do begin
-      IncludePath:=MergeSearchPaths(IncludePath,SearchPath);
-      Libraries:=MergeSearchPaths(Libraries,SearchPath);
-      OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,SearchPath);
-      ObjectPath:=MergeSearchPaths(ObjectPath,SearchPath);
-      DebugPath:=MergeSearchPaths(DebugPath,SearchPath);
-    end;
+    fProjPack.BaseCompilerOptions.MergeToIncludePaths(SearchPath);
+    fProjPack.BaseCompilerOptions.MergeToLibraryPaths(SearchPath);
+    fProjPack.BaseCompilerOptions.MergeToUnitPaths(SearchPath);
+    fProjPack.BaseCompilerOptions.MergeToObjectPath(SearchPath);
+    fProjPack.BaseCompilerOptions.MergeToDebugPath(SearchPath);
   end;
 
 var
@@ -1211,8 +1216,7 @@ begin
       // debug source dirs
       DebugSourceDirs:=ReadSearchPath('Directories','DebugSourceDirs');
       if DebugSourceDirs<>'' then
-        with fProjPack.BaseCompilerOptions do
-          DebugPath:=MergeSearchPaths(DebugPath,DebugSourceDirs);
+        fProjPack.BaseCompilerOptions.MergeToDebugPath(DebugSourceDirs);
 
       // packages
       ReadDelphiPackages;
@@ -1252,11 +1256,10 @@ begin
         if (c='U') or (c='I') then begin
           s:=ExpandDelphiSearchPath(copy(Line,4,length(Line)-4), Self);
           if s<>'' then
-            with fProjPack.BaseCompilerOptions do
-              case c of
-                'U': OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,s);
-                'I': IncludePath:=MergeSearchPaths(IncludePath,s);
-              end;
+            case c of
+              'U': fProjPack.BaseCompilerOptions.MergeToUnitPaths(s);
+              'I': fProjPack.BaseCompilerOptions.MergeToIncludePaths(s);
+            end;
         end
       end;
     finally
@@ -1308,7 +1311,8 @@ begin
     // PUREPASCAL is defined by some code to not use x86 assembly code.
     s:='-dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL';
     Options.CustomOptions:=s;
-    fSettings.AddLogLine(Format(lisConvDelphiAddedCustomOptionDefines, [s]));
+    fSettings.AddLogLine(mluNote, Format(lisConvDelphiAddedCustomOptionDefines,[s]),
+      fLazPMainFilename);
   end;
 end;
 
@@ -1325,11 +1329,8 @@ function TConvertDelphiProjPack.DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): 
       mUnit:=AUsedUnits.MissingUnits[i];
       sUnitPath:=GetCachedUnitPath(mUnit);
       if sUnitPath<>'' then begin
-        // Found from cached paths: add unit path to project's settings.
-        with fProjPack.BaseCompilerOptions do begin
-          OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,sUnitPath);
-          IncludePath:=MergeSearchPaths(IncludePath,sUnitPath);
-        end;
+        fProjPack.BaseCompilerOptions.MergeToUnitPaths(sUnitPath);
+        fProjPack.BaseCompilerOptions.MergeToIncludePaths(sUnitPath);
         // Rename a unit with different casing if needed.
         RealFileName:=fCachedRealFileNames[UpperCase(mUnit)];
         RealUnitName:=ExtractFileNameOnly(RealFileName);
@@ -1376,7 +1377,7 @@ begin
       if not DeleteFileUTF8(s) then
         exit(mrCancel);
       //fFilesToDelete.Delete(i);
-      fSettings.AddLogLine(Format(lisConvDeletedFile,[s]));
+      fSettings.AddLogLine(mluNote, Format(lisConvDeletedFile,[s]));
     end;
   end;
   Result:=mrOK;
@@ -1424,7 +1425,8 @@ begin
     Dep:=FindDependencyByName(s);
     if not Assigned(Dep) then begin
       fProjPack.AddPackageDependency(s);
-      fSettings.AddLogLine(Format(lisConvDelphiAddedPackageDependency, [s]));
+      fSettings.AddLogLine(mluNote, Format(lisConvDelphiAddedPackageDependency,[s]),
+                           fLazPMainFilename);
       Dep:=FindDependencyByName(s);
       if Assigned(Dep) then
         PackageGraph.OpenDependency(Dep,false);
@@ -1447,7 +1449,8 @@ begin
       Result:=CheckPackageDep(AUnitName);
       if not Result then
         // Package was not found. Add a message about a package that must be installed.
-        fSettings.AddLogLine(Format(lisConvDelphiPackageRequired, [ADefaultPkgName]));
+        fSettings.AddLogLine(mluWarning,
+          Format(lisConvDelphiPackageRequired, [ADefaultPkgName]));
     end;
   end;
 end;
@@ -1556,7 +1559,8 @@ begin
   if fSettings.OmitProjUnits.Contains(PureUnitName) then
   begin
     fMainUnitConverter.fUsedUnitsTool.Remove(PureUnitName);
-    fSettings.AddLogLine(Format(lisConvDelphiProjOmittedUnit,[PureUnitName]));
+    fSettings.AddLogLine(mluNote, Format(lisConvDelphiProjOmittedUnit,[PureUnitName]),
+                         fLazPMainFilename);
     TryAddPackageDep(PureUnitName, fSettings.OmitProjUnits[PureUnitName]);
   end
   else begin
@@ -1599,7 +1603,7 @@ begin
       exit(mrCancel);
     end;
     try        // Add all units to the project
-      fSettings.AddLogLine(lisConvDelphiFoundAllUnitFiles);
+      fSettings.AddLogLine(mluProgress, lisConvDelphiFoundAllUnitFiles);
       DebugLn('TConvertDelphiProject.FindAllUnits: '+lisConvDelphiFoundAllUnitFiles);
       for i:=0 to FoundUnits.Count-1 do begin
         CurFilename:=FoundUnits[i];
@@ -1622,11 +1626,8 @@ begin
       end;
     finally
       AllPath:=fUnitSearchPaths.DelimitedText;
-      // Set unit and include paths for project
-      with LazProject.CompilerOptions do begin
-        OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,AllPath);
-        IncludePath:=MergeSearchPaths(IncludePath,AllPath);
-      end;
+      LazProject.CompilerOptions.MergeToUnitPaths(AllPath);
+      LazProject.CompilerOptions.MergeToIncludePaths(AllPath);
       // Clear caches
       LazProject.DefineTemplates.SourceDirectoriesChanged;
     end;
@@ -1677,8 +1678,8 @@ begin
   try
   try
     // convert all units and fix .lfm files
-    fSettings.AddLogLine('');
-    fSettings.AddLogLine(lisConvDelphiConvertingProjPackUnits);
+    fSettings.AddLogLine(mluImportant, '');
+    fSettings.AddLogLine(mluImportant, lisConvDelphiConvertingProjPackUnits);
     for i:=0 to LazProject.UnitCount-1 do begin
       CurUnitInfo:=LazProject.Units[i];
       Application.ProcessMessages;
@@ -1691,8 +1692,8 @@ begin
     end;
     // During conversion there were more units added to be converted.
     if fUnitsToAddToProject.Count > 0 then begin
-      fSettings.AddLogLine('');
-      fSettings.AddLogLine(lisConvDelphiConvertingFoundUnits);
+      fSettings.AddLogLine(mluImportant, '');
+      fSettings.AddLogLine(mluImportant, lisConvDelphiConvertingFoundUnits);
     end;
     for i:=0 to fUnitsToAddToProject.Count-1 do begin
       Application.ProcessMessages;
@@ -1712,9 +1713,9 @@ begin
       end;
     end;
   except
-    fSettings.AddLogLine('');
-    fSettings.AddLogLine('- '+lisConvDelphiExceptionDuringConversion);
-    DebugLn('- '+lisConvDelphiExceptionDuringConversion);
+    fSettings.AddLogLine(mluImportant, '');
+    fSettings.AddLogLine(mluError, lisConvDelphiExceptionDuringConversion);
+    DebugLn(lisConvDelphiExceptionDuringConversion);
     raise;
   end;
   finally
@@ -1878,7 +1879,8 @@ begin
       if CodeToolBoss.HasInterfaceRegisterProc(CodeBuffer, HasRegisterProc) then
         if HasRegisterProc then begin
           Include(Flags, pffHasRegisterProc);
-          fSettings.AddLogLine(Format(lisConvAddingFlagForRegister, [PureUnitName]));
+          fSettings.AddLogLine(mluNote, Format(lisConvAddingFlagForRegister,[PureUnitName]),
+                               fLazPMainFilename);
         end;
     // Add new unit to package
     LazPackage.AddFile(AFileName, PureUnitName, pftUnit, Flags, cpNormal);
@@ -1905,7 +1907,7 @@ begin
       exit(mrCancel);
     end;
     try
-      fSettings.AddLogLine(lisConvDelphiFoundAllUnitFiles);
+      fSettings.AddLogLine(mluProgress, lisConvDelphiFoundAllUnitFiles);
       DebugLn('TConvertDelphiPackage.FindAllUnits: '+lisConvDelphiFoundAllUnitFiles);
       // Add all units to the package
       for i:=0 to FoundUnits.Count-1 do begin
@@ -1989,8 +1991,8 @@ begin
   try
   try
     // Convert all units and fix .lfm files
-    fSettings.AddLogLine('');
-    fSettings.AddLogLine(lisConvDelphiConvertingProjPackUnits);
+    fSettings.AddLogLine(mluImportant, '');
+    fSettings.AddLogLine(mluImportant, lisConvDelphiConvertingProjPackUnits);
     for i:=0 to LazPackage.FileCount-1 do begin
       PkgFile:=LazPackage.Files[i];
       Application.ProcessMessages;
@@ -2000,8 +2002,8 @@ begin
     end;
     // During conversion there were more units added to be converted.
     if fUnitsToAddToProject.Count > 0 then begin
-      fSettings.AddLogLine('');
-      fSettings.AddLogLine(lisConvDelphiConvertingFoundUnits);
+      fSettings.AddLogLine(mluImportant, '');
+      fSettings.AddLogLine(mluImportant, lisConvDelphiConvertingFoundUnits);
     end;
 { ToDo: add more units
     for i:=0 to fUnitsToAddToProject.Count-1 do begin
@@ -2017,9 +2019,9 @@ begin
     end;
 }
   except
-    fSettings.AddLogLine('');
-    fSettings.AddLogLine('- '+lisConvDelphiExceptionDuringConversion);
-    DebugLn('- '+lisConvDelphiExceptionDuringConversion);
+    fSettings.AddLogLine(mluImportant, '');
+    fSettings.AddLogLine(mluError, lisConvDelphiExceptionDuringConversion);
+    DebugLn(lisConvDelphiExceptionDuringConversion);
     raise;
   end;
   finally

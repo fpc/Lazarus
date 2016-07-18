@@ -151,15 +151,7 @@ type
     property OnUTF8KeyPress;
   end;
 
-procedure Register;
-
 implementation
-
-procedure Register;
-begin
-  RegisterComponents('LazControls', [TCheckBoxThemed]);
-  //RegisterPropertyEditor(TypeInfo(TCaption), TCheckBoxThemed, 'Caption', TStringMultilinePropertyEditor);
-end;
 
 { TCheckBoxThemedActionLink }
 
@@ -295,7 +287,7 @@ end;
 
 procedure TCustomCheckBoxThemed.KeyUp(var Key: Word; Shift: TShiftState);
 begin
-  inherited KeyDown(Key, Shift);
+  inherited KeyUp(Key, Shift);
   if (Key in [VK_RETURN, VK_SPACE]) and not (ssCtrl in Shift) then begin
     CheckBoxPressed :=  False;
     DoClick;
@@ -360,13 +352,13 @@ begin
     if ARightToLeft then inc(aFlags, DT_RTLREADING);
     with ThemeServices.GetTextExtent(ACanvas.Handle, aDetails, ACaption, aFlags, nil) do begin
       aTextSize.cx := Right;
-      aTextSize.cy := ACanvas.TextExtent(ACaption).cy;
+      aTextSize.cy := Bottom;
     end;
     aCaptionPoint.Y := (ARect.Bottom + ARect.Top - aTextSize.cy) div 2;
     aCheckBoxPoint.Y := (ARect.Bottom + ARect.Top - CheckBoxSize.cy) div 2;
     if ARightToLeft xor (AAlignment = taLeftJustify) then begin  { Caption is on the Left }
       aCheckBoxPoint.X := ARect.Right - CheckBoxSize.cx;
-      aCaptionPoint.X := aCheckBoxPoint.X - cIndent - aTextSize.cx;
+      aCaptionPoint.X := ARect.Left;
     end else begin  { Caption is on the Right }
       aCheckBoxPoint.X := ARect.Left;
       aCaptionPoint.X := aCheckBoxPoint.X + cIndent + CheckBoxSize.cx;

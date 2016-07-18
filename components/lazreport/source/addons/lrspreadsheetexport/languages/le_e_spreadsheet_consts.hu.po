@@ -47,9 +47,29 @@ msgstr ""
 "Oldalszámok és/vagy tartományok megadása\n"
 "vesszővel elválasztva. Például: 1,3,5-12\n"
 
+#: le_e_spreadsheet_consts.sexportpagefooter
+msgid "Export page footer"
+msgstr "Lap láblécének exportálása"
+
+#: le_e_spreadsheet_consts.sexportpageheader
+msgid "Export page header"
+msgstr "Lap fejlécének exportálása"
+
 #: le_e_spreadsheet_consts.sexportpictures
 msgid "Export pictures"
 msgstr "Képek exportálása"
+
+#: le_e_spreadsheet_consts.sexportprintrange
+msgid "Export print range"
+msgstr "Nyomtatási kép exportálása"
+
+#: le_e_spreadsheet_consts.sexportreportsummary
+msgid "Export report summary"
+msgstr "Jelentés összefoglalójának exportálása"
+
+#: le_e_spreadsheet_consts.sexportreporttitle
+msgid "Export report title"
+msgstr "Jelentés címének exportálása"
 
 #: le_e_spreadsheet_consts.sexportsettings
 msgid "Export settings"
@@ -58,6 +78,10 @@ msgstr "Exportálás beállításai"
 #: le_e_spreadsheet_consts.sexporttospreadsheet
 msgid "Export to spreadsheet"
 msgstr "Exportálás táblázatba"
+
+#: le_e_spreadsheet_consts.sexporturl
+msgid "Export URL"
+msgstr "URL exportálása"
 
 #: le_e_spreadsheet_consts.sgeneral
 msgid "General"

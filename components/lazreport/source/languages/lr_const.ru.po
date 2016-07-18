@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-18 00:58+0300\n"
+"PO-Revision-Date: 2016-04-07 01:24+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -632,6 +632,54 @@ msgstr "П&еременная"
 #: lr_const.seditorformword
 msgid "&Word wrap"
 msgstr "&Перенос слов"
+
+#: lr_const.serrexpectedassign
+msgid "Expected \":=\""
+msgstr "Ожидается \":=\""
+
+#: lr_const.serrexpectedclosingbracket1
+msgid "Expected \")\""
+msgstr "Ожидается \")\""
+
+#: lr_const.serrexpectedclosingbracket2
+msgid "Expected \"]\""
+msgstr "Ожидается \"]\""
+
+#: lr_const.serrexpectedcomma
+msgid "Expected \",\" or \")\""
+msgstr "Ожидается \",\" или \")\""
+
+#: lr_const.serrexpecteddo
+msgid "Expected \"do\""
+msgstr "Ожидается \"do\""
+
+#: lr_const.serrexpectedend
+msgid "Expected \";\" or \"end\""
+msgstr "Ожидается \";\" или \"end\""
+
+#: lr_const.serrexpectedthen
+msgid "Expected \"then\""
+msgstr "Ожидается \"then\""
+
+#: lr_const.serrexpecteduntil
+msgid "Expected \";\" or \"until\""
+msgstr "Ожидается \";\" или \"until\""
+
+#: lr_const.serrlabelgoto
+msgid "Label in goto must be a number"
+msgstr "Метка в goto должна быть числом"
+
+#: lr_const.serrline
+msgid "Line"
+msgstr "Строка"
+
+#: lr_const.serrneeddo
+msgid "Need \"do\" here"
+msgstr "Здесь необходимо \"do\""
+
+#: lr_const.serrneedto
+msgid "Need \"to\" here"
+msgstr "Здесь необходимо \"to\""
 
 #: lr_const.serror
 msgid "Error"
@@ -1548,6 +1596,14 @@ msgctxt "lr_const.snotassigned"
 msgid "[None]"
 msgstr "[Нет]"
 
+#: lr_const.snovalidexportfilenamewassupplied
+msgid "No valid export filename was supplied"
+msgstr "Не задано корректное имя файла для экспорта"
+
+#: lr_const.snovalidfilterclasswassupplied
+msgid "No valid filterclass was supplied"
+msgstr "Не задан корректный класс фильтра"
+
 #: lr_const.sobjectinspector
 msgid "Object inspector"
 msgstr "Инспектор объектов"
@@ -2294,6 +2350,14 @@ msgstr "Показывать на всех страницах"
 msgid "Report file"
 msgstr "Файл очёта"
 
+#: lr_const.sreportcorruptoldknowversion
+msgid "This report is corrupt, it probably needs \"LRE_OLDV%d_FRF_READ\"=true"
+msgstr "Отчёт повреждён, и, вероятно, нуждается в \"LRE_OLDV%d_FRF_READ\"=true"
+
+#: lr_const.sreportcorruptunknownversion
+msgid "This report is corrupt, frVersion=%d"
+msgstr "Отчёт повреждён, frVersion=%d"
+
 #: lr_const.sreportcreatedate
 msgid "Report creation date"
 msgstr "Дата создания отчёта"
@@ -2596,3 +2660,4 @@ msgstr "Перенос слов"
 #: lr_const.syes
 msgid "Yes"
 msgstr "Да"
+

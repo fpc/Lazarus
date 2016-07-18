@@ -21,3 +21,4 @@ msgstr "Registrazione "
 #: idelogger.ideloggermenucaption
 msgid "Logging ..."
 msgstr "Registrazione ..."
+

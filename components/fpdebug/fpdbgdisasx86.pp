@@ -378,7 +378,7 @@ var
     begin
       case Mode of
         0: begin
-          if rm = 6 // disp16 -> exeption to the regs
+          if rm = 6 // disp16 -> exception to the regs
           then AddOperand('%s', ASize, 2, [hvfSigned, hvfIncludeHexchar], [ofMemory])
           else AddOperand(REGS16[rm], ASize, 0, [], [ofMemory]);
         end;

@@ -7,7 +7,7 @@ interface
 uses
   Classes, ComCtrls, ExtCtrls, Spin, StdCtrls, SysUtils, FileUtil, Forms,
   Controls, Graphics, Dialogs, TAGraph, TASeries, TASources, TATools,
-  TATransformations, TACustomSeries;
+  TATransformations, TACustomSeries, Types, TADrawUtils, TATypes;
 
 type
 
@@ -21,10 +21,14 @@ type
     cbLineType: TComboBox;
     cbRotated: TCheckBox;
     cbSorted: TCheckBox;
-    ccsAvg: TCalculatedChartSource;
-    ccsDerivative: TCalculatedChartSource;
-    ccsSum: TCalculatedChartSource;
     catOscillator: TChartAxisTransformations;
+    Chart_CustomDrawPointer: TChart;
+    ChartGetPointerStyleEvent: TChart;
+    lsGetPointerStyle: TLineSeries;
+    PointerImage: TImage;
+    lsCustomDrawPointer: TLineSeries;
+    cbBitmapPointer: TCheckBox;
+    cbDrawEveryNthPointer: TCheckBox;
     chOscillator: TChart;
     chOscillatorLineSeries1: TLineSeries;
     chPointers: TChart;
@@ -41,9 +45,14 @@ type
     lcsOscillator: TListChartSource;
     PageControl1: TPageControl;
     Panel1: TPanel;
+    Panel2: TPanel;
     pnlPointers: TPanel;
     RandomChartSource1: TRandomChartSource;
     sePointerSize: TSpinEdit;
+    edEveryNth: TSpinEdit;
+    tsCustomDrawPointer: TTabSheet;
+    tsGetPointerStyle: TTabSheet;
+    tsOwnerDrawnPointer: TTabSheet;
     timOscilloscope: TTimer;
     tsOscilloscope: TTabSheet;
     tsPointers: TTabSheet;
@@ -51,10 +60,16 @@ type
     procedure btnAddSeriesClick(Sender: TObject);
     procedure btnRefreshClick(Sender: TObject);
     procedure cb3DChange(Sender: TObject);
+    procedure cbBitmapPointerChange(Sender: TObject);
     procedure cbLineTypeChange(Sender: TObject);
     procedure cbRotatedChange(Sender: TObject);
     procedure cbSortedChange(Sender: TObject);
+    procedure edEveryNthChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure lsGetPointerStyleGetPointerStyle(ASender: TChartSeries;
+      AValueIndex: Integer; var AStyle: TSeriesPointerStyle);
+    procedure lsCustomDrawPointerCustomDrawPointer(ASender: TChartSeries;
+      ADrawer: IChartDrawer; AIndex: Integer; ACenter: TPoint);
     procedure PageControl1Change(Sender: TObject);
     procedure sePointerSizeChange(Sender: TObject);
     procedure timOscilloscopeTimer(Sender: TObject);
@@ -68,7 +83,7 @@ implementation
 {$R *.lfm}
 
 uses
-  LCLIntf, TAChartUtils, TATypes, TAEnumerators;
+  LCLIntf, IntfGraphics, TAChartUtils, TAEnumerators;
 
 type
   TLineSeriesEnum =
@@ -111,6 +126,15 @@ begin
     ls.Depth := 15 - ls.Depth;
 end;
 
+procedure TForm1.cbBitmapPointerChange(Sender: TObject);
+begin
+  if cbBitmapPointer.Checked or cbDrawEveryNthPointer.Checked then
+    lsCustomDrawPointer.OnCustomDrawPointer := @lsCustomDrawPointerCustomDrawPointer
+  else
+    lsCustomDrawPointer.OnCustomDrawPointer := nil;
+  Chart_CustomDrawPointer.Invalidate;
+end;
+
 procedure TForm1.cbLineTypeChange(Sender: TObject);
 var
   ls: TLineSeries;
@@ -138,6 +162,11 @@ begin
       ls.ListSource.Sorted := cbSorted.Checked;
 end;
 
+procedure TForm1.edEveryNthChange(Sender: TObject);
+begin
+  Chart_CustomDrawPointer.Invalidate;
+end;
+
 procedure TForm1.FormCreate(Sender: TObject);
 var
   st: TSeriesPointerStyle;
@@ -159,6 +188,45 @@ begin
     ls.Marks.Distance := 4;
     chPointers.AddSeries(ls);
   end;
+end;
+
+procedure TForm1.lsGetPointerStyleGetPointerStyle(ASender: TChartSeries;
+  AValueIndex: Integer; var AStyle: TSeriesPointerStyle);
+begin
+  AStyle := TSeriesPointerStyle(AValueIndex mod (ord(High(TSeriespointerStyle))+1));
+end;
+
+procedure TForm1.lsCustomDrawPointerCustomDrawPointer(ASender: TChartSeries;
+  ADrawer: IChartDrawer; AIndex: Integer; ACenter: TPoint);
+
+  procedure DoDrawPointer;
+  var
+    img: TLazIntfImage;
+    bmp: TBitmap;
+    ser: TLineSeries;
+  begin
+    if cbBitmapPointer.Checked then begin
+      img := TLazIntfImage.Create(0,0);
+      try
+        bmp := PointerImage.Picture.Bitmap;
+        img.LoadFromBitmap(bmp.Handle, bmp.MaskHandle);
+        ADrawer.PutImage(
+          ACenter.X - bmp.Width div 2,
+          ACenter.Y - bmp.Height div 2,
+          img
+        )
+      finally
+        img.Free;
+      end;
+    end else begin
+      ser := TLineseries(ASender);
+      ser.Pointer.Draw(ADrawer, ACenter, ser.Pointer.Brush.Color);
+    end;
+  end;
+
+begin
+  if not cbDrawEveryNthPointer.Checked or (AIndex mod edEveryNth.Value = 0) then
+    DoDrawPointer;
 end;
 
 procedure TForm1.PageControl1Change(Sender: TObject);

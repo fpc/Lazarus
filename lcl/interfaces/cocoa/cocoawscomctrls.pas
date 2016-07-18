@@ -1164,7 +1164,7 @@ begin
   else
   begin
     lTickCount := lTrackBarLength div 5;
-    lTickCount := Min(lTickCount, ATrackBar.Max-ATrackBar.Min);
+    lTickCount := Min(lTickCount, 1+ATrackBar.Max-ATrackBar.Min);
   end;
   lSlider.setNumberOfTickMarks(lTickCount);
 

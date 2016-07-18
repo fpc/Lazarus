@@ -75,6 +75,7 @@ function NextNumberSeq(
 function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
 function PointDistY(const A, B: TPoint): Integer; inline;
+function PointLineDist(const P, A, B: TPoint): Integer;
 function ProjToRect(
   const APt: TDoublePoint; const ARect: TDoubleRect): TDoublePoint;
 function RectIntersectsRect(
@@ -540,6 +541,24 @@ end;
 function PointDistY(const A, B: TPoint): Integer; inline;
 begin
   Result := Min(Abs(Int64(A.Y) - B.Y), MaxInt);
+end;
+
+function PointLineDist(const P, A,B: TPoint): Integer;
+var
+  v, w, Q: TPoint;
+  dot: Int64;
+  lv: Integer;
+begin
+  if A = B then
+    Result := PointDist(A, P)
+  else begin
+    v := B - A;                // Vector pointing along line from A to B
+    w := P - A;                // Vector pointing from A to P
+    dot := Int64(v.x) * w.x + Int64(v.y) * w.y;  // dot product v . w
+    lv := PointDist(A, B);     // Length of vector AB
+    Q := (v * dot) div lv;     // Projection of P onto line A-B, seen from A
+    Result := PointDist(Q, w); // Length from A to Q
+  end;
 end;
 
 function ProjToRect(

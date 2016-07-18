@@ -59,54 +59,6 @@ echo on
 :SkipDBGD
 @echo.
 
-@echo Updating LazDataDesktop
-@set LazDataDesktop_RSJ=tools\lazdatadesktop\lib\%ArchOS%\lazdatadeskstr.rsj
-@if exist %LazDataDesktop_RSJ% goto LazDataDesktop_update
-@echo RSJ file NOT found. Searching for RST.
-@set LazDataDesktop_RSJ=tools\lazdatadesktop\lib\%ArchOS%\lazdatadeskstr.rst
-@if not exist %LazDataDesktop_RSJ% goto SkipLazDataDesktop
-:LazDataDesktop_update
-@tools\updatepofiles %LazDataDesktop_RSJ% tools\lazdatadesktop\languages\lazdatadesktop.po
-@echo Translation file %LazDataDesktop_RSJ% found.
-:SkipLazDataDesktop
-@echo.
-
-@echo Updating LazDoc
-@set LazDoc_RSJ=doceditor\units\%ArchOS%\lazdemsg.rsj
-@if exist %LazDoc_RSJ% goto LazDoc_update
-@echo RSJ file NOT found. Searching for RST.
-@set LazDoc_RSJ=doceditor\units\%ArchOS%\lazdemsg.rst
-@if not exist %LazDoc_RSJ% goto SkipLazDoc
-:LazDoc_update
-@tools\updatepofiles %LazDoc_RSJ% doceditor\languages\lazde.po
-@echo Translation file %LazDoc_RSJ% found.
-:SkipLazDoc
-@echo.
-
-@echo Updating LazExplorer
-@set LazExplorer_RSJ=examples\lazresexplorer\lib\%ArchOS%\reconstsunit.rsj
-@if exist %LazExplorer_RSJ% goto LazExplorer_update
-@echo RSJ file NOT found. Searching for RST.
-@set LazExplorer_RSJ=examples\lazresexplorer\lib\%ArchOS%\reconstsunit.rst
-@if not exist %LazExplorer_RSJ% goto SkipLazExplorer
-:LazExplorer_update
-@tools\updatepofiles %LazExplorer_RSJ% examples\lazresexplorer\languages\resexplorer.po
-@echo Translation file %LazExplorer_RSJ% found.
-:SkipLazExplorer
-@echo.
-
-@echo Updating LazReport editor sample
-@set LREditor_RSJ=components\lazreport\samples\editor\maincalleditor.rsj
-@if exist %LREditor_RSJ% goto LREditor_update
-@echo RSJ file NOT found. Searching for RST.
-@set LREditor_RSJ=components\lazreport\samples\editor\maincalleditor.rst
-@if not exist %LREditor_RSJ% goto SkipLREditor
-:LREditor_update
-@tools\updatepofiles %LREditor_RSJ% components\lazreport\samples\editor\languages\calleditorwithpkg.po
-@echo Translation file %LREditor_RSJ% found.
-:SkipLREditor
-@echo.
-
 @goto Exit
 
 :Exit_Error

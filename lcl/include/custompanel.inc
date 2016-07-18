@@ -62,6 +62,15 @@ begin
   end;
 end;
 
+procedure TCustomPanel.SetWordWrap(const Value: boolean);
+begin
+  if FWordwrap <> Value then
+  begin
+    FWordwrap := Value;
+    Invalidate;
+  end;
+end;
+
 class procedure TCustomPanel.WSRegisterClass;
 begin
   inherited WSRegisterClass;
@@ -113,6 +122,8 @@ begin
     TS.Opaque:= false;
     TS.Clipping:= false;
     TS.SystemFont:=Canvas.Font.IsDefault;
+    TS.Wordbreak := FWordWrap;
+    TS.SingleLine := not FWordwrap;
     if not Enabled then
     begin
       Canvas.Font.Color := clBtnHighlight;

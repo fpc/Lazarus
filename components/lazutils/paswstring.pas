@@ -1,16 +1,13 @@
 {
  *****************************************************************************
-                                paswstring.pas
-
-  A widestring manager written in Pascal
-  and optimized for DefaultSystemCodePage CP_UTF8.
-
- *****************************************************************************
-  This file is part of the LazUtils package
+  This file is part of LazUtils.
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
  *****************************************************************************
+
+  A widestring manager written in Pascal
+  and optimized for DefaultSystemCodePage CP_UTF8.
 }
 unit PasWString;
 
@@ -179,7 +176,7 @@ begin
   a := UTF8LowerCase(a);
   b := UTF16ToUTF8(PWideChar(s2),length(s2));
   b := UTF8LowerCase(b);
-  result := UTF8CompareText(a,b);
+  result := UTF8CompareStr(a,b);
 end;
 
 function CharLengthPChar(const Str: PChar): PtrInt;

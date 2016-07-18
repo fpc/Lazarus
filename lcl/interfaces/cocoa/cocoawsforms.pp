@@ -26,7 +26,7 @@ uses
   // RTL,FCL
   MacOSAll, CocoaAll, Classes,
   // LCL
-  Controls, Forms, Graphics, LCLType, LMessages, LCLProc,
+  Controls, Forms, Graphics, LCLType, Messages, LMessages, LCLProc,
   // Widgetset
   WSForms, WSLCLClasses, WSProc, LCLMessageGlue,
   // LCL Cocoa
@@ -222,7 +222,10 @@ begin
   win.setLevel(HintWindowLevel);
   TCocoaPanel(win).callback := TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
-  win.setAcceptsMouseMovedEvents(True);
+  if AWinControl.Perform(WM_NCHITTEST, 0, 0)=HTTRANSPARENT then
+    win.setIgnoresMouseEvents(True)
+  else
+    win.setAcceptsMouseMovedEvents(True);
 
   R.origin.x := 0;
   R.origin.y := 0;
@@ -477,6 +480,8 @@ var
     win.setTitle(ns);
     ns.release;
     win.setAcceptsMouseMovedEvents(True);
+    if AWinControl.Perform(WM_NCHITTEST, 0, 0)=HTTRANSPARENT then
+      win.setIgnoresMouseEvents(True);
 
     cnt.callback := TCocoaWindow(win).callback;
     cnt.callback.IsOpaque:=true;

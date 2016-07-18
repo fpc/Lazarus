@@ -1,5 +1,11 @@
 {%MainUnit ../lclintf.pas}
 
+
+function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
+begin
+  Result := FindPredefinedBrowser(ABrowser, AParams);
+end;
+
 // Open a given URL with the default browser
 function OpenURL(AURL: String): Boolean;
 var

@@ -17,7 +17,8 @@ end;
 
 procedure TButtonControl.WMDefaultClicked(var Message: TLMessage);
 begin
-  Click;
+  if not ((csClickEvents in ControlStyle) and (csClicked in ControlState)) then // prevent double click in case of csClickEvents, because clicks are send in MouseUp
+    Click;
 end;
 
 class procedure TButtonControl.WSRegisterClass;

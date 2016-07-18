@@ -13,3 +13,4 @@ msgstr ""
 #: lazcstrconsts.lcgnuprojectcandccompiler
 msgid "GNU project C and C++ compiler"
 msgstr "GNU-Projekt C und C++ Compiler"
+

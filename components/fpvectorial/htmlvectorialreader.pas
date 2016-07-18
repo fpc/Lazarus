@@ -14,7 +14,7 @@ interface
 
 uses
   Classes, SysUtils, math, contnrs,
-  fpimage, fpcanvas, laz2_xmlread, laz2_dom, fgl,
+  fpimage, fpcanvas, laz2_xmlread, laz2_dom, fgl, lazfileutils,
   // image data formats
   fpreadpng,
   // HTML can contain SVG
@@ -34,6 +34,7 @@ type
     function ReadHeaderFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     procedure ReadParagraphFromNode(ADest: TvParagraph; ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument);
     function ReadSVGFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+    function ReadSVGFromNode_WithEmbDoc(ANode: TDOMNode; AEmbDoc: TvEmbeddedVectorialDoc; ADoc: TvVectorialDocument): TvEntity;
     function ReadMathFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadTableFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadTableRowNode(ATable: TvTable; ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
@@ -80,7 +81,7 @@ end;
 function TvHTMLVectorialReader.ReadEntityFromNode(ANode: TDOMNode;
   AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
 var
-  lEntityName: DOMString;
+  lEntityName, lTextValue: DOMString;
   lPara: TvParagraph;
 begin
   Result := nil;
@@ -102,6 +103,16 @@ begin
       Result := nil;
     end;
     'ul': Result := ReadUListFromNode(ANode, AData, ADoc);
+  end;
+  // Raw text
+  if (ANode is TDOMText) and (lEntityName = '#text') then
+  begin
+    lTextValue := RemoveLineEndingsAndTrim(ANode.NodeValue);
+    if (lTextValue <> '') then
+    begin
+      AData.AddParagraph().AddText(lTextValue);
+      Result := nil;
+    end;
   end;
 end;
 
@@ -221,7 +232,8 @@ begin
           else if TvVectorialDocument.GetFormatFromExtension(lAttrValue, False) <> vfUnknown then
           begin
             lEmbVecImg := ADest.AddEmbeddedVectorialDoc();
-            lEmbVecImg.Document.ReadFromFile(lAttrValue);
+            if FileExistsUTF8(lAttrValue) then
+              lEmbVecImg.Document.ReadFromFile(lAttrValue);
           end;
         end;
         'xlink:href':
@@ -276,9 +288,14 @@ begin
       end
       else if (lEmbVecImg <> nil) and (lWidth > 0) and (lHeight > 0) then
       begin
-        lEmbVecImg.Width := lWidth;
-        lEmbVecImg.Height := lHeight;
+        lEmbVecImg.SetWidth(lWidth);
+        lEmbVecImg.SetHeight(lHeight);
       end;
+    end;
+    'svg':
+    begin
+      lEmbVecImg := ADest.AddEmbeddedVectorialDoc();
+      ReadSVGFromNode_WithEmbDoc(lCurNode, lEmbVecImg, ADoc);
     end;
     end;
 
@@ -298,6 +315,26 @@ var
 begin
   Result := nil;
   CurSVG := AData.AddEmbeddedVectorialDoc();
+  lDoc := TXMLDocument.Create;
+  try
+    lImportedNode := lDoc.ImportNode(ANode, True);
+    lDoc.AppendChild(lImportedNode);
+    CurSVG.Document.ReadFromXML(lDoc, vfSVG);
+  finally
+    lDoc.Free;
+  end;
+end;
+
+function TvHTMLVectorialReader.ReadSVGFromNode_WithEmbDoc(ANode: TDOMNode;
+  AEmbDoc: TvEmbeddedVectorialDoc; ADoc: TvVectorialDocument): TvEntity;
+var
+  CurSVG: TvEmbeddedVectorialDoc;
+  lText: TvText;
+  lDoc: TXMLDocument;
+  lImportedNode: TDOMNode;
+begin
+  Result := nil;
+  CurSVG := AEmbDoc;
   lDoc := TXMLDocument.Create;
   try
     lImportedNode := lDoc.ImportNode(ANode, True);
@@ -335,7 +372,7 @@ var
   lCurNode, lCurSubnode: TDOMNode;
   lNodeName, lNodeValue: DOMString;
   CurRow: TvTableRow;
-  Caption_Cell: TvTableCell;
+  Caption_Cell: TvTableCell = nil;
   CurCellPara: TvParagraph;
   // attributes
   i, lBorderNr: Integer;
@@ -420,7 +457,8 @@ begin
   end;
 
   // the caption spans all columns
-  Caption_Cell.SpannedCols := CurTable.GetColCount();
+  if Caption_Cell <> nil then
+    Caption_Cell.SpannedCols := CurTable.GetColCount();
 end;
 
 function TvHTMLVectorialReader.ReadTableRowNode(ATable: TvTable; ANode: TDOMNode;
@@ -588,7 +626,7 @@ begin
   Result := False;
   lExt := LowerCase(ExtractFileExt(AFileName));
   case lExt of
-  '.png', '.jpg', '.jpeg', '.bmp', '.xpm':
+  '.png', '.jpg', '.jpeg', '.bmp', '.xpm', '.gif':
     Result := True
   end;
 end;

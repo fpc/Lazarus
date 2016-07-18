@@ -312,8 +312,12 @@ begin
     NewPos := 0;
   if NewPos > FRange then
     NewPos := FRange;
-  InvalidateScrollInfo;
-  SetPosition(NewPos);
+  if NewPos<>FPosition then
+  begin
+    InvalidateScrollInfo;
+    SetPosition(NewPos);
+    Message.Result := 1;
+  end;
 end;
 
 procedure TControlScrollBar.ControlUpdateScrollBars;
@@ -371,6 +375,14 @@ end;
 function TControlScrollBar.ControlHandle: HWnd;
 begin
   Result := FControl.Handle;
+end;
+
+function TControlScrollBar.ControlSize: integer;
+begin
+  if Kind = sbVertical then
+    Result := FControl.Width
+  else
+    Result := FControl.Height;
 end;
 
 constructor TControlScrollBar.Create(AControl: TWinControl;
@@ -448,7 +460,7 @@ function TControlScrollBar.ClientSizeWithoutBar: integer;
 begin
   Result:=ClientSize;
   if IsScrollBarVisible then
-    Result := Min(FControl.Width, Result+GetSize+GetSystemMetrics(SM_SWSCROLLBARSPACING));
+    Result := Min(ControlSize, Result+GetSize+GetSystemMetrics(SM_SWSCROLLBARSPACING));
 end;
 
 function TControlScrollBar.GetHorzScrollBar: TControlScrollBar;

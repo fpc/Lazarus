@@ -41,7 +41,7 @@ uses
   Graphics, Dialogs, LCLType, LCLIntf, Themes, Buttons, SynEdit, SynEditKeyCmds,
   BasicCodeTools, KeywordFuncLists, LinkScanner, CodeCache, FindDeclarationTool,
   IdentCompletionTool, CodeTree, CodeAtom, PascalParserTool, CodeToolManager,
-  SrcEditorIntf, LazIDEIntf, IDEProcs, LazarusIDEStrConsts;
+  SrcEditorIntf, LazIDEIntf, IDEProcs, LazarusIDEStrConsts, LMessages;
 
 type
 
@@ -89,6 +89,7 @@ type
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
+    procedure WMNCHitTest(var Message: TLMessage); message LM_NCHITTEST;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -365,6 +366,11 @@ begin
     else if NewParameterIndex<>LastParameterIndex then
       MarkCurrentParameterInHints(NewParameterIndex);
   end;
+end;
+
+procedure TCodeContextFrm.WMNCHitTest(var Message: TLMessage);
+begin
+  Message.Result := HTCLIENT;
 end;
 
 procedure TCodeContextFrm.CreateHints(const CodeContexts: TCodeContextInfo);

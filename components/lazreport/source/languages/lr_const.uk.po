@@ -646,6 +646,54 @@ msgstr "&Змінна"
 msgid "&Word wrap"
 msgstr "&Перенесення слів"
 
+#: lr_const.serrexpectedassign
+msgid "Expected \":=\""
+msgstr ""
+
+#: lr_const.serrexpectedclosingbracket1
+msgid "Expected \")\""
+msgstr ""
+
+#: lr_const.serrexpectedclosingbracket2
+msgid "Expected \"]\""
+msgstr ""
+
+#: lr_const.serrexpectedcomma
+msgid "Expected \",\" or \")\""
+msgstr ""
+
+#: lr_const.serrexpecteddo
+msgid "Expected \"do\""
+msgstr ""
+
+#: lr_const.serrexpectedend
+msgid "Expected \";\" or \"end\""
+msgstr ""
+
+#: lr_const.serrexpectedthen
+msgid "Expected \"then\""
+msgstr ""
+
+#: lr_const.serrexpecteduntil
+msgid "Expected \";\" or \"until\""
+msgstr ""
+
+#: lr_const.serrlabelgoto
+msgid "Label in goto must be a number"
+msgstr ""
+
+#: lr_const.serrline
+msgid "Line"
+msgstr ""
+
+#: lr_const.serrneeddo
+msgid "Need \"do\" here"
+msgstr ""
+
+#: lr_const.serrneedto
+msgid "Need \"to\" here"
+msgstr ""
+
 #: lr_const.serror
 msgid "Error"
 msgstr "Помилка"
@@ -1565,6 +1613,14 @@ msgctxt "lr_const.snotassigned"
 msgid "[None]"
 msgstr "[Немає]"
 
+#: lr_const.snovalidexportfilenamewassupplied
+msgid "No valid export filename was supplied"
+msgstr ""
+
+#: lr_const.snovalidfilterclasswassupplied
+msgid "No valid filterclass was supplied"
+msgstr ""
+
 #: lr_const.sobjectinspector
 msgid "Object inspector"
 msgstr "Інспектор Об'єктів"
@@ -2312,6 +2368,14 @@ msgstr "Показувати на всіх сторінках"
 #: lr_const.srepfile
 msgid "Report file"
 msgstr "Файл звіту"
+
+#: lr_const.sreportcorruptoldknowversion
+msgid "This report is corrupt, it probably needs \"LRE_OLDV%d_FRF_READ\"=true"
+msgstr ""
+
+#: lr_const.sreportcorruptunknownversion
+msgid "This report is corrupt, frVersion=%d"
+msgstr ""
 
 #: lr_const.sreportcreatedate
 msgid "Report creation date"

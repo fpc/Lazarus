@@ -5,6 +5,11 @@ License: The same modified LGPL as the Free Pascal RTL
          See the file COPYING.modifiedLGPL for more details
 
 AUTHORS: Felipe Monteiro de Carvalho
+
+SVG Coordinates vs FPVectorial coordinates:
+
+SVG by default has [0, 0] at the top-left and coordinates grow downwards and to the right
+Text is drawn upwards (towards negative Y)
 }
 unit svgvectorialreader;
 
@@ -99,6 +104,9 @@ type
     FBrushDefs: TFPList; // of TvEntityWithPenAndBrush;
     // debug symbols
     FPathNumber: Integer;
+    // BrushDefs functions
+    function FindBrushDef_WithName(AName: string): TvEntityWithPenAndBrush;
+    //
     function ReadSVGColor(AValue: string): TFPColor;
     function ReadSVGGradientColorStyle(AValue: String): TFPColor;
     function ReadSVGStyle(AData: TvVectorialPage; AValue: string;
@@ -116,6 +124,7 @@ type
     procedure ReadSVGTransformationMatrix(AMatrix: string; out AA, AB, AC, AD, AE, AF: Double);
     //
     function GetTextContentFromNode(ANode: TDOMNode): string;
+    procedure ReadDefs_LinearGradient(ADest: TvEntityWithPenAndBrush; ANode: TDOMNode; AData: TvVectorialPage);
     procedure ReadDefsFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     //
     function ReadEntityFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
@@ -165,6 +174,10 @@ type
     procedure ReadFromXML(Doc: TXMLDocument; AData: TvVectorialDocument); override;
     class function ReadSpaceSeparatedStrings(AInput: string; AOtherSeparators: string): TStringList;
   end;
+
+var
+  // settings
+  gSVGVecReader_UseTopLeftCoords: Boolean = True;
 
 implementation
 
@@ -460,6 +473,22 @@ end;
 }
 
 { TvSVGVectorialReader }
+
+function TvSVGVectorialReader.FindBrushDef_WithName(AName: string): TvEntityWithPenAndBrush;
+var
+  i: Integer;
+begin
+  Result := nil;
+  for i := 0 to FBrushDefs.Count-1 do
+  begin
+    Result := TvEntityWithPenAndBrush(FBrushDefs.Items[i]);
+    if Result.Name = AName then
+    begin
+      Exit;
+    end;
+  end;
+  Result := nil;
+end;
 
 function TvSVGVectorialReader.ReadSVGColor(AValue: string): TFPColor;
 var
@@ -773,13 +802,13 @@ begin
   try
     lStrings.Delimiter := ';';
     lStrings.StrictDelimiter := True;
-    lStrings.DelimitedText := LowerCase(AValue);
+    lStrings.DelimitedText := AValue;
     for i := 0 to lStrings.Count-1 do
     begin
       lStr := lStrings.Strings[i];
       lPosEqual := Pos(':', lStr);
       lStyleKeyStr := Copy(lStr, 0, lPosEqual-1);
-      lStyleKeyStr := Trim(lStyleKeyStr);
+      lStyleKeyStr := LowerCase(Trim(lStyleKeyStr));
       lStyleValueStr := Copy(lStr, lPosEqual+1, Length(lStr));
       lStyleValueStr := Trim(lStyleValueStr);
       if ADestEntity <> nil then
@@ -884,7 +913,6 @@ var
   OldAlpha: Word;
   Len: Integer;
   lDefName: String;
-  i: Integer;
   lCurBrush: TvEntityWithPenAndBrush;
 begin
   Result := [];
@@ -898,14 +926,11 @@ begin
       lDefName := StringReplace(lDefName, ')', '', []);
       if lDefName = '' then Exit;
 
-      for i := 0 to FBrushDefs.Count-1 do
+      lCurBrush := FindBrushDef_WithName(lDefName);
+      if lCurBrush <> nil then
       begin
-        lCurBrush := TvEntityWithPenAndBrush(FBrushDefs.Items[i]);
-        if lCurBrush.Name = lDefName then
-        begin
-          ADestEntity.Brush := lCurBrush.Brush;
-          Exit;
-        end;
+        ADestEntity.Brush := lCurBrush.Brush;
+        Exit;
       end;
       Exit;
     end;
@@ -1237,6 +1262,119 @@ begin
   end;
 end;
 
+// <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+procedure TvSVGVectorialReader.ReadDefs_LinearGradient(ADest: TvEntityWithPenAndBrush;
+  ANode: TDOMNode; AData: TvVectorialPage);
+var
+  lAttrName, lAttrValue, lNodeName: DOMString;
+  i, len: Integer;
+  lCurSubNode: TDOMNode;
+  lBrushEntity, lCurBrush: TvEntityWithPenAndBrush;
+  lGradientColor: TvGradientColor;
+  x1, y1, x2, y2: Double;
+begin
+  x1 := 0;
+  x2 := 0;
+  y1 := 0;
+  y2 := 0;
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lAttrName := lowercase(ANode.Attributes.Item[i].NodeName);
+    lAttrValue := ANode.Attributes.Item[i].NodeValue;
+    if lAttrName = 'id' then
+      ADest.Name := lAttrValue
+    else
+    if lAttrName = 'x1' then
+    begin
+      if lAttrValue[Length(lAttrValue)] = '%' then
+        Include(ADest.Brush.Gradient_flags, gfRelStartX);
+      x1 := StringWithPercentToFloat(lAttrValue);
+    end else
+    if lAttrName = 'x2' then
+    begin
+      if lAttrValue[Length(lAttrValue)] = '%' then
+        Include(ADest.Brush.Gradient_flags, gfRelEndX);
+      x2 := StringWithPercentToFloat(lAttrValue);
+    end else
+    if lAttrName = 'y1' then
+    begin
+      if lAttrValue[Length(lAttrValue)] = '%' then
+        Include(ADest.Brush.Gradient_flags, gfRelStartY);
+      y1 := StringWithPercentToFloat(lAttrValue);
+    end else
+    if lAttrName = 'y2' then
+    begin
+      if lAttrValue[Length(lAttrValue)] = '%' then
+        Include(ADest.Brush.Gradient_flags, gfRelEndY);
+      y2 := StringWithPercentToFloat(lAttrValue);
+    end else
+    if lAttrName = 'gradientunits' then
+    begin
+      lAttrValue := LowerCase(lAttrValue);
+      if lAttrValue = 'userspaceonuse' then
+        Include(ADest.Brush.Gradient_flags, gfRelToUserSpace)
+      else if lAttrValue = 'objectboundingbox' then
+        Exclude(ADest.Brush.Gradient_flags, gfRelToUserSpace);
+    end;
+  end;
+  ADest.Brush.Gradient_start.X := x1;
+  ADest.Brush.Gradient_end.X := x2;
+  ADest.Brush.Gradient_start.Y := y1;
+  ADest.Brush.Gradient_end.Y := y2;
+  ConvertSVGCoordinatesToFPVCoordinates(AData, x1, y1, x1, y1);
+  ConvertSVGCoordinatesToFPVCoordinates(AData, x2, y2, x2, y2);
+  if not (gfRelStartX in ADest.Brush.Gradient_flags) then
+    ADest.Brush.Gradient_start.X := x1;
+  if not (gfRelEndX in ADest.Brush.Gradient_flags) then
+    ADest.Brush.Gradient_end.X := x2;
+  if not (gfRelStartY in ADest.Brush.Gradient_flags) then
+    ADest.Brush.Gradient_start.Y := y1;
+  if not (gfRelEndY in ADest.Brush.Gradient_flags) then
+    ADest.Brush.Gradient_end.Y := y2;
+  if (ADest.Brush.Gradient_start.X = 0) and
+     (ADest.Brush.Gradient_start.Y = 0) and
+     (ADest.Brush.Gradient_end.X = 0) and
+     (ADest.Brush.Gradient_end.Y = 0) then
+  begin
+    ADest.Brush.Gradient_start.X := 0.0;
+    ADest.Brush.Gradient_start.Y := 0.0;
+    ADest.Brush.Gradient_end.X := 1.0;
+    ADest.Brush.Gradient_end.Y := 1.0;
+  end;
+  if ADest.Brush.Gradient_start.X = ADest.Brush.Gradient_end.X then
+    ADest.Brush.Kind := bkVerticalGradient
+  else if ADest.Brush.Gradient_start.Y = ADest.Brush.Gradient_end.Y then
+    ADest.Brush.Kind := bkHorizontalGradient
+  else
+    ADest.Brush.Kind := bkOtherLinearGradient;
+
+  // <stop offset="0%" style="stop-color:rgb(255,255,0);stop-opacity:1" />
+  // <stop offset="100%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
+  lCurSubNode := ANode.FirstChild;
+  while Assigned(lCurSubNode) do
+  begin
+    lNodeName := LowerCase(lCurSubNode.NodeName);
+    if lNodeName = 'stop' then begin
+      for i := 0 to lCurSubNode.Attributes.Length - 1 do
+      begin
+        lAttrName := lCurSubNode.Attributes.Item[i].NodeName;
+        lAttrValue := lCurSubNode.Attributes.Item[i].NodeValue;
+        if lAttrName = 'offset' then
+          lGradientColor.Position := StringWithPercentToFloat(lAttrValue)
+          // use as fraction 0..1
+        else if lAttrName = 'style' then
+          lGradientColor.Color := ReadSVGGradientColorStyle(lAttrValue)
+        else if lAttrName = 'stop-color' then
+          lGradientColor.Color := ReadSVGColor(lAttrValue);
+      end;
+      len := Length(ADest.Brush.Gradient_colors);
+      SetLength(ADest.Brush.Gradient_colors, Len+1);
+      ADest.Brush.Gradient_colors[len] := lGradientColor;
+    end;
+    lCurSubNode := lCurSubNode.NextSibling;
+  end;
+end;
+
 procedure TvSVGVectorialReader.ReadDefsFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
@@ -1247,10 +1385,9 @@ var
   lLayerName: String;
   i, len: Integer;
   lCurNode, lCurSubNode: TDOMNode;
-  lBrushEntity: TvEntityWithPenAndBrush;
+  lBrushEntity, lCurBrush: TvEntityWithPenAndBrush;
   lCurEntity: TvEntity;
-  lGradientColor: TvGradientColor;
-  x1, y1, x2, y2: Double;
+  lAttrValue_Double: Double;
 begin
   lCurNode := ANode.FirstChild;
   while Assigned(lCurNode) do
@@ -1260,53 +1397,56 @@ begin
       'radialgradient':
       begin
         lBrushEntity := TvEntityWithPenAndBrush.Create(nil);
+
+        // First copy everything we can from any xlink:href
+        for i := 0 to lCurNode.Attributes.Length - 1 do
+        begin
+          lAttrName := LowerCase(lCurNode.Attributes.Item[i].NodeName);
+          lAttrValue := lCurNode.Attributes.Item[i].NodeValue;
+          if lAttrName = 'xlink:href' then
+          begin
+            lAttrValue := StringReplace(Trim(lAttrValue), '#', '', []);
+            lCurBrush := FindBrushDef_WithName(lAttrValue);
+            if lCurBrush <> nil then
+              lBrushEntity.Brush := lCurBrush.Brush;
+          end;
+        end;
+
+        // Now linear gradient properties
+        ReadDefs_LinearGradient(lBrushEntity, lCurNode, AData);
+
+        // Now process our own properties
+
         lBrushEntity.Brush.Kind := bkRadialGradient;
 
         // <radialGradient id="grad1" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+        // or
+        // <linearGradient id="linearGradient6038">
+        // <stop style="stop-color:#ffffff;stop-opacity:1;" offset="0" id="stop6040" />
+        // <stop style="stop-color:#000000;stop-opacity:0;" offset="1" id="stop6042" />
+        // </linearGradient>
+        // <radialGradient inkscape:collect="always" xlink:href="#linearGradient6038"
+        //  id="radialGradient3333" gradientUnits="userSpaceOnUse"
+        //  gradientTransform="matrix(0.05999054,1.120093,-1.0249935,0.05489716,995.9708,109.4759)"
+        //  cx="406.62762" cy="567.12799" fx="406.62762" fy="567.12799" r="37.15749" />
         for i := 0 to lCurNode.Attributes.Length - 1 do
         begin
           lAttrName := lCurNode.Attributes.Item[i].NodeName;
           lAttrValue := lCurNode.Attributes.Item[i].NodeValue;
-          if lAttrName = 'id' then
-          begin
-            lBrushEntity.Name := lAttrValue;
+          case lAttrName of
+          'cx', 'cy', 'fx', 'fy', 'r':
+            lAttrValue_Double := StringWithUnitToFloat(lAttrValue, sckUnknown, suMM, suMM);
           end;
-          {else if lAttrName = 'cx' then
-          begin
-            lLayerName := lCurNode.Attributes.Item[i].NodeValue;
-            lBlock.Name := lLayerName;
+
+          case lAttrName of
+          'id': lBrushEntity.Name := lAttrValue;
+          'cx': lBrushEntity.Brush.Gradient_cx := lAttrValue_Double;
+          'cy': lBrushEntity.Brush.Gradient_cy := lAttrValue_Double;
+          'r':  lBrushEntity.Brush.Gradient_r  := lAttrValue_Double;
+          'fx': lBrushEntity.Brush.Gradient_fx := lAttrValue_Double;
+          'fy': lBrushEntity.Brush.Gradient_fy := lAttrValue_Double;
           end;
-          }
-        end;
-
-{        Gradient_cx, Gradient_cy, Gradient_r, Gradient_fx, Gradient_fy: Double;
-        Gradient_cx_Unit, Gradient_cy_Unit, Gradient_r_Unit, Gradient_fx_Unit, Gradient_fy_Unit: TvCoordinateUnit;
-        Gradient_colors: array of TFPColor;}
-
-        //  <stop offset="0%" style="stop-color:rgb(255,255,255); stop-opacity:0" />
-        //  <stop offset="100%" style="stop-color:rgb(0,0,255);stop-opacity:1" />
-        //</radialGradient>}
-        lCurSubNode := lCurNode.FirstChild;
-        while Assigned(lCurSubNode) do
-        begin
-          {lNodeName := LowerCase(lCurSubNode.NodeName);
-
-          for i := 0 to lCurSubNode.Attributes.Length - 1 do
-          begin
-            lAttrName := lCurSubNode.Attributes.Item[i].NodeName;
-            lAttrValue := lCurSubNode.Attributes.Item[i].NodeValue;
-            if lAttrName = 'offset' then
-            begin
-              //lOffset := lAttrName;
-            end;
-            else if lAttrName = 'cx' then
-            begin
-              lLayerName := lCurNode.Attributes.Item[i].NodeValue;
-              lBlock.Name := lLayerName;
-            end;
-          end;}
-
-          lCurSubNode := lCurSubNode.NextSibling;
+          //lBrushEntity.Gradient_cx_Unit, Gradient_cy_Unit, Gradient_r_Unit, Gradient_fx_Unit, Gradient_fy_Unit
         end;
 
         FBrushDefs.Add(lBrushEntity);
@@ -1321,106 +1461,7 @@ begin
       begin
         lBrushEntity := TvEntityWithPenAndBrush.Create(nil);
 
-        // <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-        x1 := 0;
-        x2 := 0;
-        y1 := 0;
-        y2 := 0;
-        for i := 0 to lCurNode.Attributes.Length - 1 do
-        begin
-          lAttrName := lowercase(lCurNode.Attributes.Item[i].NodeName);
-          lAttrValue := lowercase(lCurNode.Attributes.Item[i].NodeValue);
-          if lAttrName = 'id' then
-            lBrushEntity.Name := lAttrValue
-          else
-          if lAttrName = 'x1' then
-          begin
-            if lAttrValue[Length(lAttrValue)] = '%' then
-              Include(lBrushEntity.Brush.Gradient_flags, gfRelStartX);
-            x1 := StringWithPercentToFloat(lAttrValue);
-          end else
-          if lAttrName = 'x2' then
-          begin
-            if lAttrValue[Length(lAttrValue)] = '%' then
-              Include(lBrushEntity.Brush.Gradient_flags, gfRelEndX);
-            x2 := StringWithPercentToFloat(lAttrValue);
-          end else
-          if lAttrName = 'y1' then
-          begin
-            if lAttrValue[Length(lAttrValue)] = '%' then
-              Include(lBrushEntity.Brush.Gradient_flags, gfRelStartY);
-            y1 := StringWithPercentToFloat(lAttrValue);
-          end else
-          if lAttrName = 'y2' then
-          begin
-            if lAttrValue[Length(lAttrValue)] = '%' then
-              Include(lBrushEntity.Brush.Gradient_flags, gfRelEndY);
-            y2 := StringWithPercentToFloat(lAttrValue);
-          end else
-          if lAttrName = 'gradientunits' then
-          begin
-            if lAttrValue = 'userspaceonuse' then
-              Include(lBrushEntity.Brush.Gradient_flags, gfRelToUserSpace)
-            else if lAttrValue = 'objectboundingbox' then
-              Exclude(lBrushEntity.Brush.Gradient_flags, gfRelToUserSpace);
-          end;
-        end;
-        lBrushEntity.Brush.Gradient_start.X := x1;
-        lBrushEntity.Brush.Gradient_end.X := x2;
-        lBrushEntity.Brush.Gradient_start.Y := y1;
-        lBrushEntity.Brush.Gradient_end.Y := y2;
-        ConvertSVGCoordinatesToFPVCoordinates(AData, x1, y1, x1, y1);
-        ConvertSVGCoordinatesToFPVCoordinates(AData, x2, y2, x2, y2);
-        if not (gfRelStartX in lBrushEntity.Brush.Gradient_flags) then
-          lBrushEntity.Brush.Gradient_start.X := x1;
-        if not (gfRelEndX in lBrushEntity.Brush.Gradient_flags) then
-          lBrushEntity.Brush.Gradient_end.X := x2;
-        if not (gfRelStartY in lBrushEntity.Brush.Gradient_flags) then
-          lBrushEntity.Brush.Gradient_start.Y := y1;
-        if not (gfRelEndY in lBrushEntity.Brush.Gradient_flags) then
-          lBrushEntity.Brush.Gradient_end.Y := y2;
-        if (lBrushEntity.Brush.Gradient_start.X = 0) and
-           (lBrushEntity.Brush.Gradient_start.Y = 0) and
-           (lBrushEntity.Brush.Gradient_end.X = 0) and
-           (lBrushEntity.Brush.Gradient_end.Y = 0) then
-        begin
-          lBrushEntity.Brush.Gradient_start.X := 0.0;
-          lBrushEntity.Brush.Gradient_start.Y := 0.0;
-          lBrushEntity.Brush.Gradient_end.X := 1.0;
-          lBrushEntity.Brush.Gradient_end.Y := 1.0;
-        end;
-        if lBrushEntity.Brush.Gradient_start.X = lBrushEntity.Brush.Gradient_end.X then
-          lBrushEntity.Brush.Kind := bkVerticalGradient
-        else if lBrushEntity.Brush.Gradient_start.Y = lBrushEntity.Brush.Gradient_end.Y then
-          lBrushEntity.Brush.Kind := bkHorizontalGradient
-        else
-          lBrushEntity.Brush.Kind := bkOtherLinearGradient;
-
-        // <stop offset="0%" style="stop-color:rgb(255,255,0);stop-opacity:1" />
-        // <stop offset="100%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
-        lCurSubNode := lCurNode.FirstChild;
-        while Assigned(lCurSubNode) do
-        begin
-          lNodeName := LowerCase(lCurSubNode.NodeName);
-          if lNodeName = 'stop' then begin
-            for i := 0 to lCurSubNode.Attributes.Length - 1 do
-            begin
-              lAttrName := lCurSubNode.Attributes.Item[i].NodeName;
-              lAttrValue := lCurSubNode.Attributes.Item[i].NodeValue;
-              if lAttrName = 'offset' then
-                lGradientColor.Position := StringWithPercentToFloat(lAttrValue)
-                // use as fraction 0..1
-              else if lAttrName = 'style' then
-                lGradientColor.Color := ReadSVGGradientColorStyle(lAttrValue)
-              else if lAttrName = 'stop-color' then
-                lGradientColor.Color := ReadSVGColor(lAttrValue);
-            end;
-            len := Length(lBrushEntity.Brush.Gradient_colors);
-            SetLength(lBrushEntity.Brush.Gradient_colors, Len+1);
-            lBrushEntity.Brush.Gradient_colors[len] := lGradientColor;
-          end;
-          lCurSubNode := lCurSubNode.NextSibling;
-        end;
+        ReadDefs_LinearGradient(lBrushEntity, lCurNode, AData);
 
         FBrushDefs.Add(lBrushEntity);
       end;
@@ -2971,7 +3012,8 @@ begin
   // We need to add this hack here, otherwise the Height is added twice
   // to inserted items: Once in the Insert and yet another time in the
   // coordinates of the inserted item!
-  lInsert.Y := lInsert.Y - AData.Height;
+  if not gSVGVecReader_UseTopLeftCoords then
+    lInsert.Y := lInsert.Y - AData.Height;
 
   Result := lInsert;
 end;
@@ -3037,17 +3079,33 @@ var
         sckX:      Result := (Result - ViewBox_Left) * Page_Width / ViewBox_Width;
         sckXDelta,
         sckXSize:  Result := Result * Page_Width / ViewBox_Width;
-        sckY:      Result := Page_Height - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
-        sckYDelta: Result := - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
-        sckYSize:  Result := Result * Page_Height / ViewBox_Height;
+      end;
+      if gSVGVecReader_UseTopLeftCoords then
+      begin
+        case ACoordKind of
+          sckY:      Result := (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
+          sckYDelta,
+          sckYSize:  Result := Result * Page_Height / ViewBox_Height;
+        end;
+      end
+      else
+      begin
+        case ACoordKind of
+          sckY:      Result := Page_Height - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
+          sckYDelta: Result := - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
+          sckYSize:  Result := Result * Page_Height / ViewBox_Height;
+        end;
       end;
       ViewPortApplied := True;
     end
     else
     begin
-      case ACoordKind of
-        sckY:      Result := Page_Height - Result;
-        sckYDelta: Result := - Result;
+      if not gSVGVecReader_UseTopLeftCoords then
+      begin
+        case ACoordKind of
+          sckY:      Result := Page_Height - Result;
+          sckYDelta: Result := - Result;
+        end;
       end;
     end;
   end;
@@ -3153,11 +3211,26 @@ procedure TvSVGVectorialReader.ConvertSVGCoordinatesToFPVCoordinates(
   var ADestX,ADestY: Double; ADoViewBoxAdjust: Boolean = True);
 begin
   ADestX := ASrcX * FLOAT_MILLIMETERS_PER_PIXEL;
-  ADestY := AData.Height - ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
   if ViewBoxAdjustment and ADoViewBoxAdjust then
   begin
     ADestX := (ASrcX - ViewBox_Left) * Page_Width / ViewBox_Width;
-    ADestY := AData.Height - (ASrcY - ViewBox_Top) * Page_Height / ViewBox_Height;
+  end;
+
+  if gSVGVecReader_UseTopLeftCoords then
+  begin
+    ADestY := ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
+    if ViewBoxAdjustment and ADoViewBoxAdjust then
+    begin
+      ADestY := (ASrcY - ViewBox_Top) * Page_Height / ViewBox_Height;
+    end;
+  end
+  else
+  begin
+    ADestY := AData.Height - ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
+    if ViewBoxAdjustment and ADoViewBoxAdjust then
+    begin
+      ADestY := AData.Height - (ASrcY - ViewBox_Top) * Page_Height / ViewBox_Height;
+    end;
   end;
 end;
 
@@ -3166,11 +3239,26 @@ procedure TvSVGVectorialReader.ConvertSVGDeltaToFPVDelta(
   ADestY: Double; ADoViewBoxAdjust: Boolean = True);
 begin
   ADestX := ASrcX * FLOAT_MILLIMETERS_PER_PIXEL;
-  ADestY := - ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
   if ViewBoxAdjustment and ADoViewBoxAdjust then
   begin
     ADestX := ASrcX * Page_Width / ViewBox_Width;
-    ADestY := - ASrcY * Page_Height / ViewBox_Height;
+  end;
+
+  if gSVGVecReader_UseTopLeftCoords then
+  begin
+    ADestY := - ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
+    if ViewBoxAdjustment and ADoViewBoxAdjust then
+    begin
+      ADestY := - ASrcY * Page_Height / ViewBox_Height;
+    end;
+  end
+  else
+  begin
+    ADestY := ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
+    if ViewBoxAdjustment and ADoViewBoxAdjust then
+    begin
+      ADestY := ASrcY * Page_Height / ViewBox_Height;
+    end;
   end;
 end;
 
@@ -3399,7 +3487,7 @@ begin
   // Now process the elements
   // ----------------
   lCurNode := Doc.DocumentElement.FirstChild;
-  lPage := AData.AddPage();
+  lPage := AData.AddPage(gSVGVecReader_UseTopLeftCoords);
   lPage.Width := AData.Width;
   lPage.Height := AData.Height;
   while Assigned(lCurNode) do

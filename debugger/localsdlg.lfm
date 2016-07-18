@@ -79,6 +79,7 @@ object LocalsDlg: TLocalsDlg
       Category = 'copy'
       Caption = 'actCopyRAWValue'
       OnExecute = actCopyRAWValueExecute
+      OnUpdate = actInspectUpdate
     end
   end
   object PopupMenu1: TPopupMenu

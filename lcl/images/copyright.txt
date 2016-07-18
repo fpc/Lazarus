@@ -1,0 +1,54 @@
+LICENSE AND COPYRIGHT INFORMATION ABOUT IMAGES USED IN LCL
+----------------------------------------------------------
+
+Public domain Tango https://packages.debian.org/sid/tango-icon-theme
+PNG versions: http://http.debian.net/debian/pool/main/t/tango-icon-theme/tango-icon-theme_0.8.90.orig.tar.gz
+- dialogs/*
+- btnselfile.png
+- btnseldir.png
+- dbnavcancel.png
+- dbnavdelete.png
+- dbnavrefresh.png
+- dbnavnext.png
+- dbnavlast.png
+- dbnavinsert.png
+- dbnavfirst.png
+- dbnavprior.png
+- btntime.png (modified Appointment.svg by Michael Fuchs)
+- btncalendar.png
+- btncalculator.png
+- btnfiltercancel.png
+- sortasc.png
+- sortdesc.png
+- dbnavpost.png (modified Text-x-generic-apply.svg by Ondrej Pokorny)
+- dbnavedit.png (modified Edit-metadata.svg by Ondrej Pokorny)
+- buttons/*
+- button/btn_ok.png (modified Text-x-generic-apply.svg by Ondrej Pokorny)
+- button/btn_yes.png (modified Text-x-generic-apply.svg by Ondrej Pokorny)
+- button/btn_cancel.png (modified Process-stop.svg by Ondrej Pokorny)
+- wince/wincedialog_cancel.png
+- dock/lcl_dock_to_page.png
+- dock/lcl_dock_to_bottom.png (modified format-indent-less.png by Ondrej Pokorny)
+- dock/lcl_dock_to_left.png (modified format-indent-less.png by Ondrej Pokorny)
+- dock/lcl_dock_to_right.png (modified format-indent-less.png by Ondrej Pokorny)
+- dock/lcl_dock_to_top.png (modified format-indent-less.png by Ondrej Pokorny)
+
+
+Public domain cursors (common property, see e.g. https://commons.wikimedia.org/wiki/File:Cursor_Hand.png)
+- cursors/*
+
+
+LCL license (created for LCL)
+- wince/wincedialog_ok.PNG
+- btncalcmin.xpm
+- btncalcplus.xpm
+- dbgridcheckedcb.xpm
+- btncalcimg.xpm
+- dbgridgrayedcb.xpm
+- btncalcpmin.xpm
+- btncalcmul.xpm
+- dbgriduncheckedcb.xpm
+- btncalcok.xpm
+- btncalccancel.xpm
+- dock/lcl_dock_close.png
+- dock/lcl_dock_restore.png

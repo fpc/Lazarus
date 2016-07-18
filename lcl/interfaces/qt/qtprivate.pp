@@ -418,51 +418,22 @@ end;
 procedure TQtMemoStrings.Insert(Index: integer; const S: string);
 var
   W: WideString;
-
-  function WorkaroundNeeded: Boolean;
-  var
-    HaveLt: Boolean;
-    HaveGt: Boolean;
-  begin
-    HaveLt := System.Pos('<', S) > 0;
-    HaveGt := System.Pos('>', S) > 0;
-    Result := HaveLt or HaveGt;
-  end;
-
 begin
   if FTextChanged then InternalUpdate;
   if Index < 0 then Index := 0;
 
   {$ifdef VerboseQtMemoStrings}
-  writeln('TQtMemoStrings.Insert Index=',Index);
+  writeln('TQtMemoStrings.Insert Index=',Index,' COUNT=',FStringList.Count);
   {$endif}
 
-  if Index <= FStringList.Count then
-  begin
+  // simplified because of issue #29670
+  // allow insert invalid index like others do
+  if Index >= FStringlist.Count then
+    Index := FStringList.Add(S)
+  else
     FStringList.Insert(Index, S);
-    if (TQtTextEdit(FOwner.Handle).getBlockCount - Index <= 1) then
-    begin
-      // workaround for qt richtext parser bug. issues #17170 and #22715
-      if WorkaroundNeeded then
-      begin
-        W := GetUTF8String(S);
-        if (Index >= FStringList.Count - 1) then
-          TQtTextEdit(FOwner.Handle).appendLine(W)
-        else
-          TQtTextEdit(FOwner.Handle).insertLine(Index, W);
-      end else
-      begin
-        // append is much faster in case when we add strings
-        W := S;
-        ExternalUpdate(W, False, False);
-        FTextChanged := False;
-      end;
-    end else
-    begin
-      W := GetUTF8String(S);
-      TQtTextEdit(FOwner.Handle).insertLine(Index, W);
-    end;
-  end;
+  W := GetUTF8String(S);
+  TQtTextEdit(FOwner.Handle).insertLine(Index, W);
 end;
 
 procedure TQtMemoStrings.LoadFromFile(const FileName: string);

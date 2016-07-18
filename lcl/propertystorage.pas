@@ -107,6 +107,10 @@ Type
 
   { TCustomPropertyStorage }
 
+  TPropertyStorageSaveExceptionEvent = procedure(Sender: TObject;
+                                         const ExClassName: String;
+                                         const ExMessage: String) of object;
+
   TCustomPropertyStorage = Class (TComponent)
   private
     FOnRestoringProperties: TNotifyEvent;
@@ -117,6 +121,7 @@ Type
     FSaved: Boolean;
     FOnSaveProperties: TNotifyEvent;
     FOnRestoreProperties: TNotifyEvent;
+    FOnSaveException:TPropertyStorageSaveExceptionEvent;
     procedure AddLink(ALink: TPropertyStorageLink);
     procedure RemoveLink(ALink: TPropertyStorageLink);
     procedure NotifyLinks(Operation: TPlacementOperation);
@@ -165,6 +170,7 @@ Type
     property OnSaveProperties: TNotifyEvent read FOnSaveProperties write FOnSaveProperties;
     property OnRestoringProperties: TNotifyEvent read FOnRestoringProperties write FOnRestoringProperties;
     property OnRestoreProperties: TNotifyEvent read FOnRestoreProperties write FOnRestoreProperties;
+    property OnSaveException: TPropertyStorageSaveExceptionEvent read FOnSaveException write FOnSaveException;
   end;
   
 implementation
@@ -526,16 +532,24 @@ begin
     Try
       if Assigned(FOnSavingProperties) then
         FOnSavingProperties(Self);
-      SaveProperties;
-      FStoredValues.SaveValues;
-      NotifyLinks(poSave);
-      if Assigned(FOnSaveProperties) then
-        FOnSaveProperties(Self);
-      FSaved := True;
+      try
+        SaveProperties;
+        FStoredValues.SaveValues;
+        NotifyLinks(poSave);
+        if Assigned(FOnSaveProperties) then
+          FOnSaveProperties(Self);
+        FSaved := True;
+      except
+        on E: Exception do
+        begin
+          if Assigned(FOnSaveException) then
+            FOnSaveException(Self, E.ClassName, E.Message);
+        end;
+      end;
     Finally
       FreeStorage;
     end;
-    end;
+  end;
 end;
 
 procedure TCustomPropertyStorage.Restore;
@@ -573,13 +587,7 @@ begin
           Section := RootSection;
           OnWriteString := @DoWriteString;
           OnEraseSection := @DoEraseSections;
-          try
-            StoreObjectsProps(Owner,AStoredList);
-          except
-            // ignore any exceptions
-            // ToDo: Why?
-            // ToDo: warn if unable to write file
-          end;
+          StoreObjectsProps(Owner,AStoredList);
         finally
           Free;
         end;

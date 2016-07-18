@@ -1,21 +1,22 @@
-{ This file was automatically created by Lazarus. do not edit!
+{ This file was automatically created by Lazarus. Do not edit!
   This source is only used to compile and install the package.
  }
 
-unit lazplotfunction; 
+unit lazplotfunction;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-regplotpanel, exprplotpanel, plotpanel, LazarusPackageIntf;
+  regplotpanel, exprplotpanel, plotpanel, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('regplotpanel', @regplotpanel.Register); 
-end; 
+  RegisterUnit('regplotpanel', @regplotpanel.Register);
+end;
 
 initialization
-  RegisterPackage('lazplotfunction', @Register); 
+  RegisterPackage('lazplotfunction', @Register);
 end.

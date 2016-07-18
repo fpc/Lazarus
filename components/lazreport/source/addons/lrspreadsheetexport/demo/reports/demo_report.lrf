@@ -7,7 +7,7 @@
     <KeyWords Value=""/>
     <Comments Value=""/>
     <ReportCreateDate Value="2015-08-03 16:39:16"/>
-    <ReportLastChange Value="2015-08-06 10:43:35"/>
+    <ReportLastChange Value="2016-02-10 10:30:44"/>
     <ReportVersionBuild Value=""/>
     <ReportVersionMajor Value=""/>
     <ReportVersionMinor Value=""/>
@@ -243,7 +243,7 @@
             <LineSpacing Value="2"/>
           </Data>
           <Tag Value=""/>
-          <FURLInfo Value=""/>
+          <FURLInfo Value="http://www.lazarus-ide.org/"/>
           <Font>
             <Name Value="helvetica [urw]"/>
             <Size Value="10"/>

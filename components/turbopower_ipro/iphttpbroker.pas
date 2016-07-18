@@ -83,8 +83,10 @@ begin
   FDocumment := TMemoryStream.Create;
   HandledProtocols.Add('HTTP');
   FClient.ResponseHeaders.NameValueSeparator := ':';
+{$IF FPC_FULLVERSION > 30000}
   FClient.AllowRedirect := True;
   FClient.MaxRedirects := High(Byte);
+{$ENDIF}
 end;
 
 destructor TIpHttpDataProvider.Destroy;
@@ -126,8 +128,8 @@ begin
     IpParseURL(AUrl, VAddrRec);
     FDocumment.Clear;
     FClient.Get(AUrl, FDocumment);
-    Result := (FClient.ResponseStatusCode = 200) or
-      FClient.IsRedirect(FClient.ResponseStatusCode);
+    Result := (FClient.ResponseStatusCode = 200)
+{$IF FPC_FULLVERSION > 30000}or FClient.IsRedirect(FClient.ResponseStatusCode){$ENDIF};
     if Result then
     begin
       FContentType := FClient.ResponseHeaders.Values['Content-Type'];

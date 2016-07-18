@@ -336,11 +336,13 @@ begin
       FOnModalBegin(Self);
     FApplicationHandlers[ahtModalBegin].CallNotifyEvents(Self);
   end;
+  RemoveStayOnTop(True);
 end;
 
 procedure TApplication.ModalFinished;
 begin
   dec(FModalLevel);
+  RestoreStayOnTop(True);
   if (FModalLevel = 0) then
   begin
     if Assigned(FOnModalEnd) then
@@ -1313,6 +1315,7 @@ begin
     Exit;
   if Screen = nil then
     Exit;
+  Inc(FRemoveStayOnTopCounter);
   for i := 0 to Screen.CustomFormCount - 1 do
   begin
     AForm := Screen.CustomForms[i];
@@ -1335,7 +1338,8 @@ var
 begin
   if WidgetSet.AppRestoreStayOnTopFlags(ASystemTopAlso) then
     Exit;
-  if FRestoreStayOnTop <> nil then
+  Dec(FRemoveStayOnTopCounter);
+  if (FRestoreStayOnTop <> nil) and (FRemoveStayOnTopCounter = 0) then
     for i := FRestoreStayOnTop.Count - 1 downto 0 do
     begin
       TCustomForm(FRestoreStayOnTop[i]).FormStyle := fsStayOnTop;
@@ -1409,6 +1413,18 @@ begin
 end;
 
 procedure TApplication.Deactivate(Data: PtrInt);
+  procedure HideHintWindows;
+  var
+    I: Integer;
+    Form: TCustomForm;
+  begin
+    for I := Screen.CustomFormCount-1 downto 0 do
+    begin
+      Form := Screen.CustomForms[I];
+      if Form.Visible and (Form is THintWindow) then
+        Form.Hide;
+    end;
+  end;
 begin
   if (AppDestroying in FFlags) or (not (AppActive in FFlags)) then Exit;
 
@@ -1419,6 +1435,7 @@ begin
   begin
     Exclude(FFlags, AppActive);
     NotifyDeactivateHandler;
+    HideHintWindows;
   end;
 end;
 
@@ -1548,17 +1565,17 @@ begin
     try
       if ExceptionDialog=aedOkMessageBox then
       begin
-        MsgResult := mrOk;
-        MessageBox(PChar(msg), PChar(GetTitle), MB_OK + MB_ICONERROR);
+        MsgResult:=PromptUser(GetTitle, msg,
+          idDialogError, [idButtonOk], 0, idButtonCancel);
       end else
-        MsgResult:=MessageBox(PChar(
-          Format(rsPressOkToIgnoreAndRiskDataCorruptionPressCancelToK,
-                 [Msg, LineEnding+LineEnding, LineEnding])),
-          PChar(GetTitle), MB_OKCANCEL + MB_ICONERROR);
+        MsgResult:=PromptUser(GetTitle,
+          Format(rsPressOkToIgnoreAndRiskDataCorruptionPressAbortToK,
+                 [Msg, LineEnding+LineEnding, LineEnding]),
+          idDialogError, [idButtonOk, idButtonAbort], 0, idButtonCancel);
     finally
       EnableIdleHandler;
     end;
-    if MsgResult<>mrOk then
+    if MsgResult=idButtonAbort then
     begin
       Include(FFlags, AppNoExceptionMessages);
       HaltingProgram := True;
@@ -1985,9 +2002,15 @@ end;
 procedure TApplication.IntfSettingsChange;
 begin
   if FUpdateFormatSettings then
-  {$ifdef win32}
-    GetFormatSettings
+  begin
+  {$ifdef windows}
+    {$ifdef DisableUTF8RTL}
+      GetFormatSettings;
+    {$else}
+      GetFormatSettingsUTF8;
+    {$endif}
   {$endif};
+  end;
 end;
 
 procedure TApplication.IntfThemeOptionChange(AThemeServices: TThemeServices;

@@ -195,12 +195,13 @@ procedure TOpenLoadedPackagesDlg.UpdatePackageList;
 
   procedure UpdateOnePackage(aPkg: TLazPackage);
   var
-    Data: TStringArray;
+    Data: TListViewDataItem;
   begin
-    SetLength(Data, 3);
-    Data[0] := aPkg.Name;
-    Data[1] := aPkg.Version.AsString;
-    Data[2] := PkgStateToString(aPkg);
+    Data.Data := nil;
+    SetLength(Data.StringArray, 3);
+    Data.StringArray[0] := aPkg.Name;
+    Data.StringArray[1] := aPkg.Version.AsString;
+    Data.StringArray[2] := PkgStateToString(aPkg);
     FilterEdit.Items.Add(Data);
   end;
 
@@ -211,22 +212,7 @@ begin
   for i:=0 to PackageGraph.Count-1 do
     UpdateOnePackage(PackageGraph[i]);
   FilterEdit.InvalidateFilter;
-  //PkgListView.BeginUpdate;
-  //PkgListView.AlphaSort;
-  //PkgListView.EndUpdate;
 end;
-
-//if PkgListView.Items.Count>i then begin
-//  CurListItem:=PkgListView.Items[i];
-//  CurListItem.SubItems[0]:=CurPkg.Version.AsString;
-//  CurListItem.SubItems[1]:=PkgStateToString(CurPkg);
-//end else begin
-  //CurListItem:=PkgListView.Items.Add;
-  //CurListItem.SubItems.Add(CurPkg.Version.AsString);
-  //CurListItem.SubItems.Add(PkgStateToString(CurPkg));
-//end;
-//CurListItem.Caption:=CurPkg.Name;
-
 
 end.
 

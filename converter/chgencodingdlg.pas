@@ -183,43 +183,53 @@ var
   Item: PStringToStringTreeItem;
   Filename: String;
   HasChanged: boolean;
-  li: TListItem;
+  li, Cur: TListItem;
+  OldCount, i: Integer;
 begin
   HasChanged:=False;
   NewEncoding:=NormalizeEncoding(NewEncodingComboBox.Text);
   PreviewListView.BeginUpdate;
-  PreviewListView.Items.Clear;
+  OldCount := PreviewListView.Items.Count;
   Node:=FFiles.Tree.FindLowest;
   while Node<>nil do begin
     Item:=PStringToStringTreeItem(Node.Data);
     Filename:=Item^.Name;
     Encoding:=Item^.Value;
-    DebugLn(['TChgEncodingDialog.ApplyButtonClick Filename=',Filename,' Encoding=',Encoding]);
-    Buf:=CodeToolBoss.LoadFile(Filename,true,false);
-    if (Buf<>nil) and (not Buf.ReadOnly) then begin
-      OldEncoding:=Buf.DiskEncoding;
-      SrcEdit:=SourceEditorManagerIntf.SourceEditorIntfWithFilename(Filename);
-      HasChanged:=true;
-      if SrcEdit<>nil then begin
-        DebugLn(['TChgEncodingDialog.ApplyButtonClick changing in source editor: ',Filename]);
-        Buf.DiskEncoding:=NewEncoding;
-        SrcEdit.Modified:=true;
-      end else begin
-        DebugLn(['TChgEncodingDialog.ApplyButtonClick changing on disk: ',Filename]);
-//        Buf:=CodeToolBoss.LoadFile(Filename,true,false);
-        Buf.DiskEncoding:=NewEncoding;
-        HasChanged:=Buf.Save;
-        if not HasChanged then
-          Buf.DiskEncoding:=OldEncoding;
+
+    Cur := PreviewListView.Items.FindCaption(0, Filename, False, True, False);
+    if Assigned(Cur) and Cur.Checked then
+    begin
+      DebugLn(['TChgEncodingDialog.ApplyButtonClick Filename=',Filename,' Encoding=',Encoding]);
+      Buf:=CodeToolBoss.LoadFile(Filename,true,false);
+      if (Buf<>nil) and (not Buf.ReadOnly) then begin
+        OldEncoding:=Buf.DiskEncoding;
+        SrcEdit:=SourceEditorManagerIntf.SourceEditorIntfWithFilename(Filename);
+        HasChanged:=true;
+        if SrcEdit<>nil then begin
+          DebugLn(['TChgEncodingDialog.ApplyButtonClick changing in source editor: ',Filename]);
+          Buf.DiskEncoding:=NewEncoding;
+          SrcEdit.Modified:=true;
+        end else begin
+          DebugLn(['TChgEncodingDialog.ApplyButtonClick changing on disk: ',Filename]);
+  //        Buf:=CodeToolBoss.LoadFile(Filename,true,false);
+          Buf.DiskEncoding:=NewEncoding;
+          HasChanged:=Buf.Save;
+          if not HasChanged then
+            Buf.DiskEncoding:=OldEncoding;
+        end;
       end;
-    end;
-    if not HasChanged then begin
-      li:=PreviewListView.Items.Add;
-      li.Caption:=Filename;
-      li.SubItems.Add(Encoding);
+      if not HasChanged then begin
+        li:=PreviewListView.Items.Add;
+        li.Caption:=Filename;
+        li.SubItems.Add(Encoding);
+        li.Checked := True;
+      end;
+
     end;
     Node:=FFiles.Tree.FindSuccessor(Node);
   end;
+  // Now delete all old nodes in PreviewListView
+  for i := OldCount - 1 downto 0 do PreviewListView.Items.Delete(i);
   PreviewListView.EndUpdate;
   PreviewGroupBox.Caption:=Format(lisEncodingNumberOfFilesFailed, [PreviewListView.Items.Count]);
 end;
@@ -376,6 +386,7 @@ begin
       li:=PreviewListView.Items.Add;
       li.Caption:=Filename;
       li.SubItems.Add(Encoding);
+      li.Checked := True;
       Node:=FFiles.Tree.FindSuccessor(Node);
     end;
     PreviewListView.EndUpdate;

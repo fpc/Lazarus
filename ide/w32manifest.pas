@@ -63,8 +63,8 @@ type
   public
     constructor Create; override;
     function UpdateResources(AResources: TAbstractProjectResources; const {%H-}MainFilename: string): Boolean; override;
-    procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; Path: String); override;
-    procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; Path: String); override;
+    procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; const Path: String); override;
+    procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; const Path: String); override;
 
     property UseManifest: boolean read FUseManifest write SetUseManifest;
     property DpiAware: boolean read FIsDpiaAware write SetDpiAware;
@@ -183,7 +183,8 @@ begin
   end;
 end;
 
-procedure TProjectXPManifest.WriteToProjectFile(AConfig: TObject; Path: String);
+procedure TProjectXPManifest.WriteToProjectFile(AConfig: TObject;
+  const Path: String);
 begin
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/UseXPManifest/Value', UseManifest, False);
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/DpiAware/Value', DpiAware, False);
@@ -191,7 +192,8 @@ begin
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/UIAccess/Value', UIAccess, False);
 end;
 
-procedure TProjectXPManifest.ReadFromProjectFile(AConfig: TObject; Path: String);
+procedure TProjectXPManifest.ReadFromProjectFile(AConfig: TObject;
+  const Path: String);
 begin
   UseManifest := TXMLConfig(AConfig).GetValue(Path+'General/UseXPManifest/Value', False);
   DpiAware := TXMLConfig(AConfig).GetValue(Path+'General/XPManifest/DpiAware/Value', False);

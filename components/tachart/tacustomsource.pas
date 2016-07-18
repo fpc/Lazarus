@@ -71,6 +71,7 @@ type
 type
   EBufferError = class(EChartError);
   EEditableSourceRequired = class(EChartError);
+  EXCountError = class(EChartError);
   EYCountError = class(EChartError);
 
   TChartValueText = record
@@ -86,8 +87,12 @@ type
     X, Y: Double;
     Color: TChartColor;
     Text: String;
+    XList: TDoubleDynArray;
     YList: TDoubleDynArray;
+    function GetX(AIndex: Integer): Double;
     function GetY(AIndex: Integer): Double;
+    procedure SetX(AIndex: Integer; AValue: Double);
+    procedure SetX(AValue: Double);
     procedure SetY(AIndex: Integer; AValue: Double);
     procedure SetY(AValue: Double);
     procedure MultiplyY(ACoeff: Double);
@@ -115,6 +120,21 @@ type
     function ToImage(AX: Double): Integer; inline;
   end;
 
+  TBasicChartSource = class(TComponent)
+  strict private
+    FBroadcaster: TBroadcaster;
+    FUpdateCount: Integer;
+  strict protected
+    procedure Notify;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure BeginUpdate; virtual;
+    procedure EndUpdate; virtual;
+    function IsUpdating: Boolean; inline;
+    property Broadcaster: TBroadcaster read FBroadcaster;
+  end;
+
   TCustomChartSource = class;
 
   TCustomChartSourceEnumerator = class
@@ -129,34 +149,30 @@ type
     property Current: PChartDataItem read GetCurrent;
   end;
 
-  TCustomChartSource = class(TComponent)
+  TCustomChartSource = class(TBasicChartSource)
   strict private
-    FBroadcaster: TBroadcaster;
-    FUpdateCount: Integer;
-
     procedure SortValuesInRange(
       var AValues: TChartValueTextArray; AStart, AEnd: Integer);
   strict protected
     FExtent: TDoubleRect;
     FExtentIsValid: Boolean;
+    FUpdateCount: Integer;
     FValuesTotal: Double;
     FValuesTotalIsValid: Boolean;
+    FXCount: Cardinal;
     FYCount: Cardinal;
 
     function GetCount: Integer; virtual; abstract;
     function GetItem(AIndex: Integer): PChartDataItem; virtual; abstract;
     procedure InvalidateCaches;
-    procedure Notify;
+    procedure SetXCount(AValue: Cardinal); virtual; abstract;
     procedure SetYCount(AValue: Cardinal); virtual; abstract;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   public
     procedure AfterDraw; virtual;
     procedure BeforeDraw; virtual;
-    procedure BeginUpdate;
-    procedure EndUpdate; virtual;
-    function IsUpdating: Boolean; inline;
+    procedure EndUpdate; override;
   public
     class procedure CheckFormat(const AFormat: String);
     function Extent: TDoubleRect; virtual;
@@ -172,12 +188,12 @@ type
     procedure ValuesInRange(
       AParams: TValuesInRangeParams; var AValues: TChartValueTextArray); virtual;
     function ValuesTotal: Double; virtual;
-    function XOfMax: Double;
-    function XOfMin: Double;
+    function XOfMax(AIndex: Integer = 0): Double;
+    function XOfMin(AIndex: Integer = 0): Double;
 
-    property Broadcaster: TBroadcaster read FBroadcaster;
     property Count: Integer read GetCount;
     property Item[AIndex: Integer]: PChartDataItem read GetItem; default;
+    property XCount: Cardinal read FXCount write SetXCount default 1;
     property YCount: Cardinal read FYCount write SetYCount default 1;
   end;
 
@@ -392,6 +408,15 @@ end;
 
 { TChartDataItem }
 
+function TChartDataItem.GetX(AIndex: Integer): Double;
+begin
+  AIndex := EnsureRange(AIndex, 0, Length(XList));
+  if AIndex = 0 then
+    Result := X
+  else
+    Result := XList[AIndex - 1];
+end;
+
 function TChartDataItem.GetY(AIndex: Integer): Double;
 begin
   AIndex := EnsureRange(AIndex, 0, Length(YList));
@@ -416,6 +441,23 @@ begin
   Result.Y := Y;
 end;
 
+procedure TChartDataItem.SetX(AValue: Double);
+var
+  i: Integer;
+begin
+  X := AValue;
+  for i := 0 to High(XList) do
+    XList[i] := AValue;
+end;
+
+procedure TChartDataItem.SetX(AIndex: Integer; AValue: Double);
+begin
+  if AIndex = 0 then
+    X := AValue
+  else
+    XList[AIndex - 1] := AValue;
+end;
+
 procedure TChartDataItem.SetY(AValue: Double);
 var
   i: Integer;
@@ -432,6 +474,44 @@ begin
   else
     YList[AIndex - 1] := AValue;
 end;
+
+{ TBaisChartSource }
+
+constructor TBasicChartSource.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FBroadcaster := TBroadcaster.Create;
+end;
+
+destructor TBasicChartSource.Destroy;
+begin
+  FreeAndNil(FBroadcaster);
+  inherited Destroy;
+end;
+
+procedure TBasicChartSource.BeginUpdate;
+begin
+  Inc(FUpdateCount);
+end;
+
+procedure TBasicChartSource.EndUpdate;
+begin
+  Dec(FUpdateCount);
+  if FUpdateCount > 0 then exit;
+  Notify;
+end;
+
+function TBasicChartSource.IsUpdating: Boolean; inline;
+begin
+  Result := FUpdateCount > 0;
+end;
+
+procedure TBasicChartSource.Notify;
+begin
+  if not IsUpdating then
+    FBroadcaster.Broadcast(Self);
+end;
+
 
 { TChartSourceBuffer }
 
@@ -580,11 +660,6 @@ begin
   // empty
 end;
 
-procedure TCustomChartSource.BeginUpdate;
-begin
-  Inc(FUpdateCount);
-end;
-
 class procedure TCustomChartSource.CheckFormat(const AFormat: String);
 begin
   Format(AFormat, [0.0, 0.0, '', 0.0, 0.0]);
@@ -593,14 +668,8 @@ end;
 constructor TCustomChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FBroadcaster := TBroadcaster.Create;
+  FXCount := 1;
   FYCount := 1;
-end;
-
-destructor TCustomChartSource.Destroy;
-begin
-  FreeAndNil(FBroadcaster);
-  inherited;
 end;
 
 procedure TCustomChartSource.EndUpdate;
@@ -650,9 +719,12 @@ var
 begin
   Result := Extent;
   for i := 0 to Count - 1 do
-    with Item[i]^ do
+    with Item[i]^ do begin
+      for j := 0 to High(XList) do
+        UpdateMinMax(XList[j], Result.a.X, Result.b.X);
       for j := 0 to High(YList) do
         UpdateMinMax(YList[j], Result.a.Y, Result.b.Y);
+    end;
 end;
 
 // ALB -> leftmost item where X >= AXMin, or Count if no such item
@@ -743,17 +815,6 @@ end;
 function TCustomChartSource.IsSorted: Boolean;
 begin
   Result := false;
-end;
-
-function TCustomChartSource.IsUpdating: Boolean; inline;
-begin
-  Result := FUpdateCount > 0;
-end;
-
-procedure TCustomChartSource.Notify;
-begin
-  if not IsUpdating then
-    FBroadcaster.Broadcast(Self);
 end;
 
 procedure TCustomChartSource.SortValuesInRange(
@@ -918,23 +979,23 @@ begin
   Result := FValuesTotal;
 end;
 
-function TCustomChartSource.XOfMax: Double;
+function TCustomChartSource.XOfMax(AIndex: Integer = 0): Double;
 var
   i: Integer;
 begin
   for i := 0 to Count - 1 do
     with Item[i]^ do
-      if Y = Extent.b.Y then exit(X);
+      if Y = Extent.b.Y then exit(GetX(AIndex));
   Result := 0.0;
 end;
 
-function TCustomChartSource.XOfMin: Double;
+function TCustomChartSource.XOfMin(AIndex: Integer = 0): Double;
 var
   i: Integer;
 begin
   for i := 0 to Count - 1 do
     with Item[i]^ do
-      if Y = Extent.a.Y then exit(X);
+      if Y = Extent.a.Y then exit(GetX(AIndex));
   Result := 0.0;
 end;
 

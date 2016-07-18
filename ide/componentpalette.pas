@@ -957,7 +957,7 @@ begin
     // remove every page in the PageControl without a visible page
     for i:=FPageControl.PageCount-1 downto 0 do
       RemoveUnneededPage(FPageControl.Pages[i]);
-    Application.ProcessMessages; // PageIndex of tabs are not updated without this.
+
     {$IFDEF VerboseComponentPalette}
     DebugLn(['TComponentPalette.UpdateNoteBookButtons: FPageCount after=', FPageControl.PageCount,
     ' PageCount=', Pages.count]);

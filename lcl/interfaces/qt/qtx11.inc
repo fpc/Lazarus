@@ -1,12 +1,20 @@
 {%MainUnit qtint.pp}
 
+function IsWayland: Boolean;
+begin
+  Result := GetEnvironmentVariable('XDG_SESSION_TYPE') = 'wayland';
+end;
+
 function IsOldKDEInstallation: Boolean;
 var
   Display: PDisplay;
   i: longint;
 begin
+  if IsWayland then
+    exit(False);
   //if we are under KDE4, it's already recent one.
-  Result := not ((GetEnvironmentVariable('KDE_SESSION_VERSION') = '4')
+  Result := not ((GetEnvironmentVariable('KDE_SESSION_VERSION') = '4') or
+    (GetEnvironmentVariable('KDE_SESSION_VERSION') = '5')
     or QX11Info_isCompositingManagerRunning);
   if Result then
     exit;
@@ -20,6 +28,14 @@ begin
   //Fedora marks XOrg 7.XX as 1.XX, so we have to check that too.
   Result := ((i >= 50000000) and (i <= 70040000)) or
     ((i > 0) and (i <= 10400000));
+end;
+
+function GetKdeSessionVersion: integer;
+var
+  S: String;
+begin
+  S := GetEnvironmentVariable('KDE_SESSION_VERSION');
+  Result := StrToIntDef(S, -1);
 end;
 
 function IsCurrentDesktop(AWidget: QWidgetH): Boolean;
@@ -111,7 +127,7 @@ begin
 	      @XClient) <> Success;
 end;
 
-function X11GetActivewindow: QWidgetH;
+function X11GetActiveWindow: QWidgetH;
 var
   Display: PDisplay;
   RootWin: TWindow;
@@ -348,4 +364,332 @@ begin
       Result := (n and $02) = 2;
   end;
 end;
+
+procedure MapX11Window(AWinID: LongWord);
+begin
+  XMapWindow(QX11Info_display(), TWindow(AWinID));
+end;
+
+{$IFDEF QtUseAccurateFrame}
+
+function GetX11WindowRealized(AWinID: LongWord): boolean;
+var
+  d: PDisplay;
+  AXWinAttr: TXWindowAttributes;
+begin
+  Result := False;
+  d := QX11Info_display;
+  XGetWindowAttributes(d, TWindow(AWinID), @AXWinAttr);
+  Result := (AXWinAttr.map_installed > 0) and (AXWinAttr.map_state = 2);
+end;
+
+function GetX11WindowAttributes(AWinID: LongWord; out ALeft, ATop, AWidth, AHeight, ABorder: integer): boolean;
+var
+  d: PDisplay;
+  Attr: TXWindowAttributes;
+begin
+  Result := False;
+  d := QX11Info_display;
+  ALeft := MAXINT;
+  ATop := MAXINT;
+  AWidth := MAXINT;
+  AHeight := MAXINT;
+  ABorder := MAXINT;
+  XGetWindowAttributes(d, TWindow(AWinID), @Attr);
+  Result := (Attr.map_installed > 0) and (Attr.map_state = 2);
+  if Result then
+  begin
+    ALeft := Attr.x;
+    ATop := Attr.y;
+    AWidth := Attr.width;
+    AHeight := Attr.height;
+    ABorder := Attr.border_width;
+  end;
+end;
+
+function GetX11WindowPos(AWinID: LongWord; out ALeft, ATop: integer): boolean;
+var
+  D: PDisplay;
+  ARootWindow, AChildWin: TWindow;
+  AXWinAttr: TXWindowAttributes;
+begin
+  Result := False;
+  ALeft := 0;
+  ATop := 0;
+  D := QX11Info_display;
+  if D = nil then
+    exit;
+  ARootWindow := XRootWindow(D, QX11Info_appScreen);
+  XTranslateCoordinates(d, TWindow(AWinID), ARootWindow, 0, 0, @ALeft, @ATop, @AChildWin);
+  XGetWindowAttributes(d, TWindow(AWinID), @AXWinAttr);
+  ALeft := ALeft - AXWinAttr.x;
+  ATop := ATop - AXWinAttr.y;
+  Result := (AXWinAttr.map_installed > 0) and (AXWinAttr.map_state = 2);
+end;
+
+function SetX11WindowPos(AWinID: LongWord; const ALeft, ATop: integer): boolean;
+var
+  D: PDisplay;
+  ARootWindow, AChildWin: TWindow;
+  AResult: integer;
+begin
+  Result := False;
+  D := QX11Info_display;
+  if D = nil then
+    exit;
+  Result := XMoveWindow(d, AWinID, ALeft, ATop) <> BadWindow;
+end;
+
+var
+  InternalExtentsAtom: TAtom = 0; {find extents atom}
+  InternalExtentsCounter: Integer = 0; {counter for bad wm, eg for blackbox}
+
+function propNotifyFrameExtents({%H-}ADisplay: PDisplay; AEvent:PXEvent;
+  AData : TXPointer): TBoolResult;cdecl;
+var
+  AWin: PLongWord;
+begin
+  Result := False;
+  AWin := PLongWord(AData);
+  if (AEvent^.xany.window = AWin^) then
+    inc(InternalExtentsCounter);
+  if (AEvent^.xany._type = PropertyNotify) and (AEvent^.xany.window = AWin^) then
+  begin
+    if (AEvent^.xproperty.atom = InternalExtentsAtom) then
+      Result := True;
+  end;
+  if InternalExtentsCounter > 50 then
+  begin
+    Result := True;
+    InternalExtentsCounter := -BadImplementation;
+  end;
+end;
+
+function AskX11_NET_REQUEST_FRAME_EXTENTS(AWinID: LongWord; out AMargins: TRect): boolean;
+var
+  AAtom: TAtom;
+  AEvent: TXEvent;
+  d: PDisplay;
+  AScreen: Integer;
+  ARootWindow: TWindow;
+  ReturnEvent: TXEvent;
+begin
+  Result := False;
+  AMargins := Rect(0, 0, 0, 0);
+  d := QX11Info_display;
+
+  AAtom := XInternAtom(d, '_NET_REQUEST_FRAME_EXTENTS', True);
+
+  if AAtom = None then
+    AAtom := XInternAtom(d, '_NET_REQUEST_FRAME_EXTENTS', False);
+
+  if AAtom > 0 then
+  begin
+    if InternalExtentsAtom = 0 then
+      InternalExtentsAtom := XInternAtom(d,'_NET_FRAME_EXTENTS', True);
+    if InternalExtentsAtom > 0 then
+    begin
+      AScreen := QX11Info_appScreen();
+      ARootWindow := XRootWindow(d, AScreen);
+      AEvent._type := ClientMessage;
+      AEvent.xclient._type := ClientMessage;
+      AEvent.xclient.message_type := AAtom; // extents_request_atom;
+      AEvent.xclient.display := d;
+      AEvent.xclient.window := AWinID;
+      AEvent.xclient.format := 32;
+      AEvent.xclient.data.l[0] := 0;
+      AEvent.xclient.data.l[1] := 0;
+      AEvent.xclient.data.l[2] := 0;
+      AEvent.xclient.data.l[3] := 0;
+      AEvent.xclient.data.l[4] := 0;
+
+
+      XSendEvent (d, ARootWindow, False, SubstructureRedirectMask or
+        SubstructureNotifyMask, @AEvent);
+
+      InternalExtentsCounter := 0;
+
+      if XIfEvent(d, @ReturnEvent,
+        @propNotifyFrameExtents, TXPointer(@AWinID)) = Success then
+      begin
+        Result := GetX11RectForAtom(AWinID, '_NET_FRAME_EXTENTS', AMargins);
+        if not Result and (InternalExtentsCounter = -BadImplementation) then
+        begin
+          DebugLn('QtLCL WARNING: "'+GetWindowManager+'" wm bad implementation of _NET_REQUEST_FRAME_EXTENTS.');
+          Result := True;
+          AMargins := Rect(2, 27, 2, 2);
+        end;
+      end;
+    end else
+    begin
+      DebugLn('QtLCL error: "'+GetWindowManager+'" wm does not support _NET_FRAME_EXTENTS (2).');
+    end;
+  end else
+  begin
+    DebugLn('QtLCL error: "'+GetWindowManager+'" wm does not support _NET_REQUEST_FRAME_EXTENTS.');
+  end;
+end;
+
+function GetX11WindowGeometry(AWinID: LongWord; out ARect: TRect): boolean;
+var
+  d: PDisplay;
+  ARootWin, X11Window: TWindow;
+  ABorder, ADepth: integer;
+begin
+  Result := False;
+  d := QX11Info_display();
+  with ARect do
+  begin
+    Left := 0;
+    Top := 0;
+    Right := 0;
+    Bottom := 0;
+  end;
+  if d = nil then
+    exit;
+
+  if AWinID = 0 then
+  begin
+    X11Window := XRootWindow(d, QX11Info_appScreen);
+  end else
+    X11Window := TWindow(AWinID);
+  if X11Window = 0 then
+    exit;
+  Result := XGetGeometry(d, X11Window, @ARootWin, @ARect.Left, @ARect.Top, @ARect.Right, @ARect.Bottom, @ABorder, @ADepth) = 1;
+end;
+
+{$IF FPC_FULLVERSION <= 20602}
+type
+  PUint32 = PDWord;
+{$ENDIF}
+
+function GetX11RectForAtom(AWinID: LongWord; const AAtomName: string; out ARect: TRect): boolean;
+var
+  d: PDisplay;
+  X11Window: TWindow;
+  WMAtom: TAtom;
+  typeReturned: TAtom;
+  formatReturned: Integer;
+  nitemsReturned: PtrInt;
+  unused: PtrInt;
+  data: Pointer;
+  ANewData: PUInt32;
+begin
+  Result := False;
+  d := QX11Info_display();
+  with ARect do
+  begin
+    Left := 0;
+    Top := 0;
+    Right := 0;
+    Bottom := 0;
+  end;
+  if d = nil then
+    exit;
+
+  if AWinID = 0 then
+  begin
+    X11Window := XRootWindow(d, QX11Info_appScreen);
+  end else
+    X11Window := TWindow(AWinID);
+  if X11Window = 0 then
+    exit;
+
+  {_KDE_NET_WM_SHADOW, find others}
+  WMAtom := XInternAtom(d,PChar(AAtomName), True);
+  if WMAtom > 0 then
+  begin
+    data := nil;
+    if XGetWindowProperty(d, X11Window, WMAtom, 0, 4, False, XA_CARDINAL,
+      @typeReturned, @formatReturned, @nitemsReturned,
+      @unused, @data) = Success then
+    begin
+      if (typeReturned = XA_CARDINAL) and (formatReturned = 32) and
+        (Data <> nil) then
+      begin
+        ANewData := Data;
+        while nitemsReturned > 0 do
+        begin
+          with ARect do
+          begin
+            if Left = 0 then
+              Left := Integer(ANewData^)
+            else
+            if Right = 0 then
+              Right := Integer(ANewData^)
+            else
+            if Top = 0 then
+              Top := Integer(ANewData^)
+            else
+            if Bottom = 0 then
+              Bottom := Integer(ANewData^);
+          end;
+          dec(nItemsReturned);
+          if Result or (nItemsReturned = 0) then
+            break;
+          inc(ANewData);
+        end;
+        Result := True;
+        if nitemsReturned > 0 then
+          XFree(Data);
+        Data := nil;
+      end;
+    end;
+  end else
+  begin
+    DebugLn('QtLCL error: "'+GetWindowManager+'" wm does not support '+AAtomName+'.');
+  end;
+end;
+
+function GetX11SupportedAtoms(AWinID: LongWord; AList: TStrings): boolean;
+var
+  d: PDisplay;
+  ARoot: TWindow;
+  WMAtom: TAtom;
+  typeReturned: TAtom;
+  formatReturned: Integer;
+  nitemsReturned: PtrInt;
+  unused: PtrInt;
+  data: Pointer;
+  ANewData: PAtom;
+begin
+  Result := False;
+  d := QX11Info_display;
+  if d = nil then
+    exit;
+  ARoot := XRootWindow(d, QX11Info_appScreen);
+
+  WMAtom := XInternAtom(d, '_NET_SUPPORTED', True);
+  if WMAtom = 0 then
+  begin
+    DebugLn('ERROR : QtLCL: _NET_SUPPORTED not provided by wm ',GetWindowManager);
+    exit;
+  end;
+
+  data := nil;
+  if XGetWindowProperty(d, ARoot, WMAtom, 0, (65536 div sizeof(LongInt)), False, AnyPropertyType,
+    @typeReturned, @formatReturned, @nitemsReturned,
+    @unused, @data) = Success then
+  begin
+    if (typeReturned = XA_ATOM) and (formatReturned = 32) and
+      (Data <> nil) then
+    begin
+      ANewData := Data;
+      while nitemsReturned > 0 do
+      begin
+        AList.AddObject(XGetAtomName(d, ANewData^),TObject(ANewData^));
+        dec(nItemsReturned);
+        if Result or (nItemsReturned = 0) then
+          break;
+        inc(ANewData);
+      end;
+      Result := True;
+      if nitemsReturned > 0 then
+        XFree(Data);
+      Data := nil;
+    end;
+  end;
+end;
+
+{$ENDIF}
 

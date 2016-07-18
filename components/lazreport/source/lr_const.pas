@@ -275,6 +275,8 @@ resourcestring
   sDuplicatedObjectName = 'An object named "%s" already exists';
   sObjectNotFound = 'Object "%s" not found';
   sFileNotFound = 'File not found';
+  sNoValidFilterClassWasSupplied    = 'No valid filterclass was supplied';
+  sNoValidExportFilenameWasSupplied = 'No valid export filename was supplied';
   
   SDoc       = 'Report:';
   SBand      = 'Band:';
@@ -814,6 +816,22 @@ resourcestring
   sUseFixedFontSettings = 'Use fixed font settings';
   sScriptEditor = 'Script editor';
   sUseSyntaxHighlight = 'Use syntax highlight';
+  sReportCorruptOldKnowVersion = 'This report is corrupt, it probably needs "LRE_OLDV%d_FRF_READ"=true';
+  sReportCorruptUnknownVersion = 'This report is corrupt, frVersion=%d';
+
+//--- LR_Intrp resources ---------------------------------------------------
+  sErrLine        = 'Line';
+  sErrExpectedEnd = 'Expected ";" or "end"';
+  sErrExpectedThen  = 'Expected "then"';
+  sErrExpectedUntil = 'Expected ";" or "until"';
+  sErrExpectedDO    = 'Expected "do"';
+  sErrLabelGoto     = 'Label in goto must be a number';
+  sErrExpectedAssign          = 'Expected ":="';
+  sErrExpectedClosingBracket1  = 'Expected ")"';
+  sErrExpectedClosingBracket2  = 'Expected "]"';
+  sErrExpectedComma            ='Expected "," or ")"';
+  sErrNeedDo                   = 'Need "do" here';
+  sErrNeedTo                   = 'Need "to" here';
 
 const
   frRes = 53000;

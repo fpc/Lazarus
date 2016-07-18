@@ -123,6 +123,7 @@ type
     function  AdjustBytePosToCharacterStart(Line: integer; BytePos: integer): integer;
     function  GetFirstLineBytePos: TPoint;
     function  GetLastLineBytePos: TPoint;
+    function GetLastLineHasSelection: Boolean;
     procedure SetAutoExtend(AValue: Boolean);
     procedure SetCaret(const AValue: TSynEditCaret);
     procedure SetEnabled(const Value : Boolean);
@@ -186,6 +187,7 @@ type
     // First and Last Pos are ordered according to the text flow (LTR)
     property  FirstLineBytePos: TPoint read GetFirstLineBytePos;
     property  LastLineBytePos: TPoint read GetLastLineBytePos;
+    property  LastLineHasSelection: Boolean read GetLastLineHasSelection;
     property  InvalidateLinesMethod : TInvalidateLines write FInvalidateLinesMethod;
     property  Caret: TSynEditCaret read FCaret write SetCaret;
     property  Persistent: Boolean read FPersistent write SetPersistent;
@@ -325,6 +327,7 @@ type
     procedure IncAutoMoveOnEdit;
     procedure DecAutoMoveOnEdit;
     procedure ChangeOnTouch;
+    procedure Touch(aChangeOnTouch: Boolean = False);
 
     function WasAtLineChar(aPoint: TPoint): Boolean;
     function WasAtLineByte(aPoint: TPoint): Boolean;
@@ -1339,6 +1342,13 @@ begin
     FTouched := False;
 end;
 
+procedure TSynEditCaret.Touch(aChangeOnTouch: Boolean);
+begin
+  if aChangeOnTouch then
+    ChangeOnTouch;
+  FTouched := True;
+end;
+
 
 function TSynEditCaret.WasAtLineChar(aPoint: TPoint): Boolean;
 begin
@@ -1971,13 +1981,13 @@ var
         FLines.EditInsert(LogCaretXY.X, LogCaretXY.Y, Value);
         FInternalCaret.BytePos := FInternalCaret.BytePos + Length(Value);
       end else begin
+        FLines.EditLineBreak(LogCaretXY.X, LogCaretXY.Y);
         if (P <> Start) or (LogCaretXY.X > 1 + length(FLines[ToIdx(LogCaretXY.Y)])) then begin
           SetString(Str, Value, P - Start);
           FLines.EditInsert(LogCaretXY.X, LogCaretXY.Y, Str);
         end
         else
           Str := '';
-        FLines.EditLineBreak(LogCaretXY.X + (P - Start), LogCaretXY.Y);
         Result :=  CountLines(P);
         if Result > 1 then
           FLines.EditLinesInsert(LogCaretXY.Y + 1, Result - 1);
@@ -2299,8 +2309,11 @@ begin
   WasAvail := SelAvail;
   FForceSingleLineSelected := AValue;
 
-  if WasAvail <> SelAvail then
+  if WasAvail <> SelAvail then begin
+    FInvalidateLinesMethod(Min(FStartLinePos, FEndLinePos),
+                           Max(FStartLinePos, FEndLinePos) );
     fOnChangeList.CallNotifyEvents(self);
+  end;
 end;
 
 procedure TSynEditSelection.SetHide(const AValue: Boolean);
@@ -2349,6 +2362,11 @@ begin
     Result := StartLineBytePos
   else
     Result := EndLineBytePos;
+end;
+
+function TSynEditSelection.GetLastLineHasSelection: Boolean;
+begin
+  Result := (LastLineBytePos.x > 1) or ((FActiveSelectionMode = smLine) and FForceSingleLineSelected);
 end;
 
 procedure TSynEditSelection.SetAutoExtend(AValue: Boolean);

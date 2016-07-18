@@ -106,3 +106,4 @@ msgstr "Dépôt distant"
 #: fppkg_const.rsshowlazaruspackagemanager
 msgid "Show Lazarus Package Manager"
 msgstr "Afficher le gestionnaire de paquets Lazarus"
+

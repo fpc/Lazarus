@@ -2,8 +2,9 @@
   This source is only used to compile and install the package.
  }
 
-unit IdeInspector; 
+unit IdeInspector;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
@@ -11,11 +12,11 @@ uses
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('MainInspector', @MainInspector.Register); 
-end; 
+  RegisterUnit('MainInspector', @MainInspector.Register);
+end;
 
 initialization
-  RegisterPackage('IdeInspector', @Register); 
+  RegisterPackage('IdeInspector', @Register);
 end.

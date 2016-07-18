@@ -38,13 +38,11 @@ type
     UsesInsertPolicyComboBox: TComboBox;
     ForwardProcsKeepOrderCheckBox: TCheckBox;
     ForwardProcsInsertPolicyLabel: TLabel;
-    EventMethodSectionComboBox: TComboBox;
     UsesInsertPolicyLabel: TLabel;
     TemplateFileLabel: TLabel;
     UpdateMultiProcSignaturesCheckBox: TCheckBox;
     UpdateOtherProcSignaturesCaseCheckBox: TCheckBox;
     GroupLocalVariablesCheckBox: TCheckBox;
-    EventMethodSectionLabel: TLabel;
   private
   public
     function GetTitle: String; override;
@@ -94,20 +92,6 @@ begin
     end;
   end;
 
-  EventMethodSectionLabel.Caption:=lisEventMethodSectionLabel;
-  with EventMethodSectionComboBox do begin
-    Assert(Ord(High(TInsertClassSectionResult)) = 3,  'TCodetoolsCodeCreationOptionsFrame.Setup: High(TInsertClassSectionResult) <> 3');
-    with Items do begin
-      BeginUpdate;
-      Add(lisPrivate);
-      Add(lisProtected);
-      Add(lisEMDPublic);
-      Add(lisEMDPublished);
-      Add(dlgEnvAsk);
-      EndUpdate;
-    end;
-  end;
-
   UpdateMultiProcSignaturesCheckBox.Caption:=
     lisCTOUpdateMultipleProcedureSignatures;
   UpdateOtherProcSignaturesCaseCheckBox.Caption:=
@@ -150,7 +134,6 @@ begin
       //uipAlphabetically:
                           UsesInsertPolicyComboBox.ItemIndex:=4;
     end;
-    EventMethodSectionComboBox.ItemIndex := Ord(EventMethodSection);
 
     UpdateMultiProcSignaturesCheckBox.Checked:=UpdateMultiProcSignatures;
     UpdateOtherProcSignaturesCaseCheckBox.Checked:=UpdateOtherProcSignaturesCase;
@@ -180,8 +163,6 @@ begin
     3: UsesInsertPolicy:=uipLast;
     else UsesInsertPolicy:=uipAlphabetically;
     end;
-
-    EventMethodSection := TInsertClassSection(EventMethodSectionComboBox.ItemIndex);
 
     UpdateMultiProcSignatures:=UpdateMultiProcSignaturesCheckBox.Checked;
     UpdateOtherProcSignaturesCase:=UpdateOtherProcSignaturesCaseCheckBox.Checked;

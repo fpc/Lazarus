@@ -154,6 +154,15 @@ begin
   Result := FPageIndex;
 end;
 
+function TNotebook.IndexOf(APage: TPage): integer;
+begin
+  for Result := 0 to PageCount-1 do
+    if Page[Result] = APage then
+      Exit;
+
+  Result := -1;
+end;
+
 procedure TNotebook.InsertPage(APage: TPage; Index: Integer);
 begin
   if FPageList.IndexOf(APage) >= 0 then Exit;
@@ -211,7 +220,6 @@ begin
   FPages := TUNBPages.Create(FPageList, Self);
 
   ControlStyle := []; // do not add csAcceptsControls
-  TabStop := true;
 
   // Initial size
   lSize := GetControlClassDefaultSize();

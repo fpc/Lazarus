@@ -20,32 +20,30 @@ type
 
   { TPrinterDrawer }
 
-  TPrinterDrawer = class(TCanvasDrawer)
+  TPrinterDrawer = class(TScaledCanvasDrawer)
   private
     FPrinter: TPrinter;
-    FCoeff: Double;
   public
-    constructor Create(APrinter: TPrinter);
-    function Scale(ADistance: Integer): Integer; override;
+    constructor Create(APrinter: TPrinter; AScalePens: Boolean = false);
   end;
 
 implementation
 
 uses
-  Forms, Math;
+  Forms, Math, TADrawUtils;
 
 { TPrinterDrawer }
 
-constructor TPrinterDrawer.Create(APrinter: TPrinter);
+constructor TPrinterDrawer.Create(APrinter: TPrinter;
+  AScalePens: Boolean = false);
+var
+  f: Double;
+  si: TScaleItems;
 begin
   FPrinter := APrinter;
-  inherited Create(FPrinter.Canvas);
-  FCoeff := Max(FPrinter.XDPI, FPrinter.YDPI) / Screen.PixelsPerInch;
-end;
-
-function TPrinterDrawer.Scale(ADistance: Integer): Integer;
-begin
-  Result := Round(ADistance * FCoeff);
+  f := Max(FPrinter.XDPI, FPrinter.YDPI) / Screen.PixelsPerInch;
+  if AScalePens then si := [scalePen] else si := [];
+  inherited Create(FPrinter.Canvas, f, si);
 end;
 
 end.

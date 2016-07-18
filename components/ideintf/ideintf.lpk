@@ -20,7 +20,7 @@
     <Description Value="IDEIntf - the interface units for the Lazarus IDE"/>
     <License Value="Modified LPGL2"/>
     <Version Major="1"/>
-    <Files Count="78">
+    <Files Count="80">
       <Item1>
         <Filename Value="actionseditor.pas"/>
         <UnitName Value="ActionsEditor"/>
@@ -334,6 +334,14 @@
         <Filename Value="toolbarintf.pas"/>
         <UnitName Value="ToolBarIntf"/>
       </Item78>
+      <Item79>
+        <Filename Value="changeparentdlg.pas"/>
+        <UnitName Value="ChangeParentDlg"/>
+      </Item79>
+      <Item80>
+        <Filename Value="changeparentdlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item80>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

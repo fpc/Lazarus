@@ -12,9 +12,6 @@
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
-      <Other>
-        <CustomOptions Value="$(IDEBuildOptions)"/>
-      </Other>
     </CompilerOptions>
     <Description Value="Some extra LCL controls needed by the IDE."/>
     <License Value="modified LGPL-2"/>
@@ -22,42 +19,34 @@
     <Files Count="11">
       <Item1>
         <Filename Value="checkboxthemed.pas"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="CheckBoxThemed"/>
       </Item1>
       <Item2>
         <Filename Value="dividerbevel.pas"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="DividerBevel"/>
       </Item2>
       <Item3>
         <Filename Value="extendednotebook.pas"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="ExtendedNotebook"/>
       </Item3>
       <Item4>
         <Filename Value="listfilteredit.pas"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="ListFilterEdit"/>
       </Item4>
       <Item5>
         <Filename Value="listviewfilteredit.pas"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="ListViewFilterEdit"/>
       </Item5>
       <Item6>
         <Filename Value="treefilteredit.pas"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="TreeFilterEdit"/>
       </Item6>
       <Item7>
         <Filename Value="shortpathedit.pas"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="ShortPathEdit"/>
       </Item7>
       <Item8>
         <Filename Value="lvlgraphctrl.pas"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="LvlGraphCtrl"/>
       </Item8>
       <Item9>
@@ -66,7 +55,6 @@
       </Item9>
       <Item10>
         <Filename Value="spinex.pp"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="SpinEx"/>
       </Item10>
       <Item11>

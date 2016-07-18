@@ -5,7 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LR_PQConnection, LR_IBConnection,
+  Classes, SysUtils, LR_PQConnection, LR_IBConnection,
   LRDialogControls, LR_View, LR_Class, LR_Desgn, Forms, Controls, Graphics,
   Dialogs, StdCtrls, sqldb, IBConnection;
 
@@ -42,6 +42,9 @@ var
 implementation
 
 {$R *.lfm}
+
+uses
+  LazFileUtils;
 
 { TForm1 }
 

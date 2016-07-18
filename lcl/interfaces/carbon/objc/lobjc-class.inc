@@ -165,7 +165,11 @@ function class_getInstanceVariable(param1: _Class; const param2: PChar): Ivar; c
 function class_getInstanceMethod(param1: _Class; param2: SEL): Method; cdecl; external;
 function class_getClassMethod(param1: _Class; param2: SEL): Method; cdecl; external;
 
+{$ifdef CPU64}
+procedure class_addMethod(param1: _Class; name: SEL; imp: IMP; const args: PChar); cdecl; external;
+{$else}
 procedure class_addMethods(param1: _Class; param2: Pobjc_method_list); cdecl; external;
+{$endif}
 procedure class_removeMethods(param1: _Class; param2: Pobjc_method_list); cdecl; external;
 
 function class_poseAs(imposter, original: _Class): _Class; cdecl; external;

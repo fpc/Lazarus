@@ -212,6 +212,21 @@ begin
   end;
 end;
 
+function GetTempFileName(const SExt:string):string;
+var
+  i: Integer;
+begin
+  Result:=SysToUTF8(GetTempDir(false))+'Export'+SExt;
+  if FileExistsUTF8(Result) then
+  begin
+    i:=0;
+    repeat
+      Inc(i);
+      Result:=SysToUTF8(GetTempDir(false))+'Export'+IntToStr(i) + SExt;
+    until not FileExistsUTF8(Result);
+  end;
+end;
+
 function TlrEmailExportFilter.ProcessTool: boolean;
 var
   FilterClass: TfrExportFilterClass;
@@ -228,7 +243,7 @@ begin
       break;
     end;
   if not Assigned(FilterClass) then exit;
-  FEmailAttachFileName:=SysToUTF8(GetTempDir(false))+'Export'+SExt;
+  FEmailAttachFileName:=GetTempFileName(SExt); //SysToUTF8(GetTempDir(false))+'Export'+SExt;
   FDoc.ExportTo(FilterClass, FEmailAttachFileName);
 
   for i:=0 to Length(EmailAppArray)-1 do

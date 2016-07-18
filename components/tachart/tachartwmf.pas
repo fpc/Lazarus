@@ -2,8 +2,9 @@
   This source is only used to compile and install the package.
  }
 
-unit TAChartWMF; 
+unit TAChartWMF;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
@@ -11,10 +12,10 @@ uses
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-end; 
+end;
 
 initialization
-  RegisterPackage('TAChartWMF', @Register); 
+  RegisterPackage('TAChartWMF', @Register);
 end.

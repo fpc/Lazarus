@@ -165,3 +165,4 @@ msgstr "Nem lehet létrehozni a beállítások könyvtárát: \"%s\""
 #: lazutilsstrconsts.lrsvarnoconversion
 msgid "Conversion from %s to %s not possible"
 msgstr "Az átalakítás nem lehetséges erről: %s, erre %s"
+

@@ -11,7 +11,7 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Um lado livre de um \"splitter\" não deve ser ancorado: Nó=%s%s%s Tipo=%s Âncoras[%s]=%s%s%s"
@@ -29,25 +29,25 @@ msgid "Anchor Docking Layout"
 msgstr "Anchor Docking Layout"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Âncora não é \"splitter\": Nó=%s%s%s Âncoras[%s]=%s%s%s"
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Âncora não encontrada: Nó=%s%s%s Âncoras[%s]=%s%s%s"
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Âncora no lado errado do \"splitter\": Nó=%s%s%s Âncora[%s]=%s%s%s"
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgstr "Uma página não deve estar ancorada: Nó=%s%s%s Pai=%s Tipo Pai=%s Âncoras[%s]=%s%s%s"
@@ -69,7 +69,7 @@ msgid "control is already a docksite"
 msgstr "controle já é um local de ancoragem"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Custom dock site %s%s%s can have only one site."
 msgid "Custom dock site \"%s\" can have only one site."
 msgstr "Local de ancoragem customizado %s%s%s só pode ter um local."
@@ -83,7 +83,6 @@ msgid "Docking options"
 msgstr "Opções Ancoragem"
 
 #: anchordockstr.adrsdraganddockc
-#| msgid "Use the mouse to drag and dock window \"%c\""
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Use o mouse para arrastar e ancorar a janela \"%s\""
 
@@ -220,7 +219,7 @@ msgid "No captions for floating sites"
 msgstr "Sem títulos para locais flutuantes"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "No children allowed for Node=%s%s%s Type=%s"
 msgid "No children allowed for Node=\"%s\" Type=%s"
 msgstr "Nenhum filho permitido para Nó=%s%s%s Tipo=%s"

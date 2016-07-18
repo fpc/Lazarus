@@ -6,6 +6,7 @@
    ./runtests --format=plain --suite=TestBasicFindCommentEnd
    ./runtests --format=plain --suite=TestBasicFindNextComment
    ./runtests --format=plain --suite=TestCompareTextIgnoringSpace
+   ./runtests --format=plain --suite=TestCleanCodeFromComments
    ./runtests --format=plain --suite=TestGuessIndentSize
    ./runtests --format=plain --suite=TestReindent
    ./runtests --format=plain --suite=TestSimpleFormat
@@ -35,6 +36,7 @@ type
     procedure TestBasicFindCommentEnd;
     procedure TestBasicFindNextComment;
     procedure TestCompareTextIgnoringSpace;
+    procedure TestCleanCodeFromComments;
     procedure TestGuessIndentSize;
     procedure TestReIndent;
     procedure TestSimpleFormat;
@@ -179,6 +181,43 @@ begin
   t(' a: b','a:b',0);
   t('procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings; AIndex,'#13#10'  ACount: Integer); ',
     'procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);',0);
+end;
+
+procedure TTestBasicCodeTools.TestCleanCodeFromComments;
+
+  procedure t(const Src, Expected: string;
+    NestedComments, KeepDirectives, KeepVerbosityDirectives: boolean);
+  var
+    r: string;
+  begin
+    r:=CleanCodeFromComments(Src,NestedComments,KeepDirectives,KeepVerbosityDirectives);
+    AssertEquals('Src="'+dbgstr(Src)+'",Expected="'+dbgstr(Expected)+'" Nested='+dbgs(NestedComments)+' KeepDir='+dbgs(KeepDirectives)+' KeepVerbose='+dbgs(KeepVerbosityDirectives),Expected,r);
+  end;
+
+begin
+  t('','',true,true,true);
+  t(' ',' ',true,true,true);
+  t('  ','  ',true,true,true);
+  t(' a ',' a ',true,true,true);
+  t(' a ',' a ',true,true,true);
+  t(' {} ','  ',true,true,true);
+  t(' (**) ','  ',true,true,true);
+  t(' // ',' ',true,true,true);
+  t(' // '#10' ',' '#10' ',true,true,true);
+  t(' {$} ',' {$} ',true,true,true);
+  t(' {$} ','  ',true,false,true);
+  t(' {$hints} ','  ',true,false,true);
+  t(' {$hints} ','  ',true,false,false);
+  t(' {$hints} ',' {$hints} ',true,true,false);
+  t(' {$hints} ',' {$hints} ',true,true,true);
+  t(' {$warn} ','  ',true,false,false);
+  t(' {$warn} ','  ',true,false,true);
+  t(' {$warn} ',' {$warn} ',true,true,true);
+  t(' {$warn} ','  ',true,true,false);
+  t(' {$hint} ','  ',true,false,false);
+  t(' {$hint} ','  ',true,false,true);
+  t(' {$hint} ',' {$hint} ',true,true,true);
+  t(' {$hint} ','  ',true,true,false);
 end;
 
 procedure TTestBasicCodeTools.TestGuessIndentSize;

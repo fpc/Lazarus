@@ -1,7 +1,7 @@
 { TPrinterSetupDialog }
 
 
-function TPrinterSetupDialog.Execute: Boolean;
+function TPrinterSetupDialog.DoExecute: Boolean;
 Var Dlg : Tdlgpropertiesprinter;
 begin
   Dlg:=TdlgPropertiesPrinter.Create(nil);
@@ -54,7 +54,7 @@ end;
 
 { TPrintDialog }
 
-function TPrintDialog.Execute: Boolean;
+function TPrintDialog.DoExecute: Boolean;
 Var
   Dlg : TdlgSelectPrinter;
   i   : Integer;
@@ -114,7 +114,7 @@ end;
 
 { TPrintDialog }
 
-function TPageSetupDialog.Execute: Boolean;
+function TPageSetupDialog.DoExecute: Boolean;
 var
   Dlg: TDlgPageSetup;
 begin

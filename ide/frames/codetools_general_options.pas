@@ -45,6 +45,7 @@ type
     JumpCenteredCheckBox: TCheckBox;
     JumpingGroupBox: TGroupBox;
     IndentFileLabel: TLabel;
+    JumpToMethodBodyCheckBox: TCheckBox;
     SkipForwardDeclarationsCheckBox: TCheckBox;
     procedure GeneralAutoIndentClick(Sender: TObject);
     procedure GeneralAutoIndentMouseEnter(Sender: TObject);
@@ -120,6 +121,7 @@ begin
   JumpCenteredCheckBox.Caption:=dlgcentercursorline;
   CursorBeyondEOLCheckBox.Caption:=dlgcursorbeyondeol;
   SkipForwardDeclarationsCheckBox.Caption:=dlgSkipForwardClassDeclarations;
+  JumpToMethodBodyCheckBox.Caption := dlgJumpToMethodBody;
 
   IndentationGroupBox.Caption:=lisIndentationForPascalSources;
   GeneralAutoIndent.Caption:=lisSetupDefaultIndentation;
@@ -142,6 +144,7 @@ begin
     JumpCenteredCheckBox.Checked := JumpCentered;
     CursorBeyondEOLCheckBox.Checked := CursorBeyondEOL;
     SkipForwardDeclarationsCheckBox.Checked := SkipForwardDeclarations;
+    JumpToMethodBodyCheckBox.Checked := JumpToMethodBody;
     IndentOnLineBreakCheckBox.Checked:=IndentOnLineBreak;
     IndentOnPasteCheckBox.Checked:=IndentOnPaste;
     IndentFileEdit.Text:=IndentationFileName;
@@ -158,6 +161,7 @@ begin
     JumpCentered := JumpCenteredCheckBox.Checked;
     CursorBeyondEOL := CursorBeyondEOLCheckBox.Checked;
     SkipForwardDeclarations := SkipForwardDeclarationsCheckBox.Checked;
+    JumpToMethodBody:=JumpToMethodBodyCheckBox.Checked;
     IndentOnLineBreak:=IndentOnLineBreakCheckBox.Checked;
     IndentOnPaste:=IndentOnPasteCheckBox.Checked;
     IndentationFileName:=IndentFileEdit.Text;

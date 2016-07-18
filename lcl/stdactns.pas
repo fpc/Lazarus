@@ -142,6 +142,8 @@ type
     property BeforeExecute: TNotifyEvent read FBeforeExecute write FBeforeExecute;
     property OnAccept: TNotifyEvent read FOnAccept write FOnAccept;
     property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
+  published
+    property OnUpdate;
   end;
 
   { File Actions }

@@ -6141,27 +6141,25 @@ function TGtk2WidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
   Widget: PGTKWidget;
   GRect: TGdkRectangle;
-  R: TRect;
   P: TPoint;
 begin
   Result := 0; // error
-  if Handle <> 0 then
+  if Handle = 0 then
+    Exit;
+
+  Widget := {%H-}PGtkWidget(Handle);
+
+  if GTK_IS_WINDOW(Widget) and Assigned(Widget^.window)
+  and GTK_WIDGET_VISIBLE(Widget) // Gtk2 returns invalid origin/frame for invisible widgets
+  then
   begin
-    Widget := {%H-}PGtkWidget(Handle);
-
-    if GTK_IS_WINDOW(Widget) and Assigned(Widget^.window) then
-    begin
-      gdk_window_get_origin(Widget^.window, @ARect.Left, @ARect.Top);
-      gdk_window_get_size(Widget^.window, @ARect.Right, @ARect.Bottom);
-      P := GetWidgetOrigin(Widget);
-      gdk_window_get_frame_extents(Widget^.window, @GRect);
-      R := RectFromGdkRect(GRect);
-      ARect := Bounds(P.X,P.Y,R.Right-R.Left,R.Bottom-R.Top);
-      // writeln('Frame extents are: ',dbgs(R),' ARECT=',dbgs(AREct));
-      Result := 1; // success
-      exit;
-    end;
-
+    P := GetWidgetOrigin(Widget);
+    gdk_window_get_frame_extents(Widget^.window, @GRect);
+    ARect := Bounds(P.X,P.Y,GRect.width,GRect.height);
+    // writeln('Frame extents are: ',dbgs(R),' ARECT=',dbgs(ARect));
+    Result := 1; // success
+  end else
+  begin
     ARect.TopLeft := GetWidgetOrigin(Widget);
     if (ARect.Top <> -1) or (ARect.Left <> -1)
     or (Widget^.allocation.width <> 1) or (Widget^.allocation.height <> 1) then

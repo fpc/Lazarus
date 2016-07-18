@@ -1,16 +1,19 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="fpcunitconsolerunner"/>
+    <AddToProjectUsesSection Value="True"/>
     <Author Value="Vincent"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Other>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
     </CompilerOptions>
     <License Value="Modified LGPL
 "/>
@@ -18,6 +21,7 @@
     <Files Count="1">
       <Item1>
         <Filename Value="consoletestrunner.pas"/>
+        <Type Value="Virtual Unit"/>
         <UnitName Value="consoletestrunner"/>
       </Item1>
     </Files>

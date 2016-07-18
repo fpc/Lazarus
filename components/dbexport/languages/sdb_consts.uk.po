@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-23 10:09+0300\n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"PO-Revision-Date: 2016-06-07 10:52+0200\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Virtaal 0.7.1\n"
+"X-Generator: Poedit 1.6.4\n"
 
 #: sdb_consts.scancelrecordsexported
 msgid "Exported %d before user canceled."
@@ -38,7 +38,7 @@ msgstr "Поля"
 
 #: sdb_consts.sdb_filename
 msgid "Filename:"
-msgstr "Ім'я файлу:"
+msgstr "Назва файлу:"
 
 #: sdb_consts.sdb_formatting
 msgid "Formatting"
@@ -50,7 +50,7 @@ msgstr "Перемістити вибране поле вниз"
 
 #: sdb_consts.sdb_moveselectedfieldup
 msgid "Move selected field up"
-msgstr "Перемістити вибране поле вверх"
+msgstr "Перемістити вибране поле вгору"
 
 #: sdb_consts.sdb_propertiesforselectedfield
 msgid "Properties for selected field:"
@@ -58,15 +58,15 @@ msgstr "Властивості для вибраного поля:"
 
 #: sdb_consts.sdb_selectdataexportformat
 msgid "Select data export Format"
-msgstr "Вибір Формату екпорту даних"
+msgstr "Вибір формату екпорту даних"
 
 #: sdb_consts.sdb_selectfieldstoexport
 msgid "Select fi&elds to export"
-msgstr "Вибір по&ля для експорту"
+msgstr "Вибір по&лів для експорту"
 
 #: sdb_consts.serrnodatasetassigned
 msgid "DataExporter has no Dataset assigned."
-msgstr "В DataExporter відсутній призначений набір даних."
+msgstr "В DataExporter не призначено набору даних."
 
 #: sdb_consts.serropeningdataset
 msgid "Could not open dataset for exporting: %s"
@@ -77,12 +77,10 @@ msgid "Execute ..."
 msgstr "Виконати ..."
 
 #: sdb_consts.snrecordsexported
-#, fuzzy
-#| msgid "Succesfully exported %d records."
 msgid "Successfully exported %d records."
 msgstr "Успішно експортовано %d записів."
 
 #: sdb_consts.sprogress
 msgid "Exporting %d records"
-msgstr "Експортую %d записів"
+msgstr "Експортується %d записів"
 

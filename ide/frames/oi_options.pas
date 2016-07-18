@@ -42,6 +42,7 @@ type
     ocPropName,
     ocValue,
     ocDefValue,
+    ocValueDifferBackgrnd,
     ocSubProp,
     ocReference,
     ocReadOnly
@@ -113,17 +114,18 @@ const
   DefaultOISettings: TSpeedOISettings = (
     Name: 'Default';
     Colors: (
-      { ocBackground    } DefBackgroundColor,
-      { ocGutter        } DefGutterColor,
-      { ocGutterEdge    } DefGutterEdgeColor,
-      { ocHighlight     } DefHighlightColor,
-      { ocHighlightFont } DefHighlightFontColor,
-      { ocPropName      } DefNameColor,
-      { ocValue         } DefValueColor,
-      { ocDefValue      } DefDefaultValueColor,
-      { ocSubProp       } DefSubPropertiesColor,
-      { ocReference     } DefReferencesColor,
-      { ocReadOnly      } DefReadOnlyColor
+      { ocBackground         } DefBackgroundColor,
+      { ocGutter             } DefGutterColor,
+      { ocGutterEdge         } DefGutterEdgeColor,
+      { ocHighlight          } DefHighlightColor,
+      { ocHighlightFont      } DefHighlightFontColor,
+      { ocPropName           } DefNameColor,
+      { ocValue              } DefValueColor,
+      { ocDefValue           } DefDefaultValueColor,
+      { ocValueDifferBackgrnd} DefValueDifferBackgrndColor,
+      { ocSubProp            } DefSubPropertiesColor,
+      { ocReference          } DefReferencesColor,
+      { ocReadOnly           } DefReadOnlyColor
       );
     Options: (
       { ooShowComponentTree  } True,
@@ -141,17 +143,18 @@ const
   DelphiOISettings: TSpeedOISettings = (
     Name: 'Delphi';
     Colors: (
-      { ocBackground    } clWindow,
-      { ocGutter        } clCream,
-      { ocGutterEdge    } clGray,
-      { ocHighlight     } $E0E0E0,
-      { ocHighlightFont } clBlack,
-      { ocPropName      } clBtnText,
-      { ocValue         } clNavy,
-      { ocDefValue      } clNavy,
-      { ocSubProp       } clGreen,
-      { ocReference     } clMaroon,
-      { ocReadOnly      } clGrayText
+      { ocBackground         } clWindow,
+      { ocGutter             } clCream,
+      { ocGutterEdge         } clGray,
+      { ocHighlight          } $E0E0E0,
+      { ocHighlightFont      } clBlack,
+      { ocPropName           } clBtnText,
+      { ocValue              } clNavy,
+      { ocDefValue           } clNavy,
+      { ocValueDifferBackgrnd} clWindow,
+      { ocSubProp            } clGreen,
+      { ocReference          } clMaroon,
+      { ocReadOnly           } clGrayText
       );
     Options: (
       { ooShowComponentTree  } True,
@@ -213,6 +216,7 @@ begin
   Items.Add(dlgPropNameColor);
   Items.Add(dlgValueColor);
   Items.Add(dlgDefValueColor);
+  Items.Add(dlgDifferentValueBackgroundColor);
   Items.Add(dlgSubPropColor);
   Items.Add(dlgReferenceColor);
   Items.Add(dlfReadOnlyColor)
@@ -286,6 +290,7 @@ begin
   ASettings.Colors[ocPropName] := o.PropertyNameColor;
   ASettings.Colors[ocValue] := o.ValueColor;
   ASettings.Colors[ocDefValue] := o.DefaultValueColor;
+  ASettings.Colors[ocValueDifferBackgrnd] := o.ValueDifferBackgrndColor;
   ASettings.Colors[ocSubProp] := o.SubPropertiesColor;
   ASettings.Colors[ocReference] := o.ReferencesColor;
   ASettings.Colors[ocReadOnly] := o.ReadOnlyColor;
@@ -317,6 +322,7 @@ begin
   o.PropertyNameColor := ColorsListBox.Colors[Ord(ocPropName)];
   o.ValueColor := ColorsListBox.Colors[Ord(ocValue)];
   o.DefaultValueColor := ColorsListBox.Colors[Ord(ocDefValue)];
+  o.ValueDifferBackgrndColor := ColorsListBox.Colors[Ord(ocValueDifferBackgrnd)];
   o.SubPropertiesColor := ColorsListBox.Colors[Ord(ocSubProp)];
   o.ReferencesColor := ColorsListBox.Colors[Ord(ocReference)];
   o.ReadOnlyColor := ColorsListBox.Colors[Ord(ocReadOnly)];

@@ -239,6 +239,7 @@ type
     function NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode): boolean;
     function ExtractDefinitionNodeType(DefinitionNode: TCodeTreeNode): string;
     function ExtractDefinitionName(DefinitionNode: TCodeTreeNode): string;
+    function FindDefinitionNameNode(DefinitionNode: TCodeTreeNode): TCodeTreeNode;
     function PositionInDefinitionName(DefinitionNode: TCodeTreeNode;
                                       CleanPos: integer): boolean;
     function MoveCursorToParameterSpecifier(DefinitionNode: TCodeTreeNode
@@ -585,8 +586,19 @@ var
   IsFunction: Boolean;
   IsOperator: Boolean;
   EndPos: Integer;
+  ParentNode: TCodeTreeNode;
 const
   SemiColon : char = ';';
+
+  procedure PrependName(const Prepend: string; var aPath: string);
+  begin
+    if Prepend='' then exit;
+    if aPath<>'' then
+      aPath:=Prepend+'.'+aPath
+    else
+      aPath:=Prepend;
+  end;
+
 begin
   Result:='';
   ExtractProcHeadPos:=phepNone;
@@ -595,14 +607,27 @@ begin
     ProcNode:=ProcNode.Parent;
     if ProcNode=nil then exit;
   end;
-  if (ProcNode.Desc<>ctnProcedure) and (ProcNode.Desc<>ctnProcedureType) then
+  if ProcNode.Desc=ctnProcedure then
+    IsProcType:=false
+  else if ProcNode.Desc=ctnProcedureType then
+    IsProcType:=true
+  else
     exit;
-  IsProcType:=(ProcNode.Desc=ctnProcedureType);
+
+  TheClassName:='';
+
+  if (phpAddParentProcs in Attr) and (ProcNode.Parent.Desc=ctnProcedure) then begin
+    // local proc
+    ParentNode:=ProcNode.Parent;
+    while ParentNode.Desc=ctnProcedure do begin
+      PrependName(ExtractProcName(ParentNode,Attr*[phpInUpperCase]),TheClassName);
+      ParentNode:=ParentNode.Parent;
+    end;
+  end;
 
   // build full class name
-  TheClassName:='';
   if ([phpAddClassname,phpWithoutClassName]*Attr=[phpAddClassName]) then
-    TheClassName:=ExtractClassName(ProcNode,phpInUpperCase in Attr,true);
+    PrependName(ExtractClassName(ProcNode,phpInUpperCase in Attr,true),TheClassName);
 
   // reparse the clean source
   InitExtraction;
@@ -1082,6 +1107,19 @@ begin
     end;
     Result:=nil;
   end;
+end;
+
+function TPascalReaderTool.FindDefinitionNameNode(DefinitionNode: TCodeTreeNode
+  ): TCodeTreeNode;
+begin
+  if DefinitionNode.Desc=ctnGenericType then
+  begin
+    if DefinitionNode.FirstChild<>nil then
+      Result:=DefinitionNode.FirstChild
+    else
+      Result:=nil;
+  end else
+    Result:=DefinitionNode;
 end;
 
 function TPascalReaderTool.FindProcBody(ProcNode: TCodeTreeNode): TCodeTreeNode;
@@ -2816,14 +2854,11 @@ end;
 function TPascalReaderTool.ExtractDefinitionName(DefinitionNode: TCodeTreeNode
   ): string;
 begin
-  if DefinitionNode.Desc=ctnGenericType then begin
-    if DefinitionNode.FirstChild<>nil then
-      Result:=GetIdentifier(@Src[DefinitionNode.FirstChild.StartPos])
-    else
-      Result:='';
-  end else begin
-    Result:=GetIdentifier(@Src[DefinitionNode.StartPos]);
-  end;
+  DefinitionNode:=FindDefinitionNameNode(DefinitionNode);
+  if DefinitionNode<>nil then
+    Result:=GetIdentifier(@Src[DefinitionNode.StartPos])
+  else
+    Result:='';
 end;
 
 function TPascalReaderTool.PositionInDefinitionName(

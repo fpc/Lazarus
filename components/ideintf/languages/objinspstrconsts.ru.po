@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-12-29 00:56+0300\n"
+"PO-Revision-Date: 2016-04-20 01:43+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -473,6 +473,14 @@ msgstr "Создать событие по умолчанию"
 msgid "Create new field and add it at current position"
 msgstr "Создать новое поле и вставить его в текущую позицию"
 
+#: objinspstrconsts.oiscurrentparent
+msgid "Current parent"
+msgstr "Текущий родитель"
+
+#: objinspstrconsts.oiscurrentparents
+msgid "Current parents"
+msgstr "Текущие родители"
+
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
@@ -750,6 +758,14 @@ msgstr "Вы&делить все"
 msgid "Select All Fields"
 msgstr "Выделить все поля"
 
+#: objinspstrconsts.oisselectedcontrol
+msgid "Selected control"
+msgstr "Выбранный компонент"
+
+#: objinspstrconsts.oisselectedcontrols
+msgid "Selected controls"
+msgstr "Выбранные компоненты"
+
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
 msgstr "Вы&бранные свойства"
@@ -785,6 +801,10 @@ msgstr "Установить по умолчанию: %s"
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
 msgstr "Установить значение свойства по умолчанию"
+
+#: objinspstrconsts.oisshowclasses
+msgid "Show classes"
+msgstr "Показывать классы"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"

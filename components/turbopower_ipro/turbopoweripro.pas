@@ -4,6 +4,7 @@
 
 unit TurboPowerIPro;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
@@ -23,3 +24,4 @@ end;
 initialization
   RegisterPackage('TurboPowerIPro', @Register);
 end.
+

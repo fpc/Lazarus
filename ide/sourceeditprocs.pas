@@ -314,6 +314,8 @@ begin
         end;
         if IdentItem.TryIsAbstractMethod then
           AColor:=clRed;
+        if iliHasLowerVisibility in IdentItem.Flags then
+          AColor:=clGray;
       end;
       
     ctnProperty,ctnGlobalProperty:

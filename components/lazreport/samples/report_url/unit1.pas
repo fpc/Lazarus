@@ -5,7 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LR_Class, LR_Desgn, Forms, Controls, Graphics,
+  Classes, SysUtils, LR_Class, LR_Desgn, Forms, Controls, Graphics,
   Dialogs, StdCtrls;
 
 type
@@ -33,7 +33,7 @@ var
 
 implementation
 
-uses LazUTF8;
+uses LazUTF8, LazFileUtils;
 
 {$R *.lfm}
 

@@ -1076,10 +1076,6 @@ begin
 
   MouseCaptureWidget := nil;
 
-  LastLeft:=EmptyLastMouseClick;
-  LastMiddle:=EmptyLastMouseClick;
-  LastRight:=EmptyLastMouseClick;
-
   // clipboard
   ClipboardSelectionData:=TFPList.Create;
   for c:=Low(TClipboardType) to High(TClipboardType) do begin

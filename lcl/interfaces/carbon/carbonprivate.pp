@@ -404,8 +404,10 @@ var SavedMouseUpMsg: TLMMouse;
 var PostponedDownMsg: TLMMouse;
 var PostponedDown: Boolean;
 
+// Stores last mouse info for multiple clicks
+var LastMouse: TLastMouseInfo;
 // Stores last mouse pos to call mouse move only when it really has changed
-var LastMousePos: TPoint;
+var LastMousePos: TPoint; // in client coordinates
 
 {$I carbonprivatecommon.inc}
 {$I carbonprivatecontrol.inc}
@@ -426,7 +428,7 @@ begin
   if OSError(
     CreateNewWindow(kHelpWindowClass,
       kWindowCompositingAttribute or
-      kWindowHideOnSuspendAttribute or kWindowStandardHandlerAttribute,
+      kWindowHideOnSuspendAttribute or kWindowStandardHandlerAttribute or kWindowFrameworkScaledAttribute,
       ParamsToCarbonRect(AParams), AWindow{%H-}),
     Self, SCreateWidget, 'CreateNewWindow') then RaiseCreateWidgetError(LCLObject);
 

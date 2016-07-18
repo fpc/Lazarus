@@ -295,11 +295,13 @@ end;
 
 procedure AdjustFormBounds(const AForm: TCustomForm; out SizeRect: TRect);
 begin
+  SizeRect := AForm.BoundsRect;
+  {$IFNDEF LCLRealFormBounds}
   // the LCL defines the size of a form without border, win32 with.
   // -> adjust size according to BorderStyle
-  SizeRect := AForm.BoundsRect;
   Windows.AdjustWindowRectEx(@SizeRect, CalcBorderStyleFlags(AForm) or CalcBorderIconsFlags(AForm),
     False, CalcBorderStyleFlagsEx(AForm) or CalcBorderIconsFlagsEx(AForm));
+  {$ENDIF}
 end;
 
 function CustomFormWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam): LResult; stdcall;
@@ -325,7 +327,9 @@ function CustomFormWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LPar
 
       IntfWidth := AWidth;
       IntfHeight := AHeight;
+      {$IFNDEF LCLRealFormBounds}
       LCLFormSizeToWin32Size(TCustomForm(WinControl), IntfWidth, IntfHeight);
+      {$ENDIF}
 
       if AWidth > 0 then
         pt.X := IntfWidth;
@@ -369,7 +373,7 @@ begin
           end;
           SW_PARENTOPENING:
           begin
-            if Info^.RestoreState <> 0 then
+            if (Info^.RestoreState <> 0) and WinControl.Visible then
             begin
               Windows.ShowWindowAsync(Window, Info^.RestoreState);
               Info^.RestoreState := 0;
@@ -392,20 +396,25 @@ var
 begin
   // general initialization of Params
   PrepareCreateWindow(AWinControl, AParams, Params);
+
   // customization of Params
   with Params do
   begin
     if (Parent = 0) then
     begin
-      if not Application.MainFormOnTaskBar then
-        Parent := Win32WidgetSet.AppHandle
-      else
-      if (AWinControl <> Application.MainForm) then
+      // Leave Parent at 0 if this is a standalone form.
+      if (lForm.EffectiveShowInTaskBar <> stAlways) then
       begin
-        if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
-          Parent := Application.MainFormHandle
+        if not Application.MainFormOnTaskBar then
+          Parent := Win32WidgetSet.AppHandle
         else
-          Parent := Win32WidgetSet.AppHandle;
+        if (AWinControl <> Application.MainForm) then
+        begin
+          if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+            Parent := Application.MainFormHandle
+          else
+            Parent := Win32WidgetSet.AppHandle;
+        end;
       end;
     end;
     CalcFormWindowFlags(lForm, Flags, FlagsEx);
@@ -587,15 +596,15 @@ begin
   // -> adjust size according to BorderStyle
   SizeRect := Bounds(ALeft, ATop, AWidth, AHeight);
 
+  {$IFNDEF LCLRealFormBounds}
   Windows.AdjustWindowRectEx(@SizeRect, CalcBorderStyleFlags(AForm) or CalcBorderIconsFlags(AForm),
     False, CalcBorderStyleFlagsEx(AForm) or CalcBorderIconsFlagsEx(AForm));
-
-
+  {$ENDIF}
   L := ALeft;
   T := ATop;
   W := SizeRect.Right - SizeRect.Left;
   H := SizeRect.Bottom - SizeRect.Top;
-  
+
   // we are calling setbounds in TWinControl.Initialize
   // if position is default it will be changed to designed. We do not want this.
   if wcfInitializing in TWinControlAccess(AWinControl).FWinControlFlags then

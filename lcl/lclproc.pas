@@ -26,9 +26,6 @@ interface
 
 uses
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
-  {$IFDEF win32}
-  Win9xWsManager, // Support for Lower/UpperWideStringProc on Win9x, also used by some Utf8 string handling functions
-  {$ENDIF}
   {$IFnDEF WithOldDebugln} LazLogger, {$ENDIF}
   Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, LazFileUtils,
   LCLStrConsts, LCLType, WSReferences, LazMethodList, LazUTF8, LazUTF8Classes;
@@ -159,7 +156,9 @@ function StrToDouble(const s: string): double;
 procedure RaiseGDBException(const Msg: string);
 procedure RaiseAndCatchException;
 procedure DumpExceptionBackTrace;
-procedure DumpStack;
+{$IFnDEF WithOldDebugln}
+procedure DumpStack; inline;
+{$ENDIF}
 function GetStackTrace(UseCache: boolean): string;
 procedure GetStackTracePointers(var AStack: TStackTracePointers);
 function StackTraceAsString(const AStack: TStackTracePointers;
@@ -334,7 +333,7 @@ function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
 function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF16(u: cardinal): UTF16String;
 
-{$IFnDEF DisableWrapperFunctions}
+{$IFDEF EnableWrapperFunctions}
 function UTF8CharacterLength(p: PChar): integer; inline; deprecated 'Use the function in LazUTF8 unit';
 function UTF8Length(const s: string): PtrInt; inline; deprecated 'Use the function in LazUTF8 unit';
 function UTF8Length(p: PChar; ByteCount: PtrInt): PtrInt; inline; deprecated 'Use the function in LazUTF8 unit';
@@ -388,7 +387,7 @@ function UTF16ToUTF8(const S: UTF16String): AnsiString; inline; deprecated 'Use 
 
 // locale
 procedure LCLGetLanguageIDs(var Lang, FallbackLang: String); inline; deprecated 'Use function LazGetLanguageIDs in LazUTF8 unit';
-{$ENDIF DisableWrapperFunctions}
+{$ENDIF EnableWrapperFunctions}
 
 // identifier
 function CreateFirstIdentifier(const Identifier: string): string;
@@ -2751,7 +2750,7 @@ begin
     Result:=system.widechar($D800+((u - $10000) shr 10))+system.widechar($DC00+((u - $10000) and $3ff));
 end;
 
-{$IFnDEF DisableWrapperFunctions}
+{$IFDEF EnableWrapperFunctions}
 function UTF8CharacterLength(p: PChar): integer;
 begin
   Result := LazUTF8.UTF8CharacterLength(p);
@@ -2998,7 +2997,7 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
 begin
   LazUTF8.LazGetLanguageIDs(Lang, FallbackLang);
 end;
-{$ENDIF DisableWrapperFunctions}
+{$ENDIF EnableWrapperFunctions}
 
 function CreateFirstIdentifier(const Identifier: string): string;
 // example: Ident59 becomes Ident1

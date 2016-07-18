@@ -80,31 +80,9 @@ const
 //
 // helper functions used commonly
 //
-  function GetClickCount: Integer;
-  var
-    ClickCount: UInt32;
-  begin
-    Result := 1;
-    
-    if OSError(
-      GetEventParameter(AEvent, kEventParamClickCount, typeUInt32, nil,
-        SizeOf(ClickCount), nil, @ClickCount),
-      SName, SGetEvent, 'kEventParamClickCount') then Exit;
-
-    Result := Integer(ClickCount);
-    {debugln('GetClickCount ClickCount=',dbgs(ClickCount));}
-  end;
-
   function GetMousePoint: TPoint;
-  var
-    MousePoint: HIPoint;
   begin
-    Result:=Classes.Point(0,0); // Force sane value if mouse location not found
-    if OSError(
-      GetEventParameter(AEvent, kEventParamWindowMouseLocation, typeHIPoint, nil,
-        SizeOf(MousePoint), nil, @MousePoint),
-      SName, SGetEvent, 'kEventParamWindowMouseLocation') then Exit;
-    Result:=Widget.GetWindowRelativePos(Trunc(MousePoint.X), Trunc(MousePoint.Y));
+    Result:=Widget.LCLObject.ScreenToClient(Mouse.CursorPos);
   end;
 
   function GetMouseWheelDelta: Integer;
@@ -148,17 +126,8 @@ const
 // handler functions
 //
   procedure HandleMouseDownEvent(var AMsg);
-  const
-    // array of clickcount x buttontype
-    MSGKIND: array[1..4, 1..3] of Integer = (
-      (LM_LBUTTONDOWN, LM_RBUTTONDOWN, LM_MBUTTONDOWN),
-      (LM_LBUTTONDBLCLK, LM_RBUTTONDBLCLK, LM_MBUTTONDBLCLK),
-      (LM_LBUTTONTRIPLECLK, LM_RBUTTONTRIPLECLK, LM_MBUTTONTRIPLECLK),
-      (LM_LBUTTONQUADCLK, LM_RBUTTONQUADCLK, LM_MBUTTONQUADCLK)
-    );
   var
     MouseButton: Integer;
-    ClickCount: Integer;
     MousePoint: TPoint;
     Msg: ^TLMMouse;
   begin
@@ -167,30 +136,28 @@ const
     {$ENDIF}
     Msg := @AMsg;
 
-    ClickCount := GetClickCount;
     MouseButton := GetCarbonMouseButton(AEvent);
     MousePoint := GetMousePoint;
 
-    if (ClickCount < Low(MSGKIND)) or (ClickCount > High(MSGKIND)) then
-      ClickCount := (ClickCount mod High(MSGKIND))+1;
-    
-    if (MouseButton < Low(MSGKIND[1])) or (MouseButton > High(MSGKIND[1])) then Exit;
-    Msg^.Msg := MSGKIND[ClickCount, MouseButton];
+    Msg^.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(Widget), Widget.LCLObject, LastMouse,
+      Widget.LCLObject.ClientToScreen(MousePoint), MouseButton, True);
     //debugln('HandleMouseDownEvent CliCount=',dbgs(ClickCount),' MouseButton=',dbgs(MouseButton),' Pos=',dbgs(MousePoint));
 
 
     Msg^.XPos := MousePoint.X;                         
     Msg^.YPos := MousePoint.Y;
     Msg^.Keys := GetCarbonMsgKeyState;
-    
+    case LastMouse.ClickCount of
+      2: Msg^.Keys := Msg^.Keys or MK_DOUBLECLICK;
+      3: Msg^.Keys := Msg^.Keys or MK_TRIPLECLICK;
+      4: Msg^.Keys := Msg^.Keys or MK_QUADCLICK;
+    end;
     CarbonWidgetSet.SetCaptureWidget(HWND(Widget));
 
-    if ClickCount > 1 then Postpone := True;
+    if LastMouse.ClickCount > 1 then Postpone := True;
   end;
 
   procedure HandleMouseUpEvent(var AMsg);
-  const 
-    MSGKIND: array[1..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP);
   var
     MouseButton: Integer;
     MousePoint: TPoint;
@@ -206,13 +173,18 @@ const
     MouseButton := GetCarbonMouseButton(AEvent);
     MousePoint := GetMousePoint;
     
-    if  (MouseButton >= Low(MSGKIND)) and (MouseButton <= High(MSGKIND)) then
-      Msg^.Msg := MSGKIND[MouseButton];
+    Msg^.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(Widget), Widget.LCLObject, LastMouse,
+      Widget.LCLObject.ClientToScreen(MousePoint), MouseButton, False);
 
     Msg^.XPos := MousePoint.X;
     Msg^.YPos := MousePoint.Y;
     Msg^.Keys := GetCarbonMsgKeyState;
-    
+    case LastMouse.ClickCount of
+      2: Msg^.Keys := Msg^.Keys or MK_DOUBLECLICK;
+      3: Msg^.Keys := Msg^.Keys or MK_TRIPLECLICK;
+      4: Msg^.Keys := Msg^.Keys or MK_QUADCLICK;
+    end;
+
     CarbonWidgetSet.SetCaptureWidget(0);
   end;
 
@@ -276,6 +248,7 @@ var
   DesignPt: HIPoint;
   ViewPart: HIViewPartCode;
   lTmpWidget: TCarbonWidget;
+  LCLObj: TWinControl;
 begin
   Result := EventNotHandledErr;
   Postpone := False;
@@ -306,6 +279,11 @@ begin
     Widget := lTmpWidget;
   end;
   if Widget = nil then Exit;
+
+  LCLObj := Widget.LCLObject;
+  CheckTransparentWindow(TLCLIntfHandle(Widget), LCLObj);
+  if (Widget=nil) or (LCLObj=nil) then
+    Exit;
 
   FillChar(Msg{%H-}, SizeOf(Msg), 0);
   

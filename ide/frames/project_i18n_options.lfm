@@ -1,17 +1,16 @@
 object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
   Left = 0
-  Height = 242
+  Height = 278
   Top = 0
   Width = 438
-  ClientHeight = 242
+  ClientHeight = 278
   ClientWidth = 438
-  OnClick = FrameClick
   TabOrder = 0
   DesignLeft = 467
   DesignTop = 355
   object EnableI18NCheckBox: TCheckBox
     Left = 0
-    Height = 24
+    Height = 19
     Top = 0
     Width = 438
     Align = alTop
@@ -25,21 +24,23 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 108
-    Top = 30
+    Height = 103
+    Top = 25
     Width = 438
     Align = alTop
     AutoSize = True
     BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    BorderSpacing.InnerBorder = 4
     Caption = 'i18n Options'
-    ClientHeight = 91
+    ClientHeight = 83
     ClientWidth = 434
     TabOrder = 1
     object PoOutDirLabel: TLabel
       Left = 6
       Height = 15
       Top = 6
-      Width = 118
+      Width = 111
       BorderSpacing.Around = 6
       Caption = 'PO Output Directory:'
       ParentColor = False
@@ -49,10 +50,9 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
       AnchorSideTop.Control = POOutDirEdit
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 24
-      Top = 67
-      Width = 145
-      BorderSpacing.Top = 15
+      Height = 19
+      Top = 56
+      Width = 136
       Caption = 'PoForFormsCheckBox'
       ParentShowHint = False
       ShowHint = True
@@ -64,7 +64,7 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 25
+      Height = 23
       Top = 27
       Width = 420
       Anchors = [akTop, akLeft, akRight]
@@ -81,5 +81,97 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
       TabOrder = 0
       Text = 'POOutDirEdit'
     end
+  end
+  object ExcludedGroupBox: TGroupBox
+    Left = 0
+    Height = 120
+    Top = 134
+    Width = 438
+    Align = alClient
+    Caption = 'Excluded'
+    ChildSizing.LeftRightSpacing = 10
+    ChildSizing.TopBottomSpacing = 5
+    ChildSizing.HorizontalSpacing = 10
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
+    ChildSizing.EnlargeVertical = crsScaleChilds
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 100
+    ClientWidth = 434
+    TabOrder = 2
+    object ExcludedIdentifiersPanel: TPanel
+      Left = 10
+      Height = 90
+      Top = 5
+      Width = 202
+      BevelOuter = bvNone
+      Caption = 'ExcludedIdentifiersPanel'
+      ClientHeight = 90
+      ClientWidth = 202
+      TabOrder = 0
+      object ExcludedIdentifiersMemo: TMemo
+        Left = 0
+        Height = 73
+        Top = 17
+        Width = 202
+        Align = alClient
+        OnChange = ExcludedIdentifiersMemoChange
+        ScrollBars = ssAutoVertical
+        TabOrder = 0
+      end
+      object ExcludedIdentifiersLabel: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 202
+        Align = alTop
+        BorderSpacing.Bottom = 2
+        Caption = 'Identifiers:'
+        ParentColor = False
+      end
+    end
+    object ExcludedOriginalsPanel: TPanel
+      Left = 222
+      Height = 90
+      Top = 5
+      Width = 202
+      BevelOuter = bvNone
+      Caption = 'ExcludedOriginalsPanel'
+      ClientHeight = 90
+      ClientWidth = 202
+      TabOrder = 1
+      object ExcludedOriginalsMemo: TMemo
+        Left = 0
+        Height = 73
+        Top = 17
+        Width = 202
+        Align = alClient
+        OnChange = ExcludedOriginalsMemoChange
+        ScrollBars = ssAutoVertical
+        TabOrder = 0
+      end
+      object ExcludedOriginalsLabel: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 202
+        Align = alTop
+        BorderSpacing.Bottom = 2
+        Caption = 'Originals:'
+        ParentColor = False
+      end
+    end
+  end
+  object ForceUpdatePoFilesCheckBox: TCheckBox
+    Left = 0
+    Height = 19
+    Top = 259
+    Width = 438
+    Align = alBottom
+    BorderSpacing.Top = 5
+    Caption = 'Update PO files on next compile'
+    TabOrder = 3
   end
 end

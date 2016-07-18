@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, Math, types,
   // LCL
-  LCLIntf, LCLType, LCLProc, Controls, Forms, GraphType, Graphics, Menus,
+  LCLIntf, LCLType, LCLProc, Controls, Forms, GraphType, Graphics, Menus, ComCtrls,
   // IDEIntf
   PropEditUtils, ComponentEditors, FormEditingIntf,
   // IDE
@@ -362,8 +362,7 @@ type
     procedure UpdateRealBounds;
     procedure UpdateParentChildFlags;
     procedure DoDrawMarker(Index: integer; DC: TDesignerDeviceContext);
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-           override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     // snapping
     function CleanGridSizeX: integer;
@@ -398,6 +397,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure DoChange(ForceUpdate: Boolean = False);
+    procedure IgnoreUpdate;
     property UpdateLock: integer read FUpdateLock;
 
     // items
@@ -418,6 +418,7 @@ type
     function IsSelected(APersistent: TPersistent): Boolean;
     function IsOnlySelected(APersistent: TPersistent): Boolean;
     function ParentLevel: integer;
+    function OkToCopy: boolean;
     function OnlyNonVisualPersistentsSelected: boolean;
     function OnlyVisualComponentsSelected: boolean;
     function OnlyInvisiblePersistentsSelected: boolean;
@@ -2088,6 +2089,11 @@ begin
   end;
 end;
 
+procedure TControlSelection.IgnoreUpdate;
+begin
+  FStates := FStates - cssSelectionChangeFlags;
+end;
+
 procedure TControlSelection.DoChangeProperties;
 begin
   if Assigned(OnPropertiesChanged) then OnPropertiesChanged(Self);
@@ -2140,9 +2146,9 @@ begin
      end;
 end;
 
-function TControlSelection.GetParentFormRelativeBounds(AComponent: TComponent
-  ): TRect;
-var R:TRect;
+function TControlSelection.GetParentFormRelativeBounds(AComponent: TComponent): TRect;
+var
+  R:TRect;
   P : TPoint;
 begin
   if FMediator <> nil then
@@ -2160,8 +2166,7 @@ begin
   Result:=TSelectedControl(FControls[Index]);
 end;
 
-procedure TControlSelection.SetItems(Index:integer;
-  ASelectedControl:TSelectedControl);
+procedure TControlSelection.SetItems(Index:integer; ASelectedControl:TSelectedControl);
 begin
   FControls[Index]:=ASelectedControl;
 end;
@@ -2289,7 +2294,8 @@ begin
   InvalidateGrabbers;
   InvalidateGuideLines;
   InvalidateMarkers;
-  for i:=0 to FControls.Count-1 do Items[i].Free;
+  for i:=0 to FControls.Count-1 do
+    Items[i].Free;
   FControls.Clear;
   FStates:=FStates+cssSelectionChangeFlags-[cssLookupRootSelected];
   FForm:=nil;
@@ -2897,6 +2903,22 @@ begin
       InvalidateFrame(FForm.Handle,@InvFrame,false,1);
     end;
   end;
+end;
+
+function TControlSelection.OkToCopy: boolean;
+// Prevent copying / cutting components that would lead to a crash or halt.
+var
+  i: Integer;
+begin
+  for i:=0 to FControls.Count-1 do
+    if (Items[i].Persistent is TCustomTabControl)
+    {$IFDEF LCLGTK2}   // Copying PageControl (TCustomPage) fails with GTK2
+    // in Destroy with LCLRefCount>0 due to some messages used. Issue #r51950.
+    or (Items[i].Persistent is TCustomPage)
+    {$ENDIF}
+    then
+      Exit(False);
+  Result:=True;
 end;
 
 function TControlSelection.OnlyNonVisualPersistentsSelected: boolean;

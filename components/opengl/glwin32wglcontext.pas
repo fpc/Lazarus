@@ -29,7 +29,7 @@ function LOpenGLCreateContext(AWinControl: TWinControl;
                     const AParams: TCreateParams): HWND;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 
-procedure InitWGL;
+procedure InitWGL(RequireWGL_ARB_create_context : boolean);
 procedure InitOpenGLContextGLWindowClass;
 
 
@@ -223,6 +223,7 @@ const
     );
 
 implementation
+uses glext;
 
 function GLGetProcAddress(ProcName: PChar):Pointer;
 begin
@@ -307,27 +308,39 @@ begin
       0, 0, 100, 100,
       0 { no parent window }, 0 { no menu }, hInstance,
       nil);
+    if Temp_H_wnd=0 then
+      raise Exception.Create('LGlMsCreateTemporaryWindow CreateWindowEx failed');
 
     { create Temp_h_Dc }
     Temp_h_Dc := GetDC(Temp_h_Wnd);
+    if Temp_h_Dc=0 then
+      raise Exception.Create('LGlMsCreateTemporaryWindow GetDC failed');
 
     { create and set PixelFormat (must support OpenGL to be able to
       later do wglCreateContext) }
     FillChar(pfd, SizeOf(pfd), 0);
     with pfd do
     begin
-      nSize := SizeOf(PIXELFORMATDESCRIPTOR);
+      nSize := SizeOf(pfd);
       nVersion := 1;
-      dwFlags := PFD_DRAW_TO_WINDOW or PFD_SUPPORT_OPENGL;
+      dwFlags := PFD_DRAW_TO_WINDOW or PFD_SUPPORT_OPENGL or PFD_DOUBLEBUFFER;
       iPixelType := PFD_TYPE_RGBA;
       iLayerType := PFD_MAIN_PLANE;
     end;
     PixelFormat := ChoosePixelFormat(Temp_h_Dc, @pfd);
-    SetPixelFormat(Temp_h_Dc, PixelFormat, @pfd);
+    if PixelFormat = 0 then
+      raise Exception.Create('LGlMsCreateTemporaryWindow ChoosePixelFormat failed');
+
+    if not SetPixelFormat(Temp_h_Dc, PixelFormat, @pfd) then
+      raise Exception.Create('LGlMsCreateTemporaryWindow SetPixelFormat failed');
 
     { create and make current Temp_h_GLRc }
     Temp_h_GLRc := wglCreateContext(Temp_h_Dc);
-    wglMakeCurrent(Temp_h_Dc, Temp_h_GLRc);
+    if Temp_h_GLRc = 0 then
+      raise Exception.Create('LGlMsCreateTemporaryWindow wglCreateContext failed');
+
+    if not wglMakeCurrent(Temp_h_Dc, Temp_h_GLRc) then
+      raise Exception.Create('LGlMsCreateTemporaryWindow wglMakeCurrent failed');
   except
     { make sure to finalize all partially initialized window parts }
     LGlMsDestroyTemporaryWindow;
@@ -426,7 +439,7 @@ var
   FailReason : string;
   attribList : array [0..2] of Integer;
 begin
-  InitWGL;
+  InitWGL( DebugContext );
   //InitOpenGLContextGLWindowClass;
   
   // general initialization of Params
@@ -550,7 +563,7 @@ begin
   DisposeWGLControlInfo(Info^.Window);
 end;
 
-procedure InitWGL;
+procedure InitWGL( RequireWGL_ARB_create_context : boolean );
 var
   Buffer: string;
 
@@ -569,6 +582,9 @@ begin
       needed for MultiSampling), you need to have OpenGL context 
       already initialized. We create a temporary window for this purpose. }
     LGlMsCreateTemporaryWindow;
+
+    if wglGetCurrentContext() = 0 then
+      raise Exception.Create('Context is not active');
 
     // ARB wgl extensions
     Pointer(wglCreateContextAttribsARB) := GLGetProcAddress('wglCreateContextAttribsARB');
@@ -611,7 +627,24 @@ begin
       DebugLn('InitWGL ',E.Message);
     end;
   end;
-  LGlMsDestroyTemporaryWindow;
+
+  try
+    if RequireWGL_ARB_create_context then
+    begin
+      if wglGetExtensionsStringARB = nil then
+        raise Exception.Create('InitWGL : wglGetExtensionsStringARB = nil');
+      if not CheckExtension('WGL_ARB_create_context') then
+      begin
+        raise Exception.CreateFmt('InitWGL : WGL_ARB_create_context not found. Version %s Renderer=%s'
+                                + sLineBreak + 'Extensions found:' + sLineBreak + '%s',
+            [String(glGetString(GL_VERSION)), String(glGetString(GL_RENDERER)), Buffer]);
+      end;
+      if wglCreateContextAttribsARB = nil then
+        raise Exception.Create('InitWGL : wglCreateContextAttribsARB = nil');
+    end;
+  finally
+    LGlMsDestroyTemporaryWindow;
+  end;
 end;
 
 procedure InitOpenGLContextGLWindowClass;

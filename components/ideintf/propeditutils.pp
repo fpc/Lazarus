@@ -81,6 +81,7 @@ type
 
 procedure RegisterGetLookupRoot(const OnGetLookupRoot: TGetLookupRoot);
 procedure UnregisterGetLookupRoot(const OnGetLookupRoot: TGetLookupRoot);
+function StrToBoolOI(S: string): Boolean;
 
 implementation
 
@@ -123,6 +124,15 @@ procedure UnregisterGetLookupRoot(const OnGetLookupRoot: TGetLookupRoot);
 begin
   if GetLookupRoots=nil then exit;
   GetLookupRoots.Remove(OnGetLookupRoot);
+end;
+
+function StrToBoolOI(S: string): Boolean;
+// Like StrToBool but accepts also '(False)' and '(True)'.
+begin
+  if S = '' then Exit(False);
+  if (Length(S) > 2) and (S[1] = '(') and (S[Length(S)] = ')') then
+    S := Copy(S, 2, Length(S)-2);
+  Result := StrToBool(S);
 end;
 
 { TPersistentSelectionList }
@@ -214,7 +224,7 @@ var
 begin
   if SourceSelectionList = Self then Exit;
   Clear;
-  if (SourceSelectionList <> nil) and (SourceSelectionList.Count > 0) then
+  if Assigned(SourceSelectionList) then
   begin
     FForceUpdate := SourceSelectionList.ForceUpdate;
     FPersistentList.Count := SourceSelectionList.Count;
@@ -232,9 +242,9 @@ begin
     DebugLn(['  ',i,' ',dbgsName(Items[i])]);
 end;
 
-function TPersistentSelectionList.IsEqual(
- SourceSelectionList:TPersistentSelectionList):boolean;
-var a:integer;
+function TPersistentSelectionList.IsEqual(SourceSelectionList: TPersistentSelectionList): boolean;
+var
+  a: integer;
 begin
   if (SourceSelectionList=nil) and (Count=0) then begin
     Result:=true;

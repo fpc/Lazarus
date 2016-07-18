@@ -146,9 +146,12 @@ type
     procedure AfterDraw; override;
     procedure BeforeDraw; override;
     procedure GetBounds(var ABounds: TDoubleRect); override;
-    function GetGraphPoint(AIndex: Integer): TDoublePoint;
-    function GetGraphPointX(AIndex: Integer): Double; inline;
-    function GetGraphPointY(AIndex: Integer): Double; inline;
+    function GetGraphPoint(AIndex: Integer): TDoublePoint; overload;
+    function GetGraphPoint(AIndex, AXIndex, AYIndex: Integer): TDoublePoint; overload;
+    function GetGraphPointX(AIndex: Integer): Double; overload; inline;
+    function GetGraphPointX(AIndex, AXIndex: Integer): Double; overload; inline;
+    function GetGraphPointY(AIndex: Integer): Double; overload; inline;
+    function GetGraphPointY(AIndex, AYIndex: Integer): Double; overload; inline;
     function GetSeriesColor: TColor; virtual;
     function GetXMaxVal: Double;
     procedure SourceChanged(ASender: TObject); virtual;
@@ -195,7 +198,7 @@ type
       AXLabel: String = ''; AColor: TColor = clTAColor): Integer; overload;
     function AddY(
       AY: Double; ALabel: String = ''; AColor: TColor = clTAColor): Integer; inline;
-    procedure Clear; inline;
+    procedure Clear; virtual;
     function Count: Integer; inline;
     procedure Delete(AIndex: Integer); virtual;
     function Extent: TDoubleRect; virtual;
@@ -228,11 +231,20 @@ type
 
   TLinearMarkPositions = (lmpOutside, lmpPositive, lmpNegative, lmpInside);
 
+  TSeriesPointerCustomDrawEvent = procedure (
+    ASender: TChartSeries; ADrawer: IChartDrawer; AIndex: Integer;
+    ACenter: TPoint) of object;
+
+  TSeriesPointerStyleEvent = procedure (ASender: TChartSeries;
+    AValueIndex: Integer; var AStyle: TSeriesPointerStyle) of object;
+
   { TBasicPointSeries }
 
   TBasicPointSeries = class(TChartSeries)
   strict private
     FMarkPositions: TLinearMarkPositions;
+    FOnCustomDrawPointer: TSeriesPointerCustomDrawEvent;
+    FOnGetPointerStyle: TSeriesPointerStyleEvent;
     function GetLabelDirection(AIndex: Integer): TLabelDirection;
     procedure SetMarkPositions(AValue: TLinearMarkPositions);
     procedure SetPointer(AValue: TSeriesPointer);
@@ -266,6 +278,10 @@ type
   protected
     procedure AfterAdd; override;
     procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
+    property OnCustomDrawPointer: TSeriesPointerCustomDrawEvent
+      read FOnCustomDrawPointer write FOnCustomDrawPointer;
+    property OnGetPointerStyle: TSeriesPointerStyleEvent
+      read FOnGetPointerStyle write FOnGetPointerStyle;
 
   public
     destructor Destroy; override;
@@ -777,14 +793,32 @@ begin
     Exchange(Result.X, Result.Y);
 end;
 
+function TChartSeries.GetGraphPoint(AIndex, AXIndex, AYIndex: Integer): TDoublePoint;
+begin
+  Result.X := GetGraphPointX(AIndex, AXIndex);
+  Result.Y := GetGraphPointY(AIndex, AYIndex);
+  if IsRotated then
+    Exchange(Result.X, Result.Y);
+end;
+
 function TChartSeries.GetGraphPointX(AIndex: Integer): Double;
 begin
   Result := AxisToGraphX(Source[AIndex]^.X);
 end;
 
+function TChartSeries.GetGraphPointX(AIndex, AXIndex: Integer): Double;
+begin
+  Result := AxisToGraphX(Source[AIndex]^.GetX(AXIndex));
+end;
+
 function TChartSeries.GetGraphPointY(AIndex: Integer): Double;
 begin
   Result := AxisToGraphY(Source[AIndex]^.Y);
+end;
+
+function TChartSeries.GetGraphPointY(AIndex, AYIndex: Integer): Double;
+begin
+  Result := AxisToGraphY(Source[AIndex]^.GetY(AYIndex));
 end;
 
 procedure TChartSeries.GetMax(out X, Y: Double);
@@ -1071,6 +1105,7 @@ var
   i: Integer;
   p: TDoublePoint;
   ai: TPoint;
+  ps, saved_ps: TSeriesPointerStyle;
 begin
   Assert(Pointer <> nil, 'Series pointer');
   if not Pointer.Visible then exit;
@@ -1078,8 +1113,23 @@ begin
     p := FGraphPoints[i - FLoBound];
     if not ParentChart.IsPointInViewPort(p) then continue;
     ai := ParentChart.GraphToImage(p);
-    Pointer.Draw(ADrawer, ai, Source[i]^.Color);
-    AfterDrawPointer(ADrawer, i, ai);
+    if Assigned(FOnCustomDrawPointer) then
+      FOnCustomDrawPointer(Self, ADrawer, i, ai)
+    else begin
+      if Assigned(FOnGetPointerStyle) then begin
+        saved_ps := Pointer.Style;
+        ps := saved_ps;
+        FOnGetPointerStyle(self, i, ps);
+        Pointer.SetOwner(nil);   // avoid recursion
+        Pointer.Style := ps;
+      end;
+      Pointer.Draw(ADrawer, ai, Source[i]^.Color);
+      AfterDrawPointer(ADrawer, i, ai);
+      if Assigned(FOnGetPointerStyle) then begin
+        Pointer.Style := saved_ps;
+        Pointer.SetOwner(ParentChart);
+      end;
+    end;
   end;
 end;
 

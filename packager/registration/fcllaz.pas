@@ -2,8 +2,9 @@
   This source is only used to compile and install the package.
  }
 
-unit fcllaz; 
+unit fcllaz;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
@@ -11,11 +12,11 @@ uses
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('RegisterFCL', @RegisterFCL.Register); 
-end; 
+  RegisterUnit('RegisterFCL', @RegisterFCL.Register);
+end;
 
 initialization
-  RegisterPackage('FCL', @Register); 
+  RegisterPackage('FCL', @Register);
 end.

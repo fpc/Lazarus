@@ -289,11 +289,18 @@ begin
 end;
 
 procedure TCustomLabel.UpdateSize;
+var
+  OldWidth, OldLeft: Integer;
 begin
+  OldWidth := Width;
+  OldLeft := Left;
   InvalidatePreferredSize;
   if OptimalFill and (not AutoSize) then
     AdjustFontForOptimalFill;
   AdjustSize;
+  if (AutoSize or OptimalFill) and (Alignment=taRightJustify)
+  and (OldWidth<>Width) and (OldLeft=Left) then
+    Left := Left-Width+OldWidth;
 end;
 
 {-------------------------------------------------------------------------------

@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
-"Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"PO-Revision-Date: 2015-04-22 16:18+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
+"PO-Revision-Date: 2016-07-08 14:14+0200\n"
 "Project-Id-Version: lazreport\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.8\n"
 "MIME-Version: 1.0\n"
 "Project-Id-Version: lazreport\n"
 "POT-Creation-Date: \n"
@@ -634,6 +634,54 @@ msgstr "&Variable"
 msgid "&Word wrap"
 msgstr "&Mots entiers"
 
+#: lr_const.serrexpectedassign
+msgid "Expected \":=\""
+msgstr "\":=\" attendu"
+
+#: lr_const.serrexpectedclosingbracket1
+msgid "Expected \")\""
+msgstr "\")\" attendu"
+
+#: lr_const.serrexpectedclosingbracket2
+msgid "Expected \"]\""
+msgstr "\"]\" attendu"
+
+#: lr_const.serrexpectedcomma
+msgid "Expected \",\" or \")\""
+msgstr "\",\" ou \")\" attendu"
+
+#: lr_const.serrexpecteddo
+msgid "Expected \"do\""
+msgstr "\"do\" attendu"
+
+#: lr_const.serrexpectedend
+msgid "Expected \";\" or \"end\""
+msgstr "\";\" ou \"end\" attendu"
+
+#: lr_const.serrexpectedthen
+msgid "Expected \"then\""
+msgstr "\"then\" attendu"
+
+#: lr_const.serrexpecteduntil
+msgid "Expected \";\" or \"until\""
+msgstr "\";\" ou \"until\" attendu"
+
+#: lr_const.serrlabelgoto
+msgid "Label in goto must be a number"
+msgstr "L'étiquette pour \"Goto\" doit être un nombre"
+
+#: lr_const.serrline
+msgid "Line"
+msgstr "Ligne"
+
+#: lr_const.serrneeddo
+msgid "Need \"do\" here"
+msgstr "\"do\" nécessaire ici"
+
+#: lr_const.serrneedto
+msgid "Need \"to\" here"
+msgstr "\"to\" nécessaire ici"
+
 #: lr_const.serror
 msgid "Error"
 msgstr "Erreur"
@@ -1096,7 +1144,7 @@ msgstr "Tout sélectionner"
 
 #: lr_const.sfrdesignerformselectsameclass
 msgid "Select same class objects"
-msgstr "Sélectionnez les objets de mêmes classes"
+msgstr "Sélectionner les objets de mêmes classes"
 
 #: lr_const.sfrdesignerformselobj
 msgid "Select object"
@@ -1548,6 +1596,14 @@ msgstr "Non"
 msgctxt "lr_const.snotassigned"
 msgid "[None]"
 msgstr "[Aucun]"
+
+#: lr_const.snovalidexportfilenamewassupplied
+msgid "No valid export filename was supplied"
+msgstr "Aucun nom de fichier correct n'a été fourni"
+
+#: lr_const.snovalidfilterclasswassupplied
+msgid "No valid filterclass was supplied"
+msgstr "Aucun filtre de classe correct n'a été fourni"
 
 #: lr_const.sobjectinspector
 msgid "Object inspector"
@@ -2295,6 +2351,14 @@ msgstr "Afficher dans toutes les pages"
 msgid "Report file"
 msgstr "Fichier du rapport"
 
+#: lr_const.sreportcorruptoldknowversion
+msgid "This report is corrupt, it probably needs \"LRE_OLDV%d_FRF_READ\"=true"
+msgstr "Ce rapport est endommagé. Il nécessite probablement  que \"LRE_OLDV%d_FRF_READ\" soit vrai"
+
+#: lr_const.sreportcorruptunknownversion
+msgid "This report is corrupt, frVersion=%d"
+msgstr "Ce rapport est corrompu. frVersion = %d"
+
 #: lr_const.sreportcreatedate
 msgid "Report creation date"
 msgstr "Date de création du rapport"
@@ -2597,3 +2661,4 @@ msgstr "Retour automatique à la ligne"
 #: lr_const.syes
 msgid "Yes"
 msgstr "Oui"
+

@@ -6938,9 +6938,15 @@ begin
           DefaultSelectionMode := SEL_MODE[Command];
         end;
       EcFoldLevel1..EcFoldLevel9:
-        FoldAll(Command - EcFoldLevel1);
+        begin
+          FoldAll(Command - EcFoldLevel1);
+          FCaret.Touch;
+        end;
       EcFoldLevel0:
-        UnfoldAll;
+        begin
+          UnfoldAll;
+          FCaret.Touch;
+        end;
       EcFoldCurrent:
         begin
           CY := FFoldedLinesView.ExpandedLineForBlockAtLine(CaretY);
@@ -6950,7 +6956,10 @@ begin
           end;
         end;
       EcUnFoldCurrent:
+        begin
           FFoldedLinesView.UnFoldAtTextIndex(CaretY-1);
+          FCaret.Touch;
+        end;
       EcToggleMarkupWord:
           FMarkupHighCaret.ToggleCurrentWord;
       ecZoomOut, ecZoomIn: begin
@@ -8163,9 +8172,9 @@ begin
     end else begin
       BB := BlockBegin;
       BE := BlockEnd;
-      if (BE.X = 1)
-      then e := BE.y - 1
-      else e := BE.y;
+      if FBlockSelection.LastLineHasSelection
+      then e := BE.y
+      else e := BE.y - 1;
     end;
 
     Spaces := StringOfChar(#32, FBlockIndent);
@@ -8228,10 +8237,10 @@ begin
     BB := BlockBegin;
     BE := BlockEnd;
     // convert selection to complete lines
-    if BE.X = 1 then
-      e := BE.y - 1
+    if FBlockSelection.LastLineHasSelection then
+      e := BE.y
     else
-      e := BE.y;
+      e := BE.y - 1;
   end;
 
   IncPaintLock;
@@ -8533,6 +8542,7 @@ var
   StartPt: TPoint;
   // for ContextMatch
   BracketKind, TmpStart: Integer;
+  SearchingForward: Boolean;
   TmpAttr : TSynHighlighterAttributes;
   // for IsContextBracket
   MaxKnownTokenPos, LastUsedTokenIdx, TokenListCnt: Integer;
@@ -8594,7 +8604,8 @@ var
     while (i > 0) and (TokenPosList[i].X > PosX) do
       dec(i);
     Result := TokenPosList[i].Attr = BracketKind;
-    LastUsedTokenIdx := i;
+    if not SearchingForward then
+      LastUsedTokenIdx := i;
   end;
 
   procedure DoMatchingBracketFound;
@@ -8643,7 +8654,8 @@ var
     PrevPosX := -1;
     PrevCnt := 0;
     // search until start of line
-     while PosX > 1 do begin
+    SearchingForward := False;
+    while PosX > 1 do begin
       Dec(PosX);
       Test := Line[PosX];
       if (Test = q) and IsContextBracket then begin
@@ -8660,6 +8672,8 @@ var
 
     PosX := Len;
     Len := Length(Line);
+    SearchingForward := True;
+    LastUsedTokenIdx := TokenListCnt;
     while PosX < Len do begin
       Inc(PosX);
       Test := Line[PosX];
@@ -8690,6 +8704,7 @@ var
     NumBrackets := 1;
     if Odd(i) then begin
       // closing bracket -> search opening bracket
+      SearchingForward := False;
       repeat
         // search until start of line
         while PosX > 1 do begin
@@ -8718,6 +8733,7 @@ var
       until FALSE;
     end else begin
       // opening bracket -> search closing bracket
+      SearchingForward := True;
       repeat
         // search until end of line
         Len := Length(Line);

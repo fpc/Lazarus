@@ -31,12 +31,13 @@ unit UsedUnits;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs,
+  Classes, SysUtils, AVL_Tree, Forms, Controls, Dialogs,
   // IDE
   LazarusIDEStrConsts, IDEExternToolIntf,
   // codetools
-  CodeToolManager, StdCodeTools, CodeTree, CodeToolsStructs, AVL_Tree,
-  LinkScanner, KeywordFuncLists, SourceChanger, CodeAtom, CodeToolsStrConsts, FileProcs,
+  CodeToolManager, StdCodeTools, CustomCodeTool, CodeTree, CodeAtom, CodeCache,
+  LinkScanner, KeywordFuncLists, SourceChanger, CodeToolsStrConsts, CodeToolsStructs,
+  FileProcs,
   // Converter
   ConverterTypes, ConvCodeTool, ConvertSettings, ReplaceNamesUnit;
 
@@ -137,6 +138,7 @@ type
     procedure AddUnitIfNeeded(aUnitName: string);
     function AddThreadSupport: TModalResult;
   public
+    property Filename: string read fFilename;
     property IsMainFile: Boolean read fIsMainFile write fIsMainFile;
     property IsConsoleApp: Boolean read fIsConsoleApp write fIsConsoleApp;
     property MainUsedUnits: TUsedUnits read fMainUsedUnits;
@@ -214,6 +216,7 @@ function TUsedUnits.FindMissingUnits: boolean;
 var
   UsesNode: TCodeTreeNode;
   InAtom, UnitNameAtom: TAtomPosition;
+  CaretPos: TCodeXYPosition;
   OldUnitName, OldInFilename: String;
   NewUnitName, NewInFilename: String;
   FullFileN, LowFileN: String;
@@ -247,8 +250,10 @@ begin
           if NewUnitName<>OldUnitName then begin
             // Character case differs, fix it.
             fUnitsToFixCase[OldUnitName]:=NewUnitName;
-            Settings.AddLogLine(Format(lisConvDelphiFixedUnitCase,
-                                       [OldUnitName, NewUnitName]));
+            if CodeTool.CleanPosToCaret(UnitNameAtom.StartPos, CaretPos) then
+              Settings.AddLogLine(mluNote,
+                Format(lisConvDelphiFixedUnitCase, [OldUnitName, NewUnitName]),
+                fOwnerTool.fFilename, CaretPos.Y, CaretPos.X);
           end;
           // Report Windows specific units as missing if target is CrossPlatform.
           //  Needed if work-platform is Windows.
@@ -309,8 +314,9 @@ begin
         fUnitsToRename[AOldName]:=ANewName;
         fUnitsToRenameKeys.Add(AOldName);
         fUnitsToRenameVals.AddStrings(sl);
-        fCTLink.Settings.AddLogLine(Format(lisConvDelphiReplacedUnitInUsesSection,
-                                           [AOldName, ANewName]));
+        fCTLink.Settings.AddLogLine(mluNote,
+          Format(lisConvDelphiReplacedUnitInUsesSection, [AOldName, ANewName]),
+          fOwnerTool.fFilename);
       end;
     finally
       sl.Free;
@@ -322,8 +328,9 @@ begin
       AOldName:=Copy(AOldName, 1, i-1);  // Strip the file name part.
     if fUnitsToRemove.IndexOf(AOldName)=-1 then
       fUnitsToRemove.Add(AOldName);
-    fCTLink.Settings.AddLogLine(Format(lisConvDelphiRemovedUnitInUsesSection,
-                                       [AOldName]));
+    fCTLink.Settings.AddLogLine(mluNote,
+      Format(lisConvDelphiRemovedUnitInUsesSection, [AOldName]),
+      fOwnerTool.fFilename);
   end;
 end;
 
@@ -776,7 +783,8 @@ procedure TUsedUnitsTool.AddUnitIfNeeded(aUnitName: string);
 begin
   if not HasUnit(aUnitName) then begin
     fMainUsedUnits.fUnitsToAdd.Add(aUnitName);
-    fCTLink.Settings.AddLogLine(Format(lisConvAddedUnitToUsesSection, [aUnitName]));
+    fCTLink.Settings.AddLogLine(mluNote,
+      Format(lisConvAddedUnitToUsesSection,[aUnitName]), fFilename);
     MaybeOpenPackage(aUnitName);
   end;
 end;

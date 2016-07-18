@@ -1,12 +1,6 @@
 {
- /***************************************************************************
-                               fileutil.pas
-                               ------------
-
- ***************************************************************************/
-
  *****************************************************************************
-  This file is part of the LazUtils package.
+  This file is part of LazUtils.
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
@@ -28,12 +22,13 @@ the LazFileUtils unit.
 unit FileUtil;
 
 {$mode objfpc}{$H+}
+{$i lazutils_defines.inc}
 
 interface
 
 uses
   Classes, SysUtils,
-  Masks, LazUTF8, LazFileUtils;
+  Masks, LazUTF8, LazFileUtils, StrUtils;
   
 {$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}
@@ -53,7 +48,7 @@ const
 // AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, MacOSX
 // but normally these OS use UTF-8 as system encoding so the widestringmanager
 // is not needed.
-{$IFnDEF DisableWrapperFunctions}
+{$IFDEF EnableWrapperFunctions}
 // *** Wrappers for LazUTF8 ***
 function NeedRTLAnsi: boolean; inline; deprecated 'Use the function in LazUTF8 unit';
 procedure SetNeedRTLAnsi(NewValue: boolean); inline; deprecated 'Use the function in LazUTF8 unit';
@@ -132,7 +127,7 @@ function CreateRelativePath(const Filename, BaseDirectory: string;
 function GetDarwinSystemFilename(Filename: string): string; inline;
 {$ENDIF}
 
-{$ENDIF DisableWrapperFunctions}
+{$ENDIF EnableWrapperFunctions}
 
 // file and directory operations
 function ComparePhysicalFilenames(const Filename1, Filename2: string): integer;

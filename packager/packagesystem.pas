@@ -335,7 +335,7 @@ type
                                  var PkgList: TFPList; var Tree: TPkgPairTree);
     function GetBrokenDependenciesWhenChangingPkgID(APackage: TLazPackage;
                          const NewName: string; NewVersion: TPkgVersion): TFPList;
-    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList); // returns list of new filename and TLazPackage
+    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList; IgnoreModifiedFlag: boolean = False); // returns list of new filename and TLazPackage
     procedure GetAllRequiredPackages(APackage: TLazPackage; // if not nil then ignore FirstDependency and do not add APackage to Result
                                      FirstDependency: TPkgDependency;
                                      out List: TFPList;
@@ -362,7 +362,7 @@ type
     // packages handling
     function CreateNewPackage(const Prefix: string): TLazPackage;
     procedure AddPackage(APackage: TLazPackage);
-    procedure ReplacePackage(OldPackage, NewPackage: TLazPackage);
+    procedure ReplacePackage(var OldPackage: TLazPackage; NewPackage: TLazPackage);
     procedure ClosePackage(APackage: TLazPackage);
     procedure CloseUnneededPackages;
     procedure ChangePackageID(APackage: TLazPackage;
@@ -2071,7 +2071,8 @@ begin
   EndUpdate;
 end;
 
-procedure TLazPackageGraph.ReplacePackage(OldPackage, NewPackage: TLazPackage);
+procedure TLazPackageGraph.ReplacePackage(var OldPackage: TLazPackage;
+  NewPackage: TLazPackage);
 
   procedure MoveInstalledComponents(OldPkgFile: TPkgFile);
   var
@@ -2118,6 +2119,7 @@ begin
     MoveInstalledComponents(OldPackage.RemovedFiles[i]);
   // delete old package
   Delete(fItems.IndexOf(OldPackage));
+  OldPackage:=nil;
   // restore flags
   NewPackage.Installed:=OldInstalled;
   NewPackage.AutoInstall:=OldAutoInstall;
@@ -4224,11 +4226,14 @@ begin
       // it is not needed because it is the location of the Makefile.compiled
       s:=s+' '+SwitchPathDelims(CreateRelativePath(APackage.GetSrcFilename,APackage.Directory),pdsUnix);
       if ConsoleVerbosity>1 then
-        debugln(['Hint: (lazarus) writing Makefile.compiled IncPath="',IncPath,'" UnitPath="',UnitPath,'" Custom="',OtherOptions,'" Makefile.compiled="',TargetCompiledFile,'"']);
+        debugln(['Hint: (lazarus) writing ',TargetCompiledFile,' IncPath="',IncPath,'" UnitPath="',UnitPath,'" Custom="',OtherOptions,'" Makefile.compiled="',TargetCompiledFile,'"']);
       XMLConfig.SetValue('Params/Value',s);
       if XMLConfig.Modified then begin
         InvalidateFileStateCache;
         XMLConfig.Flush;
+      end else begin
+        if ConsoleVerbosity>1 then
+          debugln(['Hint: (lazarus) not writing ',TargetCompiledFile,', because nothing changed']);
       end;
     finally
       XMLConfig.Free;
@@ -4319,6 +4324,7 @@ var
   FormIncPath: String;
   Executable: String;
   DistCleanDir: String;
+  NeedFPCMake: Boolean;
 begin
   Result:=mrCancel;
   PathDelimNeedsReplace:=PathDelim<>'/';
@@ -4492,28 +4498,39 @@ begin
     end;
   end;
 
-  if ExtractCodeFromMakefile(CodeBuffer.Source)=ExtractCodeFromMakefile(s)
+  NeedFPCMake:=false;
+  if ExtractCodeFromMakefile(CodeBuffer.Source)<>ExtractCodeFromMakefile(s)
   then begin
-    // Makefile.fpc not changed
-    Result:=mrOk;
-    exit;
-  end;
-  CodeBuffer.Source:=s;
+    // Makefile.fpc changed
+    CodeBuffer.Source:=s;
 
-  //debugln('TPkgManager.DoWriteMakefile MakefileFPCFilename="',MakefileFPCFilename,'"');
-  Result:=SaveCodeBufferToFile(CodeBuffer,MakefileFPCFilename);
-  if Result<>mrOk then begin
-    if not DirectoryIsWritableCached(ExtractFilePath(MakefileFPCFilename)) then
-    begin
-      // the package source is read only => no problem
-      Result:=mrOk;
+    //debugln('TPkgManager.DoWriteMakefile MakefileFPCFilename="',MakefileFPCFilename,'"');
+    Result:=SaveCodeBufferToFile(CodeBuffer,MakefileFPCFilename);
+    if Result<>mrOk then begin
+      if not DirectoryIsWritableCached(ExtractFilePath(MakefileFPCFilename)) then
+      begin
+        // the package source is read only => no problem
+        if ConsoleVerbosity>0 then
+          debugln(['Note: (lazarus) [TLazPackageGraph.WriteMakeFile] not writing "',MakefileFPCFilename,'" because dir not writable, ignoring...']);
+        Result:=mrOk;
+      end;
+      exit;
     end;
-    exit;
+    NeedFPCMake:=true;
   end;
 
   Executable:=FindFPCTool('fpcmake'+GetExecutableExt,
                                   EnvironmentOptions.GetParsedCompilerFilename);
-  if not FileIsExecutableCached(Executable) then
+  if FileIsExecutableCached(Executable) then begin
+    if (not NeedFPCMake)
+    and (FileAgeUTF8(MakefileFPCFilename)<FileAgeCached(Executable)) then begin
+      if ConsoleVerbosity>=-1 then
+        debugln(['Hint: (lazarus) [TLazPackageGraph.WriteMakeFile] "',Executable,'" is newer than "',MakefileFPCFilename,'"']);
+      NeedFPCMake:=true;// fpcmake is newer than Makefile.fpc
+    end;
+    if not NeedFPCMake then
+      exit(mrOk);
+  end else
     Executable:='fpcmake'+GetExecutableExt;
 
   // call fpcmake to create the Makefile
@@ -4526,7 +4543,6 @@ begin
                       'FPCDIR='+EnvironmentOptions.GetParsedFPCSourceDirectory);
   FPCMakeTool.Execute;
   FPCMakeTool.WaitForExit;
-
   Result:=mrOk;
 end;
 
@@ -4673,7 +4689,7 @@ begin
   s:=s+'begin'+e;
   s:=s+'  with Installer do'+e;
   s:=s+'    begin'+e;
-  s:=s+'    P:=AddPAckage('''+lowercase(APackage.Name)+''');'+e;
+  s:=s+'    P:=AddPackage('''+lowercase(APackage.Name)+''');'+e;
   s:=s+'    P.Version:='''+APackage.Version.AsString+''';'+e;
   s:=s+''+e;
   s:=s+'    P.Directory:=ADirectory;'+e;
@@ -5091,13 +5107,14 @@ begin
   end;
   // create source
   BeautifyCodeOptions:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions;
-  // keep in english to avoid svn updates
+  // do not translate to avoid svn updates
   HeaderSrc:= '{ This file was automatically created by Lazarus. Do not edit!'+e
            +'  This source is only used to compile and install the package.'+e
            +' }'+e+e;
   // leave the unit case the same as the package name (e.g: package name LazReport, unit name lazreport)
   Src:='unit '+ PkgUnitName +';'+e
       +e
+      +'{$warn 5023 off : no warning about unused units}'+e
       +'interface'+e
       +e;
   Src:=BeautifyCodeOptions.BeautifyStatement(Src,0);
@@ -5163,7 +5180,7 @@ begin
 end;
 
 procedure TLazPackageGraph.GetPackagesChangedOnDisk(out
-  ListOfPackages: TStringList);
+  ListOfPackages: TStringList; IgnoreModifiedFlag: boolean);
 // if package source is changed in IDE (codetools)
 // then changes on disk are ignored
 var
@@ -5195,7 +5212,7 @@ begin
     NewFilename:=APackage.Filename;
     if FileExistsCached(APackage.Filename) then begin
       if (APackage.LPKSource<>nil)
-      and (not APackage.LPKSource.FileNeedsUpdate) then
+      and (not APackage.LPKSource.FileNeedsUpdate(IgnoreModifiedFlag)) then
         continue;
       // a lpk has changed, this might include dependencies => reload lpl files
       UpdateGlobalLinks;

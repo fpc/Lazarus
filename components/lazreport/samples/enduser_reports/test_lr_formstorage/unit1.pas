@@ -5,7 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LR_Class, LR_Desgn, LRDialogControls, Forms,
+  Classes, SysUtils, LR_Class, LR_Desgn, LRDialogControls, Forms,
   Controls, Graphics, Dialogs, StdCtrls;
 
 type
@@ -32,6 +32,9 @@ var
 implementation
 
 {$R *.lfm}
+
+uses
+  lazfileutils, lazutf8;
 
 { TForm1 }
 

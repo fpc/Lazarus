@@ -115,7 +115,7 @@ resourcestring
 
   sld_FirstStart = 'First start of database desktop';
   sql_NoConnectionsFound = 'No connections or data dictionaries were found.'#13#10+
-                           ' Start by creating a new connection or data dictionary';
+                           ' Start by creating a new connection or data dictionary.';
   sld_startnewdict = 'Start new dictionary';
   sld_startnewconnection = 'Create new connection';
   sld_startempty = 'Thanks, I know what to do';
@@ -201,6 +201,7 @@ resourcestring
   sld_Menudictionary         = '&Dictionary';
   sld_Menuconnections        = 'Connections';
   sld_Menudictionaryimport   = '&Import';
+  sld_View = 'View';
   //
   sld_Actionsave           = '&Save';
   sld_ActionsaveH          = 'Save Data Dictionary';
@@ -256,6 +257,7 @@ resourcestring
   //
   sld_Dictionaries         = 'Dictionaries';
   sld_Connections          = 'Connections';
+  sld_ConnectionsDictionaries = 'Connections/Dictionaries';
   //
   sld_Recentlv1            = 'Name';
   sld_Recentlv2            = 'Filename';
@@ -273,7 +275,6 @@ resourcestring
   //
   sld_Fromconnection       = 'From connection';
   //
-  sld_ConnectionType = 'Connection type';
   sld_LegacyView = 'Legacy List View';
 
 implementation

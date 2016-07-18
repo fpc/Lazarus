@@ -49,6 +49,7 @@ type
     SynPasSyn1: TSynPasSyn;
     procedure Button3Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure M1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
@@ -57,33 +58,32 @@ type
     procedure M1Enter(Sender: TObject);
     procedure CB1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure FormHide(Sender: TObject);
     procedure CB2Click(Sender: TObject);
     procedure CB3Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Button5Click(Sender: TObject);
-    procedure FormResize(Sender: TObject);
   private
     { Private declarations }
     FActiveMemo: TWinControl;
-    //** procedure WMGetMinMaxInfo(var Msg: TLMGetMinMaxInfo); message LM_GETMINMAXINFO;
     procedure InsertText(const S:string);
+    function CheckScript:boolean;
   public
-    { Public declarations }
-    function ShowEditor: TModalResult; override;
+    function ShowEditor(AView: TfrView): TModalResult; virtual;
   end;
 
 implementation
 
 {$R *.lfm}
 
-uses LR_Desgn, LR_Fmted, LR_Var, LR_Flds, LR_Const, lr_expres;
+uses LR_Desgn, LR_Fmted, LR_Var, LR_Flds, LR_Const, lr_expres, strutils;
 
-function TfrEditorForm.ShowEditor: TModalResult;
+function TfrEditorForm.ShowEditor(AView: TfrView): TModalResult;
 begin
-  Result := mrCancel;
-  if Assigned(View) then
-    Result := inherited ShowEditor;
+  Button5.Enabled:=Assigned(AView);
+  CB1.Enabled:=Assigned(AView);
+  CB2.Enabled:=Assigned(AView);
+  CB3.Enabled:=Assigned(AView);
+  Result := inherited ShowEditor(AView);
 end;
 
 procedure TfrEditorForm.FormShow(Sender: TObject);
@@ -123,32 +123,6 @@ begin
   {$ENDIF}
 end;
 
-procedure TfrEditorForm.FormHide(Sender: TObject);
-begin
-  if ModalResult = mrOk then
-  begin
-    frDesigner.BeforeChange;
-    M1.WordWrap := False;
-    if Assigned(View) then
-    begin
-      View.Memo.Text := M1.Text;
-      View.Script.Text := M2.Text;
-    end;
-  end;
-end;
-
-//**
-{
-procedure TfrEditorForm.WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo);
-begin
-  with Msg.MinMaxInfo^ do
-  begin
-    ptMinTrackSize.x := Button2.Left + Button2.Width + 4 + 8;
-    ptMinTrackSize.y := 200;
-  end;
-end;
-}
-
 procedure TfrEditorForm.Button3Click(Sender: TObject);
 begin
   frVarForm := TfrVarForm.Create(Application);
@@ -171,6 +145,26 @@ begin
       InsertText(lrExpresionEditorForm.ResultExpresion);
   finally
     lrExpresionEditorForm.Free;
+  end;
+end;
+
+procedure TfrEditorForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
+begin
+  if ModalResult = mrOk then
+  begin
+    CanClose:=CheckScript;
+    if CanClose then
+    begin
+      frDesigner.BeforeChange;
+      M1.WordWrap := False;
+      if Assigned(View) then
+      begin
+        View.Memo.Text := M1.Text;
+        View.Script.Text := M2.Text;
+      end;
+    end
+    else
+      ModalResult:=mrNone;
   end;
 end;
 
@@ -262,6 +256,7 @@ procedure TfrEditorForm.Button5Click(Sender: TObject);
 var
   t: TfrMemoView;
 begin
+  if not Assigned(View) then Exit;
   t := TfrMemoView(View);
   frFmtForm := TfrFmtForm.Create(nil);
   with frFmtForm do
@@ -278,15 +273,6 @@ begin
   frFmtForm.Free;
 end;
 
-procedure TfrEditorForm.FormResize(Sender: TObject);
-begin
-  //**
-  {
-  ptMinTrackSize.x := Button2.Left + Button2.Width + 4 + 8;
-  ptMinTrackSize.y := 200;
-  }
-end;
-
 procedure TfrEditorForm.InsertText(const S: string);
 begin
   if S<>'' then
@@ -296,6 +282,41 @@ begin
     else
     if FActiveMemo is TSynEdit then
       TSynEdit(FActiveMemo).SelText:='['+S+']'
+  end;
+end;
+
+function TfrEditorForm.CheckScript: boolean;
+var
+  sl1, sl2: TStringList;
+
+procedure ErrorPosition(S:string);
+var
+  X, Y: LongInt;
+begin
+  if Pos('/', S) = 0 then exit;
+
+  Y := StrToInt(Copy2SymbDel(S, '/'));
+  X := StrToInt(Copy2SymbDel(S,':'));
+  M2.CaretX:=X;
+  M2.CaretY:=Y;
+  M2.SetFocus;
+end;
+
+begin
+  Result:=true;
+  sl1 := TStringList.Create;
+  sl2 := TStringList.Create;
+  try
+    frInterpretator.PrepareScript(M2.Lines, sl1, sl2);
+    if sl2.Count > 0 then
+    begin
+      ErrorPosition(Copy(sl2.Text, Length(sErrLine)+1, Length(sl2.Text)));
+      ShowMessage(sl2.Text);
+      Result:=false;
+    end;
+  finally
+    sl1.Free;
+    sl2.Free;
   end;
 end;
 

@@ -10,15 +10,6 @@
 
 unit LR_View;
 
-(*
-Notes
-  Not implemented because TMetaFile not exists :
-  
-  procedure TfrPreviewForm.FindText;
-  procedure TfrPreviewForm.FindInEMF(emf: TMetafile);
-
-*)
-
 interface
 
 {$I LR_Vers.inc}
@@ -884,11 +875,25 @@ end;
 
 function TfrPreviewForm.ExportToWithFilterIndex(AFilterIndex: Integer;
   const AFileName: string):boolean;
+var
+  S, S1:string;
+  i: SizeInt;
 begin
   if (AFilterIndex<0) or (AFilterIndex>=ExportFilters.Count) then
     raise exception.Create(sExportFilterIndexError);
   ConnectBack;
-  TfrReport(Doc).ExportTo(ExportFilters[AFilterIndex].ClassRef, AFileName);
+
+  S:=Trim(AFileName);
+  if (S <> '') and (ExtractFileExt(S) = '') and (S[Length(S)]<>'.') then
+  begin
+    S1:=ExportFilters[AFilterIndex].FilterExt;
+    i:=Pos('.', S1);
+    if i>0 then
+      Delete(S1, 1, i-1);
+    S:=S+S1;
+  end;
+
+  TfrReport(Doc).ExportTo(ExportFilters[AFilterIndex].ClassRef, S);
   Connect(Doc);
   Result:=true;
 end;
@@ -1347,66 +1352,52 @@ end;
 
 procedure TfrPreviewForm.SaveBtnClick(Sender: TObject);
 var
-  i, Index, IndexOffset: Integer;
-  FilterStr, FilterExtension, FileExtension: String;
+  i, Index: Integer;
+  FilterStr: string;
   FilterInfo: TExportFilterItem;
   FExtList:TStringList;
 begin
   if EMFPages = nil then Exit;
   FExtList:=TStringList.Create;
-  Index := 1;
-  if not (roHideDefaultFilter in TfrReport(Doc).Options) then
-  begin
-    FExtList.Add('*.frp');
-    FilterStr := sRepFile + ' (*.frp)|*.frp';
-    IndexOffset := 2;
-  end
-  else
-  begin
-    FilterStr := '';
-    IndexOffset := 1;
-  end;
-  FileExtension := ExtractFileExt(SaveDialog.FileName);
-
-  for i := 0 to ExportFilters.Count - 1 do
-  begin
-    FilterInfo := ExportFilters[i];
-    if FilterInfo.Enabled then
+  try
+    Index := 1;
+    if not (roHideDefaultFilter in TfrReport(Doc).Options) then
     begin
-      FExtList.Add(FilterInfo.FilterExt);
-      if FilterStr <> '' then
-        FilterStr := FilterStr + '|';
-      FilterStr := FilterStr + FilterInfo.FilterDesc + '|' + FilterInfo.FilterExt;
-      FilterExtension := ExtractFileExt(FilterInfo.FilterExt);
-      if (Index = 1) and (Comparetext(FilterExtension, FileExtension)=0) then
-        Index := i + IndexOffset;
-    end;
-  end;
+      FExtList.Add('*.frp');
+      FilterStr := sRepFile + ' (*.frp)|*.frp';
+    end else
+      FilterStr := '';
 
-  SaveDialog.Filter := FilterStr;
-  SaveDialog.FilterIndex := Index;
-  if SaveDialog.Execute then
-  begin
-    FileExtension:=ExtractFileExt(SaveDialog.FileName);
-    if FileExtension = '' then
-      FileExtension:=UTF8Copy(FExtList[SaveDialog.FilterIndex - 1], 2, UTF8Length(FExtList[SaveDialog.FilterIndex - 1]) - 1);
-
-    if FileExtension = '.frp' then
-      SaveToFile(SaveDialog.FileName)
-    else
+    for i := 0 to ExportFilters.Count - 1 do
     begin
-      for i := 0 to ExportFilters.Count - 1 do
+      FilterInfo := ExportFilters[i];
+      if FilterInfo.Enabled then
       begin
-        FilterInfo := ExportFilters[i];
-        if FilterInfo.Enabled and (FileExtension = UTF8Copy(FilterInfo.FilterExt, 2, UTF8Length(FilterInfo.FilterExt) - 1)) then
-        begin
-          ExportToWithFilterIndex(i, ChangeFileExt(SaveDialog.FileName, FileExtension));
-          break;
-        end;
+        FExtList.AddObject(FilterInfo.FilterExt, TObject(PtrInt(i+1)));
+        if FilterStr <> '' then
+          FilterStr := FilterStr + '|';
+        FilterStr := FilterStr + FilterInfo.FilterDesc + '|' + FilterInfo.FilterExt;
       end;
     end;
+
+    SaveDialog.Filter := FilterStr;
+    SaveDialog.FilterIndex := Index;
+    if SaveDialog.Execute then
+    begin
+      Index := SaveDialog.FilterIndex - 1;
+      if fExtList.Objects[Index]=nil then
+        SaveToFile(SaveDialog.Filename) // using .frp
+      else
+      begin
+        Index := PtrInt(fExtList.Objects[Index])-1;
+        ExportToWithFilterIndex(Index, SaveDialog.FileName);
+      end;
+    end;
+
+  finally
+    FExtList.Free;
+    ScrollBox1.Invalidate;
   end;
-  FExtList.Free;
 end;
 
 procedure TfrPreviewForm.PrintBtnClick(Sender: TObject);
@@ -1499,85 +1490,6 @@ begin
 
   end;
 end;
-
-//**
-(*
-function EnumEMFRecordsProc(DC: HDC; HandleTable: PHandleTable;
-  EMFRecord: PEnhMetaRecord; nObj: Integer; OptData: Pointer): Bool; stdcall;
-var
-  Typ: Byte;
-  s: String;
-  t: TEMRExtTextOut;
-begin
-  Result := True;
-  Typ := EMFRecord^.iType;
-  if Typ in [83, 84] then
-  begin
-    t := PEMRExtTextOut(EMFRecord)^;
-    s := WideCharLenToString(PWideChar(PChar(EMFRecord) + t.EMRText.offString),
-      t.EMRText.nChars);
-    if not CurPreview.CaseSensitive then s := AnsiUpperCase(s);
-    CurPreview.StrFound := Pos(CurPreview.FindStr, s) <> 0;
-    if CurPreview.StrFound and (RecordNum >= CurPreview.LastFoundObject) then
-    begin
-      CurPreview.StrBounds := t.rclBounds;
-      Result := False;
-    end;
-  end;
-  Inc(RecordNum);
-end;
-*)
-{
-procedure TfrPreviewForm.FindInEMF(emf: TMetafile);
-begin
-  CurPreview := Self;
-  RecordNum := 0;
-  EnumEnhMetafile(0, emf.Handle, @EnumEMFRecordsProc, nil, Rect(0, 0, 0, 0));
-end;
-
-procedure TfrPreviewForm.FindText;
-var
-  EMF: TMetafile;
-  EMFCanvas: TMetafileCanvas;
-  PageInfo: PfrPageInfo;
-begin
-  PaintAllowed := False;
-  StrFound := False;
-  while LastFoundPage < TfrEMFPages(EMFPages).Count do
-  begin
-    PageInfo := TfrEMFPages(EMFPages)[LastFoundPage];
-    EMF := TMetafile.Create;
-    EMF.Width := PageInfo.PrnInfo.PgW;
-    EMF.Height := PageInfo.PrnInfo.PgH;
-    EMFCanvas := TMetafileCanvas.Create(EMF, 0);
-    PageInfo.Visible := True;
-    TfrEMFPages(EMFPages).Draw(LastFoundPage, EMFCanvas,
-      Rect(0, 0, PageInfo.PrnInfo.PgW, PageInfo.PrnInfo.PgH));
-    EMFCanvas.Free;
-
-    FindInEMF(EMF);
-    EMF.Free;
-    if StrFound then
-    begin
-      CurPage := LastFoundPage + 1;
-      ShowPageNum;
-      VScrollBar.Position := PageInfo.r.Top + Round(StrBounds.Top * per) - 10;
-      HScrollBar.Position := PageInfo.r.Left + Round(StrBounds.Left * per) - 10;
-      LastFoundObject := RecordNum;
-      break;
-    end
-    else
-    begin
-      PageInfo.Visible := False;
-      TfrEMFPages(EMFPages).Draw(LastFoundPage, EMFCanvas,
-        Rect(0, 0, PageInfo.PrnInfo.PgW, PageInfo.PrnInfo.PgH));
-    end;
-    LastFoundObject := 0;
-    Inc(LastFoundPage);
-  end;
-  PaintAllowed := True;
-end;
-}
 
 procedure TfrPreviewForm.FindText;
 begin

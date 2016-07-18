@@ -4,6 +4,7 @@
 
 unit weblaz;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
@@ -29,3 +30,4 @@ end;
 initialization
   RegisterPackage('weblaz', @Register);
 end.
+

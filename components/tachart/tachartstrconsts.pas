@@ -14,6 +14,7 @@ resourcestring
   rsColorMapSeries = 'Color map series';
   rsConstantLine = 'Constant line';
   rsCubicSplineSeries = 'Cubic spline series';
+  rsFieldSeries = 'Vector field series';
   rsFunctionSeries = 'Function series';
   rsLeastSquaresFitSeries = 'Least-squares fit series';
   rsLineSeries = 'Line series';

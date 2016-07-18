@@ -34,11 +34,16 @@ unit AddToProjectDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons,
-  ComCtrls, StdCtrls, Dialogs, FileUtil, LazFileUtils, ButtonPanel, AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
+  // LCL
+  Forms, Controls, Buttons, ComCtrls, StdCtrls, Dialogs, ButtonPanel,
+  ListFilterEdit,
+  // LazUtils
+  FileUtil, LazFileUtils,
+  // IDEIntf
   IDEWindowIntf, PackageIntf, IDEDialogs,
-  LazarusIDEStrConsts,
-  Project, PackageDefs, PackageSystem, InputHistory;
+  // IDE
+  LazarusIDEStrConsts, Project, InputHistory, PackageDefs, PackageSystem;
   
 type
   TAddToProjectType = (
@@ -63,6 +68,8 @@ type
     FilesDeleteButton: TBitBtn;
     FilesDirButton: TBitBtn;
     FilesShortenButton: TBitBtn;
+    DependPkgNameListBox: TListBox;
+    DependPkgNameFilter: TListFilterEdit;
     // notebook
     NoteBook: TPageControl;
     AddEditorFilePage: TTabSheet;
@@ -72,7 +79,6 @@ type
     AddFileLabel: TLabel;
     // new required package
     DependPkgNameLabel: TLabel;
-    DependPkgNameComboBox: TComboBox;
     DependMinVersionLabel: TLabel;
     DependMinVersionEdit: TEdit;
     DependMaxVersionLabel: TLabel;
@@ -85,7 +91,7 @@ type
     procedure AddToProjectDialogClose(Sender: TObject;
                                       var {%H-}CloseAction: TCloseAction);
     procedure AddToProjectDialogShow(Sender: TObject);
-    procedure DependPkgNameComboBoxChange(Sender: TObject);
+    procedure DependPkgNameListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure FilesDirButtonClick(Sender: TObject);
     procedure FilesListViewSelectItem(Sender: TObject; {%H-}Item: TListItem;
       {%H-}Selected: Boolean);
@@ -219,7 +225,8 @@ begin
   SelectNext(NoteBook.ActivePage, True, True);
 end;
 
-procedure TAddToProjectDialog.DependPkgNameComboBoxChange(Sender: TObject);
+procedure TAddToProjectDialog.DependPkgNameListBoxSelectionChange(Sender: TObject;
+  User: boolean);
 begin
   CheckNewReqOk;
 end;
@@ -297,7 +304,7 @@ begin
       NewDependency.Flags:=NewDependency.Flags+[pdfMaxVersion];
     end;
 
-    NewDependency.PackageName:=DependPkgNameComboBox.Text;
+    NewDependency.PackageName:=DependPkgNameListBox.Items[DependPkgNameListBox.ItemIndex];
     if not CheckAddingDependency(TheProject,NewDependency) then exit;
 
     // ok
@@ -455,13 +462,9 @@ end;
 procedure TAddToProjectDialog.SetupAddRequirementPage;
 begin
   NewDependPage.Caption := lisProjAddNewRequirement;
-
   DependPkgNameLabel.Caption:=lisProjAddPackageName;
-  DependPkgNameComboBox.Text:='';
-
   DependMinVersionLabel.Caption:=lisProjAddMinimumVersionOptional;
   DependMinVersionEdit.Text:='';
-
   DependMaxVersionLabel.Caption:=lisProjAddMaximumVersionOptional;
   DependMaxVersionEdit.Text:='';
 end;
@@ -501,7 +504,7 @@ end;
 
 function TAddToProjectDialog.CheckNewReqOk: Boolean;
 begin
-  Result:=(DependPkgNameComboBox.Text<>'');
+  Result:=DependPkgNameListBox.ItemIndex>-1;
   ButtonPanel.OkButton.Enabled:=Result;
 end;
 
@@ -596,7 +599,8 @@ begin
     sl.Add(TLazPackageID(ANode.Data).Name);
     ANode:=fPackages.FindSuccessor(ANode);
   end;
-  DependPkgNameComboBox.Items.Assign(sl);
+  DependPkgNameFilter.Items.Assign(sl);
+  DependPkgNameFilter.InvalidateFilter;
   sl.Free;
 end;
 

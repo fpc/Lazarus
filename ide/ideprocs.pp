@@ -38,7 +38,7 @@ uses
   FileUtil, LazFileUtils, LazFileCache, LazUTF8, lazutf8classes,
   AvgLvlTree, Laz2_XMLCfg,
   // IDE
-  LazConf;
+  IDECmdLine, LazConf;
 
 type
   // comments
@@ -430,11 +430,13 @@ end;
 
 function FindFPCTool(const Executable, CompilerFilename: string): string;
 begin
-  DebugLn('FindFPCTool Executable="',Executable,'" CompilerFilename="',CompilerFilename,'"');
+  if ConsoleVerbosity>=0 then
+    DebugLn('Hint: (lazarus) FindFPCTool Executable="',Executable,'" CompilerFilename="',CompilerFilename,'"');
   Result:=FindDefaultExecutablePath(Executable);
   if Result<>'' then exit;
   Result:=AppendPathDelim(ExtractFilePath(CompilerFilename))+Executable;
-  DebugLn('FindFPCTool Try="',Result);
+  if ConsoleVerbosity>=0 then
+    DebugLn('Hint: (lazarus) FindFPCTool Try="',Result);
   if FileExistsUTF8(Result) then exit;
   Result:='';
 end;

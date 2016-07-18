@@ -23,7 +23,7 @@ unit LMessages;
 
 interface
 
-uses Classes, SysUtils, LCLType, GraphType
+uses Classes, SysUtils, Types, LCLType, GraphType
   {$ifdef WINDOWS}
   ,messages
   {$endif WINDOWS}
@@ -626,6 +626,16 @@ type
   TLMRButtonUp = TLMMouse;
   TLMMButtonUp = TLMMouse;
   TLMXButtonUp = TLMMouse;
+
+  TLastMouseInfo = record
+    WinHandle: THandle;
+    WinControl: TObject; // can be nil in special cases
+    MousePos: TPoint;
+    Time: QWord;
+    ClickCount: Integer;
+    Button: Byte; // 1=left, 2=right, 3=middle, 4=Extra
+    Down: Boolean;
+  end;
 
   TLMSetFocus = record
     Msg: Cardinal;

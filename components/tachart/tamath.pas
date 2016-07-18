@@ -30,6 +30,7 @@ function SafeInfinity: Double; inline;
 function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
 function SafeMin(A, B: Double): Double;
 function SafeNan: Double; inline;
+function SafeEqual(A, B: Double): Boolean;
 
 implementation
 
@@ -175,6 +176,20 @@ begin
   {$PUSH}{$R-}{$Q-}
   Result := NaN;
   {$POP}
+end;
+
+function SafeEqual(A, B: Double): Boolean;
+var
+  ANaN, BNaN: Boolean;
+begin
+  ANaN := IsNaN(A);
+  BNaN := IsNaN(B);
+  if ANaN and BNaN then
+    Result := true
+  else if ANaN or BNaN then
+    Result := false
+  else
+    Result := A = B;
 end;
 
 // Convert double value to integer 2's complement representation.

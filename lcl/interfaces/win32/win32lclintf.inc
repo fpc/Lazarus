@@ -103,6 +103,54 @@ begin
   Result := True;
 end;
 
+function EnumFontsCallBack(
+  var LogFont: TEnumLogFontEx;
+  var Metric: TNewTextMetricEx;
+  FontType: Longint;
+  Data: LParam):LongInt; stdcall;
+var
+  L: TStringList;
+  S: String;
+begin
+  L := TStringList(PtrInt(Data));
+  S := LogFont.elfLogFont.lfFaceName;
+  if ((logfont.elfLogFont.lfPitchAndFamily and FIXED_PITCH) = FIXED_PITCH) then
+  begin
+    L.Add(S);
+  end;
+  result := 1;
+end;
+
+
+function TWin32WidgetSet.FontIsMonoSpace(Font: HFont): boolean;
+var
+  LF: LogFontA;
+  Res: LongInt;
+  List: TStringList;
+  FontName: String;
+  DC: HDC;
+begin
+  Result := False;
+  FillChar(LF{%H-}, SizeOf(LogFontA), #0);
+  Res := GetObject(Font, SizeOf(LogFontA),@LF);
+  //writeln('TWin32WidgetSet.FontIsMonoSpace: Res = ',Res,' SizeOf(LogFont) = ',SizeOf(LogFontA));
+  //TWin32WidgetSet.GetObject uses LogFontW and converts back to LogFontA, so Res should be SizeOf(LogFontW)
+  if (Res <> SizeOf(LogFontW)) then
+    Exit;
+  LF.lfCharSet := DEFAULT_CHARSET;
+  LF.lfPitchAndFamily := 0;
+  FontName := LF.lfFaceName;
+  DC := GetDC(0);
+  List := TStringList.Create;
+  try
+    EnumFontFamiliesEX(DC, @LF, @EnumFontsCallback, PtrInt(List), 0);
+    Result := (List.IndexOf(FontName) > -1);
+  finally
+    ReleaseDC(0, DC);
+    List.Free;
+  end;
+end;
+
 procedure TWin32WidgetSet.HandleProcessEvent(AData: PtrInt; AFlags: dword);
 var
   lProcessEvent: PProcessEvent absolute AData;

@@ -1291,6 +1291,10 @@ msgstr ""
 msgid "%d desktop(s) successfully imported from \"%s\""
 msgstr ""
 
+#: lazarusidestrconsts.dlgdifferentvaluebackgroundcolor
+msgid "Different values background"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
 msgstr "Arah"
@@ -1587,8 +1591,8 @@ msgctxt "lazarusidestrconsts.dlgenvtype"
 msgid "Type"
 msgstr "Tipe"
 
-#: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
-msgid "Focus messages after compilation"
+#: lazarusidestrconsts.dlgeofocusmessagesatcompilation
+msgid "Focus messages at compilation"
 msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
@@ -1826,6 +1830,10 @@ msgstr ""
 msgid "Except/Finally"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfoldpasfordo
+msgid "For/Do"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
 msgstr ""
@@ -1890,6 +1898,14 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasvartype
 msgid "Var/Type (global)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpaswhiledo
+msgid "While/Do"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpaswithdo
+msgid "With/Do"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldxmlcdata
@@ -2224,6 +2240,10 @@ msgstr "Interval dalam detik"
 #: lazarusidestrconsts.dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Lompatan (contoh Lompatan Metode)"
+
+#: lazarusidestrconsts.dlgjumptomethodbody
+msgid "Jump directly to method body"
+msgstr ""
 
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
@@ -2719,6 +2739,14 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterfoldexp
 msgid "Expanded [-]"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverview
+msgid "Overview"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlineoverviewmarks
+msgid "Overview Mark"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlines
@@ -3445,6 +3473,10 @@ msgstr "Tampilkan apapun"
 msgid "Show executable info (Win32 only)"
 msgstr "Tampilkan info eksekutabel (hanya Win32)"
 
+#: lazarusidestrconsts.dlgshowfilenameincaption
+msgid "Show file name in caption"
+msgstr ""
+
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"
 msgstr "Tampilkan info umum"
@@ -3951,6 +3983,7 @@ msgid "View Snapshots"
 msgstr ""
 
 #: lazarusidestrconsts.histdlgcolumnloc
+msgctxt "lazarusidestrconsts.histdlgcolumnloc"
 msgid "Location"
 msgstr ""
 
@@ -4762,6 +4795,10 @@ msgstr ""
 msgid "If component palette spans over more lines, show them all and not only one."
 msgstr ""
 
+#: lazarusidestrconsts.lisautocheckmodifiedfiles
+msgid "Automatically check (select) modified files"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr ""
@@ -5146,6 +5183,18 @@ msgstr "Tidak bisas menemukan starter lazarus:%s%s"
 
 #: lazarusidestrconsts.liscannotfindunit
 msgid "Cannot find unit %s"
+msgstr ""
+
+#: lazarusidestrconsts.liscannotopenform
+msgid "Cannot open form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsaveform
+msgid "Cannot save form \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.liscannotsubstitutemacros
+msgid "Cannot substitute macro \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
@@ -5757,10 +5806,6 @@ msgstr ""
 msgid "Choose a Pascal file for indentation examples"
 msgstr ""
 
-#: lazarusidestrconsts.lischooseclasssectiondlgformethodcaption
-msgid "Insert new method to section"
-msgstr ""
-
 #: lazarusidestrconsts.lischoosecompilerexecutable
 msgid "Choose compiler executable (%s)"
 msgstr ""
@@ -5839,6 +5884,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscirculardependencydetected
 msgid "Circular dependency detected"
+msgstr ""
+
+#: lazarusidestrconsts.lisclass
+msgid "&Class"
 msgstr ""
 
 #: lazarusidestrconsts.lisclasscompletion
@@ -6059,6 +6108,19 @@ msgstr ""
 msgctxt "lazarusidestrconsts.liscodebrowser"
 msgid "Code Browser"
 msgstr "Browser Kode"
+
+#: lazarusidestrconsts.liscodecreationdialogcaption
+msgid "Code creation options"
+msgstr ""
+
+#: lazarusidestrconsts.liscodecreationdialogclasssection
+msgid "Class section"
+msgstr ""
+
+#: lazarusidestrconsts.liscodecreationdialoglocation
+msgctxt "lazarusidestrconsts.liscodecreationdialoglocation"
+msgid "Location"
+msgstr ""
 
 #: lazarusidestrconsts.liscodeexplorer
 msgctxt "lazarusidestrconsts.liscodeexplorer"
@@ -7023,10 +7085,6 @@ msgstr ""
 msgid "Convert Delphi unit"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvdelphiconvertingfile
-msgid "* Converting file %s *"
-msgstr ""
-
 #: lazarusidestrconsts.lisconvdelphiconvertingfoundunits
 msgid "*** Converting unit files found during conversion ***"
 msgstr ""
@@ -7053,10 +7111,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
-msgstr ""
-
-#: lazarusidestrconsts.lisconvdelphifixingusedunits
-msgid "* Fixing used units for file %s *"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifoundallunitfiles
@@ -7089,10 +7143,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
 msgid "Removed unit \"%s\" in uses section."
-msgstr ""
-
-#: lazarusidestrconsts.lisconvdelphirepairingformfile
-msgid "* Repairing form file %s *"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
@@ -8234,10 +8284,6 @@ msgstr "Penghapusan file %s%s%s gagal."
 msgid "Delimiter is semicolon."
 msgstr ""
 
-#: lazarusidestrconsts.lisdelphi
-msgid "Delphi"
-msgstr ""
-
 #: lazarusidestrconsts.lisdelphicompatibleresources
 msgid "Delphi compatible resources. Recommended."
 msgstr ""
@@ -8425,13 +8471,13 @@ msgstr "Klik pada salah satu item diatas untuk melihat perbedaan"
 msgid "Error reading file: %s"
 msgstr "Kesalahan pembacaan file: %s"
 
-#: lazarusidestrconsts.lisdiskdiffignorediskchanges
-msgid "Ignore disk changes"
-msgstr "Abaikan perubahan disk"
+#: lazarusidestrconsts.lisdiskdiffignorealldiskchanges
+msgid "Ignore all disk changes"
+msgstr ""
 
-#: lazarusidestrconsts.lisdiskdiffrevertall
-msgid "Reload from disk"
-msgstr "Ambil lagi dari disk"
+#: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
+msgid "Reload checked files from disk"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
@@ -8522,6 +8568,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
+msgstr ""
+
+#: lazarusidestrconsts.lisdonotwriteupdatedprojectinfoafterbuild
+msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
 msgstr ""
 
 #: lazarusidestrconsts.lisdown
@@ -9022,6 +9072,10 @@ msgstr ""
 msgid "Error opening component"
 msgstr ""
 
+#: lazarusidestrconsts.liserroropeningform
+msgid "Error opening form"
+msgstr ""
+
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr "Pemindaian aliran komponen lfm salah."
@@ -9050,6 +9104,10 @@ msgstr "Salah"
 
 #: lazarusidestrconsts.liserrors2
 msgid ", Errors: %s"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorsavingform
+msgid "Error saving form"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -9091,10 +9149,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liseventlogsavetofile
 msgid "Save Events to File"
-msgstr ""
-
-#: lazarusidestrconsts.liseventmethodsectionlabel
-msgid "Insert new event methods to section"
 msgstr ""
 
 #: lazarusidestrconsts.liseventslogaddcomment
@@ -9728,10 +9782,6 @@ msgstr ""
 msgid "freeing buffer lines: %s"
 msgstr ""
 
-#: lazarusidestrconsts.lisfreepascal
-msgid "Free Pascal"
-msgstr ""
-
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
 msgstr ""
@@ -9964,6 +10014,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr ""
+
+#: lazarusidestrconsts.lishintclickonshowoptionstofindoutwhereinheritedpaths
+msgid "Hint: Click on \"Show Options\" to find out where inherited paths are coming from."
 msgstr ""
 
 #: lazarusidestrconsts.lishints
@@ -10232,6 +10286,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"
+msgstr ""
+
+#: lazarusidestrconsts.lisimportingbuildmodesnotsupported
+msgid "Importing BuildModes is not supported for packages."
 msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
@@ -10793,6 +10851,10 @@ msgstr "Copy Komponen yang dipilih ke clipboard"
 msgid "Cut selected Components to clipboard"
 msgstr "Cut Komponen yang dipilih ke clipboard"
 
+#: lazarusidestrconsts.liskmdefaulttoosx
+msgid "Default adapted to OS X"
+msgstr ""
+
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
 msgstr "Hapus karakter terakhir"
@@ -10836,43 +10898,63 @@ msgid "Find Incremental"
 msgstr "Cari inkremental"
 
 #: lazarusidestrconsts.liskmgotomarker0
-msgid "Go to marker 0"
+#, fuzzy
+#| msgid "Go to marker 0"
+msgid "Go to bookmark 0"
 msgstr "Pergi ke penanda 0"
 
 #: lazarusidestrconsts.liskmgotomarker1
-msgid "Go to marker 1"
+#, fuzzy
+#| msgid "Go to marker 1"
+msgid "Go to bookmark 1"
 msgstr "Pergi ke penanda 1"
 
 #: lazarusidestrconsts.liskmgotomarker2
-msgid "Go to marker 2"
+#, fuzzy
+#| msgid "Go to marker 2"
+msgid "Go to bookmark 2"
 msgstr "Pergi ke penanda 2"
 
 #: lazarusidestrconsts.liskmgotomarker3
-msgid "Go to marker 3"
+#, fuzzy
+#| msgid "Go to marker 3"
+msgid "Go to bookmark 3"
 msgstr "Pergi ke penanda 3"
 
 #: lazarusidestrconsts.liskmgotomarker4
-msgid "Go to marker 4"
+#, fuzzy
+#| msgid "Go to marker 4"
+msgid "Go to bookmark 4"
 msgstr "Pergi ke penanda 4"
 
 #: lazarusidestrconsts.liskmgotomarker5
-msgid "Go to marker 5"
+#, fuzzy
+#| msgid "Go to marker 5"
+msgid "Go to bookmark 5"
 msgstr "Pergi ke penanda 5"
 
 #: lazarusidestrconsts.liskmgotomarker6
-msgid "Go to marker 6"
+#, fuzzy
+#| msgid "Go to marker 6"
+msgid "Go to bookmark 6"
 msgstr "Pergi ke penanda 6"
 
 #: lazarusidestrconsts.liskmgotomarker7
-msgid "Go to marker 7"
+#, fuzzy
+#| msgid "Go to marker 7"
+msgid "Go to bookmark 7"
 msgstr "Pergi ke penanda 7"
 
 #: lazarusidestrconsts.liskmgotomarker8
-msgid "Go to marker 8"
+#, fuzzy
+#| msgid "Go to marker 8"
+msgid "Go to bookmark 8"
 msgstr "Pergi ke penanda 8"
 
 #: lazarusidestrconsts.liskmgotomarker9
-msgid "Go to marker 9"
+#, fuzzy
+#| msgid "Go to marker 9"
+msgid "Go to bookmark 9"
 msgstr "Pergi ke penanda 9"
 
 #: lazarusidestrconsts.liskmgotosourceeditor1
@@ -11055,43 +11137,63 @@ msgid "Set free Bookmark"
 msgstr "Setel Bookmark bebas"
 
 #: lazarusidestrconsts.liskmsetmarker0
-msgid "Set marker 0"
+#, fuzzy
+#| msgid "Set marker 0"
+msgid "Set bookmark 0"
 msgstr "Set penanda 0"
 
 #: lazarusidestrconsts.liskmsetmarker1
-msgid "Set marker 1"
+#, fuzzy
+#| msgid "Set marker 1"
+msgid "Set bookmark 1"
 msgstr "Set penanda 1"
 
 #: lazarusidestrconsts.liskmsetmarker2
-msgid "Set marker 2"
+#, fuzzy
+#| msgid "Set marker 2"
+msgid "Set bookmark 2"
 msgstr "Set penanda 2"
 
 #: lazarusidestrconsts.liskmsetmarker3
-msgid "Set marker 3"
+#, fuzzy
+#| msgid "Set marker 3"
+msgid "Set bookmark 3"
 msgstr "Set penanda 3"
 
 #: lazarusidestrconsts.liskmsetmarker4
-msgid "Set marker 4"
+#, fuzzy
+#| msgid "Set marker 4"
+msgid "Set bookmark 4"
 msgstr "Set penanda 4"
 
 #: lazarusidestrconsts.liskmsetmarker5
-msgid "Set marker 5"
+#, fuzzy
+#| msgid "Set marker 5"
+msgid "Set bookmark 5"
 msgstr "Set penanda 5"
 
 #: lazarusidestrconsts.liskmsetmarker6
-msgid "Set marker 6"
+#, fuzzy
+#| msgid "Set marker 6"
+msgid "Set bookmark 6"
 msgstr "Set penanda 6"
 
 #: lazarusidestrconsts.liskmsetmarker7
-msgid "Set marker 7"
+#, fuzzy
+#| msgid "Set marker 7"
+msgid "Set bookmark 7"
 msgstr "Set penanda 7"
 
 #: lazarusidestrconsts.liskmsetmarker8
-msgid "Set marker 8"
+#, fuzzy
+#| msgid "Set marker 8"
+msgid "Set bookmark 8"
 msgstr "Set penanda 8"
 
 #: lazarusidestrconsts.liskmsetmarker9
-msgid "Set marker 9"
+#, fuzzy
+#| msgid "Set marker 9"
+msgid "Set bookmark 9"
 msgstr "Set penanda 9"
 
 #: lazarusidestrconsts.liskmstopprogram
@@ -11105,43 +11207,43 @@ msgid "Toggle between Unit and Form"
 msgstr "Toggle antara Unit dan Form"
 
 #: lazarusidestrconsts.liskmtogglemarker0
-msgid "Toggle marker 0"
+msgid "Toggle bookmark 0"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker1
-msgid "Toggle marker 1"
+msgid "Toggle bookmark 1"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker2
-msgid "Toggle marker 2"
+msgid "Toggle bookmark 2"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker3
-msgid "Toggle marker 3"
+msgid "Toggle bookmark 3"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker4
-msgid "Toggle marker 4"
+msgid "Toggle bookmark 4"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker5
-msgid "Toggle marker 5"
+msgid "Toggle bookmark 5"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker6
-msgid "Toggle marker 6"
+msgid "Toggle bookmark 6"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker7
-msgid "Toggle marker 7"
+msgid "Toggle bookmark 7"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker8
-msgid "Toggle marker 8"
+msgid "Toggle bookmark 8"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtogglemarker9
-msgid "Toggle marker 9"
+msgid "Toggle bookmark 9"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
@@ -11605,6 +11707,10 @@ msgstr ""
 msgid "Load macro from"
 msgstr ""
 
+#: lazarusidestrconsts.lislocal
+msgid "&Local"
+msgstr ""
+
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr ""
@@ -11660,10 +11766,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "Lazarus resources (.lrs) include files"
-msgstr ""
-
-#: lazarusidestrconsts.lismacpascal
-msgid "Mac Pascal"
 msgstr ""
 
 #: lazarusidestrconsts.lismacro
@@ -11860,6 +11962,10 @@ msgstr "Tambah pengawasan ..."
 msgid "Break Lines in Selection"
 msgstr ""
 
+#: lazarusidestrconsts.lismenubreak
+msgid "&Break"
+msgstr ""
+
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
 msgstr "Bangun File"
@@ -11872,10 +11978,6 @@ msgstr "Bangun Lazarus"
 
 #: lazarusidestrconsts.lismenubuildlazarusprof
 msgid "Build Lazarus with Profile: %s"
-msgstr ""
-
-#: lazarusidestrconsts.lismenubuildmanymodes
-msgid "Build many Modes ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuchecklfm
@@ -11924,10 +12026,18 @@ msgstr "Komentari pilihan"
 msgid "Compare files ..."
 msgstr ""
 
+#: lazarusidestrconsts.lismenucompilemanymodes
+msgid "Compile many Modes ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "Kode Lengkap"
+
+#: lazarusidestrconsts.lismenucompletecodeinteractive
+msgid "Complete Code (with dialog)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
@@ -11950,6 +12060,10 @@ msgstr "Konfigurasi \"Bangun Lazarus\" ..."
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "Panduan sensitif isi"
+
+#: lazarusidestrconsts.lismenucontinue
+msgid "&Continue"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 #, fuzzy
@@ -12171,8 +12285,8 @@ msgstr ""
 msgid "<conflict resolution complete>"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditordditems
-msgid "%d (%d items)"
+#: lazarusidestrconsts.lismenueditorconflictsfoundinitiallyd
+msgid "Conflicts found initially: %d"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditordeepestnestedmenulevels
@@ -12251,10 +12365,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorgroupindexmenuitems
-msgid "GroupIndex,MenuItems"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
@@ -12435,24 +12545,12 @@ msgstr ""
 msgid "%s.GroupIndex: %d"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorshortcutconflictsfoundinitiallyd
-msgid "Shortcut conflicts found initially: %d"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditorshortcutitemss
 msgid "Shortcut items: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutnotyetchanged
 msgid "Shortcut not yet changed"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorshortcutpropertywithshortcut
-msgid "Shortcut,Property with shortcut"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorshortcutpropertywithshortcutaccelerator
-msgid "Shortcut,Property with shortcut/accelerator"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcuts
@@ -12467,12 +12565,16 @@ msgstr ""
 msgid "Shortcuts and Accelerator keys"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorshortcutsassociatedwithmenusandactionsd
-msgid "Shortcuts associated with Menus and Actions (%d)"
+#: lazarusidestrconsts.lismenueditorshortcutsd
+msgid "Shortcuts (%d)"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutsdandacceleratorkeysd
 msgid "Shortcuts (%d) and Accelerator keys (%d)"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorshortcutsourceproperty
+msgid "Shortcut,Source Property"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutsusedins
@@ -12515,10 +12617,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsshortcutsandacceleratorkeys
 msgid "%s: Shortcuts and accelerator keys"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorsshortcutsummary
-msgid "%s: Shortcut summary"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsssonclicks
@@ -12957,6 +13055,10 @@ msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Buka Proyek Terakhir ..."
 
+#: lazarusidestrconsts.lismenuopenunit
+msgid "Open Unit ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupackage
 msgid "Pa&ckage"
 msgstr ""
@@ -13034,6 +13136,10 @@ msgctxt "lazarusidestrconsts.lismenureportingbug"
 msgid "Reporting a Bug"
 msgstr "Melaporkan bug..."
 
+#: lazarusidestrconsts.lismenuresaveformswithi18n
+msgid "Resave forms with enabled i18n"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 #, fuzzy
 #| msgid "Rescan FPC source directory"
@@ -13071,6 +13177,10 @@ msgstr "Parameter Menjalankan ..."
 #| msgid "Run to &Cursor"
 msgid "Step over to &Cursor"
 msgstr "Jalanjan sampai kursor"
+
+#: lazarusidestrconsts.lismenurunwithoutdebugging
+msgid "Run without Debugging"
+msgstr ""
 
 #: lazarusidestrconsts.lismenusave
 #, fuzzy
@@ -14327,6 +14437,10 @@ msgstr "Buka proyek %s?"
 msgid "Open Tool Options"
 msgstr ""
 
+#: lazarusidestrconsts.lisopenunit
+msgid "Open Unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisopenurl
 msgid "Open URL"
 msgstr ""
@@ -14343,6 +14457,10 @@ msgstr "Opsi"
 
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
+msgstr ""
+
+#: lazarusidestrconsts.lisoptionvalueignored
+msgid "ignored"
 msgstr ""
 
 #: lazarusidestrconsts.lisor
@@ -17912,7 +18030,7 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr ""
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-msgid "The key %s%sis already assigned to %s.%sRemove the old assignment and assign the key to the new function%s%s?"
+msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgstr ""
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
@@ -18468,10 +18586,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
-msgstr ""
-
-#: lazarusidestrconsts.listurbopascal
-msgid "Turbo Pascal"
 msgstr ""
 
 #: lazarusidestrconsts.listwomovedfileswillhavethesamefilenamein
@@ -19599,6 +19713,10 @@ msgstr ""
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Anda tidak bisa membangun lazarus saat debugging atau kompilasi."
 
+#: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
+msgid "You can select items by simply pressing underscored letters"
+msgstr ""
+
 #: lazarusidestrconsts.lis_all_
 #, fuzzy
 msgctxt "lazarusidestrconsts.lis_all_"
@@ -19728,8 +19846,24 @@ msgstr ""
 msgid "Found, but not listed here: "
 msgstr ""
 
+#: lazarusidestrconsts.rsi18nexcluded
+msgid "Excluded"
+msgstr ""
+
+#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextcompile
+msgid "Force update PO files on next compile"
+msgstr ""
+
+#: lazarusidestrconsts.rsi18nidentifiers
+msgid "Identifiers:"
+msgstr ""
+
 #: lazarusidestrconsts.rsi18noptions
 msgid "i18n Options"
+msgstr ""
+
+#: lazarusidestrconsts.rsi18noriginals
+msgid "Originals:"
 msgstr ""
 
 #: lazarusidestrconsts.rsincludeversioninfohint
@@ -20001,7 +20135,9 @@ msgid "Macros"
 msgstr "Makro"
 
 #: lazarusidestrconsts.srkmcatmarker
-msgid "Text marker commands"
+#, fuzzy
+#| msgid "Text marker commands"
+msgid "Text bookmark commands"
 msgstr "Perintah penanda teks"
 
 #: lazarusidestrconsts.srkmcatmulticaret
@@ -20261,13 +20397,6 @@ msgstr "Mode pemilihan kolom"
 msgid "compile program/project"
 msgstr ""
 
-#: lazarusidestrconsts.srkmeccompletecode
-#, fuzzy
-#| msgid "Complete code"
-msgctxt "lazarusidestrconsts.srkmeccompletecode"
-msgid "Complete Code"
-msgstr "Lengkpai kode"
-
 #: lazarusidestrconsts.srkmecconfigbuildfile
 msgid "config build file"
 msgstr "file konfig pembangunan"
@@ -20470,7 +20599,9 @@ msgid "Go to Line Number"
 msgstr "Pergi ke nomor baris"
 
 #: lazarusidestrconsts.srkmecgotomarker
-msgid "Go to Marker %d"
+#, fuzzy
+#| msgid "Go to Marker %d"
+msgid "Go to bookmark %d"
 msgstr "Pergi ke Penanda %d"
 
 #: lazarusidestrconsts.srkmecgotoxy
@@ -20845,6 +20976,10 @@ msgstr "jalankan file"
 msgid "run parameters"
 msgstr "parameter menjalankan"
 
+#: lazarusidestrconsts.srkmecrunwithoutdebugging
+msgid "run without debugging"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
 msgstr "Gulung sebaris ke bawah"
@@ -20996,7 +21131,9 @@ msgid "Set a free Bookmark"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsetmarker
-msgid "Set Marker %d"
+#, fuzzy
+#| msgid "Set Marker %d"
+msgid "Set bookmark %d"
 msgstr "Set Penanda %d"
 
 #: lazarusidestrconsts.srkmecshifttab
@@ -21227,7 +21364,7 @@ msgid "View local variables"
 msgstr "Lihat variabel lokal"
 
 #: lazarusidestrconsts.srkmectogglemarker
-msgid "Toggle Marker %d"
+msgid "Toggle bookmark %d"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemarkupword

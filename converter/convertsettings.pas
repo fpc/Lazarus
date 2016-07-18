@@ -30,11 +30,18 @@ unit ConvertSettings;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, IDEProcs, StdCtrls, Buttons,
-  ButtonPanel, ComCtrls, DialogProcs, FileUtil, LazFileUtils,
-  LazarusIDEStrConsts, CodeToolsStructs, CodeToolManager, CodeCache,
-  DividerBevel, BaseIDEIntf, IDEMsgIntf, IDEExternToolIntf, AVL_Tree,
-  LazConfigStorage, ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
+  Classes, SysUtils, AVL_Tree,
+  Forms, Controls, Dialogs, StdCtrls, Buttons, ButtonPanel, ComCtrls,
+  // LazUtils
+  FileUtil, LazFileUtils, DividerBevel, LazConfigStorage,
+  // CodeTools
+  CodeToolsStructs, CodeToolManager, CodeCache,
+  // IdeIntf
+  BaseIDEIntf, IDEMsgIntf, IDEExternToolIntf,
+  // IDE
+  IDEProcs, DialogProcs, LazarusIDEStrConsts,
+  // Converter
+  ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
 
 const
   ConverterVersion: integer = 2;
@@ -116,10 +123,10 @@ type
     // Create Lazarus file name and copy/rename from Delphi file with new suffix.
     function RenameDelphiToLazFile(const DelphiFilename, LazExt: string;
       out LazFilename: string; LowercaseFilename: Boolean): TModalResult; overload;
-    function RenameFile(const SrcFilename, DestFilename: string): TModalResult;
     function MaybeBackupFile(const AFilename: string): TModalResult;
     procedure ClearLog;
-    function AddLogLine(const ALine: string; Urgency: TMessageLineUrgency = mluHint): integer;
+    procedure AddLogLine(Urgency: TMessageLineUrgency; const Msg: string;
+      const Filename: string=''; LineNumber: integer=0; Column: integer=0);
     function SaveLog: Boolean;
   public
     property MainFilenames: TStringlist read fMainFilenames;
@@ -755,13 +762,6 @@ begin
   Result:=RenameFileWithErrorDialogs(DelphiFilename,LazFilename,[mbAbort]);
 end;
 
-function TConvertSettings.RenameFile(const SrcFilename, DestFilename: string): TModalResult;
-begin
-  Result:=MaybeBackupFile(SrcFilename); // Save before rename.
-  if Result<>mrOK then exit;
-  Result:=RenameFileWithErrorDialogs(SrcFilename,DestFilename,[mbAbort]);
-end;
-
 function TConvertSettings.MaybeBackupFile(const AFilename: string): TModalResult;
 var
   BackupFN: String;
@@ -780,11 +780,20 @@ begin
   fLog.Clear;
 end;
 
-function TConvertSettings.AddLogLine(
-  const ALine: string; Urgency: TMessageLineUrgency): integer;
+procedure TConvertSettings.AddLogLine(Urgency: TMessageLineUrgency;
+  const Msg: string; const Filename: string; LineNumber: integer; Column: integer);
+var
+  FN, Coords, Urg: String;
 begin
-  IDEMessagesWindow.AddCustomMessage(Urgency,aLine); // Show in message window
-  Result:=fLog.Add(MessageLineUrgencyNames[Urgency]+': '+ALine);// and store for log.
+  // Show in message window
+  IDEMessagesWindow.AddCustomMessage(Urgency, Msg, Filename, LineNumber, Column);
+  // and store for log.
+  FN := ExtractFileName(Filename);
+  if (LineNumber<>0) or (Column<>0) then
+    Coords := Format('(%d,%d)', [LineNumber, Column]);
+  if Urgency <> mluImportant then
+    Urg := MessageLineUrgencyNames[Urgency];
+  fLog.Add(FN + Coords + ' ' + Urg + ': ' + Msg);
 end;
 
 function TConvertSettings.SaveLog: Boolean;

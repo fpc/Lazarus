@@ -174,11 +174,14 @@ begin
     AssertEquals(Format('%s (%d/%d) FoldLvlEnd',   [AName, ALine, AColumn]), FoldLvlEnd, nd.FoldLvlEnd);
     AssertEquals(Format('%s (%d/%d) NestLvlStart', [AName, ALine, AColumn]), NestLvlStart, nd.NestLvlStart);
     AssertEquals(Format('%s (%d/%d) NestLvlEnd',   [AName, ALine, AColumn]), NestLvlEnd, nd.NestLvlEnd);
-    AssertEquals(Format('%s (%d/%d) FoldType',     [AName, ALine, AColumn]), PtrUInt(FoldType), PtrUInt(nd.FoldType));
-    AssertEquals(Format('%s (%d/%d) FoldTypeCompatible', [AName, ALine, AColumn]), PtrUInt(FoldTypeCompatible), PtrUInt(nd.FoldTypeCompatible));
+    AssertEquals(Format('%s (%d/%d) FoldType',     [AName, ALine, AColumn]), PtrInt(FoldType), PtrInt(nd.FoldType));
+    AssertEquals(Format('%s (%d/%d) FoldTypeCompatible', [AName, ALine, AColumn]),
+                       PtrInt(FoldTypeCompatible), PtrInt(nd.FoldTypeCompatible));
     AssertEquals(Format('%s (%d/%d) FoldGroup:',   [AName, ALine, AColumn]), FoldGroup, nd.FoldGroup);
   end;
-  AssertEquals(Format('%s (%d/%d) FoldAction',   [AName, ALine, AColumn]), FoldActionsToString(FoldAction), FoldActionsToString(nd.FoldAction));
+  AssertEquals(Format('%s (%d/%d) FoldAction',   [AName, ALine, AColumn]),
+    FoldActionsToString(FoldAction),
+    FoldActionsToString(nd.FoldAction - [sfaOutline..sfaOutlineNoLine]));
 end;
 
 procedure TTestBaseHighlighterPas.CheckPasFoldNodeInfo(AName: String; nd: TSynFoldNodeInfo;
@@ -1214,7 +1217,7 @@ begin
     {%region TEXT 1 -- [cfbtBeginEnd..cfbtNone], []}
       PopPushBaseName('Text 1 -- [cfbtBeginEnd..cfbtNone], [], 0');
       SetLines(TestTextFoldInfo1);
-      EnableFolds([cfbtBeginEnd..cfbtNone], []);
+      EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtForDo,cfbtWhileDo,cfbtWithDo], []);
       //DebugFoldInfo([]);
 
       CheckFoldInfoCounts('', [], 0, [1, 1, 1, 1, 1, 3, 0, 1, 2, 1, 2, 2]);
@@ -1284,7 +1287,7 @@ begin
     {%region TEXT 1 -- [cfbtBeginEnd..cfbtNone], [] grp=1}
       PopPushBaseName('Text 1 -- [cfbtBeginEnd..cfbtNone], [], grp=1');
       SetLines(TestTextFoldInfo1);
-      EnableFolds([cfbtBeginEnd..cfbtNone], []);
+      EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtForDo,cfbtWhileDo,cfbtWithDo], []);
       DebugFoldInfo([],1);
 
       CheckFoldInfoCounts('', [], 1, [1, 1, 0, 1, 0, 1, 0, 1, 2, 1, 2, 2]);
@@ -1342,7 +1345,7 @@ begin
     {%region TEXT 1 -- [cfbtBeginEnd,cfbtIfDef], [] grp=1}
       PopPushBaseName('Text 1 -- [cfbtBeginEnd,cfbtIfDef], [], grp=4');
       SetLines(TestTextFoldInfo1);
-      EnableFolds([cfbtBeginEnd,cfbtIfDef], []);
+      EnableFolds([cfbtBeginEnd,cfbtIfDef]-[cfbtForDo,cfbtWhileDo,cfbtWithDo], []);
       //DebugFoldInfo([],4);
 
       CheckFoldInfoCounts('', [], 1, [1, 1, 0, 1, 0, 1, 0, 1, 2, 1, 2, 2]);
@@ -1400,7 +1403,7 @@ begin
     {%region TEXT 1 -- [cfbtBeginEnd..cfbtNone], [sfaFold, sfaMultiLine]}
       PopPushBaseName('Text 1 -- [cfbtBeginEnd..cfbtNone], [sfaFold, sfaMultiLine], 0');
       SetLines(TestTextFoldInfo1);
-      EnableFolds([cfbtBeginEnd..cfbtNone], []);
+      EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtForDo,cfbtWhileDo,cfbtWithDo], []);
       //DebugFoldInfo([sfaFold, sfaMultiLine]);
 
       CheckFoldInfoCounts('', [sfaFold, sfaMultiLine], 0, [1, 1, 1, 1, 1, 1, 0, 1, 2, 1, 2, 0]);
@@ -1459,7 +1462,7 @@ begin
     {%region TEXT 1 -- [cfbtBeginEnd..cfbtNone], [sfaMarkup, sfaMultiLine]}
       PopPushBaseName('Text 1 -- [cfbtBeginEnd..cfbtNone]-cfbtIfDef, [sfaMarkup, sfaMultiLine], 0');
       SetLines(TestTextFoldInfo1);
-      EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtIfDef], []);
+      EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtIfDef]-[cfbtForDo,cfbtWhileDo,cfbtWithDo], []);
       //DebugFoldInfo([sfaMarkup, sfaMultiLine]);
 
       CheckFoldInfoCounts('', [sfaMarkup, sfaMultiLine], 0, [1, 1, 0, 1, 0, 1, 0, 1, 2, 1, 2, 0]);
@@ -1513,7 +1516,7 @@ begin
     {%region TEXT 1 -- [cfbtBeginEnd..cfbtNone], [sfaMarkup, sfaMultiLine]}
       PopPushBaseName('Text 1 -- [cfbtBeginEnd..cfbtNone], [sfaMarkup, sfaMultiLine], cfbtIfDef 0');
       SetLines(TestTextFoldInfo1);
-      EnableFolds([cfbtBeginEnd..cfbtNone], [], [cfbtIfDef]);
+      EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtForDo,cfbtWhileDo,cfbtWithDo], [], [cfbtIfDef]);
       //DebugFoldInfo([sfaMarkup, sfaMultiLine]);
 
       CheckFoldInfoCounts('', [sfaMarkup, sfaMultiLine], 0, [1, 1, 1, 1, 1, 3, 0, 1, 2, 1, 2, 0]);
@@ -1567,7 +1570,7 @@ begin
     {%region TEXT 1 -- [cfbtBeginEnd..cfbtNone]-[cfbtProcedure], [cfbtSlashComment]}
       PopPushBaseName('Text 1 -- [cfbtBeginEnd..cfbtNone]-[cfbtProcedure], [cfbtSlashComment], 0');
       SetLines(TestTextFoldInfo1);
-      EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtProcedure], [cfbtSlashComment]);
+      EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtProcedure]-[cfbtForDo,cfbtWhileDo,cfbtWithDo], [cfbtSlashComment]);
       //DebugFoldInfo([]);
 
       CheckFoldInfoCounts('', [], 0, [1, 1, 1, 1, 1, 3, 0, 1, 2, 1, 2, 2, 0]);
@@ -1642,7 +1645,7 @@ begin
     {%region TEXT 2 -- [cfbtBeginEnd..cfbtNone], []}
       PopPushBaseName('Text 2 -- [cfbtBeginEnd..cfbtNone], [], 0');
       SetLines(TestTextFoldInfo2);
-      EnableFolds([cfbtBeginEnd..cfbtNone], []);
+      EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtForDo,cfbtWhileDo,cfbtWithDo], []);
       //DebugFoldInfo([]);
 
       CheckFoldInfoCounts('', [], 0, [1, 1, 10, 2, 4, 5, 2, 3]);
@@ -1749,7 +1752,7 @@ begin
     {%region TEXT 3 -- [cfbtBeginEnd..cfbtNone], []}
       PopPushBaseName('Text 3 -- [cfbtBeginEnd..cfbtNone], [], 0');
       SetLines(TestTextFoldInfo3);
-      EnableFolds([cfbtBeginEnd..cfbtNone], []);
+      EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtForDo,cfbtWhileDo,cfbtWithDo], []);
       //DebugFoldInfo([]);
 
       CheckFoldInfoCounts('', [], 0, [1, 1, 2, 1, 1, 1, 0, 3, 1, 3, 2]);
@@ -1823,7 +1826,7 @@ begin
     {%region TEXT 4 -- [cfbtBeginEnd..cfbtNone], []}
       PopPushBaseName('Text 4(1) -- [cfbtBeginEnd..cfbtNone], [], 0');
       SetLines(TestTextFoldInfo4(1));
-      EnableFolds([cfbtBeginEnd..cfbtNone], []);
+      EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtForDo,cfbtWhileDo,cfbtWithDo], []);
       //DebugFoldInfo([]);
 
       CheckFoldInfoCounts('', [], 0, [1, 1,3, 1, 2, 1, 3]);

@@ -24,6 +24,5 @@ msgstr "%s%sProgramma in Free Pascal di un solo file eseguito da InstantFPC"
 
 #: instantfpcregisterlaz.rssinglefilepr
 msgid "%s%sSingle file program using InstantFPC to compile and execute"
-msgstr ""
-"%s%sProgramma in Free Pascal di un solo file che usa InstantFPC, da "
-"compilare e eseguire"
+msgstr "%s%sProgramma in Free Pascal di un solo file che usa InstantFPC, da compilare e eseguire"
+

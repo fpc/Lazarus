@@ -37,6 +37,9 @@ uses
   // RTL + FCL + LCL
   Classes, SysUtils, math, process, Pipes,
   LCLIntf, Forms, Dialogs,
+  {$IFDEF VerboseExtToolThread}
+  LCLProc,
+  {$ENDIF}
   // CodeTools
   FileProcs, CodeToolsStructs,
   // LazUtils

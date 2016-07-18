@@ -6,7 +6,7 @@ const
 
 { TPageSetupDialog }
 
-function TPageSetupDialog.Execute: Boolean;
+function TPageSetupDialog.DoExecute: Boolean;
 var
   CocoaPrinter: TCocoaPrinter;
 begin
@@ -27,7 +27,7 @@ end;
 
 { TPrinterSetupDialog }
 
-function TPrinterSetupDialog.Execute: Boolean;
+function TPrinterSetupDialog.DoExecute: Boolean;
 begin
   Result := False;
   if not Assigned(Printer) then Exit;
@@ -39,7 +39,7 @@ end;
 
 { TPrintDialog }
 
-function TPrintDialog.Execute: Boolean;
+function TPrintDialog.DoExecute: Boolean;
 var
   CocoaPrinter: TCocoaPrinter;
   PrintPanel: NSPrintPanel;

@@ -226,8 +226,6 @@ begin
 end;
 
 procedure TAggPasDrawer.SetFont(AFont: TFPCustomFont);
-const
-  DEFAULT_FONT_SIZE = 10; // Just a random value.
 var
   f: TAggLCLFont;
   fontSize: Integer;

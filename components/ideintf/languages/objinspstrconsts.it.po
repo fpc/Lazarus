@@ -474,6 +474,14 @@ msgstr "Crea evento predefinito"
 msgid "Create new field and add it at current position"
 msgstr "Crea un nuovo campo e aggiungilo alla posizione corrente"
 
+#: objinspstrconsts.oiscurrentparent
+msgid "Current parent"
+msgstr ""
+
+#: objinspstrconsts.oiscurrentparents
+msgid "Current parents"
+msgstr ""
+
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
@@ -751,6 +759,14 @@ msgstr "&Seleziona tutto"
 msgid "Select All Fields"
 msgstr "Seleziona tutti i campi"
 
+#: objinspstrconsts.oisselectedcontrol
+msgid "Selected control"
+msgstr ""
+
+#: objinspstrconsts.oisselectedcontrols
+msgid "Selected controls"
+msgstr ""
+
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
 msgstr "Proprietà &Selezionate"
@@ -786,6 +802,10 @@ msgstr "Imposta al valore predefinito: %s"
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
 msgstr "Imposta come Default il valore della proprietà"
+
+#: objinspstrconsts.oisshowclasses
+msgid "Show classes"
+msgstr ""
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"

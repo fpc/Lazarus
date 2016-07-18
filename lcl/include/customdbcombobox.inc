@@ -1,4 +1,4 @@
-{%MainUnit ../dbctrls.pas}
+{%MainUnit ../dbctrls.pp}
 
 {******************************************************************************
                                      TDBListBox
@@ -13,7 +13,7 @@
  *****************************************************************************
 }
 
-// included by dbctrls.pas
+// included by dbctrls.pp
 
 {TCustomDBComboBox}
 

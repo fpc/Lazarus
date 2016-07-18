@@ -106,3 +106,4 @@ msgstr "Entferntes Repository"
 #: fppkg_const.rsshowlazaruspackagemanager
 msgid "Show Lazarus Package Manager"
 msgstr "Zeige Lazarus-Packagemanager"
+

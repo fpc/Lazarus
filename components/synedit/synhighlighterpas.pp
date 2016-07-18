@@ -126,6 +126,9 @@ type
     cfbtBorCommand,   // { ... }
     cfbtSlashComment, // //
     cfbtIfThen,
+    cfbtForDo,
+    cfbtWhileDo,
+    cfbtWithDo,
     // Internal type / not configurable
     cfbtCaseElse,     // "else" in case can have multiply statements
     cfbtPackage,
@@ -136,31 +139,49 @@ type
 
 
 const
-  cfbtLastPublic = cfbtIfThen;
+  cfbtLastPublic = cfbtWithDo;
   cfbtFirstPrivate = cfbtCaseElse;
 
-  CountPascalCodeFoldBlockOffset: Pointer =
+  CountPascalCodeFoldBlockOffset =
     Pointer(PtrInt(Integer(high(TPascalCodeFoldBlockType))+1));
 
-  cfbtAll: TPascalCodeFoldBlockTypes =
-    [low(TPascalCodeFoldBlockType)..high(TPascalCodeFoldBlockType)];
-  PascalWordTripletRanges: TPascalCodeFoldBlockTypes =
+  cfbtAll = TPascalCodeFoldBlockTypes(
+    [low(TPascalCodeFoldBlockType)..high(TPascalCodeFoldBlockType)]);
+
+  PascalWordTripletRanges = TPascalCodeFoldBlockTypes(
     [cfbtBeginEnd, cfbtTopBeginEnd, cfbtProcedure, cfbtClass, cfbtProgram, cfbtRecord,
      cfbtTry, cfbtExcept, cfbtRepeat, cfbtAsm, cfbtCase, cfbtCaseElse,
      cfbtIfDef, cfbtRegion,
-     cfbtIfThen
-    ];
+     cfbtIfThen, cfbtForDo,cfbtWhileDo,cfbtWithDo
+    ]);
+  PascalNoOutlineRanges = TPascalCodeFoldBlockTypes(
+    [cfbtProgram,cfbtUnit,cfbtUnitSection, cfbtRegion, //cfbtProcedure,//=need by nested proc?
+      cfbtVarType, cfbtCaseElse,
+      cfbtIfDef, cfbtAnsiComment,cfbtBorCommand,cfbtSlashComment, cfbtNestedComment]);
 
   // restrict cdecl etc to places where they can be.
   // this needs a better parser
-  ProcModifierAllowed: TPascalCodeFoldBlockTypes =
+  ProcModifierAllowed = TPascalCodeFoldBlockTypes(
     [cfbtNone, cfbtProcedure, cfbtProgram, cfbtClass, cfbtClassSection, cfbtRecord,
      cfbtUnitSection, // unitsection, actually interface only
-     cfbtVarType, cfbtLocalVarType];
+     cfbtVarType, cfbtLocalVarType]);
 
-  PascalStatementBlocks: TPascalCodeFoldBlockTypes =
+  PascalStatementBlocks = TPascalCodeFoldBlockTypes(
     [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtTry, cfbtExcept, cfbtRepeat,
-     cfbtCaseElse, cfbtIfThen];
+     cfbtCaseElse, cfbtIfThen, cfbtForDo,cfbtWhileDo,cfbtWithDo ]);
+
+  cfbtEssential = TPascalCodeFoldBlockTypes([
+    cfbtClass, cfbtClassSection, cfbtRecord,
+    cfbtUnitSection, cfbtProcedure, cfbtProgram, cfbtPackage,
+    cfbtVarType, cfbtLocalVarType, cfbtAsm,
+    cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment, cfbtNestedComment,
+    cfbtCase, // for case-else
+    cfbtTry // only if cfbtExcept
+    ]
+    + ProcModifierAllowed + PascalStatementBlocks
+    // the following statementblocks can only be nested in another statement.
+    - [cfbtBeginEnd, cfbtCase, {cfbtTry,} cfbtExcept, cfbtRepeat,
+       cfbtCaseElse, cfbtIfThen, cfbtForDo,cfbtWhileDo,cfbtWithDo ]);
 
   PascalFoldTypeCompatibility: Array [TPascalCodeFoldBlockType] of TPascalCodeFoldBlockType =
     ( cfbtBeginEnd,      // Nested
@@ -187,6 +208,9 @@ const
       cfbtNestedComment, //cfbtBorCommand,   // { ... }
       cfbtSlashComment, // //
       cfbtIfThen,
+      cfbtForDo,
+      cfbtWhileDo,
+      cfbtWithDo,
       // Internal type / not configurable
       cfbtCaseElse,
       cfbtPackage,
@@ -259,16 +283,11 @@ type
     FMode: TPascalCompilerMode;
     FBracketNestLevel : Integer;
     FLastLineCodeFoldLevelFix: integer;
-    FPasFoldEndLevel: Smallint;
     FPasFoldFixLevel: Smallint;
-    FPasFoldMinLevel: Smallint;
   public
     procedure Clear; override;
     function Compare(Range: TSynCustomHighlighterRange): integer; override;
     procedure Assign(Src: TSynCustomHighlighterRange); override;
-    function Add(ABlockType: Pointer = nil; IncreaseLevel: Boolean = True):
-        TSynCustomCodeFoldBlock; override;
-    procedure Pop(DecreaseLevel: Boolean = True); override;
     function MaxFoldLevel: Integer; override;
     procedure IncBracketNestLevel;
     procedure DecBracketNestLevel;
@@ -278,14 +297,7 @@ type
     property BracketNestLevel: integer read FBracketNestLevel write FBracketNestLevel;
     property LastLineCodeFoldLevelFix: integer
       read FLastLineCodeFoldLevelFix write FLastLineCodeFoldLevelFix;
-    property PasFoldEndLevel: Smallint read FPasFoldEndLevel write FPasFoldEndLevel;
     property PasFoldFixLevel: Smallint read FPasFoldFixLevel write FPasFoldFixLevel;
-    property PasFoldMinLevel: Smallint read FPasFoldMinLevel write FPasFoldMinLevel;
-    // * foldable nodes              <> All nodes (pascas , not ifdef/region) *
-    //   PasFoldEndLevel             <> CodeFoldStackSize
-    //   PasFoldMinLevel             <> MinimumCodeFoldBlockLevel
-    //   LastLineCodeFoldLevelFix    <> PasFoldFixLevel
-    //   DecLastLineCodeFoldLevelFix <> DecLastLinePasFoldFix
   end;
 
   TProcTableProc = procedure of object;
@@ -300,7 +312,7 @@ type
     fAsmStart: Boolean;
     FExtendedKeywordsMode: Boolean;
     FNestedComments: boolean;
-    FStartCodeFoldBlockLevel: integer;
+    FStartCodeFoldBlockLevel: integer; // TODO: rename FStartNestedFoldBlockLevel
     FPasStartLevel: Smallint;
     fRange: TRangeStates;
     FOldRange: TRangeStates;
@@ -334,8 +346,6 @@ type
     fDirectiveAttri: TSynHighlighterAttributes;
     FCompilerMode: TPascalCompilerMode;
     fD4syntax: boolean;
-    FCatchNodeInfo: Boolean;
-    FCatchNodeInfoList: TLazSynFoldNodeInfoList;
     // Divider
     FDividerDrawConfig: Array [TSynPasDividerDrawLocation] of TSynDividerDrawConfig;
 
@@ -471,9 +481,6 @@ type
     procedure SymbolProc;
     procedure UnknownProc;
     procedure SetD4syntax(const Value: boolean);
-    procedure InitNode(out Node: TSynFoldNodeInfo; EndOffs: Integer;
-                       ABlockType: TPascalCodeFoldBlockType; aActions: TSynFoldActions;
-                       AIsFold: Boolean);
     // Divider
     procedure CreateDividerDrawConfig;
     procedure DestroyDividerDrawConfig;
@@ -494,19 +501,27 @@ type
              (DownIndex: Integer = 0): TPascalCodeFoldBlockType;
 
     // Open/Close Folds
+    procedure GetTokenBounds(out LogX1,LogX2: Integer); override;
     function StartPascalCodeFoldBlock
-             (ABlockType: TPascalCodeFoldBlockType;
-              OnlyEnabled: Boolean = False): TSynCustomCodeFoldBlock;
+             (ABlockType: TPascalCodeFoldBlockType; ForceDisabled: Boolean = False
+              ): TSynCustomCodeFoldBlock;
     procedure EndPascalCodeFoldBlock(NoMarkup: Boolean = False);
     procedure CloseBeginEndBlocksBeforeProc;
     procedure SmartCloseBeginEndBlocks(SearchFor: TPascalCodeFoldBlockType);
     procedure EndPascalCodeFoldBlockLastLine;
     procedure StartCustomCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType);
     procedure EndCustomCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType);
+    procedure CollectNodeInfo(FinishingABlock: Boolean; ABlockType: Pointer;
+      LevelChanged: Boolean); override;
 
     // Info about Folds
     function CreateFoldNodeInfoList: TLazSynFoldNodeInfoList; override;
-    procedure InitFoldNodeInfo(AList: TLazSynFoldNodeInfoList; Line: TLineIdx); override;
+    procedure ScanFoldNodeInfo(); override;
+    procedure DoInitNode(var Node: TSynFoldNodeInfo;
+                       //EndOffs: Integer;
+                       FinishingABlock: Boolean;
+                       ABlockType: Pointer; aActions: TSynFoldActions;
+                       AIsFold: Boolean); override;
 
   protected
     function LastLinePasFoldLevelFix(Index: Integer; AType: Integer = 1;
@@ -518,6 +533,8 @@ type
     function GetDividerDrawConfigCount: Integer; override;
 
     // Fold Config
+    function CreateFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
+      override;
     function GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; override;
     function GetFoldConfigCount: Integer; override;
     function GetFoldConfigInternalCount: Integer; override;
@@ -893,7 +910,7 @@ end;
 function TSynPasSyn.Func15: TtkTokenKind;
 begin
   if KeyComp('If') then begin
-    StartPascalCodeFoldBlock(cfbtIfThen, True);
+    StartPascalCodeFoldBlock(cfbtIfThen, TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen]);
     Result := tkKey
   end
   else
@@ -901,8 +918,18 @@ begin
 end;
 
 function TSynPasSyn.Func19: TtkTokenKind;
+var pas : TPascalCodeFoldBlockType;
 begin
-  if KeyComp('Do') then Result := tkKey else
+  if KeyComp('Do') then begin
+    Result := tkKey;
+    pas := TopPascalCodeFoldBlockType;
+    if pas in [cfbtForDo, cfbtWhileDo, cfbtWithDo] then
+    begin
+      EndPascalCodeFoldBlock();
+      StartPascalCodeFoldBlock(pas);
+    end
+  end
+  else
     if KeyComp('And') then Result := tkKey else Result := tkIdentifier;
 end;
 
@@ -923,8 +950,11 @@ begin
       CodeFoldRange.Add(Pointer(PtrInt(cfbtUses)), false);
     end
     else
-    if (TopPascalCodeFoldBlockType = cfbtCase) then
+    if (TopPascalCodeFoldBlockType = cfbtCase) then begin
+      EndPascalCodeFoldBlock();
+      StartPascalCodeFoldBlock(cfbtCase);
       fRange := fRange + [rsAtCaseLabel];
+    end;
   end
   else Result := tkIdentifier;
 end;
@@ -932,6 +962,7 @@ end;
 function TSynPasSyn.Func23: TtkTokenKind;
 var
   tfb: TPascalCodeFoldBlockType;
+  sl : integer;
 begin
   if KeyComp('End') then begin
     if ((fToIdent<2) or (fLine[fToIdent-1]<>'@'))
@@ -939,12 +970,15 @@ begin
       Result := tkKey;
       fRange := fRange - [rsAsm, rsAfterClassMembers];
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+      sl := fStringLen;
       // there may be more than on block ending here
       tfb := TopPascalCodeFoldBlockType;
-      while (tfb in [cfbtIfThen]) do begin // no semicolon before end
+      fStringLen:=0;
+      while (tfb in [cfbtIfThen,cfbtForDo,cfbtWhileDo,cfbtWithDo]) do begin // no semicolon before end
         EndPascalCodeFoldBlock(True);
         tfb := TopPascalCodeFoldBlockType;
       end;
+      fStringLen := sl;
       if tfb = cfbtRecord then begin
         EndPascalCodeFoldBlock;
       end else if tfb = cfbtUnit then begin
@@ -972,6 +1006,11 @@ begin
         EndPascalCodeFoldBlock;
         if TopPascalCodeFoldBlockType = cfbtProgram then
           EndPascalCodeFoldBlock;
+        fStringLen:=0;
+        while (TopPascalCodeFoldBlockType in [{cfbtIfThen,}cfbtForDo,cfbtWhileDo,cfbtWithDo]) do begin // no semicolon after end
+          EndPascalCodeFoldBlock(True);
+        end;
+        fStringLen := sl;
       end else if tfb = cfbtUnitSection then begin
         EndPascalCodeFoldBlockLastLine;
         if TopPascalCodeFoldBlockType = cfbtUnit then // "Unit".."end."
@@ -1094,7 +1133,7 @@ begin
     if TopPascalCodeFoldBlockType in [cfbtProcedure]
     then StartPascalCodeFoldBlock(cfbtTopBeginEnd)
     else StartPascalCodeFoldBlock(cfbtBeginEnd);
-    //debugln('TSynPasSyn.Func37 BEGIN ',dbgs(ord(TopPascalCodeFoldBlockType)),' LineNumber=',dbgs(fLineNumber),' ',dbgs(MinimumCodeFoldBlockLevel),' ',dbgs(CurrentCodeFoldBlockLevel));
+    //debugln('TSynPasSyn.Func37 BEGIN ',dbgs(ord(TopPascalCodeFoldBlockType)),' LineNumber=',dbgs(fLineNumber),' ',dbgs(MinimumNestFoldBlockLevel),' ',dbgs(CurrentCodeFoldBlockLevel));
   end else
   if FExtendedKeywordsMode and KeyComp('Break') then
     Result := tkKey
@@ -1109,7 +1148,11 @@ end;
 
 function TSynPasSyn.Func39: TtkTokenKind;
 begin
-  if KeyComp('For') then Result := tkKey else
+  if KeyComp('For') then begin
+    Result := tkKey;
+    StartPascalCodeFoldBlock(cfbtForDo);
+  end
+  else
     if KeyComp('Shl') then Result := tkKey else Result := tkIdentifier;
 end;
 
@@ -1134,8 +1177,8 @@ begin
       EndPascalCodeFoldBlock
     else
     if TopPascalCodeFoldBlockType = cfbtCase then begin
-      StartPascalCodeFoldBlock(cfbtCaseElse);
       FTokenIsCaseLabel := True;
+      StartPascalCodeFoldBlock(cfbtCaseElse);
     end;
   end
   else if KeyComp('Var') then begin
@@ -1207,8 +1250,7 @@ begin
     // in a "case", we need to distinguish a possible follwing "else"
     if (TopPascalCodeFoldBlockType = cfbtIfThen) then
       EndPascalCodeFoldBlock;
-    //if TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen] then
-      StartPascalCodeFoldBlock(cfbtIfThen, not (TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen]));
+    StartPascalCodeFoldBlock(cfbtIfThen, TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen]);
   end
   else
     Result := tkIdentifier;
@@ -1273,7 +1315,11 @@ end;
 function TSynPasSyn.Func57: TtkTokenKind;
 begin
   if KeyComp('Goto') then Result := tkKey else
-    if KeyComp('While') then Result := tkKey else
+    if KeyComp('While') then begin
+      Result := tkKey;
+      StartPascalCodeFoldBlock(cfbtWhileDo);
+    end
+    else
       if KeyComp('Xor') then Result := tkKey else Result := tkIdentifier;
 end;
 
@@ -1295,7 +1341,11 @@ end;
 
 function TSynPasSyn.Func60: TtkTokenKind;
 begin
-  if KeyComp('With') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('With') then begin
+    Result := tkKey;
+    StartPascalCodeFoldBlock(cfbtWithDo);
+  end
+  else Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func61: TtkTokenKind;
@@ -1693,7 +1743,7 @@ begin
   else
     Result := tkIdentifier;
   // Structural Scan / Quick
-  if FIsInNextToEOL and not FCatchNodeInfo then
+  if FIsInNextToEOL and not IsCollectingNodeInfo then
     exit;
   // Scanning for display / Look ahead
   if KeyComp('strict') then
@@ -2378,16 +2428,15 @@ begin
   fLine:=PChar(Pointer(fLineStr));
   Run := 0;
   Inherited SetLine(NewValue,LineNumber);
-  FStartCodeFoldBlockLevel := PasCodeFoldRange.MinimumCodeFoldBlockLevel;
   PasCodeFoldRange.LastLineCodeFoldLevelFix := 0;
   PasCodeFoldRange.PasFoldFixLevel := 0;
-  PasCodeFoldRange.PasFoldMinLevel := PasCodeFoldRange.PasFoldEndLevel;
-  FPasStartLevel := PasCodeFoldRange.PasFoldMinLevel;
+  FStartCodeFoldBlockLevel := PasCodeFoldRange.MinimumNestFoldBlockLevel;
+  FPasStartLevel := PasCodeFoldRange.MinimumCodeFoldBlockLevel;
   FSynPasRangeInfo.MinLevelIfDef := FSynPasRangeInfo.EndLevelIfDef;
   FSynPasRangeInfo.MinLevelRegion := FSynPasRangeInfo.EndLevelRegion;
   fLineNumber := LineNumber;
   FAtLineStart := True;
-  if not FCatchNodeInfo then
+  if not IsCollectingNodeInfo then
     Next;
 end; { SetLine }
 
@@ -2606,10 +2655,10 @@ begin
     else
     if KeyComp('region') then begin
       StartDirectiveFoldBlock(cfbtRegion);
-      if FCatchNodeInfo then
+      if IsCollectingNodeInfo then
         // Scan ahead
         if ScanRegion then begin
-          nd := FCatchNodeInfoList.LastItemPointer;
+          nd := CollectingNodeInfoList.LastItemPointer;
           if nd <> nil then
             nd^.FoldAction := nd^.FoldAction + [sfaDefaultCollapsed];
         end;
@@ -2629,10 +2678,10 @@ begin
       KeyHash;
       if KeyComp('region') then begin
         StartDirectiveFoldBlock(cfbtRegion);
-        if FCatchNodeInfo then
+        if IsCollectingNodeInfo then
           // Scan ahead
           if ScanRegion then begin
-            nd := FCatchNodeInfoList.LastItemPointer;
+            nd := CollectingNodeInfoList.LastItemPointer;
             if nd <> nil then
               nd^.FoldAction := nd^.FoldAction + [sfaDefaultCollapsed];
           end;
@@ -2928,7 +2977,8 @@ begin
   if (tfb = cfbtClass) and (rsAfterClass in fRange) then
     EndPascalCodeFoldBlock(True);
 
-  while (tfb = cfbtIfThen) do begin
+  fStringLen:=0;
+  while (tfb in [cfbtIfThen,cfbtForDo,cfbtWhileDo,cfbtWithDo]) do begin
     EndPascalCodeFoldBlock(True);
     tfb := TopPascalCodeFoldBlockType;
   end;
@@ -3295,12 +3345,12 @@ begin
     if (r <> nil) and (r <> NullRange) then begin
       r2 := TSynPasSynRange(CurrentRanges[ALineIndex + 1]);
       if sfbIncludeDisabled in AFilter.Flags then begin
-        Result := TSynPasSynRange(r).CodeFoldStackSize;
+        Result := TSynPasSynRange(r).NestFoldStackSize;
         if (r2 <> nil) and (r2 <> NullRange) then
           Result := Result + TSynPasSynRange(r2).LastLineCodeFoldLevelFix;
       end
       else begin
-        Result := TSynPasSynRange(r).PasFoldEndLevel;
+        Result := TSynPasSynRange(r).CodeFoldStackSize;
         if (r2 <> nil) and (r2 <> NullRange) then
           Result := Result + TSynPasSynRange(r2).PasFoldFixLevel;
       end;
@@ -3347,18 +3397,18 @@ begin
     if (r <> nil) and (r <> NullRange) then begin
       r2 := TSynPasSynRange(CurrentRanges[ALineIndex + 1]);
       if sfbIncludeDisabled in AFilter.Flags then begin
-        Result := TSynPasSynRange(r).CodeFoldStackSize;
+        Result := TSynPasSynRange(r).NestFoldStackSize;
         if (r2 <> nil) and (r2 <> NullRange) then
           Result := Result + TSynPasSynRange(r2).LastLineCodeFoldLevelFix;
         // now Result = FoldBlockEndLevel
-        Result := Min(Result, TSynPasSynRange(r).MinimumCodeFoldBlockLevel);
+        Result := Min(Result, TSynPasSynRange(r).MinimumNestFoldBlockLevel);
       end
       else begin
-        Result := TSynPasSynRange(r).PasFoldEndLevel;
+        Result := TSynPasSynRange(r).CodeFoldStackSize;
         if (r2 <> nil) and (r2 <> NullRange) then
           Result := Result + TSynPasSynRange(r2).PasFoldFixLevel;
         // now Result = FoldBlockEndLevel
-        Result := Min(Result, TSynPasSynRange(r).PasFoldMinLevel);
+        Result := Min(Result, TSynPasSynRange(r).MinimumCodeFoldBlockLevel);
       end;
     end;
   end;
@@ -3392,12 +3442,12 @@ begin
       r := CurrentRanges[ALineIndex];
       if (r <> nil) and (r <> NullRange) then begin
         r2 := TSynPasSynRange(CurrentRanges[ALineIndex + 1]);
-        c := TSynPasSynRange(r).PasFoldEndLevel;
+        c := TSynPasSynRange(r).CodeFoldStackSize;
         if (r2 <> nil) and (r2 <> NullRange) then
           c := c + TSynPasSynRange(r2).PasFoldFixLevel;
 
         if ANestIndex < c then begin
-          c := TSynPasSynRange(r).CodeFoldStackSize - 1 - ANestIndex;
+          c := TSynPasSynRange(r).NestFoldStackSize - 1 - ANestIndex;
           Fold := TSynPasSynRange(r).Top;
           while (Fold <> nil) and
                 ( (c > 0) or (Fold.BlockType >= CountPascalCodeFoldBlockOffset) )
@@ -3422,12 +3472,12 @@ begin
       r := CurrentRanges[ALineIndex];
       if (r <> nil) and (r <> NullRange) then begin
         r2 := TSynPasSynRange(CurrentRanges[ALineIndex + 1]);
-        c := TSynPasSynRange(r).CodeFoldStackSize;
+        c := TSynPasSynRange(r).NestFoldStackSize;
         if (r2 <> nil) and (r2 <> NullRange) then
           c := c + TSynPasSynRange(r2).LastLineCodeFoldLevelFix;
 
         if ANestIndex < c then begin
-          c := TSynPasSynRange(r).CodeFoldStackSize - 1 - ANestIndex;
+          c := TSynPasSynRange(r).NestFoldStackSize - 1 - ANestIndex;
           Fold := TSynPasSynRange(r).Top;
           while (Fold <> nil) and (c > 0) do begin
             Fold := Fold.Parent;
@@ -3454,6 +3504,12 @@ begin
   if p >= CountPascalCodeFoldBlockOffset then
     p := p - PtrUInt(CountPascalCodeFoldBlockOffset);
   Result := TPascalCodeFoldBlockType(PtrUInt(p));
+end;
+
+procedure TSynPasSyn.GetTokenBounds(out LogX1, LogX2: Integer);
+begin
+  LogX1 := Run;
+  LogX2 := LogX1 + fStringLen;
 end;
 
 function TSynPasSyn.FoldTypeCount: integer;
@@ -3558,21 +3614,48 @@ begin
   end;
 end;
 
-procedure TSynPasSyn.InitNode(out Node: TSynFoldNodeInfo; EndOffs: Integer;
-  ABlockType: TPascalCodeFoldBlockType; aActions: TSynFoldActions; AIsFold: Boolean);
+
+procedure TSynPasSyn.DoInitNode(var Node: TSynFoldNodeInfo;
+  FinishingABlock: Boolean; ABlockType: Pointer; aActions: TSynFoldActions;
+  AIsFold: Boolean);
 var
+  PasBlockType: TPascalCodeFoldBlockType;
+  EndOffs: Integer;
   OneLine: Boolean;
-  i: Integer;
-  nd: PSynFoldNodeInfo;
 begin
+  PasBlockType := TPascalCodeFoldBlockType(PtrUint(ABlockType));
+
+  if FinishingABlock then
+    EndOffs := -1
+  else
+    EndOffs := +1;
+  //inherited DoInitNode(Node, FinishingABlock, ABlockType, aActions, AIsFold);
   aActions := aActions + [sfaMultiLine];
+
+  if (not FinishingABlock) and  (ABlockType <> nil) then begin
+    if (PasBlockType in [cfbtIfThen,cfbtForDo,cfbtWhileDo,cfbtWithDo]) then
+      Include( aActions, sfaOutlineKeepLevel);
+
+    if (PasBlockType in [cfbtProcedure]) then
+      aActions := aActions + [sfaOutlineKeepLevel,sfaOutlineNoColor];
+
+    //if (PasBlockType in [cfbtProcedure]) and (InProcLevel > 0) then //nested
+    //  aActions := aActions + [sfaOutlineForceIndent];
+
+    if (PasBlockType in [cfbtExcept]) then
+      Include( aActions, sfaOutlineMergeParent);
+
+   // if (PasBlockType in [cfbtIfThen, cfbtClass,cfbtRecord]) then
+    //  aActions := aActions + [sfaOutlineNoLine];
+  end;
+
   Node.LineIndex := LineIndex;
   Node.LogXStart := Run;
   Node.LogXEnd := Run + fStringLen;
-  Node.FoldType := Pointer(PtrInt(ABlockType));
-  Node.FoldTypeCompatible := Pointer(PtrInt(PascalFoldTypeCompatibility[ABlockType]));
+  Node.FoldType := Pointer(PtrInt(ABlockType)); //Pointer(PtrUInt(PasBlockType));
+  Node.FoldTypeCompatible := Pointer(PtrUInt(PascalFoldTypeCompatibility[PasBlockType]));
   Node.FoldAction := aActions;
-  case ABlockType of
+  case PasBlockType of
     cfbtRegion:
       begin
         node.FoldGroup := FOLDGROUP_REGION;
@@ -3581,7 +3664,7 @@ begin
         else
           Node.FoldLvlStart := 0;
         Node.NestLvlStart := FSynPasRangeInfo.EndLevelRegion;
-        OneLine := (EndOffs < 0) and (Node.FoldLvlStart > FSynPasRangeInfo.MinLevelRegion);
+        OneLine := FinishingABlock and (Node.FoldLvlStart > FSynPasRangeInfo.MinLevelRegion);
       end;
     cfbtIfDef:
       begin
@@ -3591,19 +3674,20 @@ begin
         else
           Node.FoldLvlStart := 0;
         Node.NestLvlStart := FSynPasRangeInfo.EndLevelIfDef;
-        OneLine := (EndOffs < 0) and (Node.FoldLvlStart > FSynPasRangeInfo.MinLevelIfDef);
+        OneLine := FinishingABlock and (Node.FoldLvlStart > FSynPasRangeInfo.MinLevelIfDef);
       end;
     else
       begin
+        //inherited DoInitNode(Node, FinishingABlock, ABlockType, aActions, AIsFold);
         node.FoldGroup := FOLDGROUP_PASCAL;
         if AIsFold then begin
-          Node.FoldLvlStart := PasCodeFoldRange.PasFoldEndLevel;
-          Node.NestLvlStart := PasCodeFoldRange.CodeFoldStackSize;
-          OneLine := (EndOffs < 0) and (Node.FoldLvlStart > PasCodeFoldRange.PasFoldMinLevel); // MinimumCodeFoldBlockLevel);
+          Node.FoldLvlStart := PasCodeFoldRange.CodeFoldStackSize;
+          Node.NestLvlStart := PasCodeFoldRange.NestFoldStackSize;
+          OneLine := FinishingABlock and (Node.FoldLvlStart > PasCodeFoldRange.MinimumCodeFoldBlockLevel); // MinimumCodeFoldBlockLevel);
         end else begin
-          Node.FoldLvlStart := PasCodeFoldRange.CodeFoldStackSize; // Todo: zero?
-          Node.NestLvlStart := PasCodeFoldRange.CodeFoldStackSize;
-          OneLine := (EndOffs < 0) and (Node.FoldLvlStart > PasCodeFoldRange.MinimumCodeFoldBlockLevel);
+          Node.FoldLvlStart := PasCodeFoldRange.NestFoldStackSize; // CodeFoldStackSize; ? but fails test // Todo: zero?
+          Node.NestLvlStart := PasCodeFoldRange.NestFoldStackSize;
+          OneLine := FinishingABlock and (Node.NestLvlStart > PasCodeFoldRange.MinimumNestFoldBlockLevel); // MinimumCodeFoldBlockLevel);
         end;
       end;
   end;
@@ -3611,34 +3695,8 @@ begin
   if not (sfaFold in aActions) then
     EndOffs := 0;
   Node.FoldLvlEnd := Node.FoldLvlStart + EndOffs;
-  if OneLine then begin // find opening node
-    i := FCatchNodeInfoList.CountAll - 1;
-    nd := FCatchNodeInfoList.ItemPointer[i];
-    while (i >= 0) and
-          ( (nd^.FoldType <> node.FoldType) or
-            (nd^.FoldGroup <> node.FoldGroup) or
-            (not (sfaOpenFold in nd^.FoldAction)) or
-            (nd^.FoldLvlEnd <> Node.FoldLvlStart)
-          )
-    do begin
-      dec(i);
-      nd := FCatchNodeInfoList.ItemPointer[i];
-    end;
-    if i >= 0 then begin
-      nd^.FoldAction  := nd^.FoldAction + [sfaOneLineOpen, sfaSingleLine] - [sfaMultiLine];
-      Node.FoldAction := Node.FoldAction + [sfaOneLineClose, sfaSingleLine] - [sfaMultiLine];
-      if (sfaFoldHide in nd^.FoldAction) then begin
-        assert(sfaFold in nd^.FoldAction, 'sfaFoldHide without sfaFold');
-        // one liner: hide-able / not fold-able
-        nd^.FoldAction  := nd^.FoldAction - [sfaFoldFold];
-        Node.FoldAction := Node.FoldAction - [sfaFoldFold];
-      end else begin
-        // one liner: nether hide-able nore fold-able
-        nd^.FoldAction  := nd^.FoldAction - [sfaOpenFold, sfaFold, sfaFoldFold];
-        Node.FoldAction := Node.FoldAction - [sfaCloseFold, sfaFold, sfaFoldFold];
-      end;
-    end;
-  end;
+  if OneLine then  // find opening node
+    RepairSingleLineNode(Node);
 end;
 
 procedure TSynPasSyn.StartCustomCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType);
@@ -3650,14 +3708,14 @@ begin
   BlockEnabled := FFoldConfig[ord(ABlockType)].Enabled;
   FoldBlock := BlockEnabled and (FFoldConfig[ord(ABlockType)].Modes * [fmFold, fmHide] <> []);
   //if not FFoldConfig[ord(ABlockType)].Enabled then exit;
-  if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
+  if IsCollectingNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     act := [sfaOpen, sfaOpenFold];
     if BlockEnabled then
       act := act + FFoldConfig[ord(ABlockType)].FoldActions;
     if not FAtLineStart then
       act := act - [sfaFoldHide];
-    InitNode(nd, +1, ABlockType, act, FoldBlock);
-    FCatchNodeInfoList.Add(nd);
+    DoInitNode(nd, False, Pointer(PtrUInt(ABlockType)), act, FoldBlock);
+    CollectingNodeInfoList.Add(nd);
   end;
   //if not FoldBlock then
   //  exit;
@@ -3677,15 +3735,15 @@ var
 begin
   FoldBlock := FFoldConfig[ord(ABlockType)].Enabled;
   //if not FFoldConfig[ord(ABlockType)].Enabled then exit;
-  if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
+  if IsCollectingNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     BlockEnabled := FFoldConfig[ord(ABlockType)].Enabled;
     act := [sfaClose, sfaCloseFold];
     if BlockEnabled then
       act := act + FFoldConfig[PtrUInt(ABlockType)].FoldActions;
     if not FoldBlock then
       act := act - [sfaFold, sfaFoldFold, sfaFoldHide];
-    InitNode(nd, -1, ABlockType, act, FoldBlock); // + FFoldConfig[ord(ABlockType)].FoldActions);
-    FCatchNodeInfoList.Add(nd);
+    DoInitNode(nd, True, Pointer(PtrUInt(ABlockType)), act, FoldBlock); // + FFoldConfig[ord(ABlockType)].FoldActions);
+    CollectingNodeInfoList.Add(nd);
   end;
   //if not FoldBlock then
   //  exit;
@@ -3707,52 +3765,54 @@ begin
   end;
 end;
 
+procedure TSynPasSyn.CollectNodeInfo(FinishingABlock: Boolean;
+  ABlockType: Pointer; LevelChanged: Boolean);
+begin
+  // nothing
+end;
+
 function TSynPasSyn.CreateFoldNodeInfoList: TLazSynFoldNodeInfoList;
 begin
   Result := TLazSynFoldNodeInfoList.Create;
 end;
 
-procedure TSynPasSyn.InitFoldNodeInfo(AList: TLazSynFoldNodeInfoList; Line: TLineIdx);
+procedure TSynPasSyn.ScanFoldNodeInfo;
 var
   nd: PSynFoldNodeInfo;
   i: Integer;
 begin
-  FCatchNodeInfo := True;
-  FCatchNodeInfoList := TLazSynFoldNodeInfoList(AList);
-
-  StartAtLineIndex(Line);
   fStringLen := 0;
-  NextToEol;
+  inherited ScanFoldNodeInfo;
 
   fStringLen := 0;
-  i := LastLinePasFoldLevelFix(Line+1, FOLDGROUP_PASCAL, True);  // all pascal nodes (incl. not folded)
+  i := LastLinePasFoldLevelFix(LineIndex+1, FOLDGROUP_PASCAL, True);  // all pascal nodes (incl. not folded)
   while i < 0 do begin
     EndPascalCodeFoldBlock;
-    FCatchNodeInfoList.LastItemPointer^.FoldAction :=
-      FCatchNodeInfoList.LastItemPointer^.FoldAction + [sfaCloseForNextLine];
+    CollectingNodeInfoList.LastItemPointer^.FoldAction :=
+      CollectingNodeInfoList.LastItemPointer^.FoldAction + [sfaCloseForNextLine];
     inc(i);
   end;
-  if Line = CurrentLines.Count - 1 then begin
-    // last line, close all folds
-    // Run (for LogXStart) is at line-end
-    i := FCatchNodeInfoList.CountAll;
+  if LineIndex = CurrentLines.Count - 1 then begin
+    // last LineIndex, close all folds
+    // Run (for LogXStart) is at LineIndex-end
+    i := CollectingNodeInfoList.CountAll;
     while TopPascalCodeFoldBlockType <> cfbtNone do
       EndPascalCodeFoldBlock(True);
     while FSynPasRangeInfo.EndLevelIfDef > 0 do
       EndCustomCodeFoldBlock(cfbtIfDef);
     while FSynPasRangeInfo.EndLevelRegion > 0 do
       EndCustomCodeFoldBlock(cfbtRegion);
-    while i < FCatchNodeInfoList.CountAll do begin
-      nd := FCatchNodeInfoList.ItemPointer[i];
+    while i < CollectingNodeInfoList.CountAll do begin
+      nd := CollectingNodeInfoList.ItemPointer[i];
       nd^.FoldAction := nd^.FoldAction + [sfaLastLineClose];
       inc(i);
     end;
   end;
-  FCatchNodeInfo := False;
 end;
 
-function TSynPasSyn.StartPascalCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType;
-  OnlyEnabled: Boolean): TSynCustomCodeFoldBlock;
+function TSynPasSyn.StartPascalCodeFoldBlock(
+  ABlockType: TPascalCodeFoldBlockType; ForceDisabled: Boolean
+  ): TSynCustomCodeFoldBlock;
 var
   p: PtrInt;
   FoldBlock, BlockEnabled: Boolean;
@@ -3760,22 +3820,26 @@ var
   nd: TSynFoldNodeInfo;
 begin
   BlockEnabled := FFoldConfig[ord(ABlockType)].Enabled;
-  if (not BlockEnabled) and OnlyEnabled then
-    exit(nil);
+  if (not BlockEnabled) and (not ForceDisabled) and
+     (not FFoldConfig[ord(ABlockType)].IsEssential)
+  then
+    exit;
+
   FoldBlock := BlockEnabled and (FFoldConfig[ord(ABlockType)].Modes * [fmFold, fmHide] <> []);
   p := 0;
-  if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
+  // TODO: let inherited call CollectNodeInfo
+  if IsCollectingNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     act := [sfaOpen, sfaOpenFold]; //TODO: sfaOpenFold not for cfbtIfThen
     if BlockEnabled then
       act := act + FFoldConfig[ord(ABlockType)].FoldActions;
     if not FAtLineStart then
       act := act - [sfaFoldHide];
-    InitNode(nd, +1, ABlockType, act, FoldBlock);
-    FCatchNodeInfoList.Add(nd);
+    DoInitNode(nd, False, Pointer(PtrUInt(ABlockType)), act, FoldBlock);
+    CollectingNodeInfoList.Add(nd);
   end;
   if not FoldBlock then
     p := PtrInt(CountPascalCodeFoldBlockOffset);
-  Result:=TSynCustomCodeFoldBlock(StartCodeFoldBlock(p+Pointer(PtrInt(ABlockType)), FoldBlock));
+  Result:=TSynCustomCodeFoldBlock(StartCodeFoldBlock(p+Pointer(PtrInt(ABlockType)), FoldBlock, True));
 end;
 
 procedure TSynPasSyn.EndPascalCodeFoldBlock(NoMarkup: Boolean = False);
@@ -3790,7 +3854,8 @@ begin
     fRange := fRange - [rsInTypeBlock];
   fRange := fRange - [rsAfterEqual];
   DecreaseLevel := TopCodeFoldBlockType < CountPascalCodeFoldBlockOffset;
-  if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
+  // TODO: let inherited call CollectNodeInfo
+  if IsCollectingNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     BlockEnabled := FFoldConfig[ord(BlockType)].Enabled;
     act := [sfaClose, sfaCloseFold];
     if BlockEnabled then
@@ -3799,8 +3864,8 @@ begin
       act := act - [sfaFold, sfaFoldFold, sfaFoldHide];
     if NoMarkup then
       exclude(act, sfaMarkup);
-    InitNode(nd, -1, BlockType, act, DecreaseLevel);
-    FCatchNodeInfoList.Add(nd);
+    DoInitNode(nd, True, Pointer(PtrUInt(BlockType)), act, DecreaseLevel);
+    CollectingNodeInfoList.Add(nd);
   end;
   EndCodeFoldBlock(DecreaseLevel);
 end;
@@ -3847,28 +3912,28 @@ var
   i: Integer;
   nd: PSynFoldNodeInfo;
 begin
-  if FCatchNodeInfo then
-    i := FCatchNodeInfoList.CountAll;
+  if IsCollectingNodeInfo then
+    i := CollectingNodeInfoList.CountAll;
   EndPascalCodeFoldBlock;
   if FAtLineStart then begin
     // If we are not at linestart, new folds could have been opened => handle as normal close
-    if (PasCodeFoldRange.CodeFoldStackSize < FStartCodeFoldBlockLevel) and
+    if (PasCodeFoldRange.NestFoldStackSize < FStartCodeFoldBlockLevel) and
       (FStartCodeFoldBlockLevel > 0)
     then begin
       PasCodeFoldRange.DecLastLineCodeFoldLevelFix;
       dec(FStartCodeFoldBlockLevel);
-      if FCatchNodeInfo then FCatchNodeInfoList.Delete;
+      if IsCollectingNodeInfo then CollectingNodeInfoList.Delete;
     end;
     // TODO this only happens if the above was true
-    if (PasCodeFoldRange.PasFoldEndLevel < FPasStartLevel) and
+    if (PasCodeFoldRange.CodeFoldStackSize < FPasStartLevel) and
       (FPasStartLevel > 0)
     then begin
       PasCodeFoldRange.DecLastLinePasFoldFix;
       dec(FPasStartLevel);
     end;
   end
-  else if FCatchNodeInfo and (FCatchNodeInfoList.CountAll > i) then begin
-    nd := FCatchNodeInfoList.LastItemPointer;
+  else if IsCollectingNodeInfo and (CollectingNodeInfoList.CountAll > i) then begin
+    nd := CollectingNodeInfoList.LastItemPointer;
     exclude(nd^.FoldAction, sfaMarkup); // not markup able
     nd^.LogXEnd := 0;
   end;
@@ -3884,7 +3949,7 @@ function TSynPasSyn.GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting
   begin
     i := 0;
     j := StartLvl;
-    m := PasCodeFoldRange.CodeFoldStackSize;;
+    m := PasCodeFoldRange.NestFoldStackSize;;
     t := TopPascalCodeFoldBlockType(j);
     while (i <= MaxDepth) and (j < m) and
           ((t in CountTypes) or (t in SkipTypes)) do begin
@@ -4024,34 +4089,51 @@ begin
     FreeAndNil(FDividerDrawConfig[i]);
 end;
 
-function TSynPasSyn.GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
+function TSynPasSyn.CreateFoldConfigInstance(Index: Integer
+  ): TSynCustomFoldConfig;
 var
   m: TSynCustomFoldConfigModes;
 begin
-  Result := inherited GetFoldConfigInstance(Index);
-  Result.Enabled := TPascalCodeFoldBlockType(Index) in [cfbtBeginEnd..cfbtIfThen];
-
   m := [];
   if TPascalCodeFoldBlockType(Index) in PascalWordTripletRanges then
     m := [fmMarkup];
 
   case TPascalCodeFoldBlockType(Index) of
     cfbtRegion, cfbtNestedComment, cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment:
-      Result.SupportedModes := [fmFold, fmHide] + m;
-    cfbtIfThen:
-      Result.SupportedModes := m;
+      m := [fmFold, fmHide] + m;
+    cfbtIfThen, cfbtForDo, cfbtWhileDo, cfbtWithDo:
+      m := m;
     cfbtFirstPrivate..high(TPascalCodeFoldBlockType):
-      Result.SupportedModes := [];
+      m := [];
     else
-      Result.SupportedModes := [fmFold] + m;
+      m := [fmFold] + m;
   end;
+  if not (TPascalCodeFoldBlockType(Index) in PascalNoOutlineRanges) then
+    m := m + [fmOutline];
 
-  if (TPascalCodeFoldBlockType(Index) in [cfbtIfThen]) then
+  Result := TSynCustomFoldConfig.Create(m, TPascalCodeFoldBlockType(Index) in cfbtEssential);
+end;
+
+function TSynPasSyn.GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
+var
+  m: TSynCustomFoldConfigModes;
+begin
+  Result := inherited GetFoldConfigInstance(Index);
+
+  m := Result.SupportedModes;
+
+  if (TPascalCodeFoldBlockType(Index) in [cfbtIfThen, cfbtForDo, cfbtWhileDo, cfbtWithDo]) then
     m := [];
   if TPascalCodeFoldBlockType(Index) in [cfbtSlashComment] then
     Result.Modes := [fmFold, fmHide] + m
   else
     Result.Modes := [fmFold] + m;
+
+  if not (TPascalCodeFoldBlockType(Index) in PascalNoOutlineRanges) then
+    Result.Modes := Result.Modes + [fmOutline];
+
+  Result.Enabled := (TPascalCodeFoldBlockType(Index) in [cfbtBeginEnd..cfbtLastPublic]) and
+    (Result.Modes <> []);
 end;
 
 function TSynPasSyn.CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList;
@@ -4075,7 +4157,7 @@ end;
 
 function TSynPasSyn.GetFoldConfigCount: Integer;
 begin
-  // excluded cfbtNone;
+  // excluded cfbtNone; // maybe ord(cfbtLastPublic)+1 ?
   Result := ord(high(TPascalCodeFoldBlockType)) -
             ord(low(TPascalCodeFoldBlockType))
             - 1;
@@ -4307,9 +4389,7 @@ begin
   inherited Clear;
   FBracketNestLevel := 0;
   FLastLineCodeFoldLevelFix := 0;
-  FPasFoldEndLevel := 0;
   FPasFoldFixLevel := 0;
-  FPasFoldMinLevel := 0;
 end;
 
 function TSynPasSynRange.Compare(Range: TSynCustomHighlighterRange): integer;
@@ -4323,10 +4403,6 @@ begin
   if Result<>0 then exit;
   Result := FLastLineCodeFoldLevelFix - TSynPasSynRange(Range).FLastLineCodeFoldLevelFix;
   if Result<>0 then exit;
-  Result := FPasFoldEndLevel - TSynPasSynRange(Range).FPasFoldEndLevel;
-  if Result<>0 then exit;
-  Result := FPasFoldMinLevel - TSynPasSynRange(Range).FPasFoldMinLevel;
-  if Result<>0 then exit;
   Result := FPasFoldFixLevel - TSynPasSynRange(Range).FPasFoldFixLevel;
 end;
 
@@ -4337,28 +4413,8 @@ begin
     FMode:=TSynPasSynRange(Src).FMode;
     FBracketNestLevel:=TSynPasSynRange(Src).FBracketNestLevel;
     FLastLineCodeFoldLevelFix := TSynPasSynRange(Src).FLastLineCodeFoldLevelFix;
-    FPasFoldEndLevel := TSynPasSynRange(Src).FPasFoldEndLevel;
-    FPasFoldMinLevel := TSynPasSynRange(Src).FPasFoldMinLevel;
     FPasFoldFixLevel := TSynPasSynRange(Src).FPasFoldFixLevel;
   end;
-end;
-
-function TSynPasSynRange.Add(ABlockType: Pointer; IncreaseLevel: Boolean): TSynCustomCodeFoldBlock;
-begin
-  Result := inherited Add(ABlockType, True);
-  if IncreaseLevel and assigned(result) then
-    inc(FPasFoldEndLevel);
-end;
-
-procedure TSynPasSynRange.Pop(DecreaseLevel: Boolean);
-begin
-  if assigned(Top.Parent) then begin
-    if DecreaseLevel then
-      dec(FPasFoldEndLevel);
-    if FPasFoldMinLevel > FPasFoldEndLevel then
-      FPasFoldMinLevel := FPasFoldEndLevel;
-  end;
-  inherited Pop(True);
 end;
 
 function TSynPasSynRange.MaxFoldLevel: Integer;

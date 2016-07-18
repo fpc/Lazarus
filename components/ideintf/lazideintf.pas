@@ -142,11 +142,9 @@ type
   // build project flags
   // Normally you don't need to pass any flags.
   TProjectBuildFlag = (
-    pbfCleanCompile,  // append -B to the compiler options
     pbfDoNotCompileDependencies,
     pbfDoNotCompileProject,
     pbfCompileDependenciesClean,
-    pbfOnlyIfNeeded,
     pbfDoNotSaveEditorFiles,
     pbfSkipLinking,
     pbfSkipAssembler,
@@ -355,6 +353,7 @@ type
                             Flags: TProjectBuildFlags;
                             FinalizeResources: boolean = True): TModalResult; virtual; abstract;
     function DoRunProject: TModalResult; virtual; abstract;
+    function DoRunProjectWithoutDebug: TModalResult; virtual; abstract;
     function GetProjectFileForProjectEditor(AEditor: TSourceEditorInterface): TLazProjectFile; virtual; abstract;
     function DoCallProjectChangedHandler(HandlerType: TLazarusIDEHandlerType;
                                          AProject: TLazProject): TModalResult;
@@ -546,7 +545,6 @@ type
     );
 
 procedure AddBootHandler(ht: TLazarusIDEBootHandlerType; const OnBoot: TProcedure);
-procedure RunBootHandlers(ht: TLazarusIDEBootHandlerType);
 
 implementation
 
@@ -564,7 +562,7 @@ begin
   BootHandlers[ht][l]:=OnBoot;
 end;
 
-procedure RunBootHandlers(ht: TLazarusIDEBootHandlerType);
+procedure RunBootHandlers(ht: TLazarusIDEBootHandlerType);Public name 'ideintf_LazIDEIntf_RunBootHandlers';
 var
   i: Integer;
 begin

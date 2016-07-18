@@ -119,6 +119,9 @@ begin
   AddAttribute(fSpaceAttri);
   fSpaceAttri.FrameColor := clSilver;
   fSpaceAttri.FrameEdges := sfeAround;
+
+  // Ensure the HL reacts to changes in the attributes. Do this once, if all attributes are created
+  SetAttributesOnChange(@DefHighlightChange);
 end;
 
 (* Setters for attributes / This allows using in Object inspector*)

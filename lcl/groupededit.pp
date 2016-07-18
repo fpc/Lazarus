@@ -177,7 +177,6 @@ type
     procedure SetTextHint(AValue: TTranslateString);
     procedure SetTextHintFontColor(AValue: TColor);
     procedure SetTextHintFontStyle(AValue: TFontStyles);
-    procedure UpdateSpacing;
   protected
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                 WithThemeSpace: Boolean); override;
@@ -189,8 +188,8 @@ type
     function GetBuddyClassType: TControlClass; virtual; abstract;
     class function GetControlClassDefaultSize: TSize; override;
     procedure SetDirectInput(AValue: Boolean); virtual;
-    function GetText: TCaption; virtual;
-    procedure SetText(AValue: TCaption); virtual;
+    function RealGetText: TCaption; override;
+    procedure RealSetText(const AValue: TCaption); override;
 
     function GetEditPopupMenu: TPopupMenu;
     function GetBuddyCaption: TCaption;
@@ -232,7 +231,7 @@ type
     procedure EditUtf8KeyPress(var UTF8Key: TUTF8Char); virtual;
     procedure EditStartDrag(var DragObject: TDragObject); virtual;
 
-
+    procedure UpdateSpacing;
     procedure CheckCursor;
     procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
     function  EditCanModify: Boolean; virtual;
@@ -300,7 +299,7 @@ type
     property SelStart: Integer read GetSelStart write SetSelStart;
     property SelText: String read GetSelText write SetSelText;
     property TabStop: Boolean read GetTabStop write SetTabStop default True;
-    property Text: TCaption read GetText write SetText;
+    property Text;
     property TextHint: TTranslateString read GetTextHint write SetTextHint;
     property TextHintFontColor: TColor read GetTextHintFontColor write SetTextHintFontColor default clGrayText;
     property TextHintFontStyle: TFontStyles read GetTextHintFontStyle write SetTextHintFontStyle default [fsItalic];
@@ -623,7 +622,7 @@ begin
   Result := inherited TabStop;
 end;
 
-function TCustomAbstractGroupedEdit.GetText: TCaption;
+function TCustomAbstractGroupedEdit.RealGetText: TCaption;
 begin
   Result := FEdit.Text;
 end;
@@ -904,7 +903,7 @@ begin
   FEdit.PopupMenu := AValue;
 end;
 
-procedure TCustomAbstractGroupedEdit.SetText(AValue: TCaption);
+procedure TCustomAbstractGroupedEdit.RealSetText(const AValue: TCaption);
 begin
   FEdit.Text := AValue;
 end;
@@ -1147,6 +1146,12 @@ end;
 
 procedure TCustomAbstractGroupedEdit.UpdateSpacing;
 begin
+  if (FBuddy=nil) or not FBuddy.Visible then
+  begin
+    FEdit.BorderSpacing.Right := 0;
+    FEdit.BorderSpacing.Left := 0;
+  end
+  else
   if (FLayout = taLeftJustify) then
   begin
     FEdit.BorderSpacing.Right := FSpacing;

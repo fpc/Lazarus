@@ -51,8 +51,8 @@ type
   TProjectVersionStringTable = class(TVersionStringTable)
   private
     FOnModified: TNotifyEvent;
-    function GetValues(Key: string): string;
-    procedure SetValues(Key: string; const AValue: string);
+    function GetValues(const Key: string): string;
+    procedure SetValues(const Key: string; const AValue: string);
   protected
     procedure DoModified;
     function KeyToIndex(const aKey: String): Integer;
@@ -115,8 +115,8 @@ type
       AReason: TCompileReason; {%H-}SaveToTestDir: boolean); override;
     function UpdateResources(AResources: TAbstractProjectResources;
       const {%H-}MainFilename: string): boolean; override;
-    procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; Path: string); override;
-    procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; Path: string); override;
+    procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; const Path: string); override;
+    procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; const Path: string); override;
 
     property UseVersionInfo: boolean read FUseVersionInfo write SetUseVersionInfo;
     property AutoIncrementBuild: boolean read FAutoIncrementBuild write SetAutoIncrementBuild;
@@ -422,7 +422,8 @@ begin
   end;
 end;
 
-procedure TProjectVersionInfo.WriteToProjectFile(AConfig: TObject; Path: string);
+procedure TProjectVersionInfo.WriteToProjectFile(AConfig: TObject;
+  const Path: string);
 var
   i: integer;
   Key: string;
@@ -460,7 +461,8 @@ begin
   end;
 end;
 
-procedure TProjectVersionInfo.ReadFromProjectFile(AConfig: TObject; Path: string);
+procedure TProjectVersionInfo.ReadFromProjectFile(AConfig: TObject;
+  const Path: string);
 var
   i: integer;
   Node: TDomNode;
@@ -681,7 +683,7 @@ end;
 
 { TProjectVersionStringTable }
 
-function TProjectVersionStringTable.GetValues(Key: string): string;
+function TProjectVersionStringTable.GetValues(const Key: string): string;
 var
   idx: Integer;
 begin
@@ -692,7 +694,8 @@ begin
     Result := ValuesByIndex[idx];
 end;
 
-procedure TProjectVersionStringTable.SetValues(Key: string; const AValue: string);
+procedure TProjectVersionStringTable.SetValues(const Key: string;
+  const AValue: string);
 var
   idx: Integer;
 begin
@@ -722,8 +725,7 @@ begin
   // - SpecialBuild
 end;
 
-function TProjectVersionStringTable.Equals(aTable: TProjectVersionStringTable
-  ): boolean;
+function TProjectVersionStringTable.Equals(aTable: TProjectVersionStringTable): boolean;
 var
   i: Integer;
 begin

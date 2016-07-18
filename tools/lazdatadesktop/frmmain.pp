@@ -356,6 +356,7 @@ begin
   MenuItem2.Caption:= sld_Menuedit;
   MIDataDict.Caption:= sld_Menudictionary;
   MIConnection.Caption:= sld_Menuconnections;
+  MView.Caption:= sld_View;
   MIImport.Caption:= sld_Menudictionaryimport;
   MICloseSep.Caption:= sld_Separator;
   MISep.Caption:= sld_Separator;
@@ -418,6 +419,7 @@ begin
   //
   TSRecent.Caption:= sld_Dictionaries;
   TSConnections.Caption:= sld_Connections;
+  TSAll.Caption:= sld_ConnectionsDictionaries;
   LVDicts.Column[0].Caption:= sld_Recentlv1;
   LVDicts.Column[1].Caption:= sld_Recentlv2;
   LVDicts.Column[2].Caption:= sld_Recentlv3;
@@ -1884,14 +1886,7 @@ begin
   LangID1 := Application.GetOptionValue('language');
   LangID2 := '';
   if Trim(LangId1) = '' then
-  begin
     LazGetLanguageIDs(LangID1,LangID2);
-    if LangID2 = 'pt' then
-    begin
-       LangID1 := 'pb';
-       LangID2 := '';
-    end;
-  end;
   TranslateUnitResourceStrings('sdb_consts',basedir+
                'components/dbexport/languages/sdb_consts'+ext, LangID1,LangID2);
   TranslateUnitResourceStrings('ldd_consts',basedir+

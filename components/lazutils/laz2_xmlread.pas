@@ -1,10 +1,8 @@
 {
-  This file is based on the FCL unit xmlread svn revision 15251.
-  Converted to use UTF8 instead of widestrings by Mattias Gaertner.
-}
-{
  **********************************************************************
-  This file is part of the Free Component Library
+  This file is part of LazUtils.
+  It is copied from FCL unit xmlread svn revision 15251 and adapted to use
+  UTF8 instead of widestrings by Mattias Gaertner.
 
   See the file COPYING.FPC, included in this distribution,
   for details about the license.
@@ -817,6 +815,12 @@ begin
             SameText(AEncoding, 'ISO8859-1');
 end;
 
+function Is_UTF8(const AEncoding: String): Boolean;
+begin
+  Result := SameText(AEncoding, 'UTF-8') or
+            SameText(AEncoding, 'UTF8');
+end;
+
 procedure BufAllocate(var ABuffer: TDOMCharBuf; ALength: Integer);
 begin
   ABuffer.MaxLength := ALength;
@@ -1150,7 +1154,7 @@ begin
       DecodingError('Invalid character in input stream')
     else
     begin
-      Inc(FCharCount, rslt);
+      Inc(FCharCount, Cardinal(rslt));
       FReader.CheckMaxChars;
     end;
   until False;
@@ -1216,7 +1220,7 @@ var
 begin
   Result := True;
   {$IFDEF UseWideString}
-  if (FFixedUCS2 = '') and SameText(AEncoding, 'UTF-8') then
+  if (FFixedUCS2 = '') and Is_UTF8(AEncoding) then
     Exit;
   if FFixedUCS2 <> '' then
   begin
@@ -1228,7 +1232,7 @@ begin
   // TODO: must fail when a byte-based stream is labeled as word-based.
   // see rmt-e2e-61, it now fails but for a completely different reason.
   {$ELSE}
-  if SameText(AEncoding, 'UTF-8') then
+  if IS_UTF8(AEncoding) then
     Exit;
   {$ENDIF}
   FillChar(NewDecoder{%H-}, sizeof(TDecoder), 0);
@@ -2792,7 +2796,7 @@ begin
           SkipWhitespace;
           CheckName([cnToken]);
           if not AttDef.AddEnumToken(FName.Buffer, FName.Length) then
-            ValidationError('Duplicate token in enumerated attibute declaration', [], FName.Length);
+            ValidationError('Duplicate token in enumerated attribute declaration', [], FName.Length);
           SkipWhitespace;
         until not CheckForChar('|');
         ExpectChar(')');

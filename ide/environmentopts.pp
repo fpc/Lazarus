@@ -39,7 +39,7 @@ uses
 {$endif}
   Classes, SysUtils, TypInfo, contnrs, Graphics, Controls, Forms, Dialogs,
   LCLProc, FileProcs, LazFileUtils, LazFileCache, LazConfigStorage,
-  Laz2_XMLCfg, LazUTF8, SourceChanger,
+  Laz2_XMLCfg, LazUTF8, SourceChanger, CodeCompletionTool,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
   ComponentReg, IDEExternToolIntf, MacroDefIntf, DbgIntfDebuggerBase,
@@ -49,10 +49,11 @@ uses
   IdeCoolbarData, EditorToolbarStatic;
 
 const
-  EnvOptsVersion: integer = 109;
+  EnvOptsVersion: integer = 110;
   // 107 added Lazarus version
   // 108 added LastCalledByLazarusFullPath
   // 109 changed paths for desktop settings, supporting multiple desktops.
+  // 110 changed BackupType to string instead of integer
 
   {$IFDEF Windows}
   DefaultMakefilename = '$Path($(CompPath))make.exe';
@@ -96,8 +97,15 @@ type
     MaxCounter: integer;         // for bakCounter
     SubDirectory: string;
   end;
-  
-  
+const
+  // Important: When changing any of these values increase EnvOptsVersion
+  //            and add code to read old options
+  DefaultBackupTypeProject = bakSameName;
+  DefaultBackupTypeOther = bakUserDefinedAddExt;
+  DefaultBackupAddExt = 'bak';
+  DefaultBackupMaxCounter = 9;
+  DefaultBackupSubDirectory = 'backup';
+
   { Debugging }
 
 type
@@ -280,6 +288,11 @@ type
     constructor Create;
   end;
 
+  TUseUnitDlgOptions = record
+    AllUnits: Boolean;
+    AddToImplementation: Boolean;
+  end;
+
   { TDesktopOpt }
 
   TDesktopOpt = class
@@ -438,6 +451,7 @@ type
     // hints
     FAskSaveSessionOnly: boolean;
     FCheckDiskChangesWithLoading: boolean;
+    FDiskChangesAutoCheckModified: boolean;
     FShowHintsForComponentPalette: boolean;
     FShowHintsForMainSpeedButtons: boolean;
     
@@ -467,6 +481,12 @@ type
     FBuildMatrixOptions: TBuildMatrixOptions;
     FUseBuildModes: Boolean;
     FIsGlobalMode: TStrToBoolEvent;
+
+    // Clean build project dialog
+    FCleanBuildProjOut: Boolean;
+    FCleanBuildProjSrc: Boolean;
+    FCleanBuildPkgOut: Boolean;
+    FCleanBuildPkgSrc: Boolean;
 
     // Primary-config verification
     FLastCalledByLazarusFullPath: String;
@@ -504,7 +524,9 @@ type
     FAlreadyPopulatedRecentFiles : Boolean;
 
     //other recent settings
-    FLastEventMethodSectionPrompt: TInsertClassSectionResult;
+    FLastEventMethodCCResult: TCodeCreationDlgResult;
+    FLastVariableCCResult: TCodeCreationDlgResult;
+    FUseUnitDlgOptions: TUseUnitDlgOptions;
 
     // backup
     FBackupInfoProjectFiles: TBackupInfo;
@@ -680,6 +702,8 @@ type
     // hints
     property CheckDiskChangesWithLoading: boolean read FCheckDiskChangesWithLoading
                                                  write FCheckDiskChangesWithLoading;
+    property DiskChangesAutoCheckModified: boolean read FDiskChangesAutoCheckModified
+                                                  write FDiskChangesAutoCheckModified;
     property ShowHintsForComponentPalette: boolean read FShowHintsForComponentPalette
                                                   write FShowHintsForComponentPalette;
     property ShowHintsForMainSpeedButtons: boolean read FShowHintsForMainSpeedButtons
@@ -714,6 +738,12 @@ type
     // global build options
     property BuildMatrixOptions: TBuildMatrixOptions read FBuildMatrixOptions;
     property UseBuildModes: Boolean read FUseBuildModes write FUseBuildModes;
+
+    // Clean build project dialog
+    property CleanBuildProjOut: Boolean read FCleanBuildProjOut write FCleanBuildProjOut;
+    property CleanBuildProjSrc: Boolean read FCleanBuildProjSrc write FCleanBuildProjSrc;
+    property CleanBuildPkgOut: Boolean read FCleanBuildPkgOut write FCleanBuildPkgOut;
+    property CleanBuildPkgSrc: Boolean read FCleanBuildPkgSrc write FCleanBuildPkgSrc;
 
     // Debugger
     procedure SaveDebuggerPropertiesList;
@@ -762,8 +792,12 @@ type
     property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;
 
     // other recent settings
-    property LastEventMethodSectionPrompt: TInsertClassSectionResult
-      read FLastEventMethodSectionPrompt write FLastEventMethodSectionPrompt;
+    property LastEventMethodCCResult: TCodeCreationDlgResult
+      read FLastEventMethodCCResult write FLastEventMethodCCResult;
+    property LastVariableCCResult: TCodeCreationDlgResult
+      read FLastVariableCCResult write FLastVariableCCResult;
+    property UseUnitDlgOptions: TUseUnitDlgOptions
+      read FUseUnitDlgOptions write FUseUnitDlgOptions;
 
     // backup
     property BackupInfoProjectFiles: TBackupInfo read FBackupInfoProjectFiles
@@ -839,6 +873,8 @@ function CharCaseFileActionNameToType(const Action: string): TCharCaseFileAction
 function UnitRenameReferencesActionNameToType(const Action: string): TUnitRenameReferencesAction;
 function StrToMsgWndFilenameStyle(const s: string): TMsgWndFileNameStyle;
 function StrToIDEMultipleInstancesOption(const s: string): TIDEMultipleInstancesOption;
+function BackupTypeToName(b: TBackupType): string;
+function NameToBackupType(const s: string): TBackupType;
 
 function SimpleDirectoryCheck(const OldDir, NewDir,
   NotFoundErrMsg: string; out StopChecking: boolean): boolean;
@@ -913,6 +949,21 @@ begin
   for Result in TIDEMultipleInstancesOption do
     if CompareText(s,IDEMultipleInstancesOptionNames[Result])=0 then exit;
   Result:=DefaultIDEMultipleInstancesOption;
+end;
+
+function BackupTypeToName(b: TBackupType): string;
+begin
+  Str(b,Result);
+  Delete(Result,1,length('bak'));
+end;
+
+function NameToBackupType(const s: string): TBackupType;
+var
+  b: TBackupType;
+begin
+  for b in TBackupType do
+    if CompareText(s,BackupTypeToName(b))=0 then exit(b);
+  Result:=bakNone;
 end;
 
 function SimpleDirectoryCheck(const OldDir, NewDir,
@@ -1309,6 +1360,7 @@ begin
 
   // hints
   FCheckDiskChangesWithLoading:=false;
+  FDiskChangesAutoCheckModified:=false;
   FShowHintsForComponentPalette:=true;
   FShowHintsForMainSpeedButtons:=true;
   
@@ -1361,20 +1413,22 @@ begin
   FMultipleInstances:=DefaultIDEMultipleInstancesOption;
 
   // other recent settings
-  FLastEventMethodSectionPrompt:=InsertClassSectionToResult[DefaultEventMethodSection];
+  FLastEventMethodCCResult.ClassSection:=icsPublic;
+  FLastVariableCCResult.ClassSection:=icsPrivate;
+  FLastVariableCCResult.Location:=cclLocal;
 
   // backup
   with FBackupInfoProjectFiles do begin
-    BackupType:=bakSameName;
-    AdditionalExtension:='bak';  // for bakUserDefinedAddExt
-    MaxCounter:=3;               // for bakCounter
-    SubDirectory:='';
+    BackupType:=DefaultBackupTypeProject;
+    AdditionalExtension:=DefaultBackupAddExt;  // for bakUserDefinedAddExt
+    MaxCounter:=DefaultBackupMaxCounter;       // for bakCounter
+    SubDirectory:=DefaultBackupSubDirectory;
   end;
   with FBackupInfoOtherFiles do begin
-    BackupType:=bakUserDefinedAddExt;
-    AdditionalExtension:='bak';  // for bakUserDefinedAddExt
-    MaxCounter:=3;               // for bakCounter
-    SubDirectory:='';
+    BackupType:=DefaultBackupTypeOther;
+    AdditionalExtension:=DefaultBackupAddExt;  // for bakUserDefinedAddExt
+    MaxCounter:=DefaultBackupMaxCounter;       // for bakCounter
+    SubDirectory:=DefaultBackupSubDirectory;
   end;
   
   // external tools
@@ -1513,26 +1567,32 @@ end;
 
 procedure TEnvironmentOptions.LoadNonDesktop(Path: String);
 
-  procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
+  procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string;
+    DefaultBackupType: TBackupType);
   var i:integer;
   begin
     with BackupInfo do begin
-      i:=FXMLCfg.GetValue(Path+'Type',5);
-      case i of
-       0:BackupType:=bakNone;
-       1:BackupType:=bakSymbolInFront;
-       2:BackupType:=bakSymbolBehind;
-       3:BackupType:=bakCounter;
-       4:BackupType:=bakSameName;
-      else
-        BackupType:=bakUserDefinedAddExt;
+      if FFileVersion>=110 then begin
+        BackupType:=NameToBackupType(FXMLCfg.GetValue(Path+'Type',BackupTypeToName(DefaultBackupType)));
+      end else begin
+        // 109 and less:
+        i:=FXMLCfg.GetValue(Path+'Type',5);
+        case i of
+         0:BackupType:=bakNone;
+         1:BackupType:=bakSymbolInFront;
+         2:BackupType:=bakSymbolBehind;
+         3:BackupType:=bakCounter;
+         4:BackupType:=bakSameName;
+        else
+          BackupType:=bakUserDefinedAddExt;
+        end;
       end;
-      AdditionalExtension:=FXMLCfg.GetValue(Path+'AdditionalExtension','bak');
-      MaxCounter:=FXMLCfg.GetValue(Path+'MaxCounter',9);
+      AdditionalExtension:=FXMLCfg.GetValue(Path+'AdditionalExtension',DefaultBackupAddExt);
+      MaxCounter:=FXMLCfg.GetValue(Path+'MaxCounter',9); // DefaultBackupMaxCounter
       if FFileVersion<101 then
         SubDirectory:=''
       else
-        SubDirectory:=FXMLCfg.GetValue(Path+'SubDirectory','backup');
+        SubDirectory:=FXMLCfg.GetValue(Path+'SubDirectory','backup'); // DefaultBackupSubDirectory;
     end;
   end;
 
@@ -1572,9 +1632,15 @@ begin
   FConfigStore.UndoAppendBasePath;
   FUseBuildModes:=FXMLCfg.GetValue(Path+'Build/UseBuildModes',false);
 
+  // Clean build project dialog
+  FCleanBuildProjOut:=FXMLCfg.GetValue(Path+'CleanBuild/ProjOut',true);
+  FCleanBuildProjSrc:=FXMLCfg.GetValue(Path+'CleanBuild/ProjSrc',true);
+  FCleanBuildPkgOut:=FXMLCfg.GetValue(Path+'CleanBuild/PkgOut',true);
+  FCleanBuildPkgSrc:=FXMLCfg.GetValue(Path+'CleanBuild/PkgSrc',true);
+
   // backup
-  LoadBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/');
-  LoadBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/');
+  LoadBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/',DefaultBackupTypeProject);
+  LoadBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/',DefaultBackupTypeOther);
 
   // Debugger
   FDebuggerConfig.Load;
@@ -1629,6 +1695,15 @@ procedure TEnvironmentOptions.Load(OnlyDesktop: boolean);
     if fPascalFileExtension=petNone then
       fPascalFileExtension:=petPAS;
   end;
+
+  procedure LoadCCResult(var CCResult: TCodeCreationDlgResult; const Path: string;
+    const DefaultClassSection: TInsertClassSection);
+  begin
+    CCResult.ClassSection:=InsertClassSectionNameToSection(FXMLCfg.GetValue(
+      Path+'/ClassSection',InsertClassSectionNames[DefaultClassSection]));
+    CCResult.Location:=CreateCodeLocationNameToLocation(FXMLCfg.GetValue(
+      Path+'/Location',CreateCodeLocationNames[cclLocal]));
+  end;
   
 var
   Path, CurPath: String;
@@ -1643,7 +1718,7 @@ begin
     // ToDo: Get rid of EnvironmentOptions/ path. The whole file is about
     //  environment options. Many section are not under it any more.
     Path:='EnvironmentOptions/';
-    FFileVersion:=FXMLCfg.GetValue(Path+'Version/Value',0);
+    FFileVersion:=FXMLCfg.GetValue(Path+'Version/Value',EnvOptsVersion);
     FOldLazarusVersion:=FXMLCfg.GetValue(Path+'Version/Lazarus','');
     if FOldLazarusVersion='' then begin
       // 108 added LastCalledByLazarusFullPath
@@ -1724,6 +1799,7 @@ begin
 
     // hints
     FCheckDiskChangesWithLoading:=FXMLCfg.GetValue(Path+'CheckDiskChangesWithLoading/Value',false);
+    FDiskChangesAutoCheckModified:=FXMLCfg.GetValue(Path+'DiskChangesAutoCheckModified/Value',false);
     FShowHintsForComponentPalette:=FXMLCfg.GetValue(Path+'ShowHintsForComponentPalette/Value',true);
     FShowHintsForMainSpeedButtons:=FXMLCfg.GetValue(Path+'ShowHintsForMainSpeedButtons/Value',true);
 
@@ -1762,9 +1838,11 @@ begin
     FAlreadyPopulatedRecentFiles := FXMLCfg.GetValue(Path+'Recent/AlreadyPopulated', false);
 
     // other recent settings
-    FLastEventMethodSectionPrompt:=InsertClassSectionResultNameToSection(FXMLCfg.GetValue(
-      'Recent/EventMethodSectionPrompt/Value',
-      InsertClassSectionNames[DefaultEventMethodSection]));
+    LoadCCResult(FLastEventMethodCCResult, Path+'Recent/EventMethodCCResult', icsPublic);
+    LoadCCResult(FLastVariableCCResult, Path+'Recent/VariableCCResult', icsPrivate);
+
+    FUseUnitDlgOptions.AllUnits:=FXMLCfg.GetValue(Path+'Recent/UseUnitDlg/AllUnits',False);
+    FUseUnitDlgOptions.AddToImplementation:=FXMLCfg.GetValue(Path+'Recent/UseUnitDlg/AddToImplementation',False);
 
     // Add example projects to an empty project list if examples have write access
     if (FRecentProjectFiles.count=0) and (not FAlreadyPopulatedRecentFiles) then begin
@@ -1878,23 +1956,14 @@ end;
 
 procedure TEnvironmentOptions.SaveNonDesktop(Path: String);
 
-  procedure SaveBackupInfo(var BackupInfo: TBackupInfo; Path:string);
-  var i:integer;
+  procedure SaveBackupInfo(var BackupInfo: TBackupInfo; Path:string;
+    DefaultBackupType: TBackupType);
   begin
     with BackupInfo do begin
-      case BackupType of
-       bakNone: i:=0;
-       bakSymbolInFront: i:=1;
-       bakSymbolBehind: i:=2;
-       bakCounter: i:=3;
-       bakSameName: i:=4;
-      else
-        i:=5; // bakUserDefinedAddExt;
-      end;
-      FXMLCfg.SetDeleteValue(Path+'Type',i,5);
-      FXMLCfg.SetDeleteValue(Path+'AdditionalExtension',AdditionalExtension,'.bak');
-      FXMLCfg.SetDeleteValue(Path+'MaxCounter',MaxCounter,10);
-      FXMLCfg.SetDeleteValue(Path+'SubDirectory',SubDirectory,'backup');
+      FXMLCfg.SetDeleteValue(Path+'Type',BackupTypeToName(BackupType),BackupTypeToName(DefaultBackupType));
+      FXMLCfg.SetDeleteValue(Path+'AdditionalExtension',AdditionalExtension,DefaultBackupAddExt);
+      FXMLCfg.SetDeleteValue(Path+'MaxCounter',MaxCounter,DefaultBackupMaxCounter);
+      FXMLCfg.SetDeleteValue(Path+'SubDirectory',SubDirectory,DefaultBackupSubDirectory);
     end;
   end;
 
@@ -1938,9 +2007,15 @@ begin
   FConfigStore.UndoAppendBasePath;
   FXMLCfg.SetDeleteValue(Path+'Build/UseBuildModes',FUseBuildModes,false);
 
+  // Clean build project dialog
+  FXMLCfg.SetDeleteValue(Path+'CleanBuild/ProjOut',FCleanBuildProjOut,true);
+  FXMLCfg.SetDeleteValue(Path+'CleanBuild/ProjSrc',FCleanBuildProjSrc,true);
+  FXMLCfg.SetDeleteValue(Path+'CleanBuild/PkgOut',FCleanBuildPkgOut,true);
+  FXMLCfg.SetDeleteValue(Path+'CleanBuild/PkgSrc',FCleanBuildPkgSrc,true);
+
   // backup
-  SaveBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/');
-  SaveBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/');
+  SaveBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/',DefaultBackupTypeProject);
+  SaveBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/',DefaultBackupTypeOther);
 
   // debugger
   FDebuggerConfig.Save;
@@ -1977,6 +2052,17 @@ begin
 end;
 
 procedure TEnvironmentOptions.Save(OnlyDesktop: boolean);
+  procedure SaveCCResult(const CCResult: TCodeCreationDlgResult; const Path: string;
+    const DefaultClassSection: TInsertClassSection);
+  begin
+    FXMLCfg.SetDeleteValue(Path+'/ClassSection',
+      InsertClassSectionNames[CCResult.ClassSection],
+      InsertClassSectionNames[DefaultClassSection]);
+    FXMLCfg.SetDeleteValue(Path+'/Location',
+      CreateCodeLocationNames[CCResult.Location],
+      CreateCodeLocationNames[cclLocal]);
+  end;
+
 var
   Path, CurPath, NodeName: String;
   i, j: Integer;
@@ -2058,6 +2144,7 @@ begin
 
     // hints
     FXMLCfg.SetDeleteValue(Path+'CheckDiskChangesWithLoading/Value',FCheckDiskChangesWithLoading,false);
+    FXMLCfg.SetDeleteValue(Path+'DiskChangesAutoCheckModified/Value',FDiskChangesAutoCheckModified,false);
     FXMLCfg.SetDeleteValue(Path+'ShowHintsForComponentPalette/Value',FShowHintsForComponentPalette,true);
     FXMLCfg.SetDeleteValue(Path+'ShowHintsForMainSpeedButtons/Value',FShowHintsForMainSpeedButtons,true);
 
@@ -2095,9 +2182,11 @@ begin
     FXMLCfg.SetDeleteValue(Path+'Recent/AlreadyPopulated', FAlreadyPopulatedRecentFiles, false);
 
     // other recent settings
-    FXMLCfg.SetDeleteValue('Recent/EventMethodSectionPrompt/Value',
-      InsertClassSectionResultNames[FLastEventMethodSectionPrompt],
-      InsertClassSectionResultNames[InsertClassSectionToResult[DefaultEventMethodSection]]);
+    SaveCCResult(FLastEventMethodCCResult, Path+'Recent/EventMethodCCResult', icsPublic);
+    SaveCCResult(FLastVariableCCResult, Path+'Recent/VariableCCResult', icsPrivate);
+
+    FXMLCfg.SetDeleteValue(Path+'Recent/UseUnitDlg/AllUnits',FUseUnitDlgOptions.AllUnits,False);
+    FXMLCfg.SetDeleteValue(Path+'Recent/UseUnitDlg/AddToImplementation',FUseUnitDlgOptions.AddToImplementation,False);
 
     // external tools
     fExternalUserTools.Save(FConfigStore,Path+'ExternalTools/');
@@ -2150,7 +2239,8 @@ begin
     end;
 
     //automatically save active desktops
-    if AutoSaveActiveDesktop then
+    if AutoSaveActiveDesktop
+    and (Application.MainForm<>nil) and Application.MainForm.Visible then
     begin
       //save active desktop
       Desktop.ImportSettingsFromIDE;

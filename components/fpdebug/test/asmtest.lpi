@@ -29,10 +29,13 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="DebuggerIntf"/>
       </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
     </RequiredPackages>
     <Units Count="3">
       <Unit0>
@@ -42,7 +45,6 @@
       <Unit1>
         <Filename Value="..\dbgdisasx86.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="dbgdisasx86"/>
       </Unit1>
       <Unit2>
         <Filename Value="asmtestunit.pas"/>
@@ -72,12 +74,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerMessages>
-        <MsgFileName Value=""/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">

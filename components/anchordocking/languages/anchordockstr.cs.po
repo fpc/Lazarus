@@ -31,17 +31,14 @@ msgid "Anchor Docking Layout"
 msgstr "Rozložení Kotvení-Dokování"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
-#| msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Kotva není dělič: Uzel=\"%s\" Kotvy[%s]=\"%s\""
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
-#| msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Kotva nenalezena: Uzel=\"%s\" Kotvy[%s]=\"%s\""
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
-#| msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Kotva na špatnou stranu děliče: Uzel=\"%s\" Kotvy[%s]=\"%s\""
 
@@ -68,7 +65,6 @@ msgid "control is already a docksite"
 msgstr "prvek již je dokován"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
-#| msgid "Custom dock site %s%s%s can have only one site."
 msgid "Custom dock site \"%s\" can have only one site."
 msgstr "Vlastní dok \"%s\" může mít pouze jednu stranu."
 
@@ -81,7 +77,6 @@ msgid "Docking options"
 msgstr "Nastavení kotvení"
 
 #: anchordockstr.adrsdraganddockc
-#| msgid "Use the mouse to drag and dock window \"%c\""
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Použijte myš k uchopení a ukotvení okna \"%s\""
 
@@ -218,7 +213,6 @@ msgid "No captions for floating sites"
 msgstr "Skrýt popisky samostatných položek"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
-#| msgid "No children allowed for Node=%s%s%s Type=%s"
 msgid "No children allowed for Node=\"%s\" Type=%s"
 msgstr "Žádní potomci nejsou povolení pro Uzel=\"%s\" Typ=%s"
 

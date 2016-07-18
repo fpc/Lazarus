@@ -476,6 +476,14 @@ msgstr "Alleviivaus, kyllä, ei"
 msgid "No Action"
 msgstr "Ei toimintoa"
 
+#: syneditstrconst.syns_emcoverviewguttergotomark
+msgid "Jump to Mark (Overview Gutter)"
+msgstr ""
+
+#: syneditstrconst.syns_emcoverviewgutterscrollto
+msgid "Scroll (Overview Gutter)"
+msgstr ""
+
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
 msgstr "Pika-liitä valinta"

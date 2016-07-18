@@ -170,9 +170,13 @@ begin
   // add
   AProject.AddPackageDependency('FCL');
   AProject.AddPackageDependency('LCL');
+  AProject.AddPackageDependency('fpcunittestrunner');
   
   // compiler options
   AProject.LazCompilerOptions.UseLineInfoUnit:=true;
+  AProject.LazCompilerOptions.Win32GraphicApp:=true;
+  AProject.LazCompilerOptions.TargetFilename:='fpunitproject1';
+  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   Result:=mrOK;
 end;
 
@@ -357,6 +361,8 @@ begin
 
   // compiler options
   AProject.LazCompilerOptions.UseLineInfoUnit:=true;
+  AProject.LazCompilerOptions.TargetFilename:='fpunitproject1';
+  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   Result:=mrOK;
 end;
 

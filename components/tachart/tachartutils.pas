@@ -32,6 +32,7 @@ const
   CHART_COMPONENT_IDE_PAGE = 'Chart';
   PERCENT = 0.01;
   clTAColor = $20000000; // = clDefault, but avoiding dependency on Graphics
+  DEFAULT_FONT_SIZE = 10;
 
 type
   EChartError = class(Exception);
@@ -57,6 +58,7 @@ type
   end;
 
   TPointArray = array of TPoint;
+  TDoublePointArray = array of TDoublepoint;
 
   TChartDistance = 0..MaxInt;
 
@@ -298,6 +300,7 @@ const
     (coords: (Infinity, Infinity, NegInfinity, NegInfinity));
   CASE_OF_TWO: array [Boolean, Boolean] of TCaseOfTwo =
     ((cotNone, cotSecond), (cotFirst, cotBoth));
+  ORIENTATION_UNITS_PER_DEG = 10;
 
 function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 
@@ -353,9 +356,6 @@ implementation
 
 uses
   StrUtils, TypInfo, TAChartStrConsts;
-
-const
-  ORIENTATION_UNITS_PER_DEG = 10;
 
 function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 begin
@@ -566,7 +566,7 @@ end;
 procedure THistory.DeleteOld(ACount: Integer);
 begin
   FCount -= ACount;
-  Move(FData[ACount], FData[0], SizeOf(FData[0]) * FCount);
+  Move(FData[ACount], FData[0], SizeInt(FCount) * SizeOf(FData[0]));
 end;
 
 function THistory.GetCapacity: Cardinal;

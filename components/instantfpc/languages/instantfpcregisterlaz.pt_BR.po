@@ -18,12 +18,10 @@ msgid "InstantFPC script"
 msgstr "Script InstantFPC"
 
 #: instantfpcregisterlaz.rssinglefilefr
-#| msgid "%s%sSingle file Free Pascal program executed by instantfpc"
 msgid "%s%sSingle file Free Pascal program executed by InstantFPC"
 msgstr "%s%sPrograma Free Pascal de arquivo único executado pelo InstantFPC"
 
 #: instantfpcregisterlaz.rssinglefilepr
-#| msgid "%s%sSingle file program using instantfpc to compile and execute"
 msgid "%s%sSingle file program using InstantFPC to compile and execute"
 msgstr "%s%sPrograma de arquivo único usando o InstantFPC para compilar e executar"
 

@@ -397,7 +397,7 @@ begin
 
   if fRange = rsUnknown then begin
     FTokenID := tkUnknown;
-    Run := l - 1;
+    Run := l;
     exit;
   end;
 

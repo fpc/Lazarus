@@ -312,10 +312,20 @@ begin
   objc_msgSend_stret(@Result, Handle, sel_registerName(PChar(StrNSNumber_unsignedLongLongValue)), []);
 end;
 
+{$ifdef CPU64}
+function NSNumber.floatValue: Single;
+var
+  val: LongWord;
+begin
+  val := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_floatValue)), []));
+  Result := PSingle(@val)^;
+end;
+{$else}
 function NSNumber.floatValue: Single;
 begin
   Result := Single(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_floatValue)), []));
 end;
+{$endif}
 
 function NSNumber.doubleValue: double;
 begin

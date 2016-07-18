@@ -26,7 +26,6 @@ type
     FLangFilterLanguageAbbr: String;
     FLangPath: String;
     FMainFormWindowState: TWindowState;
-    FOpenDialogFilename: String;
     FResultsFormWindowState: TWindowState;
     FSelectDirectoryFilename: String;
     FTestTypes: TPoTestTypes;
@@ -36,14 +35,16 @@ type
     FMainFormGeometry: TRect;
     FGraphFormGeometry: TRect;
     FResultsFormGeometry: TRect;
+    FDisableAntialiasing: Boolean;
+    function GetDisableAntialiasing: Boolean;
     function GetMasterPoList: TStrings;
     function GetMasterPoSelList: TStrings;
     function LoadTestTypes: TPoTestTypes;
     function LoadTestOptions: TPoTestOptions;
     procedure LoadWindowsGeometry;
+    procedure LoadDisableAntiAliasing;
     function LoadExternalEditorName: String;
     function LoadSelectDirectoryFilename: String;
-    function LoadOpenDialogFilename: String;
     function LoadLangFilterLanguageAbbr: String;
     function LoadLangPath: String;
     procedure LoadMasterPoList(List: TStrings);
@@ -51,9 +52,9 @@ type
     procedure SaveTestTypes;
     procedure SaveTestOptions;
     procedure SaveWindowsGeometry;
+    procedure SaveDisableAntialiasing;
     procedure SaveExternalEditorName;
     procedure SaveSelectDirectoryFilename;
-    procedure SaveOpenDialogFilename;
     procedure SaveLangFilterLanguageAbbr;
     procedure SaveLangPath;
     procedure SaveMasterPoList;
@@ -76,9 +77,9 @@ type
     property MasterPoList: TStrings read GetMasterPoList write SetMasterPoList;
     property MasterPoSelList: TStrings read GetMasterPoSelList write SetMasterPoSelList;
     property SelectDirectoryFilename: String read FSelectDirectoryFilename write FSelectDirectoryFilename;
-    property OpenDialogFilename: String read FOpenDialogFilename write FOpenDialogFilename;
     property MainFormGeometry: TRect read FMainFormGeometry write FMainFormGeometry;
     property ResultsFormGeometry: TRect read FResultsFormGeometry write FResultsFormGeometry;
+    property DisableAntialiasing: Boolean read GetDisableAntialiasing;
     property GraphFormGeometry: TRect read FGraphFormGeometry write FGraphFormGeometry;
     property MainFormWindowState: TWindowState read FMainFormWindowState write FMainFormWindowState;
     property ResultsFormWindowState: TWindowState read FResultsFormWindowState write FResultsFormWindowState;
@@ -98,6 +99,9 @@ function GetLocalConfigPath: String;
 {$endif}
 
 implementation
+
+const
+  DEFAULT_DISABLE_ANTIALIASING = true;
 
 function FitToRect(const ARect, FitIn: TRect): TRect;
 begin
@@ -158,7 +162,6 @@ const
     );
 
   pSelectDirectoryFilename = 'SelectDirectoryFilename/';
-  pOpenDialogFilename = 'OpenDialogFilename/';
   pLangFilter = 'LanguageFilter/';
   pLangPath = 'LanguageFiles/';
   pTestTypes = 'TestTypes/';
@@ -313,9 +316,33 @@ begin
   FConfig.GetValue(pWindowsGeometry+'MainForm/Value',FMainFormGeometry,DefaultRect);
   FMainFormWindowState := IntToWindowState(FConfig.GetValue(pWindowsGeometry+'MainForm/WindowState/Value', Ord(wsNormal)));
   FConfig.GetValue(pWindowsGeometry+'ResultsForm/Value',FResultsFormGeometry,DefaultRect);
-  FResultsFormWindowState := IntToWindowState(FConfig.GetValue(pWindowsGeometry+'MainForm/WindowState/Value', Ord(wsNormal)));
+  FResultsFormWindowState := IntToWindowState(FConfig.GetValue(pWindowsGeometry+'ResultsForm/WindowState/Value', Ord(wsNormal)));
   FConfig.GetValue(pWindowsGeometry+'GraphForm/Value',FGraphFormGeometry,DefaultRect);
-  FGraphFormWindowState := IntToWindowState(FConfig.GetValue(pWindowsGeometry+'MainForm/WindowState/Value', Ord(wsNormal)));
+  FGraphFormWindowState := IntToWindowState(FConfig.GetValue(pWindowsGeometry+'GraphForm/WindowState/Value', Ord(wsNormal)));
+end;
+
+function TPoCheckerSettings.GetDisableAntialiasing: Boolean;
+var
+  cfg: TConfigStorage;
+  ver: Integer;
+begin
+  {$IFDEF POCHECKERSTANDALONE}
+  Result := FDisableAntialiasing;
+  {$ELSE}
+  cfg := GetIDEConfigStorage('editoroptions.xml', True);
+  ver := cfg.GetValue('EditorOptions/Version', 0);
+  Result := cfg.GetValue('EditorOptions/Display/DisableAntialiasing', ver < 7);
+  FDisableAntiAliasing := Result;
+  cfg.Free;
+  {$ENDIF}
+end;
+
+procedure TPoCheckerSettings.LoadDisableAntialiasing;
+begin
+  {$IFDEF POCHECKERSTANDALONE}
+  FDisableAntialiasing := FConfig.GetValue('General/Display/ResultsForm/DisableAntialiasing',
+      DEFAULT_DISABLE_ANTIALIASING);
+  {$ENDIF}
 end;
 
 function TPoCheckerSettings.LoadExternalEditorName: String;
@@ -334,11 +361,6 @@ end;
 function TPoCheckerSettings.LoadSelectDirectoryFilename: String;
 begin
   Result := FConfig.GetValue(pSelectDirectoryFilename+'Value','');
-end;
-
-function TPoCheckerSettings.LoadOpenDialogFilename: String;
-begin
-  Result := FConfig.GetValue(pOpenDialogFilename+'Value','');
 end;
 
 function TPoCheckerSettings.LoadLangFilterLanguageAbbr: String;
@@ -452,6 +474,15 @@ begin
   FConfig.SetDeleteValue(pWindowsGeometry+'GraphForm/WindowState/Value',Ord(FGraphFormWindowState), Ord(wsNormal));
 end;
 
+procedure TPoCheckerSettings.SaveDisableAntialiasing;
+begin
+  {$IFDEF POCHECKERSTANDALONE}
+  // Don't use SetDeleteValue to keep the syntax in the file because there is
+  // no gui to modify DisableAntialiasing at the moment.
+  FConfig.SetValue('General/Display/ResultsForm/DisableAntialiasing', FDisableAntialiasing);
+  {$ENDIF}
+end;
+
 procedure TPoCheckerSettings.SaveExternalEditorName;
 begin
   {$IFDEF POCHECKERSTANDALONE}
@@ -462,11 +493,6 @@ end;
 procedure TPoCheckerSettings.SaveSelectDirectoryFilename;
 begin
   FConfig.SetDeleteValue(pSelectDirectoryFilename+'Value',FSelectDirectoryFilename,'');
-end;
-
-procedure TPoCheckerSettings.SaveOpenDialogFilename;
-begin
-  FConfig.SetDeleteValue(pOpenDialogFilename+'Value',FOpenDialogFilename,'');
 end;
 
 procedure TPoCheckerSettings.SaveMasterPoList;
@@ -536,8 +562,8 @@ begin
   FMainFormWindowState := wsNormal;
   FResultsFormWindowState := wsNormal;
   FGraphFormWindowState := wsNormal;
+  FDisableAntialiasing := DEFAULT_DISABLE_ANTIALIASING;
   FExternalEditorName := '';
-  FOpenDialogFilename := '';
   FSelectDirectoryFilename := '';
   FLangFilterLanguageAbbr := '';
   if Assigned(FMasterPoList) then FMasterPoList.Free;
@@ -589,11 +615,11 @@ begin
     FTestTypes := LoadTestTypes;
     FTestOptions := LoadTestOptions;
     FSelectDirectoryFilename := LoadSelectDirectoryFilename;
-    FOpenDialogFilename := LoadOpenDialogFilename;
     FExternalEditorName := LoadExternalEditorName;
     FLangFilterLanguageAbbr := LoadLangFilterLanguageAbbr;
     FLangPath := LoadLangPath;
     LoadWindowsGeometry;
+    LoadDisableAntialiasing;
     LoadMasterPoList(FMasterPoList);
     LoadMasterPoSelList(FMasterPoSelList);
   except
@@ -607,17 +633,17 @@ begin
   try
     FConfig.SetDeleteValue('Version','1.0','');
     RemoveUnwantedPaths;
-    //the next line can be reomoved after some time
+    //the next line can be removed after some time
 
 
     SaveTestTypes;
     SaveTestOptions;
     SaveExternalEditorName;
     SaveSelectDirectoryFilename;
-    SaveOpenDialogFilename;
     SaveLangFilterLanguageAbbr;
     SaveLangPath;
     SaveWindowsGeometry;
+    SaveDisableAntialiasing;
     SaveMasterPoList;
     SaveMasterPoSelList;
     //not used anymore, clear it. Remove this line after a while

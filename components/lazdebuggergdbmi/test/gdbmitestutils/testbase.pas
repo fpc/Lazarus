@@ -5,9 +5,8 @@ unit TestBase;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry,
-  LCLProc, LazLogger, DbgIntfDebuggerBase, CompileHelpers, Dialogs, TestGDBMIControl,
-  GDBMIDebugger; // , FpGdbmiDebugger;
+  Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry, LCLProc, LazLogger,
+  LazFileUtils, DbgIntfDebuggerBase, CompileHelpers, Dialogs, TestGDBMIControl, GDBMIDebugger; // , FpGdbmiDebugger;
   // EnvironmentOpts, ExtToolDialog, TransferMacros,
 
 (*

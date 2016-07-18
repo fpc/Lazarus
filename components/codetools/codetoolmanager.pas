@@ -48,7 +48,7 @@ uses
   PPUCodeTools, LFMTrees, DirectivesTree, CodeCompletionTemplater,
   PascalParserTool, CodeToolsConfig, CustomCodeTool, FindDeclarationTool,
   IdentCompletionTool, StdCodeTools, ResourceCodeTool, CodeToolsStructs,
-  CTUnitGraph, ExtractProcTool, LazDbgLog;
+  CTUnitGraph, ExtractProcTool, LazDbgLog, CodeCompletionTool;
 
 type
   TCodeToolManager = class;
@@ -394,6 +394,8 @@ type
           const NewSrc: string = ''): boolean; deprecated;
     function AddIncludeDirectiveForInit(Code: TCodeBuffer; const Filename: string;
           const NewSrc: string = ''): boolean;
+    function AddUnitWarnDirective(Code: TCodeBuffer; WarnID, Comment: string;
+          TurnOn: boolean): boolean;
     function RemoveDirective(Code: TCodeBuffer; NewX, NewY: integer;
           RemoveEmptyIFs: boolean): boolean;
     function FixIncludeFilenames(Code: TCodeBuffer; Recursive: boolean;
@@ -406,7 +408,8 @@ type
     // keywords and comments
     function IsKeyword(Code: TCodeBuffer; const KeyWord: string): boolean;
     function ExtractCodeWithoutComments(Code: TCodeBuffer;
-          KeepDirectives: boolean = false): string;
+          KeepDirectives: boolean = false;
+          KeepVerbosityDirectives: boolean = false): string;
     function GetPasDocComments(Code: TCodeBuffer; X, Y: integer;
           out ListOfPCodeXYPosition: TFPList): boolean;
 
@@ -551,13 +554,13 @@ type
           out Operand: string; ResolveProperty: Boolean): Boolean;
 
     // code completion = auto class completion, auto forward proc completion,
-    //             local var assignment completion, event assignment completion
+    //             (local) var assignment completion, event assignment completion
     function CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
           out NewCode: TCodeBuffer;
-          out NewX, NewY, NewTopLine: integer): boolean;
+          out NewX, NewY, NewTopLine: integer;Interactive: Boolean): boolean;
     function CreateVariableForIdentifier(Code: TCodeBuffer; X,Y,TopLine: integer;
           out NewCode: TCodeBuffer;
-          out NewX, NewY, NewTopLine: integer): boolean;
+          out NewX, NewY, NewTopLine: integer; Interactive: Boolean): boolean;
     function AddMethods(Code: TCodeBuffer; X,Y, TopLine: integer;
           ListOfPCodeXYPosition: TFPList;
           const VirtualToOverride: boolean;
@@ -3281,6 +3284,21 @@ begin
   end;
 end;
 
+function TCodeToolManager.AddUnitWarnDirective(Code: TCodeBuffer; WarnID,
+  Comment: string; TurnOn: boolean): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn(['TCodeToolManager.AddUnitWarnDirective A ',Code.Filename,' aParam="',aParam,'" TurnOn=',TurnOn]);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.AddUnitWarnDirective(WarnID,Comment,TurnOn,SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
 function TCodeToolManager.RemoveDirective(Code: TCodeBuffer; NewX,
   NewY: integer; RemoveEmptyIFs: boolean): boolean;
 var
@@ -3449,10 +3467,11 @@ begin
 end;
 
 function TCodeToolManager.ExtractCodeWithoutComments(Code: TCodeBuffer;
-  KeepDirectives: boolean): string;
+  KeepDirectives: boolean; KeepVerbosityDirectives: boolean): string;
 begin
   Result:=CleanCodeFromComments(Code.Source,
-                    GetNestedCommentsFlagForFile(Code.Filename),KeepDirectives);
+          GetNestedCommentsFlagForFile(Code.Filename),KeepDirectives,
+          KeepVerbosityDirectives);
 end;
 
 function TCodeToolManager.GetPasDocComments(Code: TCodeBuffer; X, Y: integer;
@@ -4075,8 +4094,9 @@ begin
   aMessage:='unknown identifier "'+GDBIdentifier+'"';
 end;
 
-function TCodeToolManager.CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
-  out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer): boolean;
+function TCodeToolManager.CompleteCode(Code: TCodeBuffer; X, Y,
+  TopLine: integer; out NewCode: TCodeBuffer; out NewX, NewY,
+  NewTopLine: integer; Interactive: Boolean): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;
@@ -4095,7 +4115,7 @@ begin
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.CompleteCode(CursorPos,TopLine,
-                                           NewPos,NewTopLine,SourceChangeCache);
+      NewPos,NewTopLine,SourceChangeCache,Interactive);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
@@ -4108,7 +4128,7 @@ end;
 
 function TCodeToolManager.CreateVariableForIdentifier(Code: TCodeBuffer; X, Y,
   TopLine: integer; out NewCode: TCodeBuffer; out NewX, NewY,
-  NewTopLine: integer): boolean;
+  NewTopLine: integer; Interactive: Boolean): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;
@@ -4123,7 +4143,7 @@ begin
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.CreateVariableForIdentifier(CursorPos,TopLine,
-                                             NewPos,NewTopLine,SourceChangeCache);
+      NewPos,NewTopLine,SourceChangeCache,Interactive);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;

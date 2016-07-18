@@ -63,10 +63,23 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharacterLength">
-        <short/>
-        <descr/>
+        <short>Returns the number of bytes of the codepoint starting at p</short>
+        <descr>It returns 0 if p is nil.
+It returns 1 if p is a 1-byte UTF-8 codepoint or p is an invalid UTF-8 sequence.
+Otherwise it returns a number 2..4. 
+
+It does not check for malicious codepoints like #$c0#$80, nor for non defined codepoints like #$f3#$a0#$87#$b9.
+
+Use UTF8CharacterLength to step through a string with a simple loop:
+<p><code>while p^&lt;&gt;#0 do begin
+  inc(p,UTF8CharacterLength(p));
+end;
+</code>
+          </p>
+
+Even if p contains invalid UTF-8 it will run through the string without overflow.</descr>
         <errors/>
-        <seealso/>
+        <seealso>UTF8CharacterStrictLength</seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8CharacterLength.Result">

@@ -240,7 +240,7 @@ type
     FLineInfoNotification: TIDELineInfoNotification;
     FInEditorChangedUpdating: Boolean;
 
-    FOnEditorChange: TNotifyEvent;
+    FOnEditorChange: TStatusChangeEvent;
     FVisible: Boolean;
     FOnMouseMove: TMouseMoveEvent;
     FOnMouseDown: TMouseEvent;
@@ -512,8 +512,8 @@ type
     property ExecutionLine: integer read GetExecutionLine write SetExecutionLine;
     property HasExecutionMarks: Boolean read GetHasExecutionMarks;
     property InsertMode: Boolean read GetInsertmode;
-    property OnEditorChange: TNotifyEvent read FOnEditorChange
-                                          write FOnEditorChange;
+    property OnEditorChange: TStatusChangeEvent read FOnEditorChange
+                                                write FOnEditorChange;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
     property OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
@@ -703,7 +703,7 @@ type
                    ATabCaption: String = ''): TSourceEditor;
     procedure AcceptEditor(AnEditor: TSourceEditor; SendEvent: Boolean = False);
     procedure ReleaseEditor(AnEditor: TSourceEditor; SendEvent: Boolean = False);
-    procedure EditorChanged(Sender: TObject);
+    procedure EditorChanged(Sender: TObject; Changes: TSynStatusChanges);
     procedure DoClose(var CloseAction: TCloseAction); override;
     procedure DoShow; override;
     procedure DoHide; override;
@@ -1544,7 +1544,7 @@ begin
           (AParent, 'Find previous word occurrence', srkmecFindPrevWordOccurrence,
            nil, @ExecuteIdeMenuClick, nil, 'menu_search_find_previous');
       SrcEditMenuFindInFiles := RegisterIDEMenuCommand
-          (AParent, 'Find in files', srkmecFindInFiles, nil,
+          (AParent, 'Find in files', srkmecFindInFiles + ' ...', nil,
            @ExecuteIdeMenuClick, nil, 'menu_search_files');
       SrcEditMenuFindIdentifierReferences := RegisterIDEMenuCommand
           (AParent, 'FindIdentifierReferences',lisMenuFindIdentifierRefs, nil,
@@ -2008,32 +2008,34 @@ begin
   FAutoHideHintTimer.Enabled := False;
   if HintIsVisible then begin
     Cur := Mouse.CursorPos; // Desktop coordinates
-    if not IsRectEmpty(FScreenRect) then
+
+    hw := CurHintWindow;
+    OkX := ( (FAutoHintMousePos.x <= hw.Left) and
+             (Cur.x > FAutoHintMousePos.x) and (Cur.x <= hw.Left + hw.Width)
+           ) or
+           ( (FAutoHintMousePos.x >= hw.Left + hw.Width) and
+             (Cur.x < FAutoHintMousePos.x) and (Cur.x >= hw.Left)
+           ) or
+           ( (Cur.x >= hw.Left) and (Cur.x <= hw.Left + hw.Width) );
+    OkY := ( (FAutoHintMousePos.y <= hw.Top) and
+             (Cur.y > FAutoHintMousePos.y) and (Cur.y <= hw.Top + hw.Height)
+           ) or
+           ( (FAutoHintMousePos.y >= hw.Top + hw.Height) and
+             (Cur.y < FAutoHintMousePos.y) and (Cur.y >= hw.Top)
+           ) or
+           ( (Cur.y >= hw.Top) and (Cur.y <= hw.Top + hw.Height) );
+
+    // Update FAutoHintMousePos, if outside the HintWin, and new CurPos is closer to HintWin
+    if OkX then FAutoHintMousePos.x := Cur.x;
+    if OkY then FAutoHintMousePos.y := Cur.y;
+
+    if (not IsRectEmpty(FScreenRect)) and PtInRect(FScreenRect, Cur) then
     begin
-      if PtInRect(FScreenRect, Cur) then
+      // Do not close, if mouse still over the same word, that triggered the hint
         Exit;
     end else
     begin
-      hw := CurHintWindow;
-      Cur := Mouse.CursorPos; // Desktop coordinates
-      OkX := ( (FAutoHintMousePos.x <= hw.Left) and
-               (Cur.x > FAutoHintMousePos.x) and (Cur.x <= hw.Left + hw.Width)
-             ) or
-             ( (FAutoHintMousePos.x >= hw.Left + hw.Width) and
-               (Cur.x < FAutoHintMousePos.x) and (Cur.x >= hw.Left)
-             ) or
-             ( (Cur.x >= hw.Left) and (Cur.x <= hw.Left + hw.Width) );
-      OkY := ( (FAutoHintMousePos.y <= hw.Top) and
-               (Cur.y > FAutoHintMousePos.y) and (Cur.y <= hw.Top + hw.Height)
-             ) or
-             ( (FAutoHintMousePos.y >= hw.Top + hw.Height) and
-               (Cur.y < FAutoHintMousePos.y) and (Cur.y >= hw.Top)
-             ) or
-             ( (Cur.y >= hw.Top) and (Cur.y <= hw.Top + hw.Height) );
-
-      if OkX then FAutoHintMousePos.x := Cur.x;
-      if OkY then FAutoHintMousePos.y := Cur.y;
-
+      // Do not close if mouse moves towards the hint. Allow mouse to enter hint
       OkX := OkX or
              ( (FAutoHintMousePos.x <= hw.Left + MaxJitter) and
                (Cur.x > FAutoHintMousePos.x - MaxJitter) and (Cur.x <= hw.Left + hw.Width + MaxJitter)
@@ -3310,11 +3312,10 @@ end;
 {------------------------------S T A R T  F I N D-----------------------------}
 procedure TSourceEditor.StartFindAndReplace(Replace:boolean);
 const
-  SaveOptions = [ssoMatchCase,ssoWholeWord,ssoRegExpr,ssoRegExprMultiLine,ssoPrompt,ssoEntireScope,ssoSelectedOnly,ssoBackwards];
+  SaveOptions = [ssoMatchCase,ssoWholeWord,ssoRegExpr,ssoRegExprMultiLine,ssoPrompt,ssoBackwards];
 var
   NewOptions: TSynSearchOptions;
   ALeft,ATop:integer;
-  bSelectedTextOption: Boolean;
   DlgResult: TModalResult;
 begin
   LazFindReplaceDialog.ResetUserHistory;
@@ -3325,14 +3326,16 @@ begin
     NewOptions := NewOptions + [ssoReplace, ssoReplaceAll]
   else
     NewOptions := NewOptions - [ssoReplace, ssoReplaceAll];
-  NewOptions:=NewOptions-SaveOptions+InputHistories.FindOptions*SaveOptions;
-  LazFindReplaceDialog.Options := NewOptions;
+  NewOptions:=NewOptions-SaveOptions+InputHistories.FindOptions*SaveOptions
+                        -[ssoSelectedOnly, ssoEntireScope];
 
   // Fill in history items
   LazFindReplaceDialog.TextToFindComboBox.Items.Assign(InputHistories.FindHistory);
   LazFindReplaceDialog.ReplaceTextComboBox.Items.Assign(InputHistories.ReplaceHistory);
 
   with EditorComponent do begin
+    if SelAvail then
+      NewOptions := NewOptions + [ssoSelectedOnly, ssoEntireScope];
     if EditorOpts.FindTextAtCursor then begin
       if SelAvail and (BlockBegin.Y = BlockEnd.Y) and
          (  ((ComparePoints(BlockBegin, LogicalCaretXY) <= 0) and
@@ -3342,7 +3345,7 @@ begin
          )
       then begin
         //debugln('TSourceEditor.StartFindAndReplace B FindTextAtCursor SelAvail');
-        LazFindReplaceDialog.FindText := SelText
+        LazFindReplaceDialog.FindText := SelText;
       end else begin
         //debugln('TSourceEditor.StartFindAndReplace B FindTextAtCursor not SelAvail');
         LazFindReplaceDialog.FindText := GetWordAtRowCol(LogicalCaretXY);
@@ -3361,34 +3364,21 @@ begin
   LazFindReplaceDialog.Left:=ALeft;
   LazFindReplaceDialog.Top:=ATop;
 
-  try
-    bSelectedTextOption := (ssoSelectedOnly in LazFindReplaceDialog.Options);
-    //if there are selected text and more than 1 word, automatically enable selected text option
-    if EditorComponent.SelAvail
-    and (EditorComponent.BlockBegin.Y<>EditorComponent.BlockEnd.Y) then
-      LazFindReplaceDialog.Options := LazFindReplaceDialog.Options + [ssoSelectedOnly];
+  LazFindReplaceDialog.Options := NewOptions;
+  DlgResult:=LazFindReplaceDialog.ShowModal;
+  InputHistories.FindOptions:=LazFindReplaceDialog.Options*SaveOptions;
+  InputHistories.FindAutoComplete:=LazFindReplaceDialog.EnableAutoComplete;
+  if DlgResult = mrCancel then
+    exit;
+  //debugln('TSourceEditor.StartFindAndReplace B LazFindReplaceDialog.FindText="',dbgstr(LazFindReplaceDialog.FindText),'"');
 
-    DlgResult:=LazFindReplaceDialog.ShowModal;
-    InputHistories.FindOptions:=LazFindReplaceDialog.Options*SaveOptions;
-    InputHistories.FindAutoComplete:=LazFindReplaceDialog.EnableAutoComplete;
-    if DlgResult = mrCancel then
-      exit;
-    //debugln('TSourceEditor.StartFindAndReplace B LazFindReplaceDialog.FindText="',dbgstr(LazFindReplaceDialog.FindText),'"');
-
-    Replace:=ssoReplace in LazFindReplaceDialog.Options;
-    if Replace then
-      InputHistories.AddToReplaceHistory(LazFindReplaceDialog.ReplaceText);
-    InputHistories.AddToFindHistory(LazFindReplaceDialog.FindText);
-    InputHistories.Save;
-    DoFindAndReplace(LazFindReplaceDialog.FindText, LazFindReplaceDialog.ReplaceText,
-      LazFindReplaceDialog.Options);
-  finally
-    //Restore original find options
-    if bSelectedTextOption then
-      LazFindReplaceDialog.Options := LazFindReplaceDialog.Options + [ssoSelectedOnly]
-    else
-      LazFindReplaceDialog.Options := LazFindReplaceDialog.Options - [ssoSelectedOnly];
-  end;//End try-finally
+  Replace:=ssoReplace in LazFindReplaceDialog.Options;
+  if Replace then
+    InputHistories.AddToReplaceHistory(LazFindReplaceDialog.ReplaceText);
+  InputHistories.AddToFindHistory(LazFindReplaceDialog.FindText);
+  InputHistories.Save;
+  DoFindAndReplace(LazFindReplaceDialog.FindText, LazFindReplaceDialog.ReplaceText,
+    LazFindReplaceDialog.Options);
 end;
 
 procedure TSourceEditor.AskReplace(Sender: TObject; const ASearch,
@@ -4059,7 +4049,7 @@ procedure TSourceEditor.EditorStatusChanged(Sender: TObject;
   Changes: TSynStatusChanges);
 Begin
   If Assigned(OnEditorChange) then
-    OnEditorChange(Sender);
+    OnEditorChange(Sender, Changes);
   UpdatePageName;
   if Changes * [scCaretX, scCaretY, scSelection] <> [] then
     IDECommandList.PostponeUpdateEvents;
@@ -7041,7 +7031,7 @@ procedure TSourceNotebook.RemoveContextMenuItems;
 begin
   SrcEditMenuSectionFileDynamic.Clear;
   {$IFDEF VerboseMenuIntf}
-  SrcEditMenuSectionFileDynamic.WriteDebugReport('TSourceNotebook.RemoveContextMenuItems ');
+  SrcEditMenuSectionFileDynamic.WriteDebugReport('TSourceNotebook.RemoveContextMenuItems ', true);
   {$ENDIF}
 end;
 
@@ -7072,14 +7062,16 @@ end;
 
   Called whenever an editor status changes. Sender is normally a TSynEdit.
 -------------------------------------------------------------------------------}
-procedure TSourceNotebook.EditorChanged(Sender: TObject);
+procedure TSourceNotebook.EditorChanged(Sender: TObject;
+  Changes: TSynStatusChanges);
 var SenderDeleted: boolean;
 Begin
   SenderDeleted:=(Sender as TControl).Parent=nil;
   if SenderDeleted then exit;
   UpdateStatusBar;
   if Assigned(Manager) then begin
-    Manager.FHints.HideIfVisible;
+    if not(Changes=[scFocus]) then // has to be here because of issue #29726
+      Manager.FHints.HideIfVisible;
     Manager.DoEditorStatusChanged(FindSourceEditorWithEditorComponent(TSynEdit(Sender)));
   end;
 End;
@@ -7283,7 +7275,14 @@ begin
   if i>= 0 then
     PageIndex := i;
   dec(FFocusLock);
-  SourceEditorManager.ActiveSourceWindow := self;
+  SourceEditorManager.ActiveSourceWindow := Self;
+  if EditorOpts.ShowFileNameInCaption then
+  begin
+    if ActiveEditor<>nil then
+      Caption := FBaseCaption+' - '+ActiveEditor.FileName
+    else
+      Caption := FBaseCaption;
+  end;
 end;
 
 procedure TSourceNotebook.CheckCurrentCodeBufferChanged;
@@ -7406,10 +7405,12 @@ begin
     exit;
   end;
   if (PageCount = 1) and (EditorOpts.HideSingleTabInWindow) then begin
-    Caption := FBaseCaption + ': ' + NotebookPages[0];
+    if not EditorOpts.ShowFileNameInCaption then
+      Caption := FBaseCaption + ': ' + NotebookPages[0];
     FNotebook.ShowTabs := False;
   end else begin
-    Caption := FBaseCaption;
+    if not EditorOpts.ShowFileNameInCaption then
+      Caption := FBaseCaption;
     FNotebook.ShowTabs := (Manager=nil) or Manager.ShowTabs;
   end;
 end;

@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
-"PO-Revision-Date: 2015-06-13 19:18+0100\n"
+"PO-Revision-Date: 2016-06-19 17:48+0200\n"
 "Project-Id-Version: lazreport\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.7.1\n"
 "MIME-Version: 1.0\n"
 "Last-Translator: Olivier Guilbaud\n"
 "PO-Revision-Date: 2005-05-01 18:33+0200\n"
@@ -640,6 +640,54 @@ msgstr "&Variable"
 #: lr_const.seditorformword
 msgid "&Word wrap"
 msgstr "&Wortumbruch"
+
+#: lr_const.serrexpectedassign
+msgid "Expected \":=\""
+msgstr "\":=\" erwartet"
+
+#: lr_const.serrexpectedclosingbracket1
+msgid "Expected \")\""
+msgstr "\")\" erwartet"
+
+#: lr_const.serrexpectedclosingbracket2
+msgid "Expected \"]\""
+msgstr "\"]\" erwartet"
+
+#: lr_const.serrexpectedcomma
+msgid "Expected \",\" or \")\""
+msgstr "\",\" oder \")\" erwartet"
+
+#: lr_const.serrexpecteddo
+msgid "Expected \"do\""
+msgstr "\"do\" erwartet"
+
+#: lr_const.serrexpectedend
+msgid "Expected \";\" or \"end\""
+msgstr "\";\" oder \"end\" erwartet"
+
+#: lr_const.serrexpectedthen
+msgid "Expected \"then\""
+msgstr "\"then\" erwartet"
+
+#: lr_const.serrexpecteduntil
+msgid "Expected \";\" or \"until\""
+msgstr "\";\" oder \"until\" erwartet"
+
+#: lr_const.serrlabelgoto
+msgid "Label in goto must be a number"
+msgstr ""
+
+#: lr_const.serrline
+msgid "Line"
+msgstr "Zeile"
+
+#: lr_const.serrneeddo
+msgid "Need \"do\" here"
+msgstr ""
+
+#: lr_const.serrneedto
+msgid "Need \"to\" here"
+msgstr ""
 
 #: lr_const.serror
 msgid "Error"
@@ -1556,6 +1604,14 @@ msgctxt "lr_const.snotassigned"
 msgid "[None]"
 msgstr "[Keine]"
 
+#: lr_const.snovalidexportfilenamewassupplied
+msgid "No valid export filename was supplied"
+msgstr "Kein gültiger Exportdatei-Name angegeben"
+
+#: lr_const.snovalidfilterclasswassupplied
+msgid "No valid filterclass was supplied"
+msgstr "Keine gültige Filterklasse angegeben"
+
 #: lr_const.sobjectinspector
 msgid "Object inspector"
 msgstr "Objektinspektor"
@@ -2302,6 +2358,14 @@ msgstr "Auf allen Seiten anzeigen"
 msgid "Report file"
 msgstr "Reportdatei"
 
+#: lr_const.sreportcorruptoldknowversion
+msgid "This report is corrupt, it probably needs \"LRE_OLDV%d_FRF_READ\"=true"
+msgstr "Dieser Report ist beschädigt, wahrscheinlich wird \"LRE_OLDV%d_FRF_READ\"=true benötigt"
+
+#: lr_const.sreportcorruptunknownversion
+msgid "This report is corrupt, frVersion=%d"
+msgstr "Dieser Report ist beschädigt, frVersion=%d"
+
 #: lr_const.sreportcreatedate
 msgid "Report creation date"
 msgstr "Erstelldatum"
@@ -2604,3 +2668,4 @@ msgstr "Wortumbruch"
 #: lr_const.syes
 msgid "Yes"
 msgstr "Ja"
+

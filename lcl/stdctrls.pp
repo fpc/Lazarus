@@ -43,8 +43,8 @@ type
   TScrollCode = (
     // !!! Beware. The position of these enums must correspond to the SB_xxx
     // values in LCLType  (Delphi compatibility, not our decision)
-    // MWE: Don't know it this still is a requirement
-    //      afaik have I remeved all casts from the LCL
+    // MWE: Don't know if this still is a requirement
+    //      afaik have I removed all casts from the LCL
     scLineUp,   // = SB_LINEUP
     scLineDown, // = SB_LINEDOWN
     scPageUp,   // = SB_PAGEUP
@@ -563,6 +563,7 @@ type
     procedure MakeCurrentVisible;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
     procedure SelectAll; virtual;
+    procedure DeleteSelected; virtual;
     procedure UnlockSelectionChange;
   public
     property Align;
@@ -715,7 +716,7 @@ type
     FSavedFontColor: TColor;
     FSavedFontStyle: TFontStyles;
     FSavedParentFont: Boolean;
-    procedure SetTextHint(AValue: TTranslateString);
+    FSavedPasswordChar: Char;
     procedure ShowTextHint;
     procedure HideTextHint;
     procedure SetAlignment(const AValue: TAlignment);
@@ -725,6 +726,7 @@ type
     procedure SetHideSelection(const AValue: Boolean);
     procedure SetMaxLength(Value: Integer);
     procedure SetModified(Value: Boolean);
+    function GetPasswordChar: Char;
     procedure SetPasswordChar(const AValue: Char);
   protected
     class procedure WSRegisterClass; override;
@@ -743,6 +745,7 @@ type
     function GetSelLength: integer; virtual;
     function GetSelStart: integer; virtual;
     function GetSelText: string; virtual;
+    function GetTextHint: TTranslateString; virtual;
     procedure Loaded; override;
     procedure SetCaretPos(const Value: TPoint); virtual;
     procedure SetEchoMode(Val: TEchoMode); virtual;
@@ -751,6 +754,7 @@ type
     procedure SetSelLength(Val: integer); virtual;
     procedure SetSelStart(Val: integer); virtual;
     procedure SetSelText(const Val: string); virtual;
+    procedure SetTextHint(AValue: TTranslateString); virtual;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     class function GetControlClassDefaultSize: TSize; override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
@@ -785,7 +789,7 @@ type
     property Modified: Boolean read GetModified write SetModified;
     property NumbersOnly: Boolean read GetNumbersOnly write SetNumbersOnly default false;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property PasswordChar: Char read FPasswordChar write SetPasswordChar default #0;
+    property PasswordChar: Char read GetPasswordChar write SetPasswordChar default #0;
     property PopupMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default false;
     property SelLength: integer read GetSelLength write SetSelLength;
@@ -794,7 +798,7 @@ type
     property TabOrder;
     property TabStop default true;
     property Text;
-    property TextHint: TTranslateString read FTextHint write SetTextHint;
+    property TextHint: TTranslateString read GetTextHint write SetTextHint;
     property TextHintFontColor: TColor read FTextHintFontColor write FTextHintFontColor default clGrayText;
     property TextHintFontStyle: TFontStyles read FTextHintFontStyle write FTextHintFontStyle default [fsItalic];
   end;

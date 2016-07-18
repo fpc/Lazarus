@@ -106,3 +106,4 @@ msgstr "Távoli tároló"
 #: fppkg_const.rsshowlazaruspackagemanager
 msgid "Show Lazarus Package Manager"
 msgstr "Lazarus Csomagkezelő megjelenítése"
+

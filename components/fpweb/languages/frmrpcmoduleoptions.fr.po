@@ -30,3 +30,4 @@ msgstr "Enregistrer les gestionnaires JSON-RPC dans la fabrique"
 #: frmrpcmoduleoptions.sregisterwebm
 msgid "Register web module"
 msgstr "Enregistrer le module WEB"
+

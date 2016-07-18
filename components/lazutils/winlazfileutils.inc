@@ -1,7 +1,6 @@
 {%MainUnit lazfileutils.pas}
 
 
-
 function ReadAllLinks(const Filename: string;
                       ExceptionOnError: boolean): string;
 begin
@@ -15,7 +14,6 @@ begin
   if OnError=pfeEmpty then ;
   Result:=Filename;
 end;
-
 
 
 // ******** Start of WideString specific implementations ************
@@ -361,7 +359,7 @@ end;
 
 {$IFDEF WINCE}
 // In WinCE these API calls are in Windows unit
-function GetWindowsSpecialDirW(ID :  Integer) : String;
+function SHGetFolderPathUTF8(ID :  Integer) : String;
 Var
   APath : Array[0..MAX_PATH] of WideChar;
   WS: WideString;
@@ -415,7 +413,7 @@ begin
     Raise Exception.Create('Could not determine SHGetFolderPathW Function');
 end;
 
-function GetWindowsSpecialDirW(ID :  Integer) : String;
+function SHGetFolderPathUTF8(ID :  Integer) : String;
 Var
   APath : Array[0..MAX_PATH] of WideChar;
   WS: WideString;
@@ -453,9 +451,9 @@ const
   CSIDL_LOCAL = {$IFDEF WINCE}CSIDL_APPDATA{$ELSE}CSIDL_LOCAL_APPDATA{$ENDIF};
 begin
   If Global then
-    Result := GetWindowsSpecialDirW(CSIDL_GLOBAL)
+    Result := SHGetFolderPathUTF8(CSIDL_GLOBAL)
   else
-    Result := GetWindowsSpecialDirW(CSIDL_LOCAL);
+    Result := SHGetFolderPathUTF8(CSIDL_LOCAL);
   If (Result <> '') then
     begin
       if VendorName <> '' then

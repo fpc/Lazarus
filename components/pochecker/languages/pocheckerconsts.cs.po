@@ -14,7 +14,9 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: pocheckerconsts.rspochecker
-msgid "PO File Checker"
+#, fuzzy
+#| msgid "PO File Checker"
+msgid "Check PO Files ..."
 msgstr "PO File Checker"
 
 #: pocheckerconsts.rs_lang_af_za
@@ -89,6 +91,10 @@ msgstr ""
 msgid "Polish"
 msgstr ""
 
+#: pocheckerconsts.rs_lang_pt
+msgid "Portuguese"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_pt_br
 msgid "Brazilian Portuguese"
 msgstr ""
@@ -117,17 +123,9 @@ msgstr ""
 msgid "All Languages"
 msgstr ""
 
-#: pocheckerconsts.scannotfindmaster
-msgid ""
-"Cannot find master po file:\n"
-"%s\n"
-"for selected file\n"
-"%s\n"
+#: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
+msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
 msgstr ""
-"Nemůžu najít hlavní po soubor:\n"
-"%s\n"
-"pro vybraný soubor\n"
-"%s\n"
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
 msgid "Check for duplicate untranslated values"
@@ -205,8 +203,8 @@ msgid ""
 "%s\n"
 msgstr ""
 
-#: pocheckerconsts.sfuzzy
-msgid "Fuzzy"
+#: pocheckerconsts.sfuzzystringstotal
+msgid "Fuzzy strings (total: %s)"
 msgstr ""
 
 #: pocheckerconsts.sgrapstatformcaption
@@ -226,7 +224,6 @@ msgid "Ignore translated strings marked as \"fuzzy\""
 msgstr ""
 
 #: pocheckerconsts.sincompatibleformatargs
-#| msgid "[Line: %d] Incompatible format() arguments for:"
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Řádek %d] Nekompatibilní/vadné argumenty funkce format():"
 
@@ -274,10 +271,6 @@ msgstr "%s: %d položek"
 msgid "Found %d warnings."
 msgstr "Nalezeno %d varování"
 
-#: pocheckerconsts.sopenapofile
-msgid "&Open a po-file"
-msgstr "&Otevřít PO  soubor"
-
 #: pocheckerconsts.sopenfail
 msgid ""
 "Unable to open file:\n"
@@ -292,16 +285,16 @@ msgid ""
 "\"%s\"\n"
 msgstr ""
 
-#: pocheckerconsts.sopenfile
-msgid "Open file %s in Ide Editor?"
+#: pocheckerconsts.sopenfileinexternaleditor
+msgid "Open file in external editor"
 msgstr ""
 
-#: pocheckerconsts.sopenfileexternal
-msgid ""
-"Open file:\n"
-"\"%s\"\n"
-"in external editor:\n"
-"\"%s\"?\n"
+#: pocheckerconsts.sopenfileinideeditor
+msgid "Open file in IDE editor"
+msgstr ""
+
+#: pocheckerconsts.sopenfileinsystempoeditor
+msgid "Open file in system PO editor"
 msgstr ""
 
 #: pocheckerconsts.soriginal
@@ -309,22 +302,38 @@ msgid "Original"
 msgstr "Originál"
 
 #: pocheckerconsts.spercfuzzy
-#, fuzzy
-#| msgid "Fuzzy strings: %2.0f%%."
-msgid "%s: %4.1f%% fuzzy strings."
+#, fuzzy,badformat
+#| msgid "%s: %4.1f%% fuzzy strings."
+msgid "%s: %5.1f%% fuzzy strings."
 msgstr "Nepřesné překlady: %2.0f%%."
 
 #: pocheckerconsts.sperctranslated
-#, fuzzy
-#| msgid "Translated strings: %2.0f%%."
-msgid "%s: %4.1f%% translated strings."
+#, fuzzy,badformat
+#| msgid "%s: %4.1f%% translated strings."
+msgid "%s: %5.1f%% translated strings."
 msgstr "Přeloženo:          %2.0f%%."
 
 #: pocheckerconsts.spercuntranslated
-#, fuzzy
-#| msgid "Untranslated strings: %2.0f%%."
-msgid "%s: %4.1f%% untranslated strings."
+#, fuzzy,badformat
+#| msgid "%s: %4.1f%% untranslated strings."
+msgid "%s: %5.1f%% untranslated strings."
 msgstr "Nepřeloženo:       %2.0f%%."
+
+#: pocheckerconsts.sprocessingtranslationfamily
+msgid "Processing translation family..."
+msgstr ""
+
+#: pocheckerconsts.sprocessingtranslationfamilyof
+msgid "Processing translation family %s of %s"
+msgstr ""
+
+#: pocheckerconsts.srefreshalltranslationfamilies
+msgid "Refresh all translation families"
+msgstr ""
+
+#: pocheckerconsts.srefreshcurrenttranslationfamily
+msgid "Refresh current translation family"
+msgstr ""
 
 #: pocheckerconsts.sresults
 msgid "Results"
@@ -378,10 +387,18 @@ msgstr ""
 
 #: pocheckerconsts.sstathint
 msgid ""
-"%3d Translated (%3.1f%%)\n"
-"%3d UnTranslated (%3.1f%%)\n"
-"%3d Fuzzy (%3.1f%%)\n"
-"%d Error(s) in Selected Tests\n"
+"Translated: %d (%.1f%%)\n"
+"Untranslated: %d (%.1f%%)\n"
+"Fuzzy: %d (%.1f%%)\n"
+"Errors in selected tests: %d\n"
+msgstr ""
+
+#: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
+msgid "The following %s missing master .po file(s) were removed from the list:"
+msgstr ""
+
+#: pocheckerconsts.sthefollowingorphanedpofilesfound
+msgid "The following %s orphaned .po file(s) found:"
 msgstr ""
 
 #: pocheckerconsts.stotalerrors
@@ -390,12 +407,24 @@ msgstr ""
 msgid "Total errors found: %d"
 msgstr "Nalezeno celkem %d chyb / varování."
 
+#: pocheckerconsts.stotalfuzzystrings
+msgid "Total fuzzy strings: %s"
+msgstr ""
+
+#: pocheckerconsts.stotaltranslatedstrings
+msgid "Total translated strings: %s (%.1f%%)"
+msgstr ""
+
+#: pocheckerconsts.stotaluntranslatedstrings
+msgid "Total untranslated strings: %s"
+msgstr ""
+
 #: pocheckerconsts.stotalwarnings
 msgid "Total warnings found: %d"
 msgstr "Celkem nalezeno varování: %d"
 
-#: pocheckerconsts.stranslated
-msgid "Translated"
+#: pocheckerconsts.stranslatedstringstotal
+msgid "Translated strings (total: %s [%.1f%%])"
 msgstr ""
 
 #: pocheckerconsts.stranslation
@@ -408,6 +437,10 @@ msgstr "Překlad"
 msgid "Translation statistics per language:"
 msgstr "Statistiky překladu pro:"
 
+#: pocheckerconsts.stroublesomefiles
+msgid "Troublesome files"
+msgstr ""
+
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
 msgstr ""
@@ -416,7 +449,7 @@ msgstr ""
 msgid "Unselect all files"
 msgstr ""
 
-#: pocheckerconsts.suntranslated
-msgid "Untranslated"
+#: pocheckerconsts.suntranslatedstringstotal
+msgid "Untranslated strings (total: %s)"
 msgstr ""
 

@@ -20,6 +20,7 @@ type
     OpenGLControl1: TOpenGLControl;
     RandomChartSource1: TRandomChartSource;
     procedure Chart1AfterPaint(ASender: TChart);
+    procedure FormCreate(Sender: TObject);
     procedure OpenGLControl1Paint(Sender: TObject);
   end;
 
@@ -31,11 +32,19 @@ implementation
 {$R *.lfm}
 
 uses
-  TADrawUtils, TADrawerOpenGL in '..\..\TADrawerOpenGL.pas', TADrawerCanvas;
+  TADrawUtils, TADrawerOpenGL in '../../tadraweropengl.pas', TADrawerCanvas;
 
 procedure TForm1.Chart1AfterPaint(ASender: TChart);
 begin
   OpenGLControl1.Invalidate;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  // If the text engine does not find the fonts needed for the OpenGL output
+  // copy the fonts to the exe folder and uncomment the next line
+
+  // InitFonts(ExtractFilePath(ParamStr(0)));
 end;
 
 procedure TForm1.OpenGLControl1Paint(Sender: TObject);

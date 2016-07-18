@@ -56,7 +56,6 @@ msgid "Empty document"
 msgstr "Leeres Dokument"
 
 #: msgjsonviewer.serrcreatingconfigdir
-#| msgid "Could not create the configuration files directory \"s\""
 msgid "Could not create the configuration files directory \"%s\""
 msgstr "Kann das Konfigurationsdateien-Verzeichnis \"%s\" nicht erstellen"
 

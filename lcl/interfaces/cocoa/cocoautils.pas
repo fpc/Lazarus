@@ -8,7 +8,7 @@ interface
 uses
   classes,
   MacOSAll, CocoaAll,
-  Types, LCLType, LCLProc, menus;
+  Types, LCLType, LCLProc, menus, forms, controls;
 
 const
   LCLEventSubTypeMessage = MaxShort - 1;
@@ -40,6 +40,7 @@ function NSRectToRect(const NS: NSRect): TRect;
 
 procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
 procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
+function LCLCoordsToCocoa(AControl: TControl; X, Y: Integer): NSPoint;
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
 
@@ -357,6 +358,12 @@ begin
   ns.size.height:=lcl.Bottom-lcl.Top;
 end;
 
+function LCLCoordsToCocoa(AControl: TControl; X, Y: Integer): NSPoint;
+begin
+  Result.x := X;
+  Result.y := Screen.Height - Y;
+  if AControl <> nil then Result.y := Result.y - AControl.Height;
+end;
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
 begin

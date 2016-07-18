@@ -31,23 +31,40 @@ unit lclcalwrapper;
 interface
 
 uses
-  Classes, Controls, Calendar, CalControlWrapper;
+  Classes, Controls, Calendar, CalControlWrapper, LMessages;
 
 type
 
   { TLCLCalendarWrapper }
 
   TLCLCalendarWrapper = class(TCalendarControlWrapper)
+  private
+    PrevCalendarWndProc: TWndMethod;
+    CanClose: Boolean;
+    procedure LCLCalendarWrapperWndProc(var TheMessage: TLMessage);
   public
     class function GetCalendarControlClass: TControlClass; override;
     procedure SetDate(Date: TDate); override;
     function GetDate: TDate; override;
     function AreCoordinatesOnDate(X, Y: Integer): Boolean; override;
+
+    constructor Create; override;
+    destructor Destroy; override;
   end;
 
 implementation
 
 { TLCLCalendarWrapper }
+
+procedure TLCLCalendarWrapper.LCLCalendarWrapperWndProc(
+  var TheMessage: TLMessage);
+begin
+  if TheMessage.msg = LM_LBUTTONDOWN then
+    CanClose := TCalendar(GetCalendarControl).GetCalendarView = cvMonth;
+
+  if Assigned(PrevCalendarWndProc) then
+    PrevCalendarWndProc(TheMessage);
+end;
 
 class function TLCLCalendarWrapper.GetCalendarControlClass: TControlClass;
 begin
@@ -67,7 +84,26 @@ end;
 function TLCLCalendarWrapper.AreCoordinatesOnDate(X, Y: Integer): Boolean;
 begin
   Result :=
-    TCalendar(GetCalendarControl).HitTest(Point(X, Y)) in [cpDate, cpNoWhere];
+    CanClose and
+    (TCalendar(GetCalendarControl).GetCalendarView = cvMonth) and
+    (TCalendar(GetCalendarControl).HitTest(Point(X, Y)) in [cpDate, cpNoWhere]);
+
+  CanClose := True;
+end;
+
+constructor TLCLCalendarWrapper.Create;
+begin
+  inherited Create;
+
+  CanClose := True;
+  PrevCalendarWndProc := GetCalendarControl.WindowProc;
+  GetCalendarControl.WindowProc := @LCLCalendarWrapperWndProc;
+end;
+
+destructor TLCLCalendarWrapper.Destroy;
+begin
+  GetCalendarControl.WindowProc := PrevCalendarWndProc;
+  inherited Destroy;
 end;
 
 end.

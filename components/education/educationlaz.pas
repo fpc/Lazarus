@@ -2,8 +2,9 @@
   This source is only used to compile and install the package.
  }
 
-unit EducationLaz; 
+unit EducationLaz;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
@@ -13,19 +14,19 @@ uses
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('EduEnvOptsFrame', @EduEnvOptsFrame.Register); 
-  RegisterUnit('EduPkgSystem', @EduPkgSystem.Register); 
-  RegisterUnit('EduCompPalette', @EduCompPalette.Register); 
-  RegisterUnit('EduMenu', @EduMenu.Register); 
-  RegisterUnit('EduNewProgram', @EduNewProgram.Register); 
-  RegisterUnit('EduPropsEvents', @EduPropsEvents.Register); 
-  RegisterUnit('EduOIPages', @EduOIPages.Register); 
-  RegisterUnit('EduOptionsDlg', @EduOptionsDlg.Register); 
-  RegisterUnit('EduSpeedButtons', @EduSpeedButtons.Register); 
-end; 
+  RegisterUnit('EduEnvOptsFrame', @EduEnvOptsFrame.Register);
+  RegisterUnit('EduPkgSystem', @EduPkgSystem.Register);
+  RegisterUnit('EduCompPalette', @EduCompPalette.Register);
+  RegisterUnit('EduMenu', @EduMenu.Register);
+  RegisterUnit('EduNewProgram', @EduNewProgram.Register);
+  RegisterUnit('EduPropsEvents', @EduPropsEvents.Register);
+  RegisterUnit('EduOIPages', @EduOIPages.Register);
+  RegisterUnit('EduOptionsDlg', @EduOptionsDlg.Register);
+  RegisterUnit('EduSpeedButtons', @EduSpeedButtons.Register);
+end;
 
 initialization
-  RegisterPackage('EducationLaz', @Register); 
+  RegisterPackage('EducationLaz', @Register);
 end.

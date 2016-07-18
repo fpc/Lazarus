@@ -73,7 +73,7 @@ type
     fBranches: TBranchList;         // Items under these nodes can be sorted.
     fExpandAllInitially: Boolean;   // Expand all levels when searched for the first time.
     fIsFirstTime: Boolean;          // Needed for fExpandAllInitially.
-    // First node that matched the filter. Will be selected if old selection is hidden.
+    // First node matching the filter. Will be selected if old selection is hidden.
     fFirstPassedNode: TTreeNode;
     fOnGetImageIndex: TImageIndexEvent;
     procedure SetFilteredTreeview(const AValue: TCustomTreeview);
@@ -130,14 +130,7 @@ type
 var
   TreeFilterGlyph: TBitmap;
 
-procedure Register;
-
 implementation
-
-procedure Register;
-begin
-  RegisterComponents('LazControls',[TTreeFilterEdit]);
-end;
 
 { TTreeFilterBranch }
 
@@ -467,22 +460,14 @@ function TTreeFilterEdit.FilterTree(Node: TTreeNode): Boolean;
 // Filter all tree branches recursively, setting Node.Visible as needed.
 // Returns True if Node or its siblings or child nodes have visible items.
 var
-  Pass, Done: Boolean;
+  Pass: Boolean;
   FilterLC: string;
 begin
   Result:=False;
-  Done:=False;
   FilterLC:=UTF8LowerCase(Filter);
   while Node<>nil do
   begin
-    // Call OnFilterItem handler.
-    if Assigned(OnFilterItem) then
-      Pass:=OnFilterItem(TObject(Node.Data), Done)
-    else
-      Pass:=False;
-    // Filter by item's title text if needed.
-    if not (Pass or Done) then
-      Pass:=(FilterLC='') or (Pos(FilterLC,UTF8LowerCase(Node.Text))>0);
+    Pass := DoFilterItem(Node.Text, TObject(Node.Data), FilterLC);
     if Pass and (fFirstPassedNode=Nil) then
       fFirstPassedNode:=Node;
     // Recursive call for child nodes.
@@ -578,12 +563,12 @@ begin
       fSelectionList.Delete(0);
     end;
   end;
-  if Assigned(SelectNode) then  // Original selection will be restored later.
-    ANode:=SelectNode
+  if Assigned(SelectNode) then
+    ANode:=SelectNode                       // Stored selection
   else if Assigned(fFirstPassedNode) then
-    ANode:=fFirstPassedNode
+    ANode:=fFirstPassedNode                 // Node matching the filter
   else
-    ANode:=fFilteredTreeview.Items.GetFirstVisibleNode;
+    ANode:=fFilteredTreeview.Items.GetFirstVisibleNode; // Otherwise first node
   fFilteredTreeview.Selected:=ANode;
 end;
 

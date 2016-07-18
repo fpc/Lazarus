@@ -441,6 +441,13 @@ resourcestring
   oisChangeParent = 'Change Parent';
   lisUnableToFindParserForTool = 'Unable to find parser for tool "%s"';
 
+  // TChangeParentDlg
+  oisShowClasses = 'Show classes';
+  oisSelectedControl = 'Selected control';
+  oisSelectedControls = 'Selected controls';
+  oisCurrentParent = 'Current parent';
+  oisCurrentParents = 'Current parents';
+
   // Dbgrid Columns editor
   dceAddFields = 'Add Fields';
   dceDeleteAll  = 'Delete All';

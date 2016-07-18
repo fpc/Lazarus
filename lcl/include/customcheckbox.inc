@@ -251,6 +251,7 @@ end;
 
 procedure TCustomCheckBox.DoClickOnChange;
 begin
+  Changed;
   // emulate delphi OnClick behaviour (click will call OnChange)
   if not ClicksDisabled then
     inherited Click

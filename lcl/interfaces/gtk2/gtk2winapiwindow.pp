@@ -954,12 +954,24 @@ end;
 function GTKAPIWidget_FocusIn(Widget: PGTKWidget;
   {%H-}Event: PGdkEventFocus): GTKEventResult; cdecl;
 var
-  TopLevel: PGTKWidget;
+  TopLevel, FocusWidget: PGTKWidget;
 begin
   TopLevel := gtk_widget_get_toplevel(Widget);
   if gtk_type_is_a(gtk_object_type(PGTKObject(TopLevel)), gtk_window_get_type) 
-  then gtk_window_set_focus(PGTKWindow(TopLevel), PGTKAPIWidget(Widget)^.Client);
-  
+  then begin
+    if GTK_WIDGET_CAN_FOCUS(PGTKAPIWidget(Widget)^.Client) then
+      FocusWidget:=PGTKAPIWidget(Widget)^.Client
+    else
+      FocusWidget:=Widget;
+    {debugln(['GTKAPIWidget_FocusIn ',
+      ' Widget=',GetWidgetDebugReport(Widget),
+      ' Client=',GetWidgetDebugReport(PGTKAPIWidget(Widget)^.Client),
+      ' GTK_WIDGET_CAN_FOCUS(Widget)=',GTK_WIDGET_CAN_FOCUS(Widget),
+      ' GTK_WIDGET_CAN_FOCUS(Client)=',GTK_WIDGET_CAN_FOCUS(PGTKAPIWidget(Widget)^.Client),
+      '']);}
+    gtk_window_set_focus(PGTKWindow(TopLevel), FocusWidget);
+  end;
+
   Result := gtk_True;
 end;
 

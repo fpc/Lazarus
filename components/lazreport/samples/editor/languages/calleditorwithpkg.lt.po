@@ -84,10 +84,6 @@ msgstr "Naujas pranešimas"
 msgid "none"
 msgstr "joks"
 
-#: maincalleditor.cernotimplemented
-msgid "This feature is not yet implemented!"
-msgstr "Ši funkcija dar neįgyvendinta!"
-
 #: maincalleditor.ceropenreport
 msgid "Open report"
 msgstr "Atverti pranešimą"
@@ -116,15 +112,6 @@ msgstr "Spausdinti pranešimą"
 msgctxt "maincalleditor.certhumbnails"
 msgid "Thumbnails"
 msgstr "Miniatiūros"
-
-#: tfrmcustompreview.frmcustompreview.caption
-msgid "frmCustomPreview"
-msgstr "frmSavaPerziura"
-
-#: tfrmcustompreview.frpreview1.caption
-msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
-msgid "frPreview1"
-msgstr "frPerziura1"
 
 #: tfrmmain.accclose.caption
 msgid "Close"

@@ -191,7 +191,8 @@ type
     cmsFinalFields,        { allows declaring fields as "final", which means they must be initialised
                              in the (class) constructor and are constant from then on (same as final
                              fields in Java) }
-    cmsDefault_unicodestring, { ? see http://wiki.freepascal.org/FPC_JVM/Language }
+    cmsDefault_unicodestring, { makes the default string type in $h+ mode unicodestring rather than
+                                ansistring; similarly, char becomes unicodechar rather than ansichar }
     cmsTypeHelpers,
     cmsBlocks
     );
@@ -579,8 +580,7 @@ type
     procedure ClearMissingIncludeFiles;
 
     // code macros
-    procedure AddMacroValue(MacroName: PChar;
-                            ValueStart, ValueEnd: integer);
+    procedure AddMacroValue(MacroName: PChar; ValueStart, ValueEnd: integer);
     procedure ClearMacros;
     function IndexOfMacro(MacroName: PChar; InsertPos: boolean): integer;
     procedure AddMacroSource(MacroID: integer);
@@ -701,33 +701,26 @@ type
     // properties
     property OnGetSource: TOnGetSource read FOnGetSource write FOnGetSource;
     property OnLoadSource: TOnLoadSource read FOnLoadSource write FOnLoadSource;
-    property OnDeleteSource: TOnDeleteSource
-                                     read FOnDeleteSource write FOnDeleteSource;
+    property OnDeleteSource: TOnDeleteSource read FOnDeleteSource write FOnDeleteSource;
     property OnGetSourceStatus: TOnGetSourceStatus
                                read FOnGetSourceStatus write FOnGetSourceStatus;
-    property OnGetFileName: TOnGetFileName
-                                       read FOnGetFileName write FOnGetFileName;
+    property OnGetFileName: TOnGetFileName read FOnGetFileName write FOnGetFileName;
     property OnCheckFileOnDisk: TOnCheckFileOnDisk
                                read FOnCheckFileOnDisk write FOnCheckFileOnDisk;
     property OnGetInitValues: TOnGetInitValues
                                    read FOnGetInitValues write FOnGetInitValues;
-    property OnIncludeCode: TOnIncludeCode
-                                       read FOnIncludeCode write FOnIncludeCode;
-    property OnProgress: TLinkScannerProgress
-                                             read FOnProgress write FOnProgress;
+    property OnIncludeCode: TOnIncludeCode read FOnIncludeCode write FOnIncludeCode;
+    property OnProgress: TLinkScannerProgress read FOnProgress write FOnProgress;
     property IgnoreMissingIncludeFiles: boolean read GetIgnoreMissingIncludeFiles
                                              write SetIgnoreMissingIncludeFiles;
-    property InitialValues: TExpressionEvaluator
-                                             read FInitValues write FInitValues;
+    property InitialValues: TExpressionEvaluator read FInitValues write FInitValues;
     property MainCode: pointer read FMainCode write SetMainCode;
     property IncludeFileIsMissing: boolean read GetIncludeFileIsMissing;
     property NestedComments: boolean read FNestedComments;
-    property CompilerMode: TCompilerMode
-                                       read FCompilerMode write SetCompilerMode;
+    property CompilerMode: TCompilerMode read FCompilerMode write SetCompilerMode;
     property CompilerModeSwitches: TCompilerModeSwitches
                          read FCompilerModeSwitches write FCompilerModeSwitches;
-    property PascalCompiler: TPascalCompiler
-                                     read FPascalCompiler write FPascalCompiler;
+    property PascalCompiler: TPascalCompiler read FPascalCompiler write FPascalCompiler;
     property ScanTill: TLinkScannerRange read FScanTill write SetScanTill;
         
     procedure Clear;
@@ -3418,7 +3411,6 @@ begin
       if CompareUpToken(CompilerModeNames[AMode],Src,ValStart,SrcPos) then
       begin
         CompilerMode:=AMode;
-        Values.Variables[CompilerModeVars[AMode]]:='1';
         ModeValid:=true;
         break;
       end;
@@ -3448,12 +3440,20 @@ begin
     then begin
       Result:=true;
       s:=[ModeSwitch];
-      if ModeSwitch=cmsObjectiveC2 then
-        Include(s,cmsObjectiveC1);
-      if (SrcPos<=SrcLen) and (Src[SrcPos]='-') then
-        FCompilerModeSwitches:=FCompilerModeSwitches-s
-      else
+      case ModeSwitch of
+      cmsObjectiveC2: Include(s,cmsObjectiveC1);
+      end;
+      if (SrcPos<=SrcLen) and (Src[SrcPos]='-') then begin
+        FCompilerModeSwitches:=FCompilerModeSwitches-s;
+        case ModeSwitch of
+        cmsDefault_unicodestring:  Values.Undefine('FPC_UNICODESTRINGS');
+        end;
+      end else begin
         FCompilerModeSwitches:=FCompilerModeSwitches+s;
+        case ModeSwitch of
+        cmsDefault_unicodestring:  Values.Variables['FPC_UNICODESTRINGS'] := '1';
+        end;
+      end;
       exit;
     end;
   end;
@@ -4200,8 +4200,7 @@ begin
   FreeAndNil(FMissingIncludeFiles);
 end;
 
-procedure TLinkScanner.AddMacroValue(MacroName: PChar; ValueStart,
-  ValueEnd: integer);
+procedure TLinkScanner.AddMacroValue(MacroName: PChar; ValueStart, ValueEnd: integer);
 var
   i: LongInt;
   Macro: PSourceLinkMacro;
@@ -4507,9 +4506,11 @@ end;
 procedure TLinkScanner.SetCompilerMode(const AValue: TCompilerMode);
 begin
   if FCompilerMode=AValue then exit;
+  Values.Undefine(CompilerModeVars[FCompilerMode]);
   FCompilerMode:=AValue;
   FCompilerModeSwitches:=DefaultCompilerModeSwitches[CompilerMode];
   FNestedComments:=cmsNested_comment in CompilerModeSwitches;
+  Values.Variables[CompilerModeVars[FCompilerMode]]:='1';
 end;
 
 procedure TLinkScanner.SetDirectiveValueWithSequence(

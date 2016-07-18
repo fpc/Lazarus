@@ -83,10 +83,6 @@ msgstr "Créer un rapport"
 msgid "none"
 msgstr "aucun"
 
-#: maincalleditor.cernotimplemented
-msgid "This feature is not yet implemented!"
-msgstr "Cette fonctionalité n'est pas encore implémentée"
-
 #: maincalleditor.ceropenreport
 msgid "Open report"
 msgstr "Ouvrir un rapport"
@@ -115,15 +111,6 @@ msgstr "Imprimer le rapport"
 msgctxt "maincalleditor.certhumbnails"
 msgid "Thumbnails"
 msgstr "Vignettes"
-
-#: tfrmcustompreview.frmcustompreview.caption
-msgid "frmCustomPreview"
-msgstr "frmCustomPreview"
-
-#: tfrmcustompreview.frpreview1.caption
-msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
-msgid "frPreview1"
-msgstr "frPreview1"
 
 #: tfrmmain.accclose.caption
 msgctxt "TFRMMAIN.ACCCLOSE.CAPTION"

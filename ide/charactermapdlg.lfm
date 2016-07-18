@@ -2,11 +2,11 @@ object CharacterMapDialog: TCharacterMapDialog
   Left = 370
   Height = 477
   Top = 128
-  Width = 593
+  Width = 590
   BorderStyle = bsSizeToolWin
   Caption = 'CharacterMapDialog'
   ClientHeight = 477
-  ClientWidth = 593
+  ClientWidth = 590
   FormStyle = fsStayOnTop
   KeyPreview = True
   OnCreate = FormCreate
@@ -16,9 +16,9 @@ object CharacterMapDialog: TCharacterMapDialog
   LCLVersion = '1.7'
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 36
-    Top = 435
-    Width = 581
+    Height = 25
+    Top = 446
+    Width = 578
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.Enabled = False
@@ -41,83 +41,40 @@ object CharacterMapDialog: TCharacterMapDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 423
+    Height = 434
     Top = 6
-    Width = 581
-    ActivePage = TabSheet1
+    Width = 578
+    ActivePage = pgUnicode
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     TabIndex = 0
     TabOrder = 0
-    object TabSheet1: TTabSheet
-      Caption = 'ANSI'
-      ClientHeight = 390
-      ClientWidth = 577
-      object CharInfoLabel: TLabel
-        AnchorSideLeft.Control = TabSheet1
-        AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Control = TabSheet1
-        AnchorSideRight.Side = asrBottom
-        AnchorSideBottom.Control = TabSheet1
-        AnchorSideBottom.Side = asrBottom
-        Left = 6
-        Height = 17
-        Top = 367
-        Width = 565
-        Anchors = [akLeft, akRight, akBottom]
-        BorderSpacing.Around = 6
-        Caption = 'CharInfoLabel'
-        ParentColor = False
-      end
-      object StringGrid1: TStringGrid
-        AnchorSideLeft.Control = TabSheet1
-        AnchorSideTop.Control = TabSheet1
-        AnchorSideRight.Control = TabSheet1
-        AnchorSideRight.Side = asrBottom
-        AnchorSideBottom.Control = CharInfoLabel
-        Left = 0
-        Height = 361
-        Top = 0
-        Width = 577
-        Anchors = [akTop, akLeft, akRight, akBottom]
-        ColCount = 17
-        DefaultColWidth = 16
-        DefaultDrawing = False
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goSmoothScroll]
-        RowCount = 15
-        TabOrder = 0
-        OnKeyPress = StringGridKeyPress
-        OnMouseDown = StringGridMouseDown
-        OnMouseMove = StringGrid1MouseMove
-        OnSelectCell = StringGrid1SelectCell
-      end
-    end
-    object TabSheet2: TTabSheet
+    object pgUnicode: TTabSheet
       Caption = 'Unicode'
-      ClientHeight = 390
-      ClientWidth = 577
+      ClientHeight = 397
+      ClientWidth = 570
       object UnicodeCharInfoLabel: TLabel
         AnchorSideLeft.Control = Owner
         AnchorSideTop.Control = cbUniRange
         AnchorSideTop.Side = asrCenter
         Left = 6
-        Height = 17
-        Top = 362
-        Width = 147
+        Height = 15
+        Top = 370
+        Width = 139
         BorderSpacing.Around = 6
         Caption = 'UnicodeCharInfoLabel'
         ParentColor = False
       end
       object StringGrid2: TStringGrid
-        AnchorSideLeft.Control = TabSheet2
-        AnchorSideTop.Control = TabSheet2
-        AnchorSideRight.Control = TabSheet2
+        AnchorSideLeft.Control = pgUnicode
+        AnchorSideTop.Control = pgUnicode
+        AnchorSideRight.Control = pgUnicode
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = cbUniRange
         Left = 0
-        Height = 351
+        Height = 358
         Top = 0
-        Width = 577
+        Width = 570
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 16
         DefaultColWidth = 16
@@ -133,18 +90,18 @@ object CharacterMapDialog: TCharacterMapDialog
         OnSelectCell = StringGrid2SelectCell
       end
       object cbUniRange: TComboBox
-        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Control = pgUnicode
         AnchorSideRight.Side = asrBottom
-        AnchorSideBottom.Control = TabSheet2
+        AnchorSideBottom.Control = pgUnicode
         AnchorSideBottom.Side = asrBottom
-        Left = 280
+        Left = 273
         Height = 27
-        Top = 357
+        Top = 364
         Width = 291
         Anchors = [akRight, akBottom]
         BorderSpacing.Around = 6
         DropDownCount = 25
-        ItemHeight = 23
+        ItemHeight = 0
         OnSelect = cbUniRangeSelect
         Style = csDropDownList
         TabOrder = 1
@@ -153,12 +110,112 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideTop.Control = cbUniRange
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = cbUniRange
-        Left = 231
-        Height = 17
-        Top = 362
-        Width = 43
+        Left = 227
+        Height = 15
+        Top = 370
+        Width = 40
         Anchors = [akTop, akRight]
         Caption = 'Range'
+        ParentColor = False
+      end
+    end
+    object pgAnsi: TTabSheet
+      Caption = 'ANSI'
+      ClientHeight = 397
+      ClientWidth = 570
+      object CharInfoLabel: TLabel
+        AnchorSideLeft.Control = pgAnsi
+        AnchorSideTop.Control = cbCodePage
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = pgAnsi
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = pgAnsi
+        AnchorSideBottom.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 380
+        Width = 74
+        BorderSpacing.Around = 6
+        Caption = 'CharInfoLabel'
+        ParentColor = False
+      end
+      object StringGrid1: TStringGrid
+        AnchorSideLeft.Control = pgAnsi
+        AnchorSideTop.Control = pgAnsi
+        AnchorSideRight.Control = pgAnsi
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = cbCodePage
+        Left = 0
+        Height = 370
+        Top = 0
+        Width = 570
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        ColCount = 17
+        DefaultColWidth = 16
+        DefaultDrawing = False
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goSmoothScroll]
+        RowCount = 15
+        TabOrder = 0
+        OnKeyPress = StringGridKeyPress
+        OnMouseDown = StringGridMouseDown
+        OnMouseMove = StringGrid1MouseMove
+        OnSelectCell = StringGrid1SelectCell
+      end
+      object cbCodePage: TComboBox
+        AnchorSideTop.Control = StringGrid1
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = pgAnsi
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = pgAnsi
+        AnchorSideBottom.Side = asrBottom
+        Left = 245
+        Height = 23
+        Top = 376
+        Width = 319
+        Anchors = [akRight, akBottom]
+        BorderSpacing.Around = 6
+        DropDownCount = 25
+        ItemHeight = 0
+        Items.Strings = (
+          'cp1250 - Central and East European Latin'
+          'cp1251 - Cyrillic'
+          'cp1252 - West European Latin'
+          'cp1253 - Greek'
+          'cp1254 - Turkish'
+          'cp1255 - Hebrew'
+          'cp1256 - Arabic'
+          'cp1257 - Baltic'
+          'cp1258 - Vietnamese'
+          'cp437 - Original IBM PC hardware'
+          'cp850 - Latin-1'
+          'cp852 - Latin-2'
+          'cp866 - Belarusian, Russian, Ukrainian'
+          'cp874 - Thai'
+          'cp932 - Japanese'
+          'cp936 - ANSI/OEM Simplified Chinese'
+          'cp949 - Korean'
+          'cp950 - Traditional Chinese'
+          'macintosh - MAC Roman (Western Europe)'
+          'koi8 - Ukrainean, Cyrillic'
+          'iso88591 - ISO Latin-1 (Western Europe)'
+          'iso88592 - ISO Latin-2 (Central and Eastern Europe)'
+          'iso885915 - ISO Latin-9 (Western Europe)'
+        )
+        OnSelect = cbCodePageSelect
+        Style = csDropDownList
+        TabOrder = 1
+      end
+      object Label1: TLabel
+        AnchorSideLeft.Control = CharInfoLabel
+        AnchorSideTop.Control = cbCodePage
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = cbCodePage
+        Left = 182
+        Height = 15
+        Top = 380
+        Width = 57
+        Anchors = [akTop, akRight]
+        Caption = 'Code page'
         ParentColor = False
       end
     end

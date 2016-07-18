@@ -129,9 +129,7 @@ type
     FRowTextOnEnter: TKeyValuePair;
     FLastEditedRow: Integer;
     FUpdatingKeyOptions: Boolean;
-    function GetFixedRows: Integer;
     function GetItemProp(const AKeyOrIndex: Variant): TItemProp;
-    procedure SetFixedRows(AValue: Integer);
     procedure SetItemProp(const AKeyOrIndex: Variant; AValue: TItemProp);
     procedure StringsChange(Sender: TObject);
     procedure StringsChanging(Sender: TObject);
@@ -162,6 +160,7 @@ type
     procedure ResetDefaultColWidths; override;
     procedure SetCells(ACol, ARow: Integer; const AValue: string); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
+    procedure SetFixedRows(const AValue: Integer); override;
     procedure SetRowCount(AValue: Integer);
     procedure TitlesChanged(Sender: TObject);
     function ValidateEntry(const ACol,ARow:Integer; const OldValue:string; var NewValue:string): boolean; override;
@@ -183,7 +182,6 @@ type
     procedure MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
     function RestoreCurrentRow: Boolean;
 
-    property FixedRows: Integer read GetFixedRows write SetFixedRows default 1;
     property Modified;
     property Keys[Index: Integer]: string read GetKey write SetKey;
     property Values[const Key: string]: string read GetValue write SetValue;
@@ -928,18 +926,13 @@ begin
     OnStringsChanging(Self);
 end;
 
-function TValueListEditor.GetFixedRows: Integer;
-begin
-  Result := inherited FixedRows;
-end;
-
 procedure TValueListEditor.SetFixedCols(const AValue: Integer);
 begin
   if (AValue in [0,1]) then
     inherited SetFixedCols(AValue);
 end;
 
-procedure TValueListEditor.SetFixedRows(AValue: Integer);
+procedure TValueListEditor.SetFixedRows(const AValue: Integer);
 begin
   if AValue in [0,1] then begin  // No other values are allowed
     if AValue = 0 then           // Typically DisplayOptions are changed directly
@@ -973,9 +966,9 @@ begin
     if doColumnTitles in AValue then begin
       if RowCount < 2 then
         {inherited} RowCount := 2;
-      inherited FixedRows := 1;
+      inherited SetFixedRows(1);// don't do FixedRows := 1 here, it wil cause infinite recursion (Issue 0029993)
     end else
-      inherited FixedRows := 0;
+      inherited SetFixedRows(0);
 
   if (doAutoColResize in DisplayOptions) <> (doAutoColResize in AValue) then
     AutoFillColumns := (doAutoColResize in AValue);

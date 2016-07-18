@@ -33,7 +33,7 @@ uses
   Translations, Controls, Buttons,
   LCLIntf, LclProc, LazUTF8, LCLType, LMessages,
   Forms, Dialogs, GraphMath, GraphType, InterfaceBase,
-  StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl,
+  StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl, ComCtrls,
   MultiMon, Themes{, Win32Debug};
 
 const
@@ -117,6 +117,7 @@ type
     // Assoc. windowproc also acts as handler for popup menus
     FAppHandle,
     FDockWndHandle: HWND;
+    FAppMinimizing: Boolean;
     FCommonControlsVersion: DWord;
 
     FMetrics: TNonClientMetrics;
@@ -147,6 +148,8 @@ type
     function CreateThemeServices: TThemeServices; override;
     function GetAppHandle: THandle; override;
     procedure SetAppHandle(const AValue: THandle); override;
+
+    property AppMinimizing: Boolean read FAppMinimizing; // true if application is minimizing itself
   public
     { Creates a callback of Lazarus message Msg for Sender }
     procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
@@ -265,10 +268,7 @@ type
   end;
 
 var
-  MouseDownCount: Integer;
-  MouseDownTime: QWord;
-  MouseDownPos: TPoint;
-  MouseDownWindow: HWND = 0;
+  LastMouse: TLastMouseInfo;
   ComboBoxHandleSizeWindow: HWND = 0;
   IgnoreNextCharWindow: HWND = 0;  // ignore next WM_(SYS)CHAR message
   // set to true, if we are redirecting a WM_MOUSEWHEEL message, to prevent recursion
@@ -289,11 +289,6 @@ var
 
 
 initialization
-  { initialize mousedownclick to far before double click time }
-  if GetTickCount64 > 5000 then
-    MouseDownTime := GetTickCount64 - 5000
-  else
-    MouseDownTime := 0;
   SystemCharSetIsUTF8:=true;
 
   MMenuItemInfoSize := sizeof(MENUITEMINFO);

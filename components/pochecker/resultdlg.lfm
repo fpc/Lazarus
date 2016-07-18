@@ -13,7 +13,7 @@ object ResultDlgForm: TResultDlgForm
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  LCLVersion = '1.3'
+  LCLVersion = '1.7'
   object Panel1: TPanel
     Left = 0
     Height = 50
@@ -25,15 +25,17 @@ object ResultDlgForm: TResultDlgForm
     ClientWidth = 742
     TabOrder = 1
     object CloseBtn: TBitBtn
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 657
+      Left = 644
       Height = 26
       Top = 12
-      Width = 75
-      Anchors = [akRight]
+      Width = 92
+      Anchors = [akTop, akRight]
       AutoSize = True
-      BorderSpacing.Right = 10
+      BorderSpacing.Right = 6
       Cancel = True
       DefaultCaption = True
       Kind = bkClose
@@ -41,14 +43,17 @@ object ResultDlgForm: TResultDlgForm
       TabOrder = 3
     end
     object SaveBtn: TBitBtn
+      AnchorSideTop.Control = CloseBtn
       AnchorSideRight.Control = CloseBtn
-      Left = 544
+      AnchorSideBottom.Control = CloseBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 535
       Height = 26
       Top = 12
       Width = 103
-      Anchors = [akRight]
+      Anchors = [akTop, akRight, akBottom]
       AutoSize = True
-      BorderSpacing.Around = 10
+      BorderSpacing.Right = 6
       Caption = '&Save to file'
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
@@ -90,14 +95,17 @@ object ResultDlgForm: TResultDlgForm
       TabOrder = 2
     end
     object CopyBtn: TBitBtn
+      AnchorSideTop.Control = CloseBtn
       AnchorSideRight.Control = SaveBtn
-      Left = 393
+      AnchorSideBottom.Control = CloseBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 388
       Height = 26
       Top = 12
       Width = 141
-      Anchors = [akRight]
+      Anchors = [akTop, akRight, akBottom]
       AutoSize = True
-      BorderSpacing.Around = 10
+      BorderSpacing.Right = 6
       Caption = 'Copy to clipboard'
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
@@ -139,13 +147,17 @@ object ResultDlgForm: TResultDlgForm
       TabOrder = 1
     end
     object GraphStatBtn: TBitBtn
+      AnchorSideTop.Control = CloseBtn
       AnchorSideRight.Control = CopyBtn
-      Left = 226
+      AnchorSideBottom.Control = CloseBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 225
       Height = 26
       Top = 12
       Width = 157
-      Anchors = [akRight]
+      Anchors = [akTop, akRight, akBottom]
       AutoSize = True
+      BorderSpacing.Right = 6
       Caption = 'Show statistics graph'
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
@@ -717,7 +729,6 @@ object ResultDlgForm: TResultDlgForm
     VisibleSpecialChars = [vscSpace, vscTabAtLast]
     ReadOnly = True
     ScrollBars = ssAutoBoth
-    SelectedColor.FrameEdges = sfeAround
     SelectedColor.BackPriority = 50
     SelectedColor.ForePriority = 50
     SelectedColor.FramePriority = 50
@@ -725,30 +736,23 @@ object ResultDlgForm: TResultDlgForm
     SelectedColor.ItalicPriority = 50
     SelectedColor.UnderlinePriority = 50
     SelectedColor.StrikeOutPriority = 50
-    IncrementColor.FrameEdges = sfeAround
-    HighlightAllColor.FrameEdges = sfeAround
     BracketHighlightStyle = sbhsBoth
     BracketMatchColor.Background = clNone
     BracketMatchColor.Foreground = clNone
-    BracketMatchColor.FrameEdges = sfeAround
     BracketMatchColor.Style = [fsBold]
     FoldedCodeColor.Background = clNone
     FoldedCodeColor.Foreground = clGray
     FoldedCodeColor.FrameColor = clGray
-    FoldedCodeColor.FrameEdges = sfeAround
     MouseLinkColor.Background = clNone
     MouseLinkColor.Foreground = clBlue
-    MouseLinkColor.FrameEdges = sfeAround
     LineHighlightColor.Background = clNone
     LineHighlightColor.Foreground = clNone
-    LineHighlightColor.FrameEdges = sfeAround
     inline SynLeftGutterPartList1: TSynGutterPartList
       object SynGutterLineNumber1: TSynGutterLineNumber
         Width = 17
         MouseActions = <>
         MarkupInfo.Background = clBtnFace
         MarkupInfo.Foreground = clNone
-        MarkupInfo.FrameEdges = sfeAround
         DigitCount = 2
         ShowOnlyLineNumbersMultiplesOf = 1
         ZeroStart = False

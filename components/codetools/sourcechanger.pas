@@ -59,19 +59,13 @@ type
     mipClassOrder      // try to copy the order of the class
     );
     
-  //where to add created methods from event assignment: "OnClick := @MyNewProc;"
+  TCreateCodeLocation = (cclLocal, cclClass);
+
   TInsertClassSection = (
     icsPrivate,
     icsProtected,
     icsPublic,
-    icsPublished,
-    icsPrompt //show dialog prompt
-    );
-  TInsertClassSectionResult = (
-    icsrPrivate,
-    icsrProtected,
-    icsrPublic,
-    icsrPublished
+    icsPublished
   );
 
   TForwardProcBodyInsertPolicy = (
@@ -105,15 +99,6 @@ type
 
 const
   DefaultUsesInsertPolicy = uipBehindRelated;
-  DefaultEventMethodSection = icsPrompt;
-
-  InsertClassSectionToResult: array[TInsertClassSection] of TInsertClassSectionResult = (
-    icsrPrivate,
-    icsrProtected,
-    icsrPublic,
-    icsrPublished,
-    icsrPrivate
-    );
 
 type
   TWordPolicyException = class
@@ -181,7 +166,6 @@ type
     ClassPartInsertPolicy: TClassPartInsertPolicy;
     MixMethodsAndProperties: boolean;
     MethodInsertPolicy: TMethodInsertPolicy;
-    EventMethodSection: TInsertClassSection;
     PropertyReadIdentPrefix: string;
     PropertyWriteIdentPrefix: string;
     PropertyStoredIdentPostfix: string;
@@ -189,13 +173,11 @@ type
     UpdateAllMethodSignatures: boolean;
     // uses section
     UsesInsertPolicy: TUsesInsertPolicy;
-    UsesSectionPreferInterface: boolean;
 
     CurFlags: TBeautifyCodeFlags;
     
     NestedComments: boolean;
 
-    function GetRealEventMethodSection(out Section: TInsertClassSectionResult): Boolean; //in case of imsPrompt show a dialog and return a "normal" section; returns true if OK, false if canceled
     function GetIndentStr(TheIndent: integer): string; inline;
     function GetLineIndent(const Source: string; Position: integer): integer; inline;
     procedure SetupWordPolicyExceptions(ws: TStrings);
@@ -356,11 +338,14 @@ const
     );
 
   InsertClassSectionNames: array[TInsertClassSection] of ShortString = (
-    'Private', 'Protected', 'Public', 'Published', 'Prompt'
+    'Private', 'Protected', 'Public', 'Published'
+    );
+  InsertClassSectionAmpNames: array[TInsertClassSection] of ShortString = (
+    '&Private', 'P&rotected', 'P&ublic', 'Publi&shed'
     );
 
-  InsertClassSectionResultNames: array[TInsertClassSectionResult] of ShortString = (
-    'Private', 'Protected', 'Public', 'Published'
+  CreateCodeLocationNames: array[TCreateCodeLocation] of ShortString = (
+    'Local', 'Class'
     );
 
   ForwardProcBodyInsertPolicyNames: array[TForwardProcBodyInsertPolicy] of
@@ -386,18 +371,13 @@ const
   DefaultDoNotInsertSpaceInFront: TAtomTypes = [];
   DefaultDoNotInsertSpaceAfter: TAtomTypes = [atDirectiveStart];
 
-type
-  TShowEventClassSectionPromptFunc = function(out Section: TInsertClassSectionResult): Boolean;
-var
-  ShowEventMethodSectionPrompt: TShowEventClassSectionPromptFunc = nil;
-
 function AtomTypeNameToType(const s: string): TAtomType;
 function AtomTypesToStr(const AtomTypes: TAtomTypes): string;
 function WordPolicyNameToPolicy(const s: string): TWordPolicy;
 function ClassPartPolicyNameToPolicy(const s: string): TClassPartInsertPolicy;
 function MethodInsertPolicyNameToPolicy(const s: string): TMethodInsertPolicy;
-function InsertClassSectionNameToSection(const s: string; Default: TInsertClassSection): TInsertClassSection;
-function InsertClassSectionResultNameToSection(const s: string): TInsertClassSectionResult;
+function InsertClassSectionNameToSection(const s: string): TInsertClassSection;
+function CreateCodeLocationNameToLocation(const s: string): TCreateCodeLocation;
 function ForwardProcBodyInsertPolicyNameToPolicy(
   const s: string): TForwardProcBodyInsertPolicy;
 function UsesInsertPolicyNameToPolicy(const s: string): TUsesInsertPolicy;
@@ -450,19 +430,19 @@ begin
   Result:=mipLast;
 end;
 
-function InsertClassSectionNameToSection(const s: string;
-  Default: TInsertClassSection): TInsertClassSection;
+function InsertClassSectionNameToSection(const s: string): TInsertClassSection;
 begin
   for Result:=Low(TInsertClassSection) to High(TInsertClassSection) do
     if SysUtils.CompareText(InsertClassSectionNames[Result],s)=0 then exit;
-  Result:=Default;
+  Result:=icsPrivate;
 end;
 
-function InsertClassSectionResultNameToSection(const s: string): TInsertClassSectionResult;
+function CreateCodeLocationNameToLocation(const s: string): TCreateCodeLocation;
 begin
-  for Result:=Low(TInsertClassSectionResult) to High(TInsertClassSectionResult) do
-    if SysUtils.CompareText(InsertClassSectionResultNames[Result],s)=0 then exit;
-  Result:=icsrPrivate;
+  if (s<>'') and (s[1] in ['c', 'C']) then
+    Result := cclClass
+  else
+    Result := cclLocal;
 end;
 
 function ForwardProcBodyInsertPolicyNameToPolicy(
@@ -1316,7 +1296,6 @@ begin
   UpdateOtherProcSignaturesCase:=true;
   GroupLocalVariables:=true;
   MethodInsertPolicy:=mipClassOrder;
-  EventMethodSection:=DefaultEventMethodSection;
   ForwardProcBodyInsertPolicy:=fpipBehindMethods;
   KeepForwardProcOrder:=true;
   ClassHeaderComments:=true;
@@ -1741,21 +1720,6 @@ begin
     Result:=true;
   end else
     Result:=false;
-end;
-
-function TBeautifyCodeOptions.GetRealEventMethodSection(out
-  Section: TInsertClassSectionResult): Boolean;
-begin
-  Result := True;
-  if (EventMethodSection <> icsPrompt) then
-    Section := InsertClassSectionToResult[EventMethodSection]
-  else
-  begin
-    if Assigned(ShowEventMethodSectionPrompt) then
-      Result := ShowEventMethodSectionPrompt(Section)
-    else
-      Section := InsertClassSectionToResult[DefaultEventMethodSection];
-  end;
 end;
 
 procedure TBeautifyCodeOptions.SetupWordPolicyExceptions(ws: TStrings);

@@ -1,15 +1,14 @@
-{ Этот файл был автоматически создан Lazarus. Н�
-  � редактировать!
-  Исходный код используется только для комп�
-    �ляции и установки пакета.
+{ This file was automatically created by Lazarus. Do not edit!
+  This source is only used to compile and install the package.
  }
 
-unit jcfidelazarus; 
+unit jcfidelazarus;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-    JcfIdeMain, JcfIdeRegister, AsmKeywords, BuildParseTree, BuildTokenList, 
+  JcfIdeMain, JcfIdeRegister, AsmKeywords, BuildParseTree, BuildTokenList, 
   ParseError, ParseTreeNode, ParseTreeNodeType, PreProcessorExpressionParser, 
   PreProcessorExpressionTokenise, PreProcessorExpressionTokens, 
   PreProcessorParseTree, SourceToken, SourceTokenList, Tokens, TokenUtils, 
@@ -46,11 +45,11 @@ uses
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('JcfIdeRegister', @JcfIdeRegister.Register); 
-end; 
+  RegisterUnit('JcfIdeRegister', @JcfIdeRegister.Register);
+end;
 
 initialization
-  RegisterPackage('jcfidelazarus', @Register); 
+  RegisterPackage('jcfidelazarus', @Register);
 end.

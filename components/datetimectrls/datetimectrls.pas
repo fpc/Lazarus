@@ -4,17 +4,17 @@
 
 unit DateTimeCtrls;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  DateTimePicker, DBDateTimePicker, DateTimePickerPropEdit, 
-  DateTimeControlsReg, calcontrolwrapper, lclcalwrapper, LazarusPackageIntf;
+  DateTimePicker, DBDateTimePicker, calcontrolwrapper, lclcalwrapper, 
+  LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
-  RegisterUnit('DateTimeControlsReg', @DateTimeControlsReg.Register);
 end;
 
 initialization

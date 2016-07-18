@@ -43,6 +43,7 @@ function FPColorToRGBHexString(AColor: TFPColor): string;
 function RGBToFPColor(AR, AG, AB: byte): TFPColor; inline;
 function MixColors(AColor1, AColor2: TFPColor; APos, AMax: Double): TFPColor;
 function GradientColor(AColors: TvGradientColors; AValue: Double): TFPColor;
+function AlphaBlendColor(AColorBase, AColor: TFPColor): TFPColor;
 // Coordinate Conversion routines
 function CanvasCoordsToFPVectorial(AY: Integer; AHeight: Integer): Integer; inline;
 function CanvasTextPosToFPVectorial(AY: Integer; ACanvasHeight, ATextHeight: Integer): Integer;
@@ -163,6 +164,18 @@ begin
         Result := MixColors(c1, c2, AValue - p1, p2 - p1);
         exit;
       end;
+end;
+
+function AlphaBlendColor(AColorBase, AColor: TFPColor): TFPColor;
+var
+  f1, f2: Double;
+begin
+  f1 := 1 - f2;
+  f2 := AColor.Alpha / alphaOpaque;
+  Result.Alpha := Round(AColorBase.Alpha * f1 + AColor.Alpha * f2);
+  Result.Red := Round(AColorBase.Red * f1 + AColor.Red * f2);
+  Result.Green := Round(AColorBase.Green * f1 + AColor.Green * f2);
+  Result.Blue := Round(AColorBase.Blue * f1 + AColor.Blue * f2);
 end;
 
 {@@ Converts the coordinate system from a TCanvas to FPVectorial

@@ -72,7 +72,7 @@ Type
     procedure CheckStatistics(ErrorCnt: Integer);
 
   public
-    procedure RunTests(out ErrorCount, WarningCount: Integer; ErrorLog: TStrings);
+    procedure RunTests(out ErrorCount, WarningCount, TranslatedCount, UntranslatedCount, FuzzyCount: Integer; ErrorLog: TStrings);
 
     property Master: TPOFile read FMaster;
     property Child: TPOFile read FChild;
@@ -448,7 +448,7 @@ begin
   FMaster.Free;
   FMaster := nil;
   FMasterName := '';
-  if (AValue <> '') then FMaster := TPOFile.Create(AValue, True);
+  if (AValue <> '') then FMaster := TPOFile.Create(AValue, True, False);
   FMasterName := AValue;
 end;
 
@@ -479,7 +479,7 @@ begin
   FChild.Free;
   FChild := nil;
   FChildName := '';
-  if (AValue <> '') then FChild := TPOFile.Create(AValue, True);
+  if (AValue <> '') then FChild := TPOFile.Create(AValue, True, False);
   FChildName := AValue;
 end;
 
@@ -497,13 +497,13 @@ constructor TPoFamily.Create(const AMasterName, AChildName: String);
 begin
   if (AMasterName <> '') then
   begin
-    FMaster := TPOFile.Create(AMasterName, True);
+    FMaster := TPOFile.Create(AMasterName, True, False);
     FMasterName := AMasterName;
     //debugln('TPoFamily.Create: created ',FMasterName);
   end;
   if (AChildName <> '') then
   begin
-    FChild := TPOFile.Create(AChildName, True);
+    FChild := TPOFile.Create(AChildName, True, False);
     FChildName := AChildName;
     //debugln('TPoFamily.Create: created ',FChildName);
   end;
@@ -792,7 +792,7 @@ Pre conditions:
   * Master and a matching Child must be assigned at start ot testing
   * If a Child is assigned it must be child of Master
 }
-procedure TPoFamily.RunTests(out ErrorCount, WarningCount: Integer; ErrorLog: TStrings);
+procedure TPoFamily.RunTests(out ErrorCount, WarningCount, TranslatedCount, UntranslatedCount, FuzzyCount: Integer; ErrorLog: TStrings);
 var
   SL: TStringList;
   CurrErrCnt, CurrWarnCnt, ThisErrCnt: Integer;
@@ -804,6 +804,9 @@ begin
   FPoFamilyStats.Clear;
   ErrorCount := NoError;
   WarningCount := NoError;
+  TranslatedCount := 0;
+  UntranslatedCount := 0;
+  FuzzyCount := 0;
   if (not Assigned(FMaster)) and (not Assigned(FChild)) then
   begin
     {$ifdef DebugSimplePoFiles}
@@ -919,8 +922,10 @@ begin
         ThisErrCnt := ThisErrCnt + CurrErrCnt;
       end;
 
-
       //Always run this as the last test please
+      TranslatedCount := FChild.NrTranslated;
+      UntranslatedCount := FChild.NrUntranslated;
+      FuzzyCount := FChild.NrFuzzy;
       if (pttCheckStatistics in FTestTypes) then
       begin
         CheckStatistics(ThisErrCnt);

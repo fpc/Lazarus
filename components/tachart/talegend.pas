@@ -77,7 +77,7 @@ type
   { TLegendItemLine }
 
   TLegendItemLine = class(TLegendItem)
-  strict private
+  strict protected
     FPen: TFPCustomPen;
   public
     constructor Create(APen: TFPCustomPen; const AText: String);

@@ -66,13 +66,17 @@ msgid "Unit name: %s"
 msgstr "Nome unidade: %s"
 
 #: guitestrunner.sactcheckall
+#, fuzzy
+#| msgid "Check all Tests"
 msgctxt "guitestrunner.sactcheckall"
-msgid "Check all Tests"
+msgid "Select all tests"
 msgstr "Marcar todos os Testes"
 
 #: guitestrunner.sactcheckcurrentsuite
+#, fuzzy
+#| msgid "Check the Current Suite"
 msgctxt "guitestrunner.sactcheckcurrentsuite"
-msgid "Check the Current Suite"
+msgid "Select current suite"
 msgstr "Marcar a Suite Atual"
 
 #: guitestrunner.sactcloseform
@@ -81,33 +85,65 @@ msgid "Quit"
 msgstr "Sair"
 
 #: guitestrunner.sactcloseformh
+#, fuzzy
+#| msgid "Quit Testting"
 msgctxt "guitestrunner.sactcloseformh"
-msgid "Quit Testting"
+msgid "Quit testing"
 msgstr "Sair dos testes"
 
+#: guitestrunner.sactcopyalltoclipboard
+msgid "Copy text to clipboard"
+msgstr ""
+
+#: guitestrunner.sactcopyalltoclipboardh
+msgid "Copy the entire text to clipboard"
+msgstr ""
+
 #: guitestrunner.sactrunaction
+#, fuzzy
+#| msgid "&Run"
 msgctxt "guitestrunner.sactrunaction"
-msgid "&Run"
+msgid "&Run all"
 msgstr "&Executar"
 
 #: guitestrunner.sactrunactionh
+#, fuzzy
+#| msgid "Run all checked test(s)"
 msgctxt "guitestrunner.sactrunactionh"
-msgid "Run all checked test(s)"
+msgid "Run all checked tests"
 msgstr "Executar teste(s) marcado(s)"
 
 #: guitestrunner.sactrunhighlightedtest
+#, fuzzy
+#| msgid "Run highlighted test"
 msgctxt "guitestrunner.sactrunhighlightedtest"
-msgid "Run highlighted test"
+msgid "Run selected"
 msgstr "Executar teste selecionado"
 
+#: guitestrunner.sactrunhighlightedtesth
+msgid "Run selected test"
+msgstr ""
+
+#: guitestrunner.sactsaveresults
+msgid "Save results"
+msgstr ""
+
+#: guitestrunner.sactsaveresultsh
+msgid "Save XML results to file"
+msgstr ""
+
 #: guitestrunner.sactuncheckall
+#, fuzzy
+#| msgid "Uncheck all tests"
 msgctxt "guitestrunner.sactuncheckall"
-msgid "Uncheck all tests"
+msgid "Deselect all tests"
 msgstr "Desmarcar todos os testes"
 
 #: guitestrunner.sactuncheckcurrentsuite
+#, fuzzy
+#| msgid "Uncheck the Current Suite"
 msgctxt "guitestrunner.sactuncheckcurrentsuite"
-msgid "Uncheck the Current Suite"
+msgid "Deselect current suite"
 msgstr "Desmarcar a Suite Atual"
 
 #: guitestrunner.sbtnclose
@@ -129,27 +165,17 @@ msgstr "Executar teste selecionado"
 msgid "FPCUnit - run unit test"
 msgstr "FPCUnit - testes unitários"
 
-#: guitestrunner.smicopy
-msgid "&Copy"
-msgstr "&Copiar"
+#: guitestrunner.smiactions
+msgid "Actions"
+msgstr ""
 
-#: guitestrunner.smicopyclipbrd
-msgid "Copy to clipboard"
-msgstr "Copiar para Área Transf."
+#: guitestrunner.smiedit
+msgid "Edit"
+msgstr ""
 
-#: guitestrunner.smicut
-msgid "C&ut"
-msgstr "Rec&ortar"
-
-#: guitestrunner.smiruntest
-#, fuzzy
-#| msgid "  &Run all selected (checked) tests"
-msgid "&Run all selected (checked) tests"
-msgstr "  &Executar todos os testes selecionados"
-
-#: guitestrunner.smishowfail
-msgid "Copy message to clipboard"
-msgstr "Copiar mensagem para Área Transf."
+#: guitestrunner.smitesttree
+msgid "Test tree"
+msgstr ""
 
 #: guitestrunner.stshresults
 msgctxt "guitestrunner.stshresults"

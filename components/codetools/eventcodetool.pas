@@ -72,8 +72,7 @@ type
         TypeData: PTypeData; const Proc: TGetStrProc): boolean;
     function GetCompatiblePublishedMethods(ClassNode: TCodeTreeNode;
         TypeData: PTypeData; const Proc: TGetStrProc): boolean;
-    function PublishedMethodExists(const AClassName: string;
-        const AMethodName: string;
+    function PublishedMethodExists(const AClassName, AMethodName: string;
         PropInstance: TPersistent; const PropName: string;
         out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
         ): boolean;
@@ -362,8 +361,8 @@ begin
   end;
 end;
 
-function TEventsCodeTool.PublishedMethodExists(const AClassName: string;
-  const AMethodName: string; PropInstance: TPersistent; const PropName: string;
+function TEventsCodeTool.PublishedMethodExists(const AClassName, AMethodName: string;
+  PropInstance: TPersistent; const PropName: string;
   out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean): boolean;
 var
   FoundContext: TFindContext;
@@ -594,8 +593,8 @@ begin
   end;
 end;
 
-function TEventsCodeTool.PublishedMethodExists(const AClassName,
-  AMethodName: string; TypeData: PTypeData;
+function TEventsCodeTool.PublishedMethodExists(const AClassName, AMethodName: string;
+  TypeData: PTypeData;
   out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean): boolean;
 var ClassNode: TCodeTreeNode;
 begin
@@ -722,8 +721,7 @@ begin
       exit;
     end;
     SrcClassName:=SrcTool.ExtractClassName(ClassNode,true);
-    ANode:=SrcTool.FindMethodNodeInImplementation(
-                                             SrcClassName,AMethodName,false);
+    ANode:=SrcTool.FindMethodNodeInImplementation(SrcClassName,AMethodName,false);
     if ANode=nil then begin
       if ErrorOnNotFound then
         RaiseExceptionFmt('implementation of method "%s.%s" in %s', [AClassName,AMethodName,SrcTool.MainFilename]);

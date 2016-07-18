@@ -1910,28 +1910,30 @@ var
   Params: TFindDeclarationParams;
   DirectSearch, SkipChecks, SearchForward: boolean;
 
-  procedure CheckIfCursorOnAForwardDefinedClass;
+  function CheckIfNodeIsForwardDefinedClass(ANode: TCodeTreeNode;
+    ATool: TFindDeclarationTool): Boolean;
   var
     TypeNode: TCodeTreeNode;
   begin
-    if SkipChecks then exit;
-    if not (CursorNode.Desc in [ctnTypeDefinition,ctnGenericType]) then exit;
-    TypeNode:=FindTypeNodeOfDefinition(CursorNode);
+    Result := False;
+    if not (ANode.Desc in [ctnTypeDefinition,ctnGenericType]) then exit;
+    TypeNode:=ATool.FindTypeNodeOfDefinition(ANode);
     if (TypeNode<>nil)
     and (TypeNode.Desc in AllClasses)
-    and ((TypeNode.SubDesc and ctnsForwardDeclaration)>0) then
+    and ((TypeNode.SubDesc and ctnsForwardDeclaration)>0)
+    then
+      Result := True;
+  end;
+
+  procedure CheckIfCursorOnAForwardDefinedClass;
+  begin
+    if SkipChecks then exit;
+    if CheckIfNodeIsForwardDefinedClass(CursorNode, Self) then
     begin
       DirectSearch:=true;
       SearchForward:=true;
       SkipChecks:=true;
     end;
-  end;
-
-  procedure CheckIfCursorInTypeNode;
-  begin
-    if (CursorNode.Desc in AllIdentifierDefinitions)
-    and (fsfSkipClassForward in SearchSmartFlags) then
-      Exclude(SearchSmartFlags,fsfSkipClassForward);
   end;
 
   procedure CheckIfCursorInClassNode;
@@ -2077,6 +2079,42 @@ var
     debugln;
   end;
   {$ENDIF}
+
+var
+  IdentStartPos: Integer;
+
+  function TrySkipClassForward: Boolean;
+  var
+    ForwardXY, NewSkipPos: TCodeXYPosition;
+    NewSkipExprType: TExpressionType;
+    NewSkipTopLine, NewSkipCleanPos: integer;
+  begin
+    // if we skip forward class definitions and we found one -> proceed search!
+    Result :=
+         (fsfSkipClassForward in SearchSmartFlags)
+      and CheckIfNodeIsForwardDefinedClass(Params.NewNode, Params.NewCodeTool)
+      and Params.NewCodeTool.CleanPosToCaret(Params.NewNode.StartPos, ForwardXY)
+      and Params.NewCodeTool.FindDeclaration(ForwardXY, SearchSmartFlags-[fsfSkipClassForward],
+        NewSkipExprType, NewSkipPos, NewSkipTopLine);
+
+    if Result
+      and (NewSkipExprType.Desc=xtContext)
+      and (NewSkipExprType.Context.Tool=Self)
+      and (NewSkipExprType.Context.Tool.CaretToCleanPos(NewSkipPos, NewSkipCleanPos)=0)
+      and (IdentStartPos = GetIdentStartPosition(Src,NewSkipCleanPos))
+    then begin
+      // the old startpos and the skipclass startpos are the same -> we want to
+      // jump to the forward declaration because we jump from the actual one
+      Result := False;
+    end;
+
+    if Result then
+    begin
+      NewExprType := NewSkipExprType;
+      NewPos := NewSkipPos;
+      NewTopLine := NewSkipTopLine;
+    end;
+  end;
 
 var
   CleanPosInFront: integer;
@@ -2226,13 +2264,13 @@ begin
     SearchForward:=false;
     CheckIfCursorOnAForwardDefinedClass;
     CheckIfCursorInClassNode;
-    CheckIfCursorInTypeNode;
     CheckIfCursorInProcNode;
     CheckIfCursorInPropertyNode;
     // set cursor on identifier
     MoveCursorToCleanPos(CleanCursorPos);
     GetIdentStartEndAtPosition(Src,CleanCursorPos,
                                CurPos.StartPos,CurPos.EndPos);
+    IdentStartPos:=CurPos.StartPos;
     CursorAtIdentifier:=CurPos.StartPos<CurPos.EndPos;
     if CursorAtIdentifier then
       IdentifierStart:=@Src[CurPos.StartPos]
@@ -2255,6 +2293,8 @@ begin
             debugln(['TFindDeclarationTool.FindDeclaration FindDeclarationOfIdentAtParam failed']);
           end;
           {$ENDIF}
+          if Result and TrySkipClassForward then
+            Exit(True);
         end else begin
           Include(Params.Flags,fdfIgnoreCurContextNode);
           if SearchForward then
@@ -2263,6 +2303,9 @@ begin
           Result:=FindIdentifierInContext(Params);
           if Result then
           begin
+            if TrySkipClassForward then
+              Exit(True);
+
             NewExprType.Desc:=xtContext;
             NewExprType.Context.Node:=Params.NewNode;
             NewExprType.Context.Tool:=Params.NewCodeTool;
@@ -2902,8 +2945,7 @@ begin
       CurPos.StartPos:=-1;
     end else begin
       CurPos.StartPos:=-1;
-      ErrMsg:=Format(ctsNeededByMode, [CompilerModeNames[Scanner.CompilerMode]]
-        );
+      ErrMsg:=Format(ctsNeededByMode, [CompilerModeNames[Scanner.CompilerMode]]);
     end;
     if CompiledFilename<>'' then begin
       // there is a compiled unit, only the source was not found
@@ -3011,10 +3053,11 @@ function TFindDeclarationTool.GetSmartHint(Node: TCodeTreeNode;
     CTCursorPos: TCodeXYPosition;
   begin
     MoveToLastIdentifierThroughDots(ExtTool);
-    if ExtTool.CleanPosToCaret(ExtTool.CurPos.StartPos,CTCursorPos) and
-       ExtTool.FindDeclaration(CTCursorPos,
-         DefaultFindSmartHintFlags+[fsfSearchSourceName],CTExprType,CTXYPos,CTTopLine) and
-       not((CTExprType.Desc=xtContext) and (CTExprType.Context.Node=nil) and (CTExprType.Context.Tool=nil))
+    if ExtTool.CleanPosToCaret(ExtTool.CurPos.StartPos,CTCursorPos)
+    and ExtTool.FindDeclaration(CTCursorPos,
+         DefaultFindSmartHintFlags+[fsfSearchSourceName],CTExprType,CTXYPos,CTTopLine)
+    and not((CTExprType.Desc=xtContext) and (CTExprType.Context.Node=nil) and (CTExprType.Context.Tool=nil))
+    and not((CTExprType.Context.Tool=Self) and (CTXYPos.X=XYPos.X) and (CTXYPos.Y=XYPos.Y)) // prevent endless loop
     then
       Result := CTExprType.Context.Tool.GetSmartHint(CTExprType.Context.Node, CTXYPos, False, False)
     else
@@ -3108,7 +3151,7 @@ begin
               begin
                 if (Length(Result) > 0) and (Result[Length(Result)] = ';') then//delete last ";" from set
                   Delete(Result, Length(Result), 1);
-
+                ReadNextAtom;
                 SetStr := ProceedWithSmartHint(Self);
                 if (Length(SetStr) > 2) and (SetStr[2] = '=') then
                   SetStr := Copy(SetStr, 4, High(Integer));
@@ -3470,7 +3513,7 @@ function TFindDeclarationTool.FindIdentifierInContext(
   Params: TFindDeclarationParams; var IdentFoundResult: TIdentifierFoundResult
   ): boolean;
 { searches an identifier in context node
-  It does not care about code in front of the identifier like 'a.Identifer'.
+  It does not care about code in front of the identifier like 'a.Identifier'.
   
   Params:
     Identifier
@@ -3531,7 +3574,7 @@ var
     Result:=false;
     // the node cache is identifier based
     if ([fdfCollect,fdfExtractOperand]*Flags<>[]) then exit;
-    
+
     NodeCache:=GetNodeCache(ContextNode,false);
     if (NodeCache<>LastNodeCache) then begin
       // NodeCache changed -> search nearest cache entry for the identifier
@@ -9541,9 +9584,9 @@ begin
         end
         else if (CompareIdentifiers(IdentPos,'COPY')=0) then
         begin
-          if (ParamList.Count<>3) or (Scanner.Values.IsDefined('VER1_0')) then
+          if (ParamList.Count<1) or (ParamList.Count>3) or (Scanner.Values.IsDefined('VER1_0')) then
             exit;
-          Result.Desc:=xtString;
+          Result:=ParamList.Items[0]; // Copy sets the result based on the first parameter (can be any kind of string or array)
         end
         else if (CompareIdentifiers(IdentPos,'OBJCSELECTOR')=0) then
         begin

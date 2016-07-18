@@ -27,6 +27,7 @@ type
   TfrDesOptionsForm = class(TForm)
     ButtonPanel1: TButtonPanel;
     CheckBox1: TCheckBox;
+    CheckBox2: TCheckBox;
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
     GroupBox6: TGroupBox;
@@ -36,6 +37,7 @@ type
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
+    Label6: TLabel;
     PageControl1: TPageControl;
     RadioButton1: TRadioButton;
     RadioButton2: TRadioButton;

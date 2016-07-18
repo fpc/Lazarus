@@ -42,8 +42,9 @@ type
     FPropertyEditorHook: TPropertyEditorHook;
     FImageList: TImageList;
     function GetSelection: TPersistentSelectionList;
-    procedure SetPropertyEditorHook(const AValue: TPropertyEditorHook);
-    procedure SetSelection(const NewSelection: TPersistentSelectionList);
+    procedure SetPropertyEditorHook(AValue: TPropertyEditorHook);
+    procedure SetSelection(NewSelection: TPersistentSelectionList);
+    procedure UpdateSelected;
   protected
     procedure DoSelectionChanged; override;
     function GetImageFor(APersistent: TPersistent):integer;
@@ -202,7 +203,9 @@ begin
   else
     Root := AComponent.Owner;
 
-  if not ((Root is TControl) and (csOwnedChildrenNotSelectable in TControl(Root).ControlStyle)) then
+  if not ( (Root is TControl)
+       and (csOwnedChildrenNotSelectable in TControl(Root).ControlStyle) )
+  then
     TComponentAccessor(AComponent).GetChildren(@Walk, Root);
   FNode := OldNode;
   FNode.Expanded := True;
@@ -252,7 +255,7 @@ end;
   
 { TComponentTreeView }
 
-procedure TComponentTreeView.SetSelection(const NewSelection: TPersistentSelectionList);
+procedure TComponentTreeView.SetSelection(NewSelection: TPersistentSelectionList);
 begin
   if (PropertyEditorHook = nil) then
   begin
@@ -260,17 +263,22 @@ begin
       Exit;
     FComponentList.Clear;
   end
-  else
-  if not NewSelection.ForceUpdate
-    and FComponentList.IsEqual(PropertyEditorHook.LookupRoot, NewSelection) then
+  else if not NewSelection.ForceUpdate
+     and FComponentList.IsEqual(PropertyEditorHook.LookupRoot, NewSelection) then
   begin
     // nodes ok, but maybe node values need update
+    DebugLn('TComponentTreeView.SetSelection: Updating component node values.');
     UpdateComponentNodesValues;
     Exit;
   end;
   FComponentList.LookupRoot := PropertyEditorHook.LookupRoot;
   FComponentList.Selection.Assign(NewSelection);
-  RebuildComponentNodes;
+  if NewSelection.ForceUpdate then
+  begin
+    DebugLn('TComponentTreeView.SetSelection: Selection.ForceUpdate encountered.');
+    NewSelection.ForceUpdate:=false;
+  end;
+  UpdateSelected;
 end;
 
 procedure TComponentTreeView.DoSelectionChanged;
@@ -300,13 +308,7 @@ begin
     if NewSelection.IsEqual(FComponentList.Selection) then
       Exit;
     FComponentList.Selection.Assign(NewSelection);
-    if (NewSelection.Count=1) and
-       (NewSelection[0] is TCustomPage) and
-       (TCustomPage(NewSelection[0]).Parent is TCustomTabControl) then
-    begin
-      TCustomTabControl(TCustomPage(NewSelection[0]).Parent).PageIndex :=
-        TCustomPage(NewSelection[0]).PageIndex;
-    end;
+
     inherited DoSelectionChanged;
   finally
     NewSelection.Free;
@@ -565,12 +567,11 @@ begin
     OnComponentGetImageIndex(APersistent, Result);
 end;
 
-procedure TComponentTreeView.SetPropertyEditorHook(
-  const AValue: TPropertyEditorHook);
+procedure TComponentTreeView.SetPropertyEditorHook(AValue: TPropertyEditorHook);
 begin
   if FPropertyEditorHook=AValue then exit;
   FPropertyEditorHook:=AValue;
-  RebuildComponentNodes;
+  //RebuildComponentNodes;
 end;
 
 function TComponentTreeView.GetSelection: TPersistentSelectionList;
@@ -670,15 +671,12 @@ var
   end;
 
 var
-  OldExpanded: TTreeNodeExpandedState;
   RootNode: TTreeNode;
   Candidate: TComponentCandidate;
 begin
+  DebugLn('TComponentTreeView.RebuildComponentNodes: Updating TreeView with components');
   BeginUpdate;
-  // save old expanded state and clear
-  OldExpanded:=TTreeNodeExpandedState.Create(Self);
   Items.Clear;
-
   RootObject := nil;
   if PropertyEditorHook<>nil then
     RootObject := PropertyEditorHook.LookupRoot;
@@ -715,15 +713,12 @@ begin
 
     RootNode.Expand(true);
   end;
-
-  // restore old expanded state
-  OldExpanded.Apply(Self);
-  OldExpanded.Free;
   MakeSelectionVisible;
   EndUpdate;
 end;
 
 procedure TComponentTreeView.UpdateComponentNodesValues;
+// Could be optimised by adding a PropName parameter and searching a node by name.
 
   procedure UpdateComponentNode(ANode: TTreeNode);
   var
@@ -737,7 +732,29 @@ procedure TComponentTreeView.UpdateComponentNodesValues;
   end;
 
 begin
+  BeginUpdate;
   UpdateComponentNode(Items.GetFirstNode);
+  EndUpdate;
+end;
+
+procedure TComponentTreeView.UpdateSelected;
+
+  procedure UpdateComponentNode(ANode: TTreeNode);
+  var
+    APersistent: TPersistent;
+  begin
+    if ANode = nil then Exit;
+    APersistent := TPersistent(ANode.Data);
+    ANode.MultiSelected := Selection.IndexOf(APersistent) >= 0;
+    UpdateComponentNode(ANode.GetFirstChild);
+    UpdateComponentNode(ANode.GetNextSibling);
+  end;
+
+begin
+  BeginUpdate;
+  Selected := Nil;
+  UpdateComponentNode(Items.GetFirstNode);
+  EndUpdate;
 end;
 
 function TComponentTreeView.CreateNodeCaption(APersistent: TPersistent;

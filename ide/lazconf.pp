@@ -356,6 +356,7 @@ begin
       debugln(['WARNING: unable to copy config "',SecondaryFilename,'" to "',PrimaryFilename,'"']);
       exit;
     end;
+    InvalidateFileStateCache; // we have to invalidate cache in order FileExistsCached finds the new primary config file
   end;
 end;
 

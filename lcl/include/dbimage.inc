@@ -1,4 +1,4 @@
-{%MainUnit ../dbctrls.pas}
+{%MainUnit ../dbctrls.pp}
 {
  *****************************************************************************
   This file is part of the Lazarus Component Library (LCL)
@@ -284,4 +284,4 @@ begin
             (FDataLink <> nil) and FDataLink.UpdateAction(AAction);
 end;
 
-// included by dbctrls.pas
+// included by dbctrls.pp

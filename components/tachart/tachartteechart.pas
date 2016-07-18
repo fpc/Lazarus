@@ -172,7 +172,7 @@ function THorizBarSeries.AddXY(
   AX, AY: Double; AXLabel: String; AColor: TChartColor): Integer;
 begin
   Result := inherited AddXY(AY, AX, AXLabel, AColor);
-end;
+end{%H-};  // to silence the compiler warning of impossible inline of inherited method
 
 constructor THorizBarSeries.Create(AOwner: TComponent);
 begin

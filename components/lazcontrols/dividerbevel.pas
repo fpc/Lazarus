@@ -100,14 +100,7 @@ type
     property OnStartDrag;
 end;
 
-procedure Register;
-
 implementation
-
-procedure Register;
-begin
-  RegisterComponents('LazControls', [TDividerBevel]);
-end;
 
 { TDividerBevel }
 

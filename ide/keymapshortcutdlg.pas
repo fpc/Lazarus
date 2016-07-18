@@ -348,10 +348,10 @@ begin
       ConflictName:=ConflictRelation.GetCategoryAndName;
       if conflictType=ctConflictKeyA then
         ConflictName:=ConflictName
-                  +' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.ShortcutA)
+                  +' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.ShortcutA)+')'
       else
         ConflictName:=ConflictName
-                 +' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.ShortcutB);
+                 +' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.ShortcutB)+')';
       case IDEMessageDialog(lisPEConflictFound,
          Format(lisTheKeyIsAlreadyAssignedToRemoveTheOldAssignmentAnd,
                 [KeyAndShiftStateToEditorKeyString(Key),

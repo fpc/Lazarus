@@ -466,6 +466,14 @@ msgstr "Luo oletustapahtuma"
 msgid "Create new field and add it at current position"
 msgstr "Luo uusi kenttä ja lisää se nykyiseen kohtaan"
 
+#: objinspstrconsts.oiscurrentparent
+msgid "Current parent"
+msgstr ""
+
+#: objinspstrconsts.oiscurrentparents
+msgid "Current parents"
+msgstr ""
+
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
@@ -743,6 +751,14 @@ msgstr "&Valitse kaikki"
 msgid "Select All Fields"
 msgstr "Valitse kaikki kentät"
 
+#: objinspstrconsts.oisselectedcontrol
+msgid "Selected control"
+msgstr ""
+
+#: objinspstrconsts.oisselectedcontrols
+msgid "Selected controls"
+msgstr ""
+
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
 msgstr "&Valitut ominaisuudet"
@@ -778,6 +794,10 @@ msgstr "Aseta oletusarvo: %s"
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
 msgstr "Aseta ominaisuuden arvoksi oletus"
+
+#: objinspstrconsts.oisshowclasses
+msgid "Show classes"
+msgstr ""
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"

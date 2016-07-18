@@ -3,8 +3,8 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
   Height = 492
   Top = 0
   Width = 634
-  HorzScrollBar.Page = 634
-  VertScrollBar.Page = 492
+  HorzScrollBar.Page = 1
+  VertScrollBar.Page = 1
   AutoScroll = True
   ClientHeight = 492
   ClientWidth = 634
@@ -312,13 +312,13 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
   end
   object chkKWGroups: TCheckListBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = divKeyWordGroups
+    AnchorSideTop.Control = LanguageComboBox
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 185
-    Top = 301
+    Height = 156
+    Top = 330
     Width = 220
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
@@ -328,5 +328,35 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     OnExit = chkKWGroupsClickCheck
     OnKeyUp = chkKWGroupsKeyUp
     TabOrder = 8
+  end
+  object LanguageComboBox: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = divKeyWordGroups
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 301
+    Width = 200
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    ItemHeight = 15
+    OnChange = LanguageComboBoxChange
+    OnExit = LanguageComboBoxExit
+    OnKeyDown = LanguageComboBoxKeyDown
+    Style = csDropDownList
+    TabOrder = 9
+  end
+  object LanguageLabel: TLabel
+    AnchorSideLeft.Control = LanguageComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LanguageComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 212
+    Height = 15
+    Top = 305
+    Width = 80
+    BorderSpacing.Left = 6
+    Caption = 'LanguageLabel'
+    ParentColor = False
   end
 end

@@ -1,5 +1,11 @@
 {
+ **********************************************************************
+  This file is part of LazUtils.
   All functions are thread safe unless explicitely stated
+
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
+ **********************************************************************
 }
 unit LazFileUtils;
 
@@ -137,6 +143,11 @@ function ExtractFileRoot(FileName: String): String;
 {$IFDEF darwin}
 function GetDarwinSystemFilename(Filename: string): string;
 function GetDarwinNormalizedFilename(Filename: string; nForm:Integer=2): string;
+{$ENDIF}
+
+// windows paths
+{$IFDEF windows}
+function SHGetFolderPathUTF8(ID :  Integer) : String;
 {$ENDIF}
 
 procedure SplitCmdLineParams(const Params: string; ParamList: TStrings;
@@ -728,10 +739,9 @@ function ChompPathDelim(const Path: string): string;
 var
   Len, MinLen: Integer;
 begin
+  Result:=Path;
   if Path = '' then
     exit;
-
-  Result:=Path;
   Len:=length(Result);
   if (Result[1] in AllowDirectorySeparators) then begin
     MinLen := 1;

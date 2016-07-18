@@ -28,7 +28,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Graphics, GraphType, ImgList, Menus, Forms,
+  LCLType, Graphics, GraphType, ImgList, Menus, Forms,
 ////////////////////////////////////////////////////
   WSMenus, WSLCLClasses, WSProc,
   Windows, Controls, Classes, SysUtils, Win32Int, Win32Proc, Win32WSImgList,
@@ -79,6 +79,7 @@ type
   function FindMenuItemAccelerator(const ACharCode: word; const AMenuHandle: HMENU): integer;
   procedure DrawMenuItemIcon(const AMenuItem: TMenuItem; const AHDC: HDC;
     const ImageRect: TRect; const ASelected: Boolean);
+  function ItemStateToDrawState(const ItemState: UINT): LCLType.TOwnerDrawState;
 
 implementation
 
@@ -486,6 +487,58 @@ begin
   Result.cx := Result.cx + Metrics.TextMargins.cxLeftWidth + Metrics.TextMargins.cxRightWidth;
 end;
 
+function ClassicMenuItemSize(AMenuItem: TMenuItem; ADC: HDC): TSize;
+var
+  LeftSpace, RightSpace: Integer;
+  oldFont: HFONT;
+  newFont: HFONT;
+  AvgCharSize: TSize;
+begin
+  if AMenuItem.Default then
+    newFont := GetMenuItemFont([cfBold])
+  else
+    newFont := GetMenuItemFont([]);
+  oldFont := SelectObject(ADC, newFont);
+  AvgCharSize := GetAverageCharSize(ADC);
+
+  Result := StringSize(CompleteMenuItemCaption(AMenuItem, EmptyStr), ADC);
+
+  // Space between text and shortcut.
+  if AMenuItem.ShortCut <> scNone then
+    inc(Result.cx, AvgCharSize.cx);
+
+  GetNonTextSpace(AMenuItem, AvgCharSize.cx, LeftSpace, RightSpace);
+  inc(Result.cx, LeftSpace + RightSpace);
+
+  // Windows adds additional space to value returned from WM_MEASUREITEM
+  // for owner drawn menus. This is to negate that.
+  Dec(Result.cx, AvgCharSize.cx * 2);
+
+  // As for height of items in menu bar, regardless of what is set here,
+  // Windows seems to always use SM_CYMENUSIZE (space for a border is included).
+
+  if AMenuItem.IsLine then
+    Result.cy := GetSystemMetrics(SM_CYMENUSIZE) div 2 // it is a separator
+  else
+  begin
+    if AMenuItem.IsInMenuBar then
+    begin
+      Result.cy := Max(Result.cy, GetSystemMetrics(SM_CYMENUSIZE));
+      if AMenuItem.hasIcon then
+        Result.cy := Max(Result.cy, aMenuItem.GetIconSize.y);
+    end
+    else
+    begin
+      Result.cy := Max(Result.cy + 2, AvgCharSize.cy + 4);
+      if AMenuItem.hasIcon then
+        Result.cy := Max(Result.cy, aMenuItem.GetIconSize.y + 2);
+    end;
+  end;
+
+  SelectObject(ADC, oldFont);
+  DeleteObject(newFont);
+end;
+
 procedure ThemeDrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); inline;
 begin
   with Details do
@@ -785,63 +838,36 @@ end;
 
 function MenuItemSize(AMenuItem: TMenuItem; AHDC: HDC): TSize;
 var
-  LeftSpace, RightSpace: Integer;
-  oldFont: HFONT;
-  newFont: HFONT;
-  AvgCharSize: TSize;
+  CC: TControlCanvas;
+  ParentMenu: TMenu;
 begin
+  ParentMenu := AMenuItem.GetParentMenu;
+  if (ParentMenu<>nil) and ParentMenu.OwnerDraw
+  and (Assigned(ParentMenu.OnMeasureItem) or Assigned(AMenuItem.OnMeasureItem)) then
+  begin
+    CC := TControlCanvas.Create;
+    try
+      CC.Handle := AHDC;
+      Result.cx := 0;
+      Result.cy := 0;
+      if Assigned(AMenuItem.OnMeasureItem) then
+        AMenuItem.OnMeasureItem(AMenuItem, CC, Result.cx, Result.cy)
+      else if Assigned(ParentMenu.OnMeasureItem) then
+        ParentMenu.OnMeasureItem(AMenuItem, CC, Result.cx, Result.cy);
+    finally
+      CC.Free;
+    end;
+  end
+  else
   if IsVistaMenu then
   begin
     if AMenuItem.IsInMenuBar then
       Result := VistaBarMenuItemSize(AMenuItem, AHDC)
     else
       Result := VistaPopupMenuItemSize(AMenuItem, AHDC);
-    Exit;
-  end;
-
-  if AMenuItem.Default then
-    newFont := GetMenuItemFont([cfBold])
+  end
   else
-    newFont := GetMenuItemFont([]);
-  oldFont := SelectObject(aHDC, newFont);
-  AvgCharSize := GetAverageCharSize(AHDC);
-
-  Result := StringSize(CompleteMenuItemCaption(AMenuItem, EmptyStr), AHDC);
-
-  // Space between text and shortcut.
-  if AMenuItem.ShortCut <> scNone then
-    inc(Result.cx, AvgCharSize.cx);
-
-  GetNonTextSpace(AMenuItem, AvgCharSize.cx, LeftSpace, RightSpace);
-  inc(Result.cx, LeftSpace + RightSpace);
-
-  // Windows adds additional space to value returned from WM_MEASUREITEM
-  // for owner drawn menus. This is to negate that.
-  Dec(Result.cx, AvgCharSize.cx * 2);
-
-  // As for height of items in menu bar, regardless of what is set here,
-  // Windows seems to always use SM_CYMENUSIZE (space for a border is included).
-
-  if AMenuItem.IsLine then
-    Result.cy := GetSystemMetrics(SM_CYMENUSIZE) div 2 // it is a separator
-  else
-  begin
-    if AMenuItem.IsInMenuBar then
-    begin
-      Result.cy := Max(Result.cy, GetSystemMetrics(SM_CYMENUSIZE));
-      if AMenuItem.hasIcon then
-        Result.cy := Max(Result.cy, aMenuItem.GetIconSize.y);
-    end
-    else
-    begin
-      Result.cy := Max(Result.cy + 2, AvgCharSize.cy + 4);
-      if AMenuItem.hasIcon then
-        Result.cy := Max(Result.cy, aMenuItem.GetIconSize.y + 2);
-    end;
-  end;
-
-  SelectObject(aHDC, oldFont);
-  DeleteObject(newFont);
+    Result := ClassicMenuItemSize(AMenuItem, AHDC);
 end;
 
 function IsFlatMenus: Boolean; inline;
@@ -1084,6 +1110,33 @@ begin
     AImageList.Free;
 end;
 
+function ItemStateToDrawState(const ItemState: UINT): LCLType.TOwnerDrawState;
+begin
+  Result := [];
+  if ItemState and ODS_SELECTED <> 0 then
+    Include(Result, LCLType.odSelected);
+  if ItemState and ODS_GRAYED <> 0 then
+    Include(Result, LCLType.odGrayed);
+  if ItemState and ODS_DISABLED <> 0 then
+    Include(Result, LCLType.odDisabled);
+  if ItemState and ODS_CHECKED <> 0 then
+    Include(Result, LCLType.odChecked);
+  if ItemState and ODS_FOCUS <> 0 then
+    Include(Result, LCLType.odFocused);
+  if ItemState and ODS_DEFAULT <> 0 then
+    Include(Result, LCLType.odDefault);
+  if ItemState and ODS_HOTLIGHT <> 0 then
+    Include(Result, LCLType.odHotLight);
+  if ItemState and ODS_INACTIVE <> 0 then
+    Include(Result, LCLType.odInactive);
+  if ItemState and ODS_NOACCEL <> 0 then
+    Include(Result, LCLType.odNoAccel);
+  if ItemState and ODS_NOFOCUSRECT <> 0 then
+    Include(Result, LCLType.odNoFocusRect);
+  if ItemState and ODS_COMBOBOXEDIT <> 0 then
+    Include(Result, LCLType.odComboBoxEdit);
+end;
+
 procedure DrawClassicMenuItemIcon(const AMenuItem: TMenuItem; const AHDC: HDC;
   const ARect: TRect; const ASelected, AChecked: boolean);
 var
@@ -1161,6 +1214,9 @@ procedure DrawMenuItem(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect:
 var
   ASelected, ANoAccel: Boolean;
   B: Bool;
+  ParentMenu: TMenu;
+  CC: TControlCanvas;
+  ItemDrawState: LCLType.TOwnerDrawState;
 begin
   ASelected := (ItemState and ODS_SELECTED) <> 0;
   ANoAccel := (ItemState and ODS_NOACCEL) <> 0;
@@ -1170,6 +1226,24 @@ begin
     else
   else
     ANoAccel := False;
+
+  ParentMenu := AMenuItem.GetParentMenu;
+  if (ParentMenu<>nil) and ParentMenu.OwnerDraw
+  and (Assigned(ParentMenu.OnDrawItem) or Assigned(AMenuItem.OnDrawItem)) then
+  begin
+    CC := TControlCanvas.Create;
+    try
+      CC.Handle := AHDC;
+      ItemDrawState := ItemStateToDrawState(ItemState);
+      if Assigned(AMenuItem.OnDrawItem) then
+        AMenuItem.OnDrawItem(AMenuItem, CC, ARect, ItemDrawState)
+      else if Assigned(ParentMenu.OnDrawItem) then
+        ParentMenu.OnDrawItem(AMenuItem, CC, ARect, ItemDrawState);
+    finally
+      CC.Free;
+    end;
+  end
+  else
   if IsVistaMenu then
   begin
     if AMenuItem.IsInMenuBar then
@@ -1364,6 +1438,8 @@ begin
     else
       if AMenuItem.RightJustify then
         fType := fType or MFT_RIGHTJUSTIFY;
+    if AMenuItem.Default then
+      fState := fState or MFS_DEFAULT;
   end;
   CallMenuRes := InsertMenuItemW(ParentMenuHandle, AMenuItem.Parent.VisibleIndexOf(AMenuItem), True, @MenuInfo);
   if not CallMenuRes then
@@ -1489,7 +1565,7 @@ end;
 class procedure TWin32WSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
 var
   MenuHandle: HMENU;
-  AppHandle: HWND;
+  WinHandle: HWND;
 const
   lAlignment: array[TPopupAlignment, Boolean] of DWORD = (
               { left-to-rght } { right-to-left }
@@ -1503,11 +1579,13 @@ const
   );
 begin
   MenuHandle := APopupMenu.Handle;
-  AppHandle := Win32WidgetSet.AppHandle;
-  GetWin32WindowInfo(AppHandle)^.PopupMenu := APopupMenu;
+  WinHandle:=Win32WidgetSet.AppHandle;
+  if (WinHandle=0) and (Screen.ActiveCustomForm<>nil) and Screen.ActiveCustomForm.HandleAllocated then
+    WinHandle:=Screen.ActiveCustomForm.Handle;
+  GetWin32WindowInfo(WinHandle)^.PopupMenu := APopupMenu;
   TrackPopupMenuEx(MenuHandle,
     lAlignment[APopupMenu.Alignment, APopupMenu.IsRightToLeft] or lTrackButtons[APopupMenu.TrackButton],
-    X, Y, AppHandle, nil);
+    X, Y, WinHandle, nil);
 end;
 
 end.

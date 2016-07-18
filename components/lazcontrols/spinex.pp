@@ -118,7 +118,7 @@ type
   protected
     function GetBuddyClassType: TControlClass; override;
     procedure DoEnter; override;
-    function GetText: TCaption; override;
+    function RealGetText: TCaption; override;
     procedure Reset; override;
     procedure EditChange; override;
     procedure EditKeyDown(var Key: word; Shift: TShiftState); override;
@@ -356,14 +356,7 @@ type
 
 function DbgS(ANvb: TNullValueBehaviour): String; overload;
 
-procedure Register;
-
 implementation
-
-procedure Register;
-begin
-  RegisterComponents('LazControls', [TSpinEditEx, TFloatSpinEditEx]);
-end;
 
 {$I spinex.inc}
 

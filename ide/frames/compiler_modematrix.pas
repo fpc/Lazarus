@@ -61,11 +61,11 @@ type
     BMMNewOutDirMenuItem: TMenuItem;
     MoveSepToolButton: TToolButton;
     DoSepToolButton: TToolButton;
-    SystemEncodingSepToolButton: TToolButton;
+    AddSepToolButton: TToolButton;
     BMMAddLclWidgetButton: TToolButton;
     LCLMacroSepToolButton: TToolButton;
     BMMSystemEncodingButton: TToolButton;
-    AddOtherSepToolButton: TToolButton;
+    DeleteSepToolButton: TToolButton;
     procedure BMMDeleteButtonClick(Sender: TObject);
     procedure BMMMoveDownButtonClick(Sender: TObject);
     procedure BMMMoveUpButtonClick(Sender: TObject);
