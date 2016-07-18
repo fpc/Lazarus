@@ -1116,6 +1116,7 @@ begin
   Result := Windows.DrawTextW(DC, PWideChar(W), len, @Rect, Flags);
   if (Flags and DT_MODIFYSTRING <> 0) then
   begin
+    W := WideString(PWideChar(W)); // trim to first #0
     s := UTF16ToUTF8(W);
     if s<>'' then
       Move(s[1], Str^, Length(s)+1) // the programmer has to make sure there's enough space in Str
