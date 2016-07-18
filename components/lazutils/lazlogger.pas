@@ -30,7 +30,7 @@ function DbgWideStr(const StringWithSpecialChars: widestring): string; overload;
 
 function ConvertLineEndings(const s: string): string;
 procedure ReplaceSubstring(var s: string; StartPos, Count: SizeInt;
-                           const Insertion: string); inline; deprecated;
+                           const Insertion: string); inline; deprecated 'use LazUTF8.ReplaceSubstring instead';
 
 type
 
