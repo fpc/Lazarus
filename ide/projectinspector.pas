@@ -63,7 +63,7 @@ uses
   PackageIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, DialogProcs, IDEOptionDefs, EnvironmentOpts,
-  PackageDefs, Project, MainIntf, PackageEditor, AddToProjectDlg, InputHistory;
+  PackageDefs, Project, PackageEditor, AddToProjectDlg, InputHistory;
   
 type
   TOnAddUnitToProject =

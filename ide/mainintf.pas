@@ -68,7 +68,7 @@ uses
   FileUtil, LazFileUtils,
   // IDEIntf
   PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, ProjectIntf,
-  CompOptsIntf, LazIDEIntf, IDEDialogs, IDEWindowIntf,
+  CompOptsIntf, LazIDEIntf, IDEWindowIntf,
   // IDE
   LazConf, LazarusIDEStrConsts, ProjectDefs, Project, PublishModule, BuildLazDialog,
   TransferMacros, ProgressDlg, EnvironmentOpts, EditorOptions, CompilerOptions,
