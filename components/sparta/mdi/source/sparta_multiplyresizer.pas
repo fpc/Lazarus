@@ -37,6 +37,8 @@ type
   protected
     // only allow to set prevously added DesignedForms by AddDesignedForm
     //procedure SetDesignedForm(const AValue: IDesignedForm); override;
+
+    procedure RemoveFormEvent(Sender: TObject; Form: TCustomForm);
   protected { IResizer }
     //procedure TryBoundSizerToDesignedForm(Sender: TObject); override;
     function GetActiveResizeFrame: IResizeFrame; override;
@@ -123,6 +125,17 @@ begin
   end;
 end;
 
+procedure TMultiplyResizer.RemoveFormEvent(Sender: TObject; Form: TCustomForm);
+var
+  LForm: IDesignedForm;
+begin
+  if Supports(Form, IDesignedForm, LForm) then
+  begin
+    FFormsStack.Remove(LForm);
+    FForms.Remove(LForm);
+  end;
+end;
+
 function TMultiplyResizer.GetActiveResizeFrame: IResizeFrame;
 var
   LForm: IDesignedForm; 
@@ -185,6 +198,10 @@ begin
   LResizerRec := TResizerRec.Create(LFrame);
   FForms.Add(AForm, LResizerRec);
   LResizerRec.Idx := FFormsStack.Add(AForm);
+
+  // when form is removed we need to remove all handlers located in FFormsStack
+  // and FForms
+  Screen.AddHandlerRemoveForm(RemoveFormEvent);
 end;
 
 end.
