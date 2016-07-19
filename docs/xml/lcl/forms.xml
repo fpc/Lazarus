@@ -5841,6 +5841,8 @@
       <notes><note>?</note><note>application/taskbar window?</note><note>purpose?</note><note>what's the purpose for *not* returning MainForm.Handle???</note>
         </notes>
       </element>
+      <element name="TApplicationHandlerType.ahtExceptionCircle"><short>Handler invoked when there is an exception circle before killing the app with Halt</short>
+      </element>
 <!-- pointer type Visibility: default -->
       <element name="PAsyncCallQueueItem" link="TAsyncCallQueueItem">
         <short>A queued asynchronous callback request node.</short>
@@ -9316,6 +9318,14 @@ Before 0.9.31 there was no exception. Therefore some resourceless forms might us
         <descr/>
         <errors/>
         <seealso/>
+      </element>
+      <element name="TApplication.OnExceptionCircle"><short>Handler invoked when there is an exception circle before killing the app with Halt</short>
+      </element>
+      <element name="TApplication.AddOnExceptionCircleHandler"><short>Adds an application exception circle handler.</short><seealso><link id="TApplicationHandlerType.ahtExceptionCircle"/>
+        </seealso>
+      </element>
+      <element name="TApplication.RemoveOnExceptionCircleHandler"><short>Removes an application exception circle handler.</short><seealso><link id="TApplicationHandlerType.ahtExceptionCircle"/>
+        </seealso>
       </element>
     </module>
     <!-- Forms -->

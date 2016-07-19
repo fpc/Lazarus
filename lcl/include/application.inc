@@ -1194,6 +1194,16 @@ begin
     // there was an exception during showing the exception -> break the circle
     DebugLn('TApplication.HandleException: ',
       'there was another exception during showing the first exception');
+
+    if (ExceptObject is Exception) then
+    begin
+      if Assigned(OnExceptionCircle) then
+        OnExceptionCircle(Sender, Exception(ExceptObject));
+      i := FApplicationHandlers[ahtExceptionCircle].Count;
+      while FApplicationHandlers[ahtException].NextDownIndex(i) do
+        TExceptionEvent(FApplicationHandlers[ahtExceptionCircle][i])(Sender, Exception(ExceptObject));
+    end;
+
     HaltingProgram:=true;
     DumpExceptionBackTrace;
     Halt;
@@ -1803,9 +1813,20 @@ begin
   AddHandler(ahtEndSession,TMethod(Handler),AsFirst);
 end;
 
+procedure TApplication.AddOnExceptionCircleHandler(Handler: TExceptionEvent;
+  AsFirst: Boolean);
+begin
+  AddHandler(ahtExceptionCircle,TMethod(Handler),AsFirst);
+end;
+
 procedure TApplication.RemoveOnEndSessionHandler(Handler: TNotifyEvent);
 begin
   RemoveHandler(ahtEndSession,TMethod(Handler));
+end;
+
+procedure TApplication.RemoveOnExceptionCircleHandler(Handler: TExceptionEvent);
+begin
+  RemoveHandler(ahtExceptionCircle,TMethod(Handler));
 end;
 
 procedure TApplication.AddOnQueryEndSessionHandler(
