@@ -561,7 +561,7 @@ type
     procedure EndUpdate;
     property FontData: TFontData read GetData write SetData;
     function HandleAllocated: boolean;
-    property Handle: HFONT read GetHandle write SetHandle; deprecated 'use Reference.Handle instead';
+    property Handle: HFONT read GetHandle write SetHandle;
     function IsDefault: boolean;
     function IsEqual(AFont: TFont): boolean; virtual;
     property IsMonoSpace: boolean read GetIsMonoSpace;
