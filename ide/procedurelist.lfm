@@ -8,11 +8,12 @@ object ProcedureListForm: TProcedureListForm
   ClientHeight = 688
   ClientWidth = 952
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnKeyPress = FormKeyPress
   OnResize = FormResize
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.7'
   object StatusBar: TStatusBar
     Left = 0
     Height = 23
@@ -34,11 +35,11 @@ object ProcedureListForm: TProcedureListForm
     Width = 952
     Caption = 'TB'
     EdgeBorders = []
-    TabOrder = 1
+    TabOrder = 0
     object tbAbout: TToolButton
       Left = 136
       Hint = 'About'
-      Top = 2
+      Top = 0
       Caption = 'tbAbout'
       ImageIndex = 9
       OnClick = tbAboutClick
@@ -48,7 +49,7 @@ object ProcedureListForm: TProcedureListForm
     object ToolButton2: TToolButton
       Left = 131
       Height = 22
-      Top = 2
+      Top = 0
       Width = 5
       Caption = 'ToolButton2'
       Style = tbsDivider
@@ -56,17 +57,17 @@ object ProcedureListForm: TProcedureListForm
     object tbJumpTo: TToolButton
       Left = 108
       Hint = 'Jump To Selection'
-      Top = 2
+      Top = 0
       Caption = 'Goto'
       ImageIndex = 5
-      OnClick = LVDblClick
+      OnClick = SGDblClick
       ParentShowHint = False
       ShowHint = True
     end
     object ToolButton4: TToolButton
       Left = 103
       Height = 22
-      Top = 2
+      Top = 0
       Width = 5
       Caption = 'ToolButton4'
       Style = tbsDivider
@@ -74,7 +75,7 @@ object ProcedureListForm: TProcedureListForm
     object tbFilterAny: TToolButton
       Left = 80
       Hint = 'Filter by matching any part of method'
-      Top = 2
+      Top = 0
       Caption = 'tbFilterAny'
       Down = True
       Grouped = True
@@ -86,7 +87,7 @@ object ProcedureListForm: TProcedureListForm
     object tbFilterStart: TToolButton
       Left = 57
       Hint = 'Filter by matching with start of method'
-      Top = 2
+      Top = 0
       Caption = 'tbFilterStart'
       Grouped = True
       ImageIndex = 7
@@ -97,7 +98,7 @@ object ProcedureListForm: TProcedureListForm
     object ToolButton7: TToolButton
       Left = 52
       Height = 22
-      Top = 2
+      Top = 0
       Width = 5
       Caption = 'ToolButton7'
       Style = tbsDivider
@@ -106,10 +107,9 @@ object ProcedureListForm: TProcedureListForm
     object tbChangeFont: TToolButton
       Left = 29
       Hint = 'Change Font'
-      Top = 2
+      Top = 0
       Caption = 'tbChangeFont'
       ImageIndex = 4
-      OnClick = tbChangeFontClick
       ParentShowHint = False
       ShowHint = True
       Visible = False
@@ -117,7 +117,7 @@ object ProcedureListForm: TProcedureListForm
     object ToolButton9: TToolButton
       Left = 24
       Height = 22
-      Top = 2
+      Top = 0
       Width = 5
       Caption = 'ToolButton9'
       Style = tbsDivider
@@ -125,7 +125,7 @@ object ProcedureListForm: TProcedureListForm
     object tbCopy: TToolButton
       Left = 1
       Hint = 'Copy method name to the clipboard'
-      Top = 2
+      Top = 0
       Caption = 'tbCopy'
       ImageIndex = 6
       OnClick = tbCopyClick
@@ -135,23 +135,23 @@ object ProcedureListForm: TProcedureListForm
   end
   object pnlHeader: TPanel
     Left = 0
-    Height = 35
+    Height = 44
     Top = 26
     Width = 952
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 35
+    ClientHeight = 44
     ClientWidth = 952
     ParentColor = False
-    TabOrder = 2
+    TabOrder = 1
     object lblSearch: TLabel
       AnchorSideTop.Control = pnlHeader
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 15
-      Top = 10
-      Width = 35
+      Height = 18
+      Top = 13
+      Width = 42
       BorderSpacing.Around = 6
       Caption = '&Search'
       ParentColor = False
@@ -161,10 +161,10 @@ object ProcedureListForm: TProcedureListForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = pnlHeader
       AnchorSideTop.Side = asrCenter
-      Left = 581
-      Height = 15
-      Top = 10
-      Width = 40
+      Left = 610
+      Height = 18
+      Top = 13
+      Width = 46
       BorderSpacing.Left = 12
       BorderSpacing.Around = 6
       Caption = '&Objects'
@@ -177,10 +177,10 @@ object ProcedureListForm: TProcedureListForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = cbObjects
       AnchorSideBottom.Side = asrBottom
-      Left = 47
-      Height = 23
+      Left = 54
+      Height = 32
       Top = 6
-      Width = 516
+      Width = 538
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -196,53 +196,46 @@ object ProcedureListForm: TProcedureListForm
       AnchorSideTop.Control = pnlHeader
       AnchorSideRight.Control = pnlHeader
       AnchorSideRight.Side = asrBottom
-      Left = 627
-      Height = 23
+      Left = 662
+      Height = 32
       Top = 6
-      Width = 319
+      Width = 284
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
-      ItemHeight = 15
+      ItemHeight = 18
       OnChange = cbObjectsChange
       Sorted = True
       Style = csDropDownList
       TabOrder = 1
     end
   end
-  object LV: TListView
+  object SG: TStringGrid
     Left = 0
-    Height = 604
-    Top = 61
+    Height = 607
+    Top = 58
     Width = 952
-    Align = alClient
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ColCount = 4
     Columns = <    
       item
+        Title.Caption = ''
+        Width = 24
       end    
       item
-        Caption = 'Procedure'
-        Width = 300
+        Title.Caption = 'Procedure'
+        Width = 200
       end    
       item
-        Caption = 'Type'
+        Title.Caption = 'Type'
       end    
       item
-        Caption = 'Line'
-        Width = 238
+        Title.Caption = 'Line'
       end>
-    HideSelection = False
-    Items.LazData = {
-      4C0000000100000000000000FFFFFFFFFFFFFFFF03000000000000000E000000
-      54466F726D2E54657374466F75720800000046756E6374696F6E020000003234
-      FFFFFFFFFFFFFFFFFFFFFFFF
-    }
-    ReadOnly = True
-    RowSelect = True
-    ScrollBars = ssAutoBoth
-    SortType = stText
-    TabOrder = 0
-    ViewStyle = vsReport
-    OnDblClick = LVDblClick
-    OnKeyPress = edMethodsKeyPress
-    OnSelectItem = LVSelectItem
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect, goThumbTracking, goSmoothScroll, goCellEllipsis]
+    TabOrder = 3
+    OnDblClick = SGDblClick
+    OnDrawCell = SGDrawCell
+    OnSelectCell = SGSelectCell
   end
 end

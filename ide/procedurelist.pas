@@ -39,21 +39,37 @@ interface
 
 uses
   Classes, SysUtils,
+  // LCL
   LCLType, Forms, Controls, Dialogs, ComCtrls, ExtCtrls, StdCtrls, Clipbrd,
+  Graphics, Grids,
+  // Codetools
   CodeTree, CodeToolManager, CodeCache, PascalParserTool, KeywordFuncLists,
+  // IDEIntf
   LazIDEIntf, IDEImagesIntf, SrcEditorIntf,
+  // IDE
   LazarusIDEStrConsts;
 
 type
+
+  { TGridRowObject }
+
+  TGridRowObject = class
+  public
+    ImageIdx: Integer;
+    NodeStartPos: Integer;
+    FullProcedureName: string;
+    constructor Create;
+  end;
+
   { TProcedureListForm }
   TProcedureListForm = class(TForm)
     cbObjects: TComboBox;
     edMethods: TEdit;
     lblObjects: TLabel;
     lblSearch: TLabel;
-    LV: TListView;
     pnlHeader: TPanel;
     StatusBar: TStatusBar;
+    SG: TStringGrid;
     TB: TToolBar;
     tbAbout: TToolButton;
     tbCopy: TToolButton;
@@ -71,13 +87,16 @@ type
       {%H-}Shift: TShiftState);
     procedure edMethodsKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: char);
     procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure LVDblClick(Sender: TObject);
-    procedure LVSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
+    procedure SGDblClick(Sender: TObject);
+    procedure SGDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect;
+      aState: TGridDrawState);
+    procedure SGSelectCell(Sender: TObject; aCol, aRow: Integer;
+      var CanSelect: Boolean);
     procedure tbAboutClick(Sender: TObject);
-    procedure tbChangeFontClick(Sender: TObject);
     procedure tbCopyClick(Sender: TObject);
   private
     FCaret: TCodeXYPosition;
@@ -90,11 +109,12 @@ type
     { Move editors focus to selected method. }
     procedure JumpToSelection;
     { Populates Listview based on selected Class and user entered filter. }
-    procedure PopulateListview;
+    procedure PopulateGrid;
     { Populates only tho cbObjects combo with available classes. }
     procedure PopulateObjectsCombo;
-    procedure AddToListView(pCodeTool: TCodeTool; pNode: TCodeTreeNode);
+    procedure AddToGrid(pCodeTool: TCodeTool; pNode: TCodeTreeNode);
     function  PassFilter(pSearchAll: boolean; pProcName, pSearchStr: string; pCodeTool: TCodeTool; pNode: TCodeTreeNode): boolean;
+    procedure ClearGrid;
   public
     property MainFilename: string read FMainFilename;
     property Caret: TCodeXYPosition read FCaret;
@@ -109,6 +129,10 @@ implementation
 {$R *.lfm}
 
 const
+  SG_COLIDX_IMAGE = 0;
+  SG_COLIDX_PROCEDURE = 1;
+  SG_COLIDX_TYPE = 2;
+  SG_COLIDX_LINE = 3;
   cAbout =
     'Procedure List (Lazarus addon)' + #10#10 +
     'Author: Graeme Geldenhuys  (graemeg@gmail.com)' + #10 +
@@ -221,6 +245,15 @@ begin
   end;
 end;
 
+{ TGridRowObject }
+
+constructor TGridRowObject.Create;
+begin
+  ImageIdx := -1;
+  NodeStartPos := -1;
+  FullProcedureName := '';
+end;
+
 
 { TProcedureListForm }
 
@@ -235,22 +268,51 @@ begin
   edMethods.SetFocus;
 end;
 
-
-procedure TProcedureListForm.LVDblClick(Sender: TObject);
+procedure TProcedureListForm.SGDblClick(Sender: TObject);
 begin
   JumpToSelection;
 end;
 
-
-procedure TProcedureListForm.LVSelectItem(Sender: TObject; Item: TListItem;
-  Selected: Boolean);
+procedure TProcedureListForm.SGDrawCell(Sender: TObject; aCol, aRow: Integer;
+  aRect: TRect; aState: TGridDrawState);
+var
+  bmp: TBitmap;
+  grid: TStringGrid;
+  iconTop, imageIdx: Integer;
+  rowObj: TGridRowObject;
 begin
-  if Item = nil then
-    Exit; //==>
-  if Item.SubItems.Count < 4 then
-    Exit; //==>
-  if Selected then
-    StatusBar.Panels[0].Text := Item.SubItems[4];
+  grid := TStringGrid(Sender);
+
+  if (aCol = 0) and (aRow >= grid.FixedRows) then
+  begin
+    rowObj := TGridRowObject(grid.Rows[aRow].Objects[0]);
+    if Assigned(rowObj) then
+    begin
+      imageIdx := rowObj.ImageIdx;
+
+      bmp := TBitmap.Create;
+      try
+        IDEImages.Images_16.GetBitmap(imageIdx, bmp);
+        iconTop := ((aRect.Bottom - aRect.Top) - bmp.Height) div 2 + aRect.Top;
+        grid.Canvas.Draw(aRect.Left,iconTop, bmp);
+      finally
+        bmp.Free;
+      end;
+    end;
+  end;
+end;
+
+procedure TProcedureListForm.SGSelectCell(Sender: TObject; aCol, aRow: Integer;
+  var CanSelect: Boolean);
+var
+  rowObject: TGridRowObject;
+begin
+  rowObject := TGridRowObject(TStringGrid(Sender).Rows[aRow].Objects[0]);
+
+  if Assigned(rowObject) then
+  begin
+    StatusBar.Panels[0].Text := rowObject.FullProcedureName;
+  end;
 end;
 
 
@@ -259,16 +321,10 @@ begin
   ShowMessage(cAbout);
 end;
 
-procedure TProcedureListForm.tbChangeFontClick(Sender: TObject);
-begin
-
-end;
-
-
 procedure TProcedureListForm.tbCopyClick(Sender: TObject);
 begin
-  if Assigned(LV.Selected) then
-    Clipboard.AsText := LV.Selected.SubItems[0];
+  if SG.Row > 0 then
+    Clipboard.AsText := SG.Cells[SG_COLIDX_PROCEDURE,SG.Row];
 end;
 
 
@@ -287,9 +343,9 @@ begin
   tbFilterStart.Hint    := lisPListFilterStart;
   tbChangeFont.Hint     := lisPListChangeFont;
   tbCopy.Hint           := lisPListCopyMethodToClipboard;
-  LV.Column[1].Caption  := lisProcedure;
-  LV.Column[2].Caption  := lisPListType;
-  LV.Column[3].Caption  := dlgAddHiAttrGroupLine;
+  SG.Columns[SG_COLIDX_PROCEDURE].Title.Caption   := lisProcedure;
+  SG.Columns[SG_COLIDX_TYPE].Title.Caption   := lisPListType;
+  SG.Columns[SG_COLIDX_LINE].Title.Caption   := dlgAddHiAttrGroupLine;
   
   // assign resource images to toolbuttons
   TB.Images := IDEImages.Images_16;
@@ -300,18 +356,10 @@ begin
   tbFilterAny.ImageIndex   := IDEImages.LoadImage(16, 'item_filter');
   tbFilterStart.ImageIndex := IDEImages.LoadImage(16, 'item_filter');
 
-  LV.SmallImages      := IDEImages.Images_16;
-  LV.Column[0].Width  := 20;
-  LV.Column[1].Width  := 300;
-  LV.Column[2].Width  := 110;
-  LV.Column[3].Width  := 60;
-  
-  LV.ReadOnly         := True;
-  LV.RowSelect        := True;
-  LV.SortColumn       := 1;
-  LV.SortType         := stText;
-  LV.HideSelection    := False;
-  LV.Items.Clear;
+  SG.Columns[SG_COLIDX_IMAGE].Width  := 20;
+  SG.Columns[SG_COLIDX_PROCEDURE].Width  := 300;
+  SG.Columns[SG_COLIDX_TYPE].Width  := 110;
+  SG.Columns[SG_COLIDX_LINE].Width  := 60;
 
   FImageIdxProcedure  := IDEImages.LoadImage(16, 'ce_procedure');
   FImageIdxFunction   := IDEImages.LoadImage(16, 'ce_function');;
@@ -324,18 +372,19 @@ end;
 
 procedure TProcedureListForm.JumpToSelection;
 var
-  lItem: TListItem;
   CodeBuffer: TCodeBuffer;
   ACodeTool: TCodeTool;
-  lStartPos: integer;
+  lRowObject: TGridRowObject;
 begin
-  lItem := LV.Selected;
-  if lItem = nil then
-    Exit; //==>
-  if lItem.SubItems[3] = '' then
-    Exit; //==>
-    
-  lStartPos := StrToInt(lItem.SubItems[3]);
+  if SG.Row < SG.FixedRows then
+    Exit;
+
+  lRowObject := TGridRowObject(SG.Rows[SG.Row].Objects[0]);
+  if not Assigned(lRowObject) then
+    Exit;
+
+  if lRowObject.NodeStartPos < 0 then
+    Exit;
 
   CodeBuffer := CodeToolBoss.LoadFile(MainFilename,false,false);
   if CodeBuffer = nil then
@@ -346,7 +395,7 @@ begin
   if ACodeTool = nil then
     Exit; //==>
 
-  if not ACodeTool.CleanPosToCaretAndTopLine(lStartPos, FCaret, FNewTopLine) then
+  if not ACodeTool.CleanPosToCaretAndTopLine(lRowObject.NodeStartPos, FCaret, FNewTopLine) then
     Exit; //==>
 
   { This should close the form }
@@ -354,16 +403,17 @@ begin
 end;
 
 
-procedure TProcedureListForm.PopulateListview;
+procedure TProcedureListForm.PopulateGrid;
 var
   lSrcEditor: TSourceEditorInterface;
   lCodeBuffer: TCodeBuffer;
   lCodeTool: TCodeTool;
   lNode: TCodeTreeNode;
 begin
-  LV.BeginUpdate;
+  SG.BeginUpdate;
   try
-    LV.Items.Clear;
+    ClearGrid;
+
     { get active source editor }
     lSrcEditor := SourceEditorManagerIntf.ActiveEditor;
     if lSrcEditor = nil then
@@ -393,17 +443,16 @@ begin
     begin
       if lNode.Desc = ctnProcedure then
       begin
-        AddToListView(lCodeTool, lNode);
+        AddToGrid(lCodeTool, lNode);
       end;
       lNode := lNode.Next;
     end;
   finally
-    if LV.Items.Count > 0 then
+    if SG.RowCount > 0 then
     begin
-      LV.Selected := LV.Items[0];
-      LV.ItemFocused := LV.Items[0];
+      SG.Row := SG.FixedRows;
     end;
-    LV.EndUpdate;
+    SG.EndUpdate;
   end;
 end;
 
@@ -466,13 +515,14 @@ begin
 end;
 
 
-procedure TProcedureListForm.AddToListView(pCodeTool: TCodeTool; pNode: TCodeTreeNode);
+procedure TProcedureListForm.AddToGrid(pCodeTool: TCodeTool; pNode: TCodeTreeNode);
 var
-  lItem: TListItem;
   lNodeText: string;
   lCaret: TCodeXYPosition;
   FSearchAll: boolean;
   lAttr: TProcHeadAttributes;
+  lRowObject: TGridRowObject;
+  lRowIdx: Integer;
 begin
   FSearchAll := cbObjects.Text = lisPListAll;
 
@@ -493,38 +543,43 @@ begin
   if not PassFilter(FSearchAll, lNodeText, edMethods.Text, pCodeTool, pNode) then
     Exit; //==>
     
-  { Add new list item }
-  lItem := LV.Items.Add;
+  { Add new row }
+  lRowIdx := SG.RowCount;
+  SG.RowCount := lRowIdx + 1;
+  lRowObject := TGridRowObject.Create;
+  SG.Rows[lRowIdx].Objects[0] := lRowObject;
 
   { procedure name }
   lNodeText := pCodeTool.ExtractProcHead(pNode,
       [phpAddParentProcs, phpWithoutParamList, phpWithoutBrackets, phpWithoutSemicolon]);
-  lItem.SubItems.Add(lNodeText);
+  SG.Cells[SG_COLIDX_PROCEDURE,lRowIdx] := lNodeText;
 
   { type }
   lNodeText := pCodeTool.ExtractProcHead(pNode,
       [phpWithStart, phpWithoutParamList, phpWithoutBrackets, phpWithoutSemicolon,
         phpWithoutClassName, phpWithoutName]);
-  lItem.SubItems.Add(lNodeText);
+  SG.Cells[SG_COLIDX_TYPE,lRowIdx] := lNodeText;
   
   { line number }
   if pCodeTool.CleanPosToCaret(pNode.StartPos, lCaret) then
-    lItem.SubItems.Add(IntToStr(lCaret.Y));
+    SG.Cells[SG_COLIDX_LINE,lRowIdx] := IntToStr(lCaret.Y);
+
     
   { start pos - used by JumpToSelected() }
-  lItem.SubItems.Add(IntToStr(pNode.StartPos));
+  lRowObject.NodeStartPos := pNode.StartPos;
   
   { full procedure name used in statusbar }
   lNodeText := pCodeTool.ExtractProcHead(pNode,
                   [phpWithStart,phpAddParentProcs,phpWithVarModifiers,
                    phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
                    phpWithOfObject,phpWithCallingSpecs,phpWithProcModifiers]);
-  lItem.SubItems.Add(lNodeText);
+  lRowObject.FullProcedureName := lNodeText;
 
   if Pos('procedure', LowerCase(lNodeText)) > 0 then
-    lItem.ImageIndex := FImageIdxProcedure
+    lRowObject.ImageIdx := FImageIdxProcedure
   else
-    lItem.ImageIndex := FImageIdxFunction;
+    lRowObject.ImageIdx := FImageIdxFunction;
+
 end;
 
 
@@ -577,6 +632,16 @@ begin
   end;
 end;
 
+procedure TProcedureListForm.ClearGrid;
+var
+  i: Integer;
+begin
+  for i:=SG.FixedRows to SG.RowCount - 1 do
+    SG.Rows[i].Objects[0].Free;
+
+  SG.RowCount := SG.FixedRows;
+end;
+
 
 procedure TProcedureListForm.FormKeyPress(Sender: TObject; var Key: char);
 begin
@@ -601,8 +666,13 @@ begin
   Caption := Caption + ExtractFileName(FMainFilename);
   SetupGUI;
   PopulateObjectsCombo;
-  PopulateListView;
+  PopulateGrid;
   StatusBar.Panels[0].Text := self.MainFilename;
+end;
+
+procedure TProcedureListForm.FormDestroy(Sender: TObject);
+begin
+  ClearGrid;
 end;
 
 
@@ -625,47 +695,43 @@ end;
 
 procedure TProcedureListForm.edMethodsChange(Sender: TObject);
 begin
-  PopulateListview;
+  PopulateGrid;
 end;
 
 
 procedure TProcedureListForm.cbObjectsChange(Sender: TObject);
 begin
-  PopulateListview;
+  PopulateGrid;
 end;
 
 
 procedure TProcedureListForm.edMethodsKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if LV.Items.Count = 0 then
+  if SG.RowCount <= SG.FixedRows then
     Exit;
 
-  if Key = VK_Down then
+  if Key = VK_DOWN then
   begin
-    if (LV.Items.IndexOf(LV.ItemFocused) + 1) < LV.Items.Count then
-      LV.ItemFocused := LV.Items[(LV.Items.IndexOf(LV.ItemFocused) + 1)];
+    if SG.Row < (SG.RowCount - 1) then
+      SG.Row := SG.Row + 1;
   end
   else if Key = VK_Up then
   begin
-    if (LV.Items.IndexOf(LV.ItemFocused) - 1) >= 0 then
-      LV.ItemFocused := LV.Items[(LV.Items.IndexOf(LV.ItemFocused) - 1)];
+    if SG.Row > SG.FixedRows then
+      SG.Row := SG.Row - 1;
   end
   else if Key = VK_Home then
   begin
-    LV.ItemFocused := LV.Items[0];
+    if SG.RowCount > SG.FixedRows then
+      SG.Row := SG.FixedRows;
   end
   else if Key = VK_End then
   begin
-    LV.ItemFocused := LV.Items[LV.Items.Count - 1];
+    if SG.RowCount > SG.FixedRows then
+      SG.Row := SG.RowCount - 1;
   end;
 
-  if LV.ItemFocused<>nil then
-  begin
-    LV.Selected := LV.ItemFocused;
-    if Assigned(LV.Selected) then
-      LV.Selected.MakeVisible(True);
-  end;
 end;
 
 end.
