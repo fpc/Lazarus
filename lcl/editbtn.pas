@@ -188,8 +188,9 @@ type
   // Called when an item is filtered. Returns true if the item passes the filter.
   // Done=False means the data should also be filtered by its title string.
   // Done=True means no other filtering is needed.
-  TFilterItemEvent = function (Item: TObject; out Done: Boolean): Boolean of object;
-  TFilterItemExEvent = function (ACaption: string;Item: TObject; out Done: Boolean): Boolean of object;
+  TFilterItemEvent = function (ItemData: TObject; out Done: Boolean): Boolean of object;
+  TFilterItemExEvent = function (ACaption: string; ItemData: TObject;
+                                 out Done: Boolean): Boolean of object;
 
   // Can be used only for items that have a checkbox. Returns true if checked.
   TCheckItemEvent = function (Item: TObject): Boolean of object;
@@ -222,10 +223,9 @@ type
     fOnFilterItem: TFilterItemEvent;
     fOnFilterItemEx: TFilterItemExEvent;
     fOnCheckItem: TCheckItemEvent;
-    function DoFilterItem(const ACaption: string; const Item: TObject;
-      const FilterLC: string): Boolean; virtual;
-    function DoDefaultFilterItem(const ACaption: string; const Item: TObject;
-      const FilterLC: string): Boolean; virtual;
+    function DoFilterItem(const ACaption, FilterLC: string;
+      ItemData: TObject): Boolean;
+    function DoDefaultFilterItem(const ACaption, FilterLC: string): Boolean; virtual;
     procedure EditKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure EditChange; override;
     procedure EditEnter; override;
@@ -1122,31 +1122,30 @@ begin
   inherited Destroy;
 end;
 
-function TCustomControlFilterEdit.DoDefaultFilterItem(const ACaption: string;
-  const Item: TObject; const FilterLC: string): Boolean;
+function TCustomControlFilterEdit.DoDefaultFilterItem(const ACaption, FilterLC: string): Boolean;
 begin
   Result := (FilterLC='') or (Pos(FilterLC,UTF8LowerCase(ACaption))>0);
 end;
 
-function TCustomControlFilterEdit.DoFilterItem(const ACaption: string;
-  const Item: TObject; const FilterLC: string): Boolean;
+function TCustomControlFilterEdit.DoFilterItem(const ACaption, FilterLC: string;
+  ItemData: TObject): Boolean;
 var
   Done: Boolean;
 begin
   Done := False;
+  Result := False;
 
   // Filter with event handler if there is one.
   if Assigned(fOnFilterItemEx) then
-    Result:=fOnFilterItemEx(ACaption, Item, Done)
-  else
-    Result:=False;
+    Result := fOnFilterItemEx(ACaption, ItemData, Done);
+
   // Support also the old filter event without a caption.
   if (not (Result and Done)) and Assigned(fOnFilterItem) then
-    Result:=fOnFilterItem(Item, Done);
+    Result := fOnFilterItem(ItemData, Done);
 
   // Filter by item's caption text if needed.
   if not (Result or Done) then
-    Result:=DoDefaultFilterItem(ACaption, Item, FilterLC);
+    Result := DoDefaultFilterItem(ACaption, FilterLC);
 end;
 
 procedure TCustomControlFilterEdit.OnIdle(Sender: TObject; var Done: Boolean);

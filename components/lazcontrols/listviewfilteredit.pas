@@ -160,7 +160,7 @@ begin
   else
     EndInd := 0;
   for i := 0 to EndInd do begin
-    if DoFilterItem(aData.StringArray[i], TObject(aData.Data), FilterLC) then
+    if DoFilterItem(aData.StringArray[i], FilterLC, TObject(aData.Data)) then
       Exit(True);
   end;
   Result := False;

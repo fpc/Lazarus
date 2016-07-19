@@ -22,6 +22,7 @@ uses
 type
   TImageIndexEvent = function (Str: String; Data: TObject;
                                var AIsEnabled: Boolean): Integer of object;
+  TFilterNodeEvent = function (ItemNode: TTreeNode; out Done: Boolean): Boolean of object;
 
   TTreeFilterEdit = class;
 
@@ -76,6 +77,7 @@ type
     // First node matching the filter. Will be selected if old selection is hidden.
     fFirstPassedNode: TTreeNode;
     fOnGetImageIndex: TImageIndexEvent;
+    fOnFilterNode: TFilterNodeEvent;
     procedure SetFilteredTreeview(const AValue: TCustomTreeview);
     procedure SetShowDirHierarchy(const AValue: Boolean);
     function FilterTree(Node: TTreeNode): Boolean;
@@ -108,6 +110,7 @@ type
     property FilteredTreeview: TCustomTreeview read fFilteredTreeview write SetFilteredTreeview;
     property ExpandAllInitially: Boolean read fExpandAllInitially write fExpandAllInitially default False;
     property OnGetImageIndex: TImageIndexEvent read fOnGetImageIndex write fOnGetImageIndex;
+    property OnFilterNode: TFilterNodeEvent read fOnFilterNode write fOnFilterNode;
   end;
 
   { TTFENodeData - TreeFilterEditNodeData }
@@ -460,14 +463,19 @@ function TTreeFilterEdit.FilterTree(Node: TTreeNode): Boolean;
 // Filter all tree branches recursively, setting Node.Visible as needed.
 // Returns True if Node or its siblings or child nodes have visible items.
 var
-  Pass: Boolean;
+  Pass, Done: Boolean;
   FilterLC: string;
 begin
-  Result:=False;
+  Result := False;
+  Done := False;
   FilterLC:=UTF8LowerCase(Filter);
-  while Node<>nil do
+  while (Node<>nil) and not Done do
   begin
-    Pass := DoFilterItem(Node.Text, TObject(Node.Data), FilterLC);
+    // Filter with event handler if there is one.
+    if Assigned(fOnFilterNode) then
+      Pass := fOnFilterNode(Node, Done);
+    if not (Pass and Done) then
+      Pass := DoFilterItem(Node.Text, FilterLC, TObject(Node.Data));
     if Pass and (fFirstPassedNode=Nil) then
       fFirstPassedNode:=Node;
     // Recursive call for child nodes.
