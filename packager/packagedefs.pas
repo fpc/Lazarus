@@ -3175,21 +3175,21 @@ var
   CurUnitPaths: String;
   r: TModalResult;
 begin
+  Result:=True;
   CurUnitPaths:=CompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
   NewUnitPaths:=RemoveSearchPaths(NewUnitPaths,CurUnitPaths);
-  if NewUnitPaths<>'' then begin
-    NewUnitPaths:=CreateRelativeSearchPath(NewUnitPaths,Directory);
-    r:=IDEMessageDialog(lisExtendUnitPath,
-      Format(lisExtendUnitSearchPathOfPackageWith, [Name, #13,
-        NewUnitPaths]), mtConfirmation, [mbYes, mbNo, mbCancel]);
-    case r of
+  if NewUnitPaths='' then Exit;
+  NewUnitPaths:=CreateRelativeSearchPath(NewUnitPaths,Directory);
+  if NewUnitPaths='.' then Exit;
+  r:=IDEMessageDialog(lisExtendUnitPath,
+        Format(lisExtendUnitSearchPathOfPackageWith, [Name, #13, NewUnitPaths]),
+        mtConfirmation, [mbYes, mbNo, mbCancel]);
+  case r of
     mrYes: CompilerOptions.OtherUnitFiles:=
                    MergeSearchPaths(CompilerOptions.OtherUnitFiles,NewUnitPaths);
     mrNo: ;
-    else exit(false);
-    end;
+  else exit(false);
   end;
-  Result:=true;
 end;
 
 function TLazPackage.ExtendIncSearchPath(NewIncPaths: string): boolean;
@@ -3197,21 +3197,21 @@ var
   CurIncPaths: String;
   r: TModalResult;
 begin
+  Result:=True;
   CurIncPaths:=CompilerOptions.ParsedOpts.GetParsedValue(pcosIncludePath);
   NewIncPaths:=RemoveSearchPaths(NewIncPaths,CurIncPaths);
-  if NewIncPaths<>'' then begin
-    NewIncPaths:=CreateRelativeSearchPath(NewIncPaths,Directory);
-    r:=IDEMessageDialog(lisExtendIncludePath,
-      Format(lisExtendIncludeFileSearchPathOfPackageWith, [Name, #13,
-        NewIncPaths]), mtConfirmation, [mbYes, mbNo, mbCancel]);
-    case r of
-    mrYes: CompilerOptions.IncludePath:=
-                       MergeSearchPaths(CompilerOptions.IncludePath,NewIncPaths);
-    mrNo: ;
-    else exit(false);
-    end;
+  if NewIncPaths='' then Exit;
+  NewIncPaths:=CreateRelativeSearchPath(NewIncPaths,Directory);
+  if NewIncPaths='.' then Exit;
+  r:=IDEMessageDialog(lisExtendIncludePath,
+      Format(lisExtendIncludeFileSearchPathOfPackageWith, [Name, #13, NewIncPaths]),
+      mtConfirmation, [mbYes, mbNo, mbCancel]);
+  case r of
+  mrYes: CompilerOptions.IncludePath:=
+                     MergeSearchPaths(CompilerOptions.IncludePath,NewIncPaths);
+  mrNo: ;
+  else exit(false);
   end;
-  Result:=true;
 end;
 
 function TLazPackage.IndexOfPkgComponent(PkgComponent: TPkgComponent): integer;
