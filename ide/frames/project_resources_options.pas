@@ -159,6 +159,8 @@ begin
     lbResources.Selected.SubItems[LVSUBITEM_NAME] := newResName;
     // Update current name.
     FCurrentResName := newResName;
+    // Resource has been changed
+    FModified := True;
   end;
 end;
 
