@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-06-19 18:06+0200\n"
+"PO-Revision-Date: 2016-07-19 20:02+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -4576,7 +4576,7 @@ msgstr "Wenn sich die Komponentenpalette über mehrere Zeilen erstreckt, zeige a
 
 #: lazarusidestrconsts.lisautocheckmodifiedfiles
 msgid "Automatically check (select) modified files"
-msgstr ""
+msgstr "Geänderte Dateien automatisch prüfen (auswählen)"
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -4946,15 +4946,15 @@ msgstr "Kann Unit %s nicht finden"
 
 #: lazarusidestrconsts.liscannotopenform
 msgid "Cannot open form \"%s\"."
-msgstr ""
+msgstr "Kann Formular \"%s\" nicht öffnen."
 
 #: lazarusidestrconsts.liscannotsaveform
 msgid "Cannot save form \"%s\"."
-msgstr ""
+msgstr "Kann Formular \"%s\" nicht speichern."
 
 #: lazarusidestrconsts.liscannotsubstitutemacros
 msgid "Cannot substitute macro \"%s\"."
-msgstr ""
+msgstr "Kann Makro \"%s\" nicht ersetzen."
 
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
@@ -8762,7 +8762,7 @@ msgstr "Fehler beim Öffnen der Komponente"
 
 #: lazarusidestrconsts.liserroropeningform
 msgid "Error opening form"
-msgstr ""
+msgstr "Fehler beim Öffnen des Formulars"
 
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
@@ -8795,7 +8795,7 @@ msgstr ", Fehler: %s"
 
 #: lazarusidestrconsts.liserrorsavingform
 msgid "Error saving form"
-msgstr ""
+msgstr "Fehler beim Speichern des Formulars"
 
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
@@ -12597,7 +12597,7 @@ msgstr "Fehler melden ..."
 
 #: lazarusidestrconsts.lismenuresaveformswithi18n
 msgid "Resave forms with enabled i18n"
-msgstr ""
+msgstr "Formulare mit i18n neu speichern"
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC Source Directory"
@@ -13733,7 +13733,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisonlyregisterthelazaruspackagefileslpkdonotbuild
 msgid "Only register the Lazarus package files (.lpk). Do not build."
-msgstr ""
+msgstr "Nur die Lazarus-Package-Dateien (.lpk) registrieren. Nicht erstellen."
 
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
@@ -13853,7 +13853,7 @@ msgstr "Einstellungen geändert, sauberes Neucompilieren mit -B"
 
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
-msgstr ""
+msgstr "ignoriert"
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -16473,7 +16473,7 @@ msgstr "Voreinstellungens setzen"
 
 #: lazarusidestrconsts.lissetthistotranslatethecompilermessagestoanotherlang
 msgid "Set this to translate the compiler messages to another language (i.e. not English). For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg."
-msgstr ""
+msgstr "Zum Übersetzen der Compilermeldungen in eine andere Sprache (d.h. nicht Englisch). Zum Beispiel Deutsch: $(FPCSrcDir)/compiler/msg/errordu.msg."
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Set up default indentation)"
@@ -17196,10 +17196,8 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr "Der Bezeichner ist eine Unit. Bitte benennen sie eine Unit mit Datei -> Speichern unter ... um"
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-#, fuzzy
-#| msgid "The key %sis already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
-msgstr "Die Taste %s%sist bereits %s zugewiesen.%sDie alte Zuweisung entfernen und der Taste die neue Funktion%s%s zuordnen?"
+msgstr "Die Taste %s ist bereits %s%s zugewiesen.%s%sDie alte Zuweisung entfernen und der Taste die neue Funktion %s zuordnen?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
 msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%sSee Project -> Project Options -> Application for settings."
@@ -20826,4 +20824,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
