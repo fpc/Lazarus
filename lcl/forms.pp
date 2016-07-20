@@ -1218,8 +1218,7 @@ type
     ahtHelp,
     ahtHint,
     ahtShowHint,
-    ahtGetMainFormHandle,
-    ahtExceptionCircle
+    ahtGetMainFormHandle
     );
 
   PAsyncCallQueueItem = ^TAsyncCallQueueItem;
@@ -1301,7 +1300,7 @@ type
     FMainFormOnTaskBar: Boolean;
     FModalLevel: Integer;
     FMoveFormFocusToChildren: Boolean;
-    FOnExceptionCircle: TExceptionEvent;
+    FOnCircularException: TExceptionEvent;
     FOnGetMainFormHandle: TGetHandleEvent;
     FOnMessageDialogFinished: TModalDialogFinished;
     FOnModalBegin: TNotifyEvent;
@@ -1468,8 +1467,6 @@ type
     procedure RemoveOnDeactivateHandler(Handler: TNotifyEvent);
     procedure AddOnExceptionHandler(Handler: TExceptionEvent; AsFirst: Boolean=true);
     procedure RemoveOnExceptionHandler(Handler: TExceptionEvent);
-    procedure AddOnExceptionCircleHandler(Handler: TExceptionEvent; AsFirst: Boolean=true);
-    procedure RemoveOnExceptionCircleHandler(Handler: TExceptionEvent);
     procedure AddOnEndSessionHandler(Handler: TNotifyEvent; AsFirst: Boolean=true);
     procedure RemoveOnEndSessionHandler(Handler: TNotifyEvent);
     procedure AddOnQueryEndSessionHandler(Handler: TQueryEndSessionEvent; AsFirst: Boolean=true);
@@ -1566,7 +1563,7 @@ type
     property OnShowHint: TShowHintEvent read FOnShowHint write FOnShowHint;
     property OnUserInput: TOnUserInputEvent read FOnUserInput write FOnUserInput;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
-    property OnExceptionCircle: TExceptionEvent read FOnExceptionCircle write FOnExceptionCircle;
+    property OnCircularException: TExceptionEvent read FOnCircularException write FOnCircularException;
     property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write SetShowButtonGlyphs default sbgAlways;
     property ShowMenuGlyphs: TApplicationShowGlyphs read FShowMenuGlyphs write SetShowMenuGlyphs default sbgAlways;
     property ShowHint: Boolean read FShowHint write SetShowHint;
