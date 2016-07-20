@@ -722,7 +722,9 @@ begin
     for i:=0 to SelectedControls.Count-1 do begin
       if TObject(SelectedControls[i]) is TControl then begin
         CurControl:=TControl(SelectedControls[i]);
-        if (CurControl.Parent<>nil) then begin
+        if (CurControl.Parent<>nil) 
+          and not (csDesignInstance in CurControl.ComponentState)
+        then begin
           AddSibling(CurControl.Parent);
           for j:=0 to CurControl.Parent.ControlCount-1 do begin
             Sibling:=CurControl.Parent.Controls[j];
