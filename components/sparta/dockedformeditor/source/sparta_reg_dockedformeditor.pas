@@ -29,6 +29,8 @@ implementation
 procedure Register;
 begin
   FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TForm] := TFakeForm;
+  FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TFrame] := THookFrame;
+
   FormEditingHook.NonFormProxyDesignerForm[NonControlProxyDesignerFormId] := TFakeNonControl;
   FormEditingHook.NonFormProxyDesignerForm[FrameProxyDesignerFormId] := TFakeFrame;
 

@@ -18,7 +18,7 @@ interface
 
 uses
   Classes, SysUtils, SrcEditorIntf, LazIDEIntf, ComCtrls, Controls, Forms, IDEImagesIntf,
-  Buttons, ExtCtrls, Graphics, IDEWindowIntf, 
+  Buttons, ExtCtrls, Graphics, IDEWindowIntf, sparta_InterfacesMDI,
   sparta_DesignedForm, sparta_resizer, PropEdits, PropEditUtils, FormEditingIntf, ComponentEditors, EditBtn,
 {$IFDEF USE_GENERICS_COLLECTIONS}
   Generics.Collections, Generics.Defaults,
@@ -34,11 +34,11 @@ const
 type
   { TDesignFormData }
 
-  TDesignFormData = class(TComponent, IDesignedForm)
+  TDesignFormData = class(TComponent, IDesignedForm, IDesignedFormIDE)
   private
     FWndMethod: TWndMethod;
 
-    FForm: IDesignedForm;
+    FForm: IDesignedFormIDE;
     FLastScreenshot: TBitmap;
     FPopupParent: TSourceEditorWindowInterface;
     FHiding: boolean;
@@ -66,7 +66,7 @@ type
     procedure RemoveFormImage(AImage: TImage);
     procedure RepaintFormImages;
 
-    property Form: IDesignedForm read FForm implements IDesignedForm;
+    property Form: IDesignedFormIDE read FForm implements IDesignedForm, IDesignedFormIDE;
     property LastScreenshot: TBitmap read FLastScreenshot;
     property PopupParent: TSourceEditorWindowInterface read FPopupParent write SetPopupParent;
 
@@ -200,6 +200,9 @@ function FindModulePageControl(AForm: TSourceEditorWindowInterface): TModulePage
 function FindSourceEditorForDesigner(ADesigner: TIDesigner): TSourceEditorInterface;
 
 implementation
+
+uses
+  sparta_ResizerFrame;
 
 // FUTURE USE
 //
@@ -553,7 +556,7 @@ end;
 
 constructor TDesignFormData.Create(AForm: TCustomForm);
 begin
-  FForm := AForm as IDesignedForm;
+  FForm := AForm as IDesignedFormIDE;
 
   FLastScreenshot := TBitmap.Create;
   FWndMethod := FForm.Form.WindowProc;
@@ -834,10 +837,10 @@ begin
     Exit;
 
   LPageCtrl := FindModulePageControl(LFormData.Form.LastActiveSourceWindow);
-  if (LPageCtrl = nil) or (LPageCtrl.Resizer = nil) or (LPageCtrl.Resizer.FMainDTU = nil) then
+  if (LPageCtrl = nil) or (LPageCtrl.Resizer = nil) or (LPageCtrl.Resizer.MainDTU = nil) then
     Exit;
 
-  Result := LPageCtrl.Resizer.FMainDTU.ShowNonVisualComponents;
+  Result := LPageCtrl.Resizer.MainDTU.ShowNonVisualComponents;
 end;
 
 { TSpartaMainIDE }
@@ -1067,7 +1070,7 @@ var
 begin
   LResizer := GetCurrentResizer;
   if LResizer<>nil then
-    LResizer.FResizerFrame.DesignerSetFocus;
+    LResizer.ActiveResizeFrame.DesignerSetFocus;
 end;
 
 class procedure TSpartaMainIDE.EditorActivated(Sender: TObject);
@@ -1161,7 +1164,7 @@ begin
     else
     begin
       if LPageCtrl.Resizer = nil then
-        LPageCtrl.FResizer := TResizer.Create(LPageCtrl.Pages[1]);
+        LPageCtrl.FResizer := TResizer.Create(LPageCtrl.Pages[1], TResizerFrame);
 
       LPageCtrl.ShowDesignPage;
     end;
@@ -1276,7 +1279,7 @@ begin
   LForm := FormEditingHook.GetDesignerForm(GlobalDesignHook.LookupRoot);
   LFormData := FindDesignFormData(LForm);
   if LFormData=nil then Exit;
-  LSourceWindow := (LFormData as IDesignedForm).LastActiveSourceWindow;
+  LSourceWindow := (LFormData as IDesignedFormIDE).LastActiveSourceWindow;
   LPageCtrl := FindModulePageControl(LSourceWindow);
   Result := LPageCtrl.Resizer;
 end;
@@ -1480,7 +1483,7 @@ begin
     //PostMessage(LWindow.Handle, WM_BoundToDesignTabSheet, 0, 0);
     if LDesignForm <> nil then
     begin
-      LDesignForm.Form.Form.Parent := FindModulePageControl(LWindow).Resizer.FResizerFrame.pClient;
+      LDesignForm.Form.Form.Parent := FindModulePageControl(LWindow).Resizer.ActiveResizeFrame.ClientPanel;
       PostMessage(LDesignForm.Form.Form.Handle, WM_BoundToDesignTabSheet, 0, 0);
     end;
   end;
@@ -1505,7 +1508,7 @@ var
 begin
   LResizer := GetCurrentResizer;
   if LResizer<>nil then
-    LResizer.FResizerFrame.OnModified;
+    LResizer.ActiveResizeFrame.OnModified;
 end;
 
 class procedure TSpartaMainIDE.OnModifiedPersistentAdded(
@@ -1654,7 +1657,7 @@ begin
 
     LForm := FormEditingHook.GetDesignerForm(GlobalDesignHook.LookupRoot);
     LFormData := FindDesignFormData(LForm);
-    LSourceWindow := (LFormData as IDesignedForm).LastActiveSourceWindow;
+    LSourceWindow := (LFormData as IDesignedFormIDE).LastActiveSourceWindow;
     LPageCtrl := FindModulePageControl(LSourceWindow);
     TFakeFrame(LForm).SetBounds(LForm.Left-1,LForm.Top-1,TFakeFrame(LForm).Width,TFakeFrame(LForm).Height);
     //LPageCtrl.BoundToDesignTabSheet;

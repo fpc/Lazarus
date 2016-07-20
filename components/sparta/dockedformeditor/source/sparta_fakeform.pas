@@ -29,6 +29,8 @@ type
 
   TFakeForm = class(TFakeCustomForm, IDesignedFakeForm)
   private
+    FHackAlign: TAlign;
+    FHackAnchors: TAnchors;
     FHackVisible: Boolean;
     FHackAutoScroll: Boolean;
     FHackBorderStyle: TFormBorderStyle;
@@ -44,7 +46,10 @@ type
     FControlForHackedConstraints: TControl;
     FHackConstraints: TSizeConstraints;
 
+    function IsAnchorsStored: Boolean;
     function IsAutoScrollStored: Boolean;
+    procedure SetAlign(Value: TAlign);
+    procedure SetAnchors(const AValue: TAnchors);
     procedure SetHorzScrollBar(AValue: TControlScrollBar);
     procedure SetVertScrollBar(AValue: TControlScrollBar);
     procedure SetPopupMode(const AValue: TPopupMode);
@@ -65,6 +70,8 @@ type
     constructor CreateNew(AOwner: TComponent; Num: Integer = 0); override;
     destructor Destroy; override;
   published
+    property Align: TAlign read FHackAlign write SetAlign default alNone;
+    property Anchors: TAnchors read FHackAnchors write SetAnchors stored IsAnchorsStored default [akLeft, akTop];
     property AutoScroll: Boolean read FHackAutoScroll write FHackAutoScroll stored IsAutoScrollStored default False;
     property BorderIcons: TBorderIcons read GetBorderIcons write SetBorderIcons default [biSystemMenu, biMinimize, biMaximize];
     property BorderStyle: TFormBorderStyle read GetBorderStyle write SetFormBorderStyle default bsSizeable;
@@ -93,6 +100,52 @@ end;
 function TFakeForm.IsAutoScrollStored: Boolean;
 begin
   Result := BorderStyle in BorderStylesAllowAutoScroll;
+end;
+
+function TFakeForm.IsAnchorsStored: Boolean;
+begin
+  Result:=(Anchors<>AnchorAlign[Align]);
+end;
+
+procedure TFakeForm.SetAlign(Value: TAlign);
+var
+  OldAlign: TAlign;
+  a: TAnchorKind;
+begin
+  if FHackAlign = Value then exit;
+  OldAlign := FHackAlign;
+  FHackAlign := Value;
+  if (not (csLoading in ComponentState))
+  and (Align in [alLeft,alTop,alRight,alBottom,alClient]) then begin
+    // Align for alLeft,alTop,alRight,alBottom,alClient takes precedence
+    // over AnchorSides => clean up
+    for a:=low(TAnchorKind) to High(TAnchorKind) do
+    begin
+      if not (a in AnchorAlign[FHackAlign]) then continue;
+      AnchorSide[a].Control:=nil;
+      AnchorSide[a].Side:=asrTop;
+    end;
+  end;
+
+  // Notes:
+  // - if anchors had default values then change them to new default values
+  //   This is done for Delphi compatibility.
+  // - Anchors are not stored if they are AnchorAlign[Align]
+  if (Anchors = AnchorAlign[OldAlign]) and (Anchors <> AnchorAlign[FHackAlign]) then
+    Anchors := AnchorAlign[FHackAlign];
+end;
+
+procedure TFakeForm.SetAnchors(const AValue: TAnchors);
+var
+  NewAnchors: TAnchors;
+  a: TAnchorKind;
+begin
+  if Anchors = AValue then Exit;
+  NewAnchors:=AValue-FHackAnchors;
+  FHackAnchors := AValue;
+  for a:=Low(TAnchorKind) to high(TAnchorKind) do
+    if (a in NewAnchors) and (AnchorSide[a].Side=asrCenter) then
+      AnchorSide[a].FixCenterAnchoring;
 end;
 
 procedure TFakeForm.SetFormBorderStyle(ANewStyle: TFormBorderStyle);
@@ -198,6 +251,9 @@ begin
 
   FControlForHackedConstraints := TControl.Create(nil);
   FHackConstraints := TSizeConstraints.Create(FControlForHackedConstraints);
+
+  FHackAnchors := [akLeft,akTop];
+  FHackAlign := alNone;
 end;
 
 destructor TFakeForm.Destroy;
