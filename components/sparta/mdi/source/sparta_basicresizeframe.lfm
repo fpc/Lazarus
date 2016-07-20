@@ -6,7 +6,7 @@ object BasicResizeFrame: TBasicResizeFrame
   ClientHeight = 460
   ClientWidth = 320
   Color = clDefault
-  ParentColor = False
+  ParentColor = True
   TabOrder = 0
   object pR: TPanel
     AnchorSideTop.Control = Owner
@@ -166,8 +166,8 @@ object BasicResizeFrame: TBasicResizeFrame
     BevelOuter = bvNone
     ClientHeight = 427
     ClientWidth = 287
-    Color = clNone
-    ParentColor = False
+    Color = clDefault
+    ParentColor = True
     TabOrder = 4
     object pFakeMenu: TPanel
       AnchorSideLeft.Control = pBG
@@ -198,8 +198,8 @@ object BasicResizeFrame: TBasicResizeFrame
     Width = 152
     Anchors = []
     BevelOuter = bvNone
-    Color = clNone
-    ParentColor = False
+    Color = clDefault
+    ParentColor = True
     TabOrder = 5
   end
 end
