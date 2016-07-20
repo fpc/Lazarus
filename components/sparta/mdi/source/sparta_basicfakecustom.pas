@@ -280,26 +280,9 @@ end;
 function TFormImpl.PositionDelta: TPoint;
 
   procedure FormBorderDelta;
-  var
-    LTestCtrl: TWinControl;
-    LTestRec, LFormRect: TRect;
-    LForm: TCustomForm;
   begin
-    LForm := GetForm;
-    LTestCtrl := TWinControl.Create(Self);
-    try
-      LTestCtrl.Parent := LForm;
-      LTestCtrl.Left := 0;
-      LTestCtrl.Top := 0;
-
-      GetWindowRect(LForm.Handle, LFormRect);
-      GetWindowRect(LTestCtrl.Handle, LTestRec);
-
-      Result.x := Result.x + Max(LTestRec.Left - LFormRect.Left, 0);
-      Result.y := Result.y + Max(LTestRec.Top  - LFormRect.Top,  0);
-    finally
-      LTestCtrl.free;
-    end;
+    Result.X := GetSystemMetrics(SM_CXSIZEFRAME);
+    Result.Y := GetSystemMetrics(SM_CYSIZEFRAME) + GetSystemMetrics(SM_CYCAPTION);
   end;
 
 begin
