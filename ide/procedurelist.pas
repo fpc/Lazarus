@@ -45,7 +45,7 @@ uses
   // Codetools
   CodeTree, CodeToolManager, CodeCache, PascalParserTool, KeywordFuncLists,
   // IDEIntf
-  LazIDEIntf, IDEImagesIntf, SrcEditorIntf,
+  LazIDEIntf, IDEImagesIntf, SrcEditorIntf, IDEWindowIntf,
   // IDE
   LazarusIDEStrConsts;
 
@@ -668,11 +668,14 @@ begin
   PopulateObjectsCombo;
   PopulateGrid;
   StatusBar.Panels[0].Text := self.MainFilename;
+
+  IDEDialogLayoutList.ApplyLayout(Self, 950, 680, false);
 end;
 
 procedure TProcedureListForm.FormDestroy(Sender: TObject);
 begin
   ClearGrid;
+  IDEDialogLayoutList.SaveLayout(self);
 end;
 
 
