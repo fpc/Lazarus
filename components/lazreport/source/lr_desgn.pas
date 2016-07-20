@@ -540,6 +540,8 @@ type
     fCurDocFileType: Integer;
     ShapeMode: TfrShapeMode;
     FReportPopupPoint: TPoint;
+    FLastOpenDirectory: string;
+    FLastSaveDirectory: string;
     
     {$IFDEF StdOI}
     ObjInsp  : TObjectInspector;
@@ -3274,7 +3276,15 @@ begin
     Filter := sFormFile + ' (*.frf)|*.frf|' +
               sLazFormFile + ' (*.lrf)|*.lrf' +
               '';
-    InitialDir:=ExtractFilePath(ParamStrUTF8(0));
+    if InitialDir='' then
+    begin
+      InitialDir := FLastOpenDirectory;
+      if InitialDir='' then
+        InitialDir := FLastSaveDirectory;
+      if InitialDir='' then
+        InitialDir:=ExtractFilePath(ParamStrUTF8(0));
+    end;
+
     FileName := CurDocName;
     FilterIndex := 2;
     if Execute then
@@ -3284,11 +3294,13 @@ begin
       case FilterIndex of
         1: // fastreport form format
           begin
+            FLastOpenDirectory := ExtractFilePath(CurDocName);
             CurReport.LoadFromFile(CurDocName);
             FCurDocFileType := dtFastReportForm;
           end;
         2: // lasreport form xml format
           begin
+            FLastOpenDirectory := ExtractFilePath(CurDocName);
             CurReport.LoadFromXMLFile(CurDocName);
             FCurDocFileType := dtLazReportForm;
           end;
@@ -3404,12 +3416,22 @@ begin
                   sTemplFile + ' (*.frt)|*.frt|' +
                   sLazFormFile + ' (*.lrf)|*.lrf|' +
                   sLazTemplateFile + ' (*.lrt)|*.lrt';
+
       if InitialDir='' then
-        InitialDir:=ExtractFilePath(ParamStrUTF8(0));
+      begin
+        InitialDir := FLastSaveDirectory;
+        if InitialDir='' then
+          InitialDir := FLastOpenDirectory;
+        if InitialDir='' then
+          InitialDir:=ExtractFilePath(ParamStrUTF8(0));
+      end;
       FileName := CurDocName;
       FilterIndex := 3;
       if Execute then
+      begin
+        FLastSaveDirectory := ExtractFilePath(Filename);
         FCurDocFileType := FilterIndex;
+      end;
       case FCurDocFileType of
         dtFastReportForm:
           begin
@@ -6500,6 +6522,8 @@ begin
   Ini.WriteBool('frEditorForm', rsEdit, EditAfterInsert);
   Ini.WriteInteger('frEditorForm', rsSelection, Integer(ShapeMode));
   Ini.WriteBool('frEditorForm', 'UseInplaceEditor', edtUseIE);
+  Ini.WriteString('frEditorForm', 'LastOpenDirectory', FLastOpenDirectory);
+  Ini.WriteString('frEditorForm', 'LastSaveDirectory', FLastSaveDirectory);
 
   DoSaveToolbars([Panel1, Panel2, Panel3, Panel4, Panel5, Panel6]);
 
@@ -6547,6 +6571,8 @@ begin
     EditAfterInsert := Ini.ReadBool('frEditorForm', rsEdit, True);
     ShapeMode := TfrShapeMode(Ini.ReadInteger('frEditorForm', rsSelection, 1));
     edtUseIE:=Ini.ReadBool('frEditorForm', 'UseInplaceEditor', edtUseIE);
+    FLastOpenDirectory := Ini.ReadString('frEditorForm', 'LastOpenDirectory', '');
+    FLastSaveDirectory := Ini.ReadString('frEditorForm', 'LastSaveDirectory', '');
 
     ObjInsp.Left:=Ini.ReadInteger('ObjInsp', 'Left', ObjInsp.Left);
     ObjInsp.Top:=Ini.ReadInteger('ObjInsp', 'Top', ObjInsp.Top);
