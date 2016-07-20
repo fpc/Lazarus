@@ -93,9 +93,9 @@ type
     procedure FormShow(Sender: TObject);
     procedure SGDblClick(Sender: TObject);
     procedure SGDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect;
-      aState: TGridDrawState);
-    procedure SGSelectCell(Sender: TObject; aCol, aRow: Integer;
-      var CanSelect: Boolean);
+      {%H-}aState: TGridDrawState);
+    procedure SGSelectCell(Sender: TObject; {%H-}aCol, aRow: Integer;
+      var {%H-}CanSelect: Boolean);
     procedure tbAboutClick(Sender: TObject);
     procedure tbCopyClick(Sender: TObject);
   private
