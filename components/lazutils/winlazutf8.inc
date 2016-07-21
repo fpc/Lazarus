@@ -355,7 +355,11 @@ begin
   if L > 0 then
   begin
     Result:='';
+    {$IF FPC_FULLVERSION >= 30000}
     widestringmanager.Wide2AnsiMoveProc(PWideChar(@Buf[0]),Result,CP_UTF8,L-1);
+    {$ELSE}
+    widestringmanager.Wide2AnsiMoveProc(PWideChar(@Buf[0]),Result,CP_UTF8);
+    {$ENDIF}
   end
   else
     Result := Def;
