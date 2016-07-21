@@ -1121,6 +1121,11 @@ begin
         Flags := GetFlagsFromOptions(Options);
         Flags := Flags or CF_INITTOLOGFONTSTRUCT or CF_BOTH;
         RGBColors := DWORD(Font.Color);
+        if fdLimitSize in Options then
+        begin
+          nSizeMin := MinFontSize;
+          nSizeMax := MaxFontSize;
+        end;
       end;
       UserResult := ChooseFontW(@CFW);
       // we need to update LF now
@@ -1146,6 +1151,11 @@ begin
         Flags := GetFlagsFromOptions(Options);
         Flags := Flags or CF_INITTOLOGFONTSTRUCT or CF_BOTH;
         RGBColors := DWORD(Font.Color);
+        if fdLimitSize in Options then
+        begin
+          nSizeMin := MinFontSize;
+          nSizeMax := MaxFontSize;
+        end;
       end;
       UserResult := ChooseFontA(@CF);
     end
