@@ -29,7 +29,7 @@ program FindDeclaration;
 {$mode objfpc}{$H+}
 
 uses
-  SysUtils, CodeCache, CodeToolManager, CodeToolsConfig,
+  SysUtils, CodeCache, CodeToolManager, CodeToolsConfig, LazFileUtils,
   SimpleUnit1;
 
 const
