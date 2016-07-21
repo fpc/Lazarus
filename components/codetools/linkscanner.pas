@@ -3894,11 +3894,11 @@ begin
   {$IFDEF VerboseIncludeSearch}
   debugln(['TLinkScanner.LoadSourceCaseLoUp AFilename="',AFilename,'" AllowVirtual=',AllowVirtual]);
   {$ENDIF}
+  Result:=nil;
   Path:=ResolveDots(ExtractFilePath(AFilename));
   if (not AllowVirtual) and (Path<>'') and (not FilenameIsAbsolute(Path)) then
-    exit(nil);
+    exit;
   FileNameOnly:=ExtractFilename(AFilename);
-  Result:=nil;
   Result:=FOnLoadSource(Self,Path+FileNameOnly,true);
   if (Result<>nil) then exit;
   SecondaryFileNameOnly:=LowerCase(FileNameOnly);
@@ -3915,15 +3915,20 @@ end;
 
 function TLinkScanner.SearchIncludeFile(AFilename: string;
   out NewCode: Pointer; var MissingIncludeFile: TMissingIncludeFile): boolean;
-var PathStart, PathEnd: integer;
+var
+  PathStart, PathEnd: integer;
   IncludePath, CurPath: string;
   ExpFilename: string;
   HasPathDelims: Boolean;
-  function SearchPath(const APath: string): boolean;
+
+  function SearchPath(const APath, RelFilename: string): boolean;
   begin
     Result:=false;
     if APath='' then exit;
-    ExpFilename:=AppendPathDelim(APath)+AFilename;
+    {$IFDEF VerboseIncludeSearch}
+    DebugLn('TLinkScanner.SearchPath CurIncPath="',APath,'" / "',RelFilename,'"');
+    {$ENDIF}
+    ExpFilename:=AppendPathDelim(APath)+RelFilename;
     if not FilenameIsAbsolute(ExpFilename) then
       ExpFilename:=ExtractFilePath(FMainSourceFilename)+ExpFilename;
     NewCode:=LoadSourceCaseLoUp(ExpFilename);
@@ -3947,7 +3952,8 @@ var PathStart, PathEnd: integer;
       Result:=(NewCode<>nil);
       if Result then exit;
       // search in directory of source of include directive
-      if FilenameIsAbsolute(SrcFilename) then begin
+      if FilenameIsAbsolute(SrcFilename)
+      and (CompareFilenames(SrcFilename,FMainSourceFilename)<>0) then begin
         ExpFilename:=ExtractFilePath(SrcFilename)+RelFilename;
         NewCode:=LoadSourceCaseLoUp(ExpFilename);
         Result:=(NewCode<>nil);
@@ -3976,7 +3982,7 @@ var PathStart, PathEnd: integer;
         if IncludePath[PathEnd]=';' then begin
           if PathEnd>PathStart then begin
             CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
-            Result:=SearchPath(CurPath);
+            Result:=SearchPath(CurPath,RelFilename);
             if Result then exit;
           end;
           PathStart:=PathEnd+1;
@@ -3986,7 +3992,7 @@ var PathStart, PathEnd: integer;
       end;
       if PathEnd>PathStart then begin
         CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
-        Result:=SearchPath(CurPath);
+        Result:=SearchPath(CurPath,RelFilename);
         if Result then exit;
       end;
     end;
@@ -4025,16 +4031,17 @@ begin
   {$IFDEF VerboseIncludeSearch}
   debugln(['TLinkScanner.SearchIncludeFile FMainSourceFilename="',FMainSourceFilename,'" SrcFile="',SrcFilename,'" AFilename="',AFilename,'"']);
   {$ENDIF}
-  SearchCasedInIncPath(AFilename);
+  if SearchCasedInIncPath(AFilename) then exit(true);
 
   if ExtractFileExt(AFilename)='' then begin
     // search with the default file extensions
-    if SearchCasedInIncPath(AFilename+'.inc') then exit;
-    if SearchCasedInIncPath(AFilename+'.pp') then exit;
-    if SearchCasedInIncPath(AFilename+'.pas') then exit;
+    if SearchCasedInIncPath(AFilename+'.inc') then exit(true);
+    if SearchCasedInIncPath(AFilename+'.pp') then exit(true);
+    if SearchCasedInIncPath(AFilename+'.pas') then exit(true);
   end;
 
   SetMissingIncludeFile;
+  Result:=false;
 end;
 
 function TLinkScanner.IncludeFile(const AFilename: string): boolean;
