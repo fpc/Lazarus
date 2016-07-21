@@ -330,9 +330,7 @@ type
   public
     IncludePath: string;
     Filename: string;
-    DynamicExtension: boolean;
-    constructor Create(const AFilename, AIncludePath: string;
-                       aDynamicExtension: boolean);
+    constructor Create(const AFilename, AIncludePath: string);
     function CalcMemSize: PtrUInt;
   end;
   
@@ -568,10 +566,8 @@ type
     function ThreadingDirective: boolean;
     function DoDirective(StartPos, DirLen: integer): boolean;
     
-    function IncludeFile(const AFilename: string;
-                         DynamicExtension: boolean): boolean;
-    function SearchIncludeFile(AFilename: string; DynamicExtension: boolean;
-                         out NewCode: Pointer;
+    function IncludeFile(const AFilename: string): boolean;
+    function SearchIncludeFile(AFilename: string; out NewCode: Pointer;
                          var MissingIncludeFile: TMissingIncludeFile): boolean;
     procedure PushIncludeLink(ACleanedPos, ASrcPos: integer; ACode: Pointer);
     function PopIncludeLink: TSourceLink;
@@ -681,7 +677,7 @@ type
     function IgnoreErrorAfterCleanedPos: integer;// before using this, check if valid!
     function IgnoreErrorAfterValid: boolean;
     function CleanPosIsAfterIgnorePos(CleanPos: integer): boolean;
-    function LoadSourceCaseLoUp(const AFilename: string): pointer;
+    function LoadSourceCaseLoUp(const AFilename: string; AllowVirtual: boolean = false): pointer;
 
     function GuessMisplacedIfdefEndif(StartCursorPos: integer;
                                       StartCode: pointer;
@@ -3823,7 +3819,6 @@ function TLinkScanner.IncludeDirective: boolean;
 // filename can be 'filename with spaces'
 var
   IncFilename: string;
-  DynamicExtension: Boolean;
 begin
   Result:=false;
   if StoreDirectives then
@@ -3847,23 +3842,15 @@ begin
     AddLink(CommentEndPos,Code);
   end else begin
     IncFilename:=Trim(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
-    if (IncFilename<>'') and (IncFilename[1]='''')
-    and (IncFilename[length(IncFilename)]='''') then
-      IncFilename:=copy(IncFilename,2,length(IncFilename)-2);
-    ForcePathDelims(IncFilename);
-    DynamicExtension:=false;
-    if IncFilename<>'' then begin
-      if ExtractFileExt(IncFilename)='' then begin
-        if PascalCompiler=pcDelphi then begin
-          // delphi understands quoted include files and default extension is .pas
-          IncFilename:=IncFilename+'.pas';
-        end else begin
-          // default is fpc behaviour (default extension is .pp)
-          IncFilename:=IncFilename+'.pp';
-          DynamicExtension:=true;
-        end;
+    if (IncFilename<>'') and (IncFilename[1]='''') then begin
+      if (IncFilename[length(IncFilename)]='''') then
+        IncFilename:=copy(IncFilename,2,length(IncFilename)-2)
+      else begin
+        SrcPos:=CommentInnerEndPos;
+        RaiseException('missing ''');
       end;
     end;
+    ForcePathDelims(IncFilename);
     {$IFDEF ShowUpdateCleanedSrc}
     DebugLn('TLinkScanner.IncludeDirective A IncFilename="',IncFilename,'" UpdatePos=',DbgS(CommentEndPos-1));
     {$ENDIF}
@@ -3871,7 +3858,7 @@ begin
     // put old position on stack
     PushIncludeLink(CleanedLen,CommentEndPos,Code);
     // load include file
-    Result:=IncludeFile(IncFilename,DynamicExtension);
+    Result:=IncludeFile(IncFilename);
     if Result then begin
       if (SrcPos<=SrcLen) then
         CommentEndPos:=SrcPos
@@ -3898,40 +3885,40 @@ begin
   Result:=true;
 end;
 
-function TLinkScanner.LoadSourceCaseLoUp(
-  const AFilename: string): pointer;
+function TLinkScanner.LoadSourceCaseLoUp(const AFilename: string;
+  AllowVirtual: boolean): pointer;
 var
   Path, FileNameOnly: string;
   SecondaryFileNameOnly: String;
 begin
-  Path:=ExtractFilePath(AFilename);
-  if (Path<>'') and (not FilenameIsAbsolute(Path)) then
+  {$IFDEF VerboseIncludeSearch}
+  debugln(['TLinkScanner.LoadSourceCaseLoUp AFilename="',AFilename,'" AllowVirtual=',AllowVirtual]);
+  {$ENDIF}
+  Path:=ResolveDots(ExtractFilePath(AFilename));
+  if (not AllowVirtual) and (Path<>'') and (not FilenameIsAbsolute(Path)) then
     exit(nil);
   FileNameOnly:=ExtractFilename(AFilename);
   Result:=nil;
-  Result:=FOnLoadSource(Self,TrimFilename(Path+FileNameOnly),true);
+  Result:=FOnLoadSource(Self,Path+FileNameOnly,true);
   if (Result<>nil) then exit;
-  SecondaryFileNameOnly:=lowercase(FileNameOnly);
+  SecondaryFileNameOnly:=LowerCase(FileNameOnly);
   if (SecondaryFileNameOnly<>FileNameOnly) then begin
-    Result:=FOnLoadSource(Self,TrimFilename(Path+SecondaryFileNameOnly),true);
+    Result:=FOnLoadSource(Self,Path+SecondaryFileNameOnly,true);
     if (Result<>nil) then exit;
   end;
   SecondaryFileNameOnly:=UpperCaseStr(FileNameOnly);
   if (SecondaryFileNameOnly<>FileNameOnly) then begin
-    Result:=FOnLoadSource(Self,TrimFilename(Path+SecondaryFileNameOnly),true);
+    Result:=FOnLoadSource(Self,Path+SecondaryFileNameOnly,true);
     if (Result<>nil) then exit;
   end;
 end;
 
 function TLinkScanner.SearchIncludeFile(AFilename: string;
-  DynamicExtension: boolean;
   out NewCode: Pointer; var MissingIncludeFile: TMissingIncludeFile): boolean;
 var PathStart, PathEnd: integer;
-  IncludePath, PathDivider, CurPath: string;
+  IncludePath, CurPath: string;
   ExpFilename: string;
-  SecondaryFilename: String;
   HasPathDelims: Boolean;
-
   function SearchPath(const APath: string): boolean;
   begin
     Result:=false;
@@ -3940,19 +3927,70 @@ var PathStart, PathEnd: integer;
     if not FilenameIsAbsolute(ExpFilename) then
       ExpFilename:=ExtractFilePath(FMainSourceFilename)+ExpFilename;
     NewCode:=LoadSourceCaseLoUp(ExpFilename);
-    if (NewCode=nil) and DynamicExtension then begin
-      if CompareFileExt(ExpFilename,'.pp',true)=0 then
-        ExpFilename:=ChangeFileExt(ExpFilename,'.pas');
-      NewCode:=LoadSourceCaseLoUp(ExpFilename);
-    end;
     Result:=NewCode<>nil;
   end;
   
   procedure SetMissingIncludeFile;
   begin
     if MissingIncludeFile=nil then
-      MissingIncludeFile:=TMissingIncludeFile.Create(AFilename,'',DynamicExtension);
+      MissingIncludeFile:=TMissingIncludeFile.Create(AFilename,'');
     MissingIncludeFile.IncludePath:=IncludePath;
+  end;
+
+  function SearchCasedInIncPath(const RelFilename: string): boolean;
+  begin
+    if FilenameIsAbsolute(FMainSourceFilename) then begin
+      // main source has absolute filename
+      // search in directory of unit
+      ExpFilename:=ExtractFilePath(FMainSourceFilename)+RelFilename;
+      NewCode:=LoadSourceCaseLoUp(ExpFilename);
+      Result:=(NewCode<>nil);
+      if Result then exit;
+      // search in directory of source of include directive
+      if FilenameIsAbsolute(SrcFilename) then begin
+        ExpFilename:=ExtractFilePath(SrcFilename)+RelFilename;
+        NewCode:=LoadSourceCaseLoUp(ExpFilename);
+        Result:=(NewCode<>nil);
+        if Result then exit;
+      end;
+    end else begin
+      // main source is virtual -> allow virtual include file
+      NewCode:=LoadSourceCaseLoUp(RelFilename,true);
+      Result:=(NewCode<>nil);
+      if Result then exit;
+    end;
+
+    // then search the include file in the include path
+    if not HasPathDelims then begin
+      if MissingIncludeFile=nil then
+        IncludePath:=Values.Variables[ExternalMacroStart+'INCPATH']
+      else
+        IncludePath:=MissingIncludeFile.IncludePath;
+
+      {$IFDEF VerboseIncludeSearch}
+      DebugLn('TLinkScanner.SearchIncludeFile IncPath="',IncludePath,'"');
+      {$ENDIF}
+      PathStart:=1;
+      PathEnd:=PathStart;
+      while PathEnd<=length(IncludePath) do begin
+        if IncludePath[PathEnd]=';' then begin
+          if PathEnd>PathStart then begin
+            CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
+            Result:=SearchPath(CurPath);
+            if Result then exit;
+          end;
+          PathStart:=PathEnd+1;
+          PathEnd:=PathStart;
+        end else
+          inc(PathEnd);
+      end;
+      if PathEnd>PathStart then begin
+        CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
+        Result:=SearchPath(CurPath);
+        if Result then exit;
+      end;
+    end;
+    Result:=false;
   end;
 
 begin
@@ -3961,12 +3999,20 @@ begin
   {$ENDIF}
   NewCode:=nil;
   IncludePath:='';
+
+  // beware of 'dir/file.inc'
+  HasPathDelims:=(System.Pos('/',AFilename)>0) or (System.Pos('\',AFilename)>0);
+  if HasPathDelims then
+    ForcePathDelims(AFilename);
+  AFilename:=ResolveDots(AFilename);
+
   if not Assigned(FOnLoadSource) then begin
     NewCode:=nil;
     SetMissingIncludeFile;
     Result:=false;
     exit;
   end;
+
   // if include filename is absolute then load it directly
   if FilenameIsAbsolute(AFilename) then begin
     NewCode:=LoadSourceCaseLoUp(AFilename);
@@ -3975,100 +4021,29 @@ begin
     exit;
   end;
 
-  // include filename is relative
-  // beware of 'dir/file.inc'
-  HasPathDelims:=(System.Pos('/',AFilename)>0) or (System.Pos('\',AFilename)>0);
-  if HasPathDelims then
-    ForcePathDelims(AFilename);
-
-  // first search include file in the directory of the unit
+  // first search without touching the extension
   {$IFDEF VerboseIncludeSearch}
-  debugln(['TLinkScanner.SearchIncludeFile FMainSourceFilename="',FMainSourceFilename,'" SrcFile="',SrcFilename,'" AFilename="',AFilename,'" ExpFilename="',ExpFilename,'"']);
+  debugln(['TLinkScanner.SearchIncludeFile FMainSourceFilename="',FMainSourceFilename,'" SrcFile="',SrcFilename,'" AFilename="',AFilename,'"']);
   {$ENDIF}
-  if FilenameIsAbsolute(FMainSourceFilename) then begin
-    // main source has absolute filename
-    // search in directory of unit
-    ExpFilename:=ExtractFilePath(FMainSourceFilename)+AFilename;
-    NewCode:=LoadSourceCaseLoUp(ExpFilename);
-    Result:=(NewCode<>nil);
-    if Result then exit;
-    // search in directory of include file
-    if FilenameIsAbsolute(SrcFilename) then begin
-      ExpFilename:=ExtractFilePath(SrcFilename)+AFilename;
-      NewCode:=LoadSourceCaseLoUp(ExpFilename);
-      Result:=(NewCode<>nil);
-      if Result then exit;
-    end;
-  end else begin
-    // main source is virtual
-    NewCode:=FOnLoadSource(Self,TrimFilename(AFilename),true);
-    if NewCode=nil then begin
-      SecondaryFilename:=lowercase(AFilename);
-      if SecondaryFilename<>AFilename then
-        NewCode:=FOnLoadSource(Self,TrimFilename(SecondaryFilename),true);
-    end;
-    if NewCode=nil then begin
-      SecondaryFilename:=UpperCaseStr(AFilename);
-      if SecondaryFilename<>AFilename then
-        NewCode:=FOnLoadSource(Self,TrimFilename(SecondaryFilename),true);
-    end;
-    Result:=(NewCode<>nil);
-    if Result then exit;
-  end;
-  
-  // then search the include file in the include path
-  if not HasPathDelims then begin
-    if MissingIncludeFile=nil then
-      IncludePath:=Values.Variables[ExternalMacroStart+'INCPATH']
-    else
-      IncludePath:=MissingIncludeFile.IncludePath;
+  SearchCasedInIncPath(AFilename);
 
-    if Values.IsDefined('DELPHI') then
-      PathDivider:=':'
-    else
-      PathDivider:=':;';
-    {$IFDEF VerboseIncludeSearch}
-    DebugLn('TLinkScanner.SearchIncludeFile IncPath="',IncludePath,'" PathDivider="',PathDivider,'"');
-    {$ENDIF}
-    PathStart:=1;
-    PathEnd:=PathStart;
-    while PathEnd<=length(IncludePath) do begin
-      if ((Pos(IncludePath[PathEnd],PathDivider))>0)
-      {$IFDEF Windows}
-      and (not ((PathEnd-PathStart=1) // ignore colon in drive
-            and (IncludePath[PathEnd]=':')
-            and (IsWordChar[IncludePath[PathEnd-1]])))
-      {$ENDIF}
-      then begin
-        if PathEnd>PathStart then begin
-          CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
-          Result:=SearchPath(CurPath);
-          if Result then exit;
-        end;
-        PathStart:=PathEnd+1;
-        PathEnd:=PathStart;
-      end else
-        inc(PathEnd);
-    end;
-    if PathEnd>PathStart then begin
-      CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
-      Result:=SearchPath(CurPath);
-      if Result then exit;
-    end;
+  if ExtractFileExt(AFilename)='' then begin
+    // search with the default file extensions
+    if SearchCasedInIncPath(AFilename+'.inc') then exit;
+    if SearchCasedInIncPath(AFilename+'.pp') then exit;
+    if SearchCasedInIncPath(AFilename+'.pas') then exit;
   end;
-  
+
   SetMissingIncludeFile;
 end;
 
-function TLinkScanner.IncludeFile(const AFilename: string;
-  DynamicExtension: boolean): boolean;
+function TLinkScanner.IncludeFile(const AFilename: string): boolean;
 var
   NewCode: Pointer;
   MissingIncludeFile: TMissingIncludeFile;
 begin
   MissingIncludeFile:=nil;
-  Result:=SearchIncludeFile(AFilename, DynamicExtension, NewCode,
-                            MissingIncludeFile);
+  Result:=SearchIncludeFile(AFilename,NewCode,MissingIncludeFile);
   if Result then begin
     // change source
     if Assigned(FOnIncludeCode) then
@@ -4186,8 +4161,7 @@ begin
     -> Check all missing include files again }
   for i:=0 to FMissingIncludeFiles.Count-1 do begin
     MissingIncludeFile:=FMissingIncludeFiles[i];
-    if SearchIncludeFile(MissingIncludeFile.Filename,
-      MissingIncludeFile.DynamicExtension,NewCode,MissingIncludeFile)
+    if SearchIncludeFile(MissingIncludeFile.Filename,NewCode,MissingIncludeFile)
     then begin
       Result:=true;
       exit;
@@ -5041,13 +5015,11 @@ end;
 
 { TMissingIncludeFile }
 
-constructor TMissingIncludeFile.Create(const AFilename, AIncludePath: string;
-  aDynamicExtension: boolean);
+constructor TMissingIncludeFile.Create(const AFilename, AIncludePath: string);
 begin
   inherited Create;
   Filename:=AFilename;
   IncludePath:=AIncludePath;
-  DynamicExtension:=aDynamicExtension;
 end;
 
 function TMissingIncludeFile.CalcMemSize: PtrUInt;
