@@ -1558,25 +1558,31 @@ var
     LastPos: TAtomPosition;
     Identifier: String;
     StartFlag: TCommonAtomFlag;
-    IdentifierStart: Integer;
+    IdentifierStart, aStartPos: Integer;
   begin
     Result:=false;
     StartFlag:=CurPos.Flag;
+    aStartPos:=CurPos.StartPos;
     while true do begin
+      //debugln(['TExtractProcTool.AddWithBlock Atom=',GetAtom]);
       if Code<>nil then
         Code^:=Code^+GetAtom;
-      //debugln(['TExtractProcTool.AddWithBlock Atom=',GetAtom]);
       if (CurPos.EndPos>CleanEndPos) or (CurPos.StartPos>SrcLen)
       or (CurPos.StartPos>StartNode.EndPos) then
         break;
-      if (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose]) then begin
+      case CurPos.Flag of
+      cafRoundBracketOpen,cafEdgedBracketOpen:
+        if (CurPos.StartPos>aStartPos) then begin
+          // nested brackets
+          if not ReadBlock(Code) then exit;
+        end;
+      cafRoundBracketClose,cafEdgedBracketClose:
         if (StartFlag=cafRoundBracketOpen) then begin
           if (CurPos.Flag=cafRoundBracketClose) then
             break
           else
             RaiseCharExpectedButAtomFound(')');
-        end;
-        if (StartFlag=cafEdgedBracketOpen) then begin
+        end else if (StartFlag=cafEdgedBracketOpen) then begin
           if (CurPos.Flag=cafEdgedBracketClose) then
             break
           else
