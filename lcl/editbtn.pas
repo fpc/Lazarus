@@ -225,7 +225,8 @@ type
     fOnCheckItem: TCheckItemEvent;
     function DoFilterItem(const ACaption, FilterLC: string;
       ItemData: TObject): Boolean;
-    function DoDefaultFilterItem(const ACaption, FilterLC: string): Boolean; virtual;
+    function DoDefaultFilterItem(const ACaption, FilterLC: string;
+      const ItemData: TObject): Boolean; virtual;
     procedure EditKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure EditChange; override;
     procedure EditEnter; override;
@@ -1125,7 +1126,8 @@ begin
   inherited Destroy;
 end;
 
-function TCustomControlFilterEdit.DoDefaultFilterItem(const ACaption, FilterLC: string): Boolean;
+function TCustomControlFilterEdit.DoDefaultFilterItem(const ACaption, FilterLC: string;
+  const ItemData: TObject): Boolean;
 begin
   Result := (FilterLC='') or (Pos(FilterLC,UTF8LowerCase(ACaption))>0);
 end;
@@ -1148,7 +1150,7 @@ begin
 
   // Filter by item's caption text if needed.
   if not (Result or Done) then
-    Result := DoDefaultFilterItem(ACaption, FilterLC);
+    Result := DoDefaultFilterItem(ACaption, FilterLC, ItemData);
 end;
 
 procedure TCustomControlFilterEdit.OnIdle(Sender: TObject; var Done: Boolean);
