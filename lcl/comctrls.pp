@@ -788,6 +788,7 @@ type
     function GetTabHeight: Smallint;
     function GetTabIndex: Integer;
     function GetTabRectWithBorder: TRect;
+    function GetTabStop: Boolean;
     function GetTabWidth: Smallint;
     procedure SetHotTrack(const AValue: Boolean);
     procedure SetImages(const AValue: TCustomImageList);
@@ -800,6 +801,7 @@ type
     procedure SetTabHeight(const AValue: Smallint);
     procedure SetTabPosition(AValue: TTabPosition); override;
     procedure SetTabs(const AValue: TStrings);
+    procedure SetTabStop(const AValue: Boolean);
     procedure SetTabWidth(const AValue: Smallint);
   protected
     procedure AddRemovePageHandle(APage: TCustomPage); override;
@@ -853,7 +855,7 @@ type
     property TabWidth: Smallint read GetTabWidth write SetTabWidth default 0;
     property TabIndex: Integer read GetTabIndex write SetTabIndex default -1;
     property Tabs: TStrings read FTabs write SetTabs;
-    property TabStop default True;
+    property TabStop: Boolean read GetTabStop write SetTabStop default true; // workaround, see #30305
     //
     property Align;
     property Anchors;

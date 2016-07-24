@@ -505,6 +505,11 @@ begin
   FTabs.Assign(AValue);
 end;
 
+procedure TTabControl.SetTabStop(const AValue: Boolean);
+begin
+  TTabControlNoteBookStrings(FTabs).NoteBook.TabStop := AValue;
+end;
+
 procedure TTabControl.SetTabWidth(const AValue: Smallint);
 begin
   TTabControlStrings(FTabs).TabWidth:=AValue;
@@ -680,6 +685,11 @@ begin
   end;
 end;
 
+function TTabControl.GetTabStop: Boolean;
+begin
+  Result := TTabControlNoteBookStrings(FTabs).NoteBook.TabStop;
+end;
+
 procedure TTabControl.AdjustClientRect(var ARect: TRect);
 begin
   AdjustDisplayRect(ARect);
@@ -700,8 +710,8 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
   FTabs := CreateTabNoteBookStrings;
-  //Set FTab's internal NoteBook.TabStop to False, otherwise TTabControl can always be tabbed into (Issue #0021332)
-  TTabControlNoteBookStrings(FTabs).NoteBook.TabStop := False;
+  TWinControl(Self).TabStop := False; // workaround, see #30305
+  TTabControlNoteBookStrings(FTabs).NoteBook.TabStop := True;
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
   BorderWidth:=0;
