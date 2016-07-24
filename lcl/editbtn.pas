@@ -452,6 +452,7 @@ type
     FRootDir: String;
     FOnAcceptDir: TAcceptFileNameEvent;
     FShowHidden: Boolean;
+    FDialogOptions: TOpenOptions;
     function GetDirectory: String;
     procedure SetDirectory(const AValue: String);
   protected
@@ -463,12 +464,14 @@ type
     procedure RunDialog; virtual;
   public
     property AutoSelected;
+    constructor Create(AOwner: TComponent); override;
   published
     // TDirectory properties.
     property Directory: String read GetDirectory write SetDirectory;
     property RootDir: String read FRootDir write FRootDir;
     property OnAcceptDirectory: TAcceptFileNameEvent read FOnAcceptDir write FonAcceptDir;
     property DialogTitle: String read FDialogTitle write FDialogTitle;
+    property DialogOptions: TOpenOptions read FDialogOptions write FDialogOptions default DefaultOpenDialogOptions;
     property ShowHidden: Boolean read FShowHidden write FShowHidden;
     // TEditButton properties.
     property ButtonCaption;
@@ -1499,6 +1502,12 @@ end;
 
 { TDirectoryEdit }
 
+constructor TDirectoryEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FDialogOptions := DefaultOpenDialogOptions;
+end;
+
 procedure TDirectoryEdit.SetDirectory(const AValue: String);
 begin
   if (Text<>AValue) then
@@ -1519,6 +1528,7 @@ begin
     TSelectDirectoryDialog(Result).FileName:=Directory;
   end;
   // Set some common things.
+  TSelectDirectoryDialog(Result).Options := DialogOptions;
   Result.Title := DialogTitle;
 end;
 
