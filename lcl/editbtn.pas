@@ -224,9 +224,9 @@ type
     fOnFilterItemEx: TFilterItemExEvent;
     fOnCheckItem: TCheckItemEvent;
     function DoFilterItem(const ACaption, FilterLC: string;
-      ItemData: TObject): Boolean;
+      ItemData: Pointer): Boolean;
     function DoDefaultFilterItem(const ACaption, FilterLC: string;
-      const ItemData: TObject): Boolean; virtual;
+      const ItemData: Pointer): Boolean; virtual;
     procedure EditKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure EditChange; override;
     procedure EditEnter; override;
@@ -1126,14 +1126,14 @@ begin
   inherited Destroy;
 end;
 
-function TCustomControlFilterEdit.DoDefaultFilterItem(const ACaption, FilterLC: string;
-  const ItemData: TObject): Boolean;
+function TCustomControlFilterEdit.DoDefaultFilterItem(const ACaption,
+  FilterLC: string; const ItemData: Pointer): Boolean;
 begin
   Result := (FilterLC='') or (Pos(FilterLC,UTF8LowerCase(ACaption))>0);
 end;
 
-function TCustomControlFilterEdit.DoFilterItem(const ACaption, FilterLC: string;
-  ItemData: TObject): Boolean;
+function TCustomControlFilterEdit.DoFilterItem(const ACaption,
+  FilterLC: string; ItemData: Pointer): Boolean;
 var
   Done: Boolean;
 begin

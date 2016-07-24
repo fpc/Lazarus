@@ -475,7 +475,7 @@ begin
     if Assigned(fOnFilterNode) then
       Pass := fOnFilterNode(Node, Done);
     if not (Pass and Done) then
-      Pass := DoFilterItem(Node.Text, FilterLC, TObject(Node.Data));
+      Pass := DoFilterItem(Node.Text, FilterLC, Node.Data);
     if Pass and (fFirstPassedNode=Nil) then
       fFirstPassedNode:=Node;
     // Recursive call for child nodes.
