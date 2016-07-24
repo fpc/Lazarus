@@ -60,7 +60,7 @@ type
     procedure ChooseSchemeButtonClick(Sender: TObject);
     procedure ClearButtonClick(Sender: TObject);
     procedure FilterEditAfterFilter(Sender: TObject);
-    function FilterEditFilterItem(Item: TObject; out Done: Boolean): Boolean;
+    function FilterEditFilterItem(ItemData: Pointer; out Done: Boolean): Boolean;
     procedure FilterEditKeyPress(Sender: TObject; var {%H-}Key: char);
     procedure FindKeyButtonClick(Sender: TObject);
     procedure KeyMapSplitterMoved(Sender: TObject);
@@ -222,21 +222,23 @@ begin
   ClearCommandMapping(TreeView.Selected)
 end;
 
-function TEditorKeymappingOptionsFrame.FilterEditFilterItem(Item: TObject; out Done: Boolean): Boolean;
+function TEditorKeymappingOptionsFrame.FilterEditFilterItem(ItemData: Pointer;
+  out Done: Boolean): Boolean;
 var
   KeyRel: TKeyCommandRelation;
 begin
   Done:=True;
   Result:=False;
-  if Item is TKeyCommandRelation then begin
-    KeyRel:=TKeyCommandRelation(Item);        // Tree item is actual key command.
-    Done:=False;
-    Result:=KeyMapKeyFilter.Key1<>VK_UNKNOWN;
-    if Result then begin                      // Key filter is defined
-      Done:=True;
-      Result:=(CompareIDEShortCutKey1s(@KeyMapKeyFilter,@KeyRel.ShortcutA)=0)
-           or (CompareIDEShortCutKey1s(@KeyMapKeyFilter,@KeyRel.ShortcutB)=0);
-    end;
+  if ItemData=nil then Exit;
+  Assert(TObject(ItemData) is TKeyCommandRelation,
+    'TEditorKeymappingOptionsFrame.FilterEditFilterItem: ItemData is not TKeyCommandRelation.');
+  KeyRel:=TKeyCommandRelation(ItemData);      // Tree item is actual key command.
+  Done:=False;
+  Result:=KeyMapKeyFilter.Key1<>VK_UNKNOWN;
+  if Result then begin                        // Key filter is defined.
+    Done:=True;
+    Result:=(CompareIDEShortCutKey1s(@KeyMapKeyFilter,@KeyRel.ShortcutA)=0)
+         or (CompareIDEShortCutKey1s(@KeyMapKeyFilter,@KeyRel.ShortcutB)=0);
   end;
 end;
 

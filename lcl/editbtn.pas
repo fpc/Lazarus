@@ -188,8 +188,8 @@ type
   // Called when an item is filtered. Returns true if the item passes the filter.
   // Done=False means the data should also be filtered by its title string.
   // Done=True means no other filtering is needed.
-  TFilterItemEvent = function (ItemData: TObject; out Done: Boolean): Boolean of object;
-  TFilterItemExEvent = function (ACaption: string; ItemData: TObject;
+  TFilterItemEvent = function (ItemData: Pointer; out Done: Boolean): Boolean of object;
+  TFilterItemExEvent = function (const ACaption: string; ItemData: Pointer;
                                  out Done: Boolean): Boolean of object;
 
   // Can be used only for items that have a checkbox. Returns true if checked.

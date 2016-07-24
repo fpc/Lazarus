@@ -71,7 +71,7 @@ type
     procedure CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeExpanded(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    function FilterEditFilterItem(Item: TObject; out Done: Boolean): Boolean;
+    function FilterEditFilterItem(ItemData: Pointer; out Done: Boolean): Boolean;
     procedure FormShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
@@ -283,14 +283,14 @@ begin
   end;
 end;
 
-function TIDEOptionsDialog.FilterEditFilterItem(Item: TObject; out Done: Boolean): Boolean;
+function TIDEOptionsDialog.FilterEditFilterItem(ItemData: Pointer; out Done: Boolean): Boolean;
 var
   OptEditor: TAbstractIDEOptionsEditor;
 begin
   Result:=False;
   Done:=False;                        // Filter will use also the node caption.
-  if Item=nil then Exit;
-  OptEditor:=TAbstractIDEOptionsEditor(Item);
+  if ItemData=nil then Exit;
+  OptEditor:=TAbstractIDEOptionsEditor(ItemData);
   OptEditor.RememberDefaultStyles;
   Result:=OptEditor.ContainsTextInCaption(FilterEdit.Filter);
 end;
