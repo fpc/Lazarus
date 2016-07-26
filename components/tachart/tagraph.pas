@@ -892,8 +892,10 @@ begin
 
   // Undo changes made by the drawer (mainly for printing). The user may print
   // something else after the chart and, for example, would not expect the font
-  // to be rotated (Fix for issue #0027163)
+  // to be rotated (Fix for issue #0027163) or the pen to be in xor mode.
   ADrawer.ResetFont;
+  ADrawer.SetXor(false);
+  ADrawer.PrepareSimplePen(clBlack);     // resets canvas pen mode to pmCopy
   ADrawer.SetPenParams(psSolid, clDefault);
   ADrawer.SetBrushParams(bsSolid, clWhite);
   ADrawer.SetAntialiasingMode(amDontCare);
