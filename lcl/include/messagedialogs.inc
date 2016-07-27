@@ -238,7 +238,7 @@ var
   Dlg: TCustomForm;
   Cnt, LastCnt: TControl;
 begin
-  if not ((Key=VK_C) and (Shift = [ssModifier])) then
+  if not ((Key in [VK_C, VK_INSERT]) and (Shift = [ssModifier])) then
     Exit;
 
   Dlg := Self as TCustomForm;
