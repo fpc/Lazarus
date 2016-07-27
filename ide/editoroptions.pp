@@ -2714,7 +2714,7 @@ begin
     TheType := lshHTML;
     DefaultCommentType := DefaultCommentTypes[TheType];
     SynClass := LazSyntaxHighlighterClasses[TheType];
-    SetBothFilextensions('htm;html');
+    SetBothFilextensions('htm;html;xhtml');
     SampleSource :=
       '<html>'#13 + '<title>Lazarus Sample source for html</title>'#13 +
       '<body bgcolor=#ffffff background="bg.jpg">'#13 +
@@ -2774,7 +2774,7 @@ begin
     TheType := lshXML;
     DefaultCommentType := DefaultCommentTypes[TheType];
     SynClass := LazSyntaxHighlighterClasses[TheType];
-    SetBothFilextensions('xml;xsd;xsl;xslt;dtd;lpi;lps;lpk');
+    SetBothFilextensions('xml;xsd;xsl;xslt;dtd;lpi;lps;lpk;wsdl;svg');
     SampleSource :=
       '<?xml version="1.0"?>'#13 + '<!DOCTYPE root ['#13 +
       '  ]>'#13 + '<!-- Comment -->'#13 + '<root version="&test;">'#13 +
@@ -3026,7 +3026,19 @@ begin
     SetBothFilextensions('js');
     SampleSource :=
       '/* JScript */'#13#10 +
-      '/* To be written ... /*'#13#10 + #13#10 +
+      'var semafor={'#13#10 +
+      '  semafor:0,'#13#10 +
+      '  timer:null,'#13#10 +
+      '  name:"Name",'#13#10 +
+      '  clear: function(){'#13#10 +
+      '    try{'#13#10 +
+      '      this.semafor=0;'#13#10 +
+      '      clearTimeout(this.timer);'#13#10 +
+      '    }  catch (e)  { }'#13#10 +
+      '  }'#13#10 +
+      '};'#13#10 +
+
+      #13#10 +
       '/* Text Block */'#13#10 + #13#10;
     AddAttrSampleLines[ahaTextBlock] := 2;
     MappedAttributes := TStringList.Create;
