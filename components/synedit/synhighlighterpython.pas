@@ -122,7 +122,6 @@ type
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: string; override;
     function IdentKind(MayBe: PChar): TtkTokenKind; virtual;
-    function GetKeywordIdentifiers: TStringList; virtual;
     property Keywords: TStringlist read FKeywords;
     property TokenID: TtkTokenKind read FTokenID;
 
@@ -138,6 +137,7 @@ type
     function GetTokenID: TtkTokenKind;
     procedure SetLine(const NewValue: string;
                       LineNumber: Integer); override;
+    function GetKeywordIdentifiers: TStringList; virtual;
     function GetToken: string; override;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
