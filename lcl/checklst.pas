@@ -126,6 +126,7 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnResize;
+    property OnSelectionChange;
     property OnShowHint;
     property OnStartDrag;
     property OnUTF8KeyPress;
