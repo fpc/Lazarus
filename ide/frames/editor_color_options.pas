@@ -335,6 +335,8 @@ begin
       s := 'abc';
       if AttriIdx = ord(ahaFoldedCode) then
         s:= '...';
+      if (AttriIdx = ord(ahaFoldedCodeLine)) or (AttriIdx = ord(ahaHiddenCodeLine)) then
+        s:= '---';
       if AttriIdx = ord(ahaLineNumber) then
         s:= '123';
       TheTree.Canvas.Font.Color := c;

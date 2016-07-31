@@ -52,6 +52,7 @@ type
      ahaHighlightAll,      ahaBracketMatch,       ahaMouseLink,
      ahaLineNumber,        ahaLineHighlight,      ahaModifiedLine,
      ahaCodeFoldingTree,   ahaHighlightWord,      ahaFoldedCode,
+     ahaFoldedCodeLine,    ahaHiddenCodeLine,
      ahaWordGroup,         ahaTemplateEditCur,    ahaTemplateEditSync,
      ahaTemplateEditOther, ahaSyncroEditCur,      ahaSyncroEditSync,
      ahaSyncroEditOther,   ahaSyncroEditArea,     ahaGutterSeparator,

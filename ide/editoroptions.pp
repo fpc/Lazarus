@@ -113,6 +113,7 @@ const
     'Highlight all',       'Brackets highlight',        'Mouse link',
     'Line number',         'Line highlight',            'Modified line',
     'Code folding tree',   'Highlight current word',    'Folded code',
+    'Folded code Line',    'Hidden code Line',
     'Word-Brackets',       'TemplateEdit Current',      'TemplateEdit Sync',
     'TemplateEdit Cells',  'SyncronEdit Current Cells', 'SyncronEdit Syncron Cells',
     'SyncronEdit Other Cells', 'SyncronEdit Range',
@@ -144,6 +145,8 @@ const
     { ahaCodeFoldingTree }     agnGutter,
     { ahaHighlightWord }       agnText,
     { ahaFoldedCode }          agnGutter,
+    { ahaFoldedCodeLine }      agnGutter,
+    { ahaHiddenCodeLine }      agnGutter,
     { ahaWordGroup }           agnText,
     { ahaTemplateEditCur }     agnTemplateMode,
     { ahaTemplateEditSync }    agnTemplateMode,
@@ -184,6 +187,8 @@ const
     { ahaCodeFoldingTree }    [hafBackColor, hafForeColor, hafFrameColor],
     { ahaHighlightWord }      [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaFoldedCode }         [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaFoldedCodeLine }     [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaHiddenCodeLine }     [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaWordGroup }          [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaTemplateEditCur }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaTemplateEditSync }   [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
@@ -2526,6 +2531,8 @@ begin
   AdditionalHighlightAttributes[ahaCodeFoldingTree]     := dlgAddHiAttrCodeFoldingTree;
   AdditionalHighlightAttributes[ahaHighlightWord]       := dlgAddHiAttrHighlightWord;
   AdditionalHighlightAttributes[ahaFoldedCode]          := dlgAddHiAttrFoldedCode;
+  AdditionalHighlightAttributes[ahaFoldedCodeLine]      := dlgAddHiAttrFoldedCodeLine;
+  AdditionalHighlightAttributes[ahaHiddenCodeLine]      := dlgAddHiAttrHiddenCodeLine;
   AdditionalHighlightAttributes[ahaWordGroup]           := dlgAddHiAttrWordGroup;
   AdditionalHighlightAttributes[ahaTemplateEditCur]     := dlgAddHiAttrTemplateEditCur;
   AdditionalHighlightAttributes[ahaTemplateEditSync]    := dlgAddHiAttrTemplateEditSync;
@@ -6457,6 +6464,8 @@ begin
     SetMarkupColor(ahaBracketMatch,      aSynEdit.BracketMatchColor);
     SetMarkupColor(ahaMouseLink,         aSynEdit.MouseLinkColor);
     SetMarkupColor(ahaFoldedCode,        aSynEdit.FoldedCodeColor);
+    SetMarkupColor(ahaFoldedCodeLine,    aSynEdit.FoldedCodeLineColor);
+    SetMarkupColor(ahaHiddenCodeLine,    aSynEdit.HiddenCodeLineColor);
     SetMarkupColor(ahaLineHighlight,     aSynEdit.LineHighlightColor);
     if ASynEdit is TIDESynEditor then
       SetMarkupColor(ahaTopInfoHint,  TIDESynEditor(aSynEdit).TopInfoMarkup);

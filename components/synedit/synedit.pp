@@ -588,7 +588,9 @@ type
     function GetCharsInWindow: Integer;
     function GetCharWidth: integer;
     function GetDefSelectionMode: TSynSelectionMode;
+    function GetFoldedCodeLineColor: TSynSelectedColor;
     function GetFoldState: String;
+    function GetHiddenCodeLineColor: TSynSelectedColor;
     function GetLeftChar: Integer;
     function GetLineHeight: integer;
     function GetLinesInWindow: Integer;
@@ -606,7 +608,9 @@ type
     procedure SetBracketMatchColor(AValue: TSynSelectedColor);
     procedure SetDefSelectionMode(const AValue: TSynSelectionMode);
     procedure SetFoldedCodeColor(AValue: TSynSelectedColor);
+    procedure SetFoldedCodeLineColor(AValue: TSynSelectedColor);
     procedure SetFoldState(const AValue: String);
+    procedure SetHiddenCodeLineColor(AValue: TSynSelectedColor);
     procedure SetHighlightAllColor(AValue: TSynSelectedColor);
     procedure SetIncrementColor(AValue: TSynSelectedColor);
     procedure SetLineHighlightColor(AValue: TSynSelectedColor);
@@ -1128,6 +1132,8 @@ type
     property MouseLinkColor: TSynSelectedColor read GetMouseLinkColor write SetMouseLinkColor;
     property LineHighlightColor: TSynSelectedColor read GetLineHighlightColor write SetLineHighlightColor;
     property FoldedCodeColor: TSynSelectedColor read GetFoldedCodeColor write SetFoldedCodeColor;
+    property FoldedCodeLineColor: TSynSelectedColor read GetFoldedCodeLineColor write SetFoldedCodeLineColor;
+    property HiddenCodeLineColor: TSynSelectedColor read GetHiddenCodeLineColor write SetHiddenCodeLineColor;
 
     property Beautifier: TSynCustomBeautifier read fBeautifier write SetBeautifier;
     property BookMarkOptions: TSynBookMarkOpt read fBookMarkOpt write fBookMarkOpt;
@@ -1712,9 +1718,19 @@ begin
   Result := FBlockSelection.SelectionMode;
 end;
 
+function TCustomSynEdit.GetFoldedCodeLineColor: TSynSelectedColor;
+begin
+  Result := FFoldedLinesView.MarkupInfoFoldedCodeLine;
+end;
+
 function TCustomSynEdit.GetFoldState: String;
 begin
   Result := FFoldedLinesView.GetFoldDescription(0, 0, -1, -1, True);
+end;
+
+function TCustomSynEdit.GetHiddenCodeLineColor: TSynSelectedColor;
+begin
+  Result := FFoldedLinesView.MarkupInfoHiddenCodeLine;
 end;
 
 function TCustomSynEdit.GetLeftChar: Integer;
@@ -1804,6 +1820,11 @@ end;
 procedure TCustomSynEdit.SetFoldedCodeColor(AValue: TSynSelectedColor);
 begin
   FFoldedLinesView.MarkupInfoFoldedCode.Assign(AValue);
+end;
+
+procedure TCustomSynEdit.SetFoldedCodeLineColor(AValue: TSynSelectedColor);
+begin
+  FFoldedLinesView.MarkupInfoFoldedCodeLine.Assign(AValue);
 end;
 
 procedure TCustomSynEdit.SurrenderPrimarySelection;
@@ -5517,6 +5538,11 @@ begin
   TopView := TopView; // Todo: reset TopView on foldedview
   FFoldedLinesView.UnLock;
   FPendingFoldState := '';
+end;
+
+procedure TCustomSynEdit.SetHiddenCodeLineColor(AValue: TSynSelectedColor);
+begin
+  FFoldedLinesView.MarkupInfoHiddenCodeLine.Assign(AValue);
 end;
 
 procedure TCustomSynEdit.SetHighlightAllColor(AValue: TSynSelectedColor);

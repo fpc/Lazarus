@@ -2037,6 +2037,8 @@ resourcestring
   dlgAddHiAttrCodeFoldingTree     = 'Code folding tree';
   dlgAddHiAttrHighlightWord       = 'Highlight current word';
   dlgAddHiAttrFoldedCode          = 'Folded code marker';
+  dlgAddHiAttrFoldedCodeLine      = 'Fold start-line';
+  dlgAddHiAttrHiddenCodeLine      = 'Hide start-line';
   dlgAddHiAttrWordGroup           = 'Word-Brackets';
   dlgAddHiAttrTemplateEditCur     = 'Active Cell';
   dlgAddHiAttrTemplateEditSync    = 'Syncronized Cells';
