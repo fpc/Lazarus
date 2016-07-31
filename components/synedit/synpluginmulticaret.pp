@@ -273,7 +273,7 @@ type
   TSynPluginMultiCaretMode = (
     mcmCancelOnCaretMove,
     mcmMoveAllCarets,
-    // Osly for ActiveMode
+    // Only for ActiveMode
     mcmNoCarets,
     mcmAddingCarets // move main caret, keep others
   );
