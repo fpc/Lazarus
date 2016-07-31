@@ -36,6 +36,9 @@ type
   private
     FRefCount, FInDecRefCount: Integer;
     {$IFDEF WITH_REFCOUNT_DEBUG}
+    {$IFDEF WITH_REFCOUNT_LEAK_DEBUG}
+    FDebugNext, FDebugPrev: TRefCountedObject;
+    {$ENDIF}
     FDebugList: TStringList;
     FInDestroy: Boolean;
     procedure DbgAddName(DebugIdAdr: Pointer = nil; DebugIdTxt: String = '');
@@ -71,6 +74,9 @@ procedure NilThenReleaseRef(var ARefCountedObject {$IFDEF WITH_REFCOUNT_DEBUG}; 
 implementation
 {$IFDEF WITH_REFCOUNT_DEBUG}
 uses LazLoggerBase;
+{$IFDEF WITH_REFCOUNT_LEAK_DEBUG}
+var FUnfreedRefObjList: TRefCountedObject = nil;
+{$ENDIF}
 {$ENDIF}
 
 { TFreeNotifyingObject }
@@ -190,6 +196,11 @@ begin
   {$IFDEF WITH_REFCOUNT_DEBUG}
   if FDebugList = nil then
     FDebugList := TStringList.Create;
+  {$IFDEF WITH_REFCOUNT_LEAK_DEBUG}
+  FDebugNext := FUnfreedRefObjList;
+  FUnfreedRefObjList := Self;
+  if FDebugNext <> nil then FDebugNext.FDebugPrev := Self;
+  {$ENDIF}
   {$ENDIF}
   inherited;
 end;
@@ -198,6 +209,22 @@ destructor TRefCountedObject.Destroy;
 begin
   {$IFDEF WITH_REFCOUNT_DEBUG}
   FreeAndNil(FDebugList);
+  {$IFDEF WITH_REFCOUNT_LEAK_DEBUG}
+  if not( (FDebugPrev=nil) and (FDebugNext = nil) and (FUnfreedRefObjList <> self) ) then begin
+    if FDebugPrev <> nil then begin
+      Assert(FDebugPrev.FDebugNext = Self);
+      FDebugPrev.FDebugNext := FDebugNext;
+    end
+    else begin
+      Assert(FUnfreedRefObjList = Self);
+      FUnfreedRefObjList := FDebugNext;
+    end;
+    if FDebugNext <> nil then begin
+      Assert(FDebugNext.FDebugPrev = Self);
+      FDebugNext.FDebugPrev := FDebugPrev;
+    end;
+  end;
+  {$ENDIF}
   {$ENDIF}
   Assert(FRefcount = 0, 'Destroying referenced object');
   inherited;
