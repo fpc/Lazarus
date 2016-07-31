@@ -1699,7 +1699,7 @@ var
       LineBufferRtlLogPos := -1;
 
       FTokenBreaker.SetHighlighterTokensLine(TV + CurLine, CurTextIndex);
-      CharWidths := FTheLinesView.GetPhysicalCharWidths(CurTextIndex);
+      CharWidths := FTokenBreaker.CharWidths;
       fMarkupManager.PrepareMarkupForRow(CurTextIndex+1);
 
       DividerInfo := DisplayView.GetDrawDividerInfo;  // May call HL.SetRange
