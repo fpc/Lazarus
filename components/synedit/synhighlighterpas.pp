@@ -3652,7 +3652,7 @@ begin
   Node.LineIndex := LineIndex;
   Node.LogXStart := Run;
   Node.LogXEnd := Run + fStringLen;
-  Node.FoldType := Pointer(PtrInt(ABlockType)); //Pointer(PtrUInt(PasBlockType));
+  Node.FoldType := Pointer({%H-}PtrInt(ABlockType)); //Pointer(PtrUInt(PasBlockType));
   Node.FoldTypeCompatible := Pointer(PtrUInt(PascalFoldTypeCompatibility[PasBlockType]));
   Node.FoldAction := aActions;
   case PasBlockType of
@@ -3714,7 +3714,7 @@ begin
       act := act + FFoldConfig[ord(ABlockType)].FoldActions;
     if not FAtLineStart then
       act := act - [sfaFoldHide];
-    DoInitNode(nd, False, Pointer(PtrUInt(ABlockType)), act, FoldBlock);
+    DoInitNode(nd{%H-}, False, Pointer(PtrUInt(ABlockType)), act, FoldBlock);
     CollectingNodeInfoList.Add(nd);
   end;
   //if not FoldBlock then
@@ -3742,7 +3742,7 @@ begin
       act := act + FFoldConfig[PtrUInt(ABlockType)].FoldActions;
     if not FoldBlock then
       act := act - [sfaFold, sfaFoldFold, sfaFoldHide];
-    DoInitNode(nd, True, Pointer(PtrUInt(ABlockType)), act, FoldBlock); // + FFoldConfig[ord(ABlockType)].FoldActions);
+    DoInitNode(nd{%H-}, True, Pointer(PtrUInt(ABlockType)), act, FoldBlock); // + FFoldConfig[ord(ABlockType)].FoldActions);
     CollectingNodeInfoList.Add(nd);
   end;
   //if not FoldBlock then
@@ -3834,7 +3834,7 @@ begin
       act := act + FFoldConfig[ord(ABlockType)].FoldActions;
     if not FAtLineStart then
       act := act - [sfaFoldHide];
-    DoInitNode(nd, False, Pointer(PtrUInt(ABlockType)), act, FoldBlock);
+    DoInitNode(nd{%H-}, False, Pointer(PtrUInt(ABlockType)), act, FoldBlock);
     CollectingNodeInfoList.Add(nd);
   end;
   if not FoldBlock then
@@ -3864,7 +3864,7 @@ begin
       act := act - [sfaFold, sfaFoldFold, sfaFoldHide];
     if NoMarkup then
       exclude(act, sfaMarkup);
-    DoInitNode(nd, True, Pointer(PtrUInt(BlockType)), act, DecreaseLevel);
+    DoInitNode(nd{%H-}, True, Pointer(PtrUInt(BlockType)), act, DecreaseLevel);
     CollectingNodeInfoList.Add(nd);
   end;
   EndCodeFoldBlock(DecreaseLevel);

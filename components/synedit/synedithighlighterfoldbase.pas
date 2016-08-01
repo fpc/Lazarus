@@ -1522,8 +1522,6 @@ begin
 end;
 
 function TLazSynEditNestedFoldsList.Count: Integer;
-var
-  hl: TSynCustomFoldHighlighter;
 begin
   if (FCount < 0) then begin
     InitCount;
@@ -1536,8 +1534,6 @@ begin
 end;
 
 function TLazSynEditNestedFoldsList.OpeningOnLineCount: Integer;
-var
-  hl: TSynCustomFoldHighlighter;
 begin
   if (not FIncludeOpeningOnLine) or (FLine < 0) then
     exit(0);
@@ -2022,7 +2018,7 @@ begin
     act := act - [sfaFoldFold, sfaFoldHide]; // it is closing tag
   end;
 
-  DoInitNode(nd, FinishingABlock, ABlockType, act, LevelChanged);
+  DoInitNode(nd{%H-}, FinishingABlock, ABlockType, act, LevelChanged);
   FCollectingNodeInfoList.Add(nd);
 end;
 

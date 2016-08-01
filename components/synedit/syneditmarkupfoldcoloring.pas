@@ -258,7 +258,6 @@ var
   i,lvl,z : integer; //iterate parents fold
 
   procedure AddVerticalLine( ANode: TSynFoldNodeInfo );
-  var x,j : integer;
   begin
     z := Length(FHighlights);
     SetLength(FHighlights, z+1);
