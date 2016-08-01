@@ -196,6 +196,7 @@ begin
   if not (csDestroying in ComponentState) then
     GlobalNameSpace.BeginWrite;
   try
+    Application.RemoveAsyncCalls(Self); // because of Application.QueueAsyncCall(@Moved, 0); in WMMove
     DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.Destroy'){$ENDIF};
     FreeThenNil(FIcon);
     FreeIconHandles;
@@ -725,7 +726,7 @@ end;
 procedure TCustomForm.WMMove(var Message: TLMMove);
 begin
   inherited WMMove(Message);
-  Application.QueueAsyncCall(@Moved, 0)
+  Application.QueueAsyncCall(@Moved, 0);
 end;
 
 procedure TCustomForm.Moved(Data: PtrInt);
