@@ -220,6 +220,7 @@ type
     FOriginalData: PByte; // Exists and is set in case the data needed pre-multiplication
     FAlignment: TCocoaBitmapAlignment;
     FFreeData: Boolean;
+    FModified_SinceLastRecreate: Boolean;
     FDataSize: Integer;
     FBytesPerRow: Integer;
     FDepth: Byte;
@@ -247,6 +248,8 @@ type
     procedure CreateHandle();
     procedure FreeHandle();
     procedure ReCreateHandle();
+    procedure ReCreateHandle_IfModified();
+    procedure SetModified();
     function CreateSubImage(const ARect: TRect): CGImageRef;
     function CreateMaskImage(const ARect: TRect): CGImageRef;
     procedure PreMultiplyAlpha();
@@ -391,6 +394,7 @@ type
     procedure RestoreCGFillping(Ctx: CGContextRef; Width, Height: CGFloat);
     procedure ApplyTransform(Trans: CGAffineTransform);
     procedure ClearClipping;
+    procedure AttachedBitmap_SetModified(); virtual;
   public
     ctx: NSGraphicsContext;
     isControlDC: Boolean; // control DCs should never be freed by ReleaseDC as the control will free it by itself
@@ -461,6 +465,8 @@ type
   private
     FBitmap : TCocoaBitmap;
     procedure SetBitmap(const AValue: TCocoaBitmap);
+  protected
+    procedure AttachedBitmap_SetModified(); override;
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
@@ -944,7 +950,21 @@ end;
 procedure TCocoaBitmap.ReCreateHandle;
 begin
   FreeHandle();
+  if (FOriginalData <> nil) and (FData <> nil) then // fix bug 28692
+    System.Move(FOriginalData^, FData^, FDataSize);
   CreateHandle();
+end;
+
+procedure TCocoaBitmap.ReCreateHandle_IfModified;
+begin
+  if FModified_SinceLastRecreate then
+    ReCreateHandle();
+  FModified_SinceLastRecreate := False;
+end;
+
+procedure TCocoaBitmap.SetModified;
+begin
+  FModified_SinceLastRecreate := True;
 end;
 
 function TCocoaBitmap.CreateSubImage(const ARect: TRect): CGImageRef;
@@ -1626,6 +1646,7 @@ begin
     CGContextFillRect(CGContext, GetCGRectSorted(X1, Y1, X2, Y2));
   finally
     ctx.restoreGraphicsState;
+    AttachedBitmap_SetModified();
   end;
 end;
 
@@ -1688,6 +1709,8 @@ begin
 
   FPenPos.x := X;
   FPenPos.y := Y;
+
+  AttachedBitmap_SetModified();
 end;
 
 function TCocoaContext.GetPixel(X,Y:integer): TColor;
@@ -1719,6 +1742,8 @@ begin
     //restore the brush
   if Assigned(FBrush) then
      FBrush.Apply(Self);
+
+  AttachedBitmap_SetModified();
 end;
 
 procedure CGContextAddLCLPoints(cg: CGContextRef; const Points: array of TPoint;NumPts:Integer);
@@ -1776,6 +1801,8 @@ begin
     CGContextDrawPath(cg, kCGPathFillStroke)
   else
     CGContextDrawPath(cg, kCGPathEOFillStroke);
+
+  AttachedBitmap_SetModified();
 end;
 
 procedure TCocoaContext.Polyline(const Points: array of TPoint; NumPts: Integer);
@@ -1788,6 +1815,8 @@ begin
   CGContextBeginPath(cg);
   CGContextAddLCLPoints(cg, Points, NumPts);
   CGContextStrokePath(cg);
+
+  AttachedBitmap_SetModified();
 end;
 
 procedure TCocoaContext.Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; UseBrush: TCocoaBrush);
@@ -1814,6 +1843,8 @@ begin
     CGContextAddLCLRect(cg, X1, Y1, X2, Y2, true);
 
   CGContextStrokePath(cg);
+
+  AttachedBitmap_SetModified();
 end;
 
 procedure TCocoaContext.BackgroundFill(dirtyRect:NSRect);
@@ -1828,6 +1859,7 @@ begin
 
   CGContextFillRect(cg,CGRect(dirtyRect));
 
+  AttachedBitmap_SetModified();
 end;
 
 procedure TCocoaContext.Ellipse(X1, Y1, X2, Y2:Integer);
@@ -1844,6 +1876,8 @@ begin
   CGContextBeginPath(CGContext);
   CGContextAddEllipseInRect(CGContext, R);
   CGContextDrawPath(CGContext, kCGPathFillStroke);
+
+  AttachedBitmap_SetModified();
 end;
 
 procedure TCocoaContext.TextOut(X, Y: Integer; Options: Longint; Rect: PRect; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
@@ -1883,11 +1917,14 @@ begin
   end;
 
   CGContextRestoreGState(CGContext());
+
+  AttachedBitmap_SetModified();
 end;
 
 procedure TCocoaContext.Frame(const R: TRect);
 begin
   Rectangle(R.Left, R.Top, R.Right + 1, R.Bottom + 1, False, nil);
+  AttachedBitmap_SetModified();
 end;
 
 procedure TCocoaContext.Frame3d(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
@@ -1928,11 +1965,13 @@ begin
     lCanvas.Free;
   end;
   {$endif}
+  AttachedBitmap_SetModified();
 end;
 
 procedure TCocoaContext.FrameRect(const ARect: TRect; const ABrush: TCocoaBrush);
 begin
- Rectangle(Arect.Left,ARect.Top,Arect.Right,ARect.Bottom, False, ABrush);
+  Rectangle(Arect.Left,ARect.Top,Arect.Right,ARect.Bottom, False, ABrush);
+  AttachedBitmap_SetModified();
 end;
 
 procedure TCocoaContext.SetCGFillping(Ctx: CGContextRef; Width, Height: CGFloat);
@@ -1990,6 +2029,11 @@ begin
   end;
 end;
 
+procedure TCocoaContext.AttachedBitmap_SetModified;
+begin
+
+end;
+
 function TCocoaContext.DrawImageRep(dstRect: NSRect; const srcRect: NSRect;
   ImageRep: NSBitmapImageRep): Boolean;
 var
@@ -2011,6 +2055,7 @@ begin
   finally
     ctx.restoreGraphicsState;
   end;
+  AttachedBitmap_SetModified();
 end;
 
 function TCocoaContext.StretchDraw(X, Y, Width, Height: Integer;
@@ -2040,15 +2085,16 @@ begin
 
     CGImageRelease(MskImage);
     CGContextRestoreGState(CGContext);
-    Bmp.ReCreateHandle(); // Fix for bug 28102
+    Bmp.ReCreateHandle_IfModified(); // Fix for bug 28102
   end
   else
   begin
     // convert Y coordinate of the source bitmap
     YSrc := Bmp.Height - (SrcHeight + YSrc);
     Result := DrawImageRep(GetNSRect(X, Y, Width, Height),GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), bmp.ImageRep);
-    Bmp.ReCreateHandle(); // Fix for bug 28102
+    Bmp.ReCreateHandle_IfModified(); // Fix for bug 28102
   end;
+  AttachedBitmap_SetModified();
 end;
 
 {------------------------------------------------------------------------------
@@ -2148,6 +2194,7 @@ begin
   NSGraphicsContext.setCurrentContext(ctx);
   ABitmap.imagerep.drawAtPoint(NSMakePoint(X, Y));
   NSGraphicsContext.restoreGraphicsState();
+  AttachedBitmap_SetModified();
 end;
 
 procedure TCocoaContext.DrawFocusRect(ARect: TRect);
@@ -2176,6 +2223,7 @@ begin
     lCanvas.Free;
   end;
   {$endif}
+  AttachedBitmap_SetModified();
 end;
 
 { TCocoaBitmapContext }
@@ -2199,6 +2247,12 @@ begin
     InitDraw(Bitmap.Width, Bitmap.Height);
     pool.release;
   end;
+end;
+
+procedure TCocoaBitmapContext.AttachedBitmap_SetModified;
+begin
+  if FBitmap = nil then Exit;
+  FBitmap.SetModified();
 end;
 
 constructor TCocoaBitmapContext.Create;
