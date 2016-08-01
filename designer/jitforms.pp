@@ -34,7 +34,12 @@ unit JITForms;
 
 {$I ide.inc}
 
+{$IF FPC_FULLVERSION<30100}
+  {$DEFINE HasVMTParent}
+{$ENDIF}
+
 { $DEFINE VerboseJITForms}
+
 
 interface
 
@@ -419,8 +424,8 @@ var
 begin
   Result:=100000;
   if AClass=nil then exit;
-  p:=PPointer(pointer(AClass)+vmtMethodStart);
   Result:=vmtMethodStart;
+  p:=PPointer(pointer(AClass)+Result);
   while (p^<>nil) and (Result<100000) do begin
     inc(p);
     inc(Result,SizeOf(Pointer));
@@ -1442,7 +1447,17 @@ function TJITComponentList.CreateNewJITClass(AncestorClass: TClass;
 // that descends from AncestorClass.
 // The new class will have no new variables, no new methods and no new fields.
 var
-  NewVMT: Pointer;
+  AncestorVMT: PVmt;
+
+  procedure WarnUnsupportedVMTEntry(vmtOffset: PtrInt; const EntryName: string);
+  begin
+    if PPointer(Pointer(AncestorVMT)+vmtOffset)^<>nil then
+      debugln(['Warn: (lazarus) TJITComponentList.CreateNewJITClass ',EntryName,' not yet supported. Ancestor=',AncestorClass.ClassName,' Class=',NewClassName]);
+  end;
+
+
+var
+  NewVMT: PVmt;
   ClassNamePShortString: Pointer;
   NewFieldTable: PFieldTable;
   NewClassTable: PFieldClassTable;
@@ -1465,6 +1480,8 @@ begin
     raise Exception.Create('CreateNewClass NewUnitName is not a valid identifier');
   Result:=nil;
 
+  AncestorVMT:=PVmt(AncestorClass);
+
   // create vmt
   vmtSize:=GetVMTSize(AncestorClass);
   vmtTailSize:=vmtSize-vmtMethodStart;
@@ -1472,22 +1489,30 @@ begin
   FillChar(NewVMT^,vmtSize,0);
 
   // set vmtInstanceSize
-  PPtrInt(NewVMT+vmtInstanceSize)^:=AncestorClass.InstanceSize;
-  PPtrInt(NewVMT+vmtInstanceSizeNeg)^:=-AncestorClass.InstanceSize;
+  NewVMT^.vInstanceSize:=AncestorClass.InstanceSize;
+  NewVMT^.vInstanceSize2:=-AncestorClass.InstanceSize;
 
   // set vmtParent
-  TClass(Pointer(NewVMT+vmtParent)^):=AncestorClass;
+  {$IFDEF HasVMTParent}
+  NewVMT^.vParent:=AncestorVMT;
+  {$ELSE}
+  GetMem(NewVMT^.vParentRef,SizeOf(Pointer));
+  NewVMT^.vParentRef^:=AncestorVMT;
+  {$ENDIF}
 
   // set vmtClassName: create pointer to classname (PShortString)
   GetMem(ClassNamePShortString,SizeOf(ShortString));
   System.Move(NewClassName[0],ClassNamePShortString^,SizeOf(ShortString));
-  Pointer(Pointer(NewVMT+vmtClassName)^):=ClassNamePShortString;// don't use
+  NewVMT^.vClassName:=ClassNamePShortString; // don't use
                  // PShortString, so that the compiler does not get silly ideas
+
+  WarnUnsupportedVMTEntry(vmtDynamicTable,'vmtDynamicTable');
+  WarnUnsupportedVMTEntry(vmtMethodTable,'vmtMethodTable');
 
   // set vmtFieldTable
   GetMem(NewFieldTable,SizeOf(TFieldTable));
   FillChar(NewFieldTable^,SizeOf(TFieldTable),0);
-  PFieldTable(Pointer(NewVMT+vmtFieldTable)^):=NewFieldTable;
+  NewVMT^.vFieldTable:=NewFieldTable;
 
   // ClassTable
   GetMem(NewClassTable,SizeOf(Word));
@@ -1498,23 +1523,30 @@ begin
   TypeInfoSize := CalculateTypeInfoSize(NewClassName,0);
   GetMem(NewTypeInfo,TypeInfoSize);
   FillChar(NewTypeInfo^,TypeInfoSize,0);
-  Pointer(Pointer(NewVMT+vmtTypeInfo)^):=NewTypeInfo;
+  NewVMT^.vTypeInfo:=NewTypeInfo;
 
   // set TypeInfo Kind and Name
   NewTypeInfo^.Kind:=tkClass;
   System.Move(NewClassName[0],NewTypeInfo^.Name[0],length(NewClassName)+1);
   NewTypeData:=GetTypeData(NewTypeInfo);
 
+  // copy vmtInitTable
+  NewVMT^.vInitTable:=AncestorVMT^.vInitTable;
+
+  WarnUnsupportedVMTEntry(vmtAutoTable,'vmtAutoTable');
+
   // copy vmtIntfTable
-  Pointer(Pointer(NewVMT+vmtIntfTable)^):=Pointer(Pointer(Pointer(AncestorClass)+vmtIntfTable)^);
+  NewVMT^.vIntfTable:=AncestorVMT^.vIntfTable;
+
+  WarnUnsupportedVMTEntry(vmtMsgStrPtr,'vmtMsgStrPtr');
 
   // set TypeData (PropCount is the total number of properties, including ancestors)
   NewTypeData^.ClassType:=TClass(NewVMT);
-  {$IF FPC_FULLVERSION>=30100}
+  {$IFDEF HasVMTParent}
+  NewTypeData^.ParentInfo:=AncestorClass.ClassInfo;
+  {$ELSE}
   GetMem(NewTypeData^.ParentInfoRef,SizeOf(Pointer));
   NewTypeData^.ParentInfoRef^:=AncestorClass.ClassInfo;
-  {$ELSE}
-  NewTypeData^.ParentInfo:=AncestorClass.ClassInfo;
   {$ENDIF}
   NewTypeData^.PropCount:=GetTypeData(NewTypeData^.ParentInfo)^.PropCount;
   NewTypeData^.UnitName:=NewUnitName;
@@ -1522,13 +1554,13 @@ begin
   AddedPropCount^:=0;
 
   // copy the standard methods
-  System.Move(Pointer(Pointer(AncestorClass)+vmtMethodStart)^,
-              Pointer(NewVMT+vmtMethodStart)^,
+  System.Move(Pointer(Pointer(AncestorVMT)+vmtMethodStart)^,
+              Pointer(Pointer(NewVMT)+vmtMethodStart)^,
               vmtTailSize);
 
   // override 'ValidateRename' for TComponent descendants
   if AncestorClass.InheritsFrom(TComponent) then begin
-    Pointer(Pointer(NewVMT+TComponentValidateRenameOffset)^):=
+    PPointer(Pointer(NewVMT)+TComponentValidateRenameOffset)^:=
                            @TComponentWithOverrideValidateRename.ValidateRename;
   end;
 
