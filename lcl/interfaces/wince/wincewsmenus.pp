@@ -372,20 +372,12 @@ begin
   DebugLn('[CeSetMenu] MenuItemsList.Text ' + MenuItemsList.Text);
   {$endif}
   // Remove previously installed top-level menu click handlers
-  MenuItemsList.Sort;
-  while MenuItemsList.Find('1001', lIndex) do
+  for lIndex := MenuItemsList.Count-1 downto 0 do
   begin
-    MenuItemsList.Delete(lIndex);
-    {$ifdef VerboseWinCEMenu}
-    DebugLn(Format('[CeSetMenu] MenuItemsList.Delete 1001 Index %d', [lIndex]));
-    {$endif}
-  end;
-  while MenuItemsList.Find('1002', lIndex) do
-  begin
-    MenuItemsList.Delete(lIndex);
-    {$ifdef VerboseWinCEMenu}
-    DebugLn(Format('[CeSetMenu] MenuItemsList.Delete 1002 Index %d', [lIndex]));
-    {$endif}
+    if (MenuItemsList[lIndex] = '1001') or (MenuItemsList[lIndex] = '1002') then
+    begin
+      MenuItemsList.Delete(lIndex);
+    end;
   end;
 
   GetWindowRect(Wnd, BR);
