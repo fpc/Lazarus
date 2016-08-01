@@ -7,13 +7,13 @@ object Form1: TForm1
   ClientHeight = 500
   ClientWidth = 463
   OnCreate = FormCreate
-  LCLVersion = '1.1'
+  LCLVersion = '1.7'
   object comboControls: TComboBox
     Left = 80
-    Height = 23
+    Height = 21
     Top = 12
     Width = 136
-    ItemHeight = 15
+    ItemHeight = 0
     ItemIndex = 0
     Items.Strings = (
       'TCDMenu'
@@ -61,7 +61,7 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 463
-    PageIndex = 2
+    PageIndex = 0
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 2
     TabStop = True

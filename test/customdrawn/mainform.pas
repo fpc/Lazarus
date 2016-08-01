@@ -183,6 +183,7 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 var
   lItem: TCDListItems;
+  lToolbar: TCDToolbar;
 begin
   // We still dont have a property editor for this
   lItem := listviewCommon.Items.Add('First', -1, -1);
@@ -196,6 +197,15 @@ begin
   lItem := listviewCommon.Items.Add('Fourth', -1, -1);
   lItem.Add('4thSub1', -1, -1);
   lItem.Add('4thSub2', -1, -1);
+
+  // Toolbar has no design time control right now
+  lToolbar := TCDToolbar.Create(Self);
+  lToolbar.Parent := pageToolbars;
+  lToolbar.AddItem(tikButton);
+  lToolbar.AddItem(tikCheckButton);
+  lToolbar.AddItem(tikDropDownButton);
+  lToolbar.AddItem(tikSeparator);
+  lToolbar.AddItem(tikDivider);
 end;
 
 procedure TForm1.HandleClick(Sender: TObject);
