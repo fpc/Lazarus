@@ -8000,7 +8000,8 @@ begin
   List:=TStringList.Create;
   UnitList:=nil;
   try
-    s:=XMLConfig.GetValue(Path+'Units/Value','');
+    SubPath:=Path+'Units/Value';
+    s:=XMLConfig.GetValue(SubPath,'');
     List.Delimiter:=';';
     List.StrictDelimiter:=true;
     List.DelimitedText:=s;
@@ -8008,8 +8009,8 @@ begin
     for i:=0 to UnitList.Count-1 do begin
       Filename:=TrimFilename(UnitList[i]);
       Unit_Name:=ExtractFileNameOnly(Filename);
-      if (Unit_Name='') or not IsValidIdent(Unit_Name) then begin
-        DebugLn(['Warning: [TFPCTargetConfigCache.LoadFromXMLConfig] invalid unitname: ',s]);
+      if (Unit_Name='') or not IsDottedIdentifier(Unit_Name) then begin
+        DebugLn(['Warning: [TFPCTargetConfigCache.LoadFromXMLConfig] invalid unitname "',Unit_Name,'" in "',XMLConfig.Filename,'" at "',SubPath,'"']);
         continue;
       end;
       if Units=nil then
