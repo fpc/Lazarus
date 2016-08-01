@@ -6,7 +6,7 @@ interface
 
 uses
   // RTL
-  Classes, SysUtils, Types, fpcanvas, fpimage,
+  Classes, SysUtils, Types, fpcanvas, fpimage, Math,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
   Graphics, Controls, LCLType,
   //
@@ -185,7 +185,7 @@ procedure TCDDrawerMac.DrawToolBarItem(ADest: TCanvas; ASize: TSize;
   ACurItem: TCDToolBarItem; AX, AY: Integer; AState: TCDControlState;
   AStateEx: TCDToolBarStateEx);
 var
-  lX, lY1, lY2: Integer;
+  lX, lY1, lY2, lEffWidth: Integer;
 
   procedure DrawToolBarItemBorder();
   begin
@@ -220,8 +220,14 @@ begin
     if ACurItem.SubpartKind = tiskArrow then
     begin
       // Centralize the arrow in the available space
-      lX := AX - ASize.CX div 2;
-      lY1 := AY - ASize.CY div 2;
+      if ACurItem.Width > 0 then
+        lEffWidth := ACurItem.Width
+      else
+        lEffWidth := Min(ASize.CX, GetMeasures(TCDTOOLBAR_ITEM_ARROW_WIDTH));
+      lX := AX + (ASize.CX - lEffWidth) div 2;
+      lY1 := AY + (ASize.CY - lEffWidth) div 2;
+      ASize.CY := lEffWidth;
+      ASize.CX := lEffWidth;
       DrawExpandTriangle(ADest, ASize, lX, lY1, csfDownArrow);
       Exit;
     end;

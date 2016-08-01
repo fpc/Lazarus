@@ -303,17 +303,20 @@ begin
     lSize.CY := R.Bottom - R.Top;
     case Details.Part of
       TP_BUTTON, TP_DROPDOWNBUTTON, TP_SPLITBUTTON:
+      begin
         lCDToolbarItem.Kind := tikButton;
+        lCDToolbarItem.Width := lSize.CX;
+      end;
       TP_SPLITBUTTONDROPDOWN:
       begin
         lCDToolbarItem.Kind := tikDropDownButton;
         lCDToolbarItem.SubpartKind := tiskArrow;
+        lCDToolbarItem.Width := -1;
       end
       //TP_SEPARATOR, TP_SEPARATORVERT, TP_DROPDOWNBUTTONGLYPH: // tikSeparator, tikDivider
     else
       Exit;
     end;
-    lCDToolbarItem.Width := lSize.CX;
     lCDToolbarItem.Down := IsChecked(Details);
 
     lCDToolbarItem.State := [];
