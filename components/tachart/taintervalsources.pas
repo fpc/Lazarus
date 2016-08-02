@@ -375,9 +375,9 @@ end;
 procedure TDateTimeIntervalChartSource.SetSuppressPrevUnit(AValue: Boolean);
 begin
   if FSuppressPrevUnit = AValue then exit;
+  BeginUpdate;
   FSuppressPrevUnit := AValue;
-  InvalidateCaches;
-  Notify;
+  EndUpdate;
 end;
 
 procedure TDateTimeIntervalChartSource.ValuesInRange(

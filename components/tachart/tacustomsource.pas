@@ -123,8 +123,8 @@ type
   TBasicChartSource = class(TComponent)
   strict private
     FBroadcaster: TBroadcaster;
-    FUpdateCount: Integer;
   strict protected
+    FUpdateCount: Integer;
     procedure Notify;
   public
     constructor Create(AOwner: TComponent); override;
@@ -156,7 +156,6 @@ type
   strict protected
     FExtent: TDoubleRect;
     FExtentIsValid: Boolean;
-    FUpdateCount: Integer;
     FValuesTotal: Double;
     FValuesTotalIsValid: Boolean;
     FXCount: Cardinal;

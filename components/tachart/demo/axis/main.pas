@@ -35,6 +35,7 @@ type
     ChartToolsetDateTime: TChartToolset;
     cbStaticX: TCheckBox;
     cbUnitsX: TComboBox;
+    CbSuppressPrevUnit: TCheckBox;
     csStripes: TChartStyles;
     DateTimeIntervalChartSource1: TDateTimeIntervalChartSource;
     gbPositionX: TGroupBox;
@@ -45,6 +46,7 @@ type
     lblUnitsY: TLabel;
     lcsMarks: TListChartSource;
     PageControl1: TPageControl;
+    Panel1: TPanel;
     pnlPosition: TPanel;
     rbPositionBottom: TRadioButton;
     rbPositionLeft: TRadioButton;
@@ -64,6 +66,7 @@ type
     udcsSub: TUserDefinedChartSource;
     procedure cbStaticXChange(Sender: TObject);
     procedure cbStaticYChange(Sender: TObject);
+    procedure CbSuppressPrevUnitChange(Sender: TObject);
     procedure cbUnitsXChange(Sender: TObject);
     procedure cbUnitsYChange(Sender: TObject);
     procedure ChartCustomMarksAxisList1MarkToText(var AText: String; AMark: Double);
@@ -102,6 +105,11 @@ end;
 procedure TForm1.cbStaticYChange(Sender: TObject);
 begin
   ChartPosition.AxisList[2].Visible := cbStaticY.Checked;
+end;
+
+procedure TForm1.CbSuppressPrevUnitChange(Sender: TObject);
+begin
+  DateTimeIntervalChartSource1.SuppressPrevUnit := CbSuppressPrevUnit.Checked;
 end;
 
 procedure TForm1.cbUnitsXChange(Sender: TObject);
