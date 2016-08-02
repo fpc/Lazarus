@@ -208,7 +208,7 @@ type
     procedure RemoveCommand(ACommand: TIDECommand);
   public
     property ExtToolCount: integer read fExtToolCount write SetExtToolCount;// in menu
-    property Relations[Index:integer]:TKeyCommandRelation read GetRelation; default;
+    property Relations[Index:integer]: TKeyCommandRelation read GetRelation; default;
     property RelationCount:integer read GetRelationCount;
   end;
 
@@ -3230,7 +3230,10 @@ var
   CmdRel: TKeyCommandRelation;
 begin
   if NewCount=fExtToolCount then exit;
+  //debugln(['TKeyCommandRelationList.SetExtToolCount NewCount=',NewCount,' fExtToolCount=',fExtToolCount]);
   ExtToolCat:=FindCategoryByName(CommandCategoryToolMenuName);
+  //for i:=0 to ExtToolCat.Count-1 do
+  //  debugln(['  ',i,'/',ExtToolCat.Count,' ',TKeyCommandRelation(ExtToolCat[i]).Name]);
   if NewCount>fExtToolCount then begin
     // increase available external tool commands
     while NewCount>fExtToolCount do begin
@@ -3244,13 +3247,14 @@ begin
     end;
   end else begin
     // decrease available external tool commands
-    // they are always at the end of the Tools menu
+    // Note: the commands are somewhere in the list, not neccesarily at the end
     i:=ExtToolCat.Count-1;
-    while (i>=0) and (fExtToolCount>NewCount) do begin
+    while (i>=0) do begin
       if TObject(ExtToolCat[i]) is TKeyCommandRelation then begin
         ExtToolRelation:=TKeyCommandRelation(ExtToolCat[i]);
-        if (ExtToolRelation.Command>=ecExtToolFirst)
-        and (ExtToolRelation.Command<=ecExtToolLast) then begin
+        cmd:=ExtToolRelation.Command;
+        if (cmd>=ecExtToolFirst) and (cmd<=ecExtToolLast)
+        and (cmd>=ecExtToolFirst+fExtToolCount) then begin
           fRelations.Remove(ExtToolRelation);
           fCmdRelCache.Remove(ExtToolRelation);
           ExtToolCat.Delete(i);
