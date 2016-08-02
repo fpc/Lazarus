@@ -249,7 +249,7 @@ var
   i: Integer;
 begin
   inherited Notification(AComponent, Operation);
-  if Operation=opRemove then
+  if (Operation=opRemove) and (Count>0) then
   begin
     DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TIDEProgressWindow.Notification'){$ENDIF};
     try
