@@ -614,8 +614,11 @@ var
   i: integer;
   KeyCommandRelation: TKeyCommandRelation;
 begin
+  //debugln(['TExternalUserTools.LoadShortCuts ',KeyCommandRelationList.ExtToolCount,' ',Count]);
+  KeyCommandRelationList.ExtToolCount:=Count;
   for i:=0 to Count-1 do begin
     KeyCommandRelation:=KeyCommandRelationList.FindByCommand(ecExtToolFirst+i);
+    //debugln(['TExternalUserTools.LoadShortCuts ',i,'/',Count,' ',KeyCommandRelation.Name]);
     if KeyCommandRelation<>nil then begin
       Items[i].Key:=KeyCommandRelation.ShortcutA.Key1;
       Items[i].Shift:=KeyCommandRelation.ShortcutA.Shift1;
@@ -632,9 +635,11 @@ var
   i: integer;
   KeyCommandRelation: TKeyCommandRelation;
 begin
+  //debugln(['TExternalUserTools.SaveShortCuts ',KeyCommandRelationList.ExtToolCount,' ',Count]);
   KeyCommandRelationList.ExtToolCount:=Count;
   for i:=0 to Count-1 do begin
     KeyCommandRelation:=KeyCommandRelationList.FindByCommand(ecExtToolFirst+i);
+    //debugln(['TExternalUserTools.SaveShortCuts ',i,'/',Count,' ',KeyCommandRelation.Name]);
     if KeyCommandRelation<>nil then begin
       KeyCommandRelation.ShortcutA:=IDEShortCut(Items[i].Key,Items[i].Shift,
                                            VK_UNKNOWN,[]);
