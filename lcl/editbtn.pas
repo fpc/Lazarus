@@ -1666,7 +1666,11 @@ begin
       FDate := TextToDate(AValue, SysUtils.Date)
     else
       FDate := TextToDate(AValue, NullDate);
-    inherited RealSetText(DateToText(FDate));
+    //Allow to clear Text in Designer (Issue #0030425)
+    if (csDesigning in ComponentState) and (AValue = '') then
+      inherited RealSetText('')
+    else
+      inherited RealSetText(DateToText(FDate));
   end else
     inherited RealSetText(AValue);
 end;
