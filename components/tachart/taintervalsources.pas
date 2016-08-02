@@ -55,28 +55,98 @@ const
 
 type
 
+  { TDateTimeStepFormat }
+
+  TDateTimeStepFormat = class(TPersistent)
+  private
+    FSource: TBasicChartSource;
+    FYearFmt: String;
+    FMonthFmt: String;
+    FWeekFmt: String;
+    FDayFmt: String;
+    FHourFmt: String;
+    FMinuteFmt: String;
+    FSecondFmt: String;
+    FMillisecondFmt: String;
+    function IsStoredYearFmt: Boolean;
+    function IsStoredMonthFmt: Boolean;
+    function IsStoredWeekFmt: Boolean;
+    function IsStoredDayFmt: Boolean;
+    function IsStoredHourFmt: Boolean;
+    function IsStoredMinuteFmt: Boolean;
+    function IsStoredSecondFmt: Boolean;
+    function IsStoredMillisecondFmt: Boolean;
+    procedure SetYearFmt(const AValue: String);
+    procedure SetMonthFmt(const AValue: String);
+    procedure SetWeekFmt(const AValue: String);
+    procedure SetDayFmt(const AValue: String);
+    procedure SetHourFmt(const AValue: String);
+    procedure SetMinuteFmt(const AValue: String);
+    procedure SetSecondFmt(const AValue: String);
+    procedure SetMillisecondFmt(const AValue: String);
+  public
+    constructor Create(ASource: TBasicChartSource);
+  published
+    property YearFormat: String
+      read FYearFmt write SetYearFmt stored IsStoredYearFmt;
+    property MonthFormat: String
+      read FMonthFmt write SetMonthFmt stored IsStoredMonthFmt;
+    property WeekFormat: String
+      read FWeekFmt write SetWeekFmt stored IsStoredWeekFmt;
+    property DayFormat: String
+      read FDayFmt write SetDayFmt stored IsStoredDayFmt;
+    property HourFormat: String
+      read FHourFmt write SetHourFmt stored IsStoredHourFmt;
+    property MinuteFormat: String
+      read FMinuteFmt write SetMinuteFmt stored IsStoredMinuteFmt;
+    property SecondFormat: String
+      read FSecondFmt write SetSecondFmt stored IsStoredSecondFmt;
+    property MillisecondFormat: String
+      read FMillisecondFmt write SetMillisecondFmt stored IsStoredMillisecondFmt;
+  end;
+
   { TDateTimeIntervalChartSource }
+
+  TDateTimeStepChangeEvent = procedure (Sender: TObject; ASteps: TDateTimeStep) of object;
 
   TDateTimeIntervalChartSource = class(TIntervalChartSource)
   strict private
     FDateTimeFormat: String;
+    FDateTimeStepFormat: TDateTimeStepFormat;
     FSteps: TDateTimeSteps;
     FSuppressPrevUnit: Boolean;
+    FOnDateTimeStepChange: TDateTimeStepChangeEvent;
     procedure SetDateTimeFormat(AValue: String);
     procedure SetSteps(AValue: TDateTimeSteps);
     procedure SetSuppressPrevUnit(AValue: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure ValuesInRange(
       AParams: TValuesInRangeParams; var AValues: TChartValueTextArray); override;
   published
-    property DateTimeFormat: String read FDateTimeFormat write SetDateTimeFormat;
+    property DateTimeFormat: String
+      read FDateTimeFormat write SetDateTimeFormat;
+    property DateTimeStepFormat: TDateTimeStepFormat
+      read FDateTimeStepFormat write FDateTimeStepFormat;
     property Steps: TDateTimeSteps
       read FSteps write SetSteps default DATE_TIME_STEPS_ALL;
     property SuppressPrevUnit: Boolean
       read FSuppressPrevUnit write SetSuppressPrevUnit default true;
+    property OnDateTimeStepChange: TDateTimeStepChangeEvent
+      read FOnDateTimeStepChange write FOnDateTimeStepChange;
   end;
 
+const
+  DEFAULT_YEAR_FORMAT = 'yyyy';
+//  DEFAULT_QUARTER_FORMAT = 'Q/yyyy';
+  DEFAULT_MONTH_FORMAT = 'mm/yyyy';
+  DEFAULT_WEEK_FORMAT = 'dd/mm';
+  DEFAULT_DAY_FORMAT = 'dd/mm';
+  DEFAULT_HOUR_FORMAT = 'dd hh:00';
+  DEFAULT_MINUTE_FORMAT = 'hh:nn';
+  DEFAULT_SECOND_FORMAT = 'hh:ss';
+  DEFAULT_MILLISECOND_FORMAT = 'szzz"ms"';
 
 procedure Register;
 
@@ -347,6 +417,135 @@ begin
   end;
 end;
 
+{ TDateTimeStepFormat }
+
+constructor TDateTimeStepFormat.Create(ASource: TBasicChartSource);
+begin
+  inherited Create;
+  FSource := ASource;
+  FYearFmt := DEFAULT_YEAR_FORMAT;
+  FMonthFmt := DEFAULT_MONTH_FORMAT;
+  FWeekFmt := DEFAULT_WEEK_FORMAT;
+  FDayFmt := DEFAULT_DAY_FORMAT;
+  FHourFmt := DEFAULT_HOUR_FORMAT;
+  FMinuteFmt := DEFAULT_MINUTE_FORMAT;
+  FSecondFmt := DEFAULT_SECOND_FORMAT;
+  FMillisecondFmt := DEFAULT_MILLISECOND_FORMAT;
+end;
+
+function TDateTimeStepFormat.IsStoredYearFmt: Boolean;
+begin
+  Result := FYearFmt <> DEFAULT_YEAR_FORMAT;
+end;
+
+function TDateTimeStepFormat.IsStoredMonthFmt: Boolean;
+begin
+  Result := FMonthFmt <> DEFAULT_MONTH_FORMAT;
+end;
+
+function TDateTimeStepFormat.IsStoredWeekFmt: Boolean;
+begin
+  Result := FWeekFmt <> DEFAULT_WEEK_FORMAT;
+end;
+
+function TDateTimeStepFormat.IsStoredDayFmt: Boolean;
+begin
+  Result := FDayFmt <> DEFAULT_DAY_FORMAT;
+end;
+
+function TDateTimeStepFormat.IsStoredHourFmt: Boolean;
+begin
+  Result := FHourFmt <> DEFAULT_HOUR_FORMAT;
+end;
+
+function TDateTimeStepFormat.IsStoredMinuteFmt: Boolean;
+begin
+  Result := FMinuteFmt <> DEFAULT_MINUTE_FORMAT;
+end;
+
+function TDateTimeStepFormat.IsStoredSecondFmt: Boolean;
+begin
+  Result := FSecondFmt <> DEFAULT_SECOND_FORMAT;
+end;
+
+function TDateTimeStepFormat.IsStoredMillisecondFmt: Boolean;
+begin
+  Result := FMillisecondFmt <> DEFAULT_MILLISECOND_FORMAT;
+end;
+
+procedure TDateTimeStepFormat.SetYearFmt(const AValue: String);
+begin
+  if (AValue <> '') and (AValue <> FYearFmt) then begin
+    FSource.BeginUpdate;
+    FYearFmt := AValue;
+    FSource.EndUpdate;
+  end;
+end;
+
+procedure TDateTimeStepFormat.SetMonthFmt(const AValue: String);
+begin
+  if (AValue <> '') and (AValue <> FMonthFmt) then begin
+    FSource.BeginUpdate;
+    FMonthFmt := AValue;
+    FSource.EndUpdate;
+  end;
+end;
+
+procedure TDateTimeStepFormat.SetWeekFmt(const AValue: String);
+begin
+  if (AValue <> '') and (AValue <> FWeekFmt) then begin
+    FSource.BeginUpdate;
+    FWeekFmt := AValue;
+    FSource.EndUpdate;
+  end;
+end;
+
+procedure TDateTimeStepFormat.SetDayFmt(const AValue: String);
+begin
+  if (AValue <> '') and (AValue <> FDayFmt) then begin
+    FSource.BeginUpdate;
+    FDayFmt := AValue;
+    FSource.EndUpdate;
+  end;
+end;
+
+procedure TDateTimeStepFormat.SetHourFmt(const AValue: String);
+begin
+  if (AValue <> '') and (AValue <> FHourFmt) then begin
+    FSource.BeginUpdate;
+    FHourFmt := AValue;
+    FSource.EndUpdate;
+  end;
+end;
+
+procedure TDateTimeStepFormat.SetMinuteFmt(const AValue: String);
+begin
+  if (AValue <> '') and (AValue <> FMinuteFmt) then begin
+    FSource.BeginUpdate;
+    FMinuteFmt := AValue;
+    FSource.EndUpdate;
+  end;
+end;
+
+procedure TDateTimeStepFormat.SetSecondFmt(const AValue: String);
+begin
+  if (AValue <> '') and (AValue <> FSecondFmt) then begin
+    FSource.BeginUpdate;
+    FSecondFmt := AValue;
+    FSource.EndUpdate;
+  end;
+end;
+
+procedure TDateTimeStepFormat.SetMillisecondFmt(const AValue: String);
+begin
+  if (AValue <> '') and (AValue <> FMillisecondFmt) then begin
+    FSource.BeginUpdate;
+    FMillisecondFmt := AValue;
+    FSource.EndUpdate;
+  end;
+end;
+
+
 { TDateTimeIntervalChartSource }
 
 constructor TDateTimeIntervalChartSource.Create(AOwner: TComponent);
@@ -354,6 +553,13 @@ begin
   inherited Create(AOwner);
   FSteps := DATE_TIME_STEPS_ALL;
   FSuppressPrevUnit := true;
+  FDateTimeStepFormat := TDateTimeStepFormat.Create(self);
+end;
+
+destructor TDateTimeIntervalChartSource.Destroy;
+begin
+  FDateTimeStepFormat.Free;
+  inherited;
 end;
 
 procedure TDateTimeIntervalChartSource.SetDateTimeFormat(AValue: String);
@@ -395,33 +601,36 @@ var
     DateTimeToSystemTime(AValue, st);
     case helper.FBestStep of
       dtsYear:
-        Result := FormatDateTime('yyyy', AValue);
+        Result := FormatDateTime(DateTimeStepFormat.YearFormat, AValue);
       dtsQuarter:
-        Result :=
-          IntToRoman(Floor(AValue / helper.FStepLen) mod 4 + 1) +
-          FormatDateTime('/yyyy', AValue);
+        Result := IntToRoman(Floor(AValue / helper.FStepLen) mod 4 + 1) + '/' +
+          FormatDateTime(DateTimeStepFormat.YearFormat, AValue);
       dtsMonth:
-        Result := FormatDateTime(
-          IfThen(FSuppressPrevUnit and (st.Year = prevSt.Year), 'mm', 'mm/yyyy'), AValue);
+        if FSuppressPrevUnit and (st.Year = prevSt.Year) then
+          Result := FormatDateTime('mm', AValue) else
+          Result := FormatDateTime(DateTimeStepFormat.MonthFormat, AValue);
       dtsWeek:
-        Result := FormatDateTime('dd/mm', AValue);
+        Result := FormatDateTime(DateTimeStepFormat.WeekFormat, AValue);
       dtsDay:
-        Result := FormatDateTime(
-          IfThen(FSuppressPrevUnit and (st.Month = prevSt.Month), 'dd', 'dd/mm'), AValue);
+        if FSuppressPrevUnit and (st.Month = prevSt.Month) then
+          Result := FormatDateTime('dd', AValue) else
+          Result := FormatDateTime(DateTimeStepFormat.DayFormat, AValue);
       dtsHour:
-        Result := FormatDateTime(
-          IfThen(FSuppressPrevUnit and (st.Day = prevSt.Day), 'hh:00', 'dd hh:00'), AValue);
+        if FSuppressPrevUnit and (st.Day = prevSt.Day) then
+          Result := FormatDateTime('hh:00', AValue) else
+          Result := FormatDateTime(DateTimeStepFormat.HourFormat, AValue);
       dtsMinute:
-        Result := FormatDateTime(
-          IfThen(FSuppressPrevUnit and (st.Hour = prevSt.Hour), 'nn', 'hh:nn'), AValue);
+        if FSuppressPrevUnit and (st.Hour = prevSt.Hour) then
+          Result := FormatDateTime('nn', AValue) else
+          Result := FormatDateTime(DateTimeStepFormat.MinuteFormat, AValue);
       dtsSecond:
-        Result := FormatDateTime(
-          IfThen(FSuppressPrevUnit and (st.Minute = prevSt.Minute), 'ss', 'nn:ss'), AValue);
+        if FSuppressPrevUnit and (st.Minute = prevSt.Minute) then
+          Result := FormatDateTime('ss', AValue) else
+          Result := FormatDateTime(DateTimeStepFormat.SecondFormat, AValue);
       dtsMillisecond:
-        Result :=
-          IfThen(FSuppressPrevUnit and (st.Second = prevSt.Second),
-            IntToStr(st.Millisecond) + 'ms',
-            IntToStr(st.Second*1000 + st.Millisecond) + 'ms');
+        if FSuppressPrevUnit and (st.Second = prevSt.Second) then
+          Result := IntToStr(st.Millisecond) + 'ms' else
+          Result := FormatDateTime(DateTimeStepFormat.MillisecondFormat, AValue);
     end;
     if InRange(AValue, helper.FOrigParams.FMin, helper.FOrigParams.FMax) then
       prevSt := st;
@@ -480,6 +689,9 @@ begin
     x := helper.NextValue(x);
   end;
   AddValue(i, x);
+
+  if Assigned(FOnDateTimeStepChange) then
+    FOnDateTimeStepChange(self, helper.FBestStep);
 end;
 
 end.

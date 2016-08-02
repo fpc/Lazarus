@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -44,7 +44,6 @@
       <Unit0>
         <Filename Value="axisdemo.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="axisdemo"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
@@ -84,10 +83,6 @@
     </Linking>
     <Other>
       <WriteFPCLogo Value="False"/>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
 </CONFIG>

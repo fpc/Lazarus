@@ -36,10 +36,12 @@ type
     cbStaticX: TCheckBox;
     cbUnitsX: TComboBox;
     CbSuppressPrevUnit: TCheckBox;
+    CbAlternateFormat: TCheckBox;
     csStripes: TChartStyles;
     DateTimeIntervalChartSource1: TDateTimeIntervalChartSource;
     gbPositionX: TGroupBox;
     gbPositionY: TGroupBox;
+    Label1: TLabel;
     lblPositionX: TLabel;
     lblUnitsX: TLabel;
     lblPositionY: TLabel;
@@ -72,6 +74,9 @@ type
     procedure ChartCustomMarksAxisList1MarkToText(var AText: String; AMark: Double);
     procedure ChartPositionFuncSeries1Calculate(const AX: Double; out
       AY: Double);
+    procedure CbAlternateFormatChange(Sender: TObject);
+    procedure DateTimeIntervalChartSource1DateTimeStepChange(Sender: TObject;
+      ASteps: TDateTimeStep);
     procedure FormCreate(Sender: TObject);
     procedure rbPositionBottomChange(Sender: TObject);
     procedure rbPositionLeftChange(Sender: TObject);
@@ -91,7 +96,7 @@ var
 implementation
 
 uses
-  SysUtils, TAChartAxisUtils, TAChartUtils;
+  SysUtils, TypInfo, TAChartAxisUtils, TAChartUtils;
 
 {$R *.lfm}
 
@@ -132,6 +137,30 @@ procedure TForm1.ChartPositionFuncSeries1Calculate(
   const AX: Double; out AY: Double);
 begin
   AY := Sin(AX / 30) * 10 + Cos(AX / 10) * 20;
+end;
+
+procedure TForm1.DateTimeIntervalChartSource1DateTimeStepChange(
+  Sender: TObject; ASteps: TDateTimeStep);
+begin
+  Label1.Caption := GetEnumName(TypeInfo(TDateTimeStep), ord(ASteps));
+end;
+
+procedure TForm1.CbAlternateFormatChange(Sender: TObject);
+begin
+  with DateTimeIntervalChartSource1.DateTimeStepFormat do
+    if CbAlternateFormat.Checked then begin
+      WeekFormat := 'dd.mmm.';
+      DayFormat := 'dd.mm.';
+      HourFormat := 'dd. hh:nn';
+      SecondFormat := 'hh.nn';
+      MillisecondFormat := 'ss.zzz';
+    end else begin
+      WeekFormat := DEFAULT_WEEK_FORMAT;
+      DayFormat := DEFAULT_DAY_FORMAT;
+      HourFormat := DEFAULT_HOUR_FORMAT;
+      SecondFormat := DEFAULT_SECOND_FORMAT;
+      MillisecondFormat := DEFAULT_MILLISECOND_FORMAT;
+    end;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
