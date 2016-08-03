@@ -628,11 +628,13 @@ var
   OpenGlControl: TCustomOpenGLControl;
   AttrControl: TCustomOpenGLControl;
 begin
-  if csDesigning in AWinControl.ComponentState then begin
+  if csDesigning in AWinControl.ComponentState then
+  begin
     // do not use "inherited CreateHandle", because the LCL changes the hierarchy at run time
     Result:=TWSWinControlClass(ClassParent).CreateHandle(AWinControl,AParams);
   end
-  else begin
+  else
+  begin
     OpenGlControl:=AWinControl as TCustomOpenGLControl;
     if OpenGlControl.SharedControl<>nil then
       AttrControl:=OpenGlControl.SharedControl

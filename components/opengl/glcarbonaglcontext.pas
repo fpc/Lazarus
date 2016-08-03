@@ -228,7 +228,8 @@ var
   Ref: ControlRef;
   Info: PAGLControlInfo;
 begin
-  if not AWinControl.HandleAllocated then exit;
+  if not AWinControl.HandleAllocated then Exit;
+  if csDesigning in AWinControl.ComponentState then Exit;
   Ref := ControlRef(TCarbonControl(AWinControl.Handle).Widget);
   Info := GetAGLControlInfo(Ref);
   if Info=nil then exit;
