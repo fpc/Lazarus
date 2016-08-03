@@ -149,11 +149,11 @@ procedure TForm1.CbAlternateFormatChange(Sender: TObject);
 begin
   with DateTimeIntervalChartSource1.DateTimeStepFormat do
     if CbAlternateFormat.Checked then begin
-      WeekFormat := 'dd.mmm.';
-      DayFormat := 'dd.mm.';
-      HourFormat := 'dd. hh:nn';
-      SecondFormat := 'hh.nn';
-      MillisecondFormat := 'ss.zzz';
+      WeekFormat := 'dd"."mmm"."';
+      DayFormat := 'dd"."mm"."';
+      HourFormat := 'dd". "hh:nn';
+      SecondFormat := 'nn"."ss';
+      MillisecondFormat := 'ss"."zzz';
     end else begin
       WeekFormat := DEFAULT_WEEK_FORMAT;
       DayFormat := DEFAULT_DAY_FORMAT;

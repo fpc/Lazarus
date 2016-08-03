@@ -145,7 +145,7 @@ const
   DEFAULT_DAY_FORMAT = 'dd/mm';
   DEFAULT_HOUR_FORMAT = 'dd hh:00';
   DEFAULT_MINUTE_FORMAT = 'hh:nn';
-  DEFAULT_SECOND_FORMAT = 'hh:ss';
+  DEFAULT_SECOND_FORMAT = 'nn:ss';
   DEFAULT_MILLISECOND_FORMAT = 'szzz"ms"';
 
 procedure Register;
