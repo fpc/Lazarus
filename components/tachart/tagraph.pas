@@ -464,8 +464,9 @@ implementation
 {$R tagraph.res}
 
 uses
-  Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, TADrawerCanvas,
-  TAGeometry, TAMath, TAStyles, Types;
+  Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, Types,
+  TADrawerCanvas, TAGeometry, TAMath, TAStyles,
+  TATools;  // needed to initialize OnInitBuiltinTools; added to avoid crash of converted Delphi projects
 
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
