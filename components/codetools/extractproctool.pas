@@ -46,6 +46,7 @@ unit ExtractProcTool;
 {$mode objfpc}{$H+}
 
 { $define CTDEBUG}
+{off $Define VerboseAddWithBlock}
 
 interface
 
@@ -1544,12 +1545,14 @@ var
       end;
     end else begin
       if Candidates=nil then exit;
+      {$IFDEF VerboseAddWithBlock}
+      debugln(['TExtractProcTool.AddWithBlock.Add Candidate="',Identifier,'"']);
+      {$ENDIF}
       i:=Candidates.IndexOf(Identifier);
       if i<0 then
         Candidates.AddObject(Identifier,TObject(Pointer(1)))
       else
         Candidates.Objects[i]:=TObject(PtrUInt(Candidates.Objects[i])+1);
-      //debugln(['TExtractProcTool.AddWithBlock.Add ',Identifier]);
     end;
   end;
 
@@ -1560,13 +1563,16 @@ var
     StartFlag: TCommonAtomFlag;
     IdentifierStart, aStartPos: Integer;
   begin
+    {$IFDEF VerboseAddWithBlock}
+    debugln(['TExtractProcTool.AddWithBlock.ReadBlock START Atom=',GetAtom]);
+    {$ENDIF}
     Result:=false;
     StartFlag:=CurPos.Flag;
     aStartPos:=CurPos.StartPos;
     while true do begin
-      //debugln(['TExtractProcTool.AddWithBlock Atom=',GetAtom]);
-      if Code<>nil then
-        Code^:=Code^+GetAtom;
+      {$IFDEF VerboseAddWithBlock}
+      debugln(['  ReadBlock Atom="',GetAtom,'"']);
+      {$ENDIF}
       if (CurPos.EndPos>CleanEndPos) or (CurPos.StartPos>SrcLen)
       or (CurPos.StartPos>StartNode.EndPos) then
         break;
@@ -1576,18 +1582,20 @@ var
           // nested brackets
           if not ReadBlock(Code) then exit;
         end;
-      cafRoundBracketClose,cafEdgedBracketClose:
-        if (StartFlag=cafRoundBracketOpen) then begin
-          if (CurPos.Flag=cafRoundBracketClose) then
-            break
-          else
-            RaiseCharExpectedButAtomFound(')');
-        end else if (StartFlag=cafEdgedBracketOpen) then begin
-          if (CurPos.Flag=cafEdgedBracketClose) then
-            break
-          else
-            RaiseCharExpectedButAtomFound(']');
-        end;
+      cafRoundBracketClose:
+        if (StartFlag=cafRoundBracketOpen) then
+          break
+        else if StartFlag=cafEdgedBracketOpen then
+          RaiseCharExpectedButAtomFound(']')
+        else
+          RaiseStringExpectedButAtomFound('end');
+      cafEdgedBracketClose:
+        if (StartFlag=cafEdgedBracketOpen) then
+          break
+        else if StartFlag=cafRoundBracketOpen then
+          RaiseCharExpectedButAtomFound(')')
+        else
+          RaiseStringExpectedButAtomFound('end');
       end;
       if AtomIsIdentifier then begin
         LastPos:=LastAtoms.GetValueAt(0);
@@ -1595,33 +1603,43 @@ var
           or LastUpAtomIs(0,'INHERITED'))
         then begin
           // start of identifier
-          //debugln(['TExtractProcTool.AddWithBlock identifier start ',GetAtom]);
+          {$IFDEF VerboseAddWithBlock}
+          debugln(['  ReadBlock identifier START Atom="',GetAtom,'"']);
+          {$ENDIF}
           Identifier:=GetAtom;
           IdentifierStart:=CurPos.StartPos;
           repeat
             ReadNextAtom;
-            //debugln(['TExtractProcTool.AddWithBlock identifier next ',GetAtom]);
+            {$IFDEF VerboseAddWithBlock}
+            debugln(['  ReadBlock identifier NEXT Atom="',GetAtom,'" Identifier="',Identifier,'"']);
+            {$ENDIF}
             if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
             begin
               if not ReadBlock(@Identifier) then exit;
             end else if (CurPos.Flag=cafPoint) then begin
               if not Add(IdentifierStart,CurPos.EndPos,Identifier) then exit;
-              Identifier:=Identifier+GetAtom;
             end else if AtomIsChar('^') then begin
-              Identifier:=Identifier+GetAtom;
-            end else if AtomIsIdentifier and (LastAtomIs(0,'.')) then
-            begin
-              Identifier:=Identifier+GetAtom;
+            end else if AtomIsIdentifier and (LastAtomIs(0,'.')) then begin
             end else begin
-              if Code<>nil then
-                Code^:=Code^+Identifier;
               break;
             end;
+            Identifier:=Identifier+GetAtom;
           until false;
+          {$IFDEF VerboseAddWithBlock}
+          debugln(['  ReadBlock identifier END Atom="',GetAtom,'" Identifier="',Identifier,'"']);
+          {$ENDIF}
+          if Code<>nil then
+            Code^:=Code^+Identifier;
+          continue;
         end;
       end;
+      if Code<>nil then
+        Code^:=Code^+GetAtom;
       ReadNextAtom;
     end;
+    {$IFDEF VerboseAddWithBlock}
+    debugln(['ReadBlock END Atom="',GetAtom,'"']);
+    {$ENDIF}
     Result:=true;
   end;
 
@@ -1632,8 +1650,10 @@ begin
   Result:=false;
   if not CheckIfRangeOnSameLevel(StartPos,EndPos,CleanStartPos,CleanEndPos,
                                  StartNode) then exit;
-  //debugln(['TExtractProcTool.AddWithBlock ',SrcLen,' ',CleanStartPos,' ',CleanEndPos]);
-  //debugln(['TExtractProcTool.AddWithBlock Src="',copy(Src,CleanStartPos,CleanEndPos-CleanStartPos),'"']);
+  {$IFDEF VerboseAddWithBlock}
+  debugln(['TExtractProcTool.AddWithBlock ',SrcLen,' ',CleanStartPos,' ',CleanEndPos]);
+  debugln(['TExtractProcTool.AddWithBlock Src="',copy(Src,CleanStartPos,CleanEndPos-CleanStartPos),'"']);
+  {$ENDIF}
   MoveCursorToNodeStart(StartNode);
   if WithExpr<>'' then
     SourceChangeCache.MainScanner:=Scanner;
@@ -1648,20 +1668,28 @@ begin
     Indent:=Beauty.GetLineIndent(Src,CleanStartPos);
     Code:='with '+WithExpr+' do begin';
     Code:=Beauty.BeautifyStatement(Code,Indent);
-    //debugln(['TExtractProcTool.AddWithBlock Header=',Code]);
+    {$IFDEF VerboseAddWithBlock}
+    debugln(['TExtractProcTool.AddWithBlock Header=',Code]);
+    {$ENDIF}
     if not SourceChangeCache.Replace(gtNewLine,gtNewLine,
       CleanStartPos,CleanStartPos,Code) then exit;
     // add 'end;'
     Code:='end;';
     Code:=Beauty.BeautifyStatement(Code,Indent);
-    //debugln(['TExtractProcTool.AddWithBlock Footer=',Code]);
+    {$IFDEF VerboseAddWithBlock}
+    debugln(['TExtractProcTool.AddWithBlock Footer=',Code]);
+    {$ENDIF}
     if not SourceChangeCache.Replace(gtNewLine,gtNewLine,
       CleanEndPos,CleanEndPos,Code) then exit;
     // indent all between
-    //debugln(['TExtractProcTool.AddWithBlock Indent...']);
+    {$IFDEF VerboseAddWithBlock}
+    debugln(['TExtractProcTool.AddWithBlock Indent...']);
+    {$ENDIF}
     if not SourceChangeCache.IndentBlock(CleanStartPos,CleanEndPos,
       Beauty.Indent) then exit;
-    //debugln(['TExtractProcTool.AddWithBlock Apply']);
+    {$IFDEF VerboseAddWithBlock}
+    debugln(['TExtractProcTool.AddWithBlock Apply']);
+    {$ENDIF}
     if not SourceChangeCache.Apply then exit;
   end;
   Result:=true;
