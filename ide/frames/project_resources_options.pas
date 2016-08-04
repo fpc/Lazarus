@@ -129,7 +129,11 @@ end;
 procedure TResourcesOptionsFrame.cbResourceTypeChange(Sender: TObject);
 begin
   if Assigned(lbResources.Selected) then
-    lbResources.Selected.SubItems[LVSUBITEM_TYPE] := ResourceTypeToStr[TUserResourceType(cbResourceType.ItemIndex)];
+  begin
+    lbResources.Selected.SubItems[LVSUBITEM_TYPE] :=
+                 ResourceTypeToStr[TUserResourceType(cbResourceType.ItemIndex)];
+    FModified:=true;
+  end;
 end;
 
 procedure TResourcesOptionsFrame.edResourceNameEditingDone(Sender: TObject);
