@@ -396,6 +396,7 @@ type
   private
     FKind: TScrollBarKind;
     procedure SetKind(AValue: TScrollBarKind);
+    procedure GetBorderSizes(out ALeft, ARight: Integer);
   protected
     function GetPositionFromMousePos(X, Y: Integer): integer; override;
     function GetButtonFromMousePos(X, Y: Integer): TCDControlState; override;
@@ -2372,7 +2373,7 @@ end;
 function TCDPositionedControl.GetPositionDisplacementWithMargins(AOldMousePos,
   ANewMousePos: TPoint; ALeftMargin, ARightMargin: Integer; AIsHorizontal: Boolean): Integer;
 var
-  lCoord, lSize: Integer;
+  lCoord, lSize, lCurPos: Integer;
 begin
   if AIsHorizontal then
   begin
@@ -2385,12 +2386,12 @@ begin
     lSize := Height;
   end;
 
-  Result := FMin + (lCoord - ALeftMargin) * (FMax - FMin + 1) div (lSize - ARightMargin - ALeftMargin);
-  Result := FPositionAtMouseDown + Result;
+  Result := FMin + lCoord * (FMax - FMin + 1) div (lSize - ARightMargin - ALeftMargin);
+  lCurPos := Result + FPositionAtMouseDown;
 
   // sanity check
-  if Result > FMax then Result := FMax;
-  if Result < FMin then Result := FMin;
+  if lCurPos > FMax then Result := FMax - FPositionAtMouseDown;
+  if lCurPos < FMin then Result := FMin - FPositionAtMouseDown;
 end;
 
 function TCDPositionedControl.GetButtonFromMousePos(X, Y: Integer): TCDControlState;
@@ -2551,12 +2552,21 @@ begin
   if not (csLoading in ComponentState) then Invalidate;
 end;
 
+procedure TCDScrollBar.GetBorderSizes(out ALeft, ARight: Integer);
+begin
+  ALeft := FDrawer.GetMeasures(TCDSCROLLBAR_LEFT_SPACING) +
+    FDrawer.GetMeasures(TCDSCROLLBAR_LEFT_BUTTON_POS) +
+    FDrawer.GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH);
+  ARight := FDrawer.GetMeasures(TCDSCROLLBAR_RIGHT_SPACING) +
+    FDrawer.GetMeasures(TCDSCROLLBAR_RIGHT_BUTTON_POS) +
+    FDrawer.GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH);
+end;
+
 function TCDScrollBar.GetPositionFromMousePos(X, Y: Integer): integer;
 var
   lLeftBorder, lRightBorder: Integer;
 begin
-  lLeftBorder := FDrawer.GetMeasures(TCDSCROLLBAR_LEFT_SPACING);
-  lRightBorder := FDrawer.GetMeasures(TCDSCROLLBAR_RIGHT_SPACING);
+  GetBorderSizes(lLeftBorder, lRightBorder);
 
   Result := GetPositionFromMousePosWithMargins(X, Y, lLeftBorder, lRightBorder, FKind = sbHorizontal, False);
 end;
@@ -2592,8 +2602,7 @@ function TCDScrollBar.GetPositionDisplacement(AOldMousePos, ANewMousePos: TPoint
 var
   lLeftBorder, lRightBorder: Integer;
 begin
-  lLeftBorder := FDrawer.GetMeasures(TCDSCROLLBAR_LEFT_SPACING);
-  lRightBorder := FDrawer.GetMeasures(TCDSCROLLBAR_RIGHT_SPACING);
+  GetBorderSizes(lLeftBorder, lRightBorder);
 
   Result := GetPositionDisplacementWithMargins(AOldMousePos, ANewMousePos,
     lLeftBorder, lRightBorder, FKind = sbHorizontal);
