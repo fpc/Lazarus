@@ -460,6 +460,7 @@ var
   OpenFileNotify: LPOFNOTIFY;
   OpenFileName: Windows.POPENFILENAME;
   DlgRec: POpenFileDialogRec;
+  CanClose: Boolean;
 
   procedure Reposition(ADialogWnd: Handle);
   var
@@ -527,7 +528,21 @@ begin
         TOpenDialog(DlgRec^.Dialog).DoFolderChange;
       end;
       CDN_FILEOK:
+      begin
         ExtractDataFromNotify;
+        CanClose := True;
+        TOpenDialog(DlgRec^.Dialog).UserChoice := mrOK;
+        //debugln(['OpenFileDialogCallBack calling DoCanClose']);
+        TOpenDialog(DlgRec^.Dialog).DoCanClose(CanClose);
+        //debugln(['OpenFileDialogCallBack CanClose=',CanClose]);
+        if not CanClose then
+        begin
+          //the dialog window will not process the click on OK button
+          //as a result the dialog will not close
+          SetWindowLong(Wnd, DWL_MSGRESULT, 1);
+          Result := 1;
+        end;
+      end;
       CDN_TYPECHANGE:
       begin
         ExtractDataFromNotify;
@@ -590,6 +605,7 @@ var
   FileNameWideBuffer: PWideChar;
   FileNameBufferSize: Integer;
 begin
+  //debugln(['CreateFileDialogHandle A']);
   FileName := AOpenDialog.FileName;
   InitialDir := AOpenDialog.InitialDir;
   if (FileName <> '') and (FileName[length(FileName)] = PathDelim) then
@@ -645,6 +661,7 @@ begin
     lCustData := LParam(DialogRec);
   end;
   Result := THandle(OpenFile);
+  //debugln(['CreateFileDialogHandle End']);
 end;
 
 procedure DestroyFileDialogHandle(AHandle: THandle);
@@ -848,27 +865,28 @@ class procedure TWin32WSOpenDialog.VistaDialogShowModal(ADialog: IFileDialog; co
 var
   FileDialogEvents: IFileDialogEvents;
   Cookie: DWord;
-  CanClose: Boolean;
+  //CanClose: Boolean;
 begin
+  debugln('TWin32WSOpenDialog.VistaDialogShowModal A');
   FileDialogEvents := TFileDialogEvents.Create(AOpenDialog);
   ADialog.Advise(FileDialogEvents, @Cookie);
   try
     AOpenDialog.DoShow;
-    repeat
-      ADialog.Show(GetParentWnd);
-      if (AOpenDialog.UserChoice <> mrOk) then
-      begin
-        CanClose := True;
-        AOpenDialog.DoCanClose(CanClose);
-        AOpenDialog.UserChoice := mrCancel;
-      end
-      else
-        CanClose := True;
-    until CanClose;
+    ADialog.Show(GetParentWnd);
+    debugln(['TWin32WSOpenDialog.VistaDialogShowModal: AOpenDialog.UserChoice = ',ModalResultStr[AOpenDialog.UserChoice]]);
+    //DoOnClose is called from TFileDialogEvents.OnFileOk if user pressed OK
+    //Do NOT call DoCanClose if user cancels the dialog
+    //see http://docwiki.embarcadero.com/Libraries/Berlin/en/Vcl.Dialogs.TOpenDialog_Events
+    //so no need to call it here anymore
+    if (AOpenDialog.UserChoice <> mrOk) then
+    begin
+      AOpenDialog.UserChoice := mrCancel;
+    end;
   finally
     ADialog.unadvise(Cookie);
     FileDialogEvents := nil;
   end;
+  //debugln('TWin32WSOpenDialog.VistaDialogShowModal End');
 end;
 
 class function TWin32WSOpenDialog.GetParentWnd: HWND;
@@ -937,8 +955,10 @@ begin
       end
       else
       begin
+        //debugln(['TWin32WSOpenDialog.ShowModal before ProcessFileDialogResults']);
         ProcessFileDialogResult(TOpenDialog(ACommonDialog),
           GetOpenFileNameW(LPOPENFILENAME(ACommonDialog.Handle)));
+        //debugln(['TWin32WSOpenDialog.ShowModal after ProcessFileDialogResults, UserChoice=',ModalResultStr[TOpenDialog(ACommonDialog).UserChoice]]);
       end;
     finally
       SetCurrentDirUTF8(lOldWorkingDir);
@@ -1221,23 +1241,27 @@ end;
 
 { TFileDialogEvents }
 
+// Only gets called when user clicks OK in IFileDialog
 function TFileDialogEvents.OnFileOk(pfd: IFileDialog): HResult; stdcall;
 var
   CanClose: Boolean;
 begin
+  //debugln('TFileDialogEvents.OnFileOk A');
   Result := TWin32WSOpenDialog.ProcessVistaDialogResult(pfd, FDialog);
   if Succeeded(Result) then
   begin
+    FDialog.UserChoice := mrOK; //DoCanClose needs this
     CanClose := True;
+    //debugln('TFileDialogEvents.OnFileOk: calling DoCanClose');
     FDialog.DoCanClose(CanClose);
     if CanClose then
     begin
-      FDialog.UserChoice := mrOK;
       Result := S_OK;
     end
     else
       Result := S_FALSE;
   end;
+  //debugln('TFileDialogEvents.OnFileOk End');
 end;
 
 function TFileDialogEvents.OnFolderChanging(pfd: IFileDialog; psifolder: IShellItem): HResult; stdcall;

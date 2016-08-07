@@ -127,6 +127,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DoCanClose(var CanClose: Boolean); override;
     procedure DoTypeChange; virtual;
     property Files: TStrings read FFiles;
     property HistoryList: TStrings read FHistoryList write SetHistoryList;

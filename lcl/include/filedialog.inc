@@ -35,6 +35,21 @@ begin
   inherited Destroy;
 end;
 
+procedure TFileDialog.DoCanClose(var CanClose: Boolean);
+begin
+  debugln(['TFileDialog.DoCanClose: FUserChoice = ',ModalResultStr[FUserChoice],' HandleAllocated=',HandleAllocated]);
+  //Only call OnCanClose if user did not cancel the dialog, see:
+  //http://docwiki.embarcadero.com/Libraries/Berlin/en/Vcl.Dialogs.TOpenDialog_Events
+  if (FUserChoice = mrOK) then
+    inherited DoCanClose(CanClose)
+  else
+  begin
+    FCanCloseCalled := True;
+    CanClose := True;
+  end;
+end;
+
+
 
 {------------------------------------------------------------------------------}
 {  TFileDialog DoOnTypeChange                                                         }
