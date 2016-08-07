@@ -199,6 +199,7 @@ type
     function DefaultTitle: string; override;
   public
     constructor Create(TheOwner: TComponent); override;
+    procedure DoCanClose(var CanClose: Boolean); override;
     procedure DoFolderChange; virtual;
     procedure DoSelectionChange; virtual;
     procedure IntfSetOption(const AOption: TOpenOption; const AValue: Boolean);
