@@ -133,22 +133,22 @@ type
   protected
     // IFileDialogEvents
     function OnFileOk(pfd: IFileDialog): HResult; stdcall;
-    function OnFolderChanging(pfd: IFileDialog; psifolder: IShellItem): HResult; stdcall;
-    function OnFolderChange(pfd: IFileDialog): HResult; stdcall;
+    function OnFolderChanging({%H-}pfd: IFileDialog; {%H-}psifolder: IShellItem): HResult; stdcall;
+    function OnFolderChange({%H-}pfd: IFileDialog): HResult; stdcall;
     function OnSelectionChange(pfd: IFileDialog): HResult; stdcall;
-    function OnShareViolation(pfd: IFileDialog; psi: IShellItem; pResponse: pFDE_SHAREVIOLATION_RESPONSE): HResult; stdcall;
+    function OnShareViolation({%H-}pfd: IFileDialog; {%H-}psi: IShellItem; {%H-}pResponse: pFDE_SHAREVIOLATION_RESPONSE): HResult; stdcall;
     function OnTypeChange(pfd: IFileDialog): HResult; stdcall;
-    function OnOverwrite(pfd: IFileDialog; psi: IShellItem; pResponse: pFDE_OVERWRITE_RESPONSE): HResult; stdcall;
+    function OnOverwrite({%H-}pfd: IFileDialog; {%H-}psi: IShellItem; {%H-}pResponse: pFDE_OVERWRITE_RESPONSE): HResult; stdcall;
     // IFileDialogControlEvents
-    function OnItemSelected(pfdc: IFileDialogCustomize; dwIDCtl: DWORD; dwIDItem: DWORD): HResult; stdcall;
-    function OnButtonClicked(pfdc: IFileDialogCustomize; dwIDCtl: DWORD): HResult; stdcall;
-    function OnCheckButtonToggled(pfdc: IFileDialogCustomize; dwIDCtl: DWORD; bChecked: BOOL): HResult; stdcall;
-    function OnControlActivating(pfdc: IFileDialogCustomize; dwIDCtl: DWORD): HResult; stdcall;
+    function OnItemSelected({%H-}pfdc: IFileDialogCustomize; {%H-}dwIDCtl: DWORD; {%H-}dwIDItem: DWORD): HResult; stdcall;
+    function OnButtonClicked({%H-}pfdc: IFileDialogCustomize; {%H-}dwIDCtl: DWORD): HResult; stdcall;
+    function OnCheckButtonToggled({%H-}pfdc: IFileDialogCustomize; {%H-}dwIDCtl: DWORD; {%H-}bChecked: BOOL): HResult; stdcall;
+    function OnControlActivating({%H-}pfdc: IFileDialogCustomize; {%H-}dwIDCtl: DWORD): HResult; stdcall;
   public
     constructor Create(ADialog: TOpenDialog);
   end;
 
-function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; wParam: WPARAM;
+function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; {%H-}wParam: WPARAM;
   lParam: LPARAM): UINT_PTR; stdcall;
 
 function SaveApplicationState: TApplicationState;
@@ -327,6 +327,7 @@ function CanUseVistaDialogs(const AOpenDialog: TOpenDialog): Boolean;
 begin
   {$IFnDEF DisableVistaDialogs}
   Result := (WindowsVersion >= wvVista) and not (ofOldStyleDialog in AOpenDialog.Options);
+
   {$ELSE}
   Result := False;
   {$ENDIF}
@@ -841,8 +842,8 @@ begin
   if not Supports(ADialog, IFileOpenDialog) then
     Result := E_FAIL
   else
-    Result := (ADialog as IFileOpenDialog).GetResults(ShellItems);
-  if Succeeded(Result) and Succeeded(ShellItems.GetCount(Count)) then
+    Result := (ADialog as IFileOpenDialog).GetResults(ShellItems{%H-});
+  if Succeeded(Result) and Succeeded(ShellItems.GetCount(Count{%H-})) then
   begin
     AOpenDialog.Files.Clear;
     I := 0;
@@ -1161,7 +1162,7 @@ end;
   Handles the messages sent to the toolbar button by Windows
  ------------------------------------------------------------------------------}
 function BrowseForFolderCallback(hwnd : Handle; uMsg : UINT;
-  lParam, lpData : LPARAM) : Integer; stdcall;
+  {%H-}lParam, lpData : LPARAM) : Integer; stdcall;
 begin
   case uMsg of
     BFFM_INITIALIZED:
