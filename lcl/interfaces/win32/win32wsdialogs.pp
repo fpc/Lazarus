@@ -325,7 +325,11 @@ end;
 
 function CanUseVistaDialogs(const AOpenDialog: TOpenDialog): Boolean;
 begin
+  {$IFnDEF DisableVistaDialogs}
   Result := (WindowsVersion >= wvVista) and not (ofOldStyleDialog in AOpenDialog.Options);
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
 end;
 
 
