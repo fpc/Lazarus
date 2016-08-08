@@ -37,7 +37,9 @@ end;
 
 procedure TFileDialog.DoCanClose(var CanClose: Boolean);
 begin
-  //debugln(['TFileDialog.DoCanClose: FUserChoice = ',ModalResultStr[FUserChoice],' HandleAllocated=',HandleAllocated]);
+  {$ifdef DebugCommonDialogEvents}
+  debugln(['TFileDialog.DoCanClose: FUserChoice = ',ModalResultStr[FUserChoice],' HandleAllocated=',HandleAllocated]);
+  {$endif}
   //Only call OnCanClose if user did not cancel the dialog, see:
   //http://docwiki.embarcadero.com/Libraries/Berlin/en/Vcl.Dialogs.TOpenDialog_Events
   if (FUserChoice = mrOK) then
