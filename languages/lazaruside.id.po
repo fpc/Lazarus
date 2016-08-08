@@ -430,6 +430,10 @@ msgstr ""
 msgid "Folded code marker"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrfoldedcodeline
+msgid "Fold start-line"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrgroupdefault
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupdefault"
 msgid "Global"
@@ -465,6 +469,10 @@ msgstr "Teks"
 
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrhiddencodeline
+msgid "Hide start-line"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall

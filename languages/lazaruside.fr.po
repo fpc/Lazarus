@@ -434,6 +434,10 @@ msgstr "Point d'exécution"
 msgid "Folded code marker"
 msgstr "Marqueur de code plié"
 
+#: lazarusidestrconsts.dlgaddhiattrfoldedcodeline
+msgid "Fold start-line"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrgroupdefault
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupdefault"
 msgid "Global"
@@ -470,6 +474,10 @@ msgstr "Texte"
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
 msgstr "Séparateur de gouttière"
+
+#: lazarusidestrconsts.dlgaddhiattrhiddencodeline
+msgid "Hide start-line"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"

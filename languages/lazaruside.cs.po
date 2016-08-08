@@ -434,6 +434,10 @@ msgstr "Bod vykonávání"
 msgid "Folded code marker"
 msgstr "Popisovač složení kódu"
 
+#: lazarusidestrconsts.dlgaddhiattrfoldedcodeline
+msgid "Fold start-line"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrgroupdefault
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupdefault"
 msgid "Global"
@@ -470,6 +474,10 @@ msgstr "Text"
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
 msgstr "Oddělovač žlábku"
+
+#: lazarusidestrconsts.dlgaddhiattrhiddencodeline
+msgid "Hide start-line"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
