@@ -104,7 +104,7 @@ Type
     procedure ShowRecentFiles;
   Published
     // Max. items to be kept in the list.
-    Property MaxRecent : Integer Read FMaxRecent write FMaxRecent;
+    Property MaxRecent : Integer Read FMaxRecent write FMaxRecent default 10;
     // Menu item to create a submenu under. Existing items will be removed.
     Property MenuItem : TMenuItem Read FMIRecent Write SetMIRecent;
     // Popupmenu attached to a toolbar button. Existing items will be removed.
@@ -137,7 +137,7 @@ Resourcestring
   SErrFailedToCreateDir = 'Failed to create directory "%s"';
 
 const
-  DEFAULT_MASK = '%d.  %s';
+  DEFAULT_MASK = '%0:d.  %1:s';
 
 function MinimizeFileName(const AFileName:string; AMaxLen:integer) : string;
 
@@ -443,6 +443,7 @@ constructor TMRUMenuManager.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FRecent:=TStringList.Create;
+  FMaxRecent := 10;
   FMaxItemLength := 80;
   FMenuCaptionMask := DEFAULT_MASK;
 end;
