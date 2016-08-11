@@ -229,16 +229,16 @@ var
 begin
   Done:=True;
   Result:=False;
-  if ItemData=nil then Exit;
-  Assert(TObject(ItemData) is TKeyCommandRelation,
-    'TEditorKeymappingOptionsFrame.FilterEditFilterItem: ItemData is not TKeyCommandRelation.');
-  KeyRel:=TKeyCommandRelation(ItemData);      // Tree item is actual key command.
-  Done:=False;
-  Result:=KeyMapKeyFilter.Key1<>VK_UNKNOWN;
-  if Result then begin                        // Key filter is defined.
-    Done:=True;
-    Result:=(CompareIDEShortCutKey1s(@KeyMapKeyFilter,@KeyRel.ShortcutA)=0)
-         or (CompareIDEShortCutKey1s(@KeyMapKeyFilter,@KeyRel.ShortcutB)=0);
+  if TObject(ItemData) is TKeyCommandRelation then
+  begin
+    KeyRel:=TKeyCommandRelation(ItemData);      // Tree item is actual key command.
+    Done:=False;
+    Result:=KeyMapKeyFilter.Key1<>VK_UNKNOWN;
+    if Result then begin                        // Key filter is defined.
+      Done:=True;
+      Result:=(CompareIDEShortCutKey1s(@KeyMapKeyFilter,@KeyRel.ShortcutA)=0)
+           or (CompareIDEShortCutKey1s(@KeyMapKeyFilter,@KeyRel.ShortcutB)=0);
+    end;
   end;
 end;
 
