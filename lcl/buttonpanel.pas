@@ -122,6 +122,7 @@ type
     property HelpButton;
     property CloseButton;
     property CancelButton;
+    property Color;
     property ButtonOrder;
     property TabOrder;
     property DefaultButton;
