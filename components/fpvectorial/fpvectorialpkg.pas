@@ -14,7 +14,7 @@ uses
   lazvectorialreader, mathmlvectorialreader, odgvectorialreader, 
   rawvectorialreadwrite, svgvectorialreader_rsvg, svgvectorialwriter, 
   svgzvectorialreader, odtvectorialwriter, docxvectorialwriter, 
-  htmlvectorialreader, svgvectorialreader;
+  htmlvectorialreader, svgvectorialreader, fpvWMF, wmfvectorialreader;
 
 implementation
 

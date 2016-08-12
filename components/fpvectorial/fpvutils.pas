@@ -103,6 +103,8 @@ function ConvertPathToRegion(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY
 var
   FPVUDebugOutCallback: TFPVUDebugOutCallback; // executes DebugLn
   FPVDebugBuffer: string;
+  ScreenDpiX: Integer = 96;
+  ScreenDpiY: Integer = 96;
 
 implementation
 
