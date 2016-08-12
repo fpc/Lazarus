@@ -539,14 +539,6 @@ begin
   ReadHeader(AStream);
   ReadRecords(AStream, AData);
 
-  if FHasPlaceableMetaHeader then begin
-    AData.Width := FPageWidth;
-    AData.Height := FPageHeight;
-  end else begin
-    AData.Width := ScaleSizeX(FWindowExtent.X); //RawExtent.Right - FRawExtent.Left);
-    AData.Height := ScaleSizeY(FWindowExtent.Y); //FRawExtent.Bottom - FRawExtent.Top);
-  end;
-
   if FErrMsg.Count > 0 then
     raise Exception.Create(FErrMsg.Text);
 end;
@@ -913,6 +905,16 @@ begin
 
     AStream.Position := FRecordStartPos + wmfRec.Size*SizeOf(word);
   end;
+
+  if FHasPlaceableMetaHeader then begin
+    page.Width := FPageWidth;
+    page.Height := FPageHeight;
+  end else begin
+    page.Width := ScaleSizeX(FWindowExtent.X);
+    page.Height := ScaleSizeY(FWindowExtent.Y);
+  end;
+  AData.Width := page.Width;
+  AData.Height := page.Height;
 
   SetLength(params, 0);
 end;
