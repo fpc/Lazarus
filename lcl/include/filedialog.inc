@@ -46,7 +46,7 @@ begin
     inherited DoCanClose(CanClose)
   else
   begin
-    FCanCloseCalled := True;
+    FDoCanCloseCalled := True;
     CanClose := True;
   end;
 end;
@@ -441,7 +441,7 @@ begin
     inherited DoCanClose(CanClose)
   else
   begin
-    FCanCloseCalled := True;
+    FDoCanCloseCalled := True;
     CanClose := True;
   end;
 end;

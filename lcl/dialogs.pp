@@ -68,7 +68,9 @@ type
     FTitle : string;
     FUserChoice: integer;
     FHelpContext: THelpContext;
-    FCanCloseCalled: Boolean;
+    FDoCanCloseCalled: Boolean;
+    FDoShowCalled: Boolean;
+    FDoCloseCalled: Boolean;
     FClosing: boolean;
     procedure SetHandle(const AValue: THandle);
     function IsTitleStored: boolean;
@@ -80,6 +82,7 @@ type
     function GetWidth: Integer; virtual;
     procedure SetHeight(const AValue: integer); virtual;
     procedure SetWidth(const AValue: integer); virtual;
+    procedure ResetShowCloseFlags;
   public
     FCompStyle : LongInt;
     constructor Create(TheOwner: TComponent); override;

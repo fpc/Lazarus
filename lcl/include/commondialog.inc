@@ -35,6 +35,7 @@ begin
     DisabledList := Screen.DisableForms(Screen.ActiveForm);
     try
       FUserChoice := mrNone;
+      ResetShowCloseFlags;
       Handle := TWSCommonDialogClass(WidgetSetClass).CreateHandle(Self);
       Result:= DoExecute;
       Close;
@@ -54,7 +55,8 @@ procedure TCommonDialog.Close;
 begin
   if HandleAllocated and not FClosing then begin
     FClosing := true;
-    DoClose;
+    if not FDoCloseCalled then
+      DoClose;
     TWSCommonDialogClass(WidgetSetClass).DestroyHandle(Self);
     FHandle := 0;
     FClosing := false;
@@ -63,18 +65,22 @@ end;
 
 procedure TCommonDialog.DoShow;
 begin
+  if FDoShowCalled then Exit;
+  FDoShowCalled := True;
   if Assigned(FOnShow) then FOnShow(Self);
 end;
 
 procedure TCommonDialog.DoCanClose(var CanClose: Boolean);
 begin
-  FCanCloseCalled := True;
+  FDoCanCloseCalled := True;
   if Assigned(FOnCanClose) then
     OnCanClose(Self, CanClose);
 end;
 
 procedure TCommonDialog.DoClose;
 begin
+  if FDoCloseCalled then Exit;
+  FDoCloseCalled := True;
   if Assigned(FOnClose) then FOnClose(Self);
 end;
 
@@ -111,35 +117,52 @@ begin
   FWidth:=AValue;
 end;
 
+procedure TCommonDialog.ResetShowCloseFlags;
+begin
+  FDoShowCalled := False;
+  FDoCanCloseCalled := False;
+  FDoCloseCalled := False;
+end;
+
 function TCommonDialog.DoExecute : boolean;
 var
   CanClose: boolean;
 begin
-  FCanCloseCalled := False;
-  if Assigned(FOnShow) then
-    FOnShow(Self);
+  {$ifdef DebugCommonDialogEvents}
+  debugln(['TCommonDialog.DoExecute A']);
+  {$endif}
+  if not FDoShowCalled then
+  begin
+    {$ifdef DebugCommonDialogEvents}
+    debugln(['TCommonDialog.DoExecute calling DoShow']);
+    {$endif}
+    DoShow;
+  end;
+  {$ifdef DebugCommonDialogEvents}
+  debugln(['TCommonDialog.DoExecute before WS_ShowModal']);
+  {$endif}
   TWSCommonDialogClass(WidgetSetClass).ShowModal(Self);
   {$ifdef DebugCommonDialogEvents}
-  if (Self is TFileDialog) then debugln(['TCommonDialog.DoExecute, FCanCloseCalled=',FCanCloseCalled,' FUserChoice=',ModalResultStr[FUserChoice]]);
+  debugln(['TCommonDialog.DoExecute after WS_ShowModal, FCanCloseCalled=',FDoCanCloseCalled,' FUserChoice=',ModalResultStr[FUserChoice]]);
   {$endif}
   // can close was called from widgetset loop
-  if not FCanCloseCalled then
+  if not FDoCanCloseCalled then
   begin
     repeat
       {$ifdef DebugCommonDialogEvents}
-      if (Self is TFileDialog) then debugln(['TCommonDialog.DoExecute, FUserChoice=',ModalResultStr[FUserChoice],' Handle=',Handle]);
+      debugln(['TCommonDialog.DoExecute, FUserChoice=',ModalResultStr[FUserChoice],' Handle=',Handle]);
       {$endif}
       if (FUserChoice <> mrNone) and (Handle<>0) then
       begin
         CanClose := True;
         {$ifdef DebugCommonDialogEvents}
-        if (Self is TFileDialog) then debugln(['TCommonDialog.DoExecute calling DoCanClose']);
+        debugln(['TCommonDialog.DoExecute calling DoCanClose']);
         {$endif}
         DoCanClose(CanClose);
         if not CanClose then
           FUserChoice:=mrNone;
         {$ifdef DebugCommonDialogEvents}
-        if (Self is TFileDialog) then debugln(['TCommonDialog.DoExecute after calling DoCanClose: CanClose=',CanClose,' FUserChoice=',ModalResultStr[FUserChoice]]);
+        debugln(['TCommonDialog.DoExecute after calling DoCanClose: CanClose=',CanClose,' FUserChoice=',ModalResultStr[FUserChoice]]);
         {$endif}
       end;
       if FUserChoice <> mrNone then
@@ -150,6 +173,9 @@ begin
     until false;
   end;
   Result := (FUserChoice = mrOk);
+  {$ifdef DebugCommonDialogEvents}
+  debugln(['TCommonDialog.DoExecute End']);
+  {$endif}
 end;
 
 function TCommonDialog.DefaultTitle: string;

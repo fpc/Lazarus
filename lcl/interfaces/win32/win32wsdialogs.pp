@@ -521,6 +521,9 @@ begin
       CDN_INITDONE:
       begin
         ExtractDataFromNotify;
+        {$ifdef DebugCommonDialogEvents}
+        debugln(['OpenFileDialogCallBack calling DoShow']);
+        {$endif}
         TOpenDialog(DlgRec^.Dialog).DoShow;
       end;
       CDN_SELCHANGE:
@@ -887,6 +890,9 @@ begin
   FileDialogEvents := TFileDialogEvents.Create(AOpenDialog);
   ADialog.Advise(FileDialogEvents, @Cookie);
   try
+    {$ifdef DebugCommonDialogEvents}
+    debugln('TWin32WSOpenDialog.VistaDialogShowModal calling DoShow');
+    {$endif}
     AOpenDialog.DoShow;
     ADialog.Show(GetParentWnd);
     {$ifdef DebugCommonDialogEvents}
@@ -1119,6 +1125,10 @@ begin
         nSizeMax := MaxFontSize;
       end;
     end;
+    {$ifdef DebugCommonDialogEvents}
+    debugln(['TWin32WSFontDialog.CreateHandle calling DoShow']);
+    {$endif}
+    TFontDialog(ACommonDialog).DoShow;
     UserResult := ChooseFontW(@CFW);
     // we need to update LF now
     LF.lfFaceName := UTF16ToUTF8(LFW.lfFaceName);
@@ -1133,7 +1143,10 @@ begin
       Color := CF.RGBColors;
     end;
   end;
-
+  {$ifdef DebugCommonDialogEvents}
+  debugln(['TWin32WSFontDialog.CreateHandle calling DoClose']);
+  {$endif}
+  TFontDialog(ACommonDialog).DoClose;
   Result := 0;
 end;
 
@@ -1208,6 +1221,9 @@ var
   Title: widestring;
   DirName: string;
 begin
+  {$ifdef DebugCommonDialogEvents}
+  debugln(['TWin32WSSelectDirectoryDialog.CreateOldHandle A']);
+  {$endif}
   DirName := '';
   InitialDir := TSelectDirectoryDialog(ACommonDialog).FileName;
   Options := TSelectDirectoryDialog(ACommonDialog).Options;
@@ -1241,8 +1257,17 @@ begin
     // this value will be passed to callback proc as lpData
     lParam := Windows.LParam(PWideChar(InitialDirW));
   end;
-
+  {$ifdef DebugCommonDialogEvents}
+  debugln(['TWin32WSSelectDirectoryDialog.CreateOldHandle calling DoShow']);
+  {$endif}
+  TSelectDirectoryDialog(ACommonDialog).DoShow;
+  {$ifdef DebugCommonDialogEvents}
+  debugln(['TWin32WSSelectDirectoryDialog.CreateOldHandle before SHBrowseForFolder']);
+  {$endif}
   iidl := SHBrowseForFolderW(@biw);
+  {$ifdef DebugCommonDialogEvents}
+  debugln(['TWin32WSSelectDirectoryDialog.CreateOldHandle after SHBrowseForFolder']);
+  {$endif}
 
   if Assigned(iidl) then
   begin
@@ -1260,7 +1285,14 @@ begin
 
   CoTaskMemFree(Buffer);
 
+  {$ifdef DebugCommonDialogEvents}
+  debugln(['TWin32WSSelectDirectoryDialog.CreateOldHandle calling DoClose']);
+  {$endif}
+  TSelectDirectoryDialog(ACommonDialog).DoClose;
   Result := 0;
+  {$ifdef DebugCommonDialogEvents}
+  debugln(['TWin32WSSelectDirectoryDialog.CreateOldHandle End']);
+  {$endif}
 end;
 
 { TFileDialogEvents }
