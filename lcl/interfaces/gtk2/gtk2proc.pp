@@ -864,6 +864,7 @@ type
     window: PGdkWindow;
     send_event: gint8;
     time: guint32;
+    keyval: guint;
     constructor Create(Event: PGdkEventKey);
     function IsEqual(Event: PGdkEventKey): boolean;
   end;
@@ -879,6 +880,7 @@ begin
   window:=Event^.window;
   send_event:=Event^.send_event;
   time:=Event^.time;
+  keyval:=Event^.keyval;
 end;
 
 function TLCLHandledKeyEvent.IsEqual(Event: PGdkEventKey): boolean;
@@ -886,7 +888,8 @@ begin
   Result:=(gdk_event_get_type(Event)=thetype)
       and (window=Event^.window)
       and (send_event=Event^.send_event)
-      and (time=Event^.time);
+      and (time=Event^.time)
+      and (keyval=Event^.keyval);
 end;
 
 var
