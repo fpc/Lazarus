@@ -133,17 +133,17 @@ begin
   bmp := TBitmap.Create;
   try
     if RbMaxSize.Checked then begin
-      if himg/wimg > Scrollbox1.Height / Scrollbox1.Width then
+      if himg/wimg > Scrollbox1.ClientHeight / Scrollbox1.ClientWidth then
       begin
-        bmp.Height := Scrollbox1.Height;
+        bmp.Height := Scrollbox1.ClientHeight;
         bmp.Width := round(wimg/himg * bmp.Height);
-        multiplierX := multiplierX * Scrollbox1.Height / himg;
-        multiplierY := multiplierY * Scrollbox1.Height / himg;
+        multiplierX := multiplierX * Scrollbox1.ClientHeight / himg;
+        multiplierY := multiplierY * Scrollbox1.ClientHeight / himg;
       end else begin
-        bmp.Width := Scrollbox1.Width;
+        bmp.Width := Scrollbox1.ClientWidth;
         bmp.Height := round(himg/wimg * bmp.Width);
-        multiplierX := multiplierX * Scrollbox1.Width / wimg;
-        multiplierY := multiplierY * Scrollbox1.Width / wimg;
+        multiplierX := multiplierX * Scrollbox1.ClientWidth / wimg;
+        multiplierY := multiplierY * Scrollbox1.ClientWidth / wimg;
       end;
     end else
       bmp.SetSize(wimg, himg);
