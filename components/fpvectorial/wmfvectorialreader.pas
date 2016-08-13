@@ -119,6 +119,9 @@ type
     procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); override;
   end;
 
+var
+  // Settings
+  gWMFVecReader_UseTopLeftCoords: Boolean = True;
 
 implementation
 
@@ -719,8 +722,7 @@ var
   page: TvVectorialPage;
   prevX, prevY: Word;
 begin
-  AData.AddPage(true);
-  page := AData.GetPageAsVectorial(0);
+  page := AData.AddPage(gWMFVecReader_UseTopLeftCoords);
 
   while AStream.Position < AStream.Size do begin
     // Store the stream position where the current record begins
