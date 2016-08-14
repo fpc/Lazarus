@@ -714,6 +714,10 @@ procedure TCalendarDialog.OnDialogCloseQuery(Sender: TObject;
   var CanClose: boolean);
 begin
   //if Assigned(OnCanClose) then OnCanClose(Sender, CanClose);
+  if DlgForm.ModalResult = mrOK then
+    UserChoice := mrOk
+  else
+    UserChoice := mrCancel;
   DoCanClose(CanClose);
 end;
 
