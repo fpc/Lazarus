@@ -54,7 +54,6 @@ type
     FCurrTextAlign: Word;
     FCurrPolyFillMode: Word;
     FCurrRawFontHeight: Integer;
-    FBkColor: TFPColor;
     FMapMode: Word;
     FWindowOrigin: TPoint;
     FWindowExtent: TPoint;
@@ -74,7 +73,7 @@ type
     function CreateRegion(const AParams: TParamArray): Integer;
     procedure DeleteObj(const AParams: TParamArray);
     procedure ReadArc(APage: TvVectorialpage; const AParams: TParamArray);
-    procedure ReadBkColor(const AParams: TParamArray);
+    procedure ReadBkColor(APage: TvVectorialPage; const AParams: TParamArray);
     procedure ReadChord(APage: TvVectorialpage; const AParams: TParamArray);
     function ReadColor(const AParams: TParamArray; AIndex: Integer): TFPColor;
     procedure ReadExtTextOut(APage: TvVectorialPage; const AParams: TParamArray);
@@ -204,7 +203,6 @@ begin
   FCurrTextColor := colBlack;
   FCurrTextAlign := 0;  // Left + Top
   FCurrPolyFillMode := ALTERNATE;
-  FBkColor := colWhite;
   FMapMode := MM_ANISOTROPIC;
   FUnitsPerInch := 96;
 end;
@@ -412,9 +410,10 @@ begin
   path.Pen := FCurrPen;
 end;
 
-procedure TvWMFVectorialReader.ReadBkColor(const AParams: TParamArray);
+procedure TvWMFVectorialReader.ReadBkColor(APage: TvVectorialPage;
+  const AParams: TParamArray);
 begin
-  FBkColor := ReadColor(AParams, 0);
+  APage.BackgroundColor := ReadColor(AParams, 0);
 end;
 
 procedure TvWMFVectorialReader.ReadChord(APage: TvVectorialPage;
@@ -867,7 +866,7 @@ begin
       META_SCALEWINDOWEXT:
         ;
       META_SETBKCOLOR:
-        ReadBkColor(params);
+        ReadBkColor(page, params);
       META_SETBKMODE:
         ;
       META_SETLAYOUT:
