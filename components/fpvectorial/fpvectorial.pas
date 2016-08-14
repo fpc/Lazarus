@@ -772,6 +772,7 @@ type
   end;
 
   { TvRectangle }
+  { The point (X,Y) refers to the left/top corner of the rectangle! }
 
   TvRectangle = class(TvEntityWithPenBrushAndFont)
   protected
