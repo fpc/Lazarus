@@ -2174,15 +2174,25 @@ var
   lToken5Before, lToken7Before: TSVGTokenType;
   lCorrectPreviousToken: Boolean;
   lPrevRelative, lCurRelative: Boolean;
+  isFirstMove: Boolean;
+  startX, startY: Double;
 begin
+  isFirstMove := true;
   lCurTokenType := ACurTokenType;
   // --------------
   // Moves
   // --------------
   if lCurTokenType in [sttMoveTo, sttRelativeMoveTo] then
   begin
-    X := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-    Y := FSVGPathTokenizer.Tokens.Items[i+2].Value;
+    // The point at which the polygon starts. Since there may be several
+    // subpolygons we must store it to close the subpolygon correctly later.
+    startX := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+    startY := FSVGPathTokenizer.Tokens.Items[i+2].Value;
+    if isFirstMove then begin
+      X := startX;
+      Y := startY;
+      isFirstMove := false;
+    end;
 
     // take care of relative or absolute
     // Idiotism in SVG: If the path starts with a relative move to,
@@ -2208,12 +2218,9 @@ begin
   // --------------
   else if lCurTokenType = sttClosePath then
   begin
-    // Get the first point
-    AData.GetTmpPathStartPos(X, Y);
-
-    // And repeat it
-    CurX := X;
-    CurY := Y;
+    // Repeat the first point of the subpolygon
+    CurX := startX;
+    CurY := startY;
     AData.AddLineToPath(CurX, CurY);
 
     Inc(i, 1);
