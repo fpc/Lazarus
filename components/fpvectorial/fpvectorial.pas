@@ -561,8 +561,11 @@ type
     procedure CalcGradientVector(out AGradientStart, AGradientEnd: T2dPoint;
       const ARect: TRect; ADestX: Integer = 0; ADestY: Integer = 0;
       AMulX: Double = 1.0; AMulY: Double = 1.0);
+    procedure DrawPolygon(ADest: TFPCustomCanvas; var RenderInfo: TvRenderInfo;
+      const APoints: TPointsArray; const APolyStarts: TIntegerDynArray; ARect: TRect);
     procedure DrawPolygonBrushGradient(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
-      const APoints: TPointsArray; ARect: TRect; AGradientStart, AGradientEnd: T2DPoint);
+      const APoints: TPointsArray; const APolyStarts: TIntegerDynArray;
+      ARect: TRect; AGradientStart, AGradientEnd: T2DPoint);
     procedure DrawPolygonBrushRadialGradient(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
       const APoints: TPointsArray; ARect: TRect);
     procedure DrawNativePolygonBrushRadialGradient(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
@@ -3944,13 +3947,69 @@ begin
   end;
 end;
 
+{ Fills a polygon with the color of the current brush. The routine can handle
+  non-contiguous polygons (holes!) correctly using the ScanLine algorithm and
+  the even-odd rule
+  http://www.tutorialspoint.com/computer_graphics/polygon_filling_algorithm.htm
+
+  NOTE: The method only performs a solid fill, i.e. Brush.Style is ignored }
+procedure TvEntityWithPenAndBrush.DrawPolygon(ADest: TFPCustomCanvas;
+  var RenderInfo: TvRenderInfo; const APoints: TPointsArray;
+  const APolyStarts: TIntegerDynArray; ARect: TRect);
+var
+  scanlineY, scanLineY1, scanLineY2: Integer;
+  lPoints, pts: T2DPointsArray;
+  j: Integer;
+begin
+  if ARect.Top < ARect.Bottom then
+  begin
+    scanLineY1 := ARect.Top;
+    scanLineY2 := ARect.Bottom;
+  end else
+  begin
+    scanLineY1 := ARect.Bottom;
+    scanLineY2 := ARect.Top;
+  end;
+
+  // Prepare points as needed by the GetLinePolygonIntersectionPoints procedure
+  SetLength(pts, Length(APoints));
+  for j := 0 to High(APoints) do
+    pts[j] := Point2D(APoints[j].X, APoints[j].Y);
+
+  // Prepare parameters and polygon points
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Width := 1;
+  ADest.Pen.FPColor := Brush.Color;
+
+  // Fill polygon by drawing horizontal line segments
+  scanlineY := scanlineY1;
+  while (scanlineY <= scanlineY2) do begin
+    // Find intersection points of horizontal scan line with polygon
+    // with polygon
+    lPoints := GetLinePolygonIntersectionPoints(scanlineY, pts, APolyStarts, false);
+    if Length(lPoints) < 2 then begin
+      inc(scanlineY);
+      Continue;
+    end;
+    // Draw lines between intersection points, skip every second pair
+    j := 0;
+    while j < High(lPoints) do
+    begin
+      ADest.Line(round(lPoints[j].X), round(lPoints[j].Y), round(lPoints[j+1].X), round(lPoints[j+1].Y));
+      inc(j, 2);
+    end;
+    // Proceed to next scan line
+    inc(scanlineY);
+  end;
+end;
+
 { Fills the entity with a gradient.
   Assumes that the boundary is already in canvas units and is specified by
   polygon APoints. }
 procedure TvEntityWithPenAndBrush.DrawPolygonBrushGradient(
   ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
-  const APoints: TPointsArray; ARect: TRect; AGradientStart,
-  AGradientEnd: T2DPoint);
+  const APoints: TPointsArray;const APolyStarts: TIntegerDynArray;
+  ARect: TRect; AGradientStart, AGradientEnd: T2DPoint);
 var
   lPoints, pts: T2DPointsArray;
   i, j: Integer;
@@ -4072,7 +4131,7 @@ begin
   begin
     // Find intersection points of gradient line (normal to gradient vector)
     // with polygon
-    lPoints := GetLinePolygonIntersectionPoints(coord, pts, coordIsX);
+    lPoints := GetLinePolygonIntersectionPoints(coord, pts, APolyStarts, coordIsX);
     if Length(lPoints) < 2 then begin
       coord := coord + dcoord;
       Continue;
@@ -4285,8 +4344,7 @@ begin
     end
     else
     {$endif}
-      DrawPolygonBrushGradient(ADest, ARenderInfo, polypoints, lRect, gv1, gv2);
-    // to do: multiple polygons!
+      DrawPolygonBrushGradient(ADest, ARenderInfo, polypoints, polystarts, lRect, gv1, gv2);
 
     // Paint outline
     if ADest.Pen.Style <> psClear then
@@ -4969,19 +5027,26 @@ begin
         bkSimpleBrush:
           if Brush.Style <> bsClear then
           begin
-            {$IFDEF USE_LCL_CANVAS}
-            for i := 0 to High(FPolyStarts) do
-            begin
-              j := FPolyStarts[i];
-              if i = High(FPolyStarts) then
-                n := Length(FPolyPoints) - j
-              else
-                n := FPolyStarts[i+1] - FPolyStarts[i]; // + 1;
-              ACanvas.Polygon(@FPolyPoints[j], n, WindingRule = vcmNonZeroWindingRule);
-            end;
-            {$ELSE}
-            ADest.Polygon(FPolyPoints);
-            {$ENDIF}
+            if (Brush.Style = bsSolid) and (Length(FPolyStarts) > 1) then begin
+              // Non-contiguous polygon (polygon with "holes") --> use special procedure
+              // Disadvantage: it can oly do solid fills!
+              lRect := Rect(x1, y1, x2, y2);
+              DrawPolygon(ADest, ARenderInfo, FPolyPoints, FPolyStarts, lRect)
+            end
+            else
+              {$IFDEF USE_LCL_CANVAS}
+              for i := 0 to High(FPolyStarts) do
+              begin
+                j := FPolyStarts[i];
+                if i = High(FPolyStarts) then
+                  n := Length(FPolyPoints) - j
+                else
+                  n := FPolyStarts[i+1] - FPolyStarts[i]; // + 1;
+                ACanvas.Polygon(@FPolyPoints[j], n, WindingRule = vcmNonZeroWindingRule);
+              end;
+              {$ELSE}
+              ADest.Polygon(FPolyPoints);
+              {$ENDIF}
           end;
         else  // gradients
           // Boundary rect of shape filled with a gradient
@@ -4989,7 +5054,7 @@ begin
           // calculate gradient vector
           CalcGradientVector(gv1, gv2, lRect, ADestX, ADestY, AMulX, AMulY);
           // Draw the gradient
-          DrawPolygonBrushGradient(ADest, ARenderInfo, FPolyPoints, lRect, gv1, gv2);
+          DrawPolygonBrushGradient(ADest, ARenderInfo, FPolyPoints, FPolyStarts, lRect, gv1, gv2);
           // to do: multiple polygons!
       end;
 
