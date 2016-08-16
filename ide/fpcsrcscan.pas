@@ -72,6 +72,8 @@ type
     procedure Scan(Directory: string);
   end;
 
+procedure ApplyFPCSrcFiles(FPCSrcDir: string; var Files: TStringList);
+
 implementation
 
 procedure ApplyFPCSrcFiles(FPCSrcDir: string; var Files: TStringList);

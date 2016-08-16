@@ -76,6 +76,7 @@ type
     fTargetOS: string;
     fTargetCPU: string;
     fLCLWidgetType: string;
+    procedure DoOnRescanFPCDirectoryCache(Sender: TObject);
     procedure OnMacroSubstitution(TheMacro: TTransferMacro;
                                const MacroName: string; var s: string;
                                const {%H-}Data: PtrInt; var Handled, {%H-}Abort: boolean;
@@ -335,6 +336,8 @@ begin
   GetBuildMacroValues:=@OnGetBuildMacroValues;
   OnAppendCustomOption:=@AppendMatrixCustomOption;
   OnGetOutputDirectoryOverride:=@GetMatrixOutputDirectoryOverride;
+
+  CodeToolBoss.OnRescanFPCDirectoryCache:=@DoOnRescanFPCDirectoryCache;
 end;
 
 destructor TBuildManager.Destroy;
@@ -350,6 +353,9 @@ begin
   LazConfMacroFunc:=nil;
   FreeAndNil(InputHistories);
   FreeAndNil(DefaultCfgVars);
+
+  if CompareMethods(TMethod(CodeToolBoss.OnRescanFPCDirectoryCache), TMethod(@DoOnRescanFPCDirectoryCache)) then
+    CodeToolBoss.OnRescanFPCDirectoryCache:=nil;
 
   inherited Destroy;
   MainBuildBoss:=nil;
@@ -1331,6 +1337,21 @@ begin
   if not HasGUI then
     debugln(['Hint: (lazarus) Build Project: nothing to do.']);
   Result:=mrNo;
+end;
+
+procedure TBuildManager.DoOnRescanFPCDirectoryCache(Sender: TObject);
+var
+  Files: TStringList;
+  FPCSrcDir: string;
+begin
+  FPCSrcDir := EnvironmentOptions.GetParsedFPCSourceDirectory;
+  Files := GatherFilesInFPCSources(FPCSrcDir, nil);
+  if Files<>nil then
+    try
+      ApplyFPCSrcFiles(FPCSrcDir, Files);
+    finally
+      Files.Free;
+    end;
 end;
 
 function TBuildManager.CheckAmbiguousSources(const AFilename: string;

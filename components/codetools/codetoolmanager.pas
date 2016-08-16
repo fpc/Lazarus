@@ -114,6 +114,7 @@ type
     FOnFindDefineProperty: TOnFindDefineProperty;
     FOnGetIndenterExamples: TOnGetFABExamples;
     FOnGetMethodName: TOnGetMethodname;
+    FOnRescanFPCDirectoryCache: TNotifyEvent;
     FOnScannerInit: TOnScannerInit;
     FOnSearchUsedUnit: TOnSearchUsedUnit;
     FResourceTool: TResourceCodeTool;
@@ -129,6 +130,7 @@ type
     FWriteLockCount: integer;// Set/Unset counter
     FWriteLockStep: integer; // current write lock ID
     FHandlers: array[TCodeToolManagerHandler] of TMethodList;
+    procedure DoOnRescanFPCDirectoryCache(Sender: TObject);
     function GetBeautifier: TBeautifyCodeOptions; inline;
     function DoOnScannerGetInitValues(Scanner: TLinkScanner; Code: Pointer;
       out AChangeStep: integer): TExpressionEvaluator;
@@ -238,6 +240,7 @@ type
                                  out ListOfCodeBuffer: TFPList): boolean;
     property OnSearchUsedUnit: TOnSearchUsedUnit
                                  read FOnSearchUsedUnit write FOnSearchUsedUnit;
+    property OnRescanFPCDirectoryCache: TNotifyEvent read FOnRescanFPCDirectoryCache write FOnRescanFPCDirectoryCache;
 
     // initializing single scanner
     property OnScannerInit: TOnScannerInit read FOnScannerInit write FOnScannerInit;
@@ -5654,6 +5657,12 @@ begin
   Result:=not OnCheckAbort();
 end;
 
+procedure TCodeToolManager.DoOnRescanFPCDirectoryCache(Sender: TObject);
+begin
+  if Assigned(FOnRescanFPCDirectoryCache) then
+    FOnRescanFPCDirectoryCache(Sender);
+end;
+
 procedure TCodeToolManager.DoOnToolTreeChange(Tool: TCustomCodeTool;
   NodesDeleting: boolean);
 var
@@ -5915,6 +5924,7 @@ begin
     TCodeTool(Result).OnFindUsedUnit:=@DoOnFindUsedUnit;
     TCodeTool(Result).OnGetSrcPathForCompiledUnit:=@DoOnGetSrcPathForCompiledUnit;
     TCodeTool(Result).OnGetMethodName:=@DoOnInternalGetMethodName;
+    TCodeTool(Result).OnRescanFPCDirectoryCache:=@DoOnRescanFPCDirectoryCache;
     TCodeTool(Result).DirectoryCache:=
       DirectoryCachePool.GetCache(ExtractFilePath(Code.Filename),
                                   true,true);
