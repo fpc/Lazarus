@@ -62,7 +62,7 @@ uses
   Math, Classes, SysUtils, TypInfo, types, strutils, AVL_Tree,
   // LCL
   LCLProc, LCLType, LCLIntf, LResources, ComCtrls, HelpIntfs, InterfaceBase,
-  Forms, Buttons, Menus, Controls, GraphType, Graphics, ExtCtrls, Dialogs,
+  Forms, Buttons, Menus, Controls, GraphType, Graphics, ExtCtrls, Dialogs, LclStrConsts,
   // CodeTools
   FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
   CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists, CodeTree,
@@ -7906,7 +7906,7 @@ begin
   Result:=mrOk;
   if ToolStatus=itDebugger then begin
     Result:=IDEQuestionDialog(lisStopDebugging2, lisStopCurrentDebuggingAndRebuildProject,
-                              mtConfirmation,[mrYes, mrCancel, lisNo],'');
+                              mtConfirmation,[mrYes, mrCancel, rsmbNo],'');
     if Result<>mrYes then exit;
 
     Result:=DebugBoss.DoStopProject;
@@ -11095,7 +11095,7 @@ begin
     case IDEQuestionDialog(lisSaveChanges,
           Format(lisSaveFileBeforeClosingForm,
                  [AnUnitInfo.Filename, LineEnding, ADesigner.LookupRoot.Name]),
-          mtConfirmation,[mrYes,mrNoToAll,lisNo,mrCancel],'') of
+          mtConfirmation,[mrYes,mrNoToAll,rsmbNo,mrCancel],'') of
       mrYes: begin
         if DoSaveEditorFile(ASrcEdit,[sfCheckAmbiguousFiles])<>mrOk
         then Exit;

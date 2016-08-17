@@ -35,7 +35,7 @@ uses
   AVL_Tree, typinfo, math, Classes, SysUtils, Controls, Forms, Dialogs, LCLIntf,
   LCLType, LCLProc, FileProcs, IDEProcs, DialogProcs, IDEDialogs,
   LConvEncoding, LazFileCache, FileUtil, LazFileUtils, LazUTF8, LResources, PropEdits,
-  DefineTemplates, IDEMsgIntf, IDEProtocol, LazarusIDEStrConsts, NewDialog,
+  DefineTemplates, IDEMsgIntf, IDEProtocol, LazarusIDEStrConsts, LclStrConsts, NewDialog,
   NewProjectDlg, LazIDEIntf, MainBase, MainBar, MainIntf, MenuIntf, NewItemIntf,
   CompOptsIntf, SrcEditorIntf, IDEWindowIntf, ProjectIntf, Project, ProjectDefs,
   ProjectInspector, PackageIntf, PackageDefs, PackageSystem, CompilerOptions,
@@ -5700,7 +5700,7 @@ begin
     Result:=IDEQuestionDialog(lisFileNotLowercase,
       Format(lisTheUnitIsNotLowercaseTheFreePascalCompiler,
              [OldFilename, LineEnding, LineEnding+LineEnding]),
-      mtConfirmation,[mrYes,mrIgnore,lisNo,mrAbort],'');
+      mtConfirmation,[mrYes,mrIgnore,rsmbNo,mrAbort],'');
     if Result<>mrYes then exit;
   end;
   NewUnitName:=AnUnitInfo.SrcUnitName;
@@ -7868,7 +7868,7 @@ begin
     // lpi file will change => ask
     Result:=IDEQuestionDialog(lisProjectChanged,
       Format(lisSaveChangesToProject, [Project1.GetTitleOrName]),
-      mtConfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '');
+      mtConfirmation, [mrYes, mrNoToAll, rsmbNo, mbCancel], '');
     if Result=mrNoToAll then exit(mrOk);
     if Result<>mrYes then exit(mrCancel);
   end
@@ -7876,7 +7876,7 @@ begin
   begin
     // some non project files were changes in the source editor
     Result:=IDEQuestionDialog(lisSaveChangedFiles,lisSaveChangedFiles,
-      mtConfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '');
+      mtConfirmation, [mrYes, mrNoToAll, rsmbNo, mbCancel], '');
     if Result=mrNoToAll then exit(mrOk);
     if Result<>mrYes then exit(mrCancel);
   end
@@ -7893,7 +7893,7 @@ begin
       if EnvironmentOptions.AskSaveSessionOnly then begin
         Result:=IDEQuestionDialog(lisProjectSessionChanged,
           Format(lisSaveSessionChangesToProject, [Project1.GetTitleOrName]),
-          mtConfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '');
+          mtConfirmation, [mrYes, mrNoToAll, rsmbNo, mbCancel], '');
         if Result=mrNoToAll then exit(mrOk);
         if Result<>mrYes then exit(mrCancel);
       end;
