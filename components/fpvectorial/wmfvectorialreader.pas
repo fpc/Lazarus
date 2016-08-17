@@ -86,8 +86,8 @@ type
     procedure ReadPolygon(APage: TvVectorialPage; const AParams: TParamArray;
       AFilled: boolean);
     procedure ReadPolyPolygon(APage: TvVectorialPage; const AParams: TParamArray);
-    procedure ReadRectangle(APage: TvVectorialPage; const AParams: TParamArray);
-    procedure ReadRoundRect(APage: TvVectorialPage; const AParams: TParamArray);
+    procedure ReadRectangle(APage: TvVectorialPage; const AParams: TParamArray;
+      IsRounded: Boolean);
     procedure ReadStretchDIB(AStream: TStream; APage: TvVectorialPage;
       const AParams: TParamArray);
     function ReadString(const AParams: TParamArray;
@@ -272,19 +272,28 @@ function TvWMFVectorialReader.CreateFont(const AParams: TParamArray): Integer;
 var
   wmfFont: TWMFFont;
   fontRec: PWMFFontRecord;
+  fntName: String;
+  idx: Integer;
 begin
+  idx := Length(Aparams);
   wmfFont := TWMFFont.Create;
   fontRec := PWMFFontRecord(@AParams[0]);
 
-  wmfFont.Font.Name := ISO_8859_1ToUTF8(fontRec^.FaceName);
+  // Get font name
+  SetLength(fntName, 32);
+  idx := SizeOf(TWMFFontRecord) div SizeOf(word);
+  Move(AParams[idx], fntName[1], 32);
+  SetLength(fntName, StrLen(PChar(@fntName)));
+
+  wmfFont.Font.Name := ISO_8859_1ToUTF8(fntName);
   wmfFont.Font.Size := round(ScaleSizeY(fontRec^.Height));
   wmfFont.Font.Color := colBlack;  // to be replaced by FCurrTextColor
   wmfFont.Font.Bold := fontRec^.Weight >= 700;
-  wmfFont.Font.Italic := fontRec^.Italic <> 0; //Escapement <> 0;
+  wmfFont.Font.Italic := fontRec^.Italic <> 0;
   wmfFont.Font.Underline := fontRec^.UnderLine <> 0;
   wmfFont.Font.StrikeThrough := fontRec^.Strikeout <> 0;
   wmfFont.Font.Orientation := fontRec^.Orientation div 10;
-  wmfFont.RawHeight := fontRec^.Height;
+  wmfFont.RawHeight := fontRec^.Height; //* 6 div 5;    // Rough correction for y position
 
   // add to WMF object list
   Result := FObjList.Add(wmfFont);
@@ -465,6 +474,7 @@ var
   R: TRect;
   s: String;
   txt: TvText;
+  angle: Double;
 begin
   y := SmallInt(AParams[0]);   // signed int
   x := SmallInt(AParams[1]);
@@ -482,19 +492,17 @@ begin
 
   // Correct text position which is at baseline in case of fpvectorial, but
   // may be different depending on bits in the CurrTextAlign value.
-  case FCurrTextAlign and (TA_BOTTOM + TA_BASELINE) of
-    0 :
-      { In this case, the text should be top-aligned, but fpvectorial draws
-        the text at the baseline --> move it down (and take care of text
-        rotation!) }
-      offs := Rotate2DPoint(Point(0, FCurrRawFontHeight), Point(0, 0), DegToRad(FCurrFont.Orientation));
+
+  // TO DO: More testing of text positioning
+  angle := DegToRad(FCurrFont.Orientation);
+  case FCurrTextAlign and $0018 of
+    0:
+      offs := Point(0, 0); //Rotate2DPoint(Point(0, +FCurrRawFontHeight), Point(0, 0), angle);
     TA_BASELINE:
-      { This is the way how fpvectorial draws the text --> nothing to do }
-      offs := Point(0, 0);
+//      offs := Rotate2DPoint(Point(0, -FCurrRawFontHeight*6 div 5), Point(0, 0), angle);
+      offs := Rotate2DPoint(Point(0, +FCurrRawFontHeight), Point(0, 0), angle);
     TA_BOTTOM:
-      { Unfortunately we don't know the descender of the font here. Lets
-      assume it to be 1/5th of the font size. Move text up. }
-      offs := Rotate2DPoint(Point(0, -FCurrRawFontHeight div 5), Point(0, 0), DegToRad(FCurrFont.Orientation));
+      offs := Rotate2DPoint(Point(0, -FCurrRawFontHeight*7 div 5), Point(0, 0), angle);
   end;
 
   // Pass text to fpvectorial
@@ -502,7 +510,7 @@ begin
   // Select the font
   txt.Font := FCurrFont;
   // Set horizontal text alignment.
-  case FCurrTextAlign and (TA_RIGHT + TA_CENTER) of
+  case FCurrTextAlign and (TA_RIGHT or TA_CENTER) of
     TA_RIGHT  : txt.TextAnchor := vtaEnd;
     TA_CENTER : txt.TextAnchor := vtaMiddle;
     else        txt.TextAnchor := vtaStart;
@@ -556,7 +564,7 @@ begin
   // Test if file begins with a placeable meta file header
   FHasPlaceableMetaHeader := false;
   AStream.ReadBuffer(buf, SizeOf(TPlaceableMetaHeader));
-  if placeableMetaHdr.Key = $9AC6CDD7 then begin  // yes!
+  if placeableMetaHdr.Key = WMF_MAGIC_NUMBER then begin  // yes!
     FHasPlaceableMetaHeader := true;
     FBBox.Left := placeableMetaHdr.Left;
     FBBox.Top := placeableMetaHdr.Top;
@@ -663,8 +671,10 @@ begin
   poly.Pen := FCurrPen;
   if AFilled then
     poly.Brush := FCurrBrush
-  else
+  else begin
     poly.Brush.Style := bsClear;
+    poly.Brush.Kind := bkSimpleBrush;
+  end;
   case FCurrPolyFillMode of
     ALTERNATE : poly.WindingRule := vcmEvenOddRule;
     WINDING   : poly.WindingRule := vcmNonZeroWindingRule;
@@ -808,9 +818,9 @@ begin
       META_POLYPOLYGON:
         ReadPolyPolygon(page, params);
       META_RECTANGLE:
-        ReadRectangle(page, params);
+        ReadRectangle(page, params, false);
       META_ROUNDRECT:
-        ReadRectangle(page, params);
+        ReadRectangle(page, params, true);
       META_SETPIXEL:
         ;
       META_TEXTOUT:
@@ -919,7 +929,7 @@ begin
 
   SetLength(params, 0);
 end;
-
+(*
 procedure TvWMFVectorialReader.ReadRectangle(APage: TvVectorialPage;
   const AParams: TParamArray);
 // To do: not tested, having not test file
@@ -943,25 +953,29 @@ begin
   poly.Brush := FCurrBrush;
   APage.AddEntity(poly);
 end;
-
-procedure TvWMFVectorialReader.ReadRoundRect(APage: TvVectorialPage;
-  const AParams: TParamArray);
-// To do: not tested, having no test file
+  *)
+procedure TvWMFVectorialReader.ReadRectangle(APage: TvVectorialPage;
+  const AParams: TParamArray; IsRounded: Boolean);
 var
   rectRec: PWMFRectRecord;   // coordinates are SmallInt
   rx, ry: SmallInt;
   rect: TvRectangle;
 begin
-  ry := AParams[0];
-  rx := AParams[1];
-
-  rectRec := PWMFRectRecord(@AParams[4]);
+  if IsRounded then begin
+    ry := AParams[0];
+    rx := AParams[1];
+    rectRec := PWMFRectRecord(@AParams[2]);
+  end else begin
+    rectRec := PWMFRectRecord(@AParams[0]);
+    rx := 0;
+    ry := 0;
+  end;
 
   rect := TvRectangle.Create(APage);
   rect.X := ScaleX(rectRec^.Left);
-  rect.Y := ScaleY(rectRec^.Top);
+  rect.Y := ScaleY(rectRec^.Bottom);  // since the axis goes down bottom and top are interchanged!
   rect.CX := ScaleSizeX(rectRec^.Right - rectRec^.Left);
-  rect.CY := ScaleSizeY(rectRec^.Bottom - rectRec^.Top);
+  rect.CY := ScaleSizeY(rectRec^.Bottom - rectRec^.Top);  // wmf: Top < Bottom!
   rect.RX := ScaleSizeX(rx);
   rect.RY := ScaleSizeY(ry);
   rect.Pen := FCurrPen;
@@ -1090,37 +1104,41 @@ var
   s: String;
   txt: TvText;
   offs: TPoint;
+  txtHeight: Integer;
 begin
+  { Record layout:
+    word - String length
+    even number of bytes - String, no trailing zero
+    smallInt - yStart
+    smallInt - xStart }
+
   len := AParams[0];
   i := 1;
   s := ReadString(AParams, i, len);
-  inc(i, len);
-  if odd(len) then inc(i);
+  if odd(len) then inc(len);
+  inc(i, len div 2);
   y := SmallInt(AParams[i]);      // signed int!
   x := SmallInt(AParams[i + 1]);
 
   // Correct text position which is at baseline in case of fpvectorial, but
   // may be different depending on bits in the CurrTextAlign value.
-  case FCurrTextAlign and (TA_BOTTOM + TA_BASELINE) of
-    0 :
-      { In this case, the text should be top-aligned, but fpvectorial draws it
-        at the baseline --> move it down (and respect text rotation!) }
-      offs := Rotate2DPoint(Point(0, FCurrRawFontHeight), Point(0, 0), DegToRad(FCurrFont.Orientation));
-    TA_BASELINE:
-      { This is the way how fpvectorial draws the text --> nothing to do }
+
+  // TO DO: More testing of text positioning.
+  case FCurrTextAlign and $0018 of
+    0:
       offs := Point(0, 0);
+    TA_BASELINE:
+      offs := Rotate2DPoint(Point(0, FCurrRawFontHeight), Point(0, 0), DegToRad(FCurrFont.Orientation));
     TA_BOTTOM:
-      { Unfortunately we don't know the descender of the font here. Lets
-        assume it to be 1/5th of the font size. Move text up. }
-      offs := Rotate2DPoint(Point(0, -FCurrRawFontHeight div 5), Point(0, 0), DegToRad(FCurrFont.Orientation));
+      offs := Rotate2DPoint(Point(0, -FCurrRawFontHeight*7 div 5), Point(0, 0), DegToRad(FCurrFont.Orientation));
   end;
 
   // Pass the text to fpvectorial
-  txt := APage.AddText(x + offs.x, y + offs.y, s);
+  txt := APage.AddText(ScaleX(x + offs.x), ScaleY(y + offs.y), s);
   // Select the font
   txt.Font := FCurrFont;
   // Set horizontal text alignment.
-  case FCurrTextAlign and (TA_RIGHT + TA_CENTER) of
+  case FCurrTextAlign and (TA_RIGHT or TA_CENTER) of
     TA_RIGHT  : txt.TextAnchor := vtaEnd;
     TA_CENTER : txt.TextAnchor := vtaMiddle;
     else        txt.TextAnchor := vtaStart;
@@ -1203,6 +1221,7 @@ end;
 function TvWMFVectorialReader.ScaleY(y: Integer): Double;
 begin
   Result := ScaleSizeY(y - FWindowOrigin.Y);    // there is probably an issue with y direction
+//  Result := FPageHeight - ScaleSizeY(y);
 end;
 
 function TvWMFVectorialReader.ScaleSizeX(x: Integer): Double;
