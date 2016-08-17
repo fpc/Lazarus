@@ -626,7 +626,12 @@ begin
       or GDK_KEY_RELEASE_MASK or GDK_KEY_PRESS_MASK);
   LCLComponent:=GetLCLObject(Widget);
   if LCLComponent is TCommonDialog then
+  begin
+    {$ifdef DebugCommonDialogEvents}
+    debugln(['GTKDialogRealizeCB calling DoShow']);
+    {$endif}
     TCommonDialog(LCLComponent).DoShow;
+  end;
   Result:=true;
 end;
 
@@ -636,6 +641,8 @@ end;
   Result: GBoolean
 
   This function is called, before a commondialog is destroyed
+  (Only when the user aborts the dialog, not if the dialog closes as the result
+   of a click on one of itś buttons)
 -------------------------------------------------------------------------------}
 function gtkDialogCloseQueryCB(widget: PGtkWidget; data: gPointer): GBoolean;
   cdecl;
@@ -643,20 +650,30 @@ var
   theDialog : TCommonDialog;
   CanClose: boolean;
 begin
+  {$ifdef DebugCommonDialogEvents}
+  debugln(['>>>>gtkDialogCloseQueryCB A']);
+  {$endif}
   Result := False; // true = do nothing, false = destroy or hide window
   if (Data=nil) then ;
   // data is not the commondialog. Get it manually.
   theDialog := TCommonDialog(GetLCLObject(Widget));
   if theDialog=nil then exit;
   if theDialog.OnCanClose<>nil then begin
+    theDialog.UserChoice := mrCancel;
     CanClose:=True;
-    theDialog.OnCanClose(theDialog,CanClose);
+    {$ifdef DebugCommonDialogEvents}
+    debugln(['gtkDialogCloseQueryCB calling DoCanClose']);
+    {$endif}
+    theDialog.DoCanClose(CanClose);
     Result:=not CanClose;
   end;
   if not Result then begin
     StoreCommonDialogSetup(theDialog);
     DestroyCommonDialogAddOns(theDialog);
   end;
+  {$ifdef DebugCommonDialogEvents}
+  debugln(['gtkDialogCloseQueryCB End']);
+  {$endif}
 end;
 
 {-------------------------------------------------------------------------------
@@ -668,10 +685,16 @@ end;
 -------------------------------------------------------------------------------}
 function gtkDialogDestroyCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 begin
+  {$ifdef DebugCommonDialogEvents}
+  debugln(['gtkDialogDestroyCB A']);
+  {$endif}
   Result := True;
   if (Widget=nil) then ;
-  TCommonDialog(data).UserChoice := mrAbort;
+  TCommonDialog(data).UserChoice := mrCancel;
   TCommonDialog(data).Close;
+  {$ifdef DebugCommonDialogEvents}
+  debugln(['gtkDialogDestroyCB End']);
+  {$endif}
 end;
 
 {-------------------------------------------------------------------------------
@@ -685,7 +708,6 @@ end;
 function GTKDialogKeyUpDownCB(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
 begin
-  //debugln('GTKDialogKeyUpDownCB A ');
   Result:=CallBackDefaultReturn;
 
   if (Widget=nil) then ;
