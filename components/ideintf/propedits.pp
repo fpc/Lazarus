@@ -33,7 +33,7 @@ uses
   // LazUtils
   FileUtil, FPCAdds, // for StrToQWord in older fpc versions
   // IdeIntf
-  ObjInspStrConsts, PropEditUtils,
+  ObjInspStrConsts, PropEditUtils, IDEUtils,
   // Forms with .lfm files
   FrmSelectProps, StringsPropEditDlg, KeyValPropEditDlg, CollectionPropEditForm,
   FileFilterPropEditor, IDEWindowIntf;
@@ -4321,22 +4321,6 @@ begin
   Result := True;
 end;
 
-function IsValidPropName(const PropName: string): boolean;
-var
-  i, len: integer;
-begin
-  result := false;
-  len := length(PropName);
-  if len <> 0 then begin
-    result := PropName[1] in ['A'..'Z', 'a'..'z', '_'];
-    i := 1;
-    while (result) and (i < len) do begin
-      i := i + 1;
-      result := result and (PropName[i] in ['A'..'Z', 'a'..'z', '0'..'9', '_', '.']);
-      end ;
-    end ;
-end ;
-
 procedure TMethodPropertyEditor.Edit;
 { If the method does not exist in current lookuproot: create it
   Then jump to the source.
@@ -4349,7 +4333,8 @@ var
 begin
   NewMethodName := GetValue;
   //DebugLn('### TMethodPropertyEditor.Edit A OldValue=',NewMethodName);
-  if not IsValidPropName(NewMethodName) or PropertyHook.MethodFromAncestor(GetMethodValue) then
+  if not LazIsValidIdent(NewMethodName, True, True)
+  or PropertyHook.MethodFromAncestor(GetMethodValue) then
   begin
     // the current method is from the ancestor
     // -> add an override with the default name

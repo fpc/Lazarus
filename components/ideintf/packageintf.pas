@@ -694,7 +694,7 @@ end;
 procedure TLazPackageID.SetName(const NewName: TComponentName);
 begin
   if Name=NewName then exit;
-  inherited SetName(NewName);
+  ChangeName(NewName);
   UpdateIDAsString;
 end;
 

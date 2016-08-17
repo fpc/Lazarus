@@ -920,7 +920,7 @@ end;
 
 function IsValidPkgName(APkgName: String): Boolean;
 begin
-  Result := IsValidIdent(APkgName);
+  Result := IsDottedIdentifier(APkgName);
 end;
 
 function PkgFileTypeIdentToType(const s: string): TPkgFileType;

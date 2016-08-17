@@ -1837,8 +1837,10 @@ end;
 
 procedure TPackageEditorForm.SetLazPackage(const AValue: TLazPackage);
 begin
-  if (FLazPackage=AValue) and
-     not(Assigned(AValue) and (Name<>PackageEditorWindowPrefix+AValue.Name))//force editor name change when package name changed!
+  //force editor name change when package name changed!
+  if (FLazPackage=Nil)
+  and ( (AValue=Nil) or (Name=PackageEditorWindowPrefix
+                            +StringReplace(AValue.Name,'.','_',[rfReplaceAll])) )
   then
     exit;
   if FLazPackage<>nil then
@@ -1854,9 +1856,8 @@ begin
   end;
   EnvironmentOptions.LastOpenPackages.Add(FLazPackage.Filename);
   MainIDE.SaveEnvironment;
-  Name:=PackageEditorWindowPrefix+LazPackage.Name;
   FLazPackage.Editor:=Self;
-  // update components
+  // set Name and update components.
   UpdateAll(true);
 end;
 
@@ -2036,7 +2037,7 @@ procedure TPackageEditorForm.UpdateAll(Immediately: boolean);
 begin
   if csDestroying in ComponentState then exit;
   if LazPackage=nil then exit;
-  Name:=PackageEditorWindowPrefix+LazPackage.Name;
+  Name:=PackageEditorWindowPrefix + StringReplace(LazPackage.Name,'.','_',[rfReplaceAll]);
   if fForcedFlags<>[] then
     fFlags:=fFlags+fForcedFlags  // Flags forcing a partial update
   else
