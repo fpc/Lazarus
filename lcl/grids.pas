@@ -5603,7 +5603,6 @@ begin
     if (Abs(ClickMouse.X-X)>FDragDX) and (Cursor<>crMultiDrag) then begin
       ChangeCursor(crMultiDrag);
       FMoveLast:=Point(-1,-1);
-      ResetOffset(True, False);
     end;
 
     if (Cursor=crMultiDrag) and
@@ -5639,7 +5638,6 @@ begin
     if (Cursor<>crMultiDrag) and (Abs(ClickMouse.Y-Y)>FDragDX) then begin
       ChangeCursor(crMultiDrag);
       FMoveLast:=Point(-1,-1);
-      ResetOffset(False, True);
     end;
 
     if (Cursor=crMultiDrag)and
