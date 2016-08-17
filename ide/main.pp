@@ -8970,7 +8970,7 @@ end;
 procedure TMainIDE.OnControlSelectionFormChanged(Sender: TObject; OldForm,
   NewForm: TCustomForm);
 begin
-  if (TheControlSelection=nil) or (FormEditor1=nil) or not FIDEStarted then exit;
+  if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
   if OldForm<>nil then
     OldForm.Invalidate;
   if TheControlSelection.LookupRoot<>nil then
@@ -8981,7 +8981,8 @@ begin
   DebugLn('***');
   DebugLn('** TMainIDE.OnControlSelectionFormChanged: Calling UpdateIDEComponentPalette(true)');
   {$ENDIF}
-  MainIDEBar.UpdateIDEComponentPalette(true);
+  if FIDEStarted then
+    MainIDEBar.UpdateIDEComponentPalette(true);
 end;
 
 procedure TMainIDE.OnGetDesignerSelection(const ASelection: TPersistentSelectionList);
