@@ -666,12 +666,17 @@ type
 
   //----------------------------------------------------------------------------
 
+  TFindIdentifierInUsesSection_FindMissingFPCUnit = class;
+
+  //----------------------------------------------------------------------------
+
   { TFindDeclarationTool }
 
   TFindDeclarationTool = class(TPascalReaderTool)
   private
     FAdjustTopLineDueToComment: boolean;
     FDirectoryCache: TCTDirectoryCache;
+    FFindMissingFPCUnits: TFindIdentifierInUsesSection_FindMissingFPCUnit;
     FInterfaceIdentifierCache: TInterfaceIdentifierCache;
     FInterfaceHelperCache: array[TFDHelpersListKind] of TFDHelpersList;
     FOnFindUsedUnit: TOnFindUsedUnit;
@@ -1023,13 +1028,16 @@ type
 
   TFindIdentifierInUsesSection_FindMissingFPCUnit = class
   private
-    FFileName: string;
+    FUnitName: string;
     FFound: Boolean;
-  public
-    constructor Create(AFileName: string);
-    procedure Iterate(const AFilename: string);
+    FResults: TStringList;
 
-    property Found: Boolean read FFound;
+    procedure Iterate(const AFilename: string);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function Find(const AUnitName: string; const ADirectoryCache: TCTDirectoryCache): Boolean;
+    function IsInResults(const AUnitName: string): Boolean;
   end;
 
 function ExprTypeToString(const ExprType: TExpressionType): string;
@@ -1463,18 +1471,46 @@ end;
 
 { TFindIdentifierInUsesSection_FindMissingFPCUnit }
 
-constructor TFindIdentifierInUsesSection_FindMissingFPCUnit.Create(
-  AFileName: string);
+constructor TFindIdentifierInUsesSection_FindMissingFPCUnit.Create;
 begin
-  inherited Create;
+  inherited;
+  FResults := TStringList.Create;
+  FResults.CaseSensitive := True;
+  FResults.Duplicates := dupIgnore;
+  FResults.Sorted := True;
+end;
 
-  FFileName := AFileName;
+destructor TFindIdentifierInUsesSection_FindMissingFPCUnit.Destroy;
+begin
+  FResults.Free;
+
+  inherited Destroy;
+end;
+
+function TFindIdentifierInUsesSection_FindMissingFPCUnit.Find(
+  const AUnitName: string; const ADirectoryCache: TCTDirectoryCache): Boolean;
+var
+  IRes: Integer;
+begin
+  IRes := FResults.IndexOf(AUnitName);
+  if IRes>=0 then
+    Exit(Boolean(PtrInt(FResults.Objects[IRes])));
+  FUnitName := AUnitName;
+  ADirectoryCache.IterateFPCUnitsInSet(@Iterate);
+  Result := FFound;
+  FResults.AddObject(AUnitName, TObject(PtrInt(Result)));
+end;
+
+function TFindIdentifierInUsesSection_FindMissingFPCUnit.IsInResults(
+  const AUnitName: string): Boolean;
+begin
+  Result := FResults.IndexOf(AUnitName)>=0;
 end;
 
 procedure TFindIdentifierInUsesSection_FindMissingFPCUnit.Iterate(
   const AFilename: string);
 begin
-  FFound := FFound or SameFileName(FFileName, ExtractFileNameOnly(AFilename));
+  FFound := FFound or SameFileName(FUnitName, ExtractFileNameOnly(AFilename));
 end;
 
 { TTypeAliasOrderList }
@@ -7514,7 +7550,6 @@ var
 var
   AnUnitName: string;
   InFilename: string;
-  FindMissing: TFindIdentifierInUsesSection_FindMissingFPCUnit;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(UsesNode);{$ENDIF}
   {$IFDEF ShowTriedParentContexts}
@@ -7577,19 +7612,16 @@ begin
       // identifier not found and there is a missing unit
       if FindMissingFPCUnits and Assigned(FOnRescanFPCDirectoryCache) then
       begin
-        FindMissing := TFindIdentifierInUsesSection_FindMissingFPCUnit.Create(AnUnitName);
-        try
-          DirectoryCache.IterateFPCUnitsInSet(@FindMissing.Iterate);
-
-          if FindMissing.Found then
-          begin
-            FOnRescanFPCDirectoryCache(Self);
-            Result := FindIdentifierInUsesSection(UsesNode, Params, False);
-          end else
-            RaiseUnitNotFound;
-        finally
-          FindMissing.Free;
-        end;
+        AnUnitName := LowerCase(AnUnitName);
+        if FFindMissingFPCUnits=nil then
+          FFindMissingFPCUnits := TFindIdentifierInUsesSection_FindMissingFPCUnit.Create;
+        if not FFindMissingFPCUnits.IsInResults(AnUnitName) // don't rescan twice
+        and FFindMissingFPCUnits.Find(AnUnitName, DirectoryCache) then
+        begin
+          FOnRescanFPCDirectoryCache(Self);
+          Result := FindIdentifierInUsesSection(UsesNode, Params, False);
+        end else
+          RaiseUnitNotFound;
       end else
         RaiseUnitNotFound;
     end;
@@ -11152,6 +11184,7 @@ begin
     FDirectoryCache.Release;
     FDirectoryCache:=nil;
   end;
+  FFindMissingFPCUnits.Free;
   inherited Destroy;
 end;
 
