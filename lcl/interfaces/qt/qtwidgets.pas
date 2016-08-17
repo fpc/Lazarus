@@ -3592,6 +3592,7 @@ begin
     QtRightButton: LazButton := 2;
     QtMidButton: LazButton := 3;
     QtXButton1, QtXButton2: LazButton := 4;
+    else Exit; // Sometimes mouse wheel triggers an invalid button value. Ignore it.
   end;
   // do not pass mouse button into keys (TShiftState). issue #20916
   if (QEvent_type(Event) <> QEventMouseButtonRelease)
