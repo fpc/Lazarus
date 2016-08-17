@@ -1511,6 +1511,7 @@ type
     procedure AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight, ARenderHeight: Integer; out ADeltaX, ADeltaY: Integer; out AZoom: Double); virtual;
     procedure GetNaturalRenderPos(var APageHeight: Integer; out AMulY: Double); virtual; abstract;
     procedure SetNaturalRenderPos(AUseTopLeftCoords: Boolean); virtual;
+    function HasNaturalRenderPos: Boolean;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); virtual; abstract;
   end;
@@ -5701,6 +5702,7 @@ var
   lTextSize: TSize;
   lTextWidth: Integer;
   tm: TLCLTextMetric;
+  ts: TTextStyle;
   {$endif}
 begin
   lText := Value.Text + Format(' F=%d', [ADest.Font.Size]); // for debugging
@@ -8880,6 +8882,12 @@ procedure TvPage.SetNaturalRenderPos(AUseTopLeftCoords: Boolean);
 begin
   FUseTopLeftCoordinates := AUseTopLeftCoords;
 end;
+
+function TvPage.HasNaturalRenderPos: Boolean;
+begin
+  Result := FUseTopLeftCoordinates;
+end;
+
 
 { TvVectorialPage }
 
