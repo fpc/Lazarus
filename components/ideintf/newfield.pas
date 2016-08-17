@@ -63,6 +63,7 @@ type
   private
     function GetPersistentName: string;
     procedure SetPersistentName(const AValue: string);
+    function CreateFieldName(BaseName: String): String ;
   private
     LinkDataSet: TDataSet;
     FDesigner: TComponentEditorDesigner;
@@ -160,10 +161,9 @@ end;
 procedure TNewFieldFrm.EditNameChange(Sender: TObject);
 begin
   if Trim(EditName.Text) <> '' then
-    PersistentName := FDesigner.CreateUniqueComponentName(LinkDataset.Name + EditName.Text)
+    PersistentName := CreateFieldName(LinkDataset.Name + EditName.Text)
   else
     PersistentName := '';
-
   SetButtons;
 end ;
 
@@ -480,5 +480,28 @@ destructor TNewFieldFrm.Destroy;
 begin
   inherited Destroy;
 end;
+
+function TNewFieldFrm.CreateFieldName(BaseName: String): String ;
+var
+  i, j: integer;
+  ExistingComponent, OwnerComponent: TComponent;
+begin
+  Result:=BaseName;
+  OwnerComponent := FDesigner.LookupRoot;
+  if (OwnerComponent=nil) or (Result='') then exit;
+  i:=1;
+  repeat
+    ExistingComponent := OwnerComponent.FindComponent(Result);
+    if ExistingComponent<>nil then
+    begin
+       if (BaseName[Length(BaseName)] in ['0'..'9']) then
+         Result := BaseName+'_'+IntToStr(i)
+       else
+         Result := BaseName+IntToStr(i);
+       inc(i);
+    end ;
+  until ExistingComponent=nil;
+end;
+
 
 end.
