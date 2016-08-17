@@ -1358,7 +1358,7 @@ begin
   if Length(Result) > 0 then
     LFMStream.Read(Result[1],length(Result));
   LFMStream.Position:=0;
-  if (Result='') or (not IsValidIdent(Result)) then
+  if not IsValidIdent(Result) then
     Result:='';
 end;
 

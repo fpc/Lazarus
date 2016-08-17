@@ -1539,7 +1539,7 @@ begin
     // for example 'SysUtils.CompareText'
     FFileName:=FActiveSrcEdit.EditorComponent.GetWordAtRowCol(
       FActiveSrcEdit.EditorComponent.LogicalCaretXY);
-    if (FFileName<>'') and IsValidIdent(FFileName) then begin
+    if IsValidIdent(FFileName) then begin
       // search pascal unit
       AUnitName:=FFileName;
       InFilename:='';
@@ -4558,7 +4558,7 @@ function TLazSourceFileManager.NewUniqueComponentName(Prefix: string): string;
   function IdentifierIsOk(Identifier: string): boolean;
   begin
     Result:=false;
-    if (Identifier='') or not IsValidIdent(Identifier) then exit;
+    if not IsValidIdent(Identifier) then exit;
     if AllKeyWords.DoIdentifier(PChar(Identifier)) then exit;
     if IdentifierExists(Identifier) then exit;
     if IdentifierExists('T'+Identifier) then exit;
@@ -4572,7 +4572,7 @@ begin
     exit(Prefix);
   while (Prefix<>'') and (Prefix[length(Prefix)] in ['0'..'9']) do
     System.Delete(Prefix,length(Prefix),1);
-  if (Prefix='') or (not IsValidIdent(Prefix)) then
+  if not IsValidIdent(Prefix) then
     Prefix:='Resource';
   i:=0;
   repeat
@@ -6845,7 +6845,7 @@ begin
   CTErrorLine:=0;
   CTErrorCol:=0;
 
-  if (AComponentClassName='') or (not IsValidIdent(AComponentClassName)) then
+  if not IsValidIdent(AComponentClassName) then
   begin
     DebugLn(['TLazSourceFileManager.FindComponentClass invalid component class name "',AComponentClassName,'"']);
     exit(mrCancel);
@@ -7017,7 +7017,7 @@ begin
   Quiet:=([ofProjectLoading,ofQuiet]*Flags<>[]);
   HideAbort:=not (ofProjectLoading in Flags);
 
-  if (AComponentClassName='') or (not IsValidIdent(AComponentClassName)) then
+  if not IsValidIdent(AComponentClassName) then
   begin
     DebugLn(['TLazSourceFileManager.LoadComponentDependencyHidden invalid component class name "',AComponentClassName,'"']);
     exit(mrCancel);

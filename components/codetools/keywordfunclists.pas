@@ -388,7 +388,7 @@ begin
     DoDataFunction:=ADataFunction;
   end;
   inc(FCount);
-  if (AKeyWord='') or not IsValidIdent(AKeyWord) then
+  if not IsValidIdent(AKeyWord) then
     FHasOnlyIdentifiers:=false;
 end;
 

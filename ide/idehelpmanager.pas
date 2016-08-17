@@ -693,8 +693,7 @@ begin
     end;
     AFilename:=SetDirSeparators(AFilename);
     LazarusIDE.DoOpenFileAndJumpToPos(AFilename,p,-1,-1,-1,[]);
-  end else if (URLScheme='openpackage') and (URLPath<>'')
-  and IsValidIdent(URLPath) then begin
+  end else if (URLScheme='openpackage') and IsValidIdent(URLPath) then begin
     PackageEditingInterface.DoOpenPackageWithName(URLPath,[],false);
   end else if (URLScheme='fpdoc') and (URLParams<>'') then begin
     OpenFPDoc(URLParams);
@@ -744,7 +743,7 @@ begin
     exit;
   end;
   PkgName:=copy(PkgName,2,length(PkgName));
-  if (PkgName='') or not IsValidIdent(PkgName) then begin
+  if not IsValidIdent(PkgName) then begin
     InvalidPathError('It does not start with a package name, for example #rtl.');
     exit;
   end;
@@ -760,7 +759,7 @@ begin
   end;
 
   AnUnitName:=ExtractSubPath;
-  if (AnUnitName='') or (not IsValidIdent(AnUnitName)) then begin
+  if not IsValidIdent(AnUnitName) then begin
     InvalidPathError('Unit name "'+AnUnitName+'" is invalid.');
     exit;
   end;

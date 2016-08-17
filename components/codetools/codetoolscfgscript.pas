@@ -298,8 +298,7 @@ var
   AtomStart: PChar;
   SrcPos: PtrUInt;
 begin
-  if (Src='') or (OldName='') or (not IsValidIdent(OldName))
-  or (NewName='') then exit;
+  if (Src='') or not IsValidIdent(OldName) or (NewName='') then exit;
   p:=PChar(Src);
   //debugln(['RenameCTCSVariable START ',dbgstr(Src)]);
   repeat
@@ -1181,7 +1180,7 @@ begin
   Clear;
   for i:=0 to Source.Count-1 do begin
     Name:=Source.Names[i];
-    if (Name='') or not IsValidIdent(Name) then continue;
+    if not IsValidIdent(Name) then continue;
     Value:=Source.ValueFromIndex[i];
     Define(PChar(Name),Value);
   end;

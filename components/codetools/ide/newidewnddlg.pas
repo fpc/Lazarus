@@ -100,11 +100,8 @@ begin
 end;
 
 function TNewIDEWndCfgDialog.IsFormNameValid: boolean;
-var
-  s: TCaption;
 begin
-  s:=FormNameEdit.Text;
-  Result:=(s<>'') and IsValidIdent(s);
+  Result:=IsValidIdent(FormNameEdit.Text);
 end;
 
 function TNewIDEWndCfgDialog.IsMenuCaptionValid: boolean;

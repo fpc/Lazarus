@@ -4885,7 +4885,7 @@ end;
 
 procedure TComponentNamePropertyEditor.SetValue(const NewValue: ansistring);
 begin
-  if (not IsValidIdent(NewValue)) or (NewValue='') then
+  if not IsValidIdent(NewValue) then
     raise Exception.Create(Format(oisComponentNameIsNotAValidIdentifier, [NewValue]));
   inherited SetValue(NewValue);
   PropertyHook.ComponentRenamed(TComponent(GetComponent(0)));

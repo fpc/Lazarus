@@ -140,7 +140,7 @@ begin
       ok:=false;
       try
         // check syntax
-        if (S='') or (not IsValidIdent(S)) then begin
+        if not IsValidIdent(S) then begin
           IDEMessageDialog(lisCCOErrorCaption,
             Format(lisInvalidMacroTheMacroMustBeAPascalIdentifie, [S]),
             mtError,[mbCancel]);

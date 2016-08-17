@@ -1957,8 +1957,7 @@ begin
   Layout.LoadFromConfig(Config);
   for i:=FControlNames.Count-1 downto 0 do begin
     AName:=FControlNames[i];
-    if (AName<>'') and IsValidIdent(AName)
-    and (Layout.Root<>nil) then begin
+    if IsValidIdent(AName) and (Layout.Root<>nil) then begin
       Node:=Layout.Root.FindChildNode(AName,true);
       if (Node<>nil) and (Node.NodeType in [adltnControl,adltnCustomSite]) then
         continue;
@@ -1979,8 +1978,7 @@ begin
   Layout.LoadFromConfig(Path, Config);
   for i:=FControlNames.Count-1 downto 0 do begin
     AName:=FControlNames[i];
-    if (AName<>'') and IsValidIdent(AName)
-    and (Layout.Root<>nil) then begin
+    if IsValidIdent(AName) and (Layout.Root<>nil) then begin
       Node:=Layout.Root.FindChildNode(AName,true);
       if (Node<>nil) and (Node.NodeType in [adltnControl,adltnCustomSite]) then
         continue;

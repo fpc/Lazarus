@@ -588,7 +588,7 @@ var
   NewIdentifier: String;
 begin
   NewIdentifier:=NewEdit.Text;
-  if (NewIdentifier='') or (not IsValidIdent(NewIdentifier)) then begin
+  if not IsValidIdent(NewIdentifier) then begin
     IDEMessageDialog(lisFRIInvalidIdentifier,
       Format(lisSVUOisNotAValidIdentifier, [NewIdentifier]), mtError, [mbCancel]);
     ModalResult:=mrNone;

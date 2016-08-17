@@ -116,7 +116,7 @@ begin
     ErrorMsg:=lisEmpty;
     exit;
   end;
-  if (not IsValidIdent(AName)) then begin
+  if not IsValidIdent(AName) then begin
     ErrorMsg:=lisNotAValidPascalIdentifier;
     exit;
   end;

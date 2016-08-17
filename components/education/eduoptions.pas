@@ -281,7 +281,7 @@ var
 begin
   for i:=0 to ChildCount-1 do begin
     Child:=Children[i];
-    if (Child.Name='') or (not IsValidIdent(Child.Name)) then continue;
+    if not IsValidIdent(Child.Name) then continue;
     Config.AppendBasePath(Child.Name);
     try
       Result:=Child.Load(Config);
@@ -300,7 +300,7 @@ var
 begin
   for i:=0 to ChildCount-1 do begin
     Child:=Children[i];
-    if (Child.Name='') or (not IsValidIdent(Child.Name)) then continue;
+    if not IsValidIdent(Child.Name) then continue;
     Config.AppendBasePath(Child.Name);
     try
       Result:=Child.Save(Config);

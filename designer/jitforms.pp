@@ -1228,7 +1228,7 @@ begin
   if IndexOf(JITComponent)<0 then
     raise Exception.Create('TJITComponentList.RemoveMethod JITComponent.ClassName='+
       JITComponent.ClassName);
-  if (AName='') or (not IsValidIdent(AName)) then
+  if not IsValidIdent(AName) then
     raise Exception.Create('TJITComponentList.RemoveMethod invalid name: "'+AName+'"');
 
   // delete TJITMethod
@@ -1254,7 +1254,7 @@ begin
   if IndexOf(JITComponent)<0 then
     raise Exception.Create('TJITComponentList.RenameMethod JITComponent.ClassName='+
       JITComponent.ClassName);
-  if (NewName='') or (not IsValidIdent(NewName)) then
+  if not IsValidIdent(NewName) then
     raise Exception.Create('TJITComponentList.RenameMethod invalid name: "'+NewName+'"');
     
   // rename TJITMethod
@@ -1278,7 +1278,7 @@ begin
   if IndexOf(JITComponent)<0 then
     raise Exception.Create('TJITComponentList.RenameComponentClass JITComponent.ClassName='+
       JITComponent.ClassName);
-  if (NewName='') or (not IsValidIdent(NewName)) then
+  if not IsValidIdent(NewName) then
     raise Exception.Create('TJITComponentList.RenameComponentClass invalid name: "'+NewName+'"');
   DoRenameClass(JITComponent.ClassType,NewName);
 end;
@@ -1401,7 +1401,7 @@ begin
   if IndexOf(JITComponent)<0 then
     raise Exception.Create('TJITComponentList.CreateNewMethod JITComponent.ClassName='+
       JITComponent.ClassName);
-  if (AName='') or (not IsValidIdent(AName)) then
+  if not IsValidIdent(AName) then
     raise Exception.Create('TJITComponentList.CreateNewMethod invalid name: "'+AName+'"');
   OldCode:=JITComponent.MethodAddress(AName);
   if OldCode<>nil then begin

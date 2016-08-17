@@ -2623,7 +2623,7 @@ begin
     Result:=true;
     exit;
   end;
-  if (NewIdentifier='') or (not IsValidIdent(NewIdentifier)) then exit;
+  if not IsValidIdent(NewIdentifier) then exit;
 
   ClearCurCodeTool;
   SourceChangeCache.Clear;

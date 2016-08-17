@@ -2897,7 +2897,7 @@ var
     if Result='' then
       Result:=ParamType;
     // otherwise use 'Param'
-    if (Result='') or (not IsValidIdent(Result)) then
+    if not IsValidIdent(Result) then
       Result:='Param';
     // prepend an 'a'
     if Result[1]<>'a' then

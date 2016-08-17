@@ -85,7 +85,7 @@ end;
 Function TMakeSkelForm.PackageOK : Boolean;
 
 begin
-  Result:=(EPackage.Text<>'') and IsValidIdent(EPackage.Text);
+  Result:=IsValidIdent(EPackage.Text);
 end;
 
 Function TMakeSkelForm.InputFileOK : Boolean;

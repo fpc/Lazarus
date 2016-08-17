@@ -279,8 +279,8 @@ begin
 end;
 
 {   IsValidIdent returns true if the first character of Ident is in:
-    'A' to 'Z', 'a' to 'z' or '_' and the following characters are
-    on of: 'A' to 'Z', 'a' to 'z', '0'..'9' or '_'    }
+    'A' to 'Z', 'a' to 'z' or '_' and the following characters are one of:
+    'A' to 'Z', 'a' to 'z', '0'..'9' or '_'    }
 function IsValidNodeName(const Ident: string): boolean;
 var
   p: PChar;
@@ -412,7 +412,7 @@ end;
 
 procedure TWiki2FPDocConverter.SetPackageName(AValue: string);
 begin
-  if (AValue='') or not IsValidIdent(AValue) then
+  if not IsValidIdent(AValue) then
     raise Exception.Create('invalid package name "'+AValue+'"');
   if FPackageName=AValue then Exit;
   FPackageName:=AValue;

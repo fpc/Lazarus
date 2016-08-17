@@ -279,7 +279,7 @@ var
   i: Integer;
   Item: TPASObjectWriterStackEl;
 begin
-  if (Component.Name='') or (not IsValidIdent(Component.Name)) then
+  if not IsValidIdent(Component.Name) then
     raise Exception.Create('TPASObjectWriter.BeginComponent not pascal identifier');
   if (FStack<>nil) and (FStack.Count>0) then begin
     // auto create child components

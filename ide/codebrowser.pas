@@ -3327,7 +3327,7 @@ begin
   end;
 
   // get identifier
-  if (Identifier='') or (not IsValidIdent(Identifier)) then begin
+  if not IsValidIdent(Identifier) then begin
     DebugLn(['TQuickFixIdentifierNotFound_Search.Execute not an identifier "',dbgstr(Identifier),'"']);
     exit;
   end;

@@ -4328,7 +4328,7 @@ end;
 procedure TIDEBuildMacro.SetIdentifier(const AValue: string);
 begin
   if FIdentifier=AValue then exit;
-  if (AValue='') or (not IsValidIdent(AValue)) then
+  if not IsValidIdent(AValue) then
     raise Exception.Create('TIDEBuildMacro.SetIdentifier invalid identifier: '+AValue);
   FIdentifier:=AValue;
   {$IFDEF VerboseIDEModified}
@@ -4535,7 +4535,7 @@ begin
   for i:=0 to NewCount-1 do begin
     NewItem:=TIDEBuildMacro.Create;
     NewItem.LoadFromXMLConfig(AXMLConfig,Path+'Item'+IntToStr(i+1)+'/',DoSwitchPathDelims);
-    if (NewItem.Identifier<>'') and IsValidIdent(NewItem.Identifier) then
+    if IsValidIdent(NewItem.Identifier) then
       FItems.Add(NewItem)
     else
       NewItem.Free;

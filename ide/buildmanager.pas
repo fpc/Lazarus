@@ -1585,7 +1585,7 @@ begin
             else
               continue;
             CurUnitName:=ExtractFilenameOnly(FileInfo.Name);
-            if (CurUnitName='') or (not IsValidIdent(CurUnitName)) then
+            if not IsValidIdent(CurUnitName) then
               continue;
             CurFilename:=CurDir+FileInfo.Name;
             //DebugLn(['TBuildManager.CheckUnitPathForAmbiguousPascalFiles ',CurUnitName,' ',CurFilename]);

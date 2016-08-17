@@ -7946,7 +7946,7 @@ begin
   for i:=1 to Cnt do begin
     SubPath:=Path+'Defines/Macro'+IntToStr(i)+'/';
     DefineName:=UpperCaseStr(XMLConfig.GetValue(SubPath+'Name',''));
-    if (DefineName='') or (not IsValidIdent(DefineName)) then begin
+    if not IsValidIdent(DefineName) then begin
       DebugLn(['Warning: [TFPCTargetConfigCache.LoadFromXMLConfig] invalid define name ',DefineName]);
       continue;
     end;
@@ -7964,7 +7964,7 @@ begin
       StartPos:=1;
       while (p<=length(s)) and (s[p]<>';') do inc(p);
       DefineName:=copy(s,StartPos,p-StartPos);
-      if (DefineName<>'') and IsValidIdent(DefineName) then begin
+      if IsValidIdent(DefineName) then begin
         if Undefines=nil then
           Undefines:=TStringToStringTree.Create(false);
         Undefines[DefineName]:='';
@@ -8057,7 +8057,7 @@ begin
     Node:=Defines.Tree.FindLowest;
     while Node<>nil do begin
       Item:=PStringToStringTreeItem(Node.Data);
-      if (Item^.Name<>'') and IsValidIdent(Item^.Name) then begin
+      if IsValidIdent(Item^.Name) then begin
         inc(Cnt);
         SubPath:=Path+'Defines/Macro'+IntToStr(Cnt)+'/';
         XMLConfig.SetDeleteValue(SubPath+'Name',Item^.Name,'');

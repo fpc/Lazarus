@@ -690,7 +690,7 @@ begin
       if (CompareFileExt(Filename,'ppu',false)<>0) then continue;
       AUnitName:=ExtractFileNameOnly(Filename);
       Filename:=AppendPathDelim(Directory)+Filename;
-      if (AUnitName='') or (not IsValidIdent(AUnitName)) then begin
+      if not IsValidIdent(AUnitName) then begin
         DebugLn(['TPPUGroups.AddFPCGroup NOTE: invalid ppu name: ',Filename]);
         continue;
       end;

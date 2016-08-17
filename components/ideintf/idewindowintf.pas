@@ -1643,7 +1643,7 @@ begin
   while i > 0 do begin
     ID := Config.GetValue(Path+'Desktop/FormIdList/a'+IntToStr(i), '');
     //debugln(['TSimpleWindowLayoutList.LoadFromConfig ',i,' ',ID]);
-    if (ID <> '') and IsValidIdent(ID) then
+    if IsValidIdent(ID) then
     begin
       xLayoutIndex := IndexOf(ID);
       if (xLayoutIndex = -1) then
@@ -2297,7 +2297,7 @@ procedure TIDEWindowCreatorList.ShowForm(AForm: TCustomForm; BringToFront: boole
 var
   Layout: TSimpleWindowLayout;
 begin
-  if (AForm.Name='') or (not IsValidIdent(AForm.Name)) then
+  if not IsValidIdent(AForm.Name) then
     raise Exception.Create('TIDEWindowCreatorList.ShowForm invalid form name '+AForm.Name);
 
   // auto create a layout storage for every shown form

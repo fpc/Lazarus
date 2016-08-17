@@ -390,7 +390,7 @@ begin
     FAssignBodyNode:=nil;
     FInheritedDeclContext:=CleanFindContext;
     NewProcName:=ProcNameEdit.Text;
-    if (NewProcName<>'') and IsValidIdent(NewProcName) then
+    if IsValidIdent(NewProcName) then
       FProcName:=NewProcName;
 
     Result:=(FCode<>nil) and CodeToolBoss.FindAssignMethod(FCode,FX,FY,
@@ -433,7 +433,7 @@ begin
 
     DeclGroupBox.Caption:=crsCAMNewMethod;
     ProcNameLabel.Caption:=crsCAMMethodName;
-    if (NewProcName='') or (not IsValidIdent(NewProcName)) then
+    if not IsValidIdent(NewProcName) then
       ProcNameErrorLabel.Caption:=crsCAMInvalidIdentifier
     else if not Result then
       ProcNameErrorLabel.Caption:=crsCAMCursorIsNotInAPascalClassDeclaration
@@ -445,7 +445,7 @@ begin
     ParamNameLabel.Caption:=crsCAMParameterName;
     if UseInheritedParam then
       ParamNameEdit.Text:=FInheritedParamName;
-    if (ParamNameEdit.Text='') or not IsValidIdent(ParamNameEdit.Text) then
+    if not IsValidIdent(ParamNameEdit.Text) then
       ParamNameErrorLabel.Caption:=crsCAMInvalidIdentifier
     else
       ParamNameErrorLabel.Caption:='';
@@ -453,7 +453,7 @@ begin
     ParamTypeLabel.Caption:=crsCAMParameterType;
     if UseInheritedParam then
       ParamTypeEdit.Text:=FInheritedParamType;
-    if (ParamTypeEdit.Text='') or not IsValidIdent(ParamTypeEdit.Text) then
+    if not IsValidIdent(ParamTypeEdit.Text) then
       ParamTypeErrorLabel.Caption:=crsCAMInvalidIdentifier
     else
       ParamTypeErrorLabel.Caption:='';

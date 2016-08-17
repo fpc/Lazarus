@@ -452,7 +452,7 @@ begin
   CurOwner:=nil;
   CurProject:=nil;
   CurPkg:=nil;
-  if (IDEItem<>'') and IsValidIdent(IDEItem) then begin
+  if IsValidIdent(IDEItem) then begin
     // package
     CurPkg:=PackageEditingInterface.FindPackageWithName(IDEItem);
     CurOwner:=CurPkg;

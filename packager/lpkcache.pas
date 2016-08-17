@@ -308,7 +308,7 @@ begin
   if not FilenameIsAbsolute(LPKFilename) then exit;
   if CompareFilenames(ExtractFileExt(LPKFilename),'.lpk')<>0 then exit;
   PkgName:=ExtractFileNameOnly(LPKFilename);
-  if (PkgName='') or not IsValidIdent(PkgName) then exit;
+  if not IsValidIdent(PkgName) then exit;
   Result:=true;
 end;
 

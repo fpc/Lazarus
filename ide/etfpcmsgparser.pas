@@ -2350,7 +2350,7 @@ begin
     Identifier:=''
   else begin
     Identifier:=GetFPCMsgValue1(MsgLine);
-    if (Identifier='') or not IsValidIdent(Identifier) then exit;
+    if not IsValidIdent(Identifier) then exit;
   end;
 
   if MsgLine.Attribute[AttrPosChecked]<>'' then exit;

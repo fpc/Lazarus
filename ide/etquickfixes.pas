@@ -266,7 +266,7 @@ begin
     Tool.ReadNextAtom;
   Identifier:=Tool.GetAtom;
   CleanPos:=Tool.CurPos.StartPos;
-  Result:=(Identifier<>'') and IsValidIdent(Identifier);
+  Result:=IsValidIdent(Identifier);
 end;
 
 function GetMsgSrcPosOfThisIdentifier(Msg: TMessageLine; const Identifier: string;

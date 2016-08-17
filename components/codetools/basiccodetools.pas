@@ -1076,7 +1076,7 @@ begin
   if SearchCodeInSource(Source,FormClassName+'=class(',1,SrcPos,false)<1 then
     exit;
   Result:=ReadNextPascalAtom(Source,SrcPos,AtomStart);
-  if (Result<>'') and (not IsValidIdent(Result)) then
+  if not IsValidIdent(Result) then
     Result:='';
 end;
 

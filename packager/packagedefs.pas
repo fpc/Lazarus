@@ -2225,7 +2225,7 @@ begin
   end;
 
   // check build macros
-  if (MacroName<>'') and IsValidIdent(MacroName) then
+  if IsValidIdent(MacroName) then
   begin
     Values:=GetBuildMacroValues(CompilerOptions,true);
     if Values<>nil then begin

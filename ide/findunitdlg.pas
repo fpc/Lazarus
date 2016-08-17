@@ -192,7 +192,7 @@ begin
   if not IsApplicable(Msg,MissingUnit,UsedByUnit) then exit;
   DebugLn(['TQuickFixUnitNotFound_Search.Execute Unit=',MissingUnit]);
 
-  if (MissingUnit='') or (not IsValidIdent(MissingUnit)) then begin
+  if not IsValidIdent(MissingUnit) then begin
     DebugLn(['TQuickFixUnitNotFound_Search.Execute not an identifier "',dbgstr(MissingUnit),'"']);
     exit;
   end;

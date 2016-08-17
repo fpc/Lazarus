@@ -210,7 +210,7 @@ var
   ProcName: String;
 begin
   ProcName:=GetProcName;
-  if (ProcName='') or (not IsValidIdent(ProcName)) then begin
+  if not IsValidIdent(ProcName) then begin
     IDEMessageDialog(lisInvalidProcName,
       Format(lisSVUOisNotAValidIdentifier, [ProcName]), mtError,[mbCancel]);
     ModalResult:=mrNone;

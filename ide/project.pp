@@ -3852,7 +3852,7 @@ begin
   Prefix:=AnUnitName;
   while (Prefix<>'') and (Prefix[length(Prefix)] in ['0'..'9']) do
     Prefix:=copy(Prefix,1,length(Prefix)-1);
-  if (Prefix='') or (not IsValidIdent(Prefix)) then
+  if not IsValidIdent(Prefix) then
     Prefix:='Unit';
   u:=0;
   repeat
@@ -5483,7 +5483,7 @@ begin
   end;
 
   // check build macros
-  if (MacroName<>'') and IsValidIdent(MacroName) then
+  if IsValidIdent(MacroName) then
   begin
     Values:=GetBuildMacroValues(CompilerOptions,true);
     if Values<>nil then begin
@@ -7121,7 +7121,7 @@ begin
   for i:=1 to Cnt do begin
     SubPath:=Path+'Macro'+IntToStr(i)+'/';
     MacroName:=FXMLConfig.GetValue(SubPath+'Name','');
-    if (MacroName='') or not IsValidIdent(MacroName) then continue;
+    if not IsValidIdent(MacroName) then continue;
     MacroValue:=FXMLConfig.GetValue(SubPath+'Value','');
     //debugln(['LoadMacroValues Mode="',CurMode.Identifier,'" ',MacroName,'="',MacroValue,'" session=',CurMode.InSession]);
     AddMatrixMacro(MacroName,MacroValue,CurMode.Identifier,CurMode.InSession);

@@ -11319,7 +11319,7 @@ var
   OldOpenEditorsOnCodeToolChange: Boolean;
 begin
   DebugLn('Hint: (lazarus) TMainIDE.OnDesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName,' Owner=',dbgsName(AComponent.Owner));
-  if (not IsValidIdent(NewName)) or (NewName='') then
+  if not IsValidIdent(NewName) then
     raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, [Newname]));
   if WordIsKeyWord.DoItCaseInsensitive(PChar(NewName))
   or WordIsDelphiKeyWord.DoItCaseInsensitive(PChar(NewName))

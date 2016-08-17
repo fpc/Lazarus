@@ -1122,7 +1122,7 @@ begin
     IDEComponentPalette.FindComponent(fLastNewComponentAncestorType));
 
   // create unique classname
-  if (not IsValidIdent(ClassNameEdit.Text)) or (ClassNameEdit.Text='') then
+  if not IsValidIdent(ClassNameEdit.Text) then
     ClassNameEdit.Text:=IDEComponentPalette.CreateNewClassName(
                                                  fLastNewComponentAncestorType);
   // choose the same page name

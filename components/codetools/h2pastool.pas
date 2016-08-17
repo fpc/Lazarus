@@ -2520,8 +2520,8 @@ function TH2PasTool.CreateH2PNode(var PascalName: string; const CName: string;
   const PascalCode: string;
   ParentNode: TH2PNode; IsGlobal: boolean; InsertAsPreLast: boolean): TH2PNode;
 begin
-  if (PascalName<>'') and (PascalDesc<>ctnNone) and IsValidIdent(PascalName)
-  then begin
+  if (PascalDesc<>ctnNone) and IsValidIdent(PascalName) then
+  begin
     if WordIsKeyWord.DoItCaseInsensitive(PChar(PascalName)) then begin
       // C name is keyword => auto rename
       PascalName:=PascalName+'_';

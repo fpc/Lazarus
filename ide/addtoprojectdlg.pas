@@ -185,7 +185,7 @@ begin
   end;
 
   // check packagename
-  if (NewPkgName='') or (not IsValidIdent(NewPkgName)) then begin
+  if not IsValidIdent(NewPkgName) then begin
     IDEMessageDialog(lisProjAddInvalidPackagename,
       Format(lisProjAddThePackageNameIsInvalidPlaseChooseAnExistingPackag,
              [NewPkgName, LineEnding]),
