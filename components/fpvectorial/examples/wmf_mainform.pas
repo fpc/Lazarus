@@ -13,6 +13,7 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    BtnSaveAsWMF: TButton;
     Image1: TImage;
     ImageList: TImageList;
     ImageInfo: TLabel;
@@ -26,6 +27,7 @@ type
     ShellTreeView: TShellTreeView;
     Splitter1: TSplitter;
     Splitter2: TSplitter;
+    procedure BtnSaveAsWMFClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure RbMaxSizeChange(Sender: TObject);
@@ -55,7 +57,7 @@ implementation
 {$R *.lfm}
 
 uses
-  IniFiles, fpvUtils;
+  IniFiles, LazFileUtils, fpvUtils;
 
 const
   PROGRAM_NAME = 'wmfViewer';
@@ -63,6 +65,23 @@ const
 
 
 { TForm1 }
+
+procedure TForm1.BtnSaveAsWMFClick(Sender: TObject);
+var
+  fn: String;
+begin
+  if ShellListView.Selected = nil then
+    exit;
+  fn := ShellListview.GetPathFromItem(ShellListview.Selected);
+  fn := ChangeFileExt(fn, '') + '-saved.wmf';
+  if FileExistsUTF8(fn) then begin
+    if MessageDlg(Format('File "%s" already exists. Overwrite?', [fn]),
+      mtConfirmation, [mbYes, mbNo], 0) <> mrYes then exit;
+    DeleteFileUTF8(fn);
+  end;
+  FVec.WriteToFile(fn, vfWindowsMetafileWMF);
+  ShowMessage(Format('Saved as "%s"', [fn]));
+end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin

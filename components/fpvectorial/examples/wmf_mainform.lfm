@@ -155,6 +155,16 @@ object Form1: TForm1
         Caption = '      '
         ParentColor = False
       end
+      object BtnSaveAsWMF: TButton
+        Left = 368
+        Height = 25
+        Top = 6
+        Width = 91
+        Anchors = [akTop, akRight]
+        Caption = 'Save as wmf'
+        OnClick = BtnSaveAsWMFClick
+        TabOrder = 2
+      end
     end
   end
   object ImageList: TImageList
