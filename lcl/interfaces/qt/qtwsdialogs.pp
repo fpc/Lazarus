@@ -890,6 +890,9 @@ begin
       X11Raise(QWidget_winID(TQtWidget(AWND).Widget));
   end;
   {$ENDIF}
+  //Since TQtWSColorDialog.CreateHandle returns 0, in TCommonDialog.Close DoClose will not be called,
+  //so call it from here
+  ACommonDialog.DoClose;
 end;
 
 { TQtWSFontDialog }
@@ -967,6 +970,9 @@ begin
       X11Raise(QWidget_winID(TQtWidget(AWND).Widget));
   end;
   {$ENDIF}
+  //Since TQtWSFontDialog.CreateHandle returns 0, in TCommonDialog.Close DoClose will not be called,
+  //so call it from here
+  ACommonDialog.DoClose;
 end;
 
 end.
