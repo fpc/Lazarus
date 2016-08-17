@@ -110,9 +110,10 @@ type
 
   TWMFBrushRecord = packed record
     Style: Word;
-    ColorRED: byte;
+    ColorRED: Byte;
     ColorGREEN: Byte;
-    ColorBLUE: byte;
+    ColorBLUE: Byte;
+    Reserved: Byte;
     // Brush hatch/pattern data of variable length follow
     case integer of
       0: (Hatch: Word);
@@ -136,6 +137,23 @@ type
   end;
   PWMFPaletteColorRecord = ^TWMFPaletteColorRecord;
 
+  TWMFRectRecord = packed record
+    Bottom: SmallInt;
+    Right: SmallInt;
+    Top: SmallInt;
+    Left: SmallInt;
+  end;
+  PWMFRectRecord = ^TWMFRectRecord;
+
+  TWMFExtTextRecord = packed record
+    Y: SmallInt;
+    X: SmallInt;
+    Len: SmallInt;
+    Options: Word;
+    // Optional bounding rect and text follow
+  end;
+  PWMFExtTextRecord = ^TWMFExtTextRecord;
+
   TWMFFontRecord = packed record
     Height: SmallInt;    // signed int!
     Width: SmallInt;
@@ -150,7 +168,7 @@ type
     ClipPrecision: Byte;
     Quality: Byte;
     PitchAndFamily: byte;
-    Facename: Char;  // the following characters will be available by castint to PChar
+    // FaceName will be handled separately
   end;
   PWMFFontRecord = ^TWMFFontRecord;
 
@@ -165,13 +183,15 @@ type
   end;
   PWMFPenRecord = ^TWMFPenRecord;
 
-  TWMFRectRecord = packed record
-    Bottom: SmallInt;
-    Right: SmallInt;
-    Top: SmallInt;
-    Left: SmallInt;
+  TWMFPointRecord = packed record
+    Y, X: SmallInt;             // reverse order as through-out wmf
   end;
-  PWMFRectRecord = ^TWMFRectRecord;
+  PWMFPointRecord = ^TWMFPointRecord;
+
+  TWMFPointXYRecord = packed record
+    X, Y: SmallInt;             // Regular order (x,y) as needed by polygons
+  end;
+  PWMFPointXYRecord = ^TWMFPointXYRecord;
 
   TWMFStretchDIBRecord = packed record
     RasterOperation: DWord;
@@ -216,8 +236,10 @@ type
   end;
   PWMFBitmapInfoHeader = ^TWMFBitmapInfoHeader;
 
-
 const
+  // WMF Magic number in Placeable Meta Header
+  WMF_MAGIC_NUMBER = $9AC6CDD7;
+
   // WMF Record types
   META_EOF = $0000;
   META_REALIZEPALETTE = $0035;
@@ -327,6 +349,11 @@ const
   // ExtTextOutOptions flags
   ETO_OPAQUE = $0002;
   ETO_CLIPPED = $0004;
+  ETO_GLYPHINDEX = $0010;
+  ETO_RTLREADING = $0080;
+  ETO_NUMERICSLOCAL = $0400;
+  ETO_NUMERICSLATIN = $0800;
+  ETO_PDY = $2000;
 
   // Family font
   FF_DONTCARE = $00;
@@ -407,7 +434,7 @@ const
   TA_TOP = $0000;
   TA_UPDATECP = $0001;
   TA_RIGHT = $0002;
-  TA_CENTER = $0006; // Why not $0004?
+  TA_CENTER = $0006;   // Value is correct ($0004 looks more reasonable, though)
   TA_BOTTOM = $0008;
   TA_BASELINE = $0018;
   TA_RTLREADING = $0100;

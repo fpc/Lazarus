@@ -1555,6 +1555,7 @@ components/fpvectorial/svgzvectorialreader.pas svneol=native#text/pascal
 components/fpvectorial/tools/laszip/laszip.lpi svneol=native#text/plain
 components/fpvectorial/tools/laszip/laszip.pas svneol=native#text/plain
 components/fpvectorial/wmfvectorialreader.pas svneol=native#text/plain
+components/fpvectorial/wmfvectorialwriter.pas svneol=native#text/plain
 components/fpweb/README.txt svneol=native#text/plain
 components/fpweb/demo/README.txt svneol=native#text/plain
 components/fpweb/fpideexteditorinsertfilenameunit.lfm svneol=native#text/plain
