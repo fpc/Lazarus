@@ -413,6 +413,7 @@ type
     function GetHeight: Integer; override;
     function GetWidth: Integer; override;
     procedure DoCloseForm(Sender: TObject; var CloseAction: TCloseAction);virtual;
+    procedure DoShowForm(Sender: TObject);virtual;
     procedure Find; virtual;
     procedure Help; virtual;
     procedure Replace; virtual;

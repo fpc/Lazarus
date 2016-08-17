@@ -410,6 +410,12 @@ begin
   if Assigned(OnClose) then OnClose(Self);
 end;
 
+procedure TFindDialog.DoShowForm(Sender: TObject);
+begin
+  if csDesigning in ComponentState then exit;
+  if Assigned(OnShow) then OnShow(Self);
+end;
+
 function TFindDialog.GetFindText: string;
 begin
   Result:=FFindText;
@@ -607,7 +613,7 @@ begin
 
     SetFormValues;
     FFindForm.OnClose:=@DoCloseForm;
-    FFindForm.OnShow := Self.OnShow;
+    FFindForm.OnShow := @DoShowForm;
     FFindForm.HelpContext:=HelpContext;
     FFindForm.Caption:=Title;
     FFindForm.Show;
