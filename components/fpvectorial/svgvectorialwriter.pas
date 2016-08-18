@@ -23,15 +23,44 @@ type
   TvSVGVectorialWriter = class(TvCustomVectorialWriter)
   private
     FPointSeparator, FCommaSeparator: TFormatSettings;
+    FLayerIndex: Integer;
+    FPathIndex: Integer;
+    // helper routines
+    procedure ConvertFPVCoordinatesToSVGCoordinates(APage: TvVectorialPage;
+      const ASrcX, ASrcY: Double; var ADestX, ADestY: double);
+    procedure ConvertFPVSizeToSVGSize(const ASrcX, ASrcY: Double;
+      var ADestX, ADestY: double);
+    function FloatToSVGStr(x: Double): String;
+    function GetBrushAsXMLStyle(ABrush: TvBrush): String;
+    function GetPenAsXMLStyle(APen: TvPen): String;
+
     procedure WriteDocumentSize(AStrings: TStrings; AData: TvVectorialDocument);
     procedure WriteDocumentName(AStrings: TStrings; AData: TvVectorialDocument);
+
+    // Writing of svg entities
+    procedure WriteCircle(AStrings: TStrings; ADoc: TvVectorialDocument;
+      APage: TvVectorialPage; ACircle: TvCircle);
+    procedure WriteEllipse(AStrings: TStrings; ADoc: TvVectorialDocument;
+      APage: TvVectorialPage; AEllipse: TvEllipse);
+    procedure WriteEntities(AStrings: TStrings; ADoc: TvVectorialDocument;
+      APage: TvVectorialPage);
+    procedure WriteEntity(AStrings: TStrings; ADoc: TvVectorialDocument;
+      APage: TvVectorialPage; AEntity: TvEntity);
+    procedure WriteLayer(AStrings: TStrings; ADoc: TvVectorialDocument;
+      APage: TvVectorialPage; ALayer: Tvlayer);
+    procedure WritePath(AStrings: TStrings; ADoc: TvVectorialDocument;
+      APage: TvVectorialPage; APath: TPath);
+    procedure WriteRectangle(AStrings: TStrings; ADoc: TvVectorialDocument;
+      APage: TvVectorialPage; ARectangle: TvRectangle);
+    procedure WriteText(AStrings: TStrings; ADoc: TvVectorialDocument;
+      APage: TvVectorialPage; AText: TvText);
+    {
+    procedure WriteLayer(layer: TvLayer; AStrings: TStrings; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure WritePath(AIndex: Integer; APath: TPath; AStrings: TStrings; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure WriteText(AStrings: TStrings; lText: TvText; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure WriteCircle(circle: TvCircle; AStrings: TStrings; AData: TvVectorialPage);
     procedure WriteEntities(AStrings: TStrings; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    procedure ConvertFPVCoordinatesToSVGCoordinates(
-      const AData: TvVectorialPage;
-      const ASrcX, ASrcY: Double; var ADestX, ADestY: double);
+    }
   public
     { General reading methods }
     procedure WriteToStrings(AStrings: TStrings; AData: TvVectorialDocument); override;
@@ -51,17 +80,160 @@ const
   FLOAT_MILLIMETERS_PER_PIXEL = 0.2822; // DPI 90 = 1 / 90 inches per pixel
   FLOAT_PIXELS_PER_MILLIMETER = 3.5433; // DPI 90 = 1 / 90 inches per pixel
 
+
 { TvSVGVectorialWriter }
+
+procedure TvSVGVectorialWriter.ConvertFPVCoordinatesToSVGCoordinates(
+  APage: TvVectorialPage; const ASrcX, ASrcY: Double; var ADestX,
+  ADestY: double);
+begin
+  ADestX := ASrcX * FLOAT_PIXELS_PER_MILLIMETER;
+  ADestY := (APage.Height - ASrcY) * FLOAT_PIXELS_PER_MILLIMETER;
+end;
+
+procedure TvSVGVectorialWriter.ConvertFPVSizeToSVGSize(const ASrcX, ASrcY: Double;
+  var ADestX, ADestY: Double);
+begin
+  ADestX := ASrcX * FLOAT_PIXELS_PER_MILLIMETER;
+  ADestY := ASrcY * FLOAT_PIXELS_PER_MILLIMETER;
+end;
+
+function TvSVGVectorialWriter.FloatToSVGStr(x: Double): String;
+begin
+  Result := FloatToStr(x, FPointSeparator);
+end;
+
+function TvSVGVectorialWriter.GetBrushAsXMLStyle(ABrush: TvBrush): String;
+var
+  colorStr: String;
+begin
+  if ABrush.Style = bsClear then
+    colorStr := 'none'
+  else
+    colorStr := '#' + FPColorToRGBHexString(ABrush.Color);
+
+  Result := Format('fill:%s;', [
+    colorStr]);
+end;
+
+function TvSVGVectorialWriter.GetPenAsXMLStyle(APen: TvPen): String;
+var
+  colorStr: String;
+  penWidth: Integer;
+begin
+  if APen.Style = psClear then
+    colorStr := 'none' else
+    colorStr := '#' + FPColorToRGBHexString(APen.Color);
+
+  if APen.Width >= 1 then
+    penWidth := APen.Width
+  else
+    penWidth := 1;
+
+  Result := Format(
+    'stroke:%s; stroke-width:%dpx; stroke-linecap:butt; stroke-linejoin:miter; stroke-opacity:1;', [
+    colorStr, penwidth
+  ]);
+
+  case APen.Style of
+    psDash       : Result := Result + 'stroke-dasharray: 9, 5;';
+    psDot        : Result := Result + 'stroke-dasharray: 3, 5;';
+    psDashDot    : Result := Result + 'stroke-dasharray: 9, 5, 3, 5;';
+    psDashDotDot : Result := Result + 'stroke-dasharray: 9, 5, 3, 5, 3, 5;';
+  end;
+end;
 
 procedure TvSVGVectorialWriter.WriteDocumentSize(AStrings: TStrings; AData: TvVectorialDocument);
 begin
-  AStrings.Add('  width="' + FloatToStr(AData.Width, FPointSeparator) + 'mm"');
-  AStrings.Add('  height="' + FloatToStr(AData.Height, FPointSeparator) + 'mm"');
+  AStrings.Add('  width="' + FloatToSVGStr(AData.Width) + 'mm"');
+  AStrings.Add('  height="' + FloatToSVGStr(AData.Height) + 'mm"');
 end;
 
 procedure TvSVGVectorialWriter.WriteDocumentName(AStrings: TStrings; AData: TvVectorialDocument);
 begin
   AStrings.Add('  sodipodi:docname="New document 1">');
+end;
+
+procedure TvSVGVectorialWriter.WriteCircle(AStrings: TStrings;
+  ADoc: TvVectorialDocument; APage: TvVectorialPage; ACircle: TvCircle);
+var
+  cx, cy, cr, dtmp: double;
+  circleStr: string;
+begin
+  ConvertFPVCoordinatesToSVGCoordinates(APage, ACircle.X, ACircle.Y, cx, cy);
+  ConvertFPVSizeToSVGSize(ACircle.Radius, 0, cr, dtmp);
+  circleStr := Format('  <circle cx="%g" cy="%g" r="%g" style="%s %s">', [
+    cx, cy, cr,
+    GetPenAsXMLStyle(ACircle.Pen),
+    GetBrushAsXMLStyle(ACircle.Brush)
+    ], FPointSeparator);
+  AStrings.Add(circleStr);
+end;
+
+// to do: "Angle" missing
+procedure TvSVGVectorialWriter.WriteEllipse(AStrings: TStrings;
+  ADoc: TvVectorialDocument; APage: TvVectorialPage; AEllipse: TvEllipse);
+var
+  cx, cy, rx, ry: double;
+  ellipseStr: string;
+begin
+  ConvertFPVCoordinatesToSVGCoordinates(APage, AEllipse.X, AEllipse.Y, cx, cy);
+  ConvertFPVSizeToSVGSize(AEllipse.HorzHalfAxis, AEllipse.VertHalfAxis, rx, ry);
+  ellipseStr := Format('  <ellipse cx="%g" cy="%g" rx="%g" ry="%g" style="%s %s">', [
+    cx, cy, rx, ry,
+    GetPenAsXMLStyle(AEllipse.Pen),
+    GetBrushAsXMLStyle(AEllipse.Brush)
+    ], FPointSeparator);
+  AStrings.Add(ellipseStr);
+end;
+
+procedure TvSVGVectorialWriter.WriteEntities(AStrings: TStrings;
+  ADoc: TvVectorialDocument; APage: TvVectorialPage);
+var
+  lEntity: TvEntity;
+  i: Integer;
+begin
+  for i := 0 to APage.GetEntitiesCount() - 1 do
+  begin
+    lEntity := APage.GetEntity(i);
+    WriteEntity(AStrings, ADoc, APage, lEntity);
+  end;
+end;
+
+procedure TvSVGVectorialWriter.WriteEntity(AStrings: TStrings;
+  ADoc: TvVectorialDocument; APage: TvVectorialPage; AEntity: TvEntity);
+begin
+  if AEntity is TPath then
+    WritePath(AStrings, ADoc, APage, TPath(AEntity))
+  else
+  if AEntity is TvText then
+    WriteText(AStrings, ADoc, APage, TvText(AEntity))
+  else
+  if AEntity is TvCircle then
+    WriteCircle(AStrings, ADoc, APage, TvCircle(AEntity))
+  else
+  if AEntity is TvEllipse then
+    WriteEllipse(AStrings, ADoc, APage, TvEllipse(AEntity))
+  else
+  if AEntity is TvLayer then
+    WriteLayer(AStrings, ADoc, APage, TvLayer(AEntity));
+  if AEntity is TvRectangle then
+    WriteRectangle(AStrings, ADoc, APage, TvRectangle(AEntity));
+end;
+
+procedure TvSVGVectorialWriter.WriteLayer(AStrings: TStrings;
+  ADoc: TvVectorialDocument; APage: TvVectorialPage; ALayer: Tvlayer);
+var
+  lEntity: TvEntity;
+begin
+  inc(FLayerIndex);
+  AStrings.Add('  <g id="layer' + IntToStr(FLayerIndex) + '">');
+  lEntity := ALayer.GetFirstEntity;
+  while lEntity <> nil do begin
+    WriteEntity(AStrings, ADoc, APage, lEntity);
+    lEntity := ALayer.GetNextEntity;
+  end;
+  AStrings.Add('  </g>');
 end;
 
 {@@
@@ -78,8 +250,8 @@ end;
   SVG uses commas "," to separate the X,Y coordinates, so it always uses points
   "." as decimal separators and uses no thousand separators
 }
-procedure TvSVGVectorialWriter.WritePath(AIndex: Integer; APath: TPath; AStrings: TStrings;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+procedure TvSVGVectorialWriter.WritePath(AStrings: TStrings;
+  ADoc: TvVectorialDocument; APage: TvVectorialPage; APath: TPath);
 var
   j: Integer;
   PathStr: string;
@@ -88,11 +260,6 @@ var
   segment: TPathSegment;
   l2DSegment: T2DSegment absolute segment;
   l2DBSegment: T2DBezierSegment absolute segment;
-  // Pen properties
-  lPenWidth: Integer;
-  lPenColor: string;
-  // Brush properties
-  lFillColor: string;
   styleStr: string;
 begin
   OldPtX := 0;
@@ -112,31 +279,25 @@ begin
       then Break; // unsupported line type
 
     // Coordinate conversion from fpvectorial to SVG
-    ConvertFPVCoordinatesToSVGCoordinates(
-      AData, l2DSegment.X, l2DSegment.Y, PtX, PtY);
+    ConvertFPVCoordinatesToSVGCoordinates(APage, l2DSegment.X, l2DSegment.Y, PtX, PtY);
     PtX := PtX - OldPtX;
     PtY := PtY - OldPtY;
 
     if (segment.SegmentType = stMoveTo) then
-    begin
-      PathStr := PathStr + 'm '
-        + FloatToStr(PtX, FPointSeparator) + ','
-        + FloatToStr(PtY, FPointSeparator) + ' ';
-    end
-    else if (segment.SegmentType = st2DLine) or
-            (segment.SegmentType = st2DLineWithPen) then
-    begin
-      PathStr := PathStr + 'l '
-        + FloatToStr(PtX, FPointSeparator) + ','
-        + FloatToStr(PtY, FPointSeparator) + ' ';
-    end
-    else if (segment.SegmentType = st2DBezier) then
+      PathStr := PathStr + Format('m %g,%g ', [PtX, PtY], FPointSeparator)
+    else
+    if (segment.SegmentType = st2DLine) or
+       (segment.SegmentType = st2DLineWithPen)
+    then
+      PathStr := PathStr + Format('l %g,%g ', [PtX, PtY], FPointSeparator)
+    else
+    if (segment.SegmentType = st2DBezier) then
     begin
       // Converts all coordinates to absolute values
       ConvertFPVCoordinatesToSVGCoordinates(
-        AData, l2DBSegment.X2, l2DBSegment.Y2, BezierCP1X, BezierCP1Y);
+        APage, l2DBSegment.X2, l2DBSegment.Y2, BezierCP1X, BezierCP1Y);
       ConvertFPVCoordinatesToSVGCoordinates(
-        AData, l2DBSegment.X3, l2DBSegment.Y3, BezierCP2X, BezierCP2Y);
+        APage, l2DBSegment.X3, l2DBSegment.Y3, BezierCP2X, BezierCP2Y);
 
       // Transforms them into values relative to the initial point
       BezierCP1X := BezierCP1X - OldPtX;
@@ -147,14 +308,10 @@ begin
       // PtX and PtY already contains the destination point
 
       // Now render our 2D cubic bezier
-      PathStr := PathStr + 'c '
-        + FloatToStr(BezierCP1X, FPointSeparator) + ','
-        + FloatToStr(BezierCP1Y, FPointSeparator) + ' '
-        + FloatToStr(BezierCP2X, FPointSeparator) + ','
-        + FloatToStr(BezierCP2Y, FPointSeparator) + ' '
-        + FloatToStr(PtX, FPointSeparator) + ','
-        + FloatToStr(PtY, FPointSeparator) + ' '
-        ;
+      PathStr := PathStr + Format('c %g,%g %g,%g %g,%g ',
+        [BezierCP1X, BezierCP1Y, BezierCP2X, BezierCP2Y, PtX, PtY],
+        FPointSeparator
+      );
     end;
 
     // Store the current position for future points
@@ -162,42 +319,95 @@ begin
     OldPtY := OldPtY + PtY;
   end;
 
-  // Get the Pen Width
-  if APath.Pen.Width >= 1 then lPenWidth := APath.Pen.Width
-  else lPenWidth := 1;
-
-  // Get the Pen Color and Style
-  if APath.Pen.Style = psClear then lPenColor := 'none'
-  else lPenColor := '#' + FPColorToRGBHexString(APath.Pen.Color);
-
-  // Get the Brush color and style
-  if APath.Brush.Style = bsClear then lFillColor := 'none'
-  else lFillColor := '#' + FPColorToRGBHexString(APath.Brush.Color);
-
   // Now effectively write the path
   AStrings.Add('  <path');
-  styleStr:=Format('    style="fill:%s;stroke:%s;stroke-width:%dpx;'
-   + 'stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;',
-   [lFillColor, lPenColor, lPenWidth]);
-  case APath.Pen.Style of
-       psDash: styleStr:=styleStr+'stroke-dasharray: 9, 5;';
-       psDot: styleStr:=styleStr+'stroke-dasharray: 3, 5;';
-       psDashDot: styleStr:=styleStr+'stroke-dasharray: 9, 5, 3, 5;';
-       psDashDotDot: styleStr:=styleStr+'stroke-dasharray: 9, 5, 3, 5, 3, 5;';
-       else
-  end;
-  styleStr:=styleStr+'"';
+  styleStr := Format('    style="%s %s"', [
+    GetPenAsXMLStyle(APath.Pen),
+    GetBrushAsXMLStyle(APath.Brush)
+  ]);
   AStrings.Add(styleStr);
   AStrings.Add('    d="' + PathStr + '"');
-  AStrings.Add('  id="path' + IntToStr(AIndex) + '" />');
+  inc(FPathIndex);
+  AStrings.Add('    id="path' + IntToStr(FPathIndex) + '" />');
 end;
 
-procedure TvSVGVectorialWriter.ConvertFPVCoordinatesToSVGCoordinates(
-  const AData: TvVectorialPage; const ASrcX, ASrcY: Double; var ADestX,
-  ADestY: double);
+procedure TvSVGVectorialWriter.WriteRectangle(AStrings: TStrings;
+  ADoc: TvVectorialDocument; APage: TvVectorialPage; ARectangle: TvRectangle);
+var
+  cx, cy, w, h, rx, ry: double;
+  rectStr: string;
+  styleStr: String;
 begin
-  ADestX := ASrcX / FLOAT_MILLIMETERS_PER_PIXEL;
-  ADestY := (AData.Height - ASrcY) / FLOAT_MILLIMETERS_PER_PIXEL;
+  ConvertFPVCoordinatesToSVGCoordinates(APage, ARectangle.X, ARectangle.Y, cx, cy);
+  ConvertFPVSizeToSVGSize(ARectangle.CX, ARectangle.CY, w, h);
+  ConvertFPVSizeToSVGSize(ARectangle.RX, ARectangle.RY, rx, ry);
+  rectStr := Format(
+    '  <rect x="%g" y="%g" width="%g" height="%g"', [cx, cy, w, h], FPointSeparator);
+  if rx <> 0 then
+    rectStr := rectStr + Format(' rx="%g"', [rx], FPointSeparator);
+  if ry <> 0 then
+    rectStr := rectStr + Format(' ry="%g"', [ry], FPointSeparator);
+  styleStr := Format(' style="%s %s"', [
+    GetPenAsXMLStyle(ARectangle.Pen),
+    GetBrushAsXMLStyle(ARectangle.Brush)
+  ]);
+  rectStr := rectStr + styleStr + '/>';
+  AStrings.Add(rectStr);
+end;
+
+procedure TvSVGVectorialWriter.WriteText(AStrings: TStrings;
+  ADoc: TvVectorialDocument; APage: TvVectorialPage; AText: TvText);
+const
+  TEXT_ANCHORS: array[TvTextAnchor] of string = ('start', 'middle', 'end');
+  TEXT_DECO: array[0..3] of string = ('none', 'underline', 'line-through', 'line-through,underline');
+var
+  FontSize: Integer;
+  TextStr: String;
+  PtX, PtY: double;
+begin
+  ConvertFPVCoordinatesToSVGCoordinates(APage, AText.X, AText.Y, PtX, PtY);
+  TextStr := AText.Value.Text;
+  FontSize:= ceil(AText.Font.Size * FLOAT_PIXELS_PER_MILLIMETER);
+
+  AStrings.Add('  <text ');
+  // Discussion about this offset in bugs 22091 and 26817
+  {$IFDEF FPVECTORIAL_SVGWRITER_TEXT_OFFSET}
+  AStrings.Add('    x="' + FloatToStr(PtX+0.5*lText.Font.Size, FPointSeparator) + '"');
+  AStrings.Add('    y="' + FloatToStr(PtY-6.0*lText.Font.Size, FPointSeparator) + '"');
+  {$ELSE}
+  AStrings.Add('    x="' + FloatToSVGStr(PtX) + '"');
+  AStrings.Add('    y="' + FloatToSVGStr(PtY) + '"');
+  {$ENDIF}
+
+  if AText.TextAnchor <> vtaStart then AStrings.Add(
+        Format('    text-anchor="%s"', [TEXT_ANCHORS[AText.TextAnchor]]));
+
+  if AText.Font.Bold then
+  AStrings.Add('    font-weight="bold"');
+
+  if AText.Font.Italic then
+  AStrings.Add('    font-style="oblique"');
+
+  if AText.Font.Underline or AText.Font.Strikethrough then
+    AStrings.Add(
+        Format('    text-decoration="%s"', [TEXT_DECO[ord(AText.Font.UnderLine)+2*ord(AText.Font.StrikeThrough)]]));
+
+  if AText.Font.Orientation <> 0 then
+    AStrings.Add(
+        Format('    transform="rotate(%g,%g,%g)"', [-AText.Font.Orientation, PtX, PtY], FPointSeparator));
+
+  AStrings.Add(
+        Format('    font-family="%s"', [AText.Font.Name]));
+
+  AStrings.Add(
+        Format('    font-size="%d"', [FontSize]));
+
+  AStrings.Add(
+        Format('    fill="#%s"', [FPColorToRGBHexString(AText.Font.Color)]));
+
+  AStrings.Add('  >');
+  AStrings.Add(TextStr);
+  AStrings.Add('  </text>');
 end;
 
 procedure TvSVGVectorialWriter.WriteToStrings(AStrings: TStrings;
@@ -230,114 +440,17 @@ begin
   WriteDocumentName(AStrings, AData);
 
   // Now data
+  FLayerIndex := 1;
+  FPathIndex := 1;
   AStrings.Add('  <g id="layer1">');
   lPage := AData.GetPageAsVectorial(0);
-  WriteEntities(AStrings, lPage, AData);
+  WriteEntities(AStrings, AData, lPage);
   AStrings.Add('  </g>');
 
   // finalization
   AStrings.Add('</svg>');
 end;
 
-procedure TvSVGVectorialWriter.WriteText(AStrings: TStrings; lText: TvText;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument);
-const
-  TEXT_ANCHORS: array[TvTextAnchor] of string = ('start', 'middle', 'end');
-  TEXT_DECO: array[0..3] of string = ('none', 'underline', 'line-through', 'line-through,underline');
-var
-  FontSize: Integer;
-  TextStr: String;
-  PtX, PtY: double;
-begin
-  ConvertFPVCoordinatesToSVGCoordinates(AData, lText.X, lText.Y, PtX, PtY);
-  TextStr := lText.Value.Text;
-  FontSize:= ceil(lText.Font.Size / FLOAT_MILLIMETERS_PER_PIXEL);
-
-  AStrings.Add('  <text ');
-  // Discussion about this offset in bugs 22091 and 26817
-  {$IFDEF FPVECTORIAL_SVGWRITER_TEXT_OFFSET}
-  AStrings.Add('    x="' + FloatToStr(PtX+0.5*lText.Font.Size, FPointSeparator) + '"');
-  AStrings.Add('    y="' + FloatToStr(PtY-6.0*lText.Font.Size, FPointSeparator) + '"');
-  {$ELSE}
-  AStrings.Add('    x="' + FloatToStr(PtX, FPointSeparator) + '"');
-  AStrings.Add('    y="' + FloatToStr(PtY, FPointSeparator) + '"');
-  {$ENDIF}
-
-  if lText.TextAnchor <> vtaStart then AStrings.Add(
-        Format('    text-anchor="%s"', [TEXT_ANCHORS[lText.TextAnchor]]));
-
-  if lText.Font.Bold then
-  AStrings.Add('    font-weight="bold"');
-
-  if lText.Font.Italic then
-  AStrings.Add('    font-style="oblique"');
-
-  if lText.Font.Underline or lText.Font.Strikethrough then
-    AStrings.Add(
-        Format('    text-decoration="%s"', [TEXT_DECO[ord(lText.Font.UnderLine)+2*ord(lText.Font.StrikeThrough)]]));
-
-  if lText.Font.Orientation <> 0 then
-    AStrings.Add(
-        Format('    transform="rotate(%g,%g,%g)"', [-lText.Font.Orientation, PtX, PtY], FPointSeparator));
-
-  AStrings.Add(
-        Format('    font-family="%s"', [lText.Font.Name]));
-
-  AStrings.Add(
-        Format('    font-size="%d"', [FontSize]));
-
-  AStrings.Add(
-        Format('    fill="#%s"', [FPColorToRGBHexString(lText.Font.Color)]));
-
-  AStrings.Add('  >');
-  AStrings.Add(TextStr);
-  AStrings.Add('  </text>');
-end;
-
-procedure TvSVGVectorialWriter.WriteCircle(circle: TvCircle;
-  AStrings: TStrings; AData: TvVectorialPage);
-var
-  cx, cy, cr, dtmp: double;
-  CircleStr: string;
-begin
-  ConvertFPVCoordinatesToSVGCoordinates(
-        AData, circle.X, circle.Y, cx, cy);
-  ConvertFPVCoordinatesToSVGCoordinates(
-        AData, circle.Radius, 0, cr, dtmp);
-  CircleStr:='<circle cx="'+FloatToStr(cx,FPointSeparator)+'" cy="'+
-              FloatToStr(cy,FPointSeparator)+'" r="'+
-              FloatToStr(cr,FPointSeparator)+'"';
-  if circle.Pen.Style=psClear then
-    CircleStr:=CircleStr+' stroke="none"'
-  else
-    CircleStr:=CircleStr+' stroke="'+
-              '#' + FPColorToRGBHexString(circle.Pen.Color)+'"';
-  CircleStr:=CircleStr+' stroke-width="'+
-              IntToStr(circle.Pen.Width)+'"';
-  if circle.Brush.Style=bsClear then
-    CircleStr:=CircleStr+' fill="none"'
-  else
-    CircleStr:=CircleStr+' fill="'+
-              '#' + FPColorToRGBHexString(circle.Brush.Color)+'"';
-  CircleStr:=CircleStr+'/>';
-  AStrings.Add(CircleStr);
-end;
-
-procedure TvSVGVectorialWriter.WriteEntities(AStrings: TStrings;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument);
-var
-  lEntity: TvEntity;
-  i: Integer;
-begin
-  for i := 0 to AData.GetEntitiesCount() - 1 do
-  begin
-    lEntity := AData.GetEntity(i);
-
-    if lEntity is TPath then WritePath(i, TPath(lEntity), AStrings, AData, ADoc)
-    else if lEntity is TvText then WriteText(AStrings, TvText(lEntity), AData, ADoc)
-    else if lEntity is TvCircle then WriteCircle(TvCircle(lEntity), AStrings,AData);
-  end;
-end;
 
 initialization
 
