@@ -52,6 +52,7 @@ type
     FCurrPalette: TFPPalette;
     FCurrTextColor: TFPColor;
     FCurrTextAlign: Word;
+    FCurrBkMode: Word;
     FCurrPolyFillMode: Word;
     FCurrRawFontHeight: Integer;
     FMapMode: Word;
@@ -74,6 +75,7 @@ type
     procedure DeleteObj(const AParams: TParamArray);
     procedure ReadArc(APage: TvVectorialpage; const AParams: TParamArray);
     procedure ReadBkColor(APage: TvVectorialPage; const AParams: TParamArray);
+    procedure ReadBkMode(APage: TvVectorialPage; const AValue: Word);
     procedure ReadChord(APage: TvVectorialpage; const AParams: TParamArray);
     function ReadColor(const AParams: TParamArray; AIndex: Integer): TFPColor;
     procedure ReadExtTextOut(APage: TvVectorialPage; const AParams: TParamArray);
@@ -425,6 +427,12 @@ begin
   APage.BackgroundColor := ReadColor(AParams, 0);
 end;
 
+procedure TvWMFVectorialReader.ReadBkMode(APage: TvVectorialPage;
+  const AValue: Word);
+begin
+  FCurrBkMode := AValue;
+end;
+
 procedure TvWMFVectorialReader.ReadChord(APage: TvVectorialPage;
   const AParams: TParamArray);
 var
@@ -652,6 +660,8 @@ end;
   etc }
 procedure TvWMFVectorialReader.ReadPolygon(APage: TvVectorialPage;
   const AParams: TParamArray; AFilled: boolean);
+const
+  EPS = 1E-6;
 var
   n: Integer;
   i, j: Integer;
@@ -664,6 +674,11 @@ begin
   for i:= 0 to n-1 do begin
     pts[i] := Make3DPoint(ScaleX(SmallInt(AParams[j])), ScaleY(SmallInt(AParams[j+1])));
     inc(j, 2);
+  end;
+  // Automatically close polygon
+  if not SamePoint(pts[0], pts[n-1], EPS) then begin
+    SetLength(pts, n+1);
+    pts[n] := pts[0];
   end;
 
   poly := TvPolygon.Create(APage);

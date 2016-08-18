@@ -397,9 +397,9 @@ const
   MEMORYMETAFILE = $0001;  // Metafile is stored in memory
   DISKMETAFILE = $0002;    // ... on disk.
 
-  // MixMode
-  TRANSPARENT = $0001;
-  OPAQUE = $0002;
+  // Background MixMode for text, hatched brushes and other nonsolid pen styles
+  BM_TRANSPARENT = $0001;
+  BM_OPAQUE = $0002;
 
   // Pen styles
   PS_COSMETIC = $0000;

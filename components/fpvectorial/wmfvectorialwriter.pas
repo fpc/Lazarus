@@ -77,6 +77,7 @@ type
     procedure UpdateBounds(x, y: Integer);
 
     procedure WriteBkColor(AStream: TStream; APage: TvVectorialPage);
+    procedure WriteBkMode(AStream: TStream; AMode: Word);
     procedure WriteBrush(AStream: TStream; ABrush: TvBrush);
     procedure WriteEllipse(AStream: TStream; AEllipse: TvEllipse);
     procedure WriteEOF(AStream: TStream);
@@ -382,6 +383,12 @@ begin
   WriteWMFRecord(AStream, META_SETBKCOLOR, rec, SizeOf(rec));
 end;
 
+procedure TvWMFVectorialWriter.WriteBkMode(AStream: TStream; AMode: Word);
+begin
+  if AMode in [BM_TRANSPARENT, BM_OPAQUE] then
+    WriteWMFRecord(AStream, META_SETBKMODE, AMode);
+end;
+
 procedure TvWMFVectorialWriter.WriteBrush(AStream: TStream; ABrush: TvBrush);
 var
   rec: TWMFBrushRecord;
@@ -582,6 +589,7 @@ begin
   WriteWindowOrg(AStream);
   WriteMapMode(AStream);
   WriteBkColor(AStream, APage);
+  WriteBkMode(AStream, BM_TRANSPARENT);
   WriteTextAlign(AStream, TA_BASELINE or TA_LEFT);
 
   WritePageEntities(AStream, APage);

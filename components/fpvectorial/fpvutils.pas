@@ -79,6 +79,8 @@ function GetLinePolygonIntersectionPoints(ACoord: Double;
   const APoints: T2DPointsArray; ACoordIsX: Boolean): T2DPointsArray; overload;
 function Rotate2DPoint(P, RotCenter: TPoint; alpha:double): TPoint;
 function Rotate3DPointInXY(P, RotCenter: T3DPoint; alpha:double): T3DPoint;
+function SamePoint(P1, P2: T3DPoint; Epsilon: Double = 0.0): Boolean; overload;
+function SamePoint(P1, P2: TPoint): Boolean; overload;
 procedure NormalizeRect(var ARect: TRect);
 // Transformation matrix operations
 // See http://www.useragentman.com/blog/2011/01/07/css3-matrix-transform-for-the-mathematically-challenged/
@@ -845,6 +847,18 @@ begin
   result.x := Round( p.x*cosinus + p.y*sinus)   +  RotCenter.x;
   result.y := Round(-p.x*sinus   + p.y*cosinus) +  RotCenter.y;
   result.z := P.z;
+end;
+
+function SamePoint(P1, P2: TPoint): Boolean;
+begin
+  Result := (P1.X = P2.X) and (P1.Y = P2.Y);
+end;
+
+function SamePoint(P1, P2: T3DPoint; Epsilon: Double = 0.0): Boolean;
+begin
+  Result := SameValue(P1.X, P2.X, Epsilon) and
+            SameValue(P1.Y, P2.Y, Epsilon) and
+            SameValue(P1.Z, P2.Z, Epsilon);
 end;
 
 procedure NormalizeRect(var ARect: TRect);
