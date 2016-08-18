@@ -63,6 +63,7 @@ type
     FCurrPen: TvPen;
     FCurrTextColor: TFPColor;
     FCurrTextAnchor: TvTextAnchor;
+    FCurrBkMode: Word;
     FUseTopLeftCoordinates: Boolean;
     FErrMsg: TStrings;
 
@@ -384,9 +385,14 @@ begin
 end;
 
 procedure TvWMFVectorialWriter.WriteBkMode(AStream: TStream; AMode: Word);
+var
+  mode: DWord;
 begin
-  if AMode in [BM_TRANSPARENT, BM_OPAQUE] then
-    WriteWMFRecord(AStream, META_SETBKMODE, AMode);
+  FCurrBkMode := AMode;
+  if AMode in [BM_TRANSPARENT, BM_OPAQUE] then begin
+    mode := AMode;
+    WriteWMFRecord(AStream, META_SETBKMODE, mode, SizeOf(mode));
+  end;
 end;
 
 procedure TvWMFVectorialWriter.WriteBrush(AStream: TStream; ABrush: TvBrush);
@@ -481,16 +487,15 @@ var
   brush: TvBrush;
 begin
   brush := AText.Brush;
-  brush.Style := bsClear;
-  WriteBrush(AStream, brush);
+  if (brush.Style = bsClear) and (FCurrBkMode = BM_OPAQUE) then
+    WriteBkMode(AStream, BM_TRANSPARENT)
+  else begin
+    if FCurrBkMode = BM_TRANSPARENT then
+      WriteBkMode(AStream, BM_OPAQUE);
+    WriteBrush(AStream, AText.Brush);
+  end;
 
   WriteFont(AStream, AText.Font);
-
-  if (AText.Font.Color.Red <> FCurrTextColor.Red) or
-     (AText.Font.Color.Green <> FCurrTextColor.Green) or
-     (AText.Font.Color.Blue <> FCurrTextColor.Blue)
-  then
-    WriteTextColor(AStream, AText.Font.Color);
 
   if (AText.TextAnchor <> FCurrTextAnchor) then
     WriteTextAnchor(AStream, AText.TextAnchor);
@@ -521,6 +526,12 @@ var
   fntName: String;
   i, n: Integer;
 begin
+  if (AFont.Color.Red <> FCurrTextColor.Red) or
+     (AFont.Color.Green <> FCurrTextColor.Green) or
+     (AFont.Color.Blue <> FCurrTextColor.Blue)
+  then
+    WriteTextColor(AStream, AFont.Color);
+
   if SameFont(AFont, FCurrFont) then
     exit;
 
@@ -535,7 +546,7 @@ begin
     end;
 
     n := SizeOf(TWMFFontRecord) + Length(fntName);
-    rec.Height := ScaleSizeY(AFont.Size);
+    rec.Height := -ScaleSizeY(AFont.Size);
     rec.Width := 0;
     rec.Escapement := 0;
     rec.Orientation := round(AFont.Orientation * 10);
@@ -798,18 +809,16 @@ var
   P: TPoint;
   brush: TvBrush;
 begin
-  // Do not paint text background  -- to do: not working!
-  brush := FCurrBrush;
-  brush.Style := bsClear;
-  WriteBrush(AStream, brush);
+  brush := AText.Brush;
+  if (brush.Style = bsClear) and (FCurrBkMode = BM_OPAQUE) then
+    WriteBkMode(AStream, BM_TRANSPARENT)
+  else begin
+    if FCurrBkMode = BM_TRANSPARENT then
+      WriteBkMode(AStream, BM_OPAQUE);
+    WriteBrush(AStream, AText.Brush);
+  end;
 
   WriteFont(AStream, AText.Font);
-
-  if (AText.Font.Color.Red <> FCurrTextColor.Red) or
-     (AText.Font.Color.Green <> FCurrTextColor.Green) or
-     (AText.Font.Color.Blue <> FCurrTextColor.Blue)
-  then
-    WriteTextColor(AStream, AText.Font.Color);
 
   if (AText.TextAnchor <> FCurrTextAnchor) then
     WriteTextAnchor(AStream, AText.TextAnchor);

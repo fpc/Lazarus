@@ -161,6 +161,7 @@ type
     Color: TFPColor;
     Style: TFPBrushStyle;
     Kind: TvBrushKind;
+    Image: TFPCustomImage;
     // Gradient filling support
     Gradient_start: T2DPoint; // Start/end point of gradient, in pixels by default,
     Gradient_end: T2DPoint;   // but if gfRel* in flags relative to entity boundary or user space

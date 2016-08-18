@@ -82,6 +82,8 @@ type
     function ReadColor(const AParams: TParamArray; AIndex: Integer): TFPColor;
     procedure ReadExtTextOut(APage: TvVectorialPage; const AParams: TParamArray);
     procedure ReadEllipse(APage: TvVectorialPage; const AParams: TParamArray);
+    function ReadImage(const AParams: TParamArray; AIndex: Integer;
+      AImage: TFPCustomImage): Boolean;
     procedure ReadLine(APage: TvVectorialPage; P1X, P1Y, P2X, P2Y: SmallInt);
     procedure ReadMapMode(const AParams: TParamArray);
     procedure ReadOffsetWindowOrg(const AParams: TParamArray);
@@ -275,8 +277,28 @@ end;
 function TvWMFVectorialReader.DIBCreatePatternBrush(const AParams: TParamArray): Integer;
 var
   wmfBrush: TWMFBrush;
+  rasterImg: TvRasterImage = nil;
+  memImg: TFPMemoryImage = nil;
+  style: Word;
+  colorUsage: Word;
 begin
   wmfBrush := TWMFBrush.Create;
+
+  style := AParams[0];
+  colorUsage := AParams[1];
+
+  memImg := TFPMemoryImage.Create(0, 0);
+  try
+    if ReadImage(AParams, 2, memImg) then begin
+      wmfBrush.Brush.Image := memImg;
+      wmfBrush.Brush.Style := bsImage;
+    end;
+  except
+    on E:Exception do begin
+      FreeAndNil(memImg);
+      LogError('Image reading error: ' + E.Message);
+    end;
+  end;
 
   // Add to WMF object list
   Result := FObjList.Add(wmfBrush);
@@ -296,8 +318,7 @@ begin
   // Get font name
   SetLength(fntName, 32);
   idx := SizeOf(TWMFFontRecord) div SizeOf(word);
-  Move(AParams[idx], fntName[1], 32);
-  SetLength(fntName, StrLen(PChar(@fntName)));
+  fntname := StrPas(PChar(@AParams[idx]));
 
   wmfFont.Font.Name := ISO_8859_1ToUTF8(fntName);
   wmfFont.Font.Size := round(ScaleSizeY(fontRec^.Height));
@@ -544,6 +565,11 @@ begin
     TA_RIGHT  : txt.TextAnchor := vtaEnd;
     TA_CENTER : txt.TextAnchor := vtaMiddle;
     else        txt.TextAnchor := vtaStart;
+  end;
+
+  case FCurrBkMode of
+    BM_TRANSPARENT : txt.Brush.Style := bsClear;
+    BM_OPAQUE      : txt.Brush.Style := bsSolid;
   end;
 
   // to do: draw text background (if opts and ETO_OPAQUE <> 0 )
@@ -1027,6 +1053,63 @@ begin
   APage.AddEntity(rect);
 end;
 
+function TvWMFVectorialReader.ReadImage(const AParams: TParamArray;
+  AIndex: Integer; AImage: TFPCustomImage): Boolean;
+var
+  bmpCoreHdr: PWMFBitmapCoreHeader;
+  bmpInfoHdr: PWMFBitmapInfoHeader;
+  hasCoreHdr: Boolean;
+  bmpFileHdr: TBitmapFileHeader;
+  w, h: Integer;
+  memstream: TMemoryStream;
+  imgSize: Int64;
+  dataSize: Int64;
+  reader: TFPCustomImageReader;
+begin
+  Result := false;
+
+  bmpCoreHdr := PWMFBitmapCoreHeader(@AParams[AIndex]);
+  bmpInfoHdr := PWMFBitmapInfoHeader(@AParams[AIndex]);
+  hasCoreHdr := bmpInfoHdr^.HeaderSize = SizeOf(TWMFBitmapCoreHeader);
+  if hasCoreHdr then
+    exit;
+
+  w := bmpInfoHdr^.Width;
+  h := bmpInfoHdr^.Height;
+  if (w = 0) or (h = 0) then
+    exit;
+
+  memStream := TMemoryStream.Create;
+  try
+    datasize := (Length(AParams) - AIndex) * SizeOf(word);
+
+    // Put a bitmap file header in front of the bitmap info header and the data
+    bmpFileHdr.bfType := BMmagic;
+    bmpFileHdr.bfSize := SizeOf(bmpFileHdr) + datasize;
+    if bmpInfoHdr^.Compression in [BI_RGB, BI_BITFIELDS, BI_CMYK] then
+      imgSize := (w + bmpInfoHdr^.Planes * bmpInfoHdr^.BitCount + 31) div 32 * abs(h)
+    else
+      imgSize := bmpInfoHdr^.ImageSize;
+    bmpFileHdr.bfOffset := bmpFileHdr.bfSize - imgSize;
+    bmpFileHdr.bfReserved := 0;
+    memstream.WriteBuffer(bmpFileHdr, SizeOf(bmpFileHdr));
+    memstream.WriteBuffer(AParams[AIndex], (Length(AParams) - AIndex) * SizeOf(word));
+
+    // Read bitmap to image using the standard bitmap reader.
+    reader := TFPReaderBMP.Create;
+    try
+      memstream.Position := 0;
+      AImage.LoadfromStream(memStream, reader);
+      Result := true;
+    finally
+      reader.Free;
+    end;
+  finally
+    memstream.Free;
+  end;
+end;
+
+
 { Tested: embedded bmp, png and jpeg in Inkscape, saved as wmf.
   Other tests are missing due to lack of well-defined test files. }
 procedure TvWMFVectorialReader.ReadStretchDIB(AStream: TStream;
@@ -1034,31 +1117,34 @@ procedure TvWMFVectorialReader.ReadStretchDIB(AStream: TStream;
 var
   rasterImg: TvRasterImage = nil;
   memImg: TFPMemoryImage = nil;
-  reader: TFPCustomImageReader;
   dibRec: PWMFStretchDIBRecord;
-  bmpCoreHdr: PWMFBitmapCoreHeader;
-  bmpInfoHdr: PWMFBitmapInfoHeader;
   hasCoreHdr: Boolean;
-  bmpFileHdr: TBitmapFileHeader;
-  w, h: Integer;
-  memstream: TMemoryStream;
-  savedPos: Int64;
-  datasize: Int64;
-  imgSize: Int64;
 begin
-  // Store the current stream position.
-  savedPos := AStream.Position;
-
   dibRec := PWMFStretchDIBRecord(@AParams[0]);
-  bmpCoreHdr := PWMFBitmapCoreHeader(@AParams[SizeOf(TWMFStretchDIBRecord) div SizeOf(word)]);
-  bmpInfoHdr := PWMFBitmapInfoHeader(@AParams[SizeOf(TWMFStretchDIBRecord) div SizeOf(word)]);
-  hasCoreHdr := bmpInfoHdr^.HeaderSize = SizeOf(TWMFBitmapCoreHeader);
+  memImg := TFPMemoryImage.Create(0, 0); //w, h);
+  try
+    if not ReadImage(AParams, SizeOf(TWMFStretchDIBRecord) div SizeOf(word), memImg) then
+      exit;
 
-  if hasCoreHdr then begin
-    w := bmpCoreHdr^.Width;
-    h := bmpCoreHdr^.Height;
-    // Not implemented due to lack of test files.
-  end else begin
+    // Pass bitmap to fpvectorial
+    rasterImg := TvRasterImage.Create(APage);
+    rasterImg.RasterImage := memImg;
+    rasterImg.x := ScaleX(dibRec^.DestX);
+    rasterImg.y := ScaleY(dibRec^.DestY);
+    rasterImg.Width := ScaleSizeX(dibRec^.DestWidth);
+    rasterImg.Height := ScaleSizeY(dibRec^.DestHeight);
+    APage.AddEntity(rasterImg);
+  except
+    on E:Exception do begin
+      FreeAndNil(rasterImg);
+      FreeAndNil(memImg);
+      LogError('Image reading error: ' + E.Message);
+      exit;
+    end;
+  end;
+end;
+
+          (*
     w := bmpInfoHdr^.Width;
     h := bmpInfoHdr^.Height;
     if (w = 0) or (h = 0) then
@@ -1093,8 +1179,8 @@ begin
         rasterImg.RasterImage := memImg;
         rasterImg.x := ScaleX(dibRec^.DestX);
         rasterImg.y := ScaleY(dibRec^.DestY);
-        rasterImg.Width := ScaleX(dibRec^.DestWidth);
-        rasterImg.Height := ScaleY(dibRec^.DestHeight);
+        rasterImg.Width := ScaleSizeX(dibRec^.DestWidth);
+        rasterImg.Height := ScaleSizeY(dibRec^.DestHeight);
         APage.AddEntity(rasterImg);
       except
         on E:Exception do begin
@@ -1108,10 +1194,11 @@ begin
       memstream.Free;
     end;
   end;
+
   // Restore original stream position
   AStream.Position := savedPos;
 end;
-
+*)
 function TvWMFVectorialReader.ReadString(const AParams: TParamArray;
   AStartIndex, ALength: Integer): String;
 var
@@ -1180,11 +1267,18 @@ begin
   txt := APage.AddText(ScaleX(x + offs.x), ScaleY(y + offs.y), s);
   // Select the font
   txt.Font := FCurrFont;
+  // Font color
+  txt.Font.Color := FCurrTextColor;
   // Set horizontal text alignment.
   case FCurrTextAlign and (TA_RIGHT or TA_CENTER) of
     TA_RIGHT  : txt.TextAnchor := vtaEnd;
     TA_CENTER : txt.TextAnchor := vtaMiddle;
     else        txt.TextAnchor := vtaStart;
+  end;
+  // Set background style
+  case FCurrBkMode of
+    BM_TRANSPARENT : txt.Brush.Style := bsClear;
+    BM_OPAQUE      : txt.Brush.Style := bsSolid;
   end;
 end;
 
