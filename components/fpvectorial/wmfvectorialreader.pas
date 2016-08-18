@@ -9,7 +9,7 @@
   - see the empty case items in "TWMFVectorialReader.ReadRecords"
 
   Issues:
-  - fpvectorial polygon fill has the issue to always fill holes.
+  - Text often truncated, last character missing
 
   Author: Werner Pamler
 }
@@ -136,8 +136,9 @@ uses
   fpvUtils, fpvWMF;
 
 const
-  INCH = 25.4;  // 1 inch = 25.4 mm
+  INCH2MM = 25.4;      // 1 inch = 25.4 mm
   DEFAULT_SIZE = 100;  // size of image if scaling info is not available
+  SIZE_OF_WORD = 2;
 
 type
   TWMFFont = class
@@ -317,7 +318,7 @@ begin
 
   // Get font name
   SetLength(fntName, 32);
-  idx := SizeOf(TWMFFontRecord) div SizeOf(word);
+  idx := SizeOf(TWMFFontRecord) div SIZE_OF_WORD;
   fntname := StrPas(PChar(@AParams[idx]));
 
   wmfFont.Font.Name := ISO_8859_1ToUTF8(fntName);
@@ -327,7 +328,7 @@ begin
   wmfFont.Font.Italic := fontRec^.Italic <> 0;
   wmfFont.Font.Underline := fontRec^.UnderLine <> 0;
   wmfFont.Font.StrikeThrough := fontRec^.Strikeout <> 0;
-  wmfFont.Font.Orientation := fontRec^.Orientation div 10;
+  wmfFont.Font.Orientation := fontRec^.Escapement div 10;
   wmfFont.RawHeight := fontRec^.Height; //* 6 div 5;    // Rough correction for y position
 
   // add to WMF object list
@@ -807,7 +808,7 @@ begin
     FRecordStartPos := AStream.Position;
 
     // Read record size and function code
-    AStream.ReadBuffer(wmfRec, SizeOf(wmfRec));
+    AStream.ReadBuffer(wmfRec, SizeOf(TWMFRecord));
 
    {$IFDEF WMF_DEBUG}
     writeLn(Format('Record position: %0:d / Record size: %1:d words / Record type: %2:d ($%2:x): %3:s',
@@ -826,7 +827,7 @@ begin
 
     // Read parameters
     SetLength(params, wmfRec.Size - 3);
-    AStream.ReadBuffer(params[0], (wmfRec.Size - 3)*SizeOf(word));
+    AStream.ReadBuffer(params[0], (wmfRec.Size - 3)*SIZE_OF_WORD);
 
     // Process record, depending on function code
     case wmfRec.Func of
@@ -983,7 +984,7 @@ begin
       // None of them implemented
     end;
 
-    AStream.Position := FRecordStartPos + wmfRec.Size*SizeOf(word);
+    AStream.Position := FRecordStartPos + wmfRec.Size * SIZE_OF_WORD;
   end;
 
   if FHasPlaceableMetaHeader then begin
@@ -1081,7 +1082,7 @@ begin
 
   memStream := TMemoryStream.Create;
   try
-    datasize := (Length(AParams) - AIndex) * SizeOf(word);
+    datasize := (Length(AParams) - AIndex) * SIZE_OF_WORD;
 
     // Put a bitmap file header in front of the bitmap info header and the data
     bmpFileHdr.bfType := BMmagic;
@@ -1093,7 +1094,7 @@ begin
     bmpFileHdr.bfOffset := bmpFileHdr.bfSize - imgSize;
     bmpFileHdr.bfReserved := 0;
     memstream.WriteBuffer(bmpFileHdr, SizeOf(bmpFileHdr));
-    memstream.WriteBuffer(AParams[AIndex], (Length(AParams) - AIndex) * SizeOf(word));
+    memstream.WriteBuffer(AParams[AIndex], (Length(AParams) - AIndex) * SIZE_OF_WORD);
 
     // Read bitmap to image using the standard bitmap reader.
     reader := TFPReaderBMP.Create;
@@ -1123,7 +1124,7 @@ begin
   dibRec := PWMFStretchDIBRecord(@AParams[0]);
   memImg := TFPMemoryImage.Create(0, 0); //w, h);
   try
-    if not ReadImage(AParams, SizeOf(TWMFStretchDIBRecord) div SizeOf(word), memImg) then
+    if not ReadImage(AParams, SizeOf(TWMFStretchDIBRecord) div SIZE_OF_WORD, memImg) then
       exit;
 
     // Pass bitmap to fpvectorial
@@ -1209,7 +1210,7 @@ begin
   i := AStartIndex;
   j := 1;
   while j < ALength do begin
-    Move(AParams[i], s[j], SizeOf(Word));
+    Move(AParams[i], s[j], SIZE_OF_WORD);
     inc(i);
     inc(j, 2);
   end;
@@ -1300,8 +1301,8 @@ begin
   case FMapMode of
     MM_TEXT:         // 1 log unit = 1 pixel
       begin
-        fx := ScreenDpiX * INCH;
-        fy := ScreenDpiY * INCH;
+        fx := ScreenDpiX * INCH2MM;
+        fy := ScreenDpiY * INCH2MM;
       end;
     MM_LOMETRIC:     // 1 log unit = 1/10 mm
       begin
@@ -1315,25 +1316,25 @@ begin
       end;
     MM_LOENGLISH:    // 1 log unit = 1/100"
       begin
-        fx := 0.01 * INCH;
+        fx := 0.01 * INCH2MM;
         fy := fx;
       end;
     MM_HIENGLISH:    // 1 log unit = 1/1000"
       begin
-        fx := 0.001 * INCH;
+        fx := 0.001 * INCH2MM;
         fy := fx;
       end;
     MM_TWIPS:        // 1 log unit = 1 twip
       begin
-        fx := 1.0 / 1440 * INCH;
+        fx := 1.0 / 1440 * INCH2MM;
         fy := fx;
       end;
     else
       if (FWindowExtent.X = 0) or (FWindowExtent.Y = 0) then
         exit;
       if FHasPlaceableMetaHeader then begin
-        FPageWidth := (FBBox.Right - FBBox.Left) * INCH / FUnitsPerInch;
-        FPageHeight := (FBBox.Bottom - FBBox.Top) * INCH / FUnitsPerInch;
+        FPageWidth := (FBBox.Right - FBBox.Left) * INCH2MM / FUnitsPerInch;
+        FPageHeight := (FBBox.Bottom - FBBox.Top) * INCH2MM / FUnitsPerInch;
       end else
       if FWindowExtent.X > FWindowExtent.Y then begin
         FPageWidth := DEFAULT_SIZE;

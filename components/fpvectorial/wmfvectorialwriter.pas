@@ -7,13 +7,13 @@
 
   Coordinates:
   - wmf has y=0 at top, y grows downward (like with standard canvas).
-  - fpv has y=0 at bottom, y grows upwards if page.UseTopLeftCoordinates is false
-    or like wmf otherwise.
+  - fpv has y=0 at bottom and y grows upwards if page.UseTopLeftCoordinates is
+    false or like wmf otherwise.
 
   Issues:
-  - Text background is opaque although it should not be.
-  - Text rotation is ignored if files are opened by MS programs, LibreOffice ok.
+  - Text background is opaque although it should be transparent.
   - IrfanView cannot open the files written.
+  - Text positioning incorrect due to positive/negative font heights.
 
   Author: Werner Pamler
 }
@@ -546,10 +546,12 @@ begin
     end;
 
     n := SizeOf(TWMFFontRecord) + Length(fntName);
-    rec.Height := -ScaleSizeY(AFont.Size);
+    rec.Height := ScaleSizeY(AFont.Size);
     rec.Width := 0;
-    rec.Escapement := 0;
     rec.Orientation := round(AFont.Orientation * 10);
+    rec.Escapement := round(AFont.Orientation * 10); // 0;
+      // strange: must use "Escapement" here, not "Orientation".
+      // Otherwise MS software will not show the rotated font.
     rec.Weight := IfThen(AFont.Bold, 700, 400);
     rec.Italic := IfThen(AFont.Italic, 1, 0);
     rec.Underline := IfThen(AFont.Underline, 1, 0);
