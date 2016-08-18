@@ -4441,11 +4441,9 @@ begin
 
   //debugln('TLazSourceFileManager.CreateNewForm START ',NewUnitInfo.Filename,' ',AncestorType.ClassName,' ',dbgs(ResourceCode<>nil));
   // create a buffer for the new resource file and for the LFM file
-  if ResourceCode=nil then begin
-    ResourceCode:=
-      CodeToolBoss.CreateFile(ChangeFileExt(NewUnitInfo.Filename,
-                              ResourceFileExt));
-  end;
+  if ResourceCode=nil then
+    ResourceCode:=CodeToolBoss.CreateFile(ChangeFileExt(NewUnitInfo.Filename,
+                                                        ResourceFileExt));
   //debugln('TLazSourceFileManager.CreateNewForm B ',ResourceCode.Filename);
   ResourceCode.Source:='{ '+LRSComment+' }';
   CodeToolBoss.CreateFile(ChangeFileExt(NewUnitInfo.Filename,'.lfm'));
