@@ -108,9 +108,8 @@ begin
     Add('type');
     Add('  ' + GetNextThreadName + ' = class(TThread)');
     Add('  private');
-    Add('    { Private declarations }');
+    Add('');
     Add('  protected');
-    Add('    { Protected declarations }');
     Add('    procedure Execute; override;');
     Add('  end;');
     Add('');

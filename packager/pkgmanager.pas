@@ -805,13 +805,13 @@ begin
     +'type'+LE
     +'  '+Params.NewClassName+' = class('+Params.AncestorType+')'+LE
     +'  private'+LE
-    +'    { Private declarations }'+LE
+    +LE
     +'  protected'+LE
-    +'    { Protected declarations }'+LE
+    +LE
     +'  public'+LE
-    +'    { Public declarations }'+LE
+    +LE
     +'  published'+LE
-    +'    { Published declarations }'+LE
+    +LE
     +'  end;'+LE
     +LE
     +'procedure Register;'+LE

@@ -544,9 +544,9 @@ begin
      'type'+LE
     +'  T'+ResourceName+' = class('+ResourceClass.ClassName+')'+LE
     +'  private'+LE
-    +'    { private declarations }'+LE
+    +LE
     +'  public'+LE
-    +'    { public declarations }'+LE
+    +LE
     +'  end;'+LE
     +LE;
 
