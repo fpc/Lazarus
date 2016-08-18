@@ -70,9 +70,11 @@ type
     function CreateBrush(const AParams: TParamArray): Integer;
     function CreateFont(const AParams: TParamArray): Integer;
     function CreatePalette(const AParams: TParamArray): Integer;
+    function CreatePatternBrush(const AParams: TParamArray): Integer;
     function CreatePen(const AParams: TParamArray): Integer;
     function CreateRegion(const AParams: TParamArray): Integer;
     procedure DeleteObj(const AParams: TParamArray);
+    function DIBCreatePatternBrush(const AParams: TParamArray): Integer;
     procedure ReadArc(APage: TvVectorialpage; const AParams: TParamArray);
     procedure ReadBkColor(APage: TvVectorialPage; const AParams: TParamArray);
     procedure ReadBkMode(APage: TvVectorialPage; const AValue: Word);
@@ -270,6 +272,16 @@ begin
   Result := FObjList.Add(wmfBrush);
 end;
 
+function TvWMFVectorialReader.DIBCreatePatternBrush(const AParams: TParamArray): Integer;
+var
+  wmfBrush: TWMFBrush;
+begin
+  wmfBrush := TWMFBrush.Create;
+
+  // Add to WMF object list
+  Result := FObjList.Add(wmfBrush);
+end;
+
 function TvWMFVectorialReader.CreateFont(const AParams: TParamArray): Integer;
 var
   wmfFont: TWMFFont;
@@ -320,6 +332,16 @@ begin
     pal.Add(col);
   end;
   Result := FObjList.Add(pal);
+end;
+
+function TvWMFVectorialReader.CreatePatternBrush(const AParams: TParamArray): Integer;
+var
+  wmfBrush: TWMFBrush;
+begin
+  wmfBrush := TWMFBrush.Create;
+
+  // Add to WMF object list;
+  Result := FObjList.Add(wmfBrush);
 end;
 
 function TvWMFVectorialReader.CreatePen(const AParams: TParamArray): Integer;
@@ -855,13 +877,13 @@ begin
       META_CREATEPALETTE:
         CreatePalette(params);
       META_CREATEPATTERNBRUSH:
-        FObjList.Add(nil);  // i.e. not supported ATM       /// !!! TO DO
+        CreatePatternBrush(params);
       META_CREATEPENINDIRECT:
         CreatePen(params);
       META_CREATEREGION:
         CreateRegion(params);
       META_DIBCREATEPATTERNBRUSH:
-        FObjList.Add(nil);  // i.e. not supported ATM
+        DIBCreatePatternBrush(params);
       META_DELETEOBJECT:
         DeleteObj(params);
       META_SELECTCLIPREGION:
