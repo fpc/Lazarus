@@ -675,8 +675,8 @@ begin
     pts[i] := Make3DPoint(ScaleX(SmallInt(AParams[j])), ScaleY(SmallInt(AParams[j+1])));
     inc(j, 2);
   end;
-  // Automatically close polygon
-  if not SamePoint(pts[0], pts[n-1], EPS) then begin
+  // Automatically close polygon (but not polyline)
+  if AFilled and not SamePoint(pts[0], pts[n-1], EPS) then begin
     SetLength(pts, n+1);
     pts[n] := pts[0];
   end;
@@ -700,6 +700,8 @@ end;
 
 procedure TvWMFVectorialReader.ReadPolyPolygon(APage: TvVectorialPage;
   const AParams: TParamArray);
+const
+  EPS = 1E-6;
 var
   nPoly: Integer;
   nPts: array of Integer;
@@ -707,6 +709,7 @@ var
   i, j, k: Integer;
   path: TPath;
   P: T3DPoint;
+  Pstart: T3DPoint;
 begin
   k := 0;
   nPoly := AParams[k];
@@ -719,14 +722,17 @@ begin
 
   APage.StartPath;
   for j := 0 to nPoly-1 do begin
-    P := Make3DPoint(ScaleX(SmallInt(AParams[k])), ScaleY(SmallInt(AParams[k+1])));
+    PStart := Make3DPoint(ScaleX(SmallInt(AParams[k])), ScaleY(SmallInt(AParams[k+1])));
     inc(k, 2);
-    APage.AddMoveToPath(P.X, P.Y);
+    APage.AddMoveToPath(PStart.X, PStart.Y);
     for i := 1 to nPts[j]-1 do begin
       P := Make3DPoint(ScaleX(SmallInt(AParams[k])), ScaleY(SmallInt(AParams[k+1])));
       inc(k, 2);
       APage.AddLineToPath(P.X, P.Y);
     end;
+    // Close polygon
+    if not SamePoint(P, PStart, EPS) then
+      APage.AddLineToPath(PStart.X, PStart.Y);
   end;
   path := APage.EndPath;
   path.Pen := FCurrPen;
