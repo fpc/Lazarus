@@ -3857,9 +3857,6 @@ resourcestring
   lisProjAddInvalidMinMaxVersion = 'Invalid Min-Max version';
   lisProjAddTheMaximumVersionIsLowerThanTheMinimimVersion = 'The Maximum '
     +'Version is lower than the Minimim Version.';
-  lisProjAddInvalidPackagename = 'Invalid packagename';
-  lisProjAddThePackageNameIsInvalidPlaseChooseAnExistingPackag = 'The package '
-    +'name "%s" is invalid.%sPlase choose an existing package.';
   lisProjAddDependencyAlreadyExists = 'Dependency already exists';
   lisVersionMismatch = 'Version mismatch';
   lisUnableToAddTheDependencyBecauseThePackageHasAlread = 'Unable to add the '
@@ -4363,8 +4360,6 @@ resourcestring
     +'%sIt is a bad idea to share files between projects and packages.';
   lisA2PTheMaximumVersionIsLowerThanTheMinimimVersion = 'The Maximum Version '
     +'is lower than the Minimim Version.';
-  lisA2PThePackageNameIsInvalidPleaseChooseAnExisting = 'The package name "%s" '
-    +'is invalid.%sPlease choose an existing package.';
   lisA2PThePackageHasAlreadyADependencyForThe = 'The package already has a '
     +'dependency on the package "%s".';
   lisA2PNoPackageFoundForDependencyPleaseChooseAnExisting = 'No package found '

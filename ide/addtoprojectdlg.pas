@@ -184,14 +184,8 @@ begin
     exit;
   end;
 
-  // check packagename
-  if not IsValidIdent(NewPkgName) then begin
-    IDEMessageDialog(lisProjAddInvalidPackagename,
-      Format(lisProjAddThePackageNameIsInvalidPlaseChooseAnExistingPackag,
-             [NewPkgName, LineEnding]),
-      mtError,[mbCancel]);
-    exit;
-  end;
+  // package name is checked earlier
+  Assert(IsValidPkgName(NewPkgName), 'CheckAddingDependency: ' + NewPkgName + ' is not valid.');
 
   // check if package is already required
   if LazProject.FindDependencyByName(NewPkgName)<>nil then begin
