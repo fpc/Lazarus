@@ -4433,7 +4433,7 @@ function TLazSourceFileManager.CreateNewForm(NewUnitInfo: TUnitInfo;
 var
   NewComponent: TComponent;
   new_x, new_y: integer;
-  p: TPoint;
+  MainIDEBarBottom: integer;
   r: TRect;
 begin
   if not AncestorType.InheritsFrom(TComponent) then
@@ -4455,11 +4455,9 @@ begin
 
   // Figure out where we want to put the new form
   // if there is more place left of the OI put it left, otherwise right
-  p:=Point(0,0);
   if ObjectInspector1<>nil then begin
-    p:=ObjectInspector1.ClientOrigin;
-    new_x:=p.x;
-    new_y:=p.Y+10;
+    new_x:=ObjectInspector1.Left+10;
+    new_y:=ObjectInspector1.Top+10;
   end else begin
     new_x:=200;
     new_y:=100;
@@ -4467,7 +4465,14 @@ begin
   if new_x>Screen.Width div 2 then
     new_x:=new_x-500
   else if ObjectInspector1<>nil then
-    new_x:=new_x+ObjectInspector1.Width;
+    new_x:=new_x + ObjectInspector1.Width + GetSystemMetrics(SM_CXFRAME) shl 1;
+  if Assigned(MainIDEBar) then
+  begin
+    MainIDEBarBottom:=MainIDEBar.Top+MainIDEBar.Height+GetSystemMetrics(SM_CYFRAME) shl 1
+                                                      +GetSystemMetrics(SM_CYCAPTION);
+    if MainIDEBarBottom < Screen.Height div 2 then
+      new_y:=Max(new_y,MainIDEBarBottom+10);
+  end;
   r:=Screen.PrimaryMonitor.WorkareaRect;
   new_x:=Max(r.Left,Min(new_x,r.Right-400));
   new_y:=Max(r.Top,Min(new_y,r.Bottom-400));
