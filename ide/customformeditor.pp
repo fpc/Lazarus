@@ -39,18 +39,22 @@ uses
   MemCheck,
 {$ENDIF}
   // LCL+FCL
-  Classes, SysUtils, TypInfo, Math, LCLIntf, LCLType, LResources,
-  LCLMemManager, FileUtil, LazFileUtils, LazFileCache, AvgLvlTree,
-  LCLProc, Graphics, Controls, Forms, Menus, Dialogs,
+  Classes, SysUtils, TypInfo, Math,
+  LCLIntf, LCLType, LCLProc, LResources, LCLMemManager, Controls, Graphics,
+  Forms, Menus, Dialogs,
+  // LazUtils
+  FileUtil, LazFileUtils, LazFileCache, AvgLvlTree,
+  // Codetools
   CodeCache, CodeTree, CodeToolManager, FindDeclarationTool,
   // IDEIntf
-  PropEdits, PropEditUtils, ObjectInspector, FormEditingIntf,
+  PropEdits, PropEditUtils, ObjectInspector, FormEditingIntf, ComponentReg,
   UnitResources, IDEOptionsIntf, IDEDialogs, ComponentEditors,
   // IDE
-  LazarusIDEStrConsts, EditorOptions, EnvironmentOpts,
-  ControlSelection, Project, JITForms, MainIntf,
-  CustomNonFormDesigner, NonControlDesigner, FrameDesigner, ComponentReg,
-  IDEProcs, DesignerProcs, PackageDefs;
+  LazarusIDEStrConsts, EditorOptions, EnvironmentOpts, IDEProcs, Project, MainIntf,
+  PackageDefs,
+  // Designer
+  CustomNonFormDesigner, NonControlDesigner, FrameDesigner, ControlSelection,
+  JITForms, DesignerProcs;
 
 const
   OrdinalTypes = [tkInteger,tkChar,tkEnumeration,tkbool];
