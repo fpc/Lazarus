@@ -54,6 +54,7 @@ function SeparateString(AString: string; ASeparator: char): T10Strings;
 function Make3DPoint(AX, AY, AZ: Double): T3DPoint; overload; inline;
 function Make3DPoint(AX, AY: Double): T3DPoint; overload; inline;
 function Point2D(AX, AY: Double): T2DPoint; inline;
+function IsGradientBrush(ABrush: TvBrush): Boolean;
 // Mathematical routines
 function LineEquation_GetPointAndTangentForLength(AStart, AEnd: T3DPoint; ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean;
 procedure EllipticalArcToBezier(Xc, Yc, Rx, Ry, startAngle, endAngle: Double; var P1, P2, P3, P4: T3DPoint);
@@ -273,6 +274,12 @@ begin
   Result.X := AX;
   Result.Y := AY;
   Result.Z := 0;
+end;
+
+function IsGradientBrush(ABrush: TvBrush): Boolean;
+begin
+  Result := ABrush.Kind in [bkHorizontalGradient, bkVerticalGradient,
+    bkOtherLinearGradient, bkRadialGradient];
 end;
 
 { Considering a counter-clockwise arc, elliptical and alligned to the axises

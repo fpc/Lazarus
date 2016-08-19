@@ -25,6 +25,7 @@ type
     FPointSeparator, FCommaSeparator: TFormatSettings;
     FLayerIndex: Integer;
     FPathIndex: Integer;
+    FGradientIndex: Integer;
     // helper routines
     procedure ConvertFPVCoordinatesToSVGCoordinates(APage: TvVectorialPage;
       const ASrcX, ASrcY: Double; var ADestX, ADestY: double);
@@ -32,7 +33,10 @@ type
       var ADestX, ADestY: double);
     function FloatToSVGStr(x: Double): String;
     function GetBrushAsXMLStyle(ABrush: TvBrush): String;
+    function GetGradientBrushAsXML(ABrush: TvBrush): String;
     function GetPenAsXMLStyle(APen: TvPen): String;
+    procedure PrepareGradients(AStrings: TStrings; ADoc: TvVectorialDocument;
+      APage: TvVectorialPage);
 
     procedure WriteDocumentSize(AStrings: TStrings; AData: TvVectorialDocument);
     procedure WriteDocumentName(AStrings: TStrings; AData: TvVectorialDocument);
@@ -105,15 +109,76 @@ end;
 
 function TvSVGVectorialWriter.GetBrushAsXMLStyle(ABrush: TvBrush): String;
 var
-  colorStr: String;
+  fillStr: String;
 begin
-  if ABrush.Style = bsClear then
-    colorStr := 'none'
-  else
-    colorStr := '#' + FPColorToRGBHexString(ABrush.Color);
+  if ABrush.Kind = bkSimpleBrush then begin
+    if ABrush.Style = bsClear then
+      fillStr := 'none'
+    else
+      fillStr := '#' + FPColorToRGBHexString(ABrush.Color)
+  end else begin
+    inc(FGradientIndex);
+    fillStr := Format('url(#gradient%d)', [FGradientIndex]);
+  end;
 
-  Result := Format('fill:%s;', [
-    colorStr]);
+  Result := Format('fill:%s;', [fillStr]);
+end;
+
+function TvSVGVectorialWriter.GetGradientBrushAsXML(ABrush: TvBrush): String;
+var
+  gradientCol: TvGradientColor;
+  colorStr, gradientColors, gradientParams: String;
+  x1Str, y1Str, x2Str, y2Str: String;
+  cxstr, cystr, rstr, fxstr, fystr: String;
+  gradientTag: String;
+begin
+  if ABrush.Kind = bkRadialGradient then begin
+    gradientTag := 'radialGradient';
+    if ABrush.Gradient_cx_Unit = vcuPercentage then
+      cxstr := Format('%f%%', [ABrush.Gradient_cx*100], FPointSeparator) else
+      cxstr := FloatToSVGStr(ABrush.Gradient_cx);
+    if ABrush.Gradient_cy_Unit = vcuPercentage then
+      cystr := Format('%f%%', [ABrush.Gradient_cy*100], FPointSeparator) else
+      cystr := FloatToSVGStr(ABrush.Gradient_cy);
+    if ABrush.Gradient_r_Unit = vcuPercentage then
+      rstr := Format('%f%%', [ABrush.Gradient_r*100], FPointSeparator) else
+      rstr := FloatToSVGStr(ABrush.Gradient_r);
+    if ABrush.Gradient_fx_Unit = vcuPercentage then
+      fxstr := Format('%f%%', [ABrush.Gradient_fx*100], FPointSeparator) else
+      fxstr := FloatToSVGStr(ABrush.Gradient_fx);
+    if ABrush.Gradient_fy_Unit = vcuPercentage then
+      fystr := Format('%f%%', [ABrush.Gradient_fy*100], FPointSeparator) else
+      fystr := FloatToSVGStr(ABrush.Gradient_fy);
+    gradientParams := Format('cx="%s" cy="%s" r="%s" fx="%s" fy="%s"',
+      [cxstr, cystr, rstr, fxstr, fystr]);
+  end else begin
+    gradientTag := 'linearGradient';
+    if gfRelStartX in ABrush.Gradient_flags then
+      x1Str := Format('%f%%', [ABrush.Gradient_start.X*100], FPointSeparator) else
+      x1Str := FloatToSVGStr(ABrush.Gradient_start.X);
+    if gfRelEndX in ABrush.Gradient_flags then
+      x2Str := Format('%f%%', [ABrush.Gradient_end.X*100], FPointSeparator) else
+      x2Str := FloatToSVGStr(ABrush.Gradient_end.X);
+    if gfRelStartY in ABrush.Gradient_flags then
+      y1Str := Format('%f%%', [ABrush.Gradient_start.Y*100], FPointSeparator) else
+      y1Str := FloatToSVGStr(ABrush.Gradient_start.Y);
+    if gfRelEndY in ABrush.Gradient_flags then
+      y2Str := Format('%f%%', [ABrush.Gradient_end.Y*100], FPointSeparator) else
+      y2Str := FloatToSVGStr(ABrush.Gradient_end.Y);
+    gradientParams := Format('x1="%s" y1="%s" x2="%s" y2="%s"',
+      [x1Str, y1Str, x2Str, y2Str]);
+  end;
+
+  gradientColors := '';
+  for gradientCol in ABrush.Gradient_colors do begin
+    colorStr := '#' + FPColorToRGBHexString(gradientCol.Color);
+    gradientColors := gradientColors + Format('<stop offset="%f%%" stop-color="%s" />', [
+      gradientCol.Position*100, colorStr], FPointSeparator);
+  end;
+
+  Result := Format(
+    '    <%s id="gradient%d" %s>%s</%s>', [
+    gradientTag, FGradientIndex, gradientParams, gradientColors, gradientTag]);
 end;
 
 function TvSVGVectorialWriter.GetPenAsXMLStyle(APen: TvPen): String;
@@ -141,6 +206,56 @@ begin
     psDashDot    : Result := Result + 'stroke-dasharray: 9, 5, 3, 5;';
     psDashDotDot : Result := Result + 'stroke-dasharray: 9, 5, 3, 5, 3, 5;';
   end;
+end;
+
+{ Iterates through all entities of the page and creates a <defs> node containing
+  all gradient definitions. Gradients are identified by a continuous number
+  reset before processing. }
+procedure TvSVGVectorialWriter.PrepareGradients(AStrings: TStrings;
+  ADoc: TvVectorialDocument; APage: TvVectorialPage);
+
+  procedure ProcessGradient(ABrush: TvBrush);
+  var
+    gradient: String;
+  begin
+    if FGradientIndex = 0 then
+      AStrings.Add('  <defs>');
+    inc(FGradientIndex);
+    AStrings.Add(GetGradientBrushAsXML(ABrush));
+  end;
+
+  procedure ProcessEntity(AEntity: TvEntity);
+  var
+    entity: TvEntity;
+    brush: TvBrush;
+  begin
+    if AEntity is TvEntityWithPenAndBrush then begin
+      brush := TvEntityWithPenAndBrush(AEntity).Brush;
+      if IsGradientBrush(brush) then
+        ProcessGradient(TvEntityWithPenAndBrush(AEntity).Brush);
+    end;
+    if AEntity is TvLayer then begin
+      entity := TvLayer(AEntity).GetFirstEntity;
+      while entity <> nil do begin
+        ProcessEntity(entity);
+        entity := TvLayer(AEntity).GetNextEntity;
+      end;
+    end;
+  end;
+
+var
+  entity: TvEntity;
+  i: Integer;
+begin
+  FGradientIndex := 0;
+  for i := 0 to APage.GetEntitiesCount() - 1 do
+  begin
+    entity := APage.GetEntity(i);
+    ProcessEntity(entity);
+  end;
+  if FGradientIndex > 0 then
+    AStrings.Add('  </defs>');
+  FGradientIndex := 0;
 end;
 
 procedure TvSVGVectorialWriter.WriteDocumentSize(AStrings: TStrings; AData: TvVectorialDocument);
@@ -439,11 +554,15 @@ begin
   AStrings.Add('  version="1.1"');
   WriteDocumentName(AStrings, AData);
 
+  lPage := AData.GetPageAsVectorial(0);
+
+  // Prepare gradient definitions
+  PrepareGradients(AStrings, AData, lPage);
+
   // Now data
   FLayerIndex := 1;
   FPathIndex := 1;
   AStrings.Add('  <g id="layer1">');
-  lPage := AData.GetPageAsVectorial(0);
   WriteEntities(AStrings, AData, lPage);
   AStrings.Add('  </g>');
 
