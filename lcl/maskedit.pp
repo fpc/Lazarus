@@ -1778,7 +1778,9 @@ begin
         FValidationFailed := False;
       end ;
     finally
-      if FValidationFailed then
+      //also check if control can be focussed, otherwise risk an exception while
+      //handling an exception, issue #0030482
+      if FValidationFailed and CanSetFocus then
       begin
         //debugln('TCustomMaskedit.DoExit: Validation failed');
         SetFocus;
