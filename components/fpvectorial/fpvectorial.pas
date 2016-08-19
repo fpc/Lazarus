@@ -6475,34 +6475,59 @@ end;
 
 procedure TvPolygon.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double; ADoDraw: Boolean);
-
-  function CoordToCanvasX(ACoord: Double): Integer;
-  begin
-    Result := Round(ADestX + AmulX * ACoord);
-  end;
-
-  function CoordToCanvasY(ACoord: Double): Integer;
-  begin
-    Result := Round(ADestY + AmulY * ACoord);
-  end;
-
 var
   lPoints: array of TPoint;
   i: Integer;
+  x1, x2, y1, y2: Integer;
+  polystarts: TIntegerDynArray;
+  lRect: TRect;
+  gv1, gv2: T2DPoint;
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
+  x1 := MaxInt;
+  y1 := maxInt;
+  x2 := -MaxInt;
+  y2 := -MaxInt;
   SetLength(lPoints, Length(Points));
-  for i := 0 to Length(Points)-1 do
+  for i := 0 to High(Points) do
   begin
-    lPoints[i].X := CoordToCanvasX(Points[i].X);
-    lPoints[i].Y := CoordToCanvasY(Points[i].Y);
-    CalcEntityCanvasMinMaxXY(ARenderInfo, lPoints[i].X, lPoints[i].Y);
+    lPoints[i].X := CoordToCanvasX(Points[i].X, ADestX, AMulX);
+    lPoints[i].Y := CoordToCanvasY(Points[i].Y, ADestY, AMulY);
+    x1 := min(x1, lPoints[i].X);
+    y1 := min(y1, lPoints[i].Y);
+    x2 := max(x2, lPoints[i].X);
+    y2 := max(y2, lPoints[i].Y);
   end;
+  CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, x1, y1, x2, y2);
 
   if ADoDraw then
-    ADest.Polygon(lPoints);
+    if (Length(lPoints) > 2) then
+    begin
+      if Brush.Kind = bkSimpleBrush then
+        { *** Standard fill *** }
+        ADest.Polygon(lPoints)
+      else begin
+        { *** Gradients *** }
+        // (1) draw background only
+        ADest.Pen.Style := psClear;
+        // Boundary rect of shape filled with a gradient
+        lRect := Rect(x1, y1, x2, y2);
+        // calculate gradient vector
+        CalcGradientVector(gv1, gv2, lRect, ADestX, ADestY, AMulX, AMulY);
+        // Indexes where polygon starts: no multiple polygones here
+        SetLength(polyStarts, 1);
+        polyStarts[0] := 0;
+        // Draw the gradient
+        DrawPolygonBrushGradient(ADest, ARenderInfo, lPoints, polyStarts, lRect, gv1, gv2);
+        // (2) draw border
+        ADest.Brush.Style := bsClear;               // We will paint no background
+        ApplyPenToCanvas(ADest, ARenderInfo, Pen);  // Restore pen
+        ADest.Polygon(lPoints);
+      end;
+    end;
 end;
+
 
 { TvAlignedDimension }
 
