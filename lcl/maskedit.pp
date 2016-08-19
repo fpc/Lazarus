@@ -215,7 +215,7 @@ const
 
     procedure RealSetTextWhileMasked(const Value: TCaption); //See notes above!
     procedure InsertChar(Ch : TUtf8Char);
-    Function  CanInsertChar(Position : Integer; Var Ch : TUtf8Char) : Boolean;
+    Function  CanInsertChar(Position : Integer; Var Ch : TUtf8Char; IsPasting: Boolean = False) : Boolean;
     procedure DeleteSelected;
     procedure DeleteChars(NextChar : Boolean);
   protected
@@ -1211,8 +1211,8 @@ end;
 
 
 //Check if a Utf8 char can be inserted at position Position, also do case conversion if necessary
-function TCustomMaskEdit.CanInsertChar(Position: Integer; var Ch: TUtf8Char
-  ): Boolean;
+function TCustomMaskEdit.CanInsertChar(Position: Integer; var Ch: TUtf8Char;
+  IsPasting: Boolean = False): Boolean;
 Var
   Current : tMaskedType;
 Begin
@@ -1243,7 +1243,7 @@ Begin
   case Current Of
        Char_Number              : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9']);
        Char_NumberFixed         : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9']);
-       Char_NumberPlusMin       : Result := (Length(Ch) = 1) and (Ch[1] in ['0'..'9','+','-']);
+       Char_NumberPlusMin       : Result := (Length(Ch) = 1) and (Ch[1] in ['0'..'9','+','-',#32]); //yes Delphi allows a space here
        Char_Letter              : Result := (Length(Ch) = 1) and (Ch[1] In ['a'..'z', 'A'..'Z']);
        Char_LetterFixed         : Result := (Length(Ch) = 1) and (Ch[1] In ['a'..'z', 'A'..'Z']);
        Char_LetterUpCase        : Result := (Length(Ch) = 1) and (Ch[1] In ['A'..'Z']);
@@ -1266,6 +1266,12 @@ Begin
        Char_HourSeparator       : Result := (Ch = DefaultFormatSettings.TimeSeparator);
        Char_DateSeparator       : Result := (Ch = DefaultFormatSettings.DateSeparator);
   end;
+  //while typing a space iis not allowed in these cases, whilst pasting Delphi allows it nevertheless
+  if not Result and IsPasting and (Ch = #32) and
+    (Current in [Char_Number, Char_Letter, Char_LetterUpCase, Char_LetterDownCase,
+                 Char_AlphaNum, Char_AlphaNumUpCase, Char_AlphaNumDownCase]) then
+    Result := True;
+
 end;
 
 
@@ -2063,12 +2069,12 @@ begin
        CP := GetCodePoint(ClipText,i);
        //Replace all control characters with spaces
        if (Length(CP) = 1) and (CP[1] in [#0..#31]) then CP := #32;
-       while (i < Utf8Length(ClipText)) and (not CanInsertChar(P, CP)) do
+       while (i < Utf8Length(ClipText)) and (not CanInsertChar(P, CP, True)) do
        begin
          Inc(i);
          CP := GetCodePoint(ClipText,i);
        end;
-       if CanInsertChar(P, CP) then
+       if CanInsertChar(P, CP, True) then
        begin
          SetCodePoint(S,P,CP);
          Inc(P);
