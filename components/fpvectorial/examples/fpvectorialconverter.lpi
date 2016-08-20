@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -42,14 +42,13 @@
       <Unit0>
         <Filename Value="fpvectorialconverter.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="fpvectorialconverter"/>
       </Unit0>
       <Unit1>
         <Filename Value="fpvc_mainform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="formVectorialConverter"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="fpvc_mainform"/>
       </Unit1>
     </Units>
   </ProjectOptions>
@@ -70,12 +69,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="4">

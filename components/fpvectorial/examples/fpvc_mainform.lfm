@@ -1,96 +1,137 @@
 object formVectorialConverter: TformVectorialConverter
   Left = 216
-  Height = 456
+  Height = 481
   Top = 192
-  Width = 240
+  Width = 297
+  AutoSize = True
   BorderStyle = bsSingle
   Caption = 'FP Vectorial Converter'
-  ClientHeight = 456
-  ClientWidth = 240
-  LCLVersion = '1.5'
+  ClientHeight = 481
+  ClientWidth = 297
+  LCLVersion = '1.7'
   object Label1: TLabel
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
     Left = 8
     Height = 15
-    Top = 128
+    Top = 133
     Width = 133
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 8
     Caption = 'Location of the Input file:'
     ParentColor = False
   end
   object Label2: TLabel
-    Left = 6
+    Left = 8
     Height = 120
-    Top = 0
-    Width = 236
-    AutoSize = False
-    Caption = 'This converter application use the fpvectorial library to convert between various different vectorial graphics formats. The type is detected from the extension and the supported types are: PDF (*.pdf), SVG (*.svg) and Corel Draw file (*.cdr).'
+    Top = 5
+    Width = 281
+    Align = alTop
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 5
+    BorderSpacing.Right = 8
+    Caption = 'This converter application uses the fpvectorial library to convert between various different vectorial graphics formats. The type is detected from the extension and the supported types are: '#13#10'- PDF (*.pdf)'#13#10'- SVG (*.svg)'#13#10'- Corel Draw file (*.cdr)'#13#10'- Windows Metafile (*.wmf).'
     Font.Height = -12
     ParentColor = False
     ParentFont = False
     WordWrap = True
   end
   object editInput: TFileNameEdit
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
     Left = 8
-    Height = 27
-    Top = 144
-    Width = 192
+    Height = 23
+    Top = 152
+    Width = 281
     DialogOptions = []
     FilterIndex = 0
     HideDirectories = False
     ButtonWidth = 23
     NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 4
+    BorderSpacing.Right = 4
     MaxLength = 0
     TabOrder = 0
   end
   object Label3: TLabel
+    AnchorSideTop.Control = editInput
+    AnchorSideTop.Side = asrBottom
     Left = 8
     Height = 15
-    Top = 168
+    Top = 183
     Width = 143
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 8
     Caption = 'Full path of the Output file:'
     ParentColor = False
   end
   object editOutput: TFileNameEdit
+    AnchorSideTop.Control = Label3
+    AnchorSideTop.Side = asrBottom
     Left = 8
-    Height = 27
-    Top = 184
-    Width = 192
+    Height = 23
+    Top = 202
+    Width = 281
     DialogOptions = []
     FilterIndex = 0
     HideDirectories = False
     ButtonWidth = 23
     NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 4
+    BorderSpacing.Right = 4
     MaxLength = 0
     TabOrder = 1
   end
   object buttonConvert: TButton
-    Left = 87
+    AnchorSideTop.Control = buttonVisualize
+    Left = 80
     Height = 25
-    Top = 208
+    Top = 233
     Width = 67
     Caption = 'Convert'
     OnClick = buttonConvertClick
     TabOrder = 2
   end
   object buttonQuit: TButton
-    Left = 176
+    AnchorSideTop.Control = buttonVisualize
+    Left = 160
     Height = 25
-    Top = 208
+    Top = 233
     Width = 59
     Caption = 'Quit'
     OnClick = buttonQuitClick
     TabOrder = 3
   end
   object imagePreview: TImage
+    AnchorSideTop.Control = buttonVisualize
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
     Left = 8
-    Height = 210
-    Top = 240
-    Width = 224
+    Height = 208
+    Top = 266
+    Width = 281
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 8
+    BorderSpacing.Right = 8
+    BorderSpacing.Bottom = 8
+    Constraints.MinHeight = 200
   end
   object buttonVisualize: TButton
+    AnchorSideTop.Control = editOutput
+    AnchorSideTop.Side = asrBottom
     Left = 8
     Height = 25
-    Top = 208
-    Width = 59
+    Top = 233
+    Width = 62
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 8
     Caption = 'Visualize'
     OnClick = buttonVisualizeClick
     TabOrder = 4
