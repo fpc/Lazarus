@@ -280,7 +280,7 @@ var
 begin
   ConvertFPVCoordinatesToSVGCoordinates(APage, ACircle.X, ACircle.Y, cx, cy);
   ConvertFPVSizeToSVGSize(ACircle.Radius, 0, cr, dtmp);
-  circleStr := Format('  <circle cx="%g" cy="%g" r="%g" style="%s %s">', [
+  circleStr := Format('  <circle cx="%g" cy="%g" r="%g" style="%s %s" />', [
     cx, cy, cr,
     GetPenAsXMLStyle(ACircle.Pen),
     GetBrushAsXMLStyle(ACircle.Brush)
@@ -297,7 +297,7 @@ var
 begin
   ConvertFPVCoordinatesToSVGCoordinates(APage, AEllipse.X, AEllipse.Y, cx, cy);
   ConvertFPVSizeToSVGSize(AEllipse.HorzHalfAxis, AEllipse.VertHalfAxis, rx, ry);
-  ellipseStr := Format('  <ellipse cx="%g" cy="%g" rx="%g" ry="%g" style="%s %s">', [
+  ellipseStr := Format('  <ellipse cx="%g" cy="%g" rx="%g" ry="%g" style="%s %s" />', [
     cx, cy, rx, ry,
     GetPenAsXMLStyle(AEllipse.Pen),
     GetBrushAsXMLStyle(AEllipse.Brush)
