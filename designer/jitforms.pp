@@ -1588,7 +1588,8 @@ procedure TJITComponentList.FreeJITClass(var AClass: TClass);
   end;
 
 var
-  OldVMT, ClassNamePShortString: Pointer;
+  OldVMT: PVmt;
+  ClassNamePShortString: Pointer; // don't use PShortString so that the compiler don't get silly ideas
   OldFieldTable: PFieldTable;
   OldTypeInfo: PTypeInfo;
   OldMethodTable: PMethodNameTable;
@@ -1599,10 +1600,10 @@ begin
   // free TJITMethods
   JITMethods.DeleteAllOfClass(AClass);
 
-  OldVMT:=Pointer(AClass);
+  OldVMT:=PVmt(Pointer(AClass));
 
   // free methodtable
-  OldMethodTable:=PMethodNameTable((OldVMT+vmtMethodTable)^);
+  OldMethodTable:=PMethodNameTable(OldVMT^.vMethodTable);
   if Assigned(OldMethodTable) then begin
     FreeMethodTableEntries(OldMethodTable);
     FreeMem(OldMethodTable);
@@ -1614,16 +1615,16 @@ begin
   {$ENDIF}
 
   // free classname
-  ClassNamePShortString:=Pointer((OldVMT+vmtClassName)^);
+  ClassNamePShortString:=Pointer(OldVMT^.vClassName);
   FreeMem(ClassNamePShortString);
 
   // free field table
-  OldFieldTable:=PFieldTable((OldVMT+vmtFieldTable)^);
+  OldFieldTable:=PFieldTable(OldVMT^.vFieldTable);
   ReallocMem(OldFieldTable^.ClassTable,0);
   FreeMem(OldFieldTable);
 
   // free typeinfo
-  OldTypeInfo:=PTypeInfo((OldVMT+vmtTypeInfo)^);
+  OldTypeInfo:=PTypeInfo(OldVMT^.vTypeInfo);
   {$IFNDEF HasVMTParent}
   // free ParentInfoRef
   OldTypeData:=GetTypeData(OldTypeInfo);
