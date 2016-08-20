@@ -10033,7 +10033,7 @@ procedure TvVectorialDocument.WriteToFile(AFileName: string);
 var
   lFormat: TvVectorialFormat;
 begin
-  lFormat := GetFormatFromExtension(ExtractFileExt(AFileName));
+  lFormat := GetFormatFromExtension(AFileName);
   WriteToFile(AFileName, lFormat);
 end;
 
