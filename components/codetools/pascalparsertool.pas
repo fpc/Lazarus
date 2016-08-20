@@ -4048,6 +4048,7 @@ begin
   if AtomIsIdentifier then begin
     CreateChildNode;
     CurNode.Desc:=ctnGenericParameter;
+    CurNode.EndPos:=CurPos.EndPos;
     ReadNextAtom;
     repeat
       // read name
@@ -4063,6 +4064,7 @@ begin
         AtomIsIdentifierSaveE;
         CreateChildNode;
         CurNode.Desc:=ctnGenericParameter;
+        CurNode.EndPos:=CurPos.EndPos;
         ReadNextAtom;
       end else if AtomIsChar('>') then begin
         break;
@@ -4075,6 +4077,7 @@ begin
         end;
         repeat
           CurNode.EndPos:=CurPos.EndPos;
+          CurNode.Parent.EndPos:=CurPos.EndPos;
           if UpAtomIs('RECORD') or UpAtomIs('CLASS') or UpAtomIs('CONSTRUCTOR')
           then begin
             // keyword
@@ -4095,7 +4098,6 @@ begin
           ReadNextAtom;
         until false;
         // close ctnGenericConstraint
-        CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
         EndChildNode;
         if AtomIsChar('>') then break;
         // cursor is now on ;
@@ -4103,7 +4105,6 @@ begin
         SaveRaiseCharExpectedButAtomFound('>');
     until false;
     // close ctnGenericParameter
-    CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
     EndChildNode;
   end else begin
     if AtomIs('>=') then
