@@ -1608,6 +1608,11 @@ begin
     FreeMem(OldMethodTable);
   end;
 
+  // set vmtParent
+  {$IFNDEF HasVMTParent}
+  FreeMem(OldVMT^.vParentRef);
+  {$ENDIF}
+
   // free classname
   ClassNamePShortString:=Pointer((OldVMT+vmtClassName)^);
   FreeMem(ClassNamePShortString);
@@ -1619,7 +1624,7 @@ begin
 
   // free typeinfo
   OldTypeInfo:=PTypeInfo((OldVMT+vmtTypeInfo)^);
-  {$IF FPC_FULLVERSION>=30100}
+  {$IFNDEF HasVMTParent}
   // free ParentInfoRef
   OldTypeData:=GetTypeData(OldTypeInfo);
   FreeMem(OldTypeData^.ParentInfoRef);
