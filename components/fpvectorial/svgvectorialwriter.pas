@@ -26,6 +26,7 @@ type
     FLayerIndex: Integer;
     FPathIndex: Integer;
     FGradientIndex: Integer;
+
     // helper routines
     procedure ConvertFPVCoordinatesToSVGCoordinates(APage: TvVectorialPage;
       const ASrcX, ASrcY: Double; var ADestX, ADestY: double);
@@ -54,6 +55,8 @@ type
       APage: TvVectorialPage; ALayer: Tvlayer);
     procedure WritePath(AStrings: TStrings; ADoc: TvVectorialDocument;
       APage: TvVectorialPage; APath: TPath);
+    procedure WritePolygon(AStrings: TStrings;ADoc: TvVectorialDocument;
+      APage: TvVectorialPage; APolygon: TvPolygon);
     procedure WriteRectangle(AStrings: TStrings; ADoc: TvVectorialDocument;
       APage: TvVectorialPage; ARectangle: TvRectangle);
     procedure WriteText(AStrings: TStrings; ADoc: TvVectorialDocument;
@@ -88,15 +91,15 @@ const
 { TvSVGVectorialWriter }
 
 procedure TvSVGVectorialWriter.ConvertFPVCoordinatesToSVGCoordinates(
-  APage: TvVectorialPage; const ASrcX, ASrcY: Double; var ADestX,
-  ADestY: double);
+  APage: TvVectorialPage;
+  const ASrcX, ASrcY: Double; var ADestX, ADestY: double);
 begin
   ADestX := ASrcX * FLOAT_PIXELS_PER_MILLIMETER;
   ADestY := (APage.Height - ASrcY) * FLOAT_PIXELS_PER_MILLIMETER;
 end;
 
-procedure TvSVGVectorialWriter.ConvertFPVSizeToSVGSize(const ASrcX, ASrcY: Double;
-  var ADestX, ADestY: Double);
+procedure TvSVGVectorialWriter.ConvertFPVSizeToSVGSize(
+  const ASrcX, ASrcY: Double; var ADestX, ADestY: double);
 begin
   ADestX := ASrcX * FLOAT_PIXELS_PER_MILLIMETER;
   ADestY := ASrcY * FLOAT_PIXELS_PER_MILLIMETER;
@@ -331,9 +334,13 @@ begin
     WriteEllipse(AStrings, ADoc, APage, TvEllipse(AEntity))
   else
   if AEntity is TvLayer then
-    WriteLayer(AStrings, ADoc, APage, TvLayer(AEntity));
+    WriteLayer(AStrings, ADoc, APage, TvLayer(AEntity))
+  else
   if AEntity is TvRectangle then
-    WriteRectangle(AStrings, ADoc, APage, TvRectangle(AEntity));
+    WriteRectangle(AStrings, ADoc, APage, TvRectangle(AEntity))
+  else
+  if AEntity is TvPolygon then
+    WritePolygon(AStrings, ADoc, APage, TvPolygon(AEntity));
 end;
 
 procedure TvSVGVectorialWriter.WriteLayer(AStrings: TStrings;
@@ -444,6 +451,35 @@ begin
   AStrings.Add('    d="' + PathStr + '"');
   inc(FPathIndex);
   AStrings.Add('    id="path' + IntToStr(FPathIndex) + '" />');
+end;
+
+procedure TvSVGVectorialWriter.WritePolygon(AStrings: TStrings;
+  ADoc: TvVectorialDocument; APage: TvVectorialPage; APolygon: TvPolygon);
+var
+  pointsStr: String;
+  styleStr: String;
+  ptX, ptY: Double;
+  i: Integer;
+begin
+  // Collect point coordinates in a string as x,y pairs
+  pointsStr := '';
+  for i:=0 to High(APolygon.Points) do begin
+    ConvertFPVCoordinatesToSVGCoordinates(APage, APolygon.Points[i].X, APolygon.Points[i].Y, ptX, ptY);
+    if i=0 then
+      pointsStr := Format('%f,%f', [ptX, ptY], FPointSeparator) else
+      pointsStr := Format('%s %f,%f', [pointsStr, ptX, ptY], FPointSeparator);
+  end;
+
+  // Collect style items.
+  styleStr := GetPenAsXMLStyle(APolygon.Pen) + ' ' + GetBrushAsXMLStyle(APolygon.Brush);
+  if APolygon.WindingRule = vcmNonZeroWindingRule then
+    styleStr := styleStr + 'fill-rule:nonzero;' else
+    styleStr := styleStr + 'fill-rule:evenodd;';
+
+  // write the polygon xml
+  AStrings.Add('  <polygon');
+  AStrings.Add('    points="' + pointsStr + '"');
+  AStrings.Add('    style="' + styleStr + '" />');
 end;
 
 procedure TvSVGVectorialWriter.WriteRectangle(AStrings: TStrings;
