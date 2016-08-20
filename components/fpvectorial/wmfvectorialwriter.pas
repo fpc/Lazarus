@@ -64,6 +64,7 @@ type
     FCurrTextColor: TFPColor;
     FCurrTextAnchor: TvTextAnchor;
     FCurrBkMode: Word;
+    FCurrPolyFillMode: Word;
     FUseTopLeftCoordinates: Boolean;
     FErrMsg: TStrings;
 
@@ -89,6 +90,7 @@ type
     procedure WritePageEntities(AStream: TStream; APage: TvVectorialPage);
     procedure WritePath(AStream: TStream; APath: TPath);
     procedure WritePen(AStream: TStream; APen: TvPen);
+    procedure WritePolyFillMode(AStream: TStream; AValue: Word);
     procedure WritePolygon(AStream: TStream; APolygon: TvPolygon);
     procedure WriteRectangle(AStream: TStream; ARectangle: TvRectangle);
     procedure WriteText(AStream: TStream; AText: TvText);
@@ -742,6 +744,12 @@ begin
   FCurrPen := APen;
 end;
 
+procedure TvWMFVectorialWriter.WritePolyFillMode(AStream: TStream;
+  AValue: Word);
+begin
+  WriteWMFRecord(AStream, META_SETPOLYFILLMODE, AValue, SizeOf(AValue));
+end;
+
 procedure TvWMFVectorialWriter.WritePolygon(AStream: TStream;
   APolygon: TvPolygon);
 var
@@ -749,6 +757,11 @@ var
   i: Integer;
   w: Word;
 begin
+  case APolygon.WindingRule of
+    vcmEvenOddRule        : WritePolyFillMode(AStream, ALTERNATE);
+    vcmNonzeroWindingRule : WritePolyFillMode(AStream, WINDING);
+  end;
+
   WritePen(AStream, APolygon.Pen);
   WriteBrush(AStream, APolygon.Brush);
   SetLength(pts, Length(APolygon.Points));
