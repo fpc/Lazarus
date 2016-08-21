@@ -66,18 +66,21 @@ type
     class procedure CreatePreviewDialogControl(PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget); virtual;
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TGtk2WSSaveDialog }
 
   TGtk2WSSaveDialog = class(TWSSaveDialog)
   published
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TGtk2WSSelectDirectoryDialog }
 
   TGtk2WSSelectDirectoryDialog = class(TWSSelectDirectoryDialog)
   published
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TGtk2WSColorDialog }
@@ -87,6 +90,7 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TGtk2WSColorButton }
@@ -102,6 +106,7 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
 // forward declarations
@@ -800,6 +805,22 @@ begin
   end;
 end;
 
+{ TGtk2WSSelectDirectoryDialog }
+
+class function TGtk2WSSelectDirectoryDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  Result := [cdecWSPerformsDoShow];
+end;
+
+{ TGtk2WSSaveDialog }
+
+class function TGtk2WSSaveDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  Result := [cdecWSPerformsDoShow];
+end;
+
 // ---------------------- END OF signals ---------------------------------------
 
 { TGtk2WSOpenDialog }
@@ -1067,6 +1088,12 @@ begin
   //  PopulateFileAndDirectoryLists(FileSelWidget, InitialFilter);
 end;
 
+class function TGtk2WSOpenDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  Result := [cdecWSPerformsDoShow];
+end;
+
 { TGtk2WSFileDialog }
 
 class procedure TGtk2WSFileDialog.SetCallbacks(const AGtkWidget: PGtkWidget;
@@ -1294,6 +1321,12 @@ begin
   SetCallbacks(Widget, WidgetInfo);
 end;
 
+class function TGtk2WSColorDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  Result := [cdecWSPerformsDoShow];
+end;
+
 { TGtk2WSFontDialog }
 
 class procedure TGtk2WSFontDialog.SetCallbacks(const AGtkWidget: PGtkWidget;
@@ -1367,6 +1400,12 @@ begin
   WidgetInfo^.LCLObject := ACommonDialog;
   TGtk2WSCommonDialog.SetSizes(Widget, WidgetInfo);
   SetCallbacks(Widget, WidgetInfo);
+end;
+
+class function TGtk2WSFontDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  Result := [cdecWSPerformsDoShow];
 end;
 
 end.
