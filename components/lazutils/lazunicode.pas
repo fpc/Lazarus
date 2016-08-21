@@ -16,7 +16,7 @@
 unit LazUnicode;
 
 {$IFDEF FPC}
- {$mode objfpc}{$H+}
+ {$mode objfpc}{$H+}{$inline on}
 {$ENDIF}
 
 // For testing the UTF16 version.
@@ -41,11 +41,11 @@ uses
   ;
 
   // Helper functions for codepoints. They change behavior depending on ModeSwitch.
-  function CodePointCopy(const s: string; StartCharIndex, CharCount: NativeInt): string;
-  function CodePointLength(const s: string): NativeInt;
-  function CodePointPos(const SearchForText, SearchInText: string; StartPos: NativeInt = 1): NativeInt;
-  function CodePointSize(p: PChar): integer;
-  function IsCombining(const AChar: PChar): Boolean;
+  function CodePointCopy(const s: string; StartCharIndex, CharCount: NativeInt): string; inline;
+  function CodePointLength(const s: string): NativeInt; inline;
+  function CodePointPos(const SearchForText, SearchInText: string; StartPos: NativeInt = 1): NativeInt; inline;
+  function CodePointSize(p: PChar): integer; inline;
+  function IsCombining(const AChar: PChar): Boolean; inline;
 
   function UnicodeToWinCP(const s: string): AnsiString;
   function WinCPToUnicode(const s: AnsiString): string;
@@ -154,7 +154,7 @@ begin
   {$IFDEF ReallyUseUTF16}
   Result := UTF16Length(s);
   {$ELSE}
-  Result := UTF8Length(s);
+  Result := UTF8LengthFast(s);
   {$ENDIF}
 end;
 
@@ -177,7 +177,7 @@ begin
   else
     Result := 1
   {$ELSE}
-  Result := UTF8CharacterLength(p);
+  Result := UTF8CharacterLengthFast(p);
   {$ENDIF}
 end;
 

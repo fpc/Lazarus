@@ -46,13 +46,13 @@ function UTF8ToSys(const s: string): string; overload; {$IFDEF UTF8_RTL}inline;{
 function UTF8ToSys(const AFormatSettings: TFormatSettings): TFormatSettings; overload; {$IFDEF UTF8_RTL}inline;{$ENDIF}
 
 // SysToUTF8 works like AnsiToUTF8 but more independent of widestringmanager
-function SysToUTF8(const s: string): string; overload;
+function SysToUTF8(const s: string): string; overload; {$IFDEF UTF8_RTL}inline;{$ENDIF}
 function SysToUTF8(const AFormatSettings: TFormatSettings): TFormatSettings; overload;
 
 // converts OEM encoded string to UTF8 (used with some Windows specific functions)
-function ConsoleToUTF8(const s: string): string;
+function ConsoleToUTF8(const s: string): string; {$IFDEF UTF8_RTL}inline;{$ENDIF}
 // converts UTF8 string to console encoding (used by Write, WriteLn)
-function UTF8ToConsole(const s: string): string;
+function UTF8ToConsole(const s: string): string; {$IFDEF UTF8_RTL}inline;{$ENDIF}
 
 // for all Windows supporting 8bit codepages (e.g. not WinCE)
 // converts string in Windows code page to UTF8 (used with some Windows specific functions)
@@ -69,12 +69,20 @@ procedure GetLocaleFormatSettingsUTF8(LCID: Integer; var aFormatSettings: TForma
 
 function GetEnvironmentStringUTF8(Index: Integer): string;
 function GetEnvironmentVariableUTF8(const EnvVar: string): String;
-
 function SysErrorMessageUTF8(ErrorCode: Integer): String;
 
+// Returns the size of one codepoint in bytes.
 function UTF8CharacterLength(p: PChar): integer;
-function UTF8Length(const s: string): PtrInt;
+// Fast version of UTF8CharacterLength. Assumes the UTF-8 codepoint is valid.
+function UTF8CharacterLengthFast(p: PChar): integer; inline;
+
+function UTF8Length(const s: string): PtrInt; inline;
 function UTF8Length(p: PChar; ByteCount: PtrInt): PtrInt;
+// Fast versions of UTF8Length. They assume the UTF-8 data is valid.
+function UTF8LengthFast(const s: string): PtrInt; inline;
+function UTF8LengthFast(p: PChar; ByteCount: PtrInt): PtrInt;
+
+// Functions dealing with unicode number U+xxx.
 function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF8(CodePoint: cardinal): string;
 function UnicodeToUTF8(CodePoint: cardinal; Buf: PChar): integer;
@@ -402,6 +410,20 @@ begin
     Result:=0;
 end;
 
+function UTF8CharacterLengthFast(p: PChar): integer;
+begin
+  case p^ of
+    #0           : Result := 0;
+    #1..#191,#255: Result := 1;
+    #192..#223   : Result := 2;
+    #224..#239   : Result := 3;
+    #240..#247   : Result := 4;
+    #248..#251   : Result := 5;
+    #252, #253   : Result := 6;
+    #254         : Result := 7;
+  end;
+end;
+
 function UTF8Length(const s: string): PtrInt;
 begin
   Result:=UTF8Length(PChar(s),length(s));
@@ -418,6 +440,63 @@ begin
     inc(p,CharLen);
     dec(ByteCount,CharLen);
   end;
+end;
+
+function UTF8LengthFast(const s: string): PtrInt;
+begin
+  Result := UTF8LengthFast(PChar(s), Length(s));
+end;
+
+// Ported from:
+//  http://www.daemonology.net/blog/2008-06-05-faster-utf8-strlen.html
+// The code uses CPU's native data size. In a 64-bit CPU it means 8 bytes at once.
+function UTF8LengthFast(p: PChar; ByteCount: PtrInt): PtrInt;
+const
+  {$IfDef CPU64}
+  ONEMASK=$0101010101010101;
+  {$Else}
+  ONEMASK=$01010101;
+  {$EndIf}
+var
+  b: Byte;
+  pu: PPtrUInt;
+  pb: PByte absolute pu;
+  ui: PtrUInt absolute pu;
+  u: PtrUInt;
+  i: Integer;
+begin
+  pu := PPtrUInt(p);
+  Result := 0;
+  // Handle any initial misaligned bytes.
+  for i := 1 to ui and (sizeof(u) - 1) do
+  begin
+    b := pb^;
+    // Is this byte NOT the first byte of a character?
+    Result += (b shr 7) and ((not b) shr 6);
+    inc(pb);
+  end;
+  // Handle complete blocks.
+  for i := 1 to ByteCount div sizeof(u) do
+  begin
+    u := pu^;
+    // Result bytes which are NOT the first byte of a character.
+    u := ((u and (ONEMASK * $80)) shr 7) and ((not u) shr 6);
+    {$PUSH}{$Q-}  // "u * ONEMASK" causes an arithmetic overflow.
+    Result += (u * ONEMASK) >> ((sizeof(u) - 1) * 8);
+    {$POP}
+    inc(pu);
+  end;
+  // Take care of any left-over bytes.
+  for i := 1 to ({%H-}PtrUInt(p)+ByteCount) and (sizeof(u) - 1) do
+  begin
+    b :=  pb^;
+    {if (b = $00) then   // Exit if we hit a zero byte.
+      break;}
+    // Is this byte NOT the first byte of a character?
+    Result += (b shr 7) and ((not b) shr 6);
+    inc(pb);
+  end;
+  Result := ByteCount - Result;
 end;
 
 function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal;
@@ -437,8 +516,7 @@ begin
       // starts with %110 => could be double byte character
       if (ord(p[1]) and %11000000) = %10000000 then begin
         CharLen:=2;
-        Result:=((ord(p^) and %00011111) shl 6)
-                or (ord(p[1]) and %00111111);
+        Result:=((ord(p^) and %00011111) shl 6) or (ord(p[1]) and %00111111);
         if Result<(1 shl 7) then begin
           // wrong encoded, could be an XSS attack
           Result:=0;
@@ -2905,10 +2983,10 @@ begin
   Result := UTF8ReverseString(PChar(AText), length(AText));
 end;
 
-
 function Utf8RPos(const Substr, Source: string): integer;
 var
-  RevSubstr, RevSource: string; pRev: integer;
+  RevSubstr, RevSource: string;
+  pRev: integer;
 begin
   if (Pos(Substr, Source) = 0) then
     Result := 0
