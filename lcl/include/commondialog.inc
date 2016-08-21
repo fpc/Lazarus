@@ -36,6 +36,7 @@ begin
     try
       FUserChoice := mrNone;
       ResetShowCloseFlags;
+      FWSEventCapabilities := TWSCommonDialogClass(WidgetSetClass).QueryWSEventCapabilities(Self);
       Handle := TWSCommonDialogClass(WidgetSetClass).CreateHandle(Self);
       Result:= DoExecute;
       Close;
@@ -55,7 +56,7 @@ procedure TCommonDialog.Close;
 begin
   if HandleAllocated and not FClosing then begin
     FClosing := true;
-    if not FDoCloseCalled then
+    if (not FDoCloseCalled) and (not (cdecWSPerformsDoClose in FWSEventCapabilities)) then
       DoClose;
     TWSCommonDialogClass(WidgetSetClass).DestroyHandle(Self);
     FHandle := 0;
@@ -73,7 +74,7 @@ end;
 procedure TCommonDialog.DoCanClose(var CanClose: Boolean);
 begin
   FDoCanCloseCalled := True;
-  if Assigned(FOnCanClose) then
+  if Assigned(FOnCanClose) and (not (cdecWSNOCanCloseSupport in FWSEventCapabilities)) then
     OnCanClose(Self, CanClose);
 end;
 
@@ -128,10 +129,17 @@ function TCommonDialog.DoExecute : boolean;
 var
   CanClose: boolean;
 begin
+  {
+    Various widgetsets may or may not call DoShow, DoCanClose or DoClose from within
+    the WS implementation.
+    If the WS calls any of these, we assume that we should NOT call them from here.
+    Checking for FDoShowCalled (etc) alone is not enough, since it may very well be that
+    the WS wants to (deiberately) call the methos at a later point in time.
+  }
   {$ifdef DebugCommonDialogEvents}
   debugln(['TCommonDialog.DoExecute A']);
   {$endif}
-  if not FDoShowCalled then
+  if (not FDoShowCalled) and (not (cdecWSPerformsDoShow in FWSEventCapabilities)) then
   begin
     {$ifdef DebugCommonDialogEvents}
     debugln(['TCommonDialog.DoExecute calling DoShow']);
@@ -146,7 +154,7 @@ begin
   debugln(['TCommonDialog.DoExecute after WS_ShowModal, FCanCloseCalled=',FDoCanCloseCalled,' FUserChoice=',ModalResultStr[FUserChoice]]);
   {$endif}
   // can close was called from widgetset loop
-  if not FDoCanCloseCalled then
+  if (not FDoCanCloseCalled) and ((FWSEventCapabilities * [cdecWSPerformsDoCanClose,cdecWSNOCanCloseSupport]) = []) then
   begin
     repeat
       {$ifdef DebugCommonDialogEvents}

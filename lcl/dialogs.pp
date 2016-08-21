@@ -58,6 +58,10 @@ type
 
   { TCommonDialog }
 
+  TCDWSEventCapability = (cdecWSPerformsDoShow, cdecWSPerformsDoCanClose, cdecWSPerformsDoClose,
+                          cdecWSNOCanCloseSupport);
+  TCDWSEventCapabilities = set of TCDWSEventCapability;
+
   TCommonDialog = class(TLCLComponent)
   private
     FHandle : THandle;
@@ -72,6 +76,7 @@ type
     FDoShowCalled: Boolean;
     FDoCloseCalled: Boolean;
     FClosing: boolean;
+    FWSEventCapabilities :TCDWSEventCapabilities;
     procedure SetHandle(const AValue: THandle);
     function IsTitleStored: boolean;
   protected

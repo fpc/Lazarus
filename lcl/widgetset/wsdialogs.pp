@@ -51,6 +51,7 @@ type
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; virtual;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); virtual;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); virtual;
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; virtual;
   end;
 
   { TWSFileDialog }
@@ -118,6 +119,12 @@ end;
 
 class procedure TWSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
 begin
+end;
+
+class function TWSCommonDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  Result := [];
 end;
 
 class procedure TWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);

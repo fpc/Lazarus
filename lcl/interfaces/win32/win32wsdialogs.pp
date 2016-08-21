@@ -82,6 +82,7 @@ type
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TWin32WSSaveDialog }
@@ -91,6 +92,7 @@ type
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TWin32WSSelectDirectoryDialog }
@@ -100,6 +102,7 @@ type
     class function CreateOldHandle(const ACommonDialog: TCommonDialog): THandle;
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TWin32WSColorDialog }
@@ -109,6 +112,7 @@ type
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TWin32WSColorButton }
@@ -122,6 +126,7 @@ type
   TWin32WSFontDialog = class(TWSFontDialog)
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
 
@@ -409,6 +414,12 @@ begin
     FreeMem(CC^.lpCustColors);
     FreeMem(CC);
   end;
+end;
+
+class function TWin32WSColorDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  Result := [cdecWSNoCanCloseSupport];
 end;
 
 procedure UpdateStorage(Wnd: HWND; OpenFile: LPOPENFILENAME);
@@ -997,6 +1008,12 @@ begin
   end;
 end;
 
+class function TWin32WSOpenDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  Result := [cdecWSPerformsDoShow,cdecWSPerformsDoCanClose];
+end;
+
 { TWin32WSSaveDialog }
 
 class function TWin32WSSaveDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
@@ -1063,6 +1080,12 @@ begin
       RestoreApplicationState(State);
     end;
   end;
+end;
+
+class function TWin32WSSaveDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  Result := [cdecWSPerformsDoShow,cdecWSPerformsDoCanClose];
 end;
 
 { TWin32WSFontDialog }
@@ -1150,6 +1173,12 @@ begin
   Result := 0;
 end;
 
+class function TWin32WSFontDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  Result := [cdecWSPerformsDoShow, cdecWSPerformsDoClose, cdecWSNoCanCloseSupport];
+end;
+
 { TWin32WSCommonDialog }
 
 class function TWin32WSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
@@ -1206,6 +1235,15 @@ begin
   end
   else
     Result := CreateOldHandle(ACommonDialog);
+end;
+
+class function TWin32WSSelectDirectoryDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  if CanUseVistaDialogs(TSelectDirectoryDialog(ACommonDialog)) then
+    Result := [cdecWSPerformsDoShow,cdecWSPerformsDoCanClose]
+  else
+    Result := [cdecWSPerformsDoShow, cdecWSPerformsDoClose, cdecWSNoCanCloseSupport];
 end;
 
 class function TWin32WSSelectDirectoryDialog.CreateOldHandle(
