@@ -63,12 +63,14 @@ type
   TQtWSOpenDialog = class(TWSOpenDialog)
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TQtWSSaveDialog }
 
   TQtWSSaveDialog = class(TWSSaveDialog)
   published
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TQtWSSelectDirectoryDialog }
@@ -79,6 +81,7 @@ type
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TQtWSColorDialog }
@@ -87,6 +90,7 @@ type
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TQtWSColorButton }
@@ -101,6 +105,7 @@ type
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
 
@@ -113,6 +118,15 @@ const
 {QDialogRejected} mrCancel,
 {QDialogAccepted} mrOk
   );
+
+{ TQtWSSaveDialog }
+
+class function TQtWSSaveDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  Result := [cdecWSNoCanCloseSupport];
+end;
+
 {$endif}
   
 { TQtWSCommonDialog }
@@ -661,6 +675,12 @@ begin
     Result := TQtWSFileDialog.CreateHandle(ACommonDialog);
 end;
 
+class function TQtWSOpenDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  Result := [cdecWSNoCanCloseSupport];
+end;
+
 { TQtWSSelectDirectoryDialog }
 
 class procedure TQtWSSelectDirectoryDialog.UpdateProperties(
@@ -819,6 +839,12 @@ begin
   {$endif}
 end;
 
+class function TQtWSSelectDirectoryDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  Result := [cdecWSNoCanCloseSupport];
+end;
+
 { TQtWSColorDialog }
 
 class function TQtWSColorDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
@@ -893,6 +919,12 @@ begin
   //Since TQtWSColorDialog.CreateHandle returns 0, in TCommonDialog.Close DoClose will not be called,
   //so call it from here
   ACommonDialog.DoClose;
+end;
+
+class function TQtWSColorDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  Result := [cdecWSPerformsDoClose, cdecWSNoCanCloseSupport];
 end;
 
 { TQtWSFontDialog }
@@ -973,6 +1005,12 @@ begin
   //Since TQtWSFontDialog.CreateHandle returns 0, in TCommonDialog.Close DoClose will not be called,
   //so call it from here
   ACommonDialog.DoClose;
+end;
+
+class function TQtWSFontDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  Result := [cdecWSPerformsDoClose, cdecWSNoCanCloseSupport];
 end;
 
 end.
