@@ -1090,6 +1090,46 @@ end;
 
 { TWin32WSFontDialog }
 
+function FontDialogCallBack(Wnd: HWND; uMsg: UINT; wParam: WPARAM;
+  lParam: LPARAM): UINT_PTR; stdcall;
+const
+  ApplyBtnControlID = 1026;
+const //don't use initialize "var", since that will be reset to nil at every callback
+  Dlg: ^TFontDialog = nil;
+begin
+  Result := 0;
+  case uMsg of
+    WM_INITDIALOG:
+    begin
+      //debugln(['FontDialogCallBack: WM_INITDIALOG']);
+      //debugln(['  PChooseFontW(LParam)^.lCustData=',IntToHex(PChooseFontW(LParam)^.lCustData,8)]);
+      PtrInt(Dlg) := PChooseFontW(LParam)^.lCustData;
+    end;
+    WM_COMMAND:
+    begin
+      // LoWord(wParam) must be ApplyBtnControlID,
+      // since HiWord(wParam) = 0 when button is clicked, wParam = LoWord(wParam) in this case
+      if (wParam = ApplyBtnControlID) then
+      begin
+        //debugln(['FontDialogCallBack:']);
+        //debugln(['  wParam=',wParam,' lParam=',lParam]);
+        //debugln(['  HiWord(wParam)=',HiWord(wParam),' LoWord(wParam)',LoWord(wParam)]);
+        //debugln(['FontDialogCallback calling OnApplyClicked']);
+        if Assigned(Dlg) and Assigned(Dlg^) then
+        begin
+          if Assigned(Dlg^.OnApplyClicked) then
+          begin
+            //ToDo: retrieve current settings of the Windows dialog and aplly to
+            //our instance of TFontDialog
+            Dlg^.OnApplyClicked(Dlg^);
+            Result := 1;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
 class function TWin32WSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 
   function GetFlagsFromOptions(Options : TFontDialogOptions): dword;
@@ -1141,6 +1181,16 @@ begin
       LPLogFont := commdlg.PLOGFONTW(@LFW);
       Flags := GetFlagsFromOptions(Options);
       Flags := Flags or CF_INITTOLOGFONTSTRUCT or CF_BOTH;
+      //setting CF_ENABLEHOOK shows an oldstyle dialog, unless lpTemplateName is set
+      //and a template is linked in as a resource,
+      //this also requires additional flas set:
+      //https://msdn.microsoft.com/en-us/library/windows/desktop/ms646832(v=vs.85).aspx
+      if (fdApplyButton in Options) then
+      begin
+        Flags := Flags or CF_ENABLEHOOK;
+        lpfnHook := @FontDialogCallBack;
+        lCustData := PtrInt(@ACommonDialog);
+      end;
       RGBColors := DWORD(Font.Color);
       if fdLimitSize in Options then
       begin
