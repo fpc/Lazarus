@@ -1093,9 +1093,16 @@ end;
 function FontDialogCallBack(Wnd: HWND; uMsg: UINT; wParam: WPARAM;
   lParam: LPARAM): UINT_PTR; stdcall;
 const
+  //These ID's can be seen as LoWord(wParam), when uMsg = WM_COMMAND
   ApplyBtnControlID = 1026;
-const //don't use initialize "var", since that will be reset to nil at every callback
+  ColorComboBoxControlID = 1139; //see also: https://www.experts-exchange.com/questions/27267157/Font-Common-Dialog.html
+  //don't use initialize "var", since that will be reset to nil at every callback
   Dlg: ^TFontDialog = nil;
+var
+  LFW: LogFontW;
+  LFA: LogFontA absolute LFW;
+  Res: LONG;
+  AColor: TColor;
 begin
   Result := 0;
   case uMsg of
@@ -1107,20 +1114,37 @@ begin
     end;
     WM_COMMAND:
     begin
+      //debugln(['FontDialogCallBack:']);
+      //debugln(['  wParam=',wParam,' lParam=',lParam]);
+      //debugln(['  HiWord(wParam)=',HiWord(wParam),' LoWord(wParam)',LoWord(wParam)]);
+      //debugln(['  HiWord(lParam)=',HiWord(lParam),' LoWord(lParam)',LoWord(lParam)]);
       // LoWord(wParam) must be ApplyBtnControlID,
       // since HiWord(wParam) = 0 when button is clicked, wParam = LoWord(wParam) in this case
       if (wParam = ApplyBtnControlID) then
       begin
-        //debugln(['FontDialogCallBack:']);
-        //debugln(['  wParam=',wParam,' lParam=',lParam]);
-        //debugln(['  HiWord(wParam)=',HiWord(wParam),' LoWord(wParam)',LoWord(wParam)]);
         //debugln(['FontDialogCallback calling OnApplyClicked']);
         if Assigned(Dlg) and Assigned(Dlg^) then
         begin
           if Assigned(Dlg^.OnApplyClicked) then
           begin
-            //ToDo: retrieve current settings of the Windows dialog and aplly to
-            //our instance of TFontDialog
+            //Query the dialog (Wnd) return a LogFont structure
+            //https://msdn.microsoft.com/en-us/library/windows/desktop/ms646880(v=vs.85).aspx
+            ZeroMemory(@LFW, SizeOf(LogFontW));
+            SendMessage(Wnd, WM_CHOOSEFONT_GETLOGFONT, 0, PtrInt(@LFW));
+            //Unfortunately this did NOT retrieve the Color information, so yet another query is necessary
+            AColor := Dlg^.Font.Color;
+            Res := SendDlgItemMessage(Wnd, ColorComboBoxControlID, CB_GETCURSEL, 0, 0);
+            //debugln(['FontDialogCallBack SendDlgItemMessage = ',Res]);
+            //if (Res=CB_ERR) then debugln('  = CB_ERR');
+            if (Res <> CB_ERR) then
+            begin
+              AColor := TColor(SendDlgItemMessage(Wnd, ColorComboBoxControlID, CB_GETITEMDATA, Res, 0));
+              //debugln(['FontDialogCallback SendDlgItemMessage =',AColor]);
+            end;
+            //Now finally update Dlg^.Font structure
+            LFA.lfFaceName := Utf16ToUtf8(LFW.lfFaceName);
+            Dlg^.Font.Assign(LFA);
+            Dlg^.Font.Color := AColor;
             Dlg^.OnApplyClicked(Dlg^);
             Result := 1;
           end;
