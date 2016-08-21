@@ -4561,9 +4561,9 @@ begin
         ctnOnBlock:
           if SearchInOnBlockDefinition then exit;
 
-        ctnPointerType:
+        ctnPointerType,ctnClassOfType:
           begin
-            // pointer types can be forward definitions
+            // pointer and class-of can be forward definitions
             // -> search in both directions
             Params.ContextNode:=ContextNode.Parent;
             if CheckResult(FindForwardIdentifier(Params,IsForward),false) then

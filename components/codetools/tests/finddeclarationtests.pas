@@ -2,6 +2,7 @@
  Test with:
    ./testcodetools --format=plain --suite=TTestFindDeclaration
    ./testcodetools --format=plain --suite=TestFindDeclaration_Basic
+   ./testcodetools --format=plain --suite=TestFindDeclaration_ClassOf
    ./testcodetools --format=plain --suite=TestFindDeclaration_With
    ./testcodetools --format=plain --suite=TestFindDeclaration_NestedClasses
    ./testcodetools --format=plain --suite=TestFindDeclaration_ClassHelper
@@ -44,6 +45,7 @@ type
   published
     procedure TestFindDeclaration_Basic;
     procedure TestFindDeclaration_With;
+    procedure TestFindDeclaration_ClassOf;
     procedure TestFindDeclaration_NestedClasses;
     procedure TestFindDeclaration_ClassHelper;
     procedure TestFindDeclaration_TypeHelper;
@@ -272,6 +274,11 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_With;
 begin
   FindDeclarations('fdt_with.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_ClassOf;
+begin
+  FindDeclarations('fdt_classof.pas');
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_NestedClasses;

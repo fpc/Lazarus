@@ -59,7 +59,7 @@
         <IsPartOfProject Value="True"/>
       </Unit3>
       <Unit4>
-        <Filename Value="fdt_basic.pas"/>
+        <Filename Value="fdt_classof.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit4>
       <Unit5>

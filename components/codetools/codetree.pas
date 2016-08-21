@@ -133,7 +133,7 @@ const
   ctnTypeType           = 83;
   ctnFileType           = 84;
   ctnPointerType        = 85;
-  ctnClassOfType        = 86;
+  ctnClassOfType        = 86; // 1st child = ctnIdentifier
   ctnVariantType        = 87;
   ctnSpecialize         = 88; // 1st child = ctnSpecializeType, 2nd child = ctnSpecializeParams
   ctnSpecializeType     = 89; // parent = ctnSpecialize
