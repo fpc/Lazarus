@@ -72,7 +72,7 @@ function GetEnvironmentVariableUTF8(const EnvVar: string): String;
 function SysErrorMessageUTF8(ErrorCode: Integer): String;
 
 // Returns the size of one codepoint in bytes.
-function UTF8CharacterLength(p: PChar): integer;
+function UTF8CharacterLength(p: PChar): integer; inline;
 // Fast version of UTF8CharacterLength. Assumes the UTF-8 codepoint is valid.
 function UTF8CharacterLengthFast(p: PChar): integer; inline;
 
@@ -370,56 +370,65 @@ begin
   Result := SysToUTF8(SysUtils.SysErrorMessage(ErrorCode));
 end;
 
-function UTF8CharacterLength(p: PChar): integer;
+function UTF8CharacterLengthFull(p: PChar): integer;
 begin
-  if p<>nil then begin
-    if ord(p^)<%11000000 then begin
-      // regular single byte character (#0 is a character, this is pascal ;)
-      Result:=1;
-    end
-    else begin
-      // multi byte
-      if ((ord(p^) and %11100000) = %11000000) then begin
-        // could be 2 byte character
-        if (ord(p[1]) and %11000000) = %10000000 then
-          Result:=2
-        else
-          Result:=1;
-      end
-      else if ((ord(p^) and %11110000) = %11100000) then begin
-        // could be 3 byte character
-        if ((ord(p[1]) and %11000000) = %10000000)
-        and ((ord(p[2]) and %11000000) = %10000000) then
-          Result:=3
-        else
-          Result:=1;
-      end
-      else if ((ord(p^) and %11111000) = %11110000) then begin
-        // could be 4 byte character
-        if ((ord(p[1]) and %11000000) = %10000000)
-        and ((ord(p[2]) and %11000000) = %10000000)
-        and ((ord(p[3]) and %11000000) = %10000000) then
-          Result:=4
-        else
-          Result:=1;
-      end
+  case p^ of
+  #0..#191: // %11000000
+    // regular single byte character (#0 is a character, this is Pascal ;)
+    Result:=1;
+  #192..#223: // p^ and %11100000 = %11000000
+    begin
+      // could be 2 byte character
+      if (ord(p[1]) and %11000000) = %10000000 then
+        Result:=2
       else
         Result:=1;
     end;
-  end else
-    Result:=0;
+  #224..#239: // p^ and %11110000 = %11100000
+    begin
+      // could be 3 byte character
+      if ((ord(p[1]) and %11000000) = %10000000)
+      and ((ord(p[2]) and %11000000) = %10000000) then
+        Result:=3
+      else
+        Result:=1;
+    end;
+  #240..#247: // p^ and %11111000 = %11110000
+    begin
+      // could be 4 byte character
+      if ((ord(p[1]) and %11000000) = %10000000)
+      and ((ord(p[2]) and %11000000) = %10000000)
+      and ((ord(p[3]) and %11000000) = %10000000) then
+        Result:=4
+      else
+        Result:=1;
+    end;
+  else
+    Result:=1;
+  end;
+end;
+
+function UTF8CharacterLength(p: PChar): integer; inline;
+begin
+  if p=nil then exit(0);
+  if p^<#192 then exit(1);
+  Result:=UTF8CharacterLengthFull(p);
 end;
 
 function UTF8CharacterLengthFast(p: PChar): integer;
 begin
   case p^ of
-    #0..#191,#255: Result := 1;
-    #192..#223   : Result := 2;
-    #224..#239   : Result := 3;
-    #240..#247   : Result := 4;
-    #248..#251   : Result := 5;
-    #252, #253   : Result := 6;
-    #254         : Result := 7;
+    #0..#191   : Result := 1;
+    #192..#223 : Result := 2;
+    #224..#239 : Result := 3;
+    #240..#247 : Result := 4;
+    #248..#255 : Result := 1;
+    // Theoretically UTF-8 supports length 1-7, but since 2003, RFC 3629 limits
+    // it to 1-4 bytes.
+    // This is an inline function, so keep the function short.
+    //#248..#251   : Result := 5;
+    //#252, #253   : Result := 6;
+    //#254         : Result := 7;
   end;
 end;
 
