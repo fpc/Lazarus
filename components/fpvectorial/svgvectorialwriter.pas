@@ -41,6 +41,7 @@ type
 
     procedure WriteDocumentSize(AStrings: TStrings; AData: TvVectorialDocument);
     procedure WriteDocumentName(AStrings: TStrings; AData: TvVectorialDocument);
+    procedure WriteViewBox(AStrings: TStrings; AData: TvVectorialDocument);
 
     // Writing of svg entities
     procedure WriteCircle(AStrings: TStrings; ADoc: TvVectorialDocument;
@@ -53,6 +54,8 @@ type
       APage: TvVectorialPage; AEntity: TvEntity);
     procedure WriteLayer(AStrings: TStrings; ADoc: TvVectorialDocument;
       APage: TvVectorialPage; ALayer: Tvlayer);
+    procedure WriteParagraph(AStrings: TStrings; ADoc: TvVectorialDocument;
+      APage: TvVectorialPage; AParagraph: TvParagraph);
     procedure WritePath(AStrings: TStrings; ADoc: TvVectorialDocument;
       APage: TvVectorialPage; APath: TPath);
     procedure WritePolygon(AStrings: TStrings;ADoc: TvVectorialDocument;
@@ -95,7 +98,9 @@ procedure TvSVGVectorialWriter.ConvertFPVCoordinatesToSVGCoordinates(
   const ASrcX, ASrcY: Double; var ADestX, ADestY: double);
 begin
   ADestX := ASrcX * FLOAT_PIXELS_PER_MILLIMETER;
-  ADestY := (APage.Height - ASrcY) * FLOAT_PIXELS_PER_MILLIMETER;
+  if APage.HasNaturalRenderPos then
+    ADestY := ASrcY * FLOAT_PIXELS_PER_MILLIMETER else
+    ADestY := (APage.Height - ASrcY) * FLOAT_PIXELS_PER_MILLIMETER;
 end;
 
 procedure TvSVGVectorialWriter.ConvertFPVSizeToSVGSize(
@@ -272,6 +277,17 @@ begin
   AStrings.Add('  sodipodi:docname="New document 1">');
 end;
 
+procedure TvSVGVectorialWriter.WriteViewbox(AStrings: TStrings;
+  AData: TvVectorialDocument);
+var
+  x, y, w, h: Double;
+begin
+  x := 0;
+  y := 0;
+  ConvertFPVSizeToSVGSize(AData.Width, AData.Height, w, h);
+  AStrings.Add(Format('  viewBox="%f %f %f %f"', [x, y, w, h], FPointSeparator));
+end;
+
 procedure TvSVGVectorialWriter.WriteCircle(AStrings: TStrings;
   ADoc: TvVectorialDocument; APage: TvVectorialPage; ACircle: TvCircle);
 var
@@ -333,14 +349,17 @@ begin
   if AEntity is TvEllipse then
     WriteEllipse(AStrings, ADoc, APage, TvEllipse(AEntity))
   else
-  if AEntity is TvLayer then
-    WriteLayer(AStrings, ADoc, APage, TvLayer(AEntity))
-  else
   if AEntity is TvRectangle then
     WriteRectangle(AStrings, ADoc, APage, TvRectangle(AEntity))
   else
   if AEntity is TvPolygon then
-    WritePolygon(AStrings, ADoc, APage, TvPolygon(AEntity));
+    WritePolygon(AStrings, ADoc, APage, TvPolygon(AEntity))
+  else
+  if AEntity is TvLayer then
+    WriteLayer(AStrings, ADoc, APage, TvLayer(AEntity))
+  else
+  if AEntity is TvParagraph then
+    WriteParagraph(AStrings, ADoc, APage, TvParagraph(AEntity));
 end;
 
 procedure TvSVGVectorialWriter.WriteLayer(AStrings: TStrings;
@@ -356,6 +375,29 @@ begin
     lEntity := ALayer.GetNextEntity;
   end;
   AStrings.Add('  </g>');
+end;
+
+procedure TvSVGVectorialWriter.WriteParagraph(AStrings: TStrings;
+  ADoc: TvVectorialDocument; APage: TvVectorialPage; AParagraph: TvParagraph);
+var
+  lEntity: TvEntity;
+  textEntity: TvText;
+  x, y: Double;
+begin
+  lEntity := AParagraph.GetFirstEntity;
+  while lEntity <> nil do begin
+    if (lEntity is TvText) then begin
+      textEntity := TvText(lEntity);
+      x := textEntity.X;
+      y := textEntity.Y;
+      textEntity.X := AParagraph.X + x;
+      textEntity.Y := AParagraph.Y + y;
+      WriteText(AStrings, ADoc, APage, textEntity);
+      textEntity.X := x;
+      textEntity.Y := y;
+    end;
+    lEntity := AParagraph.GetNextEntity;
+  end;
 end;
 
 {@@
@@ -586,6 +628,7 @@ begin
   AStrings.Add('  xmlns="http://www.w3.org/2000/svg"');
   AStrings.Add('  xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"');
   WriteDocumentSize(AStrings, AData);
+  WriteViewbox(AStrings, AData);
   AStrings.Add('  id="svg2"');
   AStrings.Add('  version="1.1"');
   WriteDocumentName(AStrings, AData);
