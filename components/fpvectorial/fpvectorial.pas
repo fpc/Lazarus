@@ -6324,7 +6324,7 @@ begin
     ALeft := X;
     ATop := Y;
     ARight := X + CX;
-    ABottom := Y - CY;
+    ABottom := IfThen(FPage.FUseTopLeftCoordinates, Y + CY, Y - CY);
   end;
 end;
 

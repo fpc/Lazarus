@@ -104,6 +104,9 @@ type
     FBrushDefs: TFPList; // of TvEntityWithPenAndBrush;
     // debug symbols
     FPathNumber: Integer;
+    // Path support for multiple polygons
+    FPathStart: T2DPoint;
+    FIsFirstPathMove: Boolean;
     // BrushDefs functions
     function FindBrushDef_WithName(AName: string): TvEntityWithPenAndBrush;
     //
@@ -2138,6 +2141,7 @@ begin
   //lDebugStr := FSVGPathTokenizer.DebugOutTokensAsString();
   CurX := 0;
   CurY := 0;
+  FIsFirstPathMove := true;
   lLastCommandToken := sttFloatValue;
 
   i := 0;
@@ -2174,25 +2178,22 @@ var
   lToken5Before, lToken7Before: TSVGTokenType;
   lCorrectPreviousToken: Boolean;
   lPrevRelative, lCurRelative: Boolean;
-  isFirstMove: Boolean;
-  startX, startY: Double;
 begin
-  isFirstMove := true;
   lCurTokenType := ACurTokenType;
   // --------------
   // Moves
   // --------------
   if lCurTokenType in [sttMoveTo, sttRelativeMoveTo] then
   begin
-    // The point at which the polygon starts. Since there may be several
-    // subpolygons we must store it to close the subpolygon correctly later.
-    startX := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-    startY := FSVGPathTokenizer.Tokens.Items[i+2].Value;
-    if isFirstMove then begin
-      X := startX;
-      Y := startY;
-      isFirstMove := false;
-    end;
+    // The point at which the polygon starts.
+    X := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+    Y := FSVGPathTokenizer.Tokens.Items[i+2].Value;
+    (*
+    if FIsFirstPathMove then begin
+      X := FPathStart.X;
+      Y := FPathStart.Y;
+      FIsFirstPathMove := false;
+    end;*)
 
     // take care of relative or absolute
     // Idiotism in SVG: If the path starts with a relative move to,
@@ -2210,6 +2211,13 @@ begin
       CurY := Y;
     end;
     AData.AddMoveToPath(CurX, CurY);
+    // Since there may be several subpolygons we must store the start point
+    // to close the subpolygon correctly later.
+    if FIsFirstPathMove then begin
+      FPathStart.X := CurX;
+      FPathStart.Y := CurY;
+      FIsFirstPathMove := false;
+    end;
 
     Inc(i, 3);
   end
@@ -2219,8 +2227,8 @@ begin
   else if lCurTokenType = sttClosePath then
   begin
     // Repeat the first point of the subpolygon
-    CurX := startX;
-    CurY := startY;
+    CurX := FPathStart.X;
+    CurY := FPathStart.Y;
     AData.AddLineToPath(CurX, CurY);
 
     Inc(i, 1);
@@ -2467,16 +2475,13 @@ begin
 
     // Careful that absolute coordinates require using ConvertSVGCoordinatesToFPVCoordinates
     if lCurTokenType in [sttRelativeEllipticArcTo] then
-      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y)
-    else
-      ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
-
-    if lCurTokenType = sttRelativeEllipticArcTo then
     begin
+      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
       Xnew := CurX + X;
       Ynew := CurY + Y;
     end else
     begin
+      ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
       Xnew := X;
       Ynew := Y;
     end;
@@ -3253,18 +3258,18 @@ begin
 
   if gSVGVecReader_UseTopLeftCoords then
   begin
-    ADestY := - ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
-    if ViewBoxAdjustment and ADoViewBoxAdjust then
-    begin
-      ADestY := - ASrcY * Page_Height / ViewBox_Height;
-    end;
-  end
-  else
-  begin
     ADestY := ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
     if ViewBoxAdjustment and ADoViewBoxAdjust then
     begin
       ADestY := ASrcY * Page_Height / ViewBox_Height;
+    end;
+  end
+  else
+  begin
+    ADestY := -ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;  // fpc y coords grow upward, svg downward
+    if ViewBoxAdjustment and ADoViewBoxAdjust then
+    begin
+      ADestY := -ASrcY * Page_Height / ViewBox_Height;
     end;
   end;
 end;
