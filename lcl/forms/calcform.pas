@@ -567,7 +567,7 @@ end;
 
 function TCalculatorPanel.FindButton(Key: Char): TCustomSpeedButton;
 const
-  ButtonChars = '0123456789_./*-+Q%R='#8'C';
+  ButtonChars = '0123456789_./*-+QS%R='#8'C';
 var
   I: Integer;
   BtnTag: Longint;
