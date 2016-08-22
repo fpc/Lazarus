@@ -2939,7 +2939,7 @@ begin
   E2.X := E2.Y + ADeltaY;
 
   CX := CX + ADeltaX;
-  CX := CY + ADeltaY;
+  CY := CY + ADeltaY;
 end;
 
 
