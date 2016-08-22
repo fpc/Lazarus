@@ -150,6 +150,7 @@ type
     class procedure WSRegisterClass; override;
     procedure OnDialogClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure OnDialogShow(Sender: TObject);
+    procedure OnDialogCloseQuery(Sender : TObject; var CanClose : boolean);
     procedure Change; virtual;
     procedure CalcKey(var Key: char); virtual;
     function DefaultTitle: string; override;
@@ -554,6 +555,13 @@ begin
   DoShow;
 end;
 
+procedure TCalculatorDialog.OnDialogCloseQuery(Sender: TObject;
+  var CanClose: boolean);
+begin
+  UserChoice := DlgForm.ModalResult;
+  DoCanClose(CanClose);
+end;
+
 function TCalculatorDialog.GetDisplay: Double;
 begin
   if Assigned(DlgForm) then
@@ -611,6 +619,7 @@ begin
     (DlgForm as TCalculatorForm).OnDisplayChange:= @Self.DisplayChange;
     (DlgForm as TCalculatorForm).OnShow := @Self.OnDialogShow;
     (DlgForm as TCalculatorForm).OnClose := @Self.OnDialogClose;
+    (DlgForm as TCalculatorForm).OnCloseQuery :=@Self.OnDialogCloseQuery;
 
     if FDialogScale<>100 then
       DlgForm.ScaleBy(FDialogScale,100);
