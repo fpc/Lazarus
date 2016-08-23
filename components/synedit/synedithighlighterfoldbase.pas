@@ -1241,6 +1241,8 @@ begin
     FPreviousMergeLine := -1;
     i := FPreviousCount; // + 1 - 1
     if i > 0 then begin
+      if i >= Length(FPreviousNestInfo) then
+        exit;
       if (i > FPreviousEvaluationIndex) and
          (FPreviousNestInfo[i].LineIdx = FPreviousNestInfo[i-1].LineIdx)
       then
@@ -1252,7 +1254,7 @@ begin
           break;
       FPreviousCount := i + 1;
       if (i >= 0) and (i >= FPreviousEvaluationIndex) then
-          FPreviousMergeLine := FPreviousNestInfo[i].LineIdx;
+        FPreviousMergeLine := FPreviousNestInfo[i].LineIdx;
     end;
   end;
 
