@@ -5652,8 +5652,10 @@ resourcestring
     +'completion box';
   lisAddParameterBrackets = 'Add parameter brackets';
   lisReplaceWholeIdentifier = 'Replace whole identifier';
-  lisEnableReplaceWholeIdentifierDisableReplacePrefix = 'Enable = replace '
-    +'whole identifier, Disable = replace prefix';
+  lisEnableReplaceWholeIdentifierDisableReplacePrefix = 'Enable = pressing'
+    +' Return replaces whole identifier and Shift+Return replaces prefix,'
+    +' Disable = pressing Return replaces prefix and Shift+Return replaces'
+    +' whole identifier';
   lisJumpToError = 'Jump to error';
   lisJumpToErrorAtIdentifierCompletion = 'When an error in the sources is found at identifier completion, jump to it.';
   lisShowHelp = 'Show help';
