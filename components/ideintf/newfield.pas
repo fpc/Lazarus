@@ -483,7 +483,7 @@ end;
 
 function TNewFieldFrm.CreateFieldName(BaseName: String): String ;
 var
-  i, j: integer;
+  i: integer;
   ExistingComponent, OwnerComponent: TComponent;
 begin
   Result:=BaseName;
