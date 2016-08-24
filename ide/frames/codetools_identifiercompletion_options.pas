@@ -74,6 +74,8 @@ begin
   ICOpenDividerBevel.Caption:=lisIdCOpening;
   ICAutoStartAfterPointCheckBox.Caption:=lisAutomaticallyInvokeAfterPoint;
   ICAutoUseSingleIdent.Caption:=lisAutomaticallyUseSinglePossibleIdent;
+  ICAutoUseSingleIdent.Hint:=
+    lisWhenThereIsOnlyOnePossibleCompletionItemUseItImmed;
   ICShowHelpCheckBox.Caption:=lisShowHelp;
   ICShowHelpCheckBox.Hint:=lisBestViewedByInstallingAHTMLControlLikeTurbopowerip;
 

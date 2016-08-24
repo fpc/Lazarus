@@ -5647,6 +5647,9 @@ resourcestring
   lisIdCOpening = 'Opening';
   lisAutomaticallyInvokeAfterPoint = 'Automatically invoke after point';
   lisAutomaticallyUseSinglePossibleIdent = 'Automatically use single possible identifier';
+  lisWhenThereIsOnlyOnePossibleCompletionItemUseItImmed = 'When there is only '
+    +'one possible completion item use it immediately, without showing the '
+    +'completion box';
   lisAddParameterBrackets = 'Add parameter brackets';
   lisReplaceWholeIdentifier = 'Replace whole identifier';
   lisEnableReplaceWholeIdentifierDisableReplacePrefix = 'Enable = replace '

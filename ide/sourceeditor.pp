@@ -2296,6 +2296,8 @@ Begin
       // the completion is already in Value
       begin
         ccSelection := '';
+        if not CodeToolsOpts.IdentComplReplaceIdentifier then
+          SourceEnd:=Editor.LogicalCaretXY;
         if Value<>'' then AWordCompletion.AddWord(Value);
       end;
 
