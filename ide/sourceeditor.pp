@@ -2114,13 +2114,16 @@ Begin
     Prefix := CurrentString;
     case CurrentCompletionType of
      ctIdentCompletion:
-       if not InitIdentCompletionValues(S) then begin
+       if InitIdentCompletionValues(S) then begin
+         ToggleReplaceWhole:=not CodeToolsOpts.IdentComplReplaceIdentifier;
+       end else begin
          ItemList.Clear;
          exit;
        end;
 
      ctWordCompletion:
        begin
+         ToggleReplaceWhole:=not CodeToolsOpts.IdentComplReplaceIdentifier;
          ccSelection := '';
        end;
 
@@ -2240,8 +2243,6 @@ Begin
 
     ctIdentCompletion:
       begin
-        if not CodeToolsOpts.IdentComplReplaceIdentifier then
-          SourceEnd:=Editor.LogicalCaretXY;
         if Manager.ActiveCompletionPlugin<>nil then
         begin
           Manager.ActiveCompletionPlugin.Complete(Value,SourceValue,
@@ -2296,8 +2297,6 @@ Begin
       // the completion is already in Value
       begin
         ccSelection := '';
-        if not CodeToolsOpts.IdentComplReplaceIdentifier then
-          SourceEnd:=Editor.LogicalCaretXY;
         if Value<>'' then AWordCompletion.AddWord(Value);
       end;
 

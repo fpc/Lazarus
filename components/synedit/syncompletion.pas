@@ -368,6 +368,7 @@ type
     FExecCommandID: TSynEditorCommand;
     FEndOfTokenChr: string;
     FOnCodeCompletion: TCodeCompletionEvent;
+    FToggleReplacesWhole: boolean;
     procedure Cancel(Sender: TObject);
     procedure Validate(Sender: TObject; KeyChar: TUTF8Char; Shift: TShiftState);
     function GetPreviousToken(FEditor: TCustomSynEdit): string;
@@ -397,6 +398,7 @@ type
       read FOnCodeCompletion write FOnCodeCompletion;
     property ExecCommandID: TSynEditorCommand read FExecCommandID write FExecCommandID;
     property Editor;
+    property ToggleReplaceWhole: boolean read FToggleReplacesWhole write FToggleReplacesWhole;// false=shift replaces left side, true=shift replaces whole word
   end;
 
   { TSynAutoComplete }
@@ -1761,10 +1763,7 @@ begin
         do
           dec(NewBlockBegin.X);
         //BlockBegin:=NewBlockBegin;
-        if ssShift in Shift then begin
-          // replace only prefix
-          NewBlockEnd := LogCaret;
-        end else begin
+        if (ssShift in Shift)=ToggleReplaceWhole then begin
           // replace the whole word
           NewBlockEnd := LogCaret;
           CurLine:=Lines[NewBlockEnd.Y - 1];
@@ -1773,6 +1772,9 @@ begin
                or (CurLine[NewBlockEnd.X] in HighlighterIdentChars))
           do
             inc(NewBlockEnd.X);
+        end else begin
+          // replace only prefix
+          NewBlockEnd := LogCaret;
         end;
         //debugln('TSynCompletion.Validate B Position=',dbgs(Position));
         if Position>=0 then begin
