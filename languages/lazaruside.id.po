@@ -4248,12 +4248,6 @@ msgstr ""
 msgid "The package already has a dependency on the package \"%s\"."
 msgstr "Paket sudah mempunyai dependensi untuk paket %s%s%s."
 
-#: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
-#, fuzzy,badformat
-#| msgid "The package name %s%s%s is invalid.%sPlease choose an existing package."
-msgid "The package name \"%s\" is invalid.%sPlease choose an existing package."
-msgstr "Nama paket  %s%s%s tidak benar.%sSilahkan pilih paket yang sudah ada."
-
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
 #, fuzzy,badformat
 #| msgid "The page name %s%s%s is too long (max 100 chars)."
@@ -8932,7 +8926,7 @@ msgid "Enable Macros"
 msgstr "Hidupkan makro"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
-msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
 msgstr ""
 
 #: lazarusidestrconsts.lisenclose
@@ -16143,10 +16137,6 @@ msgstr "Tambah file editor"
 msgid "Invalid Min-Max version"
 msgstr "Versi Min-Max tidak benar"
 
-#: lazarusidestrconsts.lisprojaddinvalidpackagename
-msgid "Invalid packagename"
-msgstr "Namapaket tidak benar"
-
 #: lazarusidestrconsts.lisprojaddinvalidpascalunitname
 #, fuzzy
 #| msgid "Invalid pascal unit name"
@@ -16201,12 +16191,6 @@ msgstr "Versi Maksimum lebih rendah daripada Versi Minimum."
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Versi Minimum %s%s%s tidak benar.%sSilahkan gunakan format mayor mayor.minor.rilis.buatan%sSebagai contoh: 1.0.20.10"
-
-#: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
-#, fuzzy,badformat
-#| msgid "The package name %s%s%s is invalid.%sPlase choose an existing package."
-msgid "The package name \"%s\" is invalid.%sPlase choose an existing package."
-msgstr "Nama paket %s%s%s tidak benar.%sSilahkan pilih paket yang ada."
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
 #, fuzzy,badformat
@@ -19591,6 +19575,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
+msgstr ""
+
+#: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
+msgid "When there is only one possible completion item use it immediately, without showing the completion box"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein

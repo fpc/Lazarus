@@ -4068,10 +4068,6 @@ msgstr "A(z) \"%s\" legkisebb változatszám érvénytelen.%sHasználja a fő.al
 msgid "The package already has a dependency on the package \"%s\"."
 msgstr "A csomaghoz már be van állítva függőségként a(z) \"%s\" csomag."
 
-#: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
-msgid "The package name \"%s\" is invalid.%sPlease choose an existing package."
-msgstr "A(z) \"%s\" csomagnév érvénytelen.%sVálasszon egy létező csomagot!"
-
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
 msgid "The page name \"%s\" is too long (max 100 chars)."
 msgstr "A(z) \"%s\" lapnév túl hosszú (legfeljebb 100 karakter lehet)."
@@ -8619,7 +8615,9 @@ msgid "Enable Macros"
 msgstr "Makrók engedélyezése"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
-msgid "Enable = replace whole identifier, Disable = replace prefix"
+#, fuzzy
+#| msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
 msgstr "Engedélyezve = teljes azonosító cseréje, Tiltva = előtag cseréje"
 
 #: lazarusidestrconsts.lisenclose
@@ -15407,10 +15405,6 @@ msgstr "Megnyitott fájl hozzáadása"
 msgid "Invalid Min-Max version"
 msgstr "Érvénytelen legkisebb-legnagyobb változat"
 
-#: lazarusidestrconsts.lisprojaddinvalidpackagename
-msgid "Invalid packagename"
-msgstr "Érvénytelen csomagnév"
-
 #: lazarusidestrconsts.lisprojaddinvalidpascalunitname
 msgid "Invalid Pascal unit name"
 msgstr "Érvénytelen pascal unit-név"
@@ -15457,10 +15451,6 @@ msgstr "A legnagyobb változatszám kisebb, mint a legkisebb változatszám."
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "A(z) \"%s\" legkisebb változatszám érvénytelen.%sHasználja a fő.al.kiadás.építés formátumot!%sPéldául: 1.0.20.10"
-
-#: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
-msgid "The package name \"%s\" is invalid.%sPlase choose an existing package."
-msgstr "A(z) \"%s\" csomagnév nem érvényes.%sVálasszon egy létező csomagot!"
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
 msgid "The project has already a dependency for the package \"%s\"."
@@ -18682,6 +18672,10 @@ msgstr "Amikor egy unit átnevezésre kerül frissítse a hivatkozásokat"
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
 msgstr "Amikor engedélyezve van az aktuális beállítások a sablonba lesznek mentve, amely új projektek létrehozásakor használatos"
+
+#: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
+msgid "When there is only one possible completion item use it immediately, without showing the completion box"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"

@@ -4301,12 +4301,6 @@ msgstr ""
 msgid "The package already has a dependency on the package \"%s\"."
 msgstr "包已经对于包 %s%s%s 有依赖关系."
 
-#: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
-#, fuzzy,badformat
-#| msgid "The package name %s%s%s is invalid.%sPlease choose an existing package."
-msgid "The package name \"%s\" is invalid.%sPlease choose an existing package."
-msgstr "包名 %s%s%s 无效%s请选择一个已经存在的包."
-
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
 #, fuzzy,badformat
 #| msgid "The page name %s%s%s is too long (max 100 chars)."
@@ -9019,7 +9013,7 @@ msgid "Enable Macros"
 msgstr "允许宏"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
-msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
 msgstr ""
 
 #: lazarusidestrconsts.lisenclose
@@ -16287,10 +16281,6 @@ msgstr "添加代码编辑器文件"
 msgid "Invalid Min-Max version"
 msgstr "无效版本范围(最小 - 最大)"
 
-#: lazarusidestrconsts.lisprojaddinvalidpackagename
-msgid "Invalid packagename"
-msgstr "无效包名"
-
 #: lazarusidestrconsts.lisprojaddinvalidpascalunitname
 #, fuzzy
 #| msgid "Invalid pascal unit name"
@@ -16345,12 +16335,6 @@ msgstr "最大版本小于最小版本."
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "最小版本 %s%s%s 无效.%s请使用如下格式 主要版本.次要版本.发布版本.构建版本%s例如: 1.0.20.10"
-
-#: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
-#, fuzzy,badformat
-#| msgid "The package name %s%s%s is invalid.%sPlase choose an existing package."
-msgid "The package name \"%s\" is invalid.%sPlase choose an existing package."
-msgstr "包名 %s%s%s 无效%s请选择一个一见那个存在的包."
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
 #, fuzzy,badformat
@@ -19778,6 +19762,10 @@ msgstr "当单元被重命名, 更新引用..."
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
+msgstr ""
+
+#: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
+msgid "When there is only one possible completion item use it immediately, without showing the completion box"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein

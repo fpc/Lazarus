@@ -4306,12 +4306,6 @@ msgstr ""
 msgid "The package already has a dependency on the package \"%s\"."
 msgstr "Pakiet ma już zależność od pakietu %s%s%s."
 
-#: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
-#, fuzzy,badformat
-#| msgid "The package name %s%s%s is invalid.%sPlease choose an existing package."
-msgid "The package name \"%s\" is invalid.%sPlease choose an existing package."
-msgstr "Nazwa pakietu %s%s%s jest nieprawidłowa.%sProszę wybrać istniejący pakiet."
-
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
 #, fuzzy,badformat
 #| msgid "The page name %s%s%s is too long (max 100 chars)."
@@ -8962,7 +8956,7 @@ msgid "Enable Macros"
 msgstr "Włącz makra"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
-msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
 msgstr ""
 
 #: lazarusidestrconsts.lisenclose
@@ -16120,10 +16114,6 @@ msgstr ""
 msgid "Invalid Min-Max version"
 msgstr "Błędna wersja Min-Max"
 
-#: lazarusidestrconsts.lisprojaddinvalidpackagename
-msgid "Invalid packagename"
-msgstr "Błędna nazwa pakietu"
-
 #: lazarusidestrconsts.lisprojaddinvalidpascalunitname
 #, fuzzy
 #| msgid "Invalid pascal unit name"
@@ -16178,12 +16168,6 @@ msgstr "Maksymalny numer wersji jest mniejszy niż minimalny."
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Minimalny numer wersji %s%s%s jest nieprawidłowy.%sUżyj formatu: major.minor.release.build%sNp.: 1.0.20.10"
-
-#: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
-#, fuzzy,badformat
-#| msgid "The package name %s%s%s is invalid.%sPlase choose an existing package."
-msgid "The package name \"%s\" is invalid.%sPlase choose an existing package."
-msgstr "Pakiet %s%s%s jest nieprawidłowy.%sWybierz istniejący pakiet."
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
 #, fuzzy,badformat
@@ -19530,6 +19514,10 @@ msgstr "Gdy zmieniana jest nazwa modułu, zmieniaj odnośniki"
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
+msgstr ""
+
+#: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
+msgid "When there is only one possible completion item use it immediately, without showing the completion box"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein

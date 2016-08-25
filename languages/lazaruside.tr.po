@@ -4093,10 +4093,6 @@ msgstr ""
 msgid "The package already has a dependency on the package \"%s\"."
 msgstr ""
 
-#: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
-msgid "The package name \"%s\" is invalid.%sPlease choose an existing package."
-msgstr ""
-
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
 msgid "The page name \"%s\" is too long (max 100 chars)."
 msgstr ""
@@ -8705,7 +8701,7 @@ msgid "Enable Macros"
 msgstr ""
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
-msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
 msgstr ""
 
 #: lazarusidestrconsts.lisenclose
@@ -15705,10 +15701,6 @@ msgstr "Düzenleyici dosyaları ekle"
 msgid "Invalid Min-Max version"
 msgstr ""
 
-#: lazarusidestrconsts.lisprojaddinvalidpackagename
-msgid "Invalid packagename"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojaddinvalidpascalunitname
 msgid "Invalid Pascal unit name"
 msgstr ""
@@ -15754,10 +15746,6 @@ msgstr ""
 #: lazarusidestrconsts.lisprojaddtheminimumversionisinvalid
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
-msgid "The package name \"%s\" is invalid.%sPlase choose an existing package."
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
@@ -19083,6 +19071,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
+msgstr ""
+
+#: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
+msgid "When there is only one possible completion item use it immediately, without showing the completion box"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein

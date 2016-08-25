@@ -4074,10 +4074,6 @@ msgstr "Nejnižší verze %s je neplatná.%sProsím použijte formát hlavní.ve
 msgid "The package already has a dependency on the package \"%s\"."
 msgstr "Balíček již má závislost na balíčku \"%s\"."
 
-#: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
-msgid "The package name \"%s\" is invalid.%sPlease choose an existing package."
-msgstr "Jméno balíčku \"%s\" není platné.%sProsím vyberte existující balíček."
-
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
 msgid "The page name \"%s\" is too long (max 100 chars)."
 msgstr "Jméno stránky \"%s\" je příliš dlouhé (max. 100 znaků)."
@@ -8626,7 +8622,9 @@ msgid "Enable Macros"
 msgstr "Povolit makra"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
-msgid "Enable = replace whole identifier, Disable = replace prefix"
+#, fuzzy
+#| msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
 msgstr "Povolit = nahrazení celého identifikátoru, Zakázat = nahrazení prefixu"
 
 #: lazarusidestrconsts.lisenclose
@@ -15464,10 +15462,6 @@ msgstr "Přidat editované soubory"
 msgid "Invalid Min-Max version"
 msgstr "Neplatná verze Min-Max"
 
-#: lazarusidestrconsts.lisprojaddinvalidpackagename
-msgid "Invalid packagename"
-msgstr "Neplatné jméno balíčku"
-
 #: lazarusidestrconsts.lisprojaddinvalidpascalunitname
 msgid "Invalid Pascal unit name"
 msgstr "Neplatné jméno pascalovské jednotky"
@@ -15514,10 +15508,6 @@ msgstr "Maximální verze je menší než Minimální verze."
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Nejmenší verze \"%s\" je neplatná.%sProsím použijte formát hlavní.vedlejší.vydání.sestavení%sNapříklad: 1.0.20.10"
-
-#: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
-msgid "The package name \"%s\" is invalid.%sPlase choose an existing package."
-msgstr "Jméno balíčku \"%s\" není platné.%sProsím použijte existující balíček."
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
 msgid "The project has already a dependency for the package \"%s\"."
@@ -18742,6 +18732,10 @@ msgstr "Aktualizuj odkazy, pokud je jednotka přejmenována"
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
 msgstr "pokud je povoleno, aktuální nastavení jsou uloženy do šablony, která je použita při vytváření projektů"
+
+#: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
+msgid "When there is only one possible completion item use it immediately, without showing the completion box"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"

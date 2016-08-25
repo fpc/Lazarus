@@ -4035,10 +4035,6 @@ msgstr "Minimiversio \"%s\" on kelvoton.%sKäytä muotoa iso.pieni.julkaisu.kä�
 msgid "The package already has a dependency on the package \"%s\"."
 msgstr "Paketilla on jo riippuvuus pakettiin \"%s\"."
 
-#: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
-msgid "The package name \"%s\" is invalid.%sPlease choose an existing package."
-msgstr "Paketin nimi \"%s\" on kelvoton.%sValitse olemassa oleva paketti."
-
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
 msgid "The page name \"%s\" is too long (max 100 chars)."
 msgstr "Sivun nimi \"%s\" on liian pitkä (max 100 merkkiä)."
@@ -8561,7 +8557,9 @@ msgid "Enable Macros"
 msgstr "Salli makrot"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
-msgid "Enable = replace whole identifier, Disable = replace prefix"
+#, fuzzy
+#| msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
 msgstr "Salli = korvaa koko tunniste, Estä = korvaa alkuosa"
 
 #: lazarusidestrconsts.lisenclose
@@ -15347,10 +15345,6 @@ msgstr "Lisää editorissa avoinna olevia tiedostoja"
 msgid "Invalid Min-Max version"
 msgstr "Kelvoton Min-Max versio"
 
-#: lazarusidestrconsts.lisprojaddinvalidpackagename
-msgid "Invalid packagename"
-msgstr "Kelvoton paketin nimi"
-
 #: lazarusidestrconsts.lisprojaddinvalidpascalunitname
 msgid "Invalid Pascal unit name"
 msgstr "Kelvoton Pascal -käännösyksikön nimi"
@@ -15397,10 +15391,6 @@ msgstr "Maximiversio on pienempi kuin Minimiversio."
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Minimiversio \"%s\" on kelvoton.%sKäytä muotoa iso.pieni.julkaisu.käännös%sEsim.: 1.0.20.10"
-
-#: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
-msgid "The package name \"%s\" is invalid.%sPlase choose an existing package."
-msgstr "Paketin nimi \"%s\" on kelvoton.%sValitse olemassa oleva paketti."
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
 msgid "The project has already a dependency for the package \"%s\"."
@@ -18611,6 +18601,10 @@ msgstr "Käännösyksikön nimeä muutettaessa päivitetään viittaukset"
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
 msgstr "Nykyiset asetukset talletetaan malliksi, mitä käytetään luotaessa uusia projekteja"
+
+#: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
+msgid "When there is only one possible completion item use it immediately, without showing the completion box"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"

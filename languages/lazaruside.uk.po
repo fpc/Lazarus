@@ -4070,10 +4070,6 @@ msgstr "Мінімальна версія \"%s\" некоректна.%sВико
 msgid "The package already has a dependency on the package \"%s\"."
 msgstr "Пакунок вже має залежність від пакунка \"%s\""
 
-#: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
-msgid "The package name \"%s\" is invalid.%sPlease choose an existing package."
-msgstr "Назва пакунка \"%s\" є некоректною.%sВиберіть наявний пакунок."
-
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
 msgid "The page name \"%s\" is too long (max 100 chars)."
 msgstr "Назва пакунка \"%s\" занадто довга (до 100 симв.)."
@@ -8623,7 +8619,9 @@ msgid "Enable Macros"
 msgstr "Макрос доступний"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
-msgid "Enable = replace whole identifier, Disable = replace prefix"
+#, fuzzy
+#| msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
 msgstr "Ввімк = замінити цілий ідентифікатор, Вимк = замінити префікс"
 
 #: lazarusidestrconsts.lisenclose
@@ -15466,10 +15464,6 @@ msgstr "Додати файли редактора"
 msgid "Invalid Min-Max version"
 msgstr "Неправильна версія (Min-Max)"
 
-#: lazarusidestrconsts.lisprojaddinvalidpackagename
-msgid "Invalid packagename"
-msgstr "Неправильна назва пакунка"
-
 #: lazarusidestrconsts.lisprojaddinvalidpascalunitname
 msgid "Invalid Pascal unit name"
 msgstr "Неправильна назва модуля Pascal"
@@ -15516,10 +15510,6 @@ msgstr "Максимальна версія менше за мінімальну
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Мінімальна версія \"%s\" є некоректною.%sВикористовуйте формат головний.вторинний.реліз.збірка%sНаприклад: 1.0.20.10"
-
-#: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
-msgid "The package name \"%s\" is invalid.%sPlase choose an existing package."
-msgstr "Назва пакунка \"%s\" є некоректною.%sВиберіть наявний пакунок."
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
 msgid "The project has already a dependency for the package \"%s\"."
@@ -18755,6 +18745,10 @@ msgstr "Коли модуль перейменований оновити зал
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
 msgstr "Якщо ввімкнено поточні налаштування зберігаються в шаблон, який використовується при створенні нових проектів"
+
+#: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
+msgid "When there is only one possible completion item use it immediately, without showing the completion box"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"

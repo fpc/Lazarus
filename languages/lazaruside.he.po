@@ -4322,12 +4322,6 @@ msgstr "הגרסה המינימלית s%s%s% שגויה. השתמש בצורה b
 msgid "The package already has a dependency on the package \"%s\"."
 msgstr "לחבילה יש כבר תלות בחבילה s%s%s%."
 
-#: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
-#, fuzzy
-#| msgid "The package name %s%s%s is invalid.%sPlease choose an existing package."
-msgid "The package name \"%s\" is invalid.%sPlease choose an existing package."
-msgstr "שם החבילה s%s%s% שגוי. בחר חבילה קיימת."
-
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
 #, fuzzy,badformat
 #| msgid "The page name %s%s%s is too long (max 100 chars)."
@@ -9132,7 +9126,7 @@ msgid "Enable Macros"
 msgstr "אפשר מאקרו"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
-msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
 msgstr ""
 
 #: lazarusidestrconsts.lisenclose
@@ -16511,10 +16505,6 @@ msgstr "הוסף קבצי עורך"
 msgid "Invalid Min-Max version"
 msgstr "גירסה מינימלית-מקסימלית לא חוקית"
 
-#: lazarusidestrconsts.lisprojaddinvalidpackagename
-msgid "Invalid packagename"
-msgstr "שם חבילה לא חוקי"
-
 #: lazarusidestrconsts.lisprojaddinvalidpascalunitname
 #, fuzzy
 #| msgid "Invalid pascal unit name"
@@ -16569,12 +16559,6 @@ msgstr "הגרסה המקסימאלית נמוכה מהגרסה המינימאל
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "הגרסה המינימלית s%s%s% שגויה. השתמש בצורה build.major.release לדוגמה: 1.0.20.10"
-
-#: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
-#, fuzzy,badformat
-#| msgid "The package name %s%s%s is invalid.%sPlase choose an existing package."
-msgid "The package name \"%s\" is invalid.%sPlase choose an existing package."
-msgstr "שם החבילה %s%s%s לא חוקי. בחר חבילה קיימת."
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
 #, fuzzy,badformat
@@ -20097,6 +20081,10 @@ msgstr "כששם היחידה משתנה, עדכן את המקורות"
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
 msgstr "כאשר מופעל - האפשרויות הנוכחיות נשמרות בתבנית, אשר משתמשים בה ביצירת פרוייקט חדש"
+
+#: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
+msgid "When there is only one possible completion item use it immediately, without showing the completion box"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"

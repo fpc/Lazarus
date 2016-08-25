@@ -4133,12 +4133,6 @@ msgstr "その最低バージョン %s%s%sは無効です。%sメジャー.マ�
 msgid "The package already has a dependency on the package \"%s\"."
 msgstr "そのパッケージは既にパッケージ %s%s%s に依存しています。"
 
-#: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
-#, fuzzy,badformat
-#| msgid "The package name %s%s%s is invalid.%sPlease choose an existing package."
-msgid "The package name \"%s\" is invalid.%sPlease choose an existing package."
-msgstr "パッケージ名 %s%s%sは無効です。%s存在するパッケージを選んでください。"
-
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
 #, fuzzy,badformat
 #| msgid "The page name %s%s%s is too long (max 100 chars)."
@@ -8785,7 +8779,9 @@ msgid "Enable Macros"
 msgstr "マクロを有効にする"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
-msgid "Enable = replace whole identifier, Disable = replace prefix"
+#, fuzzy
+#| msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
 msgstr "有効 = 識別子全体を置換、無効 = 接頭語を置換"
 
 #: lazarusidestrconsts.lisenclose
@@ -15761,10 +15757,6 @@ msgstr "編集ファイルを追加"
 msgid "Invalid Min-Max version"
 msgstr "無効なMin-Maxバージョン"
 
-#: lazarusidestrconsts.lisprojaddinvalidpackagename
-msgid "Invalid packagename"
-msgstr "無効なパッケージ名"
-
 #: lazarusidestrconsts.lisprojaddinvalidpascalunitname
 msgid "Invalid Pascal unit name"
 msgstr "無効な Pascal ユニット名"
@@ -15817,12 +15809,6 @@ msgstr "バージョンの上限値が下限値より小さくなっています
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "バージョンの下限値%s%s%sが無効です。%sメジャー.マイナー.リリース.ビルドの書式を用いてください。%s例： 1.0.20.10"
-
-#: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
-#, fuzzy,badformat
-#| msgid "The package name %s%s%s is invalid.%sPlase choose an existing package."
-msgid "The package name \"%s\" is invalid.%sPlase choose an existing package."
-msgstr "パッケージ名 %s%s%sは無効です。%s存在するパッケージを選んでください。"
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
 #, fuzzy,badformat
@@ -19231,6 +19217,10 @@ msgstr "ユニットが名称変更されたとき、参照を更新"
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
 msgstr "許可されるとき、現在のオプションはテンプレートに保存されます。そして、新しいプロジェクトをつくるとき、それが使われます"
+
+#: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
+msgid "When there is only one possible completion item use it immediately, without showing the completion box"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"

@@ -4070,10 +4070,6 @@ msgstr "La version minimale \"%s\" n'est pas correcte.%sVeuillez utiliser le for
 msgid "The package already has a dependency on the package \"%s\"."
 msgstr "Le paquet a déjà une dépendance au paquet \"%s\"."
 
-#: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
-msgid "The package name \"%s\" is invalid.%sPlease choose an existing package."
-msgstr "Le nom de paquet \"%s\" est incorrect.%sVeuillez choisir un paquet existant."
-
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
 msgid "The page name \"%s\" is too long (max 100 chars)."
 msgstr "Le nom de page \"%s\" est trop long (maximum 100 caractères)."
@@ -8621,7 +8617,9 @@ msgid "Enable Macros"
 msgstr "Activer les macros"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
-msgid "Enable = replace whole identifier, Disable = replace prefix"
+#, fuzzy
+#| msgid "Enable = replace whole identifier, Disable = replace prefix"
+msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
 msgstr "Actif = remplacer tout l'identifiant ; Inactif = remplacer le préfixe"
 
 #: lazarusidestrconsts.lisenclose
@@ -15416,10 +15414,6 @@ msgstr "Ajouter les fichiers de l'éditeur"
 msgid "Invalid Min-Max version"
 msgstr "Version Min-Max incorrecte"
 
-#: lazarusidestrconsts.lisprojaddinvalidpackagename
-msgid "Invalid packagename"
-msgstr "Nom de paquet incorrect"
-
 #: lazarusidestrconsts.lisprojaddinvalidpascalunitname
 msgid "Invalid Pascal unit name"
 msgstr "Nom d'unité Pascal incorrecte"
@@ -15466,10 +15460,6 @@ msgstr "La version maximale est inférieure à la version minimale."
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "La version minimale \"%s\" est incorrecte.%sVeuillez utiliser le format majeure.mineure.sous-version.construction%sPar exemple : 1.0.20.10"
-
-#: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
-msgid "The package name \"%s\" is invalid.%sPlase choose an existing package."
-msgstr "Le nom de paquet \"%s\" est incorrect.%sVeuillez choisir un paquet existant."
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
 msgid "The project has already a dependency for the package \"%s\"."
@@ -18691,6 +18681,10 @@ msgstr "Si une unité est renommée, mettre à jour les références"
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
 msgstr "Lorsqu'elles sont activées, les options en cours sont enregistrées dans le modèle qui sera utilisé pour créer de nouveaux projets"
+
+#: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
+msgid "When there is only one possible completion item use it immediately, without showing the completion box"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
