@@ -255,6 +255,7 @@ object PackageEditorForm: TPackageEditorForm
       MaxLength = 0
       ParentFont = False
       TabOrder = 0
+      OnKeyDown = FilterEditKeyDown
       FilteredTreeview = ItemsTreeView
     end
     object OpenButton: TSpeedButton
