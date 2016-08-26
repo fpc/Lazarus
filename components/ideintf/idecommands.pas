@@ -636,6 +636,8 @@ type
     function FindCommandByName(const CommandName: string): TIDECommand; virtual; abstract;
     function FindCommandsByShortCut(const ShortCutMask: TIDEShortCut;
             IDEWindowClass: TCustomFormClass = nil): TFPList; virtual; abstract; // list of TIDECommand
+    function RemoveShortCut(ShortCutMask: TIDEShortCut;
+            IDEWindowClass: TCustomFormClass = nil): Integer; virtual; abstract;
     function CategoryCount: integer; virtual; abstract;
   public
     procedure StartUpdateEvents;

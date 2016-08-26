@@ -182,6 +182,8 @@ type
     function FindCommandByName(const CommandName: string): TIDECommand; override;
     function FindCommandsByShortCut(const ShortCutMask: TIDEShortCut;
       IDEWindowClass: TCustomFormClass = nil): TFPList; override;
+    function RemoveShortCut(ShortCutMask: TIDEShortCut;
+      IDEWindowClass: TCustomFormClass = nil): Integer; override;
     function TranslateKey(Key: word; Shift: TShiftState;
       IDEWindowClass: TCustomFormClass; UseLastKey: boolean = true): word;
     function IndexOf(ARelation: TKeyCommandRelation): integer;
@@ -3934,6 +3936,42 @@ begin
       if KeyFits(ShortcutA) or KeyFits(ShortcutB) then
         Result.Add(Relations[i]);
     end;
+end;
+
+function TKeyCommandRelationList.RemoveShortCut(ShortCutMask: TIDEShortCut;
+  IDEWindowClass: TCustomFormClass): Integer;
+// Removes the given shortcut from every command. Returns the number deleted.
+// An IDE extension package may want to use a reserved shortcut and remove it.
+
+  procedure CheckAndRemove(pShortCut: PIDEShortCut);
+  begin
+    if ((pShortCut^.Key1=ShortCutMask.Key1) and (pShortCut^.Shift1=ShortCutMask.Shift1))
+      and ((pShortCut^.Key2=VK_UNKNOWN)
+        or (ShortCutMask.Key2=VK_UNKNOWN)
+        or ((pShortCut^.Key2=ShortCutMask.Key2) and (pShortCut^.Shift2=ShortCutMask.Shift2))) then
+    begin
+      pShortCut^.Key1:=VK_UNKNOWN;
+      pShortCut^.Shift1:=[];
+      pShortCut^.Key2:=VK_UNKNOWN;
+      pShortCut^.Shift2:=[];
+      Inc(Result);
+    end;
+  end;
+
+var
+  i: Integer;
+begin
+  Result:=0;
+  if ShortCutMask.Key1=VK_UNKNOWN then
+    Exit;
+  for i:=0 to FRelations.Count-1 do
+    with Relations[i] do
+      if (IDEWindowClass=nil) or (Category.Scope=nil)
+      or Category.Scope.HasIDEWindowClass(IDEWindowClass) then
+      begin
+        CheckAndRemove(@ShortcutA);
+        CheckAndRemove(@ShortcutB);
+      end;
 end;
 
 function TKeyCommandRelationList.TranslateKey(Key: word; Shift: TShiftState;
