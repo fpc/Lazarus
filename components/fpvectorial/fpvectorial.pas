@@ -1525,6 +1525,7 @@ type
     procedure GetNaturalRenderPos(var APageHeight: Integer; out AMulY: Double); virtual; abstract;
     procedure SetNaturalRenderPos(AUseTopLeftCoords: Boolean); virtual;
     function HasNaturalRenderPos: Boolean;
+    function GetTopLeftCoords_Adjustment(): Double;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); virtual; abstract;
 
@@ -5733,7 +5734,7 @@ var
   lLongestLine, lLineWidth, lFontSizePx, lFontDescenderPx: Integer;
   lText: string;
   lDescender: Integer;
-  phi: Double;
+  phi, lYAdj: Double;
   {$ifdef USE_LCL_CANVAS}
   ACanvas: TCanvas absolute ADest;
   lTextSize: TSize;
@@ -5793,9 +5794,10 @@ begin
   // ...
   // We need to keep the order of lines drawing correct regardless of
   // the drawing direction
+  //lYAdj := FPage.GetTopLeftCoords_Adjustment();
   lowerDimY := refPt.Y - (lTextSize.CY - lDescender); // lowerDim.Y := refPt.Y + lFontSizePx * (1 + LINE_SPACING) * Value.Count * AMulY
   upperDimY := refPt.Y;
-  curDimY := IfThen(AMulY < 0, lowerDimY, upperDimY);
+  curDimY := lowerDimY;
 
   // TvText supports multiple lines
   for i := 0 to Value.Count - 1 do
@@ -6348,10 +6350,7 @@ var
   j: Integer;
   phi, lYAdj: Double;
 begin
-  if FPage.UseTopLeftCoordinates then
-    lYAdj := 1
-  else
-    lYAdj := -1;
+  lYAdj := FPage.GetTopLeftCoords_Adjustment();
 
   if (RX > 0) and (RY > 0) then
   begin
@@ -8431,9 +8430,9 @@ begin
       OldTextX := lText.X;
       OldTextY := lText.Y;
       CurX := CoordToCanvasX(lText.X + X + lCurWidth, ADestX, AMulX);
+      CurY := CoordToCanvasY(lText.Y + Y, ADestY, AMulY);
       lText.X := 0;
       lText.Y := 0;
-      CurY := CoordToCanvasY(lText.Y + Y, ADestY, AMulY);
       if AMulY < 0 then CurY += lHeight_px; // to keep the position in case of inversed drawing
       lText.Render_Use_NextText_X := not lFirstText;
       if lText.Render_Use_NextText_X then
@@ -8964,6 +8963,14 @@ end;
 function TvPage.HasNaturalRenderPos: Boolean;
 begin
   Result := FUseTopLeftCoordinates;
+end;
+
+function TvPage.GetTopLeftCoords_Adjustment: Double;
+begin
+  if UseTopLeftCoordinates then
+    Result := 1
+  else
+    Result := -1;
 end;
 
 
