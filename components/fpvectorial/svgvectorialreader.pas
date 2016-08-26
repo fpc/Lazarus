@@ -106,7 +106,6 @@ type
     FPathNumber: Integer;
     // Path support for multiple polygons
     FPathStart: T2DPoint;
-    FIsFirstPathMove: Boolean;
     // BrushDefs functions
     function FindBrushDef_WithName(AName: string): TvEntityWithPenAndBrush;
     //
@@ -140,7 +139,7 @@ type
     function ReadLineFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadPathFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     procedure ReadPathFromString(AStr: string; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    procedure ReadNextPathCommand(ACurTokenType: TSVGTokenType; var i: Integer; var CurX, CurY: Double; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadNextPathCommand(ACurTokenType: TSVGTokenType; var i: Integer; var AIsFirstPathMove: Boolean; var CurX, CurY: Double; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadPointsFromString(AStr: string; AData: TvVectorialPage; ADoc: TvVectorialDocument; AClosePath: Boolean);
     function ReadPolyFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadRectFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
@@ -2135,13 +2134,14 @@ var
   lCurTokenType, lLastCommandToken: TSVGTokenType;
   lDebugStr: String;
   lTmpTokenType: TSVGTokenType;
+  lIsFirstPathMove: Boolean;
 begin
   FSVGPathTokenizer.ClearTokens;
   FSVGPathTokenizer.TokenizePathString(AStr);
   //lDebugStr := FSVGPathTokenizer.DebugOutTokensAsString();
   CurX := 0;
   CurY := 0;
-  FIsFirstPathMove := true;
+  lIsFirstPathMove := true;
   lLastCommandToken := sttFloatValue;
 
   i := 0;
@@ -2151,7 +2151,7 @@ begin
     if not (lCurTokenType = sttFloatValue) then
     begin
       lLastCommandToken := lCurTokenType;
-      ReadNextPathCommand(lCurTokenType, i, CurX, CurY, AData, ADoc);
+      ReadNextPathCommand(lCurTokenType, i, lIsFirstPathMove, CurX, CurY, AData, ADoc);
     end
     // In this case we are getting a command without a starting letter
     // It is a copy of the last one, or something related to it
@@ -2162,13 +2162,13 @@ begin
       if lLastCommandToken = sttRelativeMoveTo then lTmpTokenType := sttRelativeLineTo;
       // For bezier I checked that a sttBezierTo upon repetition expects a sttBezierTo
       Dec(i);// because there is no command token in this command
-      ReadNextPathCommand(lTmpTokenType, i, CurX, CurY, AData, ADoc);
+      ReadNextPathCommand(lTmpTokenType, i, lIsFirstPathMove, CurX, CurY, AData, ADoc);
     end;
   end;
 end;
 
 procedure TvSVGVectorialReader.ReadNextPathCommand(ACurTokenType: TSVGTokenType;
-  var i: Integer; var CurX, CurY: Double; AData: TvVectorialPage;
+  var i: Integer; var AIsFirstPathMove: Boolean; var CurX, CurY: Double; AData: TvVectorialPage;
   ADoc: TvVectorialDocument);
 var
   X, Y, X2, Y2, X3, Y3, XQ, YQ, Xnew, Ynew, cx, cy, phi, tmp: Double;
@@ -2188,12 +2188,6 @@ begin
     // The point at which the polygon starts.
     X := FSVGPathTokenizer.Tokens.Items[i+1].Value;
     Y := FSVGPathTokenizer.Tokens.Items[i+2].Value;
-    (*
-    if FIsFirstPathMove then begin
-      X := FPathStart.X;
-      Y := FPathStart.Y;
-      FIsFirstPathMove := false;
-    end;*)
 
     // take care of relative or absolute
     // Idiotism in SVG: If the path starts with a relative move to,
@@ -2213,10 +2207,11 @@ begin
     AData.AddMoveToPath(CurX, CurY);
     // Since there may be several subpolygons we must store the start point
     // to close the subpolygon correctly later.
-    if FIsFirstPathMove then begin
+    if AIsFirstPathMove then
+    begin
       FPathStart.X := CurX;
       FPathStart.Y := CurY;
-      FIsFirstPathMove := false;
+      AIsFirstPathMove := false;
     end;
 
     Inc(i, 3);
@@ -2232,7 +2227,6 @@ begin
     AData.AddLineToPath(CurX, CurY);
 
     Inc(i, 1);
-//    Inc(i, 3);
   end
   // --------------
   // Lines
@@ -2488,8 +2482,11 @@ begin
 
     // in svg the y axis increases downward, in fpv upward. Therefore, angles
     // change their sign!
-    phi := -phi;
-    SweepFlag := not SweepFlag;  // i.e. "clockwise" turns into "counter-clockwise"!
+    if not gSVGVecReader_UseTopLeftCoords then
+    begin
+      phi := -phi;
+      SweepFlag := not SweepFlag;  // i.e. "clockwise" turns into "counter-clockwise"!
+    end;
 
     if CalcEllipseCenter(CurX, CurY, Xnew, Ynew, X2, Y2, phi, LargeArcFlag, SweepFlag, cx, cy, tmp) then
       AData.AddEllipticalArcWithCenterToPath(X2*tmp, Y2*tmp, phi, Xnew, Ynew, cx, cy, SweepFlag)
