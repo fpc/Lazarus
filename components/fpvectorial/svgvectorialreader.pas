@@ -2892,6 +2892,7 @@ begin
   // text spans
 
   lParagraph := TvParagraph.Create(AData);
+  lParagraph.YPos_NeedsAdjustment_DelFirstLineBodyHeight := True;
   lTextSpanStack := TSVGObjectStack.Create;
   lCurStyle := TSVGTextSpanStyle.Create;
   lTextSpanStack.Push(lCurStyle);

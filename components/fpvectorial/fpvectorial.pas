@@ -464,7 +464,8 @@ type
   TvEntityFeatures = record
     DrawsUpwards: Boolean; // TvText, TvEmbeddedVectorialDoc, etc draws upwards, but in the future we might have entities drawing downwards
     DrawsUpwardHeightAdjustment: Integer; // in Canvas pixels
-    DrawsUpwardHeightAdjustment_FirstLineExcluded: Integer; // in Canvas pixels
+    FirstLineHeight: Integer; // in Canvas pixels
+    TotalHeight: Integer; // in Canvas pixels
   end;
 
   { Now all elements }
@@ -487,7 +488,7 @@ type
     // This cased is utilized to guess the size of a document even before getting a canvas to draw at
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; out ALeft, ATop, ARight, ABottom: Double); virtual;
     function CalculateSizeInCanvas(ADest: TFPCustomCanvas; APage: TvPage; APageHeight: Integer; AZoom: Double; out ALeft, ATop, AWidth, AHeight: Integer): Boolean;
-    procedure CalculateHeightInCanvas(ADest: TFPCustomCanvas; out AHeight: Integer);
+    procedure CalculateHeightInCanvas(ADest: TFPCustomCanvas; AMulX: Double; out AHeight: Integer);
     // helper functions for CalculateBoundingBox & TvRenderInfo
     procedure ExpandBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
     class procedure CalcEntityCanvasMinMaxXY(var ARenderInfo: TvRenderInfo; APointX, APointY: Integer);
@@ -515,7 +516,7 @@ type
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); virtual;
     function AdjustColorToBackground(AColor: TFPColor; ARenderInfo: TvRenderInfo): TFPColor;
     function GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
-    function GetEntityFeatures(ADest: TFPCustomCanvas): TvEntityFeatures; virtual;
+    function GetEntityFeatures(ADest: TFPCustomCanvas; AMulX: Double): TvEntityFeatures; virtual;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
     class function GenerateDebugStrForFPColor(AColor: TFPColor): string;
     class function GenerateDebugStrForString(AValue: string): string;
@@ -677,6 +678,8 @@ type
   { TvText }
 
   TvText = class(TvEntityWithStyle)
+  private
+    function GetTextMetric_Descender_px(ADest: TFPCustomCanvas; AMulX: Double = 1.0): Integer;
   public
     Value: TStringList;
     Render_NextText_X: Integer;
@@ -687,7 +690,7 @@ type
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; out ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
-    function GetEntityFeatures(ADest: TFPCustomCanvas): TvEntityFeatures; override;
+    function GetEntityFeatures(ADest: TFPCustomCanvas; AMulX: Double): TvEntityFeatures; override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
@@ -1134,6 +1137,7 @@ type
     Width, Height: Double;
     AutoExpand: TvRichTextAutoExpand;
     ListStyle : TvListStyle; // For Bulleted or Numbered Lists...
+    YPos_NeedsAdjustment_DelFirstLineBodyHeight: Boolean; // SVG coordinates for text are cumbersome, we need this
     constructor Create(APage: TvPage); override;
     destructor Destroy; override;
     function AddText(AText: string): TvText;
@@ -3585,11 +3589,11 @@ begin
      Result := False;
 end;
 
-procedure TvEntity.CalculateHeightInCanvas(ADest: TFPCustomCanvas; out AHeight: Integer);
+procedure TvEntity.CalculateHeightInCanvas(ADest: TFPCustomCanvas; AMulX: Double; out AHeight: Integer);
 var
   lRenderInfo: TvRenderInfo;
 begin
-  Render(ADest, lRenderInfo, 0, 0, 1, 1, False);
+  Render(ADest, lRenderInfo, 0, 0, AMulX, AMulX, False);
   AHeight := lRenderInfo.EntityCanvasMaxXY.Y - lRenderInfo.EntityCanvasMinXY.Y;
 end;
 
@@ -3790,11 +3794,12 @@ begin
   Result.Z := (Z - APage.MinZ) * (ANewMax - ANewMin) / (APage.MaxZ - APage.MinZ) + ANewMin;
 end;
 
-function TvEntity.GetEntityFeatures(ADest: TFPCustomCanvas): TvEntityFeatures;
+function TvEntity.GetEntityFeatures(ADest: TFPCustomCanvas; AMulX: Double): TvEntityFeatures;
 begin
   Result.DrawsUpwards := False;
   Result.DrawsUpwardHeightAdjustment := 0;
-  Result.DrawsUpwardHeightAdjustment_FirstLineExcluded := 0;
+  Result.FirstLineHeight := 0;
+  Result.TotalHeight := 0;
 end;
 
 function TvEntity.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -5659,6 +5664,29 @@ end;
 
 { TvText }
 
+function TvText.GetTextMetric_Descender_px(ADest: TFPCustomCanvas; AMulX: Double = 1.0): Integer;
+var
+  {$ifdef USE_LCL_CANVAS}
+  ACanvas: TCanvas absolute ADest;
+  tm: TLCLTextMetric;
+  {$else}
+  lFontSizePx: Integer;
+  lTextSize: TSize;
+  {$endif}
+begin
+  Result := 0;
+
+  {$IFDEF USE_LCL_CANVAS}
+  if ACanvas.GetTextMetrics(tm) then
+    Result := tm.Descender;
+  {$ELSE}
+  lFontSizePx := Font.Size;        // is without multiplier!
+  if lFontSizePx = 0 then lFontSizePx := 10;
+  lTextSize := ADest.TextExtent(Str_Line_Height_Tester);
+  Result := (lTextSize.CY - lFontSizePx) div 2;  // rough estimate only
+  {$ENDIF}
+end;
+
 constructor TvText.Create(APage: TvPage);
 begin
   inherited Create(APage);
@@ -5734,13 +5762,11 @@ var
   lLongestLine, lLineWidth, lFontSizePx, lFontDescenderPx: Integer;
   lText: string;
   lDescender: Integer;
-  phi, lYAdj: Double;
+  phi: Double;
   {$ifdef USE_LCL_CANVAS}
   ACanvas: TCanvas absolute ADest;
   lTextSize: TSize;
   lTextWidth: Integer;
-  tm: TLCLTextMetric;
-  ts: TTextStyle;
   {$endif}
 begin
   lText := Value.Text + Format(' F=%d', [ADest.Font.Size]); // for debugging
@@ -5756,11 +5782,7 @@ begin
   lFontSizePx := Font.Size;        // is without multiplier!
   if lFontSizePx = 0 then lFontSizePx := 10;
   lTextSize := ADest.TextExtent(Str_Line_Height_Tester);
-  lDescender := (lTextSize.CY - lFontSizePx) div 2;  // rough estimate only
-  {$IFDEF USE_LCL_CANVAS}
-  if ACanvas.GetTextMetrics(tm) then
-    lDescender := tm.Descender;
-  {$ENDIF}
+  lDescender := GetTextMetric_Descender_px(ADest, AMulX);
 
   // Angle of text rotation
   phi := sign(AMulY) * DegToRad(Font.Orientation);
@@ -5794,10 +5816,9 @@ begin
   // ...
   // We need to keep the order of lines drawing correct regardless of
   // the drawing direction
-  //lYAdj := FPage.GetTopLeftCoords_Adjustment();
   lowerDimY := refPt.Y - (lTextSize.CY - lDescender); // lowerDim.Y := refPt.Y + lFontSizePx * (1 + LINE_SPACING) * Value.Count * AMulY
   upperDimY := refPt.Y;
-  curDimY := lowerDimY;
+  curDimY := IfThen(AMulY < 0, lowerDimY, upperDimY);
 
   // TvText supports multiple lines
   for i := 0 to Value.Count - 1 do
@@ -5836,22 +5857,27 @@ begin
   end;
 end;
 
-function TvText.GetEntityFeatures(ADest: TFPCustomCanvas): TvEntityFeatures;
+function TvText.GetEntityFeatures(ADest: TFPCustomCanvas; AMulX: Double): TvEntityFeatures;
 var
   ActualText: String;
   lHeight_px: Integer = 0;
 begin
+  // Calculate the total height
+  CalculateHeightInCanvas(ADest, AMulX, lHeight_px);
+  Result.TotalHeight := lHeight_px;
+
   Result.DrawsUpwardHeightAdjustment := 0;
-  if Value.Count > 0 then
-  begin
-    CalculateHeightInCanvas(ADest, lHeight_px);
+  if (not FPage.UseTopLeftCoordinates) then
     Result.DrawsUpwardHeightAdjustment := lHeight_px;
 
+  Result.FirstLineHeight := 0;
+  if (Value.Count > 0) then
+  begin
     ActualText := Value.Text;
-    if Value.Count > 0 then
-      Value.Delete(0);
-    CalculateHeightInCanvas(ADest, lHeight_px);
-    Result.DrawsUpwardHeightAdjustment_FirstLineExcluded := lHeight_px;
+    Value.Text := Value.Strings[0];
+    CalculateHeightInCanvas(ADest, AMulX, lHeight_px);
+    Result.FirstLineHeight := lHeight_px - GetTextMetric_Descender_px(ADest, AMulX);
+
     Value.Text := ActualText;
   end;
   Result.DrawsUpwards := True;
@@ -8398,6 +8424,7 @@ var
   lResetOldStyle: Boolean = False;
   lEntityRenderInfo: TvRenderInfo;
   CurX, CurY, lHeight_px: Integer;
+  lFeatures: TvEntityFeatures;
 begin
   InitializeRenderInfo(ARenderInfo, Self);
   InitializeRenderInfo(lEntityRenderInfo, Self);
@@ -8406,7 +8433,12 @@ begin
   lEntity := GetFirstEntity();
   while lEntity <> nil do
   begin
-    lHeight_px := lEntity.GetEntityFeatures(ADest).DrawsUpwardHeightAdjustment_FirstLineExcluded;
+    lFeatures := lEntity.GetEntityFeatures(ADest, AMulX);
+    lHeight_px := 0;
+    if YPos_NeedsAdjustment_DelFirstLineBodyHeight then
+      lHeight_px := -1 * lFeatures.FirstLineHeight
+    else if (lFeatures.DrawsUpwardHeightAdjustment > 0) then
+      lHeight_px := lFeatures.DrawsUpwardHeightAdjustment - lFeatures.FirstLineHeight;
 
     if lEntity is TvText then
     begin
@@ -8433,7 +8465,7 @@ begin
       CurY := CoordToCanvasY(lText.Y + Y, ADestY, AMulY);
       lText.X := 0;
       lText.Y := 0;
-      if AMulY < 0 then CurY += lHeight_px; // to keep the position in case of inversed drawing
+      CurY += lHeight_px;
       lText.Render_Use_NextText_X := not lFirstText;
       if lText.Render_Use_NextText_X then
         lText.Render_NextText_X := lPrevText.Render_NextText_X;
@@ -8618,8 +8650,7 @@ begin
   begin
     // handle both directions of drawing
     lHeight_px := 0;
-    //if lEntity.GetEntityFeatures().DrawsUpwards then
-      lEntity.CalculateHeightInCanvas(ADest, lHeight_px);
+    lEntity.CalculateHeightInCanvas(ADest, AMulX, lHeight_px);
 
     // draw the bullet (if necessary)
     if lEntity is TvParagraph then
@@ -8771,7 +8802,7 @@ begin
   begin
     lEntity.X := X;
     lEntity.Y := Y + lCurHeight;
-    lHeight_px := lEntity.GetEntityFeatures(ADest).DrawsUpwardHeightAdjustment;
+    lHeight_px := lEntity.GetEntityFeatures(ADest, AMulX).DrawsUpwardHeightAdjustment;
     CopyAndInitDocumentRenderInfo(lEntityRenderInfo, ARenderInfo);
     lEntity.Render(ADest, lEntityRenderInfo, ADestX, ADestY + lHeight_px, AMulX, AMulY, ADoDraw);
     lEntity.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
@@ -9757,6 +9788,7 @@ constructor TvTextPageSequence.Create(AOwner: TvVectorialDocument);
 begin
   inherited Create(AOwner);
 
+  FUseTopLeftCoordinates := True;
   Footer := TvRichText.Create(Self);
   Header := TvRichText.Create(Self);
   MainText := TvRichText.Create(Self);
@@ -9900,7 +9932,7 @@ begin
 
     CurEntity.X := 0;
     CurEntity.Y := 0;
-    lHeight_px := CurEntity.GetEntityFeatures(ADest).DrawsUpwardHeightAdjustment;
+    lHeight_px := CurEntity.GetEntityFeatures(ADest, AMulX).TotalHeight;
     RenderInfo.BackgroundColor := BackgroundColor;
     CurEntity.Render(ADest, RenderInfo, ADestX, CurY_px + lHeight_px, AMulX, AMulY, ADoDraw);
     // Store the old position in X/Y but don't use it, we use this to debug out the position
