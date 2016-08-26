@@ -41,9 +41,6 @@ type
     procedure ReadFromXML(Doc: TXMLDocument; AData: TvVectorialDocument); override;
   end;
 
-var
-  gSVGVecReader_RSVG_Path: string = '';
-
 implementation
 
 { TvSVGVectorialReader_RSVG }
@@ -57,11 +54,12 @@ var
   lImageReader: TFPReaderPNG = nil;
   BytesRead   : longint;
   Buffer      : array[1..BUF_SIZE] of byte;
-  lOutputTmpFileName: String;
+  lOutputTmpFileName, gSVGVecReader_RSVG_Path: String;
 begin
   Result := TvRasterImage.Create(nil);
   AProcess := TProcessUTF8.Create(nil);
   try
+    gSVGVecReader_RSVG_Path := Settings.HelperToolPath;
     if gSVGVecReader_RSVG_Path <> '' then FRSVG_CMD := gSVGVecReader_RSVG_Path;
 
     if not FileExistsUTF8(FRSVG_CMD) then

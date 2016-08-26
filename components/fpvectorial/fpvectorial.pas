@@ -1395,6 +1395,14 @@ type
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
+  TvVectorialReaderFlag = (vrfSVG_UseTopLeftCoords);
+  TvVectorialReaderFlags = set of TvVectorialReaderFlag;
+
+  TvVectorialReaderSettings = record
+    VecReaderFlags: TvVectorialReaderFlags;
+    HelperToolPath: string;
+  end;
+
   { TvVectorialDocument }
 
   TvVectorialDocument = class
@@ -1422,6 +1430,8 @@ type
     StyleHeading1Centralized, StyleHeading2Centralized, StyleHeading3Centralized: TvStyle; // heading modifications
     StyleBulletList, StyleNumberList : TvListStyle;
     StyleTextSpanBold, StyleTextSpanItalic, StyleTextSpanUnderline: TvStyle;
+    // Reader properties
+    ReaderSettings: TvVectorialReaderSettings;
     { Base methods }
     constructor Create; virtual;
     destructor Destroy; override;
@@ -1517,6 +1527,8 @@ type
     function HasNaturalRenderPos: Boolean;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); virtual; abstract;
+
+    property UseTopLeftCoordinates: Boolean read FUseTopLeftCoordinates write FUseTopLeftCoordinates;
   end;
 
   { TvVectorialPage }
@@ -1658,6 +1670,7 @@ type
     class function GetTextContentsFromNode(ANode: TDOMNode): DOMString;
     class function RemoveLineEndingsAndTrim(AStr: string): string;
   public
+    Settings: TvVectorialReaderSettings;
     { General reading methods }
     constructor Create; virtual;
     procedure ReadFromFile(AFileName: string; AData: TvVectorialDocument); virtual;
@@ -6333,27 +6346,33 @@ var
   pts: T3dPointsArray;
   ctr: T3dPoint;
   j: Integer;
-  phi: Double;
+  phi, lYAdj: Double;
 begin
+  if FPage.UseTopLeftCoordinates then
+    lYAdj := 1
+  else
+    lYAdj := -1;
+
   if (RX > 0) and (RY > 0) then
   begin
     SetLength(pts, 9);
-    pts[0] := Make3dPoint(X, Y-RY);
+    pts[0] := Make3dPoint(X, Y+lYAdj*RY);
     pts[1] := Make3dPoint(X+RX, Y);
     pts[2] := Make3dPoint(X+CX-RX, Y);
-    pts[3] := Make3dPoint(X+CX, Y-RY);
-    pts[4] := Make3dPoint(X+CX, Y-CY+RY);
-    pts[5] := Make3dPoint(X+CX-RX, Y-CY);
-    pts[6] := Make3dPoint(X+RX, Y-CY);
-    pts[7] := Make3dPoint(X, Y-CY+RY);
-    pts[8] := Make3dPoint(X, Y-RY);
-  end else
+    pts[3] := Make3dPoint(X+CX, Y+lYAdj*RY);
+    pts[4] := Make3dPoint(X+CX, Y+lYAdj*(CY-RY));
+    pts[5] := Make3dPoint(X+CX-RX, Y+lYAdj*CY);
+    pts[6] := Make3dPoint(X+RX, Y+lYAdj*CY);
+    pts[7] := Make3dPoint(X, Y+lYAdj*(CY-RY));
+    pts[8] := Make3dPoint(X, Y+lYAdj*RY);
+  end
+  else
   begin
     SetLength(pts, 5);
     pts[0] := Make3dPoint(X, Y);
     pts[1] := Make3dPoint(X+CX, Y);
-    pts[2] := Make3dPoint(X+CX, Y-CY);
-    pts[3] := Make3dPoint(X, Y-CY);
+    pts[2] := Make3dPoint(X+CX, Y+lYAdj*CY);
+    pts[3] := Make3dPoint(X, Y+lYAdj*CY);
     pts[4] := Make3dPoint(X, Y);
   end;
   ctr := Make3DPoint(X, Y);  // Rotation center
@@ -10081,6 +10100,7 @@ begin
 
   AReader := CreateVectorialReader(AFormat);
   try
+    AReader.Settings := ReaderSettings;
     AReader.ReadFromFile(AFileName, Self);
   finally
     AReader.Free;
