@@ -3520,17 +3520,23 @@ var
   i:integer;
 begin
   Result:=nil;
-  //debugln(['TKeyCommandRelationList.Find START ',DbgSName(IDEWindowClass)]);
+  //debugln(['TKeyCommandRelationList.Find START, IDEWindowClass=',DbgSName(IDEWindowClass),
+  //         ', Key1=', Key.Key1, ', Key2=', Key.Key2]);
   //if IDEWindowClass=nil then RaiseGDBException('');
   if Key.Key1=VK_UNKNOWN then exit;
   for i:=0 to FRelations.Count-1 do
     with Relations[i] do begin
       //if Command=ecDesignerSelectParent then
-      //  debugln('TKeyCommandRelationList.Find A ',Category.Scope.Name,' ',dbgsName(IDEWindowClass),' ',dbgs(IDECmdScopeDesignerOnly.IDEWindowClassCount),' ',dbgsName(IDECmdScopeDesignerOnly.IDEWindowClasses[0]));
-      //debugln(['TKeyCommandRelationList.Find ',Name,' HasScope=',Category.Scope<>nil,' ',KeyAndShiftStateToEditorKeyString(ShortcutA),' ',KeyAndShiftStateToEditorKeyString(Key),' ',(Category.Scope<>nil)      and (not Category.Scope.HasIDEWindowClass(IDEWindowClass))]);
+      //  debugln('TKeyCommandRelationList.Find A ',Category.Scope.Name,' ',dbgsName(IDEWindowClass),
+      //          ' ',dbgs(IDECmdScopeDesignerOnly.IDEWindowClassCount),
+      //          ' ',dbgsName(IDECmdScopeDesignerOnly.IDEWindowClasses[0]));
+      //debugln(['TKeyCommandRelationList.Find ',Name,' HasScope=',Category.Scope<>nil,
+      //         ' ',KeyAndShiftStateToEditorKeyString(ShortcutA),
+      //         ' ',KeyAndShiftStateToEditorKeyString(Key),
+      //         ' ',(Category.Scope<>nil) and (not Category.Scope.HasIDEWindowClass(IDEWindowClass))]);
       //if (Category.Scope<>nil) and (Category.Scope.IDEWindowClassCount>0) then
-      //  debugln(['TKeyCommandRelationList.Find ',DbgSName(Category.Scope.IDEWindowClasses[0]),' ',DbgSName(IDEWindowClass)]);
-
+      //  debugln(['TKeyCommandRelationList.Find ',DbgSName(Category.Scope.IDEWindowClasses[0]),
+      //           ' ',DbgSName(IDEWindowClass)]);
       if (Category.Scope<>nil)
       and (not Category.Scope.HasIDEWindowClass(IDEWindowClass)) then continue;
       if ((ShortcutA.Key1=Key.Key1) and (ShortcutA.Shift1=Key.Shift1) and
