@@ -3362,8 +3362,7 @@ function T2DSegment.GetPointAndTangentForDistance(ADistance: Double; out AX,
 var
   lStartPoint: T3DPoint;
 begin
-  Result:=inherited GetPointAndTangentForDistance(ADistance, AX, AY,
-    ATangentAngle);
+  Result:=inherited GetPointAndTangentForDistance(ADistance, AX, AY, ATangentAngle);
   if not GetStartPoint(lStartPoint) then Exit;
   Result := LineEquation_GetPointAndTangentForLength(lStartPoint, Make3DPoint(X, Y), ADistance, AX, AY, ATangentAngle);
 end;
@@ -4867,7 +4866,7 @@ begin
   segment.CY := ACenterY;
   segment.XRotation := AXAxisRotation;
   segment.LeftmostEllipse := False; // which value would it have?
-  segment.ClockwiseArcFlag := AClockwiseArcFlag;
+  segment.ClockwiseArcFlag := AClockwiseArcFlag xor FPage.UseTopLeftCoordinates;
   segment.CenterSetByUser := True;
 
   AppendSegment(segment);
