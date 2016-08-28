@@ -2122,8 +2122,7 @@ begin
       else
         setFocusPolicy(QtClickFocus);
     end;
-    if not(LCLObject is TCustomForm) // ToDo: use native approach also for forms
-    and (LCLObject.Perform(LM_NCHITTEST, 0, 0) = HTTRANSPARENT) then
+    if LCLObject.Perform(LM_NCHITTEST, 0, 0)=HTTRANSPARENT then
       setAttribute(QtWA_TransparentForMouseEvents);
   end;
 
@@ -3524,37 +3523,19 @@ end;
 function TQtWidget.SlotMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   Msg: TLMMouse;
+  MousePos: TQtPoint;
   MButton: QTMouseButton;
   Modifiers: QtKeyboardModifiers;
-  SaveWidget: QWidgetH;
+  SaveWidget, AWidgetAt: QWidgetH;
   LazButton: Byte;
   LazPos: TPoint;
-  MousePos: TQtPoint;
-  TrgHandle: TQtWidget;
-  TrgControl: TWinControl;
+  AMouseEvent, ANewEvent: QMouseEventH;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotMouse');
   {$endif}
 
   Result := False; // allow qt to handle message
-
-  TrgHandle := Self;
-  TrgControl := LCLObject;
-  if LCLObject is TCustomForm then // ToDo: use native approach also for forms
-    CheckTransparentWindow(TLCLIntfHandle(TrgHandle), TrgControl);
-  if (TrgHandle=nil) or (TrgControl=nil) then
-  begin
-    Exit;
-  end else
-  if (TrgControl<>LCLObject) then
-  begin
-    if TrgHandle is TQtCustomControl then
-      Result := TQtCustomControl(TrgHandle).viewport.SlotMouse(TQtCustomControl(TrgHandle).viewportWidget, Event)
-    else
-      Result := TrgHandle.SlotMouse(TrgHandle.Widget, Event);
-    Exit;
-  end;
 
   if not CanSendLCLMessage then
     exit(True);
@@ -3563,30 +3544,43 @@ begin
     (not (csDesigning in LCLObject.ComponentState) and not getEnabled) then
     Exit;
 
+  {issue #30232}
+  if testAttribute(QtWA_TransparentForMouseEvents) and
+    (Self is TQtMainWindow) and not TQtMainWindow(Self).IsMdiChild then
+  begin
+    AMouseEvent := QMouseEventH(Event);
+    ANewEvent := QMouseEvent_create(QEvent_type(Event), QMouseEvent_pos(AMouseEvent),
+      QMouseEvent_globalPos(AMouseEvent), QMouseEvent_button(AMouseEvent),
+        QMouseEvent_buttons(AMouseEvent), QInputEvent_modifiers(QInputEventH(Event)));
+    QEvent_accept(Event);
+    Result := True;
+    MousePos := QMouseEvent_globalPos(AMouseEvent)^;
+    AWidgetAt := QApplication_widgetAt(@MousePos);
+    {TODO: check what happens if pure form is transparent for mouse events.}
+    if AWidgetAt = nil then
+      AWidgetAt := QApplication_activeModalWidget;
+    if AWidgetAt = nil then
+      AWidgetAt := QApplication_activeWindow;
+    QCoreApplication_sendEvent(AWidgetAt, ANewEvent);
+    QEvent_destroy(ANewEvent);
+    exit;
+  end;
+
   // idea of multi click implementation is taken from gtk
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
-  MousePos := QMouseEvent_globalPos(QMouseEventH(Event))^;
+  MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
   OffsetMousePos(@MousePos);
-
-  LazPos := LCLObject.ScreenToClient(Point(MousePos.X, MousePos.Y));
-
-  if (LCLObject is TScrollingWinControl) and
-    TScrollingWinControl(LCLObject).VertScrollbar.Visible then
-      dec(LazPos.Y, TScrollingWinControl(LCLObject).VertScrollBar.Position);
-
-  if (LCLObject is TScrollingWinControl) and
-    TScrollingWinControl(LCLObject).HorzScrollBar.Visible then
-      dec(LazPos.X, TScrollingWinControl(LCLObject).HorzScrollBar.Position);
 
   Modifiers := QInputEvent_modifiers(QInputEventH(Event));
   Msg.Keys := QtKeyModifiersToKeyState(Modifiers, False, nil);
 
-  Msg.XPos := SmallInt(LazPos.X);
-  Msg.YPos := SmallInt(LazPos.Y);
+  Msg.XPos := SmallInt(MousePos.X);
+  Msg.YPos := SmallInt(MousePos.Y);
   
   MButton := QMouseEvent_Button(QMouseEventH(Event));
+  LazPos := Point(MousePos.X, MousePos.Y);
   case MButton of
     QtLeftButton: LazButton := 1;
     QtRightButton: LazButton := 2;
@@ -3884,31 +3878,11 @@ var
   MousePos: TQtPoint;
   Modifiers: QtKeyboardModifiers;
   ModifierState: PtrInt;
-  TrgHandle: TQtWidget;
-  TrgControl: TWinControl;
   {$IFDEF DARWIN}
   CCtl: TQtAbstractScrollArea;
   {$ENDIF}
 begin
   Result := False;
-
-  TrgHandle := Self;
-  TrgControl := LCLObject;
-  if LCLObject is TCustomForm then // ToDo: use native approach also for forms
-    CheckTransparentWindow(TLCLIntfHandle(TrgHandle), TrgControl);
-  if (TrgHandle=nil) or (TrgControl=nil) then
-  begin
-    Exit;
-  end else
-  if (TrgControl<>LCLObject) then
-  begin
-    if TrgHandle is TQtCustomControl then
-      Result := TQtCustomControl(TrgHandle).viewport.SlotMouseWheel(TQtCustomControl(TrgHandle).viewportWidget, Event)
-    else
-      Result := TrgHandle.SlotMouse(TrgHandle.Widget, Event);
-    Exit;
-  end;
-
   if not CanSendLCLMessage then
     exit;
 
