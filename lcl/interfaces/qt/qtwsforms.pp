@@ -112,6 +112,7 @@ type
   TQtWSHintWindow = class(TWSHintWindow)
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSScreen }
@@ -1009,6 +1010,26 @@ begin
   // Sets Various Events
   QtMainWindow.AttachEvents;
   Result := TLCLIntfHandle(QtMainWindow);
+end;
+
+class procedure TQtWSHintWindow.ShowHide(const AWinControl: TWinControl);
+var
+  AWidget: TQtHintWindow;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'ShowHide') then
+    Exit;
+
+  AWidget := TQtHintWindow(AWinControl.Handle);
+
+  AWidget.BeginUpdate;
+
+  if AWinControl.HandleObjectShouldBeVisible then
+  begin
+    if QApplication_activeModalWidget <> nil then
+      QWidget_setWindowModality(AWidget.Widget, QtWindowModal);
+  end;
+  AWidget.setVisible(AWinControl.HandleObjectShouldBeVisible);
+  AWidget.EndUpdate;
 end;
 
 end.
