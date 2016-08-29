@@ -765,8 +765,6 @@ type
     FDroppedDown: Boolean;
     FOnAcceptDate: TAcceptDateEvent;
     FOnCustomDate: TCustomDateEvent;
-    FOKCaption: TCaption;
-    FCancelCaption: TCaption;
     FFixedDateFormat: string; //used when DateOrder <> doNone
     FFreeDateFormat: String;  //used when DateOrder = doNone
     FDate: TDateTime;
@@ -798,8 +796,6 @@ type
     property CalendarDisplaySettings: TDisplaySettings read FDisplaySettings write FDisplaySettings;
     property OnAcceptDate: TAcceptDateEvent read FOnAcceptDAte write FOnAcceptDate;
     property OnCustomDate: TCustomDateEvent read FOnCustomDate write FOnCustomDate;
-    property OKCaption: TCaption read FOKCaption write FOKCaption;
-    property CancelCaption: TCaption read FCancelCaption write FCancelCaption;
     property ReadOnly;
     property DefaultToday: Boolean read FDefaultToday write FDefaultToday default False;
     Property DateOrder : TDateOrder Read FDateOrder Write SetDateOrder;
@@ -2515,8 +2511,6 @@ begin
   FUpdatingDate := False;
   FDefaultToday := False;
   FDisplaySettings := [dsShowHeadings, dsShowDayNames];
-  OKCaption := 'OK';
-  CancelCaption := 'Cancel';
 end;
 
 
@@ -3182,5 +3176,9 @@ begin
   RegisterComponents('Misc', [TEditButton,TFileNameEdit,TDirectoryEdit,
                               TDateEdit,TTimeEdit,TCalcEdit]);
 end;
+
+Initialization
+  RegisterPropertyToSkip(TDateEdit, 'OKCaption', 'Property streamed in older Lazarus revision','');
+  RegisterPropertyToSkip(TDateEdit, 'CancelCaption', 'Property streamed in older Lazarus revision','');
 
 end.
