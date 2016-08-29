@@ -10172,6 +10172,7 @@ begin
 
   AReader := CreateVectorialReader(AFormat);
   try
+    AReader.Settings := ReaderSettings;
     AReader.ReadFromStream(AStream, Self);
   finally
     AReader.Free;
@@ -10187,6 +10188,7 @@ begin
 
   AReader := CreateVectorialReader(AFormat);
   try
+    AReader.Settings := ReaderSettings;
     AReader.ReadFromStrings(AStrings, Self);
   finally
     AReader.Free;
