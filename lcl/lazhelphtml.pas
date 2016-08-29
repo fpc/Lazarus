@@ -334,6 +334,13 @@ begin
       ErrMsg:=hhsHelpNoHTMLBrowserFound;
     exit;
   end;
+  {$ifdef windows}
+  //The result of FindDefaultBrowser may or may not be quoted on Windows
+  //Since on Windows, a filename cannot contain a double quote, we simply remove them
+  //otherwise FileExistsUf8 and FileIsExecutable fail. Issue #0030502
+  if (Length(Executable) > 1) and (Executable[1] = '"') and (Executable[Length(Executable)] = '"') then
+    Executable := Copy(Executable, 2, Length(Executable)-2);
+  {$endif windows}
   if (not FileExistsUTF8(Executable)) then begin
     ErrMsg:=Format(hhsHelpBrowserNotFound, [Executable]);
     exit;
