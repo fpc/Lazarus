@@ -2478,7 +2478,7 @@ begin
 
     // in svg the y axis increases downward, in fpv upward. Therefore, angles
     // change their sign!
-    if not (vrfSVG_UseTopLeftCoords in Settings.VecReaderFlags) then
+    if vrfSVG_UseBottomLeftCoords in Settings.VecReaderFlags then
     begin
       phi := -phi;
       SweepFlag := not SweepFlag;  // i.e. "clockwise" turns into "counter-clockwise"!
@@ -3018,7 +3018,7 @@ begin
   // We need to add this hack here, otherwise the Height is added twice
   // to inserted items: Once in the Insert and yet another time in the
   // coordinates of the inserted item!
-  if not (vrfSVG_UseTopLeftCoords in Settings.VecReaderFlags) then
+  if vrfSVG_UseBottomLeftCoords in Settings.VecReaderFlags then
     lInsert.Y := lInsert.Y - AData.Height;
 
   Result := lInsert;
@@ -3086,7 +3086,7 @@ var
         sckXDelta,
         sckXSize:  Result := Result * Page_Width / ViewBox_Width;
       end;
-      if (vrfSVG_UseTopLeftCoords in Settings.VecReaderFlags) then
+      if not (vrfSVG_UseBottomLeftCoords in Settings.VecReaderFlags) then
       begin
         case ACoordKind of
           sckY:      Result := (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
@@ -3106,7 +3106,7 @@ var
     end
     else
     begin
-      if not (vrfSVG_UseTopLeftCoords in Settings.VecReaderFlags) then
+      if vrfSVG_UseBottomLeftCoords in Settings.VecReaderFlags then
       begin
         case ACoordKind of
           sckY:      Result := Page_Height - Result;
@@ -3222,7 +3222,7 @@ begin
     ADestX := (ASrcX - ViewBox_Left) * Page_Width / ViewBox_Width;
   end;
 
-  if (vrfSVG_UseTopLeftCoords in Settings.VecReaderFlags) then
+  if not (vrfSVG_UseBottomLeftCoords in Settings.VecReaderFlags) then
   begin
     ADestY := ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
     if ViewBoxAdjustment and ADoViewBoxAdjust then
@@ -3250,7 +3250,7 @@ begin
     ADestX := ASrcX * Page_Width / ViewBox_Width;
   end;
 
-  if (vrfSVG_UseTopLeftCoords in Settings.VecReaderFlags) then
+  if not (vrfSVG_UseBottomLeftCoords in Settings.VecReaderFlags) then
   begin
     ADestY := ASrcY * FLOAT_MILLIMETERS_PER_PIXEL;
     if ViewBoxAdjustment and ADoViewBoxAdjust then
@@ -3493,7 +3493,7 @@ begin
   // Now process the elements
   // ----------------
   lCurNode := Doc.DocumentElement.FirstChild;
-  lPage := AData.AddPage((vrfSVG_UseTopLeftCoords in Settings.VecReaderFlags));
+  lPage := AData.AddPage(not (vrfSVG_UseBottomLeftCoords in Settings.VecReaderFlags));
   lPage.Width := AData.Width;
   lPage.Height := AData.Height;
   while Assigned(lCurNode) do

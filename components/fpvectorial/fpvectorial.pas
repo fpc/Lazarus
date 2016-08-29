@@ -1399,7 +1399,7 @@ type
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
-  TvVectorialReaderFlag = (vrfSVG_UseTopLeftCoords, vrfWMF_UseTopLeftCoords);
+  TvVectorialReaderFlag = (vrfSVG_UseBottomLeftCoords, vrfWMF_UseTopLeftCoords);
   TvVectorialReaderFlags = set of TvVectorialReaderFlag;
 
   TvVectorialReaderSettings = record
