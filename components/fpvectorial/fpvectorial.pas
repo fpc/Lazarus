@@ -1399,7 +1399,7 @@ type
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
-  TvVectorialReaderFlag = (vrfSVG_UseBottomLeftCoords, vrfWMF_UseTopLeftCoords);
+  TvVectorialReaderFlag = (vrfSVG_UseBottomLeftCoords, vrfWMF_UseBottomLeftCoords);
   TvVectorialReaderFlags = set of TvVectorialReaderFlag;
 
   TvVectorialReaderSettings = record
@@ -3869,6 +3869,8 @@ end;
 procedure TvEntityWithPen.ApplyPenToCanvas(ADest: TFPCustomCanvas;
   ARenderInfo: TvRenderInfo; APen: TvPen);
 begin
+  if ADest = nil then
+    exit;
   ADest.Pen.FPColor := AdjustColorToBackground(APen.Color, ARenderInfo);
   ADest.Pen.Width := Max(1, APen.Width);   // wp: why was here "1;//APen.Width;" ???
   ADest.Pen.Style := APen.Style;
@@ -3917,6 +3919,8 @@ end;
 procedure TvEntityWithPenAndBrush.ApplyBrushToCanvas(ADest: TFPCustomCanvas;
   ABrush: PvBrush);
 begin
+  if ADest = nil then
+    exit;
   ADest.Brush.FPColor := ABrush^.Color;
   ADest.Brush.Style := ABrush^.Style;
 end;
@@ -4543,6 +4547,8 @@ var
   {$endif}
   lFPColor: TFPColor;
 begin
+  if ADest = nil then
+    exit;
   ADest.Font.Name := AFont.Name;
   if AFont.Size = 0 then AFont.Size := 10;
   ADest.Font.Size := Round(AmulX * AFont.Size);

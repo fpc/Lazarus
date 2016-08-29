@@ -711,8 +711,8 @@ const
 var
   n: Integer;
   i, j: Integer;
-  poly: TvPolygon;
   pts: Array of T3DPoint;
+  path: TPath;
 begin
   n := AParams[0];
   SetLength(pts, n);
@@ -727,21 +727,21 @@ begin
     pts[n] := pts[0];
   end;
 
-  poly := TvPolygon.Create(APage);
-  poly.Points := pts;
-  poly.Pen := FCurrPen;
+  APage.StartPath(pts[0].X, pts[0].Y);
+  for i:=1 to n-1 do
+    APage.AddLineToPath(pts[i].x, pts[i].y);
+  path := APage.EndPath;
+  path.Pen := FCurrPen;
   if AFilled then
-    poly.Brush := FCurrBrush
+    path.Brush := FCurrBrush
   else begin
-    poly.Brush.Style := bsClear;
-    poly.Brush.Kind := bkSimpleBrush;
+    path.Brush.Style := bsClear;
+    path.Brush.Kind := bkSimpleBrush;
   end;
   case FCurrPolyFillMode of
-    ALTERNATE : poly.WindingRule := vcmEvenOddRule;
-    WINDING   : poly.WindingRule := vcmNonZeroWindingRule;
+    ALTERNATE : path.WindingRule := vcmEvenOddRule;
+    WINDING   : path.WindingRule := vcmNonZeroWindingRule;
   end;
-
-  APage.AddEntity(poly);
 end;
 
 procedure TvWMFVectorialReader.ReadPolyPolygon(APage: TvVectorialPage;
@@ -798,7 +798,7 @@ var
   page: TvVectorialPage;
   prevX, prevY: Word;
 begin
-  page := AData.AddPage(vrfWMF_UseTopLeftCoords in Settings.VecReaderFlags);
+  page := AData.AddPage(not (vrfWMF_UseBottomLeftCoords in Settings.VecReaderFlags));
 
   while AStream.Position < AStream.Size do begin
     // Store the stream position where the current record begins
@@ -1333,10 +1333,9 @@ function TvWMFVectorialReader.ScaleY(y: Integer): Double;
 begin
 //  Result := ScaleSizeY(y - FWindowOrigin.Y);    // there is probably an issue with y direction
 
-  if (vrfWMF_UseTopLeftCoords in Settings.VecReaderFlags) then
-    Result := ScaleSizeY(y - FWindowOrigin.Y)
-  else
-    Result := FPageHeight - ScaleSizeY(y);
+  if (vrfWMF_UseBottomLeftCoords in Settings.VecReaderFlags) then
+    Result := FPageHeight - ScaleSizeY(y) else
+    Result := ScaleSizeY(y - FWindowOrigin.Y);
 
 //  Result := FPageHeight - ScaleSizeY(y);
 end;
