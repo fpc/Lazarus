@@ -1399,7 +1399,7 @@ type
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
-  TvVectorialReaderFlag = (vrfSVG_UseTopLeftCoords);
+  TvVectorialReaderFlag = (vrfSVG_UseTopLeftCoords, vrfWMF_UseTopLeftCoords);
   TvVectorialReaderFlags = set of TvVectorialReaderFlag;
 
   TvVectorialReaderSettings = record
@@ -5853,6 +5853,8 @@ begin
     curDimY := IfThen(AMulY < 0,
       curDimY - (lFontSizePx * (1 + LINE_SPACING) * AMulY),
       curDimY + (lFontSizePx * (1 + LINE_SPACING) * AMulY));
+    // wp: isn't this the same as
+    // curDimY := curDimY + (lFontSizePx * (1 + LINE_SPACING) * abs(AMulY);
   end;
 end;
 

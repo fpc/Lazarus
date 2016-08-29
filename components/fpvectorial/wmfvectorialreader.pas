@@ -124,9 +124,6 @@ type
     procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); override;
   end;
 
-var
-  // Settings
-  gWMFVecReader_UseTopLeftCoords: Boolean = True;
 
 implementation
 
@@ -801,7 +798,7 @@ var
   page: TvVectorialPage;
   prevX, prevY: Word;
 begin
-  page := AData.AddPage(gWMFVecReader_UseTopLeftCoords);
+  page := AData.AddPage(vrfWMF_UseTopLeftCoords in Settings.VecReaderFlags);
 
   while AStream.Position < AStream.Size do begin
     // Store the stream position where the current record begins
@@ -999,31 +996,7 @@ begin
 
   SetLength(params, 0);
 end;
-(*
-procedure TvWMFVectorialReader.ReadRectangle(APage: TvVectorialPage;
-  const AParams: TParamArray);
-// To do: not tested, having not test file
-var
-  rectRec: PWMFRectRecord;   // coordinates are SmallInt
-  poly: TvPolygon;
-  pts: array of T3DPoint;
-begin
-  rectRec := PWMFRectRecord(@AParams[0]);
 
-  SetLength(pts, 5);
-  pts[0] := Make3DPoint(ScaleX(rectRec^.Left), ScaleY(rectRec^.Top));
-  pts[1] := Make3DPoint(ScaleX(rectRec^.Right), ScaleY(rectRec^.Top));
-  pts[2] := Make3DPoint(ScaleX(rectRec^.Right), ScaleY(rectRec^.Bottom));
-  pts[3] := Make3DPoint(ScaleX(rectRec^.Left), ScaleY(rectRec^.Bottom));
-  pts[4] := pts[0];
-
-  poly := TvPolygon.Create(APage);
-  poly.Points := pts;
-  poly.Pen := FCurrPen;
-  poly.Brush := FCurrBrush;
-  APage.AddEntity(poly);
-end;
-  *)
 procedure TvWMFVectorialReader.ReadRectangle(APage: TvVectorialPage;
   const AParams: TParamArray; IsRounded: Boolean);
 var
@@ -1043,9 +1016,9 @@ begin
 
   rect := TvRectangle.Create(APage);
   rect.X := ScaleX(rectRec^.Left);
-  rect.Y := ScaleY(rectRec^.Bottom);  // since the axis goes down bottom and top are interchanged!
-  rect.CX := ScaleSizeX(rectRec^.Right - rectRec^.Left);
-  rect.CY := ScaleSizeY(rectRec^.Bottom - rectRec^.Top);  // wmf: Top < Bottom!
+  rect.Y := ScaleY(rectRec^.Top);
+  rect.CX := ScaleSizeX(abs(rectRec^.Right - rectRec^.Left));
+  rect.CY := ScaleSizeY(abs(rectRec^.Bottom - rectRec^.Top));
   rect.RX := ScaleSizeX(rx);
   rect.RY := ScaleSizeY(ry);
   rect.Pen := FCurrPen;
@@ -1358,7 +1331,13 @@ end;
   Coordinates will be increasing downwards, like in SVG }
 function TvWMFVectorialReader.ScaleY(y: Integer): Double;
 begin
-  Result := ScaleSizeY(y - FWindowOrigin.Y);    // there is probably an issue with y direction
+//  Result := ScaleSizeY(y - FWindowOrigin.Y);    // there is probably an issue with y direction
+
+  if (vrfWMF_UseTopLeftCoords in Settings.VecReaderFlags) then
+    Result := ScaleSizeY(y - FWindowOrigin.Y)
+  else
+    Result := FPageHeight - ScaleSizeY(y);
+
 //  Result := FPageHeight - ScaleSizeY(y);
 end;
 
