@@ -41,6 +41,7 @@ type
   private
     { private declarations }
     FVec: TvVectorialDocument;
+    FFileName: String;
     procedure LoadImage(const AFileName: String);
     procedure PaintImage(APage: TvPage);
     procedure ReadFromIni;
@@ -117,12 +118,16 @@ begin
     // Load the image file into a TvVectorialDocument
     FVec.ReadFromFile(AFilename);
     // Draw the image
+    FVec.GuessDocumentSize;
     page := FVec.GetPage(0);
+    if (page.Width = 0) or (page.Height = 0) then
+      page.CalculateDocumentSize;
     PaintImage(page);
     // Misc
     Caption := Format('%s - "%s"', [PROGRAM_NAME, AFileName]);
     // For conversion of the mm returned by the wmf reader to screen pixels
     ImageInfo.Caption := Format('%.1f mm x %.1f mm', [page.Width, page.Height]);
+    FFileName := AFileName;
   except
     on E:Exception do
       MessageDlg(E.Message, mtError, [mbOK], 0);
@@ -134,6 +139,8 @@ var
   bmp: TBitmap;
   multiplierX, multiplierY: Double;
   wimg, himg: Integer;
+  dx, dy: Integer;
+  zoom: Double;
 begin
   if APage = nil then
     exit;
@@ -166,9 +173,22 @@ begin
       end;
     end else
       bmp.SetSize(wimg, himg);
+
     bmp.Canvas.Brush.Color := clWindow;
     bmp.Canvas.FillRect(0, 0, bmp.Width, bmp.Height);
-    APage.Render(bmp.Canvas, 0, 0, multiplierX, multiplierY);
+
+    APage.AutoFit(bmp.Canvas, wimg, wimg, wimg, dx, dy, zoom);
+
+    if APage.UseTopLeftCoordinates then
+      APage.Render(bmp.Canvas, dx, dy, zoom, zoom) else
+      APage.Render(bmp.Canvas, dx, himg - dy, zoom, -zoom);
+    {
+    if SameText(ExtractFileExt(FFileName), '.wmf') then
+      APage.Render(bmp.Canvas, dx, dy, zoom, zoom) else
+      APage.Render(bmp.Canvas, dx, himg - dy, zoom, -zoom);
+     }
+
+//    APage.Render(bmp.Canvas, 0, 0, multiplierX, multiplierY);
     // Assign the bitmap to the image's picture.
     Image1.Picture.Assign(bmp);
     Image1.Width := bmp.Width;
