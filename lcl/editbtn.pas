@@ -2573,9 +2573,13 @@ begin
       FDate := TextToDate(AValue, SysUtils.Date)
     else
       FDate := TextToDate(AValue, NullDate);
-    AValue := DateToText(FDate);
-  end;
-  inherited SetText(AValue);
+    //Allow to clear Text in Designer (Issue #0030425)
+    if (csDesigning in ComponentState) and (AValue = '') then
+      inherited SetText('')
+    else
+      inherited SetText(DateToText(FDate));
+  end else
+    inherited SetText(AValue);
 end;
 
 procedure TDateEdit.SetDateMask;
