@@ -1,0 +1,512 @@
+object MainForm: TMainForm
+  Left = 335
+  Height = 578
+  Top = 155
+  Width = 852
+  Caption = 'Visual fpvectorial test'
+  ClientHeight = 578
+  ClientWidth = 852
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  ShowHint = True
+  LCLVersion = '1.7'
+  object GbTree: TGroupBox
+    Left = 4
+    Height = 570
+    Top = 4
+    Width = 304
+    Align = alClient
+    BorderSpacing.Around = 4
+    Caption = 'Test shapes and objects'
+    ClientHeight = 550
+    ClientWidth = 300
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 0
+    object Tree: TTreeView
+      Left = 4
+      Height = 538
+      Top = 4
+      Width = 292
+      Align = alClient
+      BorderSpacing.Bottom = 4
+      BorderSpacing.Around = 4
+      DefaultItemHeight = 18
+      HideSelection = False
+      ParentFont = False
+      ReadOnly = True
+      TabOrder = 0
+      OnCustomDrawItem = TreeCustomDrawItem
+      OnSelectionChanged = TreeSelectionChanged
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    end
+  end
+  object ScrollBox1: TScrollBox
+    Left = 312
+    Height = 578
+    Top = 0
+    Width = 540
+    HorzScrollBar.Increment = 29
+    HorzScrollBar.Page = 291
+    HorzScrollBar.Smooth = True
+    HorzScrollBar.Tracking = True
+    VertScrollBar.Increment = 57
+    VertScrollBar.Page = 578
+    VertScrollBar.Smooth = True
+    VertScrollBar.Tracking = True
+    Align = alRight
+    BorderStyle = bsNone
+    ClientHeight = 578
+    ClientWidth = 523
+    TabOrder = 1
+    object AllTestsPanel: TPanel
+      Left = 4
+      Height = 599
+      Top = 4
+      Width = 511
+      Align = alTop
+      AutoSize = True
+      BorderSpacing.Right = 4
+      BorderSpacing.Around = 4
+      BevelOuter = bvNone
+      ClientHeight = 599
+      ClientWidth = 511
+      TabOrder = 0
+      object gbRenderTest: TGroupBox
+        AnchorSideBottom.Control = gbReferenceImageTest
+        AnchorSideBottom.Side = asrBottom
+        Left = 0
+        Height = 261
+        Top = 0
+        Width = 248
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Right = 31
+        Caption = 'Render test'
+        ClientHeight = 241
+        ClientWidth = 244
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+        object Label6: TLabel
+          Left = 8
+          Height = 30
+          Top = 2
+          Width = 232
+          Align = alTop
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 2
+          BorderSpacing.Right = 4
+          Caption = 'The selected shape is rendered in two coordinate systems:'
+          ParentColor = False
+          ParentFont = False
+          WordWrap = True
+        end
+        object Label8: TLabel
+          Left = 16
+          Height = 15
+          Top = 36
+          Width = 224
+          Align = alTop
+          BorderSpacing.Left = 16
+          BorderSpacing.Top = 4
+          BorderSpacing.Right = 4
+          Caption = 'origin at bottom/left corner (fpv default)'
+          ParentColor = False
+          ParentFont = False
+          WordWrap = True
+        end
+        object Label7: TLabel
+          Left = 16
+          Height = 15
+          Top = 55
+          Width = 224
+          Align = alTop
+          BorderSpacing.Left = 16
+          BorderSpacing.Top = 4
+          BorderSpacing.Right = 4
+          Caption = 'origin at top/left corner'
+          ParentColor = False
+          ParentFont = False
+          WordWrap = True
+        end
+        object LblBothImagesMustMatch: TLabel
+          Left = 8
+          Height = 15
+          Top = 74
+          Width = 232
+          Align = alTop
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 4
+          BorderSpacing.Right = 4
+          Caption = 'Both images must match.'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+          WordWrap = True
+        end
+        object gbBottomLeft: TGroupBox
+          AnchorSideLeft.Control = gbRenderTest
+          AnchorSideTop.Side = asrBottom
+          AnchorSideBottom.Control = gbRenderTest
+          AnchorSideBottom.Side = asrBottom
+          Left = 4
+          Height = 129
+          Top = 108
+          Width = 112
+          Anchors = [akLeft, akBottom]
+          AutoSize = True
+          BorderSpacing.Left = 4
+          BorderSpacing.Right = 4
+          BorderSpacing.Bottom = 4
+          Caption = 'Origin at bottom'
+          ClientHeight = 109
+          ClientWidth = 108
+          ParentFont = False
+          TabOrder = 0
+          object BottomLeftPaintbox: TPaintBox
+            AnchorSideTop.Control = gbBottomLeft
+            Left = 4
+            Height = 100
+            Top = 3
+            Width = 100
+            BorderSpacing.Left = 4
+            BorderSpacing.Top = 3
+            BorderSpacing.Right = 4
+            BorderSpacing.Bottom = 6
+            OnPaint = PaintBoxPaint
+          end
+        end
+        object gbTopLeft: TGroupBox
+          AnchorSideLeft.Control = gbBottomLeft
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Side = asrBottom
+          AnchorSideBottom.Control = gbRenderTest
+          AnchorSideBottom.Side = asrBottom
+          Left = 124
+          Height = 129
+          Top = 108
+          Width = 112
+          Anchors = [akLeft, akBottom]
+          AutoSize = True
+          BorderSpacing.Left = 8
+          BorderSpacing.Right = 8
+          BorderSpacing.Bottom = 4
+          Caption = 'Origin at top'
+          ClientHeight = 109
+          ClientWidth = 108
+          ParentFont = False
+          TabOrder = 1
+          object TopLeftPaintbox: TPaintBox
+            AnchorSideTop.Control = gbTopLeft
+            Left = 4
+            Height = 100
+            Top = 3
+            Width = 100
+            BorderSpacing.Left = 4
+            BorderSpacing.Top = 3
+            BorderSpacing.Right = 4
+            BorderSpacing.Bottom = 6
+            OnPaint = PaintBoxPaint
+          end
+        end
+      end
+      object gbReferenceImageTest: TGroupBox
+        AnchorSideRight.Control = AllTestsPanel
+        AnchorSideRight.Side = asrBottom
+        Left = 266
+        Height = 261
+        Top = 0
+        Width = 245
+        Anchors = [akTop, akRight]
+        Caption = 'Reference image test'
+        ClientHeight = 241
+        ClientWidth = 241
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 1
+        object Label10: TLabel
+          Left = 8
+          Height = 30
+          Top = 2
+          Width = 225
+          Align = alTop
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 2
+          BorderSpacing.Right = 8
+          Caption = 'Save the bottom-origin image of the "Render test" to a bitmap file for reference.'
+          ParentColor = False
+          ParentFont = False
+          WordWrap = True
+        end
+        object Label11: TLabel
+          Left = 8
+          Height = 30
+          Top = 36
+          Width = 225
+          Align = alTop
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 4
+          BorderSpacing.Right = 8
+          Caption = 'This reference image is loaded for each test shape/object.'
+          ParentColor = False
+          ParentFont = False
+          WordWrap = True
+        end
+        object LblRefImgMustMatch: TLabel
+          Left = 8
+          Height = 30
+          Top = 70
+          Width = 225
+          Align = alTop
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 4
+          BorderSpacing.Right = 8
+          Caption = 'The reference image must match the "Render test" images.'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+          WordWrap = True
+        end
+        object BtnSaveAsRef: TButton
+          AnchorSideLeft.Control = GroupBox1
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = GroupBox1
+          AnchorSideTop.Side = asrCenter
+          AnchorSideBottom.Side = asrBottom
+          Left = 132
+          Height = 25
+          Top = 160
+          Width = 75
+          BorderSpacing.Left = 16
+          BorderSpacing.Bottom = 10
+          Caption = 'Save as ref'
+          OnClick = BtnSaveAsRefClick
+          ParentFont = False
+          TabOrder = 0
+        end
+        object GroupBox1: TGroupBox
+          AnchorSideLeft.Control = gbReferenceImageTest
+          AnchorSideTop.Control = LblRefImgMustMatch
+          AnchorSideTop.Side = asrBottom
+          AnchorSideBottom.Control = gbReferenceImageTest
+          AnchorSideBottom.Side = asrBottom
+          Left = 4
+          Height = 129
+          Top = 108
+          Width = 112
+          AutoSize = True
+          BorderSpacing.Left = 4
+          BorderSpacing.Top = 8
+          BorderSpacing.Bottom = 4
+          Caption = 'Reference image'
+          ClientHeight = 109
+          ClientWidth = 108
+          ParentFont = False
+          TabOrder = 1
+          object RefImage: TImage
+            AnchorSideTop.Control = GroupBox1
+            Left = 4
+            Height = 100
+            Top = 3
+            Width = 100
+            BorderSpacing.Left = 4
+            BorderSpacing.Top = 3
+            BorderSpacing.Right = 4
+            BorderSpacing.Bottom = 6
+          end
+        end
+      end
+      object gbReadWriteTest: TGroupBox
+        AnchorSideLeft.Control = gbRenderTest
+        AnchorSideTop.Control = gbReferenceImageTest
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = AllTestsPanel
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 314
+        Top = 285
+        Width = 511
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 24
+        Caption = 'Read/write test'
+        ClientHeight = 294
+        ClientWidth = 507
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 2
+        object Label13: TLabel
+          Left = 8
+          Height = 15
+          Top = 2
+          Width = 491
+          Align = alTop
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 2
+          BorderSpacing.Right = 8
+          Caption = 'This test is for reading and writing of the selected shape to/from an svg or wmf file.'
+          ParentColor = False
+          ParentFont = False
+          WordWrap = True
+        end
+        object LblRefImgMustMatch1: TLabel
+          Left = 8
+          Height = 45
+          Top = 57
+          Width = 491
+          Align = alTop
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 4
+          BorderSpacing.Right = 8
+          Caption = 'If it does not click "View..." to open the image in an external viewer of the operating system. If the image is displayed correctly by the viewer there is a bug in the file reader, otherwise in the writer.'
+          ParentColor = False
+          ParentFont = False
+          WordWrap = True
+        end
+        object gbWMF: TGroupBox
+          AnchorSideLeft.Control = gbSVG
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = LblRefImgMustMatch1
+          AnchorSideTop.Side = asrBottom
+          Left = 143
+          Height = 157
+          Top = 110
+          Width = 130
+          AutoSize = True
+          BorderSpacing.Left = 9
+          BorderSpacing.Top = 8
+          BorderSpacing.Bottom = 8
+          Caption = 'wmf'
+          ClientHeight = 137
+          ClientWidth = 126
+          ParentFont = False
+          TabOrder = 0
+          object BtnSaveAsWMF: TButton
+            AnchorSideLeft.Control = gbWMF
+            Left = 8
+            Height = 25
+            Top = 0
+            Width = 50
+            AutoSize = True
+            BorderSpacing.Left = 8
+            BorderSpacing.Bottom = 6
+            Caption = 'Save'
+            OnClick = BtnSaveToFileClick
+            TabOrder = 0
+          end
+          object BtnViewWMF: TButton
+            AnchorSideLeft.Control = BtnSaveAsWMF
+            AnchorSideLeft.Side = asrBottom
+            Left = 62
+            Height = 25
+            Top = 0
+            Width = 60
+            AutoSize = True
+            BorderSpacing.Left = 4
+            BorderSpacing.Right = 4
+            BorderSpacing.Bottom = 6
+            Caption = 'View...'
+            OnClick = BtnViewImageClick
+            TabOrder = 1
+          end
+          object WMFPaintBox: TPaintBox
+            AnchorSideLeft.Control = BtnSaveAsWMF
+            AnchorSideTop.Control = BtnSaveAsWMF
+            AnchorSideTop.Side = asrBottom
+            Left = 8
+            Height = 100
+            Top = 31
+            Width = 100
+            BorderSpacing.Bottom = 6
+            OnPaint = PaintBoxPaint
+          end
+        end
+        object gbSVG: TGroupBox
+          AnchorSideLeft.Control = gbReadWriteTest
+          AnchorSideTop.Control = LblRefImgMustMatch1
+          AnchorSideTop.Side = asrBottom
+          Left = 4
+          Height = 157
+          Top = 110
+          Width = 130
+          AutoSize = True
+          BorderSpacing.Left = 4
+          BorderSpacing.Top = 8
+          BorderSpacing.Bottom = 8
+          Caption = 'svg'
+          ClientHeight = 137
+          ClientWidth = 126
+          ParentFont = False
+          TabOrder = 1
+          object BtnSaveAsSvg: TButton
+            AnchorSideLeft.Control = gbSVG
+            Left = 8
+            Height = 25
+            Top = 0
+            Width = 50
+            AutoSize = True
+            BorderSpacing.Left = 8
+            BorderSpacing.Bottom = 6
+            Caption = 'Save'
+            OnClick = BtnSaveToFileClick
+            TabOrder = 0
+          end
+          object BtnViewSVG: TButton
+            AnchorSideLeft.Control = BtnSaveAsSvg
+            AnchorSideLeft.Side = asrBottom
+            Left = 62
+            Height = 25
+            Top = 0
+            Width = 60
+            AutoSize = True
+            BorderSpacing.Left = 4
+            BorderSpacing.Right = 4
+            BorderSpacing.Bottom = 6
+            Caption = 'View...'
+            OnClick = BtnViewImageClick
+            TabOrder = 1
+          end
+          object SVGPaintbox: TPaintBox
+            AnchorSideLeft.Control = BtnSaveAsSvg
+            AnchorSideTop.Control = BtnSaveAsSvg
+            AnchorSideTop.Side = asrBottom
+            Left = 8
+            Height = 100
+            Top = 31
+            Width = 100
+            BorderSpacing.Bottom = 6
+            OnPaint = PaintBoxPaint
+          end
+        end
+        object Label14: TLabel
+          Left = 8
+          Height = 15
+          Top = 19
+          Width = 491
+          Align = alTop
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 2
+          BorderSpacing.Right = 8
+          Caption = 'After clicking "Save" the file is opened and displayed in the box below.'
+          ParentColor = False
+          ParentFont = False
+          WordWrap = True
+        end
+        object LblBothImagesMustMatch1: TLabel
+          Left = 8
+          Height = 15
+          Top = 38
+          Width = 495
+          Align = alTop
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 4
+          BorderSpacing.Right = 4
+          Caption = 'This image must match the "Render test" image.'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+          WordWrap = True
+        end
+      end
+    end
+  end
+end
