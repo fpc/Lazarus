@@ -421,9 +421,14 @@ var
   PathStr: string;
   PtX, PtY, OldPtX, OldPtY: double;
   BezierCP1X, BezierCP1Y, BezierCP2X, BezierCP2Y: double;
+  cx, cy, rx, ry, phi: Double;
+  t1, t2: Double;
+  x1,y1,x2,y2: Double;
+  sweep, longArc: Integer;
   segment: TPathSegment;
   l2DSegment: T2DSegment absolute segment;
   l2DBSegment: T2DBezierSegment absolute segment;
+  l2DArcSegment: T2dEllipticalArcSegment absolute segment;
   styleStr: string;
 begin
   OldPtX := 0;
@@ -440,7 +445,9 @@ begin
       and (segment.SegmentType <> st2DLineWithPen)
       and (segment.SegmentType <> stMoveTo)
       and (segment.SegmentType <> st2DBezier)
-      then Break; // unsupported line type
+      and (segment.SegmentType <> st2DEllipticalArc)
+    then
+      break; // unsupported line type
 
     // Coordinate conversion from fpvectorial to SVG
     ConvertFPVCoordinatesToSVGCoordinates(APage, l2DSegment.X, l2DSegment.Y, PtX, PtY);
@@ -476,6 +483,41 @@ begin
         [BezierCP1X, BezierCP1Y, BezierCP2X, BezierCP2Y, PtX, PtY],
         FPointSeparator
       );
+    end else
+    if (segment.SegmentType = st2DEllipticalArc) then
+    begin
+      // Convert everything to svg coordinates. Note: this is top/left!
+      ConvertFPVSizeToSVGSize(l2DArcSegment.RX, l2DArcSegment.RY, rx, ry);
+      ConvertFPVCoordinatesToSVGCoordinates(APage, l2DArcSegment.CX, l2DArcSegment.CY, cx, cy);
+      // Determine the large-arc flag
+      x1 := OldPtX;
+      y1 := OldPtY;
+      x2 := OldPtX + PtX;
+      y2 := OldPtY + PtY;
+      if APage.UseTopLeftCoordinates then begin
+        phi := l2DArcSegment.XRotation;
+        sweep := IfThen(l2DArcSegment.ClockwiseArcFlag, 0, 1);
+      end else begin
+        phi := -l2DArcSegment.XRotation;
+        sweep := IfThen(l2DArcSegment.ClockwiseArcFlag, 1, 0);
+      end;
+      t1 := CalcEllipsePointAngle(x1, y1, rx, ry, cx, cy, phi);
+      t2 := CalcEllipsePointAngle(x2, y2, rx, ry, cx, cy, phi);
+      if sweep = 1 then
+      begin
+        // clockwise
+        // We have top/left coords now --> angle increases --> t2 must be > t1
+        if t2 < t1 then t2 := TWO_PI + t2;
+      end else
+      begin
+        // counter-clockwise
+        // angle decreases in top/left coords --> t2 must be < t1
+        if t2 > t1 then t1 := TWO_PI + t1;
+      end;
+      longarc := IfThen(abs(t2 - t1) < pi, 0, 1);
+
+      PathStr := PathStr + Format('a %g,%g %g %d,%d %g,%g',
+        [rx, ry, phi, longArc, sweep, PtX, PtY], FPointSeparator);
     end;
 
     // Store the current position for future points
