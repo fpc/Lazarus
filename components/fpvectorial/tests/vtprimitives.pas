@@ -30,9 +30,13 @@ function CreateStdPolygon(APage: TvVectorialPage): TvPolygon;
 function CreateStdSelfIntersectingPolygon(APage: TvVectorialPage): TvPolygon;
 function CreatePathWithHole(APage: TvVectorialPage): TPath;
 function CreateStdArcQ1(APage: TvVectorialPage; Clockwise: Boolean): TPath;
+function CreateStdArcQ12(APage: TvVectorialPage; Clockwise: Boolean): TPath;
 function CreateStdArcQ2(APage: TvVectorialPage; Clockwise: Boolean): TPath;
+function CreateStdArcQ23(APage: TvVectorialPage; Clockwise: Boolean): TPath;
 function CreateStdArcQ3(APage: TvVectorialPage; Clockwise: Boolean): TPath;
+function CreateStdArcQ34(APage: TvVectorialPage; Clockwise: Boolean): TPath;
 function CreateStdArcQ4(APage: TvVectorialPage; Clockwise: Boolean): TPath;
+function CreateStdArcQ41(APage: TvVectorialPage; Clockwise: Boolean): TPath;
 
 function StdSolidBrush: TvBrush;
 function StdHorizGradientBrush: TvBrush;
@@ -133,6 +137,7 @@ function CreateArc(APage: TvVectorialPage; X1,Y1, X2,Y2, CX,CY, RX, RY: Double;
   Clockwise: Boolean): TPath;
 var
   path: TPath;
+  txt: TvText;
 begin
   if APage.UseTopLeftCoordinates then begin
     Y1 := PAGE_SIZE - Y1;
@@ -144,6 +149,18 @@ begin
   APage.AddEllipticalArcWithCenterToPath(RX, RY, 0, X2, Y2, CX, CY, Clockwise);
   path := APage.EndPath;
   path.Pen := StdPen;
+
+  txt := TvText.Create(APage);
+  txt.Value.Add('1');
+  txt.X := X1;
+  txt.Y := Y1;
+  APage.AddEntity(txt);
+
+  txt := TvText.Create(APage);
+  txt.Value.Add('2');
+  txt.X := X2;
+  txt.Y := Y2;
+  APage.AddEntity(txt);
 end;
 
 
@@ -330,14 +347,30 @@ end;
 { Quarter circle in quadrant I }
 function CreateStdArcQ1(APage: TvVectorialPage; Clockwise: Boolean): TPath;
 const
-  X1 = 50;
-  Y1 = 95;
-  X2 = 90;
-  Y2 = 55;
-  CX = 50;
-  CY = 55;
-  RX = 40;
-  RY = 40;
+  CX = 50.0;
+  CY = 55.0;
+  RX = 30.0;
+  RY = 30.0;
+  X1 = CX + RX;
+  Y1 = CY;
+  X2 = CX;
+  Y2 = CY + RY;
+begin
+  Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Clockwise);
+end;
+
+{ Quarter circle reaching from quadrant I into quadrant II}
+function CreateStdArcQ12(APage: TvVectorialPage; Clockwise: Boolean): TPath;
+const
+  SQRT2 = 1.4142135623731;
+  CX = 50.0;
+  CY = 55.0;
+  RX = 30.0;
+  RY = 30.0;
+  X1 = CX + RX/SQRT2;
+  Y1 = CY + RY/SQRT2;
+  X2 = CX - RX/SQRT2;
+  Y2 = CY + RY/SQRT2;
 begin
   Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Clockwise);
 end;
@@ -345,14 +378,30 @@ end;
 { Quarter circle in quadrant II }
 function CreateStdArcQ2(APage: TvVectorialPage; Clockwise: Boolean): TPath;
 const
-  X1 = 50;
-  Y1 = 95;
-  X2 = 10;
-  Y2 = 55;
-  CX = 50;
-  CY = 55;
-  RX = 40;
-  RY = 40;
+  CX = 50.0;
+  CY = 55.0;
+  RX = 30.0;
+  RY = 30.0;
+  X1 = CX;
+  Y1 = CY + RY;
+  X2 = CX - RX;
+  Y2 = CY;
+begin
+  Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Clockwise);
+end;
+
+{ Quarter circle reaching from quadrant II into quadrant III}
+function CreateStdArcQ23(APage: TvVectorialPage; Clockwise: Boolean): TPath;
+const
+  SQRT2 = 1.4142135623731;
+  CX = 50.0;
+  CY = 55.0;
+  RX = 30.0;
+  RY = 30.0;
+  X1 = CX - RX/SQRT2;
+  Y1 = CY + RY/SQRT2;
+  X2 = CX - RX/SQRT2;
+  Y2 = CY - RY/SQRT2;
 begin
   Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Clockwise);
 end;
@@ -360,14 +409,30 @@ end;
 { Quarter circle in quadrant III }
 function CreateStdArcQ3(APage: TvVectorialPage; Clockwise: Boolean): TPath;
 const
-  X1 = 10;
-  Y1 = 55;
-  X2 = 50;
-  Y2 = 15;
-  CX = 50;
-  CY = 55;
-  RX = 40;
-  RY = 40;
+  CX = 50.0;
+  CY = 55.0;
+  RX = 30.0;
+  RY = 30.0;
+  X1 = CX - RX;
+  Y1 = CY;
+  X2 = CX;
+  Y2 = CY - RY;
+begin
+  Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Clockwise);
+end;
+
+{ Quarter circle reaching from quadrant III into quadrant IV}
+function CreateStdArcQ34(APage: TvVectorialPage; Clockwise: Boolean): TPath;
+const
+  SQRT2 = 1.4142135623731;
+  CX = 50.0;
+  CY = 55.0;
+  RX = 30.0;
+  RY = 30.0;
+  X1 = CX - RX/SQRT2;
+  Y1 = CY - RY/SQRT2;
+  X2 = CX + RX/SQRT2;
+  Y2 = CY - RY/SQRT2;
 begin
   Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Clockwise);
 end;
@@ -375,17 +440,34 @@ end;
 { Quarter circle in quadrant IV }
 function CreateStdArcQ4(APage: TvVectorialPage; Clockwise: Boolean): TPath;
 const
-  X1 = 90;
-  Y1 = 55;
-  X2 = 50;
-  Y2 = 15;
-  CX = 50;
-  CY = 55;
-  RX = 40;
-  RY = 40;
+  CX = 50.0;
+  CY = 55.0;
+  RX = 30.0;
+  RY = 30.0;
+  X1 = CX;
+  Y1 = CY - RY;
+  X2 = CX + RX;
+  Y2 = CY;
 begin
   Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Clockwise);
 end;
+
+{ Quarter circle reaching from quadrant IV into quadrant I}
+function CreateStdArcQ41(APage: TvVectorialPage; Clockwise: Boolean): TPath;
+const
+  SQRT2 = 1.4142135623731;
+  CX = 50.0;
+  CY = 55.0;
+  RX = 30.0;
+  RY = 30.0;
+  X1 = CX + RX/SQRT2;
+  Y1 = CY - RY/SQRT2;
+  X2 = CX + RX/SQRT2;
+  Y2 = CY + RY/SQRT2;
+begin
+  Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Clockwise);
+end;
+
 
 function StdSolidBrush: TvBrush;
 begin

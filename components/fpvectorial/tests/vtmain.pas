@@ -126,13 +126,21 @@ type
 
     // Arcs
     procedure Render_Arc_CW_Q1(APage: TvVectorialPage);
+    procedure Render_Arc_CW_Q12(APage: TvVectorialPage);
     procedure Render_Arc_CW_Q2(APage: TvVectorialPage);
+    procedure Render_Arc_CW_Q23(APage: TvVectorialPage);
     procedure Render_Arc_CW_Q3(APage: TvVectorialPage);
+    procedure Render_Arc_CW_Q34(APage: TvVectorialPage);
     procedure Render_Arc_CW_Q4(APage: TvVectorialPage);
+    procedure Render_Arc_CW_Q41(APage: TvVectorialPage);
     procedure Render_Arc_CCW_Q1(APage: TvVectorialPage);
+    procedure Render_Arc_CCW_Q12(APage: TvVectorialPage);
     procedure Render_Arc_CCW_Q2(APage: TvVectorialPage);
+    procedure Render_Arc_CCW_Q23(APage: TvVectorialPage);
     procedure Render_Arc_CCW_Q3(APage: TvVectorialPage);
+    procedure Render_Arc_CCW_Q34(APage: TvVectorialPage);
     procedure Render_Arc_CCW_Q4(APage: TvVectorialPage);
+    procedure Render_Arc_CCW_Q41(APage: TvVectorialPage);
 
     // Text
     procedure Render_Text(APage: TvVectorialPage; Anchor: TvTextAnchor; Angle: Double);
@@ -410,24 +418,40 @@ begin
     TRenderParams.Create(@Render_SelfIntersectingPoly_GradientFill_NonZeroWinding, 'selfintersecting_poly_gradient_nzw.png'));
 
   node0 := Tree.Items.AddChild(nil, 'Arcs');
-  node := Tree.Items.AddChild(node0, 'clockwise');
+  node := Tree.Items.AddChild(node0, 'clockwise "1" --> "2"');
   Tree.Items.AddChildObject(node, 'Quarter circle in quadrant I',
     TRenderParams.Create(@Render_Arc_CW_Q1, 'arc_cw_q1.png'));
+  Tree.Items.AddChildObject(node, 'Quarter circle in quadrant I+II',
+    TRenderParams.Create(@Render_Arc_CW_Q12, 'arc_cw_q12.png'));
   Tree.Items.AddChildObject(node, 'Quarter circle in quadrant II',
     TRenderParams.Create(@Render_Arc_CW_Q2, 'arc_cw_q2.png'));
+  Tree.Items.AddChildObject(node, 'Quarter circle in quadrant II+III',
+    TRenderParams.Create(@Render_Arc_CW_Q23, 'arc_cw_q23.png'));
   Tree.Items.AddChildObject(node, 'Quarter circle in quadrant III',
     TRenderParams.Create(@Render_Arc_CW_Q3, 'arc_cw_q3.png'));
+  Tree.Items.AddChildObject(node, 'Quarter circle in quadrant III+IV',
+    TRenderParams.Create(@Render_Arc_CW_Q34, 'arc_cw_q34.png'));
   Tree.Items.AddChildObject(node, 'Quarter circle in quadrant IV',
     TRenderParams.Create(@Render_Arc_CW_Q4, 'arc_cw_q4.png'));
-  node := Tree.Items.AddChild(node0, 'counterclockwise');
+  Tree.Items.AddChildObject(node, 'Quarter circle in quadrant IV+I',
+    TRenderParams.Create(@Render_Arc_CW_Q41, 'arc_cw_q41.png'));
+  node := Tree.Items.AddChild(node0, 'counterclockwise "1" --> "2"');
   Tree.Items.AddChildObject(node, 'Quarter circle in quadrant I',
-    TRenderParams.Create(@Render_Arc_CCW_Q1, 'arc_cdw_q1.png'));
+    TRenderParams.Create(@Render_Arc_CCW_Q1, 'arc_ccw_q1.png'));
+  Tree.Items.AddChildObject(node, 'Quarter circle in quadrant I+II',
+    TRenderParams.Create(@Render_Arc_CCW_Q12, 'arc_ccw_q12.png'));
   Tree.Items.AddChildObject(node, 'Quarter circle in quadrant II',
-    TRenderParams.Create(@Render_Arc_CCW_Q2, 'arc_cdw_q2.png'));
+    TRenderParams.Create(@Render_Arc_CCW_Q2, 'arc_ccw_q2.png'));
+  Tree.Items.AddChildObject(node, 'Quarter circle in quadrant II+III',
+    TRenderParams.Create(@Render_Arc_CCW_Q23, 'arc_ccw_q23.png'));
   Tree.Items.AddChildObject(node, 'Quarter circle in quadrant III',
-    TRenderParams.Create(@Render_Arc_CCW_Q3, 'arc_dcw_q3.png'));
+    TRenderParams.Create(@Render_Arc_CCW_Q3, 'arc_ccw_q3.png'));
+  Tree.Items.AddChildObject(node, 'Quarter circle in quadrant III+IV',
+    TRenderParams.Create(@Render_Arc_CCW_Q34, 'arc_ccw_q34.png'));
   Tree.Items.AddChildObject(node, 'Quarter circle in quadrant IV',
-    TRenderParams.Create(@Render_Arc_CCW_Q4, 'arc_cdw_q4.png'));
+    TRenderParams.Create(@Render_Arc_CCW_Q4, 'arc_ccw_q4.png'));
+  Tree.Items.AddChildObject(node, 'Quarter circle in quadrant IV+I',
+    TRenderParams.Create(@Render_Arc_CCW_Q41, 'arc_ccw_q41.png'));
 
   node0 := Tree.Items.AddChild(nil, 'Gradients');
   node := Tree.Items.AddChild(node0, 'horizontal');
@@ -735,9 +759,19 @@ begin
   CreateStdArcQ1(APage, true);
 end;
 
+procedure TMainForm.Render_Arc_CW_Q12(APage: TvVectorialPage);
+begin
+  CreateStdArcQ12(APage, true);
+end;
+
 procedure TMainForm.Render_Arc_CW_Q2(APage: TvVectorialPage);
 begin
   CreateStdArcQ2(APage, true);
+end;
+
+procedure TMainForm.Render_Arc_CW_Q23(APage: TvVectorialPage);
+begin
+  CreateStdArcQ23(APage, true);
 end;
 
 procedure TMainForm.Render_Arc_CW_Q3(APage: TvVectorialPage);
@@ -745,9 +779,19 @@ begin
   CreateStdArcQ3(APage, true);
 end;
 
+procedure TMainForm.Render_Arc_CW_Q34(APage: TvVectorialPage);
+begin
+  CreateStdArcQ34(APage, true);
+end;
+
 procedure TMainForm.Render_Arc_CW_Q4(APage: TvVectorialPage);
 begin
   CreateStdArcQ4(APage, true);
+end;
+
+procedure TMainForm.Render_Arc_CW_Q41(APage: TvVectorialPage);
+begin
+  CreateStdArcQ41(APage, true);
 end;
 
 procedure TMainForm.Render_Arc_CCW_Q1(APage: TvVectorialPage);
@@ -755,9 +799,19 @@ begin
   CreateStdArcQ1(APage, false);
 end;
 
+procedure TMainForm.Render_Arc_CCW_Q12(APage: TvVectorialPage);
+begin
+  CreateStdArcQ12(APage, false);
+end;
+
 procedure TMainForm.Render_Arc_CCW_Q2(APage: TvVectorialPage);
 begin
   CreateStdArcQ2(APage, false);
+end;
+
+procedure TMainForm.Render_Arc_CCW_Q23(APage: TvVectorialPage);
+begin
+  CreateStdArcQ23(APage, false);
 end;
 
 procedure TMainForm.Render_Arc_CCW_Q3(APage: TvVectorialPage);
@@ -765,9 +819,19 @@ begin
   CreateStdArcQ3(APage, false);
 end;
 
+procedure TMainForm.Render_Arc_CCW_Q34(APage: TvVectorialPage);
+begin
+  CreateStdArcQ34(APage, false);
+end;
+
 procedure TMainForm.Render_Arc_CCW_Q4(APage: TvVectorialPage);
 begin
   CreateStdArcQ4(APage, false);
+end;
+
+procedure TMainForm.Render_Arc_CCW_Q41(APage: TvVectorialPage);
+begin
+  CreateStdArcQ41(APage, false);
 end;
 
 procedure TMainForm.Render_Polygon_Solid(APage: TvVectorialPage);
