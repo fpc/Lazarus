@@ -418,7 +418,7 @@ begin
     TRenderParams.Create(@Render_SelfIntersectingPoly_GradientFill_NonZeroWinding, 'selfintersecting_poly_gradient_nzw.png'));
 
   node0 := Tree.Items.AddChild(nil, 'Arcs');
-  node := Tree.Items.AddChild(node0, 'clockwise "1" --> "2"');
+  node := Tree.Items.AddChild(node0, 'clockwise from point 1 to point 2');
   Tree.Items.AddChildObject(node, 'Quarter circle in quadrant I',
     TRenderParams.Create(@Render_Arc_CW_Q1, 'arc_cw_q1.png'));
   Tree.Items.AddChildObject(node, 'Quarter circle in quadrant I+II',
@@ -435,7 +435,7 @@ begin
     TRenderParams.Create(@Render_Arc_CW_Q4, 'arc_cw_q4.png'));
   Tree.Items.AddChildObject(node, 'Quarter circle in quadrant IV+I',
     TRenderParams.Create(@Render_Arc_CW_Q41, 'arc_cw_q41.png'));
-  node := Tree.Items.AddChild(node0, 'counterclockwise "1" --> "2"');
+  node := Tree.Items.AddChild(node0, 'counterclockwise from point 1 to point 2');
   Tree.Items.AddChildObject(node, 'Quarter circle in quadrant I',
     TRenderParams.Create(@Render_Arc_CCW_Q1, 'arc_ccw_q1.png'));
   Tree.Items.AddChildObject(node, 'Quarter circle in quadrant I+II',

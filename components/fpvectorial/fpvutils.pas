@@ -553,7 +553,7 @@ begin
   // Rotate ellipse back to align its major axis with the x axis
   P := Rotate3dPointInXY(Make3dPoint(x-cx, y-cy, 0), Make3dPoint(0, 0, 0), phi);
   // Correctly speaking, above line should use -phi, instead of phi. But
-  // Make3DPointInXY seems to define the angle in the opposite way.
+  // Rotate3DPointInXY seems to define the angle in the opposite way.
   Result := arctan2(P.Y/ry, P.X/rx);
   if Result < 0 then Result := TWO_PI + Result;
 end;

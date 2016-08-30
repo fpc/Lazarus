@@ -154,12 +154,14 @@ begin
   txt.Value.Add('1');
   txt.X := X1;
   txt.Y := Y1;
+  txt.Font.Color := colRed;
   APage.AddEntity(txt);
 
   txt := TvText.Create(APage);
   txt.Value.Add('2');
   txt.X := X2;
   txt.Y := Y2;
+  txt.Font.Color := colRed;
   APage.AddEntity(txt);
 end;
 

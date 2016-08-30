@@ -316,6 +316,8 @@ type
   { TPathSegment }
 
   TPathSegment = class
+  protected
+    FPath: TPath;
   public
     SegmentType: TSegmentType;
     // Fields for linking the list
@@ -332,6 +334,8 @@ type
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
     // rendering
     procedure AddToPoints(ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray); virtual;
+    // helper methods
+    function UseTopLeftCoordinates: Boolean;
   end;
 
   {@@
@@ -2907,6 +2911,7 @@ var
   xstart, ystart: Double;
   n: Integer;
   done: Boolean;
+  clockwise: Boolean;
 begin
   n := 0;
   SetLength(Points, BUFSIZE);
@@ -2918,21 +2923,25 @@ begin
   tstart := CalcEllipsePointAngle(xstart, ystart, RX, RY, CX, CY, XRotation);
   tend := CalcEllipsePointAngle(X, Y, RX, RY, CX, CY, XRotation);
 
-  // wp: Something's wrong here: I think "clockwise" is the other way round...
+  // Flip clockwise flag in case of top/left coordinates
+  clockwise := ClockwiseArcFlag xor UseTopLeftCoordinates;
 
-  if ClockwiseArcFlag then
-  begin              // tend must be larger than tstart
-    if tend < tstart then tend := TWO_PI + tend;
-  end else begin     // tend must be smaller than tstart
-    if tstart < tend then tstart := TWO_PI + tstart;
+  if clockwise then
+  begin
+    // clockwise --> angle decreases --> tstart must be > tend
     dt := -dt;
+    if tstart < tend then tstart := TWO_PI + tstart;
+  end else
+  begin
+    // counter-clockwise --> angle increases --> tstart must be < tend
+    if tend < tstart then tend := TWO_PI + tend;
   end;
 
   done := false;
   t := tstart;
   while not done do begin
-    if (ClockwiseArcFlag and (t > tend)) or
-       (not ClockwiseArcFlag and (t < tend)) then
+    if (clockwise and (t < tend)) or         // angle decreases
+       (not clockwise and (t > tend)) then   // angle increases
     begin
       t := tend;
       done := true;
@@ -2941,7 +2950,7 @@ begin
       SetLength(Points, Length(Points) + BUFSIZE);
     CalcEllipsePoint(t, RX, RY, CX, CY, XRotation, Points[n].x, Points[n].y);
     inc(n);
-    t := t + dt;      // Note: dt is <0 in counter-clockwise case
+    t := t + dt;      // Note: dt is < 0 in clockwise case
   end;
   SetLength(Points, n);
 end;
@@ -3343,6 +3352,11 @@ procedure TPathSegment.AddToPoints(ADestX, ADestY: Integer; AMulX, AMulY: Double
   var Points: TPointsArray);
 begin
   // Override by descendants
+end;
+
+function TPathSegment.UseTopLeftCoordinates: Boolean;
+begin
+  Result := (FPath <> nil) and FPath.FPage.UseTopLeftCoordinates;
 end;
 
 
@@ -4796,6 +4810,8 @@ procedure TPath.AppendSegment(ASegment: TPathSegment);
 var
   L: Integer;
 begin
+  ASegment.FPath := self;
+
   // Check if we are the first segment in the tmp path
   if PointsEnd = nil then
   begin
