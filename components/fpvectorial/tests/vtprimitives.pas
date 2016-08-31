@@ -12,7 +12,8 @@ function CreateEllipse(APage: TvVectorialPage; X1, Y1, X2, Y2: Double): TvEllips
 function CreateRectangle(APage: TvVectorialPage; X1, Y1, X2, Y2: Double): TvRectangle;
 function CreateRoundedRect(APage: TvVectorialPage; X1, Y1, X2, Y2, RX, RY: Double): TvRectangle;
 function CreatePolygon(APage: TvVectorialPage; const APoints: array of T3DPoint): TvPolygon;
-function CreateArc(APage: TvVectorialPage; X1,Y1, X2,Y2, CX,CY, RX, RY: Double; Clockwise: Boolean): TPath;
+function CreateArc(APage: TvVectorialPage; X1,Y1, X2,Y2, CX,CY, RX, RY, Angle: Double;
+  Clockwise: Boolean): TPath;
 
 function CreateSimpleBrush(AStyle: TFPBrushStyle; AColor: TFPColor): TvBrush; overload;
 function CreateSimpleBrush(AStyle: TFPBrushStyle): TvBrush; overload;
@@ -29,15 +30,26 @@ function CreateStdRoundedRect(APage: TvVectorialPage): TvRectangle;
 function CreateStdPolygon(APage: TvVectorialPage): TvPolygon;
 function CreateStdSelfIntersectingPolygon(APage: TvVectorialPage): TvPolygon;
 function CreatePathWithHole(APage: TvVectorialPage): TPath;
-function CreateStdArcQ1(APage: TvVectorialPage; Clockwise: Boolean): TPath;
-function CreateStdArcQ12(APage: TvVectorialPage; Clockwise: Boolean): TPath;
-function CreateStdArcQ2(APage: TvVectorialPage; Clockwise: Boolean): TPath;
-function CreateStdArcQ23(APage: TvVectorialPage; Clockwise: Boolean): TPath;
-function CreateStdArcQ3(APage: TvVectorialPage; Clockwise: Boolean): TPath;
-function CreateStdArcQ34(APage: TvVectorialPage; Clockwise: Boolean): TPath;
-function CreateStdArcQ4(APage: TvVectorialPage; Clockwise: Boolean): TPath;
-function CreateStdArcQ41(APage: TvVectorialPage; Clockwise: Boolean): TPath;
-
+(*
+function CreateStdCircArcQ1(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
+function CreateStdCircArcQ12(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
+function CreateStdCircArcQ2(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
+function CreateStdCircArcQ23(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
+function CreateStdCircArcQ3(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
+function CreateStdCircArcQ34(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
+function CreateStdCircArcQ4(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
+function CreateStdCircArcQ41(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
+function CreateStdCircArc32(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
+function CreateStdCircArc14(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
+function CreateStdEllArcQ1(APage: TvVectorialPage; Clockwise, Reverse: Boolean; Angle: Double): TPath;
+function CreateStdEllArcQ12(APage: TvVectorialPage; Clockwise, Reverse: Boolean; Angle: Double): TPath;
+function CreateStdEllArcQ2(APage: TvVectorialPage; Clockwise, Reverse: Boolean; Angle: Double): TPath;
+function CreateStdEllArcQ23(APage: TvVectorialPage; Clockwise, Reverse: Boolean; Angle: Double): TPath;
+function CreateStdEllArcQ3(APage: TvVectorialPage; Clockwise, Reverse: Boolean; Angle: Double): TPath;
+function CreateStdEllArcQ34(APage: TvVectorialPage; Clockwise, Reverse: Boolean; Angle: Double): TPath;
+function CreateStdEllArcQ4(APage: TvVectorialPage; Clockwise, Reverse: Boolean; Angle: Double): TPath;
+function CreateStdEllArcQ41(APage: TvVectorialPage; Clockwise, Reverse: Boolean; Angle: Double): TPath;
+  *)
 function StdSolidBrush: TvBrush;
 function StdHorizGradientBrush: TvBrush;
 function StdVertGradientBrush: TvBrush;
@@ -133,7 +145,7 @@ begin
   Result.Pen := CreatePen(psSolid, 1, colBlack);
 end;
 
-function CreateArc(APage: TvVectorialPage; X1,Y1, X2,Y2, CX,CY, RX, RY: Double;
+function CreateArc(APage: TvVectorialPage; X1,Y1, X2,Y2, CX,CY, RX, RY, Angle: Double;
   Clockwise: Boolean): TPath;
 var
   path: TPath;
@@ -143,10 +155,12 @@ begin
     Y1 := PAGE_SIZE - Y1;
     Y2 := PAGE_SIZE - Y2;
     CY := PAGE_SIZE - CY;
+    Angle := -Angle;
   end;
   // Don't invert "Clockwise" here. It does not matter where the y axis points to.
+
   APage.StartPath(X1, Y1);
-  APage.AddEllipticalArcWithCenterToPath(RX, RY, 0, X2, Y2, CX, CY, Clockwise);
+  APage.AddEllipticalArcWithCenterToPath(RX, RY, Angle, X2, Y2, CX, CY, Clockwise);
   path := APage.EndPath;
   path.Pen := StdPen;
 
@@ -345,9 +359,10 @@ begin
   Result := APage.EndPath;
   Result.Pen := StdPen;
 end;
-
+  (*
 { Quarter circle in quadrant I }
-function CreateStdArcQ1(APage: TvVectorialPage; Clockwise: Boolean): TPath;
+function CreateStdCircArcQ1(APage: TvVectorialPage;
+  Clockwise, Reverse: Boolean): TPath;
 const
   CX = 50.0;
   CY = 55.0;
@@ -358,11 +373,15 @@ const
   X2 = CX;
   Y2 = CY + RY;
 begin
-  Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Clockwise);
+  if Reverse then
+    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, 0, Clockwise)
+  else
+    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, 0, Clockwise);
 end;
 
 { Quarter circle reaching from quadrant I into quadrant II}
-function CreateStdArcQ12(APage: TvVectorialPage; Clockwise: Boolean): TPath;
+function CreateStdCircArcQ12(APage: TvVectorialPage;
+  Clockwise, Reverse: Boolean): TPath;
 const
   SQRT2 = 1.4142135623731;
   CX = 50.0;
@@ -374,11 +393,14 @@ const
   X2 = CX - RX/SQRT2;
   Y2 = CY + RY/SQRT2;
 begin
-  Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Clockwise);
+  if Reverse then
+    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, 0, Clockwise)
+  else
+    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, 0, Clockwise);
 end;
 
 { Quarter circle in quadrant II }
-function CreateStdArcQ2(APage: TvVectorialPage; Clockwise: Boolean): TPath;
+function CreateStdCircArcQ2(APage: TvVectorialPage; Clockwise: Boolean): TPath;
 const
   CX = 50.0;
   CY = 55.0;
@@ -389,11 +411,14 @@ const
   X2 = CX - RX;
   Y2 = CY;
 begin
-  Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Clockwise);
+  if Reverse then
+    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, 0, Clockwise)
+  else
+    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, 0, Clockwise);
 end;
 
 { Quarter circle reaching from quadrant II into quadrant III}
-function CreateStdArcQ23(APage: TvVectorialPage; Clockwise: Boolean): TPath;
+function CreateStdCircArcQ23(APage: TvVectorialPage; Clockwise: Boolean): TPath;
 const
   SQRT2 = 1.4142135623731;
   CX = 50.0;
@@ -405,11 +430,14 @@ const
   X2 = CX - RX/SQRT2;
   Y2 = CY - RY/SQRT2;
 begin
-  Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Clockwise);
+  if Reverse then
+    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, 0, Clockwise)
+  else
+    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, 0, Clockwise);
 end;
 
 { Quarter circle in quadrant III }
-function CreateStdArcQ3(APage: TvVectorialPage; Clockwise: Boolean): TPath;
+function CreateStdCircArcQ3(APage: TvVectorialPage; Clockwise: Boolean): TPath;
 const
   CX = 50.0;
   CY = 55.0;
@@ -420,11 +448,14 @@ const
   X2 = CX;
   Y2 = CY - RY;
 begin
-  Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Clockwise);
+  if Reverse then
+    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, 0, Clockwise)
+  else
+    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, 0, Clockwise);
 end;
 
 { Quarter circle reaching from quadrant III into quadrant IV}
-function CreateStdArcQ34(APage: TvVectorialPage; Clockwise: Boolean): TPath;
+function CreateStdCircArcQ34(APage: TvVectorialPage; Clockwise: Boolean): TPath;
 const
   SQRT2 = 1.4142135623731;
   CX = 50.0;
@@ -436,11 +467,14 @@ const
   X2 = CX + RX/SQRT2;
   Y2 = CY - RY/SQRT2;
 begin
-  Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Clockwise);
+  if Reverse then
+    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, 0, Clockwise)
+  else
+    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, 0, Clockwise);
 end;
 
 { Quarter circle in quadrant IV }
-function CreateStdArcQ4(APage: TvVectorialPage; Clockwise: Boolean): TPath;
+function CreateStdCircArcQ4(APage: TvVectorialPage; Clockwise: Boolean): TPath;
 const
   CX = 50.0;
   CY = 55.0;
@@ -451,11 +485,14 @@ const
   X2 = CX + RX;
   Y2 = CY;
 begin
-  Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Clockwise);
+  if Reverse then
+    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, 0, Clockwise)
+  else
+    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, 0, Clockwise);
 end;
 
 { Quarter circle reaching from quadrant IV into quadrant I}
-function CreateStdArcQ41(APage: TvVectorialPage; Clockwise: Boolean): TPath;
+function CreateStdCircArcQ41(APage: TvVectorialPage; Clockwise: Boolean): TPath;
 const
   SQRT2 = 1.4142135623731;
   CX = 50.0;
@@ -467,9 +504,166 @@ const
   X2 = CX + RX/SQRT2;
   Y2 = CY + RY/SQRT2;
 begin
-  Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Clockwise);
+  if Reverse then
+    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, 0, Clockwise)
+  else
+    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, 0, Clockwise);
 end;
 
+function CreateStdEllArcQ1(APage: TvVectorialPage;
+  Clockwise, Reverse: Boolean; Angle: Double): TPath;
+const
+  SQRT2 = 1.4142135623731;
+  CX = 50.0;
+  CY = 55.0;
+  RX = 30.0;
+  RY = 20.0;
+  X1 = CX + RX;
+  Y1 = CY;
+  X2 = CX;
+  Y2 = CY + RY;
+begin
+  if Reverse then
+    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, Angle, Clockwise)
+  else
+    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Angle, Clockwise);
+end;
+
+function CreateStdEllArcQ12(APage: TvVectorialPage;
+  Clockwise, Reverse: Boolean; Angle: Double): TPath;
+const
+  SQRT2 = 1.4142135623731;
+  CX = 50.0;
+  CY = 55.0;
+  RX = 30.0;
+  RY = 20.0;
+  X1 = CX + RX/SQRT2;
+  Y1 = CY + RY/SQRT2;
+  X2 = CX - RX/SQRT2;
+  Y2 = CY + RY/SQRT2;
+begin
+  if Reverse then
+    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, Angle, Clockwise)
+  else
+    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Angle, Clockwise);
+end;
+
+function CreateStdEllArcQ2(APage: TvVectorialPage;
+  Clockwise, Reverse: Boolean; Angle: Double): TPath;
+const
+  SQRT2 = 1.4142135623731;
+  CX = 50.0;
+  CY = 55.0;
+  RX = 30.0;
+  RY = 20.0;
+  X1 = CX;
+  Y1 = CY + RY;
+  X2 = CX - RX;
+  Y2 = CY;
+begin
+  if Reverse then
+    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, Angle, Clockwise)
+  else
+    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Angle, Clockwise);
+end;
+
+function CreateStdEllArcQ23(APage: TvVectorialPage;
+  Clockwise, Reverse: Boolean; Angle: Double): TPath;
+const
+  SQRT2 = 1.4142135623731;
+  CX = 50.0;
+  CY = 55.0;
+  RX = 30.0;
+  RY = 20.0;
+  X1 = CX - RX/SQRT2;
+  Y1 = CY + RY/SQRT2;
+  X2 = CX - RX/SQRT2;
+  Y2 = CY - RY/SQRT2;
+begin
+  if Reverse then
+    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, Angle, Clockwise)
+  else
+    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Angle, Clockwise);
+end;
+
+function CreateStdEllArcQ3(APage: TvVectorialPage;
+  Clockwise, Reverse: Boolean; Angle: Double): TPath;
+const
+  SQRT2 = 1.4142135623731;
+  CX = 50.0;
+  CY = 55.0;
+  RX = 30.0;
+  RY = 20.0;
+  X1 = CX - RX;
+  Y1 = CY;
+  X2 = CX;
+  Y2 = CY - RY;
+begin
+  if Reverse then
+    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, Angle, Clockwise)
+  else
+    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Angle, Clockwise);
+end;
+
+function CreateStdEllArcQ34(APage: TvVectorialPage;
+  Clockwise, Reverse: Boolean; Angle: Double): TPath;
+const
+  SQRT2 = 1.4142135623731;
+  CX = 50.0;
+  CY = 55.0;
+  RX = 30.0;
+  RY = 20.0;
+  X1 = CX - RX/SQRT2;
+  Y1 = CY - RY/SQRT2;
+  X2 = CX + RX/SQRT2;
+  Y2 = CY - RY/SQRT2;
+begin
+  if Reverse then
+    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, Angle, Clockwise)
+  else
+    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Angle, Clockwise);
+end;
+
+function CreateStdEllArcQ4(APage: TvVectorialPage;
+  Clockwise, Reverse: Boolean; Angle: Double): TPath;
+const
+  SQRT2 = 1.4142135623731;
+  CX = 50.0;
+  CY = 55.0;
+  RX = 30.0;
+  RY = 20.0;
+  X1 = CX;
+  Y1 = CY - RY;
+  X2 = CX + RX;
+  Y2 = CY;
+begin
+  if Reverse then
+    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, Angle, Clockwise)
+  else
+    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Angle, Clockwise);
+end;
+
+function CreateStdEllArcQ41(APage: TvVectorialPage;
+  Clockwise, Reverse: Boolean; Angle: Double): TPath;
+const
+  SQRT2 = 1.4142135623731;
+  CX = 50.0;
+  CY = 55.0;
+  RX = 30.0;
+  RY = 20.0;
+  X1 = CX + RX/SQRT2;
+  Y1 = CY - RY/SQRT2;
+  X2 = CX + RX/SQRT2;
+  Y2 = CY + RY/SQRT2;
+begin
+  if Reverse then
+    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, Angle, Clockwise)
+  else
+    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Angle, Clockwise);
+end;
+    *)
+
+{ ---- }
 
 function StdSolidBrush: TvBrush;
 begin

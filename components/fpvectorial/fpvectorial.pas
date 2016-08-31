@@ -4888,7 +4888,7 @@ begin
   segment.CY := ACenterY;
   segment.XRotation := AXAxisRotation;
   segment.LeftmostEllipse := False; // which value would it have?
-  segment.ClockwiseArcFlag := AClockwiseArcFlag xor FPage.UseTopLeftCoordinates;
+  segment.ClockwiseArcFlag := AClockwiseArcFlag;
   segment.CenterSetByUser := True;
 
   AppendSegment(segment);
@@ -6399,17 +6399,17 @@ var
   j: Integer;
   phi, lYAdj: Double;
 begin
-  lYAdj := FPage.GetTopLeftCoords_Adjustment();
+  lYAdj := FPage.GetTopLeftCoords_Adjustment(); // top/left: +1, bottom/left: -1
 
   if (RX > 0) and (RY > 0) then
   begin
     SetLength(pts, 9);
-    pts[0] := Make3dPoint(X, Y+lYAdj*RY);
-    pts[1] := Make3dPoint(X+RX, Y);
-    pts[2] := Make3dPoint(X+CX-RX, Y);
-    pts[3] := Make3dPoint(X+CX, Y+lYAdj*RY);
-    pts[4] := Make3dPoint(X+CX, Y+lYAdj*(CY-RY));
-    pts[5] := Make3dPoint(X+CX-RX, Y+lYAdj*CY);
+    pts[0] := Make3dPoint(X, Y+lYAdj*RY);           {    1              2    }
+    pts[1] := Make3dPoint(X+RX, Y);                 {  0,8                3  }
+    pts[2] := Make3dPoint(X+CX-RX, Y);              {                        }
+    pts[3] := Make3dPoint(X+CX, Y+lYAdj*RY);        {                        }
+    pts[4] := Make3dPoint(X+CX, Y+lYAdj*(CY-RY));   {  7                  4  }
+    pts[5] := Make3dPoint(X+CX-RX, Y+lYAdj*CY);     {    6              5    }
     pts[6] := Make3dPoint(X+RX, Y+lYAdj*CY);
     pts[7] := Make3dPoint(X, Y+lYAdj*(CY-RY));
     pts[8] := Make3dPoint(X, Y+lYAdj*RY);
@@ -6433,17 +6433,16 @@ begin
   begin
     Result.AppendMoveToSegment(pts[0].x, pts[0].y);
     Result.AppendEllipticalArcWithCenter(RX, RY, phi, pts[1].x, pts[1].y,
-      pts[1].x, pts[0].y, false);
-    // wp: strange - why must the clockwise flag be false here? It should be true!
+      pts[1].x, pts[0].y, true);
     Result.AppendLineToSegment(pts[2].x, pts[2].y);
     Result.AppendEllipticalArcWithCenter(RX, RY, phi, pts[3].x, pts[3].y,
-      pts[2].x, pts[3].y, false);
+      pts[2].x, pts[3].y, true);
     Result.AppendLineToSegment(pts[4].x, pts[4].y);
     Result.AppendEllipticalArcWithCenter(RX, RY, phi, pts[5].x, pts[5].y,
-      pts[5].x, pts[4].y, false);
+      pts[5].x, pts[4].y, true);
     Result.AppendLineToSegment(pts[6].x, pts[6].y);
     Result.AppendEllipticalArcWithCenter(RX, RY, phi, pts[7].x, pts[7].y,
-      pts[6].x, pts[7].y, false);
+      pts[6].x, pts[7].y, true);
     Result.AppendLineToSegment(pts[8].x, pts[8].y);
   end else
   begin
@@ -9475,8 +9474,9 @@ end;
 }
 function  TvVectorialPage.EndPath(AOnlyCreate: Boolean = False): TPath;
 begin
-  if FTmPPath.Len = 0 then Exit;
-  Result := AddPathCopyMem(FTmPPath, AOnlyCreate);
+  if FTmpPath.Len = 0 then Exit;
+  Result := AddPathCopyMem(FTmpPath, AOnlyCreate);
+  Result.FPage := self;
   ClearTmpPath();
 end;
 
