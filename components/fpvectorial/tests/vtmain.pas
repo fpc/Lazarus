@@ -46,6 +46,8 @@ type
     GbTree: TGroupBox;
     Label14: TLabel;
     LblBothImagesMustMatch1: TLabel;
+    RbWriteBottomLeftCoords: TRadioButton;
+    RbWriteTopLeftCoords: TRadioButton;
     RefImage: TImage;
     Label10: TLabel;
     Label11: TLabel;
@@ -55,7 +57,7 @@ type
     Label8: TLabel;
     LblBothImagesMustMatch: TLabel;
     LblRefImgMustMatch: TLabel;
-    LblRefImgMustMatch1: TLabel;
+    LblReadWriteInstructions: TLabel;
     BottomLeftPaintbox: TPaintBox;
     ScrollBox1: TScrollBox;
     TopLeftPaintbox: TPaintBox;
@@ -231,7 +233,10 @@ begin
   folder := IMG_FOLDER + ext + PathDelim;
   fn := folder + ChangeFileExt(renderParams.RefFile, '.' + ext);
   ForceDirectory(folder);
-  FDocBottomLeft.WriteToFile(fn, fmt);
+  if RbWriteBottomLeftCoords.Checked then
+    FDocBottomLeft.WriteToFile(fn, fmt)
+  else if RbWriteTopLeftCoords.Checked then
+    FDocTopLeft.WriteToFile(fn, fmt);
 
   ShowFileImage(fn);
 
