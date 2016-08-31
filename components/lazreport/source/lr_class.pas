@@ -10116,7 +10116,7 @@ var
   Value: TfrValue;
   D: TfrTDataSet;
   F: TfrTField;
-  s1: String;
+  s1, SE1: String;
   aCursr: Longint;
 
   function MasterBand: TfrBand;
@@ -10231,7 +10231,16 @@ begin
               if roIgnoreSymbolNotFound in FReportOptions then
                 aValue := Null
               else
-                raise(EParserError.Create('Undefined symbol: ' + SubValue));
+              begin
+                SE1:='';
+                if Assigned(CurView) then
+                  SE1:=SE1 + 'Object : ' + CurView.Name + #13;
+                if Assigned(CurBand) then
+                  SE1:=SE1 + 'Band : ' + CurBand.Name + #13;
+                if Assigned(CurPage) then
+                  SE1:=SE1 + 'Page : ' + CurPage.Name + #13;
+                raise(EParserError.Create(SE1 + 'Undefined symbol: ' + SubValue));
+              end;
             end;
           end;
         end;

@@ -841,7 +841,7 @@ procedure DoFuncId; forward;
     if bs = 'FOR' then
       DoFor
     else
-    if Pos('END', bs) = 1 then
+    if (bs = 'END') or (bs = 'END;') then
     begin
       cur := nsm;
       Error := False;
