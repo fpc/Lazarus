@@ -27,27 +27,28 @@ type
       AIntParam: Integer = MaxInt);
   end;
 
+  TRenderCoords  = (rcBottomLeftCoords, rcTopLeftCoords);
+
   { TMainForm }
 
   TMainForm = class(TForm)
     BtnSaveAsRef: TButton;
-    BtnSaveAsWMF: TButton;
-    BtnSaveAsSvg: TButton;
-    BtnViewWMF: TButton;
-    BtnViewSVG: TButton;
-    gbWMF: TGroupBox;
-    gbSVG: TGroupBox;
+    BtnSaveToFiles: TButton;
+    BtnViewBottomLeft: TButton;
+    BtnViewTopLeft: TButton;
+    CbFileFormat: TComboBox;
+    gbWRBottomLeft: TGroupBox;
     gbRenderTest: TGroupBox;
     gbBottomLeft: TGroupBox;
+    gbWRTopLeft: TGroupBox;
     gbTopLeft: TGroupBox;
     gbReferenceImageTest: TGroupBox;
     GroupBox1: TGroupBox;
     gbReadWriteTest: TGroupBox;
     GbTree: TGroupBox;
+    Label1: TLabel;
     Label14: TLabel;
     LblBothImagesMustMatch1: TLabel;
-    RbWriteBottomLeftCoords: TRadioButton;
-    RbWriteTopLeftCoords: TRadioButton;
     RefImage: TImage;
     Label10: TLabel;
     Label11: TLabel;
@@ -60,14 +61,15 @@ type
     LblReadWriteInstructions: TLabel;
     BottomLeftPaintbox: TPaintBox;
     ScrollBox1: TScrollBox;
+    WRTopLeftPaintbox: TPaintBox;
     TopLeftPaintbox: TPaintBox;
-    SVGPaintbox: TPaintBox;
-    WMFPaintBox: TPaintBox;
+    WRBottomLeftPaintbox: TPaintBox;
     AllTestsPanel: TPanel;
     Tree: TTreeView;
-    procedure BtnSaveToFileClick(Sender: TObject);
+    procedure BtnSaveToFilesClick(Sender: TObject);
     procedure BtnSaveAsRefClick(Sender: TObject);
     procedure BtnViewImageClick(Sender: TObject);
+    procedure CbFileFormatChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure PaintBoxPaint(Sender: TObject);
@@ -77,18 +79,20 @@ type
 
   private
     { private declarations }
-    FDocTopLeft: TvVectorialDocument;
-    FDocBottomLeft: TvVectorialDocument;
-    FDocFromWMF: TvVectorialDocument;
-    FDocFromSVG: TvVectorialDocument;
-    procedure CreateDocument(var ADoc: TvVectorialDocument;
-      var APage: TvVectorialPage; AUseTopLeftCoords: boolean);
+    FDoc: array[TRenderCoords] of TvVectorialDocument;
+    FDocFromWMF: array[TRenderCoords] of TvVectorialDocument;
+    FDocFromSVG: array[TRenderCoords] of TvVectorialDocument;
+    function GetFileFormat: TvVectorialFormat;
+    function GetFileFormatExt: String;
     procedure Populate;
+    procedure PrepareDoc(var ADoc: TvVectorialDocument; var APage: TvVectorialPage;
+      AUseTopLeftCoords: boolean);
     procedure ReadIni;
-    procedure ShowFileImage(AFilename: String);
-    procedure ShowReadWriteTestImages;
+    procedure ShowFileImage(AFilename: String; AUseTopLeftCoords: Boolean;
+      APaintbox: TPaintbox);
     procedure ShowRefImageTest;
     procedure ShowRenderTestImages;
+    procedure ShowWriteReadTestImages;
     procedure UpdateCmdStates;
     procedure WriteIni;
 
@@ -176,10 +180,10 @@ begin
   renderParams := TRenderParams(Tree.Selected.Data);
   if RenderParams = nil then
     exit;
-  if FDocBottomLeft = nil then
+  if FDoc[rcBottomLeftCoords] = nil then
     exit;
 
-  page := FDocBottomLeft.GetPageAsVectorial(0);
+  page := FDoc[rcBottomLeftCoords].GetPageAsVectorial(0);
 
   bmp := TBitmap.Create;
   try
@@ -205,7 +209,7 @@ begin
   end;
 end;
 
-procedure TMainForm.BtnSaveToFileClick(Sender: TObject);
+procedure TMainForm.BtnSaveToFilesClick(Sender: TObject);
 var
   fn: String;
   renderParams: TRenderParams;
@@ -213,32 +217,26 @@ var
   fmt: TvVectorialFormat;
   ext: String;
 begin
-  if FDocBottomLeft = nil then
-    exit;
-
   renderParams := TRenderParams(Tree.Selected.Data);
   if RenderParams = nil then
     exit;
 
-  if Sender = BtnSaveAsSVG then begin
-    ext := 'svg';
-    fmt := vfSVG;
-  end else
-  if Sender = BtnSaveAsWMF then begin
-    ext := 'wmf';
-    fmt := vfWindowsMetafileWMF;
-  end else
-    exit;
-
+  fmt := GetFileFormat;
+  ext := GetFileFormatExt;
   folder := IMG_FOLDER + ext + PathDelim;
-  fn := folder + ChangeFileExt(renderParams.RefFile, '.' + ext);
   ForceDirectory(folder);
-  if RbWriteBottomLeftCoords.Checked then
-    FDocBottomLeft.WriteToFile(fn, fmt)
-  else if RbWriteTopLeftCoords.Checked then
-    FDocTopLeft.WriteToFile(fn, fmt);
 
-  ShowFileImage(fn);
+  if FDoc[rcBottomLeftCoords] <> nil then begin
+    fn := folder + 'bl_' + ChangeFileExt(renderParams.RefFile, '.' + ext);
+    FDoc[rcBottomLeftCoords].WriteToFile(fn, fmt);
+    ShowFileImage(fn, false, WRBottomLeftPaintbox);
+  end;
+
+  if FDoc[rcTopLeftCoords] <> nil then begin
+    fn := folder + 'tl_' + ChangeFileExt(renderParams.RefFile, '.' + ext);
+    FDoc[rcTopLeftCoords].WriteToFile(fn, fmt);
+    ShowFileImage(fn, true, WRTopLeftPaintbox);
+  end;
 
   UpdateCmdStates;
 end;
@@ -247,30 +245,36 @@ procedure TMainForm.BtnViewImageClick(Sender: TObject);
 var
   fn: String;
   ext: String;
+  folder: String;
   renderParams: TRenderParams;
 begin
-  if Sender = BtnViewSVG then
-  begin
-    BtnSaveToFileClick(BtnSaveAsSVG);
-    ext := 'svg';
-  end else
-  if Sender = BtnViewWMF then
-  begin
-    BtnSaveToFileClick(BtnSaveAsWMF);
-    ext := 'wmf';
-  end else
-    exit;
+  BtnSaveToFilesClick(nil);
 
   renderParams := TRenderParams(Tree.Selected.Data);
   if renderParams = nil then
     exit;
 
-  fn := IMG_FOLDER + ext + PathDelim + ChangeFileExt(renderParams.RefFile, '.'+ext);
+  ext := GetFileFormatExt;
+  folder := IMG_FOLDER + ext + PathDelim;
+
+  if Sender = BtnViewBottomLeft then
+    fn := folder + 'bl_' + ChangeFileExt(renderParams.RefFile, '.' + ext)
+  else if Sender = BtnViewTopLeft then
+    fn := folder + 'tl_' + ChangeFileExt(renderParams.RefFile, '.' + ext)
+  else
+    raise Exception.Create('BtnViewImageClick: this sender is not supported.');
+
   if FileExists(fn) then
     OpenDocument(fn);
 end;
 
-procedure TMainForm.CreateDocument(var ADoc: TvVectorialDocument;
+procedure TMainForm.CbFileFormatChange(Sender: TObject);
+begin
+  ShowWriteReadTestImages;
+  UpdateCmdStates;
+end;
+
+procedure TMainForm.PrepareDoc(var ADoc: TvVectorialDocument;
   var APage: TvVectorialPage; AUseTopLeftCoords: boolean);
 var
   r: TvRectangle;
@@ -302,8 +306,9 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   RefImage.Hint := NOT_SAVED;
-  SVGPaintbox.Hint := NOT_SAVED;
-  WMFPaintbox.Hint := NOT_SAVED;
+  WRBottomLeftPaintbox.Hint := NOT_SAVED;
+  WRTopLeftPaintbox.Hint := NOT_SAVED;
+
   ReadIni;
   Populate;
   TreeSelectionChanged(nil);
@@ -312,6 +317,7 @@ end;
 procedure TMainForm.FormDestroy(Sender: TObject);
 var
   parentnode, node: TTreeNode;
+  rc: TRenderCoords;
 begin
   parentnode := Tree.Items.GetFirstNode;
   while parentnode <> nil do begin
@@ -323,12 +329,31 @@ begin
     parentnode := parentnode.GetNextSibling;
   end;
 
-  FreeAndNil(FDocBottomLeft);
-  FreeAndNil(FDocTopLeft);
-  FreeAndNil(FDocFromSVG);
-  FreeAndNil(FDocFromWMF);
+  for rc in TRenderCoords do begin
+    FreeAndNil(FDoc[rc]);
+    FreeAndNil(FDocFromSVG[rc]);
+    FreeAndNil(FDocFromWMF[rc]);
+  end;
 
   WriteIni;
+end;
+
+function TMainForm.GetFileFormat: TvVectorialFormat;
+begin
+  case CbFileFormat.ItemIndex of
+    0: Result := vfSVG;
+    1: Result := vfWindowsMetafileWMF;
+    else raise Exception.Create('Format not supported');
+  end;
+end;
+
+function TMainForm.GetFileFormatExt: String;
+begin
+  case CbFileFormat.ItemIndex of
+    0: Result := 'svg';
+    1: Result := 'wmf';
+    else raise Exception.Create('Format not supported');
+  end;
 end;
 
 procedure TMainForm.PaintBoxPaint(Sender: TObject);
@@ -336,17 +361,32 @@ var
   doc: TvVectorialDocument;
   page: TvVectorialPage;
   w, h: Integer;
+  fmt: TvVectorialFormat;
+  rc: TRenderCoords;
 begin
-  if Sender = BottomLeftPaintbox then
-    doc := FDocBottomLeft
-  else if Sender = TopLeftPaintbox then
-    doc := FDocTopLeft
-  else if Sender = SVGPaintbox then
-    doc := FDocFromSVG
-  else if Sender = WMFPaintbox then
-    doc := FDocFromWMF
+  fmt := GetFileFormat;
+
+  if (Sender = BottomLeftPaintbox) or (Sender = WRBottomLeftPaintbox) then
+    rc := rcBottomLeftCoords
   else
-    exit;
+  if (Sender = TopLeftPaintbox) or (Sender = WRTopLeftPaintbox) then
+    rc := rcTopLeftCoords
+  else
+    raise Exception.Create('This sender is not supported here.');
+
+  doc := nil;
+  if (Sender = BottomLeftPaintbox) or (Sender = TopLeftPaintbox) then
+    doc := FDoc[rc]
+  else
+  if (Sender = WRBottomLeftPaintbox) or (Sender = WRTopLeftPaintbox) then
+    case GetFileFormat of
+      vfSVG:
+        doc := FDocFromSVG[rc];
+      vfWindowsMetafileWMF:
+        doc := FDocFromWMF[rc];
+      else
+        raise Exception.Create('File format not supported.');
+    end;
 
   w := TPaintbox(Sender).Width;
   h := TPaintbox(Sender).Height;
@@ -425,21 +465,21 @@ begin
     TRenderParams.Create(@Render_Arc, 'arc_cw_q41.png', $0207));
 
   Tree.Items.AddChildObject(node, 'Quadrant I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_rev_cw_q1.png', $0300));
+    TRenderParams.Create(@Render_Arc, 'arc_cw_q1r.png', $0300));
   Tree.Items.AddChildObject(node, 'Quadrant I+II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_rev_cw_q12.png', $0301));
+    TRenderParams.Create(@Render_Arc, 'arc_cw_q12r.png', $0301));
   Tree.Items.AddChildObject(node, 'Quadrant II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_rev_cw_q2.png', $0302));
+    TRenderParams.Create(@Render_Arc, 'arc_cw_q2r.png', $0302));
   Tree.Items.AddChildObject(node, 'Quadrant II+III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_rev_cw_q23.png', $0303));
+    TRenderParams.Create(@Render_Arc, 'arc_cw_q23r.png', $0303));
   Tree.Items.AddChildObject(node, 'Quadrant III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_rev_cw_q3.png', $0304));
+    TRenderParams.Create(@Render_Arc, 'arc_cw_q3r.png', $0304));
   Tree.Items.AddChildObject(node, 'Quadrant III+IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_rev_cw_q34.png', $0305));
+    TRenderParams.Create(@Render_Arc, 'arc_cw_q34r.png', $0305));
   Tree.Items.AddChildObject(node, 'Quadrant IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_rev_cw_q4.png', $0306));
+    TRenderParams.Create(@Render_Arc, 'arc_cw_q4r.png', $0306));
   Tree.Items.AddChildObject(node, 'Quadrant IV+I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_rev_cw_q41.png', $0307));
+    TRenderParams.Create(@Render_Arc, 'arc_cw_q41r.png', $0307));
 
   node := Tree.Items.AddChild(node1, 'counter-clockwise from point 1 to point 2');
   Tree.Items.AddChildObject(node, 'Quadrant I',
@@ -460,21 +500,21 @@ begin
     TRenderParams.Create(@Render_Arc, 'arc_ccw_q41.png', $0007));
 
   Tree.Items.AddChildObject(node, 'Quadrant I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_rev_ccw_q1.png', $0100));
+    TRenderParams.Create(@Render_Arc, 'arc_ccw_q1r.png', $0100));
   Tree.Items.AddChildObject(node, 'Quadrant I+II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_rev_ccw_q12.png', $0101));
+    TRenderParams.Create(@Render_Arc, 'arc_ccw_q12r.png', $0101));
   Tree.Items.AddChildObject(node, 'Quadrant II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_rev_ccw_q2.png', $0102));
+    TRenderParams.Create(@Render_Arc, 'arc_ccw_q2r.png', $0102));
   Tree.Items.AddChildObject(node, 'Quadrant II+III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_rev_ccw_q23.png', $0103));
+    TRenderParams.Create(@Render_Arc, 'arc_ccw_q23r.png', $0103));
   Tree.Items.AddChildObject(node, 'Quadrant III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_rev_ccw_q3.png', $0104));
+    TRenderParams.Create(@Render_Arc, 'arc_ccw_q3r.png', $0104));
   Tree.Items.AddChildObject(node, 'Quadrant III+IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_rev_ccw_q34.png', $0105));
+    TRenderParams.Create(@Render_Arc, 'arc_ccw_q34r.png', $0105));
   Tree.Items.AddChildObject(node, 'Quadrant IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_rev_ccw_q4.png', $0106));
+    TRenderParams.Create(@Render_Arc, 'arc_ccw_q4r.png', $0106));
   Tree.Items.AddChildObject(node, 'Quadrant IV+I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_rev_ccw_q41.png', $0107));
+    TRenderParams.Create(@Render_Arc, 'arc_ccw_q41r.png', $0107));
 
   node1 := Tree.Items.AddChild(node0, 'elliptical');
   node := Tree.Items.AddChild(node1, 'clockwise from point 1 to point 2');
@@ -496,21 +536,21 @@ begin
     TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q41.png', $1207));
 
   Tree.Items.AddChildObject(node, 'Quadrant I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_rev_cw_q1.png', $1300));
+    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q1r.png', $1300));
   Tree.Items.AddChildObject(node, 'Quadrant I+II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_rev_cw_q12.png', $1301));
+    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q12r.png', $1301));
   Tree.Items.AddChildObject(node, 'Quadrant II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_rev_cw_q2.png', $1302));
+    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q2r.png', $1302));
   Tree.Items.AddChildObject(node, 'Quadrant II+III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_rev_cw_q23.png', $1303));
+    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q23r.png', $1303));
   Tree.Items.AddChildObject(node, 'Quadrant III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_rev_cw_q3.png', $1304));
+    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q3r.png', $1304));
   Tree.Items.AddChildObject(node, 'Quadrant III+IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_rev_cw_q34.png', $1305));
+    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q34r.png', $1305));
   Tree.Items.AddChildObject(node, 'Quadrant IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_rev_cw_q4.png', $1306));
+    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q4r.png', $1306));
   Tree.Items.AddChildObject(node, 'Quadrant IV+I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_rev_cw_q41.png', $1307));
+    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q41r.png', $1307));
 
   node := Tree.Items.AddChild(node1, 'counter-clockwise from point 1 to point 2');
   Tree.Items.AddChildObject(node, 'Quadrant I',
@@ -531,21 +571,21 @@ begin
     TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q41.png', $1007));
 
   Tree.Items.AddChildObject(node, 'Quadrant I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_rev_ccw_q1.png', $1100));
+    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q1r.png', $1100));
   Tree.Items.AddChildObject(node, 'Quadrant I+II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_rev_ccw_q12.png', $1101));
+    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q12r.png', $1101));
   Tree.Items.AddChildObject(node, 'Quadrant II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_rev_ccw_q2.png', $1102));
+    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q2r.png', $1102));
   Tree.Items.AddChildObject(node, 'Quadrant II+III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_rev_ccw_q23.png', $1103));
+    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q23r.png', $1103));
   Tree.Items.AddChildObject(node, 'Quadrant III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_rev_ccw_q3.png', $1104));
+    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q3r.png', $1104));
   Tree.Items.AddChildObject(node, 'Quadrant III+IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_rev_ccw_q34.png', $1105));
+    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q34r.png', $1105));
   Tree.Items.AddChildObject(node, 'Quadrant IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_rev_ccw_q4.png', $1106));
+    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q4r.png', $1106));
   Tree.Items.AddChildObject(node, 'Quadrant IV+I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_rev_ccw_q41.png', $1107));
+    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q41r.png', $1107));
 
   node1 := Tree.Items.AddChild(node0, 'elliptical, rotated 30deg');
   node := Tree.Items.AddChild(node1, 'clockwise from point 1 to point 2');
@@ -567,21 +607,21 @@ begin
     TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q41.png', $2207));
 
   Tree.Items.AddChildObject(node, 'Quadrant I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_rev_cw_q1.png', $2300));
+    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q1r.png', $2300));
   Tree.Items.AddChildObject(node, 'Quadrant I+II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_rev_cw_q12.png', $2301));
+    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q12r.png', $2301));
   Tree.Items.AddChildObject(node, 'Quadrant II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_rev_cw_q2.png', $2302));
+    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q2r.png', $2302));
   Tree.Items.AddChildObject(node, 'Quadrant II+III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_rev_cw_q23.png', $2303));
+    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q23r.png', $2303));
   Tree.Items.AddChildObject(node, 'Quadrant III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_rev_cw_q3.png', $2304));
+    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q3r.png', $2304));
   Tree.Items.AddChildObject(node, 'Quadrant III+IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_rev_cw_q34.png', $2305));
+    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q34r.png', $2305));
   Tree.Items.AddChildObject(node, 'Quadrant IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_rev_cw_q4.png', $2306));
+    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q4r.png', $2306));
   Tree.Items.AddChildObject(node, 'Quadrant IV+I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_rev_cw_q41.png', $2307));
+    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q41r.png', $2307));
 
   node := Tree.Items.AddChild(node1, 'counter-clockwise from point 1 to point 2');
   Tree.Items.AddChildObject(node, 'Quadrant I',
@@ -602,21 +642,21 @@ begin
     TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q41.png', $2007));
 
   Tree.Items.AddChildObject(node, 'Quadrant I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_rev_ccw_q1.png', $2100));
+    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q1r.png', $2100));
   Tree.Items.AddChildObject(node, 'Quadrant I+II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_rev_ccw_q12.png', $2101));
+    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q12r.png', $2101));
   Tree.Items.AddChildObject(node, 'Quadrant II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_rev_ccw_q2.png', $2102));
+    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q2r.png', $2102));
   Tree.Items.AddChildObject(node, 'Quadrant II+III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_rev_ccw_q23.png', $2103));
+    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q23r.png', $2103));
   Tree.Items.AddChildObject(node, 'Quadrant III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_rev_ccw_q3.png', $2104));
+    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q3r.png', $2104));
   Tree.Items.AddChildObject(node, 'Quadrant III+IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_rev_ccw_q34.png', $2105));
+    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q34r.png', $2105));
   Tree.Items.AddChildObject(node, 'Quadrant IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_rev_ccw_q4.png', $2106));
+    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q4r.png', $2106));
   Tree.Items.AddChildObject(node, 'Quadrant IV+I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_rev_ccw_q41.png', $2107));
+    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q41r.png', $2107));
 
   { -----------------------------------------------}
   node0 := Tree.Items.AddChild(nil, 'Gradients');
@@ -1013,56 +1053,41 @@ begin
   end;
 end;
 
-procedure TMainForm.ShowFileImage(AFilename: String);
+procedure TMainForm.ShowFileImage(AFilename: String; AUseTopLeftCoords: Boolean;
+  APaintbox: TPaintbox);
 var
   ext: String;
+  rc: TRenderCoords;
 begin
+  if AUseTopLeftCoords then
+    rc := rcTopLeftCoords else
+    rc := rcBottomLeftCoords;
+
   ext := Lowercase(ExtractFileExt(AFileName));
-  if ext = '.svg' then begin
-    FreeAndNil(FDocFromSVG);
-    if FileExists(AFileName) then begin
-      FDocFromSVG := TvVectorialDocument.Create;
-      FDocFromSVG.ReadFromFile(AFileName);
-      SVGPaintbox.Hint := AFilename;
-    end else begin
-      SVGPaintbox.Hint := NOT_SAVED;
+
+  if not FileExists(AFileName) then begin
+    case ext of
+      '.svg': FreeAndNil(FDocFromSVG[rc]);
+      '.wmf': FreeAndNil(FDocFromWMF[rc]);
+      else    raise Exception.Create('File type not supported');
     end;
-    SVGPaintbox.Invalidate;
+    APaintbox.Hint := NOT_SAVED;
+    APaintbox.Invalidate;
+    exit;
+  end;
+
+  if ext = '.svg' then begin
+    FreeAndNil(FDocFromSVG[rc]);
+    FDocFromSVG[rc] := TvVectorialDocument.Create;
+    FDocFromSVG[rc].ReadFromFile(AFileName);
   end else
   if ext = '.wmf' then begin
-    FreeAndNil(FDocFromWMF);
-    if FileExists(AFileName) then begin
-      FDocFromWMF := TvVectorialDocument.Create;
-      FDocFromWMF.ReadFromFile(AFilename);
-      WMFPaintBox.Hint := AFileName;
-    end else begin
-      WMFPaintBox.Hint := NOT_SAVED;
-    end;
-    WMFPaintBox.Invalidate;
+    FreeAndNil(FDocFromWMF[rc]);
+    FDocFromWMF[rc] := TvVectorialDocument.Create;
+    FDocFromWMF[rc].ReadFromFile(AFilename);
   end;
-end;
-
-procedure TMainForm.ShowReadWriteTestImages;
-var
-  renderParams: TRenderParams;
-  fn: String;
-begin
-  if Tree.Selected = nil then
-    exit;
-
-  renderParams := TRenderParams(Tree.Selected.Data);
-  if renderParams = nil then
-  begin
-    SVGPaintbox.Invalidate;
-    WMFPaintbox.Invalidate;
-    exit;
-  end;
-
-  fn := IMG_FOLDER + 'svg' + PathDelim + ChangeFileExt(renderParams.RefFile, '.svg');
-  ShowFileImage(fn);
-
-  fn := IMG_FOLDER + 'wmf' + PathDelim + ChangeFileExt(renderParams.RefFile, '.wmf');
-  ShowFileImage(fn);
+  APaintbox.Hint := AFileName;
+  APaintBox.Invalidate;
 end;
 
 procedure TMainForm.ShowRefImageTest;
@@ -1107,22 +1132,56 @@ begin
   end;
 
   // Render document with bottom/left origin
-  CreateDocument(FDocBottomLeft, page, false);
+  PrepareDoc(FDoc[rcBottomLeftCoords], page, false);
   renderParams.OnRender(page, renderParams.IntParam);
   BottomLeftPaintbox.Invalidate;
 
   // Render document with top/left origin
-  CreateDocument(FDocTopLeft, page, true);
+  PrepareDoc(FDoc[rcTopLeftCoords], page, true);
   renderParams.OnRender(page, renderParams.IntParam);
   TopLeftPaintbox.Invalidate;
 end;
 
+procedure TMainForm.ShowWriteReadTestImages;
+var
+  renderParams: TRenderParams;
+  folder: String;
+  fn: String;
+  ext: String;
+  rc: TRenderCoords;
+begin
+  for rc in TRenderCoords do begin
+    FreeAndNil(FDocFromSVG[rc]);
+    FreeAndNil(FDocFromWMF[rc]);
+  end;
+
+  if Tree.Selected = nil then
+    exit;
+
+  renderParams := TRenderParams(Tree.Selected.Data);
+  if renderParams = nil then
+  begin
+    WRBottomLeftPaintbox.Invalidate;
+    WRTopLeftPaintbox.Invalidate;
+    exit;
+  end;
+
+  ext := GetFileFormatExt;
+  folder := IMG_FOLDER + ext + PathDelim;
+
+  fn := folder + 'bl_' + ChangeFileExt(renderParams.RefFile, '.' + ext);
+  ShowFileImage(fn, false, WRBottomLeftPaintbox);
+
+  fn := folder + 'tl_' + ChangeFileExt(renderParams.RefFile, '.' + ext);
+  ShowFileImage(fn, true, WRTopLeftPaintbox);
+end;
+
 procedure TMainForm.TreeSelectionChanged(Sender: TObject);
 begin
-  UpdateCmdStates;
   ShowRenderTestImages;
   ShowRefImageTest;
-  ShowReadWriteTestImages;
+  ShowWriteReadTestImages;
+  UpdateCmdStates;
 end;
 
 procedure TMainForm.TreeCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
@@ -1136,26 +1195,30 @@ end;
 procedure TMainForm.UpdateCmdStates;
 var
   fn: String;
+  folder: string;
   renderParams: TRenderParams;
-  svgOK, wmfOK: boolean;
+  ext: String;
+  rc: TRenderCoords;
+  rcOK: array[TRenderCoords] of boolean = (false, false);
 begin
   BtnSaveAsRef.Enabled := Tree.Selected <> nil;
-  BtnSaveAsWMF.Enabled := Tree.Selected <> nil;
-  BtnSaveAsSVG.Enabled := Tree.Selected <> nil;
+  BtnSaveToFiles.Enabled := Tree.Selected <> nil;
+  BtnViewBottomLeft.Enabled := Tree.Selected <> nil;
+  BtnViewTopLeft.Enabled := Tree.Selected <> nil;
 
-  svgOK := false;
-  wmfOK := false;
   if Tree.Selected <> nil then begin
     renderParams := TRenderParams(Tree.Selected.Data);
     if renderParams <> nil then begin
-      fn := IMG_FOLDER + 'svg' + PathDelim + ChangeFileExt(renderParams.RefFile, '.svg');
-      svgOK := FileExists(fn);
-      fn := IMG_FOLDER + 'wmf' + PathDelim + ChangeFileExt(renderParams.RefFile, '.wmf');
-      wmfOK := FileExists(fn);
+      ext := GetFileFormatExt;
+      folder := IMG_FOLDER + ext + PathDelim;
+      fn := folder + 'bl_' + ChangeFileExt(renderParams.RefFile, '.' + ext);
+      rcOK[rcBottomLeftCoords] := FileExists(fn);
+      fn := folder + 'tl_' + ChangeFileExt(renderParams.RefFile, '.' + ext);
+      rcOK[rcTopLeftCoords] := FileExists(fn);
     end;
   end;
-  BtnViewSVG.Enabled := svgOK;
-  BtnViewWMF.Enabled := wmfOK;
+  BtnViewBottomLeft.Enabled := rcOK[rcBottomLeftcoords];
+  BtnViewTopLeft.Enabled := rcOK[rcTopLeftCoords];
 end;
 
 end.
