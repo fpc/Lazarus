@@ -10747,29 +10747,6 @@ procedure TCustomStringGrid.SelectionSetText(TheText: String);
 var
   L,SubL: TStringList;
   i,j,StartCol,StartRow: Integer;
-  procedure CollectCols(const S: String);
-  var
-    P,Ini: PChar;
-    St: String;
-  begin
-    Subl.Clear;
-    P := Pchar(S);
-    if P<>nil then
-      while P^<>#0 do begin
-        ini := P;
-        while (P^<>#0) and (P^<>#9) do
-          Inc(P);
-        if P=Ini then
-          St := ''
-        else begin
-          SetLength(St, P-Ini);
-          Move(Ini^,St[1],P-Ini);
-        end;
-        SubL.Add(St);
-        if P^<>#0 then
-          Inc(P);
-      end;
-  end;
 var
   aCol: Integer;
   aRow: Integer;
@@ -10777,6 +10754,8 @@ var
 begin
   L := TStringList.Create;
   SubL := TStringList.Create;
+  SubL.StrictDelimiter := true;
+  SubL.Delimiter := #9;
   StartCol := Selection.left;
   StartRow := Selection.Top;
   try
@@ -10784,7 +10763,7 @@ begin
     for j:=0 to L.Count-1 do begin
       if j+StartRow >= RowCount then
         break;
-      CollectCols(L[j]);
+      SubL.DelimitedText := L[j];
       for i:=0 to SubL.Count-1 do
         if (i+StartCol<ColCount) and (not GetColumnReadonly(i+StartCol)) then
         begin
