@@ -134,8 +134,10 @@ uses
 
 const
   INCH2MM = 25.4;      // 1 inch = 25.4 mm
-  DEFAULT_SIZE = 100;  // size of image if scaling info is not available
+  MM2INCH = 1.0/INCH2MM;
+  DEFAULT_SIZE = 100;  // size of image (in mm) if scaling info is not available
   SIZE_OF_WORD = 2;
+  FPV_UNIT: (fuPX, fuMM) = fuPX;
 
 type
   TWMFFont = class
@@ -1271,33 +1273,34 @@ end;
 
 procedure TvWMFVectorialReader.CalcScalingFactors(out fx, fy: Double);
 begin
+  // Convert to pixels
   case FMapMode of
     MM_TEXT:         // 1 log unit = 1 pixel
       begin
-        fx := ScreenDpiX * INCH2MM;
-        fy := ScreenDpiY * INCH2MM;
+        fx := 1.0;
+        fy := 1.0;
       end;
     MM_LOMETRIC:     // 1 log unit = 1/10 mm
       begin
-        fx := 0.1;
-        fy := 0.1;
+        fx := 0.1 * MM2INCH * ScreenDpiX;
+        fy := 0.1 * MM2INCH * ScreenDpiY;
       end;
     MM_HIMETRIC:     // 1 log unit = 1/100 mm
       begin
-        fx := 0.01;
-        fy := 0.01;
+        fx := 0.01 * MM2INCH * ScreenDpiX;
+        fy := 0.01 * MM2INCH * ScreenDpiY;
       end;
     MM_LOENGLISH:    // 1 log unit = 1/100"
       begin
-        fx := 0.01 * INCH2MM;
-        fy := fx;
+        fx := 0.01 * ScreenDpiX;
+        fy := 0.01 * ScreenDpiY;
       end;
     MM_HIENGLISH:    // 1 log unit = 1/1000"
       begin
-        fx := 0.001 * INCH2MM;
-        fy := fx;
+        fx := 0.001 * ScreenDpiX;
+        fy := 0.001 * ScreenDpiY;
       end;
-    MM_TWIPS:        // 1 log unit = 1 twip
+    MM_TWIPS:        // 1 log unit = 1 twip = 1/1440 inch
       begin
         fx := 1.0 / 1440 * INCH2MM;
         fy := fx;
@@ -1306,18 +1309,29 @@ begin
       if (FWindowExtent.X = 0) or (FWindowExtent.Y = 0) then
         exit;
       if FHasPlaceableMetaHeader then begin
-        FPageWidth := (FBBox.Right - FBBox.Left) * INCH2MM / FUnitsPerInch;
-        FPageHeight := (FBBox.Bottom - FBBox.Top) * INCH2MM / FUnitsPerInch;
+        FPageWidth := (FBBox.Right - FBBox.Left) / FUnitsPerInch * ScreenDpiX;
+        FPageHeight := (FBBox.Bottom - FBBox.Top) / FUnitsPerInch * ScreenDpiY;
       end else
       if FWindowExtent.X > FWindowExtent.Y then begin
-        FPageWidth := DEFAULT_SIZE;
-        FPageHeight := DEFAULT_SIZE * FWindowExtent.Y / FWindowExtent.X;
+        FPageWidth := DEFAULT_SIZE * MM2INCH * ScreenDpiX;
+        FPageHeight := FPageWidth * FWindowExtent.Y / FWindowExtent.X;
       end else begin
-        FPageHeight := DEFAULT_SIZE;
-        FPageWidth := DEFAULT_SIZE * FWindowExtent.X / FWindowExtent.Y;
+        FPageHeight := DEFAULT_SIZE * MM2INCH * ScreenDpiY;
+        FPageWidth := FPageHeight * FWindowExtent.X / FWindowExtent.Y;
       end;
       fx := FPageWidth / FWindowExtent.X;
       fy := FPageHeight / FWindowExtent.Y;
+  end;
+
+  // If required convert to mm
+  // The nominal fpv units are mm, but the svg reader converts to pixels.
+  if FPV_UNIT = fuMM then begin
+    fx := fx / ScreenDpiX * INCH2MM;
+    fy := fy / ScreenDpiY * INCH2MM;
+    if FMapMode in [MM_ISOTROPIC, MM_ANISOTROPIC]  then begin
+      FPageWidth := FPageWidth / ScreenDpiX * INCH2MM;
+      FPageHeight := FPageHeight / ScreenDpiY * INCH2MM;
+    end;
   end;
 end;
 

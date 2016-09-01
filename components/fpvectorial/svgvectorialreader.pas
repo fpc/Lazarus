@@ -2615,7 +2615,7 @@ begin
   end;
 end;
 
-//          <rect width="90" height="90" stroke="green" stroke-width="3" fill="yellow" filter="url(#f1)" />
+// <rect width="90" height="90" stroke="green" stroke-width="3" fill="yellow" filter="url(#f1)" />
 function TvSVGVectorialReader.ReadRectFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
 var

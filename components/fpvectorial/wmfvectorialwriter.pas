@@ -403,13 +403,18 @@ var
   rec: TWMFBrushRecord;
   idx: Word;
   wmfbrush: TWMFBrush;
+  brushstyle: TFPBrushStyle;
 begin
   if SameBrush(ABrush, FCurrBrush) then
     exit;
 
   idx := FObjList.FindBrush(ABrush);
   if idx = Word(-1) then begin
-    case ABrush.Style of
+    // No gradient support by wmf --> use a clear brush instead.
+    if ABrush.Kind <> bkSimpleBrush then
+      brushstyle := bsClear else
+      brushstyle := ABrush.Style;
+    case brushstyle of
       bsClear      : rec.Style := BS_NULL;
       bsSolid      : rec.Style := BS_SOLID;
       bsHorizontal : begin rec.Style := BS_HATCHED; rec.Hatch := HS_HORIZONTAL; end;

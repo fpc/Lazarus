@@ -5850,7 +5850,7 @@ begin
 
     // Start point of text, rotated around the reference point
     pt := Point(round(Render_NextText_X), round(curDimY));  // before rotation
-    pt := Rotate2dPoint(pt, refPt, -Phi);                      // after rotation
+    pt := Rotate2dPoint(pt, refPt, -Phi);                   // after rotation
 
     // Paint line
     if ADoDraw then

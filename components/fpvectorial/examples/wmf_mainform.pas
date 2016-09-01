@@ -86,7 +86,7 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  // Set correct dpi for scaling of mapmode MM_TEXT.
+  // Set correct dpi for scaling by wmf reader
   ScreenDPIX := ScreenInfo.PixelsPerInchX;
   ScreenDPIY := ScreenInfo.PixelsPerInchY;
 
@@ -125,8 +125,7 @@ begin
     PaintImage(page);
     // Misc
     Caption := Format('%s - "%s"', [PROGRAM_NAME, AFileName]);
-    // For conversion of the mm returned by the wmf reader to screen pixels
-    ImageInfo.Caption := Format('%.1f mm x %.1f mm', [page.Width, page.Height]);
+    ImageInfo.Caption := Format('%.0f x %.0f', [page.Width, page.Height]);
     FFileName := AFileName;
   except
     on E:Exception do
@@ -146,8 +145,8 @@ begin
     exit;
 
   // For conversion of the mm returned by the wmf reader to screen pixels
-  multiplierX := ScreenInfo.PixelsPerInchX / INCH;
-  multiplierY := ScreenInfo.PixelsPerInchY / INCH;
+  multiplierX := 1.0; //ScreenInfo.PixelsPerInchX / INCH;
+  multiplierY := 1.0; //ScreenInfo.PixelsPerInchY / INCH;
 
   // Calc image size
   wimg := round(APage.Width * multiplierX);   // image size in pixels
@@ -171,17 +170,27 @@ begin
         multiplierX := multiplierX * Scrollbox1.ClientWidth / wimg;
         multiplierY := multiplierY * Scrollbox1.ClientWidth / wimg;
       end;
-    end else
+    end else begin
       bmp.SetSize(wimg, himg);
+      multiplierX := 1.0;
+      multiplierY := 1.0;
+    end;
 
     bmp.Canvas.Brush.Color := clWindow;
     bmp.Canvas.FillRect(0, 0, bmp.Width, bmp.Height);
 
-    APage.AutoFit(bmp.Canvas, wimg, wimg, wimg, dx, dy, zoom);
+   // APage.AutoFit(bmp.Canvas, wimg, wimg, wimg, dx, dy, zoom);
 
+    if APage.UseTopLeftCoordinates then
+      APage.Render(bmp.Canvas, 0, 0, multiplierX, multiplierY) else
+      APage.Render(bmp.Canvas, 0, himg, multiplierX, -multiplierY);
+
+    {
     if APage.UseTopLeftCoordinates then
       APage.Render(bmp.Canvas, dx, dy, zoom, zoom) else
       APage.Render(bmp.Canvas, dx, himg - dy, zoom, -zoom);
+      }
+
     {
     if SameText(ExtractFileExt(FFileName), '.wmf') then
       APage.Render(bmp.Canvas, dx, dy, zoom, zoom) else
