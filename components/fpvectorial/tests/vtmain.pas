@@ -116,23 +116,11 @@ type
     // Arcs
     procedure Render_Arc(APage: TvVectorialPage; AIntParam: Integer);
 
+    // Bezier
+    procedure Render_Bezier(Apage: TvVectorialPage; AIntParam: Integer);
+
     // Text
-//    procedure Render_Text(APage: TvVectorialPage; Anchor: TvTextAnchor; Angle: Double);
     procedure Render_Text(APage: TvVectorialpage; AIntParam: Integer);
-    {
-    procedure Render_Text_Left(APage: TvVectorialPage; AIntParam: Integer);
-    procedure Render_Text_Center(APage: TvVectorialPage; AIntParam: Integer);
-    procedure Render_Text_Right(APage: TvVectorialPage; AIntParam: Integer);
-    procedure Render_Text_Left_30deg(APage: TvVectorialPage; AIntParam: Integer);
-    procedure Render_Text_Center_30deg(APage: TvVectorialPage; AIntParam: Integer);
-    procedure Render_Text_Right_30deg(APage: TvVectorialPage; AIntParam: Integer);
-    procedure Render_Text_Left_90deg(APage: TvVectorialPage; AIntParam: Integer);
-    procedure Render_Text_Center_90deg(APage: TvVectorialPage; AIntParam: Integer);
-    procedure Render_Text_Right_90deg(APage: TvVectorialPage; AIntParam: Integer);
-    procedure Render_Text_Left_m90deg(APage: TvVectorialPage; AIntParam: Integer);
-    procedure Render_Text_Center_m90deg(APage: TvVectorialPage; AIntParam: Integer);
-    procedure Render_Text_Right_m90deg(APage: TvVectorialPage; AIntParam: Integer);
-    }
     procedure Render_Text_Fonts(APage: TvVectorialPage; AIntParam: Integer);
     procedure Render_Text_Colors(APage: TvVectorialPage; AIntParam: Integer);
   public
@@ -659,6 +647,12 @@ begin
     TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q41r.png', $2107));
 
   { -----------------------------------------------}
+  node := Tree.Items.AddChild(nil, 'Bezier');
+  { -----------------------------------------------}
+  Tree.Items.AddChildObject(node, 'Single segment',
+    TRenderParams.Create(@Render_Bezier, 'bezier.png'));
+
+  { -----------------------------------------------}
   node0 := Tree.Items.AddChild(nil, 'Gradients');
   { -----------------------------------------------}
   node := Tree.Items.AddChild(node0, 'horizontal');
@@ -841,6 +835,20 @@ begin
     CreateArc(APage, x2, y2, x1, y1, CX, CY, rx, ry, phi, isClockwise)
   else
     CreateArc(APage, x1, y1, x2, y2, CX, CY, rx, ry, phi, isClockwise);
+end;
+
+procedure TMainForm.Render_Bezier(APage: TvVectorialpage; AIntParam: Integer);
+const
+  X1 = 10;
+  Y1 = 25;
+  X2 = 30;
+  Y2 = 80;
+  X3 = 50;
+  Y3 = 70;
+  X4 = 90;
+  Y4 = 25;
+begin
+  CreateBezier(APage, X1,Y1, X2,Y2, X3,Y3, X4,Y4);
 end;
 
 procedure TMainForm.Render_Path_Hole_SolidFill(APage: TvVectorialPage;

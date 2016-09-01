@@ -14,6 +14,7 @@ function CreateRoundedRect(APage: TvVectorialPage; X1, Y1, X2, Y2, RX, RY: Doubl
 function CreatePolygon(APage: TvVectorialPage; const APoints: array of T3DPoint): TvPolygon;
 function CreateArc(APage: TvVectorialPage; X1,Y1, X2,Y2, CX,CY, RX, RY, Angle: Double;
   Clockwise: Boolean): TPath;
+function CreateBezier(APage: TvVectorialPage; X1,Y1, X2,Y2, X3,Y3, X4,Y4: Double): TPath;
 
 function CreateSimpleBrush(AStyle: TFPBrushStyle; AColor: TFPColor): TvBrush; overload;
 function CreateSimpleBrush(AStyle: TFPBrushStyle): TvBrush; overload;
@@ -30,26 +31,7 @@ function CreateStdRoundedRect(APage: TvVectorialPage): TvRectangle;
 function CreateStdPolygon(APage: TvVectorialPage): TvPolygon;
 function CreateStdSelfIntersectingPolygon(APage: TvVectorialPage): TvPolygon;
 function CreatePathWithHole(APage: TvVectorialPage): TPath;
-(*
-function CreateStdCircArcQ1(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
-function CreateStdCircArcQ12(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
-function CreateStdCircArcQ2(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
-function CreateStdCircArcQ23(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
-function CreateStdCircArcQ3(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
-function CreateStdCircArcQ34(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
-function CreateStdCircArcQ4(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
-function CreateStdCircArcQ41(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
-function CreateStdCircArc32(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
-function CreateStdCircArc14(APage: TvVectorialPage; Clockwise, Reverse: Boolean): TPath;
-function CreateStdEllArcQ1(APage: TvVectorialPage; Clockwise, Reverse: Boolean; Angle: Double): TPath;
-function CreateStdEllArcQ12(APage: TvVectorialPage; Clockwise, Reverse: Boolean; Angle: Double): TPath;
-function CreateStdEllArcQ2(APage: TvVectorialPage; Clockwise, Reverse: Boolean; Angle: Double): TPath;
-function CreateStdEllArcQ23(APage: TvVectorialPage; Clockwise, Reverse: Boolean; Angle: Double): TPath;
-function CreateStdEllArcQ3(APage: TvVectorialPage; Clockwise, Reverse: Boolean; Angle: Double): TPath;
-function CreateStdEllArcQ34(APage: TvVectorialPage; Clockwise, Reverse: Boolean; Angle: Double): TPath;
-function CreateStdEllArcQ4(APage: TvVectorialPage; Clockwise, Reverse: Boolean; Angle: Double): TPath;
-function CreateStdEllArcQ41(APage: TvVectorialPage; Clockwise, Reverse: Boolean; Angle: Double): TPath;
-  *)
+
 function StdSolidBrush: TvBrush;
 function StdHorizGradientBrush: TvBrush;
 function StdVertGradientBrush: TvBrush;
@@ -148,7 +130,6 @@ end;
 function CreateArc(APage: TvVectorialPage; X1,Y1, X2,Y2, CX,CY, RX, RY, Angle: Double;
   Clockwise: Boolean): TPath;
 var
-  path: TPath;
   txt: TvText;
 begin
   if APage.UseTopLeftCoordinates then begin
@@ -161,8 +142,8 @@ begin
 
   APage.StartPath(X1, Y1);
   APage.AddEllipticalArcWithCenterToPath(RX, RY, Angle, X2, Y2, CX, CY, Clockwise);
-  path := APage.EndPath;
-  path.Pen := StdPen;
+  Result := APage.EndPath;
+  Result.Pen := StdPen;
 
   txt := TvText.Create(APage);
   txt.Value.Add('1');
@@ -175,6 +156,59 @@ begin
   txt.Value.Add('2');
   txt.X := X2;
   txt.Y := Y2;
+  txt.Font.Color := colRed;
+  APage.AddEntity(txt);
+end;
+
+function CreateBezier(APage: TvVectorialPage;
+  X1,Y1, X2,Y2, X3,Y3, X4,Y4: Double): TPath;
+var
+  txt: TvText;
+begin
+  if APage.UseTopLeftCoordinates then begin
+    Y1 := PAGE_SIZE - Y1;
+    Y2 := PAGE_SIZE - Y2;
+    Y3 := PAGE_SIZE - Y3;
+    Y4 := PAGE_SIZE - Y4;
+  end;
+  APage.StartPath(X1, Y1);
+  APage.AddBezierToPath(X2,Y2, X3,Y3, X4,Y4);
+  Result := APage.EndPath;
+  Result.Pen := StdPen;
+
+  APage.StartPath(X1, Y1);
+  APage.AddLineToPath(X2, Y2);
+  APage.Endpath.Pen.Color := colRed;
+
+  APage.StartPath(X4,Y4);
+  APage.AddLineToPath(X3, Y3);
+  APage.EndPath.Pen.Color := colRed;
+
+  txt := TvText.Create(APage);
+  txt.Value.Add('1');
+  txt.X := X1;
+  txt.Y := Y1;
+  txt.Font.Color := colRed;
+  APage.AddEntity(txt);
+
+  txt := TvText.Create(APage);
+  txt.Value.Add('2');
+  txt.X := X2;
+  txt.Y := Y2;
+  txt.Font.Color := colRed;
+  APage.AddEntity(txt);
+
+  txt := TvText.Create(APage);
+  txt.Value.Add('3');
+  txt.X := X3;
+  txt.Y := Y3;
+  txt.Font.Color := colRed;
+  APage.AddEntity(txt);
+
+  txt := TvText.Create(APage);
+  txt.Value.Add('4');
+  txt.X := X4;
+  txt.Y := Y4;
   txt.Font.Color := colRed;
   APage.AddEntity(txt);
 end;
