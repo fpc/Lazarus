@@ -424,7 +424,7 @@ var
   cx, cy, rx, ry, phi: Double;
   t1, t2: Double;
   x1,y1,x2,y2: Double;
-  sweep, longArc: Integer;
+  sweep, longarc: Integer;
   segment: TPathSegment;
   l2DSegment: T2DSegment absolute segment;
   l2DBSegment: T2DBezierSegment absolute segment;
@@ -494,13 +494,8 @@ begin
       y1 := OldPtY;
       x2 := OldPtX + PtX;
       y2 := OldPtY + PtY;
-      if APage.UseTopLeftCoordinates then begin
-        phi := l2DArcSegment.XRotation;
-        sweep := IfThen(l2DArcSegment.ClockwiseArcFlag, 0, 1);
-      end else begin
-        phi := -l2DArcSegment.XRotation;
-        sweep := IfThen(l2DArcSegment.ClockwiseArcFlag, 1, 0);
-      end;
+      phi := l2DArcSegment.XRotation * APage.GetTopLeftCoords_Adjustment();
+      sweep := IfThen(l2DArcSegment.ClockwiseArcFlag, 1, 0);
       t1 := CalcEllipsePointAngle(x1, y1, rx, ry, cx, cy, phi);
       t2 := CalcEllipsePointAngle(x2, y2, rx, ry, cx, cy, phi);
       if sweep = 1 then
@@ -517,7 +512,7 @@ begin
       longarc := IfThen(abs(t2 - t1) < pi, 0, 1);
 
       PathStr := PathStr + Format('a %g,%g %g %d,%d %g,%g',
-        [rx, ry, phi, longArc, sweep, PtX, PtY], FPointSeparator);
+        [rx, ry, RadToDeg(phi), longarc, sweep, PtX, PtY], FPointSeparator);
     end;
 
     // Store the current position for future points
