@@ -1,5 +1,6 @@
 {
   ToDo:
+    - menu item  View -> Project Groups
     - update files when project/package/file changes in IDE
     - update dependencies when changed in IDE
     - update when files changed on disk
