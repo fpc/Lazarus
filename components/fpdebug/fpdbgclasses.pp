@@ -1210,7 +1210,7 @@ begin
   if (AFrameRequired >= 0) and (AFrameRequired < FCallStackEntryList.Count) then
     exit;
   // TODO: remove, using AFrameRequired
-  if FCallStackEntryList.Count > 0 then exit; // allready done
+  if FCallStackEntryList.Count > 0 then exit; // already done
 
   Address := Process.GetInstructionPointerRegisterValue;
   Frame := Process.GetStackBasePointerRegisterValue;
