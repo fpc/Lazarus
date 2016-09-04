@@ -23,12 +23,13 @@ program runtestsgui;
 uses
   Interfaces, Forms,
   GuiTestRunner, lazmouseandkeyinput,
-  testunits, TestLazUtils;
+  testunits, TestLazUtils, testmenuintf;
 
 begin
   Application.Title:='Run Lazarus tests';
   Application.Initialize;
   Application.CreateForm(TGuiTestRunner, TestRunner);
+  Application.CreateForm(TTestMenuIntfForm, TestMenuIntfForm);
   Application.Run;
 end.
 

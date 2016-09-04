@@ -1,0 +1,17 @@
+object TestMenuIntfForm: TTestMenuIntfForm
+  Left = 287
+  Height = 237
+  Top = 215
+  Width = 541
+  Caption = 'TestMenuIntfForm'
+  Menu = TestMainMenuIntf1
+  LCLVersion = '1.7'
+  object TestMainMenuIntf1: TMainMenu
+    left = 64
+    top = 16
+  end
+  object TestPopupMenuIntf1: TPopupMenu
+    left = 64
+    top = 80
+  end
+end

@@ -33,6 +33,7 @@ var
   LazUtilsTestSuite: TTestSuite;
   CodetoolsTestSuite: TTestSuite;
   LCLTestSuite: TTestSuite;
+  IDEIntfTestSuite: TTestSuite;
   SemiAutoTestSuite: TTestSuite;
 
 // reads the output from a process and puts it in a memory stream
@@ -42,6 +43,7 @@ procedure AddToBugsTestSuite(ATest: TTest);
 procedure AddToLazUtilsTestSuite(ATestClass: TClass);
 procedure AddToCodetoolsTestSuite(ATestClass: TClass);
 procedure AddToLCLTestSuite(ATestClass: TClass);
+procedure AddToIDEIntfTestSuite(ATestClass: TClass);
 procedure AddToSemiAutoTestSuite(ATestClass: TClass);
 
 implementation
@@ -115,6 +117,11 @@ begin
   LCLTestSuite.AddTestSuiteFromClass(ATestClass);
 end;
 
+procedure AddToIDEIntfTestSuite(ATestClass: TClass);
+begin
+  IDEIntfTestSuite.AddTestSuiteFromClass(ATestClass);
+end;
+
 procedure AddToSemiAutoTestSuite(ATestClass: TClass);
 begin
   SemiAutoTestSuite.AddTestSuiteFromClass(ATestClass);
@@ -130,6 +137,8 @@ initialization
   GetTestRegistry.AddTest(CodetoolsTestSuite);
   LCLTestSuite := TTestSuite.Create('LCL tests');
   GetTestRegistry.AddTest(LCLTestSuite);
+  IDEIntfTestSuite := TTestSuite.Create('IDEIntf tests');
+  GetTestRegistry.AddTest(IDEIntfTestSuite);
   SemiAutoTestSuite := TTestSuite.Create('Semi Automatic tests');
   GetTestRegistry.AddTest(SemiAutoTestSuite);
 
