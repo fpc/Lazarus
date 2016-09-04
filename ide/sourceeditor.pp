@@ -6805,7 +6805,7 @@ begin
   end;
 
   // assign the root TMenuItem to the registered menu root.
-  // This will automatically create all registered items
+  // This will automatically create all TMenuItems for the registered items
   {$IFDEF VerboseMenuIntf}
   SrcPopupMenu.Items.WriteDebugReport('TSourceNotebook.BuildPopupMenu ');
   SourceTabMenuRoot.ConsistencyCheck;
