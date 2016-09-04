@@ -447,7 +447,7 @@ msgstr "Class"
 
 #: objinspstrconsts.oisclear
 msgid "C&lear"
-msgstr "Opsc&honen"
+msgstr "$Wissen"
 
 #: objinspstrconsts.oisclearpicture
 msgid "Clear picture"
@@ -960,7 +960,7 @@ msgstr "Verversen"
 #: objinspstrconsts.oistdacteditcopyheadline
 msgctxt "objinspstrconsts.oistdacteditcopyheadline"
 msgid "&Copy"
-msgstr "&Copieëer"
+msgstr "&Kopieer"
 
 #: objinspstrconsts.oistdacteditcopyshortcut
 msgid "Ctrl+C"
