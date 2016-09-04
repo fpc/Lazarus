@@ -1073,6 +1073,8 @@ procedure TranslateResStrings;
 var
   Lang, FallbackLang, S: String;
 begin
+  Lang:='';
+  FallbackLang:='';
   GetLanguageIDs(Lang, FallbackLang); // in unit gettext
   S := AppendPathDelim(AppendPathDelim(ExtractFileDir(ParamStr(0))) + 'languages');
   if FallbackLang = 'pt' then
