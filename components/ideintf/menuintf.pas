@@ -84,7 +84,7 @@ type
   public
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
     property Section: TIDEMenuSection read FSection write SetSection;
-    property MenuItem: TMenuItem read FMenuItem write SetMenuItem;
+    property MenuItem: TMenuItem read FMenuItem write SetMenuItem; // Note: the root section MenuItem = TMenu.Items
     property MenuItemClass: TMenuItemClass read FMenuItemClass write FMenuItemClass;
     property SectionIndex: Integer read FSectionIndex;
     property AutoFreeMenuItem: boolean read FAutoFreeMenuItem write FAutoFreeMenuItem;
@@ -95,7 +95,7 @@ type
   TIDEMenuItemClass = class of TIDEMenuItem;
 
   { TIDEMenuSection
-    An TIDEMenuItem with children, either in a sub menu or separated with
+    A TIDEMenuItem with children, either in a sub menu or separated with
     separators.
     If no children are visible, the section will not be visible.
     }
