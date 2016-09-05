@@ -1,4 +1,3 @@
-{ $Id$}
 { Copyright (C) 2007 Vincent Snijders
 
   This source is free software; you can redistribute it and/or modify it under
