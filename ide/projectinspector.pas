@@ -109,7 +109,7 @@ type
     HelpBitBtn: TToolButton;
     procedure CopyMoveToDirMenuItemClick(Sender: TObject);
     procedure DirectoryHierarchyButtonClick(Sender: TObject);
-    procedure FilterEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FilterEditKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
