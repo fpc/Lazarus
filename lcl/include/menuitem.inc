@@ -1353,7 +1353,8 @@ begin
   if AValue then
   begin
     FVisible := AValue;
-    if (not (csLoading in ComponentState)) and Parent.HandleAllocated then
+    if (not (csLoading in ComponentState)) and (Parent<>nil)
+    and Parent.HandleAllocated then
       HandleNeeded;
     if HandleAllocated then
       TWSMenuItemClass(WidgetSetClass).SetVisible(Self, True);
