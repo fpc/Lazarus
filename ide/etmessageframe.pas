@@ -2753,7 +2753,7 @@ var
   VisibleCnt: Integer;
 begin
   MessagesMenuRoot.MenuItem:=MsgCtrlPopupMenu.Items;
-  MessagesMenuRoot.BeginUpdate;
+  //MessagesMenuRoot.BeginUpdate;
   try
     HasText:=false;
     HasFilename:=false;
@@ -2891,7 +2891,7 @@ begin
 
     UpdateQuickFixes(Line);
   finally
-    MessagesMenuRoot.EndUpdate;
+    //MessagesMenuRoot.EndUpdate;
   end;
 end;
 

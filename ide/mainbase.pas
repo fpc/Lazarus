@@ -1748,7 +1748,7 @@ procedure TMainIDEBase.UpdateWindowMenu;
       Result := ASection.Items[Index]
     else
     begin
-      Result := RegisterIDEMenuCommand(ASection.GetPath,'Window'+IntToStr(Index)+ASection.Name,'');
+      Result := RegisterIDEMenuCommand(ASection,'Window'+IntToStr(Index)+ASection.Name,'');
       Result.CreateMenuItem;
     end;
   end;
@@ -1768,7 +1768,7 @@ var
   EdList: TStringList;
   EditorCur: TSourceEditor;
   P: TIDEPackage;
-  M: TIDEMenuSection;
+  aSection: TIDEMenuSection;
   s: String;
 begin
   //DebugLn('TMainIDEBase.UpdateWindowMenu: enter');
@@ -1810,7 +1810,7 @@ begin
       CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Name
     else
        CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
-    CurMenuItem.MenuItem.Checked := WindowMenuActiveForm = TCustomForm(WindowsList[i]);
+    CurMenuItem.Checked := WindowMenuActiveForm = TCustomForm(WindowsList[i]);
     CurMenuItem.OnClick:=@mnuWindowItemClick;
     // in the 'center' list
     CurMenuItem := GetMenuItem(i, itmCenterWindowLists);
@@ -1824,8 +1824,8 @@ begin
   //create source page menuitems
   itmTabListProject.Visible := False;
   itmTabListOther.Visible := False;
-  itmTabListProject.MenuItem.Checked := False;
-  itmTabListOther.MenuItem.Checked := False;
+  itmTabListProject.Checked := False;
+  itmTabListOther.Checked := False;
   itmTabListPackage.Clear;
 
   if SourceEditorManager.SourceEditorCount > 0 then begin
@@ -1847,25 +1847,25 @@ begin
       j := PtrUInt(EdList.Objects[i]);
       EditorCur := SourceEditorManager.SourceEditors[j];
       if (EditorCur.GetProjectFile <> nil) and (EditorCur.GetProjectFile.IsPartOfProject) then begin
-        M := itmTabListProject;
-        CurMenuItem := GetMenuItem(ItemCountProject, M);
+        aSection := itmTabListProject;
+        CurMenuItem := GetMenuItem(ItemCountProject, aSection);
         inc(ItemCountProject);
       end else begin
         SourceEditorManager.OnPackageForSourceEditor(P, EditorCur);
         if P <> nil then begin
           s := Format(lisTabsFor, [p.Name]);
           if itmTabListPackage.FindByName(S) is TIDEMenuSection then
-            M := TIDEMenuSection(itmTabListPackage.FindByName(S))
+            aSection := TIDEMenuSection(itmTabListPackage.FindByName(S))
           else
-            M := RegisterIDESubMenu(itmTabListPackage, S, S);
-          CurMenuItem := GetMenuItem(M.Count, M);
+            aSection := RegisterIDESubMenu(itmTabListPackage, S, S);
+          CurMenuItem := GetMenuItem(aSection.Count, aSection);
         end else begin
-          M := itmTabListOther;
-          CurMenuItem := GetMenuItem(ItemCountOther, M);
+          aSection := itmTabListOther;
+          CurMenuItem := GetMenuItem(ItemCountOther, aSection);
           inc(ItemCountOther);
         end;
       end;
-      M.Visible := True;
+      aSection.Visible := True;
       if EditorCur.SharedEditorCount > 1 then
         CurMenuItem.Caption := EditorCur.PageName + ' ('+TForm(EditorCur.Owner).Caption+')'
         //CurMenuItem.Caption := EditorCur.PageName
@@ -1873,9 +1873,9 @@ begin
       else
         CurMenuItem.Caption := EditorCur.PageName;
       if CurMenuItem.MenuItem <> nil then
-        CurMenuItem.MenuItem.Checked := SourceEditorManager.ActiveEditor = EditorCur;
-      if (SourceEditorManager.ActiveEditor = EditorCur) and (M.MenuItem <> nil) then
-        M.MenuItem.Checked := true;
+        CurMenuItem.Checked := SourceEditorManager.ActiveEditor = EditorCur;
+      if (SourceEditorManager.ActiveEditor = EditorCur) and (aSection.MenuItem <> nil) then
+        aSection.Checked := true;
       CurMenuItem.OnClick := @mnuWindowSourceItemClick;
       CurMenuItem.Tag := j;
     end;
@@ -1884,8 +1884,8 @@ begin
     ClearMenuItem(ItemCountOther, itmTabListOther);
     for i := 0 to itmTabListPackage.Count - 1 do begin
       if itmTabListPackage.Items[i] is TIDEMenuSection then begin
-        M := itmTabListPackage.Items[i] as TIDEMenuSection;
-        M.Caption := M.Caption +  Format(' (%d)', [M.Count]);
+        aSection := itmTabListPackage.Items[i] as TIDEMenuSection;
+        aSection.Caption := aSection.Caption +  Format(' (%d)', [aSection.Count]);
       end;
     end;
     itmTabListProject.Caption := dlgEnvProject +  Format(' (%d)', [itmTabListProject.Count]);

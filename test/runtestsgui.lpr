@@ -29,7 +29,7 @@ begin
   Application.Title:='Run Lazarus tests';
   Application.Initialize;
   Application.CreateForm(TGuiTestRunner, TestRunner);
-  Application.CreateForm(TTestMenuIntfForm, TestMenuIntfForm);
+  Application.CreateForm(TTestMenuIntfDlg, TestMenuIntfDlg);
   Application.Run;
 end.
 

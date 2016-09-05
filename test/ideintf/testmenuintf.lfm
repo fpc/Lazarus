@@ -1,9 +1,9 @@
-object TestMenuIntfForm: TTestMenuIntfForm
+object TestMenuIntfDlg: TTestMenuIntfDlg
   Left = 287
   Height = 237
   Top = 215
   Width = 541
-  Caption = 'TestMenuIntfForm'
+  Caption = 'TestMenuIntfDlg'
   Menu = TestMainMenuIntf1
   LCLVersion = '1.7'
   object TestMainMenuIntf1: TMainMenu

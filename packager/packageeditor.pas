@@ -250,7 +250,7 @@ type
     procedure DisableI18NForLFMCheckBoxChange(Sender: TObject);
     procedure EditVirtualUnitMenuItemClick(Sender: TObject);
     procedure ExpandDirectoryMenuItemClick(Sender: TObject);
-    procedure FilterEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FilterEditKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure FindInFilesMenuItemClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -798,7 +798,7 @@ begin
   //debugln(['TPackageEditorForm.FilesPopupMenuPopup START ',ItemsPopupMenu.Items.Count]);
   PackageEditorMenuFilesRoot.MenuItem:=ItemsPopupMenu.Items;
   //debugln(['TPackageEditorForm.FilesPopupMenuPopup START after connect ',ItemsPopupMenu.Items.Count]);
-  PackageEditorMenuRoot.BeginUpdate;
+  //PackageEditorMenuRoot.BeginUpdate;
   try
     CollectSelected;
     Writable := not LazPackage.ReadOnly;
@@ -862,7 +862,7 @@ begin
     end;
 
   finally
-    PackageEditorMenuRoot.EndUpdate;
+    //PackageEditorMenuRoot.EndUpdate;
   end;
   FSingleSelectedFile := Nil;
   FSingleSelectedDep := Nil;
@@ -936,7 +936,7 @@ var
 
 begin
   PackageEditorMenuRoot.MenuItem:=MorePopupMenu.Items;
-  PackageEditorMenuRoot.BeginUpdate;
+  //PackageEditorMenuRoot.BeginUpdate;
   try
     Writable:=(not LazPackage.ReadOnly);
 
@@ -964,7 +964,7 @@ begin
     // under section PkgEditMenuSectionMisc
     SetItem(PkgEditMenuViewPackageSource,@ViewPkgSourceClick);
   finally
-    PackageEditorMenuRoot.EndUpdate;
+    //PackageEditorMenuRoot.EndUpdate;
   end;
 end;
 

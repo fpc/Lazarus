@@ -6523,7 +6523,7 @@ var
 begin
   PopM:=TPopupMenu(Sender);
   SourceTabMenuRoot.MenuItem:=PopM.Items;
-  SourceTabMenuRoot.BeginUpdate;
+  //SourceTabMenuRoot.BeginUpdate;
   try
     // Get the tab that was clicked
     if PopM.PopupComponent is TPageControl then begin
@@ -6625,7 +6625,7 @@ begin
 
     end;
   finally
-    SourceTabMenuRoot.EndUpdate;
+    //SourceTabMenuRoot.EndUpdate;
   end;
 end;
 
@@ -6661,7 +6661,7 @@ begin
   IDECommandList.ExecuteUpdateEvents;
 
   SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
-  SourceEditorMenuRoot.BeginUpdate;
+  //SourceEditorMenuRoot.BeginUpdate;
   try
     RemoveUserDefinedMenuItems;
     RemoveContextMenuItems;
@@ -6746,7 +6746,7 @@ begin
       Manager.OnPopupMenu(@AddContextPopupMenuItem);
     SourceEditorMenuRoot.NotifySubSectionOnShow(Self);
   finally
-    SourceEditorMenuRoot.EndUpdate;
+    //SourceEditorMenuRoot.EndUpdate;
   end;
 end;
 

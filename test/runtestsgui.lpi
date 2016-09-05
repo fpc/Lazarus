@@ -107,8 +107,10 @@
       <Unit14>
         <Filename Value="ideintf\testmenuintf.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="TestMenuIntfForm"/>
+        <ComponentName Value="TestMenuIntfDlg"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="TestMenuIntf"/>
       </Unit14>
     </Units>
   </ProjectOptions>
