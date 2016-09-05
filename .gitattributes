@@ -2727,6 +2727,19 @@ components/lazreport/source/addons/lrEmailExport/lremailappthebat.pas svneol=nat
 components/lazreport/source/addons/lrEmailExport/lremailexport.lpk svneol=native#text/plain
 components/lazreport/source/addons/lrEmailExport/lremailexport.pas svneol=native#text/pascal
 components/lazreport/source/addons/lrEmailExport/lremailexport.res -text
+components/lazreport/source/addons/lrFclPDFExport/demo/aaa.lrf svneol=LF#text/xml eol=lf
+components/lazreport/source/addons/lrFclPDFExport/demo/project1.ico -text
+components/lazreport/source/addons/lrFclPDFExport/demo/project1.lpi svneol=native#text/plain
+components/lazreport/source/addons/lrFclPDFExport/demo/project1.lpr svneol=native#text/pascal
+components/lazreport/source/addons/lrFclPDFExport/demo/project1.res -text
+components/lazreport/source/addons/lrFclPDFExport/demo/unit1.lfm svneol=native#text/plain
+components/lazreport/source/addons/lrFclPDFExport/demo/unit1.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrFclPDFExport/lr_e_fclpdf.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrFclPDFExport/lr_pdfexport.lpk svneol=native#text/plain
+components/lazreport/source/addons/lrFclPDFExport/lr_pdfexport.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrFclPDFExport/lrpdfexport.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrFclPDFExport/lrpdfexport_icon.lrs svneol=native#text/plain
+components/lazreport/source/addons/lrFclPDFExport/resources/TlrPDFExport.png -text svneol=unset#image/png
 components/lazreport/source/addons/lrOfficeImport/lr_officeimport.lpk svneol=native#text/plain
 components/lazreport/source/addons/lrOfficeImport/lr_officeimport.pas svneol=native#text/pascal
 components/lazreport/source/addons/lrOfficeImport/lr_officeimport_img.res -text

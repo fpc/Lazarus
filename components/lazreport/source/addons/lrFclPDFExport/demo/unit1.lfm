@@ -1,0 +1,92 @@
+object Form1: TForm1
+  Left = 501
+  Height = 378
+  Top = 408
+  Width = 570
+  Caption = 'Form1'
+  ClientHeight = 378
+  ClientWidth = 570
+  OnCreate = FormCreate
+  LCLVersion = '1.7'
+  object Button1: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    AnchorSideTop.Side = asrCenter
+    Left = 234
+    Height = 36
+    Top = 171
+    Width = 103
+    AutoSize = True
+    Caption = 'Design report'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object Button2: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Button1
+    AnchorSideTop.Side = asrBottom
+    Left = 211
+    Height = 36
+    Top = 213
+    Width = 149
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'Export report to PDF'
+    OnClick = Button2Click
+    TabOrder = 1
+  end
+  object Button3: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Side = asrCenter
+    AnchorSideBottom.Control = Button1
+    Left = 237
+    Height = 36
+    Top = 129
+    Width = 96
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Bottom = 6
+    Caption = 'Show report'
+    OnClick = Button3Click
+    TabOrder = 2
+  end
+  object frReport1: TfrReport
+    InitialZoom = pzDefault
+    Options = []
+    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    DataType = dtDataSet
+    left = 80
+    top = 41
+  end
+  object lrPDFExport1: TlrPDFExport
+    left = 250
+    top = 41
+  end
+  object frDesigner1: TfrDesigner
+    left = 33
+    top = 37
+  end
+  object frRoundRectObject1: TfrRoundRectObject
+    left = 458
+    top = 44
+  end
+  object frBarCodeObject1: TfrBarCodeObject
+    left = 498
+    top = 43
+  end
+  object frShapeObject1: TfrShapeObject
+    left = 28
+    top = 104
+  end
+  object frCheckBoxObject1: TfrCheckBoxObject
+    left = 74
+    top = 103
+  end
+  object lrCrossObject1: TlrCrossObject
+    left = 140
+    top = 98
+  end
+end
