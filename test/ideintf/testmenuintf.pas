@@ -40,6 +40,7 @@ type
     procedure TestSinglePopupMenu;
     procedure TestPopupMenuList;
     procedure TestPopupMenuLogicalSection;
+    procedure TestPopupMenuLogicalSections;
     procedure TestPopupMenuSubMenu;
     procedure TestPopupMenuVisible;
     procedure TestPopupMenuClearHiddenSection;
@@ -118,10 +119,45 @@ begin
   PopupMenuRoot.ConsistencyCheck;
   Section1:=RegisterIDEMenuSection(PopupMenuRoot,'Section1');
   PopupMenuRoot.ConsistencyCheck;
+  AssertEquals('Section1.ChildrenAsSubMenu',false,Section1.ChildrenAsSubMenu);
   Section1.ChildrenAsSubMenu:=false;
   PopupMenuRoot.ConsistencyCheck;
   RegisterIDEMenuCommand(Section1,'Item1','Item1');
   PopupMenuRoot.ConsistencyCheck;
+end;
+
+procedure TTestMenuIntf.TestPopupMenuLogicalSections;
+var
+  Section1, Section2: TIDEMenuSection;
+begin
+  FPopupMenuRoot.MenuItem:=Dialog.TestPopupMenuIntf1.Items;
+  PopupMenuRoot.ConsistencyCheck;
+
+  Section1:=RegisterIDEMenuSection(PopupMenuRoot,'Section1');
+  AssertEquals('Section1.ChildrenAsSubMenu',false,Section1.ChildrenAsSubMenu);
+  PopupMenuRoot.ConsistencyCheck;
+  RegisterIDEMenuCommand(Section1,'Item1','Item1');
+  PopupMenuRoot.ConsistencyCheck;
+
+  Section2:=RegisterIDEMenuSection(PopupMenuRoot,'Section2');
+  AssertEquals('Section2.ChildrenAsSubMenu',false,Section2.ChildrenAsSubMenu);
+  PopupMenuRoot.ConsistencyCheck;
+  PopupMenuRoot.ConsistencyCheck;
+  RegisterIDEMenuCommand(Section2,'Item2','Item2');
+  PopupMenuRoot.ConsistencyCheck;
+
+  AssertEquals('Section1.Section=PopupMenuRoot',true,Section1.Section=PopupMenuRoot);
+  AssertEquals('Section2.Section=PopupMenuRoot',true,Section2.Section=PopupMenuRoot);
+  AssertEquals('Section1.SectionIndex',0,Section1.SectionIndex);
+  AssertEquals('Section2.SectionIndex',1,Section2.SectionIndex);
+  AssertEquals('Section1.Visible',true,Section1.Visible);
+  AssertEquals('Section2.Visible',true,Section2.Visible);
+  AssertEquals('Section1.VisibleCommandCount',1,Section1.VisibleCommandCount);
+  AssertEquals('Section2.VisibleCommandCount',1,Section2.VisibleCommandCount);
+  AssertEquals('Section1.VisibleActive',true,Section1.VisibleActive);
+  AssertEquals('Section2.VisibleActive',true,Section2.VisibleActive);
+  AssertEquals('Section2.NeedTopSeparator',true,Section2.NeedTopSeparator);
+  AssertEquals('has Section2.TopSeparator',true,Section2.TopSeparator<>nil);
 end;
 
 procedure TTestMenuIntf.TestPopupMenuSubMenu;
@@ -130,7 +166,8 @@ var
 begin
   FPopupMenuRoot.MenuItem:=Dialog.TestPopupMenuIntf1.Items;
   PopupMenuRoot.ConsistencyCheck;
-  Section1:=RegisterIDEMenuSection(PopupMenuRoot,'Section1');
+  Section1:=RegisterIDESubMenu(PopupMenuRoot,'Section1','Section1');
+  AssertEquals('Section1.ChildrenAsSubMenu',true,Section1.ChildrenAsSubMenu);
   PopupMenuRoot.ConsistencyCheck;
   RegisterIDEMenuCommand(Section1,'Item1','Item1');
   PopupMenuRoot.ConsistencyCheck;
@@ -151,7 +188,7 @@ begin
   AssertEquals('LogSection1.VisibleActive',true,LogSection1.VisibleActive);
   AssertEquals('LogSection1.VisibleCommandCount',1,LogSection1.VisibleCommandCount);
 
-  SubMenu2:=RegisterIDEMenuSection(PopupMenuRoot,'SubMenu2');
+  SubMenu2:=RegisterIDESubMenu(PopupMenuRoot,'SubMenu2','SubMenu2');
   PopupMenuRoot.ConsistencyCheck;
   Item2:=RegisterIDEMenuCommand(SubMenu2,'Item2','Item2');
   PopupMenuRoot.ConsistencyCheck;
