@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-07-08 14:10+0200\n"
+"PO-Revision-Date: 2016-09-04 18:04+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Poedit 1.8.9\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
@@ -436,7 +436,7 @@ msgstr "Marqueur de code plié"
 
 #: lazarusidestrconsts.dlgaddhiattrfoldedcodeline
 msgid "Fold start-line"
-msgstr ""
+msgstr "Plier la ligne de départ"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupdefault
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupdefault"
@@ -477,7 +477,7 @@ msgstr "Séparateur de gouttière"
 
 #: lazarusidestrconsts.dlgaddhiattrhiddencodeline
 msgid "Hide start-line"
-msgstr ""
+msgstr "Masquer la ligne de départ"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
@@ -1606,7 +1606,7 @@ msgstr "Projet Delphi"
 #: lazarusidestrconsts.dlgfilterdelphiunit
 msgctxt "lazarusidestrconsts.dlgfilterdelphiunit"
 msgid "Delphi unit"
-msgstr "Unité Delphi"
+msgstr "unité Delphi"
 
 #: lazarusidestrconsts.dlgfilterexecutable
 msgctxt "lazarusidestrconsts.dlgfilterexecutable"
@@ -2313,7 +2313,7 @@ msgstr "Supprimer"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddelprompt
 msgid "Delete list \"%s\"?"
-msgstr "Voulez-vous supprimer la liste \"%s\"?"
+msgstr "Voulez-vous supprimer la liste \"%s\" ?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
 msgid "Add Word or Term"
@@ -3328,7 +3328,7 @@ msgstr "Si coché, le paramètre \"setter\" est marqué avec \"const\"."
 
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
-msgstr "Voir toutes les unités"
+msgstr "Montrer toutes les unités"
 
 #: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
 msgid "Show captions of non-visual components"
@@ -3631,7 +3631,7 @@ msgstr "Repliage de code"
 
 #: lazarusidestrconsts.dlgusecustomconfig
 msgid "Use additional compiler config file"
-msgstr "Utiliser un fichier de configuration du compilateur supplémentaire"
+msgstr "Utiliser un fichier supplémentaire de configuration du compilateur"
 
 #: lazarusidestrconsts.dlgusedividerdraw
 msgid "Divider Drawing"
@@ -4968,7 +4968,7 @@ msgstr "Vous ne pouvez pas tester le compilateur lors du débogage ou de la comp
 
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
-msgstr "Vous pouvez seulement changer la classe des \"TComponents\"."
+msgstr "Vous pouvez seulement changer la classe des \"TComponent\"."
 
 #: lazarusidestrconsts.liscantfindavalidppu
 msgid "Can't find a valid %s.ppu"
@@ -5000,7 +5000,7 @@ msgstr "Compilateur équivoque"
 
 #: lazarusidestrconsts.lisccochecktestdir
 msgid "Please check the Test directory under %sTools -> Options -> Files -> Directory for building test projects"
-msgstr "Veuillez vérifier le répertoire de Test dans %sEnvironnement -> Options d'environnement -> Fichiers -> Répertoire pour création de projets tests"
+msgstr "Veuillez vérifier le répertoire de Test dans %sOutils -> Options... -> Fichiers -> Répertoire pour la création de projets de tests"
 
 #: lazarusidestrconsts.lisccocompilernotanexe
 msgid "The compiler \"%s\" is not an executable file.%sDetails: %s"
@@ -5777,7 +5777,7 @@ msgstr "Tout fermer"
 
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
-msgstr "Fermer les cochés"
+msgstr "Fermer les éditeurs cochés"
 
 #: lazarusidestrconsts.lisclosealltabsclose
 msgid "Close files"
@@ -7919,7 +7919,7 @@ msgstr "Voulez-vous supprimer ces fichiers ?"
 
 #: lazarusidestrconsts.lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
-msgstr "Voulez-vous supprimer les fichier équivoques ?"
+msgstr "Voulez-vous supprimer les fichiers équivoques ?"
 
 #: lazarusidestrconsts.lisdeletebreakpoint
 msgid "Delete Breakpoint"
@@ -7927,7 +7927,7 @@ msgstr "Supprimer un point d'arrêt"
 
 #: lazarusidestrconsts.lisdeletebreakpointatline
 msgid "Delete breakpoint at%s\"%s\" line %d?"
-msgstr "Voulez-vous supprimer le point d'arrêt en %s\"%s\" ligne %d ?"
+msgstr "Voulez-vous supprimer le point d'arrêt en%s\"%s\" ligne %d ?"
 
 #: lazarusidestrconsts.lisdeletebreakpointforaddress
 msgid "Delete breakpoint for address %s?"
@@ -8372,11 +8372,11 @@ msgstr "Codes sources dupliqués. Supprimez-en un ou assurez-vous que les chemin
 
 #: lazarusidestrconsts.lisduplicateunit
 msgid "Duplicate Unit"
-msgstr "Unité dupliquée"
+msgstr "Dupliquer l'unité"
 
 #: lazarusidestrconsts.lisduplicateunitin
 msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr "Unité dupliquée \"%s\" dans \"%s\""
+msgstr "Dupliquer l'unité \"%s\" dans \"%s\""
 
 #: lazarusidestrconsts.lisedit
 msgctxt "lazarusidestrconsts.lisedit"
@@ -8617,10 +8617,8 @@ msgid "Enable Macros"
 msgstr "Activer les macros"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
-#, fuzzy
-#| msgid "Enable = replace whole identifier, Disable = replace prefix"
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
-msgstr "Actif = remplacer tout l'identifiant ; Inactif = remplacer le préfixe"
+msgstr "Actif = la touche Entrée remplace tout l'identifiant alors que Maj-Entrée remplace le préfixe ; Inactif = la touche Entrée remplace le préfixe alors que Maj-Entrée remplace tout l'identifiant"
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
@@ -9200,11 +9198,11 @@ msgstr "Fichiers : %s - avec procédure \"Register \" : %s - dans la section \"u
 
 #: lazarusidestrconsts.lisfileshaverightencoding
 msgid "*** All found files already have the right encoding ***"
-msgstr "*** Tous les fichiers trouvés ont déjà le bon codage ***"
+msgstr "*** Tous les fichiers trouvés ont déjà le bon encodage ***"
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
-msgstr "Fichiers encodé \"ASCII\" ou \"UTF-8\""
+msgstr "Fichiers encodés \"ASCII\" ou \"UTF-8\""
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
 msgid "File %s is converted to text format."
@@ -9793,7 +9791,7 @@ msgstr "Options de création de l'EDI"
 
 #: lazarusidestrconsts.lisidecompileandrestart
 msgid "The IDE will be recompiled and restarted during installation/uninstallation of packages."
-msgstr "L'EDI devra être recompilé et redémarré après l'installation/désinstallation de paquets."
+msgstr "L'EDI devra être recompilé et redémarré après l'installation et la désinstallation de paquets."
 
 #: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
@@ -11147,7 +11145,7 @@ msgstr "Impossible d'écrire le fichier \"%s\" : %s"
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
 msgid "Update revision.inc"
-msgstr "Mise à jour de \"revision.inc\""
+msgstr "M.A.J. de \"revision.inc\""
 
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
@@ -11866,7 +11864,7 @@ msgstr "Supprimer le modèle de menu choisi"
 
 #: lazarusidestrconsts.lismenueditordeletethisitemanditssubitems
 msgid "Delete this item and its subitems?"
-msgstr "Voulez-vous supprimer cet élément et ses sous-éléments?"
+msgstr "Voulez-vous supprimer cet élément et ses sous-éléments ?"
 
 #: lazarusidestrconsts.lismenueditordisplaypreviewaspopupmenu
 msgid "Display preview as &Popup menu"
@@ -12384,7 +12382,7 @@ msgstr "Notice LGPL modifiée (traduite)"
 
 #: lazarusidestrconsts.lismenuinsertusername
 msgid "Current Username"
-msgstr "Utilisateur courant"
+msgstr "Utilisateur en cours"
 
 #: lazarusidestrconsts.lismenuinspect
 msgctxt "lazarusidestrconsts.lismenuinspect"
@@ -12549,7 +12547,7 @@ msgstr "Pa&quet"
 
 #: lazarusidestrconsts.lismenupackagegraph
 msgid "Package Graph"
-msgstr "Graphe des paquets..."
+msgstr "Graphe des paquets"
 
 #: lazarusidestrconsts.lismenupackagelinks
 msgid "Package Links ..."
@@ -13014,7 +13012,7 @@ msgstr "Paquets manquants"
 
 #: lazarusidestrconsts.lismissingunitschoices
 msgid "Your choices are:"
-msgstr "Vos choix sont :"
+msgstr "Vous avez chosi :"
 
 #: lazarusidestrconsts.lismissingunitscomment
 msgid "Comment Out"
@@ -13756,7 +13754,7 @@ msgstr "Uniquement les messages répondant à cette expression régulière :"
 
 #: lazarusidestrconsts.lisonlymessageswiththesefpcidscommaseparated
 msgid "Only messages with these FPC IDs (comma separated):"
-msgstr "Uniquement  les messages avec ces ID FPC (séparées par des virgules) :"
+msgstr "Uniquement  les messages avec ces ID FPC (séparés par des virgules) :"
 
 #: lazarusidestrconsts.lisonlyregisterthelazaruspackagefileslpkdonotbuild
 msgid "Only register the Lazarus package files (.lpk). Do not build."
@@ -15370,7 +15368,7 @@ msgstr "Méthode privée"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
 msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
-msgstr "Vous devez probablement installer certains paquets avant de pouvoir continuer.%sAttention :%sLe projet dépend de certains paquets au moment de la conception, qui pourraient être nécessaires pour ouvrir la fiche dans le concepteur. Si vous continuez, vous pourriez obtenir des erreurs relatives aux composants absents et le chargement de la fiche créera probablement des résultats très désagréables.%sIl est préférable d'abandonner et d'installer d'abord ces paquets."
+msgstr "Vous devez probablement installer certains paquets avant de pouvoir continuer.%sAttention :%sLe projet dépend de certains paquets au moment de la conception, qui pourraient être nécessaires pour ouvrir la fiche dans le concepteur. Si vous continuez, vous pourriez obtenir des erreurs relatives aux composants absents et le chargement de la fiche produira probablement des résultats très désagréables.%sIl est préférable d'abandonner et d'installer d'abord ces paquets."
 
 #: lazarusidestrconsts.lisprocedure
 msgctxt "lazarusidestrconsts.lisprocedure"
@@ -15610,7 +15608,7 @@ msgstr "Chemin des codes sources du projet"
 
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
-msgstr "Unité du projet"
+msgstr "unité du projet"
 
 #: lazarusidestrconsts.lisprojectunitpath
 msgid "Project Unit Path"
@@ -15986,7 +15984,7 @@ msgstr "Rouvrir avec un autre encodage"
 #: lazarusidestrconsts.lisrepeat
 msgctxt "lazarusidestrconsts.lisrepeat"
 msgid "Repeat"
-msgstr "Repéter"
+msgstr "Répéter"
 
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
@@ -16222,7 +16220,7 @@ msgstr "Tout enregistrer"
 
 #: lazarusidestrconsts.lissaveallchecked
 msgid "Save All Checked"
-msgstr "Enregistrer les cochés"
+msgstr "Enregistrer les éditeurs cochés"
 
 #: lazarusidestrconsts.lissaveallmodified
 msgid "Save all modified files"
@@ -16255,7 +16253,7 @@ msgstr "Voulez-vous enregistrer les modifications ?"
 
 #: lazarusidestrconsts.lissavechangestoproject
 msgid "Save changes to project %s?"
-msgstr "Voulez-vous enregistrer les modifications du projet %s ?"
+msgstr "Voulez-vous enregistrer les modifications apportées au projet %s ?"
 
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
@@ -16828,7 +16826,7 @@ msgstr "Arrêter"
 
 #: lazarusidestrconsts.lisstopcurrentdebuggingandrebuildproject
 msgid "Stop current debugging and rebuild project?"
-msgstr "Voulez-vous arrêter le débogage courant et recréer le projet ?"
+msgstr "Voulez-vous arrêter le débogage en cours et recréer le projet ?"
 
 #: lazarusidestrconsts.lisstopdebugging
 msgid "Stop Debugging?"
@@ -17034,7 +17032,7 @@ msgstr "Répertoire de test"
 
 #: lazarusidestrconsts.listesturl
 msgid "Test URL"
-msgstr "URL de test"
+msgstr "Tester l'URL"
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
@@ -18428,11 +18426,11 @@ msgstr "Utiliser et fermer"
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
-msgstr "Utiliser les \"Ansistrings\""
+msgstr "Utiliser les  chaînes \"Ansi\""
 
 #: lazarusidestrconsts.lisusecheckboxforbooleanvalues
 msgid "Use CheckBox for Boolean values"
-msgstr "Utiliser une \"CheckBox\" pour les valeurs booléennes"
+msgstr "Utiliser une case à cocher pour les valeurs booléennes"
 
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
@@ -18684,7 +18682,7 @@ msgstr "Lorsqu'elles sont activées, les options en cours sont enregistrées dan
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
 msgid "When there is only one possible completion item use it immediately, without showing the completion box"
-msgstr ""
+msgstr "Quand il n'y a qu'un seul élément possible d'achèvement de code, l'utiliser immédiatement sans montrer la boîte d'achèvement"
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
