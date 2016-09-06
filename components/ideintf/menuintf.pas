@@ -126,7 +126,6 @@ type
                             const AMethod: TMethod);
   protected
     procedure MenuItemClick(Sender: TObject); override;
-    procedure SetMenuItem(const AValue: TMenuItem); override;
     procedure SetChildrenAsSubMenu(const AValue: boolean); virtual;
     procedure SetVisible(const AValue: Boolean); override;
     procedure SetSubMenuImages(const AValue: TCustomImageList); virtual;
@@ -1017,6 +1016,7 @@ begin
       if TopSeparator<>nil then
         FreeTopSeparator;
       FTopSeparator:=MenuItemClass.Create(nil);
+      TopSeparator.Caption:='-';
       TopSeparator.AddHandlerOnDestroy(@OnSeparatorDestroy);
       ParentMenuItem.Insert(aMenuIndex,TopSeparator);
     end;
@@ -1039,6 +1039,7 @@ begin
       if BottomSeparator<>nil then
         FreeBottomSeparator;
       FBottomSeparator:=MenuItemClass.Create(nil);
+      BottomSeparator.Caption:='-';
       BottomSeparator.AddHandlerOnDestroy(@OnSeparatorDestroy);
       ParentMenuItem.Insert(aMenuIndex,BottomSeparator);
     end;
@@ -1082,8 +1083,12 @@ var
           // structure has changed
           if Item.MenuItem<>nil then
             Item.ClearMenuItems;
-          if (Item.MenuItem=nil) and aVisible and Item.VisibleActive then
+          //debugln(['  UpdateSection Item=',Item.Name,' RealVisible=',Item.RealVisible,' Item.VisibleActive=',Item.VisibleActive]);
+          if (Item.MenuItem=nil) and aVisible and Item.VisibleActive then begin
             Item.CreateMenuItem;
+            if Item is TIDEMenuSection then
+              TIDEMenuSection(Item).UpdateContainer;
+          end;
           if Item.MenuItem<>nil then begin
             if Item.MenuItem.Parent=nil then
               ParentMenuItem.Insert(aMenuIndex,Item.MenuItem);
@@ -1099,8 +1104,11 @@ begin
     if Section<>nil then Section.UpdateContainer;
     exit;
   end;
-  if MenuItem=nil then exit;
   if imssClearing in FStates then exit;
+  if MenuItem=nil then exit;
+  {$IFDEF VerboseMenuIntf}
+  debugln(['TIDEMenuSection.UpdateContainer "',Name,'" Count=',Count]);
+  {$ENDIF}
   ParentMenuItem:=MenuItem;
   aMenuIndex:=0;
   UpdateSection(Self);
@@ -1130,26 +1138,43 @@ end;
 
 procedure TIDEMenuSection.UpdateVisibleCommandCount(Add: integer);
 var
+  PendingContainer: TIDEMenuSection;
+
+  procedure Update(aSection: TIDEMenuSection);
+  begin
+    aSection:=aSection.GetContainerSection;
+    if PendingContainer=aSection then exit;
+    if PendingContainer<>nil then
+      PendingContainer.UpdateContainer;
+    PendingContainer:=aSection;
+  end;
+
+var
   aSection: TIDEMenuSection;
   WasVisibleActive: Boolean;
 begin
   aSection:=Self;
+  PendingContainer:=GetContainerSection; // always update the current container
   while aSection<>nil do begin
-    WasVisibleActive:=VisibleActive;
+    WasVisibleActive:=aSection.VisibleActive;
     inc(aSection.FVisibleCommandCount,Add);
     if aSection.FVisibleCommandCount<0 then
       RaiseGDBException('');
-    if (WasVisibleActive<>aSection.VisibleActive) or (aSection=Self) then begin
+    if (WasVisibleActive<>aSection.VisibleActive) then begin
       {$IFDEF VerboseMenuIntf}
       debugln(['TIDEMenuSection.UpdateVisibleCommandCount "',Name,'" Section="',aSection.Name,'" WasVis=',WasVisibleActive,' NowVis=',aSection.VisibleActive,' MI.Vis=',(aSection.MenuItem<>nil) and aSection.MenuItem.Visible]);
       {$ENDIF}
       if aSection.MenuItem<>nil then
         aSection.RealizeVisible;
-      aSection.UpdateContainer;
+      Update(aSection);
+      if aSection.ChildrenAsSubMenu and (aSection.Section<>nil) then
+        Update(aSection.Section);
     end;
     if not aSection.Visible then break;
     aSection:=aSection.Section;
   end;
+  if PendingContainer<>nil then
+    PendingContainer.UpdateContainer;
 end;
 
 procedure TIDEMenuSection.NotifySubSectionOnShow(Sender: TObject;
@@ -1232,6 +1257,9 @@ var
 begin
   AnItem.Section:=nil;
   AnItem.Name:=CreateUniqueName(AnItem.Name);
+  {$IFDEF VerboseMenuIntf}
+  debugln(['TIDEMenuSection.Insert Self="',Name,'" Item="',AnItem.Name,'" AnItem.VisibleActive=',AnItem.VisibleActive]);
+  {$ENDIF}
   FItems.Insert(Index,AnItem);
   UpdateAllChildrenIndex(Index);
   AnItem.FSection:=Self;
@@ -1241,10 +1269,9 @@ begin
     AddedVisibleCommands:=AnItem.VisibleCommandCount;
   // update this and parents TMenuItems
   UpdateVisibleCommandCount(AddedVisibleCommands);
-  // connect child TMenuItems
-  UpdateSubMenus;
 
   {$IFDEF VerboseMenuIntf}
+  debugln(['TIDEMenuSection.Insert AAA3 Self="',Name,'" Item="',AnItem.Name,'" VisibleActive=',VisibleActive,' VisibleCommandCount=',VisibleCommandCount,' MenuItem=',DbgSName(MenuItem)]);
   ConsistencyCheck;
   {$ENDIF}
 end;
@@ -1337,17 +1364,15 @@ var
   Sibling: TIDEMenuItem;
 begin
   Result:=false;
-  if MenuItem=nil then exit;
   if ChildrenAsSubMenu then exit;
+  if Section=nil then exit;
   if not VisibleActive then exit;
   // this is a logical section with visible MenuItems
-  if Section<>nil then begin
-    // search for a MenuItem in front
-    for i:=SectionIndex-1 downto 0 do begin
-      Sibling:=Section[i];
-      if Sibling.VisibleActive then
-        exit(true); // there is a visible sibling above -> yes, need TopSeparator
-    end;
+  // search for a MenuItem in front
+  for i:=SectionIndex-1 downto 0 do begin
+    Sibling:=Section[i];
+    if Sibling.VisibleActive then
+      exit(true); // there is a visible sibling above -> yes, need TopSeparator
   end;
 end;
 
@@ -1357,22 +1382,20 @@ var
   Sibling: TIDEMenuItem;
 begin
   Result:=false;
-  if MenuItem=nil then exit;
   if ChildrenAsSubMenu then exit;
+  if Section=nil then exit;
   if not VisibleActive then exit;
   // this is a logical section with visible MenuItems
-  if Section<>nil then begin
-    for i:=SectionIndex+1 to Section.Count-1 do begin
-      Sibling:=Section[i];
-      if Sibling.VisibleActive then begin
-        // there is a visible sibling below
-        if Sibling is TIDEMenuSection then begin
-          if not TIDEMenuSection(Sibling).ChildrenAsSubMenu then
-            exit(false); // the below sibling is a logical section with a TopSeparator -> no need for BottomSeparator
-        end;
-        // -> yes, need BottomSeparator
-        exit(true);
+  for i:=SectionIndex+1 to Section.Count-1 do begin
+    Sibling:=Section[i];
+    if Sibling.VisibleActive then begin
+      // there is a visible sibling below
+      if Sibling is TIDEMenuSection then begin
+        if not TIDEMenuSection(Sibling).ChildrenAsSubMenu then
+          exit(false); // the below sibling is a logical section with a TopSeparator -> no need for BottomSeparator
       end;
+      // -> yes, need BottomSeparator
+      exit(true);
     end;
   end;
 end;
@@ -1561,8 +1584,12 @@ var
   i: Integer;
   Item: TIDEMenuItem;
   RealVisibleCommandCount: Integer;
+  CanHaveMenuItem: Boolean;
 begin
   inherited ConsistencyCheck;
+
+  CanHaveMenuItem:=RealVisible and (GetRoot.MenuItem<>nil);
+
   RealVisibleCommandCount:=0;
   for i:=0 to Count-1 do begin
     Item:=Items[i];
@@ -1580,7 +1607,7 @@ begin
     RaiseError('VisibleCommandCount='+dbgs(VisibleCommandCount)+' Real='+dbgs(RealVisibleCommandCount));
 
   if NeedTopSeparator then begin
-    if TopSeparator=nil then
+    if (TopSeparator=nil) and CanHaveMenuItem then
       RaiseError('');
   end else begin
     if TopSeparator<>nil then
@@ -1588,16 +1615,21 @@ begin
   end;
 
   if NeedBottomSeparator then begin
-    if BottomSeparator=nil then
+    if (BottomSeparator=nil) and CanHaveMenuItem then
       RaiseError('');
   end else begin
     if BottomSeparator<>nil then
       RaiseError('');
   end;
 
-  if ChildrenAsSubMenu and (MenuItem<>nil) then begin
-    i:=0;
-    CheckContainerMenuItems(Self,i);
+  if ChildrenAsSubMenu then begin
+    if MenuItem<>nil then begin
+      i:=0;
+      CheckContainerMenuItems(Self,i);
+    end else begin
+      if VisibleActive and CanHaveMenuItem then
+        RaiseError('');
+    end;
   end;
 end;
 
@@ -1634,19 +1666,6 @@ begin
   NotifySubSectionOnShow(Sender);
 end;
 
-procedure TIDEMenuSection.SetMenuItem(const AValue: TMenuItem);
-begin
-  if MenuItem=AValue then exit;
-  inherited SetMenuItem(AValue);
-  {$IFDEF VerboseMenuIntf}
-  debugln('TIDEMenuSection.SetMenuItem Name="',Name,'"');
-  {$ENDIF}
-  if (MenuItem<>nil) and VisibleActive then begin
-    UpdateContainer;
-    UpdateSubMenus;
-  end;
-end;
-
 procedure TIDEMenuSection.SetChildrenAsSubMenu(const AValue: boolean);
 begin
   if FChildrenAsSubMenu=AValue then exit;
@@ -1659,7 +1678,6 @@ begin
     Section.UpdateContainer;
   if ChildrenAsSubMenu then
     UpdateContainer;
-  UpdateSubMenus;
 end;
 
 procedure TIDEMenuSection.SetVisible(const AValue: Boolean);

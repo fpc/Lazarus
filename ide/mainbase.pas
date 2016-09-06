@@ -925,7 +925,6 @@ procedure TMainIDEBase.CreateMenuSeparatorSection(
   const AName: String);
 begin
   Section:=RegisterIDEMenuSection(ParentSection,AName);
-  Section.ChildrenAsSubMenu := false;
 end;
 
 procedure TMainIDEBase.CreateMenuSubSection(ParentSection: TIDEMenuSection;
