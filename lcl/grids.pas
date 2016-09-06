@@ -5093,10 +5093,10 @@ end;
 function TCustomGrid.GetEditorBorderStyle: TBorderStyle;
 begin
   result := bsSingle;
-  if FEditor = FstringEditor then
+  if FEditor = FStringEditor then
     Result := FStringEditor.BorderStyle
   else if FEditor = FPickListEditor then
-    Result := FStringEditor.BorderStyle;
+    Result := FPickListEditor.BorderStyle;
 end;
 
 function TCustomGrid.GetBorderWidth: Integer;
