@@ -447,7 +447,7 @@ msgstr "Class"
 
 #: objinspstrconsts.oisclear
 msgid "C&lear"
-msgstr "$Wissen"
+msgstr "&Wissen"
 
 #: objinspstrconsts.oisclearpicture
 msgid "Clear picture"
