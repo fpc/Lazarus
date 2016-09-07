@@ -250,6 +250,7 @@ type
     procedure DisableI18NForLFMCheckBoxChange(Sender: TObject);
     procedure EditVirtualUnitMenuItemClick(Sender: TObject);
     procedure ExpandDirectoryMenuItemClick(Sender: TObject);
+    procedure FilterEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FindInFilesMenuItemClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -1407,6 +1408,16 @@ end;
 procedure TPackageEditorForm.ExpandDirectoryMenuItemClick(Sender: TObject);
 begin
   DoExpandCollapseDirectory(True);
+end;
+
+procedure TPackageEditorForm.FilterEditKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+  begin
+    OpenFileMenuItemClick(Nil);
+    Key := VK_UNKNOWN;
+  end;
 end;
 
 procedure TPackageEditorForm.FindInFilesMenuItemClick(Sender: TObject);

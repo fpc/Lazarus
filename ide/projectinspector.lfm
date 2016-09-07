@@ -118,6 +118,7 @@ object ProjectInspectorForm: TProjectInspectorForm
       MaxLength = 0
       ParentFont = False
       TabOrder = 0
+      OnKeyDown = FilterEditKeyDown
       FilteredTreeview = ItemsTreeView
     end
   end

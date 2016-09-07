@@ -109,6 +109,7 @@ type
     HelpBitBtn: TToolButton;
     procedure CopyMoveToDirMenuItemClick(Sender: TObject);
     procedure DirectoryHierarchyButtonClick(Sender: TObject);
+    procedure FilterEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
@@ -515,6 +516,16 @@ end;
 procedure TProjectInspectorForm.DirectoryHierarchyButtonClick(Sender: TObject);
 begin
   ShowDirectoryHierarchy:=DirectoryHierarchyButton.Down;
+end;
+
+procedure TProjectInspectorForm.FilterEditKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+  begin
+    OpenButtonClick(Nil);
+    Key := VK_UNKNOWN;
+  end;
 end;
 
 procedure TProjectInspectorForm.FormDropFiles(Sender: TObject;
