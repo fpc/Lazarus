@@ -15,7 +15,7 @@ msgstr "Database"
 #: objinspstrconsts.cactionlisteditordeleteaction
 msgctxt "objinspstrconsts.cactionlisteditordeleteaction"
 msgid "Delete"
-msgstr ""
+msgstr "Verwijder"
 
 #: objinspstrconsts.cactionlisteditordeleteactionhint
 msgid "Delete Action"
@@ -43,12 +43,12 @@ msgstr "Help"
 #: objinspstrconsts.cactionlisteditormovedownaction
 msgctxt "objinspstrconsts.cactionlisteditormovedownaction"
 msgid "Move Down"
-msgstr ""
+msgstr "Verplaats omhoog"
 
 #: objinspstrconsts.cactionlisteditormoveupaction
 msgctxt "objinspstrconsts.cactionlisteditormoveupaction"
 msgid "Move Up"
-msgstr ""
+msgstr "Verplaats naar beneden"
 
 #: objinspstrconsts.cactionlisteditornewaction
 msgid "New Action"
@@ -104,7 +104,7 @@ msgstr "CheckListBox editor"
 
 #: objinspstrconsts.clbdeletehint
 msgid "Delete the Item"
-msgstr ""
+msgstr "Verwijder het item"
 
 #: objinspstrconsts.clbdeletequest
 msgid "Delete the Item %d \"%s\"?"
@@ -126,7 +126,7 @@ msgstr "Omhoog"
 
 #: objinspstrconsts.dceaddfields
 msgid "Add Fields"
-msgstr ""
+msgstr "Voeg velden toe"
 
 #: objinspstrconsts.dcecolumneditor
 msgid "DBGrid Columns Editor"
@@ -134,7 +134,7 @@ msgstr ""
 
 #: objinspstrconsts.dcedeleteall
 msgid "Delete All"
-msgstr ""
+msgstr "Verwijder allen"
 
 #: objinspstrconsts.dcefetchlabels
 msgid "Fetch Labels"
@@ -142,7 +142,7 @@ msgstr ""
 
 #: objinspstrconsts.dceoktodelete
 msgid "This will delete all columns. Continue?"
-msgstr ""
+msgstr "Alle kolommen zullen worden verijderd. Doorgaan?"
 
 #: objinspstrconsts.dcewillreplacecontinue
 msgid "This will replace all captions from dataset. Continue?"
@@ -423,7 +423,7 @@ msgstr "Categorie"
 
 #: objinspstrconsts.oiscdelete
 msgid "Delete?"
-msgstr ""
+msgstr "Vewijderen?"
 
 #: objinspstrconsts.oischangeclass
 msgid "Change Class ..."
@@ -465,7 +465,7 @@ msgstr ""
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
-msgstr "Bevestigen verwijderen"
+msgstr "Bevestig verwijderen"
 
 #: objinspstrconsts.oiscopycomponents
 msgctxt "objinspstrconsts.oiscopycomponents"
@@ -495,7 +495,7 @@ msgstr ""
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
-msgstr ""
+msgstr "Kn&ip"
 
 #: objinspstrconsts.oisdelete
 msgctxt "objinspstrconsts.oisdelete"
@@ -531,7 +531,7 @@ msgstr "Fout"
 
 #: objinspstrconsts.oiserrordeletingaction
 msgid "Error deleting action"
-msgstr ""
+msgstr "Fout bij het verwijderen van een action"
 
 #: objinspstrconsts.oiserrorloadingimage
 msgid "Error loading image"
@@ -597,7 +597,7 @@ msgstr "Interface"
 
 #: objinspstrconsts.oisinvalidpropertyvalue
 msgid "Invalid property value"
-msgstr "Ongeldige properie waarde"
+msgstr "Ongeldige waarde voor eigenschap"
 
 #: objinspstrconsts.oisisnotavalidmethodname
 msgid "\"%s\" is not a valid method name."
@@ -688,19 +688,19 @@ msgstr "Opties"
 
 #: objinspstrconsts.oisorderbackone
 msgid "Back One"
-msgstr ""
+msgstr "Eén omlaag"
 
 #: objinspstrconsts.oisorderforwardone
 msgid "Forward One"
-msgstr ""
+msgstr "Eén naar voren"
 
 #: objinspstrconsts.oisordermovetoback
 msgid "Move to Back"
-msgstr ""
+msgstr "Helemaal onderop"
 
 #: objinspstrconsts.oisordermovetofront
 msgid "Move to Front"
-msgstr ""
+msgstr "Helemaal vooraan"
 
 #: objinspstrconsts.oispastecomponents
 msgctxt "objinspstrconsts.oispastecomponents"
@@ -817,7 +817,7 @@ msgstr "Zet naar standaardinstelling: %s"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr ""
+msgstr "Zet eigenschapwaarde naar standardistelling"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
@@ -837,7 +837,7 @@ msgstr ""
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
-msgstr ""
+msgstr "Toon statusregel"
 
 #: objinspstrconsts.oissort
 msgid "Sort"
@@ -904,7 +904,7 @@ msgstr "Eer&ste"
 
 #: objinspstrconsts.oistdactdatasetfirsthint
 msgid "First"
-msgstr "Eerse"
+msgstr "Eerste"
 
 #: objinspstrconsts.oistdactdatasetinsertheadline
 msgid "&Insert"
@@ -1033,7 +1033,7 @@ msgstr "Ctrl+Z"
 #: objinspstrconsts.oistdacteditundoshorthint
 msgctxt "objinspstrconsts.oistdacteditundoshorthint"
 msgid "Undo"
-msgstr ""
+msgstr "Ongedaan maken"
 
 #: objinspstrconsts.oistdactfileexitheadline
 msgid "E&xit"
@@ -1041,7 +1041,7 @@ msgstr "A&fsluiten"
 
 #: objinspstrconsts.oistdactfileexithint
 msgid "Exit"
-msgstr "Eruit"
+msgstr "Afsluiten"
 
 #: objinspstrconsts.oistdactfileopenheadline
 #, fuzzy
@@ -1060,11 +1060,11 @@ msgstr "Ctrl+O"
 
 #: objinspstrconsts.oistdactfileopenwithheadline
 msgid "Open with ..."
-msgstr ""
+msgstr "Openen met ..."
 
 #: objinspstrconsts.oistdactfileopenwithhint
 msgid "Open with"
-msgstr ""
+msgstr "Openen met"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
 #, fuzzy
@@ -1088,11 +1088,11 @@ msgstr "Lettertype Selecteren"
 
 #: objinspstrconsts.oistdacthelpcontentsheadline
 msgid "&Contents"
-msgstr "&Inhoud"
+msgstr "&Inhoudsopgave"
 
 #: objinspstrconsts.oistdacthelpcontentshint
 msgid "Help Contents"
-msgstr "Inhoud van de Help"
+msgstr "Inhoudsopgave van de Help"
 
 #: objinspstrconsts.oistdacthelphelphelpheadline
 msgid "&Help on Help"
@@ -1381,7 +1381,7 @@ msgstr "Opslaan..."
 
 #: objinspstrconsts.sccsiledtsaveall
 msgid "Save All ..."
-msgstr ""
+msgstr "Alles opslaan"
 
 #: objinspstrconsts.sccsiledtsavedialog
 msgid "Save Image"
@@ -1448,7 +1448,7 @@ msgstr ""
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
 msgid "New Item"
-msgstr ""
+msgstr "Nieuw item"
 
 #: objinspstrconsts.sccslvedtnewsubitem
 msgctxt "objinspstrconsts.sccslvedtnewsubitem"
@@ -1472,7 +1472,7 @@ msgstr "StringGrid bewerken..."
 #: objinspstrconsts.sccssgedtapply
 msgctxt "objinspstrconsts.sccssgedtapply"
 msgid "Apply"
-msgstr ""
+msgstr "Toepassen"
 
 #: objinspstrconsts.sccssgedtcaption
 msgid "StringGrid Editor"
@@ -1494,7 +1494,7 @@ msgstr "laad..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
 msgid "Move Rows/Cols"
-msgstr ""
+msgstr "Rijen/kolommen verplaatsen"
 
 #: objinspstrconsts.sccssgedtopendialog
 msgctxt "objinspstrconsts.sccssgedtopendialog"
@@ -1511,7 +1511,7 @@ msgstr "Opslaan..."
 #: objinspstrconsts.sccssgedtsavedialog
 msgctxt "objinspstrconsts.sccssgedtsavedialog"
 msgid "Save"
-msgstr ""
+msgstr "Opslaan"
 
 #: objinspstrconsts.sccstredt
 #, fuzzy
