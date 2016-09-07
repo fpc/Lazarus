@@ -1777,7 +1777,7 @@ begin
       CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Name
     else
        CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
-    CurMenuItem.MenuItem.Checked := WindowMenuActiveForm = TCustomForm(WindowsList[i]);
+    CurMenuItem.Checked := WindowMenuActiveForm = TCustomForm(WindowsList[i]);
     CurMenuItem.OnClick:=@mnuWindowItemClick;
     // in the 'center' list
     CurMenuItem := GetMenuItem(i, itmCenterWindowLists);
@@ -1791,8 +1791,8 @@ begin
   //create source page menuitems
   itmTabListProject.Visible := False;
   itmTabListOther.Visible := False;
-  itmTabListProject.MenuItem.Checked := False;
-  itmTabListOther.MenuItem.Checked := False;
+  itmTabListProject.Checked := False;
+  itmTabListOther.Checked := False;
   itmTabListPackage.Clear;
 
   if SourceEditorManager.SourceEditorCount > 0 then begin
@@ -1839,10 +1839,9 @@ begin
         //  + ' ('+IntToStr(1+SourceEditorManager.IndexOfSourceWindow(TSourceEditorWindowInterface(EditorCur.Owner)))+')'
       else
         CurMenuItem.Caption := EditorCur.PageName;
-      if CurMenuItem.MenuItem <> nil then
-        CurMenuItem.MenuItem.Checked := SourceEditorManager.ActiveEditor = EditorCur;
-      if (SourceEditorManager.ActiveEditor = EditorCur) and (M.MenuItem <> nil) then
-        M.MenuItem.Checked := true;
+      CurMenuItem.Checked := SourceEditorManager.ActiveEditor = EditorCur;
+      if (SourceEditorManager.ActiveEditor = EditorCur) then
+        M.Checked := true;
       CurMenuItem.OnClick := @mnuWindowSourceItemClick;
       CurMenuItem.Tag := j;
     end;
