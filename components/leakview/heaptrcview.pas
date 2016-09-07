@@ -12,7 +12,7 @@ uses
   // IDEIntf
   LazIDEIntf, MenuIntf,
   // LeakView
-  LeakInfo;
+  LeakInfo, IDECommands, ToolBarIntf, LCLType;
 
 type
   TJumpProc = procedure (Sender: TObject; const SourceName: string;
@@ -549,9 +549,22 @@ begin
 end;
 
 procedure Register;
+var
+  IDEShortCutX: TIDEShortCut;
+  IDECommandCategory: TIDECommandCategory;
+  IDECommand: TIDECommand;
+  IDEButtonCommand: TIDEButtonCommand;
 begin
-  RegisterIDEMenuCommand(itmViewMainWindows, 'mnuLeakView', rsLeakView, nil,
-    @IDEMenuClicked);
+  RegisterIDEMenuCommand(itmViewMainWindows, 'mnuLeakView', rsLeakView, nil, @IDEMenuClicked);
+
+  IDEShortCutX := IDEShortCut(VK_UNKNOWN, [], VK_UNKNOWN, []);
+  IDECommandCategory := IDECommandList.FindCategoryByName(CommandCategoryViewName);
+  if IDECommandCategory <> nil then
+  begin
+    IDECommand := RegisterIDECommand(IDECommandCategory, rsLeakView, rsLeakView, IDEShortCutX, nil, @IDEMenuClicked);
+    if IDECommand <> nil then
+      IDEButtonCommand := RegisterIDEButtonCommand(IDECommand);
+  end;
 end;
 
 end.
