@@ -211,7 +211,7 @@ var
 
 procedure IDEMenuClicked(Sender: TObject);
 begin
-  UseGDB := (MenuCmd.MenuItem <> nil) and MenuCmd.MenuItem.Checked;
+  UseGDB := MenuCmd.Checked;
   if (CurrentDebugger <> nil) and (CurrentDebugger.Watches <> nil) then
     CurrentDebugger.Watches.CurrentWatches.ClearValues;
   if (CurrentDebugger <> nil) and (CurrentDebugger.Locals <> nil) then
