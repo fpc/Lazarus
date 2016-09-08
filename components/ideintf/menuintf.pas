@@ -1072,6 +1072,7 @@ var
     SubSection: TIDEMenuSection;
     aVisible: Boolean;
   begin
+    if imssClearing in aSection.FStates then exit;
     aVisible:=aSection.RealVisible;
     for i:=0 to aSection.Count-1 do begin
       Item:=aSection[i];
