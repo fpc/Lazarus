@@ -6528,109 +6528,104 @@ var
 begin
   PopM:=TPopupMenu(Sender);
   SourceTabMenuRoot.MenuItem:=PopM.Items;
-  SourceTabMenuRoot.BeginUpdate;
-  try
-    // Get the tab that was clicked
-    if PopM.PopupComponent is TPageControl then begin
-      PageCtrl:=TPageControl(PopM.PopupComponent);
-      PageI:=PageCtrl.TabIndexAtClientPos(PageCtrl.ScreenToClient(PopM.PopupPoint));
-      if (PageI>=0) and (PageI<PageCtrl.PageCount) then
-        PageIndex := PageI  // Todo: This should be in MouseDown / or both, whichever is first
-      else
-        DebugLn(['TSourceNotebook.TabPopUpMenuPopup: Popup PageIndex=', PageI]);
+  // Get the tab that was clicked
+  if PopM.PopupComponent is TPageControl then begin
+    PageCtrl:=TPageControl(PopM.PopupComponent);
+    PageI:=PageCtrl.TabIndexAtClientPos(PageCtrl.ScreenToClient(PopM.PopupPoint));
+    if (PageI>=0) and (PageI<PageCtrl.PageCount) then
+      PageIndex := PageI  // Todo: This should be in MouseDown / or both, whichever is first
+    else
+      DebugLn(['TSourceNotebook.TabPopUpMenuPopup: Popup PageIndex=', PageI]);
+  end;
+  ASrcEdit:=ActiveEditor as TSourceEditor;
+
+  {$IFnDEF SingleSrcWindow}
+  // Multi win
+  ToWindow(SrcEditMenuMoveToOtherWindowList, 'MoveToWindow',
+                     @SrcEditMenuMoveToExistingWindowClicked);
+  ToWindow(SrcEditMenuCopyToOtherWindowList, 'CopyToWindow',
+                     @SrcEditMenuCopyToExistingWindowClicked);
+  ToWindow(SrcEditMenuFindInOtherWindowList, 'FindInWindow',
+                     @SrcEditMenuFindInWindowClicked, True);
+  {$ENDIF}
+
+  SrcEditMenuSectionEditors.Clear;
+  if Manager <> nil then begin
+    EdList := TStringList.Create;
+    EdList.OwnsObjects := False;
+    EdList.Sorted := True;
+    // sort
+    for i := 0 to EditorCount - 1 do
+      EdList.AddObject(Editors[i].PageName+' '+Editors[i].FileName, Editors[i]);
+
+
+    RecMenu := RegisterIDESubMenu(SrcEditMenuSectionEditors, lisRecentTabs, lisRecentTabs);
+    RecMenu.Visible := False;
+    ProjMenu := RegisterIDESubMenu(SrcEditMenuSectionEditors, dlgEnvProject, dlgEnvProject);
+    ProjMenu.Visible := False;
+    RegisterIDESubMenu(SrcEditMenuSectionEditors, lisMEOther, lisMEOther).Visible := False;
+
+    //first add all pages in the correct order since the editor order can be different from the tab order
+    for i := 0 to EdList.Count - 1 do
+    begin
+      EditorCur := TSourceEditor(EdList.Objects[i]);
+      s := lisMEOther;
+      P := nil;
+      if (EditorCur.GetProjectFile <> nil) and (EditorCur.GetProjectFile.IsPartOfProject) then
+        s := dlgEnvProject
+      else begin
+        Manager.OnPackageForSourceEditor(P, EditorCur);
+        if P <> nil then
+          s := Format(lisTabsFor, [p.Name]);
+      end;
+
+      if SrcEditMenuSectionEditors.FindByName(S) is TIDEMenuSection then begin
+        M := TIDEMenuSection(SrcEditMenuSectionEditors.FindByName(S))
+      end else begin
+        M := RegisterIDESubMenu(SrcEditMenuSectionEditors, S, S);
+        M.UserTag := PtrUInt(P);
+      end;
+      M.Visible := True;
+
+      AddEditorToMenuSection(EditorCur, M, i);
+      // use tag to count modified
+      if EditorCur.Modified then M.Tag := m.Tag + 1;
     end;
-    ASrcEdit:=ActiveEditor as TSourceEditor;
 
-    {$IFnDEF SingleSrcWindow}
-    // Multi win
-    ToWindow(SrcEditMenuMoveToOtherWindowList, 'MoveToWindow',
-                       @SrcEditMenuMoveToExistingWindowClicked);
-    ToWindow(SrcEditMenuCopyToOtherWindowList, 'CopyToWindow',
-                       @SrcEditMenuCopyToExistingWindowClicked);
-    ToWindow(SrcEditMenuFindInOtherWindowList, 'FindInWindow',
-                       @SrcEditMenuFindInWindowClicked, True);
-    {$ENDIF}
+    EdList.Free;
 
-    SrcEditMenuSectionEditors.Clear;
-    if Manager <> nil then begin
-      EdList := TStringList.Create;
-      EdList.OwnsObjects := False;
-      EdList.Sorted := True;
-      // sort
-      for i := 0 to EditorCount - 1 do
-        EdList.AddObject(Editors[i].PageName+' '+Editors[i].FileName, Editors[i]);
-
-
-      RecMenu := RegisterIDESubMenu(SrcEditMenuSectionEditors, lisRecentTabs, lisRecentTabs);
-      RecMenu.Visible := False;
-      ProjMenu := RegisterIDESubMenu(SrcEditMenuSectionEditors, dlgEnvProject, dlgEnvProject);
-      ProjMenu.Visible := False;
-      RegisterIDESubMenu(SrcEditMenuSectionEditors, lisMEOther, lisMEOther).Visible := False;
-
-      //first add all pages in the correct order since the editor order can be different from the tab order
-      for i := 0 to EdList.Count - 1 do
-      begin
-        EditorCur := TSourceEditor(EdList.Objects[i]);
-        s := lisMEOther;
-        P := nil;
-        if (EditorCur.GetProjectFile <> nil) and (EditorCur.GetProjectFile.IsPartOfProject) then
-          s := dlgEnvProject
-        else begin
-          Manager.OnPackageForSourceEditor(P, EditorCur);
-          if P <> nil then
-            s := Format(lisTabsFor, [p.Name]);
-        end;
-
-        if SrcEditMenuSectionEditors.FindByName(S) is TIDEMenuSection then begin
-          M := TIDEMenuSection(SrcEditMenuSectionEditors.FindByName(S))
-        end else begin
-          M := RegisterIDESubMenu(SrcEditMenuSectionEditors, S, S);
-          M.UserTag := PtrUInt(P);
-        end;
-        M.Visible := True;
-
-        AddEditorToMenuSection(EditorCur, M, i);
-        // use tag to count modified
-        if EditorCur.Modified then M.Tag := m.Tag + 1;
-      end;
-
-      EdList.Free;
-
-      // add recent tabs. skip 0 since that is the active tab
-      for i := 1 to Min(10, FHistoryList.Count-1) do
-      begin
-        EditorCur := FindSourceEditorWithPageIndex(FNotebook.IndexOf(TCustomPage(FHistoryList[i])));
-        if (EditorCur = nil) or (not EditorCur.FEditor.HandleAllocated) then continue; // show only if it was visited
-        AddEditorToMenuSection(EditorCur, RecMenu, i);
-        RecMenu.Visible := True;
-      end;
-
-      for i := 0 to SrcEditMenuSectionEditors.Count - 1 do begin
-        if SrcEditMenuSectionEditors.Items[i] is TIDEMenuSection then begin
-          M := SrcEditMenuSectionEditors.Items[i] as TIDEMenuSection;
-
-          if M.Tag = 0 then
-            M.Caption := M.Caption +  Format(' (%d)', [M.Count])
-          else
-            M.Caption := M.Caption +  Format(' (*%d/%d)', [M.Tag, M.Count]);
-
-          if M.UserTag <> 0 then
-            RegisterIDEMenuCommand(
-                    RegisterIDEMenuSection(M as TIDEMenuSection, 'Open lpk sect '+TIDEPackage(M.UserTag).Filename),
-                   'Open lpk '+TIDEPackage(M.UserTag).Filename,
-                   lisCompPalOpenPackage, @OnPopupOpenPackageFile, nil, nil, '', M.UserTag);
-        end;
-      end;
-
-      if ProjMenu.Visible then begin
-        RegisterIDEMenuCommand(
-                RegisterIDEMenuSection(ProjMenu, 'Open proj sect '),
-               'Open proj', lisOpenProject2, @OnPopupOpenProjectInsp);
-      end;
-
+    // add recent tabs. skip 0 since that is the active tab
+    for i := 1 to Min(10, FHistoryList.Count-1) do
+    begin
+      EditorCur := FindSourceEditorWithPageIndex(FNotebook.IndexOf(TCustomPage(FHistoryList[i])));
+      if (EditorCur = nil) or (not EditorCur.FEditor.HandleAllocated) then continue; // show only if it was visited
+      AddEditorToMenuSection(EditorCur, RecMenu, i);
+      RecMenu.Visible := True;
     end;
-  finally
-    SourceTabMenuRoot.EndUpdate;
+
+    for i := 0 to SrcEditMenuSectionEditors.Count - 1 do begin
+      if SrcEditMenuSectionEditors.Items[i] is TIDEMenuSection then begin
+        M := SrcEditMenuSectionEditors.Items[i] as TIDEMenuSection;
+
+        if M.Tag = 0 then
+          M.Caption := M.Caption +  Format(' (%d)', [M.Count])
+        else
+          M.Caption := M.Caption +  Format(' (*%d/%d)', [M.Tag, M.Count]);
+
+        if M.UserTag <> 0 then
+          RegisterIDEMenuCommand(
+                  RegisterIDEMenuSection(M as TIDEMenuSection, 'Open lpk sect '+TIDEPackage(M.UserTag).Filename),
+                 'Open lpk '+TIDEPackage(M.UserTag).Filename,
+                 lisCompPalOpenPackage, @OnPopupOpenPackageFile, nil, nil, '', M.UserTag);
+      end;
+    end;
+
+    if ProjMenu.Visible then begin
+      RegisterIDEMenuCommand(
+              RegisterIDEMenuSection(ProjMenu, 'Open proj sect '),
+             'Open proj', lisOpenProject2, @OnPopupOpenProjectInsp);
+    end;
+
   end;
 end;
 
@@ -6666,93 +6661,89 @@ begin
   IDECommandList.ExecuteUpdateEvents;
 
   SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
-  SourceEditorMenuRoot.BeginUpdate;
-  try
-    RemoveUserDefinedMenuItems;
-    RemoveContextMenuItems;
+  RemoveUserDefinedMenuItems;
+  RemoveContextMenuItems;
 
-    ASrcEdit:=FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
-    Assert(Assigned(ASrcEdit), 'TSourceNotebook.SrcPopUpMenuPopup: ASrcEdit=nil');
-    Assert((ASrcEdit=GetActiveSE), 'TSourceNotebook.SrcPopUpMenuPopup: ASrcEdit<>GetActiveSE');
-    EditorComp:=ASrcEdit.EditorComponent;
+  ASrcEdit:=FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
+  Assert(Assigned(ASrcEdit), 'TSourceNotebook.SrcPopUpMenuPopup: ASrcEdit=nil');
+  Assert((ASrcEdit=GetActiveSE), 'TSourceNotebook.SrcPopUpMenuPopup: ASrcEdit<>GetActiveSE');
+  EditorComp:=ASrcEdit.EditorComponent;
 
-    SrcEditMenuReadOnly.Checked:=ASrcEdit.ReadOnly;
-    SrcEditMenuShowLineNumbers.Checked := ASrcEdit.EditorComponent.Gutter.LineNumberPart.Visible;
-    SrcEditMenuDisableI18NForLFM.Visible:=false;
+  SrcEditMenuReadOnly.Checked:=ASrcEdit.ReadOnly;
+  SrcEditMenuShowLineNumbers.Checked := ASrcEdit.EditorComponent.Gutter.LineNumberPart.Visible;
+  SrcEditMenuDisableI18NForLFM.Visible:=false;
 
-    UpdateHighlightMenuItems(ASrcEdit);
-    UpdateEncodingMenuItems(ASrcEdit);
-    UpdateLineEndingMenuItems(ASrcEdit);
+  UpdateHighlightMenuItems(ASrcEdit);
+  UpdateEncodingMenuItems(ASrcEdit);
+  UpdateLineEndingMenuItems(ASrcEdit);
 
-    // ask Codetools
-    CurFilename:=ASrcEdit.FileName;
-    ShortFileName:=ExtractFileName(CurFilename);
-    MainCodeBuf:=nil;
-    if FilenameIsPascalUnit(ShortFileName)
-    or (CompareFileExt(ShortFileName,'.inc',true)=0) then
-      MainCodeBuf:=CodeToolBoss.GetMainCode(ASrcEdit.CodeBuffer)
-    else if FilenameIsPascalSource(ShortFileName) then
-      MainCodeBuf:=ASrcEdit.CodeBuffer;
+  // ask Codetools
+  CurFilename:=ASrcEdit.FileName;
+  ShortFileName:=ExtractFileName(CurFilename);
+  MainCodeBuf:=nil;
+  if FilenameIsPascalUnit(ShortFileName)
+  or (CompareFileExt(ShortFileName,'.inc',true)=0) then
+    MainCodeBuf:=CodeToolBoss.GetMainCode(ASrcEdit.CodeBuffer)
+  else if FilenameIsPascalSource(ShortFileName) then
+    MainCodeBuf:=ASrcEdit.CodeBuffer;
 
-    if (FilenameIsAbsolute(CurFilename)) then begin
-      if (MainCodeBuf<>nil) and (MainCodeBuf<>ASrcEdit.CodeBuffer)
-      and (not MainCodeBuf.IsVirtual) then begin
-        // this is an include file => add link to open unit
-        CurFilename:=MainCodeBuf.Filename;
-        ShortFileName:=ExtractFileName(CurFilename);
-        AddContextPopupMenuItem(
-          Format(lisOpenLfm,
-                 [CreateRelativePath(CurFilename,ExtractFilePath(ASrcEdit.Filename))]),
-          true,@OnPopupMenuOpenFile);
-      end;
-      if FilenameIsPascalUnit(ShortFileName) then begin
-        MaybeAddPopup('.lfm');
-        MaybeAddPopup('.dfm');
-        MaybeAddPopup('.lrs');
-        MaybeAddPopup('.s');
-      end;
-      // ToDo: unit resources
-      if (CompareFileExt(ShortFileName,'.lfm',true)=0)
-      or (CompareFileExt(ShortFileName,'.dfm',true)=0) then begin
-        MaybeAddPopup('.pas');
-        MaybeAddPopup('.pp');
-        MaybeAddPopup('.p');
-      end;
-      if (CompareFileExt(ShortFileName,'.lpi',true)=0)
-      or (CompareFileExt(ShortFileName,'.lpk',true)=0) then begin
-        AddContextPopupMenuItem(
-          Format(lisOpenLfm,[ShortFileName]),true,@OnPopupMenuOpenFile);
-      end;
-      FPDocSrc:=LazarusHelp.GetFPDocFilenameForSource(CurFilename,false,AnOwner);
-      if FPDocSrc<>'' then
-        AddContextPopupMenuItem(
-          Format(lisOpenLfm,
-                 [CreateRelativePath(FPDocSrc,ExtractFilePath(CurFilename))]),
-          true,@OnPopupMenuOpenFile);
+  if (FilenameIsAbsolute(CurFilename)) then begin
+    if (MainCodeBuf<>nil) and (MainCodeBuf<>ASrcEdit.CodeBuffer)
+    and (not MainCodeBuf.IsVirtual) then begin
+      // this is an include file => add link to open unit
+      CurFilename:=MainCodeBuf.Filename;
+      ShortFileName:=ExtractFileName(CurFilename);
+      AddContextPopupMenuItem(
+        Format(lisOpenLfm,
+               [CreateRelativePath(CurFilename,ExtractFilePath(ASrcEdit.Filename))]),
+        true,@OnPopupMenuOpenFile);
     end;
-
-    EditorPopupPoint:=EditorComp.ScreenToClient(SrcPopUpMenu.PopupPoint);
-    if EditorPopupPoint.X<=EditorComp.Gutter.Width then begin
-      EditorCaret := EditorComp.PhysicalToLogicalPos(EditorComp.PixelsToRowColumn(EditorPopupPoint));
-      // user clicked on gutter
-      SourceEditorMarks.GetMarksForLine(ASrcEdit, EditorCaret.y, Marks, MarkCount);
-      if Marks <> nil then begin
-        for i := 0 to MarkCount-1 do
-          Marks[i].CreatePopupMenuItems(@AddUserDefinedPopupMenuItem);
-        FreeMem(Marks);
-      end;
-      if (EditorCaret.Y<=EditorComp.Lines.Count)
-      and (MessagesView<>nil) then
-        MessagesView.SourceEditorPopup(EditorComp.Marks.Line[EditorCaret.Y],
-          EditorComp.LogicalCaretXY);
+    if FilenameIsPascalUnit(ShortFileName) then begin
+      MaybeAddPopup('.lfm');
+      MaybeAddPopup('.dfm');
+      MaybeAddPopup('.lrs');
+      MaybeAddPopup('.s');
     end;
-
-    if Assigned(Manager.OnPopupMenu) then
-      Manager.OnPopupMenu(@AddContextPopupMenuItem);
-    SourceEditorMenuRoot.NotifySubSectionOnShow(Self);
-  finally
-    SourceEditorMenuRoot.EndUpdate;
+    // ToDo: unit resources
+    if (CompareFileExt(ShortFileName,'.lfm',true)=0)
+    or (CompareFileExt(ShortFileName,'.dfm',true)=0) then begin
+      MaybeAddPopup('.pas');
+      MaybeAddPopup('.pp');
+      MaybeAddPopup('.p');
+    end;
+    if (CompareFileExt(ShortFileName,'.lpi',true)=0)
+    or (CompareFileExt(ShortFileName,'.lpk',true)=0) then begin
+      AddContextPopupMenuItem(
+        Format(lisOpenLfm,[ShortFileName]),true,@OnPopupMenuOpenFile);
+    end;
+    FPDocSrc:=LazarusHelp.GetFPDocFilenameForSource(CurFilename,false,AnOwner);
+    if FPDocSrc<>'' then
+      AddContextPopupMenuItem(
+        Format(lisOpenLfm,
+               [CreateRelativePath(FPDocSrc,ExtractFilePath(CurFilename))]),
+        true,@OnPopupMenuOpenFile);
   end;
+
+  EditorPopupPoint:=EditorComp.ScreenToClient(SrcPopUpMenu.PopupPoint);
+  if EditorPopupPoint.X<=EditorComp.Gutter.Width then begin
+    EditorCaret := EditorComp.PhysicalToLogicalPos(EditorComp.PixelsToRowColumn(EditorPopupPoint));
+    // user clicked on gutter
+    SourceEditorMarks.GetMarksForLine(ASrcEdit, EditorCaret.y, Marks, MarkCount);
+    if Marks <> nil then begin
+      for i := 0 to MarkCount-1 do
+        Marks[i].CreatePopupMenuItems(@AddUserDefinedPopupMenuItem);
+      FreeMem(Marks);
+    end;
+    if (EditorCaret.Y<=EditorComp.Lines.Count)
+    and (MessagesView<>nil) then
+      MessagesView.SourceEditorPopup(EditorComp.Marks.Line[EditorCaret.Y],
+        EditorComp.LogicalCaretXY);
+  end;
+
+  if Assigned(Manager.OnPopupMenu) then
+    Manager.OnPopupMenu(@AddContextPopupMenuItem);
+  SourceEditorMenuRoot.NotifySubSectionOnShow(Self);
+  //SrcPopupMenu.Items.WriteDebugReport('TSourceNotebook.SrcPopUpMenuPopup() ');
 end;
 
 procedure TSourceNotebook.DbgPopUpMenuPopup(Sender: TObject);
@@ -6809,8 +6800,6 @@ begin
     Images := IDEImages.Images_16;
   end;
 
-  // assign the root TMenuItem to the registered menu root.
-  // This will automatically create all registered items
   {$IFDEF VerboseMenuIntf}
   SrcPopupMenu.Items.WriteDebugReport('TSourceNotebook.BuildPopupMenu ');
   SourceTabMenuRoot.ConsistencyCheck;
