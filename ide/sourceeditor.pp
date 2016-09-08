@@ -6747,6 +6747,7 @@ begin
     SourceEditorMenuRoot.NotifySubSectionOnShow(Self);
   finally
     //SourceEditorMenuRoot.EndUpdate;
+    //SrcPopupMenu.Items.WriteDebugReport('TSourceNotebook.SrcPopUpMenuPopup() ');
   end;
 end;
 
@@ -6804,8 +6805,6 @@ begin
     Images := IDEImages.Images_16;
   end;
 
-  // assign the root TMenuItem to the registered menu root.
-  // This will automatically create all TMenuItems for the registered items
   {$IFDEF VerboseMenuIntf}
   SrcPopupMenu.Items.WriteDebugReport('TSourceNotebook.BuildPopupMenu ');
   SourceTabMenuRoot.ConsistencyCheck;

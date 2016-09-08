@@ -129,6 +129,7 @@ type
     procedure SetChildrenAsSubMenu(const AValue: boolean); virtual;
     procedure SetVisible(const AValue: Boolean); override;
     procedure SetSubMenuImages(const AValue: TCustomImageList); virtual;
+    procedure SetMenuItem(const AValue: TMenuItem); override;
     procedure ClearMenuItems; override;
     procedure FreeTopSeparator;
     procedure FreeBottomSeparator;
@@ -970,6 +971,15 @@ begin
   FSubMenuImages:=AValue;
   if MenuItem<>nil then
     MenuItem.SubMenuImages:=SubMenuImages;
+end;
+
+procedure TIDEMenuSection.SetMenuItem(const AValue: TMenuItem);
+begin
+  inherited SetMenuItem(AValue);
+  if (Section=nil) and (MenuItem<>nil) then begin
+    // root section -> create menu items
+    UpdateContainer;
+  end;
 end;
 
 procedure TIDEMenuSection.ClearMenuItems;
