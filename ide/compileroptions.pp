@@ -3286,6 +3286,7 @@ begin
   fStackChecks := false;
   fHeapSize := 0;
   fStackSize := 0;
+  fVerifyObjMethodCall := false;
   fTargetOS := '';
   fTargetCPU := '';
   fTargetProc := '';
@@ -3299,6 +3300,7 @@ begin
   fDebugInfoType := dsAuto;
   fUseLineInfoUnit := true;
   fUseHeaptrc := false;
+  fTrashVariables := false;
   fUseValgrind := false;
   fGenGProfCode := false;
   fStripSymbols := false;
@@ -3396,6 +3398,7 @@ begin
   FEmulatedFloatOpcodes := CompOpts.fEmulatedFloatOpcodes;
   fHeapSize := CompOpts.fHeapSize;
   fStackSize := CompOpts.fStackSize;
+  fVerifyObjMethodCall := CompOpts.VerifyObjMethodCall;
   fEmulatedFloatOpcodes := CompOpts.fEmulatedFloatOpcodes;
   fTargetOS := CompOpts.fTargetOS;
   fTargetCPU := CompOpts.fTargetCPU;
@@ -3410,6 +3413,7 @@ begin
   FDebugInfoType := CompOpts.FDebugInfoType;
   fUseLineInfoUnit := CompOpts.fUseLineInfoUnit;
   fUseHeaptrc := CompOpts.fUseHeaptrc;
+  fTrashVariables := CompOpts.fTrashVariables;
   fUseValgrind := CompOpts.fUseValgrind;
   fGenGProfCode := CompOpts.fGenGProfCode;
   fStripSymbols := CompOpts.fStripSymbols;
@@ -3544,6 +3548,7 @@ begin
   if Done(Tool.AddDiff('EmulatedFloatOpcodes',FEmulatedFloatOpcodes,CompOpts.FEmulatedFloatOpcodes)) then exit;
   if Done(Tool.AddDiff('HeapSize',fHeapSize,CompOpts.fHeapSize)) then exit;
   if Done(Tool.AddDiff('StackSize',fStackSize,CompOpts.fStackSize)) then exit;
+  if Done(Tool.AddDiff('VerifyObjMethodCall',fVerifyObjMethodCall,CompOpts.fVerifyObjMethodCall)) then exit;
   if Done(Tool.AddDiff('EmulatedFloatOpcodes',fEmulatedFloatOpcodes,CompOpts.fEmulatedFloatOpcodes)) then exit;
   if Done(Tool.AddDiff('TargetOS',fTargetOS,CompOpts.fTargetOS)) then exit;
   if Done(Tool.AddDiff('TargetCPU',fTargetCPU,CompOpts.fTargetCPU)) then exit;

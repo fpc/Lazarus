@@ -184,9 +184,9 @@ type
     function Check: Boolean; virtual;
     function GetTitle: String; virtual; abstract;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); virtual; abstract;
-    procedure ReadSettings(AOptions: TAbstractIDEOptions); virtual; abstract;
-    procedure WriteSettings(AOptions: TAbstractIDEOptions); virtual; abstract;
-    procedure RestoreSettings({%H-}AOptions: TAbstractIDEOptions); virtual;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); virtual; abstract; // options to gui
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); virtual; abstract; // gui to options
+    procedure RestoreSettings({%H-}AOptions: TAbstractIDEOptions); virtual;// user cancelled dialog -> restore any changes
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; virtual; abstract;
     class function DefaultCollapseChildNodes: Boolean; virtual;
     function FindOptionControl(AClass: TControlClass): TControl;

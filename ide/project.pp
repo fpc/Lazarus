@@ -7011,6 +7011,7 @@ function TProjectBuildModes.CreateExtraModes(aCurMode: TProjectBuildMode): TProj
       OverflowChecks:=IsDebug;
       StackChecks:=IsDebug;
       IncludeAssertionCode:=IsDebug;
+      VerifyObjMethodCall:=IsDebug;
       // Debug flags
       GenerateDebugInfo:=IsDebug;
       UseExternalDbgSyms:=IsDebug;
