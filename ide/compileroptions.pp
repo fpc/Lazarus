@@ -3437,7 +3437,7 @@ begin
   fShowTriedFiles := CompOpts.fShowTriedFiles;
   fShowCompProc := CompOpts.fShowCompProc;
   fShowCond := CompOpts.fShowCond;
-  fShowCond := CompOpts.fShowExecInfo;
+  fShowExecInfo := CompOpts.fShowExecInfo;
   fShowSummary := CompOpts.FShowSummary;
   fShowHintsForUnusedUnitsInMainSrc := CompOpts.fShowHintsForUnusedUnitsInMainSrc;
   fShowHintsForSenderNotUsed := CompOpts.fShowHintsForSenderNotUsed;
