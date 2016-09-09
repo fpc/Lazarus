@@ -2585,7 +2585,7 @@ begin
       if Result=mrYes then begin
         Result:=SaveEditorFile(AnEditorInfo.EditorComponent,[sfCheckAmbiguousFiles]);
       end;
-      if Result=mrAbort then exit;
+      if Result in [mrAbort,mrCancel] then exit;
       Result:=mrOk;
     end;
 
