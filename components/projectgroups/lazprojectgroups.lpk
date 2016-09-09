@@ -41,6 +41,11 @@ Modified LGPL-2."/>
         <UnitName Value="ProjectGroupStrConst"/>
       </Item6>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+      <EnableI18NForLFM Value="True"/>
+    </i18n>
     <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="CodeTools"/>

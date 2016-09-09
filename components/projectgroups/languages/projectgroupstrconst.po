@@ -1,0 +1,441 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: projectgroupstrconst.lisabort
+msgid "Abort"
+msgstr ""
+
+#: projectgroupstrconst.lisabortloadingprojectgroup
+msgid "Abort loading project group"
+msgstr ""
+
+#: projectgroupstrconst.lisactivetarget
+msgid "Target: %s"
+msgstr ""
+
+#: projectgroupstrconst.lisallfiles
+msgid "All files"
+msgstr ""
+
+#: projectgroupstrconst.lisbepatient
+msgid "Be patient!"
+msgstr ""
+
+#: projectgroupstrconst.lisbuildmode
+msgid ", build mode \"%s\""
+msgstr ""
+
+#: projectgroupstrconst.lisbuildmode2
+msgid "Build Mode \"%s\""
+msgstr ""
+
+#: projectgroupstrconst.lisbuildmodenotfound
+msgid "Build mode not found"
+msgstr ""
+
+#: projectgroupstrconst.lisbuildmodenotfound2
+msgid "Build mode \"%s\" not found."
+msgstr ""
+
+#: projectgroupstrconst.liscompilepackage
+msgid "Compile Package %s"
+msgstr ""
+
+#: projectgroupstrconst.liscompileproject
+msgid "Compile Project %s"
+msgstr ""
+
+#: projectgroupstrconst.lisdiscard
+msgid "Discard changes"
+msgstr ""
+
+#: projectgroupstrconst.liserrnosuchfile
+msgid ""
+"Could not find target file\n"
+"\"%s\"\n"
+"What do you want to do ?\n"
+msgstr ""
+
+#: projectgroupstrconst.liserronlyprojectgroupallowed
+msgid "Only target type \"projectgroup\" is allowed for root project group"
+msgstr ""
+
+#: projectgroupstrconst.liserrorreadingprojectgroupfile
+msgid "Error reading project group file \"%s\"%s%s"
+msgstr ""
+
+#: projectgroupstrconst.liserrtargetdoesnotexist
+msgid "Target does not exist. Remove ?"
+msgstr ""
+
+#: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
+msgid "Invalid cycle. A project group cannot have itself as target."
+msgstr ""
+
+#: projectgroupstrconst.lisinvalidfile
+msgid "Invalid File"
+msgstr ""
+
+#: projectgroupstrconst.lisinvalidxmlfilename
+msgid "Invalid xml file name \"%s\""
+msgstr ""
+
+#: projectgroupstrconst.lislazaruspackageslpk
+msgid "Lazarus packages (*.lpk)"
+msgstr ""
+
+#: projectgroupstrconst.lislazarusprojectgroup
+msgid "Lazarus project group (*.lpg)"
+msgstr ""
+
+#: projectgroupstrconst.lislazarusprojectgroupslpg
+msgid "Lazarus project groups (*.lpg)"
+msgstr ""
+
+#: projectgroupstrconst.lislazarusprojectslpi
+msgid "Lazarus projects (*.lpi)"
+msgstr ""
+
+#: projectgroupstrconst.lislazbuildnotfound
+msgid "lazbuild not found"
+msgstr ""
+
+#: projectgroupstrconst.lisneedsave
+msgid "Need save"
+msgstr ""
+
+#: projectgroupstrconst.lisnewprojectgroup
+msgid "New project group"
+msgstr ""
+
+#: projectgroupstrconst.lisnodebuildmodes
+msgid "Build Modes"
+msgstr ""
+
+#: projectgroupstrconst.lisnodedependencies
+msgid "Dependencies"
+msgstr ""
+
+#: projectgroupstrconst.lisnodefiles
+msgid "Files"
+msgstr ""
+
+#: projectgroupstrconst.lisnoderemoveddependencies
+msgid "Removed dependencies"
+msgstr ""
+
+#: projectgroupstrconst.lisnoderemovedfiles
+msgid "Removed files"
+msgstr ""
+
+#: projectgroupstrconst.lisnoderemovedtargets
+msgid "Removed targets"
+msgstr ""
+
+#: projectgroupstrconst.lisnodetargets
+msgid "Targets"
+msgstr ""
+
+#: projectgroupstrconst.lisopenprojectgroup
+msgid "Open project group"
+msgstr ""
+
+#: projectgroupstrconst.lisopenrecentprojectgroup
+msgid "Open recent project group"
+msgstr ""
+
+#: projectgroupstrconst.lisotherproject
+msgid "Other Project"
+msgstr ""
+
+#: projectgroupstrconst.lispackage
+msgid "Package"
+msgstr ""
+
+#: projectgroupstrconst.lispackagenotfound
+msgid "Package not found"
+msgstr ""
+
+#: projectgroupstrconst.lispackagenotfound2
+msgid "Package \"%s\" not found."
+msgstr ""
+
+#: projectgroupstrconst.lispascalfilepasppp
+msgid "Pascal file (*.pas;*.pp;*.p)"
+msgstr ""
+
+#: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
+msgid "Please save your changes before reloading the project group."
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroup
+msgid "Project group %s"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroup2
+msgid "Project Group: %s"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupaddexistingcaption
+msgid "Add"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupaddexistinghint
+msgid "Add existing target to project group"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupaddnewcaption
+msgid "New"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupaddnewhint
+msgid "Add new target to project group"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupdeletecaption
+msgid "Remove"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupdeletehint
+msgid "Remove target from project group"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupmodified
+msgid "Project group modified"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupmodifiedconfirm
+msgid ""
+"Project group \"%s\" is modified.\n"
+"what do you want to do?\n"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupsaveascaption
+msgid "Save As"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupsaveashint
+msgid "Save project group with a new name"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupsavecaption
+msgid "Save"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupsavehint
+msgctxt "projectgroupstrconst.lisprojectgroupsavehint"
+msgid "Save project group"
+msgstr ""
+
+#: projectgroupstrconst.lisreaderror
+msgid "Read error"
+msgstr ""
+
+#: projectgroupstrconst.lisreaderror2
+msgid "Read Error"
+msgstr ""
+
+#: projectgroupstrconst.lisremovetarget
+msgctxt "projectgroupstrconst.lisremovetarget"
+msgid "Remove target"
+msgstr ""
+
+#: projectgroupstrconst.lissavepg
+msgctxt "projectgroupstrconst.lissavepg"
+msgid "Save project group"
+msgstr ""
+
+#: projectgroupstrconst.lissaveprojectgroup
+msgctxt "projectgroupstrconst.lissaveprojectgroup"
+msgid "Save project group"
+msgstr ""
+
+#: projectgroupstrconst.lissaveprojectgroupas
+msgid "Save project group as"
+msgstr ""
+
+#: projectgroupstrconst.lisskipalltargets
+msgid "Remove all invalid targets"
+msgstr ""
+
+#: projectgroupstrconst.listargetactivate
+msgid "Activate target"
+msgstr ""
+
+#: projectgroupstrconst.listargetactivatecaption
+msgid "Activate"
+msgstr ""
+
+#: projectgroupstrconst.listargetactivatehint
+msgid "Activate selected target"
+msgstr ""
+
+#: projectgroupstrconst.listargetadd
+msgid "Add target"
+msgstr ""
+
+#: projectgroupstrconst.listargetcompile
+msgctxt "projectgroupstrconst.listargetcompile"
+msgid "Compile"
+msgstr ""
+
+#: projectgroupstrconst.listargetcompilecaption
+msgctxt "projectgroupstrconst.listargetcompilecaption"
+msgid "Compile"
+msgstr ""
+
+#: projectgroupstrconst.listargetcompileclean
+msgctxt "projectgroupstrconst.listargetcompileclean"
+msgid "Compile clean"
+msgstr ""
+
+#: projectgroupstrconst.listargetcompilecleancaption
+msgctxt "projectgroupstrconst.listargetcompilecleancaption"
+msgid "Compile clean"
+msgstr ""
+
+#: projectgroupstrconst.listargetcompilecleanhint
+msgid "Compile selected target clean"
+msgstr ""
+
+#: projectgroupstrconst.listargetcompilefromhere
+msgid "Compile from here"
+msgstr ""
+
+#: projectgroupstrconst.listargetcompilehint
+msgid "Compile selected target"
+msgstr ""
+
+#: projectgroupstrconst.listargetcopyfilename
+msgid "Copy file name"
+msgstr ""
+
+#: projectgroupstrconst.listargetcount
+msgid "%d targets"
+msgstr ""
+
+#: projectgroupstrconst.listargetearlier
+msgid "Compile target earlier"
+msgstr ""
+
+#: projectgroupstrconst.listargetearliercaption
+msgid "Earlier"
+msgstr ""
+
+#: projectgroupstrconst.listargetearlierhint
+msgid "Build target earlier"
+msgstr ""
+
+#: projectgroupstrconst.listargetinstall
+msgctxt "projectgroupstrconst.listargetinstall"
+msgid "Install"
+msgstr ""
+
+#: projectgroupstrconst.listargetinstallcaption
+msgctxt "projectgroupstrconst.listargetinstallcaption"
+msgid "Install"
+msgstr ""
+
+#: projectgroupstrconst.listargetinstallhint
+msgid "Install selected target"
+msgstr ""
+
+#: projectgroupstrconst.listargetlater
+msgid "Compile target later"
+msgstr ""
+
+#: projectgroupstrconst.listargetlatercaption
+msgid "Later"
+msgstr ""
+
+#: projectgroupstrconst.listargetlaterhint
+msgid "Build target later"
+msgstr ""
+
+#: projectgroupstrconst.listargetopen
+msgid "Open Target"
+msgstr ""
+
+#: projectgroupstrconst.listargetopencaption
+msgid "Open"
+msgstr ""
+
+#: projectgroupstrconst.listargetopenhint
+msgid "Open selected target"
+msgstr ""
+
+#: projectgroupstrconst.listargetproperties
+msgid "Target properties"
+msgstr ""
+
+#: projectgroupstrconst.listargetpropertiescaption
+msgid "Properties"
+msgstr ""
+
+#: projectgroupstrconst.listargetpropertieshint
+msgid "Show property dialog for selected target"
+msgstr ""
+
+#: projectgroupstrconst.listargetremove
+msgctxt "projectgroupstrconst.listargetremove"
+msgid "Remove target"
+msgstr ""
+
+#: projectgroupstrconst.listargetrun
+msgid "Run Target"
+msgstr ""
+
+#: projectgroupstrconst.listargetruncaption
+msgid "Run"
+msgstr ""
+
+#: projectgroupstrconst.listargetrunhint
+msgid "Run selected target"
+msgstr ""
+
+#: projectgroupstrconst.listargetuninstall
+msgctxt "projectgroupstrconst.listargetuninstall"
+msgid "Uninstall"
+msgstr ""
+
+#: projectgroupstrconst.listargetuninstallcaption
+msgctxt "projectgroupstrconst.listargetuninstallcaption"
+msgid "Uninstall"
+msgstr ""
+
+#: projectgroupstrconst.listargetuninstallhint
+msgid "Uninstall selected target"
+msgstr ""
+
+#: projectgroupstrconst.listhelazbuildwasnotfound
+msgid "The lazbuild%s was not found."
+msgstr ""
+
+#: projectgroupstrconst.listhereisstillanotherbuildinprogress
+msgid "There is still another build in progress."
+msgstr ""
+
+#: projectgroupstrconst.lisunabletocreatefile
+msgid "Unable to create file \"%s\": %s"
+msgstr ""
+
+#: projectgroupstrconst.lisunabletoloadfile
+msgid "Unable to load file \"%s\""
+msgstr ""
+
+#: projectgroupstrconst.lisunabletowriteprojectgroupfile
+msgid "Unable to write project group file \"%s\"%s%s"
+msgstr ""
+
+#: projectgroupstrconst.liswriteerror
+msgid "Write error"
+msgstr ""
+
+#: projectgroupstrconst.liswriteerror2
+msgid "Write Error"
+msgstr ""
+
+#: projectgroupstrconst.lisxmlsyntaxerrorinfile
+msgid "XML syntax error in file \"%s\": %s"
+msgstr ""
+

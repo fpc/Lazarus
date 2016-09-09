@@ -255,14 +255,14 @@ begin
   if (aFilename='') or (not FilenameIsAbsolute(aFilename)) then begin
     debugln(['Error: (lazarus) [TIDECompileTarget.LoadXML] invalid filename "',aFilename,'"']);
     if not Quiet then
-      IDEMessageDialog('Invalid File','Invalid xml file name "'+aFilename+'"',mtError,[mbOk]);
+      IDEMessageDialog(lisInvalidFile, Format(lisInvalidXmlFileName, [aFilename]), mtError, [mbOk]);
     exit;
   end;
   Code:=CodeToolBoss.LoadFile(aFilename,true,false);
   if Code=nil then begin
     debugln(['Error: (lazarus) [TIDECompileTarget.LoadXML] unable to load file "',aFilename,'"']);
     if not Quiet then
-      IDEMessageDialog('Read error','Unable to load file "'+aFilename+'"',mtError,[mbOk]);
+      IDEMessageDialog(lisReadError, Format(lisUnableToLoadFile, [aFilename]), mtError, [mbOk]);
     exit;
   end;
   try
@@ -271,7 +271,7 @@ begin
     on E: Exception do begin
       debugln(['Error: (lazarus) [TIDECompileTarget.LoadXML] xml syntax error in "',aFilename,'": '+E.Message]);
       if not Quiet then
-        IDEMessageDialog('Read error','XML syntax error in file "'+aFilename+'": '+E.Message,mtError,[mbOk]);
+        IDEMessageDialog(lisReadError, Format(lisXMLSyntaxErrorInFile, [aFilename, E.Message]), mtError, [mbOk]);
     end;
   end;
 end;
@@ -290,7 +290,7 @@ begin
     on E: Exception do begin
       debugln(['Error: (lazarus) [TIDECompileTarget.CreateXML] unable to create file "',aFilename,'": '+E.Message]);
       if not Quiet then
-        IDEMessageDialog('Write error','Unable to create file "'+aFilename+'": '+E.Message,mtError,[mbOk]);
+        IDEMessageDialog(lisWriteError, Format(lisUnableToCreateFile, [aFilename, E.Message]), mtError, [mbOk]);
     end;
   end;
 end;
@@ -516,7 +516,7 @@ begin
     try
       InitIDEFileDialog(F);
       F.Options:=[ofFileMustExist,ofEnableSizing];
-      F.Filter:='Lazarus project group (*.lpg)|*.lpg|All files|'+AllFilesMask;
+      F.Filter:=lisLazarusProjectGroup+'|*.lpg|'+lisAllFiles+'|'+AllFilesMask;
       if F.Execute then
         LoadProjectGroup(FileName,[pgloLoadRecursively]);
       StoreIDEFileDialog(F);
@@ -711,7 +711,7 @@ begin
   if not FilenameIsAbsolute(AFileName) then
     RaiseGDBException(AFileName);
   if CompareFilenames(AFileName,FileName)=0 then
-    raise Exception.Create('Invalid cycle. A project group cannot have itself as target.');
+    raise Exception.Create(lisInvalidCycleAProjectGroupCannotHaveItselfAsTarget);
   if not FileExistsCached(AFileName) then exit;
   Result:=TIDECompileTarget.Create(CompileTarget);
   Result.FileName:=AFileName;
@@ -866,7 +866,7 @@ begin
     Result:=true;
   except
     on E: Exception do begin
-      IDEMessageDialog('Read Error','Error reading project group file "'+Filename+'"'#13+E.Message,
+      IDEMessageDialog(lisReadError2, Format(lisErrorReadingProjectGroupFile, [Filename, #13, E.Message]),
         mtError,[mbOk]);
     end;
   end;
@@ -908,7 +908,7 @@ begin
     end;
   except
     on E: Exception do begin
-      IDEMessageDialog('Write Error','Unable to write project group file "'+Filename+'"'#13+E.Message,
+      IDEMessageDialog(lisWriteError2, Format(lisUnableToWriteProjectGroupFile, [Filename, #13, E.Message]),
         mtError,[mbOk]);
       Result:=false;
     end;
@@ -1010,25 +1010,24 @@ begin
   case TargetType of
   ttProject:
     begin
-      ToolTitle:='Compile Project '+ExtractFileNameOnly(Filename);
+      ToolTitle := Format(lisCompileProject, [ExtractFileNameOnly(Filename)]);
       if aBuildMode<>'' then
-        ToolTitle+=', build mode "'+aBuildMode+'"';
-      ToolKind:='Other Project';
+        ToolTitle += Format(lisBuildMode, [aBuildMode]);
+      ToolKind := lisOtherProject;
     end;
   ttPackage:
     begin
-      ToolTitle:='Compile Package '+ExtractFileNameOnly(Filename);
-      ToolKind:='Package';
+      ToolTitle := Format(lisCompilePackage, [ExtractFileNameOnly(Filename)]);
+      ToolKind := lisPackage;
     end;
   else exit;
   end;
 
-  CompileHint:='Project Group: '+Parent.Filename+LineEnding;
+  CompileHint := Format(lisProjectGroup2, [Parent.Filename + LineEnding]);
 
   LazBuildFilename:=GetLazBuildFilename;
   if LazBuildFilename='' then begin
-    IDEMessageDialog('lazbuild not found', 'The lazbuild'+ExeExt+' was not '
-      +'found.'
+    IDEMessageDialog(lisLazbuildNotFound, Format(lisTheLazbuildWasNotFound, [ExeExt])
       , mtError, [mbOk]);
     exit(arFailed);
   end;
@@ -1072,7 +1071,7 @@ function TIDECompileTarget.CheckIDEIsReadyForBuild: boolean;
 begin
   // check toolstatus
   if LazarusIDE.ToolStatus<>itNone then begin
-    IDEMessageDialog('Be patient!', 'There is still another build in progress.',
+    IDEMessageDialog(lisBePatient, lisThereIsStillAnotherBuildInProgress,
       mtInformation, [mbOk]);
     exit(false);
   end;
@@ -1380,7 +1379,7 @@ begin
              aProject.ActiveBuildModeID:=aMode.Identifier;
              if aProject.ActiveBuildModeID<>aMode.Identifier
              then begin
-               IDEMessageDialog('Build mode not found','Build mode "'+aMode.Identifier+'" not found.',mtError,[mbOk]);
+               IDEMessageDialog(lisBuildModeNotFound, Format(lisBuildModeNotFound2, [aMode.Identifier]), mtError, [mbOk]);
                exit;
              end;
              // compile project in active buildmode

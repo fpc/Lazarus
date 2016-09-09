@@ -16,7 +16,7 @@ Resourcestring
   lisAbortLoadingProjectGroup    = 'Abort loading project group';
   lisSkipAllTargets              = 'Remove all invalid targets';
   lisErrOnlyProjectGroupAllowed  = 'Only target type "projectgroup" is allowed for root project group';
-  lisLazarusProjectGroup = 'Lazarus project group';
+  lisLazarusProjectGroup = 'Lazarus project group (*.lpg)';
   lisAllFiles = 'All files';
   lisProjectGroupModified        = 'Project group modified';
   lisProjectGroupModifiedConfirm = 'Project group "%s" is modified.'+sLineBreak+
@@ -87,6 +87,39 @@ Resourcestring
   lisTargetActivateHint        = 'Activate selected target';
   lisTargetOpenCaption         = 'Open';
   lisTargetOpenHint            = 'Open selected target';
+  lisInvalidFile = 'Invalid File';
+  lisInvalidXmlFileName = 'Invalid xml file name "%s"';
+  lisReadError = 'Read error';
+  lisUnableToLoadFile = 'Unable to load file "%s"';
+  lisXMLSyntaxErrorInFile = 'XML syntax error in file "%s": %s';
+  lisWriteError = 'Write error';
+  lisUnableToCreateFile = 'Unable to create file "%s": %s';
+  lisInvalidCycleAProjectGroupCannotHaveItselfAsTarget = 'Invalid cycle. A project group cannot have itself as target.';
+  lisReadError2 = 'Read Error';
+  lisErrorReadingProjectGroupFile = 'Error reading project group file "%s"%s%s';
+  lisWriteError2 = 'Write Error';
+  lisUnableToWriteProjectGroupFile = 'Unable to write project group file "%s"%s%s';
+  lisLazbuildNotFound = 'lazbuild not found';
+  lisTheLazbuildWasNotFound = 'The lazbuild%s was not found.';
+  lisProjectGroup2 = 'Project Group: %s';
+  lisBePatient = 'Be patient!';
+  lisThereIsStillAnotherBuildInProgress = 'There is still another build in progress.';
+  lisCompileProject = 'Compile Project %s';
+  lisBuildMode = ', build mode "%s"';
+  lisCompilePackage = 'Compile Package %s';
+  lisOtherProject = 'Other Project';
+  lisPackage = 'Package';
+  lisBuildModeNotFound = 'Build mode not found';
+  lisBuildModeNotFound2 = 'Build mode "%s" not found.';
+  lisPackageNotFound = 'Package not found';
+  lisPackageNotFound2 = 'Package "%s" not found.';
+  lisBuildMode2 = 'Build Mode "%s"';
+  lisLazarusProjectsLpi = 'Lazarus projects (*.lpi)';
+  lisLazarusPackagesLpk = 'Lazarus packages (*.lpk)';
+  lisLazarusProjectGroupsLpg = 'Lazarus project groups (*.lpg)';
+  lisPascalFilePasPpP = 'Pascal file (*.pas;*.pp;*.p)';
+  lisNeedSave = 'Need save';
+  lisPleaseSaveYourChangesBeforeReloadingTheProjectGrou = 'Please save your changes before reloading the project group.';
 
 implementation
 
