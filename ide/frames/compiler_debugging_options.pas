@@ -88,8 +88,6 @@ end;
 
 procedure TCompilerDebuggingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  debugln(['TCompilerDebuggingOptionsFrame.Setup ']);
-  writeln('TCompilerDebuggingOptionsFrame.Setup ');
   grpChecks.Caption := dlgCOChecksAndAssertion;
   chkChecksIO.Caption := 'I/O (-Ci)';
   chkChecksRange.Caption := dlgCORange + ' (-Cr)';
