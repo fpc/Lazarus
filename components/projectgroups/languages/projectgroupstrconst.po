@@ -84,10 +84,6 @@ msgstr ""
 msgid "Lazarus packages (*.lpk)"
 msgstr ""
 
-#: projectgroupstrconst.lislazarusprojectgroup
-msgid "Lazarus project group (*.lpg)"
-msgstr ""
-
 #: projectgroupstrconst.lislazarusprojectgroupslpg
 msgid "Lazarus project groups (*.lpg)"
 msgstr ""
@@ -165,7 +161,7 @@ msgid "Package \"%s\" not found."
 msgstr ""
 
 #: projectgroupstrconst.lispascalfilepasppp
-msgid "Pascal file (*.pas;*.pp;*.p)"
+msgid "Pascal files (*.pas;*.pp;*.p)"
 msgstr ""
 
 #: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
@@ -238,10 +234,6 @@ msgstr ""
 
 #: projectgroupstrconst.lisreaderror
 msgid "Read error"
-msgstr ""
-
-#: projectgroupstrconst.lisreaderror2
-msgid "Read Error"
 msgstr ""
 
 #: projectgroupstrconst.lisremovetarget
@@ -438,10 +430,6 @@ msgstr ""
 
 #: projectgroupstrconst.liswriteerror
 msgid "Write error"
-msgstr ""
-
-#: projectgroupstrconst.liswriteerror2
-msgid "Write Error"
 msgstr ""
 
 #: projectgroupstrconst.lisxmlsyntaxerrorinfile

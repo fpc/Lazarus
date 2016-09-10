@@ -16,7 +16,6 @@ Resourcestring
   lisAbortLoadingProjectGroup    = 'Abort loading project group';
   lisSkipAllTargets              = 'Remove all invalid targets';
   lisErrOnlyProjectGroupAllowed  = 'Only target type "projectgroup" is allowed for root project group';
-  lisLazarusProjectGroup = 'Lazarus project group (*.lpg)';
   lisAllFiles = 'All files';
   lisProjectGroupModified        = 'Project group modified';
   lisProjectGroupModifiedConfirm = 'Project group "%s" is modified.'+sLineBreak+
@@ -95,9 +94,7 @@ Resourcestring
   lisWriteError = 'Write error';
   lisUnableToCreateFile = 'Unable to create file "%s": %s';
   lisInvalidCycleAProjectGroupCannotHaveItselfAsTarget = 'Invalid cycle. A project group cannot have itself as target.';
-  lisReadError2 = 'Read Error';
   lisErrorReadingProjectGroupFile = 'Error reading project group file "%s"%s%s';
-  lisWriteError2 = 'Write Error';
   lisUnableToWriteProjectGroupFile = 'Unable to write project group file "%s"%s%s';
   lisLazbuildNotFound = 'lazbuild not found';
   lisTheLazbuildWasNotFound = 'The lazbuild%s was not found.';
@@ -117,7 +114,7 @@ Resourcestring
   lisLazarusProjectsLpi = 'Lazarus projects (*.lpi)';
   lisLazarusPackagesLpk = 'Lazarus packages (*.lpk)';
   lisLazarusProjectGroupsLpg = 'Lazarus project groups (*.lpg)';
-  lisPascalFilePasPpP = 'Pascal file (*.pas;*.pp;*.p)';
+  lisPascalFilePasPpP = 'Pascal files (*.pas;*.pp;*.p)';
   lisNeedSave = 'Need save';
   lisPleaseSaveYourChangesBeforeReloadingTheProjectGrou = 'Please save your changes before reloading the project group.';
   lisProjectGroupReload = 'Reload';

@@ -97,10 +97,6 @@ msgstr "Érvénytelen xml fájlnév: \"%s\""
 msgid "Lazarus packages (*.lpk)"
 msgstr "Lazarus csomagok (*.lpk)"
 
-#: projectgroupstrconst.lislazarusprojectgroup
-msgid "Lazarus project group (*.lpg)"
-msgstr "Lazarus projektcsoport (*.lpg)"
-
 #: projectgroupstrconst.lislazarusprojectgroupslpg
 msgid "Lazarus project groups (*.lpg)"
 msgstr "Lazarus projektcsoportok (*.lpg)"
@@ -178,7 +174,9 @@ msgid "Package \"%s\" not found."
 msgstr "A(z) \"%s\" csomag nem található."
 
 #: projectgroupstrconst.lispascalfilepasppp
-msgid "Pascal file (*.pas;*.pp;*.p)"
+#, fuzzy
+#| msgid "Pascal file (*.pas;*.pp;*.p)"
+msgid "Pascal files (*.pas;*.pp;*.p)"
 msgstr "Pascal fájl (*.pas;*.pp;*.p)"
 
 #: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
@@ -254,10 +252,6 @@ msgstr "Projektcsoport mentése"
 
 #: projectgroupstrconst.lisreaderror
 msgid "Read error"
-msgstr "Olvasási hiba"
-
-#: projectgroupstrconst.lisreaderror2
-msgid "Read Error"
 msgstr "Olvasási hiba"
 
 #: projectgroupstrconst.lisremovetarget
@@ -454,10 +448,6 @@ msgstr "Nem lehet írni a projektcsoport fájlját: \"%s\"%s%s"
 
 #: projectgroupstrconst.liswriteerror
 msgid "Write error"
-msgstr "Írási hiba"
-
-#: projectgroupstrconst.liswriteerror2
-msgid "Write Error"
 msgstr "Írási hiba"
 
 #: projectgroupstrconst.lisxmlsyntaxerrorinfile

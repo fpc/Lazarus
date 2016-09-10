@@ -516,7 +516,7 @@ begin
     try
       InitIDEFileDialog(F);
       F.Options:=[ofFileMustExist,ofEnableSizing];
-      F.Filter:=lisLazarusProjectGroup+'|*.lpg|'+lisAllFiles+'|'+AllFilesMask;
+      F.Filter:=lisLazarusProjectGroupsLpg+'|*.lpg|'+lisAllFiles+'|'+AllFilesMask;
       if F.Execute then
         LoadProjectGroup(FileName,[pgloLoadRecursively]);
       StoreIDEFileDialog(F);
@@ -552,7 +552,7 @@ begin
       FileName:=FProjectGroup.FileName;
       InitIDEFileDialog(F);
       F.Options:=[ofOverwritePrompt,ofPathMustExist,ofEnableSizing];
-      F.Filter:=lisLazarusProjectGroup+'|*.lpg|'+lisAllFiles+'|'+AllFilesMask;
+      F.Filter:=lisLazarusProjectGroupsLpg+'|*.lpg|'+lisAllFiles+'|'+AllFilesMask;
       F.DefaultExt:='.lpg';
       Result:=F.Execute;
       if Result then begin
@@ -866,7 +866,7 @@ begin
     Result:=true;
   except
     on E: Exception do begin
-      IDEMessageDialog(lisReadError2, Format(lisErrorReadingProjectGroupFile, [Filename, #13, E.Message]),
+      IDEMessageDialog(lisReadError, Format(lisErrorReadingProjectGroupFile, [Filename, #13, E.Message]),
         mtError,[mbOk]);
     end;
   end;
@@ -908,7 +908,7 @@ begin
     end;
   except
     on E: Exception do begin
-      IDEMessageDialog(lisWriteError2, Format(lisUnableToWriteProjectGroupFile, [Filename, #13, E.Message]),
+      IDEMessageDialog(lisWriteError, Format(lisUnableToWriteProjectGroupFile, [Filename, #13, E.Message]),
         mtError,[mbOk]);
       Result:=false;
     end;
