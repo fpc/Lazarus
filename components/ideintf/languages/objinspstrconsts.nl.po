@@ -332,9 +332,10 @@ msgid "Add"
 msgstr "Toevoegen"
 
 #: objinspstrconsts.oicoleditdelete
+#, fuzzy
 msgctxt "objinspstrconsts.oicoleditdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Verwijder"
 
 #: objinspstrconsts.oicoleditdown
 msgctxt "objinspstrconsts.oicoleditdown"
