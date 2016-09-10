@@ -430,11 +430,11 @@ msgstr "Végrehajtási pont"
 
 #: lazarusidestrconsts.dlgaddhiattrfoldedcode
 msgid "Folded code marker"
-msgstr "Összecsukot kód jelző"
+msgstr "Összecsukott kód jelző"
 
 #: lazarusidestrconsts.dlgaddhiattrfoldedcodeline
 msgid "Fold start-line"
-msgstr ""
+msgstr "Összecsukott szakasz első sora"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupdefault
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupdefault"
@@ -475,7 +475,7 @@ msgstr "Hasábköz elválasztó"
 
 #: lazarusidestrconsts.dlgaddhiattrhiddencodeline
 msgid "Hide start-line"
-msgstr ""
+msgstr "Elrejtett szakasz első sora"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
@@ -4160,7 +4160,7 @@ msgstr "Lazarus névjegye"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr "Licenc: GPL/LGPL. Lásd a Lazarus és a Free Pascal forráskódokat a licenc részleteiért.%sA Lazarus egy IDE grafikus és konzolos alkalmazások létrehozására Free Pascal használatával. A Free Pascal egy Pascal és Object Pascal fordító, mely a fut Windows-on, Linux-on, Mac OS X-en, FreeBSD-n stb.%sA Lazarus a kirakós hiányzó darabja, mely lehetővé teszi programok fejlesztését az összes fenti platformra egy Delphi-szerű környezetben. Az IDE egy RAD (Rapid Application Development) eszköz mely tartalmaz űrlaptervezőt.%sAhogy a Lazarus növekszik egyre több fejlesztőre van szükségünk."
+msgstr "Licenc: GPL/LGPL. Lásd a Lazarus és a Free Pascal forráskódokat a licenc részleteiért.%sA Lazarus egy IDE grafikus és konzolos alkalmazások létrehozására Free Pascal használatával. A Free Pascal egy Pascal és Object Pascal fordító, amely fut Windows-on, Linux-on, Mac OS X-en, FreeBSD-n stb.%sA Lazarus a kirakós hiányzó darabja, mely lehetővé teszi programok fejlesztését az összes fenti platformra egy Delphi-szerű környezetben. Az IDE egy RAD (Rapid Application Development) eszköz mely tartalmaz űrlaptervezőt.%sAhogy a Lazarus növekszik egyre több fejlesztőre van szükségünk."
 
 #: lazarusidestrconsts.lisaboutnocontributors
 msgid "Cannot find contributors list."
@@ -8615,10 +8615,8 @@ msgid "Enable Macros"
 msgstr "Makrók engedélyezése"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
-#, fuzzy
-#| msgid "Enable = replace whole identifier, Disable = replace prefix"
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
-msgstr "Engedélyezve = teljes azonosító cseréje, Tiltva = előtag cseréje"
+msgstr "Engedélyezve = az Enter lenyomására a teljes azonosító, a Shift+Enter lenyomására pedig az előtag lesz lecserélve. Tiltva = az Enter lenyomására az előtag, a Shift+Enter lenyomására pedig a teljes azonosító lesz lecserélve."
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
@@ -18675,7 +18673,7 @@ msgstr "Amikor engedélyezve van az aktuális beállítások a sablonba lesznek 
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
 msgid "When there is only one possible completion item use it immediately, without showing the completion box"
-msgstr ""
+msgstr "Ha csak egy lehetséges kiegészítés van az azonnal be lesz illesztve, a kiegészítés doboz megjelenítése nélkül"
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"

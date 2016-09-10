@@ -1,0 +1,466 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: projectgroupstrconst.lisabort
+msgid "Abort"
+msgstr "Megszakítás"
+
+#: projectgroupstrconst.lisabortloadingprojectgroup
+msgid "Abort loading project group"
+msgstr "A projektcsoport betöltésének megszakítása"
+
+#: projectgroupstrconst.lisactivetarget
+msgid "Target: %s"
+msgstr "Cél: %s"
+
+#: projectgroupstrconst.lisallfiles
+msgid "All files"
+msgstr "Minden fájl"
+
+#: projectgroupstrconst.lisbepatient
+msgid "Be patient!"
+msgstr "Türelem!"
+
+#: projectgroupstrconst.lisbuildmode
+msgid ", build mode \"%s\""
+msgstr ", építési mód \"%s\""
+
+#: projectgroupstrconst.lisbuildmode2
+msgid "Build Mode \"%s\""
+msgstr "Építési mód \"%s\""
+
+#: projectgroupstrconst.lisbuildmodenotfound
+msgid "Build mode not found"
+msgstr "Építési mód nem található."
+
+#: projectgroupstrconst.lisbuildmodenotfound2
+msgid "Build mode \"%s\" not found."
+msgstr "A(z) \"%s\" építési mód nem található."
+
+#: projectgroupstrconst.liscompilepackage
+msgid "Compile Package %s"
+msgstr "Csomag fordítása: %s"
+
+#: projectgroupstrconst.liscompileproject
+msgid "Compile Project %s"
+msgstr "Projekt fordítása: %s"
+
+#: projectgroupstrconst.lisdiscard
+msgid "Discard changes"
+msgstr "Változások eldobása"
+
+#: projectgroupstrconst.liserrnosuchfile
+msgid ""
+"Could not find target file\n"
+"\"%s\"\n"
+"What do you want to do ?\n"
+msgstr ""
+"A célfájl nem található:\n"
+"\"%s\"\n"
+"Mi történjen most?\n"
+
+#: projectgroupstrconst.liserronlyprojectgroupallowed
+msgid "Only target type \"projectgroup\" is allowed for root project group"
+msgstr "Csak a \"projektgroup\" típus lehet a projektcsoport gyökere"
+
+#: projectgroupstrconst.liserrorreadingprojectgroupfile
+msgid "Error reading project group file \"%s\"%s%s"
+msgstr "Hiba a projektcsoport fájljának olvasása közben: \"%s\"%s%s"
+
+#: projectgroupstrconst.liserrtargetdoesnotexist
+msgid "Target does not exist. Remove ?"
+msgstr "A cél nem létezik. Eltávolítás?"
+
+#: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
+msgid "Invalid cycle. A project group cannot have itself as target."
+msgstr "Érvénytelen kör. A projektcsoport nem lehet a saját célja."
+
+#: projectgroupstrconst.lisinvalidfile
+msgid "Invalid File"
+msgstr "Érvénytelen fájl"
+
+#: projectgroupstrconst.lisinvalidxmlfilename
+msgid "Invalid xml file name \"%s\""
+msgstr "Érvénytelen xml fájlnév: \"%s\""
+
+#: projectgroupstrconst.lislazaruspackageslpk
+msgid "Lazarus packages (*.lpk)"
+msgstr "Lazarus csomagok (*.lpk)"
+
+#: projectgroupstrconst.lislazarusprojectgroup
+msgid "Lazarus project group (*.lpg)"
+msgstr "Lazarus projektcsoport (*.lpg)"
+
+#: projectgroupstrconst.lislazarusprojectgroupslpg
+msgid "Lazarus project groups (*.lpg)"
+msgstr "Lazarus projektcsoportok (*.lpg)"
+
+#: projectgroupstrconst.lislazarusprojectslpi
+msgid "Lazarus projects (*.lpi)"
+msgstr "Lazarus projektek (*.lpi)"
+
+#: projectgroupstrconst.lislazbuildnotfound
+msgid "lazbuild not found"
+msgstr "lazbuild nem található"
+
+#: projectgroupstrconst.lismore
+msgid "More..."
+msgstr "Több..."
+
+#: projectgroupstrconst.lisneedsave
+msgid "Need save"
+msgstr "Mentés szükséges"
+
+#: projectgroupstrconst.lisnewprojectgroup
+msgid "New project group"
+msgstr "Új projektcsoport"
+
+#: projectgroupstrconst.lisnodebuildmodes
+msgid "Build Modes"
+msgstr "Építési módok"
+
+#: projectgroupstrconst.lisnodedependencies
+msgid "Dependencies"
+msgstr "Függőségek"
+
+#: projectgroupstrconst.lisnodefiles
+msgid "Files"
+msgstr "Fájlok"
+
+#: projectgroupstrconst.lisnoderemoveddependencies
+msgid "Removed dependencies"
+msgstr "Eltávolított függőségek"
+
+#: projectgroupstrconst.lisnoderemovedfiles
+msgid "Removed files"
+msgstr "Eltávolított fájlok"
+
+#: projectgroupstrconst.lisnoderemovedtargets
+msgid "Removed targets"
+msgstr "Eltávolított célok"
+
+#: projectgroupstrconst.lisnodetargets
+msgid "Targets"
+msgstr "Célok"
+
+#: projectgroupstrconst.lisopenprojectgroup
+msgid "Open project group"
+msgstr "Projektcsoport megnyitása"
+
+#: projectgroupstrconst.lisopenrecentprojectgroup
+msgid "Open recent project group"
+msgstr "Legutóbbi projektcsoport megnyitása"
+
+#: projectgroupstrconst.lisotherproject
+msgid "Other Project"
+msgstr "Projekt megnyitása"
+
+#: projectgroupstrconst.lispackage
+msgid "Package"
+msgstr "Csomag"
+
+#: projectgroupstrconst.lispackagenotfound
+msgid "Package not found"
+msgstr "Csomag nem található"
+
+#: projectgroupstrconst.lispackagenotfound2
+msgid "Package \"%s\" not found."
+msgstr "A(z) \"%s\" csomag nem található."
+
+#: projectgroupstrconst.lispascalfilepasppp
+msgid "Pascal file (*.pas;*.pp;*.p)"
+msgstr "Pascal fájl (*.pas;*.pp;*.p)"
+
+#: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
+#, fuzzy
+msgctxt "projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou"
+msgid "Please save your changes before reloading the project group."
+msgstr "Menteni kell a változásokat mielőtt újra betölti a projektcsoportot."
+
+#: projectgroupstrconst.lisprojectgroup
+msgid "Project group %s"
+msgstr "Projektcsoport: %s"
+
+#: projectgroupstrconst.lisprojectgroup2
+msgid "Project Group: %s"
+msgstr "Projektcsoport: %s"
+
+#: projectgroupstrconst.lisprojectgroupaddexistingcaption
+msgid "Add"
+msgstr "Hozzáadás"
+
+#: projectgroupstrconst.lisprojectgroupaddexistinghint
+msgid "Add existing target to project group"
+msgstr "Létező cél hozzáadása a projektcsoporthoz"
+
+#: projectgroupstrconst.lisprojectgroupaddnewcaption
+msgid "New"
+msgstr "Új"
+
+#: projectgroupstrconst.lisprojectgroupaddnewhint
+msgid "Add new target to project group"
+msgstr "Új cél hozzáadása a projektcsoporthoz"
+
+#: projectgroupstrconst.lisprojectgroupdeletecaption
+msgid "Remove"
+msgstr "Eltávolítás"
+
+#: projectgroupstrconst.lisprojectgroupdeletehint
+msgid "Remove target from project group"
+msgstr "A cél eltávolítása a projektcsoportból"
+
+#: projectgroupstrconst.lisprojectgroupmodified
+msgid "Project group modified"
+msgstr "Projektcsoport módosítva"
+
+#: projectgroupstrconst.lisprojectgroupmodifiedconfirm
+msgid ""
+"Project group \"%s\" is modified.\n"
+"what do you want to do?\n"
+msgstr ""
+"A(z) \"%s\" projektcsoport módosult.\n"
+"Mi történjen most?\n"
+
+#: projectgroupstrconst.lisprojectgroupreload
+msgid "Reload"
+msgstr "Újratöltés"
+
+#: projectgroupstrconst.lisprojectgroupsaveascaption
+msgid "Save As"
+msgstr "Mentés másként"
+
+#: projectgroupstrconst.lisprojectgroupsaveashint
+msgid "Save project group with a new name"
+msgstr "A projektcsoport mentése új néven"
+
+#: projectgroupstrconst.lisprojectgroupsavecaption
+msgid "Save"
+msgstr "Mentés"
+
+#: projectgroupstrconst.lisprojectgroupsavehint
+msgctxt "projectgroupstrconst.lisprojectgroupsavehint"
+msgid "Save project group"
+msgstr "Projektcsoport mentése"
+
+#: projectgroupstrconst.lisreaderror
+msgid "Read error"
+msgstr "Olvasási hiba"
+
+#: projectgroupstrconst.lisreaderror2
+msgid "Read Error"
+msgstr "Olvasási hiba"
+
+#: projectgroupstrconst.lisremovetarget
+msgctxt "projectgroupstrconst.lisremovetarget"
+msgid "Remove target"
+msgstr "Cél eltávolítása"
+
+#: projectgroupstrconst.lissavepg
+msgctxt "projectgroupstrconst.lissavepg"
+msgid "Save project group"
+msgstr "Projektcsoport mentése"
+
+#: projectgroupstrconst.lissaveprojectgroup
+msgctxt "projectgroupstrconst.lissaveprojectgroup"
+msgid "Save project group"
+msgstr "Projektcsoport mentése"
+
+#: projectgroupstrconst.lissaveprojectgroupas
+msgid "Save project group as"
+msgstr "A projektcsoport mentése másként"
+
+#: projectgroupstrconst.lisskipalltargets
+msgid "Remove all invalid targets"
+msgstr "Minden érvénytelen cél eltávolítása"
+
+#: projectgroupstrconst.listargetactivate
+msgid "Activate target"
+msgstr "Cél aktiválása"
+
+#: projectgroupstrconst.listargetactivatecaption
+msgid "Activate"
+msgstr "Aktiválás"
+
+#: projectgroupstrconst.listargetactivatehint
+msgid "Activate selected target"
+msgstr "A kiválasztott cél aktiválása"
+
+#: projectgroupstrconst.listargetadd
+msgid "Add target"
+msgstr "Cél hozzáadása"
+
+#: projectgroupstrconst.listargetcompile
+msgctxt "projectgroupstrconst.listargetcompile"
+msgid "Compile"
+msgstr "Fordítás"
+
+#: projectgroupstrconst.listargetcompilecaption
+msgctxt "projectgroupstrconst.listargetcompilecaption"
+msgid "Compile"
+msgstr "Fordítás"
+
+#: projectgroupstrconst.listargetcompileclean
+msgctxt "projectgroupstrconst.listargetcompileclean"
+msgid "Compile clean"
+msgstr "Tiszta fordítás"
+
+#: projectgroupstrconst.listargetcompilecleancaption
+msgctxt "projectgroupstrconst.listargetcompilecleancaption"
+msgid "Compile clean"
+msgstr "Tiszta fordítás"
+
+#: projectgroupstrconst.listargetcompilecleanhint
+msgid "Compile selected target clean"
+msgstr "A kiválasztott cél fordítása tisztítással"
+
+#: projectgroupstrconst.listargetcompilefromhere
+msgid "Compile from here"
+msgstr "Fordítás innen"
+
+#: projectgroupstrconst.listargetcompilehint
+msgid "Compile selected target"
+msgstr "A kiválasztott cél fordítása"
+
+#: projectgroupstrconst.listargetcopyfilename
+msgid "Copy file name"
+msgstr "Fájlnév másolása"
+
+#: projectgroupstrconst.listargetcount
+msgid "%d targets"
+msgstr "%d cél"
+
+#: projectgroupstrconst.listargetearlier
+msgid "Compile target earlier"
+msgstr "Cél fordítása korábban"
+
+#: projectgroupstrconst.listargetearliercaption
+msgid "Earlier"
+msgstr "Korábban"
+
+#: projectgroupstrconst.listargetearlierhint
+msgid "Build target earlier"
+msgstr "Cél építése korábban"
+
+#: projectgroupstrconst.listargetinstall
+msgctxt "projectgroupstrconst.listargetinstall"
+msgid "Install"
+msgstr "Telepítés"
+
+#: projectgroupstrconst.listargetinstallcaption
+msgctxt "projectgroupstrconst.listargetinstallcaption"
+msgid "Install"
+msgstr "Telepítés"
+
+#: projectgroupstrconst.listargetinstallhint
+msgid "Install selected target"
+msgstr "A kiválasztott cél telepítése"
+
+#: projectgroupstrconst.listargetlater
+msgid "Compile target later"
+msgstr "Cél fordítása később"
+
+#: projectgroupstrconst.listargetlatercaption
+msgid "Later"
+msgstr "Később"
+
+#: projectgroupstrconst.listargetlaterhint
+msgid "Build target later"
+msgstr "Cél építése később"
+
+#: projectgroupstrconst.listargetopen
+msgid "Open Target"
+msgstr "Cél megnyitása"
+
+#: projectgroupstrconst.listargetopencaption
+msgid "Open"
+msgstr "Megnyitás"
+
+#: projectgroupstrconst.listargetopenhint
+msgid "Open selected target"
+msgstr "A kiválasztott cél megnyitása"
+
+#: projectgroupstrconst.listargetproperties
+msgid "Target properties"
+msgstr "Cél tulajdonságai"
+
+#: projectgroupstrconst.listargetpropertiescaption
+msgid "Properties"
+msgstr "Tulajdonságok"
+
+#: projectgroupstrconst.listargetpropertieshint
+msgid "Show property dialog for selected target"
+msgstr "A kijelölt projektcsoport tulajdonságainak megjelenítése"
+
+#: projectgroupstrconst.listargetremove
+msgctxt "projectgroupstrconst.listargetremove"
+msgid "Remove target"
+msgstr "Cél eltávolítása"
+
+#: projectgroupstrconst.listargetrun
+msgid "Run Target"
+msgstr "Cél futtatása"
+
+#: projectgroupstrconst.listargetruncaption
+msgid "Run"
+msgstr "Futtatás"
+
+#: projectgroupstrconst.listargetrunhint
+msgid "Run selected target"
+msgstr "A kiválasztott cél futtatása"
+
+#: projectgroupstrconst.listargetuninstall
+msgctxt "projectgroupstrconst.listargetuninstall"
+msgid "Uninstall"
+msgstr "Eltávolítás"
+
+#: projectgroupstrconst.listargetuninstallcaption
+msgctxt "projectgroupstrconst.listargetuninstallcaption"
+msgid "Uninstall"
+msgstr "Eltávolítás"
+
+#: projectgroupstrconst.listargetuninstallhint
+msgid "Uninstall selected target"
+msgstr "A kiválasztott cél eltávolítása"
+
+#: projectgroupstrconst.listhelazbuildwasnotfound
+msgid "The lazbuild%s was not found."
+msgstr "A lazbuild%s nem található."
+
+#: projectgroupstrconst.listhereisstillanotherbuildinprogress
+msgid "There is still another build in progress."
+msgstr "Egy másik építési még folyamatban van."
+
+#: projectgroupstrconst.lisunabletocreatefile
+msgid "Unable to create file \"%s\": %s"
+msgstr "A(z) \"%s\" fájl létrehozása nem lehetséges: %s"
+
+#: projectgroupstrconst.lisunabletoloadfile
+msgid "Unable to load file \"%s\""
+msgstr "A(z) \"%s\" fájl betöltése nem lehetséges"
+
+#: projectgroupstrconst.lisunabletowriteprojectgroupfile
+msgid "Unable to write project group file \"%s\"%s%s"
+msgstr "Nem lehet írni a projektcsoport fájlját: \"%s\"%s%s"
+
+#: projectgroupstrconst.liswriteerror
+msgid "Write error"
+msgstr "Írási hiba"
+
+#: projectgroupstrconst.liswriteerror2
+msgid "Write Error"
+msgstr "Írási hiba"
+
+#: projectgroupstrconst.lisxmlsyntaxerrorinfile
+msgid "XML syntax error in file \"%s\": %s"
+msgstr "XML szintaxis hiba a(z) \"%s\" fájlban: %s"
+

@@ -814,7 +814,7 @@ msgstr "Lekérdezés futtatása"
 
 #: lazdatadeskstr.sreadyforsql
 msgid "Ready to execute SQL statements"
-msgstr "SQL állományok futtatására lehetséges"
+msgstr "SQL állományok futtatása lehetséges"
 
 #: lazdatadeskstr.srecordsfetched
 msgid "Records fetched: %d"
