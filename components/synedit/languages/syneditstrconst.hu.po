@@ -337,7 +337,7 @@ msgstr "SASM kulcs"
 
 #: syneditstrconst.syns_attrsecondreservedword
 msgid "Second reserved word"
-msgstr "Második védett szó"
+msgstr "Másodlagos védett szó"
 
 #: syneditstrconst.syns_attrsection
 msgid "Section"
