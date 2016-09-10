@@ -100,6 +100,10 @@ msgstr ""
 msgid "lazbuild not found"
 msgstr ""
 
+#: projectgroupstrconst.lismore
+msgid "More..."
+msgstr ""
+
 #: projectgroupstrconst.lisneedsave
 msgid "Need save"
 msgstr ""
@@ -165,6 +169,7 @@ msgid "Pascal file (*.pas;*.pp;*.p)"
 msgstr ""
 
 #: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
+msgctxt "projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou"
 msgid "Please save your changes before reloading the project group."
 msgstr ""
 
@@ -208,6 +213,10 @@ msgstr ""
 msgid ""
 "Project group \"%s\" is modified.\n"
 "what do you want to do?\n"
+msgstr ""
+
+#: projectgroupstrconst.lisprojectgroupreload
+msgid "Reload"
 msgstr ""
 
 #: projectgroupstrconst.lisprojectgroupsaveascaption

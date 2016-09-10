@@ -120,6 +120,9 @@ Resourcestring
   lisPascalFilePasPpP = 'Pascal file (*.pas;*.pp;*.p)';
   lisNeedSave = 'Need save';
   lisPleaseSaveYourChangesBeforeReloadingTheProjectGrou = 'Please save your changes before reloading the project group.';
+  lisProjectGroupReload = 'Reload';
+  lisMore = 'More...';
+
 
 implementation
 

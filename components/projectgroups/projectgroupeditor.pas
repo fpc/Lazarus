@@ -366,6 +366,10 @@ begin
   ConfigAction(ATargetUninstall,iiTargetUninstall,lisTargetUninstallCaption,lisTargetUninstallHint,Nil);
   ConfigAction(ATargetActivate,iiTargetActivate,lisTargetActivateCaption,lisTargetActivateHint,Nil);
   ConfigAction(ATargetOpen,iiTargetOpen,lisTargetOpenCaption,lisTargetOpenHint,Nil);
+  ConfigAction(ATargetCopyFilename,0,lisTargetCopyFilename,'',Nil);
+  ConfigAction(ATargetCompileFromHere,0,lisTargetCompileFromHere,'',Nil);
+  ConfigAction(AProjectGroupReload,0,lisProjectGroupReload,'',Nil);
+  TBMore.Caption:=lisMore;
 end;
 
 procedure TProjectGroupEditorForm.AProjectGroupSaveUpdate(Sender: TObject);
