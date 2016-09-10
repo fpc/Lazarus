@@ -53,7 +53,7 @@ msgstr ""
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
-"What do you want to do ?\n"
+"What do you want to do?\n"
 msgstr ""
 
 #: projectgroupstrconst.liserronlyprojectgroupallowed
@@ -65,7 +65,7 @@ msgid "Error reading project group file \"%s\"%s%s"
 msgstr ""
 
 #: projectgroupstrconst.liserrtargetdoesnotexist
-msgid "Target does not exist. Remove ?"
+msgid "Target does not exist. Remove?"
 msgstr ""
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
@@ -208,7 +208,7 @@ msgstr ""
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
 msgid ""
 "Project group \"%s\" is modified.\n"
-"what do you want to do?\n"
+"What do you want to do?\n"
 msgstr ""
 
 #: projectgroupstrconst.lisprojectgroupreload

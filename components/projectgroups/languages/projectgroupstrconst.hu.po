@@ -60,10 +60,15 @@ msgid "Discard changes"
 msgstr "Változások eldobása"
 
 #: projectgroupstrconst.liserrnosuchfile
+#, fuzzy
+#| msgid ""
+#| "Could not find target file\n"
+#| "\"%s\"\n"
+#| "What do you want to do ?\n"
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
-"What do you want to do ?\n"
+"What do you want to do?\n"
 msgstr ""
 "A célfájl nem található:\n"
 "\"%s\"\n"
@@ -78,7 +83,9 @@ msgid "Error reading project group file \"%s\"%s%s"
 msgstr "Hiba a projektcsoport fájljának olvasása közben: \"%s\"%s%s"
 
 #: projectgroupstrconst.liserrtargetdoesnotexist
-msgid "Target does not exist. Remove ?"
+#, fuzzy
+#| msgid "Target does not exist. Remove ?"
+msgid "Target does not exist. Remove?"
 msgstr "A cél nem létezik. Eltávolítás?"
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
@@ -224,7 +231,7 @@ msgstr "Projektcsoport módosítva"
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
 msgid ""
 "Project group \"%s\" is modified.\n"
-"what do you want to do?\n"
+"What do you want to do?\n"
 msgstr ""
 "A(z) \"%s\" projektcsoport módosult.\n"
 "Mi történjen most?\n"

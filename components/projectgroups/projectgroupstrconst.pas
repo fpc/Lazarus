@@ -8,10 +8,10 @@ uses
   Classes, SysUtils;
 
 Resourcestring
-  lisErrTargetDoesNotExist      = 'Target does not exist. Remove ?';
+  lisErrTargetDoesNotExist      = 'Target does not exist. Remove?';
   lisErrNoSuchFile              = 'Could not find target file'+sLineBreak+
                                   '"%s"'+sLineBreak+
-                                  'What do you want to do ?';
+                                  'What do you want to do?';
   lisRemoveTarget                = 'Remove target';
   lisAbortLoadingProjectGroup    = 'Abort loading project group';
   lisSkipAllTargets              = 'Remove all invalid targets';
@@ -19,7 +19,7 @@ Resourcestring
   lisAllFiles = 'All files';
   lisProjectGroupModified        = 'Project group modified';
   lisProjectGroupModifiedConfirm = 'Project group "%s" is modified.'+sLineBreak+
-                                   'what do you want to do?';
+                                   'What do you want to do?';
 
   lisSavePG  = 'Save project group';
   lisDiscard = 'Discard changes';
