@@ -494,6 +494,8 @@ type
     FProportional: Boolean;
     FTransparent: Boolean;
     FStretch: Boolean;
+    FStretchOutEnabled: Boolean;
+    FStretchInEnabled: Boolean;
     FUseAncestorCanvas: boolean;
     FPainting: boolean;
     function  GetCanvas: TCanvas;
@@ -504,6 +506,8 @@ type
     procedure SetKeepOriginY(AValue: Boolean);
     procedure SetProportional(const AValue: Boolean);
     procedure SetStretch(const AValue : Boolean);
+    procedure SetStretchInEnabled(AValue: Boolean);
+    procedure SetStretchOutEnabled(AValue: Boolean);
     procedure SetTransparent(const AValue : Boolean);
   protected
     class procedure WSRegisterClass; override;
@@ -539,6 +543,8 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property Stretch: Boolean read FStretch write SetStretch default False;
+    property StretchOutEnabled: Boolean read FStretchOutEnabled write SetStretchOutEnabled default True;
+    property StretchInEnabled: Boolean read FStretchInEnabled write SetStretchInEnabled default True;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
     property Proportional: Boolean read FProportional write SetProportional default False;
     property OnPictureChanged: TNotifyEvent read FOnPictureChanged write FOnPictureChanged;
@@ -587,6 +593,8 @@ type
     property Proportional;
     property ShowHint;
     property Stretch;
+    property StretchOutEnabled;
+    property StretchInEnabled;
     property Transparent;
     property Visible;
   end;

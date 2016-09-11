@@ -20,6 +20,8 @@ begin
   FKeepOriginYWhenClipped := False;
   FProportional := False;
   FStretch := False;
+  FStretchOutEnabled := True;
+  FStretchInEnabled := True;
   FTransparent := False;
   FPicture := TPicture.Create;
   FPicture.OnChange := @PictureChanged;
@@ -97,6 +99,20 @@ begin
   PictureChanged(Self);
 end;
 
+procedure TCustomImage.SetStretchInEnabled(AValue: Boolean);
+begin
+  if FStretchInEnabled = AValue then Exit;
+  FStretchInEnabled := AValue;
+  PictureChanged(Self);
+end;
+
+procedure TCustomImage.SetStretchOutEnabled(AValue: Boolean);
+begin
+  if FStretchOutEnabled = AValue then Exit;
+  FStretchOutEnabled := AValue;
+  PictureChanged(Self);
+end;
+
 procedure TCustomImage.SetTransparent(const AValue : Boolean);
 begin
   if FTransparent = AValue then exit;
@@ -151,30 +167,37 @@ var
   w: Integer;
   h: Integer;
   ChangeX, ChangeY: Integer;
+  PicInside, PicOutside, PicOutsidePartial: boolean;
 begin
   PicWidth := Picture.Width;
   PicHeight := Picture.Height;
   ImgWidth := ClientWidth;
   ImgHeight := ClientHeight;
-  if Stretch or (Proportional
-  and ((PicWidth > ImgWidth) or (PicHeight > ImgHeight))) then begin
-    if Proportional and (PicWidth > 0) and (PicHeight > 0) then begin
-      w:=ImgWidth;
-      h:=(PicHeight*w) div PicWidth;
-      if h>ImgHeight then begin
-        h:=ImgHeight;
-        w:=(PicWidth*h) div PicHeight;
-      end;
-      PicWidth:=w;
-      PicHeight:=h;
-    end
-    else begin
-      PicWidth := ImgWidth;
-      PicHeight := ImgHeight;
-    end;
-  end;
+  if (PicWidth=0) or (PicHeight=0) then Exit(Rect(0, 0, 0, 0));
 
-  Result:=Rect(0,0,PicWidth,PicHeight);
+  PicInside := (PicWidth<ImgWidth) and (PicHeight<ImgHeight);
+  PicOutside := (PicWidth>ImgWidth) and (PicHeight>ImgHeight);
+  PicOutsidePartial := (PicWidth>ImgWidth) or (PicHeight>ImgHeight);
+
+  if Stretch or (Proportional and PicOutsidePartial) then
+    if (FStretchOutEnabled or PicOutside) and
+       (FStretchInEnabled or PicInside) then
+      if Proportional then begin
+        w:=ImgWidth;
+        h:=(PicHeight*w) div PicWidth;
+        if h>ImgHeight then begin
+          h:=ImgHeight;
+          w:=(PicWidth*h) div PicHeight;
+        end;
+        PicWidth:=w;
+        PicHeight:=h;
+      end
+      else begin
+        PicWidth := ImgWidth;
+        PicHeight := ImgHeight;
+      end;
+
+  Result := Rect(0, 0, PicWidth, PicHeight);
 
   if Center then
   begin
