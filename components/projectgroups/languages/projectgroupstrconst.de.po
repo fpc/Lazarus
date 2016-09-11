@@ -111,7 +111,7 @@ msgid "lazbuild not found"
 msgstr "lazbuild nicht gefunden"
 
 #: projectgroupstrconst.lismore
-msgid "More..."
+msgid "More"
 msgstr ""
 
 #: projectgroupstrconst.lisneedsave
@@ -451,3 +451,4 @@ msgstr "Schreibfehler"
 #: projectgroupstrconst.lisxmlsyntaxerrorinfile
 msgid "XML syntax error in file \"%s\": %s"
 msgstr "XML-Syntaxfehler in Datei \"%s\": %s"
+

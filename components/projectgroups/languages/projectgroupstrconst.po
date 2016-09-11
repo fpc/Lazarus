@@ -97,7 +97,7 @@ msgid "lazbuild not found"
 msgstr ""
 
 #: projectgroupstrconst.lismore
-msgid "More..."
+msgid "More"
 msgstr ""
 
 #: projectgroupstrconst.lisneedsave

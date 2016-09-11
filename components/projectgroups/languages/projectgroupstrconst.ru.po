@@ -13,19 +13,19 @@ msgstr ""
 
 #: projectgroupstrconst.lisabort
 msgid "Abort"
-msgstr ""
+msgstr "Прервать"
 
 #: projectgroupstrconst.lisabortloadingprojectgroup
 msgid "Abort loading project group"
-msgstr ""
+msgstr "Прервать загрузку группы проектов"
 
 #: projectgroupstrconst.lisactivetarget
 msgid "Target: %s"
-msgstr ""
+msgstr "Цель: %s"
 
 #: projectgroupstrconst.lisallfiles
 msgid "All files"
-msgstr ""
+msgstr "Все файлы"
 
 #: projectgroupstrconst.lisbepatient
 msgid "Be patient!"
@@ -33,31 +33,31 @@ msgstr "Будьте терпеливы!"
 
 #: projectgroupstrconst.lisbuildmode
 msgid ", build mode \"%s\""
-msgstr ""
+msgstr ", режим сборки \"%s\""
 
 #: projectgroupstrconst.lisbuildmode2
 msgid "Build Mode \"%s\""
-msgstr ""
+msgstr "Режим сборки \"%s\""
 
 #: projectgroupstrconst.lisbuildmodenotfound
 msgid "Build mode not found"
-msgstr ""
+msgstr "Режим сборки не найден"
 
 #: projectgroupstrconst.lisbuildmodenotfound2
 msgid "Build mode \"%s\" not found."
-msgstr ""
+msgstr "Режим сборки \"%s\" не найден."
 
 #: projectgroupstrconst.liscompilepackage
 msgid "Compile Package %s"
-msgstr ""
+msgstr "Компиляция пакета %s"
 
 #: projectgroupstrconst.liscompileproject
 msgid "Compile Project %s"
-msgstr ""
+msgstr "Компиляция проекта %s"
 
 #: projectgroupstrconst.lisdiscard
 msgid "Discard changes"
-msgstr ""
+msgstr "Отбросить изменения"
 
 #: projectgroupstrconst.liserrnosuchfile
 msgid ""
@@ -65,6 +65,9 @@ msgid ""
 "\"%s\"\n"
 "What do you want to do?\n"
 msgstr ""
+"Не найден целевой файл\n"
+"\"%s\"\n"
+"Что вы хотите сделать?\n"
 
 #: projectgroupstrconst.liserronlyprojectgroupallowed
 msgid "Only target type \"projectgroup\" is allowed for root project group"
@@ -76,7 +79,7 @@ msgstr "Ошибка чтения файла группы проектов \"%s\
 
 #: projectgroupstrconst.liserrtargetdoesnotexist
 msgid "Target does not exist. Remove?"
-msgstr ""
+msgstr "Цель не существует. Удалить?"
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."
@@ -104,11 +107,11 @@ msgstr "Проекты Lazarus (*.lpi)"
 
 #: projectgroupstrconst.lislazbuildnotfound
 msgid "lazbuild not found"
-msgstr ""
+msgstr "Программа lazbuild не найдена"
 
 #: projectgroupstrconst.lismore
-msgid "More..."
-msgstr ""
+msgid "More"
+msgstr "Прочие"
 
 #: projectgroupstrconst.lisneedsave
 msgid "Need save"
@@ -116,7 +119,7 @@ msgstr ""
 
 #: projectgroupstrconst.lisnewprojectgroup
 msgid "New project group"
-msgstr ""
+msgstr "Новая группа проектов"
 
 #: projectgroupstrconst.lisnodebuildmodes
 msgid "Build Modes"
@@ -148,7 +151,7 @@ msgstr ""
 
 #: projectgroupstrconst.lisopenprojectgroup
 msgid "Open project group"
-msgstr ""
+msgstr "Открыть группу проектов"
 
 #: projectgroupstrconst.lisopenrecentprojectgroup
 msgid "Open recent project group"
@@ -156,19 +159,19 @@ msgstr ""
 
 #: projectgroupstrconst.lisotherproject
 msgid "Other Project"
-msgstr ""
+msgstr "Другой проект"
 
 #: projectgroupstrconst.lispackage
 msgid "Package"
-msgstr ""
+msgstr "Пакет"
 
 #: projectgroupstrconst.lispackagenotfound
 msgid "Package not found"
-msgstr ""
+msgstr "Пакет не найден"
 
 #: projectgroupstrconst.lispackagenotfound2
 msgid "Package \"%s\" not found."
-msgstr ""
+msgstr "Пакет \"%s\" не найден."
 
 #: projectgroupstrconst.lispascalfilepasppp
 msgid "Pascal files (*.pas;*.pp;*.p)"
@@ -185,62 +188,64 @@ msgstr ""
 
 #: projectgroupstrconst.lisprojectgroup2
 msgid "Project Group: %s"
-msgstr ""
+msgstr "Группа проектов: %s"
 
 #: projectgroupstrconst.lisprojectgroupaddexistingcaption
 msgid "Add"
-msgstr ""
+msgstr "Добавить"
 
 #: projectgroupstrconst.lisprojectgroupaddexistinghint
 msgid "Add existing target to project group"
-msgstr ""
+msgstr "Добавить существующую цель в группу проектов"
 
 #: projectgroupstrconst.lisprojectgroupaddnewcaption
 msgid "New"
-msgstr ""
+msgstr "Новая"
 
 #: projectgroupstrconst.lisprojectgroupaddnewhint
 msgid "Add new target to project group"
-msgstr ""
+msgstr "Добавить новую цель в группу проектов"
 
 #: projectgroupstrconst.lisprojectgroupdeletecaption
 msgid "Remove"
-msgstr ""
+msgstr "Удалить"
 
 #: projectgroupstrconst.lisprojectgroupdeletehint
 msgid "Remove target from project group"
-msgstr ""
+msgstr "Удалить существующую цель из группы проектов"
 
 #: projectgroupstrconst.lisprojectgroupmodified
 msgid "Project group modified"
-msgstr ""
+msgstr "Группа проектов изменена"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
 msgid ""
 "Project group \"%s\" is modified.\n"
 "What do you want to do?\n"
 msgstr ""
+"Группа проектов \"%s\" была изменена.\n"
+"Что вы хотите сделать?\n"
 
 #: projectgroupstrconst.lisprojectgroupreload
 msgid "Reload"
-msgstr ""
+msgstr "Перезагрузить"
 
 #: projectgroupstrconst.lisprojectgroupsaveascaption
 msgid "Save As"
-msgstr ""
+msgstr "Сохранить как"
 
 #: projectgroupstrconst.lisprojectgroupsaveashint
 msgid "Save project group with a new name"
-msgstr ""
+msgstr "Сохранить группу проектов под новым именем"
 
 #: projectgroupstrconst.lisprojectgroupsavecaption
 msgid "Save"
-msgstr ""
+msgstr "Сохранить"
 
 #: projectgroupstrconst.lisprojectgroupsavehint
 msgctxt "projectgroupstrconst.lisprojectgroupsavehint"
 msgid "Save project group"
-msgstr ""
+msgstr "Сохранить группу проектов"
 
 #: projectgroupstrconst.lisreaderror
 msgid "Read error"
@@ -275,11 +280,11 @@ msgstr ""
 
 #: projectgroupstrconst.listargetactivatecaption
 msgid "Activate"
-msgstr ""
+msgstr "Активировать"
 
 #: projectgroupstrconst.listargetactivatehint
 msgid "Activate selected target"
-msgstr ""
+msgstr "Активировать выбранную цель"
 
 #: projectgroupstrconst.listargetadd
 msgid "Add target"
@@ -288,54 +293,54 @@ msgstr ""
 #: projectgroupstrconst.listargetcompile
 msgctxt "projectgroupstrconst.listargetcompile"
 msgid "Compile"
-msgstr ""
+msgstr "Компилировать"
 
 #: projectgroupstrconst.listargetcompilecaption
 msgctxt "projectgroupstrconst.listargetcompilecaption"
 msgid "Compile"
-msgstr ""
+msgstr "Компилировать"
 
 #: projectgroupstrconst.listargetcompileclean
 msgctxt "projectgroupstrconst.listargetcompileclean"
 msgid "Compile clean"
-msgstr ""
+msgstr "Компилировать с очисткой"
 
 #: projectgroupstrconst.listargetcompilecleancaption
 msgctxt "projectgroupstrconst.listargetcompilecleancaption"
 msgid "Compile clean"
-msgstr ""
+msgstr "Компилировать с очисткой"
 
 #: projectgroupstrconst.listargetcompilecleanhint
 msgid "Compile selected target clean"
-msgstr ""
+msgstr "Компилировать выбранную цель с очисткой"
 
 #: projectgroupstrconst.listargetcompilefromhere
 msgid "Compile from here"
-msgstr ""
+msgstr "Компилировать отсюда"
 
 #: projectgroupstrconst.listargetcompilehint
 msgid "Compile selected target"
-msgstr ""
+msgstr "Компилировать выбранную цель"
 
 #: projectgroupstrconst.listargetcopyfilename
 msgid "Copy file name"
-msgstr ""
+msgstr "Копировать имя файла"
 
 #: projectgroupstrconst.listargetcount
 msgid "%d targets"
-msgstr ""
+msgstr "Целей: %d"
 
 #: projectgroupstrconst.listargetearlier
 msgid "Compile target earlier"
-msgstr ""
+msgstr "Компилировать цель раньше"
 
 #: projectgroupstrconst.listargetearliercaption
 msgid "Earlier"
-msgstr ""
+msgstr "Раньше"
 
 #: projectgroupstrconst.listargetearlierhint
 msgid "Build target earlier"
-msgstr ""
+msgstr "Собирать цель раньше"
 
 #: projectgroupstrconst.listargetinstall
 msgctxt "projectgroupstrconst.listargetinstall"
@@ -353,15 +358,15 @@ msgstr "Установить выбранную цель"
 
 #: projectgroupstrconst.listargetlater
 msgid "Compile target later"
-msgstr ""
+msgstr "Компилировать цель позже"
 
 #: projectgroupstrconst.listargetlatercaption
 msgid "Later"
-msgstr ""
+msgstr "Позже"
 
 #: projectgroupstrconst.listargetlaterhint
 msgid "Build target later"
-msgstr ""
+msgstr "Собирать цель позже"
 
 #: projectgroupstrconst.listargetopen
 msgid "Open Target"
@@ -369,11 +374,11 @@ msgstr ""
 
 #: projectgroupstrconst.listargetopencaption
 msgid "Open"
-msgstr ""
+msgstr "Открыть"
 
 #: projectgroupstrconst.listargetopenhint
 msgid "Open selected target"
-msgstr ""
+msgstr "Открыть выбранную цель"
 
 #: projectgroupstrconst.listargetproperties
 msgid "Target properties"
@@ -381,11 +386,11 @@ msgstr ""
 
 #: projectgroupstrconst.listargetpropertiescaption
 msgid "Properties"
-msgstr ""
+msgstr "Свойства"
 
 #: projectgroupstrconst.listargetpropertieshint
 msgid "Show property dialog for selected target"
-msgstr ""
+msgstr "Показать диалог свойств для выбранной цели"
 
 #: projectgroupstrconst.listargetremove
 msgctxt "projectgroupstrconst.listargetremove"
@@ -398,11 +403,11 @@ msgstr ""
 
 #: projectgroupstrconst.listargetruncaption
 msgid "Run"
-msgstr ""
+msgstr "Запустить"
 
 #: projectgroupstrconst.listargetrunhint
 msgid "Run selected target"
-msgstr ""
+msgstr "Запустить выбранную цель"
 
 #: projectgroupstrconst.listargetuninstall
 msgctxt "projectgroupstrconst.listargetuninstall"
@@ -420,7 +425,7 @@ msgstr "Удалить выбранную цель"
 
 #: projectgroupstrconst.listhelazbuildwasnotfound
 msgid "The lazbuild%s was not found."
-msgstr ""
+msgstr "Программа lazbuild%s не найдена."
 
 #: projectgroupstrconst.listhereisstillanotherbuildinprogress
 msgid "There is still another build in progress."

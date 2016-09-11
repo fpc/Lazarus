@@ -118,7 +118,7 @@ Resourcestring
   lisNeedSave = 'Need save';
   lisPleaseSaveYourChangesBeforeReloadingTheProjectGrou = 'Please save your changes before reloading the project group.';
   lisProjectGroupReload = 'Reload';
-  lisMore = 'More...';
+  lisMore = 'More';
 
 
 implementation
