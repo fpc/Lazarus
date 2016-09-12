@@ -75,7 +75,9 @@ msgstr ""
 "Mi történjen most?\n"
 
 #: projectgroupstrconst.liserronlyprojectgroupallowed
-msgid "Only target type \"projectgroup\" is allowed for root project group"
+#, fuzzy
+#| msgid "Only target type \"projectgroup\" is allowed for root project group"
+msgid "Only target type \"projectgroup\" is allowed for root project group."
 msgstr "Csak a \"projektgroup\" típus lehet a projektcsoport gyökere"
 
 #: projectgroupstrconst.liserrorreadingprojectgroupfile
@@ -97,7 +99,9 @@ msgid "Invalid File"
 msgstr "Érvénytelen fájl"
 
 #: projectgroupstrconst.lisinvalidxmlfilename
-msgid "Invalid xml file name \"%s\""
+#, fuzzy
+#| msgid "Invalid xml file name \"%s\""
+msgid "Invalid XML file name \"%s\"."
 msgstr "Érvénytelen xml fájlnév: \"%s\""
 
 #: projectgroupstrconst.lislazaruspackageslpk
@@ -130,6 +134,10 @@ msgstr "Mentés szükséges"
 msgid "New project group"
 msgstr "Új projektcsoport"
 
+#: projectgroupstrconst.lisnewprojectgroupmenuc
+msgid "New project group ..."
+msgstr ""
+
 #: projectgroupstrconst.lisnodebuildmodes
 msgid "Build Modes"
 msgstr "Építési módok"
@@ -159,7 +167,9 @@ msgid "Targets"
 msgstr "Célok"
 
 #: projectgroupstrconst.lisopenprojectgroup
-msgid "Open project group"
+#, fuzzy
+#| msgid "Open project group"
+msgid "Open project group ..."
 msgstr "Projektcsoport megnyitása"
 
 #: projectgroupstrconst.lisopenrecentprojectgroup
@@ -279,7 +289,9 @@ msgid "Save project group"
 msgstr "Projektcsoport mentése"
 
 #: projectgroupstrconst.lissaveprojectgroupas
-msgid "Save project group as"
+#, fuzzy
+#| msgid "Save project group as"
+msgid "Save project group as ..."
 msgstr "A projektcsoport mentése másként"
 
 #: projectgroupstrconst.lisskipalltargets

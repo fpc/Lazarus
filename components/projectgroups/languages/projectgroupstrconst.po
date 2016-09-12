@@ -57,7 +57,7 @@ msgid ""
 msgstr ""
 
 #: projectgroupstrconst.liserronlyprojectgroupallowed
-msgid "Only target type \"projectgroup\" is allowed for root project group"
+msgid "Only target type \"projectgroup\" is allowed for root project group."
 msgstr ""
 
 #: projectgroupstrconst.liserrorreadingprojectgroupfile
@@ -77,7 +77,7 @@ msgid "Invalid File"
 msgstr ""
 
 #: projectgroupstrconst.lisinvalidxmlfilename
-msgid "Invalid xml file name \"%s\""
+msgid "Invalid XML file name \"%s\"."
 msgstr ""
 
 #: projectgroupstrconst.lislazaruspackageslpk
@@ -106,6 +106,10 @@ msgstr ""
 
 #: projectgroupstrconst.lisnewprojectgroup
 msgid "New project group"
+msgstr ""
+
+#: projectgroupstrconst.lisnewprojectgroupmenuc
+msgid "New project group ..."
 msgstr ""
 
 #: projectgroupstrconst.lisnodebuildmodes
@@ -137,7 +141,7 @@ msgid "Targets"
 msgstr ""
 
 #: projectgroupstrconst.lisopenprojectgroup
-msgid "Open project group"
+msgid "Open project group ..."
 msgstr ""
 
 #: projectgroupstrconst.lisopenrecentprojectgroup
@@ -252,7 +256,7 @@ msgid "Save project group"
 msgstr ""
 
 #: projectgroupstrconst.lissaveprojectgroupas
-msgid "Save project group as"
+msgid "Save project group as ..."
 msgstr ""
 
 #: projectgroupstrconst.lisskipalltargets
