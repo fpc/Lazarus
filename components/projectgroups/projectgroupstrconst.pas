@@ -15,7 +15,7 @@ Resourcestring
   lisRemoveTarget                = 'Remove target';
   lisAbortLoadingProjectGroup    = 'Abort loading project group';
   lisSkipAllTargets              = 'Remove all invalid targets';
-  lisErrOnlyProjectGroupAllowed  = 'Only target type "projectgroup" is allowed for root project group';
+  lisErrOnlyProjectGroupAllowed  = 'Only target type "projectgroup" is allowed for root project group.';
   lisAllFiles = 'All files';
   lisProjectGroupModified        = 'Project group modified';
   lisProjectGroupModifiedConfirm = 'Project group "%s" is modified.'+sLineBreak+
@@ -39,10 +39,11 @@ Resourcestring
   lisTargetLater        = 'Compile target later';
   lisTargetEarlier      = 'Compile target earlier';
   lisNewProjectGroup    = 'New project group';
-  lisOpenProjectGroup   = 'Open project group';
+  lisNewProjectGroupMenuC    = 'New project group ...';
+  lisOpenProjectGroup   = 'Open project group ...';
   lisOpenRecentProjectGroup = 'Open recent project group';
   lisSaveProjectGroup   = 'Save project group';
-  lisSaveProjectGroupAs = 'Save project group as';
+  lisSaveProjectGroupAs = 'Save project group as ...';
   lisTargetCopyFilename = 'Copy file name';
 
   lisProjectGroup            = 'Project group %s';
@@ -87,7 +88,7 @@ Resourcestring
   lisTargetOpenCaption         = 'Open';
   lisTargetOpenHint            = 'Open selected target';
   lisInvalidFile = 'Invalid File';
-  lisInvalidXmlFileName = 'Invalid xml file name "%s"';
+  lisInvalidXmlFileName = 'Invalid XML file name "%s".';
   lisReadError = 'Read error';
   lisUnableToLoadFile = 'Unable to load file "%s"';
   lisXMLSyntaxErrorInFile = 'XML syntax error in file "%s": %s';

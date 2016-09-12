@@ -68,7 +68,7 @@ begin
   IDEProjectGroupManager.Options.LoadSafe;
 
   cmdCreateProjectGroup:=RegisterIDEMenuCommand(itmProjectNewSection,
-    'NewProjectGroup',lisNewProjectGroup,@IDEProjectGroupManager.DoNewClick);
+    'NewProjectGroup',lisNewProjectGroupMenuC,@IDEProjectGroupManager.DoNewClick);
   cmdOpenProjectGroup:=RegisterIDEMenuCommand(itmProjectOpenSection,
     'OpenProjectGroup',lisOpenProjectGroup,@IDEProjectGroupManager.DoOpenClick);
   OpenRecentProjectGroupSubMenu:=RegisterIDESubMenu(itmProjectOpenSection,
