@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Dialogs, ExtCtrls, StdCtrls, ComCtrls, Menus, FileCtrl,
-  LazFileUtils, LazUTF8;
+  LazFileUtils, LazUTF8, DefaultTranslator;
 
 type
 
