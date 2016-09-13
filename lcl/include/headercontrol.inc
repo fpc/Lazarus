@@ -200,6 +200,8 @@ begin
   begin
     FMouseInControl := False;
     FDown := False;
+    if not FTracking then
+      Cursor := FSavedCursor;
     UpdateState;
   end;
 end;
