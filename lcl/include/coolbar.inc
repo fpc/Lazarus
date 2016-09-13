@@ -361,6 +361,7 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @BitmapOrImageListChange;
   FShowText := True;
+  FThemed := True;
   FVerticalSpacing := cDefVertSpacing;
 end;
 
@@ -460,6 +461,14 @@ begin
   CalculateAndAlign;
   Invalidate;
 end;
+
+procedure TCustomCoolBar.SetThemed(AValue: Boolean);
+begin
+  if FThemed = AValue then Exit;
+  FThemed := AValue;
+  Invalidate;
+end;
+
 
 procedure TCustomCoolBar.SetVertical(AValue: Boolean);
 var aRect: TRect;
@@ -1167,8 +1176,10 @@ begin
   if FBitmap.Width > 0 then
     DrawTiledBitmap(ClientRect, FBitmap)
   else begin
-    aBackground:=ThemeServices.GetElementDetails(trRebarRoot);
-    ThemeServices.DrawElement(Canvas.Handle,aBackground,ClientRect);
+    if FThemed then begin
+      aBackground:=ThemeServices.GetElementDetails(trRebarRoot);
+      ThemeServices.DrawElement(Canvas.Handle,aBackground,ClientRect);
+    end;
   end;
   aCountM1 := length(FVisiBands)-1;
   if aCountM1 >= 0 then begin

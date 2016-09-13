@@ -2445,6 +2445,7 @@ type
     FImageChangeLink: TChangeLink;
     FOnChange: TNotifyEvent;
     FShowText: Boolean;
+    FThemed: Boolean;
     FVertical: Boolean;
     FVerticalSpacing: Integer;
     function GetAlign: TAlign;
@@ -2457,6 +2458,7 @@ type
     procedure SetHorizontalSpacing(AValue: Integer);
     procedure SetImages(AValue: TCustomImageList);
     procedure SetShowText(AValue: Boolean);
+    procedure SetThemed(AValue: Boolean);
     procedure SetVertical(AValue: Boolean);
     procedure SetVerticalSpacing(AValue: Integer);
   protected const
@@ -2523,6 +2525,7 @@ type
     property HorizontalSpacing: Integer read FHorizontalSpacing write SetHorizontalSpacing default cDefHorSpacing;
     property Images: TCustomImageList read FImages write SetImages;
     property ShowText: Boolean read FShowText write SetShowText default True;
+    property Themed: Boolean read FThemed write SetThemed default True;
     property Vertical: Boolean read FVertical write SetVertical default False;
     property VerticalSpacing: Integer read FVerticalSpacing write SetVerticalSpacing default cDefVertSpacing;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -2564,6 +2567,7 @@ type
     property PopupMenu;
     property ShowHint;
     property ShowText;
+    property Themed;
     property Vertical;
     property VerticalSpacing;
     property Visible;
