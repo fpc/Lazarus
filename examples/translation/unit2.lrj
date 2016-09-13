@@ -1,0 +1,9 @@
+{"version":1,"strings":[
+{"hash":71142637,"name":"tform2.caption","sourcebytes":[83,101,99,111,110,100,32,70,111,114,109],"value":"Second Form"},
+{"hash":190817555,"name":"tform2.lbltodayis.caption","sourcebytes":[76,98,108,84,111,100,97,121,73,115],"value":"LblTodayIs"},
+{"hash":152330729,"name":"tform2.lblmoney.caption","sourcebytes":[76,98,108,77,111,110,101,121],"value":"LblMoney"},
+{"hash":11641476,"name":"tform2.groupbox1.caption","sourcebytes":[80,108,101,97,115,101,32,115,101,108,101,99,116],"value":"Please select"},
+{"hash":36507229,"name":"tform2.radiogroup.caption","sourcebytes":[83,105,110,103,108,101,32,105,116,101,109],"value":"Single item"},
+{"hash":129786979,"name":"tform2.checkgroup.caption","sourcebytes":[83,101,118,101,114,97,108,32,105,116,101,109,115],"value":"Several items"},
+{"hash":86579901,"name":"tform2.lblsum.caption","sourcebytes":[76,98,108,83,117,109],"value":"LblSum"}
+]}

@@ -1,0 +1,8 @@
+{"version":1,"strings":[
+{"hash":27368127,"name":"tmainform.caption","sourcebytes":[84,114,97,110,115,108,97,116,105,111,110,32,100,101,109,111],"value":"Translation demo"},
+{"hash":116717365,"name":"tmainform.label1.caption","sourcebytes":[83,101,108,101,99,116,32,108,97,110,103,117,97,103,101],"value":"Select language"},
+{"hash":68826669,"name":"tmainform.button1.caption","sourcebytes":[79,112,101,110,32,115,101,99,111,110,100,32,102,111,114,109],"value":"Open second form"},
+{"hash":46729883,"name":"tmainform.rgdrinks.caption","sourcebytes":[80,108,101,97,115,101,32,115,101,108,101,99,116,32,97,32,100,114,105,110,107],"value":"Please select a drink"},
+{"hash":22589999,"name":"tmainform.button2.caption","sourcebytes":[87,104,97,116,32,100,105,100,32,121,111,117,32,115,101,108,101,99,116,63],"value":"What did you select?"},
+{"hash":161921326,"name":"tmainform.lblcurrentselection.caption","sourcebytes":[78,111,32,100,114,105,110,107,32,115,101,108,101,99,116,101,100,46],"value":"No drink selected."}
+]}
