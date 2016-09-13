@@ -60,10 +60,8 @@ msgstr ""
 "Cosa vuoi fare?\n"
 
 #: projectgroupstrconst.liserronlyprojectgroupallowed
-#, fuzzy
-#| msgid "Only target type \"projectgroup\" is allowed for root project group"
 msgid "Only target type \"projectgroup\" is allowed for root project group."
-msgstr "Solo il tipo destinazione \"projectgroup\" è permesso per il gruppo di progetti principale"
+msgstr "Solo il tipo destinazione \"projectgroup\" è permesso per il gruppo di progetti principale."
 
 #: projectgroupstrconst.liserrorreadingprojectgroupfile
 msgid "Error reading project group file \"%s\"%s%s"
@@ -82,10 +80,8 @@ msgid "Invalid File"
 msgstr "File non valido"
 
 #: projectgroupstrconst.lisinvalidxmlfilename
-#, fuzzy
-#| msgid "Invalid xml file name \"%s\""
 msgid "Invalid XML file name \"%s\"."
-msgstr "Nome di file xml non valido \"%s\""
+msgstr "Nome di file xml non valido \"%s\"."
 
 #: projectgroupstrconst.lislazaruspackageslpk
 msgid "Lazarus packages (*.lpk)"
@@ -117,7 +113,7 @@ msgstr "Nuovo gruppo di progetti"
 
 #: projectgroupstrconst.lisnewprojectgroupmenuc
 msgid "New project group ..."
-msgstr ""
+msgstr "Nuovo gruppo di progetti ..."
 
 #: projectgroupstrconst.lisnodebuildmodes
 msgid "Build Modes"
@@ -148,10 +144,8 @@ msgid "Targets"
 msgstr "Destinazioni"
 
 #: projectgroupstrconst.lisopenprojectgroup
-#, fuzzy
-#| msgid "Open project group"
 msgid "Open project group ..."
-msgstr "Apri gruppo di progetti"
+msgstr "Apri gruppo di progetti ..."
 
 #: projectgroupstrconst.lisopenrecentprojectgroup
 msgid "Open recent project group"
@@ -267,10 +261,8 @@ msgid "Save project group"
 msgstr "Salva gruppo di progetti"
 
 #: projectgroupstrconst.lissaveprojectgroupas
-#, fuzzy
-#| msgid "Save project group as"
 msgid "Save project group as ..."
-msgstr "Salva gruppo di progetti come"
+msgstr "Salva gruppo di progetti come ..."
 
 #: projectgroupstrconst.lisskipalltargets
 msgid "Remove all invalid targets"
