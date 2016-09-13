@@ -235,8 +235,8 @@ msgid "Reload"
 msgstr "Перезагрузить"
 
 #: projectgroupstrconst.lisprojectgroupsaveascaption
-msgid "Save As"
-msgstr "Сохранить как"
+msgid "Save As ..."
+msgstr "Сохранить как ..."
 
 #: projectgroupstrconst.lisprojectgroupsaveashint
 msgid "Save project group with a new name"

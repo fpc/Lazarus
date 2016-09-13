@@ -225,7 +225,9 @@ msgid "Reload"
 msgstr "Ricarica"
 
 #: projectgroupstrconst.lisprojectgroupsaveascaption
-msgid "Save As"
+#, fuzzy
+#| msgid "Save As"
+msgid "Save As ..."
 msgstr "Salva come"
 
 #: projectgroupstrconst.lisprojectgroupsaveashint

@@ -220,7 +220,7 @@ msgid "Reload"
 msgstr ""
 
 #: projectgroupstrconst.lisprojectgroupsaveascaption
-msgid "Save As"
+msgid "Save As ..."
 msgstr ""
 
 #: projectgroupstrconst.lisprojectgroupsaveashint

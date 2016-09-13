@@ -240,7 +240,9 @@ msgid "Reload"
 msgstr "Neu laden"
 
 #: projectgroupstrconst.lisprojectgroupsaveascaption
-msgid "Save As"
+#, fuzzy
+#| msgid "Save As"
+msgid "Save As ..."
 msgstr "Speichern unter"
 
 #: projectgroupstrconst.lisprojectgroupsaveashint

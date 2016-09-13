@@ -59,7 +59,7 @@ Resourcestring
 
   lisProjectGroupSaveCaption   = 'Save';
   lisProjectGroupSaveHint      = 'Save project group';
-  lisProjectGroupSaveAsCaption = 'Save As';
+  lisProjectGroupSaveAsCaption = 'Save As ...';
   lisProjectGroupSaveAsHint    = 'Save project group with a new name';
   lisProjectGroupAddExistingCaption = 'Add';
   lisProjectGroupAddExistingHint    = 'Add existing target to project group';

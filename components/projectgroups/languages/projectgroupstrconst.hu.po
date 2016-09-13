@@ -253,7 +253,9 @@ msgid "Reload"
 msgstr "Újratöltés"
 
 #: projectgroupstrconst.lisprojectgroupsaveascaption
-msgid "Save As"
+#, fuzzy
+#| msgid "Save As"
+msgid "Save As ..."
 msgstr "Mentés másként"
 
 #: projectgroupstrconst.lisprojectgroupsaveashint
