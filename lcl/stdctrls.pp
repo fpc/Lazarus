@@ -1341,6 +1341,7 @@ type
   TToggleBox = class(TCustomCheckBox)
   protected
     class procedure WSRegisterClass; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure CreateParams(var Params: TCreateParams); override;
     property ParentColor default false;
   public

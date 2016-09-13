@@ -16,6 +16,12 @@ begin
   RegisterToggleBox;
 end;
 
+class function TToggleBox.GetControlClassDefaultSize: TSize;
+begin
+  //Use TButton's size
+  Result := TButton.GetControlClassDefaultSize;
+end;
+
 procedure TToggleBox.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
