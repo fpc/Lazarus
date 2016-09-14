@@ -1,0 +1,6 @@
+{"version":1,"strings":[
+{"hash":52631525,"name":"tnewnumberform.caption","sourcebytes":[78,101,119,32,110,117,109,98,101,114,32,118,97,108,117,101],"value":"New number value"},
+{"hash":202408933,"name":"tnewnumberform.rgtype.caption","sourcebytes":[78,117,109,98,101,114,32,84,121,112,101],"value":"Number Type"},
+{"hash":2836533,"name":"tnewnumberform.label1.caption","sourcebytes":[38,78,97,109,101],"value":"&Name"},
+{"hash":6063029,"name":"tnewnumberform.label2.caption","sourcebytes":[86,97,108,117,101],"value":"Value"}
+]}

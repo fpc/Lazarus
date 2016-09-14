@@ -8946,12 +8946,16 @@ tools/install/win/readme.txt svneol=native#text/plain
 tools/install/win/svn2revisioninc.bat svneol=native#text/x-msdos-program
 tools/jsonviewer/README.txt svneol=native#text/plain
 tools/jsonviewer/frmmain.lfm svneol=native#text/plain
+tools/jsonviewer/frmmain.lrj svneol=native#text/plain
 tools/jsonviewer/frmmain.pp svneol=native#text/plain
 tools/jsonviewer/frmnewboolean.lfm svneol=native#text/plain
+tools/jsonviewer/frmnewboolean.lrj svneol=native#text/plain
 tools/jsonviewer/frmnewboolean.pp svneol=native#text/plain
 tools/jsonviewer/frmnewinteger.lfm svneol=native#text/plain
+tools/jsonviewer/frmnewinteger.lrj svneol=native#text/plain
 tools/jsonviewer/frmnewinteger.pp svneol=native#text/plain
 tools/jsonviewer/frmnewstring.lfm svneol=native#text/plain
+tools/jsonviewer/frmnewstring.lrj svneol=native#text/plain
 tools/jsonviewer/frmnewstring.pp svneol=native#text/plain
 tools/jsonviewer/jsonviewer.ico -text
 tools/jsonviewer/jsonviewer.lpi svneol=native#text/plain

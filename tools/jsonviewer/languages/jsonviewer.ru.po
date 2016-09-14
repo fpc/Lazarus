@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: msgjsonviewer.sarray
 msgid "Array (%d elements)"
@@ -176,7 +178,7 @@ msgstr "Новое &числовое значение"
 
 #: tmainform.anewnumbervalue.hint
 msgid "Add a new number value"
-msgstr "Добавить новое числовое значние"
+msgstr "Добавить новое числовое значение"
 
 #: tmainform.anewobject.caption
 msgid "New &Object"
@@ -242,8 +244,8 @@ msgstr "Сохранить &как"
 msgid "Save JSON document with a new name"
 msgstr "Сохранить документ JSON под новым именем"
 
-#: tmainform.mainform.caption
-msgctxt "TMAINFORM.MAINFORM.CAPTION"
+#: tmainform.caption
+msgctxt "tmainform.caption"
 msgid "JSON Viewer"
 msgstr "Программа просмотра JSON"
 
@@ -251,29 +253,13 @@ msgstr "Программа просмотра JSON"
 msgid "&Edit"
 msgstr "&Правка"
 
-#: tmainform.menuitem1.caption
-msgctxt "TMAINFORM.MENUITEM1.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tmainform.menuitem2.caption
-msgctxt "TMAINFORM.MENUITEM2.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tmainform.menuitem3.caption
-msgctxt "TMAINFORM.MENUITEM3.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tmainform.menuitem8.caption
-msgctxt "TMAINFORM.MENUITEM8.CAPTION"
-msgid "-"
-msgstr "-"
-
 #: tmainform.mfile.caption
 msgid "&File"
 msgstr "&Файл"
+
+#: tmainform.micompact.caption
+msgid "Compact display"
+msgstr "Компактное отображение"
 
 #: tmainform.midocument.caption
 msgid "&New document with object"
@@ -295,6 +281,14 @@ msgstr "&Строгий JSON"
 msgid "&Options"
 msgstr "&Параметры"
 
+#: tmainform.odjson.title
+msgid "Select a JSON file"
+msgstr "Выберите файл JSON"
+
+#: tmainform.sdjson.title
+msgid "Save JSON document to file"
+msgstr "Сохранить документ JSON в файл"
+
 #: tmainform.tbjson.caption
 msgid "TBJSON"
 msgstr "TBJSON"
@@ -306,4 +300,46 @@ msgstr "ToolButton1"
 #: tmainform.toolbutton4.caption
 msgid "ToolButton4"
 msgstr "ToolButton4"
+
+#: tnewbooleanform.caption
+msgid "New boolean value"
+msgstr "Новое логическое значение"
+
+#: tnewbooleanform.cbvalue.caption
+msgid "Set to true"
+msgstr "Установить в true"
+
+#: tnewbooleanform.label1.caption
+msgid "&Member name"
+msgstr "Имя &элемента"
+
+#: tnewnumberform.caption
+msgid "New number value"
+msgstr "Новое числовое значение"
+
+#: tnewnumberform.label1.caption
+msgctxt "tnewnumberform.label1.caption"
+msgid "&Name"
+msgstr "&Имя"
+
+#: tnewnumberform.label2.caption
+msgid "Value"
+msgstr "Значение"
+
+#: tnewnumberform.rgtype.caption
+msgid "Number Type"
+msgstr "Тип числа"
+
+#: tnewstringform.caption
+msgid "New String value"
+msgstr "Новое строковое значение"
+
+#: tnewstringform.label1.caption
+msgctxt "tnewstringform.label1.caption"
+msgid "&Name"
+msgstr "&Имя"
+
+#: tnewstringform.label2.caption
+msgid "&Value"
+msgstr "&Значение"
 

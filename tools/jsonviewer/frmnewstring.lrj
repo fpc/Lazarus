@@ -1,0 +1,5 @@
+{"version":1,"strings":[
+{"hash":215140197,"name":"tnewstringform.caption","sourcebytes":[78,101,119,32,83,116,114,105,110,103,32,118,97,108,117,101],"value":"New String value"},
+{"hash":2836533,"name":"tnewstringform.label1.caption","sourcebytes":[38,78,97,109,101],"value":"&Name"},
+{"hash":45908917,"name":"tnewstringform.label2.caption","sourcebytes":[38,86,97,108,117,101],"value":"&Value"}
+]}

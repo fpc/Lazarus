@@ -1,0 +1,5 @@
+{"version":1,"strings":[
+{"hash":158245269,"name":"tnewbooleanform.caption","sourcebytes":[78,101,119,32,98,111,111,108,101,97,110,32,118,97,108,117,101],"value":"New boolean value"},
+{"hash":251037109,"name":"tnewbooleanform.label1.caption","sourcebytes":[38,77,101,109,98,101,114,32,110,97,109,101],"value":"&Member name"},
+{"hash":189693893,"name":"tnewbooleanform.cbvalue.caption","sourcebytes":[83,101,116,32,116,111,32,116,114,117,101],"value":"Set to true"}
+]}

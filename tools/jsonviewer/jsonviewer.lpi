@@ -11,7 +11,6 @@
       <Title Value="JSON Data viewer"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
-      <Icon Value="0"/>
     </General>
     <i18n>
       <EnableI18N Value="True"/>
@@ -46,7 +45,6 @@
       <Unit0>
         <Filename Value="jsonviewer.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="jsonviewer"/>
       </Unit0>
       <Unit1>
         <Filename Value="frmmain.pp"/>
@@ -54,12 +52,12 @@
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmmain"/>
       </Unit1>
       <Unit2>
         <Filename Value="frmnewboolean.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="NewBooleanForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmNewBoolean"/>
       </Unit2>
@@ -67,20 +65,19 @@
         <Filename Value="frmnewinteger.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="NewNumberForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmnewinteger"/>
       </Unit3>
       <Unit4>
         <Filename Value="frmnewstring.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="NewStringForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmnewstring"/>
       </Unit4>
       <Unit5>
         <Filename Value="msgjsonviewer.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="msgjsonviewer"/>
       </Unit5>
     </Units>
   </ProjectOptions>
@@ -94,12 +91,6 @@
         <UseAnsiStrings Value="False"/>
       </SyntaxOptions>
     </Parsing>
-    <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">

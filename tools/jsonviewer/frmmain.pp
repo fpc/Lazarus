@@ -26,7 +26,8 @@ interface
 
 uses
   Classes, SysUtils, fpJSON, JSONParser,
-  Forms, Controls, Dialogs, ActnList, Menus, ComCtrls, IniPropStorage, PropertyStorage;
+  Forms, Controls, Dialogs, ActnList, Menus, ComCtrls, IniPropStorage, PropertyStorage,
+  DefaultTranslator;
 
 type
 

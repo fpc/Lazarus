@@ -245,8 +245,9 @@ msgstr "Enregistrer &sous..."
 msgid "Save JSON document with a new name"
 msgstr "Enregistrer le document JSON sous un nouveau nom"
 
-#: tmainform.mainform.caption
-msgctxt "TMAINFORM.MAINFORM.CAPTION"
+#: tmainform.caption
+#, fuzzy
+msgctxt "tmainform.caption"
 msgid "JSON Viewer"
 msgstr "Visionneuse de JSON"
 
@@ -254,29 +255,13 @@ msgstr "Visionneuse de JSON"
 msgid "&Edit"
 msgstr "&Éditer"
 
-#: tmainform.menuitem1.caption
-msgctxt "TMAINFORM.MENUITEM1.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tmainform.menuitem2.caption
-msgctxt "TMAINFORM.MENUITEM2.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tmainform.menuitem3.caption
-msgctxt "TMAINFORM.MENUITEM3.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tmainform.menuitem8.caption
-msgctxt "TMAINFORM.MENUITEM8.CAPTION"
-msgid "-"
-msgstr "-"
-
 #: tmainform.mfile.caption
 msgid "&File"
 msgstr "&Fichier"
+
+#: tmainform.micompact.caption
+msgid "Compact display"
+msgstr ""
 
 #: tmainform.midocument.caption
 msgid "&New document with object"
@@ -298,6 +283,14 @@ msgstr "JSON &strict"
 msgid "&Options"
 msgstr "&Options"
 
+#: tmainform.odjson.title
+msgid "Select a JSON file"
+msgstr ""
+
+#: tmainform.sdjson.title
+msgid "Save JSON document to file"
+msgstr ""
+
 #: tmainform.tbjson.caption
 msgid "TBJSON"
 msgstr "\"TBJSON\""
@@ -309,4 +302,46 @@ msgstr "BoutonOutil1"
 #: tmainform.toolbutton4.caption
 msgid "ToolButton4"
 msgstr "BoutonOutil4"
+
+#: tnewbooleanform.caption
+msgid "New boolean value"
+msgstr ""
+
+#: tnewbooleanform.cbvalue.caption
+msgid "Set to true"
+msgstr ""
+
+#: tnewbooleanform.label1.caption
+msgid "&Member name"
+msgstr ""
+
+#: tnewnumberform.caption
+msgid "New number value"
+msgstr ""
+
+#: tnewnumberform.label1.caption
+msgctxt "tnewnumberform.label1.caption"
+msgid "&Name"
+msgstr ""
+
+#: tnewnumberform.label2.caption
+msgid "Value"
+msgstr ""
+
+#: tnewnumberform.rgtype.caption
+msgid "Number Type"
+msgstr ""
+
+#: tnewstringform.caption
+msgid "New String value"
+msgstr ""
+
+#: tnewstringform.label1.caption
+msgctxt "tnewstringform.label1.caption"
+msgid "&Name"
+msgstr ""
+
+#: tnewstringform.label2.caption
+msgid "&Value"
+msgstr ""
 

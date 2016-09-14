@@ -243,8 +243,9 @@ msgstr "Speichern als"
 msgid "Save JSON document with a new name"
 msgstr "JSON-Dokument unter neuem Namen speichern"
 
-#: tmainform.mainform.caption
-msgctxt "TMAINFORM.MAINFORM.CAPTION"
+#: tmainform.caption
+#, fuzzy
+msgctxt "tmainform.caption"
 msgid "JSON Viewer"
 msgstr "JSON-Betrachter"
 
@@ -252,29 +253,13 @@ msgstr "JSON-Betrachter"
 msgid "&Edit"
 msgstr "B&earbeiten"
 
-#: tmainform.menuitem1.caption
-msgctxt "TMAINFORM.MENUITEM1.CAPTION"
-msgid "-"
-msgstr ""
-
-#: tmainform.menuitem2.caption
-msgctxt "TMAINFORM.MENUITEM2.CAPTION"
-msgid "-"
-msgstr ""
-
-#: tmainform.menuitem3.caption
-msgctxt "TMAINFORM.MENUITEM3.CAPTION"
-msgid "-"
-msgstr ""
-
-#: tmainform.menuitem8.caption
-msgctxt "TMAINFORM.MENUITEM8.CAPTION"
-msgid "-"
-msgstr ""
-
 #: tmainform.mfile.caption
 msgid "&File"
 msgstr "Datei"
+
+#: tmainform.micompact.caption
+msgid "Compact display"
+msgstr ""
 
 #: tmainform.midocument.caption
 msgid "&New document with object"
@@ -296,6 +281,14 @@ msgstr ""
 msgid "&Options"
 msgstr "Einstellungen"
 
+#: tmainform.odjson.title
+msgid "Select a JSON file"
+msgstr ""
+
+#: tmainform.sdjson.title
+msgid "Save JSON document to file"
+msgstr ""
+
 #: tmainform.tbjson.caption
 msgid "TBJSON"
 msgstr ""
@@ -306,5 +299,47 @@ msgstr ""
 
 #: tmainform.toolbutton4.caption
 msgid "ToolButton4"
+msgstr ""
+
+#: tnewbooleanform.caption
+msgid "New boolean value"
+msgstr ""
+
+#: tnewbooleanform.cbvalue.caption
+msgid "Set to true"
+msgstr ""
+
+#: tnewbooleanform.label1.caption
+msgid "&Member name"
+msgstr ""
+
+#: tnewnumberform.caption
+msgid "New number value"
+msgstr ""
+
+#: tnewnumberform.label1.caption
+msgctxt "tnewnumberform.label1.caption"
+msgid "&Name"
+msgstr ""
+
+#: tnewnumberform.label2.caption
+msgid "Value"
+msgstr ""
+
+#: tnewnumberform.rgtype.caption
+msgid "Number Type"
+msgstr ""
+
+#: tnewstringform.caption
+msgid "New String value"
+msgstr ""
+
+#: tnewstringform.label1.caption
+msgctxt "tnewstringform.label1.caption"
+msgid "&Name"
+msgstr ""
+
+#: tnewstringform.label2.caption
+msgid "&Value"
 msgstr ""
 
