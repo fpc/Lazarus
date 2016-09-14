@@ -1,0 +1,14 @@
+{"version":1,"strings":[
+{"hash":166682498,"name":"tglazresform.caption","sourcebytes":[76,82,83,32,66,117,105,108,100,101,114],"value":"LRS Builder"},
+{"hash":90927877,"name":"tglazresform.lrslabel.caption","sourcebytes":[76,97,122,97,114,117,115,32,82,101,115,111,117,114,99,101,32,70,105,108,101,110,97,109,101],"value":"Lazarus Resource Filename"},
+{"hash":40288628,"name":"tglazresform.addanybtn.hint","sourcebytes":[65,100,100,32,40,97,110,121,32,107,105,110,100,32,111,102,41,32,102,105,108,101,115,32,116,111,32,116,104,101,32,108,105,115,116],"value":"Add (any kind of) files to the list"},
+{"hash":68926181,"name":"tglazresform.fileslabel.caption","sourcebytes":[70,105,108,101,115,32,116,111,32,105,110,99,108,117,100,101],"value":"Files to include"},
+{"hash":259526372,"name":"tglazresform.deletebtn.hint","sourcebytes":[68,101,108,101,116,101,32,115,101,108,101,99,116,101,100,32,102,105,108,101,115,32,102,114,111,109,32,116,104,101,32,108,105,115,116],"value":"Delete selected files from the list"},
+{"hash":127972340,"name":"tglazresform.clearbtn.hint","sourcebytes":[67,108,101,97,114,101,32,116,104,101,32,101,110,116,105,114,101,32,108,105,115,116],"value":"Cleare the entire list"},
+{"hash":4860802,"name":"tglazresform.clearbtn.caption","sourcebytes":[67,108,101,97,114],"value":"Clear"},
+{"hash":34324493,"name":"tglazresform.closebtn.hint","sourcebytes":[69,120,105,116,32,116,104,101,32,112,114,111,103,114,97,109],"value":"Exit the program"},
+{"hash":242581029,"name":"tglazresform.startbtn.hint","sourcebytes":[67,114,101,97,116,101,32,116,104,101,32,111,117,116,112,117,116,32,76,82,83,32,102,105,108,101],"value":"Create the output LRS file"},
+{"hash":144964035,"name":"tglazresform.startbtn.caption","sourcebytes":[67,114,101,97,116,101,32,76,82,83],"value":"Create LRS"},
+{"hash":212433139,"name":"tglazresform.messageslabel.caption","sourcebytes":[77,101,115,115,97,103,101,115],"value":"Messages"},
+{"hash":201932964,"name":"tglazresform.addimgbtn.hint","sourcebytes":[65,100,100,32,105,109,97,103,101,115,32,116,111,32,116,104,101,32,108,105,115,116],"value":"Add images to the list"}
+]}
