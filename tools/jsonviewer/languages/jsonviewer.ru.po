@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: msgjsonviewer.sarray
 msgid "Array (%d elements)"
@@ -176,7 +178,7 @@ msgstr "Новое &числовое значение"
 
 #: tmainform.anewnumbervalue.hint
 msgid "Add a new number value"
-msgstr "Добавить новое числовое значние"
+msgstr "Добавить новое числовое значение"
 
 #: tmainform.anewobject.caption
 msgid "New &Object"
