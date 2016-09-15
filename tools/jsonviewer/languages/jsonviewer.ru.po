@@ -58,7 +58,7 @@ msgstr "Пустой документ"
 
 #: msgjsonviewer.serrcreatingconfigdir
 msgid "Could not create the configuration files directory \"%s\""
-msgstr "Не удалось создать каталог конфигурационных файлов \"%s\""
+msgstr "Не удалось создать каталог файлов настройки \"%s\""
 
 #: msgjsonviewer.serrinvalidvalue
 msgid "Invalid value or wrong type: \"%s\""
