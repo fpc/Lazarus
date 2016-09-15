@@ -166,6 +166,8 @@ type
   // TCellHintPriority determines how the overall hint is combined when more
   // multiple hint texts are to be displayed.
 
+  TCellProcessType = (cpCopy, cpPaste);
+
 const
   soAll: TSaveOptions = [soDesign, soAttributes, soContent, soPosition];
   constRubberSpace: byte = 2;
@@ -356,6 +358,10 @@ type
 
   THeaderSizingEvent = procedure(sender: TObject; const IsColumn: boolean;
                                     const aIndex, aSize: Integer) of object;
+
+  TCellProcessEvent = procedure(Sender: TObject; aCol, aRow: Integer;
+                                processType: TCellProcessType;
+                                var aValue: string) of object;
 
   TGetCellHintEvent = procedure (Sender: TObject; ACol, ARow: Integer;
                                  var HintText: String) of object;
@@ -1597,6 +1603,7 @@ type
     private
       FModified: boolean;
       FColsMap,FRowsMap: TMap;
+      fOnCellProcess: TCellProcessEvent;
       function  GetCols(index: Integer): TStrings;
       function  GetObjects(ACol, ARow: Integer): TObject;
       function  GetRows(index: Integer): TStrings;
@@ -1618,6 +1625,7 @@ type
       procedure DoCopyToClipboard; override;
       procedure DoCutToClipboard; override;
       procedure DoPasteFromClipboard; override;
+      procedure DoCellProcess(aCol, aRow: Integer; processType: TCellProcessType; var aValue: string); virtual;
       procedure DrawTextInCell(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); override;
       procedure DrawCellAutonumbering(aCol,aRow: Integer; aRect: TRect; const aValue: string); override;
       //procedure EditordoGetValue; override;
@@ -1636,6 +1644,7 @@ type
       procedure SetEditText(aCol, aRow: Longint; const aValue: string); override;
 
       property Modified: boolean read FModified write FModified;
+      property OnCellProcess: TCellProcessEvent read fOnCellProcess write fOnCellProcess;
 
     public
       constructor Create(AOwner: TComponent); override;
@@ -1732,6 +1741,7 @@ type
 
     property OnAfterSelection;
     property OnBeforeSelection;
+    property OnCellProcess;
     property OnChangeBounds;
     property OnCheckboxToggled;
     property OnClick;
@@ -10470,28 +10480,40 @@ end;
 procedure TCustomStringGrid.CopyCellRectToClipboard(const R: TRect);
 var
   SelStr: String;
-  i,j,k: LongInt;
+  aRow,aCol,k: LongInt;
+  function QuoteText(s: string): string;
+  begin
+    DoCellProcess(aCol, aRow, cpCopy, s);
+    if (pos(#9, s)>0) or
+       (pos(#10, s)>0) or
+       (pos(#13, s)>0) or
+       (pos('"', s)>0)
+    then
+      result := AnsiQuotedStr(s, '"')
+    else
+      result := s;
+  end;
 begin
   SelStr := '';
-  for i:=R.Top to R.Bottom do begin
+  for aRow:=R.Top to R.Bottom do begin
 
-    for j:=R.Left to R.Right do begin
+    for aCol:=R.Left to R.Right do begin
 
-      if Columns.Enabled and (j>=FirstGridColumn) then begin
+      if Columns.Enabled and (aCol>=FirstGridColumn) then begin
 
-        k := ColumnIndexFromGridColumn(j);
+        k := ColumnIndexFromGridColumn(aCol);
         if not Columns[k].Visible then
           continue;
 
-        if (i=0) then
-          SelStr := SelStr + Columns[k].Title.Caption
+        if (aRow=0) then
+          SelStr := SelStr + QuoteText(Columns[k].Title.Caption)
         else
-          SelStr := SelStr + Cells[j,i];
+          SelStr := SelStr + QuoteText(Cells[aCol,aRow]);
 
       end else
-        SelStr := SelStr + Cells[j,i];
+        SelStr := SelStr + QuoteText(Cells[aCol,aRow]);
 
-      if j<>R.Right then
+      if aCol<>R.Right then
         SelStr := SelStr + #9;
     end;
 
@@ -10681,6 +10703,13 @@ begin
   end;
 end;
 
+procedure TCustomStringGrid.DoCellProcess(aCol, aRow: Integer;
+  processType: TCellProcessType; var aValue: string);
+begin
+  if Assigned(fOnCellProcess) then
+    OnCellProcess(Self, aCol, aRow, processType, aValue);
+end;
+
 procedure TCustomStringGrid.DrawTextInCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
@@ -10745,41 +10774,40 @@ end;
 
 procedure TCustomStringGrid.SelectionSetText(TheText: String);
 var
-  L,SubL: TStringList;
-  i,j,StartCol,StartRow: Integer;
-var
-  aCol: Integer;
-  aRow: Integer;
-  NewValue: String;
-begin
-  L := TStringList.Create;
-  SubL := TStringList.Create;
-  SubL.StrictDelimiter := true;
-  SubL.Delimiter := #9;
-  StartCol := Selection.left;
-  StartRow := Selection.Top;
-  try
-    L.Text := TheText;
-    for j:=0 to L.Count-1 do begin
-      if j+StartRow >= RowCount then
-        break;
-      SubL.DelimitedText := L[j];
-      for i:=0 to SubL.Count-1 do
-        if (i+StartCol<ColCount) and (not GetColumnReadonly(i+StartCol)) then
-        begin
-          aCol := i+StartCol;
-          aRow := j+StartRow;
-          NewValue := SubL[i];
+  StartCol,StartRow: Integer;
+  Stream: TStringStream;
+
+  procedure LoadTSV(Fields: TStringList);
+  var
+    i, aCol, aRow: Integer;
+    NewValue: string;
+  begin
+    if StartRow<RowCount then begin
+      aRow := StartRow;
+      for i := 0 to Fields.Count-1 do begin
+        aCol := StartCol + i;
+        if (aCol<ColCount) and not GetColumnReadonly(aCol) then begin
+          NewValue := Fields[i];
           {$IFDEF EnableGridPasteValidateEntry}
           if not ValidateEntry(aCol,aRow,Cells[aCol,aRow],NewValue) then
             break;
           {$ENDIF}
+          DoCellProcess(aCol, aRow, cpPaste, NewValue);
           Cells[aCol, aRow] := NewValue;
         end;
+      end;
+      inc(StartRow);
     end;
+  end;
+
+begin
+  Stream := TStringStream.Create(TheText);
+  try
+    StartCol := Selection.left;
+    StartRow := Selection.Top;
+    LCSVUtils.LoadFromCSVStream(Stream, @LoadTSV, #9);
   finally
-    SubL.Free;
-    L.Free;
+    Stream.Free;
     {$IFDEF EnableGridPasteValidateEntry}
     EditingDone;
     {$ENDIF}
