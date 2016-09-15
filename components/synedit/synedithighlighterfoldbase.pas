@@ -252,6 +252,7 @@ type
     FFoldNodeInfoListHoldCnt: integer;
 
     function GetHLNode(Index: Integer): TSynFoldNodeInfo;
+    function GetNodeEndLine(Index: Integer): Integer;
     function GetNodeFoldGroup(Index: Integer): Integer;
     function GetNodeLine(Index: Integer): Integer;
     function GetNodeFoldType(Index: Integer): Pointer;
@@ -292,6 +293,7 @@ type
     property NodeFoldType[Index: Integer]: Pointer read GetNodeFoldType;        // e.g.cfbtBeginEnd, cfbtcfbtProcedure ...
     property NodeFoldGroup[Index: Integer]: Integer read GetNodeFoldGroup;      // independend/overlapping folds, e.g begin/end; ifdef, region
     property NodeLine[Index: Integer]: Integer read GetNodeLine;                // Index
+    property NodeEndLine[Index: Integer]: Integer read GetNodeEndLine;          // Index
     property NodeLineEx[Index, PrevCount: Integer]: Integer read GetNodeLineEx; // Index
   end;
 
@@ -487,8 +489,20 @@ type
     function FoldTypeCount: integer; virtual;
     function FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;
              UseCloseNodes: boolean = false): integer; virtual; // TODO: could be deprecated ./ only child-classes
-    function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; virtual;
-    function FoldEndLine(ALineIndex, FoldIndex: Integer): integer; virtual;     // FoldEndLine, can be more than given by FoldLineLength, since Length my cut off early
+
+    function FindNextLineWithMinFoldLevel(ALineIndex: TLineIdx; ASearchLevel: Integer;
+                               const AFilter: TSynFoldBlockFilter): integer; virtual; overload;
+    function FindNextLineWithMinFoldLevel(ALineIndex: TLineIdx; ASearchLevel: Integer;
+                               AFoldGroup: integer = 0; AFlags: TSynFoldBlockFilterFlags = []): integer; overload;
+
+    function FoldEndLine(ALineIndex, FoldIndex: Integer): integer; virtual; overload; // deprecate // fix inherited classes
+    function FoldEndLine(ALineIndex, FoldIndex: Integer;
+                         const AFilter: TSynFoldBlockFilter): integer; virtual; overload;
+    function FoldEndLine(ALineIndex, FoldIndex: Integer;
+                         AFoldGroup: integer; AFlags: TSynFoldBlockFilterFlags): integer; overload;
+//                         AFoldGroup: integer = 0; AFlags: TSynFoldBlockFilterFlags = []): integer; overload;
+
+    function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; virtual;  // only for group 0 // may be one less than FoldEndLine, if end line is a mixed end-begin
 
     // All fold-nodes
     // FoldNodeInfo: Returns a shared object
@@ -997,6 +1011,23 @@ begin
   end;
 end;
 
+function TLazSynEditNestedFoldsList.GetNodeEndLine(Index: Integer): Integer;
+var
+  nd: TSynFoldNodeInfo;
+  lvl, i: Integer;
+begin
+  // TODO: Optimize: use known lines from other nodes // keep results
+  nd := HLNode[Index];
+  if sfbIncludeDisabled in FoldFlags then
+    lvl := nd.NestLvlStart
+  else
+    lvl := nd.FoldLvlStart;
+  i := FLine;
+  if Index >= FCount then
+    i := i + 1;
+  Result := HighLighter.FindNextLineWithMinFoldLevel(i, lvl, nd.FoldGroup, FoldFlags);
+end;
+
 function TLazSynEditNestedFoldsList.GetNodeFoldGroup(Index: Integer): Integer;
 begin
   if FoldGroup <> 0 then
@@ -1008,7 +1039,10 @@ end;
 function TLazSynEditNestedFoldsList.GetNodeLine(Index: Integer): Integer;
 begin
   InitLineInfoForIndex(Index);
-  Result := FNestInfo[Index].LineIdx
+  if Index >= FCount then
+    Result := FLine
+  else
+    Result := FNestInfo[Index].LineIdx;
 end;
 
 function TLazSynEditNestedFoldsList.GetNodeFoldType(Index: Integer): Pointer;
@@ -1792,6 +1826,30 @@ begin
   Result := 0;
 end;
 
+function TSynCustomFoldHighlighter.FindNextLineWithMinFoldLevel(
+  ALineIndex: TLineIdx; ASearchLevel: Integer;
+  const AFilter: TSynFoldBlockFilter): integer;
+var
+  cnt: Integer;
+begin
+  cnt := CurrentLines.Count;
+  Result := ALineIndex; // Can return the original line
+  while (Result < cnt) and (FoldBlockMinLevel(Result, AFilter) > ASearchLevel) do inc(Result);
+  if (Result = cnt) then
+    dec(Result);
+end;
+
+function TSynCustomFoldHighlighter.FindNextLineWithMinFoldLevel(
+  ALineIndex: TLineIdx; ASearchLevel: Integer; AFoldGroup: integer;
+  AFlags: TSynFoldBlockFilterFlags): integer;
+var
+  Filter: TSynFoldBlockFilter;
+begin
+  Filter.FoldGroup := AFoldGroup;
+  Filter.Flags := AFlags;
+  Result := FindNextLineWithMinFoldLevel(ALineIndex, ASearchLevel, Filter);
+end;
+
 function TSynCustomFoldHighlighter.FoldLineLength(ALineIndex, FoldIndex: Integer): integer;
 begin
   Result := FoldEndLine(ALineIndex, FoldIndex);
@@ -1803,18 +1861,30 @@ begin
 end;
 
 function TSynCustomFoldHighlighter.FoldEndLine(ALineIndex, FoldIndex: Integer): integer;
+begin
+  Result := FoldEndLine(ALineIndex, FoldIndex, 0, []);
+end;
+
+function TSynCustomFoldHighlighter.FoldEndLine(ALineIndex, FoldIndex: Integer;
+  const AFilter: TSynFoldBlockFilter): integer;
 var
-  lvl, cnt: Integer;
+  lvl: Integer;
   e, m: Integer;
 begin
-  cnt := CurrentLines.Count;
-  e := FoldBlockEndLevel(ALineIndex);
-  m := FoldBlockMinLevel(ALineIndex);
+  e := FoldBlockEndLevel(ALineIndex, AFilter);
+  m := FoldBlockMinLevel(ALineIndex, AFilter);
   lvl := Min(m+1+FoldIndex, e);
-  Result := ALineIndex + 1;
-  while (Result < cnt) and (FoldBlockMinLevel(Result) >= lvl) do inc(Result);
-  if (Result = cnt) then
-    dec(Result);
+  Result := FindNextLineWithMinFoldLevel(ALineIndex+1, lvl-1, AFilter);
+end;
+
+function TSynCustomFoldHighlighter.FoldEndLine(ALineIndex, FoldIndex: Integer;
+  AFoldGroup: integer; AFlags: TSynFoldBlockFilterFlags): integer;
+var
+  Filter: TSynFoldBlockFilter;
+begin
+  Filter.FoldGroup := AFoldGroup;
+  Filter.Flags := AFlags;
+  Result := FoldEndLine(ALineIndex, FoldIndex, Filter);
 end;
 
 function TSynCustomFoldHighlighter.GetFoldConfig(Index: Integer): TSynCustomFoldConfig;
