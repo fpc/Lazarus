@@ -758,6 +758,8 @@ type
     FLeftGutterArea, FRightGutterArea: TLazSynGutterArea;
     FPaintArea: TLazSynSurfaceManager;
     property ScreenCaret: TSynEditScreenCaret read FScreenCaret;
+    property OnClickLink : TMouseEvent read FOnClickLink write FOnClickLink;
+    property OnMouseLink: TSynMouseLinkEvent read FOnMouseLink write FOnMouseLink;
 
     procedure Paint; override;
     procedure StartPaintBuffer(const ClipRect: TRect);
@@ -1235,8 +1237,8 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnClickLink : TMouseEvent read FOnClickLink write FOnClickLink;
-    property OnMouseLink: TSynMouseLinkEvent read FOnMouseLink write FOnMouseLink;
+    property OnClickLink;
+    property OnMouseLink;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnMouseWheel;
