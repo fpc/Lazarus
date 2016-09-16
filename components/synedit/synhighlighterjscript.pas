@@ -756,7 +756,8 @@ begin
           if KeyComp('class') then Result := tkKey else
             if KeyComp('float') then Result := tkKey else
               if KeyComp('Float') then Result := tkNonReservedKey else
-                if KeyComp('pageY') then Result := tkNonReservedKey else Result := tkIdentifier;
+                if KeyComp('await') then Result := tkKey else
+                  if KeyComp('pageY') then Result := tkNonReservedKey else Result := tkIdentifier;
 end;
 
 function TSynJScriptSyn.Func55: TtkTokenKind;
@@ -822,7 +823,8 @@ begin
         if KeyComp('border') then Result := tkNonReservedKey else
           if KeyComp('host') then Result := tkNonReservedKey else
             if KeyComp('frames') then Result := tkNonReservedKey else
-              if KeyComp('right') then Result := tkNonReservedKey else Result := tkIdentifier;
+              if KeyComp('async') then Result := tkKey else
+                if KeyComp('right') then Result := tkNonReservedKey else Result := tkIdentifier;
 end;
 
 function TSynJScriptSyn.Func63: TtkTokenKind;
