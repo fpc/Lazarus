@@ -181,7 +181,7 @@ type
                                            AMarkup: TSynSelectedColorMergeResult); override;
 
     // Notifications about Changes to the text
-    Procedure TextChanged(aFirstCodeLine, aLastCodeLine, ACountDiff: Integer); override;
+    Procedure TextChanged(aFirstCodeLine, aLastCodeLine, ACountDiff: Integer); override; // lines are 1 based
   end;
 
 

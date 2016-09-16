@@ -8062,7 +8062,7 @@ begin
   if fHighlighter.AttributeChangeNeedScan then begin
     FHighlighter.CurrentLines := FTheLinesView;
     FHighlighter.ScanAllRanges;
-    fMarkupManager.TextChanged(0, FTheLinesView.Count - 1, 0);
+    fMarkupManager.TextChanged(1, FTheLinesView.Count, 0);
     TopView := TopView;
   end;
 end;
