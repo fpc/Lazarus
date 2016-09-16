@@ -10505,7 +10505,7 @@ begin
         if not Columns[k].Visible then
           continue;
 
-        if (aRow=0) then
+        if (aRow=0) and (FixedRows>0) then
           SelStr := SelStr + QuoteText(Columns[k].Title.Caption)
         else
           SelStr := SelStr + QuoteText(Cells[aCol,aRow]);
