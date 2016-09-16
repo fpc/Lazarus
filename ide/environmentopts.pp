@@ -1525,11 +1525,12 @@ end;
 
 procedure TEnvironmentOptions.EnableDebugDesktop;
 begin
-  if not Assigned(FLastDesktopBeforeDebug) and Assigned(DebugDesktop) then
+  if not Assigned(FLastDesktopBeforeDebug) and Assigned(DebugDesktop) and (DebugDesktop <> ActiveDesktop) then
   begin
     FLastDesktopBeforeDebug := TDesktopOpt.Create('');
-    FLastDesktopBeforeDebug.Assign(Desktop);
-    FLastDesktopBeforeDebug.Name := ActiveDesktopName;
+    if AutoSaveActiveDesktop then
+      Desktop.ImportSettingsFromIDE;
+    FLastDesktopBeforeDebug.Assign(Desktop, True);
     EnvironmentOptions.UseDesktop(DebugDesktop);
   end;
 end;
