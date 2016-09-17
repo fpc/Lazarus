@@ -555,6 +555,7 @@ type
     FUndoRedoItemHandlerList: TSynUndoRedoItemHandlerList;
     FMouseDownEventList: TLazSynMouseDownEventList;
     FKeyDownEventList: TLazSynKeyDownEventList;
+    FKeyUpEventList: TLazSynKeyDownEventList;
     FKeyPressEventList: TLazSynKeyPressEventList;
     FUtf8KeyPressEventList: TLazSynUtf8KeyPressEventList;
     FStatusChangedList: TObject;
@@ -1046,6 +1047,8 @@ type
 
     procedure RegisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent);
     procedure UnregisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent);
+    procedure RegisterBeforeKeyUpHandler(AHandlerProc: TKeyEvent);
+    procedure UnregisterBeforeKeyUpHandler(AHandlerProc: TKeyEvent);
     procedure RegisterBeforeKeyPressHandler(AHandlerProc: TKeyPressEvent);
     procedure UnregisterBeforeKeyPressHandler(AHandlerProc: TKeyPressEvent);
     procedure RegisterBeforeUtf8KeyPressHandler(AHandlerProc: TUTF8KeyPressEvent);
@@ -2497,6 +2500,7 @@ begin
   FBeautifier := nil;
   FreeAndNil(FDefaultBeautifier);
   FreeAndNil(FKeyDownEventList);
+  FreeAndNil(FKeyUpEventList);
   FreeAndNil(FMouseDownEventList);
   FreeAndNil(FKeyPressEventList);
   FreeAndNil(FUtf8KeyPressEventList);
@@ -2904,6 +2908,12 @@ begin
   DebugLn(['[TCustomSynEdit.KeyUp] ',Key
     ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift]);
   {$ENDIF}
+
+  // Run even before OnKeyUp
+  if FKeyUpEventList <> nil then
+    FKeyUpEventList.CallKeyDownHandlers(Self, Key, Shift);
+  if Key=0 then exit;
+
   inherited KeyUp(Key, Shift);
 
   if sfIgnoreNextChar in fStateFlags then
@@ -9185,6 +9195,19 @@ procedure TCustomSynEdit.UnregisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent)
 begin
   if FKeyDownEventList <> nil then
     FKeyDownEventList.Remove(TMethod(AHandlerProc));
+end;
+
+procedure TCustomSynEdit.RegisterBeforeKeyUpHandler(AHandlerProc: TKeyEvent);
+begin
+  if FKeyUpEventList = nil then
+    FKeyUpEventList := TLazSynKeyDownEventList.Create;
+  FKeyUpEventList.Add(TMethod(AHandlerProc));
+end;
+
+procedure TCustomSynEdit.UnregisterBeforeKeyUpHandler(AHandlerProc: TKeyEvent);
+begin
+  if FKeyUpEventList <> nil then
+    FKeyUpEventList.Remove(TMethod(AHandlerProc));
 end;
 
 procedure TCustomSynEdit.RegisterBeforeKeyPressHandler(AHandlerProc: TKeyPressEvent);
