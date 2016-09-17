@@ -8356,8 +8356,12 @@ begin
   else {currently applies only to oxygen & nitrogen theme.}
   if ((TopMargin - BottomMargin - 2) > FontHeight) then
   begin
-    TopMargin := TopMargin - BottomMargin - 3;
-    BottomMargin := 0;
+    {do not touch fusion style !}
+    if QtWidgetSet.StyleName <> 'fusion' then
+    begin
+      TopMargin := TopMargin - BottomMargin - 3;
+      BottomMargin := 0;
+    end;
   end;
   {$ENDIF}
   {if there's no text set margin to bottom margin size. issue #23642}
