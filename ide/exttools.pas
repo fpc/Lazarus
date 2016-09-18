@@ -430,6 +430,8 @@ var
   OldMsgCount: LongInt;
   Parser: TExtToolParser;
   NeedSynchronize: Boolean;
+  MsgLine: TMessageLine;
+  LineStr: String;
 begin
   {$IFDEF VerboseExtToolAddOutputLines}
   DebuglnThreadLog(['TExternalTool.AddOutputLines ',Title,' Tick=',IntToStr(GetTickCount64),' Lines=',Lines.Count]);
@@ -447,12 +449,19 @@ begin
     // feed new lines into all parsers, converting raw lines into messages
     for Line:=OldOutputCount to WorkerOutput.Count-1 do begin
       Handled:=false;
+      LineStr:=WorkerOutput[Line];
       for i:=0 to ParserCount-1 do begin
         {$IFDEF VerboseExtToolAddOutputLines}
         DebuglnThreadLog(['TExternalTool.AddOutputLines ',DbgSName(Parsers[i]),' Line="',WorkerOutput[Line],'" READLINE ...']);
         {$ENDIF}
-        Parsers[i].ReadLine(WorkerOutput[Line],Line,Handled);
+        Parsers[i].ReadLine(LineStr,Line,Handled);
         if Handled then break;
+      end;
+      if (not Handled) then begin
+        MsgLine:=WorkerMessages.CreateLine(Line);
+        MsgLine.Msg:=LineStr; // use raw output as default msg
+        MsgLine.Urgency:=mluDebug;
+        WorkerMessages.Add(MsgLine);
       end;
     end;
 
