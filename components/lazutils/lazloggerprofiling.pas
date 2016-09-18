@@ -29,8 +29,8 @@ type
     procedure SetMaxDepth(AValue: Integer);
   public
     constructor Create;
-    procedure EnterBlock(Sender: TLazLogger; Level: Integer); override;
-    procedure ExitBlock(Sender: TLazLogger; Level: Integer); override;
+    procedure EnterBlock({%H-}Sender: TLazLogger; Level: Integer); override;
+    procedure ExitBlock({%H-}Sender: TLazLogger; Level: Integer); override;
     property  MaxDepth: Integer read FMaxDepth write SetMaxDepth;
     property  TimeDiff[ALevel: Integer]: QWord read GetTimeDiff;
     property  Nested[ALevel: Integer]: QWord read GetNested;
@@ -48,8 +48,8 @@ type
     procedure SetMaxDepth(AValue: Integer);
   public
     constructor Create;
-    procedure EnterBlock(Sender: TLazLogger; Level: Integer); override;
-    procedure ExitBlock(Sender: TLazLogger; Level: Integer); override;
+    procedure EnterBlock({%H-}Sender: TLazLogger; Level: Integer); override;
+    procedure ExitBlock({%H-}Sender: TLazLogger; Level: Integer); override;
     property  MaxDepth: Integer read FMaxDepth write SetMaxDepth;
     property  MemDiff[ALevel: Integer]: Int64 read GetMemDiff;
     property  Nested[ALevel: Integer]: Int64 read GetNested;
