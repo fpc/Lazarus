@@ -708,6 +708,7 @@ begin
   BlockCount:=ProcThreadPool.MaxThreadCount;
   BlockSize:=(LoopLength div BlockCount);
   if (BlockSize<MinBlockSize) then BlockSize:=MinBlockSize;
+  if BlockSize<1 then BlockSize:=1;
   BlockCount:=((LoopLength-1) div BlockSize)+1;
 end;
 
