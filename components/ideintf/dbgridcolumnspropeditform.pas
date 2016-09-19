@@ -379,33 +379,15 @@ begin
 end;
 
 procedure TDBGridColumnsPropertyEditorForm.PersistentDeleting(APersistent: TPersistent);
-var
-  AIndex, I: Integer;
 begin
-  if (APersistent = OwnerPersistent) or (APersistent = OwnerComponent) then
-  begin
-    SetCollection(nil, nil, '');
-    Hide;
-  end
-  else
-  if Assigned(Collection) and (APersistent is TCollectionItem) and
-    (TCollectionItem(APersistent).Collection = Collection) then
-  begin
-    // persistent is still alive
-    AIndex := CollectionListBox.ItemIndex;
-    CollectionListBox.Items.BeginUpdate;
-    CollectionListBox.Items.Delete(TCollectionItem(APersistent).Index);
-    for I := TCollectionItem(APersistent).Index to CollectionListBox.Items.Count - 1 do
-      CollectionListBox.Items[I] := IntToStr(I) + ' - ' + Collection.Items[I + 1].DisplayName;
-    CollectionListBox.Items.EndUpdate;
-    if AIndex < CollectionListBox.Items.Count then
-      CollectionListBox.ItemIndex := AIndex
-    else
-      CollectionListBox.ItemIndex := CollectionListBox.Items.Count - 1;
-  end;
+  // For some reason this is called only when the whole collection is deleted,
+  // for example when changing to another project. Thus clear the whole collection.
+  DebugLn(['TDBGridColumnsPropertyEditorForm.PersistentDeleting: APersistent=', APersistent,
+           ', OwnerPersistent=', OwnerPersistent, ', OwnerComponent=', OwnerComponent]);
+  SetCollection(nil, nil, '');
+  Hide;
   UpdateButtons;
   UpdateCaption;
-  //DebugLn('*** TDBGridColumnsPropertyEditorForm.PersistentDeleting called ***');
 end;
 
 procedure TDBGridColumnsPropertyEditorForm.RefreshPropertyValues;
