@@ -6167,6 +6167,7 @@ begin
     if not DoResetToolStatus([rfInteractive, rfSuccessOnTrigger]) then exit;
     if SourceFileMgr.AskSaveProject(lisDoYouStillWantToCreateTheNewProject,
       lisDiscardChangesCreateNewProject)<>mrOK then exit;
+    GlobalDesignHook.LookupRoot:=nil;
     Result:=DoCloseProject;
     if Result=mrAbort then exit;
   end;
