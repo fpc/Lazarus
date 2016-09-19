@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-07-19 20:02+0200\n"
+"PO-Revision-Date: 2016-09-19 18:46+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -11302,7 +11302,7 @@ msgstr "Lade Makro aus"
 
 #: lazarusidestrconsts.lislocal
 msgid "&Local"
-msgstr ""
+msgstr "&Lokal"
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -11798,7 +11798,7 @@ msgstr "Imagelisten-Icon ändern"
 
 #: lazarusidestrconsts.lismenueditorchangeshortcutcaptionforcomponent
 msgid "Change %s for %s"
-msgstr ""
+msgstr "Ändere %s für %s"
 
 #: lazarusidestrconsts.lismenueditorchangeshortcutconflicts
 msgid "Change shortcut conflict \"%s\""
@@ -11838,7 +11838,7 @@ msgstr "<Konfliktauflösung komplett>"
 
 #: lazarusidestrconsts.lismenueditorconflictsfoundinitiallyd
 msgid "Conflicts found initially: %d"
-msgstr ""
+msgstr "Eingangs gefundene Konflikte: %d"
 
 #: lazarusidestrconsts.lismenueditordeepestnestedmenulevels
 msgid "Deepest nested menu level: %s"
@@ -12561,7 +12561,7 @@ msgstr "&Projekt"
 
 #: lazarusidestrconsts.lismenuprojectinspector
 msgid "Project Inspector"
-msgstr "Projektinspektor ..."
+msgstr "Projektinspektor"
 
 #: lazarusidestrconsts.lismenuprojectoptions
 msgid "Project Options ..."
@@ -13324,7 +13324,7 @@ msgstr "Mehrfache Verzeichnisse werden mit Semikolons getrennt"
 
 #: lazarusidestrconsts.lismultiplepack
 msgid ", multiple packages: "
-msgstr ""
+msgstr ", mehrfache Packages: "
 
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
@@ -16391,7 +16391,7 @@ msgstr "Ausgewählt"
 
 #: lazarusidestrconsts.lisselectedaddition
 msgid "Selected addition:"
-msgstr ""
+msgstr "Gewählte Hinzufügung:"
 
 #: lazarusidestrconsts.lisselectedandchildcontrols
 msgid "Selected and child controls"
@@ -17822,11 +17822,11 @@ msgstr "Ausgewählte Units"
 
 #: lazarusidestrconsts.lisudshownodesfordirectories
 msgid "Show nodes for directories"
-msgstr ""
+msgstr "Zeige Knoten für Verzeichnisse"
 
 #: lazarusidestrconsts.lisudshownodesforprojectandpackages
 msgid "Show nodes for project and packages"
-msgstr ""
+msgstr "Zeige Knoten für Projekt und Packages"
 
 #: lazarusidestrconsts.lisudunits
 msgid "Units"
@@ -20826,4 +20826,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-

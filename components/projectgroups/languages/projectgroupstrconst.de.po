@@ -91,8 +91,6 @@ msgid "Invalid File"
 msgstr "Ungültige Datei"
 
 #: projectgroupstrconst.lisinvalidxmlfilename
-#, fuzzy
-#| msgid "Invalid xml file name \"%s\""
 msgid "Invalid XML file name \"%s\"."
 msgstr "Ungültiger XML-Dateiname \"%s\""
 
@@ -114,7 +112,7 @@ msgstr "lazbuild nicht gefunden"
 
 #: projectgroupstrconst.lismore
 msgid "More"
-msgstr ""
+msgstr "Weitere"
 
 #: projectgroupstrconst.lisneedsave
 msgid "Need save"
@@ -126,7 +124,7 @@ msgstr "Neue Projektgruppe"
 
 #: projectgroupstrconst.lisnewprojectgroupmenuc
 msgid "New project group ..."
-msgstr ""
+msgstr "Neue Projektgruppe ..."
 
 #: projectgroupstrconst.lisnodebuildmodes
 msgid "Build Modes"
@@ -157,10 +155,8 @@ msgid "Targets"
 msgstr "Ziele"
 
 #: projectgroupstrconst.lisopenprojectgroup
-#, fuzzy
-#| msgid "Open project group"
 msgid "Open project group ..."
-msgstr "Projektgruppe öffnen"
+msgstr "Projektgruppe öffnen ..."
 
 #: projectgroupstrconst.lisopenrecentprojectgroup
 msgid "Open recent project group"
@@ -240,10 +236,8 @@ msgid "Reload"
 msgstr "Neu laden"
 
 #: projectgroupstrconst.lisprojectgroupsaveascaption
-#, fuzzy
-#| msgid "Save As"
 msgid "Save As ..."
-msgstr "Speichern unter"
+msgstr "Speichern unter ..."
 
 #: projectgroupstrconst.lisprojectgroupsaveashint
 msgid "Save project group with a new name"
@@ -278,10 +272,8 @@ msgid "Save project group"
 msgstr "Projektgruppe speichern"
 
 #: projectgroupstrconst.lissaveprojectgroupas
-#, fuzzy
-#| msgid "Save project group as"
 msgid "Save project group as ..."
-msgstr "Projektgruppe speichern unter"
+msgstr "Projektgruppe speichern unter ..."
 
 #: projectgroupstrconst.lisskipalltargets
 msgid "Remove all invalid targets"
@@ -306,26 +298,26 @@ msgstr "Ziel hinzufügen"
 #: projectgroupstrconst.listargetcompile
 msgctxt "projectgroupstrconst.listargetcompile"
 msgid "Compile"
-msgstr ""
+msgstr "Kompilieren"
 
 #: projectgroupstrconst.listargetcompilecaption
 msgctxt "projectgroupstrconst.listargetcompilecaption"
 msgid "Compile"
-msgstr ""
+msgstr "Kompilieren"
 
 #: projectgroupstrconst.listargetcompileclean
 msgctxt "projectgroupstrconst.listargetcompileclean"
 msgid "Compile clean"
-msgstr ""
+msgstr "Sauber rekompilieren"
 
 #: projectgroupstrconst.listargetcompilecleancaption
 msgctxt "projectgroupstrconst.listargetcompilecleancaption"
 msgid "Compile clean"
-msgstr ""
+msgstr "Sauber rekompilieren"
 
 #: projectgroupstrconst.listargetcompilecleanhint
 msgid "Compile selected target clean"
-msgstr ""
+msgstr "Gewähltes Ziel sauber rekompilieren"
 
 #: projectgroupstrconst.listargetcompilefromhere
 msgid "Compile from here"
@@ -438,7 +430,7 @@ msgstr "Gewähltes Ziel deinstallieren"
 
 #: projectgroupstrconst.listhelazbuildwasnotfound
 msgid "The lazbuild%s was not found."
-msgstr ""
+msgstr "lazbuild%s wurde nicht gefunden."
 
 #: projectgroupstrconst.listhereisstillanotherbuildinprogress
 msgid "There is still another build in progress."
@@ -463,4 +455,3 @@ msgstr "Schreibfehler"
 #: projectgroupstrconst.lisxmlsyntaxerrorinfile
 msgid "XML syntax error in file \"%s\": %s"
 msgstr "XML-Syntaxfehler in Datei \"%s\": %s"
-
