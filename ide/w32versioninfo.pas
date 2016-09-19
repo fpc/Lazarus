@@ -53,6 +53,7 @@ type
     FOnModified: TNotifyEvent;
     function GetValues(const Key: string): string;
     procedure SetValues(const Key: string; const AValue: string);
+    procedure AddRequired;
   protected
     procedure DoModified;
     function KeyToIndex(const aKey: String): Integer;
@@ -62,7 +63,6 @@ type
     procedure AddDefault;
     function Equals(aTable: TProjectVersionStringTable): boolean; reintroduce;
     procedure Assign(aTable: TProjectVersionStringTable); virtual;
-    procedure AddRequired;
     procedure Clear; reintroduce;
     procedure Delete(const aIndex: integer); overload; reintroduce;
     procedure Delete(const aKey: string); overload; reintroduce;
@@ -496,7 +496,6 @@ begin
     end;
     Attributes := attrs;
 
-
     // read string info
     Node := FindNode(Path + 'VersionInfo/StringTable', False);
     if Assigned(Node) then
@@ -505,6 +504,8 @@ begin
       for i := 0 to Node.Attributes.Length - 1 do
         StringTable[Node.Attributes[i].NodeName] := Node.Attributes[i].NodeValue;
       StringTable.AddRequired;
+      if StringTable['ProductVersion'] = '' then
+        StringTable['ProductVersion'] := BuildFileVersionString;
     end
     else
     begin
