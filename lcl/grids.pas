@@ -10517,8 +10517,7 @@ begin
         SelStr := SelStr + #9;
     end;
 
-    if (R.Top <> R.Bottom) or (R.Left <> R.Right) then
-      SelStr := SelStr + sLineBreak;
+    SelStr := SelStr + sLineBreak;
   end;
   Clipboard.AsText := SelStr;
 end;
