@@ -97,6 +97,7 @@ type
     class procedure UpdateWindowMask(AWindow: NSWindow; ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
   public
     class function GetWindowFromHandle(const ACustomForm: TCustomForm): TCocoaWindow;
+    class function GetWindowContentFromHandle(const ACustomForm: TCustomForm): TCocoaWindowContent;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
@@ -431,6 +432,13 @@ begin
   Result := TCocoaWindow(TCocoaWindowContent(ACustomForm.Handle).lclOwnWindow);
 end;
 
+class function TCocoaWSCustomForm.GetWindowContentFromHandle(const ACustomForm: TCustomForm): TCocoaWindowContent;
+begin
+  Result := nil;
+  if not ACustomForm.HandleAllocated then Exit;
+  Result := TCocoaWindowContent(ACustomForm.Handle);
+end;
+
 class function TCocoaWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
@@ -488,13 +496,10 @@ var
     win.LCLForm := Form;
     win.setContentView(cnt);
 
-    if (AParams.WndParent <> 0) then
-    begin
-      if (NSObject(AParams.WndParent).isKindOfClass(TCocoaWindowContent)) and (not TCocoaWindowContent(AParams.WndParent).isembedded) then
-        TCocoaWindowContent(AParams.WndParent).window.addChildWindow_ordered(win, NSWindowAbove)
-      else
-        NSWindow(AParams.WndParent).addChildWindow_ordered(win, NSWindowAbove);
-    end;
+    // Don't call addChildWindow_ordered here because this function can cause
+    // events to arrive for this window, creating a second call to TCocoaWSCustomForm.CreateHandle
+    // while the first didn't finish yet, instead delay the call
+    cnt.popup_parent := AParams.WndParent;
 
     // support for drag & drop
     win.registerForDraggedTypes(NSArray.arrayWithObjects_count(@NSFilenamesPboardType, 1));
@@ -582,10 +587,15 @@ end;
 class procedure TCocoaWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 var
   win: TCocoaWindow;
+  lWinContent: TCocoaWindowContent;
 begin
   // Another possible implementation is to have modal started in ShowHide with (fsModal in AForm.FormState)
   win := TCocoaWSCustomForm.GetWindowFromHandle(ACustomForm);
   if win = nil then Exit;
+
+  // Handle PopupParent
+  lWinContent := GetWindowContentFromHandle(ACustomForm);
+  lWinContent.resolvePopupParent();
 
   { Another possible implementation is using a session, but this requires
     disabling the other windows ourselves

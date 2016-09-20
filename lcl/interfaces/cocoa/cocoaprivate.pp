@@ -435,6 +435,8 @@ type
   public
     isembedded: Boolean; // true - if the content is inside of another control, false - if the content is in its own window;
     ownwin: NSWindow;
+    popup_parent: HWND; // if not 0, indicates that we should set the popup parent
+    procedure resolvePopupParent(); message 'resolvePopupParent';
     function lclOwnWindow: NSWindow; message 'lclOwnWindow';
     procedure lclSetFrame(const r: TRect); override;
     procedure viewDidMoveToSuperview; override;
@@ -922,6 +924,28 @@ procedure TCocoaWindowContent.didResignKeyNotification(sender: NSNotification);
 begin
   if Assigned(callback) then
     callback.DidResignKeyNotification;
+end;
+
+procedure TCocoaWindowContent.resolvePopupParent();
+var
+  lWindow: NSWindow;
+begin
+  lWindow := nil;
+  if (popup_parent <> 0) then
+  begin
+    if (NSObject(popup_parent).isKindOfClass(TCocoaWindowContent)) then
+    begin
+      if (not TCocoaWindowContent(popup_parent).isembedded) then
+        lWindow := TCocoaWindowContent(popup_parent).window;
+    end
+    else
+    begin
+      lWindow := NSWindow(popup_parent);
+    end;
+  end;
+  if lWindow <> nil then
+    lWindow.addChildWindow_ordered(Self.window, NSWindowAbove);
+  popup_parent := 0;
 end;
 
 function TCocoaWindowContent.lclOwnWindow: NSWindow;
