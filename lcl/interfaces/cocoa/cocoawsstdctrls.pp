@@ -174,6 +174,8 @@ type
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
   end;
 
   { TLCLCheckBoxCallback }
@@ -193,6 +195,8 @@ type
     //
     class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
   end;
 
   { TCocoaWSToggleBox }
@@ -434,6 +438,29 @@ begin
   cap.release;
 end;
 
+class function TCocoaWSButton.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+var
+  btn: NSButton;
+  lStr: NSString;
+begin
+  Result := AWinControl.HandleAllocated;
+  if not Result then Exit;
+  btn := NSButton(AWinControl.Handle);
+  lStr := btn.title();
+  AText := NSStringToString(lStr);
+end;
+
+class function TCocoaWSButton.GetTextLen(const AWinControl: TWinControl;
+  var ALength: Integer): Boolean;
+var
+  lText: String;
+begin
+  Result := GetText(AWinControl, lText);
+  if not Result then Exit;
+  ALength := Length(lText);
+end;
+
 { TCocoaWSCustomCheckBox }
 
 {------------------------------------------------------------------------------
@@ -511,6 +538,18 @@ class procedure TCocoaWSCustomCheckBox.SetText(const AWinControl: TWinControl;
   const AText: String);
 begin
   TCocoaWSButton.SetText(AWinControl, AText);
+end;
+
+class function TCocoaWSCustomCheckBox.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+begin
+  Result := TCocoaWSButton.GetText(AWinControl, AText);
+end;
+
+class function TCocoaWSCustomCheckBox.GetTextLen(
+  const AWinControl: TWinControl; var ALength: Integer): Boolean;
+begin
+  Result := TCocoaWSButton.GetTextLen(AWinControl, ALength);
 end;
 
 { TCocoaWSRadioButton }
