@@ -3523,7 +3523,7 @@ end;
 function TQtWidget.SlotMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   Msg: TLMMouse;
-  MousePos: TQtPoint;
+  MousePos, APos: TQtPoint;
   MButton: QTMouseButton;
   Modifiers: QtKeyboardModifiers;
   SaveWidget, AWidgetAt: QWidgetH;
@@ -3549,11 +3549,6 @@ begin
     (Self is TQtMainWindow) and not TQtMainWindow(Self).IsMdiChild then
   begin
     AMouseEvent := QMouseEventH(Event);
-    ANewEvent := QMouseEvent_create(QEvent_type(Event), QMouseEvent_pos(AMouseEvent),
-      QMouseEvent_globalPos(AMouseEvent), QMouseEvent_button(AMouseEvent),
-        QMouseEvent_buttons(AMouseEvent), QInputEvent_modifiers(QInputEventH(Event)));
-    QEvent_accept(Event);
-    Result := True;
     MousePos := QMouseEvent_globalPos(AMouseEvent)^;
     AWidgetAt := QApplication_widgetAt(@MousePos);
     {TODO: check what happens if pure form is transparent for mouse events.}
@@ -3561,6 +3556,17 @@ begin
       AWidgetAt := QApplication_activeModalWidget;
     if AWidgetAt = nil then
       AWidgetAt := QApplication_activeWindow;
+
+    APos := QMouseEvent_pos(AMouseEvent)^;
+
+    if AWidgetAt <> nil then
+      QWidget_mapFromGlobal(AWidgetAt, @APos, @MousePos);
+
+    ANewEvent := QMouseEvent_create(QEvent_type(Event), @APos,
+      QMouseEvent_globalPos(AMouseEvent), QMouseEvent_button(AMouseEvent),
+        QMouseEvent_buttons(AMouseEvent), QInputEvent_modifiers(QInputEventH(Event)));
+    QEvent_accept(Event);
+    Result := True;
     QCoreApplication_sendEvent(AWidgetAt, ANewEvent);
     QEvent_destroy(ANewEvent);
     exit;
