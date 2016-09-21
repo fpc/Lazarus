@@ -59,7 +59,7 @@ end;
 
 procedure TDBLookupComboBox.Select;
 begin
-  FDataLink.Modified;
+  FDataLink.UpdateData;
   inherited Select;
 end;
 
