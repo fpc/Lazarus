@@ -28,7 +28,7 @@ uses
   CustomDrawnControls, CustomDrawnDrawers, LazDeviceApis, LDockTree, 
   LazFreeTypeIntfDrawer, CustomDrawn_WinXP, CustomDrawn_Android, Arrow, 
   EditBtn, ComboEx, DBExtCtrls, CustomDrawn_Mac, CalcForm, LCLTranslator, 
-  GroupedEdit, LazarusPackageIntf;
+  GroupedEdit, LCLTaskDialog, LazarusPackageIntf;
 
 implementation
 

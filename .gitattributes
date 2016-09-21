@@ -6831,6 +6831,7 @@ lcl/images/btnselfile.png -text svneol=unset#image/png
 lcl/images/btntime.png -text svneol=unset#image/png
 lcl/images/buttons/btn_abort.png -text svneol=unset#image/png
 lcl/images/buttons/btn_all.png -text svneol=unset#image/png
+lcl/images/buttons/btn_arrowright.png -text
 lcl/images/buttons/btn_cancel.png -text svneol=unset#image/png
 lcl/images/buttons/btn_close.png -text svneol=unset#image/png
 lcl/images/buttons/btn_help.png -text svneol=unset#image/png
@@ -6872,6 +6873,7 @@ lcl/images/dialogs/build.bat svneol=native#text/x-msdos-program
 lcl/images/dialogs/dialog_confirmation.png -text svneol=unset#image/png
 lcl/images/dialogs/dialog_error.png -text svneol=unset#image/png
 lcl/images/dialogs/dialog_information.png -text svneol=unset#image/png
+lcl/images/dialogs/dialog_shield.png -text
 lcl/images/dialogs/dialog_warning.png -text svneol=unset#image/png
 lcl/images/dock/lcl_dock_close.png -text svneol=unset#image/png
 lcl/images/dock/lcl_dock_images.bat svneol=native#text/x-msdos-program
@@ -7704,6 +7706,7 @@ lcl/lclmessageglue.pas svneol=native#text/pascal
 lcl/lclproc.pas svneol=native#text/pascal
 lcl/lclrescache.pas svneol=native#text/pascal
 lcl/lclstrconsts.pas svneol=native#text/pascal
+lcl/lcltaskdialog.pas svneol=native#text/pascal
 lcl/lcltranslator.pas svneol=native#text/pascal
 lcl/lcltype.pp svneol=native#text/pascal
 lcl/lclunicodedata.pas svneol=native#text/pascal

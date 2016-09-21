@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="7"/>
-    <Files Count="286">
+    <Files Count="287">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -1176,6 +1176,10 @@
         <Filename Value="groupededit.pp"/>
         <UnitName Value="GroupedEdit"/>
       </Item286>
+      <Item287>
+        <Filename Value="lcltaskdialog.pas"/>
+        <UnitName Value="LCLTaskDialog"/>
+      </Item287>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>

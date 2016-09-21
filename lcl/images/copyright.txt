@@ -3,25 +3,27 @@ LICENSE AND COPYRIGHT INFORMATION ABOUT IMAGES USED IN LCL
 
 Public domain Tango https://packages.debian.org/sid/tango-icon-theme
 PNG versions: http://http.debian.net/debian/pool/main/t/tango-icon-theme/tango-icon-theme_0.8.90.orig.tar.gz
-- dialogs/*
+- btncalendar.png
+- btncalculator.png
+- btnfiltercancel.png
 - btnselfile.png
 - btnseldir.png
+- btntime.png (modified Appointment.svg by Michael Fuchs)
 - dbnavcancel.png
 - dbnavdelete.png
 - dbnavrefresh.png
 - dbnavnext.png
+- dbnavedit.png (modified Edit-metadata.svg by Ondrej Pokorny)
 - dbnavlast.png
 - dbnavinsert.png
 - dbnavfirst.png
+- dbnavpost.png (modified Text-x-generic-apply.svg by Ondrej Pokorny)
 - dbnavprior.png
-- btntime.png (modified Appointment.svg by Michael Fuchs)
-- btncalendar.png
-- btncalculator.png
-- btnfiltercancel.png
+- dialogs/dialog_shield.png (modified network-wireless-encrypted.png by Ondrej Pokorny)
+- dialogs/*
 - sortasc.png
 - sortdesc.png
-- dbnavpost.png (modified Text-x-generic-apply.svg by Ondrej Pokorny)
-- dbnavedit.png (modified Edit-metadata.svg by Ondrej Pokorny)
+- buttons/btn_arrowright.png (modified go-next.png by Ondrej Pokorny)
 - buttons/*
 - button/btn_ok.png (modified Text-x-generic-apply.svg by Ondrej Pokorny)
 - button/btn_yes.png (modified Text-x-generic-apply.svg by Ondrej Pokorny)
