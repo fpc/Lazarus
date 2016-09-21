@@ -144,6 +144,8 @@ begin
     SetLength(FListKeys, 0);
     FControlItems.Clear;
   end;
+  if Assigned(FControlLink) and FControlLink.Active then
+    FControlLink.Reset;
 end;
 
 procedure TDBLookup.DatasetChange(Sender: TObject);
