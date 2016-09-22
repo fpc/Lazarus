@@ -112,6 +112,13 @@ unit LCLTaskDialog;
     non-unicode applications (Windows limitation)
     http://msgroups.net/microsoft.public.vc.mfc/getprocaddress-ansi-unicode/571937
 
+  Version 1.20 (Ondrej Pokorny)
+  - include this unit as LCLTaskDialog.pas into the LCL
+  - remove Delphi specific code
+  - remove CC0 icons, use LCL icons instead
+
+  (The version information shouldn't be continued.)
+
 }
 
 interface
