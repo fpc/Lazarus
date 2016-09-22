@@ -115,6 +115,7 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
       Width = 244
       BorderSpacing.Around = 6
       Caption = 'ScanOutputForMakeMessagesCheckBox'
+      ParentShowHint = False
       TabOrder = 1
     end
     object ScannersButton: TButton
@@ -134,6 +135,9 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
       Top = 6
       Width = 152
       Caption = 'ShowConsoleCheckBox'
+      OnChange = ShowConsoleCheckBoxChange
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 3
       Visible = False
     end
@@ -143,6 +147,8 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
       Top = 36
       Width = 152
       Caption = 'HideWindowCheckBox'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 4
       Visible = False
     end

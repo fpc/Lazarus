@@ -172,6 +172,7 @@ type
     procedure MacrosListboxClick(Sender: TObject);
     procedure MacrosListboxDblClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
+    procedure ShowConsoleCheckBoxChange(Sender: TObject);
   private
     fAllKeys: TKeyCommandRelationList;
     fOptions: TExternalUserTool;
@@ -703,11 +704,9 @@ end;
 procedure TExternalToolOptionDlg.UpdateButtons;
 begin
   ScannersButton.Visible:=false;
-  {$IFDEF EnableDetach}
   {$IFDEF Windows}
   HideWindowCheckBox.Visible:=true;
   ShowConsoleCheckBox.Visible:=true;
-  {$ENDIF}
   {$ENDIF}
 end;
 
@@ -747,13 +746,13 @@ begin
   WorkingDirLabel.Caption:=lisEdtExtToolWorkingDirectory;
   OptionsGroupBox.Caption:=lisLazBuildOptions;
 
-  // ToDo: add hints
   with ScanOutputForFPCMessagesCheckBox do
     Caption:=lisEdtExtToolScanOutputForFreePascalCompilerMessages;
   with ScanOutputForMakeMessagesCheckBox do
     Caption:=lisEdtExtToolScanOutputForMakeMessages;
-  ShowConsoleCheckBox.Caption:='Show console';
-  HideWindowCheckBox.Caption:='Hide window';
+  ShowConsoleCheckBox.Caption:=lisShowConsole;
+  ShowConsoleCheckBox.Hint:=lisOnlyAvailableOnWindowsRunToolInANewConsole;
+  HideWindowCheckBox.Caption:=lisOnlyAvailableOnWindowsRunTheToolHidden;
 
   with KeyGroupBox do
     Caption:=lisEdtExtToolKey;
@@ -941,6 +940,12 @@ begin
                   mtError, [mbCancel]);
     ModalResult:=mrCancel;
   end;
+end;
+
+procedure TExternalToolOptionDlg.ShowConsoleCheckBoxChange(Sender: TObject);
+begin
+  if ShowConsoleCheckBox.Checked then
+    HideWindowCheckBox.Checked:=false;
 end;
 
 initialization

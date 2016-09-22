@@ -4029,9 +4029,14 @@ resourcestring
   lisEdtExtToolParameters = 'Parameters:';
   lisEdtExtToolWorkingDirectory = 'Working Directory:';
   lisEdtExtToolScanOutputForFreePascalCompilerMessages = 'Scan output for '
-    +'Free Pascal Compiler messages';
-  lisEdtExtToolScanOutputForMakeMessages = 'Scan output for make messages';
+    +'FPC messages';
+  lisEdtExtToolScanOutputForMakeMessages = 'Scan output for "make" messages';
+  lisShowConsole = 'Show console';
+  lisOnlyAvailableOnWindowsRunToolInANewConsole = 'Only available on Windows. '
+    +'Run tool in a new console.';
   lisEdtExtToolKey = 'Key';
+  lisOnlyAvailableOnWindowsRunTheToolHidden = 'Only available on Windows. Run '
+    +'the tool hidden.';
   lisAlternativeKey = 'Alternative key';
   lisEdtExtToolMacros = 'Macros';
   lisWorkingDirectoryForBuilding = 'Working directory for building';
