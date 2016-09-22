@@ -752,7 +752,8 @@ begin
     Caption:=lisEdtExtToolScanOutputForMakeMessages;
   ShowConsoleCheckBox.Caption:=lisShowConsole;
   ShowConsoleCheckBox.Hint:=lisOnlyAvailableOnWindowsRunToolInANewConsole;
-  HideWindowCheckBox.Caption:=lisOnlyAvailableOnWindowsRunTheToolHidden;
+  HideWindowCheckBox.Caption:=lisCloseAllTabsHide;
+  HideWindowCheckBox.Hint:=lisOnlyAvailableOnWindowsRunTheToolHidden;
 
   with KeyGroupBox do
     Caption:=lisEdtExtToolKey;
