@@ -130,11 +130,6 @@ uses
   Menus, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons;
 
 var
-  /// will map a default font, according to the available
-  // - if Calibri is installed, will use it
-  // - will fall back to Tahoma otherwise
-  DefaultFont: TFont;
-
 {$IFDEF MSWINDOWS}
   /// is filled once in the initialization block below
   // - you can set this reference to nil to force Delphi dialogs even
@@ -412,7 +407,37 @@ type
 var
   TaskDialog_Translate: TTaskDialogTranslate;
 
+  /// will map a default font, according to the available
+  // - if Calibri is installed, will use it
+  // - will fall back to Tahoma otherwise
+function DefaultFont: TFont;
+
 implementation
+
+var
+  LDefaultFont: TFont;
+
+function DefaultFont: TFont;
+begin
+  if LDefaultFont<>nil then
+    Exit(LDefaultFont);
+  LDefaultFont := TFont.Create;
+  LDefaultFont.Style := [];
+  if Screen.Fonts.IndexOf('Calibri')>=0 then begin
+    LDefaultFont.Size := 11;
+    LDefaultFont.Name := 'Calibri';
+  end else begin
+    if Screen.Fonts.IndexOf('Tahoma')>=0 then
+      LDefaultFont.Name := 'Tahoma' else
+      LDefaultFont.Name := 'Arial';
+
+    {$IFDEF DARWIN}
+    LDefaultFont.Size := 13;
+    {$ELSE}
+    LDefaultFont.Size := 10;
+    {$ENDIF}
+  end;
+end;
 
 const
   TD_BTNMOD: array[TCommonButton] of Integer = (
@@ -1207,28 +1232,12 @@ begin
 end;
 
 initialization
-  DefaultFont := TFont.Create;
-  DefaultFont.Style := [];
-  if Screen.Fonts.IndexOf('Calibri')>=0 then begin
-    DefaultFont.Size := 11;
-    DefaultFont.Name := 'Calibri';
-  end else begin
-    if Screen.Fonts.IndexOf('Tahoma')>=0 then
-      DefaultFont.Name := 'Tahoma' else
-      DefaultFont.Name := 'Arial';
-
-    {$IFDEF DARWIN}
-    DefaultFont.Size := 13;
-    {$ELSE}
-    DefaultFont.Size := 10;
-    {$ENDIF}
-  end;
   {$IFDEF MSWINDOWS}
   InitComCtl6;
   {$ENDIF}
   assert(ord(tdfCanBeMinimized)=15);
 
 finalization
-  DefaultFont.Free;
+  LDefaultFont.Free;
 
 end.
