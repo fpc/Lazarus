@@ -887,14 +887,18 @@ begin
       IconBorder := 10 else
       IconBorder := 24;
 
-     if (LAZ_ICONS[aDialogIcon]<>'') or (WIN_ICONS[aDialogIcon]<>nil) then
+     if (LAZ_ICONS[aDialogIcon]<>'') {$IFDEF MSWINDOWS}or (WIN_ICONS[aDialogIcon]<>nil){$ENDIF} then
      begin
       Image := TImage.Create(Dialog.Form);
       Image.Parent := Par;
+      {$IFDEF MSWINDOWS}
       if WIN_ICONS[aDialogIcon]<>nil then
         IconHandle := LoadIcon(0,WIN_ICONS[aDialogIcon])
       else
         IconHandle := 0;
+      {$ELSE}
+      IconHandle := 0;
+      {$ENDIF}
       if IconHandle<>0 then
         Image.Picture.Icon.Handle := IconHandle
       else if LAZ_ICONS[aDialogIcon]<>'' then
@@ -1081,7 +1085,7 @@ begin
       if XB<>0 then
         AddBevel else
         inc(Y,16);
-      if (LAZ_FOOTERICONS[aFooterIcon]<>'') or (WIN_FOOTERICONS[aFooterIcon]<>nil) then
+      if (LAZ_FOOTERICONS[aFooterIcon]<>'') {$IFDEF MSWINDOWS}or (WIN_FOOTERICONS[aFooterIcon]<>nil){$ENDIF} then
       begin
         Image := TImage.Create(Dialog.Form);
         Image.Parent := Par;
@@ -1090,6 +1094,7 @@ begin
         Bmp := TBitmap.Create;
         try
           Bmp.Transparent := true;
+          {$IFDEF MSWINDOWS}
           if WIN_FOOTERICONS[aFooterIcon]<>nil then
           begin
             IconHandle := LoadIcon(0,WIN_FOOTERICONS[aFooterIcon]);
@@ -1101,7 +1106,8 @@ begin
               Bmp.Height := Ico.Height shr 1;
             end;
           end;
-          if (Ico=nil) and(LAZ_FOOTERICONS[aFooterIcon]<>'') then
+          {$ENDIF}
+          if (Ico=nil) and (LAZ_FOOTERICONS[aFooterIcon]<>'') then
           begin
             Pic := TPortableNetworkGraphic.Create;
             Pic.LoadFromResourceName(HINSTANCE, LAZ_FOOTERICONS[aFooterIcon]);
@@ -1117,8 +1123,12 @@ begin
             if Pic<>nil then
               Bmp.Canvas.StretchDraw(Rect(0, 0, Bmp.Width, Bmp.Height), Pic)
             else
+            begin
+              {$IFDEF MSWINDOWS}
               DrawIconEx(Bmp.Canvas.Handle,0,0,Ico.Handle,Bmp.Width,Bmp.Height,0,
                 Bmp.Canvas.Brush.{%H-}Handle,DI_NORMAL);
+              {$ENDIF}
+            end;
             Image.Picture.Bitmap := Bmp;
             Image.SetBounds(24,Y,Bmp.Width,Bmp.Height);
             X := 40+Bmp.Width;
