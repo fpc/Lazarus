@@ -133,8 +133,8 @@ uses
   LResources, Classes, SysUtils,
   Menus, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons;
 
-var
 {$IFDEF MSWINDOWS}
+var
   /// is filled once in the initialization block below
   // - you can set this reference to nil to force Delphi dialogs even
   // on Vista/Seven (e.g. make sense if TaskDialogBiggerButtons=true)
