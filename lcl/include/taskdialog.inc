@@ -219,6 +219,14 @@ begin
   for B in RadioButtons do
     TaskDlg.Radios := TaskDlg.Radios + B.Caption + #10;
 
+  TaskDlg.Title := Caption;
+  TaskDlg.Inst := Title;
+  TaskDlg.Content := Text;
+  TaskDlg.InfoCollapse := ExpandButtonCaption;
+  TaskDlg.Info := ExpandedText;
+  TaskDlg.Footer := FooterText;
+  TaskDlg.Verify := VerificationText;
+
   ButtonID := TaskDlg.Execute(TD_COMMONBUTTONS(CommonButtons), DefBtn, TD_FLAGS(Flags), TF_DIALOGICON(MainIcon), TF_FOOTERICON(FooterIcon),
     DefRB, 0, ParentWnd, False, False, @DoOnButtonClickedHandler);
   Result := ButtonID>=0;

@@ -598,13 +598,10 @@ type
     FCommonButtons: TTaskDialogCommonButtons;
     FDefaultButton: TTaskDialogCommonButton;
     FExpandButtonCaption: string;
-    FExpanded: Boolean;
     FExpandedText: string;
     FFlags: TTaskDialogFlags;
     FFooterIcon: TTaskDialogIcon;
     FFooterText: string;
-    FHandle: HWND;
-    FHelpContext: Integer;
     FMainIcon: TTaskDialogIcon;
     FModalResult: TModalResult;
     FRadioButton: TTaskDialogRadioButtonItem;
@@ -613,7 +610,6 @@ type
     FTitle: string;
     FVerificationText: string;
     FOnButtonClicked: TTaskDlgClickEvent;
-    FOnHyperlinkClicked: TNotifyEvent;
     procedure DoOnButtonClickedHandler(Sender: PTaskDialog; AButtonID: integer;
       var ACanClose: Boolean);
     procedure SetButtons(const Value: TTaskDialogButtons);
@@ -632,12 +628,11 @@ type
     property Caption: string read FCaption write FCaption;
     property CommonButtons: TTaskDialogCommonButtons read FCommonButtons write FCommonButtons default [tcbOk, tcbCancel];
     property DefaultButton: TTaskDialogCommonButton read FDefaultButton write FDefaultButton default tcbOk;
-    property Expanded: Boolean read FExpanded;
+    property ExpandButtonCaption: string read FExpandButtonCaption write FExpandButtonCaption;
     property ExpandedText: string read FExpandedText write FExpandedText;
     property Flags: TTaskDialogFlags read FFlags write FFlags default [tfAllowDialogCancellation];
     property FooterIcon: TTaskDialogIcon read FFooterIcon write FFooterIcon default tdiNone;
     property FooterText: string read FFooterText write FFooterText;
-    property Handle: HWND read FHandle;
     property MainIcon: TTaskDialogIcon read FMainIcon write FMainIcon default tdiInformation;
     property ModalResult: TModalResult read FModalResult write FModalResult;
     property RadioButton: TTaskDialogRadioButtonItem read FRadioButton;
@@ -654,6 +649,7 @@ type
     property Caption;
     property CommonButtons;
     property DefaultButton;
+    property ExpandButtonCaption;
     property ExpandedText;
     property Flags;
     property FooterIcon;
