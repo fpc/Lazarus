@@ -110,6 +110,7 @@ type
 procedure ExplodeAWithBlockCmd(Sender: TObject);
 procedure InsertFileAtCursor(Sender: TObject);
 procedure InsertCallInherited(Sender: TObject);
+procedure InsertInt64ID(Sender: TObject);
 
 function ParseTilCursor(out Tool: TCodeTool; out CleanPos: integer;
    out Node: TCodeTreeNode; out ErrorHandled: boolean;
@@ -316,6 +317,16 @@ begin
         ErrorNotInMethod;
     end;
   end;
+end;
+
+procedure InsertInt64ID(Sender: TObject);
+var
+  SrcEdit: TSourceEditorInterface;
+begin
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
+  if SrcEdit=nil then exit;
+
+  SrcEdit.Selection:=FormatDateTime('YYYYMMDDhhnnss',Now);
 end;
 
 function ParseTilCursor(out Tool: TCodeTool; out CleanPos: integer;

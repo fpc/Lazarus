@@ -131,6 +131,10 @@ begin
   CreateSourceCommand(CmdCatCodeTools,'InsertCallInherited',
     crsInsertCallInherited,nil,@InsertCallInherited);
 
+  // insert int64 ID
+  CreateSourceCommand(CmdCatCodeTools,'InsertInt64ID',
+    'Insert int64 id YYYYDDMMhhnnss',nil,@InsertInt64ID);
+
   // Show unit / identifier dictionary
   InitUnitDictionary;
   CreateSourceCommand(CmdCatCodeTools,'ShowUnitDictionary',
