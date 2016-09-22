@@ -824,7 +824,7 @@ procedure Register;
 begin
   RegisterComponents('Dialogs',[TOpenDialog,TSaveDialog,TSelectDirectoryDialog,
                                 TColorDialog,TFontDialog,
-                                TFindDialog,TReplaceDialog]);
+                                TFindDialog,TReplaceDialog, TTaskDialog]);
   RegisterComponents('Misc',[TColorButton]);
 end;
 

@@ -6374,6 +6374,7 @@ images/components/tstatictext.png -text svneol=unset#image/png
 images/components/tstatusbar.png -text svneol=unset#image/png
 images/components/tstringgrid.png -text svneol=unset#image/png
 images/components/ttabcontrol.png -text svneol=unset#image/png
+images/components/ttaskdialog.png -text
 images/components/ttimeedit.png -text svneol=unset#image/png
 images/components/ttimer.png -text svneol=unset#image/png
 images/components/ttogglebox.png -text svneol=unset#image/png
