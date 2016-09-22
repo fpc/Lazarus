@@ -390,6 +390,7 @@ procedure TComponentListForm.ListTreeSelectionChanged(Sender: TObject);
 var
   AComponent: TRegisteredComponent;
 begin
+  UpdateButtonState;
   if FInitialized then
   begin
     if FPageControlChange then
@@ -403,7 +404,6 @@ begin
       IDEComponentPalette.SetSelectedComp(nil, False);
       FIgnoreSelection := False;
     end;
-    UpdateButtonState;
   end
   else begin
     // Only run once when the IDE starts.
