@@ -25,7 +25,7 @@ uses
   Types, typinfo, Classes, SysUtils, LMessages,
   LResources, LCLIntf, InterfaceBase, LCLStrConsts, LCLType, LCLProc, Forms,
   Controls, Themes, GraphType, Graphics, Buttons, ButtonPanel, StdCtrls,
-  ExtCtrls, LCLClasses, ClipBrd, Menus,
+  ExtCtrls, LCLClasses, ClipBrd, Menus, LCLTaskDialog,
   // LazUtils
   FileUtil, LazFileUtils;
 
@@ -501,6 +501,172 @@ type
     property ToPage: Integer read FToPage write FToPage default 0;
   end;
 
+{ TTaskDialog }
+
+const
+  tdiNone = 0;
+  tdiWarning = 1;
+  tdiError = 2;
+  tdiInformation = 3;
+  tdiShield = 4;
+  tdiQuestion = 5;
+
+type
+  TCustomTaskDialog = class;
+
+  TTaskDialogFlag = (tfEnableHyperlinks, tfUseHiconMain,
+    tfUseHiconFooter, tfAllowDialogCancellation,
+    tfUseCommandLinks, tfUseCommandLinksNoIcon,
+    tfExpandFooterArea, tfExpandedByDefault,
+    tfVerificationFlagChecked, tfShowProgressBar,
+    tfShowMarqueeProgressBar, tfCallbackTimer,
+    tfPositionRelativeToWindow, tfRtlLayout,
+    tfNoDefaultRadioButton, tfCanBeMinimized);
+  TTaskDialogFlags = set of TTaskDialogFlag;
+
+  TTaskDialogCommonButton = (tcbOk, tcbYes, tcbNo, tcbCancel, tcbRetry, tcbClose);
+  TTaskDialogCommonButtons = set of TTaskDialogCommonButton;
+
+  TTaskDlgClickEvent = procedure(Sender: TObject; ModalResult: TModalResult; var CanClose: Boolean) of object;
+
+  TTaskDialogIcon = Low(Integer)..High(Integer);
+
+  TTaskDialogButtons = class;
+
+  TTaskDialogBaseButtonItem = class(TCollectionItem)
+  private
+    FCaption: string;
+    FClient: TCustomTaskDialog;
+    FModalResult: TModalResult;
+    function GetDefault: Boolean;
+    procedure SetCaption(const ACaption: string);
+    procedure SetDefault(const Value: Boolean);
+  protected
+    property Client: TCustomTaskDialog read FClient;
+    function GetDisplayName: string; override;
+    function TaskButtonCollection: TTaskDialogButtons;
+  public
+    constructor Create(ACollection: TCollection); override;
+    property ModalResult: TModalResult read FModalResult write FModalResult;
+  published
+    property Caption: string read FCaption write SetCaption;
+    property Default: Boolean read GetDefault write SetDefault default False;
+  end;
+
+  TTaskDialogButtonItem = class(TTaskDialogBaseButtonItem)
+  public
+    constructor Create(ACollection: TCollection); override;
+  published
+    property ModalResult;
+  end;
+
+  TTaskDialogRadioButtonItem = class(TTaskDialogBaseButtonItem)
+  public
+    constructor Create(ACollection: TCollection); override;
+  end;
+
+  TTaskDialogButtonsEnumerator = class
+  private
+    FIndex: Integer;
+    FCollection: TTaskDialogButtons;
+  public
+    constructor Create(ACollection: TTaskDialogButtons);
+    function GetCurrent: TTaskDialogBaseButtonItem;
+    function MoveNext: Boolean;
+    property Current: TTaskDialogBaseButtonItem read GetCurrent;
+  end;
+
+  TTaskDialogButtons = class(TOwnedCollection)
+  private
+    FDefaultButton: TTaskDialogBaseButtonItem;
+    function GetItem(Index: Integer): TTaskDialogBaseButtonItem;
+    procedure SetDefaultButton(const Value: TTaskDialogBaseButtonItem);
+    procedure SetItem(Index: Integer; const Value: TTaskDialogBaseButtonItem);
+  public
+    function Add: TTaskDialogBaseButtonItem;
+    function FindButton(AModalResult: TModalResult): TTaskDialogBaseButtonItem;
+    function GetEnumerator: TTaskDialogButtonsEnumerator;
+    property DefaultButton: TTaskDialogBaseButtonItem read FDefaultButton write SetDefaultButton;
+    property Items[Index: Integer]: TTaskDialogBaseButtonItem read GetItem write SetItem; default;
+  end;
+
+  TCustomTaskDialog = class(TComponent)
+  private
+    FButton: TTaskDialogButtonItem;
+    FButtons: TTaskDialogButtons;
+    FCaption: string;
+    FCommonButtons: TTaskDialogCommonButtons;
+    FDefaultButton: TTaskDialogCommonButton;
+    FExpandButtonCaption: string;
+    FExpanded: Boolean;
+    FExpandedText: string;
+    FFlags: TTaskDialogFlags;
+    FFooterIcon: TTaskDialogIcon;
+    FFooterText: string;
+    FHandle: HWND;
+    FHelpContext: Integer;
+    FMainIcon: TTaskDialogIcon;
+    FModalResult: TModalResult;
+    FRadioButton: TTaskDialogRadioButtonItem;
+    FRadioButtons: TTaskDialogButtons;
+    FText: string;
+    FTitle: string;
+    FVerificationText: string;
+    FOnButtonClicked: TTaskDlgClickEvent;
+    FOnHyperlinkClicked: TNotifyEvent;
+    procedure DoOnButtonClickedHandler(Sender: PTaskDialog; AButtonID: integer;
+      var ACanClose: Boolean);
+    procedure SetButtons(const Value: TTaskDialogButtons);
+    procedure SetRadioButtons(const Value: TTaskDialogButtons);
+    function ButtonIDToModalResult(const AButtonID: Integer): TModalResult;
+  protected
+    function DoExecute(ParentWnd: HWND): Boolean; dynamic;
+    procedure DoOnButtonClicked(AModalResult: Integer; var CanClose: Boolean); dynamic;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function Execute: Boolean; overload; dynamic;
+    function Execute(ParentWnd: HWND): Boolean; overload; dynamic;
+    property Button: TTaskDialogButtonItem read FButton write FButton;
+    property Buttons: TTaskDialogButtons read FButtons write SetButtons;
+    property Caption: string read FCaption write FCaption;
+    property CommonButtons: TTaskDialogCommonButtons read FCommonButtons write FCommonButtons default [tcbOk, tcbCancel];
+    property DefaultButton: TTaskDialogCommonButton read FDefaultButton write FDefaultButton default tcbOk;
+    property Expanded: Boolean read FExpanded;
+    property ExpandedText: string read FExpandedText write FExpandedText;
+    property Flags: TTaskDialogFlags read FFlags write FFlags default [tfAllowDialogCancellation];
+    property FooterIcon: TTaskDialogIcon read FFooterIcon write FFooterIcon default tdiNone;
+    property FooterText: string read FFooterText write FFooterText;
+    property Handle: HWND read FHandle;
+    property MainIcon: TTaskDialogIcon read FMainIcon write FMainIcon default tdiInformation;
+    property ModalResult: TModalResult read FModalResult write FModalResult;
+    property RadioButton: TTaskDialogRadioButtonItem read FRadioButton;
+    property RadioButtons: TTaskDialogButtons read FRadioButtons write SetRadioButtons;
+    property Text: string read FText write FText;
+    property Title: string read FTitle write FTitle;
+    property VerificationText: string read FVerificationText write FVerificationText;
+    property OnButtonClicked: TTaskDlgClickEvent read FOnButtonClicked write FOnButtonClicked;
+  end;
+
+  TTaskDialog = class(TCustomTaskDialog)
+  published
+    property Buttons;
+    property Caption;
+    property CommonButtons;
+    property DefaultButton;
+    property ExpandedText;
+    property Flags;
+    property FooterIcon;
+    property FooterText;
+    property MainIcon;
+    property RadioButtons;
+    property Text;
+    property Title;
+    property VerificationText;
+    property OnButtonClicked;
+  end;
+
+
 var
   MinimumDialogButtonWidth: integer = 75;
   MinimumDialogButtonHeight: integer = 25;
@@ -770,6 +936,7 @@ end;
 {$I messagedialogs.inc}
 {$I promptdialog.inc}
 {$I colorbutton.inc}
+{$I taskdialog.inc}
 
 { TCustomPrintDialog }
 

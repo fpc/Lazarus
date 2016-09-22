@@ -7059,6 +7059,7 @@ lcl/include/sysenvapis_unix.inc svneol=native#text/pascal
 lcl/include/sysenvapis_win.inc svneol=native#text/pascal
 lcl/include/tabcontrol.inc svneol=native#text/pascal
 lcl/include/tabsheet.inc svneol=native#text/pascal
+lcl/include/taskdialog.inc svneol=native#text/pascal
 lcl/include/tiffimage.inc svneol=native#text/pascal
 lcl/include/togglebox.inc svneol=native#text/pascal
 lcl/include/toolbar.inc svneol=native#text/pascal

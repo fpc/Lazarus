@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="7"/>
-    <Files Count="287">
+    <Files Count="288">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -1180,6 +1180,10 @@
         <Filename Value="lcltaskdialog.pas"/>
         <UnitName Value="LCLTaskDialog"/>
       </Item287>
+      <Item288>
+        <Filename Value="include/taskdialog.inc"/>
+        <Type Value="Include"/>
+      </Item288>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>
