@@ -652,10 +652,12 @@ type
     FCustomMacroFunction: TETMacroFunction;
     FEnvironmentOverrides: TStringList;
     FExecutable: string;
+    FHideWindow: boolean;
     FHint: string;
     FQuiet: boolean;
     FResolveMacros: boolean;
     FScanners: TStrings;
+    FShowConsole: boolean;
     fTitle: string;
     fWorkingDirectory: string;
     procedure SetEnvironmentOverrides(AValue: TStringList);
@@ -675,6 +677,8 @@ type
     property WorkingDirectory: string read fWorkingDirectory write fWorkingDirectory;
     property EnvironmentOverrides: TStringList read FEnvironmentOverrides write SetEnvironmentOverrides;
     property Scanners: TStrings read FScanners write SetScanners;
+    property ShowConsole: boolean read FShowConsole write FShowConsole default false; // sets poNoConsole/poNewConsole, works only on MSWindows
+    property HideWindow: boolean read FHideWindow write FHideWindow default true; // sets/unsets swoHide/swoShow, works only on MSWindows
     property ResolveMacros: boolean read FResolveMacros write FResolveMacros default true;
     property CustomMacroFunction: TETMacroFunction read FCustomMacroFunction write FCustomMacroFunction;
     property Quiet: boolean read FQuiet write FQuiet; // no user dialogs about errors
@@ -810,6 +814,8 @@ begin
   WorkingDirectory:=Source.WorkingDirectory;
   EnvironmentOverrides:=Source.EnvironmentOverrides;
   Scanners:=Source.Scanners;
+  ShowConsole:=Source.ShowConsole;
+  HideWindow:=Source.HideWindow;
   ResolveMacros:=Source.ResolveMacros;
   CustomMacroFunction:=Source.CustomMacroFunction;
   Quiet:=Source.Quiet;
@@ -828,6 +834,8 @@ begin
       and (WorkingDirectory=Source.WorkingDirectory)
       and EnvironmentOverrides.Equals(Source.EnvironmentOverrides)
       and Scanners.Equals(Source.Scanners)
+      and (ShowConsole=Source.ShowConsole)
+      and (HideWindow=Source.HideWindow)
       and (ResolveMacros=Source.ResolveMacros)
       and CompareMethods(TMethod(CustomMacroFunction),TMethod(Source.CustomMacroFunction))
       and (Quiet=Source.Quiet);
@@ -841,6 +849,8 @@ begin
   FCustomMacroFunction:=nil;
   FEnvironmentOverrides.Clear;
   FExecutable:='';
+  FShowConsole:=false;
+  FHideWindow:=true;
   FResolveMacros:=true;
   FScanners.Clear;
   fTitle:='';

@@ -61,10 +61,11 @@ type
     fCmdLineParams: string;
     FEnvironmentOverrides: TStringList;
     fFilename: string;
-    FHideMainForm: boolean;
+    FHideWindow: boolean;
     FKey: word;
     FScanners: TStrings;
     FShift: TShiftState;
+    FShowConsole: boolean;
     fTitle: string;
     fWorkingDirectory: string;
     fSavedChangeStamp: integer;
@@ -75,9 +76,10 @@ type
     procedure SetEnvironmentOverrides(AValue: TStringList);
     procedure SetFilename(AValue: string);
     procedure SetHasScanner(aName: string; AValue: boolean);
-    procedure SetHideMainForm(AValue: boolean);
+    procedure SetHideWindow(AValue: boolean);
     procedure SetModified(AValue: boolean);
     procedure SetScanners(AValue: TStrings);
+    procedure SetShowConsole(AValue: boolean);
     procedure SetTitle(AValue: string);
     procedure SetWorkingDirectory(AValue: string);
   public
@@ -88,17 +90,18 @@ type
     procedure Assign(Source: TPersistent); override;
     function Load(Config: TConfigStorage; CfgVersion: integer): TModalResult; virtual;
     function Save(Config: TConfigStorage): TModalResult; virtual;
+    procedure IncreaseChangeStamp; inline;
     property CmdLineParams: string read fCmdLineParams write SetCmdLineParams;
     property Filename: string read fFilename write SetFilename;
     property Title: string read fTitle write SetTitle;
     property WorkingDirectory: string read fWorkingDirectory write SetWorkingDirectory;
     property EnvironmentOverrides: TStringList read FEnvironmentOverrides write SetEnvironmentOverrides;
-    property HideMainForm: boolean read FHideMainForm write SetHideMainForm default true;
     property Scanners: TStrings read FScanners write SetScanners;
     property HasScanner[aName: string]: boolean read GetHasScanner write SetHasScanner;
+    property ShowConsole: boolean read FShowConsole write SetShowConsole;
+    property HideWindow: boolean read FHideWindow write SetHideWindow;
     property Modified: boolean read GetModified write SetModified;
     property ChangeStamp: integer read FChangeStamp write SetChangeStamp;
-    procedure IncreaseChangeStamp; inline;
   public
     // these properties are saved in the keymappings, not in the config
     property Key: word read FKey write FKey;
@@ -144,23 +147,24 @@ type
 
   TExternalToolOptionDlg = class(TForm)
     ButtonPanel: TButtonPanel;
-    WorkingDirEdit: TDirectoryEdit;
     FileNameEdit: TFileNameEdit;
-    MemoParameters: TMemo;
-    ScannersButton: TButton;
-    TitleLabel: TLabel;
-    TitleEdit: TEdit;
     FilenameLabel: TLabel;
-    ParametersLabel: TLabel;
-    WorkingDirLabel: TLabel;
-    OptionsGroupBox: TGroupBox;
-    OptionScanOutputForFPCMessagesCheckBox: TCheckBox;
-    OptionScanOutputForMakeMessagesCheckBox: TCheckBox;
+    HideWindowCheckBox: TCheckBox;
     KeyGroupBox: TGroupBox;
     MacrosGroupbox: TGroupbox;
-    MacrosListbox: TListbox;
     MacrosInsertButton: TButton;
-    chkHideMainForm: TCheckBox;
+    MacrosListbox: TListbox;
+    MemoParameters: TMemo;
+    OptionsGroupBox: TGroupBox;
+    ParametersLabel: TLabel;
+    ScannersButton: TButton;
+    ScanOutputForFPCMessagesCheckBox: TCheckBox;
+    ScanOutputForMakeMessagesCheckBox: TCheckBox;
+    ShowConsoleCheckBox: TCheckBox;
+    TitleEdit: TEdit;
+    TitleLabel: TLabel;
+    WorkingDirEdit: TDirectoryEdit;
+    WorkingDirLabel: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
@@ -280,10 +284,10 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TExternalUserTool.SetHideMainForm(AValue: boolean);
+procedure TExternalUserTool.SetHideWindow(AValue: boolean);
 begin
-  if FHideMainForm=AValue then Exit;
-  FHideMainForm:=AValue;
+  if FHideWindow=AValue then Exit;
+  FHideWindow:=AValue;
   IncreaseChangeStamp;
 end;
 
@@ -299,6 +303,13 @@ procedure TExternalUserTool.SetScanners(AValue: TStrings);
 begin
   if (FScanners=AValue) or FScanners.Equals(AValue) then Exit;
   FScanners.Assign(AValue);
+  IncreaseChangeStamp;
+end;
+
+procedure TExternalUserTool.SetShowConsole(AValue: boolean);
+begin
+  if FShowConsole=AValue then Exit;
+  FShowConsole:=AValue;
   IncreaseChangeStamp;
 end;
 
@@ -343,7 +354,6 @@ begin
     FEnvironmentOverrides.Clear;
   end;
   Filename:='';
-  HideMainForm:=true;
   if FScanners.Count>0 then
   begin
     FScanners.Clear;
@@ -351,6 +361,8 @@ begin
   end;
   Title:='';
   WorkingDirectory:='';
+  ShowConsole:=false;
+  HideWindow:=true;
 end;
 
 function TExternalUserTool.Equals(Obj: TObject): boolean;
@@ -362,8 +374,9 @@ begin
     Result:=(CmdLineParams=Src.CmdLineParams)
       and EnvironmentOverrides.Equals(Src.EnvironmentOverrides)
       and (Filename=Src.Filename)
-      and (HideMainForm=Src.HideMainForm)
       and Scanners.Equals(Src.Scanners)
+      and (ShowConsole=Src.ShowConsole)
+      and (HideWindow=Src.HideWindow)
       and (Title=Src.Title)
       and (WorkingDirectory=Src.WorkingDirectory)
       and (Key=Src.Key)
@@ -383,8 +396,9 @@ begin
     WorkingDirectory:=Src.WorkingDirectory;
     EnvironmentOverrides:=Src.EnvironmentOverrides;
     Filename:=Src.Filename;
-    HideMainForm:=Src.HideMainForm;
     Scanners:=Src.Scanners;
+    ShowConsole:=Src.ShowConsole;
+    HideWindow:=Src.HideWindow;
     Title:=Src.Title;
     Key:=Src.Key;
     Shift:=Src.Shift;
@@ -401,7 +415,8 @@ begin
   fCmdLineParams:=Config.GetValue('CmdLineParams/Value','');
   fWorkingDirectory:=Config.GetValue('WorkingDirectory/Value','');
   Config.GetValue('EnvironmentOverrides/',FEnvironmentOverrides);
-  HideMainForm:=Config.GetValue('HideMainForm/Value',true);
+  ShowConsole:=Config.GetValue('ShowConsole/Value',false);
+  HideWindow:=Config.GetValue('HideWindow/Value',true);
 
   if CfgVersion<3 then
   begin
@@ -426,7 +441,8 @@ begin
   Config.SetDeleteValue('WorkingDirectory/Value',WorkingDirectory,'');
   Config.SetValue('EnvironmentOverrides/',FEnvironmentOverrides);
   Config.SetValue('Scanners/',FScanners);
-  Config.SetDeleteValue('HideMainForm/Value',HideMainForm,true);
+  Config.SetDeleteValue('ShowConsole/Value',ShowConsole,false);
+  Config.SetDeleteValue('HideWindow/Value',HideWindow,true);
   Modified:=false;
   Result:=mrOk;
 end;
@@ -535,6 +551,8 @@ begin
     Tool.CmdLineParams:=Item.CmdLineParams;
     Tool.EnvironmentOverrides:=Item.EnvironmentOverrides;
     Tool.Scanners:=Item.Scanners;
+    Tool.ShowConsole:=Item.ShowConsole;
+    Tool.HideWindow:=Item.HideWindow;
     Tool.ResolveMacros:=true;
     if not RunExternalTool(Tool) then exit;
   finally
@@ -660,9 +678,10 @@ begin
   WorkingDirEdit.Text:=fOptions.WorkingDirectory;
   fKeyBox.Key:=fOptions.Key;
   fKeyBox.ShiftState:=fOptions.Shift;
-  OptionScanOutputForFPCMessagesCheckBox.Checked:=fOptions.HasScanner[SubToolFPC];
-  OptionScanOutputForMakeMessagesCheckBox.Checked:=fOptions.HasScanner[SubToolMake];
-  chkHideMainForm.Checked:=FOptions.HideMainForm;
+  ScanOutputForFPCMessagesCheckBox.Checked:=fOptions.HasScanner[SubToolFPC];
+  ScanOutputForMakeMessagesCheckBox.Checked:=fOptions.HasScanner[SubToolMake];
+  ShowConsoleCheckBox.Checked:=FOptions.ShowConsole;
+  HideWindowCheckBox.Checked:=FOptions.HideWindow;
   fScanners.Assign(fOptions.Scanners);
   UpdateButtons;
 end;
@@ -675,14 +694,21 @@ begin
   fOptions.WorkingDirectory:=WorkingDirEdit.Text;
   fOptions.Key:=fKeyBox.Key;
   fOptions.Shift:=fKeyBox.ShiftState;
-  FOptions.HideMainForm := chkHideMainForm.Checked;
-  fOptions.HasScanner[SubToolFPC]:=OptionScanOutputForFPCMessagesCheckBox.Checked;
-  fOptions.HasScanner[SubToolMake]:=OptionScanOutputForMakeMessagesCheckBox.Checked;
+  FOptions.ShowConsole := ShowConsoleCheckBox.Checked;
+  FOptions.HideWindow := HideWindowCheckBox.Checked;
+  fOptions.HasScanner[SubToolFPC]:=ScanOutputForFPCMessagesCheckBox.Checked;
+  fOptions.HasScanner[SubToolMake]:=ScanOutputForMakeMessagesCheckBox.Checked;
 end;
 
 procedure TExternalToolOptionDlg.UpdateButtons;
 begin
   ScannersButton.Visible:=false;
+  {$IFDEF EnableDetach}
+  {$IFDEF Windows}
+  HideWindowCheckBox.Visible:=true;
+  ShowConsoleCheckBox.Visible:=true;
+  {$ENDIF}
+  {$ENDIF}
 end;
 
 function TExternalToolOptionDlg.ScannersToString(List: TStrings): string;
@@ -721,13 +747,13 @@ begin
   WorkingDirLabel.Caption:=lisEdtExtToolWorkingDirectory;
   OptionsGroupBox.Caption:=lisLazBuildOptions;
 
-  with OptionScanOutputForFPCMessagesCheckBox do
+  // ToDo: add hints
+  with ScanOutputForFPCMessagesCheckBox do
     Caption:=lisEdtExtToolScanOutputForFreePascalCompilerMessages;
-
-  with OptionScanOutputForMakeMessagesCheckBox do
+  with ScanOutputForMakeMessagesCheckBox do
     Caption:=lisEdtExtToolScanOutputForMakeMessages;
-
-  chkHideMainForm.Caption := lisEdtExtToolHideMainForm;
+  ShowConsoleCheckBox.Caption:='Show console';
+  HideWindowCheckBox.Caption:='Hide window';
 
   with KeyGroupBox do
     Caption:=lisEdtExtToolKey;

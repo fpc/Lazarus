@@ -1212,7 +1212,14 @@ begin
       {$IF FPC_FULLVERSION<20604}
       Proc.InheritHandles:=false;
       {$ENDIF}
-      Proc.Options:=Proc.Options+[poNoConsole];
+      if ToolOptions.ShowConsole then
+        Proc.Options:=Proc.Options+[poNewConsole]-[poNoConsole]
+      else
+        Proc.Options:=Proc.Options-[poNewConsole]+[poNoConsole];
+      if ToolOptions.HideWindow then
+        Proc.ShowWindow:=swoHide
+      else
+        Proc.ShowWindow:=swoShow;
       try
         Proc.Execute;
       except
@@ -1236,6 +1243,14 @@ begin
       if ExtToolConsole=nil then
         for i:=0 to ToolOptions.Scanners.Count-1 do
           Tool.AddParsers(ToolOptions.Scanners[i]);
+      if ToolOptions.ShowConsole then
+        Tool.Process.Options:=Proc.Options+[poNewConsole]-[poNoConsole]
+      else
+        Tool.Process.Options:=Proc.Options-[poNewConsole]+[poNoConsole];
+      if ToolOptions.HideWindow then
+        Tool.Process.ShowWindow:=swoHide
+      else
+        Tool.Process.ShowWindow:=swoShow;
       if ToolOptions.ResolveMacros then begin
         if not Tool.ResolveMacros then begin
           debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] failed to resolve macros']);

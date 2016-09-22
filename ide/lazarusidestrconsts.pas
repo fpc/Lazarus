@@ -4031,7 +4031,6 @@ resourcestring
   lisEdtExtToolScanOutputForFreePascalCompilerMessages = 'Scan output for '
     +'Free Pascal Compiler messages';
   lisEdtExtToolScanOutputForMakeMessages = 'Scan output for make messages';
-  lisEdtExtToolHideMainForm = 'Hide main form';
   lisEdtExtToolKey = 'Key';
   lisAlternativeKey = 'Alternative key';
   lisEdtExtToolMacros = 'Macros';
