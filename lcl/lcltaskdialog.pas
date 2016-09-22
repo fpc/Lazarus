@@ -124,9 +124,6 @@ unit LCLTaskDialog;
 interface
 
 {$MODE DELPHI}
-{$IFNDEF MSWINDOWS}
-  {$define WITHLAZARUSICONS}
-{$ENDIF}
 
 uses
   LCLType, LCLStrConsts, LCLIntf,
@@ -444,6 +441,7 @@ begin
     LDefaultFont.Size := 10;
     {$ENDIF}
   end;
+  Result := LDefaultFont;
 end;
 
 const
@@ -524,9 +522,9 @@ const
   TD_FOOTERICONS: array[TTaskDialogFooterIcon] of integer = (
     17, 84, 99, 98, 65533, 65532);
   WIN_ICONS: array[TTaskDialogIcon] of PChar = (
-    nil, IDI_WARNING, IDI_QUESTION, IDI_ERROR, IDI_INFORMATION, nil, IDI_WINLOGO);
+    nil, IDI_WARNING, IDI_QUESTION, IDI_ERROR, IDI_INFORMATION, nil, nil);
   WIN_FOOTERICONS: array[TTaskDialogFooterIcon] of PChar = (
-    nil, IDI_WARNING, IDI_QUESTION, IDI_ERROR, IDI_INFORMATION, IDI_WINLOGO);
+    nil, IDI_WARNING, IDI_QUESTION, IDI_ERROR, IDI_INFORMATION, nil);
 {$ENDIF MSWINDOWS}
 
 function IconMessage(Icon: TTaskDialogIcon): string;
@@ -701,11 +699,8 @@ var
     {$IFDEF MSWINDOWS}
     Config: TTASKDIALOGCONFIG;
     {$ENDIF}
-    {$IFDEF WITHLAZARUSICONS}
-    Pic: TPicture;
-    {$ELSE}
-    Pic: TIcon;
-    {$ENDIF}
+    Pic: TPortableNetworkGraphic;
+    Ico: TIcon;
     Bmp: TBitmap;
     i, X, Y, XB, IconBorder, FontHeight: integer;
     Par: TWinControl;
@@ -789,6 +784,7 @@ begin
 end;
 var
   PngImg: TPortableNetworkGraphic;
+  IconHandle: HICON;
 begin
   if (byte(aCommonButtons)=0) and (Buttons='') then begin
     aCommonButtons := [cbOk];
@@ -891,21 +887,26 @@ begin
       IconBorder := 10 else
       IconBorder := 24;
 
-     if
-     {$IFDEF WITHLAZARUSICONS}
-     LAZ_ICONS[aDialogIcon]<>''
-     {$ELSE}
-     WIN_ICONS[aDialogIcon]<>nil
-     {$ENDIF}
-     then
+     if (LAZ_ICONS[aDialogIcon]<>'') or (WIN_ICONS[aDialogIcon]<>nil) then
      begin
       Image := TImage.Create(Dialog.Form);
       Image.Parent := Par;
-      {$IFDEF WITHLAZARUSICONS}
-      Image.Picture.LoadFromResourceName(HINSTANCE, LAZ_ICONS[aDialogIcon]);
-      {$ELSE}
-      Image.Picture.Icon.Handle := LoadIcon(0,WIN_ICONS[aDialogIcon]);
-      {$ENDIF}
+      if WIN_ICONS[aDialogIcon]<>nil then
+        IconHandle := LoadIcon(0,WIN_ICONS[aDialogIcon])
+      else
+        IconHandle := 0;
+      if IconHandle<>0 then
+        Image.Picture.Icon.Handle := IconHandle
+      else if LAZ_ICONS[aDialogIcon]<>'' then
+      begin
+        Pic := TPortableNetworkGraphic.Create;
+        try
+          Pic.LoadFromResourceName(HINSTANCE, LAZ_ICONS[aDialogIcon]);
+          Image.Picture.Assign(Pic);
+        finally
+          Pic.Free;
+        end;
+      end;
       Image.SetBounds(IconBorder,IconBorder,Image.Picture.Icon.Width,Image.Picture.Icon.Height);
       X := Image.Width+IconBorder*2;
       Y := Image.Top;
@@ -1080,47 +1081,52 @@ begin
       if XB<>0 then
         AddBevel else
         inc(Y,16);
-      if
-      {$IFDEF WITHLAZARUSICONS}
-      LAZ_ICONS[aDialogIcon]<>''
-      {$ELSE}
-      WIN_ICONS[aDialogIcon]<>nil
-      {$ENDIF}
-      then
+      if (LAZ_FOOTERICONS[aFooterIcon]<>'') or (WIN_FOOTERICONS[aFooterIcon]<>nil) then
       begin
         Image := TImage.Create(Dialog.Form);
         Image.Parent := Par;
-        {$IFDEF WITHLAZARUSICONS}
-        Pic := TPicture.Create;
-        {$ELSE}
-        Pic := TIcon.Create;
-        {$ENDIF}
+        Pic := nil;
+        Ico := nil;
         Bmp := TBitmap.Create;
         try
           Bmp.Transparent := true;
-          {$IFDEF WITHLAZARUSICONS}
-          Pic.LoadFromLazarusResource(LAZ_FOOTERICONS[aFooterIcon]);
-          {$ELSE}
-          Pic.Handle := LoadIcon(0,WIN_FOOTERICONS[aFooterIcon]);
-          {$ENDIF}
-          Bmp.Width := Pic.Width shr 1;
-          Bmp.Height := Pic.Height shr 1;
-          Bmp.Canvas.Brush.Color := Dialog.Form.Color;
-          if Bmp.Canvas.Brush.Color = clDefault then
-            Bmp.Canvas.Brush.Color := clBtnFace;
-          Bmp.Canvas.FillRect(Rect(0, 0, Bmp.Width, Bmp.Height));
-          {$IFDEF WITHLAZARUSICONS}
-          Bmp.Canvas.StretchDraw(Rect(0, 0, Bmp.Width, Bmp.Height), Pic.Graphic);
-          {$ELSE}
-          DrawIconEx(Bmp.Canvas.Handle,0,0,Pic.Handle,Bmp.Width,Bmp.Height,0,
-            Bmp.Canvas.Brush.{%H-}Handle,DI_NORMAL);
-          {$ENDIF}
-          Image.Picture.Bitmap := Bmp;
-          Image.SetBounds(24,Y,Bmp.Width,Bmp.Height);
-          X := 40+Bmp.Width;
+          if WIN_FOOTERICONS[aFooterIcon]<>nil then
+          begin
+            IconHandle := LoadIcon(0,WIN_FOOTERICONS[aFooterIcon]);
+            if IconHandle<>0 then
+            begin
+              Ico := TIcon.Create;
+              Ico.Handle := IconHandle;
+              Bmp.Width := Ico.Width shr 1;
+              Bmp.Height := Ico.Height shr 1;
+            end;
+          end;
+          if (Ico=nil) and(LAZ_FOOTERICONS[aFooterIcon]<>'') then
+          begin
+            Pic := TPortableNetworkGraphic.Create;
+            Pic.LoadFromResourceName(HINSTANCE, LAZ_FOOTERICONS[aFooterIcon]);
+            Bmp.Width := Pic.Width shr 1;
+            Bmp.Height := Pic.Height shr 1;
+          end;
+          if (Ico<>nil) or (Pic<>nil) then
+          begin
+            Bmp.Canvas.Brush.Color := Dialog.Form.Color;
+            if Bmp.Canvas.Brush.Color = clDefault then
+              Bmp.Canvas.Brush.Color := clBtnFace;
+            Bmp.Canvas.FillRect(Rect(0, 0, Bmp.Width, Bmp.Height));
+            if Pic<>nil then
+              Bmp.Canvas.StretchDraw(Rect(0, 0, Bmp.Width, Bmp.Height), Pic)
+            else
+              DrawIconEx(Bmp.Canvas.Handle,0,0,Ico.Handle,Bmp.Width,Bmp.Height,0,
+                Bmp.Canvas.Brush.{%H-}Handle,DI_NORMAL);
+            Image.Picture.Bitmap := Bmp;
+            Image.SetBounds(24,Y,Bmp.Width,Bmp.Height);
+            X := 40+Bmp.Width;
+          end;
         finally
           Bmp.Free;
           Pic.Free;
+          Ico.Free;
         end;
       end else
       begin
