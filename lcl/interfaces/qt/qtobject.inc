@@ -78,6 +78,9 @@ begin
     App := QApplicationH(QCoreApplication_instance())
   else
     App := QApplication_Create(@argc, argv);
+  {$IFDEF QtUseNativeEventLoop}
+  FMainTimerID := -1;
+  {$ENDIF}
   {$J+}
   QtVersionInt(QtVersionMajor, QtVersionMinor, QtVersionMicro);
   {$J-}
@@ -280,10 +283,22 @@ end;
   Enter the main message loop
  ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
+{$IFDEF QtUseNativeEventLoop}
+var
+  ATimer: QTimerH;
+{$ENDIF}
 begin
+  {$IFDEF QtUseNativeEventLoop}
+  ATimer := QTimer_create(QCoreApplication_instance());
+  QTimer_setInterval(ATimer, 0);
+  QTimer_start(ATimer);
+  FMainTimerID := QTimer_timerId(ATimer);
+  QApplication_exec();
+  {$ELSE}
   // use LCL loop
   if Assigned(ALoop) then
     ALoop;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -740,6 +755,14 @@ begin
   end;
 
   case QEvent_type(Event) of
+    {$IFDEF QtUseNativeEventLoop}
+    QEventTimer:
+    begin
+      if (QTimerEvent_timerId(QTimerEventH(Event)) = FMainTimerID) and
+        Assigned(Application) and not Application.Terminated then
+          Application.Idle(True);
+    end;
+    {$ENDIF}
     QEventShortcutOverride: // issue #22827
     begin
       QKeyEvent_text(QKeyEventH(Event), @AKey);

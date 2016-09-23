@@ -50,6 +50,9 @@ type
   TQtWidgetSet = Class(TWidgetSet)
   private
     App: QApplicationH;
+    {$IFDEF QtUseNativeEventLoop}
+    FMainTimerID: integer;
+    {$ENDIF}
     {$IFDEF QtUseAccurateFrame}
     FWSFrameMargins: TRect;
     {$ENDIF}
