@@ -493,11 +493,21 @@ begin
 end;
 
 function TMenuItem.IsBitmapStored: boolean;
+var
+    act: TCustomAction;
 begin
-  Result :=
-    FBitmapIsValid and
-    (FBitmap <> nil) and (not FBitmap.Empty) and
-    (FBitmap.Width > 0) and (FBitmap.Height > 0);
+  if Action <> nil then
+  begin
+    Result := true;
+    act := TCustomAction(Action);
+    if (act.ActionList <> nil) and (act.ActionList.Images <> nil) and
+      (act.ImageIndex >= 0) and (act.ImageIndex < act.ActionList.Images.Count) then
+        Result := false;
+  end
+  else Result :=
+     FBitmapIsValid and
+     (FBitmap <> nil) and (not FBitmap.Empty) and
+     (FBitmap.Width > 0) and (FBitmap.Height > 0);
 end;
 
 {------------------------------------------------------------------------------
