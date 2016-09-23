@@ -455,6 +455,7 @@ type
   protected
     procedure CMWantSpecialKey(var Message: TLMessage); message CM_WANTSPECIALKEY;
   private
+    FTextCursor, FOffTextCursor: TCursor;
     FBlockIndent: integer;
     FBlockTabIndent: integer;
     FCaret: TSynEditCaret;
@@ -607,6 +608,7 @@ type
     function GetTopLine: Integer;
     procedure SetBlockTabIndent(AValue: integer);
     procedure SetBracketMatchColor(AValue: TSynSelectedColor);
+    procedure SetTextCursor(AValue: TCursor);
     procedure SetDefSelectionMode(const AValue: TSynSelectionMode);
     procedure SetFoldedCodeColor(AValue: TSynSelectedColor);
     procedure SetFoldedCodeLineColor(AValue: TSynSelectedColor);
@@ -619,6 +621,7 @@ type
     procedure SetMouseLinkColor(AValue: TSynSelectedColor);
     procedure SetMouseSelActions(const AValue: TSynEditMouseActions);
     procedure SetMouseTextActions(AValue: TSynEditMouseActions);
+    procedure SetOffTextCursor(AValue: TCursor);
     procedure SetPaintLockOwner(const AValue: TSynEditBase);
     procedure SetShareOptions(const AValue: TSynEditorShareOptions);
     procedure SetTextBetweenPointsSimple(aStartPoint, aEndPoint: TPoint; const AValue: String);
@@ -1131,6 +1134,8 @@ type
     // Colors
     property MarkupManager: TSynEditMarkupManager read fMarkupManager;
     property Color default clWhite;
+    property Cursor: TCursor read FTextCursor write SetTextCursor default crIBeam;
+    property OffTextCursor: TCursor read FOffTextCursor write SetOffTextCursor default crDefault;
     property IncrementColor: TSynSelectedColor read GetIncrementColor write SetIncrementColor;
     property HighlightAllColor: TSynSelectedColor read GetHighlightAllColor write SetHighlightAllColor;
     property BracketMatchColor: TSynSelectedColor read GetBracketMatchColor write SetBracketMatchColor;
@@ -1208,6 +1213,7 @@ type
     property Constraints;
     property Color;
     property Cursor default crIBeam;
+    property OffTextCursor default crDefault;
     property Enabled;
     property Font;
     property Height;
@@ -1817,6 +1823,20 @@ begin
   fMarkupBracket.MarkupInfo.Assign(AValue);
 end;
 
+procedure TCustomSynEdit.SetTextCursor(AValue: TCursor);
+begin
+  if FTextCursor = AValue then exit;
+  FTextCursor := AValue;
+  UpdateCursor;
+end;
+
+procedure TCustomSynEdit.SetOffTextCursor(AValue: TCursor);
+begin
+  if FOffTextCursor = AValue then Exit;
+  FOffTextCursor := AValue;
+  UpdateCursor;
+end;
+
 procedure TCustomSynEdit.SetDefSelectionMode(const AValue: TSynSelectionMode);
 begin
   FBlockSelection.SelectionMode := AValue; // Includes active
@@ -2088,7 +2108,9 @@ begin
   ControlStyle := ControlStyle + [csOpaque, csSetCaption, csTripleClicks, csQuadClicks];
   Height := 150;
   Width := 200;
-  Cursor := crIBeam;
+  FTextCursor := crIBeam;
+  FOffTextCursor := crDefault;
+  inherited Cursor := FTextCursor;
   fPlugins := TList.Create;
   FHookedKeyTranslationList := TSynHookedKeyTranslationList.Create;
   FUndoRedoItemHandlerList := TSynUndoRedoItemHandlerList.Create;
@@ -5400,7 +5422,7 @@ end;
 procedure TCustomSynEdit.UpdateCursor;
 begin
   if (sfHideCursor in FStateFlags) and (eoAutoHideCursor in fOptions2) then begin
-    SetCursor(crNone);
+    inherited Cursor := crNone;
     exit;
   end;
 
@@ -5408,12 +5430,12 @@ begin
      (FLastMousePoint.Y >= FTextArea.Bounds.Top) and (FLastMousePoint.Y < FTextArea.Bounds.Bottom)
   then begin
     if Assigned(FMarkupCtrlMouse) and (FMarkupCtrlMouse.Cursor <> crDefault) then
-      Cursor := FMarkupCtrlMouse.Cursor
+      inherited Cursor := FMarkupCtrlMouse.Cursor
     else
-      Cursor := crIBeam;
+      inherited Cursor := FTextCursor;
   end
   else
-    Cursor := crDefault;
+    inherited Cursor := FOffTextCursor;
 end;
 
 procedure TCustomSynEdit.Undo;
