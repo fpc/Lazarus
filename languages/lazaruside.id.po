@@ -6033,6 +6033,7 @@ msgid "Close files"
 msgstr ""
 
 #: lazarusidestrconsts.lisclosealltabshide
+msgctxt "lazarusidestrconsts.lisclosealltabshide"
 msgid "Hide window"
 msgstr ""
 
@@ -8792,10 +8793,6 @@ msgstr "Piranti yang benar membutuhkan setidaknya judul dan nama file."
 msgid "Edit Tool"
 msgstr "Edit Piranti"
 
-#: lazarusidestrconsts.lisedtexttoolhidemainform
-msgid "Hide main form"
-msgstr ""
-
 #: lazarusidestrconsts.lisedtexttoolkey
 msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
@@ -8815,11 +8812,15 @@ msgid "Program Filename:"
 msgstr "Namafileprogram:"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
-msgid "Scan output for Free Pascal Compiler messages"
+#, fuzzy
+#| msgid "Scan output for Free Pascal Compiler messages"
+msgid "Scan output for FPC messages"
 msgstr "Pindai output untuk pesan Kompilator Free Pascal"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputformakemessages
-msgid "Scan output for make messages"
+#, fuzzy
+#| msgid "Scan output for make messages"
+msgid "Scan output for \"make\" messages"
 msgstr "Pindai output untuk pesan make"
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
@@ -9991,6 +9992,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
+msgstr ""
+
+#: lazarusidestrconsts.lishidewindow
+msgctxt "lazarusidestrconsts.lishidewindow"
+msgid "Hide window"
 msgstr ""
 
 #: lazarusidestrconsts.lishidewithpackageoptionvm
@@ -14328,6 +14334,14 @@ msgstr ""
 msgid "On break line (i.e. return or enter key)"
 msgstr ""
 
+#: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
+msgid "Only available on Windows. Run the tool hidden."
+msgstr ""
+
+#: lazarusidestrconsts.lisonlyavailableonwindowsruntoolinanewconsole
+msgid "Only available on Windows. Run tool in a new console."
+msgstr ""
+
 #: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
 msgid "Only messages fitting this regular expression:"
 msgstr ""
@@ -17288,6 +17302,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowconsole
+msgid "Show console"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowdeclarationhints

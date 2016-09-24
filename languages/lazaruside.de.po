@@ -5782,6 +5782,7 @@ msgid "Close files"
 msgstr "Dateien schließen"
 
 #: lazarusidestrconsts.lisclosealltabshide
+msgctxt "lazarusidestrconsts.lisclosealltabshide"
 msgid "Hide window"
 msgstr "Verstecke Fenster"
 
@@ -8482,10 +8483,6 @@ msgstr "Ein gültiges Werkzeug benötigt wenigstens einen Namen und eine auszuf�
 msgid "Edit Tool"
 msgstr "Werkzeug bearbeiten"
 
-#: lazarusidestrconsts.lisedtexttoolhidemainform
-msgid "Hide main form"
-msgstr "Hauptformular verbergen"
-
 #: lazarusidestrconsts.lisedtexttoolkey
 msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
@@ -8505,11 +8502,15 @@ msgid "Program Filename:"
 msgstr "Programmdateiname:"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
-msgid "Scan output for Free Pascal Compiler messages"
+#, fuzzy
+#| msgid "Scan output for Free Pascal Compiler messages"
+msgid "Scan output for FPC messages"
 msgstr "Scannen der Ausgabe nach Free Pascal-Compilermeldungen"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputformakemessages
-msgid "Scan output for make messages"
+#, fuzzy
+#| msgid "Scan output for make messages"
+msgid "Scan output for \"make\" messages"
 msgstr "Ausgabe nach Make-Meldungen durchsuchen"
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
@@ -9670,6 +9671,12 @@ msgstr ""
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr "Suche ausblenden"
+
+#: lazarusidestrconsts.lishidewindow
+#, fuzzy
+msgctxt "lazarusidestrconsts.lishidewindow"
+msgid "Hide window"
+msgstr "Verstecke Fenster"
 
 #: lazarusidestrconsts.lishidewithpackageoptionvm
 msgid "Hide with package option (-vm%s)"
@@ -13729,6 +13736,14 @@ msgstr "? (An)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Beim Zeilenumbruch (z.B. Return- oder Enter-Taste)"
 
+#: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
+msgid "Only available on Windows. Run the tool hidden."
+msgstr ""
+
+#: lazarusidestrconsts.lisonlyavailableonwindowsruntoolinanewconsole
+msgid "Only available on Windows. Run tool in a new console."
+msgstr ""
+
 #: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
 msgid "Only messages fitting this regular expression:"
 msgstr ""
@@ -16500,6 +16515,10 @@ msgstr "Zeige abstrakte Methoden von \"%s\""
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Komponenten-Baum anzeigen"
+
+#: lazarusidestrconsts.lisshowconsole
+msgid "Show console"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -20826,3 +20845,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+

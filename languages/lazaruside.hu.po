@@ -5782,6 +5782,7 @@ msgid "Close files"
 msgstr "Fájlok bezárása"
 
 #: lazarusidestrconsts.lisclosealltabshide
+msgctxt "lazarusidestrconsts.lisclosealltabshide"
 msgid "Hide window"
 msgstr "Ablak elrejtése"
 
@@ -8481,10 +8482,6 @@ msgstr "Egy érvényes eszköznek legalább címének és fájlnevének kell len
 msgid "Edit Tool"
 msgstr "Eszköz szerkesztése"
 
-#: lazarusidestrconsts.lisedtexttoolhidemainform
-msgid "Hide main form"
-msgstr "Főablak elrejtése"
-
 #: lazarusidestrconsts.lisedtexttoolkey
 msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
@@ -8504,11 +8501,15 @@ msgid "Program Filename:"
 msgstr "Program fájlnév:"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
-msgid "Scan output for Free Pascal Compiler messages"
+#, fuzzy
+#| msgid "Scan output for Free Pascal Compiler messages"
+msgid "Scan output for FPC messages"
 msgstr "Free Pascal fordító üzenetek keresése a kimenetben"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputformakemessages
-msgid "Scan output for make messages"
+#, fuzzy
+#| msgid "Scan output for make messages"
+msgid "Scan output for \"make\" messages"
 msgstr "Make üzenetek keresése a kimenetben"
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
@@ -9667,6 +9668,12 @@ msgstr "Üzenet elrejtése IDE direktíva beszúrásával {%H-}"
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr "Keresés elrejtése"
+
+#: lazarusidestrconsts.lishidewindow
+#, fuzzy
+msgctxt "lazarusidestrconsts.lishidewindow"
+msgid "Hide window"
+msgstr "Ablak elrejtése"
 
 #: lazarusidestrconsts.lishidewithpackageoptionvm
 msgid "Hide with package option (-vm%s)"
@@ -13739,6 +13746,14 @@ msgstr "? (Be)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Sortöréskor (azaz Return vagy Enter billenyű)"
 
+#: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
+msgid "Only available on Windows. Run the tool hidden."
+msgstr ""
+
+#: lazarusidestrconsts.lisonlyavailableonwindowsruntoolinanewconsole
+msgid "Only available on Windows. Run tool in a new console."
+msgstr ""
+
 #: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
 msgid "Only messages fitting this regular expression:"
 msgstr "Csak ezen reguláris kifejezéshez illeszkedő üzenetek:"
@@ -16508,6 +16523,10 @@ msgstr "\"%s\" absztrakt metódusainak megjelenítése"
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Komponensfa megjelenítése"
+
+#: lazarusidestrconsts.lisshowconsole
+msgid "Show console"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"

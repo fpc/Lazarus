@@ -5742,6 +5742,7 @@ msgid "Close files"
 msgstr "Sulje tiedostot"
 
 #: lazarusidestrconsts.lisclosealltabshide
+msgctxt "lazarusidestrconsts.lisclosealltabshide"
 msgid "Hide window"
 msgstr "Piilota ikkuna"
 
@@ -8424,10 +8425,6 @@ msgstr "Työkalu tarvitsee ainakin otsikon ja tiedostonimen."
 msgid "Edit Tool"
 msgstr "Muokkaa työkalua"
 
-#: lazarusidestrconsts.lisedtexttoolhidemainform
-msgid "Hide main form"
-msgstr "Piilota pääikkuna"
-
 #: lazarusidestrconsts.lisedtexttoolkey
 msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
@@ -8447,11 +8444,15 @@ msgid "Program Filename:"
 msgstr "Ohjelman tiedostonimi:"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
-msgid "Scan output for Free Pascal Compiler messages"
+#, fuzzy
+#| msgid "Scan output for Free Pascal Compiler messages"
+msgid "Scan output for FPC messages"
 msgstr "Etsi tulosteesta Free Pascal Compiler viestit"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputformakemessages
-msgid "Scan output for make messages"
+#, fuzzy
+#| msgid "Scan output for make messages"
+msgid "Scan output for \"make\" messages"
 msgstr "Etsi tulosteesta make viestit"
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
@@ -9599,6 +9600,12 @@ msgstr "Piilota viesti lisäämällä IDE:n ohje {%H-}"
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr "Piilota haku"
+
+#: lazarusidestrconsts.lishidewindow
+#, fuzzy
+msgctxt "lazarusidestrconsts.lishidewindow"
+msgid "Hide window"
+msgstr "Piilota ikkuna"
 
 #: lazarusidestrconsts.lishidewithpackageoptionvm
 msgid "Hide with package option (-vm%s)"
@@ -13686,6 +13693,14 @@ msgstr "? (Päällä)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Riviä vaihdettaessa (Enter näppäin)"
 
+#: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
+msgid "Only available on Windows. Run the tool hidden."
+msgstr ""
+
+#: lazarusidestrconsts.lisonlyavailableonwindowsruntoolinanewconsole
+msgid "Only available on Windows. Run tool in a new console."
+msgstr ""
+
 #: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
 msgid "Only messages fitting this regular expression:"
 msgstr "Vain säännöllisen lausekkeen kanssa täsmäävät viestit:"
@@ -16440,6 +16455,10 @@ msgstr "Näytä \"%s\":n abstraktit metodit"
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Näytä komponenttipuu"
+
+#: lazarusidestrconsts.lisshowconsole
+msgid "Show console"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"

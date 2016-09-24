@@ -6101,6 +6101,7 @@ msgid "Close files"
 msgstr ""
 
 #: lazarusidestrconsts.lisclosealltabshide
+msgctxt "lazarusidestrconsts.lisclosealltabshide"
 msgid "Hide window"
 msgstr ""
 
@@ -8879,10 +8880,6 @@ msgstr "一个有效的工具需要标题和文件名."
 msgid "Edit Tool"
 msgstr "编辑工具"
 
-#: lazarusidestrconsts.lisedtexttoolhidemainform
-msgid "Hide main form"
-msgstr ""
-
 #: lazarusidestrconsts.lisedtexttoolkey
 msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
@@ -8902,11 +8899,15 @@ msgid "Program Filename:"
 msgstr "程序文件名:"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
-msgid "Scan output for Free Pascal Compiler messages"
+#, fuzzy
+#| msgid "Scan output for Free Pascal Compiler messages"
+msgid "Scan output for FPC messages"
 msgstr "扫描 Free Pascal 编译器输出信息"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputformakemessages
-msgid "Scan output for make messages"
+#, fuzzy
+#| msgid "Scan output for make messages"
+msgid "Scan output for \"make\" messages"
 msgstr "扫描 make 的输出信息"
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
@@ -10086,6 +10087,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
+msgstr ""
+
+#: lazarusidestrconsts.lishidewindow
+msgctxt "lazarusidestrconsts.lishidewindow"
+msgid "Hide window"
 msgstr ""
 
 #: lazarusidestrconsts.lishidewithpackageoptionvm
@@ -14468,6 +14474,14 @@ msgstr "? (开启)"
 msgid "On break line (i.e. return or enter key)"
 msgstr ""
 
+#: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
+msgid "Only available on Windows. Run the tool hidden."
+msgstr ""
+
+#: lazarusidestrconsts.lisonlyavailableonwindowsruntoolinanewconsole
+msgid "Only available on Windows. Run tool in a new console."
+msgstr ""
+
 #: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
 msgid "Only messages fitting this regular expression:"
 msgstr ""
@@ -17442,6 +17456,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowconsole
+msgid "Show console"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowdeclarationhints

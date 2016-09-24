@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-08-26 01:29+0300\n"
+"PO-Revision-Date: 2016-09-24 16:10+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5783,6 +5783,7 @@ msgid "Close files"
 msgstr "Закрыть файлы"
 
 #: lazarusidestrconsts.lisclosealltabshide
+msgctxt "lazarusidestrconsts.lisclosealltabshide"
 msgid "Hide window"
 msgstr "Скрыть окно"
 
@@ -8479,10 +8480,6 @@ msgstr "Корректное средство обязательно должн�
 msgid "Edit Tool"
 msgstr "Параметры пользовательского средства"
 
-#: lazarusidestrconsts.lisedtexttoolhidemainform
-msgid "Hide main form"
-msgstr "Скрывать главную форму"
-
 #: lazarusidestrconsts.lisedtexttoolkey
 msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
@@ -8502,12 +8499,12 @@ msgid "Program Filename:"
 msgstr "Имя файла программы:"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
-msgid "Scan output for Free Pascal Compiler messages"
-msgstr "Поиск сообщений компилятора Free Pascal в выводе"
+msgid "Scan output for FPC messages"
+msgstr "Искать сообщения FPC в выводе"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputformakemessages
-msgid "Scan output for make messages"
-msgstr "Поиск сообщений make в выводе"
+msgid "Scan output for \"make\" messages"
+msgstr "Искать сообщения \"make\" в выводе"
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
@@ -9640,7 +9637,7 @@ msgstr "Элементы справки"
 
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
-msgstr "Выбор справки..."
+msgstr "Выбор справки"
 
 #: lazarusidestrconsts.lishexadecimal
 msgid "Hexadecimal"
@@ -9665,6 +9662,11 @@ msgstr "Скрыть сообщение вставкой директивы IDE 
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr "Скрыть средство поиска"
+
+#: lazarusidestrconsts.lishidewindow
+msgctxt "lazarusidestrconsts.lishidewindow"
+msgid "Hide window"
+msgstr "Скрывать окно"
 
 #: lazarusidestrconsts.lishidewithpackageoptionvm
 msgid "Hide with package option (-vm%s)"
@@ -13739,6 +13741,14 @@ msgstr "? (Вкл.)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "При разрыве строки (то есть при нажатии клавиши 'Ввод')"
 
+#: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
+msgid "Only available on Windows. Run the tool hidden."
+msgstr "Доступно только в Windows. Запускать средство в скрытом режиме."
+
+#: lazarusidestrconsts.lisonlyavailableonwindowsruntoolinanewconsole
+msgid "Only available on Windows. Run tool in a new console."
+msgstr "Доступно только в Windows. Запускать средство в новой консоли."
+
 #: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
 msgid "Only messages fitting this regular expression:"
 msgstr "Только сообщения, отвечающие регулярному выражению:"
@@ -16508,6 +16518,10 @@ msgstr "Показать абстрактные методы в \"%s\""
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Показывать дерево компонентов"
+
+#: lazarusidestrconsts.lisshowconsole
+msgid "Show console"
+msgstr "Отображать консоль"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"

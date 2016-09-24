@@ -5784,6 +5784,7 @@ msgid "Close files"
 msgstr "Fermer les fichiers"
 
 #: lazarusidestrconsts.lisclosealltabshide
+msgctxt "lazarusidestrconsts.lisclosealltabshide"
 msgid "Hide window"
 msgstr "Cacher la fenêtre"
 
@@ -8483,10 +8484,6 @@ msgstr "Un outil a besoin au minimum d'un titre et d'un nom de fichier."
 msgid "Edit Tool"
 msgstr "Éditer les outils"
 
-#: lazarusidestrconsts.lisedtexttoolhidemainform
-msgid "Hide main form"
-msgstr "Masquer la fiche principale"
-
 #: lazarusidestrconsts.lisedtexttoolkey
 msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
@@ -8506,11 +8503,15 @@ msgid "Program Filename:"
 msgstr "Nom du programme :"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
-msgid "Scan output for Free Pascal Compiler messages"
+#, fuzzy
+#| msgid "Scan output for Free Pascal Compiler messages"
+msgid "Scan output for FPC messages"
 msgstr "Rechercher les messages de sortie du compilateur Free Pascal"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputformakemessages
-msgid "Scan output for make messages"
+#, fuzzy
+#| msgid "Scan output for make messages"
+msgid "Scan output for \"make\" messages"
 msgstr "Rechercher les message \"Make\" de sortie"
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
@@ -9670,6 +9671,12 @@ msgstr "Cacher le message en insérant la directive de l'EDI \"{%H-}\""
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr "Cacher la recherche"
+
+#: lazarusidestrconsts.lishidewindow
+#, fuzzy
+msgctxt "lazarusidestrconsts.lishidewindow"
+msgid "Hide window"
+msgstr "Cacher la fenêtre"
 
 #: lazarusidestrconsts.lishidewithpackageoptionvm
 msgid "Hide with package option (-vm%s)"
@@ -13748,6 +13755,14 @@ msgstr "? (On)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "En cas de saut de ligne (à savoir touche \"Entrée\")"
 
+#: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
+msgid "Only available on Windows. Run the tool hidden."
+msgstr ""
+
+#: lazarusidestrconsts.lisonlyavailableonwindowsruntoolinanewconsole
+msgid "Only available on Windows. Run tool in a new console."
+msgstr ""
+
 #: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
 msgid "Only messages fitting this regular expression:"
 msgstr "Uniquement les messages répondant à cette expression régulière :"
@@ -16517,6 +16532,10 @@ msgstr "Montrer les méthodes abstraites de \"%s\" "
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Afficher l'arbre des composants"
+
+#: lazarusidestrconsts.lisshowconsole
+msgid "Show console"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"

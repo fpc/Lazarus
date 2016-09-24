@@ -5784,6 +5784,7 @@ msgid "Close files"
 msgstr "Закрити файли"
 
 #: lazarusidestrconsts.lisclosealltabshide
+msgctxt "lazarusidestrconsts.lisclosealltabshide"
 msgid "Hide window"
 msgstr "Сховати вікно"
 
@@ -8485,10 +8486,6 @@ msgstr "Нормальний інструмент обов'язково має �
 msgid "Edit Tool"
 msgstr "Інструмент правки"
 
-#: lazarusidestrconsts.lisedtexttoolhidemainform
-msgid "Hide main form"
-msgstr "Сховати основну форму"
-
 #: lazarusidestrconsts.lisedtexttoolkey
 msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
@@ -8508,11 +8505,15 @@ msgid "Program Filename:"
 msgstr "Назва файлу програми:"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
-msgid "Scan output for Free Pascal Compiler messages"
+#, fuzzy
+#| msgid "Scan output for Free Pascal Compiler messages"
+msgid "Scan output for FPC messages"
 msgstr "Пошук повідомлень компілятора FreePascal у виведенні"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputformakemessages
-msgid "Scan output for make messages"
+#, fuzzy
+#| msgid "Scan output for make messages"
+msgid "Scan output for \"make\" messages"
 msgstr "Пошук повідомлень make в виведенні"
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
@@ -9672,6 +9673,12 @@ msgstr "Приховати повідомлення, вставивши дире
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr "Приховати засіб пошуку"
+
+#: lazarusidestrconsts.lishidewindow
+#, fuzzy
+msgctxt "lazarusidestrconsts.lishidewindow"
+msgid "Hide window"
+msgstr "Сховати вікно"
 
 #: lazarusidestrconsts.lishidewithpackageoptionvm
 msgid "Hide with package option (-vm%s)"
@@ -13796,6 +13803,14 @@ msgstr "? (Вкл)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "При розриві рядка (тобто при натисканні клавіші Enter)"
 
+#: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
+msgid "Only available on Windows. Run the tool hidden."
+msgstr ""
+
+#: lazarusidestrconsts.lisonlyavailableonwindowsruntoolinanewconsole
+msgid "Only available on Windows. Run tool in a new console."
+msgstr ""
+
 #: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
 msgid "Only messages fitting this regular expression:"
 msgstr "Лише повідомлення, що відповідають регулярному виразу:"
@@ -16571,6 +16586,10 @@ msgstr "Показати абстрактні методи \"%s\""
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Показати дерево компонентів"
+
+#: lazarusidestrconsts.lisshowconsole
+msgid "Show console"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
