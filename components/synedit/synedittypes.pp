@@ -41,7 +41,7 @@ unit SynEditTypes;
 
 interface
 uses
-  SysUtils, types;
+  SysUtils, types, Controls;
 
 const
   TSynSpecialChars = [#128..#255]; // MG: special chars. Meaning depends on system encoding/codepage.
@@ -116,7 +116,15 @@ type
     dx, dy: Integer; const rcScroll, rcClip: TRect
   ) of object;
 
-  TSynVisibleSpecialChar = (vscSpace, vscTabAtFirst, vscTabAtLast);
+  TSynMouseLocationInfo = record
+    LastMouseCaret: TPoint;  // Char; physical (screen)
+    LastMousePoint: TPoint;  // Pixel
+  end;
+
+  TSynQueryMouseCursorEvent = procedure(Sender: TObject; const AMouseLocation: TSynMouseLocationInfo;
+    var AnCursor: TCursor; var APriority: Integer; var AChangedBy: TObject) of object;
+
+TSynVisibleSpecialChar = (vscSpace, vscTabAtFirst, vscTabAtLast);
   TSynVisibleSpecialChars = set of TSynVisibleSpecialChar;
 
   TSynLineStyle = (

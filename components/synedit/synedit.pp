@@ -455,7 +455,7 @@ type
   protected
     procedure CMWantSpecialKey(var Message: TLMessage); message CM_WANTSPECIALKEY;
   private
-    FTextCursor, FOffTextCursor: TCursor;
+    FTextCursor, FOffTextCursor, FOverrideCursor: TCursor;
     FBlockIndent: integer;
     FBlockTabIndent: integer;
     FCaret: TSynEditCaret;
@@ -477,8 +477,7 @@ type
     fFontDummy: TFont;
     FLastSetFontSize: Integer;
     fInserting: Boolean;
-    fLastMouseCaret: TPoint;  // Char; physical (screen)
-    FLastMousePoint: TPoint;  // Pixel
+    FLastMouseLocation: TSynMouseLocationInfo;
     FChangedLinesStart: integer; // 1 based, 0 means invalid
     FChangedLinesEnd: integer; // 1 based, 0 means invalid, -1 means rest of screen
     FChangedLinesDiff: integer; // count changed +/-
@@ -555,6 +554,7 @@ type
     FHookedKeyTranslationList: TSynHookedKeyTranslationList;
     FUndoRedoItemHandlerList: TSynUndoRedoItemHandlerList;
     FMouseDownEventList: TLazSynMouseDownEventList;
+    FQueryMouseCursorList: TObject;
     FKeyDownEventList: TLazSynKeyDownEventList;
     FKeyUpEventList: TLazSynKeyDownEventList;
     FKeyPressEventList: TLazSynKeyPressEventList;
@@ -870,7 +870,7 @@ type
     function DoOnReplaceText(const ASearch, AReplace: string;
       Line, Column: integer): TSynReplaceAction; virtual;
     procedure DoOnStatusChange(Changes: TSynStatusChanges); virtual;
-    property LastMouseCaret: TPoint read FLastMouseCaret write SetLastMouseCaret; // TODO: deprecate? see MouseMove
+    property LastMouseCaret: TPoint read FLastMouseLocation.LastMouseCaret write SetLastMouseCaret; // TODO: deprecate? see MouseMove
     function GetSelEnd: integer;                                                 //L505
     function GetSelStart: integer;
     procedure SetSelEnd(const Value: integer);
@@ -1048,6 +1048,9 @@ type
     procedure RegisterBeforeMouseDownHandler(AHandlerProc: TMouseEvent);
     procedure UnregisterBeforeMouseDownHandler(AHandlerProc: TMouseEvent);
 
+    procedure RegisterQueryMouseCursorHandler(AHandlerProc: TSynQueryMouseCursorEvent);
+    procedure UnregisterQueryMouseCursorHandler(AHandlerProc: TSynQueryMouseCursorEvent);
+
     procedure RegisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent);
     procedure UnregisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent);
     procedure RegisterBeforeKeyUpHandler(AHandlerProc: TKeyEvent);
@@ -1130,6 +1133,9 @@ type
     property DefaultSelectionMode: TSynSelectionMode read GetDefSelectionMode write SetDefSelectionMode default smNormal;
     property SelectionMode: TSynSelectionMode read GetSelectionMode write SetSelectionMode default smNormal;
     property SelectedColor: TSynSelectedColor read GetSelectedColor write SetSelectedColor;
+
+    // Cursor
+    procedure UpdateCursorOverride;
 
     // Colors
     property MarkupManager: TSynEditMarkupManager read fMarkupManager;
@@ -1364,6 +1370,16 @@ type
     procedure Remove(AHandler: TSynScrollEventProc);
     procedure CallScrollEventHandlers(Sender: TObject; AnEvent: TSynScrollEvent;
       dx, dy: Integer; const rcScroll, rcClip: TRect);
+  end;
+
+  { TSynQueryMouseCursorList }
+
+  TSynQueryMouseCursorList = Class(TSynMethodList)
+  public
+    procedure Add(AHandler: TSynQueryMouseCursorEvent);
+    procedure Remove(AHandler: TSynQueryMouseCursorEvent);
+    procedure CallScrollEventHandlers(Sender: TObject;
+      const AMouseLocation: TSynMouseLocationInfo; var AnCursor: TCursor);
   end;
 
   { TSynEditUndoCaret }
@@ -2110,6 +2126,7 @@ begin
   Width := 200;
   FTextCursor := crIBeam;
   FOffTextCursor := crDefault;
+  FOverrideCursor := crDefault;
   inherited Cursor := FTextCursor;
   fPlugins := TList.Create;
   FHookedKeyTranslationList := TSynHookedKeyTranslationList.Create;
@@ -2158,8 +2175,8 @@ begin
   fFontDummy.Pitch := SynDefaultFontPitch;
   fFontDummy.Quality := SynDefaultFontQuality;
   FLastSetFontSize := fFontDummy.Height;
-  fLastMouseCaret := Point(-1,-1);
-  FLastMousePoint := Point(-1,-1);
+  FLastMouseLocation.LastMouseCaret := Point(-1,-1);
+  FLastMouseLocation.LastMousePoint := Point(-1,-1);
   fBlockIndent := 2;
 
   FTextArea := TLazSynTextArea.Create(Self, FTextDrawer);
@@ -2525,6 +2542,7 @@ begin
   FreeAndNil(FKeyUpEventList);
   FreeAndNil(FMouseDownEventList);
   FreeAndNil(FKeyPressEventList);
+  FreeAndNil(FQueryMouseCursorList);
   FreeAndNil(FUtf8KeyPressEventList);
   inherited Destroy;
 end;
@@ -3592,7 +3610,7 @@ begin
   if (sfRightGutterClick in fStateFlags) then
     FRightGutter.MouseMove(Shift, X, Y);
 
-  FLastMousePoint := Point(X,Y);
+  FLastMouseLocation.LastMousePoint := Point(X,Y);
   LastMouseCaret := PixelsToRowColumn(Point(X,Y)); // TODO: Used for ctrl-Link => Use LastMousePoint, and calculate only, if modifier is down
   UpdateCursor;
 
@@ -4221,6 +4239,15 @@ procedure TCustomSynEdit.SetCaretTypeSize(AType: TSynCaretType; AWidth, AHeight,
   AYOffs: Integer);
 begin
   FScreenCaret.SetCaretTypeSize(AType, AWidth, AHeight, AXOffs, AYOffs);
+end;
+
+procedure TCustomSynEdit.UpdateCursorOverride;
+var
+  c: TCursor;
+begin
+  c := crDefault;
+  TSynQueryMouseCursorList(FQueryMouseCursorList).CallScrollEventHandlers(Self, FLastMouseLocation, c);
+  FOverrideCursor := c;
 end;
 
 procedure TCustomSynEdit.PasteFromClipboard;
@@ -5426,14 +5453,13 @@ begin
     exit;
   end;
 
-  if (FLastMousePoint.X >= FTextArea.Bounds.Left) and (FLastMousePoint.X <  FTextArea.Bounds.Right) and
-     (FLastMousePoint.Y >= FTextArea.Bounds.Top) and (FLastMousePoint.Y < FTextArea.Bounds.Bottom)
-  then begin
-    if Assigned(FMarkupCtrlMouse) and (FMarkupCtrlMouse.Cursor <> crDefault) then
-      inherited Cursor := FMarkupCtrlMouse.Cursor
-    else
-      inherited Cursor := FTextCursor;
-  end
+  if (FOverrideCursor <> crDefault) then
+    inherited Cursor := FOverrideCursor
+  else
+  if (FLastMouseLocation.LastMousePoint.X >= FTextArea.Bounds.Left) and (FLastMouseLocation.LastMousePoint.X <  FTextArea.Bounds.Right) and
+     (FLastMouseLocation.LastMousePoint.Y >= FTextArea.Bounds.Top) and (FLastMouseLocation.LastMousePoint.Y < FTextArea.Bounds.Bottom)
+  then
+    inherited Cursor := FTextCursor
   else
     inherited Cursor := FOffTextCursor;
 end;
@@ -6381,8 +6407,8 @@ end;
 
 procedure TCustomSynEdit.SetLastMouseCaret(const AValue: TPoint);
 begin
-  if (FLastMouseCaret.X=AValue.X) and (FLastMouseCaret.Y=AValue.Y) then exit;
-  FLastMouseCaret:=AValue;
+  if (FLastMouseLocation.LastMouseCaret.X=AValue.X) and (FLastMouseLocation.LastMouseCaret.Y=AValue.Y) then exit;
+  FLastMouseLocation.LastMouseCaret:=AValue;
   if assigned(fMarkupCtrlMouse) then
     fMarkupCtrlMouse.LastMouseCaret := AValue;
   UpdateCursor;
@@ -9206,6 +9232,19 @@ begin
     FMouseDownEventList.Remove(TMethod(AHandlerProc));
 end;
 
+procedure TCustomSynEdit.RegisterQueryMouseCursorHandler(AHandlerProc: TSynQueryMouseCursorEvent);
+begin
+  if FQueryMouseCursorList = nil then
+    FQueryMouseCursorList := TSynQueryMouseCursorList.Create;
+  TSynQueryMouseCursorList(FQueryMouseCursorList).Add(AHandlerProc);
+end;
+
+procedure TCustomSynEdit.UnregisterQueryMouseCursorHandler(AHandlerProc: TSynQueryMouseCursorEvent);
+begin
+  if FQueryMouseCursorList <> nil then
+    TSynQueryMouseCursorList(FQueryMouseCursorList).Remove(AHandlerProc);
+end;
+
 procedure TCustomSynEdit.RegisterBeforeKeyDownHandler(AHandlerProc: TKeyEvent);
 begin
   if FKeyDownEventList = nil then
@@ -9723,6 +9762,31 @@ begin
   i:=Count;
   while NextDownIndexBitFilter(i, LongInt([AnEvent])) do
     TSynScrollEventProc(FItems[i].FHandler)(Sender, AnEvent, dx, dy, rcScroll, rcClip);
+end;
+
+{ TSynQueryMouseCursorList }
+
+procedure TSynQueryMouseCursorList.Add(AHandler: TSynQueryMouseCursorEvent);
+begin
+  inherited Add(TMethod(AHandler));
+end;
+
+procedure TSynQueryMouseCursorList.Remove(AHandler: TSynQueryMouseCursorEvent);
+begin
+  inherited Remove(TMethod(AHandler));
+end;
+
+procedure TSynQueryMouseCursorList.CallScrollEventHandlers(Sender: TObject;
+  const AMouseLocation: TSynMouseLocationInfo; var AnCursor: TCursor);
+var
+  i, p: Integer;
+  c: TObject;
+begin
+  p := 0;
+  c := nil;
+  i:=Count;
+  while NextDownIndex(i) do
+    TSynQueryMouseCursorEvent(Items[i])(Sender, AMouseLocation, AnCursor, p, c);
 end;
 
 { TSynEditMarkListInternal }

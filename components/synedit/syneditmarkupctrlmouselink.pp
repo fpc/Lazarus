@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses,
-  SynEditMouseCmds, LazSynEditText, Controls, LCLProc;
+  SynEditMouseCmds, LazSynEditText, SynEditTypes, Controls, LCLProc;
 
 type
 
@@ -45,10 +45,13 @@ type
     FLastMouseCaret: TPoint;
     FLastMouseCaretLogical: TPoint;
     function GetIsMouseOverLink: Boolean;
+    procedure SetCursor(AValue: TCursor);
     procedure SetLastMouseCaret(const AValue: TPoint);
     Procedure LinesChanged(Sender: TSynEditStrings; AIndex, ANewCount, AOldCount : Integer);
     function  IsCtrlMouseShiftState(AShift: TShiftState; OnlyShowLink: Boolean): Boolean;
     procedure InternalUpdateCtrlMouse;
+    procedure UpdateSynCursor(Sender: TObject; const AMouseLocation: TSynMouseLocationInfo;
+    var AnCursor: TCursor; var APriority: Integer; var AChangedBy: TObject);
   protected
     procedure SetLines(const AValue : TSynEditStrings); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
@@ -79,6 +82,9 @@ type
 implementation
 uses SynEdit;
 
+const
+  LINK_CURSOR_PRIORITY = 1;
+
 { TSynEditMarkupCtrlMouseLink }
 
 procedure TSynEditMarkupCtrlMouseLink.SetLastMouseCaret(const AValue: TPoint);
@@ -104,6 +110,13 @@ begin
   end;
 
   Result := FCtrlLinkable and (FCtrlMouseLine >= 0);
+end;
+
+procedure TSynEditMarkupCtrlMouseLink.SetCursor(AValue: TCursor);
+begin
+  if FCursor = AValue then Exit;
+  FCursor := AValue;
+  TCustomSynEdit(SynEdit).UpdateCursorOverride;
 end;
 
 procedure TSynEditMarkupCtrlMouseLink.LinesChanged(Sender: TSynEditStrings; AIndex, ANewCount,
@@ -137,7 +150,7 @@ procedure TSynEditMarkupCtrlMouseLink.InternalUpdateCtrlMouse;
   begin
     if FCtrlMouseLine >= 0 then
       InvalidateSynLines(FCtrlMouseLine, FCtrlMouseLine);
-    FCursor := crDefault;
+    SetCursor(crDefault);
     CtrlMouseLine:=-1;
     FCtrlLinkable := False;
   end;
@@ -162,11 +175,21 @@ begin
     CtrlMouseX2 := NewX2;
     InvalidateSynLines(FCtrlMouseLine, FCtrlMouseLine);
     if FCtrlLinkable then
-      FCursor := crHandPoint
+      SetCursor(crHandPoint)
     else
       doNotShowLink;
   end else
     doNotShowLink;
+end;
+
+procedure TSynEditMarkupCtrlMouseLink.UpdateSynCursor(Sender: TObject;
+  const AMouseLocation: TSynMouseLocationInfo; var AnCursor: TCursor; var APriority: Integer;
+  var AChangedBy: TObject);
+begin
+  if (Cursor = crDefault) or (APriority > LINK_CURSOR_PRIORITY) then exit;
+  AnCursor := Cursor;
+  APriority := LINK_CURSOR_PRIORITY;
+  AChangedBy := Self;
 end;
 
 function TSynEditMarkupCtrlMouseLink.IsCtrlMouseShiftState(AShift: TShiftState;
@@ -224,10 +247,13 @@ begin
   MarkupInfo.StyleMask := [];
   MarkupInfo.Foreground := clBlue; {TODO:  invert blue to bg .... see below}
   MarkupInfo.Background := clNone;
+
+  TCustomSynEdit(SynEdit).RegisterQueryMouseCursorHandler(@UpdateSynCursor);
 end;
 
 destructor TSynEditMarkupCtrlMouseLink.Destroy;
 begin
+  TCustomSynEdit(SynEdit).UnregisterQueryMouseCursorHandler(@UpdateSynCursor);
   if Lines <> nil then begin;
     Lines.RemoveModifiedHandler(senrLinesModified, @LinesChanged);
   end;
