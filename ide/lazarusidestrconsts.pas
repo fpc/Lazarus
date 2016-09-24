@@ -4037,6 +4037,7 @@ resourcestring
   lisEdtExtToolKey = 'Key';
   lisOnlyAvailableOnWindowsRunTheToolHidden = 'Only available on Windows. Run '
     +'the tool hidden.';
+  lisHideWindow = 'Hide window';
   lisAlternativeKey = 'Alternative key';
   lisEdtExtToolMacros = 'Macros';
   lisWorkingDirectoryForBuilding = 'Working directory for building';
