@@ -1206,10 +1206,14 @@ function TLazSynTextArea.PixelsToRowColumn(Pixels: TPoint;
   aFlags: TSynCoordinateMappingFlags): TPoint;
 begin
   // Inludes LeftChar, but not Topline
-  if not (scmForceLeftSidePos in aFlags) then
-    Pixels.X := Pixels.X +  (CharWidth div 2);  // nearest side of char
-  Result.X := (Pixels.X - FTextBounds.Left) div CharWidth
-              + LeftChar;
+  if (Pixels.X >= FTextBounds.Left) and (Pixels.X < FTextBounds.Right) then begin
+    if not (scmForceLeftSidePos in aFlags) then
+      Pixels.X := Pixels.X +  (CharWidth div 2);  // nearest side of char
+    Result.X := (Pixels.X - FTextBounds.Left) div CharWidth
+                + LeftChar;
+  end
+  else
+    Result.X := 0;
   Result.Y := (Pixels.Y - FTextBounds.Top) div LineHeight;
 
   if (not(scmIncludePartVisible in aFlags)) and (Result.Y >= LinesInWindow) then begin
