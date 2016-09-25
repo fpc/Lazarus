@@ -878,7 +878,6 @@ begin
       AssertNoConflict(Items[i]);
     except
       on E : ESynMouseCmdError do begin
-        Delete(i);
         if assigned(Owner) and (csDesigning in TComponent(Owner).ComponentState)
         then
           MessageDlg(SYNS_EDuplicateShortCut, E.Message + LineEnding + Items[i].DisplayName,
