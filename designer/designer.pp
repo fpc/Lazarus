@@ -1531,6 +1531,7 @@ end;
 function TDesigner.ClearSelection: boolean;
 begin
   ControlSelection.Clear;
+  Result:=ControlSelection.Count=0;
 end;
 
 function TDesigner.DeleteSelection: boolean;
