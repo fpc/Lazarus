@@ -468,9 +468,7 @@ begin
       http://bugs.freepascal.org/view.php?id=28033
       http://bugs.freepascal.org/view.php?id=28034
       http://bugs.freepascal.org/view.php?id=28036
-
   }
-
   if not Showing then
     Exit(0);
 
@@ -489,9 +487,12 @@ begin
   // ToDo: fix this properly for QT.
   //  Result can be negative (-560) when both Coolbar and Palette are hidden.
   if Result < 0 then
+  begin
+    DebugLn(['TMainIDEBar.CalcNonClientHeight: Height ',Result,' is below zero. Forcing it to 55.']);
     Result := 55;
+  end;
   {$ENDIF LCLQt}
-  Assert(Result >= 0, 'TMainIDEBar.CalcNonClientHeight: Result < 0');
+  Assert(Result >= 0, 'TMainIDEBar.CalcNonClientHeight: Result '+IntToStr(Result)+' is below zero.');
 
   {$IFDEF LCLWin32}
   //Win32 the constrained height has to be without SM_CYSIZEFRAME and SM_CYMENU
