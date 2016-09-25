@@ -12677,9 +12677,12 @@ end;
 procedure TMainIDE.OnPropHookModified(Sender: TObject; PropName: ShortString);
 begin
   // ToDo: Should designer be marked as modified with PropName?
-  if PropName='' then ;
-  if Assigned(ObjectInspector1) then
-    // Any change of property can cause a change of a display name
+  if ObjectInspector1=Nil then Exit;
+  if PropName='' then
+    // Item may be added or deleted or whatever.
+    ObjectInspector1.ComponentTree.RebuildComponentNodes
+  else
+    // Any change of property can cause a change in display name.
     ObjectInspector1.ComponentTree.UpdateComponentNodesValues;
 end;
 
