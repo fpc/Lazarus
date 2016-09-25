@@ -69,6 +69,7 @@ type
     function CanCopy: Boolean; virtual; abstract;
     function CanPaste: Boolean; virtual; abstract;
     function PasteSelection(Flags: TComponentPasteSelectionFlags): boolean; virtual; abstract;
+    function ClearSelection: boolean; virtual; abstract;
     function DeleteSelection: boolean; virtual; abstract;
     function CopySelectionToStream(s: TStream): boolean; virtual; abstract;
     function InsertFromStream(s: TStream; Parent: TWinControl;

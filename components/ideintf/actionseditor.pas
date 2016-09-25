@@ -24,10 +24,12 @@ unit ActionsEditor;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs,
-  ActnList, ExtCtrls, Buttons, StdCtrls, ObjInspStrConsts,
-  ComponentEditors, PropEdits, PropEditUtils, DBActns, StdActns, LCLIntf,
-  LCLType, Graphics, Menus, ComCtrls, contnrs, IDEWindowIntf;
+  Classes, SysUtils, contnrs,
+  // LCL
+  LCLIntf, LCLType, LCLProc, Forms, Controls, Dialogs, ExtCtrls, StdCtrls,
+  Graphics, Menus, ComCtrls, DBActns, StdActns, ActnList,
+  // IDEIntf
+  ObjInspStrConsts, ComponentEditors, PropEdits, PropEditUtils, IDEWindowIntf;
 
 type
   TActStdPropItem = class;
@@ -147,14 +149,14 @@ type
     FDesigner: TComponentEditorDesigner;
     procedure ResultStdActProc(const Category: string; ActionClass: TBasicActionClass;
                             ActionProperty: TActStdPropItem; LastItem: Boolean);
+    procedure FillCategories;
+    procedure FillActionByCategory(iIndex: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SetActionList(AActionList: TActionList);
-    procedure FillCategories;
-    procedure FillActionByCategory(iIndex: Integer);
     property Designer:TComponentEditorDesigner read FDesigner write FDesigner;
-  end; 
+  end;
 
   { TActionListComponentEditor }
 
@@ -385,6 +387,7 @@ procedure TActionListEditor.OnComponentSelection(
 var
   CurSelect: TContainedAction;
   tmpCategory: String;
+
   function CategoryIndexOf(Name: String): Integer;
   var
     i: Integer;
@@ -398,6 +401,7 @@ var
        and (i = lstCategory.Items.IndexOf(cActionListEditorAllCategory))
     then Result := 0;
   end;
+
 begin
   // TODO: multiselect
   if Self.Visible
@@ -417,8 +421,8 @@ begin
       if tmpCategory = ''
       then tmpCategory := cActionListEditorUnknownCategory;
       if (lstCategory.Items[lstCategory.ItemIndex] <> tmpCategory)
-         or ((lstCategory.Items[lstCategory.ItemIndex] = tmpCategory)
-              and (lstActionName.Items.IndexOf(CurSelect.Name) < 0)) then begin
+         or (lstActionName.Items.IndexOf(CurSelect.Name) < 0) then
+      begin
         if CurSelect.Category = ''
         then lstCategory.ItemIndex := lstCategory.Items.IndexOf(tmpCategory)
         else lstCategory.ItemIndex := CategoryIndexOf(CurSelect.Category);
@@ -671,6 +675,10 @@ begin
 
   NewAction.ActionList := FActionList;
 
+  // Selection updates correctly when we first clear the selection in Designer
+  //  and in Object Inspector, then add a new item.
+  // Otherwise there is a loop of back-and-forth updates and the new item does not show.
+  FDesigner.ClearSelection;
   FDesigner.PropertyEditorHook.PersistentAdded(NewAction,True);
   FDesigner.Modified;
 end;
@@ -930,7 +938,7 @@ begin
   FActionList := AActionList;
   if FActionList<>nil then FreeNotification(FActionList);
   FillCategories;
-  FillActionByCategory(-1);
+  //FillActionByCategory(-1);
 end;
 
 procedure TActionListEditor.FillCategories;
@@ -1001,7 +1009,7 @@ var
 begin
   if FActionList=nil then
   begin
-    lstActionName.Items.Clear;
+    lstActionName.Clear;
     exit;
   end;
   lstActionName.Items.BeginUpdate;
