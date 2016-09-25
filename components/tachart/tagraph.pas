@@ -465,8 +465,10 @@ implementation
 
 uses
   Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, Types,
-  TADrawerCanvas, TAGeometry, TAMath, TAStyles,
-  TATools;  // needed to initialize OnInitBuiltinTools; added to avoid crash of converted Delphi projects
+  TADrawerCanvas, TAGeometry, TAMath, TAStyles;
+
+//  TATools;  // needed to initialize OnInitBuiltinTools; added to avoid crash of converted Delphi projects
+// wp: removed again, causes compilation error with fpc 2.6.4
 
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
