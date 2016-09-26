@@ -487,7 +487,7 @@ type
           out ListOfPCodeXYPosition: TFPList;
           SkipAbstractsInStartClass: boolean = false): boolean;
     function GetValuesOfCaseVariable(Code: TCodeBuffer; X,Y: integer;
-          List: TStrings): boolean;
+          List: TStrings; WithTypeDefIfScoped: boolean): boolean;
     function GatherOverloads(Code: TCodeBuffer; X,Y: integer;
           out Graph: TDeclarationOverloadsGraph): boolean;
 
@@ -2406,7 +2406,7 @@ begin
 end;
 
 function TCodeToolManager.GetValuesOfCaseVariable(Code: TCodeBuffer; X,
-  Y: integer; List: TStrings): boolean;
+  Y: integer; List: TStrings; WithTypeDefIfScoped: boolean): boolean;
 var
   CursorPos: TCodeXYPosition;
 begin
@@ -2419,7 +2419,7 @@ begin
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   try
-    Result:=FCurCodeTool.GetValuesOfCaseVariable(CursorPos,List);
+    Result:=FCurCodeTool.GetValuesOfCaseVariable(CursorPos,List,WithTypeDefIfScoped);
   except
     on e: Exception do Result:=HandleException(e);
   end;

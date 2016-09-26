@@ -432,7 +432,7 @@ type
                                  out ListOfPCodeXYPosition: TFPList;
                                  SkipAbstractsInStartClass: boolean = false): boolean;
     function GetValuesOfCaseVariable(const CursorPos: TCodeXYPosition;
-                                     List: TStrings): boolean;
+                                     List: TStrings; WithTypeDefIfScoped: boolean): boolean;
     property Beautifier: TBeautifyCodeOptions read FBeautifier write FBeautifier;
 
     procedure CalcMemSize(Stats: TCTMemStats); override;
@@ -3400,7 +3400,8 @@ begin
 end;
 
 function TIdentCompletionTool.GetValuesOfCaseVariable(
-  const CursorPos: TCodeXYPosition; List: TStrings): boolean;
+  const CursorPos: TCodeXYPosition; List: TStrings; WithTypeDefIfScoped: boolean
+  ): boolean;
 var
   CleanCursorPos: integer;
   CursorNode: TCodeTreeNode;
@@ -3410,6 +3411,7 @@ var
   ExprType: TExpressionType;
   Node: TCodeTreeNode;
   Tool: TFindDeclarationTool;
+  EnumPrefix: string;
 begin
   Result:=false;
   ActivateGlobalWriteLock;
@@ -3467,9 +3469,18 @@ begin
 
         ctnEnumerationType:
           begin
+            if WithTypeDefIfScoped
+            and (Tool.Scanner.GetDirectiveValueAt(sdScopedEnums, Node.StartPos) = '1') then
+            begin
+              Tool.MoveCursorToCleanPos(Node.Parent.StartPos);
+              Tool.ReadNextAtom;
+              EnumPrefix := Tool.GetAtom+'.';
+            end else
+              EnumPrefix := '';
+
             Node:=Node.FirstChild;
             while Node<>nil do begin
-              List.Add(GetIdentifier(@Tool.Src[Node.StartPos]));
+              List.Add(EnumPrefix+GetIdentifier(@Tool.Src[Node.StartPos]));
               Node:=Node.NextBrother;
             end;
           end;
