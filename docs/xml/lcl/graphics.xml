@@ -143,8 +143,12 @@
       </element>
       <!-- alias type Visibility: default -->
       <element name="TColor">
-        <short/>
-        <descr/>
+        <short>A color type used by most LCL drawing functions</short>
+        <descr>Format  is $00bbggrr - blue, green, red.
+There are some predefined color constants like TMaroon.
+See ColorToRGB and RGBToColor.
+
+Additionally there are "system colors", like clWindowText, which have a color or pattern depending on the users theme, the LCL control and the drawing tool (Pen, Brush, Font).</descr>
         <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->
@@ -6085,17 +6089,19 @@ Calling the <var>MoveTo</var>
         <short>Writes <var>Text</var> string within a specified rectangle, according to predefined <var>Style</var>
         </short>
         <descr>
-	  Writes <var>Text</var> string within a specified rectangle, according to predefined <var>Style</var><br/>
+&#x9;  Writes <var>Text</var> string within a specified rectangle, according to predefined <var>Style</var><br/>
           The boundaries of the rectangle are specified in <var>ARect</var><br/><var>X, Y</var> define the starting point for writing the <var>Text</var> within the rectangle.<br/>
-	  <var>TextStyle</var> determines whether the text is justified, centered, word-wrapped, clipped at the rectangle boundaries, etc. If the <var>Style</var> argument is omitted, defaults are assumed.<br/>
-	  <br/>
-	  <b>Note:</b>
+&#x9;  <var>TextStyle</var> determines whether the text is justified, centered, word-wrapped, clipped at the rectangle boundaries, etc. If the <var>Style</var> argument is omitted, defaults are assumed.<br/>
+&#x9;  <br/>
+&#x9;  <b>Note:</b>
           The exact text position depends on the specified rectangle, the <var>TextStyle</var> of the canvas, and the <var>X, Y</var> coordinates:
           <ul>
-            <li><var>TextStyle.Alignment = taLeftJustify</var>: Text begins at <var>X</var></li>
+            <li><var>TextStyle.Alignment = taLeftJustify</var>: Text begins at <var>X</var>
+            </li>
             <li><var>TextStyle.Alignment = taCenter</var>: Text center is in the center of the rectangle (horizontally)</li>
             <li><var>TextStyle.Alignment = taRightJustify</var>: Text ends at right edge of the rectangle</li>
-            <li><var>TextStyle.Layout = tlTop</var>: Top of the text is at <var>Y</var></li>
+            <li><var>TextStyle.Layout = tlTop</var>: Top of the text is at <var>Y</var>
+            </li>
             <li><var>TextStyle.Layout = tlCenter</var>: Text center is in the center of the rectangle (vertically)</li>
             <li><var>TextStyle.Layout = tlBottom</var>: Text sits above the the bottom edge of the rectangle</li>
           </ul>
