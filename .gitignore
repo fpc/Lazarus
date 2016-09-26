@@ -141,8 +141,6 @@ components/simpleideintf/examples/units
 components/simpleideintf/units
 components/sqldb/*.bak
 components/sqldb/lib
-components/sqldb/lib/*.bak
-components/sqldb/lib/units
 components/sqldb/units
 components/sqlite/*.bak
 components/sqlite/lib
