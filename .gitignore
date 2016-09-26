@@ -100,8 +100,6 @@ components/printers/design/printers4lazidetest/*.bak
 components/printers/design/printers4lazidetest/units
 components/printers/design/units
 components/printers/lib
-components/printers/lib/*.bak
-components/printers/lib/units
 components/printers/samples/*.bak
 components/printers/samples/dialogs/*.bak
 components/printers/samples/dialogs/units
