@@ -488,13 +488,35 @@ function CodeMacroOfAll(const Parameter: string; InteractiveValue: TPersistent;
 //  <list of enums>
 //  end;
 var
-  List: TStrings;
+  List, Params: TStrings;
   Code: TCodeBuffer;
   CaretXY: TPoint;
   p: integer;
   i: Integer;
-  Indent : String;
+  Indent, Param: String;
+  WithoutExtraIndent: Boolean;
 begin
+  WithoutExtraIndent := False;
+  Params:=SplitString(Parameter,',');
+  if Params<>nil then
+  begin
+    try
+      for i:=0 to Params.Count-1 do
+      begin
+        Param:=Params[i];
+        if SysUtils.CompareText(Param,'WithoutExtraIndent')=0 then
+          WithoutExtraIndent := True
+        else begin
+          Result:=false;
+          ErrorMsg:='Unknown Option: "'+Param+'"';
+          exit;
+        end;
+      end;
+    finally
+      Params.Free;
+    end;
+  end;
+
   List:=TStringList.Create;
   try
     CaretXY:=SrcEdit.CursorTextXY;
@@ -522,6 +544,15 @@ begin
     end;
 
     Indent := StringOfChar(' ',CodeToolBoss.IndentSize);
+
+    if not WithoutExtraIndent then
+    begin
+      if eoTabsToSpaces in EditorOptions.EditorOpts.SynEditOptions then
+        Indent := Indent+StringOfChar(' ',EditorOptions.EditorOpts.TabWidth)
+      else
+        Indent := Indent+#9;
+    end;
+
     Value:='';
     for i:=0 to List.Count-1 do
       Value:=Value+ Indent + List[i]+': ;'+LineEnding;

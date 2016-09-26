@@ -5608,7 +5608,11 @@ resourcestring
     +'token in source is an end and if not returns lineend + end; + lineend';
   lisListOfAllCaseValues = 'list of all case values';
   lisReturnsListOfAllValuesOfCaseVariableInFrontOfVaria = 'returns list of '
-    +'all values of case variable in front of variable';
+    +'all values of case variable in front of variable'#13
+    +#13
+    +'Optional Parameters (comma separated):'#13
+    +'WithoutExtraIndent    // the case list will be generated without extra indentation';
+
   lisGetWordAtCurrentCursorPosition = 'get word at current cursor position';
   lisTemplateEditParamCell = 'Editable Cell';
   lisTemplateEditParamCellHelp =
