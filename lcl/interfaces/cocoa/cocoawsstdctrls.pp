@@ -137,6 +137,9 @@ type
   TCocoaMemoStrings = class(TStrings)
   private
     FTextView: NSTextView;
+  public
+    class procedure GetLineStart(const s: AnsiString; LineIndex: Integer; var Offset, LinesSkipped: Integer);
+    class function GetLinesCount(const s: AnsiString): Integer;
   protected
     function GetTextStr: string; override;
     procedure SetTextStr(const Value: string); override;
@@ -714,7 +717,7 @@ end;
 
 function TCocoaMemoStrings.GetTextStr: string;
 begin
-  Result := NSStringToString(FTextView.textStorage.string_);
+  Result := NSStringToString(FTextView.string_);
 end;
 
 procedure TCocoaMemoStrings.SetTextStr(const Value: string);
@@ -726,7 +729,7 @@ begin
   ns.release;
 end;
 
-procedure GetLineStart(const s: AnsiString; LineIndex: Integer; var Offset, LinesSkipped: Integer);
+class procedure TCocoaMemoStrings.GetLineStart(const s: AnsiString; LineIndex: Integer; var Offset, LinesSkipped: Integer);
 var
   i : Integer;
 begin
@@ -744,7 +747,7 @@ begin
   Offset:=i;
 end;
 
-function GetLinesCount(const s: AnsiString): Integer;
+class function TCocoaMemoStrings.GetLinesCount(const s: AnsiString): Integer;
 var
   ofs : Integer;
 begin
