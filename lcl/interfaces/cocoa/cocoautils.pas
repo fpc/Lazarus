@@ -26,6 +26,8 @@ type
 const
   NSNullRect : NSRect = (origin:(x:0; y:0); size:(width:0; height:0));
 
+function GetNSSize(width, height: CGFloat): NSSize; inline;
+
 function GetNSPoint(x,y: single): NSPoint; inline;
 function LCLToNSPoint(APt: TPoint; ParentHeight: Single): NSPoint;
 
@@ -253,6 +255,12 @@ begin
     lView := GetNSObjectView(obj);
     if lView <> nil then Result := lView.window;
   end;
+end;
+
+function GetNSSize(width, height: CGFloat): NSSize; inline;
+begin
+  Result.height := height;
+  Result.width := width;
 end;
 
 function GetNSPoint(x, y: single): NSPoint;

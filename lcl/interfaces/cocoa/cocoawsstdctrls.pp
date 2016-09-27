@@ -137,6 +137,7 @@ type
   TCocoaWSCustomMemo = class(TWSCustomMemo)
   public
     class function GetTextView(AWinControl: TWinControl): TCocoaTextView;
+    class function GetScrollView(AWinControl: TWinControl): TCocoaScrollView;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
@@ -840,13 +841,26 @@ end;
 { TCocoaWSCustomMemo }
 
 class function TCocoaWSCustomMemo.GetTextView(AWinControl: TWinControl): TCocoaTextView;
+var
+  lScroll: TCocoaScrollView;
+begin
+  lScroll := GetScrollView(AWinControl);
+  if not Assigned(lScroll) then
+  begin
+    Exit(nil);
+  end;
+
+  Result := TCocoaTextView(lScroll.documentView);
+end;
+
+class function TCocoaWSCustomMemo.GetScrollView(AWinControl: TWinControl): TCocoaScrollView;
 begin
   if not Assigned(AWinControl) or (not AWinControl.HandleAllocated) or (AWinControl.Handle=0) then
   begin
     Exit(nil);
   end;
 
-  Result := TCocoaTextView(NSScrollView(AWinControl.Handle).documentView);
+  Result := TCocoaScrollView(AWinControl.Handle);
 end;
 
 class function TCocoaWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
@@ -989,8 +1003,33 @@ begin
 end;
 
 class procedure  TCocoaWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
+var
+  layoutSize: NSSize;
+  txt: TCocoaTextView;
+  lScroll: TCocoaScrollView;
 begin
-  //todo:
+  {txt := GetTextView(ACustomMemo);
+  lScroll := GetScrollView(ACustomMemo);
+  if not Assigned(txt) then Exit;
+
+  if NewWordWrap then
+  begin
+    // Matching width is also important here.
+    layoutSize := lScroll.contentSize();
+    txt.setFrame(GetNSRect(0, 0, Round(layoutSize.width), 0));
+    layoutSize := GetNSSize(layoutSize.width, CGFloat_Max);
+    txt.textContainer.setContainerSize(layoutSize);
+    txt.textContainer.setWidthTracksTextView(True);
+  end
+  else
+  begin
+    layoutSize := txt.maxSize();
+    layoutSize.width := layoutSize.height;
+    txt.setMaxSize(layoutSize);
+    txt.textContainer.setWidthTracksTextView(False);
+    layoutSize := GetNSSize(CGFloat_Max, CGFloat_Max);
+    txt.textContainer.setContainerSize(layoutSize);
+  end;}
 end;
 
 class procedure TCocoaWSCustomMemo.SetText(const AWinControl:TWinControl;const AText:String);
