@@ -127,7 +127,15 @@ begin
     for i := 0 to Cfg.Count - 1 do begin
       s := Cfg[i];
       if (s <> '') and (s[1] = '-') then
-        ParamsAndCfgFileContent.Add(Trim(Cfg[i]))
+        begin
+          s := Trim(s);
+          {$ifdef windows}
+          //cfg file is made by Windows installer and probably is Windows default codepage
+          if FindInvalidUTF8Character(PChar(s), Length(s), True) > 0 then
+            s := WinCPToUtf8(s);
+          {$endif windows}
+          ParamsAndCfgFileContent.Add(s)
+        end
       else
       if (Trim(s) <> '') and (s[1] <> '#') then
         Warn := Warn + IntToStr(i)+': ' + s + LineEnding;
