@@ -2997,10 +2997,29 @@ end;
 
 function TWin32WidgetSet.SetComboMinDropDownSize(Handle: HWND; MinItemsWidth,
   MinItemsHeight, MinItemCount: integer): boolean;
+var
+  LR: LRESULT;
 begin
-  Result:= ThemeServices.ThemesEnabled and
-    boolean(Windows.SendMessage(Handle, CB_SETMINVISIBLE, MinItemCount, 0));
-  Result := Result and boolean(Windows.SendMessage(Handle, CB_SETDROPPEDWIDTH, MinItemsWidth, 0));
+  //CB_SETMINVISIBLE is only supported with the correct ComCtlVersion, it does not depend
+  //on the value of ThemeServices.ThemesEnabled
+  // https://msdn.microsoft.com/en-us/library/windows/desktop/bb775915(v=vs.85).aspx
+  Result:= (ComCtlVersion > ComCtlVersionIE6) and
+    (Windows.SendMessage(Handle, CB_SETMINVISIBLE, MinItemCount, 0) <> 0);
+  //Even if the above fails, then still we need to send the next message,  (Issue #0030526)
+  //but we return True only if everything succeeds
+  LR := Windows.SendMessage(Handle, CB_SETDROPPEDWIDTH, MinItemsWidth, 0);
+  //debugln(['TWin32WidgetSet.SetComboMinDropDownSize: LR = ',LR]);
+  {
+   It seems there is no certain way to determine if the last SendMessage was actually successful:
+   According to https://msdn.microsoft.com/en-us/library/windows/desktop/bb775901(v=vs.85).aspx upon failure
+   LR should be CB_ERR (-1), but if the Handle is wrong, the result will be 0.
+   To complicate matters, if Handle is correct and MinItemsWidth = 0, then upon success
+   the result will also be 0.
+   This means that inside this function, a result value of 0 can be valid or invalid, and when
+   MinItemsWidht = 0, there is no way of telling (only end-user will see the result on screen).
+   For now we assume that a zero result is valid if MinItemsWidth = 0.
+  }
+  Result := Result and ((LR <> CB_ERR) and ((LR <> 0)) xor (MinItemsWidth = 0));
 end;
 
 {------------------------------------------------------------------------------
