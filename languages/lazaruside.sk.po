@@ -16950,7 +16950,11 @@ msgid "Result:"
 msgstr ""
 
 #: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
-msgid "returns list of all values of case variable in front of variable"
+msgid ""
+"returns list of all values of case variable in front of variable\n"
+"\n"
+"Optional Parameters (comma separated):\n"
+"WithoutExtraIndent    // the case list will be generated without extra indentation\n"
 msgstr ""
 
 #: lazarusidestrconsts.lisrevertfailed
