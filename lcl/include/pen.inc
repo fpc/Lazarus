@@ -388,7 +388,10 @@ begin
     if IsGeometric then
       elpWidth := Width
     else
-      elpWidth := 0;
+      //(https://msdn.microsoft.com/en-us/library/windows/desktop/dd162705(v=vs.85).aspx
+      //https://msdn.microsoft.com/en-us/library/windows/desktop/dd162711(v=vs.85).aspx
+      //Issue #0022646
+      elpWidth := 1;
     elpBrushStyle := BS_SOLID;
     elpColor := TColorRef(FColor);
   end;
