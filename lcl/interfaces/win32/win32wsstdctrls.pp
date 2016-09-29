@@ -32,7 +32,7 @@ uses
   StdCtrls, Controls, Graphics, Forms, Themes,
 ////////////////////////////////////////////////////
   WSControls, WSStdCtrls, WSLCLClasses, WSProc, Windows, LCLType,
-  LazUTF8, LazUtf8Classes, InterfaceBase, LMessages, LCLMessageGlue,
+  LazUTF8, LazUtf8Classes, InterfaceBase, LMessages, LCLMessageGlue, TextStrings,
   Win32Int, Win32Proc, Win32WSControls, Win32Extra, Win32Themes;
 
 type

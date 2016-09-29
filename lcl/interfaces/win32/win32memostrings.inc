@@ -4,7 +4,7 @@ type
 
 { TWin32MemoStrings }
 
-  TWin32MemoStrings = class(TStrings)
+  TWin32MemoStrings = class(TCustomMemoStrings)
   private
     FHandle: HWND;
     FOwner: TWinControl;
