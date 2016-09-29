@@ -674,7 +674,6 @@ var
   RootNode: TTreeNode;
   Candidate: TComponentCandidate;
 begin
-  DebugLn('TComponentTreeView.RebuildComponentNodes: Updating TreeView with components');
   BeginUpdate;
   Items.Clear;
   RootObject := nil;
@@ -732,7 +731,6 @@ procedure TComponentTreeView.UpdateComponentNodesValues;
   end;
 
 begin
-  DebugLn('TComponentTreeView.RebuildComponentNodes: Updating TreeView component node values');
   BeginUpdate;
   UpdateComponentNode(Items.GetFirstNode);
   EndUpdate;
