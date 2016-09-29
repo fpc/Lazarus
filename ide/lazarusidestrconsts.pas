@@ -5594,6 +5594,31 @@ resourcestring
   lisPasteClipboard = 'paste clipboard';
   lisPasteFromClipboard = 'Paste from clipboard';
   lisInsertProcedureHead = 'insert procedure head';
+  lisInsertHeaderOfCurrentProcedure = 'Insert header of current procedure'#13
+    +#13
+    +'Optional Parameters (comma separated):'#13
+    +'WithStart,          // proc keyword e.g. ''function'', ''class procedure'''#13
+    +'WithoutClassKeyword,// without ''class'' proc keyword'#13
+    +'AddClassName,       // extract/add ClassName.'#13
+    +'WithoutClassName,   // skip classname'#13
+    +'WithoutName,        // skip function name'#13
+    +'WithoutParamList,   // skip param list'#13
+    +'WithVarModifiers,   // extract ''var'', ''out'', ''const'''#13
+    +'WithParameterNames, // extract parameter names'#13
+    +'WithoutParamTypes,  // skip colon, param types and default values'#13
+    +'WithDefaultValues,  // extract default values'#13
+    +'WithResultType,     // extract colon + result type'#13
+    +'WithOfObject,       // extract ''of object'''#13
+    +'WithCallingSpecs,   // extract cdecl; inline;'#13
+    +'WithProcModifiers,  // extract forward; alias; external;'#13
+    +'WithComments,       // extract comments and spaces'#13
+    +'InUpperCase,        // turn to uppercase'#13
+    +'CommentsToSpace,    // replace comments with a single space'#13
+    +'                      //  (default is to skip unnecessary space,'#13
+    +'                      //    e.g ''Do   ;'' normally becomes ''Do;'''#13
+    +'                      //    with this option you get ''Do ;'')'#13
+    +'WithoutBrackets,    // skip start- and end-bracket of parameter list'#13
+    +'WithoutSemicolon,   // skip semicolon at end'#13;
   lisInsertProcedureName = 'insert procedure name';
   lisInsertNameOfCurrentProcedure = 'Insert name of current procedure';
   lisInsertDate = 'insert date';
@@ -5639,6 +5664,16 @@ resourcestring
      'Note: "Sync has no position and no "=", so it syncs to the previous cell with the same default (in this case "foo")' ;
 
   lisPrecedingWord = 'Preceding word';
+  lisReturnsParameterIndexedWord = 'Returns parameter-indexed word from the current line preceding cursor position.'+#13+#13+
+                    'Words in a line are numbered 1,2,3,... from left to right, but the last word'+#13+
+                    'which is always a macro command to be expanded has number 0, thus $PrevWord(0)'+#13+
+                    'is always the current macro.'+#13+#13+
+                    'Example line:'+#13+
+                    'i 0 count-1 forb|'+#13+
+                    'Here $PrevWord(0)=forb, $PrevWord(1)=i, $PrevWord(2)=0, $PrevWord(3)=count-1'+#13+#13+
+                    'In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an '+
+                    'importaint operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used '+
+                    'to detect words for this macro: [\w\-+*\(\)\[\].^@]+';
   lisForm = 'Form';
   lisInheritedProjectComponent = 'Inherited project component';
   lisNewDlgInheritFromAProjectFormComponent = 'Inherit from a project form or component';
