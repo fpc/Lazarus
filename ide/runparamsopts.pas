@@ -115,6 +115,7 @@ type
     procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure HostApplicationBrowseBtnClick(Sender: TObject);
+    procedure UseLaunchingApplicationCheckBoxChange(Sender: TObject);
     procedure UserOverridesListViewSelectItem(Sender: TObject; {%H-}Item: TListItem;
       {%H-}Selected: Boolean);
     procedure WorkingDirectoryBtnClick(Sender: TObject);
@@ -482,6 +483,12 @@ begin
   end;
 end;
 
+procedure TRunParamsOptsDlg.UseLaunchingApplicationCheckBoxChange(
+  Sender: TObject);
+begin
+  CmdLineParametersGroupBox.Enabled:=not UseLaunchingApplicationCheckBox.Checked;
+end;
+
 procedure TRunParamsOptsDlg.UserOverridesListViewSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 var
@@ -641,6 +648,7 @@ begin
 
   // UseLaunchingApplicationComboBox
   UseLaunchingApplicationCheckBox.Checked := fOptions.UseLaunchingApplication;
+  CmdLineParametersGroupBox.Enabled:=not UseLaunchingApplicationCheckBox.Checked;
   List := InputHistories.HistoryLists.GetList(hlLaunchingApplication,true,rltFile);
   List.AppendEntry(fOptions.LaunchingApplicationPathPlusParams);
   S := FindTerminalInPath;
