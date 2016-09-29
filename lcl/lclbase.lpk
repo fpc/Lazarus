@@ -13,6 +13,11 @@
       </SearchPaths>
       <Conditionals Value="if SrcOS&lt;>'win' then
   UnitPath := 'nonwin32';"/>
+      <Linking>
+        <Debugging>
+          <DebugInfoType Value="dsDwarf2"/>
+        </Debugging>
+      </Linking>
       <Other>
         <Verbosity>
           <ShowNotes Value="False"/>

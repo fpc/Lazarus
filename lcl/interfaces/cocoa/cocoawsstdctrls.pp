@@ -27,7 +27,7 @@ uses
   MacOSAll, CocoaAll, Classes, sysutils,
   // LCL
   Controls, StdCtrls, Graphics, LCLType, LMessages, LCLProc, LCLMessageGlue,
-  LazUtf8Classes,
+  LazUtf8Classes, textstrings,
   // Widgetset
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Cocoa
@@ -134,7 +134,7 @@ type
   
   { TCocoaMemoStrings }
 
-  TCocoaMemoStrings = class(TStrings)
+  TCocoaMemoStrings = class(TCustomMemoStrings)
   private
     FTextView: NSTextView;
   public

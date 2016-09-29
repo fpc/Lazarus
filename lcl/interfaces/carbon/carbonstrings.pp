@@ -26,7 +26,7 @@ uses
  // rtl+ftl
   Classes, SysUtils,
  // LCL
-  LCLProc, LCLType, Graphics, Controls, StdCtrls, LazUtf8Classes,
+  LCLProc, LCLType, Graphics, Controls, StdCtrls, LazUtf8Classes, textstrings,
  // LCL Carbon
   CarbonEdits, CarbonListViews;
 
@@ -80,7 +80,7 @@ type
 
   { TCarbonMemoStrings }
 
-  TCarbonMemoStrings = class(TStrings)
+  TCarbonMemoStrings = class(TCustomMemoStrings)
   private
     FOwner: TCarbonMemo;      // Carbon memo control owning strings
   protected

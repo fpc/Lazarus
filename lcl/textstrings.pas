@@ -16,6 +16,10 @@
 
   TTextStrings is a TStrings descendent that is optimized for handling the
   complete text as whole (instead of as line by line as in TStringList).
+
+  TCustomMemoStrings is a TStrings descendent which works around the behavior
+  of TMemo.Lines, which contains the text with wordwrap line endings, in order
+  to store the text in the LFM without those wordwrap line endings. See bug 30659
 }
 unit TextStrings;
 
@@ -37,7 +41,14 @@ type
   end;
   PTextLineRange = ^TTextLineRange;
 
-  TTextStrings = class(TStrings)
+  TCustomMemoStrings = class(TStrings)
+  protected
+    procedure DoReadData(Reader: TReader); virtual;
+    procedure DoWriteData(Writer: TWriter); virtual;
+    procedure DefineProperties(Filer: TFiler); override;
+  end;
+
+  TTextStrings = class(TCustomMemoStrings)
   private
     FOnChange: TNotifyEvent;
     FOnChanging: TNotifyEvent;
@@ -89,6 +100,48 @@ type
   end;
 
 implementation
+
+{ TCustomMemoStrings }
+
+procedure TCustomMemoStrings.DoReadData(Reader: TReader);
+begin
+  Reader.ReadListBegin;
+  BeginUpdate;
+  try
+    Clear;
+    while not Reader.EndOfList do
+      Add(Reader.ReadString);
+  finally
+    EndUpdate;
+  end;
+  Reader.ReadListEnd;
+end;
+
+procedure TCustomMemoStrings.DoWriteData(Writer: TWriter);
+var
+  i: Integer;
+  lStringsNoWordWrap: TStringList;
+begin
+  lStringsNoWordWrap := TStringList.Create;
+  try
+    lStringsNoWordWrap.Text := Text;
+
+    Writer.WriteListBegin;
+    for i := 0 to lStringsNoWordWrap.Count - 1 do
+      Writer.WriteString(lStringsNoWordWrap.Strings[i]);
+    Writer.WriteListEnd;
+  finally
+    lStringsNoWordWrap.Free;
+  end;
+end;
+
+procedure TCustomMemoStrings.DefineProperties(Filer: TFiler);
+var
+  HasData: Boolean;
+begin
+  HasData := Count > 0;
+  Filer.DefineProperty('Strings', @DoReadData, @DoWriteData, HasData);
+end;
 
 { TTextStrings }
 
