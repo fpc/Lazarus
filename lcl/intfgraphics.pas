@@ -3460,17 +3460,9 @@ begin
 end;
 
 procedure TLazIntfImage.Assign(Source: TPersistent);
-var
-  Src: TLazIntfImage;
-  Desc: TRawImageDescription;
 begin
-  if Source is TLazIntfImage then begin
-    Src:=TLazIntfImage(Source);
-    Desc:=Src.DataDescription;
-    Desc.Width:=0; // avoid side effects
-    Desc.Height:=0; // avoid side effects
-    DataDescription:=Src.DataDescription;
-  end;
+  if Source is TLazIntfImage then
+    DataDescription:=TLazIntfImage(Source).DataDescription;
   inherited Assign(Source);
 end;
 
