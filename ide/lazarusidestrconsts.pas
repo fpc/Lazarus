@@ -338,6 +338,7 @@ resourcestring
   lisMenuToggleComment = 'Toggle Comment in Selection';
   lisMenuSortSelection = 'Sort Selection ...';
   lisMenuBeakLinesInSelection = 'Break Lines in Selection';
+  lisMenuPasteFromClipboard = 'Paste from clipboard';
   lisKMSelectWordLeft = 'Select Word Left';
   lisKMSelectWordRight = 'Select Word Right';
   lisKMSelectLineStart = 'Select Line Start';
@@ -5588,13 +5589,13 @@ resourcestring
   lisCouldNotAddIToMainSource = 'Could not add "{$I %s}" to main source!';
   lisFailedToLoadFoldStat = 'Failed to load fold state';
   lisUppercaseString = 'uppercase string';
-  lisUppercaseStringGivenAsParameter = 'Uppercase string given as parameter';
+  lisUppercaseStringGivenAsParameter = 'Uppercase string given as parameter.';
   lisLowercaseString = 'lowercase string';
-  lisLowercaseStringGivenAsParameter = 'Lowercase string given as parameter';
+  lisLowercaseStringGivenAsParameter = 'Lowercase string given as parameter.';
   lisPasteClipboard = 'paste clipboard';
-  lisPasteFromClipboard = 'Paste from clipboard';
+  lisPasteFromClipboard = 'Paste from clipboard.';
   lisInsertProcedureHead = 'insert procedure head';
-  lisInsertHeaderOfCurrentProcedure = 'Insert header of current procedure'#13
+  lisInsertHeaderOfCurrentProcedure = 'Insert header of current procedure.'#13
     +#13
     +'Optional Parameters (comma separated):'#13
     +'WithStart,          // proc keyword e.g. ''function'', ''class procedure'''#13
@@ -5620,51 +5621,52 @@ resourcestring
     +'WithoutBrackets,    // skip start- and end-bracket of parameter list'#13
     +'WithoutSemicolon,   // skip semicolon at end'#13;
   lisInsertProcedureName = 'insert procedure name';
-  lisInsertNameOfCurrentProcedure = 'Insert name of current procedure';
+  lisInsertNameOfCurrentProcedure = 'Insert name of current procedure.';
   lisInsertDate = 'insert date';
-  lisInsertDateOptionalFormatString = 'Insert date. Optional: format string';
+  lisInsertDateOptionalFormatString = 'Insert date. Optional: format string.';
   lisInsertTime = 'insert time';
-  lisInsertTimeOptionalFormatString = 'Insert time. Optional: format string';
+  lisInsertTimeOptionalFormatString = 'Insert time. Optional: format string.';
   lisInsertDateAndTime = 'insert date and time';
   lisInsertDateAndTimeOptionalFormatString = 'Insert date and time. Optional: '
-    +'format string';
+    +'format string.';
   lisInsertEndIfNeeded = 'insert end if needed';
-  lisCheckIfTheNextTokenInSourceIsAnEndAndIfNotReturnsL = 'check if the next '
-    +'token in source is an end and if not returns lineend + end; + lineend';
+  lisCheckIfTheNextTokenInSourceIsAnEndAndIfNotReturnsL = 'Check if the next '
+    +'token in source is an "end" and if not return "LineEnding + end; + LineEnding".';
   lisListOfAllCaseValues = 'list of all case values';
-  lisReturnsListOfAllValuesOfCaseVariableInFrontOfVaria = 'returns list of '
-    +'all values of case variable in front of variable'#13
+  lisReturnsListOfAllValuesOfCaseVariableInFrontOfVaria = 'Return the list of '
+    +'all values of case variable in front of variable.'#13
     +#13
     +'Optional Parameters (comma separated):'#13
     +'WithoutExtraIndent    // the case list will be generated without extra indentation';
 
   lisGetWordAtCurrentCursorPosition = 'get word at current cursor position';
+  lisGetWordAtCurrentCursorPosition2 = 'Get word at current cursor position.';
   lisTemplateEditParamCell = 'Editable Cell';
   lisTemplateEditParamCellHelp =
-     'Inserts an editable Cell. Cells can be navigated using the tab key.%0:s' +
+     'Insert an editable Cell. Cells can be navigated using the tab key.%0:s' +
      'The "param" macro takes a list of comma separated arguments.%0:s' +
      'The first argument is the default value.%0:s' +
-     'The 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s' +
+     'The 2nd argument (optional) can be used to link the cell to another cell (syncro edit).%0:s' +
      '%0:s' +
      '  while param("foo") do param(foo);%0:s' +
-     'Inserts 2 independent cells, both with the default text "foo"%0:s' +
-     'The quotes are optional%0:s' +
+     'Inserts 2 independent cells, both with the default text "foo".%0:s' +
+     'The quotes are optional.%0:s' +
      '%0:s' +
      '  if param("foo") > 0 and param("foo",sync=1) < 99 then%0:s' +
-     'Inserts 2 linked cells, editing either one, will change the other one too%0:s' +
+     'Inserts 2 linked cells, editing either one, will change the other one too.%0:s' +
      'The value "1" refers to the position of the other "param()", so if there are more params:%0:s' +
      '  if param("bar") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:s' +
-     'The 2nd and third are linked. (the 3rd refers to "2") %0:s' +
+     'The 2nd and third are linked (the 3rd refers to "2").%0:s' +
      '%0:s' +
-     '"sync can be shortened to "s":%0:s' +
+     '"Sync" can be shortened to "s":%0:s' +
      '  if param("foo") > 0 and param("foo",s=1) < 99 then%0:s' +
      '%0:s' +
      '  if param("bar") and param("foo") > 0 and param("foo",sync) < 99 then%0:s' +
      'The 2nd and third are linked.%0:s' +
-     'Note: "Sync has no position and no "=", so it syncs to the previous cell with the same default (in this case "foo")' ;
+     'Note: "Sync" has no position and no "=", so it syncs to the previous cell with the same default (in this case "foo").' ;
 
   lisPrecedingWord = 'Preceding word';
-  lisReturnsParameterIndexedWord = 'Returns parameter-indexed word from the current line preceding cursor position.'+#13+#13+
+  lisReturnParameterIndexedWord = 'Return parameter-indexed word from the current line preceding cursor position.'+#13+#13+
                     'Words in a line are numbered 1,2,3,... from left to right, but the last word'+#13+
                     'which is always a macro command to be expanded has number 0, thus $PrevWord(0)'+#13+
                     'is always the current macro.'+#13+#13+

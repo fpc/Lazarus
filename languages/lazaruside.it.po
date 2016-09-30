@@ -5550,7 +5550,9 @@ msgid ". Check if package %s is in the dependencies"
 msgstr ". Verifica che il pacchetto %s sia tra le dipendenze"
 
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
-msgid "check if the next token in source is an end and if not returns lineend + end; + lineend"
+#, fuzzy
+#| msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\""
+msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Controlla se il prossimo token nel sorgente è un END: se non lo è, mette un END su una nuova riga e va a capo"
 
 #: lazarusidestrconsts.lischeckoptions
@@ -9595,6 +9597,10 @@ msgstr "Generale"
 msgid "get word at current cursor position"
 msgstr "prendi la parola alla posizione attuale del cursore"
 
+#: lazarusidestrconsts.lisgetwordatcurrentcursorposition2
+msgid "Get word at current cursor position."
+msgstr ""
+
 #: lazarusidestrconsts.lisglobalsettings
 msgid "Global settings"
 msgstr "Impostazioni globali"
@@ -10145,11 +10151,15 @@ msgid "insert date and time"
 msgstr "Inserisci data e ora"
 
 #: lazarusidestrconsts.lisinsertdateandtimeoptionalformatstring
-msgid "Insert date and time. Optional: format string"
+#, fuzzy
+#| msgid "Insert date and time. Optional: format string"
+msgid "Insert date and time. Optional: format string."
 msgstr "Inserisci data e ora. Opzionale: stringa di formattazione"
 
 #: lazarusidestrconsts.lisinsertdateoptionalformatstring
-msgid "Insert date. Optional: format string"
+#, fuzzy
+#| msgid "Insert date. Optional: format string"
+msgid "Insert date. Optional: format string."
 msgstr "Inserisci la data. Opzionale: stringa di formattazione"
 
 #: lazarusidestrconsts.lisinsertendifneeded
@@ -10158,7 +10168,7 @@ msgstr "Inserisci end se serve"
 
 #: lazarusidestrconsts.lisinsertheaderofcurrentprocedure
 msgid ""
-"Insert header of current procedure\n"
+"Insert header of current procedure.\n"
 "\n"
 "Optional Parameters (comma separated):\n"
 "WithStart,          // proc keyword e.g. 'function', 'class procedure'\n"
@@ -10191,7 +10201,9 @@ msgid "Insert Macro"
 msgstr "Inserisci Macro"
 
 #: lazarusidestrconsts.lisinsertnameofcurrentprocedure
-msgid "Insert name of current procedure"
+#, fuzzy
+#| msgid "Insert name of current procedure"
+msgid "Insert name of current procedure."
 msgstr "Inserisci il nome della procedura corrente"
 
 #: lazarusidestrconsts.lisinsertprintshorttag
@@ -10215,7 +10227,9 @@ msgid "insert time"
 msgstr "inserisci l'ora"
 
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
-msgid "Insert time. Optional: format string"
+#, fuzzy
+#| msgid "Insert time. Optional: format string"
+msgid "Insert time. Optional: format string."
 msgstr "Inserisci l'ora. Opzionale: stringa di formattazione"
 
 #: lazarusidestrconsts.lisinserturltag
@@ -11497,7 +11511,9 @@ msgid "lowercase string"
 msgstr "stringa in minuscolo"
 
 #: lazarusidestrconsts.lislowercasestringgivenasparameter
-msgid "Lowercase string given as parameter"
+#, fuzzy
+#| msgid "Lowercase string given as parameter"
+msgid "Lowercase string given as parameter."
 msgstr "Stringa in minuscolo data come parametro"
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
@@ -12698,6 +12714,12 @@ msgstr "Grafo pacchetti"
 #: lazarusidestrconsts.lismenupackagelinks
 msgid "Package Links ..."
 msgstr "Link del pacchtto"
+
+#: lazarusidestrconsts.lismenupastefromclipboard
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismenupastefromclipboard"
+msgid "Paste from clipboard"
+msgstr "Incolla dagli Appunti "
 
 #: lazarusidestrconsts.lismenupkgnewpackagecomponent
 msgid "New package component"
@@ -14172,7 +14194,10 @@ msgid "paste clipboard"
 msgstr "incolla dagli appunti"
 
 #: lazarusidestrconsts.lispastefromclipboard
-msgid "Paste from clipboard"
+#, fuzzy
+#| msgid "Paste from clipboard"
+msgctxt "lazarusidestrconsts.lispastefromclipboard"
+msgid "Paste from clipboard."
 msgstr "Incolla dagli Appunti "
 
 #: lazarusidestrconsts.lispastelcolors
@@ -16231,19 +16256,9 @@ msgstr "&Riavvia"
 msgid "Result:"
 msgstr "Risultato:"
 
-#: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
-#, fuzzy
-#| msgid "returns list of all values of case variable in front of variable"
+#: lazarusidestrconsts.lisreturnparameterindexedword
 msgid ""
-"returns list of all values of case variable in front of variable\n"
-"\n"
-"Optional Parameters (comma separated):\n"
-"WithoutExtraIndent    // the case list will be generated without extra indentation\n"
-msgstr "ritorna lalista di tutti i valori della variabile case a fronte della variabile"
-
-#: lazarusidestrconsts.lisreturnsparameterindexedword
-msgid ""
-"Returns parameter-indexed word from the current line preceding cursor position.\n"
+"Return parameter-indexed word from the current line preceding cursor position.\n"
 "\n"
 "Words in a line are numbered 1,2,3,... from left to right, but the last word\n"
 "which is always a macro command to be expanded has number 0, thus $PrevWord(0)\n"
@@ -16255,6 +16270,20 @@ msgid ""
 "\n"
 "In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an importaint operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used to detect words for this macro: [\\w\\-+*\\(\\)\\[\\].^@]+\n"
 msgstr ""
+
+#: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
+#, fuzzy
+#| msgid ""
+#| "returns list of all values of case variable in front of variable\n"
+#| "\n"
+#| "Optional Parameters (comma separated):\n"
+#| "WithoutExtraIndent    // the case list will be generated without extra indentation\n"
+msgid ""
+"Return the list of all values of case variable in front of variable.\n"
+"\n"
+"Optional Parameters (comma separated):\n"
+"WithoutExtraIndent    // the case list will be generated without extra indentation\n"
+msgstr "ritorna lalista di tutti i valori della variabile case a fronte della variabile"
 
 #: lazarusidestrconsts.lisrevertfailed
 msgid "Revert failed"
@@ -17207,7 +17236,9 @@ msgid "Editable Cell"
 msgstr "Cella editabile"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
-msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
+#, fuzzy
+#| msgid "Insert an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync\" has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
+msgid "Insert an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit).%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\".%0:sThe quotes are optional.%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too.%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked (the 3rd refers to \"2\").%0:s%0:s\"Sync\" can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync\" has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")."
 msgstr "Inserisci una Cella editabile. Si può navigare sulle celle con il TAB%0:sLa macro \"param\" accetta una lista di argomenti separati da virgola.%0:sIl primo argomento è il valore predefinito.%0:sIl secondo (opzionale) può essere usato per collegare la cella ad un'altra (syncro edit)%0:s%0:s  mentre param(\"foo\") esegue param(foo);%0:sInserisce 2 celle indipendenti, entrambe con il testo predefinito \"foo\"%0:sLe virgolette sono opzionali%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 t%0:sInserisce 2 celle collegate, modificarne una cambia anche l'altra%0:sIl valore \"1\" si riferisce alla posizione dell'altro parametro \"param()\", quindi, se ci sono più parametri:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
 
 #: lazarusidestrconsts.listemplatefile
@@ -18597,7 +18628,9 @@ msgid "uppercase string"
 msgstr "stringa maiuscola"
 
 #: lazarusidestrconsts.lisuppercasestringgivenasparameter
-msgid "Uppercase string given as parameter"
+#, fuzzy
+#| msgid "Uppercase string given as parameter"
+msgid "Uppercase string given as parameter."
 msgstr "Stringa in maiuscolo passata come parametro"
 
 #: lazarusidestrconsts.lisurlonwikithebaseurlis

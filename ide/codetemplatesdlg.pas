@@ -776,10 +776,10 @@ begin
                     lisReturnsListOfAllValuesOfCaseVariableInFrontOfVaria,
                     @CodeMacroOfAll,nil);
   RegisterCodeMacro('WordAtCursor', lisGetWordAtCurrentCursorPosition,
-                    lisGetWordAtCurrentCursorPosition,
+                    lisGetWordAtCurrentCursorPosition2,
                     @CodeMacroWordAtCursor,nil);
   RegisterCodeMacro('PrevWord', lisPrecedingWord,
-                    lisReturnsParameterIndexedWord,
+                    lisReturnParameterIndexedWord,
                     @CodeMacroPrevWord,nil);
   RegisterCodeMacroEx('Param', lisTemplateEditParamCell,
                     Format(lisTemplateEditParamCellHelp, [LineEnding]),

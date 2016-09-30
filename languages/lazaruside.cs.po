@@ -5515,7 +5515,9 @@ msgid ". Check if package %s is in the dependencies"
 msgstr ". Zkontrolujte, jestli je balíček %s v seznamu závislostí"
 
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
-msgid "check if the next token in source is an end and if not returns lineend + end; + lineend"
+#, fuzzy
+#| msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\""
+msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "zkontrolovat zda další element ve zdrojovém kódu je \"end\". Pokud ne, zapiš konec řádku + \"end;\" + konec řádku"
 
 #: lazarusidestrconsts.lischeckoptions
@@ -9547,6 +9549,10 @@ msgstr "Obecné"
 msgid "get word at current cursor position"
 msgstr "získat slovo na aktuální pozici"
 
+#: lazarusidestrconsts.lisgetwordatcurrentcursorposition2
+msgid "Get word at current cursor position."
+msgstr ""
+
 #: lazarusidestrconsts.lisglobalsettings
 msgid "Global settings"
 msgstr "Celkové nastavení"
@@ -10092,11 +10098,15 @@ msgid "insert date and time"
 msgstr "vložit datum a čas"
 
 #: lazarusidestrconsts.lisinsertdateandtimeoptionalformatstring
-msgid "Insert date and time. Optional: format string"
+#, fuzzy
+#| msgid "Insert date and time. Optional: format string"
+msgid "Insert date and time. Optional: format string."
 msgstr "Vložit datum a čas. Volitelně: formátovací řetězec"
 
 #: lazarusidestrconsts.lisinsertdateoptionalformatstring
-msgid "Insert date. Optional: format string"
+#, fuzzy
+#| msgid "Insert date. Optional: format string"
+msgid "Insert date. Optional: format string."
 msgstr "Vložit datum. Volitelně: formátovací řetězec"
 
 #: lazarusidestrconsts.lisinsertendifneeded
@@ -10105,7 +10115,7 @@ msgstr "vložit konec pokud je třeba"
 
 #: lazarusidestrconsts.lisinsertheaderofcurrentprocedure
 msgid ""
-"Insert header of current procedure\n"
+"Insert header of current procedure.\n"
 "\n"
 "Optional Parameters (comma separated):\n"
 "WithStart,          // proc keyword e.g. 'function', 'class procedure'\n"
@@ -10138,7 +10148,9 @@ msgid "Insert Macro"
 msgstr "Vložit makro"
 
 #: lazarusidestrconsts.lisinsertnameofcurrentprocedure
-msgid "Insert name of current procedure"
+#, fuzzy
+#| msgid "Insert name of current procedure"
+msgid "Insert name of current procedure."
 msgstr "Vložit jméno aktuální procedury"
 
 #: lazarusidestrconsts.lisinsertprintshorttag
@@ -10162,7 +10174,9 @@ msgid "insert time"
 msgstr "vložit čas"
 
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
-msgid "Insert time. Optional: format string"
+#, fuzzy
+#| msgid "Insert time. Optional: format string"
+msgid "Insert time. Optional: format string."
 msgstr "Vložit čas, Volitelné: formátovaný řetězec"
 
 #: lazarusidestrconsts.lisinserturltag
@@ -11439,7 +11453,9 @@ msgid "lowercase string"
 msgstr "řetězec malými písmeny"
 
 #: lazarusidestrconsts.lislowercasestringgivenasparameter
-msgid "Lowercase string given as parameter"
+#, fuzzy
+#| msgid "Lowercase string given as parameter"
+msgid "Lowercase string given as parameter."
 msgstr "Řetězec malými písmeny daný jako parametr"
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
@@ -12640,6 +12656,12 @@ msgstr "Graf balíčku"
 #: lazarusidestrconsts.lismenupackagelinks
 msgid "Package Links ..."
 msgstr "Odkazy balíčku ..."
+
+#: lazarusidestrconsts.lismenupastefromclipboard
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismenupastefromclipboard"
+msgid "Paste from clipboard"
+msgstr "Vložit ze schránky"
 
 #: lazarusidestrconsts.lismenupkgnewpackagecomponent
 msgid "New package component"
@@ -14105,7 +14127,10 @@ msgid "paste clipboard"
 msgstr "vložit schránku"
 
 #: lazarusidestrconsts.lispastefromclipboard
-msgid "Paste from clipboard"
+#, fuzzy
+#| msgid "Paste from clipboard"
+msgctxt "lazarusidestrconsts.lispastefromclipboard"
+msgid "Paste from clipboard."
 msgstr "Vložit ze schránky"
 
 #: lazarusidestrconsts.lispastelcolors
@@ -16163,19 +16188,9 @@ msgstr "Restartovat"
 msgid "Result:"
 msgstr "Výsledek:"
 
-#: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
-#, fuzzy
-#| msgid "returns list of all values of case variable in front of variable"
+#: lazarusidestrconsts.lisreturnparameterindexedword
 msgid ""
-"returns list of all values of case variable in front of variable\n"
-"\n"
-"Optional Parameters (comma separated):\n"
-"WithoutExtraIndent    // the case list will be generated without extra indentation\n"
-msgstr "vrací seznam všech hodnot podmínkové proměnné před proměnnou"
-
-#: lazarusidestrconsts.lisreturnsparameterindexedword
-msgid ""
-"Returns parameter-indexed word from the current line preceding cursor position.\n"
+"Return parameter-indexed word from the current line preceding cursor position.\n"
 "\n"
 "Words in a line are numbered 1,2,3,... from left to right, but the last word\n"
 "which is always a macro command to be expanded has number 0, thus $PrevWord(0)\n"
@@ -16187,6 +16202,20 @@ msgid ""
 "\n"
 "In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an importaint operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used to detect words for this macro: [\\w\\-+*\\(\\)\\[\\].^@]+\n"
 msgstr ""
+
+#: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
+#, fuzzy
+#| msgid ""
+#| "returns list of all values of case variable in front of variable\n"
+#| "\n"
+#| "Optional Parameters (comma separated):\n"
+#| "WithoutExtraIndent    // the case list will be generated without extra indentation\n"
+msgid ""
+"Return the list of all values of case variable in front of variable.\n"
+"\n"
+"Optional Parameters (comma separated):\n"
+"WithoutExtraIndent    // the case list will be generated without extra indentation\n"
+msgstr "vrací seznam všech hodnot podmínkové proměnné před proměnnou"
 
 #: lazarusidestrconsts.lisrevertfailed
 msgid "Revert failed"
@@ -17139,7 +17168,9 @@ msgid "Editable Cell"
 msgstr "Upravitelná buňka"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
-msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
+#, fuzzy
+#| msgid "Insert an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync\" has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
+msgid "Insert an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit).%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\".%0:sThe quotes are optional.%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too.%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked (the 3rd refers to \"2\").%0:s%0:s\"Sync\" can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync\" has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")."
 msgstr "Vloží upravitelné buňky. Mezi buňkami můžete přecházet klávesou Tab.%0:sMakro \"param\" přijímá seznam argumentů oddělených čárkou.%0:sPrvním argumentem je výchozí hodnota.%0:sDruhý argument (nepovinný) může být použit k propojení buňky s jinou buňkou (synchronní úprava)%0:s%0:s  while param(\"foo\") do param(foo);%0:sVloží dvě nezávislé buňky, obě s výchozím textem \"foo\"%0:sUvozovky nejsou povinné%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sVloží dvě propojené buňky. Úprava jedné z nich se promítne i do druhé%0:sHodnota \"1\" odkazuje na pozici dalšího \"param()\", takže pokud je více parametrů:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sDruhá a třetí jsou propojené (třetí odkazuje na \"2\") %0:s%0:s\"sync\" může být zkráceno na \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sDruhá a třetí jsou propojené.%0:sPoznámka: Pokud \"sync\" nemá uvedeno \"=\" a pozici, propojí se k předchozí buňce se stejnou výchozí hodnotou (v tomto případě \"foo\")"
 
 #: lazarusidestrconsts.listemplatefile
@@ -18526,7 +18557,9 @@ msgid "uppercase string"
 msgstr "řetězec velkými písmeny"
 
 #: lazarusidestrconsts.lisuppercasestringgivenasparameter
-msgid "Uppercase string given as parameter"
+#, fuzzy
+#| msgid "Uppercase string given as parameter"
+msgid "Uppercase string given as parameter."
 msgstr "Řetězec velkými písmeny předán jako parametr"
 
 #: lazarusidestrconsts.lisurlonwikithebaseurlis

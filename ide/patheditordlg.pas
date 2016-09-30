@@ -442,7 +442,7 @@ begin
   PopupMenu1.Images:=IDEImages.Images_16;
   CopyMenuItem.Caption:=lisCopyAllItemsToClipboard;
   CopyMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_copy');
-  PasteMenuItem.Caption:=lisPasteFromClipboard;
+  PasteMenuItem.Caption:=lisMenuPasteFromClipboard;
   PasteMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_paste');
   ExportMenuItem.Caption:=lisExportAllItemsToFile;
   ExportMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_save');

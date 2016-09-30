@@ -5611,7 +5611,9 @@ msgid ". Check if package %s is in the dependencies"
 msgstr ""
 
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
-msgid "check if the next token in source is an end and if not returns lineend + end; + lineend"
+#, fuzzy
+#| msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\""
+msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "ソース内の次のトークンが終端でlineend + end; + lineendを返さないかどうかチェック"
 
 #: lazarusidestrconsts.lischeckoptions
@@ -9727,6 +9729,10 @@ msgstr "一般"
 msgid "get word at current cursor position"
 msgstr "現在のカーソル位置の単語を取得"
 
+#: lazarusidestrconsts.lisgetwordatcurrentcursorposition2
+msgid "Get word at current cursor position."
+msgstr ""
+
 #: lazarusidestrconsts.lisglobalsettings
 msgid "Global settings"
 msgstr ""
@@ -10275,11 +10281,15 @@ msgid "insert date and time"
 msgstr "日付と時刻を挿入"
 
 #: lazarusidestrconsts.lisinsertdateandtimeoptionalformatstring
-msgid "Insert date and time. Optional: format string"
+#, fuzzy
+#| msgid "Insert date and time. Optional: format string"
+msgid "Insert date and time. Optional: format string."
 msgstr "日付と時刻を挿入。オプションとして：書式化文字列"
 
 #: lazarusidestrconsts.lisinsertdateoptionalformatstring
-msgid "Insert date. Optional: format string"
+#, fuzzy
+#| msgid "Insert date. Optional: format string"
+msgid "Insert date. Optional: format string."
 msgstr "日付と挿入。オプションとして：書式化文字列"
 
 #: lazarusidestrconsts.lisinsertendifneeded
@@ -10288,7 +10298,7 @@ msgstr "必要ならばendを挿入"
 
 #: lazarusidestrconsts.lisinsertheaderofcurrentprocedure
 msgid ""
-"Insert header of current procedure\n"
+"Insert header of current procedure.\n"
 "\n"
 "Optional Parameters (comma separated):\n"
 "WithStart,          // proc keyword e.g. 'function', 'class procedure'\n"
@@ -10321,7 +10331,9 @@ msgid "Insert Macro"
 msgstr "マクロを挿入"
 
 #: lazarusidestrconsts.lisinsertnameofcurrentprocedure
-msgid "Insert name of current procedure"
+#, fuzzy
+#| msgid "Insert name of current procedure"
+msgid "Insert name of current procedure."
 msgstr "現在の手続きの名前を挿入"
 
 #: lazarusidestrconsts.lisinsertprintshorttag
@@ -10345,7 +10357,9 @@ msgid "insert time"
 msgstr "時刻を挿入"
 
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
-msgid "Insert time. Optional: format string"
+#, fuzzy
+#| msgid "Insert time. Optional: format string"
+msgid "Insert time. Optional: format string."
 msgstr "時刻と挿入。オプションとして：書式化文字列"
 
 #: lazarusidestrconsts.lisinserturltag
@@ -11625,7 +11639,9 @@ msgid "lowercase string"
 msgstr "小文字文字列"
 
 #: lazarusidestrconsts.lislowercasestringgivenasparameter
-msgid "Lowercase string given as parameter"
+#, fuzzy
+#| msgid "Lowercase string given as parameter"
+msgid "Lowercase string given as parameter."
 msgstr "引数として与えられた小文字文字列"
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
@@ -12830,6 +12846,11 @@ msgstr "パッケージグラフ"
 #: lazarusidestrconsts.lismenupackagelinks
 msgid "Package Links ..."
 msgstr "パッケージリンク ..."
+
+#: lazarusidestrconsts.lismenupastefromclipboard
+msgctxt "lazarusidestrconsts.lismenupastefromclipboard"
+msgid "Paste from clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.lismenupkgnewpackagecomponent
 msgid "New package component"
@@ -14292,7 +14313,8 @@ msgid "paste clipboard"
 msgstr "クリップボードを貼り付け"
 
 #: lazarusidestrconsts.lispastefromclipboard
-msgid "Paste from clipboard"
+msgctxt "lazarusidestrconsts.lispastefromclipboard"
+msgid "Paste from clipboard."
 msgstr ""
 
 #: lazarusidestrconsts.lispastelcolors
@@ -16472,19 +16494,9 @@ msgstr "再起動"
 msgid "Result:"
 msgstr "結果："
 
-#: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
-#, fuzzy
-#| msgid "returns list of all values of case variable in front of variable"
+#: lazarusidestrconsts.lisreturnparameterindexedword
 msgid ""
-"returns list of all values of case variable in front of variable\n"
-"\n"
-"Optional Parameters (comma separated):\n"
-"WithoutExtraIndent    // the case list will be generated without extra indentation\n"
-msgstr "変数の前のcase変数のすべての値のリストを返す"
-
-#: lazarusidestrconsts.lisreturnsparameterindexedword
-msgid ""
-"Returns parameter-indexed word from the current line preceding cursor position.\n"
+"Return parameter-indexed word from the current line preceding cursor position.\n"
 "\n"
 "Words in a line are numbered 1,2,3,... from left to right, but the last word\n"
 "which is always a macro command to be expanded has number 0, thus $PrevWord(0)\n"
@@ -16496,6 +16508,20 @@ msgid ""
 "\n"
 "In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an importaint operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used to detect words for this macro: [\\w\\-+*\\(\\)\\[\\].^@]+\n"
 msgstr ""
+
+#: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
+#, fuzzy
+#| msgid ""
+#| "returns list of all values of case variable in front of variable\n"
+#| "\n"
+#| "Optional Parameters (comma separated):\n"
+#| "WithoutExtraIndent    // the case list will be generated without extra indentation\n"
+msgid ""
+"Return the list of all values of case variable in front of variable.\n"
+"\n"
+"Optional Parameters (comma separated):\n"
+"WithoutExtraIndent    // the case list will be generated without extra indentation\n"
+msgstr "変数の前のcase変数のすべての値のリストを返す"
 
 #: lazarusidestrconsts.lisrevertfailed
 msgid "Revert failed"
@@ -17466,7 +17492,9 @@ msgid "Editable Cell"
 msgstr "編集可能なセル"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
-msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
+#, fuzzy
+#| msgid "Insert an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync\" has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
+msgid "Insert an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit).%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\".%0:sThe quotes are optional.%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too.%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked (the 3rd refers to \"2\").%0:s%0:s\"Sync\" can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync\" has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")."
 msgstr "編集可能なセルを挿入します。セル間はタブキーを使って移動できます。%0:s\"param\"マクロはコンマ区切りの引数のリストを取ります。%0:s最初の引数はその既定値です。%0:s2番目の引数（選択可能）はセルを他のセルにリンクするのに使えます（同期編集）。%0:s%0:s例えば、 while param(\"foo\") do param(foo);は%0:s デフォルトのテキスト\"foo\"を持つ２つの独立したセルを挿入します。%0:s引用符は省略可能です。%0:s%0:sまた、例えば、 if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 thenは、%0:s片方を編集するともう片方も変更される、リンクされた２つのセルを挿入します。%0:s値\"1\"は他の\"param()\"の位置を指していますので、より多くのparamsがある場合、例えば、%0:s if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sでは ２つ目と３つ目はリンクされます（３番目が\"2\"です）。%0:s%0:s \"sync \"は \"s\"と短縮できます。%0:s また、例えば、if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sとすれば、２つ目と３つ目がリンクされます。%0:s注意：\"sync \"は位置を持たず、\"=\"を持たないので、以前のセルを同じ既定値 (この場合 \"foo\")に同期します。"
 
 #: lazarusidestrconsts.listemplatefile
@@ -19007,7 +19035,9 @@ msgid "uppercase string"
 msgstr "大文字文字列"
 
 #: lazarusidestrconsts.lisuppercasestringgivenasparameter
-msgid "Uppercase string given as parameter"
+#, fuzzy
+#| msgid "Uppercase string given as parameter"
+msgid "Uppercase string given as parameter."
 msgstr "引数として与えられている大文字文字列 "
 
 #: lazarusidestrconsts.lisurlonwikithebaseurlis
