@@ -189,6 +189,13 @@ begin
   inc(FReferenceCount);
   if FReferenceCount = 1 then
     Cache.ItemUsed(Self);
+  {$IFDEF VerboseResCache}
+  if FReferenceCount = 10 then
+    begin
+    WarnReferenceHigh;
+    DumpStack;
+    end;
+  {$ENDIF}
   if (FReferenceCount = 1000) or (FReferenceCount = 10000) then
     WarnReferenceHigh;
 end;
