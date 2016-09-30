@@ -423,16 +423,20 @@ end;
 
 function TFindDialog.GetLeft: Integer;
 begin
+  if Assigned(FFindForm) then
+    FFormLeft := FFindForm.Left;
   Result:=FFormLeft;
 end;
 
 function TFindDialog.GetPosition: TPoint;
 begin
-  Result:=Point(FFormLeft, FFormTop);
+  Result:=Point(GetLeft, GetTop);
 end;
 
 function TFindDialog.GetTop: Integer;
 begin
+  if Assigned(FFindForm) then
+    FFormTop := FFindForm.Top;
   Result:=FFormTop;
 end;
 
@@ -464,8 +468,8 @@ end;
 
 procedure TFindDialog.SetPosition(const AValue: TPoint);
 begin
-  if (FFormLeft <> AValue.x) then Left := AValue.x;
-  If (FFormTop <> AValue.y) then  Top := AValue.y;
+  if (GetLeft <> AValue.x) then Left := AValue.x;
+  If (GetTop <> AValue.y) then  Top := AValue.y;
 end;
 
 procedure TFindDialog.SetTop(const AValue: Integer);
