@@ -106,6 +106,7 @@ type
         itmEditCut: TIDEMenuCommand;
         itmEditCopy: TIDEMenuCommand;
         itmEditPaste: TIDEMenuCommand;
+        itmEditMultiPaste: TIDEMenuCommand;
       //itmEditSelect: TIDEMenuSection;
         itmEditSelectAll: TIDEMenuCommand;
         itmEditSelectToBrace: TIDEMenuCommand;

@@ -214,6 +214,7 @@ type
     procedure mnuEditCutClicked(Sender: TObject);
     procedure mnuEditCopyClicked(Sender: TObject);
     procedure mnuEditPasteClicked(Sender: TObject);
+    procedure mnuEditMultiPasteClicked(Sender: TObject);
     procedure mnuEditSelectAllClick(Sender: TObject);
     procedure mnuEditSelectCodeBlockClick(Sender: TObject);
     procedure mnuEditSelectToBraceClick(Sender: TObject);
@@ -2598,6 +2599,7 @@ begin
     itmEditCut.OnClick:=@mnuEditCutClicked;
     itmEditCopy.OnClick:=@mnuEditCopyClicked;
     itmEditPaste.OnClick:=@mnuEditPasteClicked;
+    itmEditMultiPaste.OnClick:=@mnuEditMultiPasteClicked;
     itmEditSelectAll.OnClick:=@mnuEditSelectAllClick;
     itmEditSelectToBrace.OnClick:=@mnuEditSelectToBraceClick;
     itmEditSelectCodeBlock.OnClick:=@mnuEditSelectCodeBlockClick;
@@ -3701,6 +3703,7 @@ begin
     IDECommandList.FindIDECommand(ecSelectAll).Enabled := Assigned(ASrcEdit) and (ASrcEdit.SourceText<>'');
   end;
 
+  IDECommandList.FindIDECommand(ecMultiPaste).Enabled := Editable;
   IDECommandList.FindIDECommand(ecBlockIndent).Enabled := Editable;
   IDECommandList.FindIDECommand(ecBlockUnindent).Enabled := Editable;
   IDECommandList.FindIDECommand(ecSelectionUpperCase).Enabled := SelEditable;
@@ -12902,6 +12905,11 @@ begin
     ActiveDesigner.PasteSelection([cpsfFindUniquePositions])
   else
     DoSourceEditorCommand(ecPaste);
+end;
+
+procedure TMainIDE.mnuEditMultiPasteClicked(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecMultiPaste);
 end;
 
 procedure TMainIDE.mnuEditRedoClicked(Sender: TObject);

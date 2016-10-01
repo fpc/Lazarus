@@ -402,6 +402,7 @@ begin
     ecCut                     : Result:= srkmecCut;
     ecCopy                    : Result:= srkmecCopy;
     ecPaste                   : Result:= srkmecPaste;
+    ecMultiPaste              : Result:= srkmecMultiPaste;
     ecScrollUp                : Result:= srkmecScrollUp;
     ecScrollDown              : Result:= srkmecScrollDown;
     ecScrollLeft              : Result:= srkmecScrollLeft;
@@ -986,6 +987,7 @@ begin
   ecCopy:                SetSingle(VK_C,[XCtrl],         VK_Insert,[XCtrl]);
   ecCut:                 SetSingle(VK_X,[XCtrl],         VK_Delete,[ssShift]);
   ecPaste:               SetSingle(VK_V,[XCtrl],         VK_Insert,[ssShift]);
+  ecMultiPaste:          SetSingle(VK_UNKNOWN,[]);
   ecNormalSelect:        SetSingle(VK_UNKNOWN,[]);
   ecColumnSelect:        SetSingle(VK_UNKNOWN,[]);
   ecLineSelect:          SetSingle(VK_UNKNOWN,[]);
@@ -1459,6 +1461,7 @@ begin
   ecCopy:                SetSingle(VK_Insert,[ssCtrl]);
   ecCut:                 SetSingle(VK_Delete,[ssShift]);
   ecPaste:               SetSingle(VK_Insert,[ssShift]);
+  ecMultiPaste:          SetSingle(VK_UNKNOWN,[]);
   ecNormalSelect:        SetCombo(VK_O,[ssCtrl],VK_K,[]);
   ecColumnSelect:        SetCombo(VK_O,[ssCtrl],VK_C,[]);
   ecLineSelect:          SetCombo(VK_K,[ssCtrl],VK_L,[]);
@@ -2077,6 +2080,7 @@ begin
   ecCopy:                SetSingle(VK_C,[ssMeta],    VK_Insert,[ssCtrl]);
   ecCut:                 SetSingle(VK_X,[ssMeta],    VK_Delete,[ssShift]);
   ecPaste:               SetSingle(VK_V,[ssMeta],    VK_Insert,[ssShift]);
+  ecMultiPaste:          SetSingle(VK_UNKNOWN,[]);
   ecNormalSelect:        SetSingle(VK_UNKNOWN,[]);
   ecColumnSelect:        SetSingle(VK_UNKNOWN,[]);
   ecLineSelect:          SetSingle(VK_UNKNOWN,[]);
@@ -2623,6 +2627,7 @@ begin
   AddDefault(C, 'Copy selection to clipboard', srkmecCopy, ecCopy);
   AddDefault(C, 'Cut selection to clipboard', srkmecCut, ecCut);
   AddDefault(C, 'Paste clipboard to current position', srkmecPaste, ecPaste);
+  AddDefault(C, 'Multi paste clipboard to current position', srkmecMultiPaste, ecMultiPaste);
   AddDefault(C, 'Normal selection mode', srkmecNormalSelect, ecNormalSelect);
   AddDefault(C, 'Column selection mode', srkmecColumnSelect, ecColumnSelect);
   AddDefault(C, 'Line selection mode', srkmecLineSelect, ecLineSelect);

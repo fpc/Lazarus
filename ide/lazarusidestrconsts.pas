@@ -347,6 +347,7 @@ resourcestring
   lisKMSelectPageBottom = 'Select Page Bottom';
   lisUseAndClose = 'Use and close';
   lisMenuSelect = 'Select';
+  lisMenuMultiPaste = 'MultiPaste';
   lisMenuSelectAll = 'Select All';
   lisCheckAll = 'Check All';
   lisUncheckAll = 'Uncheck All';
@@ -2942,6 +2943,7 @@ resourcestring
   srkmecCut                   = 'Cut selection to clipboard';
   srkmecCopy                  = 'Copy selection to clipboard';
   srkmecPaste                 = 'Paste clipboard to current position';
+  srkmecMultiPaste            = 'MultiPaste clipboard to current position';
   srkmecScrollUp              = 'Scroll up one line';
   srkmecScrollDown            = 'Scroll down one line';
   srkmecScrollLeft            = 'Scroll left one char';

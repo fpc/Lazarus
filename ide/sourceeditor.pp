@@ -42,7 +42,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  SynEditMouseCmds, Classes, SysUtils, types, Math,
+  SynEditMouseCmds, Classes, SysUtils, StrUtils, types, Math,
   Controls, Forms, ComCtrls, StdCtrls, Graphics, Dialogs, Extctrls, Menus,
   ExtendedNotebook, LCLProc, LCLType, LResources, LCLIntf, FileUtil, LazFileUtils,
   Translations, ClipBrd, HelpIntfs,
@@ -69,7 +69,7 @@ uses
   CodeMacroPrompt, CodeTemplatesDlg, CodeToolsOptions,
   editor_general_options,
   SortSelectionDlg, EncloseSelectionDlg, EncloseIfDef, InvertAssignTool,
-  SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
+  SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm, MultiPasteDlg,
   FPDocHints, EditorMacroListViewer, EditorToolbarStatic, editortoolbar_options,
   DbgIntfBaseTypes, DbgIntfDebuggerBase, BaseDebugManager, Debugger, MainIntf,
   GotoFrm;
@@ -465,6 +465,7 @@ type
     function IsCaretOnScreen(ACaret: TPoint; UseSoftCenter: Boolean = False): Boolean;
 
     // text
+    procedure MultiPasteText;
     function SearchReplace(const ASearch, AReplace: string;
                            SearchOptions: TSrcEditSearchOptions): integer; override;
     function GetSourceText: string; override;
@@ -1284,6 +1285,7 @@ var
   SrcEditMenuCut: TIDEMenuCommand;
   SrcEditMenuCopy: TIDEMenuCommand;
   SrcEditMenuPaste: TIDEMenuCommand;
+  SrcEditMenuMultiPaste: TIDEMenuCommand;
   SrcEditMenuCopyFilename: TIDEMenuCommand;
   SrcEditMenuFindDeclaration: TIDEMenuCommand;
   SrcEditMenuSelectAll: TIDEMenuCommand;
@@ -1562,6 +1564,7 @@ begin
     SrcEditMenuCut:=RegisterIDEMenuCommand(AParent,'Cut',lisCut, nil, nil, nil, 'laz_cut');
     SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',lisCopy, nil, nil, nil, 'laz_copy');
     SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',lisPaste, nil, nil, nil, 'laz_paste');
+    SrcEditMenuMultiPaste:=RegisterIDEMenuCommand(AParent,'MultiPaste',lisMenuMultiPaste);
     SrcEditMenuSelectAll:=RegisterIDEMenuCommand(AParent,'SelectAll',lisMenuSelectAll);
     SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(AParent,'Copy filename', uemCopyFilename);
   {%endregion}
@@ -3821,6 +3824,8 @@ Begin
   CheckActiveWindow;
 
   case Command of
+  ecMultiPaste:
+    MultiPasteText;
 
   ecContextHelp:
     FindHelpForSourceAtCursor;
@@ -5778,6 +5783,37 @@ begin
             (Y <= CurTopLine + LinesInWin - MinLines) and
             (ACaret.X >= FEditor.LeftChar) and
             (ACaret.X <= FEditor.LeftChar + FEditor.CharsInWindow);
+end;
+
+procedure TSourceEditor.MultiPasteText;
+var
+  I, CaretX: Integer;
+  Content: TStringList;
+  Dialog: TMultiPasteDialog;
+begin
+  if ReadOnly then Exit;
+  Dialog := TMultiPasteDialog.Create(nil);
+  try
+    if Dialog.ShowModal <> mrOK then Exit;
+    CaretX := FEditor.CaretX;
+    if CaretX > 1 then
+    begin
+      Content := TStringList.Create;
+      try
+        Content.Text := Dialog.Content.Text;
+        for I := 0 to Pred(Content.Count) do
+          if I > 0 then
+            Content[I] := Concat(DupeString(' ', Pred(CaretX)), Content[I]);
+        FEditor.InsertTextAtCaret(Content.Text);
+      finally
+        Content.Free;
+      end;
+    end
+    else
+      FEditor.InsertTextAtCaret(Dialog.Content.Text);
+  finally
+    Dialog.Free;
+  end;
 end;
 
 function TSourceEditor.SearchReplace(const ASearch, AReplace: string;
@@ -10460,6 +10496,7 @@ begin
     SrcEditMenuCut.Command:=GetCommand(ecCut);
     SrcEditMenuCopy.Command:=GetCommand(ecCopy);
     SrcEditMenuPaste.Command:=GetCommand(ecPaste);
+    SrcEditMenuMultiPaste.Command:=GetCommand(ecMultiPaste);
     SrcEditMenuCopyFilename.OnClick:=@CopyFilenameClicked;
     SrcEditMenuSelectAll.Command:=GetCommand(ecSelectAll);
   {%endregion}

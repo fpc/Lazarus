@@ -1021,6 +1021,7 @@ begin
     CreateMenuItem(ParentMI,itmEditCut,'itmEditCut',lisCut,'laz_cut');
     CreateMenuItem(ParentMI,itmEditCopy,'itmEditCopy',lisCopy,'laz_copy');
     CreateMenuItem(ParentMI,itmEditPaste,'itmEditPaste',lisPaste,'laz_paste');
+    CreateMenuItem(ParentMI,itmEditMultiPaste,'itmEditMultiPaste',lisMenuMultiPaste);
 
     // "Select" menu items
     CreateMenuSeparatorSection(mnuEdit,itmEditSelect,'itmEditSelect');
@@ -1517,6 +1518,7 @@ begin
     itmEditCut.Command:=GetCommand(ecCut);
     itmEditCopy.Command:=GetCommand(ecCopy);
     itmEditPaste.Command:=GetCommand(ecPaste);
+    itmEditMultiPaste.Command:=GetCommand(ecMultiPaste);
 
     itmEditSelectAll.Command:=GetCommand(ecSelectAll);
     itmEditSelectToBrace.Command:=GetCommand(ecSelectToBrace);

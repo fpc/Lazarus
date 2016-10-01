@@ -170,6 +170,9 @@ const
   ecQuit                    = ecFirstLazarus + 214;
   ecOpenUnit                = ecFirstLazarus + 215;
 
+  // edit menu
+  ecMultiPaste              = ecFirstLazarus + 230;
+
   // IDE navigation
   ecToggleFormUnit          = ecFirstLazarus + 301;
   ecToggleObjectInsp        = ecFirstLazarus + 302;
@@ -1909,7 +1912,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..315] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..316] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -2027,6 +2030,9 @@ const
     (Value: ecCleanDirectory;                         Name: 'ecCleanDirectory'),
     (Value: ecRestart;                                Name: 'ecRestart'),
     (Value: ecQuit;                                   Name: 'ecQuit'),
+
+  // edit menu
+    (Value: ecMultiPaste;                             Name: 'ecMultiPaste'),
 
   // IDE navigation
     (Value: ecToggleFormUnit;                         Name: 'ecToggleFormUnit'),
