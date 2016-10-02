@@ -1,84 +1,88 @@
 object MultiPasteDialog: TMultiPasteDialog
   Left = 245
-  Height = 500
+  Height = 504
   Top = 137
-  Width = 460
+  Width = 466
   BorderStyle = bsDialog
   Caption = 'MultiPaste'
-  ClientHeight = 500
-  ClientWidth = 460
+  ClientHeight = 504
+  ClientWidth = 466
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '1.7'
   object PasteOptsGroupBox: TGroupBox
     Left = 6
-    Height = 216
+    Height = 210
     Top = 6
-    Width = 448
+    Width = 454
     Align = alTop
     AutoSize = True
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     Caption = 'Paste &options'
-    ClientHeight = 197
-    ClientWidth = 444
+    ClientHeight = 195
+    ClientWidth = 450
     TabOrder = 0
     object TxtBeforeLinesLabel: TLabel
       Left = 6
-      Height = 17
+      Height = 13
       Top = 6
-      Width = 432
+      Width = 438
       Align = alTop
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       Caption = 'Text &before each line'
-      FocusControl = TxtBeforeLinesEdit
+      FocusControl = TxtBeforeLinesComboBox
       ParentColor = False
     end
-    object TxtBeforeLinesEdit: TEdit
+    object TxtBeforeLinesComboBox: TComboBox
       Left = 6
       Height = 27
-      Top = 26
-      Width = 432
+      Top = 22
+      Width = 438
       Align = alTop
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       BorderSpacing.Right = 6
+      ItemHeight = 0
       TabOrder = 0
     end
     object TxtAfterLinesLabel: TLabel
       Left = 6
-      Height = 17
-      Top = 59
-      Width = 432
+      Height = 13
+      Top = 55
+      Width = 438
       Align = alTop
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       Caption = 'Text &after each line'
-      FocusControl = TxtAfterLinesEdit
+      FocusControl = TxtAfterLinesComboBox
       ParentColor = False
     end
-    object TxtAfterLinesEdit: TEdit
+    object TxtAfterLinesComboBox: TComboBox
       Left = 6
       Height = 27
-      Top = 79
-      Width = 432
+      Top = 71
+      Width = 438
       Align = alTop
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       BorderSpacing.Right = 6
+      ItemHeight = 0
       TabOrder = 1
     end
     object EscQuotesCheckBox: TCheckBox
-      AnchorSideLeft.Control = TxtAfterLinesEdit
-      AnchorSideTop.Control = TxtAfterLinesEdit
+      AnchorSideLeft.Control = TxtAfterLinesComboBox
+      AnchorSideTop.Control = TxtAfterLinesComboBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 21
-      Top = 112
-      Width = 104
+      Height = 24
+      Top = 104
+      Width = 105
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       Caption = 'Escape &quotes'
@@ -92,7 +96,7 @@ object MultiPasteDialog: TMultiPasteDialog
       AnchorSideTop.Side = asrBottom
       Left = 26
       Height = 25
-      Top = 139
+      Top = 134
       Width = 180
       BorderSpacing.Left = 20
       BorderSpacing.Top = 6
@@ -111,9 +115,9 @@ object MultiPasteDialog: TMultiPasteDialog
       AnchorSideTop.Control = EscQuotesStyleComboBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 21
-      Top = 170
-      Width = 155
+      Height = 24
+      Top = 165
+      Width = 157
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       Caption = '&Trim clipboard contents'
@@ -124,20 +128,20 @@ object MultiPasteDialog: TMultiPasteDialog
   end
   object PreviewGroupBox: TGroupBox
     Left = 6
-    Height = 225
-    Top = 228
-    Width = 448
+    Height = 234
+    Top = 222
+    Width = 454
     Align = alClient
     BorderSpacing.Around = 6
     Caption = '&Preview'
-    ClientHeight = 206
-    ClientWidth = 444
+    ClientHeight = 219
+    ClientWidth = 450
     TabOrder = 1
     inline PreviewSynEdit: TSynEdit
       Left = 6
-      Height = 194
+      Height = 207
       Top = 6
-      Width = 432
+      Width = 438
       Align = alClient
       BorderSpacing.Around = 6
       Font.Height = 13
@@ -636,9 +640,9 @@ object MultiPasteDialog: TMultiPasteDialog
   end
   object BottomButtonPanel: TButtonPanel
     Left = 6
-    Height = 35
-    Top = 459
-    Width = 448
+    Height = 36
+    Top = 462
+    Width = 454
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6

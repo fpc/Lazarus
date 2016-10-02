@@ -39,21 +39,31 @@ unit MultiPasteDlg;
 interface
 
 uses
-  SysUtils, Classes, StdCtrls, ButtonPanel, Forms, Clipbrd, IDEHelpIntf, SynEdit;
+  SysUtils, Classes, StdCtrls, ButtonPanel, Forms, Clipbrd, SynEdit,
+  IDEHelpIntf, InputHistory, IDEProcs;
+
+const
+  hlFormatPasteTxtBefore = 'FormatPasteTxtBefore';
+  hlFormatPasteTxtAfter = 'FormatPasteTxtAfter';
 
 type
+
+  { TMultiPasteDialog }
+
   TMultiPasteDialog = class(TForm)
     BottomButtonPanel: TButtonPanel;
     PreviewSynEdit: TSynEdit;
     TrimClipbrdContentsCheckBox: TCheckBox;
     EscQuotesCheckBox: TCheckBox;
     EscQuotesStyleComboBox: TComboBox;
-    TxtBeforeLinesEdit: TEdit;
-    TxtAfterLinesEdit: TEdit;
+    TxtAfterLinesComboBox: TComboBox;
+    TxtBeforeLinesComboBox: TComboBox;
     TxtBeforeLinesLabel: TLabel;
     TxtAfterLinesLabel: TLabel;
     PasteOptsGroupBox: TGroupBox;
     PreviewGroupBox: TGroupBox;
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     FContent: TStringList;
   protected
@@ -63,8 +73,6 @@ type
     procedure DoEscQuotesCheckBoxChange(Sender: TObject); virtual;
     procedure DoHelpButtonClick(Sender: TObject); virtual;
   public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     property Content: TStringList read FContent;
   end;
 
@@ -72,24 +80,42 @@ implementation
 
 {$R *.lfm}
 
-constructor TMultiPasteDialog.Create(AOwner: TComponent);
+procedure TMultiPasteDialog.FormCreate(Sender: TObject);
+var
+  List: THistoryList;
 begin
-  inherited Create(AOwner);
   FContent := TStringList.Create;
   OnShow := @DoWatch;
   OnActivate := @DoWatch;
-  TxtBeforeLinesEdit.OnChange := @DoWatch;
-  TxtAfterLinesEdit.OnChange := @DoWatch;
+  TxtBeforeLinesComboBox.OnChange := @DoWatch;
+  TxtAfterLinesComboBox.OnChange := @DoWatch;
   EscQuotesCheckBox.OnChange := @DoEscQuotesCheckBoxChange;
   EscQuotesStyleComboBox.OnChange := @DoWatch;
   TrimClipbrdContentsCheckBox.OnChange := @DoWatch;
   BottomButtonPanel.HelpButton.OnClick := @DoHelpButtonClick;
+
+  List:=InputHistories.HistoryLists.GetList(hlFormatPasteTxtBefore,true,rltCaseSensitive);
+  List.AppendEntry('Add(''');
+  TxtBeforeLinesComboBox.Items.Assign(List);
+  TxtBeforeLinesComboBox.Text:=List[0];
+
+  List:=InputHistories.HistoryLists.GetList(hlFormatPasteTxtAfter,true,rltCaseSensitive);
+  List.AppendEntry(''');');
+  TxtAfterLinesComboBox.Items.Assign(List);
+  TxtAfterLinesComboBox.Text:=List[0];
 end;
 
-destructor TMultiPasteDialog.Destroy;
+procedure TMultiPasteDialog.FormDestroy(Sender: TObject);
 begin
+  TxtBeforeLinesComboBox.AddHistoryItem(TxtBeforeLinesComboBox.Text,20,true,false);
+  InputHistories.HistoryLists.GetList(hlFormatPasteTxtBefore,true,rltCaseSensitive)
+    .Assign(TxtBeforeLinesComboBox.Items);
+
+  TxtAfterLinesComboBox.AddHistoryItem(TxtAfterLinesComboBox.Text,20,true,false);
+  InputHistories.HistoryLists.GetList(hlFormatPasteTxtAfter,true,rltCaseSensitive)
+    .Assign(TxtAfterLinesComboBox.Items);
+
   FreeAndNil(FContent);
-  inherited Destroy;
 end;
 
 procedure TMultiPasteDialog.DoWatch(Sender: TObject);
@@ -121,7 +147,7 @@ begin
         0: S := StringReplace(S, '''', '''''', [rfReplaceAll]);
         1: S := StringReplace(S, '"', '\"', [rfReplaceAll]);
       end;
-    FContent[I] := Concat(TxtBeforeLinesEdit.Text, S, TxtAfterLinesEdit.Text);
+    FContent[I] := Concat(TxtBeforeLinesComboBox.Text, S, TxtAfterLinesComboBox.Text);
   end;
   Result := FContent.Text;
 end;
