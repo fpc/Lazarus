@@ -76,7 +76,6 @@ constructor TMultiPasteDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FContent := TStringList.Create;
-  FContent.SkipLastLineBreak := True;
   OnShow := @DoWatch;
   OnActivate := @DoWatch;
   TxtBeforeLinesEdit.OnChange := @DoWatch;
@@ -89,7 +88,7 @@ end;
 
 destructor TMultiPasteDialog.Destroy;
 begin
-  FContent.Free;
+  FreeAndNil(FContent);
   inherited Destroy;
 end;
 
