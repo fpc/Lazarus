@@ -85,6 +85,10 @@ var
   List: THistoryList;
 begin
   FContent := TStringList.Create;
+  {$IF FPC_FULLVERSION >= 30101}
+  FContent.SkipLastLineBreak := True;
+  {$ENDIF}
+
   OnShow := @DoWatch;
   OnActivate := @DoWatch;
   TxtBeforeLinesComboBox.OnChange := @DoWatch;
