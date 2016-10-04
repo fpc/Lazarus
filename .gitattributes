@@ -5438,6 +5438,12 @@ examples/gridexamples/gridcelleditor/gridcelleditor.lpi svneol=native#text/plain
 examples/gridexamples/gridcelleditor/gridcelleditor.lpr svneol=native#text/plain
 examples/gridexamples/gridcelleditor/unit1.lfm svneol=native#text/plain
 examples/gridexamples/gridcelleditor/unit1.pas svneol=native#text/plain
+examples/gridexamples/merged_cells/mainform.lfm svneol=native#text/plain
+examples/gridexamples/merged_cells/mainform.pas svneol=native#text/plain
+examples/gridexamples/merged_cells/mcgrid.pas svneol=native#text/plain
+examples/gridexamples/merged_cells/mergedcells_project.lpi svneol=native#text/plain
+examples/gridexamples/merged_cells/mergedcells_project.lpr svneol=native#text/plain
+examples/gridexamples/merged_cells/readme.txt svneol=native#text/plain
 examples/gridexamples/spreadsheet/main.lfm svneol=native#text/plain
 examples/gridexamples/spreadsheet/main.pas svneol=native#text/pascal
 examples/gridexamples/spreadsheet/spreadsheet.ico -text
