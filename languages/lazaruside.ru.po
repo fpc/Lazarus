@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-10-01 02:06+0300\n"
+"PO-Revision-Date: 2016-10-06 01:24+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -12511,6 +12511,11 @@ msgstr "Макросы редактора ..."
 msgid "Make Resource String ..."
 msgstr "Создать строку ресурсов ..."
 
+#: lazarusidestrconsts.lismenumultipaste
+msgctxt "lazarusidestrconsts.lismenumultipaste"
+msgid "MultiPaste ..."
+msgstr "Вставить с форматированием ..."
+
 #: lazarusidestrconsts.lismenunewcomponent
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
@@ -13384,6 +13389,43 @@ msgstr "Переместить в: "
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."
 msgstr "Перемещение этих модулей приведёт в негодность их выражения Uses. Подробности смотрите в окне сообщений."
+
+#: lazarusidestrconsts.lismpcstyle
+msgid "C style: \" => \\\""
+msgstr "В стиле C: \" => \\\""
+
+#: lazarusidestrconsts.lismpescapequotes
+msgid "Escape &quotes"
+msgstr "Экранировать &кавычки"
+
+#: lazarusidestrconsts.lismpmultipaste
+msgctxt "lazarusidestrconsts.lismpmultipaste"
+msgid "MultiPaste"
+msgstr "Вставить с форматированием"
+
+#: lazarusidestrconsts.lismppascalstyle
+msgid "Pascal style: ' => ''"
+msgstr "В стиле Паскаля: ' => ''"
+
+#: lazarusidestrconsts.lismppasteoptions
+msgid "Paste &options"
+msgstr "Параметры &вставки"
+
+#: lazarusidestrconsts.lismppreview
+msgid "&Preview"
+msgstr "&Предварительный просмотр"
+
+#: lazarusidestrconsts.lismptextaftereachline
+msgid "Text &after each line"
+msgstr "Текст пос&ле каждой строки"
+
+#: lazarusidestrconsts.lismptextbeforeeachline
+msgid "Text &before each line"
+msgstr "Текст пере&д каждой строкой"
+
+#: lazarusidestrconsts.lismptrimclipboardcontents
+msgid "&Trim clipboard contents"
+msgstr "Обре&зать содержимое буфера обмена"
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -19964,6 +20006,10 @@ msgstr "Сместить редактор вправо"
 msgid "Move editor rightmost"
 msgstr "Поместить редактор справа"
 
+#: lazarusidestrconsts.srkmecmultipaste
+msgid "MultiPaste clipboard to current position"
+msgstr "Вставить с форматированием из буфера обмена в текущую позицию"
+
 #: lazarusidestrconsts.srkmecnextbookmark
 msgid "Next Bookmark"
 msgstr "Следующая закладка"
@@ -20022,7 +20068,7 @@ msgstr "Переместить курсор вверх на одну стран�
 
 #: lazarusidestrconsts.srkmecpaste
 msgid "Paste clipboard to current position"
-msgstr "Вставить из буфера в текущую позицию"
+msgstr "Вставить из буфера обмена в текущую позицию"
 
 #: lazarusidestrconsts.srkmecpause
 msgid "pause program"
