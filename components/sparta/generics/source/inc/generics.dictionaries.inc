@@ -163,7 +163,7 @@ begin
   Result := TCustomDictionary<CUSTOM_DICTIONARY_CONSTRAINTS>(FDictionary).Count;
 end;
 
-function TDictionaryEnumerable<TDictionaryEnumerator, T, CUSTOM_DICTIONARY_CONSTRAINTS>.ToArray: TArray;
+function TDictionaryEnumerable<TDictionaryEnumerator, T, CUSTOM_DICTIONARY_CONSTRAINTS>.ToArray: TArray<T>;
 begin
   Result := ToArrayImpl(FDictionary.Count);
 end;

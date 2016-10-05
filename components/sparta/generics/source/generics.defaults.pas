@@ -31,7 +31,7 @@ unit Generics.Defaults;
 interface
 
 uses
-  Classes, SysUtils, Contnrs, Generics.Hashes, TypInfo, Variants, Math, Generics.Strings, Generics.Helpers;
+  Classes, SysUtils, Generics.Hashes, TypInfo, Variants, Math, Generics.Strings, Generics.Helpers;
 
 type
   IComparer<T> = interface
@@ -84,16 +84,16 @@ type
   TInterface = class
   public
     function QueryInterface(constref {%H-}IID: TGUID;{%H-} out Obj): HResult; {$IFNDEF WINDOWS}cdecl{$ELSE}stdcall{$ENDIF}; virtual;
-    function _AddRef: Integer; {$IFNDEF WINDOWS}cdecl{$ELSE}stdcall{$ENDIF}; virtual; abstract;
-    function _Release: Integer; {$IFNDEF WINDOWS}cdecl{$ELSE}stdcall{$ENDIF};  virtual; abstract;
+    function _AddRef: LongInt; {$IFNDEF WINDOWS}cdecl{$ELSE}stdcall{$ENDIF}; virtual; abstract;
+    function _Release: LongInt; {$IFNDEF WINDOWS}cdecl{$ELSE}stdcall{$ENDIF};  virtual; abstract;
   end;
 
   { TRawInterface }
 
   TRawInterface = class(TInterface)
   public
-    function _AddRef: Integer; override;
-    function _Release: Integer; override;
+    function _AddRef: LongInt; override;
+    function _Release: LongInt; override;
   end;
 
   { TComTypeSizeInterface }
@@ -102,9 +102,9 @@ type
   TComTypeSizeInterface = class(TInterface)
   public
     // warning ! self as PSpoofInterfacedTypeSizeObject
-    function _AddRef: Integer; override;
+    function _AddRef: LongInt; override;
     // warning ! self as PSpoofInterfacedTypeSizeObject
-    function _Release: Integer; override;
+    function _Release: LongInt; override;
   end;
 
   { TSingletonImplementation }
@@ -216,11 +216,11 @@ type
     PPEqualityComparerVMT = ^PEqualityComparerVMT;
     PEqualityComparerVMT = ^TEqualityComparerVMT;
     TEqualityComparerVMT = packed record
-      QueryInterface: Pointer;
-      _AddRef: Pointer;
-      _Release: Pointer;
-      Equals: Pointer;
-      GetHashCode: Pointer;
+      QueryInterface: CodePointer;
+      _AddRef: CodePointer;
+      _Release: CodePointer;
+      Equals: CodePointer;
+      GetHashCode: CodePointer;
       __Reserved: Pointer; // initially or TExtendedEqualityComparerVMT compatibility
                            // (important when ExtendedEqualityComparer is calling Binary method)
       __ClassRef: THashFactoryClass; // hidden field in VMT. For class ref THashFactoryClass
@@ -274,12 +274,12 @@ type
     PPExtendedEqualityComparerVMT = ^PExtendedEqualityComparerVMT;
     PExtendedEqualityComparerVMT = ^TExtendedEqualityComparerVMT;
     TExtendedEqualityComparerVMT = packed record
-      QueryInterface: Pointer;
-      _AddRef: Pointer;
-      _Release: Pointer;
-      Equals: Pointer;
-      GetHashCode: Pointer;
-      GetHashList: Pointer;
+      QueryInterface: CodePointer;
+      _AddRef: CodePointer;
+      _Release: CodePointer;
+      Equals: CodePointer;
+      GetHashCode: CodePointer;
+      GetHashList: CodePointer;
       __ClassRef: TExtendedHashFactoryClass; // hidden field in VMT. For class ref THashFactoryClass
     end;
   private
@@ -332,24 +332,26 @@ type
     PSpoofInterfacedTypeSizeObject = ^TSpoofInterfacedTypeSizeObject;
     TSpoofInterfacedTypeSizeObject = record
       VMT: Pointer;
-      RefCount: Integer;
+      RefCount: LongInt;
       Size: SizeInt;
     end;
 
     PInstance = ^TInstance;
     TInstance = record
-      Selector: Boolean;
-      Instance: Pointer;
-
       class function Create(ASelector: Boolean; AInstance: Pointer): TComparerService.TInstance; static;
+      class function CreateSelector(ASelectorInstance: CodePointer): TComparerService.TInstance; static;
+
+      case Selector: Boolean of
+        false: (Instance: Pointer);
+        true:  (SelectorInstance: CodePointer);
     end;
 
     PComparerVMT = ^TComparerVMT;
     TComparerVMT = packed record
-      QueryInterface: Pointer;
-      _AddRef: Pointer;
-      _Release: Pointer;
-      Compare: Pointer;
+      QueryInterface: CodePointer;
+      _AddRef: CodePointer;
+      _Release: CodePointer;
+      Compare: CodePointer;
     end;
 
     TSelectFunc = function(ATypeData: PTypeData; ASize: SizeInt): Pointer;
@@ -431,21 +433,21 @@ type
     ComparerInstances: array[TTypeKind] of TInstance =
       (
         // tkUnknown
-        (Selector: True;  Instance: @TComparerService.SelectBinaryComparer),
+        (Selector: True;  SelectorInstance: @TComparerService.SelectBinaryComparer),
         // tkInteger
-        (Selector: True;  Instance: @TComparerService.SelectIntegerComparer),
+        (Selector: True;  SelectorInstance: @TComparerService.SelectIntegerComparer),
         // tkChar
         (Selector: False; Instance: @Comparer_UInt8_Instance),
         // tkEnumeration
-        (Selector: True;  Instance: @TComparerService.SelectIntegerComparer),
+        (Selector: True;  SelectorInstance: @TComparerService.SelectIntegerComparer),
         // tkFloat
-        (Selector: True;  Instance: @TComparerService.SelectFloatComparer),
+        (Selector: True;  SelectorInstance: @TComparerService.SelectFloatComparer),
         // tkSet
-        (Selector: True;  Instance: @TComparerService.SelectBinaryComparer),
+        (Selector: True;  SelectorInstance: @TComparerService.SelectBinaryComparer),
         // tkMethod
         (Selector: False; Instance: @Comparer_Method_Instance),
         // tkSString
-        (Selector: True;  Instance: @TComparerService.SelectShortStringComparer),
+        (Selector: True;  SelectorInstance: @TComparerService.SelectShortStringComparer),
         // tkLString - only internal use / deprecated in compiler
         (Selector: False; Instance: @Comparer_AnsiString_Instance), // <- unsure
         // tkAString
@@ -455,25 +457,25 @@ type
         // tkVariant
         (Selector: False; Instance: @Comparer_Variant_Instance),
         // tkArray
-        (Selector: True;  Instance: @TComparerService.SelectBinaryComparer),
+        (Selector: True;  SelectorInstance: @TComparerService.SelectBinaryComparer),
         // tkRecord
-        (Selector: True;  Instance: @TComparerService.SelectBinaryComparer),
+        (Selector: True;  SelectorInstance: @TComparerService.SelectBinaryComparer),
         // tkInterface
         (Selector: False; Instance: @Comparer_Pointer_Instance),
         // tkClass
         (Selector: False; Instance: @Comparer_Pointer_Instance),
         // tkObject
-        (Selector: True;  Instance: @TComparerService.SelectBinaryComparer),
+        (Selector: True;  SelectorInstance: @TComparerService.SelectBinaryComparer),
         // tkWChar
         (Selector: False; Instance: @Comparer_UInt16_Instance),
         // tkBool
-        (Selector: True;  Instance: @TComparerService.SelectIntegerComparer),
+        (Selector: True;  SelectorInstance: @TComparerService.SelectIntegerComparer),
         // tkInt64
         (Selector: False;  Instance: @Comparer_Int64_Instance),
         // tkQWord
         (Selector: False;  Instance: @Comparer_UInt64_Instance),
         // tkDynArray
-        (Selector: True;  Instance: @TComparerService.SelectDynArrayComparer),
+        (Selector: True;  SelectorInstance: @TComparerService.SelectDynArrayComparer),
         // tkInterfaceRaw
         (Selector: False; Instance: @Comparer_Pointer_Instance),
         // tkProcVar
@@ -485,7 +487,7 @@ type
         // tkHelper
         (Selector: False; Instance: @Comparer_Pointer_Instance),
         // tkFile
-        (Selector: True;  Instance: @TComparerService.SelectBinaryComparer), // <- unsure what type?
+        (Selector: True;  SelectorInstance: @TComparerService.SelectBinaryComparer), // <- unsure what type?
         // tkClassRef
         (Selector: False; Instance: @Comparer_Pointer_Instance),
         // tkPointer
@@ -1054,26 +1056,26 @@ end;
 
 { TRawInterface }
 
-function TRawInterface._AddRef: Integer;
+function TRawInterface._AddRef: LongInt;
 begin
   Result := -1;
 end;
 
-function TRawInterface._Release: Integer;
+function TRawInterface._Release: LongInt;
 begin
   Result := -1;
 end;
 
 { TComTypeSizeInterface }
 
-function TComTypeSizeInterface._AddRef: Integer;
+function TComTypeSizeInterface._AddRef: LongInt;
 var
   _self: TComparerService.PSpoofInterfacedTypeSizeObject absolute Self;
 begin
   Result := InterLockedIncrement(_self.RefCount);
 end;
 
-function TComTypeSizeInterface._Release: Integer;
+function TComTypeSizeInterface._Release: LongInt;
 var
   _self: TComparerService.PSpoofInterfacedTypeSizeObject absolute Self;
 begin
@@ -2146,6 +2148,12 @@ begin
   Result.Instance := AInstance;
 end;
 
+class function TComparerService.TInstance.CreateSelector(ASelectorInstance: CodePointer): TComparerService.TInstance;
+begin
+  Result.Selector := True;
+  Result.SelectorInstance := ASelectorInstance;
+end;
+
 { THashService }
 
 class function THashService<T>.SelectIntegerEqualityComparer(ATypeData: PTypeData; ASize: SizeInt): Pointer;
@@ -2236,7 +2244,7 @@ begin
     Result := LInstance.Instance;
     if LInstance.Selector then
     begin
-      TMethod(LSelectMethod).Code := Result;
+      TMethod(LSelectMethod).Code := LInstance.SelectorInstance;
       TMethod(LSelectMethod).Data := Self;
       Result := LSelectMethod(GetTypeData(ATypeInfo), ASize);
     end;
@@ -2328,34 +2336,34 @@ begin
   FEqualityComparer_Pointer_Instance       := @FEqualityComparer_Pointer_VMT      ;
 
   //////
-  FEqualityComparerInstances[tkUnknown]      := TInstance.Create(True, TMethod(TSelectMethod(THashService<T>.SelectBinaryEqualityComparer)).Code);
-  FEqualityComparerInstances[tkInteger]      := TInstance.Create(True, TMethod(TSelectMethod(THashService<T>.SelectIntegerEqualityComparer)).Code);
+  FEqualityComparerInstances[tkUnknown]      := TInstance.CreateSelector(TMethod(TSelectMethod(THashService<T>.SelectBinaryEqualityComparer)).Code);
+  FEqualityComparerInstances[tkInteger]      := TInstance.CreateSelector(TMethod(TSelectMethod(THashService<T>.SelectIntegerEqualityComparer)).Code);
   FEqualityComparerInstances[tkChar]         := TInstance.Create(False, @FEqualityComparer_UInt8_Instance);
-  FEqualityComparerInstances[tkEnumeration]  := TInstance.Create(True, TMethod(TSelectMethod(THashService<T>.SelectIntegerEqualityComparer)).Code);
-  FEqualityComparerInstances[tkFloat]        := TInstance.Create(True, TMethod(TSelectMethod(THashService<T>.SelectFloatEqualityComparer)).Code);
-  FEqualityComparerInstances[tkSet]          := TInstance.Create(True, TMethod(TSelectMethod(THashService<T>.SelectBinaryEqualityComparer)).Code);
+  FEqualityComparerInstances[tkEnumeration]  := TInstance.CreateSelector(TMethod(TSelectMethod(THashService<T>.SelectIntegerEqualityComparer)).Code);
+  FEqualityComparerInstances[tkFloat]        := TInstance.CreateSelector(TMethod(TSelectMethod(THashService<T>.SelectFloatEqualityComparer)).Code);
+  FEqualityComparerInstances[tkSet]          := TInstance.CreateSelector(TMethod(TSelectMethod(THashService<T>.SelectBinaryEqualityComparer)).Code);
   FEqualityComparerInstances[tkMethod]       := TInstance.Create(False, @FEqualityComparer_Method_Instance);
-  FEqualityComparerInstances[tkSString]      := TInstance.Create(True, TMethod(TSelectMethod(THashService<T>.SelectShortStringEqualityComparer)).Code);
+  FEqualityComparerInstances[tkSString]      := TInstance.CreateSelector(TMethod(TSelectMethod(THashService<T>.SelectShortStringEqualityComparer)).Code);
   FEqualityComparerInstances[tkLString]      := TInstance.Create(False, @FEqualityComparer_AnsiString_Instance);
   FEqualityComparerInstances[tkAString]      := TInstance.Create(False, @FEqualityComparer_AnsiString_Instance);
   FEqualityComparerInstances[tkWString]      := TInstance.Create(False, @FEqualityComparer_WideString_Instance);
   FEqualityComparerInstances[tkVariant]      := TInstance.Create(False, @FEqualityComparer_Variant_Instance);
-  FEqualityComparerInstances[tkArray]        := TInstance.Create(True, TMethod(TSelectMethod(THashService<T>.SelectBinaryEqualityComparer)).Code);
-  FEqualityComparerInstances[tkRecord]       := TInstance.Create(True, TMethod(TSelectMethod(THashService<T>.SelectBinaryEqualityComparer)).Code);
+  FEqualityComparerInstances[tkArray]        := TInstance.CreateSelector(TMethod(TSelectMethod(THashService<T>.SelectBinaryEqualityComparer)).Code);
+  FEqualityComparerInstances[tkRecord]       := TInstance.CreateSelector(TMethod(TSelectMethod(THashService<T>.SelectBinaryEqualityComparer)).Code);
   FEqualityComparerInstances[tkInterface]    := TInstance.Create(False, @FEqualityComparer_Pointer_Instance);
   FEqualityComparerInstances[tkClass]        := TInstance.Create(False, @FEqualityComparer_Pointer_Instance);
-  FEqualityComparerInstances[tkObject]       := TInstance.Create(True, TMethod(TSelectMethod(THashService<T>.SelectBinaryEqualityComparer)).Code);
+  FEqualityComparerInstances[tkObject]       := TInstance.CreateSelector(TMethod(TSelectMethod(THashService<T>.SelectBinaryEqualityComparer)).Code);
   FEqualityComparerInstances[tkWChar]        := TInstance.Create(False, @FEqualityComparer_UInt16_Instance);
-  FEqualityComparerInstances[tkBool]         := TInstance.Create(True, TMethod(TSelectMethod(THashService<T>.SelectIntegerEqualityComparer)).Code);
+  FEqualityComparerInstances[tkBool]         := TInstance.CreateSelector(TMethod(TSelectMethod(THashService<T>.SelectIntegerEqualityComparer)).Code);
   FEqualityComparerInstances[tkInt64]        := TInstance.Create(False, @FEqualityComparer_Int64_Instance);
   FEqualityComparerInstances[tkQWord]        := TInstance.Create(False, @FEqualityComparer_UInt64_Instance);
-  FEqualityComparerInstances[tkDynArray]     := TInstance.Create(True, TMethod(TSelectMethod(THashService<T>.SelectDynArrayEqualityComparer)).Code);
+  FEqualityComparerInstances[tkDynArray]     := TInstance.CreateSelector(TMethod(TSelectMethod(THashService<T>.SelectDynArrayEqualityComparer)).Code);
   FEqualityComparerInstances[tkInterfaceRaw] := TInstance.Create(False, @FEqualityComparer_Pointer_Instance);
   FEqualityComparerInstances[tkProcVar]      := TInstance.Create(False, @FEqualityComparer_Pointer_Instance);
   FEqualityComparerInstances[tkUString]      := TInstance.Create(False, @FEqualityComparer_UnicodeString_Instance);
   FEqualityComparerInstances[tkUChar]        := TInstance.Create(False, @FEqualityComparer_UInt16_Instance);
   FEqualityComparerInstances[tkHelper]       := TInstance.Create(False, @FEqualityComparer_Pointer_Instance);
-  FEqualityComparerInstances[tkFile]         := TInstance.Create(True, TMethod(TSelectMethod(THashService<T>.SelectBinaryEqualityComparer)).Code);
+  FEqualityComparerInstances[tkFile]         := TInstance.CreateSelector(TMethod(TSelectMethod(THashService<T>.SelectBinaryEqualityComparer)).Code);
   FEqualityComparerInstances[tkClassRef]     := TInstance.Create(False, @FEqualityComparer_Pointer_Instance);
   FEqualityComparerInstances[tkPointer]      := TInstance.Create(False, @FEqualityComparer_Pointer_Instance)
 end;
@@ -2449,7 +2457,7 @@ begin
     Result := LInstance.Instance;
     if LInstance.Selector then
     begin
-      TMethod(LSelectMethod).Code := Result;
+      TMethod(LSelectMethod).Code := LInstance.SelectorInstance;
       TMethod(LSelectMethod).Data := Self;
       Result := LSelectMethod(GetTypeData(ATypeInfo), ASize);
     end;
@@ -2541,34 +2549,34 @@ begin
   FExtendedEqualityComparer_Pointer_Instance       := @FExtendedEqualityComparer_Pointer_VMT      ;
 
   //////
-  FExtendedEqualityComparerInstances[tkUnknown]      := TInstance.Create(True, TMethod(TSelectMethod(TExtendedHashService<T>.SelectBinaryEqualityComparer)).Code);
-  FExtendedEqualityComparerInstances[tkInteger]      := TInstance.Create(True, TMethod(TSelectMethod(TExtendedHashService<T>.SelectIntegerEqualityComparer)).Code);
+  FExtendedEqualityComparerInstances[tkUnknown]      := TInstance.CreateSelector(TMethod(TSelectMethod(TExtendedHashService<T>.SelectBinaryEqualityComparer)).Code);
+  FExtendedEqualityComparerInstances[tkInteger]      := TInstance.CreateSelector(TMethod(TSelectMethod(TExtendedHashService<T>.SelectIntegerEqualityComparer)).Code);
   FExtendedEqualityComparerInstances[tkChar]         := TInstance.Create(False, @FExtendedEqualityComparer_UInt8_Instance);
-  FExtendedEqualityComparerInstances[tkEnumeration]  := TInstance.Create(True, TMethod(TSelectMethod(TExtendedHashService<T>.SelectIntegerEqualityComparer)).Code);
-  FExtendedEqualityComparerInstances[tkFloat]        := TInstance.Create(True, TMethod(TSelectMethod(TExtendedHashService<T>.SelectFloatEqualityComparer)).Code);
-  FExtendedEqualityComparerInstances[tkSet]          := TInstance.Create(True, TMethod(TSelectMethod(TExtendedHashService<T>.SelectBinaryEqualityComparer)).Code);
+  FExtendedEqualityComparerInstances[tkEnumeration]  := TInstance.CreateSelector(TMethod(TSelectMethod(TExtendedHashService<T>.SelectIntegerEqualityComparer)).Code);
+  FExtendedEqualityComparerInstances[tkFloat]        := TInstance.CreateSelector(TMethod(TSelectMethod(TExtendedHashService<T>.SelectFloatEqualityComparer)).Code);
+  FExtendedEqualityComparerInstances[tkSet]          := TInstance.CreateSelector(TMethod(TSelectMethod(TExtendedHashService<T>.SelectBinaryEqualityComparer)).Code);
   FExtendedEqualityComparerInstances[tkMethod]       := TInstance.Create(False, @FExtendedEqualityComparer_Method_Instance);
-  FExtendedEqualityComparerInstances[tkSString]      := TInstance.Create(True, TMethod(TSelectMethod(TExtendedHashService<T>.SelectShortStringEqualityComparer)).Code);
+  FExtendedEqualityComparerInstances[tkSString]      := TInstance.CreateSelector(TMethod(TSelectMethod(TExtendedHashService<T>.SelectShortStringEqualityComparer)).Code);
   FExtendedEqualityComparerInstances[tkLString]      := TInstance.Create(False, @FExtendedEqualityComparer_AnsiString_Instance);
   FExtendedEqualityComparerInstances[tkAString]      := TInstance.Create(False, @FExtendedEqualityComparer_AnsiString_Instance);
   FExtendedEqualityComparerInstances[tkWString]      := TInstance.Create(False, @FExtendedEqualityComparer_WideString_Instance);
   FExtendedEqualityComparerInstances[tkVariant]      := TInstance.Create(False, @FExtendedEqualityComparer_Variant_Instance);
-  FExtendedEqualityComparerInstances[tkArray]        := TInstance.Create(True, TMethod(TSelectMethod(TExtendedHashService<T>.SelectBinaryEqualityComparer)).Code);
-  FExtendedEqualityComparerInstances[tkRecord]       := TInstance.Create(True, TMethod(TSelectMethod(TExtendedHashService<T>.SelectBinaryEqualityComparer)).Code);
+  FExtendedEqualityComparerInstances[tkArray]        := TInstance.CreateSelector(TMethod(TSelectMethod(TExtendedHashService<T>.SelectBinaryEqualityComparer)).Code);
+  FExtendedEqualityComparerInstances[tkRecord]       := TInstance.CreateSelector(TMethod(TSelectMethod(TExtendedHashService<T>.SelectBinaryEqualityComparer)).Code);
   FExtendedEqualityComparerInstances[tkInterface]    := TInstance.Create(False, @FExtendedEqualityComparer_Pointer_Instance);
   FExtendedEqualityComparerInstances[tkClass]        := TInstance.Create(False, @FExtendedEqualityComparer_Pointer_Instance);
-  FExtendedEqualityComparerInstances[tkObject]       := TInstance.Create(True, TMethod(TSelectMethod(TExtendedHashService<T>.SelectBinaryEqualityComparer)).Code);
+  FExtendedEqualityComparerInstances[tkObject]       := TInstance.CreateSelector(TMethod(TSelectMethod(TExtendedHashService<T>.SelectBinaryEqualityComparer)).Code);
   FExtendedEqualityComparerInstances[tkWChar]        := TInstance.Create(False, @FExtendedEqualityComparer_UInt16_Instance);
-  FExtendedEqualityComparerInstances[tkBool]         := TInstance.Create(True, TMethod(TSelectMethod(TExtendedHashService<T>.SelectIntegerEqualityComparer)).Code);
+  FExtendedEqualityComparerInstances[tkBool]         := TInstance.CreateSelector(TMethod(TSelectMethod(TExtendedHashService<T>.SelectIntegerEqualityComparer)).Code);
   FExtendedEqualityComparerInstances[tkInt64]        := TInstance.Create(False, @FExtendedEqualityComparer_Int64_Instance);
   FExtendedEqualityComparerInstances[tkQWord]        := TInstance.Create(False, @FExtendedEqualityComparer_UInt64_Instance);
-  FExtendedEqualityComparerInstances[tkDynArray]     := TInstance.Create(True, TMethod(TSelectMethod(TExtendedHashService<T>.SelectDynArrayEqualityComparer)).Code);
+  FExtendedEqualityComparerInstances[tkDynArray]     := TInstance.CreateSelector(TMethod(TSelectMethod(TExtendedHashService<T>.SelectDynArrayEqualityComparer)).Code);
   FExtendedEqualityComparerInstances[tkInterfaceRaw] := TInstance.Create(False, @FExtendedEqualityComparer_Pointer_Instance);
   FExtendedEqualityComparerInstances[tkProcVar]      := TInstance.Create(False, @FExtendedEqualityComparer_Pointer_Instance);
   FExtendedEqualityComparerInstances[tkUString]      := TInstance.Create(False, @FExtendedEqualityComparer_UnicodeString_Instance);
   FExtendedEqualityComparerInstances[tkUChar]        := TInstance.Create(False, @FExtendedEqualityComparer_UInt16_Instance);
   FExtendedEqualityComparerInstances[tkHelper]       := TInstance.Create(False, @FExtendedEqualityComparer_Pointer_Instance);
-  FExtendedEqualityComparerInstances[tkFile]         := TInstance.Create(True, TMethod(TSelectMethod(TExtendedHashService<T>.SelectBinaryEqualityComparer)).Code);
+  FExtendedEqualityComparerInstances[tkFile]         := TInstance.CreateSelector(TMethod(TSelectMethod(TExtendedHashService<T>.SelectBinaryEqualityComparer)).Code);
   FExtendedEqualityComparerInstances[tkClassRef]     := TInstance.Create(False, @FExtendedEqualityComparer_Pointer_Instance);
   FExtendedEqualityComparerInstances[tkPointer]      := TInstance.Create(False, @FExtendedEqualityComparer_Pointer_Instance);
 end;

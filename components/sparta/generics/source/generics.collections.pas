@@ -32,7 +32,7 @@ unit Generics.Collections;
 interface
 
 uses
-    Classes, SysUtils, Generics.MemoryExpanders, Generics.Defaults, 
+    Classes, SysUtils, Generics.MemoryExpanders, Generics.Defaults,
     Generics.Helpers, Generics.Strings;
 
 { FPC BUGS related to Generics.* (54 bugs, 19 fixed)
@@ -40,7 +40,7 @@ uses
   FIXED REGRESSION: 26480, 26482
 
   CRITICAL: 24848(!!!), 24872(!), 25607(!), 26030, 25917, 25918, 25620, 24283, 24254, 24287 (Related to? 24872)
-  IMPORTANT: 23862(!), 24097, 24285, 24286 (Similar to? 24285), 24098, 24609 (RTL inconsistency), 24534, 
+  IMPORTANT: 23862(!), 24097, 24285, 24286 (Similar to? 24285), 24098, 24609 (RTL inconsistency), 24534,
              25606, 25614, 26177, 26195
   OTHER: 26484, 24073, 24463, 25593, 25596, 25597, 25602, 26181 (or MYBAD?)
   CLOSED BUT IMO STILL TO FIX: 25601(!), 25594
@@ -228,6 +228,25 @@ type
 
     property Count: SizeInt read FItemsLength write SetCount;
     property Items[Index: SizeInt]: T read GetItem write SetItem; default;
+  end;
+
+  TThreadList<T> = class
+  private
+    FList: TList<T>;
+    FDuplicates: TDuplicates;
+    FLock: TRTLCriticalSection;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    procedure Add(constref AValue: T);
+    procedure Remove(constref AValue: T);
+    procedure Clear;
+
+    function LockList: TList<T>;
+    procedure UnlockList; inline;
+
+    property Duplicates: TDuplicates read FDuplicates write FDuplicates;
   end;
 
   TQueue<T> = class(TCustomList<T>)
@@ -503,7 +522,7 @@ begin
   end;
 end;
 
-function TEnumerable<T>.GetEnumerator: TEnumerator;
+function TEnumerable<T>.GetEnumerator: TEnumerator<T>;
 begin
   Exit(DoGetEnumerator);
 end;
@@ -978,6 +997,72 @@ end;
 function TList<T>.BinarySearch(constref AItem: T; out AIndex: SizeInt; const AComparer: IComparer<T>): Boolean;
 begin
   Result := TArrayHelperBugHack.BinarySearch(FItems, AItem, AIndex, AComparer);
+end;
+
+{ TThreadList<T> }
+
+constructor TThreadList<T>.Create;
+begin
+  inherited Create;
+  FDuplicates:=dupIgnore;
+  InitCriticalSection(FLock);
+  FList := TList<T>.Create;
+end;
+
+destructor TThreadList<T>.Destroy;
+begin
+  LockList;
+  try
+    FList.Free;
+    inherited Destroy;
+  finally
+    UnlockList;
+    DoneCriticalSection(FLock);
+  end;
+end;
+
+procedure TThreadList<T>.Add(constref AValue: T);
+begin
+  LockList;
+  try
+    if (Duplicates = dupAccept) or (FList.IndexOf(AValue) = -1) then
+      FList.Add(AValue)
+    else if Duplicates = dupError then
+      raise EArgumentException.CreateRes(@SDuplicatesNotAllowed);
+  finally
+    UnlockList;
+  end;
+end;
+
+procedure TThreadList<T>.Remove(constref AValue: T);
+begin
+  LockList;
+  try
+    FList.Remove(AValue);
+  finally
+    UnlockList;
+  end;
+end;
+
+procedure TThreadList<T>.Clear;
+begin
+  LockList;
+  try
+    FList.Clear;
+  finally
+    UnlockList;
+  end;
+end;
+
+function TThreadList<T>.LockList: TList<T>;
+begin
+  Result:=FList;
+  System.EnterCriticalSection(FLock);
+end;
+
+procedure TThreadList<T>.UnlockList;
+begin
+  System.LeaveCriticalSection(FLock);
 end;
 
 { TQueue<T>.TEnumerator }
