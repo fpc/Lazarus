@@ -347,7 +347,7 @@ resourcestring
   lisKMSelectPageBottom = 'Select Page Bottom';
   lisUseAndClose = 'Use and close';
   lisMenuSelect = 'Select';
-  lisMenuMultiPaste = 'MultiPaste';
+  lisMenuMultiPaste = 'MultiPaste ...';
   lisMenuSelectAll = 'Select All';
   lisCheckAll = 'Check All';
   lisUncheckAll = 'Uncheck All';
@@ -6317,6 +6317,16 @@ resourcestring
   synfMatchActionModifiersOfMouseDown = 'Match action modifiers of mouse down';
   synfContinueWithNextMouseUpAction = 'Continue with next mouse up action';
   lisDuplicateUnitIn = 'Duplicate unit "%s" in "%s"';
+
+  lismpMultiPaste = 'MultiPaste';
+  lismpPasteOptions = 'Paste &options';
+  lismpTextBeforeEachLine = 'Text &before each line';
+  lismpTextAfterEachLine = 'Text &after each line';
+  lismpEscapeQuotes = 'Escape &quotes';
+  lismpPascalStyle = 'Pascal style: '' => ''''';
+  lismpCStyle = 'C style: " => \"';
+  lismpTrimClipboardContents = '&Trim clipboard contents';
+  lismpPreview = '&Preview';
 implementation
 
 end.

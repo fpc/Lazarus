@@ -40,7 +40,7 @@ interface
 
 uses
   SysUtils, Classes, StdCtrls, ButtonPanel, Forms, Clipbrd, SynEdit,
-  IDEHelpIntf, InputHistory, IDEProcs;
+  IDEHelpIntf, InputHistory, IDEProcs, LazarusIDEStrConsts;
 
 const
   hlFormatPasteTxtBefore = 'FormatPasteTxtBefore';
@@ -107,6 +107,16 @@ begin
   List.AppendEntry(''');');
   TxtAfterLinesComboBox.Items.Assign(List);
   TxtAfterLinesComboBox.Text:=List[0];
+
+  Caption := lismpMultiPaste;
+  PasteOptsGroupBox.Caption := lismpPasteOptions;
+  TxtBeforeLinesLabel.Caption := lismpTextBeforeEachLine;
+  TxtAfterLinesLabel.Caption := lismpTextAfterEachLine;
+  EscQuotesCheckBox.Caption := lismpEscapeQuotes;
+  EscQuotesStyleComboBox.Items[0] := lismpPascalStyle;
+  EscQuotesStyleComboBox.Items[1] := lismpCStyle;
+  TrimClipbrdContentsCheckBox.Caption := lismpTrimClipboardContents;
+  PreviewGroupBox.Caption := lismpPreview;
 end;
 
 procedure TMultiPasteDialog.FormDestroy(Sender: TObject);
