@@ -1634,6 +1634,17 @@ var
   i: Integer;
   MsgLine: TMessageLine;
 begin
+  // change all low urgency messages in front of the last message to Important
+  i:=Tool.WorkerMessages.Count-1;
+  while i>=0 do begin
+    MsgLine:=Tool.WorkerMessages[i];
+    if MsgLine.Urgency<mluHint then
+      MsgLine.Urgency:=mluImportant
+    else
+      break;
+    dec(i);
+  end;
+
   // add all skipped lines in front of the linking error
   i:=Tool.WorkerMessages.Count-1;
   if i<0 then exit;
