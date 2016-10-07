@@ -110,7 +110,7 @@ type
 
   { TDictionaryEnumerable }
 
-  TDictionaryEnumerable<TDictionaryEnumerator: TObject; // ... inherits from TCustomDictionaryEnumerator. workaround...
+  TDictionaryEnumerable<TDictionaryEnumerator, // ... inherits from TCustomDictionaryEnumerator. workaround...
     T, CUSTOM_DICTIONARY_CONSTRAINTS> = class abstract(TEnumerable<T>)
   private
     FDictionary: TCustomDictionary<CUSTOM_DICTIONARY_CONSTRAINTS>;
