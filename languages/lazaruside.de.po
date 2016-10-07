@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-09-19 18:46+0200\n"
+"PO-Revision-Date: 2016-10-06 23:58+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -5509,10 +5509,8 @@ msgid ". Check if package %s is in the dependencies"
 msgstr ""
 
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
-#, fuzzy
-#| msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\""
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
-msgstr "prüfen, ob der nächste Token im Quelltext ein End ist und falls nicht, Zeilenende + End; + Zeilende zurückgeben"
+msgstr "prüfen, ob der nächste Token im Quelltext ein End ist und falls nicht, Zeilenende + End; + Zeilenende zurückgeben"
 
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
@@ -8504,14 +8502,10 @@ msgid "Program Filename:"
 msgstr "Programmdateiname:"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
-#, fuzzy
-#| msgid "Scan output for Free Pascal Compiler messages"
 msgid "Scan output for FPC messages"
-msgstr "Scannen der Ausgabe nach Free Pascal-Compilermeldungen"
+msgstr "Ausgabe nach Free Pascal-Compilermeldungen durchsuchen"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputformakemessages
-#, fuzzy
-#| msgid "Scan output for make messages"
 msgid "Scan output for \"make\" messages"
 msgstr "Ausgabe nach Make-Meldungen durchsuchen"
 
@@ -9635,7 +9629,7 @@ msgstr "Besitzt Onlinehilfe"
 
 #: lazarusidestrconsts.lisheadercolors
 msgid "Header colors"
-msgstr ""
+msgstr "Header-Farben"
 
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
@@ -9679,7 +9673,6 @@ msgid "Hide Search"
 msgstr "Suche ausblenden"
 
 #: lazarusidestrconsts.lishidewindow
-#, fuzzy
 msgctxt "lazarusidestrconsts.lishidewindow"
 msgid "Hide window"
 msgstr "Verstecke Fenster"
@@ -10096,14 +10089,10 @@ msgid "insert date and time"
 msgstr "Datum und Zeit einfügen"
 
 #: lazarusidestrconsts.lisinsertdateandtimeoptionalformatstring
-#, fuzzy
-#| msgid "Insert date and time. Optional: format string"
 msgid "Insert date and time. Optional: format string."
 msgstr "Datum und Zeit einfügen. Optional: Formatstring"
 
 #: lazarusidestrconsts.lisinsertdateoptionalformatstring
-#, fuzzy
-#| msgid "Insert date. Optional: format string"
 msgid "Insert date. Optional: format string."
 msgstr "Datum einfügen. Optional: Formatstring"
 
@@ -10146,8 +10135,6 @@ msgid "Insert Macro"
 msgstr "Makro einfügen"
 
 #: lazarusidestrconsts.lisinsertnameofcurrentprocedure
-#, fuzzy
-#| msgid "Insert name of current procedure"
 msgid "Insert name of current procedure."
 msgstr "Name der aktuellen Prozedur eintragen"
 
@@ -10172,8 +10159,6 @@ msgid "insert time"
 msgstr "Zeit einfügen"
 
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
-#, fuzzy
-#| msgid "Insert time. Optional: format string"
 msgid "Insert time. Optional: format string."
 msgstr "Zeit einfügen. Optional: Formatstring"
 
@@ -11396,8 +11381,6 @@ msgid "lowercase string"
 msgstr "Zeichenkette in Kleinbuchstaben"
 
 #: lazarusidestrconsts.lislowercasestringgivenasparameter
-#, fuzzy
-#| msgid "Lowercase string given as parameter"
 msgid "Lowercase string given as parameter."
 msgstr "Kleinbuchstabige Zeichenkette als Parameter gegeben"
 
@@ -12604,7 +12587,6 @@ msgid "Package Links ..."
 msgstr "Package-Links ..."
 
 #: lazarusidestrconsts.lismenupastefromclipboard
-#, fuzzy
 msgctxt "lazarusidestrconsts.lismenupastefromclipboard"
 msgid "Paste from clipboard"
 msgstr "Aus Zwischenablage einfügen"
@@ -13375,11 +13357,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lismpcstyle
 msgid "C style: \" => \\\""
-msgstr ""
+msgstr "C-Stil: \" => \\\""
 
 #: lazarusidestrconsts.lismpescapequotes
 msgid "Escape &quotes"
-msgstr ""
+msgstr "Anführungszeichen maskieren"
 
 #: lazarusidestrconsts.lismpmultipaste
 msgctxt "lazarusidestrconsts.lismpmultipaste"
@@ -13388,27 +13370,27 @@ msgstr ""
 
 #: lazarusidestrconsts.lismppascalstyle
 msgid "Pascal style: ' => ''"
-msgstr ""
+msgstr "Pascal-Stil: ' => ''"
 
 #: lazarusidestrconsts.lismppasteoptions
 msgid "Paste &options"
-msgstr ""
+msgstr "Einfüge&optionen"
 
 #: lazarusidestrconsts.lismppreview
 msgid "&Preview"
-msgstr ""
+msgstr "Vorschau"
 
 #: lazarusidestrconsts.lismptextaftereachline
 msgid "Text &after each line"
-msgstr ""
+msgstr "Text n&ach jeder Zeile"
 
 #: lazarusidestrconsts.lismptextbeforeeachline
 msgid "Text &before each line"
-msgstr ""
+msgstr "Text vor jeder Zeile"
 
 #: lazarusidestrconsts.lismptrimclipboardcontents
 msgid "&Trim clipboard contents"
-msgstr ""
+msgstr "Inhal&te der Zwischenablage abschneiden"
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -13831,11 +13813,11 @@ msgstr "Beim Zeilenumbruch (z.B. Return- oder Enter-Taste)"
 
 #: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
 msgid "Only available on Windows. Run the tool hidden."
-msgstr ""
+msgstr "Nur unter Windows verfügbar. Startet das Werkzeug verborgen."
 
 #: lazarusidestrconsts.lisonlyavailableonwindowsruntoolinanewconsole
 msgid "Only available on Windows. Run tool in a new console."
-msgstr ""
+msgstr "Nur unter Windows verfügbar. Startet das Werkzeug in einer neuen Konsole."
 
 #: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
 msgid "Only messages fitting this regular expression:"
@@ -14108,8 +14090,6 @@ msgid "paste clipboard"
 msgstr "Zwischenablage einfügen"
 
 #: lazarusidestrconsts.lispastefromclipboard
-#, fuzzy
-#| msgid "Paste from clipboard"
 msgctxt "lazarusidestrconsts.lispastefromclipboard"
 msgid "Paste from clipboard."
 msgstr "Aus Zwischenablage einfügen"
@@ -16639,7 +16619,7 @@ msgstr "Komponenten-Baum anzeigen"
 
 #: lazarusidestrconsts.lisshowconsole
 msgid "Show console"
-msgstr ""
+msgstr "Konsole anzeigen"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -18527,8 +18507,6 @@ msgid "uppercase string"
 msgstr "Großbuchstabige Zeichenkette"
 
 #: lazarusidestrconsts.lisuppercasestringgivenasparameter
-#, fuzzy
-#| msgid "Uppercase string given as parameter"
 msgid "Uppercase string given as parameter."
 msgstr "Großbuchstabige Zeichenkette als Parameter angegeben"
 
@@ -20972,4 +20950,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
