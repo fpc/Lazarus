@@ -277,14 +277,16 @@ type
   end;
 
   { TMenuItemsPropertyEditor - property editor for TMenuItem properties.
-    Invokes the parent menu's component editor }
-
+    Invokes the parent menu's component editor.
+    Note: disabled because opening a menu editor window when selecting a menu item
+     in OI is not desired. Menu item properties can be changed in OI directly. }
+{
   TMenuItemsPropertyEditor = class(TClassPropertyEditor)
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
   end;
-
+}
 procedure ShowMenuEditor(aMenu: TMenu);
 function MenuDesigner: TMenuDesigner;
 
@@ -2802,7 +2804,7 @@ begin
 end;
 
 { TMenuItemsPropertyEditor }
-
+{
 procedure TMenuItemsPropertyEditor.Edit;
 var
   mnu: TMenu;
@@ -2823,10 +2825,10 @@ function TMenuItemsPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog, paRevertable, paReadOnly];
 end;
-
+}
 initialization
   RegisterComponentEditor(TMenu, TMainMenuComponentEditor);
-  RegisterPropertyEditor(TypeInfo(TMenu), TMenu, 'Items', TMenuItemsPropertyEditor);
+  //RegisterPropertyEditor(TypeInfo(TMenu), TMenu, 'Items', TMenuItemsPropertyEditor);
 
 finalization
   FreeAndNil(MenuDesignerSingleton);
