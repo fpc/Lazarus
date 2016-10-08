@@ -727,11 +727,11 @@ begin
   case aValue of
     True: if (FRIState <> risDown) then begin // set to True
             FRIState:=risDown;
-            Repaint;
+            Invalidate;
           end;
     False: if (FRIState <> risUp) then begin // set to False
              FRIState:=risUp;
-             Repaint;
+             Invalidate;
            end;
   end;
 end;
@@ -747,7 +747,7 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
   if (Button = mbLeft) and (FRIState in [risUncheckedHot, risUp]) then begin
     FRIState:=risPressed;
-    Repaint;
+    Invalidate;
     DoChange;
   end;
 end;
@@ -759,7 +759,7 @@ begin
     risUp: FRIState:=risUncheckedHot;
     risDown: FRIState:=risCheckedHot;
   end;
-  Repaint;
+  Invalidate;
 end;
 
 procedure TRadioIcon.MouseLeave;
@@ -768,7 +768,7 @@ begin
     risPressed, risCheckedHot: FRIState:=risDown;
     risUncheckedHot:           FRIState:=risUp;
   end;
-  Repaint;
+  Invalidate;
   inherited MouseLeave;
 end;
 

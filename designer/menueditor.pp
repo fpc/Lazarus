@@ -739,7 +739,7 @@ begin
     GlobalDesignHook.RefreshPropertyValues;
     GlobalDesignHook.Modified(FEditedMenuItem);
     //UpdateBoxLocationsAndSizes;
-    EditedShadow.Repaint;
+    EditedShadow.Invalidate;
     //FDesigner.FGui.UpdateStatistics;
   end;
   EditedShadow.SetFocus;
@@ -964,7 +964,7 @@ begin
     RemoveComponent(sb);
     si:=GetShadowForMenuItem(sb.ParentMenuItem);
     if Assigned(si) then
-      si.Repaint;
+      si.Invalidate;
     FreeAndNil(sb);
   end;
 end;
@@ -1458,7 +1458,7 @@ begin
       idx:=ChooseIconFromImageListDlg(FMenu.Images);
       if (idx > -1) then begin
         FSelectedMenuItem.ImageIndex:=idx;
-        selected.Repaint;
+        selected.Invalidate;
         UpdateActionsEnabledness;
         FEditorDesigner.PropertyEditorHook.RefreshPropertyValues;
         FEditorDesigner.Modified;
@@ -1470,7 +1470,7 @@ begin
         idx:=ChooseIconFromImageListDlg(FSelectedMenuItem.Parent.SubMenuImages);
         if (idx > -1) then begin
           FSelectedMenuItem.ImageIndex:=idx;
-          selected.Repaint;
+          selected.Invalidate;
           UpdateActionsEnabledness;
           FEditorDesigner.PropertyEditorHook.RefreshPropertyValues;
           FEditorDesigner.Modified;
@@ -1548,7 +1548,7 @@ begin
           UpdateBoxLocationsAndSizes;
           RefreshFakes;
           if (FSelectedMenuItem <> nil) then
-            SelectedShadowItem.Repaint;
+            SelectedShadowItem.Invalidate;
         end;
       end;
     end;
@@ -1581,7 +1581,7 @@ begin
            FDesigner.Shortcuts.UpdateShortcutList(True);
       if (FSelectedMenuItem <> nil) then begin
         RefreshFakes;
-        SelectedShadowItem.Repaint;
+        SelectedShadowItem.Invalidate;
       end;
       FDesigner.FGui.UpdateStatistics;
     end;
@@ -2311,7 +2311,7 @@ procedure TShadowItem.SetState(AValue: TShadowItemDisplayState);
 begin
   if (FState <> AValue) then begin
     FState:=AValue;
-    Repaint;
+    Invalidate;
   end;
 end;
 
@@ -2683,7 +2683,7 @@ procedure TShadowItem.ShowNormal;
 begin
   if (FState <> dsNormal) then begin
     FState:=dsNormal;
-    Repaint;
+    Invalidate;
   end;
 end;
 
@@ -2691,7 +2691,7 @@ procedure TShadowItem.ShowSelected;
 begin
   if (FState <> dsSelected) then begin
     FState:=dsSelected;
-    Repaint;
+    Invalidate;
   end;
 end;
 
@@ -2699,7 +2699,7 @@ procedure TShadowItem.ShowDisabled;
 begin
   if (FState <> dsDisabled) then begin
     FState:=dsDisabled;
-    Repaint;
+    Invalidate;
   end;
 end;
 
