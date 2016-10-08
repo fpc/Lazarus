@@ -2668,9 +2668,8 @@ end;
 
 procedure TShadowItem.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if (Button = mbLeft) and FRealItem.AutoCheck then begin
-    FRealItem.Checked:=not FRealItem.Checked;
-    FParentBox.Repaint;
+  if Button = mbLeft then begin
+    FRealItem.Click;
     FShadowMenu.FEditorDesigner.PropertyEditorHook.RefreshPropertyValues;
   end;
   if (FState = dsSelected) then
