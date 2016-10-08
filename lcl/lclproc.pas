@@ -734,8 +734,9 @@ var
   Name: string;
 begin
   Result := 0;
+  if ShortCutText = '' then Exit;
   Shift := 0;
-  StartPos:=1;
+  StartPos := 1;
   InitializeMenuKeyCaps;
   while True do
   begin
@@ -752,9 +753,8 @@ begin
     else
       Break;
   end;
-  if ShortCutText = '' then Exit;
   for Key := $08 to $FF do begin { Copy range from table in ShortCutToText }
-    Name:=ShortCutToText(Key);
+    Name := ShortCutToText(Key);
     if (Name<>'') and (length(Name)=length(ShortCutText)-StartPos+1)
     and (AnsiStrLIComp(@ShortCutText[StartPos], PChar(Name), length(Name)) = 0)
     then begin
