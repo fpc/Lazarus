@@ -201,6 +201,7 @@ type
     procedure SetupPopupMenu;
     procedure StopEditingCaption;
     procedure UpdateButtonGlyphs(isInBar: boolean);
+    function UpdateImageIndex(anImageList: TCustomImageList): Boolean;
     // user actions
     procedure AddFromTemplate(Sender: TObject);
     procedure AddImageListIcon(Sender: TObject);
@@ -1446,36 +1447,34 @@ begin
   end;
 end;
 
-procedure TShadowMenu.AddImageListIcon(Sender: TObject);
+function TShadowMenu.UpdateImageIndex(anImageList: TCustomImageList): Boolean;
 var
   idx: integer;
-  selected: TShadowItem;
 begin
-  if (FSelectedMenuItem <> nil) then begin
-    selected:=SelectedShadowItem;
-    if (FMenu.Images <> nil) then
-    begin
-      idx:=ChooseIconFromImageListDlg(FMenu.Images);
-      if (idx > -1) then begin
-        FSelectedMenuItem.ImageIndex:=idx;
-        selected.Invalidate;
-        UpdateActionsEnabledness;
-        FEditorDesigner.PropertyEditorHook.RefreshPropertyValues;
-        FEditorDesigner.Modified;
-      end;
-    end
-    else if (selected.Level > 0) and
-            (FSelectedMenuItem.Parent.SubMenuImages <> nil) then
-      begin
-        idx:=ChooseIconFromImageListDlg(FSelectedMenuItem.Parent.SubMenuImages);
-        if (idx > -1) then begin
-          FSelectedMenuItem.ImageIndex:=idx;
-          selected.Invalidate;
-          UpdateActionsEnabledness;
-          FEditorDesigner.PropertyEditorHook.RefreshPropertyValues;
-          FEditorDesigner.Modified;
-        end;
-      end;
+  idx := ChooseIconFromImageListDlg(anImageList);
+  if idx = -1 then Exit(False);
+  FSelectedMenuItem.ImageIndex := idx;
+  Result := True;
+end;
+
+procedure TShadowMenu.AddImageListIcon(Sender: TObject);
+var
+  selected: TShadowItem;
+  UpdOk: Boolean;
+begin
+  if FSelectedMenuItem = nil then Exit;
+  UpdOk := False;
+  selected:=SelectedShadowItem;
+  if (FMenu.Images <> nil) then
+    UpdOk := UpdateImageIndex(FMenu.Images)
+  else if (selected.Level > 0)
+  and (FSelectedMenuItem.Parent.SubMenuImages <> nil) then
+    UpdOk := UpdateImageIndex(FSelectedMenuItem.Parent.SubMenuImages);
+  if UpdOk then begin
+    selected.Invalidate;
+    UpdateActionsEnabledness;
+    FEditorDesigner.PropertyEditorHook.RefreshPropertyValues;
+    FEditorDesigner.Modified;
   end;
 end;
 
