@@ -63,29 +63,27 @@ procedure TMenuItem.Click;
 var
   CallAction: Boolean;
 begin
-  if Enabled then
-  begin
-    if Assigned(OnMenuPopupHandler) then OnMenuPopupHandler(Self);
+  if not Enabled then Exit;
+  if Assigned(OnMenuPopupHandler) then
+    OnMenuPopupHandler(Self);
 
-    if AutoCheck
-    and ((not Assigned(ActionLink))
-         or (Assigned(ActionLink) and not ActionLink.IsAutoCheckLinked)) then
-    begin
-      // Break a little Delphi compatibility
-      // It makes no sense to uncheck a checked RadioItem (besides, GTK can't handle it)
-      if (not RadioItem) or (not Checked) then
-        Checked := not Checked;
-    end;
-
-    CallAction:=(not (csDesigning in ComponentState)) and (ActionLink <> nil);
-    // first call our own OnClick if it differs from Action.OnExecute
-    if Assigned(FOnClick)
-    and ((not CallAction) or (not OnClickIsActionExecute)) then
-      FOnClick(Self);
-    // then trigger the Action
-    if CallAction then
-      ActionLink.Execute(Self);
+  if AutoCheck
+  and not (Assigned(ActionLink) and ActionLink.IsAutoCheckLinked)
+  and not (csDesigning in ComponentState)
+  then begin
+    // Break a little Delphi compatibility
+    // It makes no sense to uncheck a checked RadioItem (besides, GTK can't handle it)
+    if not (RadioItem and Checked) then
+      Checked := not Checked;
   end;
+
+  CallAction := Assigned(ActionLink) and not (csDesigning in ComponentState);
+  // first call our own OnClick if it differs from Action.OnExecute
+  if Assigned(FOnClick) and not (CallAction and OnClickIsActionExecute) then
+    FOnClick(Self);
+  // then trigger the Action
+  if CallAction then
+    ActionLink.Execute(Self);
 end;
 
 {------------------------------------------------------------------------------
