@@ -201,7 +201,6 @@ type
     procedure SetupPopupMenu;
     procedure StopEditingCaption;
     procedure UpdateButtonGlyphs(isInBar: boolean);
-    function UpdateImageIndex(anImageList: TCustomImageList): Boolean;
     // user actions
     procedure AddFromTemplate(Sender: TObject);
     procedure AddImageListIcon(Sender: TObject);
@@ -1447,35 +1446,25 @@ begin
   end;
 end;
 
-function TShadowMenu.UpdateImageIndex(anImageList: TCustomImageList): Boolean;
-var
-  idx: integer;
-begin
-  idx := ChooseIconFromImageListDlg(anImageList);
-  if idx = -1 then Exit(False);
-  FSelectedMenuItem.ImageIndex := idx;
-  Result := True;
-end;
-
 procedure TShadowMenu.AddImageListIcon(Sender: TObject);
 var
+  idx: integer;
   selected: TShadowItem;
-  UpdOk: Boolean;
 begin
   if FSelectedMenuItem = nil then Exit;
-  UpdOk := False;
+  idx := -1;
   selected:=SelectedShadowItem;
   if (FMenu.Images <> nil) then
-    UpdOk := UpdateImageIndex(FMenu.Images)
+    idx := ChooseIconFromImageListDlg(FMenu.Images)
   else if (selected.Level > 0)
   and (FSelectedMenuItem.Parent.SubMenuImages <> nil) then
-    UpdOk := UpdateImageIndex(FSelectedMenuItem.Parent.SubMenuImages);
-  if UpdOk then begin
-    selected.Invalidate;
-    UpdateActionsEnabledness;
-    FEditorDesigner.PropertyEditorHook.RefreshPropertyValues;
-    FEditorDesigner.Modified;
-  end;
+    idx := ChooseIconFromImageListDlg(FSelectedMenuItem.Parent.SubMenuImages);
+  if idx = -1 then Exit;
+  FSelectedMenuItem.ImageIndex := idx;
+  selected.Invalidate;
+  UpdateActionsEnabledness;
+  FEditorDesigner.PropertyEditorHook.RefreshPropertyValues;
+  FEditorDesigner.Modified;
 end;
 
 procedure TShadowMenu.DeleteTemplate(Sender: TObject);
