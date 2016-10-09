@@ -693,8 +693,8 @@ begin
     $1B: Name := MenuKeyCaps[mkcEsc];
     $20..$28:
       Name := MenuKeyCaps[TMenuKeyCap(Ord(mkcSpace) + Key - $20)];
-    $2D..$2E:
-      Name := MenuKeyCaps[TMenuKeyCap(Ord(mkcIns) + Key - $2D)];
+    $2D: Name := MenuKeyCaps[mkcIns];
+    $2E: Name := MenuKeyCaps[mkcDel];
     $30..$39: Name := Chr(Key - $30 + Ord('0'));
     $41..$5A: Name := Chr(Key - $41 + Ord('A'));
     $60..$69: Name := 'Num' + Chr(Key - $60 + Ord('0')); //Delphi differs it from 0..9
