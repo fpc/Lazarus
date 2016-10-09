@@ -62,6 +62,8 @@ type
     SubmenuGroupBox: TGroupBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormHide(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
   strict private
     FDesigner: TMenuDesignerBase;
@@ -244,7 +246,6 @@ begin
   LoadFixedButtonGlyphs;
   LoadVariableButtonGlyphs(True);
   KeyPreview:=True;
-  GlobalDesignHook.AddHandlerSetSelection(@OnDesignerSetSelection);
   InitializeStatisticVars;
   SetupPopupAssignmentsDisplay;
 end;
@@ -252,6 +253,16 @@ end;
 procedure TMenuDesignerForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FPopupAssignments);
+end;
+
+procedure TMenuDesignerForm.FormShow(Sender: TObject);
+begin
+  GlobalDesignHook.AddHandlerSetSelection(@OnDesignerSetSelection);
+end;
+
+procedure TMenuDesignerForm.FormHide(Sender: TObject);
+begin
+  GlobalDesignHook.RemoveHandlerSetSelection(@OnDesignerSetSelection);
 end;
 
 procedure TMenuDesignerForm.HelpButtonClick(Sender: TObject);

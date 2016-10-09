@@ -11,6 +11,8 @@ object MenuDesignerForm: TMenuDesignerForm
   KeyPreview = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnHide = FormHide
+  OnShow = FormShow
   Position = poScreenCenter
   ShowHint = True
   LCLVersion = '1.7'
