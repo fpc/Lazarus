@@ -259,19 +259,21 @@ end;
 procedure TIdeCoolbarOptionsFrame.SelectBand(const ID: integer);
 var
   I: integer;
+  Band: TCoolBand;
 begin
   Coolbar.Color := clDefault;
   for I := 0 to CoolBar.Bands.Count - 1 do
   begin
+    Band := CoolBar.Bands.Items[I];
     if I <> ID then
     begin
-      CoolBar.Bands.Items[I].Color := clDefault;
-      CoolBar.Bands.Items[I].Control.Color := clDefault;
+      Band.Color := clDefault;
+      Band.Control.Color := clDefault;
     end
     else
     begin
-      CoolBar.Bands.Items[I].Color := clHighlight;
-      CoolBar.Bands.Items[I].Control.Color := clHighLight;
+      Band.Color := clHighlight;
+      Band.Control.Color := clHighLight;
     end;
   end;
 end;
@@ -329,20 +331,26 @@ end;
 procedure TIdeCoolbarOptionsFrame.PopulateToolBar;
 var
   CoolBand: TCoolBand;
-  I: Integer;
+  I, J: Integer;
+  TBar: TIDEToolBar;
 begin
   CoolBar.Bands.Clear;
   for I := 0 to FTempCoolBar.ToolBars.Count - 1 do
   begin
     CoolBand := CoolBar.Bands.Add;
-    CoolBand.Break := FTempCoolBar.ToolBars[I].CurrentOptions.Break;
-    CoolBand.Control := FTempCoolBar.ToolBars[I].Toolbar;
-    FTempCoolBar.ToolBars[I].Toolbar.Enabled := False;
+    TBar := FTempCoolBar.ToolBars[I];
+    TBar.OnToolBarClick := @ToolBarClick;
+    TBar.ToolBar.DisabledImages := TBar.ToolBar.Images;
+    CoolBand.Control := TBar.Toolbar;
+    CoolBand.Control.Enabled := True;
+    CoolBand.Break := TBar.CurrentOptions.Break;
     CoolBand.Visible := True;
     CoolBand.MinWidth := 25;
     CoolBand.MinHeight := 22;
     CoolBand.FixedSize := True;
-    FTempCoolBar.ToolBars[I].UseCurrentOptions;
+    TBar.UseCurrentOptions;
+    for J := 0 to Pred(TBar.ToolBar.ButtonCount) do
+      TBar.ToolBar.Buttons[J].Enabled := False;
   end;
   if CoolBar.Bands.Count > 0 then
     SelectBand(0);
@@ -391,6 +399,7 @@ procedure TIdeCoolbarOptionsFrame.bConfigClick(Sender: TObject);
 var
   ToConfig: Integer;
   ToolBar: TToolBar;
+  BarToConfig: TIDEToolBar;
 begin
   ToConfig := GetSelectedBand;
   if ToConfig = -1 then
@@ -402,10 +411,11 @@ begin
   if ToolBar <> nil then
   begin
     ToConfig := FTempCoolBar.FindByToolBar(ToolBar);
-    if (ToConfig <> -1)
-    and (ShowToolBarConfig(FTempCoolBar.ToolBars[ToConfig].CurrentOptions.ButtonNames) = mrOK)
+    BarToConfig := FTempCoolBar.ToolBars[ToConfig];
+    if (ToConfig <> -1) and
+      (ShowToolBarConfig(BarToConfig.CurrentOptions.ButtonNames) = mrOK)
     then
-      FTempCoolBar.ToolBars[ToConfig].UseCurrentOptions;
+      BarToConfig.UseCurrentOptions;
   end;
   Coolbar.AutosizeBands;
   EnableDisableToolbarButtons;
