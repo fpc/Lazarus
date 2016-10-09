@@ -174,8 +174,7 @@ end;
 
 { TPGIPAmbiguousFileGroup }
 
-function TPGIPAmbiguousFileGroup.Add(SrcFile, PPUFile: TPGInterPkgFile
-  ): integer;
+function TPGIPAmbiguousFileGroup.Add(SrcFile, PPUFile: TPGInterPkgFile): integer;
 begin
   if (SrcFile=nil) and (PPUFile=nil) then
     RaiseException('');

@@ -207,8 +207,7 @@ begin
   {$ENDIF}
 end;
 
-function CompareFilenamesIgnoreCase(const Filename1, Filename2: string
-  ): integer;
+function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer;
 {$IFDEF darwin}
 var
   F1: CFStringRef;

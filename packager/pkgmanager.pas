@@ -917,8 +917,7 @@ begin
 end;
 
 procedure TPkgManager.OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
-  const AFilename: string; out TheUnitName: string; out HasRegisterProc: boolean
-  );
+  const AFilename: string; out TheUnitName: string; out HasRegisterProc: boolean);
 begin
   DoGetUnitRegisterInfo(AFilename,TheUnitName,HasRegisterProc,true);
 end;
@@ -1002,8 +1001,7 @@ begin
     PackageGraphExplorer.UpdatePackageAdded(Pkg);
 end;
 
-procedure TPkgManager.PackageGraphEndUpdate(Sender: TObject;
-  GraphChanged: boolean);
+procedure TPkgManager.PackageGraphEndUpdate(Sender: TObject; GraphChanged: boolean);
 begin
   if GraphChanged then IncreaseCompilerParseStamp;
   if PackageGraphExplorer<>nil then begin
@@ -1025,8 +1023,7 @@ begin
   if (Directory<>'') and not FilenameIsAbsolute(Directory) then
     RaiseGDBException(Directory);
   //DebugLn('TPkgManager.PackageGraphFindFPCUnit "',Directory,'"');
-  Filename:=CodeToolBoss.DirectoryCachePool.FindUnitInUnitLinks(Directory,
-                                                                AUnitName);
+  Filename:=CodeToolBoss.DirectoryCachePool.FindUnitInUnitLinks(Directory, AUnitName);
 end;
 
 function TPkgManager.PackageGraphExplorerUninstallPackage(Sender: TObject;
@@ -1088,8 +1085,7 @@ begin
   PackageGraph.CloseUnneededPackages;
 end;
 
-function TPkgManager.DoShowSavePackageAsDialog(
-  APackage: TLazPackage): TModalResult;
+function TPkgManager.DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
 var
   OldPkgFilename: String;
   SaveDialog: TSaveDialog;
@@ -2078,9 +2074,9 @@ var
       // check if two copied/moved files will get the same new file name
       if NewFileToOldOwnedFile.Contains(NewFilename) then begin
         IDEMessageDialog(lisConflictDetected,
-          Format(lisTwoMovedFilesWillHaveTheSameFileNameIn, [#13, aFile
-            .Filename, #13, TIDEOwnedFile(NewFileToOldOwnedFile[NewFilename]).
-            Filename, #13, TargetFilesEdit.FilesOwnerName]), mtError, [mbCancel]);
+          Format(lisTwoMovedFilesWillHaveTheSameFileNameIn,
+                 [#13, aFile.Filename, #13, TIDEOwnedFile(NewFileToOldOwnedFile[NewFilename]).Filename,
+                  #13, TargetFilesEdit.FilesOwnerName]), mtError, [mbCancel]);
         exit;
       end;
       NewFileToOldOwnedFile[NewFilename]:=aFile;
@@ -2381,8 +2377,7 @@ var
       if NewUsedUnitFilename='' then begin
         // at the new position the unit cannot be found
         if PkgName='' then begin
-          Msg:=Format(lisUnitNotFoundAtNewPosition, [AnUnitName, NewUnitFilename
-            ]);
+          Msg:=Format(lisUnitNotFoundAtNewPosition, [AnUnitName, NewUnitFilename]);
         end else begin
           Msg:=Format(lisUnitRequiresPackage, [AnUnitName, PkgName]);
         end;
@@ -3055,10 +3050,8 @@ var
   PkgFile: TPkgFile;
 begin
   Result:='';
-  if FilenameIsAbsolute(Filename) then begin
-    Result:=ExtractFilePath(Filename);
-    exit;
-  end;
+  if FilenameIsAbsolute(Filename) then
+    exit(ExtractFilePath(Filename));
   PkgFile:=PackageGraph.FindFileInAllPackages(Filename,true,true);
   if PkgFile=nil then exit;
   APackage:=PkgFile.LazPackage;
@@ -4133,13 +4126,8 @@ end;
 
 function TPkgManager.FindPackageWithName(const PkgName: string;
   IgnorePackage: TIDEPackage): TIDEPackage;
-var
-  Pkg: TLazPackage;
 begin
-  Pkg:=nil;
-  if (IgnorePackage<>nil) then
-    Pkg:=IgnorePackage as TLazPackage;
-  Result:=PackageGraph.FindPackageWithName(PkgName,Pkg);
+  Result:=PackageGraph.FindPackageWithName(PkgName, IgnorePackage as TLazPackage);
 end;
 
 function TPkgManager.RedirectPackageDependency(APackage: TIDEPackage): TIDEPackage;
@@ -4767,8 +4755,7 @@ begin
     FreeThenNil(Result);
 end;
 
-function TPkgManager.GetPackageOfCurrentSourceEditor(out APackage: TIDEPackage
-  ): TPkgFile;
+function TPkgManager.GetPackageOfCurrentSourceEditor(out APackage: TIDEPackage): TPkgFile;
 var
   SrcEdit: TSourceEditor;
 begin
@@ -5139,8 +5126,7 @@ begin
   end;
 end;
 
-function TPkgManager.WarnAboutMissingPackageFiles(APackage: TLazPackage
-  ): TModalResult;
+function TPkgManager.WarnAboutMissingPackageFiles(APackage: TLazPackage): TModalResult;
 var
   i: Integer;
   AFile: TPkgFile;
@@ -6226,8 +6212,8 @@ begin
   end;
 end;
 
-procedure TPkgManager.OnProjectInspectorDragDropTreeView(Sender,
-  Source: TObject; X, Y: Integer);
+procedure TPkgManager.OnProjectInspectorDragDropTreeView(Sender, Source: TObject;
+  X, Y: Integer);
 begin
   {$IFDEF VerbosePkgEditDrag}
   debugln(['TPkgManager.OnProjectInspectorDragDropTreeView START']);
@@ -6364,8 +6350,7 @@ begin
     dec(Result);
 end;
 
-function TLazPackageDescriptors.FindByName(const Name: string
-  ): TPackageDescriptor;
+function TLazPackageDescriptors.FindByName(const Name: string): TPackageDescriptor;
 var
   i: LongInt;
 begin
@@ -6376,8 +6361,7 @@ begin
     Result:=nil;
 end;
 
-procedure TLazPackageDescriptors.RegisterDescriptor(
-  Descriptor: TPackageDescriptor);
+procedure TLazPackageDescriptors.RegisterDescriptor(Descriptor: TPackageDescriptor);
 begin
   if Descriptor.Name='' then
     raise Exception.Create('TLazPackageDescriptors.RegisterDescriptor Descriptor.Name empty');
@@ -6385,8 +6369,7 @@ begin
   FItems.Add(Descriptor);
 end;
 
-procedure TLazPackageDescriptors.UnregisterDescriptor(
-  Descriptor: TPackageDescriptor);
+procedure TLazPackageDescriptors.UnregisterDescriptor(Descriptor: TPackageDescriptor);
 var
   i: LongInt;
 begin
