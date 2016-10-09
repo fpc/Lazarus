@@ -48,6 +48,7 @@ begin
   Grid.Cells[3, 1] := 'abc';
   Grid.Cells[4, 1] := 'bold';
   Grid.Cells[5, 1] := 'Image';
+  Grid.Cells[2, 7] := 'Image';
   Grid.Cells[2, 3] := 'This is a long text' + LineEnding + 'with line break.';
   Grid.Cells[0, 2] := 'Vertical text';
   Grid.Cells[0, 6] := 'Centered';
@@ -152,6 +153,15 @@ begin
   if (ACol = 0) and (ARow in [2..5]) then begin
     ATop := 2;
     ABottom := 5;
+  end else
+  // Merge the next two cells adjacent to cell with text 'Image'
+  if (ACol > 1) and (Grid.Cells[ACol-1, ARow] = 'Image') then begin
+    ALeft := ACol;
+    ARight := ALeft + 1;
+  end else
+  if (ACol > 2) and (Grid.Cells[ACol-2, ARow] = 'Image') then begin
+    ALeft := ACol - 1;
+    ARight := ALeft + 1;
   end;
 end;
 

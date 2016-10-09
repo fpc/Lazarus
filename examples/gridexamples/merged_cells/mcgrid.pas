@@ -19,6 +19,7 @@ type
 
   TMCStringGrid = class(TStringGrid)
   private
+    FMergeLock: Integer;
     FOnMergeCells: TMergeCellsEvent;
     FOnDrawCellText: TDrawCellTextEvent;
   protected
@@ -114,7 +115,7 @@ function TMCStringGrid.GetCells(ACol, ARow: Integer): String;
 var
   L, T, R, B: Integer;
 begin
-  if IsMerged(ACol, ARow, L, T, R, B) then
+  if (FMergeLock = 0) and IsMerged(ACol, ARow, L, T, R, B) then
     Result := inherited GetCells(L, T)
   else
     Result := inherited GetCells(ACol, ARow);
@@ -145,6 +146,7 @@ begin
   Result := false;
   if not (goColSpanning in Options) then exit;
   if not Assigned(FOnMergeCells) then exit;
+  inc(FMergeLock);
 
   ALeft := ACol;
   ARight := ACol;
@@ -162,6 +164,7 @@ begin
     ABottom := tmp;
   end;
   Result := (ALeft <> ARight) or (ATop <> ABottom);
+  dec(FMergeLock);
 end;
 
 { Repaints the entire grid after the selection is moved because normally only
