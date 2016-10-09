@@ -22,8 +22,9 @@ begin
   if (AParent = Parent) {or (pfInserting in FFlags)} then Exit;
 
   OldParent := Parent;
-  if (OldParent <> AParent) and (OldParent <> nil) and
-     (OldParent is TNotebook) {and (not (pfRemoving in FFlags))} then
+  //if old and new parent is a TNotebook then remove the page from the old one
+  if (AParent <> nil) and (OldParent <> AParent) and (OldParent <> nil) and
+     (OldParent is TNotebook)  then
   begin
     // remove from old pagelist
     ParentNotebook := TNotebook(OldParent);
