@@ -585,8 +585,9 @@ begin
   //debugln('TCustomTabControl.SetPageIndex B ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
 
   InternalSetPageIndex(AValue);
-  if ([csDesigning, csLoading, csDestroying] * ComponentState = []) then
-    DoChange;
+  //Delphi does not do this. In future we might make this configurable, so for the time being I commented it out
+  //if ([csDesigning, csLoading, csDestroying] * ComponentState = []) then
+  //  DoChange;
 end;
 
 {$IFDEF old}
