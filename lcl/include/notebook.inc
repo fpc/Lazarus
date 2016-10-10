@@ -101,6 +101,8 @@ begin
   if (Index < 0) or (Index >= fPageList.Count) then Exit;
 
   APage := TPage(fPageList[Index]);
+  //Update fPageList
+  fPageList.Delete(Index);
   // delete handle
   APage.Parent := nil;
   // free the page
