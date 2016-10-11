@@ -49,8 +49,7 @@ type
     property ActionList: TCustomActionList read FActionList write SetActionList;
     property Index: Integer read GetIndex write SetIndex stored False;
   published
-    property Category: string
-      read FCategory write SetCategory;
+    property Category: string read FCategory write SetCategory;
   end;
 
   TContainedActionClass = class of TContainedAction;
