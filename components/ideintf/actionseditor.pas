@@ -125,6 +125,8 @@ type
       {%H-}Shift: TShiftState);
     procedure ActionListEditorKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
+    procedure FormHide(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure lstActionNameDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
     procedure SplitterCanResize(Sender: TObject; var {%H-}NewSize: Integer;
@@ -374,6 +376,71 @@ end;
 
 { TActionListEditor }
 
+constructor TActionListEditor.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Caption := oisActionListEditor;
+  lblCategory.Caption := oisCategory;
+  lblName.Caption := oisAction;
+  Splitter.MinSize := lblCategory.Left + lblCategory.Width;
+  ActNew.Hint := cActionListEditorNewAction;
+  ActNewStd.Hint := cActionListEditorNewStdAction;
+  ActDelete.Hint := cActionListEditorDeleteActionHint;
+  ActMoveUp.Hint := cActionListEditorMoveUpAction;
+  ActMoveDown.Hint := cActionListEditorMoveDownAction;
+  ActPanelDescr.Caption := cActionListEditorPanelDescrriptions;
+  ActPanelToolBar.Caption := cActionListEditorPanelToolBar;
+  btnAddMore.Hint := cActionListEditorNewAction;
+  mItemToolBarNewAction.Caption := cActionListEditorNewAction;
+  mItemToolBarNewStdAction.Caption := cActionListEditorNewStdAction;
+  mItemActListNewAction.Caption := cActionListEditorNewAction;
+  mItemActListNewStdAction.Caption := cActionListEditorNewStdAction;
+  mItemActListMoveDownAction.Caption := cActionListEditorMoveDownAction;
+  mItemActListMoveUpAction.Caption := cActionListEditorMoveUpAction;
+  mItemActListDelAction.Caption := cActionListEditorDeleteAction;
+  AddActionEditor(Self);
+end;
+
+destructor TActionListEditor.Destroy;
+begin
+  if Assigned(GlobalDesignHook) then
+    GlobalDesignHook.RemoveAllHandlersForObject(Self);
+  ReleaseActionEditor(Self);
+  inherited Destroy;
+end;
+
+procedure TActionListEditor.FormCreate(Sender: TObject);
+begin
+  //imageindex 0 exists
+  ImageList1.AddResourceName(HInstance, 'laz_add'); //imageindex 1
+  ImageList1.AddResourceName(HInstance, 'laz_delete'); //imageindex 2
+  ImageList1.AddResourceName(HInstance, 'arrow_up'); //imadeindex 3
+  ImageList1.AddResourceName(HInstance, 'arrow_down'); //imageindex 4
+  btnAddMore.ImageIndex := 0;
+  // These must be set in code because OI does not work with non-existent values.
+  btnAdd.ImageIndex := 1;
+  btnDelete.ImageIndex := 2;
+  btnUp.ImageIndex := 3;
+  btnDown.ImageIndex := 4;
+end;
+
+procedure TActionListEditor.FormShow(Sender: TObject);
+begin
+  Assert(Assigned(GlobalDesignHook), 'TActionListEditor.FormShow: GlobalDesignHook not assigned.');
+  GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
+  GlobalDesignHook.AddHandlerSetSelection(@OnComponentSelection);
+  GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnRefreshPropertyValues);
+  GlobalDesignHook.AddHandlerPersistentDeleting(@OnComponentDelete);
+end;
+
+procedure TActionListEditor.FormHide(Sender: TObject);
+begin
+  GlobalDesignHook.RemoveHandlerComponentRenamed(@OnComponentRenamed);
+  GlobalDesignHook.RemoveHandlerSetSelection(@OnComponentSelection);
+  GlobalDesignHook.RemoveHandlerRefreshPropertyValues(@OnRefreshPropertyValues);
+  GlobalDesignHook.RemoveHandlerPersistentDeleting(@OnComponentDelete);
+end;
+
 function TActionListEditor.CategoryIndexOf(Category: String): Integer;
 begin
   Assert((Category <> cActionListEditorUnknownCategory)
@@ -401,7 +468,7 @@ end;
 
 procedure TActionListEditor.OnComponentRenamed(AComponent: TComponent);
 begin
-  if Visible and Assigned(FActionList)
+  if Assigned(FActionList)
   and (AComponent is TAction) and (TAction(AComponent).ActionList = FActionList)
   and Assigned(FActionList.ActionByName(AComponent.Name)) then
     lstActionName.Items[lstActionName.ItemIndex] := AComponent.Name;
@@ -414,11 +481,9 @@ var
   tmpCategory: String;
 begin
   // TODO: multiselect
-  if Self.Visible
-     and Assigned(NewSelection)
-     and (NewSelection.Count > 0)
-     and (NewSelection.Items[0] is TContainedAction)
-     and (TContainedAction(NewSelection.Items[0]).ActionList = FActionList) then
+  if Assigned(NewSelection) and (NewSelection.Count > 0)
+  and (NewSelection.Items[0] is TContainedAction)
+  and (TContainedAction(NewSelection.Items[0]).ActionList = FActionList) then
     begin
       if GetSelectedAction = NewSelection.Items[0] then Exit;
       CurAct := TContainedAction(NewSelection.Items[0]);
@@ -438,7 +503,8 @@ begin
       lstActionName.ItemIndex := lstActionName.Items.IndexOf(CurAct.Name);
       lstActionName.Click;
     end
-  else lstActionName.ItemIndex := -1;
+  else
+    lstActionName.ItemIndex := -1;
 end;
 
 procedure TActionListEditor.OnRefreshPropertyValues;
@@ -450,11 +516,10 @@ var
   tmpIndex, OldIndex: Integer;
   tmpValidAllCategories, tmpIsActCategory: Boolean;
 begin
-  if not Visible then Exit;
-  if GlobalDesignHook = nil then Exit;
   ASelections := TPersistentSelectionList.Create;
-  GlobalDesignHook.GetSelection(ASelections);
   try
+    Assert(Assigned(GlobalDesignHook));
+    GlobalDesignHook.GetSelection(ASelections);
     if ASelections.Count = 0 then Exit;
     curSel := ASelections.Items[0];
     if not (curSel is TContainedAction) then Exit;
@@ -691,21 +756,6 @@ begin
   if Ord(Key) = VK_ESCAPE then Self.Close;
 end;
 
-procedure TActionListEditor.FormCreate(Sender: TObject);
-begin
-  //imageindex 0 exists
-  ImageList1.AddResourceName(HInstance, 'laz_add'); //imageindex 1
-  ImageList1.AddResourceName(HInstance, 'laz_delete'); //imageindex 2
-  ImageList1.AddResourceName(HInstance, 'arrow_up'); //imadeindex 3
-  ImageList1.AddResourceName(HInstance, 'arrow_down'); //imageindex 4
-  btnAddMore.ImageIndex := 0;
-  // These must be set in code because OI does not work with non-existent values.
-  btnAdd.ImageIndex := 1;
-  btnDelete.ImageIndex := 2;
-  btnUp.ImageIndex := 3;
-  btnDown.ImageIndex := 4;
-end;
-
 procedure TActionListEditor.lstActionNameDrawItem(Control: TWinControl;
   Index: Integer; ARect: TRect; State: TOwnerDrawState);
 var
@@ -852,50 +902,6 @@ begin
   if CurAction = nil then Exit;
   // Add OnExecute for this action
   CreateComponentEvent(CurAction,'OnExecute');
-end;
-
-constructor TActionListEditor.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  Caption := oisActionListEditor;
-  lblCategory.Caption := oisCategory;
-  lblName.Caption := oisAction;
-  Splitter.MinSize := lblCategory.Left + lblCategory.Width;
-  ActNew.Hint := cActionListEditorNewAction;
-  ActNewStd.Hint := cActionListEditorNewStdAction;
-  ActDelete.Hint := cActionListEditorDeleteActionHint;
-  ActMoveUp.Hint := cActionListEditorMoveUpAction;
-  ActMoveDown.Hint := cActionListEditorMoveDownAction;
-  ActPanelDescr.Caption := cActionListEditorPanelDescrriptions;
-  ActPanelToolBar.Caption := cActionListEditorPanelToolBar;
-  btnAddMore.Hint := cActionListEditorNewAction;
-  mItemToolBarNewAction.Caption := cActionListEditorNewAction;
-  mItemToolBarNewStdAction.Caption := cActionListEditorNewStdAction;
-  mItemActListNewAction.Caption := cActionListEditorNewAction;
-  mItemActListNewStdAction.Caption := cActionListEditorNewStdAction;
-  mItemActListMoveDownAction.Caption := cActionListEditorMoveDownAction;
-  mItemActListMoveUpAction.Caption := cActionListEditorMoveUpAction;
-  mItemActListDelAction.Caption := cActionListEditorDeleteAction;
-
-  if Assigned(GlobalDesignHook) then
-  begin
-    GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
-    GlobalDesignHook.AddHandlerSetSelection(@OnComponentSelection);
-    GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnRefreshPropertyValues);
-    GlobalDesignHook.AddHandlerPersistentDeleting(@OnComponentDelete);
-  end;
-
-  AddActionEditor(Self);
-end;
-
-destructor TActionListEditor.Destroy;
-begin
-  if Assigned(GlobalDesignHook) then
-    GlobalDesignHook.RemoveAllHandlersForObject(Self);
-
-  ReleaseActionEditor(Self);
-  
-  inherited Destroy;
 end;
 
 procedure TActionListEditor.SetActionList(AActionList: TActionList);
