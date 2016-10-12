@@ -437,6 +437,7 @@ type
     FRubberbandCreationColor: TColor;
     FRubberbandSelectsGrandChilds: boolean;
     FCheckPackagesOnFormCreate: boolean;
+    FFormTitleBarChangesObjectInspector: boolean;
 
     // object inspector
     FObjectInspectorOptions: TOIOptions;
@@ -686,6 +687,9 @@ type
                                                       write FCreateComponentFocusNameProperty;
     property SwitchToFavoritesOITab: boolean read FSwitchToFavoritesOITab
                                              write FSwitchToFavoritesOITab;
+    property FormTitleBarChangesObjectInspector: boolean read FFormTitleBarChangesObjectInspector
+                                                        write FFormTitleBarChangesObjectInspector;
+
     // object inspector
     property ObjectInspectorOptions: TOIOptions read FObjectInspectorOptions;
 
@@ -1346,6 +1350,7 @@ begin
   FDesignerPaintLazy:=true;
   FCreateComponentFocusNameProperty:=false;
   FSwitchToFavoritesOITab:=false;
+  FFormTitleBarChangesObjectInspector:=false;
 
   // object inspector
   FObjectInspectorOptions:=TOIOptions.Create;
@@ -1786,6 +1791,7 @@ begin
     FCreateComponentFocusNameProperty:=FXMLCfg.GetValue(
        Path+'FormEditor/CreateComponentFocusNameProperty/Value',false);
     FSwitchToFavoritesOITab:=FXMLCfg.GetValue(Path+'FormEditor/SwitchToFavoritesOITab/Value',false);
+    FFormTitleBarChangesObjectInspector:=FXMLCfg.GetValue(Path+'FormEditor/FormTitleBarChangesObjectInspector/Value',false);
 
     if not OnlyDesktop then
       LoadNonDesktop(Path);
@@ -2128,6 +2134,7 @@ begin
     FXMLCfg.SetDeleteValue(Path+'FormEditor/CreateComponentFocusNameProperty/Value',
        FCreateComponentFocusNameProperty,false);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/SwitchToFavoritesOITab/Value',FSwitchToFavoritesOITab,false);
+    FXMLCfg.SetDeleteValue(Path+'FormEditor/FormTitleBarChangesObjectInspector/Value',FFormTitleBarChangesObjectInspector,false);
 
     FXMLCfg.SetDeleteValue(Path+'ShowCompileDialog/Value',FShowCompileDialog,False);
     FXMLCfg.SetDeleteValue(Path+'AutoCloseCompileDialog/Value',FAutoCloseCompileDialog,False);

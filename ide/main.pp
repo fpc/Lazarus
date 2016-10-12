@@ -11078,6 +11078,9 @@ begin
   {$ENDIF}
   DisplayState:= dsForm;
   LastFormActivated := (Sender as TDesigner).Form;
+  if EnvironmentOptions.FormTitleBarChangesObjectInspector
+  and (TheControlSelection.SelectionForm <> LastFormActivated) then
+    TheControlSelection.AssignPersistent(LastFormActivated);
   {$IFDEF VerboseComponentPalette}
   DebugLn('***');
   DebugLn(['** TMainIDE.OnDesignerActivated: Calling UpdateIDEComponentPalette(true)',

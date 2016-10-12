@@ -284,7 +284,7 @@ object FormEditorOptionsFrame: TFormEditorOptionsFrame
       Width = 232
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
-      BorderSpacing.Bottom = 6
+      BorderSpacing.Bottom = 3
       Caption = 'CheckPackagesOnFormCreateCheckBox'
       ParentShowHint = False
       ShowHint = True
@@ -304,6 +304,25 @@ object FormEditorOptionsFrame: TFormEditorOptionsFrame
       ParentShowHint = False
       ShowHint = True
       TabOrder = 7
+    end
+    object FormTitleBarChangesObjectInspectorCheckBox: TCheckBox
+      AnchorSideLeft.Control = FormEditMiscGroupBox
+      AnchorSideTop.Control = CheckPackagesOnFormCreateCheckBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideBottom.Control = FormEditMiscGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 166
+      Width = 247
+      Anchors = [akTop, akLeft, akBottom]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      BorderSpacing.Bottom = 6
+      Caption = 'FormTitleBarChangesObjectInspectorCheckBox'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 9
     end
   end
   object GuideLinesGroupBox: TGroupBox

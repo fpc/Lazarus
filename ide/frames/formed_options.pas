@@ -42,6 +42,7 @@ type
   { TFormEditorOptionsFrame }
 
   TFormEditorOptionsFrame = class(TAbstractIDEOptionsEditor)
+    FormTitleBarChangesObjectInspectorCheckBox: TCheckBox;
     SwitchToFavoritesOITabCheckBox:TCheckBox;
     CheckPackagesOnFormCreateCheckBox: TCheckBox;
     OpenDesignerOnOpenUnitCheckBox: TCheckBox;
@@ -136,6 +137,8 @@ procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
     SwitchToFavoritesOITabCheckBox.Hint:=lisSwitchToFavoritesTabAfterAsking;
     CheckPackagesOnFormCreateCheckBox.Caption:=dlgCheckPackagesOnFormCreate;
     CheckPackagesOnFormCreateCheckBox.Hint:=dlgCheckPackagesOnFormCreateHint;
+    FormTitleBarChangesObjectInspectorCheckBox.Caption:=dlgFormTitleBarChangesObjectInspector;
+    FormTitleBarChangesObjectInspectorCheckBox.Hint:=dlgFormTitleBarChangesObjectInspectorHint;
   end;
 begin
   GridGroupBox.Caption := dlgEnvGrid;
@@ -178,6 +181,7 @@ begin
     CreateCompFocusNameCheckBox.Checked := CreateComponentFocusNameProperty;
     SwitchToFavoritesOITabCheckBox.Checked := SwitchToFavoritesOITab;
     SwitchToFavoritesOITabCheckBox.Enabled := CreateCompFocusNameCheckBox.Checked;
+    FormTitleBarChangesObjectInspectorCheckBox.Checked := FormTitleBarChangesObjectInspector;
   end;
   FLoaded := True;
 end;
@@ -211,6 +215,7 @@ begin
     DesignerPaintLazy := DesignerPaintLazyCheckBox.Checked;
     CreateComponentFocusNameProperty := CreateCompFocusNameCheckBox.Checked;
     SwitchToFavoritesOITab := SwitchToFavoritesOITabCheckBox.Checked;
+    FormTitleBarChangesObjectInspector := FormTitleBarChangesObjectInspectorCheckBox.Checked;
   end;
 end;
 
