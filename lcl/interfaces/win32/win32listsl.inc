@@ -238,6 +238,8 @@ var
   lSelected: Boolean;
   AData: Pointer;
 begin
+  if Sorted then
+    Error(SSortedListError,0);
   // remember selection
   lSelected := False;
   lItemIndex := -1;
