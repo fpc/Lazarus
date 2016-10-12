@@ -784,19 +784,14 @@ end;
 class procedure TGtk2WSWinControl.SetCursor(const AWinControl: TWinControl; const ACursor: HCursor);
 var
   WidgetInfo: PWidgetInfo;
-  NewCursor: HCURSOR;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetCursor')
   then Exit;
 
-  if ACursor <> Screen.Cursors[crDefault] then
-    NewCursor := ACursor
-  else
-    NewCursor := 0;
   WidgetInfo := GetWidgetInfo({%H-}Pointer(AWinControl.Handle));
-  if WidgetInfo^.ControlCursor <> NewCursor then
+  if WidgetInfo^.ControlCursor <> ACursor then
   begin
-    WidgetInfo^.ControlCursor := NewCursor;
+    WidgetInfo^.ControlCursor := ACursor;
     TGtkPrivateWidgetClass(AWinControl.WidgetSetClass.WSPrivate).UpdateCursor(WidgetInfo);
   end;
 end;
