@@ -1440,7 +1440,7 @@ resourcestring
   dlgCheckPackagesOnFormCreate = 'Check packages on form create';
   dlgCheckPackagesOnFormCreateHint = 'The form may require a package to work. '
     +'Install such a package automatically.';
-  dlgFormTitleBarChangesObjectInspector = 'Form title bar selection changes Object Inspector';
+  dlgFormTitleBarChangesObjectInspector = 'Change Object Inspector contents on clicking form title bar';
   dlgFormTitleBarChangesObjectInspectorHint = 'Show a form''s properties in Object Inspector '
     +'by clicking on its title bar.';
 
