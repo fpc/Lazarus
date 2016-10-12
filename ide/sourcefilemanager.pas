@@ -159,7 +159,7 @@ type
     FListForm: TGenericCheckListForm;
     FCheckingFilesOnDisk: boolean;
     FCheckFilesOnDiskNeeded: boolean;
-    procedure AskToSaveEditors(EditorList: TList);
+    function AskToSaveEditors(EditorList: TList): TModalResult;
     function AddPathToBuildModes(aPath, CurDirectory: string; IsIncludeFile: Boolean): Boolean;
     function CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
     function FileExistsInIDE(const Filename: string;
@@ -4091,13 +4091,14 @@ begin
   end;
 end;
 
-procedure TLazSourceFileManager.AskToSaveEditors(EditorList: TList);
+function TLazSourceFileManager.AskToSaveEditors(EditorList: TList): TModalResult;
 // Ask from user about saving the changed SourceEditors in EditorList.
 var
   Ed: TSourceEditor;
   r: TModalResult;
   i, Remain: Integer;
 begin
+  Result := mrOK;
   if EditorList.Count = 1 then begin
     Ed := TSourceEditor(EditorList[0]);
     r := IDEQuestionDialog(lisSourceModified,
@@ -4106,7 +4107,7 @@ begin
     case r of
       mrYes: SaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
       mrNo: ; // don't save
-      mrAbort: exit;
+      mrAbort, mrCancel:  Result := mrAbort;
     end;
   end
   else if EditorList.Count > 1 then
@@ -4126,7 +4127,10 @@ begin
             break;
           end;
         mrIgnore: break; // don't save anymore
-        mrAbort: exit;
+        mrAbort, mrCancel: begin
+            Result := mrAbort;
+            break;
+          end;
       end;
     end;
 end;
@@ -4147,7 +4151,7 @@ begin
       if CheckEditorNeedsSave(Ed, False) then
         EditorList.Add(Ed);
     end;
-    AskToSaveEditors(EditorList);
+    if AskToSaveEditors(EditorList) <> mrOK then Exit;
   finally
     EditorList.Free;
   end;
@@ -4180,7 +4184,7 @@ begin
       if (i <> PageIndex) and CheckEditorNeedsSave(Ed, True) then
         EditorList.Add(Ed);
     end;
-    AskToSaveEditors(EditorList);
+    if AskToSaveEditors(EditorList) <> mrOK then Exit;
   finally
     EditorList.Free;
   end;
