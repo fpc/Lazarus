@@ -154,11 +154,11 @@ begin
   inherited DoDestroy;
 end;
 
-function TQtPrinters.Write(const Buffer; Count: Integer;
-  var Written: Integer): Boolean;
+function TQtPrinters.Write(const Buffer; Count: Integer; out Written: Integer): Boolean;
 begin
   Result := False;
   CheckRawMode(True);
+  Written := 0;
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.Write(): Raw mode is not yet supported');
   {$ENDIF}

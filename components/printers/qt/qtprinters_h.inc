@@ -57,7 +57,7 @@ type
     function GetPaperSize(Const Str: String): QPrinterPageSize;
   public
     constructor Create; override;
-    function Write(const {%H-}Buffer; {%H-}Count:Integer; var {%H-}Written: Integer): Boolean; override;
+    function Write(const {%H-}Buffer; {%H-}Count:Integer; out Written: Integer): Boolean; override;
 
     property ColorMode: QPrinterColorMode read GetColorMode write SetColorMode;
     property FullPage: Boolean read GetFullPage write SetFullPage;

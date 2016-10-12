@@ -276,7 +276,7 @@ type
      procedure Refresh;
      procedure SetPrinter(aName : String);
      Procedure RestoreDefaultBin; virtual;
-     function  Write(const Buffer; Count:Integer; var Written: Integer): Boolean; virtual;
+     function  Write(const Buffer; Count:Integer; out Written: Integer): Boolean; virtual;
      function  Write(const s: ansistring): boolean; overload;
 
      property PrinterIndex : integer read GetPrinterIndex write SetPrinterIndex;
@@ -479,9 +479,10 @@ begin
   DoSetBinName(DoGetDefaultBinName);
 end;
 
-function TPrinter.Write(const Buffer; Count:Integer; var Written: Integer): Boolean;
+function TPrinter.Write(const Buffer; Count: Integer; out Written: Integer): Boolean;
 begin
   result := False;
+  Written := 0;
 end;
 
 function TPrinter.Write(const S: ansistring): Boolean; overload;

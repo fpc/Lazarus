@@ -161,7 +161,7 @@ type
      procedure DoDestroy; override;
   public
     constructor Create; override;
-    function Write(const Buffer; Count:Integer; var Written: Integer): Boolean; override;
+    function Write(const Buffer; Count:Integer; out Written: Integer): Boolean; override;
     
     {-------------------------------------------------
         SPECIFIC CUPS METHODS OR PROPERTIES

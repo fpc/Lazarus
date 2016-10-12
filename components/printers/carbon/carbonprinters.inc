@@ -293,12 +293,11 @@ begin
   inherited DoDestroy;
 end;
 
-function TCarbonPrinter.Write(const Buffer; Count: Integer;
-  var Written: Integer): Boolean;
+function TCarbonPrinter.Write(const Buffer; Count: Integer; out Written: Integer): Boolean;
 begin
   Result := False;
   CheckRawMode(True);
-
+  Written := 0;
   DebugLn('TCarbonPrinter.Write Error: Raw mode is not supported for Carbon!');
 end;
 

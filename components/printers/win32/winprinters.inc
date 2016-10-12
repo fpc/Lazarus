@@ -47,8 +47,7 @@ begin
   inherited DoDestroy;
 end;
 
-function TWinPrinter.Write(const Buffer; Count: Integer;
-  var Written: Integer): Boolean;
+function TWinPrinter.Write(const Buffer; Count: Integer; out Written: Integer): Boolean;
 begin
   CheckRawMode(True);
   Result := WritePrinter(FPrinterHandle, @Buffer, Count, pdword(@Written));

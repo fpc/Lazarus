@@ -83,7 +83,7 @@ Type
   public
     constructor Create; override;
     
-    function Write(const Buffer; Count:Integer; var Written: Integer): Boolean; override;
+    function Write(const Buffer; Count:Integer; out Written: Integer): Boolean; override;
 
     //Warning not portable functions here
     procedure AdvancedProperties;

@@ -292,12 +292,11 @@ begin
   inherited DoDestroy;
 end;
 
-function TCocoaPrinter.Write(const Buffer; Count: Integer;
-  var Written: Integer): Boolean;
+function TCocoaPrinter.Write(const Buffer; Count: Integer; out Written: Integer): Boolean;
 begin
   Result := False;
   CheckRawMode(True);
-
+  Written := 0;
   DebugLn('TCocoaPrinter.Write Error: Raw mode is not supported for Cocoa!');
 end;
 

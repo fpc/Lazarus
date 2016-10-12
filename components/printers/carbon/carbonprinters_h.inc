@@ -89,7 +89,7 @@ type
     procedure UpdatePrinter;
   public
     constructor Create; override;
-    function Write(const {%H-}Buffer; {%H-}Count:Integer; var {%H-}Written: Integer): Boolean; override;
+    function Write(const {%H-}Buffer; {%H-}Count:Integer; out Written: Integer): Boolean; override;
     // Warning not portable functions here
     property CurrentPrinterName: String read GetCurrentPrinterName;
     property PrintSession: PMPrintSession read FPrintSession;

@@ -96,7 +96,7 @@ begin
 end;
 
 //write count bytes from buffer to raw mode stream
-function TCUPSPrinter.Write(const Buffer; Count: Integer; var Written: Integer
+function TCUPSPrinter.Write(const Buffer; Count: Integer; out Written: Integer
   ): Boolean;
 begin
   result := False;
