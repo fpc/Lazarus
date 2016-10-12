@@ -446,8 +446,7 @@ begin
          if GTK_IS_ENTRY(gObject) then
          begin
            ConnectSenderSignal(gObject,'backspace', @gtkchanged_editbox_backspace);
-           if (gtk_major_version = 2) and (gtk_minor_version < 17) then
-             ConnectSenderSignal(gObject,'delete-from-cursor', @gtkchanged_editbox_delete);
+           ConnectSenderSignal(gObject,'delete-from-cursor', @gtkchanged_editbox_delete);
          end;
          ConnectSenderSignal(gObject, 'changed', @gtkchanged_editbox);
          {$ENDIF}

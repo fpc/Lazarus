@@ -601,11 +601,8 @@ begin
     begin
       {mark as invalid event for gtkchanged_editbox, so
        it doesn't update cursor pos or we have a mess.}
-      if (gtk_major_version = 2) and (gtk_minor_version < 17) then
-      begin
-        Info := GetWidgetInfo(Widget, False);
-        include(Info^.Flags, wwiInvalidEvent);
-      end;
+      Info := GetWidgetInfo(Widget, False);
+      include(Info^.Flags, wwiInvalidEvent);
       PGtkEntry(Widget)^.current_pos := GStart - 1;
     end;
   end;
@@ -2738,14 +2735,10 @@ var
   Info: PWidgetInfo;
 begin
   EventTrace('Cut to clip', data);
-  if (Widget=nil) then ;
-  if (gtk_major_version = 2) and (gtk_minor_version < 17) then
+  if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
   begin
-    if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
-    begin
-      Info := GetWidgetInfo(Widget, False);
-      include(Info^.Flags, wwiInvalidEvent);
-    end;
+    Info := GetWidgetInfo(Widget, False);
+    include(Info^.Flags, wwiInvalidEvent);
   end;
   Mess.msg := LM_CUT;
   Result:= DeliverMessage(Data, Mess) = 0;
