@@ -452,16 +452,8 @@ procedure PopulateFileAndDirectoryLists(FileSelection: PGtkFileSelection;
 
 // notebook
 function IsTTabControl(AWidget: PGtkWidget): Boolean;
-{$IFDEF GTK2USEDUMMYNOTEBOOKPAGE}
-function GetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook): PGtkWidget;
-procedure SetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook;
-  DummyWidget: PGtkWidget);
-{$ENDIF}
 procedure UpdateNoteBookClientWidget(ANoteBook: TObject);
 function GetGtkNoteBookPageCount(ANoteBookWidget: PGtkNoteBook): integer;
-{$IFDEF GTK2USEDUMMYNOTEBOOKPAGE}
-procedure RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
-{$ENDIF}
 procedure UpdateNotebookPageTab(ANoteBook, APage: TObject);
 procedure UpdateNotebookTabFont(APage: TWinControl; AFont: TFont);
 

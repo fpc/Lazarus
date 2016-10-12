@@ -240,9 +240,6 @@ type
     function DestroyTimer(TimerHandle: THandle) : boolean; override;
     procedure DestroyLCLComponent(Sender: TObject);
     // notebook
-    {$IFDEF GTK2USEDUMMYNOTEBOOKPAGE}
-    procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
-    {$ENDIF}
 
     procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;

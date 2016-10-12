@@ -4115,30 +4115,6 @@ begin
   Result := g_object_get_data(PGObject(WidgetInfo^.CoreWidget),'lcl_ttabcontrol') <> nil;
 end;
 
-{-------------------------------------------------------------------------------
-  function GetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook): PGtkWidget;
-
-  Retrieves the DummyWidget associated with the ANoteBookWidget
--------------------------------------------------------------------------------}
-{$IFDEF GTK2USEDUMMYNOTEBOOKPAGE}
-function GetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook): PGtkWidget;
-begin
-  Result:=g_object_get_data(PGObject(ANoteBookWidget),'LCLDummyPage');
-end;
-
-{-------------------------------------------------------------------------------
-  procedure SetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook;
-    DummyWidget: PGtkWidget): PGtkWidget;
-
-  Associates the DummyWidget with the ANoteBookWidget
--------------------------------------------------------------------------------}
-procedure SetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook;
-  DummyWidget: PGtkWidget);
-begin
-  g_object_set_data(PGObject(ANoteBookWidget),'LCLDummyPage',DummyWidget);
-end;
-{$ENDIF}
-
 {------------------------------------------------------------------------------
   UpdateNoteBookClientWidget
   Params: ANoteBook: TObject
@@ -4174,26 +4150,6 @@ begin
     AListItem:=AListItem^.Next;
   end;
 end;
-
-{-------------------------------------------------------------------------------
-  procedure RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
-
-  Removes the dummy page.
-  See also AddDummyNoteBookPage
--------------------------------------------------------------------------------}
-{$IFDEF GTK2USEDUMMYNOTEBOOKPAGE}
-procedure RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
-var
-  DummyWidget: PGtkWidget;
-begin
-  DummyWidget:=GetGtkNoteBookDummyPage(NoteBookWidget);
-  if DummyWidget=nil then exit;
-  gtk_notebook_remove_page(NoteBookWidget,
-                           gtk_notebook_page_num(NoteBookWidget,DummyWidget));
-  DummyWidget:=nil;
-  SetGtkNoteBookDummyPage(NoteBookWidget,DummyWidget);
-end;
-{$ENDIF}
 
 {-------------------------------------------------------------------------------
   method UpdateNotebookPageTab

@@ -221,25 +221,6 @@ begin
   im_context_string:=Str;
 end;
 
-{$IfNDef GTK2_2}
-procedure gtkTreeSelectionCountSelectedRows({%H-}model : PGtkTreeModel; {%H-}path : PGtkTreePath;
-                                  {%H-}iter : PGtkTreeIter; data : PGint); cdecl;
-begin
-  If Assigned(Data) then
-    Inc(Data^);
-end;
-
-Type
-  PPGList = ^PGList;
-  
-procedure gtkTreeSelectionGetSelectedRows({%H-}model : PGtkTreeModel; path : PGtkTreePath;
-                                  {%H-}iter : PGtkTreeIter; data : PPGList); cdecl;
-begin
-  If Assigned(Data) then
-    Data^ := g_list_append(Data^, gtk_tree_path_copy(path));
-end;
-{$EndIf}
-
 {------------------------------------------------------------------------------
   Function: TGtk2WidgetSet._SetCallbackEx
 
@@ -4714,26 +4695,7 @@ begin
     gtk_window_set_focus(PGtkWindow(GtkWindow),nil);
   end;
 
-  if Sender is TControl then begin
-    if Sender is TCustomPage then begin
-      // a notebook always need at least one page
-      // -> if this is the last page, then add a dummy page
-      APage:=TCustomPage(Sender);
-      if (APage.Parent<>nil) and APage.Parent.HandleAllocated
-      and (APage.Parent is TPageControl) then
-      begin
-        NoteBookWidget:={%H-}PGtkNotebook(TCustomTabControl(APage.Parent).Handle);
-        if GetGtkNoteBookPageCount(NoteBookWidget)=1 then
-        begin
-          {$IFDEF GTK2USEDUMMYNOTEBOOKPAGE}
-          AddDummyNoteBookPage(NoteBookWidget);
-          UpdateNoteBookClientWidget(TCustomTabControl(APage.Parent));
-          {$ENDIF}
-        end;
-      end;
-    end;
-  end
-  else if Sender is TCommonDialog then begin
+  if Sender is TCommonDialog then begin
     DestroyCommonDialogAddOns(TCommonDialog(Sender));
   end;
 
@@ -5291,38 +5253,6 @@ begin
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   FreeMem(ImgData);
 end;
-
-{-------------------------------------------------------------------------------
-  procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
-
-  Adds the dummy page.
-  A gtk notebook must have at least one page, but TCustomTabControl also allows
-  no pages at all. Therefore at least a dummy page is added. This dummy page is
-  removed as soon as other pages are added.
--------------------------------------------------------------------------------}
-{$IFDEF GTK2USEDUMMYNOTEBOOKPAGE}
-procedure TGtk2WidgetSet.AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
-var
-  DummyWidget: PGtkWidget;
-  ALabel: PGtkWidget;
-  MenuLabel: PGtkWidget;
-begin
-  if NoteBookWidget=nil then exit;
-  DummyWidget:=GetGtkNoteBookDummyPage(NoteBookWidget);
-  if (DummyWidget=nil) then begin
-    // the notebook has no pages
-    // -> add a dummy page
-    DummyWidget := gtk_hbox_new(false, 0);
-    gtk_widget_show(DummyWidget);
-    ALabel:=gtk_label_new('');
-    gtk_widget_show(ALabel);
-    MenuLabel:=gtk_label_new('');
-    gtk_widget_show(MenuLabel);
-    gtk_notebook_append_page_menu(NoteBookWidget,DummyWidget,ALabel,MenuLabel);
-    SetGtkNoteBookDummyPage(NoteBookWidget,DummyWidget);
-  end;
-end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
   Method: TGtk2WidgetSet.SetPixel

@@ -278,7 +278,6 @@ begin
   if OldNoteBookButtonPress = nil then
     HookNoteBookClass;
 
-
   AWidget := PGtkNoteBook(gtk_notebook_new());
   WidgetInfo := CreateWidgetInfo(AWidget, AWinControl, AParams);
   {$IFDEF DebugLCLComponents}
@@ -288,12 +287,6 @@ begin
 
   if not (nboHidePageListPopup in TCustomTabControl(AWinControl).Options) then
     gtk_notebook_popup_enable(AWidget);
-
-  {$IFDEF GTK2USEDUMMYNOTEBOOKPAGE}
-  if TCustomTabControl(AWinControl).PageCount=0 then
-    // a gtk notebook needs a page -> add dummy page
-    Gtk2WidgetSet.AddDummyNoteBookPage(AWidget);
-  {$ENDIF}
 
   gtk_notebook_set_tab_pos(AWidget, GtkPositionTypeMap[TCustomTabControl(AWinControl).TabPosition]);
   Result := HWND(TLCLIntfHandle({%H-}PtrUInt(AWidget)));
@@ -408,10 +401,6 @@ begin
   if AChild.TabVisible then
     gtk_widget_show(MenuWidget);
 
-  {$IFDEF GTK2USEDUMMYNOTEBOOKPAGE}
-  // remove the dummy page (a gtk_notebook needs at least one page)
-  RemoveDummyNoteBookPage(PGtkNotebook(NoteBookWidget));
-  {$ENDIF}
   // insert the page
   gtk_notebook_insert_page_menu(PGtkNotebook(NotebookWidget), PageWidget,
     TabWidget, MenuWidget, AIndex);
