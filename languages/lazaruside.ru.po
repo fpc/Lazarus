@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-10-06 01:24+0300\n"
+"PO-Revision-Date: 2016-10-13 01:03+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1884,6 +1884,14 @@ msgstr "Запущенный экземпляр Lazarus не может прин
 #: lazarusidestrconsts.dlgforecolor
 msgid "Foreground"
 msgstr "Цвет текста"
+
+#: lazarusidestrconsts.dlgformtitlebarchangesobjectinspector
+msgid "Change Object Inspector contents on clicking form title bar"
+msgstr "Изменять содержимое инспектора объектов при щелчке по заголовку формы"
+
+#: lazarusidestrconsts.dlgformtitlebarchangesobjectinspectorhint
+msgid "Show a form's properties in Object Inspector by clicking on its title bar."
+msgstr "Показывать свойства формы в инспекторе объектов при щелчке по её заголовку"
 
 #: lazarusidestrconsts.dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"

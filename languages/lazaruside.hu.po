@@ -1884,6 +1884,14 @@ msgstr "A futó Lazarus példány nem fogad el fájlokat."
 msgid "Foreground"
 msgstr "Előtér"
 
+#: lazarusidestrconsts.dlgformtitlebarchangesobjectinspector
+msgid "Change Object Inspector contents on clicking form title bar"
+msgstr ""
+
+#: lazarusidestrconsts.dlgformtitlebarchangesobjectinspectorhint
+msgid "Show a form's properties in Object Inspector by clicking on its title bar."
+msgstr ""
+
 #: lazarusidestrconsts.dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
 msgstr "Eljárás beszúrási irányelv"

@@ -1954,6 +1954,14 @@ msgstr ""
 msgid "Foreground"
 msgstr "Farba popredia"
 
+#: lazarusidestrconsts.dlgformtitlebarchangesobjectinspector
+msgid "Change Object Inspector contents on clicking form title bar"
+msgstr ""
+
+#: lazarusidestrconsts.dlgformtitlebarchangesobjectinspectorhint
+msgid "Show a form's properties in Object Inspector by clicking on its title bar."
+msgstr ""
+
 #: lazarusidestrconsts.dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
 msgstr "Pravidlá vkladania procedúr"
