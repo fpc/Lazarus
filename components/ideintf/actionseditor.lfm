@@ -11,10 +11,12 @@ object ActionListEditor: TActionListEditor
   KeyPreview = True
   OnClose = ActionListEditorClose
   OnCreate = FormCreate
+  OnHide = FormHide
   OnKeyDown = ActionListEditorKeyDown
   OnKeyPress = ActionListEditorKeyPress
+  OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.7'
   object PanelDescr: TPanel
     Left = 0
     Height = 26
@@ -65,10 +67,8 @@ object ActionListEditor: TActionListEditor
     OnKeyDown = lstActionNameKeyDown
     OnMouseDown = lstActionNameMouseDown
     PopupMenu = PopMenuActions
-    ScrollWidth = 245
     Style = lbOwnerDrawFixed
     TabOrder = 1
-    TopIndex = -1
   end
   object lstCategory: TListBox
     Left = 0
@@ -80,9 +80,7 @@ object ActionListEditor: TActionListEditor
     OnClick = lstCategoryClick
     OnMouseDown = lstActionNameMouseDown
     PopupMenu = PopMenuActions
-    ScrollWidth = 150
     TabOrder = 2
-    TopIndex = -1
   end
   object ToolBar1: TToolBar
     Left = 0
