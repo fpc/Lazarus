@@ -5679,7 +5679,7 @@ resourcestring
                     'i 0 count-1 forb|'+#13+
                     'Here $PrevWord(0)=forb, $PrevWord(1)=i, $PrevWord(2)=0, $PrevWord(3)=count-1'+#13+#13+
                     'In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an '+
-                    'importaint operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used '+
+                    'important operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used '+
                     'to detect words for this macro: [\w\-+*\(\)\[\].^@]+';
   lisForm = 'Form';
   lisInheritedProjectComponent = 'Inherited project component';
