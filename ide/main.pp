@@ -1584,9 +1584,9 @@ begin
   Screen.AddHandlerActiveFormChanged(@HandleScreenChangedForm);
   Screen.AddHandlerActiveControlChanged(@HandleScreenChangedControl);
   IDEComponentPalette.OnClassSelected := @ComponentPaletteClassSelected;
-  MainIDEBar.SetupHints;
   SetupIDEWindowsLayout;
   RestoreIDEWindows;
+  MainIDEBar.SetupHints;
   MainIDEBar.InitPaletteAndCoolBar;
   IDEWindowCreators.AddLayoutChangedHandler(@HandleLayoutChanged);
   // make sure the main IDE bar is always shown
