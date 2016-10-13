@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-09-04 18:04+0200\n"
+"PO-Revision-Date: 2016-10-13 08:51+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -3280,7 +3280,7 @@ msgstr "Recherche interrompue par l'utilisateur."
 
 #: lazarusidestrconsts.dlgsearchcaption
 msgid "Searching ..."
-msgstr "Recherche..."
+msgstr "Recherche en cours..."
 
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
@@ -4574,7 +4574,7 @@ msgstr "Demander le nom lors de  la création"
 
 #: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
 msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
-msgstr "Un paramètre utile pour les systèmes Windows est : \"$(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe\""
+msgstr "Un paramétrage utile pour les systèmes Windows est : \"$(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe\""
 
 #: lazarusidestrconsts.lisautoadjustideheight
 msgid "Automatically adjust IDE main window height"
@@ -5519,10 +5519,8 @@ msgid ". Check if package %s is in the dependencies"
 msgstr ". Vérifier que le paquet %s est dans les dépendances"
 
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
-#, fuzzy
-#| msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\""
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
-msgstr "vérifier que l'unité lexicale suivante dans le code source est \"end\" et ne retourne pas \"lineend + end; + lineend\""
+msgstr "Vérifier que l'unité lexicale suivante dans le code source est \"end\" et sinon retourne \"LineEnding + end; + LineEnding\"."
 
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
@@ -6092,7 +6090,7 @@ msgstr "Créer les définitions pour le compilateur Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforfreepascalsvnsources
 msgid "Create Defines for Free Pascal SVN Sources"
-msgstr "Créer les définitions pour les codes sources SVN de Free Pascal"
+msgstr "Créer les définitions pour les sources SVN de Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforproject
 msgid "Create Defines for %s Project"
@@ -7346,7 +7344,7 @@ msgstr "Ouvrir l'unité %s"
 
 #: lazarusidestrconsts.liscpu
 msgid ", CPU: %s"
-msgstr ", CPU : %s"
+msgstr "- CPU : %s"
 
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
@@ -8513,14 +8511,10 @@ msgid "Program Filename:"
 msgstr "Nom du programme :"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
-#, fuzzy
-#| msgid "Scan output for Free Pascal Compiler messages"
 msgid "Scan output for FPC messages"
-msgstr "Rechercher les messages de sortie du compilateur Free Pascal"
+msgstr "Rechercher les messages de sortie de FPC"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputformakemessages
-#, fuzzy
-#| msgid "Scan output for make messages"
 msgid "Scan output for \"make\" messages"
 msgstr "Rechercher les message \"Make\" de sortie"
 
@@ -9552,7 +9546,7 @@ msgstr "obtenir le mot à la position courante du curseur "
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition2
 msgid "Get word at current cursor position."
-msgstr ""
+msgstr "Obtenir le mot à la position courante du curseur."
 
 #: lazarusidestrconsts.lisglobalsettings
 msgid "Global settings"
@@ -9687,7 +9681,6 @@ msgid "Hide Search"
 msgstr "Cacher la recherche"
 
 #: lazarusidestrconsts.lishidewindow
-#, fuzzy
 msgctxt "lazarusidestrconsts.lishidewindow"
 msgid "Hide window"
 msgstr "Cacher la fenêtre"
@@ -10032,7 +10025,7 @@ msgstr "Inclure les sous-répertoires"
 
 #: lazarusidestrconsts.lisincompatibleppu
 msgid ", incompatible ppu=%s"
-msgstr ", ppu=%s incompatible"
+msgstr "- ppu=%s incompatible"
 
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
@@ -10104,16 +10097,12 @@ msgid "insert date and time"
 msgstr "Insérer la date et l'heure"
 
 #: lazarusidestrconsts.lisinsertdateandtimeoptionalformatstring
-#, fuzzy
-#| msgid "Insert date and time. Optional: format string"
 msgid "Insert date and time. Optional: format string."
-msgstr "Insérer la date et l'heure. Facultatif : formater la chaîne de caractères"
+msgstr "Insérer la date et l'heure. Facultatif : formater la chaîne de caractères."
 
 #: lazarusidestrconsts.lisinsertdateoptionalformatstring
-#, fuzzy
-#| msgid "Insert date. Optional: format string"
 msgid "Insert date. Optional: format string."
-msgstr "Insérer la date. Facultatif : formater la chaîne de caractères"
+msgstr "Insérer la date. Facultatif : formater la chaîne de caractères."
 
 #: lazarusidestrconsts.lisinsertendifneeded
 msgid "insert end if needed"
@@ -10147,6 +10136,31 @@ msgid ""
 "WithoutBrackets,    // skip start- and end-bracket of parameter list\n"
 "WithoutSemicolon,   // skip semicolon at end\n"
 msgstr ""
+"Insérer l'en-tête de la procédure en cours.\n"
+"\n"
+"Paramètres optionnels (séparés par des virgules) :\n"
+"WithStart,          // mot-clé procédure. Par exemple : \"function\", \"class procedure\"\n"
+"WithoutClassKeyword,// sans le mot-clé de procédure \"class\"\n"
+"AddClassName,       // extraction/ajout du nom de la classe\n"
+"WithoutClassName,   // ignorer le nom de la classe\n"
+"WithoutName,        // ignorer le nom de la fonction\n"
+"WithoutParamList,   // ignorer la liste de paramètres\n"
+"WithVarModifiers,   // extraction de \"var\", \"out\", \"const\"\n"
+"WithParameterNames, // extraction des noms des paramètres\n"
+"WithoutParamTypes,  // ignorer les deux-points, les types de paramètres et le valeurs par défaut\n"
+"WithDefaultValues,  // extraction des valeurs par défaut\n"
+"WithResultType,     // extraction des deux-points et du type de résultat\n"
+"WithOfObject,       // extraction de \"of object\"\n"
+"WithCallingSpecs,   // extraction de \"cdecl;\", \"inline;\"\n"
+"WithProcModifiers,  // extraction de  \"forward;\",  \"alias;\",  \"external;\"\n"
+"WithComments,       // extraction des commentaires et des espaces\n"
+"InUpperCase,        // mise en majuscules\n"
+"CommentsToSpace,    // remplacer les commentaires par un espace simple\n"
+"                      //  (par défaut, on ignore les espaces non nécessaires ;\n"
+"                      //    par exemple : \"Do   ;\" devient normalement \"Do;\" ;\n"
+"                      //    avec cette option, on obtient \"Do ;\")\n"
+"WithoutBrackets,    // ignorer les parenthèses de début et de fin de la liste de paramètres\n"
+"WithoutSemicolon,   // ignorer le point-virgule de fin\n"
 
 #: lazarusidestrconsts.lisinsertmacro
 msgctxt "lazarusidestrconsts.lisinsertmacro"
@@ -10154,10 +10168,8 @@ msgid "Insert Macro"
 msgstr "Insérer une macro"
 
 #: lazarusidestrconsts.lisinsertnameofcurrentprocedure
-#, fuzzy
-#| msgid "Insert name of current procedure"
 msgid "Insert name of current procedure."
-msgstr "Insérer le nom de la procédure courante"
+msgstr "Insérer le nom de la procédure courante."
 
 #: lazarusidestrconsts.lisinsertprintshorttag
 msgid "Insert PrintShort tag"
@@ -10180,10 +10192,8 @@ msgid "insert time"
 msgstr "Insérer l'heure"
 
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
-#, fuzzy
-#| msgid "Insert time. Optional: format string"
 msgid "Insert time. Optional: format string."
-msgstr "Insérer la date. Facultatif :  formater la chaîne de caractères"
+msgstr "Insérer la date. Facultatif :  formater la chaîne de caractères."
 
 #: lazarusidestrconsts.lisinserturltag
 msgid "Insert url tag"
@@ -10228,7 +10238,7 @@ msgstr "Montrer la colonne de classe"
 
 #: lazarusidestrconsts.lisinspectshowcoltype
 msgid "Show type column"
-msgstr "Montrer le type de colonne"
+msgstr "Montrer la colonne de type"
 
 #: lazarusidestrconsts.lisinspectshowcolvisibility
 msgid "Show visibility column"
@@ -11406,10 +11416,8 @@ msgid "lowercase string"
 msgstr "chaîne en minuscules"
 
 #: lazarusidestrconsts.lislowercasestringgivenasparameter
-#, fuzzy
-#| msgid "Lowercase string given as parameter"
 msgid "Lowercase string given as parameter."
-msgstr "Chaîne de caractères en minuscules donnée en paramètre"
+msgstr "Chaîne de caractères en minuscules donnée en paramètre."
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 msgid "lpk has vanished on disk. Using as alternative%s"
@@ -12520,7 +12528,7 @@ msgstr "Construire une chaîne ressource..."
 #: lazarusidestrconsts.lismenumultipaste
 msgctxt "lazarusidestrconsts.lismenumultipaste"
 msgid "MultiPaste ..."
-msgstr ""
+msgstr "Collage multiple..."
 
 #: lazarusidestrconsts.lismenunewcomponent
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
@@ -12619,7 +12627,6 @@ msgid "Package Links ..."
 msgstr "Liens de paquet..."
 
 #: lazarusidestrconsts.lismenupastefromclipboard
-#, fuzzy
 msgctxt "lazarusidestrconsts.lismenupastefromclipboard"
 msgid "Paste from clipboard"
 msgstr "Coller depuis le presse-papier"
@@ -13305,7 +13312,7 @@ msgstr "(valait \"%s\")"
 
 #: lazarusidestrconsts.lismode
 msgid ", Mode: %s"
-msgstr ", Mode : %s"
+msgstr "- Mode : %s"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid ""
@@ -13402,40 +13409,40 @@ msgstr "Déplacer ces unités brisera la logique des sections \"uses\". Consulte
 
 #: lazarusidestrconsts.lismpcstyle
 msgid "C style: \" => \\\""
-msgstr ""
+msgstr "Style C : \" => \\\""
 
 #: lazarusidestrconsts.lismpescapequotes
 msgid "Escape &quotes"
-msgstr ""
+msgstr "Échappement des &guillemets"
 
 #: lazarusidestrconsts.lismpmultipaste
 msgctxt "lazarusidestrconsts.lismpmultipaste"
 msgid "MultiPaste"
-msgstr ""
+msgstr "Collage multiple"
 
 #: lazarusidestrconsts.lismppascalstyle
 msgid "Pascal style: ' => ''"
-msgstr ""
+msgstr "Style Pascal : ' => ''"
 
 #: lazarusidestrconsts.lismppasteoptions
 msgid "Paste &options"
-msgstr ""
+msgstr "&Options de collage"
 
 #: lazarusidestrconsts.lismppreview
 msgid "&Preview"
-msgstr ""
+msgstr "A&perçu"
 
 #: lazarusidestrconsts.lismptextaftereachline
 msgid "Text &after each line"
-msgstr ""
+msgstr "Texte &après chaque ligne"
 
 #: lazarusidestrconsts.lismptextbeforeeachline
 msgid "Text &before each line"
-msgstr ""
+msgstr "Texte a&vant chaque ligne"
 
 #: lazarusidestrconsts.lismptrimclipboardcontents
 msgid "&Trim clipboard contents"
-msgstr ""
+msgstr "&Réduire le contenu du presse-papiers"
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -13451,7 +13458,7 @@ msgstr "Les différents répertoires sont séparés par des points-virgules"
 
 #: lazarusidestrconsts.lismultiplepack
 msgid ", multiple packages: "
-msgstr ", paquets multiples : "
+msgstr "- paquets multiples : "
 
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
@@ -13858,11 +13865,11 @@ msgstr "En cas de saut de ligne (à savoir touche \"Entrée\")"
 
 #: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
 msgid "Only available on Windows. Run the tool hidden."
-msgstr ""
+msgstr "Disponible uniquement sur Windows. Exécutez l’outil caché."
 
 #: lazarusidestrconsts.lisonlyavailableonwindowsruntoolinanewconsole
 msgid "Only available on Windows. Run tool in a new console."
-msgstr ""
+msgstr "Disponible uniquement sur Windows. Exécutez l’outil dans une nouvelle console."
 
 #: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
 msgid "Only messages fitting this regular expression:"
@@ -14135,11 +14142,9 @@ msgid "paste clipboard"
 msgstr "Coller le contenu du presse-papier"
 
 #: lazarusidestrconsts.lispastefromclipboard
-#, fuzzy
-#| msgid "Paste from clipboard"
 msgctxt "lazarusidestrconsts.lispastefromclipboard"
 msgid "Paste from clipboard."
-msgstr "Coller depuis le presse-papier"
+msgstr "Coller depuis le presse-papier."
 
 #: lazarusidestrconsts.lispastelcolors
 msgid "Pastel Colors"
@@ -14831,7 +14836,7 @@ msgstr "Références circulaires trouvées"
 
 #: lazarusidestrconsts.lispkgmangcompilepackage
 msgid "Compile package %s"
-msgstr "Compiler le paquet %s"
+msgstr "Compiler le paquet %s "
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"
@@ -16188,6 +16193,19 @@ msgid "Result:"
 msgstr "Résultat :"
 
 #: lazarusidestrconsts.lisreturnparameterindexedword
+#, fuzzy
+#| msgid ""
+#| "Return parameter-indexed word from the current line preceding cursor position.\n"
+#| "\n"
+#| "Words in a line are numbered 1,2,3,... from left to right, but the last word\n"
+#| "which is always a macro command to be expanded has number 0, thus $PrevWord(0)\n"
+#| "is always the current macro.\n"
+#| "\n"
+#| "Example line:\n"
+#| "i 0 count-1 forb|\n"
+#| "Here $PrevWord(0)=forb, $PrevWord(1)=i, $PrevWord(2)=0, $PrevWord(3)=count-1\n"
+#| "\n"
+#| "In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an importaint operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used to detect words for this macro: [\\w\\-+*\\(\\)\\[\\].^@]+\n"
 msgid ""
 "Return parameter-indexed word from the current line preceding cursor position.\n"
 "\n"
@@ -16201,20 +16219,29 @@ msgid ""
 "\n"
 "In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an important operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used to detect words for this macro: [\\w\\-+*\\(\\)\\[\\].^@]+\n"
 msgstr ""
+"Retourne le mot indexé selon le paramètre d'index à partir de la ligne courante précdant la position du curseur.\n"
+"\n"
+"Les mots d'une ligne sont numérotés à partir de 1, de la gauche vers la droite, mais le dernier mot,\n"
+"qui est toujours une commande de macro à étendre, porte le numéro 0. Ainsi, $PrevWord(0)\n"
+"renvoie toujours à la macro en cours.\n"
+"\n"
+"Ligne d'exemple :\n"
+"i 0 count-1 forb|\n"
+"Ici, $PrevWord(0)=forb, $PrevWord(1)=i, $PrevWord(2)=0, $PrevWord(3)=count-1\n"
+"\n"
+"A la fin de votre modèle, utilisez $PrevWord(-1) qui ne donnera qu'une chaîne vide, mais qui opèrera à un nettoyage important de tous les $PrevWords trouvés. En bonus, voici une expression régulière utilisée afin de détecter les mots pour cette macro : [\\w\\-+*\\(\\)\\[\\].^@]+\n"
 
 #: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
-#, fuzzy
-#| msgid ""
-#| "returns list of all values of case variable in front of variable\n"
-#| "\n"
-#| "Optional Parameters (comma separated):\n"
-#| "WithoutExtraIndent    // the case list will be generated without extra indentation\n"
 msgid ""
 "Return the list of all values of case variable in front of variable.\n"
 "\n"
 "Optional Parameters (comma separated):\n"
 "WithoutExtraIndent    // the case list will be generated without extra indentation\n"
-msgstr "Retourne la liste de toutes les valeurs de la variable \"case\" en face de la variable"
+msgstr ""
+"Retourne la liste de toutes les valeurs de la variable \"case\" en face de la variable.\n"
+"\n"
+"Paramètres facultatifs (séparés par des virgules) :\n"
+"WithoutExtraIndent   // la liste de cas sera générée sans indentation supplémentaire.\n"
 
 #: lazarusidestrconsts.lisrevertfailed
 msgid "Revert failed"
@@ -16664,7 +16691,7 @@ msgstr "Afficher l'arbre des composants"
 
 #: lazarusidestrconsts.lisshowconsole
 msgid "Show console"
-msgstr ""
+msgstr "Voir la console"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -16945,7 +16972,7 @@ msgstr "OS source"
 
 #: lazarusidestrconsts.lisssearching
 msgid "Searching"
-msgstr "Recherche"
+msgstr "Recherche en cours"
 
 #: lazarusidestrconsts.lisssearchtext
 msgid "Search text"
@@ -17167,10 +17194,8 @@ msgid "Editable Cell"
 msgstr "Cellule modifiable"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
-#, fuzzy
-#| msgid "Insert an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync\" has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
 msgid "Insert an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit).%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\".%0:sThe quotes are optional.%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too.%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked (the 3rd refers to \"2\").%0:s%0:s\"Sync\" can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync\" has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")."
-msgstr "Insère une cellule modifiable. On peut naviguer dans les cellules avec la touche TAB.%0:sLa macro \"param\" accepte une liste d’arguments séparés par des virgules.%0:sLe premier argument est la valeur par défaut.%0:sLe 2ème (optionnel) peut être utilisé pour lier la cellule à une autre cellule(édition synchronisée)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInsère 2 cellules indépendantes, chacune avec le texte par défaut \"foo\"%0:sLes guillemets sont optionnels. %0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInsère 2 cellules liées, l’édition de l’une changera l’autre aussi %0:sLa valeur \"1\" référence la position de l’autre \"param()\". Ainsi s'il y a plus de paramètres:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sLes 2ème et 3ème sont liés. (le 3ème a la reference \"2\") %0:s%0:s\"sync peut être raccourci en \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sLe 2ème et le 3ème sont liés.%0:sNote: \"Sync n’a pas de position et pas de \"=\", ainsi il se synchronise avec la cellule précédente avec la même valeur par défaut (dans le cas présent \"foo\")"
+msgstr "Insérer une cellule modifiable. On peut naviguer dans les cellules avec la touche TAB.%0:sLa macro \"param\" accepte une liste d’arguments séparés par des virgules.%0:sLe premier argument est la valeur par défaut.%0:sLe 2ème (optionnel) peut être utilisé pour lier la cellule à une autre cellule (édition synchronisée).%0:s%0:s  while param(\"foo\") do param(foo);%0:sInsère 2 cellules indépendantes, chacune avec le texte par défaut \"foo\"%0:sLes guillemets sont optionnels. %0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInsère 2 cellules liées, l’édition de l’une changera aussi l’autre.%0:sLa valeur \"1\" fait référence à la position de l’autre \"param()\". Ainsi s'il y a plus de paramètres:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sLes 2ème et 3ème sont liés. (le 3ème a la référence \"2\") %0:s%0:s\"sync peut être raccourci en \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sLe 2ème et le 3ème sont liés%0:sNote : \"Sync\" n’a pas de position et pas de \"=\", ainsi il se synchronise avec la cellule précédente avec la même valeur par défaut (dans le cas présent \"foo\")."
 
 #: lazarusidestrconsts.listemplatefile
 msgid "Template file"
@@ -17622,7 +17647,7 @@ msgstr "Ces unités n'ont pas été trouvées :"
 
 #: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
-msgstr "Les codes sources des paquets Free Pascal sont nécessaires pour la navigation et la finition de code. Par exemple y figure le fichier \"%s\"."
+msgstr "Les codes sources des paquets Free Pascal sont nécessaires pour la navigation et la complétion de code. Par exemple y figure le fichier \"%s\"."
 
 #: lazarusidestrconsts.listhetargetisnotwritable
 msgid "The target %s is not writable."
@@ -18554,10 +18579,8 @@ msgid "uppercase string"
 msgstr "chaîne en majuscules"
 
 #: lazarusidestrconsts.lisuppercasestringgivenasparameter
-#, fuzzy
-#| msgid "Uppercase string given as parameter"
 msgid "Uppercase string given as parameter."
-msgstr "Chaîne de caractères en majuscules donnée en paramètre"
+msgstr "Chaîne de caractères en majuscules donnée en paramètre."
 
 #: lazarusidestrconsts.lisurlonwikithebaseurlis
 msgid "URL on wiki (the base url is %s)"
@@ -20015,7 +20038,7 @@ msgstr "Déplacer l'éditeur tout à droite"
 
 #: lazarusidestrconsts.srkmecmultipaste
 msgid "MultiPaste clipboard to current position"
-msgstr ""
+msgstr "Collage multiple du presse-papiers à la position courante"
 
 #: lazarusidestrconsts.srkmecnextbookmark
 msgid "Next Bookmark"
