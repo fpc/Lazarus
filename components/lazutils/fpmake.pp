@@ -3,7 +3,7 @@
 
    fpmake.pp for LazUtils 1.0
 
-   This file was generated on 02-01-2015
+   This file was generated on 14-10-16
 }
 
 {$ifndef ALLPACKAGES} 
@@ -22,7 +22,7 @@ var
 begin
   with Installer do
     begin
-    P:=AddPAckage('lazutils');
+    P:=AddPackage('lazutils');
     P.Version:='1.0';
 
     P.Directory:=ADirectory;
@@ -88,10 +88,16 @@ begin
     t.Dependencies.AddUnit('lazconfigstorage');
     t.Dependencies.AddUnit('utf8process');
     t.Dependencies.AddUnit('laz2_xpath');
-    t.Dependencies.AddUnit('lookupstringlist');
     t.Dependencies.AddUnit('lazloggerprofiling');
     t.Dependencies.AddUnit('fpcadds');
     t.Dependencies.AddUnit('lazutilities');
+    t.Dependencies.AddUnit('lazfglhash');
+    t.Dependencies.AddUnit('lcsvutils');
+    t.Dependencies.AddUnit('lazcollections');
+    t.Dependencies.AddUnit('lazlistclasses');
+    t.Dependencies.AddUnit('lazfreetypefpimagedrawer');
+    t.Dependencies.AddUnit('lookupstringlist');
+    t.Dependencies.AddUnit('lazunicode');
 
     T:=P.Targets.AddUnit('laz2_dom.pas');
     T:=P.Targets.AddUnit('laz2_xmlcfg.pas');
@@ -142,10 +148,16 @@ begin
     T:=P.Targets.AddUnit('lazconfigstorage.pas');
     T:=P.Targets.AddUnit('utf8process.pp');
     T:=P.Targets.AddUnit('laz2_xpath.pas');
-    T:=P.Targets.AddUnit('lookupstringlist.pas');
     T:=P.Targets.AddUnit('lazloggerprofiling.pas');
     T:=P.Targets.AddUnit('fpcadds.pas');
     T:=P.Targets.AddUnit('lazutilities.pas');
+    T:=P.Targets.AddUnit('lazfglhash.pas');
+    T:=P.Targets.AddUnit('lcsvutils.pas');
+    T:=P.Targets.AddUnit('lazcollections.pas');
+    T:=P.Targets.AddUnit('lazlistclasses.pas');
+    T:=P.Targets.AddUnit('lazfreetypefpimagedrawer.pas');
+    T:=P.Targets.AddUnit('lookupstringlist.pas');
+    T:=P.Targets.AddUnit('lazunicode.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.InstallFiles.Add('LazUtils.compiled',AllOSes,'$(unitinstalldir)');
