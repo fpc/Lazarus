@@ -1,9 +1,9 @@
 {
    File generated automatically by Lazarus Package Manager
 
-   fpmake.pp for LCLBase 1.3
+   fpmake.pp for LCLBase 1.7
 
-   This file was generated on 02-01-2015
+   This file was generated on 14-10-16
 }
 
 {$ifndef ALLPACKAGES} 
@@ -22,8 +22,8 @@ var
 begin
   with Installer do
     begin
-    P:=AddPAckage('lclbase');
-    P.Version:='1.3';
+    P:=AddPackage('lclbase');
+    P.Version:='1.7';
 
     P.Directory:=ADirectory;
 
@@ -36,10 +36,8 @@ begin
     P.Options.Add('-g');
     P.Options.Add('-gl');
     P.Options.Add('-l');
-    P.Options.Add('-vn-');
-    P.Options.Add('-vh-');
-    P.Options.Add('-vi-');
-    P.Options.Add('-vewbq');
+    P.Options.Add('-vewibq');
+    P.Options.Add('-vn-h-');
     P.IncludePath.Add('include');
     P.UnitPath.Add('forms');
     P.UnitPath.Add('widgetset');
@@ -116,6 +114,8 @@ begin
     t.Dependencies.AddUnit('translations');
     t.Dependencies.AddUnit('utrace');
     t.Dependencies.AddUnit('xmlpropstorage');
+    t.Dependencies.AddUnit('calendarpopup');
+    t.Dependencies.AddUnit('timepopup');
     t.Dependencies.AddUnit('messages');
     t.Dependencies.AddUnit('wsbuttons');
     t.Dependencies.AddUnit('wscalendar');
@@ -160,6 +160,12 @@ begin
     t.Dependencies.AddUnit('editbtn');
     t.Dependencies.AddUnit('comboex');
     t.Dependencies.AddUnit('dbextctrls');
+    t.Dependencies.AddUnit('customdrawn_mac');
+    t.Dependencies.AddUnit('calcform');
+    t.Dependencies.AddUnit('lcltranslator');
+    t.Dependencies.AddUnit('groupededit');
+    t.Dependencies.AddUnit('lcltaskdialog');
+    t.Dependencies.AddUnit('wslazdeviceapis');
 
     T:=P.Targets.AddUnit('checklst.pas');
     T:=P.Targets.AddUnit('clipbrd.pp');
@@ -231,7 +237,8 @@ begin
     T:=P.Targets.AddUnit('translations.pas');
     T:=P.Targets.AddUnit('utrace.pp');
     T:=P.Targets.AddUnit('xmlpropstorage.pas');
-    P.Sources.AddSrc('forms/calendarpopup.pas');
+    P.Targets.AddImplicitUnit('forms/calendarpopup.pas');
+    T:=P.Targets.AddUnit('forms/timepopup.pas');
     T:=P.Targets.AddUnit('nonwin32/messages.pp');
     T:=P.Targets.AddUnit('widgetset/wsbuttons.pp');
     T:=P.Targets.AddUnit('widgetset/wscalendar.pp');
@@ -276,10 +283,24 @@ begin
     T:=P.Targets.AddUnit('editbtn.pas');
     T:=P.Targets.AddUnit('comboex.pas');
     T:=P.Targets.AddUnit('dbextctrls.pp');
+    T:=P.Targets.AddUnit('customdrawn_mac.pas');
+    T:=P.Targets.AddUnit('forms/calcform.pas');
+    T:=P.Targets.AddUnit('lcltranslator.pas');
+    T:=P.Targets.AddUnit('groupededit.pp');
+    T:=P.Targets.AddUnit('lcltaskdialog.pas');
+    T:=P.Targets.AddUnit('widgetset/wslazdeviceapis.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.InstallFiles.Add('LCLBase.compiled',AllOSes,'$(unitinstalldir)');
 
+    // Added manually 
+    P.InstallFiles.Add('cursors.res', '$(unitinstalldir)');
+    P.InstallFiles.Add('btn_icons.res', '$(unitinstalldir)');
+    P.InstallFiles.Add('dialog_icons.res', '$(unitinstalldir)');
+    P.InstallFiles.Add('lcl_grid_images.res', '$(unitinstalldir)');
+    P.InstallFiles.Add('lcl_dbgrid_images.res', '$(unitinstalldir)');
+    P.InstallFiles.Add('lcl_edbtnimg.res', '$(unitinstalldir)');
+    P.InstallFiles.Add('lcl_dock_images.res', '$(unitinstalldir)');
     end;
 end;
 
