@@ -1090,6 +1090,7 @@ var
         then begin
           // already in place -> ok
           inc(aMenuIndex);
+          Item.Visible:=aVisible;
         end else begin
           // structure has changed
           if Item.MenuItem<>nil then
@@ -1282,7 +1283,7 @@ begin
   UpdateVisibleCommandCount(AddedVisibleCommands);
 
   {$IFDEF VerboseMenuIntf}
-  debugln(['TIDEMenuSection.Insert AAA3 Self="',Name,'" Item="',AnItem.Name,'" VisibleActive=',VisibleActive,' VisibleCommandCount=',VisibleCommandCount,' MenuItem=',DbgSName(MenuItem)]);
+  debugln(['TIDEMenuSection.Insert END Self="',Name,'" Item="',AnItem.Name,'" VisibleActive=',VisibleActive,' VisibleCommandCount=',VisibleCommandCount,' MenuItem=',DbgSName(MenuItem)]);
   ConsistencyCheck;
   {$ENDIF}
 end;
