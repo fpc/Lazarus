@@ -17,14 +17,17 @@ $(AttributesEnd)
 case $param(var) of
   : |;
   : ;
-end;
+end$AddSemicolon()
 [be | begin end else begin end]
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
 begin
   |
 end else
 begin
 
-end;
+end$AddSemicolon()
 [casee | case statement (with else)]
 $(AttributesStart)
 EnableMakros=true
@@ -33,7 +36,7 @@ case $param(var) of
   : |;
   : ;
 else ;
-end;
+end$AddSemicolon()
 [classf | class declaration (all parts)]
 $(AttributesStart)
 EnableMakros=true
@@ -75,7 +78,7 @@ end;
 $(AttributesStart)
 EnableMakros=true
 $(AttributesEnd)
-debugln(['$ProcedureName() '|]);
+debugln(['$ProcedureName() '|])$AddSemicolon()
 [fors | for (no begin/end)]
 $(AttributesStart)
 EnableMakros=true
@@ -91,7 +94,7 @@ $(AttributesEnd)
 for $Param(CounterVar) := $Param(0) to Pred($Param(Count)) do
 begin
   |
-end;
+end$AddSemicolon()
 [function | function declaration]
 $(AttributesStart)
 EnableMakros=true
@@ -113,7 +116,7 @@ $(AttributesEnd)
 if $Param(Conditional) then
 begin
   |
-end;
+end$AddSemicolon()
 [ife | if then (no begin/end) else (no begin/end)]
 $(AttributesStart)
 EnableMakros=true
@@ -133,7 +136,7 @@ begin
 end
 else begin
 
-end;
+end$AddSemicolon()
 [procedure | procedure declaration]
 procedure $Param(ProcName)|($Param());
 begin
@@ -146,11 +149,14 @@ $(AttributesEnd)
 of
 |$OfAll()end;
 [trye | try except]
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
 try
   | 
 except
 
-end;
+end$AddSemicolon()
 [tryf | try finally]
 $(AttributesStart)
 EnableMakros=true
@@ -160,7 +166,7 @@ try
   |
 finally
   $Param(FreeStatement,default)
-end;
+end$AddSemicolon()
 [trycf | try finally (with Create/Free)]
 $(AttributesStart)
 EnableMakros=true
@@ -180,7 +186,7 @@ $(AttributesEnd)
 while $Param(LoopCondition) do
 begin
   |
-end;
+end$AddSemicolon()
 [whiles | while (no begin)]
 while $Param(LoopCondition) do
   |
@@ -192,11 +198,14 @@ $(AttributesEnd)
 with $Param(Object) do
 begin
   |
-end;
+end$AddSemicolon()
 [b | begin end]
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
 begin
   |
-end;
+end$AddSemicolon()
 [withs | with (no begin)]
 $(AttributesStart)
 EnableMakros=true
@@ -238,4 +247,4 @@ $(AttributesEnd)
 $(AttributesStart)
 EnableMakros=true
 $(AttributesEnd)
-writeln('$ProcedureName() '|);
+writeln('$ProcedureName() '|)$AddSemicolon()
