@@ -6218,7 +6218,7 @@ begin
           if not FileExistsUTF8(ARecentProject) then
             EnvironmentOptions.RemoveFromRecentProjectFiles(ARecentProject)
           else
-            SourceFileMgr.AddRecentProjectFileToEnvironment(ARecentProject);
+            SourceFileMgr.AddRecentProjectFile(ARecentProject);
         end;
       end;
     tpws_examples:
@@ -6233,6 +6233,15 @@ end;
 
 function TMainIDE.DoOpenProjectFile(AFileName: string; Flags: TOpenFlags): TModalResult;
 var
+  OriginalFilename: string;
+
+  procedure RemoveRecentProjectFile;
+  begin
+    EnvironmentOptions.RemoveFromRecentProjectFiles(OriginalFilename);
+    SourceFileMgr.RemoveRecentProjectFile(AFileName);
+  end;
+
+var
   Ext,AText,ACaption: string;
   DiskFilename: String;
   FileReadable: Boolean;
@@ -6242,16 +6251,23 @@ begin
   //debugln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile A');{$ENDIF}
   if ExtractFileNameOnly(AFileName)='' then exit;
+  OriginalFilename:=AFileName;
   //debugln('TMainIDE.DoOpenProjectFile A1 "'+AFileName+'"');
   AFilename:=ExpandFileNameUTF8(TrimFilename(AFilename));
   //debugln('TMainIDE.DoOpenProjectFile A2 "'+AFileName+'"');
   if not FilenameIsAbsolute(AFilename) then
     RaiseException('TMainIDE.DoOpenProjectFile: buggy ExpandFileNameUTF8');
-  AFilename:=GetPhysicalFilenameCached(AFilename,false);
+  DiskFilename:=GetPhysicalFilenameCached(AFilename,false);
+  if DiskFilename<>AFilename then begin
+    // e.g. encoding changed
+    DebugLn(['Warning: (lazarus) [TMainIDE.DoOpenProjectFile] Fixing file name: ',AFilename,' -> ',DiskFilename]);
+    AFilename:=DiskFilename;
+  end;
 
   // check if it is a directory
   if DirPathExistsCached(AFileName) then begin
     debugln(['Error: (lazarus) [TMainIDE.DoOpenProjectFile] file is a directory']);
+    RemoveRecentProjectFile;
     exit;
   end;
 
@@ -6260,6 +6276,7 @@ begin
     ACaption:=lisFileNotFound;
     AText:=Format(lisPkgMangFileNotFound, [AFilename]);
     Result:=IDEMessageDialog(ACaption, AText, mtError, [mbAbort]);
+    RemoveRecentProjectFile;
     exit;
   end;
 
@@ -6294,7 +6311,7 @@ begin
   end;
 
   if ofAddToRecent in Flags then
-    SourceFileMgr.AddRecentProjectFileToEnvironment(AFileName);
+    SourceFileMgr.AddRecentProjectFile(AFileName);
 
   if not DoResetToolStatus([rfInteractive, rfSuccessOnTrigger]) then exit;
 

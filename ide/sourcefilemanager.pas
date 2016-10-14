@@ -173,7 +173,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure AddRecentProjectFileToEnvironment(const AFilename: string);
+    procedure AddRecentProjectFile(const AFilename: string);
+    procedure RemoveRecentProjectFile(const AFilename: string);
     procedure UpdateSourceNames;
     function CheckEditorNeedsSave(AEditor: TSourceEditorInterface;
         IgnoreSharedEdits: Boolean): Boolean;
@@ -1669,9 +1670,17 @@ begin
   end;
 end;
 
-procedure TLazSourceFileManager.AddRecentProjectFileToEnvironment(const AFilename: string);
+procedure TLazSourceFileManager.AddRecentProjectFile(const AFilename: string);
 begin
   EnvironmentOptions.AddToRecentProjectFiles(AFilename);
+  MainIDE.SetRecentProjectFilesMenu;
+  MainIDE.SaveEnvironment;
+end;
+
+procedure TLazSourceFileManager.RemoveRecentProjectFile(const AFilename: string
+  );
+begin
+  EnvironmentOptions.RemoveFromRecentProjectFiles(AFilename);
   MainIDE.SetRecentProjectFilesMenu;
   MainIDE.SaveEnvironment;
 end;
@@ -4028,13 +4037,13 @@ begin
   if Assigned(aMenuItem) and (aMenuItem.Section=itmProjectRecentOpen) then begin
     AFileName:=ExpandFileNameUTF8(aMenuItem.Caption);
     if MainIDE.DoOpenProjectFile(AFilename,[ofAddToRecent])=mrOk then begin
-      AddRecentProjectFileToEnvironment(AFilename);
+      AddRecentProjectFile(AFilename);
     end else begin
       // open failed
       if not FileExistsCached(AFilename) then begin
         EnvironmentOptions.RemoveFromRecentProjectFiles(AFilename);
       end else
-        AddRecentProjectFileToEnvironment(AFilename);
+        AddRecentProjectFile(AFilename);
     end;
   end
   else begin
@@ -7509,7 +7518,7 @@ begin
     if Result=mrAbort then exit;
     EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
     IDEProtocolOpts.LastProjectLoadingCrashed := False;
-    AddRecentProjectFileToEnvironment(Project1.ProjectInfoFile);
+    AddRecentProjectFile(Project1.ProjectInfoFile);
     MainIDE.SaveIncludeLinks;
     MainIDE.UpdateCaption;
   end;
