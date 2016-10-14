@@ -2267,6 +2267,7 @@ resourcestring
   dlgCOTrashVariables = 'Trash variables';
   dlgCOValgrind = 'Generate code for valgrind';
   dlgGPROF = 'Generate code for gprof';
+  lisOnly32bit = 'only 32bit';
   dlgCOStrip = 'Strip symbols from executable';
   dlgExtSymb = 'Use external gdb debug symbols file';
   dlgLinkSmart = 'Link smart';

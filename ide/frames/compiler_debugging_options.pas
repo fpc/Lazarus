@@ -113,7 +113,7 @@ begin
   chkUseExternalDbgSyms.Caption := dlgExtSymb + ' (-Xg)';
   chkUseHeaptrc.Caption := dlgCOHeaptrc + ' (-gh)';
   chkTrashVariables.Caption := dlgCOTrashVariables + ' (-gt)';
-  chkGenGProfCode.Caption := dlgGPROF + ' (-pg)';
+  chkGenGProfCode.Caption := dlgGPROF + ' (-pg, '+lisOnly32bit+')';
   chkSymbolsStrip.Caption := dlgCOStrip + ' (-Xs)';
 end;
 
