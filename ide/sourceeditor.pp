@@ -6559,109 +6559,104 @@ var
 begin
   PopM:=TPopupMenu(Sender);
   SourceTabMenuRoot.MenuItem:=PopM.Items;
-  //SourceTabMenuRoot.BeginUpdate;
-  try
-    // Get the tab that was clicked
-    if PopM.PopupComponent is TPageControl then begin
-      PageCtrl:=TPageControl(PopM.PopupComponent);
-      PageI:=PageCtrl.TabIndexAtClientPos(PageCtrl.ScreenToClient(PopM.PopupPoint));
-      if (PageI>=0) and (PageI<PageCtrl.PageCount) then
-        PageIndex := PageI  // Todo: This should be in MouseDown / or both, whichever is first
-      else
-        DebugLn(['TSourceNotebook.TabPopUpMenuPopup: Popup PageIndex=', PageI]);
+  // Get the tab that was clicked
+  if PopM.PopupComponent is TPageControl then begin
+    PageCtrl:=TPageControl(PopM.PopupComponent);
+    PageI:=PageCtrl.TabIndexAtClientPos(PageCtrl.ScreenToClient(PopM.PopupPoint));
+    if (PageI>=0) and (PageI<PageCtrl.PageCount) then
+      PageIndex := PageI  // Todo: This should be in MouseDown / or both, whichever is first
+    else
+      DebugLn(['TSourceNotebook.TabPopUpMenuPopup: Popup PageIndex=', PageI]);
+  end;
+  ASrcEdit:=ActiveEditor as TSourceEditor;
+
+  {$IFnDEF SingleSrcWindow}
+  // Multi win
+  ToWindow(SrcEditMenuMoveToOtherWindowList, 'MoveToWindow',
+                     @SrcEditMenuMoveToExistingWindowClicked);
+  ToWindow(SrcEditMenuCopyToOtherWindowList, 'CopyToWindow',
+                     @SrcEditMenuCopyToExistingWindowClicked);
+  ToWindow(SrcEditMenuFindInOtherWindowList, 'FindInWindow',
+                     @SrcEditMenuFindInWindowClicked, True);
+  {$ENDIF}
+
+  SrcEditMenuSectionEditors.Clear;
+  if Manager <> nil then begin
+    EdList := TStringList.Create;
+    EdList.OwnsObjects := False;
+    EdList.Sorted := True;
+    // sort
+    for i := 0 to EditorCount - 1 do
+      EdList.AddObject(Editors[i].PageName+' '+Editors[i].FileName, Editors[i]);
+
+
+    RecMenu := RegisterIDESubMenu(SrcEditMenuSectionEditors, lisRecentTabs, lisRecentTabs);
+    RecMenu.Visible := False;
+    ProjMenu := RegisterIDESubMenu(SrcEditMenuSectionEditors, dlgEnvProject, dlgEnvProject);
+    ProjMenu.Visible := False;
+    RegisterIDESubMenu(SrcEditMenuSectionEditors, lisMEOther, lisMEOther).Visible := False;
+
+    //first add all pages in the correct order since the editor order can be different from the tab order
+    for i := 0 to EdList.Count - 1 do
+    begin
+      EditorCur := TSourceEditor(EdList.Objects[i]);
+      s := lisMEOther;
+      P := nil;
+      if (EditorCur.GetProjectFile <> nil) and (EditorCur.GetProjectFile.IsPartOfProject) then
+        s := dlgEnvProject
+      else begin
+        Manager.OnPackageForSourceEditor(P, EditorCur);
+        if P <> nil then
+          s := Format(lisTabsFor, [p.Name]);
+      end;
+
+      if SrcEditMenuSectionEditors.FindByName(S) is TIDEMenuSection then begin
+        M := TIDEMenuSection(SrcEditMenuSectionEditors.FindByName(S))
+      end else begin
+        M := RegisterIDESubMenu(SrcEditMenuSectionEditors, S, S);
+        M.UserTag := PtrUInt(P);
+      end;
+      M.Visible := True;
+
+      AddEditorToMenuSection(EditorCur, M, i);
+      // use tag to count modified
+      if EditorCur.Modified then M.Tag := m.Tag + 1;
     end;
-    ASrcEdit:=ActiveEditor as TSourceEditor;
 
-    {$IFnDEF SingleSrcWindow}
-    // Multi win
-    ToWindow(SrcEditMenuMoveToOtherWindowList, 'MoveToWindow',
-                       @SrcEditMenuMoveToExistingWindowClicked);
-    ToWindow(SrcEditMenuCopyToOtherWindowList, 'CopyToWindow',
-                       @SrcEditMenuCopyToExistingWindowClicked);
-    ToWindow(SrcEditMenuFindInOtherWindowList, 'FindInWindow',
-                       @SrcEditMenuFindInWindowClicked, True);
-    {$ENDIF}
+    EdList.Free;
 
-    SrcEditMenuSectionEditors.Clear;
-    if Manager <> nil then begin
-      EdList := TStringList.Create;
-      EdList.OwnsObjects := False;
-      EdList.Sorted := True;
-      // sort
-      for i := 0 to EditorCount - 1 do
-        EdList.AddObject(Editors[i].PageName+' '+Editors[i].FileName, Editors[i]);
-
-
-      RecMenu := RegisterIDESubMenu(SrcEditMenuSectionEditors, lisRecentTabs, lisRecentTabs);
-      RecMenu.Visible := False;
-      ProjMenu := RegisterIDESubMenu(SrcEditMenuSectionEditors, dlgEnvProject, dlgEnvProject);
-      ProjMenu.Visible := False;
-      RegisterIDESubMenu(SrcEditMenuSectionEditors, lisMEOther, lisMEOther).Visible := False;
-
-      //first add all pages in the correct order since the editor order can be different from the tab order
-      for i := 0 to EdList.Count - 1 do
-      begin
-        EditorCur := TSourceEditor(EdList.Objects[i]);
-        s := lisMEOther;
-        P := nil;
-        if (EditorCur.GetProjectFile <> nil) and (EditorCur.GetProjectFile.IsPartOfProject) then
-          s := dlgEnvProject
-        else begin
-          Manager.OnPackageForSourceEditor(P, EditorCur);
-          if P <> nil then
-            s := Format(lisTabsFor, [p.Name]);
-        end;
-
-        if SrcEditMenuSectionEditors.FindByName(S) is TIDEMenuSection then begin
-          M := TIDEMenuSection(SrcEditMenuSectionEditors.FindByName(S))
-        end else begin
-          M := RegisterIDESubMenu(SrcEditMenuSectionEditors, S, S);
-          M.UserTag := PtrUInt(P);
-        end;
-        M.Visible := True;
-
-        AddEditorToMenuSection(EditorCur, M, i);
-        // use tag to count modified
-        if EditorCur.Modified then M.Tag := m.Tag + 1;
-      end;
-
-      EdList.Free;
-
-      // add recent tabs. skip 0 since that is the active tab
-      for i := 1 to Min(10, FHistoryList.Count-1) do
-      begin
-        EditorCur := FindSourceEditorWithPageIndex(FNotebook.IndexOf(TCustomPage(FHistoryList[i])));
-        if (EditorCur = nil) or (not EditorCur.FEditor.HandleAllocated) then continue; // show only if it was visited
-        AddEditorToMenuSection(EditorCur, RecMenu, i);
-        RecMenu.Visible := True;
-      end;
-
-      for i := 0 to SrcEditMenuSectionEditors.Count - 1 do begin
-        if SrcEditMenuSectionEditors.Items[i] is TIDEMenuSection then begin
-          M := SrcEditMenuSectionEditors.Items[i] as TIDEMenuSection;
-
-          if M.Tag = 0 then
-            M.Caption := M.Caption +  Format(' (%d)', [M.Count])
-          else
-            M.Caption := M.Caption +  Format(' (*%d/%d)', [M.Tag, M.Count]);
-
-          if M.UserTag <> 0 then
-            RegisterIDEMenuCommand(
-                    RegisterIDEMenuSection(M as TIDEMenuSection, 'Open lpk sect '+TIDEPackage(M.UserTag).Filename),
-                   'Open lpk '+TIDEPackage(M.UserTag).Filename,
-                   lisCompPalOpenPackage, @OnPopupOpenPackageFile, nil, nil, '', M.UserTag);
-        end;
-      end;
-
-      if ProjMenu.Visible then begin
-        RegisterIDEMenuCommand(
-                RegisterIDEMenuSection(ProjMenu, 'Open proj sect '),
-               'Open proj', lisOpenProject2, @OnPopupOpenProjectInsp);
-      end;
-
+    // add recent tabs. skip 0 since that is the active tab
+    for i := 1 to Min(10, FHistoryList.Count-1) do
+    begin
+      EditorCur := FindSourceEditorWithPageIndex(FNotebook.IndexOf(TCustomPage(FHistoryList[i])));
+      if (EditorCur = nil) or (not EditorCur.FEditor.HandleAllocated) then continue; // show only if it was visited
+      AddEditorToMenuSection(EditorCur, RecMenu, i);
+      RecMenu.Visible := True;
     end;
-  finally
-    //SourceTabMenuRoot.EndUpdate;
+
+    for i := 0 to SrcEditMenuSectionEditors.Count - 1 do begin
+      if SrcEditMenuSectionEditors.Items[i] is TIDEMenuSection then begin
+        M := SrcEditMenuSectionEditors.Items[i] as TIDEMenuSection;
+
+        if M.Tag = 0 then
+          M.Caption := M.Caption +  Format(' (%d)', [M.Count])
+        else
+          M.Caption := M.Caption +  Format(' (*%d/%d)', [M.Tag, M.Count]);
+
+        if M.UserTag <> 0 then
+          RegisterIDEMenuCommand(
+                  RegisterIDEMenuSection(M as TIDEMenuSection, 'Open lpk sect '+TIDEPackage(M.UserTag).Filename),
+                 'Open lpk '+TIDEPackage(M.UserTag).Filename,
+                 lisCompPalOpenPackage, @OnPopupOpenPackageFile, nil, nil, '', M.UserTag);
+      end;
+    end;
+
+    if ProjMenu.Visible then begin
+      RegisterIDEMenuCommand(
+              RegisterIDEMenuSection(ProjMenu, 'Open proj sect '),
+             'Open proj', lisOpenProject2, @OnPopupOpenProjectInsp);
+    end;
+
   end;
 end;
 
