@@ -169,6 +169,10 @@ function CodeMacroAddMissingEnd(const {%H-}Parameter: string;
                         {%H-}InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, {%H-}ErrorMsg: string): boolean;
+function CodeMacroAddSemicolon(const {%H-}Parameter: string;
+                        {%H-}InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
+                        var Value, {%H-}ErrorMsg: string): boolean;
 function CodeMacroOfAll(const {%H-}Parameter: string; {%H-}InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
@@ -481,6 +485,29 @@ begin
   end;
 end;
 
+function CodeMacroAddSemicolon(const Parameter: string;
+  InteractiveValue: TPersistent; SrcEdit: TSourceEditorInterface; var Value,
+  ErrorMsg: string): boolean;
+var
+  XY: TPoint;
+  Code: TCodeBuffer;
+  p, AtomStart: integer;
+  Src, Token: String;
+begin
+  Result:=true;
+  Value:='';
+  XY:=SrcEdit.CursorTextXY;
+  if XY.y<1 then exit;
+  Code:=SrcEdit.CodeToolsBuffer as TCodeBuffer;
+  Code.LineColToPosition(XY.y,XY.x,p);
+  Src:=Code.Source;
+  ReadRawNextPascalAtom(Src,p,AtomStart,true,true);
+  Token:=lowercase(copy(Src,AtomStart,p-AtomStart));
+  if (Token='else') or (Token='do') or (Token=';') or (Token=')') or (Token=']') then
+    exit;
+  Value:=';';
+end;
+
 function CodeMacroOfAll(const Parameter: string; InteractiveValue: TPersistent;
   SrcEdit: TSourceEditorInterface; var Value, ErrorMsg: string): boolean;
 // completes
@@ -772,6 +799,9 @@ begin
   RegisterCodeMacro('AddMissingEnd', lisInsertEndIfNeeded,
                      lisCheckIfTheNextTokenInSourceIsAnEndAndIfNotReturnsL,
                     @CodeMacroAddMissingEnd,nil);
+  RegisterCodeMacro('AddSemicolon', lisInsertSemicolonIfNeeded,
+                     lisCheckTheNextTokenInSourceAndAddsASemicolonIfNeeded,
+                    @CodeMacroAddSemicolon,nil);
   RegisterCodeMacro('OfAll', lisListOfAllCaseValues,
                     lisReturnsListOfAllValuesOfCaseVariableInFrontOfVaria,
                     @CodeMacroOfAll,nil);
