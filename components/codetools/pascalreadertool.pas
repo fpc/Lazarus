@@ -3426,7 +3426,7 @@ begin
     end;
     // dot
     if (p<>nil) then begin
-      if p='.' then
+      if p^='.' then
         inc(p)
       else
         p:=nil;
