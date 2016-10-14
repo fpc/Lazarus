@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="7"/>
-    <Files Count="288">
+    <Files Count="289">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -1184,6 +1184,10 @@
         <Filename Value="include/taskdialog.inc"/>
         <Type Value="Include"/>
       </Item288>
+      <Item289>
+        <Filename Value="widgetset/wslazdeviceapis.pas"/>
+        <UnitName Value="WSLazDeviceAPIS"/>
+      </Item289>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>
