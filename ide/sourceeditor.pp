@@ -2256,7 +2256,7 @@ Begin
           CodeToolBoss.IdentifierHistory.Add(
             CodeToolBoss.IdentifierList.FilteredItems[Position]);
           // get value
-          NewValue:=GetIdentCompletionValue(self, KeyChar, ValueType, CursorToLeft);
+          NewValue:=GetIdentCompletionValue(Self, KeyChar, ValueType, CursorToLeft);
           if ValueType=icvIdentifier then ;
           // insert value plus special chars like brackets, semicolons, ...
           if ValueType <> icvNone then
