@@ -47,9 +47,9 @@ uses
   LazFileUtils, LazFileCache, LazUTF8,
   // IDEIntf
   PropEdits, LazIDEIntf, MacroIntf, MacroDefIntf, PackageIntf, IDEOptionsIntf,
-  ProjPackBase, IDEDialogs, ComponentReg,
+  ProjPackIntf, IDEDialogs, ComponentReg,
   // IDE
-  EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs,
+  EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, ProjPackBase,
   LazarusIDEStrConsts, IDEProcs, TransferMacros, FileReferenceList, PublishModule;
 
 type
@@ -149,7 +149,6 @@ type
     FResourceBaseClass: TPFComponentBaseClass;
     FSourceDirectoryReferenced: boolean;
     FSourceDirNeedReference: boolean;
-    FUnitName: string;
     function GetAddToUsesPkgSection: boolean;
     function GetComponents(Index: integer): TPkgComponent;
     function GetHasRegisterProc: boolean;
@@ -168,6 +167,7 @@ type
     procedure SetRemoved(const AValue: boolean); override;
     procedure SetDisableI18NForLFM(AValue: boolean); override;
     procedure SetFileType(const AValue: TPkgFileType); override;
+    procedure SetUnitName(const AValue: string); override;
   public
     constructor Create(ThePackage: TLazPackage);
     destructor Destroy; override;
@@ -203,7 +203,6 @@ type
     property HasRegisterProc: boolean read GetHasRegisterProc write SetHasRegisterProc;
     property LazPackage: TLazPackage read FPackage;
     property SourceDirectoryReferenced: boolean read FSourceDirectoryReferenced;
-    property Unit_Name: string read FUnitName write FUnitName;
   end;
   
   
@@ -1571,6 +1570,12 @@ begin
     Include(FFlags,pffHasRegisterProc)
   else
     Exclude(FFlags,pffHasRegisterProc);
+end;
+
+procedure TPkgFile.SetUnitName(const AValue: string);
+begin
+  if FUnitName=AValue then Exit;
+  FUnitName:=AValue;
 end;
 
 procedure TPkgFile.UpdateUnitName;

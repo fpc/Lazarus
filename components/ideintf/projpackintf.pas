@@ -32,14 +32,17 @@ type
   {$M+}
   TIDEOwnedFile = class
   protected
+    FUnitName: string;
     function GetFilename: string; virtual; abstract;
     procedure SetFilename(const AValue: string); virtual; abstract;
+    procedure SetUnitName(const AValue: string); virtual; abstract;
   public
     function GetFullFilename: string; virtual; abstract; // if no path, the file was not saved yet
     function GetShortFilename(UseUp: boolean): string; virtual; abstract;
     function GetFileOwner: TObject; virtual; abstract;
     function GetFileOwnerName: string; virtual; abstract;
     property Filename: string read GetFilename write SetFilename;
+    property Unit_Name: string read FUnitName write SetUnitName;
   end;
   {$M-}
 

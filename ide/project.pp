@@ -55,7 +55,7 @@ uses
   FPCAdds, FileUtil, LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
   // IDEIntf
   PropEdits, CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, UnitResources,
-  PackageIntf, SrcEditorIntf, IDEOptionsIntf, IDEDialogs, LazIDEIntf,
+  PackageIntf, SrcEditorIntf, IDEOptionsIntf, IDEDialogs, LazIDEIntf, ProjPackIntf,
   // SynEdit
   SynEdit,
   // IDE
@@ -289,7 +289,6 @@ type
     FRunFileIfActive: boolean;
     FSessionModified: boolean;
     fSource: TCodeBuffer;
-    fSrcUnitName: String;
     fUsageCount: extended;
     fUserReadOnly:  Boolean;
     fSourceChangeStep: LongInt;
@@ -328,8 +327,8 @@ type
     procedure SetRunFileIfActive(const AValue: boolean);
     procedure SetSessionModified(const AValue: boolean);
     procedure SetSource(ABuffer: TCodeBuffer);
-    procedure SetSrcUnitName(const NewUnitName:string);
     procedure SetUserReadOnly(const NewValue: boolean);
+    procedure SetUnitName(const AValue: string); override;
   protected
     function GetFileName: string; override;
     procedure SetFilename(const AValue: string); override;
@@ -470,7 +469,7 @@ type
     property Source: TCodeBuffer read fSource write SetSource;
     property DefaultSyntaxHighlighter: TLazSyntaxHighlighter
                                read FDefaultSyntaxHighlighter write SetDefaultSyntaxHighlighter;
-    property SrcUnitName: String read fSrcUnitName write SetSrcUnitName; // unit name in source
+    property SrcUnitName: String read FUnitName write SetUnitName; deprecated 'Use Unit_Name instead.';
     property UserReadOnly: Boolean read fUserReadOnly write SetUserReadOnly;
     property SourceDirectoryReferenced: boolean read FSourceDirectoryReferenced;
     property AutoReferenceSourceDir: boolean read FAutoReferenceSourceDir
@@ -1602,20 +1601,20 @@ begin
   if Result='' then
     Result:=CodeToolBoss.GetSourceName(fSource,false);
   if Result<>'' then begin
-    // source can be parsed => update SrcUnitName
+    // source can be parsed => update UnitName
     {$IFDEF VerboseIDESrcUnitName}
     if CompareFilenames(ExtractFileNameOnly(Filename),'interpkgconflictfiles')=0 then
       debugln(['TUnitInfo.ReadUnitNameFromSource ',Result]);
     {$ENDIF}
-    fSrcUnitName:=Result;
+    FUnitName:=Result;
   end else begin
     // unable to parse the source
     if FilenameIsPascalSource(Filename) then begin
       // use default: the filename
       Result:=ExtractFileNameOnly(Filename);
-      if CompareText(Result,fSrcUnitName)=0 then begin
+      if CompareText(Result,FUnitName)=0 then begin
         // the last stored unitname has the better case
-        Result:=SrcUnitName;
+        Result:=FUnitName;
       end;
     end;
   end;
@@ -1626,7 +1625,7 @@ begin
   if not FilenameIsPascalUnit(Filename) then
     Result:=''
   else begin
-    Result:=SrcUnitName;
+    Result:=FUnitName;
     if (Result='') or (CompareText(Result,ExtractFileNameOnly(Filename))<>0) then
       Result:=ExtractFileNameOnly(Filename);
   end;
@@ -1634,7 +1633,7 @@ end;
 
 function TUnitInfo.CreateUnitName: string;
 begin
-  Result:=SrcUnitName;
+  Result:=FUnitName;
   if (Result='') and FilenameIsPascalSource(Filename) then
     Result:=ExtractFilenameOnly(Filename);
 end;
@@ -1664,7 +1663,7 @@ begin
   Modified := false;
   SessionModified := false;
   FRunFileIfActive:=false;
-  fSrcUnitName := '';
+  FUnitName := '';
   fUsageCount:=-1;
   fUserReadOnly := false;
   if fSource<>nil then fSource.Clear;
@@ -1742,8 +1741,8 @@ begin
     XMLConfig.SetDeleteValue(Path+'ResourceBaseClass/Value',
                              PFComponentBaseClassNames[FResourceBaseClass],
                              PFComponentBaseClassNames[pfcbcNone]);
-    s:=fSrcUnitName;
-    if (s<>'') and (ExtractFileNameOnly(Filename)=s) then s:=''; // only save if SrcUnitName differ from filename
+    s:=FUnitName;
+    if (s<>'') and (ExtractFileNameOnly(Filename)=s) then s:=''; // only save if UnitName differs from filename
     XMLConfig.SetDeleteValue(Path+'UnitName/Value',s,'');
     // save custom data
     SaveStringToStringTree(XMLConfig,CustomData,Path+'CustomData/');
@@ -1820,15 +1819,15 @@ begin
     if (AFilename<>'') and Assigned(fOnLoadSaveFilename) then
       fOnLoadSaveFilename(AFilename,true);
     if FilenameIsPascalSource(Filename) then begin
-      fSrcUnitName:=XMLConfig.GetValue(Path+'UnitName/Value','');
-      if fSrcUnitName='' then
-        fSrcUnitName:=ExtractFileNameOnly(Filename);
+      FUnitName:=XMLConfig.GetValue(Path+'UnitName/Value','');
+      if FUnitName='' then
+        FUnitName:=ExtractFileNameOnly(Filename);
       {$IFDEF VerboseIDESrcUnitName}
       if CompareFilenames(ExtractFileNameOnly(Filename),'interpkgconflictfiles')=0 then
-        debugln(['TUnitInfo.LoadFromXMLConfig ',fSrcUnitName]);
+        debugln(['TUnitInfo.LoadFromXMLConfig ',FUnitName]);
       {$ENDIF}
     end else
-      fSrcUnitName:='';
+      FUnitName:='';
 
     // save custom data
     LoadStringToStringTree(XMLConfig,CustomData,Path+'CustomData/');
@@ -1865,29 +1864,29 @@ begin
   LoadStringToStringTree(XMLConfig,CustomSessionData,Path+'CustomSessionData/');
 end;
 
-procedure TUnitInfo.SetSrcUnitName(const NewUnitName:string);
+procedure TUnitInfo.SetUnitName(const AValue: string);
 var
   Allowed: boolean;
   OldUnitName: String;
 begin
-  if (fSrcUnitName <> NewUnitName) and (NewUnitName <> '') then
+  if (FUnitName <> AValue) and (AValue <> '') then
   begin
     Allowed := true;
-    OldUnitName := fSrcUnitName;
+    OldUnitName := FUnitName;
     if OldUnitName = '' then
       OldUnitName := ExtractFileNameOnly(Filename);
     if Assigned(FOnUnitNameChange) then
-      FOnUnitNameChange(Self, OldUnitName, NewUnitName, false, Allowed);
+      FOnUnitNameChange(Self, OldUnitName, AValue, false, Allowed);
     // (ignore Allowed)
     if (fSource <> nil) then
     begin
-      CodeToolBoss.RenameSource(fSource,NewUnitName);
+      CodeToolBoss.RenameSource(fSource,AValue);
     end;
     {$IFDEF VerboseIDESrcUnitName}
     if CompareFilenames(ExtractFileNameOnly(Filename),'interpkgconflictfiles')=0 then
-      debugln(['TUnitInfo.SetSrcUnitName ',NewUnitName]);
+      debugln(['TUnitInfo.SetSrcUnitName ',AValue]);
     {$ENDIF}
-    fSrcUnitName := NewUnitName;
+    FUnitName := AValue;
     Modified := true;
     if (Project <> nil) then Project.UnitModified(Self);
   end;
@@ -3529,9 +3528,9 @@ begin
     // remove unit from uses section and from createforms in program file
     if (OldUnitInfo.IsPartOfProject) then begin
       if RemoveFromUsesSection then begin
-        if (OldUnitInfo.SrcUnitName<>'') then begin
+        if (OldUnitInfo.Unit_Name<>'') then begin
           CodeToolBoss.RemoveUnitFromAllUsesSections(MainUnitInfo.Source,
-            OldUnitInfo.SrcUnitName);
+            OldUnitInfo.Unit_Name);
         end;
         if (OldUnitInfo.ComponentName<>'') then begin
           CodeToolBoss.RemoveCreateFormStatement(MainUnitInfo.Source,
@@ -3917,9 +3916,9 @@ begin
     if ((OnlyProjectUnits and Units[Result].IsPartOfProject)
     or (not OnlyProjectUnits))
     and (IgnoreUnit<>Units[Result])
-    and (Units[Result].SrcUnitName<>'')
+    and (Units[Result].Unit_Name<>'')
     then begin
-      if (CompareDottedIdentifiers(PChar(Units[Result].SrcUnitName),PChar(AnUnitName))=0)
+      if (CompareDottedIdentifiers(PChar(Units[Result].Unit_Name),PChar(AnUnitName))=0)
       then
         exit;
     end;
@@ -5096,8 +5095,8 @@ begin
       // check if no other project unit has this name
       for i:=0 to UnitCount-1 do begin
         if (Units[i].IsPartOfProject)
-        and (Units[i]<>AnUnitInfo) and (Units[i].SrcUnitName<>'')
-        and (CompareText(Units[i].SrcUnitName,NewUnitName)=0) then begin
+        and (Units[i]<>AnUnitInfo) and (Units[i].Unit_Name<>'')
+        and (CompareText(Units[i].Unit_Name,NewUnitName)=0) then begin
           Allowed:=false;
           exit;
         end;
@@ -5619,7 +5618,7 @@ function TProject.ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
 begin
   Result:=fFirst[uilPartOfProject];
   while Result<>nil do begin
-    if CompareText(AnUnitName,Result.SrcUnitName)=0 then exit;
+    if CompareText(AnUnitName,Result.Unit_Name)=0 then exit;
     Result:=Result.fNext[uilPartOfProject];
   end;
 end;
