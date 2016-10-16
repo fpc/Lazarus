@@ -20,9 +20,9 @@ object AddToPackageDlg: TAddToPackageDlg
     Height = 316
     Top = 0
     Width = 658
-    ActivePage = NewRequirementPage
+    ActivePage = NewComponentPage
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     OnChange = PageControl1Change
     object NewComponentPage: TTabSheet
@@ -248,134 +248,6 @@ object AddToPackageDlg: TAddToPackageDlg
         BorderSpacing.Around = 6
         Caption = '?'
         ParentColor = False
-      end
-    end
-    object NewRequirementPage: TTabSheet
-      Caption = 'New Requirement'
-      ClientHeight = 281
-      ClientWidth = 650
-      object NewDepPanel: TPanel
-        Left = 0
-        Height = 281
-        Top = 0
-        Width = 650
-        Align = alClient
-        BevelOuter = bvNone
-        ChildSizing.LeftRightSpacing = 6
-        ChildSizing.TopBottomSpacing = 6
-        ChildSizing.HorizontalSpacing = 6
-        ChildSizing.VerticalSpacing = 6
-        ChildSizing.Layout = cclLeftToRightThenTopToBottom
-        ChildSizing.ControlsPerLine = 2
-        ClientHeight = 281
-        ClientWidth = 650
-        TabOrder = 0
-        object DependPkgNameLabel: TLabel
-          AnchorSideTop.Control = DependPkgNameFilter
-          AnchorSideTop.Side = asrCenter
-          AnchorSideRight.Control = DependPkgNameFilter
-          Left = 141
-          Height = 18
-          Top = 15
-          Width = 141
-          Anchors = [akTop, akRight]
-          BorderSpacing.CellAlignHorizontal = ccaLeftTop
-          BorderSpacing.CellAlignVertical = ccaCenter
-          Caption = 'DependPkgNameLabel'
-          ParentColor = False
-        end
-        object DependMinVersionLabel: TLabel
-          AnchorSideTop.Control = DependMinVersionEdit
-          AnchorSideTop.Side = asrCenter
-          AnchorSideRight.Control = DependMinVersionEdit
-          Left = 132
-          Height = 18
-          Top = 207
-          Width = 150
-          Anchors = [akTop, akRight]
-          BorderSpacing.CellAlignHorizontal = ccaLeftTop
-          BorderSpacing.CellAlignVertical = ccaCenter
-          Caption = 'DependMinVersionLabel'
-          ParentColor = False
-        end
-        object DependMinVersionEdit: TEdit
-          AnchorSideLeft.Control = DependPkgNameListBox
-          AnchorSideRight.Control = DependPkgNameListBox
-          AnchorSideRight.Side = asrBottom
-          AnchorSideBottom.Control = DependMaxVersionEdit
-          Left = 288
-          Height = 32
-          Top = 200
-          Width = 256
-          Anchors = [akLeft, akRight, akBottom]
-          AutoSize = False
-          BorderSpacing.Top = 6
-          TabOrder = 2
-          Text = 'DependMinVersionEdit'
-        end
-        object DependMaxVersionLabel: TLabel
-          AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = DependMaxVersionEdit
-          AnchorSideTop.Side = asrCenter
-          AnchorSideRight.Control = DependMaxVersionEdit
-          Left = 129
-          Height = 18
-          Top = 245
-          Width = 153
-          Anchors = [akTop, akRight]
-          BorderSpacing.CellAlignHorizontal = ccaLeftTop
-          BorderSpacing.CellAlignVertical = ccaCenter
-          Caption = 'DependMaxVersionLabel'
-          ParentColor = False
-        end
-        object DependMaxVersionEdit: TEdit
-          AnchorSideLeft.Control = DependMinVersionEdit
-          AnchorSideTop.Side = asrBottom
-          AnchorSideRight.Control = DependPkgNameListBox
-          AnchorSideRight.Side = asrBottom
-          Left = 288
-          Height = 32
-          Top = 238
-          Width = 256
-          Anchors = [akLeft, akRight, akBottom]
-          AutoSize = False
-          BorderSpacing.Top = 6
-          TabOrder = 3
-          Text = 'DependMaxVersionEdit'
-        end
-        object DependPkgNameFilter: TListFilterEdit
-          AnchorSideRight.Control = DependPkgNameListBox
-          AnchorSideRight.Side = asrBottom
-          Left = 288
-          Height = 32
-          Top = 8
-          Width = 256
-          ButtonWidth = 23
-          NumGlyphs = 1
-          Anchors = [akTop]
-          AutoSize = False
-          MaxLength = 0
-          TabOrder = 0
-          FilteredListbox = DependPkgNameListBox
-        end
-        object DependPkgNameListBox: TListBox
-          AnchorSideLeft.Control = DependPkgNameFilter
-          AnchorSideTop.Control = DependPkgNameFilter
-          AnchorSideTop.Side = asrBottom
-          AnchorSideRight.Control = DependPkgNameFilter
-          AnchorSideRight.Side = asrBottom
-          AnchorSideBottom.Control = DependMinVersionEdit
-          Left = 288
-          Height = 148
-          Top = 46
-          Width = 256
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          BorderSpacing.Top = 6
-          BorderSpacing.Bottom = 6
-          ItemHeight = 0
-          OnSelectionChange = DependPkgNameListBoxSelectionChange
-          TabOrder = 1
-        end
       end
     end
     object AddFilesPage: TTabSheet

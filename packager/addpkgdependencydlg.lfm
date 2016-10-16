@@ -1,0 +1,135 @@
+object AddPkgDependencyDialog: TAddPkgDependencyDialog
+  Left = 466
+  Height = 374
+  Top = 122
+  Width = 570
+  Caption = 'AddPkgDependencyDialog'
+  ClientHeight = 374
+  ClientWidth = 570
+  LCLVersion = '1.7'
+  object DependPkgNameLabel: TLabel
+    AnchorSideTop.Control = DependPkgNameFilter
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = DependPkgNameFilter
+    Left = 141
+    Height = 18
+    Top = 23
+    Width = 141
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    BorderSpacing.CellAlignHorizontal = ccaLeftTop
+    BorderSpacing.CellAlignVertical = ccaCenter
+    Caption = 'DependPkgNameLabel'
+    ParentColor = False
+  end
+  object DependPkgNameFilter: TListFilterEdit
+    AnchorSideRight.Side = asrBottom
+    Left = 288
+    Height = 32
+    Top = 16
+    Width = 256
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop]
+    AutoSize = False
+    MaxLength = 0
+    TabOrder = 0
+    FilteredListbox = DependPkgNameListBox
+  end
+  object DependPkgNameListBox: TListBox
+    AnchorSideLeft.Control = DependPkgNameFilter
+    AnchorSideTop.Control = DependPkgNameFilter
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = DependPkgNameFilter
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = DependMinVersionEdit
+    Left = 288
+    Height = 174
+    Top = 54
+    Width = 256
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    ItemHeight = 0
+    MultiSelect = True
+    TabOrder = 1
+  end
+  object DependMinVersionEdit: TEdit
+    AnchorSideLeft.Control = DependPkgNameListBox
+    AnchorSideRight.Control = DependPkgNameListBox
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = DependMaxVersionEdit
+    Left = 288
+    Height = 32
+    Top = 234
+    Width = 256
+    Anchors = [akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Top = 6
+    TabOrder = 2
+    Text = 'DependMinVersionEdit'
+  end
+  object DependMaxVersionEdit: TEdit
+    AnchorSideLeft.Control = DependMinVersionEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = DependPkgNameListBox
+    AnchorSideRight.Side = asrBottom
+    Left = 288
+    Height = 32
+    Top = 272
+    Width = 256
+    Anchors = [akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Top = 6
+    TabOrder = 3
+    Text = 'DependMaxVersionEdit'
+  end
+  object DependMinVersionLabel: TLabel
+    AnchorSideTop.Control = DependMinVersionEdit
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = DependMinVersionEdit
+    Left = 132
+    Height = 18
+    Top = 241
+    Width = 150
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    BorderSpacing.CellAlignHorizontal = ccaLeftTop
+    BorderSpacing.CellAlignVertical = ccaCenter
+    Caption = 'DependMinVersionLabel'
+    ParentColor = False
+  end
+  object DependMaxVersionLabel: TLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = DependMaxVersionEdit
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = DependMaxVersionEdit
+    Left = 129
+    Height = 18
+    Top = 279
+    Width = 153
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    BorderSpacing.CellAlignHorizontal = ccaLeftTop
+    BorderSpacing.CellAlignVertical = ccaCenter
+    Caption = 'DependMaxVersionLabel'
+    ParentColor = False
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 37
+    Top = 331
+    Width = 558
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 4
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

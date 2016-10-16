@@ -37,26 +37,22 @@ uses
   Classes, SysUtils, AVL_Tree,
   // LCL
   Forms, Controls, Buttons, ComCtrls, StdCtrls, Dialogs, ButtonPanel,
-  ListFilterEdit,
   // LazUtils
   FileUtil, LazFileUtils,
   // IDEIntf
-  IDEWindowIntf, PackageIntf, IDEDialogs,
+  IDEWindowIntf, PackageIntf,
   // IDE
-  LazarusIDEStrConsts, Project, InputHistory, PackageDefs, PackageSystem,
-  ProjPackChecks;
+  LazarusIDEStrConsts, Project, InputHistory, PackageDefs, ProjPackChecks;
   
 type
   TAddToProjectType = (
     a2pFiles,
-    a2pRequiredPkg,
     a2pEditorFiles
     );
 
   TAddToProjectResult = class
   public
     AddType: TAddToProjectType;
-    Dependency: TPkgDependency;
     FileNames: TStrings;
     destructor Destroy; override;
   end;
@@ -69,21 +65,12 @@ type
     FilesDeleteButton: TBitBtn;
     FilesDirButton: TBitBtn;
     FilesShortenButton: TBitBtn;
-    DependPkgNameListBox: TListBox;
-    DependPkgNameFilter: TListFilterEdit;
     // notebook
     NoteBook: TPageControl;
     AddEditorFilePage: TTabSheet;
-    NewDependPage: TTabSheet;
     AddFilesPage: TTabSheet;
     // add file page
     AddFileLabel: TLabel;
-    // new required package
-    DependPkgNameLabel: TLabel;
-    DependMinVersionLabel: TLabel;
-    DependMinVersionEdit: TEdit;
-    DependMaxVersionLabel: TLabel;
-    DependMaxVersionEdit: TEdit;
     // add files page
     FilesListView: TListView;
     procedure AddFileButtonClick(Sender: TObject);
@@ -92,11 +79,9 @@ type
     procedure AddToProjectDialogClose(Sender: TObject;
                                       var {%H-}CloseAction: TCloseAction);
     procedure AddToProjectDialogShow(Sender: TObject);
-    procedure DependPkgNameListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure FilesDirButtonClick(Sender: TObject);
     procedure FilesListViewSelectItem(Sender: TObject; {%H-}Item: TListItem;
       {%H-}Selected: Boolean);
-    procedure NewDependButtonClick(Sender: TObject);
     procedure FilesAddButtonClick(Sender: TObject);
     procedure FilesDeleteButtonClick(Sender: TObject);
     procedure FilesShortenButtonClick(Sender: TObject);
@@ -106,17 +91,13 @@ type
     fProject: TProject;
     procedure SetupComponents;
     procedure SetupAddEditorFilePage;
-    procedure SetupAddRequirementPage;
     procedure SetupAddFilesPage;
-    function CheckNewReqOk: Boolean;
-    procedure OnIteratePackages(APackageID: TLazPackageID);
+    procedure UpdateAvailableFiles;
+    procedure UpdateFilesButtons;
   public
     AddResult: TAddToProjectResult;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure UpdateAvailableDependencyNames;
-    procedure UpdateAvailableFiles;
-    procedure UpdateFilesButtons;
   end;
   
 function ShowAddToProjectDlg(AProject: TProject;
@@ -136,12 +117,10 @@ begin
   AddToProjectDialog:=TAddToProjectDialog.Create(nil);
   AddToProjectDialog.fProject:=AProject;
   AddToProjectDialog.UpdateAvailableFiles;
-  AddToProjectDialog.UpdateAvailableDependencyNames;
 
   case AInitTab of
-    a2pFiles: AddToProjectDialog.NoteBook.ActivePageIndex:=2;
+    a2pFiles: AddToProjectDialog.NoteBook.ActivePageIndex:=1;
     a2pEditorFiles: AddToProjectDialog.NoteBook.ActivePageIndex:=0;
-    a2pRequiredPkg: AddToProjectDialog.NoteBook.ActivePageIndex:=1;
   end;
   // hide tabs for simple look
   AddToProjectDialog.NoteBook.ShowTabs:=false;
@@ -171,12 +150,6 @@ end;
 procedure TAddToProjectDialog.AddToProjectDialogShow(Sender: TObject);
 begin
   SelectNext(NoteBook.ActivePage, True, True);
-end;
-
-procedure TAddToProjectDialog.DependPkgNameListBoxSelectionChange(Sender: TObject;
-  User: boolean);
-begin
-  CheckNewReqOk;
 end;
 
 procedure TAddToProjectDialog.FilesDirButtonClick(Sender: TObject);
@@ -219,52 +192,6 @@ procedure TAddToProjectDialog.FilesListViewSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
   UpdateFilesButtons;
-end;
-
-procedure TAddToProjectDialog.NewDependButtonClick(Sender: TObject);
-var
-  NewDependency: TPkgDependency;
-begin
-  NewDependency:=TPkgDependency.Create;
-  try
-    // check minimum version
-    if DependMinVersionEdit.Text<>'' then begin
-      if not NewDependency.MinVersion.ReadString(DependMinVersionEdit.Text) then
-      begin
-        IDEMessageDialog(lisProjAddInvalidVersion,
-          Format(lisProjAddTheMinimumVersionIsInvalid,
-                 [DependMinVersionEdit.Text, LineEnding, LineEnding]),
-          mtError,[mbCancel]);
-        exit;
-      end;
-      NewDependency.Flags:=NewDependency.Flags+[pdfMinVersion];
-    end;
-    // check maximum version
-    if DependMaxVersionEdit.Text<>'' then begin
-      if not NewDependency.MaxVersion.ReadString(DependMaxVersionEdit.Text) then
-      begin
-        IDEMessageDialog(lisProjAddInvalidVersion,
-          Format(lisProjAddTheMaximumVersionIsInvalid,
-                 [DependMaxVersionEdit.Text, LineEnding, LineEnding]),
-          mtError,[mbCancel]);
-        exit;
-      end;
-      NewDependency.Flags:=NewDependency.Flags+[pdfMaxVersion];
-    end;
-
-    NewDependency.PackageName:=DependPkgNameListBox.Items[DependPkgNameListBox.ItemIndex];
-    if not CheckAddingProjectDependency(fProject,NewDependency) then exit;
-
-    // ok
-    AddResult:=TAddToProjectResult.Create;
-    AddResult.Dependency:=NewDependency;
-    NewDependency:=nil;
-    AddResult.AddType:=a2pRequiredPkg;
-
-    ModalResult:=mrOk;
-  finally
-    NewDependency.Free;
-  end;
 end;
 
 procedure TAddToProjectDialog.AddFileButtonClick(Sender: TObject);
@@ -372,12 +299,7 @@ begin
       ButtonPanel.OkButton.OnClick:=@AddFileButtonClick;
       ButtonPanel.OkButton.Enabled:=AddFileListView.SelCount>0;
     end;
-    1: begin              // New Requirement
-      ButtonPanel.OkButton.Caption:=lisA2PCreateNewReq;
-      ButtonPanel.OkButton.OnClick:=@NewDependButtonClick;
-      CheckNewReqOk;
-    end;
-    2: begin              // Add Files
+    1: begin              // Add Files
       ButtonPanel.OkButton.Caption:=lisProjAddAddFilesToProject;
       ButtonPanel.OkButton.OnClick:=@FilesAddButtonClick;
       UpdateFilesButtons;
@@ -393,7 +315,6 @@ begin
   NotebookChange(NoteBook);
 
   SetupAddEditorFilePage;
-  SetupAddRequirementPage;
   SetupAddFilesPage;
 end;
 
@@ -405,16 +326,6 @@ begin
   AddFileLabel.Caption:=lisProjFiles;
   CurColumn:=AddFileListView.Columns.Add;
   CurColumn.Caption:=lisA2PFilename2;
-end;
-
-procedure TAddToProjectDialog.SetupAddRequirementPage;
-begin
-  NewDependPage.Caption := lisProjAddNewRequirement;
-  DependPkgNameLabel.Caption:=lisProjAddPackageName;
-  DependMinVersionLabel.Caption:=lisProjAddMinimumVersionOptional;
-  DependMinVersionEdit.Text:='';
-  DependMaxVersionLabel.Caption:=lisProjAddMaximumVersionOptional;
-  DependMaxVersionEdit.Text:='';
 end;
 
 procedure TAddToProjectDialog.SetupAddFilesPage;
@@ -450,18 +361,6 @@ begin
   UpdateFilesButtons;
 end;
 
-function TAddToProjectDialog.CheckNewReqOk: Boolean;
-begin
-  Result:=DependPkgNameListBox.ItemIndex>-1;
-  ButtonPanel.OkButton.Enabled:=Result;
-end;
-
-procedure TAddToProjectDialog.OnIteratePackages(APackageID: TLazPackageID);
-begin
-  if (fPackages.Find(APackageID)=nil) then
-    fPackages.Add(APackageID);
-end;
-
 constructor TAddToProjectDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -475,24 +374,6 @@ destructor TAddToProjectDialog.Destroy;
 begin
   FreeAndNil(fPackages);
   inherited Destroy;
-end;
-
-procedure TAddToProjectDialog.UpdateAvailableDependencyNames;
-var
-  ANode: TAVLTreeNode;
-  sl: TStringList;
-begin
-  fPackages.Clear;
-  PackageGraph.IteratePackages(fpfSearchAllExisting,@OnIteratePackages);
-  sl:=TStringList.Create;
-  ANode:=fPackages.FindLowest;
-  while ANode<>nil do begin
-    sl.Add(TLazPackageID(ANode.Data).Name);
-    ANode:=fPackages.FindSuccessor(ANode);
-  end;
-  DependPkgNameFilter.Items.Assign(sl);
-  DependPkgNameFilter.InvalidateFilter;
-  sl.Free;
 end;
 
 procedure TAddToProjectDialog.UpdateAvailableFiles;

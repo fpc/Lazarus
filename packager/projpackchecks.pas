@@ -13,7 +13,7 @@ uses
   // IDEIntf
   ComponentReg, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, IDEDefs, Project, PackageSystem, PackageDefs;
+  LazarusIDEStrConsts, IDEDefs, Project, PackageSystem, PackageDefs, ProjPackBase;
 
 // Packages:
 type
@@ -21,7 +21,6 @@ type
     d2ptUnit,
     d2ptVirtualUnit,
     d2ptNewComponent,
-    d2ptRequiredPkg,
     d2ptFile,
     d2ptFiles
     );
@@ -41,6 +40,10 @@ function CheckAddingProjectFile(AProject: TProject; NewFiles: TStringList;
 
 function CheckAddingProjectDependency(AProject: TProject;
   NewDependency: TPkgDependency): boolean;
+
+// Project or Package using the common interface
+
+function CheckAddingDependency(AProjPack: IProjPack; ADependency: TPkgDependency): boolean;
 
 
 implementation
@@ -183,7 +186,7 @@ var
   s: String;
 begin
   Result:=mrCancel;
-
+  DebugLn(['CheckAddingPackageDependency: ', LazPackage.Name]);
   NewPkgName:=NewDependency.PackageName;
 
   // check Max-Min version
@@ -199,7 +202,7 @@ begin
   end;
 
   // package name is checked earlier
-  Assert(IsValidPkgName(NewPkgName), 'CheckAddingDependency: '+NewPkgName+' is not valid.');
+  Assert(IsValidPkgName(NewPkgName), 'CheckAddingPackageDependency: '+NewPkgName+' is not valid.');
 
   // check if package is already required
   if (CompareText(NewPkgName,LazPackage.Name)=0)
@@ -230,7 +233,7 @@ begin
     ConflictDependency:=PackageGraph.FindConflictRecursively(
       LazPackage.FirstRequiredDependency,RequiredPackage);
     if ConflictDependency<>nil then begin
-      DebugLn(['CheckAddingDependency ',LazPackage.Name,' requiring ',RequiredPackage.IDAsString,' conflicts with ',ConflictDependency.AsString]);
+      DebugLn(['CheckAddingPackageDependency ',LazPackage.Name,' requiring ',RequiredPackage.IDAsString,' conflicts with ',ConflictDependency.AsString]);
       if not Quiet then
         IDEMessageDialog(lisVersionMismatch,
           Format(lisUnableToAddTheDependencyBecauseThePackageHasAlread, [
@@ -245,7 +248,7 @@ begin
     if PathList<>nil then begin
       try
         s:=PackagePathToStr(PathList);
-        DebugLn(['CheckAddingDependency ',LazPackage.Name,' requiring ',RequiredPackage.IDAsString,' creates cycles with ',s]);
+        DebugLn(['CheckAddingPackageDependency ',LazPackage.Name,' requiring ',RequiredPackage.IDAsString,' creates cycles with ',s]);
         if not Quiet then
           IDEMessageDialog(lisCircularDependencyDetected,
             Format(lisUnableToAddTheDependencyBecauseThisWouldCreateA, [
@@ -263,7 +266,7 @@ begin
   if ProvidingAPackage<>nil then
   begin
     // package is already provided by another package
-    DebugLn(['CheckAddingDependency ',LazPackage.Name,' requiring ',NewPkgName,', but is already provided by ',ProvidingAPackage.IDAsString]);
+    DebugLn(['CheckAddingPackageDependency ',LazPackage.Name,' requiring ',NewPkgName,', but is already provided by ',ProvidingAPackage.IDAsString]);
     if WarnIfAlreadyThere then
       IDEMessageDialog(lisProjAddDependencyAlreadyExists,
         Format(lisUnableToAddTheDependencyBecauseThePackageHasAlread, [
@@ -355,7 +358,7 @@ begin
   end;
 
   // package name is checked earlier
-  Assert(IsValidPkgName(NewPkgName), 'CheckAddingDependency: ' + NewPkgName + ' is not valid.');
+  Assert(IsValidPkgName(NewPkgName), 'CheckAddingProjectDependency: ' + NewPkgName + ' is not valid.');
 
   // check if package is already required
   if AProject.FindDependencyByName(NewPkgName)<>nil then begin
@@ -377,6 +380,19 @@ begin
   Result:=true;
 end;
 
+// Package or Project:
+
+function CheckAddingDependency(AProjPack: IProjPack; ADependency: TPkgDependency): boolean;
+// ToDo: Try to combine CheckAddingPackageDependency and CheckAddingProjectDependency
+//  somehow to use IProjPack param.
+begin
+  Assert((AProjPack is TLazPackage) or (AProjPack is TProject),
+         'CheckAddingDependency: AProjPack is neither a project nor a package.');
+  if AProjPack is TLazPackage then
+    Result := CheckAddingPackageDependency(AProjPack as TLazPackage, ADependency, False, True) = mrOK
+  else
+    Result := CheckAddingProjectDependency(AProjPack as TProject, ADependency)
+end;
 
 end.
 

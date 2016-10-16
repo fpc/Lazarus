@@ -63,7 +63,8 @@ uses
   PackageIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, DialogProcs, IDEOptionDefs, EnvironmentOpts,
-  PackageDefs, Project, PackageEditor, AddToProjectDlg, InputHistory, ProjPackChecks;
+  PackageDefs, Project, PackageEditor, AddToProjectDlg, AddPkgDependencyDlg,
+  InputHistory, ProjPackChecks;
 
 type
   TOnAddUnitToProject =
@@ -173,6 +174,7 @@ type
     procedure AddMenuItemClick(Sender: TObject);
     function AddOneFile(aFilename: string): TModalResult;
     procedure DoAddMoreDialog(AInitTab: TAddToProjectType);
+    procedure DoAddDepDialog;
     procedure FreeNodeData(Typ: TPENodeType);
     function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
@@ -373,7 +375,7 @@ end;
 
 procedure TProjectInspectorForm.mnuAddReqClick(Sender: TObject);
 begin
-  DoAddMoreDialog(a2pRequiredPkg);
+  DoAddDepDialog;
 end;
 
 procedure TProjectInspectorForm.MoveDependencyUpClick(Sender: TObject);
@@ -490,22 +492,34 @@ begin
       UpdateAll;
       EndUpdate;
     end;
-
-  a2pRequiredPkg:
-    begin
-      BeginUpdate;
-      if Assigned(OnAddDependency) then
-        OnAddDependency(Self,AddResult.Dependency);
-      FNextSelectedPart:=AddResult.Dependency;
-      UpdateRequiredPackages;
-      EndUpdate;
-    end;
-
   else
     Showmessage('Not implemented');
   end;
 
   AddResult.Free;
+end;
+
+procedure TProjectInspectorForm.DoAddDepDialog;
+var
+  Deps: TPkgDependencyList;
+  i: Integer;
+  Resu: TModalResult;
+begin
+  Resu:=ShowAddPkgDependencyDlg(LazProject, Deps);
+  try
+    if (Resu<>mrOK) or (Deps.Count=0) then exit;
+    BeginUpdate;
+    for i := 0 to Deps.Count-1 do
+    begin
+      if Assigned(OnAddDependency) then
+        OnAddDependency(Self, Deps[i]);
+    end;
+    FNextSelectedPart:=Deps[Deps.Count];
+    UpdateRequiredPackages;
+    EndUpdate;
+  finally
+    Deps.Free;
+  end;
 end;
 
 procedure TProjectInspectorForm.CopyMoveToDirMenuItemClick(Sender: TObject);
