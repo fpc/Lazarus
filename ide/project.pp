@@ -839,6 +839,7 @@ type
     procedure SaveToSession;
     function DoWrite(Filename: String; IsLpi: Boolean): TModalResult;
   protected
+    function GetDirectory: string; override;
     function GetActiveBuildModeID: string; override;
     function GetDefineTemplates: TProjPackDefineTemplates;
     function GetFiles(Index: integer): TLazProjectFile; override;
@@ -1089,7 +1090,7 @@ type
     property OnSaveUnitSessionInfo: TOnSaveUnitSessionInfoInfo
       read FOnSaveUnitSessionInfo write FOnSaveUnitSessionInfo;
     property POOutputDirectory: string read FPOOutputDirectory write SetPOOutputDirectory;
-    property ProjectDirectory: string read fProjectDirectory;
+    property ProjectDirectory: string read GetDirectory; deprecated 'Use Directory instead.';
     property ProjectInfoFile: string read GetProjectInfoFile write SetProjectInfoFile;
     property PublishOptions: TPublishProjectOptions read FPublishOptions write FPublishOptions;
     property ProjResources: TProjectResources read GetProjResources;
@@ -3290,6 +3291,11 @@ begin
     end;
     FXMLConfig:=nil;
   until Result<>mrRetry;
+end;
+
+function TProject.GetDirectory: string;
+begin
+  Result:=fProjectDirectory;
 end;
 
 // Method WriteProject itself

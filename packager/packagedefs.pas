@@ -609,6 +609,7 @@ type
     procedure UpdateSourceDirectories;
     procedure SourceDirectoriesChanged(Sender: TObject);
   protected
+    function GetDirectory: string; override;
     function GetDefineTemplates: TProjPackDefineTemplates;
     function GetFileCount: integer; override;
     function GetPkgFiles(Index: integer): TLazPackageFile; override;
@@ -647,7 +648,7 @@ type
     function ExtendUnitSearchPath(NewUnitPaths: string): boolean;
     function ExtendIncSearchPath(NewIncPaths: string): boolean;
     function IsVirtual: boolean; override;
-    function HasDirectory: boolean;
+    function HasDirectory: boolean; override;
     function HasStaticDirectory: boolean;
     function GetFullFilename(ResolveMacros: boolean): string;
     function GetResolvedFilename(ResolveMacros: boolean): string; // GetFullFilename + resolve symlinks
@@ -759,7 +760,6 @@ type
     property DefineTemplates: TLazPackageDefineTemplates read FDefineTemplates
                                                          write FDefineTemplates;
     property Description: string read FDescription write SetDescription;
-    property Directory: string read FDirectory; // the directory of the .lpk file with macros
     property Editor: TBasePackageEditor read FPackageEditor write SetPackageEditor;
     property EnableI18N: Boolean read FEnableI18N write SetEnableI18N;
     property EnableI18NForLFM: boolean read FEnableI18NForLFM write SetEnableI18NForLFM;
@@ -2853,6 +2853,11 @@ end;
 procedure TLazPackage.SourceDirectoriesChanged(Sender: TObject);
 begin
   FDefineTemplates.SourceDirectoriesChanged;
+end;
+
+function TLazPackage.GetDirectory: string;
+begin
+  Result:=FDirectory;
 end;
 
 procedure TLazPackage.LockModified;

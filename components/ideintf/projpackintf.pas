@@ -53,8 +53,12 @@ type
   protected
     FIDEOptions: TAbstractIDEOptions; //actually TProjectIDEOptions or TPackageIDEOptions;
     FLazCompilerOptions: TLazCompilerOptions;
+    function GetDirectory: string; virtual; abstract;
+    //procedure SetDirectory(AValue: string); virtual; abstract;
+    function HasDirectory: boolean; virtual;
     function GetLazCompilerOptions: TLazCompilerOptions;
   public
+    property Directory: string read GetDirectory;// write SetDirectory; // directory of .lpi or .lpk file
     property LazCompilerOptions: TLazCompilerOptions read GetLazCompilerOptions;
   end;
 
@@ -62,6 +66,11 @@ type
 implementation
 
 { TIDEProjPackBase }
+
+function TIDEProjPackBase.HasDirectory: boolean;
+begin
+  Result := True;
+end;
 
 function TIDEProjPackBase.GetLazCompilerOptions: TLazCompilerOptions;
 begin
