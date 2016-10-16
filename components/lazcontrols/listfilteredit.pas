@@ -39,7 +39,8 @@ type
     function CompareFNs(AFilename1,AFilename2: string): integer;
     procedure SetFilteredListbox(const AValue: TCustomListBox);
   protected
-    procedure EditEnter; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    //procedure EditEnter; override;
     procedure MoveTo(AIndex: Integer; ASelect: Boolean);
     procedure MoveNext(ASelect: Boolean = False); override;
     procedure MovePrev(ASelect: Boolean = False); override;
@@ -90,15 +91,14 @@ begin
   fOriginalData.Free;
   inherited Destroy;
 end;
-
+{
 procedure TListFilterEdit.EditEnter;
 begin
   inherited EditEnter;
-  Exit;
   if (fFilteredListbox.SelCount = 0) and (fFilteredListbox.Count > 0) then
     fFilteredListbox.Selected[0] := True;
 end;
-
+}
 procedure TListFilterEdit.RemoveItem(AItem: string);
 var
   i: Integer;
@@ -144,6 +144,17 @@ begin
     fOriginalData.Assign(fFilteredListbox.Items);
     if (fFilteredListbox is TCustomCheckListBox) and not Assigned(fCheckedItems) then
       fCheckedItems:=TStringMap.Create(False);
+  end;
+end;
+
+procedure TListFilterEdit.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation=opRemove) and (FilteredListbox=AComponent) then
+  begin
+    IdleConnected:=False;
+    fNeedUpdate:=False;
+    fFilteredListbox:=nil;
   end;
 end;
 

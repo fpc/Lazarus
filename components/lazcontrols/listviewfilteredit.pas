@@ -50,8 +50,9 @@ type
     function MatchesFilter(aData: TListViewDataItem; const FilterLC: string): Boolean;
     procedure SetFilteredListview(const AValue: TCustomListView);
   protected
-    procedure MoveTo(AIndex: Integer; ASelect: Boolean);
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function GetLastSelectedIndex: Integer;
+    procedure MoveTo(AIndex: Integer; ASelect: Boolean);
     procedure MoveNext(ASelect: Boolean = False); override;
     procedure MovePrev(ASelect: Boolean = False); override;
     procedure MovePageUp(ASelect: Boolean = False); override;
@@ -148,6 +149,17 @@ begin
   if Assigned(fFilteredListview) then
     for i := 0 to fFilteredListview.Items.Count-1 do
       fOriginalData.Add(ListItem2Data(fFilteredListview.Items[i]));
+end;
+
+procedure TListViewFilterEdit.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation=opRemove) and (FilteredListview=AComponent) then
+  begin
+    IdleConnected:=False;
+    fNeedUpdate:=False;
+    fFilteredListview:=nil;
+  end;
 end;
 
 function TListViewFilterEdit.MatchesFilter(aData: TListViewDataItem;
