@@ -8977,6 +8977,7 @@ tools/jsonviewer/jsonviewer.res -text
 tools/jsonviewer/languages/jsonviewer.cs.po svneol=native#text/plain
 tools/jsonviewer/languages/jsonviewer.de.po svneol=native#text/plain
 tools/jsonviewer/languages/jsonviewer.es.po svneol=native#text/plain
+tools/jsonviewer/languages/jsonviewer.fi.po -text svneol=native#text/plain
 tools/jsonviewer/languages/jsonviewer.fr.po svneol=native#text/plain
 tools/jsonviewer/languages/jsonviewer.hu.po svneol=native#text/plain
 tools/jsonviewer/languages/jsonviewer.it.po svneol=native#text/plain
