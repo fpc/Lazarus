@@ -63,8 +63,8 @@ uses
   PackageIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, DialogProcs, IDEOptionDefs, EnvironmentOpts,
-  PackageDefs, Project, PackageEditor, AddToProjectDlg, InputHistory;
-  
+  PackageDefs, Project, PackageEditor, AddToProjectDlg, InputHistory, ProjPackChecks;
+
 type
   TOnAddUnitToProject =
     function(Sender: TObject; AnUnitInfo: TUnitInfo): TModalresult of object;
@@ -773,7 +773,7 @@ begin
       if not NodeData.Removed then continue;
       if not (Item is TPkgDependency) then continue;
       Dependency:=TPkgDependency(Item);
-      if not CheckAddingDependency(LazProject,Dependency) then exit;
+      if not CheckAddingProjectDependency(LazProject,Dependency) then exit;
       if Assigned(OnReAddDependency) then
         OnReAddDependency(Self,Dependency);
     end;

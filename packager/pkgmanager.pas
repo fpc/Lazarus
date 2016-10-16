@@ -45,28 +45,30 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  // FCL, LCL
-  TypInfo, math, Classes, SysUtils, LCLProc, LazUTF8, Forms, Controls, Dialogs, Menus,
-  contnrs, StringHashList, Translations, LResources, ComCtrls,
-  // codetools
+  // RTL, FCL
+  TypInfo, math, Classes, SysUtils, contnrs,
+  // LCL
+  LCLProc, Forms, Controls, Dialogs, Menus, ComCtrls, StringHashList,
+  Translations, LResources,
+  // LazUtils
+  LazUTF8, Laz2_XMLCfg, lazutf8classes, LazFileUtils, LazFileCache,
+  // Codetools
   CodeToolsConfig, CodeToolManager, CodeCache, CodeToolsStructs, BasicCodeTools,
-  FileProcs, CodeTree, Laz2_XMLCfg, lazutf8classes, LazFileUtils, LazFileCache,
+  FileProcs, CodeTree,
   // IDE Interface
   SrcEditorIntf, NewItemIntf, ProjPackIntf, ProjectIntf, PackageIntf, CompOptsIntf,
-  MenuIntf, IDEWindowIntf,
-  IDEExternToolIntf,
-  PropEdits, MacroIntf, LazIDEIntf, IDEMsgIntf,
+  MenuIntf, IDEWindowIntf, IDEExternToolIntf, MacroIntf, LazIDEIntf, IDEMsgIntf,
+  ComponentReg, PropEdits, IDEDialogs, UnitResources,
   // IDE
   IDECmdLine, LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs,
   IDECommands, IDEOptionDefs, EnvironmentOpts, MiscOptions, InputHistory,
-  Project, ComponentReg, OldCustomCompDlg, PackageEditor, AddToPackageDlg,
+  Project, OldCustomCompDlg, PackageEditor, AddToPackageDlg,
   PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
   PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
   IDETranslations, TransferMacros, BuildLazDialog, NewDialog, FindInFilesDlg,
-  IDEDialogs, UnitResources, ProjectInspector, SourceEditor,
-  AddFileToAPackageDlg, LazarusPackageIntf, PublishProjectDlg, PkgLinksDlg,
+  ProjectInspector, SourceEditor, ProjPackChecks, AddFileToAPackageDlg,
+  LazarusPackageIntf, PublishProjectDlg, PkgLinksDlg,
   InterPkgConflictFiles, InstallPkgSetDlg, ConfirmPkgListDlg, NewPkgComponentDlg,
-  // bosses
   BaseBuildManager, BasePkgManager, MainBar, MainIntf, MainBase, ModeMatrixOpts;
 
 type
@@ -4861,7 +4863,7 @@ begin
       NewDependency:=TPkgDependency.Create;
       try
         NewDependency.PackageName:=APackage.Name;
-        r:=CheckAddingDependency(TLazPackage(Item),NewDependency,false,false);
+        r:=CheckAddingPackageDependency(TLazPackage(Item),NewDependency,false,false);
         if r=mrCancel then exit;
         if (not OnlyTestIfPossible) and (r<>mrIgnore) then begin
           ADependency:=NewDependency;
@@ -5163,7 +5165,7 @@ begin
   NewDependency:=TPkgDependency.Create;
   try
     NewDependency.PackageName:=ReqPackage;
-    Result:=CheckAddingDependency(APackage,NewDependency,false,false);
+    Result:=CheckAddingPackageDependency(APackage,NewDependency,false,false);
     if Result=mrIgnore then exit(mrOk);
     if Result<>mrOk then exit;
     if not OnlyTestIfPossible then begin

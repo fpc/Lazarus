@@ -32,22 +32,23 @@ unit PackageEditor;
 interface
 
 uses
-  // LCL FCL
-  Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, Graphics,
-  LCLType, LCLProc, Menus, Dialogs, FileUtil, LazFileUtils, LazFileCache, ExtCtrls,
-  contnrs,
-  // IDEIntf CodeTools
-  CodeToolManager,
+  // RTL, FCL
+  Classes, SysUtils, contnrs,
+  // LCL
+  Forms, Controls, StdCtrls, ComCtrls, Buttons, Graphics, Menus, Dialogs,
+  ExtCtrls, LCLType, LCLProc,
   TreeFilterEdit,
+  // LazUtils
+  FileUtil, LazFileUtils, LazFileCache,
+  // IDEIntf
   IDEImagesIntf, MenuIntf, LazIDEIntf, ProjectIntf, CodeToolsStructs,
   FormEditingIntf, PackageIntf, IDEHelpIntf, IDEOptionsIntf,
-  IDEExternToolIntf,
-  NewItemIntf, IDEWindowIntf,
+  NewItemIntf, IDEWindowIntf, IDEDialogs, ComponentReg,
   // IDE
-  IDEDialogs, IDEProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
-  ComponentReg, UnitResources, EnvironmentOpts, DialogProcs, InputHistory,
+  MainBase, IDEProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
+  EnvironmentOpts, DialogProcs, InputHistory,
   PackageDefs, AddToPackageDlg, PkgVirtualUnitEditor, MissingPkgFilesDlg,
-  PackageSystem, CleanPkgDeps, MainBase;
+  PackageSystem, ProjPackChecks, CleanPkgDeps;
   
 const
   PackageEditorMenuRootName = 'PackageEditor';
@@ -667,13 +668,13 @@ begin
         PkgFile:=TPkgFile(Item);
         AFilename:=PkgFile.GetFullFilename;
         if PkgFile.FileType in PkgFileRealUnitTypes then begin
-          if not CheckAddingUnitFilename(LazPackage,d2ptUnit,
+          if not CheckAddingPackageUnit(LazPackage,d2ptUnit,
             PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
         end else if PkgFile.FileType=pftVirtualUnit then begin
-          if not CheckAddingUnitFilename(LazPackage,d2ptVirtualUnit,
+          if not CheckAddingPackageUnit(LazPackage,d2ptVirtualUnit,
             PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
         end else begin
-          if not CheckAddingUnitFilename(LazPackage,d2ptFile,
+          if not CheckAddingPackageUnit(LazPackage,d2ptFile,
             PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
         end;
         PkgFile.Filename:=AFilename;
@@ -683,7 +684,7 @@ begin
         Dependency:=TPkgDependency(Item);
         // Re-add dependency
         fForcedFlags:=[pefNeedUpdateRemovedFiles,pefNeedUpdateRequiredPkgs];
-        if CheckAddingDependency(LazPackage,Dependency,false,true)<>mrOk then exit;
+        if CheckAddingPackageDependency(LazPackage,Dependency,false,true)<>mrOk then exit;
         LazPackage.RemoveRemovedDependency(Dependency);
         PackageGraph.AddDependencyToPackage(LazPackage,Dependency);
       end;

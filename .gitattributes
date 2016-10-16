@@ -7987,6 +7987,7 @@ packager/pkglinksdlg.pas svneol=native#text/plain
 packager/pkgmanager.pas svneol=native#text/pascal
 packager/pkgvirtualuniteditor.pas svneol=native#text/pascal
 packager/projpackbase.pas svneol=native#text/pascal
+packager/projpackchecks.pas svneol=native#text/pascal
 packager/registration/Makefile.compiled svneol=native#text/plain
 packager/registration/README.txt svneol=native#text/plain
 packager/registration/fcl.lpk svneol=native#text/plain

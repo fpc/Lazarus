@@ -43,7 +43,8 @@ uses
   // IDEIntf
   IDEWindowIntf, PackageIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, Project, InputHistory, PackageDefs, PackageSystem;
+  LazarusIDEStrConsts, Project, InputHistory, PackageDefs, PackageSystem,
+  ProjPackChecks;
   
 type
   TAddToProjectType = (
@@ -102,7 +103,7 @@ type
     procedure NotebookChange(Sender: TObject);
   private
     fPackages: TAVLTree;// tree of  TLazPackage or TPackageLink
-    function CheckAddingFile(NewFiles: TStringList; var NewFilename: string): TModalResult;
+    fProject: TProject;
     procedure SetupComponents;
     procedure SetupAddEditorFilePage;
     procedure SetupAddRequirementPage;
@@ -111,7 +112,6 @@ type
     procedure OnIteratePackages(APackageID: TLazPackageID);
   public
     AddResult: TAddToProjectResult;
-    TheProject: TProject;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure UpdateAvailableDependencyNames;
@@ -122,8 +122,6 @@ type
 function ShowAddToProjectDlg(AProject: TProject;
   var AddResult: TAddToProjectResult;
   AInitTab: TAddToProjectType): TModalResult;
-function CheckAddingDependency(LazProject: TProject;
-  NewDependency: TPkgDependency): boolean;
 
 
 implementation
@@ -131,14 +129,12 @@ implementation
 {$R *.lfm}
 
 function ShowAddToProjectDlg(AProject: TProject;
-  var AddResult: TAddToProjectResult;
-  AInitTab: TAddToProjectType
-  ): TModalResult;
+  var AddResult: TAddToProjectResult; AInitTab: TAddToProjectType): TModalResult;
 var
   AddToProjectDialog: TAddToProjectDialog;
 begin
   AddToProjectDialog:=TAddToProjectDialog.Create(nil);
-  AddToProjectDialog.TheProject:=AProject;
+  AddToProjectDialog.fProject:=AProject;
   AddToProjectDialog.UpdateAvailableFiles;
   AddToProjectDialog.UpdateAvailableDependencyNames;
 
@@ -164,50 +160,8 @@ begin
   AddToProjectDialog.Free;
 end;
 
-function CheckAddingDependency(LazProject: TProject;
-  NewDependency: TPkgDependency): boolean;
-var
-  NewPkgName: String;
-begin
-  Result:=false;
-  
-  NewPkgName:=NewDependency.PackageName;
-
-  // check Max-Min version
-  if (pdfMinVersion in NewDependency.Flags)
-  and (pdfMaxVersion in NewDependency.Flags)
-  and (NewDependency.MaxVersion.Compare(NewDependency.MinVersion)<0) then
-  begin
-    IDEMessageDialog(lisProjAddInvalidMinMaxVersion,
-      lisProjAddTheMaximumVersionIsLowerThanTheMinimimVersion,
-      mtError,[mbCancel]);
-    exit;
-  end;
-
-  // package name is checked earlier
-  Assert(IsValidPkgName(NewPkgName), 'CheckAddingDependency: ' + NewPkgName + ' is not valid.');
-
-  // check if package is already required
-  if LazProject.FindDependencyByName(NewPkgName)<>nil then begin
-    IDEMessageDialog(lisProjAddDependencyAlreadyExists,
-      Format(lisProjAddTheProjectHasAlreadyADependency, [NewPkgName]),
-      mtError,[mbCancel]);
-    exit;
-  end;
-
-  // check if required package exists
-  if not PackageGraph.DependencyExists(NewDependency,fpfSearchAllExisting)
-  then begin
-    IDEMessageDialog(lisProjAddPackageNotFound,
-      Format(lisProjAddTheDependencyWasNotFound,[NewDependency.AsString, LineEnding]),
-      mtError,[mbCancel]);
-    exit;
-  end;
-
-  Result:=true;
-end;
-
 { TAddToProjectDialog }
+
 procedure TAddToProjectDialog.AddToProjectDialogClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
@@ -237,7 +191,7 @@ begin
   sl:=Nil;
   DirDlg:=TSelectDirectoryDialog.Create(nil);
   try
-    DirDlg.InitialDir:=TheProject.ProjectDirectory;
+    DirDlg.InitialDir:=fProject.ProjectDirectory;
     DirDlg.Options:=DirDlg.Options+[ofPathMustExist];
     InputHistories.ApplyFileDialogSettings(DirDlg);
     if DirDlg.Execute then begin
@@ -245,8 +199,8 @@ begin
       for i := 0 to sl.Count-1 do begin
         AFilename:=CleanAndExpandFilename(sl[i]);
         NewPgkFileType:=FileNameToPkgFileType(AFilename);
-        if TheProject.ProjectDirectory<>'' then
-          AFilename:=CreateRelativePath(AFilename,TheProject.ProjectDirectory);
+        if fProject.ProjectDirectory<>'' then
+          AFilename:=CreateRelativePath(AFilename,fProject.ProjectDirectory);
         NewListItem:=FilesListView.Items.Add;
         NewListItem.Caption:=AFilename;
         NewListItem.SubItems.Add(GetPkgFileTypeLocalizedName(NewPgkFileType));
@@ -299,7 +253,7 @@ begin
     end;
 
     NewDependency.PackageName:=DependPkgNameListBox.Items[DependPkgNameListBox.ItemIndex];
-    if not CheckAddingDependency(TheProject,NewDependency) then exit;
+    if not CheckAddingProjectDependency(fProject,NewDependency) then exit;
 
     // ok
     AddResult:=TAddToProjectResult.Create;
@@ -324,7 +278,7 @@ begin
     for i:=0 to AddFileListView.Items.Count-1 do
       if AddFileListView.Items[i].Selected then begin
         NewFilename:=AddFileListView.Items[i].Caption;
-        case CheckAddingFile(NewFiles, NewFilename) of
+        case CheckAddingProjectFile(fProject, NewFiles, NewFilename) of
           mrOk: ;
           mrIgnore: continue;
         else
@@ -360,7 +314,7 @@ begin
     for i:=0 to FilesListView.Items.Count-1 do
       if FilesListView.Items[i].Selected then begin
         NewFilename:=FilesListView.Items[i].Caption;
-        case CheckAddingFile(NewFiles, NewFilename) of
+        case CheckAddingProjectFile(fProject, NewFiles, NewFilename) of
           mrOk: ;
           mrIgnore: continue;
         else
@@ -397,8 +351,8 @@ var
   ADirectory: String;
 begin
   if FilesListView.Items.Count=0 then exit;
-  if (TheProject=nil) or (not FilenameIsAbsolute(TheProject.ProjectDirectory)) then exit;
-  ADirectory:=TheProject.ProjectDirectory;
+  if (fProject=nil) or (not FilenameIsAbsolute(fProject.ProjectDirectory)) then exit;
+  ADirectory:=fProject.ProjectDirectory;
   SwitchToAbsolute:=not FilenameIsAbsolute(FilesListView.Items[0].Caption);
   for i:=0 to FilesListView.Items.Count-1 do begin
     Filename:=FilesListView.Items[i].Caption;
@@ -508,63 +462,6 @@ begin
     fPackages.Add(APackageID);
 end;
 
-function TAddToProjectDialog.CheckAddingFile(NewFiles: TStringList;
-  var NewFilename: string): TModalResult;
-var
-  ConflictFile: TUnitInfo;
-  OtherUnitName: String;
-  OtherFile: string;
-  j: Integer;
-  NewFile: TUnitInfo;
-  NewUnitName: String;
-begin
-  Result:=mrCancel;
-  // expand filename
-  if not FilenameIsAbsolute(NewFilename) then
-    NewFilename:=TrimFilename(TheProject.ProjectDirectory+PathDelim+NewFilename);
-  // check if file is already part of project
-  NewFile:=TheProject.UnitInfoWithFilename(NewFilename);
-  if (NewFile<>nil) and NewFile.IsPartOfProject then begin
-    Result:=mrIgnore;
-    exit;
-  end;
-  // check unit name
-  if FilenameIsPascalUnit(NewFilename) then begin
-    // check unitname is valid pascal identifier
-    NewUnitName:=ExtractFileNameOnly(NewFilename);
-    if (NewUnitName='') or not (IsValidUnitName(NewUnitName)) then begin
-      IDEMessageDialog(lisProjAddInvalidPascalUnitName,
-        Format(lisProjAddTheUnitNameIsNotAValidPascalIdentifier, [NewUnitName]),
-        mtWarning, [mbIgnore, mbCancel]);
-      exit;
-    end;
-    // check if unitname already exists in project
-    ConflictFile:=TheProject.UnitWithUnitname(NewUnitName);
-    if ConflictFile<>nil then begin
-      IDEMessageDialog(lisProjAddUnitNameAlreadyExists,
-        Format(lisProjAddTheUnitNameAlreadyExistsInTheProject,
-               [NewUnitName, LineEnding, ConflictFile.Filename]),
-        mtWarning, [mbCancel, mbIgnore]);
-      exit;
-    end;
-    // check if unitname already exists in selection
-    for j:=0 to NewFiles.Count-1 do begin
-      OtherFile:=NewFiles[j];
-      if FilenameIsPascalUnit(OtherFile) then begin
-        OtherUnitName:=ExtractFileNameOnly(OtherFile);
-        if CompareText(OtherUnitName, NewUnitName)=0 then begin
-          IDEMessageDialog(lisProjAddUnitNameAlreadyExists,
-            Format(lisProjAddTheUnitNameAlreadyExistsInTheSelection,
-                   [NewUnitName, LineEnding, OtherFile]),
-            mtWarning, [mbCancel]);
-          exit;
-        end;
-      end;
-    end;
-  end;
-  Result:=mrOk;
-end;
-
 constructor TAddToProjectDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -605,11 +502,11 @@ var
   NewFilename: String;
 begin
   AddFileListView.Items.BeginUpdate;
-  if TheProject<>nil then begin
-    CurFile:=TheProject.FirstUnitWithEditorIndex;
+  if fProject<>nil then begin
+    CurFile:=fProject.FirstUnitWithEditorIndex;
     while CurFile<>nil do begin
       if (not CurFile.IsPartOfProject) and (not CurFile.IsVirtual) then begin
-        NewFilename:=CreateRelativePath(CurFile.Filename,TheProject.ProjectDirectory);
+        NewFilename:=CreateRelativePath(CurFile.Filename,fProject.ProjectDirectory);
         NewListItem:=AddFileListView.Items.Add;
         NewListItem.Caption:=NewFilename;
         NewListItem.Selected:=True;
