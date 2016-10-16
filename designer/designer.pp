@@ -3091,18 +3091,16 @@ Begin
   // remove all child controls owned by the LookupRoot
   if (APersistent is TWinControl) then begin
     AWinControl:=TWinControl(APersistent);
-    // Component may to auto-create new components during deletion unless informed.
+    // Component may auto-create new components during deletion unless informed.
     // ComponentState does not have csDestroying yet when removing children.
     AWinControl.DesignerDeleting := True;
     i:=AWinControl.ControlCount-1;
     while (i>=0) do begin
       ChildControl:=AWinControl.Controls[i];
-//      if (GetLookupRootForComponent(ChildControl)=FLookupRoot)
       if ChildControl.Owner=FLookupRoot then begin
         //Debugln(['[TDesigner.RemoveComponentAndChilds] B ',dbgsName(APersistent),' Child=',dbgsName(ChildControl),' i=',i,' ',TheFormEditor.FindComponent(ChildControl)<>nil]);
         RemovePersistentAndChilds(ChildControl);
-        // the component list of the form has changed
-        // -> restart the search
+        // the component list of the form has changed -> restart the search
         i:=AWinControl.ControlCount-1;
       end else
         dec(i);

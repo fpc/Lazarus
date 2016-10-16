@@ -564,9 +564,8 @@ Begin
       // free/unbind a non form component and its designer form
       aForm:=GetDesignerForm(AComponent);
       if (AForm<>nil) and (not (AForm is TNonFormProxyDesignerForm)) then
-        RaiseException(Format(
-          lisCFETCustomFormEditorDeleteComponentWhereIsTheTCustomN, [AComponent.
-          ClassName]));
+        RaiseException(Format(lisCFETCustomFormEditorDeleteComponentWhereIsTheTCustomN,
+                              [AComponent.ClassName]));
 
       if (AForm <> nil) then
       begin

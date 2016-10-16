@@ -344,12 +344,12 @@ end;
 
 function FileIsReadable(const AFilename: string): boolean;
 begin
-  Result:= BaseUnix.FpAccess(AFilename,BaseUnix.R_OK)=0;
+  Result := BaseUnix.FpAccess(AFilename, BaseUnix.R_OK) = 0;
 end;
 
 function FileIsWritable(const AFilename: string): boolean;
 begin
-  Result := (BaseUnix.FpAccess(AFilename, BaseUnix.W_OK) = 0);
+  Result := BaseUnix.FpAccess(AFilename, BaseUnix.W_OK) = 0;
 end;
 
 

@@ -136,7 +136,7 @@ end;
 
 procedure TProjPackDefineTemplates.EndUpdate;
 begin
-  if FUpdateLock=0 then RaiseException('TProjectDefineTemplates.EndUpdate');
+  if FUpdateLock=0 then RaiseException('TProjPackDefineTemplates.EndUpdate');
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
     if ptfIsPackageTemplate in FFlags then begin

@@ -2993,14 +2993,14 @@ end;
 procedure TPkgManager.ConnectMainBarEvents;
 begin
   with MainIDEBar do begin
-    itmPkgNewPackage.OnClick :=@MainIDEitmPkgNewPackageClick;
-    itmPkgOpenLoadedPackage.OnClick :=@MainIDEitmPkgOpenLoadedPackageClicked;
+    itmPkgNewPackage.OnClick:=@MainIDEitmPkgNewPackageClick;
+    itmPkgOpenLoadedPackage.OnClick:=@MainIDEitmPkgOpenLoadedPackageClicked;
     itmPkgOpenPackageFile.OnClick:=@MainIDEitmPkgOpenPackageFileClick;
-    itmPkgOpenPackageOfCurUnit.OnClick :=@MainIDEitmPkgOpenPackageOfCurUnitClicked;
+    itmPkgOpenPackageOfCurUnit.OnClick:=@MainIDEitmPkgOpenPackageOfCurUnitClicked;
     itmPkgAddCurFileToPkg.OnClick:=@MainIDEitmPkgAddCurFileToPkgClick;
     itmPkgAddNewComponentToPkg.OnClick:=@MainIDEitmPkgNewComponentClick;
     itmPkgPkgGraph.OnClick:=@MainIDEitmPkgPkgGraphClick;
-    itmPkgPackageLinks.OnClick := @MainIDEitmPackageLinksClicked;
+    itmPkgPackageLinks.OnClick:=@MainIDEitmPackageLinksClicked;
     itmPkgEditInstallPkgs.OnClick:=@MainIDEitmPkgEditInstallPkgsClick;
     {$IFDEF CustomIDEComps}
     itmCompsConfigCustomComps.OnClick :=@MainIDEitmConfigCustomCompsClicked;
