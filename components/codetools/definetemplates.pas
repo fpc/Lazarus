@@ -5532,7 +5532,7 @@ begin
     if CompilerOptions<>'' then
       CmdLine:=CmdLine+' '+CompilerOptions;
     CmdLine:=CmdLine+' -iTP';
-    TheProcess.CommandLine := CmdLine;
+    TheProcess.ParseCmdLine(CmdLine);
     TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
     TheProcess.ShowWindow := swoHide;
     Step:='Running '+CmdLine;
