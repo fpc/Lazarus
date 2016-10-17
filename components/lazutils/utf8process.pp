@@ -62,6 +62,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Execute; override;
+    procedure ParseCmdLine(const CmdLine: string; ReadBackslash: boolean = false);
   published
     property ApplicationName: string read FApplicationNameUTF8 write SetApplicationNameUTF8;
     property CommandLine: string read FCommandLineUTF8 write SetCommandLineUTF8;
@@ -88,12 +89,18 @@ type
     procedure SetProcessID(aProcessID : Integer);
   public
     procedure Execute; override;
+    procedure ParseCmdLine(const CmdLine: string; ReadBackslash: boolean = false);
   end;
   {$ENDIF}
 
   {$IFDEF UseTProcessAlias}
 type
+
+  { TProcessUTF8 }
+
   TProcessUTF8 = class(TProcess)
+  public
+    procedure ParseCmdLine(const CmdLine: string; ReadBackslash: boolean = false);
   end;
   {$ENDIF}
 
@@ -653,5 +660,31 @@ begin
     WaitOnExit;
 end;
 {$ENDIF}
+
+procedure TProcessUTF8.ParseCmdLine(const CmdLine: string;
+  ReadBackslash: boolean);
+var
+  List: TStringList;
+begin
+  List:=TStringList.Create;
+  try
+    SplitCmdLineParams(
+      {$IFDEF UseOldTProcess}
+      SysToUTF8(CmdLine),
+      {$ELSE}
+      CmdLine,
+      {$ENDIF}
+      List,ReadBackslash);
+    if List.Count>0 then begin
+      Executable:=List[0];
+      List.Delete(0);
+    end else begin
+      Executable:='';
+    end;
+    Parameters.Assign(List);
+  finally
+    List.Free;
+  end;
+end;
 
 end.
