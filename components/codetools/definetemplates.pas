@@ -5438,7 +5438,7 @@ begin
     //DebugLn('TDefinePool.CreateFPCTemplate CmdLine="',CmdLine,'"');
 
     TheProcess := TProcessUTF8.Create(nil);
-    TheProcess.CommandLine := CmdLine;
+    TheProcess.ParseCmdLine(CmdLine);
     TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
     TheProcess.ShowWindow := swoHide;
     Step:='Running '+CmdLine;
@@ -5482,7 +5482,7 @@ begin
     CmdLine:=CmdLine+' -iTO';
 
     TheProcess := TProcessUTF8.Create(nil);
-    TheProcess.CommandLine := CmdLine;
+    TheProcess.ParseCmdLine(CmdLine);
     TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
     TheProcess.ShowWindow := swoHide;
     Step:='Running '+CmdLine;
