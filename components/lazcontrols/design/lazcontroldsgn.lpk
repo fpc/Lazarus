@@ -3,18 +3,13 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="LazControlDsgn"/>
+    <Type Value="DesignTime"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Other>
-        <CompilerMessages>
-          <MsgFileName Value=""/>
-        </CompilerMessages>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
     </CompilerOptions>
     <Files Count="1">
       <Item1>
@@ -23,7 +18,6 @@
         <UnitName Value="registerlazcontrols"/>
       </Item1>
     </Files>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="IDEIntf"/>
