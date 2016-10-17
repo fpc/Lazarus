@@ -2575,7 +2575,7 @@ var
       NewHasRegisterProc:=OldPkgFile.HasRegisterProc;
       NewAddToUses:=OldPkgFile.AddToUsesPkgSection;
     end else begin
-      NewUnitName:=OldProjFile.SrcUnitName;
+      NewUnitName:=OldProjFile.Unit_Name;
       NewFileType:=FileNameToPkgFileType(OldFilename);
       NewCompPrio:=ComponentPriorityNormal;
       NewResourceBaseClass:=OldProjFile.ResourceBaseClass;
@@ -4151,7 +4151,7 @@ begin
   if not (pcfDoNotCompileDependencies in Flags) then begin
     Result:=CheckPackageGraphForCompilation(nil,
                                             AProject.FirstRequiredDependency,
-                                            AProject.ProjectDirectory,false);
+                                            AProject.Directory,false);
     if Result<>mrOk then exit;
   end;
   
@@ -4339,7 +4339,7 @@ var
       end else begin
         ClassUnitInfo:=Project1.UnitWithComponentClassName(ComponentClassnames[i]);
         if ClassUnitInfo<>nil then
-          NewUnitName:=ClassUnitInfo.SrcUnitName;
+          NewUnitName:=ClassUnitInfo.Unit_Name;
       end;
       if (NewUnitName<>'') and (UnitNames.IndexOf(NewUnitName)<0) then begin
         // new needed unit

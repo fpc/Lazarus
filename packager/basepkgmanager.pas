@@ -232,7 +232,7 @@ begin
     if DepOwner is TLazPackage then begin
       Directory:=TLazPackage(DepOwner).Directory;
     end else if DepOwner is TProject then begin
-      Directory:=TProject(DepOwner).ProjectDirectory;
+      Directory:=TProject(DepOwner).Directory;
     end else if DepOwner=PkgBoss then begin
       Directory:=EnvironmentOptions.GetParsedLazarusDirectory;
     end else begin

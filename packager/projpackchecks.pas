@@ -293,7 +293,7 @@ begin
   Result:=mrCancel;
   // expand filename
   if not FilenameIsAbsolute(NewFilename) then
-    NewFilename:=TrimFilename(AProject.ProjectDirectory+PathDelim+NewFilename);
+    NewFilename:=TrimFilename(AProject.Directory+PathDelim+NewFilename);
   // check if file is already part of project
   NewFile:=AProject.UnitInfoWithFilename(NewFilename);
   if (NewFile<>nil) and NewFile.IsPartOfProject then begin
