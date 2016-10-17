@@ -255,7 +255,7 @@ type
     function CompleteVariableForIn(CleanCursorPos,
                        OldTopLine: integer; CursorNode: TCodeTreeNode;
                        var NewPos: TCodeXYPosition; var NewTopLine: integer;
-                       SourceChangeCache: TSourceChangeCache; Interactive: Boolean): boolean;
+                       SourceChangeCache: TSourceChangeCache; {%H-}Interactive: Boolean): boolean;
     function CompleteIdentifierByParameter(CleanCursorPos,
                        OldTopLine: integer; CursorNode: TCodeTreeNode;
                        var NewPos: TCodeXYPosition; var NewTopLine: integer;
