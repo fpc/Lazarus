@@ -1229,9 +1229,9 @@ function TSynMarkupHighIfDefEntry.DebugText(Short: Boolean): String;
 begin
   If Self = nil then
     exit('NODE IS NIL');
-  Result := Format('Line=%d NType=%s State=%s OpenState=%s Flags=%s ' +
+  Result := Format('Line=%s   NType=%s State=%s OpenState=%s Flags=%s ' +
                    ' StartCol=%d EndCol=%d',
-                   [FLine, dbgs(FNodeType), dbgs(FNodeState), dbgs(FOpeningPeerNodeState) ,
+                   [FLine.DebugText, dbgs(FNodeType), dbgs(FNodeState), dbgs(FOpeningPeerNodeState) ,
                     dbgs(FNodeFlags), FStartColumn, FEndColumn]
                   );
   if Short or (FPeers[idpOpeningPeer] = nil) then

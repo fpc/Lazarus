@@ -957,10 +957,10 @@ var UpdateMode: TUpdateMode;
     SetCaret(1,1);
     // need to add space later, so it is regocnized as trailing
 
-    BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('test'){$ENDIF};
+    BeginUndoBlock;
       SynEdit.TextBetweenPointsEx[point(5,1), point(6,1), scamEnd] := ''; // delete d
       SynEdit.TextBetweenPointsEx[point(4,2), point(4,2), scamEnd] := ' '; // add space
-    EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('test'){$ENDIF};
+    EndUndoBlock;
     TestIsFullText ('modified after block', ['abc', 'mno ', 'xyz', '']);
     TestIsCaret('modified after block', 5,2);
 

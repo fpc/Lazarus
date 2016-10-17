@@ -7142,7 +7142,7 @@ begin
   DecPaintLock;
   aList.EndBlock; // Todo: Doing this after DecPaintLock, can cause duplicate calls to StatusChanged(scModified)
   {$IFDEF SynUndoDebugBeginEnd}
-  DebugLnEnter(['<< TCustomSynEdit.InternalEndUndoBlock', DbgSName(self), ' ', dbgs(Self), ' aList=', aList, ' FPaintLock=', FPaintLock, ' InGroupCount=',aList.InGroupCount]);
+  DebugLnExit(['<< TCustomSynEdit.InternalEndUndoBlock', DbgSName(self), ' ', dbgs(Self), ' aList=', aList, ' FPaintLock=', FPaintLock, ' InGroupCount=',aList.InGroupCount]);
   {$ENDIF}
 end;
 
@@ -7179,7 +7179,7 @@ begin
   ////FFoldedLinesView.UnLock;
   fUndoList.EndBlock;
   {$IFDEF SynUndoDebugBeginEnd}
-  DebugLnEnter(['<< TCustomSynEdit.EndUndoBlock', DbgSName(self), ' ', dbgs(Self), ' Caller=', ACaller, ' FPaintLock=', FPaintLock, ' InGroupCount=',fUndoList.InGroupCount, '  FIsInDecPaintLock=',dbgs(FIsInDecPaintLock)]);
+  DebugLnExit(['<< TCustomSynEdit.EndUndoBlock', DbgSName(self), ' ', dbgs(Self), ' Caller=', ACaller, ' FPaintLock=', FPaintLock, ' InGroupCount=',fUndoList.InGroupCount, '  FIsInDecPaintLock=',dbgs(FIsInDecPaintLock)]);
   //if ACaller = '' then DumpStack;
   {$ENDIF}
 end;
@@ -7624,7 +7624,7 @@ begin
   fTSearch.Backwards:=bBackward;
   // search while the current search position is inside of the search range
   IncPaintLock;
-  BeginUndoBlock;
+  BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('SynEdit.SearchReplaceEx'){$ENDIF};
   try
     ptFoundStartSel.y := -1;
     //DebugLn(['TCustomSynEdit.SearchReplace ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd),' ASearch="',dbgstr(ASearch),'" AReplace="',dbgstr(AReplace),'"']);
@@ -7660,7 +7660,7 @@ begin
                                        ptFoundStart.Y,ptFoundStart.X);
           finally
             IncPaintLock;
-            BeginUndoBlock
+            BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('SynEdit.SearchReplaceEx(prompt)'){$ENDIF};
           end;
           if nAction = raCancel then exit;
         end else
