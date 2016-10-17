@@ -30,7 +30,7 @@ type
     DependPkgNameFilter: TListFilterEdit;
     DependPkgNameLabel: TLabel;
     DependPkgNameListBox: TListBox;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure OKButtonClick(Sender: TObject);
   private
     fPackages: TAVLTree;  // tree of  TLazPackage or TPackageLink
