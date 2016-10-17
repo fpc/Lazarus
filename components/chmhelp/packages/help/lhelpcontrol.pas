@@ -228,14 +228,14 @@ begin
     begin
       // application bundle
       // to put lhelp into the foreground, use "open -n"
-      Cmd:='/usr/bin/open -n '+ServerEXE+' --args --ipcname ' + NameForServer
+      Cmd:='/usr/bin/open -n '+ServerEXE+' --args --ipcname ' + NameForServer;
     end;
     {$ENDIF}
     with TProcessUTF8.Create(nil) do
     begin
       InheritHandles := false;
       ShowWindow:=swoShowNormal;
-      CommandLine := Cmd;
+      ParseCmdLine(Cmd);
       debugln('TLHelpConnection.StartHelpServer: going to start help server by executing '+Cmd);
       Execute;
       Free;
