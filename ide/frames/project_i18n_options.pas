@@ -58,10 +58,10 @@ var
   NewDirectory: string;
 begin
   NewDirectory := LazSelectDirectory(lisPOChoosePoFileDirectory,
-                                     FProject.ProjectDirectory);
+                                     FProject.Directory);
   if NewDirectory = '' then Exit;
   if not FProject.IsVirtual then
-    NewDirectory:=CreateRelativePath(NewDirectory,FProject.ProjectDirectory);
+    NewDirectory:=CreateRelativePath(NewDirectory,FProject.Directory);
   POOutDirEdit.Text := NewDirectory;
 end;
 

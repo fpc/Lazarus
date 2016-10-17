@@ -304,7 +304,7 @@ function TLazFindInFilesDialog.GetBaseDirectory: string;
 begin
   Result:='';
   if Project1<>nil then
-    Result:=Project1.ProjectDirectory;
+    Result:=Project1.Directory;
   if Result='' then
     Result:=GetCurrentDirUTF8;
 end;

@@ -612,7 +612,7 @@ begin
       if AnUnitInfo.OpenEditorInfoCount > 0 then
         AShareEditor := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
       NewSrcEdit:=SrcNotebook.NewFile(
-        CreateSrcEditPageName(AnUnitInfo.SrcUnitName, AFilename, AShareEditor),
+        CreateSrcEditPageName(AnUnitInfo.Unit_Name, AFilename, AShareEditor),
         AnUnitInfo.Source, False, AShareEditor);
       NewSrcEdit.EditorComponent.BeginUpdate;
       MainIDEBar.itmFileClose.Enabled:=True;
@@ -1399,7 +1399,7 @@ begin
     CurPath:=AppendPathDelim(CurPath);
     if not FilenameIsAbsolute(CurPath) then begin
       if FActiveUnitInfo.IsVirtual then
-        CurPath:=AppendPathDelim(Project1.ProjectDirectory)+CurPath
+        CurPath:=AppendPathDelim(Project1.Directory)+CurPath
       else
         CurPath:=AppendPathDelim(ExtractFilePath(FActiveUnitInfo.Filename))+CurPath;
     end;
@@ -1723,8 +1723,8 @@ begin
     s:='"'+ActiveUnitInfo.Filename+'"'
   else
     s:='"'+ActiveSourceEditor.PageName+'"';
-  if (ActiveUnitInfo.SrcUnitName<>'')
-  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.SrcUnitName,true,ActiveUnitInfo)>=0) then
+  if (ActiveUnitInfo.Unit_Name<>'')
+  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.Unit_Name,true,ActiveUnitInfo)>=0) then
   begin
     IDEMessageDialog(lisInformation, Format(
       lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
@@ -2044,8 +2044,8 @@ begin
   end else
     NewUnitInfo:=TUnitInfo.Create(NewBuffer);
   //debugln(['TLazSourceFileManager.NewFile ',NewUnitInfo.Filename,' ',NewFilename]);
-  if (CompareText(NewUnitInfo.SrcUnitName,NewUnitName)=0) then
-    NewUnitInfo.SrcUnitName:=NewUnitName;
+  if (CompareText(NewUnitInfo.Unit_Name,NewUnitName)=0) then
+    NewUnitInfo.Unit_Name:=NewUnitName;
   NewUnitInfo.BuildFileIfActive:=NewFileDescriptor.BuildFileIfActive;
   NewUnitInfo.RunFileIfActive:=NewFileDescriptor.RunFileIfActive;
 
@@ -2091,7 +2091,7 @@ begin
     if NewUnitInfo.OpenEditorInfoCount > 0 then
       AShareEditor := TSourceEditor(NewUnitInfo.OpenEditorInfo[0].EditorComponent);
     NewSrcEdit := SrcNoteBook.NewFile(
-      CreateSrcEditPageName(NewUnitInfo.SrcUnitName, NewUnitInfo.Filename, AShareEditor),
+      CreateSrcEditPageName(NewUnitInfo.Unit_Name, NewUnitInfo.Filename, AShareEditor),
       NewUnitInfo.Source, True, AShareEditor);
     MainIDEBar.itmFileClose.Enabled:=True;
     MainIDEBar.itmFileCloseAll.Enabled:=True;
@@ -2582,8 +2582,8 @@ begin
         // ask user
         if AnUnitInfo.Filename<>'' then
           AText:=Format(lisFileHasChangedSave, [AnUnitInfo.Filename])
-        else if AnUnitInfo.SrcUnitName<>'' then
-          AText:=Format(lisUnitHasChangedSave, [AnUnitInfo.SrcUnitName])
+        else if AnUnitInfo.Unit_Name<>'' then
+          AText:=Format(lisUnitHasChangedSave, [AnUnitInfo.Unit_Name])
         else
           AText:=Format(lisSourceOfPageHasChangedSave, [TSourceEditor(AEditor).PageName]);
         ACaption:=lisSourceModified;
@@ -2699,7 +2699,7 @@ function TLazSourceFileManager.FindUnitFile(const AFilename: string; TheOwner: T
 
     // search in search path of project
     AnUnitName:=ExtractFileNameOnly(AFilename);
-    BaseDir:=AProject.ProjectDirectory;
+    BaseDir:=AProject.Directory;
     UnitInFilename:='';
     Result:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
                                        BaseDir,AnUnitName,UnitInFilename,true);
@@ -3166,7 +3166,7 @@ begin
     // first look in the project directory
     TempCmd:=CmdAfterExe;
     if not FilenameIsAbsolute(TempCmd) then
-      TempCmd:=TrimFilename(AppendPathDelim(Project1.ProjectDirectory)+TempCmd);
+      TempCmd:=TrimFilename(AppendPathDelim(Project1.Directory)+TempCmd);
     if FileExistsCached(TempCmd) then begin
       CmdAfterExe:=TempCmd;
     end else begin
@@ -3288,7 +3288,7 @@ begin
         begin
           ReadLFMHeader(LFMCode.Source,LFMType,LFMComponentName,LFMClassName);
           if LFMComponentName<>'' then begin
-            anUnitName:=CurUnitInfo.SrcUnitName;
+            anUnitName:=CurUnitInfo.Unit_Name;
             if anUnitName='' then
               anUnitName:=ExtractFileNameOnly(LFMFilename);
             ItemList.Add(LFMComponentName, CurUnitInfo.Filename,
@@ -3444,7 +3444,7 @@ begin
           AnUnitInfo.ResourceBaseClass:=FindLFMBaseClass(AnUnitInfo.Filename);
           if not ResourceFits(AnUnitInfo.ResourceBaseClass) then continue;
         end;
-        AddUnit(AnUnitInfo.SrcUnitName,AnUnitInfo.Filename);
+        AddUnit(AnUnitInfo.Unit_Name,AnUnitInfo.Filename);
       end;
     end else if APackage<>nil then begin
       // add package units
@@ -4380,7 +4380,7 @@ begin
     // unit is not in a package => extend unit path
     ShortDir:=CurDirectory;
     if (not Project1.IsVirtual) then
-      ShortDir:=CreateRelativePath(ShortDir,Project1.ProjectDirectory);
+      ShortDir:=CreateRelativePath(ShortDir,Project1.Directory);
     Result:=AddPathToBuildModes(ShortDir,CurDirectory,IsIncludeFile);
   end;
 end;
@@ -4536,7 +4536,7 @@ function TLazSourceFileManager.NewUniqueComponentName(Prefix: string): string;
         if CompareText(AnUnitInfo.Component.ClassName,Identifier)=0 then exit;
       end else if (AnUnitInfo.ComponentName<>'')
       and ((AnUnitInfo.IsPartOfProject) or AnUnitInfo.Loaded) then begin
-        if SysUtils.CompareText(AnUnitInfo.SrcUnitName,Identifier)=0 then exit;
+        if SysUtils.CompareText(AnUnitInfo.Unit_Name,Identifier)=0 then exit;
         if SysUtils.CompareText(AnUnitInfo.ComponentName,Identifier)=0 then exit;
       end;
     end;
@@ -4679,9 +4679,9 @@ begin
     // if this is a project file, start in project directory
     if (AnUnitInfo=nil)
     or (AnUnitInfo.IsPartOfProject and (not Project1.IsVirtual)
-        and (not FileIsInPath(SaveDialog.InitialDir,Project1.ProjectDirectory)))
+        and (not FileIsInPath(SaveDialog.InitialDir,Project1.Directory)))
     then begin
-      SaveDialog.InitialDir:=Project1.ProjectDirectory;
+      SaveDialog.InitialDir:=Project1.Directory;
     end;
     // if this is a package file, then start in package directory
     PkgDefaultDirectory:=PkgBoss.GetDefaultSaveDirectoryForFile(AFilename);
@@ -5366,8 +5366,8 @@ begin
         OldLFMFilename:=ChangeFileExt(OldFilename,'.dfm');
     end;
     if NewUnitName='' then
-      NewUnitName:=AnUnitInfo.SrcUnitName;
-    debugln(['TLazSourceFileManager.RenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.SrcUnitName,' LFMCode=',LFMCode<>nil,' LRSCode=',LRSCode<>nil,' NewFilename="',NewFilename,'"']);
+      NewUnitName:=AnUnitInfo.Unit_Name;
+    debugln(['TLazSourceFileManager.RenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.Unit_Name,' LFMCode=',LFMCode<>nil,' LRSCode=',LRSCode<>nil,' NewFilename="',NewFilename,'"']);
 
     // check new resource file
     NewLFMFilename:='';
@@ -5413,7 +5413,7 @@ begin
     if AnUnitInfo.IsPartOfProject
     and (not Project1.IsVirtual)
     and (FilenameIsPascalUnit(NewFilename))
-    and (CompareFilenames(NewFilePath,Project1.ProjectDirectory)<>0) then begin
+    and (CompareFilenames(NewFilePath,Project1.Directory)<>0) then begin
       OldUnitPath:=Project1.CompilerOptions.GetUnitPath(false);
 
       if SearchDirectoryInSearchPath(OldUnitPath,NewFilePath,1)<1 then begin
@@ -5424,7 +5424,7 @@ begin
         begin
           Project1.CompilerOptions.OtherUnitFiles:=
                        Project1.CompilerOptions.OtherUnitFiles+';'
-                       +CreateRelativePath(NewFilePath,Project1.ProjectDirectory);
+                       +CreateRelativePath(NewFilePath,Project1.Directory);
         end;
       end;
     end;
@@ -5515,7 +5515,7 @@ begin
         // the code is not changed, therefore the marks are kept
 
     // change unitname in lpi and in main source file
-    AnUnitInfo.SrcUnitName:=NewUnitName;
+    AnUnitInfo.Unit_Name:=NewUnitName;
     if LRSCode<>nil then begin
       // change resource filename in the source include directive
       if not CodeToolBoss.RenameMainInclude(AnUnitInfo.Source,
@@ -6091,7 +6091,7 @@ begin
           FormEditor1.ClearSelection;
 
         // create JIT component
-        NewUnitName:=AnUnitInfo.SrcUnitName;
+        NewUnitName:=AnUnitInfo.Unit_Name;
         if NewUnitName='' then
           NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
         DisableAutoSize:=true;
@@ -7628,7 +7628,7 @@ var
 begin
   Project1.BeginUpdate(false);
   try
-    OldProjectDir:=Project1.ProjectDirectory;
+    OldProjectDir:=Project1.Directory;
 
     if Project1.MainUnitInfo = nil then
       UseMainSourceFile := False;
@@ -7639,7 +7639,7 @@ begin
       AFilename:='';
       // build a nice project info filename suggestion
       if UseMainSourceFile and (Project1.MainUnitID>=0) then
-        AFilename:=Project1.MainUnitInfo.SrcUnitName;
+        AFilename:=Project1.MainUnitInfo.Unit_Name;
       if AFilename='' then
         AFilename:=ExtractFileName(Project1.ProjectInfoFile);
       if AFilename='' then
@@ -7664,7 +7664,7 @@ begin
       SaveDialog.Filter := '*' + Ext + '|' + '*' + Ext;
       SaveDialog.DefaultExt := ExtractFileExt(AFilename);
       if not Project1.IsVirtual then
-        SaveDialog.InitialDir := Project1.ProjectDirectory;
+        SaveDialog.InitialDir := Project1.Directory;
 
       repeat
         Result:=mrCancel;
@@ -7828,7 +7828,7 @@ begin
         MainUnitSrcEdit.CodeBuffer:=NewBuf;
 
       // change program name
-      MainUnitInfo.SrcUnitName:=NewProgramName;
+      MainUnitInfo.Unit_Name:=NewProgramName;
       MainUnitInfo.Modified:=true;
 
       // update source notebook page names
@@ -7836,7 +7836,7 @@ begin
     end;
 
     // update paths
-    prDir := Project1.ProjectDirectory;
+    prDir := Project1.Directory;
     with Project1.CompilerOptions do begin
       OtherUnitFiles:=RebaseSearchPath(OtherUnitFiles,OldProjectDir,prDir,true);
       IncludePath   :=RebaseSearchPath(IncludePath,OldProjectDir,prDir,true);

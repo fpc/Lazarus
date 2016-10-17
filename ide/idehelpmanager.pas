@@ -1152,7 +1152,7 @@ begin
   else if (BasePathObject=HelpBoss) or (BasePathObject=MainIDEInterface) then
     Result:=EnvironmentOptions.GetParsedLazarusDirectory
   else if BasePathObject is TProject then
-    Result:=TProject(BasePathObject).ProjectDirectory
+    Result:=TProject(BasePathObject).Directory
   else if BasePathObject is TLazPackage then
     Result:=TLazPackage(BasePathObject).Directory;
   if Result<>'' then begin

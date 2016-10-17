@@ -86,7 +86,7 @@ begin
       begin
         aFilename := Filename;
         if not FProject.IsVirtual then
-          aFileName := CreateRelativePath(aFileName, FProject.ProjectDirectory);
+          aFileName := CreateRelativePath(aFileName, FProject.Directory);
 
         AddResource(aFileName);
       end;

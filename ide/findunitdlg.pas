@@ -562,7 +562,7 @@ begin
             FMainOwnerName:='project';
           end;
           OwnerNode:=InfoTreeView.Items.Add(nil,'Owner: Project');
-          AddPaths(OwnerNode,'Unit search paths',AProject.ProjectDirectory,
+          AddPaths(OwnerNode,'Unit search paths',AProject.Directory,
                    AProject.CompilerOptions.GetUnitPath(true),true);
 
         end

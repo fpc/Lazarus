@@ -1547,12 +1547,12 @@ begin
   Result:=mrOK;
   OutUnitInfo:=nil;
   if not FilenameIsAbsolute(AFileName) then
-    AFileName:=AppendPathDelim(LazProject.ProjectDirectory)+AFileName;
+    AFileName:=AppendPathDelim(LazProject.Directory)+AFileName;
   AFileName:=TrimFilename(AFileName);
   if not FileExistsUTF8(AFileName) then
     exit(mrNo);
   // Create relative search path for project settings.
-  RP:=ExtractFilePath(CreateRelativePath(AFileName, LazProject.ProjectDirectory));
+  RP:=ExtractFilePath(CreateRelativePath(AFileName, LazProject.Directory));
   if (RP<>'') and (fUnitSearchPaths.IndexOf(RP)<0) then
     fUnitSearchPaths.Add(RP);
   PureUnitName:=ExtractFileNameOnly(AFileName);

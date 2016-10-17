@@ -3333,7 +3333,7 @@ begin
   end;
 
   Filename:=Msg.GetFullFilename;
-  KnownFilename:= LazarusIDE.FindSourceFile(Filename, Project1.ProjectDirectory,
+  KnownFilename:= LazarusIDE.FindSourceFile(Filename, Project1.Directory,
                     [fsfSearchForProject, fsfUseIncludePaths, fsfMapTempToVirtualFiles]);
   Caret:=Point(Msg.Line,Msg.Column);
 

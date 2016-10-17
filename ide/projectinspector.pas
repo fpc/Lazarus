@@ -342,7 +342,7 @@ begin
   OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
-    ADirectory:=LazProject.ProjectDirectory;
+    ADirectory:=LazProject.Directory;
     if not FilenameIsAbsolute(ADirectory) then ADirectory:='';
     if ADirectory<>'' then
       OpenDialog.InitialDir:=ADirectory;
@@ -1291,7 +1291,7 @@ end;
 function TProjectInspectorForm.FilesBaseDirectory: string;
 begin
   if LazProject<>nil then
-    Result:=LazProject.ProjectDirectory
+    Result:=LazProject.Directory
   else
     Result:='';
 end;

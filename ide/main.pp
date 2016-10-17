@@ -3115,7 +3115,7 @@ end;
 procedure TMainIDE.mnuCleanDirectoryClicked(Sender: TObject);
 begin
   if Project1=nil then exit;
-  ShowCleanDirectoryDialog(Project1.ProjectDirectory,GlobalMacroList);
+  ShowCleanDirectoryDialog(Project1.Directory,GlobalMacroList);
 end;
 
 procedure TMainIDE.OnSrcNotebookFileNew(Sender: TObject);
@@ -5527,7 +5527,7 @@ begin
   if Project1.IsVirtual then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',VirtualDirectory)
   else
-    CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',Project1.ProjectDirectory)
+    CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',Project1.Directory)
 end;
 
 function TMainIDE.DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
@@ -6350,7 +6350,7 @@ begin
   // publish project
   //debugln('TMainIDE.DoPublishProject B');
   Result:=SourceFileMgr.PublishModule(Project1.PublishOptions,
-    Project1.ProjectDirectory, MainBuildBoss.GetProjectPublishDir);
+    Project1.Directory, MainBuildBoss.GetProjectPublishDir);
 end;
 
 procedure TMainIDE.DoShowProjectInspector(State: TIWGetFormState);
@@ -6625,7 +6625,7 @@ begin
 
     // get main source filename
     if not Project1.IsVirtual then begin
-      WorkingDir:=Project1.ProjectDirectory;
+      WorkingDir:=Project1.Directory;
       SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
     end else begin
       WorkingDir:=GetTestBuildDirectory;
@@ -6696,7 +6696,7 @@ begin
                                         Project1.CompilerOptions.ExecuteBefore);
       if (AReason in ToolBefore.CompileReasons) then begin
         Result:=Project1.CompilerOptions.ExecuteBefore.Execute(
-               Project1.ProjectDirectory, lisProject2+lisExecutingCommandBefore,
+               Project1.Directory, lisProject2+lisExecutingCommandBefore,
                aCompileHint);
         if Result<>mrOk then
         begin
@@ -6840,7 +6840,7 @@ begin
       // no need to check for mrOk, we are exit if it wasn't
       if (AReason in ToolAfter.CompileReasons) then begin
         Result:=Project1.CompilerOptions.ExecuteAfter.Execute(
-                            Project1.ProjectDirectory,
+                            Project1.Directory,
                             lisProject2+lisExecutingCommandAfter,aCompileHint);
         if Result<>mrOk then
         begin
@@ -7732,7 +7732,7 @@ begin
       BuildFileDialog.RunFileIfActive:=ActiveUnitInfo.RunFileIfActive;
       BuildFileDialog.MacroList:=GlobalMacroList;
       BuildFileDialog.Filename:=
-        CreateRelativePath(ActiveUnitInfo.Filename,Project1.ProjectDirectory);
+        CreateRelativePath(ActiveUnitInfo.Filename,Project1.Directory);
       if BuildFileDialog.ShowModal<>mrOk then begin
         DebugLn(['Error: (lazarus) TMainIDE.DoConfigBuildFile cancelled']);
         Result:=mrCancel;
@@ -9221,8 +9221,8 @@ end;
 procedure TMainIDE.CodeToolBossGetVirtualDirectoryAlias(Sender: TObject;
   var RealDir: string);
 begin
-  if (Project1<>nil) and (Project1.ProjectDirectory<>'') then
-    RealDir:=Project1.ProjectDirectory;
+  if (Project1<>nil) and (Project1.Directory<>'') then
+    RealDir:=Project1.Directory;
 end;
 
 procedure TMainIDE.CodeToolBossGetVirtualDirectoryDefines(DefTree: TDefineTree;
@@ -9863,7 +9863,7 @@ var
         CurFileMask:=ChompPathDelim(CurFileMask);
         if not FilenameIsAbsolute(CurFileMask) then begin
           if Project1.IsVirtual then continue;
-          CurFileMask:=AppendPathDelim(Project1.ProjectDirectory+CurFileMask);
+          CurFileMask:=AppendPathDelim(Project1.Directory+CurFileMask);
         end;
         CurFileMask:=TrimFilename(CurFileMask);
         OnlyPascalSources:=false;
@@ -11164,7 +11164,7 @@ var
     ConflictingClass: TClass;
     s: string;
   begin
-    if SysUtils.CompareText(ActiveUnitInfo.SrcUnitName,AName)=0 then
+    if SysUtils.CompareText(ActiveUnitInfo.Unit_Name,AName)=0 then
       raise Exception.Create(Format(
         lisTheUnitItselfHasAlreadyTheNamePascalIdentifiersMus, [AName]));
     if ActiveUnitInfo.IsPartOfProject then begin
@@ -11485,8 +11485,8 @@ begin
     SaveDialog.FileName:=SaveAsFilename;
     // if this is a project file, start in project directory
     if AnUnitInfo.IsPartOfProject and (not Project1.IsVirtual)
-    and (not FileIsInPath(SaveDialog.InitialDir,Project1.ProjectDirectory)) then
-      SaveDialog.InitialDir:=Project1.ProjectDirectory;
+    and (not FileIsInPath(SaveDialog.InitialDir,Project1.Directory)) then
+      SaveDialog.InitialDir:=Project1.Directory;
     // if this is a package file, then start in package directory
     PkgDefaultDirectory:=PkgBoss.GetDefaultSaveDirectoryForFile(AnUnitInfo.Filename);
     if (PkgDefaultDirectory<>'')
@@ -12150,7 +12150,7 @@ begin
     OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(AnUnitInfo,False,False);
     if (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags) then begin
       AnUnitInfo.ReadUnitNameFromSource(false);
-      ShortUnitName:=AnUnitInfo.SrcUnitName;
+      ShortUnitName:=AnUnitInfo.Unit_Name;
       if (ShortUnitName<>'') then begin
         if CodeToolBoss.AddUnitToMainUsesSectionIfNeeded(
                        Project1.MainUnitInfo.Source,ShortUnitName,'') then begin

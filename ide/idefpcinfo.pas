@@ -274,7 +274,7 @@ begin
   sl.Add('Project:');
   if Project1<>nil then begin
     sl.Add('lpi='+Project1.ProjectInfoFile);
-    sl.Add('Directory='+Project1.ProjectDirectory);
+    sl.Add('Directory='+Project1.Directory);
     sl.Add('TargetOS='+Project1.CompilerOptions.TargetOS);
     sl.Add('TargetCPU='+Project1.CompilerOptions.TargetCPU);
     sl.Add('CompilerFilename='+Project1.CompilerOptions.CompilerPath);

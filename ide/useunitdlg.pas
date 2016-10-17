@@ -361,13 +361,13 @@ begin
     FImplUsedUnits.CaseSensitive := False;
   end;
   if SrcEdit.GetProjectFile is TUnitInfo then
-    CurrentUnitName := TUnitInfo(SrcEdit.GetProjectFile).SrcUnitName
+    CurrentUnitName := TUnitInfo(SrcEdit.GetProjectFile).Unit_Name
   else
     CurrentUnitName := '';
   // Add available unit names to list
   ProjFile:=Project1.FirstPartOfProject;
   while ProjFile <> nil do begin
-    s := ProjFile.SrcUnitName;
+    s := ProjFile.Unit_Name;
     if s = CurrentUnitName then       // current unit
       s := '';
     if (ProjFile <> Project1.MainUnitInfo) and (s <> '') then

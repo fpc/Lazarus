@@ -164,7 +164,7 @@ begin
   sl:=Nil;
   DirDlg:=TSelectDirectoryDialog.Create(nil);
   try
-    DirDlg.InitialDir:=fProject.ProjectDirectory;
+    DirDlg.InitialDir:=fProject.Directory;
     DirDlg.Options:=DirDlg.Options+[ofPathMustExist];
     InputHistories.ApplyFileDialogSettings(DirDlg);
     if DirDlg.Execute then begin
@@ -172,8 +172,8 @@ begin
       for i := 0 to sl.Count-1 do begin
         AFilename:=CleanAndExpandFilename(sl[i]);
         NewPgkFileType:=FileNameToPkgFileType(AFilename);
-        if fProject.ProjectDirectory<>'' then
-          AFilename:=CreateRelativePath(AFilename,fProject.ProjectDirectory);
+        if fProject.Directory<>'' then
+          AFilename:=CreateRelativePath(AFilename,fProject.Directory);
         NewListItem:=FilesListView.Items.Add;
         NewListItem.Caption:=AFilename;
         NewListItem.SubItems.Add(GetPkgFileTypeLocalizedName(NewPgkFileType));
@@ -278,8 +278,8 @@ var
   ADirectory: String;
 begin
   if FilesListView.Items.Count=0 then exit;
-  if (fProject=nil) or (not FilenameIsAbsolute(fProject.ProjectDirectory)) then exit;
-  ADirectory:=fProject.ProjectDirectory;
+  if (fProject=nil) or (not FilenameIsAbsolute(fProject.Directory)) then exit;
+  ADirectory:=fProject.Directory;
   SwitchToAbsolute:=not FilenameIsAbsolute(FilesListView.Items[0].Caption);
   for i:=0 to FilesListView.Items.Count-1 do begin
     Filename:=FilesListView.Items[i].Caption;
@@ -387,7 +387,7 @@ begin
     CurFile:=fProject.FirstUnitWithEditorIndex;
     while CurFile<>nil do begin
       if (not CurFile.IsPartOfProject) and (not CurFile.IsVirtual) then begin
-        NewFilename:=CreateRelativePath(CurFile.Filename,fProject.ProjectDirectory);
+        NewFilename:=CreateRelativePath(CurFile.Filename,fProject.Directory);
         NewListItem:=AddFileListView.Items.Add;
         NewListItem.Caption:=NewFilename;
         NewListItem.Selected:=True;

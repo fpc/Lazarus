@@ -641,7 +641,7 @@ begin
     dltProject:
       begin
         Filename := TrimFilename(AUnitinfo.LocationName);
-        Filename:= MainIDE.FindSourceFile(Filename, Project1.ProjectDirectory,
+        Filename:= MainIDE.FindSourceFile(Filename, Project1.Directory,
                       [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath,
                        fsfMapTempToVirtualFiles, fsfSkipPackages]);
         debugln(DBG_LOCATION_INFO, ['GetFullFilename From-MainIDE Filename=', Filename]);
@@ -687,7 +687,7 @@ begin
   // => fix that
   Filename := TrimFilename(Filename);
   SrcFile := Filename;
-  SrcFile := MainIDE.FindSourceFile(SrcFile, Project1.ProjectDirectory,
+  SrcFile := MainIDE.FindSourceFile(SrcFile, Project1.Directory,
                       [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath,
                        fsfMapTempToVirtualFiles]);
   if SrcFile = '' then SrcFile := Filename;
@@ -1477,7 +1477,7 @@ begin
     if (CurDialog is TBreakPointsDlg)
     then begin
       if (Project1<>nil) then
-        TBreakPointsDlg(CurDialog).BaseDirectory:=Project1.ProjectDirectory;
+        TBreakPointsDlg(CurDialog).BaseDirectory:=Project1.Directory;
     end;
     if (CurDialog is TAssemblerDlg)
     then begin
@@ -1545,7 +1545,7 @@ var
 begin
   TheDialog:=TBreakPointsDlg(FDialogs[ddtBreakpoints]);
   if Project1 <> nil
-  then TheDialog.BaseDirectory := Project1.ProjectDirectory;
+  then TheDialog.BaseDirectory := Project1.Directory;
   TheDialog.BreakPoints := FBreakPoints;
 end;
 

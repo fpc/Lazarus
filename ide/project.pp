@@ -2011,7 +2011,7 @@ function TUnitInfo.GetDirectory: string;
 begin
   if IsVirtual then begin
     if Project<>nil then
-      Result:=Project.ProjectDirectory
+      Result:=Project.Directory
     else
       Result:='';
   end else  begin
@@ -2884,7 +2884,7 @@ begin
   // load custom data
   LoadStringToStringTree(FXMLConfig,CustomData,Path+'CustomData/');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
-  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=ProjectDirectory;
+  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=Directory;
   CodeToolBoss.DefineTree.ClearCache;
   // load the dependencies
   LoadPkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
@@ -3157,7 +3157,7 @@ begin
 
   // fpdoc
   FXMLConfig.SetDeleteValue(Path+'LazDoc/Paths',
-     SwitchPathDelims(CreateRelativeSearchPath(FPDocPaths,ProjectDirectory),
+     SwitchPathDelims(CreateRelativeSearchPath(FPDocPaths,Directory),
                       fCurStorePathDelim), '');
   FXMLConfig.SetDeleteValue(Path+'LazDoc/PackageName',FPDocPackageName,'');
 
@@ -3165,7 +3165,7 @@ begin
   FXMLConfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
   FXMLConfig.SetDeleteValue(Path+'i18n/EnableI18N/LFM', EnableI18NForLFM, true);
   FXMLConfig.SetDeleteValue(Path+'i18n/OutDir/Value',
-     SwitchPathDelims(CreateRelativePath(POOutputDirectory,ProjectDirectory),
+     SwitchPathDelims(CreateRelativePath(POOutputDirectory,Directory),
                       fCurStorePathDelim), '');
   SaveStringList(FXMLConfig, FI18NExcludedIdentifiers, Path+'i18n/ExcludedIdentifiers/');
   SaveStringList(FXMLConfig, FI18NExcludedOriginals, Path+'i18n/ExcludedOriginals/');
@@ -3998,7 +3998,7 @@ var
   CurPath: String;
 begin
   Result:=Filename;
-  BaseDir:=AppendPathDelim(ProjectDirectory);
+  BaseDir:=AppendPathDelim(Directory);
   if (BaseDir<>'') and FilenameIsAbsolute(BaseDir) and UseUp then
     Result:=CreateRelativePath(Result,BaseDir)
   else begin
@@ -4294,7 +4294,7 @@ begin
   end;
   AFilename:=TrimFilename(AFilename);
   
-  ProjectPath:=AppendPathDelim(ProjectDirectory);
+  ProjectPath:=AppendPathDelim(Directory);
   if ProjectPath<>'' then begin
     if Load then begin
       // make filename absolute
@@ -4325,7 +4325,7 @@ end;
 function TProject.RemoveProjectPathFromFilename(const AFilename: string): string;
 var ProjectPath:string;
 begin
-  ProjectPath:=ProjectDirectory;
+  ProjectPath:=Directory;
   if ProjectPath='' then ProjectPath:=GetCurrentDirUTF8;
   Result:=AFilename;
   ForcePathDelims(Result);
@@ -4342,7 +4342,7 @@ var ProjectDir, FilePath: string;
 begin
   if FilenameIsAbsolute(AFilename) then begin
     if (not IsVirtual) then begin
-      ProjectDir:=ProjectDirectory;
+      ProjectDir:=Directory;
       FilePath:=LeftStr(AFilename,length(ProjectDir));
       Result:=(CompareFileNames(ProjectDir,FilePath)=0);
     end else
@@ -4849,7 +4849,7 @@ function TProject.GetSourceDirs(WithProjectDir, WithoutOutputDir: boolean): stri
 begin
   Result:=SourceDirectories.CreateSearchPathFromAllFiles;
   if WithProjectDir then
-    Result:=MergeSearchPaths(Result,ProjectDirectory);
+    Result:=MergeSearchPaths(Result,Directory);
   if WithoutOutputDir then
     Result:=RemoveSearchPaths(Result,GetOutputDirectory);
 end;
@@ -4868,7 +4868,7 @@ function TProject.GetStateFilename: string;
 begin
   Result:=GetOutputDirectory;
   if (not FilenameIsAbsolute(Result)) and (not IsVirtual) then
-    Result:=ProjectDirectory;
+    Result:=Directory;
   Result:=AppendPathDelim(Result)+ChangeFileExt(GetCompileSourceFilename,'.compiled');
 end;
 
@@ -4898,7 +4898,7 @@ begin
   CurUnitPaths:=CompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
   NewUnitPaths:=RemoveSearchPaths(NewUnitPaths,CurUnitPaths);
   if NewUnitPaths<>'' then begin
-    NewUnitPaths:=CreateRelativeSearchPath(NewUnitPaths,ProjectDirectory);
+    NewUnitPaths:=CreateRelativeSearchPath(NewUnitPaths,Directory);
     r:=IDEMessageDialog(lisExtendUnitPath,
       Format(lisExtendUnitSearchPathOfProjectWith, [#13, NewUnitPaths]),
       mtConfirmation, [mbYes, mbNo, mbCancel]);
@@ -4919,7 +4919,7 @@ begin
   CurIncPaths:=CompilerOptions.ParsedOpts.GetParsedValue(pcosIncludePath);
   NewIncPaths:=RemoveSearchPaths(NewIncPaths,CurIncPaths);
   if NewIncPaths<>'' then begin
-    NewIncPaths:=CreateRelativeSearchPath(NewIncPaths,ProjectDirectory);
+    NewIncPaths:=CreateRelativeSearchPath(NewIncPaths,Directory);
     r:=IDEMessageDialog(lisExtendIncludePath,
       Format(lisExtendIncludeFilesSearchPathOfProjectWith, [#13, NewIncPaths]),
       mtConfirmation, [mbYes, mbNo, mbCancel]);
@@ -5049,7 +5049,7 @@ begin
     debugln(['TProject.GetPOOutDirectory failed POOutputDirectory="',POOutputDirectory,'"']);
   Result:=TrimFilename(Result);
   if not FilenameIsAbsolute(Result) then
-    Result:=TrimFilename(AppendPathDelim(ProjectDirectory)+Result);
+    Result:=TrimFilename(AppendPathDelim(Directory)+Result);
 end;
 
 function TProject.GetAutoCreatedFormsList: TStrings;
@@ -6474,7 +6474,7 @@ begin
   if (Owner as TProject).IsVirtual then
     NewProjectDir:=VirtualDirectory
   else
-    NewProjectDir:=(Owner as TProject).ProjectDirectory;
+    NewProjectDir:=(Owner as TProject).Directory;
   if CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',NewProjectDir)
   then
     Changed:=true;
@@ -6905,7 +6905,7 @@ begin
   Result:=TProjectBuildMode.Create(Self);
   Result.FIdentifier:=Identifier;
   if LazProject<>nil then
-    Result.CompilerOptions.BaseDirectory:=LazProject.ProjectDirectory;
+    Result.CompilerOptions.BaseDirectory:=LazProject.Directory;
   Result.AddOnChangedHandler(@OnItemChanged);
   fItems.Add(Result);
 end;
