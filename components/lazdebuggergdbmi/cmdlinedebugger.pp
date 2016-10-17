@@ -335,7 +335,7 @@ begin
   then begin
     FDbgProcess := TProcessUTF8.Create(nil);
     try
-      FDbgProcess.CommandLine := ExternalDebugger + ' ' + AOptions;
+      FDbgProcess.ParseCmdLine(ExternalDebugger + ' ' + AOptions);
       FDbgProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut, poNewProcessGroup];
       {$if defined(windows) and not defined(wince)}
       // under win9x and winMe should be created with console,
