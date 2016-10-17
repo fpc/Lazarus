@@ -7,16 +7,13 @@ interface
 uses
   Classes, SysUtils, AVL_Tree, fgl,
   // LCL
-  Forms, Controls, Graphics, Dialogs, StdCtrls, ButtonPanel, LCLProc,
+  Forms, Controls, Dialogs, StdCtrls, ButtonPanel, LCLProc,
   // LazControls
   ListFilterEdit,
-  // LazUtils
-  FileUtil,
   // IDEIntf
-  IDEWindowIntf, PackageIntf, ProjPackIntf, IDEDialogs,
+  IDEWindowIntf, PackageIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, InputHistory, PackageDefs, PackageSystem,
-  ProjPackBase, ProjPackChecks;
+  LazarusIDEStrConsts, PackageDefs, PackageSystem, ProjPackBase, ProjPackChecks;
 
 type
 
@@ -33,6 +30,7 @@ type
     DependPkgNameFilter: TListFilterEdit;
     DependPkgNameLabel: TLabel;
     DependPkgNameListBox: TListBox;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure OKButtonClick(Sender: TObject);
   private
     fPackages: TAVLTree;  // tree of  TLazPackage or TPackageLink
@@ -81,7 +79,7 @@ begin
   inherited Create(TheOwner);
   Caption:=lisProjAddNewRequirement;
   fPackages:=TAVLTree.Create(@CompareLazPackageIDNames);
-  IDEDialogLayoutList.ApplyLayout(Self,500,300);
+  IDEDialogLayoutList.ApplyLayout(Self,400,360);
 
   DependPkgNameLabel.Caption:=lisProjAddPackageName;
   DependMinVersionLabel.Caption:=lisProjAddMinimumVersionOptional;
@@ -94,6 +92,11 @@ destructor TAddPkgDependencyDialog.Destroy;
 begin
   FreeAndNil(fPackages);
   inherited Destroy;
+end;
+
+procedure TAddPkgDependencyDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TAddPkgDependencyDialog.AddUniquePackagesToList(APackageID: TLazPackageID);
@@ -165,15 +168,12 @@ begin
 
     // Add all selected packages.
     fResultDependencies := TPkgDependencyList.Create; // Will be freed by the caller.
-    DebugLn(['TAddPkgDependencyDialog.OKButtonClick: ListBox.SelCount=', DependPkgNameListBox.SelCount]);
     if DependPkgNameListBox.SelCount > 0 then
     begin
       for i := 0 to DependPkgNameListBox.Count-1 do
       begin
-        DebugLn(['TAddPkgDependencyDialog.OKButtonClick: Iterating ', DependPkgNameListBox.Items[i]]);
         if DependPkgNameListBox.Selected[i] then
         begin
-          DebugLn(['TAddPkgDependencyDialog.OKButtonClick: ', DependPkgNameListBox.Items[i], ' is selected.']);
           NewDependency := TPkgDependency.Create;   // Will be added to package graph.
           NewDependency.PackageName := DependPkgNameListBox.Items[i];
           if Assigned(MinVerTest) then
@@ -181,9 +181,7 @@ begin
           if Assigned(MaxVerTest) then
             NewDependency.MaxVersion.Assign(MaxVerTest);
           NewDependency.Flags := NewDependency.Flags + MinMaxVerFlags;
-          DebugLn(['TAddPkgDependencyDialog.OKButtonClick: Checking ', DependPkgNameListBox.Items[i], ' ...']);
           if not CheckAddingDependency(fProjPack, NewDependency) then exit;
-          DebugLn(['TAddPkgDependencyDialog.OKButtonClick: Adding ', DependPkgNameListBox.Items[i], ' to result.']);
           fResultDependencies.Add(NewDependency);
           NewDependency := nil;
         end;

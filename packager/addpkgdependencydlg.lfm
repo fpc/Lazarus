@@ -1,11 +1,12 @@
 object AddPkgDependencyDialog: TAddPkgDependencyDialog
   Left = 466
-  Height = 374
+  Height = 373
   Top = 122
   Width = 570
   Caption = 'AddPkgDependencyDialog'
-  ClientHeight = 374
+  ClientHeight = 373
   ClientWidth = 570
+  OnClose = FormClose
   LCLVersion = '1.7'
   object DependPkgNameLabel: TLabel
     AnchorSideTop.Control = DependPkgNameFilter
@@ -44,7 +45,7 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = DependMinVersionEdit
     Left = 288
-    Height = 174
+    Height = 197
     Top = 54
     Width = 256
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -61,7 +62,7 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     AnchorSideBottom.Control = DependMaxVersionEdit
     Left = 288
     Height = 32
-    Top = 234
+    Top = 257
     Width = 256
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = False
@@ -74,13 +75,14 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = DependPkgNameListBox
     AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
     Left = 288
     Height = 32
-    Top = 272
+    Top = 292
     Width = 256
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = False
-    BorderSpacing.Top = 6
+    BorderSpacing.Top = 3
     TabOrder = 3
     Text = 'DependMaxVersionEdit'
   end
@@ -90,7 +92,7 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     AnchorSideRight.Control = DependMinVersionEdit
     Left = 132
     Height = 18
-    Top = 241
+    Top = 264
     Width = 150
     Anchors = [akTop, akRight]
     BorderSpacing.Right = 6
@@ -106,7 +108,7 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     AnchorSideRight.Control = DependMaxVersionEdit
     Left = 129
     Height = 18
-    Top = 279
+    Top = 299
     Width = 153
     Anchors = [akTop, akRight]
     BorderSpacing.Right = 6
@@ -118,7 +120,7 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 37
-    Top = 331
+    Top = 330
     Width = 558
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
