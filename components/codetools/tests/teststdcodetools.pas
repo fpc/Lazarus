@@ -197,7 +197,7 @@ begin
 end;
 
 initialization
-  AddToCodetoolsTestSuite(TTestCTStdCodetools);
+  AddToStdToolsTestSuite(TTestCTStdCodetools);
 
 end.
 

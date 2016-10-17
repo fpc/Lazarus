@@ -135,7 +135,7 @@ begin
 end;
 
 initialization
-  AddToCodetoolsTestSuite(TTestCodetoolsCfgScript);
+  AddToNonPascalTestSuite(TTestCodetoolsCfgScript);
 
 end.
 

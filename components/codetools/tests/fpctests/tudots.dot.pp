@@ -9,6 +9,8 @@ procedure t;
 
 implementation
 
+(*
+
 uses
   tudots{declaration:tudots}, tudots.dot.next{ todo declaration:tudots.dot.next};
 
@@ -22,5 +24,6 @@ begin
   tudots.dot.test{declaration:tudots.dot.test} := 'c';
 end;
 
+*)
 end.
 

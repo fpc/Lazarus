@@ -392,7 +392,7 @@ begin
 end;
 
 initialization
-  AddToCodetoolsTestSuite(TTestCodetoolsRangeScan);
+  AddToFindDeclarationTestSuite(TTestCodetoolsRangeScan);
 
 end.
 

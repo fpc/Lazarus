@@ -123,7 +123,7 @@ begin
 end;
 
 initialization
-  AddToCodetoolsTestSuite(TTestCTXMLFixFragment);
+  AddToNonPascalTestSuite(TTestCTXMLFixFragment);
 
 end.
 

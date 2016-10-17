@@ -31,9 +31,6 @@ uses
   bug8432, testfileutil, testfileproc,
   // lazutils
   TestLazUtils, TestLazUTF8, TestLConvEncoding, TestAvgLvlTree,
-  // codetools
-  TestBasicCodetools, TestCTXMLFixFragments, TestCTRangeScan, TestCTH2Pas,
-  TestCompleteBlock, TestStdCodetools, TestMethodJumpTool, TestCfgScript,
   // lcltests
   testunicode, testpen, TestPreferredSize, TestTextStrings
   {$IFNDEF NoSemiAutomatedTests}

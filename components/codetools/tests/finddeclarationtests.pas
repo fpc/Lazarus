@@ -32,7 +32,7 @@ uses
   Classes, SysUtils, CodeToolManager, ExprEval, CodeCache, BasicCodeTools,
   CustomCodeTool, CodeTree, FindDeclarationTool, KeywordFuncLists,
   IdentCompletionTool, FileProcs, LazLogger, LazFileUtils, fpcunit,
-  testregistry;
+  testregistry, TestGlobals;
 
 type
 
@@ -322,12 +322,6 @@ begin
 end;
 
 initialization
-  GetTestRegistry.TestName := 'All tests';
-  BugsTestSuite := TTestSuite.Create('Bugs');
-  GetTestRegistry.AddTest(BugsTestSuite);
-  FindDeclarationTestSuite := TTestSuite.Create('FindDeclaration');
-  GetTestRegistry.AddTest(FindDeclarationTestSuite);
-
-  FindDeclarationTestSuite.AddTestSuiteFromClass(TTestFindDeclaration);
+  AddToFindDeclarationTestSuite(TTestFindDeclaration);
 end.
 

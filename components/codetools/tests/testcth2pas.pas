@@ -277,7 +277,7 @@ begin
 end;
 
 initialization
-  AddToCodetoolsTestSuite(TTestCodetoolsH2Pas);
+  AddToNonPascalTestSuite(TTestCodetoolsH2Pas);
 
 end.
 

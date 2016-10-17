@@ -20,8 +20,14 @@ program testcodetools;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, sysutils, consoletestrunner, dom, fpcunit, CodeToolManager,
-  CodeToolsConfig, LazLogger, finddeclarationtests, RefactoringTests,
+  Classes, sysutils, consoletestrunner, dom, fpcunit, LazLogger,
+  CodeToolManager, CodeToolsConfig,
+  testglobals,
+  TestBasicCodetools, TestCTRangeScan, TestMethodJumpTool, TestStdCodetools,
+  FindDeclarationTests, TestCompleteBlock, RefactoringTests,
+  // non Pascal
+  TestCfgScript, TestCTH2Pas, TestCTXMLFixFragments,
+  // compile test files to make sure they are valid Pascal
   fdt_classhelper,
   {$IF FPC_FULLVERSION >= 30101}
   fdt_typehelper,

@@ -460,7 +460,7 @@ begin
 end;
 
 initialization
-  AddToCodetoolsTestSuite(TTestBasicCodeTools);
+  AddToBasicTestSuite(TTestBasicCodeTools);
 
 end.
 

@@ -120,7 +120,7 @@ begin
 end;
 
 initialization
-  AddToCodetoolsTestSuite(TTestCTMethodJumpTool);
+  AddToStdToolsTestSuite(TTestCTMethodJumpTool);
 
 end.
 

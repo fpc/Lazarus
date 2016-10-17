@@ -418,7 +418,7 @@ begin
 end;
 
 initialization
-  AddToCodetoolsTestSuite(TTestCodetoolsCompleteBlock);
+  AddToRefactoringTestSuite(TTestCodetoolsCompleteBlock);
 
 end.
 
