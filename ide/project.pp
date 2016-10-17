@@ -328,13 +328,13 @@ type
     procedure SetSessionModified(const AValue: boolean);
     procedure SetSource(ABuffer: TCodeBuffer);
     procedure SetUserReadOnly(const NewValue: boolean);
-    procedure SetUnitName(const AValue: string); override;
   protected
     function GetFileName: string; override;
     procedure SetFilename(const AValue: string); override;
     procedure SetIsPartOfProject(const AValue: boolean); override;
     procedure UpdateList(ListType: TUnitInfoList; Add: boolean);
     procedure SetInternalFilename(const NewFilename: string);
+    procedure SetUnitName(const AValue: string); override;
 
     procedure UpdateHasCustomHighlighter(aDefaultHighlighter: TLazSyntaxHighlighter);
     procedure UpdatePageIndex;
