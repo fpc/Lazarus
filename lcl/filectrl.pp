@@ -294,7 +294,7 @@ const
   AttrNotNormal = faReadOnly or
                   faHidden{%H-} or
                   faSysFile{%H-} or
-                  faVolumeID or
+                  faVolumeID{%H-} or
                   faDirectory or
                   faArchive;
 var
