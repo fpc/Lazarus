@@ -447,7 +447,7 @@ end;
 function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean): boolean;
 const
   //Don't follow symlinks on *nix, just delete them
-  DeleteMask = faAnyFile {$ifdef unix} or faSymLink {$endif unix};
+  DeleteMask = faAnyFile {$ifdef unix} or faSymLink{%H-} {$endif unix};
 var
   FileInfo: TSearchRec;
   CurSrcDir: String;
@@ -462,7 +462,7 @@ begin
         continue;
       CurFilename:=CurSrcDir+FileInfo.Name;
       if ((FileInfo.Attr and faDirectory)>0)
-         {$ifdef unix} and ((FileInfo.Attr and faSymLink)=0) {$endif unix} then begin
+         {$ifdef unix} and ((FileInfo.Attr and faSymLink{%H-})=0) {$endif unix} then begin
         if not DeleteDirectory(CurFilename,false) then exit;
       end else begin
         if not LazFileUtils.DeleteFileUTF8(CurFilename) then exit;
