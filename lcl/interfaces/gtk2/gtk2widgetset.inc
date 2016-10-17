@@ -4674,8 +4674,6 @@ procedure TGtk2WidgetSet.DestroyLCLComponent(Sender : TObject);
 var
   handle: hwnd; // handle of sender
   Widget: PGtkWidget;
-  APage: TCustomPage;
-  NoteBookWidget: PGtkNotebook;
   GtkWindow: PGtkWidget;
 begin
   Handle := HWnd({%H-}PtrUInt(ObjectToGtkObject(Sender)));

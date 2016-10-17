@@ -402,8 +402,8 @@ var
   // !  TaskEx.Base.Inst := 'Callback Test';
   // !  TaskEx.Execute;
   DefaultTaskDialog: TTaskDialogEx = (
-    DialogIcon: tiInformation;
-    FooterIcon: tfiWarning);
+    DialogIcon: {%H-}tiInformation;
+    FooterIcon: tfiWarning{%H-});
 
 //function for translating the captions
 type

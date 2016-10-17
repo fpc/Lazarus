@@ -695,7 +695,7 @@ begin
 
         IsValidDirectory := (ShortFilename <> '.') and (ShortFilename <> '..');
 
-        IsHidden := (DirInfo.Attr and faHidden = faHidden);
+        IsHidden := (DirInfo.Attr and faHidden{%H-} = faHidden{%H-});
 
         // First check if we show hidden files
         if IsHidden then AddFile := (otHidden in AObjectTypes)
@@ -800,14 +800,14 @@ var
      Result:=False;
      try
        Attr := faDirectory;
-       if (otHidden in fObjectTypes) then Attr := Attr or faHidden;
+       if (otHidden in fObjectTypes) then Attr := Attr or faHidden{%H-};
        FindRes := FindFirstUTF8(AppendPathDelim(ADir) + AllFilesMask, Attr , SR);
        while (FindRes = 0) do
        begin
          if ((SR.Attr and faDirectory <> 0) and (SR.Name <> '.') and
             (SR.Name <> '..')) then
          begin
-           IsHidden := ((Attr and faHidden) > 0);
+           IsHidden := ((Attr and faHidden{%H-}) > 0);
            if not (IsHidden and (not ((otHidden in fObjectTypes)))) then
            begin
              Result := True;
@@ -1065,7 +1065,7 @@ var
     else
     begin
       Attr := FileGetAttrUtf8(Fn);
-      Result := ((Attr and faHidden) = faHidden) and not PathIsDriveRoot(Fn);
+      Result := ((Attr and faHidden{%H-}) = faHidden{%H-}) and not PathIsDriveRoot(Fn);
       if not Result then
       begin
         //it also is not allowed that any folder above is hidden
@@ -1097,7 +1097,7 @@ var
             if (Length(Fn) = 2) and (Fn[2] = ':') then Continue;
             {$endif}
             Attr := FileGetAttrUtf8(Fn);
-            if (Attr <> -1) and ((Attr and faHidden) > 0) and not PathIsDriveRoot(Fn) then
+            if (Attr <> -1) and ((Attr and faHidden{%H-}) > 0) and not PathIsDriveRoot(Fn) then
             begin
               Result := True;
               {$ifdef debug_shellctrls}

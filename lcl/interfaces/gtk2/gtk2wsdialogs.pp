@@ -43,7 +43,7 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
     class procedure SetSizes(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function  CreateHandle(const {%H-}ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
   end;
@@ -66,21 +66,21 @@ type
     class procedure CreatePreviewDialogControl(PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget); virtual;
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
-    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
+    class function QueryWSEventCapabilities(const {%H-}ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TGtk2WSSaveDialog }
 
   TGtk2WSSaveDialog = class(TWSSaveDialog)
   published
-    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
+    class function QueryWSEventCapabilities(const {%H-}ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TGtk2WSSelectDirectoryDialog }
 
   TGtk2WSSelectDirectoryDialog = class(TWSSelectDirectoryDialog)
   published
-    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
+    class function QueryWSEventCapabilities(const {%H-}ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TGtk2WSColorDialog }
@@ -90,7 +90,7 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
-    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
+    class function QueryWSEventCapabilities(const {%H-}ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TGtk2WSColorButton }
@@ -106,7 +106,7 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
-    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
+    class function QueryWSEventCapabilities(const {%H-}ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
 // forward declarations

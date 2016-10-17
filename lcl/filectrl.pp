@@ -292,8 +292,8 @@ end;
 procedure TCustomFileListBox.UpdateFileList;
 const
   AttrNotNormal = faReadOnly or
-                  faHidden or
-                  faSysFile or
+                  faHidden{%H-} or
+                  faSysFile{%H-} or
                   faVolumeID or
                   faDirectory or
                   faArchive;
@@ -305,9 +305,9 @@ var
     FileTypeToAttrMap: array[TFileAttr] of LongInt =
     (
  { ftReadOnly  } faReadOnly,
- { ftHidden    } faHidden,
- { ftSystem    } faSysFile,
- { ftVolumeID  } faVolumeId,
+ { ftHidden    } faHidden{%H-},
+ { ftSystem    } faSysFile{%H-},
+ { ftVolumeID  } faVolumeId{%H-},
  { ftDirectory } faDirectory,
  { ftArchive   } faArchive,
  { ftNormal    } 0
