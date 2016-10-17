@@ -5719,7 +5719,7 @@ begin
       mtConfirmation,[mrYes,mrIgnore,rsmbNo,mrAbort],'');
     if Result<>mrYes then exit;
   end;
-  NewUnitName:=AnUnitInfo.SrcUnitName;
+  NewUnitName:=AnUnitInfo.Unit_Name;
   if NewUnitName='' then begin
     AnUnitInfo.ReadUnitNameFromSource(false);
     NewUnitName:=AnUnitInfo.CreateUnitName;

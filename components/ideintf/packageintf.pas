@@ -109,6 +109,7 @@ type
     procedure SetName(const NewName: TComponentName); override;
     procedure UpdateIDAsString;
     procedure VersionChanged(Sender: TObject); virtual;
+    function GetDirectory: string; override;
   public
     procedure AssignOptions(Source: TPersistent); virtual;
     constructor Create; virtual; reintroduce;
@@ -616,6 +617,12 @@ end;
 procedure TLazPackageID.VersionChanged(Sender: TObject);
 begin
   UpdateIDAsString;
+end;
+
+function TLazPackageID.GetDirectory: string;
+begin
+  raise Exception.Create(''); // just an ID, no file
+  Result:='';
 end;
 
 procedure TLazPackageID.AssignOptions(Source: TPersistent);
