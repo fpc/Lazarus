@@ -5533,6 +5533,10 @@ msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimple
 msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
 msgstr ". Перевірте список шляхів пошуку пакунка %s, спробуйте перезібрати з очищенням, перевірте вирази Uses у секціях Implementation."
 
+#: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
+msgid "Check the next token in source and add a semicolon if needed."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
 msgstr "%s Перевірити ціль (ОС, ЦП, тип віджету LCL). Можливо вам треба перекомпілювати пакунок для цієї цілі або встановити іншу ціль для проекту."
@@ -10177,6 +10181,10 @@ msgstr "вставити заголовок процедури"
 msgid "insert procedure name"
 msgstr "вставити назву процедури"
 
+#: lazarusidestrconsts.lisinsertsemicolonifneeded
+msgid "Insert semicolon if needed"
+msgstr ""
+
 #: lazarusidestrconsts.lisinserttime
 msgid "insert time"
 msgstr "вставити час"
@@ -13903,6 +13911,10 @@ msgstr "? (Вкл)"
 #: lazarusidestrconsts.lisonbreaklineiereturnorenterkey
 msgid "On break line (i.e. return or enter key)"
 msgstr "При розриві рядка (тобто при натисканні клавіші Enter)"
+
+#: lazarusidestrconsts.lisonly32bit
+msgid "only 32bit"
+msgstr ""
 
 #: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
 msgid "Only available on Windows. Run the tool hidden."

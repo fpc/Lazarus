@@ -5633,6 +5633,10 @@ msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimple
 msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
 msgstr ""
 
+#: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
+msgid "Check the next token in source and add a semicolon if needed."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
 msgstr "%s 対象(OS, CPU, LCL ウィジェットタイプ)をチェックして下さい。たぶんこの対象についてパッケージを再コンパイルするか、プロジェクトについて別の対象をセットする必要があるでしょう。"
@@ -10360,6 +10364,10 @@ msgstr "手続きのヘッドを挿入"
 msgid "insert procedure name"
 msgstr "手続きの名前を挿入"
 
+#: lazarusidestrconsts.lisinsertsemicolonifneeded
+msgid "Insert semicolon if needed"
+msgstr ""
+
 #: lazarusidestrconsts.lisinserttime
 msgid "insert time"
 msgstr "時刻を挿入"
@@ -14082,6 +14090,10 @@ msgstr "? (On)"
 #: lazarusidestrconsts.lisonbreaklineiereturnorenterkey
 msgid "On break line (i.e. return or enter key)"
 msgstr "改行キーを押したとき(i.e. return 又は enter キー)"
+
+#: lazarusidestrconsts.lisonly32bit
+msgid "only 32bit"
+msgstr ""
 
 #: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
 msgid "Only available on Windows. Run the tool hidden."

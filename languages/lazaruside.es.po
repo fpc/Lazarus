@@ -5557,6 +5557,10 @@ msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimple
 msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
 msgstr ". comprueba el trayecto de búsqueda del paquete %s, prueba una reconstrucción limpia, comprueba la implementación de las secciones uses."
 
+#: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
+msgid "Check the next token in source and add a semicolon if needed."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
 msgstr "%s Comprobar el objetivo (SO, CPU, tipo de widget LCL). Tal vez tenga que recompilar el paquete para este objetivo o establecer otro objetivo para el proyecto."
@@ -10210,6 +10214,10 @@ msgstr "Insertar encabezado de procedimiento"
 msgid "insert procedure name"
 msgstr "Insertar nombre de procedimiento"
 
+#: lazarusidestrconsts.lisinsertsemicolonifneeded
+msgid "Insert semicolon if needed"
+msgstr ""
+
 #: lazarusidestrconsts.lisinserttime
 msgid "insert time"
 msgstr "insertar hora"
@@ -13946,6 +13954,10 @@ msgstr "¿? (Activado)"
 #: lazarusidestrconsts.lisonbreaklineiereturnorenterkey
 msgid "On break line (i.e. return or enter key)"
 msgstr "Al final de línea (ej. retorno o tecla enter)"
+
+#: lazarusidestrconsts.lisonly32bit
+msgid "only 32bit"
+msgstr ""
 
 #: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
 msgid "Only available on Windows. Run the tool hidden."

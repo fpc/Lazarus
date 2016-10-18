@@ -5537,6 +5537,10 @@ msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimple
 msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
 msgstr ". Zkontrolujte cestu pro balíčku %s, zkuste čisté sestavení, zkontrolujte sekci 'uses' sekce 'implementation'."
 
+#: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
+msgid "Check the next token in source and add a semicolon if needed."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
 msgstr "%s Ověřte cíl (OS, CPU, typ LCL widgetu). Možná musíte přeložit balíček pro tento cíl, nebo nastavit jiný cíl pro tento projekt."
@@ -10177,6 +10181,10 @@ msgstr "vložit hlavičku procedury"
 msgid "insert procedure name"
 msgstr "vložit jméno procedury"
 
+#: lazarusidestrconsts.lisinsertsemicolonifneeded
+msgid "Insert semicolon if needed"
+msgstr ""
+
 #: lazarusidestrconsts.lisinserttime
 msgid "insert time"
 msgstr "vložit čas"
@@ -13897,6 +13905,10 @@ msgstr "? (Zapnuto)"
 #: lazarusidestrconsts.lisonbreaklineiereturnorenterkey
 msgid "On break line (i.e. return or enter key)"
 msgstr "Při zalomení řádku (tj. klávesa Enter)"
+
+#: lazarusidestrconsts.lisonly32bit
+msgid "only 32bit"
+msgstr ""
 
 #: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
 msgid "Only available on Windows. Run the tool hidden."

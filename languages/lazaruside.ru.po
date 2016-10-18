@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-10-14 01:40+0300\n"
+"PO-Revision-Date: 2016-10-19 01:42+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5530,6 +5530,10 @@ msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimple
 msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
 msgstr ". Проверьте список путей поиска пакета %s, попробуйте пересобрать с очисткой, проверьте выражения Uses в секциях Implementation."
 
+#: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
+msgid "Check the next token in source and add a semicolon if needed."
+msgstr "Проверить следующий элемент исходного кода и, при необходимости, добавить точку с запятой."
+
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
 msgstr "%s Проверьте целевую платформу (ОС, процессор, тип библиотеки виджетов LCL). Возможно, вам требуется пересобрать пакет для данной целевой платформы, либо назначить другую целевую платформу для проекта."
@@ -10182,6 +10186,10 @@ msgstr "Вставить заголовок процедуры"
 msgid "insert procedure name"
 msgstr "Вставить имя процедуры"
 
+#: lazarusidestrconsts.lisinsertsemicolonifneeded
+msgid "Insert semicolon if needed"
+msgstr "Вставить при необходимости точку с запятой"
+
 #: lazarusidestrconsts.lisinserttime
 msgid "insert time"
 msgstr "Вставить время"
@@ -13853,6 +13861,10 @@ msgstr "? (Вкл.)"
 #: lazarusidestrconsts.lisonbreaklineiereturnorenterkey
 msgid "On break line (i.e. return or enter key)"
 msgstr "При разрыве строки (то есть при нажатии клавиши 'Ввод')"
+
+#: lazarusidestrconsts.lisonly32bit
+msgid "only 32bit"
+msgstr "только 32 бита"
 
 #: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
 msgid "Only available on Windows. Run the tool hidden."
