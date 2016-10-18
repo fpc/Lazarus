@@ -1026,8 +1026,6 @@ function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
                       out Infos: TFPCInfoStrings): boolean;
 function RunFPCInfo(const CompilerFilename: string;
                    InfoTypes: TFPCInfoTypes; const Options: string =''): string;
-function ExtractFPCFrontEndParameters(const CmdLineParams: string;
-  const Kinds: TFPCFrontEndParams = AllFPCFrontEndParams): string;
 function FPCVersionToNumber(const FPCVersionString: string): integer;
 function SplitFPCVersion(const FPCVersionString: string;
                         out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
@@ -1071,6 +1069,9 @@ procedure LoadFPCCacheFromFile(Filename: string;
             var Configs: TFPCTargetConfigCaches; var Sources: TFPCSourceCaches);
 procedure SaveFPCCacheToFile(Filename: string;
                     Configs: TFPCTargetConfigCaches; Sources: TFPCSourceCaches);
+
+function ExtractFPCFrontEndParameters(const CmdLineParams: string;
+  const Kinds: TFPCFrontEndParams = AllFPCFrontEndParams): string;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
@@ -1441,54 +1442,6 @@ begin
   finally
     List.free;
   end;
-end;
-
-function ExtractFPCFrontEndParameters(const CmdLineParams: string;
-  const Kinds: TFPCFrontEndParams): string;
-// extract the parameters for the FPC frontend tool fpc.exe
-// The result is normalized:
-//   - only the last value
-//   - order is: -T -P -V -Xp
-
-  procedure Add(const Name, Value: string);
-  begin
-    if Value='' then exit;
-    if Result<>'' then Result+=' ';
-    Result+='-'+Name+StrToCmdLineParam(Value);
-  end;
-
-var
-  Position: Integer;
-  Param, ParamT, ParamP, ParamV, ParamXp: String;
-  StartPos: integer;
-  p: PChar;
-begin
-  Result:='';
-  ParamT:='';
-  ParamP:='';
-  ParamV:='';
-  ParamXp:='';
-  Position:=1;
-  while ReadNextFPCParameter(CmdLineParams,Position,StartPos) do begin
-    Param:=ExtractFPCParameter(CmdLineParams,StartPos);
-    if Param='' then continue;
-    p:=PChar(Param);
-    if p^<>'-' then continue;
-    case p[1] of
-    'T': if fpcpT in Kinds then ParamT:=copy(Param,3,255);
-    'P': if fpcpP in Kinds then ParamP:=copy(Param,3,255);
-    'V': if fpcpV in Kinds then ParamV:=copy(Param,3,length(Param));
-    'X':
-      case p[2] of
-      'p': if fpcpXp in Kinds then ParamXp:=copy(Param,4,length(Param));
-      end;
-    end;
-  end;
-  // add parameters
-  Add('Xp',ParamXp);
-  Add('T',ParamT);
-  Add('P',ParamP);
-  Add('V',ParamV);
 end;
 
 function FPCVersionToNumber(const FPCVersionString: string): integer;
@@ -2687,6 +2640,54 @@ begin
   finally
     XMLConfig.Free;
   end;
+end;
+
+function ExtractFPCFrontEndParameters(const CmdLineParams: string;
+  const Kinds: TFPCFrontEndParams): string;
+// extract the parameters for the FPC frontend tool fpc.exe
+// The result is normalized:
+//   - only the last value
+//   - order is: -T -P -V -Xp
+
+  procedure Add(const Name, Value: string);
+  begin
+    if Value='' then exit;
+    if Result<>'' then Result+=' ';
+    Result+='-'+Name+StrToCmdLineParam(Value);
+  end;
+
+var
+  Position: Integer;
+  Param, ParamT, ParamP, ParamV, ParamXp: String;
+  StartPos: integer;
+  p: PChar;
+begin
+  Result:='';
+  ParamT:='';
+  ParamP:='';
+  ParamV:='';
+  ParamXp:='';
+  Position:=1;
+  while ReadNextFPCParameter(CmdLineParams,Position,StartPos) do begin
+    Param:=ExtractFPCParameter(CmdLineParams,StartPos);
+    if Param='' then continue;
+    p:=PChar(Param);
+    if p^<>'-' then continue;
+    case p[1] of
+    'T': if fpcpT in Kinds then ParamT:=copy(Param,3,255);
+    'P': if fpcpP in Kinds then ParamP:=copy(Param,3,255);
+    'V': if fpcpV in Kinds then ParamV:=copy(Param,3,length(Param));
+    'X':
+      case p[2] of
+      'p': if fpcpXp in Kinds then ParamXp:=copy(Param,4,length(Param));
+      end;
+    end;
+  end;
+  // add parameters
+  Add('Xp',ParamXp);
+  Add('T',ParamT);
+  Add('P',ParamP);
+  Add('V',ParamV);
 end;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
