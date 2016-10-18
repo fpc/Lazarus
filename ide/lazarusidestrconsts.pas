@@ -5639,8 +5639,8 @@ resourcestring
   lisCheckIfTheNextTokenInSourceIsAnEndAndIfNotReturnsL = 'Check if the next '
     +'token in source is an "end" and if not return "LineEnding + end; + LineEnding".';
   lisInsertSemicolonIfNeeded = 'Insert semicolon if needed';
-  lisCheckTheNextTokenInSourceAndAddsASemicolonIfNeeded = 'Check the next '
-    +'token in source and adds a semicolon if needed';
+  lisCheckTheNextTokenInSourceAndAddASemicolonIfNeeded = 'Check the next '
+    +'token in source and add a semicolon if needed.';
   lisListOfAllCaseValues = 'list of all case values';
   lisReturnsListOfAllValuesOfCaseVariableInFrontOfVaria = 'Return the list of '
     +'all values of case variable in front of variable.'#13

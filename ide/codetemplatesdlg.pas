@@ -800,7 +800,7 @@ begin
                      lisCheckIfTheNextTokenInSourceIsAnEndAndIfNotReturnsL,
                     @CodeMacroAddMissingEnd,nil);
   RegisterCodeMacro('AddSemicolon', lisInsertSemicolonIfNeeded,
-                     lisCheckTheNextTokenInSourceAndAddsASemicolonIfNeeded,
+                     lisCheckTheNextTokenInSourceAndAddASemicolonIfNeeded,
                     @CodeMacroAddSemicolon,nil);
   RegisterCodeMacro('OfAll', lisListOfAllCaseValues,
                     lisReturnsListOfAllValuesOfCaseVariableInFrontOfVaria,
