@@ -439,6 +439,10 @@ msgstr "Insérer l'appel hérité"
 msgid "Insert File Contents at Cursor ..."
 msgstr "Insérer le contenu du fichier sous le curseur..."
 
+#: codystrconsts.crsinsertint64idyyyyddmmhhnnss
+msgid "Insert int64 ID YYYYDDMMhhnnss"
+msgstr ""
+
 #: codystrconsts.crsjump
 msgid "Jump"
 msgstr "Saut"

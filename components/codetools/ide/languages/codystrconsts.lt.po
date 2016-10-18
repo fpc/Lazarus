@@ -439,6 +439,10 @@ msgstr "Įterpti kreiptį į „inherited“"
 msgid "Insert File Contents at Cursor ..."
 msgstr "Žymekliu įterpti failo turinį…"
 
+#: codystrconsts.crsinsertint64idyyyyddmmhhnnss
+msgid "Insert int64 ID YYYYDDMMhhnnss"
+msgstr ""
+
 #: codystrconsts.crsjump
 msgid "Jump"
 msgstr ""

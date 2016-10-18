@@ -449,6 +449,10 @@ msgstr ""
 msgid "Insert File Contents at Cursor ..."
 msgstr "Вставити файл під курсором ..."
 
+#: codystrconsts.crsinsertint64idyyyyddmmhhnnss
+msgid "Insert int64 ID YYYYDDMMhhnnss"
+msgstr ""
+
 #: codystrconsts.crsjump
 msgid "Jump"
 msgstr ""

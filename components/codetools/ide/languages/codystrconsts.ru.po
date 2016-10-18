@@ -439,6 +439,10 @@ msgstr "Вставить вызов унаследованного"
 msgid "Insert File Contents at Cursor ..."
 msgstr "Вставить содержимое файла в месте расположения курсора ..."
 
+#: codystrconsts.crsinsertint64idyyyyddmmhhnnss
+msgid "Insert int64 ID YYYYDDMMhhnnss"
+msgstr "Вставить значение типа int64 в формате YYYYDDMMhhnnss"
+
 #: codystrconsts.crsjump
 msgid "Jump"
 msgstr "Перейти"

@@ -440,6 +440,10 @@ msgstr "Inserire chiamata ereditata"
 msgid "Insert File Contents at Cursor ..."
 msgstr "Inserire il contenuto del file alla posizione del cursore ..."
 
+#: codystrconsts.crsinsertint64idyyyyddmmhhnnss
+msgid "Insert int64 ID YYYYDDMMhhnnss"
+msgstr ""
+
 #: codystrconsts.crsjump
 msgid "Jump"
 msgstr "Salta"

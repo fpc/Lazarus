@@ -287,6 +287,7 @@ resourcestring
   crsOnlyProceduresWithCompatibleParameters = 'Only procedures with compatible'
     +' parameters';
   crsJumpTo2 = 'Jump to';
+  crsInsertInt64IdYYYYDDMMhhnnss = 'Insert int64 ID YYYYDDMMhhnnss';
 
 implementation
 

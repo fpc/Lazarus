@@ -133,7 +133,7 @@ begin
 
   // insert int64 ID
   CreateSourceCommand(CmdCatCodeTools,'InsertInt64ID',
-    'Insert int64 id YYYYDDMMhhnnss',nil,@InsertInt64ID);
+    crsInsertInt64IdYYYYDDMMhhnnss, nil, @InsertInt64ID);
 
   // Show unit / identifier dictionary
   InitUnitDictionary;

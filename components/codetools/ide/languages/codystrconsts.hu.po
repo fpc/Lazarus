@@ -439,6 +439,10 @@ msgstr "Öröklött hívásának beszúrása"
 msgid "Insert File Contents at Cursor ..."
 msgstr "Fájl tartalmának beszúrása a kurzornál ..."
 
+#: codystrconsts.crsinsertint64idyyyyddmmhhnnss
+msgid "Insert int64 ID YYYYDDMMhhnnss"
+msgstr ""
+
 #: codystrconsts.crsjump
 msgid "Jump"
 msgstr "Ugrás"
