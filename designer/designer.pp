@@ -108,7 +108,7 @@ type
     FFlags: TDesignerFlags;
     FGridColor: TColor;
     FMediator: TDesignerMediator;
-    FOnChangeParent: TProcedureOfObject;
+    FOnChangeParent: TNotifyEvent;
     FOnPastedComponents: TOnPastedComponents;
     FProcessingDesignerEvent: Integer;
     FOnActivated: TNotifyEvent;
@@ -379,7 +379,7 @@ type
     property OnShowTabOrderEditor: TNotifyEvent read FOnShowTabOrderEditor write FOnShowTabOrderEditor;
     property OnForwardKeyToObjectInspector: TOnForwardKeyToObjectInspector read FOnForwardKeyToObjectInspector
                                                                           write FOnForwardKeyToObjectInspector;
-    property OnChangeParent: TProcedureOfObject read FOnChangeParent write FOnChangeParent;
+    property OnChangeParent: TNotifyEvent read FOnChangeParent write FOnChangeParent;
 
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
     property ShowBorderSpacing: boolean read GetShowBorderSpacing write SetShowBorderSpacing;
@@ -3274,7 +3274,7 @@ end;
 procedure TDesigner.OnChangeParentMenuClick(Sender: TObject);
 begin
   if Assigned(OnChangeParent) then
-    OnChangeParent();
+    OnChangeParent(Self);
 end;
 
 procedure TDesigner.OnSnapToGridOptionMenuClick(Sender: TObject);

@@ -569,6 +569,7 @@ type
     procedure OnDesignerShowObjectInspector(Sender: TObject);
     procedure OnDesignerShowAnchorEditor(Sender: TObject);
     procedure OnDesignerShowTabOrderEditor(Sender: TObject);
+    procedure OnDesignerChangeParent(Sender: TObject);
 
     // control selection
     procedure OnControlSelectionChanged(Sender: TObject; ForceUpdate: Boolean);
@@ -3490,10 +3491,7 @@ begin
     OnForwardKeyToObjectInspector:=@ForwardKeyToObjectInspector;
     OnShowAnchorEditor:=@OnDesignerShowAnchorEditor;
     OnShowTabOrderEditor:=@OnDesignerShowTabOrderEditor;
-    if Assigned(ObjectInspector1) then
-    begin
-      OnChangeParent:=@ObjectInspector1.ChangeParent;
-    end;
+    OnChangeParent:=@OnDesignerChangeParent;
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
     ShowComponentCaptions:=EnvironmentOptions.ShowComponentCaptions;
   end;
@@ -11530,6 +11528,13 @@ begin
   DoViewTabOrderEditor;
 end;
 
+procedure TMainIDE.OnDesignerChangeParent(Sender: TObject);
+begin
+  if ObjectInspector1=nil then
+    CreateObjectInspector(false);
+  ObjectInspector1.ChangeParent;
+end;
+
 procedure TMainIDE.OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint;
   ATopLine: integer; AEditor: TSourceEditor; DeleteForwardHistory: boolean);
 {off $DEFINE VerboseJumpHistory}
@@ -11767,6 +11772,7 @@ begin
       ObjectInspector1.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.CreateObjectInspector'){$ENDIF};
     exit;
   end;
+
   IDEWindowCreators.CreateForm(ObjectInspector1,TObjectInspectorDlg,
      aDisableAutoSize,OwningComponent);
   ObjectInspector1.Name:=DefaultObjectInspectorName;
