@@ -99,6 +99,14 @@ type
 
 const
   DefaultUsesInsertPolicy = uipBehindRelated;
+  DefaultMethodDefaultSection = icsPrivate;
+  DefaultDoNotSplitLineInFront: TAtomTypes =
+    [atColon,atComma,atSemicolon,atPoint];
+  DefaultDoNotSplitLineAfter: TAtomTypes = [atColon,atAt,atPoint,atKeyWord];
+  DefaultDoInsertSpaceInFront: TAtomTypes = [];
+  DefaultDoInsertSpaceAfter: TAtomTypes = [atColon,atComma,atSemicolon];
+  DefaultDoNotInsertSpaceInFront: TAtomTypes = [];
+  DefaultDoNotInsertSpaceAfter: TAtomTypes = [atDirectiveStart];
 
 type
   TWordPolicyException = class
@@ -165,7 +173,8 @@ type
     ClassImplementationComments: boolean;
     ClassPartInsertPolicy: TClassPartInsertPolicy;
     MixMethodsAndProperties: boolean;
-    MethodInsertPolicy: TMethodInsertPolicy;
+    MethodInsertPolicy: TMethodInsertPolicy; // method body insert policy
+    MethodDefaultSection: TInsertClassSection;
     PropertyReadIdentPrefix: string;
     PropertyWriteIdentPrefix: string;
     PropertyStoredIdentPostfix: string;
@@ -362,14 +371,6 @@ const
       'Last',
       'Alphabetically'
     );
-
-  DefaultDoNotSplitLineInFront: TAtomTypes =
-    [atColon,atComma,atSemicolon,atPoint];
-  DefaultDoNotSplitLineAfter: TAtomTypes = [atColon,atAt,atPoint,atKeyWord];
-  DefaultDoInsertSpaceInFront: TAtomTypes = [];
-  DefaultDoInsertSpaceAfter: TAtomTypes = [atColon,atComma,atSemicolon];
-  DefaultDoNotInsertSpaceInFront: TAtomTypes = [];
-  DefaultDoNotInsertSpaceAfter: TAtomTypes = [atDirectiveStart];
 
 function AtomTypeNameToType(const s: string): TAtomType;
 function AtomTypesToStr(const AtomTypes: TAtomTypes): string;
@@ -1296,6 +1297,7 @@ begin
   UpdateOtherProcSignaturesCase:=true;
   GroupLocalVariables:=true;
   MethodInsertPolicy:=mipClassOrder;
+  MethodDefaultSection:=DefaultMethodDefaultSection;
   ForwardProcBodyInsertPolicy:=fpipBehindMethods;
   KeepForwardProcOrder:=true;
   ClassHeaderComments:=true;

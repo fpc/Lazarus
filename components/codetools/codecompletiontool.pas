@@ -402,7 +402,7 @@ type
     procedure AddNeededUnitsToMainUsesSectionForRange(
         StartPos, EndPos: integer; CompletionTool: TCodeCompletionCodeTool);
   public
-    // Options
+    // Options; ToDo: move to options
     property SetPropertyVariablename: string read FSetPropertyVariablename
                                              write SetSetPropertyVariablename;
     property SetPropertyVariableIsPrefix: Boolean
@@ -414,6 +414,7 @@ type
     property AddInheritedCodeToOverrideMethod: boolean
                                         read FAddInheritedCodeToOverrideMethod
                                         write FAddInheritedCodeToOverrideMethod;
+
     property CodeCompleteClassNode: TCodeTreeNode
                      read FCodeCompleteClassNode write SetCodeCompleteClassNode;
     property CodeCompleteSrcChgCache: TSourceChangeCache
@@ -1463,7 +1464,7 @@ begin
       if not ShowCodeCreationDlg(Beauty.BeautifyProc(MethodDefinition, 0, False), True, CCOptions) then
         Exit;
     end else
-      CCOptions.ClassSection := icsPublic;
+      CCOptions.ClassSection := Beauty.MethodDefaultSection;
 
     AddClassInsertion(CleanMethodDefinition, MethodDefinition,
                       AnEventName, InsertClassSectionToNewProcClassPart[CCOptions.ClassSection]);
@@ -2219,7 +2220,7 @@ begin
 
         // add published method and method body and right side of assignment
         if not AddMethodCompatibleToProcType(AClassNode,FullEventName,ProcContext,
-          AMethodDefinition,AMethodAttr,SourceChangeCache, Interactive)
+          AMethodDefinition,AMethodAttr,SourceChangeCache,Interactive)
         then
           Exit;
         if not CompleteAssignment(FullEventName,AssignmentOperator,
