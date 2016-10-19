@@ -9,6 +9,9 @@
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
     </CompilerOptions>
     <Description Value="IDE Add-on for grouping projects, packages and project groups."/>
     <License Value="Same as IDEIntf.
