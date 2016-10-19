@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="71">
   <Node1 Name="TObjectInspector" Path="Object_Inspector" HasHelp="True"/>
   <Node2 Name="TfrmCompilerOptions" Path="Compiler_Options" HasHelp="True" IsRoot="True" ChildCount="1">
@@ -148,7 +148,7 @@
     <Node48 Name="PackageI18NOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
     <Node49 Name="PackageDescriptionOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
     <Node50 Name="PackageIntegrationOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
-    <Node51 Name="EditorsPanel" Path="EditorsPanel" ChildCount="17">
+    <Node51 Name="EditorsPanel" Path="EditorsPanel" ChildCount="27">
       <Node1 Name="EditorMarkupUserDefinedFrame" Path="Editor_User_Defined_Words" HasHelp="True" IsRoot="True"/>
       <Node2 Name="CompOptModeMatrixFrame" Path="_Compiler_Options#Additions_and_Overrides" HasHelp="True" IsRoot="True"/>
       <Node3 Name="CompilerOtherOptionsFrame" Path="_Compiler_Options#Other" HasHelp="True" IsRoot="True"/>
@@ -166,6 +166,16 @@
       <Node15 Name="ProjectVersionInfoOptionsFrame" Path="_Project_Options#Version_Info" HasHelp="True" IsRoot="True"/>
       <Node16 Name="ProjectI18NOptionsFrame" Path="_Project_Options#i18n" HasHelp="True" IsRoot="True"/>
       <Node17 Name="ProjectMiscOptionsFrame" Path="_Project_Options#Miscellaneous" HasHelp="True" IsRoot="True"/>
+      <Node18 Name="CodetoolsClassCompletionOptionsFrame" Path="Codetools_Options" HasHelp="True" IsRoot="True"/>
+      <Node19 Name="CodetoolsGeneralOptionsFrame" Path="Codetools_Options" HasHelp="True" IsRoot="True"/>
+      <Node20 Name="CodetoolsCodeCreationOptionsFrame" Path="Codetools_Options" HasHelp="True" IsRoot="True"/>
+      <Node21 Name="CodetoolsWordPolicyOptionsFrame" Path="Codetools_Options" HasHelp="True" IsRoot="True"/>
+      <Node22 Name="CodetoolsLineSplittingOptionsFrame" Path="Codetools_Options" HasHelp="True" IsRoot="True"/>
+      <Node23 Name="CodetoolsSpaceOptionsFrame" Path="Codetools_Options" HasHelp="True" IsRoot="True"/>
+      <Node24 Name="CodetoolsIndentifierCompletionOptionsFrame" Path="Codetools_Options" HasHelp="True" IsRoot="True"/>
+      <Node25 Name="CodeExplorerUpdateOptionsFrame" Path="Code_Explorer_Options" HasHelp="True" IsRoot="True"/>
+      <Node26 Name="CodeExplorerCategoriesOptionsFrame" Path="Code_Explorer_Options" HasHelp="True" IsRoot="True"/>
+      <Node27 Name="CodeObserverOptionsFrame" Path="Code_Explorer_Options" HasHelp="True" IsRoot="True"/>
     </Node51>
     <Node52 Name="BuildModeSelectPanel" Path="_Project_Options#Build_modes" HasHelp="True" IsRoot="True"/>
   </Node55>
