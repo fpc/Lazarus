@@ -44,8 +44,9 @@ uses
   // LazUtils
   LazFileUtils, LazFileCache,
   // IDEIntf
-  IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf, IDEImagesIntf,
-  FormEditingIntf, ComponentReg, IDECommands, LazIDEIntf, ProjectIntf,
+  IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf,
+  IDEImagesIntf, FormEditingIntf, ComponentReg, IDECommands, LazIDEIntf,
+  ProjectIntf, ObjectInspector,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, EditorOptions, SourceEditor,
   // Designer
@@ -108,7 +109,6 @@ type
     FGridColor: TColor;
     FMediator: TDesignerMediator;
     FOnChangeParent: TProcedureOfObject;
-    FOnHasParentCandidates: TOnHasParentCandidates;
     FOnPastedComponents: TOnPastedComponents;
     FProcessingDesignerEvent: Integer;
     FOnActivated: TNotifyEvent;
@@ -379,8 +379,6 @@ type
     property OnShowTabOrderEditor: TNotifyEvent read FOnShowTabOrderEditor write FOnShowTabOrderEditor;
     property OnForwardKeyToObjectInspector: TOnForwardKeyToObjectInspector read FOnForwardKeyToObjectInspector
                                                                           write FOnForwardKeyToObjectInspector;
-    property OnHasParentCandidates: TOnHasParentCandidates read FOnHasParentCandidates
-                                                          write FOnHasParentCandidates;
     property OnChangeParent: TProcedureOfObject read FOnChangeParent write FOnChangeParent;
 
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
@@ -3884,7 +3882,9 @@ var
   OneControlSelected: Boolean;
   SelectionVisible: Boolean;
   SrcFile: TLazProjectFile;
-  UnitIsVirtual, DesignerCanCopy: Boolean;
+  UnitIsVirtual, DesignerCanCopy, HasChangeParentCandidates: Boolean;
+  Selection: TPersistentSelectionList;
+  ChangeParentCandidates: TFPList;
 begin
   SrcFile:=LazarusIDE.GetProjectFileWithDesigner(Self);
   ControlSelIsNotEmpty:=(ControlSelection.Count>0)
@@ -3897,6 +3897,15 @@ begin
   OneControlSelected := ControlSelIsNotEmpty and not ControlSelection[0].IsNonVisualComponent;
   MultiCompsAreSelected := CompsAreSelected and (ControlSelection.Count>1);
   UnitIsVirtual:=(SrcFile=nil) or not FilenameIsAbsolute(SrcFile.Filename);
+  Selection:=TPersistentSelectionList.Create;
+  try
+    ControlSelection.GetSelection(Selection);
+    ChangeParentCandidates:=GetChangeParentCandidates(GlobalDesignHook,Selection);
+    HasChangeParentCandidates:=ChangeParentCandidates.Count>0;
+    FreeAndNil(ChangeParentCandidates);
+  finally
+    FreeAndNil(Selection);
+  end;
 
   AddComponentEditorMenuItems(PopupMenuComponentEditor,true);
 
@@ -3924,8 +3933,7 @@ begin
   DesignerMenuChangeClass.Enabled := CompsAreSelected and (ControlSelection.Count = 1);
   // Disable ViewLFM menu item for virtual units. There is no form file yet.
   DesignerMenuViewLFM.Enabled := not UnitIsVirtual;
-  DesignerMenuChangeParent.Enabled := Assigned(OnHasParentCandidates)
-                                           and OnHasParentCandidates();
+  DesignerMenuChangeParent.Enabled := HasChangeParentCandidates;
   DesignerMenuSnapToGridOption.Checked := EnvironmentOptions.SnapToGrid;
   DesignerMenuSnapToGuideLinesOption.Checked := EnvironmentOptions.SnapToGuideLines;
 end;

@@ -3492,7 +3492,6 @@ begin
     OnShowTabOrderEditor:=@OnDesignerShowTabOrderEditor;
     if Assigned(ObjectInspector1) then
     begin
-      OnHasParentCandidates:=@ObjectInspector1.HasParentCandidates;
       OnChangeParent:=@ObjectInspector1.ChangeParent;
     end;
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
