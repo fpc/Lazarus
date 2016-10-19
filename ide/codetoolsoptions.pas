@@ -83,6 +83,7 @@ type
     FForwardProcBodyInsertPolicy: TForwardProcBodyInsertPolicy;
     FKeepForwardProcOrder: boolean;
     FMethodInsertPolicy: TMethodInsertPolicy;
+    FMethodDefaultSection: TInsertClassSection;
     FKeyWordPolicy : TWordPolicy;
     FIdentifierPolicy: TWordPolicy;
     FUpdateAllMethodSignatures: boolean;
@@ -189,6 +190,8 @@ type
       read FClassImplementationComments write FClassImplementationComments;
     property MethodInsertPolicy: TMethodInsertPolicy
       read FMethodInsertPolicy write FMethodInsertPolicy;
+    property MethodDefaultSection: TInsertClassSection
+      read FMethodDefaultSection write FMethodDefaultSection;
     property KeyWordPolicy : TWordPolicy
       read FKeyWordPolicy write FKeyWordPolicy;
     property IdentifierPolicy: TWordPolicy
@@ -465,6 +468,9 @@ begin
     FMethodInsertPolicy:=MethodInsertPolicyNameToPolicy(XMLConfig.GetValue(
       'CodeToolsOptions/MethodInsertPolicy/Value',
       MethodInsertPolicyNames[mipClassOrder]));
+    FMethodDefaultSection:=InsertClassSectionNameToSection(XMLConfig.GetValue(
+      'CodeToolsOptions/MethodDefaultSection/Value',
+      InsertClassSectionNames[DefaultMethodDefaultSection]));
     FKeyWordPolicy:=WordPolicyNameToPolicy(XMLConfig.GetValue(
       'CodeToolsOptions/KeyWordPolicy/Value',
       WordPolicyNames[wpLowerCase]));
@@ -623,6 +629,9 @@ begin
     XMLConfig.SetDeleteValue('CodeToolsOptions/MethodInsertPolicy/Value',
       MethodInsertPolicyNames[FMethodInsertPolicy],
       MethodInsertPolicyNames[mipClassOrder]);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/MethodDefaultSection/Value',
+      InsertClassSectionNames[FMethodDefaultSection],
+      InsertClassSectionNames[DefaultMethodDefaultSection]);
     XMLConfig.SetDeleteValue('CodeToolsOptions/KeyWordPolicy/Value',
       WordPolicyNames[FKeyWordPolicy],
       WordPolicyNames[wpLowerCase]);
@@ -791,6 +800,7 @@ begin
     FClassHeaderComments:=CodeToolsOpts.ClassHeaderComments;
     FClassImplementationComments:=CodeToolsOpts.ClassImplementationComments;
     FMethodInsertPolicy:=CodeToolsOpts.FMethodInsertPolicy;
+    FMethodDefaultSection:=CodeToolsOpts.FMethodDefaultSection;
     FKeyWordPolicy:=CodeToolsOpts.FKeyWordPolicy;
     FIdentifierPolicy:=CodeToolsOpts.FIdentifierPolicy;
     FDoNotSplitLineInFront:=CodeToolsOpts.FDoNotSplitLineInFront;
@@ -852,6 +862,7 @@ begin
   FClassHeaderComments:=true;
   FClassImplementationComments:=true;
   FMethodInsertPolicy:=mipClassOrder;
+  FMethodDefaultSection:=DefaultMethodDefaultSection;
   FKeyWordPolicy:=wpLowerCase;
   FIdentifierPolicy:=wpNone;
   FDoNotSplitLineInFront:=DefaultDoNotSplitLineInFront;
@@ -932,6 +943,7 @@ begin
     and (FClassHeaderComments=CodeToolsOpts.ClassHeaderComments)
     and (FClassImplementationComments=CodeToolsOpts.ClassImplementationComments)
     and (FMethodInsertPolicy=CodeToolsOpts.FMethodInsertPolicy)
+    and (FMethodDefaultSection=CodeToolsOpts.FMethodDefaultSection)
     and (FKeyWordPolicy=CodeToolsOpts.FKeyWordPolicy)
     and (FIdentifierPolicy=CodeToolsOpts.FIdentifierPolicy)
     and (FDoNotSplitLineInFront=CodeToolsOpts.FDoNotSplitLineInFront)
@@ -1053,6 +1065,7 @@ begin
     Beauty.ClassHeaderComments:=ClassHeaderComments;
     Beauty.ClassImplementationComments:=ClassImplementationComments;
     Beauty.MethodInsertPolicy:=MethodInsertPolicy;
+    Beauty.MethodDefaultSection:=MethodDefaultSection;
     Beauty.KeyWordPolicy:=KeyWordPolicy;
     Beauty.IdentifierPolicy:=IdentifierPolicy;
     Beauty.SetupWordPolicyExceptions(WordPolicyExceptions);

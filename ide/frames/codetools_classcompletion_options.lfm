@@ -15,7 +15,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 24
-    Top = 72
+    Top = 105
     Width = 227
     BorderSpacing.Left = 6
     Caption = 'MixMethodsAndPropertiesCheckBox'
@@ -27,7 +27,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 24
-    Top = 132
+    Top = 165
     Width = 204
     BorderSpacing.Around = 6
     Caption = 'ClassHeaderCommentsCheckBox'
@@ -42,7 +42,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 172
-    Top = 192
+    Top = 225
     Width = 575
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -218,7 +218,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 24
-    Top = 162
+    Top = 195
     Width = 251
     BorderSpacing.Around = 6
     Caption = 'ClassImplementationCommentsCheckBox'
@@ -230,7 +230,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 24
-    Top = 102
+    Top = 135
     Width = 235
     BorderSpacing.Around = 6
     Caption = 'UpdateAllMethodSignaturesCheckBox'
@@ -238,7 +238,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
   end
   object InsertPoliciesPanel: TPanel
     Left = 0
-    Height = 72
+    Height = 105
     Top = 0
     Width = 575
     Align = alTop
@@ -250,14 +250,14 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     ChildSizing.VerticalSpacing = 6
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 72
+    ClientHeight = 105
     ClientWidth = 575
     TabOrder = 5
     object ClassPartInsertPolicyLabel: TLabel
       Left = 6
       Height = 13
       Top = 13
-      Width = 142
+      Width = 155
       BorderSpacing.CellAlignVertical = ccaCenter
       Caption = 'ClassPartInsertPolicyLabel'
       ParentColor = False
@@ -265,7 +265,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       ShowHint = True
     end
     object ClassPartInsertPolicyComboBox: TComboBox
-      Left = 154
+      Left = 167
       Height = 27
       Top = 6
       Width = 100
@@ -279,7 +279,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       Left = 6
       Height = 13
       Top = 46
-      Width = 142
+      Width = 155
       BorderSpacing.CellAlignVertical = ccaCenter
       Caption = 'MethodInsertPolicyLabel'
       ParentColor = False
@@ -287,7 +287,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       ShowHint = True
     end
     object MethodInsertPolicyComboBox: TComboBox
-      Left = 154
+      Left = 167
       Height = 27
       Top = 39
       Width = 100
@@ -296,6 +296,24 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       ShowHint = True
       Style = csDropDownList
       TabOrder = 1
+    end
+    object MethodDefaultSectionLabel: TLabel
+      Left = 6
+      Height = 13
+      Top = 79
+      Width = 155
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = 'MethodDefaultSectionLabel'
+      ParentColor = False
+    end
+    object MethodDefaultSectionComboBox: TComboBox
+      Left = 167
+      Height = 27
+      Top = 72
+      Width = 100
+      ItemHeight = 0
+      Style = csDropDownList
+      TabOrder = 2
     end
   end
 end

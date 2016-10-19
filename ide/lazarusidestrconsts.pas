@@ -2141,11 +2141,15 @@ resourcestring
   lisFirst = 'First';
   lisInFrontOfRelated = 'In front of related';
   lisBehindRelated = 'Behind related';
-  dlgInsertMethods = 'Insert methods';
+  dlgInsertMethods = 'Insert method implementations';
   lisNewMethodImplementationsAreInsertedBetweenExisting = 'New method '
     +'implementations are inserted between existing methods of this class. '
     +'Either alphabetically, or as last, or in declaration order.';
   dlgCDTClassOrder = 'Class order';
+  lisDefaultSectionOfMethods = 'Default section of methods';
+  lisDefaultClassVisibilitySectionOfNewMethodsForExampl = 'Default class '
+    +'visibility section of new methods. For example code completion on OnShow'
+    +':=';
   dlgKeywordPolicy = 'Keyword policy';
   dlgCDTLower = 'lowercase';
   dlgCDTUPPERCASE = 'UPPERCASE';

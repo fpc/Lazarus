@@ -36,6 +36,8 @@ type
     ClassPartInsertPolicyComboBox: TComboBox;
     ClassPartInsertPolicyLabel: TLabel;
     InsertPoliciesPanel: TPanel;
+    MethodDefaultSectionComboBox: TComboBox;
+    MethodDefaultSectionLabel: TLabel;
     MethodInsertPolicyComboBox: TComboBox;
     MethodInsertPolicyLabel: TLabel;
     SetPropertyVariableIsPrefixCheckBox: TCheckBox;
@@ -79,6 +81,9 @@ end;
 
 procedure TCodetoolsClassCompletionOptionsFrame.Setup(
   ADialog: TAbstractOptionsEditorDialog);
+var
+  s: String;
+  ics: TInsertClassSection;
 begin
   ClassPartInsertPolicyLabel.Caption:=dlgInsertClassParts;
   ClassPartInsertPolicyLabel.Hint:=
@@ -96,6 +101,15 @@ begin
     dlgAlphabetically+LineEnding+
     dlgCDTLast+LineEnding+
     dlgCDTClassOrder;
+
+  MethodDefaultSectionLabel.Caption:=lisDefaultSectionOfMethods;
+  MethodDefaultSectionLabel.Hint:=
+    lisDefaultClassVisibilitySectionOfNewMethodsForExampl;
+  MethodDefaultSectionComboBox.Hint:=MethodDefaultSectionLabel.Hint;
+  s:='';
+  for ics in TInsertClassSection do
+    s:=s+InsertClassSectionNames[ics]+LineEnding;
+  MethodDefaultSectionComboBox.Items.Text:=s;
 
   MixMethodsAndPropertiesCheckBox.Caption:=dlgMixMethodsAndProperties;
   UpdateAllMethodSignaturesCheckBox.Caption:=lisCTOUpdateAllMethodSignatures;
@@ -144,6 +158,8 @@ begin
       MethodInsertPolicyComboBox.ItemIndex:=2;
     end;
 
+    MethodDefaultSectionComboBox.ItemIndex:=ord(MethodDefaultSection);
+
     PropertyCompletionCheckBox.Checked := CompleteProperties;
     PropertyReadIdentPrefixEdit.Text := PropertyReadIdentPrefix;
     PropertyWriteIdentPrefixEdit.Text := PropertyWriteIdentPrefix;
@@ -175,6 +191,9 @@ begin
       1: MethodInsertPolicy := mipLast;
       2: MethodInsertPolicy := mipClassOrder;
     end;
+
+    if MethodDefaultSectionComboBox.ItemIndex>=0 then
+      MethodDefaultSection:=TInsertClassSection(MethodDefaultSectionComboBox.ItemIndex);
 
     CompleteProperties:=PropertyCompletionCheckBox.Checked;
     PropertyReadIdentPrefix :=
