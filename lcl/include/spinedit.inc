@@ -41,6 +41,16 @@ begin
     Result := ValueToStr(FValue);
 end;
 
+procedure TCustomFloatSpinEdit.RealSetText(const AValue: TCaption);
+var
+  NewValue: Double;
+begin
+  if TryStrToFloat(AValue, NewValue) then
+    Value := NewValue
+  else
+    inherited RealSetText(AValue);
+end;
+
 procedure TCustomFloatSpinEdit.TextChanged;
 var
   PrevValue: Double;

@@ -44,6 +44,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     function  RealGetText: TCaption; override;
+    procedure RealSetText(const AValue: TCaption); override;
     procedure TextChanged; override;
     procedure SetDecimals(ADecimals: Integer); virtual;
     procedure SetValue(const AValue: Double); virtual;
