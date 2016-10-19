@@ -507,14 +507,11 @@ var
 begin
   Resu:=ShowAddPkgDependencyDlg(LazProject, Deps);
   try
-    if (Resu<>mrOK) or (Deps.Count=0) then exit;
+    if (Resu<>mrOK) or (Deps.Count=0) or (OnAddDependency=nil) then exit;
     try
       BeginUpdate;
       for i := 0 to Deps.Count-1 do
-      begin
-        if Assigned(OnAddDependency) then
-          OnAddDependency(Self, Deps[i]);
-      end;
+        OnAddDependency(Self, Deps[i]);
       FNextSelectedPart:=Deps[Deps.Count-1];
       UpdateRequiredPackages;
     finally
