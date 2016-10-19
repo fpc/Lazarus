@@ -2126,6 +2126,8 @@ resourcestring
   dlgSkipForwardClassDeclarations = 'Skip forward class declarations';
   dlgJumpToMethodBody = 'Jump directly to method body';
   dlgInsertClassParts = 'Insert class parts';
+  lisNewMethodsAndMembersAreInsertedAlphabeticallyOrAdd = 'New method and '
+    +'member declarations in the class..end sections are inserted alphabetically or added last';
   lisClassCompletion = 'Class Completion';
   dlgAlphabetically = 'Alphabetically';
   dlgCDTLast = 'Last';
@@ -2140,6 +2142,9 @@ resourcestring
   lisInFrontOfRelated = 'In front of related';
   lisBehindRelated = 'Behind related';
   dlgInsertMethods = 'Insert methods';
+  lisNewMethodImplementationsAreInsertedBetweenExisting = 'New method '
+    +'implementations are inserted between existing methods of this class. '
+    +'Either alphabetically, or as last, or in declaration order.';
   dlgCDTClassOrder = 'Class order';
   dlgKeywordPolicy = 'Keyword policy';
   dlgCDTLower = 'lowercase';

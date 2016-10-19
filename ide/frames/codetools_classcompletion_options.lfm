@@ -9,66 +9,17 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
   Visible = False
   DesignLeft = 336
   DesignTop = 176
-  object ClassPartInsertPolicyRadioGroup: TRadioGroup
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 0
-    Height = 100
-    Top = 0
-    Width = 250
-    AutoFill = True
-    AutoSize = True
-    Caption = 'ClassPartInsertPolicyRadioGroup'
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
-    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-    ChildSizing.EnlargeVertical = crsHomogenousChildResize
-    ChildSizing.ShrinkHorizontal = crsScaleChilds
-    ChildSizing.ShrinkVertical = crsScaleChilds
-    ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ChildSizing.ControlsPerLine = 1
-    Constraints.MinHeight = 100
-    Constraints.MinWidth = 250
-    TabOrder = 0
-  end
-  object MethodInsertPolicyRadioGroup: TRadioGroup
-    AnchorSideLeft.Control = ClassPartInsertPolicyRadioGroup
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 256
-    Height = 100
-    Top = 0
-    Width = 319
-    Anchors = [akTop, akLeft, akRight]
-    AutoFill = True
-    AutoSize = True
-    BorderSpacing.Left = 6
-    Caption = 'MethodInsertPolicyRadioGroup'
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
-    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-    ChildSizing.EnlargeVertical = crsHomogenousChildResize
-    ChildSizing.ShrinkHorizontal = crsScaleChilds
-    ChildSizing.ShrinkVertical = crsScaleChilds
-    ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ChildSizing.ControlsPerLine = 1
-    Constraints.MinHeight = 100
-    TabOrder = 1
-  end
   object MixMethodsAndPropertiesCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = ClassPartInsertPolicyRadioGroup
+    AnchorSideTop.Control = InsertPoliciesPanel
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 24
-    Top = 106
+    Top = 72
     Width = 227
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
     Caption = 'MixMethodsAndPropertiesCheckBox'
-    TabOrder = 2
+    TabOrder = 0
   end
   object ClassHeaderCommentsCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -76,11 +27,11 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 24
-    Top = 166
+    Top = 132
     Width = 204
     BorderSpacing.Around = 6
     Caption = 'ClassHeaderCommentsCheckBox'
-    TabOrder = 4
+    TabOrder = 2
   end
   object PropertyCompletionGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
@@ -91,7 +42,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 172
-    Top = 226
+    Top = 192
     Width = 575
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -99,7 +50,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     Caption = 'PropertyCompletionGroupBox'
     ClientHeight = 157
     ClientWidth = 571
-    TabOrder = 6
+    TabOrder = 4
     object PropertyCompletionCheckBox: TCheckBox
       AnchorSideLeft.Control = PropertyCompletionGroupBox
       AnchorSideTop.Control = PropertyCompletionGroupBox
@@ -267,11 +218,11 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 24
-    Top = 196
+    Top = 162
     Width = 251
     BorderSpacing.Around = 6
     Caption = 'ClassImplementationCommentsCheckBox'
-    TabOrder = 5
+    TabOrder = 3
   end
   object UpdateAllMethodSignaturesCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -279,10 +230,72 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 24
-    Top = 136
+    Top = 102
     Width = 235
     BorderSpacing.Around = 6
     Caption = 'UpdateAllMethodSignaturesCheckBox'
-    TabOrder = 3
+    TabOrder = 1
+  end
+  object InsertPoliciesPanel: TPanel
+    Left = 0
+    Height = 72
+    Top = 0
+    Width = 575
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 6
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 72
+    ClientWidth = 575
+    TabOrder = 5
+    object ClassPartInsertPolicyLabel: TLabel
+      Left = 6
+      Height = 13
+      Top = 13
+      Width = 142
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = 'ClassPartInsertPolicyLabel'
+      ParentColor = False
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object ClassPartInsertPolicyComboBox: TComboBox
+      Left = 154
+      Height = 27
+      Top = 6
+      Width = 100
+      ItemHeight = 0
+      ParentShowHint = False
+      ShowHint = True
+      Style = csDropDownList
+      TabOrder = 0
+    end
+    object MethodInsertPolicyLabel: TLabel
+      Left = 6
+      Height = 13
+      Top = 46
+      Width = 142
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = 'MethodInsertPolicyLabel'
+      ParentColor = False
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object MethodInsertPolicyComboBox: TComboBox
+      Left = 154
+      Height = 27
+      Top = 39
+      Width = 100
+      ItemHeight = 0
+      ParentShowHint = False
+      ShowHint = True
+      Style = csDropDownList
+      TabOrder = 1
+    end
   end
 end
