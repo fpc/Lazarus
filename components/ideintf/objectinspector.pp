@@ -4341,7 +4341,7 @@ end;
 procedure TObjectInspectorDlg.SetPropertyEditorHook(NewValue:TPropertyEditorHook);
 var
   Page: TObjectInspectorPage;
-  ASelection: TPersistentSelectionList;
+  OldSelection: TPersistentSelectionList;
 begin
   if FPropertyEditorHook=NewValue then exit;
   if FPropertyEditorHook<>nil then begin
@@ -4356,23 +4356,26 @@ begin
     for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
       if GridControl[Page]<>nil then
         GridControl[Page].PropertyEditorHook:=FPropertyEditorHook;
-    if EnableHookGetSelection then begin
-      // the propertyeditorhook gets the selection from the OI
-      FPropertyEditorHook.AddHandlerGetSelection(@HookGetSelection);
-      // select root component
-      FSelection.Clear;
-      if (FPropertyEditorHook<>nil) and (FPropertyEditorHook.LookupRoot<>nil)
-      and (FPropertyEditorHook.LookupRoot is TComponent) then
-        FSelection.Add(TComponent(FPropertyEditorHook.LookupRoot));
-    end else begin
-      // the OI gets the selection from the propertyeditorhook
-      ASelection:=TPersistentSelectionList.Create;
-      try
-        FPropertyEditorHook.GetSelection(ASelection);
-        Selection := ASelection;
-      finally
-        ASelection.Free;
+    OldSelection:=TPersistentSelectionList.Create;
+    try
+      FPropertyEditorHook.GetSelection(OldSelection);
+      if EnableHookGetSelection then begin
+        // the propertyeditorhook gets the selection from the OI
+        if OldSelection.Count>0 then
+          FSelection.Assign(OldSelection); // if propertyeditorhook has a selection use that
+        FPropertyEditorHook.AddHandlerGetSelection(@HookGetSelection);
+        if OldSelection.Count=0 then begin
+          // select root component
+          FSelection.Clear;
+          if FPropertyEditorHook.LookupRoot is TComponent then
+            FSelection.Add(TComponent(FPropertyEditorHook.LookupRoot));
+        end;
+      end else begin
+        // the OI gets the selection from the propertyeditorhook
+        Selection := OldSelection;
       end;
+    finally
+      OldSelection.Free;
     end;
     FillComponentList;
     ComponentTree.PropertyEditorHook:=FPropertyEditorHook;

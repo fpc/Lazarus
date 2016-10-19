@@ -571,7 +571,7 @@ procedure TComponentTreeView.SetPropertyEditorHook(AValue: TPropertyEditorHook);
 begin
   if FPropertyEditorHook=AValue then exit;
   FPropertyEditorHook:=AValue;
-  //RebuildComponentNodes;
+  RebuildComponentNodes;
 end;
 
 function TComponentTreeView.GetSelection: TPersistentSelectionList;
