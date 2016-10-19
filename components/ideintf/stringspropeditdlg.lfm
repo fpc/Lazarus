@@ -11,7 +11,7 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
   Constraints.MinWidth = 180
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.7'
   object TextGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -71,6 +71,21 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
       Constraints.MinWidth = 75
       OnClick = SortButtonClick
       TabOrder = 1
+    end
+    object ClearButton: TButton
+      AnchorSideLeft.Control = SortButton
+      AnchorSideTop.Control = SortButton
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = SortButton
+      AnchorSideRight.Side = asrBottom
+      Left = 303
+      Height = 27
+      Top = 39
+      Width = 75
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'Clear'
+      OnClick = ClearButtonClick
+      TabOrder = 2
     end
   end
   object BtnPanel: TButtonPanel
