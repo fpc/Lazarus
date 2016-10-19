@@ -130,8 +130,51 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       ClientHeight = 105
       ClientWidth = 559
       TabOrder = 1
+      object PrivateVariablePrefixLabel: TLabel
+        Left = 33
+        Height = 13
+        Top = 25
+        Width = 125
+        BorderSpacing.Right = 6
+        BorderSpacing.CellAlignHorizontal = ccaRightBottom
+        BorderSpacing.CellAlignVertical = ccaCenter
+        Caption = 'PrivateVariablePrefixLabel'
+        ParentColor = False
+      end
+      object PropertyStoredIdentPostfixLabel: TLabel
+        Left = 0
+        Height = 13
+        Top = 46
+        Width = 158
+        BorderSpacing.Right = 6
+        BorderSpacing.CellAlignHorizontal = ccaRightBottom
+        BorderSpacing.CellAlignVertical = ccaCenter
+        Caption = 'PropertyStoredIdentPostfixLabel'
+        ParentColor = False
+      end
+      object PropertyWriteIdentPrefixLabel: TLabel
+        Left = 11
+        Height = 13
+        Top = 67
+        Width = 147
+        BorderSpacing.Right = 6
+        BorderSpacing.CellAlignHorizontal = ccaRightBottom
+        BorderSpacing.CellAlignVertical = ccaCenter
+        Caption = 'PropertyWriteIdentPrefixLabel'
+        ParentColor = False
+      end
+      object PropertyReadIdentPrefixLabel: TLabel
+        Left = 12
+        Height = 13
+        Top = 88
+        Width = 146
+        BorderSpacing.Right = 6
+        BorderSpacing.CellAlignHorizontal = ccaRightBottom
+        BorderSpacing.CellAlignVertical = ccaCenter
+        Caption = 'PropertyReadIdentPrefixLabel'
+        ParentColor = False
+      end
       object SetPropertyVariablenameLabel: TLabel
-        AnchorSideTop.Side = asrCenter
         Left = 11
         Height = 13
         Top = 4
@@ -144,69 +187,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
         ParentShowHint = False
         ShowHint = True
       end
-      object PrivateVariablePrefixLabel: TLabel
-        AnchorSideTop.Side = asrCenter
-        Left = 33
-        Height = 13
-        Top = 25
-        Width = 125
-        BorderSpacing.Right = 6
-        BorderSpacing.CellAlignHorizontal = ccaRightBottom
-        BorderSpacing.CellAlignVertical = ccaCenter
-        Caption = 'PrivateVariablePrefixLabel'
-        ParentColor = False
-      end
-      object PropertyStoredIdentPostfixLabel: TLabel
-        AnchorSideTop.Side = asrCenter
-        Left = 0
-        Height = 13
-        Top = 46
-        Width = 158
-        BorderSpacing.Right = 6
-        BorderSpacing.CellAlignHorizontal = ccaRightBottom
-        BorderSpacing.CellAlignVertical = ccaCenter
-        Caption = 'PropertyStoredIdentPostfixLabel'
-        ParentColor = False
-      end
-      object PropertyWriteIdentPrefixLabel: TLabel
-        AnchorSideTop.Side = asrCenter
-        Left = 11
-        Height = 13
-        Top = 67
-        Width = 147
-        BorderSpacing.Right = 6
-        BorderSpacing.CellAlignHorizontal = ccaRightBottom
-        BorderSpacing.CellAlignVertical = ccaCenter
-        Caption = 'PropertyWriteIdentPrefixLabel'
-        ParentColor = False
-      end
-      object PropertyReadIdentPrefixLabel: TLabel
-        AnchorSideTop.Side = asrCenter
-        Left = 12
-        Height = 13
-        Top = 88
-        Width = 146
-        BorderSpacing.Right = 6
-        BorderSpacing.CellAlignHorizontal = ccaRightBottom
-        BorderSpacing.CellAlignVertical = ccaCenter
-        Caption = 'PropertyReadIdentPrefixLabel'
-        ParentColor = False
-      end
-      object SetPropertyVariablenameEdit: TEdit
-        AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Side = asrBottom
-        Left = 164
-        Height = 21
-        Top = 0
-        Width = 80
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 0
-        Text = 'SetPropertyVariablenameEdit'
-      end
       object PrivateVariablePrefixEdit: TEdit
-        AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Side = asrBottom
         Left = 164
         Height = 21
         Top = 21
@@ -215,8 +196,6 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
         Text = 'PrivateVariablePrefixEdit'
       end
       object PropertyStoredIdentPostfixEdit: TEdit
-        AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Side = asrBottom
         Left = 164
         Height = 21
         Top = 42
@@ -225,8 +204,6 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
         Text = 'PropertyStoredIdentPostfixEdit'
       end
       object PropertyWriteIdentPrefixEdit: TEdit
-        AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Side = asrBottom
         Left = 164
         Height = 21
         Top = 63
@@ -235,14 +212,22 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
         Text = 'PropertyWriteIdentPrefixEdit'
       end
       object PropertyReadIdentPrefixEdit: TEdit
-        AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Side = asrBottom
         Left = 164
         Height = 21
         Top = 84
         Width = 80
         TabOrder = 6
         Text = 'PropertyReadIdentPrefixEdit'
+      end
+      object SetPropertyVariablenameEdit: TEdit
+        Left = 164
+        Height = 21
+        Top = 0
+        Width = 80
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 0
+        Text = 'SetPropertyVariablenameEdit'
       end
       object SetPropertyVariableIsPrefixCheckBox: TCheckBox
         AnchorSideLeft.Control = SetPropertyVariablenameEdit
