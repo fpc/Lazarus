@@ -54,13 +54,11 @@ uses
   CodeToolManager, DirectoryCacher,
   // IDEIntf,
   IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
-  CompOptsIntf, LazIDEIntf, MacroDefIntf,
-  // package registration
-  LazarusPackageIntf,
+  CompOptsIntf, LazIDEIntf, MacroDefIntf, ProjectIntf, LazarusPackageIntf,
   // IDE
   LazarusIDEStrConsts, IDECmdLine, EnvironmentOpts, IDEProcs, LazConf,
   TransferMacros, DialogProcs, IDETranslations, CompilerOptions, PackageLinks,
-  PackageDefs, ComponentReg, ProjectIntf;
+  PackageDefs, ComponentReg;
   
 const
   MakefileCompileVersion = 2;
@@ -502,6 +500,7 @@ function ExtractMakefileCompiledParams(const CompParams: string;
   CreateReduced: boolean = false;
   BaseDir: string = ''; MakeRelative: boolean = false): TStringList;
 function RemoveFPCVerbosityParams(const CompParams: string): string;
+procedure WarnSuspiciousCompilerOptions(ViewCaption, Target, CompilerParams: string);
 
 implementation
 
@@ -667,6 +666,35 @@ begin
     end;
   end;
   Result:=UTF8Trim(Result,[]);
+end;
+
+procedure WarnSuspiciousCompilerOptions(ViewCaption, Target,
+  CompilerParams: string);
+var
+  ParsedParams: TObjectList;
+  i: Integer;
+  Param: TFPCParamValue;
+  Msg: String;
+begin
+  ParsedParams:=TObjectList.Create(true);
+  try
+    ParseFPCParameters(CompilerParams,ParsedParams);
+    for i:=0 to ParsedParams.Count-1 do begin
+      Param:=TFPCParamValue(ParsedParams[i]);
+      if fpfValueChanged in Param.Flags then begin
+        Msg:='';
+        if Param.Kind in [fpkBoolean,fpkValue] then
+          Msg:='passing compiler option -'+Param.Name+' twice with different values'
+        else if Param.Kind=fpkDefine then
+          Msg:='passing compiler define "'+Param.Name+'" twice with different values';
+        if Msg='' then continue;
+        if Target<>'' then Msg:=Target+' '+Msg;
+        IDEMessagesWindow.AddCustomMessage(mluNote,Msg,'',0,0,ViewCaption);
+      end;
+    end;
+  finally
+    ParsedParams.Free;
+  end;
 end;
 
 { TLazPackageGraphFileCache }
@@ -4094,6 +4122,8 @@ begin
           else
             EffectiveCompilerParams:='-B';
         end;
+
+        WarnSuspiciousCompilerOptions('Compile checks','package '+APackage.IDAsString+':',CompilerParams);
 
         PkgCompileTool:=ExternalToolList.Add(Format(lisPkgMangCompilePackage, [APackage.IDAsString]));
         ExtToolData:=TLazPkgGraphExtToolData.Create(IDEToolCompilePackage,

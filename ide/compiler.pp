@@ -239,7 +239,6 @@ type
     property ErrorMsg: string read GetErrorMsg;
   end;
 
-
 implementation
 
 { TCompiler }

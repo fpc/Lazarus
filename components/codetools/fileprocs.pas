@@ -40,7 +40,7 @@ uses
   Windows,
   {$ENDIF}
   // RTL + FCL
-  Classes, SysUtils, AVL_Tree, contnrs,
+  Classes, SysUtils, AVL_Tree,
   // CodeTools
   CodeToolsStrConsts,
   // LazUtils

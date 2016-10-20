@@ -6788,6 +6788,8 @@ begin
           exit;
         end;
 
+        WarnSuspiciousCompilerOptions('Project checks','',CompilerParams);
+
         StartTime:=Now;
         Result:=TheCompiler.Compile(Project1,
                                 WorkingDir,CompilerFilename,CompilerParams,
