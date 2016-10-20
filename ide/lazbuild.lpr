@@ -867,6 +867,7 @@ var
 
     if (CompReason in Project1.CompilerOptions.CompileReasons) then begin
       // compile
+
       // write state file to avoid building clean every time
       if Project1.SaveStateFile(CompilerFilename,CompilerParams,false)<>mrOk then
         Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);

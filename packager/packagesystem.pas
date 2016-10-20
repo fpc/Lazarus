@@ -676,6 +676,7 @@ var
   Param: TFPCParamValue;
   Msg: String;
 begin
+  if IDEMessagesWindow=nil then exit;
   ParsedParams:=TObjectList.Create(true);
   try
     ParseFPCParameters(CompilerParams,ParsedParams);
