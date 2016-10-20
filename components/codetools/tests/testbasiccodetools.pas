@@ -495,7 +495,12 @@ begin
     t('-Mdelphi','M','delphi',fpkValue,[]);
     t('-n-','n','',fpkBoolean,[fpfUnset]);
     t('-opath','o','path',fpkValue,[]);
-    t('-O2','O2',FPCParamEnabled,fpkBoolean,[]);
+    t('-O1','O','1',fpkValue,[]);
+    t('-O2','O','2',fpkValue,[]);
+    t('-O3','O','3',fpkValue,[]);
+    t('-O4','O','4',fpkValue,[]);
+    t('-O1 -O-','O','',fpkValue,[fpfUnset,fpfSetTwice,fpfValueChanged]);
+    t('-O1 -O2','O','2',fpkValue,[fpfSetTwice,fpfValueChanged]);
     t('-Oab=c','Oab','c',fpkValue,[]);
     t('-pg','pg',FPCParamEnabled,fpkBoolean,[]);
     t('-Rfoo','R','foo',fpkValue,[]);

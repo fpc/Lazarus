@@ -1473,7 +1473,7 @@ procedure ParseFPCParameter(const CmdLineParam: string;
 const
   AlphaNum = ['a'..'z','A'..'Z','0'..'9'];
 
-  procedure Add(const aName, aValue: string; aKind: TFPCParamKind; aFlags: TFPCParamFlags = []);
+  procedure Add(aName, aValue: string; aKind: TFPCParamKind; aFlags: TFPCParamFlags = []);
   var
     i: Integer;
     Param: TFPCParamValue;
@@ -1481,6 +1481,12 @@ const
     {$IFDEF VerboseParseFPCParameter}
     debugln(['ParseFPCParameter.Add Name="',aName,'" Value="',aValue,'" Kind=',dbgs(aKind),' Flags=',dbgs(aFlags)]);
     {$ENDIF}
+    if (aName='O1') or (aName='O2') or (aName='O3') or (aName='O4') then begin
+      aValue:=aName[2];
+      aName:='O';
+      aKind:=fpkValue;
+    end;
+
     if not (aKind in [fpkUnknown,fpkConfig,fpkNonOption,fpkMultiValue]) then
       // check for duplicates
       for i:=0 to ParsedParams.Count-1 do begin
@@ -1489,8 +1495,10 @@ const
         if (aKind=fpkDefine) <> (Param.Kind=fpkDefine) then continue;
         // was already set
         Include(Param.Flags,fpfSetTwice);
-        if (aValue<>Param.Value) or ((fpfUnset in aFlags)<>(fpfUnset in Param.Flags)) then
+        if (aValue<>Param.Value) or ((fpfUnset in aFlags)<>(fpfUnset in Param.Flags))
+        or (aKind<>Param.Kind) then
           Include(Param.Flags,fpfValueChanged);
+        Param.Kind:=aKind;
         Param.Value:=aValue;
         if fpfUnset in aFlags then
           Include(Param.Flags,fpfUnset)
@@ -1499,6 +1507,16 @@ const
         exit;
       end;
     ParsedParams.Add(TFPCParamValue.Create(aName, aValue, aKind, aFlags));
+
+    // alias
+    if aName='S2' then
+      Add('M','objfpc',fpkValue,aFlags)
+    else if aName='Sd' then
+      Add('M','delphi',fpkValue,aFlags)
+    else if aName='So' then
+      Add('M','tp',fpkValue,aFlags)
+    else if aName='?' then
+      Add('h',aValue,aKind,aFlags);
   end;
 
   procedure AddBooleanFlag(var p: PChar; Len: integer; Prefix: string = '');
@@ -1688,7 +1706,7 @@ begin
             end;
           until false;
         end;
-      'i': ReadSequence(p,'S* T*');
+      'i': ReadSequence(p,'SO SP TO TP');
       'I': Add(p^,PChar(@p[1]),fpkMultiValue);
       'k': Add(p^,PChar(@p[1]),fpkMultiValue);
       'M': Add(p^,PChar(@p[1]),fpkValue);
@@ -1697,7 +1715,7 @@ begin
         case p[1] of
         '-': DisableAllFlags('O');
         else
-          ReadSequence(p,'a= o* p: W:');
+          ReadSequence(p,'a= o* p: W: w:');
         end;
       'P': ; // ToDo
       'R': Add(p^,PChar(@p[1]),fpkValue);
