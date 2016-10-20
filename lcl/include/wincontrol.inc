@@ -5255,7 +5255,7 @@ end;
 procedure TWinControl.DestroyHandle;
 var
   i: integer;
-  AWinControl: TWinControl;
+  AControl: TControl;
 begin
   //DebugLn(['TWinControl.DestroyHandle START ',DbgSName(Self)]);
   if not HandleAllocated then begin
@@ -5270,9 +5270,9 @@ begin
     if FControls <> nil then begin
       for i:= 0 to FControls.Count - 1 do begin
         //DebugLn(['  ',i,' ',DbgSName(TObject(FWinControls[i]))]);
-        AWinControl:=TWinControl(FControls[i]);
-        if (AWinControl is TWinControl) and AWinControl.HandleAllocated then
-          AWinControl.DestroyHandle;
+        AControl:=TControl(FControls[i]);
+        if (AControl is TWinControl) and TWinControl(AControl).HandleAllocated then
+          TWinControl(AControl).DestroyHandle;
       end;
     end;
     //DebugLn(['TWinControl.DestroyHandle DESTROY SELF ',DbgSName(Self)]);
