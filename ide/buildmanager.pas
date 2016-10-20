@@ -2689,7 +2689,7 @@ begin
     // the macros were resolved with default values
     // => invalidate macros so they now use the actual values
     IncreaseBuildMacroChangeStamp;
-    if ConsoleVerbosity>0 then
+    if ConsoleVerbosity>1 then
       debugln(['Hint: (lazarus) [TBuildManager.SetBuildTarget] OS=',fTargetOS,' CPU=',fTargetCPU,' CompQueryOptions=',CompQueryOptions,' DefaultOS=',CompilerTargetOS,' DefaultCPU=',CompilerTargetCPU]);
   end;
 
