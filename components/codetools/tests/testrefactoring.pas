@@ -3,7 +3,7 @@
    ./testcodetools --format=plain --suite=TTestRefactoring
    ./testcodetools --format=plain --suite=TestExplodeWith
 }
-unit RefactoringTests;
+unit TestRefactoring;
 
 {$mode objfpc}{$H+}
 

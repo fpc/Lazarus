@@ -45,6 +45,7 @@
       <Unit1>
         <Filename Value="testfinddeclaration.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="TestFinddeclaration"/>
       </Unit1>
       <Unit2>
         <Filename Value="fdt_typehelper.pas"/>
@@ -75,9 +76,9 @@
         <IsPartOfProject Value="True"/>
       </Unit8>
       <Unit9>
-        <Filename Value="refactoringtests.pas"/>
+        <Filename Value="testrefactoring.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="RefactoringTests"/>
+        <UnitName Value="TestRefactoring"/>
       </Unit9>
       <Unit10>
         <Filename Value="rt_explodewith.pas"/>
