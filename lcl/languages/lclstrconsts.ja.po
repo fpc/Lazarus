@@ -297,6 +297,10 @@ msgstr "アプリケーションの作業領域色"
 msgid "Aqua"
 msgstr "水色"
 
+#: lclstrconsts.rsascannothaveasparent
+msgid "A %s cannot have % as parent"
+msgstr ""
+
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
 msgstr "デスクトップの背景色"

@@ -300,6 +300,10 @@ msgstr "引用程序工作区"
 msgid "Aqua"
 msgstr ""
 
+#: lclstrconsts.rsascannothaveasparent
+msgid "A %s cannot have % as parent"
+msgstr ""
+
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
 msgstr "桌面"

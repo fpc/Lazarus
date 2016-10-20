@@ -260,6 +260,14 @@ begin
   Result := -1;
 end;
 
+procedure TCustomPage.CheckNewParent(AParent: TWinControl);
+begin
+  if (AParent<>nil) and (not (AParent is TCustomTabControl)) then
+    raise EInvalidOperation.CreateFmt(rsASCannotHaveAsParent, [ClassName,
+      AParent.ClassName]);
+  inherited CheckNewParent(AParent);
+end;
+
 {------------------------------------------------------------------------------
   function TCustomPage.CanTab: boolean;
  ------------------------------------------------------------------------------}

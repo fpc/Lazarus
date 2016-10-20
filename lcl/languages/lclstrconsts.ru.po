@@ -289,6 +289,10 @@ msgstr "Рабочая область приложения"
 msgid "Aqua"
 msgstr "Морской волны"
 
+#: lclstrconsts.rsascannothaveasparent
+msgid "A %s cannot have % as parent"
+msgstr ""
+
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
 msgstr "Рабочий стол"

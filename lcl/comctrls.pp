@@ -259,6 +259,7 @@ type
     function IsControlVisible: Boolean; override;
     function HandleObjectShouldBeVisible: boolean; override;
     function VisibleIndex: integer; virtual;
+    procedure CheckNewParent(AParent: TWinControl); override;
     property PageIndex: Integer read GetPageIndex write SetPageIndex;
     property TabVisible: Boolean read GetTabVisible write SetTabVisible default True;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;

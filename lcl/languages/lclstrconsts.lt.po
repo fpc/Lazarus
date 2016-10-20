@@ -298,6 +298,10 @@ msgstr "Programos darbo laukas"
 msgid "Aqua"
 msgstr "Žydra"
 
+#: lclstrconsts.rsascannothaveasparent
+msgid "A %s cannot have % as parent"
+msgstr ""
+
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
 msgstr "Darbalaukis"

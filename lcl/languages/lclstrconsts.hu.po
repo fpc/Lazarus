@@ -289,6 +289,10 @@ msgstr "Alkalmazás munkaterülete"
 msgid "Aqua"
 msgstr "Világoskék"
 
+#: lclstrconsts.rsascannothaveasparent
+msgid "A %s cannot have % as parent"
+msgstr ""
+
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
 msgstr "Asztal"

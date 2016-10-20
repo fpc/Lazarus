@@ -298,6 +298,10 @@ msgstr "Робоча область програми"
 msgid "Aqua"
 msgstr "Колір морської хвилі"
 
+#: lclstrconsts.rsascannothaveasparent
+msgid "A %s cannot have % as parent"
+msgstr ""
+
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
 msgstr "Робочий стіл"

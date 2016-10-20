@@ -291,6 +291,10 @@ msgstr "Pracovní prostředí aplikace"
 msgid "Aqua"
 msgstr "Vodní"
 
+#: lclstrconsts.rsascannothaveasparent
+msgid "A %s cannot have % as parent"
+msgstr ""
+
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
 msgstr "Plocha"

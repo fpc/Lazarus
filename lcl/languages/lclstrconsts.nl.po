@@ -298,6 +298,10 @@ msgstr "Applicatie-werkruimte"
 msgid "Aqua"
 msgstr "Aqua"
 
+#: lclstrconsts.rsascannothaveasparent
+msgid "A %s cannot have % as parent"
+msgstr ""
+
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
 msgstr "Bureaublad"

@@ -297,6 +297,10 @@ msgstr "שטח עבודה של היישום"
 msgid "Aqua"
 msgstr "מימי"
 
+#: lclstrconsts.rsascannothaveasparent
+msgid "A %s cannot have % as parent"
+msgstr ""
+
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
 msgstr "שולחן עבודה"

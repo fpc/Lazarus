@@ -291,6 +291,10 @@ msgstr "Spazio di lavoro dell'applicazione"
 msgid "Aqua"
 msgstr "Acqua"
 
+#: lclstrconsts.rsascannothaveasparent
+msgid "A %s cannot have % as parent"
+msgstr ""
+
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
 msgstr "Scrivania"
