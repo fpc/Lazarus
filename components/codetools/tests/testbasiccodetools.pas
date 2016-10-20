@@ -511,6 +511,7 @@ begin
     t('-Tfoo','T','foo',fpkValue,[]);
     t('-uMacro','Macro','',fpkDefine,[fpfUnset]);
     t('-dMacro -uMacro','Macro','',fpkDefine,[fpfUnset,fpfSetTwice,fpfValueChanged]);
+    t('-dmacro -uMACRO','macro','',fpkDefine,[fpfUnset,fpfSetTwice,fpfValueChanged]);
     t('-Uns-','Us','',fpkBoolean,[fpfUnset]);
     t('-vwne','ve',FPCParamEnabled,fpkBoolean,[]);
     t('-vmfoo','vm','foo',fpkMultiValue,[]);

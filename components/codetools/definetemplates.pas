@@ -2740,11 +2740,15 @@ const
       aKind:=fpkValue;
     end;
 
-    if not (aKind in [fpkUnknown,fpkConfig,fpkNonOption,fpkMultiValue]) then
+    if (aKind in [fpkBoolean,fpkValue,fpkDefine]) then
       // check for duplicates
       for i:=0 to ParsedParams.Count-1 do begin
         Param:=TFPCParamValue(ParsedParams[i]);
-        if (Param.Name<>aName) then continue;
+        if aKind=fpkDefine then begin
+          if CompareText(Param.Name,aName)<>0 then continue;
+        end else begin
+          if (Param.Name<>aName) then continue;
+        end;
         if (aKind=fpkDefine) <> (Param.Kind=fpkDefine) then continue;
         // was already set
         Include(Param.Flags,fpfSetTwice);
