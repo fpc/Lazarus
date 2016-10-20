@@ -23,7 +23,7 @@ interface
 
 uses
   fpcunit, contnrs, Classes, SysUtils, testglobals, FileProcs, BasicCodeTools,
-  SourceLog;
+  SourceLog, DefineTemplates;
 
 type
   { TTestBasicCodeTools }
