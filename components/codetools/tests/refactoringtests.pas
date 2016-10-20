@@ -12,7 +12,7 @@ interface
 uses
   Classes, SysUtils, CodeToolManager, CodeCache, CodeTree,
   BasicCodeTools, LazLogger, LazFileUtils, fpcunit, testregistry,
-  FindDeclarationTests;
+  TestFinddeclaration;
 
 const
   ExplodeWithMarker = 'explodewith:';

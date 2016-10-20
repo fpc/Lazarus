@@ -20,7 +20,7 @@
    ./testcodetools --format=plain --suite=TestFindDeclaration_LazTests --filemask=t*.pp
    ./testcodetools --format=plain --suite=TestFindDeclaration_LazTests --filemask=tdefaultproperty1.pp
 }
-unit FindDeclarationTests;
+unit TestFinddeclaration;
 
 {$mode objfpc}{$H+}
 

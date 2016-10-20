@@ -24,7 +24,7 @@ uses
   CodeToolManager, CodeToolsConfig,
   testglobals,
   TestBasicCodetools, TestCTRangeScan, TestMethodJumpTool, TestStdCodetools,
-  FindDeclarationTests, TestCompleteBlock, RefactoringTests,
+  testfinddeclaration, TestCompleteBlock, RefactoringTests,
   // non Pascal
   TestCfgScript, TestCTH2Pas, TestCTXMLFixFragments,
   // compile test files to make sure they are valid Pascal

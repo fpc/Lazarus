@@ -43,9 +43,8 @@
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="finddeclarationtests.pas"/>
+        <Filename Value="testfinddeclaration.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="FindDeclarationTests"/>
       </Unit1>
       <Unit2>
         <Filename Value="fdt_typehelper.pas"/>
