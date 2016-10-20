@@ -268,7 +268,7 @@ type
 
     property PopupMenuComponentEditor: TBaseComponentEditor read FPopupMenuComponentEditor write SetPopupMenuComponentEditor;
   public
-    ControlSelection : TControlSelection;
+    Selection: TControlSelection;
     DDC: TDesignerDeviceContext;
 
     constructor Create(TheDesignerForm: TCustomForm; AControlSelection: TControlSelection);
@@ -649,7 +649,7 @@ begin
   else
     FLookupRoot := FForm;
 
-  ControlSelection := AControlSelection;
+  Selection := AControlSelection;
   FFlags := [];
   FGridColor := clGray;
 
@@ -719,9 +719,9 @@ begin
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.NudgePosition]');
   {$ENDIF}
-  if (ControlSelection.SelectionForm<>Form)
-  or ControlSelection.LookupRootSelected then exit;
-  ControlSelection.MoveSelection(DiffX, DiffY, False);
+  if (Selection.SelectionForm<>Form)
+  or Selection.LookupRootSelected then exit;
+  Selection.MoveSelection(DiffX, DiffY, False);
   Modified;
 end;
 
@@ -730,9 +730,9 @@ begin
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.NudgeSize]');
   {$ENDIF}
-  if (ControlSelection.SelectionForm<>Form)
-  or ControlSelection.LookupRootSelected then exit;
-  ControlSelection.SizeSelection(DiffX, DiffY);
+  if (Selection.SelectionForm<>Form)
+  or Selection.LookupRootSelected then exit;
+  Selection.SizeSelection(DiffX, DiffY);
   Modified;
 end;
 
@@ -779,23 +779,23 @@ var
   Current, AComponent: TComponent;
   i: integer;
 begin
-  if (ControlSelection.SelectionForm <> Form) or
-     (ControlSelection.SelectionForm.ComponentCount = 0) or
-     ControlSelection.LookupRootSelected or
-     (ControlSelection.Count <> 1) then Exit;
-  if not ControlSelection[0].IsTComponent then Exit;
+  if (Selection.SelectionForm <> Form) or
+     (Selection.SelectionForm.ComponentCount = 0) or
+     Selection.LookupRootSelected or
+     (Selection.Count <> 1) then Exit;
+  if not Selection[0].IsTComponent then Exit;
 
   // create a list of components at the similar top/left
-  Current := TComponent(ControlSelection[0].Persistent);
+  Current := TComponent(Selection[0].Persistent);
   AComponent := nil;
   List := TFPList.Create;
   try
     Coord := GetParentFormRelativeClientOrigin(Current);
     if DiffX <> 0 then
     begin
-      for i := 0 to ControlSelection.SelectionForm.ComponentCount - 1 do
+      for i := 0 to Selection.SelectionForm.ComponentCount - 1 do
       begin
-        AComponent := ControlSelection.SelectionForm.Components[i];
+        AComponent := Selection.SelectionForm.Components[i];
         if (AComponent = Current) or ComponentIsInvisible(AComponent) then
           Continue;
         Test := GetParentFormRelativeClientOrigin(AComponent);
@@ -817,9 +817,9 @@ begin
     else
     if DiffY <> 0 then
     begin
-      for i := 0 to ControlSelection.SelectionForm.ComponentCount - 1 do
+      for i := 0 to Selection.SelectionForm.ComponentCount - 1 do
       begin
-        AComponent := ControlSelection.SelectionForm.Components[i];
+        AComponent := Selection.SelectionForm.Components[i];
         if (AComponent = Current) or ComponentIsInvisible(AComponent) then
           Continue;
         Test := GetParentFormRelativeClientOrigin(AComponent);
@@ -843,7 +843,7 @@ begin
   end;
   if AComponent <> nil then
   begin
-    ControlSelection.AssignPersistent(AComponent);
+    Selection.AssignPersistent(AComponent);
     Modified;
   end;
 end;
@@ -858,21 +858,21 @@ procedure TDesigner.NudgeSelection(SelectNext: Boolean);
     else
       Dec(Result);
 
-    if Result >= ControlSelection.SelectionForm.ComponentCount then
+    if Result >= Selection.SelectionForm.ComponentCount then
       Result := 0
     else
     if Result < 0 then
-      Result := ControlSelection.SelectionForm.ComponentCount - 1;
+      Result := Selection.SelectionForm.ComponentCount - 1;
   end;
 
 var
   Index, StartIndex: Integer;
   AComponent: TComponent;
 begin
-  if (ControlSelection.SelectionForm <> Form) or
-     (ControlSelection.SelectionForm.ComponentCount = 0) then Exit;
-  if (ControlSelection.Count = 1) and ControlSelection[0].IsTComponent then
-    Index := TComponent(ControlSelection[0].Persistent).ComponentIndex
+  if (Selection.SelectionForm <> Form) or
+     (Selection.SelectionForm.ComponentCount = 0) then Exit;
+  if (Selection.Count = 1) and Selection[0].IsTComponent then
+    Index := TComponent(Selection[0].Persistent).ComponentIndex
   else
     Index := -1;
 
@@ -882,7 +882,7 @@ begin
   AComponent := nil;
   while AComponent = nil do
   begin
-    AComponent := ControlSelection.SelectionForm.Components[Index];
+    AComponent := Selection.SelectionForm.Components[Index];
     if ComponentIsInvisible(AComponent) then
     begin
       AComponent := nil;
@@ -894,7 +894,7 @@ begin
 
   if AComponent <> nil then
   begin
-    ControlSelection.AssignPersistent(AComponent);
+    Selection.AssignPersistent(AComponent);
     Modified;
   end;
 end;
@@ -914,10 +914,10 @@ begin
   // resizing or moving
   if dfHasSized in FFlags then
   begin
-    ControlSelection.RestoreBounds;
-    ControlSelection.ActiveGrabber := nil;
-    if ControlSelection.RubberbandActive then
-      ControlSelection.RubberbandActive := False;
+    Selection.RestoreBounds;
+    Selection.ActiveGrabber := nil;
+    if Selection.RubberbandActive then
+      Selection.RubberbandActive := False;
     LastMouseMovePos.X := -1;
     Exclude(FFlags, dfHasSized);
     MouseDownComponent := nil;
@@ -925,24 +925,24 @@ begin
     Exit;
   end;
 
-  if ControlSelection.OnlyInvisiblePersistentsSelected then
+  if Selection.OnlyInvisiblePersistentsSelected then
     Exit;
 
-  if ControlSelection.LookupRootSelected then
+  if Selection.LookupRootSelected then
   begin
     SelectOnlyThisComponent(FLookupRoot);
     Exit;
   end;
 
   // if not component moving then select parent
-  i := ControlSelection.Count - 1;
+  i := Selection.Count - 1;
   while (i >= 0) and
-        (ControlSelection[i].ParentInSelection or
-         not ControlSelection[i].IsTComponent or
-         (ParentComponent(TComponent(ControlSelection[i].Persistent)) = nil)) do
+        (Selection[i].ParentInSelection or
+         not Selection[i].IsTComponent or
+         (ParentComponent(TComponent(Selection[i].Persistent)) = nil)) do
     Dec(i);
   if i >= 0 then
-    SelectOnlyThisComponent(ParentComponent(TComponent(ControlSelection[i].Persistent)));
+    SelectOnlyThisComponent(ParentComponent(TComponent(Selection[i].Persistent)));
 end;
 
 function TDesigner.CopySelectionToStream(AllComponentsStream: TStream): boolean;
@@ -955,16 +955,16 @@ function TDesigner.CopySelectionToStream(AllComponentsStream: TStream): boolean;
     Result:=false;
     AParent:=nil;
     i:=0;
-    while i<ControlSelection.Count do begin
-      if ControlSelection[i].IsTControl then begin
+    while i<Selection.Count do begin
+      if Selection[i].IsTControl then begin
         // unselect controls from which the parent is selected too
-        if ControlSelection[i].ParentInSelection then begin
-          ControlSelection.Delete(i);
+        if Selection[i].ParentInSelection then begin
+          Selection.Delete(i);
           continue;
         end;
 
         // check if not the top level component is selected
-        CurParent:=TControl(ControlSelection[i].Persistent).Parent;
+        CurParent:=TControl(Selection[i].Persistent).Parent;
         if CurParent=nil then begin
           IDEMessageDialog(lisCanNotCopyTopLevelComponent,
             lisCopyingAWholeFormIsNotImplemented,
@@ -976,7 +976,7 @@ function TDesigner.CopySelectionToStream(AllComponentsStream: TStream): boolean;
         if (AParent=nil) then
           AParent:=CurParent
         else if (AParent<>CurParent) then begin
-          ControlSelection.Delete(i);
+          Selection.Delete(i);
           continue;
         end;
       end;
@@ -994,21 +994,21 @@ var
   Writer: TWriter;
 begin
   Result:=false;
-  if (ControlSelection.Count=0) then exit;
+  if (Selection.Count=0) then exit;
 
   // Because controls will be pasted on a single parent,
   // unselect all controls, that do not have the same parent
   if not UnselectDistinctControls then exit;
 
-  for i:=0 to ControlSelection.Count-1 do begin
-    if not ControlSelection[i].IsTComponent then continue;
+  for i:=0 to Selection.Count-1 do begin
+    if not Selection[i].IsTComponent then continue;
 
     BinCompStream:=TMemoryStream.Create;
     TxtCompStream:=TMemoryStream.Create;
     try
       // write component binary stream
       try
-        CurComponent:=TComponent(ControlSelection[i].Persistent);
+        CurComponent:=TComponent(Selection[i].Persistent);
 
         DestroyDriver:=false;
         Writer := CreateLRSWriter(BinCompStream,DestroyDriver);
@@ -1065,8 +1065,8 @@ var
   AllComponentText: string;
 begin
   Result := false;
-  if ControlSelection.Count = 0 then exit;
-  if ControlSelection.OnlyInvisiblePersistentsSelected then exit;
+  if Selection.Count = 0 then exit;
+  if Selection.OnlyInvisiblePersistentsSelected then exit;
 
   AllComponentsStream:=TMemoryStream.Create;
   try
@@ -1101,12 +1101,12 @@ var
   i: Integer;
 begin
   Result:=nil;
-  for i:=0 to ControlSelection.Count-1 do begin
-    if (ControlSelection[i].IsTWinControl)
+  for i:=0 to Selection.Count-1 do begin
+    if (Selection[i].IsTWinControl)
     and (csAcceptsControls in
-         TWinControl(ControlSelection[i].Persistent).ControlStyle)
-    and (not ControlSelection[i].ParentInSelection) then begin
-      Result:=TWinControl(ControlSelection[i].Persistent);
+         TWinControl(Selection[i].Persistent).ControlStyle)
+    and (not Selection[i].ParentInSelection) then begin
+      Result:=TWinControl(Selection[i].Persistent);
       if GetLookupRootForComponent(Result)<>FLookupRoot then
         Result:=nil;
       break;
@@ -1247,7 +1247,7 @@ begin
   finally
     NewComponents.Free;
     if NewSelection.Count>0 then
-      ControlSelection.Assign(NewSelection);
+      Selection.Assign(NewSelection);
     NewSelection.Free;
   end;
   Result:=true;
@@ -1371,13 +1371,13 @@ begin
     SaveControlSelection := TControlSelection.Create;
     try
       Inc(FUndoLock);
-      SaveControlSelection.Assign(ControlSelection);
-      ControlSelection.Clear;
-      ControlSelection.Add(FForm.FindComponent(FUndoList[FUndoCurr].compName));
+      SaveControlSelection.Assign(Selection);
+      Selection.Clear;
+      Selection.Add(FForm.FindComponent(FUndoList[FUndoCurr].compName));
       DeleteSelection;
     finally
       Dec(FUndoLock);
-      ControlSelection.Assign(SaveControlSelection);
+      Selection.Assign(SaveControlSelection);
       SaveControlSelection.Free;
     end;
   end;
@@ -1437,10 +1437,10 @@ var
   Control: TControl;
   Parent: TWinControl;
 begin
-  if ControlSelection.Count <> 1 then Exit;
-  if not ControlSelection[0].IsTControl then Exit;
+  if Selection.Count <> 1 then Exit;
+  if not Selection[0].IsTControl then Exit;
 
-  Control := TControl(ControlSelection[0].Persistent);
+  Control := TControl(Selection[0].Persistent);
   Parent := Control.Parent;
   if (Parent = nil) and (TheAction in [2, 3]) then Exit;
 
@@ -1490,7 +1490,7 @@ end;
 
 procedure TDesigner.SelectOnlyThisComponent(AComponent: TComponent);
 begin
-  ControlSelection.AssignPersistent(AComponent);
+  Selection.AssignPersistent(AComponent);
 end;
 
 function TDesigner.CopySelection: boolean;
@@ -1505,11 +1505,11 @@ end;
 
 function TDesigner.CanCopy: Boolean;
 begin
-  Result := (ControlSelection.Count > 0) and
-            (ControlSelection.SelectionForm = Form) and
-            ControlSelection.OkToCopy and
-            not ControlSelection.OnlyInvisiblePersistentsSelected and
-            not ControlSelection.LookupRootSelected;
+  Result := (Selection.Count > 0) and
+            (Selection.SelectionForm = Form) and
+            Selection.OkToCopy and
+            not Selection.OnlyInvisiblePersistentsSelected and
+            not Selection.LookupRootSelected;
 end;
 
 function TDesigner.CanPaste: Boolean;
@@ -1528,8 +1528,8 @@ end;
 
 function TDesigner.ClearSelection: boolean;
 begin
-  ControlSelection.Clear;
-  Result:=ControlSelection.Count=0;
+  Selection.Clear;
+  Result:=Selection.Count=0;
 end;
 
 function TDesigner.DeleteSelection: boolean;
@@ -1574,8 +1574,8 @@ end;
 
 function TDesigner.ChangeClass: boolean;
 begin
-  if (ControlSelection.Count=1) and (not ControlSelection.LookupRootSelected) then
-    Result:=ShowChangeClassDialog(Self,ControlSelection[0].Persistent)=mrOK
+  if (Selection.Count=1) and (not Selection.LookupRootSelected) then
+    Result:=ShowChangeClassDialog(Self,Selection[0].Persistent)=mrOK
   else
     Result:=false;
 end;
@@ -1674,18 +1674,18 @@ begin
     begin
       SaveControlSelection := TControlSelection.Create;
       try
-        SaveControlSelection.Assign(ControlSelection);
+        SaveControlSelection.Assign(Selection);
         AStream := TStringStream.Create('');
         try
-          ControlSelection.Clear;
-          ControlSelection.Add(aPersistent);
+          Selection.Clear;
+          Selection.Add(aPersistent);
           CopySelectionToStream(AStream);
           FUndoList[FUndoCurr].obj := AStream.DataString;
         finally
           AStream.Free;
         end;
       finally
-        ControlSelection.Assign(SaveControlSelection);
+        Selection.Assign(SaveControlSelection);
         SaveControlSelection.Free;
       end;
     end;
@@ -1880,7 +1880,7 @@ begin
   begin
     PopupMenuComponentEditor := GetComponentEditorForSelection;
     BuildPopupMenu;
-    with ControlSelection do
+    with Selection do
       PopupPos := Point(Left + Width, Top);
     with Form.ClientToScreen(PopupPos) do
       FDesignerPopupMenu.Popup(X, Y);
@@ -1984,9 +1984,9 @@ function TDesigner.SizeControl(Sender: TControl; TheMessage: TLMSize): Boolean;
 begin
   Result := True;
   Sender.Dispatch(TheMessage);
-  if ControlSelection.SelectionForm = Form then
+  if Selection.SelectionForm = Form then
   begin
-    ControlSelection.CheckForLCLChanges(True);
+    Selection.CheckForLCLChanges(True);
   end;
 end;
 
@@ -1994,14 +1994,14 @@ function TDesigner.MoveControl(Sender: TControl; TheMessage: TLMMove): Boolean;
 begin
   Result := True;
   Sender.Dispatch(TheMessage);
-  //debugln('***  TDesigner.MoveControl A ',Sender.Name,':',Sender.ClassName,' ',ControlSelection.SelectionForm=Form,' ',not ControlSelection.IsResizing,' ',ControlSelection.IsSelected(Sender));
-  if ControlSelection.SelectionForm = Form then
+  //debugln('***  TDesigner.MoveControl A ',Sender.Name,':',Sender.ClassName,' ',Selection.SelectionForm=Form,' ',not Selection.IsResizing,' ',Selection.IsSelected(Sender));
+  if Selection.SelectionForm = Form then
   begin
-    if not ControlSelection.CheckForLCLChanges(True) and (Sender = Form) and
-       ControlSelection.LookupRootSelected then
+    if not Selection.CheckForLCLChanges(True) and (Sender = Form) and
+       Selection.LookupRootSelected then
     begin
       // the selected form was moved (nothing else has changed)
-      // ControlSelection does not need an update, but properties like
+      // Selection does not need an update, but properties like
       // Form.Left/Top have to be updated in the OI
       OnPropertiesChanged(Self);
     end;
@@ -2101,16 +2101,16 @@ begin
   if Button=mbLeft then begin
     // left button
     // -> check if a grabber was activated
-    ControlSelection.ActiveGrabber:=
-      ControlSelection.GrabberAtPos(MouseDownPos.X, MouseDownPos.Y);
+    Selection.ActiveGrabber:=
+      Selection.GrabberAtPos(MouseDownPos.X, MouseDownPos.Y);
     SetCaptureControl(ParentForm);
 
     if SelectedCompClass = nil then begin
       // selection mode
-      if ControlSelection.ActiveGrabber=nil then begin
+      if Selection.ActiveGrabber=nil then begin
         // no grabber resizing
 
-        CompIndex:=ControlSelection.IndexOf(MouseDownComponent);
+        CompIndex:=Selection.IndexOf(MouseDownComponent);
         if ssCtrl in Shift then begin
           // child selection
         end
@@ -2120,28 +2120,28 @@ begin
           if CompIndex<0 then begin
             // not selected
             // add component to selection
-            if (ControlSelection.SelectionForm<>nil)
-            and (ControlSelection.SelectionForm<>Form)
+            if (Selection.SelectionForm<>nil)
+            and (Selection.SelectionForm<>Form)
             then begin
               IDEMessageDialog(lisInvalidMultiselection,
                 fdInvalidMultiselectionText,
                 mtInformation,[mbOk]);
             end else begin
-              ControlSelection.Add(MouseDownComponent);
+              Selection.Add(MouseDownComponent);
             end;
           end else begin
             // remove from multiselection
-            ControlSelection.Delete(CompIndex);
+            Selection.Delete(CompIndex);
           end;
         end else begin
           // no shift key (single selection or keeping multiselection)
 
           if (CompIndex<0) then begin
             // select only this component
-            ControlSelection.AssignPersistent(MouseDownComponent);
+            Selection.AssignPersistent(MouseDownComponent);
           end else
             // sync with the interface
-            ControlSelection.UpdateBounds;
+            Selection.UpdateBounds;
         end;
       end else begin
         // mouse down on grabber -> begin sizing
@@ -2151,21 +2151,21 @@ begin
     end else begin
       // add component mode -> handled in mousemove and mouseup
       // but check if we pressed mouse on the form which is not selected
-      if (ControlSelection.SelectionForm <> Form) then
-        ControlSelection.AssignPersistent(MouseDownComponent);
+      if (Selection.SelectionForm <> Form) then
+        Selection.AssignPersistent(MouseDownComponent);
     end;
   end else begin
     // not left button
-    ControlSelection.ActiveGrabber := nil;
+    Selection.ActiveGrabber := nil;
     if (Button = mbRight) and EnvironmentOptions.RightClickSelects and
-       (ControlSelection.SelectionForm <> Form) then
-      ControlSelection.AssignPersistent(MouseDownComponent);
+       (Selection.SelectionForm <> Form) then
+      Selection.AssignPersistent(MouseDownComponent);
   end;
 
   if PropertyEditorHook<>nil then
     PropertyEditorHook.DesignerMouseDown(Sender, Button, Shift, p.X, p.Y);
 
-  if not ControlSelection.OnlyVisualComponentsSelected and ShowComponentCaptions then
+  if not Selection.OnlyVisualComponentsSelected and ShowComponentCaptions then
     Form.Invalidate;
 
   {$IFDEF VerboseDesigner}
@@ -2197,8 +2197,8 @@ var
     if MouseDownComponent=nil then exit;
 
     // add a new component
-    ControlSelection.RubberbandActive:=false;
-    ControlSelection.Clear;
+    Selection.RubberbandActive:=false;
+    Selection.Clear;
 
     NewComponentClass := SelectedCompClass.GetCreationClass;
     //debugln(['AddComponent NewComponentClass=',DbgSName(NewComponentClass)]);
@@ -2337,8 +2337,8 @@ var
     MaxParentComponent: TComponent;
   begin
     if (ssShift in Shift)
-    and (ControlSelection.SelectionForm<>nil)
-    and (ControlSelection.SelectionForm<>Form)
+    and (Selection.SelectionForm<>nil)
+    and (Selection.SelectionForm<>Form)
     then begin
       IDEMessageDialog(lisInvalidMultiselection,
         fdInvalidMultiselectionText,
@@ -2348,7 +2348,7 @@ var
 
     // check if start new selection or add/remove:
     NewRubberbandSelection:= (not (ssShift in Shift))
-      or (ControlSelection.SelectionForm<>Form);
+      or (Selection.SelectionForm<>Form);
     // update non visual components
     MoveNonVisualComponentsIntoForm;
     // if user press the Control key, then component candidates are only
@@ -2361,14 +2361,14 @@ var
     end else
       MaxParentComponent:=FLookupRoot;
     SelectionChanged:=false;
-    ControlSelection.SelectWithRubberBand(
+    Selection.SelectWithRubberBand(
       FLookupRoot,Mediator,NewRubberbandSelection,ssShift in Shift,
       SelectionChanged,MaxParentComponent);
-    if ControlSelection.Count=0 then begin
-      ControlSelection.Add(FLookupRoot);
+    if Selection.Count=0 then begin
+      Selection.Add(FLookupRoot);
       SelectionChanged:=true;
     end;
-    ControlSelection.RubberbandActive:=false;
+    Selection.RubberbandActive:=false;
     {$IFDEF VerboseDesigner}
     DebugLn('RubberbandSelect ',DbgS(ControlSelection.Grabbers[0]));
     {$ENDIF}
@@ -2380,8 +2380,8 @@ var
     if not (ssShift in Shift) then
     begin
       // select only the mouse down component
-      ControlSelection.AssignPersistent(MouseDownComponent);
-      if (ssDouble in MouseDownShift) and (ControlSelection.SelectionForm = Form) then
+      Selection.AssignPersistent(MouseDownComponent);
+      if (ssDouble in MouseDownShift) and (Selection.SelectionForm = Form) then
       begin
         // Double Click -> invoke 'Edit' of the component editor
         FShiftState := Shift;
@@ -2393,8 +2393,8 @@ var
 
   procedure DisableRubberBand;
   begin
-    if ControlSelection.RubberbandActive then
-      ControlSelection.RubberbandActive := False;
+    if Selection.RubberbandActive then
+      Selection.RubberbandActive := False;
   end;
 
 var
@@ -2415,16 +2415,16 @@ begin
   //DebugLn(['TDesigner.MouseUpOnControl DesignSender=',dbgsName(DesignSender),' SenderParentForm=',dbgsName(SenderParentForm),' ',TheMessage.XPos,',',TheMessage.YPos]);
   if (MouseDownComponent=nil) or (SenderParentForm=nil)
   or (SenderParentForm<>Form)
-  or ((ControlSelection.SelectionForm<>nil)
-    and (ControlSelection.SelectionForm<>Form)) then
+  or ((Selection.SelectionForm<>nil)
+    and (Selection.SelectionForm<>Form)) then
   begin
     MouseDownComponent:=nil;
     MouseDownSender:=nil;
     exit;
   end;
 
-  ControlSelection.ActiveGrabber:=nil;
-  RubberBandWasActive:=ControlSelection.RubberBandActive;
+  Selection.ActiveGrabber:=nil;
+  RubberBandWasActive:=Selection.RubberBandActive;
   SelectedCompClass:=GetSelectedComponentClass;
 
   GetMouseMsgShift(TheMessage,Shift,Button);
@@ -2457,7 +2457,7 @@ begin
     if Handled then exit;
   end;
 
-  ControlSelection.BeginUpdate;
+  Selection.BeginUpdate;
   if Button=mbLeft then
   begin
     if SelectedCompClass = nil then
@@ -2469,10 +2469,10 @@ begin
         // the list of all TComponent, Left,Top,Width,Height
         // Note: not every component has all four properties.
         j := FUndoCurr - 1;
-        i := ControlSelection.Count-1;
+        i := Selection.Count-1;
         while i>=0 do
         begin
-          SelectedPersistent:=ControlSelection.Items[i];
+          SelectedPersistent:=Selection.Items[i];
           if SelectedPersistent.IsTComponent then
           begin
             while (j>=0) do
@@ -2519,7 +2519,7 @@ begin
         end;
       end
       else
-        ControlSelection.UpdateBounds;
+        Selection.UpdateBounds;
     end else
     begin
       // create new a component on the form
@@ -2530,21 +2530,21 @@ begin
   begin
     // right click -> popup menu
     DisableRubberBand;
-    ControlSelection.EndUpdate;
+    Selection.EndUpdate;
     if EnvironmentOptions.RightClickSelects
-    and (not ControlSelection.IsSelected(MouseDownComponent))
+    and (not Selection.IsSelected(MouseDownComponent))
     and (Shift - [ssRight] = []) then
       PointSelect;
     PopupMenuComponentEditor := GetComponentEditorForSelection;
     BuildPopupMenu;
     PopupPos := Form.ClientToScreen(MouseUpPos);
     FDesignerPopupMenu.Popup(PopupPos.X, PopupPos.Y);
-    ControlSelection.BeginUpdate;
+    Selection.BeginUpdate;
   end;
 
   DisableRubberBand;
   LastMouseMovePos.X:=-1;
-  if (not ControlSelection.OnlyVisualComponentsSelected and ShowComponentCaptions)
+  if (not Selection.OnlyVisualComponentsSelected and ShowComponentCaptions)
   or (dfHasSized in FFlags) then
     Form.Invalidate;
   Exclude(FFlags,dfHasSized);
@@ -2553,7 +2553,7 @@ begin
   if PropertyEditorHook<>nil then
     PropertyEditorHook.DesignerMouseUp(Sender, Button, Shift, p.X, p.Y);
 
-  ControlSelection.EndUpdate;
+  Selection.EndUpdate;
 
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseUpOnControl] END');
@@ -2620,8 +2620,8 @@ begin
     if Handled then Exit;
   end;
 
-  if ControlSelection.SelectionForm = Form then
-    Grabber := ControlSelection.GrabberAtPos(LastMouseMovePos.X, LastMouseMovePos.Y)
+  if Selection.SelectionForm = Form then
+    Grabber := Selection.GrabberAtPos(LastMouseMovePos.X, LastMouseMovePos.Y)
   else
     Grabber := nil;
 
@@ -2640,32 +2640,32 @@ begin
     Exit;
   end;
 
-  if (ControlSelection.SelectionForm = nil) or (ControlSelection.SelectionForm = Form) then
+  if (Selection.SelectionForm = nil) or (Selection.SelectionForm = Form) then
   begin
     if Button = mbLeft then // left button pressed
     begin
-      if (ControlSelection.ActiveGrabber <> nil) then // grabber active => resizing
+      if (Selection.ActiveGrabber <> nil) then // grabber active => resizing
       begin
         // grabber moving -> size selection
-        if not ControlSelection.LookupRootSelected then // if not current form is selected then resize selection
+        if not Selection.LookupRootSelected then // if not current form is selected then resize selection
         begin
           if not (dfHasSized in FFlags) then
           begin
-            ControlSelection.SaveBounds(false);
+            Selection.SaveBounds(false);
             Include(FFlags, dfHasSized);
           end;
           // skip snapping when Alt is pressed
           if not (ssAlt in Shift) then
           begin
-            OldSnappedMousePos := ControlSelection.SnapGrabberMousePos(OldMouseMovePos);
-            CurSnappedMousePos := ControlSelection.SnapGrabberMousePos(LastMouseMovePos);
+            OldSnappedMousePos := Selection.SnapGrabberMousePos(OldMouseMovePos);
+            CurSnappedMousePos := Selection.SnapGrabberMousePos(LastMouseMovePos);
           end
           else
           begin
             OldSnappedMousePos := OldMouseMovePos;
             CurSnappedMousePos := LastMouseMovePos;
           end;
-          ControlSelection.SizeSelection(
+          Selection.SizeSelection(
             CurSnappedMousePos.X - OldSnappedMousePos.X,
             CurSnappedMousePos.Y - OldSnappedMousePos.Y);
           DoModified;
@@ -2674,41 +2674,41 @@ begin
       else
       begin // no grabber active => moving
         SelectedCompClass := GetSelectedComponentClass;
-        if (not ControlSelection.RubberBandActive) and
+        if (not Selection.RubberBandActive) and
            (SelectedCompClass=nil) and
            ((Shift=[ssLeft]) or (Shift=[ssAlt, ssLeft])) and
-           (ControlSelection.Count>=1) and
-           (not ControlSelection.LookupRootSelected) then
+           (Selection.Count>=1) and
+           (not Selection.LookupRootSelected) then
         begin // move selection
           if not (dfHasSized in FFlags) then
           begin
-            ControlSelection.SaveBounds(false);
+            Selection.SaveBounds(false);
             Include(FFlags, dfHasSized);
           end;
           //debugln('TDesigner.MouseMoveOnControl Move MouseDownComponent=',dbgsName(MouseDownComponent),' OldMouseMovePos=',dbgs(OldMouseMovePos),' MouseMovePos',dbgs(LastMouseMovePos),' MouseDownPos=',dbgs(MouseDownPos));
           if (ssAlt in Shift) then begin
-            if ControlSelection.MoveSelection(LastMouseMovePos.X - MouseDownPos.X, LastMouseMovePos.Y - MouseDownPos.Y, True) then
+            if Selection.MoveSelection(LastMouseMovePos.X - MouseDownPos.X, LastMouseMovePos.Y - MouseDownPos.Y, True) then
               DoModified;
           end else begin
-            if ControlSelection.MoveSelectionWithSnapping(LastMouseMovePos.X - MouseDownPos.X, LastMouseMovePos.Y - MouseDownPos.Y) then
+            if Selection.MoveSelectionWithSnapping(LastMouseMovePos.X - MouseDownPos.X, LastMouseMovePos.Y - MouseDownPos.Y) then
               DoModified;
           end;
         end
         else
         begin
           // rubberband sizing (selection or creation)
-          ControlSelection.RubberBandBounds := Rect(MouseDownPos.X, MouseDownPos.Y,
+          Selection.RubberBandBounds := Rect(MouseDownPos.X, MouseDownPos.Y,
                                                     LastMouseMovePos.X, LastMouseMovePos.Y);
           if SelectedCompClass = nil then
-            ControlSelection.RubberbandType := rbtSelection
+            Selection.RubberbandType := rbtSelection
           else
-            ControlSelection.RubberbandType := rbtCreating;
-          ControlSelection.RubberBandActive := True;
+            Selection.RubberbandType := rbtCreating;
+          Selection.RubberBandActive := True;
         end;
       end;
     end
     else
-      ControlSelection.ActiveGrabber:=nil;
+      Selection.ActiveGrabber:=nil;
   end;
   if [dfShowEditorHints, dfHasSized] * FFlags = [dfShowEditorHints, dfHasSized] then
     HintTimer(Self);
@@ -2782,7 +2782,7 @@ begin
     Handled := True;
     case TheMessage.CharCode of
       VK_DELETE:
-        if not ControlSelection.OnlyInvisiblePersistentsSelected then
+        if not Selection.OnlyInvisiblePersistentsSelected then
           DoDeleteSelectedPersistents;
 
       VK_UP:
@@ -2819,8 +2819,8 @@ begin
           Handled := False;
 
       VK_F2:
-        if (ControlSelection.Count=1) and ControlSelection[0].IsTComponent then begin
-          Current := TComponent(ControlSelection[0].Persistent);
+        if (Selection.Count=1) and Selection[0].IsTComponent then begin
+          Current := TComponent(Selection[0].Persistent);
           NewName := ShowComponentNameDialog(LookupRoot, Current);
           if NewName <> Current.Name then begin
             Current.Name:=NewName;
@@ -2861,54 +2861,54 @@ var
   AComponent: TComponent;
 begin
   Result:=true;
-  if (ControlSelection.Count=0) or (ControlSelection.SelectionForm<>Form) then
+  if (Selection.Count=0) or (Selection.SelectionForm<>Form) then
     exit;
   Result:=false;
   // check if a component is the lookup root (can not be deleted)
-  if (ControlSelection.LookupRootSelected) then begin
-    if ControlSelection.Count>1 then
+  if (Selection.LookupRootSelected) then begin
+    if Selection.Count>1 then
       IDEMessageDialog(lisInvalidDelete,
        lisTheRootComponentCanNotBeDeleted, mtInformation,
        [mbOk]);
     exit;
   end;
   // check if a selected component is inherited (can not be deleted)
-  for i:=0 to ControlSelection.Count-1 do begin
-    if not ControlSelection[i].IsTComponent then continue;
+  for i:=0 to Selection.Count-1 do begin
+    if not Selection[i].IsTComponent then continue;
     AncestorRoot:=TheFormEditor.GetAncestorLookupRoot(
-                                    TComponent(ControlSelection[i].Persistent));
+                                    TComponent(Selection[i].Persistent));
     if AncestorRoot<>nil then begin
       IDEMessageDialog(lisInvalidDelete,
        Format(lisTheComponentIsInheritedFromToDeleteAnInheritedComp,
-         [dbgsName(ControlSelection[i].Persistent), dbgsName(AncestorRoot), LineEnding]),
+         [dbgsName(Selection[i].Persistent), dbgsName(AncestorRoot), LineEnding]),
        mtInformation, [mbOk]);
       exit;
     end;
   end;
   // check if a selected component is not owned by lookuproot (can not be deleted)
-  for i:=0 to ControlSelection.Count-1 do begin
-    if not ControlSelection[i].IsTComponent then continue;
-    AComponent:=TComponent(ControlSelection[i].Persistent);
+  for i:=0 to Selection.Count-1 do begin
+    if not Selection[i].IsTComponent then continue;
+    AComponent:=TComponent(Selection[i].Persistent);
     if AComponent.Owner<>FLookupRoot then begin
       IDEMessageDialog(lisInvalidDelete,
        Format(lisTheComponentCanNotBeDeletedBecauseItIsNotOwnedBy, [dbgsName(
-         ControlSelection[i].Persistent), dbgsName(FLookupRoot)]),
+         Selection[i].Persistent), dbgsName(FLookupRoot)]),
        mtInformation, [mbOk]);
       exit;
     end;
   end;
 
-  for i := 0 to ControlSelection.Count - 1 do
+  for i := 0 to Selection.Count - 1 do
   begin
-    if not ControlSelection[i].IsTComponent then continue;
-    AComponent := TComponent(ControlSelection[i].Persistent);
+    if not Selection[i].IsTComponent then continue;
+    AComponent := TComponent(Selection[i].Persistent);
     AddUndoAction(AComponent, uopDelete, i = 0, 'Name', AComponent.Name, '');
   end;
 
   // mark selected components for deletion
-  for i:=0 to ControlSelection.Count-1 do
+  for i:=0 to Selection.Count-1 do
   begin
-    APersistent := ControlSelection[i].Persistent;
+    APersistent := Selection[i].Persistent;
     if DeletingPersistent.IndexOf(APersistent) = -1 then
       DeletingPersistent.Add(APersistent);
   end;
@@ -2930,10 +2930,10 @@ end;
 
 procedure TDesigner.DoSelectAll;
 begin
-  ControlSelection.BeginUpdate;
-  ControlSelection.Clear;
-  ControlSelection.SelectAll(FLookupRoot);
-  ControlSelection.EndUpdate;
+  Selection.BeginUpdate;
+  Selection.Clear;
+  Selection.SelectAll(FLookupRoot);
+  Selection.EndUpdate;
   Form.Invalidate;
 end;
 
@@ -2948,7 +2948,7 @@ begin
     //debugln(['TDesigner.DoDeletePersistent A ',dbgsName(APersistent),' FreeIt=',FreeIt]);
     PopupMenuComponentEditor:=nil;
     // unselect component
-    ControlSelection.Remove(APersistent);
+    Selection.Remove(APersistent);
     if (APersistent is TComponent) then begin
       AComponent:=TComponent(APersistent);
       if csDestroying in AComponent.ComponentState then
@@ -3069,7 +3069,7 @@ end;
 
 procedure TDesigner.Modified;
 Begin
-  ControlSelection.SaveBounds;
+  Selection.SaveBounds;
   DoModified;
   inherited Modified;
 end;
@@ -3490,7 +3490,7 @@ begin
   if not FDDC.RectVisible(ItemLeft, ItemTop, ItemRight, ItemBottom) then
     Exit;
 
-  IsSelected := ControlSelection.IsSelected(AComponent);
+  IsSelected := Selection.IsSelected(AComponent);
 
   if FSurface = nil then
   begin
@@ -3547,8 +3547,8 @@ begin
     end;
   end;
   FDDC.Canvas.Draw(ItemLeft, ItemTop, FSurface);
-  if (ControlSelection.Count > 1) and IsSelected then
-    ControlSelection.DrawMarkerAt(FDDC,
+  if (Selection.Count > 1) and IsSelected then
+    Selection.DrawMarkerAt(FDDC,
       ItemLeft, ItemTop, NonVisualCompWidth, NonVisualCompWidth);
 end;
 
@@ -3599,8 +3599,8 @@ begin
     and (not CompareRect(@NewFormBounds,@FDefaultFormBounds)) then begin
       //debugln('TDesigner.CheckFormBounds');
       Modified;
-      if ControlSelection.SelectionForm=Form then begin
-        ControlSelection.CheckForLCLChanges(true);
+      if Selection.SelectionForm=Form then begin
+        Selection.CheckForLCLChanges(true);
       end;
     end;
   end else begin
@@ -3613,9 +3613,9 @@ end;
 procedure TDesigner.DoPaintDesignerItems;
 begin
   // marker (multi selection markers)
-  if (ControlSelection.SelectionForm = Form) and (ControlSelection.Count > 1) then
+  if (Selection.SelectionForm = Form) and (Selection.Count > 1) then
   begin
-    ControlSelection.DrawMarkers(DDC);
+    Selection.DrawMarkers(DDC);
   end;
   // non visual component icons
   if not Assigned(IDEComponentsMaster)
@@ -3623,17 +3623,17 @@ begin
     DrawNonVisualComponents(DDC);
 
   // guidelines and grabbers
-  if (ControlSelection.SelectionForm=Form) then
+  if (Selection.SelectionForm=Form) then
   begin
     if EnvironmentOptions.ShowGuideLines then
-      ControlSelection.DrawGuideLines(DDC);
-    ControlSelection.DrawGrabbers(DDC);
+      Selection.DrawGuideLines(DDC);
+    Selection.DrawGrabbers(DDC);
   end;
   // rubberband
-  if ControlSelection.RubberBandActive and
-     ((ControlSelection.SelectionForm = Form) or (ControlSelection.SelectionForm = nil)) then
+  if Selection.RubberBandActive and
+     ((Selection.SelectionForm = Form) or (Selection.SelectionForm = nil)) then
   begin
-    ControlSelection.DrawRubberBand(DDC);
+    Selection.DrawRubberBand(DDC);
   end;
 end;
 
@@ -3670,10 +3670,10 @@ end;
 function TDesigner.GetComponentEditorForSelection: TBaseComponentEditor;
 begin
   Result := nil;
-  if (ControlSelection.Count <> 1) or
-     (ControlSelection.SelectionForm <> Form) or
-     (not ControlSelection[0].IsTComponent) then Exit;
-  Result := TheFormEditor.GetComponentEditor(TComponent(ControlSelection[0].Persistent));
+  if (Selection.Count <> 1) or
+     (Selection.SelectionForm <> Form) or
+     (not Selection[0].IsTComponent) then Exit;
+  Result := TheFormEditor.GetComponentEditor(TComponent(Selection[0].Persistent));
 end;
 
 procedure TDesigner.AddComponentEditorMenuItems(
@@ -3883,28 +3883,28 @@ var
   SelectionVisible: Boolean;
   SrcFile: TLazProjectFile;
   UnitIsVirtual, DesignerCanCopy, HasChangeParentCandidates: Boolean;
-  Selection: TPersistentSelectionList;
+  PersistentSelection: TPersistentSelectionList;
   ChangeParentCandidates: TFPList;
 begin
   SrcFile:=LazarusIDE.GetProjectFileWithDesigner(Self);
-  ControlSelIsNotEmpty:=(ControlSelection.Count>0)
-                    and (ControlSelection.SelectionForm=Form);
-  LookupRootIsSelected:=ControlSelection.LookupRootSelected;
-  OnlyNonVisualsAreSelected := ControlSelection.OnlyNonVisualPersistentsSelected;
-  SelectionVisible:=not ControlSelection.OnlyInvisiblePersistentsSelected;
+  ControlSelIsNotEmpty:=(Selection.Count>0)
+                    and (Selection.SelectionForm=Form);
+  LookupRootIsSelected:=Selection.LookupRootSelected;
+  OnlyNonVisualsAreSelected := Selection.OnlyNonVisualPersistentsSelected;
+  SelectionVisible:=not Selection.OnlyInvisiblePersistentsSelected;
   CompsAreSelected:=ControlSelIsNotEmpty and SelectionVisible
                     and not LookupRootIsSelected;
-  OneControlSelected := ControlSelIsNotEmpty and not ControlSelection[0].IsNonVisualComponent;
-  MultiCompsAreSelected := CompsAreSelected and (ControlSelection.Count>1);
+  OneControlSelected := ControlSelIsNotEmpty and not Selection[0].IsNonVisualComponent;
+  MultiCompsAreSelected := CompsAreSelected and (Selection.Count>1);
   UnitIsVirtual:=(SrcFile=nil) or not FilenameIsAbsolute(SrcFile.Filename);
-  Selection:=TPersistentSelectionList.Create;
+  PersistentSelection:=TPersistentSelectionList.Create;
   try
-    ControlSelection.GetSelection(Selection);
-    ChangeParentCandidates:=GetChangeParentCandidates(GlobalDesignHook,Selection);
+    Selection.GetSelection(PersistentSelection);
+    ChangeParentCandidates:=GetChangeParentCandidates(GlobalDesignHook,PersistentSelection);
     HasChangeParentCandidates:=ChangeParentCandidates.Count>0;
     FreeAndNil(ChangeParentCandidates);
   finally
-    FreeAndNil(Selection);
+    FreeAndNil(PersistentSelection);
   end;
 
   AddComponentEditorMenuItems(PopupMenuComponentEditor,true);
@@ -3930,7 +3930,7 @@ begin
   DesignerMenuPaste.Enabled := CanPaste;
   DesignerMenuDeleteSelection.Enabled := CompsAreSelected;
 
-  DesignerMenuChangeClass.Enabled := CompsAreSelected and (ControlSelection.Count = 1);
+  DesignerMenuChangeClass.Enabled := CompsAreSelected and (Selection.Count = 1);
   // Disable ViewLFM menu item for virtual units. There is no form file yet.
   DesignerMenuViewLFM.Enabled := not UnitIsVirtual;
   DesignerMenuChangeParent.Enabled := HasChangeParentCandidates;
@@ -3965,20 +3965,20 @@ begin
      7: VertAlignment:=csaSide2SpaceEqually;
      else VertAlignment:=csaNone;  // value=0, this prevents compiler warning.
     end;
-    ControlSelection.AlignComponents(HorizAlignment,VertAlignment);
+    Selection.AlignComponents(HorizAlignment,VertAlignment);
     Modified;
   end;
 end;
 
 procedure TDesigner.OnMirrorHorizontalPopupMenuClick(Sender: TObject);
 begin
-  ControlSelection.MirrorHorizontal;
+  Selection.MirrorHorizontal;
   Modified;
 end;
 
 procedure TDesigner.OnMirrorVerticalPopupMenuClick(Sender: TObject);
 begin
-  ControlSelection.MirrorVertical;
+  Selection.MirrorVertical;
   Modified;
 end;
 
@@ -3988,7 +3988,7 @@ var
 begin
   if ShowScaleComponentsDialog(ScaleInPercent)=mrOk then 
   begin
-    ControlSelection.ScaleComponents(ScaleInPercent);
+    Selection.ScaleComponents(ScaleInPercent);
     Modified;
   end;
 end;
@@ -4013,7 +4013,7 @@ begin
      3: VertSizing:=cssFixed;
      else VertSizing:=cssNone;  // value=0, this prevents compiler warning.
     end;
-    ControlSelection.SizeComponents(HorizSizing,AWidth,VertSizing,AHeight);
+    Selection.SizeComponents(HorizSizing,AWidth,VertSizing,AHeight);
     Modified;
   end;
 end;
@@ -4062,8 +4062,8 @@ begin
   Form.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDesigner.OnResetPopupMenuClick'){$ENDIF};
   ResetComps:=TFPList.Create;
   try
-    for i:=0 to ControlSelection.Count-1 do begin
-      Item:=ControlSelection[i];
+    for i:=0 to Selection.Count-1 do begin
+      Item:=Selection[i];
       if Item.IsTControl then begin
         ResetControl(TControl(Item.Persistent),MsgResult=mrYesToAll);
       end else if Item.IsTComponent then begin
@@ -4145,7 +4145,7 @@ procedure TDesigner.HintTimer(Sender: TObject);
 
   function GetSelectionSizeHintText: String;
   begin
-    Result := Format('%d x %d', [ControlSelection.Width, ControlSelection.Height]);
+    Result := Format('%d x %d', [Selection.Width, Selection.Height]);
   end;
 
   function GetSelectionPosHintText: String;
@@ -4163,18 +4163,18 @@ procedure TDesigner.HintTimer(Sender: TObject);
     i: integer;
     P: TPoint;
   begin
-    BaseFound := ControlSelection[0].IsTComponent;
+    BaseFound := Selection[0].IsTComponent;
     // search for one parent of our selection
     if BaseFound then
     begin
-      BaseParent := ParentComponent(TComponent(ControlSelection[0].Persistent));
+      BaseParent := ParentComponent(TComponent(Selection[0].Persistent));
       BaseFound := BaseParent is TWinControl;
       if BaseFound then
       begin
-        for i := 1 to ControlSelection.Count - 1 do
+        for i := 1 to Selection.Count - 1 do
         begin
-          if ControlSelection[0].IsTComponent then
-            TestParent := ParentComponent(TComponent(ControlSelection[0].Persistent))
+          if Selection[0].IsTComponent then
+            TestParent := ParentComponent(TComponent(Selection[0].Persistent))
           else
             TestParent := nil;
           if TestParent <> BaseParent then
@@ -4185,7 +4185,7 @@ procedure TDesigner.HintTimer(Sender: TObject);
         end;
       end;
     end;
-    P := Point(ControlSelection.Left, ControlSelection.Top);
+    P := Point(Selection.Left, Selection.Top);
     if BaseFound then
       P := TWinControl(BaseParent).ScreenToClient(Form.ClientToScreen(P));
     Result := Format('%d, %d', [P.X, P.Y]);
@@ -4220,10 +4220,10 @@ begin
   else
   begin
     // components are either resize or move
-    if (ControlSelection.LookupRoot <> Form) or (ControlSelection.Count = 0) then
+    if (Selection.LookupRoot <> Form) or (Selection.Count = 0) then
       Exit;
 
-    if ControlSelection.ActiveGrabber <> nil then
+    if Selection.ActiveGrabber <> nil then
       AHint := GetSelectionSizeHintText
     else
       AHint := GetSelectionPosHintText;
