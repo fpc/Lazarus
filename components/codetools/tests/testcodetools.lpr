@@ -57,6 +57,7 @@ type
 
     procedure ExtendXmlDocument(Doc: TXMLDocument); override;
   public
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
 
@@ -139,6 +140,13 @@ begin
   AddElement('Submitter', FSubmitter);
   AddElement('Machine', FMachine);
   Doc.FirstChild.AppendChild(env);
+end;
+
+constructor TCTTestRunner.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  DefaultFormat:=fPlain;
+  DefaultRunAllTests:=true;
 end;
 
 var

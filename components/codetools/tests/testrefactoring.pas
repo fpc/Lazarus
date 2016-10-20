@@ -52,7 +52,7 @@ var
   Filename, OldSource, Src, ID, ExpectedInsertion: String;
   aWith: PWithBlock;
 begin
-  Filename:=ExpandFileNameUTF8('rt_explodewith.pas');
+  Filename:=ExpandFileNameUTF8('moduletests/rt_explodewith.pas');
   Code:=CodeToolBoss.LoadFile(Filename,true,false);
   AssertEquals('Load file error: '+Filename,true,Code<>nil);
   if not CodeToolBoss.Explore(Code,Tool,true) then
