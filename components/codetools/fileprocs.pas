@@ -269,6 +269,13 @@ procedure ParseFPCParameters(CmdLineParams: TStrings;
   ParsedParams: TObjectList { list of TFPCParamValue });
 procedure ParseFPCParameter(const CmdLineParam: string;
   ParsedParams: TObjectList { list of TFPCParamValue });
+function IndexOfFPCParamValue(ParsedParams: TObjectList { list of TFPCParamValue };
+  const Name: string): integer;
+function GetFPCParamValue(ParsedParams: TObjectList { list of TFPCParamValue };
+  const Name: string): TFPCParamValue;
+function dbgs(k: TFPCParamKind): string; overload;
+function dbgs(f: TFPCParamFlag): string; overload;
+function dbgs(const Flags: TFPCParamFlags): string; overload;
 function ReadNextFPCParameter(const CmdLine: string; var Position: integer;
     out StartPos: integer): boolean;
 function ExtractFPCParameter(const CmdLine: string; StartPos: integer): string;
@@ -1462,6 +1469,7 @@ end;
 
 procedure ParseFPCParameter(const CmdLineParam: string;
   ParsedParams: TObjectList);
+{ $DEFINE VerboseParseFPCParameter}
 const
   AlphaNum = ['a'..'z','A'..'Z','0'..'9'];
 
@@ -1470,6 +1478,9 @@ const
     i: Integer;
     Param: TFPCParamValue;
   begin
+    {$IFDEF VerboseParseFPCParameter}
+    debugln(['ParseFPCParameter.Add Name="',aName,'" Value="',aValue,'" Kind=',dbgs(aKind),' Flags=',dbgs(aFlags)]);
+    {$ENDIF}
     if not (aKind in [fpkUnknown,fpkConfig,fpkNonOption,fpkMultiValue]) then
       // check for duplicates
       for i:=0 to ParsedParams.Count-1 do begin
@@ -1501,13 +1512,16 @@ const
       Move(Prefix[1],aName[1],PrefixLen);
     if Len>0 then
       Move(p^,aName[PrefixLen+1],Len);
+    {$IFDEF VerboseParseFPCParameter}
+    debugln(['ParseFPCParameter.AddBooleanFlag p="',p,'" Len=',Len,' Prefix="',Prefix,'" Name="'+aName+'"']);
+    {$ENDIF}
     inc(p,Len);
-    if p[1]='-' then begin
+    if p^='-' then begin
       Add(aName,'',fpkBoolean,[fpfUnset]);
       inc(p);
     end else begin
       Add(aName,FPCParamEnabled,fpkBoolean);
-      if p[1]='+' then
+      if p^='+' then
         inc(p);
     end;
   end;
@@ -1526,6 +1540,10 @@ const
     Opt, Opt2, p2: PChar;
     aName: string;
   begin
+    if not (p[1] in AlphaNum) then begin
+      AddBooleanFlag(p,1,'');
+      exit;
+    end;
     Option:=p^;
     inc(p);
     repeat
@@ -1608,6 +1626,9 @@ const
 var
   p, p2: PChar;
 begin
+  {$IFDEF VerboseParseFPCParameter}
+  debugln(['ParseFPCParameter "',CmdLineParam,'"']);
+  {$ENDIF}
   if CmdLineParam='' then exit;
   p:=PChar(CmdLineParam);
   case p^ of
@@ -1617,31 +1638,36 @@ begin
       case p^ of
       'a': ReadSequence(p);
       'C': ReadSequence(p,'a: c: f: F: h: p: P= s: T*');
-      'd': Add(p[1],'',fpkDefine);
+      'd': Add(copy(CmdLineParam,3,255),'',fpkDefine);
       'D':
         begin
           inc(p);
           case p^ of
-          'd','v': Add('D'+p^,p[1],fpkValue);
+          'd','v': Add('D'+p^,PChar(@p[1]),fpkValue);
           else
             AddBooleanFlag(p,1,'D');
           end;
         end;
-      'e': Add('e',p[1],fpkValue);
+      'e': Add('e',PChar(@p[1]),fpkValue);
       'F':
         case p[1] of
-        'a','f','i','l','o','u': Add('Fa',p[2],fpkMultiValue);
-        'c','C','D','e','E','L','m','M','r','R','U','W','w': Add('F'+p[1],p[2],fpkValue);
+        'a','f','i','l','o','u': Add('Fa',PChar(@p[2]),fpkMultiValue);
+        'c','C','D','e','E','L','m','M','r','R','U','W','w': Add('F'+p[1],PChar(@p[2]),fpkValue);
         else AddBooleanFlag(p,2);
         end;
       'g':
-        begin
+        if p[1] in [#0,'+'] then begin
+          Add('g',FPCParamEnabled,fpkBoolean,[]);
+        end else if p[1]='-' then begin
+          DisableAllFlags('g');
+          Add('g','',fpkBoolean,[fpfUnset]);
+        end else begin
           inc(p);
           repeat
             case p^ of
             'o':
               begin
-              AddBooleanFlag(p,1,'g');
+              Add('g'+p,FPCParamEnabled,fpkBoolean,[]);
               exit;
               end;
             'w':
@@ -1663,10 +1689,10 @@ begin
           until false;
         end;
       'i': ReadSequence(p,'S* T*');
-      'I': Add(p^,p[1],fpkMultiValue);
-      'k': Add(p^,p[1],fpkMultiValue);
-      'M': Add(p^,p[1],fpkValue);
-      'o': Add(p^,p[1],fpkValue);
+      'I': Add(p^,PChar(@p[1]),fpkMultiValue);
+      'k': Add(p^,PChar(@p[1]),fpkMultiValue);
+      'M': Add(p^,PChar(@p[1]),fpkValue);
+      'o': Add(p^,PChar(@p[1]),fpkValue);
       'O':
         case p[1] of
         '-': DisableAllFlags('O');
@@ -1674,13 +1700,14 @@ begin
           ReadSequence(p,'a= o* p: W:');
         end;
       'P': ; // ToDo
-      'R': Add(p^,p[1],fpkValue);
+      'R': Add(p^,PChar(@p[1]),fpkValue);
       'S': ReadSequence(p,'e: I:');
-      'T': Add(p^,p[1],fpkValue);
-      'u': Add(p[1],'',fpkDefine,[fpfUnset]);
+      's': ReadSequence(p);
+      'T': Add(p^,PChar(@p[1]),fpkValue);
+      'u': Add(copy(CmdLineParam,3,255),'',fpkDefine,[fpfUnset]);
       'U': ReadSequence(p);
       'v': ReadSequence(p,'m&');
-      'V': Add(p^,p[1],fpkValue);
+      'V': Add(p^,PChar(@p[1]),fpkValue);
       'W': ReadSequence(p,'B: M: P:');
       'X': ReadSequence(p,'LA LO LD M: P: r: R:');
       else
@@ -1690,11 +1717,55 @@ begin
       end;
     end;
   '@': // config
-    Add('',p[1],fpkConfig);
+    Add('',PChar(@p[1]),fpkConfig);
   else
     // filename
     Add('',p,fpkNonOption);
   end;
+end;
+
+function IndexOfFPCParamValue(ParsedParams: TObjectList; const Name: string
+  ): integer;
+begin
+  if ParsedParams=nil then exit(-1);
+  for Result:=0 to ParsedParams.Count-1 do
+    if TFPCParamValue(ParsedParams[Result]).Name=Name then exit;
+  Result:=-1;
+end;
+
+function GetFPCParamValue(ParsedParams: TObjectList; const Name: string
+  ): TFPCParamValue;
+var
+  i: Integer;
+begin
+  i:=IndexOfFPCParamValue(ParsedParams,Name);
+  if i<0 then
+    Result:=nil
+  else
+    Result:=TFPCParamValue(ParsedParams[i]);
+end;
+
+function dbgs(k: TFPCParamKind): string;
+begin
+  str(k,Result);
+end;
+
+function dbgs(f: TFPCParamFlag): string;
+begin
+  str(f,Result);
+end;
+
+function dbgs(const Flags: TFPCParamFlags): string;
+var
+  f: TFPCParamFlag;
+begin
+  Result:='';
+  for f in TFPCParamFlag do
+    if f in Flags then begin
+      if Result<>'' then Result+=',';
+      Result+=dbgs(f);
+    end;
+  Result:='['+Result+']';
 end;
 
 function ReadNextFPCParameter(const CmdLine: string; var Position: integer; out

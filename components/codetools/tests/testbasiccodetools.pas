@@ -22,7 +22,8 @@ unit TestBasicCodetools;
 interface
 
 uses
-  fpcunit, Classes, SysUtils, testglobals, FileProcs, BasicCodeTools, SourceLog;
+  fpcunit, contnrs, Classes, SysUtils, testglobals, FileProcs, BasicCodeTools,
+  SourceLog;
 
 type
   { TTestBasicCodeTools }
@@ -44,6 +45,7 @@ type
     procedure TestDateToCfgStr;
     procedure TestFilenameIsMatching;
     procedure TestExtractFileUnitname;
+    procedure TestParseFPCParameters;
     // SourceLog
     procedure TestChangeLineEndings;
   end;
@@ -435,6 +437,84 @@ begin
   t('ab.c.pas',false,'c');
   t('ab.c.d.pas',true,'ab.c.d');
   t('ab.c.d.pas',false,'d');
+end;
+
+procedure TTestBasicCodeTools.TestParseFPCParameters;
+var
+  Parsed: TObjectList;
+
+  procedure Init(CmdLineParams: string);
+  begin
+    Parsed.Clear;
+    ParseFPCParameters(CmdLineParams,Parsed);
+  end;
+
+  procedure T(Params: string; ExpectedName, ExpectedValue: string;
+    ExpectedKind: TFPCParamKind; ExpectedFlags: TFPCParamFlags);
+  var
+    Actual: TFPCParamValue;
+  begin
+    Init(Params);
+    Actual:=GetFPCParamValue(Parsed,ExpectedName);
+    AssertNotNull('Param "'+ExpectedName+'" not found in "'+Params+'"',Actual);
+    AssertEquals('Params="'+Params+'" Param="'+ExpectedName+'" Value mismatch',ExpectedValue,Actual.Value);
+    AssertEquals('Params="'+Params+'" Param="'+ExpectedName+'" Kind mismatch',dbgs(ExpectedKind),dbgs(Actual.Kind));
+    AssertEquals('Params="'+Params+'" Param="'+ExpectedName+'" Flags mismatch',dbgs(ExpectedFlags),dbgs(Actual.Flags));
+  end;
+
+begin
+  Parsed:=TObjectList.Create(true);
+  try
+    t('-a','a',FPCParamEnabled,fpkBoolean,[]);
+    t('-al','al',FPCParamEnabled,fpkBoolean,[]);
+    t('-aln','an',FPCParamEnabled,fpkBoolean,[]);
+    t('-al-n','al','',fpkBoolean,[fpfUnset]);
+    t('-al+l-n','al','',fpkBoolean,[fpfUnset,fpfSetTwice,fpfValueChanged]);
+    t('-al-ln','al',FPCParamEnabled,fpkBoolean,[fpfSetTwice,fpfValueChanged]);
+    t('-Adefault','Adefault',FPCParamEnabled,fpkBoolean,[]);
+    t('-b-','b','',fpkBoolean,[fpfUnset]);
+    t('-bl','bl',FPCParamEnabled,fpkBoolean,[]);
+    t('-C3','C3',FPCParamEnabled,fpkBoolean,[]);
+    t('-Cavalue','Ca','value',fpkValue,[]);
+    t('-CPPACKSET=4','CPPACKSET','4',fpkValue,[]);
+    t('-CrRt','CR',FPCParamEnabled,fpkBoolean,[]);
+    t('-dMacro','Macro','',fpkDefine,[]);
+    t('-Dddesc','Dd','desc',fpkValue,[]);
+    t('-epath','e','path',fpkValue,[]);
+    t('-E','E',FPCParamEnabled,fpkBoolean,[]);
+    t('-fPIC','fPIC',FPCParamEnabled,fpkBoolean,[]);
+    t('-Fabla','Fa','bla',fpkMultiValue,[]);
+    t('-g','g',FPCParamEnabled,fpkBoolean,[]);
+    t('-gchl','gh',FPCParamEnabled,fpkBoolean,[]);
+    t('-goset','goset',FPCParamEnabled,fpkBoolean,[]);
+    t('-gw2','gw','2',fpkValue,[]);
+    t('-iD','iD',FPCParamEnabled,fpkBoolean,[]);
+    t('-iSO','iSO',FPCParamEnabled,fpkBoolean,[]);
+    t('-kbla','k','bla',fpkMultiValue,[]);
+    t('-l-','l','',fpkBoolean,[fpfUnset]);
+    t('-Mdelphi','M','delphi',fpkValue,[]);
+    t('-n-','n','',fpkBoolean,[fpfUnset]);
+    t('-opath','o','path',fpkValue,[]);
+    t('-O2','O2',FPCParamEnabled,fpkBoolean,[]);
+    t('-Oab=c','Oab','c',fpkValue,[]);
+    t('-pg','pg',FPCParamEnabled,fpkBoolean,[]);
+    t('-Rfoo','R','foo',fpkValue,[]);
+    t('-S2','S2',FPCParamEnabled,fpkBoolean,[]);
+    t('-Sefoo','Se','foo',fpkValue,[]);
+    t('-s','s',FPCParamEnabled,fpkBoolean,[]);
+    t('-sht-','st','',fpkBoolean,[fpfUnset]);
+    t('-Tfoo','T','foo',fpkValue,[]);
+    t('-uMacro','Macro','',fpkDefine,[fpfUnset]);
+    t('-dMacro -uMacro','Macro','',fpkDefine,[fpfUnset,fpfSetTwice,fpfValueChanged]);
+    t('-Uns-','Us','',fpkBoolean,[fpfUnset]);
+    t('-vwne','ve',FPCParamEnabled,fpkBoolean,[]);
+    t('-vmfoo','vm','foo',fpkMultiValue,[]);
+    t('-Wbe','We',FPCParamEnabled,fpkBoolean,[]);
+    t('-WMfoo','WM','foo',fpkValue,[]);
+    t('-X9LA-LO-','XLO','',fpkBoolean,[fpfUnset]);
+  finally
+    Parsed.Free;
+  end;
 end;
 
 procedure TTestBasicCodeTools.TestChangeLineEndings;
