@@ -255,7 +255,7 @@ begin
     if DepOwner is TLazPackage then begin
       Directory:=TLazPackage(DepOwner).Directory;
     end else if DepOwner is TProject then begin
-      Directory:=TProject(DepOwner).ProjectDirectory;
+      Directory:=TProject(DepOwner).Directory;
     end else begin
       Directory:=''
     end;
@@ -328,7 +328,7 @@ begin
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',VirtualDirectory)
   else
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',
-                                Project1.ProjectDirectory)
+                                Project1.Directory)
 end;
 
 function TLazBuildApplication.OnIDEMessageDialog(const aCaption, aMsg: string;
@@ -804,7 +804,7 @@ var
       end;
     end;
 
-    WorkingDir:=Project1.ProjectDirectory;
+    WorkingDir:=Project1.Directory;
     SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
 
     NeedBuildAllFlag:=false;
@@ -818,7 +818,7 @@ var
     ToolBefore:=TProjectCompilationToolOptions(
                                       Project1.CompilerOptions.ExecuteBefore);
     if (CompReason in ToolBefore.CompileReasons) then begin
-      if ToolBefore.Execute(Project1.ProjectDirectory,
+      if ToolBefore.Execute(Project1.Directory,
         lisProject2+lisExecutingCommandBefore, CompileHint)<>mrOk
       then
         Error(ErrorBuildFailed,'failed "tool before" of project '+AFilename);
@@ -885,7 +885,7 @@ var
     ToolAfter:=TProjectCompilationToolOptions(
                                        Project1.CompilerOptions.ExecuteAfter);
     if (CompReason in ToolAfter.CompileReasons) then begin
-      if ToolAfter.Execute(Project1.ProjectDirectory,
+      if ToolAfter.Execute(Project1.Directory,
         lisProject2+lisExecutingCommandAfter,CompileHint)<>mrOk
       then
         Error(ErrorBuildFailed,'failed "tool after" of project '+AFilename);
