@@ -892,9 +892,39 @@ end;
 
 function GetChangeParentCandidates(PropertyEditorHook: TPropertyEditorHook;
   Selection: TPersistentSelectionList): TFPList;
+
+  function CanBeParent(Child, Parent: TPersistent): boolean;
+  begin
+    Result:=false;
+    if Child = Parent then exit;
+    if not (Parent is TWinControl) then exit;
+    if not (Child is TControl) then exit;
+    if (Child is TWinControl) and
+       (Child = TWinControl(Parent).Parent) then
+      exit;
+    if not ControlAcceptsStreamableChildComponent(TWinControl(Parent),
+             TComponentClass(Child.ClassType), PropertyEditorHook.LookupRoot)
+    then
+      exit;
+    try
+      TControl(Child).CheckNewParent(TWinControl(Parent));
+    except
+      exit;
+    end;
+    Result:=true;
+  end;
+
+  function CanBeParentOfSelection(Parent: TPersistent): boolean;
+  var
+    i: Integer;
+  begin
+    for i:=0 to Selection.Count-1 do
+      if not CanBeParent(Selection[i],Parent) then exit(false);
+    Result:=true;
+  end;
+
 var
-  i, j: Integer;
-  CurSelected: TPersistent;
+  i: Integer;
   Candidate: TWinControl;
 begin
   Result := TFPList.Create;
@@ -918,27 +948,11 @@ begin
   for i := 0 to TWinControl(PropertyEditorHook.LookupRoot).ComponentCount-1 do
   begin
     Candidate := TWinControl(TWinControl(PropertyEditorHook.LookupRoot).Components[i]);
-    if not (Candidate is TWinControl) then continue;
-    j := Selection.Count-1;
-    while j >= 0 do
-    begin
-      CurSelected := Selection[j];
-      if CurSelected is TControl then begin
-        if CurSelected = Candidate then break;
-        if (CurSelected is TWinControl) and
-           (TWinControl(CurSelected) = Candidate.Parent) then
-          break;
-        if not ControlAcceptsStreamableChildComponent(Candidate,
-                 TComponentClass(CurSelected.ClassType), PropertyEditorHook.LookupRoot)
-        then
-          break;
-      end;
-      dec(j);
-    end;
-    if j < 0 then
+    if CanBeParentOfSelection(Candidate) then
       Result.Add(Candidate);
   end;
-  Result.Add(PropertyEditorHook.LookupRoot);
+  if CanBeParentOfSelection(PropertyEditorHook.LookupRoot) then
+    Result.Add(PropertyEditorHook.LookupRoot);
 end;
 
 { TOICustomPropertyGrid }
