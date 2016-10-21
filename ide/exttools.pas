@@ -1244,9 +1244,9 @@ begin
         for i:=0 to ToolOptions.Scanners.Count-1 do
           Tool.AddParsers(ToolOptions.Scanners[i]);
       if ToolOptions.ShowConsole then
-        Tool.Process.Options:=Proc.Options+[poNewConsole]-[poNoConsole]
+        Tool.Process.Options:=Tool.Process.Options+[poNewConsole]-[poNoConsole]
       else
-        Tool.Process.Options:=Proc.Options-[poNewConsole]+[poNoConsole];
+        Tool.Process.Options:=Tool.Process.Options-[poNewConsole]+[poNoConsole];
       if ToolOptions.HideWindow then
         Tool.Process.ShowWindow:=swoHide
       else

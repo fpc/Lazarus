@@ -797,6 +797,7 @@ begin
   ResolveMacros:=true;
   FEnvironmentOverrides:=TStringList.Create;
   FScanners:=TStringList.Create;
+  FHideWindow:=true;
 end;
 
 destructor TIDEExternalToolOptions.Destroy;

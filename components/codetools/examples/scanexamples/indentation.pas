@@ -38,6 +38,9 @@ var
 begin
   if i=0 then
   begin
+    if (i=1)
+    or (i=3) then
+      ;
     repeat
       if a=2 then
         ;
