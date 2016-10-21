@@ -399,7 +399,7 @@ begin
             begin
               inc(CurCommentPos);
               if (CurCommentPos<=SrcLen) and (Src[CurCommentPos]=#3) then begin
-                // codetools skip comment
+                // codetools-skip-comment
                 inc(CurCommentPos);
                 if not OuterCommentBounds then CommentStart:=CurCommentPos;
                 while (CurCommentPos<CurEnd) do begin
@@ -469,13 +469,14 @@ begin
           end;
           if (CurCommentPos>CommentStart) and (CleanPos<CurCommentPos) then
           begin
-            // CleanPos in comment
+            // CleanPos in front of comment-end
             if OuterCommentBounds then
               CommentEnd:=CurCommentPos
             else
               CommentEnd:=CurCommentInnerEnd;
-            exit(true);
+            exit(CleanPos>=CommentStart);
           end;
+          // next
           CommentStart:=CurCommentPos;
         end else if IsSpaceChar[Src[CommentStart]] then begin
           repeat
