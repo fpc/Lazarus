@@ -1242,7 +1242,9 @@ var
   StartTime: TDateTime;
   EndTime: TDateTime;
 begin
+  {$IF FPC_FULLVERSION<30000}
   CurrentThread:=Self;
+  {$ENDIF}
   try
     Files:=nil;
     try
@@ -1293,7 +1295,9 @@ begin
     end;
   finally
     Scanned;
+    {$IF FPC_FULLVERSION<30000}
     CurrentThread:=nil;
+    {$ENDIF}
   end;
 end;
 

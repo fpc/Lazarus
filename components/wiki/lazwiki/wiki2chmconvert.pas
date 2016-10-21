@@ -77,12 +77,12 @@ type
     function GetImageLink(ImgFilename: string): string; override;
     function GetInternalImageLink(ImgFilename: String): String; override;
     function GetPageLink(Page: TW2XHTMLPage): string; override;
-    function GetRelativeCSSFileName: String; override;
     procedure SaveAllPages; override;
   public
     constructor Create; override;
     destructor Destroy; override;
     procedure Clear; override;
+    function GetRelativeCSSFileName: String; override;
     property CHMFile: string read FCHMFile write SetCHMFile;
     property IndexFileName: string read FIndexFileName write SetIndexFileName;
     property TOCFileName: String read FTOCFilename write SetTOCFilename;
