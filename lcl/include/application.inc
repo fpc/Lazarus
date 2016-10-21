@@ -766,7 +766,7 @@ procedure TApplication.ShowHintWindow(const Info: THintInfoAtMouse);
 
   function GetCursorHeightMargin: integer;
   begin
-    Result:=25;
+    Result:=25; // To-Do: better height margin (DPI or cursor aware).
   end;
 
 var
