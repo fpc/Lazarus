@@ -110,8 +110,8 @@ var
   var
     n: TDOMElement;
   begin
-    n := Doc.CreateElement(name);
-    n.AppendChild(Doc.CreateTextNode(value));
+    n := Doc.CreateElement(DOMString(name));
+    n.AppendChild(Doc.CreateTextNode(DOMString(value)));
     env.AppendChild(n);
   end;
 begin
