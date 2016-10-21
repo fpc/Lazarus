@@ -427,7 +427,7 @@ type
   
   TLinkScanner = class(TObject)
   private
-    FLinks: PSourceLink; // list of TSourceLink
+    FLinks: PSourceLink; // list of TSourceLink, sorted for CleanedPos
     FLinkCount: integer;
     FLinkCapacity: integer;
     FCleanedSrc: string;
@@ -646,6 +646,8 @@ type
     property DirectivesStored: boolean read FDirectivesStored; // directives were stored on last scan
     function FindDirective(aCode: Pointer; aSrcPos: integer;
       out FirstSortedIndex, LastSortedIndex: integer): boolean;
+    function FindFirstDirective(aCode: Pointer; aSrcPos: integer;
+      const AllowedStates: TLSDirectiveStates): PLSDirective;
     function GetDirectiveValueAt(ADirective: TSequenceDirective; ACleanPos: integer): string;
 
     // source mapping (Cleaned <-> Original)
@@ -1604,6 +1606,20 @@ begin
   Result:=false;
   FirstSortedIndex:=-1;
   LastSortedIndex:=-1;
+end;
+
+function TLinkScanner.FindFirstDirective(aCode: Pointer; aSrcPos: integer;
+  const AllowedStates: TLSDirectiveStates): PLSDirective;
+var
+  FirstSortedIndex, LastSortedIndex, i: integer;
+begin
+  Result:=nil;
+  if not FindDirective(aCode,aSrcPos,FirstSortedIndex,LastSortedIndex) then exit;
+  for i:=FirstSortedIndex to LastSortedIndex do begin
+    Result:=DirectivesSorted[i];
+    if Result^.State in AllowedStates then exit;
+  end;
+  Result:=nil;
 end;
 
 function TLinkScanner.LinkIndexAtCleanPos(ACleanPos: integer): integer;
