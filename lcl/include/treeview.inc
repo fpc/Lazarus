@@ -4246,6 +4246,7 @@ var
   R, TextRect, IntRect: TRect;
   SText: string;
   MaxHintWidth: Integer;
+  TransparentHints: Boolean;
 begin
   if FHintWnd=nil then
   begin
@@ -4277,11 +4278,17 @@ begin
   SText:=Node.Text;
   R:=FHintWnd.CalcHintRect(MaxHintWidth, SText, nil);
 
-  P:=Point(TextRect.Left-1, TextRect.Top-3);
+  TransparentHints := WidgetSet.GetLCLCapability(lcTransparentWindow) = LCL_CAPABILITY_YES;
+  if TransparentHints then
+    P:=Point(TextRect.Left-1, TextRect.Top-3)
+  else
+    P:=Point(ClientWidth, TextRect.Top-3);
+
   P:=ClientToScreen(P);
   OffsetRect(R, P.X, P.Y);
 
-  if not FHintWnd.Visible then
+  if TransparentHints // use default hint font for non-transparent hint windows
+  and not FHintWnd.Visible then
   begin
     FHintWnd.Font.Assign(Self.Font);
     FHintWnd.Font.Color := Screen.HintFont.Color;
