@@ -563,6 +563,7 @@ begin
     lcLMHelpSupport: Result := LCL_CAPABILITY_YES;
     lcNeedMininimizeAppWithMainForm: Result := LCL_CAPABILITY_NO;
     lcSendsUTF8KeyPress: Result := LCL_CAPABILITY_YES;
+    lcTransparentWindow: Result := LCL_CAPABILITY_YES;
   else
     Result := inherited;
   end;

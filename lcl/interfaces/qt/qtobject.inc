@@ -1257,6 +1257,7 @@ begin
      {when issue #20475 is fixed, then set this to LCL_CAPABILITY_YES}
      lcReceivesLMClearCutCopyPasteReliably: Result := LCL_CAPABILITY_NO;
     lcRadialGradientBrush: Result := LCL_CAPABILITY_YES;
+    lcTransparentWindow: Result := LCL_CAPABILITY_YES;
   else
     Result := inherited GetLCLCapability(ACapability);
   end;

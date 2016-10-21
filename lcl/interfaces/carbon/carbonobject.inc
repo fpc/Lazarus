@@ -1421,6 +1421,7 @@ begin
     lcAntialiasingEnabledByDefault:
       Result := LCL_CAPABILITY_YES;
     lcAccessibilitySupport: Result := LCL_CAPABILITY_YES;
+    lcTransparentWindow: Result := LCL_CAPABILITY_YES;
   else
     Result := inherited;
   end;
