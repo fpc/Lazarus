@@ -3738,7 +3738,8 @@ end;
 
 procedure TIpHtmlBaseLayouter.RemoveLeadingLFs;
 begin
-  while PIpHtmlElement(FElementQueue[0])^.ElementType in [etSoftLF, etHardLF] do
+  while (FElementQueue.Count>0)
+  and (PIpHtmlElement(FElementQueue[0])^.ElementType in [etSoftLF, etHardLF]) do
     FElementQueue.Delete(0);
 end;
 
