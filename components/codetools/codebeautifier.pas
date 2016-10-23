@@ -19,7 +19,8 @@
  ***************************************************************************
 
   Author: Mattias Gaertner
-
+}
+(*
   Abstract:
     Functions to beautify code.
     Goals:
@@ -68,9 +69,9 @@
             or expr then
           statement;
         begin
-        {comment}
+        //comment
           statement;
-        {comment}
+        //comment
           statement;
       {$IFDEF expr}
           statement;
@@ -88,7 +89,7 @@
     * long lines
        DoSomething(Param1,
                    Param2);
-}
+*)
 unit CodeBeautifier;
 
 {$mode objfpc}{$H+}
