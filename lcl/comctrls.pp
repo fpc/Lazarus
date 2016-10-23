@@ -1712,6 +1712,7 @@ type
     property OnMouseWheelUp;
     property OnResize;
     property OnSelectItem;
+    property OnShowHint;
     property OnStartDock;
     property OnStartDrag;
     property OnUTF8KeyPress;
