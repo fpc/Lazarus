@@ -278,7 +278,7 @@ end;
 function TGtk2WidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
 var
-  FormatAtom, FormatTry: TGdkAtom;
+  FormatAtom: TGdkAtom;
   SupportedCnt, i: integer;
   SupportedFormats: PGdkAtom;
   SelData: TGtkSelectionData;
@@ -286,8 +286,9 @@ var
   CompoundTextCount: integer;
 
   function IsFormatSupported(CurFormat: TGdkAtom): boolean;
-  var a: integer;
-     AllID: TGdkAtom;
+  var
+    i: integer;
+    AllID: TGdkAtom;
   begin
     //DebugLn('IsFormatSupported CurFormat=',dbgs(CurFormat),' SupportedCnt=',dbgs(SupportedCnt));
     if CurFormat=0 then begin
@@ -298,16 +299,19 @@ var
       Result:=false;
       AllID:=gdk_atom_intern('TARGETS',GdkFalse);
       SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,AllID);
-      {DebugLn('IsFormatSupported A ',Dbgs(SelData.Selection),
+      {$IFDEF DEBUG_CLIPBOARD}
+      DebugLn('IsFormatSupported A ',Dbgs(SelData.Selection),
       ' ',HexStr(Cardinal(ClipboardTypeAtoms[ClipboardType]),8),
       ' SelData.Target='+dbgs(SelData.Target),' AllID='+dbgs(AllID),
-      ' SelData.TheType='+dbgs(SelData.TheType)+' ATOM='+dbgs(gdk_atom_intern('ATOM',0))+' Name="'+GdkAtomToStr(SelData.TheType)+'"',
+      ' SelData.TheType='+dbgs(SelData._type)+' ATOM='+dbgs(gdk_atom_intern('ATOM',GdkTrue))+' Name="'+GdkAtomToStr(SelData._type)+'"',
       ' SelData.Length='+dbgs(SelData.Length),
       ' SelData.Format='+dbgs(SelData.Format)
-      );}
+      );
+      {$ENDIF}
       if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
       or (SelData.Target<>AllID)
-      or (SelData._Type<>gdk_atom_intern('ATOM',GdkFalse)) then begin
+      or (SelData._Type<>gdk_atom_intern('ATOM',GdkFalse))
+      or ((SelData.Format shr 3)<=0) then begin
         SupportedCnt:=0;
         exit;
       end;
@@ -315,15 +319,27 @@ var
       SupportedFormats:=PGdkAtom(SelData.Data);
       //DebugLn('IsFormatSupported SupportedCnt=',dbgs(SupportedCnt));
 
-      {a:=SupportedCnt-1;
-      while (a>=0) do begin
-        debugln(' ',dbgs(a),' ',GdkAtomToStr(SupportedFormats[a]),' "',p,'"');
-        dec(a);
-      end;}
+      {$IFDEF DEBUG_CLIPBOARD}
+      i:=SupportedCnt-1;
+      while (i>=0) do begin
+        debugln(' ',dbgs(i),' "',GdkAtomToStr(SupportedFormats[i]),'"');
+        dec(i);
+      end;
+      {$ENDIF}
     end;
-    a:=SupportedCnt-1;
-    while (a>=0) and (SupportedFormats[a]<>CurFormat) do dec(a);
-    Result:=(a>=0);
+    i:=SupportedCnt-1;
+    while (i>=0) and (SupportedFormats[i]<>CurFormat) do dec(i);
+    Result:=(i>=0);
+  end;
+
+  procedure CheckAtomFormat(const atom_name: Pgchar; only_if_exists:gboolean);
+  var
+    FormatTry: TGdkAtom;
+  begin
+    if FormatAtom<>0 then exit;
+    FormatTry:=gdk_atom_intern(atom_name,only_if_exists);
+    if IsFormatSupported(FormatTry) then
+      FormatAtom:=FormatTry;
   end;
 
 begin
@@ -342,41 +358,27 @@ begin
 
     FormatAtom:=FormatID;
     if (FormatAtom=gdk_atom_intern('text/plain',GdkTrue)) then begin
-      FormatAtom:=0;
       // text/plain is supported in various formats in gtk
-      FormatTry:=gdk_atom_intern('COMPOUND_TEXT',GdkFalse);
-      if IsFormatSupported(FormatTry) then
-        FormatAtom:=FormatTry;
+      FormatAtom:=0;
+      // check for UTF8 text format 'UTF8_STRING'
+      CheckAtomFormat('UTF8_STRING',GdkFalse);
       // The COMPOUND_TEXT format can be converted and is therefore
       // used as default for 'text/plain'
       if (SupportedCnt=0) then
-        FormatAtom:=gdk_atom_intern('COMPOUND_TEXT',GdkFalse);
-      // then check for UTF8 text format 'UTF8_STRING'
-      FormatTry:=gdk_atom_intern('UTF8_STRING',GdkFalse);
-      if IsFormatSupported(FormatTry) then
-        FormatAtom:=FormatTry;
-      // then check for simple text format 'text/plain'
-      FormatTry:=gdk_atom_intern('text/plain',GdkFalse);
-      if (FormatAtom=0) and IsFormatSupported(FormatTry) then
-        FormatAtom:=FormatTry;
-      // then check for simple text format STRING
-      FormatTry:=gdk_atom_intern('STRING',GdkFalse);
-      if (FormatAtom=0) and IsFormatSupported(FormatTry) then
-        FormatAtom:=FormatTry;
-      // check for some other formats that can be interpreted as text
-      FormatTry:=gdk_atom_intern('FILE_NAME',GdkTrue);
-      if (FormatAtom=0) and IsFormatSupported(FormatTry) then
-        FormatAtom:=FormatTry;
-      FormatTry:=gdk_atom_intern('HOST_NAME',GdkTrue);
-      if (FormatAtom=0) and IsFormatSupported(FormatTry) then
-        FormatAtom:=FormatTry;
-      FormatTry:=gdk_atom_intern('USER',GdkTrue);
-      if (FormatAtom=0) and IsFormatSupported(FormatTry) then
-        FormatAtom:=FormatTry;
-      // the TEXT format is not reliable, but it should be supported
-      FormatTry:=gdk_atom_intern('TEXT',GdkFalse);
-      if (FormatAtom=0) and IsFormatSupported(FormatTry) then
-        FormatAtom:=FormatTry;
+        FormatAtom:=gdk_atom_intern('COMPOUND_TEXT',GdkFalse)
+      else begin
+        CheckAtomFormat('COMPOUND_TEXT',GdkFalse);
+        // then check for simple text format 'text/plain'
+        CheckAtomFormat('text/plain',GdkFalse);
+        // then check for simple text format STRING
+        CheckAtomFormat('STRING',GdkFalse);
+        // check for some other formats that can be interpreted as text
+        CheckAtomFormat('FILE_NAME',GdkTrue);
+        CheckAtomFormat('HOST_NAME',GdkTrue);
+        CheckAtomFormat('USER',GdkTrue);
+        // the TEXT format is not reliable, but it should be supported
+        CheckAtomFormat('TEXT',GdkFalse);
+      end;
     end;
 
     {$IfDef DEBUG_CLIPBOARD}
@@ -654,6 +656,8 @@ begin
     begin
       // lcl provides 'text/plain' and the gtk-interface will automatically
       // provide some more text formats
+      ClipboardExtraGtkFormats[ClipboardType][gfUTF8_STRING]:=not IsFormatSupported(
+                gdk_atom_intern(PGChar(GtkClipboardFormatName[gfUTF8_STRING]),GdkFalse));
       ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]:=
           not IsFormatSupported(
                 gdk_atom_intern(PGChar(GtkClipboardFormatName[gfCOMPOUND_TEXT]),GdkFalse));

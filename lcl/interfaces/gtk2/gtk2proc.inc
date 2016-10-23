@@ -7311,6 +7311,8 @@ begin
         Result:=(ValidDateSelection);
         exit;
       end;
+      // give the system some time to process the request
+      Sleep(1);
     until Abs(StartTime-Now)*86400>1.0; // wait at most a second
   finally
     {$IFDEF DEBUG_CLIPBOARD}
@@ -7371,7 +7373,7 @@ begin
   ClipboardSelectionData.Add(c);
   try
     {$IFDEF DEBUG_CLIPBOARD}
-    DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID),' Type=',GdkAtomToStr(ClipboardTypeAtoms[ClipboardType]),' FormatID=',GdkAtomToStr(FormatID), ' Sanity=', IntToStr(Sanity));
+    DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID),' Type=',GdkAtomToStr(ClipboardTypeAtoms[ClipboardType]),' FormatID=',GdkAtomToStr(FormatID));
     {$ENDIF}
     if gtk_selection_convert(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],
                              FormatID, TimeID)<>GdkFalse

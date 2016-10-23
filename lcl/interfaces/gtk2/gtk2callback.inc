@@ -3607,7 +3607,7 @@ begin
   for ClipboardType:=Low(TClipboardType) to High(TClipboardType) do begin
     if SelectionData^.Selection=ClipboardTypeAtoms[ClipboardType] then begin
       if Assigned(ClipboardHandler[ClipboardType]) then begin
-        // handler found for this of clipboard
+        // handler found for this type of clipboard
         // now create a stream and find a supported format
         {$IFDEF DEBUG_CLIPBOARD}
         DebugLn('[ClipboardSelectionRequestHandler] "',ClipboardTypeName[ClipboardType],'" Format=',GdkAtomToStr(SelectionData^.Target),' ID=',dbgs(SelectionData^.Target));
@@ -3617,10 +3617,10 @@ begin
           // the gtk-interface provides automatically some formats, that the lcl
           // does not know. Wrapping them to lcl formats ...
           FormatID:=SelectionData^.Target;
-          if ((FormatID=gdk_atom_intern('COMPOUND_TEXT',GdkTrue))
-            and (ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]))
-          or ((FormatID=gdk_atom_intern('UTF8_STRING',GdkTrue))
+          if ((FormatID=gdk_atom_intern('UTF8_STRING',GdkTrue))
             and (ClipboardExtraGtkFormats[ClipboardType][gfUTF8_STRING]))
+          or ((FormatID=gdk_atom_intern('COMPOUND_TEXT',GdkTrue))
+            and (ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]))
           or ((FormatID=gdk_atom_intern('STRING',GdkTrue))
             and (ClipboardExtraGtkFormats[ClipboardType][gfSTRING]))
           or ((FormatID=gdk_atom_intern('TEXT',GdkTrue))
