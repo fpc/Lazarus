@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-10-19 01:42+0300\n"
+"PO-Revision-Date: 2016-10-25 01:24+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2167,8 +2167,8 @@ msgid "Interface"
 msgstr "Interface"
 
 #: lazarusidestrconsts.dlginsertmethods
-msgid "Insert methods"
-msgstr "Вставлять методы"
+msgid "Insert method implementations"
+msgstr "Вставлять реализации методов"
 
 #: lazarusidestrconsts.dlginsertsection
 msgid "Insert into Uses section of"
@@ -7873,6 +7873,10 @@ msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
 msgstr "По умолчанию"
 
+#: lazarusidestrconsts.lisdefaultclassvisibilitysectionofnewmethodsforexampl
+msgid "Default class visibility section of new methods. For example code completion on OnShow:="
+msgstr "Секция видимости класса, выбираемая по умолчанию для новых методов. Например, используется при завершении кода вида OnShow:="
+
 #: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
 msgid "The default is ComboBox with \"True\" and \"False\" selections"
 msgstr "По умолчанию отображается раскрывающийся список с элементами \"True\" и \"False\""
@@ -7880,6 +7884,10 @@ msgstr "По умолчанию отображается раскрывающи�
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
 msgstr "(по умолчанию)"
+
+#: lazarusidestrconsts.lisdefaultsectionofmethods
+msgid "Default section of methods"
+msgstr "Секция по умолчанию для методов"
 
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
@@ -13549,6 +13557,14 @@ msgstr "Макрос %d"
 #: lazarusidestrconsts.lisnewmacroname2
 msgid "New Macroname"
 msgstr "Новое имя макроса"
+
+#: lazarusidestrconsts.lisnewmethodimplementationsareinsertedbetweenexisting
+msgid "New method implementations are inserted between existing methods of this class. Either alphabetically, or as last, or in declaration order."
+msgstr "Новые реализации методов вставляются между уже существующими для этого класса. Они могут вставляться по алфавиту, последними либо в порядке объявления методов."
+
+#: lazarusidestrconsts.lisnewmethodsandmembersareinsertedalphabeticallyoradd
+msgid "New method and member declarations in the class..end sections are inserted alphabetically or added last."
+msgstr "Объявления новых методов и элементов класса в секциях class..end вставляются по алфавиту либо последними."
 
 #: lazarusidestrconsts.lisnewpage
 msgid "New page"

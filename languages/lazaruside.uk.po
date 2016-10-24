@@ -2168,7 +2168,9 @@ msgid "Interface"
 msgstr "Інтерфейс"
 
 #: lazarusidestrconsts.dlginsertmethods
-msgid "Insert methods"
+#, fuzzy
+#| msgid "Insert methods"
+msgid "Insert method implementations"
 msgstr "Вставляти методи"
 
 #: lazarusidestrconsts.dlginsertsection
@@ -7881,6 +7883,10 @@ msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
 msgstr "Типовий"
 
+#: lazarusidestrconsts.lisdefaultclassvisibilitysectionofnewmethodsforexampl
+msgid "Default class visibility section of new methods. For example code completion on OnShow:="
+msgstr ""
+
 #: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
 msgid "The default is ComboBox with \"True\" and \"False\" selections"
 msgstr "Типово - розкривний список з елементами \"True\" і \"False\""
@@ -7888,6 +7894,10 @@ msgstr "Типово - розкривний список з елементами
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
 msgstr "(типово)"
+
+#: lazarusidestrconsts.lisdefaultsectionofmethods
+msgid "Default section of methods"
+msgstr ""
 
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
@@ -13599,6 +13609,14 @@ msgstr "Макрос %d"
 #: lazarusidestrconsts.lisnewmacroname2
 msgid "New Macroname"
 msgstr "Нова назва макросу"
+
+#: lazarusidestrconsts.lisnewmethodimplementationsareinsertedbetweenexisting
+msgid "New method implementations are inserted between existing methods of this class. Either alphabetically, or as last, or in declaration order."
+msgstr ""
+
+#: lazarusidestrconsts.lisnewmethodsandmembersareinsertedalphabeticallyoradd
+msgid "New method and member declarations in the class..end sections are inserted alphabetically or added last."
+msgstr ""
 
 #: lazarusidestrconsts.lisnewpage
 msgid "New page"

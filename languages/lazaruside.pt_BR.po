@@ -2198,7 +2198,9 @@ msgid "Interface"
 msgstr "Interface"
 
 #: lazarusidestrconsts.dlginsertmethods
-msgid "Insert methods"
+#, fuzzy
+#| msgid "Insert methods"
+msgid "Insert method implementations"
 msgstr "Inserir métodos"
 
 #: lazarusidestrconsts.dlginsertsection
@@ -8057,6 +8059,10 @@ msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
 msgstr "Padrão"
 
+#: lazarusidestrconsts.lisdefaultclassvisibilitysectionofnewmethodsforexampl
+msgid "Default class visibility section of new methods. For example code completion on OnShow:="
+msgstr ""
+
 #: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
 msgid "The default is ComboBox with \"True\" and \"False\" selections"
 msgstr ""
@@ -8064,6 +8070,10 @@ msgstr ""
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
 msgstr "(padrão)"
+
+#: lazarusidestrconsts.lisdefaultsectionofmethods
+msgid "Default section of methods"
+msgstr ""
 
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
@@ -13810,6 +13820,14 @@ msgstr "Macro %d"
 #: lazarusidestrconsts.lisnewmacroname2
 msgid "New Macroname"
 msgstr "Novo nome de macro"
+
+#: lazarusidestrconsts.lisnewmethodimplementationsareinsertedbetweenexisting
+msgid "New method implementations are inserted between existing methods of this class. Either alphabetically, or as last, or in declaration order."
+msgstr ""
+
+#: lazarusidestrconsts.lisnewmethodsandmembersareinsertedalphabeticallyoradd
+msgid "New method and member declarations in the class..end sections are inserted alphabetically or added last."
+msgstr ""
 
 #: lazarusidestrconsts.lisnewpage
 msgid "New page"
