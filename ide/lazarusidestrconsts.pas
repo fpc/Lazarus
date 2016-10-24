@@ -2127,7 +2127,7 @@ resourcestring
   dlgJumpToMethodBody = 'Jump directly to method body';
   dlgInsertClassParts = 'Insert class parts';
   lisNewMethodsAndMembersAreInsertedAlphabeticallyOrAdd = 'New method and '
-    +'member declarations in the class..end sections are inserted alphabetically or added last';
+    +'member declarations in the class..end sections are inserted alphabetically or added last.';
   lisClassCompletion = 'Class Completion';
   dlgAlphabetically = 'Alphabetically';
   dlgCDTLast = 'Last';

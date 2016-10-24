@@ -14,9 +14,9 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideTop.Control = InsertPoliciesPanel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 24
-    Top = 105
-    Width = 227
+    Height = 19
+    Top = 93
+    Width = 213
     BorderSpacing.Left = 6
     Caption = 'MixMethodsAndPropertiesCheckBox'
     TabOrder = 0
@@ -26,9 +26,9 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideTop.Control = UpdateAllMethodSignaturesCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 24
-    Top = 165
-    Width = 204
+    Height = 19
+    Top = 143
+    Width = 196
     BorderSpacing.Around = 6
     Caption = 'ClassHeaderCommentsCheckBox'
     TabOrder = 2
@@ -42,22 +42,22 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 172
-    Top = 225
+    Top = 193
     Width = 575
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'PropertyCompletionGroupBox'
-    ClientHeight = 157
+    ClientHeight = 152
     ClientWidth = 571
     TabOrder = 4
     object PropertyCompletionCheckBox: TCheckBox
       AnchorSideLeft.Control = PropertyCompletionGroupBox
       AnchorSideTop.Control = PropertyCompletionGroupBox
       Left = 6
-      Height = 24
+      Height = 19
       Top = 6
-      Width = 192
+      Width = 180
       BorderSpacing.Around = 6
       Caption = 'PropertyCompletionCheckBox'
       TabOrder = 0
@@ -70,7 +70,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 115
-      Top = 36
+      Top = 31
       Width = 559
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -82,10 +82,10 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       ClientWidth = 559
       TabOrder = 1
       object PrivateVariablePrefixLabel: TLabel
-        Left = 36
-        Height = 13
-        Top = 5
-        Width = 146
+        Left = 34
+        Height = 15
+        Top = 4
+        Width = 135
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
@@ -94,9 +94,9 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       end
       object PropertyStoredIdentPostfixLabel: TLabel
         Left = 0
-        Height = 13
-        Top = 28
-        Width = 182
+        Height = 15
+        Top = 27
+        Width = 169
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
@@ -104,10 +104,10 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
         ParentColor = False
       end
       object PropertyWriteIdentPrefixLabel: TLabel
-        Left = 11
-        Height = 13
-        Top = 51
-        Width = 171
+        Left = 12
+        Height = 15
+        Top = 50
+        Width = 157
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
@@ -116,9 +116,9 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       end
       object PropertyReadIdentPrefixLabel: TLabel
         Left = 14
-        Height = 13
-        Top = 74
-        Width = 168
+        Height = 15
+        Top = 73
+        Width = 155
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
@@ -126,10 +126,10 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
         ParentColor = False
       end
       object SetPropertyVariablenameLabel: TLabel
-        Left = 11
-        Height = 13
-        Top = 97
-        Width = 171
+        Left = 8
+        Height = 15
+        Top = 96
+        Width = 161
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
@@ -139,7 +139,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
         ShowHint = True
       end
       object PrivateVariablePrefixEdit: TEdit
-        Left = 188
+        Left = 175
         Height = 23
         Top = 0
         Width = 80
@@ -147,7 +147,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
         Text = 'PrivateVariablePrefixEdit'
       end
       object PropertyStoredIdentPostfixEdit: TEdit
-        Left = 188
+        Left = 175
         Height = 23
         Top = 23
         Width = 80
@@ -155,7 +155,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
         Text = 'PropertyStoredIdentPostfixEdit'
       end
       object PropertyWriteIdentPrefixEdit: TEdit
-        Left = 188
+        Left = 175
         Height = 23
         Top = 46
         Width = 80
@@ -163,7 +163,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
         Text = 'PropertyWriteIdentPrefixEdit'
       end
       object PropertyReadIdentPrefixEdit: TEdit
-        Left = 188
+        Left = 175
         Height = 23
         Top = 69
         Width = 80
@@ -171,7 +171,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
         Text = 'PropertyReadIdentPrefixEdit'
       end
       object SetPropertyVariablenameEdit: TEdit
-        Left = 188
+        Left = 175
         Height = 23
         Top = 92
         Width = 80
@@ -185,10 +185,10 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = SetPropertyVariablenameEdit
         AnchorSideTop.Side = asrCenter
-        Left = 278
-        Height = 24
-        Top = 91
-        Width = 233
+        Left = 265
+        Height = 19
+        Top = 94
+        Width = 212
         BorderSpacing.Left = 10
         Caption = 'SetPropertyVariableIsPrefixCheckBox'
         ParentShowHint = False
@@ -200,10 +200,10 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = SetPropertyVariablenameEdit
         AnchorSideTop.Side = asrCenter
-        Left = 521
-        Height = 24
-        Top = 91
-        Width = 243
+        Left = 487
+        Height = 19
+        Top = 94
+        Width = 225
         BorderSpacing.Left = 10
         Caption = 'SetPropertyVariableUseConstCheckBox'
         ParentShowHint = False
@@ -217,9 +217,9 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideTop.Control = ClassHeaderCommentsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 24
-    Top = 195
-    Width = 251
+    Height = 19
+    Top = 168
+    Width = 243
     BorderSpacing.Around = 6
     Caption = 'ClassImplementationCommentsCheckBox'
     TabOrder = 3
@@ -229,16 +229,16 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideTop.Control = MixMethodsAndPropertiesCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 24
-    Top = 135
-    Width = 235
+    Height = 19
+    Top = 118
+    Width = 221
     BorderSpacing.Around = 6
     Caption = 'UpdateAllMethodSignaturesCheckBox'
     TabOrder = 1
   end
   object InsertPoliciesPanel: TPanel
     Left = 0
-    Height = 105
+    Height = 93
     Top = 0
     Width = 575
     Align = alTop
@@ -250,14 +250,14 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     ChildSizing.VerticalSpacing = 6
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 105
+    ClientHeight = 93
     ClientWidth = 575
     TabOrder = 5
     object ClassPartInsertPolicyLabel: TLabel
       Left = 6
-      Height = 13
-      Top = 13
-      Width = 155
+      Height = 15
+      Top = 10
+      Width = 147
       BorderSpacing.CellAlignVertical = ccaCenter
       Caption = 'ClassPartInsertPolicyLabel'
       ParentColor = False
@@ -265,11 +265,11 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       ShowHint = True
     end
     object ClassPartInsertPolicyComboBox: TComboBox
-      Left = 167
-      Height = 27
+      Left = 159
+      Height = 23
       Top = 6
       Width = 100
-      ItemHeight = 0
+      ItemHeight = 15
       ParentShowHint = False
       ShowHint = True
       Style = csDropDownList
@@ -277,9 +277,9 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     end
     object MethodInsertPolicyLabel: TLabel
       Left = 6
-      Height = 13
-      Top = 46
-      Width = 155
+      Height = 15
+      Top = 39
+      Width = 147
       BorderSpacing.CellAlignVertical = ccaCenter
       Caption = 'MethodInsertPolicyLabel'
       ParentColor = False
@@ -287,11 +287,11 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       ShowHint = True
     end
     object MethodInsertPolicyComboBox: TComboBox
-      Left = 167
-      Height = 27
-      Top = 39
+      Left = 159
+      Height = 23
+      Top = 35
       Width = 100
-      ItemHeight = 0
+      ItemHeight = 15
       ParentShowHint = False
       ShowHint = True
       Style = csDropDownList
@@ -299,19 +299,21 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     end
     object MethodDefaultSectionLabel: TLabel
       Left = 6
-      Height = 13
-      Top = 79
-      Width = 155
+      Height = 15
+      Top = 68
+      Width = 147
       BorderSpacing.CellAlignVertical = ccaCenter
       Caption = 'MethodDefaultSectionLabel'
       ParentColor = False
+      ParentShowHint = False
+      ShowHint = True
     end
     object MethodDefaultSectionComboBox: TComboBox
-      Left = 167
-      Height = 27
-      Top = 72
+      Left = 159
+      Height = 23
+      Top = 64
       Width = 100
-      ItemHeight = 0
+      ItemHeight = 15
       Style = csDropDownList
       TabOrder = 2
     end
