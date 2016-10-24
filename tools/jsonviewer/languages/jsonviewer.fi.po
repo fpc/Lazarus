@@ -332,3 +332,4 @@ msgstr "Nimi"
 #: tnewstringform.label2.caption
 msgid "&Value"
 msgstr "Arvo"
+

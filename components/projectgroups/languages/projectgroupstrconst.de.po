@@ -455,3 +455,4 @@ msgstr "Schreibfehler"
 #: projectgroupstrconst.lisxmlsyntaxerrorinfile
 msgid "XML syntax error in file \"%s\": %s"
 msgstr "XML-Syntaxfehler in Datei \"%s\": %s"
+
