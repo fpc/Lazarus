@@ -247,7 +247,7 @@ resourceString
   rsControlHasNoParentWindow = 'Control ''%s'' has no parent window';
   rsControlIsNotAParent = '''%s'' is not a parent of ''%s''';
   rsControlClassCantContainChildClass = 'Control of class ''%s'' can''t have control of class ''%s'' as a child';
-  rsASCannotHaveAsParent = 'A %s cannot have % as parent';
+  rsASCannotHaveAsParent = 'Class %s cannot have %s as parent.';
   lisLCLResourceSNotFound = 'Resource %s not found';
   rsFormResourceSNotFoundForResourcelessFormsCreateNew = 'Form resource %s '
     +'not found. For resourceless forms CreateNew constructor must be used.'

@@ -292,7 +292,7 @@ msgid "Aqua"
 msgstr "Acqua"
 
 #: lclstrconsts.rsascannothaveasparent
-msgid "A %s cannot have % as parent"
+msgid "Class %s cannot have %s as parent."
 msgstr ""
 
 #: lclstrconsts.rsbackgroundcolorcaption
