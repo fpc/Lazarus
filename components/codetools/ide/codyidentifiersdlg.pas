@@ -396,7 +396,7 @@ var
 begin
   if not IsApplicable(Msg,Identifier) then exit;
   if LazarusIDE.DoOpenFileAndJumpToPos(Msg.GetFullFilename,
-    Point(Msg.Column,Msg.Line),-1,-1,-1,[])<>mrOk then exit;
+    Point(Msg.Column,Msg.Line),-1,-1,-1,[ofOnlyIfExists,ofRegularFile])<>mrOk then exit;
   ShowUnitDictionaryDialog(nil);
 end;
 
