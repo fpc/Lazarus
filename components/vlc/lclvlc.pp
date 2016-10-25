@@ -54,7 +54,7 @@ Type
 
 implementation
 
-{$ifdef HasX}
+{$ifdef Unix}
 {$ifdef lclgtk2}
 {$I vlcgtk2.inc}
 {$endif}
@@ -62,6 +62,7 @@ implementation
 {$I vlcqt.inc}
 {$endif}
 {$endif}
+
 { TLCLVLCPlayer }
 
 procedure TLCLVLCPlayer.SetLCLParentWindow(AValue: TWinControl);
