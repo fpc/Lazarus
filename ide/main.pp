@@ -6795,7 +6795,8 @@ begin
                                 WorkingDir,CompilerFilename,CompilerParams,
                                 (AReason = crBuild) or NeedBuildAllFlag,
                                 pbfSkipLinking in Flags,
-                                pbfSkipAssembler in Flags,aCompileHint);
+                                pbfSkipAssembler in Flags,Project1.IsVirtual,
+                                aCompileHint);
         if ConsoleVerbosity>=0 then
           debugln(['Hint: (lazarus) [TMainIDE.DoBuildProject] compiler time in s: ',(Now-StartTime)*86400]);
         DoCallBuildingFinishedHandler(lihtProjectBuildingFinished, Self, Result=mrOk);

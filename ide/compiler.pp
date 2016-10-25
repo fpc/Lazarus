@@ -56,9 +56,8 @@ type
     destructor Destroy; override;
     function Compile(AProject: TProject;
                      const WorkingDir, CompilerFilename, CompilerParams: string;
-                     BuildAll, SkipLinking, SkipAssembler: boolean;
-                     const aCompileHint: string
-                    ): TModalResult;
+                     BuildAll, SkipLinking, SkipAssembler, CurrentDirectoryIsTestDir: boolean;
+                     const aCompileHint: string): TModalResult;
     procedure WriteError(const Msg: string);
   end;
 
@@ -218,7 +217,7 @@ type
     property ErrorMsg: String read fErrorMsg write fErrorMsg;
   end;
 
-  { TCompilerOptThread }
+  { TCompilerOptThread - thread for reading 'fpc -h' output }
 
   TCompilerOptThread = class(TThread)
   private
@@ -265,7 +264,8 @@ end;
 ------------------------------------------------------------------------------}
 function TCompiler.Compile(AProject: TProject; const WorkingDir,
   CompilerFilename, CompilerParams: string; BuildAll, SkipLinking,
-  SkipAssembler: boolean; const aCompileHint: string): TModalResult;
+  SkipAssembler, CurrentDirectoryIsTestDir: boolean; const aCompileHint: string
+  ): TModalResult;
 var
   CmdLine : String;
   Abort : Boolean;
@@ -335,6 +335,7 @@ begin
     Tool.Process.Executable:=CompilerFilename;
     Tool.CmdLineParams:=CmdLine;
     Tool.Process.CurrentDirectory:=WorkingDir;
+    Tool.CurrentDirectoryIsTestDir:=CurrentDirectoryIsTestDir;
     FPCParser:=TFPCParser(Tool.AddParsers(SubToolFPC));
     FPCParser.ShowLinesCompiled:=EnvironmentOptions.MsgViewShowFPCMsgLinesCompiled;
     FPCParser.HideHintsSenderNotUsed:=not AProject.CompilerOptions.ShowHintsForSenderNotUsed;

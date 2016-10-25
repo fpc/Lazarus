@@ -37,6 +37,7 @@ const
   IDEToolCompilePackage = 'Package';
   IDEToolCompileProject = 'Project'; // the active project
   IDEToolCompileIDE     = 'IDE';
+
 type
 
   { TIDEExternalToolData
@@ -48,7 +49,9 @@ type
     Kind: string; // e.g. IDEToolCompilePackage or IDEToolCompileProject
     ModuleName: string; // e.g. the package name
     Filename: string; // e.g. the lpi or lpk filename
+    Flags: TStrings;
     constructor Create(aKind, aModuleName, aFilename: string);
+    destructor Destroy; override;
   end;
 
 type
@@ -462,6 +465,7 @@ type
     FTitle: string;
     FTools: TIDEExternalTools;
     FViews: TFPList; // list of TExtToolView
+    FCurrentDirectoryIsTestDir: boolean;
     function GetCmdLineParams: string;
     function GetParserCount: integer;
     function GetParsers(Index: integer): TExtToolParser;
@@ -529,6 +533,8 @@ type
     function ResolveMacros: boolean; virtual; abstract; // resolve macros in Process.Executable, Process.CurrentDirectory, Process.Params, Process.Environment on Execute
     property ResolveMacrosOnExecute: boolean read FResolveMacrosOnExecute
       write FResolveMacrosOnExecute;
+    property CurrentDirectoryIsTestDir: boolean read FCurrentDirectoryIsTestDir
+      write FCurrentDirectoryIsTestDir; // virtual files were written to test directory, parsers should reverse source filenames
     property Stage: TExternalToolStage read FStage;
     procedure Execute; virtual; abstract;
     procedure Terminate; virtual; abstract;
@@ -769,6 +775,13 @@ begin
   Kind:=aKind;
   ModuleName:=aModuleName;
   Filename:=aFilename;
+  Flags:=TStringList.Create;
+end;
+
+destructor TIDEExternalToolData.Destroy;
+begin
+  FreeAndNil(Flags);
+  inherited Destroy;
 end;
 
 { TFPCParser }

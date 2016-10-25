@@ -3180,8 +3180,13 @@ begin
     if Proc<>nil then begin
       if Proc.Executable<>'' then
         s+='Executable: '+LineEnding+Proc.Executable+LineEnding+LineEnding;
-      if Proc.CurrentDirectory<>'' then
-        s+='CurrentDirectory: '+LineEnding+Proc.CurrentDirectory+LineEnding+LineEnding;
+      if Proc.CurrentDirectory<>'' then begin
+        if Tool.CurrentDirectoryIsTestDir then
+          s+='CurrentDirectory is test build directory:'
+        else
+          s+='CurrentDirectory:';
+        s+=LineEnding+Proc.CurrentDirectory+LineEnding+LineEnding;
+      end;
       if Proc.Desktop<>'' then
         s+='Desktop: '+Proc.Desktop+LineEnding;
       if Tool.EnvironmentOverrides.Text<>'' then
