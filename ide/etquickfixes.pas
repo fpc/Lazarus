@@ -237,7 +237,7 @@ begin
   CleanPos:=0;
   Node:=nil;
   Filename:=TrimFilename(Msg.GetFullFilename);
-  if not FilenameIsAbsolute(Filename) then exit;
+  if (not FilenameIsAbsolute(Filename)) and (not (mlfTestBuildFile in Msg.Flags)) then exit;
   Code:=CodeToolBoss.LoadFile(Filename,true,false);
   if Code=nil then exit;
   CodeToolBoss.Explore(Code,Tool,false);

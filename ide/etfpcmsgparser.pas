@@ -211,7 +211,8 @@ type
       const PPUFilename: string): boolean;
     procedure Translate(p: PChar; MsgItem, TranslatedItem: TFPCMsgItem;
       out TranslatedMsg: String; out MsgType: TMessageLineUrgency);
-    procedure ReverseInstantFPCCacheDir(var aFilename: string; aSynchronized: boolean);
+    function ReverseInstantFPCCacheDir(var aFilename: string; aSynchronized: boolean): boolean;
+    function ReverseTestBuildDir(MsgLine: TMessageLine; var aFilename: string): boolean;
     function LongenFilename(MsgLine: TMessageLine; aFilename: string): string; // (worker thread)
   public
     DirectoryStack: TStrings;
@@ -220,6 +221,8 @@ type
     TranslationFilename: string; // e.g. /path/to/fpcsrc/compiler/msg/errord.msg
     TranslationFile: TFPCMsgFilePoolItem;
     InstantFPCCache: string; // with trailing pathdelim
+    TestBuildDir: string; // with trailing pathdelim
+    VirtualProjectFiles: TFilenameToPointerTree;
     FPC_FullVersion: cardinal;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1064,6 +1067,7 @@ end;
 
 destructor TIDEFPCParser.Destroy;
 begin
+  FreeAndNil(VirtualProjectFiles);
   FreeAndNil(FFilesToIgnoreUnitNotUsed);
   FreeAndNil(fFileExists);
   FreeAndNil(fCurSource);
@@ -1106,6 +1110,8 @@ var
   FPCVersion: integer;
   FPCRelease: integer;
   FPCPatch: integer;
+  aProject: TLazProject;
+  aProjFile: TLazProjectFile;
 begin
   inherited Init;
 
@@ -1150,6 +1156,22 @@ begin
     InstantFPCCache:=AppendPathDelim(InstantFPCCache)
   else
     InstantFPCCache:='';
+
+  // get TestBuildDir
+  if Tool.CurrentDirectoryIsTestDir then begin
+    // source filenames in CurrentDirectory must be reversed back
+    // -> store the list of virtual filenames (needed by worker thread)
+    TestBuildDir:=AppendPathDelim(ResolveDots(Tool.Process.CurrentDirectory));
+    if VirtualProjectFiles=nil then
+      VirtualProjectFiles:=TFilenameToPointerTree.Create(true);
+    aProject:=LazarusIDE.ActiveProject;
+    for i:=0 to aProject.FileCount-1 do begin
+      aProjFile:=aProject.Files[i];
+      if aProjFile.IsPartOfProject and (not FilenameIsAbsolute(aProjFile.Filename)) then
+        VirtualProjectFiles[aProjFile.Filename]:=Tool;
+    end;
+  end else
+    TestBuildDir:='';
 end;
 
 procedure TIDEFPCParser.InitReading;
@@ -1819,12 +1841,14 @@ begin
   if IndexInStringList(FilesToIgnoreUnitNotUsed,cstFilename,MsgLine.Filename)>=0 then
   begin
     MsgLine.Urgency:=mluVerbose;
-  end else if HideHintsUnitNotUsedInMainSource
-  and FilenameIsAbsolute(MsgLine.Filename)
-  and ((CompareFileExt(MsgLine.Filename, 'lpr', false)=0)
-    or FileExists(ChangeFileExt(MsgLine.Filename, '.lpk'), aPhase=etpspSynchronized))
+  end else if HideHintsUnitNotUsedInMainSource then begin
+  if CompareFileExt(MsgLine.Filename, 'lpr', false)=0 then
+    // a lpr does not use a unit => not important
+    MsgLine.Urgency:=mluVerbose;
+  end else if FilenameIsAbsolute(MsgLine.Filename)
+    and FileExists(ChangeFileExt(MsgLine.Filename, '.lpk'), aPhase=etpspSynchronized)
   then begin
-    // a lpk/lpr does not use a unit => almost always not important
+    // a lpk does not use a unit => not important
     MsgLine.Urgency:=mluVerbose;
   end;
 end;
@@ -2054,7 +2078,7 @@ begin
       Filename:=NewFilename;
   end;
 
-  if FilenameIsAbsolute(Filename) then begin
+  if FilenameIsAbsolute(Filename) or (mlfTestBuildFile in MsgLine.Flags) then begin
     CodeBuf:=CodeToolBoss.LoadFile(Filename,false,false);
     if CodeBuf=nil then begin
       {$IFDEF VerboseFPCMsgUnitNotFound}
@@ -2517,16 +2541,40 @@ begin
   end;
 end;
 
-procedure TIDEFPCParser.ReverseInstantFPCCacheDir(var aFilename: string;
-  aSynchronized: boolean);
+function TIDEFPCParser.ReverseInstantFPCCacheDir(var aFilename: string;
+  aSynchronized: boolean): boolean;
 var
   Reversed: String;
 begin
+  Result:=false;
   if (InstantFPCCache<>'')
   and (CompareFilenames(ExtractFilePath(aFilename),InstantFPCCache)=0) then begin
     Reversed:=AppendPathDelim(Tool.WorkerDirectory)+ExtractFilename(aFilename);
-    if FileExists(Reversed,aSynchronized) then
+    if FileExists(Reversed,aSynchronized) then begin
       aFilename:=Reversed;
+      Result:=true;
+    end;
+  end;
+end;
+
+function TIDEFPCParser.ReverseTestBuildDir(MsgLine: TMessageLine;
+  var aFilename: string): boolean;
+var
+  Reversed: String;
+  l: Integer;
+begin
+  Result:=false;
+  if not Tool.CurrentDirectoryIsTestDir then exit;
+  l:=length(TestBuildDir); // Note: TestBuildDir includes trailing PathDelim
+  if (length(aFilename)>l) and (aFilename[l]=PathDelim)
+  and (CompareFilenames(LeftStr(aFilename,l),TestBuildDir)=0) then begin
+    Reversed:=copy(aFilename,l+1,length(aFilename));
+    if VirtualProjectFiles.Contains(Reversed) then begin
+      MsgLine.Flags:=MsgLine.Flags+[mlfTestBuildFile];
+      MsgLine.Attribute[MsgAttrDiskFilename]:=aFilename;
+      aFilename:=Reversed;
+      Result:=true;
+    end
   end;
 end;
 
@@ -2952,7 +3000,8 @@ var
 begin
   Result:=TrimFilename(aFilename);
   if FilenameIsAbsolute(Result) then begin
-    ReverseInstantFPCCacheDir(Result,false);
+    if ReverseInstantFPCCacheDir(Result,false) then exit;
+    if ReverseTestBuildDir(MsgLine,Result) then exit;
     exit;
   end;
   if MsgLine.Attribute['PPU']<>'' then begin
@@ -2964,13 +3013,21 @@ begin
   // check last message line
   LastMsgLine:=Tool.WorkerMessages.GetLastLine;
   if (LastMsgLine<>nil) then begin
-    LastFilename:=LastMsgLine.Filename;
+    if mlfTestBuildFile in LastMsgLine.Flags then
+      LastFilename:=LastMsgLine.Attribute[MsgAttrDiskFilename]
+    else
+      LastFilename:=LastMsgLine.Filename;
     if FilenameIsAbsolute(LastFilename) then begin
       if (length(LastFilename)>length(ShortFilename))
       and (LastFilename[length(LastFilename)-length(ShortFilename)] in AllowDirectorySeparators)
       and (CompareFilenames(RightStr(LastFilename,length(ShortFilename)),ShortFilename)=0)
       then begin
-        Result:=LastFilename;
+        if mlfTestBuildFile in LastMsgLine.Flags then begin
+          MsgLine.Attribute[MsgAttrDiskFilename]:=LastFilename;
+          MsgLine.Flags:=MsgLine.Flags+[mlfTestBuildFile];
+          Result:=LastMsgLine.Filename;
+        end else
+          Result:=LastFilename;
         exit;
       end;
     end;
@@ -2979,13 +3036,19 @@ begin
   if DirectoryStack<>nil then begin
     for i:=DirectoryStack.Count-1 downto 0 do begin
       Result:=AppendPathDelim(DirectoryStack[i])+ShortFilename;
-      if FileExists(Result,false) then exit;
+      if FileExists(Result,false) then begin
+        ReverseTestBuildDir(MsgLine,Result);
+        exit;
+      end;
     end;
   end;
   // search file in worker directory
   if Tool.WorkerDirectory<>'' then begin
     Result:=AppendPathDelim(Tool.WorkerDirectory)+ShortFilename;
-    if FileExists(Result,false) then exit;
+    if FileExists(Result,false) then begin
+      ReverseTestBuildDir(MsgLine,Result);
+      exit;
+    end;
   end;
 
   // file not found
@@ -3019,7 +3082,10 @@ begin
     if (Y>0) and (X>0)
     and (MsgLine.SubTool=SubToolFPC) and (MsgLine.Filename<>'')
     then begin
-      aFilename:=MsgLine.Filename;
+      if mlfTestBuildFile in MsgLine.Flags then
+        aFilename:=MsgLine.Attribute[MsgAttrDiskFilename]
+      else
+        aFilename:=MsgLine.Filename;
       PPUFilename:='';
       if (not FilenameIsAbsolute(aFilename)) then begin
         PPUFilename:=MsgLine.Attribute['PPU'];
@@ -3083,7 +3149,8 @@ begin
       // get source
       SourceOK:=false;
       aFilename:=MsgLine.Filename;
-      if FilenameIsAbsolute(aFilename) then begin
+      if FilenameIsAbsolute(aFilename) or (mlfTestBuildFile in MsgLine.Flags)
+      then begin
         if (fCurSource<>nil)
         and (CompareFilenames(aFilename,fCurSource.Filename)=0) then begin
           SourceOK:=true;

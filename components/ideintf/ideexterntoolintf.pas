@@ -33,6 +33,8 @@ const
 
   AbortedExitCode = 12321;
 
+  MsgAttrDiskFilename = 'DiskFile';
+
 const
   IDEToolCompilePackage = 'Package';
   IDEToolCompileProject = 'Project'; // the active project
@@ -99,7 +101,7 @@ type
     mlfFixed, // reason for the messages was resolved, e.g. quick fixed
     mlfHiddenByIDEDirective,
     mlfHiddenByIDEDirectiveValid,
-    mlfFileSearched  // file was searched, FullFilename valid
+    mlfTestBuildFile // Filename is not absolute, the test filename on disk is in Attributes[MsgAttrDiskFilename]
     );
   TMessageLineFlags = set of TMessageLineFlag;
 
