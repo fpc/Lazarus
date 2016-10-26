@@ -216,18 +216,18 @@ var
 begin
   // destination directories
   List:=InputHistories.HistoryLists.GetList(hlPublishProjectDestDirs,true,rltFile);
-  List.AppendEntry(SetDirSeparators('$(TestDir)/publishedproject/'));
-  List.AppendEntry(SetDirSeparators('$(TestDir)/publishedpackage/'));
-  List.AppendEntry(SetDirSeparators('$(ProjPath)/published/'));
+  List.AppendEntry(GetForcedPathDelims('$(TestDir)/publishedproject/'));
+  List.AppendEntry(GetForcedPathDelims('$(TestDir)/publishedpackage/'));
+  List.AppendEntry(GetForcedPathDelims('$(ProjPath)/published/'));
   DestDirComboBox.Items.Assign(List);
   
   // command after
   List:=InputHistories.HistoryLists.GetList(hlPublishProjectCommandsAfter,true,rltCaseSensitive);
-  List.AppendEntry(SetDirSeparators(
+  List.AppendEntry(GetForcedPathDelims(
                  'tar czf $MakeFile($(ProjPublishDir)).tgz $(ProjPublishDir)'));
-  List.AppendEntry(SetDirSeparators(
+  List.AppendEntry(GetForcedPathDelims(
               'tar czf $(TestDir)/project.tgz -C $(TestDir) publishedproject'));
-  List.AppendEntry(SetDirSeparators(
+  List.AppendEntry(GetForcedPathDelims(
               'tar czf $(TestDir)/package.tgz -C $(TestDir) publishedpackage'));
   CommandAfterCombobox.Items.Assign(List);
 
