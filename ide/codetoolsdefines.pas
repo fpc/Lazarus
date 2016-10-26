@@ -48,7 +48,7 @@ uses
   ComCtrls,  LCLType, ExtCtrls, Menus, LCLProc, Graphics, Dialogs, ButtonPanel,
   SynEdit,
   CodeToolManager, DefineTemplates,
-  IDEWindowIntf, IDEImagesIntf, IDEDialogs,
+  IDEWindowIntf, IDEImagesIntf, IDEDialogs, LazFileUtils,
   LazarusIDEStrConsts, CodeToolsOptions, CodeToolsDefPreview, TransferMacros,
   EditorOptions, InputFileDialog, IDEOptionDefs, LazConf, IDEProcs,
   EditDefineTree, CompilerOptions;
@@ -773,7 +773,7 @@ begin
     FileTitles[0]:=Format(lisCodeToolsDefsdirectory, [DelphiName]);
     FileDescs[0]:=Format(lisCodeToolsDefsDelphiMainDirectoryDesc, [DelphiName,
       LineEnding, DelphiName, LineEnding, IntToStr(DelphiVersion)]);
-    FileNames[0]:=SetDirSeparators(
+    FileNames[0]:=GetForcedPathDelims(
                         'C:/Programme/Borland/Delphi'+IntToStr(DelphiVersion));
     FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
     
@@ -813,14 +813,14 @@ begin
     
     FileTitles[0]:=Format(lisCodeToolsDefsprojectDirectory2, [DelphiName]);
     FileDescs[0]:=Format(lisCodeToolsDefsTheProjectDirectory, [DelphiName, LineEnding]);
-    FileNames[0]:=SetDirSeparators('C:/Programme/Borland/Delphi'
+    FileNames[0]:=GetForcedPathDelims('C:/Programme/Borland/Delphi'
                    +IntToStr(DelphiVersion)+'/YourProject');
     FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
     
     FileTitles[1]:=Format(lisCodeToolsDefsdirectory, [DelphiName]);
     FileDescs[1]:=Format(lisCodeToolsDefsDelphiMainDirectoryForProject, [DelphiName,
       LineEnding, DelphiName, LineEnding, DelphiName, LineEnding, IntToStr(DelphiVersion)]);
-    FileNames[1]:=SetDirSeparators('C:/Programme/Borland/Delphi'+IntToStr(DelphiVersion));
+    FileNames[1]:=GetForcedPathDelims('C:/Programme/Borland/Delphi'+IntToStr(DelphiVersion));
     FileFlags[1]:=[iftDirectory,iftNotEmpty,iftMustExist];
 
     EndUpdate;
@@ -866,7 +866,7 @@ begin
     FileTitles[0]:=Format(lisCodeToolsDefsdirectory, [KylixName]);
     FileDescs[0]:=Format(lisCodeToolsDefsKylixMainDirectoryDesc, [KylixName,
       LineEnding, KylixName, LineEnding, IntToStr(KylixVersion)]);
-    FileNames[0]:=SetDirSeparators('/home/'+UserName+'/kylix'+IntToStr(KylixVersion));
+    FileNames[0]:=GetForcedPathDelims('/home/'+UserName+'/kylix'+IntToStr(KylixVersion));
     FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
 
     EndUpdate;
@@ -904,7 +904,7 @@ begin
     FileTitles[0]:=Format(lisCodeToolsDefsprojectDirectory2, [KylixName]);
     FileDescs[0]:=Format(lisCodeToolsDefsTheProjectDirectory, [KylixName, LineEnding]
       );
-    FileNames[0]:=SetDirSeparators('/home/'+UserName+'/kylix'
+    FileNames[0]:=GetForcedPathDelims('/home/'+UserName+'/kylix'
                    +IntToStr(KylixVersion)+'/YourProject');
     FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
 
@@ -912,7 +912,7 @@ begin
     FileDescs[1]:=Format(lisCodeToolsDefsKylixMainDirectoryForProject, [KylixName,
       LineEnding, KylixName, LineEnding, KylixName, LineEnding, IntToStr(KylixVersion)
       ]);
-    FileNames[1]:=SetDirSeparators('/home/'+UserName+'/kylix'+IntToStr(KylixVersion));
+    FileNames[1]:=GetForcedPathDelims('/home/'+UserName+'/kylix'+IntToStr(KylixVersion));
     FileFlags[1]:=[iftDirectory,iftNotEmpty,iftMustExist];
 
     EndUpdate;
