@@ -873,7 +873,8 @@ var
         Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
       if TheCompiler.Compile(Project1,
                               WorkingDir,CompilerFilename,CompilerParams,
-                              BuildAll or NeedBuildAllFlag,false,false,CompileHint)<>mrOk
+                              BuildAll or NeedBuildAllFlag,false,false,false,
+                              CompileHint)<>mrOk
       then
         Error(ErrorBuildFailed,'failed compiling of project '+AFilename);
       // compilation succeded -> write state file
