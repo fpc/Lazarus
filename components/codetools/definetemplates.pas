@@ -1591,7 +1591,7 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
       begin
         // skip keywords
         Inc(CurPos, 19);
-        Filename:=ExpFile(SetDirSeparators(copy(Line,CurPos,length(Line))));
+        Filename:=ExpFile(GetForcedPathDelims(copy(Line,CurPos,length(Line))));
         ConfigFiles.Add('-'+Filename);
       end else if StrLComp(@UpLine[CurPos], 'COMPILER: ', 10) = 0 then begin
         // skip keywords
@@ -1643,7 +1643,7 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
       begin
         // skip keywords
         Inc(CurPos, 26);
-        Filename:=ExpFile(SetDirSeparators(copy(Line,CurPos,length(Line))));
+        Filename:=ExpFile(GetForcedPathDelims(copy(Line,CurPos,length(Line))));
         if (ConfigFiles.Count>0)
         and (ConfigFiles[ConfigFiles.Count-1]='-'+Filename) then
           ConfigFiles.Delete(ConfigFiles.Count-1);
@@ -1652,7 +1652,7 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
     'U':
       if (StrLComp(@UpLine[CurPos], 'USING UNIT PATH: ', 17) = 0) then begin
         Inc(CurPos, 17);
-        NewPath:=SetDirSeparators(copy(Line,CurPos,len));
+        NewPath:=GetForcedPathDelims(copy(Line,CurPos,len));
         if not FilenameIsAbsolute(NewPath) then
           NewPath:=ExpFile(NewPath);
         NewPath:=ChompPathDelim(TrimFilename(NewPath));
@@ -2212,7 +2212,7 @@ var
 
   function d(const Filenames: string): string;
   begin
-    Result:=SetDirSeparators(Filenames);
+    Result:=GetForcedPathDelims(Filenames);
   end;
 
   procedure AddSrcOSDefines(ParentDefTempl: TDefineTemplate);
@@ -6068,7 +6068,7 @@ var
   
   function d(const Filenames: string): string;
   begin
-    Result:=SetDirSeparators(Filenames);
+    Result:=GetForcedPathDelims(Filenames);
   end;
 
   function GatherUnits: boolean; forward;
@@ -6645,7 +6645,7 @@ function TDefinePool.CreateLazarusSrcTemplate(
 
   function D(const Filename: string): string;
   begin
-    Result:=SetDirSeparators(Filename);
+    Result:=GetForcedPathDelims(Filename);
   end;
     
 var
@@ -7017,7 +7017,7 @@ begin
   MainDirTempl.AddChild(TDefineTemplate.Create('SrcPath',
       Format(ctsSetsSrcPathTo,['RTL, VCL']),
       ExternalMacroStart+'SrcPath',
-      SetDirSeparators(
+      GetForcedPathDelims(
           CreateDelphiSrcPath(DelphiVersion,DefinePathMacro+'/')+'$(#SrcPath)'),
       da_DefineRecurse));
 
@@ -7042,7 +7042,7 @@ begin
   MainDirTempl.AddChild(TDefineTemplate.Create('SrcPath',
       Format(ctsAddsDirToSourcePath,['Delphi RTL+VCL']),
       ExternalMacroStart+'SrcPath',
-      SetDirSeparators(CreateDelphiSrcPath(DelphiVersion,'$(#DelphiDir)/')
+      GetForcedPathDelims(CreateDelphiSrcPath(DelphiVersion,'$(#DelphiDir)/')
                        +'$(#SrcPath)'),
       da_DefineRecurse));
 
@@ -7124,7 +7124,7 @@ begin
   MainDirTempl.AddChild(TDefineTemplate.Create('SrcPath',
       Format(ctsSetsSrcPathTo,['RTL, CLX']),
       ExternalMacroStart+'SrcPath',
-      SetDirSeparators(CreateKylixSrcPath(KylixVersion,DefinePathMacro+'/')
+      GetForcedPathDelims(CreateKylixSrcPath(KylixVersion,DefinePathMacro+'/')
                        +'$(#SrcPath)'),
       da_DefineRecurse));
 
@@ -7149,7 +7149,7 @@ begin
   MainDirTempl.AddChild(TDefineTemplate.Create('SrcPath',
       Format(ctsAddsDirToSourcePath,['Kylix RTL+VCL']),
       ExternalMacroStart+'SrcPath',
-      SetDirSeparators(CreateKylixSrcPath(KylixVersion,'$(#KylixDir)/')
+      GetForcedPathDelims(CreateKylixSrcPath(KylixVersion,'$(#KylixDir)/')
                        +'$(#SrcPath)'),
       da_DefineRecurse));
 
@@ -7995,7 +7995,7 @@ begin
   Result.Score:=Score;
   Result.Targets:=Targets;
   //DebugLn(['TFPCSourceRules.Add Targets="',Result.Targets,'" Priority=',Result.Score]);
-  Result.Filename:=lowercase(SetDirSeparators(Filename));
+  Result.Filename:=lowercase(GetForcedPathDelims(Filename));
   FItems.Add(Result);
   IncreaseChangeStamp;
 end;
