@@ -2002,7 +2002,7 @@ begin
     Missing:=true;
     UserReadOnly:=true;
     Name:='DefaultPackage';
-    Filename:=SetDirSeparators('$(LazarusDir)/components/custom/customdummy.lpk');
+    Filename:=GetForcedPathDelims('$(LazarusDir)/components/custom/customdummy.lpk');
     Version.SetValues(1,0,1,1);
     Author:='Anonymous';
     AutoInstall:=pitStatic;
