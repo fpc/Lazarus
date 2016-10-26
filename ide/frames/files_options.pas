@@ -275,7 +275,7 @@ begin
   CompilerTranslationFileComboBox.Hint:=CompilerTranslationFileLabel.Hint;
   with CompilerTranslationFileComboBox.Items do
   begin
-    Add(SetDirSeparators('$(FPCSrcDir)/compiler/msg/errordu.msg'));
+    Add(GetForcedPathDelims('$(FPCSrcDir)/compiler/msg/errordu.msg'));
   end;
 end;
 

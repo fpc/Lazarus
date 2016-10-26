@@ -1016,7 +1016,7 @@ begin
     FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory(FPCVer);
     if FilenameIsAbsolute(FPCSrcDir) then begin
       // FPCSrcDir exists => use the errore.msg
-      aFilename:=AppendPathDelim(FPCSrcDir)+SetDirSeparators('compiler/msg/errore.msg');
+      aFilename:=AppendPathDelim(FPCSrcDir)+GetForcedPathDelims('compiler/msg/errore.msg');
       if FileExistsCached(aFilename) then
         fCurrentEnglishFile:=aFilename;
     end;
@@ -1024,7 +1024,7 @@ begin
       // as fallback use the copy in the Codetools directory
       aFilename:=EnvironmentOptions.GetParsedLazarusDirectory;
       if FilenameIsAbsolute(aFilename) then begin
-        aFilename:=AppendPathDelim(aFilename)+SetDirSeparators('components/codetools/fpc.errore.msg');
+        aFilename:=AppendPathDelim(aFilename)+GetForcedPathDelims('components/codetools/fpc.errore.msg');
         if FileExistsCached(aFilename) then
           fCurrentEnglishFile:=aFilename;
       end;
