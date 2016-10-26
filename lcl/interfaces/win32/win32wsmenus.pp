@@ -778,6 +778,10 @@ begin
     begin
       Tmp := ThemeServices.GetElementDetails(PopupCheckBgStates[AMenuItem.Enabled]);
       ThemeDrawElement(AHDC, Tmp, CheckRect, nil);
+      CheckRect.Left := CheckRect.Left + Metrics.CheckMargins.cxLeftWidth;
+      CheckRect.Top := CheckRect.Top + Metrics.CheckMargins.cyTopHeight;
+      CheckRect.Right := CheckRect.Left + Metrics.CheckSize.cx;
+      CheckRect.Bottom := CheckRect.Top + Metrics.CheckSize.cy;
       Tmp := ThemeServices.GetElementDetails(PopupCheckStates[AMenuItem.Enabled, AMenuItem.RadioItem]);
       ThemeDrawElement(AHDC, Tmp, CheckRect, nil);
     end;
