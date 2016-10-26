@@ -897,6 +897,7 @@ begin
         if aTarget.Removed then continue;
         APath:=Format(ARoot+'/Targets/Target%d/',[ACount]);
         RelativeFileName:=ExtractRelativepath(TargetPath,aTarget.FileName);
+        StringReplace(RelativeFileName,'\','/',[rfReplaceAll]); // normalize, so that files look the same x-platform, for less svn changes
         XMLConfig.SetDeleteValue(APath+'FileName',RelativeFileName,'');
         aTarget.SaveGroupSettings(XMLConfig,APath);
         Inc(ACount);
