@@ -90,7 +90,7 @@ procedure TDebuggerGeneralOptionsFrame.cmdOpenAdditionalPathClick(
   Sender: TObject);
 begin
   PathEditorDialog.Path:=txtAdditionalPath.Text;
-  PathEditorDialog.Templates:=SetDirSeparators(
+  PathEditorDialog.Templates:=GetForcedPathDelims(
         '$(LazarusDir)/include/$(TargetOS)'
       +';$(FPCSrcDir)/rtl/inc/'
       +';$(FPCSrcDir)/rtl/$(SrcOS)'
