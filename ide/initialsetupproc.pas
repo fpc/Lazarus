@@ -119,7 +119,7 @@ function CheckLazarusDirectoryQuality(ADirectory: string;
 
   function SubDirExists(SubDir: string; var q: TSDFilenameQuality): boolean;
   begin
-    SubDir:=SetDirSeparators(SubDir);
+    SubDir:=GetForcedPathDelims(SubDir);
     if DirPathExistsCached(ADirectory+SubDir) then exit(true);
     Result:=false;
     Note:=Format(lisDirectoryNotFound2, [SubDir]);
@@ -128,7 +128,7 @@ function CheckLazarusDirectoryQuality(ADirectory: string;
 
   function SubFileExists(SubFile: string; var q: TSDFilenameQuality): boolean;
   begin
-    SubFile:=SetDirSeparators(SubFile);
+    SubFile:=GetForcedPathDelims(SubFile);
     if FileExistsCached(ADirectory+SubFile) then exit(true);
     Result:=false;
     Note:=Format(lisFileNotFound3, [SubFile]);
@@ -153,7 +153,7 @@ begin
   if not SubDirExists('ide',Result) then exit;
   if not SubDirExists('components',Result) then exit;
   if not SubFileExists('ide/lazarus.lpi',Result) then exit;
-  VersionIncFile:=SetDirSeparators('ide/version.inc');
+  VersionIncFile:=GetForcedPathDelims('ide/version.inc');
   if not SubFileExists(VersionIncFile,Result) then exit;
   sl:=TStringListUTF8.Create;
   try
@@ -487,11 +487,11 @@ begin
     ShortCompFile:='fpc'+ExeExt;
 
     // check $(LazarusDir)\fpc\3.0.0\bin\i386-win32\fpc.exe
-    if CheckFile(SetDirSeparators('$(LazarusDir)/fpc/'+{$I %FPCVERSION%}+'/bin/'+GetCompiledTargetCPU+'-'+GetCompiledTargetOS+'/')+ShortCompFile,Result)
+    if CheckFile(GetForcedPathDelims('$(LazarusDir)/fpc/'+{$I %FPCVERSION%}+'/bin/'+GetCompiledTargetCPU+'-'+GetCompiledTargetOS+'/')+ShortCompFile,Result)
       then exit;
 
     // check $(LazarusDir)\fpc\bin\i386-win32\fpc.exe
-    if CheckFile(SetDirSeparators('$(LazarusDir)/fpc/bin/'+GetCompiledTargetCPU+'-'+GetCompiledTargetOS+'/')+ShortCompFile,Result)
+    if CheckFile(GetForcedPathDelims('$(LazarusDir)/fpc/bin/'+GetCompiledTargetCPU+'-'+GetCompiledTargetOS+'/')+ShortCompFile,Result)
       then exit;
 
     // check common directories
@@ -605,7 +605,7 @@ function CheckFPCSrcDirQuality(ADirectory: string; out Note: string;
 
   function SubDirExists(SubDir: string): boolean;
   begin
-    SubDir:=SetDirSeparators(SubDir);
+    SubDir:=GetForcedPathDelims(SubDir);
     if DirPathExistsInternal(ADirectory+SubDir) then exit(true);
     Result:=false;
     Note:=Format(lisDirectoryNotFound2, [SubDir]);
@@ -613,7 +613,7 @@ function CheckFPCSrcDirQuality(ADirectory: string; out Note: string;
 
   function SubFileExists(SubFile: string): boolean;
   begin
-    SubFile:=SetDirSeparators(SubFile);
+    SubFile:=GetForcedPathDelims(SubFile);
     if FileExistsInternal(ADirectory+SubFile) then exit(true);
     Result:=false;
     Note:=Format(lisFileNotFound3, [SubFile]);
@@ -693,7 +693,7 @@ function SearchFPCSrcDirCandidates(StopIfFits: boolean; const FPCVer: string): T
     RealDir: String;
   begin
     Result:=false;
-    Dir:=ChompPathDelim(SetDirSeparators(Dir));
+    Dir:=ChompPathDelim(GetForcedPathDelims(Dir));
     if Dir='' then exit;
     // check if already checked
     if Assigned(List) and List.CaptionExists(Dir) then exit;
@@ -855,10 +855,10 @@ begin
     // Windows-only locations:
     if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
       // check make in fpc.exe directory
-      if CheckFile(SetDirSeparators('$Path($(CompPath))\make.exe'),Result)
+      if CheckFile(GetForcedPathDelims('$Path($(CompPath))\make.exe'),Result)
       then exit;
       // check $(LazarusDir)\fpc\bin\i386-win32\fpc.exe
-      if CheckFile(SetDirSeparators('$(LazarusDir)\fpc\bin\$(TargetCPU)-$(TargetOS)\make.exe'),Result)
+      if CheckFile(GetForcedPathDelims('$(LazarusDir)\fpc\bin\$(TargetCPU)-$(TargetOS)\make.exe'),Result)
         then exit;
     end;
 
