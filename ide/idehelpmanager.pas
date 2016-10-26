@@ -691,7 +691,7 @@ begin
     end else begin
       AFilename:=URLPath;
     end;
-    AFilename:=SetDirSeparators(AFilename);
+    AFilename:=GetForcedPathDelims(AFilename);
     LazarusIDE.DoOpenFileAndJumpToPos(AFilename,p,-1,-1,-1,[]);
   end else if (URLScheme='openpackage') and IsValidIdent(URLPath) then begin
     PackageEditingInterface.DoOpenPackageWithName(URLPath,[],false);
@@ -963,12 +963,13 @@ begin
           or (URLPath='lazdoc.css')
           then begin
             OpenFile(Result,
-              EnvironmentOptions.GetParsedLazarusDirectory+SetDirSeparators('/docs/'+URLPath),
+              EnvironmentOptions.GetParsedLazarusDirectory
+                +GetForcedPathDelims('/docs/'+URLPath),
               true);
           end;
         end;
       end else if URLType='file' then begin
-        OpenFile(Result,SetDirSeparators(URLPath),true);
+        OpenFile(Result,GetForcedPathDelims(URLPath),true);
       end;
       {Result:=TMemoryStream.Create;
       Stream.Stream:=Result;

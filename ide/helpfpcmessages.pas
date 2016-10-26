@@ -970,7 +970,7 @@ begin
     FPCSrcDir:=UnitSet.FPCSourceDirectory;
     if (FPCSrcDir<>'') then begin
       AltFilename:=TrimFilename(AppendPathDelim(FPCSrcDir)
-                +SetDirSeparators('compiler/msg/')+Filename);
+                +GetForcedPathDelims('compiler/msg/')+Filename);
       if FileExistsCached(AltFilename) then
         Filename:=AltFilename;
     end;
@@ -984,7 +984,7 @@ begin
         if FilenameIsAbsolute(CfgCache.RealCompiler) then
         begin
           AltFilename:=AppendPathDelim(ExtractFilePath(CfgCache.RealCompiler))
-                      +SetDirSeparators('msg/')+Filename;
+                      +'msg'+PathDelim+Filename;
           if FileExistsCached(AltFilename) then
             Filename:=AltFilename;
         end;
@@ -993,7 +993,7 @@ begin
         and FilenameIsAbsolute(CfgCache.Compiler) then
         begin
           AltFilename:=AppendPathDelim(ExtractFilePath(CfgCache.Compiler))
-                      +SetDirSeparators('msg/')+Filename;
+                      +'msg'+PathDelim+Filename;
           if FileExistsCached(AltFilename) then
             Filename:=AltFilename;
         end;
@@ -1076,7 +1076,7 @@ begin
   Result:=AdditionsFile;
   IDEMacros.SubstituteMacros(Result);
   if Result='' then begin
-    Result:=SetDirSeparators(FDefaultAdditionsFile);
+    Result:=GetForcedPathDelims(FDefaultAdditionsFile);
     IDEMacros.SubstituteMacros(Result);
   end;
   Result:=TrimFilename(Result);

@@ -1756,7 +1756,7 @@ begin
   Result:='';
   LazDir:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory);
   if (LazDir='') or not FilenameIsAbsolute(LazDir) then exit;
-  Result:=LazDir+SetDirSeparators('docs/xml/ide/');
+  Result:=LazDir+GetForcedPathDelims('docs/xml/ide/');
 end;
 
 function TCodeHelpManager.IsIDESrcFile(const SrcFilename: string): boolean;

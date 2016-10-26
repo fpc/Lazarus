@@ -1581,7 +1581,7 @@ begin
   OpenDialog.InitialDir:=ExtractFilePath(DocFile.Filename);
   if OpenDialog.Execute then begin
     ExampleEdit.Text := ExtractRelativepath(
-      ExtractFilePath(DocFile.Filename), SetDirSeparators(OpenDialog.FileName));
+      ExtractFilePath(DocFile.Filename), GetForcedPathDelims(OpenDialog.FileName));
     if ExampleEdit.Text<>FOldVisualValues[fpdiExample] then
       Modified:=true;
   end;
