@@ -748,7 +748,7 @@ begin
   if EnvironmentOptions.GetParsedLazarusDirectory<>'' then begin
     CodeToolBoss.DefinePool.EnglishErrorMsgFilename:=
       AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+
-        SetDirSeparators('components/codetools/fpc.errore.msg');
+        GetForcedPathDelims('components/codetools/fpc.errore.msg');
     CodeToolBoss.FPCDefinesCache.ExtraOptions:=
                           '-Fr'+CodeToolBoss.DefinePool.EnglishErrorMsgFilename;
   end;
