@@ -6101,7 +6101,7 @@ var
   ActiveSrcEdit, OldActiveSrcEdit: TSourceEditor;
 begin
   GetCurrentUnit(OldActiveSrcEdit,OldActiveUnitInfo);
-  Result:=DoOpenEditorFile(AFilename, PageIndex, WindowIndex, Flags);
+  Result:=DoOpenEditorFile(AFilename, PageIndex, WindowIndex, Flags+[ofRegularFile]);
   if Result<>mrOk then exit;
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo<>nil then begin
