@@ -215,7 +215,7 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
     sz := ThemeServices.GetDetailSize(Details);
     ARect := Bounds((ARect.Left + ARect.Right - sz.cx) div 2, (ARect.Top + ARect.Bottom - sz.cy) div 2,
       sz.cx, sz.cy);
-    InflateRect(ARect, 1, 1);
+    OffsetRect(ARect, 1, 1);
     ThemeServices.DrawElement(Data^._HDC, Details, ARect);
 
     // draw text
