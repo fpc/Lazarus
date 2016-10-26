@@ -264,7 +264,7 @@ function TChmHelpViewer.GetHelpEXE: String;
 begin
   Result := fHelpExe;
   if Result='' then
-    Result := SetDirSeparators('$(LazarusDir)/components/chmhelp/lhelp/lhelp$(ExeExt)');
+    Result := GetForcedPathDelims('$(LazarusDir)/components/chmhelp/lhelp/lhelp$(ExeExt)');
   if not IDEMacros.SubstituteMacros(Result) then
     Exit('');
 end;
@@ -275,7 +275,7 @@ begin
   if Result='' then
     Result:='$(LazarusDir)/docs/chm;$(LazarusDir)/docs/html;$(LazarusDir)/docs/html/lcl';
   IDEMacros.SubstituteMacros(Result);
-  Result:=MinimizeSearchPath(SetDirSeparators(Result));
+  Result:=MinimizeSearchPath(GetForcedPathDelims(Result));
 end;
 
 function TChmHelpViewer.GetFileNameAndURL(RawUrl:String; out FileName: String; out URL: String
@@ -368,7 +368,7 @@ begin
     Exit;
   end;
 
-  LHelpProject := '$(LazarusDir)'+SetDirSeparators('/components/chmhelp/lhelp/lhelp.lpi');
+  LHelpProject := '$(LazarusDir)'+GetForcedPathDelims('/components/chmhelp/lhelp/lhelp.lpi');
   if not IDEMacros.SubstituteMacros(LHelpProject) then exit;
   LHelpProject:=TrimFilename(LHelpProject);
   if not FileExistsUTF8(LHelpProject) then
@@ -417,7 +417,7 @@ begin
   Result := False;
   ALazBuild:= '$(LazarusDir)/$MakeExe(lazbuild)';
   if not IDEMacros.SubstituteMacros(ALazBuild) then exit;
-  ALazBuild:=TrimFilename(SetDirSeparators(ALazBuild));
+  ALazBuild:=TrimFilename(GetForcedPathDelims(ALazBuild));
   Result:=FileExistsUTF8(ALazBuild);
 end;
 
@@ -514,11 +514,11 @@ begin
     IDEMessageDialog(HELP_MissingLhelp,
       Format(HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
              [LineEnding, HelpExeFileName, LineEnding+LineEnding, LineEnding,
-              SetDirSeparators('components/chmhelp/lhelp/lhelp.lpi')]),
+              GetForcedPathDelims('components/chmhelp/lhelp/lhelp.lpi')]),
       mtError,[mbCancel]);
     Debugln(Format('ChmHelpViewer: '+HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
       [LineEnding, HelpExeFileName, LineEnding+LineEnding, LineEnding,
-      SetDirSeparators('components/chmhelp/lhelp/lhelp.lpi')]));
+      GetForcedPathDelims('components/chmhelp/lhelp/lhelp.lpi')]));
     exit;
   end;
 

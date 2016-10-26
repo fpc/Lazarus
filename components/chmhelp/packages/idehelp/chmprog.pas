@@ -186,7 +186,7 @@ begin
   begin
     Result := '$(LazarusDir)/docs/chm;$(LazarusDir)/docs/html';
     IDEMacros.SubstituteMacros(Result);
-    Result:=MinimizeSearchPath(SetDirSeparators(Result));
+    Result:=MinimizeSearchPath(GetForcedPathDelims(Result));
   end;
 end;
 

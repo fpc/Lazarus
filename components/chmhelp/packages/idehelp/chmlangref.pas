@@ -104,7 +104,7 @@ begin
   begin
     fCHMSearchPath := '$(LazarusDir)/docs/chm;$(LazarusDir)/docs/html';
     IDEMacros.SubstituteMacros(fCHMSearchPath);
-    fCHMSearchPath := MinimizeSearchPath(SetDirSeparators(fCHMSearchPath));
+    fCHMSearchPath := MinimizeSearchPath(GetForcedPathDelims(fCHMSearchPath));
   end;
   Filename:=SearchFileInPath(ChmFileName,'',fCHMSearchPath,';',[]);
 
