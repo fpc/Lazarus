@@ -819,10 +819,10 @@ begin
         Target:=Nil;
         APath:=Format(ARoot+'/Targets/Target%d/',[i]);
         TargetFileName:=XMLConfig.GetValue(APath+'FileName','');
-        TargetFileName:=TrimFilename(SetDirSeparators(TargetFileName));
+        TargetFileName:=TrimFilename(GetForcedPathDelims(TargetFileName));
         if not FilenameIsAbsolute(TargetFileName) then
           TargetFileName:=TrimFilename(BaseDir+TargetFileName);
-        If (TargetFileName<>'') and FileExistsCached(TargetFileName) then begin
+        if (TargetFileName<>'') and FileExistsCached(TargetFileName) then begin
           Target:=TIDECompileTarget(AddTarget(TargetFileName));
           if pgloLoadRecursively in Options then
             Target.LoadTarget(true);
