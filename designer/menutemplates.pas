@@ -143,6 +143,7 @@ function SavedTemplatesExist: boolean;
 function GetSavedTemplatesCount: integer;
 function InsertMenuTemplateDlg: TMenuItem;
 function DeleteMenuTemplateDlg: boolean;
+function GetCfgPath: string;
 
 const
   MenuBar_Height = 20;
@@ -193,7 +194,7 @@ var
   XMLConfig: TXMLConfig;
   cfgPath, s, templateCfgName: string;
 begin
-  cfgPath:=SetDirSeparators(ExtractFilePath(ChompPathDelim(SysToUTF8(GetAppConfigDir(False)))) + 'lazarus');
+  cfgPath:=GetCfgPath;
   templateCfgName:=cfgPath + DirectorySeparator + MenuTemplatesFilename;
   if not FileExistsUTF8(templateCfgName) then
     Exit(False);
@@ -261,6 +262,11 @@ begin
   finally
     dlg.Free;
   end;
+end;
+
+function GetCfgPath: string;
+begin
+  Result:=ExtractFilePath(ChompPathDelim(GetAppConfigDirUTF8(False)))+'lazarus';
 end;
 
 
@@ -423,7 +429,7 @@ var
   i, j: integer;
   cfgPath, s, sc, sText, tmp: string;
 begin
-  cfgPath:=SetDirSeparators(ExtractFilePath(ChompPathDelim(SysToUTF8(GetAppConfigDir(False)))) + 'lazarus');
+  cfgPath:=GetCfgPath;
   XMLConfig:=TXMLConfig.Create(cfgPath + DirectorySeparator + MenuTemplatesFilename);
   try
     i:=1;
@@ -504,7 +510,7 @@ var
   i, j: integer;
   cfgPath, s: string;
 begin
-  cfgPath:=SetDirSeparators(ExtractFilePath(ChompPathDelim(SysToUTF8(GetAppConfigDir(False)))) + 'lazarus');
+  cfgPath:=GetCfgPath;
   XMLConfig:=TXMLConfig.Create(cfgPath + DirectorySeparator + MenuTemplatesFilename);
   try
     i:=1;
@@ -879,7 +885,7 @@ var
   cfgPath, s, desc, currDesc: string;
 begin
   desc:=TMenuTemplate(FTVTemplates.Selected.Data).Description;
-  cfgPath:=SetDirSeparators(ExtractFilePath(ChompPathDelim(SysToUTF8(GetAppConfigDir(False)))) + 'lazarus');
+  cfgPath:=GetCfgPath;
   XMLConfig:=TXMLConfig.Create(cfgPath + DirectorySeparator + MenuTemplatesFilename);
   try
     i:=0;
