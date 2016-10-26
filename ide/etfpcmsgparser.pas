@@ -3026,8 +3026,10 @@ begin
           MsgLine.Attribute[MsgAttrDiskFilename]:=LastFilename;
           MsgLine.Flags:=MsgLine.Flags+[mlfTestBuildFile];
           Result:=LastMsgLine.Filename;
-        end else
+        end else begin
           Result:=LastFilename;
+          ReverseTestBuildDir(MsgLine,Result);
+        end;
         exit;
       end;
     end;
