@@ -303,7 +303,7 @@ begin
     // Windows-only locations:
     if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
       // check for debugger in fpc.exe directory - could be a lucky shot
-      if CheckFile(SetDirSeparators('$Path($(CompPath))/'+DebuggerFileName+GetExecutableExt),Result)
+      if CheckFile(GetForcedPathDelims('$Path($(CompPath))/'+DebuggerFileName+GetExecutableExt),Result)
         then exit;
     end;
 
@@ -767,7 +767,7 @@ begin
 
   FPCSrcDirBrowseButton.Caption:=lisPathEditBrowse;
   FPCSrcDirLabel.Caption:=SimpleFormat(lisTheSourcesOfTheFreePascalPackagesAreRequiredForBro,
-    [SetDirSeparators('rtl/linux/system.pp')]);
+    [GetForcedPathDelims('rtl/linux/system.pp')]);
   ScanLabel.Caption := lisScanning;
   StopScanButton.Caption:=lisStop;
 
