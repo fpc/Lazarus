@@ -608,7 +608,7 @@ begin
   FCurrentPathEditor:=PathEditorDialog;
   try
     inherited Click;
-    FCurrentPathEditor.Templates := SetDirSeparators(FTemplates);
+    FCurrentPathEditor.Templates := GetForcedPathDelims(FTemplates);
     FCurrentPathEditor.Path := AssociatedEdit.Text;
     FCurrentPathEditor.ShowModal;
     DoOnPathEditorExecuted;
