@@ -3016,9 +3016,14 @@
       <element name="TCustomForm.ShowModal">
         <short>Show this form as a modal Dialog.
         </short>
-        <descr>The call doesn't return until the form is closed.
-          The application switches to modal state until then.
-        </descr>
+        <descr>Shows the form in modal state and waits til it is closed by the user or by the program.
+Modal state means that neither the user nor the program can switch to forms, that were already visible before ShowModal.
+
+The form must have Visible=false when calling ShowModal.
+The call doesn't return until the form is closed.
+The application switches to modal state until then.
+ShowModal creates its own event loop calling ProcessMessages.
+</descr>
         <errors>EInvalidOperation if the form cannot be shown modally.
         </errors>
         <seealso/>
