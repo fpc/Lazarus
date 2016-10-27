@@ -170,7 +170,6 @@ type
     FDockParentClientSize: TSize;
     FDockRestoreBounds: TRect;
     FPercentPosition: Single;
-
     procedure UpdatePercentPosition;
   protected
     procedure SetResizeAnchor(const AValue: TAnchorKind); override;
@@ -192,6 +191,10 @@ type
     function HasOnlyOneSibling(Side: TAnchorKind; MinPos, MaxPos: integer): TControl;
     property DockRestoreBounds: TRect read FDockRestoreBounds write FDockRestoreBounds;
     property CustomWidth: Boolean read FCustomWidth write FCustomWidth;
+    // Increase visibility of TCustomSplitter events:
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
   end;
   TAnchorDockSplitterClass = class of TAnchorDockSplitter;
 
