@@ -3027,6 +3027,7 @@ var
   AROP2: Integer;
   APatternSpace: CGColorSpaceRef;
   BaseSpace: CGColorSpaceRef;
+  AColor: CGColorRef;
 begin
   if ADC = nil then Exit;
 
@@ -3061,7 +3062,10 @@ begin
     CGContextSetFillPattern(ADC.CGcontext, FCGPattern, @RGBA[0]);
   end
   else
-    CGContextSetRGBFillColor(ADC.CGContext, RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
+  begin
+    AColor := CGColorCreateGenericRGB(RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
+    CGContextSetFillColorWithColor(ADC.CGContext, AColor);
+  end;
 end;
 
 { TCocoaGDIObject }
