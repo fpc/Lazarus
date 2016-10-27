@@ -427,7 +427,7 @@ begin
       SendNotification(senrLineChange, TSynEditStringTrimmingList(Caller),
                        FPosY - 1, 1);
       SendNotification(senrEditAction, TSynEditStringTrimmingList(Caller),
-                       FPosY, 0, length(fSynStrings[FPosY-1]) + FPosX - 1, -FLen, '');
+                       FPosY, 0, length(fSynStrings[FPosY-1]) + FPosX, -FLen, '');
     end;
   end;
 end;
@@ -457,7 +457,7 @@ begin
       SendNotification(senrLineChange, TSynEditStringTrimmingList(Caller),
                        FPosY - 1, 1);
       SendNotification(senrEditAction, TSynEditStringTrimmingList(Caller),
-                       FPosY, 0, length(fSynStrings[FPosY-1]) + FPosX - 1, length(FText), FText);
+                       FPosY, 0, length(fSynStrings[FPosY-1]) + FPosX, length(FText), FText);
     end;
   end;
 end;
@@ -488,7 +488,7 @@ begin
       SendNotification(senrLineChange, TSynEditStringTrimmingList(Caller),
                        FPosY - 1, 1);
       SendNotification(senrEditAction, TSynEditStringTrimmingList(Caller),
-                       FPosY, 0, length(fSynStrings[FPosY-1]), length(FText), FText);
+                       FPosY, 0, 1+length(fSynStrings[FPosY-1]), length(FText), FText);
     end;
   end;
 end;
@@ -775,7 +775,7 @@ var
 begin
   if (not fEnabled) then exit;
   FIsTrimming := True;
-  {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- TrimAfterLock', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  Index=', Index, ' LockList=',fLockList.CommaText]);{$ENDIF}
+  {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- TrimAfterLock', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), ' LockList=',fLockList.Count]);{$ENDIF}
   i := fLockList.IndexOf(fLineIndex);
   if i >= 0 then begin
     if fSpaces <> fLockList.Entries[i].TrimmedSpaces then
