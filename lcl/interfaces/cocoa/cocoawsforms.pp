@@ -99,6 +99,7 @@ type
     class function GetWindowFromHandle(const ACustomForm: TCustomForm): TCocoaWindow;
     class function GetWindowContentFromHandle(const ACustomForm: TCustomForm): TCocoaWindowContent;
   published
+    class function AllocWindowHandle: TCocoaWindow; virtual;
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
@@ -439,6 +440,12 @@ begin
   Result := TCocoaWindowContent(ACustomForm.Handle);
 end;
 
+// Some projects that use the LCL need to override this
+class function TCocoaWSCustomForm.AllocWindowHandle: TCocoaWindow;
+begin
+  Result := TCocoaWindow(TCocoaWindow.alloc);
+end;
+
 class function TCocoaWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
@@ -461,7 +468,7 @@ var
   if (AParams.Style and WS_CHILD) = 0 then
   begin
 
-    win := TCocoaWindow(TCocoaWindow.alloc);
+    win := AllocWindowHandle;
 
     if not Assigned(win) then
     begin
