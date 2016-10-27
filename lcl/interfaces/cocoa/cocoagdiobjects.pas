@@ -1659,52 +1659,50 @@ end;
 procedure TCocoaContext.LineTo(X, Y: Integer);
 var
   cg: CGContextRef;
-  //p: array [0..1] of CGPoint;
   deltaX, deltaY, absDeltaX, absDeltaY: Integer;
   clipDeltaX, clipDeltaY: Float32;
-  tx,ty:Float32;
+  tx, ty, bx, by: Float32;
 begin
   cg := CGContext;
   if not Assigned(cg) then Exit;
 
-  deltaX := X - PenPos.x;
-  deltaY := Y - PenPos.y;
+  bx := FPenPos.x;
+  by := FPenPos.y;
+  deltaX := X-FPenPos.x;
+  deltaY := Y-FPenPos.y;
   if (deltaX=0) and (deltaY=0) then Exit;
 
   absDeltaX := Abs(deltaX);
   absDeltaY := Abs(deltaY);
+
   if (absDeltaX<=1) and (absDeltaY<=1) then
   begin
     // special case for 1-pixel lines
-    tx := PenPos.x + 0.55;
-    ty := PenPos.y + 0.55;
+    tx := bx + 0.05;
+    ty := by + 0.05;
   end
   else
   begin
     // exclude the last pixel from the line
     if absDeltaX > absDeltaY then
     begin
-      if deltaX > 0 then clipDeltaX := -1.0 else clipDeltaX := 1.0;
+      if deltaX > 0 then clipDeltaX := -0.5 else clipDeltaX := 0.5;
       clipDeltaY := clipDeltaX * deltaY / deltaX;
     end
     else
     begin
-      if deltaY > 0 then clipDeltaY := -1.0 else clipDeltaY := 1.0;
+      if deltaY > 0 then clipDeltaY := -0.5 else clipDeltaY := 0.5;
       clipDeltaX := clipDeltaY * deltaX / deltaY;
     end;
-    tx := X + clipDeltaX + 0.5;
-    ty := Y + clipDeltaY + 0.5;
+    bx := bx + clipDeltaX;
+    by := by + clipDeltaY;
+    tx := X + clipDeltaX;
+    ty := Y + clipDeltaY;
   end;
 
-  {p[0].x:=PenPos.X+0.5;
-  p[0].y:=PenPos.Y+0.5;
-  p[1].x:=tx;
-  p[1].y:=ty;}
-
   CGContextBeginPath(cg);
-  //CGContextAddLines(cg, @p, 2);
-  CGContextMoveToPoint(cg, PenPos.x + 0.5, PenPos.y + 0.5);
-  CGContextAddLineToPoint(cg, tx, ty);
+  CGContextMoveToPoint(cg, bx + 0.5, by + 0.5);
+  CGContextAddLineToPoint(cg, tx + 0.5, ty + 0.5);
   CGContextStrokePath(cg);
 
   FPenPos.x := X;
