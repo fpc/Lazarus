@@ -210,6 +210,7 @@ type
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
+    procedure drawRect(dirtyRect: NSRect); override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     // mouse
@@ -1748,6 +1749,14 @@ begin
   Result := inherited resignFirstResponder;
   if Assigned(callback) then
     callback.ResignFirstResponder;
+end;
+
+procedure TCocoaButton.drawRect(dirtyRect: NSRect);
+var ctx: NSGraphicsContext;
+begin
+  inherited drawRect(dirtyRect);
+  if CheckMainThread and Assigned(callback) then
+    callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
 end;
 
 function TCocoaButton.lclGetCallback: ICommonCallback;

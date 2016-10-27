@@ -31,7 +31,7 @@ uses
   // Widgetset
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Cocoa
-  CocoaWSCommon, CocoaPrivate, CocoaUtils;
+  CocoaWSCommon, CocoaPrivate, CocoaUtils, CocoaGDIObjects;
 
 type
 
@@ -185,6 +185,7 @@ type
   TLCLButtonCallback = class(TLCLCommonCallback, IButtonCallback)
   public
     procedure ButtonClick; virtual;
+    procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); override;
   end;
   TLCLButtonCallBackClass = class of TLCLButtonCallBack;
 
@@ -371,6 +372,33 @@ procedure TLCLButtonCallback.ButtonClick;
 begin
   if not Owner.lclIsEnabled() then Exit;
   SendSimpleMessage(Target, LM_CLICKED);
+end;
+
+procedure TLCLButtonCallback.Draw(ControlContext: NSGraphicsContext;
+  const bounds, dirty: NSRect);
+var
+  PS: PPaintStruct;
+  nsr:NSRect;
+  ctx: TCocoaContext;
+begin
+  // todo: think more about draw call while previous draw still active
+  ctx := TCocoaContext.Create(ControlContext);
+  ctx.isControlDC := True;
+  try
+    nsr:=dirty;
+    nsr.origin.y:=bounds.size.height-dirty.origin.y-dirty.size.height;
+    New(PS);
+    try
+      FillChar(PS^, SizeOf(TPaintStruct), 0);
+      PS^.hdc := HDC(ctx);
+      PS^.rcPaint := NSRectToRect(nsr);
+      LCLSendPaintMsg(Target, HDC(ctx), PS);
+    finally
+      Dispose(PS);
+    end;
+  finally
+    FreeAndNil(ctx);
+  end;
 end;
 
 { TLCLListBoxCallback }
