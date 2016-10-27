@@ -1287,6 +1287,43 @@ begin
   Height := R.Bottom - R.Top;
 end;
 
+function TCocoaWidgetSet.InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean;
+var
+  Font: TFont absolute AFont;
+  CTFont: CTFontRef;
+  CTFontName: CFStringRef;
+  CTFontSize: CGFloat;
+  CTFontType: CTFontUIFontType;
+begin
+  Result := False;
+
+  case AStockFont of
+    sfSystem:  // stock system font
+      CTFontType := kCTFontSystemFontType;
+    sfHint:    // stock hint font
+      CTFontType := kCTFontToolTipFontType;
+    sfIcon:    // stock icon font
+      CTFontType := kCTFontViewsFontType;
+    sfMenu:     // stock menu font
+      CTFontType := kCTFontMenuItemFontType;
+  end;
+
+  CTFont :=  CTFontCreateUIFontForLanguage(CTFontType, 0, nil);
+  try
+    CTFontName := CTFontCopyFamilyName(CTFont);
+    try
+      Font.Name := CFStringToStr(CTFontName);
+      finally
+      CFRelease(CTFontName);
+      end;
+    CTFontSize := CTFontGetSize(CTFont);
+    Font.Size := Round(CTFontSize);
+    finally
+    CFRelease(CTFont);
+    end;
+  Result := True;
+end;
+
 function TCocoaWidgetSet.HideCaret(Handle: HWND): Boolean;
 var
   Obj: NSObject;

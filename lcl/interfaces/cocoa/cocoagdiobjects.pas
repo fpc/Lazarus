@@ -620,9 +620,13 @@ begin
   // we could use NSFontTraitsAttribute to request the desired font style (Bold/Italic)
   // but in this case we may get NIL as result. This way is safer.
   if cfs_Italic in Style then
-    FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSItalicFontMask);
+    FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSItalicFontMask)
+  else
+    FFont := NSFontManager.sharedFontManager.convertFont_toNotHaveTrait(FFont, NSItalicFontMask);
   if cfs_Bold in Style then
-    FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSBoldFontMask);
+    FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSBoldFontMask)
+  else
+    FFont := NSFontManager.sharedFontManager.convertFont_toNotHaveTrait(FFont, NSBoldFontMask);
   case ALogFont.lfPitchAndFamily and $F of
     FIXED_PITCH, MONO_FONT:
       FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSFixedPitchFontMask);
