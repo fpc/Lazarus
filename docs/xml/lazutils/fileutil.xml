@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="lazutils">
     <!--
@@ -767,20 +767,10 @@ else
       </element>
       <!-- function Visibility: default -->
       <element name="SearchFileInPath">
-        <short>
-          <var>SearchFileInPath</var> - searches for  
-          <var>Filename</var> in the given  
-          <var>SearchPath</var> using the supplied  
-          <var>BasePath</var> with the specified  
-          <var>Delimiter</var> and the options listed in  
-          <var>Flags</var>
+        <short><var>SearchFileInPath</var> - searches for            <var>Filename</var> in the given            <var>SearchPath</var> using the supplied            <var>BasePath</var> with the specified            <var>Delimiter</var> and the options listed in            <var>Flags</var>
         </short>
-        <descr>
-          <p>
-            <printshort id="SearchFileInPath"/>
-          </p>
-          <p>Searches the whole path unless the <var>sffDontSearchInBasePath</var> flag is present</p>
-          <p>Returns the first file that matches the supplied criteria</p>
+        <descr><p><printshort id="SearchFileInPath"/>
+          </p><p>Searches the whole path. Relative folder file names are expanded using BasePath. By default if BasePath is set it is searched as well, unless <var>sffDontSearchInBasePath</var> flag is present</p><p>Returns the first file that matches the supplied criteria</p>
         </descr>
         <errors>If the file does not exist, an empty string is returned</errors>
       </element>
@@ -891,11 +881,7 @@ else
       <element name="FindDefaultExecutablePath">
         <short>
           <var>FindDefaultExecutablePath</var> - finds the default path to the named Executable file</short>
-        <descr>
-          <p>
-            <var>FindDefaultExecutablePath</var> - finds the default path to the named Executable file</p>
-          <p>On Windows systems, looks for the '.EXE' extension</p>
-          <p>In all systems, searches the 'PATH' environment variable to see if the file is in one of the default paths</p>
+        <descr><p><var>FindDefaultExecutablePath</var> - finds the default path to the named Executable file</p><p>On Windows systems it looks for both with and without the '.EXE' extension</p><p>If Executable is not an absolute filename the executable is searched using the environment variable PATH. Relative directories in PATH are expanded using BaseDir.</p><p>On non Unix systems (e.g. Windows) it searches in BaseDir as well. While on Unix systems (e.g. Linux, OS X) it only searches in BaseDir, if PATH contains the '.' directory.</p>
         </descr>
       </element>
       <!-- function result Visibility: default -->

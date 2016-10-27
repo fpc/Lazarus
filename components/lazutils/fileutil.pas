@@ -153,7 +153,7 @@ function ReadFileToString(const Filename: string): string;
 // file search
 type
   TSearchFileInPathFlag = (
-    sffDontSearchInBasePath,
+    sffDontSearchInBasePath, // do not search in BasePath, search only in SearchPath.
     sffSearchLoUpCase
     );
   TSearchFileInPathFlags = set of TSearchFileInPathFlag;

@@ -976,6 +976,8 @@ end;
 
 function FindDefaultExecutablePath(const Executable: string;
   const BaseDir: string): string;
+const
+  Flags : TSearchFileInPathFlags = [{$IFDEF Unix}sffDontSearchInBasePath{$ENDIF}];
 begin
   if LazFileUtils.FilenameIsAbsolute(Executable) then begin
     Result:=Executable;
@@ -989,13 +991,13 @@ begin
   end else begin
     Result:=SearchFileInPath(Executable,BaseDir,
                              LazUTF8.GetEnvironmentVariableUTF8('PATH'), PathSeparator,
-                             [sffDontSearchInBasePath]);
+                             Flags);
     if Result<>'' then exit;
     {$IFDEF Windows}
     if ExtractFileExt(Executable)='' then begin
       Result:=SearchFileInPath(Executable+'.exe',BaseDir,
                                LazUTF8.GetEnvironmentVariableUTF8('PATH'), PathSeparator,
-                               [sffDontSearchInBasePath]);
+                               Flags);
       if Result<>'' then exit;
     end;
     {$ENDIF}
