@@ -1505,18 +1505,34 @@ begin
       exit;
   end;
 
-  if (not Found) then begin
-    if FIsIncludeDirective then begin
+  if FIsIncludeDirective then
+  begin
+    if (not Found) then begin
       // search include file
       SearchPath:='.;'+CodeToolBoss.DefineTree.GetIncludePathForDirectory(BaseDir);
-      if FindFile(SearchPath) then
+      if FindFile(SearchPath) then // sets FFileName if result=true
         Found:=true;
-    end else if FilenameIsPascalSource(FFileName) or (ExtractFileExt(FFileName)='') then
+    end;
+  end else
+  begin
+    if (not Found) then
     begin
-      // search pascal unit
+      // search pascal unit without extension
+      AUnitName:=FFileName;
+      InFilename:='';
+      NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+                           BaseDir,AUnitName,InFilename,true);
+      if NewFilename<>'' then begin
+        Found:=true;
+        FFileName:=NewFilename;
+      end;
+    end;
+
+    if (not Found) and (ExtractFileExt(FFileName)<>'') then
+    begin
+      // search pascal unit with extension
       AUnitName:=ExtractFileNameOnly(FFileName);
       InFilename:=FFileName;
-      if ExtractFileExt(FFileName)='' then InFilename:='';
       NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
                            BaseDir,AUnitName,InFilename,true);
       if NewFilename<>'' then begin
