@@ -60,7 +60,7 @@ uses
   SynEdit,
   // IDE
   CompOptsModes, ProjectResources, LazConf, W32Manifest, ProjectIcon,
-  LazarusIDEStrConsts, CompilerOptions,
+  IDECmdLine, LazarusIDEStrConsts, CompilerOptions,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs, ProjPackBase,
   FileReferenceList, EditDefineTree, ModeMatrixOpts, PackageDefs, PackageSystem;
 
@@ -830,6 +830,7 @@ type
     procedure LoadFromSession;
     function DoLoadLPI(Filename: String): TModalResult;
     function DoLoadSession(Filename: String): TModalResult;
+    function DoLoadLPR(Revert: boolean): TModalResult;
     // Methods for WriteProject
     procedure SaveFlags(const Path: string);
     procedure SaveUnits(const Path: string; SaveSession: boolean);
@@ -3040,6 +3041,54 @@ begin
     LoadDefaultSession;
 end;
 
+function TProject.DoLoadLPR(Revert: boolean): TModalResult;
+// lpr is here the main module, it does not need to have the extension .lpr
+var
+  LPRUnitInfo, AnUnitInfo, NewUnitInfo: TUnitInfo;
+  FoundInUnits, MissingInUnits, NormalUnits: TStrings;
+  i: Integer;
+  CurFilename: String;
+  Code: TCodeBuffer;
+begin
+  debugln(['TProject.DoLoadLPR START']);
+  if (MainUnitID<0) or (not (pfMainUnitIsPascalSource in Flags)) then
+    exit(mrOk); // has no lpr
+  LPRUnitInfo:=MainUnitInfo;
+  if (LPRUnitInfo.Source=nil) then begin
+    LPRUnitInfo.Source:=CodeToolBoss.LoadFile(LPRUnitInfo.Filename,true,Revert);
+    if LPRUnitInfo.Source=nil then exit(mrCancel);
+  end;
+
+  if pfMainUnitHasUsesSectionForAllUnits in Flags then begin
+    try
+      CodeToolBoss.FindDelphiProjectUnits(LPRUnitInfo.Source,FoundInUnits,
+        MissingInUnits, NormalUnits, true);
+      if FoundInUnits<>nil then begin
+        for i:=0 to FoundInUnits.Count-1 do begin
+          Code:=FoundInUnits.Objects[i] as TCodeBuffer;
+          CurFilename:=Code.Filename;
+          AnUnitInfo:=UnitInfoWithFilename(CurFilename);
+          if (AnUnitInfo<>nil) and AnUnitInfo.IsPartOfProject then continue;
+          if ConsoleVerbosity>0 then
+            debugln(['Note: (lazarus) [TProject.DoLoadLPR] used unit ',FoundInUnits[i],' not marked in lpi. Setting IsPartOfProject flag.']);
+          if AnUnitInfo=nil then begin
+            NewUnitInfo:=TUnitInfo.Create(nil);
+            NewUnitInfo.Filename:=CurFilename;
+            NewUnitInfo.IsPartOfProject:=true;
+            NewUnitInfo.Source:=Code;
+            AddFile(NewUnitInfo,false);
+          end else
+            AnUnitInfo.IsPartOfProject:=true;
+        end;
+      end;
+    finally
+      FoundInUnits.Free;
+      MissingInUnits.Free;
+      NormalUnits.Free;
+    end;
+  end;
+end;
+
 // Method ReadProject itself
 function TProject.ReadProject(const NewProjectInfoFile: string;
   GlobalMatrixOptions: TBuildMatrixOptions; LoadAllOptions: Boolean): TModalResult;
@@ -3062,6 +3111,10 @@ begin
       Result:=DoLoadSession(ProjectSessionFile);
       if Result<>mrOK then Exit;
     end;
+
+    // load lpr
+    if (pfMainUnitIsPascalSource in Flags) and (MainUnitInfo<>nil) then
+      DoLoadLPR(false); // ignore errors
 
   finally
     EndUpdate;

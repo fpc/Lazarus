@@ -135,9 +135,10 @@ type
     function FindUsedUnitFiles(var MainUsesSection: TStrings): boolean;
     function FindUsedUnitFiles(var MainUsesSection,
                                ImplementationUsesSection: TStrings): boolean;
-    function FindDelphiProjectUnits(var FoundInUnits, MissingInUnits,
+    function FindDelphiProjectUnits(out FoundInUnits, MissingInUnits,
                                     NormalUnits: TStrings;
-                                    UseContainsSection: boolean = false): boolean;
+                                    UseContainsSection: boolean = false;
+                                    IgnoreNormalUnits: boolean = false): boolean;
     function UsesSectionToFilenames(UsesNode: TCodeTreeNode): TStrings;
     function UsesSectionToUnitnames(UsesNode: TCodeTreeNode): TStrings;
     function FindMissingUnits(var MissingUnits: TStrings; FixCase: boolean;
@@ -1396,8 +1397,9 @@ end;
   If no codebuffer was found/created then the filename will be the unit name
   plus the 'in' extension.
 ------------------------------------------------------------------------------}
-function TStandardCodeTool.FindDelphiProjectUnits(var FoundInUnits,
-  MissingInUnits, NormalUnits: TStrings; UseContainsSection: boolean): boolean;
+function TStandardCodeTool.FindDelphiProjectUnits(out FoundInUnits,
+  MissingInUnits, NormalUnits: TStrings; UseContainsSection: boolean;
+  IgnoreNormalUnits: boolean): boolean;
 var
   AnUnitName, AnUnitInFilename: string;
   NewCode: TCodeBuffer;
@@ -1414,7 +1416,10 @@ begin
   if UsesNode=nil then exit;
   FoundInUnits:=TStringList.Create;
   MissingInUnits:=TStringList.Create;
-  NormalUnits:=TStringList.Create;
+  if IgnoreNormalUnits then
+    NormalUnits:=nil
+  else
+    NormalUnits:=TStringList.Create;
   Node:=UsesNode.FirstChild;
   while Node<>nil do begin
     // read next unit name
@@ -1432,8 +1437,10 @@ begin
       end;
     end else if AnUnitName<>'' then begin
       // the units without 'in' are 'Forms' or units added by the user
-      NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false,Node.StartPos);
-      NormalUnits.AddObject(AnUnitName,NewCode);
+      if not IgnoreNormalUnits then begin
+        NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false,Node.StartPos);
+        NormalUnits.AddObject(AnUnitName,NewCode);
+      end;
     end;
     Node:=Node.NextBrother;
   end;

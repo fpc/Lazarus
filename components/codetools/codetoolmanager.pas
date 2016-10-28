@@ -686,9 +686,11 @@ type
     function FindMissingUnits(Code: TCodeBuffer; var MissingUnits: TStrings;
           FixCase: boolean = false; SearchImplementation: boolean = true): boolean;
     function FindDelphiProjectUnits(Code: TCodeBuffer;
-          var FoundInUnits, MissingInUnits, NormalUnits: TStrings): boolean;
+          out FoundInUnits, MissingInUnits, NormalUnits: TStrings;
+          IgnoreNormalUnits: boolean = false): boolean;
     function FindDelphiPackageUnits(Code: TCodeBuffer;
-          var FoundInUnits, MissingInUnits, NormalUnits: TStrings): boolean;
+          var FoundInUnits, MissingInUnits, NormalUnits: TStrings;
+          IgnoreNormalUnits: boolean = false): boolean;
     function CommentUnitsInUsesSections(Code: TCodeBuffer;
           MissingUnits: TStrings): boolean;
     function FindUnitCaseInsensitive(Code: TCodeBuffer;
@@ -4995,7 +4997,8 @@ begin
 end;
 
 function TCodeToolManager.FindDelphiProjectUnits(Code: TCodeBuffer;
-  var FoundInUnits, MissingInUnits, NormalUnits: TStrings): boolean;
+  out FoundInUnits, MissingInUnits, NormalUnits: TStrings;
+  IgnoreNormalUnits: boolean): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -5003,15 +5006,16 @@ begin
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.FindDelphiProjectUnits(FoundInUnits,
-                                                MissingInUnits, NormalUnits);
+    Result:=FCurCodeTool.FindDelphiProjectUnits(FoundInUnits, MissingInUnits,
+      NormalUnits, false, IgnoreNormalUnits);
   except
     on e: Exception do Result:=HandleException(e);
   end;
 end;
 
 function TCodeToolManager.FindDelphiPackageUnits(Code: TCodeBuffer;
-  var FoundInUnits, MissingInUnits, NormalUnits: TStrings): boolean;
+  var FoundInUnits, MissingInUnits, NormalUnits: TStrings;
+  IgnoreNormalUnits: boolean): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -5020,7 +5024,7 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.FindDelphiProjectUnits(FoundInUnits,
-                                              MissingInUnits, NormalUnits,true);
+                     MissingInUnits,NormalUnits,true,IgnoreNormalUnits);
   except
     on e: Exception do Result:=HandleException(e);
   end;
