@@ -5603,8 +5603,8 @@ begin
         CurFilename:=Code.Filename;
         AnUnitInfo:=UnitInfoWithFilename(CurFilename);
         if (AnUnitInfo<>nil) and AnUnitInfo.IsPartOfProject then continue;
-        if ConsoleVerbosity>0 then
-          debugln(['Note: (lazarus) [TProject.DoLoadLPR] used unit ',FoundInUnits[i],' not marked in lpi. Setting IsPartOfProject flag.']);
+        if ConsoleVerbosity>=0 then
+          debugln(['Note: (lazarus) [TProject.UpdateIsPartOfProjectFromMainUnit] used unit ',FoundInUnits[i],' not marked in lpi. Setting IsPartOfProject flag.']);
         if AnUnitInfo=nil then begin
           NewUnitInfo:=TUnitInfo.Create(nil);
           NewUnitInfo.Filename:=CurFilename;
