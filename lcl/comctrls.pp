@@ -3846,6 +3846,7 @@ type
     function GetSectionAt(P: TPoint): Integer;
     procedure Paint; override;
     procedure PaintSection(Index: Integer); virtual;
+    procedure ChangeScale(M, D: Integer);override;
   published
     property DragReorder: boolean read FDragReorder write FDragReorder;
     property Images: TCustomImageList read FImages write SetImages;

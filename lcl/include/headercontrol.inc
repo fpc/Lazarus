@@ -417,6 +417,25 @@ begin
     ThemeServices.DrawText(Canvas, Details, Section.Text, ContentRect, AlignmentMap[Section.Alignment] or DT_VCENTER or DT_SINGLELINE, 0);
 end;
 
+procedure TCustomHeaderControl.ChangeScale(M, D: Integer);
+var
+  I: integer;
+  Sect: THeaderSection;
+begin
+  inherited;
+
+  Sections.BeginUpdate;
+  try
+    for I := 0 to Sections.Count-1 do
+    begin
+      Sect := Sections.Items[I];
+      Sect.Width := MulDiv(Sect.Width, M, D);
+    end;
+  finally
+    Sections.EndUpdate;
+  end;
+end;
+
 { THeaderSections }
 
 function THeaderSections.GetItem(Index: Integer): THeaderSection;
