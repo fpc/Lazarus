@@ -3059,7 +3059,7 @@ begin
     if LPRUnitInfo.Source=nil then exit(mrCancel);
   end;
 
-  if pfMainUnitHasUsesSectionForAllUnits in Flags then begin
+  if [pfMainUnitIsPascalSource,pfMainUnitHasUsesSectionForAllUnits]<=Flags then begin
     try
       CodeToolBoss.FindDelphiProjectUnits(LPRUnitInfo.Source,FoundInUnits,
         MissingInUnits, NormalUnits, true);
