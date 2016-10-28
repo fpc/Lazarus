@@ -94,15 +94,13 @@ procedure TGraphicControl.DoOnChangeBounds;
 begin
   inherited DoOnChangeBounds;
   // reset canvas handle in next access
-  if Canvas.HandleAllocated then
-    TControlCanvas(Canvas).FreeHandle;
+  TControlCanvas(Canvas).FreeHandle;
 end;
 
 procedure TGraphicControl.DoOnParentHandleDestruction;
 begin
   inherited;
-  if Canvas.HandleAllocated then
-    TControlCanvas(Canvas).FreeHandle;
+  TControlCanvas(Canvas).FreeHandle;
 end;
 
 procedure TGraphicControl.CMCursorChanged(var Message: TLMessage);
