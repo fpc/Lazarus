@@ -5699,6 +5699,7 @@ var
   UEntry: TViewUnitsEntry;
 begin
   if Project1=nil then exit(mrCancel);
+  Project1.UpdateIsPartOfProjectFromMainUnit;
   UnitList := TViewUnitEntries.Create;
   try
     if SourceFileMgr.SelectProjectItems(UnitList, UseItemType[OnlyForms],

@@ -959,12 +959,17 @@ type
     function FindFile(const AFilename: string;
                       SearchFlags: TProjectFileSearchFlags): TLazProjectFile; override;
 
+    // used units with 'in' modifier
+    function UpdateIsPartOfProjectFromMainUnit: TModalResult;
+
     // Application.CreateForm statements
     function AddCreateFormToProjectFile(const AClassName, AName:string):boolean;
     function RemoveCreateFormFromProjectFile(const {%H-}AClassName,
                                                          AName: string):boolean;
     function FormIsCreatedInProjectFile(const AClassname, AName:string):boolean;
-    
+    function GetAutoCreatedFormsList: TStrings;
+    property TmpAutoCreatedForms: TStrings read FTmpAutoCreatedForms write FTmpAutoCreatedForms;
+
     // resources
     function GetMainResourceFilename(AnUnitInfo: TUnitInfo): string;
     function GetResourceFile(AnUnitInfo: TUnitInfo; Index:integer):TCodeBuffer;
@@ -1030,10 +1035,7 @@ type
     // i18n
     function GetPOOutDirectory: string;
 
-    //auto created forms
-    function GetAutoCreatedFormsList: TStrings;
-    property TmpAutoCreatedForms: TStrings read FTmpAutoCreatedForms write FTmpAutoCreatedForms;
-    // Bookmarks
+    // bookmarks
     function  AddBookmark(X, Y, ID: Integer; AUnitInfo:TUnitInfo):integer;
     procedure DeleteBookmark(ID: Integer);
   public
@@ -3044,49 +3046,18 @@ end;
 function TProject.DoLoadLPR(Revert: boolean): TModalResult;
 // lpr is here the main module, it does not need to have the extension .lpr
 var
-  LPRUnitInfo, AnUnitInfo, NewUnitInfo: TUnitInfo;
-  FoundInUnits, MissingInUnits, NormalUnits: TStrings;
-  i: Integer;
-  CurFilename: String;
-  Code: TCodeBuffer;
+  LPRUnitInfo: TUnitInfo;
 begin
-  debugln(['TProject.DoLoadLPR START']);
+  Result:=mrOk;
   if (MainUnitID<0) or (not (pfMainUnitIsPascalSource in Flags)) then
-    exit(mrOk); // has no lpr
+    exit; // has no lpr
   LPRUnitInfo:=MainUnitInfo;
   if (LPRUnitInfo.Source=nil) then begin
     LPRUnitInfo.Source:=CodeToolBoss.LoadFile(LPRUnitInfo.Filename,true,Revert);
     if LPRUnitInfo.Source=nil then exit(mrCancel);
   end;
 
-  if [pfMainUnitIsPascalSource,pfMainUnitHasUsesSectionForAllUnits]<=Flags then begin
-    try
-      CodeToolBoss.FindDelphiProjectUnits(LPRUnitInfo.Source,FoundInUnits,
-        MissingInUnits, NormalUnits, true);
-      if FoundInUnits<>nil then begin
-        for i:=0 to FoundInUnits.Count-1 do begin
-          Code:=FoundInUnits.Objects[i] as TCodeBuffer;
-          CurFilename:=Code.Filename;
-          AnUnitInfo:=UnitInfoWithFilename(CurFilename);
-          if (AnUnitInfo<>nil) and AnUnitInfo.IsPartOfProject then continue;
-          if ConsoleVerbosity>0 then
-            debugln(['Note: (lazarus) [TProject.DoLoadLPR] used unit ',FoundInUnits[i],' not marked in lpi. Setting IsPartOfProject flag.']);
-          if AnUnitInfo=nil then begin
-            NewUnitInfo:=TUnitInfo.Create(nil);
-            NewUnitInfo.Filename:=CurFilename;
-            NewUnitInfo.IsPartOfProject:=true;
-            NewUnitInfo.Source:=Code;
-            AddFile(NewUnitInfo,false);
-          end else
-            AnUnitInfo.IsPartOfProject:=true;
-        end;
-      end;
-    finally
-      FoundInUnits.Free;
-      MissingInUnits.Free;
-      NormalUnits.Free;
-    end;
-  end;
+  UpdateIsPartOfProjectFromMainUnit;
 end;
 
 // Method ReadProject itself
@@ -5604,6 +5575,51 @@ function TProject.FindFile(const AFilename: string;
   SearchFlags: TProjectFileSearchFlags): TLazProjectFile;
 begin
   Result:=UnitInfoWithFilename(AFilename, SearchFlags);
+end;
+
+function TProject.UpdateIsPartOfProjectFromMainUnit: TModalResult;
+var
+  FoundInUnits, MissingInUnits, NormalUnits: TStrings;
+  i: Integer;
+  Code: TCodeBuffer;
+  CurFilename: String;
+  AnUnitInfo, NewUnitInfo: TUnitInfo;
+begin
+  if (MainUnitID<0) or (MainUnitInfo.Source=nil)
+  or ([pfMainUnitIsPascalSource,pfMainUnitHasUsesSectionForAllUnits]*Flags
+    <>[pfMainUnitIsPascalSource,pfMainUnitHasUsesSectionForAllUnits])
+  then
+    exit(mrOk);
+  try
+    if CodeToolBoss.FindDelphiProjectUnits(MainUnitInfo.Source,FoundInUnits,
+      MissingInUnits, NormalUnits, true)
+    then
+      Result:=mrOk
+    else
+      Result:=mrCancel;
+    if FoundInUnits<>nil then begin
+      for i:=0 to FoundInUnits.Count-1 do begin
+        Code:=FoundInUnits.Objects[i] as TCodeBuffer;
+        CurFilename:=Code.Filename;
+        AnUnitInfo:=UnitInfoWithFilename(CurFilename);
+        if (AnUnitInfo<>nil) and AnUnitInfo.IsPartOfProject then continue;
+        if ConsoleVerbosity>0 then
+          debugln(['Note: (lazarus) [TProject.DoLoadLPR] used unit ',FoundInUnits[i],' not marked in lpi. Setting IsPartOfProject flag.']);
+        if AnUnitInfo=nil then begin
+          NewUnitInfo:=TUnitInfo.Create(nil);
+          NewUnitInfo.Filename:=CurFilename;
+          NewUnitInfo.IsPartOfProject:=true;
+          NewUnitInfo.Source:=Code;
+          AddFile(NewUnitInfo,false);
+        end else
+          AnUnitInfo.IsPartOfProject:=true;
+      end;
+    end;
+  finally
+    FoundInUnits.Free;
+    MissingInUnits.Free;
+    NormalUnits.Free;
+  end;
 end;
 
 function TProject.IndexOfFilename(const AFilename: string): integer;

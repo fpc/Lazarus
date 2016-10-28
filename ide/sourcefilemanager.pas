@@ -3499,6 +3499,7 @@ const
   MultiSelectCheckedState: Boolean = true;
 Begin
   if Project1=nil then exit(mrCancel);
+  Project1.UpdateIsPartOfProjectFromMainUnit;
   ViewUnitEntries := TViewUnitEntries.Create;
   UnitInfos:=nil;
   try
