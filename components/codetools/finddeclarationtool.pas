@@ -707,8 +707,6 @@ type
       const AFilename: string): TCodeTreeNode;
     function FindUnitFileInAllUsesSections(const AFilename: string;
       CheckMain: boolean = true; CheckImplementation: boolean = true): TCodeTreeNode;
-    function IsIncludeDirectiveAtPos(CleanPos, CleanCodePosInFront: integer;
-      var IncludeCode: TCodeBuffer): boolean;
     function FindEnumInContext(Params: TFindDeclarationParams): boolean;
     // sub methods for FindIdentifierInContext
     function DoOnIdentifierFound(Params: TFindDeclarationParams;
@@ -918,6 +916,9 @@ type
     procedure GatherUnitAndSrcPath(var UnitPath, CompleteSrcPath: string);
     function SearchUnitInUnitLinks(const TheUnitName: string): string; deprecated;
     function SearchUnitInUnitSet(const TheUnitName: string): string;
+
+    function IsIncludeDirectiveAtPos(CleanPos, CleanCodePosInFront: integer;
+      out IncludeCode: TCodeBuffer): boolean;
 
     function FindSmartHint(const CursorPos: TCodeXYPosition;
                     Flags: TFindSmartFlags = DefaultFindSmartHintFlags): string;
@@ -3448,11 +3449,12 @@ begin
 end;
 
 function TFindDeclarationTool.IsIncludeDirectiveAtPos(CleanPos,
-  CleanCodePosInFront: integer; var IncludeCode: TCodeBuffer): boolean;
+  CleanCodePosInFront: integer; out IncludeCode: TCodeBuffer): boolean;
 var LinkIndex, CommentStart, CommentEnd: integer;
   SrcLink: TSourceLink;
 begin
   Result:=false;
+  IncludeCode:=nil;
   if (Scanner=nil) then exit;
   LinkIndex:=Scanner.LinkIndexAtCleanPos(CleanPos);
   if (LinkIndex<0) or (LinkIndex>=Scanner.LinkCount-1) then exit;
