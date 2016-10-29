@@ -552,6 +552,9 @@ type
     FNewUnitTemplate: string;
     FFileDialogFilter: string;
 
+    //component list
+    FComponentListKeepOpen: Boolean;
+
     // Desktop
     FDesktops: TDesktopOptList;
     FDesktop: TDesktopOpt;
@@ -849,6 +852,9 @@ type
     property MsgViewFilters: TLMsgViewFilters read FMsgViewFilters;
     property MsgColors[u: TMessageLineUrgency]: TColor read GetMsgColors write SetMsgColors;
     property MsgViewShowFPCMsgLinesCompiled: Boolean read FMsgViewShowFPCMsgLinesCompiled write FMsgViewShowFPCMsgLinesCompiled;
+
+    //component list
+    property ComponentListKeepOpen: Boolean read FComponentListKeepOpen write FComponentListKeepOpen;
 
     // glyphs
     property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write FShowButtonGlyphs;
@@ -1828,6 +1834,9 @@ begin
     MsgViewFilters.LoadFromXMLConfig(FXMLCfg,'MsgView/Filters/');
     FMsgViewShowFPCMsgLinesCompiled:=FXMLCfg.GetValue(Path+'MsgView/FPCMsg/ShowLinesCompiled',false);
 
+    //component list
+    FComponentListKeepOpen:=FXMLCfg.GetValue(Path+'ComponentList/KeepOpen',false);
+
     // glyphs
     FShowButtonGlyphs := TApplicationShowGlyphs(FXMLCfg.GetValue(Path+'ShowButtonGlyphs/Value',
       Ord(sbgSystem)));
@@ -2174,6 +2183,9 @@ begin
       fMsgColors[u],clDefault);
     MsgViewFilters.SaveToXMLConfig(FXMLCfg,'MsgView/Filters/');
     FXMLCfg.SetDeleteValue(Path+'MsgView/FPCMsg/ShowLinesCompiled',FMsgViewShowFPCMsgLinesCompiled,false);
+
+    //component list
+    FXMLCfg.SetDeleteValue(Path+'ComponentList/KeepOpen',FComponentListKeepOpen,false);
 
     // glyphs
     FXMLCfg.SetDeleteValue(Path+'ShowButtonGlyphs/Value',Ord(FShowButtonGlyphs), Ord(sbgSystem));

@@ -12,11 +12,10 @@ object ComponentListForm: TComponentListForm
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   LCLVersion = '1.7'
-  Visible = False
   object PageControl: TPageControl
     Left = 0
-    Height = 394
-    Top = 31
+    Height = 397
+    Top = 27
     Width = 300
     ActivePage = TabSheetList
     Align = alClient
@@ -25,24 +24,24 @@ object ComponentListForm: TComponentListForm
     OnChange = PageControlChange
     object TabSheetList: TTabSheet
       Caption = 'List'
-      ClientHeight = 361
-      ClientWidth = 296
+      ClientHeight = 369
+      ClientWidth = 292
       object Panel7: TPanel
         Left = 0
-        Height = 361
+        Height = 369
         Top = 0
-        Width = 296
+        Width = 292
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 2
-        ClientHeight = 361
-        ClientWidth = 296
+        ClientHeight = 369
+        ClientWidth = 292
         TabOrder = 0
         object ListTree: TTreeView
           Left = 2
-          Height = 357
+          Height = 365
           Top = 2
-          Width = 292
+          Width = 288
           Align = alClient
           DefaultItemHeight = 26
           Images = imListPalette
@@ -138,22 +137,22 @@ object ComponentListForm: TComponentListForm
   end
   object FilterPanel: TPanel
     Left = 0
-    Height = 31
+    Height = 27
     Top = 0
     Width = 300
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 31
+    ClientHeight = 27
     ClientWidth = 300
     TabOrder = 0
     object LabelSearch: TLabel
       AnchorSideLeft.Control = FilterPanel
       AnchorSideTop.Control = FilterPanel
       Left = 6
-      Height = 19
+      Height = 15
       Top = 6
-      Width = 86
+      Width = 63
       BorderSpacing.Around = 6
       Caption = 'LabelSearch'
       ParentColor = False
@@ -163,10 +162,10 @@ object ComponentListForm: TComponentListForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = LabelSearch
       AnchorSideTop.Side = asrCenter
-      Left = 98
-      Height = 29
-      Top = 1
-      Width = 198
+      Left = 75
+      Height = 23
+      Top = 2
+      Width = 221
       OnAfterFilter = TreeFilterEdAfterFilter
       ButtonWidth = 23
       NumGlyphs = 1
@@ -177,23 +176,37 @@ object ComponentListForm: TComponentListForm
       FilteredTreeview = ListTree
     end
   end
-  object ButtonPanel: TButtonPanel
-    Left = 6
-    Height = 30
-    Top = 431
-    Width = 288
-    OKButton.Name = 'OKButton'
-    OKButton.DefaultCaption = True
-    OKButton.OnClick = OKButtonClick
-    HelpButton.Name = 'HelpButton'
-    HelpButton.DefaultCaption = True
-    CloseButton.Name = 'CloseButton'
-    CloseButton.DefaultCaption = True
-    CancelButton.Name = 'CancelButton'
-    CancelButton.DefaultCaption = True
+  object ButtonPanel: TPanel
+    Left = 0
+    Height = 43
+    Top = 424
+    Width = 300
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 43
+    ClientWidth = 300
     TabOrder = 2
-    ShowButtons = [pbOK]
-    ShowBevel = False
+    object chbKeepOpen: TCheckBox
+      Left = 8
+      Height = 19
+      Top = 10
+      Width = 95
+      Caption = 'chbKeepOpen'
+      OnChange = chbKeepOpenChange
+      TabOrder = 0
+    end
+    object OKButton: TButton
+      Left = 208
+      Height = 25
+      Top = 8
+      Width = 85
+      Anchors = [akTop, akRight]
+      Caption = 'OKButton'
+      Default = True
+      ModalResult = 1
+      OnClick = OKButtonClick
+      TabOrder = 1
+    end
   end
   object imListPalette: TImageList
     Height = 24

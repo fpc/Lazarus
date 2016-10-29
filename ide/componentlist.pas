@@ -33,23 +33,25 @@ interface
 
 uses
   Classes, SysUtils, LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
-  ComCtrls, ButtonPanel, Menus, LazarusIDEStrConsts, ComponentReg, PackageDefs,
-  IDEImagesIntf, TreeFilterEdit, FormEditingIntf, IDEOptionDefs;
+  ComCtrls, Menus, Dialogs, LazarusIDEStrConsts, ComponentReg, PackageDefs,
+  IDEImagesIntf, TreeFilterEdit, FormEditingIntf, PropEdits, IDEOptionDefs,
+  EnvironmentOpts, Designer;
 
 type
 
   { TComponentListForm }
 
   TComponentListForm = class(TForm)
+    chbKeepOpen: TCheckBox;
     imListPalette: TImageList;
     imInheritance: TImageList;
     ListTree: TTreeView;
-    ButtonPanel: TButtonPanel;
+    ButtonPanel: TPanel;
     miCollapse: TMenuItem;
     miCollapseAll: TMenuItem;
     miExpand: TMenuItem;
     miExpandAll: TMenuItem;
-    OKButton: TPanelBitBtn;
+    OKButton: TButton;
     LabelSearch: TLabel;
     PageControl: TPageControl;
     FilterPanel: TPanel;
@@ -64,6 +66,7 @@ type
     TabSheetList: TTabSheet;
     tmDeselect: TTimer;
     TreeFilterEd: TTreeFilterEdit;
+    procedure chbKeepOpenChange(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure ListTreeSelectionChanged(Sender: TObject);
@@ -90,6 +93,8 @@ type
     FIgnoreSelection: Boolean;
     FPageControlChange: Boolean;
     FActiveTree: TTreeView;
+    FAddCompNewLeft, FAddCompNewTop: Integer;
+    FAddCompNewParent: TComponent;
     procedure ClearSelection;
     procedure SelectionWasChanged;
     procedure ComponentWasAdded({%H-}ALookupRoot, {%H-}AComponent: TComponent;
@@ -97,6 +102,8 @@ type
     procedure DoComponentInheritence(Comp: TRegisteredComponent);
     procedure UpdateComponents;
     procedure UpdateButtonState;
+    function IsDocked: Boolean;
+    procedure AddSelectedComponent;
   protected
     procedure UpdateShowing; override;
   public
@@ -126,7 +133,8 @@ begin
   TabSheetList.Caption := lisCmpLstList;
   TabSheetPaletteTree.Caption := lisCmpLstPalette;
   TabSheetInheritance.Caption := lisCmpLstInheritance;
-  ButtonPanel.OKButton.Caption := lisUseAndClose;
+  OKButton.Caption := lisUse;
+  chbKeepOpen.Caption := lisKeepOpen;
 
   imListPalette.Width  := ComponentPaletteImageWidth;
   imListPalette.Height := ComponentPaletteImageHeight;
@@ -145,6 +153,56 @@ begin
     IDEComponentPalette.AddHandlerSelectionChanged(@SelectionWasChanged);
     IDEComponentPalette.AddHandlerComponentAdded(@ComponentWasAdded);
   end;
+
+  chbKeepOpen.Checked := EnvironmentOptions.ComponentListKeepOpen;
+end;
+
+procedure TComponentListForm.AddSelectedComponent;
+var
+  AComponent: TRegisteredComponent;
+  ASelections: TPersistentSelectionList;
+  NewParent: TComponent;
+  CurDesigner: TDesigner;
+begin
+  AComponent := GetSelectedComponent;
+  ASelections := TPersistentSelectionList.Create;
+  try
+    GlobalDesignHook.GetSelection(ASelections);
+    if (ASelections.Count>0) and (ASelections[0] is TComponent) then
+      NewParent := TComponent(ASelections[0])
+    else if GlobalDesignHook.LookupRoot is TComponent then
+      NewParent := TComponent(GlobalDesignHook.LookupRoot)
+    else
+      NewParent := nil;
+  finally
+    ASelections.Free;
+  end;
+
+  if NewParent=nil then
+    Exit;
+
+  CurDesigner:=TDesigner(FindRootDesigner(NewParent));
+  if CurDesigner=nil then
+    Exit;
+
+  CurDesigner.AddComponentCheckParent(NewParent, NewParent, nil, AComponent.ComponentClass);
+  if NewParent=nil then
+    Exit;
+
+  if FAddCompNewParent<>NewParent then
+  begin
+    FAddCompNewLeft := 0;
+    FAddCompNewTop := 0;
+    FAddCompNewParent := NewParent;
+  end;
+  Inc(FAddCompNewLeft, 8);
+  Inc(FAddCompNewTop, 8);
+  CurDesigner.AddComponent(AComponent, AComponent.ComponentClass, NewParent, FAddCompNewLeft, FAddCompNewTop, 0, 0);
+end;
+
+procedure TComponentListForm.chbKeepOpenChange(Sender: TObject);
+begin
+  EnvironmentOptions.ComponentListKeepOpen := chbKeepOpen.Checked;
 end;
 
 destructor TComponentListForm.Destroy;
@@ -158,7 +216,7 @@ end;
 procedure TComponentListForm.FormShow(Sender: TObject);
 begin
   //DebugLn(['*** TComponentListForm.FormShow, Parent=', Parent, ', Parent.Parent=', ParentParent]);
-  ButtonPanel.Visible := (HostDockSite=Nil) or (HostDockSite.Parent=Nil);
+  ButtonPanel.Visible := not IsDocked;
   if ButtonPanel.Visible then
   begin                              // ComponentList is undocked
     PageControl.AnchorSideBottom.Side := asrTop;
@@ -231,6 +289,11 @@ begin
     Result := GetSelectedTreeComp(InheritanceTree)
 end;
 
+function TComponentListForm.IsDocked: Boolean;
+begin
+  Result := (HostDockSite<>Nil) and (HostDockSite.Parent<>Nil);
+end;
+
 procedure TComponentListForm.ComponentWasAdded(ALookupRoot, AComponent: TComponent;
   ARegisteredComponent: TRegisteredComponent);
 begin
@@ -240,7 +303,7 @@ end;
 
 procedure TComponentListForm.UpdateButtonState;
 begin
-  ButtonPanel.OKButton.Enabled := Assigned(GetSelectedComponent);
+  OKButton.Enabled := Assigned(GetSelectedComponent);
 end;
 
 procedure TComponentListForm.UpdateShowing;
@@ -459,23 +522,10 @@ end;
 
 procedure TComponentListForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  if Parent=nil then begin
+  if not FKeepSelected then
+  begin
     ClearSelection;
-    if not fKeepSelected then
-      IDEComponentPalette.Selected := Nil;
-  end
-  else begin
-    // Using a dock manager...
-    CloseAction := caNone;
-    //todo: helper function in DockManager or IDEDockMaster for closing forms.
-    // Only close the window if it's floating.
-    // AnchorDocking doesn't seem to initialize 'FloatingDockSiteClass' so we can't just check 'Floating'.
-    // Also, AnchorDocking use nested forms, so the check for HostDockSite.Parent.
-    if Assigned(HostDockSite) and (HostDockSite.DockClientCount <= 1)
-      and (HostDockSite is TCustomForm) and (HostDockSite.Parent = nil) then
-    begin
-      TCustomForm(HostDockSite).Close;
-    end;
+    IDEComponentPalette.Selected := Nil;
   end;
   FKeepSelected := False;
 end;
@@ -484,7 +534,7 @@ procedure TComponentListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: 
 begin
   if Key=VK_ESCAPE then
   begin
-    if IDEComponentPalette.Selected = nil then //close only if no component is selected
+    if (IDEComponentPalette.Selected = nil) and not IsDocked  then //close only if no component is selected
       Close
     else
       ClearSelection; //unselect if component is selected
@@ -497,13 +547,15 @@ var
   AComponent: TRegisteredComponent;
 begin
   AComponent := GetSelectedComponent;
-  if AComponent<>nil then begin
-    FPageControlChange:=True;
-    IDEComponentPalette.Selected := AComponent;
+  if AComponent=nil then
+    Exit;
+
+  if IsDocked or chbKeepOpen.Checked then
+    AddSelectedComponent
+  else
+  begin
     FKeepSelected := True;
     Close;
-    if Assigned(IDEComponentPalette.OnClassSelected) then
-      IDEComponentPalette.OnClassSelected(Self);
   end;
 end;
 

@@ -211,6 +211,7 @@ resourcestring
   lisSelectionTool = 'Selection tool';
   lisClickToSelectPalettePage = 'Click to Select Palette Page';
   lisTotalPages = 'Total Pages: %s';
+  lisKeepOpen = 'keep open';
   
   // macros
   lisCursorColumnInCurrentEditor = 'Cursor column in current editor';
@@ -345,7 +346,6 @@ resourcestring
   lisKMSelectLineEnd = 'Select Line End';
   lisKMSelectPageTop = 'Select Page Top';
   lisKMSelectPageBottom = 'Select Page Bottom';
-  lisUseAndClose = 'Use and close';
   lisMenuSelect = 'Select';
   lisMenuMultiPaste = 'MultiPaste ...';
   lisMenuSelectAll = 'Select All';
