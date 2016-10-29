@@ -4792,8 +4792,14 @@ begin
     fTopLeft.x := FixedCols;
     TLChanged := True;
   end;
-  FGCache.TLRowOff := Min(FGCache.TLRowOff, FGCache.MaxTLOffset.y);
-  FGCache.TLColOff := Min(FGCache.TLColOff, FGCache.MaxTLOffset.x);
+  if TopRow=FGCache.MaxTopLeft.y then
+    FGCache.TLRowOff := Min(FGCache.TLRowOff, FGCache.MaxTLOffset.y)
+  else
+    FGCache.TLRowOff := Min(FGCache.TLRowOff, RowHeights[TopRow]);
+  if LeftCol=FGCache.MaxTopLeft.x then
+    FGCache.TLColOff := Min(FGCache.TLColOff, FGCache.MaxTLOffset.x)
+  else
+    FGCache.TLColOff := Min(FGCache.TLColOff, ColWidths[LeftCol]);
   if TLChanged then
     TopLeftChanged;
 
