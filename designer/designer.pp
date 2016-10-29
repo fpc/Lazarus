@@ -302,6 +302,12 @@ type
       StartNewGroup: boolean; aFieldName: string; const aOldVal, aNewVal: variant): boolean; override;
     function IsUndoLocked: boolean; override;
     procedure ClearUndoItem(AIndex: Integer);
+    procedure AddComponent(const NewRegisteredComponent: TRegisteredComponent;
+      const NewComponentClass: TComponentClass; const NewParent: TComponent;
+      const NewLeft, NewTop, NewWidth, NewHeight: Integer); override;
+    procedure AddComponentCheckParent(var NewParent: TComponent;
+      const OriginComponent: TComponent; const OriginWinControl: TWinControl;
+      const NewComponentClass: TComponentClass); override;
 
     function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
     function NonVisualComponentAtPos(X, Y: integer): TComponent;
@@ -676,6 +682,126 @@ begin
   FUndoLock := 0;
   FUndoState := ucsNone;
   FUndoGroupId := 1;
+end;
+
+procedure TDesigner.AddComponent(
+  const NewRegisteredComponent: TRegisteredComponent;
+  const NewComponentClass: TComponentClass; const NewParent: TComponent;
+  const NewLeft, NewTop, NewWidth, NewHeight: Integer);
+var
+  NewComponent: TComponent;
+  DisableAutoSize: Boolean;
+  NewControl: TControl;
+begin
+  if NewParent=nil then exit;
+  if NewComponentClass = nil then exit;
+
+  // add a new component
+  Selection.RubberbandActive:=false;
+  Selection.Clear;
+
+  if not PropertyEditorHook.BeforeAddPersistent(Self, NewComponentClass, NewParent)
+  then begin
+    DebugLn('Note: TDesigner.AddComponent BeforeAddPersistent failed: ComponentClass=',
+            NewComponentClass.ClassName,' NewParent=',DbgSName(NewParent));
+    exit;
+  end;
+
+  // check cycles
+  if TheFormEditor.ClassDependsOnComponent(NewComponentClass, LookupRoot) then
+  begin
+    IDEMessageDialog(lisA2PInvalidCircularDependency,
+      Format(lisIsAThisCircularDependencyIsNotAllowed, [dbgsName(LookupRoot),
+        dbgsName(NewComponentClass), LineEnding]),
+      mtError,[mbOk],'');
+    exit;
+  end;
+
+  // create component and component interface
+  DebugLn(['AddComponent ',DbgSName(NewComponentClass),' Parent=',DbgSName(NewParent),' ',NewLeft,',',NewTop,',',NewWidth,',',NewHeight]);
+  DisableAutoSize:=true;
+  NewComponent := TheFormEditor.CreateComponent(
+     NewParent,NewComponentClass,'',
+     NewLeft,NewTop,NewWidth,NewHeight,DisableAutoSize);
+  if NewComponent=nil then exit;
+  if DisableAutoSize and (NewComponent is TControl) then
+    TControl(NewComponent).EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDesigner.AddComponent'){$ENDIF};
+  TheFormEditor.FixupReferences(NewComponent); // e.g. frame references a datamodule
+
+  // modified
+  Modified;
+
+  // set initial properties
+  if NewComponent is TControl then begin
+    NewControl:=TControl(NewComponent);
+    //debugln(['AddComponent ',DbgSName(Self),' Bounds=',dbgs(NewControl.BoundsRect),' BaseBounds=',dbgs(NewControl.BaseBounds),' BaseParentClientSize=',dbgs(NewControl.BaseParentClientSize)]);
+    NewControl.Visible:=true;
+    if csSetCaption in NewControl.ControlStyle then
+      NewControl.Caption:=NewComponent.Name;
+  end;
+  if Assigned(FOnSetDesigning) then
+    FOnSetDesigning(Self,NewComponent,True);
+
+  if EnvironmentOptions.CreateComponentFocusNameProperty then
+    // ask user for name
+    NewComponent.Name:=ShowComponentNameDialog(LookupRoot,NewComponent);
+
+  // tell IDE about the new component (e.g. add it to the source)
+  NotifyPersistentAdded(NewComponent);
+
+  // creation completed
+  // -> select new component
+  SelectOnlyThisComponent(NewComponent);
+  if Assigned(FOnComponentAdded) then // this resets the component palette to the selection tool
+    FOnComponentAdded(Self, NewComponent, NewRegisteredComponent);
+
+  {$IFDEF VerboseDesigner}
+  DebugLn('NEW COMPONENT ADDED: Form.ComponentCount=',DbgS(Form.ComponentCount),
+     '  NewComponent.Owner.Name=',NewComponent.Owner.Name);
+  {$ENDIF}
+  AddUndoAction(NewComponent, uopAdd, true, 'Name', '', NewComponent.Name);
+end;
+
+procedure TDesigner.AddComponentCheckParent(var NewParent: TComponent;
+  const OriginComponent: TComponent; const OriginWinControl: TWinControl;
+  const NewComponentClass: TComponentClass);
+var
+  NewParentControl: TWinControl;
+begin
+  if Mediator<>nil then begin
+    // mediator, non LCL components
+    if NewParent=nil then
+      NewParent:=OriginComponent;
+    while (NewParent<>nil)
+    and (not Mediator.ParentAcceptsChild(NewParent,NewComponentClass)) do
+      NewParent:=NewParent.GetParentComponent;
+    if NewParent=nil then
+      NewParent:=FLookupRoot;
+  end else if (FLookupRoot is TCustomForm) or (FLookupRoot is TCustomFrame)
+  then begin
+    // LCL controls
+    if NewParent<>nil then begin
+      if not (NewParent is TWinControl) then begin
+        debugln(['ERROR: AddComponent failed: AddClicked returned not a TWinControl: ',DbgSName(NewParent)]);
+        exit;
+      end;
+      NewParentControl := TWinControl(NewParent);
+    end else if OriginComponent is TWinControl then
+      NewParentControl := TWinControl(OriginComponent)
+    else
+      NewParentControl := OriginWinControl;
+
+    while (NewParentControl <> nil)
+    and not ControlAcceptsStreamableChildComponent(NewParentControl,
+                                                NewComponentClass,FLookupRoot)
+    do
+      NewParentControl := NewParentControl.Parent;
+    NewParent := NewParentControl;
+    //debugln(['AddComponent NewParent=',DbgSName(NewParent)]);
+  end else begin
+    // TDataModule
+    NewParent := FLookupRoot;
+  end;
 end;
 
 procedure TDesigner.PrepareFreeDesigner(AFreeComponent: boolean);
@@ -2175,31 +2301,23 @@ end;
 
 procedure TDesigner.MouseUpOnControl(Sender : TControl; var TheMessage:TLMMouse);
 var
-  NewLeft, NewTop, NewWidth, NewHeight: Integer;
   Button: TMouseButton;
   Shift: TShiftState;
   SenderParentForm: TCustomForm;
   RubberBandWasActive: boolean;
-  ParentClientOrigin, PopupPos: TPoint;
+  PopupPos: TPoint;
   SelectedCompClass: TRegisteredComponent;
   SelectionChanged, NewRubberbandSelection: boolean;
   DesignSender: TControl;
 
-  procedure AddComponent;
+  procedure DoAddComponent;
   var
     NewParent: TComponent;
-    NewParentControl: TWinControl;
-    NewComponent: TComponent;
     NewComponentClass: TComponentClass;
-    DisableAutoSize: Boolean;
-    NewControl: TControl;
+    NewLeft, NewTop, NewWidth, NewHeight: Integer;
+    ParentClientOrigin: TPoint;
   begin
     if MouseDownComponent=nil then exit;
-
-    // add a new component
-    Selection.RubberbandActive:=false;
-    Selection.Clear;
-
     NewComponentClass := SelectedCompClass.GetCreationClass;
     //debugln(['AddComponent NewComponentClass=',DbgSName(NewComponentClass)]);
 
@@ -2207,48 +2325,10 @@ var
     NewParent:=nil;
     if not PropertyEditorHook.AddClicked(Self,MouseDownComponent,Button,Shift,
       MouseUpPos.X,MouseUpPos.Y,NewComponentClass,NewParent) then exit;
-    if Mediator<>nil then begin
-      // mediator, non LCL components
-      if NewParent=nil then
-        NewParent:=MouseDownComponent;
-      while (NewParent<>nil)
-      and (not Mediator.ParentAcceptsChild(NewParent,NewComponentClass)) do
-        NewParent:=NewParent.GetParentComponent;
-      if NewParent=nil then
-        NewParent:=FLookupRoot;
-    end else if (FLookupRoot is TCustomForm) or (FLookupRoot is TCustomFrame)
-    then begin
-      // LCL controls
-      if NewParent<>nil then begin
-        if not (NewParent is TWinControl) then begin
-          debugln(['ERROR: AddComponent failed: AddClicked returned not a TWinControl: ',DbgSName(NewParent)]);
-          exit;
-        end;
-        NewParentControl := TWinControl(NewParent);
-      end else if MouseDownComponent is TWinControl then
-        NewParentControl := TWinControl(MouseDownComponent)
-      else
-        NewParentControl := WinControlAtPos(MouseUpPos.X, MouseUpPos.Y, true, true);
 
-      while (NewParentControl <> nil)
-      and not ControlAcceptsStreamableChildComponent(NewParentControl,
-                                                  NewComponentClass,FLookupRoot)
-      do
-        NewParentControl := NewParentControl.Parent;
-      NewParent := NewParentControl;
-      //debugln(['AddComponent NewParent=',DbgSName(NewParent)]);
-    end else begin
-      // TDataModule
-      NewParent := FLookupRoot;
-    end;
+    AddComponentCheckParent(NewParent, MouseDownComponent,
+      WinControlAtPos(MouseUpPos.X, MouseUpPos.Y, true, true), NewComponentClass);
     if not Assigned(NewParent) then exit;
-
-    if not PropertyEditorHook.BeforeAddPersistent(Self, NewComponentClass, NewParent)
-    then begin
-      DebugLn('Note: TDesigner.AddComponent BeforeAddPersistent failed: ComponentClass=',
-              NewComponentClass.ClassName,' NewParent=',DbgSName(NewParent));
-      exit;
-    end;
 
     // calculate initial bounds
     NewLeft:=Min(MouseDownPos.X,MouseUpPos.X);
@@ -2277,59 +2357,7 @@ var
     //DebugLn(['AddComponent ',dbgsName(NewComponentClass)]);
     if NewComponentClass = nil then exit;
 
-    // check cycles
-    if TheFormEditor.ClassDependsOnComponent(NewComponentClass, LookupRoot) then
-    begin
-      IDEMessageDialog(lisA2PInvalidCircularDependency,
-        Format(lisIsAThisCircularDependencyIsNotAllowed, [dbgsName(LookupRoot),
-          dbgsName(NewComponentClass), LineEnding]),
-        mtError,[mbOk],'');
-      exit;
-    end;
-    
-    // create component and component interface
-    DebugLn(['AddComponent ',DbgSName(NewComponentClass),' Parent=',DbgSName(NewParent),' ',NewLeft,',',NewTop,',',NewWidth,',',NewHeight]);
-    DisableAutoSize:=true;
-    NewComponent := TheFormEditor.CreateComponent(
-       NewParent,NewComponentClass,'',
-       NewLeft,NewTop,NewWidth,NewHeight,DisableAutoSize);
-    if NewComponent=nil then exit;
-    if DisableAutoSize and (NewComponent is TControl) then
-      TControl(NewComponent).EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDesigner.MouseUpOnControl'){$ENDIF};
-    TheFormEditor.FixupReferences(NewComponent); // e.g. frame references a datamodule
-
-    // modified
-    Modified;
-
-    // set initial properties
-    if NewComponent is TControl then begin
-      NewControl:=TControl(NewComponent);
-      //debugln(['AddComponent ',DbgSName(Self),' Bounds=',dbgs(NewControl.BoundsRect),' BaseBounds=',dbgs(NewControl.BaseBounds),' BaseParentClientSize=',dbgs(NewControl.BaseParentClientSize)]);
-      NewControl.Visible:=true;
-      if csSetCaption in NewControl.ControlStyle then
-        NewControl.Caption:=NewComponent.Name;
-    end;
-    if Assigned(FOnSetDesigning) then
-      FOnSetDesigning(Self,NewComponent,True);
-
-    if EnvironmentOptions.CreateComponentFocusNameProperty then
-      // ask user for name
-      NewComponent.Name:=ShowComponentNameDialog(LookupRoot,NewComponent);
-
-    // tell IDE about the new component (e.g. add it to the source)
-    NotifyPersistentAdded(NewComponent);
-
-    // creation completed
-    // -> select new component
-    SelectOnlyThisComponent(NewComponent);
-    if Assigned(FOnComponentAdded) then // this resets the component palette to the selection tool
-      FOnComponentAdded(Self, NewComponent, SelectedCompClass);
-
-    {$IFDEF VerboseDesigner}
-    DebugLn('NEW COMPONENT ADDED: Form.ComponentCount=',DbgS(Form.ComponentCount),
-       '  NewComponent.Owner.Name=',NewComponent.Owner.Name);
-    {$ENDIF}
-    AddUndoAction(NewComponent, uopAdd, true, 'Name', '', NewComponent.Name);
+    AddComponent(SelectedCompClass, NewComponentClass, NewParent, NewLeft, NewTop, NewWidth, NewHeight);
   end;
 
   procedure RubberbandSelect;
@@ -2523,7 +2551,7 @@ begin
     end else
     begin
       // create new a component on the form
-      AddComponent;
+      DoAddComponent;
     end;
   end
   else if Button=mbRight then
