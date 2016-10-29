@@ -545,14 +545,19 @@ procedure TComponentListForm.OKButtonClick(Sender: TObject);
 // Select component from palette and close this form. User can insert the component.
 var
   AComponent: TRegisteredComponent;
+  OldFocusedControl: TWinControl;
 begin
   AComponent := GetSelectedComponent;
   if AComponent=nil then
     Exit;
 
   if IsDocked or chbKeepOpen.Checked then
-    AddSelectedComponent
-  else
+  begin
+    OldFocusedControl := Screen.ActiveControl;
+    AddSelectedComponent;
+    if (OldFocusedControl<>nil) and OldFocusedControl.CanSetFocus then // AddComponent in docked mode steals focus to designer, get it back
+      OldFocusedControl.SetFocus;
+  end else
   begin
     FKeepSelected := True;
     Close;
