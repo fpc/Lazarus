@@ -1842,14 +1842,15 @@ begin
   begin
     MsgLine.Urgency:=mluVerbose;
   end else if HideHintsUnitNotUsedInMainSource then begin
-  if CompareFileExt(MsgLine.Filename, 'lpr', false)=0 then
-    // a lpr does not use a unit => not important
-    MsgLine.Urgency:=mluVerbose;
-  end else if FilenameIsAbsolute(MsgLine.Filename)
+    if CompareFileExt(MsgLine.Filename, 'lpr', false)=0 then
+      // a lpr does not use a unit => not important
+      MsgLine.Urgency:=mluVerbose
+    else if FilenameIsAbsolute(MsgLine.Filename)
     and FileExists(ChangeFileExt(MsgLine.Filename, '.lpk'), aPhase=etpspSynchronized)
-  then begin
-    // a lpk does not use a unit => not important
-    MsgLine.Urgency:=mluVerbose;
+    then begin
+      // a lpk does not use a unit => not important
+      MsgLine.Urgency:=mluVerbose;
+    end;
   end;
 end;
 
