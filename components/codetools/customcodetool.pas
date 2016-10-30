@@ -878,6 +878,7 @@ begin
             inc(p);
         end else if p^='$' then begin
           // hexadecimal
+          Inc(p);
           while IsHexNumberChar[p^] do
             inc(p);
         end;
