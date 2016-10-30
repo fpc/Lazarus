@@ -76,7 +76,7 @@ type
     procedure miExpandClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure ComponentsDblClick(Sender: TObject);    
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);    
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);    
     procedure pmCollapseExpandPopup(Sender: TObject);
     procedure tmDeselectTimer(Sender: TObject);
     procedure TreeFilterEdAfterFilter(Sender: TObject);
