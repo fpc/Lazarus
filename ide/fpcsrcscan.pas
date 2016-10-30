@@ -121,6 +121,7 @@ begin
     ApplyFPCSrcFiles(Directory,Files);
     // delete item in progress window
     debugln(['TFPCSrcScan.OnFilesGathered closing progress item ...']);
+    ProgressItem.Window.Close;
     FreeAndNil(ProgressItem);
     Scans.Remove(Self);
     debugln(['TFPCSrcScan.OnFilesGathered END']);
