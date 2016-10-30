@@ -470,6 +470,10 @@ type
     function FindDeclarationOfPropertyPath(Code: TCodeBuffer;
           const PropertyPath: string; out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): Boolean;
+    function FindFileAtCursor(Code: TCodeBuffer; X,Y: integer;
+      out Found: TFindFileAtCursorFlag; out FoundFilename: string;
+      Allowed: TFindFileAtCursorFlags = DefaultFindFileAtCursorAllowed;
+      StartPos: PCodeXYPosition = nil): boolean;
 
     // get code context
     function FindCodeContext(Code: TCodeBuffer; X,Y: integer;
@@ -2252,6 +2256,31 @@ begin
   end;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindDeclarationOfPropertyPath END ');
+  {$ENDIF}
+end;
+
+function TCodeToolManager.FindFileAtCursor(Code: TCodeBuffer; X, Y: integer;
+  out Found: TFindFileAtCursorFlag; out FoundFilename: string;
+  Allowed: TFindFileAtCursorFlags; StartPos: PCodeXYPosition): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindFileAtCursor A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.FindFileAtCursor(CursorPos,Found,FoundFilename,
+      Allowed,StartPos);
+  except
+    on e: Exception do HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindFileAtCursor END ');
   {$ENDIF}
 end;
 

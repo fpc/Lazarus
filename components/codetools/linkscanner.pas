@@ -567,8 +567,6 @@ type
     function DoDirective(StartPos, DirLen: integer): boolean;
     
     function IncludeFile(const AFilename: string): boolean;
-    function SearchIncludeFile(AFilename: string; out NewCode: Pointer;
-                         var MissingIncludeFile: TMissingIncludeFile): boolean;
     procedure PushIncludeLink(ACleanedPos, ASrcPos: integer; ACode: Pointer);
     function PopIncludeLink: TSourceLink;
     function GetIncludeFileIsMissing: boolean;
@@ -680,6 +678,9 @@ type
     function IgnoreErrorAfterValid: boolean;
     function CleanPosIsAfterIgnorePos(CleanPos: integer): boolean;
     function LoadSourceCaseLoUp(const AFilename: string; AllowVirtual: boolean = false): pointer;
+
+    function SearchIncludeFile(AFilename: string; out NewCode: Pointer;
+                         var MissingIncludeFile: TMissingIncludeFile): boolean;
 
     function GuessMisplacedIfdefEndif(StartCursorPos: integer;
                                       StartCode: pointer;

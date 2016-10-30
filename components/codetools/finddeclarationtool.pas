@@ -629,6 +629,7 @@ type
   //----------------------------------------------------------------------------
   // TFindDeclarationTool is source based and can therefore search for more
   // than declarations:
+type
   TFindSmartFlag = (
     fsfIncludeDirective, // search for include file
     fsfFindMainDeclaration, // stop if already on a declaration
@@ -636,7 +637,11 @@ type
     fsfSkipClassForward  // when a forward class was found, jump further to the class
     );
   TFindSmartFlags = set of TFindSmartFlag;
-  
+const
+  DefaultFindSmartFlags = [fsfIncludeDirective];
+  DefaultFindSmartHintFlags = DefaultFindSmartFlags+[fsfFindMainDeclaration];
+
+type
   TFindSrcStartType = (
     fsstIdentifier
     );
@@ -655,9 +660,18 @@ type
     foeEnumeratorCurrentExprType // expression type of 'enumerator Current'
     );
 
+  TFindFileAtCursorFlag = (
+    ffatNone,
+    ffatUsedUnit,
+    ffatIncludeFile,
+    ffatDisabledIncludeFile,
+    ffatResource,
+    ffatLiteral,
+    ffatComment
+    );
+  TFindFileAtCursorFlags = set of TFindFileAtCursorFlag;
 const
-  DefaultFindSmartFlags = [fsfIncludeDirective];
-  DefaultFindSmartHintFlags = DefaultFindSmartFlags+[fsfFindMainDeclaration];
+  DefaultFindFileAtCursorAllowed = [Low(TFindFileAtCursorFlag)..high(TFindFileAtCursorFlag)];
 
 type
   //----------------------------------------------------------------------------
@@ -853,7 +867,6 @@ type
     procedure OnFindUsedUnitIdentifier(Sender: TPascalParserTool;
       IdentifierCleanPos: integer; Range: TEPRIRange;
       Node: TCodeTreeNode; Data: Pointer; var {%H-}Abort: boolean);
-  protected
   public
     constructor Create;
     destructor Destroy; override;
@@ -903,7 +916,7 @@ type
     function FindUnitInAllUsesSections(const AnUnitName: string;
           out NamePos, InPos: TAtomPosition): boolean;
     function GetUnitNameForUsesSection(TargetTool: TFindDeclarationTool): string;
-    function GetUnitForUsesSection(TargetTool: TFindDeclarationTool): string; deprecated;
+    function GetUnitForUsesSection(TargetTool: TFindDeclarationTool): string; deprecated 'use GetUnitNameForUsesSection instead';
     function IsHiddenUsedUnit(TheUnitName: PChar): boolean;
 
     function FindCodeToolForUsedUnit(const AnUnitName, AnUnitInFilename: string;
@@ -919,6 +932,10 @@ type
 
     function IsIncludeDirectiveAtPos(CleanPos, CleanCodePosInFront: integer;
       out IncludeCode: TCodeBuffer): boolean;
+    function FindFileAtCursor(const CursorPos: TCodeXYPosition;
+      out Found: TFindFileAtCursorFlag; out FoundFilename: string;
+      Allowed: TFindFileAtCursorFlags = DefaultFindFileAtCursorAllowed;
+      StartPos: PCodeXYPosition = nil): boolean;
 
     function FindSmartHint(const CursorPos: TCodeXYPosition;
                     Flags: TFindSmartFlags = DefaultFindSmartHintFlags): string;
@@ -2786,6 +2803,8 @@ end;
 
 function TFindDeclarationTool.GetUnitNameForUsesSection(
   TargetTool: TFindDeclarationTool): string;
+// if unit is already used return ''
+// else return nice name
 var
   UsesNode: TCodeTreeNode;
   Alternative: String;
@@ -3468,6 +3487,121 @@ begin
     IncludeCode:=TCodeBuffer(SrcLink.Code);
     Result:=true;
     exit;
+  end;
+end;
+
+function TFindDeclarationTool.FindFileAtCursor(
+  const CursorPos: TCodeXYPosition; out Found: TFindFileAtCursorFlag; out
+  FoundFilename: string; Allowed: TFindFileAtCursorFlags;
+  StartPos: PCodeXYPosition): boolean;
+var
+  CleanPos, CommentStart, CommentEnd: integer;
+  Node: TCodeTreeNode;
+  aUnitName, UnitInFilename, DirectiveName, Param, Line: string;
+  NewCode: TCodeBuffer;
+  NewCodePtr: Pointer;
+  MissingIncludeFile: TMissingIncludeFile;
+begin
+  Result:=false;
+  Found:=ffatNone;
+  FoundFilename:='';
+  if StartPos<>nil then
+   StartPos^:=CleanCodeXYPosition;
+  if [ffatUsedUnit,ffatIncludeFile,ffatDisabledIncludeFile]*Allowed<>[]
+  then begin
+    try
+      BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanPos,
+                    [btSetIgnoreErrorPos,btCursorPosOutAllowed]);
+      Node:=FindDeepestNodeAtPos(CleanPos,false);
+      if Node<>nil then begin
+        // cursor in parsed code
+        if CleanPosIsInComment(CleanPos,Node.StartPos,CommentStart,CommentEnd,true)
+        then begin
+          // cursor in comment in parsed code
+          if (ffatIncludeFile in Allowed)
+          and IsIncludeDirectiveAtPos(CleanPos,CommentStart,NewCode) then begin
+            // enabled include directive
+            Found:=ffatIncludeFile;
+            FoundFilename:=NewCode.Filename;
+            Result:=true;
+            exit;
+          end else if ExtractLongParamDirective(Src,CommentStart,DirectiveName,Param)
+          then begin
+            DirectiveName:=lowercase(DirectiveName);
+            if (ffatDisabledIncludeFile in Allowed)
+            and ((DirectiveName='i') or (DirectiveName='include')) then begin
+              // disabled include directive
+              if (Param<>'') and (Param[1]<>'%') then begin
+                Result:=true;
+                Found:=ffatDisabledIncludeFile;
+                FoundFilename:=ResolveDots(GetForcedPathDelims(Param));
+                // search include file
+                MissingIncludeFile:=nil;
+                if Scanner.SearchIncludeFile(FoundFilename,NewCodePtr,
+                  MissingIncludeFile)
+                then
+                  FoundFilename:=TCodeBuffer(NewCodePtr).Filename;
+                exit;
+              end;
+            end else if (ffatResource in Allowed)
+            and ((DirectiveName='r') or (DirectiveName='resource')) then begin
+              // resource directive
+              Result:=true;
+              Found:=ffatResource;
+              FoundFilename:=ResolveDots(GetForcedPathDelims(Param));
+              if (FoundFilename<>'') and (copy(FoundFilename,1,2)='*.') then begin
+                Delete(FoundFilename,1,1);
+                FoundFilename:=ChangeFileExt(MainFilename,FoundFilename);
+              end else if not FilenameIsAbsolute(FoundFilename) then begin
+                FoundFilename:=ResolveDots(ExtractFilePath(MainFilename)+FoundFilename);
+              end;
+              exit;
+            end;
+          end;
+          if ffatComment in Allowed then begin
+            // ToDo: check comment
+
+          end;
+        end else begin
+          if Node.Desc in [ctnUseUnitClearName,ctnUseUnitNamespace] then
+            Node:=Node.Parent;
+          if Node.Desc=ctnUseUnit then begin
+            if (CleanPos>=Node.StartPos) and (CleanPos<Node.EndPos) then begin
+              // cursor on used unit
+              Found:=ffatUsedUnit;
+              if StartPos<>nil then
+                CleanPosToCaret(Node.StartPos,StartPos^);
+              MoveCursorToNodeStart(Node);
+              ReadNextAtom;
+              aUnitName:=ExtractUsedUnitNameAtCursor(@UnitInFilename);
+              NewCode:=FindUnitSource(aUnitName,UnitInFilename,false);
+              if NewCode<>nil then begin
+                FoundFilename:=NewCode.Filename;
+                Result:=true;
+              end else begin
+                FoundFilename:=UnitInFilename;
+                Result:=false;
+              end;
+              exit;
+            end;
+          end;
+        end;
+      end;
+    except
+      on ELinkScannerError do ;
+      on ECodeToolError do ;
+    end;
+  end;
+
+  // fallback: ignore parsed code and read the line at cursor directly
+  if (CursorPos.Y<1) or (CursorPos.Y>CursorPos.Code.LineCount) then exit;
+  Line:=CursorPos.Code.GetLine(CursorPos.Y,false);
+  if CursorPos.X>length(Line) then exit;
+  if ffatLiteral in Allowed then begin
+    // ToDo: check literal
+  end;
+  if ffatComment in Allowed then begin
+    // ToDo: check simple
   end;
 end;
 

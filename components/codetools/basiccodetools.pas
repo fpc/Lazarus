@@ -319,6 +319,8 @@ function RemoveUnitFromUsesSection(Source:TSourceLog;
 // compiler directives
 function FindIncludeDirective(const Source,Section:string; Index:integer;
    out IncludeStart,IncludeEnd:integer):boolean;
+function ExtractLongParamDirective(const Source: string; CommentStartPos: integer;
+   out DirectiveName, FileParam: string): boolean;
 function SplitCompilerDirective(const Directive:string;
    out DirectiveName,Parameters:string):boolean;
 
@@ -430,6 +432,36 @@ begin
       end;
     end;
   until Atom='';
+end;
+
+function ExtractLongParamDirective(const Source: string; CommentStartPos: integer;
+  out DirectiveName, FileParam: string): boolean;
+var
+  p, StartPos: PChar;
+begin
+  Result:=false;
+  FileParam:='';
+  if CommentStartPos>length(Source) then exit;
+  p:=@Source[CommentStartPos];
+  if (p^<>'{') or (p[1]<>'$') then exit;
+  inc(p,2);
+  StartPos:=p;
+  if not IsIdentStartChar[p^] then exit;
+  while IsIdentChar[p^] do inc(p);
+  DirectiveName:=copy(Source,StartPos-PChar(Source)+1,p-StartPos);
+  Result:=true;
+  while p^ in [' ',#9] do inc(p);
+  if p^='''' then begin
+    // 'param with spaces'
+    inc(p);
+    StartPos:=p;
+    while not (p^ in [#0,#10,#13,'''']) do inc(p);
+  end else begin
+    // param without spaces
+    StartPos:=p;
+    while not (p^ in [#0,#9,#10,#13,' ','}']) do inc(p);
+  end;
+  FileParam:=copy(Source,StartPos-PChar(Source)+1,p-StartPos);
 end;
 
 function SplitCompilerDirective(const Directive:string;

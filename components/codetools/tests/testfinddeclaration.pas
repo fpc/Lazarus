@@ -52,6 +52,7 @@ type
     procedure TestFindDeclaration_ObjCClass;
     procedure TestFindDeclaration_ObjCCategory;
     procedure TestFindDeclaration_Generics;
+    procedure TestFindDeclaration_FileAtCursor;
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
   end;
@@ -309,6 +310,34 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_Generics;
 begin
   FindDeclarations('moduletests/fdt_generics.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_FileAtCursor;
+var
+  Code, SubUnit2Code: TCodeBuffer;
+  Found: TFindFileAtCursorFlag;
+  FoundFilename: string;
+begin
+  Code:=CodeToolBoss.CreateFile('test1.lpr');
+  Code.Source:='uses unit2 in ''sub/unit2.pas'';'+LineEnding;
+  SubUnit2Code:=CodeToolBoss.CreateFile('unit2.pas');
+  try
+    // test cursor on 'unit2'
+    CodeToolBoss.FindFileAtCursor(Code,5,1,Found,FoundFilename);
+    // test cursor on 'in'
+    // test cursor on in-file literal
+  finally
+    Code.IsDeleted:=true;
+    SubUnit2Code.IsDeleted:=true;
+  end;
+  // ToDo: test $i in code
+  // ToDo: test $i 'file with spaces' in code
+  // ToDo: test $i in disabled code
+  // ToDo: test $R file.lfm
+  // ToDo: test $R *.lfm
+  // ToDo: test 'readme.txt' in active code
+  // ToDo: test readme.txt in active code fails
+  // ToDo: test readme.txt in comment works
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;

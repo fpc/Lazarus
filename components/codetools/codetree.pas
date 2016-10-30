@@ -80,10 +80,10 @@ const
   ctnVarDefinition      = 21;
   ctnConstDefinition    = 22;
   ctnGlobalProperty     = 23;
-  ctnUseUnit            = 24; // StartPos=unit, EndPos=unitname+inFilename, children ctnUseUnitNamespace, ctnUseUnitClearName
-  ctnVarArgs            = 25;
-  ctnUseUnitNamespace   = 26; // <namespace>.clearname.pas
-  ctnUseUnitClearName   = 27; // namespace.<clearname>.pas
+  ctnVarArgs            = 24;
+  ctnUseUnit            = 25; // StartPos=unit, EndPos=unitname+inFilename, children ctnUseUnitNamespace, ctnUseUnitClearName, parent ctnUsesSection
+  ctnUseUnitNamespace   = 26; // <namespace>.clearname.pas, parent ctnUseUnit
+  ctnUseUnitClearName   = 27; // namespace.<clearname>.pas, parent ctnUseUnit
 
   ctnClass              = 30;
   ctnClassInterface     = 31;
