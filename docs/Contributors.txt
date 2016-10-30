@@ -154,6 +154,7 @@ Mazen Neifer
 Micha Nelissen
 Michael A. Hess
 Michael Fuchs
+Michael W. Vogel
 Michal Bukovjan
 Michal Gawrycki
 Michalis Kamburelis
