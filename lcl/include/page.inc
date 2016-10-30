@@ -20,27 +20,25 @@ var
   i: integer;
 begin
   if (AParent = Parent) {or (pfInserting in FFlags)} then Exit;
-
   OldParent := Parent;
-  //if old and new parent is a TNotebook then remove the page from the old one
-  if (AParent <> nil) and (OldParent <> AParent) and (OldParent <> nil) and
-     (OldParent is TNotebook)  then
-  begin
-    // remove from old pagelist
-    ParentNotebook := TNotebook(OldParent);
-    i := ParentNotebook.FPageList.IndexOf(Self);
-    ParentNotebook.Pages.Delete(i);
-  end;
-
   inherited SetParent(AParent);
 
   if (Parent <> nil) and (Parent is TNotebook) then
   begin
     // add to new pagelist
     ParentNotebook := TNotebook(Parent);
-    i := ParentNotebook.FPageList.IndexOf(Self);
+    i := ParentNotebook.Pages.IndexOfObject(Self);
     if i < 0 then
-      ParentNotebook.InsertPage(Self, ParentNotebook.Pages.Count);
+      ParentNotebook.Pages.AddObject(Name, Self);
+  end;
+
+  //if old and new parent is a TNotebook then remove the page from the old one
+  if (OldParent <> nil) and (OldParent is TNotebook) then
+  begin
+    // remove from old pagelist
+    ParentNotebook := TNotebook(OldParent);
+    i := ParentNotebook.FPages.IndexOfObject(Self);
+    ParentNotebook.Pages.Delete(i);
   end;
 end;
 
@@ -58,6 +56,8 @@ begin
 end;
 
 destructor TPage.Destroy;
+var
+  aIndex: Integer;
 begin
   {$ifdef DEBUG_NEW_NOTEBOOK}
   DebugLn('[TPage.Destroy]');
@@ -66,9 +66,10 @@ begin
   if (Parent <> nil) and (Parent is TNotebook) then
   begin
     {$ifdef DEBUG_NEW_NOTEBOOK}
-    DebugLn('[TPage.Destroy] FPageList.Remove(Self)');
+    DebugLn('[TPage.Destroy] FPages.Remove(Self)');
     {$endif}
-    TNotebook(Parent).FPageList.Remove(Self);
+    aIndex := TNotebook(Parent).FPages.IndexOfObject(Self);
+    TNotebook(Parent).FPages.Delete(aIndex);
   end;
 
   inherited Destroy;

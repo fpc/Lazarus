@@ -89,20 +89,23 @@ type
 
   TUNBPages = class(TStrings)
   private
-    FPageList: TListWithEvent;
+    FPageList: TObjectList;
     FNotebook: TNotebook;
-    procedure PageListChange(Ptr: Pointer; AnAction: TListNotification);
+    function GetNotebookOwner: TComponent;
   protected
     function Get(Index: Integer): String; override;
     function GetCount: Integer; override;
     function GetObject(Index: Integer): TObject; override;
     procedure Put(Index: Integer; const S: String); override;
   public
-    constructor Create(thePageList: TListWithEvent;
-                       theNotebook: TNotebook);
+    constructor Create(theNotebook: TNotebook);
+    destructor Destroy; override;
+    function Add(const S: string): Integer; override;
+    function AddObject(const S: string; AObject: TObject): Integer; override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
-    procedure Insert(Index: Integer; const S: String); override;
+    function IndexOfObject(AObject: TObject): Integer; override;
+    procedure Insert(Index: Integer; const S: string); override;
 //    procedure Move(CurIndex, NewIndex: Integer); override;
   end;
 
@@ -112,18 +115,17 @@ type
   private
     FPages: TStrings; // TUNBPages
     FPageIndex: Integer;
-    FPageList: TListWithEvent;
     function GetActivePage: String;
     function GetActivePageComponent: TPage;
     function GetPage(AIndex: Integer): TPage;
     function GetPageCount : integer;
     function GetPageIndex: Integer;
 {    function FindVisiblePage(Index: Integer): Integer;}
-    procedure InsertPage(APage: TPage; Index: Integer);
 {    procedure MovePage(APage: TCustomPage; NewIndex: Integer);
     procedure RemovePage(Index: Integer);
     procedure SetActivePage(const Value: String);}
     procedure SetPageIndex(AValue: Integer);
+    procedure SetPages(Items: TStrings);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -142,7 +144,7 @@ type
   published
     // LCL TNotebook specific properties
     property PageIndex: Integer read GetPageIndex write SetPageIndex default -1;
-    property Pages: TStrings read FPages;
+    property Pages: TStrings read FPages write SetPages stored False;
     // Generic properties
     property Align;
     property AutoSize;

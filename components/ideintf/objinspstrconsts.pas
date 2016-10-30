@@ -462,6 +462,16 @@ resourcestring
   // DBPropedits
   dpeUnableToRetrieveFieldsDefinitions = 'Unable to retrieve fields definition from dataset.';
 
+  // PagesPropEditDlg
+  oisPagesEditorDialog = 'Pages Editor';
+  oisPages = 'Pages';
+  oisAdd = 'Add';
+  oisAddPage = 'Add Page';
+  oisInsertPageName = 'Insert Page Name';
+  oisRename = 'Rename';
+  oisRenamePage = 'Rename Page';
+  oisDeletePageQuestion = 'Do you want to delete the page?';
+
 implementation
 
 end.

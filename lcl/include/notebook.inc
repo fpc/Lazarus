@@ -15,115 +15,126 @@
                                    TUNBPages
  ******************************************************************************}
 
-{------------------------------------------------------------------------------
-  TUNBPages Constructor
- ------------------------------------------------------------------------------}
-constructor TUNBPages.Create(thePageList: TListWithEvent;
-  theNotebook: TNotebook);
+constructor TUNBPages.Create(theNotebook: TNotebook);
 begin
   inherited Create;
-  fPageList := thePageList;
-  fPageList.OnChange:=@PageListChange;
-  fNotebook := theNotebook;
+  FPageList := TObjectList.Create(False);
+  FNotebook := theNotebook;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TUNBPages.PageListChange(Ptr: Pointer; AnAction: TListNotification);
- ------------------------------------------------------------------------------}
-procedure TUNBPages.PageListChange(Ptr: Pointer; AnAction: TListNotification);
-{var
-  APage: TUNBPage;}
+destructor TUNBPages.Destroy;
 begin
-{  if (AnAction=lnAdded) then
-  begin
-    APage:=TObject(Ptr) as TUNBPage;
-    if not (pfInserting in APage.FFlags) then
-      APage.Parent:=fNotebook;
-  end;}
+  FPageList.Free;
+  inherited Destroy;
 end;
 
-{------------------------------------------------------------------------------
-  TUNBPages Get
- ------------------------------------------------------------------------------}
-function TUNBPages.Get(Index: Integer): string;
+function TUNBPages.GetNotebookOwner: TComponent;
 begin
-  if (Index<0) or (Index>=fPageList.Count) then
+  Result := FNotebook.Owner;
+  if Result = nil then
+    Result := FNotebook;
+end;
+
+function TUNBPages.Get(Index: Integer): String;
+begin
+  if (Index < 0) or (Index >= FPageList.Count) then
     RaiseGDBException('TUNBPages.Get Index out of bounds');
-  Result := TPage(fPageList[Index]).Caption;
+  Result := TPage(fPageList[Index]).Name;
 end;
 
-{------------------------------------------------------------------------------
-  TUNBPages GetCount
- ------------------------------------------------------------------------------}
 function TUNBPages.GetCount: Integer;
 begin
-  Result := fPageList.Count;
+  Result := FPageList.Count;
 end;
 
-{------------------------------------------------------------------------------
-  TUNBPages GetObject
- ------------------------------------------------------------------------------}
 function TUNBPages.GetObject(Index: Integer): TObject;
 begin
-  if (Index<0) or (Index>=fPageList.Count) then
+  if (Index < 0) or (Index >= FPageList.Count) then
     RaiseGDBException('TUNBPages.GetObject Index out of bounds');
-  Result := TPage(fPageList[Index]);
+  Result := TPage(FPageList[Index]);
 end;
 
-{------------------------------------------------------------------------------
-  TUNBPages Put
- ------------------------------------------------------------------------------}
 procedure TUNBPages.Put(Index: Integer; const S: String);
 begin
-  if (Index<0) or (Index>=fPageList.Count) then
+  if (Index < 0) or (Index >= FPageList.Count) then
     RaiseGDBException('TUNBPages.Put Index out of bounds');
-  //debugln(['TUNBPages.Put ',DbgSName(FNotebook),' ',Index,' S="',S,'"']);
-  TPage(fPageList[Index]).Caption := S;
+  TPage(FPageList[Index]).Name := S;
 end;
 
-{------------------------------------------------------------------------------
-  TUNBPages Clear
- ------------------------------------------------------------------------------}
+function TUNBPages.Add(const S: string): Integer;
+begin
+  Result := AddObject(S, TPage.Create(GetNotebookOwner));
+end;
+
+function TUNBPages.AddObject(const S: string; AObject: TObject): Integer;
+var
+  NewPage: TPage;
+begin
+  Result := FPageList.Add(AObject);
+  NewPage := TPage(AObject);
+  if IsValidIdent(S) then NewPage.Name := S;
+  NewPage.Caption := S;
+  NewPage.Parent := FNotebook;
+  NewPage.Align := alClient;
+  NewPage.Visible := False;
+  NewPage.ControlStyle := NewPage.ControlStyle + [csNoDesignVisible];
+  if FNotebook.PageIndex = -1 then FNotebook.SetPageIndex(Result);
+end;
+
 procedure TUNBPages.Clear;
 begin
-  while fPageList.Count>0 do
-    Delete(fPageList.Count-1);
+  while FPageList.Count > 0 do
+    Delete(FPageList.Count - 1);
 end;
 
-{------------------------------------------------------------------------------
-  TUNBPages Delete
- ------------------------------------------------------------------------------}
 procedure TUNBPages.Delete(Index: Integer);
 var
   APage: TPage;
+  OldPageIndex: Integer;
 begin
   // Make sure Index is in the range of valid pages to delete
-  if (Index < 0) or (Index >= fPageList.Count) then Exit;
+  if (Index < 0) or (Index >= FPageList.Count) then Exit;
 
-  APage := TPage(fPageList[Index]);
-  //Update fPageList
-  fPageList.Delete(Index);
-  // delete handle
-  APage.Parent := nil;
-  // free the page
-  Application.ReleaseComponent(APage);
+  APage := TPage(FPageList[Index]);
+  FPageList.Delete(Index);
+  if APage.Parent = FNotebook then begin
+    Application.ReleaseComponent(APage);
+    Application.ProcessMessages;
+  end;
+
+  OldPageIndex := FNotebook.FPageIndex;
+  FNotebook.FPageIndex := -1;
+  if OldPageIndex >= FNotebook.PageCount then
+    FNotebook.SetPageIndex(FNotebook.PageCount - 1)
+  else
+    FNotebook.SetPageIndex(OldPageIndex);
 end;
 
-{------------------------------------------------------------------------------
-  TUNBPages Insert
- ------------------------------------------------------------------------------}
-procedure TUNBPages.Insert(Index: Integer; const S: String);
+function TUNBPages.IndexOfObject(AObject: TObject): Integer;
+var
+  Index: Integer;
+begin
+  Result := -1;
+  for Index := 0 to FPageList.Count - 1 do
+    if TPage(FPageList[Index]) = AObject then Exit(Index);
+end;
+
+procedure TUNBPages.Insert(Index: Integer; const S: string);
 var
   NewPage: TPage;
-  NewOwner: TComponent;
 begin
-  NewOwner := FNotebook.Owner;
-  if NewOwner = nil then
-    NewOwner := FNotebook;
-  NewPage := TPage.Create(NewOwner);
+  if (Index < 0) or (Index >= FPageList.Count) then
+    RaiseGDBException('TUNBPages.Insert Index out of bounds');
+  NewPage := TPage.Create(GetNotebookOwner);
+  FPageList.Insert(Index, NewPage);
+  if IsValidIdent(S) then NewPage.Name := S;
   NewPage.Caption := S;
-
-  FNoteBook.InsertPage(NewPage,Index);
+  NewPage.Parent := FNotebook;
+  NewPage.Align := alClient;
+  NewPage.Visible := False;
+  NewPage.ControlStyle := NewPage.ControlStyle + [csNoDesignVisible];
+  if FNotebook.PageIndex >= Index then
+    FNotebook.PageIndex := FNotebook.PageIndex + 1;
 end;
 
 {******************************************************************************
@@ -131,7 +142,7 @@ end;
  ******************************************************************************}
 function TNotebook.GetActivePage: String;
 begin
-  Result := Page[GetPageIndex].Caption;
+  Result := Page[GetPageIndex].Name;
 end;
 
 function TNotebook.GetActivePageComponent: TPage;
@@ -141,12 +152,12 @@ end;
 
 function TNotebook.GetPage(AIndex: Integer): TPage;
 begin
-  if (AIndex < 0) or (AIndex >= FPageList.Count) then
+  if (AIndex < 0) or (AIndex >= FPages.Count) then
     RaiseGDBException(Format('TNotebook.GetCustomPage Index out of bounds. AIndex=%d', [AIndex]));
-  Result := TPage(FPageList.Items[AIndex]);
+  Result := TPage(FPages.Objects[AIndex]);
 end;
 
-function TNotebook.GetPageCount: Integer;
+function TNotebook.GetPageCount: integer;
 begin
   Result := FPages.Count;
 end;
@@ -158,25 +169,7 @@ end;
 
 function TNotebook.IndexOf(APage: TPage): integer;
 begin
-  for Result := 0 to PageCount-1 do
-    if Page[Result] = APage then
-      Exit;
-
-  Result := -1;
-end;
-
-procedure TNotebook.InsertPage(APage: TPage; Index: Integer);
-begin
-  if FPageList.IndexOf(APage) >= 0 then Exit;
-
-  FPageList.Insert(Index, APage);
-
-  APage.Parent := Self;
-  APage.Align := alClient;
-  APage.Visible := False;
-  APage.ControlStyle := APage.ControlStyle + [csNoDesignVisible];
-
-  if PageIndex = -1 then SetPageIndex(Index);
+  Result := FPages.IndexOfObject(APage);
 end;
 
 procedure TNotebook.SetPageIndex(AValue: Integer);
@@ -184,7 +177,7 @@ var
   pg: TPage;
 begin
   if (AValue < -1) or (AValue >= Pages.Count) then Exit;
-  if FPageIndex = AValue then exit;
+  if FPageIndex = AValue then Exit;
 
   // Hide the previously shown page
   if (FPageIndex >= 0) and (FPageIndex < Pages.Count) then
@@ -197,7 +190,7 @@ begin
   // Update the property
   FPageIndex := AValue;
   if (FPageIndex = -1) then
-    exit;
+    Exit;
 
   // And show the new one
   pg := Page[FPageIndex];
@@ -208,18 +201,96 @@ begin
   pg.Align := alClient;
 end;
 
-{------------------------------------------------------------------------------
-  TNotebook Constructor
- ------------------------------------------------------------------------------}
+procedure TNotebook.SetPages(Items: TStrings);
+var
+  Unchanged, Index, DummyIndex, ItemsCount: Integer;
+  DummyPageList: TObjectList;
+  APage: TPage;
+
+  procedure DummyDelete(aName: String);
+  var
+    i, aIndex: Integer;
+    DelPage: TPage;
+  begin
+    aIndex := -1;
+    for i := 0  to DummyPageList.Count - 1 do
+      if TPage(DummyPageList[i]).Name = aName then begin
+        aIndex := i;
+        Break;
+      end;
+    if aIndex = -1 then Exit;
+    DelPage := TPage(DummyPageList[aIndex]);
+    if Items.IndexOfObject(DelPage) >= 0 then Exit;
+    DummyPageList.Delete(aIndex);
+    DelPage.Parent := nil;
+    Application.ReleaseComponent(DelPage);
+    Application.ProcessMessages;
+  end;
+
+begin
+  if csDesigning in ComponentState then Exit;
+
+  Unchanged := 0;
+  while (Unchanged < Items.Count) and (Unchanged < FPages.Count)
+  and (Items.Objects[Unchanged] = FPages.Objects[Unchanged])
+  and (Items[Unchanged] = TPage(FPages.Objects[Unchanged]).Name) do
+    Inc(Unchanged);
+  if (Unchanged = FPages.Count) and (Unchanged = Items.Count) then Exit;
+
+  DummyPageList := TObjectList.Create(False);
+  try
+    // move all unused/changed pages to dummy
+    for Index := FPages.Count - 1 downto Unchanged do
+    begin
+      APage := TPage(FPages.Objects[Index]);
+      APage.SetParent(nil);
+      DummyPageList.Add(APage);
+    end;
+
+    // add new or changed pages to notebook
+    Index := 0;
+    while Index < Items.Count do begin
+      // if Items comes from a other notebook, Items.Count is changed by APage.SetParent
+      ItemsCount := Items.Count;
+      if Assigned(Items.Objects[Index]) then begin
+        DummyDelete(Items[Index]);
+        APage := TPage(Items.Objects[Index]);
+        if IsValidIdent(Items[Index]) then APage.Name := Items[Index];
+        APage.Caption := Items[Index];
+        APage.SetParent(Self);
+        DummyIndex := DummyPageList.IndexOf(APage);
+        if DummyIndex >= 0 then
+          DummyPageList.Delete(DummyIndex);
+      end else begin
+        DummyDelete(Items[Index]);
+        FPages.Add(Items[Index]);
+      end;
+      Inc(Index, 1 - (ItemsCount - Items.Count));
+    end;
+
+    // delete all unused old pages
+    for Index := DummyPageList.Count - 1 downto 0 do
+    begin
+      APage := TPage(DummyPageList[Index]);
+      DummyPageList.Delete(Index);
+      APage.Parent := nil;
+      Application.ReleaseComponent(APage);
+      Application.ProcessMessages;
+    end;
+
+  finally
+    DummyPageList.Free;
+  end;
+end;
+
 constructor TNotebook.Create(TheOwner: TComponent);
 var
   lSize: TSize;
 begin
   inherited Create(TheOwner);
 
-  FPageList := TListWithEvent.Create;
   FPageIndex := -1;
-  FPages := TUNBPages.Create(FPageList, Self);
+  FPages := TUNBPages.Create(Self);
 
   ControlStyle := []; // do not add csAcceptsControls
 
@@ -230,7 +301,6 @@ end;
 
 destructor TNotebook.Destroy;
 begin
-  FreeAndNil(FPageList);
   FreeAndNil(FPages);
 
   inherited Destroy;
@@ -241,7 +311,7 @@ var
   i: Integer;
 begin
   if AControl = ActivePageComponent then exit;
-  i := FPageList.IndexOf(Pointer(aControl));
+  i := FPages.IndexOfObject(aControl);
   if i >= 0 then
     PageIndex := i;
   inherited ShowControl(AControl);

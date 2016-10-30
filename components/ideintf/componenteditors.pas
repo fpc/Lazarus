@@ -1024,7 +1024,7 @@ procedure TUntabbedNotebookComponentEditor.DoAddPage;
 begin
   if not HasHook then exit;
   NoteBook.Pages.Add('');
-  AddNewPageToDesigner(NoteBook.Pages.Count-1);
+  AddNewPageToDesigner(NoteBook.PageCount - 1);
 end;
 
 procedure TUntabbedNotebookComponentEditor.DoDeletePage;

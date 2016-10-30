@@ -36,7 +36,7 @@ uses
   ObjInspStrConsts, PropEditUtils, IDEUtils,
   // Forms with .lfm files
   FrmSelectProps, StringsPropEditDlg, KeyValPropEditDlg, CollectionPropEditForm,
-  FileFilterPropEditor, IDEWindowIntf;
+  FileFilterPropEditor, PagesPropEditDlg, IDEWindowIntf;
 
 const
   MaxIdentLength: Byte = 63;
@@ -715,6 +715,20 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
+  end;
+
+  { TPagesPropertyEditor
+    PropertyEditor editor for the TNoteBook.Pages properties.
+    Brings up a dialog with a Memo for entering pages. }
+
+  TPagesPropEditorDlg = class;
+
+  TPagesPropertyEditor = class(TClassPropertyEditor)
+  public
+    procedure AssignItems(OldItmes, NewItems: TStrings);
+    procedure Edit; override;
+    function CreateDlg(s: TStrings): TPagesPropEditorDlg; virtual;
+    function GetAttributes: TPropertyAttributes; override;
   end;
 
 { TComponentNamePropertyEditor
@@ -1531,6 +1545,11 @@ type
     Editor: TPropertyEditor;
   end;
 
+  TPagesPropEditorDlg = class(TPagesPropEditorFrm)
+  public
+    Editor: TPropertyEditor;
+  end;
+
   { TCustomShortCutGrabBox }
 
   TCustomShortCutGrabBox = class(TCustomPanel)
@@ -1713,6 +1732,93 @@ type
     procedure GetSelectableComponents(ARoot: TComponent);
     procedure Gather(Child: TComponent);
   end;
+
+{ TPagesPropertyEditor }
+
+procedure TPagesPropertyEditor.AssignItems(OldItmes, NewItems: TStrings);
+var
+  Unchanged, Index, PageIndex: Integer;
+  DummyNotebook: TNotebook;
+  APage: TPage;
+  PageComponent: TPersistent;
+  NoteBook: TNoteBook;
+begin
+  // search for unchanged pages
+  Unchanged := 0;
+  while (Unchanged < NewItems.Count) and (Unchanged < OldItmes.Count)
+  and (NewItems.Objects[Unchanged] = OldItmes.Objects[Unchanged])
+  and (NewItems[Unchanged] = TPage(OldItmes.Objects[Unchanged]).Name) do
+    Inc(Unchanged);
+  if (Unchanged = OldItmes.Count) and (Unchanged = NewItems.Count) then Exit;
+
+  NoteBook := TNotebook(FOwnerComponent);
+  DummyNotebook := TNotebook.Create(nil);
+  try
+    // move all unused/changed pages to dummy
+    for Index := OldItmes.Count - 1 downto Unchanged do
+    begin
+      APage := TPage(OldItmes.Objects[Index]);
+      APage.Parent := DummyNotebook;
+    end;
+
+    // add NewItems or changed pages to notebook
+    for Index := Unchanged to NewItems.Count - 1 do
+    begin
+      if Assigned(NewItems.Objects[Index]) then begin
+        APage := TPage(NewItems.Objects[Index]);
+      end else begin
+        PageIndex := NoteBook.Pages.Add(NewItems[Index]);
+        APage := TPage(NoteBook.Pages.Objects[PageIndex]);
+      end;
+      APage.Parent := NoteBook;
+      if IsValidIdent(NewItems[Index]) then APage.Name := NewItems[Index];
+      APage.Caption := NewItems[Index];
+      PropertyHook.PersistentAdded(APage, False);
+    end;
+
+    // delete all unused OldItmes pages
+    for Index := DummyNotebook.PageCount - 1 downto 0 do
+    begin
+      APage := TPage(DummyNotebook.Pages.Objects[Index]);
+      APage.Parent := nil;;
+      DummyNotebook.Pages.Delete(Index);
+      PageComponent := TPersistent(APage);
+      PropertyHook.DeletePersistent(PageComponent);
+    end;
+  finally
+    DummyNotebook.Free;
+  end;
+end;
+
+procedure TPagesPropertyEditor.Edit;
+var
+  TheDialog: TPagesPropEditorDlg;
+  Old, New: TStrings;
+begin
+  Old := TStrings(GetObjectValue);
+  TheDialog := CreateDlg(Old);
+  try
+    if (TheDialog.ShowModal = mrOK) then begin
+      New := TheDialog.ListBox.Items;
+      AssignItems(Old, TheDialog.ListBox.Items);
+      SetPtrValue(New);
+    end;
+  finally
+    TheDialog.Free;
+  end;
+end;
+
+function TPagesPropertyEditor.CreateDlg(s: TStrings): TPagesPropEditorDlg;
+begin
+  Result := TPagesPropEditorDlg.Create(Application);
+  Result.Editor := Self;
+  Result.ListBox.Items.Assign(s);
+end;
+
+function TPagesPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paDialog, paRevertable, paReadOnly];
+end;
 
 { TSelectableComponentEnumerator }
 
@@ -7553,6 +7659,7 @@ begin
   RegisterPropertyEditor(TypeInfo(AnsiString), TCustomFrame, 'LCLVersion', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TCustomPage), TCustomTabControl, 'ActivePage', TNoteBookActiveControlPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TSizeConstraints), TControl, 'Constraints', TConstraintsPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TStrings), TNoteBook, 'Pages', TPagesPropertyEditor);
 
   // since fpc 2.6.0 WordBool, LongBool and QWordBool only allow 0 and 1
   RegisterPropertyEditor(TypeInfo(WordBool), nil, '', TBoolPropertyEditor);
