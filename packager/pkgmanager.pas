@@ -321,7 +321,7 @@ type
     // package compilation
     function DoCompileProjectDependencies(AProject: TProject;
                                Flags: TPkgCompileFlags): TModalResult; override;
-    function DoCompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
+    function DoCompilePackage(APackage: TIDEPackage; Flags: TPkgCompileFlags;
                               ShowAbort: boolean): TModalResult; override;
     function DoCreatePackageMakefile(APackage: TLazPackage;
                                      ShowAbort: boolean): TModalResult;
@@ -4181,7 +4181,7 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.DoCompilePackage(APackage: TLazPackage;
+function TPkgManager.DoCompilePackage(APackage: TIDEPackage;
   Flags: TPkgCompileFlags; ShowAbort: boolean): TModalResult;
 begin
   Result:=mrCancel;
@@ -4192,10 +4192,11 @@ begin
 
   Result:=MainIDE.PrepareForCompile;
   if Result<>mrOk then exit;
-  
+  Assert(APackage is TLazPackage, 'TPkgManager.DoCompilePackage: APackage is not TLazPackage');
+
   // check graph for circles and broken dependencies
   if not (pcfDoNotCompileDependencies in Flags) then begin
-    Result:=CheckPackageGraphForCompilation(APackage,nil,APackage.Directory,ShowAbort);
+    Result:=CheckPackageGraphForCompilation(TLazPackage(APackage),nil,APackage.Directory,ShowAbort);
     if Result<>mrOk then exit;
   end;
   
@@ -4209,11 +4210,11 @@ begin
   end;
 
   // check user search paths
-  Result:=CheckUserSearchPaths(APackage.CompilerOptions);
+  Result:=CheckUserSearchPaths(TBaseCompilerOptions(APackage.LazCompilerOptions));
   if Result<>mrOk then exit;
 
   // compile
-  Result:=PackageGraph.CompilePackage(APackage,Flags,false);
+  Result:=PackageGraph.CompilePackage(TLazPackage(APackage),Flags,false);
 end;
 
 function TPkgManager.DoCreatePackageMakefile(APackage: TLazPackage;

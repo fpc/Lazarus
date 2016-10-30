@@ -273,6 +273,10 @@ type
     // package editors
     function GetPackageOfEditorItem(Sender: TObject): TIDEPackage; virtual; abstract;
 
+    // package compilation
+    function DoCompilePackage(APackage: TIDEPackage; Flags: TPkgCompileFlags;
+                              ShowAbort: boolean): TModalResult; virtual; abstract;
+
     // install
     function CheckInstallPackageList(PkgIDList: TObjectList;
                  Flags: TPkgInstallInIDEFlags = []): boolean; virtual; abstract;
