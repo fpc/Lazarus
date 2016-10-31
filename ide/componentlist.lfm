@@ -196,11 +196,12 @@ object ComponentListForm: TComponentListForm
       TabOrder = 0
     end
     object OKButton: TButton
-      Left = 208
+      Left = 215
       Height = 25
       Top = 8
-      Width = 85
+      Width = 78
       Anchors = [akTop, akRight]
+      AutoSize = True
       Caption = 'OKButton'
       Default = True
       ModalResult = 1

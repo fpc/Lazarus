@@ -211,7 +211,7 @@ resourcestring
   lisSelectionTool = 'Selection tool';
   lisClickToSelectPalettePage = 'Click to Select Palette Page';
   lisTotalPages = 'Total Pages: %s';
-  lisKeepOpen = 'keep open';
+  lisKeepOpen = 'Keep open';
   
   // macros
   lisCursorColumnInCurrentEditor = 'Cursor column in current editor';
