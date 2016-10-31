@@ -303,6 +303,7 @@ msgstr ""
 #: objinspstrconsts.nbcesaddpage
 #, fuzzy
 #| msgid "Add page"
+msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
 msgstr "添加页面"
 
@@ -382,6 +383,12 @@ msgstr ""
 msgid "ActionList Editor"
 msgstr "动作列表编辑器"
 
+#: objinspstrconsts.oisadd
+#, fuzzy
+msgctxt "objinspstrconsts.oisadd"
+msgid "Add"
+msgstr "添加"
+
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
 msgstr ""
@@ -393,6 +400,13 @@ msgstr ""
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
 msgstr ""
+
+#: objinspstrconsts.oisaddpage
+#, fuzzy
+#| msgid "Add page"
+msgctxt "objinspstrconsts.oisaddpage"
+msgid "Add Page"
+msgstr "添加页面"
 
 #: objinspstrconsts.oisaddtofavorites
 msgid "Add to Favorites"
@@ -531,6 +545,10 @@ msgstr "删除组件"
 msgid "Delete item \"%s\"?"
 msgstr "删除项目 %s%s%s?"
 
+#: objinspstrconsts.oisdeletepagequestion
+msgid "Do you want to delete the page?"
+msgstr ""
+
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
 msgstr ""
@@ -600,6 +618,10 @@ msgstr "方法不兼容"
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "输入掩码:"
+
+#: objinspstrconsts.oisinsertpagename
+msgid "Insert Page Name"
+msgstr ""
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
@@ -720,6 +742,14 @@ msgstr ""
 msgid "Move to Front"
 msgstr ""
 
+#: objinspstrconsts.oispages
+msgid "Pages"
+msgstr ""
+
+#: objinspstrconsts.oispageseditordialog
+msgid "Pages Editor"
+msgstr ""
+
 #: objinspstrconsts.oispastecomponents
 #, fuzzy
 #| msgid "Paste components"
@@ -758,6 +788,14 @@ msgstr "记录"
 #: objinspstrconsts.oisremovefromfavorites
 msgid "Remove from Favorites"
 msgstr "从常用移除"
+
+#: objinspstrconsts.oisrename
+msgid "Rename"
+msgstr ""
+
+#: objinspstrconsts.oisrenamepage
+msgid "Rename Page"
+msgstr ""
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"

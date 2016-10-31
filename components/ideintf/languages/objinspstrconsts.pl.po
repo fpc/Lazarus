@@ -301,6 +301,7 @@ msgstr ""
 #: objinspstrconsts.nbcesaddpage
 #, fuzzy
 #| msgid "Add page"
+msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
 msgstr "Dodaj stronę"
 
@@ -380,6 +381,12 @@ msgstr ""
 msgid "ActionList Editor"
 msgstr "Edytor ActionList"
 
+#: objinspstrconsts.oisadd
+#, fuzzy
+msgctxt "objinspstrconsts.oisadd"
+msgid "Add"
+msgstr "Dodaj"
+
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
 msgstr ""
@@ -391,6 +398,13 @@ msgstr ""
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
 msgstr ""
+
+#: objinspstrconsts.oisaddpage
+#, fuzzy
+#| msgid "Add page"
+msgctxt "objinspstrconsts.oisaddpage"
+msgid "Add Page"
+msgstr "Dodaj stronę"
 
 #: objinspstrconsts.oisaddtofavorites
 msgid "Add to Favorites"
@@ -525,6 +539,10 @@ msgstr "Usuń komponenty"
 msgid "Delete item \"%s\"?"
 msgstr "Usuń element %s%s%s?"
 
+#: objinspstrconsts.oisdeletepagequestion
+msgid "Do you want to delete the page?"
+msgstr ""
+
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
 msgstr ""
@@ -594,6 +612,10 @@ msgstr "Niekompatybilna metoda"
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "Maska wejściowa:"
+
+#: objinspstrconsts.oisinsertpagename
+msgid "Insert Page Name"
+msgstr ""
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
@@ -712,6 +734,14 @@ msgstr "Przenieś na spód"
 msgid "Move to Front"
 msgstr "Przenieś na wierzch"
 
+#: objinspstrconsts.oispages
+msgid "Pages"
+msgstr ""
+
+#: objinspstrconsts.oispageseditordialog
+msgid "Pages Editor"
+msgstr ""
+
 #: objinspstrconsts.oispastecomponents
 #, fuzzy
 #| msgid "Paste components"
@@ -750,6 +780,14 @@ msgstr "Record"
 #: objinspstrconsts.oisremovefromfavorites
 msgid "Remove from Favorites"
 msgstr "Usuń z ulubionych"
+
+#: objinspstrconsts.oisrename
+msgid "Rename"
+msgstr ""
+
+#: objinspstrconsts.oisrenamepage
+msgid "Rename Page"
+msgstr ""
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"

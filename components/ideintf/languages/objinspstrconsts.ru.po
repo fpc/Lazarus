@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-04-20 01:43+0300\n"
+"PO-Revision-Date: 2016-11-01 01:26+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -296,28 +296,29 @@ msgid "Unable to find parser for tool \"%s\""
 msgstr "Невозможно найти анализатор для средства \"%s\""
 
 #: objinspstrconsts.nbcesaddpage
+msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
-msgstr "Добавить страницу"
+msgstr "Добавить вкладку"
 
 #: objinspstrconsts.nbcesdeletepage
 msgid "Delete Page"
-msgstr "Удалить страницу"
+msgstr "Удалить вкладку"
 
 #: objinspstrconsts.nbcesinsertpage
 msgid "Insert Page"
-msgstr "Вставить страницу"
+msgstr "Вставить вкладку"
 
 #: objinspstrconsts.nbcesmovepageleft
 msgid "Move Page Left"
-msgstr "Переместить страницу влево"
+msgstr "Переместить вкладку влево"
 
 #: objinspstrconsts.nbcesmovepageright
 msgid "Move Page Right"
-msgstr "Переместить страницу вправо"
+msgstr "Переместить вкладку вправо"
 
 #: objinspstrconsts.nbcesshowpage
 msgid "Show Page"
-msgstr "Показать страницу"
+msgstr "Показать вкладку"
 
 #: objinspstrconsts.oicoleditadd
 msgctxt "objinspstrconsts.oicoleditadd"
@@ -363,6 +364,11 @@ msgstr "Редактор Action&List ..."
 msgid "ActionList Editor"
 msgstr "Редактор ActionList"
 
+#: objinspstrconsts.oisadd
+msgctxt "objinspstrconsts.oisadd"
+msgid "Add"
+msgstr "Добавить"
+
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
 msgstr "&Добавить элемент"
@@ -374,6 +380,11 @@ msgstr "&Добавить поля"
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
 msgstr "Добавить поля из FieldDefs"
+
+#: objinspstrconsts.oisaddpage
+msgctxt "objinspstrconsts.oisaddpage"
+msgid "Add Page"
+msgstr "Добавить вкладку"
 
 #: objinspstrconsts.oisaddtofavorites
 msgid "Add to Favorites"
@@ -500,6 +511,10 @@ msgstr "&Удалить"
 msgid "Delete item \"%s\"?"
 msgstr "Удалить элемент \"%s\"?"
 
+#: objinspstrconsts.oisdeletepagequestion
+msgid "Do you want to delete the page?"
+msgstr "Вы действительно хотите удалить вкладку?"
+
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
 msgstr "Удалить выбранные поля"
@@ -567,6 +582,10 @@ msgstr "Несовместимый метод"
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "Маска ввода:"
+
+#: objinspstrconsts.oisinsertpagename
+msgid "Insert Page Name"
+msgstr "Введите имя вкладки"
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
@@ -685,6 +704,14 @@ msgstr "Поместить сзади"
 msgid "Move to Front"
 msgstr "Поместить спереди"
 
+#: objinspstrconsts.oispages
+msgid "Pages"
+msgstr "Вкладки"
+
+#: objinspstrconsts.oispageseditordialog
+msgid "Pages Editor"
+msgstr "Редактор вкладок"
+
 #: objinspstrconsts.oispastecomponents
 msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
@@ -721,6 +748,14 @@ msgstr "Запись"
 #: objinspstrconsts.oisremovefromfavorites
 msgid "Remove from Favorites"
 msgstr "Удалить из избранного"
+
+#: objinspstrconsts.oisrename
+msgid "Rename"
+msgstr "Переименовать"
+
+#: objinspstrconsts.oisrenamepage
+msgid "Rename Page"
+msgstr "Переименовать вкладку"
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"

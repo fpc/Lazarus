@@ -297,6 +297,7 @@ msgid "Unable to find parser for tool \"%s\""
 msgstr "Kann keinen Parser für Werkzeug \"%s\" finden"
 
 #: objinspstrconsts.nbcesaddpage
+msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
 msgstr "Seite hinzufügen"
 
@@ -364,6 +365,12 @@ msgstr "Action&List-Editor ..."
 msgid "ActionList Editor"
 msgstr "Aktionslisteneditor"
 
+#: objinspstrconsts.oisadd
+#, fuzzy
+msgctxt "objinspstrconsts.oisadd"
+msgid "Add"
+msgstr "&Hinzufügen"
+
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
 msgstr "Eintr&ag hinzufügen"
@@ -375,6 +382,12 @@ msgstr "Felder hinzufügen"
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
 msgstr "Felder aus Felddefs hinzufügen"
+
+#: objinspstrconsts.oisaddpage
+#, fuzzy
+msgctxt "objinspstrconsts.oisaddpage"
+msgid "Add Page"
+msgstr "Seite hinzufügen"
 
 #: objinspstrconsts.oisaddtofavorites
 msgid "Add to Favorites"
@@ -501,6 +514,10 @@ msgstr "Komponente löschen"
 msgid "Delete item \"%s\"?"
 msgstr "Eintrag \"%s\" löschen?"
 
+#: objinspstrconsts.oisdeletepagequestion
+msgid "Do you want to delete the page?"
+msgstr ""
+
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
 msgstr "Gewählte(s) Feld(er) löschen"
@@ -568,6 +585,10 @@ msgstr "Inkompatible Methode"
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "Eingabemaske:"
+
+#: objinspstrconsts.oisinsertpagename
+msgid "Insert Page Name"
+msgstr ""
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
@@ -686,6 +707,14 @@ msgstr "Zurück"
 msgid "Move to Front"
 msgstr "Nach vorn"
 
+#: objinspstrconsts.oispages
+msgid "Pages"
+msgstr ""
+
+#: objinspstrconsts.oispageseditordialog
+msgid "Pages Editor"
+msgstr ""
+
 #: objinspstrconsts.oispastecomponents
 msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
@@ -722,6 +751,14 @@ msgstr "Struktur"
 #: objinspstrconsts.oisremovefromfavorites
 msgid "Remove from Favorites"
 msgstr "Von Favoriten entfernen"
+
+#: objinspstrconsts.oisrename
+msgid "Rename"
+msgstr ""
+
+#: objinspstrconsts.oisrenamepage
+msgid "Rename Page"
+msgstr ""
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"

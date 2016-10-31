@@ -302,6 +302,7 @@ msgstr ""
 #: objinspstrconsts.nbcesaddpage
 #, fuzzy
 #| msgid "Add page"
+msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
 msgstr "Pridať stránku"
 
@@ -381,6 +382,12 @@ msgstr ""
 msgid "ActionList Editor"
 msgstr "Editor zoznamu činností"
 
+#: objinspstrconsts.oisadd
+#, fuzzy
+msgctxt "objinspstrconsts.oisadd"
+msgid "Add"
+msgstr "Pridať"
+
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
 msgstr ""
@@ -392,6 +399,13 @@ msgstr ""
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
 msgstr ""
+
+#: objinspstrconsts.oisaddpage
+#, fuzzy
+#| msgid "Add page"
+msgctxt "objinspstrconsts.oisaddpage"
+msgid "Add Page"
+msgstr "Pridať stránku"
 
 #: objinspstrconsts.oisaddtofavorites
 msgid "Add to Favorites"
@@ -530,6 +544,10 @@ msgstr "Zmazať komponenty"
 msgid "Delete item \"%s\"?"
 msgstr "Zmazať položku %s%s%s?"
 
+#: objinspstrconsts.oisdeletepagequestion
+msgid "Do you want to delete the page?"
+msgstr ""
+
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
 msgstr ""
@@ -599,6 +617,10 @@ msgstr "Nekompatibilná metóda"
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "Vstupná maska:"
+
+#: objinspstrconsts.oisinsertpagename
+msgid "Insert Page Name"
+msgstr ""
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
@@ -719,6 +741,14 @@ msgstr ""
 msgid "Move to Front"
 msgstr ""
 
+#: objinspstrconsts.oispages
+msgid "Pages"
+msgstr ""
+
+#: objinspstrconsts.oispageseditordialog
+msgid "Pages Editor"
+msgstr ""
+
 #: objinspstrconsts.oispastecomponents
 #, fuzzy
 #| msgid "Paste components"
@@ -757,6 +787,14 @@ msgstr "Záznam"
 #: objinspstrconsts.oisremovefromfavorites
 msgid "Remove from Favorites"
 msgstr "Odstrániť z Obľúbených"
+
+#: objinspstrconsts.oisrename
+msgid "Rename"
+msgstr ""
+
+#: objinspstrconsts.oisrenamepage
+msgid "Rename Page"
+msgstr ""
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"

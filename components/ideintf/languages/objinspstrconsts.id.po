@@ -298,6 +298,7 @@ msgstr ""
 #: objinspstrconsts.nbcesaddpage
 #, fuzzy
 #| msgid "Add page"
+msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
 msgstr "Tambah halaman"
 
@@ -377,6 +378,12 @@ msgstr ""
 msgid "ActionList Editor"
 msgstr "Editor Daftar Aksi"
 
+#: objinspstrconsts.oisadd
+#, fuzzy
+msgctxt "objinspstrconsts.oisadd"
+msgid "Add"
+msgstr "Tambah"
+
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
 msgstr ""
@@ -388,6 +395,13 @@ msgstr ""
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
 msgstr ""
+
+#: objinspstrconsts.oisaddpage
+#, fuzzy
+#| msgid "Add page"
+msgctxt "objinspstrconsts.oisaddpage"
+msgid "Add Page"
+msgstr "Tambah halaman"
 
 #: objinspstrconsts.oisaddtofavorites
 msgid "Add to Favorites"
@@ -524,6 +538,10 @@ msgstr "Hapus komponen"
 msgid "Delete item \"%s\"?"
 msgstr "Hapus item %s%s%s?"
 
+#: objinspstrconsts.oisdeletepagequestion
+msgid "Do you want to delete the page?"
+msgstr ""
+
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
 msgstr ""
@@ -593,6 +611,10 @@ msgstr ""
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "Input Mask:"
+
+#: objinspstrconsts.oisinsertpagename
+msgid "Insert Page Name"
+msgstr ""
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
@@ -713,6 +735,14 @@ msgstr ""
 msgid "Move to Front"
 msgstr ""
 
+#: objinspstrconsts.oispages
+msgid "Pages"
+msgstr ""
+
+#: objinspstrconsts.oispageseditordialog
+msgid "Pages Editor"
+msgstr ""
+
 #: objinspstrconsts.oispastecomponents
 #, fuzzy
 #| msgid "Paste components"
@@ -751,6 +781,14 @@ msgstr "Record"
 #: objinspstrconsts.oisremovefromfavorites
 msgid "Remove from Favorites"
 msgstr "Hapus dari Favorit"
+
+#: objinspstrconsts.oisrename
+msgid "Rename"
+msgstr ""
+
+#: objinspstrconsts.oisrenamepage
+msgid "Rename Page"
+msgstr ""
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"
