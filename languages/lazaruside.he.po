@@ -11038,6 +11038,10 @@ msgstr "שמור ברשימת ההתקנות"
 msgid "Keep name"
 msgstr "שמור שם"
 
+#: lazarusidestrconsts.liskeepopen
+msgid "Keep open"
+msgstr ""
+
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
 msgstr "שמור הזחה יחסית של תבנית מרובת שורות"
@@ -19977,10 +19981,6 @@ msgstr "הודעת \"איך להשתמש\" (אפשרות h-)"
 
 #: lazarusidestrconsts.lisuse
 msgid "Use"
-msgstr ""
-
-#: lazarusidestrconsts.lisuseandclose
-msgid "Use and close"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseansistrings

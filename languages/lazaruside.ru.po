@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-10-25 01:24+0300\n"
+"PO-Revision-Date: 2016-11-01 01:03+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -10469,6 +10469,10 @@ msgstr "Оставить в списке на установку"
 msgid "Keep name"
 msgstr "Сохранить имя"
 
+#: lazarusidestrconsts.liskeepopen
+msgid "Keep open"
+msgstr "Оставить открытым"
+
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
 msgstr "Сохранять относительные отступы в многострочном шаблоне"
@@ -18599,10 +18603,6 @@ msgstr "Сообщение со справкой (параметр -h)"
 #: lazarusidestrconsts.lisuse
 msgid "Use"
 msgstr "Использовать"
-
-#: lazarusidestrconsts.lisuseandclose
-msgid "Use and close"
-msgstr "Применить и закрыть"
 
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"

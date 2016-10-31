@@ -10655,6 +10655,10 @@ msgstr "インストールリストに保持"
 msgid "Keep name"
 msgstr "名前を保持"
 
+#: lazarusidestrconsts.liskeepopen
+msgid "Keep open"
+msgstr ""
+
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
 msgstr "複数行のテンプレートの相対インデントを保持"
@@ -19131,10 +19135,6 @@ msgstr "使用メッセージ（-hオプション）"
 #: lazarusidestrconsts.lisuse
 msgid "Use"
 msgstr ""
-
-#: lazarusidestrconsts.lisuseandclose
-msgid "Use and close"
-msgstr "使用して閉じる"
 
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"

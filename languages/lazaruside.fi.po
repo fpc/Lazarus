@@ -10392,6 +10392,10 @@ msgstr "Pidetään asennuksessa"
 msgid "Keep name"
 msgstr "Hyväksy nimi tällaisenaan"
 
+#: lazarusidestrconsts.liskeepopen
+msgid "Keep open"
+msgstr ""
+
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
 msgstr "Säilytä monirivisten mallineiden suhteellinen sisennys"
@@ -18521,10 +18525,6 @@ msgstr "Käyttöopastus (-h valinta)"
 #: lazarusidestrconsts.lisuse
 msgid "Use"
 msgstr ""
-
-#: lazarusidestrconsts.lisuseandclose
-msgid "Use and close"
-msgstr "Käytä ja sulje"
 
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"

@@ -10463,6 +10463,10 @@ msgstr "Megtartás a telepítési listában"
 msgid "Keep name"
 msgstr "Név megtartása"
 
+#: lazarusidestrconsts.liskeepopen
+msgid "Keep open"
+msgstr ""
+
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
 msgstr "A többsoros sablon viszonylagos behúzásának megtartása"
@@ -18591,10 +18595,6 @@ msgstr "Használati útmutató (-h kapcsoló)"
 #: lazarusidestrconsts.lisuse
 msgid "Use"
 msgstr "Használat"
-
-#: lazarusidestrconsts.lisuseandclose
-msgid "Use and close"
-msgstr "Használat és bezárás"
 
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"

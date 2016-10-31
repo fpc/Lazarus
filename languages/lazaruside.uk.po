@@ -10468,6 +10468,10 @@ msgstr "Залишити в списку встановлення"
 msgid "Keep name"
 msgstr "Залишати назву"
 
+#: lazarusidestrconsts.liskeepopen
+msgid "Keep open"
+msgstr ""
+
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
 msgstr "Зберігати відносний відступ багаторядкового шаблону"
@@ -18666,10 +18670,6 @@ msgstr "Повідомлення використання (опція -h)"
 #: lazarusidestrconsts.lisuse
 msgid "Use"
 msgstr "Використати"
-
-#: lazarusidestrconsts.lisuseandclose
-msgid "Use and close"
-msgstr "Використати і закрити"
 
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"

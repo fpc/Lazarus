@@ -10736,6 +10736,10 @@ msgstr "Palikti diegiamųjų sąraše"
 msgid "Keep name"
 msgstr "Nekeisti pavadinimo"
 
+#: lazarusidestrconsts.liskeepopen
+msgid "Keep open"
+msgstr ""
+
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
 msgstr "Daugelio eilučių šablone palikti santykinį lygiavimą"
@@ -19273,10 +19277,6 @@ msgstr "Pranešimas apie naudojimą (-h parinktis)"
 
 #: lazarusidestrconsts.lisuse
 msgid "Use"
-msgstr ""
-
-#: lazarusidestrconsts.lisuseandclose
-msgid "Use and close"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseansistrings

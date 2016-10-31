@@ -10451,6 +10451,10 @@ msgstr "In Installationsliste behalten"
 msgid "Keep name"
 msgstr "Name behalten"
 
+#: lazarusidestrconsts.liskeepopen
+msgid "Keep open"
+msgstr ""
+
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
 msgstr "Behalte die Einrückung der mehrzeiligen Vorlage bei"
@@ -18557,10 +18561,6 @@ msgstr "Ausgabe für den Aufruf (Parameter -h)"
 #: lazarusidestrconsts.lisuse
 msgid "Use"
 msgstr "Verwenden"
-
-#: lazarusidestrconsts.lisuseandclose
-msgid "Use and close"
-msgstr "Verwenden und schließen"
 
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"

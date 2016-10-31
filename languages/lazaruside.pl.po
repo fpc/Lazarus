@@ -10808,6 +10808,10 @@ msgstr ""
 msgid "Keep name"
 msgstr "Zachowaj nazwę"
 
+#: lazarusidestrconsts.liskeepopen
+msgid "Keep open"
+msgstr ""
+
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
 msgstr "Zachowaj względne wcięcia wielo-linijkowych szablonów"
@@ -19408,10 +19412,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisuse
 msgid "Use"
-msgstr ""
-
-#: lazarusidestrconsts.lisuseandclose
-msgid "Use and close"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseansistrings

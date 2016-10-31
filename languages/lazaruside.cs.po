@@ -10468,6 +10468,10 @@ msgstr "Uchovat v seznamu instalovaných"
 msgid "Keep name"
 msgstr "Zachovat jméno"
 
+#: lazarusidestrconsts.liskeepopen
+msgid "Keep open"
+msgstr ""
+
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
 msgstr "Zachovat relativní odsazení víceřádkové šablony"
@@ -18653,10 +18657,6 @@ msgstr "Zpráva o použití (volba -h)"
 #: lazarusidestrconsts.lisuse
 msgid "Use"
 msgstr ""
-
-#: lazarusidestrconsts.lisuseandclose
-msgid "Use and close"
-msgstr "Použít a zavřít"
 
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"

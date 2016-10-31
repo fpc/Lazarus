@@ -10521,6 +10521,10 @@ msgstr "Tieni nella lista di installazione"
 msgid "Keep name"
 msgstr "Mantieni il nome"
 
+#: lazarusidestrconsts.liskeepopen
+msgid "Keep open"
+msgstr ""
+
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
 msgstr "Conservare le rientranze relative del modello a più righe"
@@ -18724,10 +18728,6 @@ msgstr "Messaggio di aiuto (opzione -h)"
 #: lazarusidestrconsts.lisuse
 msgid "Use"
 msgstr ""
-
-#: lazarusidestrconsts.lisuseandclose
-msgid "Use and close"
-msgstr "Usa e chiudi"
 
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"
