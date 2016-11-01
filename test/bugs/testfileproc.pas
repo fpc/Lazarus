@@ -55,6 +55,21 @@ begin
 {$endif}
   DoTest('$(LazarusDir)\..\dir\','$(LazarusDir)\..\dir\');
   DoTest(' a ','a');
+  DoTest('a ','a');
+  DoTest('.','.');
+  DoTest('a/','a/');
+  DoTest('a/.','a/');
+  DoTest('./a','a');
+  DoTest('././a','a');
+  DoTest('a/..','.');
+  DoTest('a/b/..','a/');
+  DoTest('a/../b','b');
+  DoTest('a/b/../c','a/c');
+  DoTest('a/b/../../c','c');
+  DoTest('a/./b','a/b');
+  DoTest('a/.//b','a/b');
+  DoTest('a//b','a/b');
+  DoTest('a//./b','a/b');
 end;
 
 procedure TTestFileProc.TestCreateRelativePath;
