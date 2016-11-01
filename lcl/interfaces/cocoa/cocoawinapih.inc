@@ -126,6 +126,7 @@ function HideCaret(Handle: HWND): Boolean; override;
 
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
+function InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean; override;
 function IsWindowEnabled(Handle: HWND): boolean; override;
 function IsWindowVisible(Handle: HWND): boolean; override;
 function IsWindow(handle: HWND): boolean; override;
