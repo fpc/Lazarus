@@ -3507,17 +3507,32 @@ begin
   FoundFilename:='';
   if StartPos<>nil then
    StartPos^:=CleanCodeXYPosition;
+  {$IFDEF VerboseFindFileAtCursor}
+  debugln(['TFindDeclarationTool.FindFileAtCursor START']);
+  {$ENDIF}
   if [ffatUsedUnit,ffatIncludeFile,ffatDisabledIncludeFile]*Allowed<>[]
   then begin
     try
+      {$IFDEF VerboseFindFileAtCursor}
+      debugln(['TFindDeclarationTool.FindFileAtCursor search in nodes']);
+      {$ENDIF}
       BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanPos,
                     [btSetIgnoreErrorPos,btCursorPosOutAllowed]);
       Node:=FindDeepestNodeAtPos(CleanPos,false);
+      {$IFDEF VerboseFindFileAtCursor}
+      debugln(['TFindDeclarationTool.FindFileAtCursor has node: ',Node<>nil]);
+      {$ENDIF}
       if Node<>nil then begin
+        {$IFDEF VerboseFindFileAtCursor}
+        debugln(['TFindDeclarationTool.FindFileAtCursor in node "',Node.DescAsString,'"']);
+        {$ENDIF}
         // cursor in parsed code
         if CleanPosIsInComment(CleanPos,Node.StartPos,CommentStart,CommentEnd,true)
         then begin
           // cursor in comment in parsed code
+          {$IFDEF VerboseFindFileAtCursor}
+          debugln(['TFindDeclarationTool.FindFileAtCursor in comment']);
+          {$ENDIF}
           if (ffatIncludeFile in Allowed)
           and IsIncludeDirectiveAtPos(CleanPos,CommentStart,NewCode) then begin
             // enabled include directive
@@ -3563,9 +3578,19 @@ begin
 
           end;
         end else begin
-          if Node.Desc in [ctnUseUnitClearName,ctnUseUnitNamespace] then
+          {$IFDEF VerboseFindFileAtCursor}
+          debugln(['TFindDeclarationTool.FindFileAtCursor in parsed code, not in comment']);
+          {$ENDIF}
+          if Node.Desc in [ctnUseUnitClearName,ctnUseUnitNamespace] then begin
             Node:=Node.Parent;
+            {$IFDEF VerboseFindFileAtCursor}
+            debugln(['TFindDeclarationTool.FindFileAtCursor node="',Node.DescAsString,'"']);
+            {$ENDIF}
+          end;
           if Node.Desc=ctnUseUnit then begin
+            {$IFDEF VerboseFindFileAtCursor}
+            debugln(['TFindDeclarationTool.FindFileAtCursor in use unit CleanPos=',CleanPos,' Node=',Node.StartPos,'-',Node.EndPos]);
+            {$ENDIF}
             if (CleanPos>=Node.StartPos) and (CleanPos<Node.EndPos) then begin
               // cursor on used unit
               Found:=ffatUsedUnit;
@@ -3575,6 +3600,9 @@ begin
               ReadNextAtom;
               aUnitName:=ExtractUsedUnitNameAtCursor(@UnitInFilename);
               NewCode:=FindUnitSource(aUnitName,UnitInFilename,false);
+              {$IFDEF VerboseFindFileAtCursor}
+              debugln(['TFindDeclarationTool.FindFileAtCursor cursor on used unit "',aUnitName,'" in "',UnitInFilename,'" Found=',NewCode<>nil]);
+              {$ENDIF}
               if NewCode<>nil then begin
                 FoundFilename:=NewCode.Filename;
                 Result:=true;

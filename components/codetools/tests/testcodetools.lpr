@@ -22,7 +22,7 @@ program testcodetools;
 uses
   Classes, sysutils, consoletestrunner, dom, fpcunit, LazLogger,
   CodeToolManager, CodeToolsConfig,
-  testglobals,
+  TestGlobals,
   TestBasicCodetools, TestCTRangeScan, TestMethodJumpTool, TestStdCodetools,
   TestFinddeclaration, TestCompleteBlock, TestRefactoring,
   // non Pascal

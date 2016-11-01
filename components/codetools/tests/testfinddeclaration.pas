@@ -10,6 +10,7 @@
    ./testcodetools --format=plain --suite=TestFindDeclaration_ObjCClass
    ./testcodetools --format=plain --suite=TestFindDeclaration_ObjCCategory
    ./testcodetools --format=plain --suite=TestFindDeclaration_Generics
+   ./testcodetools --format=plain --suite=TestFindDeclaration_FileAtCursor
 
  FPC tests:
    ./testcodetools --format=plain --suite=TestFindDeclaration_FPCTests
@@ -319,13 +320,37 @@ var
   FoundFilename: string;
 begin
   Code:=CodeToolBoss.CreateFile('test1.lpr');
-  Code.Source:='uses unit2 in ''sub/unit2.pas'';'+LineEnding;
+  Code.Source:='uses unit2 in ''sub/../unit2.pas'';'+LineEnding;
   SubUnit2Code:=CodeToolBoss.CreateFile('unit2.pas');
   try
+    // --- used unit ---
     // test cursor on 'unit2'
-    CodeToolBoss.FindFileAtCursor(Code,5,1,Found,FoundFilename);
+    if not CodeToolBoss.FindFileAtCursor(Code,6,1,Found,FoundFilename) then
+      Fail('CodeToolBoss.FindFileAtCursor at uses unit2 failed');
+    AssertEquals('FindFileAtCursor at uses unit2 Found',ord(ffatUsedUnit),ord(Found));
+    AssertEquals('FindFileAtCursor at uses unit2 FoundFilename','unit2.pas',FoundFilename);
     // test cursor on 'in'
+    if not CodeToolBoss.FindFileAtCursor(Code,12,1,Found,FoundFilename) then
+      Fail('CodeToolBoss.FindFileAtCursor at uses unit2-in failed');
+    AssertEquals('FindFileAtCursor at uses unit2-in Found',ord(ffatUsedUnit),ord(Found));
+    AssertEquals('FindFileAtCursor at uses unit2-in FoundFilename','unit2.pas',FoundFilename);
     // test cursor on in-file literal
+    if not CodeToolBoss.FindFileAtCursor(Code,16,1,Found,FoundFilename) then
+      Fail('CodeToolBoss.FindFileAtCursor at uses unit2-in-literal failed');
+    AssertEquals('FindFileAtCursor at uses unit2-in-lit Found',ord(ffatUsedUnit),ord(Found));
+    AssertEquals('FindFileAtCursor at uses unit2-in-lit FoundFilename','unit2.pas',FoundFilename);
+
+    // --- enabled include directive ---
+    // test cursor on enabled include directive of empty file
+    Code.Source:='program test1;'+LineEnding
+      +'{$i unit2.pas}'+LineEnding;
+    SubUnit2Code.Source:='';
+    if not CodeToolBoss.FindFileAtCursor(Code,1,2,Found,FoundFilename) then
+      Fail('CodeToolBoss.FindFileAtCursor at uses unit2 failed');
+    //ToDo AssertEquals('FindFileAtCursor at enabled include directive Found',ord(ffatIncludeFile),ord(Found));
+    AssertEquals('FindFileAtCursor at enabled include directive FoundFilename','unit2.pas',FoundFilename);
+
+
   finally
     Code.IsDeleted:=true;
     SubUnit2Code.IsDeleted:=true;
