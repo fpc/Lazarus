@@ -1,6 +1,5 @@
 {%MainUnit lazfileutils.pas}
 
-
 function ResolveDots(const AFilename: string): string;
 //trim double path delims and expand special dirs like .. and .
 //on Windows change also '/' to '\' except for filenames starting with '\\?\'
@@ -47,7 +46,7 @@ begin
       if (SrcPos<l) then begin
         if (AFilename[SrcPos+1]=PathDelim)
         and ((DestPos=1) or (AFilename[SrcPos-1]=PathDelim)) then begin
-          // special dir ./
+          // special dir ./ or */./
           // -> skip
           inc(SrcPos,2);
           continue;
@@ -60,11 +59,11 @@ begin
           //  3. C:..    -> copy
           //  4. C:\..   -> skip .., keep C:\
           //  5. \\..    -> skip .., keep \\
-          //  6. xxx../..   -> copy
-          //  7. xxxdir/..  -> trim dir and skip ..
-          //  8. xxxdir/..  -> trim dir and skip ..
+          //  6. ../..   -> copy because if the first '..' was not resolved, the next can't neither
+          //  7. dir/..  -> trim dir and ..
+          //  8. dir$macro/..  -> copy
           if DestPos=1 then begin
-            //  1. ..      -> copy
+            //  1. .. or ../  -> copy
           end else if (DestPos=2) and (Result[1]=PathDelim) then begin
             //  2. /..     -> skip .., keep /
             inc(SrcPos,2);
@@ -85,10 +84,11 @@ begin
             continue;
           {$ENDIF}
           end else if (DestPos>1) and (Result[DestPos-1]=PathDelim) then begin
+            // */.
             if (DestPos>3)
             and (Result[DestPos-2]='.') and (Result[DestPos-3]='.')
             and ((DestPos=4) or (Result[DestPos-4]=PathDelim)) then begin
-              //  6. ../..   -> copy
+              //  6. ../..   -> copy because if the first '..' was not resolved, the next can't neither
             end else begin
               //  7. xxxdir/..  -> trim dir and skip ..
               DirStart:=DestPos-2;
@@ -104,8 +104,25 @@ begin
                 inc(MacroPos);
               end;
               if MacroPos=DestPos then begin
+                // previous directory does not contain a macro -> remove dir/..
                 DestPos:=DirStart;
                 inc(SrcPos,2);
+                //writeln('ResolveDots ',DestPos,' SrcPos=',SrcPos,' File="',AFilename,'" Result="',copy(Result,1,DestPos-1),'"');
+                if SrcPos>l then begin
+                  // '..' at end of filename
+                  if (DestPos>1) and (Result[DestPos-1]<>PathDelim) then begin
+                    // foo/dir/.. -> foo
+                    dec(DestPos);
+                  end else if (DestPos=1) then begin
+                    // foo/.. -> .
+                    Result[1]:='.';
+                    DestPos:=2;
+                  end;
+                end else if DestPos=1 then begin
+                  // e.g. 'foo/../'
+                  while (SrcPos<=l) and (AFilename[SrcPos] in AllowDirectorySeparators) do
+                    inc(SrcPos);
+                end;
                 continue;
               end;
             end;

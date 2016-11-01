@@ -635,7 +635,6 @@ end;
 function TrimFilename(const AFilename: string): string;
 //Trim leading and trailing spaces
 //then call ResolveDots to trim double path delims and expand special dirs like .. and .
-
 var
   Len, Start: Integer;
 begin
