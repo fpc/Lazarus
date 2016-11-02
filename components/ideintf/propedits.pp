@@ -3812,7 +3812,7 @@ end;
 procedure TPasswordStringPropertyEditor.PropDrawValue(ACanvas: TCanvas;
   const ARect: TRect; AState: TPropEditDrawState);
 begin
-  DrawValue(DupeString('*',Length(GetVisualValue)),ACanvas,ARect,AState);
+  DrawValue('*****',ACanvas,ARect,AState);
 end;
 
 { TWideStringPropertyEditor }
@@ -3846,7 +3846,7 @@ end;
 procedure TPasswordWideStringPropertyEditor.PropDrawValue(ACanvas: TCanvas;
   const ARect: TRect; AState: TPropEditDrawState);
 begin
-  DrawValue(DupeString('*',Length(UTF8Decode(GetVisualValue))),ACanvas,ARect,AState);
+  DrawValue('*****',ACanvas,ARect,AState);
 end;
 
 { TNestedPropertyEditor }
