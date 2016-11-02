@@ -347,7 +347,7 @@ begin
     SubUnit2Code.Source:='';
     if not CodeToolBoss.FindFileAtCursor(Code,1,2,Found,FoundFilename) then
       Fail('CodeToolBoss.FindFileAtCursor at uses unit2 failed');
-    //ToDo AssertEquals('FindFileAtCursor at enabled include directive Found',ord(ffatIncludeFile),ord(Found));
+    AssertEquals('FindFileAtCursor at enabled include directive Found',ord(ffatIncludeFile),ord(Found));
     AssertEquals('FindFileAtCursor at enabled include directive FoundFilename','unit2.pas',FoundFilename);
 
 

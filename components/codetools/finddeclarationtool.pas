@@ -934,7 +934,7 @@ type
       out IncludeCode: TCodeBuffer): boolean;
     function FindFileAtCursor(const CursorPos: TCodeXYPosition;
       out Found: TFindFileAtCursorFlag; out FoundFilename: string;
-      Allowed: TFindFileAtCursorFlags = DefaultFindFileAtCursorAllowed;
+      SearchFor: TFindFileAtCursorFlags = DefaultFindFileAtCursorAllowed;
       StartPos: PCodeXYPosition = nil): boolean;
 
     function FindSmartHint(const CursorPos: TCodeXYPosition;
@@ -3492,7 +3492,7 @@ end;
 
 function TFindDeclarationTool.FindFileAtCursor(
   const CursorPos: TCodeXYPosition; out Found: TFindFileAtCursorFlag; out
-  FoundFilename: string; Allowed: TFindFileAtCursorFlags;
+  FoundFilename: string; SearchFor: TFindFileAtCursorFlags;
   StartPos: PCodeXYPosition): boolean;
 var
   CleanPos, CommentStart, CommentEnd: integer;
@@ -3510,7 +3510,7 @@ begin
   {$IFDEF VerboseFindFileAtCursor}
   debugln(['TFindDeclarationTool.FindFileAtCursor START']);
   {$ENDIF}
-  if [ffatUsedUnit,ffatIncludeFile,ffatDisabledIncludeFile]*Allowed<>[]
+  if [ffatUsedUnit,ffatIncludeFile,ffatDisabledIncludeFile]*SearchFor<>[]
   then begin
     try
       {$IFDEF VerboseFindFileAtCursor}
@@ -3533,32 +3533,31 @@ begin
           {$IFDEF VerboseFindFileAtCursor}
           debugln(['TFindDeclarationTool.FindFileAtCursor in comment']);
           {$ENDIF}
-          if (ffatIncludeFile in Allowed)
-          and IsIncludeDirectiveAtPos(CleanPos,CommentStart,NewCode) then begin
-            // enabled include directive
-            Found:=ffatIncludeFile;
-            FoundFilename:=NewCode.Filename;
-            Result:=true;
-            exit;
-          end else if ExtractLongParamDirective(Src,CommentStart,DirectiveName,Param)
+          if ExtractLongParamDirective(Src,CommentStart,DirectiveName,Param)
           then begin
             DirectiveName:=lowercase(DirectiveName);
-            if (ffatDisabledIncludeFile in Allowed)
-            and ((DirectiveName='i') or (DirectiveName='include')) then begin
-              // disabled include directive
+            if (ffatIncludeFile in SearchFor)
+            and (DirectiveName='i') or (DirectiveName='include') then begin
+              // include directive
               if (Param<>'') and (Param[1]<>'%') then begin
+                // include file directive
                 Result:=true;
-                Found:=ffatDisabledIncludeFile;
-                FoundFilename:=ResolveDots(GetForcedPathDelims(Param));
-                // search include file
-                MissingIncludeFile:=nil;
-                if Scanner.SearchIncludeFile(FoundFilename,NewCodePtr,
-                  MissingIncludeFile)
-                then
-                  FoundFilename:=TCodeBuffer(NewCodePtr).Filename;
+                Found:=ffatIncludeFile;
+                if IsIncludeDirectiveAtPos(CleanPos,CommentStart,NewCode) then
+                begin
+                  FoundFilename:=NewCode.Filename;
+                end else begin
+                  FoundFilename:=ResolveDots(GetForcedPathDelims(Param));
+                  // search include file
+                  MissingIncludeFile:=nil;
+                  if Scanner.SearchIncludeFile(FoundFilename,NewCodePtr,
+                    MissingIncludeFile)
+                  then
+                    FoundFilename:=TCodeBuffer(NewCodePtr).Filename;
+                end;
                 exit;
               end;
-            end else if (ffatResource in Allowed)
+            end else if (ffatResource in SearchFor)
             and ((DirectiveName='r') or (DirectiveName='resource')) then begin
               // resource directive
               Result:=true;
@@ -3573,7 +3572,7 @@ begin
               exit;
             end;
           end;
-          if ffatComment in Allowed then begin
+          if ffatComment in SearchFor then begin
             // ToDo: check comment
 
           end;
@@ -3625,10 +3624,10 @@ begin
   if (CursorPos.Y<1) or (CursorPos.Y>CursorPos.Code.LineCount) then exit;
   Line:=CursorPos.Code.GetLine(CursorPos.Y,false);
   if CursorPos.X>length(Line) then exit;
-  if ffatLiteral in Allowed then begin
+  if ffatLiteral in SearchFor then begin
     // ToDo: check literal
   end;
-  if ffatComment in Allowed then begin
+  if ffatComment in SearchFor then begin
     // ToDo: check simple
   end;
 end;
