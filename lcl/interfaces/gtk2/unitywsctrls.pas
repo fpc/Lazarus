@@ -10,7 +10,7 @@ interface
 uses
   GLib2, Gtk2, Gdk2Pixbuf,
   Classes, SysUtils, dynlibs,
-  Graphics, Controls, Forms, ExtCtrls, WSExtCtrls, LCLType;
+  Graphics, Controls, Forms, ExtCtrls, WSExtCtrls, LCLType, LazUTF8;
 
 { TUnityWSCustomTrayIcon is the class for tray icons on systems
   running the Unity desktop environment.
@@ -258,7 +258,7 @@ begin
   if Loaded then
     Exit(Initialized);
   Loaded:= True;
-  if GetEnvironmentVariable('XDG_CURRENT_DESKTOP') <> 'Unity' then
+  if GetEnvironmentVariableUTF8('XDG_CURRENT_DESKTOP') <> 'Unity' then
   begin
     Initialized := False;
     Exit;
