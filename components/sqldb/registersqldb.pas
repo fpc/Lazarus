@@ -142,11 +142,25 @@ Type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
+  { TSQLFirebirdFileNamePropertyEditor }
+
   TSQLFirebirdFileNamePropertyEditor=class(TFileNamePropertyEditor)
   public
     function GetFilter: String; override;
     function GetInitialDirectory: string; override;
   end;
+
+{$IFDEF HASSQLITE3CONNECTION}
+
+  { TSQLSQLite3FileNamePropertyEditor }
+
+  TSQLSQLite3FileNamePropertyEditor=class(TFileNamePropertyEditor)
+  public
+    function GetFilter: string; override;
+    function GetInitialDirectory: string; override;
+  end;
+
+{$ENDIF}
 
   { TSQLFileDescriptor }
 
@@ -263,6 +277,9 @@ Resourcestring
   SSQLSource = 'Insert your SQL statements here';
 
   SFireBirdDatabases = 'Firebird databases';
+{$IFDEF HASSQLITE3CONNECTION}
+  SSQLite3Databases = 'SQLite3 databases';
+{$ENDIF}
   SInterbaseDatabases = 'Interbase databases';
   SSQLStringsPropertyEditorDlgTitle = 'Editing %s';
 
@@ -325,7 +342,7 @@ begin
 end;
 {$ENDIF}
 
-{ TDbfFileNamePropertyEditor }
+{ TSQLFirebirdFileNamePropertyEditor }
 
 function TSQLFirebirdFileNamePropertyEditor.GetFilter: String;
 begin
@@ -339,6 +356,24 @@ begin
   Result:= (GetComponent(0) as TSQLConnection).DatabaseName;
   Result:= ExtractFilePath(Result);
 end;
+
+{$IFDEF HASSQLITE3CONNECTION}
+
+{ TSQLSQLite3FileNamePropertyEditor }
+
+function TSQLSQLite3FileNamePropertyEditor.GetFilter: string;
+begin
+  Result := SSQLite3Databases+' (*.db;*.db3;*.sqlite;*.sqlite3)|*.db;*.db3;*.sqlite;*.sqlite3';
+  Result:= Result+ '|'+ inherited GetFilter;
+end;
+
+function TSQLSQLite3FileNamePropertyEditor.GetInitialDirectory: string;
+begin
+  Result:= (GetComponent(0) as TSQLConnection).DatabaseName;
+  Result:= ExtractFilePath(Result);
+end;
+
+{$ENDIF}
 
 { TSQLStringsPropertyEditor }
 
@@ -518,6 +553,10 @@ begin
 {$IFDEF HASIBCONNECTION}
   RegisterPropertyEditor(TypeInfo(AnsiString),
     TIBConnection, 'DatabaseName', TSQLFirebirdFileNamePropertyEditor);
+{$ENDIF}
+{$IFDEF HASSQLITE3CONNECTION}
+  RegisterPropertyEditor(TypeInfo(AnsiString),
+    TSQLite3Connection, 'DatabaseName', TSQLSQLite3FileNamePropertyEditor);
 {$ENDIF}
   RegisterPropertyEditor(TypeInfo(AnsiString),
     TSQLConnector, 'ConnectorType', TSQLDBConnectorTypePropertyEditor);
