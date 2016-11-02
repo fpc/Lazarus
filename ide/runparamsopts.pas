@@ -50,7 +50,7 @@ uses
   Classes, SysUtils, LCLProc, Controls, Forms, Buttons, StdCtrls, ComCtrls,
   Dialogs, ExtCtrls, BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs,
   IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, LazFileUtils,
-  Laz2_XMLCfg, LazFileCache, ButtonPanel;
+  Laz2_XMLCfg, LazFileCache, LazUTF8, ButtonPanel;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old
@@ -166,10 +166,10 @@ begin
   {$ENDIF}
   Term := ATerm;
   if Term = '' then
-    Term := GetEnvironmentVariable('TERM');
+    Term := GetEnvironmentVariableUTF8('TERM');
   if Term = '' then
     Term := 'xterm';
-  List.DelimitedText := GetEnvironmentVariable('PATH');
+  List.DelimitedText := GetEnvironmentVariableUTF8('PATH');
   for i := 0 to List.Count - 1 do
   begin
     S := List.Strings[i] + PathDelim + Term;
