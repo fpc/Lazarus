@@ -390,7 +390,7 @@ end;
 
 procedure TSynEditMarkupFoldColors.DoMarkupParentCloseFoldAtRow(aRow: Integer);
 var
-  lvl,z : integer;
+  lvl: integer;
 
   procedure AddHighlight( ANode: TSynFoldNodeInfo );
   var x,j : integer;
