@@ -23,7 +23,7 @@ interface
 
 uses
   // RTL / FCL
-  Classes, TypInfo, SysUtils, types, RtlConsts, variants,
+  Classes, TypInfo, SysUtils, StrUtils, types, RtlConsts, variants,
   // LCL
   LCLType, LCLIntf, LCLProc, Forms, Controls, GraphType, ButtonPanel, Graphics,
   StdCtrls, Buttons, Menus, ExtCtrls, ComCtrls, Dialogs, EditBtn, Grids, ValEdit,
@@ -301,6 +301,8 @@ type
     FPropCount: Integer;
     FPropList: PInstPropList;
     function GetPrivateDirectory: ansistring;
+    procedure DrawValue(const AValue: string; ACanvas:TCanvas; const ARect:TRect;
+      AState:TPropEditDrawState);
   protected
     // Draw Checkbox for Boolean and Set element editors.
     function DrawCheckbox(ACanvas: TCanvas; const ARect: TRect; IsTrue: Boolean): TRect;
@@ -522,6 +524,15 @@ type
     procedure SetValue(const NewValue: ansistring); override;
   end;
 
+{ TPasswordStringPropertyEditor
+  The default property editor for string passwords}
+
+  TPasswordStringPropertyEditor = class(TStringPropertyEditor)
+  public
+    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+      AState: TPropEditDrawState); override;
+  end;
+
 { TWideStringPropertyEditor
   The default property editor for widestrings}
 
@@ -530,6 +541,15 @@ type
     function AllEqual: Boolean; override;
     function GetValue: ansistring; override;
     procedure SetValue(const NewValue: ansistring); override;
+  end;
+
+{ TPasswordWideStringPropertyEditor
+  The default property editor for widestring passwords}
+
+  TPasswordWideStringPropertyEditor = class(TWideStringPropertyEditor)
+  public
+    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+      AState: TPropEditDrawState); override;
   end;
 
 { TNestedPropertyEditor
@@ -2781,6 +2801,26 @@ begin
     Result:=PropertyHook.GetPrivateDirectory;
 end;
 
+procedure TPropertyEditor.DrawValue(const AValue: string; ACanvas: TCanvas;
+  const ARect: TRect; AState: TPropEditDrawState);
+var
+  Style : TTextStyle;
+begin
+  FillChar(Style{%H-},SizeOf(Style),0);
+  With Style do begin
+    Alignment := taLeftJustify;
+    Layout := tlCenter;
+    Opaque := False;
+    Clipping := True;
+    ShowPrefix := False;
+    WordBreak := False;
+    SingleLine := True;
+    ExpandTabs := True;
+    SystemFont := False;
+  end;
+  ACanvas.TextRect(ARect,ARect.Left+3,ARect.Top,AValue, Style);
+end;
+
 procedure TPropertyEditor.GetProperties(Proc:TGetPropEditProc);
 begin
 end;
@@ -3312,22 +3352,8 @@ end;
 
 procedure TPropertyEditor.PropDrawValue(ACanvas:TCanvas; const ARect: TRect;
   AState: TPropEditDrawState);
-var
-  Style : TTextStyle;
 begin
-  FillChar(Style{%H-},SizeOf(Style),0);
-  With Style do begin
-    Alignment := taLeftJustify;
-    Layout := tlCenter;
-    Opaque := False;
-    Clipping := True;
-    ShowPrefix := False;
-    WordBreak := False;
-    SingleLine := True;
-    ExpandTabs := True;
-    SystemFont := False;
-  end;
-  ACanvas.TextRect(ARect,ARect.Left+3,ARect.Top,GetVisualValue, Style);
+  DrawValue(GetVisualValue,ACanvas,ARect,AState);
 end;
 
 procedure TPropertyEditor.UpdateSubProperties;
@@ -3781,6 +3807,14 @@ begin
   SetStrValue(NewValue);
 end;
 
+{ TPasswordStringPropertyEditor }
+
+procedure TPasswordStringPropertyEditor.PropDrawValue(ACanvas: TCanvas;
+  const ARect: TRect; AState: TPropEditDrawState);
+begin
+  DrawValue(DupeString('*',Length(GetVisualValue)),ACanvas,ARect,AState);
+end;
+
 { TWideStringPropertyEditor }
 
 function TWideStringPropertyEditor.AllEqual: Boolean;
@@ -3805,6 +3839,14 @@ end;
 procedure TWideStringPropertyEditor.SetValue(const NewValue: ansistring);
 begin
   SetWideStrValue(UTF8Decode(NewValue));
+end;
+
+{ TPasswordWideStringPropertyEditor }
+
+procedure TPasswordWideStringPropertyEditor.PropDrawValue(ACanvas: TCanvas;
+  const ARect: TRect; AState: TPropEditDrawState);
+begin
+  DrawValue(DupeString('*',Length(UTF8Decode(GetVisualValue))),ACanvas,ARect,AState);
 end;
 
 { TNestedPropertyEditor }
