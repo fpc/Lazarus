@@ -947,8 +947,6 @@ var
   absTime: CFAbsoluteTime;
   gDate: CFGregorianDate;
   tz: CFTimeZoneRef;
-  aTime: TDateTime;
-  ok: boolean;
 begin
   absTime := CFDateGetAbsoluteTime(dateRef);
   tz := CFTimeZoneCopySystem;

@@ -186,7 +186,6 @@ type
     procedure SetScrollBars(const AValue: TScrollStyle);
   protected
     function GetFrame({%H-}Index: Integer): ControlRef; override;
-    function GetPreferredSize: TPoint; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     procedure GetLineOffset(AIndex: Integer; out AStart, AEnd: TXNOffset);
@@ -197,6 +196,7 @@ type
   public
     procedure Invalidate(Rect: PRect = nil); override;
     procedure BoundsChanged; override;
+    function GetPreferredSize: TPoint; override;
     procedure AllowMenuProcess({%H-}MenuHotKey: AnsiChar; {%H-}State: TShiftState; var AllowMenu: Boolean); override;
     procedure TextDidChange; override;
     function GetTextObject: TXNObject;
