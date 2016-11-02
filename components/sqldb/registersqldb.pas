@@ -527,6 +527,7 @@ begin
   RegisterPropertyEditor(TypeInfo(AnsiString),
     TSQLDBLibraryLoader, 'ConnectionType', TSQLDBConnectorTypePropertyEditor);
 {$endif}
+  RegisterPropertyEditor(TypeInfo(string), TSQLConnection, 'Password', TPasswordWideStringPropertyEditor);
   RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery,  'SQL'      , TSQLStringsPropertyEditor);
   RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery,  'InsertSQL', TSQLStringsPropertyEditor);
   RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery,  'UpdateSQL', TSQLStringsPropertyEditor);
