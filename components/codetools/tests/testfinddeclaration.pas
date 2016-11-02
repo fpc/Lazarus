@@ -315,13 +315,14 @@ end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_FileAtCursor;
 var
-  Code, SubUnit2Code: TCodeBuffer;
+  Code, SubUnit2Code, LFMCode: TCodeBuffer;
   Found: TFindFileAtCursorFlag;
   FoundFilename: string;
 begin
   Code:=CodeToolBoss.CreateFile('test1.lpr');
   Code.Source:='uses unit2 in ''sub/../unit2.pas'';'+LineEnding;
   SubUnit2Code:=CodeToolBoss.CreateFile('unit2.pas');
+  LFMCode:=CodeToolBoss.CreateFile('test1.lfm');
   try
     // --- used unit ---
     // test cursor on 'unit2'
@@ -346,20 +347,50 @@ begin
       +'{$i unit2.pas}'+LineEnding;
     SubUnit2Code.Source:='';
     if not CodeToolBoss.FindFileAtCursor(Code,1,2,Found,FoundFilename) then
-      Fail('CodeToolBoss.FindFileAtCursor at uses unit2 failed');
-    AssertEquals('FindFileAtCursor at enabled include directive Found',ord(ffatIncludeFile),ord(Found));
-    AssertEquals('FindFileAtCursor at enabled include directive FoundFilename','unit2.pas',FoundFilename);
+      Fail('CodeToolBoss.FindFileAtCursor at enabled include directive of empty inc failed');
+    AssertEquals('FindFileAtCursor at enabled include directive of empty Found',ord(ffatIncludeFile),ord(Found));
+    AssertEquals('FindFileAtCursor at enabled include directive of empty FoundFilename','unit2.pas',FoundFilename);
 
+    SubUnit2Code.Source:='{$define a}';
+    if not CodeToolBoss.FindFileAtCursor(Code,1,2,Found,FoundFilename) then
+      Fail('CodeToolBoss.FindFileAtCursor at enabled include directive of non-empty inc failed');
+    AssertEquals('FindFileAtCursor at enabled include directive of non-empty Found',ord(ffatIncludeFile),ord(Found));
+    AssertEquals('FindFileAtCursor at enabled include directive of non-empty FoundFilename','unit2.pas',FoundFilename);
+
+    // --- disabled include directive ---
+    // test cursor on disabled include directive
+    Code.Source:='program test1;'+LineEnding
+      +'{$ifdef disabled}'+LineEnding
+      +'{$i unit2.pas}'+LineEnding
+      +'{$endif}'+LineEnding;
+    SubUnit2Code.Source:='';
+    if not CodeToolBoss.FindFileAtCursor(Code,1,3,Found,FoundFilename) then
+      Fail('CodeToolBoss.FindFileAtCursor at disabled include directive failed');
+    AssertEquals('FindFileAtCursor at disabled include directive Found',ord(ffatDisabledIncludeFile),ord(Found));
+    AssertEquals('FindFileAtCursor at disabled include directive FoundFilename','unit2.pas',FoundFilename);
+
+    // --- enabled resource directive ---
+    Code.Source:='program test1;'+LineEnding
+      +'{$R test1.lfm}'+LineEnding;
+    if not CodeToolBoss.FindFileAtCursor(Code,1,2,Found,FoundFilename) then
+      Fail('CodeToolBoss.FindFileAtCursor at enabled resource directive failed');
+    AssertEquals('FindFileAtCursor at enabled resource directive Found',ord(ffatResource),ord(Found));
+    AssertEquals('FindFileAtCursor at enabled resource directive FoundFilename','test1.lfm',FoundFilename);
+
+    Code.Source:='program test1;'+LineEnding
+      +'{$R *.lfm}'+LineEnding;
+    if not CodeToolBoss.FindFileAtCursor(Code,1,2,Found,FoundFilename) then
+      Fail('CodeToolBoss.FindFileAtCursor at enabled resource directive failed');
+    AssertEquals('FindFileAtCursor at enabled resource directive Found',ord(ffatResource),ord(Found));
+    AssertEquals('FindFileAtCursor at enabled resource directive FoundFilename','test1.lfm',FoundFilename);
 
   finally
     Code.IsDeleted:=true;
     SubUnit2Code.IsDeleted:=true;
+    LFMCode.IsDeleted:=true;
   end;
-  // ToDo: test $i in code
   // ToDo: test $i 'file with spaces' in code
   // ToDo: test $i in disabled code
-  // ToDo: test $R file.lfm
-  // ToDo: test $R *.lfm
   // ToDo: test 'readme.txt' in active code
   // ToDo: test readme.txt in active code fails
   // ToDo: test readme.txt in comment works

@@ -666,6 +666,7 @@ type
     ffatIncludeFile,
     ffatDisabledIncludeFile,
     ffatResource,
+    ffatDisabledResource,
     ffatLiteral,
     ffatComment
     );
@@ -3495,12 +3496,75 @@ function TFindDeclarationTool.FindFileAtCursor(
   FoundFilename: string; SearchFor: TFindFileAtCursorFlags;
   StartPos: PCodeXYPosition): boolean;
 var
-  CleanPos, CommentStart, CommentEnd: integer;
+  CleanPos: integer;
+
+  function CheckComment(CommentStart, CommentEnd: integer; Enabled: boolean): boolean;
+  var
+    DirectiveName, Param: string;
+    NewCode: TCodeBuffer;
+    MissingIncludeFile: TMissingIncludeFile;
+    NewCodePtr: Pointer;
+  begin
+    Result:=false;
+    // cursor in comment in parsed code
+    {$IFDEF VerboseFindFileAtCursor}
+    debugln(['TFindDeclarationTool.FindFileAtCursor.CheckComment']);
+    {$ENDIF}
+    if ExtractLongParamDirective(Src,CommentStart,DirectiveName,Param) then begin
+      DirectiveName:=lowercase(DirectiveName);
+      if ((Enabled and (ffatIncludeFile in SearchFor))
+      or (not Enabled and (ffatDisabledIncludeFile in SearchFor)))
+        and (DirectiveName='i') or (DirectiveName='include')
+      then begin
+        // include directive
+        if (Param<>'') and (Param[1]<>'%') then begin
+          // include file directive
+          Result:=true;
+          if Enabled then
+            Found:=ffatIncludeFile
+          else
+            Found:=ffatDisabledIncludeFile;
+          if Enabled and IsIncludeDirectiveAtPos(CleanPos,CommentStart,NewCode) then
+          begin
+            FoundFilename:=NewCode.Filename;
+          end else begin
+            FoundFilename:=ResolveDots(GetForcedPathDelims(Param));
+            // search include file
+            MissingIncludeFile:=nil;
+            if Scanner.SearchIncludeFile(FoundFilename,NewCodePtr,
+              MissingIncludeFile)
+            then
+              FoundFilename:=TCodeBuffer(NewCodePtr).Filename;
+          end;
+          exit;
+        end;
+      end else if ((Enabled and (ffatResource in SearchFor))
+      or (not Enabled and (ffatDisabledResource in SearchFor)))
+        and ((DirectiveName='r') or (DirectiveName='resource'))
+      then begin
+        // resource directive
+        Result:=true;
+        if Enabled then
+          Found:=ffatResource
+        else
+          Found:=ffatDisabledResource;
+        FoundFilename:=ResolveDots(GetForcedPathDelims(Param));
+        if (FoundFilename<>'') and (copy(FoundFilename,1,2)='*.') then begin
+          Delete(FoundFilename,1,1);
+          FoundFilename:=ChangeFileExt(MainFilename,FoundFilename);
+        end else if not FilenameIsAbsolute(FoundFilename) then begin
+          FoundFilename:=ResolveDots(ExtractFilePath(MainFilename)+FoundFilename);
+        end;
+        exit;
+      end;
+    end;
+  end;
+
+var
+  CommentStart, CommentEnd: integer;
   Node: TCodeTreeNode;
-  aUnitName, UnitInFilename, DirectiveName, Param, Line: string;
+  aUnitName, UnitInFilename, Line: string;
   NewCode: TCodeBuffer;
-  NewCodePtr: Pointer;
-  MissingIncludeFile: TMissingIncludeFile;
 begin
   Result:=false;
   Found:=ffatNone;
@@ -3529,52 +3593,20 @@ begin
         // cursor in parsed code
         if CleanPosIsInComment(CleanPos,Node.StartPos,CommentStart,CommentEnd,true)
         then begin
-          // cursor in comment in parsed code
-          {$IFDEF VerboseFindFileAtCursor}
-          debugln(['TFindDeclarationTool.FindFileAtCursor in comment']);
-          {$ENDIF}
-          if ExtractLongParamDirective(Src,CommentStart,DirectiveName,Param)
-          then begin
-            DirectiveName:=lowercase(DirectiveName);
-            if (ffatIncludeFile in SearchFor)
-            and (DirectiveName='i') or (DirectiveName='include') then begin
-              // include directive
-              if (Param<>'') and (Param[1]<>'%') then begin
-                // include file directive
-                Result:=true;
-                Found:=ffatIncludeFile;
-                if IsIncludeDirectiveAtPos(CleanPos,CommentStart,NewCode) then
-                begin
-                  FoundFilename:=NewCode.Filename;
-                end else begin
-                  FoundFilename:=ResolveDots(GetForcedPathDelims(Param));
-                  // search include file
-                  MissingIncludeFile:=nil;
-                  if Scanner.SearchIncludeFile(FoundFilename,NewCodePtr,
-                    MissingIncludeFile)
-                  then
-                    FoundFilename:=TCodeBuffer(NewCodePtr).Filename;
-                end;
-                exit;
-              end;
-            end else if (ffatResource in SearchFor)
-            and ((DirectiveName='r') or (DirectiveName='resource')) then begin
-              // resource directive
-              Result:=true;
-              Found:=ffatResource;
-              FoundFilename:=ResolveDots(GetForcedPathDelims(Param));
-              if (FoundFilename<>'') and (copy(FoundFilename,1,2)='*.') then begin
-                Delete(FoundFilename,1,1);
-                FoundFilename:=ChangeFileExt(MainFilename,FoundFilename);
-              end else if not FilenameIsAbsolute(FoundFilename) then begin
-                FoundFilename:=ResolveDots(ExtractFilePath(MainFilename)+FoundFilename);
-              end;
-              exit;
+          //debugln(['TFindDeclarationTool.FindFileAtCursor Comment="',copy(Src,CommentStart,CommentEnd-CommentStart),'"']);
+          if (CommentEnd-CommentStart>4)
+          and (Src[CommentStart]='{') and (Src[CommentStart+1]=#3) then begin
+            // cursor in disabled code
+            if CleanPosIsInComment(CleanPos,CommentStart+2,CommentStart,CommentEnd,true)
+            then begin
+              // cursor in disabled comment
+              if CheckComment(CommentStart,CommentEnd,false) then
+                exit(true);
             end;
-          end;
-          if ffatComment in SearchFor then begin
-            // ToDo: check comment
-
+          end else begin
+            // cursor in enabled comment
+            if CheckComment(CommentStart,CommentEnd,true) then
+              exit(true);
           end;
         end else begin
           {$IFDEF VerboseFindFileAtCursor}
