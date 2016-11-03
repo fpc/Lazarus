@@ -1247,7 +1247,6 @@ begin
       NewFilename:=AppendPathDelim(Tool.WorkerDirectory)+ExtractFileName(AFilename);
       if FileExists(NewFilename,false) then begin
         AFilename:=NewFilename;
-        aDir:=InstantFPCCache;
       end;
     end;
     // store directory
@@ -2548,8 +2547,8 @@ var
   Reversed: String;
 begin
   Result:=false;
-  if (InstantFPCCache<>'')
-  and (CompareFilenames(ExtractFilePath(aFilename),InstantFPCCache)=0) then begin
+  if (InstantFPCCache='') then exit;
+  if (CompareFilenames(ExtractFilePath(aFilename),InstantFPCCache)=0) then begin
     Reversed:=AppendPathDelim(Tool.WorkerDirectory)+ExtractFilename(aFilename);
     if FileExists(Reversed,aSynchronized) then begin
       aFilename:=Reversed;
@@ -2927,7 +2926,7 @@ begin
     end;
     if p^<>')' then exit; // not a fpc message
     inc(p);
-    while p^ in [' '] do inc(p);
+    while p^=' ' do inc(p);
   end;
 
   if p^ in [#0..#31,' '] then begin
