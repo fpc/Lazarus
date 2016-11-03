@@ -1,10 +1,19 @@
-
 {**********************************************************************
- extracted from Package pl_ExControls.pkg
- From PilotLogic Software House
- for CodeTyphon Project (http://www.pilotlogic.com/)
- This unit is part of CodeTyphon Project
- used by Lazarus for Industrial package
+ GnouMeter is a meter which can display an integer or a float value (Single).
+ Just like a progress bar or a gauge, all you have do do is to define
+ the Minimum and maximum values as well as the actual value.
+
+ Above the meter, one can display the name of the data being measured (optional)
+ and its actual value with its corresponding unit.
+ The minimum and maximum values are respectively shown at the bottom and the
+ top of the meter with their corresponding units.
+ The meter is filled with the color ColorFore and its background color
+ is defined by the ColorBack Property.
+
+ THIS COMPONENT IS ENTIRELY FREEWARE
+
+ Author: Jérôme Hersant
+         jhersant@post4.tele.dk
 ***********************************************************************}
 
 unit indGnouMeter;

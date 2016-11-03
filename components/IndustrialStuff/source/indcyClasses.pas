@@ -35,11 +35,6 @@
     *
     * ***** END LICENSE BLOCK *****}
     
-{**********************************************************************
- Package pl_Cindy.pkg
- for CodeTyphon Studio (http://www.pilotlogic.com/)
-***********************************************************************}
-
 unit indcyClasses;
 
 {$mode objfpc}{$H+}

@@ -34,11 +34,6 @@
     *
     * ***** END LICENSE BLOCK *****}
     
-{**********************************************************************
- Package pl_Cindy.pkg
- for CodeTyphon Studio (http://www.pilotlogic.com/)
-***********************************************************************}
-
 unit indcyGraphics;
 
 {$mode objfpc}{$H+}

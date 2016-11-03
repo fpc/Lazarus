@@ -35,12 +35,8 @@
     * provisions above, a recipient may use your version of this file under the
     * terms of any one of the MPL, the GPL or the LGPL.
     *
-    * ***** END LICENSE BLOCK *****}
+    * ***** END LICENSE BLOCK *****
     
-{**********************************************************************
- Package pl_Cindy.pkg
- for CodeTyphon Studio (http://www.pilotlogic.com/)
-***********************************************************************
 Modified by Jurassic Pork 2013 for package Industrial of Lazarus}
 
 unit IndLed;
