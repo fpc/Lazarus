@@ -82,6 +82,11 @@ begin
   RegisterCustomMemo;
 end;
 
+function TCustomMemo.CanShowTextHint: Boolean;
+begin
+  Result := (Lines.Count = 0) and inherited CanShowTextHint;
+end;
+
 procedure TCustomMemo.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
