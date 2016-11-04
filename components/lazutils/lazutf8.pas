@@ -125,7 +125,6 @@ function UTF8UpperString(const s: string): string;
 function UTF8SwapCase(const AInStr: string; ALanguage: string=''): string;
 function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
                                   StopOnNonUTF8: Boolean = true): PtrInt;
-function ValidUTF8String(const s: String): String;
 function UTF8StringOfChar(AUtf8Char: String; N: Integer): String;
 function UTF8AddChar(AUtf8Char: String; const S: String; N: Integer): String;
 function UTF8AddCharR(AUtf8Char: String; const S: String; N: Integer): String;
@@ -144,6 +143,11 @@ function Utf8RPos(const Substr, Source: string): integer;
 
 function UTF8WrapText(S, BreakStr :string; BreakChars :TSysCharSet; MaxCol: integer): string; overload;
 function UTF8WrapText(S :string; MaxCol :integer) :string; overload;
+
+type
+  TEscapeMode = (emPascal, emHexPascal, emHexC, emC, emAsciiControlNames);
+function ValidUTF8String(const s: String): String; inline; deprecated 'Use Utf8EscapeControlChars() instead.';
+function Utf8EscapeControlChars(S: String; EscapeMode: TEscapeMode = emPascal): String;
 
 type
   TUTF8TrimFlag = (
@@ -2768,43 +2772,73 @@ begin
   Result:=-1;
 end;
 
-function ValidUTF8String(const s: String): String;
-var
-  p, cur: PChar;
-  l, lr: integer;
-  NeedFree: Boolean;
+function ValidUTF8String(const s: String): String; inline;
 begin
-  if FindInvalidUTF8Character(PChar(s), Length(s)) <> -1 then
-  begin
-    NeedFree := True;
-    GetMem(p, Length(s) + 1);
-    StrPCopy(p, s);
-    UTF8FixBroken(p);
-  end
-  else
-  begin
-    p := PChar(s);
-    NeedFree := False;
-  end;
+  Result := Utf8EscapeControlChars(s, emPascal);
+end;
 
+{
+  Translates escape characters inside an UTF8 encoded string into
+  human readable format.
+  Mainly used for logging purposes.
+  Parameters:
+    S         : Input string. Must be UTF8 encoded.
+    EscapeMode: controls the human readable format for escape characters.
+}
+function Utf8EscapeControlChars(S: String; EscapeMode: TEscapeMode = emPascal): String;
+const
+  //lookuptables are about 1.8 to 1.3 times faster than a function using IntToStr or IntToHex
+  PascalEscapeStrings: Array[#0..#31] of string = (
+    '#0' , '#1' , '#2' , '#3' , '#4' , '#5' , '#6' , '#7' ,
+    '#8' , '#9' , '#10', '#11', '#12', '#13', '#14', '#15',
+    '#16', '#17', '#18', '#19', '#20', '#21', '#22', '#23',
+    '#24', '#25', '#26', '#27', '#28', '#29', '#30', '#31');
+  CEscapeStrings: Array[#0..#31] of string = (
+    '\0'   , '\0x01', '\0x02', '\0x03', '\0x04', '\0x05', '\0x06', '\0x07',
+    '\0x08', '\t'   , '\r'   , '\0x0B', '\0x0C', '\n'   , '\0x0E', '\0x0F',
+    '\0x10', '\0x11', '\0x12', '\0x13', '\0x14', '\0x15', '\0x16', '\0x17',
+    '\0x18', '\0x19', '\0x1A', '\0x1B', '\0x1C', '\0x1D', '\0x1E', '\0x1F');
+  HexEscapeCStrings: Array[#0..#31] of string = (
+    '\0x00', '\0x01', '\0x02', '\0x03', '\0x04', '\0x05', '\0x06', '\0x07',
+    '\0x08', '\0x09', '\0x0A', '\0x0B', '\0x0C', '\0x0D', '\0x0E', '\0x0F',
+    '\0x10', '\0x11', '\0x12', '\0x13', '\0x14', '\0x15', '\0x16', '\0x17',
+    '\0x18', '\0x19', '\0x1A', '\0x1B', '\0x1C', '\0x1D', '\0x1E', '\0x1F');
+  HexEscapePascalStrings: Array[#0..#31] of string = (
+    '#$00', '#$01', '#$02', '#$03', '#$04', '#$05', '#$06', '#$07',
+    '#$08', '#$09', '#$0A', '#$0B', '#$0C', '#$0D', '#$0E', '#$0F',
+    '#$10', '#$11', '#$12', '#$13', '#$14', '#$15', '#$16', '#$17',
+    '#$18', '#$19', '#$1A', '#$1B', '#$1C', '#$1D', '#$1E', '#$1F');
+  AsciiControlStrings: Array[#0..#31] of string = (
+    '[NUL]', '[SOH]', '[STX]', '[ETX]', '[EOT]', '[ENQ]', '[ACK]', '[BEL]',
+    '[BS]' , '[HT]' , '[LF]' , '[VT]' , '[FF]' , '[CR]' , '[SO]' , '[SI]' ,
+    '[DLE]', '[DC1]', '[DC2]', '[DC3]', '[DC4]', '[NAK]', '[SYN]', '[ETB]',
+    '[CAN]', '[EM]' , '[SUB]', '[ESC]', '[FS]' , '[GS]' , '[RS]' , '[US]');
+var
+  Ch: Char;
+  i: Integer;
+begin
+  if FindInvalidUTF8Character(PChar(S), Length(S)) <> -1 then
+  begin
+    UTF8FixBroken(S);
+  end;
   Result := '';
-  cur := p;
-  while cur^ <> #0 do
+  //a byte < 127 cannot be part of a multi-byte codepoint, so this is safe
+  for i := 1 to Length(S) do
   begin
-    l := UTF8CharacterLength(cur);
-    if (l = 1) and (cur^ < #32) then
-      Result := Result + '#' + IntToStr(Ord(cur^))
-    else
+    Ch := S[i];
+    if (Ch < #32) then
     begin
-      lr := Length(Result);
-      SetLength(Result, lr + l);
-      System.Move(cur^, Result[lr + 1], l);
-    end;
-    inc(cur, l)
+      case EscapeMode of
+        emPascal: Result := Result + PascalEscapeStrings[Ch];
+        emHexPascal: Result := Result + HexEscapePascalStrings[Ch];
+        emHexC: Result := Result + HexEscapeCStrings[Ch];
+        emC: Result := Result + CEscapeStrings[Ch];
+        emAsciiControlNames: Result := Result + AsciiControlStrings[Ch];
+      end;//case
+    end
+    else
+      Result := Result + Ch;
   end;
-
-  if NeedFree then
-    FreeMem(p);
 end;
 
 function Utf8StringOfChar(AUtf8Char: String; N: Integer): String;
