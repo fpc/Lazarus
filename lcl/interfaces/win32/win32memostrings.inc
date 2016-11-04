@@ -19,7 +19,6 @@ type
     procedure SetUpdateState(Updating: Boolean); override;
   public
     constructor Create(Handle: HWND; TheOwner: TWinControl);
-    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure AddStrings(TheStrings: TStrings); override;
     procedure Clear; override;
@@ -91,12 +90,6 @@ begin
   inherited Create;
   FHandle := Handle;
   FOwner := TheOwner;
-end;
-
-destructor TWin32MemoStrings.Destroy;
-begin
-  // do nothing
-  inherited Destroy;
 end;
 
 procedure TWin32MemoStrings.Assign(Source: TPersistent);
