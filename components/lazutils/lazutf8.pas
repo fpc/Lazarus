@@ -146,7 +146,7 @@ function UTF8WrapText(S :string; MaxCol :integer) :string; overload;
 
 type
   TEscapeMode = (emPascal, emHexPascal, emHexC, emC, emAsciiControlNames);
-function ValidUTF8String(const s: String): String; inline; deprecated 'Use Utf8EscapeControlChars() instead.';
+function ValidUTF8String(const s: String): String; inline; deprecated 'Use Utf8EscapeControlChars() instead.'; // deprecated in 1.7
 function Utf8EscapeControlChars(S: String; EscapeMode: TEscapeMode = emPascal): String;
 
 type
