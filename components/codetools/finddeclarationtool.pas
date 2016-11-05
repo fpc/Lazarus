@@ -79,7 +79,7 @@ uses
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
   SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
   DirectoryCacher, AVL_Tree, PascalParserTool,
-  PascalReaderTool, FileProcs, LazFileUtils, LazUtilities,
+  PascalReaderTool, FileProcs, LazFileUtils, LazUtilities, LazUTF8,
   DefineTemplates, FindDeclarationCache;
 
 type
@@ -3561,10 +3561,11 @@ var
   end;
 
 var
-  CommentStart, CommentEnd: integer;
+  CommentStart, CommentEnd, Col, StartCol: integer;
   Node: TCodeTreeNode;
-  aUnitName, UnitInFilename, Line: string;
+  aUnitName, UnitInFilename, Line, Literal: string;
   NewCode: TCodeBuffer;
+  p, StartP: PChar;
 begin
   Result:=false;
   Found:=ffatNone;
@@ -3654,10 +3655,47 @@ begin
 
   // fallback: ignore parsed code and read the line at cursor directly
   if (CursorPos.Y<1) or (CursorPos.Y>CursorPos.Code.LineCount) then exit;
-  Line:=CursorPos.Code.GetLine(CursorPos.Y,false);
+  Line:=CursorPos.Code.GetLine(CursorPos.Y-1,false);
+  {$IFDEF VerboseFindFileAtCursor}
+  debugln(['TFindDeclarationTool.FindFileAtCursor Line="',copy(Line,1,CursorPos.X-1),'|',copy(Line,CursorPos.X,200),'"']);
+  {$ENDIF}
   if CursorPos.X>length(Line) then exit;
   if ffatLiteral in SearchFor then begin
-    // ToDo: check literal
+    // check literal
+    p:=PChar(Line);
+    Col:=1;
+    repeat
+      if p^=#0 then begin
+        break;
+      end else if p^='''' then begin
+        StartCol:=Col;
+        inc(Col);
+        inc(p);
+        StartP:=p;
+        repeat
+          case p^ of
+          #0: break;
+          '''': break;
+          #9: Col:=(Col+8) and not 7;
+          else inc(p,UTF8CharacterLength(p));
+          end;
+        until false;
+        if (CursorPos.X>=StartCol) and (CursorPos.X<=Col) then begin
+          Literal:=copy(Line,Col,p-StartP);
+          if not FilenameIsAbsolute(Literal) then
+            Literal:=TrimFilename(ExtractFilePath(Scanner.MainFilename)+Literal);
+          if FilenameIsAbsolute(Literal)
+          and DirectoryCache.Pool.FileExists(Literal) then begin
+            Found:=ffatLiteral;
+            FoundFilename:=Literal;
+            exit(true);
+          end;
+        end;
+        if p^=#0 then break;
+      end;
+      inc(p);
+      inc(Col);
+    until false;
   end;
   if ffatComment in SearchFor then begin
     // ToDo: check simple
