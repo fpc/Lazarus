@@ -1663,7 +1663,7 @@ begin
   if FColor <> Value then
   begin
     FColor := Value;
-    FParentColor := False;
+    ParentColor := False;
     Perform(CM_COLORCHANGED, 0, 0);
     Invalidate;
   end;
