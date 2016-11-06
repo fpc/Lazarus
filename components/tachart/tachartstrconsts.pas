@@ -35,6 +35,14 @@ resourcestring
   desInsertRow = 'Insert row';
   desDeleteRow = 'Delete row';
 
+  // Axis
+  rsLeft = 'Left';
+  rsRight = 'Right';
+  rsTop = 'Top';
+  rsBottom = 'Bottom';
+  rsHidden = 'Hidden';
+  rsInverted = 'Inverted';
+
   // Subcomponents editor
   rsAdd = 'Add';
   rsDelete = 'Delete';

@@ -47,6 +47,10 @@ msgstr "Automatikus méretezés"
 msgid "Bar series"
 msgstr "Sávok"
 
+#: tachartstrconsts.rsbottom
+msgid "Bottom"
+msgstr ""
+
 #: tachartstrconsts.rsboxandwhiskerseries
 msgid "Box-and-whiskers series"
 msgstr "Bajszos dobozok"
@@ -107,13 +111,25 @@ msgstr "Vektormezők"
 msgid "Function series"
 msgstr "Függvény"
 
+#: tachartstrconsts.rshidden
+msgid "Hidden"
+msgstr ""
+
 #: tachartstrconsts.rsinvalidlogbase
 msgid "Logarithm base must be > 0 and <> 1."
 msgstr "A logaritmus alapja > 0 és <> 1 lehet."
 
+#: tachartstrconsts.rsinverted
+msgid "Inverted"
+msgstr ""
+
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
 msgstr "Legkisebb illeszkedő négyzetek"
+
+#: tachartstrconsts.rsleft
+msgid "Left"
+msgstr ""
 
 #: tachartstrconsts.rslinear
 msgid "Linear"
@@ -166,6 +182,14 @@ msgstr "Tortaszeletek"
 #: tachartstrconsts.rspolarseries
 msgid "Polar series"
 msgstr "Polár"
+
+#: tachartstrconsts.rsright
+msgid "Right"
+msgstr ""
+
+#: tachartstrconsts.rstop
+msgid "Top"
+msgstr ""
 
 #: tachartstrconsts.rsuserdefined
 msgctxt "tachartstrconsts.rsuserdefined"

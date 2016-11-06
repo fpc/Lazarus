@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: tachartstrconsts.descolor
@@ -48,6 +48,10 @@ msgstr "Auto-Skalierung"
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
 msgstr "Säulen/Balken-Diagramm"
+
+#: tachartstrconsts.rsbottom
+msgid "Bottom"
+msgstr "Unten"
 
 #: tachartstrconsts.rsboxandwhiskerseries
 msgid "Box-and-whiskers series"
@@ -109,13 +113,25 @@ msgstr "Vektorfeld-Diagramm"
 msgid "Function series"
 msgstr "Funktions-Diagramm"
 
+#: tachartstrconsts.rshidden
+msgid "Hidden"
+msgstr "unsichtbar"
+
 #: tachartstrconsts.rsinvalidlogbase
 msgid "Logarithm base must be > 0 and <> 1."
 msgstr "Die Logarithmus-Basis muss größer als 0 und darf nicht gleich 1 sein."
 
+#: tachartstrconsts.rsinverted
+msgid "Inverted"
+msgstr "invertiert"
+
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
 msgstr "Fit"
+
+#: tachartstrconsts.rsleft
+msgid "Left"
+msgstr "Links"
 
 #: tachartstrconsts.rslinear
 msgid "Linear"
@@ -169,6 +185,14 @@ msgstr "Torten-Diagramm"
 msgid "Polar series"
 msgstr "Polar-Diagramm"
 
+#: tachartstrconsts.rsright
+msgid "Right"
+msgstr "Rechts"
+
+#: tachartstrconsts.rstop
+msgid "Top"
+msgstr "Oben"
+
 #: tachartstrconsts.rsuserdefined
 msgctxt "tachartstrconsts.rsuserdefined"
 msgid "User-defined"
@@ -210,4 +234,3 @@ msgstr "Fehler beim Umbenennen von Komponenten: %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Werkzeuge bearbeiten"
-

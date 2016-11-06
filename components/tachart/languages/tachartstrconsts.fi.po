@@ -37,6 +37,10 @@ msgstr "Automaattinen skaalaus"
 msgid "Bar series"
 msgstr "Pylväskuvaaja"
 
+#: tachartstrconsts.rsbottom
+msgid "Bottom"
+msgstr ""
+
 #: tachartstrconsts.rsboxandwhiskerseries
 msgid "Box-and-whiskers series"
 msgstr "Laatikko-jana kuvaaja"
@@ -97,13 +101,25 @@ msgstr ""
 msgid "Function series"
 msgstr "Funktiokuvaaja"
 
+#: tachartstrconsts.rshidden
+msgid "Hidden"
+msgstr ""
+
 #: tachartstrconsts.rsinvalidlogbase
 msgid "Logarithm base must be > 0 and <> 1."
+msgstr ""
+
+#: tachartstrconsts.rsinverted
+msgid "Inverted"
 msgstr ""
 
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
 msgstr "Pienimpään neliösummaan sopiva kuvaaja"
+
+#: tachartstrconsts.rsleft
+msgid "Left"
+msgstr ""
 
 #: tachartstrconsts.rslinear
 msgid "Linear"
@@ -156,6 +172,14 @@ msgstr "Piirakkakuvaaja"
 #: tachartstrconsts.rspolarseries
 msgid "Polar series"
 msgstr "Napakuvaaja"
+
+#: tachartstrconsts.rsright
+msgid "Right"
+msgstr ""
+
+#: tachartstrconsts.rstop
+msgid "Top"
+msgstr ""
 
 #: tachartstrconsts.rsuserdefined
 msgctxt "tachartstrconsts.rsuserdefined"

@@ -37,6 +37,10 @@ msgstr ""
 msgid "Bar series"
 msgstr ""
 
+#: tachartstrconsts.rsbottom
+msgid "Bottom"
+msgstr ""
+
 #: tachartstrconsts.rsboxandwhiskerseries
 msgid "Box-and-whiskers series"
 msgstr ""
@@ -97,12 +101,24 @@ msgstr ""
 msgid "Function series"
 msgstr ""
 
+#: tachartstrconsts.rshidden
+msgid "Hidden"
+msgstr ""
+
 #: tachartstrconsts.rsinvalidlogbase
 msgid "Logarithm base must be > 0 and <> 1."
 msgstr ""
 
+#: tachartstrconsts.rsinverted
+msgid "Inverted"
+msgstr ""
+
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
+msgstr ""
+
+#: tachartstrconsts.rsleft
+msgid "Left"
 msgstr ""
 
 #: tachartstrconsts.rslinear
@@ -155,6 +171,14 @@ msgstr ""
 
 #: tachartstrconsts.rspolarseries
 msgid "Polar series"
+msgstr ""
+
+#: tachartstrconsts.rsright
+msgid "Right"
+msgstr ""
+
+#: tachartstrconsts.rstop
+msgid "Top"
 msgstr ""
 
 #: tachartstrconsts.rsuserdefined

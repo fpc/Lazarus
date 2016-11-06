@@ -48,6 +48,10 @@ msgstr "Autoskala"
 msgid "Bar series"
 msgstr "Stapeldiagram"
 
+#: tachartstrconsts.rsbottom
+msgid "Bottom"
+msgstr ""
+
 #: tachartstrconsts.rsboxandwhiskerseries
 msgid "Box-and-whiskers series"
 msgstr "Box-and-whiskers diagram"
@@ -110,13 +114,25 @@ msgstr ""
 msgid "Function series"
 msgstr "Funktionskurva"
 
+#: tachartstrconsts.rshidden
+msgid "Hidden"
+msgstr ""
+
 #: tachartstrconsts.rsinvalidlogbase
 msgid "Logarithm base must be > 0 and <> 1."
+msgstr ""
+
+#: tachartstrconsts.rsinverted
+msgid "Inverted"
 msgstr ""
 
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
 msgstr "Least-squares fit kurva"
+
+#: tachartstrconsts.rsleft
+msgid "Left"
+msgstr ""
 
 #: tachartstrconsts.rslinear
 msgid "Linear"
@@ -169,6 +185,14 @@ msgstr "Cirkeldiagram"
 #: tachartstrconsts.rspolarseries
 msgid "Polar series"
 msgstr "Polardiagram"
+
+#: tachartstrconsts.rsright
+msgid "Right"
+msgstr ""
+
+#: tachartstrconsts.rstop
+msgid "Top"
+msgstr ""
 
 #: tachartstrconsts.rsuserdefined
 msgctxt "tachartstrconsts.rsuserdefined"

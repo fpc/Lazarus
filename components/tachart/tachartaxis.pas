@@ -266,7 +266,7 @@ type
 implementation
 
 uses
-  LResources, Math, PropEdits, TAGeometry, TAMath;
+  LResources, Math, PropEdits, TAChartStrConsts, TAGeometry, TAMath;
 
 var
   VIdentityTransform: TChartAxisTransformations;
@@ -549,14 +549,13 @@ end;
 
 function TChartAxis.GetDisplayName: String;
 const
-  SIDE_NAME: array [TChartAxisAlignment] of String =
-    ('Left', 'Top', 'Right', 'Bottom');
-  VISIBLE_NAME: array [Boolean] of String = (' Hidden', '');
-  INVERTED_NAME: array [Boolean] of String = ('', ' Inverted');
+  SIDE_NAME: array [TChartAxisAlignment] of PStr =
+    (@rsLeft, @rsTop, @rsRight, @rsBottom);
 begin
-  Result :=
-    SIDE_NAME[Alignment] + VISIBLE_NAME[Visible] + INVERTED_NAME[IsFlipped] +
-    FormatIfNotEmpty(' (%s)', Title.Caption);
+  Result := SIDE_NAME[Alignment]^;
+  if not Visible then Result := Result + ' ' + rsHidden;
+  if IsFlipped then Result := Result + ' ' + rsInverted;
+  Result := Result + FormatIfNotEmpty(' (%s)', Title.Caption);
 end;
 
 function TChartAxis.GetMarks: TChartAxisMarks;
