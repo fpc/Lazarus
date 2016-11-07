@@ -180,8 +180,6 @@ type
     property TabStop;
     property Text;
     property TextHint;
-    property TextHintFontColor;
-    property TextHintFontStyle;
     property Visible;
   end;
 
@@ -325,8 +323,6 @@ type
     property OnUTF8KeyPress;
     property Text;
     property TextHint stored IsTextHintStored;
-    property TextHintFontColor;
-    property TextHintFontStyle;
   end;
 
   { TFileNameEdit }
@@ -440,8 +436,6 @@ type
     property OnUTF8KeyPress;
     property Text;
     property TextHint;
-    property TextHintFontColor;
-    property TextHintFontStyle;
   end;
 
 
@@ -536,8 +530,6 @@ type
     property OnUTF8KeyPress;
     property Text;
     property TextHint;
-    property TextHintFontColor;
-    property TextHintFontStyle;
   end;
 
 
@@ -651,8 +643,6 @@ type
     property Visible;
     property Text;
     property TextHint;
-    property TextHintFontColor;
-    property TextHintFontStyle;
   end;
   
   { TTimeEdit }
@@ -752,8 +742,6 @@ type
       property Visible;
       property Text;
       property TextHint;
-      property TextHintFontColor;
-      property TextHintFontStyle;
   end;
   
 
@@ -855,8 +843,6 @@ type
     property OnUTF8KeyPress;
     property Text;
     property TextHint;
-    property TextHintFontColor;
-    property TextHintFontStyle;
   end;
 
 

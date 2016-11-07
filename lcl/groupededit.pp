@@ -70,6 +70,8 @@ type
     FIsReadOnly: Boolean;
     FLayout: TLeftRight;
     FSpacing: Integer;
+    FTextHintFontColor: TColor;      //remove in 1.9
+    FTextHintFontStyle: TFontStyles; //remove in 1.9
     //Forwarded events from FButton
     FOnBuddyClick: TNotifyEvent;
     //Forwarded events from FEdit
@@ -120,8 +122,8 @@ type
     function GetSelText: String;
     function GetTabStop: Boolean;
     function GetTextHint: TTranslateString;
-    function GetTextHintFontColor: TColor;
-    function GetTextHintFontStyle: TFontStyles;
+    function GetTextHintFontColor: TColor;      //Remove in 1.9
+    function GetTextHintFontStyle: TFontStyles; //Remove in 1.9
 
     procedure InternalOnBuddyClick(Sender: TObject);
     procedure InternalOnEditClick(Sender: TObject);
@@ -175,8 +177,6 @@ type
     procedure SetSpacing(const Value: integer);
     procedure SetTabStop(AValue: Boolean);
     procedure SetTextHint(AValue: TTranslateString);
-    procedure SetTextHintFontColor(AValue: TColor);
-    procedure SetTextHintFontStyle(AValue: TFontStyles);
   protected
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                 WithThemeSpace: Boolean); override;
@@ -301,8 +301,8 @@ type
     property TabStop: Boolean read GetTabStop write SetTabStop default True;
     property Text;
     property TextHint: TTranslateString read GetTextHint write SetTextHint;
-    property TextHintFontColor: TColor read GetTextHintFontColor write SetTextHintFontColor default clGrayText;
-    property TextHintFontStyle: TFontStyles read GetTextHintFontStyle write SetTextHintFontStyle default [fsItalic];
+    property TextHintFontColor: TColor read GetTextHintFontColor write FTextHintFontColor default clGrayText; deprecated 'Will be removed in the future'; //deprecated in 1.7
+    property TextHintFontStyle: TFontStyles read GetTextHintFontStyle write FTextHintFontStyle default [fsItalic]; deprecated 'Will be removed in the future'; //deprecated in 1.7
 
     property OnChange: TNotifyEvent read FOnEditChange write FOnEditChange;
     property OnClick: TNotifyEvent read FOnEditClick write FOnEditClick;
@@ -400,8 +400,6 @@ type
     property TabStop;
     property Text;
     property TextHint;
-    property TextHintFontColor;
-    property TextHintFontStyle;
     property Visible;
   end;
 
@@ -634,12 +632,12 @@ end;
 
 function TCustomAbstractGroupedEdit.GetTextHintFontColor: TColor;
 begin
-  Result := FEdit.TextHintFontColor;
+  Result := clGrayText;
 end;
 
 function TCustomAbstractGroupedEdit.GetTextHintFontStyle: TFontStyles;
 begin
-  Result := FEdit.TextHintFontStyle;
+  Result := [fsItalic];
 end;
 
 procedure TCustomAbstractGroupedEdit.FocusAndMaybeSelectAll;
@@ -1134,16 +1132,6 @@ begin
   FEdit.TextHint := AValue;
 end;
 
-procedure TCustomAbstractGroupedEdit.SetTextHintFontColor(AValue: TColor);
-begin
-  FEdit.TextHintFontColor := AValue;
-end;
-
-procedure TCustomAbstractGroupedEdit.SetTextHintFontStyle(AValue: TFontStyles);
-begin
-  FEdit.TextHintFontStyle := AValue;
-end;
-
 procedure TCustomAbstractGroupedEdit.UpdateSpacing;
 begin
   if (FBuddy=nil) or not FBuddy.Visible then
@@ -1294,4 +1282,7 @@ begin
   FEdit.ValidateEdit;
 end;
 
+initialization
+  RegisterPropertyToSkip(TCustomAbstractGroupedEdit, 'TextHintFontColor','Used in a previous version of Lazarus','');
+  RegisterPropertyToSkip(TCustomAbstractGroupedEdit, 'TextHintFontStyle','Used in a previous version of Lazarus','');
 end.

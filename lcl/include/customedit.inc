@@ -675,13 +675,23 @@ begin
   try
     //settint Text clears modified flag
     inherited RealSetText(FTextHint);
-    Font.Color := FTextHintFontColor;
-    Font.Style := FTextHintFontStyle;
+    Font.Color := clGrayText; //FTextHintFontColor;
+    Font.Style := [fsItalic]; //FTextHintFontStyle;
     PasswordChar := #0;
   finally
     FSettingTextHint := False;
     Modified := OldModified;
   end;
+end;
+
+function TCustomEdit.GetTextHintFontColor: TColor;
+begin
+  Result := clGrayText;
+end;
+
+function TCustomEdit.GetTextHintFontStyle: TFontStyles;
+begin
+  Result := [fsItalic];
 end;
 
 procedure TCustomEdit.HideTextHint;

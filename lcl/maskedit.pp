@@ -334,8 +334,6 @@ const
     property EditMask;
     property Text;
     property TextHint;
-    property TextHintFontColor;
-    property TextHintFontStyle;
     property SpaceChar;
   end;
 
@@ -2143,5 +2141,8 @@ begin
 end;
 
 
+initialization
+  RegisterPropertyToSkip(TCustomMaskEdit, 'TextHintFontColor','Used in a previous version of Lazarus','');
+  RegisterPropertyToSkip(TCustomMaskEdit, 'TextHintFontStyle','Used in a previous version of Lazarus','');
 
 end.
