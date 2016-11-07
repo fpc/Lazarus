@@ -3623,7 +3623,7 @@ procedure TCustomTreeView.SetBottomItem(Value: TTreeNode);
 begin
   if HandleAllocated and (Value <> nil) then begin
     Value.MakeVisible;
-    ScrolledTop:=Value.Top+Value.Height-(ClientHeight-ScrollBarWidth);
+    ScrolledTop:=Value.Top+Value.Height-ClientHeight;
   end;
 end;
 
@@ -3761,7 +3761,7 @@ end;
 function TCustomTreeView.GetMaxScrollLeft: integer;
 begin
   UpdateMaxRight;
-  Result:=FMaxRight-(ClientWidth-ScrollBarWidth-2*BorderWidth);
+  Result:=FMaxRight-(ClientWidth-2*BorderWidth);
   if Result<0 then Result:=0;
 end;
 
@@ -3774,7 +3774,7 @@ begin
     Result:=0
   else begin
     Result:=LastVisibleNode.Top+LastVisibleNode.Height
-             -(ClientHeight-ScrollBarWidth)+2*integer(BorderWidth);
+             -ClientHeight+2*integer(BorderWidth);
     //DebugLn('>>> ',LastVisibleNode.Text,' ',Result);
     if Result<0 then Result:=0;
   end;
@@ -3788,7 +3788,7 @@ begin
   Result := nil;
   if not Assigned(Items) then
     Exit;
-  if (Y >= BorderWidth) and (Y < (ClientHeight - ScrollBarWidth) - BorderWidth) then
+  if (Y >= BorderWidth) and (Y < ClientHeight - BorderWidth) then
   begin
     inc(Y, FScrolledTop - BorderWidth);
     i := IndexOfNodeAtTop(Items.FTopLvlItems, Items.FTopLvlCount, Y);
@@ -3809,12 +3809,12 @@ end;
 
 function TCustomTreeView.GetNodeDrawAreaWidth: integer;
 begin
-  Result:=ClientWidth-ScrollBarWidth-BorderWidth*2;
+  Result:=ClientWidth-BorderWidth*2;
 end;
 
 function TCustomTreeView.GetNodeDrawAreaHeight: integer;
 begin
-  Result:=ClientHeight-ScrollBarWidth-BorderWidth*2;
+  Result:=ClientHeight-BorderWidth*2;
 end;
 
 function TCustomTreeView.GetNodeAt(X, Y: Integer): TTreeNode;
@@ -3921,7 +3921,7 @@ function TCustomTreeView.GetHitTestInfoAt(X, Y: Integer): THitTests;
 var Node: TTreeNode;
 begin
   Result := [];
-  if (X>=0) and (X<ClientWidth) and (Y>=0) and (Y<(ClientHeight-ScrollBarWidth))
+  if (X>=0) and (X<ClientWidth) and (Y>=0) and (Y<ClientHeight)
   then begin
     Node:=GetNodeAtY(Y);
     if Node<>nil then begin
@@ -3991,7 +3991,7 @@ begin
     //DebugLn('[TCustomTreeView.IsNodeVisible] B Node=',DbgS(ANode),
     //  ' ',dbgs(FScrolledTop)+'>=',dbgs(ANode.Top+ANode.Height)+' or =',dbgs(FScrolledTop),'+'+dbgs(ClientHeight)+'<',dbgs(ANode.Top));
     if (FScrolledTop>=ANode.Top+ANode.Height)
-    or (FScrolledTop+(ClientHeight-ScrollBarWidth)-2*BorderWidth<ANode.Top)
+    or (FScrolledTop+ClientHeight-2*BorderWidth<ANode.Top)
     then
       Result:=false;
   end;
@@ -4006,7 +4006,7 @@ begin
     //DebugLn('[TCustomTreeView.IsNodeVisible] B Node=',DbgS(ANode),
     //' ',FScrolledTop,'>=',ANode.Top,'+',ANode.Height,' or ',FScrolledTop,'+',ClientHeight,'<',ANode.Top);
     if (FScrolledTop>ANode.Top)
-    or (FScrolledTop+(ClientHeight-ScrollBarWidth)-2*BorderWidth
+    or (FScrolledTop+ClientHeight-2*BorderWidth
       <ANode.Top+ANode.Height)
     then
       Result:=false;
@@ -4181,7 +4181,7 @@ begin
     ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
     ScrollInfo.nTrackPos := 0;
     ScrollInfo.nMin := 0;
-    ScrollInfo.nPage := Max(1,(ClientWidth-ScrollBarWidth)-2*BorderWidth);
+    ScrollInfo.nPage := Max(1,ClientWidth-2*BorderWidth);
     ScrollInfo.nMax := Max(1,GetMaxScrollLeft+integer(ScrollInfo.nPage)-1);
     ScrollInfo.nPos := Max(FScrolledLeft,0);
     if not CompareMem(@ScrollInfo,@FLastHorzScrollInfo,SizeOf(TScrollInfo))
@@ -4212,7 +4212,7 @@ begin
     ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
     ScrollInfo.nTrackPos := 0;
     ScrollInfo.nMin := 0;
-    ScrollInfo.nPage := Max(1,(ClientHeight-ScrollBarWidth)-FDefItemHeight);
+    ScrollInfo.nPage := Max(1,ClientHeight-FDefItemHeight);
     ScrollInfo.nMax := Max(1,GetMaxScrollTop+integer(ScrollInfo.nPage)-1);
     ScrollInfo.nTrackPos := 0;
     ScrollInfo.nPos := Max(0,FScrolledTop);
@@ -4638,8 +4638,8 @@ begin
         //if Node<>nil then DebugLn(' Node.Text=',Node.Text) else DebugLn('');
       end;
       SpaceRect := Rect(BorderWidth, BorderWidth,
-                        (ClientWidth - ScrollBarWidth) - BorderWidth,
-                        (ClientHeight - ScrollBarWidth) - BorderWidth);
+                        ClientWidth - BorderWidth,
+                        ClientHeight - BorderWidth);
       // draw insert mark for new root node
       if (InsertMarkType = tvimAsFirstChild) and (Items.Count = 0) then
       begin
@@ -4669,18 +4669,18 @@ begin
       begin
         if a = HalfBorderWidth then
           Pen.Color := clBlack;
-        MoveTo(a, (ClientHeight-ScrollBarWidth) - 1 - a);
+        MoveTo(a, ClientHeight - 1 - a);
         LineTo(a, a);
-        LineTo((ClientWidth - ScrollBarWidth) - 1 - a, a);
+        LineTo(ClientWidth - 1 - a, a);
       end;
       Pen.Color := clWhite;
       for a := 0 to BorderWidth - 1 do
       begin
         if a = HalfBorderWidth then
           Pen.Color := clLtGray;
-        MoveTo((ClientWidth - ScrollBarWidth) - 1 - a, a);
-        LineTo((ClientWidth - ScrollBarWidth) - 1 - a, (ClientHeight - ScrollBarWidth) - 1 - a);
-        LineTo(a, (ClientHeight-ScrollBarWidth) - 1 - a);
+        MoveTo(ClientWidth - 1 - a, a);
+        LineTo(ClientWidth - 1 - a, ClientHeight - 1 - a);
+        LineTo(a, ClientHeight - 1 - a);
       end;
       if IsCustomDrawn(dtControl, cdPostPaint) then
       begin
@@ -5075,7 +5075,7 @@ var
   OverlayIndex: Integer;
 begin
   NodeRect := Node.DisplayRect(False);
-  if (NodeRect.Bottom < 0) or (NodeRect.Top >= (ClientHeight - ScrollBarWidth)) then
+  if (NodeRect.Bottom < 0) or (NodeRect.Top >= ClientHeight) then
     Exit;
   NodeSelected := (Node.Selected) or (Node.MultiSelected);
   Canvas.Font.Color := Font.Color;
@@ -5701,9 +5701,9 @@ begin
     SB_LINEDOWN:   ScrolledTop := ScrolledTop + FDefItemHeight;
     SB_LINEUP:     ScrolledTop := ScrolledTop - FDefItemHeight;
       // Scrolls one page of lines up / down
-    SB_PAGEDOWN:   ScrolledTop := ScrolledTop + (ClientHeight-ScrollBarWidth)
+    SB_PAGEDOWN:   ScrolledTop := ScrolledTop + ClientHeight
                                      - FDefItemHeight;
-    SB_PAGEUP:     ScrolledTop := ScrolledTop - (ClientHeight-ScrollBarWidth)
+    SB_PAGEUP:     ScrolledTop := ScrolledTop - ClientHeight
                                      + FDefItemHeight;
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION,
@@ -5723,9 +5723,9 @@ begin
     SB_LINERIGHT:  ScrolledLeft := ScrolledLeft + FDefItemHeight div 2;
     SB_LINELEFT:   ScrolledLeft := ScrolledLeft - FDefItemHeight div 2;
       // Scrolls one page of lines left / right
-    SB_PAGERIGHT:  ScrolledLeft := ScrolledLeft + (ClientHeight-ScrollBarWidth)
+    SB_PAGERIGHT:  ScrolledLeft := ScrolledLeft + ClientHeight
                                        - FDefItemHeight;
-    SB_PAGELEFT:   ScrolledLeft := ScrolledLeft - (ClientHeight-ScrollBarWidth)
+    SB_PAGELEFT:   ScrolledLeft := ScrolledLeft - ClientHeight
                                        + FDefItemHeight;
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION,

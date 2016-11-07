@@ -3934,7 +3934,6 @@ uses
   InterfaceBase, WSComCtrls, WSFactory;
 
 const
-  ScrollBarWidth = 0;
   AllPanelsParts = [Low(TPanelPart)..High(TPanelPart)];
 
 { TNBBasePages }
