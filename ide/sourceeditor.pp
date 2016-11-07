@@ -3500,7 +3500,7 @@ begin
     end;
     if (Result = 0) and not (ssoReplaceAll in anOptions) then begin
       ACaption:=lisUENotFound;
-      AText:=Format(lisUESearchStringNotFound, [ValidUTF8String(aFindText)]);
+      AText:=Format(lisUESearchStringNotFound, [Utf8EscapeControlChars(aFindText, emPascal)]);
       if not (Again or OldEntireScope) then begin
         if ssoBackwards in anOptions then
           AText:=AText+' '+lisUESearchStringContinueEnd
