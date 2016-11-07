@@ -1743,7 +1743,7 @@ begin
       if (Screen.Forms[I].Menu = Value) and (Screen.Forms[I] <> Self) then
         raise EInvalidOperation.CreateFmt(sDuplicateMenus, [Value.Name]);
 
-  if FMenu <> nil then
+  if (FMenu <> nil) and not (csDestroying in FMenu.ComponentState) then
   begin
     FMenu.DestroyHandle;
     FMenu.Parent := nil;
