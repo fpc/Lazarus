@@ -526,16 +526,20 @@ end;
 procedure TStringToPointerTree.SetValues(const s: string; const AValue: Pointer);
 var
   Node: TAvgLvlTreeNode;
-  NewItem: PStringToPointerItem;
+  Item: PStringToPointerItem;
 begin
   Node:=FindNode(s);
   if Node<>nil then begin
-    PStringToPointerItem(Node.Data)^.Value:=AValue;
+    Item:=PStringToPointerItem(Node.Data);
+    if Item^.Value=AValue then exit;
+    if FreeValues then
+       TObject(Item^.Value).Free;
+    Item^.Value:=AValue;
   end else begin
-    New(NewItem);
-    NewItem^.Name:=s;
-    NewItem^.Value:=AValue;
-    FTree.Add(NewItem);
+    New(Item);
+    Item^.Name:=s;
+    Item^.Value:=AValue;
+    FTree.Add(Item);
   end;
 end;
 
