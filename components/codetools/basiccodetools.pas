@@ -1504,6 +1504,7 @@ end;
 function FindCommentEnd(const ASource: string; StartPos: integer;
   NestedComments: boolean): integer;
 // returns position after the comment end, e.g. after }
+// failure: returns length(ASource)+1
 var
   CommentLvl: integer;
   p: PChar;
@@ -2900,7 +2901,7 @@ begin
   else
     if Result>1 then begin
       c2:=Source[Result-1];
-      // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><, ..
+      // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><, @@ ..
       if ((c2='=') and  (IsEqualOperatorStartChar[c]))
       or ((c='<') and (c2='>'))
       or ((c='>') and (c2='<'))

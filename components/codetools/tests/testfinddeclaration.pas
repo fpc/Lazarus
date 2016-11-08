@@ -402,17 +402,36 @@ begin
     AssertEquals('FindFileAtCursor in literal Found',ord(ffatLiteral),ord(Found));
     AssertEquals('FindFileAtCursor in literal FoundFilename','unit2.pas',FoundFilename);
 
+    // --- comment ---
+    Code.Source:='program test1;'+LineEnding
+      +'{unit2.pas}'+LineEnding;
+    if not CodeToolBoss.FindFileAtCursor(Code,3,2,Found,FoundFilename) then
+      Fail('CodeToolBoss.FindFileAtCursor in comment');
+    AssertEquals('FindFileAtCursor in comment Found',ord(ffatComment),ord(Found));
+    AssertEquals('FindFileAtCursor in comment FoundFilename','unit2.pas',FoundFilename);
+
+    // --- unit name search in comment ---
+    Code.Source:='program test1;'+LineEnding
+      +'{unit2}'+LineEnding;
+    if not CodeToolBoss.FindFileAtCursor(Code,3,2,Found,FoundFilename) then
+      Fail('CodeToolBoss.FindFileAtCursor in comment');
+    AssertEquals('FindFileAtCursor in comment Found',ord(ffatUnit),ord(Found));
+    AssertEquals('FindFileAtCursor in comment FoundFilename','unit2.pas',FoundFilename);
+
+    // --- unit name search in code ---
+    Code.Source:='program test1;'+LineEnding
+      +'begin'+LineEnding
+      +'  unit2.Test;'+LineEnding;
+    if not CodeToolBoss.FindFileAtCursor(Code,3,3,Found,FoundFilename) then
+      Fail('CodeToolBoss.FindFileAtCursor in comment');
+    AssertEquals('FindFileAtCursor in comment Found',ord(ffatUnit),ord(Found));
+    AssertEquals('FindFileAtCursor in comment FoundFilename','unit2.pas',FoundFilename);
 
   finally
     Code.IsDeleted:=true;
     SubUnit2Code.IsDeleted:=true;
     LFMCode.IsDeleted:=true;
   end;
-  // ToDo: test $i 'file with spaces' in code
-  // ToDo: test $i in disabled code
-  // ToDo: test 'readme.txt' in active code
-  // ToDo: test readme.txt in active code fails
-  // ToDo: test readme.txt in comment works
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;

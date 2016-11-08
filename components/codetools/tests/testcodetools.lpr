@@ -57,7 +57,6 @@ type
 
     procedure ExtendXmlDocument(Doc: TXMLDocument); override;
   public
-    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
 
@@ -142,16 +141,11 @@ begin
   Doc.FirstChild.AppendChild(env);
 end;
 
-constructor TCTTestRunner.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  DefaultFormat:=fPlain;
-  DefaultRunAllTests:=true;
-end;
-
 var
   App: TCTTestRunner;
 begin
+  DefaultFormat:=fPlain;
+  DefaultRunAllTests:=True;
   App := TCTTestRunner.Create(nil);
   App.Initialize;
   App.Title := 'FPCUnit Console runner for the CodeTools Find Declaration Suite.';

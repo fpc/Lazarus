@@ -668,7 +668,8 @@ type
     ffatResource,
     ffatDisabledResource,
     ffatLiteral,
-    ffatComment
+    ffatComment,
+    ffatUnit // unit by name
     );
   TFindFileAtCursorFlags = set of TFindFileAtCursorFlag;
 const
@@ -3560,10 +3561,71 @@ var
     end;
   end;
 
+  function CheckPlainComments(Source: string; CurAbsPos: integer): boolean;
+  var
+    Filename: String;
+    p, EndPos, FileStartPos, FileEndPos, MinPos, MaxPos: Integer;
+  begin
+    // check if cursor in a comment (ignoring directives)
+    Result:=false;
+    CursorPos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,CurAbsPos);
+    Source:=CursorPos.Code.Source;
+    if (CurAbsPos<1) or (CurAbsPos>length(Source)) then exit;
+    p:=1;
+    repeat
+      p:=FindNextComment(Source,p);
+      if p>CurAbsPos then break;
+      EndPos:=FindCommentEnd(Source,p,Scanner.NestedComments);
+      if EndPos>CurAbsPos then begin
+        // cursor in comment
+        MinPos:=p+1;
+        MaxPos:=EndPos-1;
+        if Source[p]<>'{' then begin
+          inc(MinPos);
+          dec(MaxPos);
+        end;
+        FileStartPos:=CurAbsPos;
+        while (FileStartPos>MinPos) and not (Source[FileStartPos-1] in [#0..#32]) do
+          dec(FileStartPos);
+        FileEndPos:=CurAbsPos;
+        while (FileEndPos<MaxPos) and not (Source[FileEndPos] in [#0..#32]) do
+          inc(FileEndPos);
+        Filename:=TrimFilename(copy(Source,FileStartPos,FileEndPos-FileStartPos));
+        if not FilenameIsAbsolute(Filename) then
+          Filename:=ResolveDots(ExtractFilePath(MainFilename)+Filename);
+        if Scanner.OnLoadSource(Scanner,Filename,false)<>nil then begin
+          Found:=ffatComment;
+          FoundFilename:=Filename;
+          exit(true);
+        end;
+        exit;
+      end;
+      p:=EndPos;
+    until false;
+  end;
+
+  function CheckUnitByWordAtCursor(Source: string; CurAbsPos: integer): boolean;
+  // e.g. 'Sy|sUtils.CompareText'
+  var
+    AnUnitName: String;
+    Code: TCodeBuffer;
+    p: Integer;
+  begin
+    Result:=false;
+    p:=FindStartOfAtom(Source,CurAbsPos);
+    if p<1 then exit;
+    AnUnitName:=GetIdentifier(@Source[p]);
+    Code:=FindUnitSource(AnUnitName,'',false);
+    if Code=nil then exit;
+    Found:=ffatUnit;
+    FoundFilename:=Code.Filename;
+    Result:=true;
+  end;
+
 var
-  CommentStart, CommentEnd, Col, StartCol: integer;
+  CommentStart, CommentEnd, Col, StartCol, CurAbsPos: integer;
   Node: TCodeTreeNode;
-  aUnitName, UnitInFilename, Line, Literal: string;
+  aUnitName, UnitInFilename, Line, Literal, aSource: string;
   NewCode: TCodeBuffer;
   p, StartP: PChar;
 begin
@@ -3571,7 +3633,10 @@ begin
   Found:=ffatNone;
   FoundFilename:='';
   if StartPos<>nil then
-   StartPos^:=CleanCodeXYPosition;
+    StartPos^:=CleanCodeXYPosition;
+  if CursorPos.Code.LineColIsOutside(CursorPos.Y,CursorPos.X) then exit;
+  if CursorPos.Code.LineColIsSpace(CursorPos.Y,CursorPos.X) then exit;
+  if (CursorPos.Y<1) or (CursorPos.Y>CursorPos.Code.LineCount) then exit;
   {$IFDEF VerboseFindFileAtCursor}
   debugln(['TFindDeclarationTool.FindFileAtCursor START']);
   {$ENDIF}
@@ -3663,42 +3728,52 @@ begin
   if ffatLiteral in SearchFor then begin
     // check literal
     p:=PChar(Line);
-    Col:=1;
     repeat
-      if p^=#0 then begin
+      case p^ of
+      #0:
         break;
-      end else if p^='''' then begin
-        StartCol:=Col;
-        inc(Col);
-        inc(p);
-        StartP:=p;
-        repeat
-          case p^ of
-          #0: break;
-          '''': break;
-          #9: Col:=(Col+8) and not 7;
-          else inc(p,UTF8CharacterLength(p));
-          end;
-        until false;
-        if (CursorPos.X>=StartCol) and (CursorPos.X<=Col) then begin
-          Literal:=copy(Line,Col,p-StartP);
-          if not FilenameIsAbsolute(Literal) then
-            Literal:=TrimFilename(ExtractFilePath(Scanner.MainFilename)+Literal);
-          if FilenameIsAbsolute(Literal)
-          and DirectoryCache.Pool.FileExists(Literal) then begin
+      '''':
+        begin
+          StartCol:=p-PChar(Line)+1;
+          inc(p);
+          StartP:=p;
+          repeat
+            case p^ of
+            #0,'''': break;
+            else inc(p);
+            end;
+          until false;
+          Col:=p-PChar(Line)+1;
+          writeln('TFindDeclarationTool.FindFileAtCursor Col=',Col,' CursorCol=',CursorPos.X,' Literal=',copy(Line,StartCol+1,p-StartP));
+          if (p>StartP) and (CursorPos.X>=StartCol) and (CursorPos.X<=Col) then begin
+            Literal:=copy(Line,StartCol+1,p-StartP);
+            if not FilenameIsAbsolute(Literal) then
+              Literal:=TrimFilename(ExtractFilePath(Scanner.MainFilename)+Literal);
             Found:=ffatLiteral;
             FoundFilename:=Literal;
             exit(true);
           end;
+          if p^=#0 then break;
+          // p is now on the ending '
         end;
-        if p^=#0 then break;
       end;
       inc(p);
       inc(Col);
     until false;
   end;
+
+  // search without node tree with basic tools
+  CursorPos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,CurAbsPos);
+  aSource:=CursorPos.Code.Source;
+  if (CurAbsPos<1) or (CurAbsPos>length(aSource)) then exit;
+
   if ffatComment in SearchFor then begin
-    // ToDo: check simple
+    // ignore syntax and only read comments
+    if CheckPlainComments(aSource,CurAbsPos) then exit(true);
+  end;
+
+  if ffatUnit in SearchFor then begin
+    if CheckUnitByWordAtCursor(aSource,CurAbsPos) then exit(true);
   end;
 end;
 
