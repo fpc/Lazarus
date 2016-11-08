@@ -4375,7 +4375,7 @@ begin
     FExpandSignSize := ThemeServices.GetDetailSize(Details).cx;
   end
   else
-    FExpandSignSize := 9;
+    FExpandSignSize := DefaultTreeNodeExpandSignSize;
 end;
 
 procedure TCustomTreeView.SetExpandSignType(Value: TTreeViewExpandSignType);

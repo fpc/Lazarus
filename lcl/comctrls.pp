@@ -3199,6 +3199,7 @@ const
                             tvoKeepCollapsedNodes, tvoAutoItemHeight, tvoThemedDraw];
   DefaultMultiSelectStyle = [msControlSelect];
   DefaultTreeNodeHeight = 20;
+  DefaultTreeNodeExpandSignSize = 9;
 
 type
   TTreeViewExpandSignType = (
@@ -3545,7 +3546,7 @@ type
     property DefaultItemHeight: integer read FDefItemHeight write SetDefaultItemHeight default DefaultTreeNodeHeight;
     property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;
     property ExpandSignColor: TColor read FExpandSignColor write FExpandSignColor default clWindowFrame;
-    property ExpandSignSize: integer read FExpandSignSize write FExpandSignSize;
+    property ExpandSignSize: integer read FExpandSignSize write FExpandSignSize default DefaultTreeNodeExpandSignSize;
     property ExpandSignType: TTreeViewExpandSignType
       read FExpandSignType write SetExpandSignType default tvestTheme;
     property InsertMarkNode: TTreeNode read FInsertMarkNode write SetInsertMarkNode;
