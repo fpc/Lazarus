@@ -3441,6 +3441,7 @@ type
     // it off might make things faster
     property AccessibilityOn: Boolean read FAccessibilityOn write FAccessibilityOn default True;
   protected
+    procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
     property BorderStyle default bsSingle;
     property HideSelection: Boolean

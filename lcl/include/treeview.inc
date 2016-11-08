@@ -5858,6 +5858,13 @@ begin
    if not KeepPrimary then Selected := nil;
 end;
 
+procedure TCustomTreeView.CMShowingChanged(var Message: TLMessage);
+begin
+  inherited CMShowingChanged(Message);
+  if not Showing and (FHintWnd<>nil) and FHintWnd.Visible then
+    FHintWnd.Hide;
+end;
+
 function TCustomTreeView.IsCustomDrawn(Target: TCustomDrawTarget;
   Stage: TCustomDrawStage): Boolean;
 begin
