@@ -5,8 +5,8 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, FPimage, agg_fpimage, Agg_LCL;
+  Classes, SysUtils, LCLProc, FileUtil, LazFileUtils, LResources, Forms,
+  Controls, Graphics, Dialogs, FPimage, agg_fpimage, Agg_LCL;
 
 type
 
