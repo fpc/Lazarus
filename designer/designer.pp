@@ -3213,8 +3213,8 @@ begin
         aDDC.Canvas.FrameRect(
           CurControl.Left-CurControl.BorderSpacing.GetSideSpace(akLeft),
           CurControl.Top-CurControl.BorderSpacing.GetSideSpace(akTop),
-          CurControl.Left+CurControl.Width+CurControl.BorderSpacing.GetSideSpace(akRight)-1,
-          CurControl.Top+CurControl.Height+CurControl.BorderSpacing.GetSideSpace(akBottom)-1
+          CurControl.Left+CurControl.Width+CurControl.BorderSpacing.GetSideSpace(akRight),
+          CurControl.Top+CurControl.Height+CurControl.BorderSpacing.GetSideSpace(akBottom)
           );
       end;
     end;
