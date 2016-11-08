@@ -23,7 +23,7 @@ interface
 
 uses
   // RTL / FCL
-  Classes, TypInfo, SysUtils, StrUtils, types, RtlConsts, variants,
+  Classes, TypInfo, SysUtils, types, RtlConsts, variants,
   // LCL
   LCLType, LCLIntf, LCLProc, Forms, Controls, GraphType, ButtonPanel, Graphics,
   StdCtrls, Buttons, Menus, ExtCtrls, ComCtrls, Dialogs, EditBtn, Grids, ValEdit,
@@ -300,14 +300,14 @@ type
     FOwnerComponent: TComponent;
     FPropCount: Integer;
     FPropList: PInstPropList;
-    function GetPrivateDirectory: ansistring;
-    procedure DrawValue(const AValue: string; ACanvas:TCanvas; const ARect:TRect;
-      AState:TPropEditDrawState);
   protected
     // Draw Checkbox for Boolean and Set element editors.
     function DrawCheckbox(ACanvas: TCanvas; const ARect: TRect; IsTrue: Boolean): TRect;
     function DrawCheckValue(ACanvas: TCanvas; const ARect: TRect;
       {%H-}AState: TPropEditDrawState; {%H-}IsTrue: Boolean): TRect;
+    procedure DrawValue(const AValue: string; ACanvas:TCanvas; const ARect:TRect;
+      {%H-}AState:TPropEditDrawState);
+    function GetPrivateDirectory: ansistring;
   public
     constructor Create(Hook:TPropertyEditorHook; APropCount:Integer); virtual;
     destructor Destroy; override;
@@ -529,6 +529,7 @@ type
 
   TPasswordStringPropertyEditor = class(TStringPropertyEditor)
   public
+    function GetPassword: string; virtual;
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       AState: TPropEditDrawState); override;
   end;
@@ -548,6 +549,7 @@ type
 
   TPasswordWideStringPropertyEditor = class(TWideStringPropertyEditor)
   public
+    function GetPassword: WideString; virtual;
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       AState: TPropEditDrawState); override;
   end;
@@ -3809,10 +3811,18 @@ end;
 
 { TPasswordStringPropertyEditor }
 
+function TPasswordStringPropertyEditor.GetPassword: string;
+begin
+  if GetVisualValue<>'' then
+    Result:='*****'
+  else
+    Result:='';
+end;
+
 procedure TPasswordStringPropertyEditor.PropDrawValue(ACanvas: TCanvas;
   const ARect: TRect; AState: TPropEditDrawState);
 begin
-  DrawValue('*****',ACanvas,ARect,AState);
+  DrawValue(GetPassword,ACanvas,ARect,AState);
 end;
 
 { TWideStringPropertyEditor }
@@ -3843,10 +3853,18 @@ end;
 
 { TPasswordWideStringPropertyEditor }
 
+function TPasswordWideStringPropertyEditor.GetPassword: WideString;
+begin
+  if GetVisualValue<>'' then
+    Result:='*****'
+  else
+    Result:='';
+end;
+
 procedure TPasswordWideStringPropertyEditor.PropDrawValue(ACanvas: TCanvas;
   const ARect: TRect; AState: TPropEditDrawState);
 begin
-  DrawValue('*****',ACanvas,ARect,AState);
+  DrawValue(UTF8Encode(GetPassword),ACanvas,ARect,AState);
 end;
 
 { TNestedPropertyEditor }
