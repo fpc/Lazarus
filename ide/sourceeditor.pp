@@ -7835,7 +7835,7 @@ end;
 
 procedure TSourceNotebook.OpenAtCursorClicked(Sender: TObject);
 begin
-  if assigned(Manager) and Assigned(Manager.OnOpenFileAtCursorClicked) then
+  if Assigned(Manager) and Assigned(Manager.OnOpenFileAtCursorClicked) then
     Manager.OnOpenFileAtCursorClicked(Sender);
 end;
 

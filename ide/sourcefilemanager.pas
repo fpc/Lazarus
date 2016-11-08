@@ -46,7 +46,7 @@ uses
   DiskDiffsDialog, InputHistory, CheckLFMDlg, LCLMemManager, CodeToolManager,
   CodeToolsStructs, ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool,
   BasicCodeTools, SynEdit, UnitResources, IDEExternToolIntf, ObjectInspector,
-  PublishModule, etMessagesWnd,
+  PublishModule, etMessagesWnd, SourceSynEditor,
   FormEditingIntf, fpjson;
 
 type
@@ -314,23 +314,23 @@ type
   end;
 
 
-  function SourceFileMgr: TLazSourceFileManager;
+function SourceFileMgr: TLazSourceFileManager;
 
-  function CreateSrcEditPageName(const AnUnitName, AFilename: string;
-    IgnoreEditor: TSourceEditor): string;
-  procedure UpdateDefaultPasFileExt;
+function CreateSrcEditPageName(const AnUnitName, AFilename: string;
+  IgnoreEditor: TSourceEditor): string;
+procedure UpdateDefaultPasFileExt;
 
-  // Wrappers for TFileOpener methods.
-  // WindowIndex is WindowID
-  function GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
-    ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
-  function OpenEditorFile(AFileName: string; PageIndex, WindowIndex: integer;
-    AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags; UseWindowID: Boolean = False): TModalResult;
-  function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
-    ActiveUnitInfo: TUnitInfo): TModalResult;
-  function OpenMainUnit(PageIndex, WindowIndex: integer;
-    Flags: TOpenFlags; UseWindowID: Boolean = False): TModalResult;
-  function RevertMainUnit: TModalResult;
+// Wrappers for TFileOpener methods.
+// WindowIndex is WindowID
+function GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
+  ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
+function OpenEditorFile(AFileName: string; PageIndex, WindowIndex: integer;
+  AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags; UseWindowID: Boolean = False): TModalResult;
+function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo): TModalResult;
+function OpenMainUnit(PageIndex, WindowIndex: integer;
+  Flags: TOpenFlags; UseWindowID: Boolean = False): TModalResult;
+function RevertMainUnit: TModalResult;
 
 
 implementation
@@ -1487,57 +1487,84 @@ var
   NewFilename,InFilename: string;
   AUnitName: String;
   SearchPath: String;
+  Edit: TIDESynEditor;
+  FoundType: TFindFileAtCursorFlag;
 begin
   Result:=mrCancel;
   if (FActiveSrcEdit=nil) or (FActiveUnitInfo=nil) then exit;
   BaseDir:=ExtractFilePath(FActiveUnitInfo.Filename);
 
-  // parse FFileName at cursor
   Found:=false;
-  FFileName:=GetFilenameAtRowCol(FActiveSrcEdit.EditorComponent.LogicalCaretXY);
-  if FFileName='' then exit;
 
-  // check if absolute FFileName
-  if FilenameIsAbsolute(FFileName) then begin
-    if FileExistsCached(FFileName) then
+  // check if a filename is selected
+  Edit:=FActiveSrcEdit.EditorComponent;
+  if Edit.SelAvail and (Edit.BlockBegin.Y=Edit.BlockBegin.X) then begin
+    FFileName:=ResolveDots(Edit.SelText);
+    if not FilenameIsAbsolute(FFileName) then
+      FFileName:=ResolveDots(BaseDir+FFileName);
+    if FilenameIsAbsolute(FFileName) then begin
+      if FileExistsCached(FFileName) then
+        Found:=true
+      else
+        exit;
+    end;
+  end;
+
+  // in a Pascal file use codetools
+  if FilenameIsPascalSource(FActiveUnitInfo.Filename) then begin
+    if CodeToolBoss.FindFileAtCursor(FActiveSrcEdit.CodeBuffer,
+      Edit.LogicalCaretXY.X,Edit.LogicalCaretXY.Y,FoundType,FFileName) then
       Found:=true
     else
       exit;
   end;
 
-  if FIsIncludeDirective then
-  begin
-    if (not Found) then begin
-      // search include file
-      SearchPath:='.;'+CodeToolBoss.DefineTree.GetIncludePathForDirectory(BaseDir);
-      if FindFile(SearchPath) then // sets FFileName if result=true
-        Found:=true;
-    end;
-  end else
-  begin
-    if (not Found) then
-    begin
-      // search pascal unit without extension
-      AUnitName:=FFileName;
-      InFilename:='';
-      NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
-                           BaseDir,AUnitName,InFilename,true);
-      if NewFilename<>'' then begin
-        Found:=true;
-        FFileName:=NewFilename;
-      end;
+  if not Found then begin
+    // parse FFileName at cursor
+    FFileName:=GetFilenameAtRowCol(FActiveSrcEdit.EditorComponent.LogicalCaretXY);
+    if FFileName='' then exit;
+    // check if absolute FFileName
+    if FilenameIsAbsolute(FFileName) then begin
+      if FileExistsCached(FFileName) then
+        Found:=true
+      else
+        exit;
     end;
 
-    if (not Found) and (ExtractFileExt(FFileName)<>'') then
+    if FIsIncludeDirective then
     begin
-      // search pascal unit with extension
-      AUnitName:=ExtractFileNameOnly(FFileName);
-      InFilename:=FFileName;
-      NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
-                           BaseDir,AUnitName,InFilename,true);
-      if NewFilename<>'' then begin
-        Found:=true;
-        FFileName:=NewFilename;
+      if (not Found) then begin
+        // search include file
+        SearchPath:='.;'+CodeToolBoss.DefineTree.GetIncludePathForDirectory(BaseDir);
+        if FindFile(SearchPath) then // sets FFileName if result=true
+          Found:=true;
+      end;
+    end else
+    begin
+      if (not Found) then
+      begin
+        // search pascal unit without extension
+        AUnitName:=FFileName;
+        InFilename:='';
+        NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+                             BaseDir,AUnitName,InFilename,true);
+        if NewFilename<>'' then begin
+          Found:=true;
+          FFileName:=NewFilename;
+        end;
+      end;
+
+      if (not Found) and (ExtractFileExt(FFileName)<>'') then
+      begin
+        // search pascal unit with extension
+        AUnitName:=ExtractFileNameOnly(FFileName);
+        InFilename:=FFileName;
+        NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+                             BaseDir,AUnitName,InFilename,true);
+        if NewFilename<>'' then begin
+          Found:=true;
+          FFileName:=NewFilename;
+        end;
       end;
     end;
   end;
