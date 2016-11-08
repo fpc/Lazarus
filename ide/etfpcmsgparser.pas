@@ -1247,6 +1247,7 @@ begin
       NewFilename:=AppendPathDelim(Tool.WorkerDirectory)+ExtractFileName(AFilename);
       if FileExists(NewFilename,false) then begin
         AFilename:=NewFilename;
+        aDir:=Tool.WorkerDirectory;
       end;
     end;
     // store directory
