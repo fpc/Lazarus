@@ -1127,7 +1127,7 @@ begin
     if TreeView <> nil then
       Result := TreeView.FDefItemHeight
     else
-      Result := 20;
+      Result := DefaultTreeNodeHeight;
   end
   else
     Result := FHeight;
@@ -3162,7 +3162,7 @@ begin
   TabStop := True;
   ParentColor := False;
 //  FBackgroundColor := clWindow;
-  FDefItemHeight := 20;
+  FDefItemHeight := DefaultTreeNodeHeight;
   FExpandSignType := tvestTheme;
   UpdateExpandSignSize;
   FTreeNodes := TTreeNodes.Create(Self);
@@ -4392,7 +4392,7 @@ procedure TCustomTreeView.SetDefaultItemHeight(Value: integer);
 begin
   if (tvoAutoItemHeight in FOptions) and (not (csLoading in ComponentState))
   then exit;
-  if Value<=0 then Value:=20;
+  if Value<=0 then Value:=DefaultTreeNodeHeight;
   if Value=FDefItemHeight then exit;
   FDefItemHeight:=Value;
   Include(FStates,tvsTopsNeedsUpdate);

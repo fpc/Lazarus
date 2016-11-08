@@ -3198,6 +3198,7 @@ const
                             tvoHideSelection, tvoToolTips,
                             tvoKeepCollapsedNodes, tvoAutoItemHeight, tvoThemedDraw];
   DefaultMultiSelectStyle = [msControlSelect];
+  DefaultTreeNodeHeight = 20;
 
 type
   TTreeViewExpandSignType = (
@@ -3541,7 +3542,7 @@ type
     property BorderWidth default 0;
     property Color default clWindow;
     property BottomItem: TTreeNode read GetBottomItem write SetBottomItem;
-    property DefaultItemHeight: integer read FDefItemHeight write SetDefaultItemHeight default 20;
+    property DefaultItemHeight: integer read FDefItemHeight write SetDefaultItemHeight default DefaultTreeNodeHeight;
     property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;
     property ExpandSignType: TTreeViewExpandSignType
       read FExpandSignType write SetExpandSignType default tvestTheme;
@@ -3564,6 +3565,7 @@ type
     property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor default clWindowFrame;
     property TreeLinePenStyle: TPenStyle read FTreeLinePenStyle write FTreeLinePenStyle default psPattern;
     property ExpandSignColor: TColor read FExpandSignColor write FExpandSignColor default clWindowFrame;
+    property ExpandSignSize: integer read FExpandSignSize write FExpandSignSize;
   published
     property TabStop default true;
   end;
