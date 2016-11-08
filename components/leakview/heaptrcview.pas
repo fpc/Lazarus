@@ -563,7 +563,10 @@ begin
   begin
     IDECommand := RegisterIDECommand(IDECommandCategory, rsLeakView, rsLeakView, IDEShortCutX, nil, @IDEMenuClicked);
     if IDECommand <> nil then
+    begin
       IDEButtonCommand := RegisterIDEButtonCommand(IDECommand);
+      if IDEButtonCommand=nil then ;
+    end;
   end;
 end;
 
