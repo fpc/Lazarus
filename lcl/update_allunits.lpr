@@ -62,7 +62,7 @@ begin
     Source.Add('interface');
     Source.Add('uses');
     for i:=0 to Units.Count-1 do begin
-      s:='  '+Units[i];
+      s:='  '+Units[i]+'{%H-}';
       if i=Units.Count-1 then
         s:=s+';'
       else
