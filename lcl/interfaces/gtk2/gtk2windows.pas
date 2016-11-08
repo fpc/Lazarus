@@ -4,13 +4,15 @@ unit gtk2windows;
 
 interface
 
+{$ifdef Windows}
 uses
   Windows;
   
   function GetWin32AppHandle: THandle; // Beware LCLType.THandle <> Windows.THandle
-
+{$endif}
 implementation
 
+{$ifdef Windows}
 const
   ClsName: array[0..6] of char = 'Window'#0;
   PrivateAppHandle: THandle = 0;
@@ -50,5 +52,6 @@ finalization
     Windows.UnregisterClass(@ClsName, System.HInstance);
   end;
 
+{$endif}
 end.
 
