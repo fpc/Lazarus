@@ -2,8 +2,8 @@
 unit AllLCLIntfUnits;
 interface
 uses
-  interfaces,
-  {%H-}noguiint{%H-},
-  {%H-}noguiwsfactory{%H-};
+  interfaces{%H-},
+  noguiint{%H-},
+  noguiwsfactory{%H-};
 implementation
 end.

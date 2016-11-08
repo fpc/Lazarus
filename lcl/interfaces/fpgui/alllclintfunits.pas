@@ -2,24 +2,24 @@
 unit AllLCLIntfUnits;
 interface
 uses
-  fpguiwsdialogs,
-  fpguiwscomctrls,
-  fpguiwspairsplitter,
-  fpguiwsstdctrls,
-  interfaces,
-  fpguiwsextdlgs,
-  fpguiwscontrols,
-  fpguiwsforms,
-  fpguiwsbuttons,
-  fpguiobjects,
-  fpguiwsfactory,
-  fpguiproc,
-  fpguiwsextctrls,
-  fpguiwsprivate,
-  fpguiint,
-  fpguiwsgrids,
-  fpguiwsimglist,
-  //fpguiwscalendar,
-  fpguiwsmenus;
+  fpguiint{%H-},
+  fpguiobjects{%H-},
+  fpguiproc{%H-},
+  fpguiwsbuttons{%H-},
+  fpguiwscalendar{%H-},
+  fpguiwscomctrls{%H-},
+  fpguiwscontrols{%H-},
+  fpguiwsdialogs{%H-},
+  fpguiwsextctrls{%H-},
+  fpguiwsextdlgs{%H-},
+  fpguiwsfactory{%H-},
+  fpguiwsforms{%H-},
+  fpguiwsgrids{%H-},
+  fpguiwsimglist{%H-},
+  fpguiwsmenus{%H-},
+  fpguiwspairsplitter{%H-},
+  fpguiwsprivate{%H-},
+  fpguiwsstdctrls{%H-},
+  interfaces{%H-};
 implementation
 end.

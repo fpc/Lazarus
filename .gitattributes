@@ -7231,6 +7231,7 @@ lcl/interfaces/carbon/pascocoa/foundation/foundation.pas svneol=native#text/plai
 lcl/interfaces/cocoa/Makefile svneol=native#text/plain
 lcl/interfaces/cocoa/Makefile.compiled svneol=native#text/plain
 lcl/interfaces/cocoa/Makefile.fpc svneol=native#text/plain
+lcl/interfaces/cocoa/agl.pp svneol=native#text/plain
 lcl/interfaces/cocoa/alllclintfunits.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoa_extra.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoacaret.pas svneol=native#text/pascal
