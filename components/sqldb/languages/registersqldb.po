@@ -13,6 +13,10 @@ msgstr ""
 msgid "Shared libraries"
 msgstr ""
 
+#: registersqldb.ssqlite3databases
+msgid "SQLite3 databases"
+msgstr ""
+
 #: registersqldb.ssqlscript
 msgid "SQL Script file"
 msgstr ""

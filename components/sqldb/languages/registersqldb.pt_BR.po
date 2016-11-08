@@ -4,10 +4,12 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo B Paula\n"
+"Last-Translator: Silvio Clecio\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: registersqldb.sfirebirddatabases
 msgid "Firebird databases"
@@ -20,6 +22,10 @@ msgstr "Bancos de dados \"Interbase\""
 #: registersqldb.slibraries
 msgid "Shared libraries"
 msgstr "Bibliotecas compartilhadas"
+
+#: registersqldb.ssqlite3databases
+msgid "SQLite3 databases"
+msgstr "Bancos de dados \"SQLite3\""
 
 #: registersqldb.ssqlscript
 msgid "SQL Script file"
@@ -36,4 +42,3 @@ msgstr "Insira suas declarações SQL aqui"
 #: registersqldb.ssqlstringspropertyeditordlgtitle
 msgid "Editing %s"
 msgstr "Editando %s"
-

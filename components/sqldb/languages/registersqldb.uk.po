@@ -23,6 +23,10 @@ msgstr "Бази даних Interbase"
 msgid "Shared libraries"
 msgstr "Спільні бібліотеки"
 
+#: registersqldb.ssqlite3databases
+msgid "SQLite3 databases"
+msgstr ""
+
 #: registersqldb.ssqlscript
 msgid "SQL Script file"
 msgstr "Файл сценарію SQL"

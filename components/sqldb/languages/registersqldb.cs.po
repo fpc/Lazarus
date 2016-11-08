@@ -22,6 +22,10 @@ msgstr "Interbase databáze"
 msgid "Shared libraries"
 msgstr "Sdílené knihovny"
 
+#: registersqldb.ssqlite3databases
+msgid "SQLite3 databases"
+msgstr ""
+
 #: registersqldb.ssqlscript
 msgid "SQL Script file"
 msgstr "SQL Script soubor"

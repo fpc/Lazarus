@@ -21,6 +21,10 @@ msgstr "Базы данных Interbase"
 msgid "Shared libraries"
 msgstr "Динамические библиотеки"
 
+#: registersqldb.ssqlite3databases
+msgid "SQLite3 databases"
+msgstr ""
+
 #: registersqldb.ssqlscript
 msgid "SQL Script file"
 msgstr "Файл сценария SQL"
