@@ -271,6 +271,7 @@ var
   LastMouse: TLastMouseInfo;
   ComboBoxHandleSizeWindow: HWND = 0;
   IgnoreNextCharWindow: HWND = 0;  // ignore next WM_(SYS)CHAR message
+  IgnoreKeyUp: Boolean = True; // ignore KeyUp after application start; issue #30836
   // set to true, if we are redirecting a WM_MOUSEWHEEL message, to prevent recursion
   InMouseWheelRedirection: boolean = false;
   OnClipBoardRequest: TClipboardRequestEvent;
