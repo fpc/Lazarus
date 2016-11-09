@@ -119,6 +119,9 @@ const
 {QDialogAccepted} mrOk
   );
 
+
+{$endif}
+
 { TQtWSSaveDialog }
 
 class function TQtWSSaveDialog.QueryWSEventCapabilities(
@@ -127,8 +130,6 @@ begin
   Result := [cdecWSNoCanCloseSupport];
 end;
 
-{$endif}
-  
 { TQtWSCommonDialog }
 
 class function TQtWSCommonDialog.GetDialogParent(const ACommonDialog: TCommonDialog): QWidgetH;
