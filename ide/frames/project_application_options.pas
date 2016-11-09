@@ -18,11 +18,12 @@ type
     AppSettingsGroupBox: TGroupBox;
     CreateAppBundleButton: TBitBtn;
     DefaultIconButton: TButton;
+    DpiAwareLabel: TLabel;
+    DpiAwareComboBox: TComboBox;
     WindowsDividerBevel: TDividerBevel;
     DarwinDividerBevel: TDividerBevel;
     UIAccessCheckBox: TCheckBox;
     ExecutionLevelComboBox: TComboBox;
-    DpiAwareCheckBox: TCheckBox;
     ClearIconButton: TBitBtn;
     IconImage: TImage;
     IconLabel: TLabel;
@@ -172,7 +173,8 @@ end;
 
 procedure TProjectApplicationOptionsFrame.UseXPManifestCheckBoxChange(Sender: TObject);
 begin
-  DpiAwareCheckBox.Enabled := UseXPManifestCheckBox.Checked;
+  DpiAwareLabel.Enabled := UseXPManifestCheckBox.Checked;
+  DpiAwareComboBox.Enabled := UseXPManifestCheckBox.Checked;
   ExecutionLevelLabel.Enabled := UseXPManifestCheckBox.Checked;
   ExecutionLevelComboBox.Enabled := UseXPManifestCheckBox.Checked;
   UIAccessCheckBox.Enabled := UseXPManifestCheckBox.Checked;
@@ -209,6 +211,8 @@ end;
 procedure TProjectApplicationOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 var
   ExecutionLevel: TXPManifestExecutionLevel;
+  DpiLevel: TXPManifestDpiAware;
+  DpiLevelNames: array[TXPManifestDpiAware] of string;
 begin
   AppSettingsGroupBox.Caption := dlgApplicationSettings;
   TitleLabel.Caption := dlgPOTitle;
@@ -219,10 +223,18 @@ begin
   // Windows specific, Manifest
   WindowsDividerBevel.Caption := lisForWindows;
   UseXPManifestCheckBox.Caption := dlgPOUseManifest;
-  DpiAwareCheckBox.Caption := dlgPODpiAware;
+
+  DpiAwareLabel.Caption := dlgPODpiAwareness;
+  DpiLevelNames[xmdaFalse] := dlgPODpiAwarenessOff;
+  DpiLevelNames[xmdaTrue] := dlgPODpiAwarenessOn;
+  DpiLevelNames[xmdaPerMonitor] := dlgPODpiAwarenessOldOffNewPerMonitor;
+  DpiLevelNames[xmdaTruePM] := dlgPODpiAwarenessOldOnNewPerMonitor;
+
   ExecutionLevelLabel.Caption := dlgPOExecutionLevel;
-  for ExecutionLevel := Low(TXPManifestExecutionLevel) to High(TXPManifestExecutionLevel) do
+  for ExecutionLevel in TXPManifestExecutionLevel do
     ExecutionLevelComboBox.Items.Add(ExecutionLevelToCaption[ExecutionLevel]^);
+  for DpiLevel in TXPManifestDpiAware do
+    DpiAwareComboBox.Items.Add(DpiLevelNames[DpiLevel] + ' (' + ManifestDpiAwareValues[DpiLevel] + ')');
   UIAccessCheckBox.Caption := dlgPOUIAccess;
 
   // Darwin specific, Application Bundle
@@ -260,11 +272,12 @@ begin
     with ProjResources.XPManifest do
     begin
       UseXPManifestCheckBox.Checked := UseManifest;
-      DpiAwareCheckBox.Checked := DpiAware;
+      DpiAwareComboBox.ItemIndex := Ord(DpiAware);
       ExecutionLevelComboBox.ItemIndex := Ord(ExecutionLevel);
       UIAccessCheckBox.Checked := UIAccess;
     end;
-    DpiAwareCheckBox.Enabled := UseXPManifestCheckBox.Checked;
+    DpiAwareLabel.Enabled := UseXPManifestCheckBox.Checked;
+    DpiAwareComboBox.Enabled := UseXPManifestCheckBox.Checked;
     ExecutionLevelLabel.Enabled := UseXPManifestCheckBox.Checked;
     ExecutionLevelComboBox.Enabled := UseXPManifestCheckBox.Checked;
     UIAccessCheckBox.Enabled := UseXPManifestCheckBox.Checked;
@@ -298,7 +311,7 @@ begin
     with ProjResources.XPManifest do
     begin
       UseManifest := UseXPManifestCheckBox.Checked;
-      DpiAware := DpiAwareCheckBox.Checked;
+      DpiAware := TXPManifestDpiAware(DpiAwareComboBox.ItemIndex);
       ExecutionLevel := TXPManifestExecutionLevel(ExecutionLevelComboBox.ItemIndex);
       UIAccess := UIAccessCheckBox.Checked;
     end;

@@ -1133,7 +1133,7 @@ function dbgs(Flags: TUnitInfoFlags): string; overload;
 implementation
 
 const
-  ProjectInfoFileVersion = 9;
+  ProjectInfoFileVersion = 10;
   ProjOptionsPath = 'ProjectOptions/';
 
 
