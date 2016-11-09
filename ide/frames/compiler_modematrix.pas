@@ -660,8 +660,7 @@ begin
     end;
     List.Sort;
     // LCLWidgetType gets its own button.
-    BMMAddLclWidgetButton.Visible:=Assigned(LCLWidgetTypeMacro);
-    LCLMacroSepToolButton.Visible:=BMMAddLclWidgetButton.Visible;
+    BMMAddLclWidgetButton.Enabled:=Assigned(LCLWidgetTypeMacro);
     if Assigned(LCLWidgetTypeMacro) then
       AddLCLWidgetTypeValues(BMMAddLclWidgetPopupMenu, LCLWidgetTypeMacro);
     // Place other macros to the popup menu opened from "Add" button.
@@ -1234,6 +1233,7 @@ begin
   fCaptionPatternMacroValue:=lisMMValueS;
 
   BMMAddLclWidgetButton.Caption:=Format(fCaptionPatternMacroName,['LCLWidgetType']);
+  BMMAddLclWidgetButton.Hint := lisMMWidgetSetAvailableForLCLProject;
   BMMAddOtherButton.Caption:=lisAdd;
 
   BMMSystemEncodingButton.Caption:=lisMMUseSystemEncoding;
