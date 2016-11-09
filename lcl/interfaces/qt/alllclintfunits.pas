@@ -3,8 +3,8 @@ unit AllLCLIntfUnits;
 interface
 uses
   interfaces{%H-},
-  qt4{%H-},
-  qt45{%H-},
+  //qt4{%H-},
+  //qt45{%H-},
   qtcaret{%H-},
   qtint{%H-},
   qtobjects{%H-},
