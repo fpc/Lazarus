@@ -15,9 +15,6 @@
 
   Abstract:
     TTreeView for LCL
-
-  ToDo:
-    - Columns
 }
 
 
@@ -28,9 +25,6 @@ const
   TTreeNodeStreamVersion : word = 2;
   TVAutoHeightString = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789jgpq|\()^';
   MinNodeCapacity = 10;
-
-  // maximum scroll range
-  //MAX_SCROLL = 32767;
 
 function CompareExpandedNodes(Data1, Data2: Pointer): integer;
 var
@@ -1045,7 +1039,6 @@ begin
   Result := GetLastChild;
   if Assigned(Result) and not Result.Visible then begin
     Result := Result.GetPrevVisible;
-    // ToDo: implement this better. Now it works only when Self is visible.
     if Result = Self then begin                     // No visible nodes found.
       Assert(Visible, 'TTreeNode.GetLastVisibleChild: Node is not Visible');
       Result := Nil;
