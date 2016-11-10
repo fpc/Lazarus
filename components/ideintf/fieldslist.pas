@@ -32,8 +32,8 @@ unit fieldslist;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
-  Buttons, DB, StdCtrls, ObjInspStrConsts, ComponentEditors, PropEdits;
+  Classes, SysUtils, Forms, Dialogs,
+  Buttons, DB, StdCtrls, ObjInspStrConsts, ComponentEditors;
 
 type
 
@@ -48,7 +48,10 @@ type
     { private declarations }
     FDesigner: TComponentEditorDesigner;
     LinkDataset: TDataset;
-    procedure RefreshFieldsList;
+  protected
+    procedure RefreshFieldsList; virtual;
+    procedure SelectAll; virtual;
+    procedure DoShow; override;
   public
     { public declarations }
     constructor Create(AOwner: TComponent; ADataset: TDataset;
@@ -186,6 +189,21 @@ begin
     if PreActive then
       LinkDataset.Active:=True;
   end;    
+end;
+
+procedure TFieldsListFrm.SelectAll;
+begin
+  if BitBtnOk.Enabled then
+  begin
+    ListBox1.SelectAll;
+    ListBox1.MakeCurrentVisible;
+  end;
+end;
+
+procedure TFieldsListFrm.DoShow;
+begin
+  inherited DoShow;
+  SelectAll;
 end;
 
 constructor TFieldsListFrm.Create(AOwner: TComponent; ADataset: TDataset;

@@ -7,7 +7,7 @@ object FieldsListFrm: TFieldsListFrm
   Caption = 'FieldsListFrm'
   ClientHeight = 271
   ClientWidth = 173
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.7'
   object BitBtnOk: TBitBtn
     Left = 9
     Height = 25
@@ -18,7 +18,6 @@ object FieldsListFrm: TFieldsListFrm
     Default = True
     Kind = bkOK
     ModalResult = 1
-    NumGlyphs = 0
     OnClick = BitBtnOkClick
     TabOrder = 0
   end
@@ -32,7 +31,6 @@ object FieldsListFrm: TFieldsListFrm
     Caption = 'Cancel'
     Kind = bkCancel
     ModalResult = 2
-    NumGlyphs = 0
     TabOrder = 1
   end
   object ListBox1: TListBox
