@@ -46,7 +46,7 @@ interface
 uses
   Classes,
   LCLIntf, LCLType, Graphics, ClipBrd,
-  SynEditExport, LCLProc, LazUtf8;
+  SynEditHighlighter, SynEditExport, LCLProc, LazUtf8;
 
 type
   THTMLFontSize = (fs01, fs02, fs03, fs04, fs05, fs06, fs07, fsDefault);        //eb 2000-10-12
@@ -66,10 +66,11 @@ type
   private
     fOptions: TExportHtmlOptions;
     fFontSize: THTMLFontSize;
-    function ColorToHTML(AColor: TColor): string;
     procedure SetExportHtmlOptions(Value: TExportHtmlOptions);
     function GetCreateHTMLFragment: Boolean;
     procedure SetCreateHTMLFragment(Value: Boolean);
+    function MakeFontSpan(FG, BG: TColor): String;
+    function StyleToHtml(AStyle: TFontStyles; IsSpace, DoSet: Boolean): String;
   protected
     procedure FormatAfterLastAttribute; override;
     procedure FormatAttributeDone(BackgroundChanged, ForegroundChanged: boolean;
@@ -80,6 +81,11 @@ type
     procedure FormatBeforeFirstAttribute(BackgroundChanged,
       ForegroundChanged: boolean; FontStylesChanged: TFontStyles); override;
 {end}                                                                           //mh 2000-10-10
+    procedure FormatBeforeFirstAttributeImmediate(BG, FG: TColor); override;
+    procedure FormatAfterLastAttributeImmediate; override;
+    procedure FormatAttributeInitImmediate(Attri: TSynHighlighterAttributes; IsSpace: Boolean); override;
+    procedure FormatAttributeDoneImmediate(Attri: TSynHighlighterAttributes; IsSpace: Boolean); override;
+
     procedure FormatNewLine; override;
     function GetFooter: string; override;
     function GetFormatName: string; override;
@@ -87,6 +93,7 @@ type
     procedure SetExportAsText(Value: boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
+    function ColorToHTML(AColor: TColor): string;
   published
     property Color;
     property CreateHTMLFragment: boolean read GetCreateHTMLFragment
@@ -351,6 +358,72 @@ begin
       AddData('<strike>');
   end;
 end;
+
+procedure TSynExporterHTML.FormatBeforeFirstAttributeImmediate(BG, FG: TColor);
+var
+  Span: String;
+begin
+  debugln(['TSynExporterHTML.FormatBeforeFirstAttributeImmediate']);
+  // if not heoFragmentOnly this is handled in GetHeader
+  if (heoFragmentOnly in Options) then
+  begin
+    Span := MakeFontSpan(FG, BG);
+    AddData(Span);
+  end;
+end;
+
+procedure TSynExporterHTML.FormatAfterLastAttributeImmediate;
+begin
+  debugln(['TSynExporterHTML.FormatAfterLastAttributeImmediate']);
+  if (heoFragmentOnly in Options) then
+    AddData('</span>');
+end;
+
+procedure TSynExporterHTML.FormatAttributeInitImmediate(
+  Attri: TSynHighlighterAttributes; IsSpace: Boolean);
+var
+  Span, StyleStr: String;
+  FG, BG: TColor;
+begin
+  debugln(['TSynExporterHTML.FormatAttributeInitImmediate']);
+  FG := ValidatedColor(Attri.Foreground, fFont.Color);
+  BG := ValidatedColor(Attri.Background, fBackgroundColor);
+  if (not IsSpace and (FG <> fFont.Color)) or
+     (UseBackGround and (BG <> fbackGroundColor)) then
+  begin
+    Span := MakeFontSpan(FG, BG);
+    AddData(Span);
+  end;
+  if (Attri.Style <> []) then
+  begin
+    StyleStr := StyleToHtml(Attri.Style, IsSpace, True);
+    AddData(StyleStr);
+  end;
+end;
+
+procedure TSynExporterHTML.FormatAttributeDoneImmediate(
+  Attri: TSynHighlighterAttributes; IsSpace: Boolean);
+var
+  FG, BG: TColor;
+  StyleStr: String;
+begin
+  debugln(['TSynExporterHTML.FormatAttributeDoneImmediate']);
+  //reversed order compared to FormatAttributeInitImmediate
+  if (Attri.Style <> []) then
+  begin
+    StyleStr := StyleToHtml(Attri.Style, IsSpace, False);
+    AddData(StyleStr);
+  end;
+  FG := ValidatedColor(Attri.Foreground, fFont.Color);
+  BG := ValidatedColor(Attri.Background, fBackgroundColor);
+  if (not IsSpace and (FG <> fFont.Color)) or
+     (UseBackGround and (BG <> fbackGroundColor)) then
+  begin
+    AddData('</span>');
+  end;
+
+end;
+
 {end}                                                                           //mh 2000-10-10
 
 procedure TSynExporterHTML.FormatNewLine;
@@ -473,6 +546,36 @@ begin
     else
       Options := Options - [heoFragmentOnly];
   end;
+end;
+
+function TSynExporterHTML.MakeFontSpan(FG, BG: TColor): String;
+begin
+  Result := '<span style="color: ';
+  FG := ValidatedColor(FG, fFont.Color);
+  Result := Result + AnsiDequotedStr(ColorToHtml(FG), '"');
+  BG := ValidatedColor(BG, fBackgroundColor);
+  if UseBackGround then
+  begin
+    Result := Result + '; background-color: ' + AnsiDequotedStr(ColorToHtml(BG), '"');
+  end;
+  Result := Result + ';">';
+end;
+
+function TSynExporterHTML.StyleToHtml(AStyle: TFontStyles; IsSpace, DoSet: Boolean): String;
+begin
+  Result := '';
+  if not IsSpace then
+  begin
+    if (fsBold in AStyle) then
+      if DoSet then Result := Result + '<b>' else Result := Result + '</b>';
+    if (fsItalic in AStyle) then
+      if DoSet then Result := Result + '<i>' else Result := Result + '</i>';
+    if (fsUnderline in AStyle) then
+      if DoSet then Result := Result + '<u>' else Result := Result + '</u>';
+  end;
+  //the only style that actually is applied to whitespace in HTML
+  if (fsStrikeOut in AStyle) then
+    if DoSet then Result := Result + '<strike>' else Result := Result + '</strike>';
 end;
 
 end.
