@@ -4785,7 +4785,7 @@ var
               DrawVertLine(CurMid, VertMid + FExpandSignSize div 2, NodeRect.Bottom)
             else
             begin
-              DrawVertLine(CurMid, NodeRect.Top, Max(NodeRect.Top, VertMid - FExpandSignSize div 2));
+              DrawVertLine(CurMid, NodeRect.Top, VertMid);
               DrawVertLine(CurMid, VertMid + FExpandSignSize div 2 + VertDelta, NodeRect.Bottom);
             end;
           end
@@ -4802,11 +4802,11 @@ var
           begin
             if ((InsertMarkNode = Node) and (InsertMarkType = tvimAsNextSibling)) then
             begin
-              DrawVertLine(CurMid, NodeRect.Top, Max(NodeRect.Top, VertMid - FExpandSignSize div 2));
+              DrawVertLine(CurMid, NodeRect.Top, VertMid);
               DrawVertLine(CurMid, VertMid + FExpandSignSize div 2, NodeRect.Bottom - 1);
             end
             else
-              DrawVertLine(CurMid, NodeRect.Top, VertMid - FExpandSignSize div 2);
+              DrawVertLine(CurMid, NodeRect.Top, VertMid);
           end
           else
           if ((InsertMarkNode = Node) and (InsertMarkType = tvimAsNextSibling)) then
