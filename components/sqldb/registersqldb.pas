@@ -277,9 +277,7 @@ Resourcestring
   SSQLSource = 'Insert your SQL statements here';
 
   SFireBirdDatabases = 'Firebird databases';
-{$IFDEF HASSQLITE3CONNECTION}
   SSQLite3Databases = 'SQLite3 databases';
-{$ENDIF}
   SInterbaseDatabases = 'Interbase databases';
   SSQLStringsPropertyEditorDlgTitle = 'Editing %s';
 
