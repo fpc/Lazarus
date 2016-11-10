@@ -584,18 +584,27 @@ end;
 function TSynExporterHTML.StyleToHtml(AStyle: TFontStyles; IsSpace, DoSet: Boolean): String;
 begin
   Result := '';
-  if not IsSpace then
+  if DoSet then
   begin
-    if (fsBold in AStyle) then
-      if DoSet then Result := Result + '<b>' else Result := Result + '</b>';
-    if (fsItalic in AStyle) then
-      if DoSet then Result := Result + '<i>' else Result := Result + '</i>';
-    if (fsUnderline in AStyle) then
-      if DoSet then Result := Result + '<u>' else Result := Result + '</u>';
+    if not IsSpace then
+    begin
+      if (fsBold in AStyle) then Result := Result + '<b>';
+      if (fsItalic in AStyle) then Result := Result + '<i>';
+      if (fsUnderline in AStyle) then Result := Result + '<u>';
+    end;
+    //the only style that actually is applied to whitespace in HTML
+    if (fsStrikeOut in AStyle) then Result := Result + '<strike>';
+  end
+  else
+  begin //unset in the opposite order as set
+    if (fsStrikeOut in AStyle) then Result := Result + '</strike>';
+    if not IsSpace then
+    begin
+      if (fsUnderline in AStyle) then Result := Result + '</u>';
+      if (fsItalic in AStyle) then Result := Result + '</i>';
+      if (fsBold in AStyle) then Result := Result + '</b>';
+    end;
   end;
-  //the only style that actually is applied to whitespace in HTML
-  if (fsStrikeOut in AStyle) then
-    if DoSet then Result := Result + '<strike>' else Result := Result + '</strike>';
 end;
 
 end.
