@@ -26,7 +26,7 @@
 const
   TTreeNodeWithPointerStreamVersion : word = 1;
   TTreeNodeStreamVersion : word = 2;
-  TVAutoHeightString = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789|\()^';
+  TVAutoHeightString = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789jgpq|\()^';
   MinNodeCapacity = 10;
 
   // maximum scroll range
@@ -3496,7 +3496,7 @@ var
 begin
   if (tvoAutoItemHeight in FOptions)
   and HandleAllocated and Canvas.HandleAllocated then begin
-    NewDefItemHeight:=Canvas.TextHeight(TVAutoHeightString)+2; // +2 for border
+    NewDefItemHeight:=Canvas.TextHeight(TVAutoHeightString)+2; // +2 for spacing
     if NewDefItemHeight<2 then NewDefItemHeight:=2;
     if (Images<>nil) and (Images.Height>NewDefItemHeight) then
       NewDefItemHeight:=Images.Height;
