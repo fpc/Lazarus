@@ -42,3 +42,4 @@ msgstr "Geben sie ihre SQL-Anweisungen hier ein"
 #: registersqldb.ssqlstringspropertyeditordlgtitle
 msgid "Editing %s"
 msgstr "Bearbeite %s"
+
