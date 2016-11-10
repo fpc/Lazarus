@@ -112,7 +112,7 @@ msgid "Function series"
 msgstr "Séries de fonctions"
 
 #: tachartstrconsts.rshidden
-msgid "Hidden"
+msgid "hidden"
 msgstr ""
 
 #: tachartstrconsts.rsinvalidlogbase
@@ -120,7 +120,7 @@ msgid "Logarithm base must be > 0 and <> 1."
 msgstr "La base de logarithme doit être > 0 et <>1."
 
 #: tachartstrconsts.rsinverted
-msgid "Inverted"
+msgid "inverted"
 msgstr ""
 
 #: tachartstrconsts.rsleastsquaresfitseries

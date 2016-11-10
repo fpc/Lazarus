@@ -49,7 +49,7 @@ msgstr "Гистограмма"
 
 #: tachartstrconsts.rsbottom
 msgid "Bottom"
-msgstr ""
+msgstr "Нижняя"
 
 #: tachartstrconsts.rsboxandwhiskerseries
 msgid "Box-and-whiskers series"
@@ -112,16 +112,16 @@ msgid "Function series"
 msgstr "Диаграмма по функции"
 
 #: tachartstrconsts.rshidden
-msgid "Hidden"
-msgstr ""
+msgid "hidden"
+msgstr "скрытая"
 
 #: tachartstrconsts.rsinvalidlogbase
 msgid "Logarithm base must be > 0 and <> 1."
 msgstr "Основание логарифма должно быть больше нуля и не равно единице."
 
 #: tachartstrconsts.rsinverted
-msgid "Inverted"
-msgstr ""
+msgid "inverted"
+msgstr "обратная"
 
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
@@ -129,7 +129,7 @@ msgstr "Диаграмма по методу наименьших квадрат
 
 #: tachartstrconsts.rsleft
 msgid "Left"
-msgstr ""
+msgstr "Левая"
 
 #: tachartstrconsts.rslinear
 msgid "Linear"
@@ -185,11 +185,11 @@ msgstr "Лепестковая диаграмма"
 
 #: tachartstrconsts.rsright
 msgid "Right"
-msgstr ""
+msgstr "Правая"
 
 #: tachartstrconsts.rstop
 msgid "Top"
-msgstr ""
+msgstr "Верхняя"
 
 #: tachartstrconsts.rsuserdefined
 msgctxt "tachartstrconsts.rsuserdefined"

@@ -40,8 +40,8 @@ resourcestring
   rsRight = 'Right';
   rsTop = 'Top';
   rsBottom = 'Bottom';
-  rsHidden = 'Hidden';
-  rsInverted = 'Inverted';
+  rsHidden = 'hidden';
+  rsInverted = 'inverted';
 
   // Subcomponents editor
   rsAdd = 'Add';

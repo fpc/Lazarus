@@ -553,8 +553,8 @@ const
     (@rsLeft, @rsTop, @rsRight, @rsBottom);
 begin
   Result := SIDE_NAME[Alignment]^;
-  if not Visible then Result := Result + ' ' + rsHidden;
-  if IsFlipped then Result := Result + ' ' + rsInverted;
+  if not Visible then Result := Result + ', ' + rsHidden;
+  if IsFlipped then Result := Result + ', ' + rsInverted;
   Result := Result + FormatIfNotEmpty(' (%s)', Title.Caption);
 end;
 

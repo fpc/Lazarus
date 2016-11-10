@@ -112,7 +112,7 @@ msgid "Function series"
 msgstr "Függvény"
 
 #: tachartstrconsts.rshidden
-msgid "Hidden"
+msgid "hidden"
 msgstr ""
 
 #: tachartstrconsts.rsinvalidlogbase
@@ -120,7 +120,7 @@ msgid "Logarithm base must be > 0 and <> 1."
 msgstr "A logaritmus alapja > 0 és <> 1 lehet."
 
 #: tachartstrconsts.rsinverted
-msgid "Inverted"
+msgid "inverted"
 msgstr ""
 
 #: tachartstrconsts.rsleastsquaresfitseries

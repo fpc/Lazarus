@@ -114,7 +114,9 @@ msgid "Function series"
 msgstr "Funktions-Diagramm"
 
 #: tachartstrconsts.rshidden
-msgid "Hidden"
+#, fuzzy
+#| msgid "Hidden"
+msgid "hidden"
 msgstr "unsichtbar"
 
 #: tachartstrconsts.rsinvalidlogbase
@@ -122,7 +124,9 @@ msgid "Logarithm base must be > 0 and <> 1."
 msgstr "Die Logarithmus-Basis muss größer als 0 und darf nicht gleich 1 sein."
 
 #: tachartstrconsts.rsinverted
-msgid "Inverted"
+#, fuzzy
+#| msgid "Inverted"
+msgid "inverted"
 msgstr "invertiert"
 
 #: tachartstrconsts.rsleastsquaresfitseries
@@ -234,3 +238,4 @@ msgstr "Fehler beim Umbenennen von Komponenten: %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Werkzeuge bearbeiten"
+
