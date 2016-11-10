@@ -3040,9 +3040,25 @@ msgstr "Criar Aplicação Encartada"
 msgid "Load &Default"
 msgstr "Carregar &Padrão"
 
-#: lazarusidestrconsts.dlgpodpiaware
-msgid "Enabled DPI Awareness (for Vista+)"
-msgstr "Consciência de DPI habilitado (para Vista+)"
+#: lazarusidestrconsts.dlgpodpiawareness
+msgid "DPI awareness"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpodpiawarenessoff
+msgid "off"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpodpiawarenessoldoffnewpermonitor
+msgid "Vista-8: off, 8.1+: per monitor"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitor
+msgid "Vista-8: on, 8.1+: per monitor"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpodpiawarenesson
+msgid "on"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoexecutionlevel
 msgid "Execution Level"
@@ -13593,6 +13609,10 @@ msgstr "Valor \"%s\""
 #: lazarusidestrconsts.lismmwas
 msgid "(was \"%s\")"
 msgstr "(era \"%s\")"
+
+#: lazarusidestrconsts.lismmwidgetsetavailableforlclproject
+msgid "WidgetSet change is available only for LCL projects"
+msgstr ""
 
 #: lazarusidestrconsts.lismode
 msgid ", Mode: %s"
