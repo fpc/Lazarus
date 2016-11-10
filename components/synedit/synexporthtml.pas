@@ -260,6 +260,26 @@ var
 const
   Digits: array[0..15] of char = '0123456789ABCDEF';
 begin
+  Result := '';
+  case AColor of
+    clRed:     Result := 'red';
+    clGreen:   Result := 'green';
+    clBlue:    Result := 'blue';
+    clPurple:  Result := 'purple';
+    clYellow:  Result := 'yellow';
+    clBlack:   Result := 'black';
+    clWhite:   Result := 'white';
+    clGray:    Result := 'gray';
+    clMaroon:  Result := 'maroon';
+    clFuchsia: Result := 'fuchsia';
+    clLime:    Result := 'lime';
+    clNavy:    Result := 'navy';
+    clAqua:    Result := 'aqua';
+    clTeal:    Result := 'teal';
+    clSilver:  Result := 'silver';
+  end;
+  if (Result <> '') then
+    Exit;
   RGBColor := ColorToRGB(AColor);
   Result := '"#000000"';
  {****************}
@@ -323,7 +343,7 @@ procedure TSynExporterHTML.FormatAttributeInit(BackgroundChanged,
 begin
   if BackgroundChanged then
     AddData('<span style="background-color: ' +
-      Copy(ColorToHtml(fLastBG), 2, 9) + '>');
+      AnsiDequotedStr(ColorToHtml(fLastBG), '"') {Copy(ColorToHtml(fLastBG), 2, 9)} + '>');
   if (BackgroundChanged or ForegroundChanged) and (fLastFG <> fFont.Color) then
     AddData('<font color=' + ColorToHtml(fLastFG) + '>');
   if BackgroundChanged or ForegroundChanged or (FontStylesChanged <> []) then
@@ -345,7 +365,7 @@ procedure TSynExporterHTML.FormatBeforeFirstAttribute(BackgroundChanged,
 begin
   if BackgroundChanged then
     AddData('<span style="background-color: ' +
-      Copy(ColorToHtml(fLastBG), 2, 9) + '>');
+      AnsiDequotedStr(ColorToHtml(fLastBG), '"') {Copy(ColorToHtml(fLastBG), 2, 9)} + '>');
   AddData('<font color=' + ColorToHtml(fLastFG) + '>');
   if FontStylesChanged <> [] then begin
     if fsBold in fLastStyle then
