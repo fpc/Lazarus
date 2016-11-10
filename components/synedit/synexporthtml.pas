@@ -122,7 +122,7 @@ const
                   '<head>'+LineEnding+
                   '%s'+LineEnding+
                   '</head>'+LineEnding+
-                  '<body text=%s bgcolor=%s>';
+                  '<body text="%s" bgcolor="%s">';
   DocumentEnd = '</body>'+LineEnding+'</html>';
   CodeStart = '<pre><code>';
   CodeEnd = '</code></pre>';
@@ -281,24 +281,24 @@ begin
   if (Result <> '') then
     Exit;
   RGBColor := ColorToRGB(AColor);
-  Result := '"#000000"';
+  Result := '#000000';
  {****************}
   RGBValue := GetRValue(RGBColor);
   if RGBValue > 0 then begin
-    Result[3] := Digits[RGBValue shr  4];
-    Result[4] := Digits[RGBValue and 15];
+    Result[2] := Digits[RGBValue shr  4];
+    Result[3] := Digits[RGBValue and 15];
   end;
  {****************}
   RGBValue := GetGValue(RGBColor);
   if RGBValue > 0 then begin
-    Result[5] := Digits[RGBValue shr  4];
-    Result[6] := Digits[RGBValue and 15];
+    Result[4] := Digits[RGBValue shr  4];
+    Result[5] := Digits[RGBValue and 15];
   end;
  {****************}
   RGBValue := GetBValue(RGBColor);
   if RGBValue > 0 then begin
-    Result[7] := Digits[RGBValue shr  4];
-    Result[8] := Digits[RGBValue and 15];
+    Result[6] := Digits[RGBValue shr  4];
+    Result[7] := Digits[RGBValue and 15];
   end;
 end;
 
@@ -343,9 +343,9 @@ procedure TSynExporterHTML.FormatAttributeInit(BackgroundChanged,
 begin
   if BackgroundChanged then
     AddData('<span style="background-color: ' +
-      AnsiDequotedStr(ColorToHtml(fLastBG), '"') {Copy(ColorToHtml(fLastBG), 2, 9)} + '>');
+      ColorToHtml(fLastBG) {Copy(ColorToHtml(fLastBG), 2, 9)} + '>');
   if (BackgroundChanged or ForegroundChanged) and (fLastFG <> fFont.Color) then
-    AddData('<font color=' + ColorToHtml(fLastFG) + '>');
+    AddData('<font color="' + ColorToHtml(fLastFG) + '">');
   if BackgroundChanged or ForegroundChanged or (FontStylesChanged <> []) then
   begin
     if fsBold in fLastStyle then
@@ -365,8 +365,8 @@ procedure TSynExporterHTML.FormatBeforeFirstAttribute(BackgroundChanged,
 begin
   if BackgroundChanged then
     AddData('<span style="background-color: ' +
-      AnsiDequotedStr(ColorToHtml(fLastBG), '"') {Copy(ColorToHtml(fLastBG), 2, 9)} + '>');
-  AddData('<font color=' + ColorToHtml(fLastFG) + '>');
+      ColorToHtml(fLastBG) {Copy(ColorToHtml(fLastBG), 2, 9)} + '>');
+  AddData('<font color="' + ColorToHtml(fLastFG) + '">');
   if FontStylesChanged <> [] then begin
     if fsBold in fLastStyle then
       AddData('<b>');
@@ -572,11 +572,11 @@ function TSynExporterHTML.MakeFontSpan(FG, BG: TColor): String;
 begin
   Result := '<span style="color: ';
   FG := ValidatedColor(FG, fFont.Color);
-  Result := Result + AnsiDequotedStr(ColorToHtml(FG), '"');
+  Result := Result + ColorToHtml(FG);
   BG := ValidatedColor(BG, fBackgroundColor);
   if UseBackGround then
   begin
-    Result := Result + '; background-color: ' + AnsiDequotedStr(ColorToHtml(BG), '"');
+    Result := Result + '; background-color: ' + ColorToHtml(BG);
   end;
   Result := Result + ';">';
 end;
