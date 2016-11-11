@@ -2465,7 +2465,7 @@ begin
 
   // respond to result of LCL handling the message
   case PLMsg^.Msg of
-    LM_ERASEBKGND, LM_SETCURSOR, LM_RBUTTONUP, LM_CONTEXTMENU, LM_MOUSEWHEEL:
+    LM_ERASEBKGND, LM_SETCURSOR, LM_RBUTTONUP, LM_CONTEXTMENU:
       if PLMsg^.Result = 0 then
         WinProcess := True;
 
