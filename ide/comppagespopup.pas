@@ -145,6 +145,7 @@ begin
         if SameText(TreeView1.Selected.Text, ComponentPageControl.Page[i].Caption) then
         begin
           ComponentPageControl.PageIndex:=i;
+          ComponentPageControl.OnChange(Self);
           Break;
         end;
   Close;
