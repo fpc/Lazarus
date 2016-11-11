@@ -1545,6 +1545,7 @@ end;
 function TCodeHelpManager.GetFPDocFilenameForSource(SrcFilename: string;
   ResolveIncludeFiles: Boolean; out CacheWasUsed: boolean;
   out AnOwner: TObject; CreateIfNotExists: boolean): string;
+{off $Define VerboseGetFPDocForSrc}
 var
   FPDocName: String;
   SearchedPaths: string;
@@ -1557,8 +1558,18 @@ var
   begin
     Result:=false;
     if Paths='' then exit;
-    if not IDEMacros.CreateAbsoluteSearchPath(Paths,BaseDir) then exit;
-    //DebugLn(['SearchInPath START ',Paths]);
+    {$IFDEF VerboseGetFPDocForSrc}
+    debugln(['GetFPDocFilenameForSource.SearchInPath unresolved Paths="',Paths,'" BaseDir="',BaseDir,'"']);
+    {$ENDIF}
+    if not IDEMacros.CreateAbsoluteSearchPath(Paths,BaseDir) then begin
+      {$IFDEF VerboseGetFPDocForSrc}
+      debugln(['GetFPDocFilenameForSource.SearchInPath invalid macro Paths="',Paths,'"']);
+      {$ENDIF}
+      exit;
+    end;
+    {$IFDEF VerboseGetFPDocForSrc}
+    debugln(['GetFPDocFilenameForSource.SearchInPath resolved Paths="',Paths,'"']);
+    {$ENDIF}
     if Paths='' then exit;
     p:=1;
     repeat
@@ -1569,6 +1580,9 @@ var
           // not yet searched in this directory
           SearchedPaths:=SearchedPaths+';'+CurPath;
           Filename:=AppendPathDelim(CurPath)+FPDocName;
+          {$IFDEF VerboseGetFPDocForSrc}
+          debugln(['GetFPDocFilenameForSource.SearchInPath try file="',Filename,'"']);
+          {$ENDIF}
           if FileExistsCached(Filename) then exit(true);
         end;
       end;
@@ -1595,30 +1609,63 @@ var
       PkgList:=PackageEditingInterface.GetOwnersOfUnit(SrcFilename);
     end;
     // get all packages owning the file
-    if PkgList=nil then exit;
+    if PkgList=nil then begin
+      {$IFDEF VerboseGetFPDocForSrc}
+      debugln(['GetFPDocFilenameForSource.CheckUnitOwners no owner for SrcFile="',SrcFilename,'"']);
+      {$ENDIF}
+      exit;
+    end;
     try
       for i:=0 to PkgList.Count-1 do begin
-        //debugln(['CheckUnitOwners ',DbgSName(TObject(PkgList[i]))]);
+        {$IFDEF VerboseGetFPDocForSrc}
+        debugln(['GetFPDocFilenameForSource.CheckUnitOwners owner="',DbgSName(TObject(PkgList[i])),'"']);
+        {$ENDIF}
         if TObject(PkgList[i]) is TLazProject then begin
           AProject:=TLazProject(PkgList[i]);
           AnOwner:=AProject;
-          if AProject.FPDocPaths='' then continue;
+          if AProject.FPDocPaths='' then begin
+            {$IFDEF VerboseGetFPDocForSrc}
+            debugln(['GetFPDocFilenameForSource.CheckUnitOwners project has no FPDocPaths "',AProject.ProjectInfoFile,'"']);
+            {$ENDIF}
+            continue;
+          end;
           BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
-          if BaseDir='' then continue;
+          if BaseDir='' then begin
+            {$IFDEF VerboseGetFPDocForSrc}
+            debugln(['GetFPDocFilenameForSource.CheckUnitOwners project is virtual "',AProject.ProjectInfoFile,'"']);
+            {$ENDIF}
+            continue;
+          end;
           // add fpdoc paths of project
-          if SearchInPath(AProject.FPDocPaths,BaseDir,Filename) then
+          if SearchInPath(AProject.FPDocPaths,BaseDir,Filename) then begin
+            {$IFDEF VerboseGetFPDocForSrc}
+            debugln(['GetFPDocFilenameForSource.CheckUnitOwners found in project "',AProject.ProjectInfoFile,'" File="',Filename,'"']);
+            {$ENDIF}
             exit(true);
+          end;
         end else if TObject(PkgList[i]) is TLazPackage then begin
           APackage:=TLazPackage(PkgList[i]);
           AnOwner:=APackage;
-          if APackage.FPDocPaths='' then continue;
+          if APackage.FPDocPaths='' then begin
+            {$IFDEF VerboseGetFPDocForSrc}
+            debugln(['GetFPDocFilenameForSource.CheckUnitOwners package has no FPDocPaths ',APackage.Name,'  "',APackage.Filename,'"']);
+            {$ENDIF}
+            continue;
+          end;
           BaseDir:=APackage.Directory;
-          if BaseDir='' then continue;
+          if BaseDir='' then begin
+            {$IFDEF VerboseGetFPDocForSrc}
+            debugln(['GetFPDocFilenameForSource.CheckUnitOwners package is virtual "',APackage.Name,'"']);
+            {$ENDIF}
+            continue;
+          end;
           // add fpdoc paths of package
           if SearchInPath(APackage.FPDocPaths,BaseDir,Filename) then begin
+            {$IFDEF VerboseGetFPDocForSrc}
+            debugln(['GetFPDocFilenameForSource.CheckUnitOwners found in package "',APackage.Filename,'" File="',Filename,'"']);
+            {$ENDIF}
             exit(true);
-          end else if AnOwner=nil then
-            AnOwner:=APackage;
+          end;
         end;
       end;
     finally
@@ -1634,13 +1681,23 @@ var
     // check IDE directories
     if IsIDESrcFile(SrcFilename) then begin
       AnOwner:=LazarusHelp;
-      if SearchInPath(GetIDESrcFPDocPath,'',Filename) then
+      {$IFDEF VerboseGetFPDocForSrc}
+      debugln(['GetFPDocFilenameForSource.CheckIfInLazarus IsIDESrcFile "',SrcFilename,'"']);
+      {$ENDIF}
+      if SearchInPath(GetIDESrcFPDocPath,'',Filename) then begin
+        {$IFDEF VerboseGetFPDocForSrc}
+        debugln(['GetFPDocFilenameForSource.CheckIfInLazarus found in IDE "',Filename,'"']);
+        {$ENDIF}
         exit(true);
+      end;
     end;
 
     // finally: check if in user directories
     if SearchInPath(EnvironmentOptions.FPDocPaths,'',Filename) then
     begin
+      {$IFDEF VerboseGetFPDocForSrc}
+      debugln(['GetFPDocFilenameForSource.CheckIfInLazarus found in user files "',Filename,'"']);
+      {$ENDIF}
       AnOwner:=nil;
       exit(true);
     end;
@@ -1667,7 +1724,9 @@ begin
   
   if not FilenameIsPascalSource(SrcFilename) then
   begin
+    {$IFDEF VerboseGetFPDocForSrc}
     DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource error: not a source file: "',SrcFilename,'"']);
+    {$ENDIF}
     exit;
   end;
   
@@ -1686,7 +1745,7 @@ begin
     end;
     CacheWasUsed:=false;
 
-    {$IFDEF VerboseCodeHelp}
+    {$IF defined(VerboseCodeHelp) or defined(VerboseGetFPDocForSrc)}
     DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource searching SrcFilename=',SrcFilename]);
     {$ENDIF}
 
@@ -1700,8 +1759,17 @@ begin
       // not found
       if AnOwner=nil then
         DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource Hint: file without owner: ',SrcFilename])
-      else
-        debugln(['TCodeHelpManager.GetFPDocFilenameForSource Hint: Owner has no fpdoc paths: ',SrcFilename]);
+      else if AnOwner is TLazProject then begin
+        if TLazProject(AnOwner).FPDocPaths='' then
+          debugln(['TCodeHelpManager.GetFPDocFilenameForSource Hint: Owner (project) has no fpdoc paths: ',SrcFilename])
+        else
+          debugln(['TCodeHelpManager.GetFPDocFilenameForSource Hint: Owner (project) has no fpdoc file for: ',SrcFilename])
+      end else if AnOwner is TLazPackage then begin
+        if TLazPackage(AnOwner).FPDocPaths='' then
+          debugln(['TCodeHelpManager.GetFPDocFilenameForSource Hint: Owner (package ',TLazPackage(AnOwner).Name,') has no fpdoc paths: ',SrcFilename])
+        else
+          debugln(['TCodeHelpManager.GetFPDocFilenameForSource Hint: Owner (package ',TLazPackage(AnOwner).Name,') has no fpdoc file for: ',SrcFilename])
+      end;
     end;
 
     // save to cache
@@ -1717,11 +1785,11 @@ begin
     if (Result='') and CreateIfNotExists then begin
       Result:=DoCreateFPDocFileForSource(SrcFilename,AnOwner);
     end;
-    {$IFDEF VerboseCodeHelp}
+    {$IF defined(VerboseCodeHelp) or defined(VerboseGetFPDocForSrc)}
     DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource SrcFilename="',SrcFilename,'" Result="',Result,'"']);
     {$ENDIF}
   end;
-  {$ifdef VerboseCodeHelp}
+  {$IF defined(VerboseCodeHelp) or defined(VerboseGetFPDocForSrc)}
   DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource ',dbgsName(AnOwner)]);
   {$endif}
 end;
