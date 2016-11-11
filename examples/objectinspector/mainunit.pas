@@ -14,10 +14,16 @@ type
   TMyComponent = class(TComponent)
   private
     FAnInteger: integer;
+    FWideStr: widestring;
+    FUnicodeStr: unicodestring;
+    FAnsiStr: ansistring;
     procedure SetAnInteger(const AValue: integer);
   public
   published
     property AnInteger: integer read FAnInteger write SetAnInteger;
+    property WideStr: widestring read FWideStr write FWideStr;
+    property UnicodeStr: unicodestring read FUnicodeStr write FUnicodeStr;
+    property AnsiStr: ansistring read FAnsiStr write FAnsiStr;
   end;
 
   { TForm1 }
@@ -63,12 +69,8 @@ begin
   ARootComponent:=TMyComponent.Create(nil);
 
   // create the PropertyGrid
-  PropertyGrid:=TOIPropertyGrid.CreateWithParams(Self,ThePropertyEditorHook
-      ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet{, tkMethod}
-      , tkSString, tkLString, tkAString, tkWString, tkVariant
-      {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
-      , tkInt64, tkQWord],
-      25);
+  PropertyGrid:=TOIPropertyGrid.CreateWithParams(Self,ThePropertyEditorHook,
+                                                 AllTypeKinds,25);
   with PropertyGrid do begin
     Name:='PropertyGrid';
     Parent:=PropGridGroupbox;
