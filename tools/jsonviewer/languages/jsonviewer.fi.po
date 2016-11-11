@@ -234,8 +234,8 @@ msgstr "Tallenna nimellä"
 msgid "Save JSON document with a new name"
 msgstr "Tallenna JSON dokumentti uudella nimellä"
 
-#: tmainform.caption
-msgctxt "tmainform.caption"
+#: tmainform.mainform.caption
+msgctxt "tmainform.mainform.caption"
 msgid "JSON Viewer"
 msgstr ""
 
@@ -243,13 +243,29 @@ msgstr ""
 msgid "&Edit"
 msgstr "Muokkaa"
 
+#: tmainform.menuitem1.caption
+msgctxt "tmainform.menuitem1.caption"
+msgid "-"
+msgstr ""
+
+#: tmainform.menuitem2.caption
+msgctxt "tmainform.menuitem2.caption"
+msgid "-"
+msgstr ""
+
+#: tmainform.menuitem3.caption
+msgctxt "tmainform.menuitem3.caption"
+msgid "-"
+msgstr ""
+
+#: tmainform.menuitem8.caption
+msgctxt "tmainform.menuitem8.caption"
+msgid "-"
+msgstr ""
+
 #: tmainform.mfile.caption
 msgid "&File"
 msgstr "Tiedosto"
-
-#: tmainform.micompact.caption
-msgid "Compact display"
-msgstr ""
 
 #: tmainform.midocument.caption
 msgid "&New document with object"
@@ -271,14 +287,6 @@ msgstr ""
 msgid "&Options"
 msgstr "Optiot"
 
-#: tmainform.odjson.title
-msgid "Select a JSON file"
-msgstr "Valitse JSON tiedosto"
-
-#: tmainform.sdjson.title
-msgid "Save JSON document to file"
-msgstr "Tallenna JSON dokumentti tiedostoon"
-
 #: tmainform.tbjson.caption
 msgid "TBJSON"
 msgstr ""
@@ -291,44 +299,3 @@ msgstr ""
 msgid "ToolButton4"
 msgstr ""
 
-#: tnewbooleanform.caption
-msgid "New boolean value"
-msgstr "Uusi boolean arvo"
-
-#: tnewbooleanform.cbvalue.caption
-msgid "Set to true"
-msgstr "Aseta true arvoon"
-
-#: tnewbooleanform.label1.caption
-msgid "&Member name"
-msgstr "Jäsenen nimi"
-
-#: tnewnumberform.caption
-msgid "New number value"
-msgstr "Uusi numeroarvo"
-
-#: tnewnumberform.label1.caption
-msgctxt "tnewnumberform.label1.caption"
-msgid "&Name"
-msgstr "Nimi"
-
-#: tnewnumberform.label2.caption
-msgid "Value"
-msgstr "Arvo"
-
-#: tnewnumberform.rgtype.caption
-msgid "Number Type"
-msgstr "Numerotyyppi"
-
-#: tnewstringform.caption
-msgid "New String value"
-msgstr "Uusi merkkijonoarvo"
-
-#: tnewstringform.label1.caption
-msgctxt "tnewstringform.label1.caption"
-msgid "&Name"
-msgstr "Nimi"
-
-#: tnewstringform.label2.caption
-msgid "&Value"
-msgstr "Arvo"
