@@ -60,6 +60,11 @@ const
   DefGutterColor = DefBackgroundColor;
   DefGutterEdgeColor = cl3DShadow;
 
+  DefaultOITypeKinds = [
+    tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet,{ tkMethod,}
+    tkSString, tkLString, tkAString, tkWString, tkVariant,
+    {tkArray, tkRecord, tkInterface,} tkClass, tkObject, tkWChar, tkBool,
+    tkInt64, tkQWord, tkUString, tkUChar];
 type
   EObjectInspectorException = class(Exception);
 
@@ -678,52 +683,68 @@ type
     procedure PropFilterEditAfterFilter(Sender: TObject);
     procedure NoteBookPageChange(Sender: TObject);
   private
-    StateOfHintsOnMainPopupMenu: Boolean;
+    FAutoShow: Boolean;
+    FCheckboxForBoolean: Boolean;
+    FComponentEditor: TBaseComponentEditor;
+    FDefaultItemHeight: integer;
+    FEnableHookGetSelection: boolean;
     FFavorites: TOIFavoriteProperties;
+    FFilter: TTypeKinds;
+    FFlags: TOIFlags;
     FInfoBoxHeight: integer;
-    FOnPropertyHint: TOIPropertyHint;
-    FOnSelectionChange: TNotifyEvent;
-    FRestricted: TOIRestrictedProperties;
+    FLastActiveRowName: String;
+    FOnAddAvailablePersistent: TOnAddAvailablePersistent;
     FOnAddToFavorites: TNotifyEvent;
+    FOnAutoShow: TNotifyEvent;
     FOnFindDeclarationOfProperty: TNotifyEvent;
+    FOnModified: TNotifyEvent;
+    FOnNodeGetImageIndex: TOnOINodeGetImageEvent;
     FOnOIKeyDown: TKeyEvent;
+    FOnPropertyHint: TOIPropertyHint;
     FOnRemainingKeyDown: TKeyEvent;
     FOnRemainingKeyUp: TKeyEvent;
     FOnRemoveFromFavorites: TNotifyEvent;
+    FOnSelectionChange: TNotifyEvent;
+    FOnSelectPersistentsInOI: TNotifyEvent;
+    FOnShowOptions: TNotifyEvent;
     FOnUpdateRestricted: TNotifyEvent;
     FOnViewRestricted: TNotifyEvent;
-    FSelection: TPersistentSelectionList;
-    FDefaultItemHeight: integer;
-    FFlags: TOIFlags;
-    FOnShowOptions: TNotifyEvent;
     FPropertyEditorHook: TPropertyEditorHook;
-    FOnAddAvailablePersistent: TOnAddAvailablePersistent;
-    FOnSelectPersistentsInOI: TNotifyEvent;
-    FOnModified: TNotifyEvent;
-    FAutoShow: Boolean;
-    FCheckboxForBoolean: Boolean;
+    FRefreshingSelectionCount: integer;
+    FRestricted: TOIRestrictedProperties;
+    FSelection: TPersistentSelectionList;
+    FSettingSelectionCount: integer;
     FShowComponentTree: Boolean;
     FShowFavorites: Boolean;
     FShowInfoBox: Boolean;
     FShowRestricted: Boolean;
     FShowStatusBar: Boolean;
+    FStateOfHintsOnMainPopupMenu: Boolean;
     FUpdateLock: integer;
     FUpdatingAvailComboBox: Boolean;
-    FComponentEditor: TBaseComponentEditor;
-    FOnNodeGetImageIndex: TOnOINodeGetImageEvent;
-    procedure TopSplitterMoved(Sender: TObject);
-    procedure CreateTopSplitter;
-    procedure CreateBottomSplitter;
-    function GetParentCandidates: TFPList;
+    function GetComponentPanelHeight: integer;
     function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
+    function GetInfoBoxHeight: integer;
+    function GetParentCandidates: TFPList;
+    procedure CreateBottomSplitter;
+    procedure CreateTopSplitter;
+    procedure DefSelectionVisibleInDesigner;
+    procedure DoChangeParentItemClick(Sender: TObject);
+    procedure DoCollectionAddItem(Sender: TObject);
+    procedure DoComponentEditorVerbMenuItemClick(Sender: TObject);
+    procedure DoZOrderItemClick(Sender: TObject);
+    procedure RestrictedPaint(
+      ABox: TPaintBox; const ARestrictions: TWidgetSetRestrictionsArray);
     procedure SetComponentEditor(const AValue: TBaseComponentEditor);
-    procedure SetFavorites(const AValue: TOIFavoriteProperties);
     procedure SetComponentPanelHeight(const AValue: integer);
     procedure SetDefaultItemHeight(const AValue: integer);
+    procedure SetEnableHookGetSelection(AValue: boolean);
+    procedure SetFavorites(const AValue: TOIFavoriteProperties);
+    procedure SetFilter(const AValue: TTypeKinds);
     procedure SetInfoBoxHeight(const AValue: integer);
-    procedure SetRestricted(const AValue: TOIRestrictedProperties);
     procedure SetOnShowOptions(const AValue: TNotifyEvent);
     procedure SetPropertyEditorHook(NewValue: TPropertyEditorHook);
+    procedure SetRestricted(const AValue: TOIRestrictedProperties);
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure SetShowComponentTree(const AValue: boolean);
     procedure SetShowFavorites(const AValue: Boolean);
@@ -731,22 +752,7 @@ type
     procedure SetShowRestricted(const AValue: Boolean);
     procedure SetShowStatusBar(const AValue: Boolean);
     procedure ShowNextPage(Delta: integer);
-    procedure RestrictedPaint(
-      ABox: TPaintBox; const ARestrictions: TWidgetSetRestrictionsArray);
-    procedure DoChangeParentItemClick(Sender: TObject);
-    procedure DoComponentEditorVerbMenuItemClick(Sender: TObject);
-    procedure DoCollectionAddItem(Sender: TObject);
-    procedure DoZOrderItemClick(Sender: TObject);
-  private
-    FEnableHookGetSelection: boolean;
-    FSettingSelectionCount: integer;
-    FRefreshingSelectionCount: integer;
-    FOnAutoShow: TNotifyEvent;
-    FLastActiveRowName: String;
-    procedure DefSelectionVisibleInDesigner;
-    function GetComponentPanelHeight: integer;
-    function GetInfoBoxHeight: integer;
-    procedure SetEnableHookGetSelection(AValue: boolean);
+    procedure TopSplitterMoved(Sender: TObject);
   protected
     function PersistentToString(APersistent: TPersistent): string;
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
@@ -787,7 +793,7 @@ type
     procedure HookRefreshPropertyValues;
     procedure ActivateGrid(Grid: TOICustomPropertyGrid);
     procedure FocusGrid(Grid: TOICustomPropertyGrid = nil);
-
+  public
     property ComponentPanelHeight: integer read GetComponentPanelHeight
                                           write SetComponentPanelHeight;
     property DefaultItemHeight: integer read FDefaultItemHeight
@@ -795,6 +801,7 @@ type
     property EnableHookGetSelection: Boolean read FEnableHookGetSelection
                                              write SetEnableHookGetSelection;
     property Favorites: TOIFavoriteProperties read FFavorites write SetFavorites;
+    property Filter: TTypeKinds read FFilter write SetFilter;
     property GridControl[Page: TObjectInspectorPage]: TOICustomPropertyGrid
                                                             read GetGridControl;
     property InfoBoxHeight: integer read GetInfoBoxHeight write SetInfoBoxHeight;
@@ -4148,6 +4155,7 @@ begin
   FInfoBoxHeight := 80;
   FShowInfoBox := True;
   FComponentEditor := nil;
+  FFilter := DefaultOITypeKinds;
 
   Caption := oisObjectInspector;
   FilterLabel.Caption := oisBtnComponents;
@@ -4855,7 +4863,7 @@ end;
 
 procedure TObjectInspectorDlg.MainPopupMenuClose(Sender: TObject);
 begin
-  if StateOfHintsOnMainPopupMenu then OnShowHintPopupMenuItemClick(nil);
+  if FStateOfHintsOnMainPopupMenu then OnShowHintPopupMenuItemClick(nil);
 end;
 
 procedure TObjectInspectorDlg.OnGridKeyDown(Sender: TObject; var Key: Word;
@@ -5339,12 +5347,6 @@ procedure TObjectInspectorDlg.CreateNoteBook;
     end;
   end;
 
-const
-  PROPS = [
-    tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet,{ tkMethod,}
-    tkSString, tkLString, tkAString, tkWString, tkVariant,
-    {tkArray, tkRecord, tkInterface,} tkClass, tkObject, tkWChar, tkBool,
-    tkInt64, tkQWord];
   function AddPage(PageName, TabCaption: string): TTabSheet;
   begin
     Result:=TTabSheet.Create(Self);
@@ -5382,11 +5384,11 @@ begin
     
   NoteBook.PageIndex:=0;
 
-  PropertyGrid := CreateGrid(PROPS, oipgpProperties, 0);
+  PropertyGrid := CreateGrid(Filter - [tkMethod], oipgpProperties, 0);
   EventGrid := CreateGrid([tkMethod], oipgpEvents, 1);
-  FavoriteGrid := CreateGrid(PROPS + [tkMethod], oipgpFavorite, 2);
+  FavoriteGrid := CreateGrid(Filter + [tkMethod], oipgpFavorite, 2);
   FavoriteGrid.Favorites := FFavorites;
-  RestrictedGrid := CreateGrid(PROPS + [tkMethod], oipgpRestricted, 3);
+  RestrictedGrid := CreateGrid(Filter + [tkMethod], oipgpRestricted, 3);
 
   RestrictedPanel := TPanel.Create(Self);
   with RestrictedPanel do
@@ -5648,7 +5650,7 @@ begin
   RemovePropertyEditorMenuItems;
   RemoveComponentEditorMenuItems;
   ShowHintsPopupMenuItem.Checked := PropertyGrid.ShowHint;
-  StateOfHintsOnMainPopupMenu:=PropertyGrid.ShowHint;
+  FStateOfHintsOnMainPopupMenu:=PropertyGrid.ShowHint;
   for Page := Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
     if GridControl[Page] <> nil then
       GridControl[Page].ShowHint := False;
@@ -5842,6 +5844,15 @@ begin
       FPropertyEditorHook.AddHandlerGetSelection(@HookGetSelection)
     else
       FPropertyEditorHook.RemoveHandlerGetSelection(@HookGetSelection)
+end;
+
+procedure TObjectInspectorDlg.SetFilter(const AValue: TTypeKinds);
+begin
+  if FFilter=AValue then Exit;
+  FFilter:=AValue;
+  PropertyGrid.Filter := Filter - [tkMethod];
+  FavoriteGrid.Filter := Filter + [tkMethod];
+  RestrictedGrid.Filter := Filter + [tkMethod];
 end;
 
 procedure TObjectInspectorDlg.HookRefreshPropertyValues;

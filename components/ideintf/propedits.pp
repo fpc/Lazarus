@@ -356,6 +356,8 @@ type
     function GetVarValueAt(Index: Integer):Variant;
     function GetWideStrValue: WideString;
     function GetWideStrValueAt(Index: Integer): WideString;
+    function GetUnicodeStrValue: UnicodeString;
+    function GetUnicodeStrValueAt(Index: Integer): UnicodeString;
     function GetValue: ansistring; virtual;
     function GetHint({%H-}HintType: TPropEditHint; {%H-}x, {%H-}y: integer): string; virtual;
     function GetDefaultValue: ansistring; virtual;
@@ -375,6 +377,7 @@ type
     procedure SetPtrValue(const NewValue: Pointer);
     procedure SetStrValue(const NewValue: AnsiString);
     procedure SetWideStrValue(const NewValue: WideString);
+    procedure SetUnicodeStrValue(const NewValue: UnicodeString);
     procedure SetVarValue(const NewValue: Variant);
     procedure Modified(PropName: ShortString = '');
     function ValueAvailable: Boolean;
@@ -552,6 +555,16 @@ type
     function GetPassword: WideString; virtual;
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       AState: TPropEditDrawState); override;
+  end;
+
+{ TUnicodeStringPropertyEditor
+  The default property editor for unicodestrings}
+
+  TUnicodeStringPropertyEditor = class(TPropertyEditor)
+  public
+    function AllEqual: Boolean; override;
+    function GetValue: ansistring; override;
+    procedure SetValue(const NewValue: ansistring); override;
   end;
 
 { TNestedPropertyEditor
@@ -2032,7 +2045,7 @@ const
     nil,                       // tkDynArray
     nil,                       // tkInterfaceRaw,
     nil,                       // tkProcVar
-    nil,                       // tkUString
+    TUnicodeStringPropertyEditor,// tkUString
     nil                        // tkUChar
 {$IF declared(tkHelper)}
     ,nil                       // tkHelper
@@ -2872,6 +2885,16 @@ begin
   with FPropList^[Index] do Result:=GetWideStrProp(Instance,PropInfo);
 end;
 
+function TPropertyEditor.GetUnicodeStrValue: UnicodeString;
+begin
+  Result:=GetUnicodeStrValueAt(0);
+end;
+
+function TPropertyEditor.GetUnicodeStrValueAt(Index: Integer): UnicodeString;
+begin
+  with FPropList^[Index] do Result:=GetUnicodeStrProp(Instance,PropInfo);
+end;
+
 function TPropertyEditor.GetValue:ansistring;
 begin
   Result:=oisUnknown;
@@ -3092,6 +3115,23 @@ begin
     for I:=0 to FPropCount-1 do
       with FPropList^[I] do begin
         SetWideStrProp(Instance,PropInfo,NewValue);
+        Modified(PropInfo^.Name);
+      end;
+end;
+
+procedure TPropertyEditor.SetUnicodeStrValue(const NewValue: UnicodeString);
+var
+  I: Integer;
+  Changed: boolean;
+begin
+  Changed:=false;
+  for I:=0 to FPropCount-1 do
+    with FPropList^[I] do
+      Changed:=Changed or (GetUnicodeStrProp(Instance,PropInfo)<>NewValue);
+  if Changed then
+    for I:=0 to FPropCount-1 do
+      with FPropList^[I] do begin
+        SetUnicodeStrProp(Instance,PropInfo,NewValue);
         Modified(PropInfo^.Name);
       end;
 end;
@@ -3865,6 +3905,32 @@ procedure TPasswordWideStringPropertyEditor.PropDrawValue(ACanvas: TCanvas;
   const ARect: TRect; AState: TPropEditDrawState);
 begin
   DrawValue(UTF8Encode(GetPassword),ACanvas,ARect,AState);
+end;
+
+{ TUnicodeStringPropertyEditor }
+
+function TUnicodeStringPropertyEditor.AllEqual: Boolean;
+var
+  I: Integer;
+  V: UnicodeString;
+begin
+  Result := False;
+  if PropCount > 1 then begin
+    V := GetUnicodeStrValue;
+    for I := 1 to PropCount - 1 do
+      if GetUnicodeStrValueAt(I) <> V then Exit;
+  end;
+  Result := True;
+end;
+
+function TUnicodeStringPropertyEditor.GetValue: ansistring;
+begin
+  Result:=UTF8Encode(GetUnicodeStrValue);
+end;
+
+procedure TUnicodeStringPropertyEditor.SetValue(const NewValue: ansistring);
+begin
+  SetUnicodeStrValue(UTF8Decode(NewValue));
 end;
 
 { TNestedPropertyEditor }
