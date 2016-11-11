@@ -1,0 +1,334 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: msgjsonviewer.sarray
+msgid "Array (%d elements)"
+msgstr "Taulukko (%d elementtiä)"
+
+#: msgjsonviewer.scancelclose
+msgid "Do not close the window"
+msgstr "Ei suljeta ikkunaa"
+
+#: msgjsonviewer.scancelpaste
+msgid "Do not paste the new data"
+msgstr "Ei liitetä uutta dataa"
+
+#: msgjsonviewer.scaption
+msgctxt "msgjsonviewer.scaption"
+msgid "JSON Viewer"
+msgstr ""
+
+#: msgjsonviewer.sdiscard
+msgid "Discard changes"
+msgstr "Hylkää muutokset"
+
+#: msgjsonviewer.sdocumentmodified
+msgid "JSON document modified"
+msgstr "JSON dokumenttia muokattu"
+
+#: msgjsonviewer.sdocumentmodifiedaction
+msgid ""
+"The JSON data was changed but not saved.\n"
+"What do want to do ?\n"
+msgstr ""
+"JSON data on muuttunut mutta ei tallennettu.\n"
+"Mitä tehdään ?\n"
+
+#: msgjsonviewer.sduplicatemembername
+msgid "Duplicate member name \"%s\"."
+msgstr ""
+
+#: msgjsonviewer.selement
+msgid "Element nr. %d"
+msgstr "Elementin numero %d"
+
+#: msgjsonviewer.sempty
+msgid "Empty document"
+msgstr "Tyhjä dokumentti"
+
+#: msgjsonviewer.serrcreatingconfigdir
+msgid "Could not create the configuration files directory \"%s\""
+msgstr ""
+
+#: msgjsonviewer.serrinvalidvalue
+msgid "Invalid value or wrong type: \"%s\""
+msgstr "Vääränlainen arvo tai väärä tyyppi: \"%s\""
+
+#: msgjsonviewer.serrnovalidjsonclipboard
+msgid "The clipboard does not contain valid JSON data"
+msgstr "Leikepöytä ei sisällä säännönmukaista JSON dataa"
+
+#: msgjsonviewer.snewmember
+msgid "New object member"
+msgstr "Uusi olio jäsen"
+
+#: msgjsonviewer.snewmembername
+msgid "Enter a name for the new member (type: %s)"
+msgstr "Nimeä uusi jäsen (tyyppi: %s)"
+
+#: msgjsonviewer.snomorematches
+msgid "No nodes match the criterium"
+msgstr "Mikään solmu ei vastaa kriteereitä"
+
+#: msgjsonviewer.snull
+msgid "null"
+msgstr ""
+
+#: msgjsonviewer.sobject
+msgid "Object (%d members)"
+msgstr "Olio (%d jäsentä)"
+
+#: msgjsonviewer.ssavedata
+msgid "Save the changes"
+msgstr "Tallenna muutokset"
+
+#: tmainform.acopy.caption
+msgid "&Copy"
+msgstr "Kopio"
+
+#: tmainform.acopy.hint
+msgid "Copy selected node to clipboard as JSON"
+msgstr "Kopio JSON-muodossa leikepöydälle valittu solmu"
+
+#: tmainform.acut.caption
+msgid "C&ut"
+msgstr "Leikkaa"
+
+#: tmainform.acut.hint
+msgid "Cut selected node to clipboard as JSON"
+msgstr "Leikkaa JSON-muodossa leikepöydälle valittu solmu"
+
+#: tmainform.adeletevalue.caption
+msgid "&Delete value"
+msgstr "Poista arvo"
+
+#: tmainform.adeletevalue.hint
+msgid "Delete the selected value"
+msgstr "Poista valittu arvo"
+
+#: tmainform.aexpandall.caption
+msgid "E&xpand all nodes"
+msgstr "Avaa laajennettuna kaikki solmut"
+
+#: tmainform.aexpandall.hint
+msgid "Expand all nodes in the document"
+msgstr "Avaa laajennettuna kaikki solmut dokumentissa"
+
+#: tmainform.aexpandcurrentcontainer.caption
+msgid "Expand &current object/array"
+msgstr "Avaa laajennettuna nykyinen olio/taulukko"
+
+#: tmainform.aexpandcurrentcontainer.hint
+msgid "Expand all nodes in the current object/array"
+msgstr "Avaa laajennettuna kaikki solmut nykyisessä oliossa/taulukossa"
+
+#: tmainform.afind.caption
+msgid "&Find"
+msgstr "Etsi"
+
+#: tmainform.afindnext.caption
+msgid "Find &next occurrence"
+msgstr "Etsi seuraava esiintymä"
+
+#: tmainform.anew.caption
+msgid "&New"
+msgstr "Uusi"
+
+#: tmainform.anew.hint
+msgid "Create new JSON document"
+msgstr "Luo uusi JSON dokumentti"
+
+#: tmainform.anewarray.caption
+msgid "New &Array"
+msgstr "Uusi taulukko"
+
+#: tmainform.anewarray.hint
+msgid "Add a new JSON array"
+msgstr "Lisää uusi JSON taulukko"
+
+#: tmainform.anewbooleanvalue.caption
+msgid "New &boolean value"
+msgstr "Uusi boolean arvo"
+
+#: tmainform.anewbooleanvalue.hint
+msgid "Add a new boolean value"
+msgstr "Lisää uusi boolean arvo"
+
+#: tmainform.anewnullvalue.caption
+msgid "New N&ull value"
+msgstr "Uusi Null arvo"
+
+#: tmainform.anewnullvalue.hint
+msgid "Add a new null value"
+msgstr "Lisää uusi null arvo"
+
+#: tmainform.anewnumbervalue.caption
+msgid "&New numerical Value"
+msgstr "Uusi numeroarvo"
+
+#: tmainform.anewnumbervalue.hint
+msgid "Add a new number value"
+msgstr "Lisää uusi numeroarvo"
+
+#: tmainform.anewobject.caption
+msgid "New &Object"
+msgstr "Uusi olio"
+
+#: tmainform.anewobject.hint
+msgid "Add a new JSON object"
+msgstr "Lisää uusi JSON olio"
+
+#: tmainform.anewstringvalue.caption
+msgid "New &string value"
+msgstr "Uusi merkkijono arvo"
+
+#: tmainform.anewstringvalue.hint
+msgid "Add a new string value"
+msgstr "Lisää uusi merkkijono arvo"
+
+#: tmainform.aopen.caption
+msgid "&Open"
+msgstr "Avaa"
+
+#: tmainform.aopen.hint
+msgid "Open JSON document from file"
+msgstr "Avaa tiedostosta JSON dokumentti"
+
+#: tmainform.apaste.caption
+msgid "&Paste"
+msgstr "Liitä"
+
+#: tmainform.apaste.hint
+msgid "Paste JSON data in clipboard as new member"
+msgstr "Liitä JSON data leikepöydältä uutenä jäsenenä"
+
+#: tmainform.apasteasdocument.caption
+msgid "Paste as new document"
+msgstr "Liitä uutena dokumenttina"
+
+#: tmainform.apasteasdocument.hint
+msgid "Paste JSON data in clipboard as new document"
+msgstr "Liitä JSON data leikepöydältä uutena dokumenttina"
+
+#: tmainform.aquit.caption
+msgid "&Quit"
+msgstr "Lopeta"
+
+#: tmainform.aquit.hint
+msgid "Exit the program"
+msgstr "Sulje ohjelma"
+
+#: tmainform.asave.caption
+msgid "&Save"
+msgstr "Tallenna"
+
+#: tmainform.asave.hint
+msgid "Save the JSON document to file"
+msgstr "Tallenna JSON dokumentti tiedostoon"
+
+#: tmainform.asaveas.caption
+msgid "Save &as"
+msgstr "Tallenna nimellä"
+
+#: tmainform.asaveas.hint
+msgid "Save JSON document with a new name"
+msgstr "Tallenna JSON dokumentti uudella nimellä"
+
+#: tmainform.caption
+msgctxt "tmainform.caption"
+msgid "JSON Viewer"
+msgstr ""
+
+#: tmainform.medit.caption
+msgid "&Edit"
+msgstr "Muokkaa"
+
+#: tmainform.mfile.caption
+msgid "&File"
+msgstr "Tiedosto"
+
+#: tmainform.micompact.caption
+msgid "Compact display"
+msgstr ""
+
+#: tmainform.midocument.caption
+msgid "&New document with object"
+msgstr "Uusi dokumentti oliolla"
+
+#: tmainform.miinsert.caption
+msgid "&Values"
+msgstr "Arvot"
+
+#: tmainform.misortmembers.caption
+msgid "Sort object members"
+msgstr "Lajittele oliojäsenet"
+
+#: tmainform.mistrict.caption
+msgid "&Strict JSON"
+msgstr ""
+
+#: tmainform.moptions.caption
+msgid "&Options"
+msgstr "Optiot"
+
+#: tmainform.odjson.title
+msgid "Select a JSON file"
+msgstr "Valitse JSON tiedosto"
+
+#: tmainform.sdjson.title
+msgid "Save JSON document to file"
+msgstr "Tallenna JSON dokumentti tiedostoon"
+
+#: tmainform.tbjson.caption
+msgid "TBJSON"
+msgstr ""
+
+#: tmainform.toolbutton1.caption
+msgid "ToolButton1"
+msgstr ""
+
+#: tmainform.toolbutton4.caption
+msgid "ToolButton4"
+msgstr ""
+
+#: tnewbooleanform.caption
+msgid "New boolean value"
+msgstr "Uusi boolean arvo"
+
+#: tnewbooleanform.cbvalue.caption
+msgid "Set to true"
+msgstr "Aseta true arvoon"
+
+#: tnewbooleanform.label1.caption
+msgid "&Member name"
+msgstr "Jäsenen nimi"
+
+#: tnewnumberform.caption
+msgid "New number value"
+msgstr "Uusi numeroarvo"
+
+#: tnewnumberform.label1.caption
+msgctxt "tnewnumberform.label1.caption"
+msgid "&Name"
+msgstr "Nimi"
+
+#: tnewnumberform.label2.caption
+msgid "Value"
+msgstr "Arvo"
+
+#: tnewnumberform.rgtype.caption
+msgid "Number Type"
+msgstr "Numerotyyppi"
+
+#: tnewstringform.caption
+msgid "New String value"
+msgstr "Uusi merkkijonoarvo"
+
+#: tnewstringform.label1.caption
+msgctxt "tnewstringform.label1.caption"
+msgid "&Name"
+msgstr "Nimi"
+
+#: tnewstringform.label2.caption
+msgid "&Value"
+msgstr "Arvo"

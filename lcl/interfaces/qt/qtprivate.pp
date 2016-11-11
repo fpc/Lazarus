@@ -504,7 +504,8 @@ begin
     if (FSavedIndex <> FOwner.currentIndex) then
       FOwner.setCurrentIndex(FSavedIndex);
     FOwner.setText(FSavedText);
-  end;
+  end else
+    FOwner.setCurrentIndex(FSavedIndex);
   FOwner.EndUpdate;
 end;
 

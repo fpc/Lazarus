@@ -11,11 +11,11 @@ msgstr "Datapisteiden muokkain"
 
 #: tachartstrconsts.desdeleterow
 msgid "Delete row"
-msgstr ""
+msgstr "Poista rivi"
 
 #: tachartstrconsts.desinsertrow
 msgid "Insert row"
-msgstr ""
+msgstr "Lisää rivi"
 
 #: tachartstrconsts.destext
 msgid "Text"
