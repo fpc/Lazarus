@@ -403,8 +403,8 @@ end;
 function TCustomEdit.CanShowTextHint: Boolean;
 begin
   Result := (([csDesigning,csLoading] * ComponentState) = []) and
-            (Text = '') and
             (FTextHint <> '') and
+            (Text = '') and
             (not Focused);
 end;
 
@@ -586,7 +586,7 @@ begin
       Change;
     end;
   end;
-  if (Text = '') and (not FTextHintShowing) then ShowTextHint;
+  if CanShowTextHint and (not FTextHintShowing) then ShowTextHint;
 end;
 
 procedure TCustomEdit.Change;
