@@ -795,10 +795,16 @@ begin
   if (WheelDelta > 0) then
   begin
     if (PageControl.ActivePageIndex > 0) then
+    begin
       PageControl.ActivePageIndex := PageControl.ActivePageIndex - 1;
+      PageControl.OnChange(PageControl);
+    end;
   end else begin
     if (PageControl.ActivePageIndex < PageControl.PageCount-1) then
+    begin
       PageControl.ActivePageIndex := PageControl.ActivePageIndex + 1;
+      PageControl.OnChange(PageControl);
+    end;
   end;
   Handled := True;
 end;
