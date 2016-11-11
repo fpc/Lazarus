@@ -535,6 +535,7 @@ end;
 procedure TCustomEdit.RealSetText(const AValue: TCaption);
 begin
   FTextChangedByRealSetText := True;
+  if FTextHintShowing and (not FSettingTextHint) then HideTextHint;
   Modified := False;
   inherited RealSetText(AValue);
   FTextChangedByRealSetText := False;
