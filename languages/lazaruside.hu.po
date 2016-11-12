@@ -2951,23 +2951,23 @@ msgstr "Alapértelmezés betöltése"
 
 #: lazarusidestrconsts.dlgpodpiawareness
 msgid "DPI awareness"
-msgstr ""
+msgstr "DPI tudatosság"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoff
 msgid "off"
-msgstr ""
+msgstr "kikapcsolva"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldoffnewpermonitor
 msgid "Vista-8: off, 8.1+: per monitor"
-msgstr ""
+msgstr "Vista-8: kikapcsolva, 8.1+: monitorfüggő"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitor
 msgid "Vista-8: on, 8.1+: per monitor"
-msgstr ""
+msgstr "Vista-8: bekapcsolva, 8.1+: monitorfüggő"
 
 #: lazarusidestrconsts.dlgpodpiawarenesson
 msgid "on"
-msgstr ""
+msgstr "bekapcsolva"
 
 #: lazarusidestrconsts.dlgpoexecutionlevel
 msgid "Execution Level"
