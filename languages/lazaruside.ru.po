@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-07-05 01:19+0300\n"
+"PO-Revision-Date: 2016-11-11 01:34+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2950,9 +2950,25 @@ msgstr "Создать Application Bundle"
 msgid "Load &Default"
 msgstr "Загрузить по &умолчанию"
 
-#: lazarusidestrconsts.dlgpodpiaware
-msgid "Enabled DPI Awareness (for Vista+)"
-msgstr "Поддержка различных DPI (для Vista+)"
+#: lazarusidestrconsts.dlgpodpiawareness
+msgid "DPI awareness"
+msgstr "Поддержка DPI"
+
+#: lazarusidestrconsts.dlgpodpiawarenessoff
+msgid "off"
+msgstr "выключена"
+
+#: lazarusidestrconsts.dlgpodpiawarenessoldoffnewpermonitor
+msgid "Vista-8: off, 8.1+: per monitor"
+msgstr "Vista-8: выключена, 8.1+: отдельно для каждого монитора"
+
+#: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitor
+msgid "Vista-8: on, 8.1+: per monitor"
+msgstr "Vista-8: включена, 8.1+: отдельно для каждого монитора"
+
+#: lazarusidestrconsts.dlgpodpiawarenesson
+msgid "on"
+msgstr "включена"
 
 #: lazarusidestrconsts.dlgpoexecutionlevel
 msgid "Execution Level"
