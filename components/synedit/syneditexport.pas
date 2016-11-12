@@ -43,6 +43,7 @@ Known Issues:
 unit SynEditExport;
 
 {$I SynEdit.inc}
+{.$define debug_synexport}
 
 interface
 
@@ -405,7 +406,9 @@ end;
 procedure TSynCustomExporter.FormatTokenImmediate(Token: String;
   Attri: TSynHighlighterAttributes; IsSpace: Boolean);
 begin
+  {$ifdef debug_synexport}
   debugln(['TSynCustomExporter.FormatTokenImmediate: Token = "', Token,'", IsSpace = ',IsSpace]);
+  {$endif}
   FormatAttributeInitImmediate(Attri, IsSpace);
   FormatToken(Token);
   FormatAttributeDoneImmediate(Attri, IsSpace);
