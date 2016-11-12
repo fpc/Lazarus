@@ -569,7 +569,7 @@ msgstr "Felső sor igazítása az előtte lévő megjegyzéshez"
 
 #: lazarusidestrconsts.dlgalphabetically
 msgid "Alphabetically"
-msgstr "Ábécé rendben"
+msgstr "Ábécérendben"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
@@ -1886,11 +1886,11 @@ msgstr "Előtér"
 
 #: lazarusidestrconsts.dlgformtitlebarchangesobjectinspector
 msgid "Change Object Inspector contents on clicking form title bar"
-msgstr ""
+msgstr "Az Objektumfelügyelő tartalma változzon meg egy form címsorára kattintva"
 
 #: lazarusidestrconsts.dlgformtitlebarchangesobjectinspectorhint
 msgid "Show a form's properties in Object Inspector by clicking on its title bar."
-msgstr ""
+msgstr "Az érintett form tulajdonságainak megjelenítése az Objektumfelügyelőben egy form címsorára kattintva"
 
 #: lazarusidestrconsts.dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
@@ -2166,10 +2166,8 @@ msgid "Interface"
 msgstr "Felület"
 
 #: lazarusidestrconsts.dlginsertmethods
-#, fuzzy
-#| msgid "Insert methods"
 msgid "Insert method implementations"
-msgstr "Metódusok beszúrása"
+msgstr "Metódusok kidolgozásának beszúrása"
 
 #: lazarusidestrconsts.dlginsertsection
 msgid "Insert into Uses section of"
@@ -2998,23 +2996,23 @@ msgstr "Alapértelmezés betöltése"
 
 #: lazarusidestrconsts.dlgpodpiawareness
 msgid "DPI awareness"
-msgstr ""
+msgstr "DPI tudatosság"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoff
 msgid "off"
-msgstr ""
+msgstr "kikapcsolva"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldoffnewpermonitor
 msgid "Vista-8: off, 8.1+: per monitor"
-msgstr ""
+msgstr "Vista-8: kikapcsolva, 8.1+: monitorfüggő"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitor
 msgid "Vista-8: on, 8.1+: per monitor"
-msgstr ""
+msgstr "Vista-8: bekapcsolva, 8.1+: monitorfüggő"
 
 #: lazarusidestrconsts.dlgpodpiawarenesson
 msgid "on"
-msgstr ""
+msgstr "bekapcsolva"
 
 #: lazarusidestrconsts.dlgpoexecutionlevel
 msgid "Execution Level"
@@ -3987,7 +3985,7 @@ msgstr "Érvénytelen fájlnév"
 
 #: lazarusidestrconsts.lisa2pinvalidunitname
 msgid "Invalid Unit Name"
-msgstr "Érvényelen unit-név"
+msgstr "Érvénytelen unit-név"
 
 #: lazarusidestrconsts.lisa2pisnotavalidunitname
 msgid "\"%s\" is not a valid unit name."
@@ -5535,10 +5533,8 @@ msgid ". Check if package %s is in the dependencies"
 msgstr ". Ellenőrizni kell, hogy a(z) %s csomag szerepel-e a függőségek között"
 
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
-#, fuzzy
-#| msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\""
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
-msgstr "ellenőrzi, hogy a következő szimbólum a forrásban egy end és, hogy nem ad-e vissza sorvég + end; + sorvéget"
+msgstr "Ellenőrizze, hogy a következő szimbólum a forrásban egy \"end\" és hogy nem ad-e vissza \"LineEnding + end; + LineEnding\" sorozatot."
 
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
@@ -5551,7 +5547,7 @@ msgstr ". Ellenőrizze a(z) %s csomag keresési útvonalát, próbáljon tiszta 
 
 #: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
 msgid "Check the next token in source and add a semicolon if needed."
-msgstr ""
+msgstr "A forráskód következő elemének vizsgálata alapján pontosvessző beillesztése ha szükséges."
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
@@ -7897,7 +7893,7 @@ msgstr "Alapértelmezett"
 
 #: lazarusidestrconsts.lisdefaultclassvisibilitysectionofnewmethodsforexampl
 msgid "Default class visibility section of new methods. For example code completion on OnShow:="
-msgstr ""
+msgstr "Alapértelmezett láthatósági szakasz az új metódusok számára. Például a kódkiegészítés \"OnShow:=\" esetén"
 
 #: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
 msgid "The default is ComboBox with \"True\" and \"False\" selections"
@@ -7909,7 +7905,7 @@ msgstr "(alapértelmezett)"
 
 #: lazarusidestrconsts.lisdefaultsectionofmethods
 msgid "Default section of methods"
-msgstr ""
+msgstr "Alapértelmezett szakasz a metódusok számára"
 
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
@@ -8541,16 +8537,12 @@ msgid "Program Filename:"
 msgstr "Program fájlnév:"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
-#, fuzzy
-#| msgid "Scan output for Free Pascal Compiler messages"
 msgid "Scan output for FPC messages"
-msgstr "Free Pascal fordító üzenetek keresése a kimenetben"
+msgstr "FPC üzenetek keresése a kimenetben"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputformakemessages
-#, fuzzy
-#| msgid "Scan output for make messages"
 msgid "Scan output for \"make\" messages"
-msgstr "Make üzenetek keresése a kimenetben"
+msgstr "\"make\" üzenetek keresése a kimenetben"
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
@@ -9580,7 +9572,7 @@ msgstr "kifejezés lekérdezése a kurzor jelenlegi helyénél"
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition2
 msgid "Get word at current cursor position."
-msgstr ""
+msgstr "Kifejezés lekérdezése a kurzor jelenlegi helyénél."
 
 #: lazarusidestrconsts.lisglobalsettings
 msgid "Global settings"
@@ -9714,7 +9706,6 @@ msgid "Hide Search"
 msgstr "Keresés elrejtése"
 
 #: lazarusidestrconsts.lishidewindow
-#, fuzzy
 msgctxt "lazarusidestrconsts.lishidewindow"
 msgid "Hide window"
 msgstr "Ablak elrejtése"
@@ -10131,16 +10122,12 @@ msgid "insert date and time"
 msgstr "dátum és idő beillesztése"
 
 #: lazarusidestrconsts.lisinsertdateandtimeoptionalformatstring
-#, fuzzy
-#| msgid "Insert date and time. Optional: format string"
 msgid "Insert date and time. Optional: format string."
-msgstr "Dátum és idő beszúrása. Nem kötelező: formátum karakterlánc"
+msgstr "Dátum és idő beszúrása. Nem kötelező: formátum karakterlánc."
 
 #: lazarusidestrconsts.lisinsertdateoptionalformatstring
-#, fuzzy
-#| msgid "Insert date. Optional: format string"
 msgid "Insert date. Optional: format string."
-msgstr "Dátum beillesztése. Nem kötelező: formátum karakterlánc"
+msgstr "Dátum beillesztése. Nem kötelező: formátum karakterlánc."
 
 #: lazarusidestrconsts.lisinsertendifneeded
 msgid "insert end if needed"
@@ -10174,6 +10161,31 @@ msgid ""
 "WithoutBrackets,    // skip start- and end-bracket of parameter list\n"
 "WithoutSemicolon,   // skip semicolon at end\n"
 msgstr ""
+"Az aktuális eljárás fejlécének beszúrása.\n"
+"\n"
+"Lehetséges paraméterek (vesszővel elválasztva):\n"
+"WithStart,          // eljárás kulcsszó, például 'function', 'class procedure'\n"
+"WithoutClassKeyword,// 'class' kulcsszó nélkül\n"
+"AddClassName,       // osztálynév hozzáfűzése\n"
+"WithoutClassName,   // osztálynév nélkül\n"
+"WithoutName,        // eljárásnév nélkül\n"
+"WithoutParamList,   // paraméterek listája nélkül\n"
+"WithVarModifiers,   // változók módosítóinak hozzáfűzése: 'var', 'out', 'const'\n"
+"WithParameterNames, // paraméterek neveinek hozzáfűzése\n"
+"WithoutParamTypes,  // paraméterek típusai és alapértelmezett értékek nélkül\n"
+"WithDefaultValues,  // alapértelmezett értékek hozzáfűzése\n"
+"WithResultType,     // vessző + visszatérési típus hozzáfűzése\n"
+"WithOfObject,       // 'of object' hozzáfűzése\n"
+"WithCallingSpecs,   // hívási módok hozzáfűzése: cdecl; inline;\n"
+"WithProcModifiers,  // eljárás módosítók hozzáfűzése: forward; alias; external;\n"
+"WithComments,       // megjegyzések és szóközök hozzáfűzése\n"
+"InUpperCase,        // nagybetűssé alakítva\n"
+"CommentsToSpace,    // megjegyzések cseréje egy darab szóközre\n"
+"                      //  (alapértelmezés szerint a szükségtelen szóközök el lesznek hagyva,\n"
+"                      //    például a  'Do   ;' normál esetben 'Do;' lesz,\n"
+"                      //    de ezt használva az eredmény 'Do ;')\n"
+"WithoutBrackets,    // paraméterlista zárójelei nélkül\n"
+"WithoutSemicolon,   // pontosvessző elhagyása a végéről\n"
 
 #: lazarusidestrconsts.lisinsertmacro
 msgctxt "lazarusidestrconsts.lisinsertmacro"
@@ -10181,10 +10193,8 @@ msgid "Insert Macro"
 msgstr "Makró beszúrása"
 
 #: lazarusidestrconsts.lisinsertnameofcurrentprocedure
-#, fuzzy
-#| msgid "Insert name of current procedure"
 msgid "Insert name of current procedure."
-msgstr "Aktuális eljárás nevének beszúrása"
+msgstr "Aktuális eljárás nevének beszúrása."
 
 #: lazarusidestrconsts.lisinsertprintshorttag
 msgid "Insert PrintShort tag"
@@ -10204,17 +10214,15 @@ msgstr "eljárás névének beszúrása"
 
 #: lazarusidestrconsts.lisinsertsemicolonifneeded
 msgid "Insert semicolon if needed"
-msgstr ""
+msgstr "Pontosvessző beszúrása szükség esetén"
 
 #: lazarusidestrconsts.lisinserttime
 msgid "insert time"
 msgstr "idő beszúrása"
 
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
-#, fuzzy
-#| msgid "Insert time. Optional: format string"
 msgid "Insert time. Optional: format string."
-msgstr "Idő beszúrása. Nem kötelező: formátum karakterlánc"
+msgstr "Idő beszúrása. Nem kötelező: formátum karakterlánc."
 
 #: lazarusidestrconsts.lisinserturltag
 msgid "Insert url tag"
@@ -10481,7 +10489,7 @@ msgstr "Név megtartása"
 
 #: lazarusidestrconsts.liskeepopen
 msgid "Keep open"
-msgstr ""
+msgstr "Maradjon nyitva"
 
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
@@ -11439,10 +11447,8 @@ msgid "lowercase string"
 msgstr "kisbetűs karakterlánc"
 
 #: lazarusidestrconsts.lislowercasestringgivenasparameter
-#, fuzzy
-#| msgid "Lowercase string given as parameter"
 msgid "Lowercase string given as parameter."
-msgstr "Paraméterként megadott kisbetűs karakterlánc"
+msgstr "Paraméterként megadott kisbetűs karakterlánc."
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 msgid "lpk has vanished on disk. Using as alternative%s"
@@ -11531,7 +11537,7 @@ msgstr "Azonosító előtag:"
 
 #: lazarusidestrconsts.lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
-msgstr "Beillesztés ábécé rendben"
+msgstr "Beillesztés ábécérendben"
 
 #: lazarusidestrconsts.lismakeresstrinsertcontexttsensitive
 msgid "Insert context sensitive"
@@ -12553,7 +12559,7 @@ msgstr "ResourceString létrehozása ..."
 #: lazarusidestrconsts.lismenumultipaste
 msgctxt "lazarusidestrconsts.lismenumultipaste"
 msgid "MultiPaste ..."
-msgstr ""
+msgstr "Beillesztés forráskóddal ..."
 
 #: lazarusidestrconsts.lismenunewcomponent
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
@@ -12652,7 +12658,6 @@ msgid "Package Links ..."
 msgstr "Csomag hivatkozások ..."
 
 #: lazarusidestrconsts.lismenupastefromclipboard
-#, fuzzy
 msgctxt "lazarusidestrconsts.lismenupastefromclipboard"
 msgid "Paste from clipboard"
 msgstr "Beillesztés a vágólapról"
@@ -13336,7 +13341,7 @@ msgstr "(\"%s\" volt)"
 
 #: lazarusidestrconsts.lismmwidgetsetavailableforlclproject
 msgid "WidgetSet change is available only for LCL projects"
-msgstr ""
+msgstr "A vezérlőkészlet megváltoztatása csak LCL projektek esetén lehetséges"
 
 #: lazarusidestrconsts.lismode
 msgid ", Mode: %s"
@@ -13435,40 +13440,40 @@ msgstr "Ezen unitok áthelyezése törést okoz a uses szakaszokban. Lásd az Ü
 
 #: lazarusidestrconsts.lismpcstyle
 msgid "C style: \" => \\\""
-msgstr ""
+msgstr "C stílus: \" => \\\""
 
 #: lazarusidestrconsts.lismpescapequotes
 msgid "Escape &quotes"
-msgstr ""
+msgstr "Idézőjelek átalakítása"
 
 #: lazarusidestrconsts.lismpmultipaste
 msgctxt "lazarusidestrconsts.lismpmultipaste"
 msgid "MultiPaste"
-msgstr ""
+msgstr "Beillesztés forráskóddal"
 
 #: lazarusidestrconsts.lismppascalstyle
 msgid "Pascal style: ' => ''"
-msgstr ""
+msgstr "Pascal stílus: ' => ''"
 
 #: lazarusidestrconsts.lismppasteoptions
 msgid "Paste &options"
-msgstr ""
+msgstr "Beillesztés beállításai"
 
 #: lazarusidestrconsts.lismppreview
 msgid "&Preview"
-msgstr ""
+msgstr "Előnézet"
 
 #: lazarusidestrconsts.lismptextaftereachline
 msgid "Text &after each line"
-msgstr ""
+msgstr "Szöveg minden sor után"
 
 #: lazarusidestrconsts.lismptextbeforeeachline
 msgid "Text &before each line"
-msgstr ""
+msgstr "Szöveg minden sor előtt"
 
 #: lazarusidestrconsts.lismptrimclipboardcontents
 msgid "&Trim clipboard contents"
-msgstr ""
+msgstr "Vágólap tartalmának rövidítése"
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -13579,11 +13584,11 @@ msgstr "Új makrónév"
 
 #: lazarusidestrconsts.lisnewmethodimplementationsareinsertedbetweenexisting
 msgid "New method implementations are inserted between existing methods of this class. Either alphabetically, or as last, or in declaration order."
-msgstr ""
+msgstr "Az új metódusok kidolgozásai az adott osztály létező metódusai közé kerülnek. Ez történhet ábécérend szerint, utolsóként vagy a deklaráció sorrendjében."
 
 #: lazarusidestrconsts.lisnewmethodsandmembersareinsertedalphabeticallyoradd
 msgid "New method and member declarations in the class..end sections are inserted alphabetically or added last."
-msgstr ""
+msgstr "Az új metódusok és tagok beszúrása a class..end szakaszba ábécérend szerint vagy a lista végére történjen."
 
 #: lazarusidestrconsts.lisnewpage
 msgid "New page"
@@ -13899,15 +13904,15 @@ msgstr "Sortöréskor (azaz Return vagy Enter billenyű)"
 
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
-msgstr ""
+msgstr "csak 32bit"
 
 #: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
 msgid "Only available on Windows. Run the tool hidden."
-msgstr ""
+msgstr "Csak Windows rendszeren érhető el. Az eszköz rejtve fut."
 
 #: lazarusidestrconsts.lisonlyavailableonwindowsruntoolinanewconsole
 msgid "Only available on Windows. Run tool in a new console."
-msgstr ""
+msgstr "Csak Windows rendszeren érhető el. Az eszköz új konzolban fut."
 
 #: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
 msgid "Only messages fitting this regular expression:"
@@ -14180,11 +14185,9 @@ msgid "paste clipboard"
 msgstr "vágólap beillesztése"
 
 #: lazarusidestrconsts.lispastefromclipboard
-#, fuzzy
-#| msgid "Paste from clipboard"
 msgctxt "lazarusidestrconsts.lispastefromclipboard"
 msgid "Paste from clipboard."
-msgstr "Beillesztés a vágólapról"
+msgstr "Beillesztés a vágólapról."
 
 #: lazarusidestrconsts.lispastelcolors
 msgid "Pastel Colors"
@@ -14714,7 +14717,7 @@ msgstr "Fájlok végleges rendezése"
 
 #: lazarusidestrconsts.lispesortfilesalphabetically
 msgid "Sort files alphabetically"
-msgstr "Fájlok rendezése ábécé-rendben"
+msgstr "Fájlok rendezése ábécé szerint"
 
 #: lazarusidestrconsts.lispethefileiscurrentlynotintheincludepathofthepackagea
 msgid "The file \"%s\" is currently not in the include path of the package.%sAdd \"%s\" to the include path?"
@@ -16246,20 +16249,29 @@ msgid ""
 "\n"
 "In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an important operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used to detect words for this macro: [\\w\\-+*\\(\\)\\[\\].^@]+\n"
 msgstr ""
+"A paraméter által mutatott sorszámú szót adja vissza a kurzor előtt az aktuális sorban.\n"
+"\n"
+"Egy sorban a szavak számozása 1,2,3,... balról jobbra, de az utolsó szó,\n"
+"ami mindig egy kiterjesztendő makró parancs, a 0 sorszámot viseli, vagyis a $PrevWord(0)\n"
+"mindig az aktuális makrót jelenti.\n"
+"\n"
+"Példa:\n"
+"i 0 count-1 forb|\n"
+"A példában $PrevWord(0)=forb, $PrevWord(1)=i, $PrevWord(2)=0, $PrevWord(3)=count-1\n"
+"\n"
+"Egy sablon végén a $PrevWord(-1) használata javasolt, mely üres karakterláncot ad vissza, de egy fontos műveletet is végrehajt: törli az összes $PrevWords értéket. Továbbá álljon még itt egy reguláris kifejezés, melyet a szavak keresésére használ ez a makró: [\\w\\-+*\\(\\)\\[\\].^@]+\n"
 
 #: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
-#, fuzzy
-#| msgid ""
-#| "returns list of all values of case variable in front of variable\n"
-#| "\n"
-#| "Optional Parameters (comma separated):\n"
-#| "WithoutExtraIndent    // the case list will be generated without extra indentation\n"
 msgid ""
 "Return the list of all values of case variable in front of variable.\n"
 "\n"
 "Optional Parameters (comma separated):\n"
 "WithoutExtraIndent    // the case list will be generated without extra indentation\n"
-msgstr "a \"case\" változó összes értékének listáját adja vissza a változó elé"
+msgstr ""
+"A \"case\" változó összes értékének listáját adja vissza a változó elé.\n"
+"\n"
+"Lehetséges paraméterek (vesszővel elválasztva):\n"
+"WithoutExtraIndent    // az értékek listája a behúzás növelése nélkül lesz elkészítve\n"
 
 #: lazarusidestrconsts.lisrevertfailed
 msgid "Revert failed"
@@ -16709,7 +16721,7 @@ msgstr "Komponensfa megjelenítése"
 
 #: lazarusidestrconsts.lisshowconsole
 msgid "Show console"
-msgstr ""
+msgstr "Konzol megjelenítése"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -17212,8 +17224,6 @@ msgid "Editable Cell"
 msgstr "Szerkeszthető cella"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
-#, fuzzy
-#| msgid "Insert an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync\" has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
 msgid "Insert an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit).%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\".%0:sThe quotes are optional.%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too.%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked (the 3rd refers to \"2\").%0:s%0:s\"Sync\" can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync\" has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")."
 msgstr "Szerkeszthető cella beszúrása. A cellák között a TAB billenytűvel lehet navigálni.%0:sA \"param\" makró vesszővel elválasztott argumentumlistát igényel.%0:sAz első argumentum az alapértelmezett érték.%0:sA második argumentum (esetleges) használatával egy egy másik cellához csatolható (szinkronszerkesztés)%0:s%0:s  while param(\"foo\") do param(foo);%0:sKét különálló cellát szúr be, mindkettő alapértelmezett szövege \"foo\" lesz%0:sAz idézőjel tetszőleges%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sKét csatolt cellát szúr be, az egyik szerkesztése a másikat is megváltoztatja%0:sAz \"1\" érték a másik \"param()\" helyzetére hivatkozik, ezért ha több \"param\" is van:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sA második és a harmadik csatolva van egymáshoz. (a harmadik a \"2\"-ra hivatkozik) %0:s%0:sA \"sync\" lerövidíthető \"s\"-re:%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sA második és a harmadik csatolva van egymáshoz.%0:sMegjegyzés: A \"sync\" nem található és nincs \"=\" jel sem, ezért a csatolás az előző olyan cellával jön létre, melynek ugyanaz az alapértelmezett szövege (ez esetben \"foo\")"
 
@@ -18599,10 +18609,8 @@ msgid "uppercase string"
 msgstr "nagybetűs karakterlánc"
 
 #: lazarusidestrconsts.lisuppercasestringgivenasparameter
-#, fuzzy
-#| msgid "Uppercase string given as parameter"
 msgid "Uppercase string given as parameter."
-msgstr "Paraméterként megadott nagybetűs karakterlánc"
+msgstr "Paraméterként megadott nagybetűs karakterlánc."
 
 #: lazarusidestrconsts.lisurlonwikithebaseurlis
 msgid "URL on wiki (the base url is %s)"
@@ -20056,7 +20064,7 @@ msgstr "Lapfül mozgatása a jobb szélre"
 
 #: lazarusidestrconsts.srkmecmultipaste
 msgid "MultiPaste clipboard to current position"
-msgstr ""
+msgstr "Vágólap tartalmának beillesztése forráskóddal az aktuális helyre"
 
 #: lazarusidestrconsts.srkmecnextbookmark
 msgid "Next Bookmark"

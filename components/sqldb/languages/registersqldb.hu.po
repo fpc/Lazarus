@@ -25,7 +25,7 @@ msgstr "Megosztott függvénytárak"
 
 #: registersqldb.ssqlite3databases
 msgid "SQLite3 databases"
-msgstr ""
+msgstr "SQLite3 adatbázisok"
 
 #: registersqldb.ssqlscript
 msgid "SQL Script file"

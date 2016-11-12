@@ -291,7 +291,7 @@ msgstr "Világoskék"
 
 #: lclstrconsts.rsascannothaveasparent
 msgid "Class %s cannot have %s as parent."
-msgstr ""
+msgstr "A(z) %s osztály szülője nem lehet %s."
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -531,7 +531,7 @@ msgstr "Keresés"
 
 #: lclstrconsts.rsfindmore
 msgid "Find more"
-msgstr "További keresés"
+msgstr "Következő keresése"
 
 #: lclstrconsts.rsfirstrecordhint
 msgid "First"
@@ -1183,7 +1183,7 @@ msgstr "Csere"
 
 #: lclstrconsts.rsreplaceall
 msgid "Replace all"
-msgstr "Mindet cseréli"
+msgstr "Összes cseréje"
 
 #: lclstrconsts.rsresourcenotfound
 msgctxt "lclstrconsts.rsresourcenotfound"

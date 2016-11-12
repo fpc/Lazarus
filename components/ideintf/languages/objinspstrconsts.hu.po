@@ -318,7 +318,7 @@ msgstr "Mozgatás eggyel jobbra"
 
 #: objinspstrconsts.nbcesshowpage
 msgid "Show Page"
-msgstr "Oldal megjelenítése"
+msgstr "Lap megjelenítése"
 
 #: objinspstrconsts.oicoleditadd
 msgctxt "objinspstrconsts.oicoleditadd"
@@ -365,7 +365,6 @@ msgid "ActionList Editor"
 msgstr "Műveletlista szerkesztő"
 
 #: objinspstrconsts.oisadd
-#, fuzzy
 msgctxt "objinspstrconsts.oisadd"
 msgid "Add"
 msgstr "Hozzáadás"
@@ -383,7 +382,6 @@ msgid "Add fields from FieldDefs"
 msgstr "Mezők hozzáadása FieldDefs-ből"
 
 #: objinspstrconsts.oisaddpage
-#, fuzzy
 msgctxt "objinspstrconsts.oisaddpage"
 msgid "Add Page"
 msgstr "Lap hozzáadása"
@@ -515,7 +513,7 @@ msgstr "Törli a(z) \"%s\" elemet?"
 
 #: objinspstrconsts.oisdeletepagequestion
 msgid "Do you want to delete the page?"
-msgstr ""
+msgstr "Törölni szeretné a lapot?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
@@ -587,7 +585,7 @@ msgstr "Beviteli maszk:"
 
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
-msgstr ""
+msgstr "Lapnév beszúrása"
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
@@ -708,11 +706,11 @@ msgstr "Előtérbe"
 
 #: objinspstrconsts.oispages
 msgid "Pages"
-msgstr ""
+msgstr "Lapok"
 
 #: objinspstrconsts.oispageseditordialog
 msgid "Pages Editor"
-msgstr ""
+msgstr "Lapok szerkesztése"
 
 #: objinspstrconsts.oispastecomponents
 msgctxt "objinspstrconsts.oispastecomponents"
@@ -753,11 +751,11 @@ msgstr "Eltávolítás a kedvencek közül"
 
 #: objinspstrconsts.oisrename
 msgid "Rename"
-msgstr ""
+msgstr "Átnevezés"
 
 #: objinspstrconsts.oisrenamepage
 msgid "Rename Page"
-msgstr ""
+msgstr "Lap átnevezése"
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"

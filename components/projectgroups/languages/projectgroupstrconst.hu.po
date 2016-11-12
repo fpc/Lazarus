@@ -60,11 +60,6 @@ msgid "Discard changes"
 msgstr "Változások eldobása"
 
 #: projectgroupstrconst.liserrnosuchfile
-#, fuzzy
-#| msgid ""
-#| "Could not find target file\n"
-#| "\"%s\"\n"
-#| "What do you want to do ?\n"
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
@@ -75,18 +70,14 @@ msgstr ""
 "Mi történjen most?\n"
 
 #: projectgroupstrconst.liserronlyprojectgroupallowed
-#, fuzzy
-#| msgid "Only target type \"projectgroup\" is allowed for root project group"
 msgid "Only target type \"projectgroup\" is allowed for root project group."
-msgstr "Csak a \"projektgroup\" típus lehet a projektcsoport gyökere"
+msgstr "Csak a \"projektgroup\" típus lehet a projektcsoport gyökere."
 
 #: projectgroupstrconst.liserrorreadingprojectgroupfile
 msgid "Error reading project group file \"%s\"%s%s"
 msgstr "Hiba a projektcsoport fájljának olvasása közben: \"%s\"%s%s"
 
 #: projectgroupstrconst.liserrtargetdoesnotexist
-#, fuzzy
-#| msgid "Target does not exist. Remove ?"
 msgid "Target does not exist. Remove?"
 msgstr "A cél nem létezik. Eltávolítás?"
 
@@ -99,10 +90,8 @@ msgid "Invalid File"
 msgstr "Érvénytelen fájl"
 
 #: projectgroupstrconst.lisinvalidxmlfilename
-#, fuzzy
-#| msgid "Invalid xml file name \"%s\""
 msgid "Invalid XML file name \"%s\"."
-msgstr "Érvénytelen xml fájlnév: \"%s\""
+msgstr "Érvénytelen XML fájlnév: \"%s\"."
 
 #: projectgroupstrconst.lislazaruspackageslpk
 msgid "Lazarus packages (*.lpk)"
@@ -121,10 +110,8 @@ msgid "lazbuild not found"
 msgstr "lazbuild nem található"
 
 #: projectgroupstrconst.lismore
-#, fuzzy
-#| msgid "More..."
 msgid "More"
-msgstr "Több..."
+msgstr "Továbbiak"
 
 #: projectgroupstrconst.lisneedsave
 msgid "Need save"
@@ -136,7 +123,7 @@ msgstr "Új projektcsoport"
 
 #: projectgroupstrconst.lisnewprojectgroupmenuc
 msgid "New project group ..."
-msgstr ""
+msgstr "Új projektcsoport ..."
 
 #: projectgroupstrconst.lisnodebuildmodes
 msgid "Build Modes"
@@ -167,10 +154,8 @@ msgid "Targets"
 msgstr "Célok"
 
 #: projectgroupstrconst.lisopenprojectgroup
-#, fuzzy
-#| msgid "Open project group"
 msgid "Open project group ..."
-msgstr "Projektcsoport megnyitása"
+msgstr "Projektcsoport megnyitása ..."
 
 #: projectgroupstrconst.lisopenrecentprojectgroup
 msgid "Open recent project group"
@@ -193,13 +178,10 @@ msgid "Package \"%s\" not found."
 msgstr "A(z) \"%s\" csomag nem található."
 
 #: projectgroupstrconst.lispascalfilepasppp
-#, fuzzy
-#| msgid "Pascal file (*.pas;*.pp;*.p)"
 msgid "Pascal files (*.pas;*.pp;*.p)"
-msgstr "Pascal fájl (*.pas;*.pp;*.p)"
+msgstr "Pascal fájlok (*.pas;*.pp;*.p)"
 
 #: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
-#, fuzzy
 msgctxt "projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou"
 msgid "Please save your changes before reloading the project group."
 msgstr "Menteni kell a változásokat mielőtt újra betölti a projektcsoportot."
@@ -253,10 +235,8 @@ msgid "Reload"
 msgstr "Újratöltés"
 
 #: projectgroupstrconst.lisprojectgroupsaveascaption
-#, fuzzy
-#| msgid "Save As"
 msgid "Save As ..."
-msgstr "Mentés másként"
+msgstr "Mentés másként ..."
 
 #: projectgroupstrconst.lisprojectgroupsaveashint
 msgid "Save project group with a new name"
@@ -291,10 +271,8 @@ msgid "Save project group"
 msgstr "Projektcsoport mentése"
 
 #: projectgroupstrconst.lissaveprojectgroupas
-#, fuzzy
-#| msgid "Save project group as"
 msgid "Save project group as ..."
-msgstr "A projektcsoport mentése másként"
+msgstr "A projektcsoport mentése másként ..."
 
 #: projectgroupstrconst.lisskipalltargets
 msgid "Remove all invalid targets"

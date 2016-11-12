@@ -245,7 +245,6 @@ msgid "Save JSON document with a new name"
 msgstr "JSON dokumentum mentése új névvel"
 
 #: tmainform.caption
-#, fuzzy
 msgctxt "tmainform.caption"
 msgid "JSON Viewer"
 msgstr "JSON Megjelenítő"
@@ -260,7 +259,7 @@ msgstr "&Fájl"
 
 #: tmainform.micompact.caption
 msgid "Compact display"
-msgstr ""
+msgstr "Tömör megjelenítés"
 
 #: tmainform.midocument.caption
 msgid "&New document with object"
@@ -284,11 +283,11 @@ msgstr "Beállítás&ok"
 
 #: tmainform.odjson.title
 msgid "Select a JSON file"
-msgstr ""
+msgstr "JSON fájl választása"
 
 #: tmainform.sdjson.title
 msgid "Save JSON document to file"
-msgstr ""
+msgstr "JSON dokumentum mentése fájlba"
 
 #: tmainform.tbjson.caption
 msgid "TBJSON"
@@ -304,43 +303,43 @@ msgstr "ToolButton4"
 
 #: tnewbooleanform.caption
 msgid "New boolean value"
-msgstr ""
+msgstr "Új logikai érték"
 
 #: tnewbooleanform.cbvalue.caption
 msgid "Set to true"
-msgstr ""
+msgstr "Beállítás igaz-ra"
 
 #: tnewbooleanform.label1.caption
 msgid "&Member name"
-msgstr ""
+msgstr "&Tagnév"
 
 #: tnewnumberform.caption
 msgid "New number value"
-msgstr ""
+msgstr "Új számérték"
 
 #: tnewnumberform.label1.caption
 msgctxt "tnewnumberform.label1.caption"
 msgid "&Name"
-msgstr ""
+msgstr "&Név"
 
 #: tnewnumberform.label2.caption
 msgid "Value"
-msgstr ""
+msgstr "Érték"
 
 #: tnewnumberform.rgtype.caption
 msgid "Number Type"
-msgstr ""
+msgstr "Számtípus"
 
 #: tnewstringform.caption
 msgid "New String value"
-msgstr ""
+msgstr "Új szövegérték"
 
 #: tnewstringform.label1.caption
 msgctxt "tnewstringform.label1.caption"
 msgid "&Name"
-msgstr ""
+msgstr "&Név"
 
 #: tnewstringform.label2.caption
 msgid "&Value"
-msgstr ""
+msgstr "É&rték"
 

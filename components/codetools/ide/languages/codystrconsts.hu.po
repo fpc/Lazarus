@@ -441,7 +441,7 @@ msgstr "Fájl tartalmának beszúrása a kurzornál ..."
 
 #: codystrconsts.crsinsertint64idyyyyddmmhhnnss
 msgid "Insert int64 ID YYYYDDMMhhnnss"
-msgstr ""
+msgstr "Int64 ID beszúrása (ÉÉÉÉHHNNóóppmm)"
 
 #: codystrconsts.crsjump
 msgid "Jump"

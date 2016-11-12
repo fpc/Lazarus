@@ -49,7 +49,7 @@ msgstr "Sávok"
 
 #: tachartstrconsts.rsbottom
 msgid "Bottom"
-msgstr ""
+msgstr "Alulra"
 
 #: tachartstrconsts.rsboxandwhiskerseries
 msgid "Box-and-whiskers series"
@@ -113,7 +113,7 @@ msgstr "Függvény"
 
 #: tachartstrconsts.rshidden
 msgid "hidden"
-msgstr ""
+msgstr "rejtett"
 
 #: tachartstrconsts.rsinvalidlogbase
 msgid "Logarithm base must be > 0 and <> 1."
@@ -121,7 +121,7 @@ msgstr "A logaritmus alapja > 0 és <> 1 lehet."
 
 #: tachartstrconsts.rsinverted
 msgid "inverted"
-msgstr ""
+msgstr "fordított"
 
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
@@ -129,7 +129,7 @@ msgstr "Legkisebb illeszkedő négyzetek"
 
 #: tachartstrconsts.rsleft
 msgid "Left"
-msgstr ""
+msgstr "Balra"
 
 #: tachartstrconsts.rslinear
 msgid "Linear"
@@ -185,11 +185,11 @@ msgstr "Polár"
 
 #: tachartstrconsts.rsright
 msgid "Right"
-msgstr ""
+msgstr "Jobbra"
 
 #: tachartstrconsts.rstop
 msgid "Top"
-msgstr ""
+msgstr "Felülre"
 
 #: tachartstrconsts.rsuserdefined
 msgctxt "tachartstrconsts.rsuserdefined"
