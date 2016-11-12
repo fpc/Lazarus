@@ -1208,7 +1208,8 @@ begin
     {$ifndef RedirectDestroyMessages}and (Msg <> WM_NCDESTROY){$endif}
     and not ((Msg >= WM_CUT) and (Msg <= WM_CLEAR))
     and ((Msg < WM_KEYFIRST) or (Msg > WM_KEYLAST))
-    and ((Msg < WM_MOUSEFIRST) or (Msg > WM_MOUSELAST)) then
+    and ((Msg < WM_MOUSEFIRST) or (Msg > WM_MOUSELAST))
+    and (Msg <> WM_CONTEXTMENU) then
   begin
     WinResult := CallDefaultWindowProc(Window, Msg, WParam, LParam);
     Exit(True);
