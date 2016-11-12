@@ -527,7 +527,7 @@ msgstr "Keresés"
 
 #: lclstrconsts.rsfindmore
 msgid "Find more"
-msgstr "További keresés"
+msgstr "Következő keresése"
 
 #: lclstrconsts.rsfirstrecordhint
 msgid "First"
@@ -1179,7 +1179,7 @@ msgstr "Csere"
 
 #: lclstrconsts.rsreplaceall
 msgid "Replace all"
-msgstr "Mindet cseréli"
+msgstr "Összes cseréje"
 
 #: lclstrconsts.rsresourcenotfound
 msgctxt "lclstrconsts.rsresourcenotfound"

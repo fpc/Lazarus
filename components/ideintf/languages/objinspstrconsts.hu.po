@@ -317,7 +317,7 @@ msgstr "Mozgatás eggyel jobbra"
 
 #: objinspstrconsts.nbcesshowpage
 msgid "Show Page"
-msgstr "Oldal megjelenítése"
+msgstr "Lap megjelenítése"
 
 #: objinspstrconsts.oicoleditadd
 msgctxt "objinspstrconsts.oicoleditadd"

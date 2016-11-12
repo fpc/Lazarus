@@ -561,7 +561,7 @@ msgstr "Felső sor igazítása az előtte lévő megjegyzéshez"
 
 #: lazarusidestrconsts.dlgalphabetically
 msgid "Alphabetically"
-msgstr "Ábécé rendben"
+msgstr "Ábécérendben"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
@@ -3919,7 +3919,7 @@ msgstr "Érvénytelen fájlnév"
 
 #: lazarusidestrconsts.lisa2pinvalidunitname
 msgid "Invalid Unit Name"
-msgstr "Érvényelen unit-név"
+msgstr "Érvénytelen unit-név"
 
 #: lazarusidestrconsts.lisa2pisnotavalidunitname
 msgid "\"%s\" is not a valid unit name."
@@ -11370,7 +11370,7 @@ msgstr "Azonosító előtag:"
 
 #: lazarusidestrconsts.lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
-msgstr "Beillesztés ábécé rendben"
+msgstr "Beillesztés ábécérendben"
 
 #: lazarusidestrconsts.lismakeresstrinsertcontexttsensitive
 msgid "Insert context sensitive"
@@ -13956,7 +13956,7 @@ msgstr "Fájlok végleges rendezése"
 
 #: lazarusidestrconsts.lispesortfilesalphabetically
 msgid "Sort files alphabetically"
-msgstr "Fájlok rendezése ábécé-rendben"
+msgstr "Fájlok rendezése ábécé szerint"
 
 #: lazarusidestrconsts.lispethefileiscurrentlynotintheincludepathofthepackagea
 msgid "The file \"%s\" is currently not in the include path of the package.%sAdd \"%s\" to the include path?"
