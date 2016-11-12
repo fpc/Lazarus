@@ -6310,6 +6310,7 @@ end;
 procedure TWinControl.RemoveControl(AControl: TControl);
 var
   AWinControl: TWinControl;
+  AGrControl: TGraphicControl;
 begin
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.RemoveControl'){$ENDIF};
   try
@@ -6322,8 +6323,16 @@ begin
         AWinControl.DestroyHandle;
     end
     else
+    begin
+      if AControl is TGraphicControl then
+      begin
+        AGrControl := TGraphicControl(AControl);
+        if (AGrControl.Canvas<>nil) then
+          TControlCanvas(AGrControl.Canvas).FreeHandle;
+      end;
       if HandleAllocated then
         AControl.InvalidateControl(AControl.IsVisible, False, True);
+    end;
     Remove(AControl);
     Perform(CM_CONTROLLISTCHANGE, WParam(AControl), LParam(False));
     if not (csDestroying in ComponentState) then

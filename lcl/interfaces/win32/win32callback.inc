@@ -1952,6 +1952,8 @@ begin
     end;
     IgnoreNextCharWindow := 0;
   end;
+  if IgnoreKeyUp and (Msg = WM_KEYUP) then
+    Exit(1);
 
   case Msg of
     WM_NULL:
@@ -2152,6 +2154,7 @@ begin
       DoMsgKeyDownUp(CN_KEYDOWN, Result);
       WindowInfo^.IMEComposed:=False;
       IgnoreNextCharWindow := Window;
+      IgnoreKeyUp := False;
     end;
     WM_KEYUP:
     begin
