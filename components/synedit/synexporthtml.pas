@@ -40,6 +40,7 @@ Known Issues:
 unit SynExportHTML;
 
 {$I synedit.inc}
+{.$define debug_synexporthtml}
 
 interface
 
@@ -93,7 +94,6 @@ type
     procedure SetExportAsText(Value: boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
-    function ColorToHTML(AColor: TColor): string;
   published
     property Color;
     property CreateHTMLFragment: boolean read GetCreateHTMLFragment
@@ -106,6 +106,8 @@ type
     property Title;
     property UseBackground;
   end;
+
+function ColorToHTML(AColor: TColor): string;
 
 implementation
 
@@ -136,6 +138,56 @@ const
 
   StartFragmentComment = '<!--StartFragment-->';
   EndFragmentComment = '<!--EndFragment-->';
+
+
+function ColorToHTML(AColor: TColor): string;
+var
+  RGBColor: TColorRef;
+  RGBValue: byte;
+const
+  Digits: array[0..15] of char = '0123456789ABCDEF';
+begin
+  Result := '';
+  case AColor of
+    clRed:     Result := 'red';
+    clGreen:   Result := 'green';
+    clBlue:    Result := 'blue';
+    clPurple:  Result := 'purple';
+    clYellow:  Result := 'yellow';
+    clBlack:   Result := 'black';
+    clWhite:   Result := 'white';
+    clGray:    Result := 'gray';
+    clMaroon:  Result := 'maroon';
+    clFuchsia: Result := 'fuchsia';
+    clLime:    Result := 'lime';
+    clNavy:    Result := 'navy';
+    clAqua:    Result := 'aqua';
+    clTeal:    Result := 'teal';
+    clSilver:  Result := 'silver';
+  end;
+  if (Result <> '') then
+    Exit;
+  RGBColor := ColorToRGB(AColor);
+  Result := '#000000';
+ {****************}
+  RGBValue := GetRValue(RGBColor);
+  if RGBValue > 0 then begin
+    Result[2] := Digits[RGBValue shr  4];
+    Result[3] := Digits[RGBValue and 15];
+  end;
+ {****************}
+  RGBValue := GetGValue(RGBColor);
+  if RGBValue > 0 then begin
+    Result[4] := Digits[RGBValue shr  4];
+    Result[5] := Digits[RGBValue and 15];
+  end;
+ {****************}
+  RGBValue := GetBValue(RGBColor);
+  if RGBValue > 0 then begin
+    Result[6] := Digits[RGBValue shr  4];
+    Result[7] := Digits[RGBValue and 15];
+  end;
+end;
 
 { TSynExporterHTML }
 
@@ -253,54 +305,6 @@ begin
   fReplaceReserved['€'] := '&euro;';}
 end;
 
-function TSynExporterHTML.ColorToHTML(AColor: TColor): string;
-var
-  RGBColor: TColorRef;
-  RGBValue: byte;
-const
-  Digits: array[0..15] of char = '0123456789ABCDEF';
-begin
-  Result := '';
-  case AColor of
-    clRed:     Result := 'red';
-    clGreen:   Result := 'green';
-    clBlue:    Result := 'blue';
-    clPurple:  Result := 'purple';
-    clYellow:  Result := 'yellow';
-    clBlack:   Result := 'black';
-    clWhite:   Result := 'white';
-    clGray:    Result := 'gray';
-    clMaroon:  Result := 'maroon';
-    clFuchsia: Result := 'fuchsia';
-    clLime:    Result := 'lime';
-    clNavy:    Result := 'navy';
-    clAqua:    Result := 'aqua';
-    clTeal:    Result := 'teal';
-    clSilver:  Result := 'silver';
-  end;
-  if (Result <> '') then
-    Exit;
-  RGBColor := ColorToRGB(AColor);
-  Result := '#000000';
- {****************}
-  RGBValue := GetRValue(RGBColor);
-  if RGBValue > 0 then begin
-    Result[2] := Digits[RGBValue shr  4];
-    Result[3] := Digits[RGBValue and 15];
-  end;
- {****************}
-  RGBValue := GetGValue(RGBColor);
-  if RGBValue > 0 then begin
-    Result[4] := Digits[RGBValue shr  4];
-    Result[5] := Digits[RGBValue and 15];
-  end;
- {****************}
-  RGBValue := GetBValue(RGBColor);
-  if RGBValue > 0 then begin
-    Result[6] := Digits[RGBValue shr  4];
-    Result[7] := Digits[RGBValue and 15];
-  end;
-end;
 
 procedure TSynExporterHTML.FormatAfterLastAttribute;
 begin
@@ -383,7 +387,9 @@ procedure TSynExporterHTML.FormatBeforeFirstAttributeImmediate(BG, FG: TColor);
 var
   Span: String;
 begin
+  {$ifdef debug_synexporthtml}
   debugln(['TSynExporterHTML.FormatBeforeFirstAttributeImmediate']);
+  {$endif}
   // if not heoFragmentOnly this is handled in GetHeader
   if (heoFragmentOnly in Options) then
   begin
@@ -394,7 +400,9 @@ end;
 
 procedure TSynExporterHTML.FormatAfterLastAttributeImmediate;
 begin
+  {$ifdef debug_synexporthtml}
   debugln(['TSynExporterHTML.FormatAfterLastAttributeImmediate']);
+  {$endif}
   if (heoFragmentOnly in Options) then
     AddData('</span>');
 end;
@@ -405,7 +413,9 @@ var
   Span, StyleStr: String;
   FG, BG: TColor;
 begin
+  {$ifdef debug_synexporthtml}
   debugln(['TSynExporterHTML.FormatAttributeInitImmediate']);
+  {$endif}
   FG := ValidatedColor(Attri.Foreground, fFont.Color);
   BG := ValidatedColor(Attri.Background, fBackgroundColor);
   if (not IsSpace and (FG <> fFont.Color)) or
@@ -427,7 +437,9 @@ var
   FG, BG: TColor;
   StyleStr: String;
 begin
+  {$ifdef debug_synexporthtml}
   debugln(['TSynExporterHTML.FormatAttributeDoneImmediate']);
+  {$endif}
   //reversed order compared to FormatAttributeInitImmediate
   if (Attri.Style <> []) then
   begin
@@ -509,11 +521,13 @@ begin
     SFooter := GetFooter;
     FooterLen := Length(SFooter);
 
-    //debugln(['TSynExporterHtml.GetHeader: WinClipHeaderSize=',WinClipHeadersize]);
-    //debugln(['  Footer="',Sfooter,'"']);
-    //debugln(['  FooterLen=',FooterLen]);
-    //debugln(['  BufferSize=',getBufferSize]);
-    //debugln(['  length(docHeader)=',length(docheader)]);
+    {$ifdef debug_synexporthtml}
+    debugln(['TSynExporterHtml.GetHeader: WinClipHeaderSize=',WinClipHeadersize]);
+    debugln(['  Footer="',Sfooter,'"']);
+    debugln(['  FooterLen=',FooterLen]);
+    debugln(['  BufferSize=',getBufferSize]);
+    debugln(['  length(docHeader)=',length(docheader)]);
+    {$endif}
 
     // Described in http://msdn.microsoft.com/library/sdkdoc/htmlclip/htmlclipboard.htm
     WinClipHeader := Format(WinClipHeaderFmt,
