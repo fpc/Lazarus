@@ -4726,7 +4726,7 @@ procedure TWinControl.FontChanged(Sender: TObject);
 begin
   if HandleAllocated and ([csLoading, csDestroying] * ComponentState = []) then
   begin
-    TWSWinControlClass(WidgetSetClass).SetFont(Self, Font);
+    TWSWinControlClass(WidgetSetClass).SetFont(Self, TFont(Sender));
     Exclude(FWinControlFlags, wcfFontChanged);
   end
   else

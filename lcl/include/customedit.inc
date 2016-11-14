@@ -50,6 +50,10 @@ begin
   TWSCustomEditClass(WidgetSetClass).SetCaretPos(Self, fCaretPos);
   TWSCustomEditClass(WidgetSetClass).SetSelStart(Self, FSelStart);
   TWSCustomEditClass(WidgetSetClass).SetSelLength(Self, FSelLength);
+  if WidgetSet.GetLCLCapability(lcTextHint) = LCL_CAPABILITY_YES then
+    TWSCustomEditClass(WidgetSetClass).SetTextHint(Self, FTextHint)
+  else
+    if CanShowEmulatedTextHint then ShowEmulatedTextHint;
 end;
 
 {------------------------------------------------------------------------------
@@ -81,8 +85,6 @@ begin
   // Accessibility
   AccessibleRole := larTextEditorSingleline;
   FTextHint := '';
-  FTextHintFontColor := clGrayText;
-  FTextHintFontStyle := [fsItalic];
 end;
 
 {------------------------------------------------------------------------------
@@ -112,12 +114,6 @@ end;
 function TCustomEdit.GetTextHint: TTranslateString;
 begin
   Result := FTextHint;
-end;
-
-procedure TCustomEdit.Loaded;
-begin
-  inherited Loaded;
-  if CanShowTextHint then ShowTextHint;
 end;
 
 {------------------------------------------------------------------------------
@@ -367,21 +363,8 @@ begin
   FModified := Value;
 end;
 
-function TCustomEdit.GetPasswordChar: Char;
-begin
-  if FTextHintShowing then
-    Result := FSavedPasswordChar
-  else
-    Result := FPasswordChar;
-end;
-
 procedure TCustomEdit.SetPasswordChar(const AValue: Char);
 begin
-  if FTextHintShowing and (not FSettingTextHint) and (FSavedPasswordChar<>AValue) then
-  begin
-    FSavedPasswordChar := AValue;
-    Exit;
-  end;
   if FPasswordChar=AValue then exit;
 
   FPasswordChar:=AValue;
@@ -391,7 +374,7 @@ begin
   else
     EchoMode:=emPassword;
   end;
-  if HandleAllocated then
+  if HandleAllocated and (FEmulatedTextHintStatus=thsHidden) then
     TWSCustomEditClass(WidgetSetClass).SetPasswordChar(Self, AValue);
 end;
 
@@ -405,12 +388,19 @@ begin
   RegisterPropertyToSkip(TCustomEdit, 'OEMConvert', 'VCL compatibility property', '');
 end;
 
-function TCustomEdit.CanShowTextHint: Boolean;
+function TCustomEdit.CanShowEmulatedTextHint: Boolean;
 begin
-  Result := (([csDesigning,csLoading] * ComponentState) = []) and
+  Result := HandleAllocated and
+            (WidgetSet.GetLCLCapability(lcTextHint)=LCL_CAPABILITY_NO) and
+            (([csDesigning,csLoading] * ComponentState) = []) and
             (FTextHint <> '') and
             (Text = '') and
             (not Focused);
+end;
+
+function TCustomEdit.CreateEmulatedTextHintFont: TFont;
+begin
+  Result := TWSCustomEditClass(WidgetSetClass).CreateEmulatedTextHintFont(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -509,6 +499,12 @@ begin
     inherited WMChar(Message);
 end;
 
+procedure TCustomEdit.WndProc(var Message: TLMessage);
+begin
+  if not((Message.msg=CM_TEXTCHANGED) and (FEmulatedTextHintStatus<>thsHidden)) then //eat CM_TEXTCHANGED
+    inherited WndProc(Message);
+end;
+
 procedure TCustomEdit.CMWantSpecialKey(var Message: TCMWantSpecialKey);
 begin
   // don't allow LCL to handle arrow keys for edit controls
@@ -534,19 +530,24 @@ end;
 
 procedure TCustomEdit.RealSetText(const AValue: TCaption);
 begin
+  if (FEmulatedTextHintStatus=thsShowing) and (AValue<>'') then
+    HideEmulatedTextHint;
+
   FTextChangedByRealSetText := True;
-  if FTextHintShowing and (not FSettingTextHint) then HideTextHint;
   Modified := False;
   inherited RealSetText(AValue);
   FTextChangedByRealSetText := False;
+
+  if (FEmulatedTextHintStatus=thsHidden) and CanShowEmulatedTextHint then
+    ShowEmulatedTextHint;
 end;
 
 function TCustomEdit.RealGetText: TCaption;
 begin
-  if not FTextHintShowing then
-    Result := inherited RealGetText
+  if FEmulatedTextHintStatus=thsShowing then
+    Result := ''
   else
-    Result := '';
+    Result := inherited RealGetText;
 end;
 
 {------------------------------------------------------------------------------
@@ -561,7 +562,6 @@ var
   SStart, SLen: Integer;
 begin
   //debugln('TCustomEdit.TextChanged ',DbgSName(Self));
-  if FSettingTextHint then Exit;
   if FCharCase in [ecUppercase, ecLowercase] then
   begin
     // use a local variable to reduce amounts of widgetset calls
@@ -591,16 +591,6 @@ begin
       Change;
     end;
   end;
-  if FTextHintShowing then
-  begin
-    if not FSettingTextHint and not CanShowTextHint then
-      HideTextHint;
-  end
-  else
-  begin
-    if CanShowTextHint then
-      ShowTextHint;
-  end;
 end;
 
 procedure TCustomEdit.Change;
@@ -611,6 +601,7 @@ end;
 
 procedure TCustomEdit.DoEnter;
 begin
+  if FEmulatedTextHintStatus=thsShowing then HideEmulatedTextHint;
   //AutoSelect when DoEnter is fired by keyboard
   if (FAutoSelect and not (csLButtonDown in ControlState)) then
   begin
@@ -618,14 +609,30 @@ begin
     if (SelText = Text) then FAutoSelected := True;
   end;//End if FAutoSelect
   inherited DoEnter;
-  if FTextHintShowing then HideTextHint;
 end;
 
 procedure TCustomEdit.DoExit;
 begin
   FAutoSelected := False;
   inherited DoExit;
-  if CanShowTextHint then ShowTextHint;
+  if CanShowEmulatedTextHint then ShowEmulatedTextHint;
+end;
+
+procedure TCustomEdit.FontChanged(Sender: TObject);
+var
+  HintFont: TObject;
+begin
+  if (FEmulatedTextHintStatus=thsHidden) then
+    inherited FontChanged(Sender)
+  else
+  begin
+    HintFont := CreateEmulatedTextHintFont;
+    try
+      inherited FontChanged(HintFont);
+    finally
+      HintFont.Free;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -649,71 +656,75 @@ procedure TCustomEdit.SetTextHint(const AValue: TTranslateString);
 begin
   if (FTextHint = AValue) then Exit;
   FTextHint := AValue;
-  if FTextHintShowing and (FTextHint = '') then
+  if (WidgetSet.GetLCLCapability(lcTextHint) = LCL_CAPABILITY_YES) and HandleAllocated then
+    TWSCustomEditClass(WidgetSetClass).SetTextHint(Self, AValue);
+  if (FEmulatedTextHintStatus=thsShowing) and (FTextHint = '') then
   begin
-    HideTextHint;
+    HideEmulatedTextHint;
   end
   else
   begin
-    if CanShowTextHint then ShowTextHint;
+    if CanShowEmulatedTextHint then ShowEmulatedTextHint;
   end;
 end;
 
-procedure TCustomEdit.ShowTextHint;
-var
-  OldModified: Boolean;
+procedure TCustomEdit.SetTextHintFontColor(const aTextHintFontColor: TColor);
 begin
-  if not FTextHintShowing then
-  begin
-    FSavedFontColor := Font.Color;
-    FSavedFontStyle := Font.Style;
-    FSavedParentFont := ParentFont;
-    FSavedPasswordChar := PasswordChar;
-  end;
-  FTextHintShowing := True;
-  OldModified := Modified;
-  FSettingTextHint := True;
+  DebugLn('TCustomEdit.TextHintFontColor is deprecated and will be removed in Lazarus 1.9');
+end;
+
+procedure TCustomEdit.SetTextHintFontStyle(const aTextHintFontStyle: TFontStyles
+  );
+begin
+  DebugLn('TCustomEdit.TextHintFontStyle is deprecated and will be removed in Lazarus 1.9');
+end;
+
+procedure TCustomEdit.ShowEmulatedTextHint;
+var
+  HintFont: TFont;
+begin
+  if (FEmulatedTextHintStatus<>thsHidden) then
+    Exit;
+
+  FEmulatedTextHintStatus := thsChanging;
+
+  HintFont := CreateEmulatedTextHintFont;
   try
-    //settint Text clears modified flag
-    inherited RealSetText(FTextHint);
-    Font.Color := clGrayText; //FTextHintFontColor;
-    Font.Style := [fsItalic]; //FTextHintFontStyle;
-    PasswordChar := #0;
+    TWSCustomEditClass(WidgetSetClass).SetFont(Self, HintFont);
   finally
-    FSettingTextHint := False;
-    Modified := OldModified;
+    HintFont.Free;
   end;
+
+  TWSCustomEditClass(WidgetSetClass).SetText(Self, Self.TextHint);
+  TWSCustomEditClass(WidgetSetClass).SetPasswordChar(Self, #0);
+
+  FEmulatedTextHintStatus := thsShowing;
 end;
 
 function TCustomEdit.GetTextHintFontColor: TColor;
 begin
-  Result := clGrayText;
+  Result := clNone;
+  DebugLn('TCustomEdit.TextHintFontColor is deprecated and will be removed in Lazarus 1.9');
 end;
 
 function TCustomEdit.GetTextHintFontStyle: TFontStyles;
 begin
-  Result := [fsItalic];
+  Result := [];
+  DebugLn('TCustomEdit.TextHintFontStyle is deprecated and will be removed in Lazarus 1.9');
 end;
 
-procedure TCustomEdit.HideTextHint;
-var
-  OldModified: Boolean;
+procedure TCustomEdit.HideEmulatedTextHint;
 begin
-  try
-    //settint Text clears modified flag
-    OldModified := Modified;
-    Font.Color := FSavedFontColor;
-    Font.Style := FSavedFontStyle;
-    ParentFont := FSavedParentFont;
-    PasswordChar := FSavedPasswordChar;
-    FTextHintShowing := False;
-    FSettingTextHint := True;
-    inherited RealSetText('');
-    FTextHintShowing := False;
-  finally
-    FSettingTextHint := False;
-    Modified := OldModified;
-  end;
+  if FEmulatedTextHintStatus<>thsShowing then
+    Exit;
+
+  FEmulatedTextHintStatus := thsChanging;
+
+  TWSCustomEditClass(WidgetSetClass).SetFont(Self, Font);
+  TWSCustomEditClass(WidgetSetClass).SetPasswordChar(Self, PasswordChar);
+  TWSCustomEditClass(WidgetSetClass).SetText(Self, '');
+
+  FEmulatedTextHintStatus := thsHidden;
 end;
 
 procedure TCustomEdit.SetAlignment(const AValue: TAlignment);

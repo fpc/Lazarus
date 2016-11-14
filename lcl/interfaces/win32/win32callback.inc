@@ -314,6 +314,8 @@ end;
 // The original function was about 2400 lines.
 
 type
+  TAccessCustomEdit = class(TCustomEdit);
+
   TWindowProcHelper = class
   private
     // WindowProc parameters
@@ -1318,6 +1320,7 @@ var
   WindowDC: HDC;
   WindowColor: TColor;
   ChildWinControl: TWinControl;
+  EditFont: TFont;
 begin
   WindowDC := HDC(WParam);
   ChildWinControl := ChildWindowInfo^.WinControl;
@@ -1346,7 +1349,17 @@ begin
   begin
     if ChildWinControl <> nil then
     begin
-      WindowColor := ChildWinControl.Font.Color;
+      if (ChildWinControl is TCustomEdit)
+      and (TAccessCustomEdit(ChildWinControl).FEmulatedTextHintStatus=thsShowing) then
+      begin
+        EditFont := TAccessCustomEdit(ChildWinControl).CreateEmulatedTextHintFont;
+        try
+          WindowColor := EditFont.Color;
+        finally
+          EditFont.Free;
+        end;
+      end else
+        WindowColor := ChildWinControl.Font.Color;
       if WindowColor = clDefault then
         WindowColor := ChildWinControl.GetDefaultColor(dctFont);
       Windows.SetTextColor(WindowDC, ColorToRGB(WindowColor));

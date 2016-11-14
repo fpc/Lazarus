@@ -177,6 +177,7 @@ type
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
+    class procedure SetTextHint(const ACustomEdit: TCustomEdit; const ATextHint: string); override;
 
     class procedure Cut(const ACustomEdit: TCustomEdit); override;
     class procedure Copy(const ACustomEdit: TCustomEdit); override;
@@ -1306,6 +1307,13 @@ begin
     TWin32WSWinControl.SetText(ACustomEdit, UTF8Copy(AText, 1, ACustomEdit.MaxLength))
   else
     TWin32WSWinControl.SetText(ACustomEdit, AText);
+end;
+
+class procedure TWin32WSCustomEdit.SetTextHint(const ACustomEdit: TCustomEdit;
+  const ATextHint: string);
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetTextHint') then Exit;
+  SendMessage(ACustomEdit.Handle, EM_SETCUEBANNER, 1, {%H-}LParam(PWideChar(WideString(ATextHint))));
 end;
 
 class procedure TWin32WSCustomEdit.Cut(const ACustomEdit: TCustomEdit);

@@ -709,18 +709,10 @@ type
     FSelStart: integer;
     FTextChangedByRealSetText: Boolean;
     FTextHint: TTranslateString;
-    FTextHintShowing: Boolean;
-    FSettingTextHint: Boolean;
-    FTextHintFontColor: TColor;      //Remove in 1.9
-    FTextHintFontStyle: TFontStyles; //Remove in 1.9
-    FSavedFontColor: TColor;
-    FSavedFontStyle: TFontStyles;
-    FSavedParentFont: Boolean;
-    FSavedPasswordChar: Char;
     function GetTextHintFontColor: TColor;       //Remove in 1.9
     function GetTextHintFontStyle: TFontStyles;  //Remove in 1.9
-    procedure ShowTextHint;
-    procedure HideTextHint;
+    procedure ShowEmulatedTextHint;
+    procedure HideEmulatedTextHint;
     procedure SetAlignment(const AValue: TAlignment);
     function GetCanUndo: Boolean;
     function GetModified: Boolean;
@@ -728,16 +720,23 @@ type
     procedure SetHideSelection(const AValue: Boolean);
     procedure SetMaxLength(Value: Integer);
     procedure SetModified(Value: Boolean);
-    function GetPasswordChar: Char;
     procedure SetPasswordChar(const AValue: Char);
+    procedure SetTextHintFontColor(const aTextHintFontColor: TColor);
+    procedure SetTextHintFontStyle(const aTextHintFontStyle: TFontStyles);
+  protected type
+    TEmulatedTextHintStatus = (thsHidden, thsShowing, thsChanging);
   protected
+    FEmulatedTextHintStatus: TEmulatedTextHintStatus;
+
     class procedure WSRegisterClass; override;
-    function CanShowTextHint: Boolean; virtual;
+    function CanShowEmulatedTextHint: Boolean; virtual;
+    function CreateEmulatedTextHintFont: TFont; virtual;
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure InitializeWnd; override;
     procedure TextChanged; override;
+    procedure FontChanged(Sender: TObject); override;
     procedure Change; virtual;
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -748,7 +747,6 @@ type
     function GetSelStart: integer; virtual;
     function GetSelText: string; virtual;
     function GetTextHint: TTranslateString; virtual;
-    procedure Loaded; override;
     procedure SetCaretPos(const Value: TPoint); virtual;
     procedure SetEchoMode(Val: TEchoMode); virtual;
     procedure SetNumbersOnly(Value: Boolean); virtual;
@@ -765,6 +763,7 @@ type
     procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); override;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
     procedure CMWantSpecialKey(var Message: TCMWantSpecialKey); message CM_WANTSPECIALKEY;
+    procedure WndProc(var Message: TLMessage); override;
 
     property AutoSelect: Boolean read FAutoSelect write FAutoSelect default True;
     property AutoSelected: Boolean read FAutoSelected write FAutoSelected;
@@ -791,7 +790,7 @@ type
     property Modified: Boolean read GetModified write SetModified;
     property NumbersOnly: Boolean read GetNumbersOnly write SetNumbersOnly default false;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property PasswordChar: Char read GetPasswordChar write SetPasswordChar default #0;
+    property PasswordChar: Char read FPasswordChar write SetPasswordChar default #0;
     property PopupMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default false;
     property SelLength: integer read GetSelLength write SetSelLength;
@@ -801,8 +800,8 @@ type
     property TabStop default true;
     property Text;
     property TextHint: TTranslateString read GetTextHint write SetTextHint;
-    property TextHintFontColor: TColor read GetTextHintFontColor write FTextHintFontColor default clGrayText; deprecated 'Will be removed in the future'; //deprecated in 1.7
-    property TextHintFontStyle: TFontStyles read GetTextHintFontStyle write FTextHintFontStyle default [fsItalic]; deprecated 'Will be removed in the future';
+    property TextHintFontColor: TColor read GetTextHintFontColor write SetTextHintFontColor default clGrayText; deprecated 'Will be removed in the future'; //deprecated in 1.7
+    property TextHintFontStyle: TFontStyles read GetTextHintFontStyle write SetTextHintFontStyle default [fsItalic]; deprecated 'Will be removed in the future';
   end;
 
 
@@ -838,7 +837,6 @@ type
     procedure SetVertScrollBar(const AValue: TMemoScrollBar);
   protected
     class procedure WSRegisterClass; override;
-    function CanShowTextHint: Boolean; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
@@ -859,6 +857,7 @@ type
     procedure WMGetDlgCode(var Message: TLMNoParams); message LM_GETDLGCODE;
     class function GetControlClassDefaultSize: TSize; override;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
+    function CanShowEmulatedTextHint: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

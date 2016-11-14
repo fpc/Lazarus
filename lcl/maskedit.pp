@@ -220,7 +220,7 @@ const
     procedure DeleteChars(NextChar : Boolean);
   protected
     function ApplyMaskToText(Value: TCaption): TCaption;
-    function CanShowTextHint: Boolean; override;
+    function CanShowEmulatedTextHint: Boolean; override;
     function DisableMask(const NewText: String): Boolean;
     function RestoreMask(const NewText: String): Boolean;
     procedure RealSetText(const AValue: TCaption); override;
@@ -1521,12 +1521,12 @@ begin
   Result := S;
 end;
 
-function TCustomMaskEdit.CanShowTextHint: Boolean;
+function TCustomMaskEdit.CanShowEmulatedTextHint: Boolean;
 begin
   if IsMasked then
     Result := False
   else
-    Result := inherited CanShowTextHint;
+    Result := inherited CanShowEmulatedTextHint;
 end;
 
 

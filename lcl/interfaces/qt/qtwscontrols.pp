@@ -92,6 +92,8 @@ type
     class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
+  TAccessWinControl = class(TWinControl);
+
   { TQtWSGraphicControl }
 
   TQtWSGraphicControl = class(TWSGraphicControl)
@@ -622,7 +624,7 @@ begin
   // issue #28437
   if AWinControl.HandleObjectShouldBeVisible and not AWinControl.IsParentFont and
     (AWinControl.Font.Name = 'default') then
-      SetFont(AWinControl, AWinControl.Font);
+      TAccessWinControl(AWinControl).FontChanged(AWinControl.Font);
 
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
   Widget.EndUpdate;
