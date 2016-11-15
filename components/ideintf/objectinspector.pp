@@ -2358,18 +2358,20 @@ end;
 procedure TOICustomPropertyGrid.MouseMove(Shift:TShiftState;  X,Y:integer);
 var
   TheHint: String;
+  fPropRow: TOIPropertyGridRow;
 
   procedure DoShow(pt: TPoint); inline;
   begin
-    FHintManager.ShowHint(ClientToScreen(pt), TheHint);
+    if WidgetSet.GetLCLCapability(lcTransparentWindow)=LCL_CAPABILITY_NO then
+      Inc(pt.Y, fPropRow.Height);
+    FHintManager.ShowHint(ClientToScreen(pt), TheHint, False);
     if FHintManager.CurHintWindow<>nil then
       FHintManager.CurHintWindow.OnMouseLeave := @HintMouseLeave;
   end;
 
 var
   SplitDistance:integer;
-  Index, Brd: Integer;
-  fPropRow: TOIPropertyGridRow;
+  Index, TextLeft: Integer;
   HintType: TPropEditHint;
 begin
   inherited MouseMove(Shift,X,Y);
@@ -2414,9 +2416,9 @@ begin
     begin
       // Mouse is over property name...
       TheHint := fPropRow.Name;
-      Brd := BorderWidth + GetTreeIconX(Index) + Indent;
-      if (Canvas.TextWidth(TheHint) + Brd) >= SplitterX then
-        DoShow(Point(Brd, fPropRow.Top-TopY-1));
+      TextLeft := BorderWidth + GetTreeIconX(Index) + Indent + 5;
+      if (Canvas.TextWidth(TheHint) + TextLeft) >= SplitterX-2 then
+        DoShow(Point(TextLeft - 3, fPropRow.Top-TopY-1));
     end else
     if HintType in [pehValue,pehEditButton] then
     begin
@@ -2424,8 +2426,9 @@ begin
       TheHint := fPropRow.LastPaintedValue;
       if length(TheHint) > 100 then
         TheHint := copy(TheHint, 1, 100) + '...';
-      if Canvas.TextWidth(TheHint) > (ClientWidth - BorderWidth - SplitterX) then
-        DoShow(Point(SplitterX, fPropRow.Top-TopY-1));
+      TextLeft := SplitterX+2;
+      if Canvas.TextWidth(TheHint) > (ClientWidth - BorderWidth - TextLeft) then
+        DoShow(Point(TextLeft - 3, fPropRow.Top-TopY-1));
     end;
   end;
 end;
@@ -3493,7 +3496,7 @@ end;
 
 procedure TOICustomPropertyGrid.ResetLongHintTimer;
 begin
-  if FLongHintTimer = Nil then Exit;
+  if (FLongHintTimer = Nil) or FShowingLongHint then Exit;
   FLongHintTimer.Enabled := False;
   if RowCount > 0 then
     FLongHintTimer.Enabled := not FDragging;
