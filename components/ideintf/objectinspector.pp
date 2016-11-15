@@ -312,9 +312,10 @@ type
     FPropNameFilter : String;
 
     // hint stuff
-    FHintTimer: TTimer;
+    FLongHintTimer: TTimer;
     FHintManager: THintWindowManager;
     FHintIndex: integer;
+    FHintType: TPropEditHint;
     FShowingLongHint: boolean; // last hint was activated by the hinttimer
 
     ValueEdit: TEdit;
@@ -326,10 +327,10 @@ type
     {$ENDIF}
     ValueButton: TSpeedButton;
 
+    procedure HintMouseLeave(Sender: TObject);
     procedure HintTimer(Sender: TObject);
-    procedure ResetHintTimer;
+    procedure ResetLongHintTimer;
     procedure HideHint;
-    procedure OnUserInput(Sender: TObject; {%H-}Msg: Cardinal);
     procedure HintMouseDown(Sender: TObject; Button: TMouseButton;
                             Shift: TShiftState; X, Y: Integer);
 
@@ -435,6 +436,7 @@ type
     procedure MouseDown(Button:TMouseButton; Shift:TShiftState; X,Y:integer); override;
     procedure MouseMove(Shift:TShiftState; X,Y:integer);  override;
     procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X,Y:integer); override;
+    procedure MouseLeave; override;
 
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure HandleStandardKeys(var Key: Word; Shift: TShiftState); virtual;
@@ -1115,7 +1117,6 @@ begin
     FDefaultItemHeight:=DefItemHeight;
 
   BuildPropertyList;
-  Application.AddOnUserInputHandler(@OnUserInput,true);
 end;
 
 constructor TOICustomPropertyGrid.Create(TheOwner: TComponent);
@@ -1128,7 +1129,6 @@ var
   a: integer;
 begin
   SetIdleEvent(false);
-  Application.RemoveOnUserInputHandler(@OnUserInput);
   FItemIndex := -1;
   for a := 0 to FRows.Count - 1 do
     Rows[a].Free;
@@ -1140,7 +1140,7 @@ begin
   FreeAndNil(FNameFont);
   FreeAndNil(FHighlightFont);
   FreeAndNil(FExpandedProperties);
-  FreeAndNil(FHintTimer);
+  FreeAndNil(FLongHintTimer);
   FreeAndNil(FHintManager);
   FreeAndNil(FNewComboBoxItems);
   FreeAndNil(FActiveRowBmp);
@@ -1152,14 +1152,14 @@ begin
   if not ShowHint then exit(false);
 
   Result := true;
-  if FHintTimer = nil then
+  if FLongHintTimer = nil then
   begin
     FHintIndex := -1;
     FShowingLongHint := False;
-    FHintTimer := TTimer.Create(nil);
-    FHintTimer.Interval := 500;
-    FHintTimer.Enabled := False;
-    FHintTimer.OnTimer := @HintTimer;
+    FLongHintTimer := TTimer.Create(nil);
+    FLongHintTimer.Interval := 500;
+    FLongHintTimer.Enabled := False;
+    FLongHintTimer.OnTimer := @HintTimer;
 
     FHintManager.OnMouseDown := @HintMouseDown;
     FHintManager.WindowName := 'This_is_a_hint_window';
@@ -2180,7 +2180,8 @@ begin
   Result:=true;
 end;
 
-function TOICustomPropertyGrid.MouseToIndex(y:integer;MustExist:boolean):integer;
+function TOICustomPropertyGrid.MouseToIndex(Y: integer; MustExist: boolean
+  ): integer;
 var l,r,m:integer;
 begin
   l:=0;
@@ -2344,6 +2345,16 @@ begin
   end;
 end;
 
+procedure TOICustomPropertyGrid.MouseLeave;
+begin
+  if Assigned(FHintManager) and Assigned(FHintManager.CurHintWindow)
+  and FHintManager.CurHintWindow.Visible
+  and not PtInRect(ClientRect, ScreenToClient(Mouse.CursorPos)) then
+    FHintManager.HideHint;
+
+  inherited MouseLeave;
+end;
+
 procedure TOICustomPropertyGrid.MouseMove(Shift:TShiftState;  X,Y:integer);
 var
   TheHint: String;
@@ -2351,16 +2362,20 @@ var
   procedure DoShow(pt: TPoint); inline;
   begin
     FHintManager.ShowHint(ClientToScreen(pt), TheHint);
+    if FHintManager.CurHintWindow<>nil then
+      FHintManager.CurHintWindow.OnMouseLeave := @HintMouseLeave;
   end;
 
 var
   SplitDistance:integer;
   Index, Brd: Integer;
   fPropRow: TOIPropertyGridRow;
+  HintType: TPropEditHint;
 begin
   inherited MouseMove(Shift,X,Y);
   SplitDistance:=X-SplitterX;
   if FDragging then begin
+    HideHint;
     if ssLeft in Shift then begin
       SplitterX:=SplitterX+SplitDistance;
     end else begin
@@ -2384,19 +2399,27 @@ begin
     // to check if the property text fits in its box, if not show a hint
     if not (ShowHint and InitHints) then Exit;
     Index := MouseToIndex(y,false);
+    HintType := GetHintTypeAt(Index, x);
+    if (Index<>FHintIndex) or (HintType<>FHintType) then
+      HideHint;
+    ResetLongHintTimer;
     if (Index = -1) or FShowingLongHint
-    or ( FHintManager.HintIsVisible and (Index = FHintIndex) ) then Exit;
+    or ( FHintManager.HintIsVisible and (Index = FHintIndex) and (HintType=FHintType) ) then
+      Exit;
+
     FHintIndex:=Index;
+    FHintType := HintType;
     fPropRow := GetRow(Index);
-    if X < SplitterX then
+    if HintType = pehName then
     begin
       // Mouse is over property name...
       TheHint := fPropRow.Name;
       Brd := BorderWidth + GetTreeIconX(Index) + Indent;
       if (Canvas.TextWidth(TheHint) + Brd) >= SplitterX then
         DoShow(Point(Brd, fPropRow.Top-TopY-1));
-    end
-    else begin
+    end else
+    if HintType in [pehValue,pehEditButton] then
+    begin
       // Mouse is over property value...
       TheHint := fPropRow.LastPaintedValue;
       if length(TheHint) > 100 then
@@ -2598,11 +2621,6 @@ begin
     FOnSelectionChange(Self);
 end;
 
-procedure TOICustomPropertyGrid.OnUserInput(Sender: TObject; Msg: Cardinal);
-begin
-  ResetHintTimer;
-end;
-
 procedure TOICustomPropertyGrid.HintMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
@@ -2612,6 +2630,12 @@ begin
     pos := ScreenToClient(FHintManager.CurHintWindow.ClientToScreen(Point(X, Y)));
     MouseDown(Button, Shift, pos.X, pos.Y);
   end;
+end;
+
+procedure TOICustomPropertyGrid.HintMouseLeave(Sender: TObject);
+begin
+  if FindLCLControl(Mouse.CursorPos)<>Self then
+    FHintManager.HideHint;
 end;
 
 procedure TOICustomPropertyGrid.EndDragSplitter;
@@ -3432,8 +3456,8 @@ var
   AHint: String;
   OkToShow: Boolean;
 begin
-  if FHintTimer <> nil then
-    FHintTimer.Enabled := False;
+  if FLongHintTimer <> nil then
+    FLongHintTimer.Enabled := False;
   if (not InitHints) then exit;
 
   Position := Mouse.CursorPos;
@@ -3462,17 +3486,17 @@ begin
   // Show hint if all is well.
   if OkToShow and FHintManager.ShowHint(Position, AHint) then begin
     FHintIndex := Index;
+    FHintType := HintType;
     FShowingLongHint := True;
   end;
 end;
 
-procedure TOICustomPropertyGrid.ResetHintTimer;
+procedure TOICustomPropertyGrid.ResetLongHintTimer;
 begin
-  HideHint;
-  if FHintTimer = Nil then Exit;
-  FHintTimer.Enabled := False;
+  if FLongHintTimer = Nil then Exit;
+  FLongHintTimer.Enabled := False;
   if RowCount > 0 then
-    FHintTimer.Enabled := not FDragging;
+    FLongHintTimer.Enabled := not FDragging;
 end;
 
 procedure TOICustomPropertyGrid.HideHint;
@@ -3519,8 +3543,8 @@ var
 begin
   if not CanEditRowValue(false) then exit;
 
-  if FHintTimer <> nil then
-    FHintTimer.Enabled := False;
+  if FLongHintTimer <> nil then
+    FLongHintTimer.Enabled := False;
 
   if (FCurrentEdit = ValueComboBox) then 
   begin
