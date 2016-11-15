@@ -181,7 +181,7 @@ type
     constructor Create; overload;
     destructor Destroy; override;
     function HintIsVisible: boolean;
-    function ShowHint(ScreenPos: TPoint; TheHint: string): boolean;
+    function ShowHint(ScreenPos: TPoint; TheHint: string; const MouseOffset: Boolean = True): boolean;
     procedure HideHint;
     procedure HideIfVisible;
   public
@@ -352,7 +352,8 @@ begin
   Result := FHtmlHelpProvider;
 end;
 
-function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string): boolean;
+function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string;
+  const MouseOffset: Boolean): boolean;
 var
   ms: TMemoryStream;
   NewWidth, NewHeight: integer;
@@ -363,7 +364,10 @@ var
   begin
     HintWinRect := HintTextWindow.CalcHintRect(Screen.Width, TheHint, Nil);
     HintTextWindow.HintRect := HintWinRect;      // Adds borders.
-    HintTextWindow.OffsetHintRect(ScreenPos);
+    if MouseOffset then
+      HintTextWindow.OffsetHintRect(ScreenPos)
+    else
+      HintTextWindow.OffsetHintRect(ScreenPos, 0);
     HintTextWindow.ActivateHint(TheHint);
   end;
 
@@ -385,7 +389,10 @@ var
     if NewHeight <= 0 then
       NewHeight := 200;
     HintRenderWindow.HintRectAdjust := Rect(0, 0, NewWidth, NewHeight);
-    HintRenderWindow.OffsetHintRect(ScreenPos);
+    if MouseOffset then
+      HintRenderWindow.OffsetHintRect(ScreenPos)
+    else
+      HintRenderWindow.OffsetHintRect(ScreenPos, 0);
     HintRenderWindow.ActivateRendered;
   end;
 

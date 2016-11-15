@@ -378,7 +378,7 @@ type
     procedure ActivateHint(const ClientPos: TPoint; const ABaseURL, AHint: string;
       AAutoShown: Boolean = True); overload;
     procedure ActivateHint(ClientRect: TRect; const ABaseURL, AHint: string;
-      AAutoShown: Boolean); overload;
+      AAutoShown: Boolean; AMouseOffset: Boolean = True); overload;
 
     // selections
     function SelectionAvailable: boolean; override;
@@ -1007,9 +1007,9 @@ type
     procedure HideHintTimer(Sender: TObject);
   public
     procedure ActivateHint(const ScreenRect: TRect; const ABaseURL, AHint: string;
-      AAutoShown: Boolean = True); overload;
+      AAutoShown: Boolean = True; AMouseOffset: Boolean = True); overload;
     procedure ActivateHint(const ScreenPos: TPoint; const ABaseURL, AHint: string;
-      AAutoShown: Boolean = True); overload;
+      AAutoShown: Boolean = True; AMouseOffset: Boolean = True); overload;
     procedure HideAutoHintAfterMouseMoved;
     procedure HideAutoHint;
     procedure UpdateHintTimer;
@@ -1146,9 +1146,9 @@ type
     // Hints
     FHints: TSourceEditorHintWindowManager;
     procedure ActivateHint(const ScreenRect: TRect; const BaseURL, TheHint: string;
-      AutoShown: Boolean = True); overload;
+      AutoShown: Boolean = True; AMouseOffset: Boolean = True); overload;
     procedure ActivateHint(const ScreenPos: TPoint; const BaseURL, TheHint: string;
-      AutoShown: Boolean = True); overload;
+      AutoShown: Boolean = True; AMouseOffset: Boolean = True); overload;
   private
     FCodeTemplateModul: TSynEditAutoComplete;
     FGotoDialog: TfrmGoto;
@@ -1896,13 +1896,13 @@ end;
 { TSourceEditorHintWindowManager }
 
 procedure TSourceEditorHintWindowManager.ActivateHint(const ScreenPos: TPoint;
-  const ABaseURL, AHint: string; AAutoShown: Boolean);
+  const ABaseURL, AHint: string; AAutoShown: Boolean; AMouseOffset: Boolean);
 begin
-  ActivateHint(Rect(ScreenPos.x, ScreenPos.y, ScreenPos.x, ScreenPos.y), ABaseURL, AHint, AAutoShown);
+  ActivateHint(Rect(ScreenPos.x, ScreenPos.y, ScreenPos.x, ScreenPos.y), ABaseURL, AHint, AAutoShown, AMouseOffset);
 end;
 
 procedure TSourceEditorHintWindowManager.ActivateHint(const ScreenRect: TRect;
-  const ABaseURL, AHint: string; AAutoShown: Boolean);
+  const ABaseURL, AHint: string; AAutoShown: Boolean; AMouseOffset: Boolean);
 begin
   FAutoShown := AAutoShown;
   BaseURL := ABaseURL;
@@ -1912,13 +1912,13 @@ begin
   begin
     FAutoHintMousePos := Mouse.CursorPos;
     if not(HintIsVisible and (FLastHint = AHint)) then
-      ShowHint(ScreenRect.TopLeft,AHint);
+      ShowHint(ScreenRect.TopLeft,AHint,AMouseOffset);
   end else
   begin
     if HintIsVisible and (FLastHint = AHint) then
       HideIfVisible
     else
-      ShowHint(ScreenRect.TopLeft,AHint);
+      ShowHint(ScreenRect.TopLeft,AHint,AMouseOffset);
   end;
   FAutoHideHintTimer.Enabled := AAutoShown;
 end;
@@ -3303,14 +3303,14 @@ begin
 end;
 
 procedure TSourceEditor.ActivateHint(ClientRect: TRect; const ABaseURL,
-  AHint: string; AAutoShown: Boolean);
+  AHint: string; AAutoShown: Boolean; AMouseOffset: Boolean);
 var
   ScreenRect: TRect;
 begin
   if SourceNotebook=nil then exit;
   ScreenRect.TopLeft:=EditorComponent.ClientToScreen(ClientRect.TopLeft);
   ScreenRect.BottomRight:=EditorComponent.ClientToScreen(ClientRect.BottomRight);
-  Manager.ActivateHint(ScreenRect,ABaseURL,AHint,AAutoShown);
+  Manager.ActivateHint(ScreenRect,ABaseURL,AHint,AAutoShown,AMouseOffset);
 end;
 
 {------------------------------S T A R T  F I N D-----------------------------}
@@ -10736,19 +10736,19 @@ begin
 end;
 
 procedure TSourceEditorManager.ActivateHint(const ScreenPos: TPoint;
-  const BaseURL, TheHint: string; AutoShown: Boolean);
+  const BaseURL, TheHint: string; AutoShown: Boolean; AMouseOffset: Boolean);
 begin
   if csDestroying in ComponentState then exit;
 
-  FHints.ActivateHint(ScreenPos, BaseURL, TheHint, AutoShown);
+  FHints.ActivateHint(ScreenPos, BaseURL, TheHint, AutoShown, AMouseOffset);
 end;
 
 procedure TSourceEditorManager.ActivateHint(const ScreenRect: TRect;
-  const BaseURL, TheHint: string; AutoShown: Boolean);
+  const BaseURL, TheHint: string; AutoShown: Boolean; AMouseOffset: Boolean);
 begin
   if csDestroying in ComponentState then exit;
 
-  FHints.ActivateHint(ScreenRect, BaseURL, TheHint, AutoShown);
+  FHints.ActivateHint(ScreenRect, BaseURL, TheHint, AutoShown, AMouseOffset);
 end;
 
 procedure TSourceEditorManager.OnCodeTemplateTokenNotFound(Sender: TObject;
