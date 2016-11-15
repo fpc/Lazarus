@@ -12,7 +12,7 @@ object SearchProgressForm: TSearchProgressForm
   OnDestroy = SearchFormDESTROY
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.7'
   Visible = True
   object Panel2: TPanel
     Left = 0
@@ -25,7 +25,6 @@ object SearchProgressForm: TSearchProgressForm
     ClientWidth = 700
     FullRepaint = False
     TabOrder = 0
-    TabStop = True
     object lblMatches: TLabel
       AnchorSideTop.Control = MatchesLabel
       AnchorSideTop.Side = asrCenter
