@@ -904,7 +904,7 @@ begin
   else
     s:='$'+fTransferMacros[i].Name+'()';
   ALine := MemoParameters.CaretPos.Y;
-  If MemoParameters.Lines.Count = 0 Then
+  if ALine >= MemoParameters.Lines.Count then
     MemoParameters.Lines.Add('');
   AStr := MemoParameters.Lines[Aline];
   MemoParameters.Lines[Aline] := AStr + s;
