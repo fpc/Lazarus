@@ -2547,7 +2547,7 @@ resourcestring
   lisForDarwin = 'For Darwin';
   dlgPOUseAppBundle = 'Use Application Bundle for running and debugging';
   dlgPOCreateAppBundle = 'Create Application Bundle';
-  dlgPOUseManifest = 'Use manifest file to enable themes';
+  dlgPOUseManifest = 'Use manifest resource (and enable themes)';
   dlgPODpiAwareness = 'DPI awareness';
   dlgPODpiAwarenessOff = 'off';
   dlgPODpiAwarenessOn = 'on';
