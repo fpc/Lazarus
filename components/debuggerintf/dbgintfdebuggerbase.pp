@@ -763,16 +763,11 @@ type
    private
      FName: String;
      FValue: String;
-     FDBGType: TDBGType;
-     procedure SetDBGType(const aDBGType: TDBGType);
    protected
      procedure DoAssign(AnOther: TDbgEntityValue); override;
    public
-    destructor Destroy; override;
-   public
      property Name: String read FName;
      property Value: String read FValue;
-     property DBGType: TDBGType read FDBGType write SetDBGType;
    end;
 
  { TLocals }
@@ -2903,26 +2898,11 @@ end;
 
 { TLocalsValue }
 
-destructor TLocalsValue.Destroy;
-begin
-  FDBGType.Free;
-
-  inherited Destroy;
-end;
-
 procedure TLocalsValue.DoAssign(AnOther: TDbgEntityValue);
 begin
   inherited DoAssign(AnOther);
   FName := TLocalsValue(AnOther).FName;
   FValue := TLocalsValue(AnOther).FValue;
-  // don't assign FDBGType
-end;
-
-procedure TLocalsValue.SetDBGType(const aDBGType: TDBGType);
-begin
-  if FDBGType = aDBGType then Exit;
-  FreeAndNil(FDBGType);
-  FDBGType := aDBGType;
 end;
 
 { TLocalsListBase }
