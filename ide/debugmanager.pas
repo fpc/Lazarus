@@ -41,7 +41,7 @@ uses
   MemCheck,
   {$ENDIF}
   // LCL
-  Classes, SysUtils, Forms, Controls, Dialogs, ExtCtrls, LazFileUtils,
+  Classes, SysUtils, math, Forms, Controls, Dialogs, ExtCtrls, LazFileUtils,
   LCLType, LCLIntf, LazLoggerBase, Laz2_XMLCfg, LazFileCache, LazUTF8,
   // codetools
   CodeCache, CodeToolManager, PascalParserTool, CodeTree,
@@ -248,10 +248,33 @@ type
                               DoDisableAutoSizing: boolean = false); override;
   end;
 
+function DBGDateTimeFormatter(const aValue: string): string;
+
 implementation
 
 var
   DBG_LOCATION_INFO: PLazLoggerLogGroup;
+
+function DBGDateTimeFormatter(const aValue: string): string;
+var
+  FS: TFormatSettings;
+  MyDate: Extended;
+begin
+  FS := Default(TFormatSettings);
+  FS.DecimalSeparator := '.';
+  if TryStrToFloat(aValue, MyDate, FS) then
+  begin
+    // it is important to know datetime for all TDate/TTime/TDateTime
+    if SameValue(Frac(MyDate), 0) then
+      Result := DateToStr(MyDate)
+    else
+    if SameValue(Int(MyDate), 0) then
+      Result := TimeToStr(MyDate)
+    else
+      Result := DateTimeToStr(MyDate);
+  end else
+    Result := aValue;
+end;
 
 type
 
@@ -1701,6 +1724,13 @@ begin
   inherited Create(TheOwner);
 
   LazarusIDE.AddHandlerOnProjectClose(@DoProjectClose);
+
+  RegisterValueFormatter(skSimple, 'TDate', @DBGDateTimeFormatter);
+  RegisterValueFormatter(skFloat, 'TDate', @DBGDateTimeFormatter);
+  RegisterValueFormatter(skSimple, 'TTime', @DBGDateTimeFormatter);
+  RegisterValueFormatter(skFloat, 'TTime', @DBGDateTimeFormatter);
+  RegisterValueFormatter(skSimple, 'TDateTime', @DBGDateTimeFormatter);
+  RegisterValueFormatter(skFloat, 'TDateTime', @DBGDateTimeFormatter);
 end;
 
 destructor TDebugManager.Destroy;

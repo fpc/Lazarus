@@ -37,7 +37,7 @@ interface
 
 uses
   SysUtils, Classes, Forms, ClipBrd, LCLProc, LazLoggerBase, strutils,
-  IDEWindowIntf, DebuggerStrConst,
+  IDEWindowIntf, DbgIntfDebuggerBase, DebuggerStrConst,
   ComCtrls, ActnList, Menus, BaseDebugManager, Debugger, DebuggerDlg;
 
 type
@@ -317,9 +317,11 @@ var
   n, idx: Integer;                               
   List: TStringList;
   Item: TListItem;
-  S: String;
+  S, DebugEval, FmtValue: String;
   Locals: TIDELocals;
   Snap: TSnapshot;
+  DBGType: TDBGType;
+  LocValue: TLocalsValue;
 begin
   if (ThreadsMonitor = nil) or (CallStackMonitor = nil) or (LocalsMonitor=nil) then begin
     lvLocals.Items.Clear;
@@ -375,18 +377,26 @@ begin
       // add/update entries
       for n := 0 to Locals.Count - 1 do
       begin
-        idx := List.IndexOf(Uppercase(Locals.Names[n]));
+        DebugEval := '';
+        DBGType := nil;
+        LocValue := Locals.Entries[n];
+        FmtValue := LocValue.Value;
+        if (LocValue.DBGType=nil) and (DebugBoss.Evaluate(LocValue.Name, DebugEval, DBGType, [])) then
+          LocValue.DBGType := DBGType;
+        if (LocValue.DBGType<>nil) then
+          FmtValue := DebugBoss.FormatValue(LocValue.DBGType, FmtValue);
+        idx := List.IndexOf(Uppercase(LocValue.Name));
         if idx = -1
         then begin
           // New entry
           Item := lvLocals.Items.Add;
-          Item.Caption := Locals.Names[n];
-          Item.SubItems.Add(Locals.Values[n]);
+          Item.Caption := LocValue.Name;
+          Item.SubItems.Add(FmtValue);
         end
         else begin
           // Existing entry
           Item := TListItem(List.Objects[idx]);
-          Item.SubItems[0] := Locals.Values[n];
+          Item.SubItems[0] := FmtValue;
           List.Delete(idx);
         end;
       end;

@@ -1530,6 +1530,7 @@ begin
 
   // initialize the other IDE managers
   DebugBoss:=TDebugManager.Create(nil);
+  DebugBossManager:=DebugBoss;
   DebugBoss.ConnectMainBarEvents;
   DebuggerDlg.OnProcessCommand := @HandleProcessIDECommand;
 
@@ -11025,27 +11026,31 @@ begin
         if EditorOpts.DbgHintAutoTypeCastClass
         then Opts := [defClassAutoCast];
         DebugEval:='';
-        if not DebugBoss.Evaluate(Expression, DebugEval, DBGType, Opts) or (DebugEval = '') then
-          DebugEval := '???';
-        // deference a pointer - maybe it is a class
-        if Assigned(DBGType) and (DBGType.Kind in [skPointer]) and
-           not( StringCase(Lowercase(DBGType.TypeName), ['char', 'character', 'ansistring']) in [0..2] )
-        then
+        if DebugBoss.Evaluate(Expression, DebugEval, DBGType, Opts) and not (DebugEval = '') then
         begin
-          if DBGType.Value.AsPointer <> nil then
+          // deference a pointer - maybe it is a class
+          if Assigned(DBGType) and (DBGType.Kind in [skPointer]) and
+             not( StringCase(Lowercase(DBGType.TypeName), ['char', 'character', 'ansistring']) in [0..2] )
+          then
           begin
-            DebugEvalDerefer:='';
-            if DebugBoss.Evaluate(Expression + '^', DebugEvalDerefer, DBGTypeDerefer, Opts) then
+            if DBGType.Value.AsPointer <> nil then
             begin
-              if Assigned(DBGTypeDerefer) and
-                ( (DBGTypeDerefer.Kind <> skPointer) or
-                  (StringCase(Lowercase(DBGTypeDerefer.TypeName), ['char', 'character', 'ansistring']) in [0..2])
-                )
-              then
-                DebugEval := DebugEval + ' = ' + DebugEvalDerefer;
+              DebugEvalDerefer:='';
+              if DebugBoss.Evaluate(Expression + '^', DebugEvalDerefer, DBGTypeDerefer, Opts) then
+              begin
+                if Assigned(DBGTypeDerefer) and
+                  ( (DBGTypeDerefer.Kind <> skPointer) or
+                    (StringCase(Lowercase(DBGTypeDerefer.TypeName), ['char', 'character', 'ansistring']) in [0..2])
+                  )
+                then
+                  DebugEval := DebugEval + ' = ' + DebugEvalDerefer;
+              end;
             end;
-          end;
-        end;
+          end else
+            DebugEval := DebugBoss.FormatValue(DBGType, DebugEval);
+        end else
+          DebugEval := '???';
+
         FreeAndNil(DBGType);
         FreeAndNil(DBGTypeDerefer);
         HasHint:=true;

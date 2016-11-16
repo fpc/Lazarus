@@ -763,11 +763,16 @@ type
    private
      FName: String;
      FValue: String;
+     FDBGType: TDBGType;
+     procedure SetDBGType(const aDBGType: TDBGType);
    protected
      procedure DoAssign(AnOther: TDbgEntityValue); override;
    public
+    destructor Destroy; override;
+   public
      property Name: String read FName;
      property Value: String read FValue;
+     property DBGType: TDBGType read FDBGType write SetDBGType;
    end;
 
  { TLocals }
@@ -1901,11 +1906,28 @@ type
   TDebuggerClass = class of TDebuggerIntf;
 
   TBaseDebugManagerIntf = class(TComponent)
+  public type
+    TStringFunction = function(const aValue: string): string;
+  private
+    FValueFormatterList: TStringList;
+
+    function ValueFormatterKey(const aSymbolKind: TDBGSymbolKind;
+      const aTypeName: string): string;
   protected
     function GetDebuggerClass(const AIndex: Integer): TDebuggerClass;
     function FindDebuggerClass(const Astring: String): TDebuggerClass;
   public
     function DebuggerCount: Integer;
+
+    procedure RegisterValueFormatter(const aSymbolKind: TDBGSymbolKind;
+      const aTypeName: string; const aFunc: TStringFunction);
+    function FormatValue(const aSymbolKind: TDBGSymbolKind;
+      const aTypeName, aValue: string): string;
+    function FormatValue(const aDBGType: TDBGType;
+      const aValue: string): string;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   end;
 
 procedure RegisterDebugger(const ADebuggerClass: TDebuggerClass);
@@ -1924,6 +1946,7 @@ function dbgs(AName: TDBGCommand): String; overload;
 
 var
   DbgStateChangeCounter: Integer = 0;  // workaround for state changes during TWatchValue.GetValue
+  DebugBossManager: TBaseDebugManagerIntf;
 
 implementation
 
@@ -2880,11 +2903,26 @@ end;
 
 { TLocalsValue }
 
+destructor TLocalsValue.Destroy;
+begin
+  FDBGType.Free;
+
+  inherited Destroy;
+end;
+
 procedure TLocalsValue.DoAssign(AnOther: TDbgEntityValue);
 begin
   inherited DoAssign(AnOther);
   FName := TLocalsValue(AnOther).FName;
   FValue := TLocalsValue(AnOther).FValue;
+  // don't assign FDBGType
+end;
+
+procedure TLocalsValue.SetDBGType(const aDBGType: TDBGType);
+begin
+  if FDBGType = aDBGType then Exit;
+  FreeAndNil(FDBGType);
+  FDBGType := aDBGType;
 end;
 
 { TLocalsListBase }
@@ -6092,12 +6130,29 @@ begin
   DebugLn(DBG_WARNINGS, 'TDebuggerIntf.Stop Class=',ClassName,' failed.');
 end;
 
+constructor TBaseDebugManagerIntf.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  FValueFormatterList := TStringList.Create;
+  FValueFormatterList.Sorted := True;
+  FValueFormatterList.Duplicates := dupError;
+end;
+
 function TBaseDebugManagerIntf.DebuggerCount: Integer;
 begin
   Result := MDebuggerClasses.Count;
 end;
 
-function TBaseDebugManagerIntf.FindDebuggerClass(const AString: String): TDebuggerClass;
+destructor TBaseDebugManagerIntf.Destroy;
+begin
+  FValueFormatterList.Free;
+
+  inherited Destroy;
+end;
+
+function TBaseDebugManagerIntf.FindDebuggerClass(const Astring: String
+  ): TDebuggerClass;
 var
   idx: Integer;
 begin
@@ -6107,9 +6162,43 @@ begin
   else Result := TDebuggerClass(MDebuggerClasses.Objects[idx]);
 end;
 
+function TBaseDebugManagerIntf.FormatValue(const aSymbolKind: TDBGSymbolKind;
+  const aTypeName, aValue: string): string;
+var
+  I: Integer;
+begin
+  I := FValueFormatterList.IndexOf(ValueFormatterKey(aSymbolKind, aTypeName));
+  if I>=0 then
+    Result := TStringFunction(FValueFormatterList.Objects[I])(aValue)
+  else
+    Result := aValue;
+end;
+
+function TBaseDebugManagerIntf.FormatValue(const aDBGType: TDBGType;
+  const aValue: string): string;
+begin
+  if aDBGType=nil then
+    Result := aValue
+  else
+    Result := FormatValue(aDBGType.Kind, aDBGType.TypeName, aValue);
+end;
+
 function TBaseDebugManagerIntf.GetDebuggerClass(const AIndex: Integer): TDebuggerClass;
 begin
   Result := TDebuggerClass(MDebuggerClasses.Objects[AIndex]);
+end;
+
+procedure TBaseDebugManagerIntf.RegisterValueFormatter(
+  const aSymbolKind: TDBGSymbolKind; const aTypeName: string;
+  const aFunc: TStringFunction);
+begin
+  FValueFormatterList.AddObject(ValueFormatterKey(aSymbolKind, aTypeName), TObject(aFunc));
+end;
+
+function TBaseDebugManagerIntf.ValueFormatterKey(
+  const aSymbolKind: TDBGSymbolKind; const aTypeName: string): string;
+begin
+  Result := UpperCase(IntToStr(Ord(aSymbolKind))+':'+aTypeName);
 end;
 
 

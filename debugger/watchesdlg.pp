@@ -825,6 +825,7 @@ procedure TWatchesDlg.UpdateItem(const AItem: TListItem; const AWatch: TIdeWatch
   end;
 var
   WatchValue: TIdeWatchValue;
+  WatchValueStr: string;
 begin
   DebugBoss.LockCommandProcessing;
   try
@@ -840,11 +841,12 @@ begin
   if (WatchValue <> nil) and
      ( (GetSelectedSnapshot = nil) or not(WatchValue.Validity in [ddsUnknown, ddsEvaluating, ddsRequested]) )
   then begin
+    WatchValueStr := ClearMultiline(DebugBoss.FormatValue(WatchValue.TypeInfo, WatchValue.Value));
     if (WatchValue.TypeInfo <> nil) and
        (WatchValue.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
        (WatchValue.TypeInfo.Len >= 0)
-    then AItem.SubItems[0] := Format(drsLen, [WatchValue.TypeInfo.Len]) + ClearMultiline(WatchValue.Value)
-    else AItem.SubItems[0] := ClearMultiline(WatchValue.Value);
+    then AItem.SubItems[0] := Format(drsLen, [WatchValue.TypeInfo.Len]) + WatchValueStr
+    else AItem.SubItems[0] := WatchValueStr;
   end
   else
     AItem.SubItems[0] := '<not evaluated>';
