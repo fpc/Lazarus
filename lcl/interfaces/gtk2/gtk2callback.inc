@@ -3604,95 +3604,91 @@ begin
   {$ENDIF}
   if (Data=nil) or (TimeID=0) or (Info=0) or (TargetWidget=nil) then ;
   if SelectionData^.Target=0 then exit;
-  for ClipboardType:=Low(TClipboardType) to High(TClipboardType) do begin
-    if SelectionData^.Selection=ClipboardTypeAtoms[ClipboardType] then begin
-      if Assigned(ClipboardHandler[ClipboardType]) then begin
-        // handler found for this type of clipboard
-        // now create a stream and find a supported format
-        {$IFDEF DEBUG_CLIPBOARD}
-        DebugLn('[ClipboardSelectionRequestHandler] "',ClipboardTypeName[ClipboardType],'" Format=',GdkAtomToStr(SelectionData^.Target),' ID=',dbgs(SelectionData^.Target));
-        {$ENDIF}
-        MemStream:=TMemoryStream.Create;
-        try
-          // the gtk-interface provides automatically some formats, that the lcl
-          // does not know. Wrapping them to lcl formats ...
-          FormatID:=SelectionData^.Target;
-          if ((FormatID=gdk_atom_intern('UTF8_STRING',GdkTrue))
-            and (ClipboardExtraGtkFormats[ClipboardType][gfUTF8_STRING]))
-          or ((FormatID=gdk_atom_intern('COMPOUND_TEXT',GdkTrue))
-            and (ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]))
-          or ((FormatID=gdk_atom_intern('STRING',GdkTrue))
-            and (ClipboardExtraGtkFormats[ClipboardType][gfSTRING]))
-          or ((FormatID=gdk_atom_intern('TEXT',GdkTrue))
-            and (ClipboardExtraGtkFormats[ClipboardType][gfTEXT]))
-          then
-            FormatID:=gdk_atom_intern('text/plain',GdkTrue);
-
-          {$IFDEF DEBUG_CLIPBOARD}
-          DebugLn('[ClipboardSelectionRequestHandler] FormatID=',dbgs(FormatID),'=',GdkAtomToStr(FormatID),' ',dbgs(ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]));
-          {$ENDIF}
-          // get the requested data by calling the handler for this clipboard type
-          ClipboardHandler[ClipboardType](FormatID,MemStream);
-          MemStream.Position:=0;
-
-          // build clipboard data for gtk
-          Buffer:=nil;
-          BufLength:=0;
-          BitCount:=8;
-
-          // if the format was wrapped, transform it back
-          if (FormatID=gdk_atom_intern('text/plain',GdkTrue)) then begin
-            if (SelectionData^.Target=gdk_atom_intern('COMPOUND_TEXT',GdkTrue))
-            then begin
-              // transform text/plain to COMPOUND_TEXT
-              BufLength:=integer(MemStream.Size);
-              P:=StrAlloc(BufLength+1);
-              MemStream.Read(P^,BufLength);
-              P[BufLength]:=#0;
-
-              BufLength:=0;
-              gdk_string_to_compound_text(P,
-                @SelectionData^._Type,
-                @SelectionData^.Format,ppguchar(@Buffer),@BufLength);
-              StrDispose(P);
-              gtk_selection_data_set(SelectionData,SelectionData^.Target,
-                SelectionData^.Format,Buffer,BufLength);
-              gdk_free_compound_text(Buffer);
-              exit;
-            end;
-          end;
-          if Buffer=nil then begin
-            {$IFDEF DEBUG_CLIPBOARD}
-            DebugLn('[ClipboardSelectionRequestHandler] Default MemStream.Size=',dbgs(MemStream.Size));
-            {$ENDIF}
-            BufLength:=integer(MemStream.Size);
-            if BufLength>0 then begin
-              GetMem(Buffer,BufLength);
-              MemStream.Read(Buffer^,BufLength);
-              {SetLength(s,MemStream.Size);
-              MemStream.Position:=0;
-              MemStream.Read(s[1],MemStream.Size);
-              DebugLn(' >>> "',s,'"');}
-            end;
-          end;
-          {$IFDEF DEBUG_CLIPBOARD}
-          DebugLn('[ClipboardSelectionRequestHandler] Len=',dbgs(BufLength));
-          {$ENDIF}
-          // workaround for issues 21453 and 30071.
-          // gtk_selection_data_set auto adds the required null term. Remove it here.
-          if (BufLength>0) and (PChar(Buffer+BufLength-1)^ = #0) then
-            dec(BufLength);
-          gtk_selection_data_set(SelectionData,SelectionData^.Target,BitCount,
-            Buffer,BufLength);
-          if Buffer<>nil then
-            FreeMem(Buffer);
-        finally
-          MemStream.Free;
-        end;
-      end;
+  for ClipboardType:=Low(TClipboardType) to High(TClipboardType) do
+  begin
+    if SelectionData^.Selection<>ClipboardTypeAtoms[ClipboardType] then
+      Continue;
+    if ClipboardHandler[ClipboardType]=nil then
       break;
+    // handler found for this type of clipboard
+    // now create a stream and find a supported format
+    {$IFDEF DEBUG_CLIPBOARD}
+    DebugLn('[ClipboardSelectionRequestHandler] "',ClipboardTypeName[ClipboardType],'" Format=',GdkAtomToStr(SelectionData^.Target),' ID=',dbgs(SelectionData^.Target));
+    {$ENDIF}
+    MemStream:=TMemoryStream.Create;
+    try
+      // the gtk-interface provides automatically some formats, that the lcl
+      // does not know. Wrapping them to lcl formats ...
+      FormatID:=SelectionData^.Target;
+      if ((FormatID=gdk_atom_intern('UTF8_STRING',GdkTrue))
+        and (ClipboardExtraGtkFormats[ClipboardType][gfUTF8_STRING]))
+      or ((FormatID=gdk_atom_intern('COMPOUND_TEXT',GdkTrue))
+        and (ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]))
+      or ((FormatID=gdk_atom_intern('STRING',GdkTrue))
+        and (ClipboardExtraGtkFormats[ClipboardType][gfSTRING]))
+      or ((FormatID=gdk_atom_intern('TEXT',GdkTrue))
+        and (ClipboardExtraGtkFormats[ClipboardType][gfTEXT]))
+      then
+        FormatID:=gdk_atom_intern('text/plain',GdkTrue);
+
+      {$IFDEF DEBUG_CLIPBOARD}
+      DebugLn('[ClipboardSelectionRequestHandler] FormatID=',dbgs(FormatID),'=',GdkAtomToStr(FormatID),' ',dbgs(ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]));
+      {$ENDIF}
+      // get the requested data by calling the handler for this clipboard type
+      ClipboardHandler[ClipboardType](FormatID,MemStream);
+      MemStream.Position:=0;
+
+      // build clipboard data for gtk
+      Buffer:=nil;
+      BufLength:=0;
+      BitCount:=8;
+
+      // if the format was wrapped, transform it back
+      if (FormatID=gdk_atom_intern('text/plain',GdkTrue))
+      and (SelectionData^.Target=gdk_atom_intern('COMPOUND_TEXT',GdkTrue))
+      then begin
+        // transform text/plain to COMPOUND_TEXT
+        BufLength:=integer(MemStream.Size);
+        P:=StrAlloc(BufLength+1);
+        MemStream.Read(P^,BufLength);
+        P[BufLength]:=#0;
+        BufLength:=0;
+        gdk_string_to_compound_text(P,
+          @SelectionData^._Type,
+          @SelectionData^.Format,ppguchar(@Buffer),@BufLength);
+        StrDispose(P);
+        gtk_selection_data_set(SelectionData,SelectionData^.Target,
+          SelectionData^.Format,Buffer,BufLength);
+        gdk_free_compound_text(Buffer);
+        exit;
+      end;
+      {$IFDEF DEBUG_CLIPBOARD}
+      DebugLn('[ClipboardSelectionRequestHandler] Default MemStream.Size=',dbgs(MemStream.Size));
+      {$ENDIF}
+      BufLength:=integer(MemStream.Size);
+      if BufLength>0 then begin
+        GetMem(Buffer,BufLength);
+        Assert(Assigned(Buffer), 'ClipboardSelectionRequestHandler: Buffer = Nil');
+        MemStream.Read(Buffer^,BufLength);
+        {SetLength(s,MemStream.Size);
+        MemStream.Position:=0;
+        MemStream.Read(s[1],MemStream.Size);
+        DebugLn(' >>> "',s,'"');}
+        {$IFDEF DEBUG_CLIPBOARD}
+        DebugLn('[ClipboardSelectionRequestHandler] Len=',dbgs(BufLength));
+        {$ENDIF}
+        // workaround for issues 21453 and 30071.
+        // gtk_selection_data_set auto adds the required null term. Remove it here.
+        if (BufLength>0) and (PChar(Buffer+BufLength-1)^ = #0) then
+          dec(BufLength);
+        gtk_selection_data_set(SelectionData,SelectionData^.Target,BitCount,Buffer,BufLength);
+        FreeMem(Buffer);
+      end;
+    finally
+      MemStream.Free;
     end;
-  end;
+    break;
+  end; // for
 end;
 
 {------------------------------------------------------------------------------
