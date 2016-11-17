@@ -234,6 +234,7 @@ type
     procedure SetDirectivesFilter(const AValue: string);
     procedure SetMode(AMode: TCodeExplorerMode);
     procedure UpdateMode;
+    procedure UpdateCaption;
   protected
     fLastCodeTool: TCodeTool;
     fCodeSortedForStartPos: TAvgLvlTree;// tree of TTreeNode sorted for TViewNodeData(Node.Data).StartPos, secondary EndPos
@@ -464,7 +465,7 @@ begin
   UpdateMode;
 
   Name:=NonModalIDEWindowNames[nmiwCodeExplorerName];
-  Caption := lisMenuViewCodeExplorer;
+  UpdateCaption;
 
   case CodeExplorerOptions.Page of
   cepDirectives: MainNotebook.ActivePage:=DirectivesPage;
@@ -1933,6 +1934,15 @@ begin
   Refresh(true);
 end;
 
+procedure TCodeExplorerView.UpdateCaption;
+var
+  s: String;
+begin
+  s:=lisMenuViewCodeExplorer;
+  if (CodeExplorerOptions.Refresh=cerManual) and (FCodeFilename<>'') then
+    s+=' - ' + ExtractFileName(FCodeFilename);
+end;
+
 procedure TCodeExplorerView.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
@@ -2235,7 +2245,7 @@ begin
 
       CodeTreeview.EndUpdate;
     end;
-    Caption := lisMenuViewCodeExplorer + ' - ' + ExtractFileName(FCodeFilename);
+    UpdateCaption;
     if HostDockSite <> nil then
       HostDockSite.UpdateDockCaption();
   finally
