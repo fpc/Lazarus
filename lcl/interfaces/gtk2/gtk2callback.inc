@@ -3678,6 +3678,10 @@ begin
           {$IFDEF DEBUG_CLIPBOARD}
           DebugLn('[ClipboardSelectionRequestHandler] Len=',dbgs(BufLength));
           {$ENDIF}
+          // workaround for issues 21453 and 30071.
+          // gtk_selection_data_set auto adds the required null term. Remove it here.
+          if (BufLength>0) and (PChar(Buffer+BufLength-1)^ = #0) then
+            dec(BufLength);
           gtk_selection_data_set(SelectionData,SelectionData^.Target,BitCount,
             Buffer,BufLength);
           if Buffer<>nil then
