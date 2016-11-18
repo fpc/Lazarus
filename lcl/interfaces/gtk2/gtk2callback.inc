@@ -3590,9 +3590,8 @@ var
   P: PChar;
 begin
   BufLength:=integer(MemStream.Size);
-  P:=StrAlloc(BufLength+1);
+  P:=StrAlloc(BufLength);
   MemStream.Read(P^,BufLength);
-  P[BufLength]:=#0;
   Buffer:=nil;
   BufLength:=0;
   gdk_string_to_compound_text(P,
@@ -3611,10 +3610,10 @@ var
 begin
   BufLength:=integer(MemStream.Size);
   GetMem(Buffer,BufLength);
-  Assert(Assigned(Buffer), 'ClipboardSelectionRequestHandler: Buffer = Nil');
+  Assert(Assigned(Buffer) and (BufLength>0), 'SetData: GTK2 clipboard Buffer=Nil or empty.');
   MemStream.Read(Buffer^,BufLength);
   // Issue #21453. gtk_selection_data_set adds the required null. Remove it here.
-  if (BufLength>0) and (PChar(Buffer+BufLength-1)^ = #0) then
+  if PChar(Buffer+BufLength-1)^ = #0 then
     dec(BufLength);
   gtk_selection_data_set(SelectionData,SelectionData^.Target,8,Buffer,BufLength);
   FreeMem(Buffer);
