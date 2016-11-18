@@ -64,10 +64,14 @@ type
     FDpiAware: TXPManifestDpiAware;
     FUIAccess: Boolean;
     FUseManifest: boolean;
+    FTextName: string;
+    FTextDesc: string;
     procedure SetDpiAware(AValue: TXPManifestDpiAware);
     procedure SetExecutionLevel(AValue: TXPManifestExecutionLevel);
     procedure SetUIAccess(AValue: Boolean);
     procedure SetUseManifest(const AValue: boolean);
+    procedure SetTextName(const AValue: string);
+    procedure SetTextDesc(const AValue: string);
   public
     constructor Create; override;
     function UpdateResources(AResources: TAbstractProjectResources; const {%H-}MainFilename: string): Boolean; override;
@@ -78,6 +82,8 @@ type
     property DpiAware: TXPManifestDpiAware read FDpiAware write SetDpiAware;
     property ExecutionLevel: TXPManifestExecutionLevel read FExecutionLevel write SetExecutionLevel;
     property UIAccess: Boolean read FUIAccess write SetUIAccess;
+    property TextName: string read FTextName write SetTextName;
+    property TextDesc: string read FTextDesc write SetTextDesc;
   end;
 
 const
@@ -100,8 +106,8 @@ const
   sManifestFileData: String =
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'#$D#$A+
     '<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">'#$D#$A+
-    ' <assemblyIdentity version="1.0.0.0" processorArchitecture="*" name="CompanyName.ProductName.YourApp" type="win32"/>'#$D#$A+
-    ' <description>Your application description here.</description>'#$D#$A+
+    ' <assemblyIdentity version="1.0.0.0" processorArchitecture="*" name="%s" type="win32"/>'#$D#$A+
+    ' <description>%s</description>'#$D#$A+
     ' <dependency>'#$D#$A+
     '  <dependentAssembly>'#$D#$A+
     '   <assemblyIdentity type="win32" name="Microsoft.Windows.Common-Controls" version="6.0.0.0" processorArchitecture="*" publicKeyToken="6595b64144ccf1df" language="*"/>'#$D#$A+
@@ -170,6 +176,20 @@ begin
   Modified := True;
 end;
 
+procedure TProjectXPManifest.SetTextDesc(const AValue: string);
+begin
+  if FTextDesc = AValue then Exit;
+  FTextDesc := AValue;
+  Modified := True;
+end;
+
+procedure TProjectXPManifest.SetTextName(const AValue: string);
+begin
+  if FTextName = AValue then Exit;
+  FTextName := AValue;
+  Modified := True;
+end;
+
 procedure TProjectXPManifest.SetUIAccess(AValue: Boolean);
 begin
   if FUIAccess = AValue then Exit;
@@ -185,6 +205,8 @@ begin
   DpiAware := xmdaFalse;
   ExecutionLevel := xmelAsInvoker;
   UIAccess := False;
+  TextName := 'CompanyName.ProductName.AppName';
+  TextDesc := 'Your application description.';
 end;
 
 function TProjectXPManifest.UpdateResources(AResources: TAbstractProjectResources;
@@ -203,6 +225,8 @@ begin
     RType.Free; //no longer needed
     RName.Free;
     ManifestFileData := Format(sManifestFileData, [
+      TextName,
+      TextDesc,
       ExecutionLevelToStr[ExecutionLevel],
       BoolToStr(UIAccess, 'true', 'false'),
       ManifestDpiAwareValues[DpiAware]]);
@@ -218,6 +242,8 @@ begin
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/DpiAware/Value', ManifestDpiAwareValues[DpiAware], ManifestDpiAwareValues[xmdaFalse]);
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/ExecutionLevel/Value', ExecutionLevelToStr[ExecutionLevel], ExecutionLevelToStr[xmelAsInvoker]);
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/UIAccess/Value', UIAccess, False);
+  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/TextName/Value', TextName, '');
+  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/TextDesc/Value', TextDesc, '');
 end;
 
 procedure TProjectXPManifest.ReadFromProjectFile(AConfig: TObject;
@@ -242,7 +268,10 @@ begin
     ExecutionLevel := TXPManifestExecutionLevel(Cfg.GetValue(Path+'General/XPManifest/ExecutionLevel/Value', 0))
   else
     ExecutionLevel := StrToXPManifestExecutionLevel(Cfg.GetValue(Path+'General/XPManifest/ExecutionLevel/Value', ''));
+
   UIAccess := Cfg.GetValue(Path+'General/XPManifest/UIAccess/Value', False);
+  TextName := Cfg.GetValue(Path+'General/XPManifest/TextName/Value', TextName);
+  TextDesc := Cfg.GetValue(Path+'General/XPManifest/TextDesc/Value', TextDesc);
 end;
 
 initialization

@@ -2554,6 +2554,7 @@ resourcestring
   dlgPODpiAwarenessOldOffNewPerMonitor = 'Vista-8: off, 8.1+: per monitor';
   dlgPODpiAwarenessOldOnNewPerMonitor = 'Vista-8: on, 8.1+: per monitor';
   dlgPOUIAccess = 'UI Access (uiAccess)';
+  dlgPOTextFields = 'Text fields';
   dlgPOAsInvoker = 'as invoker (asInvoker)';
   dlgPOHighestAvailable = 'highest available (highestAvailable)';
   dlgPORequireAdministrator = 'require administrator (requireAdministrator)';

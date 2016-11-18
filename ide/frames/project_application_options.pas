@@ -16,6 +16,7 @@ type
 
   TProjectApplicationOptionsFrame = class(TAbstractIDEOptionsEditor)
     AppSettingsGroupBox: TGroupBox;
+    TextFieldButton: TButton;
     CreateAppBundleButton: TBitBtn;
     DefaultIconButton: TButton;
     DpiAwareLabel: TLabel;
@@ -46,6 +47,7 @@ type
     procedure IconTrackChange(Sender: TObject);
     procedure LoadIconButtonClick(Sender: TObject);
     procedure SaveIconButtonClick(Sender: TObject);
+    procedure TextFieldButtonClick(Sender: TObject);
     procedure UseXPManifestCheckBoxChange(Sender: TObject);
   private
     FProject: TProject;
@@ -171,6 +173,22 @@ begin
     IconImage.Picture.SaveToFile(SavePictureDialog1.FileName);
 end;
 
+procedure TProjectApplicationOptionsFrame.TextFieldButtonClick(Sender: TObject);
+var
+  Caps, Values: array[0..1] of string;
+begin
+  Caps[0] := lisName;
+  Caps[1] := lisCodeHelpDescrTag;
+  Values[0] := FProject.ProjResources.XPManifest.TextName;
+  Values[1] := FProject.ProjResources.XPManifest.TextDesc;
+
+  if InputQuery(TextFieldButton.Caption, Caps, Values) then
+  begin
+    FProject.ProjResources.XPManifest.TextName := Values[0];
+    FProject.ProjResources.XPManifest.TextDesc := Values[1];
+  end;
+end;
+
 procedure TProjectApplicationOptionsFrame.UseXPManifestCheckBoxChange(Sender: TObject);
 begin
   DpiAwareLabel.Enabled := UseXPManifestCheckBox.Checked;
@@ -178,6 +196,7 @@ begin
   ExecutionLevelLabel.Enabled := UseXPManifestCheckBox.Checked;
   ExecutionLevelComboBox.Enabled := UseXPManifestCheckBox.Checked;
   UIAccessCheckBox.Enabled := UseXPManifestCheckBox.Checked;
+  TextFieldButton.Enabled := UseXPManifestCheckBox.Checked;
 end;
 
 procedure TProjectApplicationOptionsFrame.SetIconFromStream(Value: TStream);
@@ -236,6 +255,7 @@ begin
   for DpiLevel in TXPManifestDpiAware do
     DpiAwareComboBox.Items.Add(DpiLevelNames[DpiLevel] + ' (' + ManifestDpiAwareValues[DpiLevel] + ')');
   UIAccessCheckBox.Caption := dlgPOUIAccess;
+  TextFieldButton.Caption := dlgPOTextFields;
 
   // Darwin specific, Application Bundle
   DarwinDividerBevel.Caption := lisForDarwin;
@@ -281,6 +301,7 @@ begin
     ExecutionLevelLabel.Enabled := UseXPManifestCheckBox.Checked;
     ExecutionLevelComboBox.Enabled := UseXPManifestCheckBox.Checked;
     UIAccessCheckBox.Enabled := UseXPManifestCheckBox.Checked;
+    TextFieldButton.Enabled := UseXPManifestCheckBox.Checked;
     AStream := TProjectIcon(ProjResources[TProjectIcon]).GetStream;
     try
       SetIconFromStream(AStream);
