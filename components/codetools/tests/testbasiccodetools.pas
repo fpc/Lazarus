@@ -1,19 +1,23 @@
 {
  Test with:
-   ./runtests --format=plain --suite=TTestBasicCodeTools
-   ./runtests --format=plain --suite=TestFindLineEndOrCodeInFrontOfPosition
-   ./runtests --format=plain --suite=TestHasTxtWord
-   ./runtests --format=plain --suite=TestBasicFindCommentEnd
-   ./runtests --format=plain --suite=TestBasicFindNextComment
-   ./runtests --format=plain --suite=TestCompareTextIgnoringSpace
-   ./runtests --format=plain --suite=TestCleanCodeFromComments
-   ./runtests --format=plain --suite=TestGuessIndentSize
-   ./runtests --format=plain --suite=TestReindent
-   ./runtests --format=plain --suite=TestSimpleFormat
-   ./runtests --format=plain --suite=TestDateToCfgStr
-   ./runtests --format=plain --suite=TestFilenameIsMatching
-   ./runtests --format=plain --suite=TestExtractFileUnitname
-   ./runtests --format=plain --suite=TestChangeLineEndings
+   ./testcodetools --format=plain --suite=TTestBasicCodeTools
+   ./testcodetools --format=plain --suite=TestFindLineEndOrCodeInFrontOfPosition
+   ./testcodetools --format=plain --suite=TestHasTxtWord
+   ./testcodetools --format=plain --suite=TestBasicFindCommentEnd
+   ./testcodetools --format=plain --suite=TestBasicFindNextComment
+   ./testcodetools --format=plain --suite=TestCompareTextIgnoringSpace
+   ./testcodetools --format=plain --suite=TestCleanCodeFromComments
+   ./testcodetools --format=plain --suite=TestGuessIndentSize
+   ./testcodetools --format=plain --suite=TestReindent
+   ./testcodetools --format=plain --suite=TestSimpleFormat
+   ./testcodetools --format=plain --suite=TestStringToPascalConst
+
+   ./testcodetools --format=plain --suite=TestDateToCfgStr
+   ./testcodetools --format=plain --suite=TestFilenameIsMatching
+   ./testcodetools --format=plain --suite=TestExtractFileUnitname
+   ./testcodetools --format=plain --suite=TestParseFPCParameters
+
+   ./testcodetools --format=plain --suite=TestChangeLineEndings
 }
 unit TestBasicCodetools;
 
@@ -41,6 +45,7 @@ type
     procedure TestGuessIndentSize;
     procedure TestReIndent;
     procedure TestSimpleFormat;
+    procedure TestStringToPascalConst;
     // FileProcs
     procedure TestDateToCfgStr;
     procedure TestFilenameIsMatching;
@@ -290,6 +295,27 @@ begin
   t('A%1B',['Foo','Bar'],'ABarB,Foo');
   t('A%1%0B',['Foo','Bar'],'ABarFooB');
   t('A%1:s%0:sB',['Foo','Bar'],'ABarFooB');
+end;
+
+procedure TTestBasicCodeTools.TestStringToPascalConst;
+
+  procedure t(s, Expected: string);
+  var
+    Actual: String;
+  begin
+    Actual:=StringToPascalConst(s);
+    AssertEquals('StringToPascalConst <'+DbgStr(s)+'>',Expected,Actual);
+  end;
+
+begin
+  t('','''''');
+  t('Foo','''Foo''');
+  t('Foo"','''Foo"''');
+  t('Foo''','''Foo''''''');
+  t('Fo''o','''Fo''''o''');
+  t('''Foo','''''''Foo''');
+  t('Foo'#10,'''Foo''#10');
+  t('Foo'#10'Bar','''Foo''#10''Bar''');
 end;
 
 procedure TTestBasicCodeTools.TestDateToCfgStr;

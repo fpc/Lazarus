@@ -5101,7 +5101,8 @@ begin
 end;
 
 function StringToPascalConst(const s: string): string;
-// converts s to
+// converts s to a Pascal string literal
+// e.g. foo becomes 'foo', bytes 0..31 become #ord
 
   function Convert(var DestStr: string): integer;
   var
@@ -5111,8 +5112,9 @@ function StringToPascalConst(const s: string): string;
     InString: Boolean;
   begin
     SrcLen:=length(s);
-    DestPos:=0;
-    InString:=false;
+    DestPos:=1;
+    if DestStr<>'' then DestStr[DestPos]:='''';
+    InString:=true;
     for SrcPos:=1 to SrcLen do begin
       inc(DestPos);
       c:=s[SrcPos];
@@ -5126,8 +5128,8 @@ function StringToPascalConst(const s: string): string;
         if DestStr<>'' then
           DestStr[DestPos]:=c;
         if c='''' then begin
-          if DestStr<>'' then DestStr[DestPos]:='''';
           inc(DestPos);
+          if DestStr<>'' then DestStr[DestPos]:='''';
         end;
       end else begin
         // special char
