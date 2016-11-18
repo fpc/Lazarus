@@ -261,7 +261,7 @@ end;
 
 function TXMLConfig.GetValue(const APath: String; ADefault: Integer): Integer;
 begin
-  Result := StrToIntDef(GetValue(APath, IntToStr(ADefault)),ADefault);
+  Result := StrToIntDef(GetValue(APath, ''),ADefault);
 end;
 
 procedure TXMLConfig.GetValue(const APath: String; out ARect: TRect;
@@ -277,16 +277,11 @@ function TXMLConfig.GetValue(const APath: String; ADefault: Boolean): Boolean;
 var
   s: String;
 begin
-  if ADefault then
-    s := 'True'
-  else
-    s := 'False';
+  s := GetValue(APath, '');
 
-  s := GetValue(APath, s);
-
-  if CompareText(s,'TRUE')=0 then
+  if SameText(s, 'True') then
     Result := True
-  else if CompareText(s,'FALSE')=0 then
+  else if SameText(s, 'False') then
     Result := False
   else
     Result := ADefault;
@@ -295,7 +290,7 @@ end;
 function TXMLConfig.GetExtendedValue(const APath: String;
   const ADefault: extended): extended;
 begin
-  Result:=StrToExtended(GetValue(APath,ExtendedToStr(ADefault)),ADefault);
+  Result:=StrToExtended(GetValue(APath,''),ADefault);
 end;
 
 procedure TXMLConfig.SetValue(const APath, AValue: String);
