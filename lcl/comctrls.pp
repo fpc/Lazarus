@@ -356,7 +356,7 @@ type
   // These are LCL additions
   TCTabControlOption = (
     nboShowCloseButtons, nboMultiLine, nboHidePageListPopup,
-    nboKeyboardTabSwitch, nboShowAddTabButton);
+    nboKeyboardTabSwitch, nboShowAddTabButton, nboDoChangeOnSetIndex);
   TCTabControlOptions = set of TCTabControlOption;
   TCTabControlCapability = (nbcShowCloseButtons, nbcMultiLine, nbcPageListPopup, nbcShowAddTabButton);
   TCTabControlCapabilities = set of TCTabControlCapability;
@@ -413,7 +413,6 @@ type
     procedure SetActivePage(const Value: String);
     procedure SetActivePageComponent(const AValue: TCustomPage);
     procedure SetImages(const AValue: TCustomImageList);
-    procedure SetOptions(const AValue: TCTabControlOptions);
     procedure SetPageIndex(AValue: Integer);
     procedure SetPages(AValue: TStrings);
     procedure SetShowTabs(AValue: Boolean);
@@ -425,6 +424,7 @@ type
     PageClass: TCustomPageClass;
     function GetPageClass: TCustomPageClass; virtual;
     function GetListClass: TNBBasePagesClass; virtual;
+    procedure SetOptions(const AValue: TCTabControlOptions); virtual;
     procedure AddRemovePageHandle(APage: TCustomPage); virtual;
     procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
     class procedure WSRegisterClass; override;
@@ -805,6 +805,7 @@ type
     procedure SetTabStop(const AValue: Boolean);
     procedure SetTabWidth(const AValue: Smallint);
   protected
+    procedure SetOptions(const AValue: TCTabControlOptions); override;
     procedure AddRemovePageHandle(APage: TCustomPage); override;
     function CanChange: Boolean; override;
     function CanShowTab(ATabIndex: Integer): Boolean; virtual;
@@ -3924,6 +3925,7 @@ const
 
 function CompareExpandedNodes(Data1, Data2: Pointer): integer;
 function CompareTextWithExpandedNode(Key, Data: Pointer): integer;
+function DbgS(Opt: TCTabControlOptions): String; overload;
 
 procedure Register;
 

@@ -14,6 +14,22 @@
 
 {off $DEFINE NOTEBOOK_DEBUG}
 
+const
+  TabControlOptionStr: Array[TCTabControlOption] of String = (
+      'nboShowCloseButtons', 'nboMultiLine', 'nboHidePageListPopup',
+      'nboKeyboardTabSwitch', 'nboShowAddTabButton', 'nboDoChangeOnSetIndex'
+    );
+
+function DbgS(Opt: TCTabControlOptions): String; overload;
+var
+  O: TCTabControlOption;
+begin
+  Result := '';
+  for O in Opt do Result := Result +  TabControlOptionStr[O] + ',';
+  if (Length(Result) > 0) then System.Delete(Result, Length(Result), 1);
+  Result := '[' + Result + ']';
+end;
+
 {------------------------------------------------------------------------------
   TNBPages Constructor
  ------------------------------------------------------------------------------}
@@ -585,9 +601,12 @@ begin
   //debugln('TCustomTabControl.SetPageIndex B ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
 
   InternalSetPageIndex(AValue);
-  //Delphi does not do this. In future we might make this configurable, so for the time being I commented it out
-  //if ([csDesigning, csLoading, csDestroying] * ComponentState = []) then
-  //  DoChange;
+
+  //debugln(['TCustomTabControl.SetPageIndex C ',dbgsName(Self)]);
+  //debugln(['  FOptions = ',DbgS(Foptions)]);
+
+  if ([csDesigning, csLoading, csDestroying] * ComponentState = []) and (nboDoChangeOnSetIndex in Options) then
+    DoChange;
 end;
 
 {$IFDEF old}

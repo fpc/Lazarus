@@ -515,6 +515,14 @@ begin
   TTabControlStrings(FTabs).TabWidth:=AValue;
 end;
 
+procedure TTabControl.SetOptions(const AValue: TCTabControlOptions);
+begin
+  inherited SetOptions(AValue);
+  //propagate the changes to FTabs.NoteBook, this is needed in TCustomTabControl.SetPageIndex
+  //since SetTabIndex eventually does FTabs.NoteBook.SetPageIndex
+  TTabControlNoteBookStrings(FTabs).NoteBook.Options := AValue;
+end;
+
 procedure TTabControl.AddRemovePageHandle(APage: TCustomPage);
 begin
   // There are no pages, don't create a handle
