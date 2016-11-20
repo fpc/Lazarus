@@ -169,7 +169,8 @@ var
   F2: TPGInterPkgFile absolute File2;
 begin
   // compare case insensitive to find cross platform duplicates
-  Result:=CompareFilenamesIgnoreCase(F1.ShortFilename,F2.ShortFilename);
+  // Note: do not use CompareFilenamesIgnoreCase, because of Turkish ı, I
+  Result:=CompareText(F1.ShortFilename,F2.ShortFilename);
 end;
 
 { TPGIPAmbiguousFileGroup }
