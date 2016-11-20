@@ -1,0 +1,17 @@
+1. Name: Free-icons
+   WebPage: http://www.aha-soft.com/free-icons/
+   License: Creative Commons Attribution-Share Alike 3.0
+2. Name: Tango-icon-theme
+   WebPage: http://http.debian.net/debian/pool/main/t/tango-icon-theme/tango-icon-theme_0.8.90.orig.tar.gz
+   License: GPL
+3. Name: Trainee Icons
+   WebPage: http://emey87.deviantart.com/art/trainee-iconset-226-icons-192928994
+   Licnese: CC Attribution-No Derivative 4.0
+4. Name: Led icon-set
+   WebPage: http://led24.de/iconset/
+   License: CC Attribution 4.0
+5. Name: FamFamFam
+   WebPage: http://www.famfamfam.com/lab/icons/mini/
+   License: CC Attribution 4.0   
+
+
