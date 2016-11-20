@@ -89,7 +89,6 @@ var
 begin
   if not WSCheckMenuItem(AMenuItem, 'AttachMenu') or (AMenuItem.Parent = nil) then
     Exit;
-
   Widget := TQtWidget(AMenuItem.Parent.Handle);
   if Widget is TQtMenuBar then
     TQtMenuBar(Widget).insertMenu(AMenuItem.Parent.VisibleIndexOf(AMenuItem),
@@ -215,7 +214,11 @@ begin
   begin
     if (AMenuItem.Owner is TMainMenu) and
       Assigned(TMainMenu(AMenuItem.Owner).Parent) and
-      (TMainMenu(AMenuItem.Owner).Parent is TCustomForm) then
+      (
+      (TMainMenu(AMenuItem.Owner).Parent is TCustomForm) or
+      (TMainMenu(AMenuItem.Owner).Parent is TCustomFrame)
+      )
+       then
     begin
       {do not destroy menuitem handle if parent form handle = 0 - it's
        already destroyed (TCustomForm.DestroyWnd isn't called when
@@ -397,16 +400,31 @@ class function TQtWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 var
   MenuBar: TQtMenuBar;
   Menu: TQtMenu;
+  AParent: TComponent;
 begin
   { If the menu is a main menu, there is no need to create a handle for it.
     It's already created on the window }
-  if (AMenu is TMainMenu) and (AMenu.Owner is TCustomForm) then
+  if (AMenu is TMainMenu) then
   begin
-    MenuBar := TQtMainWindow(TCustomForm(AMenu.Owner).Handle).MenuBar;
-
-    Result := HMENU(MenuBar);
-  end
-  else if (AMenu is TPopUpMenu) then
+    AParent := AMenu.Parent;
+    if AParent = nil then
+      AParent := AMenu.Owner;
+    if Assigned(AParent) and
+      ((AParent is TCustomForm) or (AParent is TCustomFrame)) then
+    begin
+      if (AParent is TCustomForm) then
+        MenuBar := TQtMainWindow(TCustomForm(AParent).Handle).MenuBar
+      else
+        MenuBar := TQtMainWindow(TCustomFrame(AParent).Handle).MenuBar;
+      Result := HMENU(MenuBar);
+    end else
+    begin
+      Menu := TQtMenu.Create(AMenu.Items);
+      Menu.AttachEvents;
+      Result := HMENU(Menu);
+    end;
+  end else
+  if (AMenu is TPopUpMenu) then
   begin
     Menu := TQtMenu.Create(AMenu.Items);
     Menu.AttachEvents;

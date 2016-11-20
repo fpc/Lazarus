@@ -49,6 +49,7 @@ type
 
   TQtWSCustomFrame = class(TWSCustomFrame)
   published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TQtWSFrame }
@@ -133,6 +134,27 @@ implementation
 uses qtint, LCLIntf
   {$IF DEFINED(VerboseQtResize) OR DEFINED(DEBUGQTUSEACCURATEFRAME)}, LCLProc{$ENDIF}
   ;
+
+{ TQtWSCustomFrame }
+
+class function TQtWSCustomFrame.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  QtFrame: TQtMainWindow;
+begin
+  if IsFormDesign(AWinControl) or (csDesigning in AWinControl.ComponentState) then
+    QtFrame := TQtDesignWidget.Create(AWinControl, AParams)
+  else
+    QtFrame := TQtMainWindow.Create(AWinControl, AParams);
+  QtFrame.setWindowFlags(QtWindow or QtFramelessWindowHint);
+  QtFrame.AttachEvents;
+  {$IFDEF QTSCROLLABLEFORMS}
+  if Assigned(QtFrame.ScrollArea) then
+    QtFrame.ScrollArea.AttachEvents;
+  {$ENDIF}
+  QtFrame.MenuBar.AttachEvents;
+  Result := TLCLIntfHandle(QtFrame);
+end;
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomForm.CreateHandle

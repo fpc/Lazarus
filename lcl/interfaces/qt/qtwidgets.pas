@@ -633,6 +633,7 @@ type
   TQtMainWindow = class(TQtWidget)
   private
     FBlocked: Boolean;
+    FIsFrameWindow: Boolean;
     LayoutWidget: QBoxLayoutH;
     FCWEventHook: QObject_hookH;
     FShowOnTaskBar: Boolean;
@@ -694,13 +695,14 @@ type
     procedure setShowInTaskBar(AValue: Boolean);
     procedure setRealPopupParent(NewParent: QWidgetH);
     property Blocked: Boolean read FBlocked write FBlocked;
+    property IsFrameWindow: Boolean read FIsFrameWindow write FIsFrameWindow; {check if our LCLObject is TCustomFrame}
     property ShowOnTaskBar: Boolean read FShowOnTaskBar;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     function CWEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
   end;
-  
+
   { TQtHintWindow }
 
   TQtHintWindow = class(TQtMainWindow)
@@ -6709,7 +6711,8 @@ begin
                                {must be added, see issue #29159}
                                QEventMouseMove]) then
     begin
-      if Assigned(FOwner) and (FOwner is TQtMainWindow) and (TCustomForm(LCLObject).FormStyle = fsMDIForm) and
+      if Assigned(FOwner) and (FOwner is TQtMainWindow) and not TQtMainWindow(FOwner).IsFrameWindow and
+        (TCustomForm(LCLObject).FormStyle = fsMDIForm) and
         (TQtMainWindow(FOwner).MDIAreaHandle <> nil) then
         // paint via MDIAreaHandle viewport hook
       else
@@ -6843,6 +6846,7 @@ begin
   {$IFDEF QtUseAccurateFrame}
   FFormHasInvalidPosition := False;
   {$ENDIF}
+
   FBlocked := False;
   FShowOnTaskBar := False;
   QtFormBorderStyle := Ord(bsSizeable);
@@ -6857,6 +6861,10 @@ begin
   {$ENDIF}
 
   IsMainForm := (LCLObject <> nil) and (LCLObject = Application.MainForm);
+
+  IsFrameWindow := not IsMainForm and (LCLObject <> nil) and (LCLObject is TCustomFrame);
+  if IsFrameWindow then
+    QtFormBorderStyle := Ord(bsNone);
 
   if IsMainForm then
   begin
@@ -6909,8 +6917,7 @@ begin
 
     if not (csDesigning in LCLObject.ComponentState) then
       QMainWindow_setDockOptions(QMainWindowH(Result), QMainWindowAnimatedDocks);
-  end
-  else
+  end else
   begin
     if IsMdiChild then
     begin
@@ -6925,10 +6932,9 @@ begin
       LayoutWidget := QBoxLayoutH(QWidget_layout(Result));
       if LayoutWidget <> nil then
         QBoxLayout_destroy(LayoutWidget);
-    end
-    else
+    end else
     begin
-      if (TCustomForm(LCLObject).FormStyle = fsSplash) and
+      if not IsFrameWindow and (TCustomForm(LCLObject).FormStyle = fsSplash) and
         not (csDesigning in LCLObject.ComponentState) then
         Result := QWidget_create(nil, QtSplashScreen)
       else
@@ -7078,6 +7084,9 @@ end;
 function TQtMainWindow.GetContainerWidget: QWidgetH;
 begin
   {$IFDEF QTSCROLLABLEFORMS}
+  if IsFrameWindow then
+    Result := ScrollArea.GetContainerWidget
+  else
   if not Assigned(ScrollArea) or (QWidget_windowType(Widget) = QtToolTip) or
     (QWidget_windowType(Widget) = QtSplashScreen) or
     (TCustomForm(LCLObject).FormStyle = fsMdiForm) then
@@ -7347,7 +7356,7 @@ end;
 
 procedure TQtMainWindow.Resize(ANewWidth, ANewHeight: Integer);
 begin
-  if not IsMDIChild and
+  if not IsMDIChild and not IsFrameWindow and
     (TCustomForm(LCLObject).BorderStyle in [bsDialog, bsNone, bsSingle]) and
      not (csDesigning in LCLObject.ComponentState) then
   begin
@@ -7749,7 +7758,7 @@ begin
             {$ENDIF}
           end;
         end;
-        if CanSendEvent then
+        if CanSendEvent and not IsFrameWindow then
         begin
           {$IFDEF MSWINDOWS}
           AForm := TCustomForm(LCLObject);
@@ -7879,7 +7888,7 @@ end;
 
 function TQtMainWindow.IsMdiChild: Boolean;
 begin
-  Result := (LCLObject <> nil) and not
+  Result := (LCLObject <> nil) and not IsFrameWindow and not
     (csDesigning in LCLObject.ComponentState) and
     (TCustomForm(LCLObject).FormStyle = fsMDIChild) and not IsFormDesign(LCLObject);
 end;
@@ -7950,6 +7959,9 @@ begin
   {$ifdef VerboseQt}
   WriteLn('TQtWidget.SlotActivateWindow Name', LCLObject.Name, ' vActivate: ', dbgs(vActivate));
   {$endif}
+
+  if IsFrameWindow then
+    exit;
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
