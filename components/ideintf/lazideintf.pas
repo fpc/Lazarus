@@ -164,7 +164,7 @@ type
   TSearchIDEFileFlag = (
     siffDoNotCheckAllPackages, // do not search filename in unrelated packages (e.g. installed but not used by project)
     siffCheckAllProjects, // search filename in all loaded projects
-    siffCaseSensitive,  // check case sensitive
+    siffCaseSensitive,  // check case sensitive, otherwise use Pascal case insensitivity (CompareText)
     siffDoNotCheckOpenFiles,  // do not search in files opened in source editor
     siffIgnoreExtension  // compare only filename, ignore file extension
     );
