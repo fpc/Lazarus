@@ -516,7 +516,7 @@ begin
         end;
       fbPackageCategory:
         begin
-          if Data^.DataType = 14 then
+          if Data^.DataType = 12 then
           begin
             if Data^.Category = TPackageCategory(AExtraParam) then
               FilterNode(Node, 'PackageCategory')
