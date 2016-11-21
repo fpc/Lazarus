@@ -5401,7 +5401,7 @@ begin
       GetFixupReferenceNames(CurRoot,ReferenceRootNames);
       for j:=0 to ReferenceRootNames.Count-1 do begin
         RefRootName:=ReferenceRootNames[j];
-        if UTF8SearchInStringList(LoadingReferenceNames,RefRootName)>=0
+        if SearchInStringListI(LoadingReferenceNames,RefRootName)>=0
         then
           continue;
         ReferenceInstanceNames.Clear;

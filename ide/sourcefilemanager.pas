@@ -1685,12 +1685,12 @@ begin
   try
     if not CodeToolBoss.FindUsedUnitNames(MainUnitInfo.Source,
       MainUsesSection,ImplementationUsesSection) then exit;
-    if (UTF8SearchInStringList(MainUsesSection,'forms')<0)
-    and (UTF8SearchInStringList(ImplementationUsesSection,'forms')<0) then
+    if (SearchInStringListI(MainUsesSection,'forms')<0)
+    and (SearchInStringListI(ImplementationUsesSection,'forms')<0) then
       exit;
     // project uses lcl unit Forms
-    if (UTF8SearchInStringList(MainUsesSection,'interfaces')>=0)
-    or (UTF8SearchInStringList(ImplementationUsesSection,'interfaces')>=0) then
+    if (SearchInStringListI(MainUsesSection,'interfaces')>=0)
+    or (SearchInStringListI(ImplementationUsesSection,'interfaces')>=0) then
       exit;
     // project uses lcl unit Forms, but not unit interfaces
     // this will result in strange linker error
