@@ -3070,6 +3070,10 @@ msgstr "Symbol &speichern"
 msgid "Session"
 msgstr "Sitzung"
 
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Titel:"
@@ -3083,7 +3087,9 @@ msgid "Use Application Bundle for running and debugging"
 msgstr "Anwendungs-Bundle für Start und Debug verwenden"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes"
+#, fuzzy
+#| msgid "Use manifest file to enable themes"
+msgid "Use manifest resource (and enable themes)"
 msgstr "Themen mit Manifest-Datei einschalten"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick

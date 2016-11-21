@@ -3072,6 +3072,10 @@ msgstr "&Зберегти значок"
 msgid "Session"
 msgstr "Сесія"
 
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Заголовок:"
@@ -3085,7 +3089,9 @@ msgid "Use Application Bundle for running and debugging"
 msgstr "Використовувати пакет застосунків для запуску і зневадження"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes"
+#, fuzzy
+#| msgid "Use manifest file to enable themes"
+msgid "Use manifest resource (and enable themes)"
 msgstr "Використовувати manifest-файл для увімкнення тем"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick

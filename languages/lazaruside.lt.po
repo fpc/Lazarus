@@ -3130,6 +3130,10 @@ msgstr "Į&rašyti piktogramą"
 msgid "Session"
 msgstr "Sesija"
 
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Antraštė:"
@@ -3146,8 +3150,8 @@ msgstr "Startui ir derinimui naudoti programą-ryšulį (tik dėl Darwin)"
 
 #: lazarusidestrconsts.dlgpousemanifest
 #, fuzzy
-#| msgid "Use manifest file to enable themes (Windows only)"
-msgid "Use manifest file to enable themes"
+#| msgid "Use manifest file to enable themes"
+msgid "Use manifest resource (and enable themes)"
 msgstr "Naudoti manifest failą temų įgalinimui (tik dėl Windows)"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick

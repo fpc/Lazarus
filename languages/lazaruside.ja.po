@@ -3101,6 +3101,10 @@ msgstr "アイコンを保存(&S)"
 msgid "Session"
 msgstr "セッション"
 
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "タイトル："
@@ -3117,8 +3121,8 @@ msgstr "アプリケーションバンドルを実行およびデバッグに用
 
 #: lazarusidestrconsts.dlgpousemanifest
 #, fuzzy
-#| msgid "Use manifest file to enable themes (Windows only)"
-msgid "Use manifest file to enable themes"
+#| msgid "Use manifest file to enable themes"
+msgid "Use manifest resource (and enable themes)"
 msgstr "テーマを使用可能とするためマニフェストファイルを用いる（Windowsのみ）"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick

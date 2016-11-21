@@ -3068,6 +3068,10 @@ msgstr "Ikon mentése"
 msgid "Session"
 msgstr "Munkamenet"
 
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Megnevezés:"
@@ -3081,7 +3085,9 @@ msgid "Use Application Bundle for running and debugging"
 msgstr "Alkalmazásköteg használata futtatáshoz és hibakereséshez"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes"
+#, fuzzy
+#| msgid "Use manifest file to enable themes"
+msgid "Use manifest resource (and enable themes)"
 msgstr "Témák engedélyezése jegyzékfájl használatával"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick

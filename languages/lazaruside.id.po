@@ -3164,6 +3164,10 @@ msgstr ""
 msgid "Session"
 msgstr "Sesi"
 
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Judul:"
@@ -3180,8 +3184,8 @@ msgstr "Gunakan Bundel Aplikasi untuk menjalankan dan debugging (hanya darwin)"
 
 #: lazarusidestrconsts.dlgpousemanifest
 #, fuzzy
-#| msgid "Use manifest file to enable themes (Windows only)"
-msgid "Use manifest file to enable themes"
+#| msgid "Use manifest file to enable themes"
+msgid "Use manifest resource (and enable themes)"
 msgstr "Gunakan file manifest untuk menghidupkan tema (hany windows)"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick

@@ -3114,6 +3114,10 @@ msgstr "&Salvar ícone"
 msgid "Session"
 msgstr "Sessão"
 
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Título:"
@@ -3130,8 +3134,8 @@ msgstr "Usar aplicação encartada para execução e depuração (somente Darwin
 
 #: lazarusidestrconsts.dlgpousemanifest
 #, fuzzy
-#| msgid "Use manifest file to enable themes (Windows only)"
-msgid "Use manifest file to enable themes"
+#| msgid "Use manifest file to enable themes"
+msgid "Use manifest resource (and enable themes)"
 msgstr "Usar arquivo de manifesto para ativar temas (somente windows)"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick

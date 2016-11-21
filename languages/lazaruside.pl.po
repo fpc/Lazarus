@@ -3216,6 +3216,10 @@ msgstr "Zapisz ikonę"
 msgid "Session"
 msgstr "Sesja"
 
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Nazwa:"
@@ -3232,8 +3236,8 @@ msgstr "Użyj Zestawu Aplikacji do uruchomienia i odpluskiwania (dot. systemu Da
 
 #: lazarusidestrconsts.dlgpousemanifest
 #, fuzzy
-#| msgid "Use manifest file to enable themes (Windows only)"
-msgid "Use manifest file to enable themes"
+#| msgid "Use manifest file to enable themes"
+msgid "Use manifest resource (and enable themes)"
 msgstr "Użyj pliku manifest aby odblokować kompozycje"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick

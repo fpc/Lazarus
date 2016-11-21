@@ -3076,6 +3076,10 @@ msgstr "Uložit ikonu"
 msgid "Session"
 msgstr "Sezení"
 
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Nadpis:"
@@ -3089,7 +3093,9 @@ msgid "Use Application Bundle for running and debugging"
 msgstr "Použít aplikační balík pro spuštění a ladění"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes"
+#, fuzzy
+#| msgid "Use manifest file to enable themes"
+msgid "Use manifest resource (and enable themes)"
 msgstr "Použít soubor manifest k povole grafických témat"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick

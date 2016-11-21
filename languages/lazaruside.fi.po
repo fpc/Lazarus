@@ -3040,6 +3040,10 @@ msgstr "&Tallenna kuvake"
 msgid "Session"
 msgstr "Istunto"
 
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Nimi:"
@@ -3053,7 +3057,9 @@ msgid "Use Application Bundle for running and debugging"
 msgstr "Käytä \"Application Bundle\" ajoon ja virheiden jäljitykseen"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes"
+#, fuzzy
+#| msgid "Use manifest file to enable themes"
+msgid "Use manifest resource (and enable themes)"
 msgstr "Käytä manifest-tiedostoa teemoja varten"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick

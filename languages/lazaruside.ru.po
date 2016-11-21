@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-11-11 01:34+0300\n"
+"PO-Revision-Date: 2016-11-22 01:21+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3069,6 +3069,10 @@ msgstr "Сох&ранить значок"
 msgid "Session"
 msgstr "Сеанс работы"
 
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr "Текстовые поля"
+
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Заголовок:"
@@ -3082,8 +3086,8 @@ msgid "Use Application Bundle for running and debugging"
 msgstr "Использовать Application Bundle для запуска и отладки"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes"
-msgstr "Использовать файл manifest для включения поддержки тем"
+msgid "Use manifest resource (and enable themes)"
+msgstr "Использовать ресурс manifest (включить поддержку тем)"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"

@@ -3055,6 +3055,10 @@ msgstr ""
 msgid "Session"
 msgstr ""
 
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr ""
@@ -3068,7 +3072,7 @@ msgid "Use Application Bundle for running and debugging"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes"
+msgid "Use manifest resource (and enable themes)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick

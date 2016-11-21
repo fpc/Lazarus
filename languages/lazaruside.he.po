@@ -3229,6 +3229,10 @@ msgstr "שמור סמל"
 msgid "Session"
 msgstr "הפעלה"
 
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "כותרת:"
@@ -3245,8 +3249,8 @@ msgstr "השתמש בחבורת היישום להרצה ולניפוי שגיא�
 
 #: lazarusidestrconsts.dlgpousemanifest
 #, fuzzy
-#| msgid "Use manifest file to enable themes (Windows only)"
-msgid "Use manifest file to enable themes"
+#| msgid "Use manifest file to enable themes"
+msgid "Use manifest resource (and enable themes)"
 msgstr "השתמש בקובץ הרשימות לאפשר ערכות נושא (חלונות בלבד)"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick

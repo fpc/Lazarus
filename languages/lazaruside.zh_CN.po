@@ -3197,6 +3197,10 @@ msgstr "保存图标"
 msgid "Session"
 msgstr "会话"
 
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "标题:"
@@ -3213,8 +3217,8 @@ msgstr "用程序包运行或调试(仅darwin)"
 
 #: lazarusidestrconsts.dlgpousemanifest
 #, fuzzy
-#| msgid "Use manifest file to enable themes (Windows only)"
-msgid "Use manifest file to enable themes"
+#| msgid "Use manifest file to enable themes"
+msgid "Use manifest resource (and enable themes)"
 msgstr "使用 manifest 文件启用主题 (仅windows)"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick

@@ -3183,6 +3183,10 @@ msgstr "Uložiť ikonu"
 msgid "Session"
 msgstr "Relácia"
 
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Titulok:"
@@ -3199,8 +3203,8 @@ msgstr "Použiť zväzok aplikácií pre spustenie a ladenie (lem darwin)"
 
 #: lazarusidestrconsts.dlgpousemanifest
 #, fuzzy
-#| msgid "Use manifest file to enable themes (Windows only)"
-msgid "Use manifest file to enable themes"
+#| msgid "Use manifest file to enable themes"
+msgid "Use manifest resource (and enable themes)"
 msgstr "Použiť súbor manifestu, pre zapnutie tém (len Windows)"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
