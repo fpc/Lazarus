@@ -63,7 +63,7 @@ type
     procedure DestEdtAcceptFileName(Sender: TObject; var {%H-}Value: String);
     procedure DestEdtEditingDone(Sender: TObject);
     procedure FileListBoxDrawItem(Control: TWinControl; Index: Integer;
-      ARect: TRect; State: TOwnerDrawState);
+      ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -441,7 +441,8 @@ var
   S:string;
   ResFileStream, BinFileStream: TFileStreamUtf8;
   ResMemStream, BinMemStream: TMemoryStream;
-  ResourceFilename, FullResourceFilename, BinFilename, BinExt, ResourceName, ResourceType: String;
+  ResourceFilename, FullResourceFilename, BinFilename, BinExt, ResourceName, ResourceType,
+    ExpS: String;
 begin
   FileCount := FileListBox.Count;
   if FileCount = 0 then
@@ -460,7 +461,9 @@ begin
       AddMessageFmt(ErrFileNotfound,[S]);
       exit;
     end;
-    if CompareFilenamesIgnoreCase(ExpandFileNameUTF8(S), FullResourceFilename) = 0 then
+    ExpS:=ExpandFileNameUTF8(S);
+    if (CompareText(ExpS,FullResourceFilename)=0)
+      or (CompareFilenamesIgnoreCase(ExpandFileNameUTF8(S), FullResourceFilename) = 0) then
     begin
       AddMessageFmt(ErrFileIsResource,[S]);
       exit;
