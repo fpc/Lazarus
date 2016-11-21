@@ -250,7 +250,7 @@ type
     procedure IterateFPCUnitsInSet(const Directory: string;
                                    const Iterate: TCTOnIterateFile);
     function FindDiskFilename(const Filename: string;
-                              {%H-}SearchCaseInsensitive: boolean = false): string;
+                              {%H-}SearchCaseInsensitive: boolean = false): string; // using Pascal case insensitivity, not UTF-8
     function FindUnitInDirectory(const Directory, AUnitName: string;
                                  AnyCase: boolean = false): string;
     function FindVirtualFile(const Filename: string): string;
