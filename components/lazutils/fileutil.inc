@@ -958,17 +958,16 @@ begin
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
       then
         continue;
-      if LazFileUtils.CompareFilenamesIgnoreCase(FileInfo.Name,ShortFilename)=0 then begin
-        if FileInfo.Name=ShortFilename then begin
-          // fits exactly
-          //Don't return (unaltered) Filename: otherwise possible changes by ResolveDots get lost
-          Result:=CurDir+FileInfo.Name;
-          break;
-        end;
-        // fits case insensitive
+      if LazFileUtils.CompareFilenamesIgnoreCase(FileInfo.Name,ShortFilename)<>0 then
+        continue;
+      if FileInfo.Name=ShortFilename then begin
+        // fits exactly
+        //Don't return (unaltered) Filename: otherwise possible changes by ResolveDots get lost
         Result:=CurDir+FileInfo.Name;
-        // search further
+        break;
       end;
+      // fits case insensitive
+      Result:=CurDir+FileInfo.Name;
     until LazFileUtils.FindNextUTF8(FileInfo)<>0;
   end;
   LazFileUtils.FindCloseUTF8(FileInfo);
