@@ -23,6 +23,13 @@ uses
   {$endif}
   Classes;
 
+{$IF FPC_FULLVERSION>=30000}
+function GetTickCount64: QWord;
+begin
+  Result := SysUtils.GetTickCount64;
+end;
+{$ENDIF}
+
 // ToDo: Move the code to 1 include file per platform
 {$IFDEF WINDOWS}
 function NowUTC: TDateTime;
@@ -33,13 +40,15 @@ begin
   result := systemTimeToDateTime(SystemTime);
 end;
 
+{$IF FPC_FULLVERSION<30000}
 function GetTickCount64: QWord;
 begin
   // GetTickCount64 is better, but we need to check the Windows version to use it
   Result := Windows.GetTickCount();
 end;
+{$ENDIF FPC_FULLVERSION}
 
-{$else}
+{$else WINDOWS}
 {$ifdef UNIX}
 Const
 {Date Translation}
@@ -96,6 +105,7 @@ begin
   result := systemTimeToDateTime(SystemTime);
 end;
 
+{$IF FPC_FULLVERSION<30000}
 {$IF defined(Linux) and not defined(GetTickCountTimeOfDay)}
 function GetTickCount64: QWord;
 var
@@ -113,20 +123,23 @@ begin
   Result := (Int64(tp.tv_sec) * 1000) + (tp.tv_usec div 1000);
 end;
 {$ENDIF}
+{$ENDIF FPC_FULLVERSION}
 
-{$else}
-// Not Windows and not UNIX, so just write the most trivial code until we have something besser:
+{$else UNIX}
+// Not Windows and not UNIX, so just write the most trivial code until we have something better:
 function NowUTC: TDateTime;
 begin
   Result := Now;
 end;
 
+{$IF FPC_FULLVERSION<30000}
 function GetTickCount64: QWord;
 begin
   Result := Trunc(Now * 24 * 60 * 60 * 1000);
 end;
-{$endif}
-{$endif}
+{$ENDIF FPC_FULLVERSION}
+{$endif UNIX}
+{$endif WINDOWS}
 
 end.
 
