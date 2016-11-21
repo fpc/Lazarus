@@ -5639,7 +5639,7 @@ begin
           if (CurDir<>'') then begin
             if pvPkgSearch in Verbosity then
               debugln(['Info: (lazarus) Open dependency ['+Dependency.PackageName+']: trying in owner directory "'+AppendPathDelim(CurDir)+'" ...']);
-            AFilename:=FindDiskFileCaseInsensitive(
+            AFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(
                          AppendPathDelim(CurDir)+Dependency.PackageName+'.lpk');
             if FileExistsCached(AFilename) then begin
               OpenFile(AFilename);

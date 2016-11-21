@@ -2177,7 +2177,7 @@ begin
       AFilename:=AppendPathDelim(CurDir)+AFilename;
   end;
   if not FilenameIsAbsolute(AFilename) then exit;
-  AFilename:=FindDiskFileCaseInsensitive(AFilename);
+  AFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(AFilename);
   if not FileExistsCached(AFilename) then exit;
   Result:=AFilename;
 end;

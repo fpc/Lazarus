@@ -1011,7 +1011,7 @@ begin
         fDelphiPFilename:=ChangeFileExt(fSettings.MainFilename,fDelphiPSuffix);
       if not FileExistsUTF8(fDelphiPFilename) then
         fDelphiPFilename:=FindDiskFileCaseInsensitive(fSettings.MainFilename);
-// ? fDelphiPFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(fDelphiPFilename);
+// ? fDelphiPFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(fSettings.MainFilename);
 
       // Actual conversion.
       Result:=ConvertSub;
