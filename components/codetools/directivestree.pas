@@ -2350,7 +2350,7 @@ begin
     if (Filename='') then exit(true);
     inc(p,4);
     while (p<Node.EndPos) and IsSpaceChar[Src[p]] do inc(p);
-    if CompareFilenamesIgnoreCase(Filename,copy(Src,p,Node.EndPos-p-1))=0 then
+    if CompareText(Filename,copy(Src,p,Node.EndPos-p-1))=0 then // do not use CompareFilenamesIgnoreCase
       exit(true);
   end;
 end;
@@ -2388,8 +2388,9 @@ begin
     if (Filename='') then exit(true);
     if FindNextIncludeDirective(Src,p,NestedComments,
       FilenameStartPos,FilenameEndPos,CommentStart,CommentEnd)=p then
-    begin;
-      if CompareFilenamesIgnoreCase(Filename,
+    begin
+      // do not use CompareFilenamesIgnoreCase
+      if CompareText(Filename,
         copy(Src,FilenameStartPos,FilenameEndPos-FilenameStartPos))=0
       then
         exit(true);
