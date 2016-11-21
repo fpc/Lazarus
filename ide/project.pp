@@ -5546,8 +5546,8 @@ var
       AFileName:=ExtractFilename(AFileName);
     if siffCaseSensitive in SearchFlags then
       Result:=SearchedFilename=AFilename
-    else
-      Result:=CompareFilenamesIgnoreCase(SearchedFilename,AFilename)=0;
+    else // check Pascal case insensitivity (CompareText, do not use CompareFilenamesIgnoreCase, because of Turkish I)
+      Result:=CompareText(SearchedFilename,AFilename)=0;
   end;
   
 begin

@@ -330,7 +330,7 @@ end;
   function FindFilesCaseInsensitive(const Directory,
     CaseInsensitiveFilename: string; IgnoreExact: boolean): TStringLists;
 
-  Search case insensitive in Directory for all files
+  Search Pascal case insensitive in Directory for all files
   named CaseInsensitiveFilename
 -------------------------------------------------------------------------------}
 function FindFilesCaseInsensitive(const Directory,
@@ -346,7 +346,7 @@ begin
       // check if special file
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
         continue;
-      if (CompareFilenamesIgnoreCase(CaseInsensitiveFilename,FileInfo.Name)=0)
+      if (CompareText(CaseInsensitiveFilename,FileInfo.Name)=0) // Pascal insensitibity, not UTF-8, thing about Turkish I
       and ((not IgnoreExact)
            or (CompareFilenames(CaseInsensitiveFilename,FileInfo.Name)<>0))
       then begin
