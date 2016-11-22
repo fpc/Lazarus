@@ -1,0 +1,149 @@
+object ManifestForm: TManifestForm
+  Left = 554
+  Height = 212
+  Top = 512
+  Width = 568
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'Manifest'
+  ClientHeight = 212
+  ClientWidth = 568
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.7'
+  object DpiAwareLabel: TLabel
+    AnchorSideTop.Control = DpiAwareComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 8
+    Height = 17
+    Top = 15
+    Width = 103
+    BorderSpacing.Left = 21
+    BorderSpacing.Top = 3
+    Caption = 'DpiAwareLabel'
+    ParentColor = False
+  end
+  object DpiAwareComboBox: TComboBox
+    AnchorSideLeft.Control = ExecutionLevelLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 176
+    Height = 31
+    Top = 8
+    Width = 381
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 30
+    BorderSpacing.Top = 3
+    ItemHeight = 0
+    Style = csDropDownList
+    TabOrder = 0
+  end
+  object ExecutionLevelLabel: TLabel
+    AnchorSideTop.Control = ExecutionLevelComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 8
+    Height = 17
+    Top = 49
+    Width = 138
+    Caption = 'ExecutionLevelLabel'
+    ParentColor = False
+  end
+  object ExecutionLevelComboBox: TComboBox
+    AnchorSideLeft.Control = DpiAwareComboBox
+    AnchorSideTop.Control = DpiAwareComboBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = DpiAwareComboBox
+    AnchorSideRight.Side = asrBottom
+    Left = 176
+    Height = 31
+    Top = 42
+    Width = 381
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 3
+    ItemHeight = 0
+    Style = csDropDownList
+    TabOrder = 1
+  end
+  object UIAccessCheckBox: TCheckBox
+    AnchorSideTop.Control = ExecutionLevelComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 24
+    Top = 76
+    Width = 152
+    BorderSpacing.Top = 3
+    Caption = 'UIAccessCheckBox'
+    TabOrder = 2
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 29
+    Top = 177
+    Width = 556
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    HelpButton.OnClick = HelpButtonClick
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 5
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowBevel = False
+  end
+  object NameLabel: TLabel
+    AnchorSideLeft.Control = DpiAwareLabel
+    AnchorSideTop.Control = NameEdit
+    AnchorSideTop.Side = asrCenter
+    Left = 8
+    Height = 17
+    Top = 108
+    Width = 77
+    BorderSpacing.Top = 3
+    Caption = 'NameLabel'
+    ParentColor = False
+  end
+  object NameEdit: TEdit
+    AnchorSideLeft.Control = DpiAwareComboBox
+    AnchorSideTop.Control = UIAccessCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = DpiAwareComboBox
+    AnchorSideRight.Side = asrBottom
+    Left = 176
+    Height = 27
+    Top = 103
+    Width = 381
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 3
+    TabOrder = 3
+  end
+  object DescLabel: TLabel
+    AnchorSideLeft.Control = DpiAwareLabel
+    AnchorSideTop.Control = DescEdit
+    AnchorSideTop.Side = asrCenter
+    Left = 8
+    Height = 17
+    Top = 138
+    Width = 69
+    BorderSpacing.Top = 3
+    Caption = 'DescLabel'
+    ParentColor = False
+  end
+  object DescEdit: TEdit
+    AnchorSideLeft.Control = NameEdit
+    AnchorSideTop.Control = NameEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = NameEdit
+    AnchorSideRight.Side = asrBottom
+    Left = 176
+    Height = 27
+    Top = 133
+    Width = 381
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 3
+    TabOrder = 4
+  end
+end

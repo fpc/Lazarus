@@ -2548,6 +2548,7 @@ resourcestring
   dlgPOUseAppBundle = 'Use Application Bundle for running and debugging';
   dlgPOCreateAppBundle = 'Create Application Bundle';
   dlgPOUseManifest = 'Use manifest resource (and enable themes)';
+  dlgPOManifestOptions = 'Manifest options';
   dlgPODpiAwareness = 'DPI awareness';
   dlgPODpiAwarenessOff = 'off';
   dlgPODpiAwarenessOn = 'on';
