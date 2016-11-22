@@ -62,10 +62,11 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-# get FPC version
-FPCVersion=$(fpc -v | grep 'Compiler version' | sed 's/.*\([0-9]\.[0-9]\.[0-9]\).*/\1/')
-echo "FPCVersion=$FPCVersion"
+# get date
+Date=`date +%Y%m%d`
+ChangeLogDate=`date --rfc-822`
 
+# get FPC version
 Arch=`dpkg --print-architecture`
 echo "debian architecture=$Arch"
 targetos=$Arch
@@ -88,9 +89,16 @@ else
     fi 
   fi 
 fi
+FPCVersion=$($ppcbin -v | grep version| sed 's/.*\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/')
 
-Date=`date +%Y%m%d`
-LazVersion=$(./get_lazarus_version.sh)$LazVersionPostfix
+# get Lazarus version
+LazVersion=$(./get_lazarus_version.sh)
+# get consistent major.minor.release version, to avoid dpkg install an older version
+if [ $(echo $LazVersion | egrep '^[^.]*\.[^.]*$') ]; then
+  LazVersion=${LazVersion}.0
+fi
+LazVersion=$LazVersion$LazVersionPostfix
+
 SrcTGZ=lazarus-$LazVersion-$LazRelease.tar.gz
 CurDir=`pwd`
 TmpDir=~/tmp/lazarus$LazVersion
@@ -101,9 +109,6 @@ EtcSrcDir=$CurDir/linux
 LazSrcDir=../..
 LazDestDir=$LazBuildDir/usr/share/lazarus/${LazVersion}
 LazDestDirInstalled=/usr/share/lazarus/${LazVersion}
- 
-FPCVersion=$($ppcbin -v | grep version| sed 's/.*\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/')
-ChangeLogDate=`date --rfc-822`
 
 echo "ppcbin=$ppcbin"
 echo "LazVersion=$LazVersion"
