@@ -690,10 +690,10 @@ begin
           NeedToRebuild := False;
           if Install(InstallStatus, NeedToRebuild) = mrOk then
           begin
+            SerializablePackages.MarkRuntimePackages;
+            VisualTree.UpdatePackageStates;
             if (InstallStatus = isSuccess) or (InstallStatus = isPartiallyFailed) then
             begin
-              SerializablePackages.MarkRuntimePackages;
-              VisualTree.UpdatePackageStates;
               if NeedToRebuild then
               begin
                 EnableDisableControls(False);

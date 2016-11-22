@@ -407,7 +407,7 @@ object MainFrm: TMainFrm
       TabOrder = 0
       Transparent = True
       object tbOptions: TToolButton
-        Left = 433
+        Left = 431
         Top = 0
         AutoSize = True
         Caption = 'Options'
@@ -465,7 +465,7 @@ object MainFrm: TMainFrm
         ImageIndex = 5
         ParentShowHint = False
         ShowHint = True
-        Style = tbsDropDown
+        Style = tbsButtonDrop
       end
       object tbUpdate: TToolButton
         Left = 211
