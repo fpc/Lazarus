@@ -201,6 +201,7 @@ type
     procedure ImageListChange(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure OnFilterChanged(Sender: TObject);
+    function GetPageScroll: integer;
   protected
     FViews: TFPList;// list of TMessagesViewMap
     FStates: TMsgCtrlStates;
@@ -1289,19 +1290,25 @@ end;
 procedure TMessagesCtrl.WMVScroll(var Msg: TLMScroll);
 begin
   case Msg.ScrollCode of
-      // Scrolls to start / end of the text
+    // Scrolls to start / end of the text
     SB_TOP:        ScrollTop := 0;
     SB_BOTTOM:     ScrollTop := ScrollTopMax;
+    {$IFDEF EnableMsgWndLineWrap}
+    // Scrolls one line up / down
+    SB_LINEDOWN:   ScrollTop := ScrollTop + 1;
+    SB_LINEUP:     ScrollTop := ScrollTop - 1;
+    {$ELSE}
       // Scrolls one line up / down
     SB_LINEDOWN:   ScrollTop := ScrollTop + ItemHeight div 2;
     SB_LINEUP:     ScrollTop := ScrollTop - ItemHeight div 2;
-      // Scrolls one page of lines up / down
-    SB_PAGEDOWN:   ScrollTop := ScrollTop + ClientHeight - ItemHeight;
-    SB_PAGEUP:     ScrollTop := ScrollTop - ClientHeight + ItemHeight;
-      // Scrolls to the current scroll bar position
+    {$ENDIF}
+    // Scrolls one page of lines up / down
+    SB_PAGEDOWN:   ScrollTop := ScrollTop + GetPageScroll;
+    SB_PAGEUP:     ScrollTop := ScrollTop - GetPageScroll;
+    // Scrolls to the current scroll bar position
     SB_THUMBPOSITION,
     SB_THUMBTRACK: ScrollTop := Msg.Pos;
-      // Ends scrolling
+    // Ends scrolling
     SB_ENDSCROLL:  SetCaptureControl(nil); // release scrollbar capture
   end;
 end;
@@ -1311,13 +1318,18 @@ begin
   if Mouse.WheelScrollLines=-1 then
   begin
     // -1 : scroll by page
-    ScrollTop := ScrollTop -
-              (Message.WheelDelta * (ClientHeight - ItemHeight)) div 120;
+    ScrollTop := ScrollTop - (Message.WheelDelta * GetPageScroll) div 120;
   end else begin
+    {$IFDEF EnableMsgWndLineWrap}
+    // scrolling one line -> see SB_LINEDOWN and SB_LINEUP handler in WMVScroll
+    ScrollTop := ScrollTop -
+        (Message.WheelDelta * Mouse.WheelScrollLines) div 240;
+    {$ELSE}
     // scrolling one line -> scroll half an item, see SB_LINEDOWN and SB_LINEUP
     // handler in WMVScroll
     ScrollTop := ScrollTop -
         (Message.WheelDelta * Mouse.WheelScrollLines*ItemHeight) div 240;
+    {$ENDIF}
   end;
   Message.Result := 1;
 end;
@@ -1391,6 +1403,15 @@ end;
 procedure TMessagesCtrl.OnFilterChanged(Sender: TObject);
 begin
   IdleConnected:=true;
+end;
+
+function TMessagesCtrl.GetPageScroll: integer;
+begin
+  {$IFDEF EnableMsgWndLineWrap}
+  Result:=Max(1,((ClientHeight-BorderWidth) div ItemHeight));
+  {$ELSE}
+  Result:=ClientHeight - ItemHeight;
+  {$ENDIF}
 end;
 
 function TMessagesCtrl.GetSelectedLine: integer;
@@ -1541,7 +1562,11 @@ begin
   LoSearchText:=fLastLoSearchText;
 
   // paint from top to bottom
+  {$IFDEF EnableMsgWndLineWrap}
+  y:=-ScrollTop*ItemHeight;
+  {$ELSE}
   y:=-ScrollTop;
+  {$ENDIF}
   for i:=0 to ViewCount-1 do begin
     if y>ClientHeight then break;
     View:=Views[i];
@@ -1743,13 +1768,13 @@ begin
 
   VK_PRIOR: // Page Up
     begin
-      SelectNextShown(-1-Max(0,ClientHeight div ItemHeight));
+      SelectNextShown(-Max(1,ClientHeight div ItemHeight));
       Key:=VK_UNKNOWN;
     end;
 
   VK_NEXT: // Page Down
     begin
-      SelectNextShown(1+Max(0,ClientHeight div ItemHeight));
+      SelectNextShown(Max(1,ClientHeight div ItemHeight));
       Key:=VK_UNKNOWN;
     end;
   end;
@@ -2316,6 +2341,8 @@ var
   MinScrollTop: integer;
   MaxScrollTop: Integer;
 begin
+  {$IFDEF EnableMsgWndLineWrap}
+  {$ELSE}
   y:=GetLineTop(View,LineNumber,false);
   if FullyVisible then begin
     MinScrollTop:=Max(0,y+ItemHeight-ClientHeight);
@@ -2324,6 +2351,7 @@ begin
     MinScrollTop:=Max(0,y-1-ClientHeight);
     MaxScrollTop:=y+ItemHeight-1;
   end;
+  {$ENDIF}
   //debugln(['TMessagesCtrl.ScrollToLine ',LineNumber,' y=',y,' Min=',MinScrollTop,' Max=',MaxScrollTop]);
   y:=Max(Min(ScrollTop,MaxScrollTop),MinScrollTop);
   //debugln(['TMessagesCtrl.ScrollToLine y=',y,' ScrollTopMax=',ScrollTopMax]);
