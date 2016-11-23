@@ -48,6 +48,7 @@ object OpenLoadedPackagesDlg: TOpenLoadedPackagesDlg
     TabOrder = 1
     ViewStyle = vsReport
     OnDblClick = PkgListViewDblClick
+    OnKeyPress = PkgListViewKeyPress
     OnSelectItem = PkgListViewSelectItem
   end
   object Splitter1: TSplitter

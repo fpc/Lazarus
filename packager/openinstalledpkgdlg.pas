@@ -31,8 +31,10 @@ unit OpenInstalledPkgDlg;
 interface
 
 uses
-  SysUtils, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, LCLProc, ButtonPanel,
-  IDEHelpIntf, IDEWindowIntf, PackageIntf, ListViewFilterEdit,
+  SysUtils,
+  Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, LCLType, LCLProc, ButtonPanel,
+  ListViewFilterEdit,
+  IDEHelpIntf, IDEWindowIntf, PackageIntf,
   PackageDefs, LazarusIDEStrConsts, PackageSystem;
 
 type
@@ -50,6 +52,7 @@ type
     procedure HelpButtonClick(Sender: TObject);
     procedure OpenButtonClick(Sender: TObject);
     procedure PkgListViewDblClick(Sender: TObject);
+    procedure PkgListViewKeyPress(Sender: TObject; var Key: char);
     procedure PkgListViewSelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
   private
   public
@@ -88,6 +91,12 @@ end;
 procedure TOpenLoadedPackagesDlg.PkgListViewDblClick(Sender: TObject);
 begin
   OpenButtonClick(Sender);
+end;
+
+procedure TOpenLoadedPackagesDlg.PkgListViewKeyPress(Sender: TObject; var Key: char);
+begin
+  if Key = Char(VK_RETURN) then
+    OpenButtonClick(Nil);
 end;
 
 procedure TOpenLoadedPackagesDlg.PkgListViewSelectItem(Sender: TObject;
