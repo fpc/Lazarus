@@ -160,7 +160,7 @@ function TPackageInstaller.CompilePackage(const AIDEPackage: TIDEPackage;
 begin
   Result := -1;
   {$if declared(lcl_version)}
-   {$if (lcl_major >= 1) and (lcl_minor >= 7)}
+   {$if (lcl_major > 0) and (lcl_minor > 6)}
      //DoCompilePackage function is only available with Laz 1.7 +
      DoOnPackageInstallProgress(imCompilePackage, APackageFile);
      Result := PackageEditingInterface.DoCompilePackage(AIDEPackage, [pcfCleanCompile, pcfDoNotSaveEditorFiles], False);
