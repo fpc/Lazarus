@@ -27,28 +27,32 @@ interface
  Author: Balázs Székely
 }
 uses
-  Classes, SysUtils, Laz2_XMLCfg, LazFileUtils;
+  Classes, SysUtils, LazIDEIntf, Laz2_XMLCfg, LazFileUtils;
 
 type
-  { TPackageOptions }
-  RProxySettings = record
-    Enabled: boolean;
-    Server: string;
-    Port: Word;
-    User: string;
-    Password: string;
+  { TOptions }
+  TProxySettings = record
+    FEnabled: boolean;
+    FServer: string;
+    FPort: Word;
+    FUser: string;
+    FPassword: string;
   end;
 
-  TPackageOptions = class
+  TOptions = class
    private
-     FProxySettings: RProxySettings;
+     FProxySettings: TProxySettings;
      FXML: TXMLConfig;
      FRemoteRepository: String;
      FChanged: Boolean;
      FLastDownloadDir: String;
      FLastPackageDirSrc: String;
      FLastPackageDirDst: String;
-     procedure LoadDefault;
+     FRestrictedExtensions: String;
+     FRestrictedDirectories: String;
+     FLocalRepositoryPackages: String;
+     FLocalRepositoryArchive: String;
+     FLocalRepositoryUpdate: String;
      procedure SetRemoteRepository(const ARemoteRepository: String);
    public
      constructor Create(const AFileName: String);
@@ -56,27 +60,34 @@ type
    public
      procedure Save;
      procedure Load;
+     procedure LoadDefault;
    published
      property Changed: Boolean read FChanged write FChanged;
      property LastDownloadDir: String read FLastDownloadDir write FLastDownloadDir;
      property LastPackagedirSrc: String read FLastPackageDirSrc write FLastPackageDirSrc;
      property LastPackagedirDst: String read FLastPackageDirDst write FLastPackageDirDst;
      property RemoteRepository: string read FRemoteRepository write SetRemoteRepository;
-     property ProxyEnabled: Boolean read FProxySettings.Enabled write FProxySettings.Enabled;
-     property ProxyServer: String read FProxySettings.Server write FProxySettings.Server;
-     property ProxyPort: Word read FProxySettings.Port write FProxySettings.Port;
-     property ProxyUser: String read FProxySettings.User write FProxySettings.User;
-     property ProxyPassword: String read FProxySettings.Password write FProxySettings.Password;
+     property ProxyEnabled: Boolean read FProxySettings.FEnabled write FProxySettings.FEnabled;
+     property ProxyServer: String read FProxySettings.FServer write FProxySettings.FServer;
+     property ProxyPort: Word read FProxySettings.FPort write FProxySettings.FPort;
+     property ProxyUser: String read FProxySettings.FUser write FProxySettings.FUser;
+     property ProxyPassword: String read FProxySettings.FPassword write FProxySettings.FPassword;
+     property RestrictedExtension: String read FRestrictedExtensions write FRestrictedExtensions;
+     property RestrictedDirectories: String read FRestrictedDirectories write FRestrictedDirectories;
+     property LocalRepositoryPackages: String read FLocalRepositoryPackages write FLocalRepositoryPackages;
+     property LocalRepositoryArchive: String read FLocalRepositoryArchive write FLocalRepositoryArchive;
+     property LocalRepositoryUpdate: String read FLocalRepositoryUpdate write FLocalRepositoryUpdate;
   end;
 
 var
-  PackageOptions: TPackageOptions = nil;
+  Options: TOptions = nil;
 
 implementation
+uses opkman_const;
 
-{ TPackageOptions }
+{ TOptions }
 
-constructor TPackageOptions.Create(const AFileName: String);
+constructor TOptions.Create(const AFileName: String);
 begin
   FXML := TXMLConfig.Create(AFileName);
   if FileExists(AFileName) then
@@ -85,7 +96,7 @@ begin
     LoadDefault;
   end;
 
-destructor TPackageOptions.Destroy;
+destructor TOptions.Destroy;
 begin
   if FChanged then
     Save;
@@ -93,43 +104,74 @@ begin
   inherited Destroy;
 end;
 
-procedure TPackageOptions.Load;
+procedure TOptions.Load;
 begin
-  FRemoteRepository := FXML.GetValue('RemoteRepository/Value', '');
-  FLastDownloadDir := FXML.GetValue('LastDownloadDir/Value', '');
-  FLastPackageDirSrc := FXML.GetValue('LastPackageDirSrc/Value', '');
-  FLastPackageDirDst := FXML.GetValue('LastPackageDirDst/Value', '');
-  FProxySettings.Enabled := FXML.GetValue('Proxy/Enabled/Value', false);
-  FProxySettings.Server := FXML.GetValue('Proxy/Server/Value', '');
-  FProxySettings.Port := FXML.GetValue('Proxy/Port/Value', 0);
-  FProxySettings.User := FXML.GetValue('Proxy/User/Value', '');
-  FProxySettings.Password := FXML.GetValue('Proxy/Password/Value', '');
+  FRemoteRepository := FXML.GetValue('General/RemoteRepository/Value', '');
+  FLastDownloadDir := FXML.GetValue('General/LastDownloadDir/Value', '');
+  FLastPackageDirSrc := FXML.GetValue('General/LastPackageDirSrc/Value', '');
+  FLastPackageDirDst := FXML.GetValue('GeneralLastPackageDirDst/Value', '');
+
+  FProxySettings.FEnabled := FXML.GetValue('Proxy/Enabled/Value', False);
+  FProxySettings.FServer := FXML.GetValue('Proxy/Server/Value', '');
+  FProxySettings.FPort := FXML.GetValue('Proxy/Port/Value', 0);
+  FProxySettings.FUser := FXML.GetValue('Proxy/User/Value', '');
+  FProxySettings.FPassword := FXML.GetValue('Proxy/Password/Value', '');
+
+  FLocalRepositoryPackages := FXML.GetValue('Folders/LocalRepositoryPackages/Value', '');
+  FLocalRepositoryArchive := FXML.GetValue('Folders/LocalRepositoryArchive/Value', '');
+  FLocalRepositoryUpdate := FXML.GetValue('Folders/LocalRepositoryUpdate/Value', '');
 end;
 
-procedure TPackageOptions.Save;
+procedure TOptions.Save;
 begin
-  FXML.SetDeleteValue('RemoteRepository/Value', FRemoteRepository, '');
-  FXML.SetDeleteValue('LastDownloadDir/Value', FLastDownloadDir, '');
-  FXML.SetDeleteValue('LastPackageDirSrc/Value', FLastPackageDirSrc, '');
+  FXML.SetDeleteValue('General/RemoteRepository/Value', FRemoteRepository, '');
+  FXML.SetDeleteValue('General/LastDownloadDir/Value', FLastDownloadDir, '');
+  FXML.SetDeleteValue('General/LastPackageDirSrc/Value', FLastPackageDirSrc, '');
   FXML.SetDeleteValue('LastPackageDirDst/Value', FLastPackageDirDst, '');
 
-  FXML.SetDeleteValue('Proxy/Enabled/Value', FProxySettings.Enabled, false);
-  FXML.SetDeleteValue('Proxy/Server/Value', FProxySettings.Server, '');
-  FXML.SetDeleteValue('Proxy/Port/Value', FProxySettings.Port, 0);
-  FXML.SetDeleteValue('Proxy/User/Value', FProxySettings.User, '');
-  FXML.SetDeleteValue('Proxy/Password/Value', FProxySettings.Password, '');
+  FXML.SetDeleteValue('Proxy/Enabled/Value', FProxySettings.FEnabled, false);
+  FXML.SetDeleteValue('Proxy/Server/Value', FProxySettings.FServer, '');
+  FXML.SetDeleteValue('Proxy/Port/Value', FProxySettings.FPort, 0);
+  FXML.SetDeleteValue('Proxy/User/Value', FProxySettings.FUser, '');
+  FXML.SetDeleteValue('Proxy/Password/Value', FProxySettings.FPassword, '');
+
+  FXML.SetDeleteValue('Folders/LocalRepositoryPackages/Value', FLocalRepositoryPackages, '');
+  FXML.SetDeleteValue('Folders/LocalRepositoryArchive/Value', FLocalRepositoryArchive, '');
+  FXML.SetDeleteValue('Folders/LocalRepositoryUpdate/Value', FLocalRepositoryUpdate, '');
 
   FXML.Flush;
   FChanged := False;
 end;
 
-procedure TPackageOptions.LoadDefault;
+procedure TOptions.LoadDefault;
+var
+  LocalRepository: String;
 begin
   FRemoteRepository := 'http://packages.lazarus-ide.org/';
+
+  FProxySettings.FEnabled := False;
+  FProxySettings.FServer := '';
+  FProxySettings.FPort := 0;
+  FProxySettings.FUser := '';
+  FProxySettings.FPassword := '';
+
+  LocalRepository := AppendPathDelim(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath) + cLocalRepository);
+  FLocalRepositoryPackages := LocalRepository + AppendPathDelim(cLocalRepositoryPackages);
+  if not DirectoryExists(FLocalRepositoryPackages) then
+    CreateDir(FLocalRepositoryPackages);
+  FLocalRepositoryArchive := LocalRepository + AppendPathDelim(cLocalRepositoryArchive);
+  if not DirectoryExistsUTF8(FLocalRepositoryArchive) then
+    CreateDirUTF8(FLocalRepositoryArchive);
+  FLocalRepositoryUpdate := LocalRepository + AppendPathDelim(cLocalRepositoryUpdate);
+  if not DirectoryExists(FLocalRepositoryUpdate) then
+    CreateDir(FLocalRepositoryUpdate);
+
+  FRestrictedExtensions := '*.a,*.o,*.ppu,*.compiled,*.bak,*.or,*.rsj,*.~ ';
+  FRestrictedDirectories := 'lib,backup';
   Save;
 end;
 
-procedure TPackageOptions.SetRemoteRepository(const ARemoteRepository: String);
+procedure TOptions.SetRemoteRepository(const ARemoteRepository: String);
 begin
   if FRemoteRepository <> ARemoteRepository then
   begin

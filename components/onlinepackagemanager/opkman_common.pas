@@ -42,13 +42,7 @@ type
   end;
 
 var
-  LocalRepository: String;
-  LocalRepositoryArchive: String;
-  LocalRepositoryPackages: String;
-  LocalRepositoryConfig: String;
-  LocalRepositoryUpdate: String;
   LocalRepositoryConfigFile: String;
-  ConfigFile: String;
   PackageAction: TPackageAction;
   ForceDownload: Boolean = True;
   ForceExtract: Boolean = True;
@@ -56,7 +50,7 @@ var
 
 function MessageDlgEx(const AMsg: String; ADlgType: TMsgDlgType;  AButtons:
   TMsgDlgButtons; AParent: TForm): TModalResult;
-function InitLocalRepository: Boolean;
+procedure InitLocalRepository;
 function SecToHourAndMin(const ASec: LongInt): String;
 function FormatSize(Size: Int64): String;
 function FormatSpeed(Speed: LongInt): String;
@@ -84,28 +78,18 @@ begin
   end;
 end;
 
-function InitLocalRepository: Boolean;
+procedure InitLocalRepository;
+var
+  LocalRepository, LocalRepositoryConfig: String;
 begin
   LocalRepository := AppendPathDelim(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath) + cLocalRepository);
   if not DirectoryExistsUTF8(LocalRepository) then
     CreateDirUTF8(LocalRepository);
-  LocalRepositoryArchive := AppendPathDelim(LocalRepository + AppendPathDelim(cLocalRepositoryArchive));
-  if not DirectoryExistsUTF8(LocalRepositoryArchive) then
-    CreateDirUTF8(LocalRepositoryArchive);
-  LocalRepositoryUpdate := AppendPathDelim(LocalRepository + AppendPathDelim(cLocalRepositoryUpdate));
-  if not DirectoryExists(LocalRepositoryUpdate) then
-    CreateDir(LocalRepositoryUpdate);
-  LocalRepositoryPackages := AppendPathDelim(LocalRepository + AppendPathDelim(cLocalRepositoryPackages));
-  if not DirectoryExists(LocalRepositoryPackages) then
-    CreateDir(LocalRepositoryPackages);
-  LocalRepositoryConfig := AppendPathDelim(LocalRepository + AppendPathDelim(cLocalRepositoryConfig));
+
+  LocalRepositoryConfig := AppendPathDelim(LocalRepository + cLocalRepositoryConfig);
   if not DirectoryExists(LocalRepositoryConfig) then
     CreateDir(LocalRepositoryConfig);
   LocalRepositoryConfigFile := LocalRepositoryConfig + cLocalRepositoryConfigFile;
-  Result := DirectoryExistsUTF8(LocalRepository) and
-            DirectoryExistsUTF8(LocalRepositoryArchive) and
-            DirectoryExistsUTF8(LocalRepositoryConfig) and
-            DirectoryExistsUTF8(LocalRepositoryPackages);
 end;
 
 function SecToHourAndMin(const ASec: LongInt): String;

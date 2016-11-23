@@ -161,10 +161,25 @@ resourcestring
   rsProgressFrmInfo4 = 'Canceling. Please wait...';
 
   //options form
-  rsOptionsFrmCaption = 'Options';
-  rsOptionedRemoteRepository = 'Please enter the remote repository address!';
-  rsOptionedProxyServer = 'Please enter the proxy server address!';
-  rsOptionedProxyPort = 'Please enter the proxy server port!';
+  rsOptions_FrmCaption = 'Options';
+  rsOptions_lbRemoteRepository_Caption = 'Remote repository';
+  rsOptions_cbProxy_Caption = 'Use proxy';
+  rsOptions_gbProxySettings_Caption = 'Proxy settings';
+  rsOptions_lbServer_Caption = 'Server';
+  rsOptions_lbPort_Caption = 'Port';
+  rsOptions_lbUsername_Caption = 'Username';
+  rsOptions_lbPassword_Caption = 'Password';
+  rsOptions_lbLocalRepositoryPackages_Caption = 'Local repository';
+  rsOptions_edLocalRepositoryPackages_Hint = 'The folder where the repository packages are extracted/installed';
+  rsOptions_lbLocalRepositoryArchive_Caption = 'Archive directory';
+  rsOptions_edLocalRepositoryArchive_Hint = 'The folder where the zip files are downloaded from the remote repository';
+  rsOptions_lbLocalRepositoryUpdate_Caption = 'Update directory';
+  rsOptions_edLocalRepositoryUpdate_Hint = 'The folder where the zip files are downloaded from the package maintainer webpage';
+  rsOptions_RemoteRepository_Information = 'Please enter the remote repository address!';
+  rsOptions_ProxyServer_Information = 'Please enter the proxy server address!';
+  rsOptions_ProxyPort_Information = 'Please enter the proxy server port!';
+  rsOptions_InvalidDirectory_Information = 'Please enter a valid directory';
+  rsOptions_RestoreDefaults_Confirmation = 'This will restore the default settings. Continue?';
 
   //packagelist form
   rsPackageListFrmCaption0 = 'Installed package list';

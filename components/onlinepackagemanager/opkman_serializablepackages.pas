@@ -285,7 +285,7 @@ var
 
 
 implementation
-uses opkman_common, opkman_const;
+uses opkman_common, opkman_const, opkman_options;
 
 { TPackageVersion }
 
@@ -986,7 +986,7 @@ function TSerializablePackages.IsPackageDownloaded(const APackage: TPackage): Bo
 var
   FileName: String;
 begin
-  FileName := LocalRepositoryArchive + APackage.RepositoryFileName;
+  FileName := Options.LocalRepositoryArchive + APackage.RepositoryFileName;
   Result := (FileExists(FileName)) and
             (MD5Print(MD5File(FileName)) = APackage.RepositoryFileHash) and
             (FileUtil.FileSize(FileName) = APackage.RepositoryFileSize);
@@ -1001,7 +1001,7 @@ begin
   for I := 0 to APackage.FPackageFiles.Count - 1 do
   begin
     PackageFile := TPackageFile(APackage.FPackageFiles.Items[I]);
-    PackageFile.FPackageAbsolutePath := LocalRepositoryPackages + APackage.PackageBaseDir + PackageFile.FPackageRelativePath + PackageFile.Name;
+    PackageFile.FPackageAbsolutePath := Options.LocalRepositoryPackages + APackage.PackageBaseDir + PackageFile.FPackageRelativePath + PackageFile.Name;
     if not FileExists(PackageFile.FPackageAbsolutePath) then
     begin
       Result := False;
@@ -1046,10 +1046,10 @@ begin
       begin
         FileName := StringReplace(APackageFile.Name, '.lpk', '.opkman', [rfIgnoreCase]);
         Result := (psExtracted in APackageFile.PackageStates) and
-                  FileExists(LocalRepositoryPackages + APackageBaseDir + APackageFile.PackageRelativePath + FileName);
+                  FileExists(Options.LocalRepositoryPackages + APackageBaseDir + APackageFile.PackageRelativePath + FileName);
         if Result then
         begin
-          APackageFile.InstalledFileName := LocalRepositoryPackages + APackageFile.FPackageRelativePath + APackageFile.Name;
+          APackageFile.InstalledFileName := Options.LocalRepositoryPackages + APackageFile.FPackageRelativePath + APackageFile.Name;
           APackageFile.InstalledFileVersion := APackageFile.VersionAsString;
           Result := True;
         end
@@ -1237,7 +1237,7 @@ begin
              (PackageFile.PackageType in [ptRunTime, ptRunTimeOnly]) then
       begin
         FileName := StringReplace(PackageFile.Name, '.lpk', '.opkman', [rfIgnoreCase]);
-        FileCreate(LocalRepositoryPackages + Items[I].PackageBaseDir + PackageFile.PackageRelativePath + FileName);
+        FileCreate(Options.LocalRepositoryPackages + Items[I].PackageBaseDir + PackageFile.PackageRelativePath + FileName);
       end;
     end;
   end;
@@ -1270,12 +1270,12 @@ begin
     begin
       if IsPackageDownloaded(Items[I]) then
       begin
-        if DeleteFile(LocalRepositoryArchive + Items[I].RepositoryFileName) then
+        if DeleteFile(Options.LocalRepositoryArchive + Items[I].RepositoryFileName) then
           Inc(Result);
       end;
       if IsPackageExtracted(Items[I]) then
-        if DirectoryExists(LocalRepositoryPackages + Items[I].PackageBaseDir) then
-          DeleteDirectory(LocalRepositoryPackages + Items[I].PackageBaseDir, False);
+        if DirectoryExists(Options.LocalRepositoryPackages + Items[I].PackageBaseDir) then
+          DeleteDirectory(Options.LocalRepositoryPackages + Items[I].PackageBaseDir, False);
     end;
   end;
 end;

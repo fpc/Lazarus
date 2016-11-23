@@ -356,15 +356,15 @@ var
 begin
   CanGo := False;
   SDD.Title := rsCreateRepositorySDDTitleSrc;
-  SDD.InitialDir := PackageOptions.LastPackagedirSrc;
+  SDD.InitialDir := Options.LastPackagedirSrc;
   if SDD.Execute then
   begin
     ShowHideControls(1);
     Application.ProcessMessages;
     try
       FPackageDir := AppendPathDelim(SDD.FileName);
-      PackageOptions.LastPackageDirSrc := FPackageDir;
-      PackageOptions.Changed := True;
+      Options.LastPackageDirSrc := FPackageDir;
+      Options.Changed := True;
       edPackageDir.Text := FPackageDir;
       PackageList := TStringList.Create;
       try
@@ -496,15 +496,15 @@ begin
   end;
 
   SDD.Title := rsCreateRepositorySDDTitleDst;
-  SDD.InitialDir := PackageOptions.LastPackagedirDst;
+  SDD.InitialDir := Options.LastPackagedirDst;
   if SDD.Execute then
   begin
     fPackageZipper := TPackageZipper.Create;
     fPackageZipper.OnZipError := @DoOnZippError;
     fPackageZipper.OnZipCompleted := @DoOnZipCompleted;
     FDestDir := AppendPathDelim(SDD.FileName);
-    PackageOptions.LastPackagedirDst := FDestDir;
-    PackageOptions.Changed := True;
+    Options.LastPackagedirDst := FDestDir;
+    Options.Changed := True;
     FPackageName := StringReplace(FPackageName, ' ', '', [rfReplaceAll]);
     FPackageFile := FDestDir + FPackageName + '.zip';
     pnMessage.Caption := rsCreateRepositoryPackageMessage4;

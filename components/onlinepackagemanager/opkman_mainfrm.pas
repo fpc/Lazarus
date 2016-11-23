@@ -132,12 +132,12 @@ uses opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common
 procedure TMainFrm.FormCreate(Sender: TObject);
 begin
   InitLocalRepository;
-  PackageOptions := TPackageOptions.Create(LocalRepositoryConfigFile);
+  Options := TOptions.Create(LocalRepositoryConfigFile);
   VisualTree := TVisualTree.Create(pnMain, imTree, pmTree);
   VisualTree.OnChecking := @DoOnChecking;
   VisualTree.OnChecked := @DoOnChecked;
   SerializablePackages := TSerializablePackages.Create;
-  PackageDownloader := TPackageDownloader.Create(PackageOptions.RemoteRepository);
+  PackageDownloader := TPackageDownloader.Create(Options.RemoteRepository);
   PackageDownloader.OnJSONProgress := @DoOnJSONProgress;
   PackageDownloader.OnJSONDownloadCompleted := @DoOnJSONDownloadCompleted;
   InstallPackageList := TObjectList.Create(True);
@@ -150,7 +150,7 @@ begin
   PackageDownloader.Free;
   SerializablePackages.Free;
   VisualTree.Free;
-  PackageOptions.Free;
+  Options.Free;
   InstallPackageList.Free;
   Application.HintHidePause := FHintTimeOut;
 end;
@@ -312,18 +312,10 @@ procedure TMainFrm.ShowOptions;
 begin
   OptionsFrm := TOptionsFrm.Create(MainFrm);
   try
-    OptionsFrm.Caption := rsOptionsFrmCaption;
-    OptionsFrm.edRemoteRepository.Text := PackageOptions.RemoteRepository;
-    OptionsFrm.cbProxy.Checked := PackageOptions.ProxyEnabled;
-    OptionsFrm.gbProxySettings.Enabled := PackageOptions.ProxyEnabled;
-    OptionsFrm.edProxyServer.Text := PackageOptions.ProxyServer;
-    OptionsFrm.seProxyPort.Value := PackageOptions.ProxyPort;
-    OptionsFrm.edProxyUser.Text := PackageOptions.ProxyUser;
-    OptionsFrm.edProxyPassword.Text := PackageOptions.ProxyPassword;
-
+    OptionsFrm.SetupControls;
     if OptionsFrm.ShowModal = mrOk then
     begin
-      tbRefresh.Enabled := PackageOptions.RemoteRepository <> '';
+      tbRefresh.Enabled := Options.RemoteRepository <> '';
       GetPackageList;
     end;
   finally
@@ -344,7 +336,7 @@ begin
   VisualTree.VST.Enabled := (AEnable) and (SerializablePackages.Count > 0);
   if edFilter.CanFocus then
     edFilter.SetFocus;
-  tbRefresh.Enabled := (AEnable) and (Trim(PackageOptions.RemoteRepository) <> '');
+  tbRefresh.Enabled := (AEnable) and (Trim(Options.RemoteRepository) <> '');
   tbDownload.Enabled := (AEnable) and (SerializablePackages.Count > 0) and (VisualTree.VST.CheckedCount > 0);
   tbInstall.Enabled := (AEnable) and (SerializablePackages.Count > 0) and (VisualTree.VST.CheckedCount > 0);
   tbUpdate.Enabled :=  (AEnable) and (SerializablePackages.Count > 0) and (VisualTree.VST.CheckedCount > 0);
@@ -517,7 +509,7 @@ begin
   if not IsSomethingChecked then
     Exit;
 
-  SDD.InitialDir := PackageOptions.LastDownloadDir;
+  SDD.InitialDir := Options.LastDownloadDir;
   if SDD.Execute then
   begin
     CanGo := True;
@@ -540,8 +532,8 @@ begin
 
   if CanGo then
   begin
-    PackageOptions.LastDownloadDir := DstDir;
-    PackageOptions.Changed := True;
+    Options.LastDownloadDir := DstDir;
+    Options.Changed := True;
     PackageAction := paDownloadTo;
     DoExtract := False;
     if Download(DstDir, DoExtract) = mrOK then
@@ -597,7 +589,7 @@ begin
     if SerializablePackages.DownloadCount > 0 then
     begin
       DoExtract := True;
-      CanGo := UpdateP(LocalRepositoryUpdate, DoExtract) = mrOK;
+      CanGo := UpdateP(Options.LocalRepositoryUpdate, DoExtract) = mrOK;
       VisualTree.UpdatePackageStates;
     end;
 
@@ -606,7 +598,7 @@ begin
       if SerializablePackages.ExtractCount > 0 then
       begin
         DoOpen := False;
-        CanGo := Extract(LocalRepositoryUpdate, LocalRepositoryPackages, DoOpen, True) = mrOk;
+        CanGo := Extract(Options.LocalRepositoryUpdate, Options.LocalRepositoryPackages, DoOpen, True) = mrOk;
         VisualTree.UpdatePackageStates;
       end;
 
@@ -669,7 +661,7 @@ begin
     if SerializablePackages.DownloadCount > 0 then
     begin
       DoExtract := True;
-      CanGo := Download(LocalRepositoryArchive, DoExtract) = mrOK;
+      CanGo := Download(Options.LocalRepositoryArchive, DoExtract) = mrOK;
       VisualTree.UpdatePackageStates;
     end;
 
@@ -678,7 +670,7 @@ begin
       if SerializablePackages.ExtractCount > 0 then
       begin
         DoOpen := False;
-        CanGo := Extract(LocalRepositoryArchive, LocalRepositoryPackages, DoOpen) = mrOk;
+        CanGo := Extract(Options.LocalRepositoryArchive, Options.LocalRepositoryPackages, DoOpen) = mrOk;
         VisualTree.UpdatePackageStates;
       end;
 

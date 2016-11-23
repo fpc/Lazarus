@@ -348,7 +348,7 @@ begin
       if SerializablePackages.Items[I].IsDownloadable then
       begin
         Inc(FCnt);
-        FFrom := PackageOptions.RemoteRepository + SerializablePackages.Items[I].RepositoryFileName;
+        FFrom := Options.RemoteRepository + SerializablePackages.Items[I].RepositoryFileName;
         FTo := FDownloadTo + SerializablePackages.Items[I].RepositoryFileName;
         FCurSize := SerializablePackages.Items[I].RepositoryFileSize;
         DS := TDownloadStream.Create(TFileStream.Create(FTo, fmCreate));
@@ -479,12 +479,12 @@ begin
   FTimer := nil;
   FMS := TMemoryStream.Create;
   FHTTPClient := TFPHTTPClient.Create(nil);
-  if PackageOptions.ProxyEnabled then
+  if Options.ProxyEnabled then
     begin
-      FHTTPClient.Proxy.Host:= PackageOptions.ProxyServer;
-      FHTTPClient.Proxy.Port:= PackageOptions.ProxyPort;
-      FHTTPClient.Proxy.UserName:= PackageOptions.ProxyUser;
-      FHTTPClient.Proxy.Password:= PackageOptions.ProxyPassword;
+      FHTTPClient.Proxy.Host:= Options.ProxyServer;
+      FHTTPClient.Proxy.Port:= Options.ProxyPort;
+      FHTTPClient.Proxy.UserName:= Options.ProxyUser;
+      FHTTPClient.Proxy.Password:= Options.ProxyPassword;
     end;
 end;
 
@@ -500,7 +500,7 @@ end;
 
 procedure TThreadDownload.DownloadJSON(const ATimeOut: Integer = -1);
 begin
-  FRemoteJSONFile := PackageOptions.RemoteRepository + cRemoteJSONFile;
+  FRemoteJSONFile := Options.RemoteRepository + cRemoteJSONFile;
   FDownloadType := dtJSON;
   FTimer := TThreadTimer.Create;
   FTimer.Interval := ATimeOut;
@@ -557,12 +557,12 @@ begin
   try
     URL := FixProtocol(AURL);
     HttpClient := TFPHTTPClient.Create(nil);
-    if PackageOptions.ProxyEnabled then
+    if Options.ProxyEnabled then
       begin
-        HTTPClient.Proxy.Host:= PackageOptions.ProxyServer;
-        HTTPClient.Proxy.Port:= PackageOptions.ProxyPort;
-        HTTPClient.Proxy.UserName:= PackageOptions.ProxyUser;
-        HTTPClient.Proxy.Password:= PackageOptions.ProxyPassword;
+        HTTPClient.Proxy.Host:= Options.ProxyServer;
+        HTTPClient.Proxy.Port:= Options.ProxyPort;
+        HTTPClient.Proxy.UserName:= Options.ProxyUser;
+        HTTPClient.Proxy.Password:= Options.ProxyPassword;
       end;
 
     try

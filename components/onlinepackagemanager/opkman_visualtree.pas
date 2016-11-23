@@ -219,7 +219,7 @@ begin
   //add repository(DataType = 0)
   RootNode := FVST.AddChild(nil);
   RootData := FVST.GetNodeData(RootNode);
-  RootData^.Repository := PackageOptions.RemoteRepository;
+  RootData^.Repository := Options.RemoteRepository;
   RootData^.DataType := 0;
   for I := 0 to SerializablePackages.Count - 1 do
   begin
