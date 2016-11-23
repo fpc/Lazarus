@@ -2245,7 +2245,6 @@ begin
     exit(mrCancel);
   end;
   Result:=ShowAddPkgDependencyDlg(LazPackage, Deps);
-  DebugLn(['TPackageEditorForm.ShowAddDepDialog: Deps.Count=', Deps.Count]);
   try
     if (Result<>mrOk) or (Deps.Count=0) then exit;
     PackageGraph.BeginUpdate(false);
