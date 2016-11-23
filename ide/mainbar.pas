@@ -418,7 +418,7 @@ procedure TMainIDEBar.DoSetMainIDEHeight(const AIDEIsMaximized: Boolean; ANewHei
 begin
   if not Showing then Exit;
 
-  DebugLn(['TMainIDEBar.DoSetMainIDEHeight: IDEStarted=', LazarusIDE.IDEStarted]);
+  //DebugLn(['TMainIDEBar.DoSetMainIDEHeight: IDEStarted=', LazarusIDE.IDEStarted]);
   if Assigned(IDEDockMaster) then
   begin
     if EnvironmentOptions.Desktop.AutoAdjustIDEHeight then
@@ -726,7 +726,7 @@ begin
   if LazarusIDE.IDEStarted then
     case State of
       wsMaximized, wsNormal: begin
-        DebugLn('TMainIDEBar.Resizing: Setting main IDE height');
+        //DebugLn('TMainIDEBar.Resizing: Setting main IDE height');
         DoSetMainIDEHeight(State = wsMaximized);
       end;
     end;
