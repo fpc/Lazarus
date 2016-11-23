@@ -679,39 +679,51 @@ begin
     (AnsiStrLComp(PChar(s),PChar(UNKNOWN_VK_PREFIX),length(UNKNOWN_VK_PREFIX))=0);
 end;
 
+function KeyCodeToKeyString(Key: integer): string;
+begin
+  case Key of
+    VK_BACK:
+      Result := MenuKeyCaps[mkcBkSp];
+    VK_TAB:
+      Result := MenuKeyCaps[mkcTab];
+    VK_RETURN:
+      Result := MenuKeyCaps[mkcEnter];
+    VK_ESCAPE:
+      Result := MenuKeyCaps[mkcEsc];
+    VK_SPACE..VK_SPACE+8:
+      Result := MenuKeyCaps[TMenuKeyCap(Key - VK_SPACE + Ord(mkcSpace))];
+    VK_INSERT:
+      Result := MenuKeyCaps[mkcIns];
+    VK_DELETE:
+      Result := MenuKeyCaps[mkcDel];
+    VK_0..VK_9:
+      Result := Chr(Key - VK_0 + Ord('0'));
+    VK_A..VK_Z:
+      Result := Chr(Key - VK_A + Ord('A'));
+    VK_NUMPAD0..VK_NUMPAD9:
+      Result := 'Num' + Chr(Key - VK_NUMPAD0 + Ord('0')); // Delphi differs it from 0..9
+    VK_F1..VK_F24:
+      Result := 'F' + IntToStr(Key - (VK_F1-1));
+    else
+      Result := GetSpecialShortCutName(Key);
+  end;
+end;
+
 function ShortCutToText(ShortCut: TShortCut): string;
 var
   Name: string;
-  Key: Byte;
 begin
+  Result := '';
   InitializeMenuKeyCaps;
-  Key := ShortCut and $FF;
-  case Key of
-    $08: Name := MenuKeyCaps[mkcBkSp]; //made code little nicer
-    $09: Name := MenuKeyCaps[mkcTab]; //made code little nicer
-    $0D: Name := MenuKeyCaps[mkcEnter];
-    $1B: Name := MenuKeyCaps[mkcEsc];
-    $20..$28:
-      Name := MenuKeyCaps[TMenuKeyCap(Ord(mkcSpace) + Key - $20)];
-    $2D: Name := MenuKeyCaps[mkcIns];
-    $2E: Name := MenuKeyCaps[mkcDel];
-    $30..$39: Name := Chr(Key - $30 + Ord('0'));
-    $41..$5A: Name := Chr(Key - $41 + Ord('A'));
-    $60..$69: Name := 'Num' + Chr(Key - $60 + Ord('0')); //Delphi differs it from 0..9
-    $70..$87: Name := 'F' + IntToStr(Key - $6F);
-  else
-    Name := GetSpecialShortCutName(Key); //need Key, not shortcut
-  end;
+  Name := KeyCodeToKeyString(ShortCut and $FF);
   if Name <> '' then
   begin
-    Result := '';
     if ShortCut and scShift <> 0 then Result := Result + MenuKeyCaps[mkcShift];
     if ShortCut and scCtrl <> 0 then Result := Result + MenuKeyCaps[mkcCtrl];
     if ShortCut and scMeta <> 0 then Result := Result + MenuKeyCaps[mkcMeta];
     if ShortCut and scAlt <> 0 then Result := Result + MenuKeyCaps[mkcAlt];
     Result := Result + Name;
-  end
-  else Result := '';
+  end;
 end;
 
 function TextToShortCut(const ShortCutText: string): TShortCut;
