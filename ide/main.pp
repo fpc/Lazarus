@@ -1586,11 +1586,11 @@ begin
   Screen.AddHandlerActiveFormChanged(@HandleScreenChangedForm);
   Screen.AddHandlerActiveControlChanged(@HandleScreenChangedControl);
   IDEComponentPalette.OnClassSelected := @ComponentPaletteClassSelected;
+  IDEWindowCreators.AddLayoutChangedHandler(@HandleLayoutChanged);
   SetupIDEWindowsLayout;
   RestoreIDEWindows;
   MainIDEBar.SetupHints;
   MainIDEBar.InitPaletteAndCoolBar;
-  IDEWindowCreators.AddLayoutChangedHandler(@HandleLayoutChanged);
   // make sure the main IDE bar is always shown
   IDEWindowCreators.ShowForm(MainIDEBar,false);
   DebugBoss.UpdateButtonsAndMenuItems; // Disable Stop-button (and some others).
