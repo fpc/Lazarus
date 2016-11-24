@@ -43,7 +43,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Width = 256
     BorderSpacing.Top = 6
     Caption = 'OpenLastProjectAtStartCheckBox'
-    TabOrder = 0
+    TabOrder = 2
   end
   object ShowCompileDialogCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -57,7 +57,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     BorderSpacing.Top = 2
     Caption = 'ShowCompileDialogCheckBox'
     OnChange = ShowCompileDialogCheckBoxChange
-    TabOrder = 1
+    TabOrder = 4
   end
   object LazarusDirLabel: TLabel
     AnchorSideLeft.Control = Owner
@@ -85,7 +85,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
     OnClick = DirectoriesButtonClick
-    TabOrder = 2
+    TabOrder = 7
   end
   object LazarusDirComboBox: TComboBox
     AnchorSideLeft.Control = Owner
@@ -98,7 +98,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Width = 568
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 0
-    TabOrder = 3
+    TabOrder = 6
     Text = 'LazarusDirComboBox'
   end
   object CompilerPathComboBox: TComboBox
@@ -112,7 +112,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Width = 568
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 0
-    TabOrder = 4
+    TabOrder = 8
     Text = 'CompilerPathComboBox'
   end
   object CompilerPathButton: TButton
@@ -128,7 +128,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
     OnClick = FilesButtonClick
-    TabOrder = 5
+    TabOrder = 9
   end
   object CompilerPathLabel: TLabel
     AnchorSideLeft.Control = Owner
@@ -153,7 +153,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Width = 568
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 0
-    TabOrder = 6
+    TabOrder = 10
     Text = 'FPCSourceDirComboBox'
   end
   object FPCSourceDirButton: TButton
@@ -169,7 +169,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
     OnClick = DirectoriesButtonClick
-    TabOrder = 7
+    TabOrder = 11
   end
   object FPCSourceDirLabel: TLabel
     AnchorSideLeft.Control = Owner
@@ -218,7 +218,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Width = 568
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 0
-    TabOrder = 8
+    TabOrder = 12
     Text = 'MakePathComboBox'
   end
   object MakePathButton: TButton
@@ -234,7 +234,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
     OnClick = FilesButtonClick
-    TabOrder = 9
+    TabOrder = 13
   end
   object TestBuildDirComboBox: TComboBox
     AnchorSideLeft.Control = Owner
@@ -247,7 +247,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Width = 568
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 0
-    TabOrder = 10
+    TabOrder = 14
     Text = 'TestBuildDirComboBox'
   end
   object TestBuildDirButton: TButton
@@ -263,7 +263,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
     OnClick = DirectoriesButtonClick
-    TabOrder = 11
+    TabOrder = 15
   end
   object AutoCloseCompileDialogCheckBox: TCheckBox
     AnchorSideLeft.Control = ShowCompileDialogCheckBox
@@ -276,7 +276,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Width = 261
     BorderSpacing.Left = 30
     Caption = 'AutoCloseCompileDialogCheckBox'
-    TabOrder = 12
+    TabOrder = 5
   end
   object CompilerTranslationFileLabel: TLabel
     AnchorSideLeft.Control = Owner
@@ -308,7 +308,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     OnClick = CompilerTranslationFileButtonClick
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 13
+    TabOrder = 17
   end
   object CompilerTranslationFileComboBox: TComboBox
     AnchorSideLeft.Control = Owner
@@ -323,7 +323,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     ItemHeight = 0
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 14
+    TabOrder = 16
     Text = 'CompilerTranslationFileComboBox'
   end
   object lblCenter: TLabel
@@ -348,7 +348,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Right = 3
     BorderSpacing.Around = 2
-    TabOrder = 15
+    TabOrder = 0
   end
   object MaxRecentProjectFilesSpin: TSpinEdit
     AnchorSideLeft.Control = lblCenter
@@ -363,7 +363,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 3
     BorderSpacing.Around = 2
-    TabOrder = 16
+    TabOrder = 1
   end
   object MultipleInstancesLabel: TLabel
     AnchorSideLeft.Control = Owner
@@ -389,6 +389,6 @@ object FilesOptionsFrame: TFilesOptionsFrame
     BorderSpacing.Top = 2
     ItemHeight = 0
     Style = csDropDownList
-    TabOrder = 17
+    TabOrder = 3
   end
 end
