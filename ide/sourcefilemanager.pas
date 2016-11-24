@@ -196,18 +196,23 @@ type
     function CloseEditorFile(AEditor: TSourceEditorInterface;
                                Flags: TCloseFlags):TModalResult;
     function CloseEditorFile(const Filename: string; Flags: TCloseFlags): TModalResult;
-    function FindUnitFile(const AFilename: string; TheOwner: TObject = nil;
-                          Flags: TFindUnitFileFlags = []): string;
-    function FindSourceFile(const AFilename, BaseDirectory: string;
-                            Flags: TFindSourceFlags): string;
-    function CheckFilesOnDisk(Instantaneous: boolean = false): TModalResult;
+
     function PublishModule(Options: TPublishModuleOptions;
       const SrcDirectory, DestDirectory: string): TModalResult;
+
+    // interactive unit selection
     function SelectProjectItems(ItemList: TViewUnitEntries; ItemType: TIDEProjectItem;
       MultiSelect: boolean; var MultiSelectCheckedState: Boolean): TModalResult;
     function SelectUnitComponents(DlgCaption: string; ItemType: TIDEProjectItem;
       Files: TStringList; MultiSelect: boolean;
       var MultiSelectCheckedState: Boolean): TModalResult;
+    // unit search
+    function FindUnitFile(const AFilename: string; TheOwner: TObject = nil;
+                          Flags: TFindUnitFileFlags = []): string;
+    function FindSourceFile(const AFilename, BaseDirectory: string;
+                            Flags: TFindSourceFlags): string;
+    function FindUnitsOfOwner(TheOwner: TObject; AddListed, AddUsed,
+                              AddPackages: boolean): TStrings;
 
     function AddUnitToProject(const AEditor: TSourceEditorInterface): TModalResult;
     function AddActiveUnitToProject: TModalResult;
@@ -221,15 +226,20 @@ type
     function SaveProjectIfChanged: TModalResult;
     function CloseProject: TModalResult;
     procedure OpenProject(aMenuItem: TIDEMenuItem);
+    function CompleteLoadingProjectInfo: TModalResult;
+
     procedure CloseAll;
     procedure InvertedFileClose(PageIndex: LongInt; SrcNoteBook: TSourceNotebook);
+
     // Ensure compilation is OK, build many modes at one go.
     function PrepareForCompileWithMsg: TModalResult;
     function BuildManyModes: Boolean;
+
     // Project Inspector
     // Checks if the UnitDirectory is part of the Unit Search Paths, if not,
     // ask the user if he wants to extend dependencies or the Unit Search Paths.
     function CheckDirIsInSearchPath(UnitInfo: TUnitInfo; AllowAddingDependencies, IsIncludeFile: Boolean): Boolean;
+
     // methods for 'new unit'
     function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
         NewOwner: TObject; NewFilename: string; var NewCodeBuffer: TCodeBuffer;
@@ -238,6 +248,7 @@ type
         AncestorType: TPersistentClass; ResourceCode: TCodeBuffer;
         UseCreateFormStatements, DisableAutoSize: Boolean): TModalResult;
     function NewUniqueComponentName(Prefix: string): string;
+
     // methods for 'save unit'
     function ShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TUnitInfo;
         var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean): TModalResult;
@@ -247,9 +258,11 @@ type
     function RenameUnit(AnUnitInfo: TUnitInfo; NewFilename, NewUnitName: string;
         var LFMCode, LRSCode: TCodeBuffer): TModalResult;
     function RenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser: boolean): TModalresult;
-
-    // methods for 'open unit' and 'open main unit'
+    function ReplaceUnitUse(OldFilename, OldUnitName,
+                            NewFilename, NewUnitName: string;
+                            IgnoreErrors, Quiet, Confirm: boolean): TModalResult;
   private
+    // private help methods for designer
     function LoadResourceFile(AnUnitInfo: TUnitInfo; var LFMCode, LRSCode: TCodeBuffer;
         AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
     function FindBaseComponentClass(AnUnitInfo: TUnitInfo; const AComponentClassName,
@@ -269,6 +282,8 @@ type
     function LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
         const AFilename: string; Flags: TLoadBufferFlags; ShowAbort: boolean): TModalResult;
   public
+    // related to Designer
+    function DesignerUnitIsVirtual(aLookupRoot: TComponent): Boolean;
     function CheckLFMInEditor(LFMUnitInfo: TUnitInfo; Quiet: boolean): TModalResult;
     function LoadLFM(AnUnitInfo: TUnitInfo; OpenFlags: TOpenFlags;
                        CloseFlags: TCloseFlags): TModalResult;
@@ -279,17 +294,14 @@ type
         CloseFlags: TCloseFlags; out Component: TComponent): TModalResult;
     function UpdateUnitInfoResourceBaseClass(AnUnitInfo: TUnitInfo;
       Quiet: boolean): boolean;
-
-    // methods for 'close unit'
     function CloseUnitComponent(AnUnitInfo: TUnitInfo; Flags: TCloseFlags): TModalResult;
     function CloseDependingUnitComponents(AnUnitInfo: TUnitInfo;
                                           Flags: TCloseFlags): TModalResult;
     function UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
                                  CheckHasDesigner: boolean): boolean;
-    function RemoveFilesFromProject(AProject: TProject; UnitInfos: TFPList): TModalResult;
 
-    // methods for open project, create project from source
-    function CompleteLoadingProjectInfo: TModalResult;
+    // many files
+    function RemoveFilesFromProject(AProject: TProject; UnitInfos: TFPList): TModalResult;
 
     // methods for 'save project'
   private
@@ -302,13 +314,10 @@ type
     procedure UpdateProjectResourceInfo;
   public
     function AskSaveProject(const ContinueText, ContinueBtn: string): TModalResult;
+
     function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean;
-    function ReplaceUnitUse(OldFilename, OldUnitName,
-                              NewFilename, NewUnitName: string;
-                              IgnoreErrors, Quiet, Confirm: boolean): TModalResult;
-    // related to Designer
-    function DesignerUnitIsVirtual(aLookupRoot: TComponent): Boolean;
   public
+    function CheckFilesOnDisk(Instantaneous: boolean = false): TModalResult;
     property CheckingFilesOnDisk: boolean read FCheckingFilesOnDisk write FCheckingFilesOnDisk;
     property CheckFilesOnDiskNeeded: boolean read FCheckFilesOnDiskNeeded;
   end;
@@ -3033,6 +3042,208 @@ begin
   end;
 
   Result:='';
+end;
+
+function TLazSourceFileManager.FindUnitsOfOwner(TheOwner: TObject; AddListed,
+  AddUsed, AddPackages: boolean): TStrings;
+var
+  Files: TFilenameToStringTree;
+  UnitPath: string; // only if not AddPackages:
+                    // owner unitpath without unitpaths of required packages
+
+  function Add(aFilename: string): boolean;
+  begin
+    if Files.Contains(aFilename) then exit(false);
+    //debugln(['  Add ',aFilename]);
+    Files[aFilename]:='';
+    FindUnitsOfOwner.Add(aFilename);
+  end;
+
+  procedure AddListedPackageUnits(aPackage: TLazPackage);
+  // add listed units of aPackage
+  var
+    i: Integer;
+    PkgFile: TPkgFile;
+  begin
+    //debugln([' AddListedPackageUnits ',aPackage.IDAsString]);
+    for i:=0 to aPackage.FileCount-1 do
+    begin
+      PkgFile:=aPackage.Files[i];
+      if not (PkgFile.FileType in PkgFileRealUnitTypes) then continue;
+      if not PkgFile.InUses then continue;
+      Add(PkgFile.Filename);
+    end;
+  end;
+
+  procedure AddUsedUnit(aFilename: string);
+  // add recursively all units
+
+    procedure AddUses(UsesSection: TStrings);
+    var
+      i: Integer;
+      Code: TCodeBuffer;
+    begin
+      if UsesSection=nil then exit;
+      for i:=0 to UsesSection.Count-1 do begin
+        //debugln(['AddUses ',UsesSection[i]]);
+        Code:=TCodeBuffer(UsesSection.Objects[i]);
+        if Code=nil then exit;
+        AddUsedUnit(Code.Filename);
+      end;
+    end;
+
+  var
+    Code: TCodeBuffer;
+    MainUsesSection, ImplementationUsesSection: TStrings;
+  begin
+    //debugln(['  AddUsedUnit START ',aFilename]);
+    if not AddPackages then
+    begin
+      if FilenameIsAbsolute(aFilename) then
+      begin
+        if SearchDirectoryInSearchPath(UnitPath,ExtractFilePath(aFilename))<0 then
+          exit; // not in exclusive unitpath
+      end else begin
+        if (not (TheOwner is TProject)) or (not TProject(TheOwner).IsVirtual) then
+          exit;
+      end;
+    end;
+    //debugln(['  AddUsedUnit OK ',aFilename]);
+    if not Add(aFilename) then exit;
+    Code:=CodeToolBoss.LoadFile(aFilename,true,false);
+    if Code=nil then exit;
+    MainUsesSection:=nil;
+    ImplementationUsesSection:=nil;
+    try
+      CodeToolBoss.FindUsedUnitFiles(Code,MainUsesSection,ImplementationUsesSection);
+      AddUses(MainUsesSection);
+      AddUses(ImplementationUsesSection);
+    finally
+      MainUsesSection.Free;
+      ImplementationUsesSection.Free;
+    end;
+  end;
+
+var
+  aProject: TProject;
+  aPackage, ReqPackage: TLazPackage;
+  MainFile, CurFilename: String;
+  AnUnitInfo: TUnitInfo;
+  i: Integer;
+  Code: TCodeBuffer;
+  FoundInUnits, MissingUnits, NormalUnits: TStrings;
+  PkgList: TFPList;
+  PkgListFlags: TPkgIntfRequiredFlags;
+begin
+  Result:=TStringList.Create;
+  MainFile:='';
+  FoundInUnits:=nil;
+  MissingUnits:=nil;
+  NormalUnits:=nil;
+  aProject:=nil;
+  aPackage:=nil;
+  PkgList:=nil;
+  Files:=TFilenameToStringTree.Create(false);
+  try
+    //debugln(['TLazSourceFileManager.FindUnitsOfOwner ',DbgSName(TheOwner)]);
+    if TheOwner is TProject then
+    begin
+      aProject:=TProject(TheOwner);
+      // add main project source (e.g. .lpr)
+      if (aProject.MainFile<>nil) and (pfMainUnitIsPascalSource in aProject.Flags)
+      then begin
+        MainFile:=aProject.MainFile.Filename;
+        Add(MainFile);
+      end;
+      if AddListed then begin
+        // add listed units (i.e. units in project inspector)
+        AnUnitInfo:=aProject.FirstPartOfProject;
+        while AnUnitInfo<>nil do
+        begin
+          if FilenameIsPascalUnit(AnUnitInfo.Filename) then
+            Add(AnUnitInfo.Filename);
+          AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+        end;
+      end;
+      if AddListed and AddPackages then
+      begin
+        // get required packages
+        if pfUseDesignTimePackages in aProject.Flags then
+          PkgListFlags:=[]
+        else
+          PkgListFlags:=[pirSkipDesignTimeOnly];
+        PackageGraph.GetAllRequiredPackages(nil,aProject.FirstRequiredDependency,
+          PkgList,PkgListFlags);
+      end;
+    end else if TheOwner is TLazPackage then begin
+      aPackage:=TLazPackage(TheOwner);
+      if AddListed then
+      begin
+        // add listed units (i.e. units in package editor)
+        AddListedPackageUnits(aPackage);
+      end;
+      if AddUsed then
+        MainFile:=aPackage.GetSrcFilename;
+      if AddListed and AddPackages then
+      begin
+        // get required packages
+        PackageGraph.GetAllRequiredPackages(aPackage,nil,PkgList,[]);
+      end;
+    end else begin
+      FreeAndNil(Result);
+      raise Exception.Create('TLazSourceFileManager.FindUnitsOfOwner: invalid owner '+DbgSName(TheOwner));
+    end;
+
+    if AddListed and AddPackages and (PkgList<>nil) then begin
+      // add package units (listed in their package editors)
+      for i:=0 to PkgList.Count-1 do begin
+        ReqPackage:=TLazPackage(PkgList[i]);
+        AddListedPackageUnits(ReqPackage);
+      end;
+    end;
+
+    if AddUsed and (MainFile<>'') then
+    begin
+      // add all used units with 'in' files
+      Code:=CodeToolBoss.LoadFile(MainFile,true,false);
+      if Code<>nil then begin
+        UnitPath:='';
+        if aProject<>nil then begin
+          CodeToolBoss.FindDelphiProjectUnits(Code,FoundInUnits,MissingUnits,NormalUnits);
+          if not AddPackages then
+          begin
+            UnitPath:=aProject.CompilerOptions.GetUnitPath(false);
+            RemoveSearchPaths(UnitPath,aProject.CompilerOptions.GetInheritedOption(icoUnitPath,false));
+          end;
+        end
+        else if aPackage<>nil then begin
+          CodeToolBoss.FindDelphiPackageUnits(Code,FoundInUnits,MissingUnits,NormalUnits);
+          if not AddPackages then
+          begin
+            UnitPath:=aPackage.CompilerOptions.GetUnitPath(false);
+            RemoveSearchPaths(UnitPath,aPackage.CompilerOptions.GetInheritedOption(icoUnitPath,false));
+          end;
+        end;
+        //debugln(['TLazSourceFileManager.FindUnitsOfOwner UnitPath="',UnitPath,'"']);
+        if FoundInUnits<>nil then
+          for i:=0 to FoundInUnits.Count-1 do
+          begin
+            CurFilename:=TCodeBuffer(FoundInUnits.Objects[i]).Filename;
+            Add(CurFilename);
+            AddUsedUnit(CurFilename);
+          end;
+        if NormalUnits<>nil then
+          for i:=0 to NormalUnits.Count-1 do
+            AddUsedUnit(TCodeBuffer(NormalUnits.Objects[i]).Filename);
+      end;
+    end;
+  finally
+    FoundInUnits.Free;
+    MissingUnits.Free;
+    NormalUnits.Free;
+    PkgList.Free;
+    Files.Free;
+  end;
 end;
 
 function TLazSourceFileManager.CheckFilesOnDisk(Instantaneous: boolean): TModalResult;

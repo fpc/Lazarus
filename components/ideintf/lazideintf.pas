@@ -381,10 +381,9 @@ type
     function BeginCodeTools: boolean; virtual; abstract;
     function DoShowCodeToolBossError: TMessageLine; virtual; abstract;
     procedure DoJumpToCodeToolBossError; virtual; abstract;
-
     function NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; virtual; abstract;
     function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; virtual; abstract; // true if something was saved
-
+    function FindUnitsOfOwner(TheOwner: TObject; AddListed, AddUsed, AddPackages: boolean): TStrings; virtual; abstract;
     property OpenEditorsOnCodeToolChange: boolean read FOpenEditorsOnCodeToolChange
                                              write FOpenEditorsOnCodeToolChange;
     property SaveClosedSourcesOnCodeToolChange: boolean read FSaveClosedSourcesOnCodeToolChange

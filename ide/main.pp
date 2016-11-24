@@ -893,6 +893,8 @@ type
     procedure DoJumpToCodeToolBossError; override;
     function NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
     function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
+    function FindUnitsOfOwner(TheOwner: TObject; AddListed, AddUsed,
+      AddPackages: boolean): TStrings; override;
     procedure ApplyCodeToolChanges;
     procedure DoJumpToOtherProcedureSection;
     procedure DoFindDeclarationAtCursor;
@@ -9471,6 +9473,12 @@ function TMainIDE.SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInter
 // save all open sources to code tools cache
 begin
   Result:=SourceFileMgr.SaveSourceEditorChangesToCodeCache(AEditor);
+end;
+
+function TMainIDE.FindUnitsOfOwner(TheOwner: TObject; AddListed, AddUsed,
+  AddPackages: boolean): TStrings;
+begin
+  Result:=SourceFileMgr.FindUnitsOfOwner(TheOwner,AddListed,AddUsed,AddPackages);
 end;
 
 function TMainIDE.DoJumpToSourcePosition(const Filename: string; NewX, NewY,
