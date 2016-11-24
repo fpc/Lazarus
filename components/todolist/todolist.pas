@@ -65,7 +65,7 @@ uses
   Classes, SysUtils, Math, LCLProc, Forms, Controls, Dialogs, StrUtils,
   ComCtrls, ActnList, AvgLvlTree, LazUTF8Classes, LCLType, ButtonPanel,
   CodeCache, CodeToolManager, BasicCodeTools, FileProcs, LazFileUtils,
-  LclIntf,
+  LazFileCache, LclIntf,
   // IDEIntf
   LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf,
   // IDE
@@ -241,12 +241,11 @@ var
   i: integer;
   St : String;
   CurOwner: TObject;
-  CurProject: TLazProject;
-  CurPackage: TIDEPackage;
-  CurProjFile: TLazProjectFile;
   Node: TAvgLvlTreeNode;
   CurFile: TTLScannedFile;
-  CurPkgFile: TLazPackageFile;
+  Units: TStrings;
+  CurProject: TLazProject;
+  CurPkg: TIDEPackage;
 begin
   if not Immediately then begin
     fUpdateNeeded:=true;
@@ -263,6 +262,7 @@ begin
 
   Screen.Cursor:=crHourGlass;
   lvTodo.BeginUpdate;
+  Units:=nil;
   try
     fUpdating:=True;
     CodeToolBoss.ActivateWriteLock;
@@ -273,45 +273,17 @@ begin
     if StartFilename<>'' then begin
       // Find a '.todo' file of the main source
       St:=ChangeFileExt(StartFilename,'.todo');
-      if FileExistsUTF8(St) then
+      if FileExistsCached(St) then
         ScanFile(St);
       // Scan main source file
       if FilenameIsPascalUnit(StartFilename) then
         ScanFile(StartFilename);
     end;
 
-    // find project/package
-    ResolveIDEItem(CurOwner,CurProject,CurPackage);
-    if CurOwner=nil then begin
-      CurProject:=LazarusIDE.ActiveProject;
-      CurOwner:=CurProject;
-    end;
-
-    //debugln(['TIDETodoWindow.UpdateTodos Owner=',DbgSName(CurOwner)]);
-    if CurProject<>nil then begin
-      // scan all units of project
-      Caption:=lisToDoList+' - '+ExtractFileName(CurProject.ProjectInfoFile);
-      FBaseDirectory:=ExtractFilePath(CurProject.ProjectInfoFile);
-      if (CurProject.MainFile<>nil) and (pfMainUnitIsPascalSource in CurProject.Flags)
-      then
-        ScanFile(CurProject.MainFile.Filename);
-      for i:=0 to CurProject.FileCount-1 do begin
-        CurProjFile:=CurProject.Files[i];
-        //debugln(['TIDETodoWindow.UpdateTodos ',CurProjFile.IsPartOfProject,' ',CurProjFile.Filename]);
-        if CurProjFile.IsPartOfProject
-        and FilenameIsPascalUnit(CurProjFile.Filename) then
-          ScanFile(CurProjFile.Filename);
-      end;
-    end else if CurPackage<>nil then begin
-      // scan all units of package
-      Caption:=lisToDoList+' - '+ExtractFilename(CurPackage.Filename);
-      FBaseDirectory:=ExtractFilePath(CurPackage.Filename);
-      for i:=0 to CurPackage.FileCount-1 do begin
-        CurPkgFile:=CurPackage.Files[i];
-        if FilenameIsPascalUnit(CurPkgFile.Filename) then
-          ScanFile(CurPkgFile.Filename);
-      end;
-    end;
+    ResolveIDEItem(CurOwner,CurProject,CurPkg);
+    Units:=LazarusIDE.FindUnitsOfOwner(CurOwner,true,true,false);
+    for i:=0 to Units.Count-1 do
+      ScanFile(Units[i]);
 
     Node:=fScannedFiles.FindLowest;
     while Node<>nil do begin
@@ -321,6 +293,7 @@ begin
       Node:=fScannedFiles.FindSuccessor(Node);
     end;
   finally
+    Units.Free;
     CodeToolBoss.DeactivateWriteLock;
     lvTodo.EndUpdate;
     Screen.Cursor:=crDefault;
@@ -452,7 +425,7 @@ begin
   CurOwner:=nil;
   CurProject:=nil;
   CurPkg:=nil;
-  if IsValidIdent(IDEItem) then begin
+  if IsValidIdent(IDEItem,true) then begin
     // package
     CurPkg:=PackageEditingInterface.FindPackageWithName(IDEItem);
     CurOwner:=CurPkg;
