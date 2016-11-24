@@ -3193,6 +3193,10 @@ msgstr ""
 msgid "&Load Icon"
 msgstr "Wczytaj ikonę"
 
+#: lazarusidestrconsts.dlgpomanifestoptions
+msgid "Manifest options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"
@@ -3215,10 +3219,6 @@ msgstr "Zapisz ikonę"
 #: lazarusidestrconsts.dlgposavesession
 msgid "Session"
 msgstr "Sesja"
-
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr ""
 
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"

@@ -3047,6 +3047,10 @@ msgstr "(semmi)"
 msgid "&Load Icon"
 msgstr "Ikon betö&ltése"
 
+#: lazarusidestrconsts.dlgpomanifestoptions
+msgid "Manifest options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"
@@ -3067,10 +3071,6 @@ msgstr "Ikon mentése"
 #: lazarusidestrconsts.dlgposavesession
 msgid "Session"
 msgstr "Munkamenet"
-
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr ""
 
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"

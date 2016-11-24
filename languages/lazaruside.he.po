@@ -3206,6 +3206,10 @@ msgstr "(ללא)"
 msgid "&Load Icon"
 msgstr "טען סמל"
 
+#: lazarusidestrconsts.dlgpomanifestoptions
+msgid "Manifest options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"
@@ -3228,10 +3232,6 @@ msgstr "שמור סמל"
 #: lazarusidestrconsts.dlgposavesession
 msgid "Session"
 msgstr "הפעלה"
-
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr ""
 
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"

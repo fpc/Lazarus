@@ -3051,6 +3051,10 @@ msgstr "(aucun)"
 msgid "&Load Icon"
 msgstr "&Charger une icône"
 
+#: lazarusidestrconsts.dlgpomanifestoptions
+msgid "Manifest options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"
@@ -3071,10 +3075,6 @@ msgstr "&Enregistrer l'icône"
 #: lazarusidestrconsts.dlgposavesession
 msgid "Session"
 msgstr "Session"
-
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr ""
 
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
