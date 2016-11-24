@@ -4273,9 +4273,9 @@ begin
 
   TransparentHints := WidgetSet.GetLCLCapability(lcTransparentWindow) = LCL_CAPABILITY_YES;
   if TransparentHints then
-    P:=Point(TextRect.Left-1, TextRect.Top-3)
+    P:=Point(TextRect.Left-1, TextRect.Top-3+BorderWidth)
   else
-    P:=Point(ClientWidth, TextRect.Top-3);
+    P:=Point(ClientWidth, TextRect.Top-3+BorderWidth);
 
   P:=ClientToScreen(P);
   OffsetRect(R, P.X, P.Y);
@@ -5681,6 +5681,7 @@ begin
   Include(FStates,tvsScrollbarChanged);
   ScrollFlags := SW_INVALIDATE or SW_ERASE;
   ScrollArea := ClientRect;
+  InflateRect(ScrollArea, -BorderWidth, -BorderWidth);
   ScrollWindowEx(Handle, DeltaX, DeltaY, @ScrollArea, @ScrollArea, 0, nil, ScrollFlags);
 end;
 
