@@ -29,7 +29,7 @@ unit DBDateTimePicker;
 interface
 
 uses
-  Classes, SysUtils, DateTimePicker, db, DBCtrls;
+  Classes, SysUtils, DateTimePicker, db, DBCtrls, LMessages;
 
 type
 
@@ -52,6 +52,7 @@ type
     procedure ActiveChange(Sender: TObject);
     function GetField: TField;
     procedure CheckField;
+    procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     { Protected declarations }
     procedure Change; override;
@@ -226,6 +227,11 @@ begin
     inherited ReadOnly := True;
     DateTime := NullDate;
   end;
+end;
+
+procedure TDBDateTimePicker.CMGetDataLink(var Message: TLMessage);
+begin
+  Message.Result := PtrUInt(FDataLink);
 end;
 
 procedure TDBDateTimePicker.Change;
