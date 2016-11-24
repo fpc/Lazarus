@@ -67,7 +67,7 @@ uses
   CodeCache, CodeToolManager, BasicCodeTools, FileProcs, LazFileUtils,
   LazFileCache, LclIntf,
   // IDEIntf
-  LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf,
+  LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf, IDEUtils,
   // IDE
   ToDoListStrConsts;
 
@@ -425,7 +425,7 @@ begin
   CurOwner:=nil;
   CurProject:=nil;
   CurPkg:=nil;
-  if IsValidIdent(IDEItem,true) then begin
+  if LazIsValidIdent(IDEItem,true) then begin
     // package
     CurPkg:=PackageEditingInterface.FindPackageWithName(IDEItem);
     CurOwner:=CurPkg;
