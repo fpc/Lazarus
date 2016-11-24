@@ -71,10 +71,6 @@ begin
   DpiAwareComboBox.Items.Clear;
   for DpiLevel in TXPManifestDpiAware do
     DpiAwareComboBox.Items.Add(DpiLevelNames[DpiLevel] + ' (' + ManifestDpiAwareValues[DpiLevel] + ')');
-
-  ButtonPanel1.OKButton.Caption := lisOk;
-  ButtonPanel1.CancelButton.Caption := lisCancel;
-  ButtonPanel1.HelpButton.Caption := lisHelp;
 end;
 
 procedure TManifestForm.HelpButtonClick(Sender: TObject);
