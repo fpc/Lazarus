@@ -26,6 +26,14 @@ unit opkman_httpclient;
 
 {$mode objfpc}{$H+}
 
+{$IF FPC_VERSION = 3}
+  {$IF FPC_RELEASE > 0}
+   {$IF FPC_PATCH > 0}
+     {$DEFINE FPC311}
+    {$ENDIF}
+  {$ENDIF}
+{$ENDIF}
+
 interface
 
 uses
@@ -461,8 +469,10 @@ procedure TFPCustomHTTPClient.SetIOTimeout(AValue: Integer);
 begin
   if AValue=FIOTimeout then exit;
   FIOTimeout:=AValue;
-{  if Assigned(FSocket) then
-    FSocket.IOTimeout:=AValue;}
+  {$IFDEF FPC311}
+   if Assigned(FSocket) then
+     FSocket.IOTimeout:=AValue;
+  {$ENDIF}
 end;
 
 function TFPCustomHTTPClient.NoContentAllowed(ACode: Integer): Boolean;
@@ -559,8 +569,10 @@ begin
   G:=GetSocketHandler(UseSSL);
   FSocket:=TInetSocket.Create(AHost,APort,G);
   try
-{    if FIOTimeout<>0 then
-      FSocket.IOTimeout:=FIOTimeout;}
+    {$IFDEF FPC311}
+    if FIOTimeout <> 0 then
+      FSocket.IOTimeout := FIOTimeout;
+    {$ENDIF}
     FSocket.Connect;
   except
     FreeAndNil(FSocket);
