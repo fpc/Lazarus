@@ -16,10 +16,6 @@ msgstr ""
 msgid "CSV files"
 msgstr ""
 
-#: todoliststrconsts.dlgfropts
-msgid "Options"
-msgstr "Opcje"
-
 #: todoliststrconsts.dlgunitdeprefresh
 msgid "Refresh"
 msgstr "Odśwież"
@@ -69,12 +65,6 @@ msgstr "Lista \"Do zrobienia\""
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Idź do wybranej linii źródła"
-
-#: todoliststrconsts.listodolistoptions
-#, fuzzy
-#| msgid "ToDo options..."
-msgid "ToDo options ..."
-msgstr "Opcje..."
 
 #: todoliststrconsts.listodolistprintlist
 msgid "Print todo items"

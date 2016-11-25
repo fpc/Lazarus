@@ -5,10 +5,6 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "CSV files"
 msgstr "CSV tiedostot"
 
-#: todoliststrconsts.dlgfropts
-msgid "Options"
-msgstr "Asetukset"
-
 #: todoliststrconsts.dlgunitdeprefresh
 msgid "Refresh"
 msgstr "Päivitä"
@@ -56,10 +52,6 @@ msgstr "ToDo luettelo"
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Mene valitulle lähderiville"
-
-#: todoliststrconsts.listodolistoptions
-msgid "ToDo options ..."
-msgstr "ToDo asetukset ..."
 
 #: todoliststrconsts.listodolistprintlist
 msgid "Print todo items"

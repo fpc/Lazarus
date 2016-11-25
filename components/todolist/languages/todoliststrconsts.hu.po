@@ -15,10 +15,6 @@ msgstr ""
 msgid "CSV files"
 msgstr "CSV fájlok"
 
-#: todoliststrconsts.dlgfropts
-msgid "Options"
-msgstr "Beállítások"
-
 #: todoliststrconsts.dlgunitdeprefresh
 msgid "Refresh"
 msgstr "Frissítés"
@@ -66,10 +62,6 @@ msgstr "ToDo lista"
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Ugrás a forrás kiválasztott sorára"
-
-#: todoliststrconsts.listodolistoptions
-msgid "ToDo options ..."
-msgstr "ToDo beállítások ..."
 
 #: todoliststrconsts.listodolistprintlist
 msgid "Print todo items"

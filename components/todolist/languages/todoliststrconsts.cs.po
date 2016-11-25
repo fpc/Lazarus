@@ -14,10 +14,6 @@ msgstr ""
 msgid "CSV files"
 msgstr ""
 
-#: todoliststrconsts.dlgfropts
-msgid "Options"
-msgstr "Volby"
-
 #: todoliststrconsts.dlgunitdeprefresh
 msgid "Refresh"
 msgstr "Obnovit"
@@ -65,10 +61,6 @@ msgstr "Seznam úkolů"
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Přeskočí na umístění úkolu ve zdroji"
-
-#: todoliststrconsts.listodolistoptions
-msgid "ToDo options ..."
-msgstr "Volby úkolů ..."
 
 #: todoliststrconsts.listodolistprintlist
 msgid "Print todo items"

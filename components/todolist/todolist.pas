@@ -144,7 +144,6 @@ type
     SaveDialog1: TSaveDialog;
     ToolBar: TToolBar;
     tbGoto: TToolButton;
-    tbOptions: TToolButton;
     tbPrint: TToolButton;
     tbRefresh: TToolButton;
     tbExport: TToolButton;
@@ -602,9 +601,7 @@ begin
   acRefresh.Hint := lisTodolistRefresh;
   acGoto.Hint := listodoListGotoLine;
   tbPrint.Hint := listodoListPrintList;
-  tbOptions.Hint := lisToDoListOptions;
 
-  tbOptions.Caption := dlgFROpts;
   tbPrint.Caption := lisPrint;
   tbRefresh.Caption := dlgUnitDepRefresh;
   tbGoto.Caption := lisToDoGoto;

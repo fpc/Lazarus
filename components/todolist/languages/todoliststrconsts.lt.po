@@ -15,10 +15,6 @@ msgstr ""
 msgid "CSV files"
 msgstr ""
 
-#: todoliststrconsts.dlgfropts
-msgid "Options"
-msgstr "Parinktys"
-
 #: todoliststrconsts.dlgunitdeprefresh
 msgid "Refresh"
 msgstr "Atnaujinti"
@@ -66,10 +62,6 @@ msgstr "ToDo sąrašas"
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Rodyti eilutę pirminiame kode"
-
-#: todoliststrconsts.listodolistoptions
-msgid "ToDo options ..."
-msgstr "ToDo parinktys…"
 
 #: todoliststrconsts.listodolistprintlist
 msgid "Print todo items"

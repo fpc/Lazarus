@@ -15,10 +15,6 @@ msgstr ""
 msgid "CSV files"
 msgstr "Fichier CSV"
 
-#: todoliststrconsts.dlgfropts
-msgid "Options"
-msgstr "Options"
-
 #: todoliststrconsts.dlgunitdeprefresh
 msgid "Refresh"
 msgstr "Rafraîchir"
@@ -66,10 +62,6 @@ msgstr "Pense-bête"
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Aller à la ligne du code source sélectionné"
-
-#: todoliststrconsts.listodolistoptions
-msgid "ToDo options ..."
-msgstr "Options du pense-bête..."
 
 #: todoliststrconsts.listodolistprintlist
 msgid "Print todo items"
