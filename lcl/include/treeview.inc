@@ -4855,7 +4855,7 @@ var
       tvestTheme:
         begin
           // draw a themed expand sign. Todo: track hot
-          R := Rect(ALeft, ATop, ARight + 1, ABottom + 1);
+          R := Rect(ALeft, ATop, ARight, ABottom);
           Details := ThemeServices.GetElementDetails(PlusMinusDetail[False, CollapseSign]);
           ThemeServices.DrawElement(Canvas.Handle, Details, R, nil);
         end;
@@ -4993,6 +4993,7 @@ var
     CurBackgroundColor,bclr: TColor;
   begin
     bclr:=Canvas.Brush.Color;
+    CurBackgroundColor:=clNone;
     try
       if (tvoRowSelect in Options) and IsSelected then
         if tvoThemedDraw in Options then
@@ -5056,7 +5057,11 @@ var
     if (tvoThemedDraw in Options) then
       ThemeServices.DrawText(Canvas, Details, AText, NodeRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0)
     else
+    begin
+      if isSelected then
+        Canvas.Brush.Style:=bsClear;
       DrawText(Canvas.Handle, PChar(AText), -1, NodeRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX);
+    end;
   end;
 
 
