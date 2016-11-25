@@ -78,16 +78,16 @@ end;
 
 procedure InitLocalRepository;
 var
-  LocalRepository, LocalRepositoryConfig: String;
+  LocalRepo, LocalRepoConfig: String;
 begin
-  LocalRepository := AppendPathDelim(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath) + cLocalRepository);
-  if not DirectoryExistsUTF8(LocalRepository) then
-    CreateDirUTF8(LocalRepository);
+  LocalRepo := AppendPathDelim(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath) + cLocalRepository);
+  if not DirectoryExistsUTF8(LocalRepo) then
+    CreateDirUTF8(LocalRepo);
 
-  LocalRepositoryConfig := AppendPathDelim(LocalRepository + cLocalRepositoryConfig);
-  if not DirectoryExists(LocalRepositoryConfig) then
-    CreateDir(LocalRepositoryConfig);
-  LocalRepositoryConfigFile := LocalRepositoryConfig + cLocalRepositoryConfigFile;
+  LocalRepoConfig := AppendPathDelim(LocalRepo + cLocalRepositoryConfig);
+  if not DirectoryExists(LocalRepoConfig) then
+    CreateDir(LocalRepoConfig);
+  LocalRepositoryConfigFile := LocalRepoConfig + cLocalRepositoryConfigFile;
 end;
 
 function SecToHourAndMin(const ASec: LongInt): String;

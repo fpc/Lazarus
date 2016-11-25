@@ -161,6 +161,7 @@ begin
   if MessageDlgEx(rsOptions_RestoreDefaults_Conf, mtInformation, [mbYes, mbNo], Self) = mrYes then
   begin
     Options.LoadDefault;
+    Options.CreateMissingPaths;
     SetupControls;
   end;
 end;

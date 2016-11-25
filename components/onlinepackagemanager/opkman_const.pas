@@ -32,6 +32,7 @@ uses
   Classes, SysUtils;
 
 const
+  cRemoteRepository = 'http://packages.lazarus-ide.org/';
   cRemoteJSONFile = 'packagelist.json';
   cLocalRepository =  'onlinepackagemanager';
   cLocalRepositoryPackages = 'packages';
@@ -39,6 +40,8 @@ const
   cLocalRepositoryUpdate = 'update';
   cLocalRepositoryConfig = 'config';
   cLocalRepositoryConfigFile = 'options.xml';
+  cRestrictedExtensionDef = '*.a,*.o,*.ppu,*.compiled,*.bak,*.or,*.rsj,*.~ ';
+  cRestrictedDirectoryDef = 'lib,backup';
 
 resourcestring
   //package manager

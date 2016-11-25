@@ -56,6 +56,11 @@ type
      FLastPackageDirDst: String;
      FRestrictedExtensions: String;
      FRestrictedDirectories: String;
+     // Default values for local repositories.
+     FLocalPackagesDefault: String;
+     FLocalArchiveDefault: String;
+     FLocalUpdateDefault: String;
+     // Actual local repositories.
      FLocalRepositoryPackages: String;
      FLocalRepositoryArchive: String;
      FLocalRepositoryUpdate: String;
@@ -63,10 +68,10 @@ type
    public
      constructor Create(const AFileName: String);
      destructor Destroy; override;
-   public
-     procedure Save;
      procedure Load;
+     procedure Save;
      procedure LoadDefault;
+     procedure CreateMissingPaths;
    published
      property Changed: Boolean read FChanged write FChanged;
      property RemoteRepository: string read FRemoteRepository write SetRemoteRepository;
@@ -96,13 +101,33 @@ uses opkman_const;
 { TOptions }
 
 constructor TOptions.Create(const AFileName: String);
+var
+  LocalRepo: String;
 begin
+  LocalRepo := AppendPathDelim(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath) + cLocalRepository);
+  FLocalPackagesDefault := LocalRepo + AppendPathDelim(cLocalRepositoryPackages);
+  FLocalArchiveDefault := LocalRepo + AppendPathDelim(cLocalRepositoryArchive);
+  FLocalUpdateDefault := LocalRepo + AppendPathDelim(cLocalRepositoryUpdate);
+
   FXML := TXMLConfig.Create(AFileName);
   if FileExists(AFileName) then
-    Load
+  begin
+    Load;
+    if FLocalRepositoryPackages = '' then
+      FLocalRepositoryPackages := FLocalPackagesDefault;
+    if FLocalRepositoryArchive = '' then
+      FLocalRepositoryArchive := FLocalArchiveDefault;
+    if FLocalRepositoryUpdate = '' then
+      FLocalRepositoryUpdate := FLocalUpdateDefault;
+    if FRestrictedExtensions = '' then
+      FRestrictedExtensions := cRestrictedExtensionDef;
+    if FRestrictedDirectories = '' then
+      FRestrictedDirectories := cRestrictedDirectoryDef;
+  end
   else
     LoadDefault;
-  end;
+  CreateMissingPaths;
+end;
 
 destructor TOptions.Destroy;
 begin
@@ -161,10 +186,8 @@ begin
 end;
 
 procedure TOptions.LoadDefault;
-var
-  LocalRepository: String;
 begin
-  FRemoteRepository := 'http://packages.lazarus-ide.org/';
+  FRemoteRepository := cRemoteRepository;
   FForceDownloadAndExtract := True;
   FDeleteZipAfterInstall := True;
 
@@ -174,20 +197,22 @@ begin
   FProxySettings.FUser := '';
   FProxySettings.FPassword := '';
 
-  LocalRepository := AppendPathDelim(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath) + cLocalRepository);
-  FLocalRepositoryPackages := LocalRepository + AppendPathDelim(cLocalRepositoryPackages);
+  FLocalRepositoryPackages := FLocalPackagesDefault;
+  FLocalRepositoryArchive := FLocalArchiveDefault;
+  FLocalRepositoryUpdate := FLocalUpdateDefault;
+  FRestrictedExtensions := cRestrictedExtensionDef;
+  FRestrictedDirectories := cRestrictedDirectoryDef;
+  Save;
+end;
+
+procedure TOptions.CreateMissingPaths;
+begin
   if not DirectoryExists(FLocalRepositoryPackages) then
     CreateDir(FLocalRepositoryPackages);
-  FLocalRepositoryArchive := LocalRepository + AppendPathDelim(cLocalRepositoryArchive);
-  if not DirectoryExistsUTF8(FLocalRepositoryArchive) then
+  if not DirectoryExists(FLocalRepositoryArchive) then
     CreateDirUTF8(FLocalRepositoryArchive);
-  FLocalRepositoryUpdate := LocalRepository + AppendPathDelim(cLocalRepositoryUpdate);
   if not DirectoryExists(FLocalRepositoryUpdate) then
     CreateDir(FLocalRepositoryUpdate);
-
-  FRestrictedExtensions := '*.a,*.o,*.ppu,*.compiled,*.bak,*.or,*.rsj,*.~ ';
-  FRestrictedDirectories := 'lib,backup';
-  Save;
 end;
 
 procedure TOptions.SetRemoteRepository(const ARemoteRepository: String);
