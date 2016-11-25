@@ -45,6 +45,8 @@ type
     bLocalRepositoryPackages: TSpeedButton;
     bRestore: TButton;
     cbProxy: TCheckBox;
+    cbForceDownloadExtract: TCheckBox;
+    cbDeleteZipAfterInstall: TCheckBox;
     edLocalRepositoryPackages: TEdit;
     edLocalRepositoryArchive: TEdit;
     edLocalRepositoryUpdate: TEdit;
@@ -139,6 +141,8 @@ begin
     Exit;
   end;
   Options.RemoteRepository := edRemoteRepository.Text;
+  Options.ForceDownloadAndExtract := cbForceDownloadExtract.Checked;
+  Options.DeleteZipAfterInstall := cbDeleteZipAfterInstall.Checked;
   Options.ProxyEnabled := cbProxy.Checked;
   Options.ProxyServer := edProxyServer.Text;
   Options.ProxyPort := seProxyPort.Value;
@@ -189,6 +193,13 @@ begin
 
   lbRemoteRepository.Caption := rsOptions_lbRemoteRepository_Caption;
   edRemoteRepository.Text := Options.RemoteRepository;
+  cbForceDownloadExtract.Checked := Options.ForceDownloadAndExtract;
+  cbDeleteZipAfterInstall.Checked := Options.DeleteZipAfterInstall;
+
+  cbForceDownloadExtract.Caption := rsOptions_cbForceDownloadExtract_Caption;
+  cbForceDownloadExtract.Hint := rsOptions_cbForceDownloadExtract_Hint;
+  cbDeleteZipAfterInstall.Caption := rsOptions_cbDelete_Caption;
+  cbDeleteZipAfterInstall.Hint := rsOptions_cbDelete_Hint;
 
   cbProxy.Caption := rsOptions_cbProxy_Caption;
   gbProxySettings.Caption := rsOptions_gbProxySettings_Caption;

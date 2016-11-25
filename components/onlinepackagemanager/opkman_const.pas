@@ -163,6 +163,11 @@ resourcestring
   //options form
   rsOptions_FrmCaption = 'Options';
   rsOptions_lbRemoteRepository_Caption = 'Remote repository';
+  rsOptions_cbForceDownloadExtract_Caption = 'Always force download and extract';
+  rsOptions_cbForceDownloadExtract_Hint = 'If this option is checked the packages are always re-downloaded/extracted before install';
+  rsOptions_cbDelete_Caption = 'Delete downloaded zip files after installation/update';
+  rsOptions_cbDelete_Hint = 'If this option is checked the downloaded zip file is always deleted after installation';
+
   rsOptions_cbProxy_Caption = 'Use proxy';
   rsOptions_gbProxySettings_Caption = 'Proxy settings';
   rsOptions_lbServer_Caption = 'Server';

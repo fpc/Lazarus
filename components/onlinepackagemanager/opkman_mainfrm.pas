@@ -604,6 +604,8 @@ begin
 
       if CanGo then
       begin
+        if Options.DeleteZipAfterInstall then
+          SerializablePackages.DeleteDownloadedZipFiles;
         if SerializablePackages.InstallCount > 0 then
         begin
           InstallStatus := isFailed;
@@ -676,6 +678,8 @@ begin
 
       if CanGo then
       begin
+        if Options.DeleteZipAfterInstall then
+          SerializablePackages.DeleteDownloadedZipFiles;
         if SerializablePackages.InstallCount > 0 then
         begin
           InstallStatus := isFailed;

@@ -44,6 +44,8 @@ type
      FProxySettings: TProxySettings;
      FXML: TXMLConfig;
      FRemoteRepository: String;
+     FForceDownloadAndExtract: Boolean;
+     FDeleteZipAfterInstall: Boolean;
      FChanged: Boolean;
      FLastDownloadDir: String;
      FLastPackageDirSrc: String;
@@ -63,10 +65,12 @@ type
      procedure LoadDefault;
    published
      property Changed: Boolean read FChanged write FChanged;
+     property RemoteRepository: string read FRemoteRepository write SetRemoteRepository;
+     property ForceDownloadAndExtract: Boolean read FForceDownloadAndExtract write FForceDownloadAndExtract;
+     property DeleteZipAfterInstall: Boolean read FDeleteZipAfterInstall write FDeleteZipAfterInstall;
      property LastDownloadDir: String read FLastDownloadDir write FLastDownloadDir;
      property LastPackagedirSrc: String read FLastPackageDirSrc write FLastPackageDirSrc;
      property LastPackagedirDst: String read FLastPackageDirDst write FLastPackageDirDst;
-     property RemoteRepository: string read FRemoteRepository write SetRemoteRepository;
      property ProxyEnabled: Boolean read FProxySettings.FEnabled write FProxySettings.FEnabled;
      property ProxyServer: String read FProxySettings.FServer write FProxySettings.FServer;
      property ProxyPort: Word read FProxySettings.FPort write FProxySettings.FPort;
@@ -107,6 +111,8 @@ end;
 procedure TOptions.Load;
 begin
   FRemoteRepository := FXML.GetValue('General/RemoteRepository/Value', '');
+  FForceDownloadAndExtract := FXML.GetValue('General/ForceDownloadAndExtract/Value', True);
+  FDeleteZipAfterInstall := FXML.GetValue('General/DeleteZipAfterInstall/Value', True);
   FLastDownloadDir := FXML.GetValue('General/LastDownloadDir/Value', '');
   FLastPackageDirSrc := FXML.GetValue('General/LastPackageDirSrc/Value', '');
   FLastPackageDirDst := FXML.GetValue('GeneralLastPackageDirDst/Value', '');
@@ -125,6 +131,8 @@ end;
 procedure TOptions.Save;
 begin
   FXML.SetDeleteValue('General/RemoteRepository/Value', FRemoteRepository, '');
+  FXML.SetDeleteValue('General/ForceDownloadAndExtract/Value', FForceDownloadAndExtract, True);
+  FXML.SetDeleteValue('General/DeleteZipAfterInstall/Value', FDeleteZipAfterInstall, True);
   FXML.SetDeleteValue('General/LastDownloadDir/Value', FLastDownloadDir, '');
   FXML.SetDeleteValue('General/LastPackageDirSrc/Value', FLastPackageDirSrc, '');
   FXML.SetDeleteValue('LastPackageDirDst/Value', FLastPackageDirDst, '');
@@ -148,6 +156,8 @@ var
   LocalRepository: String;
 begin
   FRemoteRepository := 'http://packages.lazarus-ide.org/';
+  FForceDownloadAndExtract := True;
+  FDeleteZipAfterInstall := True;
 
   FProxySettings.FEnabled := False;
   FProxySettings.FServer := '';

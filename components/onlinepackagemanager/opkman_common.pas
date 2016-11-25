@@ -44,8 +44,6 @@ type
 var
   LocalRepositoryConfigFile: String;
   PackageAction: TPackageAction;
-  ForceDownload: Boolean = True;
-  ForceExtract: Boolean = True;
   InstallPackageList: TObjectList;
 
 function MessageDlgEx(const AMsg: String; ADlgType: TMsgDlgType;  AButtons:

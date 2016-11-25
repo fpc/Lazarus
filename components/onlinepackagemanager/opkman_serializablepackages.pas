@@ -271,6 +271,7 @@ type
     function Cleanup: Integer;
     function IsDependencyOk(PackageDependency: TPackageDependency; DependencyPackage: TPackageFile): Boolean;
     function IsInstalledVersionOk(PackageDependency: TPackageDependency; InstalledVersion: String): Boolean;
+    procedure DeleteDownloadedZipFiles;
   public
     property Count: Integer read GetCount;
     property DownloadCount: Integer read GetDownloadCount;
@@ -569,7 +570,7 @@ begin
       Result := (Checked) and
                 (psRepository in PackageStates) and
                 (not (psError in PackageStates)) and
-                ((ForceDownload) or ((not (psDownloaded in PackageStates)) and (not (psExtracted in PackageStates))));
+                ((Options.ForceDownloadAndExtract) or ((not (psDownloaded in PackageStates)) and (not (psExtracted in PackageStates))));
   end;
 end;
 
@@ -582,7 +583,7 @@ begin
        Result := (Checked) and
                  (psDownloaded in PackageStates) and
                  (not (psError in PackageStates)) and
-                 ((ForceExtract) or ((not (psExtracted in PackageStates)) and (not (psInstalled in PackageStates))));
+                 ((Options.ForceDownloadAndExtract) or ((not (psExtracted in PackageStates)) and (not (psInstalled in PackageStates))));
    end;
 end;
 
@@ -1279,6 +1280,28 @@ begin
     end;
   end;
 end;
+
+procedure TSerializablePackages.DeleteDownloadedZipFiles;
+var
+  I: Integer;
+begin
+  for I := 0 to Count - 1 do
+  begin
+    case PackageAction of
+      paInstall:
+        begin
+          if IsPackageDownloaded(Items[I]) then
+            DeleteFile(Options.LocalRepositoryArchive + Items[I].RepositoryFileName)
+        end;
+      paUpdate:
+        begin
+          if FileExists(Options.LocalRepositoryUpdate + Items[I].RepositoryFileName) then
+            DeleteFile(Options.LocalRepositoryUpdate + Items[I].RepositoryFileName)
+        end;
+    end;
+  end;
+end;
+
 
 function TSerializablePackages.IsDependencyOk(PackageDependency: TPackageDependency;
   DependencyPackage: TPackageFile): Boolean;
