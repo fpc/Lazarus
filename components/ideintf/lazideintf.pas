@@ -195,6 +195,14 @@ type
     fsfSkipPackages
     );
   TFindSourceFlags = set of TFindSourceFlag;
+
+  TFindUnitsOfOwnerFlag = (
+    fuooListed, // add units listed in lpi/lpk aka project inspector/package editor
+    fuooUsed,   // add units used by main source file (depends on current build mode and environment)
+    fuooPackages, // extends fuooListed and fuooUsed by units from used packages
+    fuooSourceEditor // add units in source editor
+    );
+  TFindUnitsOfOwnerFlags = set of TFindUnitsOfOwnerFlag;
   
   TModalResultFunction = function(Sender: TObject): TModalResult of object;
   TLazProjectChangedFunction = function(Sender: TObject;
@@ -383,7 +391,7 @@ type
     procedure DoJumpToCodeToolBossError; virtual; abstract;
     function NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; virtual; abstract;
     function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; virtual; abstract; // true if something was saved
-    function FindUnitsOfOwner(TheOwner: TObject; AddListed, AddUsed, AddPackages, AddTabs: boolean): TStrings; virtual; abstract;
+    function FindUnitsOfOwner(TheOwner: TObject; Flags: TFindUnitsOfOwnerFlags): TStrings; virtual; abstract;
     property OpenEditorsOnCodeToolChange: boolean read FOpenEditorsOnCodeToolChange
                                              write FOpenEditorsOnCodeToolChange;
     property SaveClosedSourcesOnCodeToolChange: boolean read FSaveClosedSourcesOnCodeToolChange

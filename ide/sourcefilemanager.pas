@@ -211,8 +211,7 @@ type
                           Flags: TFindUnitFileFlags = []): string;
     function FindSourceFile(const AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string;
-    function FindUnitsOfOwner(TheOwner: TObject; AddListed, AddUsed,
-                              AddPackages, AddTabs: boolean): TStrings;
+    function FindUnitsOfOwner(TheOwner: TObject; Flags: TFindUnitsOfOwnerFlags): TStrings;
 
     function AddUnitToProject(const AEditor: TSourceEditorInterface): TModalResult;
     function AddActiveUnitToProject: TModalResult;
@@ -3044,8 +3043,8 @@ begin
   Result:='';
 end;
 
-function TLazSourceFileManager.FindUnitsOfOwner(TheOwner: TObject; AddListed,
-  AddUsed, AddPackages, AddTabs: boolean): TStrings;
+function TLazSourceFileManager.FindUnitsOfOwner(TheOwner: TObject;
+  Flags: TFindUnitsOfOwnerFlags): TStrings;
 var
   Files: TFilenameToStringTree;
   UnitPath: string; // only if not AddPackages:
@@ -3097,7 +3096,7 @@ var
     MainUsesSection, ImplementationUsesSection: TStrings;
   begin
     //debugln(['  AddUsedUnit START ',aFilename]);
-    if not AddPackages then
+    if not (fuooPackages in Flags) then
     begin
       if FilenameIsAbsolute(aFilename) then
       begin
@@ -3155,7 +3154,7 @@ begin
         MainFile:=aProject.MainFile.Filename;
         Add(MainFile);
       end;
-      if AddListed then begin
+      if (fuooListed in Flags) then begin
         // add listed units (i.e. units in project inspector)
         AnUnitInfo:=aProject.FirstPartOfProject;
         while AnUnitInfo<>nil do
@@ -3165,7 +3164,7 @@ begin
           AnUnitInfo:=AnUnitInfo.NextPartOfProject;
         end;
       end;
-      if AddListed and AddPackages then
+      if (fuooListed in Flags) and (fuooPackages in Flags) then
       begin
         // get required packages
         if pfUseDesignTimePackages in aProject.Flags then
@@ -3177,14 +3176,14 @@ begin
       end;
     end else if TheOwner is TLazPackage then begin
       aPackage:=TLazPackage(TheOwner);
-      if AddListed then
+      if (fuooListed in Flags) then
       begin
         // add listed units (i.e. units in package editor)
         AddListedPackageUnits(aPackage);
       end;
-      if AddUsed then
+      if (fuooUsed in Flags) then
         MainFile:=aPackage.GetSrcFilename;
-      if AddListed and AddPackages then
+      if (fuooListed in Flags) and (fuooPackages in Flags) then
       begin
         // get required packages
         PackageGraph.GetAllRequiredPackages(aPackage,nil,PkgList,[]);
@@ -3194,7 +3193,7 @@ begin
       raise Exception.Create('TLazSourceFileManager.FindUnitsOfOwner: invalid owner '+DbgSName(TheOwner));
     end;
 
-    if AddListed and AddPackages and (PkgList<>nil) then begin
+    if (fuooListed in Flags) and (fuooPackages in Flags) and (PkgList<>nil) then begin
       // add package units (listed in their package editors)
       for i:=0 to PkgList.Count-1 do begin
         ReqPackage:=TLazPackage(PkgList[i]);
@@ -3202,7 +3201,7 @@ begin
       end;
     end;
 
-    if AddUsed and (MainFile<>'') then
+    if (fuooUsed in Flags) and (MainFile<>'') then
     begin
       // add all used units with 'in' files
       Code:=CodeToolBoss.LoadFile(MainFile,true,false);
@@ -3210,16 +3209,23 @@ begin
         UnitPath:='';
         if aProject<>nil then begin
           CodeToolBoss.FindDelphiProjectUnits(Code,FoundInUnits,MissingUnits,NormalUnits);
-          if not AddPackages then
+          if not (fuooPackages in Flags) then
           begin
+            // only project units wanted -> create unitpath excluding unitpaths from packages
+            // Note: even if the project contains an unitpath to the source
+            //       folder of a package, the units are not project units.
             UnitPath:=aProject.CompilerOptions.GetUnitPath(false);
             RemoveSearchPaths(UnitPath,aProject.CompilerOptions.GetInheritedOption(icoUnitPath,false));
           end;
         end
         else if aPackage<>nil then begin
           CodeToolBoss.FindDelphiPackageUnits(Code,FoundInUnits,MissingUnits,NormalUnits);
-          if not AddPackages then
+          if not (fuooPackages in Flags) then
           begin
+            // only units of this package wanted
+            // -> create unitpath excluding unitpaths from used packages
+            // Note: even if the package contains an unitpath to the source
+            //       folder of a sub package, the units belong to the sub package
             UnitPath:=aPackage.CompilerOptions.GetUnitPath(false);
             RemoveSearchPaths(UnitPath,aPackage.CompilerOptions.GetInheritedOption(icoUnitPath,false));
           end;
@@ -3229,7 +3235,8 @@ begin
           for i:=0 to FoundInUnits.Count-1 do
           begin
             CurFilename:=TCodeBuffer(FoundInUnits.Objects[i]).Filename;
-            Add(CurFilename);
+            Add(CurFilename); // units with 'in' filename always belong to the
+                // project, that's the Delphi way
             AddUsedUnit(CurFilename);
           end;
         if NormalUnits<>nil then
@@ -3237,7 +3244,7 @@ begin
             AddUsedUnit(TCodeBuffer(NormalUnits.Objects[i]).Filename);
       end;
     end;
-    if AddTabs then
+    if (fuooSourceEditor in Flags) then
       for i := 0 to pred(SourceEditorManager.SourceEditorCount) do
       begin
         CurFilename := SourceEditorManager.SourceEditors[i].FileName;

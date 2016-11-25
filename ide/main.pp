@@ -893,8 +893,7 @@ type
     procedure DoJumpToCodeToolBossError; override;
     function NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
     function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
-    function FindUnitsOfOwner(TheOwner: TObject; AddListed, AddUsed,
-      AddPackages, AddTabs: boolean): TStrings; override;
+    function FindUnitsOfOwner(TheOwner: TObject; Flags: TFindUnitsOfOwnerFlags): TStrings; override;
     procedure ApplyCodeToolChanges;
     procedure DoJumpToOtherProcedureSection;
     procedure DoFindDeclarationAtCursor;
@@ -9475,10 +9474,10 @@ begin
   Result:=SourceFileMgr.SaveSourceEditorChangesToCodeCache(AEditor);
 end;
 
-function TMainIDE.FindUnitsOfOwner(TheOwner: TObject; AddListed, AddUsed,
-  AddPackages, AddTabs: boolean): TStrings;
+function TMainIDE.FindUnitsOfOwner(TheOwner: TObject;
+  Flags: TFindUnitsOfOwnerFlags): TStrings;
 begin
-  Result:=SourceFileMgr.FindUnitsOfOwner(TheOwner,AddListed,AddUsed,AddPackages,AddTabs);
+  Result:=SourceFileMgr.FindUnitsOfOwner(TheOwner,Flags);
 end;
 
 function TMainIDE.DoJumpToSourcePosition(const Filename: string; NewX, NewY,

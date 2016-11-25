@@ -246,6 +246,7 @@ var
   Units: TStrings;
   CurProject: TLazProject;
   CurPkg: TIDEPackage;
+  Flags: TFindUnitsOfOwnerFlags;
 begin
   if not Immediately then begin
     fUpdateNeeded:=true;
@@ -281,7 +282,8 @@ begin
     end;
 
     ResolveIDEItem(CurOwner,CurProject,CurPkg);
-    Units:=LazarusIDE.FindUnitsOfOwner(CurOwner,true,true,false,false);
+    Flags:=[fuooListed,fuooUsed];
+    Units:=LazarusIDE.FindUnitsOfOwner(CurOwner,Flags);
     for i:=0 to Units.Count-1 do
       ScanFile(Units[i]);
 
