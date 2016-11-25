@@ -29,6 +29,9 @@ interface
 uses
   Classes, SysUtils, LazIDEIntf, Laz2_XMLCfg, LazFileUtils;
 
+const
+  Version = 1;
+
 type
   { TOptions }
   TProxySettings = record
@@ -130,6 +133,7 @@ end;
 
 procedure TOptions.Save;
 begin
+  FXML.SetDeleteValue('Version/Value', Version, 0);
   FXML.SetDeleteValue('General/RemoteRepository/Value', FRemoteRepository, '');
   FXML.SetDeleteValue('General/ForceDownloadAndExtract/Value', FForceDownloadAndExtract, True);
   FXML.SetDeleteValue('General/DeleteZipAfterInstall/Value', FDeleteZipAfterInstall, True);
