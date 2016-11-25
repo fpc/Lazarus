@@ -10,18 +10,9 @@ Currently, the only help viewer that supports this protocol is the lhelp CHM hel
 
 {$mode objfpc}{$H+}
 
-{$IFDEF UNIX}
-  {$if FPC_FULLVERSION <= 20700}
-    {$DEFINE STALE_PIPE_WORKAROUND}
-  {$ENDIF}
-{$ENDIF}
-
 interface
 
 uses
-  {$IFDEF STALE_PIPE_WORKAROUND}
-  BaseUnix,
-  {$ENDIF}
   Classes, SysUtils, LazFileUtils, LazLogger, SimpleIPC, process, UTF8Process;
 
 const
@@ -95,10 +86,6 @@ type
     property ProcessWhileWaiting: TProcedureOfObject read FProcessWhileWaiting write FProcessWhileWaiting;
   end;
 
-  {$IFDEF STALE_PIPE_WORKAROUND}
-  function IPCPipeIsStale(AIPC: TSimpleIPC): Boolean;
-  {$ENDIF}
-
 implementation
 
 { TLHelpConnection }
@@ -159,46 +146,9 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF STALE_PIPE_WORKAROUND}
-function IPCPipeIsStale(AIPC: TSimpleIPC): Boolean;
-var
-  PipeName: String;
-  fd: cint;
-begin
-  Result := False;
-  PipeName:='/tmp/'+AIPC.ServerID;
-  if (AIPC is TSimpleIPCServer) and (not TSimpleIPCServer(AIPC).Global) and (TSimpleIPCServer(AIPC).InstanceID <> '') then
-    PipeName := PipeName +'-'+TSimpleIPCServer(AIPC).InstanceID;
-
-  // it's possible to have a stale file that is not open for reading which will
-  // cause fpOpen to hang/block later when .Active is set to true while it
-  // wait's for the pipe to be opened on the other end
-
-  // O_WRONLY | O_NONBLOCK causes fpOpen to return -1 if the file is not open for reading
-  // so in fact the 'server' is not running
-  fd := FpOpen(PipeName, O_WRONLY or O_NONBLOCK);
-  if fd = -1 then
-  begin
-    Result := True;
-    // delete the named pipe since it's orphaned
-    FpUnlink(PipeName);
-  end
-  else
-  FpClose(fd);
-
-end;
-
-{$ENDIF}
 function TLHelpConnection.ServerRunning: Boolean;
-{$IFDEF STALE_PIPE_WORKAROUND}
-{$ENDIF}
 begin
   Result := (fServerOut<>nil) and (fServerOut.ServerID <> '') and (fServerOut.ServerRunning);
-  {$IFDEF STALE_PIPE_WORKAROUND}
-  if not Result then
-    Exit; // ==>
-  Result := not IPCPipeIsStale(fServerOut);
-  {$ENDIF}
 end;
 
 function TLHelpConnection.StartHelpServer(NameForServer: String;
