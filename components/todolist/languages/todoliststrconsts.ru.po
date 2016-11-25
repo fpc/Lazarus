@@ -27,10 +27,6 @@ msgstr "Вставить макрос"
 msgid "Text"
 msgstr "Текст"
 
-#: todoliststrconsts.lisprint
-msgid "Print"
-msgstr "Печать"
-
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
 msgstr "Вставить элемент списка ToDo"
@@ -62,10 +58,6 @@ msgstr "Список ToDo"
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Перейти к выделенной строке исходного кода"
-
-#: todoliststrconsts.listodolistprintlist
-msgid "Print todo items"
-msgstr "Распечатать элементы ToDo"
 
 #: todoliststrconsts.listodolistrefresh
 msgid "Refresh todo items"

@@ -50,9 +50,6 @@
     
     Sub comments in nested comments are ignored.
 *)
-{#todo options }
-{#todo print an todo report }
-
 
 unit TodoList;
 
@@ -144,7 +141,6 @@ type
     SaveDialog1: TSaveDialog;
     ToolBar: TToolBar;
     tbGoto: TToolButton;
-    tbPrint: TToolButton;
     tbRefresh: TToolButton;
     tbExport: TToolButton;
     procedure acExportExecute(Sender: TObject);
@@ -600,9 +596,7 @@ begin
 
   acRefresh.Hint := lisTodolistRefresh;
   acGoto.Hint := listodoListGotoLine;
-  tbPrint.Hint := listodoListPrintList;
 
-  tbPrint.Caption := lisPrint;
   tbRefresh.Caption := dlgUnitDepRefresh;
   tbGoto.Caption := lisToDoGoto;
   tbExport.Caption := lisToDoExport;

@@ -17,10 +17,6 @@ msgstr ""
 msgid "Text"
 msgstr ""
 
-#: todoliststrconsts.lisprint
-msgid "Print"
-msgstr ""
-
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
 msgstr ""
@@ -51,10 +47,6 @@ msgstr ""
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
-msgstr ""
-
-#: todoliststrconsts.listodolistprintlist
-msgid "Print todo items"
 msgstr ""
 
 #: todoliststrconsts.listodolistrefresh

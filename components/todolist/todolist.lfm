@@ -71,13 +71,6 @@ object IDETodoWindow: TIDETodoWindow
     ShowCaptions = True
     ShowHint = True
     TabOrder = 1
-    object tbPrint: TToolButton
-      Left = 147
-      Top = 2
-      AutoSize = True
-      Caption = 'Print'
-      Visible = False
-    end
     object tbRefresh: TToolButton
       Left = 1
       Top = 2

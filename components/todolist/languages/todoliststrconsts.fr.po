@@ -27,10 +27,6 @@ msgstr "Insérer une macro"
 msgid "Text"
 msgstr "Texte"
 
-#: todoliststrconsts.lisprint
-msgid "Print"
-msgstr "Imprimer"
-
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
 msgstr "Insérer une note dans le pense-bête (\"ToDo\")"
@@ -62,10 +58,6 @@ msgstr "Pense-bête"
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Aller à la ligne du code source sélectionné"
-
-#: todoliststrconsts.listodolistprintlist
-msgid "Print todo items"
-msgstr "Imprimer le pense-bête"
 
 #: todoliststrconsts.listodolistrefresh
 msgid "Refresh todo items"

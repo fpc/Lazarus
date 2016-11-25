@@ -26,10 +26,6 @@ msgstr "Vložit makro"
 msgid "Text"
 msgstr "Text"
 
-#: todoliststrconsts.lisprint
-msgid "Print"
-msgstr "Tisk"
-
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
 msgstr "Nový úkol"
@@ -61,10 +57,6 @@ msgstr "Seznam úkolů"
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Přeskočí na umístění úkolu ve zdroji"
-
-#: todoliststrconsts.listodolistprintlist
-msgid "Print todo items"
-msgstr "Tisk úkolů"
 
 #: todoliststrconsts.listodolistrefresh
 msgid "Refresh todo items"

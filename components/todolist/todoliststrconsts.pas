@@ -30,7 +30,6 @@ uses
 resourcestring
   lisTodolistRefresh='Refresh todo items';
   lisTodoListGotoLine='Goto selected source line';
-  lisTodoListPrintList='Print todo items';
   lisCTInsertMacro = 'Insert Macro';
   lisToDoLDone = 'Done';
   lisToDoLDescription = 'Description';
@@ -41,7 +40,6 @@ resourcestring
   listToDoLCategory = 'Category';
   lisToDoGoto = 'Goto';
   lisToDoExport = 'Export';
-  lisPrint = 'Print';
   dlgUnitDepRefresh = 'Refresh';
   lisTDDInsertToDo = 'Insert ToDo';
   lisViewToDoList = 'View ToDo List';

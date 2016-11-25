@@ -26,10 +26,6 @@ msgstr "Makro einfügen"
 msgid "Text"
 msgstr "Text"
 
-#: todoliststrconsts.lisprint
-msgid "Print"
-msgstr "Drucken"
-
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
 msgstr "ToDo einfügen"
@@ -61,10 +57,6 @@ msgstr "ToDo-Liste"
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Zur gewählten Quelltextzeile springen"
-
-#: todoliststrconsts.listodolistprintlist
-msgid "Print todo items"
-msgstr "ToDo-Elemente drucken"
 
 #: todoliststrconsts.listodolistrefresh
 msgid "Refresh todo items"

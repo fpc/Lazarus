@@ -28,10 +28,6 @@ msgstr "Wstaw Makro"
 msgid "Text"
 msgstr "Tekst"
 
-#: todoliststrconsts.lisprint
-msgid "Print"
-msgstr "Drukuj"
-
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
 msgstr "Wstaw \"Do zrobienia\""
@@ -65,10 +61,6 @@ msgstr "Lista \"Do zrobienia\""
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Idź do wybranej linii źródła"
-
-#: todoliststrconsts.listodolistprintlist
-msgid "Print todo items"
-msgstr "Drukuj elementy listy"
 
 #: todoliststrconsts.listodolistrefresh
 msgid "Refresh todo items"

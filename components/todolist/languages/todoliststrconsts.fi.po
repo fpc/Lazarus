@@ -17,10 +17,6 @@ msgstr "Lisää Makro"
 msgid "Text"
 msgstr "Teksti"
 
-#: todoliststrconsts.lisprint
-msgid "Print"
-msgstr "Tulosta"
-
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
 msgstr "Lisää ToDo-merkintä"
@@ -52,10 +48,6 @@ msgstr "ToDo luettelo"
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Mene valitulle lähderiville"
-
-#: todoliststrconsts.listodolistprintlist
-msgid "Print todo items"
-msgstr "Tulosta todo kohdat"
 
 #: todoliststrconsts.listodolistrefresh
 msgid "Refresh todo items"
