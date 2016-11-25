@@ -2587,16 +2587,19 @@ begin
                               TypeNode.StartPos,TypeNode.EndPos,@AliasType);
     //debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter parameter type: AliasType=',FindContextToString(AliasType)]);
 
-    if HasAtOperator then begin
+    TypeTool:=ExprType.Context.Tool;
+    TypeNode:=ExprType.Context.Node;
+    if HasAtOperator
+    or ((Scanner.CompilerMode=cmDelphi) and (ExprType.Desc=xtContext) // procedures in delphi mode without @
+        and (TypeNode<>nil) and (TypeNode.Desc=ctnProcedureType)) then
+    begin
       debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter HasAtOperator ExprType=',ExprTypeToString(ExprType)]);
       NewType:='';
       if (ExprType.Desc<>xtContext)
-      or (ExprType.Context.Node=nil) then begin
+      or (TypeNode=nil) then begin
         debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter parameter has @ operator, but this is not implemented for ',ExprTypeToString(ExprType)]);
         exit;
       end;
-      TypeNode:=ExprType.Context.Node;
-      TypeTool:=ExprType.Context.Tool;
       if (TypeNode.Desc=ctnPointerType) then begin
         // for example PMapID = ^...
         if (TypeNode.FirstChild<>nil)
