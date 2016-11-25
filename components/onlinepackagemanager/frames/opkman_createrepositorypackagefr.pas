@@ -123,27 +123,27 @@ uses opkman_const, opkman_common, opkman_options;
 
 procedure TCreateRepositoryPackagefr.InitializeFrame;
 begin
-  lbPackagedir.Caption := rsCreateRepositoryPackagelbPackageDir;
-  pnMessage.Caption := rsCreateRepositoryPackagepnMessage;
-  cbOpen.Caption := rsCreateRepositoryPackagecbOpenCaption;
+  lbPackagedir.Caption := rsCreateRepositoryPackageFrm_lbPackageDir_Caption;
+  pnMessage.Caption := rsCreateRepositoryPackageFrm_pnMessage_Caption;
+  cbOpen.Caption := rsCreateRepositoryPackageFrm_cbOpen_Caption;
   cbCategory.Text := '';
-  cbCategory.Items.Add(rsMainFrmVSTTextPackageCategory0);
-  cbCategory.Items.Add(rsMainFrmVSTTextPackageCategory1);
-  cbCategory.Items.Add(rsMainFrmVSTTextPackageCategory2);
-  cbCategory.Items.Add(rsMainFrmVSTTextPackageCategory3);
-  cbCategory.Items.Add(rsMainFrmVSTTextPackageCategory4);
-  cbCategory.Items.Add(rsMainFrmVSTTextPackageCategory5);
-  cbCategory.Items.Add(rsMainFrmVSTTextPackageCategory6);
-  cbCategory.Items.Add(rsMainFrmVSTTextPackageCategory7);
-  cbCategory.Items.Add(rsMainFrmVSTTextPackageCategory8);
-  lbLazCompatibility.Caption := rsCreateRepositoryPackagelbLazCompatibility;
-  lbFPCCompatibility.Caption := rsCreateRepositoryPackagelbFPCCompatibility;
-  lbSupportedWidgetSet.Caption := rsCreateRepositoryPackagelbSupportedWidgetset;
-  lbCategory.Caption := rsCreateRepositoryPackagelbCategory;
-  lbDisplayName.Caption := rsCreateRepositoryPackagelbDisplayName;
-  lbHomePageURL.Caption := rsCreateRepositoryPackagelbHomePageURL;
-  lbDownloadURL.Caption := rsCreateRepositoryPackagelbDownloadURL;
-  lbSVNURL.Caption := rsCreateRepositoryPackagelbSVNURL;
+  cbCategory.Items.Add(rsMainFrm_VSTText_PackageCategory0);
+  cbCategory.Items.Add(rsMainFrm_VSTText_PackageCategory1);
+  cbCategory.Items.Add(rsMainFrm_VSTText_PackageCategory2);
+  cbCategory.Items.Add(rsMainFrm_VSTText_PackageCategory3);
+  cbCategory.Items.Add(rsMainFrm_VSTText_PackageCategory4);
+  cbCategory.Items.Add(rsMainFrm_VSTText_PackageCategory5);
+  cbCategory.Items.Add(rsMainFrm_VSTText_PackageCategory6);
+  cbCategory.Items.Add(rsMainFrm_VSTText_PackageCategory7);
+  cbCategory.Items.Add(rsMainFrm_VSTText_PackageCategory8);
+  lbLazCompatibility.Caption := rsCreateRepositoryPackageFrm_lbLazCompatibility_Caption;
+  lbFPCCompatibility.Caption := rsCreateRepositoryPackageFrm_lbFPCCompatibility_Caption;
+  lbSupportedWidgetSet.Caption := rsCreateRepositoryPackageFrm_lbSupportedWidgetset_Caption;
+  lbCategory.Caption := rsCreateRepositoryPackageFrm_lbCategory_Caption;
+  lbDisplayName.Caption := rsCreateRepositoryPackageFrm_lbDisplayName_Caption;
+  lbHomePageURL.Caption := rsCreateRepositoryPackageFrm_lbHomePageURL_Caption;
+  lbDownloadURL.Caption := rsCreateRepositoryPackageFrm_lbDownloadURL_Caption;
+  lbSVNURL.Caption := rsCreateRepositoryPackageFrm_lbSVNURL_Caption;
 
   FVSTPackages := TVirtualStringTree.Create(nil);
   with FVSTPackages do
@@ -163,7 +163,7 @@ begin
     with Header.Columns.Add do begin
       Position := 0;
       Width := 250;
-      Text := rsCreateRepositoryPackagepnCaption0;
+      Text := rsCreateRepositoryPackageFrm_pnCaption_Caption0;
     end;
     Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoVisible, hoAutoSpring];
     Header.SortColumn := 0;
@@ -200,12 +200,12 @@ begin
     with Header.Columns.Add do begin
       Position := 0;
       Width := 150;
-      Text := rsCreateRepositoryPackagepnCaption1;
+      Text := rsCreateRepositoryPackageFrm_pnCaption_Caption1;
     end;
     with Header.Columns.Add do begin
       Position := 1;
       Width := 250;
-      Text := rsCreateRepositoryPackagepnCaption2;
+      Text := rsCreateRepositoryPackageFrm_pnCaption_Caption2;
     end;
     Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoVisible, hoAutoSpring];
     Header.SortColumn := 0;
@@ -355,7 +355,7 @@ var
   CanGo: Boolean;
 begin
   CanGo := False;
-  SDD.Title := rsCreateRepositorySDDTitleSrc;
+  SDD.Title := rsCreateRepositoryPackageFrm_SDDTitleSrc;
   SDD.InitialDir := Options.LastPackagedirSrc;
   if SDD.Execute then
   begin
@@ -396,7 +396,7 @@ begin
             Data^.FPackageRelativePath := TPackageData(PackageList.Objects[I]).FPackageRelativePath;
             Data^.FFullPath := TPackageData(PackageList.Objects[I]).FFullPath;
             if not LoadPackageData(Data^.FFullPath, Data) then
-              MessageDlgEx(rsCreateRepositoryPackageError0, mtError, [mbOk], TForm(Self.Parent));
+              MessageDlgEx(rsCreateRepositoryPackageFrm_Error0, mtError, [mbOk], TForm(Self.Parent));
             Data^.FLazCompatibility := '1.6, Trunk';
             Data^.FFPCCompatibility := '2.6.4, 3.0.0';
             Data^.FSupportedWidgetSet := 'win32/64, gtk2, carbon';
@@ -411,7 +411,7 @@ begin
           end;
         end
         else
-          MessageDlgEx(rsCreateRepositoryPackageNoPackage, mtInformation, [mbOk], TForm(Self.Parent));
+          MessageDlgEx(rsCreateRepositoryPackageFrm_NoPackage, mtInformation, [mbOk], TForm(Self.Parent));
       finally
         for I := PackageList.Count - 1 downto 0 do
           PackageList.Objects[I].Free;
@@ -462,7 +462,7 @@ begin
       if Data^.FCategory = -1 then
       begin
         SelectAndFocusNode(Node);
-        MessageDlgEx(rsCreateRepositoryPackageMessage0 + ' "' + Data^.FName + '".', mtInformation, [mbOk], TForm(Self.Parent));
+        MessageDlgEx(rsCreateRepositoryPackageFrm_Message0 + ' "' + Data^.FName + '".', mtInformation, [mbOk], TForm(Self.Parent));
         cbCategory.SetFocus;
         Exit;
       end;
@@ -473,21 +473,21 @@ begin
       if Trim(Data^.FLazCompatibility) = '' then
       begin
         SelectAndFocusNode(Node);
-        MessageDlgEx(rsCreateRepositoryPackageMessage1 + ' "' + Data^.FName + '".', mtInformation, [mbOk], TForm(Self.Parent));
+        MessageDlgEx(rsCreateRepositoryPackageFrm_Message1 + ' "' + Data^.FName + '".', mtInformation, [mbOk], TForm(Self.Parent));
         edLazCompatibility.SetFocus;
         Exit;
       end;
       if Trim(Data^.FFPCCompatibility) = '' then
       begin
         SelectAndFocusNode(Node);
-        MessageDlgEx(rsCreateRepositoryPackageMessage2 + ' "' + Data^.FName + '".', mtInformation, [mbOk], TForm(Self.Parent));
+        MessageDlgEx(rsCreateRepositoryPackageFrm_Message2 + ' "' + Data^.FName + '".', mtInformation, [mbOk], TForm(Self.Parent));
         edFPCCompatibility.SetFocus;
         Exit;
       end;
       if Trim(Data^.FSupportedWidgetSet) = '' then
       begin
         SelectAndFocusNode(Node);
-        MessageDlgEx(rsCreateRepositoryPackageMessage3 + ' "' + Data^.FName + '".', mtInformation, [mbOk], TForm(Self.Parent));
+        MessageDlgEx(rsCreateRepositoryPackageFrm_Message3 + ' "' + Data^.FName + '".', mtInformation, [mbOk], TForm(Self.Parent));
         edSupportedWidgetset.SetFocus;
         Exit;
       end;
@@ -495,7 +495,7 @@ begin
     Node := FVSTPackages.GetNext(Node);
   end;
 
-  SDD.Title := rsCreateRepositorySDDTitleDst;
+  SDD.Title := rsCreateRepositoryPackageFrm_SDDTitleDst;
   SDD.InitialDir := Options.LastPackagedirDst;
   if SDD.Execute then
   begin
@@ -507,7 +507,7 @@ begin
     Options.Changed := True;
     FPackageName := StringReplace(FPackageName, ' ', '', [rfReplaceAll]);
     FPackageFile := FDestDir + FPackageName + '.zip';
-    pnMessage.Caption := rsCreateRepositoryPackageMessage4;
+    pnMessage.Caption := rsCreateRepositoryPackageFrm_Message4;
     ShowHideControls(1);
     bCreate.Enabled := False;
     pnBrowse.Enabled := False;
@@ -674,22 +674,22 @@ begin
   Data := FVSTPackageData.GetNodeData(Node);
   case Column of
     0: case Data^.FDataType of
-         2: CellText := rsMainFrmVSTTextVersion;
-         3: CellText := rsMainFrmVSTTextDescription;
-         4: CellText := rsMainFrmVSTTextAuthor;
-         5: CellText := rsMainFrmVSTTextPackagetype;
-         6: CellText := rsMainFrmVSTTextDependecies;
-         7: CellText := rsMainFrmVSTTextLicense;
+         2: CellText := rsMainFrm_VSTText_Version;
+         3: CellText := rsMainFrm_VSTText_Description;
+         4: CellText := rsMainFrm_VSTText_Author;
+         5: CellText := rsMainFrm_VSTText_Packagetype;
+         6: CellText := rsMainFrm_VSTText_Dependecies;
+         7: CellText := rsMainFrm_VSTText_License;
        end;
     1: case Data^.FDataType of
          2: CellText := Data^.FVersionAsString;
          3: CellText := Data^.FDescription;
          4: CellText := Data^.FAuthor;
          5: case Data^.FPackageType of
-              ptRunAndDesignTime: CellText := rsMainFrmVSTTextPackageType0;
-              ptDesignTime:       CellText := rsMainFrmVSTTextPackageType1;
-              ptRunTime:          CellText := rsMainFrmVSTTextPackageType2;
-              ptRunTimeOnly:      CellText := rsMainFrmVSTTextPackageType3;
+              ptRunAndDesignTime: CellText := rsMainFrm_VSTText_PackageType0;
+              ptDesignTime:       CellText := rsMainFrm_VSTText_PackageType1;
+              ptRunTime:          CellText := rsMainFrm_VSTText_PackageType2;
+              ptRunTimeOnly:      CellText := rsMainFrm_VSTText_PackageType3;
             end;
          6: CellText := Data^.FDependenciesAsString;
          7: CellText := Data^.FLicense;
@@ -722,7 +722,7 @@ end;
 procedure TCreateRepositoryPackagefr.DoOnZippError(Sender: TObject;
   AZipFile: String; const AErrMsg: String);
 begin
-   MessageDlgEx(rsCreateRepositoryPackageError1 + ' "' + AZipFile + '". ' + rsProgressFrmError1 + sLineBreak +
+   MessageDlgEx(rsCreateRepositoryPackageFrm_Error1 + ' "' + AZipFile + '". ' + rsProgressFrm_Error1 + sLineBreak +
                 AErrMsg, mtError, [mbOk], TForm(Self.Parent));
    ShowHideControls(2);
    bCreate.Enabled := True;
@@ -739,7 +739,7 @@ var
   JSON: TJSONStringType;
   MS: TMemoryStream;
 begin
-  pnMessage.Caption := rsCreateRepositoryPackageMessage5;
+  pnMessage.Caption := rsCreateRepositoryPackageFrm_Message5;
   pnMessage.Invalidate;
   Sleep(2000);
 
@@ -802,13 +802,13 @@ begin
           MS.SaveToFile(FDestDir + FPackageName + '.json');
           if cbOpen.Checked then
             OpenDocument(FDestDir);
-          MessageDlgEx(rsCreateRepositoryPackageMessage6, mtInformation, [mbOk], TForm(Self.Parent));
+          MessageDlgEx(rsCreateRepositoryPackageFrm_Message6, mtInformation, [mbOk], TForm(Self.Parent));
         finally
           MS.Free;
         end;
       end
       else
-       MessageDlgEx(rsCreateRepositoryPackageError2 + sLineBreak + SerializablePackages.LastError, mtInformation, [mbOk], TForm(Self.Parent));
+       MessageDlgEx(rsCreateRepositoryPackageFrm_Error2 + sLineBreak + SerializablePackages.LastError, mtInformation, [mbOk], TForm(Self.Parent));
     end;
     ShowHideControls(2);
   finally

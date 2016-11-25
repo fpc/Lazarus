@@ -156,24 +156,24 @@ begin
      with Header.Columns.Add do begin
        Position := 0;
        Width := 250;
-       Text := rsMainFrmVSTHeaderColumnPackageName;
+       Text := rsMainFrm_VSTHeaderColumn_PackageName;
      end;
      with Header.Columns.Add do begin
        Position := 1;
        Alignment := taCenter;
        Width := 75;
-       Text := rsMainFrmVSTHeaderColumnInstalled;
+       Text := rsMainFrm_VSTHeaderColumn_Installed;
      end;
      with Header.Columns.Add do begin
        Position := 2;
        Alignment := taCenter;
        Width := 75;
-       Text := rsMainFrmVSTHeaderColumnAvailable;
+       Text := rsMainFrm_VSTHeaderColumn_Available;
      end;
      with Header.Columns.Add do begin
         Position := 3;
         Width := 400;
-        Text := rsMainFrmVSTHeaderColumnData;
+        Text := rsMainFrm_VSTHeaderColumn_Data;
       end;
      Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoShowSortGlyphs, hoVisible, hoAutoSpring];
      Header.SortColumn := 0;
@@ -827,10 +827,10 @@ begin
                   begin
                     if (Result = mrNone) or (Result = mrYes) then
                     begin
-                      Msg := rsProgressFrmlbPackageCaption + ' "' + Data^.PackageFileName + '" ' + rsPackageDependency0 + ' "' + DataSearch^.PackageFileName + '". ' + rsPackageDependency1;
+                      Msg := rsProgressFrm_lbPackage_Caption + ' "' + Data^.PackageFileName + '" ' + rsMainFrm_rsPackageDependency0 + ' "' + DataSearch^.PackageFileName + '". ' + rsMainFrm_rsPackageDependency1;
                       Result := MessageDlgEx(Msg, mtConfirmation, [mbYes, mbYesToAll, mbNo, mbNoToAll, mbCancel], TForm(FVST.Parent.Parent));
                       if Result in [mrNo, mrNoToAll] then
-                        MessageDlgEx(rsPackageDependency2, mtInformation, [mbOk], TForm(FVST.Parent.Parent));
+                        MessageDlgEx(rsMainFrm_rsPackageDependency2, mtInformation, [mbOk], TForm(FVST.Parent.Parent));
                       if (Result = mrNoToAll) or (Result = mrCancel) then
                         Exit;
                     end;
@@ -905,23 +905,23 @@ begin
          else
            CellText := Data^.PackageDisplayName;
       2: CellText := Data^.PackageFileName;
-      3: CellText := rsMainFrmVSTTextDescription;
-      4: CellText := rsMainFrmVSTTextAuthor;
-      5: CellText := rsMainFrmVSTTextLazCompatibility;
-      6: CellText := rsMainFrmVSTTextFPCCompatibility;
-      7: CellText := rsMainFrmVSTTextSupportedWidgetsets;
-      8: CellText := rsMainFrmVSTTextPackagetype;
-      9: CellText := rsMainFrmVSTTextDependecies;
-     10: CellText := rsMainFrmVSTTextLicense;
-     11: CellText := rsMainFrmVSTTextPackageInfo;
-     12: CellText := rsMainFrmVSTTextCategory;
-     13: CellText := rsMainFrmVSTTextRepositoryFilename;
-     14: CellText := rsMainFrmVSTTextRepositoryFileSize;
-     15: CellText := rsMainFrmVSTTextRepositoryFileHash;
-     16: CellText := rsMainFrmVSTTextRepositoryFileDate;
-     17: CellText := rsMainFrmVSTTextHomePageURL;
-     18: CellText := rsMainFrmVSTTextDownloadURL;
-     19: CellText := rsMainFrmVSTTextSVNURL;
+      3: CellText := rsMainFrm_VSTText_Description;
+      4: CellText := rsMainFrm_VSTText_Author;
+      5: CellText := rsMainFrm_VSTText_LazCompatibility;
+      6: CellText := rsMainFrm_VSTText_FPCCompatibility;
+      7: CellText := rsMainFrm_VSTText_SupportedWidgetsets;
+      8: CellText := rsMainFrm_VSTText_Packagetype;
+      9: CellText := rsMainFrm_VSTText_Dependecies;
+     10: CellText := rsMainFrm_VSTText_License;
+     11: CellText := rsMainFrm_VSTText_PackageInfo;
+     12: CellText := rsMainFrm_VSTText_Category;
+     13: CellText := rsMainFrm_VSTText_RepositoryFilename;
+     14: CellText := rsMainFrm_VSTText_RepositoryFileSize;
+     15: CellText := rsMainFrm_VSTText_RepositoryFileHash;
+     16: CellText := rsMainFrm_VSTText_RepositoryFileDate;
+     17: CellText := rsMainFrm_VSTText_HomePageURL;
+     18: CellText := rsMainFrm_VSTText_DownloadURL;
+     19: CellText := rsMainFrm_VSTText_SVNURL;
 
     end;
   end
@@ -947,15 +947,15 @@ begin
       0: CellText := '';
       1: CellText := '';
       2: case Ord(Data^.PackageState) of
-           0: CellText := rsMainFrmVSTTextPackageState0;
-           1: CellText := rsMainFrmVSTTextPackageState1;
-           2: CellText := rsMainFrmVSTTextPackageState2;
+           0: CellText := rsMainFrm_VSTText_PackageState0;
+           1: CellText := rsMainFrm_VSTText_PackageState1;
+           2: CellText := rsMainFrm_VSTText_PackageState2;
            3: begin
                 Data^.IsInstalled := Data^.InstalledVersion >= Data^.Version;
                 if Data^.IsInstalled then
-                  CellText := rsMainFrmVSTTextPackageState4
+                  CellText := rsMainFrm_VSTText_PackageState4
                 else
-                  CellText := rsMainFrmVSTTextPackageState3
+                  CellText := rsMainFrm_VSTText_PackageState3
               end;
          end;
       3: CellText := Data^.Description;
@@ -964,24 +964,24 @@ begin
       6: CellText := Data^.FPCCompatibility;
       7: CellText := Data^.SupportedWidgetSet;
       8: case Data^.PackageType of
-           ptRunAndDesignTime: CellText := rsMainFrmVSTTextPackageType0;
-           ptDesignTime:       CellText := rsMainFrmVSTTextPackageType1;
-           ptRunTime:          CellText := rsMainFrmVSTTextPackageType2;
-           ptRunTimeOnly:      CellText := rsMainFrmVSTTextPackageType3;
+           ptRunAndDesignTime: CellText := rsMainFrm_VSTText_PackageType0;
+           ptDesignTime:       CellText := rsMainFrm_VSTText_PackageType1;
+           ptRunTime:          CellText := rsMainFrm_VSTText_PackageType2;
+           ptRunTimeOnly:      CellText := rsMainFrm_VSTText_PackageType3;
          end;
       9: CellText := Data^.Dependencies;
      10: CellText := Data^.License;
      11: CellText := '';
      12: case Data^.Category of
-           pcCryptography:  CellText := rsMainFrmVSTTextPackageCategory0;
-           pcDataControls:  CellText := rsMainFrmVSTTextPackageCategory1;
-           pcGraphics:      CellText := rsMainFrmVSTTextPackageCategory2;
-           pcGUIContainers: CellText := rsMainFrmVSTTextPackageCategory3;
-           pcLazIDEPlugins: CellText := rsMainFrmVSTTextPackageCategory4;
-           pcMultimedia:    CellText := rsMainFrmVSTTextPackageCategory5;
-           pcNetworking:    CellText := rsMainFrmVSTTextPackageCategory6;
-           pcReporting:     CellText := rsMainFrmVSTTextPackageCategory7;
-           pcOther:         CellText := rsMainFrmVSTTextPackageCategory8
+           pcCryptography:  CellText := rsMainFrm_VSTText_PackageCategory0;
+           pcDataControls:  CellText := rsMainFrm_VSTText_PackageCategory1;
+           pcGraphics:      CellText := rsMainFrm_VSTText_PackageCategory2;
+           pcGUIContainers: CellText := rsMainFrm_VSTText_PackageCategory3;
+           pcLazIDEPlugins: CellText := rsMainFrm_VSTText_PackageCategory4;
+           pcMultimedia:    CellText := rsMainFrm_VSTText_PackageCategory5;
+           pcNetworking:    CellText := rsMainFrm_VSTText_PackageCategory6;
+           pcReporting:     CellText := rsMainFrm_VSTText_PackageCategory7;
+           pcOther:         CellText := rsMainFrm_VSTText_PackageCategory8
          end;
      13: CellText := Data^.RepositoryFileName;
      14: CellText := FormatSize(Data^.RepositoryFileSize);

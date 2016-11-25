@@ -173,7 +173,7 @@ begin
   if SerializablePackages.Count > 0 then
     SerializablePackages.Clear;
   EnableDisableControls(False);
-  SetupMessage(rsMessageDownload);
+  SetupMessage(rsMainFrm_rsMessageDownload);
   PackageDownloader.DownloadJSON(10000);
 end;
 
@@ -189,7 +189,7 @@ begin
     VisualTree.UpdatePackageStates;
   end
   else
-    MessageDlgEx(rsNoPackageToDownload, mtInformation, [mbOk], Self)
+    MessageDlgEx(rsMainFrm_rsNoPackageToDownload, mtInformation, [mbOk], Self)
 end;
 
 function TMainFrm.Download(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
@@ -279,8 +279,8 @@ begin
         if (not SerializablePackages.JSONToPackages(AJSON)) or (SerializablePackages.Count = 0) then
         begin
           EnableDisableControls(True);
-          SetupMessage(rsMessageNoPackage);
-          MessageDlgEx(rsMessageError1 + sLineBreak + SerializablePackages.LastError, mtInformation, [mbOk], Self);
+          SetupMessage(rsMainFrm_rsMessageNoPackage);
+          MessageDlgEx(rsMainFrm_rsMessageError1 + sLineBreak + SerializablePackages.LastError, mtInformation, [mbOk], Self);
           Exit;
         end;
         EnableDisableControls(True);
@@ -288,12 +288,12 @@ begin
         mJSON.Text := AJSON;
         cbAll.Checked := False;
         VisualTree.PopulateTree;
-        Caption := rsLazarusPackageManager + '(' + IntToStr(SerializablePackages.Count) + ' ' + rsMainFrmCaption + ')';
+        Caption := rsLazarusPackageManager + '(' + IntToStr(SerializablePackages.Count) + ' ' + rsMainFrm_Caption + ')';
       end;
     etConfig:
       begin
         EnableDisableControls(True);
-        SetupMessage(rsMessageNoPackage);
+        SetupMessage(rsMainFrm_rsMessageNoPackage);
         Caption := rsLazarusPackageManager;
         if MessageDlgEx('"' + AErrMsg + '"', mtConfirmation, [mbYes, mbNo], Self) = mrYes then
           ShowOptions;
@@ -301,9 +301,9 @@ begin
     etTimeOut, etHTTPClient:
       begin
         EnableDisableControls(True);
-        SetupMessage(rsMessageNoPackage);
+        SetupMessage(rsMainFrm_rsMessageNoPackage);
         Caption := rsLazarusPackageManager;
-        MessageDlgEx(rsMessageError0 + sLineBreak + '"' + AErrMsg + '"', mtInformation, [mbOk], Self);
+        MessageDlgEx(rsMainFrm_rsMessageError0 + sLineBreak + '"' + AErrMsg + '"', mtInformation, [mbOk], Self);
       end;
   end;
 end;
@@ -517,7 +517,7 @@ begin
     VisualTree.UpdatePackageStates;
     PackageListFrm := TPackageListFrm.Create(MainFrm);
     try
-      PackageListFrm.lbMessage.Caption := rsMainFrmPackageAlreadyDownloaded;
+      PackageListFrm.lbMessage.Caption := rsMainFrm_PackageAlreadyDownloaded;
       PackageListFrm.PopulateList(1, DstDir);
       if PackageListFrm.Count > 0 then
         CanGo := PackageListFrm.ShowModal = mrYes
@@ -565,14 +565,14 @@ var
 begin
   if not IsSomethingChecked(True) then
     Exit;
-  if MessageDlgEx(rsMainFrmPackageUpdateWarning, mtConfirmation, [mbYes, mbNo], Self) = mrNo then
+  if MessageDlgEx(rsMainFrm_PackageUpdateWarning, mtConfirmation, [mbYes, mbNo], Self) = mrNo then
     Exit;
   CanGo := True;
   NeedToRebuild := False;
   VisualTree.UpdatePackageStates;
   PackageListFrm := TPackageListFrm.Create(MainFrm);
   try
-    PackageListFrm.lbMessage.Caption := rsMainFrmPackageUpdate0;
+    PackageListFrm.lbMessage.Caption := rsMainFrm_PackageUpdate0;
     PackageListFrm.PopulateList(2);
     if PackageListFrm.Count > 0 then
       CanGo := PackageListFrm.ShowModal = mrYes
@@ -646,7 +646,7 @@ begin
   VisualTree.UpdatePackageStates;
   PackageListFrm := TPackageListFrm.Create(MainFrm);
   try
-    PackageListFrm.lbMessage.Caption := rsMainFrmPackageAlreadyInstalled;
+    PackageListFrm.lbMessage.Caption := rsMainFrm_PackageAlreadyInstalled;
     PackageListFrm.PopulateList(0);
     if PackageListFrm.Count > 0 then
       CanGo := PackageListFrm.ShowModal = mrYes
@@ -710,10 +710,10 @@ procedure TMainFrm.tbCleanUpClick(Sender: TObject);
 var
   Cnt: Integer;
 begin
-  if MessageDlgEx(rsRepositoryCleanup0, mtInformation, [mbYes, mbNo], Self) = mrYes then
+  if MessageDlgEx(rsMainFrm_rsRepositoryCleanup0, mtInformation, [mbYes, mbNo], Self) = mrYes then
   begin
     Cnt := SerializablePackages.Cleanup;
-    MessageDlgEx(IntToStr(Cnt) + ' ' + rsRepositoryCleanup1, mtInformation, [mbOk], Self);
+    MessageDlgEx(IntToStr(Cnt) + ' ' + rsMainFrm_rsRepositoryCleanup1, mtInformation, [mbOk], Self);
   end;
 end;
 
@@ -768,70 +768,70 @@ end;
 procedure TMainFrm.SetupControls;
 begin
   cbFilterBy.Clear;
-  cbFilterBy.Items.Add(rsMainFrmVSTHeaderColumnPackageName);
-  cbFilterBy.Items.Add(rsMainFrmVSTHeaderColumnPackageFile);
-  cbFilterBy.Items.Add(rsMainFrmVSTTextPackageCategory);
-  cbFilterBy.Items.Add(rsMainFrmVSTTextPackageStatus);
-  cbFilterBy.Items.Add(rsMainFrmVSTTextVersion);
-  cbFilterBy.Items.Add(rsMainFrmVSTTextDescription);
-  cbFilterBy.Items.Add(rsMainFrmVSTTextAuthor);
-  cbFilterBy.Items.Add(rsMainFrmVSTTextLazCompatibility);
-  cbFilterBy.Items.Add(rsMainFrmVSTTextFPCCompatibility);
-  cbFilterBy.Items.Add(rsMainFrmVSTTextSupportedWidgetsets);
-  cbFilterBy.Items.Add(rsMainFrmVSTTextPackagetype);
-  cbFilterBy.Items.Add(rsMainFrmVSTTextDependecies);
-  cbFilterBy.Items.Add(rsMainFrmVSTTextLicense);
+  cbFilterBy.Items.Add(rsMainFrm_VSTHeaderColumn_PackageName);
+  cbFilterBy.Items.Add(rsMainFrm_VSTHeaderColumn_PackageFile);
+  cbFilterBy.Items.Add(rsMainFrm_VSTText_PackageCategory);
+  cbFilterBy.Items.Add(rsMainFrm_VSTText_PackageStatus);
+  cbFilterBy.Items.Add(rsMainFrm_VSTText_Version);
+  cbFilterBy.Items.Add(rsMainFrm_VSTText_Description);
+  cbFilterBy.Items.Add(rsMainFrm_VSTText_Author);
+  cbFilterBy.Items.Add(rsMainFrm_VSTText_LazCompatibility);
+  cbFilterBy.Items.Add(rsMainFrm_VSTText_FPCCompatibility);
+  cbFilterBy.Items.Add(rsMainFrm_VSTText_SupportedWidgetsets);
+  cbFilterBy.Items.Add(rsMainFrm_VSTText_Packagetype);
+  cbFilterBy.Items.Add(rsMainFrm_VSTText_Dependecies);
+  cbFilterBy.Items.Add(rsMainFrm_VSTText_License);
   cbFilterBy.ItemIndex := 0;
 
   cbPackageType.Clear;
   cbPackageType.Items.Add('');
-  cbPackageType.Items.Add(rsMainFrmVSTTextPackageType0);
-  cbPackageType.Items.Add(rsMainFrmVSTTextPackageType1);
-  cbPackageType.Items.Add(rsMainFrmVSTTextPackageType2);
-  cbPackageType.Items.Add(rsMainFrmVSTTextPackageType3);
+  cbPackageType.Items.Add(rsMainFrm_VSTText_PackageType0);
+  cbPackageType.Items.Add(rsMainFrm_VSTText_PackageType1);
+  cbPackageType.Items.Add(rsMainFrm_VSTText_PackageType2);
+  cbPackageType.Items.Add(rsMainFrm_VSTText_PackageType3);
 
   cbPackageState.Clear;
   cbPackageState.Items.Add('');
-  cbPackageState.Items.Add(rsMainFrmVSTTextPackageState0);
-  cbPackageState.Items.Add(rsMainFrmVSTTextPackageState1);
-  cbPackageState.Items.Add(rsMainFrmVSTTextPackageState2);
-  cbPackageState.Items.Add(rsMainFrmVSTTextPackageState3);
+  cbPackageState.Items.Add(rsMainFrm_VSTText_PackageState0);
+  cbPackageState.Items.Add(rsMainFrm_VSTText_PackageState1);
+  cbPackageState.Items.Add(rsMainFrm_VSTText_PackageState2);
+  cbPackageState.Items.Add(rsMainFrm_VSTText_PackageState3);
 
   cbPackageCategory.Clear;
   cbPackageCategory.Items.Add('');
-  cbPackageCategory.Items.Add(rsMainFrmVSTTextPackageCategory0);
-  cbPackageCategory.Items.Add(rsMainFrmVSTTextPackageCategory1);
-  cbPackageCategory.Items.Add(rsMainFrmVSTTextPackageCategory2);
-  cbPackageCategory.Items.Add(rsMainFrmVSTTextPackageCategory3);
-  cbPackageCategory.Items.Add(rsMainFrmVSTTextPackageCategory4);
-  cbPackageCategory.Items.Add(rsMainFrmVSTTextPackageCategory5);
-  cbPackageCategory.Items.Add(rsMainFrmVSTTextPackageCategory6);
-  cbPackageCategory.Items.Add(rsMainFrmVSTTextPackageCategory7);
-  cbPackageCategory.Items.Add(rsMainFrmVSTTextPackageCategory8);
+  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory0);
+  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory1);
+  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory2);
+  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory3);
+  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory4);
+  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory5);
+  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory6);
+  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory7);
+  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory8);
 
 
-  tbRefresh.Caption := rsMainFrmTBRefreshCaption;
-  tbRefresh.Hint := rsMainFrmTBRefreshHint;
-  tbDownload.Caption := rsMainFrmTBDownloadCaption;
-  tbDownload.Hint := rsMainFrmTBDownloadHint;
-  tbInstall.Caption := rsMainFrmTBInstallCaption;
-  tbInstall.Hint := rsMainFrmTBInstallHint;
-  tbUpdate.Caption := rsMainFrmTBUpdateCaption;
-  tbUpdate.Hint := rsMainFrmTBUpdateHint;
-  tbCleanUp.Caption := rsMainFrmTBCleanUpCaption;
-  tbCleanUp.Hint := rsMainFrmTBCleanUpHint;
-  tbCreate.Caption := rsMainFrmTBRepositoryCaption;
-  tbCreate.Hint := rsMainFrmTBRepositoryHint;
-  tbOptions.Caption := rsMainFrmTBOptionsCaption;
-  tbOptions.Hint := rsMainFrmTBOptionsHint;
-  miCreateRepositoryPackage.Caption := rsMainFrmmiCreateRepositoryPackage;
-  miCreateRepository.Caption := rsMainFrmmiCreateRepository;
-  miJSONShow.Caption := rsMainFrmmiJSONShow;
-  miJSONHide.Caption := rsMainFrmmiJSONHide;
+  tbRefresh.Caption := rsMainFrm_TBRefresh_Caption;
+  tbRefresh.Hint := rsMainFrm_TBRefresh_Hint;
+  tbDownload.Caption := rsMainFrm_TBDownload_Caption;
+  tbDownload.Hint := rsMainFrm_TBDownload_Hint;
+  tbInstall.Caption := rsMainFrm_TBInstall_Caption;
+  tbInstall.Hint := rsMainFrm_TBInstall_Hint;
+  tbUpdate.Caption := rsMainFrm_TBUpdate_Caption;
+  tbUpdate.Hint := rsMainFrm_TBUpdate_Hint;
+  tbCleanUp.Caption := rsMainFrm_TBCleanUp_Caption;
+  tbCleanUp.Hint := rsMainFrm_TBCleanUp_Hint;
+  tbCreate.Caption := rsMainFrm_TBRepository_Caption;
+  tbCreate.Hint := rsMainFrm_TBRepository_Hint;
+  tbOptions.Caption := rsMainFrm_TBOptions_Caption;
+  tbOptions.Hint := rsMainFrm_TBOptions_Hint;
+  miCreateRepositoryPackage.Caption := rsMainFrm_miCreateRepositoryPackage;
+  miCreateRepository.Caption := rsMainFrm_miCreateRepository;
+  miJSONShow.Caption := rsMainFrm_miJSONShow;
+  miJSONHide.Caption := rsMainFrm_miJSONHide;
 
-  Caption := rsMainFrmCaption;
-  edFilter.Hint := rsMainFrmedFilterHint;
-  spClear.Hint := rsMainFrmspClearHint;
+  Caption := rsMainFrm_Caption;
+  edFilter.Hint := rsMainFrm_edFilter_Hint;
+  spClear.Hint := rsMainFrm_spClear_Hint;
   cbFilterBy.Top := (pnTop.Height - cbFilterBy.Height) div 2;
   pnFilter.Height := cbFilterBy.Height;
   pnFilter.Top := (pnTop.Height - pnFilter.Height) div 2;
@@ -839,15 +839,15 @@ begin
   cbPackageType.Top := (pnTop.Height - cbPackageType.Height) div 2;
   cbPackageCategory.Top := (pnTop.Height - cbPackageCategory.Height) div 2;
   cbAll.Top := (pnTop.Height - cbAll.Height) div 2;
-  cbAll.Hint := rsMainFrmcbAllHint;
+  cbAll.Hint := rsMainFrm_cbAll_Hint;
   spExpand.Top:= (pnTop.Height - spExpand.Height + 1) div 2;
-  spExpand.Hint := rsMainFrmspExpandHint;
+  spExpand.Hint := rsMainFrm_spExpand_Hint;
   spCollapse.Top:= (pnTop.Height - spCollapse.Height + 1) div 2;
-  spCollapse.Hint := rsMainFrmspCollapseHint;
-  cbAll.Caption := rsMainFrmcbAllCaption;
+  spCollapse.Hint := rsMainFrm_spCollapse_Hint;
+  cbAll.Caption := rsMainFrm_cbAll_Caption;
   lbFilterBy.Top := cbFilterBy.Top + (cbFilterBy.Height - lbFilterBy.Height) div 2;
-  lbFilterBy.Caption := rsMainFrmlbFilterCaption;
-  cbFilterBy.Hint := rsMainFrmcbFilterByHint;
+  lbFilterBy.Caption := rsMainFrm_lbFilter_Caption;
+  cbFilterBy.Hint := rsMainFrm_cbFilterBy_Hint;
 
   cbPackageCategory.Visible := False;
   cbPackageType.Visible := False;

@@ -110,13 +110,13 @@ begin
   begin
     if Trim(edProxyServer.Text)  = '' then
     begin
-      MessageDlgEx(rsOptions_ProxyServer_Information, mtInformation, [mbOk], Self);
+      MessageDlgEx(rsOptions_ProxyServer_Info, mtInformation, [mbOk], Self);
       edProxyServer.SetFocus;
       Exit;
     end;
     if seProxyPort.Value = 0 then
     begin
-      MessageDlgEx(rsOptions_ProxyPort_Information, mtInformation, [mbOk], Self);
+      MessageDlgEx(rsOptions_ProxyPort_Info, mtInformation, [mbOk], Self);
       seProxyPort.SetFocus;
       Exit;
     end;
@@ -124,19 +124,19 @@ begin
 
   if Trim(edLocalRepositoryPackages.Text)  = '' then
   begin
-    MessageDlgEx(rsOptions_InvalidDirectory_Information, mtInformation, [mbOk], Self);
+    MessageDlgEx(rsOptions_InvalidDirectory_Info, mtInformation, [mbOk], Self);
     edLocalRepositoryPackages.SetFocus;
     Exit;
   end;
   if Trim(edLocalRepositoryArchive.Text)  = '' then
   begin
-    MessageDlgEx(rsOptions_InvalidDirectory_Information, mtInformation, [mbOk], Self);
+    MessageDlgEx(rsOptions_InvalidDirectory_Info, mtInformation, [mbOk], Self);
     edLocalRepositoryArchive.SetFocus;
     Exit;
   end;
   if Trim(edLocalRepositoryUpdate.Text)  = '' then
   begin
-    MessageDlgEx(rsOptions_InvalidDirectory_Information, mtInformation, [mbOk], Self);
+    MessageDlgEx(rsOptions_InvalidDirectory_Info, mtInformation, [mbOk], Self);
     edLocalRepositoryUpdate.SetFocus;
     Exit;
   end;
@@ -158,7 +158,7 @@ end;
 
 procedure TOptionsFrm.bRestoreClick(Sender: TObject);
 begin
-  if MessageDlgEx(rsOptions_RestoreDefaults_Confirmation, mtInformation, [mbYes, mbNo], Self) = mrYes then
+  if MessageDlgEx(rsOptions_RestoreDefaults_Conf, mtInformation, [mbYes, mbNo], Self) = mrYes then
   begin
     Options.LoadDefault;
     SetupControls;

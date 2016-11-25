@@ -751,7 +751,7 @@ begin
   Package := FindPackage(AName, fpbPackageName);
   if Package <> nil then
   begin
-    FLastError := rsMainFrmPackageNameAlreadyExists;
+    FLastError := rsMainFrm_PackageNameAlreadyExists;
     Exit;
   end;
   Result := TPackage(FPackages.Add);

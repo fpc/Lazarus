@@ -274,7 +274,7 @@ begin
   if FDownloadType = dtJSON then
   begin
     FHTTPClient.NeedToBreak := True;
-    FErrMsg := rsMessageError2;
+    FErrMsg := rsMainFrm_rsMessageError2;
     FErrTyp := etTimeOut;
     FTimer.StopTimer;
     Synchronize(@DoOnJSONDownloadCompleted);
@@ -332,7 +332,7 @@ begin
     else
     begin
       FErrTyp := etConfig;
-      FErrMsg := rsMessageNoRepository0 + sLineBreak + rsMessageNoRepository1;
+      FErrMsg := rsMainFrm_rsMessageNoRepository0 + sLineBreak + rsMainFrm_rsMessageNoRepository1;
     end;
     if FTimer.Enabled then
       FTimer.StopTimer;

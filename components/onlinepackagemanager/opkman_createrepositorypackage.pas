@@ -34,7 +34,7 @@ uses opkman_const;
 
 procedure TCreateRepositoryPackagesFrm.FormCreate(Sender: TObject);
 begin
-  Caption := rsCreateRepositoryPackage;
+  Caption := rsCreateRepositoryPackageFrm_Caption;
   frCreateRep.InitializeFrame;
 end;
 

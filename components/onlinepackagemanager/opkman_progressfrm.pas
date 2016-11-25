@@ -210,7 +210,7 @@ procedure TProgressFrm.DoOnPackageDownloadProgress(Sender: TObject; AFrom, ATo: 
   ACnt, ATotCnt: Integer; ACurPos, ACurSize, ATotPos, ATotSize: Int64;
   AEllapsed, ARemaining, ASpeed: LongInt);
 begin
-  Caption := rsProgressfrmCaption0 + '(' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) +')' + rsProgressFrmCaption4;
+  Caption := rsProgressfrm_Caption0 + '(' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) +')' + rsProgressFrm_Caption4;
   lbPackageData.Caption := ExtractFileName(ATo);
   lbSpeedData.Caption := FormatSpeed(ASpeed);
   lbSpeedData.Update;
@@ -219,13 +219,13 @@ begin
   lbRemainingData.Caption := SecToHourAndMin(ARemaining);
   lbRemainingData.Update;
   if ACurSize > 0 then
-    lbReceived.Caption := rsProgressFrmlbReceivedCaption0 + '  ' + FormatSize(ACurPos) + ' / ' + FormatSize(ACurSize)
+    lbReceived.Caption := rsProgressFrm_lbReceived_Caption0 + '  ' + FormatSize(ACurPos) + ' / ' + FormatSize(ACurSize)
   else
-    lbReceived.Caption := rsProgressFrmlbReceivedCaption0 + '  ' + FormatSize(ACurPos) + ' / ' + rsProgressFrmCaption5;
+    lbReceived.Caption := rsProgressFrm_lbReceived_Caption0 + '  ' + FormatSize(ACurPos) + ' / ' + rsProgressFrm_Caption5;
   lbReceived.Update;
   pb.Position := Round((ACurPos/ACurSize) * 100);
   pb.Update;
-  lbReceivedTotal.Caption := rsProgressFrmlbReceivedTotalCaption0 + '  ' + FormatSize(ATotPos) + ' / ' + FormatSize(ATotSize);
+  lbReceivedTotal.Caption := rsProgressFrm_lbReceivedTotal_Caption0 + '  ' + FormatSize(ATotPos) + ' / ' + FormatSize(ATotSize);
   lbReceivedTotal.Update;
   pbTotal.Position := Round((ATotPos/ATotSize) * 100);
   pbTotal.Update;
@@ -242,13 +242,13 @@ begin
   begin
     if (FCnt < FTotCnt) then
     begin
-      Msg := rsProgressFrmError0 + ' "' + APackageName + '". ' + rsProgressFrmError1 + sLineBreak  + '"' +
-             AErrMsg + '"' + sLineBreak + rsProgressFrmConfirm0;
+      Msg := rsProgressFrm_Error0 + ' "' + APackageName + '". ' + rsProgressFrm_Error1 + sLineBreak  + '"' +
+             AErrMsg + '"' + sLineBreak + rsProgressFrm_Conf0;
       FMdlRes := MessageDlgEx(Msg, mtError, [mbYes, mbYesToAll, mbNo], Self);
     end
     else
     begin
-      Msg :=  rsProgressFrmError0 + ' "' + APackageName + '". ' + rsProgressFrmError1 + sLineBreak  + '"' + AErrMsg + '"';
+      Msg :=  rsProgressFrm_Error0 + ' "' + APackageName + '". ' + rsProgressFrm_Error1 + sLineBreak  + '"' + AErrMsg + '"';
       MessageDlgEx(Msg, mtError, [mbOk], Self);
       FMdlRes := mrNo;
     end;
@@ -275,7 +275,7 @@ procedure TProgressFrm.DoOnZipProgress(Sender: TObject; AZipfile: String;
   ACnt, ATotCnt: Integer;  ACurPos, ACurSize, ATotPos, ATotSize: Int64;
   AEllapsed, ARemaining, ASpeed: LongInt);
 begin
-  Caption := rsProgressfrmCaption1 + '(' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) +')' + rsProgressFrmCaption4;
+  Caption := rsProgressfrm_Caption1 + '(' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) +')' + rsProgressFrm_Caption4;
   lbPackageData.Caption := AZipFile;
   lbSpeedData.Caption := FormatSpeed(ASpeed);
   lbSpeedData.Update;
@@ -283,11 +283,11 @@ begin
   lbEllapsedData.Update;
   lbRemainingData.Caption := SecToHourAndMin(ARemaining);
   lbRemainingData.Update;
-  lbReceived.Caption := rsProgressFrmlbReceivedCaption1 + '  ' + FormatSize(ACurPos) + ' / ' + FormatSize(ACurSize);
+  lbReceived.Caption := rsProgressFrm_lbReceived_Caption1 + '  ' + FormatSize(ACurPos) + ' / ' + FormatSize(ACurSize);
   lbReceived.Update;
   pb.Position := Round((ACurPos/ACurSize) * 100);
   pb.Update;
-  lbReceivedTotal.Caption := rsProgressFrmlbReceivedTotalCaption1 + '  ' + FormatSize(ATotPos) + ' / ' + FormatSize(ATotSize);
+  lbReceivedTotal.Caption := rsProgressFrm_lbReceivedTotal_Caption1 + '  ' + FormatSize(ATotPos) + ' / ' + FormatSize(ATotSize);
   lbReceivedTotal.Update;
   pbTotal.Position := Round((ATotPos/ATotSize) * 100);
   pbTotal.Update;
@@ -303,13 +303,13 @@ begin
   begin
     if (FCnt < FTotCnt) then
     begin
-      Msg := rsProgressFrmError2 + ' "' + APackageName + '". ' + rsProgressFrmError1 + sLineBreak + '" ' +
-             AErrMsg + '"' + sLineBreak + rsProgressFrmConfirm0;
+      Msg := rsProgressFrm_Error2 + ' "' + APackageName + '". ' + rsProgressFrm_Error1 + sLineBreak + '" ' +
+             AErrMsg + '"' + sLineBreak + rsProgressFrm_Conf0;
       FMdlRes := MessageDlgEx(Msg, mtError, [mbYes, mbYesToAll, mbNo],  Self);
     end
     else
     begin
-      Msg := rsProgressFrmError2 + ' "' + APackageName + '". ' + rsProgressFrmError1 + sLineBreak + '"' + AErrMsg + '"';
+      Msg := rsProgressFrm_Error2 + ' "' + APackageName + '". ' + rsProgressFrm_Error1 + sLineBreak + '"' + AErrMsg + '"';
       MessageDlgEx(Msg, mtError, [mbOk], Self);
       FMdlRes := mrNo;
     end;
@@ -342,38 +342,38 @@ var
 begin
   FCnt := ACnt;
   FTotCnt := ATotCnt;
-  Caption := rsProgressFrmCaption2 + '(' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) + ')' + rsProgressFrmCaption4;
+  Caption := rsProgressFrm_Caption2 + '(' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) + ')' + rsProgressFrm_Caption4;
   Node := FVST.AddChild(nil);
   Data := FVST.GetNodeData(Node);
   case AInstallMessage of
     imOpenPackage:
        begin
-         Data^.FName := rsInstallInfoOpenPackage + ' "' + APackageName + '".';
+         Data^.FName := rsProgressFrm_Info5 + ' "' + APackageName + '".';
          Data^.FImageIndex := 0;
        end;
     imOpenPackageSuccess:
        begin
-         Data^.FName := rsInstallInfoOpenPackageSuccess;
+         Data^.FName := rsProgressFrm_Info6;
          Data^.FImageIndex := 1;
        end;
     imCompilePackage:
        begin
-         Data^.FName := rsInstallInfoCompilePackage + ' "' + APackageName + '".';
+         Data^.FName := rsProgressFrm_Info7 + ' "' + APackageName + '".';
          Data^.FImageIndex := 0;
        end;
     imCompilePackageSuccess:
        begin
-         Data^.FName := rsInstallInfoCompilePackageSuccess;
+         Data^.FName := rsProgressFrm_Info6;
          Data^.FImageIndex := 1;
        end;
     imInstallPackage:
        begin
-         Data^.FName := rsInstallInfoInstallPackage + ' "' + APackageName + '".';
+         Data^.FName := rsProgressFrm_Info8 + ' "' + APackageName + '".';
          Data^.FImageIndex := 0;
        end;
     imInstallPackageSuccess:
        begin
-         Data^.FName := rsInstallInfoInstallPackageSuccess;
+         Data^.FName := rsProgressFrm_Info6;
          Data^.FImageIndex := 1;
        end;
     imPackageCompleted:
@@ -405,12 +405,12 @@ begin
   begin
     if (FCnt < FTotCnt) then
     begin
-      Msg := rsProgressFrmError3 + ' "' + APackageName + '". ' + rsProgressFrmConfirm0;
+      Msg := rsProgressFrm_Error3 + ' "' + APackageName + '". ' + rsProgressFrm_Conf0;
       FMdlRes := MessageDlgEx(Msg, mtError, [mbYes, mbYesToAll, mbNo],  Self);
     end
     else
     begin
-      Msg := rsProgressFrmError3 + ' "' + APackageName + '". ';
+      Msg := rsProgressFrm_Error3 + ' "' + APackageName + '". ';
       MessageDlgEx(Msg, mtError, [mbOk], Self);
       FMdlRes := mrNo;
     end;
@@ -446,16 +446,16 @@ var
 begin
   FCnt := ACnt;
   FTotCnt := ATotCnt;
-  Caption := rsProgressFrmCaption3 + '(' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) +')' + rsProgressFrmCaption4;
+  Caption := rsProgressFrm_Caption3 + '(' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) +')' + rsProgressFrm_Caption4;
   Node := FVST.AddChild(nil);
   Data := FVST.GetNodeData(Node);
   case AUtyp of
-    0: Data^.FName := rsProgressFrmInfo2 + ' "' + AUPackageName + '"( ' + AUPackageURL + ')';
-    1: Data^.FName := rsProgressFrmInfo1;
+    0: Data^.FName := rsProgressFrm_Info2 + ' "' + AUPackageName + '"( ' + AUPackageURL + ')';
+    1: Data^.FName := rsProgressFrm_Info1;
     2: if AUErrMsg <> '' then
-         Data^.FName := rsProgressFrmError7 + ': ' + AUErrMsg + '';
+         Data^.FName := rsProgressFrm_Error7 + ': ' + AUErrMsg + '';
        else
-         Data^.FName := rsProgressFrmError7 + '.';
+         Data^.FName := rsProgressFrm_Error7 + '.';
   end;
   Data^.FImageIndex := AUTyp;
   FVST.TopNode := Node;
@@ -471,7 +471,7 @@ begin
   begin
     Node := FVST.AddChild(nil);
     Data := FVST.GetNodeData(Node);
-    Data^.FName := rsProgressFrmInfo3;
+    Data^.FName := rsProgressFrm_Info3;
     Data^.FImageIndex := 0;
     FVST.TopNode := Node;
     FVST.RepaintNode(Node);
@@ -483,7 +483,7 @@ begin
   begin
     Node := FVST.AddChild(nil);
     Data := FVST.GetNodeData(Node);
-    Data^.FName := rsProgressFrmError8;
+    Data^.FName := rsProgressFrm_Error8;
     Data^.FImageIndex := 2;
     FVST.TopNode := Node;
     FVST.RepaintNode(Node);
@@ -496,7 +496,7 @@ end;
 
 procedure TProgressFrm.bCancelClick(Sender: TObject);
 begin
-  Self.Caption := rsProgressFrmInfo4;
+  Self.Caption := rsProgressFrm_Info4;
   bCancel.Enabled := False;
   FCanClose := True;
   case FType of
@@ -533,27 +533,27 @@ begin
   FType := AType;
   case AType of
     0: begin  //download
-         Caption := rsProgressfrmCaption0 + rsProgressFrmCaption4;
+         Caption := rsProgressFrm_Caption0 + rsProgressFrm_Caption4;
          pnLabels.Visible := True;
          pnLabels.BringToFront;
          FVST.Visible := False;
-         lbReceived.Caption := rsProgressFrmlbReceivedCaption0;
-         lbReceivedTotal.Caption := rsProgressFrmlbReceivedTotalCaption0;
-         cbExtractOpen.Caption := rsProgressFrmcbExtractOpenCaption0;
+         lbReceived.Caption := rsProgressFrm_lbReceived_Caption0;
+         lbReceivedTotal.Caption := rsProgressFrm_lbReceivedTotal_Caption0;
+         cbExtractOpen.Caption := rsProgressFrm_cbExtractOpen_Caption0;
          cbExtractOpen.Visible := (PackageAction <> paInstall) and (PackageAction <> paUpdate);
        end;
     1: begin //extract
-         Caption := rsProgressfrmCaption1 + rsProgressFrmCaption4;
+         Caption := rsProgressFrm_Caption1 + rsProgressFrm_Caption4;
          pnLabels.Visible := True;
          FVST.Visible := False;
-         lbReceived.Caption := rsProgressFrmlbReceivedCaption1;
-         lbReceivedTotal.Caption := rsProgressFrmlbReceivedTotalCaption1;
-         cbExtractOpen.Caption := rsProgressFrmcbExtractOpenCaption1;
+         lbReceived.Caption := rsProgressFrm_lbReceived_Caption1;
+         lbReceivedTotal.Caption := rsProgressFrm_lbReceivedTotal_Caption1;
+         cbExtractOpen.Caption := rsProgressFrm_cbExtractOpen_Caption1;
          cbExtractOpen.Checked := False;
          cbExtractOpen.Visible := (PackageAction <> paInstall) and (PackageAction <> paUpdate);
        end;
     2: begin //install
-         Caption := rsProgressfrmCaption2 + rsProgressFrmCaption4;
+         Caption := rsProgressFrm_Caption2 + rsProgressFrm_Caption4;
          pnLabels.Visible := False;
          FVST.Visible := True;
          cbExtractOpen.Visible := False;
@@ -563,17 +563,17 @@ begin
          PackageInstaller.OnPackageInstallCompleted := @ProgressFrm.DoOnPackageInstallCompleted;
        end;
     3: begin //update
-         Caption := rsProgressFrmCaption3 + rsProgressFrmCaption4;
+         Caption := rsProgressFrm_Caption3 + rsProgressFrm_Caption4;
          pnLabels.Visible := False;
          FVST.Visible := True;
          cbExtractOpen.Visible := False;
        end;
   end;
-  lbPackage.Caption := rsProgressFrmlbPackageCaption;
-  lbSpeed.Caption := rsProgressFrmlbSpeedCaption;
-  lbSpeedData.Caption := rsProgressFrmlbSpeedCalcCaption;
-  lbEllapsed.Caption := rsProgressFrmlbEllapsedCaption;
-  lbRemaining.Caption := rsProgressFrmlbRemainingCaption;
+  lbPackage.Caption := rsProgressFrm_lbPackage_Caption;
+  lbSpeed.Caption := rsProgressFrm_lbSpeed_Caption;
+  lbSpeedData.Caption := rsProgressFrm_lbSpeedCalc_Caption;
+  lbEllapsed.Caption := rsProgressFrm_lbEllapsed_Caption;
+  lbRemaining.Caption := rsProgressFrm_lbRemaining_Caption;
   pb.Top := lbReceived.Top + lbReceived.Height + 1;
   pbTotal.Top := lbReceivedTotal.Top + lbReceivedTotal.Height + 1;
   bCancel.Top := (pnButtons.Height - bCancel.Height) div 2;
