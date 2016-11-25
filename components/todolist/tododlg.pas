@@ -29,7 +29,7 @@ unit ToDoDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, Buttons, ButtonPanel, Menus, Spin,
   TodoList, ToDoListStrConsts, IDECommands, LCLType,
   MenuIntf, PackageIntf, SrcEditorIntf, IDEWindowIntf, LazIDEIntf;
@@ -49,10 +49,6 @@ type
     TodoLabel: TLabel;
     TodoMemo: TMemo;
     procedure FormCreate(Sender: TObject);
-  private
-
-  public
-
   end;
   
 var

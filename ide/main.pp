@@ -894,7 +894,7 @@ type
     function NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
     function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
     function FindUnitsOfOwner(TheOwner: TObject; AddListed, AddUsed,
-      AddPackages: boolean): TStrings; override;
+      AddPackages, AddTabs: boolean): TStrings; override;
     procedure ApplyCodeToolChanges;
     procedure DoJumpToOtherProcedureSection;
     procedure DoFindDeclarationAtCursor;
@@ -9476,9 +9476,9 @@ begin
 end;
 
 function TMainIDE.FindUnitsOfOwner(TheOwner: TObject; AddListed, AddUsed,
-  AddPackages: boolean): TStrings;
+  AddPackages, AddTabs: boolean): TStrings;
 begin
-  Result:=SourceFileMgr.FindUnitsOfOwner(TheOwner,AddListed,AddUsed,AddPackages);
+  Result:=SourceFileMgr.FindUnitsOfOwner(TheOwner,AddListed,AddUsed,AddPackages,AddTabs);
 end;
 
 function TMainIDE.DoJumpToSourcePosition(const Filename: string; NewX, NewY,

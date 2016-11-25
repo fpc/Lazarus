@@ -281,7 +281,7 @@ begin
     end;
 
     ResolveIDEItem(CurOwner,CurProject,CurPkg);
-    Units:=LazarusIDE.FindUnitsOfOwner(CurOwner,true,true,false);
+    Units:=LazarusIDE.FindUnitsOfOwner(CurOwner,true,true,false,false);
     for i:=0 to Units.Count-1 do
       ScanFile(Units[i]);
 
@@ -311,6 +311,7 @@ end;
 procedure TIDETodoWindow.FormShow(Sender: TObject);
 begin
   IdleConnected:=true;
+  UpdateTodos(true);
 end;
 
 procedure TIDETodoWindow.HelpButtonClick(Sender: TObject);

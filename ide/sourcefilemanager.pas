@@ -212,7 +212,7 @@ type
     function FindSourceFile(const AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string;
     function FindUnitsOfOwner(TheOwner: TObject; AddListed, AddUsed,
-                              AddPackages: boolean): TStrings;
+                              AddPackages, AddTabs: boolean): TStrings;
 
     function AddUnitToProject(const AEditor: TSourceEditorInterface): TModalResult;
     function AddActiveUnitToProject: TModalResult;
@@ -3045,13 +3045,13 @@ begin
 end;
 
 function TLazSourceFileManager.FindUnitsOfOwner(TheOwner: TObject; AddListed,
-  AddUsed, AddPackages: boolean): TStrings;
+  AddUsed, AddPackages, AddTabs: boolean): TStrings;
 var
   Files: TFilenameToStringTree;
   UnitPath: string; // only if not AddPackages:
                     // owner unitpath without unitpaths of required packages
 
-  function Add(aFilename: string): boolean;
+  function Add(const aFilename: string): boolean;
   begin
     if Files.Contains(aFilename) then exit(false);
     //debugln(['  Add ',aFilename]);
@@ -3075,7 +3075,7 @@ var
     end;
   end;
 
-  procedure AddUsedUnit(aFilename: string);
+  procedure AddUsedUnit(const aFilename: string);
   // add recursively all units
 
     procedure AddUses(UsesSection: TStrings);
@@ -3237,6 +3237,13 @@ begin
             AddUsedUnit(TCodeBuffer(NormalUnits.Objects[i]).Filename);
       end;
     end;
+    if AddTabs then
+      for i := 0 to pred(SourceEditorManager.SourceEditorCount) do
+      begin
+        CurFilename := SourceEditorManager.SourceEditors[i].FileName;
+        if FilenameIsPascalUnit(CurFilename) then
+          Add(CurFilename);
+      end;
   finally
     FoundInUnits.Free;
     MissingUnits.Free;
