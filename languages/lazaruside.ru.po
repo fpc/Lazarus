@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-11-25 01:06+0300\n"
+"PO-Revision-Date: 2016-11-26 01:53+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3050,7 +3050,7 @@ msgstr "&Загрузить значок"
 
 #: lazarusidestrconsts.dlgpomanifestoptions
 msgid "Manifest options"
-msgstr "Параметры ресурса Manifest"
+msgstr "Параметры ресурса manifest"
 
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
