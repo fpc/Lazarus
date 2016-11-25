@@ -21,7 +21,7 @@ msgstr "Обновить"
 
 #: todoliststrconsts.lisaddunitsinsourceeditor
 msgid "Add units in source editor"
-msgstr ""
+msgstr "Добавить модули из редактора исходного кода"
 
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
@@ -33,7 +33,7 @@ msgstr "Текст"
 
 #: todoliststrconsts.lissearchtodosinsourceeditorunitsaswell
 msgid "Search todos in source editor units as well"
-msgstr ""
+msgstr "Искать элементы ToDo также в модулях, открытых в редакторе исходного кода"
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
