@@ -19,6 +19,10 @@ msgstr ""
 msgid "Refresh"
 msgstr "Atnaujinti"
 
+#: todoliststrconsts.lisaddunitsinsourceeditor
+msgid "Add units in source editor"
+msgstr ""
+
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
 msgstr "Įterpti makrokomandą"
@@ -26,6 +30,10 @@ msgstr "Įterpti makrokomandą"
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
 msgstr "Tekstas"
+
+#: todoliststrconsts.lissearchtodosinsourceeditorunitsaswell
+msgid "Search todos in source editor units as well"
+msgstr ""
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"

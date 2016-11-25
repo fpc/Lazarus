@@ -62,7 +62,7 @@ uses
   Classes, SysUtils, Math, LCLProc, Forms, Controls, Dialogs, StrUtils,
   ComCtrls, ActnList, AvgLvlTree, LazUTF8Classes, LCLType, ButtonPanel,
   CodeCache, CodeToolManager, BasicCodeTools, FileProcs, LazFileUtils,
-  LazFileCache, LclIntf,
+  LazFileCache, LclIntf, StdCtrls,
   // IDEIntf
   LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf, IDEUtils,
   // IDE
@@ -143,6 +143,8 @@ type
     tbGoto: TToolButton;
     tbRefresh: TToolButton;
     tbExport: TToolButton;
+    ToolButton1: TToolButton;
+    tbAddSrcEdit: TToolButton;
     procedure acExportExecute(Sender: TObject);
     procedure acGotoExecute(Sender: TObject);
     procedure acRefreshExecute(Sender: TObject);
@@ -155,6 +157,7 @@ type
     procedure lvTodoCompare(Sender : TObject; Item1, Item2 : TListItem;
       {%H-}Data : Integer; var Compare : Integer);
     procedure SaveDialog1Show(Sender: TObject);
+    procedure tbAddSrcEditClick(Sender: TObject);
   private
     FBaseDirectory: string;
     fUpdating, fUpdateNeeded: Boolean;
@@ -278,6 +281,8 @@ begin
 
     ResolveIDEItem(CurOwner,CurProject,CurPkg);
     Flags:=[fuooListed,fuooUsed];
+    if tbAddSrcEdit.Down then
+      Include(Flags,fuooSourceEditor);
     Units:=LazarusIDE.FindUnitsOfOwner(CurOwner,Flags);
     for i:=0 to Units.Count-1 do
       ScanFile(Units[i]);
@@ -387,6 +392,11 @@ end;
 procedure TIDETodoWindow.SaveDialog1Show(Sender: TObject);
 begin
   SaveDialog1.InitialDir:=GetCurrentDirUTF8;
+end;
+
+procedure TIDETodoWindow.tbAddSrcEditClick(Sender: TObject);
+begin
+  UpdateTodos;
 end;
 
 //Initialise the todo project and find them
@@ -600,6 +610,8 @@ begin
   tbRefresh.Caption := dlgUnitDepRefresh;
   tbGoto.Caption := lisToDoGoto;
   tbExport.Caption := lisToDoExport;
+  tbAddSrcEdit.Caption := lisAddUnitsInSourceEditor;
+  tbAddSrcEdit.Hint := lisSearchTodosInSourceEditorUnitsAsWell;
 
   with lvTodo do
   begin

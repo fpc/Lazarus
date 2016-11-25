@@ -9,6 +9,10 @@ msgstr "CSV tiedostot"
 msgid "Refresh"
 msgstr "Päivitä"
 
+#: todoliststrconsts.lisaddunitsinsourceeditor
+msgid "Add units in source editor"
+msgstr ""
+
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
 msgstr "Lisää Makro"
@@ -16,6 +20,10 @@ msgstr "Lisää Makro"
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
 msgstr "Teksti"
+
+#: todoliststrconsts.lissearchtodosinsourceeditorunitsaswell
+msgid "Search todos in source editor units as well"
+msgstr ""
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"

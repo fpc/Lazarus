@@ -40,6 +40,9 @@ resourcestring
   listToDoLCategory = 'Category';
   lisToDoGoto = 'Goto';
   lisToDoExport = 'Export';
+  lisAddUnitsInSourceEditor = 'Add units in source editor';
+  lisSearchTodosInSourceEditorUnitsAsWell = 'Search todos in source editor '
+    +'units as well';
   dlgUnitDepRefresh = 'Refresh';
   lisTDDInsertToDo = 'Insert ToDo';
   lisViewToDoList = 'View ToDo List';

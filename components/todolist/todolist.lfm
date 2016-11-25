@@ -2,11 +2,11 @@ object IDETodoWindow: TIDETodoWindow
   Left = 415
   Height = 300
   Top = 429
-  Width = 643
+  Width = 837
   ActiveControl = lvTodo
   Caption = 'IDETodoWindow'
   ClientHeight = 300
-  ClientWidth = 643
+  ClientWidth = 837
   KeyPreview = True
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
@@ -17,7 +17,7 @@ object IDETodoWindow: TIDETodoWindow
     Left = 6
     Height = 206
     Top = 54
-    Width = 631
+    Width = 825
     Align = alClient
     BorderSpacing.Around = 6
     Columns = <    
@@ -47,7 +47,6 @@ object IDETodoWindow: TIDETodoWindow
       end    
       item
         Caption = 'Category'
-        Width = 100
       end>
     RowSelect = True
     ScrollBars = ssAutoBoth
@@ -62,7 +61,7 @@ object IDETodoWindow: TIDETodoWindow
     Left = 0
     Height = 48
     Top = 0
-    Width = 643
+    Width = 837
     AutoSize = True
     ButtonHeight = 46
     ButtonWidth = 47
@@ -89,12 +88,27 @@ object IDETodoWindow: TIDETodoWindow
       Action = acExport
       AutoSize = True
     end
+    object ToolButton1: TToolButton
+      Left = 147
+      Height = 46
+      Top = 2
+      Width = 8
+      Caption = 'ToolButton1'
+      Style = tbsSeparator
+    end
+    object tbAddSrcEdit: TToolButton
+      Left = 155
+      Top = 2
+      Caption = 'Add source editor units'
+      OnClick = tbAddSrcEditClick
+      Style = tbsCheck
+    end
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 28
     Top = 266
-    Width = 631
+    Width = 825
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'

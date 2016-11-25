@@ -19,6 +19,10 @@ msgstr "Файлы CSV"
 msgid "Refresh"
 msgstr "Обновить"
 
+#: todoliststrconsts.lisaddunitsinsourceeditor
+msgid "Add units in source editor"
+msgstr ""
+
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
 msgstr "Вставить макрос"
@@ -26,6 +30,10 @@ msgstr "Вставить макрос"
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
 msgstr "Текст"
+
+#: todoliststrconsts.lissearchtodosinsourceeditorunitsaswell
+msgid "Search todos in source editor units as well"
+msgstr ""
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"

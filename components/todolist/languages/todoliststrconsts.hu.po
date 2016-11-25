@@ -19,6 +19,10 @@ msgstr "CSV fájlok"
 msgid "Refresh"
 msgstr "Frissítés"
 
+#: todoliststrconsts.lisaddunitsinsourceeditor
+msgid "Add units in source editor"
+msgstr ""
+
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
 msgstr "Makró beszúrása"
@@ -26,6 +30,10 @@ msgstr "Makró beszúrása"
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
 msgstr "Szöveg"
+
+#: todoliststrconsts.lissearchtodosinsourceeditorunitsaswell
+msgid "Search todos in source editor units as well"
+msgstr ""
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
