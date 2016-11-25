@@ -67,44 +67,29 @@ object FpDocOptionsFrame: TFpDocOptionsFrame
       OnClick = LazDocDeletePathButtonClick
       TabOrder = 2
     end
-    object LazDocBrowseButton: TButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = LazDocPathEdit
-      AnchorSideRight.Control = LazDocPathsGroupBox
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = LazDocPathEdit
-      AnchorSideBottom.Side = asrBottom
-      Left = 416
-      Height = 27
-      Top = 155
-      Width = 50
-      Anchors = [akTop, akRight, akBottom]
-      BorderSpacing.Right = 6
-      Caption = '...'
-      OnClick = LazDocBrowseButtonClick
-      TabOrder = 3
-    end
-    object LazDocPathEdit: TEdit
+    object LazDocPathEdit: TDirectoryEdit
       AnchorSideLeft.Control = LazDocPathsGroupBox
       AnchorSideTop.Control = LazDocAddPathButton
       AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = LazDocBrowseButton
+      AnchorSideRight.Control = LazDocListBox
+      AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 27
       Top = 155
-      Width = 410
+      Width = 460
+      Directory = 'LazDocPathEdit'
+      DialogOptions = [ofPathMustExist, ofEnableSizing, ofViewDetail]
+      ShowHidden = False
+      ButtonWidth = 50
+      NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
+      MaxLength = 0
+      TabOrder = 3
       OnChange = LazDocPathEditChange
-      TabOrder = 4
       Text = 'LazDocPathEdit'
     end
-  end
-  object SelectDirectoryDialog: TSelectDirectoryDialog
-    FilterIndex = 0
-    left = 372
-    top = 8
   end
 end

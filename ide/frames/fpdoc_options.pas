@@ -25,7 +25,7 @@ unit fpdoc_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Dialogs, StdCtrls,
+  Classes, SysUtils, FileUtil, Forms, Dialogs, StdCtrls, EditBtn,
   EnvironmentOpts, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf;
 
 type
@@ -34,15 +34,12 @@ type
 
   TFpDocOptionsFrame = class(TAbstractIDEOptionsEditor)
     LazDocAddPathButton: TButton;
-    LazDocBrowseButton: TButton;
     LazDocDeletePathButton: TButton;
     LazDocListBox: TListBox;
-    LazDocPathEdit: TEdit;
+    LazDocPathEdit: TDirectoryEdit;
     LazDocPathsGroupBox: TGroupBox;
-    SelectDirectoryDialog: TSelectDirectoryDialog;
     procedure LazDocDeletePathButtonClick(Sender: TObject);
     procedure LazDocAddPathButtonClick(Sender: TObject);
-    procedure LazDocBrowseButtonClick(Sender: TObject);
     procedure LazDocListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure LazDocPathEditChange(Sender: TObject);
   private
@@ -102,12 +99,6 @@ begin
   end;
 end;
 
-procedure TFpDocOptionsFrame.LazDocBrowseButtonClick(Sender: TObject);
-begin
-  if SelectDirectoryDialog.Execute then
-    LazDocPathEdit.Text := SelectDirectoryDialog.FileName;
-end;
-
 procedure TFpDocOptionsFrame.LazDocListBoxSelectionChange(Sender: TObject; User: boolean);
 begin
   LazDocDeletePathButton.Enabled:=(Sender as TListBox).ItemIndex <> -1;
@@ -115,7 +106,7 @@ end;
 
 procedure TFpDocOptionsFrame.LazDocPathEditChange(Sender: TObject);
 begin
-  LazDocAddPathButton.Enabled:=(Sender as TEdit).Text <> '';
+  LazDocAddPathButton.Enabled:= LazDocPathEdit.Text <> '';
 end;
 
 class function TFpDocOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
