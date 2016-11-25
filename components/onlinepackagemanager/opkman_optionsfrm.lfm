@@ -47,7 +47,7 @@ object OptionsFrm: TOptionsFrm
       Left = 8
       Height = 25
       Top = 8
-      Width = 100
+      Width = 162
       Caption = 'Restore defaults'
       OnClick = bRestoreClick
       TabOrder = 2

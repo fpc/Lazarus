@@ -30,7 +30,7 @@ uses
   Classes, SysUtils, LazIDEIntf, Laz2_XMLCfg, LazFileUtils;
 
 const
-  Version = 1;
+  OpkVersion = 1;
 
 type
   { TOptions }
@@ -46,6 +46,7 @@ type
    private
      FProxySettings: TProxySettings;
      FXML: TXMLConfig;
+     FVersion: Integer;
      FRemoteRepository: String;
      FForceDownloadAndExtract: Boolean;
      FDeleteZipAfterInstall: Boolean;
@@ -113,7 +114,11 @@ end;
 
 procedure TOptions.Load;
 begin
-  FRemoteRepository := FXML.GetValue('General/RemoteRepository/Value', '');
+  FVersion := FXML.GetValue('Version/Value', 0);
+  if FVersion = 0 then
+    FRemoteRepository := FXML.GetValue('RemoteRepository/Value', '')
+  else
+    FRemoteRepository := FXML.GetValue('General/RemoteRepository/Value', '');
   FForceDownloadAndExtract := FXML.GetValue('General/ForceDownloadAndExtract/Value', True);
   FDeleteZipAfterInstall := FXML.GetValue('General/DeleteZipAfterInstall/Value', True);
   FLastDownloadDir := FXML.GetValue('General/LastDownloadDir/Value', '');
@@ -133,7 +138,7 @@ end;
 
 procedure TOptions.Save;
 begin
-  FXML.SetDeleteValue('Version/Value', Version, 0);
+  FXML.SetDeleteValue('Version/Value', OpkVersion, 0);
   FXML.SetDeleteValue('General/RemoteRepository/Value', FRemoteRepository, '');
   FXML.SetDeleteValue('General/ForceDownloadAndExtract/Value', FForceDownloadAndExtract, True);
   FXML.SetDeleteValue('General/DeleteZipAfterInstall/Value', FDeleteZipAfterInstall, True);
