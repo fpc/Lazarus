@@ -8,6 +8,7 @@ tmysql50connection.png
 tmysql51connection.png
 tmysql55connection.png
 tmysql56connection.png
+tmysql57connection.png
 tmysqlconnection.png
 todbcconnection.png
 toracleconnection.png
