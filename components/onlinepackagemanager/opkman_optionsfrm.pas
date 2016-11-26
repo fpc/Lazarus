@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, opkman_VirtualTrees, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, Spin, ComCtrls, Buttons, LazFileUtils;
+  StdCtrls, ExtCtrls, Spin, ComCtrls, Buttons, EditBtn, LazFileUtils;
 
 type
 
@@ -39,17 +39,14 @@ type
 
   TOptionsFrm = class(TForm)
     bCancel: TButton;
-    bLocalRepositoryArchive: TSpeedButton;
-    bLocalRepositoryUpdate: TSpeedButton;
     bOk: TButton;
-    bLocalRepositoryPackages: TSpeedButton;
     bRestore: TButton;
     cbProxy: TCheckBox;
     cbForceDownloadExtract: TCheckBox;
     cbDeleteZipAfterInstall: TCheckBox;
-    edLocalRepositoryPackages: TEdit;
-    edLocalRepositoryArchive: TEdit;
-    edLocalRepositoryUpdate: TEdit;
+    edLocalRepositoryUpdate: TDirectoryEdit;
+    edLocalRepositoryPackages: TDirectoryEdit;
+    edLocalRepositoryArchive: TDirectoryEdit;
     edProxyPassword: TEdit;
     edProxyServer: TEdit;
     edProxyUser: TEdit;
@@ -65,9 +62,6 @@ type
     lbPassword: TLabel;
     pnExtensions: TPanel;
     pnFolders: TPanel;
-    pnLocalRepositoryPackages: TPanel;
-    pnLocalRepositoryArchive: TPanel;
-    pnLocalRepositoryUpdate: TPanel;
     pnProxy: TPanel;
     pnGeneral: TPanel;
     pgOptions: TPageControl;
@@ -78,7 +72,6 @@ type
     tsExtensions: TTabSheet;
     tsGeneral: TTabSheet;
     tsProxy: TTabSheet;
-    procedure bLocalRepositoryPackagesClick(Sender: TObject);
     procedure bOkClick(Sender: TObject);
     procedure bRestoreClick(Sender: TObject);
     procedure cbProxyChange(Sender: TObject);
@@ -151,7 +144,6 @@ begin
   Options.LocalRepositoryPackages := AppendPathDelim(edLocalRepositoryPackages.Text);
   Options.LocalRepositoryArchive := AppendPathDelim(edLocalRepositoryArchive.Text);
   Options.LocalRepositoryUpdate := AppendPathDelim(edLocalRepositoryUpdate.Text);
-
   Options.Save;
   ModalResult := mrOk;
 end;
@@ -169,16 +161,6 @@ end;
 procedure TOptionsFrm.cbProxyChange(Sender: TObject);
 begin
   gbProxySettings.Enabled:= cbProxy.Checked;
-end;
-
-procedure TOptionsFrm.bLocalRepositoryPackagesClick(Sender: TObject);
-begin
-  if SDD.Execute then
-    case (Sender as TSpeedButton).Tag of
-      0: edLocalRepositoryPackages.Text := SDD.FileName;
-      1: edLocalRepositoryArchive.Text := SDD.FileName;
-      2: edLocalRepositoryUpdate.Text := SDD.FileName;
-    end;
 end;
 
 procedure TOptionsFrm.edRemoteRepositoryKeyPress(Sender: TObject; var Key: char);
@@ -221,6 +203,7 @@ begin
   edLocalRepositoryArchive.Hint := rsOptions_edLocalRepositoryArchive_Hint;
   lbLocalRepositoryUpdate.Caption := rsOptions_lbLocalRepositoryUpdate_Caption;
   edLocalRepositoryUpdate.Hint := rsOptions_edLocalRepositoryUpdate_Hint;
+
   edLocalRepositoryPackages.Text := Options.LocalRepositoryPackages;
   edLocalRepositoryArchive.Text := Options.LocalRepositoryArchive;
   edLocalRepositoryUpdate.Text := Options.LocalRepositoryUpdate;

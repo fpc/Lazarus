@@ -1,12 +1,12 @@
 object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
   Left = 585
-  Height = 480
+  Height = 475
   Top = 250
-  Width = 822
+  Width = 825
   BorderIcons = [biSystemMenu]
   Caption = 'CreateRepositoryPackagesFrm'
-  ClientHeight = 480
-  ClientWidth = 822
+  ClientHeight = 475
+  ClientWidth = 825
   Color = clBtnFace
   Constraints.MinHeight = 450
   Constraints.MinWidth = 650
@@ -16,96 +16,86 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
   Position = poOwnerFormCenter
   LCLVersion = '1.7'
   inline frCreateRep: TCreateRepositoryPackagefr
-    Height = 480
-    Width = 822
+    Height = 475
+    Width = 825
     Align = alClient
-    ClientHeight = 480
-    ClientWidth = 822
+    ClientHeight = 475
+    ClientWidth = 825
     inherited pnMessage: TPanel
-      Height = 374
-      Width = 560
+      Height = 369
+      Width = 563
     end
     inherited pnPackages: TPanel
-      Height = 374
+      Height = 369
     end
     inherited pnBrowse: TPanel
-      Width = 822
-      ClientWidth = 822
+      Width = 825
+      ClientWidth = 825
       inherited Bevel1: TBevel
-        Width = 822
-      end
-      inherited pnPackageDir: TPanel
-        Width = 696
-        ClientWidth = 696
-        inherited edPackageDir: TEdit
-          Width = 666
-        end
-        inherited bPackageDir: TSpeedButton
-          Left = 666
-        end
+        Width = 825
       end
     end
     inherited pnData: TPanel
-      Height = 374
-      Width = 560
-      ClientHeight = 374
-      ClientWidth = 560
+      Height = 369
+      Width = 563
+      ClientHeight = 369
+      ClientWidth = 563
       inherited pnPackageData: TPanel
-        Height = 182
-        Width = 560
-        ClientHeight = 178
-        ClientWidth = 556
+        Height = 177
+        Width = 563
+        ClientHeight = 173
+        ClientWidth = 559
         inherited edSupportedWidgetset: TEdit
-          Width = 358
+          Width = 361
         end
         inherited edLazCompatibility: TEdit
-          Width = 359
+          Width = 362
         end
         inherited edFPCCompatibility: TEdit
-          Width = 358
+          Width = 361
         end
         inherited lbOF1: TLabel
-          Left = 531
+          Left = 534
         end
         inherited lbOF3: TLabel
-          Left = 531
+          Left = 534
         end
         inherited lbOF4: TLabel
-          Left = 531
+          Left = 534
         end
       end
       inherited spMain1: TSplitter
-        Width = 560
+        Width = 563
       end
       inherited pnCategory: TPanel
-        Width = 560
-        ClientWidth = 556
+        Width = 563
+        ClientWidth = 559
         inherited edHomePageURL: TEdit
-          Width = 358
+          Width = 361
         end
         inherited edDownloadURL: TEdit
-          Width = 358
+          Width = 361
         end
         inherited edSVNURL: TEdit
-          Width = 358
+          Width = 361
         end
         inherited edDisplayName: TEdit
-          Width = 358
+          Width = 361
         end
       end
     end
     inherited spMain: TSplitter
-      Height = 374
+      Height = 369
     end
     inherited pnButtons: TPanel
-      Top = 439
-      Width = 822
-      ClientWidth = 818
+      Top = 434
+      Width = 825
+      ClientWidth = 821
       inherited bCreate: TButton
-        Left = 656
+        Left = 659
       end
       inherited bCancel: TButton
-        Left = 733
+        Left = 736
       end
     end
   end

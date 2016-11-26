@@ -208,11 +208,11 @@ end;
 procedure TOptions.CreateMissingPaths;
 begin
   if not DirectoryExists(FLocalRepositoryPackages) then
-    CreateDir(FLocalRepositoryPackages);
+    CreateDirUTF8(FLocalRepositoryPackages);
   if not DirectoryExists(FLocalRepositoryArchive) then
     CreateDirUTF8(FLocalRepositoryArchive);
   if not DirectoryExists(FLocalRepositoryUpdate) then
-    CreateDir(FLocalRepositoryUpdate);
+    CreateDirUTF8(FLocalRepositoryUpdate);
 end;
 
 procedure TOptions.SetRemoteRepository(const ARemoteRepository: String);

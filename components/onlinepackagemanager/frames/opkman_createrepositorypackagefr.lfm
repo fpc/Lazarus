@@ -65,34 +65,16 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
       Width = 788
       Align = alBottom
     end
-    object pnPackageDir: TPanel
+    object edPackageDir: TDirectoryEdit
       Left = 109
       Height = 23
-      Top = 8
-      Width = 662
-      Anchors = [akTop, akLeft, akRight]
-      AutoSize = True
-      BevelOuter = bvNone
-      ClientHeight = 23
-      ClientWidth = 662
+      Top = 9
+      Width = 647
+      ShowHidden = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      MaxLength = 0
       TabOrder = 0
-      object edPackageDir: TEdit
-        Left = 0
-        Height = 23
-        Top = 0
-        Width = 632
-        Align = alClient
-        TabOrder = 0
-      end
-      object bPackageDir: TSpeedButton
-        Left = 632
-        Height = 23
-        Top = 0
-        Width = 30
-        Align = alRight
-        Caption = '...'
-        OnClick = bPackageDirClick
-      end
     end
   end
   object pnData: TPanel

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, ExtCtrls, StdCtrls, Dialogs,
   LazFileUtils, Graphics, Menus, Buttons, Laz2_XMLCfg, opkman_VirtualTrees,
-  md5, fpjson, LCLIntf, opkman_serializablepackages, opkman_zipper;
+  md5, fpjson, LCLIntf, EditBtn, opkman_serializablepackages, opkman_zipper;
 
 type
   PData = ^TData;
@@ -42,13 +42,13 @@ type
     Bevel1: TBevel;
     cbCategory: TComboBox;
     cbOpen: TCheckBox;
+    edPackageDir: TDirectoryEdit;
     edDownloadURL: TEdit;
     edDisplayName: TEdit;
     edSVNURL: TEdit;
     edFPCCompatibility: TEdit;
     edHomePageURL: TEdit;
     edLazCompatibility: TEdit;
-    edPackageDir: TEdit;
     edSupportedWidgetset: TEdit;
     imTree: TImageList;
     lbCategory: TLabel;
@@ -69,11 +69,9 @@ type
     pnBrowse: TPanel;
     pnCategory: TPanel;
     pnMessage: TPanel;
-    pnPackageDir: TPanel;
     pnPackages: TPanel;
     pnData: TPanel;
     SDD: TSelectDirectoryDialog;
-    bPackageDir: TSpeedButton;
     spMain: TSplitter;
     spMain1: TSplitter;
     procedure bCancelClick(Sender: TObject);
@@ -429,11 +427,11 @@ end;
 
 procedure TCreateRepositoryPackagefr.pnBrowseResize(Sender: TObject);
 begin
-  pnPackageDir.Top := (pnBrowse.Height - pnPackageDir.Height) div 2;
+  edPackageDir.Top := (pnBrowse.Height - edPackageDir.Height) div 2;
   lbPackageDir.Left := 100;
-  lbPackageDir.Top := pnPackageDir.Top + (pnPackageDir.Height - lbPackageDir.Height) div 2;
-  pnPackageDir.Left := lbPackagedir.Left + lbPackagedir.Width + 5;
-  pnPackageDir.Width := pnBrowse.Width - pnPackageDir.Left - 120;
+  lbPackageDir.Top := edPackageDir.Top + (edPackageDir.Height - lbPackageDir.Height) div 2;
+  edPackageDir.Left := lbPackagedir.Left + lbPackagedir.Width + 5;
+  edPackageDir.Width := pnBrowse.Width - edPackageDir.Left - 120;
 end;
 
 procedure TCreateRepositoryPackagefr.bCreateClick(Sender: TObject);

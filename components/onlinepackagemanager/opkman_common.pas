@@ -86,7 +86,7 @@ begin
 
   LocalRepoConfig := AppendPathDelim(LocalRepo + cLocalRepositoryConfig);
   if not DirectoryExists(LocalRepoConfig) then
-    CreateDir(LocalRepoConfig);
+    CreateDirUTF8(LocalRepoConfig);
   LocalRepositoryConfigFile := LocalRepoConfig + cLocalRepositoryConfigFile;
 end;
 

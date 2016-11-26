@@ -1,7 +1,7 @@
 object OptionsFrm: TOptionsFrm
-  Left = 661
+  Left = 624
   Height = 300
-  Top = 304
+  Top = 287
   Width = 450
   BorderIcons = [biSystemMenu]
   Caption = 'Options'
@@ -58,9 +58,9 @@ object OptionsFrm: TOptionsFrm
     Height = 261
     Top = 0
     Width = 450
-    ActivePage = tsGeneral
+    ActivePage = tsFolders
     Align = alClient
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 1
     object tsGeneral: TTabSheet
       Caption = 'General'
@@ -240,37 +240,6 @@ object OptionsFrm: TOptionsFrm
         Color = clBtnFace
         ParentColor = False
         TabOrder = 0
-        object pnLocalRepositoryPackages: TPanel
-          Left = 15
-          Height = 23
-          Top = 32
-          Width = 413
-          Anchors = [akTop, akLeft, akRight]
-          AutoSize = True
-          BevelOuter = bvNone
-          ClientHeight = 23
-          ClientWidth = 413
-          TabOrder = 0
-          object edLocalRepositoryPackages: TEdit
-            Left = 0
-            Height = 23
-            Top = 0
-            Width = 383
-            Align = alClient
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 0
-          end
-          object bLocalRepositoryPackages: TSpeedButton
-            Left = 383
-            Height = 23
-            Top = 0
-            Width = 30
-            Align = alRight
-            Caption = '...'
-            OnClick = bLocalRepositoryPackagesClick
-          end
-        end
         object lbLocalRepositoryPackages: TLabel
           Left = 15
           Height = 15
@@ -280,87 +249,60 @@ object OptionsFrm: TOptionsFrm
           ParentColor = False
           ParentShowHint = False
         end
-        object pnLocalRepositoryArchive: TPanel
-          Left = 15
-          Height = 23
-          Top = 87
-          Width = 413
-          Anchors = [akTop, akLeft, akRight]
-          AutoSize = True
-          BevelOuter = bvNone
-          ClientHeight = 23
-          ClientWidth = 413
-          TabOrder = 1
-          object edLocalRepositoryArchive: TEdit
-            Left = 0
-            Height = 23
-            Top = 0
-            Width = 383
-            Align = alClient
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 0
-          end
-          object bLocalRepositoryArchive: TSpeedButton
-            Tag = 1
-            Left = 383
-            Height = 23
-            Top = 0
-            Width = 30
-            Align = alRight
-            Caption = '...'
-            OnClick = bLocalRepositoryPackagesClick
-          end
-        end
         object lbLocalRepositoryArchive: TLabel
           Left = 15
           Height = 15
-          Top = 69
+          Top = 74
           Width = 125
           Caption = 'Local repository archive'
           ParentColor = False
           ParentShowHint = False
         end
-        object pnLocalRepositoryUpdate: TPanel
-          Left = 15
-          Height = 23
-          Top = 145
-          Width = 413
-          Anchors = [akTop, akLeft, akRight]
-          AutoSize = True
-          BevelOuter = bvNone
-          ClientHeight = 23
-          ClientWidth = 413
-          TabOrder = 2
-          object edLocalRepositoryUpdate: TEdit
-            Left = 0
-            Height = 23
-            Top = 0
-            Width = 383
-            Align = alClient
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 0
-          end
-          object bLocalRepositoryUpdate: TSpeedButton
-            Tag = 2
-            Left = 383
-            Height = 23
-            Top = 0
-            Width = 30
-            Align = alRight
-            Caption = '...'
-            OnClick = bLocalRepositoryPackagesClick
-          end
-        end
         object lbLocalRepositoryUpdate: TLabel
           Left = 15
           Height = 15
-          Top = 128
+          Top = 130
           Width = 124
           Caption = 'Local repository update'
           ParentColor = False
           ParentShowHint = False
+        end
+        object edLocalRepositoryPackages: TDirectoryEdit
+          Left = 14
+          Height = 23
+          Top = 32
+          Width = 412
+          Directory = 'edLocalRepositoryPackages'
+          ShowHidden = False
+          ButtonWidth = 23
+          NumGlyphs = 1
+          MaxLength = 0
+          TabOrder = 0
+          Text = 'edLocalRepositoryPackages'
+        end
+        object edLocalRepositoryArchive: TDirectoryEdit
+          Tag = 1
+          Left = 14
+          Height = 23
+          Top = 91
+          Width = 412
+          ShowHidden = False
+          ButtonWidth = 23
+          NumGlyphs = 1
+          MaxLength = 0
+          TabOrder = 1
+        end
+        object edLocalRepositoryUpdate: TDirectoryEdit
+          Tag = 2
+          Left = 14
+          Height = 23
+          Top = 147
+          Width = 412
+          ShowHidden = False
+          ButtonWidth = 23
+          NumGlyphs = 1
+          MaxLength = 0
+          TabOrder = 2
         end
       end
     end
