@@ -18,20 +18,29 @@ msgstr ""
 msgid "Refresh"
 msgstr "Aktualisieren"
 
-#: todoliststrconsts.lisaddunitsinsourceeditor
-msgid "Add units in source editor"
-msgstr ""
-
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
 msgstr "Makro einfügen"
+
+#: todoliststrconsts.lispackages
+msgid "Packages"
+msgstr ""
+
+#: todoliststrconsts.lispackageshint
+msgid "Extends \"%s\" and \"%s\" options by units from used packages"
+msgstr ""
 
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
 msgstr "Text"
 
-#: todoliststrconsts.lissearchtodosinsourceeditorunitsaswell
-msgid "Search todos in source editor units as well"
+#: todoliststrconsts.lissourceeditor
+msgid "Editor"
+msgstr ""
+
+#: todoliststrconsts.lissourceeditorhint
+msgctxt "todoliststrconsts.lissourceeditorhint"
+msgid "Add units in source editor"
 msgstr ""
 
 #: todoliststrconsts.listddinserttodo
@@ -62,6 +71,14 @@ msgstr "Modul"
 msgid "ToDo List"
 msgstr "ToDo-Liste"
 
+#: todoliststrconsts.listodolisted
+msgid "Listed"
+msgstr ""
+
+#: todoliststrconsts.listodolistedhint
+msgid "Add units listed in lpi/lpk aka project inspector/package editor"
+msgstr ""
+
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Zur gewählten Quelltextzeile springen"
@@ -81,6 +98,14 @@ msgstr "Eigentümer"
 #: todoliststrconsts.listodolpriority
 msgid "Priority"
 msgstr "Priorität"
+
+#: todoliststrconsts.listodoused
+msgid "Used"
+msgstr ""
+
+#: todoliststrconsts.listodousedhint
+msgid "Add units used by main source file"
+msgstr ""
 
 #: todoliststrconsts.listtodolcategory
 msgid "Category"

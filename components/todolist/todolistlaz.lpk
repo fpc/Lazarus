@@ -1,18 +1,15 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="ToDoListLaz"/>
+    <Type Value="DesignTime"/>
     <AddToProjectUsesSection Value="True"/>
-    <Author Value="Olivier GUILBAUD &lt;golivier@free.fr>, Gerard Visent &lt;gerardusmercator@gmail.com>, Mattias Gaertner, Alexander du Plessis
-"/>
+    <Author Value="Olivier GUILBAUD &lt;golivier@free.fr>, Gerard Visent &lt;gerardusmercator@gmail.com>, Mattias Gaertner, Alexander du Plessis, Silvio Clecio"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
-      <Other>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
     </CompilerOptions>
     <Description Value="A todo list window for the Lazarus IDE
 "/>
@@ -46,7 +43,6 @@
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <Type Value="DesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="IDEIntf"/>

@@ -19,21 +19,31 @@ msgstr "Файлы CSV"
 msgid "Refresh"
 msgstr "Обновить"
 
-#: todoliststrconsts.lisaddunitsinsourceeditor
-msgid "Add units in source editor"
-msgstr "Добавить модули из редактора исходного кода"
-
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
 msgstr "Вставить макрос"
+
+#: todoliststrconsts.lispackages
+msgid "Packages"
+msgstr ""
+
+#: todoliststrconsts.lispackageshint
+msgid "Extends \"%s\" and \"%s\" options by units from used packages"
+msgstr ""
 
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
 msgstr "Текст"
 
-#: todoliststrconsts.lissearchtodosinsourceeditorunitsaswell
-msgid "Search todos in source editor units as well"
-msgstr "Искать элементы ToDo также в модулях, открытых в редакторе исходного кода"
+#: todoliststrconsts.lissourceeditor
+msgid "Editor"
+msgstr ""
+
+#: todoliststrconsts.lissourceeditorhint
+#, fuzzy
+msgctxt "todoliststrconsts.lissourceeditorhint"
+msgid "Add units in source editor"
+msgstr "Добавить модули из редактора исходного кода"
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
@@ -63,6 +73,14 @@ msgstr "Модуль"
 msgid "ToDo List"
 msgstr "Список ToDo"
 
+#: todoliststrconsts.listodolisted
+msgid "Listed"
+msgstr ""
+
+#: todoliststrconsts.listodolistedhint
+msgid "Add units listed in lpi/lpk aka project inspector/package editor"
+msgstr ""
+
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Перейти к выделенной строке исходного кода"
@@ -82,6 +100,14 @@ msgstr "Владелец"
 #: todoliststrconsts.listodolpriority
 msgid "Priority"
 msgstr "Приоритет"
+
+#: todoliststrconsts.listodoused
+msgid "Used"
+msgstr ""
+
+#: todoliststrconsts.listodousedhint
+msgid "Add units used by main source file"
+msgstr ""
 
 #: todoliststrconsts.listtodolcategory
 msgid "Category"

@@ -40,9 +40,14 @@ resourcestring
   listToDoLCategory = 'Category';
   lisToDoGoto = 'Goto';
   lisToDoExport = 'Export';
-  lisAddUnitsInSourceEditor = 'Add units in source editor';
-  lisSearchTodosInSourceEditorUnitsAsWell = 'Search todos in source editor '
-    +'units as well';
+  lisToDoListed = 'Listed';
+  lisToDoListedHint = 'Add units listed in lpi/lpk aka project inspector/package editor';
+  lisToDoUsed = 'Used';
+  lisToDoUsedHint = 'Add units used by main source file';
+  lisPackages = 'Packages';
+  lisPackagesHint = 'Extends "%s" and "%s" options by units from used packages';
+  lisSourceEditor = 'Editor';
+  lisSourceEditorHint = 'Add units in source editor';
   dlgUnitDepRefresh = 'Refresh';
   lisTDDInsertToDo = 'Insert ToDo';
   lisViewToDoList = 'View ToDo List';
