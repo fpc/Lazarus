@@ -301,6 +301,7 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
         Top = 6
         Width = 324
         Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 23
         ClientWidth = 324

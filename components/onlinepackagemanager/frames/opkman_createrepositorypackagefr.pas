@@ -266,9 +266,9 @@ begin
   XMLConfig := TXMLConfig.Create(APath);
   try
     AData^.FPackageType := PackageTypeIdentToType(XMLConfig.GetValue(BasePath + 'Type/Value', PackageTypeIdents[ptRunTime]));
-    AData^.FDescription := XMLConfig.GetValue(BasePath + 'Description/Value', '');
-    AData^.FAuthor := XMLConfig.GetValue(BasePath + 'Author/Value', '');
-    AData^.FLicense := XMLConfig.GetValue(BasePath + 'License/Value', '');
+    AData^.FDescription := String(XMLConfig.GetValue(BasePath + 'Description/Value', ''));
+    AData^.FAuthor := String(XMLConfig.GetValue(BasePath + 'Author/Value', ''));
+    AData^.FLicense := String(XMLConfig.GetValue(BasePath + 'License/Value', ''));
     AData^.FVersionAsString := GetVersion(XMLConfig, BasePath + 'Version');
     DepCount := XMLConfig.GetValue(BasePath + 'RequiredPkgs/Count', 0);
     for I := 0 to DepCount - 1 do
@@ -362,7 +362,7 @@ begin
     Options.Changed := True;
     PackageList := TStringList.Create;
     try
-      FindPackages(edPackageDir.Text, PackageList);
+      FindPackages(FPackageDir, PackageList);
       if PackageList.Count > 0 then
       begin
         FVSTPackages.Clear;
