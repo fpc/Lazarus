@@ -1351,7 +1351,7 @@ begin
 
       ctsfcAllCase:
         // do not use CompareFilenamesIgnoreCase
-        if CompareText(ShortFilename,FileInfo.Name)=0 then begin
+        if SysUtils.CompareText(ShortFilename,FileInfo.Name)=0 then begin
           Result:=FileInfo.Name;
           if ShortFilename=FileInfo.Name then break;
         end;
@@ -1562,7 +1562,7 @@ begin
           if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
           then
             continue;
-          if (CompareText(FileInfo.Name,ShortFile)=0)
+          if (SysUtils.CompareText(FileInfo.Name,ShortFile)=0)
           or (LazFileUtils.CompareFilenamesIgnoreCase(FileInfo.Name,ShortFile)=0) then begin
             if FileInfo.Name=ShortFile then begin
               // file found, with correct name
