@@ -83,15 +83,33 @@ resourcestring
   rsMainFrm_VSTText_PackageState2 = 'Extracted';
   rsMainFrm_VSTText_PackageState3 = 'Installed';
   rsMainFrm_VSTText_PackageState4 = 'Up to date';
-  rsMainFrm_VSTText_PackageCategory0 = 'Cryptography';
-  rsMainFrm_VSTText_PackageCategory1 = 'DataControls';
-  rsMainFrm_VSTText_PackageCategory2 = 'Graphics';
-  rsMainFrm_VSTText_PackageCategory3 = 'GUIContainers';
-  rsMainFrm_VSTText_PackageCategory4 = 'LazIDEPlugins';
-  rsMainFrm_VSTText_PackageCategory5 = 'Multimedia';
-  rsMainFrm_VSTText_PackageCategory6 = 'Networking';
-  rsMainFrm_VSTText_PackageCategory7 = 'Reporting';
-  rsMainFrm_VSTText_PackageCategory8 = 'Other';
+  rsMainFrm_VSTText_PackageCategory0  = 'Charts and Graphs';
+  rsMainFrm_VSTText_PackageCategory1  = 'Cryptography';
+  rsMainFrm_VSTText_PackageCategory2  = 'DataControls';
+  rsMainFrm_VSTText_PackageCategory3  = 'Date and Time';
+  rsMainFrm_VSTText_PackageCategory4  = 'Dialogs';
+  rsMainFrm_VSTText_PackageCategory5  = 'Edit, Memos';
+  rsMainFrm_VSTText_PackageCategory6  = 'Files and Drives';
+  rsMainFrm_VSTText_PackageCategory7  = 'GUIContainers';
+  rsMainFrm_VSTText_PackageCategory8  = 'Graphics';
+  rsMainFrm_VSTText_PackageCategory9  = 'Grids';
+  rsMainFrm_VSTText_PackageCategory10 = 'Indicators and Gauges';
+  rsMainFrm_VSTText_PackageCategory11 = 'Labels';
+  rsMainFrm_VSTText_PackageCategory12 = 'LazIDEPlugins';
+  rsMainFrm_VSTText_PackageCategory13 = 'List and Combo Boxes';
+  rsMainFrm_VSTText_PackageCategory14 = 'ListViews and TreeViews';
+  rsMainFrm_VSTText_PackageCategory15 = 'Menus';
+  rsMainFrm_VSTText_PackageCategory16 = 'Multimedia';
+  rsMainFrm_VSTText_PackageCategory17 = 'Networking';
+  rsMainFrm_VSTText_PackageCategory18 = 'Panels';
+  rsMainFrm_VSTText_PackageCategory19 = 'Reporting';
+  rsMainFrm_VSTText_PackageCategory20 = 'Science';
+  rsMainFrm_VSTText_PackageCategory21 = 'Security';
+  rsMainFrm_VSTText_PackageCategory22 = 'Shapes';
+  rsMainFrm_VSTText_PackageCategory23 = 'Sizers, Scrollers';
+  rsMainFrm_VSTText_PackageCategory24 = 'System';
+  rsMainFrm_VSTText_PackageCategory25 = 'Tabbed Components';
+  rsMainFrm_VSTText_PackageCategory26 = 'Other';
   rsMainFrm_cbAll_Caption = 'All/None';
   rsMainFrm_cbAll_Hint = 'Check/Uncheck packages';
   rsMainFrm_lbFilter_Caption = 'Filter by:';
@@ -258,6 +276,30 @@ resourcestring
 implementation
 
 end.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

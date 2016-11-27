@@ -43,7 +43,7 @@ type
   end;
 
 const
-  MaxCategories = 9;
+  MaxCategories = 27;
   Categories: array[0..MaxCategories - 1] of String = (
     rsMainFrm_VSTText_PackageCategory0,
     rsMainFrm_VSTText_PackageCategory1,
@@ -53,7 +53,25 @@ const
     rsMainFrm_VSTText_PackageCategory5,
     rsMainFrm_VSTText_PackageCategory6,
     rsMainFrm_VSTText_PackageCategory7,
-    rsMainFrm_VSTText_PackageCategory8);
+    rsMainFrm_VSTText_PackageCategory8,
+    rsMainFrm_VSTText_PackageCategory9,
+    rsMainFrm_VSTText_PackageCategory10,
+    rsMainFrm_VSTText_PackageCategory11,
+    rsMainFrm_VSTText_PackageCategory12,
+    rsMainFrm_VSTText_PackageCategory13,
+    rsMainFrm_VSTText_PackageCategory14,
+    rsMainFrm_VSTText_PackageCategory15,
+    rsMainFrm_VSTText_PackageCategory16,
+    rsMainFrm_VSTText_PackageCategory17,
+    rsMainFrm_VSTText_PackageCategory18,
+    rsMainFrm_VSTText_PackageCategory19,
+    rsMainFrm_VSTText_PackageCategory20,
+    rsMainFrm_VSTText_PackageCategory21,
+    rsMainFrm_VSTText_PackageCategory22,
+    rsMainFrm_VSTText_PackageCategory23,
+    rsMainFrm_VSTText_PackageCategory24,
+    rsMainFrm_VSTText_PackageCategory25,
+    rsMainFrm_VSTText_PackageCategory26);
 
 var
   LocalRepositoryConfigFile: String;
