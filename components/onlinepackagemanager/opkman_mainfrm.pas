@@ -766,6 +766,8 @@ begin
 end;
 
 procedure TMainFrm.SetupControls;
+var
+  I: Integer;
 begin
   cbFilterBy.Clear;
   cbFilterBy.Items.Add(rsMainFrm_VSTHeaderColumn_PackageName);
@@ -799,16 +801,8 @@ begin
 
   cbPackageCategory.Clear;
   cbPackageCategory.Items.Add('');
-  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory0);
-  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory1);
-  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory2);
-  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory3);
-  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory4);
-  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory5);
-  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory6);
-  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory7);
-  cbPackageCategory.Items.Add(rsMainFrm_VSTText_PackageCategory8);
-
+  for I := 0 to MaxCategories - 1 do
+  cbPackageCategory.Items.Add(Categories[I]);
 
   tbRefresh.Caption := rsMainFrm_TBRefresh_Caption;
   tbRefresh.Hint := rsMainFrm_TBRefresh_Hint;

@@ -54,6 +54,7 @@ object PackageListFrm: TPackageListFrm
       Height = 26
       Top = 8
       Width = 75
+      Anchors = [akTop, akRight]
       Caption = 'Ok'
       ModalResult = 1
       TabOrder = 2

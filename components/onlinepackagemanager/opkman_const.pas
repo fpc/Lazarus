@@ -248,6 +248,13 @@ resourcestring
   rsCreateRepositoryPackageFrm_Message5 = 'Creating JSON. Please wait...';
   rsCreateRepositoryPackageFrm_Message6 = 'Repository package successfully created.';
 
+  //categories form
+  rsCategoriesFrm_Caption = 'List with categories';
+  rsCategoriesFrm_lbMessage_Caption = 'Please select(check) one or more categories';
+  rsCategoriesFrm_bYes_Caption = 'Ok';
+  rsCategoriesFrm_bCancel_Caption = 'Cancel';
+
+
 implementation
 
 end.

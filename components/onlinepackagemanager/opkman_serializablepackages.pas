@@ -58,17 +58,6 @@ type
     psError);
   TPackageStates = set of TPackageState;
 
-  TPackageCategory = (
-    pcCryptography,
-    pcDataControls,
-    pcGraphics,
-    pcGUIContainers,
-    pcLazIDEPlugins,
-    pcMultimedia,
-    pcNetworking,
-    pcReporting,
-    pcOther);
-
   TChangeType = (ctAdd, ctRemove);
   { TPackageVersion }
 
@@ -186,7 +175,7 @@ type
   private
     FName: String;
     FDisplayName: String;
-    FCategory: TPackageCategory;
+    FCategory: String;
     FRepositoryFileName: String;
     FRepositoryFileSize: Int64;
     FRepositoryFileHash: String;
@@ -217,7 +206,7 @@ type
   published
     property Name: String read FName write FName;
     property DisplayName: String read FDisplayName write FDisplayName;
-    property Category: TPackageCategory read FCategory write FCategory;
+    property Category: String read FCategory write FCategory;
     property Checked: Boolean read FChecked write FChecked;
     property RepositoryFileName: String read FRepositoryFileName write FRepositoryFileName;
     property RepositoryFileSize: int64 read FRepositoryFileSize write FRepositoryFileSize;
@@ -1073,7 +1062,7 @@ begin
     APackageData := TJSONObject.Create;
     APackageData.Add('Name', TPackage(APackage).Name);
     APackageData.Add('DisplayName', APackage.DisplayName);
-    APackageData.Add('Category', Ord(TPackage(APackage).Category));
+    APackageData.Add('Category', TPackage(APackage).Category);
     APackageData.Add('RepositoryFileName', TPackage(APackage).RepositoryFileName);
     APackageData.Add('RepositoryFileSize', TPackage(APackage).RepositoryFileSize);
     APackageData.Add('RepositoryFileHash', TPackage(APackage).RepositoryFileHash);

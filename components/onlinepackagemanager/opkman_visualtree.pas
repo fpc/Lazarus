@@ -42,7 +42,7 @@ type
     PackageState: TPackageState;
     PackageName: String;
     PackageDisplayName: String;
-    Category: TPackageCategory;
+    Category: String;
     PackageFileName: String;
     Version: String;
     InstalledVersion: String;
@@ -518,7 +518,7 @@ begin
         begin
           if Data^.DataType = 12 then
           begin
-            if Data^.Category = TPackageCategory(AExtraParam) then
+            if Pos(UpperCase(Categories[AExtraParam]), UpperCase(Data^.Category)) > 0 then
               FilterNode(Node, 'PackageCategory')
             else
               FilterNode(Node, '')
@@ -972,17 +972,7 @@ begin
       9: CellText := Data^.Dependencies;
      10: CellText := Data^.License;
      11: CellText := '';
-     12: case Data^.Category of
-           pcCryptography:  CellText := rsMainFrm_VSTText_PackageCategory0;
-           pcDataControls:  CellText := rsMainFrm_VSTText_PackageCategory1;
-           pcGraphics:      CellText := rsMainFrm_VSTText_PackageCategory2;
-           pcGUIContainers: CellText := rsMainFrm_VSTText_PackageCategory3;
-           pcLazIDEPlugins: CellText := rsMainFrm_VSTText_PackageCategory4;
-           pcMultimedia:    CellText := rsMainFrm_VSTText_PackageCategory5;
-           pcNetworking:    CellText := rsMainFrm_VSTText_PackageCategory6;
-           pcReporting:     CellText := rsMainFrm_VSTText_PackageCategory7;
-           pcOther:         CellText := rsMainFrm_VSTText_PackageCategory8
-         end;
+     12: CellText := Data^.Category;
      13: CellText := Data^.RepositoryFileName;
      14: CellText := FormatSize(Data^.RepositoryFileSize);
      15: CellText := Data^.RepositoryFileHash;

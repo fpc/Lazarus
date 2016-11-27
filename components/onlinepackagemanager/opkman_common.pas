@@ -29,7 +29,8 @@ unit opkman_common;
 interface
 
 uses
-  Classes, SysUtils, Dialogs, Forms, Controls, LazIDEIntf, LazFileUtils, contnrs;
+  Classes, SysUtils, Dialogs, Forms, Controls, LazIDEIntf, LazFileUtils, contnrs,
+  opkman_const;
 
 type
   TPackageAction = (paDownloadTo, paInstall, paUpdate);
@@ -40,6 +41,19 @@ type
     FPackageRelativePath: String;
     FFullPath: String;
   end;
+
+const
+  MaxCategories = 9;
+  Categories: array[0..MaxCategories - 1] of String = (
+    rsMainFrm_VSTText_PackageCategory0,
+    rsMainFrm_VSTText_PackageCategory1,
+    rsMainFrm_VSTText_PackageCategory2,
+    rsMainFrm_VSTText_PackageCategory3,
+    rsMainFrm_VSTText_PackageCategory4,
+    rsMainFrm_VSTText_PackageCategory5,
+    rsMainFrm_VSTText_PackageCategory6,
+    rsMainFrm_VSTText_PackageCategory7,
+    rsMainFrm_VSTText_PackageCategory8);
 
 var
   LocalRepositoryConfigFile: String;
@@ -57,7 +71,6 @@ procedure FindPackages(const ADirName: String; APackageList: TStrings);
 procedure FindAllFilesEx(const ADirName: String; AFileList: TStrings);
 
 implementation
-uses opkman_const;
 
 function MessageDlgEx(const AMsg: string; ADlgType: TMsgDlgType;
   AButtons: TMsgDlgButtons; AParent: TForm): TModalResult;

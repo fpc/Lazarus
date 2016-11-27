@@ -148,7 +148,7 @@ begin
   FDeleteZipAfterInstall := FXML.GetValue('General/DeleteZipAfterInstall/Value', True);
   FLastDownloadDir := FXML.GetValue('General/LastDownloadDir/Value', '');
   FLastPackageDirSrc := FXML.GetValue('General/LastPackageDirSrc/Value', '');
-  FLastPackageDirDst := FXML.GetValue('GeneralLastPackageDirDst/Value', '');
+  FLastPackageDirDst := FXML.GetValue('General/LastPackageDirDst/Value', '');
 
   FProxySettings.FEnabled := FXML.GetValue('Proxy/Enabled/Value', False);
   FProxySettings.FServer := FXML.GetValue('Proxy/Server/Value', '');
@@ -169,7 +169,7 @@ begin
   FXML.SetDeleteValue('General/DeleteZipAfterInstall/Value', FDeleteZipAfterInstall, True);
   FXML.SetDeleteValue('General/LastDownloadDir/Value', FLastDownloadDir, '');
   FXML.SetDeleteValue('General/LastPackageDirSrc/Value', FLastPackageDirSrc, '');
-  FXML.SetDeleteValue('LastPackageDirDst/Value', FLastPackageDirDst, '');
+  FXML.SetDeleteValue('General/LastPackageDirDst/Value', FLastPackageDirDst, '');
 
   FXML.SetDeleteValue('Proxy/Enabled/Value', FProxySettings.FEnabled, false);
   FXML.SetDeleteValue('Proxy/Server/Value', FProxySettings.FServer, '');

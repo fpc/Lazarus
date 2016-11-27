@@ -70,11 +70,13 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
       Height = 23
       Top = 9
       Width = 647
+      OnAcceptDirectory = edPackageDirAcceptDirectory
       ShowHidden = False
       ButtonWidth = 23
       NumGlyphs = 1
       MaxLength = 0
       TabOrder = 0
+      OnButtonClick = edPackageDirButtonClick
     end
   end
   object pnData: TPanel
@@ -209,15 +211,6 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
       ClientWidth = 522
       TabOrder = 2
       Visible = False
-      object cbCategory: TComboBox
-        Left = 168
-        Height = 23
-        Top = 6
-        Width = 177
-        ItemHeight = 15
-        TabOrder = 0
-        Text = 'cbCategory'
-      end
       object lbCategory: TLabel
         Left = 9
         Height = 15
@@ -227,10 +220,11 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
         ParentColor = False
       end
       object lbOF2: TLabel
-        Left = 350
+        Left = 497
         Height = 15
         Top = 11
         Width = 5
+        Anchors = [akTop, akRight]
         Caption = '*'
         Font.Color = clRed
         Font.Style = [fsBold]
@@ -259,7 +253,7 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
         Top = 83
         Width = 324
         Anchors = [akTop, akLeft, akRight]
-        TabOrder = 1
+        TabOrder = 0
       end
       object edDownloadURL: TEdit
         Left = 168
@@ -267,7 +261,7 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
         Top = 118
         Width = 324
         Anchors = [akTop, akLeft, akRight]
-        TabOrder = 2
+        TabOrder = 1
       end
       object lbSVNURL: TLabel
         Left = 9
@@ -283,7 +277,7 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
         Top = 152
         Width = 324
         Anchors = [akTop, akLeft, akRight]
-        TabOrder = 3
+        TabOrder = 2
       end
       object lbDisplayName: TLabel
         Left = 9
@@ -294,12 +288,47 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
         ParentColor = False
       end
       object edDisplayName: TEdit
-        Left = 168
+        Left = 169
         Height = 23
-        Top = 49
+        Top = 48
         Width = 324
         Anchors = [akTop, akLeft, akRight]
+        TabOrder = 3
+      end
+      object pnCategories: TPanel
+        Left = 168
+        Height = 23
+        Top = 6
+        Width = 324
+        Anchors = [akTop, akLeft, akRight]
+        BevelOuter = bvNone
+        ClientHeight = 23
+        ClientWidth = 324
+        ParentColor = False
         TabOrder = 4
+        object spCategories: TSpeedButton
+          Left = 294
+          Height = 23
+          Top = 0
+          Width = 30
+          Align = alRight
+          Caption = '...'
+          OnClick = spCategoriesClick
+          ShowHint = True
+          ParentShowHint = False
+        end
+        object edCategories: TEdit
+          Left = 0
+          Height = 23
+          Top = 0
+          Width = 294
+          Align = alClient
+          AutoSize = False
+          ParentShowHint = False
+          ReadOnly = True
+          ShowHint = True
+          TabOrder = 0
+        end
       end
     end
   end
@@ -354,10 +383,6 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
       Caption = 'After create, open containing folder '
       TabOrder = 2
     end
-  end
-  object SDD: TSelectDirectoryDialog
-    left = 88
-    top = 88
   end
   object imTree: TImageList
     left = 48
@@ -621,5 +646,9 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
       AD86367BAD22FFFFFF00FFFFFF00FFFFFF00FFFFFF00367BAD61367BADC4367B
       AD61FFFFFF00FFFFFF00FFFFFF00
     }
+  end
+  object SDD: TSelectDirectoryDialog
+    left = 88
+    top = 88
   end
 end
