@@ -51,9 +51,11 @@ resourcestring
   rsMainFrm_Caption = 'packages found';
   rsMainFrm_VSTHeaderColumn_PackageName = 'Packages';
   rsMainFrm_VSTHeaderColumn_PackageFile = 'Package file(.lpk)';
-  rsMainFrm_VSTHeaderColumn_Available = 'Available';
+  rsMainFrm_VSTHeaderColumn_Available = 'Repository';
   rsMainFrm_VSTHeaderColumn_Installed = 'Installed';
+  rsMainFrm_VSTHeaderColumn_Update = 'Update';
   rsMainFrm_VSTHeaderColumn_Data = 'Status/Data';
+  rsMainFrm_VSTHeaderColumn_Button = '';
   rsMainFrm_VSTText_PackageCategory = 'Package category';
   rsMainFrm_VSTText_PackageStatus = 'Package status';
   rsMainFrm_VSTText_Version = 'Version';
@@ -110,6 +112,8 @@ resourcestring
   rsMainFrm_VSTText_PackageCategory24 = 'System';
   rsMainFrm_VSTText_PackageCategory25 = 'Tabbed Components';
   rsMainFrm_VSTText_PackageCategory26 = 'Other';
+  rsMainFrm_VSTText_Desc = 'Description for package';
+  rsMainFrm_VSTText_Lic = 'License info for package';
   rsMainFrm_cbAll_Caption = 'All/None';
   rsMainFrm_cbAll_Hint = 'Check/Uncheck packages';
   rsMainFrm_lbFilter_Caption = 'Filter by:';

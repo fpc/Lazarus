@@ -1,0 +1,24 @@
+object PackageDetailsFrm: TPackageDetailsFrm
+  Left = 455
+  Height = 490
+  Top = 264
+  Width = 735
+  BorderIcons = [biSystemMenu, biMaximize]
+  ClientHeight = 490
+  ClientWidth = 735
+  Color = clBtnFace
+  PopupMode = pmExplicit
+  Position = poOwnerFormCenter
+  LCLVersion = '1.7'
+  object mDetails: TMemo
+    Left = 0
+    Height = 490
+    Top = 0
+    Width = 735
+    Align = alClient
+    Color = clBtnFace
+    ReadOnly = True
+    ScrollBars = ssBoth
+    TabOrder = 0
+  end
+end

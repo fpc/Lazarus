@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, Graphics, Menus, Dialogs, Forms, LCLIntf, contnrs,
-  PackageIntf, opkman_VirtualTrees, opkman_common, opkman_serializablepackages;
+  PackageIntf, Buttons, opkman_VirtualTrees, opkman_common, opkman_serializablepackages;
 
 
 type
@@ -62,6 +62,8 @@ type
     DownloadURL: String;
     SVNURL: String;
     IsInstalled: Boolean;
+    ButtonID: Integer;
+    Button: TSpeedButton;
   end;
 
   TFilterBy = (fbPackageName, fbPackageFileName, fbPackageCategory, fbPackageState,
@@ -105,8 +107,12 @@ type
     procedure VSTMouseDown(Sender: TObject; Button: TMouseButton; {%H-}Shift: TShiftState; X, Y: Integer);
     procedure VSTGetHint(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
       var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: String);
+    procedure VSTAfterCellPaint(Sender: TBaseVirtualTree;  {%H-}TargetCanvas: TCanvas;
+      Node: PVirtualNode; Column: TColumnIndex; const {%H-}CellRect: TRect);
+    procedure VSTCollapsed(Sender: TBaseVirtualTree; {%H-}Node: PVirtualNode);
     procedure VSTOnDblClick(Sender: TObject);
     function IsAllChecked(const AChecking: PVirtualNode): Boolean;
+    procedure ButtonClick(Sender: TObject);
   public
     constructor Create(const AParent: TWinControl; const AImgList: TImageList;
       APopupMenu: TPopupMenu);
@@ -131,7 +137,7 @@ var
   VisualTree: TVisualTree = nil;
 
 implementation
-uses opkman_const, opkman_options;
+uses opkman_const, opkman_options, opkman_packagedetailsfrm;
 
 { TVisualTree }
 
@@ -153,27 +159,45 @@ begin
      DefaultText := '';
      Header.AutoSizeIndex := 3;
      Header.Height := 25;
-     with Header.Columns.Add do begin
+     with Header.Columns.Add do
+     begin
        Position := 0;
        Width := 250;
        Text := rsMainFrm_VSTHeaderColumn_PackageName;
      end;
-     with Header.Columns.Add do begin
+     with Header.Columns.Add do
+     begin
        Position := 1;
        Alignment := taCenter;
        Width := 75;
        Text := rsMainFrm_VSTHeaderColumn_Installed;
      end;
-     with Header.Columns.Add do begin
+     with Header.Columns.Add do
+     begin
        Position := 2;
        Alignment := taCenter;
        Width := 75;
        Text := rsMainFrm_VSTHeaderColumn_Available;
      end;
-     with Header.Columns.Add do begin
-        Position := 3;
-        Width := 400;
+     with Header.Columns.Add do
+     begin
+       Position := 3;
+       Alignment := taCenter;
+       Width := 75;
+       Text := rsMainFrm_VSTHeaderColumn_Update;
+     end;
+     with Header.Columns.Add do
+     begin
+        Position := 4;
+        Width := 280;
         Text := rsMainFrm_VSTHeaderColumn_Data;
+      end;
+     with Header.Columns.Add do
+     begin
+        Position := 5;
+        Width := 25;
+        Text := rsMainFrm_VSTHeaderColumn_Button;
+        Options := Options - [coResizable];
       end;
      Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoShowSortGlyphs, hoVisible, hoAutoSpring];
      Header.SortColumn := 0;
@@ -196,6 +220,8 @@ begin
      OnMouseDown := @VSTMouseDown;
      OnDblClick := @VSTOnDblClick;
      OnGetHint := @VSTGetHint;
+     OnAfterCellPaint := @VSTAfterCellPaint;
+     OnCollapsed := @VSTCollapsed;
      OnFreeNode := @VSTFreeNode;
    end;
 end;
@@ -212,10 +238,11 @@ var
   RootNode, Node, ChildNode, GrandChildNode: PVirtualNode;
   RootData, Data, ChildData, GrandChildData: PData;
   PackageFile: TPackageFile;
+  UniqueID: Integer;
 begin
   FVST.Clear;
   FVST.NodeDataSize := SizeOf(TData);
-
+  UniqueID := 0;
   //add repository(DataType = 0)
   RootNode := FVST.AddChild(nil);
   RootData := FVST.GetNodeData(RootNode);
@@ -248,6 +275,17 @@ begin
        GrandChildData := FVST.GetNodeData(GrandChildNode);
        GrandChildData^.Description := PackageFile.Description;
        GrandChildData^.DataType := 3;
+       GrandChildData^.Button := TSpeedButton.Create(FVST);
+       with GrandChildData^.Button do
+       begin
+         Inc(UniqueID);
+         Caption := '...';
+         Parent := FVST;
+         Visible := True;
+         Tag := UniqueID;
+         OnClick := @ButtonClick;
+       end;
+       GrandChildData^.ButtonID := UniqueID;
        //add author(DataType = 4)
        GrandChildNode := FVST.AddChild(ChildNode);
        GrandChildData := FVST.GetNodeData(GrandChildNode);
@@ -283,6 +321,17 @@ begin
        GrandChildData := FVST.GetNodeData(GrandChildNode);
        GrandChildData^.License := PackageFile.License;
        GrandChildData^.DataType := 10;
+       GrandChildData^.Button := TSpeedButton.Create(FVST);
+       with GrandChildData^.Button do
+       begin
+         Inc(UniqueID);
+         Caption := '...';
+         Parent := FVST;
+         Visible := True;
+         Tag := UniqueID;
+         OnClick := @ButtonClick;
+       end;
+       GrandChildData^.ButtonID := UniqueID;
      end;
      //add miscellaneous(DataType = 11)
      ChildNode := FVST.AddChild(Node);
@@ -329,7 +378,6 @@ begin
      GrandChildData := FVST.GetNodeData(GrandChildNode);
      GrandChildData^.SVNURL := SerializablePackages.Items[I].SVNURL;
      GrandChildData^.DataType := 19;
-
   end;
   FVST.SortTree(0, opkman_VirtualTrees.sdAscending);
   FVST.Expanded[RootNode] := True;
@@ -349,6 +397,99 @@ begin
       Break;
     end;
     Node := FVST.GetNext(Node);
+  end;
+end;
+
+procedure TVisualTree.ButtonClick(Sender: TObject);
+var
+  Node, ParentNode: PVirtualNode;
+  Data, ParentData: PData;
+  ButtonID: Integer;
+  Text: String;
+  FrmCaption: String;
+begin
+  ButtonID := (Sender as TSpeedButton).Tag;
+  Node := VST.GetFirst;
+  while Assigned(Node) do
+  begin
+    Data := VST.GetNodeData(Node);
+    if Data^.ButtonID = ButtonID then
+    begin
+      ParentNode := Node^.Parent;
+      ParentData := VST.GetNodeData(ParentNode);
+      case Data^.DataType of
+        3: begin
+             Text := Data^.Description;
+             FrmCaption := rsMainFrm_VSTText_Desc + ' "' + ParentData^.PackageFileName  + '"';
+           end;
+       10: begin
+             Text := Data^.License;
+             FrmCaption := rsMainFrm_VSTText_Lic  + ' "' + ParentData^.PackageFileName  + '"';
+           end;
+      end;
+      Break;
+    end;
+    Node := VST.GetNext(Node);
+  end;
+
+  PackageDetailsFrm := TPackageDetailsFrm.Create(TForm(FVST.Parent.Parent));
+  try
+    PackageDetailsFrm.Caption := FrmCaption;
+    PackageDetailsFrm.mDetails.Text := Text;
+    PackageDetailsFrm.ShowModal;
+  finally
+    PackageDetailsFrm.Free;
+  end;
+end;
+
+procedure TVisualTree.VSTAfterCellPaint(Sender: TBaseVirtualTree;
+  TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+  const CellRect: TRect);
+var
+  Data: PData;
+  R: TRect;
+  Text: String;
+begin
+  if Column = 5 then
+  begin
+    Data := FVST.GetNodeData(Node);
+    if Assigned(Data^.Button)  then
+    begin
+      R := FVST.GetDisplayRect(Node, Column, false);
+      Data^.Button.Left   := R.Left + 1;
+      Data^.Button.Width  := R.Right - R.Left -2;
+      Data^.Button.Top    := R.Top + 1;
+      Data^.Button.Height := R.Bottom - R.Top - 2;
+      case Data^.DataType of
+        3: Text := Data^.Description;
+       10: Text := Data^.License;
+      end;
+      Data^.Button.Visible := ((R.Bottom > FVST.Top) and (R.Bottom < FVST.Top + FVST.Height)) and (Trim(Text) <> '')
+    end;
+  end;
+end;
+
+procedure TVisualTree.VSTCollapsed(Sender: TBaseVirtualTree; Node: PVirtualNode);
+var
+  ChildNode: PVirtualNode;
+  ChildData: PData;
+  R: TRect;
+  Text: String;
+begin
+  ChildNode := VST.GetFirst;
+  while Assigned(ChildNode) do
+  begin
+    ChildData := VST.GetNodeData(ChildNode);
+    if Assigned(ChildData^.Button) then
+    begin
+      case ChildData^.DataType of
+        3: Text := ChildData^.Description;
+       10: Text := ChildData^.License;
+      end;
+      R := FVST.GetDisplayRect(ChildNode, 5, false);
+      ChildData^.Button.Visible := ((R.Bottom > FVST.Top) and (R.Bottom < FVST.Top + FVST.Height)) and (Trim(Text) <> '')
+    end;
+    ChildNode := VST.GetNext(ChildNode);
   end;
 end;
 
@@ -874,7 +1015,7 @@ begin
          else if (Data1^.DataType = 2) and (Data1^.DataType = 2) then
            Result := CompareText(Data1^.PackageFileName, Data2^.PackageFileName);
        end;
-    3: if (Data1^.DataType = 1) and (Data1^.DataType = 1) then
+    4: if (Data1^.DataType = 1) and (Data1^.DataType = 1) then
          Result := Ord(Data1^.PackageState) - Ord(Data2^.PackageState);
   end;
 end;
@@ -943,6 +1084,10 @@ begin
   end
   else if Column = 3 then
   begin
+      CellText := '';
+  end
+  else if Column = 4 then
+  begin
     case Data^.DataType of
       0: CellText := '';
       1: CellText := '';
@@ -981,13 +1126,17 @@ begin
      18: CellText := Data^.DownloadURL;
      19: CellText := Data^.SVNURL;
     end;
-  end;
+  end
+  else if Column = 5 then
+  begin
+    CellText := '';
+  end
 end;
 
 procedure TVisualTree.VSTHeaderClick(Sender: TVTHeader; Column: TColumnIndex;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if (Column = 1) or (Column = 2) then
+  if (Column > 0) then
     Exit;
   if Button = mbLeft then
   begin
@@ -1019,7 +1168,7 @@ var
   Data: PData;
 begin
   Data := FVST.GetNodeData(Node);
-  if (Column = 3) and (FHoverNode = Node) and (FHoverColumn = Column) and ((Data^.DataType = 17) or (Data^.DataType = 18)) then
+  if (Column = 4) and (FHoverNode = Node) and (FHoverColumn = Column) and ((Data^.DataType = 17) or (Data^.DataType = 18)) then
   begin
     TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsUnderline];
     if  Node <> Sender.FocusedNode then
@@ -1027,7 +1176,7 @@ begin
     else
       TargetCanvas.Font.Color := clWhite;
   end
-  else if (Column = 3) and (Data^.DataType = 2) and (Data^.IsInstalled) then
+  else if (Column = 4) and (Data^.DataType = 2) and (Data^.IsInstalled) then
   begin
     TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold];
     if  Node <> Sender.FocusedNode then
@@ -1087,7 +1236,7 @@ begin
         for I := 0 to VST.Header.Columns.Count - 1 do
          begin
            VST.Header.Columns.GetColumnBounds(I, L, R);
-           if (X >= L) and (X <= R) and (I = 3) then
+           if (X >= L) and (X <= R) and (I = 4) then
            begin
              FLinkClicked := True;
              if (Data^.DataType = 17) and (Trim(Data^.HomePageURL) <> '') then
@@ -1114,7 +1263,7 @@ var
   Data: PData;
 begin
   Data := FVST.GetNodeData(Node);
-  if (Column <> 3) then
+  if (Column <> 4) then
     Exit;
   LineBreakStyle := hlbForceMultiLine;
   case Data^.DataType of
