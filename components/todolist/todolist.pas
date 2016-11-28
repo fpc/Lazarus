@@ -644,6 +644,7 @@ begin
   tbGoto.Caption := lisToDoGoto;
   tbExport.Caption := lisToDoExport;
 
+  grbOptions.Caption := lisOptions;
   chkListed.Caption := lisToDoListed;
   chkListed.Hint := lisToDoListedHint;
   chkUsed.Caption := lisToDoUsed;

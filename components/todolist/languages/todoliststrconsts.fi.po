@@ -13,6 +13,10 @@ msgstr "Päivitä"
 msgid "Insert Macro"
 msgstr "Lisää Makro"
 
+#: todoliststrconsts.lisoptions
+msgid "Options"
+msgstr ""
+
 #: todoliststrconsts.lispackages
 msgid "Packages"
 msgstr ""
@@ -67,7 +71,7 @@ msgid "Listed"
 msgstr ""
 
 #: todoliststrconsts.listodolistedhint
-msgid "Add units listed in lpi/lpk aka project inspector/package editor"
+msgid "Add units listed in project inspector/package editor"
 msgstr ""
 
 #: todoliststrconsts.listodolistgotoline

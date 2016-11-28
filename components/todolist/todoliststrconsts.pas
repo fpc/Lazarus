@@ -40,8 +40,9 @@ resourcestring
   listToDoLCategory = 'Category';
   lisToDoGoto = 'Goto';
   lisToDoExport = 'Export';
+  lisOptions = 'Options';
   lisToDoListed = 'Listed';
-  lisToDoListedHint = 'Add units listed in lpi/lpk aka project inspector/package editor';
+  lisToDoListedHint = 'Add units listed in project inspector/package editor';
   lisToDoUsed = 'Used';
   lisToDoUsedHint = 'Add units used by main source file';
   lisPackages = 'Packages';

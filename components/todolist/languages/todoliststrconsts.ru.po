@@ -23,13 +23,17 @@ msgstr "Обновить"
 msgid "Insert Macro"
 msgstr "Вставить макрос"
 
+#: todoliststrconsts.lisoptions
+msgid "Options"
+msgstr "Параметры"
+
 #: todoliststrconsts.lispackages
 msgid "Packages"
-msgstr ""
+msgstr "Пакеты"
 
 #: todoliststrconsts.lispackageshint
 msgid "Extends \"%s\" and \"%s\" options by units from used packages"
-msgstr ""
+msgstr "Расширить множества \"%s\" и \"%s\" модулями используемых пакетов"
 
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
@@ -37,10 +41,9 @@ msgstr "Текст"
 
 #: todoliststrconsts.lissourceeditor
 msgid "Editor"
-msgstr ""
+msgstr "Редактор"
 
 #: todoliststrconsts.lissourceeditorhint
-#, fuzzy
 msgctxt "todoliststrconsts.lissourceeditorhint"
 msgid "Add units in source editor"
 msgstr "Добавить модули из редактора исходного кода"
@@ -75,11 +78,11 @@ msgstr "Список ToDo"
 
 #: todoliststrconsts.listodolisted
 msgid "Listed"
-msgstr ""
+msgstr "Указанные"
 
 #: todoliststrconsts.listodolistedhint
-msgid "Add units listed in lpi/lpk aka project inspector/package editor"
-msgstr ""
+msgid "Add units listed in project inspector/package editor"
+msgstr "Добавить модули, указанные в инспекторе проекта либо редакторе пакета"
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
@@ -103,11 +106,11 @@ msgstr "Приоритет"
 
 #: todoliststrconsts.listodoused
 msgid "Used"
-msgstr ""
+msgstr "Используемые"
 
 #: todoliststrconsts.listodousedhint
 msgid "Add units used by main source file"
-msgstr ""
+msgstr "Добавить модули, используемые в главном файле исходного кода"
 
 #: todoliststrconsts.listtodolcategory
 msgid "Category"
