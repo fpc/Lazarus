@@ -1,24 +1,46 @@
 object PackageDetailsFrm: TPackageDetailsFrm
   Left = 455
-  Height = 490
+  Height = 310
   Top = 264
-  Width = 735
-  BorderIcons = [biSystemMenu, biMaximize]
-  ClientHeight = 490
-  ClientWidth = 735
+  Width = 477
+  BorderIcons = [biSystemMenu]
+  ClientHeight = 310
+  ClientWidth = 477
   Color = clBtnFace
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
   LCLVersion = '1.7'
   object mDetails: TMemo
-    Left = 0
-    Height = 490
-    Top = 0
-    Width = 735
+    Left = 5
+    Height = 259
+    Top = 5
+    Width = 467
     Align = alClient
-    Color = clBtnFace
+    BorderSpacing.Around = 5
+    ParentColor = True
     ReadOnly = True
     ScrollBars = ssBoth
     TabOrder = 0
+  end
+  object pnButtons: TPanel
+    Left = 0
+    Height = 41
+    Top = 269
+    Width = 477
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 41
+    ClientWidth = 477
+    TabOrder = 1
+    object bOk: TButton
+      Left = 390
+      Height = 26
+      Top = 8
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'Ok'
+      ModalResult = 1
+      TabOrder = 0
+    end
   end
 end

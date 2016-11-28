@@ -111,8 +111,10 @@ type
       Node: PVirtualNode; Column: TColumnIndex; const {%H-}CellRect: TRect);
     procedure VSTCollapsed(Sender: TBaseVirtualTree; {%H-}Node: PVirtualNode);
     procedure VSTOnDblClick(Sender: TObject);
+    procedure VSTScroll(Sender: TBaseVirtualTree; {%H-}DeltaX, {%H-}DeltaY: Integer);
     function IsAllChecked(const AChecking: PVirtualNode): Boolean;
     procedure ButtonClick(Sender: TObject);
+    procedure ShowHideButtons;
   public
     constructor Create(const AParent: TWinControl; const AImgList: TImageList;
       APopupMenu: TPopupMenu);
@@ -157,7 +159,7 @@ begin
      Indent := 22;
      TabOrder := 1;
      DefaultText := '';
-     Header.AutoSizeIndex := 3;
+     Header.AutoSizeIndex := 4;
      Header.Height := 25;
      with Header.Columns.Add do
      begin
@@ -222,6 +224,7 @@ begin
      OnGetHint := @VSTGetHint;
      OnAfterCellPaint := @VSTAfterCellPaint;
      OnCollapsed := @VSTCollapsed;
+     OnScroll := @VSTScroll;
      OnFreeNode := @VSTFreeNode;
    end;
 end;
@@ -311,16 +314,11 @@ begin
        GrandChildData := FVST.GetNodeData(GrandChildNode);
        GrandChildData^.PackageType := PackageFile.PackageType;
        GrandChildData^.DataType := 8;
-       //add dependencies(DataType = 9)
-       GrandChildNode := FVST.AddChild(ChildNode);
-       GrandChildData := FVST.GetNodeData(GrandChildNode);
-       GrandChildData^.Dependencies := PackageFile.DependenciesAsString;
-       GrandChildData^.DataType := 9;
-       //add license(DataType = 10)
+       //add license(DataType = 9)
        GrandChildNode := FVST.AddChild(ChildNode);
        GrandChildData := FVST.GetNodeData(GrandChildNode);
        GrandChildData^.License := PackageFile.License;
-       GrandChildData^.DataType := 10;
+       GrandChildData^.DataType := 9;
        GrandChildData^.Button := TSpeedButton.Create(FVST);
        with GrandChildData^.Button do
        begin
@@ -333,6 +331,11 @@ begin
        end;
        GrandChildData^.ButtonID := UniqueID;
      end;
+     //add dependencies(DataType = 10)
+     GrandChildNode := FVST.AddChild(ChildNode);
+     GrandChildData := FVST.GetNodeData(GrandChildNode);
+     GrandChildData^.Dependencies := PackageFile.DependenciesAsString;
+     GrandChildData^.DataType := 10;
      //add miscellaneous(DataType = 11)
      ChildNode := FVST.AddChild(Node);
      ChildData := FVST.GetNodeData(ChildNode);
@@ -422,7 +425,7 @@ begin
              Text := Data^.Description;
              FrmCaption := rsMainFrm_VSTText_Desc + ' "' + ParentData^.PackageFileName  + '"';
            end;
-       10: begin
+        9: begin
              Text := Data^.License;
              FrmCaption := rsMainFrm_VSTText_Lic  + ' "' + ParentData^.PackageFileName  + '"';
            end;
@@ -440,6 +443,42 @@ begin
   finally
     PackageDetailsFrm.Free;
   end;
+end;
+
+procedure TVisualTree.ShowHideButtons;
+var
+  ChildNode: PVirtualNode;
+  ChildData: PData;
+  R: TRect;
+  Text: String;
+begin
+  ChildNode := VST.GetFirst;
+  while Assigned(ChildNode) do
+  begin
+    ChildData := VST.GetNodeData(ChildNode);
+    if Assigned(ChildData^.Button) then
+    begin
+      case ChildData^.DataType of
+        3: Text := ChildData^.Description;
+        9: Text := ChildData^.License;
+      end;
+      R := FVST.GetDisplayRect(ChildNode, 5, false);
+      ChildData^.Button.Visible := ((R.Bottom > FVST.Top) and (R.Bottom < FVST.Top + FVST.Height)) and (Trim(Text) <> '');
+      FVST.InvalidateNode(ChildNode);
+    end;
+    ChildNode := VST.GetNext(ChildNode);
+  end;
+end;
+
+procedure TVisualTree.VSTScroll(Sender: TBaseVirtualTree; DeltaX,
+  DeltaY: Integer);
+begin
+  ShowHideButtons;
+end;
+
+procedure TVisualTree.VSTCollapsed(Sender: TBaseVirtualTree; Node: PVirtualNode);
+begin
+  ShowHideButtons;
 end;
 
 procedure TVisualTree.VSTAfterCellPaint(Sender: TBaseVirtualTree;
@@ -462,34 +501,10 @@ begin
       Data^.Button.Height := R.Bottom - R.Top - 2;
       case Data^.DataType of
         3: Text := Data^.Description;
-       10: Text := Data^.License;
+        9: Text := Data^.License;
       end;
-      Data^.Button.Visible := ((R.Bottom > FVST.Top) and (R.Bottom < FVST.Top + FVST.Height)) and (Trim(Text) <> '')
+      Data^.Button.Visible := ((R.Bottom > FVST.Top) and (R.Bottom < FVST.Top + FVST.Height)) and (Trim(Text) <> '');
     end;
-  end;
-end;
-
-procedure TVisualTree.VSTCollapsed(Sender: TBaseVirtualTree; Node: PVirtualNode);
-var
-  ChildNode: PVirtualNode;
-  ChildData: PData;
-  R: TRect;
-  Text: String;
-begin
-  ChildNode := VST.GetFirst;
-  while Assigned(ChildNode) do
-  begin
-    ChildData := VST.GetNodeData(ChildNode);
-    if Assigned(ChildData^.Button) then
-    begin
-      case ChildData^.DataType of
-        3: Text := ChildData^.Description;
-       10: Text := ChildData^.License;
-      end;
-      R := FVST.GetDisplayRect(ChildNode, 5, false);
-      ChildData^.Button.Visible := ((R.Bottom > FVST.Top) and (R.Bottom < FVST.Top + FVST.Height)) and (Trim(Text) <> '')
-    end;
-    ChildNode := VST.GetNext(ChildNode);
   end;
 end;
 
@@ -715,15 +730,15 @@ begin
              FilterNode(Node, '');
          end;
        end;
-     fbDependecies:
-       begin
-          if Data^.DataType = 9 then
-           FilterNode(Node, Data^.Dependencies);
-       end;
      fbLicense:
        begin
-          if Data^.DataType = 10 then
+          if Data^.DataType = 9 then
            FilterNode(Node, Data^.License);
+       end;
+     fbDependecies:
+       begin
+          if Data^.DataType = 10 then
+           FilterNode(Node, Data^.Dependencies);
        end;
    end;
    Node := FVST.GetNext(Node);
@@ -1052,8 +1067,8 @@ begin
       6: CellText := rsMainFrm_VSTText_FPCCompatibility;
       7: CellText := rsMainFrm_VSTText_SupportedWidgetsets;
       8: CellText := rsMainFrm_VSTText_Packagetype;
-      9: CellText := rsMainFrm_VSTText_Dependecies;
-     10: CellText := rsMainFrm_VSTText_License;
+      9: CellText := rsMainFrm_VSTText_License;
+     10: CellText := rsMainFrm_VSTText_Dependecies;
      11: CellText := rsMainFrm_VSTText_PackageInfo;
      12: CellText := rsMainFrm_VSTText_Category;
      13: CellText := rsMainFrm_VSTText_RepositoryFilename;
@@ -1063,7 +1078,6 @@ begin
      17: CellText := rsMainFrm_VSTText_HomePageURL;
      18: CellText := rsMainFrm_VSTText_DownloadURL;
      19: CellText := rsMainFrm_VSTText_SVNURL;
-
     end;
   end
   else if Column = 1 then
@@ -1114,8 +1128,8 @@ begin
            ptRunTime:          CellText := rsMainFrm_VSTText_PackageType2;
            ptRunTimeOnly:      CellText := rsMainFrm_VSTText_PackageType3;
          end;
-      9: CellText := Data^.Dependencies;
-     10: CellText := Data^.License;
+      9: CellText := Data^.License;
+     10: CellText := Data^.Dependencies;
      11: CellText := '';
      12: CellText := Data^.Category;
      13: CellText := Data^.RepositoryFileName;
@@ -1284,6 +1298,7 @@ begin
     OpenDocument(FLink);
   end;
 end;
+
 
 end.
 

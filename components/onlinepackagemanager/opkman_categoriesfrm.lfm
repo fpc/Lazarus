@@ -4,7 +4,6 @@ object CategoriesFrm: TCategoriesFrm
   Top = 265
   Width = 343
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsSingle
   Caption = 'CategoriesFrm'
   ClientHeight = 383
   ClientWidth = 343

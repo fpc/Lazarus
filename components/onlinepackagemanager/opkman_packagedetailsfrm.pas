@@ -5,14 +5,17 @@ unit opkman_packagedetailsfrm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ExtCtrls;
 
 type
 
   { TPackageDetailsFrm }
 
   TPackageDetailsFrm = class(TForm)
+    bOk: TButton;
     mDetails: TMemo;
+    pnButtons: TPanel;
   private
 
   public
