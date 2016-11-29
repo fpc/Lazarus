@@ -83,10 +83,8 @@ msgid "Listed"
 msgstr "Listado"
 
 #: todoliststrconsts.listodolistedhint
-#, fuzzy
-#| msgid "Add units listed in lpi/lpk aka project inspector/package editor"
 msgid "Add units listed in project inspector/package editor"
-msgstr "Adiciona unidades listadas em lpi/lpk a.k.a inspetor de projeto/editor de pacotes"
+msgstr "Adiciona unidades listadas no inspetor de projeto/editor de pacotes"
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
