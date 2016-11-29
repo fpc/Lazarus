@@ -4506,10 +4506,10 @@ begin
         TrySmoothScrollBy(message.Pos-SP.x, 0);
       message.Result := 0;
     end;
-    SB_PAGEUP: TrySmoothScrollBy(-(ClientHeight-FGCache.FixedHeight), 0);
-    SB_PAGEDOWN: TrySmoothScrollBy(ClientHeight-FGCache.FixedHeight, 0);
-    SB_LINEUP: TrySmoothScrollBy(-DefaultRowHeight, 0);
-    SB_LINEDOWN: TrySmoothScrollBy(DefaultRowHeight, 0);
+    SB_PAGELEFT: TrySmoothScrollBy(-(ClientWidth-FGCache.FixedWidth), 0);
+    SB_PAGERIGHT: TrySmoothScrollBy(ClientWidth-FGCache.FixedWidth, 0);
+    SB_LINELEFT: TrySmoothScrollBy(-DefaultColWidth, 0);
+    SB_LINERIGHT: TrySmoothScrollBy(DefaultColWidth, 0);
   end;
 
   if EditorMode then
