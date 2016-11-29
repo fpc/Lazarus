@@ -261,7 +261,7 @@ resourcestring
   rsCreateRepositoryPackageFrm_SDDTitleSrc = 'Select package directory';
   rsCreateRepositoryPackageFrm_SDDTitleDst = 'Save repository package to...';
   rsCreateRepositoryPackageFrm_Error0 = 'Error reading package';
-  rsCreateRepositoryPackageFrm_Error1 = 'Cannot creating zip file:';
+  rsCreateRepositoryPackageFrm_Error1 = 'Cannot create zip file:';
   rsCreateRepositoryPackageFrm_Error2 = 'Cannot create JSON file:';
   rsCreateRepositoryPackageFrm_Message0 = 'Please select a category for package:';
   rsCreateRepositoryPackageFrm_Message1 = 'Please enter supported lazarus versions for package:';

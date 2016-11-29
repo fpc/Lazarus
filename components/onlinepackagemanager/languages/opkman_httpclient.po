@@ -1,0 +1,35 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: opkman_httpclient.serrchunklineendmissing
+msgid "Chunk line end missing"
+msgstr ""
+
+#: opkman_httpclient.serrchunktoobig
+msgid "Chunk too big"
+msgstr ""
+
+#: opkman_httpclient.serrinvalidprotocol
+msgid "Invalid protocol : \"%s\""
+msgstr ""
+
+#: opkman_httpclient.serrinvalidprotocolversion
+msgid "Invalid protocol version in response: \"%s\""
+msgstr ""
+
+#: opkman_httpclient.serrinvalidstatuscode
+msgid "Invalid response status code: %s"
+msgstr ""
+
+#: opkman_httpclient.serrmaxredirectsreached
+msgid "Maximum allowed redirects reached : %d"
+msgstr ""
+
+#: opkman_httpclient.serrreadingsocket
+msgid "Error reading data from socket"
+msgstr ""
+
+#: opkman_httpclient.serrunexpectedresponse
+msgid "Unexpected response status code: %d"
+msgstr ""
+
