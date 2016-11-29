@@ -14192,9 +14192,9 @@ begin
     raise EIpHtmlException.Create(SHtmlNoDataProvider);
   if not FDataProvider.DoCheckURL(St, ResourceType) then
     raise EIpHtmlException.Create(SHtmlResUnavail + St);
-  St := LowerCase(ResourceType);
+  ResourceType := LowerCase(ResourceType);
 
-  if ( Pos('text/', St) = 0) and (pos('image/', St) = 0) then begin
+  if ( Pos('text/', ResourceType) <> 1) and (pos('image/', ResourceType) <> 1) then begin
     FViewer.FHotURL := St;
     FViewer.DoHotClick;
     Result := True;
@@ -14381,12 +14381,13 @@ begin
       raise EIpHtmlException.Create(SHtmlResUnavail + St);
     IsImage := False;
     S := nil;
-    if pos('image/', LowerCase(ResourceType)) <> 0 then begin
+    ResourceType := Lowercase(ResourceType);
+    if pos('image/', ResourceType) = 1 then begin
       IsImage := True;
       S := BuildImagePage(St);
     end else
 
-    if Pos('text/', LowerCase(ResourceType)) = 0 then begin
+    if Pos('text/', ResourceType) <> 1 then begin
       FViewer.FHotURL := St;
       FViewer.DoHotClick;
       Exit;
@@ -15132,8 +15133,7 @@ begin
         raise EIpHtmlException.Create(SHtmlNoDataProvider);
       if (FMasterFrame = nil)
       or ((FMasterFrame <> nil) and (not FMasterFrame.IsExternal(URL))) then begin
-        if (FMasterFrame <> nil)
-        and (FMasterFrame.FHtml <> nil) then
+        if (FMasterFrame <> nil) and (FMasterFrame.FHtml <> nil) then
           FDataProvider.DoLeave(FMasterFrame.FHtml);
         FMasterFrame.Free;
         FMasterFrame := nil;
