@@ -3888,16 +3888,15 @@ begin
   end;
 end;
 
-// The layout should only be auto-adjusted for controls with the most simple
-// default absolute positioning
+// Auto-adjust the layout of controls without alignment. Custom anchoring is allowed.
 function TControl.ShouldAutoAdjustLeftAndTop: Boolean;
 begin
-  Result := (Align = alNone) and (Anchors = [akTop, akLeft]) and (Parent <> nil);
+  Result := (Align = alNone) and (Parent <> nil);
 end;
 
 function TControl.ShouldAutoAdjustWidthAndHeight: Boolean;
 begin
-  Result := (Align = alNone) and (Anchors = [akTop, akLeft]) and (AutoSize = False);
+  Result := (Align = alNone) and (AutoSize = False);
 end;
 
 procedure TControl.UpdateAnchorRules;
