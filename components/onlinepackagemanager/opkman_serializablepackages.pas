@@ -226,6 +226,7 @@ type
   private
     FPackages: TCollection;
     FLastError: String;
+    FOnProcessJSON: TNotifyEvent;
     function GetCount: Integer;
     function GetDownloadCount: Integer;
     function GetExtractCount: Integer;
@@ -268,6 +269,7 @@ type
     property InstallCount: Integer read GetInstallCount;
     property Items[Index: Integer]: TPackage read GetItem write SetItem;
     property LastError: String read FlastError;
+    property OnProcessJSON: TNotifyEvent read FOnProcessJSON write FOnProcessJSON;
   end;
 
 var
@@ -910,6 +912,8 @@ begin
         begin
           for I := 0 to Data.Count - 1 do
           begin
+            if Assigned(FOnProcessJSON) then
+              FOnProcessJSON(Self);
             if Data.Items[I].JSONType = jtObject then
             begin
               if not JSONToPackageData(Data.Items[I], Package) then

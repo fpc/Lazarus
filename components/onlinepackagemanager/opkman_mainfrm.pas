@@ -109,6 +109,7 @@ type
     procedure DoOnChecked(Sender: TObject);
     procedure DoOnJSONProgress(Sender: TObject);
     procedure DoOnJSONDownloadCompleted(Sender: TObject; AJSON: TJSONStringType; AErrTyp: TErrorType; const AErrMsg: String = '');
+    procedure DoOnProcessJSON(Sender: TObject);
     function IsSomethingChecked(const AIsUpdate: Boolean = False): Boolean;
     function Download(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
     function Extract(const ASrcDir, ADstDir: String; var ADoOpen: Boolean; const AIsUpdate: Boolean = False): TModalResult;
@@ -137,6 +138,7 @@ begin
   VisualTree.OnChecking := @DoOnChecking;
   VisualTree.OnChecked := @DoOnChecked;
   SerializablePackages := TSerializablePackages.Create;
+  SerializablePackages.OnProcessJSON := @DoOnProcessJSON;
   PackageDownloader := TPackageDownloader.Create(Options.RemoteRepository);
   PackageDownloader.OnJSONProgress := @DoOnJSONProgress;
   PackageDownloader.OnJSONDownloadCompleted := @DoOnJSONDownloadCompleted;
@@ -169,6 +171,7 @@ end;
 
 procedure TMainFrm.GetPackageList;
 begin
+  Caption := rsLazarusPackageManager;
   VisualTree.VST.Clear;
   if SerializablePackages.Count > 0 then
     SerializablePackages.Clear;
@@ -276,6 +279,7 @@ begin
   case AErrTyp of
     etNone:
       begin
+        SetupMessage(rsMainFrm_rsMessageParsingJSON);
         if (not SerializablePackages.JSONToPackages(AJSON)) or (SerializablePackages.Count = 0) then
         begin
           EnableDisableControls(True);
@@ -283,11 +287,11 @@ begin
           MessageDlgEx(rsMainFrm_rsMessageError1 + sLineBreak + SerializablePackages.LastError, mtInformation, [mbOk], Self);
           Exit;
         end;
+        VisualTree.PopulateTree;
         EnableDisableControls(True);
         SetupMessage;
         mJSON.Text := AJSON;
         cbAll.Checked := False;
-        VisualTree.PopulateTree;
         Caption := rsLazarusPackageManager + '(' + IntToStr(SerializablePackages.Count) + ' ' + rsMainFrm_Caption + ')';
       end;
     etConfig:
@@ -306,6 +310,11 @@ begin
         MessageDlgEx(rsMainFrm_rsMessageError0 + sLineBreak + '"' + AErrMsg + '"', mtInformation, [mbOk], Self);
       end;
   end;
+end;
+
+procedure TMainFrm.DoOnProcessJSON(Sender: TObject);
+begin
+  Application.ProcessMessages;
 end;
 
 procedure TMainFrm.ShowOptions;
@@ -769,6 +778,8 @@ procedure TMainFrm.SetupControls;
 var
   I: Integer;
 begin
+  Caption := rsLazarusPackageManager;
+
   cbFilterBy.Clear;
   cbFilterBy.Items.Add(rsMainFrm_VSTHeaderColumn_PackageName);
   cbFilterBy.Items.Add(rsMainFrm_VSTHeaderColumn_PackageFile);
@@ -823,7 +834,6 @@ begin
   miJSONShow.Caption := rsMainFrm_miJSONShow;
   miJSONHide.Caption := rsMainFrm_miJSONHide;
 
-  Caption := rsMainFrm_Caption;
   edFilter.Hint := rsMainFrm_edFilter_Hint;
   spClear.Hint := rsMainFrm_spClear_Hint;
   cbFilterBy.Top := (pnTop.Height - cbFilterBy.Height) div 2;

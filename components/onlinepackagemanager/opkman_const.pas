@@ -51,7 +51,7 @@ resourcestring
   rsMainFrm_Caption = 'packages found';
   rsMainFrm_VSTHeaderColumn_PackageName = 'Packages';
   rsMainFrm_VSTHeaderColumn_PackageFile = 'Package file(.lpk)';
-  rsMainFrm_VSTHeaderColumn_Available = 'Repository';
+  rsMainFrm_VSTHeaderColumn_Repository = 'Repository';
   rsMainFrm_VSTHeaderColumn_Installed = 'Installed';
   rsMainFrm_VSTHeaderColumn_Update = 'Update';
   rsMainFrm_VSTHeaderColumn_Data = 'Status/Data';
@@ -148,6 +148,7 @@ resourcestring
   rsMainFrm_PackageUpdate0 = 'The following repository packages don''t have a valid external download link. The packages will be skipped. Continue?';
   rsMainFrm_PackageUpdate1 = 'None of the checked repository package(s) has a valid external download link.';
   rsMainFrm_rsMessageNoPackage = 'No packages to show.';
+  rsMainFrm_rsMessageParsingJSON = 'Parsing JSON. Please wait...';
   rsMainFrm_rsMessageDownload = 'Downloading package list. Please wait...';
   rsMainFrm_rsMessageNoRepository0 = 'Remote package repository not configured.';
   rsMainFrm_rsMessageNoRepository1 = 'Do you wish to configure it now?';
