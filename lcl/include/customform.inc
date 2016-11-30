@@ -347,6 +347,14 @@ begin
   end;
 end;
 
+procedure TCustomForm.SetDesignTimeDPI(const aDesignTimeDPI: Integer);
+begin
+  if not (csLoading in ComponentState) then
+    raise EInvalidOperation.Create(sCannotSetDesignTimeDPI);
+
+  FDesignTimeDPI := aDesignTimeDPI;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomForm.SetIcon
   Params: the new icon
@@ -2680,6 +2688,8 @@ begin
   //DebugLn('TCustomForm.Loaded ',Name,':',ClassName,' ',FormUpdating,' ',fsCreating in FFormState,' ',Visible,' ',fsVisible in FormState);
   if fsVisible in FormState then
     Visible := True;
+  if csDesigning in ComponentState then
+    FDesignTimeDPI := Screen.PixelsPerInch;
 end;
 
 {------------------------------------------------------------------------------

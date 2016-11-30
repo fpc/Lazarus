@@ -471,6 +471,7 @@ type
     procedure SetAlphaBlend(const AValue: Boolean);
     procedure SetAlphaBlendValue(const AValue: Byte);
     procedure SetBorderIcons(NewIcons: TBorderIcons);
+    procedure SetDesignTimeDPI(const aDesignTimeDPI: Integer);
     procedure SetFormBorderStyle(NewStyle: TFormBorderStyle);
     procedure SetCancelControl(NewControl: TControl);
     procedure SetDefaultControl(NewControl: TControl);
@@ -659,7 +660,7 @@ type
     property DefaultMonitor: TDefaultMonitor read FDefaultMonitor
       write FDefaultMonitor default dmActiveForm;
     property Designer: TIDesigner read FDesigner write FDesigner;
-    property DesignTimeDPI: Integer read FDesignTimeDPI write FDesignTimeDPI;
+    property DesignTimeDPI: Integer read FDesignTimeDPI write SetDesignTimeDPI;
     property EffectiveShowInTaskBar: TShowInTaskBar read GetEffectiveShowInTaskBar;
     property FormState: TFormState read FFormState;
     property FormStyle: TFormStyle read FFormStyle write SetFormStyle
@@ -753,6 +754,7 @@ type
     property Color;
     property Constraints;
     property DefaultMonitor;
+    property DesignTimeDPI;
     property DockSite;
     property DragKind;
     property DragMode;
