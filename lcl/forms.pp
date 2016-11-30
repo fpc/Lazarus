@@ -452,6 +452,7 @@ type
     FShowInTaskbar: TShowInTaskbar;
     FWindowState: TWindowState;
     FDesignTimeDPI: Integer;
+    FScaled: Boolean;
     function GetClientHandle: HWND;
     function GetEffectiveShowInTaskBar: TShowInTaskBar;
     function GetMonitor: TMonitor;
@@ -696,6 +697,7 @@ type
     property RestoredTop: integer read FRestoredTop;
     property RestoredWidth: integer read FRestoredWidth;
     property RestoredHeight: integer read FRestoredHeight;
+    property Scaled: Boolean read FScaled write FScaled default False;
     property ShowInTaskBar: TShowInTaskbar read FShowInTaskbar write SetShowInTaskBar
                                     default stDefault;
     property Visible stored VisibleIsStored default false;
@@ -812,6 +814,7 @@ type
     property ShowInTaskBar;
     property UseDockManager;
     property LCLVersion: string read FLCLVersion write FLCLVersion stored LCLVersionIsStored;
+    property Scaled;
     property Visible;
     property WindowState;
   end;
