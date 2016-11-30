@@ -36,7 +36,8 @@ type
     FOwnerPersistent: TPersistent;
     FPropertyName: String;
     procedure FillCollectionListBox;
-    procedure SelectInObjectInspector(ForceUpdate, UnselectAll: Boolean);
+    procedure ClearSelectionInObjectInspector;
+    procedure SelectInObjectInspector(ForceUpdate: Boolean);
     procedure Modified;
   protected
     procedure UpdateCaption;
@@ -98,7 +99,7 @@ procedure TCollectionPropertyEditorForm.CollectionListBoxClick(Sender: TObject);
 begin
   UpdateButtons;
   UpdateCaption;
-  SelectInObjectInspector(False, False);
+  SelectInObjectInspector(False);
 end;
 
 procedure TCollectionPropertyEditorForm.actAddExecute(Sender: TObject);
@@ -109,7 +110,7 @@ begin
   FillCollectionListBox;
   if CollectionListBox.Items.Count > 0 then
     CollectionListBox.ItemIndex := CollectionListBox.Items.Count - 1;
-  SelectInObjectInspector(True, False);
+  SelectInObjectInspector(True);
   UpdateButtons;
   UpdateCaption;
   Modified;
@@ -148,7 +149,7 @@ begin
       if NewItemIndex > I then Dec(NewItemIndex);
       //debugln('TCollectionPropertyEditorForm.DeleteClick A NewItemIndex=',dbgs(NewItemIndex),' ItemIndex=',dbgs(CollectionListBox.ItemIndex),' CollectionListBox.Items.Count=',dbgs(CollectionListBox.Items.Count),' Collection.Count=',dbgs(Collection.Count));
       // unselect all items in OI (collections can act strange on delete)
-      SelectInObjectInspector(True, True);
+      ClearSelectionInObjectInspector;
       // now delete
       Collection.Items[I].Free;
       // update listbox after whatever happened
@@ -157,7 +158,7 @@ begin
       if NewItemIndex < CollectionListBox.Items.Count then
       begin
         CollectionListBox.ItemIndex := NewItemIndex;
-        SelectInObjectInspector(False, False);
+        SelectInObjectInspector(False);
       end;
       //debugln('TCollectionPropertyEditorForm.DeleteClick B');
       Modified;
@@ -180,7 +181,7 @@ begin
   CollectionListBox.ItemIndex := I + 1;
 
   FillCollectionListBox;
-  SelectInObjectInspector(True, False);
+  SelectInObjectInspector(True);
   Modified;
 end;
 
@@ -197,7 +198,7 @@ begin
   CollectionListBox.ItemIndex := I - 1;
 
   FillCollectionListBox;
-  SelectInObjectInspector(True, False);
+  SelectInObjectInspector(True);
   Modified;
 end;
 
@@ -273,8 +274,10 @@ var
 begin
   CollectionListBox.Items.BeginUpdate;
   try
-    if Collection <> nil then Cnt := Collection.Count
-    else Cnt := 0;
+    if Collection <> nil then
+      Cnt := Collection.Count
+    else
+      Cnt := 0;
 
     // add or replace list items
     for I := 0 to Cnt - 1 do
@@ -290,14 +293,10 @@ begin
     if Cnt > 0 then
     begin
       while CollectionListBox.Items.Count > Cnt do
-      begin
         CollectionListBox.Items.Delete(CollectionListBox.Items.Count - 1);
-      end;
     end
     else
-    begin
       CollectionListBox.Items.Clear;
-    end;
   finally
     CollectionListBox.Items.EndUpdate;
     UpdateButtons;
@@ -305,27 +304,37 @@ begin
   end;
 end;
 
-procedure TCollectionPropertyEditorForm.SelectInObjectInspector(ForceUpdate, UnselectAll: Boolean);
+procedure TCollectionPropertyEditorForm.ClearSelectionInObjectInspector;
+var
+  NewSelection: TPersistentSelectionList;
+begin
+  if GlobalDesignHook = nil then Exit;
+  // select in OI
+  NewSelection := TPersistentSelectionList.Create;
+  NewSelection.ForceUpdate := True;
+  try
+    GlobalDesignHook.SetSelection(NewSelection);
+    GlobalDesignHook.LookupRoot := GetLookupRootForComponent(OwnerPersistent);
+  finally
+    NewSelection.Free;
+  end;
+end;
+
+procedure TCollectionPropertyEditorForm.SelectInObjectInspector(ForceUpdate: Boolean);
 var
   I: Integer;
   NewSelection: TPersistentSelectionList;
 begin
-  if Collection = nil then Exit;
+  if (Collection = nil) or (GlobalDesignHook = nil) then Exit;
   // select in OI
   NewSelection := TPersistentSelectionList.Create;
   NewSelection.ForceUpdate := ForceUpdate;
   try
-    if not UnselectAll then
-    begin
-      for I := 0 to CollectionListBox.Items.Count - 1 do
-        if CollectionListBox.Selected[I] then
-          NewSelection.Add(Collection.Items[I]);
-    end;
-    if GlobalDesignHook <> nil then
-    begin
-      GlobalDesignHook.SetSelection(NewSelection);
-      GlobalDesignHook.LookupRoot := GetLookupRootForComponent(OwnerPersistent);
-    end;
+    for I := 0 to CollectionListBox.Items.Count - 1 do
+      if CollectionListBox.Selected[I] then
+        NewSelection.Add(Collection.Items[I]);
+    GlobalDesignHook.SetSelection(NewSelection);
+    GlobalDesignHook.LookupRoot := GetLookupRootForComponent(OwnerPersistent);
   finally
     NewSelection.Free;
   end;
