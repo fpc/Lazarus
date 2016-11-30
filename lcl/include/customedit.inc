@@ -505,6 +505,11 @@ begin
     inherited WndProc(Message);
 end;
 
+function TCustomEdit.ShouldAutoAdjustWidthAndHeight: Boolean;
+begin
+  Result := (Align = alNone);
+end;
+
 procedure TCustomEdit.CMWantSpecialKey(var Message: TCMWantSpecialKey);
 begin
   // don't allow LCL to handle arrow keys for edit controls

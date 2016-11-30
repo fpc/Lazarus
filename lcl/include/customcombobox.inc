@@ -622,6 +622,11 @@ begin
     Result := False;
 end;
 
+function TCustomComboBox.ShouldAutoAdjustWidthAndHeight: Boolean;
+begin
+  Result := (Align = alNone);
+end;
+
 {------------------------------------------------------------------------------
   function TCustomComboBox.GetItemCount: Integer;
 
