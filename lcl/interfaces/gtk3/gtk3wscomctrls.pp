@@ -488,7 +488,7 @@ begin
   if not WSCheckHandleAllocated(ALV, 'ColumnGetWidth') then
     Exit;
   // DebugLn('TGtk3WSCustomListView.ColumnGetWidth ');
-  Result := TGtk3ListView(ALV.Handle).ColumnGetWidth(AColumn.Index);
+  Result := TGtk3ListView(ALV.Handle).ColumnGetWidth(AIndex);
 end;
 
 class procedure TGtk3WSCustomListView.ColumnInsert(const ALV: TCustomListView;
