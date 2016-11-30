@@ -2239,6 +2239,17 @@ begin
   Message.Result:= 0;
 end;
 
+procedure TCustomForm.WMDPIChanged(var Msg: TLMessage);
+begin
+  if Parent=nil then
+  begin
+    if Scaled then
+      ScaleBy(Msg.wParamhi, PixelsPerInch);
+  end;
+
+  FPixelsPerInch := Msg.wParamhi;
+end;
+
 {------------------------------------------------------------------------------
        TCustomForm Method Hide
 ------------------------------------------------------------------------------}

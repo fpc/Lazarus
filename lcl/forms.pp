@@ -510,6 +510,7 @@ type
     procedure CMActivate(var Message: TLMessage); message CM_ACTIVATE;
     procedure CMDeactivate(var Message: TLMessage); message CM_DEACTIVATE;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
+    procedure WMDPIChanged(var Msg: TLMessage); message LM_DPICHANGED;
   protected
     FActionLists: TList; // keep this TList for Delphi compatibility
     FFormBorderStyle: TFormBorderStyle;
