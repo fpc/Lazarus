@@ -145,7 +145,7 @@ begin
         begin
           Node := FVST.AddChild(nil);
           Data := FVST.GetNodeData(Node);
-          Data^.FName := PackageFile.Name + '(' + PackageFile.VersionAsString + ')';
+          Data^.FName := PackageFile.Name + '(' + PackageFile.InstalledFileVersion + ')';
           Data^.FImageIndex := 1;
         end;
       end;

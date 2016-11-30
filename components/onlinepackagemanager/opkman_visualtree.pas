@@ -802,6 +802,7 @@ begin
   end;
   Node := FVST.GetFirst;
   HideButtons;
+  CollapseEx;
   if Node <> nil then
     FVST.TopNode := Node;
 end;
