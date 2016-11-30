@@ -235,6 +235,7 @@ type
     procedure SetMode(AMode: TCodeExplorerMode);
     procedure UpdateMode;
     procedure UpdateCaption;
+    function OnExpandedStateGetNodeText(Node: TTreeNode): string;
   protected
     fLastCodeTool: TCodeTool;
     fCodeSortedForStartPos: TAvgLvlTree;// tree of TTreeNode sorted for TViewNodeData(Node.Data).StartPos, secondary EndPos
@@ -1943,6 +1944,25 @@ begin
     s+=' - ' + ExtractFileName(FCodeFilename);
 end;
 
+function TCodeExplorerView.OnExpandedStateGetNodeText(Node: TTreeNode): string;
+var
+  p: Integer;
+begin
+  Result:=Node.Text;
+  if Result='' then exit;
+  p:=length(Result);
+  if Result[p]=')' then begin
+    dec(p);
+    while (p>1) and (Result[p] in ['+','0'..'9']) do dec(p);
+    if (p>1) and (Result[p]='(') then begin
+      repeat
+        dec(p);
+      until (p=0) or (Result[p]<>' ');
+      SetLength(Result,p);
+    end;
+  end;
+end;
+
 procedure TCodeExplorerView.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
@@ -2196,8 +2216,10 @@ begin
 
       // start updating the CodeTreeView
       CodeTreeview.BeginUpdate;
+      debugln(['TCodeExplorerView.RefreshCode BBB1 ========================================']);
       if not CurFollowNode then
-        OldExpanded:=TTreeNodeExpandedState.Create(CodeTreeView);
+        OldExpanded:=TTreeNodeExpandedState.Create(CodeTreeView,@OnExpandedStateGetNodeText);
+      debugln(['TCodeExplorerView.RefreshCode BBB2 ========================================']);
 
       ClearCodeTreeView;
 
