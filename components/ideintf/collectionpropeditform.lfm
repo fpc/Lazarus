@@ -14,7 +14,7 @@ object CollectionPropertyEditorForm: TCollectionPropertyEditorForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poDefaultPosOnly
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.7'
   object ToolBar1: TToolBar
     Left = 0
     Height = 42
@@ -87,11 +87,11 @@ object CollectionPropertyEditorForm: TCollectionPropertyEditorForm
     end
     object actMoveUp: TAction
       Caption = 'Up'
-      OnExecute = actMoveUpExecute
+      OnExecute = actMoveUpDownExecute
     end
     object actMoveDown: TAction
       Caption = 'Down'
-      OnExecute = actMoveDownExecute
+      OnExecute = actMoveUpDownExecute
     end
   end
 end

@@ -25,8 +25,7 @@ type
     MoveDownButton: TToolButton;
     procedure actAddExecute(Sender: TObject);
     procedure actDelExecute(Sender: TObject);
-    procedure actMoveDownExecute(Sender: TObject);
-    procedure actMoveUpExecute(Sender: TObject);
+    procedure actMoveUpDownExecute(Sender: TObject);
     procedure CollectionListBoxClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -168,37 +167,30 @@ begin
   UpdateCaption;
 end;
 
-procedure TCollectionPropertyEditorForm.actMoveDownExecute(Sender: TObject);
+procedure TCollectionPropertyEditorForm.actMoveUpDownExecute(Sender: TObject);
 var
-  I: Integer;
+  I, Direction: Integer;
 begin
   if Collection = nil then Exit;
-
   I := CollectionListBox.ItemIndex;
-  if I >= Collection.Count - 1 then Exit;
 
-  Collection.Items[I].Index := I + 1;
-  CollectionListBox.ItemIndex := I + 1;
+  if TComponent(Sender).Name = 'actMoveUp' then
+  begin
+    Direction := -1;
+    Assert(I > 0, 'TCollectionPropertyEditorForm.actMoveUpDownExecute: wrong index.');
+  end
+  else begin
+    Direction := 1;
+    Assert(I < Collection.Count-1, 'TCollectionPropertyEditorForm.actMoveUpDownExecute: wrong index.');
+  end;
+
+  Collection.Items[I].Index := I + Direction;
+
+  CollectionListBox.Items.Move(I + Direction, I);
+  CollectionListBox.ItemIndex := I + Direction;
 
   FillCollectionListBox;
-  SelectInObjectInspector(True);
-  Modified;
-end;
-
-procedure TCollectionPropertyEditorForm.actMoveUpExecute(Sender: TObject);
-var
-  I: Integer;
-begin
-  if Collection = nil then Exit;
-
-  I := CollectionListBox.ItemIndex;
-  if I < 0 then Exit;
-
-  Collection.Items[I].Index := I - 1;
-  CollectionListBox.ItemIndex := I - 1;
-
-  FillCollectionListBox;
-  SelectInObjectInspector(True);
+  SelectInObjectInspector(False);
   Modified;
 end;
 
@@ -216,7 +208,8 @@ begin
     else
       NewCaption := '';
 
-  if NewCaption <> '' then NewCaption := NewCaption + '.';
+  if NewCaption <> '' then
+    NewCaption := NewCaption + '.';
   NewCaption := oiColEditEditing + ' ' + NewCaption + PropertyName;
 
   if CollectionListBox.ItemIndex > -1 then
