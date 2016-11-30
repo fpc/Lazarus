@@ -218,6 +218,7 @@ const
   LM_DROPFILES         = $0233;
 
   LM_SELCHANGE         = $0234;
+  LM_DPICHANGED        = $02E0;
   LM_CUT               = $0300;
   LM_COPY              = $0301;
   LM_PASTE             = $0302;

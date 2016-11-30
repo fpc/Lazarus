@@ -1946,6 +1946,10 @@ var
   CharCodeNotEmpty: boolean;
   R: TRect;
   ACtl: TWinControl;
+{$IF NOT DECLARED(WM_DPICHANGED)} // WM_DPICHANGED was added in FPC 3.1.1
+const
+  WM_DPICHANGED = $02E0;
+{$ENDIF}
 begin
   FillChar(LMessage, SizeOf(LMessage), 0);
   PLMsg := @LMessage;
@@ -1981,6 +1985,7 @@ begin
       end;
     WM_ENTERIDLE: Application.Idle(False);
     WM_ACTIVATE:  SetLMessageAndParams(LM_ACTIVATE);
+    WM_DPICHANGED: SetLMessageAndParams(LM_DPICHANGED);
     WM_IME_ENDCOMPOSITION:
     begin
       {IME Windows the composition has finished}
