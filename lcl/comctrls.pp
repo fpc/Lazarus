@@ -3681,6 +3681,8 @@ type
   end;
 
 
+  TTVGetNodeText = function(Node: TTreeNode): string of object;
+
   { TTreeNodeExpandedState }
   { class to store and restore the expanded state of a TTreeView
     The nodes are identified by their Text property.
@@ -3695,15 +3697,20 @@ type
    }
 
   TTreeNodeExpandedState = class
+  private
+    FOnGetNodeText: TTVGetNodeText;
+    function DefaultGetNodeText(Node: TTreeNode): string;
+  public
     NodeText: string;
     Children: TAvgLvlTree;
-    constructor Create(FirstTreeNode: TTreeNode);
-    constructor Create(TreeView: TCustomTreeView);
+    constructor Create(FirstTreeNode: TTreeNode; const GetNodeTextEvent: TTVGetNodeText = nil);
+    constructor Create(TreeView: TCustomTreeView; const GetNodeTextEvent: TTVGetNodeText = nil);
     destructor Destroy; override;
     procedure Clear;
     procedure CreateChildNodes(FirstTreeNode: TTreeNode);
     procedure Apply(FirstTreeNode: TTreeNode; CollapseToo: boolean = true);
     procedure Apply(TreeView: TCustomTreeView; CollapseToo: boolean = true);
+    property OnGetNodeText: TTVGetNodeText read FOnGetNodeText write FOnGetNodeText;
   end;
 
 

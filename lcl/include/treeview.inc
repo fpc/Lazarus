@@ -192,13 +192,28 @@ end;
 
 { TTreeNodeExpandedState }
 
-constructor TTreeNodeExpandedState.Create(FirstTreeNode: TTreeNode);
+function TTreeNodeExpandedState.DefaultGetNodeText(Node: TTreeNode): string;
 begin
+  Result:=Node.Text;
+end;
+
+constructor TTreeNodeExpandedState.Create(FirstTreeNode: TTreeNode;
+  const GetNodeTextEvent: TTVGetNodeText);
+begin
+  if GetNodeTextEvent<>nil then
+    FOnGetNodeText:=GetNodeTextEvent
+  else
+    FOnGetNodeText:=@DefaultGetNodeText;
   CreateChildNodes(FirstTreeNode);
 end;
 
-constructor TTreeNodeExpandedState.Create(TreeView: TCustomTreeView);
+constructor TTreeNodeExpandedState.Create(TreeView: TCustomTreeView;
+  const GetNodeTextEvent: TTVGetNodeText);
 begin
+  if GetNodeTextEvent<>nil then
+    FOnGetNodeText:=GetNodeTextEvent
+  else
+    FOnGetNodeText:=@DefaultGetNodeText;
   CreateChildNodes(TreeView.Items.GetFirstNode);
 end;
 
@@ -221,16 +236,19 @@ var
   ChildNode: TTreeNode;
   NewExpandedNode: TTreeNodeExpandedState;
 begin
-  if (FirstTreeNode<>nil) and (FirstTreeNode.Parent<>nil) then
-    NodeText:=FirstTreeNode.Parent.Text
+  Clear;
+  if (FirstTreeNode=nil) then exit;
+  if (FirstTreeNode.Parent<>nil) then
+    NodeText:=OnGetNodeText(FirstTreeNode.Parent)
   else
     NodeText:='';
-  Clear;
   ChildNode:=FirstTreeNode;
   while ChildNode<>nil do begin
     if ChildNode.Expanded then begin
       if Children=nil then Children:=TAvgLvlTree.Create(@CompareExpandedNodes);
-      NewExpandedNode:=TTreeNodeExpandedState.Create(ChildNode.GetFirstChild);
+      NewExpandedNode:=TTreeNodeExpandedState.Create(ChildNode.GetFirstChild,OnGetNodeText);
+      if ChildNode.GetFirstChild=nil then
+        NewExpandedNode.NodeText:=OnGetNodeText(ChildNode);
       Children.Add(NewExpandedNode);
     end;
     ChildNode:=ChildNode.GetNextSibling;
@@ -246,8 +264,10 @@ begin
   if Children=nil then exit;
   ChildNode:=FirstTreeNode;
   while ChildNode<>nil do begin
-    ChildNodeText:=ChildNode.Text;
+    ChildNodeText:=OnGetNodeText(ChildNode);
     ANode:=Children.FindKey(PChar(ChildNodeText),@CompareTextWithExpandedNode);
+    if ChildNodeText='' then
+      debugln(['TTreeNodeExpandedState.Apply ',ChildNode.GetTextPath,' ChildNodeText="',ChildNodeText,'"']);
     if ANode<>nil then
       ChildNode.Expanded:=true
     else if CollapseToo then
