@@ -1555,7 +1555,9 @@ begin
     '''','#','0'..'9','$','%':
       begin
         // a constant
-        if (ObserverState.IgnoreConstLevel>=0)
+        if not FindUnnamedConstants then begin
+          // ignore
+        end else if (ObserverState.IgnoreConstLevel>=0)
         and (ObserverState.IgnoreConstLevel>=ObserverState.StackPtr)
         then begin
           // ignore range
@@ -2218,10 +2220,8 @@ begin
 
       // start updating the CodeTreeView
       CodeTreeview.BeginUpdate;
-      debugln(['TCodeExplorerView.RefreshCode BBB1 ========================================']);
       if not CurFollowNode then
         OldExpanded:=TTreeNodeExpandedState.Create(CodeTreeView,@OnExpandedStateGetNodeText);
-      debugln(['TCodeExplorerView.RefreshCode BBB2 ========================================']);
 
       ClearCodeTreeView;
 
