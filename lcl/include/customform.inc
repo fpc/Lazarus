@@ -2250,10 +2250,11 @@ begin
   if Parent=nil then
   begin
     if Scaled then
+    begin
       ScaleBy(Msg.wParamhi, PixelsPerInch);
+      FPixelsPerInch := Msg.wParamhi;
+    end;
   end;
-
-  FPixelsPerInch := Msg.wParamhi;
 end;
 
 {------------------------------------------------------------------------------
