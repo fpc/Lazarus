@@ -158,6 +158,12 @@ begin
 
   EndFormUpdate; // the BeginFormUpdate is in CreateNew
   inherited AfterConstruction;
+
+  if Scaled then
+  begin
+    ScaleBy(Screen.PixelsPerInch, DesignTimeDPI);
+    FPixelsPerInch := Screen.PixelsPerInch;
+  end;
 end;
 
 {------------------------------------------------------------------------------
