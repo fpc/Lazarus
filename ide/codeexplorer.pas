@@ -1246,6 +1246,7 @@ var
   ObserverCats: TCEObserverCategories;
   ProcNode: TCodeTreeNode;
   ObsState: TCodeObserverStatementState;
+  TVNode: TTreeNode;
 begin
   CodeNode:=Tool.Tree.Root;
   ObserverCats:=CodeExplorerOptions.ObserverCategories;
@@ -1269,7 +1270,8 @@ begin
             if LineCnt>=CodeExplorerOptions.LongProcLineCount then
             begin
               ProcNode:=CodeNode.Parent;
-              AddCodeNode(cefcLongProcs,ProcNode);
+              TVNode:=AddCodeNode(cefcLongProcs,ProcNode);
+              TVNode.Text:=TVNode.Text+' ['+IntToStr(LineCnt)+']';
             end;
           end;
           if (cefcEmptyProcs in ObserverCats)
