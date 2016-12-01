@@ -404,7 +404,7 @@ type
     property MemberByName[AIndex: String]: TFpDbgSymbol read GetMemberByName; // Includes inheritance
     //
     property Flags: TDbgSymbolFlags read GetFlags;
-    property Count: Integer read GetCount; deprecated;
+    property Count: Integer read GetCount; deprecated 'use MemberCount instead';
     property Parent: TFpDbgSymbol read GetParent; deprecated;
     // for Subranges
     property HasBounds: Boolean read GetHasBounds;
