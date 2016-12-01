@@ -159,7 +159,7 @@ begin
   EndFormUpdate; // the BeginFormUpdate is in CreateNew
   inherited AfterConstruction;
 
-  if Scaled then
+  if Scaled and (Screen.PixelsPerInch<>DesignTimeDPI) then
   begin
     ScaleBy(Screen.PixelsPerInch, DesignTimeDPI);
     FPixelsPerInch := Screen.PixelsPerInch;
@@ -2249,7 +2249,7 @@ procedure TCustomForm.WMDPIChanged(var Msg: TLMessage);
 begin
   if Parent=nil then
   begin
-    if Scaled then
+    if Scaled and (Msg.wParamhi<>PixelsPerInch) then
     begin
       ScaleBy(Msg.wParamhi, PixelsPerInch);
       FPixelsPerInch := Msg.wParamhi;
