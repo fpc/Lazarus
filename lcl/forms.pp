@@ -456,7 +456,6 @@ type
     function GetClientHandle: HWND;
     function GetEffectiveShowInTaskBar: TShowInTaskBar;
     function GetMonitor: TMonitor;
-    function GetPixelsPerInch: Longint;
     function IsAutoScrollStored: Boolean;
     function IsForm: Boolean;
     function IsIconStored: Boolean;
@@ -693,7 +692,7 @@ type
     property OnWindowStateChange: TNotifyEvent
                          read FOnWindowStateChange write FOnWindowStateChange;
     property ParentFont default False;
-    property PixelsPerInch: Longint read GetPixelsPerInch write FPixelsPerInch stored False;
+    property PixelsPerInch: Longint read FPixelsPerInch write FPixelsPerInch stored False;
     property Position: TPosition read FPosition write SetPosition default poDesigned;
     property RestoredLeft: integer read FRestoredLeft;
     property RestoredTop: integer read FRestoredTop;

@@ -159,9 +159,9 @@ begin
   EndFormUpdate; // the BeginFormUpdate is in CreateNew
   inherited AfterConstruction;
 
-  if Scaled and (Screen.PixelsPerInch<>DesignTimeDPI) then
+  if Scaled and (Screen.PixelsPerInch<>FPixelsPerInch) then
   begin
-    ScaleBy(Screen.PixelsPerInch, DesignTimeDPI);
+    ScaleBy(Screen.PixelsPerInch, PixelsPerInch);
     FPixelsPerInch := Screen.PixelsPerInch;
   end;
 end;
@@ -2333,35 +2333,6 @@ begin
   Result := IsForm and (Icon <> nil);
 end;
 
-function TCustomForm.GetPixelsPerInch: Longint;
-var
-  ParentForm: TCustomForm;
-  DC: HDC;
-begin
-  if FPixelsPerInch = 0 then
-  begin
-    if Assigned(Parent) then
-    begin
-      ParentForm := GetParentForm(Self);
-      if Assigned(ParentForm) then
-        FPixelsPerInch := ParentForm.PixelsPerInch;
-    end;
-
-    if FPixelsPerInch <= 0 then
-    begin
-      if HandleAllocated then
-      begin
-        DC := GetDC(Handle);
-        FPixelsPerInch := GetDeviceCaps(DC, LOGPIXELSX);
-        ReleaseDC(Handle, DC);
-      end
-      else
-        FPixelsPerInch := Screen.PixelsPerInch;
-    end;
-  end;
-  Result := FPixelsPerInch;
-end;
-
 function TCustomForm.GetMonitor: TMonitor;
 begin
   Result := Screen.MonitorFromWindow(Handle, mdNearest);
@@ -2705,10 +2676,11 @@ begin
     if Control.CanFocus then SetActiveControl(Control);
   end;
   //DebugLn('TCustomForm.Loaded ',Name,':',ClassName,' ',FormUpdating,' ',fsCreating in FFormState,' ',Visible,' ',fsVisible in FormState);
-  if fsVisible in FormState then
-    Visible := True;
   if csDesigning in ComponentState then
     FDesignTimeDPI := Screen.PixelsPerInch;
+  FPixelsPerInch := FDesignTimeDPI;
+  if fsVisible in FormState then
+    Visible := True;
 end;
 
 {------------------------------------------------------------------------------
