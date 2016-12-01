@@ -1578,10 +1578,8 @@ begin
     Include(FFlags,lffSelectedValid);
   end else
   begin
-    FSelected := AValue;
-    if HandleAllocated then
-      TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FSelected.Index,
-          FSelected, lisSelected, True);
+    DoSelectItem(FSelected, False);
+    DoSelectItem(AValue, True);
   end;
 end;
 
