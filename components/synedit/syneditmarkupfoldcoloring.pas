@@ -122,11 +122,7 @@ type
 
 implementation
 uses
-  SynEdit, SynEditTypes, SynEditMiscProcs, Dialogs, strutils
-{$IFDEF SynEditMarkupFoldColoringDebug}
-  , SynHighlighterPas
-{$ENDIF}
-  ;
+  SynEdit, SynEditTypes, SynEditMiscProcs, Dialogs;
 
 
 {$IFDEF SynEditMarkupFoldColoringDebug}
