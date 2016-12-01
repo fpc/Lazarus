@@ -162,7 +162,7 @@ begin
   if Scaled and (Screen.PixelsPerInch<>FPixelsPerInch) then
   begin
     AutoAdjustLayout(lapAutoAdjustForDPI, FPixelsPerInch, Screen.PixelsPerInch,
-      Width, MulDiv(Width, Screen.PixelsPerInch, FPixelsPerInch));
+      Width, MulDiv(Width, Screen.PixelsPerInch, FPixelsPerInch), False);
     FPixelsPerInch := Screen.PixelsPerInch;
   end;
 end;
@@ -2254,7 +2254,7 @@ begin
     if Scaled and (hi(Msg.wParam)<>PixelsPerInch) then
     begin
       AutoAdjustLayout(lapAutoAdjustForDPI, FPixelsPerInch, hi(Msg.wParam),
-        Width, MulDiv(Width, hi(Msg.wParam), FPixelsPerInch));
+        Width, MulDiv(Width, hi(Msg.wParam), FPixelsPerInch), True);
       FPixelsPerInch := hi(Msg.wParam);
     end;
   end;
