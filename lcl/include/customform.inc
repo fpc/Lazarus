@@ -2249,10 +2249,10 @@ procedure TCustomForm.WMDPIChanged(var Msg: TLMessage);
 begin
   if Parent=nil then
   begin
-    if Scaled and (Msg.wParamhi<>PixelsPerInch) then
+    if Scaled and (hi(Msg.wParam)<>PixelsPerInch) then
     begin
-      ScaleBy(Msg.wParamhi, PixelsPerInch);
-      FPixelsPerInch := Msg.wParamhi;
+      ScaleBy(hi(Msg.wParam), PixelsPerInch);
+      FPixelsPerInch := hi(Msg.wParam);
     end;
   end;
 end;
