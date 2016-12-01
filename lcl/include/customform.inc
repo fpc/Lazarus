@@ -2635,8 +2635,6 @@ begin
   FFormState := FFormState - [fsBorderStyleChanged, fsFormStyleChanged];
   inherited CreateWnd;
 
-  FPixelsPerInch := 0;
-
   //DebugLn('Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');
   UpdateMenu;
 
