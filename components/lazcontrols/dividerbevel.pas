@@ -52,9 +52,9 @@ type
     procedure CalculatePreferredSize(
                          var PreferredWidth, PreferredHeight: Integer;
                          {%H-}WithThemeSpace: Boolean); override;
-    function ShouldAutoAdjustWidthAndHeight: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
+    function ShouldAutoAdjustWidthAndHeight: Boolean; override;
   published
     property Caption;
     property Align;
