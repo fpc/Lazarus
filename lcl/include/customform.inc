@@ -356,7 +356,7 @@ end;
 procedure TCustomForm.SetDesignTimeDPI(const aDesignTimeDPI: Integer);
 begin
   if (csLoading in ComponentState) // allow setting only when loading
-  or not (csDesigning in ComponentState)) then // or in runtime (the programmer has to know why he is doing that)
+  or not (csDesigning in ComponentState) then // or in runtime (the programmer has to know why he is doing that)
     FDesignTimeDPI := aDesignTimeDPI
   else
     raise EInvalidOperation.Create(sCannotSetDesignTimeDPI);
