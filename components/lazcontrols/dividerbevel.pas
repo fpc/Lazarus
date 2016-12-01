@@ -52,6 +52,7 @@ type
     procedure CalculatePreferredSize(
                          var PreferredWidth, PreferredHeight: Integer;
                          {%H-}WithThemeSpace: Boolean); override;
+    function ShouldAutoAdjustWidthAndHeight: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -394,6 +395,11 @@ begin
     PreferredHeight := 0;
     PreferredWidth := Max(FTextExtent.cy, FBevelHeight);
   end;
+end;
+
+function TDividerBevel.ShouldAutoAdjustWidthAndHeight: Boolean;
+begin
+  Result := (Align = alNone);
 end;
 
 constructor TDividerBevel.Create(AOwner: TComponent);
