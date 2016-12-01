@@ -1523,7 +1523,8 @@ type
     property BaseParentClientSize: TSize read FBaseParentClientSize;
     procedure WriteLayoutDebugReport(const Prefix: string); virtual;
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
-      const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer); virtual;
+      const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer;
+      const AScaleFonts: Boolean); virtual;
     function ShouldAutoAdjustLeftAndTop: Boolean; virtual;
     function ShouldAutoAdjustWidthAndHeight: Boolean; virtual;
   public
@@ -2195,8 +2196,9 @@ type
     procedure ScrollBy_WS(DeltaX, DeltaY: Integer);
     procedure ScrollBy(DeltaX, DeltaY: Integer); virtual;
     procedure WriteLayoutDebugReport(const Prefix: string); override;
-    procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
-      const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer); override;
+    procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy; const AFromDPI,
+      AToDPI, AOldFormWidth, ANewFormWidth: Integer;
+      const AScaleFonts: Boolean); override;
   public
     constructor Create(TheOwner: TComponent);override;
     constructor CreateParented(AParentWindow: HWND);

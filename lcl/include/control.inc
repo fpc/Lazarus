@@ -3834,7 +3834,8 @@ begin
 end;
 
 procedure TControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
-  const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer);
+  const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer;
+  const AScaleFonts: Boolean);
 var
   lXProportion, lYProportion: Double;
   NewLeft, NewTop, NewHeight, NewWidth: Integer;
@@ -3858,6 +3859,9 @@ begin
   // y-axis adjustment proportion
   if AFromDPI > 0 then lYProportion := AToDPI / AFromDPI
   else lYProportion := 1.0;
+
+  if AScaleFonts and not ParentFont then
+    Font.Height := Round(GetFontData(Font.Reference.Handle).Height*lYProportion);
 
   // Apply the changes
   if lMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
