@@ -1372,6 +1372,10 @@ msgstr "黄"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "不能聚焦于无法聚焦或者不可见的窗口"
 
+#: lclstrconsts.scannotsetdesigntimedpi
+msgid "Cannot set design time DPI."
+msgstr ""
+
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
 msgstr "重复的菜单"

@@ -1329,6 +1329,10 @@ msgstr "Жёлтый"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Невозможно перевести фокус в отключённое или невидимое окно"
 
+#: lclstrconsts.scannotsetdesigntimedpi
+msgid "Cannot set design time DPI."
+msgstr ""
+
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Дублирующиеся меню"

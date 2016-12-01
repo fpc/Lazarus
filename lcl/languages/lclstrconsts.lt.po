@@ -1360,6 +1360,10 @@ msgstr "Geltona"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Negalima sufokusuoti neveiksnaus ar nematomo lango"
 
+#: lclstrconsts.scannotsetdesigntimedpi
+msgid "Cannot set design time DPI."
+msgstr ""
+
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Meniu dubliuojasi"

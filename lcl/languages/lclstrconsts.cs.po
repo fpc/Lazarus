@@ -1331,6 +1331,10 @@ msgstr "Žlutá"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Nelze zaktivnit zakázané nebo neviditelné okno"
 
+#: lclstrconsts.scannotsetdesigntimedpi
+msgid "Cannot set design time DPI."
+msgstr ""
+
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Zdvojit nabídku"

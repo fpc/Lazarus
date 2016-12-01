@@ -1333,6 +1333,10 @@ msgstr "Giallo"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Impossibile dare il focus a finestre disabilitate o invisibili"
 
+#: lclstrconsts.scannotsetdesigntimedpi
+msgid "Cannot set design time DPI."
+msgstr ""
+
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Menu dupicati"
