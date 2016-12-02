@@ -1474,6 +1474,7 @@ end;
 function TCodeBuffer.FileOnDiskHasChanged(IgnoreModifiedFlag: Boolean): boolean;
 // file on disk has changed since last load/save
 begin
+  if IsVirtual then exit(false);
   if IgnoreModifiedFlag then
   begin
     if FileExistsCached(Filename) then
