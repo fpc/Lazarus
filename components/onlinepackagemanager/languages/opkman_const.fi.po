@@ -1,0 +1,901 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: opkman_const.rscategoriesfrm_bcancel_caption
+msgid "Cancel"
+msgstr "Peru"
+
+#: opkman_const.rscategoriesfrm_byes_caption
+msgctxt "opkman_const.rscategoriesfrm_byes_caption"
+msgid "Ok"
+msgstr ""
+
+#: opkman_const.rscategoriesfrm_caption
+msgid "List with categories"
+msgstr "Luettelo luokittain"
+
+#: opkman_const.rscategoriesfrm_lbmessage_caption
+msgid "Please select(check) one or more categories"
+msgstr "Valitse (tarkista) yksi tai useampi luokka"
+
+#: opkman_const.rscreaterepositorypackagefrm_caption
+msgctxt "opkman_const.rscreaterepositorypackagefrm_caption"
+msgid "Create repository package"
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_cbopen_caption
+msgid "After create open containing folder"
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_error0
+msgid "Error reading package"
+msgstr "Virhe luettaessa pakkausta"
+
+#: opkman_const.rscreaterepositorypackagefrm_error1
+msgid "Cannot create zip file:"
+msgstr "Ei pystytä luomaan zip tiedostoa:"
+
+#: opkman_const.rscreaterepositorypackagefrm_error2
+msgid "Cannot create JSON file:"
+msgstr "Ei pystytä luomaan JSON tiedostoa:"
+
+#: opkman_const.rscreaterepositorypackagefrm_lbcategory_caption
+msgid "Category:"
+msgstr "Luokka:"
+
+#: opkman_const.rscreaterepositorypackagefrm_lbdisplayname_caption
+msgid "Display name"
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_lbdownloadurl_caption
+msgid "Download link:"
+msgstr "Latauslinkki:"
+
+#: opkman_const.rscreaterepositorypackagefrm_lbfpccompatibility_caption
+msgid "FPC compatibility:"
+msgstr "Free Pascal yhteensopivuus:"
+
+#: opkman_const.rscreaterepositorypackagefrm_lbhomepageurl_caption
+msgid "Home page:"
+msgstr "Kotisivu:"
+
+#: opkman_const.rscreaterepositorypackagefrm_lblazcompatibility_caption
+msgid "Lazarus compatibility:"
+msgstr "Lazarus yhteensopivuus:"
+
+#: opkman_const.rscreaterepositorypackagefrm_lbpackagedir_caption
+msgid "Select package directory:"
+msgstr "Valitse pakettikansio:"
+
+#: opkman_const.rscreaterepositorypackagefrm_lbsupportedwidgetset_caption
+msgid "Supported widgetset:"
+msgstr "Tuetut käyttöliittymäkirjastot"
+
+#: opkman_const.rscreaterepositorypackagefrm_lbsvnurl_caption
+msgctxt "opkman_const.rscreaterepositorypackagefrm_lbsvnurl_caption"
+msgid "SVN"
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_message0
+msgid "Please select a category for package:"
+msgstr "Valitse pakkauksen luokka:"
+
+#: opkman_const.rscreaterepositorypackagefrm_message1
+msgid "Please enter supported lazarus versions for package:"
+msgstr "Anna pakkauksen tukemat Lazarus versiot:"
+
+#: opkman_const.rscreaterepositorypackagefrm_message2
+msgid "Please enter supported FPC versions for package:"
+msgstr "Anna pakkauksen tukemat FPC versiot:"
+
+#: opkman_const.rscreaterepositorypackagefrm_message3
+msgid "Please enter supported widgetsets for package:"
+msgstr "Anna pakkauksen tukemat käyttöliittymäkirjastot:"
+
+#: opkman_const.rscreaterepositorypackagefrm_message4
+msgid "Compressing package. Please wait..."
+msgstr "Pakataan paketti. Odota ..."
+
+#: opkman_const.rscreaterepositorypackagefrm_message5
+msgid "Creating JSON. Please wait..."
+msgstr "Luodaan JSON. Odota..."
+
+#: opkman_const.rscreaterepositorypackagefrm_message6
+msgid "Repository package successfully created."
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_nopackage
+msgid "No packages found!"
+msgstr "Ei yhtään pakettia löydetty!"
+
+#: opkman_const.rscreaterepositorypackagefrm_pncaption_caption0
+msgid "Available packages"
+msgstr "Saatavilla olevat paketit"
+
+#: opkman_const.rscreaterepositorypackagefrm_pncaption_caption1
+msgctxt "opkman_const.rscreaterepositorypackagefrm_pncaption_caption1"
+msgid "Description"
+msgstr "Kuvaus"
+
+#: opkman_const.rscreaterepositorypackagefrm_pncaption_caption2
+msgid "Data"
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_pnmessage_caption
+msgid "Please wait..."
+msgstr "Odota ..."
+
+#: opkman_const.rscreaterepositorypackagefrm_sddtitledst
+msgid "Save repository package to..."
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_sddtitlesrc
+msgid "Select package directory"
+msgstr "Valitse paketti kansio"
+
+#: opkman_const.rslazaruspackagemanager
+msgid "Online Package Manager"
+msgstr ""
+
+#: opkman_const.rsmainfrm_caption
+msgid "packages found"
+msgstr "pakettia löydetty"
+
+#: opkman_const.rsmainfrm_cball_caption
+msgid "All/None"
+msgstr "Kaikki/Ei mitään"
+
+#: opkman_const.rsmainfrm_cball_hint
+msgid "Check/Uncheck packages"
+msgstr ""
+
+#: opkman_const.rsmainfrm_cbfilterby_hint
+msgid "Filter package list by:"
+msgstr "Suodata pakkauslettelo :"
+
+#: opkman_const.rsmainfrm_edfilter_hint
+msgid "Type filter text"
+msgstr ""
+
+#: opkman_const.rsmainfrm_filenamealreadyexists
+msgid "A package with the same zip file already exists!"
+msgstr "Samanniminen paketti zip-tiedostona on jo olemassa!"
+
+#: opkman_const.rsmainfrm_lbfilter_caption
+msgid "Filter by:"
+msgstr ""
+
+#: opkman_const.rsmainfrm_micreaterepository
+msgid "Create repository"
+msgstr ""
+
+#: opkman_const.rsmainfrm_micreaterepositorypackage
+msgctxt "opkman_const.rsmainfrm_micreaterepositorypackage"
+msgid "Create repository package"
+msgstr ""
+
+#: opkman_const.rsmainfrm_mijsonhide
+msgid "Hide JSON"
+msgstr "Piilota JSON"
+
+#: opkman_const.rsmainfrm_mijsonshow
+msgid "Show JSON"
+msgstr "Näytä JSON"
+
+#: opkman_const.rsmainfrm_packagealreadydownloaded
+msgid "The following repository packages already exists in the target folder. Continue?"
+msgstr ""
+
+#: opkman_const.rsmainfrm_packagealreadyinstalled
+msgid "The following packages are alrady installed. Continue with install?"
+msgstr "Seuraavat paketit on jo asennettu. Jatketaanko asentamista?"
+
+#: opkman_const.rsmainfrm_packagenamealreadyexists
+msgid "A package with the same name already exists!"
+msgstr "Samanniminen paketti on jo olemassa!"
+
+#: opkman_const.rsmainfrm_packageupdate0
+msgid "The following repository packages don't have a valid external download link. The packages will be skipped. Continue?"
+msgstr ""
+
+#: opkman_const.rsmainfrm_packageupdate1
+msgid "None of the checked repository package(s) has a valid external download link."
+msgstr ""
+
+#: opkman_const.rsmainfrm_packageupdatewarning
+msgid ""
+"Updating packages from external link is not without a risk!\n"
+"Only update if you trust the package maintainer. Continue?\n"
+msgstr ""
+
+#: opkman_const.rsmainfrm_rsmessagedownload
+msgid "Downloading package list. Please wait..."
+msgstr "Ladataan pakettiluettelo. Odota ..."
+
+#: opkman_const.rsmainfrm_rsmessageerror0
+msgid "Cannot download package list. Error message:"
+msgstr "Ei voida ladata pakettiluetteloa. Virheviesti:"
+
+#: opkman_const.rsmainfrm_rsmessageerror1
+msgid "Invalid JSON file."
+msgstr "Virheellinen JSON tiedosto."
+
+#: opkman_const.rsmainfrm_rsmessageerror2
+msgid "Remote server unreachable."
+msgstr ""
+
+#: opkman_const.rsmainfrm_rsmessagenopackage
+msgid "No packages to show."
+msgstr "Ei paketteja näytettäväksi"
+
+#: opkman_const.rsmainfrm_rsmessagenorepository0
+msgid "Remote package repository not configured."
+msgstr ""
+
+#: opkman_const.rsmainfrm_rsmessagenorepository1
+msgid "Do you wish to configure it now?"
+msgstr "Haluatko asettaa sen nyt?"
+
+#: opkman_const.rsmainfrm_rsmessageparsingjson
+msgid "Parsing JSON. Please wait..."
+msgstr "JSON:in jäsennys. Odota ..."
+
+#: opkman_const.rsmainfrm_rsnopackagetodownload
+msgid "Please check one or more packages!"
+msgstr "Tarkista yhdestä tai useammasta paketista!"
+
+#: opkman_const.rsmainfrm_rspackagedependency0
+msgid "depends on package:"
+msgstr "riippuvuus pakkauksesta:"
+
+#: opkman_const.rsmainfrm_rspackagedependency1
+msgid "Resolve dependency?"
+msgstr "Ratkaise riippuvuus?"
+
+#: opkman_const.rsmainfrm_rspackagedependency2
+msgid "Not resolving dependencies might lead to install failure!"
+msgstr ""
+
+#: opkman_const.rsmainfrm_rspackagedependency3
+msgid "is in"
+msgstr ""
+
+#: opkman_const.rsmainfrm_rspackagedependency4
+msgid "dependency list. Unchecking it might lead to installing failure. Do you wish to continue?"
+msgstr "riippuvuusluettelo. Sen poistaminen saattaisi johtaa asentamisen epäonnistumiseen. Haluatko jatkaa?"
+
+#: opkman_const.rsmainfrm_rsrepositorycleanup0
+msgid "This will delete all non-installed packages from local repository. Continue?"
+msgstr ""
+
+#: opkman_const.rsmainfrm_rsrepositorycleanup1
+msgid "packages deleted!"
+msgstr "paketit poistettu!"
+
+#: opkman_const.rsmainfrm_spclear_hint
+msgid "Clear filter text"
+msgstr ""
+
+#: opkman_const.rsmainfrm_spcollapse_hint
+msgid "Collapse package tree"
+msgstr ""
+
+#: opkman_const.rsmainfrm_spexpand_hint
+msgid "Expand package tree"
+msgstr "Laajenna paketti puu"
+
+#: opkman_const.rsmainfrm_tbcleanup_caption
+msgid "Cleanup"
+msgstr ""
+
+#: opkman_const.rsmainfrm_tbcleanup_hint
+msgid "Cleanup local repository"
+msgstr ""
+
+#: opkman_const.rsmainfrm_tbdownload_caption
+msgid "Download"
+msgstr "Lataa"
+
+#: opkman_const.rsmainfrm_tbdownload_hint
+msgid "Download packages to..."
+msgstr "Lataa paketit ..."
+
+#: opkman_const.rsmainfrm_tbinstall_caption
+msgid "Install"
+msgstr "Asenna"
+
+#: opkman_const.rsmainfrm_tbinstall_hint
+msgid "Install packages"
+msgstr "Asenna pakkaukset"
+
+#: opkman_const.rsmainfrm_tboptions_caption
+msgctxt "opkman_const.rsmainfrm_tboptions_caption"
+msgid "Options"
+msgstr "Optiot"
+
+#: opkman_const.rsmainfrm_tboptions_hint
+msgid "Show options dialog"
+msgstr "Näytä optiot dialogi"
+
+#: opkman_const.rsmainfrm_tbrefresh_caption
+msgid "Refresh"
+msgstr "Päivitä"
+
+#: opkman_const.rsmainfrm_tbrefresh_hint
+msgid "Refresh package list"
+msgstr "Päivitä pakettiluettelo"
+
+#: opkman_const.rsmainfrm_tbrepository_caption
+msgid "Create"
+msgstr "Luo"
+
+#: opkman_const.rsmainfrm_tbrepository_hint
+msgid "Create package or repository"
+msgstr ""
+
+#: opkman_const.rsmainfrm_tbupdate_caption
+msgctxt "opkman_const.rsmainfrm_tbupdate_caption"
+msgid "Update"
+msgstr "Päivitä"
+
+#: opkman_const.rsmainfrm_tbupdate_hint
+msgid "Update packages from external URL"
+msgstr "Päivitä paketit ulkoisesta URL:stä"
+
+#: opkman_const.rsmainfrm_vstheadercolumn_data
+msgid "Status/Data"
+msgstr "Tila/Data"
+
+#: opkman_const.rsmainfrm_vstheadercolumn_installed
+msgctxt "opkman_const.rsmainfrm_vstheadercolumn_installed"
+msgid "Installed"
+msgstr "Asenettu"
+
+#: opkman_const.rsmainfrm_vstheadercolumn_packagefile
+msgid "Package file(.lpk)"
+msgstr "Pakettitiedosto (.lpk)"
+
+#: opkman_const.rsmainfrm_vstheadercolumn_packagename
+msgid "Packages"
+msgstr "Paketit"
+
+#: opkman_const.rsmainfrm_vstheadercolumn_repository
+msgctxt "opkman_const.rsmainfrm_vstheadercolumn_repository"
+msgid "Repository"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vstheadercolumn_update
+msgctxt "opkman_const.rsmainfrm_vstheadercolumn_update"
+msgid "Update"
+msgstr "Päivitä"
+
+#: opkman_const.rsmainfrm_vsttext_author
+msgid "Author"
+msgstr "Tekijä"
+
+#: opkman_const.rsmainfrm_vsttext_category
+msgid "Category"
+msgstr "Luokka"
+
+#: opkman_const.rsmainfrm_vsttext_dependecies
+msgid "Dependencies"
+msgstr "Riippuvuudet"
+
+#: opkman_const.rsmainfrm_vsttext_desc
+msgid "Description for package"
+msgstr "Paketin kuvaus"
+
+#: opkman_const.rsmainfrm_vsttext_description
+msgctxt "opkman_const.rsmainfrm_vsttext_description"
+msgid "Description"
+msgstr "Kuvaus"
+
+#: opkman_const.rsmainfrm_vsttext_downloadurl
+msgid "Update link"
+msgstr "Päivitä linkki"
+
+#: opkman_const.rsmainfrm_vsttext_fpccompatibility
+msgid "FPC compatibility"
+msgstr "Free Pascal yhteensopivuus"
+
+#: opkman_const.rsmainfrm_vsttext_homepageurl
+msgid "Home page"
+msgstr "Kotisivu"
+
+#: opkman_const.rsmainfrm_vsttext_lazcompatibility
+msgid "Lazarus compatibility"
+msgstr "Lazarus yhteensopivuus"
+
+#: opkman_const.rsmainfrm_vsttext_lic
+msgid "License info for package"
+msgstr "Paketin lisenssi"
+
+#: opkman_const.rsmainfrm_vsttext_license
+msgid "License"
+msgstr "Lisenssi"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory
+msgid "Package category"
+msgstr "Paketin luokka"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory0
+msgid "Charts and Graphs"
+msgstr "Kaaviot ja kuvaajat"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory1
+msgid "Cryptography"
+msgstr "Salaus"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory10
+msgid "Indicators and Gauges"
+msgstr "Ilmaisimet ja mittarit"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory11
+msgid "Labels"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory12
+msgid "LazIDEPlugins"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory13
+msgid "List and Combo Boxes"
+msgstr "Luettelot ja yhdistelmäruudut"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory14
+msgid "ListViews and TreeViews"
+msgstr "Luettelo ja puunäkynät"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory15
+msgid "Menus"
+msgstr "Valikot"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory16
+msgid "Multimedia"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory17
+msgid "Networking"
+msgstr "Verkko"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory18
+msgid "Panels"
+msgstr "Paneelit"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory19
+msgid "Reporting"
+msgstr "Raportit"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory2
+msgid "DataControls"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory20
+msgid "Science"
+msgstr "Tiede"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory21
+msgid "Security"
+msgstr "Turvallisuus"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory22
+msgid "Shapes"
+msgstr "Muodot"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory23
+msgid "Sizers, Scrollers"
+msgstr "Koon muuttajat, vierityspalkit"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory24
+msgid "System"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory25
+msgid "Tabbed Components"
+msgstr "Välilehtikomponentit"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory26
+msgid "Other"
+msgstr "Muut"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory3
+msgid "Date and Time"
+msgstr "Päiväys ja aika"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory4
+msgid "Dialogs"
+msgstr "Dialogit"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory5
+msgid "Edit, Memos"
+msgstr "Tekstiruudut, muistiot"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory6
+msgid "Files and Drives"
+msgstr "Tiedostot ja asemat"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory7
+msgid "GUIContainers"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory8
+msgid "Graphics"
+msgstr "Grafiikka"
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory9
+msgid "Grids"
+msgstr "Taulukot"
+
+#: opkman_const.rsmainfrm_vsttext_packageinfo
+msgid "Package info"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_packagestate0
+msgctxt "opkman_const.rsmainfrm_vsttext_packagestate0"
+msgid "Repository"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_packagestate1
+msgid "Downloaded"
+msgstr "Ladattu"
+
+#: opkman_const.rsmainfrm_vsttext_packagestate2
+msgid "Extracted"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_packagestate3
+msgctxt "opkman_const.rsmainfrm_vsttext_packagestate3"
+msgid "Installed"
+msgstr "Asennettu"
+
+#: opkman_const.rsmainfrm_vsttext_packagestate4
+msgid "Up to date"
+msgstr "Ajantasalla"
+
+#: opkman_const.rsmainfrm_vsttext_packagestatus
+msgid "Package status"
+msgstr "Paketin tila"
+
+#: opkman_const.rsmainfrm_vsttext_packagetype
+msgid "Package type"
+msgstr "Paketin tyyppi"
+
+#: opkman_const.rsmainfrm_vsttext_packagetype0
+msgid "Designtime and runtime"
+msgstr "Suunnittelun ja ajonaikainen"
+
+#: opkman_const.rsmainfrm_vsttext_packagetype1
+msgid "Designtime"
+msgstr "Suunnittelunaikainen"
+
+#: opkman_const.rsmainfrm_vsttext_packagetype2
+msgid "Runtime"
+msgstr "Ajonaikainen"
+
+#: opkman_const.rsmainfrm_vsttext_packagetype3
+msgid "Runtime only, cannot be installed in IDE"
+msgstr "Vain ajonaikainen ei voida asentaa kehitysympäristöön"
+
+#: opkman_const.rsmainfrm_vsttext_repositoryfiledate
+msgid "Available since"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_repositoryfilehash
+msgid "Repository filehash"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_repositoryfilename
+msgid "Repository filename"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_repositoryfilesize
+msgid "Repository filesize"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_supportedwidgetsets
+msgid "Supported widget sets"
+msgstr "Tuetut käyttöliittymäkirjastot"
+
+#: opkman_const.rsmainfrm_vsttext_svnurl
+msgctxt "opkman_const.rsmainfrm_vsttext_svnurl"
+msgid "SVN"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_version
+msgid "Version"
+msgstr "Versio"
+
+#: opkman_const.rsoptions_cbdelete_caption
+msgid "Delete downloaded zip files after installation/update"
+msgstr "Poista ladatut zip-tiedostojen asennuksen/päivityksen jälkeen"
+
+#: opkman_const.rsoptions_cbdelete_hint
+msgid "If this option is checked the downloaded zip file is always deleted after installation"
+msgstr "Jos tämä vaihtoehto on valittu niin zip-tiedosto poistetaan aina asennuksen jälkeen"
+
+#: opkman_const.rsoptions_cbforcedownloadextract_caption
+msgid "Always force download and extract"
+msgstr "Aina ladataan ja puretaan"
+
+#: opkman_const.rsoptions_cbforcedownloadextract_hint
+msgid "If this option is checked the packages are always re-downloaded/extracted before install"
+msgstr "Jos tämä vaihtoehto on valittu niin paketit ovat aina uudelleen ladattu/purettu ennen asennusta"
+
+#: opkman_const.rsoptions_cbproxy_caption
+msgid "Use proxy"
+msgstr "Käytä välityspalvelinta"
+
+#: opkman_const.rsoptions_edlocalrepositoryarchive_hint
+msgid "The folder where the zip files are downloaded from the remote repository"
+msgstr ""
+
+#: opkman_const.rsoptions_edlocalrepositorypackages_hint
+msgid "The folder where the repository packages are extracted/installed"
+msgstr ""
+
+#: opkman_const.rsoptions_edlocalrepositoryupdate_hint
+msgid "The folder where the zip files are downloaded from the package maintainer webpage"
+msgstr ""
+
+#: opkman_const.rsoptions_frmcaption
+msgctxt "opkman_const.rsoptions_frmcaption"
+msgid "Options"
+msgstr "Optiot"
+
+#: opkman_const.rsoptions_gbproxysettings_caption
+msgid "Proxy settings"
+msgstr "Välityspalvelimen asetukset"
+
+#: opkman_const.rsoptions_invaliddirectory_info
+msgid "Please enter a valid directory"
+msgstr "Anna kelvollinen kansio"
+
+#: opkman_const.rsoptions_lblocalrepositoryarchive_caption
+msgid "Archive directory"
+msgstr ""
+
+#: opkman_const.rsoptions_lblocalrepositorypackages_caption
+msgid "Local repository"
+msgstr ""
+
+#: opkman_const.rsoptions_lblocalrepositoryupdate_caption
+msgid "Update directory"
+msgstr "Päivitä kansio"
+
+#: opkman_const.rsoptions_lbpassword_caption
+msgid "Password"
+msgstr "Salasana"
+
+#: opkman_const.rsoptions_lbport_caption
+msgid "Port"
+msgstr "Portti"
+
+#: opkman_const.rsoptions_lbremoterepository_caption
+msgid "Remote repository"
+msgstr ""
+
+#: opkman_const.rsoptions_lbserver_caption
+msgid "Server"
+msgstr "Palvelin"
+
+#: opkman_const.rsoptions_lbusername_caption
+msgid "Username"
+msgstr "Käyttäjänimi"
+
+#: opkman_const.rsoptions_proxyport_info
+msgid "Please enter the proxy server port!"
+msgstr "Anna välityspalvelimen portti!"
+
+#: opkman_const.rsoptions_proxyserver_info
+msgid "Please enter the proxy server address!"
+msgstr "Anna välityspalvelimen osoite!"
+
+#: opkman_const.rsoptions_remoterepository_information
+msgid "Please enter the remote repository address!"
+msgstr ""
+
+#: opkman_const.rsoptions_restoredefaults_conf
+msgid "This will restore the default settings. Continue?"
+msgstr "Tämä palauttaa oletusasetukset. Jatketaanko?"
+
+#: opkman_const.rspackagelistfrm_bno_caption
+msgid "No"
+msgstr "Ei"
+
+#: opkman_const.rspackagelistfrm_bok_caption
+msgctxt "opkman_const.rspackagelistfrm_bok_caption"
+msgid "Ok"
+msgstr ""
+
+#: opkman_const.rspackagelistfrm_byes_caption
+msgid "Yes"
+msgstr "Kyllä"
+
+#: opkman_const.rspackagelistfrm_caption0
+msgid "Installed package list"
+msgstr "Asennettu pakettiluettelo"
+
+#: opkman_const.rspackagelistfrm_caption1
+msgid "Downloaded package list"
+msgstr "Ladattu pakettiluettelo "
+
+#: opkman_const.rspackagelistfrm_caption2
+msgid "Update package list"
+msgstr "Päivitä pakettiluettelo"
+
+#: opkman_const.rsprogressfrm_caption0
+msgid "Downloading packages"
+msgstr "Ladataan paketteja"
+
+#: opkman_const.rsprogressfrm_caption1
+msgid "Extracting packages"
+msgstr "Puretaan paketteja"
+
+#: opkman_const.rsprogressfrm_caption2
+msgid "Installing packages"
+msgstr "Asennetut paketit"
+
+#: opkman_const.rsprogressfrm_caption3
+msgid "Updating packages"
+msgstr "Päivitetyt paketit"
+
+#: opkman_const.rsprogressfrm_caption4
+msgid ". Please wait..."
+msgstr ". Odota ...."
+
+#: opkman_const.rsprogressfrm_caption5
+msgid "Unknown"
+msgstr "Tuntematon"
+
+#: opkman_const.rsprogressfrm_cbextractopen_caption0
+msgid "Extract after download"
+msgstr "Pura lataamisen jälkeen"
+
+#: opkman_const.rsprogressfrm_cbextractopen_caption1
+msgid "Open containing folder"
+msgstr ""
+
+#: opkman_const.rsprogressfrm_conf0
+msgid "Continue with next one?"
+msgstr "Jatketaanko seuraavaan?"
+
+#: opkman_const.rsprogressfrm_error0
+msgid "Cannot download package:"
+msgstr "Ei voi ladata pakettia:"
+
+#: opkman_const.rsprogressfrm_error1
+msgid "Error message:"
+msgstr "Virheviesti:"
+
+#: opkman_const.rsprogressfrm_error10
+msgctxt "opkman_const.rsprogressfrm_error10"
+msgid "Dependecy"
+msgstr "Riippuvuus"
+
+#: opkman_const.rsprogressfrm_error11
+msgctxt "opkman_const.rsprogressfrm_error11"
+msgid "not found!"
+msgstr "ei löydetty!"
+
+#: opkman_const.rsprogressfrm_error12
+msgid "Cannot open package file."
+msgstr "Ei voida avata pakettitiedostoa."
+
+#: opkman_const.rsprogressfrm_error13
+msgid "Cannot compile package."
+msgstr "Ei voida kääntää pakettia"
+
+#: opkman_const.rsprogressfrm_error14
+msgid "Cannot install package."
+msgstr "Ei voida asentaa pakettia."
+
+#: opkman_const.rsprogressfrm_error2
+msgid "Cannot extract package:"
+msgstr "Ei voida purkaa pakettia:"
+
+#: opkman_const.rsprogressfrm_error3
+msgid "Cannot install package:"
+msgstr "Ei voida asentaa pakettia:"
+
+#: opkman_const.rsprogressfrm_error4
+msgctxt "opkman_const.rsprogressfrm_error4"
+msgid "Dependecy"
+msgstr "Riippuvuus"
+
+#: opkman_const.rsprogressfrm_error5
+msgctxt "opkman_const.rsprogressfrm_error5"
+msgid "not found!"
+msgstr "ei löydetä!"
+
+#: opkman_const.rsprogressfrm_error6
+msgid "Unknown error."
+msgstr "Tuntematon virhe"
+
+#: opkman_const.rsprogressfrm_error7
+msgid "Cannot contact download site"
+msgstr "Ei saada yhteyttä lataussivulle"
+
+#: opkman_const.rsprogressfrm_error8
+msgid "No valid download link found."
+msgstr "Epäkelpo latauslinkki löytyi"
+
+#: opkman_const.rsprogressfrm_error9
+msgid "Cannot add package to the IDE."
+msgstr "Ei voida lisätä pakettia kehitysympäristöön."
+
+#: opkman_const.rsprogressfrm_info0
+msgctxt "opkman_const.rsprogressfrm_info0"
+msgid "Installing package:"
+msgstr "Asennetut paketit:"
+
+#: opkman_const.rsprogressfrm_info1
+msgctxt "opkman_const.rsprogressfrm_info1"
+msgid "Success."
+msgstr "Onnistui."
+
+#: opkman_const.rsprogressfrm_info2
+msgid "Contacting download site for"
+msgstr ""
+
+#: opkman_const.rsprogressfrm_info3
+msgid "Preparing to download. Please wait..."
+msgstr "Valmistellaan latausta. Odota..."
+
+#: opkman_const.rsprogressfrm_info4
+msgid "Canceling. Please wait..."
+msgstr "Perutaan. Odota..."
+
+#: opkman_const.rsprogressfrm_info5
+msgid "Opening package:"
+msgstr "Avataan paketti:"
+
+#: opkman_const.rsprogressfrm_info6
+msgctxt "opkman_const.rsprogressfrm_info6"
+msgid "Success."
+msgstr "Onnistui."
+
+#: opkman_const.rsprogressfrm_info7
+msgid "Compiling package:"
+msgstr "Käännetään paketti:"
+
+#: opkman_const.rsprogressfrm_info8
+msgctxt "opkman_const.rsprogressfrm_info8"
+msgid "Installing package:"
+msgstr "Asennetaan paketti:"
+
+#: opkman_const.rsprogressfrm_lbellapsed_caption
+msgid "Ellapsed:"
+msgstr ""
+
+#: opkman_const.rsprogressfrm_lbpackage_caption
+msgid "Package:"
+msgstr "Paketti:"
+
+#: opkman_const.rsprogressfrm_lbreceivedtotal_caption0
+msgid "Received(total):"
+msgstr "Vastaanotettu(kaikkiaan):"
+
+#: opkman_const.rsprogressfrm_lbreceivedtotal_caption1
+msgid "Unzipped(total):"
+msgstr "Purettu(kaikkiaan):"
+
+#: opkman_const.rsprogressfrm_lbreceived_caption0
+msgid "Received:"
+msgstr "Vastaanotettu:"
+
+#: opkman_const.rsprogressfrm_lbreceived_caption1
+msgid "Unzipped:"
+msgstr "Purettu:"
+
+#: opkman_const.rsprogressfrm_lbremaining_caption
+msgid "Remaining:"
+msgstr "Jäljellä:"
+
+#: opkman_const.rsprogressfrm_lbspeedcalc_caption
+msgid "Estimating. Please wait..."
+msgstr "Arvioidaan. Odota ..."
+
+#: opkman_const.rsprogressfrm_lbspeed_caption
+msgid "Speed:"
+msgstr "Nopeus:"
+

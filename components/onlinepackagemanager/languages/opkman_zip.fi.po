@@ -1,0 +1,59 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: opkman_zip.serrbufsizechange
+msgid "Changing buffer size is not allowed while (un)zipping."
+msgstr "Puskurin kokoa ei ole sallittua muuttaa purattaessa eikä pakattaessa"
+
+#: opkman_zip.serrcorruptzip
+msgid "Corrupt ZIP file %s."
+msgstr "Viottunut ZIP tiedosto %s."
+
+#: opkman_zip.serrfilechange
+msgid "Changing output file name is not allowed while (un)zipping."
+msgstr "Tiedoston nimeä ei saa muuttaa purattaessa eikä pakattaessa"
+
+#: opkman_zip.serrfiledoesnotexist
+msgid "File \"%s\" does not exist."
+msgstr "Tiedosto \"%s\" ei ole saatavissa"
+
+#: opkman_zip.serrfiletoolarge
+msgid "File size %d is larger than maximum supported size %d."
+msgstr "Tiedoston koko %d on suurempi kuin suurin tuettu koko %d."
+
+#: opkman_zip.serrinvalidcrc
+msgid "Invalid CRC checksum while unzipping %s."
+msgstr "Viallinen CRC:n tarkistussumma kun puretaan %s. "
+
+#: opkman_zip.serrmaxentries
+msgid "Encountered %d file entries; maximum supported is %d."
+msgstr ""
+
+#: opkman_zip.serrmissingarchivename
+msgid "Missing archive filename in streamed entry %d."
+msgstr ""
+
+#: opkman_zip.serrmissingfilename
+msgid "Missing filename in entry %d."
+msgstr ""
+
+#: opkman_zip.serrnofilename
+msgid "No archive filename for examine operation."
+msgstr ""
+
+#: opkman_zip.serrnostream
+msgid "No stream is opened."
+msgstr ""
+
+#: opkman_zip.serrpostoolarge
+msgid "Position/offset %d is larger than maximum supported %d."
+msgstr ""
+
+#: opkman_zip.serrunsupportedcompressionformat
+msgid "Unsupported compression format %d"
+msgstr "Tukematon pakkausformaatti %d"
+
+#: opkman_zip.serrunsupportedmultiplediskscd
+msgid "A central directory split over multiple disks is unsupported."
+msgstr "Keskeisten kansioiden jakamista useille levyille ei tueta."
+
