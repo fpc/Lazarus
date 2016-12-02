@@ -3624,6 +3624,7 @@ components/projectgroups/languages/projectgroupstrconst.it.po svneol=native#text
 components/projectgroups/languages/projectgroupstrconst.po svneol=native#text/plain
 components/projectgroups/languages/projectgroupstrconst.ru.po svneol=native#text/plain
 components/projectgroups/lazprojectgroups.lpk svneol=native#text/plain
+components/projectgroups/lazprojectgroups.pas svneol=native#text/plain
 components/projectgroups/projectgroup.pp svneol=native#text/plain
 components/projectgroups/projectgroupeditor.lfm svneol=native#text/plain
 components/projectgroups/projectgroupeditor.pas svneol=native#text/plain
