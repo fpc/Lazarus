@@ -256,10 +256,12 @@ type
 
   TCustomFrame = class(TScrollingWinControl)
   private
+    FDesignTimeDPI: Integer;
     procedure AddActionList(ActionList: TCustomActionList);
     procedure RemoveActionList(ActionList: TCustomActionList);
     procedure ReadDesignLeft(Reader: TReader);
     procedure ReadDesignTop(Reader: TReader);
+    procedure SetDesignTimeDPI(const aDesignTimeDPI: Integer);
     procedure WriteDesignLeft(Writer: TWriter);
     procedure WriteDesignTop(Writer: TWriter);
   protected
@@ -270,10 +272,13 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure CalculatePreferredSize(var PreferredWidth,
            PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     class function GetControlClassDefaultSize: TSize; override;
+  public
+    property DesignTimeDPI: Integer read FDesignTimeDPI write SetDesignTimeDPI default 96;
   end;
 
   TCustomFrameClass = class of TCustomFrame;
@@ -299,6 +304,7 @@ type
     property ClientWidth;
     property Color nodefault;
     property Constraints;
+    property DesignTimeDPI;
     property DockSite;
     property DragCursor;
     property DragKind;

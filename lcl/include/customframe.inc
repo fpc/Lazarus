@@ -29,6 +29,15 @@ begin
     ParentForm.DoRemoveActionList(ActionList);
 end;
 
+procedure TCustomFrame.SetDesignTimeDPI(const aDesignTimeDPI: Integer);
+begin
+  if (csLoading in ComponentState) // allow setting only when loading
+  or not (csDesigning in ComponentState) then // or in runtime (the programmer has to know why he is doing that)
+    FDesignTimeDPI := aDesignTimeDPI
+  else
+    raise EInvalidOperation.Create(sCannotSetDesignTimeDPI);
+end;
+
 procedure TCustomFrame.ReadDesignLeft(Reader: TReader);
 var
   Temp: LongInt;
@@ -133,6 +142,14 @@ begin
   Result.CY := 240;
 end;
 
+procedure TCustomFrame.Loaded;
+begin
+  inherited Loaded;
+
+  if csDesigning in ComponentState then
+    FDesignTimeDPI := Screen.PixelsPerInch;
+end;
+
 procedure TCustomFrame.DefineProperties(Filer: TFiler);
 Var
   Ancestor: TComponent;
@@ -164,6 +181,7 @@ begin
   inherited Create(AOwner);
   ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents, csSetCaption,
                    csDoubleClicks, csParentBackground];
+  FDesignTimeDPI := 96;
   if (ClassType<>TFrame) and ([csDesignInstance, csDesigning]*ComponentState=[]) then
   begin
     if not InitInheritedComponent(Self, TFrame) then
