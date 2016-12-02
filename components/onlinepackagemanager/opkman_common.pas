@@ -75,6 +75,7 @@ const
 
 var
   LocalRepositoryConfigFile: String;
+  LocalRepositoryUpdatesFile: String;
   PackageAction: TPackageAction;
   InstallPackageList: TObjectList;
 
@@ -87,6 +88,7 @@ function FormatSpeed(Speed: LongInt): String;
 function GetDirSize(const ADirName: String; var AFileCnt, ADirCnt: Integer): Int64;
 procedure FindPackages(const ADirName: String; APackageList: TStrings);
 procedure FindAllFilesEx(const ADirName: String; AFileList: TStrings);
+function FixProtocol(const AURL: String): String;
 
 implementation
 
@@ -119,6 +121,7 @@ begin
   if not DirectoryExists(LocalRepoConfig) then
     CreateDirUTF8(LocalRepoConfig);
   LocalRepositoryConfigFile := LocalRepoConfig + cLocalRepositoryConfigFile;
+  LocalRepositoryUpdatesFile := LocalRepoConfig + cLocalRepositoryUpdatesFile;
 end;
 
 function SecToHourAndMin(const ASec: LongInt): String;
@@ -300,6 +303,13 @@ procedure FindAllFilesEx(const ADirName: String; AFileList: TStrings);
 
 begin
   FindFiles(ADirName);
+end;
+
+function FixProtocol(const AURL: String): String;
+begin
+  Result := AURL;
+  if (Pos('http://', Result) = 0) and (Pos('https://', Result) = 0) then
+    Result := 'https://' + Result;
 end;
 
 end.

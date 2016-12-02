@@ -40,6 +40,7 @@ const
   cLocalRepositoryUpdate = 'update';
   cLocalRepositoryConfig = 'config';
   cLocalRepositoryConfigFile = 'options.xml';
+  cLocalRepositoryUpdatesFile = 'updates.xml';
   cRestrictedExtensionDef = '*.a,*.o,*.ppu,*.compiled,*.bak,*.or,*.rsj,*.~ ';
   cRestrictedDirectoryDef = 'lib,backup';
 

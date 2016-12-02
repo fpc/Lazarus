@@ -103,7 +103,6 @@ type
     FOnPackageUpdateProgress: TOnPackageUpdateProgress;
     FOnPackageUpdateCompleted: TOnPackageUpdateCompleted;
     function GetUpdateSize(const AURL: String; var AErrMsg: String): Int64;
-    function FixProtocol(const AURL: String): String;
     procedure DoReceivedUpdateSize(Sender: TObject; const ContentLength, {%H-}CurrentPos: int64);
     procedure DoOnTimer(Sender: TObject);
     procedure DoOnJSONProgress;
@@ -480,12 +479,12 @@ begin
   FMS := TMemoryStream.Create;
   FHTTPClient := TFPHTTPClient.Create(nil);
   if Options.ProxyEnabled then
-    begin
-      FHTTPClient.Proxy.Host:= Options.ProxyServer;
-      FHTTPClient.Proxy.Port:= Options.ProxyPort;
-      FHTTPClient.Proxy.UserName:= Options.ProxyUser;
-      FHTTPClient.Proxy.Password:= Options.ProxyPassword;
-    end;
+  begin
+    FHTTPClient.Proxy.Host:= Options.ProxyServer;
+    FHTTPClient.Proxy.Port:= Options.ProxyPort;
+    FHTTPClient.Proxy.UserName:= Options.ProxyUser;
+    FHTTPClient.Proxy.Password:= Options.ProxyPassword;
+  end;
 end;
 
 destructor TThreadDownload.Destroy;
@@ -536,13 +535,6 @@ procedure TThreadDownload.DoReceivedUpdateSize(Sender: TObject;
 begin
   if ContentLength > 0 then
     Abort;
-end;
-
-function TThreadDownload.FixProtocol(const AURL: String): String;
-begin
-  Result := AURL;
-  if (Pos('http://', Result) = 0) and (Pos('https://', Result) = 0) then
-    Result := 'https://' + Result;
 end;
 
 function TThreadDownload.GetUpdateSize(const AURL: String; var AErrMsg: String): Int64;

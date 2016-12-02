@@ -125,7 +125,7 @@ implementation
 
 uses opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common,
      opkman_progressfrm, opkman_zipper, opkman_packagelistfrm, opkman_options,
-     opkman_optionsfrm, opkman_createrepositorypackage;
+     opkman_optionsfrm, opkman_createrepositorypackage, opkman_updates;
 {$R *.lfm}
 
 { TMainFrm }
@@ -142,6 +142,7 @@ begin
   PackageDownloader := TPackageDownloader.Create(Options.RemoteRepository);
   PackageDownloader.OnJSONProgress := @DoOnJSONProgress;
   PackageDownloader.OnJSONDownloadCompleted := @DoOnJSONDownloadCompleted;
+  Updates := TUpdates.Create(LocalRepositoryUpdatesFile);
   InstallPackageList := TObjectList.Create(True);
   FHintTimeOut := Application.HintHidePause;
   Application.HintHidePause := 1000000;
@@ -149,6 +150,8 @@ end;
 
 procedure TMainFrm.FormDestroy(Sender: TObject);
 begin
+  Updates.StopUpdate;
+  Updates.Terminate;
   PackageDownloader.Free;
   SerializablePackages.Free;
   VisualTree.Free;
@@ -287,6 +290,7 @@ begin
           MessageDlgEx(rsMainFrm_rsMessageError1 + sLineBreak + SerializablePackages.LastError, mtInformation, [mbOk], Self);
           Exit;
         end;
+        Updates.StartUpdate;
         VisualTree.PopulateTree;
         EnableDisableControls(True);
         SetupMessage;
