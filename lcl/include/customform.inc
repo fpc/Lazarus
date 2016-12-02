@@ -2248,14 +2248,17 @@ begin
 end;
 
 procedure TCustomForm.WMDPIChanged(var Msg: TLMessage);
+var
+  NewDpi: integer;
 begin
   if Parent=nil then
   begin
-    if Scaled and (hi(Msg.wParam)<>PixelsPerInch) then
+    NewDpi := hi(Msg.wParam);
+    if Scaled and (NewDpi<>PixelsPerInch) then
     begin
-      AutoAdjustLayout(lapAutoAdjustForDPI, FPixelsPerInch, hi(Msg.wParam),
-        Width, MulDiv(Width, hi(Msg.wParam), FPixelsPerInch), True);
-      FPixelsPerInch := hi(Msg.wParam);
+      AutoAdjustLayout(lapAutoAdjustForDPI, FPixelsPerInch, NewDpi,
+        Width, MulDiv(Width, NewDpi, FPixelsPerInch), True);
+      FPixelsPerInch := NewDpi;
     end;
   end;
 end;
