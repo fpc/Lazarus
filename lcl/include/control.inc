@@ -5307,7 +5307,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TControl.CNPreferredSizeChanged;
+  procedure TControl.GetSidePosition;
 
   Utility function to retrieve Left,Top,Right and Bottom.
  ------------------------------------------------------------------------------}
