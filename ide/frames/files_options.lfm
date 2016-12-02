@@ -381,10 +381,13 @@ object FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = OpenLastProjectAtStartCheckBox
     AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 166
     Height = 31
     Top = 80
-    Width = 294
+    Width = 454
+    Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 8
     BorderSpacing.Top = 2
     ItemHeight = 0
