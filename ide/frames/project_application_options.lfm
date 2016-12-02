@@ -1,21 +1,21 @@
 object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
   Left = 0
-  Height = 462
+  Height = 550
   Top = 0
   Width = 487
-  ClientHeight = 462
+  ClientHeight = 550
   ClientWidth = 487
   TabOrder = 0
   DesignLeft = 392
   DesignTop = 251
   object AppSettingsGroupBox: TGroupBox
     Left = 0
-    Height = 413
+    Height = 501
     Top = 0
     Width = 487
     Align = alTop
     Caption = 'AppSettingsGroupBox'
-    ClientHeight = 394
+    ClientHeight = 482
     ClientWidth = 483
     TabOrder = 0
     object TitleLabel: TLabel
@@ -73,12 +73,12 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 24
-      Top = 321
+      Top = 413
       Width = 191
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'UseAppBundleCheckBox'
-      TabOrder = 9
+      TabOrder = 12
     end
     object UseXPManifestCheckBox: TCheckBox
       AnchorSideLeft.Control = AppSettingsGroupBox
@@ -192,6 +192,43 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 2
     end
+    object UIAccessCheckBox: TCheckBox
+      AnchorSideTop.Control = ExecutionLevelComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 27
+      Height = 24
+      Top = 331
+      Width = 152
+      BorderSpacing.Top = 3
+      Caption = 'UIAccessCheckBox'
+      TabOrder = 10
+    end
+    object ExecutionLevelComboBox: TComboBox
+      AnchorSideLeft.Control = DpiAwareComboBox
+      AnchorSideTop.Control = DpiAwareComboBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = DpiAwareComboBox
+      AnchorSideRight.Side = asrBottom
+      Left = 195
+      Height = 31
+      Top = 297
+      Width = 282
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 3
+      ItemHeight = 0
+      Style = csDropDownList
+      TabOrder = 9
+    end
+    object ExecutionLevelLabel: TLabel
+      AnchorSideTop.Control = ExecutionLevelComboBox
+      AnchorSideTop.Side = asrCenter
+      Left = 27
+      Height = 17
+      Top = 304
+      Width = 138
+      Caption = 'ExecutionLevelLabel'
+      ParentColor = False
+    end
     object DefaultIconButton: TButton
       AnchorSideLeft.Control = LoadIconButton
       AnchorSideTop.Control = LoadIconButton
@@ -223,11 +260,11 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       ParentFont = False
     end
     object DarwinDividerBevel: TDividerBevel
-      AnchorSideTop.Control = ManifestButton
+      AnchorSideTop.Control = TextFieldButton
       AnchorSideTop.Side = asrBottom
       Left = 8
       Height = 17
-      Top = 301
+      Top = 393
       Width = 471
       Caption = 'For Darwin'
       Anchors = [akTop, akLeft, akRight]
@@ -241,29 +278,59 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 27
       Height = 29
-      Top = 351
+      Top = 443
       Width = 177
       AutoSize = True
       BorderSpacing.Left = 21
       BorderSpacing.Top = 6
       Caption = 'CreateAppBundleButton'
       OnClick = CreateAppBundleButtonClick
-      TabOrder = 10
+      TabOrder = 13
     end
-    object ManifestButton: TButton
+    object DpiAwareLabel: TLabel
       AnchorSideLeft.Control = UseXPManifestCheckBox
+      AnchorSideTop.Control = DpiAwareComboBox
+      AnchorSideTop.Side = asrCenter
+      Left = 27
+      Height = 17
+      Top = 270
+      Width = 103
+      BorderSpacing.Left = 21
+      BorderSpacing.Top = 3
+      Caption = 'DpiAwareLabel'
+      ParentColor = False
+    end
+    object DpiAwareComboBox: TComboBox
+      AnchorSideLeft.Control = ExecutionLevelLabel
+      AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = UseXPManifestCheckBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = TitleEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 195
+      Height = 31
+      Top = 263
+      Width = 282
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 30
+      BorderSpacing.Top = 3
+      ItemHeight = 0
+      Style = csDropDownList
+      TabOrder = 8
+    end
+    object TextFieldButton: TButton
+      AnchorSideLeft.Control = UIAccessCheckBox
+      AnchorSideTop.Control = UIAccessCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 27
       Height = 29
-      Top = 266
-      Width = 118
+      Top = 358
+      Width = 120
       AutoSize = True
-      BorderSpacing.Left = 21
-      BorderSpacing.Top = 6
-      Caption = 'ManifestButton'
-      OnClick = ManifestButtonClick
-      TabOrder = 8
+      BorderSpacing.Top = 3
+      Caption = 'TextFieldButton'
+      OnClick = TextFieldButtonClick
+      TabOrder = 11
     end
   end
   object OpenPictureDialog1: TOpenPictureDialog

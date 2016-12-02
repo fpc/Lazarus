@@ -2548,13 +2548,13 @@ resourcestring
   dlgPOUseAppBundle = 'Use Application Bundle for running and debugging';
   dlgPOCreateAppBundle = 'Create Application Bundle';
   dlgPOUseManifest = 'Use manifest resource (and enable themes)';
-  dlgPOManifestOptions = 'Manifest options';
   dlgPODpiAwareness = 'DPI awareness';
   dlgPODpiAwarenessOff = 'off';
   dlgPODpiAwarenessOn = 'on';
   dlgPODpiAwarenessOldOffNewPerMonitor = 'Vista-8: off, 8.1+: per monitor';
   dlgPODpiAwarenessOldOnNewPerMonitor = 'Vista-8: on, 8.1+: per monitor';
   dlgPOUIAccess = 'UI Access (uiAccess)';
+  dlgPOTextFields = 'Text fields';
   dlgPOAsInvoker = 'as invoker (asInvoker)';
   dlgPOHighestAvailable = 'highest available (highestAvailable)';
   dlgPORequireAdministrator = 'require administrator (requireAdministrator)';
