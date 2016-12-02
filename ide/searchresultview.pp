@@ -37,9 +37,10 @@ unit SearchResultView;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, ComCtrls, LCLType, LCLIntf, LazUTF8,
-  Menus, strutils, IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
-  IDEProcs, Project, MainIntf, Clipbrd, ActnList, IDECommands, TreeFilterEdit;
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, ComCtrls, LCLType,
+  LCLIntf, LazUTF8, AvgLvlTree, LazFileUtils, Menus, strutils, IDEOptionDefs,
+  LazarusIDEStrConsts, EnvironmentOpts, InputHistory, IDEProcs, Project,
+  MainIntf, Clipbrd, ActnList, IDECommands, TreeFilterEdit;
 
 
 type
@@ -99,6 +100,7 @@ type
     fUpdateCount: integer;
     FSearchInListPhrases: string;
     fFiltered: Boolean;
+    fFilenameToNode: TAvgLvlTree; // TTreeNode sorted for Text
     procedure SetSkipped(const AValue: integer);
     procedure AddNode(Line: string; MatchPos: TLazSearchMatchPos);
   public
@@ -223,6 +225,23 @@ implementation
 const
   MaxTextLen = 80;
 
+function CompareTVNodeTextAsFilename(Node1, Node2: Pointer): integer;
+var
+  TVNode1: TTreeNode absolute Node1;
+  TVNode2: TTreeNode absolute Node2;
+begin
+  Result:=CompareFilenames(TVNode1.Text,TVNode2.Text);
+end;
+
+function CompareFilenameWithTVNode(Filename, Node: Pointer): integer;
+var
+  aFilename: String;
+  TVNode: TTreeNode absolute Node;
+begin
+  aFilename:=String(Filename);
+  Result:=CompareFilenames(aFilename,TVNode.Text);
+end;
+
 function CopySearchMatchPos(var Src, Dest: TLazSearchMatchPos): Boolean;
 begin
   Result := False;
@@ -329,13 +348,13 @@ end;
 procedure TSearchResultsView.mniCopyItemClick(Sender: TObject);
 var
   tv: TCustomTreeView;
-  node: TTreeNode;
+  Node: TTreeNode;
 begin
   tv := popList.PopupComponent as TCustomTreeView;
   with tv.ScreenToClient(popList.PopupPoint) do
-    node := tv.GetNodeAt(X, Y);
-  if node <> nil then
-    Clipboard.AsText := node.Text;
+    Node := tv.GetNodeAt(X, Y);
+  if Node <> nil then
+    Clipboard.AsText := Node.Text;
 end;
 
 procedure TSearchResultsView.mniCopySelectedClick(Sender: TObject);
@@ -1032,13 +1051,21 @@ procedure TLazSearchResultTV.AddNode(Line: string; MatchPos: TLazSearchMatchPos)
 var
   Node: TTreeNode;
   ChildNode: TTreeNode;
+  AVLNode: TAvgLvlTreeNode;
 begin
   if MatchPos=nil then exit;
-  Node := Items.FindNodeWithText(MatchPos.FileName);
+  AVLNode:=fFilenameToNode.FindKey(PChar(MatchPos.FileName),@CompareFilenameWithTVNode);
+  if AVLNode<>nil then
+    Node := TTreeNode(AVLNode.Data)
+  else
+    Node := nil;
 
   //enter a new file entry
   if not Assigned(Node) then
+    begin
     Node := Items.Add(Node, MatchPos.FileName);
+    fFilenameToNode.Add(Node);
+    end;
 
   ChildNode := Items.AddChild(Node, Line);
   Node.Expanded:=true;
@@ -1058,16 +1085,18 @@ begin
   fUpdateStrings:= TStringList.Create;
   FSearchInListPhrases := '';
   fFiltered := False;
+  fFilenameToNode:=TAvgLvlTree.Create(@CompareTVNodeTextAsFilename);
 end;//Create
 
 Destructor TLazSearchResultTV.Destroy;
 begin
+  fFilenameToNode.Free;
   if Assigned(fSearchObject) then
     FreeAndNil(fSearchObject);
   //if UpdateStrings is empty, the objects are stored in Items due to filtering
   //filtering clears UpdateStrings
   if (fUpdateStrings.Count = 0) then
-   FreeObjectsTN(Items);
+    FreeObjectsTN(Items);
   if Assigned(fUpdateStrings) then
   begin
     FreeObjects(fUpdateStrings);
@@ -1110,6 +1139,7 @@ begin
 
     Items.BeginUpdate;
     Items.Clear;
+    fFilenameToNode.Clear;
 
     for i := 0 to fUpdateStrings.Count - 1 do
       AddNode(fUpdateStrings[i], TLazSearchMatchPos(fUpdateStrings.Objects[i]));
@@ -1184,19 +1214,20 @@ end;
 procedure TLazSearchResultTV.FreeObjectsTN(tnItems: TTreeNodes);
 var i: Integer;
 begin
- for i:=0 to tnItems.Count-1 do
-   if Assigned(tnItems[i].Data) then
-     TLazSearchMatchPos(tnItems[i].Data).Free;
+  fFilenameToNode.Clear;
+  for i:=0 to tnItems.Count-1 do
+    if Assigned(tnItems[i].Data) then
+      TLazSearchMatchPos(tnItems[i].Data).Free;
 end;
 
 procedure TLazSearchResultTV.FreeObjects(slItems: TStrings);
 var i: Integer;
 begin
- if (slItems.Count <= 0) then Exit;
- for i:=0 to slItems.Count-1 do
+  if (slItems.Count <= 0) then Exit;
+  for i:=0 to slItems.Count-1 do
   begin
-   if Assigned(slItems.Objects[i]) then
-    slItems.Objects[i].Free;
+    if Assigned(slItems.Objects[i]) then
+      slItems.Objects[i].Free;
   end;//End for-loop
 end;
 
