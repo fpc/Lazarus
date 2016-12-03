@@ -622,9 +622,13 @@ begin
     Result := False;
 end;
 
-function TCustomComboBox.ShouldAutoAdjustWidthAndHeight: Boolean;
+procedure TCustomComboBox.ShouldAutoAdjust(var ALeft, ATop, AWidth,
+  AHeight: Boolean);
 begin
-  Result := (Align = alNone);
+  ALeft := (Align = alNone) and (Parent <> nil);
+  ATop := ALeft;
+  AWidth := (Align in [alNone, alLeft, alRight]);
+  AHeight := (Align in [alNone, alTop, alBottom]) and (AutoSize = False);
 end;
 
 {------------------------------------------------------------------------------

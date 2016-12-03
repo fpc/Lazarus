@@ -3840,6 +3840,7 @@ var
   lXProportion, lYProportion: Double;
   NewLeft, NewTop, NewHeight, NewWidth: Integer;
   lMode: TLayoutAdjustmentPolicy;
+  AALeft, AATop, AAWidth, AAHeight: Boolean;
 begin
   // First resolve ladDefault
   lMode := AMode;
@@ -3866,41 +3867,44 @@ begin
   // Apply the changes
   if lMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
-    if ShouldAutoAdjustLeftAndTop then
-    begin
-      NewLeft := Round(Left * lXProportion);
-      NewTop := Round(Top * lYProportion);
-    end
+    AALeft := False;
+    AATop := False;
+    AAWidth := False;
+    AAHeight := False;
+    NewWidth := Width;
+    NewHeight := Height;
+    ShouldAutoAdjust(AALeft, AATop, AAWidth, AAHeight);
+    if AALeft then
+      NewLeft := Round(Left * lXProportion)
     else
-    begin
       NewLeft := Left;
-      NewTop := Top;
-    end;
-    if ShouldAutoAdjustWidthAndHeight then
-    begin
-      NewWidth := Round(Width * lXProportion);
-      NewHeight := Round(Height * lYProportion);
-    end
+    if AATop then
+      NewTop := Round(Top * lYProportion)
     else
+      NewTop := Top;
+    // Give a shake at the autosize to recalculate font sizes for example
+    if (not AAWidth or not AAHeight) and AutoSize then
     begin
-      // Give a shake at the autosize to recalculate font sizes for example
       if AutoSize then AdjustSize();
       NewWidth := Width;
       NewHeight := Height;
     end;
+    if AAWidth then
+      NewWidth := Round(Width * lXProportion);
+    if AAHeight then
+      NewHeight := Round(Height * lYProportion);
+
     SetBounds(NewLeft, NewTop, NewWidth, NewHeight);
   end;
 end;
 
 // Auto-adjust the layout of controls without alignment. Custom anchoring is allowed.
-function TControl.ShouldAutoAdjustLeftAndTop: Boolean;
+procedure TControl.ShouldAutoAdjust(var ALeft, ATop, AWidth, AHeight: Boolean);
 begin
-  Result := (Align = alNone) and (Parent <> nil);
-end;
-
-function TControl.ShouldAutoAdjustWidthAndHeight: Boolean;
-begin
-  Result := (Align = alNone) and (AutoSize = False);
+  ALeft := (Align = alNone) and (Parent <> nil);
+  ATop := ALeft;
+  AWidth := (Align in [alNone, alLeft, alRight]) and (AutoSize = False);
+  AHeight := (Align in [alNone, alTop, alBottom]) and (AutoSize = False);
 end;
 
 procedure TControl.UpdateAnchorRules;

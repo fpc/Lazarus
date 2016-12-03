@@ -52,9 +52,9 @@ type
     procedure CalculatePreferredSize(
                          var PreferredWidth, PreferredHeight: Integer;
                          {%H-}WithThemeSpace: Boolean); override;
+    procedure ShouldAutoAdjust(var ALeft, ATop, AWidth, AHeight: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
-    function ShouldAutoAdjustWidthAndHeight: Boolean; override;
   published
     property Caption;
     property Align;
@@ -397,9 +397,15 @@ begin
   end;
 end;
 
-function TDividerBevel.ShouldAutoAdjustWidthAndHeight: Boolean;
+procedure TDividerBevel.ShouldAutoAdjust(var ALeft, ATop, AWidth,
+  AHeight: Boolean);
 begin
-  Result := (Align = alNone);
+  ALeft := (Align = alNone) and (Parent <> nil);
+  ATop := ALeft;
+  AWidth := (Align in [alNone, alLeft, alRight])
+    and (AutoSize = False) and not (Orientation = trVertical);
+  AHeight := (Align in [alNone, alTop, alBottom])
+    and (AutoSize = False) and not (Orientation = trHorizontal);
 end;
 
 constructor TDividerBevel.Create(AOwner: TComponent);

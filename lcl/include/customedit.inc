@@ -505,9 +505,13 @@ begin
     inherited WndProc(Message);
 end;
 
-function TCustomEdit.ShouldAutoAdjustWidthAndHeight: Boolean;
+procedure TCustomEdit.ShouldAutoAdjust(var ALeft, ATop, AWidth, AHeight: Boolean
+  );
 begin
-  Result := (Align = alNone);
+  ALeft := (Align = alNone) and (Parent <> nil);
+  ATop := ALeft;
+  AWidth := (Align in [alNone, alLeft, alRight]);
+  AHeight := (Align in [alNone, alTop, alBottom]) and (AutoSize = False);
 end;
 
 procedure TCustomEdit.CMWantSpecialKey(var Message: TCMWantSpecialKey);
