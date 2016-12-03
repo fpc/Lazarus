@@ -1,3 +1,21 @@
+lazarus (1.7.0) unstable; urgency=low
+
+  * Snapshot building.
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Mon, 30 Nov 2016 20:01:22 +0100
+
+lazarus (1.5.0) unstable; urgency=low
+
+  * Snapshot building.
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sun, 11 Jan 2015 12:07:35 +0100
+
+lazarus (1.3.0) unstable; urgency=low
+
+  * Snapshot building.
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sun, 3 Nov 2013 10:11:12 +0100
+
 lazarus (0.9.24)
 
 The Lazarus IDE is started with "startlazarus" or directly with "lazarus-ide".
