@@ -1412,6 +1412,9 @@ type
     procedure SetZOrder(TopMost: Boolean); virtual;
     class function GetControlClassDefaultSize: TSize; virtual;
     function ColorIsStored: boolean; virtual;
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double;
+      const AScaleFonts: Boolean); virtual;
   protected
     // actions
     function GetActionLinkClass: TControlActionLinkClass; virtual;

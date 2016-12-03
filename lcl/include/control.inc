@@ -2912,6 +2912,49 @@ begin
   {$ENDIF}
 end;
 
+procedure TControl.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+  const AXProportion, AYProportion: Double; const AScaleFonts: Boolean);
+var
+  NewLeft, NewTop, NewHeight, NewWidth: Integer;
+  AALeft, AATop, AAWidth, AAHeight: Boolean;
+begin
+  if AScaleFonts and not ParentFont then
+    Font.Height := Round(GetFontData(Font.Reference.Handle).Height*AYProportion);
+
+  // Apply the changes
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+  begin
+    AALeft := False;
+    AATop := False;
+    AAWidth := False;
+    AAHeight := False;
+    NewWidth := Width;
+    NewHeight := Height;
+    ShouldAutoAdjust(AALeft, AATop, AAWidth, AAHeight);
+    if AALeft then
+      NewLeft := Round(Left * AXProportion)
+    else
+      NewLeft := Left;
+    if AATop then
+      NewTop := Round(Top * AYProportion)
+    else
+      NewTop := Top;
+    // Give a shake at the autosize to recalculate font sizes for example
+    if (not AAWidth or not AAHeight) and AutoSize then
+    begin
+      if AutoSize then AdjustSize();
+      NewWidth := Width;
+      NewHeight := Height;
+    end;
+    if AAWidth then
+      NewWidth := Round(Width * AXProportion);
+    if AAHeight then
+      NewHeight := Round(Height * AYProportion);
+
+    SetBounds(NewLeft, NewTop, NewWidth, NewHeight);
+  end;
+end;
+
 procedure TControl.AnchorSideChanged(TheAnchorSide: TAnchorSide);
 begin
   //debugln('TControl.AnchorSideChanged ',DbgSName(Self));
@@ -3838,9 +3881,7 @@ procedure TControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
   const AScaleFonts: Boolean);
 var
   lXProportion, lYProportion: Double;
-  NewLeft, NewTop, NewHeight, NewWidth: Integer;
   lMode: TLayoutAdjustmentPolicy;
-  AALeft, AATop, AAWidth, AAHeight: Boolean;
 begin
   // First resolve ladDefault
   lMode := AMode;
@@ -3861,41 +3902,7 @@ begin
   if AFromDPI > 0 then lYProportion := AToDPI / AFromDPI
   else lYProportion := 1.0;
 
-  if AScaleFonts and not ParentFont then
-    Font.Height := Round(GetFontData(Font.Reference.Handle).Height*lYProportion);
-
-  // Apply the changes
-  if lMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
-  begin
-    AALeft := False;
-    AATop := False;
-    AAWidth := False;
-    AAHeight := False;
-    NewWidth := Width;
-    NewHeight := Height;
-    ShouldAutoAdjust(AALeft, AATop, AAWidth, AAHeight);
-    if AALeft then
-      NewLeft := Round(Left * lXProportion)
-    else
-      NewLeft := Left;
-    if AATop then
-      NewTop := Round(Top * lYProportion)
-    else
-      NewTop := Top;
-    // Give a shake at the autosize to recalculate font sizes for example
-    if (not AAWidth or not AAHeight) and AutoSize then
-    begin
-      if AutoSize then AdjustSize();
-      NewWidth := Width;
-      NewHeight := Height;
-    end;
-    if AAWidth then
-      NewWidth := Round(Width * lXProportion);
-    if AAHeight then
-      NewHeight := Round(Height * lYProportion);
-
-    SetBounds(NewLeft, NewTop, NewWidth, NewHeight);
-  end;
+  DoAutoAdjustLayout(lMode, lXProportion, lYProportion, AScaleFonts);
 end;
 
 // Auto-adjust the layout of controls without alignment. Custom anchoring is allowed.
