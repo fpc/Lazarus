@@ -365,6 +365,10 @@ msgstr "Rozlišovať veľké a malé písmo"
 msgid "Control of class '%s' can't have control of class '%s' as a child"
 msgstr "Prvok triedy '%s' nemôže mať prvok triedy '%s' ako dieťa"
 
+#: lclstrconsts.rscontrolhasnoparentform
+msgid "Control '%s' has no parent form"
+msgstr ""
+
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
 msgstr "Prvok '%s' nemá rodičovské okno"

@@ -371,6 +371,10 @@ msgstr "Skirti raidžių lygį"
 msgid "Control of class '%s' can't have control of class '%s' as a child"
 msgstr "„%s“ klasės valdiklis negali būti „%s“ klasės valdiklio tėvas"
 
+#: lclstrconsts.rscontrolhasnoparentform
+msgid "Control '%s' has no parent form"
+msgstr ""
+
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
 msgstr "„%s“ valdiklis neturi tėvinio lango"

@@ -764,6 +764,34 @@ begin
   end;
 end;
 
+function TControl.ScaleCoord(const ASize: Integer): Integer;
+var
+  ParentForm: TCustomForm;
+begin
+  ParentForm := GetParentForm(Self);
+  if ParentForm=nil then
+    raise EInvalidOperation.CreateFmt(rsControlHasNoParentForm, [Name]);
+
+  if ParentForm.DesignTimeDPI=ParentForm.PixelsPerInch then
+    Result := ASize
+  else
+    Result := MulDiv(ASize, ParentForm.PixelsPerInch, ParentForm.DesignTimeDPI);
+end;
+
+function TControl.ScaleCoordBack(const ASize: Integer): Integer;
+var
+  ParentForm: TCustomForm;
+begin
+  ParentForm := GetParentForm(Self);
+  if ParentForm=nil then
+    raise EInvalidOperation.CreateFmt(rsControlHasNoParentForm, [Name]);
+
+  if ParentForm.DesignTimeDPI=ParentForm.PixelsPerInch then
+    Result := ASize
+  else
+    Result := MulDiv(ASize, ParentForm.DesignTimeDPI, ParentForm.PixelsPerInch);
+end;
+
 {------------------------------------------------------------------------------
        TControl.ChangeScale
 

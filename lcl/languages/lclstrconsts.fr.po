@@ -362,6 +362,10 @@ msgstr "Respecter la casse"
 msgid "Control of class '%s' can't have control of class '%s' as a child"
 msgstr "Le contrôle de la classe \"%s\" ne peut pas contenir un contrôle de la classe \"%s\" comme enfant"
 
+#: lclstrconsts.rscontrolhasnoparentform
+msgid "Control '%s' has no parent form"
+msgstr ""
+
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
 msgstr "Le contrôle \"%s\" n'a pas de fenêtre parent"

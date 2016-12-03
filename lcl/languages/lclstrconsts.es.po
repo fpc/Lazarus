@@ -360,6 +360,10 @@ msgstr "Sensible a mayúsculas/minúsculas"
 msgid "Control of class '%s' can't have control of class '%s' as a child"
 msgstr "El control de clase '%s' no puede tener al control de clase '%s' como hijo"
 
+#: lclstrconsts.rscontrolhasnoparentform
+msgid "Control '%s' has no parent form"
+msgstr ""
+
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
 msgstr "El control '%s' no tiene ventana padre"

@@ -360,6 +360,10 @@ msgstr "Sama kirjainkoko"
 msgid "Control of class '%s' can't have control of class '%s' as a child"
 msgstr "Luokan '%s' kontrollin lapsi ei voi olla luokan '%s' kontrolli"
 
+#: lclstrconsts.rscontrolhasnoparentform
+msgid "Control '%s' has no parent form"
+msgstr ""
+
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
 msgstr "Kontrolli '%s':lla ei ole emoikkunaa"

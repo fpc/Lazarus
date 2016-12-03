@@ -364,6 +364,10 @@ msgstr "Rozlišovat velká/malá"
 msgid "Control of class '%s' can't have control of class '%s' as a child"
 msgstr "Prvek třídy '%s' nemůže mít prvek třídy '%s' jako dítě"
 
+#: lclstrconsts.rscontrolhasnoparentform
+msgid "Control '%s' has no parent form"
+msgstr ""
+
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
 msgstr "Prvek '%s' nemá rodičovské okno"

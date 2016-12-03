@@ -371,6 +371,10 @@ msgstr "רגיש לריישיות"
 msgid "Control of class '%s' can't have control of class '%s' as a child"
 msgstr "פקד של המחלקה  '%s' לא יכול לקבל פקד של מחלקה s% בתור בן"
 
+#: lclstrconsts.rscontrolhasnoparentform
+msgid "Control '%s' has no parent form"
+msgstr ""
+
 #: lclstrconsts.rscontrolhasnoparentwindow
 #, fuzzy,badformat
 msgid "Control '%s' has no parent window"

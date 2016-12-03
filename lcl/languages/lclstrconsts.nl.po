@@ -371,6 +371,10 @@ msgstr "Hoofdletter gevoelig"
 msgid "Control of class '%s' can't have control of class '%s' as a child"
 msgstr "Control van klasse '%s' kan control van klasse '%s' niet als kind hebben"
 
+#: lclstrconsts.rscontrolhasnoparentform
+msgid "Control '%s' has no parent form"
+msgstr ""
+
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
 msgstr "Control '%s' heeft geen venster als ouder"
