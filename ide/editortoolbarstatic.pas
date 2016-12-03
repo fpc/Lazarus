@@ -219,6 +219,9 @@ begin
   CfgItem.OnClick     := @FCollection.DoConfigureEditorToolbar;
 
   FToolBar.PopupMenu  := xPM;
+
+  if FWindow.PixelsPerInch<>96 then
+    FToolBar.AutoAdjustLayout(lapAutoAdjustForDPI, 96, FWindow.PixelsPerInch, 0, 0, False);
 end;
 
 destructor TEditorToolbar.Destroy;
