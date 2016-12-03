@@ -257,6 +257,7 @@ type
   TCustomFrame = class(TScrollingWinControl)
   private
     FDesignTimeDPI: Integer;
+    FPixelsPerInch: Integer;
     procedure AddActionList(ActionList: TCustomActionList);
     procedure RemoveActionList(ActionList: TCustomActionList);
     procedure ReadDesignLeft(Reader: TReader);
@@ -273,12 +274,16 @@ type
     procedure CalculatePreferredSize(var PreferredWidth,
            PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure Loaded; override;
+    procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy; const AFromDPI,
+      AToDPI, AOldFormWidth, ANewFormWidth: Integer;
+      const AScaleFonts: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     class function GetControlClassDefaultSize: TSize; override;
   public
     property DesignTimeDPI: Integer read FDesignTimeDPI write SetDesignTimeDPI default 96;
+    property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch;
   end;
 
   TCustomFrameClass = class of TCustomFrame;

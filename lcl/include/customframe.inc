@@ -20,6 +20,16 @@ begin
     ParentForm.DoAddActionList(ActionList);
 end;
 
+procedure TCustomFrame.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
+  const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer;
+  const AScaleFonts: Boolean);
+begin
+  inherited AutoAdjustLayout(AMode, AFromDPI, AToDPI, AOldFormWidth,
+    ANewFormWidth, AScaleFonts);
+
+  FPixelsPerInch := AToDPI;
+end;
+
 procedure TCustomFrame.RemoveActionList(ActionList: TCustomActionList);
 var
   ParentForm: TCustomForm;
@@ -125,15 +135,25 @@ procedure TCustomFrame.SetParent(AParent: TWinControl);
     end;
   end;
 
+var
+  ParentForm: TCustomForm;
 begin
   if Parent=AParent then exit;
   if Parent<>nil then
     UpdateActionLists(Self,opRemove);
+
   if (Parent=nil) and HandleAllocated then
     DestroyHandle;
   inherited SetParent(AParent);
   if Parent <> nil then
+  begin
     UpdateActionLists(Self,opInsert);
+
+    ParentForm := GetParentForm(Self);
+    if (ParentForm<>nil) and ParentForm.Scaled
+    and (ParentForm.PixelsPerInch<>PixelsPerInch) then
+      AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, ParentForm.PixelsPerInch, 0, 0, False);
+  end;
 end;
 
 class function TCustomFrame.GetControlClassDefaultSize: TSize;
@@ -148,6 +168,7 @@ begin
 
   if csDesigning in ComponentState then
     FDesignTimeDPI := Screen.PixelsPerInch;
+  FPixelsPerInch := FDesignTimeDPI;
 end;
 
 procedure TCustomFrame.DefineProperties(Filer: TFiler);
@@ -182,6 +203,7 @@ begin
   ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents, csSetCaption,
                    csDoubleClicks, csParentBackground];
   FDesignTimeDPI := 96;
+  FPixelsPerInch := FDesignTimeDPI;
   if (ClassType<>TFrame) and ([csDesignInstance, csDesigning]*ComponentState=[]) then
   begin
     if not InitInheritedComponent(Self, TFrame) then
