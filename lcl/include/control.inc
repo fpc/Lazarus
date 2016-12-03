@@ -2945,6 +2945,7 @@ procedure TControl.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
 var
   AAWidth, AAHeight: Boolean;
   NewLeft, NewTop, NewWidth, NewHeight, OldWidth, OldHeight: Integer;
+  NewRight, NewBottom: Int64;
 begin
   if AScaleFonts and not ParentFont then
     Font.Height := Round(GetFontData(Font.Reference.Handle).Height*AYProportion);
@@ -2970,12 +2971,32 @@ begin
     if (Align=alNone) and (akLeft in Anchors) then
       NewLeft := Round(NewLeft * AXProportion);
     if (Align=alNone) and (akRight in Anchors) and (Parent<>nil) then
-      NewLeft := Parent.ClientWidth-Round((Parent.ClientWidth-NewLeft-OldWidth) * AXProportion)-OldWidth;
+    begin
+      if not(akLeft in Anchors) then
+      begin
+        NewRight := Round((Parent.ClientWidth-NewLeft-OldWidth) * AXProportion);
+        NewLeft := Parent.ClientWidth-NewRight-OldWidth
+      end else
+      begin
+        NewRight := Round((Parent.ClientWidth-Left-OldWidth) * AXProportion);
+        NewWidth := Parent.ClientWidth-NewLeft-NewRight;
+      end;
+    end;
 
     if (Align=alNone) and (akTop in Anchors) then
       NewTop := Round(NewTop * AYProportion);
     if (Align=alNone) and (akBottom in Anchors) and (Parent<>nil) then
-      NewTop := Parent.ClientHeight-Round((Parent.ClientHeight-NewTop-OldHeight) * AYProportion)-OldHeight;
+    begin
+      if not(akTop in Anchors) then
+      begin
+        NewBottom := Round((Parent.ClientHeight-NewTop-OldHeight) * AYProportion);
+        NewTop := Parent.ClientHeight-NewBottom-OldHeight
+      end else
+      begin
+        NewBottom := Round((Parent.ClientHeight-Top-OldHeight) * AYProportion);
+        NewHeight := Parent.ClientHeight-NewTop-NewBottom;
+      end;
+    end;
 
     // Give a shake at the autosize to recalculate font sizes for example
     if (not AAWidth or not AAHeight) and AutoSize then
