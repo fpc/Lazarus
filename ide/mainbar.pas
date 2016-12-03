@@ -560,6 +560,7 @@ begin
   // This form has no resource => must be constructed using CreateNew
   inherited CreateNew(TheOwner, 1);
   AllowDropFiles:=true;
+  Scaled:=true;
   OnDropFiles:=@MainIDEBarDropFiles;
   try
     Icon.LoadFromResourceName(HInstance, 'WIN_MAIN');
@@ -714,6 +715,7 @@ begin
     CoolBand.FixedSize := True;
     IDECoolBar.ToolBars[I].UseCurrentOptions;
   end;
+  CoolBar.AutoAdjustLayout(lapAutoAdjustForDPI, 96, PixelsPerInch, 0, 0, False);
   CoolBar.AutosizeBands;
 
   CoolBar.Visible := CoolBarOpts.Visible;

@@ -512,8 +512,7 @@ begin
   FCoolBarToolBars.Clear;
   for I := 0 to Options.FToolBars.Count - 1 do
   begin
-    IDEToolBar := TIDEToolBar.Create(Nil);
-    FCoolBarToolBars.Add(IDEToolBar);
+    IDEToolBar := Add;
     IDEToolBar.CurrentOptions.PosIndex := I;
     IDEToolBar.CurrentOptions.Break := Options.FToolBars[I].Break;
     IDEToolBar.CurrentOptions.ButtonNames.Assign(Options.FToolBars[I].ButtonNames);

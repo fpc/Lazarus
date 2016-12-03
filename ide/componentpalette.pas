@@ -201,7 +201,8 @@ var
   ButtonTree: TAVLTree;
   Node: TAVLTreeNode;
   ScrollBox: TScrollBox;
-  buttonx, MaxBtnPerRow, i: integer;
+  buttonx, MaxBtnPerRow, i, ComponentPaletteBtnWidthScaled,
+    ComponentPaletteBtnHeightScaled: integer;
 begin
   if (PageComponent=Nil) or (PageComponent.ComponentCount=0)
   or not (PageComponent.Components[0] is TScrollBox) then
@@ -215,6 +216,8 @@ begin
   Pal := TComponentPalette(Palette);
   if Pal.PageControl<>nil then
     Pal.PageControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPage.ReAlignButtons'){$ENDIF};
+  ComponentPaletteBtnWidthScaled := Pal.PageControl.ScaleCoord(ComponentPaletteBtnWidth);
+  ComponentPaletteBtnHeightScaled := Pal.PageControl.ScaleCoord(ComponentPaletteBtnHeight);
   ButtonTree:=nil;
   try
     ScrollBox:=TScrollBox(PageComponent.Components[0]);
@@ -227,7 +230,7 @@ begin
     end;
     if ButtonTree.Count=0 then exit;
 
-    ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
+    ButtonX:= ((ComponentPaletteBtnWidthScaled*3) div 2) + 2;
 
     {$IFDEF VerboseComponentPalette}
     if PageComponent.Caption = CompPalVerbPgName then
@@ -245,20 +248,20 @@ begin
         ]);
     {$ENDIF}
 
-    MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithoutBar - ButtonX) div ComponentPaletteBtnWidth);
+    MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithoutBar - ButtonX) div ComponentPaletteBtnWidthScaled);
 
     // If we need to wrap, make sure we have space for the scrollbar
     if MaxBtnPerRow < ButtonTree.Count then
-      MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithBar - ButtonX) div ComponentPaletteBtnWidth);
-    //debugln(['TComponentPage.ReAlignButtons MaxBtnPerRow=',MaxBtnPerRow,' ButtonTree.Count=',ButtonTree.Count,' ',ButtonX + MaxBtnPerRow * ComponentPaletteBtnWidth]);
+      MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithBar - ButtonX) div ComponentPaletteBtnWidthScaled);
+    //debugln(['TComponentPage.ReAlignButtons MaxBtnPerRow=',MaxBtnPerRow,' ButtonTree.Count=',ButtonTree.Count,' ',ButtonX + MaxBtnPerRow * ComponentPaletteBtnWidthScaled]);
     if MaxBtnPerRow<1 then MaxBtnPerRow:=1;
 
     i:=0;
     Node:=ButtonTree.FindLowest;
     while Node<>nil do begin
       CurButton:=TSpeedbutton(Node.Data);
-      CurButton.SetBounds(ButtonX + (i mod MaxBtnPerRow) * ComponentPaletteBtnWidth,
-                          (i div MaxBtnPerRow) * ComponentPaletteBtnHeight,
+      CurButton.SetBounds(ButtonX + (i mod MaxBtnPerRow) * ComponentPaletteBtnWidthScaled,
+                          (i div MaxBtnPerRow) * ComponentPaletteBtnHeightScaled,
                           CurButton.Width, CurButton.Height);
       {$IFDEF VerboseComponentPalette}
       if PageComponent.Caption = CompPalVerbPgName then
@@ -330,7 +333,7 @@ begin
       VertScrollBar.Visible := false;
       AutoScroll:=false;
       {$ENDIF}
-      VertScrollBar.Increment := ComponentPaletteBtnHeight;
+      VertScrollBar.Increment := PageComponent.ScaleCoord(ComponentPaletteBtnHeight);
       VertScrollBar.Tracking := True;
       Parent := PageComponent;
     end;
@@ -407,7 +410,7 @@ begin
     Down := True;
     Hint := lisSelectionTool;
     ShowHint := EnvironmentOptions.ShowHintsForComponentPalette;
-    SetBounds(0,0,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
+    SetBounds(0,0,aScrollBox.ScaleCoord(ComponentPaletteBtnWidth),aScrollBox.ScaleCoord(ComponentPaletteBtnHeight));
     Parent := aScrollBox;
   end;
 end;
@@ -435,7 +438,7 @@ begin
       Pal.fComponentButtons[CompCN] := Btn;
       Btn.Name := CompPaletteCompBtnPrefix + aButtonUniqueName + CompCN;
       // Left and Top will be set in ReAlignButtons.
-      Btn.SetBounds(Btn.Left,Btn.Top,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
+      Btn.SetBounds(Btn.Left,Btn.Top,aScrollBox.ScaleCoord(ComponentPaletteBtnWidth),aScrollBox.ScaleCoord(ComponentPaletteBtnHeight));
       Btn.Glyph.Assign(aComp.Icon);
       Btn.GroupIndex := 1;
       Btn.Flat := true;
