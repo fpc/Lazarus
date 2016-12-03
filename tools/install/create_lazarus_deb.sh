@@ -184,6 +184,7 @@ cat $DebianSrcDir/control$LCLWidgetset | \
       -e "s/LAZVERSION/$LazVersion/g" \
       -e "s/ARCH/$Arch/g" \
       -e "s/LAZSIZE/$LazSize/g" \
+      -e "s/PKGNAME/$PkgName/g" \
   > $LazBuildDir/DEBIAN/control
 
 # copyright and changelog files
