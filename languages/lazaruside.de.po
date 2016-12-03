@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-10-09 22:58+0200\n"
+"PO-Revision-Date: 2016-12-03 18:58+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Language: de_DE\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 1.8.9\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -1885,7 +1885,7 @@ msgstr "Vordergrundfarbe"
 
 #: lazarusidestrconsts.dlgformtitlebarchangesobjectinspector
 msgid "Change Object Inspector contents on clicking form title bar"
-msgstr ""
+msgstr "Objektinspektor-Inhalte durch Klicken auf Titelleiste ändern"
 
 #: lazarusidestrconsts.dlgformtitlebarchangesobjectinspectorhint
 msgid "Show a form's properties in Object Inspector by clicking on its title bar."
@@ -2165,10 +2165,8 @@ msgid "Interface"
 msgstr ""
 
 #: lazarusidestrconsts.dlginsertmethods
-#, fuzzy
-#| msgid "Insert methods"
 msgid "Insert method implementations"
-msgstr "Methodeneinfügung"
+msgstr "Methodenimplementierungen einfügen"
 
 #: lazarusidestrconsts.dlginsertsection
 msgid "Insert into Uses section of"
@@ -2723,7 +2721,6 @@ msgid "Messages"
 msgstr "Meldungen"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentdebug
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentdebug"
 msgid "Debug"
 msgstr "Debug"
@@ -2998,23 +2995,23 @@ msgstr "Vorgabe-Symbol laden"
 
 #: lazarusidestrconsts.dlgpodpiawareness
 msgid "DPI awareness"
-msgstr ""
+msgstr "DPI-Bewusstsein"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoff
 msgid "off"
-msgstr ""
+msgstr "aus"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldoffnewpermonitor
 msgid "Vista-8: off, 8.1+: per monitor"
-msgstr ""
+msgstr "Vista-8: aus, 8.1+: pro Monitor"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitor
 msgid "Vista-8: on, 8.1+: per monitor"
-msgstr ""
+msgstr "Vista-8: an, 8.1+: pro Monitor"
 
 #: lazarusidestrconsts.dlgpodpiawarenesson
 msgid "on"
-msgstr ""
+msgstr "an"
 
 #: lazarusidestrconsts.dlgpoexecutionlevel
 msgid "Execution Level"
@@ -3051,7 +3048,7 @@ msgstr "Symbol &laden"
 
 #: lazarusidestrconsts.dlgpomanifestoptions
 msgid "Manifest options"
-msgstr ""
+msgstr "Manifesteinstellungen"
 
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
@@ -3087,10 +3084,8 @@ msgid "Use Application Bundle for running and debugging"
 msgstr "Anwendungs-Bundle für Start und Debug verwenden"
 
 #: lazarusidestrconsts.dlgpousemanifest
-#, fuzzy
-#| msgid "Use manifest file to enable themes"
 msgid "Use manifest resource (and enable themes)"
-msgstr "Themen mit Manifest-Datei einschalten"
+msgstr "Manifest-Ressource verwenden (und Themen aktivieren)"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
@@ -7029,7 +7024,7 @@ msgstr "Probleme beim Reparieren der Formulardatei %s"
 
 #: lazarusidestrconsts.lisconvrepairingincludefiles
 msgid "Repairing include files : "
-msgstr ""
+msgstr "Repariere Include-Dateien :"
 
 #: lazarusidestrconsts.lisconvreplacedcall
 msgid "Replaced call %s with %s"
@@ -7721,7 +7716,6 @@ msgid "Disable/Enable updates for the entire window"
 msgstr "Aktualisierungen für das ganze Fenster de-/aktivieren"
 
 #: lazarusidestrconsts.lisdebug
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisdebug"
 msgid "Debug"
 msgstr "Debug"
@@ -8657,10 +8651,8 @@ msgid "Enable Macros"
 msgstr "Makros einschalten"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
-#, fuzzy
-#| msgid "Enable = replace whole identifier, Disable = replace prefix"
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
-msgstr "Aktivieren = ganzen Bezeichner ersetzen, Deaktivieren = Präfix ersetzen"
+msgstr "Aktivieren = drücken von Enter ersetzt den ganzen Bezeichner und Shift+Enter ersetzt den Präfix, Deaktivieren = drücken von Enter ersetzt denPräfix und Shift+Enter ersetzt den ganzen Bezeichner"
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
@@ -9553,7 +9545,7 @@ msgstr "Umbenennen aller Referenzen"
 
 #: lazarusidestrconsts.lisfrirenaming
 msgid "Renaming"
-msgstr ""
+msgstr "Umbenennung"
 
 #: lazarusidestrconsts.lisfrisearch
 msgid "Search"
@@ -10200,7 +10192,7 @@ msgstr "Prozedurname einfügen"
 
 #: lazarusidestrconsts.lisinsertsemicolonifneeded
 msgid "Insert semicolon if needed"
-msgstr ""
+msgstr "Semikolon einfügen falls benötigt"
 
 #: lazarusidestrconsts.lisinserttime
 msgid "insert time"
@@ -10475,7 +10467,7 @@ msgstr "Name behalten"
 
 #: lazarusidestrconsts.liskeepopen
 msgid "Keep open"
-msgstr ""
+msgstr "Offen halten"
 
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
@@ -13877,7 +13869,7 @@ msgstr "Beim Zeilenumbruch (z.B. Return- oder Enter-Taste)"
 
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
-msgstr ""
+msgstr "nur 32 Bit"
 
 #: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
 msgid "Only available on Windows. Run the tool hidden."
@@ -14299,10 +14291,8 @@ msgid "Dependency Properties"
 msgstr "Abhängigkeitseigenschaften"
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
-#, fuzzy
-#| msgid "Edit General Options"
 msgid "Edit general options"
-msgstr "Allgemeine Einstellungen"
+msgstr "Allgemeine Einstellungen bearbeiten"
 
 #: lazarusidestrconsts.lispckeditfileproperties
 msgid "File Properties"
@@ -14610,7 +14600,7 @@ msgstr "Zeige nicht benötigte Abhängigkeiten"
 
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
-msgstr ""
+msgstr "Wenn das Formular gespeichert wird kann die IDE alle TTranslateString-Eigenschaften in die po-Datei des Packages speichern. Dafür müssen Sie i18n für dieses Package aktivieren, ein po-Ausgabeverzeichnis angeben und diese Einstellung deaktiviert lassen."
 
 #: lazarusidestrconsts.lispdabort
 msgctxt "lazarusidestrconsts.lispdabort"
@@ -15334,7 +15324,7 @@ msgstr "Unit \"%s\" wurde aus Package (lpk) entfernt"
 
 #: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
 msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
-msgstr ""
+msgstr "Die folgenden Abhängigkeiten werden nicht benötigt wegen der automatischen Transitivität zwischen den Package-Abhängigkeiten."
 
 #: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
 msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options (compiler options section) / Additions and Overrides%s%s"
@@ -19397,7 +19387,7 @@ msgstr "Lesezeichen-Befehle"
 
 #: lazarusidestrconsts.srkmcatmulticaret
 msgid "Multi caret commands"
-msgstr ""
+msgstr "Mehrfachcursor-Befehle"
 
 #: lazarusidestrconsts.srkmcatpackagemenu
 msgid "Package menu commands"
@@ -21012,4 +21002,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-

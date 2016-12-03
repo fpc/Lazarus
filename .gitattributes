@@ -3289,6 +3289,7 @@ components/onlinepackagemanager/images/Tree_Buttons/Refresh1.png -text svneol=un
 components/onlinepackagemanager/languages/opkman_VirtualTrees.fi.po -text svneol=native#text/plain
 components/onlinepackagemanager/languages/opkman_VirtualTrees.hu.po svneol=native#text/plain
 components/onlinepackagemanager/languages/opkman_VirtualTrees.po svneol=native#text/plain
+components/onlinepackagemanager/languages/opkman_const.de.po svneol=native#text/plain
 components/onlinepackagemanager/languages/opkman_const.es.po svneol=native#text/plain
 components/onlinepackagemanager/languages/opkman_const.fi.po -text svneol=native#text/plain
 components/onlinepackagemanager/languages/opkman_const.hu.po svneol=native#text/plain
