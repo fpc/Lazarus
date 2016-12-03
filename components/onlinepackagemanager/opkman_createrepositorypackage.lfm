@@ -2,11 +2,11 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
   Left = 585
   Height = 475
   Top = 250
-  Width = 820
+  Width = 819
   BorderIcons = [biSystemMenu]
   Caption = 'CreateRepositoryPackagesFrm'
   ClientHeight = 475
-  ClientWidth = 820
+  ClientWidth = 819
   Color = clBtnFace
   Constraints.MinHeight = 450
   Constraints.MinWidth = 650
@@ -17,82 +17,83 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
   LCLVersion = '1.7'
   inline frCreateRep: TCreateRepositoryPackagefr
     Height = 475
-    Width = 820
+    Width = 819
     Align = alClient
     ClientHeight = 475
-    ClientWidth = 820
+    ClientWidth = 819
     inherited pnMessage: TPanel
       Height = 369
-      Width = 558
+      Width = 557
     end
     inherited pnPackages: TPanel
       Height = 369
     end
     inherited pnBrowse: TPanel
-      Width = 820
-      ClientWidth = 820
+      Width = 819
+      ClientWidth = 819
       inherited Bevel1: TBevel
-        Width = 820
+        Width = 819
       end
     end
     inherited pnData: TPanel
       Height = 369
-      Width = 558
+      Width = 557
       ClientHeight = 369
-      ClientWidth = 558
+      ClientWidth = 557
       inherited pnPackageData: TPanel
         Height = 177
-        Width = 558
+        Width = 557
         ClientHeight = 173
-        ClientWidth = 554
+        ClientWidth = 553
         inherited edSupportedWidgetset: TEdit
-          Width = 356
+          Width = 355
         end
         inherited edLazCompatibility: TEdit
-          Width = 357
-        end
-        inherited edFPCCompatibility: TEdit
           Width = 356
         end
+        inherited edFPCCompatibility: TEdit
+          Width = 355
+        end
         inherited lbOF1: TLabel
-          Left = 529
+          Left = 528
         end
         inherited lbOF3: TLabel
-          Left = 529
+          Left = 528
         end
         inherited lbOF4: TLabel
-          Left = 529
+          Left = 528
         end
       end
       inherited spMain1: TSplitter
-        Width = 558
+        Width = 557
       end
       inherited pnCategory: TPanel
-        Width = 558
-        ClientWidth = 554
+        Width = 557
+        ClientHeight = 185
+        ClientWidth = 553
         inherited lbOF2: TLabel
-          Left = 529
+          Left = 528
         end
         inherited edHomePageURL: TEdit
-          Width = 356
+          Width = 355
         end
         inherited edDownloadURL: TEdit
-          Width = 356
+          Width = 355
         end
         inherited edSVNURL: TEdit
-          Width = 356
+          Width = 355
         end
         inherited edDisplayName: TEdit
-          Width = 356
+          Width = 355
         end
         inherited pnCategories: TPanel
-          Width = 356
-          ClientWidth = 356
+          Width = 355
+          ClientWidth = 355
           inherited spCategories: TSpeedButton
-            Left = 326
+            Left = 325
           end
           inherited edCategories: TEdit
-            Width = 326
+            Width = 325
           end
         end
       end
@@ -102,13 +103,14 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
     end
     inherited pnButtons: TPanel
       Top = 434
-      Width = 820
-      ClientWidth = 816
+      Width = 819
+      ClientHeight = 37
+      ClientWidth = 815
       inherited bCreate: TButton
-        Left = 654
+        Left = 653
       end
       inherited bCancel: TButton
-        Left = 731
+        Left = 730
       end
     end
   end

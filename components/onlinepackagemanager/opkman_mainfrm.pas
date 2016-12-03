@@ -123,7 +123,8 @@ var
 
 implementation
 
-uses opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common,
+uses LCLVersion,
+     opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common,
      opkman_progressfrm, opkman_zipper, opkman_packagelistfrm, opkman_options,
      opkman_optionsfrm, opkman_createrepositorypackage, opkman_updates;
 {$R *.lfm}
@@ -146,6 +147,9 @@ begin
   InstallPackageList := TObjectList.Create(True);
   FHintTimeOut := Application.HintHidePause;
   Application.HintHidePause := 1000000;
+ {$IF LCL_FULLVERSION >= 1070000}
+  tbCreate.Style := tbsButtonDrop;
+ {$ENDIF}
 end;
 
 procedure TMainFrm.FormDestroy(Sender: TObject);

@@ -2,14 +2,13 @@ object MainFrm: TMainFrm
   Left = 463
   Height = 600
   Top = 164
-  Width = 800
+  Width = 801
   Caption = 'Online Package Manager'
   ClientHeight = 600
-  ClientWidth = 800
+  ClientWidth = 801
   Color = clBtnFace
   Constraints.MinHeight = 400
   Constraints.MinWidth = 600
-  DesignTimeDPI = 96
   KeyPreview = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -21,11 +20,11 @@ object MainFrm: TMainFrm
     Left = 0
     Height = 530
     Top = 0
-    Width = 800
+    Width = 801
     Align = alClient
     BevelOuter = bvNone
     ClientHeight = 530
-    ClientWidth = 800
+    ClientWidth = 801
     TabOrder = 0
     OnResize = pnMainResize
     object pnMessage: TPanel
@@ -50,18 +49,18 @@ object MainFrm: TMainFrm
       Left = 0
       Height = 60
       Top = 0
-      Width = 800
+      Width = 801
       Align = alTop
       BevelOuter = bvNone
       ClientHeight = 60
-      ClientWidth = 800
+      ClientWidth = 801
       Color = clBtnFace
       ParentColor = False
       TabOrder = 0
       OnResize = pnTopResize
       object spExpand: TSpeedButton
         Tag = 1
-        Left = 752
+        Left = 753
         Height = 20
         Top = 13
         Width = 21
@@ -126,7 +125,7 @@ object MainFrm: TMainFrm
       end
       object spCollapse: TSpeedButton
         Tag = 2
-        Left = 774
+        Left = 775
         Height = 20
         Top = 13
         Width = 21
@@ -371,7 +370,7 @@ object MainFrm: TMainFrm
       Left = 0
       Height = 470
       Top = 60
-      Width = 800
+      Width = 801
       Align = alClient
       Color = clBtnFace
       PopupMenu = pmMemo
@@ -385,10 +384,10 @@ object MainFrm: TMainFrm
     Left = 0
     Height = 70
     Top = 530
-    Width = 800
+    Width = 801
     Align = alBottom
     ClientHeight = 70
-    ClientWidth = 800
+    ClientWidth = 801
     TabOrder = 1
     OnResize = pnToolBarResize
     object tbButtons: TToolBar
@@ -408,7 +407,7 @@ object MainFrm: TMainFrm
       TabOrder = 0
       Transparent = True
       object tbOptions: TToolButton
-        Left = 431
+        Left = 433
         Top = 0
         AutoSize = True
         Caption = 'Options'
@@ -466,7 +465,7 @@ object MainFrm: TMainFrm
         ImageIndex = 5
         ParentShowHint = False
         ShowHint = True
-        Style = tbsButtonDrop
+        Style = tbsDropDown
       end
       object tbUpdate: TToolButton
         Left = 211

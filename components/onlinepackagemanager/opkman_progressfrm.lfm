@@ -2,11 +2,11 @@ object ProgressFrm: TProgressFrm
   Left = 534
   Height = 284
   Top = 243
-  Width = 504
+  Width = 502
   BorderIcons = []
   Caption = 'Downloading packages'
   ClientHeight = 284
-  ClientWidth = 504
+  ClientWidth = 502
   Color = clBtnFace
   Constraints.MinHeight = 240
   Constraints.MinWidth = 450
@@ -24,11 +24,11 @@ object ProgressFrm: TProgressFrm
     Left = 0
     Height = 41
     Top = 243
-    Width = 504
+    Width = 502
     Align = alBottom
     BevelOuter = bvNone
     ClientHeight = 41
-    ClientWidth = 504
+    ClientWidth = 502
     TabOrder = 0
     object bCancel: TButton
       Left = 192
@@ -55,18 +55,18 @@ object ProgressFrm: TProgressFrm
     Left = 0
     Height = 243
     Top = 0
-    Width = 499
+    Width = 497
     Align = alClient
     BorderSpacing.Right = 5
     BevelOuter = bvNone
     ClientHeight = 243
-    ClientWidth = 499
+    ClientWidth = 497
     TabOrder = 1
     object lbPackageData: TLabel
       Left = 88
       Height = 1
       Top = 12
-      Width = 406
+      Width = 404
       Anchors = [akTop, akLeft, akRight]
       ParentColor = False
     end
@@ -74,7 +74,7 @@ object ProgressFrm: TProgressFrm
       Left = 88
       Height = 15
       Top = 34
-      Width = 406
+      Width = 404
       Anchors = [akTop, akLeft, akRight]
       Caption = 'Calculating. Please wait...'
       ParentColor = False
@@ -83,7 +83,7 @@ object ProgressFrm: TProgressFrm
       Left = 88
       Height = 1
       Top = 78
-      Width = 406
+      Width = 404
       Anchors = [akTop, akLeft, akRight]
       ParentColor = False
     end
@@ -91,7 +91,7 @@ object ProgressFrm: TProgressFrm
       Left = 88
       Height = 1
       Top = 56
-      Width = 406
+      Width = 404
       Anchors = [akTop, akLeft, akRight]
       ParentColor = False
     end
@@ -131,7 +131,7 @@ object ProgressFrm: TProgressFrm
       Left = 16
       Height = 20
       Top = 164
-      Width = 475
+      Width = 473
       Anchors = [akLeft, akRight, akBottom]
       TabOrder = 0
     end
@@ -139,7 +139,7 @@ object ProgressFrm: TProgressFrm
       Left = 16
       Height = 20
       Top = 208
-      Width = 475
+      Width = 473
       Anchors = [akLeft, akRight, akBottom]
       TabOrder = 1
     end
