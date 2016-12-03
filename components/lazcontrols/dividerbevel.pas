@@ -52,9 +52,9 @@ type
     procedure CalculatePreferredSize(
                          var PreferredWidth, PreferredHeight: Integer;
                          {%H-}WithThemeSpace: Boolean); override;
-    procedure ShouldAutoAdjust(var ALeft, ATop, AWidth, AHeight: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure ShouldAutoAdjust(var ALeft, ATop, AWidth, AHeight: Boolean); override;
   published
     property Caption;
     property Align;
