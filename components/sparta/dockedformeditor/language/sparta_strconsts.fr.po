@@ -12,10 +12,6 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Generator: Poedit 1.8.6\n"
 
-#: sparta_strconsts.sargumentoutofrange
-msgid "Argument out of range"
-msgstr "Argument hors limites"
-
 #: sparta_strconsts.scode
 msgctxt "sparta_strconsts.scode"
 msgid "Code"

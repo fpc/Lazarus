@@ -11,10 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: sparta_strconsts.sargumentoutofrange
-msgid "Argument out of range"
-msgstr "Az argumentum a tartományon kívül esik"
-
 #: sparta_strconsts.scode
 msgctxt "sparta_strconsts.scode"
 msgid "Code"

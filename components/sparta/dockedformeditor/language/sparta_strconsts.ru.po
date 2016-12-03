@@ -11,10 +11,6 @@ msgstr ""
 "Language: ru\n"
 "X-Generator: Poedit 1.7.7\n"
 
-#: sparta_strconsts.sargumentoutofrange
-msgid "Argument out of range"
-msgstr "Аргумент вне диапазона"
-
 #: sparta_strconsts.scode
 msgctxt "sparta_strconsts.scode"
 msgid "Code"
