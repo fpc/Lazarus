@@ -1,5 +1,5 @@
-Source: lazarus
-Package: lazarus
+Source: lazarus-project
+Package: lazarus-project
 Version: LAZVERSION
 Section: devel
 Priority: optional
