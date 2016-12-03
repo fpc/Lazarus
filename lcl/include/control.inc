@@ -2943,8 +2943,8 @@ end;
 procedure TControl.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
   const AXProportion, AYProportion: Double; const AScaleFonts: Boolean);
 var
-  NewLeft, NewTop, NewHeight, NewWidth: Integer;
-  AALeft, AATop, AAWidth, AAHeight: Boolean;
+  AAWidth, AAHeight: Boolean;
+  NewLeft, NewTop, NewWidth, NewHeight, OldWidth, OldHeight: Integer;
 begin
   if AScaleFonts and not ParentFont then
     Font.Height := Round(GetFontData(Font.Reference.Handle).Height*AYProportion);
@@ -2952,21 +2952,31 @@ begin
   // Apply the changes
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
-    AALeft := False;
-    AATop := False;
     AAWidth := False;
     AAHeight := False;
+    NewLeft := Left;
+    NewTop := Top;
     NewWidth := Width;
     NewHeight := Height;
-    ShouldAutoAdjust(AALeft, AATop, AAWidth, AAHeight);
-    if AALeft then
-      NewLeft := Round(Left * AXProportion)
-    else
-      NewLeft := Left;
-    if AATop then
-      NewTop := Round(Top * AYProportion)
-    else
-      NewTop := Top;
+    OldWidth := Width;
+    OldHeight := Height;
+
+    ShouldAutoAdjust(AAWidth, AAHeight);
+    AAWidth := AAWidth and (Align in [alNone, alLeft, alRight])
+      and not((akLeft in Anchors) and (akRight in Anchors));
+    AAHeight := AAHeight and (Align in [alNone, alTop, alBottom])
+      and not((akTop in Anchors) and (akBottom in Anchors));
+
+    if (Align=alNone) and (akLeft in Anchors) then
+      NewLeft := Round(NewLeft * AXProportion);
+    if (Align=alNone) and (akRight in Anchors) and (Parent<>nil) then
+      NewLeft := Parent.ClientWidth-Round((Parent.ClientWidth-NewLeft-OldWidth) * AXProportion)-OldWidth;
+
+    if (Align=alNone) and (akTop in Anchors) then
+      NewTop := Round(NewTop * AYProportion);
+    if (Align=alNone) and (akBottom in Anchors) and (Parent<>nil) then
+      NewTop := Parent.ClientHeight-Round((Parent.ClientHeight-NewTop-OldHeight) * AYProportion)-OldHeight;
+
     // Give a shake at the autosize to recalculate font sizes for example
     if (not AAWidth or not AAHeight) and AutoSize then
     begin
@@ -2978,6 +2988,22 @@ begin
       NewWidth := Round(Width * AXProportion);
     if AAHeight then
       NewHeight := Round(Height * AYProportion);
+
+    if Anchors*[akLeft, akRight] = [akRight] then
+      NewLeft := NewLeft+Width-NewWidth;
+    if Anchors*[akTop, akBottom] = [akBottom] then
+      NewTop := NewTop+Height-NewHeight;
+
+    if AAWidth then
+    begin
+      if akRight in Anchors then
+        NewLeft := NewLeft-NewWidth+OldWidth;
+    end;
+    if AAHeight then
+    begin
+      if akBottom in Anchors then
+        NewTop := NewTop-NewHeight+OldHeight;
+    end;
 
     SetBounds(NewLeft, NewTop, NewWidth, NewHeight);
   end;
@@ -3933,13 +3959,11 @@ begin
   DoAutoAdjustLayout(lMode, lXProportion, lYProportion, AScaleFonts);
 end;
 
-// Auto-adjust the layout of controls without alignment. Custom anchoring is allowed.
-procedure TControl.ShouldAutoAdjust(var ALeft, ATop, AWidth, AHeight: Boolean);
+// Auto-adjust the layout of controls.
+procedure TControl.ShouldAutoAdjust(var AWidth, AHeight: Boolean);
 begin
-  ALeft := (Align = alNone) and (Parent <> nil);
-  ATop := ALeft;
-  AWidth := (Align in [alNone, alLeft, alRight]) and (AutoSize = False);
-  AHeight := (Align in [alNone, alTop, alBottom]) and (AutoSize = False);
+  AWidth := not AutoSize;
+  AHeight := not AutoSize;
 end;
 
 procedure TControl.UpdateAnchorRules;

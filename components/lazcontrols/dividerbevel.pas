@@ -54,7 +54,7 @@ type
                          {%H-}WithThemeSpace: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure ShouldAutoAdjust(var ALeft, ATop, AWidth, AHeight: Boolean); override;
+    procedure ShouldAutoAdjust(var AWidth, AHeight: Boolean); override;
   published
     property Caption;
     property Align;
@@ -397,15 +397,11 @@ begin
   end;
 end;
 
-procedure TDividerBevel.ShouldAutoAdjust(var ALeft, ATop, AWidth,
+procedure TDividerBevel.ShouldAutoAdjust(var AWidth,
   AHeight: Boolean);
 begin
-  ALeft := (Align = alNone) and (Parent <> nil);
-  ATop := ALeft;
-  AWidth := (Align in [alNone, alLeft, alRight])
-    and (AutoSize = False) and not (Orientation = trVertical);
-  AHeight := (Align in [alNone, alTop, alBottom])
-    and (AutoSize = False) and not (Orientation = trHorizontal);
+  AWidth := not (AutoSize and (Orientation = trVertical));
+  AHeight := not (AutoSize and (Orientation = trHorizontal));
 end;
 
 constructor TDividerBevel.Create(AOwner: TComponent);

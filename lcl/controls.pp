@@ -1531,7 +1531,7 @@ type
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
       const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer;
       const AScaleFonts: Boolean); virtual;
-    procedure ShouldAutoAdjust(var ALeft, ATop, AWidth, AHeight: Boolean); virtual;
+    procedure ShouldAutoAdjust(var AWidth, AHeight: Boolean); virtual;
   public
     constructor Create(TheOwner: TComponent);override;
     destructor Destroy; override;
