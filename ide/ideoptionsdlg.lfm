@@ -13,6 +13,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '1.7'
+  Scaled = True
   object ButtonPanel: TButtonPanel
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
