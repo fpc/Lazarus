@@ -73,6 +73,36 @@ const
     rsMainFrm_VSTText_PackageCategory25,
     rsMainFrm_VSTText_PackageCategory26);
 
+  //needed for localized filter, since the JSON contains only english text
+  CategoriesEng: array[0..MaxCategories - 1] of String = (
+    'Charts and Graphs',
+    'Cryptography',
+    'DataControls',
+    'Date and Time',
+    'Dialogs',
+    'Edit, Memos',
+    'Files and Drives',
+    'GUIContainers',
+    'Graphics',
+    'Grids',
+    'Indicators and Gauges',
+    'Labels',
+    'LazIDEPlugins',
+    'List and Combo Boxes',
+    'ListViews and TreeViews',
+    'Menus',
+    'Multimedia',
+    'Networking',
+    'Panels',
+    'Reporting',
+    'Science',
+    'Security',
+    'Shapes',
+    'Sizers, Scrollers',
+    'System',
+    'Tabbed Components',
+    'Other');
+
 var
   LocalRepositoryConfigFile: String;
   LocalRepositoryUpdatesFile: String;
@@ -165,7 +195,6 @@ begin
   else
     Result := FormatFloat('#,##0.0 GB/s', Speed / GB);
 end;
-
 
 function GetDirSize(const ADirName: String; var AFileCnt, ADirCnt: Integer): Int64;
 var

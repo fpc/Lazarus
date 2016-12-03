@@ -715,7 +715,7 @@ begin
         begin
           if Data^.DataType = 12 then
           begin
-            if Pos(UpperCase(Categories[AExtraParam]), UpperCase(Data^.Category)) > 0 then
+            if Pos(UpperCase(CategoriesEng[AExtraParam]), UpperCase(Data^.Category)) > 0 then
               FilterNode(Node, 'PackageCategory')
             else
               FilterNode(Node, '')
