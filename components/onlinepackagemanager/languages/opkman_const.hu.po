@@ -439,7 +439,7 @@ msgstr "Titkosítás"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory10
 msgid "Indicators and Gauges"
-msgstr "Kijelzők, mérők"
+msgstr "Kijelzők és mérők"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory11
 msgid "Labels"
@@ -495,8 +495,8 @@ msgid "Shapes"
 msgstr "Alakzatok"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory23
-msgid "Sizers, Scrollers"
-msgstr "Méretezők, görgetők"
+msgid "Sizers and Scrollers"
+msgstr "Méretezők és görgetők"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory24
 msgid "System"
@@ -519,8 +519,8 @@ msgid "Dialogs"
 msgstr "Párbeszédek"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory5
-msgid "Edit, Memos"
-msgstr "Szerkesztés, jegyzetelés"
+msgid "Edit and Memos"
+msgstr "Szerkesztés és jegyzetelés"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory6
 msgid "Files and Drives"

@@ -80,7 +80,7 @@ const
     'DataControls',
     'Date and Time',
     'Dialogs',
-    'Edit, Memos',
+    'Edit and Memos',
     'Files and Drives',
     'GUIContainers',
     'Graphics',
@@ -98,7 +98,7 @@ const
     'Science',
     'Security',
     'Shapes',
-    'Sizers, Scrollers',
+    'Sizers and Scrollers',
     'System',
     'Tabbed Components',
     'Other');

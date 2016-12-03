@@ -483,8 +483,8 @@ msgid "Shapes"
 msgstr "Muodot"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory23
-msgid "Sizers, Scrollers"
-msgstr "Koon muuttajat, vierityspalkit"
+msgid "Sizers and Scrollers"
+msgstr "Koon muuttajat ja vierityspalkit"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory24
 msgid "System"
@@ -507,8 +507,8 @@ msgid "Dialogs"
 msgstr "Dialogit"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory5
-msgid "Edit, Memos"
-msgstr "Tekstiruudut, muistiot"
+msgid "Edit and Memos"
+msgstr "Tekstiruudut ja muistiot"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory6
 msgid "Files and Drives"

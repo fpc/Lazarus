@@ -91,7 +91,7 @@ resourcestring
   rsMainFrm_VSTText_PackageCategory2  = 'DataControls';
   rsMainFrm_VSTText_PackageCategory3  = 'Date and Time';
   rsMainFrm_VSTText_PackageCategory4  = 'Dialogs';
-  rsMainFrm_VSTText_PackageCategory5  = 'Edit, Memos';
+  rsMainFrm_VSTText_PackageCategory5  = 'Edit and Memos';
   rsMainFrm_VSTText_PackageCategory6  = 'Files and Drives';
   rsMainFrm_VSTText_PackageCategory7  = 'GUIContainers';
   rsMainFrm_VSTText_PackageCategory8  = 'Graphics';
@@ -109,7 +109,7 @@ resourcestring
   rsMainFrm_VSTText_PackageCategory20 = 'Science';
   rsMainFrm_VSTText_PackageCategory21 = 'Security';
   rsMainFrm_VSTText_PackageCategory22 = 'Shapes';
-  rsMainFrm_VSTText_PackageCategory23 = 'Sizers, Scrollers';
+  rsMainFrm_VSTText_PackageCategory23 = 'Sizers and Scrollers';
   rsMainFrm_VSTText_PackageCategory24 = 'System';
   rsMainFrm_VSTText_PackageCategory25 = 'Tabbed Components';
   rsMainFrm_VSTText_PackageCategory26 = 'Other';

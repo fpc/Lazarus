@@ -46,6 +46,7 @@ type
     PackageFileName: String;
     Version: String;
     InstalledVersion: String;
+    UpdateVersion: String;
     Description: String;
     Author: String;
     LazCompatibility: String;
@@ -119,6 +120,7 @@ type
     procedure ButtonClick(Sender: TObject);
     procedure ShowButtons;
     procedure HideButtons;
+    function TranslateCategories(const AStr: String): String;
   public
     constructor Create(const AParent: TWinControl; const AImgList: TImageList;
       APopupMenu: TPopupMenu);
@@ -294,6 +296,7 @@ begin
          ChildData := FVST.GetNodeData(ChildNode);
          ChildData^.PackageFileName := PackageFile.Name;
          ChildData^.InstalledVersion := PackageFile.InstalledFileVersion;
+         ChildData^.UpdateVersion := PackageFile.UpdateVersion;
          ChildData^.Version := PackageFile.VersionAsString;
          ChildData^.PackageState := PackageFile.PackageState;
          ChildData^.DataType := 2;
@@ -497,6 +500,45 @@ begin
       Data^.Button.Visible := False;
     Node := VST.GetNext(Node);
   end;
+end;
+
+function TVisualTree.TranslateCategories(const AStr: String): String;
+var
+  SL: TStringList;
+  I, J: Integer;
+  Str: String;
+begin
+  if Categories[0] = CategoriesEng[0] then
+  begin
+    Result := AStr;
+    Exit;
+  end;
+  Result := '';
+  SL := TStringList.Create;
+  try
+    SL.Delimiter := ',';
+    SL.StrictDelimiter := True;
+    SL.DelimitedText := AStr;
+    for I := 0 to SL.Count - 1 do
+    begin
+      Str := Trim(SL.Strings[I]);
+      for J := 0 to MaxCategories - 1 do
+      begin
+        if Str = CategoriesEng[J] then
+        begin
+          if Result = '' then
+            Result := Categories[J]
+          else
+            Result := Result + ', ' + Categories[J];
+          Break;
+        end;
+      end;
+    end;
+  finally
+    SL.Free;
+  end;
+  if Result = '' then
+    Result := AStr;
 end;
 
 procedure TVisualTree.VSTScroll(Sender: TBaseVirtualTree; DeltaX,
@@ -1167,6 +1209,11 @@ begin
   end
   else if Column = 3 then
   begin
+    if Data^.UpdateVersion = '' then
+      Data^.UpdateVersion := '-';
+    if Data^.DataType = 2 then
+      CellText := Data^.UpdateVersion
+    else
       CellText := '';
   end
   else if Column = 4 then
@@ -1200,7 +1247,7 @@ begin
       9: CellText := GetDisplayString(Data^.License);
      10: CellText := Data^.Dependencies;
      11: CellText := '';
-     12: CellText := Data^.Category;
+     12: CellText := TranslateCategories(Data^.Category);
      13: CellText := Data^.RepositoryFileName;
      14: CellText := FormatSize(Data^.RepositoryFileSize);
      15: CellText := Data^.RepositoryFileHash;

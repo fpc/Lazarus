@@ -112,6 +112,7 @@ type
     function LoadPackageData(const APath: String; AData: PData): Boolean;
     procedure ShowHideControls(const AType: Integer);
     procedure SaveExtraInfo(const ANode: PVirtualNode);
+    function TranslateCategories(const AStr: String): String;
   public
     procedure InitializeFrame;
     procedure FinalizeFrame;
@@ -727,6 +728,45 @@ begin
    pnBrowse.Enabled := True;
 end;
 
+function TCreateRepositoryPackagefr.TranslateCategories(const AStr: String): String;
+var
+  SL: TStringList;
+  I, J: Integer;
+  Str: String;
+begin
+  if Categories[0] = CategoriesEng[0] then
+  begin
+    Result := AStr;
+    Exit;
+  end;
+  Result := '';
+  SL := TStringList.Create;
+  try
+    SL.Delimiter := ',';
+    SL.StrictDelimiter := True;
+    SL.DelimitedText := AStr;
+    for I := 0 to SL.Count - 1 do
+    begin
+      Str := Trim(SL.Strings[I]);
+      for J := 0 to MaxCategories - 1 do
+      begin
+        if Str = Categories[J] then
+        begin
+          if Result = '' then
+            Result := CategoriesEng[J]
+          else
+            Result := Result + ', ' + CategoriesEng[J];
+          Break;
+        end;
+      end;
+    end;
+  finally
+    SL.Free;
+  end;
+  if Result = '' then
+    Result := AStr;
+end;
+
 procedure TCreateRepositoryPackagefr.DoOnZipCompleted(Sender: TObject);
 var
   SerializablePackages: TSerializablePackages;
@@ -748,7 +788,7 @@ begin
     begin
       RootData := FVSTPackages.GetNodeData(RootNode);
       Package := SerializablePackages.AddPackage(RootData^.FName);
-      Package.Category := RootData^.FCategory;
+      Package.Category := TranslateCategories(RootData^.FCategory);
       Package.RepositoryFileName := ExtractFileName(FPackageFile);
       Package.RepositoryFileSize := FileUtil.FileSize(FPackageFile);
       Package.RepositoryFileHash := MD5Print(MD5File(FPackageFile));

@@ -495,8 +495,8 @@ msgid "Shapes"
 msgstr "Figuras"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory23
-msgid "Sizers, Scrollers"
-msgstr "Redimensionadores, Desplazamientos"
+msgid "Sizers and Scrollers"
+msgstr "Redimensionadores y Desplazamientos"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory24
 msgid "System"
@@ -519,8 +519,8 @@ msgid "Dialogs"
 msgstr "Dialogos"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory5
-msgid "Edit, Memos"
-msgstr "Editores, Memos"
+msgid "Edit and Memos"
+msgstr "Editores y Memos"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory6
 msgid "Files and Drives"

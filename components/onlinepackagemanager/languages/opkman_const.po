@@ -483,7 +483,7 @@ msgid "Shapes"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory23
-msgid "Sizers, Scrollers"
+msgid "Sizers and Scrollers"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory24
@@ -507,7 +507,7 @@ msgid "Dialogs"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory5
-msgid "Edit, Memos"
+msgid "Edit and Memos"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory6
