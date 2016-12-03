@@ -2063,6 +2063,7 @@ begin
   FAlphaBlend := False;
   FAlphaBlendValue := 255;
   FDesignTimeDPI := 96;
+  FPixelsPerInch := FDesignTimeDPI;
   // set border style before handle is allocated
   if not (fsBorderStyleChanged in FFormState) then
     FFormBorderStyle:= bsSizeable;
