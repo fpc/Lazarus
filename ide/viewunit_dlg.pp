@@ -460,6 +460,7 @@ var
   S2PItem: PStringToPointerTreeItem;
   Entry: TViewUnitsEntry;
 Begin
+  FilterEdit.StoreSelection;
   for S2PItem in fEntries.fItems do begin
     Entry:=TViewUnitsEntry(S2PItem^.Value);
     Entry.Selected:=FilterEdit.SelectionList.IndexOf(Entry.Name)>-1;
