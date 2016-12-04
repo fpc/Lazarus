@@ -12,14 +12,15 @@ object ViewUnitDialog: TViewUnitDialog
   Caption = 'View Project Units'
   ClientHeight = 386
   ClientWidth = 378
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.7'
   object Listbox: TListBox
     Left = 6
-    Height = 279
-    Top = 35
+    Height = 267
+    Top = 44
     Width = 366
     Align = alClient
     BorderSpacing.Around = 6
@@ -27,16 +28,15 @@ object ViewUnitDialog: TViewUnitDialog
     ItemHeight = 0
     OnDblClick = OKButtonClick
     OnDrawItem = ListboxDrawItem
-    OnKeyDown = ListboxKeyDown
+    OnKeyPress = ListboxKeyPress
     PopupMenu = popListBox
-    ScrollWidth = 364
     Style = lbOwnerDrawFixed
-    TabOrder = 0
+    TabOrder = 1
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 346
+    Height = 37
+    Top = 343
     Width = 366
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -50,24 +50,24 @@ object ViewUnitDialog: TViewUnitDialog
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
     CancelButton.OnClick = CancelButtonClick
-    TabOrder = 1
+    TabOrder = 3
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object BtnPanel: TPanel
     Left = 6
-    Height = 23
+    Height = 32
     Top = 6
     Width = 366
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 23
+    ClientHeight = 32
     ClientWidth = 366
-    TabOrder = 2
+    TabOrder = 0
     object SortAlphabeticallySpeedButton: TSpeedButton
       Left = 0
-      Height = 23
+      Height = 32
       Top = 0
       Width = 25
       Align = alLeft
@@ -81,7 +81,7 @@ object ViewUnitDialog: TViewUnitDialog
     end
     object FilterEdit: TListFilterEdit
       Left = 31
-      Height = 23
+      Height = 32
       Top = 0
       Width = 335
       ButtonWidth = 23
@@ -97,12 +97,12 @@ object ViewUnitDialog: TViewUnitDialog
   object ProgressBar1: TProgressBar
     Left = 6
     Height = 20
-    Top = 320
+    Top = 317
     Width = 366
     Align = alBottom
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
-    TabOrder = 3
+    TabOrder = 2
     Visible = False
   end
   object popListBox: TPopupMenu
