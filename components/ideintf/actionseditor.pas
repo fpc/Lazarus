@@ -112,7 +112,7 @@ type
     btnDown: TToolButton;
     procedure ActDeleteExecute(Sender: TObject);
     procedure ActDeleteUpdate(Sender: TObject);
-    procedure ActMoveDownExecute(Sender: TObject);
+    procedure ActMoveUpDownExecute(Sender: TObject);
     procedure ActMoveDownUpdate(Sender: TObject);
     procedure ActMoveUpUpdate(Sender: TObject);
     procedure ActNewExecute(Sender: TObject);
@@ -659,7 +659,7 @@ begin
   TAction(Sender).Enabled := lstActionName.SelCount > 0;
 end;
 
-procedure TActionListEditor.ActMoveDownExecute(Sender: TObject);
+procedure TActionListEditor.ActMoveUpDownExecute(Sender: TObject);
 var
   fact0,fAct1: TContainedAction;
   lboxIndex: Integer;

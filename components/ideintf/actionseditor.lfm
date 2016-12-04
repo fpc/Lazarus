@@ -154,13 +154,13 @@ object ActionListEditor: TActionListEditor
     end
     object ActMoveUp: TAction
       Category = 'MoveUpDown'
-      OnExecute = ActMoveDownExecute
+      OnExecute = ActMoveUpDownExecute
       OnUpdate = ActMoveUpUpdate
       ShortCut = 16422
     end
     object ActMoveDown: TAction
       Category = 'MoveUpDown'
-      OnExecute = ActMoveDownExecute
+      OnExecute = ActMoveUpDownExecute
       OnUpdate = ActMoveDownUpdate
       ShortCut = 16424
     end
@@ -197,12 +197,12 @@ object ActionListEditor: TActionListEditor
     object mItemActListMoveUpAction: TMenuItem
       Action = ActMoveUp
       Caption = 'Move Up'
-      OnClick = ActMoveDownExecute
+      OnClick = ActMoveUpDownExecute
     end
     object mItemActListMoveDownAction: TMenuItem
       Action = ActMoveDown
       Caption = 'Move Down'
-      OnClick = ActMoveDownExecute
+      OnClick = ActMoveUpDownExecute
     end
     object MenuItem6: TMenuItem
       Caption = '-'
