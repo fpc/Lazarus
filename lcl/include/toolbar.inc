@@ -348,8 +348,13 @@ begin
 
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
-    ButtonWidth := Round(ButtonWidth * AXProportion);
-    ButtonHeight := Round(ButtonHeight * AYProportion);
+    BeginUpdate;
+    try
+      SetButtonSize(Round(ButtonWidth * AXProportion), Round(ButtonHeight * AYProportion));
+      DropDownWidth := Round(DropDownWidth * AXProportion);
+    finally
+      EndUpdate;
+    end;
   end;
 end;
 
