@@ -351,7 +351,11 @@ begin
     BeginUpdate;
     try
       SetButtonSize(Round(ButtonWidth * AXProportion), Round(ButtonHeight * AYProportion));
-      DropDownWidth := Round(DropDownWidth * AXProportion);
+      FThemeButtonDropWidth := Round(FThemeButtonDropWidth * AXProportion);
+      FThemeDropDownWidth := Round(FThemeDropDownWidth * AXProportion);
+      if DropDownWidth<>cDropDownWidth then
+        DropDownWidth := Round(DropDownWidth * AXProportion);
+      FToolBarFlags := FToolBarFlags + [tbfUpdateVisibleBarNeeded];
     finally
       EndUpdate;
     end;
