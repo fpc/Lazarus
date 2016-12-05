@@ -3055,10 +3055,6 @@ msgstr "(žádné)"
 msgid "&Load Icon"
 msgstr "Načíst ikonu"
 
-#: lazarusidestrconsts.dlgpomanifestoptions
-msgid "Manifest options"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"
@@ -3079,6 +3075,10 @@ msgstr "Uložit ikonu"
 #: lazarusidestrconsts.dlgposavesession
 msgid "Session"
 msgstr "Sezení"
+
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"

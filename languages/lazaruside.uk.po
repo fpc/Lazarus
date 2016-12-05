@@ -3051,10 +3051,6 @@ msgstr "(немає)"
 msgid "&Load Icon"
 msgstr "&Завантажити значок"
 
-#: lazarusidestrconsts.dlgpomanifestoptions
-msgid "Manifest options"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"
@@ -3075,6 +3071,10 @@ msgstr "&Зберегти значок"
 #: lazarusidestrconsts.dlgposavesession
 msgid "Session"
 msgstr "Сесія"
+
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"

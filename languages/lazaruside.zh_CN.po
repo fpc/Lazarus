@@ -3129,10 +3129,6 @@ msgstr "(无)"
 msgid "&Load Icon"
 msgstr "载入图标(&L)"
 
-#: lazarusidestrconsts.dlgpomanifestoptions
-msgid "Manifest options"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"
@@ -3153,6 +3149,10 @@ msgstr "保存图标(&S)"
 #: lazarusidestrconsts.dlgposavesession
 msgid "Session"
 msgstr "会话"
+
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"

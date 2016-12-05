@@ -3109,10 +3109,6 @@ msgstr "(joks)"
 msgid "&Load Icon"
 msgstr "Į&kelti piktogramą"
 
-#: lazarusidestrconsts.dlgpomanifestoptions
-msgid "Manifest options"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"
@@ -3133,6 +3129,10 @@ msgstr "Į&rašyti piktogramą"
 #: lazarusidestrconsts.dlgposavesession
 msgid "Session"
 msgstr "Sesija"
+
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"

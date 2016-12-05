@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-11-26 01:53+0300\n"
+"PO-Revision-Date: 2016-12-06 01:27+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3048,10 +3048,6 @@ msgstr "(нет)"
 msgid "&Load Icon"
 msgstr "&Загрузить значок"
 
-#: lazarusidestrconsts.dlgpomanifestoptions
-msgid "Manifest options"
-msgstr "Параметры ресурса manifest"
-
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"
@@ -3072,6 +3068,10 @@ msgstr "Сох&ранить значок"
 #: lazarusidestrconsts.dlgposavesession
 msgid "Session"
 msgstr "Сеанс работы"
+
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr "Текстовые поля"
 
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"

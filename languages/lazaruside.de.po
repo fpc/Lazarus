@@ -3046,10 +3046,6 @@ msgstr "(keiner)"
 msgid "&Load Icon"
 msgstr "Symbol &laden"
 
-#: lazarusidestrconsts.dlgpomanifestoptions
-msgid "Manifest options"
-msgstr "Manifesteinstellungen"
-
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"
@@ -3070,6 +3066,10 @@ msgstr "Symbol &speichern"
 #: lazarusidestrconsts.dlgposavesession
 msgid "Session"
 msgstr "Sitzung"
+
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
@@ -21002,3 +21002,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+

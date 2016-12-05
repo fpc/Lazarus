@@ -3080,10 +3080,6 @@ msgstr "（なし）"
 msgid "&Load Icon"
 msgstr "アイコンを読み込む(&L)"
 
-#: lazarusidestrconsts.dlgpomanifestoptions
-msgid "Manifest options"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"
@@ -3104,6 +3100,10 @@ msgstr "アイコンを保存(&S)"
 #: lazarusidestrconsts.dlgposavesession
 msgid "Session"
 msgstr "セッション"
+
+#: lazarusidestrconsts.dlgpotextfields
+msgid "Text fields"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
