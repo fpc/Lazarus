@@ -189,6 +189,7 @@ type
     FHomePageURL: String;
     FDownloadURL: String;
     FForceUpdate: Boolean;
+    FDownloadZipURL: String;
     FSVNURL: String;
     FUpdateSize: Int64;
     FIsDirZipped: Boolean;
@@ -199,6 +200,7 @@ type
     constructor Create; reintroduce;
     destructor Destroy; override;
     procedure ChangePackageStates(const AChangeType: TChangeType; APackageState: TPackageState);
+    function FindPackageFile(const APackageFileName: String): TPackageFile;
   public
     property PackageStates: TPackageStates read FPackageStates;
     property PackageState: TPackageState read FPackageState;
@@ -207,6 +209,7 @@ type
     property UpdateSize: Int64 read FUpdateSize write FUpdateSize;
     property IsDirZipped: Boolean read FIsDirZipped write FIsDirZipped;
     property ForceUpdate: Boolean read FForceUpdate write FForceUpdate;
+    property DownloadZipURL: String read FDownloadZipURL write FDownloadZipURL;
   published
     property Name: String read FName write FName;
     property DisplayName: String read FDisplayName write FDisplayName;
@@ -630,6 +633,21 @@ begin
   end;
 end;
 
+function TPackage.FindPackageFile(const APackageFileName: String): TPackageFile;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := 0 to FPackageFiles.Count - 1 do
+  begin
+    if UpperCase(TPackageFile(FPackageFiles.Items[I]).Name) = UpperCase(APackageFileName) then
+    begin
+      Result := TPackageFile(FPackageFiles.Items[I]);
+      Break;
+    end;
+  end;
+end;
+
 { TSerializablePackages }
 
 constructor TSerializablePackages.Create;
@@ -771,8 +789,8 @@ begin
   for I := 0 to Count - 1 do
   begin
     case AFindPackageBy of
-      fpbPackageName: NeedToBreak := Items[I].Name = AValue;
-      fpbRepositoryFilename: NeedToBreak := Items[I].RepositoryFileName = AValue
+      fpbPackageName: NeedToBreak := UpperCase(Items[I].Name) = UpperCase(AValue);
+      fpbRepositoryFilename: NeedToBreak := UpperCase(Items[I].RepositoryFileName) = UpperCase(AValue)
     end;
     if NeedToBreak then
     begin
@@ -813,7 +831,7 @@ begin
   begin
     for J := 0 to Items[I].FPackageFiles.Count - 1 do
     begin
-      if TPackageFile(Items[I].FPackageFiles.Items[J]).Name = APackageFileName then
+      if UpperCase(TPackageFile(Items[I].FPackageFiles.Items[J]).Name) = UpperCase(APackageFileName) then
       begin
         Result := TPackageFile(Items[I].FPackageFiles.Items[J]);
         Break;

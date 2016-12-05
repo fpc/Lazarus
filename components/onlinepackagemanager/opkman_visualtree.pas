@@ -61,6 +61,9 @@ type
     RepositoryDate: TDate;
     HomePageURL: String;
     DownloadURL: String;
+    DownloadZipURL: String;
+    ForceUpadate: Boolean;
+    HasUpdate: Boolean;
     SVNURL: String;
     IsInstalled: Boolean;
     ButtonID: Integer;
@@ -134,6 +137,7 @@ type
     procedure CollapseEx;
     procedure GetPackageList;
     procedure UpdatePackageStates;
+    procedure UpdatePackageUStatus;
     function ResolveDependencies: TModalResult;
   published
     property OnChecking: TOnChecking read FOnChecking write FOnChecking;
@@ -178,6 +182,7 @@ begin
        Position := 1;
        Alignment := taCenter;
        Width := 80;
+       Options := Options - [coResizable];
        Text := rsMainFrm_VSTHeaderColumn_Installed;
      end;
      with Header.Columns.Add do
@@ -185,6 +190,7 @@ begin
        Position := 2;
        Alignment := taCenter;
        Width := 85;
+       Options := Options - [coResizable];
        Text := rsMainFrm_VSTHeaderColumn_Repository;
      end;
      with Header.Columns.Add do
@@ -192,6 +198,7 @@ begin
        Position := 3;
        Alignment := taCenter;
        Width := 80;
+       Options := Options - [coResizable];
        Text := rsMainFrm_VSTHeaderColumn_Update;
      end;
      with Header.Columns.Add do
@@ -204,6 +211,7 @@ begin
      begin
         Position := 5;
         Width := 25;
+        Options := Options - [coResizable];
         Text := rsMainFrm_VSTHeaderColumn_Button;
         Options := Options - [coResizable];
       end;
@@ -287,6 +295,7 @@ begin
        Data^.PackageDisplayName := SerializablePackages.Items[I].DisplayName;
        Data^.PackageState := SerializablePackages.Items[I].PackageState;
        Data^.DataType := 1;
+       Data^.HasUpdate := False;
        for J := 0 to SerializablePackages.Items[I].PackageFiles.Count - 1 do
        begin
          //add packagefiles(DataType = 2)
@@ -957,39 +966,110 @@ begin
   end;
 end;
 
+procedure TVisualTree.UpdatePackageUStatus;
+var
+  Node, ParentNode: PVirtualNode;
+  Data, ParentData: PData;
+  Package: TPackage;
+  PackageFile: TPackageFile;
+begin
+  Node := FVST.GetFirst;
+  while Assigned(Node) do
+  begin
+    Data := FVST.GetNodeData(Node);
+    if (Data^.DataType = 1) then
+    begin
+      Package := SerializablePackages.FindPackage(Data^.PackageName, fpbPackageName);
+      if Package <> nil then
+      begin
+        Data^.DownloadZipURL := Package.DownloadZipURL;
+        Data^.ForceUpadate := Package.ForceUpdate;
+        FVST.ReinitNode(Node, False);
+        FVST.RepaintNode(Node);
+        if Package.ForceUpdate then
+        begin
+          Data^.HasUpdate := True;
+          FVST.ReinitNode(Node, False);
+          FVST.RepaintNode(Node);
+        end;
+      end;
+    end;
+    if Data^.DataType = 2 then
+    begin
+      PackageFile := SerializablePackages.FindPackageFile(Data^.PackageFileName);
+      if PackageFile <> nil then
+      begin
+        Data^.UpdateVersion := PackageFile.UpdateVersion;
+        FVST.ReinitNode(Node, False);
+        FVST.RepaintNode(Node);
+        if Data^.UpdateVersion > Data^.InstalledVersion then
+        begin
+          ParentNode := Node^.Parent;
+          ParentData := FVST.GetNodeData(ParentNode);
+          ParentData^.HasUpdate := True;
+          FVST.ReinitNode(ParentNode, False);
+          FVST.RepaintNode(ParentNode);
+        end;
+      end;
+    end;
+    Node := FVST.GetNext(Node);
+  end;
+end;
+
 procedure TVisualTree.VSTBeforeCellPaint(Sender: TBaseVirtualTree;
   TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
   CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
 var
-  Data: PData;
+  Data, ParentData: PData;
+  ParentNode: PVirtualNode;
 begin
   Data := Sender.GetNodeData(Node);
-  if (Data^.DataType = 0) or (Data^.DataType = 1) then
+  if (Data^.DataType = 0) or (Data^.DataType = 1) or (Data^.DataType = 2) then
   begin
     if (Node = Sender.FocusedNode) then
     begin
-      if Column = 0 then
-      begin
-        if Data^.DataType = 0 then
-          TargetCanvas.Brush.Color := $00E5E5E5 //00D8D8D8
-        else if Data^.DataType = 1 then
-          TargetCanvas.Brush.Color := $00E5E5E5;
-            TargetCanvas.FillRect(CellRect);
-        TargetCanvas.Brush.Color := FVST.Colors.FocusedSelectionColor;
-        TargetCanvas.FillRect(ContentRect)
-      end
-      else
-      begin
-        TargetCanvas.Brush.Color := FVST.Colors.FocusedSelectionColor;
-        TargetCanvas.FillRect(CellRect)
+      case Column of
+        0: begin
+             if Data^.DataType = 0 then
+               TargetCanvas.Brush.Color := $00E5E5E5 //00D8D8D8
+             else
+               TargetCanvas.Brush.Color := $00E5E5E5;
+             TargetCanvas.FillRect(CellRect);
+             TargetCanvas.Brush.Color := FVST.Colors.FocusedSelectionColor;
+             TargetCanvas.FillRect(ContentRect)
+           end
+        else
+           begin
+             TargetCanvas.Brush.Color := FVST.Colors.FocusedSelectionColor;
+             TargetCanvas.FillRect(CellRect)
+           end;
       end;
     end
     else
     begin
-      if Data^.DataType = 0 then
-        TargetCanvas.Brush.Color := $00E5E5E5 //00D8D8D8
-      else if Data^.DataType = 1 then
-        TargetCanvas.Brush.Color := $00E5E5E5;
+      case Column of
+        0, 1, 2, 4, 5:
+          begin
+            if Data^.DataType = 0 then
+              TargetCanvas.Brush.Color := $00E5E5E5 //00D8D8D8
+            else
+              TargetCanvas.Brush.Color := $00E5E5E5;
+          end;
+        3:begin
+            if (Data^.DataType = 2) then
+            begin
+              ParentNode := Node^.Parent;
+              ParentData := FVST.GetNodeData(ParentNode);
+              if (Data^.UpdateVersion > Data^.InstalledVersion) then
+              begin
+                TargetCanvas.Brush.Color := $00E5E5E5;
+                ParentData^.HasUpdate := True;
+              end
+              else
+                ParentData^.HasUpdate := False;
+            end;
+          end;
+      end;
       TargetCanvas.FillRect(CellRect);
     end;
   end
@@ -1122,8 +1202,8 @@ begin
          else if (Data1^.DataType = 2) and (Data1^.DataType = 2) then
            Result := CompareText(Data1^.PackageFileName, Data2^.PackageFileName);
        end;
-    4: if (Data1^.DataType = 1) and (Data1^.DataType = 1) then
-         Result := Ord(Data1^.PackageState) - Ord(Data2^.PackageState);
+    3: if (Data1^.DataType = 1) and (Data1^.DataType = 1) then
+         Result := Ord(Data2^.HasUpdate) - Ord(Data1^.HasUpdate);
   end;
 end;
 
@@ -1209,12 +1289,20 @@ begin
   end
   else if Column = 3 then
   begin
-    if Data^.UpdateVersion = '' then
-      Data^.UpdateVersion := '-';
-    if Data^.DataType = 2 then
-      CellText := Data^.UpdateVersion
-    else
-      CellText := '';
+    case Data^.DataType of
+      1: if Data^.HasUpdate then
+           CellText := 'NEW';
+      2: begin
+           if Data^.UpdateVersion = '' then
+             Data^.UpdateVersion := '-';
+           if Data^.DataType = 2 then
+             CellText := Data^.UpdateVersion
+           else
+             CellText := '';
+         end
+      else
+        CellText := '';
+    end
   end
   else if Column = 4 then
   begin
@@ -1226,7 +1314,7 @@ begin
            1: CellText := rsMainFrm_VSTText_PackageState1;
            2: CellText := rsMainFrm_VSTText_PackageState2;
            3: begin
-                Data^.IsInstalled := Data^.InstalledVersion >= Data^.Version;
+                Data^.IsInstalled := Data^.InstalledVersion >= Data^.UpdateVersion;
                 if Data^.IsInstalled then
                   CellText := rsMainFrm_VSTText_PackageState4
                 else
@@ -1266,7 +1354,7 @@ end;
 procedure TVisualTree.VSTHeaderClick(Sender: TVTHeader; Column: TColumnIndex;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if (Column > 0) then
+  if (Column <> 0) and (Column <> 3) then
     Exit;
   if Button = mbLeft then
   begin
@@ -1298,28 +1386,39 @@ var
   Data: PData;
 begin
   Data := FVST.GetNodeData(Node);
-  if (Column = 4) and (FHoverNode = Node) and (FHoverColumn = Column) and ((Data^.DataType = 17) or (Data^.DataType = 18)) then
-  begin
-    TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsUnderline];
-    if  Node <> Sender.FocusedNode then
-      TargetCanvas.Font.Color := clBlue
+  case column of
+    3: begin
+         TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold];
+         if Node <> Sender.FocusedNode then
+           TargetCanvas.Font.Color := clBlack
+         else
+           TargetCanvas.Font.Color := clWhite;
+       end;
+    4: begin
+         if (FHoverNode = Node) and (FHoverColumn = Column) and ((Data^.DataType = 17) or (Data^.DataType = 18)) then
+         begin
+           TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsUnderline];
+           if  Node <> Sender.FocusedNode then
+             TargetCanvas.Font.Color := clBlue
+           else
+             TargetCanvas.Font.Color := clWhite;
+         end
+         else if (Data^.DataType = 2) and (Data^.IsInstalled) then
+         begin
+           TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold];
+           if  Node <> Sender.FocusedNode then
+             TargetCanvas.Font.Color := clGreen
+           else
+             TargetCanvas.Font.Color := clWhite;
+         end;
+       end
     else
-      TargetCanvas.Font.Color := clWhite;
-  end
-  else if (Column = 4) and (Data^.DataType = 2) and (Data^.IsInstalled) then
-  begin
-    TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold];
-    if  Node <> Sender.FocusedNode then
-      TargetCanvas.Font.Color := clGreen
-    else
-      TargetCanvas.Font.Color := clWhite;
-  end
-  else
-  begin
-    if  Node <> Sender.FocusedNode then
-      TargetCanvas.Font.Color := FVST.Font.Color
-    else
-      TargetCanvas.Font.Color := clWhite;
+      begin
+        if  Node <> Sender.FocusedNode then
+          TargetCanvas.Font.Color := FVST.Font.Color
+        else
+          TargetCanvas.Font.Color := clWhite;
+      end;
   end;
 end;
 

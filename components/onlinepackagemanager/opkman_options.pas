@@ -1,9 +1,3 @@
-unit opkman_options;
-
-{$mode objfpc}{$H+}
-
-interface
-
 {
  ***************************************************************************
  *                                                                         *
@@ -26,6 +20,12 @@ interface
 
  Author: Balázs Székely
 }
+unit opkman_options;
+
+{$mode objfpc}{$H+}
+
+interface
+
 uses
   Classes, SysUtils, LazIDEIntf, Laz2_XMLCfg, LazFileUtils;
 

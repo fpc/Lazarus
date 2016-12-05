@@ -5,48 +5,88 @@ unit opkman_updates;
 interface
 
 uses
-  Classes, SysUtils, LazIDEIntf, Laz2_XMLCfg, LazFileUtils, fpjson,
-  opkman_httpclient, opkman_timer,
-
-  dialogs;
+  Classes, SysUtils, LazIDEIntf, Laz2_XMLCfg, LazFileUtils, fpjson, fpjsonrtti,
+  opkman_httpclient, opkman_timer;
 
 const
   OpkVersion = 1;
   UpdateInterval = 6000;
 
 type
-  TUpdateInfo = record
-    FPackageName: String;
-    FPackageFileName: String;
-    FUpdateVersion: String;
-    FForceUpdate: Boolean;
+
+  { TUpdatePackageFiles }
+
+  TUpdatePackageFiles = class(TCollectionItem)
+  private
+    FName: String;
+    FVersion: String;
+  published
+    property Name: String read FName write FName;
+    property Version: String read FVersion write FVersion;
+  end;
+
+  { TUpdatePackageData }
+
+  TUpdatePackageData = class(TPersistent)
+  private
+    FDownloadZipURL: String;
+    FForceUpdate: boolean;
+    FName: String;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+  published
+    property Name: String read FName write FName;
+    property ForceUpdate: boolean read FForceUpdate write FForceUpdate;
+    property DownloadZipURL: String read FDownloadZipURL write FDownloadZipURL;
+  end;
+
+  {TUpdatePackage}
+
+  TUpdatePackage = class(TPersistent)
+  private
+    FUpdatePackageData: TUpdatePackageData;
+    FUpdatePackageFiles: TCollection;
+    procedure Clear;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function LoadFromJSON(const AJSON: TJSONStringType): boolean;
+  published
+    property UpdatePackageData: TUpdatePackageData read FUpdatePackageData write FUpdatePackageData;
+    property UpdatePackageFiles: TCollection read FUpdatePackageFiles write FUpdatePackageFiles;
   end;
 
   { TUpdates }
-
   TUpdates = class(TThread)
   private
     FXML: TXMLConfig;
     FHTTPClient: TFPHTTPClient;
     FTimer: TThreadTimer;
+    FUpdatePackage: TUpdatePackage;
     FStarted: Boolean;
     FVersion: Integer;
     FNeedToBreak: Boolean;
     FNeedToUpdate: Boolean;
     FBusyUpdating: Boolean;
-    procedure SetUpdateInfo(const AUpdateInfo: TUpdateInfo);
+    FOnUpdate: TNotifyEvent;
+    FPaused: Boolean;
     function GetUpdateInfo(const AURL: String; var AJSON: TJSONStringType): Boolean;
-    function ParseJSON(const AJSON: TJSONStringType; var AUpdateInfo: TUpdateInfo): Boolean;
     procedure DoOnTimer(Sender: TObject);
+    procedure DoOnUpdate;
+    procedure Load;
+    procedure Save;
   protected
     procedure Execute; override;
   public
-    procedure Load;
-    procedure Save;
     constructor Create(const AFileName: String);
     destructor Destroy; override;
     procedure StartUpdate;
     procedure StopUpdate;
+  published
+    property Paused: Boolean read FPaused write FPaused;
+    property OnUpdate: TNotifyEvent read FOnUpdate write FOnUpdate;
   end;
 
 var
@@ -55,6 +95,73 @@ var
 implementation
 
 uses opkman_serializablepackages, opkman_options, opkman_common;
+
+{ TUpdatePackage }
+
+procedure TUpdatePackage.Clear;
+var
+  I: Integer;
+begin
+  FUpdatePackageData.Clear;
+  for I := FUpdatePackageFiles.Count - 1 downto 0 do
+    FUpdatePackageFiles.Items[I].Free;
+  FUpdatePackageFiles.Clear;
+end;
+
+constructor TUpdatePackage.Create;
+begin
+  FUpdatePackageData := TUpdatePackageData.Create;
+  FUpdatePackageFiles := TCollection.Create(TUpdatePackageFiles);
+end;
+
+destructor TUpdatePackage.Destroy;
+var
+  I: Integer;
+begin
+  FUpdatePackageData.Free;
+  for I := FUpdatePackageFiles.Count - 1 downto 0 do
+    FUpdatePackageFiles.Items[I].Free;
+  FUpdatePackageFiles.Free;
+  inherited Destroy;
+end;
+
+function TUpdatePackage.LoadFromJSON(const AJSON: TJSONStringType): boolean;
+var
+  DeStreamer: TJSONDeStreamer;
+begin
+  DeStreamer := TJSONDeStreamer.Create(nil);
+  try
+    Clear;
+    try
+      DeStreamer.JSONToObject(AJSON, Self);
+      Result := True;
+    except
+      Result := False;
+    end;
+  finally
+    DeStreamer.Free;
+  end;
+end;
+
+{ TUpdatePackageData }
+
+constructor TUpdatePackageData.Create;
+begin
+  Clear;
+end;
+
+destructor TUpdatePackageData.Destroy;
+begin
+  //
+  inherited Destroy;
+end;
+
+procedure TUpdatePackageData.Clear;
+begin
+  FName := '';
+  FForceUpdate := False;
+  FDownloadZipURL := '';
+end;
 
 { TUpdates }
 
@@ -71,6 +178,7 @@ begin
     FHTTPClient.Proxy.UserName:= Options.ProxyUser;
     FHTTPClient.Proxy.Password:= Options.ProxyPassword;
   end;
+  FUpdatePackage := TUpdatePackage.Create;
   FTimer := nil;
 end;
 
@@ -84,30 +192,8 @@ begin
     FTimer.Terminate;
   end;
   FHTTPClient.Free;
+  FUpdatePackage.Free;
   inherited Destroy;
-end;
-
-procedure TUpdates.SetUpdateInfo(const AUpdateInfo: TUpdateInfo);
-var
-  I, J: Integer;
-  Package: TPackage;
-  PackageFile: TPackageFile;
-begin
-  for I := 0 to SerializablePackages.Count - 1 do
-  begin
-    Package := SerializablePackages.Items[I];
-    for J := 0 to SerializablePackages.Items[I].PackageFiles.Count - 1 do
-    begin
-      PackageFile := TPackageFile(SerializablePackages.Items[I].PackageFiles.Items[J]);
-      if (UpperCase(Package.Name) = UpperCase(AUpdateInfo.FPackageName)) and
-        (UpperCase(PackageFile.Name) = UpperCase(AUpdateInfo.FPackageFileName)) then
-      begin
-        Package.ForceUpdate := AUpdateInfo.FForceUpdate;
-        PackageFile.UpdateVersion := AUpdateInfo.FUpdateVersion;
-        Exit;
-      end;
-    end;
-  end;
 end;
 
 procedure TUpdates.Load;
@@ -115,22 +201,29 @@ var
   Count: Integer;
   I: Integer;
   Path: String;
-  UpdateInfo: TUpdateInfo;
+  PackageName: String;
+  PackageFileName: String;
+  Package: TPackage;
+  PackageFile: TPackageFile;
 begin
   FVersion := FXML.GetValue('Version/Value', 0);
   Count := FXML.GetValue('Count/Value', 0);
   for I := 0 to Count - 1 do
   begin
     Path := 'Item' + IntToStr(I);
-    with UpdateInfo do
+    PackageName := FXML.GetValue('Items/' + Path + '/PackageName', '');
+    Package := SerializablePackages.FindPackage(PackageName, fpbPackageName);
+    if Package <> nil then
     begin
-      FPackageName := FXML.GetValue('Items/' + Path + '/PackageName', '');
-      FForceUpdate :=  FXML.GetValue('Items/' + Path + '/ForceUpdate', False);
-      FPackageFileName := FXML.GetValue('Items/' + Path + '/PackageFileName', '');
-      FUpdateVersion := FXML.GetValue('Items/' + Path + '/UpdateVersion', '');
+      Package.ForceUpdate := FXML.GetValue('Items/' + Path + '/ForceUpdate', False);
+      Package.DownloadZipURL := FXML.GetValue('Items/' + Path + '/DownloadZipURL', '');
     end;
-    SetUpdateInfo(UpdateInfo);
+    PackageFileName := FXML.GetValue('Items/' + Path + '/PackageFileName', '');
+    PackageFile := Package.FindPackageFile(PackageFileName);
+    if PackageFile <> nil then
+      PackageFile.UpdateVersion := FXML.GetValue('Items/' + Path + '/UpdateVersion', '');
   end;
+  Synchronize(@DoOnUpdate);
 end;
 
 procedure TUpdates.Save;
@@ -155,11 +248,12 @@ begin
       PackageFile := TPackageFile(SerializablePackages.Items[I].PackageFiles.Items[J]);
       FXML.SetDeleteValue('Items/' + Path + '/PackageName', Package.Name, '');
       FXML.SetDeleteValue('Items/' + Path + '/ForceUpdate', Package.ForceUpdate, False);
+      FXML.SetDeleteValue('Items/' + Path + '/DownloadZipURL', Package.DownloadZipURL, '');
       FXML.SetDeleteValue('Items/' + Path + '/PackageFileName', PackageFile.Name, '');
       FXML.SetDeleteValue('Items/' + Path + '/UpdateVersion', PackageFile.UpdateVersion, '');
     end;
   end;
-  FXML.SetDeleteExtendedValue('Count/Value', Count, 0);
+  FXML.SetDeleteValue('Count/Value', Count, 0);
   FXML.Flush;
 end;
 
@@ -171,16 +265,14 @@ end;
 
 function TUpdates.GetUpdateInfo(const AURL: String; var AJSON: TJSONStringType): Boolean;
 var
-  URL: string;
+  URL: String;
   Ms: TMemoryStream;
 begin
   Result := False;
   if Trim(AURL) = '' then
     Exit;
-
-  if Pos('update.json', AURL) = 0 then
+  if Pos('.json', AURL) = 0 then
     Exit;
-
   URL := FixProtocol(AURL);
   Ms := TMemoryStream.Create;
   try
@@ -202,39 +294,60 @@ begin
   end;
 end;
 
-function TUpdates.ParseJSON(const AJSON: TJSONStringType; var AUpdateInfo: TUpdateInfo): Boolean;
+procedure TUpdates.DoOnUpdate;
 begin
-  Result := False;
-
+  if Assigned(FOnUpdate) then
+    FOnUpdate(Self);
 end;
 
 procedure TUpdates.Execute;
 var
-  I: Integer;
-  UpdateInfo: TUpdateInfo;
+  I, J: Integer;
   JSON: TJSONStringType;
+  PackageFile: TPackageFile;
+  NeedToUpdate: Boolean;
 begin
   Load;
   while not Terminated do
   begin
-    if (FNeedToUpdate) and (not FBusyUpdating) then
+    if (FNeedToUpdate) and (not FBusyUpdating) and (not FPaused) then
     begin
+      NeedToUpdate := False;
       FBusyUpdating := True;
       try
         for I := 0 to SerializablePackages.Count - 1  do
         begin
-          if not FNeedToBreak then
+          if FPaused then
+            Break;
+          if (not FNeedToBreak) then
           begin
             JSON := '';
             if GetUpdateInfo(SerializablePackages.Items[I].DownloadURL, JSON) then
             begin
-              if ParseJSON(JSON, UpdateInfo) then
+              if FUpdatePackage.LoadFromJSON(JSON) then
               begin
-                SetUpdateInfo(UpdateInfo);
+                SerializablePackages.Items[I].DownloadZipURL := FUpdatePackage.FUpdatePackageData.DownloadZipURL;
+                SerializablePackages.Items[I].ForceUpdate := FUpdatePackage.FUpdatePackageData.ForceUpdate;
+                NeedToUpdate := FUpdatePackage.FUpdatePackageData.ForceUpdate = True;
+                for J := 0 to FUpdatePackage.FUpdatePackageFiles.Count - 1 do
+                begin
+                  PackageFile := SerializablePackages.Items[I].FindPackageFile(TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[J]).Name);
+                  if PackageFile <> nil then
+                  begin
+                    if not NeedToUpdate then
+                      NeedToUpdate := TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[J]).Version > PackageFile.UpdateVersion;
+                    PackageFile.UpdateVersion := TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[J]).Version;
+                  end;
+                end;
               end;
             end;
-          end;
+          end
+          else
+            FHTTPClient.NeedToBreak := True;
         end;
+        if (NeedToUpdate) and (not FNeedToBreak) and (not FPaused) then
+          if Assigned(FOnUpdate) then
+            Synchronize(@DoOnUpdate);
       finally
         FBusyUpdating := False;
         FNeedToUpdate := False;
@@ -248,6 +361,7 @@ begin
   if FStarted then
     Exit;
   FStarted := True;
+  FPaused := False;
   Load;
   FTimer := TThreadTimer.Create;
   FTimer.Interval := UpdateInterval;

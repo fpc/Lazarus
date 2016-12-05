@@ -110,6 +110,7 @@ type
     procedure DoOnJSONProgress(Sender: TObject);
     procedure DoOnJSONDownloadCompleted(Sender: TObject; AJSON: TJSONStringType; AErrTyp: TErrorType; const AErrMsg: String = '');
     procedure DoOnProcessJSON(Sender: TObject);
+    procedure DoOnUpdate(Sender: TObject);
     function IsSomethingChecked(const AIsUpdate: Boolean = False): Boolean;
     function Download(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
     function Extract(const ASrcDir, ADstDir: String; var ADoOpen: Boolean; const AIsUpdate: Boolean = False): TModalResult;
@@ -144,6 +145,7 @@ begin
   PackageDownloader.OnJSONProgress := @DoOnJSONProgress;
   PackageDownloader.OnJSONDownloadCompleted := @DoOnJSONDownloadCompleted;
   Updates := TUpdates.Create(LocalRepositoryUpdatesFile);
+  Updates.OnUpdate := @DoOnUpdate;
   InstallPackageList := TObjectList.Create(True);
   FHintTimeOut := Application.HintHidePause;
   Application.HintHidePause := 1000000;
@@ -323,6 +325,11 @@ end;
 procedure TMainFrm.DoOnProcessJSON(Sender: TObject);
 begin
   Application.ProcessMessages;
+end;
+
+procedure TMainFrm.DoOnUpdate(Sender: TObject);
+begin
+  VisualTree.UpdatePackageUStatus;
 end;
 
 procedure TMainFrm.ShowOptions;
