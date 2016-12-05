@@ -42,3 +42,4 @@ msgstr "Ошибка чтения данных из сокета"
 #: opkman_httpclient.serrunexpectedresponse
 msgid "Unexpected response status code: %d"
 msgstr "Неожиданный код состояния в ответе: %d"
+
