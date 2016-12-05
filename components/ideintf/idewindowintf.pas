@@ -1040,8 +1040,8 @@ begin
   ALayout:=Find(ADialog,true);
   //debugln(['TIDEDialogLayoutList.ApplyLayout ',ALayout.Name,' ',ALayout.SizeValid,' ',ALayout.Width,',',ALayout.Height]);
   if ALayout.SizeValid then begin
-    NewWidth:=ALayout.Width;
-    NewHeight:=ALayout.Height;
+    NewWidth:=ADialog.ScaleCoord(ALayout.Width);
+    NewHeight:=ADialog.ScaleCoord(ALayout.Height);
   end else begin
     NewWidth:=DefaultWidth;
     NewHeight:=DefaultHeight;
@@ -1064,8 +1064,8 @@ var
 begin
   if (ADialog=nil) or (Self=nil) then exit;
   ALayout:=Find(ADialog,true);
-  ALayout.Width:=ADialog.Width;
-  ALayout.Height:=ADialog.Height;
+  ALayout.Width:=ADialog.ScaleCoordBack(ADialog.Width);
+  ALayout.Height:=ADialog.ScaleCoordBack(ADialog.Height);
 end;
 
 procedure TIDEDialogLayoutList.Clear;
