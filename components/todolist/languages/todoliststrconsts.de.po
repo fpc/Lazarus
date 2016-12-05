@@ -119,3 +119,4 @@ msgstr "Kategorie"
 #: todoliststrconsts.lisviewtodolist
 msgid "View ToDo List"
 msgstr "ToDo-Liste anzeigen"
+
