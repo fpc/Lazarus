@@ -1112,7 +1112,9 @@ begin
   ADrawer.Pen := APen;
   ADrawer.Line(p1.x, p1.y, p2.x, p2.y);
   if FArrow.Visible then begin
-    len := sqrt(sqr(p2.x - p1.x) + sqr(p2.y - p1.y)) * 0.01;
+    len := sqrt(sqr(p2.x - p1.x) + sqr(p2.y - p1.y)) * 0.01 / ADrawer.Scale(1);
+    // Be aware that the drawer scales pixels. But the arrow length here is
+    // already at the correct size!
     arr := TChartArrow.Create(nil);
     arr.Assign(FArrow);
     arr.SetOwner(nil);  // avoid repainting due to next commands
