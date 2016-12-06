@@ -6743,7 +6743,7 @@ begin
         RowHeights[i] := Round(RowHeights[i] * AYProportion);
 
       DefaultColWidth := Round(DefaultColWidth * AXProportion);
-      if DefaultRowHeight > 0 then
+      if IsDefRowHeightStored then
         DefaultRowHeight := Round(DefaultRowHeight * AYProportion);
     finally
       EndUpdate;
