@@ -1478,6 +1478,8 @@ type
     //scale support
     function ScaleCoord(const ASize: Integer): Integer;
     function ScaleCoordBack(const ASize: Integer): Integer;
+    function ScaleCoord96(const ASize: Integer): Integer;
+    function ScaleCoord96Back(const ASize: Integer): Integer;
   public
     // size
     procedure AdjustSize; virtual;// smart calling DoAutoSize
