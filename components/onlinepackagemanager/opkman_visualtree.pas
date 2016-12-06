@@ -1058,18 +1058,16 @@ begin
               TargetCanvas.Brush.Color := $00E5E5E5;
           end;
         3:begin
+            TargetCanvas.Brush.Color := $00E5E5E5;
             if (Data^.DataType = 2) then
             begin
               ParentNode := Node^.Parent;
               ParentData := FVST.GetNodeData(ParentNode);
-              if (Data^.UpdateVersion > Data^.InstalledVersion) then
-              begin
-                TargetCanvas.Brush.Color := $00E5E5E5;
-                ParentData^.HasUpdate := True;
-              end
+              if (Data^.UpdateVersion > Data^.InstalledVersion) or (ParentData^.ForceUpadate) then
+                ParentData^.HasUpdate := True
               else
                 ParentData^.HasUpdate := False;
-            end;
+            end
           end;
       end;
       TargetCanvas.FillRect(CellRect);
@@ -1385,17 +1383,21 @@ procedure TVisualTree.VSTPaintText(Sender: TBaseVirtualTree;
   const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
   TextType: TVSTTextType);
 var
-  Data: PData;
+  Data, ParentData: PData;
 begin
   Data := FVST.GetNodeData(Node);
   case column of
     3: begin
+
          case Data^.DataType of
            1: TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold];
-           2: if Data^.UpdateVersion > Data^.InstalledVersion then
-                TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold]
-              else
-                TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
+           2: begin
+                ParentData := FVST.GetNodeData(Node^.Parent);
+                if (Data^.UpdateVersion > Data^.InstalledVersion) or (ParentData^.HasUpdate) then
+                  TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold]
+                else
+                  TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
+              end;
          end;
          if Node <> Sender.FocusedNode then
            TargetCanvas.Font.Color := clBlack
