@@ -3035,6 +3035,9 @@ begin
   if nDenominator = 0 then
     Result := -1
   else
+  if nNumerator = nDenominator then
+    Result := nNumber
+  else
     Result := MathRound(int64(nNumber) * int64(nNumerator) / nDenominator);
 end;
 
