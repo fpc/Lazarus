@@ -251,18 +251,30 @@ type
     property OnPaint;
   end;
 
+  TCustomDesignControl = class(TScrollingWinControl)
+  protected
+    FDesignTimePPI: Integer;
+    FPixelsPerInch: Integer;
+
+    procedure SetDesignTimePPI(const ADesignTimePPI: Integer);
+  protected
+    procedure Loaded; override;
+  public
+    constructor Create(TheOwner: TComponent); override;
+  public
+    property DesignTimePPI: Integer read FDesignTimePPI write SetDesignTimePPI default 96;
+    property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch stored False;
+  end;
+
 
   { TCustomFrame }
 
-  TCustomFrame = class(TScrollingWinControl)
+  TCustomFrame = class(TCustomDesignControl)
   private
-    FDesignTimePPI: Integer;
-    FPixelsPerInch: Integer;
     procedure AddActionList(ActionList: TCustomActionList);
     procedure RemoveActionList(ActionList: TCustomActionList);
     procedure ReadDesignLeft(Reader: TReader);
     procedure ReadDesignTop(Reader: TReader);
-    procedure SetDesignTimePPI(const aDesignTimePPI: Integer);
     procedure WriteDesignLeft(Writer: TWriter);
     procedure WriteDesignTop(Writer: TWriter);
   protected
@@ -273,7 +285,6 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure CalculatePreferredSize(var PreferredWidth,
            PreferredHeight: integer; WithThemeSpace: Boolean); override;
-    procedure Loaded; override;
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy; const AFromDPI,
       AToDPI, AOldFormWidth, ANewFormWidth: Integer;
       const AScaleFonts: Boolean); override;
@@ -281,9 +292,6 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     class function GetControlClassDefaultSize: TSize; override;
-  public
-    property DesignTimePPI: Integer read FDesignTimePPI write SetDesignTimePPI default 96;
-    property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch;
   end;
 
   TCustomFrameClass = class of TCustomFrame;
@@ -413,7 +421,7 @@ type
   TModalDialogFinished = procedure (Sender: TObject; AResult: Integer) of object;
 
 
-  TCustomForm = class(TScrollingWinControl)
+  TCustomForm = class(TCustomDesignControl)
   private
     FActive: Boolean;
     FActiveControl: TWinControl;
@@ -453,7 +461,6 @@ type
     FOnShortcut: TShortCutEvent;
     FOnShow: TNotifyEvent;
     FOnWindowStateChange: TNotifyEvent;
-    FPixelsPerInch: Longint;
     FPosition: TPosition;
     FRealizedShowInTaskBar: TShowInTaskbar;
     FRestoredLeft: integer;
@@ -462,7 +469,6 @@ type
     FRestoredHeight: integer;
     FShowInTaskbar: TShowInTaskbar;
     FWindowState: TWindowState;
-    FDesignTimePPI: Integer;
     FScaled: Boolean;
     function GetClientHandle: HWND;
     function GetEffectiveShowInTaskBar: TShowInTaskBar;
@@ -481,7 +487,6 @@ type
     procedure SetAlphaBlend(const AValue: Boolean);
     procedure SetAlphaBlendValue(const AValue: Byte);
     procedure SetBorderIcons(NewIcons: TBorderIcons);
-    procedure SetDesignTimePPI(const aDesignTimePPI: Integer);
     procedure SetFormBorderStyle(NewStyle: TFormBorderStyle);
     procedure SetCancelControl(NewControl: TControl);
     procedure SetDefaultControl(NewControl: TControl);
@@ -671,8 +676,7 @@ type
     property DefaultMonitor: TDefaultMonitor read FDefaultMonitor
       write FDefaultMonitor default dmActiveForm;
     property Designer: TIDesigner read FDesigner write FDesigner;
-    property DesignTimeDPI: Integer read FDesignTimePPI write SetDesignTimePPI default 96; deprecated 'Use DesignTimePPI instead. DesignTimeDPI will be removed in 1.8';
-    property DesignTimePPI: Integer read FDesignTimePPI write SetDesignTimePPI default 96;
+    property DesignTimeDPI: Integer read FDesignTimePPI write SetDesignTimePPI stored False; deprecated 'Use DesignTimePPI instead. DesignTimeDPI will be removed in 1.8';
     property EffectiveShowInTaskBar: TShowInTaskBar read GetEffectiveShowInTaskBar;
     property FormState: TFormState read FFormState;
     property FormStyle: TFormStyle read FFormStyle write SetFormStyle
@@ -704,7 +708,6 @@ type
     property OnWindowStateChange: TNotifyEvent
                          read FOnWindowStateChange write FOnWindowStateChange;
     property ParentFont default False;
-    property PixelsPerInch: Longint read FPixelsPerInch write FPixelsPerInch stored False;
     property Position: TPosition read FPosition write SetPosition default poDesigned;
     property RestoredLeft: integer read FRestoredLeft;
     property RestoredTop: integer read FRestoredTop;
@@ -1778,6 +1781,7 @@ function GetFirstParentForm(Control:TControl): TCustomForm;
 function ValidParentForm(Control: TControl; TopForm: Boolean = True): TCustomForm;
 function GetDesignerForm(APersistent: TPersistent): TCustomForm;
 function FindRootDesigner(APersistent: TPersistent): TIDesigner;
+function NeedParentDesignControl(Control: TControl): TCustomDesignControl;
 
 function IsAccel(VK: word; const Str: string): Boolean;
 procedure NotifyApplicationUserInput(Target: TControl; Msg: Cardinal);
@@ -1982,6 +1986,21 @@ begin
 end;
 
 //------------------------------------------------------------------------------
+function NeedParentDesignControl(Control: TControl): TCustomDesignControl;
+var
+  SControl: TControl;
+begin
+  SControl := Control;
+  while (Control <> nil) and (Control.Parent <> nil) do
+    Control := Control.Parent;
+
+  if Control is TCustomDesignControl then
+    Result := TCustomDesignControl(Control)
+  else
+    raise EInvalidOperation.CreateFmt(rsControlHasNoParentFormOrFrame, [SControl.Name]);
+end;
+
+//------------------------------------------------------------------------------
 function GetDesignerForm(Control: TControl): TCustomForm;
 begin
   // find the topmost parent form with designer
@@ -2154,6 +2173,7 @@ end;
 {$I controlscrollbar.inc}
 {$I scrollingwincontrol.inc}
 {$I scrollbox.inc}
+{$I customdesigncontrol.inc}
 {$I customframe.inc}
 {$I customform.inc}
 {$I customdockform.inc}

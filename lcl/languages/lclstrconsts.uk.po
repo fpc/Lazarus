@@ -371,8 +371,8 @@ msgstr "Врахування регістру"
 msgid "Control of class '%s' can't have control of class '%s' as a child"
 msgstr "Елемент управління класу '%s' не може мати наслідником елемент класу '%s'"
 
-#: lclstrconsts.rscontrolhasnoparentform
-msgid "Control '%s' has no parent form"
+#: lclstrconsts.rscontrolhasnoparentformorframe
+msgid "Control '%s' has no parent form or frame"
 msgstr ""
 
 #: lclstrconsts.rscontrolhasnoparentwindow

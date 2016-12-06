@@ -354,15 +354,6 @@ begin
   end;
 end;
 
-procedure TCustomForm.SetDesignTimePPI(const aDesignTimePPI: Integer);
-begin
-  if (csLoading in ComponentState) // allow setting only when loading
-  or not (csDesigning in ComponentState) then // or in runtime (the programmer has to know why he is doing that)
-    FDesignTimePPI := aDesignTimePPI
-  else
-    raise EInvalidOperation.Create(sCannotSetDesignTimePPI);
-end;
-
 {------------------------------------------------------------------------------
   Method: TCustomForm.SetIcon
   Params: the new icon
@@ -2062,8 +2053,6 @@ begin
   FShowInTaskbar := stDefault;
   FAlphaBlend := False;
   FAlphaBlendValue := 255;
-  FDesignTimePPI := 96;
-  FPixelsPerInch := FDesignTimePPI;
   // set border style before handle is allocated
   if not (fsBorderStyleChanged in FFormState) then
     FFormBorderStyle:= bsSizeable;
@@ -2680,9 +2669,6 @@ begin
     if Control.CanFocus then SetActiveControl(Control);
   end;
   //DebugLn('TCustomForm.Loaded ',Name,':',ClassName,' ',FormUpdating,' ',fsCreating in FFormState,' ',Visible,' ',fsVisible in FormState);
-  if csDesigning in ComponentState then
-    FDesignTimePPI := Screen.PixelsPerInch;
-  FPixelsPerInch := FDesignTimePPI;
   if fsVisible in FormState then
     Visible := True;
 end;

@@ -362,8 +362,8 @@ msgstr "Kis-/nagybetűre érzékeny"
 msgid "Control of class '%s' can't have control of class '%s' as a child"
 msgstr "'%s' osztályú vezérlőnek nem lehet gyermeke egy '%s' osztályú vezérlő"
 
-#: lclstrconsts.rscontrolhasnoparentform
-msgid "Control '%s' has no parent form"
+#: lclstrconsts.rscontrolhasnoparentformorframe
+msgid "Control '%s' has no parent form or frame"
 msgstr ""
 
 #: lclstrconsts.rscontrolhasnoparentwindow

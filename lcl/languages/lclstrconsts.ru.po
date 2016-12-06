@@ -362,9 +362,9 @@ msgstr "С учётом регистра"
 msgid "Control of class '%s' can't have control of class '%s' as a child"
 msgstr "Элемент управления класса '%s' не может иметь дочерний элемент управления класса '%s'"
 
-#: lclstrconsts.rscontrolhasnoparentform
-msgid "Control '%s' has no parent form"
-msgstr "Элемент управления '%s' не имеет родительской формы"
+#: lclstrconsts.rscontrolhasnoparentformorframe
+msgid "Control '%s' has no parent form or frame"
+msgstr ""
 
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"

@@ -364,8 +364,8 @@ msgstr "Differenzia maiuscolo e minuscolo"
 msgid "Control of class '%s' can't have control of class '%s' as a child"
 msgstr "Un controllo di classe '%s' non può avere figli di classe '%s'"
 
-#: lclstrconsts.rscontrolhasnoparentform
-msgid "Control '%s' has no parent form"
+#: lclstrconsts.rscontrolhasnoparentformorframe
+msgid "Control '%s' has no parent form or frame"
 msgstr ""
 
 #: lclstrconsts.rscontrolhasnoparentwindow

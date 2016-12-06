@@ -370,8 +370,8 @@ msgstr "大文字小文字を区別"
 msgid "Control of class '%s' can't have control of class '%s' as a child"
 msgstr "コントロールクラス '%s' はコントロールクラス '%s' を子とすることはできません"
 
-#: lclstrconsts.rscontrolhasnoparentform
-msgid "Control '%s' has no parent form"
+#: lclstrconsts.rscontrolhasnoparentformorframe
+msgid "Control '%s' has no parent form or frame"
 msgstr ""
 
 #: lclstrconsts.rscontrolhasnoparentwindow

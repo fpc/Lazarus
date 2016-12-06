@@ -246,7 +246,7 @@ resourceString
   rsCreatingGdbCatchableError = 'Creating gdb catchable error:';
   rsAControlCanNotHaveItselfAsParent = 'A control can''t have itself as a parent';
   rsControlHasNoParentWindow = 'Control ''%s'' has no parent window';
-  rsControlHasNoParentForm = 'Control ''%s'' has no parent form';
+  rsControlHasNoParentFormOrFrame = 'Control ''%s'' has no parent form or frame';
   rsControlIsNotAParent = '''%s'' is not a parent of ''%s''';
   rsControlClassCantContainChildClass = 'Control of class ''%s'' can''t have control of class ''%s'' as a child';
   rsASCannotHaveAsParent = 'Class %s cannot have %s as parent.';

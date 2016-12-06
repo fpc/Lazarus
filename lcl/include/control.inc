@@ -766,58 +766,34 @@ end;
 
 function TControl.ScaleCoord(const ASize: Integer): Integer;
 var
-  ParentForm: TCustomForm;
+  ParentForm: TCustomDesignControl;
 begin
-  ParentForm := GetParentForm(Self);
-  if ParentForm=nil then
-    raise EInvalidOperation.CreateFmt(rsControlHasNoParentForm, [Name]);
-
-  if ParentForm.DesignTimePPI=ParentForm.PixelsPerInch then
-    Result := ASize
-  else
-    Result := MulDiv(ASize, ParentForm.PixelsPerInch, ParentForm.DesignTimePPI);
+  ParentForm := NeedParentDesignControl(Self);
+  Result := MulDiv(ASize, ParentForm.PixelsPerInch, ParentForm.DesignTimePPI);
 end;
 
 function TControl.ScaleCoord96(const ASize: Integer): Integer;
 var
-  ParentForm: TCustomForm;
+  ParentForm: TCustomDesignControl;
 begin
-  ParentForm := GetParentForm(Self);
-  if ParentForm=nil then
-    raise EInvalidOperation.CreateFmt(rsControlHasNoParentForm, [Name]);
-
-  if ParentForm.PixelsPerInch=96 then
-    Result := ASize
-  else
-    Result := MulDiv(ASize, ParentForm.PixelsPerInch, 96);
+  ParentForm := NeedParentDesignControl(Self);
+  Result := MulDiv(ASize, ParentForm.PixelsPerInch, 96);
 end;
 
 function TControl.ScaleCoord96Back(const ASize: Integer): Integer;
 var
-  ParentForm: TCustomForm;
+  ParentForm: TCustomDesignControl;
 begin
-  ParentForm := GetParentForm(Self);
-  if ParentForm=nil then
-    raise EInvalidOperation.CreateFmt(rsControlHasNoParentForm, [Name]);
-
-  if ParentForm.PixelsPerInch=96 then
-    Result := ASize
-  else
-    Result := MulDiv(ASize, 96, ParentForm.PixelsPerInch);
+  ParentForm := NeedParentDesignControl(Self);
+  Result := MulDiv(ASize, 96, ParentForm.PixelsPerInch);
 end;
 
 function TControl.ScaleCoordBack(const ASize: Integer): Integer;
 var
-  ParentForm: TCustomForm;
+  ParentForm: TCustomDesignControl;
 begin
-  ParentForm := GetParentForm(Self);
-  if ParentForm=nil then
-    raise EInvalidOperation.CreateFmt(rsControlHasNoParentForm, [Name]);
-
-  if ParentForm.DesignTimePPI=ParentForm.PixelsPerInch then
-    Result := ASize
-  else
-    Result := MulDiv(ASize, ParentForm.DesignTimePPI, ParentForm.PixelsPerInch);
+  ParentForm := NeedParentDesignControl(Self);
+  Result := MulDiv(ASize, ParentForm.DesignTimePPI, ParentForm.PixelsPerInch);
 end;
 
 {------------------------------------------------------------------------------
