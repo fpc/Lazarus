@@ -2981,6 +2981,8 @@ begin
   // Apply the changes
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
+
+    // Dimensions
     AAWidth := False;
     AAHeight := False;
     NewLeft := Left;
@@ -3053,6 +3055,9 @@ begin
       if akBottom in Anchors then
         NewTop := NewTop-NewHeight+OldHeight;
     end;
+
+    BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
+    Constraints.AutoAdjustLayout(AXProportion, AYProportion);
 
     SetBounds(NewLeft, NewTop, NewWidth, NewHeight);
   end;

@@ -264,4 +264,29 @@ begin
   end;    
 end;
 
+procedure TSizeConstraints.AutoAdjustLayout(const AXProportion,
+  AYProportion: Double);
+
+  procedure Scale(var Value: Integer; const Proportion: Double; var Changed: Boolean);
+  begin
+    if Value<>0 then
+    begin
+      Value := Round(Value * Proportion);
+      Changed := True;
+    end;
+  end;
+var
+  Changed: Boolean;
+begin
+  Changed := False;
+
+  Scale(FMaxWidth, AXProportion, Changed);
+  Scale(FMinWidth, AXProportion, Changed);
+  Scale(FMaxHeight, AYProportion, Changed);
+  Scale(FMinHeight, AYProportion, Changed);
+
+  if Changed then
+    Change;
+end;
+
 // included by controls.pp
