@@ -144,6 +144,8 @@ begin
   PackageDownloader := TPackageDownloader.Create(Options.RemoteRepository);
   PackageDownloader.OnJSONProgress := @DoOnJSONProgress;
   PackageDownloader.OnJSONDownloadCompleted := @DoOnJSONDownloadCompleted;
+  Updates := TUpdates.Create(LocalRepositoryUpdatesFile);
+  Updates.OnUpdate := @DoOnUpdate;
   InstallPackageList := TObjectList.Create(True);
   FHintTimeOut := Application.HintHidePause;
   Application.HintHidePause := 1000000;
@@ -154,11 +156,8 @@ end;
 
 procedure TMainFrm.FormDestroy(Sender: TObject);
 begin
-  if Assigned(Updates) then
-  begin
-    Updates.StopUpdate;
-    Updates.Terminate;
-  end;
+  Updates.StopUpdate;
+  Updates.Terminate;
   PackageDownloader.Free;
   SerializablePackages.Free;
   VisualTree.Free;
@@ -297,12 +296,7 @@ begin
           MessageDlgEx(rsMainFrm_rsMessageError1 + sLineBreak + SerializablePackages.LastError, mtInformation, [mbOk], Self);
           Exit;
         end;
-        if not Assigned(Updates) then
-        begin
-          Updates := TUpdates.Create(LocalRepositoryUpdatesFile);
-          Updates.OnUpdate := @DoOnUpdate;
-          Updates.StartUpdate;
-        end;
+        Updates.StartUpdate;
         VisualTree.PopulateTree;
         EnableDisableControls(True);
         SetupMessage;
@@ -524,12 +518,6 @@ end;
 
 procedure TMainFrm.tbRefreshClick(Sender: TObject);
 begin
-  if Assigned(Updates) then
-  begin
-    Updates.StopUpdate;
-    Updates.Terminate;
-    Updates := nil;
-  end;
   VisualTree.VST.Clear;
   VisualTree.VST.Invalidate;
   GetPackageList;
