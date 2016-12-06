@@ -19,13 +19,14 @@ begin
   FPixelsPerInch := FDesignTimePPI;
 end;
 
-procedure TCustomDesignControl.Loaded;
+procedure TCustomDesignControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
+  const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer;
+  const AScaleFonts: Boolean);
 begin
-  inherited Loaded;
+  inherited AutoAdjustLayout(AMode, AFromDPI, AToDPI, AOldFormWidth,
+    ANewFormWidth, AScaleFonts);
 
-  if csDesigning in ComponentState then
-    FDesignTimePPI := Screen.PixelsPerInch;
-  FPixelsPerInch := FDesignTimePPI;
+  FPixelsPerInch := AToDPI;
 end;
 
 procedure TCustomDesignControl.SetDesignTimePPI(const ADesignTimePPI: Integer);

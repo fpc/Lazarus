@@ -6168,6 +6168,9 @@ begin
   Result:=LoadLFM(AnUnitInfo,LFMBuf,OpenFlags,CloseFlags);
 end;
 
+type
+  TAccessCustomDesignControl = class(TCustomDesignControl);
+
 function TLazSourceFileManager.LoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
   OpenFlags: TOpenFlags; CloseFlags: TCloseFlags): TModalResult;
 const
@@ -6197,6 +6200,7 @@ var
   NewControl: TControl;
   ARestoreVisible: Boolean;
   AncestorClass: TComponentClass;
+  DsgControl: TCustomDesignControl;
 begin
   {$IFDEF IDE_DEBUG}
   debugln('TLazSourceFileManager.LoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
@@ -6373,6 +6377,16 @@ begin
             NewControl.ControlStyle:=NewControl.ControlStyle+[csNoDesignVisible];
           if DisableAutoSize then
             NewControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
+        end;
+
+        if NewComponent is TCustomDesignControl then
+        begin
+          DsgControl := TCustomDesignControl(NewComponent);
+          if DsgControl.DesignTimePPI<>Screen.PixelsPerInch then
+          begin
+            DsgControl.AutoAdjustLayout(lapAutoAdjustForDPI, DsgControl.DesignTimePPI, Screen.PixelsPerInch, 0, 0, False);
+            TAccessCustomDesignControl(DsgControl).FDesignTimePPI := Screen.PixelsPerInch;
+          end;
         end;
 
         if NewComponent is TFrame then

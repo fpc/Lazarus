@@ -160,11 +160,8 @@ begin
   inherited AfterConstruction;
 
   if Scaled and (Screen.PixelsPerInch<>FPixelsPerInch) then
-  begin
     AutoAdjustLayout(lapAutoAdjustForDPI, FPixelsPerInch, Screen.PixelsPerInch,
       Width, MulDiv(Width, Screen.PixelsPerInch, FPixelsPerInch), False);
-    FPixelsPerInch := Screen.PixelsPerInch;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2245,11 +2242,8 @@ begin
   begin
     NewDpi := hi(Msg.wParam);
     if Scaled and (NewDpi<>PixelsPerInch) then
-    begin
       AutoAdjustLayout(lapAutoAdjustForDPI, FPixelsPerInch, NewDpi,
         Width, MulDiv(Width, NewDpi, FPixelsPerInch), True);
-      FPixelsPerInch := NewDpi;
-    end;
   end;
 end;
 

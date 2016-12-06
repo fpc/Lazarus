@@ -258,7 +258,8 @@ type
 
     procedure SetDesignTimePPI(const ADesignTimePPI: Integer);
   protected
-    procedure Loaded; override;
+    procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy; const AFromDPI,
+      AToDPI, AOldFormWidth, ANewFormWidth: Integer; const AScaleFonts: Boolean); override;
   public
     constructor Create(TheOwner: TComponent); override;
   public
@@ -285,9 +286,6 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure CalculatePreferredSize(var PreferredWidth,
            PreferredHeight: integer; WithThemeSpace: Boolean); override;
-    procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy; const AFromDPI,
-      AToDPI, AOldFormWidth, ANewFormWidth: Integer;
-      const AScaleFonts: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;

@@ -20,16 +20,6 @@ begin
     ParentForm.DoAddActionList(ActionList);
 end;
 
-procedure TCustomFrame.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
-  const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer;
-  const AScaleFonts: Boolean);
-begin
-  inherited AutoAdjustLayout(AMode, AFromDPI, AToDPI, AOldFormWidth,
-    ANewFormWidth, AScaleFonts);
-
-  FPixelsPerInch := AToDPI;
-end;
-
 procedure TCustomFrame.RemoveActionList(ActionList: TCustomActionList);
 var
   ParentForm: TCustomForm;
