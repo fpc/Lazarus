@@ -952,6 +952,8 @@ type
     function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double; const AScaleFonts: Boolean); override;
     procedure DoOnChangeBounds; override;
     procedure DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
     procedure DoOPExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
@@ -6715,6 +6717,38 @@ begin
     Editor.SetFocus;
   InvalidateCell(FCol,FRow,True);
   {$ifdef dbgGrid}DebugLnExit('grid.DoEditorShow [',Editor.ClassName,'] END');{$endif}
+end;
+
+procedure TCustomGrid.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+  const AXProportion, AYProportion: Double; const AScaleFonts: Boolean);
+var
+  i: Integer;
+  C: TGridColumn;
+begin
+  inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion, AScaleFonts);
+
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+  begin
+    BeginUpdate;
+    try
+      for i := Columns.Count - 1 downto 0 do
+      begin
+        C := Columns.Items[i];
+        C.MaxSize := Round(MaxSize * AXProportion);
+        C.MinSize := Round(MinSize * AXProportion);
+        C.Width := Round(Width * AXProportion);
+      end;
+
+      for i := RowCount - 1 downto 0 do
+        RowHeights[i] := Round(RowHeights[i] * AYProportion);
+
+      DefaultColWidth := Round(DefaultColWidth * AXProportion);
+      if DefaultRowHeight > 0 then
+        DefaultRowHeight := Round(DefaultRowHeight * AYProportion);
+    finally
+      EndUpdate;
+    end;
+  end;
 end;
 
 procedure TCustomGrid.DoOnChangeBounds;

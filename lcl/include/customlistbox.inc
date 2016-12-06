@@ -468,6 +468,18 @@ begin
   end;
 end;
 
+procedure TCustomListBox.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+  const AXProportion, AYProportion: Double; const AScaleFonts: Boolean);
+begin
+  inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion, AScaleFonts);
+
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+  begin
+    if FItemHeight > 0 then
+      ItemHeight := Round(ItemHeight * AYProportion);
+  end;
+end;
+
 procedure TCustomListBox.DoSelectionChange(User: Boolean);
 begin
   if Assigned(OnSelectionChange) then

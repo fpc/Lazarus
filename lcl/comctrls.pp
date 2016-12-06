@@ -1480,6 +1480,8 @@ type
     procedure DoInsert(AItem: TListItem); virtual;
     procedure DoItemChecked(AItem: TListItem);
     procedure DoSelectItem(AItem: TListItem; ASelected: Boolean); virtual;
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double; const AScaleFonts: Boolean); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
 
     procedure DoEndEdit(AItem: TListItem; const AValue: String); virtual;

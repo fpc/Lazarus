@@ -611,6 +611,26 @@ begin
       FOnSelectItem(Self, AItem, ASelected);
 end;
 
+procedure TCustomListView.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+  const AXProportion, AYProportion: Double; const AScaleFonts: Boolean);
+var
+  i: Integer;
+  C: TListColumn;
+begin
+  inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion, AScaleFonts);
+
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+  begin
+    for i := ColumnCount - 1 downto 0 do
+    begin
+      C := Column[i];
+      C.MaxWidth := Round(C.MaxWidth * AXProportion);
+      C.MinWidth := Round(C.MinWidth * AXProportion);
+      C.Width := Round(C.Width * AXProportion);
+    end;
+  end;
+end;
+
 procedure TCustomListView.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
