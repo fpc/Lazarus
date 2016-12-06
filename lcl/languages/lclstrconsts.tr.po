@@ -1372,8 +1372,8 @@ msgstr ""
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Etkisizleştirilmiş ya da görünmez pencerelere odaklanılamaz"
 
-#: lclstrconsts.scannotsetdesigntimedpi
-msgid "Cannot set design time DPI."
+#: lclstrconsts.scannotsetdesigntimeppi
+msgid "Cannot set design time PPI."
 msgstr ""
 
 #: lclstrconsts.sduplicatemenus

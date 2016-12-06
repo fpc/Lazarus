@@ -96,10 +96,10 @@ begin
     begin
       DebugLn(Format('[TCDWSCustomForm.ShowHide] First form layout adjustment '
        + 'lOldDPI=%d lNewDPI=%d lOldFormWidth=%d lNewFormWidth=%d',
-       [lForm.LCLForm.DesignTimeDPI, Screen.PixelsPerInch, lForm.LCLForm.Width, Screen.Width]));
+       [lForm.LCLForm.DesignTimePPI, Screen.PixelsPerInch, lForm.LCLForm.Width, Screen.Width]));
       lForm.LayoutAutoAdjusted := True;
       lForm.LCLForm.AutoAdjustLayout(lapAutoAdjustWithoutHorizontalScrolling,
-        lForm.LCLForm.DesignTimeDPI,
+        lForm.LCLForm.DesignTimePPI,
         Screen.PixelsPerInch, lForm.LCLForm.Width, Screen.Width);
       LCLIntf.InvalidateRect(HWND(lForm), nil, False);
       // if necessary adjust the form coordinates

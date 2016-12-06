@@ -772,10 +772,10 @@ begin
   if ParentForm=nil then
     raise EInvalidOperation.CreateFmt(rsControlHasNoParentForm, [Name]);
 
-  if ParentForm.DesignTimeDPI=ParentForm.PixelsPerInch then
+  if ParentForm.DesignTimePPI=ParentForm.PixelsPerInch then
     Result := ASize
   else
-    Result := MulDiv(ASize, ParentForm.PixelsPerInch, ParentForm.DesignTimeDPI);
+    Result := MulDiv(ASize, ParentForm.PixelsPerInch, ParentForm.DesignTimePPI);
 end;
 
 function TControl.ScaleCoord96(const ASize: Integer): Integer;
@@ -814,10 +814,10 @@ begin
   if ParentForm=nil then
     raise EInvalidOperation.CreateFmt(rsControlHasNoParentForm, [Name]);
 
-  if ParentForm.DesignTimeDPI=ParentForm.PixelsPerInch then
+  if ParentForm.DesignTimePPI=ParentForm.PixelsPerInch then
     Result := ASize
   else
-    Result := MulDiv(ASize, ParentForm.DesignTimeDPI, ParentForm.PixelsPerInch);
+    Result := MulDiv(ASize, ParentForm.DesignTimePPI, ParentForm.PixelsPerInch);
 end;
 
 {------------------------------------------------------------------------------

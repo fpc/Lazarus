@@ -1333,8 +1333,8 @@ msgstr "Jaune"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Impossible de focaliser une fenêtre invisible ou désactivée"
 
-#: lclstrconsts.scannotsetdesigntimedpi
-msgid "Cannot set design time DPI."
+#: lclstrconsts.scannotsetdesigntimeppi
+msgid "Cannot set design time PPI."
 msgstr ""
 
 #: lclstrconsts.sduplicatemenus

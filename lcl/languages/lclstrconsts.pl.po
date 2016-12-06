@@ -1345,8 +1345,8 @@ msgstr "Żółty"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Nie można ustawić ogniska na wyłączone lub niewidzialne okno"
 
-#: lclstrconsts.scannotsetdesigntimedpi
-msgid "Cannot set design time DPI."
+#: lclstrconsts.scannotsetdesigntimeppi
+msgid "Cannot set design time PPI."
 msgstr ""
 
 #: lclstrconsts.sduplicatemenus

@@ -1333,8 +1333,8 @@ msgstr "Sárga"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Nem lehet letiltott vagy láthatatlan ablakot előtérbe hozni"
 
-#: lclstrconsts.scannotsetdesigntimedpi
-msgid "Cannot set design time DPI."
+#: lclstrconsts.scannotsetdesigntimeppi
+msgid "Cannot set design time PPI."
 msgstr ""
 
 #: lclstrconsts.sduplicatemenus

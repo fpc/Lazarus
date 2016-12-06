@@ -354,13 +354,13 @@ begin
   end;
 end;
 
-procedure TCustomForm.SetDesignTimeDPI(const aDesignTimeDPI: Integer);
+procedure TCustomForm.SetDesignTimePPI(const aDesignTimePPI: Integer);
 begin
   if (csLoading in ComponentState) // allow setting only when loading
   or not (csDesigning in ComponentState) then // or in runtime (the programmer has to know why he is doing that)
-    FDesignTimeDPI := aDesignTimeDPI
+    FDesignTimePPI := aDesignTimePPI
   else
-    raise EInvalidOperation.Create(sCannotSetDesignTimeDPI);
+    raise EInvalidOperation.Create(sCannotSetDesignTimePPI);
 end;
 
 {------------------------------------------------------------------------------
@@ -2062,8 +2062,8 @@ begin
   FShowInTaskbar := stDefault;
   FAlphaBlend := False;
   FAlphaBlendValue := 255;
-  FDesignTimeDPI := 96;
-  FPixelsPerInch := FDesignTimeDPI;
+  FDesignTimePPI := 96;
+  FPixelsPerInch := FDesignTimePPI;
   // set border style before handle is allocated
   if not (fsBorderStyleChanged in FFormState) then
     FFormBorderStyle:= bsSizeable;
@@ -2681,8 +2681,8 @@ begin
   end;
   //DebugLn('TCustomForm.Loaded ',Name,':',ClassName,' ',FormUpdating,' ',fsCreating in FFormState,' ',Visible,' ',fsVisible in FormState);
   if csDesigning in ComponentState then
-    FDesignTimeDPI := Screen.PixelsPerInch;
-  FPixelsPerInch := FDesignTimeDPI;
+    FDesignTimePPI := Screen.PixelsPerInch;
+  FPixelsPerInch := FDesignTimePPI;
   if fsVisible in FormState then
     Visible := True;
 end;

@@ -1332,8 +1332,8 @@ msgstr "Amarillo"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "No se puede establecer el foco en una ventana desactivada o invisible"
 
-#: lclstrconsts.scannotsetdesigntimedpi
-msgid "Cannot set design time DPI."
+#: lclstrconsts.scannotsetdesigntimeppi
+msgid "Cannot set design time PPI."
 msgstr ""
 
 #: lclstrconsts.sduplicatemenus

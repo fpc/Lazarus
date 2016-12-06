@@ -282,7 +282,7 @@ begin
     lForm := GetForm(i);
 
     if lForm.LayoutAutoAdjusted then lOldDPI := Screen.PixelsPerInch
-    else lOldDPI := lForm.LCLForm.DesignTimeDPI;
+    else lOldDPI := lForm.LCLForm.DesignTimePPI;
     lNewDPI := ANewDPI;
     lOldFormWidth := lForm.LCLForm.Width;
     lNewFormWidth := ANewWidth;

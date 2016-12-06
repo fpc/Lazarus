@@ -1331,8 +1331,8 @@ msgstr "Keltainen"
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Ei voi fokusoida estettyä tai näkymätöntä ikkunaa"
 
-#: lclstrconsts.scannotsetdesigntimedpi
-msgid "Cannot set design time DPI."
+#: lclstrconsts.scannotsetdesigntimeppi
+msgid "Cannot set design time PPI."
 msgstr ""
 
 #: lclstrconsts.sduplicatemenus
