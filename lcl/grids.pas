@@ -6734,9 +6734,9 @@ begin
       for i := Columns.Count - 1 downto 0 do
       begin
         C := Columns.Items[i];
-        C.MaxSize := Round(MaxSize * AXProportion);
-        C.MinSize := Round(MinSize * AXProportion);
-        C.Width := Round(Width * AXProportion);
+        C.MaxSize := Round(C.MaxSize * AXProportion);
+        C.MinSize := Round(C.MinSize * AXProportion);
+        C.Width := Round(C.Width * AXProportion);
       end;
 
       for i := RowCount - 1 downto 0 do
