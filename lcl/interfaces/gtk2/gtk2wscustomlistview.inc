@@ -794,7 +794,6 @@ class function TGtk2WSCustomListView.ColumnGetWidth(const ALV: TCustomListView;
 var
   Widgets: PTVWidgets;
   GtkColumn: PGtkTreeViewColumn;
-  i: Integer;
 begin
   Result := -1;
 
@@ -804,8 +803,7 @@ begin
   GetCommonTreeViewWidgets({%H-}PGtkWidget(ALV.Handle), Widgets);
   if not GTK_IS_TREE_VIEW(Widgets^.MainView) then
     Exit;
-  i := AColumn.Index;
-  GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), i);
+  GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
   if GtkColumn <> nil then
     Result := gtk_tree_view_column_get_width(GtkColumn);
 end;
@@ -885,26 +883,19 @@ var
   Column: PGtkTreeViewColumn;
   PrevColumn: PGtkTreeViewColumn;
 begin
-  if not WSCheckHandleAllocated(ALV, 'ColumnMove')
-  then Exit;
+  if not WSCheckHandleAllocated(ALV, 'ColumnMove') then Exit;
 
   GetCommonTreeViewWidgets({%H-}PGtkWidget(ALV.Handle), Widgets);
-
-  if not GTK_IS_TREE_VIEW(Widgets^.MainView) then
-    Exit;
+  if not GTK_IS_TREE_VIEW(Widgets^.MainView) then Exit;
 
   Column := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AOldIndex);
   if Column <> nil then
   begin
-
     if ANewIndex = 0 then
       PrevColumn := nil
     else
-      PrevColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView),
-        ANewIndex-1);
-
-    gtk_tree_view_move_column_after(PGtkTreeView(Widgets^.MainView),
-      Column, PrevColumn);
+      PrevColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), ANewIndex);
+    gtk_tree_view_move_column_after(PGtkTreeView(Widgets^.MainView), Column, PrevColumn);
   end;
 end;
 
