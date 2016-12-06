@@ -157,6 +157,9 @@ type
     function DoHint: Boolean; virtual;
     procedure DrawPanel(Panel: TStatusPanel; const Rect: TRect); virtual;
     procedure LMDrawItem(var Message: TLMDrawItems); message LM_DRAWITEM;
+
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double; const AScaleFonts: Boolean); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
