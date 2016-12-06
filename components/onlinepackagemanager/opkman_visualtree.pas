@@ -205,6 +205,7 @@ begin
      begin
         Position := 4;
         Width := 280;
+        Options := Options - [coResizable];
         Text := rsMainFrm_VSTHeaderColumn_Data;
       end;
      with Header.Columns.Add do
@@ -408,6 +409,7 @@ begin
     FVST.OnCollapsed := @VSTCollapsed;
     FVST.OnExpanding := @VSTExpanding;
   end;
+  HideButtons;
 end;
 
 function TVisualTree.IsAllChecked(const AChecking: PVirtualNode): Boolean;

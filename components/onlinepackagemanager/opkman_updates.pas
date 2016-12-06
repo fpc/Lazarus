@@ -217,11 +217,11 @@ begin
     begin
       Package.ForceUpdate := FXML.GetValue('Items/' + Path + '/ForceUpdate', False);
       Package.DownloadZipURL := FXML.GetValue('Items/' + Path + '/DownloadZipURL', '');
+      PackageFileName := FXML.GetValue('Items/' + Path + '/PackageFileName', '');
+      PackageFile := Package.FindPackageFile(PackageFileName);
+      if PackageFile <> nil then
+        PackageFile.UpdateVersion := FXML.GetValue('Items/' + Path + '/UpdateVersion', '');
     end;
-    PackageFileName := FXML.GetValue('Items/' + Path + '/PackageFileName', '');
-    PackageFile := Package.FindPackageFile(PackageFileName);
-    if PackageFile <> nil then
-      PackageFile.UpdateVersion := FXML.GetValue('Items/' + Path + '/UpdateVersion', '');
   end;
   Synchronize(@DoOnUpdate);
 end;

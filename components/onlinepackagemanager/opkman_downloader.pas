@@ -387,14 +387,14 @@ begin
     begin
       if FNeedToBreak then
         Break;
-      if (SerializablePackages.Items[I].Checked) and (Trim(SerializablePackages.Items[I].DownloadURL) <> '') then
+      if (SerializablePackages.Items[I].Checked) and (Trim(SerializablePackages.Items[I].DownloadZipURL) <> '') then
       begin
         Inc(FCnt);
         FUpackageName := SerializablePackages.Items[I].Name;
-        FUPackageURL := SerializablePackages.Items[I].DownloadURL;
+        FUPackageURL := SerializablePackages.Items[I].DownloadZipURL;
         FUTyp := 0;
         Synchronize(@DoOnPackageUpdateProgress);
-        UpdateSize := GetUpdateSize(SerializablePackages.Items[I].DownloadURL, FUErrMsg);
+        UpdateSize := GetUpdateSize(SerializablePackages.Items[I].DownloadZipURL, FUErrMsg);
         if UpdateSize > -1 then
         begin
           FUTyp := 1;
@@ -431,11 +431,11 @@ begin
       begin
         if NeedToBreak then
           Break;
-        if (SerializablePackages.Items[I].Checked) and (Trim(SerializablePackages.Items[I].DownloadURL) <> '') and
+        if (SerializablePackages.Items[I].Checked) and (Trim(SerializablePackages.Items[I].DownloadZipURL) <> '') and
            (SerializablePackages.Items[I].UpdateSize > -1) and (not (psError in  SerializablePackages.Items[I].PackageStates)) then
         begin
           Inc(FCnt);
-          FFrom := FixProtocol(SerializablePackages.Items[I].DownloadURL);
+          FFrom := FixProtocol(SerializablePackages.Items[I].DownloadZipURL);
           FTo := FDownloadTo + SerializablePackages.Items[I].RepositoryFileName;
           FCurSize := SerializablePackages.Items[I].UpdateSize;
           DS := TDownloadStream.Create(TFileStream.Create(FTo, fmCreate));
@@ -589,7 +589,7 @@ begin
   FTotCnt := 0;
   FTotSize := 0;
   for I := 0 to SerializablePackages.Count - 1 do
-    if (SerializablePackages.Items[I].Checked) and (Trim(SerializablePackages.Items[I].DownloadURL) <> '') then
+    if (SerializablePackages.Items[I].Checked) and (Trim(SerializablePackages.Items[I].DownloadZipURL) <> '') then
       Inc(FTotCnt);
   FTimer := TThreadTimer.Create;
   FTimer.OnTimer := @DoOnTimer;
