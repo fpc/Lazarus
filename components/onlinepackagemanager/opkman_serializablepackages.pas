@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Variants, fpjson, jsonparser, md5, contnrs,
-  PackageIntf;
+  PackageIntf, Laz2_XMLCfg;
 
 
 type
@@ -188,7 +188,7 @@ type
     FPackageBaseDir: String;
     FHomePageURL: String;
     FDownloadURL: String;
-    FForceUpdate: Boolean;
+    FForceNotify: Boolean;
     FDownloadZipURL: String;
     FSVNURL: String;
     FUpdateSize: Int64;
@@ -208,7 +208,7 @@ type
     property IsExtractable: Boolean read GetExtractable;
     property UpdateSize: Int64 read FUpdateSize write FUpdateSize;
     property IsDirZipped: Boolean read FIsDirZipped write FIsDirZipped;
-    property ForceUpdate: Boolean read FForceUpdate write FForceUpdate;
+    property ForceNotify: Boolean read FForceNotify write FForceNotify;
     property DownloadZipURL: String read FDownloadZipURL write FDownloadZipURL;
   published
     property Name: String read FName write FName;
@@ -249,6 +249,7 @@ type
     function IsPackageExtracted(const APackage: TPackage): Boolean;
     function IsPackageInstalled(const APackageFile: TPackageFile; const APackageBaseDir: String): Boolean;
     function IsAtLeastOnePackageFileInstalled(const APackage: TPackage): Boolean;
+    function GetRuntimePackageVersion(const APath: String): String;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1026,6 +1027,42 @@ begin
   end;
 end;
 
+function TSerializablePackages.GetRuntimePackageVersion(const APath: String): String;
+
+  function VersionBound(const AVersion: Integer): Integer;
+  begin
+    if AVersion > 9999 then
+      Result := 9999
+    else if AVersion < 0 then
+      Result := 0
+    else
+      Result := AVersion;
+  end;
+
+  function GetVersion(const AXMLConfig: TXMLConfig; const APath: String): String;
+  var
+    Major, Minor, Release, Build: Integer;
+  begin
+    Major := VersionBound(AXMLConfig.GetValue(APath + '/Major', 0));
+    Minor := VersionBound(AXMLConfig.GetValue(APath + '/Minor', 0));
+    Release := VersionBound(AXMLConfig.GetValue(APath + '/Release', 0));
+    Build := VersionBound(AXMLConfig.GetValue(APath + '/Build', 0));
+    Result := IntToStr(Major) + '.' + IntToStr(Minor) + '.' + IntToStr(Release) + '.' + IntToStr(Build);
+  end;
+
+var
+  XMLConfig: TXMLConfig;
+begin
+  Result := '-';
+  XMLConfig := TXMLConfig.Create(APath);
+  try
+    Result := GetVersion(XMLConfig, 'Package/Version');
+  finally
+    XMLConfig.Free;
+  end;
+end;
+
+
 function TSerializablePackages.IsPackageInstalled(const APackageFile: TPackageFile;
   const APackageBaseDir: String): Boolean;
 
@@ -1065,8 +1102,8 @@ begin
                   FileExists(Options.LocalRepositoryPackages + APackageBaseDir + APackageFile.PackageRelativePath + FileName);
         if Result then
         begin
-          APackageFile.InstalledFileName := Options.LocalRepositoryPackages + APackageFile.FPackageRelativePath + APackageFile.Name;
-          APackageFile.InstalledFileVersion := APackageFile.VersionAsString;
+          APackageFile.InstalledFileName := Options.LocalRepositoryPackages + APackageBaseDir + APackageFile.FPackageRelativePath + APackageFile.Name;
+          APackageFile.InstalledFileVersion := GetRuntimePackageVersion(APackageFile.InstalledFileName);
           Result := True;
         end
         else

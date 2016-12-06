@@ -985,10 +985,10 @@ begin
       if Package <> nil then
       begin
         Data^.DownloadZipURL := Package.DownloadZipURL;
-        Data^.ForceUpadate := Package.ForceUpdate;
+        Data^.ForceUpadate := Package.ForceNotify;
         FVST.ReinitNode(Node, False);
         FVST.RepaintNode(Node);
-        if Package.ForceUpdate then
+        if Package.ForceNotify then
         begin
           Data^.HasUpdate := True;
           FVST.ReinitNode(Node, False);
@@ -1390,7 +1390,13 @@ begin
   Data := FVST.GetNodeData(Node);
   case column of
     3: begin
-         TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold];
+         case Data^.DataType of
+           1: TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold];
+           2: if Data^.UpdateVersion > Data^.InstalledVersion then
+                TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold]
+              else
+                TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
+         end;
          if Node <> Sender.FocusedNode then
            TargetCanvas.Font.Color := clBlack
          else

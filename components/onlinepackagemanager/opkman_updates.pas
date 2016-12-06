@@ -30,7 +30,7 @@ type
   TUpdatePackageData = class(TPersistent)
   private
     FDownloadZipURL: String;
-    FForceUpdate: boolean;
+    FForceNotify: boolean;
     FName: String;
   public
     constructor Create;
@@ -38,7 +38,7 @@ type
     procedure Clear;
   published
     property Name: String read FName write FName;
-    property ForceUpdate: boolean read FForceUpdate write FForceUpdate;
+    property ForceNotify: boolean read FForceNotify write FForceNotify;
     property DownloadZipURL: String read FDownloadZipURL write FDownloadZipURL;
   end;
 
@@ -159,7 +159,7 @@ end;
 procedure TUpdatePackageData.Clear;
 begin
   FName := '';
-  FForceUpdate := False;
+  FForceNotify := False;
   FDownloadZipURL := '';
 end;
 
@@ -215,7 +215,7 @@ begin
     Package := SerializablePackages.FindPackage(PackageName, fpbPackageName);
     if Package <> nil then
     begin
-      Package.ForceUpdate := FXML.GetValue('Items/' + Path + '/ForceUpdate', False);
+      Package.ForceNotify := FXML.GetValue('Items/' + Path + '/ForceNotify', False);
       Package.DownloadZipURL := FXML.GetValue('Items/' + Path + '/DownloadZipURL', '');
       PackageFileName := FXML.GetValue('Items/' + Path + '/PackageFileName', '');
       PackageFile := Package.FindPackageFile(PackageFileName);
@@ -247,13 +247,13 @@ begin
       Path := 'Item' + IntToStr(Count);
       PackageFile := TPackageFile(SerializablePackages.Items[I].PackageFiles.Items[J]);
       FXML.SetDeleteValue('Items/' + Path + '/PackageName', Package.Name, '');
-      FXML.SetDeleteValue('Items/' + Path + '/ForceUpdate', Package.ForceUpdate, False);
+      FXML.SetDeleteValue('Items/' + Path + '/ForceNotify', Package.ForceNotify, False);
       FXML.SetDeleteValue('Items/' + Path + '/DownloadZipURL', Package.DownloadZipURL, '');
       FXML.SetDeleteValue('Items/' + Path + '/PackageFileName', PackageFile.Name, '');
       FXML.SetDeleteValue('Items/' + Path + '/UpdateVersion', PackageFile.UpdateVersion, '');
     end;
   end;
-  FXML.SetDeleteValue('Count/Value', Count, 0);
+  FXML.SetDeleteValue('Count/Value', Count + 1, 0);
   FXML.Flush;
 end;
 
@@ -327,8 +327,8 @@ begin
               if FUpdatePackage.LoadFromJSON(JSON) then
               begin
                 SerializablePackages.Items[I].DownloadZipURL := FUpdatePackage.FUpdatePackageData.DownloadZipURL;
-                SerializablePackages.Items[I].ForceUpdate := FUpdatePackage.FUpdatePackageData.ForceUpdate;
-                NeedToUpdate := FUpdatePackage.FUpdatePackageData.ForceUpdate = True;
+                SerializablePackages.Items[I].ForceNotify := FUpdatePackage.FUpdatePackageData.ForceNotify;
+                NeedToUpdate := FUpdatePackage.FUpdatePackageData.ForceNotify = True;
                 for J := 0 to FUpdatePackage.FUpdatePackageFiles.Count - 1 do
                 begin
                   PackageFile := SerializablePackages.Items[I].FindPackageFile(TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[J]).Name);
@@ -374,6 +374,7 @@ procedure TUpdates.StopUpdate;
 begin
   FNeedToBreak := True;
   FTimer.StopTimer;
+  FStarted := False;
   FHTTPClient.NeedToBreak := True;
   Save;
 end;
