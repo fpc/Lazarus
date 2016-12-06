@@ -403,7 +403,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('IPro', [TIpFileDataProvider]);
+  RegisterComponents('IPro', [TIpFileDataProvider, TIpHTMLDataProvider]);
 end;
 
 

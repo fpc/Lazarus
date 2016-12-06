@@ -1,3 +1,4 @@
 tipfiledataprovider.png
 tiphtmlpanel.png
 tiphttpdataprovider.png
+tiphtmldataprovider.png
