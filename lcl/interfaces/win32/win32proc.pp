@@ -681,7 +681,6 @@ var
   DC: HDC;
   Handle: HWND;
   TheWinControl: TWinControl absolute Sender;
-  ARect: TRect;
   Win32Info: PWin32WindowInfo;
 begin
   Result := False;
