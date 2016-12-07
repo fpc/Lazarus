@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils,
-  LCLProc, Forms, Controls,
+  LCLProc, Forms, Controls, LCLType, LResources,
   LazFileUtils, LazConfigStorage, Laz2_XMLCfg,
   IDEOptionsIntf, MacroIntf, LazIDEIntf, BaseIDEIntf,
   AnchorDocking, AnchorDockStorage;
@@ -29,6 +29,7 @@ type
     procedure LoadLegacyAnchorDockOptions;
     procedure LoadLayoutFromConfig(Path: string; aXMLCfg: TRttiXMLConfig);
     procedure LoadLayoutFromFile(FileName: string);
+    procedure LoadLayoutFromRessource;
 
     procedure SaveMainLayoutToTree;
     procedure SaveLayoutToConfig(Path: string; aXMLCfg: TRttiXMLConfig);
@@ -118,22 +119,13 @@ end;
 
 procedure TAnchorDesktopOpt.LoadDefaultLayout;
 var
-  BaseDir: String;
   Filename: String;
 begin
   Filename := AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+'anchordocklayout.xml';
   if FileExistsUTF8(Filename) then//first load from anchordocklayout.xml -- backwards compatibility
     LoadLayoutFromFile(Filename)
   else
-  begin
-    BaseDir := '$PkgDir(AnchorDockingDsgn)';
-    IDEMacros.SubstituteMacros(BaseDir);
-    if (BaseDir<>'') and DirectoryExistsUTF8(BaseDir) then begin
-      Filename:=AppendPathDelim(BaseDir)+'ADLayoutDefault.xml';
-      if FileExistsUTF8(Filename) then
-        LoadLayoutFromFile(Filename);
-    end;
-  end;
+    LoadLayoutFromRessource;
 end;
 
 procedure TAnchorDesktopOpt.LoadDefaults;
@@ -172,6 +164,25 @@ begin
     LoadLayoutFromConfig('',Config);
   finally
     Config.Free;
+  end;
+end;
+
+procedure TAnchorDesktopOpt.LoadLayoutFromRessource;
+var
+  Config: TRttiXMLConfig;
+  LayoutResource: TLazarusResourceStream;
+begin
+  LayoutResource := TLazarusResourceStream.Create('ADLayoutDefault', nil);
+  try
+    Config := TRttiXMLConfig.Create(nil);
+    try
+      Config.ReadFromStream(LayoutResource);
+      LoadLayoutFromConfig('',Config);
+    finally
+      Config.Free;
+    end;
+  finally
+    LayoutResource.Free;
   end;
 end;
 
@@ -281,6 +292,10 @@ function TAnchorDesktopOpt.RestoreDesktop: Boolean;
 begin
   Result := DockMaster.FullRestoreLayout(FTree,True);
 end;
+
+initialization
+
+{$I ADLayoutDefault.lrs}
 
 end.
 

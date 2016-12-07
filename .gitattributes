@@ -605,6 +605,7 @@ components/anchordocking/anchordockoptionsdlg.pas svneol=native#text/plain
 components/anchordocking/anchordockpkg.pas svneol=native#text/plain
 components/anchordocking/anchordockstorage.pas svneol=native#text/plain
 components/anchordocking/anchordockstr.pas svneol=native#text/plain
+components/anchordocking/design/ADLayoutDefault.lrs svneol=native#text/pascal
 components/anchordocking/design/ADLayoutDefault.xml svneol=native#text/plain
 components/anchordocking/design/anchordesktopoptions.pas svneol=native#text/pascal
 components/anchordocking/design/anchordockingdsgn.lpk svneol=native#text/plain
