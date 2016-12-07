@@ -21,10 +21,10 @@ end;
 
 procedure TCustomDesignControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
   const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer;
-  const AScaleFonts: Boolean);
+  const AScale0Fonts: Boolean);
 begin
   inherited AutoAdjustLayout(AMode, AFromDPI, AToDPI, AOldFormWidth,
-    ANewFormWidth, AScaleFonts);
+    ANewFormWidth, AScale0Fonts);
 
   FPixelsPerInch := AToDPI;
 end;

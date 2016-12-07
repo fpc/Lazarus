@@ -2945,13 +2945,13 @@ begin
 end;
 
 procedure TControl.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-  const AXProportion, AYProportion: Double; const AScaleFonts: Boolean);
+  const AXProportion, AYProportion: Double; const AScale0Fonts: Boolean);
 var
   AAWidth, AAHeight: Boolean;
   NewLeft, NewTop, NewWidth, NewHeight, OldWidth, OldHeight: Integer;
   NewRight, NewBottom: Int64;
 begin
-  if AScaleFonts and not ParentFont then
+  if (AScale0Fonts or (Font.Height<>0)) and not ParentFont then
     Font.Height := Round(GetFontData(Font.Reference.Handle).Height*AYProportion);
 
   // Apply the changes
@@ -3962,7 +3962,7 @@ end;
 
 procedure TControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
   const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer;
-  const AScaleFonts: Boolean);
+  const AScale0Fonts: Boolean);
 var
   lXProportion, lYProportion: Double;
   lMode: TLayoutAdjustmentPolicy;
@@ -3986,7 +3986,7 @@ begin
   if AFromDPI > 0 then lYProportion := AToDPI / AFromDPI
   else lYProportion := 1.0;
 
-  DoAutoAdjustLayout(lMode, lXProportion, lYProportion, AScaleFonts);
+  DoAutoAdjustLayout(lMode, lXProportion, lYProportion, AScale0Fonts);
 end;
 
 // Auto-adjust the layout of controls.

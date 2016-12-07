@@ -3837,14 +3837,14 @@ end;
 
 procedure TWinControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
   const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer;
-  const AScaleFonts: Boolean);
+  const AScale0Fonts: Boolean);
 var
   i: Integer;
 begin
   for i:=0 to ControlCount-1 do
-    Controls[i].AutoAdjustLayout(AMode, AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth, AScaleFonts);
+    Controls[i].AutoAdjustLayout(AMode, AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth, AScale0Fonts);
 
-  inherited AutoAdjustLayout(AMode, AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth, AScaleFonts);
+  inherited AutoAdjustLayout(AMode, AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth, AScale0Fonts);
 end;
 
 {------------------------------------------------------------------------------

@@ -545,7 +545,7 @@ type
     procedure SetStyle(Val: TListBoxStyle); virtual;
     procedure DrawItem(Index: Integer; ARect: TRect; State: TOwnerDrawState); virtual;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-      const AXProportion, AYProportion: Double; const AScaleFonts: Boolean);
+      const AXProportion, AYProportion: Double; const AScale0Fonts: Boolean);
       override;
     procedure DoSelectionChange(User: Boolean); virtual;
     procedure SendItemIndex;

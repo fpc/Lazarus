@@ -1416,7 +1416,7 @@ type
     function ColorIsStored: boolean; virtual;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double;
-      const AScaleFonts: Boolean); virtual;
+      const AScale0Fonts: Boolean); virtual;
   protected
     // actions
     function GetActionLinkClass: TControlActionLinkClass; virtual;
@@ -1534,7 +1534,7 @@ type
     procedure WriteLayoutDebugReport(const Prefix: string); virtual;
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
       const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer;
-      const AScaleFonts: Boolean); virtual;
+      const AScale0Fonts: Boolean); virtual;
     procedure ShouldAutoAdjust(var AWidth, AHeight: Boolean); virtual;
   public
     constructor Create(TheOwner: TComponent);override;
@@ -2207,7 +2207,7 @@ type
     procedure WriteLayoutDebugReport(const Prefix: string); override;
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy; const AFromDPI,
       AToDPI, AOldFormWidth, ANewFormWidth: Integer;
-      const AScaleFonts: Boolean); override;
+      const AScale0Fonts: Boolean); override;
   public
     constructor Create(TheOwner: TComponent);override;
     constructor CreateParented(AParentWindow: HWND);

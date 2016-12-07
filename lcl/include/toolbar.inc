@@ -342,9 +342,9 @@ begin
 end;
 
 procedure TToolBar.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-  const AXProportion, AYProportion: Double; const AScaleFonts: Boolean);
+  const AXProportion, AYProportion: Double; const AScale0Fonts: Boolean);
 begin
-  inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion, AScaleFonts);
+  inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion, AScale0Fonts);
 
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin

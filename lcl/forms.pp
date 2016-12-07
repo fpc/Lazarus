@@ -259,7 +259,7 @@ type
     procedure SetDesignTimePPI(const ADesignTimePPI: Integer);
   protected
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy; const AFromDPI,
-      AToDPI, AOldFormWidth, ANewFormWidth: Integer; const AScaleFonts: Boolean); override;
+      AToDPI, AOldFormWidth, ANewFormWidth: Integer; const AScale0Fonts: Boolean); override;
   public
     constructor Create(TheOwner: TComponent); override;
   public

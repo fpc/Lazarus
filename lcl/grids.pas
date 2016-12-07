@@ -953,7 +953,7 @@ type
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-      const AXProportion, AYProportion: Double; const AScaleFonts: Boolean); override;
+      const AXProportion, AYProportion: Double; const AScale0Fonts: Boolean); override;
     procedure DoOnChangeBounds; override;
     procedure DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
     procedure DoOPExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
@@ -6720,12 +6720,12 @@ begin
 end;
 
 procedure TCustomGrid.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-  const AXProportion, AYProportion: Double; const AScaleFonts: Boolean);
+  const AXProportion, AYProportion: Double; const AScale0Fonts: Boolean);
 var
   i: Integer;
   C: TGridColumn;
 begin
-  inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion, AScaleFonts);
+  inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion, AScale0Fonts);
 
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
