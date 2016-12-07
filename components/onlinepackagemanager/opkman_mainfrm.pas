@@ -118,6 +118,7 @@ type
     function Extract(const ASrcDir, ADstDir: String; var ADoOpen: Boolean; const AIsUpdate: Boolean = False): TModalResult;
     function Install(var AInstallStatus: TInstallStatus; var ANeedToRebuild: Boolean): TModalResult;
     function UpdateP(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
+    procedure TerminateUpdates;
   public
   end;
 
@@ -156,10 +157,19 @@ begin
  {$ENDIF}
 end;
 
+procedure TMainFrm.TerminateUpdates;
+begin
+  if Assigned(Updates) then
+  begin
+    Updates.StopUpdate;
+    Updates.Terminate;
+    Updates := nil;
+  end;
+end;
+
 procedure TMainFrm.FormDestroy(Sender: TObject);
 begin
-  Updates.StopUpdate;
-  Updates.Terminate;
+  TerminateUpdates;
   PackageDownloader.Free;
   SerializablePackages.Free;
   VisualTree.Free;
@@ -284,6 +294,7 @@ begin
     ProgressFrm.Free;
   end;
 end;
+
 
 procedure TMainFrm.DoOnJSONDownloadCompleted(Sender: TObject; AJSON: TJSONStringType; AErrTyp: TErrorType; const AErrMsg: String = '');
 begin
@@ -653,6 +664,7 @@ begin
               VisualTree.UpdatePackageStates;
               if NeedToRebuild then
               begin
+                TerminateUpdates;
                 EnableDisableControls(False);
                 IDECommands.ExecuteIDECommand(Self, ecBuildLazarus);
                 EnableDisableControls(True);
@@ -732,6 +744,7 @@ begin
             begin
               if NeedToRebuild then
               begin
+                TerminateUpdates;
                 EnableDisableControls(False);
                 IDECommands.ExecuteIDECommand(Self, ecBuildLazarus);
                 EnableDisableControls(True);
