@@ -269,6 +269,7 @@ type
     function Cleanup: Integer;
     function IsDependencyOk(PackageDependency: TPackageDependency; DependencyPackage: TPackageFile): Boolean;
     function IsInstalledVersionOk(PackageDependency: TPackageDependency; InstalledVersion: String): Boolean;
+    function GetPackageInstallState(const APackage: TPackage): Integer; overload;
     procedure DeleteDownloadedZipFiles;
   public
     property Count: Integer read GetCount;
@@ -1113,6 +1114,29 @@ begin
       begin
         Result := CheckIDEPackages
       end;
+  end;
+end;
+
+function TSerializablePackages.GetPackageInstallState(const APackage: TPackage): Integer;
+var
+  I: Integer;
+  PackageFile: TPackageFile;
+  InstCnt: Integer;
+begin
+  InstCnt := 0;
+  for I := 0 to APackage.PackageFiles.Count - 1 do
+  begin
+    PackageFile := TPackageFile(APackage.PackageFiles.Items[I]);
+    if IsPackageInstalled(PackageFile, APackage.PackageBaseDir) then
+      Inc(InstCnt);
+  end;
+  case InstCnt of
+    0: Result := 0;
+    1..High(Integer):
+        if InstCnt < APackage.PackageFiles.Count then
+          Result := 2
+        else
+          Result := 1;
   end;
 end;
 

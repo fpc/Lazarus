@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LazIDEIntf, Laz2_XMLCfg, LazFileUtils, fpjson, fpjsonrtti,
-  opkman_httpclient, opkman_timer;
+  opkman_httpclient, opkman_timer, opkman_serializablepackages;
 
 const
   OpkVersion = 1;
@@ -77,6 +77,9 @@ type
     procedure DoOnUpdate;
     procedure Load;
     procedure Save;
+    procedure SetPaused(const AValue: Boolean);
+    procedure AssignPackageData(APackage: TPackage);
+    procedure ResetPackageData(APackage: TPackage);
   protected
     procedure Execute; override;
   public
@@ -85,7 +88,7 @@ type
     procedure StartUpdate;
     procedure StopUpdate;
   published
-    property Paused: Boolean read FPaused write FPaused;
+    property Paused: Boolean read FPaused write SetPaused;
     property OnUpdate: TNotifyEvent read FOnUpdate write FOnUpdate;
   end;
 
@@ -94,7 +97,7 @@ var
 
 implementation
 
-uses opkman_serializablepackages, opkman_options, opkman_common;
+uses opkman_options, opkman_common;
 
 { TUpdatePackage }
 
@@ -257,6 +260,47 @@ begin
   FXML.Flush;
 end;
 
+procedure TUpdates.SetPaused(const AValue: Boolean);
+begin
+  if FPaused <> AValue then
+  begin
+    FPaused := AValue;
+    if FPaused then
+      Save;
+  end;
+end;
+
+procedure TUpdates.AssignPackageData(APackage: TPackage);
+var
+  I: Integer;
+  PackageFile: TPackageFile;
+begin
+  APackage.DownloadZipURL := FUpdatePackage.FUpdatePackageData.DownloadZipURL;
+  APackage.ForceNotify := FUpdatePackage.FUpdatePackageData.ForceNotify;
+  for I := 0 to FUpdatePackage.FUpdatePackageFiles.Count - 1 do
+  begin
+    PackageFile := APackage.FindPackageFile(TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[I]).Name);
+    if PackageFile <> nil then
+      PackageFile.UpdateVersion := TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[I]).Version;
+  end;
+end;
+
+procedure TUpdates.ResetPackageData(APackage: TPackage);
+var
+  I: Integer;
+  PackageFile: TPackageFile;
+begin
+  APackage.DownloadZipURL := '';
+  APackage.ForceNotify := False;
+  for I := 0 to APackage.PackageFiles.Count - 1 do
+  begin
+    PackageFile := APackage.FindPackageFile(TPackageFile(APackage.PackageFiles.Items[I]).Name);
+    if PackageFile <> nil then
+      PackageFile.UpdateVersion := '';
+  end;
+
+end;
+
 procedure TUpdates.DoOnTimer(Sender: TObject);
 begin
   if (FTimer.Enabled) and (not FNeedToBreak) then
@@ -302,17 +346,14 @@ end;
 
 procedure TUpdates.Execute;
 var
-  I, J: Integer;
+  I: Integer;
   JSON: TJSONStringType;
-  PackageFile: TPackageFile;
-  NeedToUpdate: Boolean;
 begin
   Load;
   while not Terminated do
   begin
     if (FNeedToUpdate) and (not FBusyUpdating) and (not FPaused) then
     begin
-      NeedToUpdate := False;
       FBusyUpdating := True;
       try
         for I := 0 to SerializablePackages.Count - 1  do
@@ -325,29 +366,18 @@ begin
             if GetUpdateInfo(SerializablePackages.Items[I].DownloadURL, JSON) then
             begin
               if FUpdatePackage.LoadFromJSON(JSON) then
-              begin
-                SerializablePackages.Items[I].DownloadZipURL := FUpdatePackage.FUpdatePackageData.DownloadZipURL;
-                SerializablePackages.Items[I].ForceNotify := FUpdatePackage.FUpdatePackageData.ForceNotify;
-                NeedToUpdate := FUpdatePackage.FUpdatePackageData.ForceNotify = True;
-                for J := 0 to FUpdatePackage.FUpdatePackageFiles.Count - 1 do
-                begin
-                  PackageFile := SerializablePackages.Items[I].FindPackageFile(TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[J]).Name);
-                  if PackageFile <> nil then
-                  begin
-                    if not NeedToUpdate then
-                      NeedToUpdate := TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[J]).Version > PackageFile.UpdateVersion;
-                    PackageFile.UpdateVersion := TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[J]).Version;
-                  end;
-                end;
-              end;
-            end;
+                AssignPackageData(SerializablePackages.Items[I])
+              else
+                ResetPackageData(SerializablePackages.Items[I]);
+            end
+            else
+              ResetPackageData(SerializablePackages.Items[I]);
           end
           else
             FHTTPClient.NeedToBreak := True;
         end;
-        if (NeedToUpdate) and (not FNeedToBreak) and (not FPaused) then
-          if Assigned(FOnUpdate) then
-            Synchronize(@DoOnUpdate);
+        if Assigned(FOnUpdate) and (not FNeedToBreak) and (not FPaused) then
+          Synchronize(@DoOnUpdate);
       finally
         FBusyUpdating := False;
         FNeedToUpdate := False;
@@ -358,11 +388,11 @@ end;
 
 procedure TUpdates.StartUpdate;
 begin
+  Load;
+  FPaused := False;
   if FStarted then
     Exit;
   FStarted := True;
-  FPaused := False;
-  Load;
   FTimer := TThreadTimer.Create;
   FTimer.Interval := UpdateInterval;
   FTimer.OnTimer := @DoOnTimer;

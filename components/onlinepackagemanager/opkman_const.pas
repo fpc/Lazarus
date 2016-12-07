@@ -43,6 +43,7 @@ const
   cLocalRepositoryUpdatesFile = 'updates.xml';
   cRestrictedExtensionDef = '*.a,*.o,*.ppu,*.compiled,*.bak,*.or,*.rsj,*.~ ';
   cRestrictedDirectoryDef = 'lib,backup';
+  cHelpPage = 'http://wiki.freepascal.org/Online_Package_Manager';
 
 resourcestring
   //package manager
@@ -77,6 +78,9 @@ resourcestring
   rsMainFrm_VSTText_HomePageURL = 'Home page';
   rsMainFrm_VSTText_DownloadURL = 'Update link';
   rsMainFrm_VSTText_SVNURL = 'SVN';
+  rsMainFrm_VSTText_Install0 = 'No';
+  rsMainFrm_VSTText_Install1 = 'Yes';
+  rsMainFrm_VSTText_Install2 = 'Partially';
   rsMainFrm_VSTText_PackageType0 = 'Designtime and runtime';
   rsMainFrm_VSTText_PackageType1 = 'Designtime';
   rsMainFrm_VSTText_PackageType2 = 'Runtime';
@@ -137,6 +141,8 @@ resourcestring
   rsMainFrm_TBRepository_Hint = 'Create package or repository';
   rsMainFrm_TBOptions_Caption = 'Options';
   rsMainFrm_TBOptions_Hint = 'Show options dialog';
+  rsMainFrm_TBHelp_Caption = 'Help';
+  rsMainFrm_TBHelp_Hint = 'Help(' + cHelpPage + ')';
   rsMainFrm_miCreateRepositoryPackage = 'Create repository package';
   rsMainFrm_miCreateRepository = 'Create repository';
   rsMainFrm_miJSONShow =  'Show JSON';
@@ -146,8 +152,8 @@ resourcestring
   rsMainFrm_PackageAlreadyInstalled = 'The following packages are alrady installed. Continue with install?';
   rsMainFrm_PackageAlreadyDownloaded = 'The following repository packages already exists in the target folder. Continue?';
   rsMainFrm_PackageUpdateWarning = 'Updating packages from external link is not without a risk!' + sLineBreak + 'Only update if you trust the package maintainer. Continue?';
-  rsMainFrm_PackageUpdate0 = 'The following repository packages don''t have a valid external download link. The packages will be skipped. Continue?';
-  rsMainFrm_PackageUpdate1 = 'None of the checked repository package(s) has a valid external download link.';
+  rsMainFrm_PackageUpdate0 = 'The following repository packages are not installed or don''t have a valid external download link. The packages will be skipped. Continue?';
+  rsMainFrm_PackageUpdate1 = 'None of the checked repository packages are installed or has a valid external download link.';
   rsMainFrm_rsMessageNoPackage = 'No packages to show.';
   rsMainFrm_rsMessageParsingJSON = 'Parsing JSON. Please wait...';
   rsMainFrm_rsMessageDownload = 'Downloading package list. Please wait...';

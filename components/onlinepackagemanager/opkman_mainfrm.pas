@@ -71,6 +71,7 @@ type
     imTBNor: TImageList;
     tbDownload: TToolButton;
     tbInstall: TToolButton;
+    tbHelp: TToolButton;
     tbRefresh: TToolButton;
     tbCleanUp: TToolButton;
     tbCreate: TToolButton;
@@ -79,6 +80,7 @@ type
     procedure pnToolBarResize(Sender: TObject);
     procedure tbCleanUpClick(Sender: TObject);
     procedure tbDownloadClick(Sender: TObject);
+    procedure tbHelpClick(Sender: TObject);
     procedure tbInstallClick(Sender: TObject);
     procedure tbOptionsClick(Sender: TObject);
     procedure tbRefreshClick(Sender: TObject);
@@ -296,8 +298,8 @@ begin
           MessageDlgEx(rsMainFrm_rsMessageError1 + sLineBreak + SerializablePackages.LastError, mtInformation, [mbOk], Self);
           Exit;
         end;
-        Updates.StartUpdate;
         VisualTree.PopulateTree;
+        Updates.StartUpdate;
         EnableDisableControls(True);
         SetupMessage;
         mJSON.Text := AJSON;
@@ -367,6 +369,7 @@ begin
   tbCleanUp.Enabled := (AEnable) and (SerializablePackages.Count > 0);
   tbCreate.Enabled := (AEnable);
   tbOptions.Enabled := (AEnable);
+  tbHelp.Enabled := (AEnable);
 end;
 
 procedure TMainFrm.SetupMessage(const AMessage: String = '');
@@ -516,8 +519,14 @@ begin
   ShowOptions;
 end;
 
+procedure TMainFrm.tbHelpClick(Sender: TObject);
+begin
+  OpenDocument('http://wiki.freepascal.org/Online_Package_Manager');
+end;
+
 procedure TMainFrm.tbRefreshClick(Sender: TObject);
 begin
+  Updates.Paused := True;
   VisualTree.VST.Clear;
   VisualTree.VST.Invalidate;
   GetPackageList;
@@ -556,6 +565,7 @@ begin
 
   if CanGo then
   begin
+    Updates.Paused := True;
     Options.LastDownloadDir := DstDir;
     Options.Changed := True;
     PackageAction := paDownloadTo;
@@ -577,6 +587,7 @@ begin
     end;
   end;
   SerializablePackages.RemoveErrorState;
+  Updates.Paused := False;
 end;
 
 procedure TMainFrm.tbUpdateClick(Sender: TObject);
@@ -608,6 +619,7 @@ begin
 
   if CanGo then
   begin
+    Updates.Paused := True;
     PackageAction := paUpdate;
     VisualTree.UpdatePackageStates;
     if SerializablePackages.DownloadCount > 0 then
@@ -652,7 +664,10 @@ begin
     end;
   end;
   if not NeedToRebuild then
+  begin
     SerializablePackages.RemoveErrorState;
+    Updates.Paused := False;
+  end;
 end;
 
 procedure TMainFrm.tbInstallClick(Sender: TObject);
@@ -682,6 +697,7 @@ begin
 
   if CanGo then
   begin
+    Updates.Paused := True;
     PackageAction := paInstall;
     VisualTree.UpdatePackageStates;
     if SerializablePackages.DownloadCount > 0 then
@@ -727,7 +743,10 @@ begin
     end;
   end;
   if not NeedToRebuild then
+  begin
     SerializablePackages.RemoveErrorState;
+    Updates.Paused := False;
+  end;
 end;
 
 procedure TMainFrm.tbCleanUpClick(Sender: TObject);
@@ -844,6 +863,9 @@ begin
   tbCreate.Hint := rsMainFrm_TBRepository_Hint;
   tbOptions.Caption := rsMainFrm_TBOptions_Caption;
   tbOptions.Hint := rsMainFrm_TBOptions_Hint;
+  tbHelp.Caption := rsMainFrm_TBHelp_Caption;
+  tbHelp.Hint := rsMainFrm_TBHelp_Hint;
+
   miCreateRepositoryPackage.Caption := rsMainFrm_miCreateRepositoryPackage;
   miCreateRepository.Caption := rsMainFrm_miCreateRepository;
   miJSONShow.Caption := rsMainFrm_miJSONShow;

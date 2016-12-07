@@ -165,7 +165,8 @@ begin
       if (SerializablePackages.Items[I].Checked) then
       begin
         Inc(ChkCnt);
-        if (Trim(SerializablePackages.Items[I].DownloadZipURL) = '') then
+        if (Trim(SerializablePackages.Items[I].DownloadZipURL) = '') or
+           (SerializablePackages.GetPackageInstallState(SerializablePackages.Items[I]) = 0) then
         begin
           Inc(InvCnt);
           Node := FVST.AddChild(nil);
