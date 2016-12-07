@@ -2951,7 +2951,7 @@ var
   NewLeft, NewTop, NewWidth, NewHeight, OldWidth, OldHeight: Integer;
   NewRight, NewBottom: Int64;
 begin
-  if (AScale0Fonts or (Font.Height<>0)) and not ParentFont then
+  if (AScale0Fonts or (Font.Height<>0)) and (not ParentFont or (Parent=nil)) then
     Font.Height := Round(GetFontData(Font.Reference.Handle).Height*AYProportion);
 
   // Apply the changes
