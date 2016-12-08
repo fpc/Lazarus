@@ -5149,6 +5149,7 @@ resourcestring
   lisThisWillCreateACircularDependency = 'This will create a circular dependency.';
   lisAnchorEditorNoControlSelected = 'Anchor Editor - no control selected';
   lisAnchorsOfSelectedControls = 'Anchors of selected controls';
+  lisAnchorsOf = 'Anchors of';
   lisDebugOptionsFrmAdditionalSearchPath = 'Additional search path';
   lisDebugOptionsFrmDebuggerGeneralOptions = 'Debugger general options';
   lisDebugOptionsFrmShowMessageOnStop = 'Show message on stop';

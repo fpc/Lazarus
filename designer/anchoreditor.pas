@@ -36,7 +36,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, StdCtrls, Buttons, Spin,
-  IDECommands, PropEdits, IDEDialogs, LazarusIDEStrConsts, IDEOptionDefs;
+  ExtCtrls, Graphics, IDECommands, PropEdits, IDEDialogs, LazarusIDEStrConsts,
+  IDEOptionDefs;
 
 type
 
@@ -121,6 +122,10 @@ type
     RightRefRightSpeedButton: TSpeedButton;
     RightSiblingComboBox: TComboBox;
     RightSiblingLabel: TLabel;
+    TopShape: TShape;
+    LeftShape: TShape;
+    BottomShape: TShape;
+    RightShape: TShape;
     TopAnchoredCheckBox: TCheckBox;
     TopBorderSpaceSpinEdit: TSpinEdit;
     TopGroupBox: TGroupBox;
@@ -154,6 +159,7 @@ type
     procedure CollectValues(const ASelection: TList;
                             out TheValues: TAnchorDesignerValues;
                             out SelectedControlCount: integer);
+    procedure UpdateFrames;
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure UpdateShowing; override;
@@ -178,6 +184,34 @@ var
 implementation
 
 {$R *.lfm}
+
+procedure UpdateFrame(AShape: TShape; ACheckBox: TCheckBox; ASpeedButtons: array of TSpeedButton);
+const
+  sm = 2;  // shape margin (should be enough place in designer)
+var
+  i: Integer;
+begin
+  case ACheckBox.State of
+    cbChecked: AShape.Pen.Style:=psSolid;
+    cbGrayed:  AShape.Pen.Style:=psDot;
+  else
+    AShape.Visible:=False;
+    Exit;
+  end;
+
+  for i:=Low(ASpeedButtons) to High(ASpeedButtons) do
+  begin
+    if not ASpeedButtons[i].Down then
+      Continue;
+    AShape.Height:=ASpeedButtons[i].Height+sm*2;
+    AShape.Width:=ASpeedButtons[i].Width+sm*2;
+    AShape.AnchorVerticalCenterTo(ASpeedButtons[i]);
+    AShape.AnchorHorizontalCenterTo(ASpeedButtons[i]);
+    AShape.Visible:=True ;
+    Exit;
+  end;
+  AShape.Visible:=False ;
+end;
 
 { TAnchorDesigner }
 
@@ -247,16 +281,6 @@ begin
   BottomRefTopSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_top_bottom');
   BottomRefCenterSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_center_vertical');
   BottomRefBottomSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_bottom');
-
-  // autosizing
-  BottomSiblingLabel.AnchorToNeighbour(akLeft,10,BottomAnchoredCheckBox);
-  BottomSiblingComboBox.AnchorToNeighbour(akLeft,5,BottomSiblingLabel);
-  BottomSiblingLabel.AnchorVerticalCenterTo(BottomSiblingComboBox);
-  BottomAnchoredCheckBox.AnchorVerticalCenterTo(BottomSiblingComboBox);
-  TopSiblingLabel.AnchorToNeighbour(akLeft,10,TopAnchoredCheckBox);
-  TopSiblingComboBox.AnchorToNeighbour(akLeft,5,TopSiblingLabel);
-  TopSiblingLabel.AnchorVerticalCenterTo(TopSiblingComboBox);
-  TopAnchoredCheckBox.AnchorVerticalCenterTo(TopSiblingComboBox);
 
   GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnRefreshPropertyValues);
   GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
@@ -804,7 +828,10 @@ begin
       RightGroupBox.Enabled:=false;
       BottomGroupBox.Enabled:=false;
     end else begin
-      Caption:=lisAnchorsOfSelectedControls;
+      if CurSelection.Count=1 then
+        Caption:=lisAnchorsOf+' '+TControl(CurSelection[0]).Name
+      else
+        Caption:=lisAnchorsOfSelectedControls;
 
       // all
       BorderSpaceGroupBox.Enabled:=true;
@@ -895,6 +922,7 @@ begin
       RightRefCenterSpeedButton.Down:=(CurSide.Side=asrCenter);
       RightRefLeftSpeedButton.Down:=(CurSide.Side=asrTop);
     end;
+    UpdateFrames;
   finally
     FUpdating:=false;
   end;
@@ -992,6 +1020,18 @@ begin
       inc(SelectedControlCount);
     end;
   end;
+end;
+
+procedure TAnchorDesigner.UpdateFrames;
+begin
+  UpdateFrame(TopShape, TopAnchoredCheckBox,
+    [TopRefTopSpeedButton, TopRefCenterSpeedButton, TopRefBottomSpeedButton]);
+  UpdateFrame(LeftShape, LeftAnchoredCheckBox,
+    [LeftRefLeftSpeedButton, LeftRefCenterSpeedButton, LeftRefRightSpeedButton]);
+  UpdateFrame(BottomShape, BottomAnchoredCheckBox,
+    [BottomRefTopSpeedButton, BottomRefCenterSpeedButton, BottomRefBottomSpeedButton]);
+  UpdateFrame(RightShape, RightAnchoredCheckBox,
+    [RightRefLeftSpeedButton, RightRefCenterSpeedButton, RightRefRightSpeedButton]);
 end;
 
 procedure TAnchorDesigner.OnSetSelection(
