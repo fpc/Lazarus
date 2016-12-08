@@ -111,7 +111,7 @@ type
     ProgressBar1: TProgressBar;
     RemoveBitBtn: TSpeedButton;
     SortAlphabeticallySpeedButton: TSpeedButton;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ListboxDrawItem({%H-}Control: TWinControl; Index: Integer;
