@@ -277,7 +277,6 @@ type
                                   ADependency: TPkgDependency): TModalResult; override;
     procedure AddProjectRegCompDependency(AProject: TProject;
                           ARegisteredComponent: TRegisteredComponent); override;
-    procedure AddProjectLCLDependency(AProject: TProject); override;
     function AddProjectDependencies(AProject: TProject; const Packages: string;
                                   OnlyTestIfPossible: boolean = false): TModalResult; override;
     function OnProjectInspectorAddDependency(Sender: TObject;
@@ -3394,11 +3393,6 @@ begin
   APackage:=TLazPackage(RedirectPackageDependency(APackage));
 
   AddProjectDependency(AProject,APackage);
-end;
-
-procedure TPkgManager.AddProjectLCLDependency(AProject: TProject);
-begin
-  AddProjectDependency(AProject,PackageGraph.LCLPackage);
 end;
 
 function TPkgManager.AddProjectDependencies(AProject: TProject;

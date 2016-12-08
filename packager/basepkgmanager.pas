@@ -89,7 +89,6 @@ type
                                   ADependency: TPkgDependency): TModalResult; virtual; abstract;
     procedure AddProjectRegCompDependency(AProject: TProject;
                           ARegisteredComponent: TRegisteredComponent); virtual; abstract;
-    procedure AddProjectLCLDependency(AProject: TProject); virtual; abstract;
     function AddProjectDependencies(AProject: TProject; const Packages: string;
                                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract;
     function CheckProjectHasInstalledPackages(AProject: TProject; Interactive: boolean): TModalResult; virtual; abstract;
