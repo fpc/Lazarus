@@ -572,13 +572,12 @@ ResourceString
   SErrFileChange = 'Changing output file name is not allowed while (un)zipping.';
   SErrInvalidCRC = 'Invalid CRC checksum while unzipping %s.';
   SErrCorruptZIP = 'Corrupt ZIP file %s.';
-  SErrUnsupportedCompressionFormat = 'Unsupported compression format %d';
+  SErrUnsupportedCompressionFormat = 'Unsupported compression format %d.';
   SErrUnsupportedMultipleDisksCD = 'A central directory split over multiple disks is unsupported.';
   SErrMaxEntries = 'Encountered %d file entries; maximum supported is %d.';
   SErrMissingFileName = 'Missing filename in entry %d.';
   SErrMissingArchiveName = 'Missing archive filename in streamed entry %d.';
   SErrFileDoesNotExist = 'File "%s" does not exist.';
-  {%H-}SErrFileTooLarge = 'File size %d is larger than maximum supported size %d.';
   SErrPosTooLarge = 'Position/offset %d is larger than maximum supported %d.';
   SErrNoFileName = 'No archive filename for examine operation.';
   SErrNoStream = 'No stream is opened.';

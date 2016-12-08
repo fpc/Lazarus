@@ -17,10 +17,6 @@ msgstr ""
 msgid "File \"%s\" does not exist."
 msgstr ""
 
-#: opkman_zip.serrfiletoolarge
-msgid "File size %d is larger than maximum supported size %d."
-msgstr ""
-
 #: opkman_zip.serrinvalidcrc
 msgid "Invalid CRC checksum while unzipping %s."
 msgstr ""
@@ -50,7 +46,7 @@ msgid "Position/offset %d is larger than maximum supported %d."
 msgstr ""
 
 #: opkman_zip.serrunsupportedcompressionformat
-msgid "Unsupported compression format %d"
+msgid "Unsupported compression format %d."
 msgstr ""
 
 #: opkman_zip.serrunsupportedmultiplediskscd

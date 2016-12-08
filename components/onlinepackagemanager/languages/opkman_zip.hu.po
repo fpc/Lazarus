@@ -27,10 +27,6 @@ msgstr "A kimeneti fájl nevének megváltoztatása (ki)tömörítés közben ne
 msgid "File \"%s\" does not exist."
 msgstr "A fájl nem létezik: \"%s\""
 
-#: opkman_zip.serrfiletoolarge
-msgid "File size %d is larger than maximum supported size %d."
-msgstr "A fájl mérete (%d) nagyobb mint a támogatott legnagyobb méret: %d"
-
 #: opkman_zip.serrinvalidcrc
 msgid "Invalid CRC checksum while unzipping %s."
 msgstr "Érvénytelen CRC ellenőrző összeg kitömörítés közben: %s"
@@ -60,7 +56,9 @@ msgid "Position/offset %d is larger than maximum supported %d."
 msgstr "A pozíció (%d) nagyobb mint a támogatott legnagyobb: %d"
 
 #: opkman_zip.serrunsupportedcompressionformat
-msgid "Unsupported compression format %d"
+#, fuzzy
+#| msgid "Unsupported compression format %d"
+msgid "Unsupported compression format %d."
 msgstr "Nem támogatott tömörítési formátum: %d"
 
 #: opkman_zip.serrunsupportedmultiplediskscd

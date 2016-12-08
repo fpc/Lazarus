@@ -17,10 +17,6 @@ msgstr "Tiedoston nimeä ei saa muuttaa purattaessa eikä pakattaessa"
 msgid "File \"%s\" does not exist."
 msgstr "Tiedosto \"%s\" ei ole saatavissa"
 
-#: opkman_zip.serrfiletoolarge
-msgid "File size %d is larger than maximum supported size %d."
-msgstr "Tiedoston koko %d on suurempi kuin suurin tuettu koko %d."
-
 #: opkman_zip.serrinvalidcrc
 msgid "Invalid CRC checksum while unzipping %s."
 msgstr "Viallinen CRC:n tarkistussumma kun puretaan %s. "
@@ -50,7 +46,9 @@ msgid "Position/offset %d is larger than maximum supported %d."
 msgstr ""
 
 #: opkman_zip.serrunsupportedcompressionformat
-msgid "Unsupported compression format %d"
+#, fuzzy
+#| msgid "Unsupported compression format %d"
+msgid "Unsupported compression format %d."
 msgstr "Tukematon pakkausformaatti %d"
 
 #: opkman_zip.serrunsupportedmultiplediskscd

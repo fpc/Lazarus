@@ -1,0 +1,65 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
+
+#: opkman_zip.serrbufsizechange
+msgid "Changing buffer size is not allowed while (un)zipping."
+msgstr "Изменение размера буфера не разрешается во время упаковки/распаковки."
+
+#: opkman_zip.serrcorruptzip
+msgid "Corrupt ZIP file %s."
+msgstr "Файл ZIP %s повреждён."
+
+#: opkman_zip.serrfilechange
+msgid "Changing output file name is not allowed while (un)zipping."
+msgstr "Изменение имени файла вывода не разрешается во время упаковки/распаковки."
+
+#: opkman_zip.serrfiledoesnotexist
+msgid "File \"%s\" does not exist."
+msgstr "Файл \"%s\" не существует."
+
+#: opkman_zip.serrinvalidcrc
+msgid "Invalid CRC checksum while unzipping %s."
+msgstr "Неверная контрольная сумма CRC при распаковке %s."
+
+#: opkman_zip.serrmaxentries
+msgid "Encountered %d file entries; maximum supported is %d."
+msgstr "Обнаруженное количество файловых записей (%d) больше максимально возможного %d."
+
+#: opkman_zip.serrmissingarchivename
+msgid "Missing archive filename in streamed entry %d."
+msgstr "В выводимой записи %d отсутствует имя архивного файла."
+
+#: opkman_zip.serrmissingfilename
+msgid "Missing filename in entry %d."
+msgstr "Запись %d не содержит имя файла."
+
+#: opkman_zip.serrnofilename
+msgid "No archive filename for examine operation."
+msgstr "Имя архивного файла для проведения операции чтения не задано."
+
+#: opkman_zip.serrnostream
+msgid "No stream is opened."
+msgstr "Ни одного потока не открыто."
+
+#: opkman_zip.serrpostoolarge
+msgid "Position/offset %d is larger than maximum supported %d."
+msgstr "Позиция/смещение %d больше максимально допустимого %d."
+
+#: opkman_zip.serrunsupportedcompressionformat
+msgid "Unsupported compression format %d."
+msgstr "Формат сжатия %d не поддерживается."
+
+#: opkman_zip.serrunsupportedmultiplediskscd
+msgid "A central directory split over multiple disks is unsupported."
+msgstr "Размещение центрального каталога на нескольких дисках не поддерживается."
+
