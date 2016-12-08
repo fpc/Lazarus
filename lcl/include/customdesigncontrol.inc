@@ -31,8 +31,13 @@ end;
 
 procedure TCustomDesignControl.SetDesignTimePPI(const ADesignTimePPI: Integer);
 begin
+  if FDesignTimePPI=ADesignTimePPI then
+    Exit;
+
   if (csLoading in ComponentState) // allow setting only when loading
-  or not (csDesigning in ComponentState) then // or in runtime (the programmer has to know why he is doing that)
+  or not (csDesigning in ComponentState) // or in runtime (the programmer has to know why he is doing that)
+  or ((csDesigning in ComponentState) and (ADesignTimePPI=Screen.PixelsPerInch)) // or in designtime when setting the correct value
+  then
     FDesignTimePPI := ADesignTimePPI
   else
     raise EInvalidOperation.Create(sCannotSetDesignTimePPI);

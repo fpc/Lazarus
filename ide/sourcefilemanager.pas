@@ -4773,6 +4773,11 @@ begin
     TControl(NewComponent).Caption:=NewComponent.Name;
   NewUnitInfo.Component := NewComponent;
   MainIDE.CreateDesignerForComponent(NewUnitInfo,NewComponent);
+  if NewComponent is TCustomDesignControl then
+  begin
+    TCustomDesignControl(NewComponent).DesignTimePPI := Screen.PixelsPerInch;
+    TCustomDesignControl(NewComponent).PixelsPerInch := Screen.PixelsPerInch;
+  end;
 
   NewUnitInfo.ComponentName:=NewComponent.Name;
   NewUnitInfo.ComponentResourceName:=NewUnitInfo.ComponentName;
@@ -6168,9 +6173,6 @@ begin
   Result:=LoadLFM(AnUnitInfo,LFMBuf,OpenFlags,CloseFlags);
 end;
 
-type
-  TAccessCustomDesignControl = class(TCustomDesignControl);
-
 function TLazSourceFileManager.LoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
   OpenFlags: TOpenFlags; CloseFlags: TCloseFlags): TModalResult;
 const
@@ -6385,7 +6387,7 @@ begin
           if DsgControl.DesignTimePPI<>Screen.PixelsPerInch then
           begin
             DsgControl.AutoAdjustLayout(lapAutoAdjustForDPI, DsgControl.DesignTimePPI, Screen.PixelsPerInch, 0, 0, False);
-            TAccessCustomDesignControl(DsgControl).FDesignTimePPI := Screen.PixelsPerInch;
+            DsgControl.DesignTimePPI := Screen.PixelsPerInch;
           end;
         end;
 
