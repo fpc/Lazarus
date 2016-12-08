@@ -260,7 +260,7 @@ var
   FS: TFormatSettings;
   MyDate: Extended;
 begin
-  FS := Default(TFormatSettings);
+  FillChar(FS, SizeOf(TFormatSettings), 0);
   FS.DecimalSeparator := '.';
   if TryStrToFloat(aValue, MyDate, FS) then
   begin
