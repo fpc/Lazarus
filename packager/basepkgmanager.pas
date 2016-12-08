@@ -46,7 +46,7 @@ uses
   TypInfo, Classes, SysUtils, Forms, LazFileUtils, LCLProc, ComCtrls,
   LazIDEIntf, PackageIntf, MenuIntf,
   LazarusIDEStrConsts, EnvironmentOpts,
-  CompilerOptions, PackageDefs, PackageSystem, ComponentReg, Project;
+  CompilerOptions, PackageDefs, PackageSystem, Project;
 
 type
   { TBasePkgManager }
@@ -87,8 +87,6 @@ type
                                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract;
     function AddProjectDependency(AProject: TProject;
                                   ADependency: TPkgDependency): TModalResult; virtual; abstract;
-    procedure AddProjectRegCompDependency(AProject: TProject;
-                          ARegisteredComponent: TRegisteredComponent); virtual; abstract;
     function AddProjectDependencies(AProject: TProject; const Packages: string;
                                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract;
     function CheckProjectHasInstalledPackages(AProject: TProject; Interactive: boolean): TModalResult; virtual; abstract;

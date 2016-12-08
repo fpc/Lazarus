@@ -275,8 +275,6 @@ type
                                   OnlyTestIfPossible: boolean = false): TModalResult; override;
     function AddProjectDependency(AProject: TProject;
                                   ADependency: TPkgDependency): TModalResult; override;
-    procedure AddProjectRegCompDependency(AProject: TProject;
-                          ARegisteredComponent: TRegisteredComponent); override;
     function AddProjectDependencies(AProject: TProject; const Packages: string;
                                   OnlyTestIfPossible: boolean = false): TModalResult; override;
     function OnProjectInspectorAddDependency(Sender: TObject;
@@ -3376,23 +3374,6 @@ begin
     AddUnitToProjectMainUsesSection(AProject,
       ExtractFileNameOnly(ADependency.RequiredPackage.GetCompileSourceFilename),'');
   end;
-end;
-
-procedure TPkgManager.AddProjectRegCompDependency(AProject: TProject;
-  ARegisteredComponent: TRegisteredComponent);
-var
-  PkgFile: TPkgFile;
-  APackage: TLazPackage;
-begin
-  if not (ARegisteredComponent is TPkgComponent) then exit;
-  
-  PkgFile:=TPkgComponent(ARegisteredComponent).PkgFile;
-  if (PkgFile=nil) then exit;
-
-  APackage:=PkgFile.LazPackage;
-  APackage:=TLazPackage(RedirectPackageDependency(APackage));
-
-  AddProjectDependency(AProject,APackage);
 end;
 
 function TPkgManager.AddProjectDependencies(AProject: TProject;
