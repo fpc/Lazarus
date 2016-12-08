@@ -195,11 +195,11 @@ msgid "A package with the same name already exists!"
 msgstr ""
 
 #: opkman_const.rsmainfrm_packageupdate0
-msgid "The following repository packages don't have a valid external download link. The packages will be skipped. Continue?"
+msgid "The following repository packages are not installed or don't have a valid external download link. The packages will be skipped. Continue?"
 msgstr ""
 
 #: opkman_const.rsmainfrm_packageupdate1
-msgid "None of the checked repository package(s) has a valid external download link."
+msgid "None of the checked repository packages are installed or has a valid external download link."
 msgstr ""
 
 #: opkman_const.rsmainfrm_packageupdatewarning
@@ -298,6 +298,14 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_tbdownload_hint
 msgid "Download packages to..."
+msgstr ""
+
+#: opkman_const.rsmainfrm_tbhelp_caption
+msgid "Help"
+msgstr ""
+
+#: opkman_const.rsmainfrm_tbhelp_hint
+msgid "Help(http://wiki.freepascal.org/Online_Package_Manager)"
 msgstr ""
 
 #: opkman_const.rsmainfrm_tbinstall_caption
@@ -400,6 +408,20 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_homepageurl
 msgid "Home page"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_install0
+msgctxt "opkman_const.rsmainfrm_vsttext_install0"
+msgid "No"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_install1
+msgctxt "opkman_const.rsmainfrm_vsttext_install1"
+msgid "Yes"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_install2
+msgid "Partially"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_lazcompatibility
@@ -552,6 +574,10 @@ msgstr ""
 msgid "Up to date"
 msgstr ""
 
+#: opkman_const.rsmainfrm_vsttext_packagestate5
+msgid "New updates available"
+msgstr ""
+
 #: opkman_const.rsmainfrm_vsttext_packagestatus
 msgid "Package status"
 msgstr ""
@@ -699,6 +725,7 @@ msgid "This will restore the default settings. Continue?"
 msgstr ""
 
 #: opkman_const.rspackagelistfrm_bno_caption
+msgctxt "opkman_const.rspackagelistfrm_bno_caption"
 msgid "No"
 msgstr ""
 
@@ -708,6 +735,7 @@ msgid "Ok"
 msgstr ""
 
 #: opkman_const.rspackagelistfrm_byes_caption
+msgctxt "opkman_const.rspackagelistfrm_byes_caption"
 msgid "Yes"
 msgstr ""
 

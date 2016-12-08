@@ -205,11 +205,15 @@ msgid "A package with the same name already exists!"
 msgstr "¡Un paquete con el mismo nombre ya existe!"
 
 #: opkman_const.rsmainfrm_packageupdate0
-msgid "The following repository packages don't have a valid external download link. The packages will be skipped. Continue?"
+#, fuzzy
+#| msgid "The following repository packages don't have a valid external download link. The packages will be skipped. Continue?"
+msgid "The following repository packages are not installed or don't have a valid external download link. The packages will be skipped. Continue?"
 msgstr "Los siguientes paquetes del repositorio no tienen un enlace externo de descarga. Esos paquetes van a ser omitidos. ¿Continuar?"
 
 #: opkman_const.rsmainfrm_packageupdate1
-msgid "None of the checked repository package(s) has a valid external download link."
+#, fuzzy
+#| msgid "None of the checked repository package(s) has a valid external download link."
+msgid "None of the checked repository packages are installed or has a valid external download link."
 msgstr "Ninguno de los repositorios marcados tiene un link externo de descarga válido."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
@@ -312,6 +316,14 @@ msgstr "Descargar"
 msgid "Download packages to..."
 msgstr "Descargar paquetes a..."
 
+#: opkman_const.rsmainfrm_tbhelp_caption
+msgid "Help"
+msgstr ""
+
+#: opkman_const.rsmainfrm_tbhelp_hint
+msgid "Help(http://wiki.freepascal.org/Online_Package_Manager)"
+msgstr ""
+
 #: opkman_const.rsmainfrm_tbinstall_caption
 msgid "Install"
 msgstr "Instalar"
@@ -413,6 +425,22 @@ msgstr "Compatibilidad con FPC"
 #: opkman_const.rsmainfrm_vsttext_homepageurl
 msgid "Home page"
 msgstr "Sitio web"
+
+#: opkman_const.rsmainfrm_vsttext_install0
+#, fuzzy
+msgctxt "opkman_const.rsmainfrm_vsttext_install0"
+msgid "No"
+msgstr "No"
+
+#: opkman_const.rsmainfrm_vsttext_install1
+#, fuzzy
+msgctxt "opkman_const.rsmainfrm_vsttext_install1"
+msgid "Yes"
+msgstr "Sí"
+
+#: opkman_const.rsmainfrm_vsttext_install2
+msgid "Partially"
+msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_lazcompatibility
 msgid "Lazarus compatibility"
@@ -564,6 +592,10 @@ msgstr "Instalado"
 msgid "Up to date"
 msgstr "Actualizado"
 
+#: opkman_const.rsmainfrm_vsttext_packagestate5
+msgid "New updates available"
+msgstr ""
+
 #: opkman_const.rsmainfrm_vsttext_packagestatus
 msgid "Package status"
 msgstr "Estado del paquete"
@@ -711,6 +743,7 @@ msgid "This will restore the default settings. Continue?"
 msgstr "Esto restaurará las opciones predeterminadas ¿Continuar?"
 
 #: opkman_const.rspackagelistfrm_bno_caption
+msgctxt "opkman_const.rspackagelistfrm_bno_caption"
 msgid "No"
 msgstr "No"
 
@@ -720,6 +753,7 @@ msgid "Ok"
 msgstr "Ok"
 
 #: opkman_const.rspackagelistfrm_byes_caption
+msgctxt "opkman_const.rspackagelistfrm_byes_caption"
 msgid "Yes"
 msgstr "Sí"
 

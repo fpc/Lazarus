@@ -205,11 +205,11 @@ msgid "A package with the same name already exists!"
 msgstr "Egy csomag már létezik ugyanezzel a névvel!"
 
 #: opkman_const.rsmainfrm_packageupdate0
-msgid "The following repository packages don't have a valid external download link. The packages will be skipped. Continue?"
+msgid "The following repository packages are not installed or don't have a valid external download link. The packages will be skipped. Continue?"
 msgstr ""
 
 #: opkman_const.rsmainfrm_packageupdate1
-msgid "None of the checked repository package(s) has a valid external download link."
+msgid "None of the checked repository packages are installed or has a valid external download link."
 msgstr ""
 
 #: opkman_const.rsmainfrm_packageupdatewarning
@@ -309,6 +309,14 @@ msgstr "Letöltés"
 #: opkman_const.rsmainfrm_tbdownload_hint
 msgid "Download packages to..."
 msgstr "Csomagok letöltése máshová..."
+
+#: opkman_const.rsmainfrm_tbhelp_caption
+msgid "Help"
+msgstr ""
+
+#: opkman_const.rsmainfrm_tbhelp_hint
+msgid "Help(http://wiki.freepascal.org/Online_Package_Manager)"
+msgstr ""
 
 #: opkman_const.rsmainfrm_tbinstall_caption
 msgid "Install"
@@ -412,6 +420,22 @@ msgstr "FPC kompatibilitás"
 #: opkman_const.rsmainfrm_vsttext_homepageurl
 msgid "Home page"
 msgstr "Honlap"
+
+#: opkman_const.rsmainfrm_vsttext_install0
+#, fuzzy
+msgctxt "opkman_const.rsmainfrm_vsttext_install0"
+msgid "No"
+msgstr "Nem"
+
+#: opkman_const.rsmainfrm_vsttext_install1
+#, fuzzy
+msgctxt "opkman_const.rsmainfrm_vsttext_install1"
+msgid "Yes"
+msgstr "Igen"
+
+#: opkman_const.rsmainfrm_vsttext_install2
+msgid "Partially"
+msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_lazcompatibility
 msgid "Lazarus compatibility"
@@ -564,6 +588,10 @@ msgstr "Telepítve"
 msgid "Up to date"
 msgstr "Naprakész"
 
+#: opkman_const.rsmainfrm_vsttext_packagestate5
+msgid "New updates available"
+msgstr ""
+
 #: opkman_const.rsmainfrm_vsttext_packagestatus
 msgid "Package status"
 msgstr "Csomag állapota"
@@ -711,6 +739,7 @@ msgid "This will restore the default settings. Continue?"
 msgstr "Ez visszaállítja az alapértelmezett beállításokat. Folytatás?"
 
 #: opkman_const.rspackagelistfrm_bno_caption
+msgctxt "opkman_const.rspackagelistfrm_bno_caption"
 msgid "No"
 msgstr "Nem"
 
@@ -720,6 +749,7 @@ msgid "Ok"
 msgstr "Ok"
 
 #: opkman_const.rspackagelistfrm_byes_caption
+msgctxt "opkman_const.rspackagelistfrm_byes_caption"
 msgid "Yes"
 msgstr "Igen"
 
