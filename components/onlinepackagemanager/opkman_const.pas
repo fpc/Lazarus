@@ -90,6 +90,7 @@ resourcestring
   rsMainFrm_VSTText_PackageState2 = 'Extracted';
   rsMainFrm_VSTText_PackageState3 = 'Installed';
   rsMainFrm_VSTText_PackageState4 = 'Up to date';
+  rsMainFrm_VSTText_PackageState5 = 'New updates available';
   rsMainFrm_VSTText_PackageCategory0  = 'Charts and Graphs';
   rsMainFrm_VSTText_PackageCategory1  = 'Cryptography';
   rsMainFrm_VSTText_PackageCategory2  = 'DataControls';

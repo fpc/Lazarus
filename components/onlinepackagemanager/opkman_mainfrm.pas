@@ -537,7 +537,7 @@ end;
 
 procedure TMainFrm.tbRefreshClick(Sender: TObject);
 begin
-  Updates.Paused := True;
+  Updates.PauseUpdate;
   VisualTree.VST.Clear;
   VisualTree.VST.Invalidate;
   GetPackageList;
@@ -576,7 +576,7 @@ begin
 
   if CanGo then
   begin
-    Updates.Paused := True;
+    Updates.PauseUpdate;
     Options.LastDownloadDir := DstDir;
     Options.Changed := True;
     PackageAction := paDownloadTo;
@@ -598,7 +598,7 @@ begin
     end;
   end;
   SerializablePackages.RemoveErrorState;
-  Updates.Paused := False;
+  Updates.StartUpdate;
 end;
 
 procedure TMainFrm.tbUpdateClick(Sender: TObject);
@@ -630,7 +630,7 @@ begin
 
   if CanGo then
   begin
-    Updates.Paused := True;
+    Updates.PauseUpdate;
     PackageAction := paUpdate;
     VisualTree.UpdatePackageStates;
     if SerializablePackages.DownloadCount > 0 then
@@ -678,7 +678,7 @@ begin
   if not NeedToRebuild then
   begin
     SerializablePackages.RemoveErrorState;
-    Updates.Paused := False;
+    Updates.StartUpdate;
   end;
 end;
 
@@ -709,7 +709,7 @@ begin
 
   if CanGo then
   begin
-    Updates.Paused := True;
+    Updates.PauseUpdate;
     PackageAction := paInstall;
     VisualTree.UpdatePackageStates;
     if SerializablePackages.DownloadCount > 0 then
@@ -758,7 +758,7 @@ begin
   if not NeedToRebuild then
   begin
     SerializablePackages.RemoveErrorState;
-    Updates.Paused := False;
+    Updates.StartUpdate;
   end;
 end;
 

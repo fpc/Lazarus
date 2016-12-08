@@ -1010,12 +1010,11 @@ begin
           ParentNode := Node^.Parent;
           ParentData := FVST.GetNodeData(ParentNode);
           Data^.HasUpdate := (Data^.UpdateVersion > Data^.InstalledVersion) or (ParentData^.ForceUpadate);
-          if Data^.HasUpdate then
-          begin
-            ParentData^.HasUpdate := True;
-            FVST.ReinitNode(ParentNode, False);
-            FVST.RepaintNode(ParentNode);
-          end;
+          ParentData^.HasUpdate := Data^.HasUpdate;
+          FVST.ReinitNode(Node, False);
+          FVST.RepaintNode(Node);
+          FVST.ReinitNode(ParentNode, False);
+          FVST.RepaintNode(ParentNode);
         end;
       end;
     end;
@@ -1310,10 +1309,13 @@ begin
            1: CellText := rsMainFrm_VSTText_PackageState1;
            2: CellText := rsMainFrm_VSTText_PackageState2;
            3: begin
-                if Data^.InstalledVersion >= Data^.UpdateVersion then
-                  CellText := rsMainFrm_VSTText_PackageState4
+                if Data^.HasUpdate then
+                  CellText := rsMainFrm_VSTText_PackageState5
                 else
-                  CellText := rsMainFrm_VSTText_PackageState3
+                  if (Data^.UpdateVersion = '') or (Data^.UpdateVersion = Data^.InstalledVersion) then
+                    CellText := rsMainFrm_VSTText_PackageState4
+                  else
+                    CellText := rsMainFrm_VSTText_PackageState3
               end;
          end;
       3: CellText := GetDisplayString(Data^.Description);
@@ -1421,7 +1423,8 @@ begin
            else
              TargetCanvas.Font.Color := clWhite;
          end
-         else if (Data^.DataType = 2) and (Data^.InstalledVersion >= Data^.UpdateVersion) then
+         else if (Data^.DataType = 2) and (not Data^.HasUpdate) and (Data^.InstalledVersion <> '') and
+           ((Data^.UpdateVersion = '') or (Data^.UpdateVersion = Data^.InstalledVersion)) then
          begin
            TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold];
            if  Node <> Sender.FocusedNode then

@@ -87,8 +87,9 @@ type
     destructor Destroy; override;
     procedure StartUpdate;
     procedure StopUpdate;
+    procedure PauseUpdate;
   published
-    property Paused: Boolean read FPaused write SetPaused;
+    property IsPaused: Boolean read FPaused;
     property OnUpdate: TNotifyEvent read FOnUpdate write FOnUpdate;
   end;
 
@@ -403,9 +404,16 @@ end;
 procedure TUpdates.StopUpdate;
 begin
   FNeedToBreak := True;
+  Save;
   FTimer.StopTimer;
   FStarted := False;
   FHTTPClient.NeedToBreak := True;
+
+end;
+
+procedure TUpdates.PauseUpdate;
+begin
+  FPaused := True;
   Save;
 end;
 
