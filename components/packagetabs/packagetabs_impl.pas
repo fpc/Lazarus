@@ -907,7 +907,7 @@ begin
         xLbl.Caption := xPkgItem.Title;
         xLbl.Parent := FPanel;
         xLbl.PopupMenu := FTabLabelMenu;
-        xLbl.Height := TPackageTabButton.GetControlClassDefaultSize.cy;
+        xLbl.Height := FPanel.ScaleCoord(TPackageTabButton.GetControlClassDefaultSize.cy);
         xLbl.OnCloseAllFiles := @CloseAllFiles;
         if FPanel is TPackageTabScrollBox then
         begin
