@@ -294,7 +294,8 @@ begin
     if Self.ItemHeight <> 0 then
       AHeight := Self.ItemHeight
     else
-      AHeight := ItemHeight;
+      AHeight := Canvas.TextHeight('Hg');
+
     MeasureItem(Integer(ItemId), AHeight);
     if AHeight > 0 then
       ItemHeight := AHeight;
