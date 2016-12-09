@@ -3511,6 +3511,7 @@ var
     {$IFDEF VerboseFindFileAtCursor}
     debugln(['TFindDeclarationTool.FindFileAtCursor.CheckComment']);
     {$ENDIF}
+    if CommentStart=CommentEnd then exit;
     if ExtractLongParamDirective(Src,CommentStart,DirectiveName,Param) then begin
       DirectiveName:=lowercase(DirectiveName);
       if ((Enabled and (ffatIncludeFile in SearchFor))
