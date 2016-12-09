@@ -16,58 +16,53 @@
     <Description Value="The FCL - FreePascal Component Library provides the base classes for object pascal."/>
     <License Value="modified LGPL-2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="10">
+    <Files Count="9">
       <Item1>
         <Filename Value="lazaruspackageintf.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="LazarusPackageIntf"/>
       </Item1>
       <Item2>
-        <Filename Value="registerfcl.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="RegisterFCL"/>
-      </Item2>
-      <Item3>
         <Filename Value="db.pas"/>
         <Type Value="Virtual Unit"/>
         <UnitName Value="db"/>
-      </Item3>
-      <Item4>
+      </Item2>
+      <Item3>
         <Filename Value="process.pas"/>
         <Type Value="Virtual Unit"/>
         <UnitName Value="process"/>
-      </Item4>
-      <Item5>
+      </Item3>
+      <Item4>
         <Filename Value="simpleipc.pas"/>
         <Type Value="Virtual Unit"/>
         <UnitName Value="simpleipc"/>
-      </Item5>
-      <Item6>
+      </Item4>
+      <Item5>
         <Filename Value="eventlog.pas"/>
         <Type Value="Virtual Unit"/>
         <UnitName Value="eventlog"/>
-      </Item6>
-      <Item7>
+      </Item5>
+      <Item6>
         <Filename Value="XMLConf.pas"/>
         <Type Value="Virtual Unit"/>
         <UnitName Value="XMLConf"/>
-      </Item7>
-      <Item8>
+      </Item6>
+      <Item7>
         <Filename Value="fcllaz.pas"/>
         <Type Value="Main Unit"/>
         <UnitName Value="fcllaz"/>
-      </Item8>
-      <Item9>
+      </Item7>
+      <Item8>
         <Filename Value="servicemanager.pas"/>
         <Type Value="Virtual Unit"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ServiceManager"/>
-      </Item9>
-      <Item10>
+      </Item8>
+      <Item9>
         <Filename Value="sqldb.pp"/>
         <Type Value="Virtual Unit"/>
         <UnitName Value="sqldb"/>
-      </Item10>
+      </Item9>
     </Files>
     <LazDoc Paths="docs"/>
     <UsageOptions>

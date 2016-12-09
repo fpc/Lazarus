@@ -8,14 +8,12 @@ unit fcllaz;
 interface
 
 uses
-  RegisterFCL, db, process, simpleipc, eventlog, XMLConf, sqldb, 
-  LazarusPackageIntf;
+  db, process, simpleipc, eventlog, XMLConf, sqldb, LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
-  RegisterUnit('RegisterFCL', @RegisterFCL.Register);
 end;
 
 initialization

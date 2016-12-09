@@ -1,8 +1,7 @@
-{  $Id$  }
 {
  /***************************************************************************
-                            registerlcl.pas
-                            ---------------
+                            pkgregisterbase.pas
+                            -------------------
 
 
  ***************************************************************************/
@@ -29,9 +28,9 @@
   Author: Mattias Gaertner
 
   Abstract:
-    Registration of the FCL components.
+    Registration of the FCL components used by the IDE.
 }
-unit RegisterFCL;
+unit PkgRegisterBase;
 
 {$mode objfpc}{$H+}
 
