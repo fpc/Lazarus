@@ -3457,7 +3457,6 @@ type
     property HideSelection: Boolean
       read GetHideSelection write SetHideSelection default True;
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
-    property Images: TCustomImageList read FImages write SetImages;
     property Indent: Integer read FIndent write SetIndent default 15;
     property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect default False;
     property OnAddition: TTVExpandedEvent read FOnAddition write FOnAddition;
@@ -3499,7 +3498,6 @@ type
     property ShowRoot: Boolean read GetShowRoot write SetShowRoot default True;
     property ShowSeparators: Boolean read GetShowSeparators write SetShowSeparators default True;
     property SortType: TSortType read FSortType write SetSortType default stNone;
-    property StateImages: TCustomImageList read FStateImages write SetStateImages;
     property ToolTips: Boolean read GetToolTips write SetToolTips default True;
   public
     constructor Create(AnOwner: TComponent); override;
@@ -3557,6 +3555,7 @@ type
     property ExpandSignSize: integer read FExpandSignSize write FExpandSignSize default DefaultTreeNodeExpandSignSize;
     property ExpandSignType: TTreeViewExpandSignType
       read FExpandSignType write SetExpandSignType default tvestTheme;
+    property Images: TCustomImageList read FImages write SetImages;
     property InsertMarkNode: TTreeNode read FInsertMarkNode write SetInsertMarkNode;
     property InsertMarkType: TTreeViewInsertMarkType read FInsertMarkType write SetInsertMarkType;
     property Items: TTreeNodes read FTreeNodes write SetTreeNodes;
@@ -3572,6 +3571,7 @@ type
     property SelectionFontColorUsed: boolean read FSelectedFontColorUsed write FSelectedFontColorUsed default False;
     property Selections[AIndex: Integer]: TTreeNode read GetSelections;
     property SeparatorColor: TColor read fSeparatorColor write SetSeparatorColor default clGray;
+    property StateImages: TCustomImageList read FStateImages write SetStateImages;
     property TopItem: TTreeNode read GetTopItem write SetTopItem;
     property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor default clWindowFrame;
     property TreeLinePenStyle: TPenStyle read FTreeLinePenStyle write FTreeLinePenStyle default psPattern;

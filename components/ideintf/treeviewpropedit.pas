@@ -62,9 +62,9 @@ type
     procedure btnSaveClick(Sender: TObject);
     procedure edtIndexStateEditingDone(Sender: TObject);
   private
-    FTreeView: TTreeView;
+    FTreeView: TCustomTreeView;
     FModified: Boolean;
-    procedure LoadFromTree(ATreeView: TTreeView);
+    procedure LoadFromTree(ATreeView: TCustomTreeView);
     procedure SaveToTree;
     procedure UpdateEnabledStates;
   public
@@ -91,7 +91,7 @@ implementation
 
 {$R *.lfm}
 
-function EditTreeView(ATreeView: TTreeView):boolean;
+function EditTreeView(ATreeView: TCustomTreeView):boolean;
 var
   TreeViewItemsEditorForm: TTreeViewItemsEditorForm;
 begin
@@ -241,7 +241,7 @@ begin
   end;
 end;
 
-procedure TTreeViewItemsEditorForm.LoadFromTree(ATreeView: TTreeView);
+procedure TTreeViewItemsEditorForm.LoadFromTree(ATreeView: TCustomTreeView);
 begin
   FTreeView := ATreeView;
   if Assigned(ATreeView) then
@@ -277,7 +277,7 @@ end;
 
 procedure TTreeViewItemsProperty.Edit;
 begin
-  if EditTreeView(GetComponent(0) as TTreeView) then
+  if EditTreeView(GetComponent(0) as TCustomTreeView) then
     Modified;
 end;
 
@@ -294,7 +294,7 @@ begin
   If Index = 0 then
   begin
     GetHook(Hook);
-    if EditTreeView(GetComponent as TTreeView) then
+    if EditTreeView(GetComponent as TCustomTreeView) then
       if Assigned(Hook) then
         Hook.Modified(Self);
   end;
