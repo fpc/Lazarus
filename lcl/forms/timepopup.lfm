@@ -14,6 +14,7 @@ object TimePopupForm: TTimePopupForm
   OnDeactivate = FormDeactivate
   PopupMode = pmAuto
   LCLVersion = '1.7'
+  Scaled = True
   object MainPanel: TPanel
     Left = 0
     Height = 185
