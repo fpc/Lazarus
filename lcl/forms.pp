@@ -260,6 +260,7 @@ type
   protected
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy; const AFromDPI,
       AToDPI, AOldFormWidth, ANewFormWidth: Integer; const AScale0Fonts: Boolean); override;
+    procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
   public

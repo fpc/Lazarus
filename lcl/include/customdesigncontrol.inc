@@ -29,6 +29,13 @@ begin
   FPixelsPerInch := AToDPI;
 end;
 
+procedure TCustomDesignControl.Loaded;
+begin
+  inherited Loaded;
+
+  FPixelsPerInch := FDesignTimePPI;
+end;
+
 procedure TCustomDesignControl.SetDesignTimePPI(const ADesignTimePPI: Integer);
 begin
   if FDesignTimePPI=ADesignTimePPI then
