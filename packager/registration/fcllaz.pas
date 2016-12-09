@@ -8,7 +8,8 @@ unit fcllaz;
 interface
 
 uses
-  RegisterFCL, db, process, simpleipc, eventlog, XMLConf, LazarusPackageIntf;
+  RegisterFCL, db, process, simpleipc, eventlog, XMLConf, sqldb, 
+  LazarusPackageIntf;
 
 implementation
 

@@ -24,7 +24,7 @@
 
 With the exception of the unit registersqldb, which is GPL-2. This unit contains code for the IDE and is usually not used by programs."/>
     <Version Major="1" Release="2"/>
-    <Files Count="4">
+    <Files Count="3">
       <Item1>
         <Filename Value="registersqldb.pas"/>
         <HasRegisterProc Value="True"/>
@@ -32,33 +32,31 @@ With the exception of the unit registersqldb, which is GPL-2. This unit contains
         <UnitName Value="registersqldb"/>
       </Item1>
       <Item2>
-        <Filename Value="sqldb.pp"/>
-        <Type Value="Virtual Unit"/>
-        <UnitName Value="sqldb"/>
-      </Item2>
-      <Item3>
         <Filename Value="sqlstringspropertyeditordlg.lfm"/>
         <Type Value="LFM"/>
-      </Item3>
-      <Item4>
+      </Item2>
+      <Item3>
         <Filename Value="sqlstringspropertyeditordlg.pas"/>
         <UnitName Value="SQLStringsPropertyEditorDlg"/>
-      </Item4>
+      </Item3>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="4">
       <Item1>
         <PackageName Value="CodeTools"/>
       </Item1>
       <Item2>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="IDEIntf"/>
       </Item2>
       <Item3>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="SynEdit"/>
       </Item3>
+      <Item4>
+        <PackageName Value="FCL"/>
+      </Item4>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
