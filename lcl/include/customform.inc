@@ -159,9 +159,9 @@ begin
   EndFormUpdate; // the BeginFormUpdate is in CreateNew
   inherited AfterConstruction;
 
-  if Scaled and (Screen.PixelsPerInch<>FPixelsPerInch) then
-    AutoAdjustLayout(lapAutoAdjustForDPI, FPixelsPerInch, Screen.PixelsPerInch,
-      Width, MulDiv(Width, Screen.PixelsPerInch, FPixelsPerInch), False);
+  if Scaled and (Screen.PixelsPerInch<>PixelsPerInch) then
+    AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, Screen.PixelsPerInch,
+      Width, MulDiv(Width, Screen.PixelsPerInch, PixelsPerInch), False);
 end;
 
 {------------------------------------------------------------------------------
@@ -2043,7 +2043,6 @@ begin
   Include(FFormState,fsFirstShow);
   //DebugLn('[TCustomForm.CreateNew] Class=',Classname);
   BeginFormUpdate;
-  FScaled := DefaultScaled;
   FLastFocusedControl := Self;
   FBorderIcons := [biSystemMenu, biMinimize, biMaximize];
   FDefaultMonitor := dmActiveForm;
@@ -2243,8 +2242,8 @@ begin
   begin
     NewDpi := hi(Msg.wParam);
     if Scaled and (NewDpi<>PixelsPerInch) then
-      AutoAdjustLayout(lapAutoAdjustForDPI, FPixelsPerInch, NewDpi,
-        Width, MulDiv(Width, NewDpi, FPixelsPerInch), True);
+      AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, NewDpi,
+        Width, MulDiv(Width, NewDpi, PixelsPerInch), True);
   end;
 end;
 

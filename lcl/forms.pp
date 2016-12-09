@@ -252,7 +252,10 @@ type
   end;
 
   TCustomDesignControl = class(TScrollingWinControl)
-  protected
+  private const
+    DefaultScaled = {$IFDEF LCLScaleForms}True{$ELSE}False{$ENDIF};
+  private
+    FScaled: Boolean;
     FDesignTimePPI: Integer;
     FPixelsPerInch: Integer;
 
@@ -264,8 +267,10 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
   public
+    property DesignTimeDPI: Integer read FDesignTimePPI write SetDesignTimePPI stored False; deprecated 'Use DesignTimePPI instead. DesignTimeDPI will be removed in 1.8';
     property DesignTimePPI: Integer read FDesignTimePPI write SetDesignTimePPI default 96;
     property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch stored False;
+    property Scaled: Boolean read FScaled write FScaled default DefaultScaled;
   end;
 
 
@@ -354,6 +359,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    property Scaled;
     property ShowHint;
     property TabOrder;
     property TabStop;
@@ -421,8 +427,6 @@ type
 
 
   TCustomForm = class(TCustomDesignControl)
-  private const
-    DefaultScaled = {$IFDEF LCLScaleForms}True{$ELSE}False{$ENDIF};
   private
     FActive: Boolean;
     FActiveControl: TWinControl;
@@ -470,7 +474,6 @@ type
     FRestoredHeight: integer;
     FShowInTaskbar: TShowInTaskbar;
     FWindowState: TWindowState;
-    FScaled: Boolean;
     function GetClientHandle: HWND;
     function GetEffectiveShowInTaskBar: TShowInTaskBar;
     function GetMonitor: TMonitor;
@@ -677,7 +680,6 @@ type
     property DefaultMonitor: TDefaultMonitor read FDefaultMonitor
       write FDefaultMonitor default dmActiveForm;
     property Designer: TIDesigner read FDesigner write FDesigner;
-    property DesignTimeDPI: Integer read FDesignTimePPI write SetDesignTimePPI stored False; deprecated 'Use DesignTimePPI instead. DesignTimeDPI will be removed in 1.8';
     property EffectiveShowInTaskBar: TShowInTaskBar read GetEffectiveShowInTaskBar;
     property FormState: TFormState read FFormState;
     property FormStyle: TFormStyle read FFormStyle write SetFormStyle
@@ -714,7 +716,6 @@ type
     property RestoredTop: integer read FRestoredTop;
     property RestoredWidth: integer read FRestoredWidth;
     property RestoredHeight: integer read FRestoredHeight;
-    property Scaled: Boolean read FScaled write FScaled default DefaultScaled;
     property ShowInTaskBar: TShowInTaskbar read FShowInTaskbar write SetShowInTaskBar
                                     default stDefault;
     property Visible stored VisibleIsStored default false;
