@@ -262,7 +262,7 @@ begin
     ena := not Assigned(Items.Objects[Index]) or (Items.Objects[Index] is TCodeTreeNode);
     if not (ena or (odSelected in State)) then
       Canvas.Font.Color := clGreen;
-    IDEImages.Images_16.Draw(Canvas, 1, ARect.Top, UnitImgInd, ena);
+    IDEImages.Images_16.Draw(Canvas, 1, (ARect.Top+ARect.Bottom-IDEImages.Images_16.Height) div 2, UnitImgInd, ena);
     if Items.Objects[Index] is TCodeTreeNode then
     begin
       // unit for moving: implementation->interface
@@ -274,7 +274,7 @@ begin
       Canvas.MoveTo(ARect.Left + 13, ARect.Top + 8);
       Canvas.LineTo(ARect.Left + 15, ARect.Top + 11);
     end;
-    Canvas.TextRect(ARect, ARect.Left + 20, ARect.Top, Items[Index]);
+    Canvas.TextRect(ARect, ARect.Left + IDEImages.Images_16.Width + 4, ARect.Top, Items[Index]);
   end;
 end;
 
