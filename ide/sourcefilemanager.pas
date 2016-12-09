@@ -6384,11 +6384,10 @@ begin
         if NewComponent is TCustomDesignControl then
         begin
           DsgControl := TCustomDesignControl(NewComponent);
-          if DsgControl.DesignTimePPI<>Screen.PixelsPerInch then
-          begin
+          if DsgControl.Scaled and (DsgControl.DesignTimePPI<>Screen.PixelsPerInch) then
             DsgControl.AutoAdjustLayout(lapAutoAdjustForDPI, DsgControl.DesignTimePPI, Screen.PixelsPerInch, 0, 0, False);
-            DsgControl.DesignTimePPI := Screen.PixelsPerInch;
-          end;
+          DsgControl.DesignTimePPI := Screen.PixelsPerInch;
+          DsgControl.PixelsPerInch := Screen.PixelsPerInch;
         end;
 
         if NewComponent is TFrame then
