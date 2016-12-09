@@ -829,7 +829,7 @@ begin
       BottomGroupBox.Enabled:=false;
     end else begin
       if CurSelection.Count=1 then
-        Caption:=lisAnchorsOf+' '+TControl(CurSelection[0]).Name
+        Caption:=Format(lisAnchorsOf,[TControl(CurSelection[0]).Name])
       else
         Caption:=lisAnchorsOfSelectedControls;
 
