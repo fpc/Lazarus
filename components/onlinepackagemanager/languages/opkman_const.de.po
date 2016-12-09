@@ -205,15 +205,11 @@ msgid "A package with the same name already exists!"
 msgstr "Ein Package mit dem selben Namen existiert bereits!"
 
 #: opkman_const.rsmainfrm_packageupdate0
-#, fuzzy
-#| msgid "The following repository packages don't have a valid external download link. The packages will be skipped. Continue?"
-msgid "The following repository packages are not installed or don't have a valid external download link. The packages will be skipped. Continue?"
+msgid "The following repository packages don't have a valid external download link. The packages will be skipped. Continue?"
 msgstr "Die folgenden Repository-Packages haben keinen gültigen Download-Link. Die Packages werden übersprungen. Fortfahren?"
 
 #: opkman_const.rsmainfrm_packageupdate1
-#, fuzzy
-#| msgid "None of the checked repository package(s) has a valid external download link."
-msgid "None of the checked repository packages are installed or has a valid external download link."
+msgid "None of the checked repository package(s) has a valid external download link."
 msgstr "Keines der ausgewählten Packages hat einen gültigen Download-Link."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
@@ -278,7 +274,7 @@ msgstr "ist in"
 
 #: opkman_const.rsmainfrm_rspackagedependency4
 msgid "dependency list. Unchecking it might lead to installing failure. Do you wish to continue?"
-msgstr ""
+msgstr "Abhängigkeitenliste. Sie zu deaktivieren kann zu Fehlern bei der Installation führen. Wollen Sie fortfahren?"
 
 #: opkman_const.rsmainfrm_rsrepositorycleanup0
 msgid "This will delete all non-installed packages from local repository. Continue?"
@@ -316,14 +312,6 @@ msgstr "Download"
 msgid "Download packages to..."
 msgstr "Packages herunterladen nach..."
 
-#: opkman_const.rsmainfrm_tbhelp_caption
-msgid "Help"
-msgstr ""
-
-#: opkman_const.rsmainfrm_tbhelp_hint
-msgid "Help(http://wiki.freepascal.org/Online_Package_Manager)"
-msgstr ""
-
 #: opkman_const.rsmainfrm_tbinstall_caption
 msgid "Install"
 msgstr "Installieren"
@@ -343,7 +331,7 @@ msgstr "Einstellungen-Dialog anzeigen"
 
 #: opkman_const.rsmainfrm_tbrefresh_caption
 msgid "Refresh"
-msgstr "Aktualisieren"
+msgstr "Auffrischen"
 
 #: opkman_const.rsmainfrm_tbrefresh_hint
 msgid "Refresh package list"
@@ -425,22 +413,6 @@ msgstr "FPC-Kompatibilität"
 #: opkman_const.rsmainfrm_vsttext_homepageurl
 msgid "Home page"
 msgstr "Homepage"
-
-#: opkman_const.rsmainfrm_vsttext_install0
-#, fuzzy
-msgctxt "opkman_const.rsmainfrm_vsttext_install0"
-msgid "No"
-msgstr "Nein"
-
-#: opkman_const.rsmainfrm_vsttext_install1
-#, fuzzy
-msgctxt "opkman_const.rsmainfrm_vsttext_install1"
-msgid "Yes"
-msgstr "Ja"
-
-#: opkman_const.rsmainfrm_vsttext_install2
-msgid "Partially"
-msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_lazcompatibility
 msgid "Lazarus compatibility"
@@ -556,7 +528,7 @@ msgstr "Dateien und Laufwerke"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory7
 msgid "GUIContainers"
-msgstr ""
+msgstr "GUI-Container"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory8
 msgid "Graphics"
@@ -591,10 +563,6 @@ msgstr "Installiert"
 #: opkman_const.rsmainfrm_vsttext_packagestate4
 msgid "Up to date"
 msgstr "Aktuell"
-
-#: opkman_const.rsmainfrm_vsttext_packagestate5
-msgid "New updates available"
-msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagestatus
 msgid "Package status"
@@ -728,11 +696,11 @@ msgstr "Benutzername"
 
 #: opkman_const.rsoptions_proxyport_info
 msgid "Please enter the proxy server port!"
-msgstr ""
+msgstr "Bitte geben Sie den Proxy-Server-Port ein!"
 
 #: opkman_const.rsoptions_proxyserver_info
 msgid "Please enter the proxy server address!"
-msgstr ""
+msgstr "Bitte geben Sie die Proxy-Server-Adresse ein!"
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"
@@ -743,7 +711,6 @@ msgid "This will restore the default settings. Continue?"
 msgstr "Das wird die Vorgabe-Einstellungen wiederherstellen. Fortfahren?"
 
 #: opkman_const.rspackagelistfrm_bno_caption
-msgctxt "opkman_const.rspackagelistfrm_bno_caption"
 msgid "No"
 msgstr "Nein"
 
@@ -753,7 +720,6 @@ msgid "Ok"
 msgstr "OK"
 
 #: opkman_const.rspackagelistfrm_byes_caption
-msgctxt "opkman_const.rspackagelistfrm_byes_caption"
 msgid "Yes"
 msgstr "Ja"
 
@@ -944,4 +910,3 @@ msgstr "Kalkuliere. Bitte warten..."
 #: opkman_const.rsprogressfrm_lbspeed_caption
 msgid "Speed:"
 msgstr "Geschwindigkeit:"
-
