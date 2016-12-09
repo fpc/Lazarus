@@ -2043,6 +2043,7 @@ begin
   Include(FFormState,fsFirstShow);
   //DebugLn('[TCustomForm.CreateNew] Class=',Classname);
   BeginFormUpdate;
+  FScaled := DefaultScaled;
   FLastFocusedControl := Self;
   FBorderIcons := [biSystemMenu, biMinimize, biMaximize];
   FDefaultMonitor := dmActiveForm;

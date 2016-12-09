@@ -420,6 +420,8 @@ type
 
 
   TCustomForm = class(TCustomDesignControl)
+  private const
+    DefaultScaled = {$IFDEF LCLScaleForms}True{$ELSE}False{$ENDIF};
   private
     FActive: Boolean;
     FActiveControl: TWinControl;
@@ -711,7 +713,7 @@ type
     property RestoredTop: integer read FRestoredTop;
     property RestoredWidth: integer read FRestoredWidth;
     property RestoredHeight: integer read FRestoredHeight;
-    property Scaled: Boolean read FScaled write FScaled default False;
+    property Scaled: Boolean read FScaled write FScaled default DefaultScaled;
     property ShowInTaskBar: TShowInTaskbar read FShowInTaskbar write SetShowInTaskBar
                                     default stDefault;
     property Visible stored VisibleIsStored default false;
