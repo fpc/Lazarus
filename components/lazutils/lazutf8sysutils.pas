@@ -25,7 +25,7 @@ uses
     Windows,
   {$else}
     Unix, BaseUnix,
-    {$IfDef Linux}
+    {$If defined(Linux) and (FPC_FULLVERSION<30000)}
     Linux,
     {$EndIf}
   {$endif}
