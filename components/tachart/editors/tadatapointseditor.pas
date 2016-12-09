@@ -184,6 +184,7 @@ procedure TDataPointsEditorForm.sgDataPrepareCanvas(sender: TObject; aCol,
 var
   ts: TTextStyle;
 begin
+  Unused(aRow, aState);
   if ACol = 0 then begin
     ts := TStringGrid(Sender).Canvas.TextStyle;
     ts.Alignment := taRightJustify;
