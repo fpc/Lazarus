@@ -35,6 +35,7 @@ uses
   opkman_serializablepackages;
 
 
+
 type
   TInstallStatus = (isSuccess, isPartiallyFailed, isFailed);
   TInstallMessage = (imOpenPackage, imOpenPackageSuccess, imOpenPackageError,
@@ -255,7 +256,13 @@ begin
           -1, 1:
             begin
               if CompRes = 1 then
+              begin
                 DoOnPackageInstallProgress(imCompilePackageSuccess, PackageFile);
+                if PackageAction = paUpdate then
+                  if PackageFile.ForceNotify then
+                    if PackageFile.InternalVersion > PackageFile.InternalVersionOld then
+                      PackageFile.InternalVersionOld := PackageFile.InternalVersion;
+              end;
               if PackageFile.PackageType in [ptRunAndDesignTime, ptDesigntime] then
               begin
                 DoOnPackageInstallProgress(imInstallPackage, PackageFile);

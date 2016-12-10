@@ -90,7 +90,8 @@ resourcestring
   rsMainFrm_VSTText_PackageState2 = 'Extracted';
   rsMainFrm_VSTText_PackageState3 = 'Installed';
   rsMainFrm_VSTText_PackageState4 = 'Up to date';
-  rsMainFrm_VSTText_PackageState5 = 'New updates available';
+  rsMainFrm_VSTText_PackageState5 = 'New version available(repository)';
+  rsMainFrm_VSTText_PackageState6 = 'New updates available';
   rsMainFrm_VSTText_PackageCategory0  = 'Charts and Graphs';
   rsMainFrm_VSTText_PackageCategory1  = 'Cryptography';
   rsMainFrm_VSTText_PackageCategory2  = 'DataControls';
@@ -145,7 +146,7 @@ resourcestring
   rsMainFrm_TBHelp_Caption = 'Help';
   rsMainFrm_TBHelp_Hint = 'Help (' + cHelpPage + ')';
   rsMainFrm_miCreateRepositoryPackage = 'Create repository package';
-  rsMainFrm_miCreateRepository = 'Create repository';
+  rsMainFrm_miCreateJSONForUpdates = 'Create JSON for updates';
   rsMainFrm_miJSONShow =  'Show JSON';
   rsMainFrm_miJSONHide = 'Hide JSON';
   rsMainFrm_PackagenameAlreadyExists = 'A package with the same name already exists!';
@@ -278,6 +279,23 @@ resourcestring
   rsCreateRepositoryPackageFrm_Message4 = 'Compressing package. Please wait...';
   rsCreateRepositoryPackageFrm_Message5 = 'Creating JSON. Please wait...';
   rsCreateRepositoryPackageFrm_Message6 = 'Repository package successfully created.';
+
+  //createupdatejson
+  rsCreateJSONForUpdatesFrm_Caption = 'Create update JSON for package: ';
+  rsCreateJSONForUpdatesFrm_bHelp_Caption = 'Help';
+  rsCreateJSONForUpdatesFrm_bCreate_Caption = 'Create';
+  rsCreateJSONForUpdatesFrm_bClose_Caption = 'Cancel';
+  rsCreateJSONForUpdatesFrm_lbLinkToZip_Caption = 'Link to the package zip file';
+  rsCreateJSONForUpdatesFrm_bTest_Caption = 'Test';
+  rsCreateJSONForUpdatesFrm_Column0_Text = 'PackageFileName';
+  rsCreateJSONForUpdatesFrm_Column1_Text = 'Version';
+  rsCreateJSONForUpdatesFrm_Column2_Text = 'Force notify';
+  rsCreateJSONForUpdatesFrm_Column3_Text = 'Internal version';
+  rsCreateJSONForUpdatesFrm_Message0 = 'Please select a repository package!';
+  rsCreateJSONForUpdatesFrm_Message1 = 'Please select only one repository package!';
+  rsCreateJSONForUpdatesFrm_Message2 = 'Please enter a valid URL!';
+  rsCreateJSONForUpdatesFrm_Message3 = 'Please check at least one package file!';
+
 
   //categories form
   rsCategoriesFrm_Caption = 'List with categories';

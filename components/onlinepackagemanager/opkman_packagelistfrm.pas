@@ -156,7 +156,7 @@ begin
       begin
         Node := FVST.AddChild(nil);
         Data := FVST.GetNodeData(Node);
-        Data^.FName := SerializablePackages.Items[I].Name;
+        Data^.FName := SerializablePackages.Items[I].DisplayName;
         Data^.FImageIndex := 0;
       end;
     end
@@ -165,13 +165,13 @@ begin
       if (SerializablePackages.Items[I].Checked) then
       begin
         Inc(ChkCnt);
-        if (Trim(SerializablePackages.Items[I].DownloadZipURL) = '') or
+        if (Trim(SerializablePackages.Items[I].DownloadURL) = '') or
            (SerializablePackages.GetPackageInstallState(SerializablePackages.Items[I]) = 0) then
         begin
           Inc(InvCnt);
           Node := FVST.AddChild(nil);
           Data := FVST.GetNodeData(Node);
-          Data^.FName := SerializablePackages.Items[I].Name;
+          Data^.FName := SerializablePackages.Items[I].DisplayName;
           Data^.FImageIndex := 0;
           SerializablePackages.Items[I].ChangePackageStates(ctAdd, psError);
         end;
@@ -213,8 +213,8 @@ begin
     Header.Height := 25;
     Colors.BorderColor := clBlack;
     BorderSpacing.Top := 5;
-    BorderSpacing.Left := 10;
-    BorderSpacing.Right := 10;
+    BorderSpacing.Left := 15;
+    BorderSpacing.Right := 15;
     with Header.Columns.Add do begin
       Position := 0;
       Width := 250;

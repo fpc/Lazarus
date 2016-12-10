@@ -461,7 +461,7 @@ object MainFrm: TMainFrm
         Top = 0
         AutoSize = True
         Caption = 'Create'
-        DropdownMenu = pmRepository
+        DropdownMenu = pmCreate
         ImageIndex = 5
         ParentShowHint = False
         ShowHint = True
@@ -514,7 +514,7 @@ object MainFrm: TMainFrm
       OnClick = miJSONShowClick
     end
   end
-  object pmRepository: TPopupMenu
+  object pmCreate: TPopupMenu
     left = 144
     top = 224
     object miCreateRepositoryPackage: TMenuItem
@@ -522,8 +522,8 @@ object MainFrm: TMainFrm
       OnClick = miCreateRepositoryPackageClick
     end
     object miCreateRepository: TMenuItem
-      Caption = 'Create repository'
-      Enabled = False
+      Caption = 'Create JSON for updates'
+      OnClick = miCreateRepositoryClick
     end
   end
   object SDD: TSelectDirectoryDialog

@@ -62,7 +62,7 @@ type
     pnTop: TPanel;
     pnMain: TPanel;
     pmTree: TPopupMenu;
-    pmRepository: TPopupMenu;
+    pmCreate: TPopupMenu;
     SDD: TSelectDirectoryDialog;
     spCollapse: TSpeedButton;
     spClear: TSpeedButton;
@@ -76,6 +76,7 @@ type
     tbCleanUp: TToolButton;
     tbCreate: TToolButton;
     tbUpdate: TToolButton;
+    procedure miCreateRepositoryClick(Sender: TObject);
     procedure miCreateRepositoryPackageClick(Sender: TObject);
     procedure pnToolBarResize(Sender: TObject);
     procedure tbCleanUpClick(Sender: TObject);
@@ -130,7 +131,8 @@ implementation
 uses LCLVersion,
      opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common,
      opkman_progressfrm, opkman_zipper, opkman_packagelistfrm, opkman_options,
-     opkman_optionsfrm, opkman_createrepositorypackage, opkman_updates;
+     opkman_optionsfrm, opkman_createrepositorypackage, opkman_updates,
+     opkman_createjsonforupdates;
 {$R *.lfm}
 
 { TMainFrm }
@@ -611,8 +613,6 @@ var
 begin
   if not IsSomethingChecked(True) then
     Exit;
-  if MessageDlgEx(rsMainFrm_PackageUpdateWarning, mtConfirmation, [mbYes, mbNo], Self) = mrNo then
-    Exit;
   CanGo := True;
   NeedToRebuild := False;
   VisualTree.UpdatePackageStates;
@@ -630,6 +630,9 @@ begin
 
   if CanGo then
   begin
+    if MessageDlgEx(rsMainFrm_PackageUpdateWarning, mtConfirmation, [mbYes, mbNo], Self) = mrNo then
+      Exit;
+
     Updates.PauseUpdate;
     PackageAction := paUpdate;
     VisualTree.UpdatePackageStates;
@@ -793,9 +796,33 @@ procedure TMainFrm.miCreateRepositoryPackageClick(Sender: TObject);
 begin
   CreateRepositoryPackagesFrm := TCreateRepositoryPackagesFrm.Create(MainFrm);
   try
-   CreateRepositoryPackagesFrm.ShowModal;
+    CreateRepositoryPackagesFrm.ShowModal;
   finally
     CreateRepositoryPackagesFrm.Free;
+  end;
+end;
+
+procedure TMainFrm.miCreateRepositoryClick(Sender: TObject);
+var
+  Msg: String;
+begin
+  case VisualTree.GetCheckedRepositoryPackages of
+    0: Msg := rsCreateJSONForUpdatesFrm_Message0;
+    1: Msg := '';
+    2: Msg := rsCreateJSONForUpdatesFrm_Message1;
+  end;
+  if Msg <> '' then
+  begin
+    MessageDlgEx(Msg, mtInformation, [mbOk], MainFrm);
+    Exit;
+  end;
+  VisualTree.GetPackageList;
+  CreateJSONForUpdatesFrm := TCreateJSONForUpdatesFrm.Create(MainFrm);
+  try
+    CreateJSONForUpdatesFrm.PopluateTree;
+    CreateJSONForUpdatesFrm.ShowModal;
+  finally
+    CreateJSONForUpdatesFrm.Free;
   end;
 end;
 
@@ -880,7 +907,7 @@ begin
   tbHelp.Hint := rsMainFrm_TBHelp_Hint;
 
   miCreateRepositoryPackage.Caption := rsMainFrm_miCreateRepositoryPackage;
-  miCreateRepository.Caption := rsMainFrm_miCreateRepository;
+  miCreateRepository.Caption := rsMainFrm_miCreateJSONForUpdates;
   miJSONShow.Caption := rsMainFrm_miJSONShow;
   miJSONHide.Caption := rsMainFrm_miJSONHide;
 

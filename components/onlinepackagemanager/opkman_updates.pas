@@ -20,9 +20,13 @@ type
   private
     FName: String;
     FVersion: String;
+    FForceNotify: Boolean;
+    FInternalVersion: Integer;
   published
     property Name: String read FName write FName;
     property Version: String read FVersion write FVersion;
+    property ForceNotify: Boolean read FForceNotify write FForceNotify;
+    property InternalVersion: Integer read FInternalVersion write FInternalVersion;
   end;
 
   { TUpdatePackageData }
@@ -30,7 +34,6 @@ type
   TUpdatePackageData = class(TPersistent)
   private
     FDownloadZipURL: String;
-    FForceNotify: boolean;
     FName: String;
   public
     constructor Create;
@@ -38,7 +41,6 @@ type
     procedure Clear;
   published
     property Name: String read FName write FName;
-    property ForceNotify: boolean read FForceNotify write FForceNotify;
     property DownloadZipURL: String read FDownloadZipURL write FDownloadZipURL;
   end;
 
@@ -52,7 +54,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function LoadFromJSON(const AJSON: TJSONStringType): boolean;
+    function LoadFromJSON(const AJSON: TJSONStringType): Boolean;
+    function SaveToJSON(var AJSON: TJSONStringType): Boolean;
   published
     property UpdatePackageData: TUpdatePackageData read FUpdatePackageData write FUpdatePackageData;
     property UpdatePackageFiles: TCollection read FUpdatePackageFiles write FUpdatePackageFiles;
@@ -129,7 +132,7 @@ begin
   inherited Destroy;
 end;
 
-function TUpdatePackage.LoadFromJSON(const AJSON: TJSONStringType): boolean;
+function TUpdatePackage.LoadFromJSON(const AJSON: TJSONStringType): Boolean;
 var
   DeStreamer: TJSONDeStreamer;
 begin
@@ -144,6 +147,24 @@ begin
     end;
   finally
     DeStreamer.Free;
+  end;
+end;
+
+function TUpdatePackage.SaveToJSON(var AJSON: TJSONStringType): Boolean;
+var
+  Streamer: TJSONStreamer;
+begin
+  Streamer := TJSONStreamer.Create(nil);
+  try
+    Streamer.Options := Streamer.Options + [jsoUseFormatString];
+    try
+      AJSON := Streamer.ObjectToJSONString(Self);
+      Result := AJSON <> '';
+    except
+      Result := False;
+    end;
+  finally
+    Streamer.Free;
   end;
 end;
 
@@ -163,7 +184,6 @@ end;
 procedure TUpdatePackageData.Clear;
 begin
   FName := '';
-  FForceNotify := False;
   FDownloadZipURL := '';
 end;
 
@@ -202,29 +222,49 @@ end;
 
 procedure TUpdates.Load;
 var
-  Count: Integer;
-  I: Integer;
-  Path: String;
+  PackageCount: Integer;
+  PackageFileCount: Integer;
+  I, J: Integer;
+  Path, SubPath: String;
   PackageName: String;
   PackageFileName: String;
   Package: TPackage;
   PackageFile: TPackageFile;
+  HasUpdate: Boolean;
 begin
   FVersion := FXML.GetValue('Version/Value', 0);
-  Count := FXML.GetValue('Count/Value', 0);
-  for I := 0 to Count - 1 do
+  PackageCount := FXML.GetValue('Count/Value', 0);
+  for I := 0 to PackageCount - 1 do
   begin
-    Path := 'Item' + IntToStr(I);
-    PackageName := FXML.GetValue('Items/' + Path + '/PackageName', '');
+    Path := 'Package' + IntToStr(I) + '/';
+    PackageName := FXML.GetValue(Path + 'Name', '');
     Package := SerializablePackages.FindPackage(PackageName, fpbPackageName);
     if Package <> nil then
     begin
-      Package.ForceNotify := FXML.GetValue('Items/' + Path + '/ForceNotify', False);
-      Package.DownloadZipURL := FXML.GetValue('Items/' + Path + '/DownloadZipURL', '');
-      PackageFileName := FXML.GetValue('Items/' + Path + '/PackageFileName', '');
-      PackageFile := Package.FindPackageFile(PackageFileName);
-      if PackageFile <> nil then
-        PackageFile.UpdateVersion := FXML.GetValue('Items/' + Path + '/UpdateVersion', '');
+      HasUpdate := False;
+      Package.DownloadZipURL := FXML.GetValue(Path + '/DownloadZipURL', '');
+      PackageFileCount := FXML.GetValue(Path + 'Count', 0);
+      for J := 0 to PackageFileCount - 1 do
+      begin
+        SubPath := Path + 'PackageFile' +  IntToStr(J) + '/';
+        PackageFileName := FXML.GetValue(SubPath + 'Name', '');
+        PackageFile := Package.FindPackageFile(PackageFileName);
+        if PackageFile <> nil then
+        begin
+          PackageFile.UpdateVersion := FXML.GetValue(SubPath + 'UpdateVersion', '');
+          PackageFile.ForceNotify := FXML.GetValue(SubPath + 'ForceNotify', False);
+          PackageFile.InternalVersion := FXML.GetValue(SubPath + 'InternalVersion', 0);;
+          PackageFile.InternalVersionOld := FXML.GetValue(SubPath + 'InternalVersionOld', 0);
+          PackageFile.HasUpdate := (PackageFile.UpdateVersion <> '') and (PackageFile.InstalledFileVersion <> '') and
+                                   (
+                                     ((not PackageFile.ForceNotify) and (PackageFile.UpdateVersion > PackageFile.InstalledFileVersion)) or
+                                     ((PackageFile.ForceNotify) and (PackageFile.InternalVersion > PackageFile.InternalVersionOld))
+                                   );
+          if not HasUpdate then
+            HasUpdate := PackageFile.HasUpdate;
+        end;
+      end;
+      Package.HasUpdate := HasUpdate;
     end;
   end;
   Synchronize(@DoOnUpdate);
@@ -233,31 +273,32 @@ end;
 procedure TUpdates.Save;
 var
   I, J: Integer;
-  Count: Integer;
-  Path: String;
+  Path, SubPath: String;
   Package: TPackage;
   PackageFile: TPackageFile;
 begin
   FNeedToBreak := True;
   FXML.Clear;
-  Count := -1;
   FXML.SetDeleteValue('Version/Value', OpkVersion, 0);
+  FXML.SetDeleteValue('Count/Value', SerializablePackages.Count, 0);
   for I := 0 to SerializablePackages.Count - 1 do
   begin
     Package := SerializablePackages.Items[I];
+    Path := 'Package' + IntToStr(I) + '/';
+    FXML.SetDeleteValue(Path + 'Name', Package.Name, '');
+    FXML.SetDeleteValue(Path + 'DownloadZipURL', Package.DownloadZipURL, '');
+    FXML.SetDeleteValue(Path + 'Count', SerializablePackages.Items[I].PackageFiles.Count, 0);
     for J := 0 to SerializablePackages.Items[I].PackageFiles.Count - 1 do
     begin
-      Inc(Count);
-      Path := 'Item' + IntToStr(Count);
+      SubPath := Path + 'PackageFile' +  IntToStr(J) + '/';
       PackageFile := TPackageFile(SerializablePackages.Items[I].PackageFiles.Items[J]);
-      FXML.SetDeleteValue('Items/' + Path + '/PackageName', Package.Name, '');
-      FXML.SetDeleteValue('Items/' + Path + '/ForceNotify', Package.ForceNotify, False);
-      FXML.SetDeleteValue('Items/' + Path + '/DownloadZipURL', Package.DownloadZipURL, '');
-      FXML.SetDeleteValue('Items/' + Path + '/PackageFileName', PackageFile.Name, '');
-      FXML.SetDeleteValue('Items/' + Path + '/UpdateVersion', PackageFile.UpdateVersion, '');
+      FXML.SetDeleteValue(SubPath + 'Name', PackageFile.Name, '');
+      FXML.SetDeleteValue(SubPath + 'UpdateVersion', PackageFile.UpdateVersion, '');
+      FXML.SetDeleteValue(SubPath + 'ForceNotify', PackageFile.ForceNotify, False);
+      FXML.SetDeleteValue(SubPath + 'InternalVersion', PackageFile.InternalVersion, 0);
+      FXML.SetDeleteValue(SubPath + 'InternalVersionOld', PackageFile.InternalVersionOld, 0);
     end;
   end;
-  FXML.SetDeleteValue('Count/Value', Count + 1, 0);
   FXML.Flush;
 end;
 
@@ -274,16 +315,29 @@ end;
 procedure TUpdates.AssignPackageData(APackage: TPackage);
 var
   I: Integer;
+  HasUpdate: Boolean;
   PackageFile: TPackageFile;
 begin
+  HasUpdate := False;
   APackage.DownloadZipURL := FUpdatePackage.FUpdatePackageData.DownloadZipURL;
-  APackage.ForceNotify := FUpdatePackage.FUpdatePackageData.ForceNotify;
   for I := 0 to FUpdatePackage.FUpdatePackageFiles.Count - 1 do
   begin
     PackageFile := APackage.FindPackageFile(TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[I]).Name);
     if PackageFile <> nil then
+    begin
       PackageFile.UpdateVersion := TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[I]).Version;
+      PackageFile.ForceNotify := TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[I]).ForceNotify;
+      PackageFile.InternalVersion := TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[I]).InternalVersion;
+      PackageFile.HasUpdate := (PackageFile.UpdateVersion <> '') and (PackageFile.InstalledFileVersion <> '') and
+                               (
+                                 ((not PackageFile.ForceNotify) and (PackageFile.UpdateVersion > PackageFile.InstalledFileVersion)) or
+                                 ((PackageFile.ForceNotify) and (PackageFile.InternalVersion > PackageFile.InternalVersionOld))
+                               );
+      if not HasUpdate then
+        HasUpdate := PackageFile.HasUpdate;
+    end;
   end;
+  APackage.HasUpdate := HasUpdate;
 end;
 
 procedure TUpdates.ResetPackageData(APackage: TPackage);
@@ -292,14 +346,19 @@ var
   PackageFile: TPackageFile;
 begin
   APackage.DownloadZipURL := '';
-  APackage.ForceNotify := False;
+  APackage.HasUpdate := False;
   for I := 0 to APackage.PackageFiles.Count - 1 do
   begin
     PackageFile := APackage.FindPackageFile(TPackageFile(APackage.PackageFiles.Items[I]).Name);
     if PackageFile <> nil then
+    begin
+      PackageFile.HasUpdate := False;
       PackageFile.UpdateVersion := '';
+      PackageFile.ForceNotify := False;
+      PackageFile.InternalVersion := 0;
+      PackageFile.InternalVersionOld := 0;
+    end;
   end;
-
 end;
 
 procedure TUpdates.DoOnTimer(Sender: TObject);

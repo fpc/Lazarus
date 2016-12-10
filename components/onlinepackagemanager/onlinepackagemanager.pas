@@ -13,7 +13,8 @@ uses
   opkman_common, opkman_progressfrm, opkman_zipper, opkman_timer, 
   opkman_installer, opkman_packagelistfrm, opkman_options, 
   opkman_createrepositorypackage, opkman_categoriesfrm, 
-  opkman_packagedetailsfrm, opkman_updates, LazarusPackageIntf;
+  opkman_packagedetailsfrm, opkman_updates, opkman_createjsonforupdates, 
+  LazarusPackageIntf;
 
 implementation
 

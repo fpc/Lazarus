@@ -62,8 +62,8 @@ type
     HomePageURL: String;
     DownloadURL: String;
     DownloadZipURL: String;
-    ForceUpadate: Boolean;
     HasUpdate: Boolean;
+    IsUpdated: Boolean;
     SVNURL: String;
     InstallState: Integer;
     ButtonID: Integer;
@@ -139,6 +139,7 @@ type
     procedure UpdatePackageStates;
     procedure UpdatePackageUStatus;
     function ResolveDependencies: TModalResult;
+    function GetCheckedRepositoryPackages: Integer;
   published
     property OnChecking: TOnChecking read FOnChecking write FOnChecking;
     property OnChecked: TNotifyEvent read FOnChecked write FOnChecked;
@@ -296,6 +297,7 @@ begin
        Data^.PackageDisplayName := SerializablePackages.Items[I].DisplayName;
        Data^.PackageState := SerializablePackages.Items[I].PackageState;
        Data^.InstallState := SerializablePackages.GetPackageInstallState(SerializablePackages.Items[I]);
+       Data^.HasUpdate := SerializablePackages.Items[I].HasUpdate;
        Data^.DataType := 1;
        for J := 0 to SerializablePackages.Items[I].PackageFiles.Count - 1 do
        begin
@@ -309,6 +311,7 @@ begin
          ChildData^.UpdateVersion := PackageFile.UpdateVersion;
          ChildData^.Version := PackageFile.VersionAsString;
          ChildData^.PackageState := PackageFile.PackageState;
+         ChildData^.HasUpdate := PackageFile.HasUpdate;
          ChildData^.DataType := 2;
          //add description(DataType = 3)
          GrandChildNode := FVST.AddChild(ChildNode);
@@ -971,8 +974,8 @@ end;
 
 procedure TVisualTree.UpdatePackageUStatus;
 var
-  Node, ParentNode: PVirtualNode;
-  Data, ParentData: PData;
+  Node: PVirtualNode;
+  Data: PData;
   Package: TPackage;
   PackageFile: TPackageFile;
 begin
@@ -986,15 +989,9 @@ begin
       if Package <> nil then
       begin
         Data^.DownloadZipURL := Package.DownloadZipURL;
-        Data^.ForceUpadate := Package.ForceNotify;
+        Data^.HasUpdate := Package.HasUpdate;
         FVST.ReinitNode(Node, False);
         FVST.RepaintNode(Node);
-        if (Package.ForceNotify) and (SerializablePackages.GetPackageInstallState(Package) > 0) then
-        begin
-          Data^.HasUpdate := True;
-          FVST.ReinitNode(Node, False);
-          FVST.RepaintNode(Node);
-        end;
       end;
     end;
     if Data^.DataType = 2 then
@@ -1003,19 +1000,9 @@ begin
       if PackageFile <> nil then
       begin
         Data^.UpdateVersion := PackageFile.UpdateVersion;
+        Data^.HasUpdate := PackageFile.HasUpdate;
         FVST.ReinitNode(Node, False);
         FVST.RepaintNode(Node);
-        if (Data^.InstalledVersion <> '') and (Trim(Data^.UpdateVersion) <> '') then
-        begin
-          ParentNode := Node^.Parent;
-          ParentData := FVST.GetNodeData(ParentNode);
-          Data^.HasUpdate := (Data^.UpdateVersion > Data^.InstalledVersion) or (ParentData^.ForceUpadate);
-          ParentData^.HasUpdate := Data^.HasUpdate;
-          FVST.ReinitNode(Node, False);
-          FVST.RepaintNode(Node);
-          FVST.ReinitNode(ParentNode, False);
-          FVST.RepaintNode(ParentNode);
-        end;
       end;
     end;
     Node := FVST.GetNext(Node);
@@ -1169,6 +1156,24 @@ begin
   end;
 end;
 
+function TVisualTree.GetCheckedRepositoryPackages: Integer;
+var
+  Node: PVirtualNode;
+  Data: PData;
+begin
+  Result := 0;
+  Node := FVST.GetFirst;
+  while Assigned(Node) do
+  begin
+    Data := FVST.GetNodeData(Node);
+    if (Data^.DataType = 1) and ((FVST.CheckState[Node] = csCheckedNormal) or (FVST.CheckState[Node] = csMixedNormal)) then
+      Inc(Result);
+    if Result > 1 then
+      Break;
+    Node := FVST.GetNext(Node);
+  end;
+end;
+
 procedure TVisualTree.VSTCompareNodes(Sender: TBaseVirtualTree; Node1,
   Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
 var
@@ -1309,13 +1314,26 @@ begin
            1: CellText := rsMainFrm_VSTText_PackageState1;
            2: CellText := rsMainFrm_VSTText_PackageState2;
            3: begin
-                if Data^.HasUpdate then
-                  CellText := rsMainFrm_VSTText_PackageState5
-                else
-                  if (Data^.UpdateVersion = '') or (Data^.UpdateVersion = Data^.InstalledVersion) then
-                    CellText := rsMainFrm_VSTText_PackageState4
+                if not Data^.HasUpdate then
+                begin
+                  if (Data^.UpdateVersion = '') then
+                  begin
+                    if Data^.InstalledVersion >= Data^.Version then
+                      CellText := rsMainFrm_VSTText_PackageState4
+                    else
+                      CellText := rsMainFrm_VSTText_PackageState5
+                  end
                   else
-                    CellText := rsMainFrm_VSTText_PackageState3
+                  begin
+                    if (Data^.InstalledVersion >= Data^.UpdateVersion) then
+                      CellText := rsMainFrm_VSTText_PackageState4
+                    else
+                      CellText := rsMainFrm_VSTText_PackageState6
+                  end;
+                end
+                else
+                  CellText := rsMainFrm_VSTText_PackageState6;
+                Data^.IsUpdated := CellText = rsMainFrm_VSTText_PackageState4;
               end;
          end;
       3: CellText := GetDisplayString(Data^.Description);
@@ -1380,7 +1398,7 @@ procedure TVisualTree.VSTPaintText(Sender: TBaseVirtualTree;
   const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
   TextType: TVSTTextType);
 var
-  Data, ParentData: PData;
+  Data: PData;
 begin
   Data := FVST.GetNodeData(Node);
   case column of
@@ -1401,13 +1419,10 @@ begin
     3: begin
          case Data^.DataType of
            1: TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold];
-           2: begin
-                ParentData := FVST.GetNodeData(Node^.Parent);
-                if (Data^.UpdateVersion > Data^.InstalledVersion) or (ParentData^.HasUpdate) then
-                  TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold]
-                else
-                  TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
-              end;
+           2: if Data^.HasUpdate then
+                TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold]
+              else
+                TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
          end;
          if Node <> Sender.FocusedNode then
            TargetCanvas.Font.Color := clBlack
@@ -1423,8 +1438,7 @@ begin
            else
              TargetCanvas.Font.Color := clWhite;
          end
-         else if (Data^.DataType = 2) and (not Data^.HasUpdate) and (Data^.InstalledVersion <> '') and
-           ((Data^.UpdateVersion = '') or (Data^.UpdateVersion = Data^.InstalledVersion)) then
+         else if (Data^.DataType = 2) and (Data^.IsUpdated) then
          begin
            TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold];
            if  Node <> Sender.FocusedNode then

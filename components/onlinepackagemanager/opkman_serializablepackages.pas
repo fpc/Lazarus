@@ -133,6 +133,10 @@ type
     FInstalledFileName: String;
     FInstalledFileVersion: String;
     FUpdateVersion: String;
+    FForceNotify: Boolean;
+    FInternalVersion: Integer;
+    FInternalVersionOld: Integer;
+    FHasUpdate: Boolean;
     FVersion: TPackageVersion;
     FVersionAsString: String;
     FDependencies: TPackageDependencies;
@@ -157,6 +161,10 @@ type
     property PackageAbsolutePath: String read FPackageAbsolutePath write FPackageAbsolutePath;
     property Checked: Boolean read FChecked write FChecked;
     property IsInstallable: Boolean read GetInstallable;
+    property ForceNotify: Boolean read FForceNotify write FForceNotify;
+    property InternalVersion: Integer read FInternalVersion write FInternalVersion;
+    property InternalVersionOld: Integer read FInternalVersionOld write FInternalVersionOld;
+    property HasUpdate: Boolean read FHasUpdate write FHasUpdate;
   published
     property Name: String read FName write FName;
     property Author: String read FAuthor write FAuthor;
@@ -188,8 +196,8 @@ type
     FPackageBaseDir: String;
     FHomePageURL: String;
     FDownloadURL: String;
-    FForceNotify: Boolean;
     FDownloadZipURL: String;
+    FHasUpdate: Boolean;
     FSVNURL: String;
     FUpdateSize: Int64;
     FIsDirZipped: Boolean;
@@ -208,8 +216,8 @@ type
     property IsExtractable: Boolean read GetExtractable;
     property UpdateSize: Int64 read FUpdateSize write FUpdateSize;
     property IsDirZipped: Boolean read FIsDirZipped write FIsDirZipped;
-    property ForceNotify: Boolean read FForceNotify write FForceNotify;
     property DownloadZipURL: String read FDownloadZipURL write FDownloadZipURL;
+    property HasUpdate: Boolean read FHasUpdate write FHasUpdate;
   published
     property Name: String read FName write FName;
     property DisplayName: String read FDisplayName write FDisplayName;
