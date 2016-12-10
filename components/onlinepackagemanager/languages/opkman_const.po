@@ -2,6 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: opkman_const.rscategoriesfrm_bcancel_caption
+msgctxt "opkman_const.rscategoriesfrm_bcancel_caption"
 msgid "Cancel"
 msgstr ""
 
@@ -16,6 +17,66 @@ msgstr ""
 
 #: opkman_const.rscategoriesfrm_lbmessage_caption
 msgid "Please select (check) one or more categories"
+msgstr ""
+
+#: opkman_const.rscreatejsonforupdatesfrm_bclose_caption
+msgctxt "opkman_const.rscreatejsonforupdatesfrm_bclose_caption"
+msgid "Cancel"
+msgstr ""
+
+#: opkman_const.rscreatejsonforupdatesfrm_bcreate_caption
+msgctxt "opkman_const.rscreatejsonforupdatesfrm_bcreate_caption"
+msgid "Create"
+msgstr ""
+
+#: opkman_const.rscreatejsonforupdatesfrm_bhelp_caption
+msgctxt "opkman_const.rscreatejsonforupdatesfrm_bhelp_caption"
+msgid "Help"
+msgstr ""
+
+#: opkman_const.rscreatejsonforupdatesfrm_btest_caption
+msgid "Test"
+msgstr ""
+
+#: opkman_const.rscreatejsonforupdatesfrm_caption
+msgid "Create update JSON for package: "
+msgstr ""
+
+#: opkman_const.rscreatejsonforupdatesfrm_column0_text
+msgid "PackageFileName"
+msgstr ""
+
+#: opkman_const.rscreatejsonforupdatesfrm_column1_text
+msgctxt "opkman_const.rscreatejsonforupdatesfrm_column1_text"
+msgid "Version"
+msgstr ""
+
+#: opkman_const.rscreatejsonforupdatesfrm_column2_text
+msgid "Force notify"
+msgstr ""
+
+#: opkman_const.rscreatejsonforupdatesfrm_column3_text
+msgid "Internal version"
+msgstr ""
+
+#: opkman_const.rscreatejsonforupdatesfrm_lblinktozip_caption
+msgid "Link to the package zip file"
+msgstr ""
+
+#: opkman_const.rscreatejsonforupdatesfrm_message0
+msgid "Please select a repository package!"
+msgstr ""
+
+#: opkman_const.rscreatejsonforupdatesfrm_message1
+msgid "Please select only one repository package!"
+msgstr ""
+
+#: opkman_const.rscreatejsonforupdatesfrm_message2
+msgid "Please enter a valid URL!"
+msgstr ""
+
+#: opkman_const.rscreatejsonforupdatesfrm_message3
+msgid "Please check at least one package file!"
 msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_caption
@@ -161,8 +222,8 @@ msgstr ""
 msgid "Filter by:"
 msgstr ""
 
-#: opkman_const.rsmainfrm_micreaterepository
-msgid "Create repository"
+#: opkman_const.rsmainfrm_micreatejsonforupdates
+msgid "Create JSON for updates"
 msgstr ""
 
 #: opkman_const.rsmainfrm_micreaterepositorypackage
@@ -297,6 +358,7 @@ msgid "Download packages"
 msgstr ""
 
 #: opkman_const.rsmainfrm_tbhelp_caption
+msgctxt "opkman_const.rsmainfrm_tbhelp_caption"
 msgid "Help"
 msgstr ""
 
@@ -330,6 +392,7 @@ msgid "Refresh package list"
 msgstr ""
 
 #: opkman_const.rsmainfrm_tbrepository_caption
+msgctxt "opkman_const.rsmainfrm_tbrepository_caption"
 msgid "Create"
 msgstr ""
 
@@ -571,6 +634,12 @@ msgid "Up to date"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagestate5
+msgctxt "opkman_const.rsmainfrm_vsttext_packagestate5"
+msgid "New version available(repository)"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_packagestate6
+msgctxt "opkman_const.rsmainfrm_vsttext_packagestate6"
 msgid "New updates available"
 msgstr ""
 
@@ -624,6 +693,7 @@ msgid "SVN"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_version
+msgctxt "opkman_const.rsmainfrm_vsttext_version"
 msgid "Version"
 msgstr ""
 
