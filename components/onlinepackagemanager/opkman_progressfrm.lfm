@@ -87,7 +87,7 @@ object ProgressFrm: TProgressFrm
       Anchors = [akTop, akLeft, akRight]
       ParentColor = False
     end
-    object lbEllapsedData: TLabel
+    object lbElapsedData: TLabel
       Left = 88
       Height = 1
       Top = 56
@@ -111,12 +111,12 @@ object ProgressFrm: TProgressFrm
       Caption = 'Speed:'
       ParentColor = False
     end
-    object lbEllapsed: TLabel
+    object lbElapsed: TLabel
       Left = 16
       Height = 15
       Top = 56
-      Width = 46
-      Caption = 'Ellapsed:'
+      Width = 43
+      Caption = 'Elapsed:'
       ParentColor = False
     end
     object lbRemaining: TLabel

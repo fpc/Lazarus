@@ -16,8 +16,10 @@ msgid "Cancel"
 msgstr "Abbrechen"
 
 #: opkman_const.rscategoriesfrm_byes_caption
+#, fuzzy
+#| msgid "Ok"
 msgctxt "opkman_const.rscategoriesfrm_byes_caption"
-msgid "Ok"
+msgid "OK"
 msgstr "OK"
 
 #: opkman_const.rscategoriesfrm_caption
@@ -25,7 +27,9 @@ msgid "List with categories"
 msgstr "Liste mit Kategorien"
 
 #: opkman_const.rscategoriesfrm_lbmessage_caption
-msgid "Please select(check) one or more categories"
+#, fuzzy
+#| msgid "Please select(check) one or more categories"
+msgid "Please select (check) one or more categories"
 msgstr "Bitte wählen Sie eine oder mehrere Kategorien"
 
 #: opkman_const.rscreaterepositorypackagefrm_caption
@@ -205,11 +209,15 @@ msgid "A package with the same name already exists!"
 msgstr "Ein Package mit dem selben Namen existiert bereits!"
 
 #: opkman_const.rsmainfrm_packageupdate0
-msgid "The following repository packages don't have a valid external download link. The packages will be skipped. Continue?"
+#, fuzzy
+#| msgid "The following repository packages don't have a valid external download link. The packages will be skipped. Continue?"
+msgid "The following repository packages are not installed or don't have a valid external download link. The packages will be skipped. Continue?"
 msgstr "Die folgenden Repository-Packages haben keinen gültigen Download-Link. Die Packages werden übersprungen. Fortfahren?"
 
 #: opkman_const.rsmainfrm_packageupdate1
-msgid "None of the checked repository package(s) has a valid external download link."
+#, fuzzy
+#| msgid "None of the checked repository package(s) has a valid external download link."
+msgid "None of the checked repository packages are installed or has a valid external download link."
 msgstr "Keines der ausgewählten Packages hat einen gültigen Download-Link."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
@@ -309,8 +317,18 @@ msgid "Download"
 msgstr "Download"
 
 #: opkman_const.rsmainfrm_tbdownload_hint
-msgid "Download packages to..."
+#, fuzzy
+#| msgid "Download packages to..."
+msgid "Download packages"
 msgstr "Packages herunterladen nach..."
+
+#: opkman_const.rsmainfrm_tbhelp_caption
+msgid "Help"
+msgstr ""
+
+#: opkman_const.rsmainfrm_tbhelp_hint
+msgid "Help (http://wiki.freepascal.org/Online_Package_Manager)"
+msgstr ""
 
 #: opkman_const.rsmainfrm_tbinstall_caption
 msgid "Install"
@@ -364,7 +382,9 @@ msgid "Installed"
 msgstr "Installiert"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_packagefile
-msgid "Package file(.lpk)"
+#, fuzzy
+#| msgid "Package file(.lpk)"
+msgid "Package file (.lpk)"
 msgstr "Package-Datei (.lpk)"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_packagename
@@ -413,6 +433,22 @@ msgstr "FPC-Kompatibilität"
 #: opkman_const.rsmainfrm_vsttext_homepageurl
 msgid "Home page"
 msgstr "Homepage"
+
+#: opkman_const.rsmainfrm_vsttext_install0
+#, fuzzy
+msgctxt "opkman_const.rsmainfrm_vsttext_install0"
+msgid "No"
+msgstr "Nein"
+
+#: opkman_const.rsmainfrm_vsttext_install1
+#, fuzzy
+msgctxt "opkman_const.rsmainfrm_vsttext_install1"
+msgid "Yes"
+msgstr "Ja"
+
+#: opkman_const.rsmainfrm_vsttext_install2
+msgid "Partially"
+msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_lazcompatibility
 msgid "Lazarus compatibility"
@@ -564,6 +600,10 @@ msgstr "Installiert"
 msgid "Up to date"
 msgstr "Aktuell"
 
+#: opkman_const.rsmainfrm_vsttext_packagestate5
+msgid "New updates available"
+msgstr ""
+
 #: opkman_const.rsmainfrm_vsttext_packagestatus
 msgid "Package status"
 msgstr "Package-Status"
@@ -711,15 +751,19 @@ msgid "This will restore the default settings. Continue?"
 msgstr "Das wird die Vorgabe-Einstellungen wiederherstellen. Fortfahren?"
 
 #: opkman_const.rspackagelistfrm_bno_caption
+msgctxt "opkman_const.rspackagelistfrm_bno_caption"
 msgid "No"
 msgstr "Nein"
 
 #: opkman_const.rspackagelistfrm_bok_caption
+#, fuzzy
+#| msgid "Ok"
 msgctxt "opkman_const.rspackagelistfrm_bok_caption"
-msgid "Ok"
+msgid "OK"
 msgstr "OK"
 
 #: opkman_const.rspackagelistfrm_byes_caption
+msgctxt "opkman_const.rspackagelistfrm_byes_caption"
 msgid "Yes"
 msgstr "Ja"
 
@@ -875,20 +919,24 @@ msgctxt "opkman_const.rsprogressfrm_info8"
 msgid "Installing package:"
 msgstr "Installiere Package:"
 
-#: opkman_const.rsprogressfrm_lbellapsed_caption
-msgid "Ellapsed:"
-msgstr "Verstrichen:"
+#: opkman_const.rsprogressfrm_lbelapsed_caption
+msgid "Elapsed:"
+msgstr ""
 
 #: opkman_const.rsprogressfrm_lbpackage_caption
 msgid "Package:"
 msgstr "Package:"
 
 #: opkman_const.rsprogressfrm_lbreceivedtotal_caption0
-msgid "Received(total):"
+#, fuzzy
+#| msgid "Received(total):"
+msgid "Received (total):"
 msgstr "Empfangen (total):"
 
 #: opkman_const.rsprogressfrm_lbreceivedtotal_caption1
-msgid "Unzipped(total):"
+#, fuzzy
+#| msgid "Unzipped(total):"
+msgid "Unzipped (total):"
 msgstr "Entpackt (total):"
 
 #: opkman_const.rsprogressfrm_lbreceived_caption0
@@ -910,3 +958,4 @@ msgstr "Kalkuliere. Bitte warten..."
 #: opkman_const.rsprogressfrm_lbspeed_caption
 msgid "Speed:"
 msgstr "Geschwindigkeit:"
+

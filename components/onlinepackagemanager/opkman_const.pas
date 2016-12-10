@@ -52,7 +52,7 @@ resourcestring
   //main form
   rsMainFrm_Caption = 'packages found';
   rsMainFrm_VSTHeaderColumn_PackageName = 'Packages';
-  rsMainFrm_VSTHeaderColumn_PackageFile = 'Package file(.lpk)';
+  rsMainFrm_VSTHeaderColumn_PackageFile = 'Package file (.lpk)';
   rsMainFrm_VSTHeaderColumn_Repository = 'Repository';
   rsMainFrm_VSTHeaderColumn_Installed = 'Installed';
   rsMainFrm_VSTHeaderColumn_Update = 'Update';
@@ -131,7 +131,7 @@ resourcestring
   rsMainFrm_TBRefresh_Caption = 'Refresh';
   rsMainFrm_TBRefresh_Hint = 'Refresh package list';
   rsMainFrm_TBDownload_Caption = 'Download';
-  rsMainFrm_TBDownload_Hint = 'Download packages to...';
+  rsMainFrm_TBDownload_Hint = 'Download packages';
   rsMainFrm_TBInstall_Caption = 'Install';
   rsMainFrm_TBInstall_Hint = 'Install packages';
   rsMainFrm_TBUpdate_Caption = 'Update';
@@ -143,7 +143,7 @@ resourcestring
   rsMainFrm_TBOptions_Caption = 'Options';
   rsMainFrm_TBOptions_Hint = 'Show options dialog';
   rsMainFrm_TBHelp_Caption = 'Help';
-  rsMainFrm_TBHelp_Hint = 'Help(' + cHelpPage + ')';
+  rsMainFrm_TBHelp_Hint = 'Help (' + cHelpPage + ')';
   rsMainFrm_miCreateRepositoryPackage = 'Create repository package';
   rsMainFrm_miCreateRepository = 'Create repository';
   rsMainFrm_miJSONShow =  'Show JSON';
@@ -182,12 +182,12 @@ resourcestring
   rsProgressFrm_lbPackage_Caption = 'Package:';
   rsProgressFrm_lbSpeed_Caption = 'Speed:';
   rsProgressFrm_lbSpeedCalc_Caption = 'Estimating. Please wait...';
-  rsProgressFrm_lbEllapsed_Caption = 'Ellapsed:';
+  rsProgressFrm_lbElapsed_Caption = 'Elapsed:';
   rsProgressFrm_lbRemaining_Caption = 'Remaining:';
   rsProgressFrm_lbReceived_Caption0 = 'Received:';
   rsProgressFrm_lbReceived_Caption1 = 'Unzipped:';
-  rsProgressFrm_lbReceivedTotal_Caption0 = 'Received(total):';
-  rsProgressFrm_lbReceivedTotal_Caption1 = 'Unzipped(total):';
+  rsProgressFrm_lbReceivedTotal_Caption0 = 'Received (total):';
+  rsProgressFrm_lbReceivedTotal_Caption1 = 'Unzipped (total):';
   rsProgressFrm_cbExtractOpen_Caption0 = 'Extract after download';
   rsProgressFrm_cbExtractOpen_Caption1 = 'Open containing folder';
   rsProgressFrm_Error0 = 'Cannot download package:';
@@ -247,7 +247,7 @@ resourcestring
   rsPackageListFrm_Caption2 = 'Update package list';
   rsPackageListFrm_bYes_Caption = 'Yes';
   rsPackageListFrm_bNo_Caption = 'No';
-  rsPackageListFrm_bOk_Caption = 'Ok';
+  rsPackageListFrm_bOk_Caption = 'OK';
 
   //createrepositorypackage form
   rsCreateRepositoryPackageFrm_Caption = 'Create repository package';
@@ -281,8 +281,8 @@ resourcestring
 
   //categories form
   rsCategoriesFrm_Caption = 'List with categories';
-  rsCategoriesFrm_lbMessage_Caption = 'Please select(check) one or more categories';
-  rsCategoriesFrm_bYes_Caption = 'Ok';
+  rsCategoriesFrm_lbMessage_Caption = 'Please select (check) one or more categories';
+  rsCategoriesFrm_bYes_Caption = 'OK';
   rsCategoriesFrm_bCancel_Caption = 'Cancel';
 
 

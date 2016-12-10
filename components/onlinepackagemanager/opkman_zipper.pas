@@ -34,7 +34,7 @@ uses
 type
   TOnProgressEx = procedure(Sender : TObject; const ATotPos, ATotSize: Int64);
   TOnZipProgress = procedure(Sender: TObject; AZipfile: String; ACnt, ATotCnt: Integer; ACurPos, ACurSize, ATotPos, ATotSize: Int64;
-    AEllapsed, ARemaining, ASpeed: LongInt) of object;
+    AElapsed, ARemaining, ASpeed: LongInt) of object;
   TOnZipError = procedure(Sender: TObject; APackageName: String; const AErrMsg: String) of object;
   TOnZipCompleted = TNotifyEvent;
 
@@ -54,7 +54,7 @@ type
     FTotPos: Int64;
     FTotPosTmp: Int64;
     FTotSize: Int64;
-    FEllapsed: Integer;
+    FElapsed: Integer;
     FRemaining: Integer;
     FSpeed: Integer;
     FErrMsg: String;
@@ -120,7 +120,7 @@ uses opkman_serializablepackages, opkman_common;
 procedure TPackageUnzipper.DoOnZipProgress;
 begin
   if Assigned(FOnZipProgress) then
-    FOnZipProgress(Self, FZipfile, FCnt, FTotCnt, FCurPos, FCurSize, FTotPosTmp, FTotSize, FEllapsed, FRemaining, FSpeed);
+    FOnZipProgress(Self, FZipfile, FCnt, FTotCnt, FCurPos, FCurSize, FTotPosTmp, FTotSize, FElapsed, FRemaining, FSpeed);
 end;
 
 procedure TPackageUnzipper.DoOnZipError;
@@ -207,8 +207,8 @@ end;
 
 procedure TPackageUnzipper.DoOnTimer(Sender: TObject);
 begin
-  Inc(FEllapsed);
-  FSpeed := Round(FTotPosTmp/FEllapsed);
+  Inc(FElapsed);
+  FSpeed := Round(FTotPosTmp/FElapsed);
   FRemaining := Round((FTotSize - FTotPosTmp)/FSpeed);
 end;
 

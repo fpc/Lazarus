@@ -42,7 +42,7 @@ type
   TOnJSONDownloadCompleted = procedure(Sender: TObject; AJSON: TJSONStringType; AErrTyp: TErrorType; const AErrMsg: String = '') of object;
   TOnWriteStream = procedure(Sender: TObject; APos: Int64) of object;
   TOnPackageDownloadProgress = procedure(Sender: TObject; AFrom, ATo: String; ACnt, ATotCnt: Integer; ACurPos, ACurSize, ATotPos, ATotSize: Int64;
-    AEllapsed, ARemaining, ASpeed: LongInt) of object;
+    AElapsed, ARemaining, ASpeed: LongInt) of object;
   TOnPackageDownloadError = procedure(Sender: TObject; APackageName: String; const AErrMsg: String = '') of object;
   TOnPackageDownloadCompleted = TNotifyEvent;
   TOnPackageUpdateProgress = procedure(Sender: TObject; AUPackageName, AUPackageURL: String; ACnt, ATotCnt: Integer; AUTyp: Integer; AUErrMsg: String) of object;
@@ -86,7 +86,7 @@ type
     FTotPos: Int64;
     FTotPosTmp: Int64;
     FTotSize: Int64;
-    FEllapsed: Integer;
+    FElapsed: Integer;
     FRemaining: Integer;
     FSpeed: Integer;
     FTimer: TThreadTimer;
@@ -150,7 +150,7 @@ type
     procedure DoOnJSONProgress(Sender: TObject);
     procedure DoOnJSONDownloadCompleted(Sender: TObject; AJSON: TJSONStringType; AErrTyp: TErrorType; const AErrMsg: String = '');
     procedure DoOnPackageDownloadProgress(Sender: TObject; AFrom, ATo: String; ACnt, ATotCnt: Integer;
-      ACurPos, ACurSize, ATotPos, ATotSize: Int64; AEllapsed, ARemaining, ASpeed: LongInt);
+      ACurPos, ACurSize, ATotPos, ATotSize: Int64; AElapsed, ARemaining, ASpeed: LongInt);
     procedure DoOnPackageDownloadError(Sender: TObject; APackageName: String; const AErrMsg: String = '');
     procedure DoOnPackageDownloadCompleted(Sender: TObject);
     procedure DoOnPackageUpdateProgress(Sender: TObject; AUPackageName, AUPackageURL: String; ACnt, ATotCnt: Integer; AUTyp: Integer; AUErrMsg: String);
@@ -224,7 +224,7 @@ end;
 procedure TThreadDownload.DoOnPackageDownloadProgress;
 begin
   if Assigned(FOnPackageDownloadCompleted) then
-    FOnPackageDownloadProgress(Self, FFrom, FTo, FCnt, FTotCnt, FCurPos, FCurSize, FTotPosTmp, FTotSize, FEllapsed, FRemaining, FSpeed);
+    FOnPackageDownloadProgress(Self, FFrom, FTo, FCnt, FTotCnt, FCurPos, FCurSize, FTotPosTmp, FTotSize, FElapsed, FRemaining, FSpeed);
 end;
 
 procedure TThreadDownload.DoOnPackageDownloadError;
@@ -281,8 +281,8 @@ begin
   end
   else if (FDownloadType = dtPackage) or (FDownloadType = dtUpdate) then
   begin
-    Inc(FEllapsed);
-    FSpeed := Round(FTotPosTmp/FEllapsed);
+    Inc(FElapsed);
+    FSpeed := Round(FTotPosTmp/FElapsed);
     if FSpeed > 0 then
       FRemaining := Round((FTotSize - FTotPosTmp)/FSpeed);
   end;
@@ -602,10 +602,10 @@ end;
 
 procedure TPackageDownloader.DoOnPackageDownloadProgress(Sender: TObject; AFrom, ATo: String;
   ACnt, ATotCnt: Integer; ACurPos, ACurSize, ATotPos, ATotSize: Int64;
-  AEllapsed, ARemaining, ASpeed: LongInt);
+  AElapsed, ARemaining, ASpeed: LongInt);
 begin
   if Assigned(FOnPackageDownloadProgress) then
-    FOnPackageDownloadProgress(Self, AFrom, ATo, ACnt, ATotCnt, ACurPos, ACurSize, ATotPos, ATotSize, AEllapsed, ARemaining, ASpeed);
+    FOnPackageDownloadProgress(Self, AFrom, ATo, ACnt, ATotCnt, ACurPos, ACurSize, ATotPos, ATotSize, AElapsed, ARemaining, ASpeed);
 end;
 
 procedure TPackageDownloader.DoOnPackageDownloadError(Sender: TObject;

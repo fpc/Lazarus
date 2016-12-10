@@ -38,8 +38,8 @@ type
     bCancel: TButton;
     cbExtractOpen: TCheckBox;
     imTree: TImageList;
-    lbEllapsed: TLabel;
-    lbEllapsedData: TLabel;
+    lbElapsed: TLabel;
+    lbElapsedData: TLabel;
     lbPackage: TLabel;
     lbPackageData: TLabel;
     lbReceived: TLabel;
@@ -80,11 +80,11 @@ type
       Node: PVirtualNode; {%H-}Column: TColumnIndex; {%H-}TextType: TVSTTextType);
   public
     procedure DoOnPackageDownloadProgress(Sender: TObject; {%H-}AFrom, ATo: String; ACnt, ATotCnt: Integer;
-      ACurPos, ACurSize, ATotPos, ATotSize: Int64; AEllapsed, ARemaining, ASpeed: LongInt);
+      ACurPos, ACurSize, ATotPos, ATotSize: Int64; AElapsed, ARemaining, ASpeed: LongInt);
     procedure DoOnPackageDownloadError(Sender: TObject; APackageName: String; const AErrMsg: String = '');
     procedure DoOnPackageDownloadCompleted(Sender: TObject);
     procedure DoOnZipProgress(Sender: TObject; AZipfile: String; ACnt, ATotCnt: Integer;
-      ACurPos, ACurSize, ATotPos, ATotSize: Int64; AEllapsed, ARemaining, ASpeed: LongInt);
+      ACurPos, ACurSize, ATotPos, ATotSize: Int64; AElapsed, ARemaining, ASpeed: LongInt);
     procedure DoOnZipError(Sender: TObject; APackageName: String; const AErrMsg: String);
     procedure DoOnZipCompleted(Sender: TObject);
     procedure DoOnPackageInstallProgress(Sender: TObject; ACnt, ATotCnt: Integer; APackageName: String; AInstallMessage: TInstallMessage);
@@ -208,14 +208,14 @@ end;
 
 procedure TProgressFrm.DoOnPackageDownloadProgress(Sender: TObject; AFrom, ATo: String;
   ACnt, ATotCnt: Integer; ACurPos, ACurSize, ATotPos, ATotSize: Int64;
-  AEllapsed, ARemaining, ASpeed: LongInt);
+  AElapsed, ARemaining, ASpeed: LongInt);
 begin
   Caption := rsProgressfrm_Caption0 + '(' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) +')' + rsProgressFrm_Caption4;
   lbPackageData.Caption := ExtractFileName(ATo);
   lbSpeedData.Caption := FormatSpeed(ASpeed);
   lbSpeedData.Update;
-  lbEllapsedData.Caption := SecToHourAndMin(AEllapsed);
-  lbEllapsedData.Update;
+  lbElapsedData.Caption := SecToHourAndMin(AElapsed);
+  lbElapsedData.Update;
   lbRemainingData.Caption := SecToHourAndMin(ARemaining);
   lbRemainingData.Update;
   if ACurSize > 0 then
@@ -273,14 +273,14 @@ end;
 
 procedure TProgressFrm.DoOnZipProgress(Sender: TObject; AZipfile: String;
   ACnt, ATotCnt: Integer;  ACurPos, ACurSize, ATotPos, ATotSize: Int64;
-  AEllapsed, ARemaining, ASpeed: LongInt);
+  AElapsed, ARemaining, ASpeed: LongInt);
 begin
   Caption := rsProgressfrm_Caption1 + '(' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) +')' + rsProgressFrm_Caption4;
   lbPackageData.Caption := AZipFile;
   lbSpeedData.Caption := FormatSpeed(ASpeed);
   lbSpeedData.Update;
-  lbEllapsedData.Caption := SecToHourAndMin(AEllapsed);
-  lbEllapsedData.Update;
+  lbElapsedData.Caption := SecToHourAndMin(AElapsed);
+  lbElapsedData.Update;
   lbRemainingData.Caption := SecToHourAndMin(ARemaining);
   lbRemainingData.Update;
   lbReceived.Caption := rsProgressFrm_lbReceived_Caption1 + '  ' + FormatSize(ACurPos) + ' / ' + FormatSize(ACurSize);
@@ -572,7 +572,7 @@ begin
   lbPackage.Caption := rsProgressFrm_lbPackage_Caption;
   lbSpeed.Caption := rsProgressFrm_lbSpeed_Caption;
   lbSpeedData.Caption := rsProgressFrm_lbSpeedCalc_Caption;
-  lbEllapsed.Caption := rsProgressFrm_lbEllapsed_Caption;
+  lbElapsed.Caption := rsProgressFrm_lbElapsed_Caption;
   lbRemaining.Caption := rsProgressFrm_lbRemaining_Caption;
   pb.Top := lbReceived.Top + lbReceived.Height + 1;
   pbTotal.Top := lbReceivedTotal.Top + lbReceivedTotal.Height + 1;

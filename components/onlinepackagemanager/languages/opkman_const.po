@@ -7,7 +7,7 @@ msgstr ""
 
 #: opkman_const.rscategoriesfrm_byes_caption
 msgctxt "opkman_const.rscategoriesfrm_byes_caption"
-msgid "Ok"
+msgid "OK"
 msgstr ""
 
 #: opkman_const.rscategoriesfrm_caption
@@ -15,7 +15,7 @@ msgid "List with categories"
 msgstr ""
 
 #: opkman_const.rscategoriesfrm_lbmessage_caption
-msgid "Please select(check) one or more categories"
+msgid "Please select (check) one or more categories"
 msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_caption
@@ -297,7 +297,7 @@ msgid "Download"
 msgstr ""
 
 #: opkman_const.rsmainfrm_tbdownload_hint
-msgid "Download packages to..."
+msgid "Download packages"
 msgstr ""
 
 #: opkman_const.rsmainfrm_tbhelp_caption
@@ -305,7 +305,7 @@ msgid "Help"
 msgstr ""
 
 #: opkman_const.rsmainfrm_tbhelp_hint
-msgid "Help(http://wiki.freepascal.org/Online_Package_Manager)"
+msgid "Help (http://wiki.freepascal.org/Online_Package_Manager)"
 msgstr ""
 
 #: opkman_const.rsmainfrm_tbinstall_caption
@@ -360,7 +360,7 @@ msgid "Installed"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vstheadercolumn_packagefile
-msgid "Package file(.lpk)"
+msgid "Package file (.lpk)"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vstheadercolumn_packagename
@@ -731,7 +731,7 @@ msgstr ""
 
 #: opkman_const.rspackagelistfrm_bok_caption
 msgctxt "opkman_const.rspackagelistfrm_bok_caption"
-msgid "Ok"
+msgid "OK"
 msgstr ""
 
 #: opkman_const.rspackagelistfrm_byes_caption
@@ -891,8 +891,8 @@ msgctxt "opkman_const.rsprogressfrm_info8"
 msgid "Installing package:"
 msgstr ""
 
-#: opkman_const.rsprogressfrm_lbellapsed_caption
-msgid "Ellapsed:"
+#: opkman_const.rsprogressfrm_lbelapsed_caption
+msgid "Elapsed:"
 msgstr ""
 
 #: opkman_const.rsprogressfrm_lbpackage_caption
@@ -900,11 +900,11 @@ msgid "Package:"
 msgstr ""
 
 #: opkman_const.rsprogressfrm_lbreceivedtotal_caption0
-msgid "Received(total):"
+msgid "Received (total):"
 msgstr ""
 
 #: opkman_const.rsprogressfrm_lbreceivedtotal_caption1
-msgid "Unzipped(total):"
+msgid "Unzipped (total):"
 msgstr ""
 
 #: opkman_const.rsprogressfrm_lbreceived_caption0

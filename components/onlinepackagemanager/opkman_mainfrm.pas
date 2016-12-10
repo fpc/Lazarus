@@ -315,7 +315,7 @@ begin
         SetupMessage;
         mJSON.Text := AJSON;
         cbAll.Checked := False;
-        Caption := rsLazarusPackageManager + '(' + IntToStr(SerializablePackages.Count) + ' ' + rsMainFrm_Caption + ')';
+        Caption := rsLazarusPackageManager + ' (' + IntToStr(SerializablePackages.Count) + ' ' + rsMainFrm_Caption + ')';
       end;
     etConfig:
       begin
