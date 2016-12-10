@@ -566,7 +566,8 @@ begin
       except
         on E: Exception do
         begin
-          if UpperCase(E.Message) <>  UpperCase('Operation aborted') then
+          if (UpperCase(E.Message) <> UpperCase('Operation aborted')) and
+             (UpperCase(E.Message) <> UpperCase('Chunk to big')) then
             AErrMsg := E.Message;
         end;
       end;

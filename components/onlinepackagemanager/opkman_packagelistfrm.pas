@@ -166,6 +166,7 @@ begin
       begin
         Inc(ChkCnt);
         if (Trim(SerializablePackages.Items[I].DownloadURL) = '') or
+           (Trim(SerializablePackages.Items[I].DownloadZipURL) = '') or
            (SerializablePackages.GetPackageInstallState(SerializablePackages.Items[I]) = 0) then
         begin
           Inc(InvCnt);

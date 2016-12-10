@@ -242,7 +242,7 @@ begin
     if Package <> nil then
     begin
       HasUpdate := False;
-      Package.DownloadZipURL := FXML.GetValue(Path + '/DownloadZipURL', '');
+      Package.DownloadZipURL := FXML.GetValue(Path + 'DownloadZipURL', '');
       PackageFileCount := FXML.GetValue(Path + 'Count', 0);
       for J := 0 to PackageFileCount - 1 do
       begin
