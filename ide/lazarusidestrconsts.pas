@@ -5135,10 +5135,10 @@ resourcestring
   lisAnchorLeftToRightSide = 'Anchor left side to right side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling.';
   lisAnchorRightToLeftSide = 'Anchor right side to left side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling.';
   lisAnchorRightToRightSide = 'Anchor right side to right side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored.';
-  lisTopSiblingComboBoxHint = 'This is the sibling control to which the top side is anchored. Leave empty for parent.';
-  lisBottomSiblingComboBoxHint = 'This is the sibling control to which the bottom side is anchored. Leave empty for parent.';
-  lisRightSiblingComboBoxHint = 'This is the sibling control to which the right side is anchored. Leave empty for parent.';
-  lisLeftSiblingComboBoxHint = 'This is the sibling control to which the left side is anchored. Leave empty for parent.';
+  lisTopSiblingComboBoxHint = 'This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter).';
+  lisBottomSiblingComboBoxHint = 'This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter).';
+  lisRightSiblingComboBoxHint = 'This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter).';
+  lisLeftSiblingComboBoxHint = 'This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter).';
   lisBorderSpace = 'Border space';
   lisSibling = 'Sibling';
   lisRightAnchoring = 'Right anchoring';
