@@ -50,7 +50,7 @@ resourcestring
   rsLazarusPackageManager = 'Online Package Manager';
 
   //main form
-  rsMainFrm_Caption = 'packages found';
+  rsPackagesFound = '(%s packages found)';
   rsMainFrm_VSTHeaderColumn_PackageName = 'Packages';
   rsMainFrm_VSTHeaderColumn_PackageFile = 'Package file (.lpk)';
   rsMainFrm_VSTHeaderColumn_Repository = 'Repository';

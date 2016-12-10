@@ -151,10 +151,6 @@ msgstr "Seleccionar directorio del paquete"
 msgid "Online Package Manager"
 msgstr "Administrador de Paquetes en Línea"
 
-#: opkman_const.rsmainfrm_caption
-msgid "packages found"
-msgstr "paquetes encontrados"
-
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
 msgstr "Todos/Ninguno"
@@ -778,6 +774,10 @@ msgstr "Lista de paquetes descargados"
 #: opkman_const.rspackagelistfrm_caption2
 msgid "Update package list"
 msgstr "Actualizar lista de paquetes"
+
+#: opkman_const.rspackagesfound
+msgid "(%s packages found)"
+msgstr ""
 
 #: opkman_const.rsprogressfrm_caption0
 msgid "Downloading packages"

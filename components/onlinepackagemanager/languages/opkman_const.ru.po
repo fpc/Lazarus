@@ -147,10 +147,6 @@ msgstr ""
 msgid "Online Package Manager"
 msgstr "Сетевой диспетчер пакетов"
 
-#: opkman_const.rsmainfrm_caption
-msgid "packages found"
-msgstr ""
-
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
 msgstr ""
@@ -173,7 +169,7 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_lbfilter_caption
 msgid "Filter by:"
-msgstr ""
+msgstr "Фильтрация:"
 
 #: opkman_const.rsmainfrm_micreaterepository
 msgid "Create repository"
@@ -296,96 +292,96 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_tbcleanup_caption
 msgid "Cleanup"
-msgstr ""
+msgstr "Очистить"
 
 #: opkman_const.rsmainfrm_tbcleanup_hint
 msgid "Cleanup local repository"
-msgstr ""
+msgstr "Очистить локальный репозиторий"
 
 #: opkman_const.rsmainfrm_tbdownload_caption
 msgid "Download"
-msgstr ""
+msgstr "Загрузить"
 
 #: opkman_const.rsmainfrm_tbdownload_hint
 msgid "Download packages"
-msgstr ""
+msgstr "Загрузить пакеты"
 
 #: opkman_const.rsmainfrm_tbhelp_caption
 msgid "Help"
-msgstr ""
+msgstr "Справка"
 
 #: opkman_const.rsmainfrm_tbhelp_hint
 msgid "Help (http://wiki.freepascal.org/Online_Package_Manager)"
-msgstr ""
+msgstr "Справка (http://wiki.freepascal.org/Online_Package_Manager)"
 
 #: opkman_const.rsmainfrm_tbinstall_caption
 msgid "Install"
-msgstr ""
+msgstr "Установить"
 
 #: opkman_const.rsmainfrm_tbinstall_hint
 msgid "Install packages"
-msgstr ""
+msgstr "Установить пакеты"
 
 #: opkman_const.rsmainfrm_tboptions_caption
 msgctxt "opkman_const.rsmainfrm_tboptions_caption"
 msgid "Options"
-msgstr ""
+msgstr "Параметры"
 
 #: opkman_const.rsmainfrm_tboptions_hint
 msgid "Show options dialog"
-msgstr ""
+msgstr "Показать диалог параметров"
 
 #: opkman_const.rsmainfrm_tbrefresh_caption
 msgid "Refresh"
-msgstr ""
+msgstr "Синхронизировать"
 
 #: opkman_const.rsmainfrm_tbrefresh_hint
 msgid "Refresh package list"
-msgstr ""
+msgstr "Синхронизировать список пакетов"
 
 #: opkman_const.rsmainfrm_tbrepository_caption
 msgid "Create"
-msgstr ""
+msgstr "Создать"
 
 #: opkman_const.rsmainfrm_tbrepository_hint
 msgid "Create package or repository"
-msgstr ""
+msgstr "Создать пакет или репозиторий"
 
 #: opkman_const.rsmainfrm_tbupdate_caption
 msgctxt "opkman_const.rsmainfrm_tbupdate_caption"
 msgid "Update"
-msgstr ""
+msgstr "Обновить"
 
 #: opkman_const.rsmainfrm_tbupdate_hint
 msgid "Update packages from external URL"
-msgstr ""
+msgstr "Обновить пакеты с внешнего адреса"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_data
 msgid "Status/Data"
-msgstr ""
+msgstr "Состояние/данные"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_installed
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_installed"
 msgid "Installed"
-msgstr ""
+msgstr "Установлен"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_packagefile
 msgid "Package file (.lpk)"
-msgstr ""
+msgstr "Файл пакета (.lpk)"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_packagename
 msgid "Packages"
-msgstr ""
+msgstr "Пакеты"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_repository
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_repository"
 msgid "Repository"
-msgstr ""
+msgstr "Репозиторий"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_update
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_update"
 msgid "Update"
-msgstr ""
+msgstr "Обновление"
 
 #: opkman_const.rsmainfrm_vsttext_author
 msgid "Author"
@@ -401,7 +397,7 @@ msgstr "Зависимости"
 
 #: opkman_const.rsmainfrm_vsttext_desc
 msgid "Description for package"
-msgstr ""
+msgstr "Описание пакета"
 
 #: opkman_const.rsmainfrm_vsttext_description
 msgctxt "opkman_const.rsmainfrm_vsttext_description"
@@ -410,7 +406,7 @@ msgstr "Описание"
 
 #: opkman_const.rsmainfrm_vsttext_downloadurl
 msgid "Update link"
-msgstr ""
+msgstr "Адрес загрузки"
 
 #: opkman_const.rsmainfrm_vsttext_fpccompatibility
 msgid "FPC compatibility"
@@ -418,21 +414,21 @@ msgstr "Совместимость с FPC"
 
 #: opkman_const.rsmainfrm_vsttext_homepageurl
 msgid "Home page"
-msgstr ""
+msgstr "Домашняя страница"
 
 #: opkman_const.rsmainfrm_vsttext_install0
 msgctxt "opkman_const.rsmainfrm_vsttext_install0"
 msgid "No"
-msgstr ""
+msgstr "Нет"
 
 #: opkman_const.rsmainfrm_vsttext_install1
 msgctxt "opkman_const.rsmainfrm_vsttext_install1"
 msgid "Yes"
-msgstr ""
+msgstr "Да"
 
 #: opkman_const.rsmainfrm_vsttext_install2
 msgid "Partially"
-msgstr ""
+msgstr "Частично"
 
 #: opkman_const.rsmainfrm_vsttext_lazcompatibility
 msgid "Lazarus compatibility"
@@ -560,33 +556,33 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packageinfo
 msgid "Package info"
-msgstr ""
+msgstr "Сведения о пакете"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate0
 msgctxt "opkman_const.rsmainfrm_vsttext_packagestate0"
 msgid "Repository"
-msgstr ""
+msgstr "В репозитории"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate1
 msgid "Downloaded"
-msgstr ""
+msgstr "Загружен"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate2
 msgid "Extracted"
-msgstr ""
+msgstr "Распакован"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate3
 msgctxt "opkman_const.rsmainfrm_vsttext_packagestate3"
 msgid "Installed"
-msgstr ""
+msgstr "Установлен"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate4
 msgid "Up to date"
-msgstr ""
+msgstr "Обновлений нет"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate5
 msgid "New updates available"
-msgstr ""
+msgstr "Доступно обновление"
 
 #: opkman_const.rsmainfrm_vsttext_packagestatus
 msgid "Package status"
@@ -614,19 +610,19 @@ msgstr "Только времени исполнения, не может быт
 
 #: opkman_const.rsmainfrm_vsttext_repositoryfiledate
 msgid "Available since"
-msgstr ""
+msgstr "Дата появления"
 
 #: opkman_const.rsmainfrm_vsttext_repositoryfilehash
 msgid "Repository filehash"
-msgstr ""
+msgstr "Хэш файла в репозитории"
 
 #: opkman_const.rsmainfrm_vsttext_repositoryfilename
 msgid "Repository filename"
-msgstr ""
+msgstr "Имя файла в репозитории"
 
 #: opkman_const.rsmainfrm_vsttext_repositoryfilesize
 msgid "Repository filesize"
-msgstr ""
+msgstr "Размер файла в репозитории"
 
 #: opkman_const.rsmainfrm_vsttext_supportedwidgetsets
 msgid "Supported widget sets"
@@ -676,7 +672,7 @@ msgstr ""
 #: opkman_const.rsoptions_frmcaption
 msgctxt "opkman_const.rsoptions_frmcaption"
 msgid "Options"
-msgstr ""
+msgstr "Параметры"
 
 #: opkman_const.rsoptions_gbproxysettings_caption
 msgid "Proxy settings"
@@ -737,7 +733,7 @@ msgstr ""
 #: opkman_const.rspackagelistfrm_bno_caption
 msgctxt "opkman_const.rspackagelistfrm_bno_caption"
 msgid "No"
-msgstr ""
+msgstr "Нет"
 
 #: opkman_const.rspackagelistfrm_bok_caption
 msgctxt "opkman_const.rspackagelistfrm_bok_caption"
@@ -747,7 +743,7 @@ msgstr "ОК"
 #: opkman_const.rspackagelistfrm_byes_caption
 msgctxt "opkman_const.rspackagelistfrm_byes_caption"
 msgid "Yes"
-msgstr ""
+msgstr "Да"
 
 #: opkman_const.rspackagelistfrm_caption0
 msgid "Installed package list"
@@ -760,6 +756,10 @@ msgstr ""
 #: opkman_const.rspackagelistfrm_caption2
 msgid "Update package list"
 msgstr ""
+
+#: opkman_const.rspackagesfound
+msgid "(%s packages found)"
+msgstr "(найдено пакетов: %s)"
 
 #: opkman_const.rsprogressfrm_caption0
 msgid "Downloading packages"

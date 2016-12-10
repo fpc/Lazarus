@@ -151,10 +151,6 @@ msgstr ""
 msgid "Online Package Manager"
 msgstr "Hálózati Csomagkezelő"
 
-#: opkman_const.rsmainfrm_caption
-msgid "packages found"
-msgstr "csomag található"
-
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
 msgstr "Mind/Semmi"
@@ -774,6 +770,10 @@ msgstr "Letöltött csomagok listája"
 #: opkman_const.rspackagelistfrm_caption2
 msgid "Update package list"
 msgstr "Csomaglista frissítése"
+
+#: opkman_const.rspackagesfound
+msgid "(%s packages found)"
+msgstr ""
 
 #: opkman_const.rsprogressfrm_caption0
 msgid "Downloading packages"

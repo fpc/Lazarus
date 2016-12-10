@@ -137,10 +137,6 @@ msgstr ""
 msgid "Online Package Manager"
 msgstr ""
 
-#: opkman_const.rsmainfrm_caption
-msgid "packages found"
-msgstr ""
-
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
 msgstr ""
@@ -749,6 +745,10 @@ msgstr ""
 
 #: opkman_const.rspackagelistfrm_caption2
 msgid "Update package list"
+msgstr ""
+
+#: opkman_const.rspackagesfound
+msgid "(%s packages found)"
 msgstr ""
 
 #: opkman_const.rsprogressfrm_caption0
