@@ -44,7 +44,7 @@ begin
     R := UTF8ToUTF16(SUTF8);
 
     AssertEquals('UTF8ToUTF16 of unicode char: ' + IntToHex(U, 6) + ' error! ' + DbgWideStr(SUTF16) + ' ' + DbgWideStr(R),
-      UTF8Encode(SUTF16), UTF8Encode(R));
+      DbgStr(UTF8Encode(SUTF16)), DbgStr(UTF8Encode(R)));
   end;
   
   for I1 := 0 to High(Limits) do // test two char string with limit char values
@@ -81,7 +81,7 @@ begin
     R := UTF16ToUTF8(SUTF16);
 
     AssertEquals('UTF16ToUTF8 of unicode char: ' + IntToHex(U, 6) + ' error! "' + DbgStr(PChar(SUTF16),length(SUTF16)*2) + '" "' + DbgStr(R)+'"',
-      SUTF8, R);
+      DbgStr(SUTF8), DbgStr(R));
   end;
   
   for I1 := 0 to High(Limits) do
