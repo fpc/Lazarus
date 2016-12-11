@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-12-06 01:32+0300\n"
+"PO-Revision-Date: 2016-12-12 01:43+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Language: ru\n"
@@ -364,7 +364,7 @@ msgstr "Элемент управления класса '%s' не может и
 
 #: lclstrconsts.rscontrolhasnoparentformorframe
 msgid "Control '%s' has no parent form or frame"
-msgstr ""
+msgstr "Элемент управления '%s' не имеет родительской формы или фрейма"
 
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
@@ -1335,7 +1335,7 @@ msgstr "Невозможно перевести фокус в отключённ
 
 #: lclstrconsts.scannotsetdesigntimeppi
 msgid "Cannot set design time PPI."
-msgstr ""
+msgstr "Невозможно установить PPI времени разработки."
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
