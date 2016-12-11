@@ -30,19 +30,16 @@ msgid "Please select (check) one or more categories"
 msgstr "Выберите (отметьте) одну либо несколько категорий"
 
 #: opkman_const.rscreatejsonforupdatesfrm_bclose_caption
-#, fuzzy
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_bclose_caption"
 msgid "Cancel"
 msgstr "Отмена"
 
 #: opkman_const.rscreatejsonforupdatesfrm_bcreate_caption
-#, fuzzy
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_bcreate_caption"
 msgid "Create"
 msgstr "Создать"
 
 #: opkman_const.rscreatejsonforupdatesfrm_bhelp_caption
-#, fuzzy
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_bhelp_caption"
 msgid "Help"
 msgstr "Справка"
@@ -60,7 +57,6 @@ msgid "PackageFileName"
 msgstr ""
 
 #: opkman_const.rscreatejsonforupdatesfrm_column1_text
-#, fuzzy
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_column1_text"
 msgid "Version"
 msgstr "Версия"
