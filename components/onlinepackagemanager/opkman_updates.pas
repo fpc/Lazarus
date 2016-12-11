@@ -83,7 +83,6 @@ type
     procedure DoOnUpdate;
     procedure Load;
     procedure Save;
-    procedure SetPaused(const AValue: Boolean);
     procedure AssignPackageData(APackage: TPackage);
     procedure ResetPackageData(APackage: TPackage);
     procedure CheckForOpenSSL;
@@ -282,7 +281,8 @@ var
   Package: TPackage;
   PackageFile: TPackageFile;
 begin
-  FNeedToBreak := True;
+  if SerializablePackages.Count = 0 then
+    Exit;
   FXML.Clear;
   FXML.SetDeleteValue('Version/Value', OpkVersion, 0);
   FXML.SetDeleteValue('Count/Value', SerializablePackages.Count, 0);
@@ -306,16 +306,6 @@ begin
     end;
   end;
   FXML.Flush;
-end;
-
-procedure TUpdates.SetPaused(const AValue: Boolean);
-begin
-  if FPaused <> AValue then
-  begin
-    FPaused := AValue;
-    if FPaused then
-      Save;
-  end;
 end;
 
 procedure TUpdates.AssignPackageData(APackage: TPackage);
