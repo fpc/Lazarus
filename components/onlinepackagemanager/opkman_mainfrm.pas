@@ -151,6 +151,8 @@ begin
   PackageDownloader.OnJSONDownloadCompleted := @DoOnJSONDownloadCompleted;
   Updates := TUpdates.Create(LocalRepositoryUpdatesFile);
   Updates.OnUpdate := @DoOnUpdate;
+  Updates.StartUpdate;
+  Updates.PauseUpdate;
   InstallPackageList := TObjectList.Create(True);
   FHintTimeOut := Application.HintHidePause;
   Application.HintHidePause := 1000000;

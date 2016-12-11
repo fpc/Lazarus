@@ -96,7 +96,6 @@ type
     procedure StopUpdate;
     procedure PauseUpdate;
   published
-    property IsPaused: Boolean read FPaused;
     property OnUpdate: TNotifyEvent read FOnUpdate write FOnUpdate;
   end;
 
@@ -497,11 +496,11 @@ end;
 
 procedure TUpdates.StartUpdate;
 begin
-  FOpenSSLAvaialable := False;
   Load;
   FPaused := False;
   if FStarted then
     Exit;
+  FOpenSSLAvaialable := False;
   FStarted := True;
   FTimer := TThreadTimer.Create;
   FTimer.Interval := UpdateInterval;
