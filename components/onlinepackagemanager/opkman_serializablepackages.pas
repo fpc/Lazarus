@@ -198,6 +198,7 @@ type
     FDownloadURL: String;
     FDownloadZipURL: String;
     FHasUpdate: Boolean;
+    FDisableInOPM: Boolean;
     FSVNURL: String;
     FUpdateSize: Int64;
     FIsDirZipped: Boolean;
@@ -218,6 +219,7 @@ type
     property IsDirZipped: Boolean read FIsDirZipped write FIsDirZipped;
     property DownloadZipURL: String read FDownloadZipURL write FDownloadZipURL;
     property HasUpdate: Boolean read FHasUpdate write FHasUpdate;
+    property DisableInOPM: Boolean read FDisableInOPM write FDisableInOPM;
   published
     property Name: String read FName write FName;
     property DisplayName: String read FDisplayName write FDisplayName;

@@ -63,6 +63,7 @@ type
     DownloadURL: String;
     DownloadZipURL: String;
     HasUpdate: Boolean;
+    DisableInOPM: Boolean;
     IsUpdated: Boolean;
     SVNURL: String;
     InstallState: Integer;
@@ -298,6 +299,8 @@ begin
        Data^.PackageState := SerializablePackages.Items[I].PackageState;
        Data^.InstallState := SerializablePackages.GetPackageInstallState(SerializablePackages.Items[I]);
        Data^.HasUpdate := SerializablePackages.Items[I].HasUpdate;
+       Data^.DisableInOPM := SerializablePackages.Items[I].DisableInOPM;
+       FVST.IsDisabled[Node] := Data^.DisableInOPM;
        Data^.DataType := 1;
        for J := 0 to SerializablePackages.Items[I].PackageFiles.Count - 1 do
        begin
@@ -305,6 +308,7 @@ begin
          PackageFile := TPackageFile(SerializablePackages.Items[I].PackageFiles.Items[J]);
          ChildNode := FVST.AddChild(Node);
          ChildNode^.CheckType := ctTriStateCheckBox;
+         FVST.IsDisabled[ChildNode] := FVST.IsDisabled[ChildNode^.Parent];
          ChildData := FVST.GetNodeData(ChildNode);
          ChildData^.PackageFileName := PackageFile.Name;
          ChildData^.InstalledVersion := PackageFile.InstalledFileVersion;
@@ -315,91 +319,110 @@ begin
          ChildData^.DataType := 2;
          //add description(DataType = 3)
          GrandChildNode := FVST.AddChild(ChildNode);
+         FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
          GrandChildData^.Description := PackageFile.Description;
          GrandChildData^.DataType := 3;
          Inc(UniqueID);
          CreateButton(UniqueID, GrandChildData);
+         GrandChildData^.Button.Enabled := not FVST.IsDisabled[GrandChildNode];
          //add author(DataType = 4)
          GrandChildNode := FVST.AddChild(ChildNode);
+         FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
          GrandChildData^.Author := PackageFile.Author;
          GrandChildData^.DataType := 4;
          //add lazcompatibility(DataType = 5)
          GrandChildNode := FVST.AddChild(ChildNode);
+         FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
          GrandChildData^.LazCompatibility := PackageFile.LazCompatibility;
          GrandChildData^.DataType := 5;
          //add fpccompatibility(DataType = 6)
          GrandChildNode := FVST.AddChild(ChildNode);
+         FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
          GrandChildData^.FPCCompatibility := PackageFile.FPCCompatibility;
          GrandChildData^.DataType := 6;
          //add widgetset(DataType = 7)
          GrandChildNode := FVST.AddChild(ChildNode);
+         FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
          GrandChildData^.SupportedWidgetSet := PackageFile.SupportedWidgetSet;
          GrandChildData^.DataType := 7;
          //add packagetype(DataType = 8)
          GrandChildNode := FVST.AddChild(ChildNode);
+         FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
          GrandChildData^.PackageType := PackageFile.PackageType;
          GrandChildData^.DataType := 8;
          //add license(DataType = 9)
          GrandChildNode := FVST.AddChild(ChildNode);
+         FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
          GrandChildData^.License := PackageFile.License;
          GrandChildData^.DataType := 9;
          Inc(UniqueID);
          CreateButton(UniqueID, GrandChildData);
+         GrandChildData^.Button.Enabled := not FVST.IsDisabled[GrandChildNode];
          //add dependencies(DataType = 10)
          GrandChildNode := FVST.AddChild(ChildNode);
+         FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
          GrandChildData^.Dependencies := PackageFile.DependenciesAsString;
          GrandChildData^.DataType := 10;
        end;
        //add miscellaneous(DataType = 11)
        ChildNode := FVST.AddChild(Node);
+       FVST.IsDisabled[ChildNode] := FVST.IsDisabled[ChildNode^.Parent];
        ChildData := FVST.GetNodeData(ChildNode);
        ChildData^.DataType := 11;
        //add category(DataType = 12)
        GrandChildNode := FVST.AddChild(ChildNode);
+       FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
        GrandChildData := FVST.GetNodeData(GrandChildNode);
        GrandChildData^.Category := SerializablePackages.Items[I].Category;
        GrandChildData^.DataType := 12;
        //add Repository Filename(DataType = 13)
        GrandChildNode := FVST.AddChild(ChildNode);
+       FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
        GrandChildData := FVST.GetNodeData(GrandChildNode);
        GrandChildData^.RepositoryFileName := SerializablePackages.Items[I].RepositoryFileName;
        GrandChildData^.DataType := 13;
        //add Repository Filesize(DataType = 14)
        GrandChildNode := FVST.AddChild(ChildNode);
+       FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
        GrandChildData := FVST.GetNodeData(GrandChildNode);
        GrandChildData^.RepositoryFileSize := SerializablePackages.Items[I].RepositoryFileSize;
        GrandChildData^.DataType := 14;
        //add Repository Hash(DataType = 15)
        GrandChildNode := FVST.AddChild(ChildNode);
+       FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
        GrandChildData := FVST.GetNodeData(GrandChildNode);
        GrandChildData^.RepositoryFileHash := SerializablePackages.Items[I].RepositoryFileHash;
        GrandChildData^.DataType := 15;
        //add Repository Date(DataType = 16)
        GrandChildNode := FVST.AddChild(ChildNode);
+       FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
        GrandChildData := FVST.GetNodeData(GrandChildNode);
        GrandChildData^.RepositoryDate := SerializablePackages.Items[I].RepositoryDate;
        GrandChildData^.DataType := 16;
        FVST.Expanded[ChildNode] := True;
        //add HomePageURL(DataType = 17)
        GrandChildNode := FVST.AddChild(ChildNode);
+       FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
        GrandChildData := FVST.GetNodeData(GrandChildNode);
        GrandChildData^.HomePageURL := SerializablePackages.Items[I].HomePageURL;
        GrandChildData^.DataType := 17;
        //add DownloadURL(DataType = 18)
        GrandChildNode := FVST.AddChild(ChildNode);
+       FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
        GrandChildData := FVST.GetNodeData(GrandChildNode);
        GrandChildData^.DownloadURL := SerializablePackages.Items[I].DownloadURL;
        GrandChildData^.DataType := 18;
        //add SVNURL(DataType = 19)
        GrandChildNode := FVST.AddChild(ChildNode);
+       FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
        GrandChildData := FVST.GetNodeData(GrandChildNode);
        GrandChildData^.SVNURL := SerializablePackages.Items[I].SVNURL;
        GrandChildData^.DataType := 19;
@@ -601,6 +624,7 @@ begin
         9: Text := Data^.License;
       end;
       Data^.Button.Visible := ((R.Bottom > FVST.Top) and (R.Bottom < FVST.Top + FVST.Height)) and (Trim(Text) <> '');
+      Data^.Button.Enabled := not FVST.IsDisabled[Node];
     end;
   end;
 end;
@@ -990,6 +1014,8 @@ begin
       begin
         Data^.DownloadZipURL := Package.DownloadZipURL;
         Data^.HasUpdate := Package.HasUpdate;
+        Data^.DisableInOPM := Package.DisableInOPM;
+        FVST.IsDisabled[Node] := Data^.DisableInOPM;
         FVST.ReinitNode(Node, False);
         FVST.RepaintNode(Node);
       end;
@@ -1001,9 +1027,19 @@ begin
       begin
         Data^.UpdateVersion := PackageFile.UpdateVersion;
         Data^.HasUpdate := PackageFile.HasUpdate;
+        FVST.IsDisabled[Node] := FVST.IsDisabled[Node^.Parent];
         FVST.ReinitNode(Node, False);
         FVST.RepaintNode(Node);
       end;
+    end;
+    if Data^.DataType in [3..19] then
+    begin
+      FVST.IsDisabled[Node] := FVST.IsDisabled[Node^.Parent];
+      FVST.ReinitNode(Node, False);
+      FVST.RepaintNode(Node);
+      if (Data^.DataType = 3) or (Data^.DataType = 9) then
+        if Assigned(Data^.Button) then
+          Data^.Button.Enabled := not FVST.IsDisabled[Node];
     end;
     Node := FVST.GetNext(Node);
   end;

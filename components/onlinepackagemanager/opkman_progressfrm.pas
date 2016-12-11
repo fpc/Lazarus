@@ -266,7 +266,6 @@ end;
 
 procedure TProgressFrm.DoOnPackageDownloadCompleted(Sender: TObject);
 begin
-  bCancel.Enabled := False;
   FCanClose := True;
   FSuccess := True;
   Close;
@@ -328,7 +327,6 @@ end;
 
 procedure TProgressFrm.DoOnZipCompleted(Sender: TObject);
 begin
-  bCancel.Enabled := False;
   FCanClose := True;
   FSuccess := True;
   Close;
@@ -432,7 +430,6 @@ end;
 
 procedure TProgressFrm.DoOnPackageInstallCompleted(Sender: TObject; ANeedToRebuild: Boolean; AInstallStatus: TInstallStatus);
 begin
-  bCancel.Enabled := False;
   FCanClose := True;
   FSuccess := True;
   FNeedToRebuild := ANeedToRebuild;
@@ -470,7 +467,6 @@ var
   Data: PData;
   Node: PVirtualNode;
 begin
-  bCancel.Enabled := False;
   if AUSuccess then
   begin
     Node := FVST.AddChild(nil);

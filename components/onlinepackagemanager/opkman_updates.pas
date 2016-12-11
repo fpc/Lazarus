@@ -34,6 +34,7 @@ type
   TUpdatePackageData = class(TPersistent)
   private
     FDownloadZipURL: String;
+    FDisableInOPM: Boolean;
     FName: String;
   public
     constructor Create;
@@ -42,6 +43,7 @@ type
   published
     property Name: String read FName write FName;
     property DownloadZipURL: String read FDownloadZipURL write FDownloadZipURL;
+    property DisableInOPM: Boolean read FDisableInOPM write FDisableInOPM;
   end;
 
   {TUpdatePackage}
@@ -187,6 +189,7 @@ procedure TUpdatePackageData.Clear;
 begin
   FName := '';
   FDownloadZipURL := '';
+  FDisableInOPM := False;
 end;
 
 { TUpdates }
@@ -245,6 +248,7 @@ begin
     begin
       HasUpdate := False;
       Package.DownloadZipURL := FXML.GetValue(Path + 'DownloadZipURL', '');
+      Package.DisableInOPM := FXML.GetValue(Path + 'DisableInOPM', False);
       PackageFileCount := FXML.GetValue(Path + 'Count', 0);
       for J := 0 to PackageFileCount - 1 do
       begin
@@ -289,6 +293,7 @@ begin
     Path := 'Package' + IntToStr(I) + '/';
     FXML.SetDeleteValue(Path + 'Name', Package.Name, '');
     FXML.SetDeleteValue(Path + 'DownloadZipURL', Package.DownloadZipURL, '');
+    FXML.SetDeleteValue(Path + 'DisableInOPM', Package.DisableInOPM, False);
     FXML.SetDeleteValue(Path + 'Count', SerializablePackages.Items[I].PackageFiles.Count, 0);
     for J := 0 to SerializablePackages.Items[I].PackageFiles.Count - 1 do
     begin
@@ -322,6 +327,7 @@ var
 begin
   HasUpdate := False;
   APackage.DownloadZipURL := FUpdatePackage.FUpdatePackageData.DownloadZipURL;
+  APackage.DisableInOPM := FUpdatePackage.FUpdatePackageData.DisableInOPM;
   for I := 0 to FUpdatePackage.FUpdatePackageFiles.Count - 1 do
   begin
     PackageFile := APackage.FindPackageFile(TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[I]).Name);
@@ -348,6 +354,7 @@ var
   PackageFile: TPackageFile;
 begin
   APackage.DownloadZipURL := '';
+  APackage.DisableInOPM := False;
   APackage.HasUpdate := False;
   for I := 0 to APackage.PackageFiles.Count - 1 do
   begin
