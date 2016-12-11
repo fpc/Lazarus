@@ -846,12 +846,11 @@ begin
   else
   if (Flags and MB_OKCANCEL) = MB_OKCANCEL then
     Buttons := [mbOK,mbCancel]
+  //else
+  //if (Flags and MB_OK) = MB_OK then  <-- MB_OK = 0, the test would always be true.
+  //  Buttons := [mbOK]
   else
-  if (Flags and MB_OK) = MB_OK then
-    Buttons := [mbOK]
-  else
-    {%H-}Buttons := [mbOK];
-
+    Buttons := [mbOK];
 
   if (Flags and MB_ICONINFORMATION) = MB_ICONINFORMATION then
     DlgTYpe := mtInformation
