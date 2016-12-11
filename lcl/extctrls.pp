@@ -1025,12 +1025,15 @@ type
 
   TCustomPanel = class(TCustomControl)
   private
+    FBevelColor : TColor;
     FBevelInner, FBevelOuter : TPanelBevel;
     FBevelWidth : TBevelWidth;
     FAlignment : TAlignment;
     FFullRepaint: Boolean;
     FWordWrap: Boolean;
+    procedure PaintBevel(var ARect: TRect; ABevel: TPanelBevel);
     procedure SetAlignment(const Value : TAlignment);
+    procedure SetBevelColor(AValue: TColor);
     procedure SetBevelInner(const Value: TPanelBevel);
     procedure SetBevelOuter(const Value: TPanelBevel);
     procedure SetBevelWidth(const Value: TBevelWidth);
@@ -1050,6 +1053,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     property Align default alNone;
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
+    property BevelColor: TColor read FBevelColor write SetBevelColor default clDefault;
     property BevelInner: TPanelBevel read FBevelInner write SetBevelInner default bvNone;
     property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter default bvRaised;
     property BevelWidth: TBevelWidth read FBevelWidth write SetBevelWidth default 1;
@@ -1069,6 +1073,7 @@ type
     property Anchors;
     property AutoSize;
     property BorderSpacing;
+    property BevelColor;
     property BevelInner;
     property BevelOuter;
     property BevelWidth;

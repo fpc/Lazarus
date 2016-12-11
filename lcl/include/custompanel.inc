@@ -29,6 +29,7 @@ begin
     csClickEvents, csSetCaption, csDoubleClicks, csReplicatable,
     csNoFocus, csAutoSize0x0]
     - [csOpaque]; // we need the default background
+  FBevelColor := clDefault;
   FBevelOuter := bvRaised;
   FBevelInner := bvNone;
   FBevelWidth := 1;
@@ -53,6 +54,15 @@ begin
   end;
 end;
 
+procedure TCustomPanel.SetBevelColor(AValue: TColor);
+begin
+  if FBevelColor <> AValue then
+  begin
+    FBevelColor := AValue;
+    Invalidate;
+  end;
+end;
+
 procedure TCustomPanel.SetBevelWidth(const Value: TBevelWidth);
 begin
   if FBevelWidth <> Value then
@@ -62,7 +72,7 @@ begin
   end;
 end;
 
-procedure TCustomPanel.SetWordWrap(const Value: boolean);
+procedure TCustomPanel.SetWordwrap(const Value: Boolean);
 begin
   if FWordwrap <> Value then
   begin
@@ -95,6 +105,16 @@ begin
   end;
 end;
 
+procedure TCustomPanel.PaintBevel(var ARect: TRect; ABevel: TPanelBevel);
+begin
+  if ABevel <> bvNone then
+    if BevelColor = clDefault then
+      Canvas.Frame3d(ARect, BevelWidth, ABevel)
+    else
+      Canvas.Frame3d(ARect, BevelColor, BevelColor, BevelWidth);
+  // Note: Frame3D inflates ARect
+end;
+
 procedure TCustomPanel.Paint;
 var
   ARect: TRect;
@@ -102,15 +122,9 @@ var
 begin
   ARect := GetClientRect;
 
-  // if BevelOuter is set then draw a frame with BevelWidth
-  if (BevelOuter <> bvNone) then
-    Canvas.Frame3d(ARect, BevelWidth, BevelOuter); // Note: Frame3D inflates ARect
-
+  PaintBevel(ARect, BevelOuter);
   InflateRect(ARect, -BorderWidth, -BorderWidth);
-
-  // if BevelInner is set then skip the BorderWidth and draw a frame with BevelWidth
-  if (BevelInner <> bvNone) then
-    Canvas.Frame3d(ARect, BevelWidth, BevelInner); // Note: Frame3D inflates ARect
+  PaintBevel(ARect, BevelInner);
 
   if Caption <> '' then
   begin
