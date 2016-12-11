@@ -809,6 +809,7 @@ begin
     Exit;
 
   LPageCtrl.PageIndex := 1;
+  LPageCtrl.OnChange(LPageCtrl);
 end;
 
 procedure TDTXTabMaster.ShowForm(AForm: TCustomForm);
