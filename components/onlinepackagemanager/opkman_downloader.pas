@@ -397,6 +397,8 @@ begin
         UpdateSize := GetUpdateSize(SerializablePackages.Items[I].DownloadZipURL, FUErrMsg);
         if UpdateSize > -1 then
         begin
+          if UpdateSize = 0 then
+            UpdateSize := SerializablePackages.Items[I].RepositoryFileSize;
           FUTyp := 1;
           Synchronize(@DoOnPackageUpdateProgress);
           Inc(UpdCnt);
@@ -443,18 +445,19 @@ begin
             DS.FOnWriteStream := @DoOnWriteStream;
             try
               FHTTPClient.AllowRedirect := True;
-              FHTTPClient.HTTPMethod('GET', FFrom, DS, [200]);
-              SerializablePackages.Items[I].ChangePackageStates(ctAdd, psDownloaded);
+              FHTTPClient.HTTPMethod('GET', FFrom, DS, []);
             except
-              on E: Exception do
-              begin
-                FErrMsg := E.Message;
-                FErrTyp := etHTTPClient;
-                SerializablePackages.Items[I].ChangePackageStates(ctRemove, psDownloaded);
-                SerializablePackages.Items[I].ChangePackageStates(ctAdd, psError);
-                Synchronize(@DoOnPackageDownloadError);
-              end;
             end;
+            if FHTTPClient.ResponseStatusCode <> 200 then
+            begin
+              FErrMsg := IntToStr(FHTTPClient.ResponseStatusCode);
+              FErrTyp := etHTTPClient;
+              SerializablePackages.Items[I].ChangePackageStates(ctRemove, psDownloaded);
+              SerializablePackages.Items[I].ChangePackageStates(ctAdd, psError);
+              Synchronize(@DoOnPackageDownloadError);
+            end
+            else
+              SerializablePackages.Items[I].ChangePackageStates(ctAdd, psDownloaded);
           finally
             DS.Free
           end;
@@ -564,15 +567,11 @@ begin
       try
         HttpClient.HTTPMethod('GET', URL, SS, []);
       except
-        on E: Exception do
-        begin
-          if (UpperCase(E.Message) <> UpperCase('Operation aborted')) and
-             (UpperCase(E.Message) <> UpperCase('Chunk to big')) then
-            AErrMsg := E.Message;
-        end;
       end;
-      if AErrMsg = '' then
-        Result := StrToIntDef(HttpClient.ResponseHeaders.Values['CONTENT-LENGTH'], 0);
+      if HttpClient.ResponseStatusCode = 200 then
+        Result := StrToIntDef(HttpClient.ResponseHeaders.Values['CONTENT-LENGTH'], 0)
+      else
+        AErrMsg := 'Error code: ' + IntToStr(HttpClient.ResponseStatusCode);
     finally
       HttpClient.Free;
     end;

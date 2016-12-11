@@ -73,6 +73,7 @@ type
     FNeedToBreak: Boolean;
     FNeedToUpdate: Boolean;
     FBusyUpdating: Boolean;
+    FOpenSSLAvaialable: Boolean;
     FOnUpdate: TNotifyEvent;
     FPaused: Boolean;
     function GetUpdateInfo(const AURL: String; var AJSON: TJSONStringType): Boolean;
@@ -83,6 +84,7 @@ type
     procedure SetPaused(const AValue: Boolean);
     procedure AssignPackageData(APackage: TPackage);
     procedure ResetPackageData(APackage: TPackage);
+    procedure CheckForOpenSSL;
   protected
     procedure Execute; override;
   public
@@ -101,7 +103,7 @@ var
 
 implementation
 
-uses opkman_options, opkman_common;
+uses opkman_options, opkman_common, opkman_const, opkman_zip;
 
 { TUpdatePackage }
 
@@ -361,6 +363,42 @@ begin
   end;
 end;
 
+procedure TUpdates.CheckForOpenSSL;
+var
+  ZipFile: String;
+  UnZipper: TUnZipper;
+begin
+  {$IFDEF MSWINDOWS}
+   FOpenSSLAvaialable := FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'libeay32.dll') and
+                         FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'ssleay32.dll');
+   if not FOpenSSLAvaialable then
+   begin
+     ZipFile := ExtractFilePath(ParamStr(0)) + ExtractFileName(OpenSSLURL);
+     try
+       FHTTPClient.Get(OpenSSLURL, ZipFile);
+     except
+     end;
+     if FileExistsUTF8(ZipFile) then
+     begin
+       UnZipper := TUnZipper.Create;
+       try
+         try
+           UnZipper.FileName := ZipFile;
+           UnZipper.Examine;
+           UnZipper.UnZipAllFiles;
+         except
+         end;
+       finally
+         UnZipper.Free;
+       end;
+       DeleteFileUTF8(ZipFile);
+       FOpenSSLAvaialable := FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'libeay32.dll') and
+                             FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'ssleay32.dll');
+     end;
+  end;
+  {$ENDIF}
+end;
+
 procedure TUpdates.DoOnTimer(Sender: TObject);
 begin
   if (FTimer.Enabled) and (not FNeedToBreak) then
@@ -383,12 +421,15 @@ begin
     try
       FHTTPClient.AllowRedirect := True;
       FHTTPClient.HTTPMethod('GET', URL, MS, []);
-      if Ms.Size > 0 then
+      if FHTTPClient.ResponseStatusCode = 200 then
       begin
-        MS.Position := 0;
-        SetLength(AJSON, MS.Size);
-        MS.Read(Pointer(AJSON)^, Length(AJSON));
-        Result := Length(AJSON) > 0;
+        if Ms.Size > 0 then
+        begin
+          MS.Position := 0;
+          SetLength(AJSON, MS.Size);
+          MS.Read(Pointer(AJSON)^, Length(AJSON));
+          Result := Length(AJSON) > 0;
+        end;
       end;
     except
       Result := False;
@@ -410,9 +451,10 @@ var
   JSON: TJSONStringType;
 begin
   Load;
+  CheckForOpenSSL;
   while not Terminated do
   begin
-    if (FNeedToUpdate) and (not FBusyUpdating) and (not FPaused) then
+    if (FNeedToUpdate) and (not FBusyUpdating) and (not FPaused) and (FOpenSSLAvaialable) then
     begin
       FBusyUpdating := True;
       try
@@ -448,6 +490,7 @@ end;
 
 procedure TUpdates.StartUpdate;
 begin
+  FOpenSSLAvaialable := False;
   Load;
   FPaused := False;
   if FStarted then
@@ -467,7 +510,6 @@ begin
   FTimer.StopTimer;
   FStarted := False;
   FHTTPClient.NeedToBreak := True;
-
 end;
 
 procedure TUpdates.PauseUpdate;
