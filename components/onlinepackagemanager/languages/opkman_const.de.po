@@ -208,10 +208,6 @@ msgstr "Package-Verzeichnis wählen"
 msgid "Online Package Manager"
 msgstr "Online-Package-Manager"
 
-#: opkman_const.rsmainfrm_caption
-msgid "packages found"
-msgstr "Packages gefunden"
-
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
 msgstr "Alle/Keine"
@@ -833,6 +829,10 @@ msgstr "Heruntergeladene-Packages-Liste"
 msgid "Update package list"
 msgstr "Aktualisierte-Packages-Liste"
 
+#: opkman_const.rspackagesfound
+msgid "(%s packages found)"
+msgstr ""
+
 #: opkman_const.rsprogressfrm_caption0
 msgid "Downloading packages"
 msgstr "Lade Packages herunter"
@@ -1008,3 +1008,4 @@ msgstr "Kalkuliere. Bitte warten..."
 #: opkman_const.rsprogressfrm_lbspeed_caption
 msgid "Speed:"
 msgstr "Geschwindigkeit:"
+
