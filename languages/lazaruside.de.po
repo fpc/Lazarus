@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-12-03 18:58+0100\n"
+"PO-Revision-Date: 2016-12-10 17:06+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -3069,7 +3069,7 @@ msgstr "Sitzung"
 
 #: lazarusidestrconsts.dlgpotextfields
 msgid "Text fields"
-msgstr ""
+msgstr "Textfelder"
 
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
@@ -5550,7 +5550,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
 msgid "Check the next token in source and add a semicolon if needed."
-msgstr ""
+msgstr "Prüft das nächste Zeichen im Quelltext und ergänzt ein Semikolon falls notwendig."
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
@@ -5558,7 +5558,7 @@ msgstr "%s Überprüfen Sie das Ziel (OS, CPU, LCL Widgettyp). Vielleicht müsse
 
 #: lazarusidestrconsts.lischeckuncheckall
 msgid "Check/uncheck all"
-msgstr ""
+msgstr "Alle auswählen/abwählen"
 
 #: lazarusidestrconsts.lischooseadifferentname
 msgid "Choose a different name"
@@ -9228,7 +9228,7 @@ msgstr "Datei %s hat eine fehlerhafte Syntax."
 
 #: lazarusidestrconsts.lisfileshasregisterprocedureinpackageusessection
 msgid "Files: %s, has Register procedure: %s, in package uses section: %s"
-msgstr ""
+msgstr "Dateien: %s, besitzt Register Prozedur: %s, im Package-uses-Abschnitt: %s"
 
 #: lazarusidestrconsts.lisfileshaverightencoding
 msgid "*** All found files already have the right encoding ***"
@@ -13549,7 +13549,7 @@ msgstr "Neuer Makroname"
 
 #: lazarusidestrconsts.lisnewmethodimplementationsareinsertedbetweenexisting
 msgid "New method implementations are inserted between existing methods of this class. Either alphabetically, or as last, or in declaration order."
-msgstr ""
+msgstr "Neue Methodenimplementierungen werden zwischen bestehenden Methoden dieser Klasse eingefügt - entweder alphabetisch, an letzter Stelle oder in der Anmeldungsreihenfolge."
 
 #: lazarusidestrconsts.lisnewmethodsandmembersareinsertedalphabeticallyoradd
 msgid "New method and member declarations in the class..end sections are inserted alphabetically or added last."
@@ -16659,7 +16659,7 @@ msgstr "Kurz, kein Pfad"
 
 #: lazarusidestrconsts.lisshouldthecomponentbeautocreatedwhentheapplications
 msgid "Should the component \"%s\" be auto created when the application starts?"
-msgstr ""
+msgstr "Soll die Komponente \"%s\" automatisch erzeugt werden wenn die Anwendung startet?"
 
 #: lazarusidestrconsts.lisshow
 msgid "Show"
@@ -21002,4 +21002,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-

@@ -17,8 +17,6 @@ msgid "Cancel"
 msgstr "Abbrechen"
 
 #: opkman_const.rscategoriesfrm_byes_caption
-#, fuzzy
-#| msgid "Ok"
 msgctxt "opkman_const.rscategoriesfrm_byes_caption"
 msgid "OK"
 msgstr "OK"
@@ -28,19 +26,15 @@ msgid "List with categories"
 msgstr "Liste mit Kategorien"
 
 #: opkman_const.rscategoriesfrm_lbmessage_caption
-#, fuzzy
-#| msgid "Please select(check) one or more categories"
 msgid "Please select (check) one or more categories"
 msgstr "Bitte wählen Sie eine oder mehrere Kategorien"
 
 #: opkman_const.rscreatejsonforupdatesfrm_bclose_caption
-#, fuzzy
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_bclose_caption"
 msgid "Cancel"
 msgstr "Abbrechen"
 
 #: opkman_const.rscreatejsonforupdatesfrm_bcreate_caption
-#, fuzzy
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_bcreate_caption"
 msgid "Create"
 msgstr "Erzeugen"
@@ -48,49 +42,48 @@ msgstr "Erzeugen"
 #: opkman_const.rscreatejsonforupdatesfrm_bhelp_caption
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_bhelp_caption"
 msgid "Help"
-msgstr ""
+msgstr "Hilfe"
 
 #: opkman_const.rscreatejsonforupdatesfrm_btest_caption
 msgid "Test"
-msgstr ""
+msgstr "Test"
 
 #: opkman_const.rscreatejsonforupdatesfrm_caption
 msgid "Create update JSON for package: "
-msgstr ""
+msgstr "Erzeuge Aktualisierungs-JSON für Package:"
 
 #: opkman_const.rscreatejsonforupdatesfrm_column0_text
 msgid "PackageFileName"
-msgstr ""
+msgstr "Package-Dateiname"
 
 #: opkman_const.rscreatejsonforupdatesfrm_column1_text
-#, fuzzy
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_column1_text"
 msgid "Version"
 msgstr "Version"
 
 #: opkman_const.rscreatejsonforupdatesfrm_column2_text
 msgid "Force notify"
-msgstr ""
+msgstr "Meldung erzwingen"
 
 #: opkman_const.rscreatejsonforupdatesfrm_column3_text
 msgid "Internal version"
-msgstr ""
+msgstr "Interne Version"
 
 #: opkman_const.rscreatejsonforupdatesfrm_lblinktozip_caption
 msgid "Link to the package zip file"
-msgstr ""
+msgstr "Link zur Package-Zip-Datei"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message0
 msgid "Please select a repository package!"
-msgstr ""
+msgstr "Bitte wählen Sie ein Repository-Package!"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message1
 msgid "Please select only one repository package!"
-msgstr ""
+msgstr "Bitte wählen Sie nur ein Repository-Package!"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message2
 msgid "Please enter a valid URL!"
-msgstr ""
+msgstr "Bitte geben Sie eine gültige URL ein!"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message3
 msgid "Please check at least one package file!"
@@ -215,6 +208,10 @@ msgstr "Package-Verzeichnis wählen"
 msgid "Online Package Manager"
 msgstr "Online-Package-Manager"
 
+#: opkman_const.rsmainfrm_caption
+msgid "packages found"
+msgstr "Packages gefunden"
+
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
 msgstr "Alle/Keine"
@@ -241,7 +238,7 @@ msgstr "Gefiltert nach:"
 
 #: opkman_const.rsmainfrm_micreatejsonforupdates
 msgid "Create JSON for updates"
-msgstr ""
+msgstr "Erzeuge JSON für Aktualisierungen"
 
 #: opkman_const.rsmainfrm_micreaterepositorypackage
 msgctxt "opkman_const.rsmainfrm_micreaterepositorypackage"
@@ -269,16 +266,12 @@ msgid "A package with the same name already exists!"
 msgstr "Ein Package mit dem selben Namen existiert bereits!"
 
 #: opkman_const.rsmainfrm_packageupdate0
-#, fuzzy
-#| msgid "The following repository packages don't have a valid external download link. The packages will be skipped. Continue?"
 msgid "The following repository packages are not installed or don't have a valid external download link. The packages will be skipped. Continue?"
-msgstr "Die folgenden Repository-Packages haben keinen gültigen Download-Link. Die Packages werden übersprungen. Fortfahren?"
+msgstr "Die folgenden Repository-Packages sind nicht installiert oder haben keinen gültigen Download-Link. Die Packages werden übersprungen. Fortfahren?"
 
 #: opkman_const.rsmainfrm_packageupdate1
-#, fuzzy
-#| msgid "None of the checked repository package(s) has a valid external download link."
 msgid "None of the checked repository packages are installed or has a valid external download link."
-msgstr "Keines der ausgewählten Packages hat einen gültigen Download-Link."
+msgstr "Keines der ausgewählten Repository-Packages ist installiert oder hat einen gültigen Download-Link."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
 msgid ""
@@ -377,19 +370,17 @@ msgid "Download"
 msgstr "Download"
 
 #: opkman_const.rsmainfrm_tbdownload_hint
-#, fuzzy
-#| msgid "Download packages to..."
 msgid "Download packages"
-msgstr "Packages herunterladen nach..."
+msgstr "Packages herunterladen"
 
 #: opkman_const.rsmainfrm_tbhelp_caption
 msgctxt "opkman_const.rsmainfrm_tbhelp_caption"
 msgid "Help"
-msgstr ""
+msgstr "Hilfe"
 
 #: opkman_const.rsmainfrm_tbhelp_hint
 msgid "Help (http://wiki.freepascal.org/Online_Package_Manager)"
-msgstr ""
+msgstr "Hilfe (http://wiki.freepascal.org/Online_Package_Manager)"
 
 #: opkman_const.rsmainfrm_tbinstall_caption
 msgid "Install"
@@ -444,8 +435,6 @@ msgid "Installed"
 msgstr "Installiert"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_packagefile
-#, fuzzy
-#| msgid "Package file(.lpk)"
 msgid "Package file (.lpk)"
 msgstr "Package-Datei (.lpk)"
 
@@ -497,20 +486,18 @@ msgid "Home page"
 msgstr "Homepage"
 
 #: opkman_const.rsmainfrm_vsttext_install0
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_vsttext_install0"
 msgid "No"
 msgstr "Nein"
 
 #: opkman_const.rsmainfrm_vsttext_install1
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_vsttext_install1"
 msgid "Yes"
 msgstr "Ja"
 
 #: opkman_const.rsmainfrm_vsttext_install2
 msgid "Partially"
-msgstr ""
+msgstr "Teilweise"
 
 #: opkman_const.rsmainfrm_vsttext_lazcompatibility
 msgid "Lazarus compatibility"
@@ -665,12 +652,12 @@ msgstr "Aktuell"
 #: opkman_const.rsmainfrm_vsttext_packagestate5
 msgctxt "opkman_const.rsmainfrm_vsttext_packagestate5"
 msgid "New version available(repository)"
-msgstr ""
+msgstr "Neue Version verfügbar (Repository)"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate6
 msgctxt "opkman_const.rsmainfrm_vsttext_packagestate6"
 msgid "New updates available"
-msgstr ""
+msgstr "Neue Aktualisierungen verfügbar"
 
 #: opkman_const.rsmainfrm_vsttext_packagestatus
 msgid "Package status"
@@ -825,8 +812,6 @@ msgid "No"
 msgstr "Nein"
 
 #: opkman_const.rspackagelistfrm_bok_caption
-#, fuzzy
-#| msgid "Ok"
 msgctxt "opkman_const.rspackagelistfrm_bok_caption"
 msgid "OK"
 msgstr "OK"
@@ -847,10 +832,6 @@ msgstr "Heruntergeladene-Packages-Liste"
 #: opkman_const.rspackagelistfrm_caption2
 msgid "Update package list"
 msgstr "Aktualisierte-Packages-Liste"
-
-#: opkman_const.rspackagesfound
-msgid "(%s packages found)"
-msgstr ""
 
 #: opkman_const.rsprogressfrm_caption0
 msgid "Downloading packages"
@@ -994,21 +975,17 @@ msgstr "Installiere Package:"
 
 #: opkman_const.rsprogressfrm_lbelapsed_caption
 msgid "Elapsed:"
-msgstr ""
+msgstr "Verstrichen:"
 
 #: opkman_const.rsprogressfrm_lbpackage_caption
 msgid "Package:"
 msgstr "Package:"
 
 #: opkman_const.rsprogressfrm_lbreceivedtotal_caption0
-#, fuzzy
-#| msgid "Received(total):"
 msgid "Received (total):"
 msgstr "Empfangen (total):"
 
 #: opkman_const.rsprogressfrm_lbreceivedtotal_caption1
-#, fuzzy
-#| msgid "Unzipped(total):"
 msgid "Unzipped (total):"
 msgstr "Entpackt (total):"
 
@@ -1031,4 +1008,3 @@ msgstr "Kalkuliere. Bitte warten..."
 #: opkman_const.rsprogressfrm_lbspeed_caption
 msgid "Speed:"
 msgstr "Geschwindigkeit:"
-

@@ -4,13 +4,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-01-27 16:19+0100\n"
+"PO-Revision-Date: 2016-12-10 16:47+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Language: de_DE\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.9\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser \"%s\" not executable."
@@ -679,10 +679,8 @@ msgid "%s: Already registered"
 msgstr "%s: Bereits registriert"
 
 #: lclstrconsts.rshelpcontextnotfound
-#, fuzzy
-#| msgid "Help Context not found"
 msgid "A help database was found for this topic, but this topic was not found"
-msgstr "Hilfekontext nicht gefunden"
+msgstr "Eine Hilfe-Datenbank wurde für dieses Thema gefunden, aber dieses Thema wurde nicht gefunden"
 
 #: lclstrconsts.rshelpdatabasenotfound
 msgid "There is no help database installed for this topic"
@@ -1517,7 +1515,7 @@ msgstr "Falscher Token-Typ: %s erwartet, %s gefunden"
 
 #: lclstrconsts.sshellctrlsbytes
 msgid "%s bytes"
-msgstr ""
+msgstr "%s Bytes"
 
 #: lclstrconsts.sshellctrlsinvalidpath
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"
@@ -1525,6 +1523,8 @@ msgid ""
 "Invalid pathname:\n"
 "\"%s\"\n"
 msgstr ""
+"Ungültiger Pfadname:\n"
+"\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidpathrelative
 msgid ""
@@ -1540,6 +1540,8 @@ msgid ""
 "Invalid pathname:\n"
 "\"%s\"\n"
 msgstr ""
+"Ungültiger Pfadname:\n"
+"\"%s\"\n"
 
 #: lclstrconsts.sshellctrlskb
 msgid "%s kB"
@@ -1551,7 +1553,7 @@ msgstr ""
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"
-msgstr ""
+msgstr "Name"
 
 #: lclstrconsts.sshellctrlsselecteditemdoesnotexists
 msgid ""
@@ -1561,9 +1563,8 @@ msgstr ""
 
 #: lclstrconsts.sshellctrlssize
 msgid "Size"
-msgstr ""
+msgstr "Größe"
 
 #: lclstrconsts.sshellctrlstype
 msgid "Type"
-msgstr ""
-
+msgstr "Typ"
