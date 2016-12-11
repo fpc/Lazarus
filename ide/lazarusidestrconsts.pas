@@ -2544,7 +2544,7 @@ resourcestring
     +'contains a directory which is already in the "Other unit files".%s%s';
   lisRemoveThePathsFromOtherSources = 'Remove the paths from "Other sources"';
   lisForWindows = 'For Windows';
-  lisForDarwin = 'For Darwin';
+  lisForMacOSDarwin = 'For macOS (Darwin)';
   dlgPOUseAppBundle = 'Use Application Bundle for running and debugging';
   dlgPOCreateAppBundle = 'Create Application Bundle';
   dlgPOUseManifest = 'Use manifest resource (and enable themes)';

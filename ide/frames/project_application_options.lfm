@@ -259,7 +259,7 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       Height = 17
       Top = 396
       Width = 477
-      Caption = 'For Darwin'
+      Caption = 'For macOS (Darwin)'
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 3
       BorderSpacing.Top = 6

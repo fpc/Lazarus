@@ -258,7 +258,7 @@ begin
   TextFieldButton.Caption := dlgPOTextFields;
 
   // Darwin specific, Application Bundle
-  DarwinDividerBevel.Caption := lisForDarwin;
+  DarwinDividerBevel.Caption := lisForMacOSDarwin;
   CreateAppBundleButton.Caption := dlgPOCreateAppBundle;
   CreateAppBundleButton.LoadGlyphFromResourceName(HInstance, 'pkg_compile');
 
