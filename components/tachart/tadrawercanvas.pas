@@ -457,6 +457,7 @@ procedure TCanvasDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
   begin
     ts := ACanvas.TextStyle;
     ts.RightToLeft := FRightToLeft;
+    ts.WordBreak := false;   // added to disable erroneous workbreaks in Linux printing
     ts.Clipping := false;
     r := Bounds(x, y, 1, 1);
     ACanvas.TextRect(r, x, y, txt, ts);
