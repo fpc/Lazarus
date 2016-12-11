@@ -40,7 +40,10 @@ uses
   Classes, SysUtils, FileUtil, Laz2_XMLCfg, LCLProc, Controls, Forms,
   CodeToolManager, LazConf, LResources,
   ProjectResourcesIntf, resource;
-   
+
+const
+  DefaultXPManifestTextName = 'CompanyName.ProductName.AppName';
+  DefaultXPManifestTextDesc = 'Your application description.';
 type
   TXPManifestExecutionLevel = (
     xmelAsInvoker,
@@ -205,8 +208,8 @@ begin
   DpiAware := xmdaFalse;
   ExecutionLevel := xmelAsInvoker;
   UIAccess := False;
-  TextName := 'CompanyName.ProductName.AppName';
-  TextDesc := 'Your application description.';
+  TextName := DefaultXPManifestTextName;
+  TextDesc := DefaultXPManifestTextDesc;
 end;
 
 function TProjectXPManifest.UpdateResources(AResources: TAbstractProjectResources;
@@ -242,8 +245,8 @@ begin
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/DpiAware/Value', ManifestDpiAwareValues[DpiAware], ManifestDpiAwareValues[xmdaFalse]);
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/ExecutionLevel/Value', ExecutionLevelToStr[ExecutionLevel], ExecutionLevelToStr[xmelAsInvoker]);
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/UIAccess/Value', UIAccess, False);
-  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/TextName/Value', TextName, '');
-  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/TextDesc/Value', TextDesc, '');
+  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/TextName/Value', TextName, DefaultXPManifestTextName);
+  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/TextDesc/Value', TextDesc, DefaultXPManifestTextDesc);
 end;
 
 procedure TProjectXPManifest.ReadFromProjectFile(AConfig: TObject;
