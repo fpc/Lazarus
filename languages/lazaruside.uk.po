@@ -4527,6 +4527,10 @@ msgstr "Якорити правий бік до лівої сторони бра
 msgid "Anchor right side to right side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr "Якорити правий бік до правої сторони брата. Використовуйте BorderSpacing щоб задати відстань. BorderSpacing брата ігнорується."
 
+#: lazarusidestrconsts.lisanchorsof
+msgid "Anchors of %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
 msgstr "Якорі вибраних елементів керування"
@@ -4783,7 +4787,9 @@ msgid "Bottoms"
 msgstr "Нижні"
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
-msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
+#, fuzzy
+#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
+msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgstr "Це елемент керування одного рівня, за яким фіксується нижня сторона. Залишити порожнім для батьківського."
 
 #: lazarusidestrconsts.lisbottomspaceequally
@@ -9407,10 +9413,6 @@ msgstr "Фокусна підказка"
 msgid "Force renaming"
 msgstr "Розпочати зміну назв"
 
-#: lazarusidestrconsts.lisfordarwin
-msgid "For Darwin"
-msgstr "Для Darwin"
-
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
 msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
 msgstr "Наприклад, виводити вгорі локальні змінні, потім елементи поточного класу, його предків, поточного і використаних модулів"
@@ -9418,6 +9420,10 @@ msgstr "Наприклад, виводити вгорі локальні змі�
 #: lazarusidestrconsts.lisform
 msgid "Form"
 msgstr "Форма"
+
+#: lazarusidestrconsts.lisformacosdarwin
+msgid "For macOS (Darwin)"
+msgstr ""
 
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
@@ -11366,7 +11372,9 @@ msgid "Left anchoring"
 msgstr "Ліве якорювання"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
-msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
+#, fuzzy
+#| msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
+msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgstr "Це список елементів одного рівня для якого ліва сторона зафіксована. Залишити порожнім для батьківського."
 
 #: lazarusidestrconsts.lisleftsides
@@ -16348,7 +16356,9 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr "Правий бордюр. Значення додається до базового бордюру і використовується для відступу справа від контролю."
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
-msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
+#, fuzzy
+#| msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
+msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgstr "Це список контролів одного рівня для якого права сторона зафіксована. Залишити порожнім для батьківського."
 
 #: lazarusidestrconsts.lisrightsides
@@ -17998,7 +18008,9 @@ msgid "Tops"
 msgstr "Вершини"
 
 #: lazarusidestrconsts.listopsiblingcomboboxhint
-msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
+#, fuzzy
+#| msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
+msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgstr "Це список контролів одного рівня для якого верхня сторона зафіксована. Залишити порожнім для батьківського."
 
 #: lazarusidestrconsts.listopspaceequally

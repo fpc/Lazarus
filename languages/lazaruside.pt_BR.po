@@ -4630,6 +4630,10 @@ msgstr "Ancorar lado direito ao lado esquerdo do irmão. A distância mantida é
 msgid "Anchor right side to right side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr "Ancorar lado direito ao lado direito do irmão. Usar \"Espaço da borda\" para ajustar a distância. Espaçamento da borda do irmão é ignorado."
 
+#: lazarusidestrconsts.lisanchorsof
+msgid "Anchors of %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
 msgstr "Âncora dos controles selecionados"
@@ -4891,7 +4895,9 @@ msgid "Bottoms"
 msgstr "Bases"
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
-msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
+#, fuzzy
+#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
+msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgstr "Este é o controle irmão ao qual o lado base está ancorado. Deixar vazio para o controle-pai."
 
 #: lazarusidestrconsts.lisbottomspaceequally
@@ -9624,10 +9630,6 @@ msgstr "Dica de foco"
 msgid "Force renaming"
 msgstr "Forçar renomeação"
 
-#: lazarusidestrconsts.lisfordarwin
-msgid "For Darwin"
-msgstr ""
-
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
 msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
 msgstr ""
@@ -9635,6 +9637,10 @@ msgstr ""
 #: lazarusidestrconsts.lisform
 msgid "Form"
 msgstr "Formulário"
+
+#: lazarusidestrconsts.lisformacosdarwin
+msgid "For macOS (Darwin)"
+msgstr ""
 
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
@@ -11591,7 +11597,9 @@ msgid "Left anchoring"
 msgstr "Ancoragem a esquerda"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
-msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
+#, fuzzy
+#| msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
+msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgstr "Este é o controle irmão ao qual o lado esquerdo está ancorado. Deixar vazio para o controle-pai."
 
 #: lazarusidestrconsts.lisleftsides
@@ -16693,7 +16701,9 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr "Espaço da borda Direita. Este valor será adicionado ao espaço da borda base e usado para o espaço direito do controle."
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
-msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
+#, fuzzy
+#| msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
+msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgstr "Este é o controle irmão ao qual o lado direito está ancorado. Deixar vazio para o controle-pai."
 
 #: lazarusidestrconsts.lisrightsides
@@ -18454,7 +18464,9 @@ msgid "Tops"
 msgstr "Topos"
 
 #: lazarusidestrconsts.listopsiblingcomboboxhint
-msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
+#, fuzzy
+#| msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
+msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgstr "Este é o controle irmão o qual o lado superior está ancorado. Deixar vazio para o controle-pai."
 
 #: lazarusidestrconsts.listopspaceequally

@@ -4531,6 +4531,10 @@ msgstr "Ukotvit pravý okraj k levému okraji sourozence. Udržovaná vzdálenos
 msgid "Anchor right side to right side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr "Ukotvit pravý okraj k pravému okraji sourozence. Použijte BorderSpacing pro nastavení vzdálenosti. BorderSpacing sourozence je ignorováno."
 
+#: lazarusidestrconsts.lisanchorsof
+msgid "Anchors of %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
 msgstr "Ukotvení vybraného ovládacího prvku"
@@ -4787,7 +4791,9 @@ msgid "Bottoms"
 msgstr "Spodní části"
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
-msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
+#, fuzzy
+#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
+msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgstr "Toto je sourozenec prvku, k jehož spodní straně je ukotvený. Nechte prázdné pro rodiče."
 
 #: lazarusidestrconsts.lisbottomspaceequally
@@ -9410,10 +9416,6 @@ msgstr "Tip při fokusu"
 msgid "Force renaming"
 msgstr "Vynutit přejmenování"
 
-#: lazarusidestrconsts.lisfordarwin
-msgid "For Darwin"
-msgstr "Pro Darwin"
-
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
 msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
 msgstr "Například ukázat nahoře místní proměnné, když členové aktuální třídy, když předci, když aktuální jednotky, když použité jednotky"
@@ -9421,6 +9423,10 @@ msgstr "Například ukázat nahoře místní proměnné, když členové aktuál
 #: lazarusidestrconsts.lisform
 msgid "Form"
 msgstr "Formulář"
+
+#: lazarusidestrconsts.lisformacosdarwin
+msgid "For macOS (Darwin)"
+msgstr ""
 
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
@@ -11366,7 +11372,9 @@ msgid "Left anchoring"
 msgstr "Levé ukotvení"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
-msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
+#, fuzzy
+#| msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
+msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgstr "Toto je sourozenec prvku, k jehož levé straně je ukotvený. Ponechte prázdné pro rodiče."
 
 #: lazarusidestrconsts.lisleftsides
@@ -16345,7 +16353,9 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr "Pravý okraj. Tato hodnota je přidána k základnímu okraji a použitá pro odsazení vpravo od prvku."
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
-msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
+#, fuzzy
+#| msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
+msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgstr "Toto je sourozenec prvku, k jehož pravé straně je ukotven. Ponechte prázdné pro rodiče."
 
 #: lazarusidestrconsts.lisrightsides
@@ -17985,7 +17995,9 @@ msgid "Tops"
 msgstr "Vrcholky"
 
 #: lazarusidestrconsts.listopsiblingcomboboxhint
-msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
+#, fuzzy
+#| msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
+msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgstr "Toto je sourozenec prvku, k jehož horní straně je ukotvený. Ponechte prázdné pro rodiče."
 
 #: lazarusidestrconsts.listopspaceequally

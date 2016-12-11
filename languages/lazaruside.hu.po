@@ -4523,6 +4523,10 @@ msgstr "Jobb szél horgonyzása a testvér bal széléhez. A megtartott távols�
 msgid "Anchor right side to right side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr "Jobb szél horgonyzása a testvér jobb széléhez. A BorderSpacing használható a távolság beállításához. A testvér BorderSpacing tulajdonsága nem számít."
 
+#: lazarusidestrconsts.lisanchorsof
+msgid "Anchors of %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
 msgstr "A kijelölt vezérlők horgonyai"
@@ -4779,7 +4783,9 @@ msgid "Bottoms"
 msgstr "Alsó oldalak egy vonalban"
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
-msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
+#, fuzzy
+#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
+msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgstr "Ez az a társvezérlő, amelyikhez az alsó oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen."
 
 #: lazarusidestrconsts.lisbottomspaceequally
@@ -9393,10 +9399,6 @@ msgstr "Fókusz tipp"
 msgid "Force renaming"
 msgstr "Átnevezés erőltetése"
 
-#: lazarusidestrconsts.lisfordarwin
-msgid "For Darwin"
-msgstr "Darwin esetén"
-
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
 msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
 msgstr "Például: legfelül jelennek meg a helyi változók, aztán az aktuális osztály és az ősök elemei, majd az aktuális unit és a használt unit-ok elemei."
@@ -9404,6 +9406,10 @@ msgstr "Például: legfelül jelennek meg a helyi változók, aztán az aktuáli
 #: lazarusidestrconsts.lisform
 msgid "Form"
 msgstr "Form"
+
+#: lazarusidestrconsts.lisformacosdarwin
+msgid "For macOS (Darwin)"
+msgstr ""
 
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
@@ -11309,7 +11315,9 @@ msgid "Left anchoring"
 msgstr "Bal oldal horgonyozása"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
-msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
+#, fuzzy
+#| msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
+msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgstr "Ez az a társvezérlő, amelyikhez a bal oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen."
 
 #: lazarusidestrconsts.lisleftsides
@@ -16297,7 +16305,9 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr "Jobb oldali keret-térköz. Ez az érték hozzáadódik az alap oldaltérközhöz és a vezérlő jobb oldalára vonatkozik."
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
-msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
+#, fuzzy
+#| msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
+msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgstr "Ez az a társvezérlő, amelyikhez a jobb oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen."
 
 #: lazarusidestrconsts.lisrightsides
@@ -17933,7 +17943,9 @@ msgid "Tops"
 msgstr "Felső oldalak egy vonalban"
 
 #: lazarusidestrconsts.listopsiblingcomboboxhint
-msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
+#, fuzzy
+#| msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
+msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgstr "Ez az a társvezérlő, amelyikhez a felső oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen."
 
 #: lazarusidestrconsts.listopspaceequally
