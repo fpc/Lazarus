@@ -1946,6 +1946,7 @@ begin
   s:=lisMenuViewCodeExplorer;
   if (CodeExplorerOptions.Refresh=cerManual) and (FCodeFilename<>'') then
     s+=' - ' + ExtractFileName(FCodeFilename);
+  Caption:=s;
 end;
 
 function TCodeExplorerView.OnExpandedStateGetNodeText(Node: TTreeNode): string;
