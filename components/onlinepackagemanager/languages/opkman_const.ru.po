@@ -511,111 +511,111 @@ msgstr "Категория пакета"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory0
 msgid "Charts and Graphs"
-msgstr ""
+msgstr "Диаграммы и графики"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory1
 msgid "Cryptography"
-msgstr ""
+msgstr "Криптография"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory10
 msgid "Indicators and Gauges"
-msgstr ""
+msgstr "Индикаторы и указатели"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory11
 msgid "Labels"
-msgstr ""
+msgstr "Метки"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory12
 msgid "LazIDEPlugins"
-msgstr ""
+msgstr "Плагины Lazarus IDE"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory13
 msgid "List and Combo Boxes"
-msgstr ""
+msgstr "Списки"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory14
 msgid "ListViews and TreeViews"
-msgstr ""
+msgstr "ListView и TreeView"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory15
 msgid "Menus"
-msgstr ""
+msgstr "Меню"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory16
 msgid "Multimedia"
-msgstr ""
+msgstr "Мультимедиа"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory17
 msgid "Networking"
-msgstr ""
+msgstr "Сеть"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory18
 msgid "Panels"
-msgstr ""
+msgstr "Панели"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory19
 msgid "Reporting"
-msgstr ""
+msgstr "Отчёты"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory2
 msgid "DataControls"
-msgstr ""
+msgstr "Данные"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory20
 msgid "Science"
-msgstr ""
+msgstr "Наука"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory21
 msgid "Security"
-msgstr ""
+msgstr "Безопасность"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory22
 msgid "Shapes"
-msgstr ""
+msgstr "Фигуры"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory23
 msgid "Sizers and Scrollers"
-msgstr ""
+msgstr "Размер и прокрутка"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory24
 msgid "System"
-msgstr ""
+msgstr "Система"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory25
 msgid "Tabbed Components"
-msgstr ""
+msgstr "Компоненты со вкладками"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory26
 msgid "Other"
-msgstr ""
+msgstr "Прочее"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory3
 msgid "Date and Time"
-msgstr ""
+msgstr "Дата и время"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory4
 msgid "Dialogs"
-msgstr ""
+msgstr "Диалоги"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory5
 msgid "Edit and Memos"
-msgstr ""
+msgstr "Поля ввода"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory6
 msgid "Files and Drives"
-msgstr ""
+msgstr "Файлы и накопители"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory7
 msgid "GUIContainers"
-msgstr ""
+msgstr "Компоненты-контейнеры"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory8
 msgid "Graphics"
-msgstr ""
+msgstr "Графика"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory9
 msgid "Grids"
-msgstr ""
+msgstr "Таблицы"
 
 #: opkman_const.rsmainfrm_vsttext_packageinfo
 msgid "Package info"
