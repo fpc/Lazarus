@@ -608,9 +608,14 @@ var
   Buf: array[0..6] of Char;
   Len: Integer;
 begin
-  Len:=UnicodeToUTF8Inline(CodePoint, @Buf[0]);
-  Buf[Len]:=#0;
-  Result := StrPas(@Buf[0]);
+  if (CodePoint = 0) then
+    Result := #0 //StrPas does not like #0
+  else
+  begin
+    Len:=UnicodeToUTF8Inline(CodePoint, @Buf[0]);
+    Buf[Len]:=#0;
+    Result := StrPas(@Buf[0]);
+  end;
 end;
 
 function UnicodeToUTF8Inline(CodePoint: cardinal; Buf: PChar): integer;
