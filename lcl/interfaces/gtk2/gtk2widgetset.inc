@@ -440,16 +440,12 @@ begin
          ConnectSenderSignal(gObject, 'value-changed', @gtkchanged_editbox);
        end else
        begin
-         {$IFDEF VerboseTWinControlRealText}
-         ConnectSenderSignalAfter(gObject, 'changed', @gtkchanged_editbox);
-         {$ELSE}
          if GTK_IS_ENTRY(gObject) then
          begin
            ConnectSenderSignal(gObject,'backspace', @gtkchanged_editbox_backspace);
            ConnectSenderSignal(gObject,'delete-from-cursor', @gtkchanged_editbox_delete);
          end;
          ConnectSenderSignal(gObject, 'changed', @gtkchanged_editbox);
-         {$ENDIF}
        end;
     end;
 
