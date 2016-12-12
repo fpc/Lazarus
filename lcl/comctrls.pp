@@ -3382,6 +3382,7 @@ type
     function CanEdit(Node: TTreeNode): Boolean; virtual;
     function CanExpand(Node: TTreeNode): Boolean; virtual;
     function CreateNode: TTreeNode; virtual;
+    function CreateNodes: TTreeNodes; virtual;
     function CustomDraw(const ARect: TRect;
       Stage: TCustomDrawStage): Boolean; virtual;
     function CustomDrawItem(Node: TTreeNode; State: TCustomDrawState;

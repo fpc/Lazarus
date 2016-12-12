@@ -18,10 +18,14 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MinorVersionNr Value="1"/>
-      <BuildNr Value="3"/>
+      <BuildNr Value="5"/>
       <CharSet Value="04B0"/>
-      <StringTable Comments="Explore your resources in executables and resource files" CompanyName="Alexey Lagunov" FileDescription="Resource Explorer" InternalName="LazResExplorer" LegalCopyright="Alexey Lagunov" LegalTrademarks="No Trademarks" OriginalFilename="lazresexplorer" ProductName="Lazarus Resource Explorer" ProductVersion=""/>
+      <StringTable Comments="Explore your resources in executables and resource files" CompanyName="Alexey Lagunov" FileDescription="Resource Explorer" InternalName="LazResExplorer" LegalCopyright="Alexey Lagunov" LegalTrademarks="No Trademarks" OriginalFilename="lazresexplorer" ProductName="Lazarus Resource Explorer" ProductVersion="0.1.0.3"/>
     </VersionInfo>
+    <MacroValues Count="2">
+      <Macro1 Name="LCLWidgetType" Value="gtk2"/>
+      <Macro2 Name="LCLWidgetType" Value="gtk2"/>
+    </MacroValues>
     <BuildModes Count="2">
       <Item1 Name="Release" Default="True"/>
       <Item2 Name="Debug">
@@ -121,17 +125,4 @@
       </Options>
     </Linking>
   </CompilerOptions>
-  <Debugging>
-    <Exceptions Count="3">
-      <Item1>
-        <Name Value="EAbort"/>
-      </Item1>
-      <Item2>
-        <Name Value="ECodetoolError"/>
-      </Item2>
-      <Item3>
-        <Name Value="EFOpenError"/>
-      </Item3>
-    </Exceptions>
-  </Debugging>
 </CONFIG>

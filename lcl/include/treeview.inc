@@ -3178,7 +3178,7 @@ begin
   FDefItemHeight := DefaultTreeNodeHeight;
   FExpandSignType := tvestTheme;
   UpdateExpandSignSize;
-  FTreeNodes := TTreeNodes.Create(Self);
+  FTreeNodes := CreateNodes;
   BorderStyle := bsSingle;
   BorderWidth := 0;
   FMultiSelectStyle := DefaultMultiSelectStyle;
@@ -5327,6 +5327,11 @@ begin
     DoCreateNodeClass(NewNodeClass);
     Result := NewNodeClass.Create(Items);
   end;
+end;
+
+function TCustomTreeView.CreateNodes: TTreeNodes;
+begin
+  Result := TTreeNodes.Create(Self);
 end;
 
 procedure TCustomTreeView.ImageListChange(Sender: TObject);

@@ -1853,7 +1853,7 @@ begin
   FInitialSelectedMenuItem := aSelect;
   SetInitialBounds(0, 0, aWidth, aHeight);
   Name := 'ShadowMenu';
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TShadowMenu.Create'){$ENDIF};
   try
     FItemsPopupMenu := TPopupMenu.Create(Self);
     FItemsPopupMenu.Name := 'ItemsPopupMenu';
@@ -1888,7 +1888,7 @@ begin
     AutoSize := False;
     Align := alClient;
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TShadowMenu.Create'){$ENDIF};
   end;
 end;
 
