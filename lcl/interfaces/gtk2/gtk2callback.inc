@@ -473,6 +473,12 @@ begin
               gtk_editable_set_position(PGtkEditable(Widget), GStart + 1);
           end;
         end;
+      end
+      else begin
+        DebugLn(['gtkchanged_editbox: GStart=', GStart, ', GEnd=', GEnd,
+                 ', EntryText=', EntryText, ', Len=', UTF8Length(EntryText),
+                 ', Widget.text_length=', PGtkEntry(Widget)^.text_length]);
+        raise Exception.Create('gtkchanged_editbox: (GStart <> GEnd) or (UTF8Length(EntryText) < Widget.text_length).');
       end;
     end else
       g_object_set_data(PGObject(Widget),'lcl-do-not-change-selection', nil);
