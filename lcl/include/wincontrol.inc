@@ -6155,13 +6155,13 @@ var
   i: Integer;
 begin
   // scroll inner controls
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.ScrollBy'){$ENDIF};
   try
     for i := 0 to ControlCount - 1 do
       with Controls[i] do
         SetBounds(Left + DeltaX, Top + DeltaY, Width, Height);
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.ScrollBy'){$ENDIF};
   end;
 end;
 
