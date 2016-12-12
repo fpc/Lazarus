@@ -30,9 +30,9 @@ uses
   TestLpi, BugTestCase,
   bug8432, testfileutil, testfileproc,
   // lazutils
-  TestLazUtils, TestLazUTF8, TestLConvEncoding, TestAvgLvlTree,
+  TestLazUtils, TestLazUTF8, TestLazUTF16, TestLConvEncoding, TestAvgLvlTree,
   // lcltests
-  testunicode, testpen, TestPreferredSize, TestTextStrings
+  testpen, TestPreferredSize, TestTextStrings
   {$IFNDEF NoSemiAutomatedTests}
   // semi-automatic tests
   , testpagecontrol, semiautotest, idesemiautotests, lclsemiautotests

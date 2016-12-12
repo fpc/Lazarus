@@ -23,7 +23,7 @@
             <Filename Value="runtests"/>
           </Target>
           <SearchPaths>
-            <OtherUnitFiles Value="bugs;lcltests;codetoolstests;lazutils"/>
+            <OtherUnitFiles Value="bugs;lcltests;lazutils"/>
             <UnitOutputDirectory Value="unitsconsole\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <Conditionals Value="if defined(EnableCTRange) then
@@ -82,7 +82,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="17">
+    <Units Count="12">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -101,61 +101,39 @@
         <IsPartOfProject Value="True"/>
       </Unit3>
       <Unit4>
-        <Filename Value="lcltests\testunicode.pas"/>
+        <Filename Value="testunits.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestUnicode"/>
       </Unit4>
       <Unit5>
-        <Filename Value="testunits.pas"/>
+        <Filename Value="lcltests\testpen.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit5>
       <Unit6>
-        <Filename Value="lcltests\testpen.pas"/>
+        <Filename Value="lcltests\testtextstrings.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit6>
       <Unit7>
-        <Filename Value="lcltests\testtextstrings.pas"/>
+        <Filename Value="lazutils\testlazutils.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit7>
       <Unit8>
-        <Filename Value="codetoolstests\testbasiccodetools.pas"/>
+        <Filename Value="lazutils\testlazxml.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestBasicCodetools"/>
       </Unit8>
       <Unit9>
-        <Filename Value="lazutils\testlazutils.pas"/>
+        <Filename Value="lazutils\testavglvltree.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit9>
       <Unit10>
-        <Filename Value="codetoolstests\testctxmlfixfragments.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="codetoolstests\testcfgscript.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="TestCfgScript"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="codetoolstests\teststdcodetools.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="lazutils\testlazxml.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="lazutils\testavglvltree.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="codetoolstests\testmethodjumptool.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit15>
-      <Unit16>
         <Filename Value="lazutils\testlconvencoding.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestLConvEncoding"/>
-      </Unit16>
+      </Unit10>
+      <Unit11>
+        <Filename Value="lazutils\testlazutf16.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestLazUTF16"/>
+      </Unit11>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -165,7 +143,7 @@
       <Filename Value="runtests"/>
     </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="bugs;lcltests;codetoolstests;lazutils"/>
+      <OtherUnitFiles Value="bugs;lcltests;lazutils"/>
       <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Conditionals Value="if defined(EnableCTRange) then

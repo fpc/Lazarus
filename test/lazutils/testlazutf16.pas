@@ -1,4 +1,4 @@
-unit TestUnicode;
+unit TestLazUTF16;
 
 {$mode objfpc}{$H+}
 
