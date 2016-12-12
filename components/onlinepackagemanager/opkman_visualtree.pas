@@ -321,7 +321,10 @@ begin
          GrandChildNode := FVST.AddChild(ChildNode);
          FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
-         GrandChildData^.Description := PackageFile.Description;
+         if ChildData^.InstalledVersion <> '' then
+           GrandChildData^.Description := PackageFile.InstalledFileDescription
+         else
+           GrandChildData^.Description := PackageFile.Description;
          GrandChildData^.DataType := 3;
          Inc(UniqueID);
          CreateButton(UniqueID, GrandChildData);
@@ -360,7 +363,10 @@ begin
          GrandChildNode := FVST.AddChild(ChildNode);
          FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
-         GrandChildData^.License := PackageFile.License;
+         if ChildData^.InstalledVersion <> '' then
+           GrandChildData^.License := PackageFile.InstalledFileLincese
+         else
+           GrandChildData^.License := PackageFile.License;
          GrandChildData^.DataType := 9;
          Inc(UniqueID);
          CreateButton(UniqueID, GrandChildData);
@@ -1035,11 +1041,17 @@ begin
     if Data^.DataType in [3..19] then
     begin
       FVST.IsDisabled[Node] := FVST.IsDisabled[Node^.Parent];
-      FVST.ReinitNode(Node, False);
-      FVST.RepaintNode(Node);
       if (Data^.DataType = 3) or (Data^.DataType = 9) then
+      begin
+        case Data^.DataType of
+          3: Data^.Description := PackageFile.InstalledFileDescription;
+          9: Data^.License := PackageFile.InstalledFileLincese;
+        end;
         if Assigned(Data^.Button) then
           Data^.Button.Enabled := not FVST.IsDisabled[Node];
+      end;
+      FVST.ReinitNode(Node, False);
+      FVST.RepaintNode(Node);
     end;
     Node := FVST.GetNext(Node);
   end;

@@ -670,7 +670,6 @@ begin
               VisualTree.UpdatePackageStates;
               if NeedToRebuild then
               begin
-                TerminateUpdates;
                 EnableDisableControls(False);
                 IDECommands.ExecuteIDECommand(Self, ecBuildLazarus);
                 EnableDisableControls(True);
@@ -750,7 +749,6 @@ begin
             begin
               if NeedToRebuild then
               begin
-                TerminateUpdates;
                 EnableDisableControls(False);
                 IDECommands.ExecuteIDECommand(Self, ecBuildLazarus);
                 EnableDisableControls(True);

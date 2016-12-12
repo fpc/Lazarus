@@ -132,6 +132,8 @@ type
     FPackageAbsolutePath: String;
     FInstalledFileName: String;
     FInstalledFileVersion: String;
+    FInstalledFileDescription: String;
+    FInstalledFileLincese: String;
     FUpdateVersion: String;
     FForceNotify: Boolean;
     FInternalVersion: Integer;
@@ -165,6 +167,8 @@ type
     property InternalVersion: Integer read FInternalVersion write FInternalVersion;
     property InternalVersionOld: Integer read FInternalVersionOld write FInternalVersionOld;
     property HasUpdate: Boolean read FHasUpdate write FHasUpdate;
+    property InstalledFileDescription: String read FInstalledFileDescription write FInstalledFileDescription;
+    property InstalledFileLincese: String read FInstalledFileLincese write FInstalledFileLincese;
   published
     property Name: String read FName write FName;
     property Author: String read FAuthor write FAuthor;
@@ -259,7 +263,9 @@ type
     function IsPackageExtracted(const APackage: TPackage): Boolean;
     function IsPackageInstalled(const APackageFile: TPackageFile; const APackageBaseDir: String): Boolean;
     function IsAtLeastOnePackageFileInstalled(const APackage: TPackage): Boolean;
-    function GetRuntimePackageVersion(const APath: String): String;
+    function GetPackageVersion(const APath: String): String;
+    function GetPackageDescription(const APath: String): String;
+    function GetPackageLicense(const APath: String): String;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1038,7 +1044,7 @@ begin
   end;
 end;
 
-function TSerializablePackages.GetRuntimePackageVersion(const APath: String): String;
+function TSerializablePackages.GetPackageVersion(const APath: String): String;
 
   function VersionBound(const AVersion: Integer): Integer;
   begin
@@ -1073,6 +1079,32 @@ begin
   end;
 end;
 
+function TSerializablePackages.GetPackageDescription(const APath: String): String;
+var
+  XMLConfig: TXMLConfig;
+begin
+  Result := '';
+  XMLConfig := TXMLConfig.Create(APath);
+  try
+    Result := XMLConfig.GetValue('Package/Description/Value', '');
+  finally
+    XMLConfig.Free;
+  end;
+end;
+
+function TSerializablePackages.GetPackageLicense(const APath: String): String;
+var
+  XMLConfig: TXMLConfig;
+begin
+  Result := '';
+  XMLConfig := TXMLConfig.Create(APath);
+  try
+    Result := XMLConfig.GetValue('Package/License/Value', '');
+  finally
+    XMLConfig.Free;
+  end;
+end;
+
 
 function TSerializablePackages.IsPackageInstalled(const APackageFile: TPackageFile;
   const APackageBaseDir: String): Boolean;
@@ -1095,6 +1127,8 @@ function TSerializablePackages.IsPackageInstalled(const APackageFile: TPackageFi
                                          IntToStr(Package.Version.Minor) + '.' +
                                          IntToStr(Package.Version.Release) + '.' +
                                          IntToStr(Package.Version.Build);
+        APackageFile.InstalledFileDescription := GetPackageDescription(Package.Filename);
+        APackageFile.InstalledFileLincese := GetPackageLicense(Package.Filename);
         Result := True;
         Break;
       end;
@@ -1114,7 +1148,9 @@ begin
         if Result then
         begin
           APackageFile.InstalledFileName := Options.LocalRepositoryPackages + APackageBaseDir + APackageFile.FPackageRelativePath + APackageFile.Name;
-          APackageFile.InstalledFileVersion := GetRuntimePackageVersion(APackageFile.InstalledFileName);
+          APackageFile.InstalledFileVersion := GetPackageVersion(APackageFile.InstalledFileName);
+          APackageFile.InstalledFileDescription := GetPackageDescription(APackageFile.InstalledFileName);
+          APackageFile.InstalledFileLincese := GetPackageLicense(APackageFile.InstalledFileName);
           Result := True;
         end
         else
