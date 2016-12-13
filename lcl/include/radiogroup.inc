@@ -181,7 +181,6 @@ begin
       with ARadioButton do
       begin
         Name := 'RadioButton'+IntToStr(FButtonList.Count);
-        AutoSize := False;
         OnClick := @Self.Clicked;
         OnChange := @Self.Changed;
         OnEnter := @Self.ItemEnter;
