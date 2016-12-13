@@ -45,11 +45,12 @@ const
   cRestrictedDirectoryDef = 'lib,backup';
   cHelpPage = 'http://wiki.freepascal.org/Online_Package_Manager';
   {$ifdef win64}
-  OpenSSLURL = 'http://packages.lazarus-ide.org/openssl-1.0.2j-x64_86-win64.zip';
+  cOpenSSLURL = 'http://packages.lazarus-ide.org/openssl-1.0.2j-x64_86-win64.zip';
   {$endif}
   {$ifdef win32}
-  OpenSSLURL = 'http://packages.lazarus-ide.org/openssl-1.0.2j-i386-win32.zip';
+  cOpenSSLURL = 'http://packages.lazarus-ide.org/openssl-1.0.2j-i386-win32.zip';
   {$endif}
+  cExtractDir = 'ExtractDir';
 
 resourcestring
   //package manager

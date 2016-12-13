@@ -156,7 +156,10 @@ begin
       begin
         Node := FVST.AddChild(nil);
         Data := FVST.GetNodeData(Node);
-        Data^.FName := SerializablePackages.Items[I].DisplayName;
+        if SerializablePackages.Items[I].DisplayName <> '' then
+          Data^.FName := SerializablePackages.Items[I].DisplayName
+        else
+          Data^.FName := SerializablePackages.Items[I].Name;
         Data^.FImageIndex := 0;
       end;
     end
@@ -172,7 +175,10 @@ begin
           Inc(InvCnt);
           Node := FVST.AddChild(nil);
           Data := FVST.GetNodeData(Node);
-          Data^.FName := SerializablePackages.Items[I].DisplayName;
+          if SerializablePackages.Items[I].DisplayName <> '' then
+            Data^.FName := SerializablePackages.Items[I].DisplayName
+          else
+            Data^.FName := SerializablePackages.Items[I].Name;
           Data^.FImageIndex := 0;
           SerializablePackages.Items[I].ChangePackageStates(ctAdd, psError);
         end;

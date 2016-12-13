@@ -543,7 +543,7 @@ Type
     Procedure UnZipAllFiles(AFileName : String);
     Procedure Clear;
     Procedure Examine;
-    Function GetZipSize(var IsDirZipped: Boolean): Int64;
+    Function GetZipSize(var IsDirZipped: Boolean; var ABaseDir: String): Int64;
   Public
     Property BufferSize : LongWord Read FBufSize Write SetBufSize;
     Property OnOpenInputStream: TCustomInputStreamEvent read FOnOpenInputStream write FOnOpenInputStream;
@@ -2643,12 +2643,11 @@ begin
   end;
 end;
 
-function TUnZipper.GetZipSize(var IsDirZipped: Boolean): Int64;
+function TUnZipper.GetZipSize(var IsDirZipped: Boolean; var ABaseDir: String): Int64;
 var
   I: Integer;
   Item: TFullZipFileEntry;
   AllFiles: Boolean;
-  BasePath: String;
   P: Integer;
 begin
   AllFiles := (FFiles.Count = 0);
@@ -2656,14 +2655,13 @@ begin
   try
     ReadZipDirectory;
     Result := 0;
-    BasePath := '';
     if FEntries.Count > 0 then
     begin
       P := Pos('/', TZipFileEntry(FEntries.Items[0]).ArchiveFileName);
       if P = 0 then
         P := Pos('\', TZipFileEntry(FEntries.Items[0]).ArchiveFileName);
       if P <> 0 then
-      BasePath := Copy(TZipFileEntry(FEntries.Items[0]).ArchiveFileName, 1, P);
+      ABaseDir := Copy(TZipFileEntry(FEntries.Items[0]).ArchiveFileName, 1, P);
     end;
     for i:=0 to FEntries.Count-1 do
     begin
@@ -2672,10 +2670,14 @@ begin
       begin
         Result := Result + TZipFileEntry(Item).Size;
         if IsDirZipped then
-          if Pos(BasePath, Item.ArchiveFileName) = 0 then
+          if Pos(ABaseDir, Item.ArchiveFileName) = 0 then
             IsDirZipped := False;
       end;
     end;
+    if not IsDirZipped then
+      ABaseDir := ''
+    else
+      ABaseDir := Copy(ABaseDir, 1, Length(ABaseDir) - 1);
   finally
     CloseInput;
   end;

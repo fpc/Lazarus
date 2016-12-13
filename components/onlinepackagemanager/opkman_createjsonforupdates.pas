@@ -170,7 +170,10 @@ begin
     Exit;
   end;
 
-  SD.FileName := 'update_' + FPackage.DisplayName;
+  if FPackage.DisplayName <> '' then
+    SD.FileName := 'update_' + FPackage.DisplayName
+  else
+    SD.FileName := 'update_' + FPackage.Name;
   if SD.Execute then
   begin
     UpdatePackage := TUpdatePackage.Create;

@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Variants, fpjson, jsonparser, md5, contnrs,
-  PackageIntf, Laz2_XMLCfg;
+  PackageIntf, Laz2_XMLCfg, LazFileUtils;
 
 
 type
@@ -206,6 +206,7 @@ type
     FSVNURL: String;
     FUpdateSize: Int64;
     FIsDirZipped: Boolean;
+    FZippedBaseDir: String;
     FPackageFiles: TCollection;
     function GetDownloadable: Boolean;
     function GetExtractable: Boolean;
@@ -221,6 +222,7 @@ type
     property IsExtractable: Boolean read GetExtractable;
     property UpdateSize: Int64 read FUpdateSize write FUpdateSize;
     property IsDirZipped: Boolean read FIsDirZipped write FIsDirZipped;
+    property ZippedBaseDir: String read FZippedBaseDir write FZippedBaseDir;
     property DownloadZipURL: String read FDownloadZipURL write FDownloadZipURL;
     property HasUpdate: Boolean read FHasUpdate write FHasUpdate;
     property DisableInOPM: Boolean read FDisableInOPM write FDisableInOPM;
@@ -941,7 +943,13 @@ var
   Package: TPackage;
 begin
   Clear;
-  Result := True;
+  if Trim(JSON) = '' then
+  begin
+    Result := False;
+    Exit;
+  end
+  else
+    Result := True;
   Parser := TJSONParser.Create(JSON);
   try
     Data := Parser.Parse;
@@ -1021,7 +1029,7 @@ var
   FileName: String;
 begin
   FileName := Options.LocalRepositoryArchive + APackage.RepositoryFileName;
-  Result := (FileExists(FileName)) and
+  Result := (FileExistsUTF8(FileName)) and
             (MD5Print(MD5File(FileName)) = APackage.RepositoryFileHash) and
             (FileUtil.FileSize(FileName) = APackage.RepositoryFileSize);
 end;
@@ -1036,7 +1044,7 @@ begin
   begin
     PackageFile := TPackageFile(APackage.FPackageFiles.Items[I]);
     PackageFile.FPackageAbsolutePath := Options.LocalRepositoryPackages + APackage.PackageBaseDir + PackageFile.FPackageRelativePath + PackageFile.Name;
-    if not FileExists(PackageFile.FPackageAbsolutePath) then
+    if not FileExistsUTF8(PackageFile.FPackageAbsolutePath) then
     begin
       Result := False;
       Break;
@@ -1124,11 +1132,14 @@ function TSerializablePackages.IsPackageInstalled(const APackageFile: TPackageFi
       begin
         APackageFile.InstalledFileName := Package.Filename;
         APackageFile.InstalledFileVersion := IntToStr(Package.Version.Major) + '.' +
-                                         IntToStr(Package.Version.Minor) + '.' +
-                                         IntToStr(Package.Version.Release) + '.' +
-                                         IntToStr(Package.Version.Build);
-        APackageFile.InstalledFileDescription := GetPackageDescription(Package.Filename);
-        APackageFile.InstalledFileLincese := GetPackageLicense(Package.Filename);
+                                             IntToStr(Package.Version.Minor) + '.' +
+                                             IntToStr(Package.Version.Release) + '.' +
+                                             IntToStr(Package.Version.Build);
+        if FileExistsUTF8(APackageFile.InstalledFileName) then
+        begin
+          APackageFile.InstalledFileDescription := GetPackageDescription(Package.Filename);
+          APackageFile.InstalledFileLincese := GetPackageLicense(Package.Filename);
+        end;
         Result := True;
         Break;
       end;
@@ -1144,14 +1155,16 @@ begin
       begin
         FileName := StringReplace(APackageFile.Name, '.lpk', '.opkman', [rfIgnoreCase]);
         Result := (psExtracted in APackageFile.PackageStates) and
-                  FileExists(Options.LocalRepositoryPackages + APackageBaseDir + APackageFile.PackageRelativePath + FileName);
+                  FileExistsUTF8(Options.LocalRepositoryPackages + APackageBaseDir + APackageFile.PackageRelativePath + FileName);
         if Result then
         begin
           APackageFile.InstalledFileName := Options.LocalRepositoryPackages + APackageBaseDir + APackageFile.FPackageRelativePath + APackageFile.Name;
-          APackageFile.InstalledFileVersion := GetPackageVersion(APackageFile.InstalledFileName);
-          APackageFile.InstalledFileDescription := GetPackageDescription(APackageFile.InstalledFileName);
-          APackageFile.InstalledFileLincese := GetPackageLicense(APackageFile.InstalledFileName);
-          Result := True;
+          if FileExistsUTF8(APackageFile.InstalledFileName) then
+          begin
+            APackageFile.InstalledFileVersion := GetPackageVersion(APackageFile.InstalledFileName);
+            APackageFile.InstalledFileDescription := GetPackageDescription(APackageFile.InstalledFileName);
+            APackageFile.InstalledFileLincese := GetPackageLicense(APackageFile.InstalledFileName);
+          end;
         end
         else
           Result := CheckIDEPackages
@@ -1360,7 +1373,7 @@ begin
              (PackageFile.PackageType in [ptRunTime, ptRunTimeOnly]) then
       begin
         FileName := StringReplace(PackageFile.Name, '.lpk', '.opkman', [rfIgnoreCase]);
-        FileCreate(Options.LocalRepositoryPackages + Items[I].PackageBaseDir + PackageFile.PackageRelativePath + FileName);
+        FileCreateUTF8(Options.LocalRepositoryPackages + Items[I].PackageBaseDir + PackageFile.PackageRelativePath + FileName);
       end;
     end;
   end;

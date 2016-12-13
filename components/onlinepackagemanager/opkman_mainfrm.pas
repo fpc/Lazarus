@@ -196,10 +196,10 @@ end;
 
 procedure TMainFrm.GetPackageList;
 begin
+  Updates.PauseUpdate;
   Caption := rsLazarusPackageManager;
   VisualTree.VST.Clear;
-  if SerializablePackages.Count > 0 then
-    SerializablePackages.Clear;
+  VisualTree.VST.Invalidate;
   EnableDisableControls(False);
   SetupMessage(rsMainFrm_rsMessageDownload);
   PackageDownloader.DownloadJSON(10000);
@@ -314,13 +314,14 @@ begin
           Exit;
         end;
         VisualTree.PopulateTree;
-        Updates.StartUpdate;
         EnableDisableControls(True);
         SetupMessage;
         mJSON.Text := AJSON;
         cbAll.Checked := False;
         Caption := rsLazarusPackageManager + ' ' + Format(rsPackagesFound, [
           IntToStr(SerializablePackages.Count)]);
+        if Assigned(Updates) then
+          Updates.StartUpdate;
       end;
     etConfig:
       begin
@@ -542,9 +543,6 @@ end;
 
 procedure TMainFrm.tbRefreshClick(Sender: TObject);
 begin
-  Updates.PauseUpdate;
-  VisualTree.VST.Clear;
-  VisualTree.VST.Invalidate;
   GetPackageList;
 end;
 

@@ -235,6 +235,9 @@ var
   PackageFile: TPackageFile;
   HasUpdate: Boolean;
 begin
+  if (not Assigned(SerializablePackages)) or (SerializablePackages.Count = 0) then
+    Exit;
+
   FVersion := FXML.GetValue('Version/Value', 0);
   PackageCount := FXML.GetValue('Count/Value', 0);
   for I := 0 to PackageCount - 1 do
@@ -281,7 +284,7 @@ var
   Package: TPackage;
   PackageFile: TPackageFile;
 begin
-  if SerializablePackages.Count = 0 then
+  if (not Assigned(SerializablePackages)) or (SerializablePackages.Count = 0) then
     Exit;
   FXML.Clear;
   FXML.SetDeleteValue('Version/Value', OpkVersion, 0);
@@ -369,9 +372,9 @@ begin
                          FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'ssleay32.dll');
    if not FOpenSSLAvaialable then
    begin
-     ZipFile := ExtractFilePath(ParamStr(0)) + ExtractFileName(OpenSSLURL);
+     ZipFile := ExtractFilePath(ParamStr(0)) + ExtractFileName(cOpenSSLURL);
      try
-       FHTTPClient.Get(OpenSSLURL, ZipFile);
+       FHTTPClient.Get(cOpenSSLURL, ZipFile);
      except
      end;
      if FileExistsUTF8(ZipFile) then
@@ -450,7 +453,7 @@ begin
   CheckForOpenSSL;
   while not Terminated do
   begin
-    if (FNeedToUpdate) and (not FBusyUpdating) and (not FPaused) and (FOpenSSLAvaialable) then
+    if Assigned(SerializablePackages) and (FNeedToUpdate) and (not FBusyUpdating) and (not FPaused) and (FOpenSSLAvaialable) then
     begin
       FBusyUpdating := True;
       try
