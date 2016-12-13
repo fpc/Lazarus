@@ -323,10 +323,6 @@ msgstr ""
 msgid "Not resolving dependencies might lead to install failure!"
 msgstr ""
 
-#: opkman_const.rsmainfrm_rspackagedependency3
-msgid "is in"
-msgstr ""
-
 #: opkman_const.rsmainfrm_rspackagedependency4
 msgid "dependency list. Unchecking it might lead to installing failure. Do you wish to continue?"
 msgstr ""
@@ -644,15 +640,11 @@ msgid "Up to date"
 msgstr "Обновлений нет"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate5
-#, fuzzy
-#| msgid "New updates available"
 msgctxt "opkman_const.rsmainfrm_vsttext_packagestate5"
-msgid "New version available(repository)"
-msgstr "Доступно обновление"
+msgid "New version available (repository)"
+msgstr "Доступно обновление (в репозитории)"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate6
-#, fuzzy
-#| msgid "New updates available"
 msgctxt "opkman_const.rsmainfrm_vsttext_packagestate6"
 msgid "New updates available"
 msgstr "Доступно обновление"
@@ -853,11 +845,11 @@ msgstr ""
 
 #: opkman_const.rsprogressfrm_caption4
 msgid ". Please wait..."
-msgstr ""
+msgstr ". Подождите..."
 
 #: opkman_const.rsprogressfrm_caption5
 msgid "Unknown"
-msgstr ""
+msgstr "Неизвестно"
 
 #: opkman_const.rsprogressfrm_cbextractopen_caption0
 msgid "Extract after download"
@@ -938,42 +930,33 @@ msgstr ""
 #: opkman_const.rsprogressfrm_info0
 msgctxt "opkman_const.rsprogressfrm_info0"
 msgid "Installing package:"
-msgstr ""
+msgstr "Установка пакета:"
 
 #: opkman_const.rsprogressfrm_info1
 msgctxt "opkman_const.rsprogressfrm_info1"
 msgid "Success."
-msgstr ""
+msgstr "Успешно."
 
 #: opkman_const.rsprogressfrm_info2
-msgid "Contacting download site for"
-msgstr ""
+msgid "Contacting download site for \"%s\" (%s)"
+msgstr "Соединение с сайтом для загрузки \"%s\" (%s)"
 
 #: opkman_const.rsprogressfrm_info3
 msgid "Preparing to download. Please wait..."
-msgstr ""
+msgstr "Подготовка к загрузке. Подождите..."
 
 #: opkman_const.rsprogressfrm_info4
 msgid "Canceling. Please wait..."
-msgstr ""
+msgstr "Отмена. Подождите..."
 
 #: opkman_const.rsprogressfrm_info5
 msgid "Opening package:"
-msgstr ""
+msgstr "Открытие пакета:"
 
 #: opkman_const.rsprogressfrm_info6
 msgctxt "opkman_const.rsprogressfrm_info6"
-msgid "Success."
-msgstr ""
-
-#: opkman_const.rsprogressfrm_info7
 msgid "Compiling package:"
-msgstr ""
-
-#: opkman_const.rsprogressfrm_info8
-msgctxt "opkman_const.rsprogressfrm_info8"
-msgid "Installing package:"
-msgstr ""
+msgstr "Компиляция пакета:"
 
 #: opkman_const.rsprogressfrm_lbelapsed_caption
 msgid "Elapsed:"

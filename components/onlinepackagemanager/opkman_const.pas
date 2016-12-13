@@ -97,7 +97,7 @@ resourcestring
   rsMainFrm_VSTText_PackageState2 = 'Extracted';
   rsMainFrm_VSTText_PackageState3 = 'Installed';
   rsMainFrm_VSTText_PackageState4 = 'Up to date';
-  rsMainFrm_VSTText_PackageState5 = 'New version available(repository)';
+  rsMainFrm_VSTText_PackageState5 = 'New version available (repository)';
   rsMainFrm_VSTText_PackageState6 = 'New updates available';
   rsMainFrm_VSTText_PackageCategory0  = 'Charts and Graphs';
   rsMainFrm_VSTText_PackageCategory1  = 'Cryptography';
@@ -177,7 +177,6 @@ resourcestring
   rsMainFrm_rsPackageDependency0 = 'depends on package:';
   rsMainFrm_rsPackageDependency1 = 'Resolve dependency?';
   rsMainFrm_rsPackageDependency2 = 'Not resolving dependencies might lead to install failure!';
-  rsMainFrm_rsPackageDependency3 = 'is in';
   rsMainFrm_rsPackageDependency4 = 'dependency list. Unchecking it might lead to installing failure. Do you wish to continue?';
 
   //progress form
@@ -216,13 +215,11 @@ resourcestring
   rsProgressFrm_Conf0 = 'Continue with next one?';
   rsProgressFrm_Info0 = 'Installing package:';
   rsProgressFrm_Info1 = 'Success.';
-  rsProgressFrm_Info2 = 'Contacting download site for';
+  rsProgressFrm_Info2 = 'Contacting download site for "%s" (%s)';
   rsProgressFrm_Info3 = 'Preparing to download. Please wait...';
   rsProgressFrm_Info4 = 'Canceling. Please wait...';
   rsProgressFrm_Info5 = 'Opening package:';
-  rsProgressFrm_Info6 = 'Success.';
-  rsProgressFrm_Info7 = 'Compiling package:';
-  rsProgressFrm_Info8 = 'Installing package:';
+  rsProgressFrm_Info6 = 'Compiling package:';
 
   //options form
   rsOptions_FrmCaption = 'Options';

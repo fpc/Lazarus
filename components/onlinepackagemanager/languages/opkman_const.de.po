@@ -325,10 +325,6 @@ msgstr "Abhängigkeit auflösen?"
 msgid "Not resolving dependencies might lead to install failure!"
 msgstr "Nicht aufgelöste Abhängigkeiten können die Installation scheitern lassen!"
 
-#: opkman_const.rsmainfrm_rspackagedependency3
-msgid "is in"
-msgstr "ist in"
-
 #: opkman_const.rsmainfrm_rspackagedependency4
 msgid "dependency list. Unchecking it might lead to installing failure. Do you wish to continue?"
 msgstr "Abhängigkeitenliste. Sie zu deaktivieren kann zu Fehlern bei der Installation führen. Wollen Sie fortfahren?"
@@ -646,8 +642,10 @@ msgid "Up to date"
 msgstr "Aktuell"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate5
+#, fuzzy
+#| msgid "New version available(repository)"
 msgctxt "opkman_const.rsmainfrm_vsttext_packagestate5"
-msgid "New version available(repository)"
+msgid "New version available (repository)"
 msgstr "Neue Version verfügbar (Repository)"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate6
@@ -944,7 +942,9 @@ msgid "Success."
 msgstr "Erfolg."
 
 #: opkman_const.rsprogressfrm_info2
-msgid "Contacting download site for"
+#, fuzzy,badformat
+#| msgid "Contacting download site for \"%s\" ( %s)"
+msgid "Contacting download site for \"%s\" (%s)"
 msgstr "Kontaktiere Download-Seite für"
 
 #: opkman_const.rsprogressfrm_info3
@@ -960,18 +960,11 @@ msgid "Opening package:"
 msgstr "Öffne Package:"
 
 #: opkman_const.rsprogressfrm_info6
+#, fuzzy
+#| msgid "Success."
 msgctxt "opkman_const.rsprogressfrm_info6"
-msgid "Success."
-msgstr "Erfolg."
-
-#: opkman_const.rsprogressfrm_info7
 msgid "Compiling package:"
-msgstr "Kompiliere Package:"
-
-#: opkman_const.rsprogressfrm_info8
-msgctxt "opkman_const.rsprogressfrm_info8"
-msgid "Installing package:"
-msgstr "Installiere Package:"
+msgstr "Erfolg."
 
 #: opkman_const.rsprogressfrm_lbelapsed_caption
 msgid "Elapsed:"

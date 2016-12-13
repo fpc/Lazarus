@@ -353,27 +353,27 @@ begin
        end;
     imOpenPackageSuccess:
        begin
-         Data^.FName := rsProgressFrm_Info6;
+         Data^.FName := rsProgressFrm_Info1;
          Data^.FImageIndex := 1;
        end;
     imCompilePackage:
        begin
-         Data^.FName := rsProgressFrm_Info7 + ' "' + APackageName + '".';
+         Data^.FName := rsProgressFrm_Info6 + ' "' + APackageName + '".';
          Data^.FImageIndex := 0;
        end;
     imCompilePackageSuccess:
        begin
-         Data^.FName := rsProgressFrm_Info6;
+         Data^.FName := rsProgressFrm_Info1;
          Data^.FImageIndex := 1;
        end;
     imInstallPackage:
        begin
-         Data^.FName := rsProgressFrm_Info8 + ' "' + APackageName + '".';
+         Data^.FName := rsProgressFrm_Info0 + ' "' + APackageName + '".';
          Data^.FImageIndex := 0;
        end;
     imInstallPackageSuccess:
        begin
-         Data^.FName := rsProgressFrm_Info6;
+         Data^.FName := rsProgressFrm_Info1;
          Data^.FImageIndex := 1;
        end;
     imPackageCompleted:
@@ -450,7 +450,7 @@ begin
   Node := FVST.AddChild(nil);
   Data := FVST.GetNodeData(Node);
   case AUtyp of
-    0: Data^.FName := rsProgressFrm_Info2 + ' "' + AUPackageName + '"( ' + AUPackageURL + ')';
+    0: Data^.FName := Format(rsProgressFrm_Info2, [AUPackageName, AUPackageURL]);
     1: Data^.FName := rsProgressFrm_Info1;
     2: if AUErrMsg <> '' then
          Data^.FName := rsProgressFrm_Error7 + ': ' + AUErrMsg + '';
