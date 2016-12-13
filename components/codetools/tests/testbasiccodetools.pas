@@ -572,7 +572,7 @@ begin
 end;
 
 initialization
-  AddToBasicTestSuite(TTestBasicCodeTools);
+  AddToPascalTestSuite(TTestBasicCodeTools);
 
 end.
 

@@ -21,7 +21,7 @@
    ./testcodetools --format=plain --suite=TestFindDeclaration_LazTests --filemask=t*.pp
    ./testcodetools --format=plain --suite=TestFindDeclaration_LazTests --filemask=tdefaultproperty1.pp
 }
-unit TestFinddeclaration;
+unit TestFindDeclaration;
 
 {$mode objfpc}{$H+}
 
@@ -57,10 +57,6 @@ type
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
   end;
-
-var
-  BugsTestSuite: TTestSuite;
-  FindDeclarationTestSuite: TTestSuite;
 
 implementation
 
@@ -445,6 +441,6 @@ begin
 end;
 
 initialization
-  AddToFindDeclarationTestSuite(TTestFindDeclaration);
+  AddToPascalTestSuite(TTestFindDeclaration);
 end.
 

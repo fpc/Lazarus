@@ -120,7 +120,7 @@ begin
 end;
 
 initialization
-  AddToStdToolsTestSuite(TTestCTMethodJumpTool);
+  AddToPascalTestSuite(TTestCTMethodJumpTool);
 
 end.
 

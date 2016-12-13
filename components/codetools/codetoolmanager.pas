@@ -130,6 +130,7 @@ type
     FWriteLockCount: integer;// Set/Unset counter
     FWriteLockStep: integer; // current write lock ID
     FHandlers: array[TCodeToolManagerHandler] of TMethodList;
+    FErrorDbgMsg: string;
     procedure DoOnRescanFPCDirectoryCache(Sender: TObject);
     function GetBeautifier: TBeautifyCodeOptions; inline;
     function DoOnScannerGetInitValues(Scanner: TLinkScanner; Code: Pointer;
@@ -277,6 +278,7 @@ type
     property ErrorLine: integer read fErrorLine;
     property ErrorMessage: string read fErrorMsg;
     property ErrorTopLine: integer read fErrorTopLine;
+    property ErrorDbgMsg: string read FErrorDbgMsg;
     property Abortable: boolean read FAbortable write SetAbortable;
     property OnCheckAbort: TOnCodeToolCheckAbort
                                          read FOnCheckAbort write FOnCheckAbort;
@@ -1850,11 +1852,11 @@ end;
 procedure TCodeToolManager.WriteError;
 begin
   if FWriteExceptions then begin
-    DbgOut('### TCodeToolManager.HandleException: "'+ErrorMessage+'"');
-    if ErrorLine>0 then DbgOut(' at Line=',DbgS(ErrorLine));
-    if ErrorColumn>0 then DbgOut(' Col=',DbgS(ErrorColumn));
-    if ErrorCode<>nil then DbgOut(' in "',ErrorCode.Filename,'"');
-    DebugLn('');
+    FErrorDbgMsg:='### TCodeToolManager.HandleException: "'+ErrorMessage+'"';
+    if ErrorLine>0 then FErrorDbgMsg+=' at Line='+DbgS(ErrorLine);
+    if ErrorColumn>0 then FErrorDbgMsg+=' Col='+DbgS(ErrorColumn);
+    if ErrorCode<>nil then FErrorDbgMsg+=' in "'+ErrorCode.Filename+'"';
+    Debugln(FErrorDbgMsg);
     {$IFDEF CTDEBUG}
     WriteDebugReport(true,false,false,false,false,false);
     {$ENDIF}

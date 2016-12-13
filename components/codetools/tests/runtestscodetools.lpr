@@ -14,6 +14,12 @@
   at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
   to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
   MA 02111-1307, USA.
+
+  Abstract:
+    Testsuites for codetools.
+
+  Usage:
+
 }
 program runtestscodetools;
 
@@ -24,7 +30,7 @@ uses
   CodeToolManager, CodeToolsConfig,
   TestGlobals,
   TestBasicCodetools, TestCTRangeScan, TestMethodJumpTool, TestStdCodetools,
-  TestFinddeclaration, TestCompleteBlock, TestRefactoring,
+  TestFindDeclaration, TestCompleteBlock, TestRefactoring,
   // non Pascal
   TestCfgScript, TestCTH2Pas, TestCTXMLFixFragments,
   // compile test files to make sure they are valid Pascal
@@ -36,7 +42,7 @@ uses
   {$IFDEF Darwin}
   fdt_objccategory, fdt_objcclass,
   {$ENDIF}
-  fdt_classof, fdt_with, rt_explodewith, fdt_generics;
+  fdt_classof, fdt_with, rt_explodewith, fdt_generics, TestPascalParser;
 
 const
   ConfigFilename = 'codetools.config';

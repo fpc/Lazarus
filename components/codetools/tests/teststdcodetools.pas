@@ -197,7 +197,7 @@ begin
 end;
 
 initialization
-  AddToStdToolsTestSuite(TTestCTStdCodetools);
+  AddToPascalTestSuite(TTestCTStdCodetools);
 
 end.
 

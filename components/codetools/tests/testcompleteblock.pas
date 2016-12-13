@@ -1,15 +1,15 @@
 {
  Test all with:
-     ./runtests --format=plain --suite=TTestCodetoolsCompleteBlock
+   ./runtests --format=plain --suite=TTestCodetoolsCompleteBlock
 
  Test specific with:
-     ./runtests --format=plain --suite=TestCompleteBlockClassStart
-     ./runtests --format=plain --suite=TestCompleteBlockBegin
-     ./runtests --format=plain --suite=TestCompleteBlockRepeat
-     ./runtests --format=plain --suite=TestCompleteBlockCase
-     ./runtests --format=plain --suite=TestCompleteBlockTry
-     ./runtests --format=plain --suite=TestCompleteBlockAsm
-     ./runtests --format=plain --suite=TestCompleteBlockIf
+   ./runtests --format=plain --suite=TestCompleteBlockClassStart
+   ./runtests --format=plain --suite=TestCompleteBlockBegin
+   ./runtests --format=plain --suite=TestCompleteBlockRepeat
+   ./runtests --format=plain --suite=TestCompleteBlockCase
+   ./runtests --format=plain --suite=TestCompleteBlockTry
+   ./runtests --format=plain --suite=TestCompleteBlockAsm
+   ./runtests --format=plain --suite=TestCompleteBlockIf
 }
 unit TestCompleteBlock;
 
@@ -418,7 +418,7 @@ begin
 end;
 
 initialization
-  AddToRefactoringTestSuite(TTestCodetoolsCompleteBlock);
+  AddToPascalTestSuite(TTestCodetoolsCompleteBlock);
 
 end.
 

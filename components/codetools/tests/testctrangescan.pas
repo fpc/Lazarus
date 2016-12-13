@@ -392,7 +392,7 @@ begin
 end;
 
 initialization
-  AddToFindDeclarationTestSuite(TTestCodetoolsRangeScan);
+  AddToPascalTestSuite(TTestCodetoolsRangeScan);
 
 end.
 
