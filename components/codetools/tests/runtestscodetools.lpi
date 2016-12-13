@@ -9,7 +9,7 @@
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
-      <Title Value="testcodetools"/>
+      <Title Value="runtestscodetools"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
@@ -39,7 +39,7 @@
     </RequiredPackages>
     <Units Count="13">
       <Unit0>
-        <Filename Value="testcodetools.lpr"/>
+        <Filename Value="runtestscodetools.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
@@ -98,7 +98,7 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="testcodetools"/>
+      <Filename Value="runtestscodetools"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
