@@ -216,7 +216,6 @@ begin
         Width := 25;
         Options := Options - [coResizable];
         Text := rsMainFrm_VSTHeaderColumn_Button;
-        Options := Options - [coResizable];
       end;
      Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoShowSortGlyphs, hoVisible, hoAutoSpring];
      {$IFDEF LCLCarbon}
@@ -427,11 +426,11 @@ begin
        GrandChildData^.DownloadURL := SerializablePackages.Items[I].DownloadURL;
        GrandChildData^.DataType := 18;
        //add SVNURL(DataType = 19)
-       GrandChildNode := FVST.AddChild(ChildNode);
+       {GrandChildNode := FVST.AddChild(ChildNode);
        FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
        GrandChildData := FVST.GetNodeData(GrandChildNode);
        GrandChildData^.SVNURL := SerializablePackages.Items[I].SVNURL;
-       GrandChildData^.DataType := 19;
+       GrandChildData^.DataType := 19;}
     end;
     FVST.SortTree(0, opkman_VirtualTrees.sdAscending);
     ExpandEx;
@@ -1044,8 +1043,14 @@ begin
       if (Data^.DataType = 3) or (Data^.DataType = 9) then
       begin
         case Data^.DataType of
-          3: Data^.Description := PackageFile.InstalledFileDescription;
-          9: Data^.License := PackageFile.InstalledFileLincese;
+          3: if Data^.InstalledVersion <> '' then
+               Data^.Description := PackageFile.InstalledFileDescription
+             else
+               Data^.Description := PackageFile.Description;
+          9: if Data^.InstalledVersion <> '' then
+               Data^.License := PackageFile.InstalledFileLincese
+             else
+               Data^.License := PackageFile.License;
         end;
         if Assigned(Data^.Button) then
           Data^.Button.Enabled := not FVST.IsDisabled[Node];
