@@ -4356,15 +4356,13 @@ begin
   if bShow then
   begin
     if not HandleAllocated then CreateHandle;
+    if Assigned(FControls) then
+    begin
+      for n := 0 to FControls.Count - 1 do
+        if TObject(FControls[n]) is TWinControl then
+          TWinControl(FControls[n]).UpdateShowing;
+    end;
   end;
-
-  if Assigned(FControls) then
-  begin
-    for n := 0 to FControls.Count - 1 do
-      if TObject(FControls[n]) is TWinControl then
-        TWinControl(FControls[n]).UpdateShowing;
-  end;
-
   if not HandleAllocated then
   begin
     {$IFDEF VerboseShowing}
