@@ -2702,7 +2702,7 @@ begin
   {$IF defined(CHECK_POSITION) or defined(VerboseFormUpdateShowing) or defined(VerboseShowing)}
   DebugLn(['[TCustomForm.UpdateShowing] START ',DbgSName(Self),' Pos=',Left,',',Top,' Visible=',Visible,' Showing=',Showing]);
   {$ENDIF}
-  // If the the form is about to show, calculate its metrics
+  // If the form is about to show, calculate its metrics
   if Visible and (not (csDestroying in ComponentState)) then
   begin
     if not (csDesigning in ComponentState) then
