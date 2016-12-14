@@ -1023,9 +1023,24 @@ var
           OldWidget.DeliverMessage(Msg);
         end else
         begin
-          {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
-          Writeln('TQtWidgetSet.FocusChanged: *** DO NOT KILL FOCUS ***');
-          {$ENDIF}
+          if (OldWidget is TQtComboBox) and CheckIfActiveForm(OldWidget) then
+          begin
+            if (NewWidget = nil) and QWidget_isVisible(aold) and QWidget_isEnabled(aold) and
+              (TQtComboBox(OldWidget).LineEdit = nil) then
+            begin
+              {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+              DebugLn('WARNING: Qt mismatched kill focus message, backfocus to ',dbgsName(OldWidget.LCLObject),
+              ' LCLObject focus status ',dbgs(OldWidget.LCLObject.Focused));
+              {$ENDIF}
+              OldWidget.setFocus;
+            end else
+              OldWidget.DeliverMessage(Msg);
+          end else
+          begin
+            {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+            Writeln('TQtWidgetSet.FocusChanged: *** DO NOT KILL FOCUS FOR ',dbgsName(OldWidget),' ***');
+            {$ENDIF}
+          end;
         end;
       end else
         if CheckIfActiveForm(OldWidget) then
