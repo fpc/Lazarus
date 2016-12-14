@@ -416,7 +416,6 @@ begin
     end;
     if FNeedToBreak then
       Exit;
-    Sleep(2000);
     if (UpdCnt = 0) then
     begin
       FUSuccess := False;

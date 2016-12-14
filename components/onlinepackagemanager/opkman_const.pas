@@ -156,6 +156,7 @@ resourcestring
   rsMainFrm_miCreateJSONForUpdates = 'Create JSON for updates';
   rsMainFrm_miJSONShow =  'Show JSON';
   rsMainFrm_miJSONHide = 'Hide JSON';
+  rsMainFrm_miCopyToClpBrd = 'Copy to clipboard';
   rsMainFrm_PackagenameAlreadyExists = 'A package with the same name already exists!';
   rsMainFrm_FilenameAlreadyExists = 'A package with the same zip file already exists!';
   rsMainFrm_PackageAlreadyInstalled = 'The following packages are alrady installed. Continue with install?';

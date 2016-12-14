@@ -505,6 +505,14 @@ object MainFrm: TMainFrm
       Caption = 'Show JSON'
       OnClick = miJSONShowClick
     end
+    object MenuItem1: TMenuItem
+      Caption = '-'
+    end
+    object miCopyToClpBrd: TMenuItem
+      Caption = 'Copy to clipboard'
+      Enabled = False
+      OnClick = miCopyToClpBrdClick
+    end
   end
   object pmMemo: TPopupMenu
     left = 144

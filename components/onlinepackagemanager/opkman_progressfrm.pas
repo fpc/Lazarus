@@ -327,6 +327,7 @@ end;
 
 procedure TProgressFrm.DoOnZipCompleted(Sender: TObject);
 begin
+  Application.ProcessMessages;
   FCanClose := True;
   FSuccess := True;
   Close;
@@ -434,6 +435,7 @@ begin
   FSuccess := True;
   FNeedToRebuild := ANeedToRebuild;
   FInstallStatus := AInstallStatus;
+  Application.ProcessMessages;
   Sleep(1000);
   Close;
 end;
@@ -475,9 +477,9 @@ begin
     Data^.FImageIndex := 0;
     FVST.TopNode := Node;
     FVST.RepaintNode(Node);
-    Sleep(3000);
-    SetupControls(0);
     Application.ProcessMessages;
+    Sleep(2000);
+    SetupControls(0);
   end
   else
   begin
@@ -578,6 +580,7 @@ begin
   pbTotal.Top := lbReceivedTotal.Top + lbReceivedTotal.Height + 1;
   bCancel.Top := (pnButtons.Height - bCancel.Height) div 2;
   cbExtractOpen.Top := bCancel.Top + (bCancel.Height - cbExtractOpen.Height) div 2;
+  Application.ProcessMessages;
 end;
 
 procedure TProgressFrm.VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;

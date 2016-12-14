@@ -31,8 +31,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, contnrs,
   StdCtrls, ExtCtrls, Buttons, Menus, ComCtrls, IDECommands, LazFileUtils,
-  LCLIntf, fpjson, opkman_downloader, opkman_installer,
-  PackageIntf;
+  LCLIntf, fpjson, opkman_VirtualTrees, opkman_downloader, opkman_installer,
+  PackageIntf, Clipbrd;
 
 type
 
@@ -43,6 +43,8 @@ type
     cbPackageState: TComboBox;
     cbPackageType: TComboBox;
     imTBDis: TImageList;
+    MenuItem1: TMenuItem;
+    miCopyToClpBrd: TMenuItem;
     miCreateRepository: TMenuItem;
     miCreateRepositoryPackage: TMenuItem;
     tbCleanUp1: TToolButton;
@@ -76,6 +78,7 @@ type
     tbCleanUp: TToolButton;
     tbCreate: TToolButton;
     tbUpdate: TToolButton;
+    procedure miCopyToClpBrdClick(Sender: TObject);
     procedure miCreateRepositoryClick(Sender: TObject);
     procedure miCreateRepositoryPackageClick(Sender: TObject);
     procedure pnToolBarResize(Sender: TObject);
@@ -825,6 +828,22 @@ begin
   end;
 end;
 
+procedure TMainFrm.miCopyToClpBrdClick(Sender: TObject);
+var
+  Data: PData;
+  Node: PVirtualNode;
+begin
+  Node := VisualTree.VST.GetFirstSelected;
+  if Node <> nil then
+  begin
+    Data := VisualTree.VST.GetNodeData(Node);
+    case Data^.DataType of
+      17: Clipboard.AsText := Data^.HomePageURL;
+      18: Clipboard.AsText := Data^.DownloadURL;
+    end;
+  end;
+end;
+
 procedure TMainFrm.pnMainResize(Sender: TObject);
 begin
   pnMessage.Left := (pnMain.Width - pnMessage.Width) div 2;
@@ -909,6 +928,7 @@ begin
   miCreateRepository.Caption := rsMainFrm_miCreateJSONForUpdates;
   miJSONShow.Caption := rsMainFrm_miJSONShow;
   miJSONHide.Caption := rsMainFrm_miJSONHide;
+  miCopyToClpBrd.Caption := rsMainFrm_miCopyToClpBrd;
 
   edFilter.Hint := rsMainFrm_edFilter_Hint;
   spClear.Hint := rsMainFrm_spClear_Hint;

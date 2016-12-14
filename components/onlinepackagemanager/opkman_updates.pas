@@ -395,6 +395,8 @@ begin
                              FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'ssleay32.dll');
      end;
   end;
+  {$ELSE}
+  FOpenSSLAvaialable := True;
   {$ENDIF}
 end;
 

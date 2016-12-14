@@ -1538,13 +1538,14 @@ var
  Node: PVirtualNode;
  Data: PData;
  I, L, R: Integer;
+ MenuItem: TMenuItem;
 begin
-  if Button = mbLeft then
+  Node := FVST.GetNodeAt(X, Y);
+  if Node <> nil then
   begin
-    Node := FVST.GetNodeAt(X, Y);
-    if Node <> nil then
+    Data := FVST.GetNodeData(Node);
+    if Button = mbLeft then
     begin
-      Data := FVST.GetNodeData(Node);
       if (Data^.DataType = 17) or (Data^.DataType = 18) then
       begin
         for I := 0 to VST.Header.Columns.Count - 1 do
@@ -1566,8 +1567,15 @@ begin
            end;
          end;
       end;
+    end
+    else if Button = mbRight then
+    begin
+      MenuItem := FVST.PopupMenu.Items.Find(rsMainFrm_miCopyToClpBrd);
+      if MenuItem <> nil then
+        MenuItem.Enabled := ((Data^.DataType = 17) and (Trim(Data^.HomePageURL) <> '')) or
+                            ((Data^.DataType = 18) and (Trim(Data^.DownloadURL) <> ''));
     end;
-  end;
+  end
 end;
 
 procedure TVisualTree.VSTGetHint(Sender: TBaseVirtualTree; Node: PVirtualNode;
