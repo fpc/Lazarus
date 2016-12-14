@@ -1464,7 +1464,6 @@ var
   ComboWidget: PGtkWidget;
   Model: PGtkTreeModel;
   Index: Integer;
-  Text: String;
   Box: PGtkWidget;
   ItemList: TGtkListStoreStringList;
   LCLIndex: PLongint;
@@ -1487,19 +1486,7 @@ begin
     AWidgetInfo^.DataOwner := True;
   end;
   
-  // this should work but may not in all circumstances
-  Index := -1;
-  if AWithEntry = False then
-  begin // the current widget HAS an entry
-    Text:='';
-    GetText(ACustomComboBox, Text);
-    if Text = '' then
-      Index := -1
-    else
-      Index := ACustomComboBox.Items.IndexOf(Text);
-  end;
-  if Index = -1 then
-    Index := GetItemIndex(ACustomComboBox);
+  Index := GetItemIndex(ACustomComboBox);
 
   if PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button <> nil then
     FreeWidgetInfo(PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button);
