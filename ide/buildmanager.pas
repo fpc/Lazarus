@@ -77,6 +77,7 @@ type
     fTargetCPU: string;
     fLCLWidgetType: string;
     procedure DoOnRescanFPCDirectoryCache(Sender: TObject);
+    function GetTargetFilename: String;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro;
                                const MacroName: string; var s: string;
                                const {%H-}Data: PtrInt; var Handled, {%H-}Abort: boolean;
@@ -579,36 +580,36 @@ begin
   Result:=fLCLWidgetType;
 end;
 
+function TBuildManager.GetTargetFilename: String;
+begin
+  Result := GetProjectTargetFilename(Project1);
+  if GetProjectUsesAppBundle then
+    // return command line to Application Bundle (darwin only)
+    Result := ExtractFileNameWithoutExt(Result) + '.app';
+end;
+
 function TBuildManager.GetRunCommandLine: string;
 var
-  TargetFileName: string;
-  
-  function GetTargetFilename: String;
-  begin
-    Result := GetProjectTargetFilename(Project1);
-    
-    if GetProjectUsesAppBundle then
-    begin
-      // return command line to Application Bundle (darwin only)
-      Result := ExtractFileNameWithoutExt(Result) + '.app';
-    end;
-  end;
-  
+  TFN: string;  // Target Filename
 begin
   Result := '';
   if Project1=nil then exit;
   if Project1.RunParameterOptions.UseLaunchingApplication then
     Result := Project1.RunParameterOptions.LaunchingApplicationPathPlusParams;
 
-  if Result=''
-  then begin
-    Result:=Project1.RunParameterOptions.CmdLineParams;
-    if GlobalMacroList.SubstituteStr(Result) then begin
-      TargetFileName:='"'+GetTargetFilename+'"';
+  if Result='' then
+  begin
+    Result := Project1.RunParameterOptions.CmdLineParams;
+    if GlobalMacroList.SubstituteStr(Result) then
+    begin
+      TFN := GetTargetFilename;
+      if (TFN <> '') and (TFN[Length(TFN)] in AllowDirectorySeparators) then
+        TFN += ExtractFileNameOnly(Project1.CompilerOptions.GetDefaultMainSourceFileName);
+      TFN := '"'+TFN+'"';
       if Result='' then
-        Result:=TargetFileName
+        Result:=TFN
       else
-        Result:=TargetFilename+' '+Result;
+        Result:=TFN+' '+Result;
     end else
       Result:='';
   end else begin
