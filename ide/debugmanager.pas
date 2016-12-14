@@ -2195,7 +2195,7 @@ begin
         else
           if IDEMessageDialog(lisLaunchingApplicationInvalid,
             Format(lisTheLaunchingApplicationBundleDoesNotExists,
-              [LaunchingCmdLine, LineEnding, LineEnding, LineEnding+LineEnding]),
+              [LaunchingApplication, LineEnding, LineEnding, LineEnding+LineEnding]),
             mtError, [mbYes, mbNo, mbCancel]) = mrYes then
           begin
             if not BuildBoss.CreateProjectApplicationBundle then Exit;
@@ -2218,7 +2218,7 @@ begin
         else begin
           IDEMessageDialog(lisLaunchingApplicationInvalid,
             Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta,
-                   [LaunchingCmdLine, LineEnding, LineEnding+LineEnding]),
+                   [LaunchingApplication, LineEnding, LineEnding+LineEnding]),
             mtError, [mbOK]);
           Exit;
         end;
