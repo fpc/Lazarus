@@ -206,12 +206,6 @@ begin
         end;
       end;
 
-      // mantis #26206: Layered windows are only supported for top-level windows.
-      // After Windows 8 it is supported for child windows too.
-      if (WindowsVersion < wv8) and Assigned(AWinControl.Parent)
-      and (AWinControl is TCustomForm) and TCustomForm(AWinControl).AlphaBlend then
-        FlagsEx := FlagsEx and not WS_EX_LAYERED;
-
       Window := CreateWindowExW(FlagsEx, PWideChar(WideString(pClassName)),
         PWideChar(UTF8ToUTF16(WindowTitle)), Flags,
         Left, Top, Width, Height, Parent, 0, HInstance, @NCCreateParams);

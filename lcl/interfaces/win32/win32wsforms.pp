@@ -442,7 +442,11 @@ begin
       Height := Bounds.Bottom - Bounds.Top;
     end;
     SubClassWndProc := @CustomFormWndProc;
-    if not (csDesigning in lForm.ComponentState) and lForm.AlphaBlend then
+
+    // mantis #26206: Layered windows are only supported for top-level windows.
+    // After Windows 8 it is supported for child windows too.
+    if not (csDesigning in lForm.ComponentState) and lForm.AlphaBlend
+    and ((WindowsVersion >= wv8) or (Parent = 0)) then
       FlagsEx := FlagsEx or WS_EX_LAYERED;
   end;
   SetStdBiDiModeParams(AWinControl, Params);

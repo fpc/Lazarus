@@ -432,7 +432,8 @@ begin
     Height := lWinBounds.Bottom - lWinBounds.Top;
   end;
   //SubClassWndProc := @CustomFormWndProc;
-  if not (csDesigning in lForm.ComponentState) and lForm.AlphaBlend then
+  if not (csDesigning in lForm.ComponentState) and lForm.AlphaBlend
+  and ((WindowsVersion >= wv8) or (Parent = 0)) then
     FlagsEx := FlagsEx or WS_EX_LAYERED;
 
   //SetStdBiDiModeParams(AWinControl, Params);
