@@ -930,11 +930,16 @@ procedure TCustomComboBox.RealSetText(const AValue: TCaption);
 var
   I: integer;
 begin
-  I := FItems.IndexOf(AValue);
-  if I >= 0 then
-    ItemIndex := I
-  else if (not (csLoading in ComponentState)) then
-    ItemIndex := -1;
+  // when items have same text, FItems.IndexOf(AValue) gives wrong index. Issue #28683.
+  I := ItemIndex;
+  if (I < 0) or (I >= FItems.Count) or (FItems[I] <> AValue) then
+  begin
+    I := FItems.IndexOf(AValue);
+    if I >= 0 then
+      ItemIndex := I
+    else if (not (csLoading in ComponentState)) then
+      ItemIndex := -1;
+  end;
   inherited;
 end;
 
