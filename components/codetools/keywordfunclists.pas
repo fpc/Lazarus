@@ -1628,11 +1628,40 @@ begin
   WordIsCustomOperator:=TKeyWordFunctionList.Create('WordIsCustomOperator');
   KeyWordLists.Add(WordIsCustomOperator);
   with WordIsCustomOperator do begin
+    Add('IMPLICIT' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXPLICIT' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NEGATIVE' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('POSITIVE' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INC' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DEC' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LOGICALNOT' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TRUNC' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ROUND' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IN' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EQUAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NOTEQUAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('GREATERTHAN' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('GREATERTHANOREQUAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LESSTHAN' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LESSTHANOREQUAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ADD' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SUBTRACT' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MULTIPLY' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DIVIDE' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INTDIVIDE' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MODULUS' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LEFTSHIFT' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RIGHTSHIFT' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LOGICALAND' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LOGICALOR' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LOGICALXOR' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BITWISEAND' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BITWISEOR' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BITWISEXOR' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    // FPC operators
     Add(':=' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('=' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('<>' ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('IN' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('>' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('>=' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('<' ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1651,7 +1680,6 @@ begin
     Add('NOT' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INC' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEC' ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    // FPC operators
     Add('**' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('><' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('<<',{$ifdef FPC}@{$endif}AllwaysTrue);

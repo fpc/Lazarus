@@ -1193,6 +1193,8 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
    static function X: uNameSpace.Storage.Folders.PItem;
    function Intf.Method = ImplementingMethodName;
    class operator Inc(Rec: TRec1): TRec1;
+   class operator Initialize(var Rec: TRec1);
+   class operator Finalize(var Rec: TRec1);
 
  proc specifiers without parameters:
    stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline,
@@ -1237,9 +1239,10 @@ begin
   IsOperator:=(not IsFunction) and UpAtomIs('OPERATOR');
   // read name
   ReadNextAtom;
-  if IsOperator then
-    AtomIsCustomOperator(true,true,true)
-  else
+  if IsOperator then begin
+    AtomIsCustomOperator(true,true,true);
+    IsFunction:=not (UpAtomIs('INITIALIZE') or UpAtomIs('FINALIZE'));
+  end else
     AtomIsIdentifierSaveE;
   // create node for procedure head
   CreateChildNode;
@@ -1678,20 +1681,20 @@ begin
       Include(Attr,phpCreateNodes);
     ReadParamList(true,false,Attr);
   end;
-  if (pphIsOperator in ParseAttr) and (CurPos.Flag<>cafColon) then begin
-    // read operator result identifier
-    // example: operator =()IsEqual:boolean;
-    AtomIsIdentifierSaveE;
-    if (pphCreateNodes in ParseAttr) then begin
-      CreateChildNode;
-      CurNode.Desc:=ctnVarDefinition;
-      CurNode.EndPos:=CurPos.EndPos;
-      EndChildNode;
-    end;
-    ReadNextAtom;
-  end;
 
-  if ([pphIsFunction,pphIsOperator]*ParseAttr<>[]) then begin
+  if (pphIsFunction in ParseAttr) then begin
+    if (pphIsOperator in ParseAttr) and (CurPos.Flag=cafWord) then begin
+      // read operator result identifier
+      // example: operator =()IsEqual:boolean;
+      AtomIsIdentifierSaveE;
+      if (pphCreateNodes in ParseAttr) then begin
+        CreateChildNode;
+        CurNode.Desc:=ctnVarDefinition;
+        CurNode.EndPos:=CurPos.EndPos;
+        EndChildNode;
+      end;
+      ReadNextAtom;
+    end;
     // read function result type
     if CurPos.Flag=cafColon then begin
       ReadNextAtom;
@@ -2643,6 +2646,16 @@ var ChildCreated: boolean;
   IsFunction, HasForwardModifier, IsClassProc, IsOperator, IsMethod: boolean;
   ProcNode: TCodeTreeNode;
   ParseAttr: TParseProcHeadAttributes;
+
+  procedure CheckProcName;
+  begin
+    if IsOperator then begin
+      AtomIsCustomOperator(true,true,true);
+      IsFunction:=not (UpAtomIs('INITIALIZE') or UpAtomIs('FINALIZE'));
+    end else
+      AtomIsIdentifierSaveE;
+  end;
+
 begin
   if UpAtomIs('CLASS') then begin
     if not (CurSection in [ctnImplementation]+AllSourceTypes) then
@@ -2670,10 +2683,7 @@ begin
   IsOperator:=(not IsFunction) and UpAtomIs('OPERATOR');
   IsMethod:=False;
   ReadNextAtom;// read first atom of head (= name/operator + parameterlist + resulttype;)
-  if IsOperator then
-    AtomIsCustomOperator(true,true,true)
-  else
-    AtomIsIdentifierSaveE;
+  CheckProcName;
   if ChildCreated then begin
     // create node for procedure head
     CreateChildNode;
@@ -2699,10 +2709,7 @@ begin
       // read procedure name of a class method (the name after the . )
       IsMethod:=True;
       ReadNextAtom;
-      if IsOperator then
-        AtomIsCustomOperator(true,true,true)
-      else
-        AtomIsIdentifierSaveE;
+      CheckProcName;
       ReadNextAtom;
     end;
   end;
@@ -5775,10 +5782,21 @@ begin
 end;
 
 procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode);
-var HasForwardModifier, IsFunction, IsOperator, IsMethod: boolean;
+var
+  HasForwardModifier, IsFunction, IsOperator, IsMethod: boolean;
   ParseAttr: TParseProcHeadAttributes;
   IsProcType: Boolean;
   ProcHeadNode: TCodeTreeNode;
+
+  procedure CheckProcName;
+  begin
+    if IsOperator then begin
+      AtomIsCustomOperator(true,true,true);
+      IsFunction:=not (UpAtomIs('INITIALIZE') or UpAtomIs('FINALIZE'));
+    end else
+      AtomIsIdentifierSaveE;
+  end;
+
 begin
   if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
   if ProcNode.Desc=ctnMethodMap then begin
@@ -5818,7 +5836,7 @@ begin
     ReadNextAtom;// read first atom of head
     CurNode:=ProcHeadNode;
     if CurNode=nil then
-      if ProcNode.Desc=ctnProcedureType then
+      if IsProcType then
         SaveRaiseCharExpectedButAtomFound(';')
       else
         SaveRaiseStringExpectedButAtomFound('identifier');
@@ -5827,10 +5845,7 @@ begin
     if not IsProcType then begin
       // read procedure name of a class method (the name after the . )
       repeat
-        if IsOperator then
-          AtomIsCustomOperator(true,true,true)
-        else
-          AtomIsIdentifierSaveE;
+        CheckProcName;
         ReadNextAtom;
         if AtomIsChar('<') then
           ReadGenericParam;
