@@ -1211,8 +1211,7 @@ begin
 
     end else
     begin
-      if Assigned(NewWidget.LCLObject) and (GetParentForm(NewWidget.LCLObject) <> nil) and
-        GetParentForm(NewWidget.LCLObject).Visible then
+      if Assigned(NewWidget.LCLObject) and NewWidget.LCLObject.IsVisible then
           NewWidget.DeliverMessage(Msg);
     end;
   end;
