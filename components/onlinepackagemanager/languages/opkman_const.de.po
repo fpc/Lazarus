@@ -232,6 +232,10 @@ msgstr "Ein Package mit der selben Zip-Datei existiert bereits!"
 msgid "Filter by:"
 msgstr "Gefiltert nach:"
 
+#: opkman_const.rsmainfrm_micopytoclpbrd
+msgid "Copy to clipboard"
+msgstr ""
+
 #: opkman_const.rsmainfrm_micreatejsonforupdates
 msgid "Create JSON for updates"
 msgstr "Erzeuge JSON für Aktualisierungen"

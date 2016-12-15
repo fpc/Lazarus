@@ -222,6 +222,10 @@ msgstr ""
 msgid "Filter by:"
 msgstr ""
 
+#: opkman_const.rsmainfrm_micopytoclpbrd
+msgid "Copy to clipboard"
+msgstr ""
+
 #: opkman_const.rsmainfrm_micreatejsonforupdates
 msgid "Create JSON for updates"
 msgstr ""

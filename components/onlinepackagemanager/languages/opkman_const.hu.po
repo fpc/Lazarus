@@ -239,6 +239,10 @@ msgstr "Egy csomag már létezik ugyanezzel a zip fájllal!"
 msgid "Filter by:"
 msgstr "Szűrés:"
 
+#: opkman_const.rsmainfrm_micopytoclpbrd
+msgid "Copy to clipboard"
+msgstr ""
+
 #: opkman_const.rsmainfrm_micreatejsonforupdates
 msgid "Create JSON for updates"
 msgstr ""

@@ -46,7 +46,7 @@ msgstr "Справка"
 
 #: opkman_const.rscreatejsonforupdatesfrm_btest_caption
 msgid "Test"
-msgstr ""
+msgstr "Проверить"
 
 #: opkman_const.rscreatejsonforupdatesfrm_caption
 msgid "Create update JSON for package: "
@@ -194,7 +194,7 @@ msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_pnmessage_caption
 msgid "Please wait..."
-msgstr ""
+msgstr "Подождите..."
 
 #: opkman_const.rscreaterepositorypackagefrm_sddtitledst
 msgid "Save repository package to..."
@@ -210,19 +210,19 @@ msgstr "Сетевой диспетчер пакетов"
 
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
-msgstr ""
+msgstr "Всё/ничего"
 
 #: opkman_const.rsmainfrm_cball_hint
 msgid "Check/Uncheck packages"
-msgstr ""
+msgstr "Выбрать/снять выбор со всех пакетов"
 
 #: opkman_const.rsmainfrm_cbfilterby_hint
 msgid "Filter package list by:"
-msgstr ""
+msgstr "Фильтровать список пакетов по:"
 
 #: opkman_const.rsmainfrm_edfilter_hint
 msgid "Type filter text"
-msgstr ""
+msgstr "Введите текст фильтра"
 
 #: opkman_const.rsmainfrm_filenamealreadyexists
 msgid "A package with the same zip file already exists!"
@@ -231,6 +231,10 @@ msgstr ""
 #: opkman_const.rsmainfrm_lbfilter_caption
 msgid "Filter by:"
 msgstr "Фильтрация:"
+
+#: opkman_const.rsmainfrm_micopytoclpbrd
+msgid "Copy to clipboard"
+msgstr "Копировать в буфер обмена"
 
 #: opkman_const.rsmainfrm_micreatejsonforupdates
 msgid "Create JSON for updates"
@@ -337,15 +341,15 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_spclear_hint
 msgid "Clear filter text"
-msgstr ""
+msgstr "Очистить фильтр"
 
 #: opkman_const.rsmainfrm_spcollapse_hint
 msgid "Collapse package tree"
-msgstr ""
+msgstr "Свернуть дерево пакетов"
 
 #: opkman_const.rsmainfrm_spexpand_hint
 msgid "Expand package tree"
-msgstr ""
+msgstr "Развернуть дерево пакетов"
 
 #: opkman_const.rsmainfrm_tbcleanup_caption
 msgid "Cleanup"
@@ -721,7 +725,7 @@ msgstr ""
 
 #: opkman_const.rsoptions_cbproxy_caption
 msgid "Use proxy"
-msgstr ""
+msgstr "Использовать прокси-сервер"
 
 #: opkman_const.rsoptions_edlocalrepositoryarchive_hint
 msgid "The folder where the zip files are downloaded from the remote repository"
@@ -742,7 +746,7 @@ msgstr "Параметры"
 
 #: opkman_const.rsoptions_gbproxysettings_caption
 msgid "Proxy settings"
-msgstr ""
+msgstr "Параметры прокси-сервера"
 
 #: opkman_const.rsoptions_invaliddirectory_info
 msgid "Please enter a valid directory"
@@ -762,11 +766,11 @@ msgstr ""
 
 #: opkman_const.rsoptions_lbpassword_caption
 msgid "Password"
-msgstr ""
+msgstr "Пароль"
 
 #: opkman_const.rsoptions_lbport_caption
 msgid "Port"
-msgstr ""
+msgstr "Порт"
 
 #: opkman_const.rsoptions_lbremoterepository_caption
 msgid "Remote repository"
@@ -774,11 +778,11 @@ msgstr ""
 
 #: opkman_const.rsoptions_lbserver_caption
 msgid "Server"
-msgstr ""
+msgstr "Сервер"
 
 #: opkman_const.rsoptions_lbusername_caption
 msgid "Username"
-msgstr ""
+msgstr "Имя пользователя"
 
 #: opkman_const.rsoptions_proxyport_info
 msgid "Please enter the proxy server port!"
