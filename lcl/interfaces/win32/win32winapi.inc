@@ -1874,6 +1874,13 @@ begin
     Result := MultiMon.GetMonitorInfo(hMonitor, LPMonitorInfo(lpmi));
 end;
 
+function TWin32WidgetSet.GetDpiForMonitor(hmonitor: HMONITOR; dpiType: TMonitorDpiType; out dpiX: UINT; out dpiY: UINT): HRESULT;
+begin
+  if WindowsVersion >= wv8_1 then
+    Result := Win32Int.GetDpiForMonitor(hmonitor, dpiType, dpiX, dpiY)
+  else
+    Result := S_FALSE;
+end;
 {------------------------------------------------------------------------------
   Method:  GetObject
   Params:  GDIObj  - handle to graphics object of interest

@@ -1034,6 +1034,11 @@ begin
   Result := False;
 end;
 
+function TWidgetset.GetDpiForMonitor(hmonitor: HMONITOR; dpiType: TMonitorDpiType; out dpiX: UINT; out dpiY: UINT): HRESULT;
+begin
+  Result := S_FALSE;
+end;
+
 function TWidgetSet.GetObject(GDIObject: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
 begin
   Result := 0;

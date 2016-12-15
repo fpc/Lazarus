@@ -282,6 +282,44 @@ var
   MessageStackDepth: string = '';
 {$endif}
 
+// Multi Dpi support (not yet in FCL); ToDo: move to FCL
+type
+  TGetDpiForMonitor = function(hmonitor: HMONITOR; dpiType: TMonitorDpiType; out dpiX: UINT; out dpiY: UINT): HRESULT; stdcall;
+var
+  GetDpiForMonitor: TGetDpiForMonitor;
+  g_pfnGetDpiForMonitor: TGetDpiForMonitor = nil;
+  g_fShellScalingInitDone: Boolean = False;
+
+function InitShellScalingStubs: Boolean;
+var
+  hShcore: Windows.HMODULE;
+begin
+  if g_fShellScalingInitDone then
+    Exit(@g_pfnGetDpiForMonitor <> nil);
+
+  hShcore := GetModuleHandle('Shcore');
+  if hShcore<>0 then
+  begin
+    Pointer(g_pfnGetDpiForMonitor) := GetProcAddress(hShcore, 'GetDpiForMonitor');
+
+    g_fShellScalingInitDone := True;
+  end else
+  begin
+    Pointer(g_pfnGetDpiForMonitor)    := nil;
+  end;
+end;
+
+function xGetDpiForMonitor(hmonitor: HMONITOR; dpiType: TMonitorDpiType;
+  out dpiX: UINT; out dpiY: UINT): HRESULT; stdcall;
+begin
+  if InitShellScalingStubs then
+    Exit(g_pfnGetDpiForMonitor(hmonitor, dpiType, dpiX, dpiY));
+
+  dpiX := 0;
+  dpiY := 0;
+  Result := S_FALSE;
+end;
+
 {$I win32listsl.inc}
 {$I win32callback.inc}
 {$I win32object.inc}
@@ -290,6 +328,8 @@ var
 
 
 initialization
+  Pointer(GetDpiForMonitor) := @xGetDpiForMonitor;
+
   SystemCharSetIsUTF8:=true;
 
   MMenuItemInfoSize := sizeof(MENUITEMINFO);

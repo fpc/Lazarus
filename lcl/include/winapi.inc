@@ -433,6 +433,11 @@ begin
   Result := Widgetset.GetMonitorInfo(hMonitor, lpmi);
 end;
 
+function GetDpiForMonitor(hmonitor: HMONITOR; dpiType: TMonitorDpiType; out dpiX: UINT; out dpiY: UINT): HRESULT;
+begin
+  Result := Widgetset.GetDpiForMonitor(hmonitor, dpiType, dpiX, dpiY);
+end;
+
 function GetObject(GDIObject: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
 begin
   Result := WidgetSet.GetObject(GDIObject, BufSize, Buf);

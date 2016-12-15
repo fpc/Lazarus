@@ -111,6 +111,8 @@ function GetIconInfo(AIcon: HICON; AIconInfo: PIconInfo): Boolean; override;
 function GetKeyState(NVirtKey: Integer): SmallInt; override;
 function GetMapMode(DC: HDC): Integer; override;
 function GetMonitorInfo(hMonitor: HMONITOR; lpmi: LCLType.PMonitorInfo): Boolean; override;
+function GetDpiForMonitor(hmonitor: HMONITOR; dpiType: TMonitorDpiType;
+  out dpiX: UINT; out dpiY: UINT): HRESULT; override;
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
 function GetParent(Handle: HWND): HWND; override;
 function GetProp(Handle: HWND; Str: PChar): Pointer; override;
