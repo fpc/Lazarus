@@ -161,7 +161,8 @@ begin
 
   if Scaled and (Monitor.PixelsPerInch<>PixelsPerInch) then
     AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, Monitor.PixelsPerInch,
-      Width, MulDiv(Width, Monitor.PixelsPerInch, PixelsPerInch), False);
+      Width, MulDiv(Width, Monitor.PixelsPerInch, PixelsPerInch),
+      Screen.PixelsPerInch<>Monitor.PixelsPerInch);
 end;
 
 {------------------------------------------------------------------------------
