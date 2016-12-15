@@ -2382,7 +2382,10 @@ end;
 
 function TCustomForm.GetMonitor: TMonitor;
 begin
-  Result := Screen.MonitorFromWindow(Handle, mdNearest);
+  if HandleAllocated then
+  Result := Screen.MonitorFromWindow(Handle, mdNearest)
+  else
+  Result :=Screen.MonitorFromPoint(point(Left,Top));
 end;
 
 {------------------------------------------------------------------------------
