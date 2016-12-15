@@ -1913,7 +1913,8 @@ begin
 
   OldScaled := Scaled;
   inherited SetScaled(AScaled);
-  if not OldScaled and Scaled and not (csDesigning in ComponentState) then // AutoScale in runtime
+  if not OldScaled and Scaled
+  and (ComponentState * [csDesigning, csLoading] = []) then // not in designtime and not when loading
     AutoScale(Screen.PixelsPerInch<>Monitor.PixelsPerInch);
 end;
 
