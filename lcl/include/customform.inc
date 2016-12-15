@@ -1553,6 +1553,35 @@ begin
   end;
 end;
 
+procedure TCustomForm.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+  const AXProportion, AYProportion: Double; const AScale0Fonts: Boolean);
+var
+  NewWidth, NewHeight, OldWidth, OldHeight: Integer;
+begin
+  if Assigned(Parent) then
+  begin
+    inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion, AScale0Fonts);
+    Exit;
+  end;
+
+  if (AScale0Fonts or (Font.Height<>0)) and (not ParentFont or (Parent=nil)) then
+  begin
+    if Font.Size<>0 then
+      Font.Size := Round(Font.Size*AYProportion)
+    else
+      Font.Height := Round(GetFontData(Font.Reference.Handle).Height*AYProportion);
+  end;
+
+  // Apply the changes
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+  begin
+    BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
+    Constraints.AutoAdjustLayout(AXProportion, AYProportion);
+
+    SetBounds(Left, Top, Round(Width*AXProportion), Round(Height*AYProportion));
+  end;
+end;
+
 procedure TCustomForm.DoRemoveActionList(List: TCustomActionList);
 begin
   if FActionLists<>nil then
