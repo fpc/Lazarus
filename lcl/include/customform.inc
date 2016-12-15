@@ -159,9 +159,9 @@ begin
   EndFormUpdate; // the BeginFormUpdate is in CreateNew
   inherited AfterConstruction;
 
-  if Scaled and (Screen.PixelsPerInch<>PixelsPerInch) then
-    AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, Screen.PixelsPerInch,
-      Width, MulDiv(Width, Screen.PixelsPerInch, PixelsPerInch), False);
+  if Scaled and (Monitor.PixelsPerInch<>PixelsPerInch) then
+    AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, Monitor.PixelsPerInch,
+      Width, MulDiv(Width, Monitor.PixelsPerInch, PixelsPerInch), False);
 end;
 
 {------------------------------------------------------------------------------
