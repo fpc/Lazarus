@@ -27,6 +27,16 @@ begin
     Result := Left;
 end;
 
+function TMonitor.GetPixelsPerInch: Integer;
+var
+  X, Y: UINT;
+begin
+  if WidgetSet.GetDpiForMonitor(FHandle, MDT_EFFECTIVE_DPI, X, Y)=S_OK then
+    Result := X
+  else
+    Result := Screen.PixelsPerInch;
+end;
+
 function TMonitor.GetHeight: Integer;
 begin
   with GetBoundsRect do

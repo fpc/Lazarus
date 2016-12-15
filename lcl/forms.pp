@@ -940,6 +940,7 @@ type
     function GetInfo(out Info: TMonitorInfo): Boolean; {inline; fpc bug - compilation error with inline}
     function GetLeft: Integer;
     function GetHeight: Integer;
+    function GetPixelsPerInch: Integer;
     function GetTop: Integer;
     function GetWidth: Integer;
     function GetBoundsRect: TRect;
@@ -955,6 +956,7 @@ type
     property BoundsRect: TRect read GetBoundsRect;
     property WorkareaRect: TRect read GetWorkareaRect;
     property Primary: Boolean read GetPrimary;
+    property PixelsPerInch: Integer read GetPixelsPerInch;
   end;
 
   { TMonitorList }
