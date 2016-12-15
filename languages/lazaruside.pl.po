@@ -5052,7 +5052,7 @@ msgid "Bottoms"
 msgstr ""
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
-msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr ""
 
 #: lazarusidestrconsts.lisbottomspaceequally
@@ -11684,7 +11684,7 @@ msgid "Left anchoring"
 msgstr "Lewe umocowanie"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
-msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr ""
 
 #: lazarusidestrconsts.lisleftsides
@@ -17013,7 +17013,7 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr "Prawy odstęp obramowania. Ta wartość jest dodawana do podstawowego odstępu."
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
-msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr ""
 
 #: lazarusidestrconsts.lisrightsides
@@ -18694,7 +18694,7 @@ msgid "Tops"
 msgstr ""
 
 #: lazarusidestrconsts.listopsiblingcomboboxhint
-msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr ""
 
 #: lazarusidestrconsts.listopspaceequally

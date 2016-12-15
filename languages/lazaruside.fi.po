@@ -4752,8 +4752,8 @@ msgstr "Alareunat"
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Tämä on naapurikontrolli, mihin alareuna on ankkuroitu. Tyhjä tarkoittaa emokontrollia."
 
 #: lazarusidestrconsts.lisbottomspaceequally
@@ -11293,8 +11293,8 @@ msgstr "Vasemman reunan ankkurointi"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Tämä on naapurikontrolli, mihin vasen reuna on ankkuroitu. Tyhjä tarkoittaa emokontrollia."
 
 #: lazarusidestrconsts.lisleftsides
@@ -16229,8 +16229,8 @@ msgstr "Oikea reuna-alue. Tämä arvo lisätään yhteiseen reuna-alueeseen."
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Tämä on naapurikontrolli, mihin oikea reuna on ankkuroitu. Tyhjä tarkoittaa emokontrollia."
 
 #: lazarusidestrconsts.lisrightsides
@@ -17865,8 +17865,8 @@ msgstr "Yläreunat"
 
 #: lazarusidestrconsts.listopsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Tämä on naapurikontrolli, mihin yläreuna on ankkuroitu. Tyhjä tarkoittaa emokontrollia."
 
 #: lazarusidestrconsts.listopspaceequally

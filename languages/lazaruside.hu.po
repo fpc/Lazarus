@@ -4784,8 +4784,8 @@ msgstr "Alsó oldalak egy vonalban"
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Ez az a társvezérlő, amelyikhez az alsó oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen."
 
 #: lazarusidestrconsts.lisbottomspaceequally
@@ -11316,8 +11316,8 @@ msgstr "Bal oldal horgonyozása"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Ez az a társvezérlő, amelyikhez a bal oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen."
 
 #: lazarusidestrconsts.lisleftsides
@@ -16306,8 +16306,8 @@ msgstr "Jobb oldali keret-térköz. Ez az érték hozzáadódik az alap oldalté
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Ez az a társvezérlő, amelyikhez a jobb oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen."
 
 #: lazarusidestrconsts.lisrightsides
@@ -17944,8 +17944,8 @@ msgstr "Felső oldalak egy vonalban"
 
 #: lazarusidestrconsts.listopsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Ez az a társvezérlő, amelyikhez a felső oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen."
 
 #: lazarusidestrconsts.listopspaceequally

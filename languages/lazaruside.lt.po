@@ -4916,8 +4916,8 @@ msgstr "Sutapdinti apatinius kraštus"
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr ""
 "Tai kaimyninė komponentė, prie kurios bus pririštas apatinis kraštas.\n"
 "Nurodant tėvą, laukelis paliekamas tuščias.\n"
@@ -11643,8 +11643,8 @@ msgstr "Kairės prieraiša"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr ""
 "Tai kaimyninė komponentė, prie kurios bus pririštas kairysis kraštas.\n"
 "Nurodant tėvą, laukelis paliekamas tuščias.\n"
@@ -16767,8 +16767,8 @@ msgstr ""
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr ""
 "Tai kaimyninė komponentė, prie kurios bus pririštas dešinysis kraštas.\n"
 "Nurodant tėvą, laukelis paliekamas tuščias.\n"
@@ -18544,8 +18544,8 @@ msgstr "Sutapdinti viršutinius kraštus"
 
 #: lazarusidestrconsts.listopsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr ""
 "Tai kaimyninė komponentė, prie kurios bus pririštas viršutinis kraštas.\n"
 "Nurodant tėvą, laukelis paliekamas tuščias.\n"

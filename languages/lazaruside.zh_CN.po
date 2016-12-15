@@ -4982,8 +4982,8 @@ msgstr "底部"
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
 
 #: lazarusidestrconsts.lisbottomspaceequally
@@ -11728,8 +11728,8 @@ msgstr "左锚点"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "This is the sibling control to which the left side is anchored. Leave empty for parent."
 
 #: lazarusidestrconsts.lisleftsides
@@ -16927,8 +16927,8 @@ msgstr "右边距. 这个值将添加为基础边距并且设置为控件的左�
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "This is the sibling control to which the right side is anchored. Leave empty for parent."
 
 #: lazarusidestrconsts.lisrightsides
@@ -18654,8 +18654,8 @@ msgstr "上方"
 
 #: lazarusidestrconsts.listopsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "This is the sibling control to which the top side is anchored. Leave empty for parent."
 
 #: lazarusidestrconsts.listopspaceequally

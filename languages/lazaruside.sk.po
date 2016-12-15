@@ -5047,8 +5047,8 @@ msgstr "Spodné okraje"
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Toto je súrodenec prvku, ku ktorého spodnej strane je ukotvený. Ponechajte prázdne pre rodiča."
 
 #: lazarusidestrconsts.lisbottomspaceequally
@@ -11789,8 +11789,8 @@ msgstr "Ľavé ukotvenie"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Toto·je·súrodenec·prvku,·ku·ktorého·ľavej·strane·je·ukotvený.·Ponechajte·prázdne·pre·rodiča"
 
 #: lazarusidestrconsts.lisleftsides
@@ -17144,8 +17144,8 @@ msgstr "Pravý okraj.·Táto·hodnota·je·pridaná·k·základnému·okraju·a�
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Toto·je·súrodenec·prvku,·ku·ktorého·pravej·strane·je·ukotvený.·Ponechajte·prázdne·pre·rodiča"
 
 #: lazarusidestrconsts.lisrightsides
@@ -18891,8 +18891,8 @@ msgstr "Horné okraje"
 
 #: lazarusidestrconsts.listopsiblingcomboboxhint
 #, fuzzy
-#| msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
-msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+#| msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Toto·je·súrodenec·prvku,·ku·ktorého·hornej·strane·je·ukotvený.·Ponechajte·prázdne·pre·rodiča"
 
 #: lazarusidestrconsts.listopspaceequally

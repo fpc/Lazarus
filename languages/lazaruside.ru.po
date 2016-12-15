@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-12-12 01:32+0300\n"
+"PO-Revision-Date: 2016-12-16 01:38+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4782,7 +4782,7 @@ msgid "Bottoms"
 msgstr "Нижние края"
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
-msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Это сосед, к которому привязывается нижняя граница. Оставьте пустым для привязки к родителю в стиле Delphi (BorderSpacing и ReferenceSide не имеют значения)."
 
 #: lazarusidestrconsts.lisbottomspaceequally
@@ -11310,7 +11310,7 @@ msgid "Left anchoring"
 msgstr "Левая привязка"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
-msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Это сосед, к которому привязывается левая граница. Оставьте пустым для привязки к родителю в стиле Delphi (BorderSpacing и ReferenceSide не имеют значения)."
 
 #: lazarusidestrconsts.lisleftsides
@@ -16299,7 +16299,7 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr "Правый зазор. Его значение добавляется к базовуму зазору и используется для определения пространства справа от компонента."
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
-msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Это сосед, к которому привязывается правая граница. Оставьте пустым для привязки к родителю в стиле Delphi (BorderSpacing и ReferenceSide не имеют значения)."
 
 #: lazarusidestrconsts.lisrightsides
@@ -17935,7 +17935,7 @@ msgid "Tops"
 msgstr "Верхние края"
 
 #: lazarusidestrconsts.listopsiblingcomboboxhint
-msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
+msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Это сосед, к которому привязывается верхняя граница. Оставьте пустым для привязки к родителю в стиле Delphi (BorderSpacing и ReferenceSide не имеют значения)."
 
 #: lazarusidestrconsts.listopspaceequally
