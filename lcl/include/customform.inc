@@ -504,6 +504,20 @@ begin
     MoveToDefaultPosition;
 end;
 
+procedure TCustomForm.AutoScale(const AScale0Fonts: Boolean);
+begin
+  if not Scaled then
+  begin
+    Scaled := True; // will execute AutoScale
+    Exit;
+  end;
+
+  if PixelsPerInch<>Monitor.PixelsPerInch then
+    AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, Monitor.PixelsPerInch,
+      MulDiv(Width, Monitor.PixelsPerInch, PixelsPerInch),
+      MulDiv(Height, Monitor.PixelsPerInch, PixelsPerInch), AScale0Fonts);
+end;
+
 {------------------------------------------------------------------------------
   procedure TCustomForm.SetWindowFocus;
  ------------------------------------------------------------------------------}
@@ -1888,6 +1902,19 @@ begin
   WindowState := wsNormal;
   SetBounds(ALeft, ATop, AWidth, AHeight);
   WindowState := prevWindowState;
+end;
+
+procedure TCustomForm.SetScaled(const AScaled: Boolean);
+var
+  OldScaled: Boolean;
+begin
+  if Scaled=AScaled then
+    Exit;
+
+  OldScaled := Scaled;
+  inherited SetScaled(AScaled);
+  if not OldScaled and Scaled and not (csDesigning in ComponentState) then // AutoScale in runtime
+    AutoScale(Screen.PixelsPerInch<>Monitor.PixelsPerInch);
 end;
 
 {------------------------------------------------------------------------------

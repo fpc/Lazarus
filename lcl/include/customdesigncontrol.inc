@@ -50,3 +50,8 @@ begin
   else
     raise EInvalidOperation.Create(sCannotSetDesignTimePPI);
 end;
+
+procedure TCustomDesignControl.SetScaled(const AScaled: Boolean);
+begin
+  FScaled := AScaled;
+end;

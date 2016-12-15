@@ -261,6 +261,8 @@ type
 
     procedure SetDesignTimePPI(const ADesignTimePPI: Integer);
   protected
+    procedure SetScaled(const AScaled: Boolean); virtual;
+
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy; const AFromDPI,
       AToDPI, AOldFormWidth, ANewFormWidth: Integer; const AScale0Fonts: Boolean); override;
     procedure Loaded; override;
@@ -270,7 +272,7 @@ type
     property DesignTimeDPI: Integer read FDesignTimePPI write SetDesignTimePPI stored False; deprecated 'Use DesignTimePPI instead. DesignTimeDPI will be removed in 1.8';
     property DesignTimePPI: Integer read FDesignTimePPI write SetDesignTimePPI default 96;
     property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch stored False;
-    property Scaled: Boolean read FScaled write FScaled default DefaultScaled;
+    property Scaled: Boolean read FScaled write SetScaled default DefaultScaled;
   end;
 
 
@@ -581,6 +583,7 @@ type
     procedure DoAutoSize; override;
     procedure SetAutoSize(Value: Boolean); override;
     procedure SetAutoScroll(Value: Boolean); override;
+    procedure SetScaled(const AScaled: Boolean); override;
     procedure DoAddActionList(List: TCustomActionList);
     procedure DoRemoveActionList(List: TCustomActionList);
     procedure ProcessResource;virtual;
@@ -659,7 +662,8 @@ type
     function ActiveMDIChild: TCustomForm; virtual;
     function GetMDIChildren(AIndex: Integer): TCustomForm; virtual;
     function MDIChildCount: Integer; virtual;
-
+  public
+    procedure AutoScale(const AScale0Fonts: Boolean); // set scaled to True and AutoAdjustLayout to current monitor PPI
   public
     // drag and dock
     procedure Dock(NewDockSite: TWinControl; ARect: TRect); override;
