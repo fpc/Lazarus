@@ -3853,7 +3853,8 @@ begin
       Trim(lisChangeBuildMode + ' ' + KeyValuesToCaptionStr(ACmd.ShortcutA, ACmd.ShortcutB, '('));
 
   ACmd.Hint := ABuildHint;
-  ProjInspector.OptionsBitBtn.Hint := ABuildHint;
+  if ProjInspector<>nil then
+    ProjInspector.OptionsBitBtn.Hint := ABuildHint;
 end;
 
 procedure TMainIDE.UpdatePackageCommands(Sender: TObject);
