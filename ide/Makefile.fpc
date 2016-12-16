@@ -108,6 +108,7 @@ DEFAULT_IDE_OPTIONS= $(LAZARUS_LIBPATHS) \
 # Options to compile an IDE with a lot of packages
 BIG_IDE_OPTIONS=-dBigIDE $(DEFAULT_IDE_OPTIONS) \
   -Fu../components/synedit/design/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/lazcontrols/design/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/rtticontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/cairocanvas/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/printers/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
@@ -125,6 +126,7 @@ BIG_IDE_OPTIONS=-dBigIDE $(DEFAULT_IDE_OPTIONS) \
   -Fu../components/tachart/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/todolist/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/datetimectrls/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/datetimectrls/design/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/jcf2/IdePlugin/lazarus/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/chmhelp/packages/help/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/chmhelp/packages/idehelp/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \

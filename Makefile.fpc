@@ -51,8 +51,8 @@ help:
 	@$(ECHO)
 	@$(ECHO) " Main targets"
 	@$(ECHO) "                  Without any target, target 'all' will be invoked."
-	@$(ECHO) "   all            build minimal IDE, lazbuild, startlazarus."
-	@$(ECHO) "   clean          deletes files that 'all' creates. It does not clean up all possible"
+	@$(ECHO) "   all            build all needed, i.e. minimal IDE, lazbuild, startlazarus."
+	@$(ECHO) "   clean          deletes files that 'bigide' creates. It does not clean up all possible"
 	@$(ECHO) "                  targets. Clean other target: make clean LCL_PLATFORM=qt"
 	@$(ECHO) "   distclean      Clean all targets and common leftovers."
 	@$(ECHO) "   lazbuild       build lazbuild and lcl with nogui widgetset"
@@ -65,11 +65,11 @@ help:
 	@$(ECHO) "   registration   build package FCL"
 	@$(ECHO) "   lazutils       build package LazUtils, requires registration"
 	@$(ECHO) "   codetools      build package CodeTools, requires lazutils"
-	@$(ECHO) "   lcl            build package LCL, requires lazutils"
+	@$(ECHO) "   lcl            build package LCLBase and LCL, requires lazutils"
 	@$(ECHO) "   tools          build lazres, svn2revisioninc, updatepofiles, lrstolfm,"
 	@$(ECHO) "                  requires LCL with nogui widgetset"
 	@$(ECHO) "   basecomponents build debuggerintf, lazdebuggergdbmi, lazcontrols, synedit, ideintf"
-       	@$(ECHO) "                  for the LCL_PLATFORM, requires lcl"
+   	@$(ECHO) "                  for the LCL_PLATFORM, requires lcl"
 	@$(ECHO) "   bigidecomponents build many extra packages for the LCL_PLATFORM, requires basecomponents"
 	@$(ECHO) "   lhelp          build lhelp, requires bigidecomponents"
 	@$(ECHO) "   starter        build startlazarus, requires basecomponents"
@@ -130,7 +130,7 @@ lcl:
 	$(MAKE) -C lcl
 
 #-----------------------------------------------------------------------------
-# build lazcontrols, synedit, ideintf for the LCL_PLATFORM
+# build required LCL components needed by IDE for the LCL_PLATFORM
 # (Note: lazutils and codetools are shared on all LCL platforms)
 # requires lcl
 basecomponents:

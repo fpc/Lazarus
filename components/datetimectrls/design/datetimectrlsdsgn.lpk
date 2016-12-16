@@ -11,7 +11,7 @@
       <SearchPaths>
         <IncludeFiles Value="."/>
         <OtherUnitFiles Value="."/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
     </CompilerOptions>
     <Description Value="TDateTimePicker - the cross-platform control behaving much like VCL's TDateTimePicker. TDBDateTimePicker - the data-aware version of TDateTimePicker"/>

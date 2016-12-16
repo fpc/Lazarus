@@ -24,16 +24,29 @@ files=$(wildcard ./units/*$(OEXT)) \
 help:
 	@$(ECHO)
 	@$(ECHO) " Targets"
-	@$(ECHO) "   all         same as bigide"
-	@$(ECHO) "               lazutils, codetools, lazcontrols, synedit,
-	@$(ECHO) "               and ideintf are build separately"
+	@$(ECHO) "   all         same as base + bigide"
 	@$(ECHO) "   clean       deletes output files of base and bigide components"
+	@$(ECHO) "   base        build lazutils, codetools, lazcontrols, synedit and ideintf"
+	@$(ECHO) "               requires packager/registration"
 	@$(ECHO) "   bigide      build the extra packages for the bigide"
+	@$(ECHO) "               requires base"
+
+#-----------------------------------------------------------------------------
+# build base packages, requires packager/registration
+base:
+	$(MAKE) -C lazutils
+	$(MAKE) -C codetools
+	$(MAKE) -C lazcontrols
+	$(MAKE) -C synedit
+	$(MAKE) -C ideintf
+	$(MAKE) -C debuggerintf
+	$(MAKE) -C lazdebuggergdbmi
 
 #-----------------------------------------------------------------------------
 # build the extra packages needed by the bigide
 bigide:
 	$(MAKE) -C synedit/design
+	$(MAKE) -C lazcontrols/design
 	$(MAKE) -C rtticontrols
 	$(MAKE) -C cairocanvas
 	$(MAKE) -C printers
@@ -49,6 +62,7 @@ bigide:
 	$(MAKE) -C tachart
 	$(MAKE) -C todolist
 	$(MAKE) -C datetimectrls
+	$(MAKE) -C datetimectrls/design
 	$(MAKE) -C jcf2/IdePlugin/lazarus
 	$(MAKE) -C chmhelp/packages/help
 	$(MAKE) -C chmhelp/packages/idehelp
@@ -59,7 +73,7 @@ bigide:
 	$(MAKE) -C PascalScript/Source
 	$(MAKE) -C macroscript
 
-all: bigide
+all: base bigide
 
 clean:
 	$(MAKE) -C lazutils clean
@@ -67,6 +81,7 @@ clean:
 	$(MAKE) -C debuggerintf clean
 	$(MAKE) -C lazdebuggergdbmi clean
 	$(MAKE) -C lazcontrols clean
+	$(MAKE) -C lazcontrols/design clean
 	$(MAKE) -C ideintf clean
 	$(MAKE) -C synedit clean
 	$(MAKE) -C synedit/design clean
@@ -85,6 +100,7 @@ clean:
 	$(MAKE) -C tachart clean
 	$(MAKE) -C todolist clean
 	$(MAKE) -C datetimectrls clean
+	$(MAKE) -C datetimectrls/design clean
 	$(MAKE) -C jcf2/IdePlugin/lazarus clean
 	$(MAKE) -C chmhelp/packages/help clean
 	$(MAKE) -C chmhelp/packages/idehelp clean
@@ -103,6 +119,7 @@ distclean:
 	$(MAKE) -C debuggerintf distclean
 	$(MAKE) -C lazdebuggergdbmi distclean
 	$(MAKE) -C lazcontrols distclean
+	$(MAKE) -C lazcontrols/design distclean
 	$(MAKE) -C ideintf distclean
 	$(MAKE) -C synedit distclean
 	$(MAKE) -C synedit/design distclean
@@ -121,6 +138,7 @@ distclean:
 	$(MAKE) -C tachart distclean
 	$(MAKE) -C todolist distclean
 	$(MAKE) -C datetimectrls distclean
+	$(MAKE) -C datetimectrls/design distclean
 	$(MAKE) -C jcf2/IdePlugin/lazarus distclean
 	$(MAKE) -C chmhelp/packages/help distclean
 	$(MAKE) -C chmhelp/packages/idehelp distclean
