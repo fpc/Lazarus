@@ -7141,8 +7141,8 @@ begin
       end;
       {$ENDIF}
     end;
-  {$ENDIF}
   end else
+  {$ENDIF}
   Result:=inherited getClientBounds;
 end;
 
