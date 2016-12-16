@@ -2,13 +2,13 @@ object MainFrm: TMainFrm
   Left = 463
   Height = 640
   Top = 164
-  Width = 900
+  Width = 920
   Caption = 'Online Package Manager'
   ClientHeight = 640
-  ClientWidth = 900
+  ClientWidth = 920
   Color = clBtnFace
   Constraints.MinHeight = 400
-  Constraints.MinWidth = 600
+  Constraints.MinWidth = 700
   KeyPreview = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -20,11 +20,11 @@ object MainFrm: TMainFrm
     Left = 0
     Height = 570
     Top = 0
-    Width = 900
+    Width = 920
     Align = alClient
     BevelOuter = bvNone
     ClientHeight = 570
-    ClientWidth = 900
+    ClientWidth = 920
     TabOrder = 0
     OnResize = pnMainResize
     object pnMessage: TPanel
@@ -49,18 +49,18 @@ object MainFrm: TMainFrm
       Left = 0
       Height = 60
       Top = 0
-      Width = 900
+      Width = 920
       Align = alTop
       BevelOuter = bvNone
       ClientHeight = 60
-      ClientWidth = 900
+      ClientWidth = 920
       Color = clBtnFace
       ParentColor = False
       TabOrder = 0
       OnResize = pnTopResize
       object spExpand: TSpeedButton
         Tag = 1
-        Left = 852
+        Left = 872
         Height = 20
         Top = 13
         Width = 21
@@ -125,7 +125,7 @@ object MainFrm: TMainFrm
       end
       object spCollapse: TSpeedButton
         Tag = 2
-        Left = 874
+        Left = 894
         Height = 20
         Top = 13
         Width = 21
@@ -370,7 +370,7 @@ object MainFrm: TMainFrm
       Left = 0
       Height = 510
       Top = 60
-      Width = 900
+      Width = 920
       Align = alClient
       Color = clBtnFace
       PopupMenu = pmMemo
@@ -384,10 +384,10 @@ object MainFrm: TMainFrm
     Left = 0
     Height = 70
     Top = 570
-    Width = 900
+    Width = 920
     Align = alBottom
     ClientHeight = 70
-    ClientWidth = 900
+    ClientWidth = 920
     TabOrder = 1
     OnResize = pnToolBarResize
     object tbButtons: TToolBar
@@ -512,6 +512,10 @@ object MainFrm: TMainFrm
       Caption = 'Copy to clipboard'
       Enabled = False
       OnClick = miCopyToClpBrdClick
+    end
+    object miResetRating: TMenuItem
+      Caption = 'Reset rating'
+      OnClick = miResetRatingClick
     end
   end
   object pmMemo: TPopupMenu

@@ -44,6 +44,7 @@ type
     cbPackageType: TComboBox;
     imTBDis: TImageList;
     MenuItem1: TMenuItem;
+    miResetRating: TMenuItem;
     miCopyToClpBrd: TMenuItem;
     miCreateRepository: TMenuItem;
     miCreateRepositoryPackage: TMenuItem;
@@ -81,6 +82,7 @@ type
     procedure miCopyToClpBrdClick(Sender: TObject);
     procedure miCreateRepositoryClick(Sender: TObject);
     procedure miCreateRepositoryPackageClick(Sender: TObject);
+    procedure miResetRatingClick(Sender: TObject);
     procedure pnToolBarResize(Sender: TObject);
     procedure tbCleanUpClick(Sender: TObject);
     procedure tbDownloadClick(Sender: TObject);
@@ -844,6 +846,30 @@ begin
   end;
 end;
 
+procedure TMainFrm.miResetRatingClick(Sender: TObject);
+var
+  Data: PData;
+  Node: PVirtualNode;
+  Package: TPackage;
+begin
+  if MessageDlgEx(rsMainFrm_miResetRating + '?', mtConfirmation, [mbYes, mbNo], Self) = mrNo then
+    Exit;
+  Node := VisualTree.VST.GetFirstSelected;
+  if Node <> nil then
+  begin
+    Data := VisualTree.VST.GetNodeData(Node);
+    if Data^.DataType = 1 then
+    begin
+      Data^.Rating := 0;
+      Package := SerializablePackages.FindPackage(Data^.PackageName, fpbPackageName);
+      if Package <> nil then
+        Package.Rating := 0;
+      VisualTree.VST.ReinitNode(Node, False);
+      VisualTree.VST.RepaintNode(Node);
+    end;
+  end;
+end;
+
 procedure TMainFrm.pnMainResize(Sender: TObject);
 begin
   pnMessage.Left := (pnMain.Width - pnMessage.Width) div 2;
@@ -929,6 +955,7 @@ begin
   miJSONShow.Caption := rsMainFrm_miJSONShow;
   miJSONHide.Caption := rsMainFrm_miJSONHide;
   miCopyToClpBrd.Caption := rsMainFrm_miCopyToClpBrd;
+  miResetRating.Caption := rsMainFrm_miResetRating;
 
   edFilter.Hint := rsMainFrm_edFilter_Hint;
   spClear.Hint := rsMainFrm_spClear_Hint;

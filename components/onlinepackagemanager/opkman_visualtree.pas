@@ -227,6 +227,13 @@ begin
         Options := Options - [coResizable];
         Text := rsMainFrm_VSTHeaderColumn_Rating;
       end;
+     with Header.Columns.Add do
+     begin
+        Position := 6;
+        Alignment := taCenter;
+        Width := 20;
+        Options := Options - [coResizable];
+     end;
      Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoShowSortGlyphs, hoVisible, hoAutoSpring];
      {$IFDEF LCLCarbon}
      Header.Options := Header.Options - [hoShowSortGlyphs];
@@ -235,7 +242,7 @@ begin
      HintMode := hmHint;
      ShowHint := True;
      TabOrder := 2;
-     TreeOptions.MiscOptions := [toCheckSupport, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning];
+     TreeOptions.MiscOptions := [toCheckSupport, toFullRepaintOnResize, toInitOnSave, toWheelPanning];
      TreeOptions.PaintOptions := [toHideFocusRect, toAlwaysHideSelection, toPopupMode, toShowButtons, toShowDropmark, toShowRoot, toThemeAware];
      TreeOptions.SelectionOptions := [toFullRowSelect, toRightClickSelect];
      TreeOptions.AutoOptions := [toAutoTristateTracking];
@@ -1693,6 +1700,9 @@ begin
       if MenuItem <> nil then
         MenuItem.Enabled := ((Data^.DataType = 17) and (Trim(Data^.HomePageURL) <> '')) or
                             ((Data^.DataType = 18) and (Trim(Data^.DownloadURL) <> ''));
+      MenuItem := FVST.PopupMenu.Items.Find(rsMainFrm_miResetRating);
+      if MenuItem <> nil then
+        MenuItem.Enabled := (DownColumn = 5) and (Data^.Rating <> 0);
     end;
   end
 end;
