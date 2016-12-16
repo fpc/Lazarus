@@ -65,6 +65,7 @@ resourcestring
   rsMainFrm_VSTHeaderColumn_Update = 'Update';
   rsMainFrm_VSTHeaderColumn_Data = 'Status/Data';
   rsMainFrm_VSTHeaderColumn_Button = '';
+  rsMainFrm_VSTHeaderColumn_Rating = 'Rating';
   rsMainFrm_VSTText_PackageCategory = 'Package category';
   rsMainFrm_VSTText_PackageStatus = 'Package status';
   rsMainFrm_VSTText_Version = 'Version';
@@ -179,6 +180,7 @@ resourcestring
   rsMainFrm_rsPackageDependency1 = 'Resolve dependency?';
   rsMainFrm_rsPackageDependency2 = 'Not resolving dependencies might lead to install failure!';
   rsMainFrm_rsPackageDependency4 = 'dependency list. Unchecking it might lead to installing failure. Do you wish to continue?';
+  rsMainFrm_rsPackageRating = 'Your vote for package "%s" is: %s. Thank you for voting!';
 
   //progress form
   rsProgressFrm_Caption0 = 'Downloading packages';

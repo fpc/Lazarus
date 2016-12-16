@@ -31,7 +31,8 @@ interface
 
 uses
   Classes, SysUtils, Controls, Graphics, Menus, Dialogs, Forms, LCLIntf, contnrs,
-  PackageIntf, Buttons, opkman_VirtualTrees, opkman_common, opkman_serializablepackages;
+  PackageIntf, Buttons, Math, opkman_VirtualTrees, opkman_VTGraphics, opkman_common,
+  opkman_serializablepackages;
 
 
 type
@@ -69,6 +70,7 @@ type
     InstallState: Integer;
     ButtonID: Integer;
     Button: TSpeedButton;
+    Rating: Integer;
   end;
 
   TFilterBy = (fbPackageName, fbPackageFileName, fbPackageCategory, fbPackageState,
@@ -81,12 +83,14 @@ type
   private
     FVST: TVirtualStringTree;
     FHoverNode: PVirtualNode;
+    FHoverP: TPoint;
     FHoverColumn: Integer;
     FLink: String;
     FLinkClicked: Boolean;
     FSortCol: Integer;
     FSortDir: opkman_VirtualTrees.TSortDirection;
     FCheckingNodes: Boolean;
+    FLeaving: Boolean;
     FOnChecking: TOnChecking;
     FOnChecked: TNotifyEvent;
     procedure VSTBeforeCellPaint(Sender: TBaseVirtualTree;
@@ -109,6 +113,8 @@ type
       {%H-}TextType: TVSTTextType);
     procedure VSTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure VSTMouseMove(Sender: TObject; {%H-}Shift: TShiftState; X, Y: Integer);
+    procedure VSTMouseEnter(Sender: TObject);
+    procedure VSTMouseLeave(Sender: TObject);
     procedure VSTMouseDown(Sender: TObject; Button: TMouseButton; {%H-}Shift: TShiftState; X, Y: Integer);
     procedure VSTGetHint(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
       var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: String);
@@ -117,13 +123,15 @@ type
     procedure VSTCollapsed(Sender: TBaseVirtualTree; {%H-}Node: PVirtualNode);
     procedure VSTExpanding(Sender: TBaseVirtualTree; {%H-}Node: PVirtualNode; var {%H-}Allowed: Boolean);
     procedure VSTCollapsing(Sender: TBaseVirtualTree; {%H-}Node: PVirtualNode; var {%H-}Allowed: Boolean);
-    procedure VSTOnDblClick(Sender: TObject);
+    procedure VSTDblClick(Sender: TObject);
     procedure VSTScroll(Sender: TBaseVirtualTree; {%H-}DeltaX, {%H-}DeltaY: Integer);
     function GetDisplayString(const AStr: String): String;
     function IsAllChecked(const AChecking: PVirtualNode): Boolean;
     procedure ButtonClick(Sender: TObject);
     procedure ShowButtons;
     procedure HideButtons;
+    procedure DrawStars(ACanvas: TCanvas; AStartIndex: Integer; P: TPoint; AAvarage: Double);
+    function GetColumn(const AX: Integer): Integer;
     function TranslateCategories(const AStr: String): String;
   public
     constructor Create(const AParent: TWinControl; const AImgList: TImageList;
@@ -173,6 +181,7 @@ begin
      DefaultText := '';
      Header.AutoSizeIndex := 4;
      Header.Height := 25;
+
      with Header.Columns.Add do
      begin
        Position := 0;
@@ -213,9 +222,10 @@ begin
      with Header.Columns.Add do
      begin
         Position := 5;
-        Width := 25;
+        Alignment := taCenter;
+        Width := 88;
         Options := Options - [coResizable];
-        Text := rsMainFrm_VSTHeaderColumn_Button;
+        Text := rsMainFrm_VSTHeaderColumn_Rating;
       end;
      Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoShowSortGlyphs, hoVisible, hoAutoSpring];
      {$IFDEF LCLCarbon}
@@ -226,7 +236,7 @@ begin
      ShowHint := True;
      TabOrder := 2;
      TreeOptions.MiscOptions := [toCheckSupport, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning];
-     TreeOptions.PaintOptions := [toHideFocusRect, toAlwaysHideSelection, toPopupMode, toShowButtons, toShowDropmark, toShowRoot, toThemeAware, toUseBlendedImages];
+     TreeOptions.PaintOptions := [toHideFocusRect, toAlwaysHideSelection, toPopupMode, toShowButtons, toShowDropmark, toShowRoot, toThemeAware];
      TreeOptions.SelectionOptions := [toFullRowSelect, toRightClickSelect];
      TreeOptions.AutoOptions := [toAutoTristateTracking];
      OnBeforeCellPaint := @VSTBeforeCellPaint;
@@ -238,8 +248,10 @@ begin
      OnGetImageIndex := @VSTGetImageIndex;
      OnHeaderClick := @VSTHeaderClick;
      OnMouseMove := @VSTMouseMove;
+     OnMouseLeave := @VSTMouseLeave;
+     OnMouseEnter := @VSTMouseEnter;
      OnMouseDown := @VSTMouseDown;
-     OnDblClick := @VSTOnDblClick;
+     OnDblClick := @VSTDblClick;
      OnGetHint := @VSTGetHint;
      OnAfterCellPaint := @VSTAfterCellPaint;
      OnCollapsed := @VSTCollapsed;
@@ -299,6 +311,7 @@ begin
        Data^.InstallState := SerializablePackages.GetPackageInstallState(SerializablePackages.Items[I]);
        Data^.HasUpdate := SerializablePackages.Items[I].HasUpdate;
        Data^.DisableInOPM := SerializablePackages.Items[I].DisableInOPM;
+       Data^.Rating := SerializablePackages.Items[I].Rating;
        FVST.IsDisabled[Node] := Data^.DisableInOPM;
        Data^.DataType := 1;
        for J := 0 to SerializablePackages.Items[I].PackageFiles.Count - 1 do
@@ -606,6 +619,70 @@ begin
   HideButtons;
 end;
 
+procedure TVisualTree.DrawStars(ACanvas: TCanvas; AStartIndex: Integer;
+  P: TPoint; AAvarage: Double);
+
+  procedure Draw(const AX, AY: Integer; ATyp, ACnt: Integer);
+  var
+    Bmp: TBitMap;
+    I: Integer;
+  begin
+    Bmp := TBitmap.Create;
+    try
+      Bmp.Width := 16;
+      Bmp.Height := 16;
+      if AStartIndex + ATyp > 25 then
+        ShowMessage('crap');
+      TImageList(FVST.Images).GetBitmap(AStartIndex + ATyp, Bmp);
+      for I := 0 to ACnt - 1 do
+        ACanvas.Draw(AX + I*16 + 5, AY, Bmp);
+    finally
+      Bmp.Free;
+    end;
+  end;
+
+var
+  F: Double;
+  I, X, Y: Integer;
+  Stars, NoStars: Integer;
+  HalfStar: Boolean;
+begin
+  HalfStar := False;
+  F := Frac(AAvarage);
+  I := Trunc(AAvarage);
+  case CompareValue(F, 0.25, 0.005) of
+      -1:
+        begin
+            Stars := I;
+            NoStars := 5 - Stars;
+        end;
+    0, 1:
+        begin
+          if CompareValue(F, 0.75, 0.005) = -1 then
+          begin
+            Stars := I;
+            NoStars := 5 - Stars - 1;
+            HalfStar := True;
+          end
+          else
+          begin
+            Stars := I + 1;
+            NoStars := 5 - Stars;
+          end;
+        end;
+  end;
+  X := P.X;
+  Y := P.Y;
+  Draw(X, Y, 0, Stars);
+  Inc(X, Stars*16);
+  if HalfStar then
+  begin
+    Draw(X, Y, 2, 1);
+    Inc(X, 16);
+  end;
+  Draw(X, Y, 1, NoStars);
+end;
+
 procedure TVisualTree.VSTAfterCellPaint(Sender: TBaseVirtualTree;
   TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
   const CellRect: TRect);
@@ -613,17 +690,19 @@ var
   Data: PData;
   R: TRect;
   Text: String;
+  P: TPoint;
+  Stars: Integer;
 begin
-  if Column = 5 then
+  if Column = 4 then
   begin
     Data := FVST.GetNodeData(Node);
     if Assigned(Data^.Button)  then
     begin
-      R := FVST.GetDisplayRect(Node, Column, false);
-      Data^.Button.Left   := R.Left + 1;
-      Data^.Button.Width  := R.Right - R.Left -2;
+      R := FVST.GetDisplayRect(Node, Column, False);
+      Data^.Button.Width := 25;
+      Data^.Button.Left   := R.Right - Data^.Button.Width - 1;
       Data^.Button.Top    := R.Top + 1;
-      Data^.Button.Height := R.Bottom - R.Top - 2;
+      Data^.Button.Height := R.Bottom - R.Top - 1;
       case Data^.DataType of
         3: Text := Data^.Description;
         9: Text := Data^.License;
@@ -631,6 +710,25 @@ begin
       Data^.Button.Visible := ((R.Bottom > FVST.Top) and (R.Bottom < FVST.Top + FVST.Height)) and (Trim(Text) <> '');
       Data^.Button.Enabled := not FVST.IsDisabled[Node];
     end;
+  end
+  else if Column = 5 then
+  begin
+    Data := FVST.GetNodeData(Node);
+    if Data^.DataType = 1 then
+    begin
+      R := FVST.GetDisplayRect(Node, Column, False);
+      P.X := R.Left + 1;
+      P.Y := ((R.Bottom - R.Top - 16) div 2) + 1;
+      if (Node = FHoverNode) and (not FLeaving) and (FHoverP.X >= P.X + 1) and (Abs(FHoverP.X - P.X) <= R.Right - R.Bottom) then
+      begin
+        Stars := Trunc((FHoverP.X - P.X)/16) + 1;
+        if Stars > 5 then
+          Stars := 5;
+        DrawStars(TargetCanvas, 23, P, Stars)
+      end
+      else
+        DrawStars(TargetCanvas, 20, P, Data^.Rating);
+    end
   end;
 end;
 
@@ -1020,6 +1118,7 @@ begin
         Data^.DownloadZipURL := Package.DownloadZipURL;
         Data^.HasUpdate := Package.HasUpdate;
         Data^.DisableInOPM := Package.DisableInOPM;
+        Data^.Rating := Package.Rating;
         FVST.IsDisabled[Node] := Data^.DisableInOPM;
         FVST.ReinitNode(Node, False);
         FVST.RepaintNode(Node);
@@ -1068,52 +1167,23 @@ procedure TVisualTree.VSTBeforeCellPaint(Sender: TBaseVirtualTree;
 var
   Data: PData;
 begin
-  Data := Sender.GetNodeData(Node);
-  if (Data^.DataType = 0) or (Data^.DataType = 1) or (Data^.DataType = 2) then
+  if CellPaintMode = cpmPaint then
   begin
-    if (Node = Sender.FocusedNode) then
-    begin
-      case Column of
-        0: begin
-             if Data^.DataType = 0 then
-               TargetCanvas.Brush.Color := $00E5E5E5 //00D8D8D8
-             else
-               TargetCanvas.Brush.Color := $00E5E5E5;
-             TargetCanvas.FillRect(CellRect);
-             TargetCanvas.Brush.Color := FVST.Colors.FocusedSelectionColor;
-             TargetCanvas.FillRect(ContentRect)
-           end
-        else
-           begin
-             TargetCanvas.Brush.Color := FVST.Colors.FocusedSelectionColor;
-             TargetCanvas.FillRect(CellRect)
-           end;
-      end;
-    end
+    Data := Sender.GetNodeData(Node);
+
+    if (Data^.DataType = 0) or (Data^.DataType = 1) or (Data^.DataType = 2) then
+      TargetCanvas.Brush.Color := $00E5E5E5
     else
-    begin
-      if Data^.DataType = 0 then
-         TargetCanvas.Brush.Color := $00E5E5E5 //00D8D8D8
-      else if Data^.DataType = 1 then
-        TargetCanvas.Brush.Color := $00E5E5E5;
-      TargetCanvas.FillRect(CellRect);
-    end;
-  end
-  else
-  begin
+      TargetCanvas.Brush.Color := clBtnFace;
+    TargetCanvas.FillRect(CellRect);
     if (Node = Sender.FocusedNode) then
     begin
       TargetCanvas.Brush.Color := FVST.Colors.FocusedSelectionColor;
       if Column = 0 then
         TargetCanvas.FillRect(ContentRect)
-      else
-        TargetCanvas.FillRect(CellRect);
+     else
+       TargetCanvas.FillRect(CellRect);
     end
-    else
-    begin
-      TargetCanvas.Brush.Style := bsClear;
-      TargetCanvas.FillRect(CellRect);
-    end;
   end;
 end;
 
@@ -1498,6 +1568,13 @@ begin
              TargetCanvas.Font.Color := clGreen
            else
              TargetCanvas.Font.Color := clWhite;
+         end
+         else
+         begin
+           if  Node <> Sender.FocusedNode then
+             TargetCanvas.Font.Color := clBlack
+           else
+             TargetCanvas.Font.Color := clWhite;
          end;
        end
     else
@@ -1520,20 +1597,50 @@ begin
   Finalize(Data^);
 end;
 
-procedure TVisualTree.VSTMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+function TVisualTree.GetColumn(const AX: Integer): Integer;
 var
- I, L, R: Integer;
+  I: Integer;
+  L, R: Integer;
 begin
-  FHoverColumn := -1;
-  FHoverNode:= VST.GetNodeAt(X, Y);
+  Result := -1;
   for I := 0 to VST.Header.Columns.Count - 1 do
   begin
     VST.Header.Columns.GetColumnBounds(I, L, R);
-    if (X >= L) and (X <= R) then
+    if (AX >= L) and (AX <= R) then
     begin
-      FHoverColumn := I;
+      Result := I;
       Break;
     end;
+  end;
+end;
+
+
+procedure TVisualTree.VSTMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+begin
+  FHoverColumn := -1;
+  FHoverP.X := X;
+  FHoverP.Y := Y;
+  FHoverNode:= VST.GetNodeAt(X, Y);
+  FHoverColumn := GetColumn(X);
+  if (FHoverColumn = 5) and (FHoverNode <> nil) then
+  begin
+    FVST.ReinitNode(FHoverNode, False);
+    FVST.RepaintNode(FHoverNode);
+  end;
+end;
+
+procedure TVisualTree.VSTMouseEnter(Sender: TObject);
+begin
+  FLeaving := False;
+end;
+
+procedure TVisualTree.VSTMouseLeave(Sender: TObject);
+begin
+  if Assigned(FHoverNode) then
+  begin
+    FLeaving := True;
+    FVST.ReinitNode(FHoverNode, False);
+    FVST.RepaintNode(FHoverNode)
   end;
 end;
 
@@ -1542,35 +1649,42 @@ procedure TVisualTree.VSTMouseDown(Sender: TObject; Button: TMouseButton;
 var
  Node: PVirtualNode;
  Data: PData;
- I, L, R: Integer;
  MenuItem: TMenuItem;
+ DownColumn: Integer;
+ R: TRect;
+ PackageName: String;
+ Package: TPackage;
 begin
   Node := FVST.GetNodeAt(X, Y);
   if Node <> nil then
   begin
+    DownColumn := GetColumn(X);
     Data := FVST.GetNodeData(Node);
     if Button = mbLeft then
     begin
-      if (Data^.DataType = 17) or (Data^.DataType = 18) then
-      begin
-        for I := 0 to VST.Header.Columns.Count - 1 do
-         begin
-           VST.Header.Columns.GetColumnBounds(I, L, R);
-           if (X >= L) and (X <= R) and (I = 4) then
+      case DownColumn of
+        4: if (Data^.DataType = 17) or (Data^.DataType = 18) and (DownColumn = 4) then
            begin
              FLinkClicked := True;
              if (Data^.DataType = 17) and (Trim(Data^.HomePageURL) <> '') then
-             begin
-               FLink := Data^.HomePageURL;
-               Break
-             end
+               FLink := Data^.HomePageURL
              else if (Data^.DataType = 18) and (Trim(Data^.DownloadURL) <> '') then
-             begin
                FLink := Data^.DownloadURL;
-               Break;
-             end;
            end;
-         end;
+        5: begin
+             R := FVST.GetDisplayRect(Node, DownColumn, False);
+             Data^.Rating := Trunc((FHoverP.X - R.Left - 1)/16) + 1;
+             if Data^.Rating > 5 then
+               Data^.Rating := 5;
+             Package := SerializablePackages.FindPackage(Data^.PackageName, fpbPackageName);
+             if Package <> nil then
+               Package.Rating := Data^.Rating;
+             if Data^.PackageDisplayName <> '' then
+               PackageName := Data^.PackageDisplayName
+             else
+               PackageName := Data^.PackageName;
+             MessageDlgEx(Format(rsMainFrm_rsPackageRating, [PackageName, InttoStr(Data^.Rating)]), mtInformation, [mbOk],  TForm(FVST.Parent.Parent));
+           end;
       end;
     end
     else if Button = mbRight then
@@ -1601,7 +1715,7 @@ begin
   end;
 end;
 
-procedure TVisualTree.VSTOnDblClick(Sender: TObject);
+procedure TVisualTree.VSTDblClick(Sender: TObject);
 begin
   if FLinkClicked then
   begin

@@ -207,6 +207,7 @@ type
     FUpdateSize: Int64;
     FIsDirZipped: Boolean;
     FZippedBaseDir: String;
+    FRating: Integer;
     FPackageFiles: TCollection;
     function GetDownloadable: Boolean;
     function GetExtractable: Boolean;
@@ -226,6 +227,7 @@ type
     property DownloadZipURL: String read FDownloadZipURL write FDownloadZipURL;
     property HasUpdate: Boolean read FHasUpdate write FHasUpdate;
     property DisableInOPM: Boolean read FDisableInOPM write FDisableInOPM;
+    property Rating: Integer read FRating write FRating;
   published
     property Name: String read FName write FName;
     property DisplayName: String read FDisplayName write FDisplayName;

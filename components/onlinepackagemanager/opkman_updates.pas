@@ -250,6 +250,7 @@ begin
       HasUpdate := False;
       Package.DownloadZipURL := FXML.GetValue(Path + 'DownloadZipURL', '');
       Package.DisableInOPM := FXML.GetValue(Path + 'DisableInOPM', False);
+      Package.Rating := FXML.GetValue(Path + 'Rating', 0);
       PackageFileCount := FXML.GetValue(Path + 'Count', 0);
       for J := 0 to PackageFileCount - 1 do
       begin
@@ -296,6 +297,7 @@ begin
     FXML.SetDeleteValue(Path + 'Name', Package.Name, '');
     FXML.SetDeleteValue(Path + 'DownloadZipURL', Package.DownloadZipURL, '');
     FXML.SetDeleteValue(Path + 'DisableInOPM', Package.DisableInOPM, False);
+    FXML.SetDeleteValue(Path + 'Rating', Package.Rating, 0);
     FXML.SetDeleteValue(Path + 'Count', SerializablePackages.Items[I].PackageFiles.Count, 0);
     for J := 0 to SerializablePackages.Items[I].PackageFiles.Count - 1 do
     begin
