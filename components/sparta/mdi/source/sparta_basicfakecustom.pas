@@ -151,14 +151,17 @@ begin
 end;
 
 procedure TFormImpl.SetPublishedBounds(AIndex: Integer; AValue: Integer);
+const
+  cMinWidth = 135;
+  cMaxWidth = 5*1024; // huge Mac monitors have 5K pixels width
 begin
   if AIndex = 2 then
-    if AValue < 135 then
-      AValue := 135;
+    if AValue < cMinWidth then
+      AValue := cMinWidth;
 
   if AIndex in [2, 3] then
-    if AValue > 4096 then
-      AValue := 4096;
+    if AValue > cMaxWidth then
+      AValue := cMaxWidth;
 
   case AIndex of
     0: FHackLeft := AValue;
