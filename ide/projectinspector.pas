@@ -64,7 +64,7 @@ uses
   // IDE
   LazarusIDEStrConsts, IDEProcs, DialogProcs, IDEOptionDefs, EnvironmentOpts,
   PackageDefs, Project, PackageEditor, AddToProjectDlg, AddPkgDependencyDlg,
-  InputHistory, ProjPackChecks;
+  InputHistory, MainBase, ProjPackChecks;
 
 type
   TOnAddUnitToProject =
@@ -1027,6 +1027,8 @@ begin
   RemoveBitBtn  := CreateToolButton('RemoveBitBtn', lisRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', lisOptions, lisPckEditEditGeneralOptions, 'menu_environment_options', @OptionsBitBtnClick);
+  OptionsBitBtn.DropdownMenu := TSetBuildModeToolButton.TBuildModeMenu.Create(Self);
+  OptionsBitBtn.Style := tbsDropDown;
   HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisMenuOnlineHelp, 'menu_help', @HelpBitBtnClick);
 
   AddBitBtn.DropdownMenu:=AddPopupMenu;

@@ -3833,7 +3833,8 @@ procedure TMainIDE.UpdateProjectCommands(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AUnitInfo: TUnitInfo;
-  xCmd: TIDECommand;
+  ACmd: TIDECommand;
+  ABuildHint: string;
 begin
   GetCurrentUnit(ASrcEdit,AUnitInfo);
   if not UpdateProjectCommandsStamp.Changed(AUnitInfo) then
@@ -3842,14 +3843,17 @@ begin
   IDECommandList.FindIDECommand(ecAddCurUnitToProj).Enabled:=Assigned(AUnitInfo) and not AUnitInfo.IsPartOfProject;
   IDECommandList.FindIDECommand(ecBuildManyModes).Enabled:=(Project1<>nil) and (Project1.BuildModes.Count>1);
 
-  xCmd := IDECommandList.FindIDECommand(ecProjectChangeBuildMode);
+  ACmd := IDECommandList.FindIDECommand(ecProjectChangeBuildMode);
   if Assigned(Project1) then
-    xCmd.Hint :=
-      Trim(lisChangeBuildMode + ' ' + KeyValuesToCaptionStr(xCmd.ShortcutA, xCmd.ShortcutB, '(')) + sLineBreak +
+    ABuildHint :=
+      Trim(lisChangeBuildMode + ' ' + KeyValuesToCaptionStr(ACmd.ShortcutA, ACmd.ShortcutB, '(')) + sLineBreak +
       Format('[%s]', [Project1.ActiveBuildMode.GetCaption])
   else
-    xCmd.Hint :=
-      Trim(lisChangeBuildMode + ' ' + KeyValuesToCaptionStr(xCmd.ShortcutA, xCmd.ShortcutB, '('));
+    ABuildHint :=
+      Trim(lisChangeBuildMode + ' ' + KeyValuesToCaptionStr(ACmd.ShortcutA, ACmd.ShortcutB, '('));
+
+  ACmd.Hint := ABuildHint;
+  ProjInspector.OptionsBitBtn.Hint := ABuildHint;
 end;
 
 procedure TMainIDE.UpdatePackageCommands(Sender: TObject);
