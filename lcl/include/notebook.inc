@@ -90,7 +90,7 @@ end;
 procedure TUNBPages.Delete(Index: Integer);
 var
   APage: TPage;
-  OldPageIndex: Integer;
+  NewPageIndex: Integer;
 begin
   // Make sure Index is in the range of valid pages to delete
   if (Index < 0) or (Index >= FPageList.Count) then Exit;
@@ -102,12 +102,11 @@ begin
     Application.ProcessMessages;
   end;
 
-  OldPageIndex := FNotebook.FPageIndex;
+  NewPageIndex := FNotebook.FPageIndex;
+  if ((Index < NewPageIndex) and (NewPageIndex > 0)) or (NewPageIndex = FNotebook.PageCount) then
+    Dec(NewPageIndex);
   FNotebook.FPageIndex := -1;
-  if OldPageIndex >= FNotebook.PageCount then
-    FNotebook.SetPageIndex(FNotebook.PageCount - 1)
-  else
-    FNotebook.SetPageIndex(OldPageIndex);
+  FNotebook.SetPageIndex(NewPageIndex);
 end;
 
 function TUNBPages.IndexOfObject(AObject: TObject): Integer;
