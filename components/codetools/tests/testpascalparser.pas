@@ -139,6 +139,8 @@ begin
     '    // only IFDEF FPC_HAS_MANAGEMENT_OPERATORS',
     '    class operator Initialize(var t: TMyRecord);',
     '    class operator Finalize(var t: TMyRecord);',
+    '    class operator Copy(var t: TMyRecord);',
+    '    class operator Clone(constref t1: TMyRecord ; var t2: TMyRecord);',
     '  end;',
     '',
     'class operator TMyRecord.Implicit(t: TMyRecord): TMyRecord;',

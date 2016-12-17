@@ -137,6 +137,7 @@ type
     function GetExtraction(InUpperCase: boolean): string;
     function ExtractStreamEndIsIdentChar: boolean;
     procedure ExtractNextAtom(AddAtom: boolean; Attr: TProcHeadAttributes);
+    procedure CheckOperatorProc(IsOperator: boolean; var IsFunction: boolean); inline;
   protected
     // parsing
     FLastCompilerMode: TCompilerMode;
@@ -323,6 +324,18 @@ begin
 end;
 
 { TPascalParserTool }
+
+// inline
+procedure TPascalParserTool.CheckOperatorProc(IsOperator: boolean;
+  var IsFunction: boolean);
+begin
+  if IsOperator then begin
+    AtomIsCustomOperator(true,true,true);
+    IsFunction:=not (UpAtomIs('INITIALIZE') or UpAtomIs('FINALIZE')
+                  or UpAtomIs('COPY') or UpAtomIs('CLONE'));
+  end else
+    AtomIsIdentifierSaveE;
+end;
 
 constructor TPascalParserTool.Create;
 begin
@@ -1239,11 +1252,7 @@ begin
   IsOperator:=(not IsFunction) and UpAtomIs('OPERATOR');
   // read name
   ReadNextAtom;
-  if IsOperator then begin
-    AtomIsCustomOperator(true,true,true);
-    IsFunction:=not (UpAtomIs('INITIALIZE') or UpAtomIs('FINALIZE'));
-  end else
-    AtomIsIdentifierSaveE;
+  CheckOperatorProc(IsOperator,IsFunction);
   // create node for procedure head
   CreateChildNode;
   CurNode.Desc:=ctnProcedureHead;
@@ -2646,16 +2655,6 @@ var ChildCreated: boolean;
   IsFunction, HasForwardModifier, IsClassProc, IsOperator, IsMethod: boolean;
   ProcNode: TCodeTreeNode;
   ParseAttr: TParseProcHeadAttributes;
-
-  procedure CheckProcName;
-  begin
-    if IsOperator then begin
-      AtomIsCustomOperator(true,true,true);
-      IsFunction:=not (UpAtomIs('INITIALIZE') or UpAtomIs('FINALIZE'));
-    end else
-      AtomIsIdentifierSaveE;
-  end;
-
 begin
   if UpAtomIs('CLASS') then begin
     if not (CurSection in [ctnImplementation]+AllSourceTypes) then
@@ -2683,7 +2682,7 @@ begin
   IsOperator:=(not IsFunction) and UpAtomIs('OPERATOR');
   IsMethod:=False;
   ReadNextAtom;// read first atom of head (= name/operator + parameterlist + resulttype;)
-  CheckProcName;
+  CheckOperatorProc(IsOperator,IsFunction);
   if ChildCreated then begin
     // create node for procedure head
     CreateChildNode;
@@ -2709,7 +2708,7 @@ begin
       // read procedure name of a class method (the name after the . )
       IsMethod:=True;
       ReadNextAtom;
-      CheckProcName;
+      CheckOperatorProc(IsOperator,IsFunction);
       ReadNextAtom;
     end;
   end;
@@ -5787,16 +5786,6 @@ var
   ParseAttr: TParseProcHeadAttributes;
   IsProcType: Boolean;
   ProcHeadNode: TCodeTreeNode;
-
-  procedure CheckProcName;
-  begin
-    if IsOperator then begin
-      AtomIsCustomOperator(true,true,true);
-      IsFunction:=not (UpAtomIs('INITIALIZE') or UpAtomIs('FINALIZE'));
-    end else
-      AtomIsIdentifierSaveE;
-  end;
-
 begin
   if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
   if ProcNode.Desc=ctnMethodMap then begin
@@ -5845,7 +5834,7 @@ begin
     if not IsProcType then begin
       // read procedure name of a class method (the name after the . )
       repeat
-        CheckProcName;
+        CheckOperatorProc(IsOperator,IsFunction);
         ReadNextAtom;
         if AtomIsChar('<') then
           ReadGenericParam;
