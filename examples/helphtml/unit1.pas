@@ -52,8 +52,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  LazHelpHTML, StdCtrls, Buttons, HelpIntfs;
+  Forms, StdCtrls, LazHelpHTML, HelpIntfs;
 
 type
 

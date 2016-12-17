@@ -10,9 +10,10 @@ object Form1: TForm1
   ClientHeight = 300
   ClientWidth = 400
   OnCreate = FormCreate
+  LCLVersion = '1.7'
   object Edit1: TEdit
     Left = 60
-    Height = 23
+    Height = 32
     Top = 40
     Width = 207
     HelpType = htKeyword
@@ -22,7 +23,7 @@ object Form1: TForm1
   end
   object Edit2: TEdit
     Left = 60
-    Height = 23
+    Height = 32
     Top = 95
     Width = 207
     HelpType = htKeyword
