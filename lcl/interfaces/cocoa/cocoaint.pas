@@ -33,7 +33,7 @@ uses
   // carbon bindings
   MacOSAll,
   // interfacebase
-  InterfaceBase, GraphType,
+  LCLPlatformDef, InterfaceBase, GraphType,
   // private
   CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects,
   CocoaProc, cocoa_extra, CocoaWSMenus, CocoaWSForms,

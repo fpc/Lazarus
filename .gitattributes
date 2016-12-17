@@ -7918,6 +7918,7 @@ lcl/lclclasses.pp svneol=native#text/pascal
 lcl/lclintf.pas svneol=native#text/pascal
 lcl/lclmemmanager.pas svneol=native#text/pascal
 lcl/lclmessageglue.pas svneol=native#text/pascal
+lcl/lclplatformdef.pas svneol=native#text/pascal
 lcl/lclproc.pas svneol=native#text/pascal
 lcl/lclrescache.pas svneol=native#text/pascal
 lcl/lclstrconsts.pas svneol=native#text/pascal

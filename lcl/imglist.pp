@@ -44,8 +44,13 @@ interface
 {$endif}
 
 uses
-  Types, SysUtils, Classes, FPCAdds, LCLStrConsts, LCLIntf, LResources, LCLType,
-  LCLProc, Graphics, GraphType, LCLClasses, IntfGraphics, FPReadBMP,
+  // RTL + FCL
+  Types, SysUtils, Classes, FPReadBMP,
+  // LazUtils
+  FPCAdds,
+  // LCL
+  LCLStrConsts, LCLIntf, LResources, LCLType, LCLProc, Graphics, GraphType,
+  LCLClasses, IntfGraphics,
   WSReferences;
 
 type

@@ -22,7 +22,11 @@ unit AsyncProcess;
 interface
 
 uses
-  Classes, SysUtils, Process, LCLProc, FileUtil, InterfaceBase, LCLIntf, UTF8Process;
+  Classes, Process,
+  // LazUtils
+  FileUtil, UTF8Process,
+  // LCL
+  InterfaceBase, LCLIntf;
 
 type
 

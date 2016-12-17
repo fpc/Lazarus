@@ -35,8 +35,12 @@ in directory where your program translation files are placed.
 interface
 
 uses
-  Classes, SysUtils, LResources, GetText, Controls, typinfo, LazFileUtils,
-  Translations, Forms, LazUTF8;
+  // RTL + FCL
+  Classes, SysUtils, typinfo, GetText,
+  // LCL
+  LResources, Translations, Forms,
+  // LazUtils
+  LazFileUtils, LazUTF8;
 
 type
 
@@ -78,8 +82,6 @@ function GetDefaultLang: String;
 
 implementation
 
-uses
-  Menus;
 
 type
   TPersistentAccess = class(TPersistent);

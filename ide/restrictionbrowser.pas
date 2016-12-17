@@ -30,11 +30,15 @@ unit RestrictionBrowser;
 interface
 
 uses
-  Classes, SysUtils, InterfaceBase, LCLProc, Contnrs, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, ComCtrls, TreeFilterEdit, ExtCtrls, Buttons,
-  IDEImagesIntf, ObjectInspector,
-  CompatibilityRestrictions, IDEOptionDefs, LazarusIDEStrConsts,
-  EnvironmentOpts, LazConf;
+  Classes, Contnrs,
+  // LCL
+  InterfaceBase, LCLPlatformDef, LCLProc, Forms, StdCtrls, ComCtrls, ExtCtrls, Buttons,
+  // LazControls
+  TreeFilterEdit,
+  // IdeIntf
+  IDEImagesIntf,
+  // IDE
+  CompatibilityRestrictions, IDEOptionDefs, LazarusIDEStrConsts;
 
 type
   { TRestrictionBrowserView }

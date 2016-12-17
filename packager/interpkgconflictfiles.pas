@@ -1046,7 +1046,8 @@ begin
     if TargetCPU='' then TargetCPU:=GetCompiledTargetCPU;
     LCLWidgetType:='$(LCLWidgetType)';
     GlobalMacroList.SubstituteStr(LCLWidgetType);
-    if LCLWidgetType='' then LCLWidgetType:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
+    if LCLWidgetType='' then
+      LCLWidgetType:=GetLCLWidgetTypeName;
 
     {$IFDEF VerboseCheckInterPkgFiles}
     debugln(['CheckInterPkgFiles TargetOS=',TargetOS,' TargetCPU=',TargetCPU,' LCLWidgetType=',LCLWidgetType]);

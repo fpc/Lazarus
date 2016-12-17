@@ -14,7 +14,11 @@ uses
   // FCL
   SysUtils, Classes,
   // LCL
-  LCLProc, InterfaceBase, LazConfigStorage, PropEdits;
+  LCLProc, LCLPlatformDef,
+  // LazUtils
+  LazConfigStorage,
+  // IdeIntf
+  PropEdits;
 
 type
   TWidgetSetRestrictionsArray = array [TLCLPlatform] of Integer;

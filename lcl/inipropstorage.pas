@@ -14,7 +14,11 @@ unit IniPropStorage;
 interface
 
 uses
-  Classes, SysUtils, Forms, IniFiles, LazUtf8;
+  Classes, SysUtils, IniFiles,
+  // LazUtils
+  LazUtf8,
+  // LCL
+  Forms;
 
 type
   { TCustomIniPropStorage }

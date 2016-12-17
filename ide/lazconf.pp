@@ -46,25 +46,16 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, InterfaceBase, FileUtil, LazFileUtils,
-  LazUTF8, lazutf8classes, LCLProc, DefineTemplates;
+  SysUtils, Classes,
+  // LCL
+  LCLProc,
+  // LazUtils
+  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes,
+  // Codetools
+  DefineTemplates;
 
 const
   LazarusVersionStr = {$I version.inc};
-
-  LCLPlatformDisplayNames: array[TLCLPlatform] of string = (
-      'gtk (deprecated)',
-      'gtk 2',
-      'gtk3 (alpha)',
-      'win32/win64',
-      'wince',
-      'carbon',
-      'qt',
-      'fpGUI (alpha)',
-      'NoGUI',
-      'cocoa (alpha)',
-      'customdraw (alpha)'
-    );
 
 function CompareLazarusVersion(V1, V2: string): integer;
 
@@ -116,10 +107,6 @@ function OSLocksExecutables: boolean;
 // returns the default browser
 procedure GetDefaultBrowser(var Browser, Params: string);
 
-// LCL
-function GetDefaultLCLWidgetType: TLCLPlatform;
-function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
-
 // Replace OnGetApplicationName, so that Application.Title
 // doesn't interfere with GetAppConfigDir and related.
 function GetLazarusApplicationName: string;
@@ -138,19 +125,6 @@ const
   
 const
   ExitCodeRestartLazarus = 99;
-
-var
-  // set by lazbuild.lpr and used by GetDefaultLCLWidgetType
-  BuildLCLWidgetType: TLCLPlatform =
-    {$IFDEF MSWindows}{$DEFINE WidgetSetDefined}
-    lpWin32;
-    {$ENDIF}
-    {$IFDEF darwin}{$DEFINE WidgetSetDefined}
-    lpCarbon;
-    {$ENDIF}
-    {$IFNDEF WidgetSetDefined}
-    lpGtk2;
-    {$ENDIF}
 
 implementation
 
@@ -215,21 +189,6 @@ begin
                              GetEnvironmentVariableUTF8('PATH'),PathSeparator,
                              [sffDontSearchInBasePath]);
   Result:=TrimFilename(Result);
-end;
-
-function GetDefaultLCLWidgetType: TLCLPlatform;
-begin
-  if (WidgetSet<>nil) and (WidgetSet.LCLPlatform<>lpNoGUI) then
-    Result:=WidgetSet.LCLPlatform
-  else
-    Result:=BuildLCLWidgetType;
-end;
-
-function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
-begin
-  for Result:=Low(TLCLPlatform) to High(TLCLPlatform) do
-    if CompareText(ADirName,LCLPlatformDirNames[Result])=0 then exit;
-  Result:=lpGtk2;
 end;
 
 function CompareLazarusVersion(V1, V2: string): integer;

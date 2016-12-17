@@ -16,7 +16,9 @@ unit DynQueue;
 interface
 
 uses
-  Classes, SysUtils, LazLoggerBase;
+  Classes, SysUtils,
+  // LazUtils
+  LazLoggerBase;
   
 type
   TDynamicQueueItem = record

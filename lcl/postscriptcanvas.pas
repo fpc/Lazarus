@@ -42,9 +42,13 @@ unit PostScriptCanvas;
 interface
 
 uses
-  Classes, SysUtils, strutils, Math, Types, Graphics, LazFileUtils,
-  Forms, GraphMath, GraphType, FPImage, IntfGraphics, Printers, LCLType,
-  LCLIntf, LCLProc, PostScriptUnicode, LazUTF8, LazUTF8Classes;
+  // RTL + FCL
+  Classes, SysUtils, strutils, Math, Types, FPImage,
+  // LCL
+  Graphics, Forms, GraphMath, GraphType, IntfGraphics, Printers,
+  LCLType, LCLIntf, LCLProc, PostScriptUnicode,
+  // LazUtils
+  LazFileUtils, LazUTF8, LazUTF8Classes;
   
 Type
 

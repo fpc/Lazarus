@@ -21,7 +21,8 @@ unit GraphUtil;
 interface
 
 uses
-  Types, Graphics, GraphType, Math, LCLType, LCLIntf;
+  Types, Math,
+  Graphics, GraphType, LCLType, LCLIntf;
 
 function ColorToGray(const AColor: TColor): Byte;
 procedure ColorToHLS(const AColor: TColor; out H, L, S: Byte);

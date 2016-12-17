@@ -86,9 +86,12 @@ unit Translations;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, LazFileUtils, StringHashList, AvgLvlTree,
-  LConvEncoding, LazUTF8, LazUTF8Classes,
-  {$IF FPC_FULLVERSION>=30001}jsonscanner,{$ENDIF} jsonparser, fpjson;
+  Classes, SysUtils,
+  {$IF FPC_FULLVERSION>=30001}jsonscanner,{$ENDIF} jsonparser, fpjson,
+  // LCL
+  LCLProc, StringHashList,
+  // LazUtils
+  FileUtil, LazFileUtils, AvgLvlTree, LConvEncoding, LazUTF8, LazUTF8Classes;
 
 type
   TStringsType = (

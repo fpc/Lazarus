@@ -23,7 +23,11 @@ unit GraphType;
 interface
 
 uses
-  FPCAdds, Classes, SysUtils, LCLType, LCLProc, types;
+  Classes, SysUtils, Types, Math,
+  // LazUtils
+  FPCAdds,
+  // LCL
+  LCLType, LCLProc;
 
 {$ifdef Trace}
 {$ASSERTIONS ON}
@@ -259,9 +263,6 @@ var
   MissingBits: array[0..15] of array[0..7] of word;
 
 implementation
-
-uses
-  Math;
 
 {------------------------------------------------------------------------------
   Function: CopyImageData

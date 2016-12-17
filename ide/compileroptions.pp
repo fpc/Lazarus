@@ -1063,7 +1063,7 @@ begin
       else if CompareIdentifiers(PChar(VarName),'SrcOS2')=0 then
         SetCTCSVariableAsString(Value,GetDefaultSrcOS2ForTargetOS(GetCompiledTargetOS))
       else if CompareIdentifiers(PChar(VarName),'LCLWidgetType')=0 then
-        SetCTCSVariableAsString(Value,LCLPlatformDirNames[GetDefaultLCLWidgetType])
+        SetCTCSVariableAsString(Value,GetLCLWidgetTypeName)
       else
         ClearCTCSVariable(Value);
     end else if (CompareIdentifiers(FunctionName,'GetEnv')=0) then

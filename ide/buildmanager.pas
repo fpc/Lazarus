@@ -34,15 +34,15 @@ unit BuildManager;
 interface
 
 uses
-  // RTL + FCL + LCL
+  // RTL + FCL
   Classes, SysUtils, AVL_Tree,
-  InterfaceBase, LCLProc, Dialogs, Forms, Controls,
+  // LCL
+  InterfaceBase, LCLPlatformDef, LCLProc, Dialogs, Forms, Controls,
   // CodeTools
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
   FileProcs, CodeToolsCfgScript,
   // LazUtils
-  LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8,
-  Laz2_XMLCfg,
+  LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
   // IDEIntf
   IDEOptionsIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   CompOptsIntf, LazIDEIntf, MacroDefIntf, IDEMsgIntf,
@@ -329,7 +329,7 @@ begin
   inherited Create(AOwner);
   fTargetOS:=GetCompiledTargetOS;
   fTargetCPU:=GetCompiledTargetCPU;
-  fLCLWidgetType:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
+  fLCLWidgetType:=GetLCLWidgetTypeName;
   FUnitSetChangeStamp:=TFPCUnitSetCache.GetInvalidChangeStamp;
 
   OnBackupFileInteractive:=@BackupFileForWrite;
@@ -2624,7 +2624,7 @@ procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU,
     else
       Result:='';
     if (Result='') or (SysUtils.CompareText(Result,'default')=0) then
-      Result:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
+      Result:=GetLCLWidgetTypeName;
     Result:=lowercase(Result);
   end;
 

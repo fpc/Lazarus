@@ -27,8 +27,12 @@ interface
 {$endif}
 
 uses
-  Types, Classes, SysUtils, Math, LCLStrConsts, LCLType, LCLProc, LMessages,
-  FPImage, GraphType, GraphMath, IntfGraphics, Themes, LazUTF8;
+  Types, Classes, SysUtils, Math, FPImage,
+  // LazUtils
+  LazUTF8,
+  // LCL
+  LCLType, LCLProc, LMessages, LCLPlatformDef,
+  GraphType, GraphMath, IntfGraphics, Themes;
 
 type
   PEventHandler = type Pointer;
@@ -47,22 +51,6 @@ type
   TSocketEvent = procedure(AData: PtrInt; AFlags: dword) of object;
 
   TLCLWndMethod = procedure(var TheMessage: TLMessage) of Object;
-
-  TLCLPlatform = (
-    lpGtk,
-    lpGtk2,
-    lpGtk3,
-    lpWin32,
-    lpWinCE,
-    lpCarbon,
-    lpQT,
-    lpfpGUI,
-    lpNoGUI,
-    lpCocoa,
-    lpCustomDrawn
-    );
-    
-  TLCLPlatforms = set of TLCLPlatform;
 
   TLCLCapability = (
     lcAsyncProcess,             // Support for async process
@@ -183,21 +171,10 @@ type
   end;
   TWidgetSetClass = class of TWidgetSet;
 
+  function GetDefaultLCLWidgetType: TLCLPlatform;
+  function GetLCLWidgetTypeName: string;
+
 const
-  LCLPlatformDirNames: array[TLCLPlatform] of string = (
-      'gtk',
-      'gtk2',
-      'gtk3',
-      'win32',
-      'wince',
-      'carbon',
-      'qt',
-      'fpgui',
-      'nogui',
-      'cocoa',
-      'customdrawn'
-    );
-    
   { Constants for the routine TWidgetSet.GetLCLCapability }
   LCL_CAPABILITY_NO = 0;
   LCL_CAPABILITY_YES = 1;
@@ -234,6 +211,25 @@ var
   WidgetSet: TWidgetSet = nil;
 
 implementation
+
+{function GetDefaultLCLWidgetType: TLCLPlatform;
+begin
+  Assert(Assigned(WidgetSet), 'GetDefaultLCLWidgetType: WidgetSet is not assigned.');
+  if WidgetSet.LCLPlatform<>lpNoGUI then
+    Result:=WidgetSet.LCLPlatform
+end; }
+function GetDefaultLCLWidgetType: TLCLPlatform;
+begin
+  if (WidgetSet<>nil) and (WidgetSet.LCLPlatform<>lpNoGUI) then
+    Result:=WidgetSet.LCLPlatform
+  else
+    Result:=BuildLCLWidgetType;
+end;
+
+function GetLCLWidgetTypeName: string;
+begin
+  Result:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
+end;
 
 { TDialogButtons }
 

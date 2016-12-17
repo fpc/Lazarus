@@ -24,7 +24,9 @@ unit Maps;
 interface
 
 uses
-  Classes, SysUtils, Math, FPCAdds, AvgLvlTree, typinfo;
+  Classes, SysUtils, Math, typinfo,
+  // LazUtils
+  FPCAdds, AvgLvlTree;
   
 type
   TMapIdType = (itu1, its1, itu2, its2, itu4, its4, itu8, its8, itu16, its16,

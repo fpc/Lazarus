@@ -35,9 +35,12 @@ unit uDlgSelectPrinter;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ExtCtrls, Spin, ComCtrls, LCLType, InterfaceBase,
-  Printers, OsPrinters, CUPSDyn, Math;
+  Classes, SysUtils, Math,
+  // LCL
+  LResources, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, ExtCtrls,
+  Spin, ComCtrls, LCLType, LCLPlatformDef, InterfaceBase, Printers,
+  // Printers
+  OsPrinters, CUPSDyn;
 
 type
 

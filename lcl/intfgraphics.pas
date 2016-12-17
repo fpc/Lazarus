@@ -25,10 +25,13 @@ unit IntfGraphics;
 interface
 
 uses
-  Classes, SysUtils, fpImage, FPReadBMP, FPWriteBMP, BMPComn, FPCAdds,
-  AvgLvlTree, LCLType, LCLversion, Math,
-  LCLProc, GraphType, FPReadPNG, FPWritePNG, FPReadTiff, FPWriteTiff, FPTiffCmn,
-  IcnsTypes;
+  // RTL + FCL
+  Classes, SysUtils, Math, fpImage, FPReadBMP, FPWriteBMP, BMPComn,
+  FPReadPNG, FPWritePNG, FPReadTiff, FPWriteTiff, FPTiffCmn,
+  // LazUtils
+  FPCAdds, AvgLvlTree,
+  // LCL
+  LCLType, LCLversion, LCLProc, GraphType, IcnsTypes;
 
 type
   { TLazIntfImage }

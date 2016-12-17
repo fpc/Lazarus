@@ -48,7 +48,7 @@ uses
   // LCL
   customdrawn_common, customdrawncontrols, customdrawndrawers,
   lazcanvas, lazregions, lazdeviceapis,
-  InterfaceBase, Themes, Dialogs, Buttons,
+  LCLPlatformDef, InterfaceBase, Themes, Dialogs, Buttons,
   Controls,  Forms, lclproc, IntfGraphics, GraphType,
   LCLType, LMessages, Graphics, LCLStrConsts, Menus, LazLoggerBase;
 

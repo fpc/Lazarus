@@ -34,7 +34,9 @@ uses
   Windows,
   {$ENDIF}
   Classes, SysUtils, Types, RtlConsts, TypInfo, variants,
+  // LCL
   DynQueue, LCLProc, LCLStrConsts,
+  // LazUtils
   LazConfigStorage, FPCAdds, LazUTF8, LazUTF8Classes;
 
 {$DEFINE UseLRS}

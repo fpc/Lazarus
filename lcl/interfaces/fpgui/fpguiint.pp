@@ -26,9 +26,8 @@ uses
   // FCL
   Classes, Types, SysUtils, Math,
   // LCL
-  InterfaceBase, LCLProc, LCLType, LMessages,
-  Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf,
-  GraphType,
+  LCLPlatformDef, InterfaceBase, LCLProc, LCLType, LMessages,
+  Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType,
   // Bindings
   fpg_main, fpg_form, fpguiproc, fpg_base, fpg_dialogs,
   // Widgetset

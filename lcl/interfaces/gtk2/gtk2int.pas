@@ -34,23 +34,19 @@ uses
   Types, Classes, SysUtils, Math,
   {$IfNDef GTK2_2}
     {$IfDef HasX}
-     XLib, xatom, X, gdk2x, //XUtil,
+     XLib, xatom, X, gdk2x,
     {$EndIf}
   {$EndIf}
   gdk2pixbuf, gtk2, gdk2, glib2, Pango,
+  // LazUtils
+  LazFileUtils,
   // LCL
-  Maps, LazFileUtils, Dialogs, Controls, Forms, LCLStrConsts,
+  Maps, Dialogs, Controls, Forms, LCLStrConsts,
   LMessages, LCLProc, LazUTF8, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
-  Graphics, Menus, Themes, WSLCLClasses,
-
-  Buttons, StdCtrls, CheckLst,
-  ComCtrls, Spin,
-  ExtCtrls, LResources,
-
-  InterfaceBase,
-  Gtk2WinApiWindow,
-  Gtk2Globals, Gtk2Proc,
-  Gtk2Def, Gtk2FontCache, Gtk2Extra,
+  Graphics, Menus, Themes, Buttons, StdCtrls, CheckLst, ComCtrls, Spin, ExtCtrls,
+  LCLPlatformDef, InterfaceBase,
+  WSLCLClasses,
+  Gtk2WinApiWindow, Gtk2Globals, Gtk2Proc, Gtk2Def, Gtk2FontCache, Gtk2Extra,
   Gtk2MsgQueue;
 
 type

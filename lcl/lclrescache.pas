@@ -19,8 +19,12 @@ unit LCLResCache;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds, Types, LCLType, LCLProc, AvgLvlTree, WSReferences,
-  syncobjs;
+  Classes, SysUtils, Types,
+  // LazUtils
+  FPCAdds, AvgLvlTree,
+  // LCL
+  LCLType, LCLProc, WSReferences,
+  syncobjs; // This FCL unit must be in the end.
   
 {off $DEFINE CheckResCacheConsistency}
 
@@ -142,16 +146,26 @@ type
                                            read FOnCompareDescPtrWithDescriptor;
   end;
 
-function ComparePHandleWithResourceCacheItem(HandlePtr: PLCLHandle; Item:
-  TResourceCacheItem): integer;
+function ComparePHandleWithResourceCacheItem(HandlePtr: PLCLHandle;
+  Item: TResourceCacheItem): integer;
 function CompareDescPtrWithBlockResDesc(DescPtr: Pointer;
   Item: TBlockResourceCacheDescriptor): integer;
 
 implementation
 
 
-function ComparePHandleWithResourceCacheItem(HandlePtr: PLCLHandle; Item:
-  TResourceCacheItem): integer;
+function CompareLCLHandles(h1, h2: TLCLHandle): integer;
+begin
+  if h1>h2 then
+    Result:=1
+  else if h1<h2 then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+function ComparePHandleWithResourceCacheItem(HandlePtr: PLCLHandle;
+  Item: TResourceCacheItem): integer;
 begin
   Result := CompareLCLHandles(HandlePtr^, Item.Handle);
 end;

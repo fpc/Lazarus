@@ -39,8 +39,8 @@ interface
 
 
 uses
-  SysUtils, Math, Types, Classes, Contnrs, FPCAdds, LCLVersion, LazUTF8Classes,
-  FileUtil,
+  // RTL + FCL
+  SysUtils, Math, Types, Classes, Contnrs,
   FPImage, FPCanvas,
   FPWriteBMP,              // bmp support
   FPWritePNG, PNGComn,     // png support
@@ -48,10 +48,11 @@ uses
   FPReadJpeg, FPWriteJpeg, // jpg support
   FPReadTiff, FPTiffCmn,   // tiff support
   FPReadGif,
-  AvgLvlTree,
-  IntfGraphics,
-  LCLStrConsts, LCLType, LCLProc, LMessages, LResources, LCLResCache,
-  GraphType, IcnsTypes, GraphMath, WSReferences;
+  // LazUtils
+  FPCAdds, LazUTF8Classes, FileUtil, AvgLvlTree,
+  // LCL
+  LCLVersion, LCLStrConsts, LCLType, LCLProc, LMessages, LResources, LCLResCache,
+  IntfGraphics, GraphType, IcnsTypes, GraphMath, WSReferences;
 
 type
   PColor = ^TColor;

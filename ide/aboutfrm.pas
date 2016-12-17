@@ -25,9 +25,16 @@ unit AboutFrm;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds, Forms, Controls, Graphics, StdCtrls, Buttons,
-  ExtCtrls, ComCtrls, Menus, LCLIntf, LazConf, LazarusIDEStrConsts,
-  EnvironmentOpts, Clipbrd, LazFileUtils, lazutf8classes, DefineTemplates;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Graphics, StdCtrls, Buttons, ExtCtrls, ComCtrls, Menus,
+  LCLIntf, LazConf, InterfaceBase, LCLPlatformDef, Clipbrd,
+  // LazUtils
+  FPCAdds, LazFileUtils, lazutf8classes,
+  // Codetools
+  DefineTemplates,
+  // IDE
+  LazarusIDEStrConsts, EnvironmentOpts;
 
 type
 

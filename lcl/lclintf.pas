@@ -50,9 +50,11 @@ uses
   {$IFDEF Windows}Windows, ShellApi, LazUtf16,{$ENDIF}
   {$IFDEF UNIX}Unix, {$ENDIF}
   {$IFDEF Darwin}MacOSAll, CocoaAll,{$ENDIF}
-  Math, Classes, SysUtils, Types, LCLType, LCLProc, GraphType, InterfaceBase,
-  FileUtil, LazFileUtils, UTF8Process, Maps, LMessages, LazUTF8, lazutf8sysutils,
-  LCLStrConsts;
+  Math, Classes, SysUtils, Types,
+  // LCL
+  LCLType, LCLProc, LMessages, LCLStrConsts, GraphType, Maps, InterfaceBase,
+  // LazUtils
+  FileUtil, LazFileUtils, UTF8Process, LazUTF8, LazUTF8SysUtils;
 
 {$ifdef Trace}
   {$ASSERTIONS ON}
@@ -65,7 +67,6 @@ uses
 {$I lclintfh.inc}
 
 function PredefinedClipboardFormat(AFormat: TPredefinedClipboardFormat): TClipboardFormat;
-
 
 function MsgKeyDataToShiftState(KeyData: PtrInt): TShiftState;
 

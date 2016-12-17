@@ -49,14 +49,18 @@ uses
   Windows,
   {$ENDIF}
   LCLProc, Forms, Controls, LCLType, StdCtrls, ExtCtrls, Buttons, Dialogs,
+  LCLPlatformDef, CheckLst, Menus, ComCtrls,
+  // LazUtils
   FileUtil, LazFileUtils, LazUTF8, LazLogger, lazutf8classes, LazFileCache,
-  InterfaceBase, CheckLst, Menus, ComCtrls, DividerBevel, DefineTemplates,
-  CodeToolManager,
+  // LazControls
+  DividerBevel,
+  // Codetools
+  CodeToolManager, DefineTemplates,
   // IDEIntf
   LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
-  PackageIntf, IDEExternToolIntf, IDEOptionsIntf,
+  PackageIntf, IDEExternToolIntf,
   // IDE
-  LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
+  LazarusIDEStrConsts, TransferMacros, LazConf, DialogProcs,
   MainBar, EnvironmentOpts,
   ApplicationBundle, ModeMatrixOpts, CompilerOptions, BuildProfileManager,
   GenericListEditor, GenericCheckList, PackageSystem, PackageDefs;

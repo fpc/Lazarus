@@ -45,9 +45,9 @@ uses
   LineInfo,
   {$ENDIF}
   // rtl+fcl
-  Types, Classes, SysUtils, FPCAdds,
-  // interfacebase
-  InterfaceBase,
+  Types, Classes, SysUtils,
+  // LazUtils
+  FPCAdds,
   // gtk
   {$IFDEF gtk2}
     glib2, gdk2pixbuf, gdk2, gtk2, Pango, gtk2proc,
@@ -63,12 +63,12 @@ uses
   {$endif}
   Math, // after gtk to get the correct Float type
   // LCL
+  LCLPlatformDef, InterfaceBase,
   FileUtil, Translations, ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts,
   LMessages, LCLProc, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
   Graphics, Menus, Maps, Themes,
   // widgetset
-  GtkDebug,
-  GtkFontCache, gtkDef, GtkProc, gtkMsgQueue, GtkExtra, WSLCLClasses;
+  GtkDebug, GtkFontCache, gtkDef, GtkProc, gtkMsgQueue, GtkExtra, WSLCLClasses;
 
 type
 

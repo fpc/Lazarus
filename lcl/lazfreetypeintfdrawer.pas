@@ -5,7 +5,11 @@ unit LazFreeTypeIntfDrawer;
 interface
 
 uses
-  Classes, SysUtils, Graphics, EasyLazFreeType, IntfGraphics, FPimage;
+  Classes, SysUtils, FPimage,
+  // LazUtils
+  EasyLazFreeType,
+  // LCL
+  GraphType, Graphics, IntfGraphics;
 
 type
   TLazIntfImageGetPixelAtProc = procedure(p: pointer; out Color: TFPColor);
@@ -54,8 +58,6 @@ type
   end;
 
 implementation
-
-uses LCLType, GraphType;
 
 type
   PFPColorBytes = ^TFPColorBytes;

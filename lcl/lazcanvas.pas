@@ -40,9 +40,8 @@ uses
   Classes, SysUtils, contnrs, Math,
   // FCL-Image
   fpimgcanv, fpcanvas, fpimage, clipping, pixtools, fppixlcanv,
-  intfgraphics,
-  // regions
-  lazregions
+  // LCL
+  IntfGraphics, LazRegions
   {$if defined(lazcanvas_debug) or defined(lazcanvas_profiling)}
   , lazutf8sysutils, LCLProc
   {$endif}

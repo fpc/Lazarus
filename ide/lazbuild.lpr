@@ -30,7 +30,8 @@ uses
   {$ENDIF}
   Classes, SysUtils, math, CustApp,
   Interfaces, // this includes the NoGUI widgetset
-  LCLProc, Dialogs, Forms, Controls, InterfaceBase,
+  // LCL
+  LCLPlatformDef, {InterfaceBase,} LCLProc, Dialogs, Forms, Controls,
   // codetools
   CodeCache, CodeToolManager, DefineTemplates, FileProcs,
   // IDEIntf
@@ -555,7 +556,7 @@ begin
   if WidgetSetOverride<>'' then
     CurProf.TargetPlatform:=DirNameToLCLPlatform(WidgetSetOverride)
   else
-    CurProf.TargetPlatform:=GetDefaultLCLWidgetType;
+    CurProf.TargetPlatform:=GetBuildLCLWidgetType;
   if BuildIDEOptions<>'' then
   begin
     s:=CurProf.ExtraOptions;
@@ -1818,7 +1819,7 @@ begin
   writeln('or --ws=<widgetset>');
   writeln(LongToConsole(Format(
     lisOverrideTheProjectWidgetsetEGGtkGtk2QtWin32CarbonD, [space,
-    LCLPlatformDirNames[LazConf.GetDefaultLCLWidgetType]])));
+    LCLPlatformDirNames[GetBuildLCLWidgetType]])));
   writeln('');
   writeln('--cpu=<cpu>');
   writeln(LongToConsole(Format(

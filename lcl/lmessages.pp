@@ -23,7 +23,10 @@ unit LMessages;
 
 interface
 
-uses Classes, SysUtils, Types, LCLType, GraphType
+uses
+  Classes, SysUtils, Types,
+  // LCL
+  LCLType, GraphType
   {$ifdef WINDOWS}
   ,messages
   {$endif WINDOWS}

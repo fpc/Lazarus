@@ -42,7 +42,10 @@ unit DynHashArray;
 
 interface
 
-uses Classes, SysUtils, LCLProc;
+uses
+  Classes, SysUtils,
+  // LCL
+  LCLProc;
 
 type
   TDynHashArray = class;

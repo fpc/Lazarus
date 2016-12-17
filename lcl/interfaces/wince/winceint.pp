@@ -40,14 +40,16 @@ uses
   {$else}
     aygshell,
   {$endif}
-  // Libs
-  Windows,
-  // RTL, LCL
-  Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
-  ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType, LazUTF8,
-  LMessages, StdCtrls, SysUtils, Graphics, Menus,
+  // Libs, RTL
+  Windows, Classes,
+  // LCL
+  LCLIntf, LCLType, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
+  ExtCtrls, Forms, GraphMath, GraphType, LCLPlatformDef, InterfaceBase,
+  LMessages, StdCtrls, SysUtils, Graphics, Menus, Themes,
+  // LazUtils
+  LazUTF8,
   // Widgetset
-  WinCEProc, WinCEExtra, WinExt, WinCEDef, Themes;
+  WinCEProc, WinCEExtra, WinExt, WinCEDef;
 
 const
   {$ifdef Win32}

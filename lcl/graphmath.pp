@@ -29,7 +29,8 @@ unit GraphMath;
 interface
 
 Uses
-  Types, Classes, SysUtils, Math, LCLProc;
+  Types, Classes, SysUtils, Math,
+  LCLProc;
 
 Type
   TFloatPoint = Record

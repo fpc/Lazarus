@@ -28,7 +28,11 @@ unit TextStrings;
 interface
 
 uses
-  Classes, SysUtils, LCLStrConsts, LazUtf8Classes;
+  Classes, SysUtils,
+  // LCL
+  LCLStrConsts,
+  // LazUtils
+  LazUtf8Classes;
   
 type
   { TTextStrings }

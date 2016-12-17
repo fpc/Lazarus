@@ -24,7 +24,8 @@ unit StringHashList;
 interface
 
 uses
-  Classes, SysUtils, LCLStrConsts;
+  Classes, SysUtils,
+  LCLStrConsts;
 
 type
   PStringHashItem = ^TStringHashItem;

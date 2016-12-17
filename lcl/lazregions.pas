@@ -10,7 +10,8 @@ unit LazRegions;
 interface
 
 uses
-  Classes, SysUtils, LCLType, fpcanvas;
+  Classes, SysUtils, fpcanvas,
+  LCLType;
 
 type
   TLazRegionFillMode = (rfmOddEven, rfmWinding);

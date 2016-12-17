@@ -18,9 +18,12 @@ unit LazHelpHTML;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLIntf, Forms, Process, LazFileUtils, UTF8Process,
-  LazConfigStorage, LazUTF8, LCLStrConsts, HelpIntfs, LazHelpIntf;
-  
+  Classes, SysUtils,
+  // LazUtils
+  LazFileUtils, UTF8Process, LazUTF8, LazConfigStorage,
+  // LCL
+  LCLProc, LCLIntf, LCLStrConsts, HelpIntfs, LazHelpIntf;
+
 type
   { THTMLHelpDatabase
 

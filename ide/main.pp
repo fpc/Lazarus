@@ -61,8 +61,9 @@ uses
   // fpc packages
   Math, Classes, SysUtils, TypInfo, types, strutils, AVL_Tree,
   // LCL
-  LCLProc, LCLType, LCLIntf, LResources, ComCtrls, HelpIntfs, InterfaceBase,
-  Forms, Buttons, Menus, Controls, GraphType, Graphics, ExtCtrls, Dialogs, LclStrConsts,
+  LCLProc, LCLType, LCLIntf, LResources, HelpIntfs, InterfaceBase, LCLPlatformDef,
+  ComCtrls, Forms, Buttons, Menus, Controls, GraphType, Graphics, ExtCtrls,
+  Dialogs, LclStrConsts,
   // CodeTools
   FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
   CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists, CodeTree,
@@ -1444,7 +1445,7 @@ begin
   CodeToolBoss.SetGlobalValue(
     ExternalMacroStart+'ProjPath',VirtualDirectory);
   CodeToolBoss.SetGlobalValue(
-    ExternalMacroStart+'LCLWidgetType',LCLPlatformDirNames[GetDefaultLCLWidgetType]);
+    ExternalMacroStart+'LCLWidgetType',GetLCLWidgetTypeName);
   CodeToolBoss.SetGlobalValue(
     ExternalMacroStart+'FPCSrcDir',EnvironmentOptions.GetParsedFPCSourceDirectory);
 end;
@@ -9093,7 +9094,7 @@ begin
   with CodeToolBoss.GlobalValues do begin
     Variables[ExternalMacroStart+'LazarusDir']:=EnvironmentOptions.GetParsedLazarusDirectory;
     Variables[ExternalMacroStart+'ProjPath']:=VirtualDirectory;
-    Variables[ExternalMacroStart+'LCLWidgetType']:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
+    Variables[ExternalMacroStart+'LCLWidgetType']:=GetLCLWidgetTypeName;
     Variables[ExternalMacroStart+'FPCSrcDir']:=EnvironmentOptions.GetParsedFPCSourceDirectory;
   end;
 

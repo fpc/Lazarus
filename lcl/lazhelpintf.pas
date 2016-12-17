@@ -25,8 +25,11 @@ unit LazHelpIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, LCLStrConsts, Dialogs,
-  LazConfigStorage, HelpIntfs, Masks, LazFileUtils, LazUTF8;
+  Classes, SysUtils,
+  // LazUtils
+  FileUtil, LazFileUtils, LazUTF8, LazConfigStorage, Masks,
+  // LCL
+  LCLProc, LCLStrConsts, Dialogs, HelpIntfs;
 
 type
   { THelpQueryItem }

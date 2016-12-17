@@ -37,10 +37,12 @@ uses
   qt4,
   // FPC
   Classes, SysUtils, Math, Types, maps,
+  // LazUtils
+  LazUTF8,
   // LCL
-  InterfaceBase, LCLProc, LazUTF8, LCLType, LMessages, LCLMessageGlue, LCLStrConsts,
-  Controls, ExtCtrls, Forms,
-  Dialogs, StdCtrls, LCLIntf, GraphType, GraphUtil, Themes,
+  LCLPlatformDef, InterfaceBase, LCLProc, LCLType, LCLIntf,
+  LMessages, LCLMessageGlue, LCLStrConsts,
+  Controls, ExtCtrls, Forms, StdCtrls, GraphType, GraphUtil, Themes,
   // WS
   qtproc;
 
@@ -347,7 +349,7 @@ uses
  QtCaret,
  QtThemes,
 ////////////////////////////////////////////////////
-  Graphics, buttons, Menus,
+  Graphics, buttons,
   // Bindings
   QtWSFactory, qtwidgets, qtobjects, qtsystemtrayicon;
 
