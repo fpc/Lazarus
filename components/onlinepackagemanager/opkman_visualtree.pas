@@ -1532,17 +1532,16 @@ var
 begin
   Data := FVST.GetNodeData(Node);
   case column of
-    1: begin
-         if Node <> Sender.FocusedNode then
+    2: begin
+         if Data^.DataType = 2 then
          begin
-           if Data^.DataType = 1 then
-           begin
-             case Data^.InstallState of
-               1: TargetCanvas.Font.Color := clBlack;
-               2: TargetCanvas.Font.Color := clBlack;
-             end;
-           end;
-         end
+           if (Data^.InstalledVersion = '') or ((Data^.InstalledVersion <> '') and (Data^.InstalledVersion < Data^.Version)) then
+             TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold]
+           else
+             TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
+         end;
+         if Node <> Sender.FocusedNode then
+           TargetCanvas.Font.Color := clBlack
          else
            TargetCanvas.Font.Color := clWhite;
        end;
