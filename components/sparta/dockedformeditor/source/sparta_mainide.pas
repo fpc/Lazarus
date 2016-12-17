@@ -70,7 +70,7 @@ type
     property LastScreenshot: TBitmap read FLastScreenshot;
     property PopupParent: TSourceEditorWindowInterface read FPopupParent write SetPopupParent;
 
-    constructor Create(AForm: TCustomForm);
+    constructor Create(AForm: TCustomForm); reintroduce;
     destructor Destroy; override;
   end;
 
@@ -113,12 +113,12 @@ type
     procedure SetActiveDesignFormData(const AValue: TDesignFormData);
   protected
     procedure WndMethod(var TheMessage: TLMessage);
-    constructor Create(AForm: TSourceEditorWindowInterface);
-    destructor Destroy; override;
     procedure OnChangeBounds(Sender: TObject);
     procedure AddPageCtrl(ASrcEditor: TSourceEditorInterface; APage: TModulePageControl);
     procedure RemovePageCtrl(ASrcEditor: TSourceEditorInterface);
   public
+    constructor Create(AForm: TSourceEditorWindowInterface);
+    destructor Destroy; override;
     property ActiveDesignFormData: TDesignFormData read FActiveDesignFormData write SetActiveDesignFormData;
   end;
 
