@@ -233,7 +233,9 @@ begin
         end;
         g_slist_free(cFilenames);
       end;
-    end;
+    end
+    else
+      TheDialog.Files.Clear;
   end;
 
   cFilename := gtk_file_chooser_get_filename(widget);
@@ -246,6 +248,8 @@ begin
     else
       TheDialog.FileName := cFilename;
     g_free(cFilename);
+    if (TheDialog is TOpenDialog) and (not (ofAllowMultiSelect in TOpenDialog(theDialog).Options)) then
+      TheDialog.Files.Add(TheDialog.FileName);
   end;
 
   //?? StoreCommonDialogSetup(theDialog);
