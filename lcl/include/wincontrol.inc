@@ -7013,7 +7013,8 @@ begin
     SetBounds(NewLeft, NewTop, Message.Width, Message.Height);
   //if CheckPosition(Self) then
     //debugln(['TWinControl.WMSize ',DbgSName(Self),' ClientRectNeedsInterfaceUpdate=',ClientRectNeedsInterfaceUpdate]);
-  if ((Message.SizeType and Size_SourceIsInterface) > 0) and ClientRectNeedsInterfaceUpdate then
+  if ((Message.SizeType and Size_SourceIsInterface) > 0) and ((Message.SizeType and SIZE_MINIMIZED) = 0)
+  and ClientRectNeedsInterfaceUpdate then
     DoAdjustClientRectChange;
   {$IFDEF VerboseClientRectBugFix}
   {$IFDEF CHECK_POSITION}
