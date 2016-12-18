@@ -176,7 +176,7 @@ resourcestring
   rsMainFrm_rsMessageError2 = 'Remote server unreachable.';
   rsMainFrm_rsNoPackageToDownload = 'Please check one or more packages!';
   rsMainFrm_rsRepositoryCleanup0 = 'This will delete all non-installed packages from local repository. Continue?';
-  rsMainFrm_rsRepositoryCleanup1 = 'packages deleted!';
+  rsMainFrm_rsRepositoryCleanup1 = '%s packages deleted!';
   rsMainFrm_rsPackageDependency0 = 'depends on package:';
   rsMainFrm_rsPackageDependency1 = 'Resolve dependency?';
   rsMainFrm_rsPackageDependency2 = 'Not resolving dependencies might lead to install failure!';
@@ -205,17 +205,12 @@ resourcestring
   rsProgressFrm_Error1 = 'Error message:';
   rsProgressFrm_Error2 = 'Cannot extract package:';
   rsProgressFrm_Error3 = 'Cannot install package:';
-  rsProgressFrm_Error4 = 'Dependecy';
-  rsProgressFrm_Error5 = 'not found!';
-  rsProgressFrm_Error6 = 'Unknown error.';
-  rsProgressFrm_Error7 = 'Cannot contact download site';
-  rsProgressFrm_Error8 = 'No valid download link found.';
-  rsProgressFrm_Error9 = 'Cannot add package to the IDE.';
-  rsProgressFrm_Error10 = 'Dependecy';
-  rsProgressFrm_Error11 = 'not found!';
-  rsProgressFrm_Error12 = 'Cannot open package file.';
-  rsProgressFrm_Error13 = 'Cannot compile package.';
-  rsProgressFrm_Error14 = 'Cannot install package.';
+  rsProgressFrm_Error4 = 'Dependency "%s" not found!';
+  rsProgressFrm_Error5 = 'Cannot contact download site';
+  rsProgressFrm_Error6 = 'No valid download link found.';
+  rsProgressFrm_Error7 = 'Cannot open package file.';
+  rsProgressFrm_Error8 = 'Cannot compile package.';
+  rsProgressFrm_Error9 = 'Cannot install package.';
   rsProgressFrm_Conf0 = 'Continue with next one?';
   rsProgressFrm_Info0 = 'Installing package:';
   rsProgressFrm_Info1 = 'Success.';
@@ -235,8 +230,8 @@ resourcestring
   rsOptions_cbForceDownloadExtract_Caption = 'Always force download and extract';
   rsOptions_cbForceDownloadExtract_Hint = 'If this option is checked the packages are always re-downloaded/extracted before install';
   rsOptions_lbSelectProfile_Caption = 'Select profile';
-  rsOptions_cbSelecProfile_Item0 = 'Regular user';
-  rsOptions_cbSelecProfile_Item1 = 'Package maintainer';
+  rsOptions_cbSelectProfile_Item0 = 'Regular user';
+  rsOptions_cbSelectProfile_Item1 = 'Package maintainer';
   rsOptions_cbSelectProfile_Hint = 'Choose a profile that best fits you';
   rsOptions_cbDelete_Caption = 'Delete downloaded zip files after installation/update';
   rsOptions_cbDelete_Hint = 'If this option is checked the downloaded zip file is always deleted after installation';
@@ -297,7 +292,7 @@ resourcestring
   rsCreateRepositoryPackageFrm_Message6 = 'Repository package successfully created.';
 
   //createupdatejson
-  rsCreateJSONForUpdatesFrm_Caption = 'Create update JSON for package: ';
+  rsCreateJSONForUpdatesFrm_Caption = 'Create update JSON for package:';
   rsCreateJSONForUpdatesFrm_bHelp_Caption = 'Help';
   rsCreateJSONForUpdatesFrm_bCreate_Caption = 'Create';
   rsCreateJSONForUpdatesFrm_bClose_Caption = 'Cancel';

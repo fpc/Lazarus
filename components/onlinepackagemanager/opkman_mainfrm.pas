@@ -778,7 +778,8 @@ begin
   if MessageDlgEx(rsMainFrm_rsRepositoryCleanup0, mtInformation, [mbYes, mbNo], Self) = mrYes then
   begin
     Cnt := SerializablePackages.Cleanup;
-    MessageDlgEx(IntToStr(Cnt) + ' ' + rsMainFrm_rsRepositoryCleanup1, mtInformation, [mbOk], Self);
+    MessageDlgEx(Format(rsMainFrm_rsRepositoryCleanup1, [IntToStr(Cnt)]),
+      mtInformation, [mbOk], Self);
   end;
 end;
 

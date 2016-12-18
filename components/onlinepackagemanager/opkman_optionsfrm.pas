@@ -214,8 +214,8 @@ begin
   tsProfiles.Caption := rsOptions_tsProfiles_Caption;
   lbSelectProfile.Caption := rsOptions_lbSelectProfile_Caption;
   cbSelectProfile.Clear;
-  cbSelectProfile.Items.Add(rsOptions_cbSelecProfile_Item0);
-  cbSelectProfile.Items.Add(rsOptions_cbSelecProfile_Item1);
+  cbSelectProfile.Items.Add(rsOptions_cbSelectProfile_Item0);
+  cbSelectProfile.Items.Add(rsOptions_cbSelectProfile_Item1);
   cbSelectProfile.ItemIndex := Options.UserProfile;
   cbSelectProfile.Hint := rsOptions_cbSelectProfile_Hint;
 end;

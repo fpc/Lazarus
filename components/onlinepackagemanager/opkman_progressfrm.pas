@@ -455,9 +455,9 @@ begin
     0: Data^.FName := Format(rsProgressFrm_Info2, [AUPackageName, AUPackageURL]);
     1: Data^.FName := rsProgressFrm_Info1;
     2: if AUErrMsg <> '' then
-         Data^.FName := rsProgressFrm_Error7 + ': ' + AUErrMsg + '';
+         Data^.FName := rsProgressFrm_Error5 + ': ' + AUErrMsg + '';
        else
-         Data^.FName := rsProgressFrm_Error7 + '.';
+         Data^.FName := rsProgressFrm_Error5 + '.';
   end;
   Data^.FImageIndex := AUTyp;
   FVST.TopNode := Node;
@@ -485,7 +485,7 @@ begin
   begin
     Node := FVST.AddChild(nil);
     Data := FVST.GetNodeData(Node);
-    Data^.FName := rsProgressFrm_Error8;
+    Data^.FName := rsProgressFrm_Error6;
     Data^.FImageIndex := 2;
     FVST.TopNode := Node;
     FVST.RepaintNode(Node);

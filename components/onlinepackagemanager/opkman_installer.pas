@@ -207,13 +207,13 @@ var
 begin
   case AInstallMessage of
     imOpenPackageError:
-      ErrMsg := rsProgressFrm_Error12;
+      ErrMsg := rsProgressFrm_Error7;
     imCompilePackageError:
-      ErrMsg := rsProgressFrm_Error13;
+      ErrMsg := rsProgressFrm_Error8;
     imInstallPackageError:
-      ErrMsg := rsProgressFrm_Error14;
+      ErrMsg := rsProgressFrm_Error9;
     imDependencyError:
-      ErrMsg := rsProgressFrm_Error10 + ' "' + FUnresolvedPackageFileName + '" ' + rsProgressFrm_Error11;
+      ErrMsg := Format(rsProgressFrm_Error4, [FUnresolvedPackageFileName]);
     end;
   APackageFile.PackageStates := APackageFile.PackageStates - [psInstalled];
   APackageFile.PackageStates := APackageFile.PackageStates + [psError];

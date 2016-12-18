@@ -43,7 +43,7 @@ msgid "Test"
 msgstr ""
 
 #: opkman_const.rscreatejsonforupdatesfrm_caption
-msgid "Create update JSON for package: "
+msgid "Create update JSON for package:"
 msgstr ""
 
 #: opkman_const.rscreatejsonforupdatesfrm_column0_text
@@ -248,6 +248,10 @@ msgstr "Piilota JSON"
 msgid "Show JSON"
 msgstr "Näytä JSON"
 
+#: opkman_const.rsmainfrm_miresetrating
+msgid "Reset rating"
+msgstr ""
+
 #: opkman_const.rsmainfrm_packagealreadydownloaded
 msgid "The following repository packages already exists in the target folder. Continue?"
 msgstr ""
@@ -326,12 +330,18 @@ msgstr ""
 msgid "dependency list. Unchecking it might lead to installing failure. Do you wish to continue?"
 msgstr "riippuvuusluettelo. Sen poistaminen saattaisi johtaa asentamisen epäonnistumiseen. Haluatko jatkaa?"
 
+#: opkman_const.rsmainfrm_rspackagerating
+msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
+msgstr ""
+
 #: opkman_const.rsmainfrm_rsrepositorycleanup0
 msgid "This will delete all non-installed packages from local repository. Continue?"
 msgstr ""
 
 #: opkman_const.rsmainfrm_rsrepositorycleanup1
-msgid "packages deleted!"
+#, fuzzy,badformat
+#| msgid "packages deleted!"
+msgid "%s packages deleted!"
 msgstr "paketit poistettu!"
 
 #: opkman_const.rsmainfrm_spclear_hint
@@ -434,6 +444,10 @@ msgstr "Pakettitiedosto (.lpk)"
 #: opkman_const.rsmainfrm_vstheadercolumn_packagename
 msgid "Packages"
 msgstr "Paketit"
+
+#: opkman_const.rsmainfrm_vstheadercolumn_rating
+msgid "Rating"
+msgstr ""
 
 #: opkman_const.rsmainfrm_vstheadercolumn_repository
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_repository"
@@ -728,6 +742,20 @@ msgstr "Jos tämä vaihtoehto on valittu niin paketit ovat aina uudelleen ladatt
 msgid "Use proxy"
 msgstr "Käytä välityspalvelinta"
 
+#: opkman_const.rsoptions_cbselectprofile_hint
+msgid "Choose a profile that best fits you"
+msgstr ""
+
+#: opkman_const.rsoptions_cbselectprofile_item0
+msgctxt "opkman_const.rsoptions_cbselectprofile_item0"
+msgid "Regular user"
+msgstr ""
+
+#: opkman_const.rsoptions_cbselectprofile_item1
+msgctxt "opkman_const.rsoptions_cbselectprofile_item1"
+msgid "Package maintainer"
+msgstr ""
+
 #: opkman_const.rsoptions_edlocalrepositoryarchive_hint
 msgid "The folder where the zip files are downloaded from the remote repository"
 msgstr ""
@@ -777,6 +805,10 @@ msgstr "Portti"
 msgid "Remote repository"
 msgstr ""
 
+#: opkman_const.rsoptions_lbselectprofile_caption
+msgid "Select profile"
+msgstr ""
+
 #: opkman_const.rsoptions_lbserver_caption
 msgid "Server"
 msgstr "Palvelin"
@@ -800,6 +832,22 @@ msgstr ""
 #: opkman_const.rsoptions_restoredefaults_conf
 msgid "This will restore the default settings. Continue?"
 msgstr "Tämä palauttaa oletusasetukset. Jatketaanko?"
+
+#: opkman_const.rsoptions_tsfolders_caption
+msgid "Folders"
+msgstr ""
+
+#: opkman_const.rsoptions_tsgeneral_caption
+msgid "General"
+msgstr ""
+
+#: opkman_const.rsoptions_tsprofiles_caption
+msgid "Profiles"
+msgstr ""
+
+#: opkman_const.rsoptions_tsproxy_caption
+msgid "Proxy"
+msgstr ""
 
 #: opkman_const.rspackagelistfrm_bno_caption
 msgctxt "opkman_const.rspackagelistfrm_bno_caption"
@@ -876,28 +924,6 @@ msgstr "Ei voi ladata pakettia:"
 msgid "Error message:"
 msgstr "Virheviesti:"
 
-#: opkman_const.rsprogressfrm_error10
-msgctxt "opkman_const.rsprogressfrm_error10"
-msgid "Dependecy"
-msgstr "Riippuvuus"
-
-#: opkman_const.rsprogressfrm_error11
-msgctxt "opkman_const.rsprogressfrm_error11"
-msgid "not found!"
-msgstr "ei löydetty!"
-
-#: opkman_const.rsprogressfrm_error12
-msgid "Cannot open package file."
-msgstr "Ei voida avata pakettitiedostoa."
-
-#: opkman_const.rsprogressfrm_error13
-msgid "Cannot compile package."
-msgstr "Ei voida kääntää pakettia"
-
-#: opkman_const.rsprogressfrm_error14
-msgid "Cannot install package."
-msgstr "Ei voida asentaa pakettia."
-
 #: opkman_const.rsprogressfrm_error2
 msgid "Cannot extract package:"
 msgstr "Ei voida purkaa pakettia:"
@@ -907,29 +933,41 @@ msgid "Cannot install package:"
 msgstr "Ei voida asentaa pakettia:"
 
 #: opkman_const.rsprogressfrm_error4
+#, fuzzy,badformat
+#| msgid "Dependecy"
 msgctxt "opkman_const.rsprogressfrm_error4"
-msgid "Dependecy"
+msgid "Dependency \"%s\" not found!"
 msgstr "Riippuvuus"
 
 #: opkman_const.rsprogressfrm_error5
+#, fuzzy
+#| msgid "not found!"
 msgctxt "opkman_const.rsprogressfrm_error5"
-msgid "not found!"
+msgid "Cannot contact download site"
 msgstr "ei löydetä!"
 
 #: opkman_const.rsprogressfrm_error6
-msgid "Unknown error."
+#, fuzzy
+#| msgid "Unknown error."
+msgid "No valid download link found."
 msgstr "Tuntematon virhe"
 
 #: opkman_const.rsprogressfrm_error7
-msgid "Cannot contact download site"
+#, fuzzy
+#| msgid "Cannot contact download site"
+msgid "Cannot open package file."
 msgstr "Ei saada yhteyttä lataussivulle"
 
 #: opkman_const.rsprogressfrm_error8
-msgid "No valid download link found."
+#, fuzzy
+#| msgid "No valid download link found."
+msgid "Cannot compile package."
 msgstr "Epäkelpo latauslinkki löytyi"
 
 #: opkman_const.rsprogressfrm_error9
-msgid "Cannot add package to the IDE."
+#, fuzzy
+#| msgid "Cannot add package to the IDE."
+msgid "Cannot install package."
 msgstr "Ei voida lisätä pakettia kehitysympäristöön."
 
 #: opkman_const.rsprogressfrm_info0
