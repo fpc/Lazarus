@@ -1344,6 +1344,28 @@ end;
 
 { TWin32WSCustomMemo }
 
+function MemoWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+var
+  Control: TWinControl;
+  LMessage: TLMessage;
+begin
+  case Msg of
+    // prevent flickering, Mantis #16140
+    WM_ERASEBKGND:
+      begin
+        Control := GetWin32WindowInfo(Window)^.WinControl;
+        LMessage.msg := Msg;
+        LMessage.wParam := WParam;
+        LMessage.lParam := LParam;
+        LMessage.Result := 0;
+        Result := DeliverMessage(Control, LMessage);
+      end;
+    else
+      Result := WindowProc(Window, Msg, WParam, LParam);
+  end;
+end;
+
 class function TWin32WSCustomMemo.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -1355,6 +1377,7 @@ begin
   with Params do
   begin
     pClassName := @EditClsName[0];
+//    SubClassWndProc := @MemoWndProc;
     WindowTitle := StrCaption;
   end;
   // create window
