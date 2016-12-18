@@ -32,7 +32,7 @@ interface
 uses
   Classes, Contnrs,
   // LCL
-  InterfaceBase, LCLPlatformDef, LCLProc, Forms, StdCtrls, ComCtrls, ExtCtrls, Buttons,
+  LCLPlatformDef, LCLProc, Forms, StdCtrls, ComCtrls, ExtCtrls, Buttons,
   // LazControls
   TreeFilterEdit,
   // IdeIntf
