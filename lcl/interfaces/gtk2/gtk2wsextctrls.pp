@@ -164,15 +164,13 @@ type
 
 implementation
 
-uses
 {$ifdef HasX}
-  x, xlib,
+uses
+  {$ifdef HasGdk2X}
+    gdk2x,
+  {$endif}
+  x, xlib;
 {$endif}
-//  gtk2, gdk2, glib2, gtk2def, gtk2proc,
-{$ifdef HasGdk2X}
-  gdk2x,
-{$endif}
-  interfacebase;
 
 { TGtk2WSCustomPanel }
 

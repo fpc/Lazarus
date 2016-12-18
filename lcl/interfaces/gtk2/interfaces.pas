@@ -21,9 +21,7 @@ unit Interfaces;
 
 interface
 
-uses 
-  {$IFDEF UNIX}{$IFNDEF DisableCWString}cwstring,{$ENDIF}{$ENDIF}
-  InterfaceBase;
+{$IFDEF UNIX}{$IFNDEF DisableCWString}uses cwstring;{$ENDIF}{$ENDIF}
 
 implementation
 
