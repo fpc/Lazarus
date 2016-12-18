@@ -468,7 +468,7 @@ begin
           if (not FNeedToBreak) then
           begin
             JSON := '';
-            if GetUpdateInfo(SerializablePackages.Items[I].DownloadURL, JSON) then
+            if GetUpdateInfo(Trim(SerializablePackages.Items[I].DownloadURL), JSON) then
             begin
               if FUpdatePackage.LoadFromJSON(JSON) then
                 AssignPackageData(SerializablePackages.Items[I])
