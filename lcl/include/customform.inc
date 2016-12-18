@@ -2341,10 +2341,7 @@ end;
 ------------------------------------------------------------------------------}
 function TCustomForm.AutoSizeDelayedHandle: Boolean;
 begin
-  if WindowState=wsMinimized then
-    // this form is minimized => no valid width/height, see bug 30826
-    Result:=true
-  else if (Parent<>nil) or (ParentWindow<>0) then
+  if (Parent<>nil) or (ParentWindow<>0) then
     // this form is inlined / embedded it works like a normal TWinControl
     Result:=inherited AutoSizeDelayedHandle
   else
