@@ -1455,8 +1455,8 @@ begin
   case Index of
   LOGPIXELSX,
   LOGPIXELSY:
-    // logical is allways 72 dpi, although physical can differ
-    Result := 72; // TODO: test scaling and magnification
+    // logical is always 96 dpi (to correspond with 100% scaling on Windows), although physical can differ
+    Result := 96;
   BITSPIXEL:  Result := CGDisplayBitsPerPixel(CGMainDisplayID);
   else
     DebugLn('TCarbonWidgetSet.GetDeviceCaps TODO Index: ' + DbgS(Index));
