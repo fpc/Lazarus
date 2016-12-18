@@ -50,6 +50,7 @@ type
      FRemoteRepository: String;
      FForceDownloadAndExtract: Boolean;
      FDeleteZipAfterInstall: Boolean;
+     FUserProfile: Integer;
      FChanged: Boolean;
      FLastDownloadDir: String;
      FLastPackageDirSrc: String;
@@ -77,6 +78,7 @@ type
      property RemoteRepository: string read FRemoteRepository write SetRemoteRepository;
      property ForceDownloadAndExtract: Boolean read FForceDownloadAndExtract write FForceDownloadAndExtract;
      property DeleteZipAfterInstall: Boolean read FDeleteZipAfterInstall write FDeleteZipAfterInstall;
+     property UserProfile: Integer read FUserProfile write FUserProfile;
      property LastDownloadDir: String read FLastDownloadDir write FLastDownloadDir;
      property LastPackagedirSrc: String read FLastPackageDirSrc write FLastPackageDirSrc;
      property LastPackagedirDst: String read FLastPackageDirDst write FLastPackageDirDst;
@@ -159,6 +161,8 @@ begin
   FLocalRepositoryPackages := FXML.GetValue('Folders/LocalRepositoryPackages/Value', '');
   FLocalRepositoryArchive := FXML.GetValue('Folders/LocalRepositoryArchive/Value', '');
   FLocalRepositoryUpdate := FXML.GetValue('Folders/LocalRepositoryUpdate/Value', '');
+
+  FUserProfile := FXML.GetValue('Profiles/UserProfile/Value', 0);
 end;
 
 procedure TOptions.Save;
@@ -181,6 +185,8 @@ begin
   FXML.SetDeleteValue('Folders/LocalRepositoryArchive/Value', FLocalRepositoryArchive, '');
   FXML.SetDeleteValue('Folders/LocalRepositoryUpdate/Value', FLocalRepositoryUpdate, '');
 
+  FXML.SetDeleteValue('Profiles/UserProfile/Value', FUserProfile, 0);
+
   FXML.Flush;
   FChanged := False;
 end;
@@ -202,6 +208,8 @@ begin
   FLocalRepositoryUpdate := FLocalUpdateDefault;
   FRestrictedExtensions := cRestrictedExtensionDef;
   FRestrictedDirectories := cRestrictedDirectoryDef;
+
+  FUserProfile := 0;
   Save;
 end;
 

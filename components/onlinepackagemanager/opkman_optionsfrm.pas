@@ -44,6 +44,7 @@ type
     cbProxy: TCheckBox;
     cbForceDownloadExtract: TCheckBox;
     cbDeleteZipAfterInstall: TCheckBox;
+    cbSelectProfile: TComboBox;
     edLocalRepositoryUpdate: TDirectoryEdit;
     edLocalRepositoryPackages: TDirectoryEdit;
     edLocalRepositoryArchive: TDirectoryEdit;
@@ -55,12 +56,13 @@ type
     lbLocalRepositoryArchive: TLabel;
     lbLocalRepositoryUpdate: TLabel;
     lbRemoteRepository: TLabel;
+    lbSelectProfile: TLabel;
     lbServer: TLabel;
     lbLocalRepositoryPackages: TLabel;
     lbUserName: TLabel;
     lbPort: TLabel;
     lbPassword: TLabel;
-    pnExtensions: TPanel;
+    pnProfiles: TPanel;
     pnFolders: TPanel;
     pnProxy: TPanel;
     pnGeneral: TPanel;
@@ -69,7 +71,7 @@ type
     SDD: TSelectDirectoryDialog;
     seProxyPort: TSpinEdit;
     tsFolders: TTabSheet;
-    tsExtensions: TTabSheet;
+    tsProfiles: TTabSheet;
     tsGeneral: TTabSheet;
     tsProxy: TTabSheet;
     procedure bOkClick(Sender: TObject);
@@ -136,6 +138,7 @@ begin
   Options.RemoteRepository := edRemoteRepository.Text;
   Options.ForceDownloadAndExtract := cbForceDownloadExtract.Checked;
   Options.DeleteZipAfterInstall := cbDeleteZipAfterInstall.Checked;
+  Options.UserProfile := cbSelectProfile.ItemIndex;
   Options.ProxyEnabled := cbProxy.Checked;
   Options.ProxyServer := edProxyServer.Text;
   Options.ProxyPort := seProxyPort.Value;
@@ -173,17 +176,17 @@ procedure TOptionsFrm.SetupControls;
 begin
   pgOptions.ActivePageIndex := 0;
   Caption := rsOptions_FrmCaption;
-
+  tsGeneral.Caption := rsOptions_tsGeneral_Caption;
   lbRemoteRepository.Caption := rsOptions_lbRemoteRepository_Caption;
   edRemoteRepository.Text := Options.RemoteRepository;
   cbForceDownloadExtract.Checked := Options.ForceDownloadAndExtract;
   cbDeleteZipAfterInstall.Checked := Options.DeleteZipAfterInstall;
-
   cbForceDownloadExtract.Caption := rsOptions_cbForceDownloadExtract_Caption;
   cbForceDownloadExtract.Hint := rsOptions_cbForceDownloadExtract_Hint;
   cbDeleteZipAfterInstall.Caption := rsOptions_cbDelete_Caption;
   cbDeleteZipAfterInstall.Hint := rsOptions_cbDelete_Hint;
 
+  tsProxy.Caption := rsOptions_tsProxy_Caption;
   cbProxy.Caption := rsOptions_cbProxy_Caption;
   gbProxySettings.Caption := rsOptions_gbProxySettings_Caption;
   lbServer.Caption := rsOptions_lbServer_Caption;
@@ -197,16 +200,24 @@ begin
   edProxyUser.Text := Options.ProxyUser;
   edProxyPassword.Text := Options.ProxyPassword;
 
+  tsFolders.Caption := rsOptions_tsFolders_Caption;
   lbLocalRepositoryPackages.Caption := rsOptions_lbLocalRepositoryPackages_Caption;
   edLocalRepositoryPackages.Hint := rsOptions_edLocalRepositoryPackages_Hint;
   lbLocalRepositoryArchive.Caption := rsOptions_lbLocalRepositoryArchive_Caption;
   edLocalRepositoryArchive.Hint := rsOptions_edLocalRepositoryArchive_Hint;
   lbLocalRepositoryUpdate.Caption := rsOptions_lbLocalRepositoryUpdate_Caption;
   edLocalRepositoryUpdate.Hint := rsOptions_edLocalRepositoryUpdate_Hint;
-
   edLocalRepositoryPackages.Text := Options.LocalRepositoryPackages;
   edLocalRepositoryArchive.Text := Options.LocalRepositoryArchive;
   edLocalRepositoryUpdate.Text := Options.LocalRepositoryUpdate;
+
+  tsProfiles.Caption := rsOptions_tsProfiles_Caption;
+  lbSelectProfile.Caption := rsOptions_lbSelectProfile_Caption;
+  cbSelectProfile.Clear;
+  cbSelectProfile.Items.Add(rsOptions_cbSelecProfile_Item0);
+  cbSelectProfile.Items.Add(rsOptions_cbSelecProfile_Item1);
+  cbSelectProfile.ItemIndex := Options.UserProfile;
+  cbSelectProfile.Hint := rsOptions_cbSelectProfile_Hint;
 end;
 
 end.

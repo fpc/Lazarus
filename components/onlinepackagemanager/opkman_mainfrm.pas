@@ -389,7 +389,9 @@ begin
   tbInstall.Enabled := (AEnable) and (SerializablePackages.Count > 0) and (VisualTree.VST.CheckedCount > 0);
   tbUpdate.Enabled :=  (AEnable) and (SerializablePackages.Count > 0) and (VisualTree.VST.CheckedCount > 0);
   tbCleanUp.Enabled := (AEnable) and (SerializablePackages.Count > 0);
-  tbCreate.Enabled := (AEnable);
+  tbCreate.Visible := Options.UserProfile = 1;
+  if tbCreate.Visible then
+    tbCreate.Enabled := (AEnable);
   tbOptions.Enabled := (AEnable);
   tbHelp.Enabled := (AEnable);
 end;

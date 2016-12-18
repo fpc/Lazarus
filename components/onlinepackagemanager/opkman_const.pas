@@ -227,9 +227,17 @@ resourcestring
 
   //options form
   rsOptions_FrmCaption = 'Options';
+  rsOptions_tsGeneral_Caption = 'General';
+  rsOptions_tsProxy_Caption = 'Proxy';
+  rsOptions_tsFolders_Caption = 'Folders';
+  rsOptions_tsProfiles_Caption = 'Profiles';
   rsOptions_lbRemoteRepository_Caption = 'Remote repository';
   rsOptions_cbForceDownloadExtract_Caption = 'Always force download and extract';
   rsOptions_cbForceDownloadExtract_Hint = 'If this option is checked the packages are always re-downloaded/extracted before install';
+  rsOptions_lbSelectProfile_Caption = 'Select profile';
+  rsOptions_cbSelecProfile_Item0 = 'Regular user';
+  rsOptions_cbSelecProfile_Item1 = 'Package maintainer';
+  rsOptions_cbSelectProfile_Hint = 'Choose a profile that best fits you';
   rsOptions_cbDelete_Caption = 'Delete downloaded zip files after installation/update';
   rsOptions_cbDelete_Hint = 'If this option is checked the downloaded zip file is always deleted after installation';
   rsOptions_cbProxy_Caption = 'Use proxy';

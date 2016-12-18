@@ -58,9 +58,9 @@ object OptionsFrm: TOptionsFrm
     Height = 261
     Top = 0
     Width = 450
-    ActivePage = tsFolders
+    ActivePage = tsProxy
     Align = alClient
-    TabIndex = 2
+    TabIndex = 1
     TabOrder = 1
     object tsGeneral: TTabSheet
       Caption = 'General'
@@ -81,7 +81,7 @@ object OptionsFrm: TOptionsFrm
         object lbRemoteRepository: TLabel
           Left = 15
           Height = 15
-          Top = 15
+          Top = 14
           Width = 100
           Caption = 'Remote repository:'
           ParentColor = False
@@ -155,7 +155,7 @@ object OptionsFrm: TOptionsFrm
           object edProxyServer: TEdit
             Left = 8
             Height = 23
-            Top = 17
+            Top = 18
             Width = 296
             OnKeyPress = edRemoteRepositoryKeyPress
             TabOrder = 0
@@ -172,7 +172,7 @@ object OptionsFrm: TOptionsFrm
           object lbUserName: TLabel
             Left = 8
             Height = 15
-            Top = 48
+            Top = 52
             Width = 53
             Caption = 'Username'
             ParentColor = False
@@ -180,7 +180,7 @@ object OptionsFrm: TOptionsFrm
           object edProxyUser: TEdit
             Left = 8
             Height = 23
-            Top = 65
+            Top = 70
             Width = 186
             OnKeyPress = edRemoteRepositoryKeyPress
             TabOrder = 1
@@ -197,7 +197,7 @@ object OptionsFrm: TOptionsFrm
           object lbPassword: TLabel
             Left = 208
             Height = 15
-            Top = 48
+            Top = 52
             Width = 50
             Caption = 'Password'
             ParentColor = False
@@ -205,7 +205,7 @@ object OptionsFrm: TOptionsFrm
           object edProxyPassword: TEdit
             Left = 208
             Height = 23
-            Top = 64
+            Top = 69
             Width = 186
             EchoMode = emPassword
             OnKeyPress = edRemoteRepositoryKeyPress
@@ -216,7 +216,7 @@ object OptionsFrm: TOptionsFrm
           object seProxyPort: TSpinEdit
             Left = 318
             Height = 23
-            Top = 16
+            Top = 17
             Width = 76
             MaxValue = 65535
             TabOrder = 3
@@ -243,7 +243,7 @@ object OptionsFrm: TOptionsFrm
         object lbLocalRepositoryPackages: TLabel
           Left = 15
           Height = 15
-          Top = 15
+          Top = 14
           Width = 84
           Caption = 'Local repository'
           ParentColor = False
@@ -252,7 +252,7 @@ object OptionsFrm: TOptionsFrm
         object lbLocalRepositoryArchive: TLabel
           Left = 15
           Height = 15
-          Top = 74
+          Top = 73
           Width = 125
           Caption = 'Local repository archive'
           ParentColor = False
@@ -261,7 +261,7 @@ object OptionsFrm: TOptionsFrm
         object lbLocalRepositoryUpdate: TLabel
           Left = 15
           Height = 15
-          Top = 130
+          Top = 129
           Width = 124
           Caption = 'Local repository update'
           ParentColor = False
@@ -277,6 +277,8 @@ object OptionsFrm: TOptionsFrm
           ButtonWidth = 23
           NumGlyphs = 1
           MaxLength = 0
+          ParentShowHint = False
+          ShowHint = True
           TabOrder = 0
           Text = 'edLocalRepositoryPackages'
         end
@@ -290,6 +292,8 @@ object OptionsFrm: TOptionsFrm
           ButtonWidth = 23
           NumGlyphs = 1
           MaxLength = 0
+          ParentShowHint = False
+          ShowHint = True
           TabOrder = 1
         end
         object edLocalRepositoryUpdate: TDirectoryEdit
@@ -302,25 +306,52 @@ object OptionsFrm: TOptionsFrm
           ButtonWidth = 23
           NumGlyphs = 1
           MaxLength = 0
+          ParentShowHint = False
+          ShowHint = True
           TabOrder = 2
         end
       end
     end
-    object tsExtensions: TTabSheet
-      Caption = 'Extensions'
+    object tsProfiles: TTabSheet
+      Caption = 'Profiles'
       ClientHeight = 233
       ClientWidth = 442
-      TabVisible = False
-      object pnExtensions: TPanel
+      object pnProfiles: TPanel
         Left = 0
         Height = 233
         Top = 0
         Width = 442
         Align = alClient
         BevelOuter = bvNone
+        ClientHeight = 233
+        ClientWidth = 442
         Color = clBtnFace
         ParentColor = False
         TabOrder = 0
+        object lbSelectProfile: TLabel
+          Left = 15
+          Height = 15
+          Top = 15
+          Width = 68
+          Caption = 'Select profile'
+          ParentColor = False
+        end
+        object cbSelectProfile: TComboBox
+          Left = 15
+          Height = 23
+          Top = 33
+          Width = 192
+          ItemHeight = 15
+          ItemIndex = 0
+          Items.Strings = (
+            'Regular user'
+            'Package maintainer'
+          )
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 0
+          Text = 'Regular user'
+        end
       end
     end
   end
