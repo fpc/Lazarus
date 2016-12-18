@@ -16,7 +16,11 @@ interface
 {$H+}
 
 uses
-  Classes, Controls, CustomTimer, Forms, FPCanvas, Types,
+  Classes, SysUtils, Types, Math, FPCanvas,
+  // LCL
+  Controls, CustomTimer, GraphMath, Forms, LCLPlatformDef, InterfaceBase,
+  LCLType, LCLIntf,
+  // TAChart
   TAChartUtils, TADrawUtils, TAGraph, TATypes;
 
 type
@@ -589,7 +593,6 @@ var
 implementation
 
 uses
-  GraphMath, InterfaceBase, LCLType, LCLIntf, Math, SysUtils,
   TAChartStrConsts, TACustomSeries, TAEnumerators, TAGeometry, TAMath;
 
 function InitBuiltinTools(AChart: TChart): TBasicChartToolset;

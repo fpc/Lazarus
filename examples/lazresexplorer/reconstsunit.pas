@@ -4,6 +4,8 @@ unit reConstsUnit;
 
 interface
 
+uses gettext, translations, LCLPlatformDef, InterfaceBase;
+
 resourcestring
   sResourceExplorer = 'Resource explorer';
   sSaveResource     = 'Save resource ...';
@@ -36,8 +38,8 @@ resourcestring
 
 
 function LCLVersionStr: string;
+
 implementation
-uses gettext, translations, InterfaceBase;
 
 function LCLVersionStr: string;
 begin

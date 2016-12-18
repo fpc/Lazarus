@@ -27,9 +27,15 @@ unit LazChmHelp;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazLogger, LazFileUtils, LazHelpIntf, HelpIntfs,
-  LazConfigStorage, PropEdits, LazIDEIntf, IDEDialogs, IDEExternToolIntf,
-  LHelpControl, Controls, UTF8Process, ChmLangRef, ChmLcl, ChmProg;
+  Classes, SysUtils,
+  // LazUtils
+  FileUtil, LazLogger, LazFileUtils, LazConfigStorage, UTF8Process,
+  // LCL
+  Controls, Forms, Dialogs, LazHelpIntf, HelpIntfs, LCLPlatformDef, InterfaceBase,
+  // IdeIntf
+  PropEdits, IDEDialogs, MacroIntf, LazIDEIntf, IDEExternToolIntf, HelpFPDoc,
+  // ChmHelp
+  LHelpControl, ChmLangRef, ChmLcl, ChmProg;
   
 resourcestring
   HELP_CURRENT_MENU  = '&Help';
@@ -108,8 +114,6 @@ type
 procedure Register;
 
 implementation
-
-uses Process, MacroIntf, InterfaceBase, Forms, Dialogs, HelpFPDoc;
 
 const
   // Part of help name. Stored/retrieved in Lazarus options CHMHelp/Name.
