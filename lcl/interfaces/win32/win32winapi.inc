@@ -1120,12 +1120,16 @@ begin
   len := Length(W);
   if (Flags and DT_MODIFYSTRING <> 0) then
     SetLength(W, len+4);
+  // Remove DT_RIGHT, if the rectangle is calculated (Windows bug), Mantis 20763
+  if (Flags and DT_CALCRECT = DT_CALCRECT)
+  and (Flags and DT_RIGHT = DT_RIGHT) then
+    Flags := Flags and not DT_RIGHT;
   Result := Windows.DrawTextW(DC, PWideChar(W), len, @Rect, Flags);
   if (Flags and DT_MODIFYSTRING <> 0) then
   begin
     W := WideString(PWideChar(W)); // trim to first #0
     s := UTF16ToUTF8(W);
-    if s<>'' then
+    if s <> '' then
       Move(s[1], Str^, Length(s)+1) // the programmer has to make sure there's enough space in Str
     else
       Str^ := #0;
@@ -1145,19 +1149,19 @@ begin
   // aligned bold italic text. The DrawText windows function is documented to
   // clip out text in some special cases, specially when drawing italic text,
   // but I found it's even worse with drawing bold italic text.
-  if (len>0) and (flags and DT_CALCRECT = DT_CALCRECT) then
+  if (len > 0) and (Flags and DT_CALCRECT = DT_CALCRECT) then
   begin
 
     GetObject(GetCurrentObject(DC, OBJ_FONT), SizeOf(LOGFONT), @lf);
 
-    if lf.lfItalic<>0 then
+    if lf.lfItalic <> 0 then
     begin
 
       paABC := @aABC;
       res := GetCharABCWidthsW(DC, Uint(W[len]), Uint(W[len]), paABC);
 
-     if res then
-       Rect.Right := Rect.Right + Abs(aABC.abcC);
+      if res then
+        Rect.Right := Rect.Right + Abs(aABC.abcC);
 
     end;
   end;
