@@ -1,12 +1,12 @@
 object CreateJSONForUpdatesFrm: TCreateJSONForUpdatesFrm
   Left = 659
-  Height = 268
+  Height = 272
   Top = 255
-  Width = 423
+  Width = 453
   BorderIcons = [biSystemMenu]
   Caption = 'CreateJSONForUpdatesFrm'
-  ClientHeight = 268
-  ClientWidth = 423
+  ClientHeight = 272
+  ClientWidth = 453
   Color = clBtnFace
   Constraints.MinHeight = 200
   Constraints.MinWidth = 300
@@ -18,52 +18,51 @@ object CreateJSONForUpdatesFrm: TCreateJSONForUpdatesFrm
   object pnButtons: TPanel
     Left = 0
     Height = 41
-    Top = 227
-    Width = 423
+    Top = 231
+    Width = 453
     Align = alBottom
     BevelOuter = bvNone
     ClientHeight = 41
-    ClientWidth = 423
+    ClientWidth = 453
     TabOrder = 1
     object bCreate: TButton
-      Left = 257
+      Left = 287
       Height = 26
       Top = 8
       Width = 75
       Anchors = [akTop, akRight]
       Caption = 'Create'
       OnClick = bCreateClick
-      TabOrder = 1
+      TabOrder = 0
     end
     object bClose: TButton
-      Left = 334
+      Left = 364
       Height = 26
       Top = 8
       Width = 75
       Anchors = [akTop, akRight]
       Caption = 'Close'
       ModalResult = 2
-      TabOrder = 2
+      TabOrder = 1
     end
-    object bHelp: TButton
+    object cbOpen: TCheckBox
       Left = 15
-      Height = 25
-      Top = 9
-      Width = 75
-      Caption = 'Help'
-      TabOrder = 0
-      Visible = False
+      Height = 19
+      Top = 12
+      Width = 211
+      Caption = 'After create, open containing folder '
+      TabOrder = 2
     end
   end
   object pnTop: TPanel
     Left = 0
     Height = 72
     Top = 0
-    Width = 423
+    Width = 453
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 72
-    ClientWidth = 423
+    ClientWidth = 453
     TabOrder = 0
     Visible = False
     object lbLinkToZip: TLabel
@@ -78,12 +77,12 @@ object CreateJSONForUpdatesFrm: TCreateJSONForUpdatesFrm
       Left = 15
       Height = 23
       Top = 32
-      Width = 341
+      Width = 371
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 0
     end
     object bTest: TButton
-      Left = 359
+      Left = 389
       Height = 25
       Top = 31
       Width = 50

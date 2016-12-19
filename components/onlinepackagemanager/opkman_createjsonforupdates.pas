@@ -17,7 +17,7 @@ type
     bClose: TButton;
     bCreate: TButton;
     bTest: TButton;
-    bHelp: TButton;
+    cbOpen: TCheckBox;
     edLinkToZip: TEdit;
     imTree: TImageList;
     lbLinkToZip: TLabel;
@@ -71,9 +71,9 @@ begin
   Caption := rsCreateJSONForUpdatesFrm_Caption;
   lbLinkToZip.Caption := rsCreateJSONForUpdatesFrm_lbLinkToZip_Caption;
   bTest.Caption := rsCreateJSONForUpdatesFrm_bTest_Caption;
-  bHelp.Caption := rsCreateJSONForUpdatesFrm_bHelp_Caption;
   bCreate.Caption := rsCreateJSONForUpdatesFrm_bCreate_Caption;
   bClose.Caption := rsCreateJSONForUpdatesFrm_bClose_Caption;
+  cbOpen.Caption := rsCreateJSONForUpdatesFrm_cbOpen_Caption;
 
   FVST := TVirtualStringTree.Create(nil);
    with FVST do
@@ -163,13 +163,15 @@ var
   Ms: TMemoryStream;
   Node: PVirtualNode;
   Data: PData;
+  CanClose: Boolean;
+  ErrMsg: String;
 begin
   if FVST.CheckedCount = 0 then
   begin
     MessageDlgEx(rsCreateJSONForUpdatesFrm_Message3, mtInformation, [mbOk], Self);
     Exit;
   end;
-
+  CanClose := False;
   if FPackage.DisplayName <> '' then
     SD.FileName := 'update_' + FPackage.DisplayName
   else
@@ -207,10 +209,23 @@ begin
         finally
           MS.Free;
         end;
+        CanClose := True;
+        MessageDlgEx(rsCreateJSONForUpdatesFrm_Message4, mtInformation, [mbOk], Self);
+      end
+      else
+      begin
+        ErrMsg := StringReplace(UpdatePackage.LastError, '"', '', [rfReplaceAll]);
+        MessageDlgEx(rsCreateJSONForUpdatesFrm_Error1 + sLineBreak + '"' + ErrMsg + '"', mtError, [mbOk], Self);
       end;
     finally
       UpdatePackage.Free;
     end;
+  end;
+  if CanClose then
+  begin
+    if cbOpen.Checked then
+      OpenDocument(ExtractFilePath(SD.FileName));
+    Close
   end;
 end;
 

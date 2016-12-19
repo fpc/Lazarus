@@ -252,6 +252,15 @@ resourcestring
   rsOptions_ProxyPort_Info = 'Please enter the proxy server port!';
   rsOptions_InvalidDirectory_Info = 'Please enter a valid directory';
   rsOptions_RestoreDefaults_Conf = 'This will restore the default settings. Continue?';
+  rsOptions_lbCheckForUpdates_Caption = 'Check for package updates';
+  rsOptions_cbCheckForUpdates_Item0 = 'Every few minutes';
+  rsOptions_cbCheckForUpdates_Item1 = 'Every hour';
+  rsOptions_cbCheckForUpdates_Item2 = 'Once per day';
+  rsOptions_cbCheckForUpdates_Item3 = 'Weekly';
+  rsOptions_cbCheckForUpdates_Item4 = 'Montly';
+  rsOptions_cbCheckForUpdates_Item5 = 'Never';
+  rsOptions_lbLastUpdate_Caption = 'Last update: ';
+  rsOptions_LastUpdate_Never = 'Never';
 
   //packagelist form
   rsPackageListFrm_Caption0 = 'Installed package list';
@@ -293,19 +302,21 @@ resourcestring
 
   //createupdatejson
   rsCreateJSONForUpdatesFrm_Caption = 'Create update JSON for package:';
-  rsCreateJSONForUpdatesFrm_bHelp_Caption = 'Help';
   rsCreateJSONForUpdatesFrm_bCreate_Caption = 'Create';
   rsCreateJSONForUpdatesFrm_bClose_Caption = 'Cancel';
+  rsCreateJSONForUpdatesFrm_cbOpen_Caption = 'After create open containing folder';
   rsCreateJSONForUpdatesFrm_lbLinkToZip_Caption = 'Link to the package zip file';
   rsCreateJSONForUpdatesFrm_bTest_Caption = 'Test';
   rsCreateJSONForUpdatesFrm_Column0_Text = 'PackageFileName';
   rsCreateJSONForUpdatesFrm_Column1_Text = 'Version';
   rsCreateJSONForUpdatesFrm_Column2_Text = 'Force notify';
   rsCreateJSONForUpdatesFrm_Column3_Text = 'Internal version';
-  rsCreateJSONForUpdatesFrm_Message0 = 'Please select a repository package!';
-  rsCreateJSONForUpdatesFrm_Message1 = 'Please select only one repository package!';
+  rsCreateJSONForUpdatesFrm_Message0 = 'Please check a repository package!';
+  rsCreateJSONForUpdatesFrm_Message1 = 'Please check only one repository package!';
   rsCreateJSONForUpdatesFrm_Message2 = 'Please enter a valid URL!';
   rsCreateJSONForUpdatesFrm_Message3 = 'Please check at least one package file!';
+  rsCreateJSONForUpdatesFrm_Message4 = 'JSON successfully created.';
+  rsCreateJSONForUpdatesFrm_Error1 = 'Cannot create JSON! Error message:';
 
 
   //categories form

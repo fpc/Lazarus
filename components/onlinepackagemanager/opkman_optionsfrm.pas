@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, opkman_VirtualTrees, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, Spin, ComCtrls, Buttons, EditBtn, LazFileUtils;
+  StdCtrls, ExtCtrls, Spin, ComCtrls, Buttons, EditBtn, LazFileUtils, Math;
 
 type
 
@@ -45,6 +45,7 @@ type
     cbForceDownloadExtract: TCheckBox;
     cbDeleteZipAfterInstall: TCheckBox;
     cbSelectProfile: TComboBox;
+    cbCheckForUpdates: TComboBox;
     edLocalRepositoryUpdate: TDirectoryEdit;
     edLocalRepositoryPackages: TDirectoryEdit;
     edLocalRepositoryArchive: TDirectoryEdit;
@@ -53,6 +54,8 @@ type
     edProxyUser: TEdit;
     edRemoteRepository: TEdit;
     gbProxySettings: TGroupBox;
+    lbLastUpdate: TLabel;
+    lbUpdates: TLabel;
     lbLocalRepositoryArchive: TLabel;
     lbLocalRepositoryUpdate: TLabel;
     lbRemoteRepository: TLabel;
@@ -139,6 +142,7 @@ begin
   Options.ForceDownloadAndExtract := cbForceDownloadExtract.Checked;
   Options.DeleteZipAfterInstall := cbDeleteZipAfterInstall.Checked;
   Options.UserProfile := cbSelectProfile.ItemIndex;
+  Options.CheckForUpdates := cbCheckForUpdates.ItemIndex;
   Options.ProxyEnabled := cbProxy.Checked;
   Options.ProxyServer := edProxyServer.Text;
   Options.ProxyPort := seProxyPort.Value;
@@ -174,8 +178,8 @@ end;
 
 procedure TOptionsFrm.SetupControls;
 begin
-  pgOptions.ActivePageIndex := 0;
   Caption := rsOptions_FrmCaption;
+  pgOptions.ActivePageIndex := 0;
   tsGeneral.Caption := rsOptions_tsGeneral_Caption;
   lbRemoteRepository.Caption := rsOptions_lbRemoteRepository_Caption;
   edRemoteRepository.Text := Options.RemoteRepository;
@@ -185,7 +189,19 @@ begin
   cbForceDownloadExtract.Hint := rsOptions_cbForceDownloadExtract_Hint;
   cbDeleteZipAfterInstall.Caption := rsOptions_cbDelete_Caption;
   cbDeleteZipAfterInstall.Hint := rsOptions_cbDelete_Hint;
-
+  lbUpdates.Caption := rsOptions_lbCheckForUpdates_Caption;
+  cbCheckForUpdates.Clear;
+  cbCheckForUpdates.Items.Add(rsOptions_cbCheckForUpdates_Item0);
+  cbCheckForUpdates.Items.Add(rsOptions_cbCheckForUpdates_Item1);
+  cbCheckForUpdates.Items.Add(rsOptions_cbCheckForUpdates_Item2);
+  cbCheckForUpdates.Items.Add(rsOptions_cbCheckForUpdates_Item3);
+  cbCheckForUpdates.Items.Add(rsOptions_cbCheckForUpdates_Item4);
+  cbCheckForUpdates.Items.Add(rsOptions_cbCheckForUpdates_Item5);
+  cbCheckForUpdates.ItemIndex := Options.CheckForUpdates;
+  if CompareValue(Options.LastUpdate, 0.0, 0.1) <= 0 then
+    lbLastUpdate.Caption := rsOptions_lbLastUpdate_Caption + rsOptions_LastUpdate_Never
+  else
+    lbLastUpdate.Caption := rsOptions_lbLastUpdate_Caption + FormatDateTime('YYYY.MM.DD  hh:mm:ss', Options.LastUpdate);
   tsProxy.Caption := rsOptions_tsProxy_Caption;
   cbProxy.Caption := rsOptions_cbProxy_Caption;
   gbProxySettings.Caption := rsOptions_gbProxySettings_Caption;

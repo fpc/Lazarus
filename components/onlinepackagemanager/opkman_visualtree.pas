@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, Graphics, Menus, Dialogs, Forms, LCLIntf, contnrs,
-  PackageIntf, Buttons, Math, opkman_VirtualTrees, opkman_VTGraphics, opkman_common,
+  PackageIntf, Buttons, Math, opkman_VirtualTrees, opkman_common,
   opkman_serializablepackages;
 
 
@@ -1715,10 +1715,30 @@ begin
   Data := FVST.GetNodeData(Node);
   if (Column <> 4) then
     Exit;
-  LineBreakStyle := hlbForceMultiLine;
+  LineBreakStyle := hlbForceSingleLine;
   case Data^.DataType of
     3: HintText := Data^.Description;
-   10: HintText := Data^.License;
+    4: HintText := Data^.Author;
+    5: HintText := Data^.LazCompatibility;
+    6: HintText := Data^.FPCCompatibility;
+    7: HintText := Data^.SupportedWidgetSet;
+    8: case Data^.PackageType of
+         ptRunAndDesignTime: HintText := rsMainFrm_VSTText_PackageType0;
+         ptDesignTime:       HintText := rsMainFrm_VSTText_PackageType1;
+         ptRunTime:          HintText := rsMainFrm_VSTText_PackageType2;
+         ptRunTimeOnly:      HintText := rsMainFrm_VSTText_PackageType3;
+       end;
+    9: HintText := GetDisplayString(Data^.License);
+    10: HintText := Data^.Dependencies;
+    11: HintText := '';
+    12: HintText := TranslateCategories(Data^.Category);
+    13: HintText := Data^.RepositoryFileName;
+    14: HintText := FormatSize(Data^.RepositoryFileSize);
+    15: HintText := Data^.RepositoryFileHash;
+    16: HintText := FormatDateTime('YYYY.MM.DD', Data^.RepositoryDate);
+    17: HintText := Data^.HomePageURL;
+    18: HintText := Data^.DownloadURL;
+    19: HintText := Data^.SVNURL;
    else
        HintText := '';
   end;

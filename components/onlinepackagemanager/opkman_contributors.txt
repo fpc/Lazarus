@@ -1,3 +1,7 @@
 #The following people contributed to Package Manger:
 
+Juha Manninen 
+lainz
+minesadorada
 varianus
+Werner Pamler

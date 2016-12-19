@@ -776,7 +776,10 @@ var
   RootData, Data: PData;
   JSON: TJSONStringType;
   MS: TMemoryStream;
+  ErrMsg: String;
+  CanClose: Boolean;
 begin
+  CanClose := False;
   pnMessage.Caption := rsCreateRepositoryPackageFrm_Message5;
   pnMessage.Invalidate;
   Sleep(2000);
@@ -838,15 +841,17 @@ begin
           MS.Write(Pointer(JSON)^, Length(JSON));
           MS.Position := 0;
           MS.SaveToFile(FDestDir + FPackageName + '.json');
-          if cbOpen.Checked then
-            OpenDocument(FDestDir);
           MessageDlgEx(rsCreateRepositoryPackageFrm_Message6, mtInformation, [mbOk], TForm(Self.Parent));
+          CanClose := True;
         finally
           MS.Free;
         end;
       end
       else
-       MessageDlgEx(rsCreateRepositoryPackageFrm_Error2 + sLineBreak + SerializablePackages.LastError, mtInformation, [mbOk], TForm(Self.Parent));
+      begin
+       ErrMsg := StringReplace(SerializablePackages.LastError, '"', '', [rfReplaceAll]);
+       MessageDlgEx(rsCreateRepositoryPackageFrm_Error2 + sLineBreak + '"' + ErrMsg + '"', mtError, [mbOk], TForm(Self.Parent));
+      end;
     end;
     ShowHideControls(2);
   finally
@@ -854,6 +859,13 @@ begin
   end;
   bCreate.Enabled := True;
   pnBrowse.Enabled := True;
+  if CanClose then
+  begin
+    if cbOpen.Checked then
+      OpenDocument(FDestDir);
+    TForm(Self.Parent).ModalResult := mrOk;
+    TForm(Self.Parent).Close;
+  end;
 end;
 
 

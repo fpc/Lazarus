@@ -1,11 +1,11 @@
 object MainFrm: TMainFrm
   Left = 463
-  Height = 640
+  Height = 600
   Top = 164
-  Width = 920
+  Width = 800
   Caption = 'Online Package Manager'
-  ClientHeight = 640
-  ClientWidth = 920
+  ClientHeight = 600
+  ClientWidth = 800
   Color = clBtnFace
   Constraints.MinHeight = 400
   Constraints.MinWidth = 700
@@ -18,13 +18,13 @@ object MainFrm: TMainFrm
   LCLVersion = '1.7'
   object pnMain: TPanel
     Left = 0
-    Height = 570
+    Height = 530
     Top = 0
-    Width = 920
+    Width = 800
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 570
-    ClientWidth = 920
+    ClientHeight = 530
+    ClientWidth = 800
     TabOrder = 0
     OnResize = pnMainResize
     object pnMessage: TPanel
@@ -49,18 +49,18 @@ object MainFrm: TMainFrm
       Left = 0
       Height = 60
       Top = 0
-      Width = 920
+      Width = 800
       Align = alTop
       BevelOuter = bvNone
       ClientHeight = 60
-      ClientWidth = 920
+      ClientWidth = 800
       Color = clBtnFace
       ParentColor = False
       TabOrder = 0
       OnResize = pnTopResize
       object spExpand: TSpeedButton
         Tag = 1
-        Left = 872
+        Left = 752
         Height = 20
         Top = 13
         Width = 21
@@ -125,7 +125,7 @@ object MainFrm: TMainFrm
       end
       object spCollapse: TSpeedButton
         Tag = 2
-        Left = 894
+        Left = 774
         Height = 20
         Top = 13
         Width = 21
@@ -368,9 +368,9 @@ object MainFrm: TMainFrm
     end
     object mJSON: TMemo
       Left = 0
-      Height = 510
+      Height = 470
       Top = 60
-      Width = 920
+      Width = 800
       Align = alClient
       Color = clBtnFace
       PopupMenu = pmMemo
@@ -383,11 +383,11 @@ object MainFrm: TMainFrm
   object pnToolBar: TPanel
     Left = 0
     Height = 70
-    Top = 570
-    Width = 920
+    Top = 530
+    Width = 800
     Align = alBottom
     ClientHeight = 70
-    ClientWidth = 920
+    ClientWidth = 800
     TabOrder = 1
     OnResize = pnToolBarResize
     object tbButtons: TToolBar

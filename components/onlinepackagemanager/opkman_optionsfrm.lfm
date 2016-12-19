@@ -2,14 +2,14 @@ object OptionsFrm: TOptionsFrm
   Left = 624
   Height = 300
   Top = 287
-  Width = 450
+  Width = 475
   BorderIcons = [biSystemMenu]
   Caption = 'Options'
   ClientHeight = 300
-  ClientWidth = 450
+  ClientWidth = 475
   Color = clBtnFace
   Constraints.MinHeight = 300
-  Constraints.MinWidth = 450
+  Constraints.MinWidth = 475
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
   LCLVersion = '1.7'
@@ -17,14 +17,14 @@ object OptionsFrm: TOptionsFrm
     Left = 0
     Height = 39
     Top = 261
-    Width = 450
+    Width = 475
     Align = alBottom
     BevelOuter = bvNone
     ClientHeight = 39
-    ClientWidth = 450
+    ClientWidth = 475
     TabOrder = 0
     object bOk: TButton
-      Left = 257
+      Left = 282
       Height = 25
       Top = 8
       Width = 88
@@ -34,7 +34,7 @@ object OptionsFrm: TOptionsFrm
       TabOrder = 0
     end
     object bCancel: TButton
-      Left = 350
+      Left = 375
       Height = 25
       Top = 8
       Width = 88
@@ -57,24 +57,24 @@ object OptionsFrm: TOptionsFrm
     Left = 0
     Height = 261
     Top = 0
-    Width = 450
-    ActivePage = tsProxy
+    Width = 475
+    ActivePage = tsGeneral
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 1
     object tsGeneral: TTabSheet
       Caption = 'General'
       ClientHeight = 233
-      ClientWidth = 442
+      ClientWidth = 467
       object pnGeneral: TPanel
         Left = 0
         Height = 233
         Top = 0
-        Width = 442
+        Width = 467
         Align = alClient
         BevelOuter = bvNone
         ClientHeight = 233
-        ClientWidth = 442
+        ClientWidth = 467
         Color = clBtnFace
         ParentColor = False
         TabOrder = 0
@@ -90,7 +90,7 @@ object OptionsFrm: TOptionsFrm
           Left = 15
           Height = 23
           Top = 32
-          Width = 408
+          Width = 433
           Anchors = [akTop, akLeft, akRight]
           OnKeyPress = edRemoteRepositoryKeyPress
           TabOrder = 0
@@ -116,21 +116,56 @@ object OptionsFrm: TOptionsFrm
           ShowHint = True
           TabOrder = 2
         end
+        object lbUpdates: TLabel
+          Left = 15
+          Height = 15
+          Top = 144
+          Width = 146
+          Caption = 'Check for package updates:'
+          ParentColor = False
+        end
+        object cbCheckForUpdates: TComboBox
+          Left = 15
+          Height = 23
+          Top = 162
+          Width = 177
+          ItemHeight = 15
+          ItemIndex = 0
+          Items.Strings = (
+            'Every few minutes'
+            'Every hour    '
+            'Once per day'
+            'Weekly'
+            'Montly'
+            'Never'
+          )
+          Style = csDropDownList
+          TabOrder = 3
+          Text = 'Every few minutes'
+        end
+        object lbLastUpdate: TLabel
+          Left = 204
+          Height = 15
+          Top = 165
+          Width = 64
+          Caption = 'Last update:'
+          ParentColor = False
+        end
       end
     end
     object tsProxy: TTabSheet
       Caption = 'Proxy'
       ClientHeight = 233
-      ClientWidth = 442
+      ClientWidth = 492
       object pnProxy: TPanel
         Left = 0
         Height = 233
         Top = 0
-        Width = 442
+        Width = 492
         Align = alClient
         BevelOuter = bvNone
         ClientHeight = 233
-        ClientWidth = 442
+        ClientWidth = 492
         Color = clBtnFace
         ParentColor = False
         TabOrder = 0
@@ -216,8 +251,9 @@ object OptionsFrm: TOptionsFrm
           object seProxyPort: TSpinEdit
             Left = 318
             Height = 23
-            Top = 17
+            Top = 18
             Width = 76
+            AutoSize = False
             MaxValue = 65535
             TabOrder = 3
           end
@@ -227,16 +263,16 @@ object OptionsFrm: TOptionsFrm
     object tsFolders: TTabSheet
       Caption = 'Folders'
       ClientHeight = 233
-      ClientWidth = 442
+      ClientWidth = 492
       object pnFolders: TPanel
         Left = 0
         Height = 233
         Top = 0
-        Width = 442
+        Width = 492
         Align = alClient
         BevelOuter = bvNone
         ClientHeight = 233
-        ClientWidth = 442
+        ClientWidth = 492
         Color = clBtnFace
         ParentColor = False
         TabOrder = 0
@@ -271,11 +307,12 @@ object OptionsFrm: TOptionsFrm
           Left = 14
           Height = 23
           Top = 32
-          Width = 412
+          Width = 458
           Directory = 'edLocalRepositoryPackages'
           ShowHidden = False
           ButtonWidth = 23
           NumGlyphs = 1
+          Anchors = [akTop, akLeft, akRight]
           MaxLength = 0
           ParentShowHint = False
           ShowHint = True
@@ -287,10 +324,11 @@ object OptionsFrm: TOptionsFrm
           Left = 14
           Height = 23
           Top = 91
-          Width = 412
+          Width = 458
           ShowHidden = False
           ButtonWidth = 23
           NumGlyphs = 1
+          Anchors = [akTop, akLeft, akRight]
           MaxLength = 0
           ParentShowHint = False
           ShowHint = True
@@ -301,10 +339,11 @@ object OptionsFrm: TOptionsFrm
           Left = 14
           Height = 23
           Top = 147
-          Width = 412
+          Width = 458
           ShowHidden = False
           ButtonWidth = 23
           NumGlyphs = 1
+          Anchors = [akTop, akLeft, akRight]
           MaxLength = 0
           ParentShowHint = False
           ShowHint = True
@@ -315,16 +354,16 @@ object OptionsFrm: TOptionsFrm
     object tsProfiles: TTabSheet
       Caption = 'Profiles'
       ClientHeight = 233
-      ClientWidth = 442
+      ClientWidth = 492
       object pnProfiles: TPanel
         Left = 0
         Height = 233
         Top = 0
-        Width = 442
+        Width = 492
         Align = alClient
         BevelOuter = bvNone
         ClientHeight = 233
-        ClientWidth = 442
+        ClientWidth = 492
         Color = clBtnFace
         ParentColor = False
         TabOrder = 0
@@ -349,6 +388,7 @@ object OptionsFrm: TOptionsFrm
           )
           ParentShowHint = False
           ShowHint = True
+          Style = csDropDownList
           TabOrder = 0
           Text = 'Regular user'
         end

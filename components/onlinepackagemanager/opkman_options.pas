@@ -50,7 +50,8 @@ type
      FRemoteRepository: String;
      FForceDownloadAndExtract: Boolean;
      FDeleteZipAfterInstall: Boolean;
-     FUserProfile: Integer;
+     FCheckForUpdates: Integer;
+     FLastUpdate: TDateTime;
      FChanged: Boolean;
      FLastDownloadDir: String;
      FLastPackageDirSrc: String;
@@ -65,6 +66,7 @@ type
      FLocalRepositoryPackages: String;
      FLocalRepositoryArchive: String;
      FLocalRepositoryUpdate: String;
+     FUserProfile: Integer;
      procedure SetRemoteRepository(const ARemoteRepository: String);
    public
      constructor Create(const AFileName: String);
@@ -78,6 +80,8 @@ type
      property RemoteRepository: string read FRemoteRepository write SetRemoteRepository;
      property ForceDownloadAndExtract: Boolean read FForceDownloadAndExtract write FForceDownloadAndExtract;
      property DeleteZipAfterInstall: Boolean read FDeleteZipAfterInstall write FDeleteZipAfterInstall;
+     property CheckForUpdates: Integer read FCheckForUpdates write FCheckForUpdates;
+     property LastUpdate: TDateTime read FLastUpdate write FLastUpdate;
      property UserProfile: Integer read FUserProfile write FUserProfile;
      property LastDownloadDir: String read FLastDownloadDir write FLastDownloadDir;
      property LastPackagedirSrc: String read FLastPackageDirSrc write FLastPackageDirSrc;
@@ -151,6 +155,8 @@ begin
   FLastDownloadDir := FXML.GetValue('General/LastDownloadDir/Value', '');
   FLastPackageDirSrc := FXML.GetValue('General/LastPackageDirSrc/Value', '');
   FLastPackageDirDst := FXML.GetValue('General/LastPackageDirDst/Value', '');
+  FCheckForUpdates := FXML.GetValue('General/CheckForUpdates/Value', 0);
+  FLastUpdate := FXML.GetExtendedValue('General/LastUpdate/Value', 0.0);
 
   FProxySettings.FEnabled := FXML.GetValue('Proxy/Enabled/Value', False);
   FProxySettings.FServer := FXML.GetValue('Proxy/Server/Value', '');
@@ -174,6 +180,8 @@ begin
   FXML.SetDeleteValue('General/LastDownloadDir/Value', FLastDownloadDir, '');
   FXML.SetDeleteValue('General/LastPackageDirSrc/Value', FLastPackageDirSrc, '');
   FXML.SetDeleteValue('General/LastPackageDirDst/Value', FLastPackageDirDst, '');
+  FXML.SetDeleteValue('General/CheckForUpdates/Value', FCheckForUpdates, 0);
+  FXML.SetDeleteExtendedValue('General/LastUpdate/Value', FLastUpdate, 0.0);
 
   FXML.SetDeleteValue('Proxy/Enabled/Value', FProxySettings.FEnabled, false);
   FXML.SetDeleteValue('Proxy/Server/Value', FProxySettings.FServer, '');
@@ -196,6 +204,8 @@ begin
   FRemoteRepository := cRemoteRepository;
   FForceDownloadAndExtract := True;
   FDeleteZipAfterInstall := True;
+  FCheckForUpdates := 0;
+  FLastUpdate := 0.0;
 
   FProxySettings.FEnabled := False;
   FProxySettings.FServer := '';

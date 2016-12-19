@@ -6,11 +6,10 @@ interface
 
 uses
   Classes, SysUtils, LazIDEIntf, Laz2_XMLCfg, LazFileUtils, fpjson, fpjsonrtti,
-  opkman_httpclient, opkman_timer, opkman_serializablepackages;
+  opkman_httpclient, opkman_timer, opkman_serializablepackages, dateutils;
 
 const
   OpkVersion = 1;
-  UpdateInterval = 6000;
 
 type
 
@@ -52,12 +51,14 @@ type
   private
     FUpdatePackageData: TUpdatePackageData;
     FUpdatePackageFiles: TCollection;
+    FLastError: String;
     procedure Clear;
   public
     constructor Create;
     destructor Destroy; override;
     function LoadFromJSON(const AJSON: TJSONStringType): Boolean;
     function SaveToJSON(var AJSON: TJSONStringType): Boolean;
+    property LastError: String read FLastError;
   published
     property UpdatePackageData: TUpdatePackageData read FUpdatePackageData write FUpdatePackageData;
     property UpdatePackageFiles: TCollection read FUpdatePackageFiles write FUpdatePackageFiles;
@@ -86,6 +87,7 @@ type
     procedure AssignPackageData(APackage: TPackage);
     procedure ResetPackageData(APackage: TPackage);
     procedure CheckForOpenSSL;
+    function IsTimeToUpdate: Boolean;
   protected
     procedure Execute; override;
   public
@@ -145,7 +147,11 @@ begin
       DeStreamer.JSONToObject(AJSON, Self);
       Result := True;
     except
-      Result := False;
+      on E: Exception do
+      begin
+        FLastError := E.Message;
+        Result := False;
+      end;
     end;
   finally
     DeStreamer.Free;
@@ -156,6 +162,7 @@ function TUpdatePackage.SaveToJSON(var AJSON: TJSONStringType): Boolean;
 var
   Streamer: TJSONStreamer;
 begin
+  Result := False;
   Streamer := TJSONStreamer.Create(nil);
   try
     Streamer.Options := Streamer.Options + [jsoUseFormatString];
@@ -163,7 +170,11 @@ begin
       AJSON := Streamer.ObjectToJSONString(Self);
       Result := AJSON <> '';
     except
-      Result := False;
+      on E: Exception do
+      begin
+        FLastError := E.Message;
+        Result := False;
+      end;
     end;
   finally
     Streamer.Free;
@@ -402,9 +413,21 @@ begin
   {$ENDIF}
 end;
 
+function TUpdates.IsTimeToUpdate: Boolean;
+begin
+  case Options.CheckForUpdates of
+    0: Result := MinutesBetween(Now, Options.LastUpdate) >= 2;
+    1: Result := HoursBetween(Now, Options.LastUpdate) >= 1;
+    2: Result := DaysBetween(Now, Options.LastUpdate) >= 1;
+    3: Result := WeeksBetween(Now, Options.LastUpdate) >= 1;
+    4: Result := MonthsBetween(Now, Options.LastUpdate) >= 1;
+    5: Result := False;
+  end;
+end;
+
 procedure TUpdates.DoOnTimer(Sender: TObject);
 begin
-  if (FTimer.Enabled) and (not FNeedToBreak) then
+  if (FTimer.Enabled) and (not FNeedToBreak) and (IsTimeToUpdate) then
     FNeedToUpdate := True;
 end;
 
@@ -459,6 +482,8 @@ begin
   begin
     if Assigned(SerializablePackages) and (FNeedToUpdate) and (not FBusyUpdating) and (not FPaused) and (FOpenSSLAvaialable) then
     begin
+      Options.LastUpdate := Now;
+      Options.Changed := True;
       FBusyUpdating := True;
       try
         for I := 0 to SerializablePackages.Count - 1  do
@@ -500,7 +525,7 @@ begin
   FOpenSSLAvaialable := False;
   FStarted := True;
   FTimer := TThreadTimer.Create;
-  FTimer.Interval := UpdateInterval;
+  FTimer.Interval := 5000;
   FTimer.OnTimer := @DoOnTimer;
   FTimer.StartTimer;
   Start;
