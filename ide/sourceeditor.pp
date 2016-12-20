@@ -74,11 +74,11 @@ uses
   IDECmdLine, LazarusIDEStrConsts, IDECommands, EditorOptions, EnvironmentOpts,
   WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs, IDEHelpManager,
   MacroPromptDlg, TransferMacros, CodeContextForm, SrcEditHintFrm, etMessagesWnd,
-  etSrcEditMarks, InputHistory, CodeMacroPrompt, CodeTemplatesDlg, CodeToolsOptions,
+  etSrcEditMarks, CodeMacroPrompt, CodeTemplatesDlg, CodeToolsOptions,
   editor_general_options, SortSelectionDlg, EncloseSelectionDlg, EncloseIfDef,
   InvertAssignTool, SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
   MultiPasteDlg, EditorMacroListViewer, EditorToolbarStatic, editortoolbar_options,
-  FPDocHints, MainIntf, GotoFrm, BaseDebugManager, Debugger;
+  InputhistoryWithSearchOpt, FPDocHints, MainIntf, GotoFrm, BaseDebugManager, Debugger;
 
 type
   TSourceNotebook = class;
@@ -3338,12 +3338,12 @@ begin
     NewOptions := NewOptions + [ssoReplace, ssoReplaceAll]
   else
     NewOptions := NewOptions - [ssoReplace, ssoReplaceAll];
-  NewOptions:=NewOptions-SaveOptions+InputHistories.FindOptions*SaveOptions
+  NewOptions:=NewOptions-SaveOptions+InputHistoriesSO.FindOptions*SaveOptions
                         -[ssoSelectedOnly, ssoEntireScope];
 
   // Fill in history items
-  LazFindReplaceDialog.TextToFindComboBox.Items.Assign(InputHistories.FindHistory);
-  LazFindReplaceDialog.ReplaceTextComboBox.Items.Assign(InputHistories.ReplaceHistory);
+  LazFindReplaceDialog.TextToFindComboBox.Items.Assign(InputHistoriesSO.FindHistory);
+  LazFindReplaceDialog.ReplaceTextComboBox.Items.Assign(InputHistoriesSO.ReplaceHistory);
 
   with EditorComponent do begin
     if SelAvail then
@@ -3367,10 +3367,10 @@ begin
       LazFindReplaceDialog.FindText:='';
     end;
   end;
-  LazFindReplaceDialog.EnableAutoComplete:=InputHistories.FindAutoComplete;
+  LazFindReplaceDialog.EnableAutoComplete:=InputHistoriesSO.FindAutoComplete;
   // if there is no FindText, use the most recently used FindText
-  if (LazFindReplaceDialog.FindText='') and (InputHistories.FindHistory.Count > 0) then
-    LazFindReplaceDialog.FindText:=InputHistories.FindHistory[0];
+  if (LazFindReplaceDialog.FindText='') and (InputHistoriesSO.FindHistory.Count > 0) then
+    LazFindReplaceDialog.FindText:=InputHistoriesSO.FindHistory[0];
 
   GetDialogPosition(LazFindReplaceDialog.Width,LazFindReplaceDialog.Height,ALeft,ATop);
   LazFindReplaceDialog.Left:=ALeft;
@@ -3378,17 +3378,17 @@ begin
 
   LazFindReplaceDialog.Options := NewOptions;
   DlgResult:=LazFindReplaceDialog.ShowModal;
-  InputHistories.FindOptions:=LazFindReplaceDialog.Options*SaveOptions;
-  InputHistories.FindAutoComplete:=LazFindReplaceDialog.EnableAutoComplete;
+  InputHistoriesSO.FindOptions:=LazFindReplaceDialog.Options*SaveOptions;
+  InputHistoriesSO.FindAutoComplete:=LazFindReplaceDialog.EnableAutoComplete;
   if DlgResult = mrCancel then
     exit;
   //debugln('TSourceEditor.StartFindAndReplace B LazFindReplaceDialog.FindText="',dbgstr(LazFindReplaceDialog.FindText),'"');
 
   Replace:=ssoReplace in LazFindReplaceDialog.Options;
   if Replace then
-    InputHistories.AddToReplaceHistory(LazFindReplaceDialog.ReplaceText);
-  InputHistories.AddToFindHistory(LazFindReplaceDialog.FindText);
-  InputHistories.Save;
+    InputHistoriesSO.AddToReplaceHistory(LazFindReplaceDialog.ReplaceText);
+  InputHistoriesSO.AddToFindHistory(LazFindReplaceDialog.FindText);
+  InputHistoriesSO.Save;
   DoFindAndReplace(LazFindReplaceDialog.FindText, LazFindReplaceDialog.ReplaceText,
     LazFindReplaceDialog.Options);
 end;
@@ -6473,7 +6473,7 @@ begin
           SrcEdit.CodeBuffer.DiskEncoding:=NewEncoding;
           SrcEdit.CodeBuffer.Modified:=true;
           // set override
-          InputHistories.FileEncodings[SrcEdit.CodeBuffer.Filename]:=NewEncoding;
+          InputHistoriesSO.FileEncodings[SrcEdit.CodeBuffer.Filename]:=NewEncoding;
           DebugLn(['TSourceNotebook.EncodingClicked Change file to ',SrcEdit.CodeBuffer.DiskEncoding]);
           if (not SrcEdit.CodeBuffer.IsVirtual)
           and (LazarusIDE.DoSaveEditorFile(SrcEdit, []) <> mrOk)
@@ -6492,7 +6492,7 @@ begin
             end;
           end;
           // set override
-          InputHistories.FileEncodings[SrcEdit.CodeBuffer.Filename]:=NewEncoding;
+          InputHistoriesSO.FileEncodings[SrcEdit.CodeBuffer.Filename]:=NewEncoding;
           if not SrcEdit.CodeBuffer.Revert then begin
             IDEMessageDialog(lisCodeToolsDefsReadError,
               Format(lisUnableToRead, [SrcEdit.CodeBuffer.Filename]),

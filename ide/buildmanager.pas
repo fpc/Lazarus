@@ -178,7 +178,7 @@ type
     procedure TranslateMacros;
     procedure SetupExternalTools;
     procedure SetupCompilerInterface;
-    procedure SetupInputHistories;
+    procedure SetupInputHistories(aInputHist: TInputHistories);
     procedure EnvOptsChanged;
 
     function GetBuildMacroOverride(const MacroName: string): string; override;
@@ -264,8 +264,7 @@ begin
                                 Pointer(UnitFile2^.FileUnitName));
 end;
 
-function CompareUnitNameAndUnitFile(UnitName: PChar;
-  UnitFile: PUnitFile): integer;
+function CompareUnitNameAndUnitFile(UnitName: PChar; UnitFile: PUnitFile): integer;
 begin
   Result:=CompareIdentifierPtrs(Pointer(UnitName),Pointer(UnitFile^.FileUnitName));
 end;
@@ -524,14 +523,10 @@ begin
   TheCompiler := TCompiler.Create;
 end;
 
-procedure TBuildManager.SetupInputHistories;
+procedure TBuildManager.SetupInputHistories(aInputHist: TInputHistories);
 begin
-  if InputHistories<>nil then exit;
-  InputHistories:=TInputHistories.Create;
-  with InputHistories do begin
-    SetLazarusDefaultFilename;
-    Load;
-  end;
+  aInputHist.SetLazarusDefaultFilename;
+  aInputHist.Load;
 end;
 
 procedure TBuildManager.EnvOptsChanged;

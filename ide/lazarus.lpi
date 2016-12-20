@@ -16,8 +16,6 @@
       <UseXPManifest Value="True"/>
       <XPManifest>
         <DpiAware Value="True"/>
-        <TextName Value="CompanyName.ProductName.AppName"/>
-        <TextDesc Value="Your application description."/>
       </XPManifest>
       <Icon Value="0"/>
     </General>
@@ -68,7 +66,7 @@
         <PackageName Value="SynEdit"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="241">
+    <Units Count="242">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -532,6 +530,7 @@
         <Filename Value="buildprojectdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="BuildProjectDlg"/>
       </Unit75>
       <Unit76>
         <Filename Value="ideguicmdline.pas"/>
@@ -772,6 +771,7 @@
       <Unit119>
         <Filename Value="inputhistory.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="InputHistory"/>
       </Unit119>
       <Unit120>
         <Filename Value="makeresstrdlg.pas"/>
@@ -811,6 +811,7 @@
       <Unit127>
         <Filename Value="buildmanager.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="BuildManager"/>
       </Unit127>
       <Unit128>
         <Filename Value="basebuildmanager.pas"/>
@@ -1112,7 +1113,10 @@
       <Unit191>
         <Filename Value="viewunit_dlg.pp"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="ViewUnitDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ViewUnit_Dlg"/>
       </Unit191>
       <Unit192>
         <Filename Value="codetoolsdefines.pas"/>
@@ -1181,7 +1185,10 @@
       <Unit206>
         <Filename Value="findinfilesdlg.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="LazFindInFilesDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="FindInFilesDlg"/>
       </Unit206>
       <Unit207>
         <Filename Value="ideoptionsdlg.pas"/>
@@ -1230,6 +1237,7 @@
         <Filename Value="runparamsopts.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="RunParamsOpts"/>
       </Unit216>
       <Unit217>
         <Filename Value="idetranslations.pas"/>
@@ -1351,6 +1359,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="DefinesGui"/>
       </Unit240>
+      <Unit241>
+        <Filename Value="inputhistorywithsearchopt.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="InputhistoryWithSearchOpt"/>
+      </Unit241>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

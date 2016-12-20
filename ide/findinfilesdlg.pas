@@ -18,12 +18,19 @@ interface
 
 uses
   Classes, SysUtils,
-  FileProcs, LazFileUtils,
+  // LCL
   LCLProc, Controls, StdCtrls, Forms, Buttons, ExtCtrls, Dialogs, ButtonPanel,
+  // Codetools
+  FileProcs,
+  // LazUtils
+  LazFileUtils,
+  // SynEdit
   SynEditTypes, SynEdit,
+  // IdeIntf
   MacroIntf, IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, IDEDialogs,
-  LazarusIDEStrConsts, InputHistory, EditorOptions, Project, IDEProcs,
-  SearchFrm, SearchResultView;
+  // IDE
+  LazarusIDEStrConsts, InputHistory, InputhistoryWithSearchOpt, EditorOptions, Project,
+  IDEProcs, SearchFrm, SearchResultView;
 
 type
   { TLazFindInFilesDialog }
@@ -367,7 +374,8 @@ begin
   // show last used file masks
   AssignToComboBox(FileMaskComboBox, InputHistories.FindInFilesMaskHistory);
   Options := InputHistories.FindInFilesSearchOptions;
-  SynSearchOptions := InputHistories.FindOptions * SharedOptions;//share basic options with FindReplaceDlg
+  //share basic options with FindReplaceDlg
+  SynSearchOptions := InputHistoriesSO.FindOptions * SharedOptions;
 end;
 
 procedure TLazFindInFilesDialog.SaveHistory;
@@ -382,7 +390,9 @@ begin
     InputHistories.AddToFindInFilesPathHistory(Dir);
   InputHistories.AddToFindInFilesMaskHistory(FileMaskComboBox.Text);
   InputHistories.FindInFilesSearchOptions:=Options;
-  InputHistories.FindOptions := InputHistories.FindOptions - SharedOptions + (SynSearchOptions*SharedOptions);//share basic options with FindReplaceDlg
+  //share basic options with FindReplaceDlg
+  InputHistoriesSO.FindOptions := InputHistoriesSO.FindOptions - SharedOptions
+                                              + (SynSearchOptions*SharedOptions);
   InputHistories.Save;
 end;
 

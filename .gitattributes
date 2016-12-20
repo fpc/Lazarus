@@ -6293,6 +6293,7 @@ ide/initialsetupdlgs.pas svneol=native#text/pascal
 ide/initialsetupproc.pas svneol=native#text/plain
 ide/inputfiledialog.pas svneol=native#text/pascal
 ide/inputhistory.pas svneol=native#text/pascal
+ide/inputhistorywithsearchopt.pas svneol=native#text/pascal
 ide/inspectchksumchangeddlg.lfm svneol=native#text/plain
 ide/inspectchksumchangeddlg.pas svneol=native#text/pascal
 ide/invertassigntool.pas svneol=native#text/pascal

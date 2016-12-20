@@ -146,7 +146,7 @@ uses
   KeyMapping, IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg,
   JumpHistoryView, DesktopManager, ExampleManager,
   BuildLazDialog, BuildProfileManager, BuildManager, CheckCompOptsForNewUnitDlg,
-  MiscOptions, InputHistory, UnitDependencies,
+  MiscOptions, InputHistory, InputhistoryWithSearchOpt, UnitDependencies,
   IDEFPCInfo, IDEInfoDlg, IDEInfoNeedBuild, ProcessList, InitialSetupDlgs,
   InitialSetupProc, NewDialog, MakeResStrDlg, DialogProcs, FindReplaceDialog,
   FindInFilesDlg, CodeExplorer, BuildFileDlg, ProcedureList, ExtractProcDlg,
@@ -1353,10 +1353,12 @@ begin
 
   DebuggerOptions := TDebuggerOptions.Create;
 
-  MainBuildBoss.SetupInputHistories;
+  Assert(InputHistories = nil, 'TMainIDE.LoadGlobalOptions: InputHistories is already assigned.');
+  InputHistoriesSO := TInputHistoriesWithSearchOpt.Create;
+  InputHistories := InputHistoriesSO;
+  MainBuildBoss.SetupInputHistories(InputHistories);
 
   CreateDirUTF8(GetProjectSessionsConfigPath);
-
   RunBootHandlers(libhEnvironmentOptionsLoaded);
 end;
 
