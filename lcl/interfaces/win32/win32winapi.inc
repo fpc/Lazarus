@@ -1115,16 +1115,26 @@ begin
     SetLength(s, count);
     move(str^, PChar(s)^, count);
   end;
+
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
   W := UTF8ToUTF16(s);
   len := Length(W);
   if (Flags and DT_MODIFYSTRING <> 0) then
     SetLength(W, len+4);
-  // Remove DT_RIGHT, if the rectangle is calculated (Windows bug), Mantis 20763
-  if (Flags and DT_CALCRECT = DT_CALCRECT)
-  and (Flags and DT_RIGHT = DT_RIGHT) then
-    Flags := Flags and not DT_RIGHT;
+
+  if (Flags and DT_CALCRECT = DT_CALCRECT) then
+  begin
+    // remove DT_RIGHT, if the rectangle is calculated (Windows bug), Mantis 20763
+    if (Flags and DT_RIGHT = DT_RIGHT) then
+      Flags := Flags and not DT_RIGHT;
+    // if the rectangle is calculated and DT_WORDBREAK is set, longer words should
+    // be truncated as in Delphi, Mantis 20762
+    if (Flags and DT_WORDBREAK = DT_WORDBREAK) then
+      Flags := Flags or DT_END_ELLIPSIS;
+  end;
+
   Result := Windows.DrawTextW(DC, PWideChar(W), len, @Rect, Flags);
+
   if (Flags and DT_MODIFYSTRING <> 0) then
   begin
     W := WideString(PWideChar(W)); // trim to first #0
@@ -1134,7 +1144,6 @@ begin
     else
       Str^ := #0;
   end;
-
 
   // Theoretically, we need to augment the returned rect by the text overhang
   // The overhang is returned in the abcC field as documented in the
@@ -1151,18 +1160,13 @@ begin
   // but I found it's even worse with drawing bold italic text.
   if (len > 0) and (Flags and DT_CALCRECT = DT_CALCRECT) then
   begin
-
     GetObject(GetCurrentObject(DC, OBJ_FONT), SizeOf(LOGFONT), @lf);
-
     if lf.lfItalic <> 0 then
     begin
-
       paABC := @aABC;
       res := GetCharABCWidthsW(DC, Uint(W[len]), Uint(W[len]), paABC);
-
       if res then
         Rect.Right := Rect.Right + Abs(aABC.abcC);
-
     end;
   end;
 end;
