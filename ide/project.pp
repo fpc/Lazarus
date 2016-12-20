@@ -56,8 +56,6 @@ uses
   // IDEIntf
   PropEdits, CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, UnitResources,
   PackageIntf, SrcEditorIntf, IDEOptionsIntf, IDEDialogs, LazIDEIntf, ProjPackIntf,
-  // SynEdit
-  SynEdit,
   // IDE
   CompOptsModes, ProjectResources, LazConf, W32Manifest, ProjectIcon,
   IDECmdLine, LazarusIDEStrConsts, CompilerOptions,
@@ -80,7 +78,7 @@ type
   TOnChangeProjectInfoFile = procedure(TheProject: TProject) of object;
 
   TOnSaveUnitSessionInfoInfo = procedure(AUnitInfo: TUnitInfo) of object;
-                                 
+
   TUnitInfoList = (
     uilPartOfProject,
     uilWithEditorIndex,
@@ -1721,6 +1719,7 @@ var
   AFilename: String;
   i, X, Y: Integer;
   s: String;
+  BM: TFileBookmark;
 begin
   // global data
   AFilename:=Filename;
@@ -1765,15 +1764,16 @@ begin
 
     XMLConfig.SetDeleteValue(Path+'UsageCount/Value',RoundToInt(fUsageCount),-1);
     if OpenEditorInfoCount > 0 then
-      for i := Bookmarks.Count - 1 downto 0 do begin
-        if (Project.Bookmarks.BookmarkWithID(Bookmarks[i].ID) = nil) or
-           (Project.Bookmarks.BookmarkWithID(Bookmarks[i].ID).UnitInfo <> self)
+      for i := Bookmarks.Count - 1 downto 0 do
+      begin
+        BM := Bookmarks[i];
+        if (Project.Bookmarks.BookmarkWithID(BM.ID) = nil) or
+           (Project.Bookmarks.BookmarkWithID(BM.ID).UnitInfo <> self)
         then
           Bookmarks.Delete(i)
         else
-        if TSynEdit(OpenEditorInfo[0].EditorComponent.EditorControl).GetBookMark(Bookmarks[i].ID, X{%H-}, Y{%H-})
-        then
-          Bookmarks[i].CursorPos := Point(X, Y);
+        if OpenEditorInfo[0].EditorComponent.GetBookMark(BM.ID, X, Y) then
+          BM.CursorPos := Point(X, Y);
       end;
     FBookmarks.SaveToXMLConfig(XMLConfig,Path+'Bookmarks/');
     XMLConfig.SetDeleteValue(Path+'Loaded/Value',fLoaded,false);
@@ -1941,7 +1941,8 @@ end;
 procedure TUnitInfo.UpdatePageIndex;
 var
   HasPageIndex: Boolean;
-  BookmarkID, i, j: integer;
+  i, j: integer;
+  BM: TFileBookmark;
 begin
   HasPageIndex := False;
   i := FEditorInfoList.Count - 1;
@@ -1952,17 +1953,18 @@ begin
   end;
   UpdateList(uilWithEditorIndex, HasPageIndex);
 
-  if assigned(Project1) and assigned(Project1.Bookmarks) then begin
+  if Assigned(Project1) and Assigned(Project1.Bookmarks) then
+  begin
     if OpenEditorInfoCount > 0 then begin
       inc(FSetBookmarLock);
       try
         // Adjust bookmarks
-        for i := Bookmarks.Count - 1 downto 0 do begin
-          BookmarkID := Bookmarks[i].ID;
-          j := Project1.Bookmarks.IndexOfID(BookmarkID);
+        for i := Bookmarks.Count-1 downto 0 do
+        begin
+          BM := Bookmarks[i];
+          j := Project1.Bookmarks.IndexOfID(BM.ID);
           if (j < 0) then
-            TSynEdit(OpenEditorInfo[0].EditorComponent.EditorControl).SetBookMark(BookmarkID,
-              Bookmarks[i].CursorPos.X, Bookmarks[i].CursorPos.Y);
+            OpenEditorInfo[0].EditorComponent.SetBookMark(BM.ID, BM.CursorPos.X, BM.CursorPos.Y);
         end;
       finally
         dec(FSetBookmarLock);

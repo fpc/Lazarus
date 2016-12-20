@@ -425,6 +425,8 @@ type
     procedure SetSelection(const AValue: string); override;
     procedure CopyToClipboard; override;
     procedure CutToClipboard; override;
+    function GetBookMark(BookMark: Integer; out X, Y: Integer): Boolean; override;
+    procedure SetBookMark(BookMark: Integer; X, Y: Integer); override;
 
     procedure ExportAsHtml(AFileName: String);
 
@@ -4550,6 +4552,17 @@ end;
 procedure TSourceEditor.CutToClipboard;
 begin
   FEditor.CutToClipboard;
+end;
+
+function TSourceEditor.GetBookMark(BookMark: Integer; out X, Y: Integer): Boolean;
+begin
+  X := 0; Y := 0;
+  Result := FEditor.GetBookMark(BookMark, X, Y);
+end;
+
+procedure TSourceEditor.SetBookMark(BookMark: Integer; X, Y: Integer);
+begin
+  FEditor.SetBookMark(BookMark, X, Y);
 end;
 
 procedure TSourceEditor.ExportAsHtml(AFileName: String);

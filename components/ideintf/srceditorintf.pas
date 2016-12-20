@@ -120,6 +120,8 @@ type
                         out Action: TSrcEditReplaceAction); virtual; abstract;
     procedure CopyToClipboard; virtual; abstract;
     procedure CutToClipboard; virtual; abstract;
+    function GetBookMark(BookMark: Integer; out X, Y: Integer): Boolean; virtual; abstract;
+    procedure SetBookMark(BookMark: Integer; X, Y: Integer); virtual; abstract;
 
     // screen and text position mapping
     function LineCount: Integer; virtual; abstract;
