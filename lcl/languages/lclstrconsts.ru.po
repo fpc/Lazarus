@@ -876,10 +876,6 @@ msgstr "Зелёный"
 msgid "List index exceeds bounds (%d)"
 msgstr "Индекс списка вне диапазона (%d)"
 
-#: lclstrconsts.rslistmustbeempty
-msgid "List must be empty"
-msgstr "Список должен быть пуст"
-
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "Малиновый"

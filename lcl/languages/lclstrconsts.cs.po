@@ -878,10 +878,6 @@ msgstr "Citrusová"
 msgid "List index exceeds bounds (%d)"
 msgstr "Index seznamu překročil meze (%d)"
 
-#: lclstrconsts.rslistmustbeempty
-msgid "List must be empty"
-msgstr "Seznam musí být prázdný"
-
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "Kaštanová"

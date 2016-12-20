@@ -869,10 +869,6 @@ msgstr ""
 msgid "List index exceeds bounds (%d)"
 msgstr ""
 
-#: lclstrconsts.rslistmustbeempty
-msgid "List must be empty"
-msgstr ""
-
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr ""

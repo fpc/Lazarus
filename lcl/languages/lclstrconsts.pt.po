@@ -896,10 +896,6 @@ msgstr "Limão"
 msgid "List index exceeds bounds (%d)"
 msgstr "Índice lista excede o limite (%d)"
 
-#: lclstrconsts.rslistmustbeempty
-msgid "List must be empty"
-msgstr "Lista deve estar vazia"
-
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "Marrom"

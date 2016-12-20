@@ -79,6 +79,16 @@ msgstr "%s não é um vínculo simbólico"
 msgid "%s is not executable"
 msgstr "%s não é um executável"
 
+#: lazutilsstrconsts.lrslistindexexceedsbounds
+msgctxt "lazutilsstrconsts.lrslistindexexceedsbounds"
+msgid "List index exceeds bounds (%d)"
+msgstr ""
+
+#: lazutilsstrconsts.lrslistmustbeempty
+msgctxt "lazutilsstrconsts.lrslistmustbeempty"
+msgid "List must be empty"
+msgstr ""
+
 #: lazutilsstrconsts.lrsmodified
 msgctxt "lazutilsstrconsts.lrsmodified"
 msgid "  modified "

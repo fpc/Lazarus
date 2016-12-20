@@ -907,10 +907,6 @@ msgstr "黄緑色"
 msgid "List index exceeds bounds (%d)"
 msgstr "リストインデックスが範囲外です (%d)"
 
-#: lclstrconsts.rslistmustbeempty
-msgid "List must be empty"
-msgstr "ハッシュリストは空でなくてはなりません"
-
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "栗色"

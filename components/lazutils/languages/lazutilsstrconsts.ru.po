@@ -78,6 +78,16 @@ msgstr "%s не является символической ссылкой"
 msgid "%s is not executable"
 msgstr "%s не является исполнимым файлом"
 
+#: lazutilsstrconsts.lrslistindexexceedsbounds
+msgctxt "lazutilsstrconsts.lrslistindexexceedsbounds"
+msgid "List index exceeds bounds (%d)"
+msgstr ""
+
+#: lazutilsstrconsts.lrslistmustbeempty
+msgctxt "lazutilsstrconsts.lrslistmustbeempty"
+msgid "List must be empty"
+msgstr ""
+
 #: lazutilsstrconsts.lrsmodified
 msgctxt "lazutilsstrconsts.lrsmodified"
 msgid "  modified "

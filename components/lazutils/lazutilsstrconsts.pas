@@ -37,6 +37,8 @@ resourceString
   lrsUnableToCreateConfigDirectoryS = 'Unable to create config directory "%s"';
   lrsProgramFileNotFound = 'program file not found %s';
   lrsCanNotExecute = 'can not execute %s';
+  lrsListMustBeEmpty = 'List must be empty';
+  lrsListIndexExceedsBounds = 'List index exceeds bounds (%d)';
 
   // XPath
   lrsNodeSet = 'node set';

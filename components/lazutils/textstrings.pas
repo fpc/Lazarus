@@ -29,11 +29,9 @@ interface
 
 uses
   Classes, SysUtils,
-  // LCL
-  LCLStrConsts,
   // LazUtils
-  LazUtf8Classes;
-  
+  LazUtf8Classes, LazUtilsStrConsts;
+
 type
   { TTextStrings }
 
@@ -233,7 +231,7 @@ var
 begin
   if not FArraysValid then BuildArrays;
   if (Index<0) or (Index>=FLineCount) then
-    Error(rsListIndexExceedsBounds, Index);
+    Error(lrsListIndexExceedsBounds, Index);
   Line:=@FLineRanges[Index];
   if (Line^.Line='')
   and (Line^.StartPos<Line^.EndPos) then begin
@@ -260,7 +258,7 @@ function TTextStrings.GetObject(Index: Integer): TObject;
 begin
   if FArraysValid then begin
     if (Index<0) or (Index>=FLineCount) then
-      Error(rsListIndexExceedsBounds, Index);
+      Error(lrsListIndexExceedsBounds, Index);
     Result:=FLineRanges[Index].TheObject;
   end else
     Result:=nil;
@@ -279,7 +277,7 @@ var
 begin
   if not FArraysValid then BuildArrays;
   if (Index<0) or (Index>=FLineCount) then
-    Error(rsListIndexExceedsBounds, Index);
+    Error(lrsListIndexExceedsBounds, Index);
   OldStartPos:=FLineRanges[Index].StartPos;
   OldEndPos:=FLineRanges[Index].EndPos;
   NewLineLen:=length(s);
@@ -320,7 +318,7 @@ procedure TTextStrings.PutObject(Index: Integer; AnObject: TObject);
 begin
   if not FArraysValid then BuildArrays;
   if (Index<0) or (Index>=FLineCount) then
-    Error(rsListIndexExceedsBounds, Index);
+    Error(lrsListIndexExceedsBounds, Index);
   FLineRanges[Index].TheObject:=AnObject;
 end;
 
@@ -466,7 +464,7 @@ var
 begin
   if not FArraysValid then BuildArrays;
   if (Index<0) or (Index>=FLineCount) then
-    Error(rsListIndexExceedsBounds, Index);
+    Error(lrsListIndexExceedsBounds, Index);
   // adjust text
   OldLineLen:=GetLineLen(Index,true);
   if OldLineLen>0 then begin
@@ -510,14 +508,14 @@ begin
   // check values
   if Index1=Index2 then exit;
   if Index1<0 then
-    Error(rsListIndexExceedsBounds, Index1);
+    Error(lrsListIndexExceedsBounds, Index1);
   if Index2<0 then
-    Error(rsListIndexExceedsBounds, Index2);
+    Error(lrsListIndexExceedsBounds, Index2);
   if not FArraysValid then BuildArrays;
   if Index1>=FLineCount then
-    Error(rsListIndexExceedsBounds, Index1);
+    Error(lrsListIndexExceedsBounds, Index1);
   if Index2>=FLineCount then
-    Error(rsListIndexExceedsBounds, Index2);
+    Error(lrsListIndexExceedsBounds, Index2);
 
   // make sure Index1<Index2
   if Index1>Index2 then begin
@@ -613,14 +611,14 @@ begin
   // check values
   if CurIndex=NewIndex then exit;
   if CurIndex<0 then
-    Error(rsListIndexExceedsBounds, CurIndex);
+    Error(lrsListIndexExceedsBounds, CurIndex);
   if NewIndex<0 then
-    Error(rsListIndexExceedsBounds, NewIndex);
+    Error(lrsListIndexExceedsBounds, NewIndex);
   if not FArraysValid then BuildArrays;
   if CurIndex>=FLineCount then
-    Error(rsListIndexExceedsBounds, CurIndex);
+    Error(lrsListIndexExceedsBounds, CurIndex);
   if NewIndex>=FLineCount then
-    Error(rsListIndexExceedsBounds, NewIndex);
+    Error(lrsListIndexExceedsBounds, NewIndex);
 
   // adjust text
   MakeTextBufferUnique;

@@ -919,10 +919,6 @@ msgstr "橙"
 msgid "List index exceeds bounds (%d)"
 msgstr "list 索引超过限制 (%d)"
 
-#: lclstrconsts.rslistmustbeempty
-msgid "List must be empty"
-msgstr "列表必须为空"
-
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "栗"

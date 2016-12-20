@@ -907,10 +907,6 @@ msgstr "Gelsvai žalsva"
 msgid "List index exceeds bounds (%d)"
 msgstr "Sąrašo indeksas peržengė ribas (%d)"
 
-#: lclstrconsts.rslistmustbeempty
-msgid "List must be empty"
-msgstr "Sąrašas turi būti tuščias"
-
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "Kaštoninė"

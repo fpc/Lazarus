@@ -874,10 +874,6 @@ msgstr "Limetti"
 msgid "List index exceeds bounds (%d)"
 msgstr "Luettelon osoitin ylittää rajat (%d)"
 
-#: lclstrconsts.rslistmustbeempty
-msgid "List must be empty"
-msgstr "Luettelon pitää olla tyhjä"
-
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr ""

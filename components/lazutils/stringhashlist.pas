@@ -25,7 +25,8 @@ interface
 
 uses
   Classes, SysUtils,
-  LCLStrConsts;
+  // LazUtils
+  LazUtilsStrConsts;
 
 type
   PStringHashItem = ^TStringHashItem;
@@ -353,7 +354,7 @@ begin
   begin
     if Count > 0 then
     begin
-      raise EListError.Create(rsListMustBeEmpty);
+      raise EListError.Create(lrsListMustBeEmpty);
       exit;
     end;
     fCaseSensitive := Value;

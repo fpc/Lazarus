@@ -876,10 +876,6 @@ msgstr "Élénkzöld"
 msgid "List index exceeds bounds (%d)"
 msgstr "A lista indexe a határon kívül esik (%d)"
 
-#: lclstrconsts.rslistmustbeempty
-msgid "List must be empty"
-msgstr "A listának üresnek kell lennie"
-
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "Gesztenyebarna"

@@ -222,7 +222,6 @@ resourceString
   sInvalidCharSet = 'The char set in mask "%s" is not valid!';
   SMaskEditNoMatch = 'The current text does not match the specified mask.';
 
-  rsListMustBeEmpty = 'List must be empty';
   rsInvalidPropertyValue = 'Invalid property value';
   rsPropertyDoesNotExist = 'Property %s does not exist';
   rsInvalidStreamFormat = 'Invalid stream format';

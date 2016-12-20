@@ -921,10 +921,6 @@ msgstr "לימוני"
 msgid "List index exceeds bounds (%d)"
 msgstr "אינדקס הרשימה עובר את הגבול"
 
-#: lclstrconsts.rslistmustbeempty
-msgid "List must be empty"
-msgstr "הרשימה חייבת להיות ריקה"
-
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "ערמוני"
