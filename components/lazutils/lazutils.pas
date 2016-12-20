@@ -18,9 +18,9 @@ uses
   LazLoggerProfiling, LazMethodList, LazUnicode, LazUTF16, LazUTF8, 
   LazUTF8Classes, LazUTF8SysUtils, LazUtilities, LazUtilsStrConsts, 
   LConvEncoding, lcsvutils, LookupStringList, Maps, Masks, PasWString, 
-  StringHashList, TextStrings, TTCache, TTCalc, TTCMap, TTDebug, TTError, 
-  TTFile, TTGLoad, TTInterp, TTLoad, TTMemory, TTObjs, TTProfile, TTRASTER, 
-  TTTables, TTTypes, UTF8Process, LazarusPackageIntf;
+  StringHashList, TextStrings, Translations, TTCache, TTCalc, TTCMap, TTDebug, 
+  TTError, TTFile, TTGLoad, TTInterp, TTLoad, TTMemory, TTObjs, TTProfile, 
+  TTRASTER, TTTables, TTTypes, UTF8Process, LazarusPackageIntf;
 
 implementation
 

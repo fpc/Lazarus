@@ -27,6 +27,7 @@ function DbgStr(const StringWithSpecialChars: string): string; overload;
 function DbgStr(const StringWithSpecialChars: string; StartPos, Len: PtrInt): string; overload;
 function DbgStr(const p: PChar; Len: PtrInt): string; overload;
 function DbgWideStr(const StringWithSpecialChars: widestring): string; overload;
+procedure DumpExceptionBackTrace;
 
 function ConvertLineEndings(const s: string): string;
 procedure ReplaceSubstring(var s: string; StartPos, Count: SizeInt;
@@ -763,6 +764,30 @@ begin
       inc(DestPos,length(s));
     end;
   end;
+end;
+
+procedure DumpAddr(Addr: Pointer);
+begin
+  // preventing another exception, while dumping stack trace
+  try
+    DebugLn(BackTraceStrFunc(Addr));
+  except
+    DebugLn(SysBackTraceStr(Addr));
+  end;
+end;
+
+procedure DumpExceptionBackTrace;
+var
+  FrameCount: integer;
+  Frames: PPointer;
+  FrameNumber:Integer;
+begin
+  DebugLn('  Stack trace:');
+  DumpAddr(ExceptAddr);
+  FrameCount:=ExceptFrameCount;
+  Frames:=ExceptFrames;
+  for FrameNumber := 0 to FrameCount-1 do
+    DumpAddr(Frames[FrameNumber]);
 end;
 
 function ConvertLineEndings(const s: string): string;

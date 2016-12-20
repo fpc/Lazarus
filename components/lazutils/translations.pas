@@ -81,17 +81,13 @@ unit Translations;
 
 {$mode objfpc}{$H+}{$INLINE ON}
 
-{$include include/lcl_defines.inc}
-
 interface
 
 uses
   Classes, SysUtils,
   {$IF FPC_FULLVERSION>=30001}jsonscanner,{$ENDIF} jsonparser, fpjson,
-  // LCL
-  LCLProc,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LConvEncoding,
+  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LConvEncoding, LazLogger,
   AvgLvlTree, StringHashList;
 
 type
@@ -613,7 +609,7 @@ begin
     Result:=true;
   except
     on e: Exception do begin
-      {$IFNDEF DisableChecks}
+      {$IFnDEF DisableChecks}
       DebugLn('Exception while translating ', ResUnitName);
       DebugLn(e.Message);
       DumpExceptionBackTrace;
@@ -648,7 +644,7 @@ begin
     Result:=true;
   except
     on e: Exception do begin
-      {$IFNDEF DisableChecks}
+      {$IFnDEF DisableChecks}
       DebugLn('Exception while translating:');
       DebugLn(e.Message);
       DumpExceptionBackTrace;
@@ -1168,7 +1164,8 @@ begin
 {$ENDIF}
   then begin
     Result:=Item.Translation;
-    if Result='' then RaiseGDBException('TPOFile.Translate Inconsistency');
+    if Result='' then
+      Raise Exception.Create('TPOFile.Translate Inconsistency');
   end else
     Result:=OriginalValue;
   //Remove lineending at the end of the string if present.
@@ -1211,7 +1208,7 @@ begin
   DebugLn('Entries:');
   DebugLn('---------------------------------------------');
   for i:=0 to FItems.Count-1 do begin
-    DebugLn('#',dbgs(i),': ');
+    DebugLn(['#', i ,': ']);
     Item := TPOFileItem(FItems[i]);
     DebugLn('Comments=',Item.Comments);
     DebugLn('Identifier=',Item.IdentifierLow);
@@ -1253,10 +1250,10 @@ begin
   if (StopIndex > Count - 1) then StopIndex := Count - 1;
   if (StartIndex < 0) then StartIndex := 0;
 
-  DebugLn('Entries [',DbgS(StartIndex),'..',Dbgs(StopIndex),']:');
+  DebugLn(['Entries [', StartIndex, '..', StopIndex, ']:']);
   DebugLn('---------------------------------------------');
   for i := StartIndex to StopIndex do begin
-    DebugLn('#',dbgs(i),': ');
+    DebugLn(['#', i, ': ']);
     Item := TPOFileItem(FItems[i]);
     DebugLn('Identifier=',Item.IdentifierLow);
     DebugLn('msgid=',Item.Original);
@@ -1297,10 +1294,10 @@ begin
   if (StopIndex > Count - 1) then StopIndex := Count - 1;
   if (StartIndex < 0) then StartIndex := 0;
 
-  Log.Add('Entries ['+DbgS(StartIndex)+'..'+Dbgs(StopIndex)+']:');
+  Log.Add(Format('Entries [%d..%d]:', [StartIndex, StopIndex]));
   Log.Add('---------------------------------------------');
   for i := StartIndex to StopIndex do begin
-    Log.Add('#'+dbgs(i)+': ');
+    Log.Add(Format('#%d: ', [i]));
     Item := TPOFileItem(FItems[i]);
     Log.Add('Identifier='+Item.IdentifierLow);
     Log.Add('msgid='+Item.Original);
@@ -1819,18 +1816,14 @@ var
 begin
   F := TStringList.Create;
   try
-
     F.CommaText := Flags;
     i := F.IndexOf(AFlag);
-
     if (i<0) and Check then
       F.Add(AFlag)
     else
     if (i>=0) and (not Check) then
       F.Delete(i);
-
     Flags := F.CommaText;
-
   finally
     F.Free;
   end;
