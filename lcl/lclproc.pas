@@ -934,17 +934,8 @@ begin
 end;
 
 procedure DumpExceptionBackTrace;
-var
-  FrameCount: integer;
-  Frames: PPointer;
-  FrameNumber:Integer;
 begin
-  DebugLn('  Stack trace:');
-  DumpAddr(ExceptAddr);
-  FrameCount:=ExceptFrameCount;
-  Frames:=ExceptFrames;
-  for FrameNumber := 0 to FrameCount-1 do
-    DumpAddr(Frames[FrameNumber]);
+  LazLogger.DumpExceptionBackTrace;
 end;
 
 function GetStackTrace(UseCache: boolean): string;

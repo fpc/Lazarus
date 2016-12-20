@@ -284,28 +284,29 @@ procedure TDynHashArray.WriteDebugReport;
 var i, RealHashIndex: integer;
   HashItem: PDynHashArrayItem;
 begin
-  DebugLogger.DebugLn('TDynHashArray.WriteDebugReport: Consistency=',dbgs(ConsistencyCheck));
-  DebugLogger.DebugLn('  Count=',dbgs(FCount),'  Capacity=',dbgs(FCapacity));
+  DebugLn('TDynHashArray.WriteDebugReport: Consistency=',dbgs(ConsistencyCheck));
+  DebugLn('  Count=',dbgs(FCount),'  Capacity=',dbgs(FCapacity));
   for i:=0 to FCapacity-1 do begin
     HashItem:=FItems[i];
     if HashItem<>nil then begin
-      DebugLogger.DbgOut('  Index=',IntToStr(i));
+      DbgOut('  Index=',IntToStr(i));
       while HashItem<>nil do begin
-        DebugLogger.DbgOut(' ',Dbgs(HashItem^.Item));
+        DbgOut(' ',Dbgs(HashItem^.Item));
         RealHashIndex:=IndexOf(HashItem^.Item);
-        if RealHashIndex<>i then DebugLogger.DbgOut('(H='+dbgs(RealHashIndex)+')');
+        if RealHashIndex<>i then
+          DbgOut('(H='+dbgs(RealHashIndex)+')');
         HashItem:=HashItem^.Next;
         if (HashItem<>nil) and (HashItem^.IsOverflow=false) then break;
       end;
-      DebugLogger.DebugLn;
+      DebugLn;
     end;
   end;
   HashItem:=FFirstItem;
   while HashItem<>nil do begin
-    DebugLogger.DebugLn('  ',Dbgs(HashItem^.Prior),'<-'
-                        ,Dbgs(HashItem)
-                        ,'(',Dbgs(HashItem^.Item),')'
-                        ,'->',Dbgs(HashItem^.Next));
+    DebugLn('  ',Dbgs(HashItem^.Prior),'<-'
+                ,Dbgs(HashItem)
+                ,'(',Dbgs(HashItem^.Item),')'
+                ,'->',Dbgs(HashItem^.Next));
     HashItem:=HashItem^.Next;
   end;
 end;
