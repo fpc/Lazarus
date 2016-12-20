@@ -36,9 +36,9 @@ uses
   // Bindings - qt4 must come first to avoid type redefinition problems
   qt4,
   // FPC
-  Classes, SysUtils, Math, Types, maps,
+  Classes, SysUtils, Math, Types,
   // LazUtils
-  LazUTF8,
+  LazUTF8, Maps,
   // LCL
   LCLPlatformDef, InterfaceBase, LCLProc, LCLType, LCLIntf,
   LMessages, LCLMessageGlue, LCLStrConsts,

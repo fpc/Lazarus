@@ -35,9 +35,9 @@ uses
   {$ENDIF}
   Classes, SysUtils, Types, RtlConsts, TypInfo, variants,
   // LCL
-  DynQueue, LCLProc, LCLStrConsts,
+  LCLProc, LCLStrConsts,
   // LazUtils
-  LazConfigStorage, FPCAdds, LazUTF8, LazUTF8Classes;
+  LazConfigStorage, FPCAdds, DynQueue, LazUTF8, LazUTF8Classes;
 
 {$DEFINE UseLRS}
 {$DEFINE UseRES}

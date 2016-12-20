@@ -19,6 +19,7 @@ uses
   // LCL
   InterfaceBase,
   LMessages, LCLProc, Controls, ComCtrls, Forms, LCLIntf, LCLType,
+  // LazUtils
   DynHashArray;
 
 {$I dragicons.inc}

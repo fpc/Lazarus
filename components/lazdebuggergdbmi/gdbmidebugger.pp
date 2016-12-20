@@ -54,8 +54,13 @@ uses
    Unix,BaseUnix,termio,
 {$ENDIF}
   Classes, SysUtils, strutils, math, Variants,
-  Controls, Maps, FileUtil, Dialogs, Forms,
-  BaseIDEIntf, LCLProc, LazUTF8, LazClasses, LazLoggerBase,
+  // LCL
+  Controls, Dialogs, Forms,
+  LCLProc,
+  // LazUtils
+  FileUtil, LazUTF8, LazClasses, LazLoggerBase, Maps,
+  // IdeIntf
+  BaseIDEIntf,
   {$IFDEF Darwin}
   LazFileUtils,
   {$ENDIF}

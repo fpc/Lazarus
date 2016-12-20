@@ -48,10 +48,11 @@ implementation
 
 {$ELSE}
 uses
-  Classes, SysUtils, LCLProc, FileUtil, StringHashList, LazUTF8Classes
-  {, LConvEncoding}
-  //{$IFDEF UNIX}{$IFNDEF DisableCWString}, cwstring{$ENDIF}{$ENDIF}
-  ;
+  Classes, SysUtils,
+  // LCL
+  LCLProc,
+  // LazUtils
+  FileUtil, LazUTF8Classes, StringHashList;
 
 {
 type

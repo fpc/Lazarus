@@ -49,12 +49,12 @@ uses
   // RTL + FCL
   Classes, SysUtils, TypInfo,
   // LCL
-  LCLProc, Forms, Controls, Dialogs, maps,
+  LCLProc, Forms, Controls, Dialogs,
   // CodeTools
   CodeToolsConfig, ExprEval, DefineTemplates, BasicCodeTools, CodeToolsCfgScript,
   LinkScanner, CodeToolManager, CodeCache, FileProcs,
   // LazUtils
-  FPCAdds, FileUtil, LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
+  FPCAdds, FileUtil, LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg, Maps,
   // IDEIntf
   PropEdits, UnitResources, EditorSyntaxHighlighterDef,
   CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, SrcEditorIntf,

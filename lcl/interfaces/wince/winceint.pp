@@ -43,11 +43,11 @@ uses
   // Libs, RTL
   Windows, Classes,
   // LCL
-  LCLIntf, LCLType, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
+  LCLIntf, LCLType, ComCtrls, Controls, Buttons, Dialogs,
   ExtCtrls, Forms, GraphMath, GraphType, LCLPlatformDef, InterfaceBase,
   LMessages, StdCtrls, SysUtils, Graphics, Menus, Themes,
   // LazUtils
-  LazUTF8,
+  LazUTF8, DynHashArray,
   // Widgetset
   WinCEProc, WinCEExtra, WinExt, WinCEDef;
 

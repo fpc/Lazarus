@@ -43,8 +43,14 @@ unit DbgIntfDebuggerBase;
 
 interface
 
-uses DbgIntfBaseTypes, DbgIntfMiscClasses, LazClasses, LazLoggerBase, LazFileUtils,
-  maps, LCLProc, Classes, sysutils, math, contnrs, LazMethodList;
+uses
+  Classes, sysutils, math, contnrs,
+  // LCL
+  LCLProc,
+  // LazUtils
+  LazClasses, LazLoggerBase, LazFileUtils, Maps, LazMethodList,
+  // DebuggerIntf
+  DbgIntfBaseTypes, DbgIntfMiscClasses;
 
 const
   DebuggerIntfVersion = 0;

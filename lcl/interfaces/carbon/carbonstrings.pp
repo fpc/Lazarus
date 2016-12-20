@@ -23,11 +23,13 @@ interface
 {$endif}
 
 uses
- // rtl+ftl
+  // rtl+ftl
   Classes, SysUtils,
- // LCL
-  LCLProc, LCLType, Graphics, Controls, StdCtrls, LazUtf8Classes, textstrings,
- // LCL Carbon
+  // LCL
+  LCLProc, LCLType, Graphics, Controls, StdCtrls,
+  // LazUtils
+  LazUtf8Classes, TextStrings,
+  // LCL Carbon
   CarbonEdits, CarbonListViews;
 
 type

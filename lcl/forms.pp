@@ -32,10 +32,14 @@ interface
 {$DEFINE HasDefaultValues}
 
 uses
-  Classes, SysUtils, Types, TypInfo, Math, Maps, LCLVersion, InterfaceBase,
-  LCLStrConsts, LCLType, LCLProc, LCLIntf, LazFileUtils, LazUTF8,
+  // RTL + FCL
+  Classes, SysUtils, Types, TypInfo, Math, CustApp,
+  // LCL
+  LCLStrConsts, LCLType, LCLProc, LCLIntf, LCLVersion, LCLClasses, InterfaceBase,
   LResources, GraphType, Graphics, Menus, LMessages, CustomTimer, ActnList,
-  ClipBrd, CustApp, HelpIntfs, LCLClasses, Controls, ImgList, Themes
+  ClipBrd, HelpIntfs, Controls, ImgList, Themes,
+  // LazUtils
+  LazFileUtils, LazUTF8, Maps
   {$ifndef wince},gettext{$endif}// remove ifdefs when gettext is fixed and a new fpc is released
   ;
 

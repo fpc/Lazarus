@@ -16,6 +16,7 @@ interface
 
 uses
   Classes, SysUtils, Math,
+  // LazUtils
   Maps;
 
 type

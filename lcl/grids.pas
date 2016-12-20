@@ -33,10 +33,13 @@ unit Grids;
 interface
 
 uses
-  Types, Classes, SysUtils, TypInfo, Math, Maps, LCLStrConsts, LCLProc, LCLType, LCLIntf,
-  LazFileUtils, FPCanvas, Controls, GraphType, Graphics, Forms, DynamicArray,
+  // RTL + FCL
+  Classes, SysUtils, Types, TypInfo, Math, FPCanvas,
+  // LCL
+  LCLStrConsts, LCLProc, LCLType, LCLIntf, Controls, GraphType, Graphics, Forms,
   LMessages, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes,
-  LazUTF8, LazUtf8Classes, Laz2_XMLCfg, LCSVUtils
+  // LazUtils
+  LazFileUtils, DynamicArray, Maps, LazUTF8, LazUtf8Classes, Laz2_XMLCfg, LCSVUtils
 {$ifdef WINDOWS}
   ,messages
 {$endif}

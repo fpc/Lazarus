@@ -202,7 +202,7 @@ resourceString
   rsWin32Warning = 'Warning:';
   rsWin32Error = 'Error:';
   
-  // StringHashList, LResource, Menus, ExtCtrls, ImgList, Spin
+  // LResource, Menus, ExtCtrls, ImgList, Spin
   // StdCtrls, Calendar, CustomTimer, Forms, Grids, LCLProc, Controls, ComCtrls,
   // ExtDlgs, EditBtn, Masks, MaskEdit
   sInvalidActionRegistration = 'Invalid action registration';

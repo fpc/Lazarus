@@ -14,7 +14,9 @@ unit UTrace;
 interface
 
 uses
-  sysutils, LazFileUtils;
+  sysutils,
+  // LazUtils
+  LazFileUtils;
 
 type
   TAssertErrorAddrType = Pointer;

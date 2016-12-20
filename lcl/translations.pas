@@ -89,9 +89,10 @@ uses
   Classes, SysUtils,
   {$IF FPC_FULLVERSION>=30001}jsonscanner,{$ENDIF} jsonparser, fpjson,
   // LCL
-  LCLProc, StringHashList,
+  LCLProc,
   // LazUtils
-  FileUtil, LazFileUtils, AvgLvlTree, LConvEncoding, LazUTF8, LazUTF8Classes;
+  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LConvEncoding,
+  AvgLvlTree, StringHashList;
 
 type
   TStringsType = (

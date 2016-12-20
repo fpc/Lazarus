@@ -27,9 +27,11 @@ interface
 uses
   // RTL
   Classes, SysUtils, glib2, gdk2pixbuf, pango, gdk2, gtk2,
+  // LazUtils
+  DynHashArray,
   // LCL
   Gtk2Extra,
-  LCLIntf, LCLProc, LCLType, LCLMemManager, DynHashArray,
+  LCLIntf, LCLProc, LCLType, LCLMemManager,
   GraphType, Gtk2Globals, Graphics {for TColor};
 
 {$ifdef TraceGdiCalls}

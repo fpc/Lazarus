@@ -24,9 +24,12 @@ interface
 
 
 uses
-  Classes, SysUtils, types, LCLStrConsts, LCLType, LCLProc, LMessages, Graphics,
-  ExtendedStrings, LCLIntf, ActnList, Controls, TextStrings, LazUTF8,
-  Forms, Menus, LResources;
+  Classes, SysUtils, types,
+  // LCL
+  LCLStrConsts, LCLType, LCLProc, LCLIntf, LMessages, LResources, Graphics,
+  ActnList, Controls, Forms, Menus,
+  // LazUtils
+  TextStrings, ExtendedStrings, LazUTF8;
 
 type
 

@@ -26,9 +26,11 @@ uses
   qt4,
   // Free Pascal
   Classes, SysUtils, Types,
+  // LazUtils
+  Maps,
   // LCL
   LCLType, LCLIntf, LCLProc, LazUTF8, Menus, Graphics, ClipBrd, ExtCtrls,
-  Interfacebase, maps;
+  Interfacebase;
 
 type
   // forward declarations

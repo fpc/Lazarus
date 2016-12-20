@@ -44,11 +44,11 @@ uses
   // Other units
   Math, // Math after gtk to get the correct Float type
   // LCL
-  LMessages, LCLProc, LCLIntf, LCLType, DynHashArray, GraphType, Graphics,
+  LMessages, LCLProc, LCLIntf, LCLType, GraphType, Graphics,
   LResources, Controls, Forms, Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls,
   Dialogs, ExtDlgs, ImgList, LCLMessageGlue,
   // LazUtils
-  Masks, FileUtil, LazFileUtils, LazUTF8,
+  Masks, FileUtil, LazFileUtils, LazUTF8, DynHashArray,
   // Gtk2
   Gtk2FontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, {%H-}Gtk2Debug;
 

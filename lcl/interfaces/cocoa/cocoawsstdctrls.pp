@@ -27,7 +27,8 @@ uses
   MacOSAll, CocoaAll, Classes, sysutils,
   // LCL
   Controls, StdCtrls, Graphics, LCLType, LMessages, LCLProc, LCLMessageGlue,
-  LazUtf8Classes, textstrings,
+  // LazUtils
+  LazUTF8Classes, TextStrings,
   // Widgetset
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Cocoa

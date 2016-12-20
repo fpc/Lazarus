@@ -27,11 +27,11 @@ uses
   // LCL
   LCLType, LCLIntf, LCLProc, Forms, Controls, GraphType, ButtonPanel, Graphics,
   StdCtrls, Buttons, Menus, ExtCtrls, ComCtrls, Dialogs, EditBtn, Grids, ValEdit,
-  FileCtrl, StringHashList, PropertyStorage, Themes,
+  FileCtrl, PropertyStorage, Themes,
   // LazControls
   {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
   // LazUtils
-  FileUtil, FPCAdds, // for StrToQWord in older fpc versions
+  FileUtil, StringHashList, FPCAdds, // for StrToQWord in older fpc versions
   // IdeIntf
   ObjInspStrConsts, PropEditUtils, IDEUtils,
   // Forms with .lfm files

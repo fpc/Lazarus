@@ -39,10 +39,10 @@ uses
   {$EndIf}
   gdk2pixbuf, gtk2, gdk2, glib2, Pango,
   // LazUtils
-  LazFileUtils,
+  LazFileUtils, LazUTF8, DynHashArray, Maps,
   // LCL
-  Maps, Dialogs, Controls, Forms, LCLStrConsts,
-  LMessages, LCLProc, LazUTF8, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
+  Dialogs, Controls, Forms, LCLStrConsts,
+  LMessages, LCLProc, LCLIntf, LCLType, GraphType, GraphMath,
   Graphics, Menus, Themes, Buttons, StdCtrls, CheckLst, ComCtrls, Spin, ExtCtrls,
   LCLPlatformDef, InterfaceBase,
   WSLCLClasses,

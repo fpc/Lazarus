@@ -19,9 +19,14 @@ unit ComponentEditors;
 interface
 
 uses
-  Classes, SysUtils, LResources, TypInfo, Maps, LCLProc, Forms, Controls, Menus,
-  ExtCtrls, CustomTimer, Graphics, Grids, CheckLst, Buttons, ComCtrls, Dialogs,
-  LazStringGridEdit, CheckListboxEditorDlg, CheckGroupEditorDlg, GraphType,
+  Classes, SysUtils, TypInfo,
+  // LCL
+  LCLProc, LResources, Forms, Controls, Menus, ExtCtrls, CustomTimer, Graphics,
+  Grids, CheckLst, Buttons, ComCtrls, Dialogs, GraphType,
+  // LazUtils
+  Maps,
+  // IdeIntf
+  LazStringGridEdit, CheckListboxEditorDlg, CheckGroupEditorDlg,
   PropEdits, PropEditUtils, ComponentReg,
   ObjInspStrConsts;
 
