@@ -56,23 +56,20 @@ interface
 {$I ide.inc}
 
 uses
-{$IFDEF IDE_MEM_CHECK}
+  {$IFDEF IDE_MEM_CHECK}
   MemCheck,
-{$ENDIF}
-  Classes, SysUtils, typinfo, AVL_Tree,
-  LCLType, LCLIntf, Buttons, Menus, Controls, Graphics, ExtCtrls, Dialogs, Forms,
-  SynEditKeyCmds,
+  {$ENDIF}
+  Classes, typinfo,
+  // LCL
+  LCLType, Buttons, Controls, Graphics, Dialogs, Forms,
   // Codetools
-  CodeToolManager, CodeCache,
-  // LazUtils
-  FileUtil, LazFileUtils,
+  CodeCache,
   // IDEIntf
   PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, ProjectIntf,
   CompOptsIntf, LazIDEIntf, IDEWindowIntf,
   // IDE
-  LazConf, LazarusIDEStrConsts, ProjectDefs, Project, PublishModule, BuildLazDialog,
-  TransferMacros, ProgressDlg, EnvironmentOpts, EditorOptions, CompilerOptions,
-  KeyMapping, IDEProcs, IDEDefs, IDEOptionDefs, PackageDefs;
+  LazConf, LazarusIDEStrConsts, Project, PublishModule, BuildLazDialog,
+  ProgressDlg, EnvironmentOpts, IDEDefs, PackageDefs;
 
 type
   // The IDE is at anytime in a specific state:
