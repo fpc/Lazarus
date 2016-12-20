@@ -32,9 +32,9 @@ unit FindReplaceDialog;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, Controls, StdCtrls, Forms, Buttons,
-  ExtCtrls, Dialogs, Graphics, ButtonPanel,
-  SynEditTypes, SynRegExpr, SynEdit,
+  Classes, SysUtils, RegExpr, LCLProc, LCLType, Controls, StdCtrls, Forms,
+  Buttons, ExtCtrls, Dialogs, Graphics, ButtonPanel,
+  SynEditTypes, SynEdit,
   IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
   LazarusIdeStrConsts, InputHistory;
 

@@ -32,10 +32,10 @@ interface
 
 uses
   // RTL + FCL + LCL
-  Classes, SysUtils, types, LCLProc, LCLIntf, Forms, Controls, ComCtrls,
-  Dialogs, ExtCtrls, StdCtrls, Buttons,
+  Classes, SysUtils, types, RegExpr, LCLProc, LCLIntf, Forms, Controls,
+  ComCtrls, Dialogs, ExtCtrls, StdCtrls, Buttons,
   // SynEdit, CodeTools
-  SynRegExpr, SourceLog, KeywordFuncLists, BasicCodeTools, FileProcs,
+  SourceLog, KeywordFuncLists, BasicCodeTools, FileProcs,
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache,
   // IDEIntf

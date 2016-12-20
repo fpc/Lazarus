@@ -45,8 +45,6 @@ uses
   IDECmdLine, MiscOptions, Project, LazConf, PackageDefs,
   PackageLinks, PackageSystem, InterPkgConflictFiles, BuildLazDialog,
   BuildProfileManager, BuildManager, BaseBuildManager, ModeMatrixOpts;
-  // Hack: The project refers directly to SynRegExpr in SynEdit directory
-  //  without pulling the whole package with it. Must be solved properly later.
 
 type
   TPkgAction = (

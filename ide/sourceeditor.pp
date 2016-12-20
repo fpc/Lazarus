@@ -44,7 +44,7 @@ uses
   {$ENDIF}
   SynEditMouseCmds,
   // RTL + FCL
-  Classes, SysUtils, StrUtils, types, Math,
+  Classes, SysUtils, StrUtils, types, Math, RegExpr,
   // LCL
   Controls, Forms, ComCtrls, StdCtrls, Graphics, Dialogs, Extctrls, Menus,
   LCLProc, LCLType, LResources, LCLIntf, FileUtil, LazFileUtils,
@@ -58,7 +58,7 @@ uses
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   LinkScanner, CodeTree, SourceChanger,
   // synedit
-  SynEditLines, SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr,
+  SynEditLines, SynEditStrConst, SynEditTypes, SynEdit,
   SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
   SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
   SynBeautifier, SynPluginMultiCaret,
