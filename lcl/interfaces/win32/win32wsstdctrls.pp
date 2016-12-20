@@ -1386,7 +1386,7 @@ begin
   with Params do
   begin
     pClassName := @EditClsName[0];
-//    SubClassWndProc := @MemoWndProc;
+    SubClassWndProc := @MemoWndProc;
     WindowTitle := StrCaption;
   end;
   // create window
