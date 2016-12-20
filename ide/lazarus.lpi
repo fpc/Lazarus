@@ -1302,6 +1302,7 @@
       <Unit230>
         <Filename Value="formeditor.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="FormEditor"/>
       </Unit230>
       <Unit231>
         <Filename Value="revision.inc"/>

@@ -135,7 +135,7 @@
       </Item29>
       <Item30>
         <Filename Value="lazutf16.pas"/>
-        <UnitName Value="lazUTF16"/>
+        <UnitName Value="LazUTF16"/>
       </Item30>
       <Item31>
         <Filename Value="lazutf8sysutils.pas"/>
@@ -287,7 +287,6 @@
       </Item67>
       <Item68>
         <Filename Value="utf8process.pp"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="UTF8Process"/>
       </Item68>
       <Item69>

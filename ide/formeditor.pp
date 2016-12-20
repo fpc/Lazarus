@@ -33,7 +33,7 @@ interface
 uses
   Classes, LCLProc, Controls, Forms, Buttons, SysUtils, Graphics,
   // register IDE base packages
-  RegisterLCL, FCLLaz, allsynedit, LazControls, LazarusPackageIntf,
+  LazarusPackageIntf, RegisterLCL, PkgRegisterBase, allsynedit, LazControls,
   // IDE
   ObjectInspector, Designer, IDECommands, FormEditingIntf, CustomFormEditor;
 

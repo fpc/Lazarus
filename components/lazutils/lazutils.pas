@@ -24,7 +24,6 @@ implementation
 
 procedure Register;
 begin
-  RegisterUnit('UTF8Process', @UTF8Process.Register);
 end;
 
 initialization

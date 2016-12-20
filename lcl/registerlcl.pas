@@ -58,7 +58,6 @@ begin
   RegisterUnit('LazHelpHTML',@LazHelpHTML.Register);
   RegisterUnit('PopupNotifier', @PopupNotifier.Register);
   RegisterUnit('AsyncProcess', @AsyncProcess.Register);
-  RegisterUnit('UTF8Process', @UTF8Process.Register);
   RegisterUnit('ShellCtrls', @ShellCtrls.Register);
   RegisterUnit('XMLPropStorage',@XMLPropStorage.Register);
   RegisterUnit('IniPropStorage',@IniPropStorage.Register);
