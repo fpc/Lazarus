@@ -28,12 +28,20 @@ unit Compiler_Other_Options;
 interface
 
 uses
-  Classes, SysUtils, math, AVL_Tree, LazLogger, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, ComCtrls, ExtCtrls, Buttons, LCLType, LazUTF8,
-  CodeToolsCfgScript, KeywordFuncLists, LazarusIDEStrConsts,
-  IDEOptionsIntf, CompOptsIntf, IDECommands, PackageDefs,
-  CompilerOptions, Compiler, AllCompilerOptions, DefinesGui,
-  EditorOptions, SynEdit, SynEditKeyCmds, SynCompletion, SourceSynEditor;
+  Classes, SysUtils, math, AVL_Tree,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, ExtCtrls, Buttons, LCLType,
+  // LazUtils
+  LazUTF8, LazLogger,
+  // Codetools
+  CodeToolsCfgScript, KeywordFuncLists,
+  // IdeIntf
+  IDEOptionsIntf, CompOptsIntf, IDECommands,
+  // SynEdit
+  SynEdit, SynEditKeyCmds, SynCompletion,
+  // IDE
+  LazarusIDEStrConsts, CompilerOptions, Compiler, AllCompilerOptions, DefinesGui,
+  EditorOptions, PackageDefs, SourceSynEditor;
 
 type
 

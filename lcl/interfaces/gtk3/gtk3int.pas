@@ -26,11 +26,10 @@ uses
   {$ENDIF}
   SysUtils, Classes, types,
   // LazUtils
-  LazUTF8,
+  LazUTF8, Translations,
   // LCL
-  LCLPlatformDef, InterfaceBase, Translations,
+  LCLPlatformDef, InterfaceBase, LCLProc, LCLStrConsts, LCLType, LMessages,
   Controls, Forms, FPImage, Graphics, GraphUtil, GraphType, IntfGraphics,
-  LCLProc, LCLStrConsts, LCLType, LMessages,
   LazGtk3, LazGdk3, LazGlib2, LazGObject2, LazCairo1, LazPango1, LazPangoCairo1, LazGio2,
   LazGdkPixbuf2, gtk3widgets, gtk3objects, gtk3procs;
 

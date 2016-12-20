@@ -26,8 +26,13 @@ unit ModeMatrixOpts;
 interface
 
 uses
-  Classes, SysUtils, contnrs, LazConfigStorage, Laz2_XMLCfg, LazLogger, LazUTF8,
-  FileProcs, KeywordFuncLists, CodeToolsCfgScript, LazarusIDEStrConsts;
+  Classes, SysUtils, contnrs,
+  // LazUtils
+  LazConfigStorage, Laz2_XMLCfg, LazLogger, LazUTF8,
+  // Codetools
+  FileProcs, KeywordFuncLists, CodeToolsCfgScript,
+  // IDE
+  LazarusIDEStrConsts;
 
 const
   BuildMatrixProjectName = '#project';

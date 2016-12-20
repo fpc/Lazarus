@@ -32,11 +32,13 @@ unit IDETranslations;
 interface
 
 uses
-  Classes, SysUtils, GetText, LazUTF8, Translations,
-  IDEProcs, FileProcs, LazFileUtils, LazFileCache,
-  CodeToolManager, DirectoryCacher, CodeCache,
-  LazarusIDEStrConsts;
-  { IDE Language (Human, not computer) }
+  Classes, SysUtils, GetText,
+  // LazUtils
+  LazFileUtils, LazFileCache, LazUTF8, Translations,
+  // Codetools
+  FileProcs, CodeToolManager, DirectoryCacher, CodeCache,
+  // IDE
+  IDEProcs, LazarusIDEStrConsts;  { IDE Language (Human, not computer) }
 
 type
   { TLazarusTranslation }

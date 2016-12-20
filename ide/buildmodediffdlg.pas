@@ -30,10 +30,13 @@ unit BuildModeDiffDlg;
 interface
 
 uses
-  Classes, sysutils, LazUTF8, LazLogger, AvgLvlTree, Forms, ButtonPanel,
-  StdCtrls, ComCtrls,
-  LazarusIDEStrConsts, EnvironmentOpts, Project, ModeMatrixOpts,
-  CompOptsModes;
+  Classes, sysutils,
+  // LCL
+  StdCtrls, ComCtrls, Forms, ButtonPanel,
+  // LazUtils
+  LazUTF8, LazLogger, AvgLvlTree,
+  // IDE
+  LazarusIDEStrConsts, EnvironmentOpts, Project, ModeMatrixOpts, CompOptsModes;
 
 type
 

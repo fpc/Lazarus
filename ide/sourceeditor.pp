@@ -48,12 +48,12 @@ uses
   // LCL
   Controls, Forms, ComCtrls, StdCtrls, Graphics, Dialogs, Extctrls, Menus,
   LCLProc, LCLType, LResources, LCLIntf, FileUtil, LazFileUtils,
-  Translations, ClipBrd, HelpIntfs, Messages,
+  ClipBrd, HelpIntfs, Messages,
   // LazControls
   ExtendedNotebook,
   // LazUtils
-  LConvEncoding, LazLoggerBase, LazUTF8Classes, LazLogger, AvgLvlTree,
-  LazFileCache, LazUTF8,
+  LConvEncoding, LazUTF8Classes, LazFileCache, LazUTF8, AvgLvlTree,
+  LazLoggerBase, LazLogger, Translations,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   LinkScanner, CodeTree, SourceChanger,

@@ -48,10 +48,10 @@ uses
   // RTL, FCL
   TypInfo, math, Classes, SysUtils, contnrs,
   // LCL
-  LCLProc, Forms, Controls, Dialogs, Menus, ComCtrls,
-  Translations, LResources,
+  LCLProc, Forms, Controls, Dialogs, Menus, ComCtrls, LResources,
   // LazUtils
   LazUTF8, Laz2_XMLCfg, lazutf8classes, LazFileUtils, LazFileCache, StringHashList,
+  Translations,
   // Codetools
   CodeToolsConfig, CodeToolManager, CodeCache, CodeToolsStructs, BasicCodeTools,
   FileProcs, CodeTree,

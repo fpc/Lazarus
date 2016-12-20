@@ -33,10 +33,16 @@ unit QFInitLocalVarDlg;
 interface
 
 uses
-  Classes, SysUtils, Math, contnrs, LazLogger,
-  Forms, Controls, Graphics, Dialogs, ButtonPanel, ExtCtrls,
+  Classes, SysUtils, Math, contnrs,
+  // LCL
+  Forms, Controls, Dialogs, ButtonPanel, ExtCtrls,
+  // LazUtils
+  LazLogger,
+  // Codetools
   CodeToolManager, CodeCache, StdCodeTools,
+  // IdeIntf
   LazIDEIntf, IDEDialogs,
+  // IDE
   LazarusIDEStrConsts;
 
 type

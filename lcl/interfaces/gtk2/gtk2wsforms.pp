@@ -27,9 +27,11 @@ uses
   {$ENDIF}
   Math, types, Classes,
   // LCL
-  LazLogger, LCLType, Controls, LMessages, InterfaceBase,
-  Graphics, Forms, WSForms, WSProc,
-  Gtk2Int, Gtk2Proc, Gtk2Def, Gtk2Extra, Gtk2Globals, Gtk2WSControls;
+  LCLType, Controls, LMessages, InterfaceBase, Graphics, Forms,
+  Gtk2Int, Gtk2Proc, Gtk2Def, Gtk2Extra, Gtk2Globals, Gtk2WSControls,
+  WSForms, WSProc,
+  // LazUtils
+  LazLogger;
 
 type
 

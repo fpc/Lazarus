@@ -38,9 +38,9 @@ uses
   // RTL + FCL
   Classes, SysUtils, typinfo, GetText,
   // LCL
-  LResources, Translations, Forms,
+  LResources, Forms,
   // LazUtils
-  LazFileUtils, LazUTF8;
+  Translations, LazFileUtils, LazUTF8;
 
 type
 

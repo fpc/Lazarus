@@ -26,10 +26,10 @@ interface
 
 uses
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
-  {$IFnDEF WithOldDebugln} LazLogger, {$ENDIF}
   Classes, SysUtils, Math, TypInfo, Types,
   // LazUtils
   FPCAdds, AvgLvlTree, LazFileUtils, LazMethodList, LazUTF8, LazUTF8Classes,
+  {$IFnDEF WithOldDebugln} LazLogger, {$ENDIF}
   // LCL
   LCLStrConsts, LCLType;
 

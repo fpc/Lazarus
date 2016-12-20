@@ -29,11 +29,14 @@ interface
 }
 uses
   Windows, // keep as first
-  Classes, RtlConsts, ActiveX, MultiMon,
+  Classes, SysUtils, RtlConsts, ActiveX, MultiMon, CommCtrl,
   // LCL
-  LCLPlatformDef, InterfaceBase, LCLIntf, LclProc, LazUTF8, LCLType, LMessages,
-  Translations, Controls, Buttons, Forms, Dialogs, GraphMath, GraphType, StdCtrls,
-  SysUtils, Win32Def, Graphics, Menus, CommCtrl, ComCtrls, Themes{, Win32Debug};
+  LCLPlatformDef, InterfaceBase, LCLIntf, LclProc, LCLType, LMessages,
+  Controls, Buttons, Forms, Dialogs, GraphMath, GraphType, StdCtrls,
+  Graphics, Menus, ComCtrls, Themes, Win32Def,
+  // LazUtils
+  LazUTF8, Translations;
+  {, Win32Debug}
 
 const
   // standard windows cursors

@@ -37,10 +37,14 @@ unit frmmain;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, Menus, ActnList, StdActns,
-  ComCtrls, IniPropStorage, LCLType, ExtCtrls, LCLProc, Translations,
-  dicteditor, fraconnection, ddfiles, fpdatadict, lazdatadeskstr,
-  FileUtil, LazFileUtils, LazUTF8;
+  Classes, SysUtils, fpdatadict,
+  // LCL
+  Forms, Controls, Dialogs, Menus, ActnList, StdActns, ComCtrls, ExtCtrls,
+  IniPropStorage, LCLType, LCLProc,
+  // LazUtils
+  FileUtil, LazFileUtils, LazUTF8, Translations,
+  // LazDataDesktop
+  dicteditor, fraconnection, ddfiles, lazdatadeskstr;
 
 type
   TEngineMenuItem = Class(TMenuItem)

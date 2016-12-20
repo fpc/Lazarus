@@ -54,14 +54,17 @@ interface
 
 uses
   Classes, SysUtils,
-  LazLogger, AvgLvlTree, LazFileUtils, LazUTF8,
+  // LCL
   Menus, Dialogs, Controls,
-  CodeToolManager, CodeCache, CodeTree, CodeAtom, BasicCodeTools,
-  KeywordFuncLists,
+  // LazUtils
+  LazLogger, AvgLvlTree, LazFileUtils, LazUTF8,
+  // Codetools
+  CodeToolManager, CodeCache, CodeTree, CodeAtom, BasicCodeTools, KeywordFuncLists,
+  // IdeIntf
   IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, IDEDialogs, MenuIntf,
   ProjectIntf, PackageIntf, CompOptsIntf,
-  LazarusIDEStrConsts,
-  etFPCMsgParser, AbstractsMethodsDlg, QFInitLocalVarDlg;
+  // IDE
+  LazarusIDEStrConsts, etFPCMsgParser, AbstractsMethodsDlg, QFInitLocalVarDlg;
 
 type
 

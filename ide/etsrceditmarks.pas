@@ -32,10 +32,17 @@ unit etSrcEditMarks;
 interface
 
 uses
-  Classes, SysUtils, math, LazLogger, LazFileUtils, AvgLvlTree,
-  KeywordFuncLists, Graphics, Controls, Forms, ImgList,
+  Classes, SysUtils, math,
+  // LCL
+  Graphics, Controls, Forms, ImgList,
+  // LazUtils
+  LazLogger, LazFileUtils, AvgLvlTree,
+  // Codetools
+  KeywordFuncLists,
+  // SynEdit
   SynEditMarkupGutterMark,
   SynEditMarks, SynEditMiscClasses, SynEditTypes, SynEdit, LazSynEditText,
+  // IdeIntf
   IDEExternToolIntf;
 
 type
