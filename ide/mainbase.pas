@@ -52,23 +52,26 @@ interface
 {$I ide.inc}
 
 uses
-{$IFDEF IDE_MEM_CHECK}
+  {$IFDEF IDE_MEM_CHECK}
   MemCheck,
-{$ENDIF}
-  Math, Classes, LCLType, LCLProc, LCLIntf, Buttons, Menus, ComCtrls,
-  SysUtils, types, Controls, Graphics, ExtCtrls, Dialogs, LazFileUtils, Forms,
-  CodeToolManager, AVL_Tree, SynEditKeyCmds, PackageIntf,
+  {$ENDIF}
+  Classes, SysUtils, Types, Math,
+  // LCL
+  LCLProc, Buttons, Menus, ComCtrls, Controls, Graphics, Dialogs, Forms, ImgList,
+  // LazUtils
+  LazFileUtils,
+  // Codetools
+  CodeToolManager,
+  // SynEdit
+  SynEditKeyCmds,
   // IDEIntf
-  IDEImagesIntf, SrcEditorIntf, LazIDEIntf, MenuIntf, NewItemIntf,
-  IDECommands, IDEWindowIntf, ProjectIntf, ToolBarIntf,
+  IDEImagesIntf, SrcEditorIntf, LazIDEIntf, MenuIntf, NewItemIntf, PackageIntf,
+  IDECommands, IDEWindowIntf, ProjectIntf, ToolBarIntf, ObjectInspector,
+  PropEdits, IDEDialogs, EditorSyntaxHighlighterDef,
   // IDE
-  LazConf, LazarusIDEStrConsts, ProjectDefs, Project, IDEDialogs,
-  TransferMacros, ObjectInspector, PropEdits, BuildManager,
-  EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
-  Debugger, IDEOptionDefs, Splash, Designer,
-  SourceEditor, FindInFilesDlg,
-  MainBar, MainIntf, SourceSynEditor, PseudoTerminalDlg,
-  DesktopManager, ImgList;
+  LazConf, LazarusIDEStrConsts, Project, BuildManager, IDEProcs,
+  EnvironmentOpts, EditorOptions, CompilerOptions, SourceEditor, SourceSynEditor,
+  FindInFilesDlg, DesktopManager, Splash, MainBar, MainIntf, Designer, Debugger;
 
 type
   TResetToolFlag = (

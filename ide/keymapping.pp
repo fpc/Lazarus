@@ -32,9 +32,17 @@ unit KeyMapping;
 interface
 
 uses
-  Classes, SysUtils, contnrs, Forms, LCLType, LCLProc, AvgLvlTree, Laz2_XMLCfg,
+  Classes, SysUtils, contnrs,
+  // LCL
+  Forms, LCLType, LCLProc,
+  // LazUtils
+  AvgLvlTree, Laz2_XMLCfg,
+  // SynEdit
   SynEditKeyCmds, SynPluginTemplateEdit, SynPluginSyncroEdit, SynPluginMultiCaret,
-  IDECommands, LazarusIDEStrConsts, Debugger;
+  // IdeIntf
+  IDECommands,
+  // IDE
+  LazarusIDEStrConsts, Debugger;
 
 type
   TKeyMapScheme = (

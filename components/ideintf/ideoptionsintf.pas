@@ -25,8 +25,13 @@ unit IDEOptionsIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, Buttons, Forms, StdCtrls, Graphics,
-  ComCtrls, Grids, Laz2_XMLCfg;
+  Classes, SysUtils,
+  // LCL
+  LCLProc, Controls, Buttons, Forms, StdCtrls, Graphics, ComCtrls, Grids,
+  // LazUtils
+  Laz2_XMLCfg,
+  // IdeIntf
+  EditorSyntaxHighlighterDef;
 
 const
   NoParent = -1;
@@ -157,6 +162,7 @@ type
   public
     // read-only access to options needed by external packages.
     // feel free to extend when needed
+    function ExtensionToLazSyntaxHighlighter(Ext: String): TLazSyntaxHighlighter; virtual; abstract;
     property TabPosition: TTabPosition read GetTabPosition;
   end;
 

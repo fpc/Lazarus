@@ -25,9 +25,15 @@ unit editor_dividerdraw_options;
 interface
 
 uses
-  Classes, SysUtils, StdCtrls, ExtCtrls, Graphics,
-  LCLType, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf,
-  SynEditHighlighter, Spin, ColorBox, CheckLst;
+  Classes, SysUtils,
+  // LCL
+  StdCtrls, ExtCtrls, Graphics, Spin, ColorBox, CheckLst, LCLType,
+  // IdeIntf
+  EditorSyntaxHighlighterDef, IDEOptionsIntf,
+  // SynEdit
+  SynEditHighlighter,
+  // IDE
+  EditorOptions, LazarusIDEStrConsts;
 
 type
 
@@ -60,7 +66,6 @@ type
     procedure TopLvlColorBoxChange(Sender: TObject);
     procedure TopLvlColorCheckBoxChange(Sender: TObject);
   private
-    { private declarations }
     FHighlighters: array[TLazSyntaxHighlighter] of TSrcIDEHighlighter;
     FCurHighlighter: TSrcIDEHighlighter;
     FCurDividerConf: TSynDividerDrawConfig;

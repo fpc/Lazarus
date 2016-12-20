@@ -25,9 +25,17 @@ unit editor_codefolding_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, StdCtrls, ExtCtrls, Graphics,
-  LCLType, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, Controls,
-  SynEditHighlighter, SynEditHighlighterFoldBase, CheckLst, Buttons;
+  Classes, SysUtils,
+  // LCL
+  LCLType, Forms, StdCtrls, ExtCtrls, Graphics, Controls, CheckLst, Buttons,
+  // LazUtils
+  FileUtil,
+  // IdeIntf
+  EditorSyntaxHighlighterDef, IDEOptionsIntf,
+  // SynEdit
+  SynEditHighlighter, SynEditHighlighterFoldBase,
+  // IDE
+  EditorOptions, LazarusIDEStrConsts;
 
 type
 

@@ -25,11 +25,19 @@ unit editor_markup_options;
 interface
 
 uses
-  Classes, StdCtrls, ComCtrls, Graphics, sysutils, EditorOptions, LazarusIDEStrConsts,
-  SourceMarks, IDEOptionsIntf, Spin, ExtCtrls, SynEditMarkupBracket, editor_color_options,
-  editor_general_options, editor_keymapping_options, editor_codefolding_options, SynEdit,
-  SynCompletion, SynHighlighterPas, SynEditKeyCmds, SynEditHighlighterFoldBase, DividerBevel,
-  LCLType, CheckLst, Controls;
+  Classes, sysutils,
+  // LCL
+  LCLType, CheckLst, Controls, StdCtrls, ComCtrls, Graphics, Spin, ExtCtrls,
+  // LazControls
+  DividerBevel,
+  // IDEIntf
+  EditorSyntaxHighlighterDef, IDEOptionsIntf,
+  // SynEdit
+  SynEdit, SynCompletion, SynHighlighterPas, SynEditKeyCmds, SynEditHighlighterFoldBase,
+  // IDE
+  EditorOptions, LazarusIDEStrConsts, SourceMarks, SynEditMarkupBracket,
+  editor_color_options, editor_general_options, editor_keymapping_options,
+  editor_codefolding_options;
 
 type
   { TEditorMarkupOptionsFrame }

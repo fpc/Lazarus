@@ -38,8 +38,13 @@ unit IDECmdLine;
 interface
 
 uses 
-  Classes, SysUtils, FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes,
-  LazLogger, LazConf, LCLProc;
+  Classes, SysUtils,
+  // LazUtils
+  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LazLogger,
+  // LCL
+  LCLProc,
+  // IDE
+  LazConf;
 
 const
   ShowSetupDialogOptLong='--setup';

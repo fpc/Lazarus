@@ -39,9 +39,10 @@ uses
   // LazUtils
   LConvEncoding, FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes,
   // IDEIntf
-  ComponentReg, LazIDEIntf, PackageIntf, ProjectIntf, IDEDialogs, IDEExternToolIntf,
+  ComponentReg, IDEDialogs,
+  LazIDEIntf, PackageIntf, ProjectIntf, IDEExternToolIntf, IDEOptionsIntf,
   // IDE
-  IDEProcs, DialogProcs, EditorOptions, CompilerOptions,
+  IDEProcs, DialogProcs, CompilerOptions,
   ProjPackBase, Project, ProjectDefs, PackageDefs, PackageSystem, PackageEditor,
   BasePkgManager, LazarusIDEStrConsts,
   // Converter
@@ -1514,8 +1515,9 @@ begin
   if LazProject.MainUnitInfo=nil then begin
     // add .lpr file to project as main unit
     MainUnitInfo:=TUnitInfo.Create(fMainUnitConverter.fPascalBuffer);
+    Assert(Assigned(IDEEditorOptions), 'TConvertDelphiProject.CreateMainSourceFile: IDEEditorOptions is Nil.');
     MainUnitInfo.DefaultSyntaxHighlighter:=
-                    ExtensionToLazSyntaxHighlighter(fMainUnitConverter.LazFileExt);
+      IDEEditorOptions.ExtensionToLazSyntaxHighlighter(fMainUnitConverter.LazFileExt);
     MainUnitInfo.IsPartOfProject:=true;
     LazProject.AddFile(MainUnitInfo,false);
     LazProject.MainFileID:=0;

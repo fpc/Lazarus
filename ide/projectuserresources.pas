@@ -35,11 +35,18 @@ unit ProjectUserResources;
 interface
 
 uses
-  Classes, SysUtils, Laz2_XMLCfg, LCLProc, FileProcs, LazFileUtils, LazUTF8,
+  // RTL + LCL
+  Classes, SysUtils,
+  resource, bitmapresource, groupresource, groupiconresource, groupcursorresource,
+  // LCL
+  LCLProc,
+  // LazUtils
+  FileProcs, LazFileUtils, LazUTF8, Laz2_XMLCfg,
+  // IdeIntf
   ProjectResourcesIntf, IDEMsgIntf, MacroIntf, IDEExternToolIntf,
-  LazarusIDEStrConsts, resource, bitmapresource, groupresource,
-  groupiconresource, groupcursorresource;
-   
+  // IDE
+  LazarusIDEStrConsts;
+
 type
   TUserResourceType = (
     rtIcon,    // maps to RT_GROUP_ICON

@@ -32,22 +32,28 @@ unit SourceFileManager;
 interface
 
 uses
-  AVL_Tree, typinfo, math, Classes, SysUtils, Controls, Forms, Dialogs, LCLIntf,
-  LCLType, LCLProc, FileProcs, IDEProcs, DialogProcs, IDEDialogs,
-  LConvEncoding, LazFileCache, FileUtil, LazFileUtils, LazUTF8, LResources, PropEdits,
-  DefineTemplates, IDEMsgIntf, IDEProtocol, LazarusIDEStrConsts, LclStrConsts, NewDialog,
-  NewProjectDlg, LazIDEIntf, MainBase, MainBar, MainIntf, MenuIntf, NewItemIntf,
-  CompOptsIntf, SrcEditorIntf, IDEWindowIntf, ProjectIntf, Project, ProjectDefs,
-  ProjectInspector, PackageIntf, PackageDefs, PackageSystem, CompilerOptions,
-  BasePkgManager, ComponentReg, SourceEditor, EditorOptions, CustomFormEditor,
-  FormEditor, EmptyMethodsDlg, BaseDebugManager, ControlSelection,
-  TransferMacros, EnvironmentOpts, BuildManager, EditorMacroListViewer,
-  KeywordFuncLists, FindRenameIdentifier, GenericCheckList, ViewUnit_Dlg,
-  DiskDiffsDialog, InputHistory, CheckLFMDlg, LCLMemManager, CodeToolManager,
-  CodeToolsStructs, ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool,
-  BasicCodeTools, SynEdit, UnitResources, IDEExternToolIntf, ObjectInspector,
-  PublishModule, etMessagesWnd, SourceSynEditor,
-  FormEditingIntf, fpjson;
+  Classes, SysUtils, typinfo, math, AVL_Tree, fpjson,
+  // LCL
+  Controls, Forms, Dialogs, LCLIntf, LCLType, LCLProc, LclStrConsts,
+  LResources, LCLMemManager,
+  // LazUtils
+  LConvEncoding, LazFileCache, FileUtil, LazFileUtils, LazUTF8,
+  // Codetools
+  BasicCodeTools, CodeToolsStructs, CodeToolManager, FileProcs, DefineTemplates,
+  CodeCache, CodeTree, FindDeclarationTool, KeywordFuncLists,
+  // IdeIntf
+  IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, NewItemIntf,
+  CompOptsIntf, SrcEditorIntf, IDEWindowIntf, ProjectIntf, PackageIntf,
+  FormEditingIntf, IDEExternToolIntf, ObjectInspector, UnitResources, ComponentReg,
+  EditorSyntaxHighlighterDef,
+  // IDE
+  IDEProcs, DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog, NewProjectDlg,
+  MainBase, MainBar, MainIntf, Project, ProjectDefs, ProjectInspector, CompilerOptions,
+  SourceSynEditor, SourceEditor, EditorOptions, EnvironmentOpts, CustomFormEditor,
+  ControlSelection, FormEditor, EmptyMethodsDlg, BaseDebugManager, TransferMacros,
+  BuildManager, EditorMacroListViewer, FindRenameIdentifier, GenericCheckList,
+  ViewUnit_Dlg, DiskDiffsDialog, InputHistory, CheckLFMDlg, PublishModule, etMessagesWnd,
+  ConvCodeTool, BasePkgManager, PackageDefs, PackageSystem;
 
 type
 

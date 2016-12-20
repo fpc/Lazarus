@@ -43,24 +43,27 @@ interface
 {$I ide.inc}
 
 uses
-{$IFDEF IDE_MEM_CHECK}
+  {$IFDEF IDE_MEM_CHECK}
   MemCheck,
-{$ENDIF}
-  // RTL + FCL + LCL
-  Classes, SysUtils, TypInfo, LCLProc, Forms, Controls, Dialogs, maps,
+  {$ENDIF}
+  // RTL + FCL
+  Classes, SysUtils, TypInfo,
+  // LCL
+  LCLProc, Forms, Controls, Dialogs, maps,
   // CodeTools
-  CodeToolsConfig, ExprEval, DefineTemplates,
-  BasicCodeTools, CodeToolsCfgScript, CodeToolManager, CodeCache, FileProcs,
+  CodeToolsConfig, ExprEval, DefineTemplates, BasicCodeTools, CodeToolsCfgScript,
+  LinkScanner, CodeToolManager, CodeCache, FileProcs,
   // LazUtils
   FPCAdds, FileUtil, LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
   // IDEIntf
-  PropEdits, CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, UnitResources,
-  PackageIntf, SrcEditorIntf, IDEOptionsIntf, IDEDialogs, LazIDEIntf, ProjPackIntf,
+  PropEdits, UnitResources, EditorSyntaxHighlighterDef,
+  CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, SrcEditorIntf,
+  IDEOptionsIntf, IDEDialogs, LazIDEIntf, ProjPackIntf, PackageIntf,
   // IDE
   CompOptsModes, ProjectResources, LazConf, W32Manifest, ProjectIcon,
-  IDECmdLine, LazarusIDEStrConsts, CompilerOptions,
-  TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs, ProjPackBase,
-  FileReferenceList, EditDefineTree, ModeMatrixOpts, PackageDefs, PackageSystem;
+  IDECmdLine, IDEProcs, CompilerOptions, RunParamsOpts, ModeMatrixOpts,
+  TransferMacros, ProjectDefs, FileReferenceList, EditDefineTree,
+  LazarusIDEStrConsts, ProjPackBase, PackageDefs, PackageSystem;
 
 type
   TUnitInfo = class;
@@ -1121,6 +1124,7 @@ const
 var
   Project1: TProject = nil;// the main project
   
+function FilenameToLazSyntaxHighlighter(Filename: String): TLazSyntaxHighlighter;
 function AddCompileReasonsDiff(const PropertyName: string;
        const Old, New: TCompileReasons; Tool: TCompilerDiffTool = nil): boolean;
 function dbgs(aType: TUnitCompDependencyType): string; overload;
@@ -1134,6 +1138,20 @@ const
   ProjectInfoFileVersion = 10;
   ProjOptionsPath = 'ProjectOptions/';
 
+
+function FilenameToLazSyntaxHighlighter(Filename: String): TLazSyntaxHighlighter;
+var
+  CompilerMode: TCompilerMode;
+begin
+  Result:=IDEEditorOptions.ExtensionToLazSyntaxHighlighter(ExtractFileExt(Filename));
+  if Result in [lshFreePascal,lshDelphi] then begin
+    CompilerMode:=CodeToolBoss.GetCompilerModeForDirectory(ExtractFilePath(Filename));
+    if CompilerMode in [cmDELPHI,cmTP] then
+      Result:=lshDelphi
+    else
+      Result:=lshFreePascal;
+  end;
+end;
 
 function AddCompileReasonsDiff(const PropertyName: string;
   const Old, New: TCompileReasons; Tool: TCompilerDiffTool): boolean;
@@ -1854,8 +1872,7 @@ begin
   else
     LoadedDesigner:=false;
   fUserReadOnly:=XMLConfig.GetValue(Path+'ReadOnly/Value',false);
-  FBuildFileIfActive:=XMLConfig.GetValue(Path+'BuildFileIfActive/Value',
-                                         false);
+  FBuildFileIfActive:=XMLConfig.GetValue(Path+'BuildFileIfActive/Value',false);
   FRunFileIfActive:=XMLConfig.GetValue(Path+'RunFileIfActive/Value',false);
   fUsageCount:=XMLConfig.GetValue(Path+'UsageCount/Value',-1);
   if fUsageCount<1 then begin
@@ -1923,7 +1940,7 @@ begin
   end;
   
   fFileName:=NewFilename;
-  if EditorOpts<>nil then
+  if IDEEditorOptions<>nil then
     UpdateDefaultHighlighter(FilenameToLazSyntaxHighlighter(FFilename));
   UpdateSourceDirectoryReference;
 end;
@@ -3591,7 +3608,7 @@ var
 begin
   NewBuf:=CodeToolBoss.CreateFile(Filename);
   AnUnitInfo:=TUnitInfo.Create(NewBuf);
-  if EditorOpts<>nil then
+  if IDEEditorOptions<>nil then
     AnUnitInfo.DefaultSyntaxHighlighter := FilenameToLazSyntaxHighlighter(NewBuf.Filename);
   Result:=AnUnitInfo;
 end;
@@ -5054,7 +5071,7 @@ procedure TProject.UpdateAllCustomHighlighter;
 var
   i: Integer;
 begin
-  if EditorOpts=nil then exit;
+  if IDEEditorOptions=nil then exit;
   for i:=0 to UnitCount-1 do
     Units[i].UpdateHasCustomHighlighter(FilenameToLazSyntaxHighlighter(Units[i].Filename));
 end;
@@ -5063,7 +5080,7 @@ procedure TProject.UpdateAllSyntaxHighlighter;
 var
   i: Integer;
 begin
-  if EditorOpts=nil then exit;
+  if IDEEditorOptions=nil then exit;
   for i:=0 to UnitCount-1 do
     Units[i].UpdateDefaultHighlighter(FilenameToLazSyntaxHighlighter(Units[i].Filename));
 end;

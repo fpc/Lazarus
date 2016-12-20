@@ -37,9 +37,16 @@ unit ProjectDefs;
 interface
 
 uses
-  Classes, SysUtils, Controls, Forms,
-  FileProcs, LazFileUtils, Laz2_XMLCfg, LazUTF8,
+  Classes, SysUtils,
+  // LCL
+  Controls, Forms,
+  // Codetools
+  FileProcs,
+  // LazUtils
+  LazFileUtils, LazUTF8, Laz2_XMLCfg,
+  // IdeIntf
   CompOptsIntf, ProjectIntf, LazIDEIntf,
+  // IDE
   frmCustomApplicationOptions, PublishModule, IDEProcs, LazarusIDEStrConsts;
 
 type

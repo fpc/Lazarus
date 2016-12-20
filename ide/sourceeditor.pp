@@ -42,11 +42,17 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  SynEditMouseCmds, Classes, SysUtils, StrUtils, types, Math,
+  SynEditMouseCmds,
+  // RTL + FCL
+  Classes, SysUtils, StrUtils, types, Math,
+  // LCL
   Controls, Forms, ComCtrls, StdCtrls, Graphics, Dialogs, Extctrls, Menus,
-  ExtendedNotebook, LCLProc, LCLType, LResources, LCLIntf, FileUtil, LazFileUtils,
-  Translations, ClipBrd, HelpIntfs,
-  LConvEncoding, Messages, LazLoggerBase, lazutf8classes, LazLogger, AvgLvlTree,
+  LCLProc, LCLType, LResources, LCLIntf, FileUtil, LazFileUtils,
+  Translations, ClipBrd, HelpIntfs, Messages,
+  // LazControls
+  ExtendedNotebook,
+  // LazUtils
+  LConvEncoding, LazLoggerBase, LazUTF8Classes, LazLogger, AvgLvlTree,
   LazFileCache, LazUTF8,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
@@ -58,21 +64,21 @@ uses
   SynBeautifier, SynPluginMultiCaret,
   SynPluginSyncronizedEditBase, SourceSynEditor,
   SynExportHTML, SynHighlighterPas, SynEditMarkup, SynEditMarkupIfDef,
-  // Intf
+  // IdeIntf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
-  IDEWindowIntf, ProjectIntf, MacroDefIntf, ToolBarIntf,
+  IDEWindowIntf, ProjectIntf, MacroDefIntf, ToolBarIntf, IDEDialogs,
+  EditorSyntaxHighlighterDef,
+  // DebuggerIntf
+  DbgIntfBaseTypes, DbgIntfDebuggerBase,
   // IDE units
-  IDECmdLine, IDEDialogs, LazarusIDEStrConsts, IDECommands,
-  EditorOptions, EnvironmentOpts, WordCompletion, FindReplaceDialog, IDEProcs,
-  IDEOptionDefs, IDEHelpManager, MacroPromptDlg, TransferMacros,
-  CodeContextForm, SrcEditHintFrm, etMessagesWnd, etSrcEditMarks, InputHistory,
-  CodeMacroPrompt, CodeTemplatesDlg, CodeToolsOptions,
-  editor_general_options,
-  SortSelectionDlg, EncloseSelectionDlg, EncloseIfDef, InvertAssignTool,
-  SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm, MultiPasteDlg,
-  FPDocHints, EditorMacroListViewer, EditorToolbarStatic, editortoolbar_options,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, BaseDebugManager, Debugger, MainIntf,
-  GotoFrm;
+  IDECmdLine, LazarusIDEStrConsts, IDECommands, EditorOptions, EnvironmentOpts,
+  WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs, IDEHelpManager,
+  MacroPromptDlg, TransferMacros, CodeContextForm, SrcEditHintFrm, etMessagesWnd,
+  etSrcEditMarks, InputHistory, CodeMacroPrompt, CodeTemplatesDlg, CodeToolsOptions,
+  editor_general_options, SortSelectionDlg, EncloseSelectionDlg, EncloseIfDef,
+  InvertAssignTool, SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
+  MultiPasteDlg, EditorMacroListViewer, EditorToolbarStatic, editortoolbar_options,
+  FPDocHints, MainIntf, GotoFrm, BaseDebugManager, Debugger;
 
 type
   TSourceNotebook = class;

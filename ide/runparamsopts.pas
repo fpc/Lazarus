@@ -47,10 +47,15 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, LCLProc, Controls, Forms, Buttons, StdCtrls, ComCtrls,
-  Dialogs, ExtCtrls, BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs,
-  IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, LazFileUtils,
-  Laz2_XMLCfg, LazFileCache, LazUTF8, ButtonPanel;
+  Classes, SysUtils,
+  // LCL
+  Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs, ButtonPanel,
+  // IdeIntf
+  BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs,
+  // LazUtils
+  LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
+  // IDE
+  IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old

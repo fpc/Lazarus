@@ -55,7 +55,7 @@ const
 
   LCLPlatformDisplayNames: array[TLCLPlatform] of string = (
     'gtk (deprecated)',
-    'gtk 2',
+    'gtk2',
     'gtk3 (alpha)',
     'win32/win64',
     'wince',

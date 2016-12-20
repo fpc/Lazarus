@@ -36,9 +36,20 @@ unit InputHistory;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, LazFileCache, DiffPatch, IDEProcs,
-  AvgLvlTree, Laz2_XMLCfg, SynEditTypes, LazConf, Dialogs, LazUTF8, IDEDialogs,
-  ProjectIntf, LazFileUtils;
+  // RTL + LCL
+  Classes, SysUtils,
+  // LCL
+  Dialogs,
+  // LazUtils
+  LazFileCache, LazFileUtils, LazUTF8, AvgLvlTree, Laz2_XMLCfg,
+  // Codetools
+  FileProcs,
+  // IdeIntf
+  ProjectIntf, IDEDialogs,
+  // SynEdit
+  SynEditTypes,
+  // IDE
+  DiffPatch, LazConf, IDEProcs;
 
 {$ifdef Windows}
 {$define CaseInsensitiveFilenames}

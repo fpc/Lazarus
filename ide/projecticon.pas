@@ -34,9 +34,16 @@ unit ProjectIcon;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Laz2_XMLCfg, lazutf8classes, LCLProc,
-  Graphics, FileProcs, LazFileUtils, LazFileCache,
-  resource, groupiconresource, ProjectResourcesIntf;
+  // RTL + LCL
+  Classes, SysUtils, resource, groupiconresource,
+  // LCL
+  LCLProc, Graphics,
+  // LazUtils
+  FileUtil, LazFileUtils, LazFileCache, Laz2_XMLCfg, lazutf8classes,
+  // Codetools
+  FileProcs,
+  // IdeIntf
+  ProjectResourcesIntf;
    
 type
   TIconData = array of byte;
