@@ -39,13 +39,19 @@ type
 
   TOptionsFrm = class(TForm)
     bCancel: TButton;
+    bFoldersAdd: TButton;
+    bFilesEdit: TButton;
+    bFilesDelete: TButton;
+    bFoldersDelete: TButton;
+    bFoldersEdit: TButton;
     bOk: TButton;
     bRestore: TButton;
+    bFilesAdd: TButton;
     cbProxy: TCheckBox;
     cbForceDownloadExtract: TCheckBox;
     cbDeleteZipAfterInstall: TCheckBox;
-    cbSelectProfile: TComboBox;
     cbCheckForUpdates: TComboBox;
+    cbSelectProfile: TComboBox;
     edLocalRepositoryUpdate: TDirectoryEdit;
     edLocalRepositoryPackages: TDirectoryEdit;
     edLocalRepositoryArchive: TDirectoryEdit;
@@ -54,34 +60,53 @@ type
     edProxyUser: TEdit;
     edRemoteRepository: TEdit;
     gbProxySettings: TGroupBox;
+    lbFilterFiles: TLabel;
+    lbFilterDirs: TLabel;
     lbLastUpdate: TLabel;
+    lbSelectProfile: TLabel;
     lbUpdates: TLabel;
     lbLocalRepositoryArchive: TLabel;
     lbLocalRepositoryUpdate: TLabel;
     lbRemoteRepository: TLabel;
-    lbSelectProfile: TLabel;
     lbServer: TLabel;
     lbLocalRepositoryPackages: TLabel;
     lbUserName: TLabel;
     lbPort: TLabel;
     lbPassword: TLabel;
+    lbExcludeFiles: TListBox;
+    lbExcludeFolders: TListBox;
+    pnProfilesCaptionLeft: TPanel;
+    pnProfilesCaptionLeft1: TPanel;
+    pnProfilesLeftButtons: TPanel;
+    pnProfilesRightButtons: TPanel;
+    pnProfilesRight: TPanel;
+    pnProfilesTop: TPanel;
     pnProfiles: TPanel;
     pnFolders: TPanel;
     pnProxy: TPanel;
     pnGeneral: TPanel;
     pgOptions: TPageControl;
     pnBottom: TPanel;
+    pnProfilesMain: TPanel;
+    pnProfilesLeft: TPanel;
     SDD: TSelectDirectoryDialog;
     seProxyPort: TSpinEdit;
     tsFolders: TTabSheet;
     tsProfiles: TTabSheet;
     tsGeneral: TTabSheet;
     tsProxy: TTabSheet;
+    procedure bFilesAddClick(Sender: TObject);
+    procedure bFilesDeleteClick(Sender: TObject);
+    procedure bFilesEditClick(Sender: TObject);
     procedure bOkClick(Sender: TObject);
     procedure bRestoreClick(Sender: TObject);
     procedure cbProxyChange(Sender: TObject);
+    procedure cbSelectProfileChange(Sender: TObject);
     procedure edRemoteRepositoryKeyPress(Sender: TObject; var Key: char);
+    procedure pnProfilesMainResize(Sender: TObject);
+    procedure pnProfilesTopResize(Sender: TObject);
   private
+    function GetSelectedText(AListBox: TListBox; var AIndex: Integer): String;
   public
     procedure SetupControls;
   end;
@@ -96,6 +121,8 @@ uses opkman_options, opkman_common, opkman_const;
 { TOptionsFrm }
 
 procedure TOptionsFrm.bOkClick(Sender: TObject);
+var
+  I: Integer;
 begin
   if Trim(edRemoteRepository.Text)  = '' then
   begin
@@ -141,18 +168,143 @@ begin
   Options.RemoteRepository := edRemoteRepository.Text;
   Options.ForceDownloadAndExtract := cbForceDownloadExtract.Checked;
   Options.DeleteZipAfterInstall := cbDeleteZipAfterInstall.Checked;
-  Options.UserProfile := cbSelectProfile.ItemIndex;
   Options.CheckForUpdates := cbCheckForUpdates.ItemIndex;
+
   Options.ProxyEnabled := cbProxy.Checked;
   Options.ProxyServer := edProxyServer.Text;
   Options.ProxyPort := seProxyPort.Value;
   Options.ProxyUser := edProxyUser.Text;
   Options.ProxyPassword := edProxyPassword.Text;
+
   Options.LocalRepositoryPackages := AppendPathDelim(edLocalRepositoryPackages.Text);
   Options.LocalRepositoryArchive := AppendPathDelim(edLocalRepositoryArchive.Text);
   Options.LocalRepositoryUpdate := AppendPathDelim(edLocalRepositoryUpdate.Text);
+
+  Options.UserProfile := cbSelectProfile.ItemIndex;
+  for I := 0 to lbExcludeFiles.Items.Count - 1 do
+  begin
+    if I = 0 then
+      Options.ExcludedFiles := lbExcludeFiles.Items[I]
+    else
+      Options.ExcludedFiles := Options.ExcludedFiles + ',' + lbExcludeFiles.Items[I];
+  end;
+  for I := 0 to lbExcludeFolders.Items.Count - 1 do
+  begin
+    if I = 0 then
+      Options.ExcludedFolders := lbExcludeFolders.Items[I]
+    else
+      Options.ExcludedFolders := Options.ExcludedFolders + ',' + lbExcludeFolders.Items[I];
+  end;
+
   Options.Save;
   ModalResult := mrOk;
+end;
+
+function TOptionsFrm.GetSelectedText(AListBox: TListBox; var AIndex: Integer): String;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := 0 to AListBox.Count - 1 do
+  begin
+    if AListBox.Selected[I] then
+    begin
+      Result := AListBox.Items.Strings[I];
+      AIndex := I;
+      Break;
+    end;
+  end;
+end;
+
+procedure TOptionsFrm.bFilesAddClick(Sender: TObject);
+var
+  Value: String;
+  Index: Integer;
+  ListBox: TListBox;
+begin
+  case (Sender as TButton).Tag of
+    0: begin
+         ListBox := lbExcludeFiles;
+         Value := InputBox(rsOptions_InputBox_Caption, rsOptions_InputBox_Text0, '*.');
+       end;
+    1: begin
+         ListBox := lbExcludeFolders;
+         Value := InputBox(rsOptions_InputBox_Caption, rsOptions_InputBox_Text1, '');
+       end;
+  end;
+  if Value <> '' then
+  begin
+    Index := ListBox.Items.Add(Value);
+    ListBox.Selected[Index] := True;
+  end;
+end;
+
+procedure TOptionsFrm.bFilesEditClick(Sender: TObject);
+var
+  Value: String;
+  Index: Integer;
+  MsgInfo: String;
+  MsgTxt: String;
+  ListBox: TListBox;
+begin
+  case (Sender as TButton).Tag of
+    0: begin
+         MsgInfo := rsOptions_InputBox_Info0;
+         MsgTxt := rsOptions_InputBox_Text0;
+         Listbox := lbExcludeFiles;
+       end;
+    1: begin
+         MsgInfo := rsOptions_InputBox_Info1;
+         MsgTxt := rsOptions_InputBox_Text1;
+         ListBox := lbExcludeFolders;
+       end;
+  end;
+  if ListBox.SelCount = 0 then
+  begin
+    MessageDlgEx(MsgInfo, mtInformation, [mbOk], Self);
+    ListBox.SetFocus;
+    Exit;
+  end;
+  Index := -1;
+  Value := InputBox(rsOptions_InputBox_Caption, MsgTxt, GetSelectedText(ListBox, Index));
+  if (Value <> '') and (Index <> -1) then
+    ListBox.Items[Index] := Value;
+end;
+
+
+procedure TOptionsFrm.bFilesDeleteClick(Sender: TObject);
+var
+  MsgConf: String;
+  MsgInfo: String;
+  ListBox: TListBox;
+  Value: String;
+  Index: Integer;
+begin
+  case (Sender as TButton).Tag of
+     0: begin
+          MsgInfo := rsOptions_InputBox_Info0;
+          MsgConf := rsOptions_InputBox_Conf0;
+          ListBox := lbExcludeFiles;
+        end;
+     1: begin
+          MsgInfo := rsOptions_InputBox_Info1;
+          MsgConf := rsOptions_InputBox_Conf1;
+          ListBox := lbExcludeFolders;
+        end;
+   end;
+  if ListBox.SelCount = 0 then
+  begin
+    MessageDlgEx(MsgInfo, mtInformation, [mbOk], Self);
+    ListBox.SetFocus;
+    Exit;
+  end;
+  Index := -1;
+  Value := GetSelectedText(ListBox, Index);
+  if (Value <> '') and (Index <> -1) then
+  begin
+    if MessageDlgEx(Format(MsgConf, [Value]), mtConfirmation, [mbYes, mbNo], Self) = mrYes then
+      ListBox.Items.Delete(Index);
+  end;
 end;
 
 procedure TOptionsFrm.bRestoreClick(Sender: TObject);
@@ -170,6 +322,11 @@ begin
   gbProxySettings.Enabled:= cbProxy.Checked;
 end;
 
+procedure TOptionsFrm.cbSelectProfileChange(Sender: TObject);
+begin
+  pnProfilesMain.Visible := cbSelectProfile.ItemIndex = 1;
+end;
+
 procedure TOptionsFrm.edRemoteRepositoryKeyPress(Sender: TObject; var Key: char);
 begin
   if Key = #13 then
@@ -178,6 +335,7 @@ end;
 
 procedure TOptionsFrm.SetupControls;
 begin
+  Self.DoubleBuffered := True;
   Caption := rsOptions_FrmCaption;
   pgOptions.ActivePageIndex := 0;
   tsGeneral.Caption := rsOptions_tsGeneral_Caption;
@@ -229,11 +387,41 @@ begin
 
   tsProfiles.Caption := rsOptions_tsProfiles_Caption;
   lbSelectProfile.Caption := rsOptions_lbSelectProfile_Caption;
+  pnProfilesMain.DoubleBuffered := True;
+  pnProfilesLeft.DoubleBuffered := True;
+  pnProfilesTop.DoubleBuffered := True;
   cbSelectProfile.Clear;
   cbSelectProfile.Items.Add(rsOptions_cbSelectProfile_Item0);
   cbSelectProfile.Items.Add(rsOptions_cbSelectProfile_Item1);
   cbSelectProfile.ItemIndex := Options.UserProfile;
   cbSelectProfile.Hint := rsOptions_cbSelectProfile_Hint;
+  lbFilterFiles.Caption := rsOptions_lbFilterFiles_Caption;
+  lbFilterDirs.Caption := rsOptions_lbFilterDirs_Caption;
+  bFilesAdd.Caption := rsOptions_bAdd_Caption;
+  bFilesEdit.Caption := rsOptions_bEdit_Caption;
+  bFilesDelete.Caption := rsOptions_bDelete_Caption;
+  bFoldersAdd.Caption := rsOptions_bAdd_Caption;
+  bFoldersEdit.Caption := rsOptions_bEdit_Caption;
+  bFoldersDelete.Caption := rsOptions_bDelete_Caption;
+  lbExcludeFiles.Hint := rsOpitons_lbExcludeFiles_Hint;
+  lbExcludeFiles.Items.Delimiter := ',';
+  lbExcludeFiles.Items.StrictDelimiter := True;
+  lbExcludeFiles.Items.DelimitedText := Options.ExcludedFiles;
+  lbExcludeFolders.Hint := rsOpitons_lbExcludeFolders_Hint;
+  lbExcludeFolders.Items.Delimiter := ',';
+  lbExcludeFolders.Items.StrictDelimiter := True;
+  lbExcludeFolders.Items.DelimitedText := Options.ExcludedFolders;
+  pnProfilesMain.Visible := Options.UserProfile = 1;
+end;
+
+procedure TOptionsFrm.pnProfilesMainResize(Sender: TObject);
+begin
+  pnProfilesLeft.Width := pnProfilesMain.Width div 2;
+end;
+
+procedure TOptionsFrm.pnProfilesTopResize(Sender: TObject);
+begin
+  cbSelectProfile.Left := lbSelectProfile.Left + lbSelectProfile.Width + 10;
 end;
 
 end.

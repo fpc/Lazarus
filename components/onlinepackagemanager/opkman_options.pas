@@ -56,8 +56,6 @@ type
      FLastDownloadDir: String;
      FLastPackageDirSrc: String;
      FLastPackageDirDst: String;
-     FRestrictedExtensions: String;
-     FRestrictedDirectories: String;
      // Default values for local repositories.
      FLocalPackagesDefault: String;
      FLocalArchiveDefault: String;
@@ -67,6 +65,8 @@ type
      FLocalRepositoryArchive: String;
      FLocalRepositoryUpdate: String;
      FUserProfile: Integer;
+     FExcludedFiles: String;
+     FExcludedFolders: String;
      procedure SetRemoteRepository(const ARemoteRepository: String);
    public
      constructor Create(const AFileName: String);
@@ -91,11 +91,11 @@ type
      property ProxyPort: Word read FProxySettings.FPort write FProxySettings.FPort;
      property ProxyUser: String read FProxySettings.FUser write FProxySettings.FUser;
      property ProxyPassword: String read FProxySettings.FPassword write FProxySettings.FPassword;
-     property RestrictedExtension: String read FRestrictedExtensions write FRestrictedExtensions;
-     property RestrictedDirectories: String read FRestrictedDirectories write FRestrictedDirectories;
      property LocalRepositoryPackages: String read FLocalRepositoryPackages write FLocalRepositoryPackages;
      property LocalRepositoryArchive: String read FLocalRepositoryArchive write FLocalRepositoryArchive;
      property LocalRepositoryUpdate: String read FLocalRepositoryUpdate write FLocalRepositoryUpdate;
+     property ExcludedFiles: String read FExcludedFiles write FExcludedFiles;
+     property ExcludedFolders: String read FExcludedFolders write FExcludedFolders;
   end;
 
 var
@@ -125,10 +125,10 @@ begin
       FLocalRepositoryArchive := FLocalArchiveDefault;
     if FLocalRepositoryUpdate = '' then
       FLocalRepositoryUpdate := FLocalUpdateDefault;
-    if FRestrictedExtensions = '' then
-      FRestrictedExtensions := cRestrictedExtensionDef;
-    if FRestrictedDirectories = '' then
-      FRestrictedDirectories := cRestrictedDirectoryDef;
+    if FExcludedFiles = '' then
+      FExcludedFiles := cExcludedFilesDef;
+    if FExcludedFolders = '' then
+      FExcludedFolders := cExcludedFoldersDef;
   end
   else
     LoadDefault;
@@ -169,6 +169,8 @@ begin
   FLocalRepositoryUpdate := FXML.GetValue('Folders/LocalRepositoryUpdate/Value', '');
 
   FUserProfile := FXML.GetValue('Profiles/UserProfile/Value', 0);
+  FExcludedFiles := FXML.GetValue('Profiles/ExcludedFiles/Value', '');
+  FExcludedFolders := FXML.GetValue('Profiles/ExcludedFolders/Value', '');
 end;
 
 procedure TOptions.Save;
@@ -194,6 +196,8 @@ begin
   FXML.SetDeleteValue('Folders/LocalRepositoryUpdate/Value', FLocalRepositoryUpdate, '');
 
   FXML.SetDeleteValue('Profiles/UserProfile/Value', FUserProfile, 0);
+  FXML.SetDeleteValue('Profiles/ExcludedFiles/Value', FExcludedFiles, '');
+  FXML.SetDeleteValue('Profiles/ExcludedFolders/Value', FExcludedFolders, '');
 
   FXML.Flush;
   FChanged := False;
@@ -216,10 +220,10 @@ begin
   FLocalRepositoryPackages := FLocalPackagesDefault;
   FLocalRepositoryArchive := FLocalArchiveDefault;
   FLocalRepositoryUpdate := FLocalUpdateDefault;
-  FRestrictedExtensions := cRestrictedExtensionDef;
-  FRestrictedDirectories := cRestrictedDirectoryDef;
 
   FUserProfile := 0;
+  FExcludedFiles := cExcludedFilesDef;
+  FExcludedFolders := cExcludedFoldersDef;
   Save;
 end;
 

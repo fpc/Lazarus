@@ -41,8 +41,8 @@ const
   cLocalRepositoryConfig = 'config';
   cLocalRepositoryConfigFile = 'options.xml';
   cLocalRepositoryUpdatesFile = 'updates.xml';
-  cRestrictedExtensionDef = '*.a,*.o,*.ppu,*.compiled,*.bak,*.or,*.rsj,*.~ ';
-  cRestrictedDirectoryDef = 'lib,backup';
+  cExcludedFilesDef = '*.a,*.o,*.ppu,*.compiled,*.bak,*.or,*.rsj,*.~ ';
+  cExcludedFoldersDef = 'lib,backup';
   cHelpPage = 'http://wiki.freepascal.org/Online_Package_Manager';
   {$ifdef win64}
   cOpenSSLURL = 'http://packages.lazarus-ide.org/openssl-1.0.2j-x64_86-win64.zip';
@@ -84,7 +84,7 @@ resourcestring
   rsMainFrm_VSTText_RepositoryFileHash = 'Repository filehash';
   rsMainFrm_VSTText_RepositoryFileDate = 'Available since';
   rsMainFrm_VSTText_HomePageURL = 'Home page';
-  rsMainFrm_VSTText_DownloadURL = 'Update link';
+  rsMainFrm_VSTText_DownloadURL = 'Update link(external JSON)';
   rsMainFrm_VSTText_SVNURL = 'SVN';
   rsMainFrm_VSTText_Install0 = 'No';
   rsMainFrm_VSTText_Install1 = 'Yes';
@@ -261,6 +261,21 @@ resourcestring
   rsOptions_cbCheckForUpdates_Item5 = 'Never';
   rsOptions_lbLastUpdate_Caption = 'Last update: ';
   rsOptions_LastUpdate_Never = 'Never';
+  rsOptions_lbFilterFiles_Caption = 'Excluded file extensions';
+  rsOptions_lbFilterDirs_Caption = 'Excluded folders';
+  rsOptions_bAdd_Caption = 'Add';
+  rsOptions_bEdit_Caption = 'Edit';
+  rsOptions_bDelete_Caption = 'Delete';
+  rsOpitons_lbExcludeFiles_Hint = 'This files will be excluded from repository packages(see: "Create repository package")';
+  rsOpitons_lbExcludeFolders_Hint = 'This folders will be excluded from repository packages(see: "Create repository package")';
+  rsOptions_InputBox_Caption = 'Add new exclusion';
+  rsOptions_InputBox_Text0 = 'Type the extension name:';
+  rsOptions_InputBox_Text1 = 'Type the folder name:';
+  rsOptions_InputBox_Info0 = 'Please select a file extension!';
+  rsOptions_InputBox_Info1 = 'Please select a folder!';
+  rsOptions_InputBox_Conf0 = 'Delete selected extension("%s")?';
+  rsOptions_InputBox_Conf1 = 'Delete selected folder("%s")?';
+
 
   //packagelist form
   rsPackageListFrm_Caption0 = 'Installed package list';
@@ -285,7 +300,7 @@ resourcestring
   rsCreateRepositoryPackageFrm_lbFPCCompatibility_Caption = 'FPC compatibility:';
   rsCreateRepositoryPackageFrm_lbSupportedWidgetset_Caption = 'Supported widgetset:';
   rsCreateRepositoryPackageFrm_lbHomePageURL_Caption = 'Home page:';
-  rsCreateRepositoryPackageFrm_lbDownloadURL_Caption = 'Download link:';
+  rsCreateRepositoryPackageFrm_lbDownloadURL_Caption = 'Update link(external JSON):';
   rsCreateRepositoryPackageFrm_lbSVNURL_Caption = 'SVN';
   rsCreateRepositoryPackageFrm_SDDTitleSrc = 'Select package directory';
   rsCreateRepositoryPackageFrm_SDDTitleDst = 'Save repository package to...';

@@ -391,7 +391,10 @@ begin
   tbCleanUp.Enabled := (AEnable) and (SerializablePackages.Count > 0);
   tbCreate.Visible := Options.UserProfile = 1;
   if tbCreate.Visible then
+  begin
+    tbCreate.Left := tbOptions.Left - 10;
     tbCreate.Enabled := (AEnable);
+  end;
   tbOptions.Enabled := (AEnable);
   tbHelp.Enabled := (AEnable);
 end;
