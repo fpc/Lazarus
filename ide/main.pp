@@ -1334,6 +1334,7 @@ begin
   EditorOpts.Load;
 
   ExternalUserTools:=TExternalUserTools(EnvironmentOptions.ExternalToolMenuItems);
+  Assert(Assigned(ExternalUserTools), 'TMainIDE.LoadGlobalOptions: ExternalUserTools=Nil.');
   ExternalUserTools.LoadShortCuts(EditorOpts.KeyMap);
 
   MiscellaneousOptions := TMiscellaneousOptions.Create;

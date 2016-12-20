@@ -50,7 +50,6 @@ uses
   IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs,
   InputHistory, EditDefineTree, ProjectResources, MiscOptions, LazConf,
   EnvironmentOpts, TransferMacros, CompilerOptions,
-  ExtToolEditDlg{needed for environment options ExternalUserTools},
   ExtTools, etMakeMsgParser, etFPCMsgParser,
   Compiler, FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon,
   ModeMatrixOpts, BaseBuildManager, ApplicationBundle;

@@ -9,13 +9,35 @@
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
     </General>
-    <MacroValues Count="1">
-      <Macro1 Name="LCLWidgetType" Value="nogui"/>
-    </MacroValues>
-    <BuildModes Count="1">
-      <Item1 Name="default" Default="True"/>
+    <BuildModes Count="2">
+      <Item1 Name="Debug" Default="True"/>
+      <Item2 Name="Release">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <Target>
+            <Filename Value="../lazbuild"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="include;include/$(TargetOS)"/>
+            <OtherUnitFiles Value="../designer;../packager;../debugger;../ide;../components/synedit"/>
+            <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+          </SearchPaths>
+          <CodeGeneration>
+            <SmartLinkUnit Value="True"/>
+            <Optimizations>
+              <OptimizationLevel Value="3"/>
+            </Optimizations>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <GenerateDebugInfo Value="False"/>
+            </Debugging>
+            <LinkSmart Value="True"/>
+          </Linking>
+        </CompilerOptions>
+      </Item2>
       <SharedMatrixOptions Count="1">
-        <Item1 ID="037437114172" Modes="default" Type="IDEMacro" MacroName="LCLWidgetType" Value="nogui"/>
+        <Item1 ID="037437114172" Type="IDEMacro" MacroName="LCLWidgetType" Value="nogui"/>
       </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
@@ -30,7 +52,7 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="3">
       <Item1>
         <PackageName Value="DebuggerIntf"/>
       </Item1>
@@ -38,13 +60,10 @@
         <PackageName Value="CodeTools"/>
       </Item2>
       <Item3>
-        <PackageName Value="SynEdit"/>
-      </Item3>
-      <Item4>
         <PackageName Value="IDEIntf"/>
-      </Item4>
+      </Item3>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="5">
       <Unit0>
         <Filename Value="lazbuild.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -64,6 +83,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="IDECmdLine"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="../components/synedit/synregexpr.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="SynRegExpr"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -73,8 +97,30 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="include;include/$(TargetOS)"/>
-      <OtherUnitFiles Value="../designer;../packager;../debugger;../ide"/>
+      <OtherUnitFiles Value="../designer;../packager;../debugger;../ide;../components/synedit"/>
       <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <IncludeAssertionCode Value="True"/>
+      </SyntaxOptions>
+    </Parsing>
+    <CodeGeneration>
+      <Checks>
+        <IOChecks Value="True"/>
+        <RangeChecks Value="True"/>
+        <OverflowChecks Value="True"/>
+        <StackChecks Value="True"/>
+      </Checks>
+      <VerifyObjMethodCallValidity Value="True"/>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf2Set"/>
+        <UseHeaptrc Value="True"/>
+        <TrashVariables Value="True"/>
+        <UseExternalDbgSyms Value="True"/>
+      </Debugging>
+    </Linking>
   </CompilerOptions>
 </CONFIG>

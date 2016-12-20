@@ -31,7 +31,7 @@ uses
   Classes, SysUtils, math, CustApp,
   Interfaces, // this includes the NoGUI widgetset
   // LCL
-  LCLPlatformDef, {InterfaceBase,} LCLProc, Dialogs, Forms, Controls,
+  LCLPlatformDef, LCLProc, Controls, Dialogs, Forms,
   // codetools
   CodeCache, CodeToolManager, DefineTemplates, FileProcs,
   // IDEIntf
@@ -45,7 +45,9 @@ uses
   IDECmdLine, MiscOptions, Project, LazConf, PackageDefs,
   PackageLinks, PackageSystem, InterPkgConflictFiles, BuildLazDialog,
   BuildProfileManager, BuildManager, BaseBuildManager, ModeMatrixOpts;
-  
+  // Hack: The project refers directly to SynRegExpr in SynEdit directory
+  //  without pulling the whole package with it. Must be solved properly later.
+
 type
   TPkgAction = (
     lpaBuild, // build package, default
@@ -1303,10 +1305,8 @@ Var
   NeedArg: Boolean;
 
   Function FindLongOpt(S : String) : boolean;
-
   Var
     I : integer;
-
   begin
     If CaseSensitiveOptions then
       begin
