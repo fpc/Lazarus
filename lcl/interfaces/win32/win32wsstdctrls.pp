@@ -50,6 +50,7 @@ type
 
   TWin32WSCustomGroupBox = class(TWSCustomGroupBox)
   published
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign,
@@ -567,6 +568,14 @@ class procedure TWin32WSCustomGroupBox.SetBiDiMode(
   UseRightToLeftReading, UseRightToLeftScrollBar : Boolean);
 begin
   RecreateWnd(AWinControl);
+end;
+
+class procedure TWin32WSCustomGroupBox.SetText(const AWinControl: TWinControl;
+  const AText: string);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetText') then Exit;
+  TWin32WSWinControl.SetText(AWinControl, AText);
+  AWinControl.Invalidate;
 end;
 
 class procedure TWin32WSCustomGroupBox.GetPreferredSize(
