@@ -30,8 +30,9 @@ unit ChgEncodingDlg;
 interface
 
 uses
-  // RTL + FCL + LCL
-  Classes, SysUtils, AVL_Tree,
+  // RTL + FCL
+  Classes, SysUtils, AVL_Tree, RegExpr,
+  // LCL
   LCLProc, Forms, Controls, ExtCtrls, StdCtrls, ComCtrls, Buttons,
   // CodeTools
   CodeCache, CodeToolsStructs, CodeToolManager, FileProcs,
@@ -39,8 +40,6 @@ uses
   LConvEncoding, LazFileUtils, LazFileCache,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEHelpIntf,
-  // SynEdit
-  SynRegExpr,
   // IDE
   IDEProcs, PackageDefs, PackageSystem, Project, LazarusIDEStrConsts;
 

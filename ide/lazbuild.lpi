@@ -19,7 +19,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="include;include/$(TargetOS)"/>
-            <OtherUnitFiles Value="../designer;../packager;../debugger;../ide;../components/synedit"/>
+            <OtherUnitFiles Value="../designer;../packager;../debugger;../ide"/>
             <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -63,7 +63,7 @@
         <PackageName Value="IDEIntf"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="4">
       <Unit0>
         <Filename Value="lazbuild.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -83,11 +83,6 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="IDECmdLine"/>
       </Unit3>
-      <Unit4>
-        <Filename Value="../components/synedit/synregexpr.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="SynRegExpr"/>
-      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -97,7 +92,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="include;include/$(TargetOS)"/>
-      <OtherUnitFiles Value="../designer;../packager;../debugger;../ide;../components/synedit"/>
+      <OtherUnitFiles Value="../designer;../packager;../debugger;../ide"/>
       <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
     <Parsing>

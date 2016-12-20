@@ -35,13 +35,11 @@ unit PublishModule;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, RegExpr,
   // LCL
   LCLProc,
   // LazUtils
   LazFileUtils, Laz2_XMLCfg,
-  // SynEdit
-  SynRegExpr,
   // IDE
   IDEProcs;
 

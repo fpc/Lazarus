@@ -25,10 +25,15 @@ unit AddDirToPkgDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, ButtonPanel, EditBtn,
-  SynRegExpr, FileProcs, LazFileUtils,
+  Classes, SysUtils, RegExpr,
+  // LCL
+  Forms, Controls, Dialogs, StdCtrls, ButtonPanel, EditBtn,
+  // LazUtils
+  FileProcs, LazFileUtils,
+  // IdeIntf
+  IDEWindowIntf,
   // IDE
-  IDEWindowIntf, IDEProcs, LazarusIDEStrConsts, PackageDefs;
+  IDEProcs, LazarusIDEStrConsts, PackageDefs;
 
 type
 

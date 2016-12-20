@@ -26,8 +26,13 @@ unit SimpleIDE;
 interface
 
 uses
-  Classes, SysUtils, TextTools, SynRegExpr, FileProcs,
-  IDETextConverter;
+  Classes, SysUtils, RegExpr,
+  // LazUtils
+  LazFileUtils,
+  // Codetools
+  FileProcs,
+  // IdeIntf
+  TextTools, IDETextConverter;
 
 type
   { TLazyTextConverterToolClasses }

@@ -5,8 +5,13 @@ unit ReplaceFuncsUnit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, ButtonPanel, Grids, CheckLst, Menus, StdCtrls, SynRegExpr,
+  Classes, SysUtils, RegExpr,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  Buttons, ButtonPanel, Grids, CheckLst, Menus, StdCtrls,
+  // LazUtils
+  FileUtil,
+  // IDE, converter
   LazarusIDEStrConsts, ConverterTypes;
 
 type
