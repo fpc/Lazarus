@@ -1751,7 +1751,7 @@ begin
     FLinkClicked := False;
     FHoverColumn := -1;
     FHoverNode := nil;
-    OpenDocument(FLink);
+    OpenURL(FLink);
   end;
 end;
 
