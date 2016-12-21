@@ -108,7 +108,7 @@ type
   private
     function GetSelectedText(AListBox: TListBox; var AIndex: Integer): String;
   public
-    procedure SetupControls;
+    procedure SetupControls(const AActivePageIndex: Integer = 0);
   end;
 
 var
@@ -333,11 +333,11 @@ begin
     bOkClick(bOk);
 end;
 
-procedure TOptionsFrm.SetupControls;
+procedure TOptionsFrm.SetupControls(const AActivePageIndex: Integer = 0);
 begin
   Self.DoubleBuffered := True;
   Caption := rsOptions_FrmCaption;
-  pgOptions.ActivePageIndex := 0;
+  pgOptions.ActivePageIndex := AActivePageIndex;
   tsGeneral.Caption := rsOptions_tsGeneral_Caption;
   lbRemoteRepository.Caption := rsOptions_lbRemoteRepository_Caption;
   edRemoteRepository.Text := Options.RemoteRepository;

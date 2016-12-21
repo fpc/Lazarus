@@ -112,7 +112,6 @@ type
     procedure SetupMessage(const AMessage: String = '');
     procedure SetupControls;
     procedure GetPackageList;
-    procedure ShowOptions;
     procedure DoOnChecking(Sender: TObject; const AIsAllChecked: Boolean);
     procedure DoOnChecked(Sender: TObject);
     procedure DoOnJSONProgress(Sender: TObject);
@@ -126,6 +125,7 @@ type
     function UpdateP(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
     procedure TerminateUpdates;
   public
+    procedure ShowOptions(const AActivePageIndex: Integer = 0);
   end;
 
 var
@@ -356,11 +356,11 @@ begin
   VisualTree.UpdatePackageUStatus;
 end;
 
-procedure TMainFrm.ShowOptions;
+procedure TMainFrm.ShowOptions(const AActivePageIndex: Integer = 0);
 begin
   OptionsFrm := TOptionsFrm.Create(MainFrm);
   try
-    OptionsFrm.SetupControls;
+    OptionsFrm.SetupControls(AActivePageIndex);
     if OptionsFrm.ShowModal = mrOk then
     begin
       tbRefresh.Enabled := Options.RemoteRepository <> '';

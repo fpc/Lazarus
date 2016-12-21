@@ -58,9 +58,9 @@ object OptionsFrm: TOptionsFrm
     Height = 325
     Top = 0
     Width = 525
-    ActivePage = tsProfiles
+    ActivePage = tsGeneral
     Align = alClient
-    TabIndex = 3
+    TabIndex = 0
     TabOrder = 1
     object tsGeneral: TTabSheet
       Caption = 'General'

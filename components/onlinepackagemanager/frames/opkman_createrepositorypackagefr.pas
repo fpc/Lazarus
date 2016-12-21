@@ -40,6 +40,7 @@ type
     bCancel: TButton;
     bCreate: TButton;
     Bevel1: TBevel;
+    bOptions: TButton;
     cbOpen: TCheckBox;
     edCategories: TEdit;
     edPackageDir: TDirectoryEdit;
@@ -75,9 +76,9 @@ type
     SDD: TSelectDirectoryDialog;
     spCategories: TSpeedButton;
     spMain: TSplitter;
-    spMain1: TSplitter;
     procedure bCancelClick(Sender: TObject);
     procedure bCreateClick(Sender: TObject);
+    procedure bOptionsClick(Sender: TObject);
     procedure edPackageDirAcceptDirectory(Sender: TObject; var Value: String);
     procedure edPackageDirButtonClick(Sender: TObject);
     procedure pnBrowseResize(Sender: TObject);
@@ -119,7 +120,8 @@ type
   end;
 
 implementation
-uses opkman_const, opkman_common, opkman_options, opkman_categoriesfrm;
+uses opkman_const, opkman_common, opkman_options, opkman_categoriesfrm,
+     opkman_mainfrm;
 {$R *.lfm}
 
 { TCreateRepositoryPackagefr }
@@ -522,6 +524,11 @@ begin
   end;
 end;
 
+procedure TCreateRepositoryPackagefr.bOptionsClick(Sender: TObject);
+begin
+  MainFrm.ShowOptions(3);
+end;
+
 procedure TCreateRepositoryPackagefr.bCancelClick(Sender: TObject);
 begin
   if Assigned(FPackageZipper) then
@@ -830,7 +837,7 @@ begin
         Node := FVSTPackages.GetNextSibling(Node);
       end;
     end;
-
+    ShowHideControls(2);
     if SerializablePackages.Count > 0 then
     begin
       JSON := '';
@@ -853,7 +860,6 @@ begin
        MessageDlgEx(rsCreateRepositoryPackageFrm_Error2 + sLineBreak + '"' + ErrMsg + '"', mtError, [mbOk], TForm(Self.Parent));
       end;
     end;
-    ShowHideControls(2);
   finally
     SerializablePackages.Free;
   end;

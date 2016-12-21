@@ -41,7 +41,7 @@ const
   cLocalRepositoryConfig = 'config';
   cLocalRepositoryConfigFile = 'options.xml';
   cLocalRepositoryUpdatesFile = 'updates.xml';
-  cExcludedFilesDef = '*.a,*.o,*.ppu,*.compiled,*.bak,*.or,*.rsj,*.~ ';
+  cExcludedFilesDef = '*.,*.a,*.o,*.ppu,*.compiled,*.bak,*.or,*.rsj,*.~';
   cExcludedFoldersDef = 'lib,backup';
   cHelpPage = 'http://wiki.freepascal.org/Online_Package_Manager';
   {$ifdef win64}
@@ -84,7 +84,7 @@ resourcestring
   rsMainFrm_VSTText_RepositoryFileHash = 'Repository filehash';
   rsMainFrm_VSTText_RepositoryFileDate = 'Available since';
   rsMainFrm_VSTText_HomePageURL = 'Home page';
-  rsMainFrm_VSTText_DownloadURL = 'Update link(external JSON)';
+  rsMainFrm_VSTText_DownloadURL = 'Update link(JSON)';
   rsMainFrm_VSTText_SVNURL = 'SVN';
   rsMainFrm_VSTText_Install0 = 'No';
   rsMainFrm_VSTText_Install1 = 'Yes';
@@ -261,8 +261,8 @@ resourcestring
   rsOptions_cbCheckForUpdates_Item5 = 'Never';
   rsOptions_lbLastUpdate_Caption = 'Last update: ';
   rsOptions_LastUpdate_Never = 'Never';
-  rsOptions_lbFilterFiles_Caption = 'Excluded file extensions';
-  rsOptions_lbFilterDirs_Caption = 'Excluded folders';
+  rsOptions_lbFilterFiles_Caption = 'Excluded files(packages)';
+  rsOptions_lbFilterDirs_Caption = 'Excluded folders(packages)';
   rsOptions_bAdd_Caption = 'Add';
   rsOptions_bEdit_Caption = 'Edit';
   rsOptions_bDelete_Caption = 'Delete';
@@ -300,7 +300,7 @@ resourcestring
   rsCreateRepositoryPackageFrm_lbFPCCompatibility_Caption = 'FPC compatibility:';
   rsCreateRepositoryPackageFrm_lbSupportedWidgetset_Caption = 'Supported widgetset:';
   rsCreateRepositoryPackageFrm_lbHomePageURL_Caption = 'Home page:';
-  rsCreateRepositoryPackageFrm_lbDownloadURL_Caption = 'Update link(external JSON):';
+  rsCreateRepositoryPackageFrm_lbDownloadURL_Caption = 'Update link(JSON):';
   rsCreateRepositoryPackageFrm_lbSVNURL_Caption = 'SVN';
   rsCreateRepositoryPackageFrm_SDDTitleSrc = 'Select package directory';
   rsCreateRepositoryPackageFrm_SDDTitleDst = 'Save repository package to...';

@@ -121,6 +121,7 @@ procedure FindAllFilesEx(const ADirName: String; AFileList: TStrings);
 function FixProtocol(const AURL: String): String;
 
 implementation
+uses opkman_options;
 
 function MessageDlgEx(const AMsg: string; ADlgType: TMsgDlgType;
   AButtons: TMsgDlgButtons; AParent: TForm): TModalResult;
@@ -299,6 +300,36 @@ begin
 end;
 
 procedure FindAllFilesEx(const ADirName: String; AFileList: TStrings);
+var
+  SLExcludedFiles: TStringList;
+  SLExcludedFolders: TStringList;
+
+  function IsAllowed(const AName: String; const AIsDir: Boolean): Boolean;
+  var
+    I: Integer;
+  begin
+    Result := True;
+    if not AIsDir then
+    begin
+      for I := 0 to SLExcludedFiles.Count - 1 do
+      begin
+        if UpperCase(SLExcludedFiles.Strings[I]) = UpperCase(ExtractFileExt(AName)) then
+        begin
+          Result := False;
+          Break;
+        end;
+      end;
+    end
+    else
+    begin
+      for I := 0 to SLExcludedFolders.Count - 1 do
+        if UpperCase(SLExcludedFolders.Strings[I]) = UpperCase(AName) then
+        begin
+          Result := False;
+          Break;
+        end;
+    end;
+  end;
 
   procedure FindFiles(const ADirName: String);
   var
@@ -310,7 +341,8 @@ procedure FindAllFilesEx(const ADirName: String; AFileList: TStrings);
     begin
       try
         repeat
-           AFileList.Add(Path + SR.Name);
+           if IsAllowed(SR.Name, False) then
+             AFileList.Add(Path + SR.Name);
         until FindNext(SR) <> 0;
       finally
         FindClose(SR);
@@ -322,7 +354,8 @@ procedure FindAllFilesEx(const ADirName: String; AFileList: TStrings);
       try
         repeat
           if ((SR.Attr and faDirectory) <> 0) and (SR.Name <> '.') and (SR.Name <> '..') then
-            FindFiles(Path + SR.Name);
+            if IsAllowed(SR.Name, True) then
+              FindFiles(Path + SR.Name);
         until FindNext(SR) <> 0;
       finally
         FindClose(SR);
@@ -330,8 +363,40 @@ procedure FindAllFilesEx(const ADirName: String; AFileList: TStrings);
     end;
   end;
 
+var
+  I, P: Integer;
+  Ext: String;
 begin
-  FindFiles(ADirName);
+  SLExcludedFiles := TStringList.Create;
+  try
+    SLExcludedFiles.Delimiter := ',';
+    SLExcludedFiles.StrictDelimiter := True;
+    SLExcludedFiles.DelimitedText := Options.ExcludedFiles;
+    for I := 0 to SLExcludedFiles.Count - 1 do
+    begin
+      P := Pos('*.', SLExcludedFiles.Strings[I]);
+      if P > 0 then
+      begin
+        Ext := Copy(SLExcludedFiles.Strings[I], 2, Length(SLExcludedFiles.Strings[I]));
+        if Trim(Ext) = '.' then
+          Ext := '';
+      end
+      else
+        Ext := '.' + SLExcludedFiles.Strings[I];
+      SLExcludedFiles.Strings[I] := Ext;
+    end;
+    SLExcludedFolders := TStringList.Create;
+    try
+      SLExcludedFolders.Delimiter := ',';
+      SLExcludedFolders.StrictDelimiter := True;
+      SLExcludedFolders.DelimitedText := Options.ExcludedFolders;
+      FindFiles(ADirName);
+    finally
+      SLExcludedFolders.Free;
+    end;
+  finally
+    SLExcludedFiles.Free;
+  end;
 end;
 
 function FixProtocol(const AURL: String): String;
