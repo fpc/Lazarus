@@ -14,7 +14,7 @@ uses
   Laz_XMLStreaming, Laz_XMLWrite, LazClasses, lazCollections, 
   LazConfigStorage, LazDbgLog, lazfglhash, LazFileCache, LazFileUtils, 
   LazFreeType, LazFreeTypeFontCollection, LazFreeTypeFPImageDrawer, 
-  LazListClasses, LazLogger, LazLoggerBase, LazLoggerDummy, 
+  LazLinkedList, LazListClasses, LazLogger, LazLoggerBase, LazLoggerDummy, 
   LazLoggerProfiling, LazMethodList, LazUnicode, LazUTF16, LazUTF8, 
   LazUTF8Classes, LazUTF8SysUtils, LazUtilities, LazUtilsStrConsts, 
   LConvEncoding, lcsvutils, LookupStringList, Maps, Masks, PasWString, 

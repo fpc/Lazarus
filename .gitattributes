@@ -3057,6 +3057,7 @@ components/lazutils/lazfileutils.pas svneol=native#text/pascal
 components/lazutils/lazfreetype.pas svneol=native#text/pascal
 components/lazutils/lazfreetypefontcollection.pas svneol=native#text/plain
 components/lazutils/lazfreetypefpimagedrawer.pas svneol=native#text/pascal
+components/lazutils/lazlinkedlist.pas svneol=native#text/pascal
 components/lazutils/lazlistclasses.pas svneol=native#text/plain
 components/lazutils/lazlogger.pas svneol=native#text/pascal
 components/lazutils/lazloggerbase.pas svneol=native#text/pascal
@@ -7909,7 +7910,6 @@ lcl/lazdialogs.pas svneol=native#text/plain
 lcl/lazfreetypeintfdrawer.pas svneol=native#text/plain
 lcl/lazhelphtml.pas svneol=native#text/pascal
 lcl/lazhelpintf.pas svneol=native#text/pascal
-lcl/lazlinkedlist.pas svneol=native#text/pascal
 lcl/lazregions.pas svneol=native#text/pascal
 lcl/lcl_calc_images.res -text
 lcl/lcl_dbgrid_images.res -text

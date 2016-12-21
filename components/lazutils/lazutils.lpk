@@ -16,7 +16,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="90">
+    <Files Count="91">
       <Item1>
         <Filename Value="LazLoggerImpl.inc"/>
         <Type Value="Include"/>
@@ -174,209 +174,213 @@
         <UnitName Value="LazFreeTypeFPImageDrawer"/>
       </Item39>
       <Item40>
-        <Filename Value="lazlistclasses.pas"/>
-        <UnitName Value="LazListClasses"/>
+        <Filename Value="lazlinkedlist.pas"/>
+        <UnitName Value="LazLinkedList"/>
       </Item40>
       <Item41>
-        <Filename Value="lazlogger.pas"/>
-        <UnitName Value="LazLogger"/>
+        <Filename Value="lazlistclasses.pas"/>
+        <UnitName Value="LazListClasses"/>
       </Item41>
       <Item42>
-        <Filename Value="lazloggerbase.pas"/>
-        <UnitName Value="LazLoggerBase"/>
+        <Filename Value="lazlogger.pas"/>
+        <UnitName Value="LazLogger"/>
       </Item42>
       <Item43>
-        <Filename Value="lazloggerdummy.pas"/>
-        <UnitName Value="LazLoggerDummy"/>
+        <Filename Value="lazloggerbase.pas"/>
+        <UnitName Value="LazLoggerBase"/>
       </Item43>
       <Item44>
-        <Filename Value="lazloggerprofiling.pas"/>
-        <UnitName Value="LazLoggerProfiling"/>
+        <Filename Value="lazloggerdummy.pas"/>
+        <UnitName Value="LazLoggerDummy"/>
       </Item44>
       <Item45>
-        <Filename Value="lazmethodlist.pas"/>
-        <UnitName Value="LazMethodList"/>
+        <Filename Value="lazloggerprofiling.pas"/>
+        <UnitName Value="LazLoggerProfiling"/>
       </Item45>
       <Item46>
-        <Filename Value="lazunicode.pas"/>
-        <UnitName Value="LazUnicode"/>
+        <Filename Value="lazmethodlist.pas"/>
+        <UnitName Value="LazMethodList"/>
       </Item46>
       <Item47>
-        <Filename Value="lazutf16.pas"/>
-        <UnitName Value="LazUTF16"/>
+        <Filename Value="lazunicode.pas"/>
+        <UnitName Value="LazUnicode"/>
       </Item47>
       <Item48>
-        <Filename Value="lazutf8.pas"/>
-        <UnitName Value="LazUTF8"/>
+        <Filename Value="lazutf16.pas"/>
+        <UnitName Value="LazUTF16"/>
       </Item48>
       <Item49>
-        <Filename Value="lazutf8classes.pas"/>
-        <UnitName Value="LazUTF8Classes"/>
+        <Filename Value="lazutf8.pas"/>
+        <UnitName Value="LazUTF8"/>
       </Item49>
       <Item50>
-        <Filename Value="lazutf8sysutils.pas"/>
-        <UnitName Value="LazUTF8SysUtils"/>
+        <Filename Value="lazutf8classes.pas"/>
+        <UnitName Value="LazUTF8Classes"/>
       </Item50>
       <Item51>
-        <Filename Value="lazutilities.pas"/>
-        <UnitName Value="LazUtilities"/>
+        <Filename Value="lazutf8sysutils.pas"/>
+        <UnitName Value="LazUTF8SysUtils"/>
       </Item51>
       <Item52>
-        <Filename Value="lazutils_defines.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="lazutilities.pas"/>
+        <UnitName Value="LazUtilities"/>
       </Item52>
       <Item53>
-        <Filename Value="lazutilsstrconsts.pas"/>
-        <UnitName Value="LazUtilsStrConsts"/>
+        <Filename Value="lazutils_defines.inc"/>
+        <Type Value="Include"/>
       </Item53>
       <Item54>
-        <Filename Value="lconvencoding.pas"/>
-        <UnitName Value="LConvEncoding"/>
+        <Filename Value="lazutilsstrconsts.pas"/>
+        <UnitName Value="LazUtilsStrConsts"/>
       </Item54>
       <Item55>
-        <Filename Value="lcsvutils.pas"/>
-        <UnitName Value="lcsvutils"/>
+        <Filename Value="lconvencoding.pas"/>
+        <UnitName Value="LConvEncoding"/>
       </Item55>
       <Item56>
-        <Filename Value="lookupstringlist.pas"/>
-        <UnitName Value="LookupStringList"/>
+        <Filename Value="lcsvutils.pas"/>
+        <UnitName Value="lcsvutils"/>
       </Item56>
       <Item57>
-        <Filename Value="maps.pp"/>
-        <UnitName Value="Maps"/>
+        <Filename Value="lookupstringlist.pas"/>
+        <UnitName Value="LookupStringList"/>
       </Item57>
       <Item58>
-        <Filename Value="masks.pas"/>
-        <UnitName Value="Masks"/>
+        <Filename Value="maps.pp"/>
+        <UnitName Value="Maps"/>
       </Item58>
       <Item59>
-        <Filename Value="paswstring.pas"/>
-        <UnitName Value="PasWString"/>
+        <Filename Value="masks.pas"/>
+        <UnitName Value="Masks"/>
       </Item59>
       <Item60>
-        <Filename Value="stringhashlist.pas"/>
-        <UnitName Value="StringHashList"/>
+        <Filename Value="paswstring.pas"/>
+        <UnitName Value="PasWString"/>
       </Item60>
       <Item61>
-        <Filename Value="textstrings.pas"/>
-        <UnitName Value="TextStrings"/>
+        <Filename Value="stringhashlist.pas"/>
+        <UnitName Value="StringHashList"/>
       </Item61>
       <Item62>
-        <Filename Value="translations.pas"/>
-        <UnitName Value="Translations"/>
+        <Filename Value="textstrings.pas"/>
+        <UnitName Value="TextStrings"/>
       </Item62>
       <Item63>
-        <Filename Value="ttcache.pas"/>
-        <UnitName Value="TTCache"/>
+        <Filename Value="translations.pas"/>
+        <UnitName Value="Translations"/>
       </Item63>
       <Item64>
-        <Filename Value="ttcalc.pas"/>
-        <UnitName Value="TTCalc"/>
+        <Filename Value="ttcache.pas"/>
+        <UnitName Value="TTCache"/>
       </Item64>
       <Item65>
-        <Filename Value="ttcalc1.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="ttcalc.pas"/>
+        <UnitName Value="TTCalc"/>
       </Item65>
       <Item66>
-        <Filename Value="ttcalc2.inc"/>
+        <Filename Value="ttcalc1.inc"/>
         <Type Value="Include"/>
       </Item66>
       <Item67>
-        <Filename Value="ttcalc3.inc"/>
+        <Filename Value="ttcalc2.inc"/>
         <Type Value="Include"/>
       </Item67>
       <Item68>
-        <Filename Value="ttcalc4.inc"/>
+        <Filename Value="ttcalc3.inc"/>
         <Type Value="Include"/>
       </Item68>
       <Item69>
-        <Filename Value="ttcmap.pas"/>
-        <UnitName Value="TTCMap"/>
+        <Filename Value="ttcalc4.inc"/>
+        <Type Value="Include"/>
       </Item69>
       <Item70>
-        <Filename Value="ttconfig.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="ttcmap.pas"/>
+        <UnitName Value="TTCMap"/>
       </Item70>
       <Item71>
-        <Filename Value="ttdebug.pas"/>
-        <UnitName Value="TTDebug"/>
+        <Filename Value="ttconfig.inc"/>
+        <Type Value="Include"/>
       </Item71>
       <Item72>
-        <Filename Value="tterror.pas"/>
-        <UnitName Value="TTError"/>
+        <Filename Value="ttdebug.pas"/>
+        <UnitName Value="TTDebug"/>
       </Item72>
       <Item73>
-        <Filename Value="ttfile.pas"/>
-        <UnitName Value="TTFile"/>
+        <Filename Value="tterror.pas"/>
+        <UnitName Value="TTError"/>
       </Item73>
       <Item74>
-        <Filename Value="ttgload.pas"/>
-        <UnitName Value="TTGLoad"/>
+        <Filename Value="ttfile.pas"/>
+        <UnitName Value="TTFile"/>
       </Item74>
       <Item75>
-        <Filename Value="ttinterp.pas"/>
-        <UnitName Value="TTInterp"/>
+        <Filename Value="ttgload.pas"/>
+        <UnitName Value="TTGLoad"/>
       </Item75>
       <Item76>
-        <Filename Value="ttload.pas"/>
-        <UnitName Value="TTLoad"/>
+        <Filename Value="ttinterp.pas"/>
+        <UnitName Value="TTInterp"/>
       </Item76>
       <Item77>
-        <Filename Value="ttmemory.pas"/>
-        <UnitName Value="TTMemory"/>
+        <Filename Value="ttload.pas"/>
+        <UnitName Value="TTLoad"/>
       </Item77>
       <Item78>
-        <Filename Value="ttobjs.pas"/>
-        <UnitName Value="TTObjs"/>
+        <Filename Value="ttmemory.pas"/>
+        <UnitName Value="TTMemory"/>
       </Item78>
       <Item79>
-        <Filename Value="ttprofile.pas"/>
-        <UnitName Value="TTProfile"/>
+        <Filename Value="ttobjs.pas"/>
+        <UnitName Value="TTObjs"/>
       </Item79>
       <Item80>
-        <Filename Value="ttraster.pas"/>
-        <UnitName Value="TTRASTER"/>
+        <Filename Value="ttprofile.pas"/>
+        <UnitName Value="TTProfile"/>
       </Item80>
       <Item81>
-        <Filename Value="ttraster_sweep.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="ttraster.pas"/>
+        <UnitName Value="TTRASTER"/>
       </Item81>
       <Item82>
-        <Filename Value="tttables.pas"/>
-        <UnitName Value="TTTables"/>
+        <Filename Value="ttraster_sweep.inc"/>
+        <Type Value="Include"/>
       </Item82>
       <Item83>
-        <Filename Value="tttypes.pas"/>
-        <UnitName Value="TTTypes"/>
+        <Filename Value="tttables.pas"/>
+        <UnitName Value="TTTables"/>
       </Item83>
       <Item84>
-        <Filename Value="unixfileutil.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="tttypes.pas"/>
+        <UnitName Value="TTTypes"/>
       </Item84>
       <Item85>
-        <Filename Value="unixlazfileutils.inc"/>
+        <Filename Value="unixfileutil.inc"/>
         <Type Value="Include"/>
       </Item85>
       <Item86>
-        <Filename Value="unixlazutf8.inc"/>
+        <Filename Value="unixlazfileutils.inc"/>
         <Type Value="Include"/>
       </Item86>
       <Item87>
-        <Filename Value="utf8process.pp"/>
-        <UnitName Value="UTF8Process"/>
+        <Filename Value="unixlazutf8.inc"/>
+        <Type Value="Include"/>
       </Item87>
       <Item88>
-        <Filename Value="winfileutil.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="utf8process.pp"/>
+        <UnitName Value="UTF8Process"/>
       </Item88>
       <Item89>
-        <Filename Value="winlazfileutils.inc"/>
+        <Filename Value="winfileutil.inc"/>
         <Type Value="Include"/>
       </Item89>
       <Item90>
-        <Filename Value="winlazutf8.inc"/>
+        <Filename Value="winlazfileutils.inc"/>
         <Type Value="Include"/>
       </Item90>
+      <Item91>
+        <Filename Value="winlazutf8.inc"/>
+        <Type Value="Include"/>
+      </Item91>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>

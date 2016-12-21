@@ -78,7 +78,6 @@ begin
     t.Dependencies.AddUnit('intfgraphics');
     t.Dependencies.AddUnit('lazhelphtml');
     t.Dependencies.AddUnit('lazhelpintf');
-    t.Dependencies.AddUnit('lazlinkedlist');
     t.Dependencies.AddUnit('lclclasses');
     t.Dependencies.AddUnit('lclintf');
     t.Dependencies.AddUnit('lclmemmanager');
@@ -201,7 +200,6 @@ begin
     T:=P.Targets.AddUnit('intfgraphics.pas');
     T:=P.Targets.AddUnit('lazhelphtml.pas');
     T:=P.Targets.AddUnit('lazhelpintf.pas');
-    T:=P.Targets.AddUnit('lazlinkedlist.pas');
     T:=P.Targets.AddUnit('lclclasses.pp');
     T:=P.Targets.AddUnit('lclintf.pas');
     T:=P.Targets.AddUnit('lclmemmanager.pas');
