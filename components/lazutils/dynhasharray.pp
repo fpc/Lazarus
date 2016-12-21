@@ -1,13 +1,13 @@
 {
-  Author: Mattias Gaertner
-
  *****************************************************************************
-  This file is part of the Lazarus Component Library (LCL)
+  This file is part of LazUtils.
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
  *****************************************************************************
  
+  Author: Mattias Gaertner
+
   Abstract:
     This unit defines TDynHashArray, which is very similar to a TList, since
     it also stores pointer/objects.
