@@ -5,8 +5,8 @@ unit TestWatchUtils;
 interface
 
 uses
-  Classes, SysUtils, TestBase, LazLoggerBase, DbgIntfBaseTypes, DbgIntfDebuggerBase,
-  SynRegExpr;
+  Classes, SysUtils, RegExpr, TestBase, LazLoggerBase,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase;
 
 type
 

@@ -117,7 +117,6 @@ begin
     t.Dependencies.AddUnit('synplugintemplateedit');
     t.Dependencies.AddUnit('lazsynedittext');
     t.Dependencies.AddUnit('lazsyntextarea');
-    t.Dependencies.AddUnit('synregexpr');
     t.Dependencies.AddUnit('syntextdrawer');
     t.Dependencies.AddUnit('syneditmarkupguttermark');
     t.Dependencies.AddUnit('synhighlighterbat');
@@ -198,7 +197,6 @@ begin
     T:=P.Targets.AddUnit('synplugintemplateedit.pp');
     T:=P.Targets.AddUnit('lazsynedittext.pas');
     T:=P.Targets.AddUnit('lazsyntextarea.pp');
-    T:=P.Targets.AddUnit('synregexpr.pas');
     T:=P.Targets.AddUnit('syntextdrawer.pp');
     T:=P.Targets.AddUnit('syneditmarkupguttermark.pp');
     T:=P.Targets.AddUnit('synhighlighterbat.pas');

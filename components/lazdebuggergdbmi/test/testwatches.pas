@@ -5,8 +5,9 @@ unit TestWatches;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry, TestGDBMIControl, DbgIntfBaseTypes,
-  DbgIntfDebuggerBase, TestBase, GDBMIDebugger, LCLProc, SynRegExpr, TestWatchUtils;
+  Classes, SysUtils, fpcunit, testutils, testregistry, RegExpr,
+  TestGDBMIControl, DbgIntfBaseTypes,
+  DbgIntfDebuggerBase, TestBase, GDBMIDebugger, LCLProc, TestWatchUtils;
 
 const
   BREAK_LINE_FOOFUNC_NEST  = 206;

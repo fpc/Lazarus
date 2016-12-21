@@ -3,7 +3,7 @@ program testregexpr;
 {$mode objfpc}{$H+}
 
 uses
-  SynRegExpr;
+  RegExpr;
 
 type
    tregexprflag = (
@@ -63,7 +63,7 @@ procedure do_error(i : longint);
   end;
 
 begin
-   writeln ('*** Testing library SynRegExpr ***');
+   writeln ('*** Testing library RegExpr ***');
 
    { basic tests }
 

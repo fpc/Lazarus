@@ -37,7 +37,7 @@ Alternatively, the contents of these files may be used under the terms of the GN
 If you wish to allow use of your version of these files only under the terms of the GPL and not to allow others to use your version of this file under the MPL, indicate your decision by deleting the provisions above and replace them with the notice and other provisions required by the GPL. If you do not delete the provisions above, a recipient may use your version of this file under either the MPL or the GPL.
 "/>
     <Version Major="1"/>
-    <Files Count="84">
+    <Files Count="83">
       <Item1>
         <Filename Value="synbeautifier.pas"/>
         <UnitName Value="SynBeautifier"/>
@@ -325,58 +325,54 @@ If you wish to allow use of your version of these files only under the terms of 
         <UnitName Value="LazSynTextArea"/>
       </Item71>
       <Item72>
-        <Filename Value="synregexpr.pas"/>
-        <UnitName Value="SynRegExpr"/>
-      </Item72>
-      <Item73>
         <Filename Value="syntextdrawer.pp"/>
         <UnitName Value="SynTextDrawer"/>
-      </Item73>
-      <Item74>
+      </Item72>
+      <Item73>
         <Filename Value="syneditmarkupguttermark.pp"/>
         <UnitName Value="SynEditMarkupGutterMark"/>
-      </Item74>
-      <Item75>
+      </Item73>
+      <Item74>
         <Filename Value="synhighlighterbat.pas"/>
         <UnitName Value="SynHighlighterBat"/>
-      </Item75>
-      <Item76>
+      </Item74>
+      <Item75>
         <Filename Value="synhighlighterini.pas"/>
         <UnitName Value="SynHighlighterIni"/>
-      </Item76>
-      <Item77>
+      </Item75>
+      <Item76>
         <Filename Value="syneditmarkupspecialchar.pp"/>
         <UnitName Value="SynEditMarkupSpecialChar"/>
-      </Item77>
-      <Item78>
+      </Item76>
+      <Item77>
         <Filename Value="allsynedit.pas"/>
         <Type Value="Main Unit"/>
         <UnitName Value="allsynedit"/>
-      </Item78>
-      <Item79>
+      </Item77>
+      <Item78>
         <Filename Value="synedittextdoublewidthchars.pas"/>
         <UnitName Value="SynEditTextDoubleWidthChars"/>
-      </Item79>
-      <Item80>
+      </Item78>
+      <Item79>
         <Filename Value="synedittextsystemcharwidth.pas"/>
         <UnitName Value="synedittextsystemcharwidth"/>
-      </Item80>
-      <Item81>
+      </Item79>
+      <Item80>
         <Filename Value="syneditmarkupifdef.pp"/>
         <UnitName Value="syneditmarkupifdef"/>
-      </Item81>
-      <Item82>
+      </Item80>
+      <Item81>
         <Filename Value="synpluginmulticaret.pp"/>
         <UnitName Value="SynPluginMultiCaret"/>
-      </Item82>
-      <Item83>
+      </Item81>
+      <Item82>
         <Filename Value="synhighlighterpike.pas"/>
         <UnitName Value="synhighlighterpike"/>
-      </Item83>
-      <Item84>
+      </Item82>
+      <Item83>
         <Filename Value="syneditmarkupfoldcoloring.pas"/>
         <UnitName Value="SynEditMarkupFoldColoring"/>
-      </Item84>
+      </Item83>
     </Files>
     <LazDoc Paths="docs\xml"/>
     <i18n>

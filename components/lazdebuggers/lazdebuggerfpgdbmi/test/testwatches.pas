@@ -5,9 +5,9 @@ unit TestWatches;
 interface
 
 uses
-  Classes, SysUtils, strutils, fpcunit, testutils, testregistry, TestGDBMIControl,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, TestBase, FpGdbmiDebugger, LCLProc, SynRegExpr,
-  TestWatchUtils, GDBMIDebugger, FpErrorMessages;
+  Classes, SysUtils, strutils, fpcunit, testutils, testregistry, RegExpr,
+  TestGDBMIControl, DbgIntfBaseTypes, DbgIntfDebuggerBase, TestBase, FpGdbmiDebugger,
+  LCLProc, TestWatchUtils, GDBMIDebugger, FpErrorMessages;
 
 const
   BREAK_COUNT_TestWatchesUnitSimple = 17;

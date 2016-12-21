@@ -40,9 +40,8 @@ unit SynEditRegexSearch;
 interface
 
 uses
-  Classes,
+  Classes, RegExpr,
   SynEditTypes,
-  SynRegExpr,
   SynEditMiscClasses;
 
 type

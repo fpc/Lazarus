@@ -42,8 +42,8 @@ unit SynEditSearch;
 interface
 
 uses
-  Classes, SysUtils,
-  LCLIntf, LCLType, LCLProc, LazUTF8, SynRegExpr, SynEditMiscProcs, SynEditTypes;
+  Classes, SysUtils, RegExpr,
+  LCLIntf, LCLType, LCLProc, LazUTF8, SynEditMiscProcs, SynEditTypes;
 
 procedure MakeCompTable;
 

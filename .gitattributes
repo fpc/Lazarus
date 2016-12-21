@@ -4153,7 +4153,6 @@ components/synedit/synpluginmulticaret.pp svneol=native#text/plain
 components/synedit/synpluginsyncroedit.pp svneol=native#text/pascal
 components/synedit/synpluginsyncronizededitbase.pp svneol=native#text/pascal
 components/synedit/synplugintemplateedit.pp svneol=native#text/pascal
-components/synedit/synregexpr.pas svneol=native#text/pascal
 components/synedit/syntextdrawer.pp svneol=native#text/pascal
 components/synedit/test/SynTest.lpi svneol=native#text/plain
 components/synedit/test/SynTest.lpr svneol=native#text/pascal

@@ -298,7 +298,6 @@ begin
   fOmitProjUnits['SynHighlighterMulti']:='SynEdit';
   fOmitProjUnits['SynHighlighterPas']  :='SynEdit';
   fOmitProjUnits['SynTextDrawer']      :='SynEdit';
-  fOmitProjUnits['SynRegExpr']         :='SynEdit';
 end;
 
 destructor TConvertSettings.Destroy;
