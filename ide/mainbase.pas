@@ -322,7 +322,7 @@ var
       AMenuItem := Items[CurIndex] as TBuildModeMenuItem
     else
     begin
-      AMenuItem := TBuildModeMenuItem.Create(DropdownMenu);
+      AMenuItem := TBuildModeMenuItem.Create(Self);
       AMenuItem.Name := Name + 'Mode' + IntToStr(CurIndex);
       Items.Add(AMenuItem);
     end;
