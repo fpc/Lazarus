@@ -1109,7 +1109,7 @@ end;
 procedure TVisualTree.UpdatePackageUStatus;
 var
   Node: PVirtualNode;
-  Data: PData;
+  Data, ParentData: PData;
   Package: TPackage;
   PackageFile: TPackageFile;
 begin
@@ -1146,14 +1146,15 @@ begin
     if Data^.DataType in [3..19] then
     begin
       FVST.IsDisabled[Node] := FVST.IsDisabled[Node^.Parent];
+      ParentData := FVST.GetNodeData(Node^.Parent);
       if (Data^.DataType = 3) or (Data^.DataType = 9) then
       begin
         case Data^.DataType of
-          3: if Data^.InstalledVersion <> '' then
+          3: if ParentData^.InstalledVersion <> '' then
                Data^.Description := PackageFile.InstalledFileDescription
              else
                Data^.Description := PackageFile.Description;
-          9: if Data^.InstalledVersion <> '' then
+          9: if ParentData^.InstalledVersion <> '' then
                Data^.License := PackageFile.InstalledFileLincese
              else
                Data^.License := PackageFile.License;
