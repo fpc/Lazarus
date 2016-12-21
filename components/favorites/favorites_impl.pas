@@ -168,11 +168,10 @@ end;
 procedure TOpenFileFavToolButton.RefreshMenu(Sender: TObject);
 var
   xM, xSep: TMenuItem;
-  xFavoriteFile: string;
+  xFavoriteFile, xExt: string;
   xMI, xAddToFav: TFileNameMenuItem;
   xProj: TLazProject;
   xMIndex: Integer;
-  xExt: RawByteString;
 begin
   if Assigned(FOrigOnPopup) then
     FOrigOnPopup(Sender);
