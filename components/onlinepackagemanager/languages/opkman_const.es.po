@@ -45,11 +45,6 @@ msgctxt "opkman_const.rscreatejsonforupdatesfrm_bcreate_caption"
 msgid "Create"
 msgstr "Crear"
 
-#: opkman_const.rscreatejsonforupdatesfrm_bhelp_caption
-msgctxt "opkman_const.rscreatejsonforupdatesfrm_bhelp_caption"
-msgid "Help"
-msgstr ""
-
 #: opkman_const.rscreatejsonforupdatesfrm_btest_caption
 msgid "Test"
 msgstr ""
@@ -57,6 +52,12 @@ msgstr ""
 #: opkman_const.rscreatejsonforupdatesfrm_caption
 msgid "Create update JSON for package:"
 msgstr ""
+
+#: opkman_const.rscreatejsonforupdatesfrm_cbopen_caption
+#, fuzzy
+msgctxt "opkman_const.rscreatejsonforupdatesfrm_cbopen_caption"
+msgid "After create open containing folder"
+msgstr "Luego de crear abrir carpeta contenedora"
 
 #: opkman_const.rscreatejsonforupdatesfrm_column0_text
 msgid "PackageFileName"
@@ -76,16 +77,20 @@ msgstr ""
 msgid "Internal version"
 msgstr ""
 
+#: opkman_const.rscreatejsonforupdatesfrm_error1
+msgid "Cannot create JSON! Error message:"
+msgstr ""
+
 #: opkman_const.rscreatejsonforupdatesfrm_lblinktozip_caption
 msgid "Link to the package zip file"
 msgstr ""
 
 #: opkman_const.rscreatejsonforupdatesfrm_message0
-msgid "Please select a repository package!"
+msgid "Please check a repository package!"
 msgstr ""
 
 #: opkman_const.rscreatejsonforupdatesfrm_message1
-msgid "Please select only one repository package!"
+msgid "Please check only one repository package!"
 msgstr ""
 
 #: opkman_const.rscreatejsonforupdatesfrm_message2
@@ -96,12 +101,17 @@ msgstr ""
 msgid "Please check at least one package file!"
 msgstr ""
 
+#: opkman_const.rscreatejsonforupdatesfrm_message4
+msgid "JSON successfully created."
+msgstr ""
+
 #: opkman_const.rscreaterepositorypackagefrm_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_caption"
 msgid "Create repository package"
 msgstr "Crear paquete para el repositorio"
 
 #: opkman_const.rscreaterepositorypackagefrm_cbopen_caption
+msgctxt "opkman_const.rscreaterepositorypackagefrm_cbopen_caption"
 msgid "After create open containing folder"
 msgstr "Luego de crear abrir carpeta contenedora"
 
@@ -122,11 +132,15 @@ msgid "Category:"
 msgstr "Categoría:"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbdisplayname_caption
-msgid "Display name"
+#, fuzzy
+#| msgid "Display name"
+msgid "Display name:"
 msgstr "Nombre a mostar"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbdownloadurl_caption
-msgid "Download link:"
+#, fuzzy
+#| msgid "Update link(JSON):"
+msgid "Update link (JSON):"
 msgstr "Enlace de descarga:"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbfpccompatibility_caption
@@ -150,8 +164,10 @@ msgid "Supported widgetset:"
 msgstr "Widgetset soportado:"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbsvnurl_caption
+#, fuzzy
+#| msgid "SVN"
 msgctxt "opkman_const.rscreaterepositorypackagefrm_lbsvnurl_caption"
-msgid "SVN"
+msgid "SVN:"
 msgstr "SVN"
 
 #: opkman_const.rscreaterepositorypackagefrm_message0
@@ -499,7 +515,9 @@ msgid "Description"
 msgstr "Descripción"
 
 #: opkman_const.rsmainfrm_vsttext_downloadurl
-msgid "Update link"
+#, fuzzy
+#| msgid "Update link(JSON)"
+msgid "Update link (JSON)"
 msgstr "Enlace de actualización"
 
 #: opkman_const.rsmainfrm_vsttext_fpccompatibility
@@ -740,6 +758,51 @@ msgctxt "opkman_const.rsmainfrm_vsttext_version"
 msgid "Version"
 msgstr "Versión"
 
+#: opkman_const.rsopitons_lbexcludefiles_hint
+msgid "This files will be excluded from repository packages (see: \"Create repository package\")"
+msgstr ""
+
+#: opkman_const.rsopitons_lbexcludefolders_hint
+msgid "This folders will be excluded from repository packages (see: \"Create repository package\")"
+msgstr ""
+
+#: opkman_const.rsoptions_badd_caption
+msgid "Add"
+msgstr ""
+
+#: opkman_const.rsoptions_bdelete_caption
+msgid "Delete"
+msgstr ""
+
+#: opkman_const.rsoptions_bedit_caption
+msgid "Edit"
+msgstr ""
+
+#: opkman_const.rsoptions_cbcheckforupdates_item0
+msgid "Every few minutes"
+msgstr ""
+
+#: opkman_const.rsoptions_cbcheckforupdates_item1
+msgid "Every hour"
+msgstr ""
+
+#: opkman_const.rsoptions_cbcheckforupdates_item2
+msgid "Once per day"
+msgstr ""
+
+#: opkman_const.rsoptions_cbcheckforupdates_item3
+msgid "Weekly"
+msgstr ""
+
+#: opkman_const.rsoptions_cbcheckforupdates_item4
+msgid "Montly"
+msgstr ""
+
+#: opkman_const.rsoptions_cbcheckforupdates_item5
+msgctxt "opkman_const.rsoptions_cbcheckforupdates_item5"
+msgid "Never"
+msgstr ""
+
 #: opkman_const.rsoptions_cbdelete_caption
 msgid "Delete downloaded zip files after installation/update"
 msgstr "Eliminar zip descargados luego de la instalación/actualización"
@@ -795,9 +858,58 @@ msgstr "Opciones"
 msgid "Proxy settings"
 msgstr "Opciones de proxy"
 
+#: opkman_const.rsoptions_inputbox_caption
+msgid "Add new exclusion"
+msgstr ""
+
+#: opkman_const.rsoptions_inputbox_conf0
+msgid "Delete selected extension (\"%s\")?"
+msgstr ""
+
+#: opkman_const.rsoptions_inputbox_conf1
+msgid "Delete selected folder (\"%s\")?"
+msgstr ""
+
+#: opkman_const.rsoptions_inputbox_info0
+msgid "Please select a file extension!"
+msgstr ""
+
+#: opkman_const.rsoptions_inputbox_info1
+msgid "Please select a folder!"
+msgstr ""
+
+#: opkman_const.rsoptions_inputbox_text0
+msgid "Type the extension name:"
+msgstr ""
+
+#: opkman_const.rsoptions_inputbox_text1
+msgid "Type the folder name:"
+msgstr ""
+
 #: opkman_const.rsoptions_invaliddirectory_info
 msgid "Please enter a valid directory"
 msgstr "Por favor ingresa un directorio válido"
+
+#: opkman_const.rsoptions_lastupdate_never
+msgctxt "opkman_const.rsoptions_lastupdate_never"
+msgid "Never"
+msgstr ""
+
+#: opkman_const.rsoptions_lbcheckforupdates_caption
+msgid "Check for package updates"
+msgstr ""
+
+#: opkman_const.rsoptions_lbfilterdirs_caption
+msgid "Excluded folders (packages)"
+msgstr ""
+
+#: opkman_const.rsoptions_lbfilterfiles_caption
+msgid "Excluded files (packages)"
+msgstr ""
+
+#: opkman_const.rsoptions_lblastupdate_caption
+msgid "Last update: "
+msgstr ""
 
 #: opkman_const.rsoptions_lblocalrepositoryarchive_caption
 msgid "Archive directory"

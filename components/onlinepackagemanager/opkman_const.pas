@@ -84,7 +84,7 @@ resourcestring
   rsMainFrm_VSTText_RepositoryFileHash = 'Repository filehash';
   rsMainFrm_VSTText_RepositoryFileDate = 'Available since';
   rsMainFrm_VSTText_HomePageURL = 'Home page';
-  rsMainFrm_VSTText_DownloadURL = 'Update link(JSON)';
+  rsMainFrm_VSTText_DownloadURL = 'Update link (JSON)';
   rsMainFrm_VSTText_SVNURL = 'SVN';
   rsMainFrm_VSTText_Install0 = 'No';
   rsMainFrm_VSTText_Install1 = 'Yes';
@@ -261,20 +261,20 @@ resourcestring
   rsOptions_cbCheckForUpdates_Item5 = 'Never';
   rsOptions_lbLastUpdate_Caption = 'Last update: ';
   rsOptions_LastUpdate_Never = 'Never';
-  rsOptions_lbFilterFiles_Caption = 'Excluded files(packages)';
-  rsOptions_lbFilterDirs_Caption = 'Excluded folders(packages)';
+  rsOptions_lbFilterFiles_Caption = 'Excluded files (packages)';
+  rsOptions_lbFilterDirs_Caption = 'Excluded folders (packages)';
   rsOptions_bAdd_Caption = 'Add';
   rsOptions_bEdit_Caption = 'Edit';
   rsOptions_bDelete_Caption = 'Delete';
-  rsOpitons_lbExcludeFiles_Hint = 'This files will be excluded from repository packages(see: "Create repository package")';
-  rsOpitons_lbExcludeFolders_Hint = 'This folders will be excluded from repository packages(see: "Create repository package")';
+  rsOpitons_lbExcludeFiles_Hint = 'This files will be excluded from repository packages (see: "Create repository package")';
+  rsOpitons_lbExcludeFolders_Hint = 'This folders will be excluded from repository packages (see: "Create repository package")';
   rsOptions_InputBox_Caption = 'Add new exclusion';
   rsOptions_InputBox_Text0 = 'Type the extension name:';
   rsOptions_InputBox_Text1 = 'Type the folder name:';
   rsOptions_InputBox_Info0 = 'Please select a file extension!';
   rsOptions_InputBox_Info1 = 'Please select a folder!';
-  rsOptions_InputBox_Conf0 = 'Delete selected extension("%s")?';
-  rsOptions_InputBox_Conf1 = 'Delete selected folder("%s")?';
+  rsOptions_InputBox_Conf0 = 'Delete selected extension ("%s")?';
+  rsOptions_InputBox_Conf1 = 'Delete selected folder ("%s")?';
 
 
   //packagelist form
@@ -295,13 +295,13 @@ resourcestring
   rsCreateRepositoryPackageFrm_pnCaption_Caption2 = 'Data';
   rsCreateRepositoryPackageFrm_NoPackage = 'No packages found!';
   rsCreateRepositoryPackageFrm_lbCategory_Caption = 'Category:';
-  rsCreateRepositoryPackageFrm_lbDisplayName_Caption = 'Display name';
+  rsCreateRepositoryPackageFrm_lbDisplayName_Caption = 'Display name:';
   rsCreateRepositoryPackageFrm_lbLazCompatibility_Caption = 'Lazarus compatibility:';
   rsCreateRepositoryPackageFrm_lbFPCCompatibility_Caption = 'FPC compatibility:';
   rsCreateRepositoryPackageFrm_lbSupportedWidgetset_Caption = 'Supported widgetset:';
   rsCreateRepositoryPackageFrm_lbHomePageURL_Caption = 'Home page:';
-  rsCreateRepositoryPackageFrm_lbDownloadURL_Caption = 'Update link(JSON):';
-  rsCreateRepositoryPackageFrm_lbSVNURL_Caption = 'SVN';
+  rsCreateRepositoryPackageFrm_lbDownloadURL_Caption = 'Update link (JSON):';
+  rsCreateRepositoryPackageFrm_lbSVNURL_Caption = 'SVN:';
   rsCreateRepositoryPackageFrm_SDDTitleSrc = 'Select package directory';
   rsCreateRepositoryPackageFrm_SDDTitleDst = 'Save repository package to...';
   rsCreateRepositoryPackageFrm_Error0 = 'Error reading package';
