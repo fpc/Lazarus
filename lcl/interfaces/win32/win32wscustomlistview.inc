@@ -387,7 +387,7 @@ begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetAutoSize')
   then Exit;
 
-  if AAutoSize
+  if AAutoSize and (ALV.Items.Count > 0)
   then ListView_SetColumnWidth(ALV.Handle, AIndex, AutoSizeWidth)
   else ListView_SetColumnWidth(ALV.Handle, AIndex, TListColumnAccess(AColumn).GetStoredWidth);
 end;
@@ -466,7 +466,7 @@ begin
   // TODO: implement with LV_COLUMN.subitem (associate different columns and insert/delete last.
 
   if AVisible
-  then if AColumn.AutoSize
+  then if AColumn.AutoSize and (ALV.Items.Count > 0)
     then ListView_SetColumnWidth(ALV.Handle, AIndex, AutoSizeWidth)
     else ListView_SetColumnWidth(ALV.Handle, AIndex, TListColumnAccess(AColumn).GetStoredWidth)
   else ListView_SetColumnWidth(ALV.Handle, AIndex, 0);
@@ -784,7 +784,10 @@ begin
   ShowWindow(ALV.Handle, SW_HIDE);
   for ColIndex := 0 to TCustomListViewAccess(ALV).Columns.Count - 1 do
     if ALV.Column[ColIndex].AutoSize then
-      ListView_SetColumnWidth(ALV.Handle, ColIndex, AutoSizeWidth);
+      if ALV.Items.Count > 0 then
+        ListView_SetColumnWidth(ALV.Handle, ColIndex, AutoSizeWidth)
+      else
+        ListView_SetColumnWidth(ALV.Handle, ColIndex, TListColumnAccess(ALV.Column[ColIndex]).GetStoredWidth);
 
   SendMessage(ALV.Handle,WM_SETREDRAW,WPARAM(True),0);
   if ALV.Visible then
