@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
@@ -81,12 +83,12 @@ msgstr "%s не является исполнимым файлом"
 #: lazutilsstrconsts.lrslistindexexceedsbounds
 msgctxt "lazutilsstrconsts.lrslistindexexceedsbounds"
 msgid "List index exceeds bounds (%d)"
-msgstr ""
+msgstr "Индекс списка находится вне диапазона (%d)"
 
 #: lazutilsstrconsts.lrslistmustbeempty
 msgctxt "lazutilsstrconsts.lrslistmustbeempty"
 msgid "List must be empty"
-msgstr ""
+msgstr "Список должен быть пуст"
 
 #: lazutilsstrconsts.lrsmodified
 msgctxt "lazutilsstrconsts.lrsmodified"
