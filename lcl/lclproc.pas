@@ -923,16 +923,6 @@ begin
   end;
 end;
 
-procedure DumpAddr(Addr: Pointer);
-begin
-  // preventing another exception, while dumping stack trace
-  try
-    DebugLn(BackTraceStrFunc(Addr));
-  except
-    DebugLn(SysBackTraceStr(Addr));
-  end;
-end;
-
 procedure DumpExceptionBackTrace;
 begin
   LazLogger.DumpExceptionBackTrace;
