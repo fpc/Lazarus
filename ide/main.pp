@@ -8980,8 +8980,8 @@ begin
   {$IFDEF IDE_DEBUG}
   debugln('[TMainIDE.OnControlSelectionChanged]');
   {$ENDIF}
-  if (TheControlSelection = nil) or (FormEditor1 = nil) then Exit;
-
+  Assert(Assigned(TheControlSelection), 'TMainIDE.OnControlSelectionChanged: TheControlSelection=Nil.');
+  if FormEditor1 = nil then Exit;
   NewSelection := TPersistentSelectionList.Create;
   NewSelection.ForceUpdate := ForceUpdate;
   for i := 0 to TheControlSelection.Count - 1 do
@@ -8995,7 +8995,8 @@ end;
 
 procedure TMainIDE.OnControlSelectionPropsChanged(Sender: TObject);
 begin
-  if (TheControlSelection=nil) or (FormEditor1=nil) or (ObjectInspector1=nil) then exit;
+  Assert(Assigned(TheControlSelection), 'TMainIDE.OnControlSelectionPropsChanged: TheControlSelection=Nil.');
+  if (FormEditor1=nil) or (ObjectInspector1=nil) then exit;
   ObjectInspector1.SaveChanges; // Save in any case, PropEditor value may have changed
   ObjectInspector1.RefreshPropertyValues;
 end;
@@ -9003,7 +9004,8 @@ end;
 procedure TMainIDE.OnControlSelectionFormChanged(Sender: TObject; OldForm,
   NewForm: TCustomForm);
 begin
-  if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
+  Assert(Assigned(TheControlSelection), 'TMainIDE.OnControlSelectionFormChanged: TheControlSelection=Nil.');
+  if FormEditor1=nil then exit;
   if OldForm<>nil then
     OldForm.Invalidate;
   if TheControlSelection.LookupRoot<>nil then

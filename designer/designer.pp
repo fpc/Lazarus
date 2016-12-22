@@ -809,10 +809,7 @@ begin
   // was FinalizeFreeDesigner
   Include(FFlags, dfDestroyingForm);
   // free or hide the form
-  TheControlSelection.BeginUpdate;
   TheFormEditor.DeleteComponent(FLookupRoot,AFreeComponent);
-  TheControlSelection.IgnoreUpdate;
-  TheControlSelection.EndUpdate;
   DisconnectComponent;
   Free;
 end;
