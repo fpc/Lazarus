@@ -6195,6 +6195,10 @@ begin
   // create new project
   Project1:=CreateProjectObject(ProjectDesc,ProjectDescriptorProgram);
   Result:=SourceFileMgr.InitNewProject(ProjectDesc);
+
+  {$push}{$overflowchecks off}
+  Inc(BookmarksStamp);
+  {$pop}
 end;
 
 function TMainIDE.DoSaveProject(Flags: TSaveFlags):TModalResult;
@@ -6337,6 +6341,10 @@ begin
   Project1:=CreateProjectObject(ProjectDescriptorProgram,
                                 ProjectDescriptorProgram);
   Result:=SourceFileMgr.InitOpenedProjectFile(AFileName, Flags);
+
+  {$push}{$overflowchecks off}
+  Inc(BookmarksStamp);
+  {$pop}
 end;
 
 function TMainIDE.DoPublishProject(Flags: TSaveFlags; ShowDialog: boolean): TModalResult;
@@ -10711,6 +10719,10 @@ begin
         UInfo.DeleteBookmark(Id);
     end;
   end;
+
+  {$push}{$overflowchecks off}
+  Inc(BookmarksStamp);
+  {$pop}
 end;
 
 procedure TMainIDE.OnSrcNotebookEditorDoSetBookmark(Sender: TObject; ID: Integer; Toggle: Boolean);
@@ -10746,7 +10758,7 @@ Begin
   if SetMark then
     ActEdit.EditorComponent.SetBookMark(ID,NewXY.X,NewXY.Y);
 
-  {$push}{$R-}  // range check off
+  {$push}{$overflowchecks off}
   Inc(BookmarksStamp);
   {$pop}
 end;

@@ -59,7 +59,7 @@ type
 
   TBookmarkCommandsStamp = record
   private
-    BookmarksStamp: Int64;
+    FBookmarksStamp: Int64;
   public
     function Changed(ABookmarksStamp: Int64): Boolean;
   end;
@@ -460,14 +460,9 @@ end;
 
 function TBookmarkCommandsStamp.Changed(ABookmarksStamp: Int64): Boolean;
 begin
-  Result := not(
-        (BookmarksStamp = ABookmarksStamp)
-    );
-
-  if not Result then
-    Exit;
-
-  BookmarksStamp := ABookmarksStamp;
+  Result := (FBookmarksStamp <> ABookmarksStamp);
+  if Result then
+    FBookmarksStamp := ABookmarksStamp;
 end;
 
 { TFileCommandsStamp }
