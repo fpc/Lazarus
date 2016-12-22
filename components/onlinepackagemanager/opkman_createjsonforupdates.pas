@@ -16,6 +16,7 @@ type
   TCreateJSONForUpdatesFrm = class(TForm)
     bClose: TButton;
     bCreate: TButton;
+    bHelp: TButton;
     bTest: TButton;
     cbOpen: TCheckBox;
     edLinkToZip: TEdit;
@@ -25,6 +26,7 @@ type
     pnButtons: TPanel;
     SD: TSaveDialog;
     procedure bCreateClick(Sender: TObject);
+    procedure bHelpClick(Sender: TObject);
     procedure bTestClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -72,6 +74,7 @@ begin
   lbLinkToZip.Caption := rsCreateJSONForUpdatesFrm_lbLinkToZip_Caption;
   bTest.Caption := rsCreateJSONForUpdatesFrm_bTest_Caption;
   bCreate.Caption := rsCreateJSONForUpdatesFrm_bCreate_Caption;
+  bHelp.Caption := rsCreateJSONForUpdatesFrm_bHelp_Caption;
   bClose.Caption := rsCreateJSONForUpdatesFrm_bClose_Caption;
   cbOpen.Caption := rsCreateJSONForUpdatesFrm_cbOpen_Caption;
 
@@ -227,6 +230,11 @@ begin
       OpenDocument(ExtractFilePath(SD.FileName));
     Close
   end;
+end;
+
+procedure TCreateJSONForUpdatesFrm.bHelpClick(Sender: TObject);
+begin
+  OpenURL(cHelpPage_CreateExternalJSON);
 end;
 
 procedure TCreateJSONForUpdatesFrm.VSTGetText(Sender: TBaseVirtualTree;

@@ -41,9 +41,11 @@ const
   cLocalRepositoryConfig = 'config';
   cLocalRepositoryConfigFile = 'options.xml';
   cLocalRepositoryUpdatesFile = 'updates.xml';
-  cExcludedFilesDef = '*.,*.a,*.o,*.ppu,*.compiled,*.bak,*.or,*.rsj,*.~';
-  cExcludedFoldersDef = 'lib,backup';
+  cExcludedFilesDef = '*.,*.a,*.o,*.ppu,*.compiled,*.bak,*.or,*.rsj,*.~,*.exe,*.dbg,*.zip,*.json';
+  cExcludedFoldersDef = 'lib,backup,updates,compiled,.git,.svn';
   cHelpPage = 'http://wiki.freepascal.org/Online_Package_Manager';
+  cHelpPage_CreateRepositoryPackage = 'http://wiki.freepascal.org/Online_Package_Manager#Create_repository_package';
+  cHelpPage_CreateExternalJSON = 'http://wiki.freepascal.org/Online_Package_Manager#Create_JSON_for_updates';
   {$ifdef win64}
   cOpenSSLURL = 'http://packages.lazarus-ide.org/openssl-1.0.2j-x64_86-win64.zip';
   {$endif}
@@ -314,9 +316,14 @@ resourcestring
   rsCreateRepositoryPackageFrm_Message4 = 'Compressing package. Please wait...';
   rsCreateRepositoryPackageFrm_Message5 = 'Creating JSON. Please wait...';
   rsCreateRepositoryPackageFrm_Message6 = 'Repository package successfully created.';
+  rsCreateRepositoryPackageFrm_bHelp_Caption = 'Help';
+  rsCreateRepositoryPackageFrm_bOptions_Caption = 'Options';
+  rsCreateRepositoryPackageFrm_bCreate_Caption = 'Create';
+  rsCreateRepositoryPackageFrm_bCancel_Caption = 'Cancel';
 
   //createupdatejson
   rsCreateJSONForUpdatesFrm_Caption = 'Create update JSON for package:';
+  rsCreateJSONForUpdatesFrm_bHelp_Caption = 'Help';
   rsCreateJSONForUpdatesFrm_bCreate_Caption = 'Create';
   rsCreateJSONForUpdatesFrm_bClose_Caption = 'Cancel';
   rsCreateJSONForUpdatesFrm_cbOpen_Caption = 'After create open containing folder';

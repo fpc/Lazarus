@@ -40,6 +40,7 @@ type
     bCancel: TButton;
     bCreate: TButton;
     Bevel1: TBevel;
+    bHelp: TButton;
     bOptions: TButton;
     cbOpen: TCheckBox;
     edCategories: TEdit;
@@ -78,6 +79,7 @@ type
     spMain: TSplitter;
     procedure bCancelClick(Sender: TObject);
     procedure bCreateClick(Sender: TObject);
+    procedure bHelpClick(Sender: TObject);
     procedure bOptionsClick(Sender: TObject);
     procedure edPackageDirAcceptDirectory(Sender: TObject; var Value: String);
     procedure edPackageDirButtonClick(Sender: TObject);
@@ -140,6 +142,10 @@ begin
   lbHomePageURL.Caption := rsCreateRepositoryPackageFrm_lbHomePageURL_Caption;
   lbDownloadURL.Caption := rsCreateRepositoryPackageFrm_lbDownloadURL_Caption;
   lbSVNURL.Caption := rsCreateRepositoryPackageFrm_lbSVNURL_Caption;
+  bHelp.Caption := rsCreateRepositoryPackageFrm_bHelp_Caption;
+  bOptions.Caption := rsCreateRepositoryPackageFrm_bOptions_Caption;
+  bCreate.Caption := rsCreateRepositoryPackageFrm_bCreate_Caption;
+  bCancel.Caption := rsCreateRepositoryPackageFrm_bCancel_Caption;
 
   FVSTPackages := TVirtualStringTree.Create(nil);
   with FVSTPackages do
@@ -522,6 +528,11 @@ begin
     pnBrowse.Enabled := False;
     fPackageZipper.StartZip(FPackageDir, FPackageFile);
   end;
+end;
+
+procedure TCreateRepositoryPackagefr.bHelpClick(Sender: TObject);
+begin
+  OpenURL(cHelpPage_CreateRepositoryPackage);
 end;
 
 procedure TCreateRepositoryPackagefr.bOptionsClick(Sender: TObject);

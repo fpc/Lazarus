@@ -374,7 +374,7 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
       TabOrder = 0
     end
     object bOptions: TButton
-      Left = 506
+      Left = 507
       Height = 26
       Top = 5
       Width = 75
@@ -382,6 +382,16 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
       Caption = 'Options'
       OnClick = bOptionsClick
       TabOrder = 1
+    end
+    object bHelp: TButton
+      Left = 430
+      Height = 26
+      Top = 5
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'Help'
+      OnClick = bHelpClick
+      TabOrder = 4
     end
   end
   object imTree: TImageList

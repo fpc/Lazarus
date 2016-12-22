@@ -1,12 +1,12 @@
 object CreateJSONForUpdatesFrm: TCreateJSONForUpdatesFrm
-  Left = 659
-  Height = 272
-  Top = 255
-  Width = 453
+  Left = 524
+  Height = 304
+  Top = 275
+  Width = 580
   BorderIcons = [biSystemMenu]
   Caption = 'CreateJSONForUpdatesFrm'
-  ClientHeight = 272
-  ClientWidth = 453
+  ClientHeight = 304
+  ClientWidth = 580
   Color = clBtnFace
   Constraints.MinHeight = 200
   Constraints.MinWidth = 300
@@ -18,15 +18,15 @@ object CreateJSONForUpdatesFrm: TCreateJSONForUpdatesFrm
   object pnButtons: TPanel
     Left = 0
     Height = 41
-    Top = 231
-    Width = 453
+    Top = 263
+    Width = 580
     Align = alBottom
     BevelOuter = bvNone
     ClientHeight = 41
-    ClientWidth = 453
+    ClientWidth = 580
     TabOrder = 1
     object bCreate: TButton
-      Left = 287
+      Left = 414
       Height = 26
       Top = 8
       Width = 75
@@ -36,7 +36,7 @@ object CreateJSONForUpdatesFrm: TCreateJSONForUpdatesFrm
       TabOrder = 0
     end
     object bClose: TButton
-      Left = 364
+      Left = 491
       Height = 26
       Top = 8
       Width = 75
@@ -53,16 +53,26 @@ object CreateJSONForUpdatesFrm: TCreateJSONForUpdatesFrm
       Caption = 'After create, open containing folder '
       TabOrder = 2
     end
+    object bHelp: TButton
+      Left = 336
+      Height = 26
+      Top = 8
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'Help'
+      OnClick = bHelpClick
+      TabOrder = 3
+    end
   end
   object pnTop: TPanel
     Left = 0
     Height = 72
     Top = 0
-    Width = 453
+    Width = 580
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 72
-    ClientWidth = 453
+    ClientWidth = 580
     TabOrder = 0
     Visible = False
     object lbLinkToZip: TLabel
@@ -77,12 +87,12 @@ object CreateJSONForUpdatesFrm: TCreateJSONForUpdatesFrm
       Left = 15
       Height = 23
       Top = 32
-      Width = 371
+      Width = 498
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 0
     end
     object bTest: TButton
-      Left = 389
+      Left = 516
       Height = 25
       Top = 31
       Width = 50

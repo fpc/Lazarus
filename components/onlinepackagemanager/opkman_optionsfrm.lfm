@@ -497,6 +497,7 @@ object OptionsFrm: TOptionsFrm
               ParentShowHint = False
               ScrollWidth = 161
               ShowHint = True
+              Sorted = True
               TabOrder = 2
             end
           end
@@ -584,6 +585,7 @@ object OptionsFrm: TOptionsFrm
               ParentShowHint = False
               ScrollWidth = 154
               ShowHint = True
+              Sorted = True
               TabOrder = 2
             end
           end
