@@ -217,6 +217,7 @@ begin
   else
   if Assigned(Application) and (Application.ModalLevel > 0) then
   begin
+    ShowWindow(FAppHandle, SW_RESTORE);
     for i := Screen.CustomFormZOrderCount - 1 downto 0 do
     begin
       AForm := Screen.CustomFormsZOrdered[i];
@@ -225,7 +226,6 @@ begin
         ShowWindow(AForm.Handle, SW_RESTORE);
       end;
     end;
-    ShowWindow(FAppHandle, SW_RESTORE);
   end
   else
     Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_RESTORE, 0);
