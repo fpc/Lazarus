@@ -34,7 +34,6 @@ implementation
 procedure Register;
 begin
   RegisterUnit('RegisterLCL', @RegisterLCL.Register);
-  RegisterUnit('EditBtn', @EditBtn.Register);
 end;
 
 initialization

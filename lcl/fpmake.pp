@@ -55,12 +55,8 @@ begin
     t.Dependencies.AddUnit('dbgrids');
     t.Dependencies.AddUnit('defaulttranslator');
     t.Dependencies.AddUnit('dialogs');
-    t.Dependencies.AddUnit('dynamicarray');
-    t.Dependencies.AddUnit('dynhasharray');
-    t.Dependencies.AddUnit('dynqueue');
     t.Dependencies.AddUnit('extctrls');
     t.Dependencies.AddUnit('extdlgs');
-    t.Dependencies.AddUnit('extendedstrings');
     t.Dependencies.AddUnit('extgraphics');
     t.Dependencies.AddUnit('filectrl');
     t.Dependencies.AddUnit('forms');
@@ -91,7 +87,6 @@ begin
     t.Dependencies.AddUnit('lclversion');
     t.Dependencies.AddUnit('lmessages');
     t.Dependencies.AddUnit('lresources');
-    t.Dependencies.AddUnit('maps');
     t.Dependencies.AddUnit('maskedit');
     t.Dependencies.AddUnit('pairsplitter');
     t.Dependencies.AddUnit('popupnotifier');
@@ -105,12 +100,9 @@ begin
     t.Dependencies.AddUnit('spin');
     t.Dependencies.AddUnit('stdactns');
     t.Dependencies.AddUnit('stdctrls');
-    t.Dependencies.AddUnit('stringhashlist');
-    t.Dependencies.AddUnit('textstrings');
     t.Dependencies.AddUnit('themes');
     t.Dependencies.AddUnit('tmschema');
     t.Dependencies.AddUnit('toolwin');
-    t.Dependencies.AddUnit('translations');
     t.Dependencies.AddUnit('utrace');
     t.Dependencies.AddUnit('xmlpropstorage');
     t.Dependencies.AddUnit('calendarpopup');
@@ -177,12 +169,8 @@ begin
     T:=P.Targets.AddUnit('dbgrids.pas');
     T:=P.Targets.AddUnit('defaulttranslator.pas');
     T:=P.Targets.AddUnit('dialogs.pp');
-    T:=P.Targets.AddUnit('dynamicarray.pas');
-    T:=P.Targets.AddUnit('dynhasharray.pp');
-    T:=P.Targets.AddUnit('dynqueue.pas');
     T:=P.Targets.AddUnit('extctrls.pp');
     T:=P.Targets.AddUnit('extdlgs.pas');
-    T:=P.Targets.AddUnit('extendedstrings.pas');
     T:=P.Targets.AddUnit('extgraphics.pas');
     T:=P.Targets.AddUnit('filectrl.pp');
     T:=P.Targets.AddUnit('forms.pp');
@@ -213,7 +201,6 @@ begin
     T:=P.Targets.AddUnit('lclversion.pas');
     T:=P.Targets.AddUnit('lmessages.pp');
     T:=P.Targets.AddUnit('lresources.pp');
-    T:=P.Targets.AddUnit('maps.pp');
     T:=P.Targets.AddUnit('maskedit.pp');
     T:=P.Targets.AddUnit('pairsplitter.pas');
     T:=P.Targets.AddUnit('popupnotifier.pas');
@@ -227,12 +214,9 @@ begin
     T:=P.Targets.AddUnit('spin.pp');
     T:=P.Targets.AddUnit('stdactns.pas');
     T:=P.Targets.AddUnit('stdctrls.pp');
-    T:=P.Targets.AddUnit('stringhashlist.pas');
-    T:=P.Targets.AddUnit('textstrings.pas');
     T:=P.Targets.AddUnit('themes.pas');
     T:=P.Targets.AddUnit('tmschema.pas');
     T:=P.Targets.AddUnit('toolwin.pp');
-    T:=P.Targets.AddUnit('translations.pas');
     T:=P.Targets.AddUnit('utrace.pp');
     T:=P.Targets.AddUnit('xmlpropstorage.pas');
     P.Targets.AddImplicitUnit('forms/calendarpopup.pas');
