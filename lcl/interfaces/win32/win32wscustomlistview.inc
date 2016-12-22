@@ -10,8 +10,6 @@
 }
 
 { TWin32WSCustomListView }
-const
-  AutoSizeWidth = LVSCW_AUTOSIZE_USEHEADER;
 
 type
   TLVStyleType = (lsStyle, lsInvert, lsExStyle);
@@ -269,6 +267,33 @@ end;
 // Column code
 ////////////////////////////////////////////////////////////////////////////////
 
+class procedure TWin32WSCustomListView.ColumnDoAutosize(const ALV: TCustomListView; const AIndex: Integer);
+var
+  CaptionSize: TSize;
+begin
+  if (ALV.Items.Count > 0) then
+    ListView_SetColumnWidth(ALV.Handle, AIndex, LVSCW_AUTOSIZE)
+  else
+  begin
+    // normally, we have to use ListView_GetStringWidth, but it doesn't work with
+    // Unicode, so we take a universal function to get the width of the caption
+    if GetTextExtentPoint32W(ALV.Canvas.Handle,
+                             PWideChar(UTF8ToUTF16(ALV.Column[AIndex].Caption)),
+                             UTF8Length(ALV.Column[AIndex].Caption),
+                             CaptionSize) then
+    begin
+      // to retrieve the column width that can contain the string without
+      // truncating it, you must add padding to the returned string width
+      // see msdn: ListView_GetStringWidth
+      // there is no way to get the needed padding size for a list view caption
+      // so we take the height of the current caption text, to be DPI aware
+      ListView_SetColumnWidth(ALV.Handle, AIndex, CaptionSize.cx + CaptionSize.cy);
+    end
+    else
+      ListView_SetColumnWidth(ALV.Handle, AIndex, TListColumnAccess(ALV.Column[AIndex]).GetStoredWidth);
+  end;
+end;
+
 class procedure TWin32WSCustomListView.ColumnDelete(const ALV: TCustomListView; const AIndex: Integer);
 var
   hHdr, hLV: THandle;
@@ -387,8 +412,8 @@ begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetAutoSize')
   then Exit;
 
-  if AAutoSize and (ALV.Items.Count > 0)
-  then ListView_SetColumnWidth(ALV.Handle, AIndex, AutoSizeWidth)
+  if AAutoSize
+  then ColumnDoAutosize(ALV, AIndex)
   else ListView_SetColumnWidth(ALV.Handle, AIndex, TListColumnAccess(AColumn).GetStoredWidth);
 end;
 
@@ -454,7 +479,7 @@ begin
   then Exit;
 
   if AColumn.AutoSize
-  then ListView_SetColumnWidth(ALV.Handle, AIndex, AutoSizeWidth)
+  then ColumnDoAutosize(ALV, AIndex)
   else ListView_SetColumnWidth(ALV.Handle, AIndex, AWidth)
 end;
 
@@ -466,8 +491,8 @@ begin
   // TODO: implement with LV_COLUMN.subitem (associate different columns and insert/delete last.
 
   if AVisible
-  then if AColumn.AutoSize and (ALV.Items.Count > 0)
-    then ListView_SetColumnWidth(ALV.Handle, AIndex, AutoSizeWidth)
+  then if AColumn.AutoSize
+    then ColumnDoAutosize(ALV, AIndex)
     else ListView_SetColumnWidth(ALV.Handle, AIndex, TListColumnAccess(AColumn).GetStoredWidth)
   else ListView_SetColumnWidth(ALV.Handle, AIndex, 0);
 end;
@@ -695,7 +720,7 @@ begin
   // it only once per column.
 
   if (ASubIndex >= 0) and (ASubIndex < ALV.ColumnCount) and ALV.Column[ASubIndex].AutoSize and (TCustomListViewAccess(ALV).GetUpdateCount = 0) then
-    ListView_SetColumnWidth(ALV.Handle, ASubIndex, AutoSizeWidth);
+    ColumnDoAutosize(ALV, ASubIndex);
 end;
 
 class procedure TWin32WSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
@@ -783,11 +808,8 @@ begin
   // so it won't flicker at all.
   ShowWindow(ALV.Handle, SW_HIDE);
   for ColIndex := 0 to TCustomListViewAccess(ALV).Columns.Count - 1 do
-    if ALV.Column[ColIndex].AutoSize then
-      if ALV.Items.Count > 0 then
-        ListView_SetColumnWidth(ALV.Handle, ColIndex, AutoSizeWidth)
-      else
-        ListView_SetColumnWidth(ALV.Handle, ColIndex, TListColumnAccess(ALV.Column[ColIndex]).GetStoredWidth);
+    if ALV.Column[ColIndex].AutoSize
+    then ColumnDoAutosize(ALV, ColIndex);
 
   SendMessage(ALV.Handle,WM_SETREDRAW,WPARAM(True),0);
   if ALV.Visible then

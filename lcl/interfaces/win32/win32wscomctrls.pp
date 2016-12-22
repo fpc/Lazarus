@@ -114,6 +114,7 @@ type
 
   TWin32WSCustomListView = class(TWSCustomListView)
   private
+    class procedure ColumnDoAutosize(const ALV: TCustomListView; const AIndex: Integer);
     class function  GetHeader(const AHandle: THandle): THandle;
     class procedure PositionHeader(const AHandle: THandle);
     class procedure UpdateStyle(const AHandle: THandle; const AMask, AStyle: Integer);
