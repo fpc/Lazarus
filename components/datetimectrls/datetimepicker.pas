@@ -187,6 +187,7 @@ type
     FChangeInRecursiveCall: Boolean;
     FCorrectedDTP: TDateTimePart;
     FCorrectedValue: Word;
+    FEnableWhenUnchecked: Boolean;
 
     function AreSeparatorsStored: Boolean;
     function GetChecked: Boolean;
@@ -248,6 +249,7 @@ type
     procedure SetYear(const AValue: Word);
     procedure SetYYYYMMDD(const AValue: TYMD);
     procedure SetHMSMs(const AValue: THMSMs);
+    procedure SetEnableWhenUnchecked(const AEnableWhenUnchecked: Boolean);
     procedure UpdateIfUserChangedText;
     function GetSelectedText: String;
     procedure AdjustSelection;
@@ -393,7 +395,7 @@ type
     property DroppedDown: Boolean read GetDroppedDown;
     property CalAlignment: TDTCalAlignment read FCalAlignment write SetCalAlignment default dtaDefault;
     property FlatButton: Boolean read GetFlatButton write SetFlatButton default False;
-
+    property EnableWhenUnchecked: Boolean read FEnableWhenUnchecked write SetEnableWhenUnchecked default False;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -465,6 +467,7 @@ type
     property ShowMonthNames;
     property CalAlignment;
     property FlatButton;
+    property EnableWhenUnchecked;
 // events:
     property OnChange;
     property OnCheckBoxChange;
@@ -679,6 +682,8 @@ begin
               // we'll change the date, but keep the time:
               DTPicker.SetDateTime(ComposeDateTime(Cal.GetDate, DTPicker.DateTime));
             end;
+            if DTPicker.ShowCheckBox and not DTPicker.Checked then
+              DTPicker.Checked := True;
           finally
             Dec(DTPicker.FUserChanging);
           end;
@@ -893,7 +898,7 @@ end;
 
 procedure TCustomDateTimePicker.CheckTextEnabled;
 begin
-  FTextEnabled := Self.Enabled and GetChecked;
+  FTextEnabled := Self.Enabled and (FEnableWhenUnchecked or GetChecked);
 
   if Assigned(FArrowButton) then
     FArrowButton.Enabled := FTextEnabled;
@@ -2913,6 +2918,16 @@ begin
     CheckTextEnabled;
     Invalidate;
   end;
+end;
+
+procedure TCustomDateTimePicker.SetEnableWhenUnchecked(
+  const AEnableWhenUnchecked: Boolean);
+begin
+  if FEnableWhenUnchecked = AEnableWhenUnchecked then Exit;
+  FEnableWhenUnchecked := AEnableWhenUnchecked;
+
+  CheckTextEnabled;
+  Invalidate;
 end;
 
 procedure TCustomDateTimePicker.SetFlatButton(const AValue: Boolean);
