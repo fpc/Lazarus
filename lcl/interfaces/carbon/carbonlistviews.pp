@@ -273,6 +273,7 @@ type
     procedure DrawItem(AIndex: Integer; AState: DataBrowserItemState); override;
     procedure SelectionChanged(AIndex: Integer; ASelect: Boolean); override;
     procedure FocusedChanged({%H-}AIndex: Integer); override;
+    procedure SetFont(const AFont: TFont); override;
   end;
   
   { TCarbonCheckListBox }
@@ -1944,7 +1945,8 @@ begin
   ShowColumnHeaders(False);
   ShowCheckboxes(False);
   ShowAsList(True);
-  SetItemsHeight((LCLObject as TCustomListBox).ItemHeight);
+  if (LCLObject as TCustomListBox).Style = lbOwnerDrawFixed then
+    SetItemsHeight((LCLObject as TCustomListBox).ItemHeight);
   SetRowSelect(True);
   SetScrollBars(ssAutoVertical);
   SetSelectionMode((LCLObject as TCustomListBox).ExtendedSelect,
@@ -2009,6 +2011,13 @@ end;
 procedure TCarbonListBox.FocusedChanged(AIndex: Integer);
 begin
   LCLSendSelectionChangedMsg(LCLObject);
+end;
+
+procedure TCarbonListBox.SetFont(const AFont: TFont);
+begin
+  inherited SetFont(AFont);
+  if (LCLObject as TCustomListBox).Style = lbOwnerDrawFixed then
+    SetItemsHeight((LCLObject as TCustomListBox).ItemHeight);
 end;
 
 { TCarbonCheckListBox }
