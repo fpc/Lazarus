@@ -513,6 +513,7 @@ begin
         FNeedToUpdate := False;
       end;
     end;
+    Sleep(1000);
   end;
 end;
 
