@@ -48,7 +48,7 @@ msgstr ""
 
 #: opkman_const.rscreatejsonforupdatesfrm_cbopen_caption
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_cbopen_caption"
-msgid "After create open containing folder"
+msgid "Open containing folder after creation"
 msgstr ""
 
 #: opkman_const.rscreatejsonforupdatesfrm_column0_text
@@ -127,7 +127,7 @@ msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_cbopen_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_cbopen_caption"
-msgid "After create open containing folder"
+msgid "Open containing folder after creation"
 msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_error0

@@ -60,8 +60,9 @@ msgstr ""
 
 #: opkman_const.rscreatejsonforupdatesfrm_cbopen_caption
 #, fuzzy
+#| msgid "After create open containing folder"
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_cbopen_caption"
-msgid "After create open containing folder"
+msgid "Open containing folder after creation"
 msgstr "A tartalmazó mappa megnyitása létrehozás után"
 
 #: opkman_const.rscreatejsonforupdatesfrm_column0_text
@@ -139,8 +140,10 @@ msgid "Create repository package"
 msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_cbopen_caption
+#, fuzzy
+#| msgid "After create open containing folder"
 msgctxt "opkman_const.rscreaterepositorypackagefrm_cbopen_caption"
-msgid "After create open containing folder"
+msgid "Open containing folder after creation"
 msgstr "A tartalmazó mappa megnyitása létrehozás után"
 
 #: opkman_const.rscreaterepositorypackagefrm_error0

@@ -290,7 +290,7 @@ resourcestring
   //createrepositorypackage form
   rsCreateRepositoryPackageFrm_Caption = 'Create repository package';
   rsCreateRepositoryPackageFrm_pnMessage_Caption = 'Please wait...';
-  rsCreateRepositoryPackageFrm_cbOpen_Caption = 'After create open containing folder';
+  rsCreateRepositoryPackageFrm_cbOpen_Caption = 'Open containing folder after creation';
   rsCreateRepositoryPackageFrm_lbPackageDir_Caption = 'Select package directory:';
   rsCreateRepositoryPackageFrm_pnCaption_Caption0 = 'Available packages';
   rsCreateRepositoryPackageFrm_pnCaption_Caption1 = 'Description';
@@ -326,7 +326,7 @@ resourcestring
   rsCreateJSONForUpdatesFrm_bHelp_Caption = 'Help';
   rsCreateJSONForUpdatesFrm_bCreate_Caption = 'Create';
   rsCreateJSONForUpdatesFrm_bClose_Caption = 'Cancel';
-  rsCreateJSONForUpdatesFrm_cbOpen_Caption = 'After create open containing folder';
+  rsCreateJSONForUpdatesFrm_cbOpen_Caption = 'Open containing folder after creation';
   rsCreateJSONForUpdatesFrm_lbLinkToZip_Caption = 'Link to the package zip file';
   rsCreateJSONForUpdatesFrm_bTest_Caption = 'Test';
   rsCreateJSONForUpdatesFrm_Column0_Text = 'PackageFileName';

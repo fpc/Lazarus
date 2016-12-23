@@ -40,7 +40,6 @@ msgid "Create"
 msgstr "Создать"
 
 #: opkman_const.rscreatejsonforupdatesfrm_bhelp_caption
-#, fuzzy
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_bhelp_caption"
 msgid "Help"
 msgstr "Справка"
@@ -55,8 +54,8 @@ msgstr "Создать JSON для обновления пакета:"
 
 #: opkman_const.rscreatejsonforupdatesfrm_cbopen_caption
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_cbopen_caption"
-msgid "After create open containing folder"
-msgstr ""
+msgid "Open containing folder after creation"
+msgstr "Открыть целевой каталог после создания"
 
 #: opkman_const.rscreatejsonforupdatesfrm_column0_text
 msgid "PackageFileName"
@@ -77,11 +76,11 @@ msgstr "Внутренняя версия"
 
 #: opkman_const.rscreatejsonforupdatesfrm_error1
 msgid "Cannot create JSON! Error message:"
-msgstr ""
+msgstr "Невозможно создать JSON! Сообщение об ошибке:"
 
 #: opkman_const.rscreatejsonforupdatesfrm_lblinktozip_caption
 msgid "Link to the package zip file"
-msgstr ""
+msgstr "Ссылка на архивный файл пакета"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message0
 msgid "Please check a repository package!"
@@ -104,25 +103,21 @@ msgid "JSON successfully created."
 msgstr "JSON успешно создан."
 
 #: opkman_const.rscreaterepositorypackagefrm_bcancel_caption
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositorypackagefrm_bcancel_caption"
 msgid "Cancel"
 msgstr "Отмена"
 
 #: opkman_const.rscreaterepositorypackagefrm_bcreate_caption
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositorypackagefrm_bcreate_caption"
 msgid "Create"
 msgstr "Создать"
 
 #: opkman_const.rscreaterepositorypackagefrm_bhelp_caption
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositorypackagefrm_bhelp_caption"
 msgid "Help"
 msgstr "Справка"
 
 #: opkman_const.rscreaterepositorypackagefrm_boptions_caption
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositorypackagefrm_boptions_caption"
 msgid "Options"
 msgstr "Параметры"
@@ -134,8 +129,8 @@ msgstr "Создать пакет в репозитории"
 
 #: opkman_const.rscreaterepositorypackagefrm_cbopen_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_cbopen_caption"
-msgid "After create open containing folder"
-msgstr ""
+msgid "Open containing folder after creation"
+msgstr "Открыть целевой каталог после создания"
 
 #: opkman_const.rscreaterepositorypackagefrm_error0
 msgid "Error reading package"
@@ -1036,11 +1031,11 @@ msgstr "Неизвестно"
 
 #: opkman_const.rsprogressfrm_cbextractopen_caption0
 msgid "Extract after download"
-msgstr ""
+msgstr "Распаковать после загрузки"
 
 #: opkman_const.rsprogressfrm_cbextractopen_caption1
 msgid "Open containing folder"
-msgstr ""
+msgstr "Открыть целевой каталог"
 
 #: opkman_const.rsprogressfrm_conf0
 msgid "Continue with next one?"
