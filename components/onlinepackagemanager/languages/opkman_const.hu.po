@@ -45,6 +45,11 @@ msgctxt "opkman_const.rscreatejsonforupdatesfrm_bcreate_caption"
 msgid "Create"
 msgstr "Létrehozás"
 
+#: opkman_const.rscreatejsonforupdatesfrm_bhelp_caption
+msgctxt "opkman_const.rscreatejsonforupdatesfrm_bhelp_caption"
+msgid "Help"
+msgstr ""
+
 #: opkman_const.rscreatejsonforupdatesfrm_btest_caption
 msgid "Test"
 msgstr ""
@@ -104,6 +109,29 @@ msgstr ""
 #: opkman_const.rscreatejsonforupdatesfrm_message4
 msgid "JSON successfully created."
 msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_bcancel_caption
+#, fuzzy
+msgctxt "opkman_const.rscreaterepositorypackagefrm_bcancel_caption"
+msgid "Cancel"
+msgstr "Mégsem"
+
+#: opkman_const.rscreaterepositorypackagefrm_bcreate_caption
+#, fuzzy
+msgctxt "opkman_const.rscreaterepositorypackagefrm_bcreate_caption"
+msgid "Create"
+msgstr "Létrehozás"
+
+#: opkman_const.rscreaterepositorypackagefrm_bhelp_caption
+msgctxt "opkman_const.rscreaterepositorypackagefrm_bhelp_caption"
+msgid "Help"
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_boptions_caption
+#, fuzzy
+msgctxt "opkman_const.rscreaterepositorypackagefrm_boptions_caption"
+msgid "Options"
+msgstr "Beállítások"
 
 #: opkman_const.rscreaterepositorypackagefrm_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_caption"

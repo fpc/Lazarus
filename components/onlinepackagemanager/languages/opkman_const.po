@@ -29,6 +29,11 @@ msgctxt "opkman_const.rscreatejsonforupdatesfrm_bcreate_caption"
 msgid "Create"
 msgstr ""
 
+#: opkman_const.rscreatejsonforupdatesfrm_bhelp_caption
+msgctxt "opkman_const.rscreatejsonforupdatesfrm_bhelp_caption"
+msgid "Help"
+msgstr ""
+
 #: opkman_const.rscreatejsonforupdatesfrm_btest_caption
 msgid "Test"
 msgstr ""
@@ -85,6 +90,26 @@ msgstr ""
 
 #: opkman_const.rscreatejsonforupdatesfrm_message4
 msgid "JSON successfully created."
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_bcancel_caption
+msgctxt "opkman_const.rscreaterepositorypackagefrm_bcancel_caption"
+msgid "Cancel"
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_bcreate_caption
+msgctxt "opkman_const.rscreaterepositorypackagefrm_bcreate_caption"
+msgid "Create"
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_bhelp_caption
+msgctxt "opkman_const.rscreaterepositorypackagefrm_bhelp_caption"
+msgid "Help"
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_boptions_caption
+msgctxt "opkman_const.rscreaterepositorypackagefrm_boptions_caption"
+msgid "Options"
 msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_caption
