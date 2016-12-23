@@ -299,15 +299,18 @@ begin
       DoOnPackageInstallProgress(imPackageCompleted, PackageFile);
     end;
   end;
-  if (InstallPackageList.Count > 0) and (not FNeedToBreak) then
+  if InstallPackageList.Count > 0 then
   begin
     PkgInstallInIDEFlags := [piiifQuiet];
     if PackageEditingInterface.InstallPackages(InstallPackageList, PkgInstallInIDEFlags) = mrOk then
     begin
-      if ErrCnt = 0 then
-        FInstallStatus := isSuccess
-      else
-        FInstallStatus := isPartiallyFailed;
+      if not FNeedToBreak then
+      begin
+        if ErrCnt = 0 then
+          FInstallStatus := isSuccess
+        else
+          FInstallStatus := isPartiallyFailed;
+      end;
     end;
   end;
   if Assigned(FOnPackageInstallCompleted) then

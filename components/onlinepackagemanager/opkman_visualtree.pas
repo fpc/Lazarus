@@ -39,6 +39,8 @@ type
   PData = ^TData;
   TData = record
     DataType: Integer;
+    PID: Integer;
+    PFID: Integer;
     Repository: String;
     PackageState: TPackageState;
     PackageName: String;
@@ -312,6 +314,7 @@ begin
        Node := FVST.AddChild(RootNode);
        Node^.CheckType := ctTriStateCheckBox;
        Data := FVST.GetNodeData(Node);
+       Data^.PID := I;
        Data^.PackageName := SerializablePackages.Items[I].Name;
        Data^.PackageDisplayName := SerializablePackages.Items[I].DisplayName;
        Data^.PackageState := SerializablePackages.Items[I].PackageState;
@@ -329,6 +332,8 @@ begin
          ChildNode^.CheckType := ctTriStateCheckBox;
          FVST.IsDisabled[ChildNode] := FVST.IsDisabled[ChildNode^.Parent];
          ChildData := FVST.GetNodeData(ChildNode);
+         ChildData^.PID := I;
+         ChildData^.PFID := J;
          ChildData^.PackageFileName := PackageFile.Name;
          ChildData^.InstalledVersion := PackageFile.InstalledFileVersion;
          ChildData^.UpdateVersion := PackageFile.UpdateVersion;
@@ -1044,7 +1049,7 @@ begin
     Data := FVST.GetNodeData(Node);
     if Data^.DataType = 1 then
     begin
-      Package := SerializablePackages.FindPackage(Data^.PackageName, fpbPackageName);
+      Package := SerializablePackages.Items[Data^.PID];
       if Package <> nil then
       begin
         if (FVST.CheckState[Node] = csCheckedNormal) or (FVST.CheckState[Node] = csMixedNormal) then
@@ -1055,7 +1060,7 @@ begin
     end;
     if Data^.DataType = 2 then
     begin
-      PackageFile := SerializablePackages.FindPackageFile(Data^.PackageFileName);
+      PackageFile := TPackageFile(SerializablePackages.Items[Data^.PID].PackageFiles.Items[Data^.PFID]);
       if PackageFile <> nil then
       begin
         if FVST.CheckState[Node] = csCheckedNormal then
@@ -1082,7 +1087,7 @@ begin
     Data := FVST.GetNodeData(Node);
     if (Data^.DataType = 1) then
     begin
-      Package := SerializablePackages.FindPackage(Data^.PackageName, fpbPackageName);
+      Package := SerializablePackages.Items[Data^.PID];
       if Package <> nil then
       begin
         Data^.PackageState := Package.PackageState;
@@ -1093,7 +1098,7 @@ begin
     end;
     if Data^.DataType = 2 then
     begin
-      PackageFile := SerializablePackages.FindPackageFile(Data^.PackageFileName);
+      PackageFile := TPackageFile(SerializablePackages.Items[Data^.PID].PackageFiles.Items[Data^.PFID]);
       if PackageFile <> nil then
       begin
         Data^.InstalledVersion := PackageFile.InstalledFileVersion;
@@ -1119,7 +1124,7 @@ begin
     Data := FVST.GetNodeData(Node);
     if (Data^.DataType = 1) then
     begin
-      Package := SerializablePackages.FindPackage(Data^.PackageName, fpbPackageName);
+      Package := SerializablePackages.Items[Data^.PID];
       if Package <> nil then
       begin
         Data^.DownloadZipURL := Package.DownloadZipURL;
@@ -1133,7 +1138,7 @@ begin
     end;
     if Data^.DataType = 2 then
     begin
-      PackageFile := SerializablePackages.FindPackageFile(Data^.PackageFileName);
+      PackageFile := TPackageFile(SerializablePackages.Items[Data^.PID].PackageFiles.Items[Data^.PFID]);
       if PackageFile <> nil then
       begin
         Data^.UpdateVersion := PackageFile.UpdateVersion;
@@ -1251,7 +1256,7 @@ begin
                 DataSearch := FVST.GetNodeData(NodeSearch);
                 if DataSearch^.DataType = 2 then
                 begin
-                  DependencyPackage := SerializablePackages.FindPackageFile(DataSearch^.PackageFileName);
+                  DependencyPackage := TPackageFile(SerializablePackages.Items[DataSearch^.PID].PackageFiles.Items[DataSearch^.PFID]);
                   if (FVST.CheckState[NodeSearch] <> csCheckedNormal) and
                        (UpperCase(DataSearch^.PackageFileName) = UpperCase(PackageFileName)) and
                          ((SerializablePackages.IsDependencyOk(TPackageDependency(PackageList.Items[I]), DependencyPackage)) and
@@ -1683,7 +1688,7 @@ begin
              Data^.Rating := Trunc((FHoverP.X - R.Left - 1)/16) + 1;
              if Data^.Rating > 5 then
                Data^.Rating := 5;
-             Package := SerializablePackages.FindPackage(Data^.PackageName, fpbPackageName);
+             Package := SerializablePackages.Items[Data^.PID];
              if Package <> nil then
                Package.Rating := Data^.Rating;
              if Data^.PackageDisplayName <> '' then

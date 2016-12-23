@@ -707,7 +707,6 @@ begin
     Exit;
 
   CanGo := True;
-  VisualTree.UpdatePackageStates;
   PackageListFrm := TPackageListFrm.Create(MainFrm);
   try
     PackageListFrm.lbMessage.Caption := rsMainFrm_PackageAlreadyInstalled;
