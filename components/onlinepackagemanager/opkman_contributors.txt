@@ -1,4 +1,4 @@
-#The following people contributed to Package Manger:
+#The following people contributed to Package Manager:
 
 Juha Manninen 
 lainz
