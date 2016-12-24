@@ -70,9 +70,6 @@ After obtaining a CGImageRef, the next step to implement the RawImage_fromDevice
 		<issue name="TListBox.Columns">
 			<short>Listbox Columns property is not supported</short>
 		</issue>
-		<issue name="TListBox.ItemHeight">
-			<short>Listbox ItemHeight property is not supported</short>
-		</issue>
 		<issue name="TCheckBox.Alignment">
 			<short>CheckBox Alignment property is not supported</short>
 		</issue>
