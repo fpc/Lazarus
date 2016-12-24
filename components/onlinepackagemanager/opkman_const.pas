@@ -75,7 +75,7 @@ resourcestring
   rsMainFrm_VSTText_Author = 'Author';
   rsMainFrm_VSTText_LazCompatibility = 'Lazarus compatibility';
   rsMainFrm_VSTText_FPCCompatibility = 'FPC compatibility';
-  rsMainFrm_VSTText_SupportedWidgetsets = 'Supported widget sets';
+  rsMainFrm_VSTText_SupportedWidgetsets = 'Supported widgetsets';
   rsMainFrm_VSTText_Packagetype = 'Package type';
   rsMainFrm_VSTText_Dependecies = 'Dependencies';
   rsMainFrm_VSTText_License = 'License';
@@ -162,27 +162,24 @@ resourcestring
   rsMainFrm_miCopyToClpBrd = 'Copy to clipboard';
   rsMainFrm_miResetRating = 'Reset rating';
   rsMainFrm_PackagenameAlreadyExists = 'A package with the same name already exists!';
-  rsMainFrm_FilenameAlreadyExists = 'A package with the same zip file already exists!';
-  rsMainFrm_PackageAlreadyInstalled = 'The following packages are alrady installed. Continue with install?';
-  rsMainFrm_PackageAlreadyDownloaded = 'The following repository packages already exists in the target folder. Continue?';
+  rsMainFrm_PackageAlreadyInstalled = 'The following packages are already installed. Continue anyway?';
+  rsMainFrm_PackageAlreadyDownloaded = 'The following repository packages already exist in the target folder. Continue?';
   rsMainFrm_PackageUpdateWarning = 'Updating packages from external link is not without a risk!' + sLineBreak + 'Only update if you trust the package maintainer. Continue?';
   rsMainFrm_PackageUpdate0 = 'The following repository packages are not installed or don''t have a valid external download link. The packages will be skipped. Continue?';
-  rsMainFrm_PackageUpdate1 = 'None of the checked repository packages are installed or has a valid external download link.';
+  rsMainFrm_PackageUpdate1 = 'None of the checked repository packages is installed or has a valid external download link.';
   rsMainFrm_rsMessageNoPackage = 'No packages to show.';
   rsMainFrm_rsMessageParsingJSON = 'Parsing JSON. Please wait...';
   rsMainFrm_rsMessageDownload = 'Downloading package list. Please wait...';
-  rsMainFrm_rsMessageNoRepository0 = 'Remote package repository not configured.';
-  rsMainFrm_rsMessageNoRepository1 = 'Do you wish to configure it now?';
+  rsMainFrm_rsMessageNoRepository0 = 'Remote package repository not configured.' + sLineBreak + 'Do you wish to configure it now?';
   rsMainFrm_rsMessageError0 = 'Cannot download package list. Error message:';
   rsMainFrm_rsMessageError1 = 'Invalid JSON file.';
   rsMainFrm_rsMessageError2 = 'Remote server unreachable.';
   rsMainFrm_rsNoPackageToDownload = 'Please check one or more packages!';
   rsMainFrm_rsRepositoryCleanup0 = 'This will delete all non-installed packages from local repository. Continue?';
   rsMainFrm_rsRepositoryCleanup1 = '%s packages deleted!';
-  rsMainFrm_rsPackageDependency0 = 'depends on package:';
-  rsMainFrm_rsPackageDependency1 = 'Resolve dependency?';
-  rsMainFrm_rsPackageDependency2 = 'Not resolving dependencies might lead to install failure!';
-  rsMainFrm_rsPackageDependency4 = 'dependency list. Unchecking it might lead to installing failure. Do you wish to continue?';
+  rsMainFrm_rsPackageDependency0 = 'Package "%s" depends on package "%s". '
+    +'Resolve dependency?';
+  rsMainFrm_rsPackageDependency1 = 'Not resolving dependencies might lead to install failure!';
   rsMainFrm_rsPackageRating = 'Your vote for package "%s" is: %s. Thank you for voting!';
 
   //progress form
@@ -268,8 +265,8 @@ resourcestring
   rsOptions_bAdd_Caption = 'Add';
   rsOptions_bEdit_Caption = 'Edit';
   rsOptions_bDelete_Caption = 'Delete';
-  rsOpitons_lbExcludeFiles_Hint = 'This files will be excluded from repository packages (see: "Create repository package")';
-  rsOpitons_lbExcludeFolders_Hint = 'This folders will be excluded from repository packages (see: "Create repository package")';
+  rsOptions_lbExcludeFiles_Hint = 'These files will be excluded from repository packages (see: "Create repository package")';
+  rsOptions_lbExcludeFolders_Hint = 'These folders will be excluded from repository packages (see: "Create repository package")';
   rsOptions_InputBox_Caption = 'Add new exclusion';
   rsOptions_InputBox_Text0 = 'Type the extension name:';
   rsOptions_InputBox_Text1 = 'Type the folder name:';
@@ -291,7 +288,7 @@ resourcestring
   rsCreateRepositoryPackageFrm_Caption = 'Create repository package';
   rsCreateRepositoryPackageFrm_pnMessage_Caption = 'Please wait...';
   rsCreateRepositoryPackageFrm_cbOpen_Caption = 'Open containing folder after creation';
-  rsCreateRepositoryPackageFrm_lbPackageDir_Caption = 'Select package directory:';
+  rsCreateRepositoryPackageFrm_lbPackageDir_Caption = 'Package directory:';
   rsCreateRepositoryPackageFrm_pnCaption_Caption0 = 'Available packages';
   rsCreateRepositoryPackageFrm_pnCaption_Caption1 = 'Description';
   rsCreateRepositoryPackageFrm_pnCaption_Caption2 = 'Data';
@@ -300,7 +297,7 @@ resourcestring
   rsCreateRepositoryPackageFrm_lbDisplayName_Caption = 'Display name:';
   rsCreateRepositoryPackageFrm_lbLazCompatibility_Caption = 'Lazarus compatibility:';
   rsCreateRepositoryPackageFrm_lbFPCCompatibility_Caption = 'FPC compatibility:';
-  rsCreateRepositoryPackageFrm_lbSupportedWidgetset_Caption = 'Supported widgetset:';
+  rsCreateRepositoryPackageFrm_lbSupportedWidgetset_Caption = 'Supported widgetsets:';
   rsCreateRepositoryPackageFrm_lbHomePageURL_Caption = 'Home page:';
   rsCreateRepositoryPackageFrm_lbDownloadURL_Caption = 'Update link (JSON):';
   rsCreateRepositoryPackageFrm_lbSVNURL_Caption = 'SVN:';
@@ -310,7 +307,7 @@ resourcestring
   rsCreateRepositoryPackageFrm_Error1 = 'Cannot create zip file:';
   rsCreateRepositoryPackageFrm_Error2 = 'Cannot create JSON file:';
   rsCreateRepositoryPackageFrm_Message0 = 'Please select a category for package:';
-  rsCreateRepositoryPackageFrm_Message1 = 'Please enter supported lazarus versions for package:';
+  rsCreateRepositoryPackageFrm_Message1 = 'Please enter supported Lazarus versions for package:';
   rsCreateRepositoryPackageFrm_Message2 = 'Please enter supported FPC versions for package:';
   rsCreateRepositoryPackageFrm_Message3 = 'Please enter supported widgetsets for package:';
   rsCreateRepositoryPackageFrm_Message4 = 'Compressing package. Please wait...';

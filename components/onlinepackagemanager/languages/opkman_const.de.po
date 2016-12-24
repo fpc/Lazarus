@@ -182,11 +182,15 @@ msgid "Lazarus compatibility:"
 msgstr "Lazarus-Kompatibilität"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbpackagedir_caption
-msgid "Select package directory:"
+#, fuzzy
+#| msgid "Select package directory:"
+msgid "Package directory:"
 msgstr "Package-Verzeichnis auswählen:"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbsupportedwidgetset_caption
-msgid "Supported widgetset:"
+#, fuzzy
+#| msgid "Supported widgetset:"
+msgid "Supported widgetsets:"
 msgstr "Unterstütztes Widgetset:"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbsvnurl_caption
@@ -201,7 +205,9 @@ msgid "Please select a category for package:"
 msgstr "Bitte wählen Sie eine Kategorie für Package:"
 
 #: opkman_const.rscreaterepositorypackagefrm_message1
-msgid "Please enter supported lazarus versions for package:"
+#, fuzzy
+#| msgid "Please enter supported lazarus versions for package:"
+msgid "Please enter supported Lazarus versions for package:"
 msgstr "Bitte geben Sie die unterstützten Lazarus-Versionen ein für Package:"
 
 #: opkman_const.rscreaterepositorypackagefrm_message2
@@ -273,10 +279,6 @@ msgstr "Package-Liste filtern nach:"
 msgid "Type filter text"
 msgstr "Filtertext eingeben"
 
-#: opkman_const.rsmainfrm_filenamealreadyexists
-msgid "A package with the same zip file already exists!"
-msgstr "Ein Package mit der selben Zip-Datei existiert bereits!"
-
 #: opkman_const.rsmainfrm_lbfilter_caption
 msgid "Filter by:"
 msgstr "Gefiltert nach:"
@@ -307,11 +309,15 @@ msgid "Reset rating"
 msgstr "Bewertung zurücksetzen"
 
 #: opkman_const.rsmainfrm_packagealreadydownloaded
-msgid "The following repository packages already exists in the target folder. Continue?"
+#, fuzzy
+#| msgid "The following repository packages already exists in the target folder. Continue?"
+msgid "The following repository packages already exist in the target folder. Continue?"
 msgstr "Die folgenden Repository-Packages existieren bereits im Zielverzeichnis. Fortfahren?"
 
 #: opkman_const.rsmainfrm_packagealreadyinstalled
-msgid "The following packages are alrady installed. Continue with install?"
+#, fuzzy
+#| msgid "The following packages are alrady installed. Continue with install?"
+msgid "The following packages are already installed. Continue anyway?"
 msgstr "Die folgenden Packages sind bereits installiert. Mit der Installation fortfahren?"
 
 #: opkman_const.rsmainfrm_packagenamealreadyexists
@@ -323,7 +329,9 @@ msgid "The following repository packages are not installed or don't have a valid
 msgstr "Die folgenden Repository-Packages sind nicht installiert oder haben keinen gültigen Download-Link. Die Packages werden übersprungen. Fortfahren?"
 
 #: opkman_const.rsmainfrm_packageupdate1
-msgid "None of the checked repository packages are installed or has a valid external download link."
+#, fuzzy
+#| msgid "None of the checked repository packages are installed or has a valid external download link."
+msgid "None of the checked repository packages is installed or has a valid external download link."
 msgstr "Keines der ausgewählten Repository-Packages ist installiert oder hat einen gültigen Download-Link."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
@@ -355,12 +363,10 @@ msgid "No packages to show."
 msgstr "Keine Packages zum Anzeigen."
 
 #: opkman_const.rsmainfrm_rsmessagenorepository0
-msgid "Remote package repository not configured."
+msgid ""
+"Remote package repository not configured.\n"
+"Do you wish to configure it now?\n"
 msgstr ""
-
-#: opkman_const.rsmainfrm_rsmessagenorepository1
-msgid "Do you wish to configure it now?"
-msgstr "Wollen Sie es jetzt konfigurieren?"
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson
 msgid "Parsing JSON. Please wait..."
@@ -371,20 +377,16 @@ msgid "Please check one or more packages!"
 msgstr "Bitte prüfen Sie ein oder mehrere Packages!"
 
 #: opkman_const.rsmainfrm_rspackagedependency0
-msgid "depends on package:"
+#, fuzzy,badformat
+#| msgid "depends on package:"
+msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
 msgstr "hängt ab von Package:"
 
 #: opkman_const.rsmainfrm_rspackagedependency1
-msgid "Resolve dependency?"
-msgstr "Abhängigkeit auflösen?"
-
-#: opkman_const.rsmainfrm_rspackagedependency2
+#, fuzzy
+#| msgid "Resolve dependency?"
 msgid "Not resolving dependencies might lead to install failure!"
-msgstr "Nicht aufgelöste Abhängigkeiten können die Installation scheitern lassen!"
-
-#: opkman_const.rsmainfrm_rspackagedependency4
-msgid "dependency list. Unchecking it might lead to installing failure. Do you wish to continue?"
-msgstr "Abhängigkeitenliste. Sie zu deaktivieren kann zu Fehlern bei der Installation führen. Wollen Sie fortfahren?"
+msgstr "Abhängigkeit auflösen?"
 
 #: opkman_const.rsmainfrm_rspackagerating
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
@@ -759,7 +761,9 @@ msgid "Repository filesize"
 msgstr "Repository-Dateigröße"
 
 #: opkman_const.rsmainfrm_vsttext_supportedwidgetsets
-msgid "Supported widget sets"
+#, fuzzy
+#| msgid "Supported widget sets"
+msgid "Supported widgetsets"
 msgstr "Unterstützte Widgetsets"
 
 #: opkman_const.rsmainfrm_vsttext_svnurl
@@ -771,14 +775,6 @@ msgstr "SVN"
 msgctxt "opkman_const.rsmainfrm_vsttext_version"
 msgid "Version"
 msgstr "Version"
-
-#: opkman_const.rsopitons_lbexcludefiles_hint
-msgid "This files will be excluded from repository packages (see: \"Create repository package\")"
-msgstr ""
-
-#: opkman_const.rsopitons_lbexcludefolders_hint
-msgid "This folders will be excluded from repository packages (see: \"Create repository package\")"
-msgstr ""
 
 #: opkman_const.rsoptions_badd_caption
 msgid "Add"
@@ -912,6 +908,16 @@ msgstr "Niemals"
 #: opkman_const.rsoptions_lbcheckforupdates_caption
 msgid "Check for package updates"
 msgstr "Nach Package-Updates suchen"
+
+#: opkman_const.rsoptions_lbexcludefiles_hint
+msgctxt "opkman_const.rsoptions_lbexcludefiles_hint"
+msgid "These files will be excluded from repository packages (see: \"Create repository package\")"
+msgstr ""
+
+#: opkman_const.rsoptions_lbexcludefolders_hint
+msgctxt "opkman_const.rsoptions_lbexcludefolders_hint"
+msgid "These folders will be excluded from repository packages (see: \"Create repository package\")"
+msgstr ""
 
 #: opkman_const.rsoptions_lbfilterdirs_caption
 msgid "Excluded folders (packages)"

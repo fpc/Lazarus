@@ -1264,10 +1264,10 @@ begin
                   begin
                     if (Result = mrNone) or (Result = mrYes) then
                     begin
-                      Msg := rsProgressFrm_lbPackage_Caption + ' "' + Data^.PackageFileName + '" ' + rsMainFrm_rsPackageDependency0 + ' "' + DataSearch^.PackageFileName + '". ' + rsMainFrm_rsPackageDependency1;
+                      Msg := Format(rsMainFrm_rsPackageDependency0, [Data^.PackageFileName, DataSearch^.PackageFileName]);
                       Result := MessageDlgEx(Msg, mtConfirmation, [mbYes, mbYesToAll, mbNo, mbNoToAll, mbCancel], TForm(FVST.Parent.Parent));
                       if Result in [mrNo, mrNoToAll] then
-                        MessageDlgEx(rsMainFrm_rsPackageDependency2, mtInformation, [mbOk], TForm(FVST.Parent.Parent));
+                        MessageDlgEx(rsMainFrm_rsPackageDependency1, mtInformation, [mbOk], TForm(FVST.Parent.Parent));
                       if (Result = mrNoToAll) or (Result = mrCancel) then
                         Exit;
                     end;

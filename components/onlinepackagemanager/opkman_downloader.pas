@@ -331,7 +331,7 @@ begin
     else
     begin
       FErrTyp := etConfig;
-      FErrMsg := rsMainFrm_rsMessageNoRepository0 + sLineBreak + rsMainFrm_rsMessageNoRepository1;
+      FErrMsg := rsMainFrm_rsMessageNoRepository0;
     end;
     if FTimer.Enabled then
       FTimer.StopTimer;

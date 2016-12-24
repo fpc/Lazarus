@@ -187,11 +187,13 @@ msgid "Lazarus compatibility:"
 msgstr "Lazarus kompatibilitás:"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbpackagedir_caption
-msgid "Select package directory:"
+msgid "Package directory:"
 msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_lbsupportedwidgetset_caption
-msgid "Supported widgetset:"
+#, fuzzy
+#| msgid "Supported widgetset:"
+msgid "Supported widgetsets:"
 msgstr "Támogatott vezérlőkészletek:"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbsvnurl_caption
@@ -206,7 +208,7 @@ msgid "Please select a category for package:"
 msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_message1
-msgid "Please enter supported lazarus versions for package:"
+msgid "Please enter supported Lazarus versions for package:"
 msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_message2
@@ -278,10 +280,6 @@ msgstr "Csomaglista szűrése:"
 msgid "Type filter text"
 msgstr "Szűrőszöveg bevitele"
 
-#: opkman_const.rsmainfrm_filenamealreadyexists
-msgid "A package with the same zip file already exists!"
-msgstr "Egy csomag már létezik ugyanezzel a zip fájllal!"
-
 #: opkman_const.rsmainfrm_lbfilter_caption
 msgid "Filter by:"
 msgstr "Szűrés:"
@@ -312,11 +310,13 @@ msgid "Reset rating"
 msgstr ""
 
 #: opkman_const.rsmainfrm_packagealreadydownloaded
-msgid "The following repository packages already exists in the target folder. Continue?"
+msgid "The following repository packages already exist in the target folder. Continue?"
 msgstr ""
 
 #: opkman_const.rsmainfrm_packagealreadyinstalled
-msgid "The following packages are alrady installed. Continue with install?"
+#, fuzzy
+#| msgid "The following packages are alrady installed. Continue with install?"
+msgid "The following packages are already installed. Continue anyway?"
 msgstr "A következő csomagok már telepítve vannak. Folytatás telepítéssel?"
 
 #: opkman_const.rsmainfrm_packagenamealreadyexists
@@ -328,7 +328,7 @@ msgid "The following repository packages are not installed or don't have a valid
 msgstr ""
 
 #: opkman_const.rsmainfrm_packageupdate1
-msgid "None of the checked repository packages are installed or has a valid external download link."
+msgid "None of the checked repository packages is installed or has a valid external download link."
 msgstr ""
 
 #: opkman_const.rsmainfrm_packageupdatewarning
@@ -358,12 +358,12 @@ msgid "No packages to show."
 msgstr "Nincs megjelenítendő csomag."
 
 #: opkman_const.rsmainfrm_rsmessagenorepository0
-msgid "Remote package repository not configured."
+#, fuzzy
+#| msgid "Remote package repository not configured."
+msgid ""
+"Remote package repository not configured.\n"
+"Do you wish to configure it now?\n"
 msgstr "A távoli csomagtároló nincs beállítva."
-
-#: opkman_const.rsmainfrm_rsmessagenorepository1
-msgid "Do you wish to configure it now?"
-msgstr "Szeretné most beállítani?"
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson
 msgid "Parsing JSON. Please wait..."
@@ -374,20 +374,16 @@ msgid "Please check one or more packages!"
 msgstr "Egy vagy több csomagot ki kell jelölni!"
 
 #: opkman_const.rsmainfrm_rspackagedependency0
-msgid "depends on package:"
+#, fuzzy,badformat
+#| msgid "depends on package:"
+msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
 msgstr "függ a következő csomagtól:"
 
 #: opkman_const.rsmainfrm_rspackagedependency1
-msgid "Resolve dependency?"
-msgstr "Függőség feloldása?"
-
-#: opkman_const.rsmainfrm_rspackagedependency2
+#, fuzzy
+#| msgid "Resolve dependency?"
 msgid "Not resolving dependencies might lead to install failure!"
-msgstr "A feloldatlan függőségek a telepítés sikertelenségét okozhatják!"
-
-#: opkman_const.rsmainfrm_rspackagedependency4
-msgid "dependency list. Unchecking it might lead to installing failure. Do you wish to continue?"
-msgstr ""
+msgstr "Függőség feloldása?"
 
 #: opkman_const.rsmainfrm_rspackagerating
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
@@ -772,7 +768,9 @@ msgid "Repository filesize"
 msgstr "Fájlméret (a tárolóban)"
 
 #: opkman_const.rsmainfrm_vsttext_supportedwidgetsets
-msgid "Supported widget sets"
+#, fuzzy
+#| msgid "Supported widget sets"
+msgid "Supported widgetsets"
 msgstr "Támogatott vezérlőkészletek"
 
 #: opkman_const.rsmainfrm_vsttext_svnurl
@@ -784,14 +782,6 @@ msgstr "SVN"
 msgctxt "opkman_const.rsmainfrm_vsttext_version"
 msgid "Version"
 msgstr "Változat"
-
-#: opkman_const.rsopitons_lbexcludefiles_hint
-msgid "This files will be excluded from repository packages (see: \"Create repository package\")"
-msgstr ""
-
-#: opkman_const.rsopitons_lbexcludefolders_hint
-msgid "This folders will be excluded from repository packages (see: \"Create repository package\")"
-msgstr ""
 
 #: opkman_const.rsoptions_badd_caption
 msgid "Add"
@@ -924,6 +914,16 @@ msgstr ""
 
 #: opkman_const.rsoptions_lbcheckforupdates_caption
 msgid "Check for package updates"
+msgstr ""
+
+#: opkman_const.rsoptions_lbexcludefiles_hint
+msgctxt "opkman_const.rsoptions_lbexcludefiles_hint"
+msgid "These files will be excluded from repository packages (see: \"Create repository package\")"
+msgstr ""
+
+#: opkman_const.rsoptions_lbexcludefolders_hint
+msgctxt "opkman_const.rsoptions_lbexcludefolders_hint"
+msgid "These folders will be excluded from repository packages (see: \"Create repository package\")"
 msgstr ""
 
 #: opkman_const.rsoptions_lbfilterdirs_caption

@@ -403,11 +403,11 @@ begin
   bFoldersAdd.Caption := rsOptions_bAdd_Caption;
   bFoldersEdit.Caption := rsOptions_bEdit_Caption;
   bFoldersDelete.Caption := rsOptions_bDelete_Caption;
-  lbExcludeFiles.Hint := rsOpitons_lbExcludeFiles_Hint;
+  lbExcludeFiles.Hint := rsOptions_lbExcludeFiles_Hint;
   lbExcludeFiles.Items.Delimiter := ',';
   lbExcludeFiles.Items.StrictDelimiter := True;
   lbExcludeFiles.Items.DelimitedText := Options.ExcludedFiles;
-  lbExcludeFolders.Hint := rsOpitons_lbExcludeFolders_Hint;
+  lbExcludeFolders.Hint := rsOptions_lbExcludeFolders_Hint;
   lbExcludeFolders.Items.Delimiter := ',';
   lbExcludeFolders.Items.StrictDelimiter := True;
   lbExcludeFolders.Items.DelimitedText := Options.ExcludedFolders;
