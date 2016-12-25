@@ -5,7 +5,6 @@ Public domain Tango https://packages.debian.org/sid/tango-icon-theme
 PNG versions: http://http.debian.net/debian/pool/main/t/tango-icon-theme/tango-icon-theme_0.8.90.orig.tar.gz
 - btncalendar.png
 - btncalculator.png
-- btnfiltercancel.png
 - btnselfile.png
 - btnseldir.png
 - btntime.png (modified Appointment.svg by Michael Fuchs)
@@ -54,3 +53,4 @@ LCL license (created for LCL)
 - btncalccancel.xpm
 - dock/lcl_dock_close.png
 - dock/lcl_dock_restore.png
+- btnfiltercancel.png (by Paul Ishenin)
