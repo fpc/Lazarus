@@ -782,19 +782,19 @@ msgstr "Никогда"
 
 #: opkman_const.rsoptions_cbdelete_caption
 msgid "Delete downloaded zip files after installation/update"
-msgstr ""
+msgstr "Удалять загруженные архивы после установки/обновления"
 
 #: opkman_const.rsoptions_cbdelete_hint
 msgid "If this option is checked the downloaded zip file is always deleted after installation"
-msgstr ""
+msgstr "При включении этого параметра загруженный файл ZIP всегда будет удаляться после установки"
 
 #: opkman_const.rsoptions_cbforcedownloadextract_caption
 msgid "Always force download and extract"
-msgstr ""
+msgstr "Всегда загружать и распаковывать"
 
 #: opkman_const.rsoptions_cbforcedownloadextract_hint
 msgid "If this option is checked the packages are always re-downloaded/extracted before install"
-msgstr ""
+msgstr "При включении этого параметра пакеты всегда повторно загружаются и распаковываются перед установкой"
 
 #: opkman_const.rsoptions_cbproxy_caption
 msgid "Use proxy"
@@ -816,15 +816,15 @@ msgstr "Сопровождающий пакета"
 
 #: opkman_const.rsoptions_edlocalrepositoryarchive_hint
 msgid "The folder where the zip files are downloaded from the remote repository"
-msgstr ""
+msgstr "Каталог для загрузки архивов из удалённого репозитория"
 
 #: opkman_const.rsoptions_edlocalrepositorypackages_hint
 msgid "The folder where the repository packages are extracted/installed"
-msgstr ""
+msgstr "Каталог для распаковки и установки пакетов из репозитория"
 
 #: opkman_const.rsoptions_edlocalrepositoryupdate_hint
 msgid "The folder where the zip files are downloaded from the package maintainer webpage"
-msgstr ""
+msgstr "Каталог для загрузки архивов со страницы сопровождающего"
 
 #: opkman_const.rsoptions_frmcaption
 msgctxt "opkman_const.rsoptions_frmcaption"
@@ -837,31 +837,31 @@ msgstr "Параметры прокси-сервера"
 
 #: opkman_const.rsoptions_inputbox_caption
 msgid "Add new exclusion"
-msgstr ""
+msgstr "Добавить новое исключение"
 
 #: opkman_const.rsoptions_inputbox_conf0
 msgid "Delete selected extension (\"%s\")?"
-msgstr ""
+msgstr "Удалить выбранное расширение (\"%s\")?"
 
 #: opkman_const.rsoptions_inputbox_conf1
 msgid "Delete selected folder (\"%s\")?"
-msgstr ""
+msgstr "Удалить выбранный каталог (\"%s\")?"
 
 #: opkman_const.rsoptions_inputbox_info0
 msgid "Please select a file extension!"
-msgstr ""
+msgstr "Выберите расширение файла!"
 
 #: opkman_const.rsoptions_inputbox_info1
 msgid "Please select a folder!"
-msgstr ""
+msgstr "Выберите каталог!"
 
 #: opkman_const.rsoptions_inputbox_text0
 msgid "Type the extension name:"
-msgstr ""
+msgstr "Введите расширение:"
 
 #: opkman_const.rsoptions_inputbox_text1
 msgid "Type the folder name:"
-msgstr ""
+msgstr "Введите имя каталога:"
 
 #: opkman_const.rsoptions_invaliddirectory_info
 msgid "Please enter a valid directory"
@@ -874,7 +874,7 @@ msgstr "Не проводилось"
 
 #: opkman_const.rsoptions_lbcheckforupdates_caption
 msgid "Check for package updates"
-msgstr ""
+msgstr "Проверять наличие обновлений пакетов"
 
 #: opkman_const.rsoptions_lbexcludefiles_hint
 msgctxt "opkman_const.rsoptions_lbexcludefiles_hint"
@@ -900,15 +900,15 @@ msgstr "Последнее обновление: "
 
 #: opkman_const.rsoptions_lblocalrepositoryarchive_caption
 msgid "Archive directory"
-msgstr ""
+msgstr "Каталог архивов"
 
 #: opkman_const.rsoptions_lblocalrepositorypackages_caption
 msgid "Local repository"
-msgstr ""
+msgstr "Локальный репозиторий"
 
 #: opkman_const.rsoptions_lblocalrepositoryupdate_caption
 msgid "Update directory"
-msgstr ""
+msgstr "Каталог обновлений"
 
 #: opkman_const.rsoptions_lbpassword_caption
 msgid "Password"
@@ -920,11 +920,11 @@ msgstr "Порт"
 
 #: opkman_const.rsoptions_lbremoterepository_caption
 msgid "Remote repository"
-msgstr ""
+msgstr "Удалённый репозиторий"
 
 #: opkman_const.rsoptions_lbselectprofile_caption
 msgid "Select profile"
-msgstr ""
+msgstr "Выберите профиль"
 
 #: opkman_const.rsoptions_lbserver_caption
 msgid "Server"
