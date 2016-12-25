@@ -6621,6 +6621,7 @@ images/componenttreeview/oi_control.png -text svneol=unset#image/png
 images/componenttreeview/oi_form.png -text svneol=unset#image/png
 images/componenttreeview/oi_item.png -text svneol=unset#image/png
 images/componenttreeview_list.txt svneol=native#text/plain
+images/copyright.txt svneol=native#text/plain
 images/debugger/callstack_bottom.png -text
 images/debugger/callstack_goto.png -text
 images/debugger/callstack_more.png -text

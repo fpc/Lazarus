@@ -1,0 +1,8 @@
+LICENSE AND COPYRIGHT INFORMATION ABOUT IMAGES USED IN LAZARUS IDE
+------------------------------------------------------------------
+
+Public domain Tango https://packages.debian.org/sid/tango-icon-theme
+- ToDo
+
+Creative Commons. Author and source mentioned.
+- pkg_sortalphabetically.png, originally sort_ascend.png by Momenticons (got from findicons.com)
