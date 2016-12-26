@@ -33,6 +33,7 @@ begin
     P.Dependencies.Add('fcl-process');
     P.Dependencies.Add('fcl-db');
     P.Dependencies.Add('fcl-image');
+    P.Dependencies.Add('fcl-registry');
     P.Dependencies.Add('chm');
     P.Dependencies.Add('univint',[darwin, iphonesim]);
     P.Dependencies.Add('cocoaint',[darwin, iphonesim]);
