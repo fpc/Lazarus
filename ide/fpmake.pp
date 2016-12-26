@@ -2,7 +2,10 @@
 {$mode objfpc}{$H+}
 program fpmake;
 
-uses fpmkunit;
+uses
+  fpmkunit,
+  sysutils,
+  classes;
 {$endif ALLPACKAGES}
 
 function IdeGetApplicationName: string;
