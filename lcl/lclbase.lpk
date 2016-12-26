@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="7"/>
-    <Files Count="282">
+    <Files Count="283">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -1159,6 +1159,10 @@
         <Filename Value="lclplatformdef.pas"/>
         <UnitName Value="LCLPlatformDef"/>
       </Item282>
+      <Item283>
+        <Filename Value="industrialbase.pp"/>
+        <UnitName Value="IndustrialBase"/>
+      </Item283>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>
