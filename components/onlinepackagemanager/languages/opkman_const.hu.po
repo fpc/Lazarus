@@ -904,12 +904,14 @@ msgid "Type the folder name:"
 msgstr ""
 
 #: opkman_const.rsoptions_invaliddirectory_info
-msgid "Please enter a valid directory"
+#, fuzzy
+#| msgid "Please enter a valid directory"
+msgid "Please enter a valid directory!"
 msgstr "Érvényes könyvtárat kell megadni"
 
 #: opkman_const.rsoptions_lastupdate_never
 msgctxt "opkman_const.rsoptions_lastupdate_never"
-msgid "Never"
+msgid "never"
 msgstr ""
 
 #: opkman_const.rsoptions_lbcheckforupdates_caption

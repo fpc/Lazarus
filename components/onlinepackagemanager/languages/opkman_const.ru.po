@@ -864,13 +864,13 @@ msgid "Type the folder name:"
 msgstr "Введите имя каталога:"
 
 #: opkman_const.rsoptions_invaliddirectory_info
-msgid "Please enter a valid directory"
-msgstr ""
+msgid "Please enter a valid directory!"
+msgstr "Введите корректный каталог!"
 
 #: opkman_const.rsoptions_lastupdate_never
 msgctxt "opkman_const.rsoptions_lastupdate_never"
-msgid "Never"
-msgstr "Не проводилось"
+msgid "never"
+msgstr "не проводилось"
 
 #: opkman_const.rsoptions_lbcheckforupdates_caption
 msgid "Check for package updates"
@@ -888,11 +888,11 @@ msgstr "Эти каталоги будут исключены из состав�
 
 #: opkman_const.rsoptions_lbfilterdirs_caption
 msgid "Excluded folders (packages)"
-msgstr ""
+msgstr "Исключённые каталоги (пакеты)"
 
 #: opkman_const.rsoptions_lbfilterfiles_caption
 msgid "Excluded files (packages)"
-msgstr ""
+msgstr "Исключённые файлы (пакеты)"
 
 #: opkman_const.rsoptions_lblastupdate_caption
 msgid "Last update: "
@@ -936,19 +936,19 @@ msgstr "Имя пользователя"
 
 #: opkman_const.rsoptions_proxyport_info
 msgid "Please enter the proxy server port!"
-msgstr ""
+msgstr "Введите порт прокси-сервера!"
 
 #: opkman_const.rsoptions_proxyserver_info
 msgid "Please enter the proxy server address!"
-msgstr ""
+msgstr "Введите адрес прокси-сервера!"
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"
-msgstr ""
+msgstr "Введите адрес удалённого репозитория!"
 
 #: opkman_const.rsoptions_restoredefaults_conf
 msgid "This will restore the default settings. Continue?"
-msgstr ""
+msgstr "Это действие восстановит значения параметров по умолчанию. Продолжить?"
 
 #: opkman_const.rsoptions_tsfolders_caption
 msgid "Folders"
@@ -983,15 +983,15 @@ msgstr "Да"
 
 #: opkman_const.rspackagelistfrm_caption0
 msgid "Installed package list"
-msgstr ""
+msgstr "Список установленных пакетов"
 
 #: opkman_const.rspackagelistfrm_caption1
 msgid "Downloaded package list"
-msgstr ""
+msgstr "Список загруженных пакетов"
 
 #: opkman_const.rspackagelistfrm_caption2
 msgid "Update package list"
-msgstr ""
+msgstr "Список обновляемых пакетов"
 
 #: opkman_const.rspackagesfound
 msgid "(%s packages found)"
@@ -999,19 +999,19 @@ msgstr "(найдено пакетов: %s)"
 
 #: opkman_const.rsprogressfrm_caption0
 msgid "Downloading packages"
-msgstr ""
+msgstr "Идёт загрузка пакетов"
 
 #: opkman_const.rsprogressfrm_caption1
 msgid "Extracting packages"
-msgstr ""
+msgstr "Идёт распаковка пакетов"
 
 #: opkman_const.rsprogressfrm_caption2
 msgid "Installing packages"
-msgstr ""
+msgstr "Идёт установка пакетов"
 
 #: opkman_const.rsprogressfrm_caption3
 msgid "Updating packages"
-msgstr ""
+msgstr "Идёт обновление пакетов"
 
 #: opkman_const.rsprogressfrm_caption4
 msgid ". Please wait..."

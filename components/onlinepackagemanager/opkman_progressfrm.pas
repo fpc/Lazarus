@@ -210,7 +210,7 @@ procedure TProgressFrm.DoOnPackageDownloadProgress(Sender: TObject; AFrom, ATo: 
   ACnt, ATotCnt: Integer; ACurPos, ACurSize, ATotPos, ATotSize: Int64;
   AElapsed, ARemaining, ASpeed: LongInt);
 begin
-  Caption := rsProgressfrm_Caption0 + '(' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) +')' + rsProgressFrm_Caption4;
+  Caption := rsProgressfrm_Caption0 + ' (' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) +')' + rsProgressFrm_Caption4;
   lbPackageData.Caption := ExtractFileName(ATo);
   lbSpeedData.Caption := FormatSpeed(ASpeed);
   lbSpeedData.Update;
@@ -275,7 +275,7 @@ procedure TProgressFrm.DoOnZipProgress(Sender: TObject; AZipfile: String;
   ACnt, ATotCnt: Integer;  ACurPos, ACurSize, ATotPos, ATotSize: Int64;
   AElapsed, ARemaining, ASpeed: LongInt);
 begin
-  Caption := rsProgressfrm_Caption1 + '(' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) +')' + rsProgressFrm_Caption4;
+  Caption := rsProgressfrm_Caption1 + ' (' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) +')' + rsProgressFrm_Caption4;
   lbPackageData.Caption := AZipFile;
   lbSpeedData.Caption := FormatSpeed(ASpeed);
   lbSpeedData.Update;
@@ -343,7 +343,7 @@ var
 begin
   FCnt := ACnt;
   FTotCnt := ATotCnt;
-  Caption := rsProgressFrm_Caption2 + '(' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) + ')' + rsProgressFrm_Caption4;
+  Caption := rsProgressFrm_Caption2 + ' (' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) + ')' + rsProgressFrm_Caption4;
   Node := FVST.AddChild(nil);
   Data := FVST.GetNodeData(Node);
   case AInstallMessage of
@@ -448,7 +448,7 @@ var
 begin
   FCnt := ACnt;
   FTotCnt := ATotCnt;
-  Caption := rsProgressFrm_Caption3 + '(' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) +')' + rsProgressFrm_Caption4;
+  Caption := rsProgressFrm_Caption3 + ' (' + IntToStr(ACnt) + '/' + IntToStr(ATotCnt) +')' + rsProgressFrm_Caption4;
   Node := FVST.AddChild(nil);
   Data := FVST.GetNodeData(Node);
   case AUtyp of

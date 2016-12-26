@@ -249,7 +249,7 @@ resourcestring
   rsOptions_RemoteRepository_Information = 'Please enter the remote repository address!';
   rsOptions_ProxyServer_Info = 'Please enter the proxy server address!';
   rsOptions_ProxyPort_Info = 'Please enter the proxy server port!';
-  rsOptions_InvalidDirectory_Info = 'Please enter a valid directory';
+  rsOptions_InvalidDirectory_Info = 'Please enter a valid directory!';
   rsOptions_RestoreDefaults_Conf = 'This will restore the default settings. Continue?';
   rsOptions_lbCheckForUpdates_Caption = 'Check for package updates';
   rsOptions_cbCheckForUpdates_Item0 = 'Every few minutes';
@@ -259,7 +259,7 @@ resourcestring
   rsOptions_cbCheckForUpdates_Item4 = 'Montly';
   rsOptions_cbCheckForUpdates_Item5 = 'Never';
   rsOptions_lbLastUpdate_Caption = 'Last update: ';
-  rsOptions_LastUpdate_Never = 'Never';
+  rsOptions_LastUpdate_Never = 'never';
   rsOptions_lbFilterFiles_Caption = 'Excluded files (packages)';
   rsOptions_lbFilterDirs_Caption = 'Excluded folders (packages)';
   rsOptions_bAdd_Caption = 'Add';
