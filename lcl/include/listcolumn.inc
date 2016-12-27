@@ -163,6 +163,8 @@ begin
   
   LV := TListColumns(Collection).FOwner;
   TWSCustomListViewClass(LV.WidgetSetClass).ColumnSetCaption(LV, Index, Self, FCaption);
+  if FAutoSize then
+    TWSCustomListViewClass(LV.WidgetSetClass).ColumnSetAutosize(LV, Index, Self, FAutosize);
 end;
 
 procedure TListColumn.SetWidth(const AValue: TWidth);
