@@ -456,21 +456,16 @@ begin
         begin
           // if we change selstart in OnChange event new cursor pos need to
           // be postponed in TGtk2WSCustomEdit.SetSelStart
-          NeedCursorCheck := True;
           if g_object_get_data(PGObject(Widget),'lcl-gtkentry-pasted-data') <> nil then
           begin
+            NeedCursorCheck := True;
             g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',nil);
             gtk_editable_set_position(PGtkEditable(Widget), GStart);
           end else
           begin
-            //NeedCursorCheck := True;
-            if gtk_minor_version < 17 then
-            begin
-              g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',Widget);
-              g_idle_add(@GtkEntryDelayCursorPos, Widget);
-              exit;
-            end else
-              gtk_editable_set_position(PGtkEditable(Widget), GStart + 1);
+            g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',Widget);
+            g_idle_add(@GtkEntryDelayCursorPos, Widget);
+            exit;
           end;
         end;
       end;
@@ -601,11 +596,8 @@ begin
     begin
       {mark as invalid event for gtkchanged_editbox, so
        it doesn't update cursor pos or we have a mess.}
-      if (gtk_major_version = 2) and (gtk_minor_version < 17) then
-      begin
-        Info := GetWidgetInfo(Widget, False);
-        include(Info^.Flags, wwiInvalidEvent);
-      end;
+      Info := GetWidgetInfo(Widget, False);
+      include(Info^.Flags, wwiInvalidEvent);
       PGtkEntry(Widget)^.current_pos := GStart - 1;
     end;
   end;
@@ -2800,14 +2792,10 @@ var
   Info: PWidgetInfo;
 begin
   EventTrace('Cut to clip', data);
-  if (Widget=nil) then ;
-  if (gtk_major_version = 2) and (gtk_minor_version < 17) then
+  if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
   begin
-    if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
-    begin
-      Info := GetWidgetInfo(Widget, False);
-      include(Info^.Flags, wwiInvalidEvent);
-    end;
+    Info := GetWidgetInfo(Widget, False);
+    include(Info^.Flags, wwiInvalidEvent);
   end;
   Mess.msg := LM_CUT;
   Result:= DeliverMessage(Data, Mess) = 0;

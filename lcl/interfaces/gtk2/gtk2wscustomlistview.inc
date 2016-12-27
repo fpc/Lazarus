@@ -1499,17 +1499,7 @@ begin
           //gtk2 iter has no focus??
           Path := gtk_tree_path_new_from_string(PChar(IntToStr(AIndex)));
           if GTK_IS_TREE_VIEW(MainView) then
-          begin
-            if AIsSet then
-              gtk_tree_view_set_cursor(PGtkTreeView(MainView), Path, nil, False)
-            else
-            begin
-              if (gtk_major_version = 2) and (gtk_minor_version < 14) then
-                gtk_tree_view_set_cursor(PGtkTreeView(MainView), nil, nil, False)
-              else
-                gtk_tree_view_set_cursor(PGtkTreeView(MainView), Path, nil, False);
-            end;
-          end
+            gtk_tree_view_set_cursor(PGtkTreeView(MainView), Path, nil, False)
           else
           if GTK_IS_ICON_VIEW(MainView) then
             gtk_icon_view_set_cursor(PGtkIconView(MainView), Path, nil, False);
