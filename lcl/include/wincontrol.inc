@@ -5031,6 +5031,7 @@ end;
 procedure TWinControl.PaintTo(ACanvas: TCanvas; X, Y: Integer);
 begin
   PaintTo(ACanvas.Handle, X, Y);
+  ACanvas.Changed;
 end;
 
 procedure TWinControl.SetShape(AShape: TBitmap);
