@@ -1,0 +1,953 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    LCLTaskDialog
+  ====================================================================
+-->
+
+<module name="LCLTaskDialog">
+<short></short>
+<descr>
+</descr>
+
+<!-- enumeration type Visibility: default -->
+<element name="TCommonButton">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TCommonButton.cbOK">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TCommonButton.cbYes">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TCommonButton.cbNo">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TCommonButton.cbCancel">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TCommonButton.cbRetry">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TCommonButton.cbClose">
+<short></short>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TCommonButtons">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TTaskDialogIcon">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogIcon.tiBlank">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogIcon.tiWarning">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogIcon.tiQuestion">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogIcon.tiError">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogIcon.tiInformation">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogIcon.tiNotUsed">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogIcon.tiShield">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TTaskDialogFooterIcon">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFooterIcon.tfiBlank">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFooterIcon.tfiWarning">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFooterIcon.tfiQuestion">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFooterIcon.tfiError">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFooterIcon.tfiInformation">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFooterIcon.tfiShield">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TTaskDialogFlag">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfEnableHyperLinks">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfUseHIconMain">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfUseHIconFooter">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfAllowDialogCancellation">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfUseCommandLinks">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfUseCommandLinksNoIcon">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfExpandFooterArea">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfExpandByDefault">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfVerificationFlagChecked">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfShowProgressBar">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfShowMarqueeProgressBar">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfCallbackTimer">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfPositionRelativeToWindow">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfRtlLayout">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfNoDefaultRadioButton">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfCanBeMinimized">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfQuery">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfQueryMasked">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogFlag.tdfQueryFieldFocused">
+<short></short>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TTaskDialogFlags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PTaskDialog">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TTaskDialogButtonClickedEvent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialogButtonClickedEvent.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialogButtonClickedEvent.AButtonID">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialogButtonClickedEvent.ACanClose">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TTaskDialogElement">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogElement.tdeContent">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogElement.tdeExpandedInfo">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogElement.tdeFooter">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogElement.tdeMainInstruction">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogElement.tdeEdit">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTaskDialogElement.tdeVerif">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TEmulatedTaskDialog">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TEmulatedTaskDialog.HandleEmulatedButtonClicked">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TEmulatedTaskDialog.HandleEmulatedButtonClicked.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TEmulatedTaskDialog.KeyDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TEmulatedTaskDialog.KeyDown.Key">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TEmulatedTaskDialog.KeyDown.Shift">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TEmulatedTaskDialog.CreateNew">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TEmulatedTaskDialog.CreateNew.AOwner">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TEmulatedTaskDialog.CreateNew.Num">
+<short></short>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TEmulatedTaskDialog.Owner">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TEmulatedTaskDialog.Element">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TEmulatedTaskDialog.Combo">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TEmulatedTaskDialog.Edit">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TEmulatedTaskDialog.Verif">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TTaskDialogImplementation">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialogImplementation.OnButtonClicked">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialogImplementation.Emulated">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialogImplementation.Wnd">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialogImplementation.Form">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TTaskDialog">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialog.Title">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialog.Inst">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialog.Content">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialog.Buttons">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialog.Radios">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialog.Info">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialog.InfoExpanded">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialog.InfoCollapse">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialog.Footer">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialog.Verify">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialog.Selection">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialog.Query">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialog.RadioRes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialog.SelectionRes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialog.VerifyChecked">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialog.Dialog">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TTaskDialog.Execute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTaskDialog.Execute.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialog.Execute.aCommonButtons">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialog.Execute.aButtonDef">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialog.Execute.aFlags">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialog.Execute.aDialogIcon">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialog.Execute.aFooterIcon">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialog.Execute.aRadioDef">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialog.Execute.aWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialog.Execute.aParent">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialog.Execute.aNonNative">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialog.Execute.aEmulateClassicStyle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialog.Execute.aOnButtonClicked">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TTaskDialog.SetElementText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialog.SetElementText.element">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialog.SetElementText.Text">
+<short></short>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TTaskDialogEx">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialogEx.Base">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialogEx.CommonButtons">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialogEx.ButtonDef">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialogEx.Flags">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialogEx.DialogIcon">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialogEx.FooterIcon">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialogEx.RadioDef">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialogEx.Width">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialogEx.NonNative">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialogEx.EmulateClassicStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TTaskDialogEx.OnButtonClicked">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TTaskDialogEx.Init">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TTaskDialogEx.Execute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTaskDialogEx.Execute.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialogEx.Execute.aParent">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UnAmp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UnAmp.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UnAmp.s">
+<short></short>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="DefaultTaskDialog">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function type Visibility: default -->
+<element name="TTaskDialogTranslate">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTaskDialogTranslate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTaskDialogTranslate.aString">
+<short></short>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TaskDialog_Translate">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DefaultFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="DefaultFont.Result">
+<short></short>
+</element>
+
+</module> <!-- LCLTaskDialog -->
+
+</package>
+</fpdoc-descriptions>

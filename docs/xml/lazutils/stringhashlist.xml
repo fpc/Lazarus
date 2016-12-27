@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    StringHashList
+  ====================================================================
+-->
+
+<module name="StringHashList">
+<short></short>
+<descr>
+</descr>
+
+<!-- pointer type Visibility: default -->
+<element name="PStringHashItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TStringHashItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TStringHashItem.HashValue">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TStringHashItem.Key">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TStringHashItem.Data">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PStringHashItemList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TStringHashList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TStringHashList.FList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TStringHashList.FCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TStringHashList.fCaseSensitive">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TStringHashList.BinarySearch">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TStringHashList.BinarySearch.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.BinarySearch.HashValue">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TStringHashList.CompareString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TStringHashList.CompareString.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.CompareString.Value1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.CompareString.Value2">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TStringHashList.CompareValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TStringHashList.CompareValue.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.CompareValue.Value1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.CompareValue.Value2">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TStringHashList.FindHashBoundaries">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.FindHashBoundaries.HashValue">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.FindHashBoundaries.StartFrom">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.FindHashBoundaries.First">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.FindHashBoundaries.Last">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TStringHashList.GetData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TStringHashList.GetData.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.GetData.S">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TStringHashList.SetCaseSensitive">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.SetCaseSensitive.Value">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TStringHashList.Delete">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Delete.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TStringHashList.SetData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.SetData.S">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.SetData.AValue">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TStringHashList.HashOf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: protected -->
+<element name="TStringHashList.HashOf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.HashOf.Key">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TStringHashList.Insert">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Insert.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Insert.Item">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TStringHashList.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Create.CaseSensitivity">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TStringHashList.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TStringHashList.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TStringHashList.Add.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Add.S">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Add.ItemData">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TStringHashList.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TStringHashList.Find">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TStringHashList.Find.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Find.S">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Find.Data">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TStringHashList.Remove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TStringHashList.Remove.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Remove.S">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringHashList.Remove.Data">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TStringHashList.CaseSensitive">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TStringHashList.Count">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TStringHashList.Data">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TStringHashList.Data.S">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TStringHashList.List">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- StringHashList -->
+
+</package>
+</fpdoc-descriptions>

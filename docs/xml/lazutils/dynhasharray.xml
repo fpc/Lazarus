@@ -1,0 +1,1173 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    DynHashArray
+  ====================================================================
+-->
+
+<module name="DynHashArray">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TDynHashArray">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function type Visibility: default -->
+<element name="THashFunction">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THashFunction.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashFunction.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THashFunction.Item">
+<short></short>
+</element>
+
+<!-- function type Visibility: default -->
+<element name="TOwnerHashFunction">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TOwnerHashFunction.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOwnerHashFunction.Item">
+<short></short>
+</element>
+
+<!-- function type Visibility: default -->
+<element name="TOnGetKeyForHashItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TOnGetKeyForHashItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnGetKeyForHashItem.Item">
+<short></short>
+</element>
+
+<!-- function type Visibility: default -->
+<element name="TOnEachHashItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TOnEachHashItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnEachHashItem.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnEachHashItem.Item">
+<short></short>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PDynHashArrayItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TDynHashArrayItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDynHashArrayItem.Item">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDynHashArrayItem.Next">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDynHashArrayItem.Prior">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDynHashArrayItem.IsOverflow">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TDynHashArrayOption">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TDynHashArrayOption.dhaoCachingEnabled">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TDynHashArrayOption.dhaoCacheContains">
+<short></short>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TDynHashArrayOptions">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FItems">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FCapacity">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FMinCapacity">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FMaxCapacity">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FFirstItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FHashCacheItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FHashCacheIndex">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FLowWaterMark">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FHighWaterMark">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FCustomHashFunction">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FOnGetKeyForHashItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FOptions">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FOwnerHashFunction">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FContainsCache">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TDynHashArray.NewHashItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TDynHashArray.NewHashItem.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TDynHashArray.DisposeHashItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.DisposeHashItem.ADynHashArrayItem">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TDynHashArray.ComputeWaterMarks">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TDynHashArray.SetCapacity">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SetCapacity.NewCapacity">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TDynHashArray.SetCustomHashFunction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SetCustomHashFunction.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TDynHashArray.SetOnGetKeyForHashItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SetOnGetKeyForHashItem.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TDynHashArray.SetOptions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SetOptions.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TDynHashArray.SetOwnerHashFunction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SetOwnerHashFunction.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDynHashArray.RebuildItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDynHashArray.SaveCacheItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SaveCacheItem.Item">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SaveCacheItem.Index">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TDynHashArray.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.Create.InitialMinCapacity">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TDynHashArray.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDynHashArray.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.Add.Item">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynHashArray.Contains">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TDynHashArray.Contains.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.Contains.Item">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynHashArray.ContainsKey">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TDynHashArray.ContainsKey.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.ContainsKey.Key">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDynHashArray.Remove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.Remove.Item">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDynHashArray.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDynHashArray.ClearCache">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynHashArray.First">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TDynHashArray.First.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDynHashArray.Count">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynHashArray.IndexOf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TDynHashArray.IndexOf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.IndexOf.AnItem">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynHashArray.IndexOfKey">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TDynHashArray.IndexOfKey.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.IndexOfKey.Key">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynHashArray.FindHashItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TDynHashArray.FindHashItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.FindHashItem.Item">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynHashArray.FindHashItemWithKey">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TDynHashArray.FindHashItemWithKey.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.FindHashItemWithKey.Key">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynHashArray.FindItemWithKey">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TDynHashArray.FindItemWithKey.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.FindItemWithKey.Key">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynHashArray.GetHashItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TDynHashArray.GetHashItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.GetHashItem.HashIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDynHashArray.Delete">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.Delete.ADynHashArrayItem">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDynHashArray.AssignTo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.AssignTo.List">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDynHashArray.ForEach">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.ForEach.Func">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynHashArray.SlowAlternativeHashMethod">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TDynHashArray.SlowAlternativeHashMethod.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SlowAlternativeHashMethod.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SlowAlternativeHashMethod.Item">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynHashArray.ConsistencyCheck">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TDynHashArray.ConsistencyCheck.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDynHashArray.WriteDebugReport">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDynHashArray.FirstHashItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDynHashArray.MinCapacity">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDynHashArray.MaxCapacity">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDynHashArray.Capacity">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDynHashArray.CustomHashFunction">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDynHashArray.OwnerHashFunction">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDynHashArray.OnGetKeyForHashItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDynHashArray.Options">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDynHashArrayItemMemManager">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArrayItemMemManager.FFirstFree">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArrayItemMemManager.FFreeCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArrayItemMemManager.FCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArrayItemMemManager.FMinFree">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynHashArrayItemMemManager.FMaxFreeRatio">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TDynHashArrayItemMemManager.SetMaxFreeRatio">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArrayItemMemManager.SetMaxFreeRatio.NewValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TDynHashArrayItemMemManager.SetMinFree">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArrayItemMemManager.SetMinFree.NewValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TDynHashArrayItemMemManager.DisposeFirstFreeItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDynHashArrayItemMemManager.DisposeItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynHashArrayItemMemManager.DisposeItem.ADynHashArrayItem">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynHashArrayItemMemManager.NewItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TDynHashArrayItemMemManager.NewItem.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDynHashArrayItemMemManager.MinimumFreeCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDynHashArrayItemMemManager.MaximumFreeRatio">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDynHashArrayItemMemManager.Count">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDynHashArrayItemMemManager.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TDynHashArrayItemMemManager.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TDynHashArrayItemMemManager.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynHashArrayItemMemManager.ConsistencyCheck">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TDynHashArrayItemMemManager.ConsistencyCheck.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDynHashArrayItemMemManager.WriteDebugReport">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="EDynHashArrayException">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="ItemMemManager">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- DynHashArray -->
+
+</package>
+</fpdoc-descriptions>

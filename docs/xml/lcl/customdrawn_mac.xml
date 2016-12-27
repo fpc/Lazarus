@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    CustomDrawn_Mac
+  ====================================================================
+-->
+
+<module name="CustomDrawn_Mac">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TCDDrawerMac">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerMac.DrawExpandTriangle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawExpandTriangle.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawExpandTriangle.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawExpandTriangle.AX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawExpandTriangle.AY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawExpandTriangle.AFacing">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerMac.DrawMacSquareButton">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawMacSquareButton.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawMacSquareButton.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawMacSquareButton.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawMacSquareButton.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawMacSquareButton.AStateEx">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCDDrawerMac.GetMeasures">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TCDDrawerMac.GetMeasures.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.GetMeasures.AMeasureID">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerMac.DrawButton">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawButton.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawButton.ADestPos">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawButton.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawButton.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawButton.AStateEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCDDrawerMac.DrawToolBarItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawToolBarItem.ADest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawToolBarItem.ASize">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawToolBarItem.ACurItem">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawToolBarItem.AX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawToolBarItem.AY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawToolBarItem.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCDDrawerMac.DrawToolBarItem.AStateEx">
+<short></short>
+</element>
+
+</module> <!-- CustomDrawn_Mac -->
+
+</package>
+</fpdoc-descriptions>

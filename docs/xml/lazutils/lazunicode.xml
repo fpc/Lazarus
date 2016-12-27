@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    LazUnicode
+  ====================================================================
+-->
+
+<module name="LazUnicode">
+<short></short>
+<descr>
+</descr>
+
+<!-- function Visibility: default -->
+<element name="CodePointCopy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CodePointCopy.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CodePointCopy.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CodePointCopy.StartCharIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CodePointCopy.CharCount">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CodePointLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CodePointLength.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CodePointLength.s">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CodePointPos">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CodePointPos.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CodePointPos.SearchForText">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CodePointPos.SearchInText">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CodePointPos.StartPos">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CodePointSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CodePointSize.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CodePointSize.p">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="IsCombining">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="IsCombining.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsCombining.AChar">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="UnicodeToWinCP">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="UnicodeToWinCP.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="UnicodeToWinCP.s">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="WinCPToUnicode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="WinCPToUnicode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WinCPToUnicode.s">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TUnicodeEnumeratorBase">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TUnicodeEnumeratorBase.fCurrent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TUnicodeEnumeratorBase.fCurrentPos">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TUnicodeEnumeratorBase.fEndPos">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TUnicodeEnumeratorBase.fCurrentCodeUnitCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TUnicodeEnumeratorBase.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TUnicodeEnumeratorBase.Create.A">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TUnicodeEnumeratorBase.Current">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TUnicodeEnumeratorBase.CurrentCodeUnitCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TCodePointEnumerator">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCodePointEnumerator.MoveNext">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TCodePointEnumerator.MoveNext.Result">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TUnicodeCharacterEnumerator">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TUnicodeCharacterEnumerator.fCurrentCodePointCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TUnicodeCharacterEnumerator.CurrentCodePointCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TUnicodeCharacterEnumerator.MoveNext">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TUnicodeCharacterEnumerator.MoveNext.Result">
+<short></short>
+</element>
+
+<!-- operator Visibility: default -->
+<element name="enumerator(string):TCodePointEnumerator">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="enumerator(string):TCodePointEnumerator.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="enumerator(string):TCodePointEnumerator.A">
+<short></short>
+</element>
+
+</module> <!-- LazUnicode -->
+
+</package>
+</fpdoc-descriptions>

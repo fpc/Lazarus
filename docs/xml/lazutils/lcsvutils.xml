@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    lcsvutils
+  ====================================================================
+-->
+
+<module name="lcsvutils">
+<short></short>
+<descr>
+</descr>
+
+<!-- procedure type Visibility: default -->
+<element name="TCSVRecordProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCSVRecordProc.Fields">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TCSVEncoding">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TCSVEncoding.ceAuto">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TCSVEncoding.ceUTF8">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TCSVEncoding.ceUTF16">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TCSVEncoding.ceUTF16be">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="LoadFromCSVStream">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LoadFromCSVStream.AStream">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LoadFromCSVStream.AProc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LoadFromCSVStream.ADelimiter">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LoadFromCSVStream.CSVEncoding">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="LoadFromCSVFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LoadFromCSVFile.aFilename">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LoadFromCSVFile.AProc">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LoadFromCSVFile.ADelimiter">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LoadFromCSVFile.CSVEncoding">
+<short></short>
+</element>
+
+</module> <!-- lcsvutils -->
+
+</package>
+</fpdoc-descriptions>

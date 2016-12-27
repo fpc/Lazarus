@@ -1,0 +1,842 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    LazFreeTypeFPImageDrawer
+  ====================================================================
+-->
+
+<module name="LazFreeTypeFPImageDrawer">
+<short></short>
+<descr>
+</descr>
+
+<!-- procedure type Visibility: default -->
+<element name="TLazIntfImageGetPixelAtProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImageGetPixelAtProc.p">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImageGetPixelAtProc.Color">
+<short></short>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TLazIntfImageSetPixelAtProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImageSetPixelAtProc.p">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImageSetPixelAtProc.Color">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TFPImageFreeTypeDrawer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFPImageFreeTypeDrawer.FColor">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFPImageFreeTypeDrawer.FCurX">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFPImageFreeTypeDrawer.FCurY">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TFPImageFreeTypeDrawer.FImage">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFPImageFreeTypeDrawer.MoveToPixel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.MoveToPixel.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.MoveToPixel.y">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFPImageFreeTypeDrawer.GetCurrentColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: protected -->
+<element name="TFPImageFreeTypeDrawer.GetCurrentColor.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFPImageFreeTypeDrawer.SetCurrentColorAndMoveRight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.SetCurrentColorAndMoveRight.AColor">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFPImageFreeTypeDrawer.MoveRight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFPImageFreeTypeDrawer.GetClipRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: protected -->
+<element name="TFPImageFreeTypeDrawer.GetClipRect.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFPImageFreeTypeDrawer.RenderDirectly">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.RenderDirectly.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.RenderDirectly.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.RenderDirectly.tx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.RenderDirectly.data">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFPImageFreeTypeDrawer.RenderDirectlyClearType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.RenderDirectlyClearType.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.RenderDirectlyClearType.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.RenderDirectlyClearType.tx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.RenderDirectlyClearType.data">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFPImageFreeTypeDrawer.InternalMergeColorOver">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.InternalMergeColorOver.merge">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.InternalMergeColorOver.c">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.InternalMergeColorOver.calpha">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFPImageFreeTypeDrawer.MergeColorOver">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.MergeColorOver.merge">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.MergeColorOver.c">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.MergeColorOver.ApplyOpacity">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFPImageFreeTypeDrawer.DrawPixelAndMoveRight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawPixelAndMoveRight.c">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawPixelAndMoveRight.applyOpacity">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFPImageFreeTypeDrawer.ClearTypePixelAndMoveRight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.ClearTypePixelAndMoveRight.Cr">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.ClearTypePixelAndMoveRight.Cg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.ClearTypePixelAndMoveRight.Cb">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.ClearTypePixelAndMoveRight.Color">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFPImageFreeTypeDrawer.UnclippedDrawPixel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.UnclippedDrawPixel.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.UnclippedDrawPixel.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.UnclippedDrawPixel.c">
+<short></short>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TFPImageFreeTypeDrawer.ClearTypeRGBOrder">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TFPImageFreeTypeDrawer.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.Create.AImage">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFPImageFreeTypeDrawer.DrawPixel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawPixel.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawPixel.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawPixel.c">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFPImageFreeTypeDrawer.ClearTypePixel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.ClearTypePixel.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.ClearTypePixel.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.ClearTypePixel.Cr">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.ClearTypePixel.Cg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.ClearTypePixel.Cb">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.ClearTypePixel.Color">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFPImageFreeTypeDrawer.SetVertLine">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.SetVertLine.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.SetVertLine.y1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.SetVertLine.y2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.SetVertLine.c">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFPImageFreeTypeDrawer.DrawVertLine">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawVertLine.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawVertLine.y1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawVertLine.y2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawVertLine.c">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFPImageFreeTypeDrawer.SetHorizLine">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.SetHorizLine.x1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.SetHorizLine.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.SetHorizLine.x2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.SetHorizLine.c">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFPImageFreeTypeDrawer.DrawHorizLine">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawHorizLine.x1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawHorizLine.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawHorizLine.x2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawHorizLine.c">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFPImageFreeTypeDrawer.FillPixels">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.FillPixels.c">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFPImageFreeTypeDrawer.DrawText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawText.AText">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawText.AFont">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawText.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawText.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageFreeTypeDrawer.DrawText.AColor">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TFPImageFreeTypeDrawer.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TFPImageFreeTypeDrawer.Image">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TFPMemoryImageWithScanline">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFPMemoryImageWithScanline.GetScanline">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: protected -->
+<element name="TFPMemoryImageWithScanline.GetScanline.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPMemoryImageWithScanline.GetScanline.y">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFPMemoryImageWithScanline.SetUsePalette">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPMemoryImageWithScanline.SetUsePalette.Value">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TFPMemoryImageWithScanline.ScanLine">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TFPMemoryImageWithScanline.ScanLine.y">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TFPImageWithScanlineFreeTypeDrawer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TFPImageWithScanlineFreeTypeDrawer.FCurrentColor">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFPImageWithScanlineFreeTypeDrawer.MoveToPixel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageWithScanlineFreeTypeDrawer.MoveToPixel.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageWithScanlineFreeTypeDrawer.MoveToPixel.y">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFPImageWithScanlineFreeTypeDrawer.GetCurrentColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: protected -->
+<element name="TFPImageWithScanlineFreeTypeDrawer.GetCurrentColor.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFPImageWithScanlineFreeTypeDrawer.SetCurrentColorAndMoveRight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageWithScanlineFreeTypeDrawer.SetCurrentColorAndMoveRight.AColor">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFPImageWithScanlineFreeTypeDrawer.MoveRight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFPImageWithScanlineFreeTypeDrawer.GetClipRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: protected -->
+<element name="TFPImageWithScanlineFreeTypeDrawer.GetClipRect.Result">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TFPImageWithScanlineFreeTypeDrawer.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFPImageWithScanlineFreeTypeDrawer.Create.AImage">
+<short></short>
+</element>
+
+</module> <!-- LazFreeTypeFPImageDrawer -->
+
+</package>
+</fpdoc-descriptions>

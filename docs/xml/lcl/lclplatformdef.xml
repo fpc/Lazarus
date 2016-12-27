@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    LCLPlatformDef
+  ====================================================================
+-->
+
+<module name="LCLPlatformDef">
+<short></short>
+<descr>
+</descr>
+
+<!-- enumeration type Visibility: default -->
+<element name="TLCLPlatform">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLCLPlatform.lpGtk">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLCLPlatform.lpGtk2">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLCLPlatform.lpGtk3">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLCLPlatform.lpWin32">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLCLPlatform.lpWinCE">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLCLPlatform.lpCarbon">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLCLPlatform.lpQT">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLCLPlatform.lpfpGUI">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLCLPlatform.lpNoGUI">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLCLPlatform.lpCocoa">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TLCLPlatform.lpCustomDrawn">
+<short></short>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TLCLPlatforms">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DirNameToLCLPlatform">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="DirNameToLCLPlatform.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DirNameToLCLPlatform.ADirName">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetBuildLCLWidgetType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetBuildLCLWidgetType.Result">
+<short></short>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="LCLPlatformDirNames">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="LCLPlatformDisplayNames">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="BuildLCLWidgetType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- LCLPlatformDef -->
+
+</package>
+</fpdoc-descriptions>

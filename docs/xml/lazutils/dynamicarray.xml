@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    DynamicArray
+  ====================================================================
+-->
+
+<module name="DynamicArray">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="EArray">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TOnNotifyItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnNotifyItem.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnNotifyItem.Col">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnNotifyItem.Row">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnNotifyItem.Item">
+<short></short>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TOnExchangeItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnExchangeItem.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnExchangeItem.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnExchangeItem.WithIndex">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TArray">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TArray.FCols">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TArray.FOnDestroyItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TArray.FOnNewItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TArray.Getarr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TArray.Getarr.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.Getarr.Col">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.Getarr.Row">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TArray.Setarr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.Setarr.Col">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.Setarr.Row">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.Setarr.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TArray.ClearCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.ClearCol.L">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.ClearCol.Col">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TArray.Aumentar_Rows">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.Aumentar_Rows.col">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.Aumentar_Rows.Rows">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.Aumentar_Rows.L">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TArray.DestroyItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.DestroyItem.Col">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.DestroyItem.Row">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.DestroyItem.P">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TArray.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TArray.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TArray.SetLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.SetLength.Cols">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.SetLength.Rows">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TArray.DeleteColRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.DeleteColRow.IsColumn">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.DeleteColRow.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TArray.MoveColRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.MoveColRow.IsColumn">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.MoveColRow.FromIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.MoveColRow.ToIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TArray.ExchangeColRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.ExchangeColRow.IsColumn">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.ExchangeColRow.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArray.ExchangeColRow.WithIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TArray.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TArray.Arr">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TArray.Arr.Col">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TArray.Arr.Row">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TArray.OnDestroyItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TArray.OnNewItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- DynamicArray -->
+
+</package>
+</fpdoc-descriptions>

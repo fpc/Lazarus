@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    lazfglhash
+  ====================================================================
+-->
+
+<module name="lazfglhash">
+<short></short>
+<descr>
+</descr>
+
+<!-- generic class Visibility: default -->
+<element name="TLazHTGNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazHTGNode.FData">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazHTGNode.Data">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- generic class Visibility: default -->
+<element name="TLazFPGHashTable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: protected -->
+<element name="TLazFPGHashTable.THTGNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazFPGHashTable.THTGNode.FData">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazFPGHashTable.THTGNode.Data">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure type Visibility: protected -->
+<element name="TLazFPGHashTable.TGIteratorMethod">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazFPGHashTable.TGIteratorMethod.Item">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazFPGHashTable.TGIteratorMethod.Key">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazFPGHashTable.TGIteratorMethod.Continue">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TLazFPGHashTable.CreateNewNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: protected -->
+<element name="TLazFPGHashTable.CreateNewNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazFPGHashTable.CreateNewNode.aKey">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazFPGHashTable.AddNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazFPGHashTable.AddNode.ANode">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazFPGHashTable.SetData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazFPGHashTable.SetData.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazFPGHashTable.SetData.AValue">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TLazFPGHashTable.GetData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: protected -->
+<element name="TLazFPGHashTable.GetData.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazFPGHashTable.GetData.index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazFPGHashTable.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazFPGHashTable.Add.aKey">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazFPGHashTable.Add.aItem">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazFPGHashTable.Items">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TLazFPGHashTable.Items.index">
+<short></short>
+</element>
+
+</module> <!-- lazfglhash -->
+
+</package>
+</fpdoc-descriptions>

@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    lazCollections
+  ====================================================================
+-->
+
+<module name="lazCollections">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TLazMonitor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazMonitor.FSpinCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazMonitor.FDefaultSpinCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class function Visibility: private -->
+<element name="TLazMonitor.GetDefaultSpinCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TLazMonitor.GetDefaultSpinCount.Result">
+<short></short>
+</element>
+
+<!-- class procedure Visibility: private -->
+<element name="TLazMonitor.SetDefaultSpinCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazMonitor.SetDefaultSpinCount.AValue">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TLazMonitor.GetSpinCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TLazMonitor.GetSpinCount.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TLazMonitor.SetSpinCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazMonitor.SetSpinCount.AValue">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TLazMonitor.create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazMonitor.Acquire">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazMonitor.SpinCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazMonitor.DefaultSpinCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- generic class Visibility: default -->
+<element name="TLazThreadedQueue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazThreadedQueue.FMonitor">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazThreadedQueue.FList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazThreadedQueue.FPushTimeout">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazThreadedQueue.FPopTimeout">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazThreadedQueue.FQueueSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazThreadedQueue.FTotalItemsPopped">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazThreadedQueue.FTotalItemsPushed">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazThreadedQueue.FHasRoomEvent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazThreadedQueue.FHasItemEvent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazThreadedQueue.FShutDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TLazThreadedQueue.TryPushItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TLazThreadedQueue.TryPushItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazThreadedQueue.TryPushItem.AItem">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TLazThreadedQueue.TryPopItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TLazThreadedQueue.TryPopItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazThreadedQueue.TryPopItem.AItem">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TLazThreadedQueue.create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazThreadedQueue.create.AQueueDepth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazThreadedQueue.create.PushTimeout">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazThreadedQueue.create.PopTimeout">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TLazThreadedQueue.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazThreadedQueue.Grow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazThreadedQueue.Grow.ADelta">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazThreadedQueue.PushItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TLazThreadedQueue.PushItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazThreadedQueue.PushItem.AItem">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazThreadedQueue.PopItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TLazThreadedQueue.PopItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazThreadedQueue.PopItem.AItem">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazThreadedQueue.PopItemTimeout">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TLazThreadedQueue.PopItemTimeout.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazThreadedQueue.PopItemTimeout.AItem">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazThreadedQueue.PopItemTimeout.Timeout">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazThreadedQueue.DoShutDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazThreadedQueue.QueueSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazThreadedQueue.TotalItemsPopped">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazThreadedQueue.TotalItemsPushed">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazThreadedQueue.ShutDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- lazCollections -->
+
+</package>
+</fpdoc-descriptions>
