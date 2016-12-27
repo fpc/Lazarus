@@ -1811,8 +1811,11 @@ begin
       DebugLn('TCarbonWidgetSet.GetParent Widget: ' + DbgS(TCarbonControl(Handle).Widget));
     {$ENDIF}
     Result := HWnd(GetCarbonWidget(HIViewGetSuperview(TCarbonControl(Handle).Widget)));
-    if Result = 0 then // no parent control => then parent is a window?
+    if Result = 0 then begin // no parent control => then parent is a window?
       Result := HWnd(GetCarbonWidget(HIViewGetWindow(TCarbonControl(Handle).Widget)));
+      if Result = Handle then
+        Result := 0; // Sanity check - otherwise FindLCLWindow can be stuck in a loop
+    end;
   end;
   // Carbon windows has no parent
   
