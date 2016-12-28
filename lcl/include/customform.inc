@@ -2573,8 +2573,7 @@ var
 begin
   Result := TBitmap.Create;
   try
-    Result.Width := ClientWidth;
-    Result.Height := ClientHeight;
+    Result.SetSize(ClientWidth, ClientHeight);
     LCLIntf.GetWindowRect(Handle, ARect);
     with GetClientOrigin do
       PaintTo(Result.Canvas, ARect.Left - X, ARect.Top - Y);
