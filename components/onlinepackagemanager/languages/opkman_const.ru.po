@@ -75,8 +75,8 @@ msgid "Internal version"
 msgstr "Внутренняя версия"
 
 #: opkman_const.rscreatejsonforupdatesfrm_error1
-msgid "Cannot create JSON! Error message:"
-msgstr "Невозможно создать JSON! Сообщение об ошибке:"
+msgid "Cannot create JSON for updates! Error message:"
+msgstr "Невозможно создать JSON для обновлений! Сообщение об ошибке:"
 
 #: opkman_const.rscreatejsonforupdatesfrm_lblinktozip_caption
 msgid "Link to the package zip file"
@@ -99,8 +99,8 @@ msgid "Please check at least one package file!"
 msgstr "Следует отметить хотя бы один файл пакета!"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message4
-msgid "JSON successfully created."
-msgstr "JSON успешно создан."
+msgid "JSON for updates successfully created."
+msgstr "JSON для обновлений успешно создан."
 
 #: opkman_const.rscreaterepositorypackagefrm_bcancel_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_bcancel_caption"
