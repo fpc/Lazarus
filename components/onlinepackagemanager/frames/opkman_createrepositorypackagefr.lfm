@@ -12,7 +12,7 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
   DesignTop = 213
   object pnMessage: TPanel
     Left = 247
-    Height = 344
+    Height = 340
     Top = 65
     Width = 503
     Align = alClient
@@ -31,7 +31,7 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
   end
   object pnPackages: TPanel
     Left = 0
-    Height = 344
+    Height = 340
     Top = 65
     Width = 245
     Align = alLeft
@@ -81,23 +81,23 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
   end
   object pnData: TPanel
     Left = 247
-    Height = 344
+    Height = 340
     Top = 65
     Width = 503
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 344
+    ClientHeight = 340
     ClientWidth = 503
     TabOrder = 2
     object pnPackageData: TPanel
       Left = 0
-      Height = 155
+      Height = 151
       Top = 189
       Width = 503
       Align = alClient
       BevelOuter = bvNone
       BorderStyle = bsSingle
-      ClientHeight = 151
+      ClientHeight = 147
       ClientWidth = 499
       TabOrder = 0
       Visible = False
@@ -324,7 +324,7 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
   end
   object spMain: TSplitter
     Left = 245
-    Height = 344
+    Height = 340
     Top = 65
     Width = 2
     AutoSnap = False
@@ -334,41 +334,41 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
   end
   object pnButtons: TPanel
     Left = 0
-    Height = 41
-    Top = 409
+    Height = 45
+    Top = 405
     Width = 750
     Align = alBottom
     BevelOuter = bvNone
     BorderStyle = bsSingle
-    ClientHeight = 37
+    ClientHeight = 41
     ClientWidth = 746
     TabOrder = 5
     object bCreate: TButton
       Left = 584
       Height = 26
-      Top = 5
+      Top = 8
       Width = 75
       Anchors = [akTop, akRight]
       Caption = 'Create'
       Enabled = False
       OnClick = bCreateClick
-      TabOrder = 2
+      TabOrder = 3
     end
     object bCancel: TButton
       Left = 661
       Height = 26
-      Top = 5
+      Top = 8
       Width = 75
       Anchors = [akTop, akRight]
       Caption = 'Cancel'
       ModalResult = 2
       OnClick = bCancelClick
-      TabOrder = 3
+      TabOrder = 4
     end
     object cbOpen: TCheckBox
       Left = 10
       Height = 19
-      Top = 8
+      Top = 1
       Width = 211
       Caption = 'After create, open containing folder '
       TabOrder = 0
@@ -376,22 +376,30 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
     object bOptions: TButton
       Left = 507
       Height = 26
-      Top = 5
+      Top = 8
       Width = 75
       Anchors = [akTop, akRight]
       Caption = 'Options'
       OnClick = bOptionsClick
-      TabOrder = 1
+      TabOrder = 2
     end
     object bHelp: TButton
       Left = 430
       Height = 26
-      Top = 5
+      Top = 8
       Width = 75
       Anchors = [akTop, akRight]
       Caption = 'Help'
       OnClick = bHelpClick
-      TabOrder = 4
+      TabOrder = 5
+    end
+    object cbJSONForUpdates: TCheckBox
+      Left = 10
+      Height = 19
+      Top = 21
+      Width = 148
+      Caption = 'Create JSON for updates'
+      TabOrder = 1
     end
   end
   object imTree: TImageList

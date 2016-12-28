@@ -334,8 +334,8 @@ resourcestring
   rsCreateJSONForUpdatesFrm_Message1 = 'Please check only one repository package!';
   rsCreateJSONForUpdatesFrm_Message2 = 'Please enter a valid URL!';
   rsCreateJSONForUpdatesFrm_Message3 = 'Please check at least one package file!';
-  rsCreateJSONForUpdatesFrm_Message4 = 'JSON successfully created.';
-  rsCreateJSONForUpdatesFrm_Error1 = 'Cannot create JSON! Error message:';
+  rsCreateJSONForUpdatesFrm_Message4 = 'JSON for updates successfully created.';
+  rsCreateJSONForUpdatesFrm_Error1 = 'Cannot create JSON for updates! Error message:';
 
 
   //categories form

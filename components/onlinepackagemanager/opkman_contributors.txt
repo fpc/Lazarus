@@ -1,8 +1,12 @@
 #The following people contributed to Package Manager:
 
+007
 Juha Manninen 
 lainz
 Maxim Ganetsky
 minesadorada
+Péter Gábor
+Seppo Suutarla
+Swen Heinig
 varianus
 Werner Pamler
