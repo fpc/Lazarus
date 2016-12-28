@@ -544,8 +544,7 @@ var
 begin
   SavedDC := SaveDC(ADC);
   MoveWindowOrgEx(ADC, X, Y);
-  SendMessage(AWinControl.Handle, WM_PRINT, WParam(ADC),
-    PRF_CHECKVISIBLE or PRF_CHILDREN or PRF_CLIENT or PRF_NONCLIENT or PRF_OWNED);
+  PrintWindow(AWinControl.Handle, ADC, 0);
   RestoreDC(ADC, SavedDC);
 end;
 
