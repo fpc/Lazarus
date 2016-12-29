@@ -531,6 +531,7 @@ begin
   EnableDisableControls(False);
   if SDD.Execute then
   begin
+    Screen.Cursor := crHourGlass;
     ShowHideControls(1);
     fPackageZipper := TPackageZipper.Create;
     fPackageZipper.OnZipError := @DoOnZippError;
@@ -542,6 +543,8 @@ begin
     FPackageFile := FDestDir + FPackageName + '.zip';
     pnMessage.Caption := rsCreateRepositoryPackageFrm_Message4;
     fPackageZipper.StartZip(FPackageDir, FPackageFile);
+    fPackageZipper.WaitFor;
+    Screen.Cursor := crDefault;
   end
   else
     EnableDisableControls(True);
