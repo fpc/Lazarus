@@ -5052,15 +5052,11 @@ docs/xml/lcl/dialogs/inputquery.pas svneol=native#text/pascal
 docs/xml/lcl/dialogs/trymessagedlg.pas svneol=native#text/pascal
 docs/xml/lcl/dialogs/tryshowmessage.pas svneol=native#text/pascal
 docs/xml/lcl/dirsel.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/dynamicarray.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dynamicarray/tarrayexample.pas svneol=native#text/plain
-docs/xml/lcl/dynhasharray.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/dynqueue.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/editbtn.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/extctrls.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/extctrls/statusbar.pas svneol=native#text/plain
 docs/xml/lcl/extdlgs.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/extendedstrings.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/extgraphics.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/filectrl.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/forms.xml svneol=LF#text/xml eol=lf
@@ -5120,7 +5116,6 @@ docs/xml/lcl/lazdialogs.xml svneol=native#text/plain
 docs/xml/lcl/lazfreetypeintfdrawer.xml svneol=native#text/plain
 docs/xml/lcl/lazhelphtml.xml svneol=native#text/plain
 docs/xml/lcl/lazhelpintf.xml svneol=native#text/plain
-docs/xml/lcl/lazlinkedlist.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lazregions.xml svneol=native#text/plain
 docs/xml/lcl/lazutf8classes.xml svneol=native#text/plain
 docs/xml/lcl/lcl.xml svneol=LF#text/plain eol=lf
@@ -5142,7 +5137,6 @@ docs/xml/lcl/lconvencoding.xml svneol=LF#text/plain eol=lf
 docs/xml/lcl/ldocktree.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lmessages.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lresources.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/maps.xml svneol=native#text/plain
 docs/xml/lcl/maskedit.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/menus.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/pairsplitter.xml svneol=LF#text/xml eol=lf
@@ -5159,12 +5153,9 @@ docs/xml/lcl/spin.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/stdactns.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/stdctrls.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/stdctrls/tcustomcheckbox_allowgrayed.pas svneol=native#text/plain
-docs/xml/lcl/stringhashlist.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/textstrings.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/themes.xml svneol=native#text/plain
 docs/xml/lcl/tmschema.xml svneol=native#text/plain
 docs/xml/lcl/toolwin.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/translations.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/utf8process.xml svneol=native#text/plain
 docs/xml/lcl/utrace.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/valedit.xml svneol=native#text/plain
