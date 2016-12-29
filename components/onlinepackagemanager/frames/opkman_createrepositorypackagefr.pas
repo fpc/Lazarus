@@ -528,8 +528,10 @@ begin
 
   SDD.Title := rsCreateRepositoryPackageFrm_SDDTitleDst;
   SDD.InitialDir := Options.LastPackagedirDst;
+  EnableDisableControls(False);
   if SDD.Execute then
   begin
+    ShowHideControls(1);
     fPackageZipper := TPackageZipper.Create;
     fPackageZipper.OnZipError := @DoOnZippError;
     fPackageZipper.OnZipCompleted := @DoOnZipCompleted;
@@ -539,10 +541,10 @@ begin
     FPackageName := StringReplace(FPackageName, ' ', '', [rfReplaceAll]);
     FPackageFile := FDestDir + FPackageName + '.zip';
     pnMessage.Caption := rsCreateRepositoryPackageFrm_Message4;
-    ShowHideControls(1);
-    EnableDisableControls(False);
     fPackageZipper.StartZip(FPackageDir, FPackageFile);
-  end;
+  end
+  else
+    EnableDisableControls(True);
 end;
 
 procedure TCreateRepositoryPackagefr.bHelpClick(Sender: TObject);
@@ -817,7 +819,7 @@ begin
     begin
       RootData := FVSTPackages.GetNodeData(RootNode);
       UpdatePackage.UpdatePackageData.Name := RootData^.FName;
-      UpdatePackage.UpdatePackageData.DownloadZipURL := '';
+      UpdatePackage.UpdatePackageData.DownloadZipURL := RootData^.FDownloadURL;
       if RootData^.FDisplayName <> '' then
         FileName := FDestDir + 'update_' + RootData^.FDisplayName + '.json'
       else
