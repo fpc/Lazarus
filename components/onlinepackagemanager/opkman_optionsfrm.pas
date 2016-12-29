@@ -268,7 +268,13 @@ begin
   Index := -1;
   Value := InputBox(rsOptions_InputBox_Caption, MsgTxt, GetSelectedText(ListBox, Index));
   if (Value <> '') and (Index <> -1) then
+  begin
+    ListBox.Sorted := False;
     ListBox.Items[Index] := Value;
+    ListBox.Sorted := True;
+    Index := ListBox.Items.IndexOf(Value);
+    ListBox.Selected[Index] := True;
+  end;
 end;
 
 
@@ -301,10 +307,8 @@ begin
   Index := -1;
   Value := GetSelectedText(ListBox, Index);
   if (Value <> '') and (Index <> -1) then
-  begin
     if MessageDlgEx(Format(MsgConf, [Value]), mtConfirmation, [mbYes, mbNo], Self) = mrYes then
       ListBox.Items.Delete(Index);
-  end;
 end;
 
 procedure TOptionsFrm.bRestoreClick(Sender: TObject);
