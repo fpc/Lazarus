@@ -1231,7 +1231,8 @@ begin
     s:=CodeToolBoss.GetCompleteSrcPathForDirectory('');
     if SearchDirectoryInSearchPath(s,ExtractFilePath(FFileName))<1 then
       // the file is not in the project search path => check if it is a symlink
-      ChooseSymlink(FFilename,true);
+      if ChooseSymlink(FFilename,true) <> mrOK then
+        exit(mrCancel);
   end;
 
   // check to not open directories
@@ -8169,7 +8170,7 @@ begin
     // lpi file will change => ask
     Result:=IDEQuestionDialog(lisProjectChanged,
       Format(lisSaveChangesToProject, [Project1.GetTitleOrName]),
-      mtConfirmation, [mrYes, mrNoToAll, rsmbNo, mbCancel], '');
+      mtConfirmation, [mrYes, mrNoToAll, rsmbNo, mrCancel], '');
     if Result=mrNoToAll then exit(mrOk);
     if Result<>mrYes then exit(mrCancel);
   end
@@ -8177,7 +8178,7 @@ begin
   begin
     // some non project files were changes in the source editor
     Result:=IDEQuestionDialog(lisSaveChangedFiles,lisSaveChangedFiles,
-      mtConfirmation, [mrYes, mrNoToAll, rsmbNo, mbCancel], '');
+      mtConfirmation, [mrYes, mrNoToAll, rsmbNo, mrCancel], '');
     if Result=mrNoToAll then exit(mrOk);
     if Result<>mrYes then exit(mrCancel);
   end
@@ -8194,7 +8195,7 @@ begin
       if EnvironmentOptions.AskSaveSessionOnly then begin
         Result:=IDEQuestionDialog(lisProjectSessionChanged,
           Format(lisSaveSessionChangesToProject, [Project1.GetTitleOrName]),
-          mtConfirmation, [mrYes, mrNoToAll, rsmbNo, mbCancel], '');
+          mtConfirmation, [mrYes, mrNoToAll, rsmbNo, mrCancel], '');
         if Result=mrNoToAll then exit(mrOk);
         if Result<>mrYes then exit(mrCancel);
       end;
