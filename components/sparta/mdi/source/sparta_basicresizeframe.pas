@@ -791,7 +791,7 @@ begin
   ShowSizeControls;
 
   // for GTK2 resizing form (pClient is hidden under pBG)
-  {$IF DEFINED(LCLGtk2) OR DEFINED(LCLQt)}
+  {$IF DEFINED(LCLGtk2) OR DEFINED(LCLQt) OR DEFINED(LCLQt5)}
   pClient.SendToBack; // <--- this is a must.
   {$ENDIF}
   pClient.BringToFront;
