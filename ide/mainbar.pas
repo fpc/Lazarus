@@ -651,23 +651,18 @@ end;
 
 procedure TMainIDEBar.UpdateIDEComponentPalette(IfFormChanged: boolean);
 var
-  OldLastCompPaletteForm, LastActiveForm: TCustomForm;
-  AResult: Boolean;
+  LastActiveForm: TCustomForm;
 begin
   // Package manager updates the palette initially.
   LastActiveForm := LazarusIDE.LastFormActivated;
   if not LazarusIDE.IDEStarted
   or (IfFormChanged and (LastCompPaletteForm=LastActiveForm)) then
     exit;
-  OldLastCompPaletteForm:=LastCompPaletteForm;
-  LastCompPaletteForm:=LastActiveForm;
-  AResult:=(LastActiveForm<>nil) and (LastActiveForm.Designer<>nil)
+  LastCompPaletteForm := LastActiveForm;
+  IDEComponentPalette.HideControls :=
+    (LastActiveForm<>nil) and (LastActiveForm.Designer<>nil)
     and (LastActiveForm.Designer.LookupRoot<>nil)
     and not (LastActiveForm.Designer.LookupRoot is TControl);
-  IDEComponentPalette.HideControls:=AResult;
-  // Don't update palette at the first time if not hiding controls.
-  if (OldLastCompPaletteForm = Nil) and not IDEComponentPalette.HideControls then
-    exit;
   {$IFDEF VerboseComponentPalette}
   DebugLn(['* TMainIDEBar.UpdateIDEComponentPalette: Updating palette *',
            ', HideControls=', IDEComponentPalette.HideControls]);
