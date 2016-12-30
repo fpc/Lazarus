@@ -402,6 +402,7 @@ type
     function DateIsNull: Boolean;
     procedure SelectDate;
     procedure SelectTime;
+    procedure SendExternalKey(const aKey: Char);
 
     procedure Paint; override;
     procedure EditingDone; override;
@@ -2884,6 +2885,25 @@ end;
 procedure TCustomDateTimePicker.SelectYear;
 begin
   SelectDateTimePart(dtpYear);
+end;
+
+procedure TCustomDateTimePicker.SendExternalKey(const aKey: Char);
+var
+  SPart: TTextPart;
+begin
+  if not(aKey in ['0'..'9']) then
+    Exit;
+
+  if FSelectedTextPart in [1..3] then
+  begin
+    FTextPart[FSelectedTextPart] := aKey;
+    FUserChangedText := True;
+  end else
+  if FSelectedTextPart in [4..8] then
+  begin
+    FTimeText[TDateTimePart(FSelectedTextPart-1)] := aKey;
+    FUserChangedText := True;
+  end;
 end;
 
 procedure TCustomDateTimePicker.SelectHour;
