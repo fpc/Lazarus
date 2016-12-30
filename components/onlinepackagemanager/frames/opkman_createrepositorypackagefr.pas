@@ -543,8 +543,6 @@ begin
     FPackageFile := FDestDir + FPackageName + '.zip';
     pnMessage.Caption := rsCreateRepositoryPackageFrm_Message4;
     fPackageZipper.StartZip(FPackageDir, FPackageFile);
-    fPackageZipper.WaitFor;
-    Screen.Cursor := crDefault;
   end
   else
     EnableDisableControls(True);
@@ -759,6 +757,7 @@ end;
 procedure TCreateRepositoryPackagefr.DoOnZippError(Sender: TObject;
   AZipFile: String; const AErrMsg: String);
 begin
+   Screen.Cursor := crDefault;
    MessageDlgEx(rsCreateRepositoryPackageFrm_Error1 + ' "' + AZipFile + '". ' + rsProgressFrm_Error1 + sLineBreak +
                 AErrMsg, mtError, [mbOk], TForm(Self.Parent));
    ShowHideControls(2);
@@ -881,7 +880,7 @@ begin
   CanClose := False;
   pnMessage.Caption := rsCreateRepositoryPackageFrm_Message5;
   pnMessage.Invalidate;
-  Sleep(2000);
+  Screen.Cursor := crDefault;
   SerializablePackages := TSerializablePackages.Create;
   try
     RootNode := FVSTPackages.GetFirst;
@@ -965,7 +964,6 @@ begin
     TForm(Self.Parent).Close;
   end;
 end;
-
 
 
 end.
