@@ -2531,6 +2531,78 @@ begin
   Result:=EventStopped;
 end;
 
+const
+  //AlexeyT:
+  //table got from usual Russian keyboard with 8 win-keys on the top
+
+  ru_map: array[GDK_KEY_Cyrillic_yu .. GDK_KEY_Cyrillic_CAPITAL_HARDSIGN] of byte =
+    (
+    0, ////Ord('.'), //GDK_KEY_Cyrillic_yu = $6c0;
+    VK_F, //GDK_KEY_Cyrillic_a = $6c1;
+    0, ////Ord(','), //GDK_KEY_Cyrillic_be = $6c2;
+    VK_W, //GDK_KEY_Cyrillic_tse = $6c3;
+    VK_L, //GDK_KEY_Cyrillic_de = $6c4;
+    VK_T, //GDK_KEY_Cyrillic_ie = $6c5;
+    VK_A, //GDK_KEY_Cyrillic_ef = $6c6;
+    VK_U, //GDK_KEY_Cyrillic_ghe = $6c7;
+    0, ////Ord('['), //GDK_KEY_Cyrillic_ha = $6c8;
+    VK_B, //GDK_KEY_Cyrillic_i = $6c9;
+    VK_Q, //GDK_KEY_Cyrillic_shorti = $6ca;
+    VK_R, //GDK_KEY_Cyrillic_ka = $6cb;
+    VK_K, //GDK_KEY_Cyrillic_el = $6cc;
+    VK_V, //GDK_KEY_Cyrillic_em = $6cd;
+    VK_Y, //GDK_KEY_Cyrillic_en = $6ce;
+    VK_J, //GDK_KEY_Cyrillic_o = $6cf;
+    VK_G, //GDK_KEY_Cyrillic_pe = $6d0;
+    VK_Z, //GDK_KEY_Cyrillic_ya = $6d1;
+    VK_H, //GDK_KEY_Cyrillic_er = $6d2;
+    VK_C, //GDK_KEY_Cyrillic_es = $6d3;
+    VK_N, //GDK_KEY_Cyrillic_te = $6d4;
+    VK_E, //GDK_KEY_Cyrillic_u = $6d5;
+    0, ////Ord(';'), //GDK_KEY_Cyrillic_zhe = $6d6;
+    VK_D, //GDK_KEY_Cyrillic_ve = $6d7;
+    VK_M, //GDK_KEY_Cyrillic_softsign = $6d8;
+    VK_S, //GDK_KEY_Cyrillic_yeru = $6d9;
+    VK_P, //GDK_KEY_Cyrillic_ze = $6da;
+    VK_I, //GDK_KEY_Cyrillic_sha = $6db;
+    0, ////Ord(''''), //GDK_KEY_Cyrillic_e = $6dc;
+    VK_O, //GDK_KEY_Cyrillic_shcha = $6dd;
+    VK_X, //GDK_KEY_Cyrillic_che = $6de;
+    0, ////Ord(']'), //GDK_KEY_Cyrillic_hardsign = $6df;
+    0, ////Ord('.'), //GDK_KEY_Cyrillic_CAPITAL_YU = $6e0;
+    VK_F, //GDK_KEY_Cyrillic_CAPITAL_A = $6e1;
+    0, ////Ord(','), //GDK_KEY_Cyrillic_CAPITAL_BE = $6e2;
+    VK_W, //GDK_KEY_Cyrillic_CAPITAL_TSE = $6e3;
+    VK_L, //GDK_KEY_Cyrillic_CAPITAL_DE = $6e4;
+    VK_T, //GDK_KEY_Cyrillic_CAPITAL_IE = $6e5;
+    VK_A, //GDK_KEY_Cyrillic_CAPITAL_EF = $6e6;
+    VK_U, //GDK_KEY_Cyrillic_CAPITAL_GHE = $6e7;
+    0, ////Ord('['), //GDK_KEY_Cyrillic_CAPITAL_HA = $6e8;
+    VK_B, //GDK_KEY_Cyrillic_CAPITAL_I = $6e9;
+    VK_Q, //GDK_KEY_Cyrillic_CAPITAL_SHORTI = $6ea;
+    VK_R, //GDK_KEY_Cyrillic_CAPITAL_KA = $6eb;
+    VK_K, //GDK_KEY_Cyrillic_CAPITAL_EL = $6ec;
+    VK_V, //GDK_KEY_Cyrillic_CAPITAL_EM = $6ed;
+    VK_Y, //GDK_KEY_Cyrillic_CAPITAL_EN = $6ee;
+    VK_J, //GDK_KEY_Cyrillic_CAPITAL_O = $6ef;
+    VK_G, //GDK_KEY_Cyrillic_CAPITAL_PE = $6f0;
+    VK_Z, //GDK_KEY_Cyrillic_CAPITAL_YA = $6f1;
+    VK_H, //GDK_KEY_Cyrillic_CAPITAL_ER = $6f2;
+    VK_C, //GDK_KEY_Cyrillic_CAPITAL_ES = $6f3;
+    VK_N, //GDK_KEY_Cyrillic_CAPITAL_TE = $6f4;
+    VK_E, //GDK_KEY_Cyrillic_CAPITAL_U = $6f5;
+    0, ////Ord(';'), //GDK_KEY_Cyrillic_CAPITAL_ZHE = $6f6;
+    VK_D, //GDK_KEY_Cyrillic_CAPITAL_VE = $6f7;
+    VK_M, //GDK_KEY_Cyrillic_CAPITAL_SOFTSIGN = $6f8;
+    VK_S, //GDK_KEY_Cyrillic_CAPITAL_YERU = $6f9;
+    VK_P, //GDK_KEY_Cyrillic_CAPITAL_ZE = $6fa;
+    VK_I, //GDK_KEY_Cyrillic_CAPITAL_SHA = $6fb;
+    0, ////Ord(''''), //GDK_KEY_Cyrillic_CAPITAL_E = $6fc;
+    VK_O, //GDK_KEY_Cyrillic_CAPITAL_SHCHA = $6fd;
+    VK_X, //GDK_KEY_Cyrillic_CAPITAL_CHE = $6fe;
+    0 ////Ord(']') //GDK_KEY_Cyrillic_CAPITAL_HARDSIGN = $6ff;
+    );
+
 {------------------------------------------------------------------------------
   Procedure: InitKeyboardTables
   Params:    none
@@ -2953,18 +3025,13 @@ procedure InitKeyboardTables;
         // VK_A on a russian layout generates a cyrillic_EF
         // VK_A on a serbian layout generates a cyrillic_A
         //
-        // Mapping cyrillic_A to VK_A is easier so that encoding is used.
         // Maybe in future we can take the KBLayout into account
+        //
+        // AlexeyT:
+        // Now Ru keys on RU keyb layout work ok (array ru_map),
+        // cannot test Serbian/Ukrainian/Byelorussian etc
         case AKeySym of
-          GDK_KEY_cyrillic_a..GDK_KEY_cyrillic_ze:
-          begin
-            AVKey := VK_A + AKeySym - GDK_KEY_cyrillic_a;
-          end;
-          // Capital is not needed, the lower will match
-          //GDK_KEY_cyrillic_A..GDK_KEY_cyrillic_ZE:
-          //begin
-          //  AVKey := VK_A + AKeySym - GDK_KEY_cyrillic_A;
-          //end;
+          Low(ru_map)..High(ru_map):  AVKey := ru_map[AKeySym];
         end;
       end;
 
