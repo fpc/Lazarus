@@ -188,6 +188,7 @@ type
     FCorrectedDTP: TDateTimePart;
     FCorrectedValue: Word;
     FEnableWhenUnchecked: Boolean;
+    FAutoCheck: Boolean;
 
     function AreSeparatorsStored: Boolean;
     function GetChecked: Boolean;
@@ -335,6 +336,7 @@ type
     procedure Change; virtual;
     procedure DoDropDown; virtual;
     procedure DoCloseUp; virtual;
+    procedure DoAutoCheck; virtual;
 
     property BorderStyle default bsSingle;
     property AutoSize default True;
@@ -362,6 +364,7 @@ type
              read FOnCheckBoxChange write FOnCheckBoxChange;
     property OnDropDown: TNotifyEvent read FOnDropDown write FOnDropDown;
     property OnCloseUp: TNotifyEvent read FOnCloseUp write FOnCloseUp;
+    property AutoCheck: Boolean read FAutoCheck write FAutoCheck default True;
     property ShowCheckBox: Boolean
              read GetShowCheckBox write SetShowCheckBox default False;
     property Checked: Boolean read GetChecked write SetChecked default True;
@@ -420,6 +423,7 @@ type
     property DroppedDown;
   published
     property ArrowShape;
+    property AutoCheck;
     property ShowCheckBox;
     property Checked;
     property CenturyFrom;
@@ -683,8 +687,7 @@ begin
               // we'll change the date, but keep the time:
               DTPicker.SetDateTime(ComposeDateTime(Cal.GetDate, DTPicker.DateTime));
             end;
-            if DTPicker.ShowCheckBox and not DTPicker.Checked then
-              DTPicker.Checked := True;
+            DTPicker.DoAutoCheck;
           finally
             Dec(DTPicker.FUserChanging);
           end;
@@ -2016,14 +2019,20 @@ begin
             Key := 0;
             UpdateIfUserChangedText;
             if not FReadOnly then
+            begin
               IncreaseCurrentTextPart;
+              DoAutoCheck;
+            end;
           end;
         VK_DOWN:
           begin
             Key := 0;
             UpdateIfUserChangedText;
             if not FReadOnly then
+            begin
               DecreaseCurrentTextPart;
+              DoAutoCheck;
+            end;
           end;
         VK_RETURN:
           if not FReadOnly then
@@ -2214,6 +2223,7 @@ begin
           end else
             Invalidate;
 
+          DoAutoCheck;
         end;
 
       end;
@@ -2888,8 +2898,6 @@ begin
 end;
 
 procedure TCustomDateTimePicker.SendExternalKey(const aKey: Char);
-var
-  SPart: TTextPart;
 begin
   if not(aKey in ['0'..'9']) then
     Exit;
@@ -2898,11 +2906,13 @@ begin
   begin
     FTextPart[FSelectedTextPart] := aKey;
     FUserChangedText := True;
+    DoAutoCheck;
   end else
   if FSelectedTextPart in [4..8] then
   begin
     FTimeText[TDateTimePart(FSelectedTextPart-1)] := aKey;
     FUserChangedText := True;
+    DoAutoCheck;
   end;
 end;
 
@@ -3723,6 +3733,12 @@ begin
   end;
 end;
 
+procedure TCustomDateTimePicker.DoAutoCheck;
+begin
+  if ShowCheckBox and not Checked and AutoCheck then
+    Checked := True;
+end;
+
 procedure TCustomDateTimePicker.DestroyArrowBtn;
 begin
   if Assigned(FArrowButton) then begin
@@ -3742,6 +3758,7 @@ begin
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, cx, cy);
 
+  FAutoCheck := True;
   FCalAlignment := dtaDefault;
   FCorrectedDTP := dtpAMPM;
   FCorrectedValue := 0;
