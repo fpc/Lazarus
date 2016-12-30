@@ -453,7 +453,7 @@ begin
 end;
 
 function TMainIDEBar.CalcNonClientHeight: Integer;
-{$IF DEFINED(LCLWin32) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt)}
+{$IF DEFINED(LCLWin32) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt) OR DEFINED(LCLQt5)}
 var
   WindowRect, WindowClientRect: TRect;
 {$ENDIF}
@@ -474,7 +474,7 @@ begin
   if not Showing then
     Exit(0);
 
-  {$IF DEFINED(LCLWin32) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt)}
+  {$IF DEFINED(LCLWin32) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt) OR DEFINED(LCLQt5)}
   //Gtk2 + Win32 + Qt
   //retrieve real main menu height because
   // - Win32: multi-line is possible (SM_CYMENU reflects only single line)
@@ -485,7 +485,7 @@ begin
 
   Result := WindowClientRect.Top - WindowRect.Top;
 
-  {$IFDEF LCLQt}
+  {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5)}
   // ToDo: fix this properly for QT.
   //  Result can be negative (-560) when both Coolbar and Palette are hidden.
   if Result < 0 then

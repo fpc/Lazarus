@@ -2885,7 +2885,7 @@ begin
   {$IFDEF LCLCarbon}
     FForcePaintEvents := True;
   {$ELSE}
-  {$IFDEF LCLQt}
+  {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5)}
     FForcePaintEvents := True;
   {$ELSE}
     FForcePaintEvents := False;

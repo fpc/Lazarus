@@ -1,6 +1,6 @@
 {%MainUnit ../osprinters.pas}
 uses
-  Classes, SysUtils, Printers, qt4, qtobjects,
+  Classes, SysUtils, Printers, {$IFDEF LCLQt5}qt5{$ELSE}qt4{$ENDIF}, qtobjects,
   LCLType, LCLProc;
 
 type
@@ -54,7 +54,7 @@ type
     procedure DoDestroy; override;
   public
     procedure Validate;
-    function GetPaperSize(Const Str: String): QPrinterPageSize;
+    function GetPaperSize(Const Str: String): {$IFDEF LCLQt5}QPagedPaintDevicePageSize{$ELSE}QPrinterPageSize{$ENDIF};
   public
     constructor Create; override;
     function Write(const {%H-}Buffer; {%H-}Count:Integer; out Written: Integer): Boolean; override;

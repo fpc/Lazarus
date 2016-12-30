@@ -48,14 +48,14 @@ begin
   QPrinterNPageSize = 30 }
 end;
 
-function TQtPrinters.GetPaperSize(Const Str: String): QPrinterPageSize;
+function TQtPrinters.GetPaperSize(Const Str: String): {$IFDEF LCLQt5}QPagedPaintDevicePageSize{$ELSE}QPrinterPageSize{$ENDIF};
 var
   i: Integer;
 begin
-  Result := QPrinterA4;
+  Result := {$IFDEF LCLQt5}QPagedPaintDeviceA4{$ELSE}QPrinterA4{$ENDIF};
   i := FPagesEnum.IndexOf(Str);
   if i >= 0 then
-    Result := QPrinterPageSize(i);
+    Result := {$IFDEF LCLQt5}QPagedPaintDevicePageSize{$ELSE}QPrinterPageSize{$ENDIF}(i);
 end;
 
 procedure TQtPrinters.BeginPage;

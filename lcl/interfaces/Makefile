@@ -350,250 +350,250 @@ endif
 export LCL_PLATFORM
 override DEFAULT_DIR=$(LCL_PLATFORM)
 ifeq ($(FULL_TARGET),i386-linux)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-haiku)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-nativent)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-iphonesim)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-android)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i386-aros)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),powerpc-wii)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),powerpc-aix)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),x86_64-netbsd)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),x86_64-solaris)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),x86_64-openbsd)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),x86_64-darwin)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),x86_64-iphonesim)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),x86_64-aros)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),x86_64-dragonfly)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),arm-darwin)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),arm-android)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),powerpc64-darwin)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),powerpc64-aix)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),avr-embedded)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),armeb-linux)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),armeb-embedded)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),mips-linux)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),mipsel-linux)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),mipsel-embedded)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),mipsel-android)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),jvm-java)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),jvm-android)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i8086-msdos)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),i8086-win16)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),aarch64-linux)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifeq ($(FULL_TARGET),aarch64-darwin)
-override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+override TARGET_DIRS+=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 endif
 ifdef REQUIRE_UNITSDIR
 override UNITSDIR+=$(REQUIRE_UNITSDIR)
@@ -1969,6 +1969,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -1982,6 +1983,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -1995,6 +1997,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2008,6 +2011,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2021,6 +2025,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2034,6 +2039,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2047,6 +2053,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2060,6 +2067,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2073,6 +2081,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2086,6 +2095,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2099,6 +2109,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2112,6 +2123,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2125,6 +2137,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2138,6 +2151,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2151,6 +2165,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2164,6 +2179,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2177,6 +2193,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2190,6 +2207,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2203,6 +2221,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2216,6 +2235,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2229,6 +2249,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2242,6 +2263,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2255,6 +2277,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2268,6 +2291,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2281,6 +2305,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2294,6 +2319,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2307,6 +2333,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2320,6 +2347,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2333,6 +2361,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2346,6 +2375,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2359,6 +2389,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2372,6 +2403,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2385,6 +2417,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2398,6 +2431,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2411,6 +2445,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2424,6 +2459,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2437,6 +2473,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2450,6 +2487,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2463,6 +2501,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2476,6 +2515,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2489,6 +2529,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2502,6 +2543,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2515,6 +2557,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2528,6 +2571,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2541,6 +2585,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2554,6 +2599,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2567,6 +2613,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2580,6 +2627,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2593,6 +2641,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2606,6 +2655,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2619,6 +2669,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2632,6 +2683,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2645,6 +2697,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2658,6 +2711,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2671,6 +2725,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2684,6 +2739,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2697,6 +2753,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2710,6 +2767,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2723,6 +2781,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2736,6 +2795,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2749,6 +2809,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2762,6 +2823,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2775,6 +2837,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2788,6 +2851,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2801,6 +2865,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2814,6 +2879,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2827,6 +2893,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2840,6 +2907,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2853,6 +2921,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2866,6 +2935,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2879,6 +2949,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2892,6 +2963,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2905,6 +2977,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2918,6 +2991,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2931,6 +3005,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2944,6 +3019,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2957,6 +3033,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2970,6 +3047,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2983,6 +3061,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -2996,6 +3075,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -3009,6 +3089,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -3022,6 +3103,7 @@ TARGET_DIRS_GTK3=1
 TARGET_DIRS_WIN32=1
 TARGET_DIRS_WINCE=1
 TARGET_DIRS_QT=1
+TARGET_DIRS_QT5=1
 TARGET_DIRS_CARBON=1
 TARGET_DIRS_FPGUI=1
 TARGET_DIRS_NOGUI=1
@@ -3297,6 +3379,51 @@ qt_makefiles:
 qt:
 	$(MAKE) -C qt all
 .PHONY: qt_all qt_debug qt_smart qt_release qt_units qt_examples qt_shared qt_install qt_sourceinstall qt_exampleinstall qt_distinstall qt_zipinstall qt_zipsourceinstall qt_zipexampleinstall qt_zipdistinstall qt_clean qt_distclean qt_cleanall qt_info qt_makefiles qt
+endif
+ifdef TARGET_DIRS_QT5
+qt5_all:
+	$(MAKE) -C qt5 all
+qt5_debug:
+	$(MAKE) -C qt5 debug
+qt5_smart:
+	$(MAKE) -C qt5 smart
+qt5_release:
+	$(MAKE) -C qt5 release
+qt5_units:
+	$(MAKE) -C qt5 units
+qt5_examples:
+	$(MAKE) -C qt5 examples
+qt5_shared:
+	$(MAKE) -C qt5 shared
+qt5_install:
+	$(MAKE) -C qt5 install
+qt5_sourceinstall:
+	$(MAKE) -C qt5 sourceinstall
+qt5_exampleinstall:
+	$(MAKE) -C qt5 exampleinstall
+qt5_distinstall:
+	$(MAKE) -C qt5 distinstall
+qt5_zipinstall:
+	$(MAKE) -C qt5 zipinstall
+qt5_zipsourceinstall:
+	$(MAKE) -C qt5 zipsourceinstall
+qt5_zipexampleinstall:
+	$(MAKE) -C qt5 zipexampleinstall
+qt5_zipdistinstall:
+	$(MAKE) -C qt5 zipdistinstall
+qt5_clean:
+	$(MAKE) -C qt5 clean
+qt5_distclean:
+	$(MAKE) -C qt5 distclean
+qt5_cleanall:
+	$(MAKE) -C qt5 cleanall
+qt5_info:
+	$(MAKE) -C qt5 info
+qt5_makefiles:
+	$(MAKE) -C qt5 makefiles
+qt5:
+	$(MAKE) -C qt5 all
+.PHONY: qt5_all qt5_debug qt5_smart qt5_release qt5_units qt5_examples qt5_shared qt5_install qt5_sourceinstall qt5_exampleinstall qt5_distinstall qt5_zipinstall qt5_zipsourceinstall qt5_zipexampleinstall qt5_zipdistinstall qt5_clean qt5_distclean qt5_cleanall qt5_info qt5_makefiles qt5
 endif
 ifdef TARGET_DIRS_CARBON
 carbon_all:

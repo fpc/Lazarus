@@ -2,7 +2,7 @@
 main=lcl
 
 [target]
-dirs=gtk gtk2 gtk3 win32 wince qt carbon fpgui nogui cocoa customdrawn
+dirs=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
 
 [default]
 dir=$(LCL_PLATFORM)

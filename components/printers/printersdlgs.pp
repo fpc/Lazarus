@@ -94,6 +94,10 @@ implementation
       uses qtobjects, qt4, qtint;
       {$I qtprndialogs.inc}
     {$ENDIF}
+    {$IFDEF LCLQt5}
+      uses qtobjects, qt5, qtint;
+      {$I qtprndialogs.inc}
+    {$ENDIF}    
     {$IFDEF LCLGtk2}
       uses udlgSelectPrinter, udlgPropertiesPrinter, udlgPageSetup;
       {$I cupsprndialogs.inc}
@@ -103,9 +107,14 @@ implementation
       uses qtobjects, qt4, qtint;
       {$I qtprndialogs.inc}
     {$ELSE}
+    {$IFDEF LCLQt5}
+      uses qtobjects, qt5, qtint;
+      {$I qtprndialogs.inc}
+    {$ELSE}    
       uses udlgSelectPrinter, udlgPropertiesPrinter, udlgPageSetup;
       {$I cupsprndialogs.inc}
     {$ENDIF}
+    {$ENDIF}    
   {$ENDIF}
 {$ENDIF}
 
@@ -115,9 +124,15 @@ implementation
     qtobjects, qtwidgets, qt4, LCLIntf, LCLType;
     {$I qtprndialogs.inc}
   {$ELSE}
+  {$IFDEF LCLQt5}
+    uses Windows,
+    qtobjects, qtwidgets, qt5, LCLIntf, LCLType;
+    {$I qtprndialogs.inc}
+  {$ELSE}  
     uses Windows, WinUtilPrn, InterfaceBase, LCLIntf, LCLType, WinVer;
     {$I winprndialogs.inc}
   {$ENDIF}
+  {$ENDIF}  
 
 {$ENDIF}
 

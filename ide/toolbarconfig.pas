@@ -179,7 +179,7 @@ procedure TToolBarConfig.FormCreate(Sender: TObject);
 begin
   inherited;
   //we have to ownerdraw the listview on qt
-  {$IFDEF LCLQT}
+  {$IF DEFINED(LCLQT) OR DEFINED(LCLQT5)}
   lvToolbar.OwnerDraw := True;
   {$ENDIF}
   pnlButtons.Color := clBtnFace;
@@ -335,7 +335,7 @@ begin
       lvItem            := lvToolbar.Items.Add;
     lvItem.Caption      := ACaption;
     lvItem.Data         := n.Data;
-    {$IF not DEFINED(LCLQt)}
+    {$IF not DEFINED(LCLQt) and not DEFINED(LCLQt5)}
     if n.ImageIndex > -1 then
       lvItem.ImageIndex   := n.ImageIndex
     else
@@ -439,7 +439,7 @@ begin
     lvItem := lvToolbar.Items.Add;
   lvItem.Selected := False;
   lvItem.Caption:= cIDEToolbarDivider;
-  {$IF not DEFINED(LCLQt)}
+  {$IF not DEFINED(LCLQt) and not DEFINED(LCLQt5)}
   lvItem.ImageIndex:= divImageIndex;
   {$ENDIF}
   //lvItem.SubItems.Add(IntToStr(CurrProfile));
@@ -572,7 +572,7 @@ begin
     lvItem := lvToolbar.Items.Add;
     lvItem.Caption:= Item.GetCaptionWithShortCut;
     lvItem.Data:= Item;
-    {$IF not DEFINED(LCLQt)}
+    {$IF not DEFINED(LCLQt) and not DEFINED(LCLQt5)}
     if Item.ImageIndex > -1 then
       lvItem.ImageIndex:= Item.ImageIndex
     else
@@ -591,7 +591,7 @@ var
 begin
   lvItem := lvToolbar.Items.Add;
   lvItem.Caption:= cIDEToolbarDivider;
-  {$IF not DEFINED(LCLQt)}
+  {$IF not DEFINED(LCLQt) and not DEFINED(LCLQt5)}
   lvItem.ImageIndex:= divImageIndex;
   {$ENDIF}
   //  lvItem.SubItems.Add(IntToStr(PMask));
