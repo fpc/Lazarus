@@ -19,7 +19,7 @@ interface
 uses
   Classes, contnrs, SysUtils, FileUtil, Forms, Controls, ExtCtrls, StdCtrls,
   Graphics, LCLType, lclintf, Menus, LMessages, sparta_DesignedForm, Math,
-  Types, FormEditingIntf, PropEdits, sparta_BasicResizeFrame;
+  Types, FormEditingIntf, PropEdits, ObjectInspector, sparta_BasicResizeFrame;
 
 type
 
@@ -55,29 +55,35 @@ begin
 end;
 
 procedure TResizerFrame.BeginFormSizeUpdate(Sender: TObject);
+var
+  OI: TObjectInspectorDlg;
 begin
   inherited;
 
   // when was active ActivePropertyGrid.ItemIndex for height or width during scaling
   // there was problem with values :<
-  if ((Sender = pR) or (Sender = pB) or (FNodes.IndexOf(Sender) in [3,4,5])) and (FormEditingHook.GetCurrentObjectInspector <> nil) then
+  OI := FormEditingHook.GetCurrentObjectInspector;
+  if ((Sender = pR) or (Sender = pB) or (FNodes.IndexOf(Sender) in [3,4,5])) and Assigned(OI) then
   begin
-    FActivePropertyGridItemIndex := FormEditingHook.GetCurrentObjectInspector.GetActivePropertyGrid.ItemIndex;
-    FormEditingHook.GetCurrentObjectInspector.GetActivePropertyGrid.ItemIndex := -1;
+    FActivePropertyGridItemIndex := OI.GetActivePropertyGrid.ItemIndex;
+    OI.GetActivePropertyGrid.ItemIndex := -1;
   end
   else
     FActivePropertyGridItemIndex := -1;
 end;
 
 procedure TResizerFrame.EndFormSizeUpdate(Sender: TObject);
+var
+  OI: TObjectInspectorDlg;
 begin
   inherited;
 
   // restore last selected item in OI.
   if FActivePropertyGridItemIndex <> -1 then
   begin
-    if FormEditingHook.GetCurrentObjectInspector <> nil then
-      FormEditingHook.GetCurrentObjectInspector.GetActivePropertyGrid.ItemIndex := FActivePropertyGridItemIndex;
+    OI := FormEditingHook.GetCurrentObjectInspector;
+    if OI <> nil then
+      OI.GetActivePropertyGrid.ItemIndex := FActivePropertyGridItemIndex;
     FActivePropertyGridItemIndex := -1;
   end;
 

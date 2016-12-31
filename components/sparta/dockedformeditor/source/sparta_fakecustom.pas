@@ -22,7 +22,7 @@ uses
 {$IFDEF USE_GENERICS_COLLECTIONS}
   Generics.Defaults,
 {$ENDIF}
-  SrcEditorIntf;
+  SrcEditorIntf, ObjectInspector;
 
 type
   { TDesignedFormImpl }
@@ -718,12 +718,18 @@ begin
 end;
 
 procedure TDesignedFormImpl.EndUpdate(AModified: Boolean);
+var
+  OI: TObjectInspectorDlg;
 begin
   TFormAccess(FOwner).SetDesigning(True, False);
   inherited EndUpdate(AModified);
-  if AModified and (FormEditingHook <> nil) then
-    if (FormEditingHook.GetCurrentDesigner = FOwner.Designer) and (FormEditingHook.GetCurrentObjectInspector <> nil) then
-      FormEditingHook.GetCurrentObjectInspector.RefreshPropertyValues;
+  if AModified and (FormEditingHook <> nil)
+  and (FormEditingHook.GetCurrentDesigner = FOwner.Designer) then
+  begin
+    OI := FormEditingHook.GetCurrentObjectInspector;
+    if Assigned(OI) then
+      OI.RefreshPropertyValues;
+  end;
 end;
 
 end.
