@@ -3577,6 +3577,16 @@ begin
     {TODO: check what happens if pure form is transparent for mouse events.}
     QCoreApplication_sendEvent(AWidgetAt, ANewEvent);
     QEvent_destroy(ANewEvent);
+    {if our transparent widget is hidden during mouse down, send mouse up to current
+     widget}
+    if not QWidget_isVisible(QWidgetH(Sender)) and (QEvent_type(Event)=QEventMouseButtonPress) then
+    begin
+      ANewEvent := QMouseEvent_create(QEventMouseButtonRelease, @APosF,
+        @AGlobalPosF, QMouseEvent_button(AMouseEvent),
+          QMouseEvent_buttons(AMouseEvent), QInputEvent_modifiers(QInputEventH(Event)));
+      QCoreApplication_sendEvent(AWidgetAt, ANewEvent);
+      QEvent_destroy(ANewEvent);
+    end;
     exit;
   end;
 
