@@ -395,6 +395,7 @@ begin
     tbCreate.Left := tbOptions.Left - 10;
     tbCreate.Enabled := (AEnable);
   end;
+  pnToolBarResize(pnToolbar);
   tbOptions.Enabled := (AEnable);
   tbHelp.Enabled := (AEnable);
 end;
@@ -792,7 +793,8 @@ var
 begin
   W := 0;
   for I := 0 to tbButtons.ButtonCount - 1 do
-    W := W + tbButtons.Buttons[I].Width;
+    if tbButtons.Buttons[I].Visible then
+      W := W + tbButtons.Buttons[I].Width;
   tbButtons.Width := W + 2;
   if tbButtons.Width < 450 then
     tbButtons.Width := 450;
