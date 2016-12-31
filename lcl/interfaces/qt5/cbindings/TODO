@@ -1,0 +1,21 @@
+* As of Qt-5.6 QtWebKit is deprecated and removed, must use QWebEnginexx classes instead.
+http://doc.qt.io/qt-5/qtwebenginewidgets-qtwebkitportingguide.html
+QWebView -> QWebEngineView
+QWebPage -> QWebEnginePage  (QWebPage::setContentEditable is out, use QWebEnginePage::runJavaScript)
+QWebHistory -> QWebEngineHistory
+QWebHistoryItem -> QWebEngineHistoryItem
+QWebFrame -> QWebEnginePage
+QNetworkAccessManager -> hook is in QWebEnginePage
+*DOES NOT EXIST IN QtWebEngine - provided link -> Unavailable Qt WebKit API*
+QGraphicsWebView
+QWebElement
+QWebDatabase
+QWebPlugin**
+QWebPage::setPalette
+QWebView::setRenderHints
+QWebHistoryInterface
+QWebPage::setContentEditable
+QWebPage::setLinkDelegationPolicy -> QWebEnginePage::acceptNavigationRequest()
+
+
+
