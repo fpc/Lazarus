@@ -31,7 +31,7 @@ uses
   Controls, StdCtrls, ExtCtrls, Forms, Graphics, Buttons, Menus, ButtonPanel,
   ImgList, Themes, LCLintf, LCLProc,
   // IdeIntf
-  FormEditingIntf, PropEdits,
+  FormEditingIntf, PropEdits, ObjectInspector,
   // IDE
   LazarusIDEStrConsts, MenuDesignerBase, MenuShortcuts;
 
@@ -587,12 +587,18 @@ begin
 end;
 
 procedure TMenuDesignerForm.EndUpdate;
+var
+  OI: TObjectInspectorDlg;
 begin
   if FUpdateCount<=0 then
     RaiseGDBException('');
   Dec(FUpdateCount);
   if FUpdateCount = 0 then
-    OnDesignerSetSelection(FormEditingHook.GetCurrentObjectInspector.Selection);
+  begin
+    OI := FormEditingHook.GetCurrentObjectInspector;
+    if Assigned(OI) then
+      OnDesignerSetSelection(OI.Selection);
+  end;
 end;
 
 function TMenuDesignerForm.IsUpdate: Boolean;
