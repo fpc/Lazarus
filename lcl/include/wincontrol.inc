@@ -8107,7 +8107,6 @@ var
   Layout: TAutoSizeCtrlData;
   NewClientWidth: Integer;
   NewClientHeight: Integer;
-  CurClientRect: TRect;
   NewMoveLeft, NewMoveRight: integer;
   FrameWidth: integer;
   FrameHeight: integer;
