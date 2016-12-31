@@ -547,13 +547,8 @@ var
 begin
   Result := -1;
   for I := 0 to FCoolbarToolBars.Count-1 do
-  begin
     if ToolBars[I].ToolBar = aToolBar then
-    begin
-      Result := I;
-      Break;
-    end;
-  end;
+      Exit(I);
 end;
 
 function Compare(const Item1, Item2: TIDEToolBar): Integer;
