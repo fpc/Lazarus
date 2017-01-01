@@ -2197,6 +2197,7 @@ var
   QtDC: TQtDeviceContext absolute DC;
   R, R1: TRect;
   Pt: TPoint;
+  ALayout: QtLayoutDirection;
 
   procedure DoDrawCharByChar(const AClipped: Boolean);
   var
@@ -2259,7 +2260,7 @@ begin
     begin
       // couldn't find way to fix it.
     end;
-    QtDC.fillRect(Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
+    QtDC.fillRect(X, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
   end else
   if ((Options and ETO_OPAQUE) = 0) and (Rect <> nil) and (QtDC.getBKMode = OPAQUE) then
   begin
@@ -2281,6 +2282,9 @@ begin
 
   if Str <> nil then
   begin
+    ALayout := QPainter_layoutDirection(QtDC.Widget);
+    if Options and ETO_RTLREADING <> 0 then
+      QPainter_setLayoutDirection(QtDC.Widget, QtRightToLeft);
     if Count >= 0 then
       WideStr := GetUtf8String(Copy(Str, 1, Count))
     else
@@ -2306,6 +2310,8 @@ begin
       else
         QtDC.drawText(X, Y, @WideStr);
     end;
+    if Options and ETO_RTLREADING <> 0 then
+      QPainter_setLayoutDirection(QtDC.Widget, ALayout);
   end;
 
   Result := True;
