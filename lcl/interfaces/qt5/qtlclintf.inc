@@ -894,6 +894,11 @@ begin
   QRubberBand_setGeometry(QRubberBandH(ARubberBand), @ARect);
 end;
 
+function TQtWidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+begin
+  Result := ExtTextOut(DC,X,Y,Options,Rect,Str,Count,Dx);
+end;
+
 function TQtWidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean;
 begin
   Result := False;
