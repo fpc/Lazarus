@@ -2219,7 +2219,7 @@ begin
   end;
 
   if ((Options and ETO_OPAQUE) <> 0) and (Rect <> nil) then
-    QtDC.fillRect(X, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
+    QtDC.fillRect(Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
 
   if Str <> nil then
   begin

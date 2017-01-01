@@ -2260,7 +2260,7 @@ begin
     begin
       // couldn't find way to fix it.
     end;
-    QtDC.fillRect(X, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
+    QtDC.fillRect(Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
   end else
   if ((Options and ETO_OPAQUE) = 0) and (Rect <> nil) and (QtDC.getBKMode = OPAQUE) then
   begin
