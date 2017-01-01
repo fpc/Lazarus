@@ -2164,6 +2164,7 @@ var
   QtDC: TQtDeviceContext absolute DC;
   R, R1: TRect;
   ALayout: QtLayoutDirection;
+  B: boolean;
 
   procedure DoDrawCharByChar(const AClipped: Boolean);
   var
@@ -2206,6 +2207,7 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
+  B := False;
   if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
   begin
     if Count >= 0 then
@@ -2215,11 +2217,17 @@ begin
 
     R := QtDC.getClipRegion.getBoundingRect;
     QtDC.font.Metrics.boundingRect(@R1, @R, 0, @WideStr);
+    B := True;
     Rect := @R1;
   end;
 
   if ((Options and ETO_OPAQUE) <> 0) and (Rect <> nil) then
-    QtDC.fillRect(Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
+  begin
+    if B then
+      QtDC.fillRect(X, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top)
+    else
+      QtDC.fillRect(Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
+  end;
 
   if Str <> nil then
   begin
