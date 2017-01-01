@@ -59,6 +59,8 @@ type
       ARect: TRect; State: TOwnerDrawState);
     procedure UnitsListBoxKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure UnitsListBoxMeasureItem(Control: TWinControl; Index: Integer;
+      var AHeight: Integer);
   private
     UnitImgInd: Integer;
     FMainUsedUnits: TStringList;
@@ -285,6 +287,13 @@ begin
   // Should be removed when issue #20599 is resolved.
   if (Key = VK_O) and (Shift = []) then
     Key:=VK_UNKNOWN;
+end;
+
+procedure TUseUnitDialog.UnitsListBoxMeasureItem(Control: TWinControl;
+  Index: Integer; var AHeight: Integer);
+begin
+  if (AHeight <= IDEImages.Images_16.Height) then
+    AHeight := IDEImages.Images_16.Height + 2;
 end;
 
 procedure TUseUnitDialog.AddImplUsedUnits;
