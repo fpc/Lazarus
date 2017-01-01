@@ -642,7 +642,7 @@ end;
 
 function compareControlTop(Item1, Item2: pointer): Integer;
 begin
-  if TControl(Item1).Top<TControl(TControl).Top then Result:=-1
+  if TControl(Item1).Top<TControl(Item2).Top then Result:=-1
   else if TControl(Item1).Top>TControl(Item2).Top then Result:=1
   else Result:=0;
 end;
