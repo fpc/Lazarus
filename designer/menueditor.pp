@@ -922,9 +922,9 @@ begin
       anExistingSI.Parent:=nil;
       box.RemoveComponent(anExistingSI);
       FreeAndNil(anExistingSI);
-      FEditorDesigner.PropertyEditorHook.PersistentDeleting(TPersistent(mi));
+      FEditorDesigner.PropertyEditorHook.DeletePersistent(TPersistent(mi));
+      FEditorDesigner.PropertyEditorHook.Modified(mi);
       FreeAndNil(mi);
-      FEditorDesigner.PropertyEditorHook.PersistentDeleted;
       FEditorDesigner.Modified;
 
       if (box.ShadowCount = 0) then
