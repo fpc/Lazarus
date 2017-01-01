@@ -13309,7 +13309,7 @@ begin
     GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
     if Assigned(ActiveSourceEditor) then begin
       ActiveSourceEditor.DoEditorExecuteCommand(EditorCommand); // pass the command
-      if FocusEditor then
+      if FocusEditor and ActiveSourceEditor.EditorControl.CanFocus then
         ActiveSourceEditor.EditorControl.SetFocus;
     end;
   end;
