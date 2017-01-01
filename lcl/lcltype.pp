@@ -224,6 +224,7 @@ type
 const
   ETO_OPAQUE = 2;
   ETO_CLIPPED = 4;
+  ETO_RTLREADING = 128;
 
   CS_VREDRAW = dword(1);
   CS_HREDRAW = dword(2);

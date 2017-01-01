@@ -1357,6 +1357,8 @@ begin
   Flags := 0;
   if TextStyle.Opaque then
     Flags := ETO_Opaque;
+  if TextStyle.RightToLeft then
+    Flags := Flags or ETO_RTLREADING;
   ExtUTF8Out(FHandle, X, Y, Flags, nil, PChar(Text), Length(Text), nil);
   MoveTo(X + TextWidth(Text), Y);
   Changed;
