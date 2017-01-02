@@ -630,14 +630,14 @@ begin
     taLeftJustify: Pos := X;
     taRightJustify:
     begin
-      Pos := X - TextWidth(AText);
+      Pos := X - TextWidth(AText) / XRatio;
     end;
     taCenter:
     begin
-      Pos := X - (TextWidth(AText) / 2);
+      Pos := X - (TextWidth(AText) / 2 / XRatio);
     end;
   end;
-  DrawText(Pos, Y, TextWidth(AText), TextHeight, AText, Style);
+  DrawText(Pos, Y, TextWidth(AText) / XRatio + 2, TextHeight / YRatio, AText, Style);
   Cursor.Left += TextWidth(AText) / XRatio;
 end;
 
