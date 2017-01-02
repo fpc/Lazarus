@@ -9593,15 +9593,10 @@ begin
   EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
   BackGroundColor := nil;
-  if Assigned(DevCtx.GDIObjects[gdiBrush]) and (DevCtx.BkMode = OPAQUE) and
-    Assigned(DevCtx.CurrentBackColor.Colormap) then
+  if DevCtx.BkMode = OPAQUE then
   begin
-    EnsureGCColor(DC, dccCurrentBackColor, DevCtx.GDIObjects[gdiBrush]^.GDIBrushFill = GDK_SOLID, True);
-    //do not set BackGroundColor if CurrentBrush.Color = CurrentBackColor.
-    //issue #22719
-    if TGDKColorToTColor(DevCtx.CurrentBackColor.Color) <>
-      TGDKColorToTColor(DevCtx.GetBrush^.GDIBrushColor.Color) then
-      BackGroundColor := @DevCtx.CurrentBackColor.Color;
+    AllocGDIColor(DC, @DevCtx.CurrentBackColor);
+    BackGroundColor := @DevCtx.CurrentBackColor.Color;
   end;
 
   DevCtx.DrawTextWithColors(Str, Count,
