@@ -7868,13 +7868,6 @@ begin
       
       DevCtx.CurrentBrush := GDIObject;
       DevCtx.SelectedColors := dcscCustom;
-      if DevCtx.GC = nil then Exit;
-
-      gdk_gc_set_fill(DevCtx.GC, GDIObject^.GDIBrushFill);
-      case GDIObject^.GDIBrushFill of
-        GDK_STIPPLED: gdk_gc_set_stipple(DevCtx.GC, GDIObject^.GDIBrushPixMap);
-        GDK_TILED:    gdk_gc_set_tile(DevCtx.GC, GDIObject^.GDIBrushPixMap);
-      end;
     end;
 
     gdiFont: begin
