@@ -203,7 +203,10 @@ var
       ScrollMsg := WM_VSCROLL;
     end;
     if Windows.GetScrollInfo(Handle, ScrollBar, ScrollInfo)
-    and (Int64(ScrollInfo.nPage) < Int64(ScrollInfo.nMax)) then
+    and (((MMessage^.WheelDelta < 0)
+        and (Int64(ScrollInfo.nPos) <= Int64(ScrollInfo.nMax) - Int64(ScrollInfo.nPage)))
+      or ((MMessage^.WheelDelta > 0)
+        and (Int64(ScrollInfo.nPos) > Int64(ScrollInfo.nMin)))) then
     begin
       if Mouse.WheelScrollLines < 0 then
         // -1 means, scroll one page
