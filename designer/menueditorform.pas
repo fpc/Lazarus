@@ -60,6 +60,7 @@ type
     ShortcutItemsCountLabel: TLabel;
     StatisticsGroupBox: TGroupBox;
     SubmenuGroupBox: TGroupBox;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormHide(Sender: TObject);
@@ -248,6 +249,12 @@ begin
   KeyPreview:=True;
   InitializeStatisticVars;
   SetupPopupAssignmentsDisplay;
+end;
+
+procedure TMenuDesignerForm.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  FDesigner.FreeShadowMenu;
 end;
 
 procedure TMenuDesignerForm.FormDestroy(Sender: TObject);

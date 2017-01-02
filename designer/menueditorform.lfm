@@ -9,6 +9,7 @@ object MenuDesignerForm: TMenuDesignerForm
   Constraints.MinHeight = 400
   Constraints.MinWidth = 730
   KeyPreview = True
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnHide = FormHide
