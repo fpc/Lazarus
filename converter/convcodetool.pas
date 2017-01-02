@@ -228,6 +228,7 @@ begin
       if not ReplaceFuncCalls(fIsConsoleApp) then exit;
   finally
     fCTLink.SrcCache.EndUpdate;
+    fCTLink.SrcCache.Apply;
   end;
   Result:=mrOK;
 end;
@@ -373,7 +374,6 @@ begin
       end;
       CleanPos:=FindCommentEnd(Code.Source, CleanPos, CodeTool.Scanner.NestedComments);
     until false;
-    //SrcCache.Apply;
   end;
   Result:=true;
 end;

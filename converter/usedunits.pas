@@ -125,7 +125,6 @@ type
     fOnCheckPackageDependency: TCheckUnitEvent;
     fOnCheckUnitForConversion: TCheckUnitEvent;
     function HasUnit(aUnitName: string): Boolean;
-    procedure MaybeOpenPackage(aUnitName: string);
     function GetMissingUnitCount: integer;
   public
     constructor Create(ACTLink: TCodeToolLink; AFilename: string);
@@ -135,7 +134,8 @@ type
     function Remove(aUnit: string): TModalResult;
     procedure MoveMissingToComment(aAllCommentedUnits: TStrings);
     function AddUnitImmediately(aUnitName: string): Boolean;
-    procedure AddUnitIfNeeded(aUnitName: string);
+    function AddUnitIfNeeded(aUnitName: string): Boolean;
+    function MaybeAddPackageDep(aUnitName: string): Boolean;
     function AddThreadSupport: TModalResult;
   public
     property Filename: string read fFilename;
@@ -305,7 +305,7 @@ begin
         if fOwnerTool.HasUnit(sl[i]) then
           sl.Delete(i)
         else
-          fOwnerTool.MaybeOpenPackage(sl[i]);
+          fOwnerTool.MaybeAddPackageDep(sl[i]);
       end;
       WillRemove:=sl.Count=0;
       if not WillRemove then begin
@@ -645,16 +645,17 @@ begin
          or fImplUsedUnits.fUnitsToRenameVals.Find(aUnitName, x);
 end;
 
-procedure TUsedUnitsTool.MaybeOpenPackage(aUnitName: string);
-// Open a package containing a unit. Called when the unit is not found.
+function TUsedUnitsTool.MaybeAddPackageDep(aUnitName: string): Boolean;
+// Add a dependency to a package containing the unit and open it.
+// Called when the unit is not found.
 var
   s: String;
 begin
+  Result := False;
   s:='';
   if fCTLink.CodeTool.DirectoryCache.FindUnitSourceInCompletePath(aUnitName,s,True) = '' then
     if Assigned(fOnCheckPackageDependency) then
-      if not fOnCheckPackageDependency(aUnitName) then
-        ;
+      Result := not fOnCheckPackageDependency(aUnitName);
 end;
 
 function TUsedUnitsTool.ConvertUsed: TModalResult;
@@ -777,15 +778,19 @@ begin
   RemoveFromAdded(fImplUsedUnits.fUnitsToAdd);
   RemoveFromAdded(fMainUsedUnits.fUnitsToAddForLCL);
   RemoveFromAdded(fImplUsedUnits.fUnitsToAddForLCL);
+  fCTLink.Settings.AddLogLine(mluNote,
+    Format(lisConvAddedUnitToUsesSection, [aUnitName]), fFilename);
 end;
 
-procedure TUsedUnitsTool.AddUnitIfNeeded(aUnitName: string);
+function TUsedUnitsTool.AddUnitIfNeeded(aUnitName: string): Boolean;
 begin
-  if not HasUnit(aUnitName) then begin
+  Result := not HasUnit(aUnitName);
+  if Result then
+  begin
     fMainUsedUnits.fUnitsToAdd.Add(aUnitName);
     fCTLink.Settings.AddLogLine(mluNote,
-      Format(lisConvAddedUnitToUsesSection,[aUnitName]), fFilename);
-    MaybeOpenPackage(aUnitName);
+      Format(lisConvAddedUnitToUsesSection, [aUnitName]), fFilename);
+    MaybeAddPackageDep(aUnitName);
   end;
 end;
 

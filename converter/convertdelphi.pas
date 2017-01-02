@@ -1411,6 +1411,7 @@ end;
 function TConvertDelphiProjPack.CheckPackageDep(AUnitName: string): Boolean;
 // Check if the given unit can be found in existing packages. Add a dependency if found.
 // This is called only if the unit is reported as missing.
+// Returns True if a dependency was really added.
 var
   Pack: TPkgFile;
   Dep: TPkgDependency;
@@ -1451,7 +1452,7 @@ begin
       if not Result then
         // Package was not found. Add a message about a package that must be installed.
         fSettings.AddLogLine(mluWarning,
-          Format(lisConvDelphiPackageRequired, [ADefaultPkgName]));
+                        Format(lisConvDelphiPackageRequired, [ADefaultPkgName]));
     end;
   end;
 end;

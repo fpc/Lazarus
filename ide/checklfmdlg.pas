@@ -34,15 +34,16 @@ uses
   // FCL+LCL
   Classes, SysUtils, Math, TypInfo, contnrs,
   LCLProc, LResources, Forms, Controls,
-  Graphics, Dialogs, Buttons, StdCtrls, ExtCtrls,
+  Dialogs, Buttons, StdCtrls, ExtCtrls,
   // components
   SynHighlighterLFM, SynEdit, BasicCodeTools, CodeCache, CodeToolManager,
   SynEditMiscClasses, LFMTrees,
+  // IDEIntf
+  IDEExternToolIntf, PackageIntf, IDEWindowIntf, PropEdits, PropEditUtils,
+  IDEMsgIntf, IDEDialogs, ComponentReg,
   // IDE
-  IDEExternToolIntf, PackageIntf, IDEWindowIntf, PropEdits, PropEditUtils, IDEMsgIntf,
-  IDEDialogs, ComponentReg,
   CustomFormEditor, LazarusIDEStrConsts,
-  IDEProcs, IDEOptionDefs, EditorOptions, SourceMarks, JITForms;
+  IDEProcs, EditorOptions, SourceMarks, JITForms;
 
 type
 

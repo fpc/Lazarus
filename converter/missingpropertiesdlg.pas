@@ -33,18 +33,18 @@ interface
 
 uses
   // FCL+LCL
-  Classes, SysUtils, LCLProc, Forms, Controls, Grids, LResources,
-  LConvEncoding, Graphics, Dialogs, Buttons, StdCtrls, ExtCtrls, contnrs,
-  LazFileUtils, LazUTF8Classes, LCLType, LazUTF8,
+  Classes, SysUtils, contnrs,
+  LCLProc, Forms, Controls, Grids, LResources, Dialogs, Buttons, StdCtrls, ExtCtrls,
+  // LazUtils
+  LazFileUtils, LazUTF8Classes, LazUTF8,
   // components
-  SynHighlighterLFM, SynEdit, SynEditMiscClasses, LFMTrees,
+  SynHighlighterLFM, SynEdit, SynEditMiscClasses,
   // codetools
-  CodeCache, CodeToolManager, CodeToolsStructs, CodeCompletionTool,
+  CodeCache, CodeToolManager, CodeToolsStructs, CodeCompletionTool, LFMTrees,
   // IdeIntf
-  ComponentReg, PackageIntf, IDEWindowIntf, IDEExternToolIntf,
+  IDEExternToolIntf, ComponentReg,
   // IDE
-  CustomFormEditor, LazarusIDEStrConsts, IDEProcs,
-  EditorOptions, CheckLFMDlg, Project, SourceMarks,
+  LazarusIDEStrConsts, EditorOptions, CheckLFMDlg, Project, SourceMarks,
   // Converter
   ConverterTypes, ConvertSettings, ReplaceNamesUnit,
   ConvCodeTool, FormFileConv, UsedUnits;
@@ -612,7 +612,8 @@ var
 begin
   Result:=mrOK;
   if not Assigned(fUsedUnitsTool) then Exit;
-  for i := 0 to aMissingTypes.Count-1 do begin
+  for i := 0 to aMissingTypes.Count-1 do
+  begin
     RegComp:=IDEComponentPalette.FindComponent(aMissingTypes[i]);
     NeededUnitName:='';
     if (RegComp<>nil) then begin
@@ -621,14 +622,17 @@ begin
         if NeededUnitName='' then
           NeededUnitName:=RegComp.GetUnitName;
       end;
-    end else begin
+    end
+    else begin
       ClassUnitInfo:=Project1.UnitWithComponentClassName(aMissingTypes[i]);
       if ClassUnitInfo<>nil then
         NeededUnitName:=ClassUnitInfo.GetUsesUnitName;
     end;
-    if NeededUnitName<>'' then begin
-      if fUsedUnitsTool.AddUnitImmediately(NeededUnitName) then
-        Result:=mrRetry;  // Caller must check LFM validity again
+    if (NeededUnitName<>'')
+    and fUsedUnitsTool.AddUnitImmediately(NeededUnitName) then
+    begin
+      Result:=mrRetry;  // Caller must check LFM validity again
+      fUsedUnitsTool.MaybeAddPackageDep(NeededUnitName);
     end;
   end;
 end;

@@ -9,7 +9,7 @@ uses
 
 type
 
-  TAddUnitEvent = procedure (AUnitName: string) of object;
+  TAddUnitEvent = function (AUnitName: string): Boolean of object;
   TCheckUnitEvent = function (AUnitName: string): Boolean of object;
 
   // What to do with {$R *.RES} directive, convert to lowercase or delete.
