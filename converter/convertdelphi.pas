@@ -666,9 +666,12 @@ begin
     ConvTool.HasFormFile:=DfmFilename<>'';
     ConvTool.AddUnitEvent:=@fUsedUnitsTool.AddUnitIfNeeded;
     Result:=ConvTool.Convert;
+    if Result<>mrOK then exit;
   finally
     ConvTool.Free;
   end;
+  // First pass to add, remove, fix and comment out units in uses sections.
+  Result:=fUsedUnitsTool.ConvertUsed;
 end;
 
 function TDelphiUnit.ConvertFormFile: TModalResult;
@@ -697,7 +700,8 @@ begin
     Result:=SaveCodeBufferToFile(fLFMBuffer,fLFMBuffer.Filename);
     if Result<>mrOK then exit;
   end;
-  // After other changes: add, remove, fix and comment out units in uses sections.
+  // Second pass to add, remove, fix and comment out units in uses sections.
+  // More changes to uses section can happen during form file conversion.
   Result:=fUsedUnitsTool.ConvertUsed;
   if Result<>mrOK then exit;
   Result:=mrOK;

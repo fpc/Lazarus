@@ -391,16 +391,20 @@ begin
     // Don't remove the unit names but add to Delphi block instead.
     for i:=0 to fUnitsToRemove.Count-1 do
       if not MoveToDelphi(fUnitsToRemove[i]) then Exit;
+    fUnitsToRemove.Clear;
     // ... and don't comment the unit names either.
     for i:=0 to fUnitsToComment.Count-1 do
       if not MoveToDelphi(fUnitsToComment[i]) then Exit;
+    fUnitsToComment.Clear;
     // Add replacement units to LCL block.
     for i:=0 to fUnitsToRenameKeys.Count-1 do begin
       if not MoveToDelphi(fUnitsToRenameKeys[i]) then Exit;
       LCLOnlyUnits.Add(fUnitsToRename[fUnitsToRenameKeys[i]]);
     end;
+    fUnitsToRenameKeys.Clear;
     // Additional units for LCL (like Interfaces).
     LCLOnlyUnits.AddStrings(fUnitsToAddForLCL);
+    fUnitsToAddForLCL.Clear;
     // Add LCL and Delphi sections for output.
     if (LclOnlyUnits.Count=0) and (DelphiOnlyUnits.Count=0) then Exit(True);
     fCTLink.ResetMainScanner;
@@ -481,9 +485,8 @@ var
   i: Integer;
 begin
   Result:=false;
-  for i:=0 to fUnitsToRemove.Count-1 do begin
-    DebugLn('TUsedUnits.RemoveUnits: '+fUnitsToRemove[i]);
-    //fCTLink.ResetMainScanner;
+  for i:=0 to fUnitsToRemove.Count-1 do
+  begin
     ParseToUsesSectionEnd;
     if not fCTLink.CodeTool.RemoveUnitFromUsesSection(UsesSectionNode,
                          UpperCaseStr(fUnitsToRemove[i]), fCTLink.SrcCache) then
@@ -667,17 +670,21 @@ begin
   with fCTLink do begin
     // Fix case
     if not CodeTool.ReplaceUsedUnits(fMainUsedUnits.fUnitsToFixCase, SrcCache) then exit;
+    fMainUsedUnits.fUnitsToFixCase.Clear;
     if not CodeTool.ReplaceUsedUnits(fImplUsedUnits.fUnitsToFixCase, SrcCache) then exit;
+    fImplUsedUnits.fUnitsToFixCase.Clear;
     // Add more units.
     with fMainUsedUnits do begin
       for i:=0 to fUnitsToAdd.Count-1 do
         if not CodeTool.AddUnitToSpecificUsesSection(
                           fUsesSection, fUnitsToAdd[i], '', SrcCache) then exit;
+      fUnitsToAdd.Clear;
     end;
     with fImplUsedUnits do begin
       for i:=0 to fUnitsToAdd.Count-1 do
         if not CodeTool.AddUnitToSpecificUsesSection(
                           fUsesSection, fUnitsToAdd[i], '', SrcCache) then exit;
+      fUnitsToAdd.Clear;
     end;
     if fIsMainFile or not Settings.SupportDelphi then begin
       // One way conversion (or main file) -> remove and rename units.
@@ -685,7 +692,9 @@ begin
       if not fImplUsedUnits.RemoveUnits then exit;
       // Rename
       if not CodeTool.ReplaceUsedUnits(fMainUsedUnits.fUnitsToRename, SrcCache) then exit;
+      fMainUsedUnits.fUnitsToRename.Clear;
       if not CodeTool.ReplaceUsedUnits(fImplUsedUnits.fUnitsToRename, SrcCache) then exit;
+      fImplUsedUnits.fUnitsToRename.Clear;
     end;
     if Settings.SupportDelphi then begin
       // Support Delphi. Add IFDEF blocks for units.
@@ -703,17 +712,21 @@ begin
           if not CodeTool.CommentUnitsInUsesSection(fImplUsedUnits.fUnitsToComment,
             SrcCache, CodeTool.FindImplementationUsesNode) then exit;
         if not SrcCache.Apply then exit;
+        fMainUsedUnits.fUnitsToComment.Clear;
+        fImplUsedUnits.fUnitsToComment.Clear;
       end;
       // Add more units meant for only LCL.
       with fMainUsedUnits do begin
         for i:=0 to fUnitsToAddForLCL.Count-1 do
           if not CodeTool.AddUnitToSpecificUsesSection(fUsesSection,
                                    fUnitsToAddForLCL[i], '', SrcCache) then exit;
+        fUnitsToAddForLCL.Clear;
       end;
       with fImplUsedUnits do begin
         for i:=0 to fUnitsToAddForLCL.Count-1 do
           if not CodeTool.AddUnitToSpecificUsesSection(fUsesSection,
                                    fUnitsToAddForLCL[i], '', SrcCache) then exit;
+        fUnitsToAddForLCL.Clear;
       end;
     end;
   end;
