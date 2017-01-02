@@ -1156,11 +1156,11 @@ var
     Result:=ExpandDelphiSearchPath(SearchPath, Self);
   end;
 
-  procedure AddPackDep(const DelphiPkgName, DelphiPkgNames, LazarusPkgName: string);
+  procedure AddPackDep(const DelphiPkgName, LowerDelphiPkgNames, LazarusPkgName: string);
   begin
     if DelphiPkgName='' then exit;
-    if System.Pos(';'+lowercase(DelphiPkgName)+';',
-                  ';'+lowercase(DelphiPkgNames)+';')>0 then begin
+    if Pos(';'+lowercase(DelphiPkgName)+';', ';'+LowerDelphiPkgNames+';')>0 then
+    begin
       fProjPack.AddPackageDependency(LazarusPkgName);
       fSettings.AddLogLine(mluNote,
         Format(lisConvDelphiAddedPackageDependency,[LazarusPkgName]),
