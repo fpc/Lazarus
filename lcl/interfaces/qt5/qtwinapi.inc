@@ -2508,11 +2508,11 @@ function TQtWidgetSet.GetCapture: HWND;
 var
   w: QWidgetH;
   Widget: TQtWidget;
-  {$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWSQT4}
   AWin: HWND;
   {$ENDIF}
 begin
-  {$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWSQT4}
   AWin := Windows.GetCapture;
   if AWin <> 0 then
     w := QWidget_find(AWin)
@@ -2534,7 +2534,7 @@ begin
     // Capture widget can be child of complex control. In any case we should return TQtWidget as result.
     // So we will look for parent while not found apropriate LCL handle.
     Widget := GetFirstQtObjectFromWidgetH(w);
-    {$IFDEF MSWINDOWS}
+    {$IFDEF MSWINDOWSQT4}
     if Widget <> nil then
     begin
       if Widget is TQtCustomControl then
@@ -5376,7 +5376,7 @@ begin
   Result := w <> nil;
   if Result then
   begin
-    {$IFDEF MSWINDOWS}
+    {$IFDEF MSWINDOWSQT4}
     if (w is TQtMainWindow) then
       w.releaseMouse()
     else
@@ -5816,7 +5816,7 @@ begin
       ReleaseCapture;
     if IsValidHandle(AHandle) then
     begin
-      {$IFDEF MSWINDOWS}
+      {$IFDEF MSWINDOWSQT4}
       if TQtWidget(AHandle) is TQtCustomControl then
       begin
         Windows.SetCapture(QWidget_winID(TQtCustomControl(AHandle).Viewport.Widget))
