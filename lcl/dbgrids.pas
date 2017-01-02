@@ -314,6 +314,7 @@ type
     FKeySign: Integer;
     FSavedRecord: Integer;
     FOnGetCellHint: TDbGridCellHintEvent;
+    FOnRowMoved: TMovedEvent;
     procedure EmptyGrid;
     function GetColumns: TDBGridColumns;
     function GetCurrentColumn: TColumn;
@@ -342,6 +343,7 @@ type
     procedure SetDataSource(const AValue: TDataSource);
     procedure SetExtraOptions(const AValue: TDBGridExtraOptions);
     procedure SetOptions(const AValue: TDBGridOptions);
+    procedure SetRowMoved(AValue: TMovedEvent);
     procedure SetSelectedIndex(const AValue: Integer);
     procedure UpdateBufferCount;
 
@@ -494,6 +496,7 @@ type
     property OnTitleClick: TDBGridClickEvent read FOnTitleClick write FOnTitleClick;
     property OnUserCheckboxBitmap: TDbGridCheckboxBitmapEvent read FOnCheckboxBitmap write FOnCheckboxBitmap;
     property OnUserCheckboxState: TDbGridCheckboxStateEvent read FOnCheckboxState write FOnCheckboxState;
+    property OnRowMoved: TMovedEvent read FOnRowMoved write SetRowMoved;
   public
     constructor Create(AOwner: TComponent); override;
     procedure AutoAdjustColumns; override;
@@ -537,6 +540,7 @@ type
     property InplaceEditor;
     property SelectedColor;
     property SelectedRows;
+    property OnRowMoved;
   published
     property Align;
     property AlternateColor;
@@ -1208,6 +1212,17 @@ begin
   {$ifdef dbgDBGrid}
   DebugLnExit('%s.SetOptions DONE', [ClassName]);
   {$endif}
+end;
+
+procedure TCustomDBGrid.SetRowMoved(AValue: TMovedEvent);
+begin
+  if FOnRowMoved = AValue then
+    Exit;
+  FOnRowMoved := AValue;
+  if assigned(OnRowMoved) then
+    inherited Options := inherited Options + [goRowMoving]
+  else
+    inherited Options := inherited Options - [goRowMoving];
 end;
 
 procedure TCustomDBGrid.SetSelectedIndex(const AValue: Integer);
@@ -1987,7 +2002,9 @@ begin
     end;
     if Assigned(OnColumnMoved) then
       OnColumnMoved(Self, FromIndex, ToIndex);
-  end;
+  end
+  else if Assigned(OnRowMoved) then
+    OnRowMoved(Self, FromIndex, ToIndex);
 end;
 
 function TCustomDBGrid.ColumnEditorStyle(aCol: Integer; F: TField): TColumnButtonStyle;
@@ -2624,8 +2641,10 @@ begin
           else begin
             if Button=mbLeft then
               ClearSelection(true);
-            if gz=gzFixedRows then
-              doMouseDown
+            if gz=gzFixedRows then begin
+              fGridState:=gsRowMoving;
+              doMouseDown;
+            end
             else
               doInherited;
           end;
