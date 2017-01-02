@@ -651,6 +651,7 @@ end;
 function TUsedUnitsTool.MaybeAddPackageDep(aUnitName: string): Boolean;
 // Add a dependency to a package containing the unit and open it.
 // Called when the unit is not found.
+// Returns True if a dependency was really added.
 var
   s: String;
 begin
@@ -658,7 +659,7 @@ begin
   s:='';
   if fCTLink.CodeTool.DirectoryCache.FindUnitSourceInCompletePath(aUnitName,s,True) = '' then
     if Assigned(fOnCheckPackageDependency) then
-      Result := not fOnCheckPackageDependency(aUnitName);
+      Result := fOnCheckPackageDependency(aUnitName);
 end;
 
 function TUsedUnitsTool.ConvertUsed: TModalResult;
