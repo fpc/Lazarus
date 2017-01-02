@@ -1068,10 +1068,21 @@ begin
   if CurrentBrush^.GDIBrushFill = GDK_Solid then Exit;
   if CurrentBrush^.GDIBrushPixmap = nil then Exit;
 
-  gdk_gc_set_fill(GC, CurrentBrush^.GDIBrushFill);
-  if CurrentBrush^.GDIBrushFill = GDK_STIPPLED
-  then gdk_gc_set_stipple(GC, CurrentBrush^.GDIBrushPixmap)
-  else gdk_gc_set_tile(GC, CurrentBrush^.GDIBrushPixmap);
+  if CurrentBrush^.GDIBrushFill = GDK_STIPPLED then
+  begin
+    //invert background / foreground colors to match Windows.FillRect behavior
+    //with a 1bit bitmap pattern brush (bit set -> back color, bit unset -> text color)
+    EnsureGCColor(HDC(Self), dccCurrentTextColor, False, True);
+    EnsureGCColor(HDC(Self), dccCurrentBackColor, False, False);
+    gdk_gc_set_stipple(GC, CurrentBrush^.GDIBrushPixmap);
+    //use GDK_OPAQUE_STIPPLED to draw both background and foreground color
+    gdk_gc_set_fill(GC, GDK_OPAQUE_STIPPLED);
+  end
+  else
+  begin
+    gdk_gc_set_tile(GC, CurrentBrush^.GDIBrushPixmap);
+    gdk_gc_set_fill(GC, GDK_TILED);
+  end;
 
   gdk_gc_get_values(GC, @FGCValues);
 end;

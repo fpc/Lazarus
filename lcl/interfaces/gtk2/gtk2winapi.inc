@@ -3923,7 +3923,7 @@ begin
   Result := IsValidDC(DC) and IsValidGDIObject(Brush);
   if not Result or IsRectEmpty(Rect) then
     Exit;
-  if ({%H-}PGdiObject(Brush)^.GDIBrushFill <> GDK_SOLID) and (TGtkDeviceContext(DC).BkMode = OPAQUE) then
+  if ({%H-}PGdiObject(Brush)^.GDIBrushFill = GDK_TILED) and (TGtkDeviceContext(DC).BkMode = OPAQUE) then
   begin
     // fill a rectangle with a solid back color first
     TempBr := CreateSolidBrush(TGtkDeviceContext(DC).CurrentBackColor.ColorRef);
