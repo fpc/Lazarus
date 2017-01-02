@@ -668,6 +668,7 @@ resourcestring
   lisAddDelphiDefineHint = 'Useful when the code has checks for supported compiler versions';
   lisBackupChangedFiles = 'Make backup of changed files';
   lisBackupHint = 'Creates a Backup directory under project directory';
+
   lisStartConversion = 'Start Conversion';
   lisConvertTarget = 'Target';
   lisConvertTargetHint = 'Converter adds conditional compilation to support different targets';
@@ -683,6 +684,42 @@ resourcestring
   lisScanFilesInParentDir = 'Scan files in parent directory';
   lisScanFilesInParentDirHint = 'Search for source files in sibling directories'
     +' (parent directory and its children)';
+
+  //Delphi converter
+  lisConvDelphiConvertDelphiUnit = 'Convert Delphi unit';
+  lisConvDelphiConvertDelphiProject = 'Convert Delphi project';
+  lisConvDelphiConvertDelphiPackage = 'Convert Delphi package';
+  lisConvDelphiFoundAllUnitFiles = 'Found all unit files';
+  lisConvDelphiRepairingFormFiles = '*** Fixing used units and Repairing form files ***';
+  lisConvDelphiConvertingProjPackUnits = '*** Converting unit files belonging to project/package ***';
+  lisConvDelphiConvertingFoundUnits = '*** Converting unit files found during conversion ***';
+  lisConvDelphiChangedEncodingToUTF8 = 'Changed encoding from %s to UTF-8';
+  lisConvDelphiAllSubDirsScanned = 'All sub-directories will be scanned for unit files';
+  lisConvDelphiMissingIncludeFile = '%s(%s,%s) missing include file';
+  lisConvDelphiFixedUnitCase = 'Fixed character case of unit "%s" to "%s".';
+  lisConvDelphiReplacedUnitInUsesSection = 'Replaced unit "%s" with "%s" in uses section.';
+  lisConvDelphiRemovedUnitFromUsesSection = 'Removed unit "%s" from uses section.';
+  lisConvDelphiAddedUnitToUsesSection = 'Added unit "%s" to uses section.';
+  lisConvDelphiAddedCustomOptionDefines = 'Added defines %s in custom options';
+  lisConvDelphiUnitsToReplaceIn = 'Units to replace in %s';
+  lisConvDelphiConversionTook = 'Conversion took: %s';
+  lisConvDelphiConversionReady = 'Conversion Ready.';
+  lisConvDelphiConversionAborted = 'Conversion Aborted.';
+  lisConvDelphiBeginCodeToolsFailed = 'BeginCodeTools failed!';
+  lisConvDelphiError = 'Error="%s"';
+  lisConvDelphiFailedConvertingUnit = 'Failed converting unit';
+  lisConvDelphiFailedToConvertUnit = 'Failed to convert unit "%s"';
+  lisConvDelphiExceptionDuringConversion = 'Exception happened during unit conversion.'
+    +' Continuing with form files of already converted units...';
+  lisConvDelphiUnitnameExistsInLCL = 'Unitname exists in LCL';
+  lisConvDelphiUnitWithNameExistsInLCL = 'LCL already has a unit with name %s.'
+    +' Delete local file %s?';
+  lisConvDelphiPackageNameExists = 'Package name exists';
+  lisConvDelphiProjOmittedUnit = 'Omitted unit %s from project';
+  lisConvDelphiAddedPackageDependency = 'Added Package %s as a dependency.';
+  lisConvDelphiPackageRequired = 'Package %s is required but not installed in Lazarus! Install it later.';
+  lisConvDelphiThereIsAlreadyAPackageWithTheNamePleaseCloseThisPa = 'There is '
+    +'already a package with the name "%s"%sPlease close this package first.';
   lisConvUnknownProps = 'Unknown properties';
   lisConvTypesToReplace = 'Types to replace';
   lisConvTypeReplacements = 'Type Replacements';
@@ -703,7 +740,6 @@ resourcestring
   lisConvTopOff = 'Top offset';
   lisConvLeftOff = 'Left offset';
   lisConvDelphiFunc = 'Delphi Function';
-  lisConvAddedUnitToUsesSection = 'Added unit %s to uses section';
   lisConvAddingFlagForRegister = 'Adding flag for "Register" procedure in unit %s.';
   lisConvDeletedFile = 'Deleted file %s';
   lisConvBracketNotFound = 'Bracket not found';
@@ -723,7 +759,6 @@ resourcestring
   lisConvStoppedBecauseThereIsPackage  = 'Stopped because there already is a package with the same name';
   lisConvConvertedFrom = ' { *Converted from %s* }';
   lisConvThisLogWasSaved = 'This log was saved to %s';
-  lisScanning = 'Scanning';
   lisScanParentDir = 'Scanning parent directory';
   lisReplacement = 'Replacement';
   lisReplacements = 'Replacements';
@@ -736,6 +771,7 @@ resourcestring
   lisFilesHaveRightEncoding = '*** All found files already have the right encoding ***';
   lisEncodingNumberOfFilesFailed = 'Number of files failed to convert: %d';
 
+  //
   lisnoname = 'noname';
   lisTheDestinationDirectoryDoesNotExist = 'The destination directory%s"%s" does not exist.';
   lisRenameFile = 'Rename file?';
@@ -2328,8 +2364,12 @@ resourcestring
   dlgCOSources = 'Other sources (.pp/.pas files, used only by IDE not by compiler)';
   dlgCODebugPath = 'Debugger path addition (none):';
   lisDelimiterIsSemicolon = 'Delimiter is semicolon.';
+
+  // Initial setup dialog
+  lisScanning = 'Scanning';
   lisCompiler = 'Compiler';
   lisDebugger = 'Debugger';
+
   lisToFPCPath = 'Path:';
   lisCOSkipCallingCompiler = 'Skip calling compiler';
   lisCOAmbiguousAdditionalCompilerConfigFile = 'Ambiguous additional compiler config file';
@@ -5890,41 +5930,6 @@ resourcestring
 
   //IDE info dialog
   lisIDEInfoInformationAboutTheIDE = 'Information about the IDE';
-
-  //Delphi converter
-  lisConvDelphiConvertDelphiUnit = 'Convert Delphi unit';
-  lisConvDelphiConvertDelphiProject = 'Convert Delphi project';
-  lisConvDelphiConvertDelphiPackage = 'Convert Delphi package';
-  lisConvDelphiFoundAllUnitFiles = 'Found all unit files';
-  lisConvDelphiRepairingFormFiles = '*** Fixing used units and Repairing form files ***';
-  lisConvDelphiConvertingProjPackUnits = '*** Converting unit files belonging to project/package ***';
-  lisConvDelphiConvertingFoundUnits = '*** Converting unit files found during conversion ***';
-  lisConvDelphiChangedEncodingToUTF8 = 'Changed encoding from %s to UTF-8';
-  lisConvDelphiAllSubDirsScanned = 'All sub-directories will be scanned for unit files';
-  lisConvDelphiMissingIncludeFile = '%s(%s,%s) missing include file';
-  lisConvDelphiFixedUnitCase = 'Fixed character case of unit "%s" to "%s".';
-  lisConvDelphiReplacedUnitInUsesSection = 'Replaced unit "%s" with "%s" in uses section.';
-  lisConvDelphiRemovedUnitInUsesSection = 'Removed unit "%s" in uses section.';
-  lisConvDelphiAddedCustomOptionDefines = 'Added defines %s in custom options';
-  lisConvDelphiUnitsToReplaceIn = 'Units to replace in %s';
-  lisConvDelphiConversionTook = 'Conversion took: %s';
-  lisConvDelphiConversionReady = 'Conversion Ready.';
-  lisConvDelphiConversionAborted = 'Conversion Aborted.';
-  lisConvDelphiBeginCodeToolsFailed = 'BeginCodeTools failed!';
-  lisConvDelphiError = 'Error="%s"';
-  lisConvDelphiFailedConvertingUnit = 'Failed converting unit';
-  lisConvDelphiFailedToConvertUnit = 'Failed to convert unit "%s"';
-  lisConvDelphiExceptionDuringConversion = 'Exception happened during unit conversion.'
-    +' Continuing with form files of already converted units...';
-  lisConvDelphiUnitnameExistsInLCL = 'Unitname exists in LCL';
-  lisConvDelphiUnitWithNameExistsInLCL = 'LCL already has a unit with name %s.'
-    +' Delete local file %s?';
-  lisConvDelphiPackageNameExists = 'Package name exists';
-  lisConvDelphiProjOmittedUnit = 'Omitted unit %s from project';
-  lisConvDelphiAddedPackageDependency = 'Added Package %s as a dependency.';
-  lisConvDelphiPackageRequired = 'Package %s is required but not installed in Lazarus! Install it later.';
-  lisConvDelphiThereIsAlreadyAPackageWithTheNamePleaseCloseThisPa = 'There is '
-    +'already a package with the name "%s"%sPlease close this package first.';
 
   //Disassembler dialog
   lisDisAssAssembler = 'Assembler';

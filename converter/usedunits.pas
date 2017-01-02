@@ -329,7 +329,7 @@ begin
     if fUnitsToRemove.IndexOf(AOldName)=-1 then
       fUnitsToRemove.Add(AOldName);
     fCTLink.Settings.AddLogLine(mluNote,
-      Format(lisConvDelphiRemovedUnitInUsesSection, [AOldName]),
+      Format(lisConvDelphiRemovedUnitFromUsesSection, [AOldName]),
       fOwnerTool.fFilename);
   end;
 end;
@@ -792,7 +792,7 @@ begin
   RemoveFromAdded(fMainUsedUnits.fUnitsToAddForLCL);
   RemoveFromAdded(fImplUsedUnits.fUnitsToAddForLCL);
   fCTLink.Settings.AddLogLine(mluNote,
-    Format(lisConvAddedUnitToUsesSection, [aUnitName]), fFilename);
+    Format(lisConvDelphiAddedUnitToUsesSection, [aUnitName]), fFilename);
 end;
 
 function TUsedUnitsTool.AddUnitIfNeeded(aUnitName: string): Boolean;
@@ -802,7 +802,7 @@ begin
   begin
     fMainUsedUnits.fUnitsToAdd.Add(aUnitName);
     fCTLink.Settings.AddLogLine(mluNote,
-      Format(lisConvAddedUnitToUsesSection, [aUnitName]), fFilename);
+      Format(lisConvDelphiAddedUnitToUsesSection, [aUnitName]), fFilename);
     MaybeAddPackageDep(aUnitName);
   end;
 end;
