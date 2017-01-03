@@ -3699,21 +3699,18 @@ end;
   But also called on every widget realize, so it should not release all styles
   everytime.
 -------------------------------------------------------------------------------}
+{$IFDEF EventTrace}
 procedure GTKStyleChanged({%H-}Widget: PGtkWidget; {%H-}previous_style : PGTKStyle;
   {%H-}Data: Pointer); cdecl;
 begin
-  {$IFDEF EventTrace}
   EventTrace('style-set', nil);
-  {$ENDIF}
   //ReleaseAllStyles;
 end;
 
 procedure GTKStyleChangedAfter({%H-}Widget: PGtkWidget; {%H-}previous_style : PGTKStyle;
   {%H-}Data: Pointer); cdecl;
 begin
-  {$IFDEF EventTrace}
   EventTrace('style-set', nil);
-  {$ENDIF}
 
   { Note:
     This event is called for many widgets but not for all.
@@ -3725,6 +3722,7 @@ begin
   //debugln('style-set after ',DbgSName(TWinControl(Data)));
   //LCLObject.InvalidateClientRectCache(False);
 end;
+{$ENDIF}
 
 
 function gtkListBoxSelectionChangedAfter(widget: PGtkWidget; data: gPointer

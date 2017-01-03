@@ -230,9 +230,12 @@ procedure ClipboardSelectionRequestHandler(TargetWidget: PGtkWidget;
   Data: Pointer); cdecl;
 function ClipboardSelectionLostOwnershipHandler(TargetWidget: PGtkWidget;
   EventSelection: PGdkEventSelection;  Data: Pointer): cardinal; cdecl;
-
+{$IFDEF EventTrace}
 procedure GTKStyleChanged(Widget: PGtkWidget; previous_style :
   PGTKStyle; Data: Pointer); cdecl;
+procedure GTKStyleChangedAfter(Widget: PGtkWidget; previous_style : PGTKStyle;
+  Data: Pointer); cdecl;
+{$ENDIF}
 function gtkListBoxSelectionChangedAfter(widget: PGtkWidget;
                                       data: gPointer): GBoolean; cdecl;
 
@@ -789,8 +792,6 @@ function GTKWindowStateEventCB(widget: PGtkWidget;
 
 function gtkMouseWheelCB({%H-}widget: PGtkWidget; event: PGdkEventScroll;
                          data: gPointer): GBoolean; cdecl;
-procedure GTKStyleChangedAfter(Widget: PGtkWidget; previous_style : PGTKStyle;
-  Data: Pointer); cdecl;
 
 implementation
 

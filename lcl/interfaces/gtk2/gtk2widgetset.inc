@@ -469,9 +469,11 @@ begin
     begin
       //DebugLn(['TGtkWidgetSet.SetCallback ',DbgSName(ALCLObject),' ',GetWidgetDebugReport(PGtkWIdget(gfixed))]);
       ConnectSenderSignal(gFixed,'expose-event', @GTKExposeEvent);
-      ConnectSenderSignalAfter(gFixed,'style-set', @GTKStyleChangedAfter);
       ConnectSenderSignalAfter(gFixed,'expose-event', @GTKExposeEventAfter);
+      {$IFDEF EventTrace}
       ConnectSenderSignal(gFixed,'style-set', @GTKStyleChanged);
+      ConnectSenderSignalAfter(gFixed,'style-set', @GTKStyleChangedAfter);
+      {$ENDIF}
     end;
 
 
