@@ -113,7 +113,6 @@ function gtkfrmactivateAfter( widget: PGtkWidget; {%H-}Event: PgdkEventFocus;
   data: gPointer): GBoolean; cdecl;
 function gtkfrmdeactivateAfter( widget: PGtkWidget; {%H-}Event: PgdkEventFocus;
   data: gPointer): GBoolean; cdecl;
-function GTKMap({%H-}Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
 
 function GTKKeyPress(Widget: PGtkWidget; Event: pgdkeventkey;
   Data: gPointer): GBoolean; cdecl;

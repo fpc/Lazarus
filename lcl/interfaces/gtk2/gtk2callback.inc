@@ -861,12 +861,6 @@ begin
   {$ENDIF}
 end;
 
-function GTKMap({%H-}Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
-begin
-  Result := CallBackDefaultReturn;
-  EventTrace('map', data);
-end;
-
 function GTKKeyPress(Widget: PGtkWidget; Event: PGdkEventKey; Data: gPointer) : GBoolean; cdecl;
 begin
   Result := HandleGtkKeyUpDown(Widget,Event,Data,true,True,'key-press-event');
