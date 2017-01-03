@@ -5096,7 +5096,6 @@ procedure TfrDesignerForm.FillInspFields;
 var
   t: TfrView;
 begin
-  ObjInspSelect(nil);
   if SelNum = 0 then
     ObjInspSelect(Page)
   else
