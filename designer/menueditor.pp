@@ -1894,6 +1894,10 @@ end;
 
 destructor TShadowMenu.Destroy;
 begin
+  Parent := nil;
+  GlobalDesignHook.RemoveHandlerRefreshPropertyValues(@OnDesignerRefreshPropertyValues);
+  GlobalDesignHook.RemoveHandlerModified(@OnDesignerModified);
+  GlobalDesignHook.RemoveHandlerObjectPropertyChanged(@OnObjectPropertyChanged);
   inherited Destroy;
 end;
 

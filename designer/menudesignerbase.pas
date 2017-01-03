@@ -241,20 +241,13 @@ end;
 
 destructor TMenuDesignerBase.Destroy;
 begin
-  if (FShadowMenu <> nil) then begin
-    FShadowMenu.Parent:=nil;
-    FreeAndNil(FShadowMenu);
-  end;
+  FreeShadowMenu;
   FreeAndNil(FShortcuts);
   inherited Destroy;
 end;
 
 procedure TMenuDesignerBase.FreeShadowMenu;
 begin
-  if FShadowMenu <> nil then
-    FShadowMenu.SelectedMenuItem:=nil;
-  if Assigned(GlobalDesignHook) then
-    GlobalDesignHook.RemoveAllHandlersForObject(FShadowMenu);
   FreeAndNil(FShadowMenu);
 end;
 

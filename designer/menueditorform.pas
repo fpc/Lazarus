@@ -568,8 +568,7 @@ begin
       end
       else if (aMenu <> FEditedMenu) then
       begin
-        FDesigner.ShadowMenu.Free;
-        FDesigner.ShadowMenu := Nil;
+        FDesigner.FreeShadowMenu;
         FEditedMenu := aMenu;
         selection := aMenuItem;
       end;
