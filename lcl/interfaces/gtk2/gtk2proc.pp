@@ -88,12 +88,12 @@ var
 
 // GTKCallback.inc headers
 procedure EventTrace(const {%H-}TheMessage: string; {%H-}data: pointer);
-function gtkNoteBookCloseBtnClicked(Widget: PGtkWidget;
+function gtkNoteBookCloseBtnClicked({%H-}Widget: PGtkWidget;
   Data: Pointer): GBoolean; cdecl;
 function gtkRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 function gtkRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
-function gtkshowCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtkHideCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkshowCB( {%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkHideCB( {%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkactivateCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkchangedCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
@@ -109,11 +109,11 @@ function gtkExposeEvent(Widget: PGtkWidget; Event: PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
 function gtkExposeEventAfter(Widget: PGtkWidget; Event: PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
-function gtkfrmactivateAfter( widget: PGtkWidget; Event: PgdkEventFocus;
+function gtkfrmactivateAfter( widget: PGtkWidget; {%H-}Event: PgdkEventFocus;
   data: gPointer): GBoolean; cdecl;
-function gtkfrmdeactivateAfter( widget: PGtkWidget; Event: PgdkEventFocus;
+function gtkfrmdeactivateAfter( widget: PGtkWidget; {%H-}Event: PgdkEventFocus;
   data: gPointer): GBoolean; cdecl;
-function GTKMap(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
+function GTKMap({%H-}Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
 
 function GTKKeyPress(Widget: PGtkWidget; Event: pgdkeventkey;
   Data: gPointer): GBoolean; cdecl;
@@ -124,18 +124,18 @@ function GTKKeyRelease(Widget: PGtkWidget; Event: pgdkeventkey;
 function GTKKeyReleaseAfter(Widget: PGtkWidget; Event: pgdkeventkey;
   Data: gPointer): GBoolean; cdecl;
 
-function GTKFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
+function GTKFocusCB(widget: PGtkWidget; {%H-}event:PGdkEventFocus;
                     data: gPointer): GBoolean; cdecl;
-function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
+function GTKKillFocusCB({%H-}widget: PGtkWidget; {%H-}event:PGdkEventFocus;
                         {%H-}data: gPointer): GBoolean; cdecl;
-function GTKKillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
+function GTKKillFocusCBAfter(widget: PGtkWidget; {%H-}event:PGdkEventFocus;
                              data: gPointer): GBoolean; cdecl;
 function gtkdestroyCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 procedure DestroyWindowFromPointCB(Widget: PGtkWidget; {%H-}data: gPointer); cdecl;
-function gtkdeleteCB(widget: PGtkWidget; event: PGdkEvent;
+function gtkdeleteCB({%H-}widget: PGtkWidget; {%H-}event: PGdkEvent;
                      data: gPointer): GBoolean; cdecl;
-function gtkresizeCB(widget: PGtkWidget; {%H-}data: gPointer): GBoolean; cdecl;
-function gtkMonthChanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkresizeCB({%H-}widget: PGtkWidget; {%H-}data: gPointer): GBoolean; cdecl;
+function gtkMonthChanged({%H-}Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 procedure DeliverMouseMoveMessage({%H-}Widget:PGTKWidget; Event: PGDKEventMotion;
                                   AWinControl: TWinControl);
 
@@ -171,28 +171,28 @@ function gtkEnterCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkLeaveCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtksize_allocateCB(widget: PGtkWidget; {%H-}size :pGtkAllocation;
   data: gPointer): GBoolean; cdecl;
-function gtksize_allocate_client(widget: PGtkWidget; size :pGtkAllocation;
+function gtksize_allocate_client({%H-}widget: PGtkWidget; {%H-}size :pGtkAllocation;
   data: gPointer): GBoolean; cdecl;
 function gtkconfigureevent( widget: PGtkWidget; event: PgdkEventConfigure;
   data: gPointer): GBoolean; cdecl;
 function gtkInsertText(widget: PGtkWidget; char: pChar; NewTextLength:
                      Integer; Position: pgint; data: gPointer): GBoolean; cdecl;
-function gtkSetEditable( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtkMoveWord( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtkMovePage( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtkMoveToRow( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtkMoveToColumn( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtkKillChar( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtkKillWord( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtkKillLine( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkSetEditable( {%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkMoveWord( {%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkMovePage( {%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkMoveToRow( {%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkMoveToColumn( {%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkKillChar( {%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkKillWord( {%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkKillLine( {%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkCutToClip( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtkCopyToClip( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkCopyToClip( {%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkPasteFromClip( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkValueChanged({%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkTimerCB(Data: gPointer): gBoolean; cdecl;
-function gtkFocusInNotifyCB (widget: PGtkWidget; event: PGdkEvent;
+function gtkFocusInNotifyCB (widget: PGtkWidget; {%H-}event: PGdkEvent;
   data: gpointer): GBoolean; cdecl;
-function gtkFocusOutNotifyCB (widget: PGtkWidget; event: PGdkEvent;
+function gtkFocusOutNotifyCB (widget: PGtkWidget; {%H-}event: PGdkEvent;
   data: gpointer): GBoolean; cdecl;
 
 // PGtkAdjustment cb
@@ -217,19 +217,19 @@ function GTKCheckMenuToggeledCB(AMenuItem: PGTKCheckMenuItem;
                                 AData: gPointer): GBoolean; cdecl;
 function GTKKeySnooper({%H-}Widget: PGtkWidget; Event: PGdkEventKey;
   FuncData: gPointer): gInt; cdecl;
-function gtkYearChanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkYearChanged({%H-}Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 procedure GtkDragDataReceived({%H-}widget:PGtkWidget; context:PGdkDragContext;
   {%H-}x:gint; {%H-}y:gint; selection_data:PGtkSelectionData; {%H-}info:guint; time:guint; Data: gPointer);cdecl;
 
 
 // clipboard
-procedure ClipboardSelectionReceivedHandler(TargetWidget: PGtkWidget;
-  SelectionData: PGtkSelectionData; TimeID: guint32; Data: Pointer); cdecl;
-procedure ClipboardSelectionRequestHandler(TargetWidget: PGtkWidget;
-  SelectionData: PGtkSelectionData; Info: cardinal; TimeID: cardinal;
-  Data: Pointer); cdecl;
-function ClipboardSelectionLostOwnershipHandler(TargetWidget: PGtkWidget;
-  EventSelection: PGdkEventSelection;  Data: Pointer): cardinal; cdecl;
+procedure ClipboardSelectionReceivedHandler({%H-}TargetWidget: PGtkWidget;
+  SelectionData: PGtkSelectionData; TimeID: guint32; {%H-}Data: Pointer); cdecl;
+procedure ClipboardSelectionRequestHandler({%H-}TargetWidget: PGtkWidget;
+  SelectionData: PGtkSelectionData; {%H-}Info: cardinal; {%H-}TimeID: cardinal;
+  {%H-}Data: Pointer); cdecl;
+function ClipboardSelectionLostOwnershipHandler({%H-}TargetWidget: PGtkWidget;
+  EventSelection: PGdkEventSelection;  {%H-}Data: Pointer): cardinal; cdecl;
 {$IFDEF EventTrace}
 procedure GTKStyleChanged(Widget: PGtkWidget; previous_style :
   PGTKStyle; Data: Pointer); cdecl;
@@ -240,27 +240,27 @@ function gtkListBoxSelectionChangedAfter(widget: PGtkWidget;
                                       data: gPointer): GBoolean; cdecl;
 
 // drag callbacks
-function edit_drag_data_received(widget: pgtkWidget;
+function edit_drag_data_received({%H-}widget: pgtkWidget;
              Context: pGdkDragContext;
-             X: Integer;
-             Y: Integer;
+             {%H-}X: Integer;
+             {%H-}Y: Integer;
              seldata: pGtkSelectionData;
-             info: Integer;
+             {%H-}info: Integer;
              time: Integer;
                                   data: pointer): GBoolean; cdecl;
-function edit_source_drag_data_get(widget: pgtkWidget;
-             Context: pGdkDragContext;
+function edit_source_drag_data_get({%H-}widget: pgtkWidget;
+             {%H-}Context: pGdkDragContext;
              Selection_data: pGtkSelectionData;
              info: Integer;
-             time: Integer;
+             {%H-}time: Integer;
                                   data: pointer): GBoolean; cdecl;
-function Edit_source_drag_data_delete (widget: pGtkWidget;
-                   context: pGdkDragContext;
-                   data: gpointer): gBoolean ; cdecl;
+function Edit_source_drag_data_delete ({%H-}widget: pGtkWidget;
+                   {%H-}context: pGdkDragContext;
+                   {%H-}data: gpointer): gBoolean ; cdecl;
 
 // combobox callbacks
-function gtkComboBoxShowAfter(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtkComboBoxHideAfter(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkComboBoxShowAfter({%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkComboBoxHideAfter({%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 
 // notebook callbacks
 function PageIconWidgetExposeAfter(Widget: PGtkWidget; Event: PGDKEventExpose;

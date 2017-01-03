@@ -124,12 +124,11 @@ end;
   gtkNoteBookCloseBtnClicked is called by the gtk, whenever a close button in
   the tab of a notebook page is clicked.
 -------------------------------------------------------------------------------}
-function gtkNoteBookCloseBtnClicked(Widget: PGtkWidget;
+function gtkNoteBookCloseBtnClicked({%H-}Widget: PGtkWidget;
   Data: Pointer): GBoolean; cdecl;
 var APage: TCustomPage;
 begin
   Result:=true; // handled = true
-  if Widget=nil then ;
   if ComponentIsDestroyingHandle(TWinControl(Data)) then exit;
   APage:=TCustomPage(Data);
   TCustomTabControl(APage.Parent).DoCloseTabClicked(APage);
@@ -289,7 +288,7 @@ begin
   end;
 end;
 
-function gtkshowCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkshowCB( {%H-}widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMShowWindow;
 begin
@@ -298,7 +297,6 @@ begin
   {$IFDEF EventTrace}
   EventTrace('show', data);
   {$ENDIF}
-  if Widget=nil then ;
   FillChar(Mess{%H-},SizeOf(Mess),0);
   Mess.Msg := LM_SHOWWINDOW;
   Mess.Show := True;
@@ -306,7 +304,7 @@ begin
   Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkHideCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkHideCB( {%H-}widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMShowWindow;
 begin
@@ -315,7 +313,6 @@ begin
   {$IFDEF EventTrace}
   EventTrace('hide', data);
   {$ENDIF}
-  if Widget=nil then ;
   FillChar(Mess{%H-},SizeOf(Mess),0);
   Mess.Msg := LM_SHOWWINDOW;
   Mess.Show := False;
@@ -401,7 +398,7 @@ var
   Info: PWidgetInfo;
 begin
   Result := AGtkWidget <> nil;
-  if AGtkWidget <> nil then
+  if Result then
   begin
     g_idle_remove_by_data(AGtkWidget);
     Info := GetWidgetInfo(AGtkWidget);
@@ -765,7 +762,7 @@ begin
   end;
 end;
 
-function gtkfrmactivateAfter(widget: PGtkWidget; Event : PgdkEventFocus;
+function gtkfrmactivateAfter({%H-}widget: PGtkWidget; {%H-}Event : PgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess: TLMActivate;
@@ -778,7 +775,6 @@ begin
   {$IFDEF EventTrace}
   EventTrace('activate after', data);
   {$ENDIF}
-  if (Widget=nil) or (Event=nil) then ;
 
   ResetDefaultIMContext;
 
@@ -821,7 +817,7 @@ begin
   {$ENDIF}
 end;
 
-function gtkfrmdeactivateAfter( widget: PGtkWidget; Event : PgdkEventFocus;
+function gtkfrmdeactivateAfter( {%H-}widget: PGtkWidget; {%H-}Event : PgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess: TLMActivate;
@@ -833,7 +829,6 @@ begin
   {$IFDEF EventTrace}
   EventTrace('deactivate after', data);
   {$ENDIF}
-  if (Widget=nil) or (Event=nil) then ;
   {$IFDEF VerboseFocus}
   LCLObject := TControl(GetLCLObject(Widget));
   DebugLnEnter(['gtkfrmDeactivate INIT Widget=',DbgS(Widget),' ',Event^._in,
@@ -866,10 +861,9 @@ begin
   {$ENDIF}
 end;
 
-function GTKMap(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
+function GTKMap({%H-}Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
 begin
   Result := CallBackDefaultReturn;
-  if (Widget=nil) then ;
   EventTrace('map', data);
 end;
 
@@ -943,7 +937,7 @@ end;
 type
   TCustomEditHack = class(TCustomEdit);
 
-function GTKFocusCB(widget: PGtkWidget; event: PGdkEventFocus; data: gPointer): GBoolean; cdecl;
+function GTKFocusCB(widget: PGtkWidget; {%H-}event: PGdkEventFocus; data: gPointer): GBoolean; cdecl;
 var
   Mess : TLMessage;
   LCLObject: TObject;
@@ -957,7 +951,6 @@ begin
   {$IFDEF EventTrace}
   EventTrace('focus', data);
   {$ENDIF}
-  if (Widget=nil) or (Event=nil) then ;
   //DebugLn('GTKFocusCB ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
 
   LCLObject:=TObject(data);
@@ -1041,7 +1034,7 @@ begin
   {$ENDIF}
 end;
 
-function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
+function GTKKillFocusCB({%H-}widget: PGtkWidget; {%H-}event:PGdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 {$IFDEF VerboseFocus}
 var
@@ -1052,7 +1045,6 @@ begin
   {$IFDEF EventTrace}
   EventTrace('killfocusCB', data);
   {$ENDIF}
-  if (Widget=nil) or (Event=nil) then ;
   //DebugLn('GTKKillFocusCB ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
   NeedShiftUpdateAfternFocus := True;   // <- JRA: this doesn't look like simply log !!!
@@ -1090,7 +1082,7 @@ begin
   end;
 end;
 
-function GTKKillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
+function GTKKillFocusCBAfter({%H-}widget: PGtkWidget; {%H-}event:PGdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
@@ -1102,7 +1094,6 @@ var
   CurFocusWidget: PGtkWidget;
 {$ENDIF}
 begin
-  if (Widget=nil) or (Event=nil) then ;
   {$IFDEF EventTrace}
   EventTrace('killfocusCBAfter', data);
   {$ENDIF}
@@ -1332,23 +1323,21 @@ begin
   LastWFPMousePos := Point(High(Integer), High(Integer));
 end;
 
-function gtkdeleteCB( widget : PGtkWidget; event : PGdkEvent;
+function gtkdeleteCB( {%H-}widget : PGtkWidget; {%H-}event : PGdkEvent;
   data : gPointer) : GBoolean; cdecl;
 var Mess : TLMessage;
 begin
   FillChar(Mess{%H-},SizeOf(Mess),0);
-  if (Widget=nil) or (Event=nil) then ;
   Mess.Msg:= LM_CLOSEQUERY;
   { Message results : True - do nothing, False - destroy or hide window }
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkresizeCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkresizeCB( {%H-}widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 //var
 //   Mess : TLMessage;
 begin
   Result := CallBackDefaultReturn;
-  if (Widget=nil) then ;
   {$IFDEF EventTrace}
   EventTrace('resize', data);
   {$ENDIF}
@@ -1358,12 +1347,11 @@ begin
 //TObject(data).Dispatch(Mess);
 end;
 
-function gtkMonthChanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkMonthChanged({%H-}Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess: TLMessage;
 begin
   Result := CallBackDefaultReturn;
-  if (Widget=nil) then ;
   {$IFDEF EventTrace}
   EventTrace('month changed', data);
   {$ENDIF}
@@ -1649,7 +1637,7 @@ var
   ColWidth: gint;
 begin
   Result := AGtkWidget <> nil;
-  if AGtkWidget <> nil then
+  if Result then
   begin
     if g_object_get_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick') <> nil then
     begin
