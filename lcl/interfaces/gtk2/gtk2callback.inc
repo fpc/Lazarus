@@ -1464,14 +1464,13 @@ end;
   Returns true, if mouse move event should be sent before the widget itself
   reacts.
 -------------------------------------------------------------------------------}
-function ControlGetsMouseMoveBefore(AControl: TControl;
+function ControlGetsMouseMoveBefore({%H-}AControl: TControl;
   const ABefore: Boolean; Event: PGDKEventMotion): boolean;
 var
   ShiftState: TShiftState;
   Widget: PGtkWidget;
   MainView: PGtkWidget;
 begin
-  if (AControl=nil) then ;
   Result := True;
   // currently there are no controls, that need after events.
   if not ABefore then exit;
@@ -2199,10 +2198,9 @@ end;
   Returns true, if mouse up event should be sent before the widget istelf
   reacts.
 -------------------------------------------------------------------------------}
-function ControlGetsMouseUpBefore(AControl: TControl): boolean;
+function ControlGetsMouseUpBefore({%H-}AControl: TControl): boolean;
 begin
   Result:=true;
-  if AControl=nil then ;
 end;
 
 {-------------------------------------------------------------------------------
@@ -2547,7 +2545,7 @@ begin
   SendSizeNotificationToLCL(Widget);
 end;
 
-function gtksize_allocate_client(widget: PGtkWidget; size: pGtkAllocation;
+function gtksize_allocate_client({%H-}widget: PGtkWidget; {%H-}size: pGtkAllocation;
   data: gPointer): GBoolean; cdecl;
 var
   MainWidget: PGtkWidget;
@@ -2555,7 +2553,6 @@ var
 begin
   Result := CallBackDefaultReturn;
 
-  if (Widget=nil) or (Size=nil) then ;
   if (TObject(Data) is TWinControl) then
   begin
     {$IFDEF VerboseSizeMsg}
@@ -2640,82 +2637,74 @@ begin
       g_signal_stop_emission_by_name(PGtkObject(widget), 'insert_text');
 end;
 
-function gtkSetEditable( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkSetEditable( {%H-}widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
   EventTrace('Set Editable', data);
-  if (Widget=nil) then ;
   Mess.msg := LM_SETEDITABLE;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkMoveWord( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkMoveWord( {%H-}widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
    Mess : TLMessage;
 begin
   EventTrace('Move Word', data);
-  if (Widget=nil) then ;
   Mess.msg := LM_MOVEWORD;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkMovePage( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkMovePage( {%H-}widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
   EventTrace('Move Page', data);
-  if (Widget=nil) then ;
   Mess.msg := LM_MOVEPAGE;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkMoveToRow( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkMoveToRow( {%H-}widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
   EventTrace('Move To Row!!', data);
-  if (Widget=nil) then ;
   Mess.msg := LM_MOVETOROW;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkMoveToColumn( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkMoveToColumn( {%H-}widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
   EventTrace('MoveToColumn', data);
-  if (Widget=nil) then ;
   Mess.msg := LM_MOVETOCOLUMN;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkKillChar( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkKillChar( {%H-}widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
   EventTrace('Kill Char', data);
-  if (Widget=nil) then ;
   Mess.msg := LM_KILLCHAR;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkKillWord( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkKillWord( {%H-}widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
   EventTrace('Kill Word', data);
-  if (Widget=nil) then ;
   Mess.msg := LM_KILLWORD;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkKillLine( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkKillLine( {%H-}widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
   EventTrace('Kill Line', data);
-  if (Widget=nil) then ;
   Mess.msg := LM_KILLLINE;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2735,12 +2724,11 @@ begin
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkCopyToClip( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkCopyToClip( {%H-}widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
   EventTrace('Copy to Clip', data);
-  if (Widget=nil) then ;
   Mess.msg := LM_COPY;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2751,7 +2739,6 @@ var
   Info: PWidgetInfo;
 begin
   EventTrace('Paste from clip', data);
-  if (Widget=nil) then ;
 
   // we must update cursor pos with delay otherwise selStart is wrong.issue #7243
   if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
@@ -2765,7 +2752,7 @@ begin
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkValueChanged(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkValueChanged({%H-}widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
@@ -2837,7 +2824,7 @@ begin
   end;
 end;
 
-function gtkFocusInNotifyCB (widget : PGtkWidget; event : PGdkEvent;
+function gtkFocusInNotifyCB (widget : PGtkWidget; {%H-}event : PGdkEvent;
   data : gpointer) : GBoolean; cdecl;
 var
   MessI : TLMEnter;
@@ -2848,7 +2835,6 @@ begin
   EventTrace ('FocusInNotify (alias Enter)', data);
   {$ENDIF}
 
-  if (Event=nil) then ;
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
     g_signal_stop_emission_by_name(PGTKObject(Widget),'focus-in-event');
@@ -2858,7 +2844,7 @@ begin
   DeliverMessage(Data, MessI);
 end;
 
-function gtkFocusOutNotifyCB (widget : PGtkWidget; event : PGdkEvent;
+function gtkFocusOutNotifyCB (widget : PGtkWidget; {%H-}event : PGdkEvent;
   data : gpointer) : GBoolean; cdecl;
 var
   MessI : TLMExit;
@@ -2869,7 +2855,6 @@ begin
   EventTrace ('FocusOutNotify (alias Exit)', data);
   {$ENDIF}
 
-  if (Event=nil) then ;
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
     g_signal_stop_emission_by_name(PGTKObject(Widget),'focus-out-event');
@@ -3424,13 +3409,12 @@ begin
   end;
 end;
 
-function gtkYearChanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkYearChanged({%H-}Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   MSG: TLMessage;
 begin
   Result := CallBackDefaultReturn;
 
-  if (Widget=nil) then ;
   EventTrace('year changed', data);
   MSG.Msg := LM_YEARCHANGED;
   DeliverPostMessage(Data, MSG);
@@ -3510,15 +3494,14 @@ end;
   Copy the received selection data record and buffer to
   internal record and buffer (ClipboardSelectionData)
  ------------------------------------------------------------------------------}
-procedure ClipboardSelectionReceivedHandler(TargetWidget: PGtkWidget;
-  SelectionData: PGtkSelectionData; TimeID: guint32; Data: Pointer); cdecl;
+procedure ClipboardSelectionReceivedHandler({%H-}TargetWidget: PGtkWidget;
+  SelectionData: PGtkSelectionData; TimeID: guint32; {%H-}Data: Pointer); cdecl;
 var TempBuf: Pointer;
   c: PClipboardEventData;
   i: integer;
 begin
   // at any time there can be several requests
   // find the request with the correct TimeID
-  if (Data=nil) or (TargetWidget=nil) then ;
   i:=ClipboardSelectionData.Count-1;
   while (i>=0) do begin
     c:=PClipboardEventData(ClipboardSelectionData[i]);
@@ -3616,9 +3599,9 @@ end;
   Since the lcl clipboard caches all requests this will typically be another
   application.
  ------------------------------------------------------------------------------}
-procedure ClipboardSelectionRequestHandler(TargetWidget: PGtkWidget;
-  SelectionData: PGtkSelectionData; Info: cardinal; TimeID: cardinal;
-  Data: Pointer); cdecl;
+procedure ClipboardSelectionRequestHandler({%H-}TargetWidget: PGtkWidget;
+  SelectionData: PGtkSelectionData; {%H-}Info: cardinal; {%H-}TimeID: cardinal;
+  {%H-}Data: Pointer); cdecl;
 var
   ClipboardType: TClipboardType;
   FormatID: cardinal;
@@ -3627,7 +3610,6 @@ begin
   {$IFDEF DEBUG_CLIPBOARD}
   DebugLn('*** [ClipboardSelectionRequestHandler] START');
   {$ENDIF}
-  if (Data=nil) or (TimeID=0) or (Info=0) or (TargetWidget=nil) then ;
   if SelectionData^.Target=0 then exit;
   for ClipboardType:=Low(TClipboardType) to High(TClipboardType) do
   begin
@@ -3683,11 +3665,10 @@ end;
 
   This signal is emitted if another application gets the clipboard ownership.
  ------------------------------------------------------------------------------}
-function ClipboardSelectionLostOwnershipHandler(TargetWidget: PGtkWidget;
-  EventSelection: PGdkEventSelection;  Data: Pointer): cardinal; cdecl;
+function ClipboardSelectionLostOwnershipHandler({%H-}TargetWidget: PGtkWidget;
+  EventSelection: PGdkEventSelection;  {%H-}Data: Pointer): cardinal; cdecl;
 var ClipboardType: TClipboardType;
 begin
-  if (Data=nil) or (TargetWidget=nil) then ;
   //DebugLn('*** [ClipboardSelectionLostOwnershipHandler] ',DbgS(targetwidget));
   for ClipboardType:=Low(TClipboardType) to High(TClipboardType) do
     if EventSelection^.Selection=ClipboardTypeAtoms[ClipboardType] then begin
@@ -3718,20 +3699,18 @@ end;
   But also called on every widget realize, so it should not release all styles
   everytime.
 -------------------------------------------------------------------------------}
-procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle;
-  Data: Pointer); cdecl;
+procedure GTKStyleChanged({%H-}Widget: PGtkWidget; {%H-}previous_style : PGTKStyle;
+  {%H-}Data: Pointer); cdecl;
 begin
-  if (Widget=nil) or (Data=nil) or (previous_style=nil) then ;
   {$IFDEF EventTrace}
   EventTrace('style-set', nil);
   {$ENDIF}
   //ReleaseAllStyles;
 end;
 
-procedure GTKStyleChangedAfter(Widget: PGtkWidget; previous_style : PGTKStyle;
-  Data: Pointer); cdecl;
+procedure GTKStyleChangedAfter({%H-}Widget: PGtkWidget; {%H-}previous_style : PGTKStyle;
+  {%H-}Data: Pointer); cdecl;
 begin
-  if (Widget=nil) or (Data=nil) or (previous_style=nil) then ;
   {$IFDEF EventTrace}
   EventTrace('style-set', nil);
   {$ENDIF}
@@ -3830,10 +3809,9 @@ Begin
 end;
 
 
-function Edit_source_drag_data_delete (Widget: pGtkWidget;
-  Context: pGdkDragContext; Data: gpointer): gBoolean ; cdecl;
+function Edit_source_drag_data_delete ({%H-}Widget: pGtkWidget;
+  {%H-}Context: pGdkDragContext; {%H-}Data: gpointer): gBoolean ; cdecl;
 begin
-  if (Widget=nil) or (Context=nil) or (Data=nil) then ;
   //DebugLn('Trace:***************');
   //DebugLn('Trace:DELETE THE DATA');
   Result:=false;
@@ -3859,12 +3837,11 @@ begin
   Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkComboBoxHideAfter(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkComboBoxHideAfter({%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 var
   Mess : TLMCommand;
 begin
   Result := True;
-  if (Widget=nil) then ;
   EventTrace('ComboBoxHideAfter', data);
   FillChar(Mess{%H-},SizeOf(Mess),0);
   Mess.Msg := CN_Command;
