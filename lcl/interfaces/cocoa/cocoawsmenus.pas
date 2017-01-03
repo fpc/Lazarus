@@ -73,6 +73,7 @@ type
     procedure lclClearCallback; override;
     function lclIsHandle: Boolean; override;
     procedure attachAppleMenuItems(); message 'attachAppleMenuItems';
+    function validateMenuItem(menuItem: NSMenuItem): Boolean; override;
   end;
 
   TCocoaMenuItem_HideApp = objcclass(NSMenuItem)
@@ -259,6 +260,11 @@ begin
   ns.release;
 
   attachedAppleMenuItems := True;
+end;
+
+function TCocoaMenuItem.validateMenuItem(menuItem: NSMenuItem): Boolean;
+begin
+  Result := FMenuItemTarget.Enabled;
 end;
 
 procedure TCocoaMenuItem_HideApp.lclItemSelected(sender: id);
