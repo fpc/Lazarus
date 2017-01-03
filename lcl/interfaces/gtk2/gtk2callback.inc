@@ -971,7 +971,7 @@ begin
 
   NeedShiftUpdateAfternFocus := False;
   gdk_window_get_pointer(nil, nil, nil, @Mask);
-  UpdateShiftState(TGtk2WidgetSet(WidgetSet).KeyStateList, GTKEventStateToShiftState(Word(Mask)));
+  UpdateShiftState(GTK2WidgetSet.KeyStateList, GTKEventStateToShiftState(Word(Mask)));
 
   {$IFDEF VerboseFocus}
   DebugLnEnter(['GTKFocusCB INIT Widget=',DbgS(Widget),' Event^.theIn=',Event^._in,
@@ -1573,8 +1573,7 @@ begin
     NeedShiftUpdateAfternFocus := False;
     LastModifierKeys := ShiftState*[ssShift, ssCtrl, ssAlt, ssSuper];
     //DebugLn(['Adjust KeyStateList in MouseMove',Integer(LastModifierKeys)]);
-    if (WidgetSet <> nil) and (TGtk2WidgetSet(WidgetSet).KeyStateList <> nil) then
-      UpdateShiftState(TGtk2WidgetSet(WidgetSet).KeyStateList, LastModifierKeys);
+    UpdateShiftState(GTK2WidgetSet.KeyStateList, LastModifierKeys);
   end;
 
   {$IFDEF VerboseMouseCapture}
@@ -2082,8 +2081,7 @@ begin
   then begin
     LastModifierKeys := ShiftState*[ssShift, ssCtrl, ssAlt, ssSuper];
     //DebugLn(['Adjust KeyStateList in MouseBtnDown',Integer(LastModifierKeys)]);
-    if (WidgetSet <> nil) and (TGtk2WidgetSet(WidgetSet).KeyStateList <> nil) then
-      UpdateShiftState(TGtk2WidgetSet(WidgetSet).KeyStateList, LastModifierKeys);
+    UpdateShiftState(GTK2WidgetSet.KeyStateList, LastModifierKeys);
   end;
 
   MappedXY := TranslateGdkPointToClientArea(Event^.Window, EventXY,
