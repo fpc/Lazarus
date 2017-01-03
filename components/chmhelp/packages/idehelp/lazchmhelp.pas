@@ -27,9 +27,16 @@ unit LazChmHelp;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazLogger, LazFileUtils, LazHelpIntf, HelpIntfs,
-  LazConfigStorage, PropEdits, LazIDEIntf, IDEDialogs, IDEExternToolIntf,
-  LHelpControl, Controls, UTF8Process, ChmLangRef, ChmLcl, ChmProg;
+  Classes, SysUtils,
+  // LazUtils
+  FileUtil, LazLogger, LazFileUtils, LazConfigStorage, UTF8Process,
+  // LCL
+  Controls, Forms, Dialogs, LazHelpIntf, HelpIntfs, LCLPlatformDef, InterfaceBase,
+  // IdeIntf
+  PropEdits, IDEDialogs, MacroIntf, LazIDEIntf, IDEExternToolIntf, HelpFPDoc,
+  IDEHelpIntf,
+  // ChmHelp
+  LHelpControl, ChmLangRef, ChmLcl, ChmProg;
   
 resourcestring
   HELP_CURRENT_MENU  = '&Help';
@@ -138,6 +145,10 @@ begin
   LCLHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
   RegisterFPCDirectivesHelpDatabase;
   FPCDirectivesHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
+
+  // disable showing CodeBrowser on unknown identifiers. LHelp has its own
+  // search function.
+  LazarusHelp.ShowCodeBrowserOnUnknownIdentifier:=false;
 end;
 
 
