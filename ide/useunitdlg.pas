@@ -59,7 +59,7 @@ type
       ARect: TRect; State: TOwnerDrawState);
     procedure UnitsListBoxKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure UnitsListBoxMeasureItem(Control: TWinControl; Index: Integer;
+    procedure UnitsListBoxMeasureItem({%H-}Control: TWinControl; {%H-}Index: Integer;
       var AHeight: Integer);
   private
     UnitImgInd: Integer;

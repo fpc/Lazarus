@@ -117,7 +117,7 @@ type
     procedure ListboxDrawItem({%H-}Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure ListboxKeyPress(Sender: TObject; var Key: char);
-    procedure ListboxMeasureItem(Control: TWinControl; Index: Integer;
+    procedure ListboxMeasureItem({%H-}Control: TWinControl; {%H-}Index: Integer;
       var AHeight: Integer);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure SortAlphabeticallySpeedButtonClick(Sender: TObject);
