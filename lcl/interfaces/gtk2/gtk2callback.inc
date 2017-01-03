@@ -3291,7 +3291,7 @@ end;
 function GTKKeySnooper(Widget: PGtkWidget; Event: PGdkEventKey;
   FuncData: gPointer): gInt; cdecl;
 var
-  KeyStateList: TFPList;
+  KeyStateList: TFPList absolute FuncData;
 
   procedure UpdateToggleList(const AVKeyCode: Integer);
   begin
@@ -3376,8 +3376,7 @@ begin
     Exit;
   end;
 
-  if FuncData = nil then exit;
-  KeyStateList := TObject(FuncData) as TFPList;
+  if KeyStateList = nil then exit;
   
   ShiftState := GTKEventStateToShiftState(Event^.State);
   
