@@ -630,6 +630,8 @@ begin
     lFiles[i] := NSStringToString(lNSStr);
   end;
   Application.IntfDropFiles(lFiles);
+  if Application.MainForm<>nil then
+    Application.MainForm.IntfDropFiles(lFiles);
 end;
 
 {------------------------------------------------------------------------------
