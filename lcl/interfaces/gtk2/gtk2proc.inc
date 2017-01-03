@@ -3924,10 +3924,8 @@ var
 begin
   Result:=nil;
   LCLParent:=GetNearestLCLObject(Child);
-  if (LCLParent=nil) or (not (LCLParent is TWinControl))
-  or (not TWinControl(LCLParent).HandleAllocated)
-  then exit;
-  Result:={%H-}PGtkWidget(TWinControl(LCLParent).Handle);
+  if (LCLParent is TWinControl) then
+    Result:={%H-}PGtkWidget(TWinControlAccess(LCLParent).WindowHandle);
 end;
 
 function GetWinControlFixedWidget(Child: PGtkWidget): PGtkWidget;
