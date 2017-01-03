@@ -3468,10 +3468,10 @@ begin
     begin
       Form := nil;
       if (TObject(Data) is TWinControl) then
-        Form := (TObject(Data) as TWinControl).IntfGetDropFilesTarget;
+        Form := TWinControl(Data).IntfGetDropFilesTarget;
         
       if Form is TCustomForm then
-        (Form as TCustomForm).IntfDropFiles(Files)
+        TCustomForm(Form).IntfDropFiles(Files)
       else
         if (Application <> nil) and (Application.MainForm <> nil) then
           Application.MainForm.IntfDropFiles(Files);
@@ -3771,18 +3771,17 @@ Begin
   gtk_drag_finish(Context,false,false,time);
 end;
 
-function edit_source_drag_data_get(widget : pgtkWidget;
-  Context : pGdkDragContext;
+function edit_source_drag_data_get({%H-}widget : pgtkWidget;
+  {%H-}Context : pGdkDragContext;
   Selection_data : pGtkSelectionData;
   info : Integer;
-  time : Integer;
+  {%H-}time : Integer;
   data : pointer) : GBoolean; cdecl;
 var
   strTemp : PChar;
   Texts : String;
 Begin
   Result:=false;
-  if (Time=0) or (Context=nil) or (Widget=nil) then ;
   if (info = TARGET_ROOTWIN) then begin
     //DebugLn('Trace:I WAS DROPPED ON THE ROOTWIN')
   end
@@ -3816,18 +3815,16 @@ begin
 end;
 
 // combobox callbacks
-function gtkComboBoxShowAfter(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkComboBoxShowAfter({%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 var
   Mess : TLMCommand;
-  AComboBox: TCustomComboBox;
+  AComboBox: TCustomComboBox absolute data;
 begin
   Result := True;
   EventTrace('ComboBoxShowAfter', data);
 
-  AComboBox:=TObject(Data) as TCustomComboBox;
   AComboBox.IntfGetItems;
 
-  if (Widget=nil) then ;
   FillChar(Mess{%H-},SizeOf(Mess),0);
   Mess.Msg := CN_Command;
   Mess.NotifyCode := CBN_DROPDOWN;
@@ -3878,13 +3875,12 @@ end;
 function PageIconWidgetExposeAfter(Widget: PGtkWidget; Event: PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
 var
-  ThePage: TCustomPage;
+  ThePage: TCustomPage absolute Data;
 begin
   Result := false;
   //DebugLn('PageIconWidgetExposeAfter ',DbgS(Widget));
   EventTrace('PageIconWidgetExposeAfter', Data);
   if (Event^.Count > 0) then exit;
-  ThePage := TObject(Data) as TCustomPage;
   DrawNotebookPageIcon(ThePage, Widget);
 end;
 
