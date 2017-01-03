@@ -66,6 +66,7 @@ interface
 { $DEFINE VerboseFindDeclarationFail}
 { $DEFINE DebugAddToolDependency}
 { $DEFINE VerboseCPS}
+{ $DEFINE VerboseFindDeclarationAndOverload}
 
 {$IFDEF CTDEBUG}{$DEFINE DebugPrefix}{$ENDIF}
 {$IFDEF ShowTriedIdentifiers}{$DEFINE DebugPrefix}{$ENDIF}
@@ -5533,22 +5534,38 @@ var
   procedure AddPos;
   begin
     AddCodePosition(OldPositions,NewPos);
-    if (NodeList.IndexOf(NewNode)>=0) then
+    if (NodeList.IndexOf(NewNode)>=0) then begin
+      {$IFDEF VerboseFindDeclarationAndOverload}
+      debugln(['AddPos skip, because Node already in NodList']);
+      {$ENDIF}
       exit;
+    end;
     NodeList.Add(NewNode);
 
     if (fdlfWithoutEmptyProperties in Flags)
     and (NewNode.Desc=ctnProperty)
-    and (NewTool.PropNodeIsTypeLess(NewNode)) then
+    and (NewTool.PropNodeIsTypeLess(NewNode)) then begin
+      {$IFDEF VerboseFindDeclarationAndOverload}
+      debugln(['AddPos skip, because property has no type']);
+      {$ENDIF}
       exit;
+    end;
     if (fdlfWithoutForwards in Flags) then begin
       if (NewNode.Desc in [ctnTypeDefinition,ctnGenericType])
-      and NewTool.NodeIsForwardDeclaration(NewNode)
-      then
+      and NewTool.NodeIsForwardDeclaration(NewNode) then begin
+        {$IFDEF VerboseFindDeclarationAndOverload}
+        debugln(['AddPos skip, because type is forward']);
+        {$ENDIF}
         exit;
+      end;
       if (NewNode.Desc=ctnProcedure)
-      and ((NewNode.SubDesc and ctnsForwardDeclaration)>0) then
+      and ((NewNode.SubDesc and ctnsForwardDeclaration)>0)
+      and (not NewNode.HasParentOfType(ctnInterface)) then begin
+        {$IFDEF VerboseFindDeclarationAndOverload}
+        debugln(['AddPos skip, because proc is forward']);
+        {$ENDIF}
         exit;
+      end;
     end;
     AddCodePosition(ListOfPCodeXYPosition,NewPos);
   end;
@@ -5594,6 +5611,9 @@ var
   end;
 
 begin
+  {$IFDEF VerboseFindDeclarationAndOverload}
+  debugln(['TFindDeclarationTool.FindDeclarationAndOverload START']);
+  {$ENDIF}
   Result:=true;
   ListOfPCodeXYPosition:=nil;
   NewTool:=nil;
@@ -5612,15 +5632,26 @@ begin
     AtDefinition:=StartPositionAtDefinition;
     if AtDefinition then begin
       AddPos;
-      if fdlfIfStartIsDefinitionStop in Flags then exit;
+      if fdlfIfStartIsDefinitionStop in Flags then begin
+        {$IFDEF VerboseFindDeclarationAndOverload}
+        debugln(['TFindDeclarationTool.FindDeclarationAndOverload AtDefiniton and fdlfIfStartIsDefinitionStop in Flags']);
+        {$ENDIF}
+        exit;
+      end;
     end;
     if StartPositionAtFunctionResult then begin
       AddPos;
       // the function result has no overloads => stop search
+      {$IFDEF VerboseFindDeclarationAndOverload}
+      debugln(['TFindDeclarationTool.FindDeclarationAndOverload function result has no overloads']);
+      {$ENDIF}
       exit;
     end;
     if NewNode.Desc in AllSourceTypes then begin
       // the unit name has no overloads => stop search
+      {$IFDEF VerboseFindDeclarationAndOverload}
+      debugln(['TFindDeclarationTool.FindDeclarationAndOverload unit name has no overload']);
+      {$ENDIF}
       exit;
     end;
 
@@ -5635,11 +5666,13 @@ begin
         AddPos;
         CurCursorPos:=NewPos;
         CurTool:=NewTool;
-        {debugln('TFindDeclarationTool.FindDeclarationAndOverload Self="',MainFilename,'" ');
+        {$IFDEF VerboseFindDeclarationAndOverload}
+        debugln('TFindDeclarationTool.FindDeclarationAndOverload Self="',MainFilename,'" ');
         if CurCursorPos.Code<>nil then
           debugln('  CurCursorPos=',CurCursorPos.Code.Filename,' ',dbgs(CurCursorPos.X),',',dbgs(CurCursorPos.Y));
         if CurTool<>nil then
-          debugln('  CurTool=',CurTool.MainFilename);}
+          debugln('  CurTool=',CurTool.MainFilename);
+        {$ENDIF}
         if (CurTool=nil) then exit;
       end;
     except
