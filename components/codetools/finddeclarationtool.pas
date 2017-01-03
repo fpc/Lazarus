@@ -644,7 +644,8 @@ type
   TFindDeclarationListFlag = (
     fdlfWithoutEmptyProperties, // omit properties without type and attributes
     fdlfWithoutForwards,        // omit foward classes and procedures
-    fdlfIfStartIsDefinitionStop // omit overloads when start is a definition
+    fdlfIfStartIsDefinitionStop,// omit overloads when start is a definition
+    fdlfOneOverloadPerUnit      // ignore other overloads of an identifier within the same unit
     );
   TFindDeclarationListFlags = set of TFindDeclarationListFlag;
 
@@ -5122,6 +5123,16 @@ var
       {$ENDIF}
       exit;
     end;
+
+    if (fdlfOneOverloadPerUnit in Flags)
+    and (NodeList.Count>0)
+    and (TCodeTreeNode(NodeList[NodeList.Count-1]).GetRoot=NewTool.Tree.Root)
+    then begin
+      {$IFDEF VerboseFindDeclarationAndOverload}
+      debugln(['AddPos skip, because in same unit']);
+      {$ENDIF}
+      exit;
+    end;
     NodeList.Add(NewNode);
 
     if (fdlfWithoutEmptyProperties in Flags)
@@ -5149,6 +5160,7 @@ var
         exit;
       end;
     end;
+
     AddCodePosition(ListOfPCodeXYPosition,NewPos);
   end;
   
