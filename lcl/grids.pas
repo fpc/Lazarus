@@ -8816,6 +8816,12 @@ begin
     cfg.setValue(cPath + '/title/caption/value', c.Title.Caption);
     if not c.Title.IsDefaultFont then
       CfgSetFontValue(cfg, cPath + '/title/font', c.Title.Font);
+    if c.Title.IsAlignmentStored then
+      cfg.setValue(cPath + '/title/alignment/value', ord(c.Title.Alignment));
+    if c.Title.IsColorStored then
+      cfg.setValue(cPath + '/title/color/value', colortostring(c.Title.Color));
+    if c.Title.IsLayoutStored then
+      cfg.setValue(cPath + '/title/layout/value', ord(c.Title.Layout));
 
     doSaveColumn(self, c, -1, Cfg, Version, cPath);
   end;
@@ -8961,6 +8967,15 @@ begin
     s := cfg.GetValue(cPath + '/title/font/name/value', '');
     if s<>'' then
       cfgGetFontValue(cfg, cPath + '/title/font', c.Title.Font);
+    s := cfg.getValue(cPath + '/title/alignment/value', '');
+    if s<>'' then
+      c.Title.Alignment := TAlignment(StrToIntDef(s, 0));
+    s := cfg.getValue(cPath + '/title/color/value', '');
+    if s<>'' then
+      c.Title.Color := StringToColor(s);
+    s := cfg.GetValue(cPath + 'title/layout/value', '');
+    if s<>'' then
+      c.Title.Layout := TTextLayout(StrToIntDef(s, 0));
 
     doLoadColumn(self, c, -1, cfg, version, cpath);
   end;
