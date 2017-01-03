@@ -1577,12 +1577,10 @@ begin
       UpdateShiftState(TGtk2WidgetSet(WidgetSet).KeyStateList, LastModifierKeys);
   end;
 
+  {$IFDEF VerboseMouseCapture}
   if (MouseCaptureWidget = Widget) and ([ssLeft,ssRight,ssMiddle]*ShiftState=[]) then
-  begin
-    {$IFDEF VerboseMouseCapture}
     DebugLn(['gtkMotionNotify gtk capture without mouse down: ',GetWidgetDebugReport(Widget)]);
-    {$ENDIF}
-  end;
+  {$ENDIF}
 
   if not (csDesigning in TComponent(Data).ComponentState) then
   begin
