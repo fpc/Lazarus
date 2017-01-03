@@ -2026,6 +2026,7 @@ begin
   GlobalDesignHook.PersistentAdded(newMI, not isSeparator);
   //GlobalDesignHook.Modified(newMI);
   FShadowMenu.FDesigner.FGui.AddingItem := False;
+  FShadowMenu.SetSelectedMenuItem(newMI, False, False);
   if not isSeparator then
     FShadowMenu.FDesigner.FGui.UpdateStatistics;
   FShadowMenu.UpdateActionsEnabledness;
