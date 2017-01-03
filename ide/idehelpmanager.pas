@@ -1358,6 +1358,7 @@ begin
   HelpViewers:=THelpViewers.Create;
   RegisterIDEHelpDatabases;
   RegisterDefaultIDEHelpViewers;
+  CombineSameIdentifiersInUnit:=true;
   
   CodeHelpBoss:=TCodeHelpManager.Create(Self);
 
@@ -1475,6 +1476,7 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
     ListOfPCodeXYPosition: TFPList;
     CurCodePos: PCodeXYPosition;
     i: Integer;
+    Flags: TFindDeclarationListFlags;
   begin
     Complete:=false;
     Result:=shrHelpNotFound;
@@ -1482,8 +1484,12 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
     PascalHelpContextLists:=nil;
     try
       // get all possible declarations of this identifier
+      debugln(['CollectDeclarations ',CodeBuffer.Filename,' line=',CodePos.Y,' col=',CodePos.X]);
+      Flags:=[fdlfWithoutEmptyProperties,fdlfWithoutForwards];
+      if CombineSameIdentifiersInUnit then
+        Include(Flags,fdlfOneOverloadPerUnit);
       if CodeToolBoss.FindDeclarationAndOverload(CodeBuffer,CodePos.X,CodePos.Y,
-        ListOfPCodeXYPosition,[fdlfWithoutEmptyProperties,fdlfWithoutForwards])
+        ListOfPCodeXYPosition,Flags)
       then begin
         if ListOfPCodeXYPosition=nil then exit;
         debugln('TIDEHelpManager.ShowHelpForSourcePosition Success, number of declarations: ',dbgs(ListOfPCodeXYPosition.Count));

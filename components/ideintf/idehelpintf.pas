@@ -51,6 +51,8 @@ type
   { TBaseHelpManager }
 
   TBaseHelpManager = class(TComponent)
+  private
+    FCombineSameIdentifiersInUnit: boolean;
   public
     procedure ConnectMainBarEvents; virtual; abstract;
     procedure LoadHelpOptions; virtual; abstract;
@@ -75,6 +77,9 @@ type
       ResolveIncludeFiles: Boolean;
       out AnOwner: TObject// a package or a project or LazarusHelp or nil for user defined
       ): string; virtual; abstract;
+
+    property CombineSameIdentifiersInUnit: boolean
+      read FCombineSameIdentifiersInUnit write FCombineSameIdentifiersInUnit;
   end;
   
 
