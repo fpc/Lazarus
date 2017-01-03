@@ -32,16 +32,19 @@ end;
 class function TPortableAnyMapGraphic.IsStreamFormatSupported(Stream: TStream): Boolean;
 var
   Pos: Int64;
-  C: Char;
+  C: array [0..1] of Char;
+  r: integer;
 begin
   Pos := Stream.Position;
   try
-    Stream.ReadBuffer(C, 1);
-    Result := (C = 'P');
-    if not Result then
-      Exit;
-    Stream.ReadBuffer(C, 1);
-    Result := (Ord(C)-Ord('0')) in [1..6];
+    r := Stream.Read(C, 2);
+    if r = 2 then
+    begin
+      Result := (C[0] = 'P');
+      Result := Result and ((Ord(C[1])-Ord('0')) in [1..6]); // P1,P2,..,P6
+    end else begin
+      Result := False;
+    end;
   finally
     Stream.Position := Pos;
   end;
