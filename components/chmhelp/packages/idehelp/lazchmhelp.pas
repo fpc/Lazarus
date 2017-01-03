@@ -34,6 +34,7 @@ uses
   Controls, Forms, Dialogs, LazHelpIntf, HelpIntfs, LCLPlatformDef, InterfaceBase,
   // IdeIntf
   PropEdits, IDEDialogs, MacroIntf, LazIDEIntf, IDEExternToolIntf, HelpFPDoc,
+  IDEHelpIntf,
   // ChmHelp
   LHelpControl, ChmLangRef, ChmLcl, ChmProg;
   
@@ -142,6 +143,10 @@ begin
   LCLHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
   RegisterFPCDirectivesHelpDatabase;
   FPCDirectivesHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
+
+  // disable showing CodeBrowser on unknown identifiers. LHelp has its own
+  // search function.
+  LazarusHelp.ShowCodeBrowserOnUnknownIdentifier:=false;
 end;
 
 
