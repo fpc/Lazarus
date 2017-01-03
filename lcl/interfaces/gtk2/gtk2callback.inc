@@ -3747,18 +3747,17 @@ end;
 
 //DRAG CALLBACK FUNCTIONS
 
-function edit_drag_data_received(widget : pgtkWidget;
+function edit_drag_data_received({%H-}widget : pgtkWidget;
   Context : pGdkDragContext;
-  X, Y : Integer;
+  {%H-}X, {%H-}Y : Integer;
   SelData : pGtkSelectionData;
-  info : Integer;
+  {%H-}info : Integer;
   time : Integer;
   data : pointer) : GBoolean; cdecl;
 Var
   Texts : String;
 Begin
   Result:=false;
-  if (Widget=nil) or (X=0) or (Y=0) or (Info=0) then exit;
   //DebugLn('Trace:***********Drag Data Received*******************');
   if Seldata^.Length > 0 then
   Begin
