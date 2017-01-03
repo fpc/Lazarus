@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions><package name="IDEIntf"><module name="IDEHelpIntf"><element name="TBaseHelpManager.CombineSameIdentifiersInUnit"><short>If true ignore overloads of an identifier within the same unit</short><descr>Default is true.
+
+For example the RTL procedure "format" of unit SysUtils has an overload. If this option is disabled, the IDE shows the help selector to let the user select the right procedure.</descr>
+      </element><element name="TBaseHelpManager.ShowCodeBrowserOnUnknownIdentifier"><short>When enabled and the user requests help for an unknown identifier the CodeBrowser is shown.</short><descr>When the user presses F1 in the source editor, the IDE searches the Pascal declaration. If not found it searches in the list of keywords. If still not found, the identifier is "unknown". If this option is enabled (default) it will then show the Code Browser.
+The LHelp addon disables this option.</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions><package name="IDEIntf"><module name="PropEdits"><element name="TPropertyEditorHook.GetAncestorInstance"><short>Returns the designer ancestor property</short><descr>InstProp must be provided with valid values. See TPropertyEditor.
+The ancestor property has the same property info.
+This works only for designed inherited components (VFI, visual form inheritance).
+It does <i>not</i> return the compile time ancestor.
+It returns true on success.</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>
