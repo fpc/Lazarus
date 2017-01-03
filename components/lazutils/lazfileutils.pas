@@ -16,16 +16,14 @@ interface
 uses
   Classes, SysUtils, SysConst, LazUTF8, LazUtilsStrConsts;
 
-
+{$IF defined(Windows) or defined(darwin) or defined(HASAMIGA)}
+{$define CaseInsensitiveFilenames}
 {$IFDEF Windows}
-  {$define CaseInsensitiveFilenames}
   {$define HasUNCPaths}
 {$ENDIF}
-{$IFDEF darwin}
-  {$define CaseInsensitiveFilenames}
 {$ENDIF}
-{$IF defined(CaseInsensitiveFilenames) or defined(darwin)}
-  {$DEFINE NotLiteralFilenames} // e.g. HFS+ normalizes file names
+{$IF defined(CaseInsensitiveFilenames)}
+  {$define NotLiteralFilenames} // e.g. HFS+ normalizes file names
 {$ENDIF}
 
 function CompareFilenames(const Filename1, Filename2: string): integer; overload;
@@ -168,17 +166,25 @@ uses
 {$IFDEF Windows}
   Windows {$IFnDEF WinCE}, ShlObj, ActiveX, WinDirs{$ENDIF};
 {$ELSE}
-  {$IFDEF darwin}
-  MacOSAll,
+  {$IFDEF HASAMIGA}
+  exec, amigados;
+  {$ELSE}
+    {$IFDEF darwin}
+    MacOSAll,
+    {$ENDIF}
+    Unix, BaseUnix;
   {$ENDIF}
-  Unix, BaseUnix;
 {$ENDIF}
 
 {$I lazfileutils.inc}
 {$IFDEF windows}
   {$I winlazfileutils.inc}
 {$ELSE}
-  {$I unixlazfileutils.inc}
+  {$IFDEF HASAMIGA}
+    {$I amigalazfileutils.inc}
+  {$ELSE}
+    {$I unixlazfileutils.inc}
+  {$ENDIF}
 {$ENDIF}
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
@@ -1026,7 +1032,7 @@ begin
       Start:=Start+Prefix;
     I:=0;
     repeat
-      Result:=Format('%s%.5d.tmp',[Start,I]);
+      Result:=SysUtils.Format('%s%.5d.tmp',[Start,I]);
       Inc(I);
     until not FileExistsUTF8(Result);
   end;

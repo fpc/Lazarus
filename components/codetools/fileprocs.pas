@@ -56,11 +56,11 @@ type
   TFPCMemStreamSeekType = integer;
   PCharZ = Pointer;
 
-{$if defined(Windows) or defined(darwin)}
+{$IF defined(Windows) or defined(darwin) or defined(HASAMIGA)}
 {$define CaseInsensitiveFilenames}
-{$endif}
-{$IF defined(CaseInsensitiveFilenames) or defined(darwin)}
-{$DEFINE NotLiteralFilenames}
+{$ENDIF}
+{$IF defined(CaseInsensitiveFilenames)}
+{$define NotLiteralFilenames}
 {$ENDIF}
 
 const
@@ -364,7 +364,7 @@ function CompareAddrWithCTLineInfoCacheItem(Addr, Item: Pointer): integer;
 implementation
 
 // to get more detailed error messages consider the os
-{$IFnDEF Windows}
+{$IF not (defined(Windows) or defined(HASAMIGA))}
 uses
   Unix;
 {$ENDIF}

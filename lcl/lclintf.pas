@@ -210,16 +210,19 @@ end;
 // System APIs which have an operating-system specific implementation
 // They should be moved to FPC eventually
 {$I sysenvapis.inc}
-{$ifdef Windows}
+{$IFDEF Windows}
   {$I sysenvapis_win.inc}
-{$endif}
-{$ifdef UNIX}
-  {$ifdef darwin}
+{$ENDIF}
+{$IFDEF HASAMIGA}
+  {$I sysenvapis_amiga.inc}
+{$ENDIF}
+{$IFDEF UNIX}
+  {$IFDEF darwin}
     {$I sysenvapis_mac.inc}
-  {$else}
+  {$ELSE}
     {$I sysenvapis_unix.inc}
-  {$endif}
-{$endif}
+  {$ENDIF}
+{$ENDIF}
 
 procedure InternalInit;
 var

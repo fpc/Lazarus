@@ -21,14 +21,16 @@ function GetTickCount64: QWord;
 implementation
 
 uses
-  {$ifdef Windows}
+  {$IFDEF Windows}
     Windows,
-  {$else}
-    Unix, BaseUnix,
-    {$If defined(Linux) and (FPC_FULLVERSION<30000)}
-    Linux,
-    {$EndIf}
-  {$endif}
+  {$ELSE}
+    {$IFnDEF HASAMIGA}
+      Unix, BaseUnix,
+      {$If defined(Linux) and (FPC_FULLVERSION<30000)}
+      Linux,
+      {$EndIf}
+    {$ENDIF}
+  {$ENDIF}
   Classes;
 
 {$IF FPC_FULLVERSION>=30000}
@@ -56,8 +58,8 @@ begin
 end;
 {$ENDIF FPC_FULLVERSION}
 
-{$else WINDOWS}
-{$ifdef UNIX}
+{$ELSE WINDOWS}
+{$IFDEF UNIX}
 Const
 {Date Translation}
   C1970=2440588;
@@ -133,7 +135,7 @@ end;
 {$ENDIF}
 {$ENDIF FPC_FULLVERSION}
 
-{$else UNIX}
+{$ELSE UNIX}
 // Not Windows and not UNIX, so just write the most trivial code until we have something better:
 function NowUTC: TDateTime;
 begin
@@ -146,8 +148,8 @@ begin
   Result := Trunc(Now * 24 * 60 * 60 * 1000);
 end;
 {$ENDIF FPC_FULLVERSION}
-{$endif UNIX}
-{$endif WINDOWS}
+{$ENDIF UNIX}
+{$ENDIF WINDOWS}
 
 end.
 

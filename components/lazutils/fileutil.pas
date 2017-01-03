@@ -29,12 +29,12 @@ interface
 uses
   Classes, SysUtils,
   Masks, LazUTF8, LazFileUtils, StrUtils;
-  
-{$if defined(Windows) or defined(darwin)}
+
+{$IF defined(Windows) or defined(darwin) or defined(HASAMIGA)}
 {$define CaseInsensitiveFilenames}
-{$endif}
+{$ENDIF}
 {$IF defined(CaseInsensitiveFilenames) or defined(darwin)}
-{$DEFINE NotLiteralFilenames}
+{$define NotLiteralFilenames}
 {$ENDIF}
 
 const
@@ -284,14 +284,22 @@ uses
 {$IFDEF windows}
   Windows;
 {$ELSE}
+  {$IFDEF HASAMIGA}
+  AmigaDOS;
+  {$ELSE}
   Unix;
+  {$ENDIF}
 {$ENDIF}
 
 {$I fileutil.inc}
 {$IFDEF windows}
   {$i winfileutil.inc}
 {$ELSE}
+  {$IFDEF HASAMIGA}
+  {$i unixfileutil.inc}   // Reuse UNIX code for Amiga
+  {$ELSE}
   {$i unixfileutil.inc}
+  {$ENDIF}
 {$ENDIF}
 
 end.

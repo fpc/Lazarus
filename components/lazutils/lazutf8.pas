@@ -224,11 +224,15 @@ begin
   Result:=true;
 end;
 
-{$ifdef windows}
+{$IFDEF windows}
   {$i winlazutf8.inc}
-{$else}
+{$ELSE}
+  {$IFDEF HASAMIGA}
+  {$i unixlazutf8.inc}   // Reuse UNIX code for Amiga
+  {$ELSE}
   {$i unixlazutf8.inc}
-{$endif}
+  {$ENDIF}
+{$ENDIF}
 
 var
   FNeedRTLAnsi: boolean = false;

@@ -30,12 +30,19 @@ unit PPUGraph;
 interface
 
 uses
-  Classes, SysUtils, dynlibs, PPUParser, CodeTree, AVL_Tree, FileProcs,
+  Classes, SysUtils,
+  {$IFnDEF HASAMIGA}
+  dynlibs,
+  {$ENDIF}
+  PPUParser, CodeTree, AVL_Tree, FileProcs,
   LazFileUtils, BasicCodeTools, CodeGraph, CodeToolManager, CodeToolsStructs;
 
 const
   FPCPPUGroupPrefix = 'fpc_';
-  
+  {$IFDEF HASAMIGA}
+  SharedSuffix = 'library';
+  {$ENDIF}
+
 type
   TPPUGroup = class;
 
