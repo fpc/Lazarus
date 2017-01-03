@@ -105,6 +105,9 @@ type
     procedure DoPolygonFill (const points:array of TPoint); override;
     // Routines which don't work with out extended clipping in TFPImageCanvas
     procedure DoLine (x1,y1,x2,y2:integer); override;
+    // Other abstract routines that need implementation
+    procedure DoCopyRect(x,y:integer; canvas:TFPCustomCanvas; Const SourceRect:TRect); override;
+    procedure DoDraw(x,y:integer; const AImage: TFPCustomImage); override;
   public
     HasNoImage: Boolean;
     NativeDC: PtrInt; // Utilized by LCL-CustomDrawn
@@ -124,7 +127,10 @@ type
       const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
     procedure AlphaBlendIgnoringDestPixels(ASource: TLazCanvas;
       const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
-    procedure CanvasCopyRect(ASource: TLazCanvas;
+    procedure AlphaBlend_Image(ASource: TFPCustomImage;
+      const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
+    procedure DoDrawImage(x,y:integer; const AImage: TFPCustomImage);
+    procedure CanvasCopyRect(ASource: TFPCustomCanvas;
       const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
     // Fills the entire drawing with a color
     // AIgnoreClippingAndWindowOrg speeds up the drawing a lot, but it is dangerous,
@@ -463,6 +469,18 @@ begin
   end;
 end;
 
+procedure TLazCanvas.DoCopyRect(x, y: integer; canvas: TFPCustomCanvas;
+  const SourceRect: TRect);
+begin
+  CanvasCopyRect(canvas, X, Y, SourceRect.Left, SourceRect.Top,
+    SourceRect.right-SourceRect.Left, SourceRect.Bottom-SourceRect.Top);
+end;
+
+procedure TLazCanvas.DoDraw(x, y: integer; const AImage: TFPCustomImage);
+begin
+  AlphaBlend_Image(AImage, X, Y, 0, 0, AImage.Width, AImage.Height);
+end;
+
 constructor TLazCanvas.create(AnImage: TFPCustomImage);
 begin
   inherited Create(AnImage);
@@ -655,9 +673,29 @@ begin
   end;
 end;
 
-procedure TLazCanvas.CanvasCopyRect(ASource: TLazCanvas; const ADestX, ADestY,
+procedure TLazCanvas.AlphaBlend_Image(ASource: TFPCustomImage; const ADestX,
+  ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
+var
+  SrcCanvas: TLazCanvas;
+begin
+  SrcCanvas := TLazCanvas.Create(ASource);
+  try
+    AlphaBlend(SrcCanvas, ADestX, ADestY,
+      ASourceX, ASourceY, ASourceWidth, ASourceHeight);
+  finally
+    SrcCanvas.Free;
+  end;
+end;
+
+procedure TLazCanvas.DoDrawImage(x, y: integer; const AImage: TFPCustomImage);
+begin
+  DoDraw(x, y, AImage);
+end;
+
+procedure TLazCanvas.CanvasCopyRect(ASource: TFPCustomCanvas; const ADestX, ADestY,
   ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
 var
+  ALazSource: TLazCanvas absolute ASource;
   x, y, CurDestX, CurDestY, CurSrcX, CurSrcY: Integer;
   lDrawWidth, lDrawHeight: Integer;
   lColor: TFPColor;
@@ -681,9 +719,10 @@ begin
 
   {$ifdef lazcanvas_new_fast_copy}
   // If the formats match, make a fast copy of the data itself, without pixel conversion
-  if (Image is TLazIntfImage) and (ASource.Image is TLazIntfImage) and
+  if (ASource is TLazCanvas) and
+     (Image is TLazIntfImage) and (ALazSource.Image is TLazIntfImage) and
      (ImageFormat in [clfRGB24, clfRGB24UpsideDown, clfBGR24, clfBGRA32, clfRGBA32, clfARGB32]) and
-     (ImageFormat = ASource.ImageFormat) then
+     (ImageFormat = ALazSource.ImageFormat) then
   begin
     case ImageFormat of
       clfRGB24, clfRGB24UpsideDown, clfBGR24: lBytesPerPixel := 3;
@@ -698,7 +737,7 @@ begin
       if CurDestY >= Height then Continue;
       CurSrcY := ASourceY + y;
 
-      lScanlineSrc := TLazIntfImage(ASource.Image).GetDataLineStart(CurSrcY);
+      lScanlineSrc := TLazIntfImage(ALazSource.Image).GetDataLineStart(CurSrcY);
       lScanlineDest := TLazIntfImage(Image).GetDataLineStart(CurDestY);
       if (lScanlineSrc = nil) or (lScanlineDest = nil) then Break;
       Inc(lScanlineSrc, (ASourceX)*lBytesPerPixel);
