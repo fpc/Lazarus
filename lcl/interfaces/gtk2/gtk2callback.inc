@@ -11,13 +11,14 @@
 function DoDeliverPaintMessage(const Target: TObject; var PaintMsg: TLMPaint): PtrInt;
 var
   WidgetInfo: PWidgetInfo;
+  IsCustomControl: Boolean;
 begin
   {
     erase backgound of custom controls
     use only for real custom controls that are GTKAPIWidget
   }
-
-  if (TObject(Target) is TCustomControl) then begin
+  IsCustomControl := TObject(Target) is TCustomControl;
+  if IsCustomControl then begin
     Include(TWinControlAccess(Target).FWinControlFlags, wcfEraseBackground);
     TWinControl(Target).Perform(LM_ERASEBKGND, PtrInt(PaintMsg.DC), 0);
     Exclude(TWinControlAccess(Target).FWinControlFlags, wcfEraseBackground);
@@ -25,7 +26,7 @@ begin
 
   Result := DeliverMessage(Target, PaintMsg);
 
-  if (TObject(Target) is TCustomControl) then begin
+  if IsCustomControl then begin
     WidgetInfo := GetWidgetInfo({%H-}PGtkWidget(TCustomControl(Target).Handle), False);
     if WidgetInfo <> nil then
       WidgetInfo^.UpdateRect := Rect(0,0,0,0);
