@@ -894,7 +894,7 @@ end;
 
 
 var
-  NeedShiftUpdateAfternFocus: Boolean;
+  NeedShiftUpdateAfterFocus: Boolean;
 
 procedure UpdateShiftState(const KeyStateList: TFPList; const ShiftState: TShiftState);
 
@@ -969,7 +969,7 @@ begin
     ClearTopLevelsFocus(Widget);
   end;
 
-  NeedShiftUpdateAfternFocus := False;
+  NeedShiftUpdateAfterFocus := False;
   gdk_window_get_pointer(nil, nil, nil, @Mask);
   UpdateShiftState(GTK2WidgetSet.KeyStateList, GTKEventStateToShiftState(Word(Mask)));
 
@@ -1568,9 +1568,9 @@ begin
 
   ShiftState := GTKEventStateToShiftState(Event^.State);
 
-  if (ShiftState*[ssShift, ssCtrl, ssAlt, ssSuper] <> LastModifierKeys) or NeedShiftUpdateAfternFocus
+  if (ShiftState*[ssShift, ssCtrl, ssAlt, ssSuper] <> LastModifierKeys) or NeedShiftUpdateAfterFocus
   then begin
-    NeedShiftUpdateAfternFocus := False;
+    NeedShiftUpdateAfterFocus := False;
     LastModifierKeys := ShiftState*[ssShift, ssCtrl, ssAlt, ssSuper];
     //DebugLn(['Adjust KeyStateList in MouseMove',Integer(LastModifierKeys)]);
     UpdateShiftState(GTK2WidgetSet.KeyStateList, LastModifierKeys);
