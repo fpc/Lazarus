@@ -2183,6 +2183,7 @@ end;
 -------------------------------------------------------------------------------}
 function ControlGetsMouseUpBefore({%H-}AControl: TControl): boolean;
 begin
+  {$NOTE ControlGetsMouseUpBefore always return true. See if still necessary}
   Result:=true;
 end;
 
@@ -2378,6 +2379,7 @@ begin
   {$ENDIF}
 
   // stop the signal, so that it is not sent to the parent widgets
+  {$NOTE See if is necessary to stop emission. Return true is enough to avoid propagation}
   g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
 
   ResetDefaultIMContext;
