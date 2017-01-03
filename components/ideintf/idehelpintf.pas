@@ -53,6 +53,7 @@ type
   TBaseHelpManager = class(TComponent)
   private
     FCombineSameIdentifiersInUnit: boolean;
+    FShowCodeBrowserOnUnknownIdentifier: boolean;
   public
     procedure ConnectMainBarEvents; virtual; abstract;
     procedure LoadHelpOptions; virtual; abstract;
@@ -80,6 +81,8 @@ type
 
     property CombineSameIdentifiersInUnit: boolean
       read FCombineSameIdentifiersInUnit write FCombineSameIdentifiersInUnit;
+    property ShowCodeBrowserOnUnknownIdentifier: boolean
+      read FShowCodeBrowserOnUnknownIdentifier write FShowCodeBrowserOnUnknownIdentifier;
   end;
   
 

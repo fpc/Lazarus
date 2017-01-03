@@ -1359,6 +1359,7 @@ begin
   RegisterIDEHelpDatabases;
   RegisterDefaultIDEHelpViewers;
   CombineSameIdentifiersInUnit:=true;
+  ShowCodeBrowserOnUnknownIdentifier:=true;
   
   CodeHelpBoss:=TCodeHelpManager.Create(Self);
 
@@ -1544,7 +1545,7 @@ begin
   debugln(['TIDEHelpManager.ShowHelpForSourcePosition no declaration found, trying keywords...']);
   Result:=CollectKeyWords(CodeBuffer,Identifier);
   if Result in [shrCancel,shrSuccess] then exit;
-  if IsValidIdent(Identifier) then
+  if IsValidIdent(Identifier) and ShowCodeBrowserOnUnknownIdentifier then
   begin
     debugln(['TIDEHelpManager.ShowHelpForSourcePosition "',Identifier,'" is not an FPC keyword, search via code browser...']);
     ShowCodeBrowser(Identifier);
