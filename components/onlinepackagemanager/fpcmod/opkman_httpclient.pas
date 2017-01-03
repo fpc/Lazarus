@@ -335,7 +335,7 @@ Function EncodeURLElement(S : String) : String;
 Function DecodeURLElement(Const S : String) : String;
 
 implementation
-{$IFnDEF(HASAMIGA)}
+{$IFnDEF HASAMIGA}
 uses sslsockets;
 {$ENDIF}
 
@@ -545,7 +545,7 @@ begin
   if Assigned(FonGetSocketHandler) then
     FOnGetSocketHandler(Self,UseSSL,Result);
   if (Result=Nil) then
-  {$IFnDEF(HASAMIGA)}
+  {$IFnDEF HASAMIGA}
     If UseSSL then
       Result:=TSSLSocketHandler.Create
     else
