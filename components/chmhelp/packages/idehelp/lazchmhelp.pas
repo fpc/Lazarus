@@ -27,14 +27,10 @@ unit LazChmHelp;
 interface
 
 uses
-  Classes, SysUtils,
-  // LazUtils
-  FileUtil, LazLogger, LazFileUtils, LazConfigStorage, UTF8Process,
-  // LCL
-  Controls, Forms, Dialogs, LazHelpIntf, HelpIntfs, LCLPlatformDef, InterfaceBase,
+  Classes, SysUtils, FileUtil, LazLogger, LazFileUtils, LazHelpIntf, HelpIntfs,
+  UTF8Process, LazConfigStorage, Controls,
   // IdeIntf
-  PropEdits, IDEDialogs, MacroIntf, LazIDEIntf, IDEExternToolIntf, HelpFPDoc,
-  IDEHelpIntf,
+  PropEdits, IDEDialogs, LazIDEIntf, IDEExternToolIntf, IDEHelpIntf,
   // ChmHelp
   LHelpControl, ChmLangRef, ChmLcl, ChmProg;
   
