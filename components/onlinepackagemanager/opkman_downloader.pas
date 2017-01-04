@@ -30,9 +30,7 @@ interface
 
 uses
   Classes, SysUtils, fpjson, opkman_httpclient, opkman_timer, opkman_common,
-  opkman_serializablepackages,
-
-  dialogs;
+  opkman_serializablepackages;
 
 type
   TDownloadType = (dtJSON, dtPackage, dtUpdate);

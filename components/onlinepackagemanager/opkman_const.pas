@@ -53,6 +53,8 @@ const
   cOpenSSLURL = 'http://packages.lazarus-ide.org/openssl-1.0.2j-i386-win32.zip';
   {$endif}
   cExtractDir = 'ExtractDir';
+  cSubmitURL_Zip =  'aHR0cDovL2xhemFydXNvcG0uMDAwd2ViaG9zdGFwcC5jb20vemlwLnBocA==';
+  cSubmitURL_JSON = 'aHR0cDovL2xhemFydXNvcG0uMDAwd2ViaG9zdGFwcC5jb20vanNvbi5waHA=';
 
 resourcestring
   //package manager
@@ -287,7 +289,6 @@ resourcestring
   //createrepositorypackage form
   rsCreateRepositoryPackageFrm_Caption = 'Create repository package';
   rsCreateRepositoryPackageFrm_pnMessage_Caption = 'Please wait...';
-  rsCreateRepositoryPackageFrm_cbOpen_Caption = 'Open containing folder after creation';
   rsCreateRepositoryPackageFrm_lbPackageDir_Caption = 'Package directory:';
   rsCreateRepositoryPackageFrm_pnCaption_Caption0 = 'Available packages';
   rsCreateRepositoryPackageFrm_pnCaption_Caption1 = 'Description';
@@ -306,24 +307,34 @@ resourcestring
   rsCreateRepositoryPackageFrm_Error0 = 'Error reading package';
   rsCreateRepositoryPackageFrm_Error1 = 'Cannot create zip file:';
   rsCreateRepositoryPackageFrm_Error2 = 'Cannot create JSON file:';
+  rsCreateRepositoryPackageFrm_Error3  = 'Cannot send file: "%s"';
   rsCreateRepositoryPackageFrm_Message0 = 'Please select a category for package:';
   rsCreateRepositoryPackageFrm_Message1 = 'Please enter supported Lazarus versions for package:';
   rsCreateRepositoryPackageFrm_Message2 = 'Please enter supported FPC versions for package:';
   rsCreateRepositoryPackageFrm_Message3 = 'Please enter supported widgetsets for package:';
   rsCreateRepositoryPackageFrm_Message4 = 'Compressing package. Please wait...';
   rsCreateRepositoryPackageFrm_Message5 = 'Creating JSON. Please wait...';
-  rsCreateRepositoryPackageFrm_Message6 = 'Repository package successfully created.';
+  rsCreateRepositoryPackageFrm_Message6 = 'Creating JSON for updates. Please wait...';
+  rsCreateRepositoryPackageFrm_Message7 = 'Repository package successfully created.';
+  rsCreateRepositoryPackageFrm_Message8 = 'Sending files("%s"). Please wait...';
+  rsCreateRepositoryPackageFrm_Message9 = 'Files successfully sent. Thank you for submitting packages!' + sLineBreak + 'Your request will be processed in 24 hours.';
+  rsCreateRepositoryPackageFrm_Message10 = 'Canceling upload. Please wait...';
   rsCreateRepositoryPackageFrm_bHelp_Caption = 'Help';
+  rsCreateRepositoryPackageFrm_bHelp_Hint = 'Open help';
   rsCreateRepositoryPackageFrm_bOptions_Caption = 'Options';
+  rsCreateRepositoryPackageFrm_bOptions_Hint = 'Open options dialog';
   rsCreateRepositoryPackageFrm_bCreate_Caption = 'Create';
+  rsCreateRepositoryPackageFrm_bCreate_Hint = 'Create files locally';
+  rsCreateRepositoryPackageFrm_bSubmit_Caption = 'Submit';
+  rsCreateRepositoryPackageFrm_bSubmit_Hint = 'Submit files to remote server';
   rsCreateRepositoryPackageFrm_bCancel_Caption = 'Cancel';
+  rsCreateRepositoryPackageFrm_bCancel_Hint = 'Close this dialog';
 
   //createupdatejson
   rsCreateJSONForUpdatesFrm_Caption = 'Create update JSON for package:';
   rsCreateJSONForUpdatesFrm_bHelp_Caption = 'Help';
   rsCreateJSONForUpdatesFrm_bCreate_Caption = 'Create';
   rsCreateJSONForUpdatesFrm_bClose_Caption = 'Cancel';
-  rsCreateJSONForUpdatesFrm_cbOpen_Caption = 'Open containing folder after creation';
   rsCreateJSONForUpdatesFrm_lbLinkToZip_Caption = 'Link to the package zip file';
   rsCreateJSONForUpdatesFrm_bTest_Caption = 'Test';
   rsCreateJSONForUpdatesFrm_Column0_Text = 'PackageFileName';

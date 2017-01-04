@@ -1432,7 +1432,7 @@ begin
         end;
       paUpdate:
         begin
-          if FileExists(Options.LocalRepositoryUpdate + Items[I].RepositoryFileName) then
+          if FileExistsUTF8(Options.LocalRepositoryUpdate + Items[I].RepositoryFileName) then
             DeleteFile(Options.LocalRepositoryUpdate + Items[I].RepositoryFileName)
         end;
     end;

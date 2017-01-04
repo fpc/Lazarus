@@ -18,7 +18,6 @@ type
     bCreate: TButton;
     bHelp: TButton;
     bTest: TButton;
-    cbOpen: TCheckBox;
     edLinkToZip: TEdit;
     imTree: TImageList;
     lbLinkToZip: TLabel;
@@ -76,7 +75,6 @@ begin
   bCreate.Caption := rsCreateJSONForUpdatesFrm_bCreate_Caption;
   bHelp.Caption := rsCreateJSONForUpdatesFrm_bHelp_Caption;
   bClose.Caption := rsCreateJSONForUpdatesFrm_bClose_Caption;
-  cbOpen.Caption := rsCreateJSONForUpdatesFrm_cbOpen_Caption;
 
   FVST := TVirtualStringTree.Create(nil);
    with FVST do
@@ -225,11 +223,7 @@ begin
     end;
   end;
   if CanClose then
-  begin
-    if cbOpen.Checked then
-      OpenDocument(ExtractFilePath(SD.FileName));
     Close
-  end;
 end;
 
 procedure TCreateJSONForUpdatesFrm.bHelpClick(Sender: TObject);

@@ -16,6 +16,28 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
   Position = poOwnerFormCenter
   LCLVersion = '1.7'
   inline frCreateRep: TCreateRepositoryPackagefr
+    Height = 450
     Align = alClient
+    ClientHeight = 450
+    inherited pnMessage: TPanel
+      Height = 336
+    end
+    inherited pnPackages: TPanel
+      Height = 336
+    end
+    inherited pnData: TPanel
+      Height = 336
+      ClientHeight = 336
+      inherited pnPackageData: TPanel
+        Height = 147
+        ClientHeight = 143
+      end
+    end
+    inherited spMain: TSplitter
+      Height = 336
+    end
+    inherited pnButtons: TPanel
+      Top = 401
+    end
   end
 end

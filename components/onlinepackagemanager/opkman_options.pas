@@ -116,7 +116,7 @@ begin
   FLocalUpdateDefault := LocalRepo + AppendPathDelim(cLocalRepositoryUpdate);
 
   FXML := TXMLConfig.Create(AFileName);
-  if FileExists(AFileName) then
+  if FileExistsUTF8(AFileName) then
   begin
     Load;
     if FLocalRepositoryPackages = '' then
