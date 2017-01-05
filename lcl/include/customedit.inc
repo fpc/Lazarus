@@ -141,17 +141,9 @@ end;
   Replace the selected part of text-field with "val".
  ------------------------------------------------------------------------------}
 procedure TCustomEdit.SetSelText(const Val : string);
-var
-  OldText, NewText: string;
-  OldPos: Integer;
 begin
-  OldPos := SelStart;
-  OldText := Text;
-  NewText := UTF8Copy(OldText, 1, OldPos) +
-             Val +
-             UTF8Copy(OldText, OldPos + SelLength + 1, MaxInt);
-  Text := NewText;
-  SelStart := OldPos + UTF8Length(Val);
+  if HandleAllocated then
+    TWSCustomEditClass(WidgetSetClass).SetSelText(Self, Val);
 end;
 
 {------------------------------------------------------------------------------
