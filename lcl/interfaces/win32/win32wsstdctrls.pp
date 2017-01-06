@@ -202,6 +202,7 @@ type
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
     class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
+    class procedure SetSelText(const ACustomEdit: TCustomEdit; const NewSelText: string); override;
   end;
 
   { TWin32WSEdit }
@@ -1470,6 +1471,12 @@ class procedure TWin32WSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo;
 begin
   // TODO: check if can be done without recreation
   RecreateWnd(ACustomMemo);
+end;
+
+class procedure TWin32WSCustomMemo.SetSelText(const ACustomEdit: TCustomEdit;
+  const NewSelText: string);
+begin
+  TWin32WSCustomEdit.SetSelText(ACustomEdit, NewSelText);
 end;
 
 class procedure TWin32WSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);

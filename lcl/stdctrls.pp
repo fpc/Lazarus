@@ -855,7 +855,6 @@ type
     procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); override;
     procedure SetCaretPos(const Value: TPoint); override;
     procedure SetLines(const Value: TStrings);
-    procedure SetSelText(const Val: string); override;
     procedure SetWantReturns(const AValue: Boolean);
     procedure SetWantTabs(const NewWantTabs: boolean);
     procedure SetWordWrap(const Value: boolean);

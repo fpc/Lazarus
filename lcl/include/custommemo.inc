@@ -206,16 +206,6 @@ begin
     FLines.Assign(Value);
 end;
 
-procedure TCustomMemo.SetSelText(const Val: string);
-begin
-  Lines.BeginUpdate;
-  try
-    inherited SetSelText(Val);
-  finally
-    Lines.EndUpdate;
-  end;
-end;
-
 procedure TCustomMemo.SetScrollBars(const Value: TScrollStyle);
 begin
   if Value <> FScrollbars then begin

@@ -181,6 +181,7 @@ type
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); virtual;
     class procedure SetWantReturns(const ACustomMemo: TCustomMemo; const NewWantReturns: boolean); virtual;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); virtual;
+    class procedure SetSelText(const ACustomEdit: TCustomEdit; const NewSelText: string); override;
   end;
   TWSCustomMemoClass = class of TWSCustomMemo;
 
@@ -647,6 +648,17 @@ end;
 
 class procedure TWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
 begin
+end;
+
+class procedure TWSCustomMemo.SetSelText(const ACustomEdit: TCustomEdit;
+  const NewSelText: string);
+begin
+  TCustomMemo(ACustomEdit).Lines.BeginUpdate;
+  try
+    TWSCustomEdit.SetSelText(ACustomEdit, NewSelText);
+  finally
+    TCustomMemo(ACustomEdit).Lines.EndUpdate;
+  end;
 end;
 
 class procedure TWSCustomMemo.SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean);
