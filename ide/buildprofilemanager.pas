@@ -402,7 +402,7 @@ begin
     fTargetPlatform:=Platfrm;
     fIdeBuildMode:=bmBuild;
     fUpdateRevisionInc:=True;
-    fOptions.Add('-O2 -g- -Xs');
+    fOptions.Add('-O3 -g- -Xs');
   end;
   Add(Profile);
 
