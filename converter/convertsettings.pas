@@ -212,7 +212,6 @@ type
   public
     constructor Create(AOwner: TComponent; ASettings: TConvertSettings); reintroduce;
     destructor Destroy; override;
-    property CacheUnitsThread: TThread read fCacheUnitsThread;
   end;
 
 
@@ -853,8 +852,6 @@ end;
 
 destructor TConvertSettingsForm.Destroy;
 begin
-  if Assigned(fCacheUnitsThread) and not fThreadStarted then
-    fCacheUnitsThread.Free;
   inherited Destroy;
 end;
 
@@ -966,7 +963,6 @@ begin
   if ScanParentDirCheckBox.Checked and Assigned(fCacheUnitsThread) then
   begin
     ThreadGuiShow(True);
-    fCacheUnitsThread.FreeOnTerminate:=True;
     fCacheUnitsThread.OnTerminate:=@ThreadTerminated;
     fCacheUnitsThread.Start;
     fThreadStarted := True;
@@ -1002,7 +998,6 @@ end;
 procedure TConvertSettingsForm.ThreadTerminated(Sender: TObject);
 begin
   ThreadGuiShow(False);
-  fCacheUnitsThread := nil;  // Thread frees itself. Make the variable nil, too.
 end;
 
 // Edit replacements in grids

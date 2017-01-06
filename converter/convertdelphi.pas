@@ -1033,6 +1033,7 @@ begin
     Result:=mrAbort;
   end;
   finally
+    CacheUnitsThread.Free;
     EndTime:=Now;
     s:=FormatDateTime('hh:nn:ss', EndTime-StartTime);
     if (Result<>mrAbort) and (s<>'00:00:00') then
