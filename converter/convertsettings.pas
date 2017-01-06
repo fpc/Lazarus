@@ -528,6 +528,8 @@ begin
   MapReplacement('MMSystem',            '');
   MapReplacement('.*dll.*',             '');
   MapReplacement('^Q(.+)',              '$1');         // Kylix unit names.
+  // SynEdit has an identical RegExpr as FCL has, but names differ.
+  MapReplacement('SynRegExpr',          'RegExpr');
   // Tnt* third party components.
   MapReplacement('TntLXStringGrids',    'Grids');
   MapReplacement('TntLXCombos',         '');
@@ -597,8 +599,8 @@ begin
     AddDefaultCategory(Categ);
     //AddFunc(Categ, 'CreateFile', 'FileCreate($1)','','SysUtils');
     //AddFunc(Categ, 'ReadFile',   'FileRead($1)'  ,'','SysUtils');
-    AddFunc(Categ, 'GetFileSize','FileSize($1)'  ,'','SysUtils');
     AddFunc(Categ, 'CloseHandle','FileClose($1)' ,'','SysUtils');
+    AddFunc(Categ, 'GetFileSize','FileSize($1)'  ,'LazUtils','FileUtil');
     // WindowsAPI
     Categ:='WindowsAPI';
     AddDefaultCategory(Categ);
