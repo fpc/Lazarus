@@ -101,6 +101,7 @@ type
     function GetDfmFileName: string;
     function CopyAndLoadFile: TModalResult;
     function FixLfmFilenameAndLoad(ADfmFilename: string): TModalResult;
+    function ReduceMissingUnits: TModalResult;
     function ConvertUnitFile: TModalResult;
     function ConvertFormFile: TModalResult;
     function FixIncludeFiles: TModalResult;
@@ -188,6 +189,7 @@ type
     function ReadDelphiConfigFiles: TModalResult;
     function ExtractOptionsFromDOF(const DOFFilename: string): TModalResult;
     function ExtractOptionsFromCFG(const CFGFilename: string): TModalResult;
+    procedure MissingUnitsSub(AUsedUnits: TUsedUnits);
     function DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer; override;
     function AddToProjectLater(AFileName: string): Boolean;
     function MaybeDeleteFiles: TModalResult;
@@ -618,25 +620,24 @@ begin
   end;
 end;
 
+function TDelphiUnit.ReduceMissingUnits: TModalResult;
+// Find or comment out some / all of missing units.
+begin
+  Result:=mrOK;
+  // Comment out automatically units that were commented in other files.
+  fUsedUnitsTool.MainUsedUnits.CommentAutomatic(fOwnerConverter.fAllCommentedUnits);
+  fUsedUnitsTool.ImplUsedUnits.CommentAutomatic(fOwnerConverter.fAllCommentedUnits);
+  // Remove omitted units from MissingUnits.
+  fUsedUnitsTool.MainUsedUnits.OmitUnits;
+  fUsedUnitsTool.ImplUsedUnits.OmitUnits;
+  // Try to find from subdirectories scanned earlier.
+  if fOwnerConverter.DoMissingUnits(fUsedUnitsTool)=0 then exit;
+  if fUsedUnitsTool.MissingUnitCount=0 then exit;
+  // Interactive dialog for searching unit.
+  Result:=AskUnitPathFromUser;
+end;
+
 function TDelphiUnit.ConvertUnitFile: TModalResult;
-
-  function ReduceMissingUnits: TModalResult;
-  // Find or comment out some / all of missing units.
-  begin
-    Result:=mrOK;
-    // Try to find from subdirectories scanned earlier.
-    if fOwnerConverter.DoMissingUnits(fUsedUnitsTool)=0 then exit;
-    // Comment out automatically units that were commented in other files.
-    fUsedUnitsTool.MainUsedUnits.CommentAutomatic(fOwnerConverter.fAllCommentedUnits);
-    fUsedUnitsTool.ImplUsedUnits.CommentAutomatic(fOwnerConverter.fAllCommentedUnits);
-    // Remove omitted units from MissingUnits.
-    fUsedUnitsTool.MainUsedUnits.OmitUnits;
-    fUsedUnitsTool.ImplUsedUnits.OmitUnits;
-    if fUsedUnitsTool.MissingUnitCount=0 then exit;
-    // Interactive dialog for searching unit.
-    Result:=AskUnitPathFromUser;
-  end;
-
 var
   DfmFilename: string;     // Delphi .DFM file name.
   ConvTool: TConvDelphiCodeTool;
@@ -1321,38 +1322,37 @@ begin
   end;
 end;
 
+procedure TConvertDelphiProjPack.MissingUnitsSub(AUsedUnits: TUsedUnits);
+var
+  mUnit, sUnitPath, RealFileName, RealUnitName: string;
+  i: Integer;
+begin
+  for i:= AUsedUnits.MissingUnits.Count-1 downto 0 do begin
+    mUnit:=AUsedUnits.MissingUnits[i];
+    sUnitPath:=GetCachedUnitPath(mUnit);
+    if sUnitPath<>'' then begin
+      fProjPack.BaseCompilerOptions.MergeToUnitPaths(sUnitPath);
+      fProjPack.BaseCompilerOptions.MergeToIncludePaths(sUnitPath);
+      // Rename a unit with different casing if needed.
+      RealFileName:=fCachedRealFileNames[UpperCase(mUnit)];
+      RealUnitName:=ExtractFileNameOnly(RealFileName);
+      if (RealUnitName<>'') and (RealUnitName<>mUnit) then
+        AUsedUnits.UnitsToFixCase[mUnit]:=RealUnitName;
+      // Will be added later to project.
+      AddToProjectLater(sUnitPath+RealFileName);
+      AUsedUnits.MissingUnits.Delete(i);      // No more missing, delete from list.
+    end
+    else if CheckPackageDep(mUnit) then
+      AUsedUnits.MissingUnits.Delete(i);
+  end;
+end;
+
 function TConvertDelphiProjPack.DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer;
 // Locate unit names from earlier cached list or from packages.
 // Return the number of units still missing.
-
-  procedure DoMissingSub(AUsedUnits: TUsedUnits);
-  var
-    mUnit, sUnitPath, RealFileName, RealUnitName: string;
-    i: Integer;
-  begin
-    for i:= AUsedUnits.MissingUnits.Count-1 downto 0 do begin
-      mUnit:=AUsedUnits.MissingUnits[i];
-      sUnitPath:=GetCachedUnitPath(mUnit);
-      if sUnitPath<>'' then begin
-        fProjPack.BaseCompilerOptions.MergeToUnitPaths(sUnitPath);
-        fProjPack.BaseCompilerOptions.MergeToIncludePaths(sUnitPath);
-        // Rename a unit with different casing if needed.
-        RealFileName:=fCachedRealFileNames[UpperCase(mUnit)];
-        RealUnitName:=ExtractFileNameOnly(RealFileName);
-        if (RealUnitName<>'') and (RealUnitName<>mUnit) then
-          AUsedUnits.UnitsToFixCase[mUnit]:=RealUnitName;
-        // Will be added later to project.
-        AddToProjectLater(sUnitPath+RealFileName);
-        AUsedUnits.MissingUnits.Delete(i);      // No more missing, delete from list.
-      end
-      else if CheckPackageDep(mUnit) then
-        AUsedUnits.MissingUnits.Delete(i);
-    end;
-  end;
-
 begin
-  DoMissingSub(AUsedUnitsTool.MainUsedUnits);
-  DoMissingSub(AUsedUnitsTool.ImplUsedUnits);
+  MissingUnitsSub(AUsedUnitsTool.MainUsedUnits);
+  MissingUnitsSub(AUsedUnitsTool.ImplUsedUnits);
   Result:=AUsedUnitsTool.MissingUnitCount;
 end;
 
