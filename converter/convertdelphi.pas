@@ -734,8 +734,9 @@ begin
         try
           UnitDirDialog.InitialDir:=fOwnerConverter.fPrevSelectedPath;
           UnitDirDialog.Title:=lisConvDelphiAllSubDirsScanned;
-          if UnitDirDialog.Execute then begin
-            fOwnerConverter.fPrevSelectedPath:=ExtractFilePath(UnitDirDialog.Filename);
+          if UnitDirDialog.Execute then
+          begin
+            fOwnerConverter.fPrevSelectedPath:=UnitDirDialog.FileName;
             // Add the new path to project if missing units are found.
             // We use a thread here only to reuse its code. No parallel operations now.
             CacheUnitsThread:=TCacheUnitsThread.Create(fOwnerConverter,
