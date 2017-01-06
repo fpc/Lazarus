@@ -31,7 +31,8 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree,
-  Forms, Controls, Dialogs, StdCtrls, Buttons, ButtonPanel, ComCtrls,
+  // LCL
+  Forms, Controls, Dialogs, StdCtrls, Buttons, ButtonPanel, ComCtrls, LCLProc,
   // LazUtils
   FileUtil, LazFileUtils, DividerBevel, LazConfigStorage,
   // CodeTools
@@ -979,7 +980,8 @@ end;
 
 procedure TConvertSettingsForm.CancelButtonClick(Sender: TObject);
 begin
-  if Assigned(fCacheUnitsThread) then begin
+  if Assigned(fCacheUnitsThread) and fThreadStarted then
+  begin
     (fCacheUnitsThread as TCacheUnitsThread).Searcher.Stop;
     fCacheUnitsThread.WaitFor;
   end;
