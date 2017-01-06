@@ -176,7 +176,7 @@ type
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
-    class procedure SetSelText(const ACustomEdit: TCustomEdit; NewSelText: string); override;
+    class procedure SetSelText(const ACustomEdit: TCustomEdit; const NewSelText: string); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetTextHint(const ACustomEdit: TCustomEdit; const ATextHint: string); override;
@@ -1309,9 +1309,9 @@ begin
 end;
 
 class procedure TWin32WSCustomEdit.SetSelText(const ACustomEdit: TCustomEdit;
-  NewSelText: string);
+  const NewSelText: string);
 begin
-  SendMessageW(ACustomEdit.Handle, EM_REPLACESEL, WPARAM(1), LPARAM(PWideChar(WideString(NewSelText))));
+  SendMessageW(ACustomEdit.Handle, EM_REPLACESEL, WPARAM(1), LPARAM(PWideChar(UTF8ToUTF16(NewSelText))));
 end;
 
 class procedure TWin32WSCustomEdit.SetText(const AWinControl: TWinControl;
@@ -1329,7 +1329,7 @@ class procedure TWin32WSCustomEdit.SetTextHint(const ACustomEdit: TCustomEdit;
   const ATextHint: string);
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetTextHint') then Exit;
-  SendMessage(ACustomEdit.Handle, EM_SETCUEBANNER, 1, {%H-}LParam(PWideChar(WideString(ATextHint))));
+  SendMessage(ACustomEdit.Handle, EM_SETCUEBANNER, 1, {%H-}LParam(PWideChar(UTF8ToUTF16(ATextHint))));
 end;
 
 class procedure TWin32WSCustomEdit.Cut(const ACustomEdit: TCustomEdit);

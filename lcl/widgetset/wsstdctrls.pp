@@ -159,7 +159,7 @@ type
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); virtual;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); virtual;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); virtual;
-    class procedure SetSelText(const ACustomEdit: TCustomEdit; NewSelText: string); virtual;
+    class procedure SetSelText(const ACustomEdit: TCustomEdit; const NewSelText: string); virtual;
     class procedure SetTextHint(const ACustomEdit: TCustomEdit; const ATextHint: string); virtual;
     class function CreateEmulatedTextHintFont(const ACustomEdit: TCustomEdit): TFont; virtual;
 
@@ -577,7 +577,7 @@ begin
 end;
 
 class procedure TWSCustomEdit.SetSelText(const ACustomEdit: TCustomEdit;
-  NewSelText: string);
+  const NewSelText: string);
 var
   OldText, NewText: string;
   OldPos: Integer;
