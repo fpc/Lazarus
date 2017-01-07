@@ -34,7 +34,10 @@ type
 
   TBarWidthStyle = (bwPercent, bwPercentMin);
 
+
   TBarSeries = class;
+
+  TBarToolTarget = (bttDatapoint, bttBar);
 
   TBeforeDrawBarEvent = procedure (
     ASender: TBarSeries; ACanvas: TCanvas; const ARect: TRect;
@@ -50,6 +53,7 @@ type
     FBarPen: TPen;
     FBarWidthPercent: Integer;
     FBarWidthStyle: TBarWidthStyle;
+    FToolTarget: TBarToolTarget;
     FOnBeforeDrawBar: TBeforeDrawBarEvent;
     FZeroLevel: Double;
 
@@ -78,6 +82,8 @@ type
     function GetBarWidth(AIndex: Integer): Integer;
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
+    function GetNearestPoint(const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; override;
   published
     property AxisIndexX;
     property AxisIndexY;
@@ -95,6 +101,8 @@ type
       read GetSeriesColor write SetSeriesColor stored false default clRed;
     property Source;
     property Styles;
+    property ToolTarget: TBarToolTarget
+      read FToolTarget write FToolTarget default bttDataPoint;
     property UseReticule;
     property ZeroLevel: Double
       read FZeroLevel write SetZeroLevel stored IsZeroLevelStored;
@@ -1120,6 +1128,73 @@ end;
 procedure TBarSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
   GetLegendItemsRect(AItems, BarBrush);
+end;
+
+function TBarSeries.GetNearestPoint(const AParams: TNearestPointParams;
+  out AResults: TNearestPointResults): Boolean;
+var
+  pointIndex: Integer;
+  graphClickPt: TDoublePoint;
+  sp, p: TDoublePoint;
+  ofs, w: Double;
+  heights: TDoubleDynArray;
+  y, z: Double;
+  stackindex: Integer;
+begin
+  if FToolTarget = bttDatapoint then
+  begin
+    Result := inherited;
+    exit;
+  end;
+
+  Result := false;
+  AResults.FDist := Sqr(AParams.FRadius) + 1;
+  AResults.FIndex := -1;
+
+  if IsRotated then
+    z := AxisToGraphX(ZeroLevel)
+  else
+    z := AxisToGraphY(ZeroLevel);
+  SetLength(heights, Source.YCount + 1);
+
+  // clicked point in image coordinates
+  graphClickPt := ParentChart.ImageToGraph(AParams.FPoint);
+  if IsRotated then
+    Exchange(graphclickpt.X, graphclickpt.Y);
+
+  // Iterate through all points of the series
+  for pointIndex := 0 to Count - 1 do begin
+    sp := Source[pointindex]^.Point;
+    if IsNan(sp) then
+      continue;
+    BarOffsetWidth(sp.X, pointindex, ofs, w);
+    sp.X := sp.X + ofs;
+    if not InRange(graphClickPt.X, sp.X - w, sp.X + w) then
+      continue;
+    heights[0] := z;
+    heights[1] := NumberOr(sp.Y, z);
+    for stackIndex := 1 to Source.YCount-1 do begin
+      y := NumberOr(Source[pointindex]^.YList[stackIndex - 1], 0);
+      heights[stackIndex + 1] := heights[stacKindex] + y;
+    end;
+    for stackindex := 0 to High(heights)-1 do
+      if ((heights[stackindex] < heights[stackindex + 1]) and
+         InRange(graphClickPt.Y, heights[stackindex], heights[stackIndex + 1]))
+      or
+         ((heights[stackindex + 1] < heights[stackindex]) and
+         InRange(graphClickPt.Y, heights[stackindex + 1], heights[stackIndex]))
+      then  begin
+        AResults.FDist := 0;
+        AResults.FIndex := pointindex;
+        AResults.FYIndex := stackIndex;
+        AResults.FValue := DoublePoint(Source[pointindex]^.X, Source[pointindex]^.GetY(stackIndex));
+        if IsRotated then
+          Exchange(AResults.FValue.X, AResults.FValue.Y);
+        AResults.FImg := ParentChart.GraphToImage(AResults.FValue);
+        Result := true;
+        exit;
+      end;
+  end;
 end;
 
 function TBarSeries.GetSeriesColor: TColor;

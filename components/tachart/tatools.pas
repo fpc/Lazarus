@@ -411,6 +411,7 @@ type
   strict protected
     FNearestGraphPoint: TDoublePoint;
     FPointIndex: Integer;
+    FYIndex: Integer;
     FSeries: TBasicChartSeries;
     procedure FindNearestPoint(APoint: TPoint);
     property MouseInsideOnly: Boolean
@@ -423,6 +424,7 @@ type
     property NearestGraphPoint: TDoublePoint read FNearestGraphPoint;
     property PointIndex: Integer read FPointIndex;
     property Series: TBasicChartSeries read FSeries;
+    property YIndex: Integer read FYIndex;
   published
     property AffectedSeries: String
       read GetAffectedSeries write SetAffectedSeries;
@@ -497,6 +499,7 @@ type
     FOnHintLocation: TChartToolHintLocationEvent;
     FPrevPointIndex: Integer;
     FPrevSeries: TBasicChartSeries;
+    FPrevYIndex: Integer;
     FUseApplicationHint: Boolean;
     FUseDefaultHintText: Boolean;
     procedure HideHint;
@@ -1603,6 +1606,7 @@ begin
   FAffectedSeries.Init;
   SetPropDefaults(Self, ['GrabRadius']);
   FPointIndex := -1;
+  FYIndex := 0;
 end;
 
 procedure TDataPointTool.FindNearestPoint(APoint: TPoint);
@@ -1664,6 +1668,7 @@ begin
   if best.FDist = MaxInt then exit;
   FSeries := bestS;
   FPointIndex := best.FIndex;
+  FYIndex := best.FYIndex;
   FNearestGraphPoint := FChart.ImageToGraph(best.FImg);
 end;
 
@@ -1836,12 +1841,15 @@ begin
     HideHint;
     exit;
   end;
-  if (FPrevSeries = Series) and (FPrevPointIndex = PointIndex) then
+  if (FPrevSeries = Series) and (FPrevPointIndex = PointIndex) and
+     (FPrevYIndex = YIndex)
+  then
     exit;
   if FPrevSeries = nil then
     SetCursor;
   FPrevSeries := Series;
   FPrevPointIndex := PointIndex;
+  FPrevYIndex := YIndex;
   h := GetHintText;
   APoint := FChart.ClientToScreen(APoint);
   if Assigned(OnHintPosition) then

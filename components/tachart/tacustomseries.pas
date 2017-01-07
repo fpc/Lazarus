@@ -34,7 +34,8 @@ type
   TNearestPointResults = record
     FDist: Integer;
     FImg: TPoint;
-    FIndex: Integer;
+    FIndex: Integer;        // Point index
+    FYIndex: Integer;       // Index to be used in Source.GetY()
     FValue: TDoublePoint;
   end;
 
@@ -1239,6 +1240,7 @@ begin
     if dist >= AResults.FDist then continue;
     AResults.FDist := dist;
     AResults.FIndex := i;
+    AResults.FYIndex := 0;  // to do: find yindex of stacked series
     AResults.FImg := pt;
     AResults.FValue := sp;
   end;
