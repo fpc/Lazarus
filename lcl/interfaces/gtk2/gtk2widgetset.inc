@@ -6389,7 +6389,10 @@ begin
   end;
   ReallocMem(Lines, 0);
   If TmpStr <> nil then
-    Result := StrNew(TmpStr^.str)
+  begin
+    Result := StrNew(TmpStr^.str);
+    g_string_free(TmpStr, True);
+  end
   else
     Result:=nil;
 end;
