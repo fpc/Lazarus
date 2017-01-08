@@ -511,7 +511,7 @@ var
   begin
     Result :=
       ((Details.Element = teTreeview) and (Details.Part = TVP_TREEITEM)) or
-      (Details.Element = teToolTip);
+      (Details.Element = teToolTip) or (Details.Element = teMenu);
   end;
 
 begin
