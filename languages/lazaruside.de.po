@@ -6761,10 +6761,6 @@ msgstr "Komponente benötigt Vorgänger"
 msgid "Add comment after replacement"
 msgstr "Kommentar nach Ersetzung hinzufügen"
 
-#: lazarusidestrconsts.lisconvaddedunittousessection
-msgid "Added unit %s to uses section"
-msgstr "Unit %s zum uses Abschnitt hinzugefügt"
-
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr "Füge Flag für \"Register\" Prozedur in Unit %s hinzu."
@@ -6800,6 +6796,10 @@ msgstr ""
 #: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
 msgid "Added Package %s as a dependency."
 msgstr "Package %s als Abhängigkeit hinzugefügt."
+
+#: lazarusidestrconsts.lisconvdelphiaddedunittousessection
+msgid "Added unit \"%s\" to uses section."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -6898,9 +6898,9 @@ msgstr "Package %s wird benötigt, ist aber nicht in Lazarus installiert! Späte
 msgid "Omitted unit %s from project"
 msgstr "Unit %s aus Projekt entfernt"
 
-#: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
-msgid "Removed unit \"%s\" in uses section."
-msgstr "Unit \"%s\" im uses Abschnitt entfernt."
+#: lazarusidestrconsts.lisconvdelphiremovedunitfromusessection
+msgid "Removed unit \"%s\" from uses section."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Fixing used units and Repairing form files ***"

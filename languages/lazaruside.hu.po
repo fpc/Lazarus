@@ -6764,10 +6764,6 @@ msgstr "A vezérlőnek szülőre van szüksége"
 msgid "Add comment after replacement"
 msgstr "Megjegyzés hozzáadása csere után"
 
-#: lazarusidestrconsts.lisconvaddedunittousessection
-msgid "Added unit %s to uses section"
-msgstr "A(z) %s unit hozzá lett adva a uses szakaszhoz"
-
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr "Jelző hozzáadása a \"Register\" eljáráshoz a(z) %s unit-ban."
@@ -6803,6 +6799,10 @@ msgstr "%s definíció hozzáadva az egyéni beállításokhoz"
 #: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
 msgid "Added Package %s as a dependency."
 msgstr "A(z) %s csomag hozzáadva függőségként."
+
+#: lazarusidestrconsts.lisconvdelphiaddedunittousessection
+msgid "Added unit \"%s\" to uses section."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -6901,9 +6901,9 @@ msgstr "A(z) %s csomag szükséges, de nincs telepítve a Lazarus-ban! Telepít�
 msgid "Omitted unit %s from project"
 msgstr "A(z) %s unit kihagyva a projektből"
 
-#: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
-msgid "Removed unit \"%s\" in uses section."
-msgstr "Eltávolított unit a uses szakaszban: %s"
+#: lazarusidestrconsts.lisconvdelphiremovedunitfromusessection
+msgid "Removed unit \"%s\" from uses section."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Fixing used units and Repairing form files ***"

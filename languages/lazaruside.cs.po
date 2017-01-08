@@ -6775,10 +6775,6 @@ msgstr "Prvek potřebuje rodiče"
 msgid "Add comment after replacement"
 msgstr "Přidat komentář po nahrazení"
 
-#: lazarusidestrconsts.lisconvaddedunittousessection
-msgid "Added unit %s to uses section"
-msgstr "Přidána jednotka %s do sekce uses"
-
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr "Přidání příznaku pro proceduru \"Register\" v jednotce %s."
@@ -6814,6 +6810,10 @@ msgstr "Přidán(a/y) definice %s ve vlastních volbách"
 #: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
 msgid "Added Package %s as a dependency."
 msgstr "Přidán balík %s jako závislost"
+
+#: lazarusidestrconsts.lisconvdelphiaddedunittousessection
+msgid "Added unit \"%s\" to uses section."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -6912,9 +6912,9 @@ msgstr "Balík %s je vyžadování v Lazarusu! Nainstalujte jej později."
 msgid "Omitted unit %s from project"
 msgstr "Jednotka %s vypuštěna z projektu"
 
-#: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
-msgid "Removed unit \"%s\" in uses section."
-msgstr "Odstraněna jednotka \"%s\" ze sekce použitých jednotek."
+#: lazarusidestrconsts.lisconvdelphiremovedunitfromusessection
+msgid "Removed unit \"%s\" from uses section."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Fixing used units and Repairing form files ***"

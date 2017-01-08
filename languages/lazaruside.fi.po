@@ -6723,10 +6723,6 @@ msgstr "Kontrolli tarvitsee emon"
 msgid "Add comment after replacement"
 msgstr "Lisää kommentti korvaavan jälkeen"
 
-#: lazarusidestrconsts.lisconvaddedunittousessection
-msgid "Added unit %s to uses section"
-msgstr "Lisätty käännösyksikkö %s uses lauseeseen"
-
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr "Lisätään lippu \"Register\" aliohjelmalle käännösyksikössä %s."
@@ -6762,6 +6758,10 @@ msgstr "Lisätty määritteet %s mukautettuihin asetuksiin"
 #: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
 msgid "Added Package %s as a dependency."
 msgstr "Lisätty riippuvuus pakettiin %s."
+
+#: lazarusidestrconsts.lisconvdelphiaddedunittousessection
+msgid "Added unit \"%s\" to uses section."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgid "All sub-directories will be scanned for unit files"
@@ -6859,9 +6859,9 @@ msgstr "Paketti %s tarvitaan, muttei ole asennettu Lazarukseen! Asenna myöhemmi
 msgid "Omitted unit %s from project"
 msgstr "Käännösyksikkö %s jätettiin pois projektista"
 
-#: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
-msgid "Removed unit \"%s\" in uses section."
-msgstr "Poistettu käännösyksikkö \"%s\" uses-lauseesta."
+#: lazarusidestrconsts.lisconvdelphiremovedunitfromusessection
+msgid "Removed unit \"%s\" from uses section."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Fixing used units and Repairing form files ***"

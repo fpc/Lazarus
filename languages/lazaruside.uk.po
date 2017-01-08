@@ -6772,10 +6772,6 @@ msgstr "Елемент управління вимагає \"предка\""
 msgid "Add comment after replacement"
 msgstr "Після заміни додати коментар"
 
-#: lazarusidestrconsts.lisconvaddedunittousessection
-msgid "Added unit %s to uses section"
-msgstr "До секції uses додано модуль %s"
-
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr "Додавання прапорця наявності у модулі %s процедури \"Register\"."
@@ -6811,6 +6807,10 @@ msgstr "До користувацьких параметрів додано ви
 #: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
 msgid "Added Package %s as a dependency."
 msgstr "Пакунок %s додано як залежність."
+
+#: lazarusidestrconsts.lisconvdelphiaddedunittousessection
+msgid "Added unit \"%s\" to uses section."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -6909,9 +6909,9 @@ msgstr "Пакунок %s необхідний, але не встановлен
 msgid "Omitted unit %s from project"
 msgstr "Знехтуваний модуль %s з проекту"
 
-#: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
-msgid "Removed unit \"%s\" in uses section."
-msgstr "Видалений модуль \"%s\" в секції uses."
+#: lazarusidestrconsts.lisconvdelphiremovedunitfromusessection
+msgid "Removed unit \"%s\" from uses section."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Fixing used units and Repairing form files ***"

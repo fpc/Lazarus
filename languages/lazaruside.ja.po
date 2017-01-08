@@ -6881,10 +6881,6 @@ msgstr "コントロールには親コントロールが必要です"
 msgid "Add comment after replacement"
 msgstr "置換後にコメントを追加"
 
-#: lazarusidestrconsts.lisconvaddedunittousessection
-msgid "Added unit %s to uses section"
-msgstr ""
-
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr ""
@@ -6920,6 +6916,10 @@ msgstr "カスタムオプションに追加されたdefines  %s"
 #: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
 msgid "Added Package %s as a dependency."
 msgstr "依存するものとして追加されたパッケージ %s"
+
+#: lazarusidestrconsts.lisconvdelphiaddedunittousessection
+msgid "Added unit \"%s\" to uses section."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -7020,9 +7020,9 @@ msgstr "パッケージ %s が要求されていますが、Lazarusにインス�
 msgid "Omitted unit %s from project"
 msgstr "プロジェクトからユニット %s を省略"
 
-#: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
-msgid "Removed unit \"%s\" in uses section."
-msgstr "このuses節からユニット \"%s\" を削除しました"
+#: lazarusidestrconsts.lisconvdelphiremovedunitfromusessection
+msgid "Removed unit \"%s\" from uses section."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Fixing used units and Repairing form files ***"

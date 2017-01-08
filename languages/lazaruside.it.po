@@ -6807,10 +6807,6 @@ msgstr "Il controllo necessita del genitore"
 msgid "Add comment after replacement"
 msgstr "Aggiungi un commento dopo la sostituzione"
 
-#: lazarusidestrconsts.lisconvaddedunittousessection
-msgid "Added unit %s to uses section"
-msgstr "Aggiunta la unit %s alla sezione \"uses\""
-
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr "Aggiungo il flag \"Registrare\"alla procedura nella unit %s"
@@ -6846,6 +6842,10 @@ msgstr "Aggiunte le definizioni %s nelle opzioni personalizzate"
 #: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
 msgid "Added Package %s as a dependency."
 msgstr "Aggiunto il Pacchetto %s alle dipendenze"
+
+#: lazarusidestrconsts.lisconvdelphiaddedunittousessection
+msgid "Added unit \"%s\" to uses section."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -6944,9 +6944,9 @@ msgstr "Il pacchetto %s è richiesto ma non è installato in Lazarus. Installarl
 msgid "Omitted unit %s from project"
 msgstr "Unit %s omessa dal progetto"
 
-#: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
-msgid "Removed unit \"%s\" in uses section."
-msgstr "Soppressa la unit \"%s\" nella sezione \"uses\"."
+#: lazarusidestrconsts.lisconvdelphiremovedunitfromusessection
+msgid "Removed unit \"%s\" from uses section."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Fixing used units and Repairing form files ***"

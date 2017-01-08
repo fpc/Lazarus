@@ -7014,10 +7014,6 @@ msgstr "控件需要父类"
 msgid "Add comment after replacement"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvaddedunittousessection
-msgid "Added unit %s to uses section"
-msgstr ""
-
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr ""
@@ -7052,6 +7048,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
 msgid "Added Package %s as a dependency."
+msgstr ""
+
+#: lazarusidestrconsts.lisconvdelphiaddedunittousessection
+msgid "Added unit \"%s\" to uses section."
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
@@ -7151,8 +7151,8 @@ msgstr ""
 msgid "Omitted unit %s from project"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
-msgid "Removed unit \"%s\" in uses section."
+#: lazarusidestrconsts.lisconvdelphiremovedunitfromusessection
+msgid "Removed unit \"%s\" from uses section."
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles

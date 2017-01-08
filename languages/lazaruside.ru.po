@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-12-16 01:38+0300\n"
+"PO-Revision-Date: 2017-01-08 23:53+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -6758,10 +6758,6 @@ msgstr "Элемент управления требует \"родителя\""
 msgid "Add comment after replacement"
 msgstr "Добавлять комментарий при замене"
 
-#: lazarusidestrconsts.lisconvaddedunittousessection
-msgid "Added unit %s to uses section"
-msgstr "Модуль %s добавлен в выражение Uses"
-
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr "Добавление флага наличия процедуры \"Register\" в модуле %s."
@@ -6797,6 +6793,10 @@ msgstr "К параметрам пользователя добавлены оп
 #: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
 msgid "Added Package %s as a dependency."
 msgstr "Пакет %s добавлен в качестве зависимости."
+
+#: lazarusidestrconsts.lisconvdelphiaddedunittousessection
+msgid "Added unit \"%s\" to uses section."
+msgstr "Модуль \"%s\" добавлен в выражение Uses."
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -6895,8 +6895,8 @@ msgstr "Пакет %s требуется, но не установлен в Laza
 msgid "Omitted unit %s from project"
 msgstr "Модуль %s не включён в проект"
 
-#: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
-msgid "Removed unit \"%s\" in uses section."
+#: lazarusidestrconsts.lisconvdelphiremovedunitfromusessection
+msgid "Removed unit \"%s\" from uses section."
 msgstr "Модуль \"%s\" удалён из выражения Uses."
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
