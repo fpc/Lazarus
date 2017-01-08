@@ -53,13 +53,6 @@ msgstr "Test"
 msgid "Create update JSON for package:"
 msgstr "Erzeuge Aktualisierungs-JSON für Package:"
 
-#: opkman_const.rscreatejsonforupdatesfrm_cbopen_caption
-#, fuzzy
-#| msgid "After create open containing folder"
-msgctxt "opkman_const.rscreatejsonforupdatesfrm_cbopen_caption"
-msgid "Open containing folder after creation"
-msgstr "Enthaltenes Verzeichnis nach dem Erzeugen öffnen"
-
 #: opkman_const.rscreatejsonforupdatesfrm_column0_text
 msgid "PackageFileName"
 msgstr "Package-Dateiname"
@@ -115,11 +108,19 @@ msgctxt "opkman_const.rscreaterepositorypackagefrm_bcancel_caption"
 msgid "Cancel"
 msgstr "Abbrechen"
 
+#: opkman_const.rscreaterepositorypackagefrm_bcancel_hint
+msgid "Close this dialog"
+msgstr ""
+
 #: opkman_const.rscreaterepositorypackagefrm_bcreate_caption
 #, fuzzy
 msgctxt "opkman_const.rscreaterepositorypackagefrm_bcreate_caption"
 msgid "Create"
 msgstr "Erzeugen"
+
+#: opkman_const.rscreaterepositorypackagefrm_bcreate_hint
+msgid "Create files locally"
+msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_bhelp_caption
 #, fuzzy
@@ -127,23 +128,32 @@ msgctxt "opkman_const.rscreaterepositorypackagefrm_bhelp_caption"
 msgid "Help"
 msgstr "Hilfe"
 
+#: opkman_const.rscreaterepositorypackagefrm_bhelp_hint
+msgid "Open help"
+msgstr ""
+
 #: opkman_const.rscreaterepositorypackagefrm_boptions_caption
 #, fuzzy
 msgctxt "opkman_const.rscreaterepositorypackagefrm_boptions_caption"
 msgid "Options"
 msgstr "Einstellungen"
 
+#: opkman_const.rscreaterepositorypackagefrm_boptions_hint
+msgid "Open options dialog"
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_bsubmit_caption
+msgid "Submit"
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_bsubmit_hint
+msgid "Submit files to remote server"
+msgstr ""
+
 #: opkman_const.rscreaterepositorypackagefrm_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_caption"
 msgid "Create repository package"
 msgstr "Erzeuge Repository-Package "
-
-#: opkman_const.rscreaterepositorypackagefrm_cbopen_caption
-#, fuzzy
-#| msgid "After create open containing folder"
-msgctxt "opkman_const.rscreaterepositorypackagefrm_cbopen_caption"
-msgid "Open containing folder after creation"
-msgstr "Verzeichnis nach dem Erzeugen öffnen"
 
 #: opkman_const.rscreaterepositorypackagefrm_error0
 msgid "Error reading package"
@@ -156,6 +166,10 @@ msgstr "Kann Zip-Datei nicht erzeugen:"
 #: opkman_const.rscreaterepositorypackagefrm_error2
 msgid "Cannot create JSON file:"
 msgstr "Kann JSON-Datei nicht erzeugen:"
+
+#: opkman_const.rscreaterepositorypackagefrm_error3
+msgid "Cannot send file: \"%s\""
+msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_lbcategory_caption
 msgid "Category:"
@@ -214,6 +228,10 @@ msgstr "Bitte wählen Sie eine Kategorie für Package:"
 msgid "Please enter supported Lazarus versions for package:"
 msgstr "Bitte geben Sie die unterstützten Lazarus-Versionen ein für Package:"
 
+#: opkman_const.rscreaterepositorypackagefrm_message10
+msgid "Cancelling upload. Please wait..."
+msgstr ""
+
 #: opkman_const.rscreaterepositorypackagefrm_message2
 msgid "Please enter supported FPC versions for package:"
 msgstr "Bitte geben Sie die unterstützen FPC-Versionen ein für Package:"
@@ -231,8 +249,28 @@ msgid "Creating JSON. Please wait..."
 msgstr "Erzeuge JSON. Bitte warten..."
 
 #: opkman_const.rscreaterepositorypackagefrm_message6
+#, fuzzy
+#| msgid "Repository package successfully created."
+msgctxt "opkman_const.rscreaterepositorypackagefrm_message6"
+msgid "Creating JSON for updates. Please wait..."
+msgstr "Repository-Package erfolgreich erzeugt."
+
+#: opkman_const.rscreaterepositorypackagefrm_message7
+#, fuzzy
+#| msgid "Repository package successfully created."
+msgctxt "opkman_const.rscreaterepositorypackagefrm_message7"
 msgid "Repository package successfully created."
 msgstr "Repository-Package erfolgreich erzeugt."
+
+#: opkman_const.rscreaterepositorypackagefrm_message8
+msgid "Sending files (\"%s\"). Please wait..."
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_message9
+msgid ""
+"Files successfully sent. Thank you for submitting packages!\n"
+"Your request will be processed in 24 hours.\n"
+msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_nopackage
 msgid "No packages found!"

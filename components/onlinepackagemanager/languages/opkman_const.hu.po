@@ -58,13 +58,6 @@ msgstr ""
 msgid "Create update JSON for package:"
 msgstr ""
 
-#: opkman_const.rscreatejsonforupdatesfrm_cbopen_caption
-#, fuzzy
-#| msgid "After create open containing folder"
-msgctxt "opkman_const.rscreatejsonforupdatesfrm_cbopen_caption"
-msgid "Open containing folder after creation"
-msgstr "A tartalmazó mappa megnyitása létrehozás után"
-
 #: opkman_const.rscreatejsonforupdatesfrm_column0_text
 msgid "PackageFileName"
 msgstr ""
@@ -117,15 +110,27 @@ msgctxt "opkman_const.rscreaterepositorypackagefrm_bcancel_caption"
 msgid "Cancel"
 msgstr "Mégsem"
 
+#: opkman_const.rscreaterepositorypackagefrm_bcancel_hint
+msgid "Close this dialog"
+msgstr ""
+
 #: opkman_const.rscreaterepositorypackagefrm_bcreate_caption
 #, fuzzy
 msgctxt "opkman_const.rscreaterepositorypackagefrm_bcreate_caption"
 msgid "Create"
 msgstr "Létrehozás"
 
+#: opkman_const.rscreaterepositorypackagefrm_bcreate_hint
+msgid "Create files locally"
+msgstr ""
+
 #: opkman_const.rscreaterepositorypackagefrm_bhelp_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_bhelp_caption"
 msgid "Help"
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_bhelp_hint
+msgid "Open help"
 msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_boptions_caption
@@ -134,17 +139,22 @@ msgctxt "opkman_const.rscreaterepositorypackagefrm_boptions_caption"
 msgid "Options"
 msgstr "Beállítások"
 
+#: opkman_const.rscreaterepositorypackagefrm_boptions_hint
+msgid "Open options dialog"
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_bsubmit_caption
+msgid "Submit"
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_bsubmit_hint
+msgid "Submit files to remote server"
+msgstr ""
+
 #: opkman_const.rscreaterepositorypackagefrm_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_caption"
 msgid "Create repository package"
 msgstr ""
-
-#: opkman_const.rscreaterepositorypackagefrm_cbopen_caption
-#, fuzzy
-#| msgid "After create open containing folder"
-msgctxt "opkman_const.rscreaterepositorypackagefrm_cbopen_caption"
-msgid "Open containing folder after creation"
-msgstr "A tartalmazó mappa megnyitása létrehozás után"
 
 #: opkman_const.rscreaterepositorypackagefrm_error0
 msgid "Error reading package"
@@ -157,6 +167,10 @@ msgstr "A zip fájl nem hozható létre:"
 #: opkman_const.rscreaterepositorypackagefrm_error2
 msgid "Cannot create JSON file:"
 msgstr "A JSON fájl nem hozható létre:"
+
+#: opkman_const.rscreaterepositorypackagefrm_error3
+msgid "Cannot send file: \"%s\""
+msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_lbcategory_caption
 msgid "Category:"
@@ -211,6 +225,10 @@ msgstr ""
 msgid "Please enter supported Lazarus versions for package:"
 msgstr ""
 
+#: opkman_const.rscreaterepositorypackagefrm_message10
+msgid "Cancelling upload. Please wait..."
+msgstr ""
+
 #: opkman_const.rscreaterepositorypackagefrm_message2
 msgid "Please enter supported FPC versions for package:"
 msgstr ""
@@ -228,7 +246,23 @@ msgid "Creating JSON. Please wait..."
 msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_message6
+msgctxt "opkman_const.rscreaterepositorypackagefrm_message6"
+msgid "Creating JSON for updates. Please wait..."
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_message7
+msgctxt "opkman_const.rscreaterepositorypackagefrm_message7"
 msgid "Repository package successfully created."
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_message8
+msgid "Sending files (\"%s\"). Please wait..."
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_message9
+msgid ""
+"Files successfully sent. Thank you for submitting packages!\n"
+"Your request will be processed in 24 hours.\n"
 msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_nopackage

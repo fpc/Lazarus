@@ -316,9 +316,9 @@ resourcestring
   rsCreateRepositoryPackageFrm_Message5 = 'Creating JSON. Please wait...';
   rsCreateRepositoryPackageFrm_Message6 = 'Creating JSON for updates. Please wait...';
   rsCreateRepositoryPackageFrm_Message7 = 'Repository package successfully created.';
-  rsCreateRepositoryPackageFrm_Message8 = 'Sending files("%s"). Please wait...';
+  rsCreateRepositoryPackageFrm_Message8 = 'Sending files ("%s"). Please wait...';
   rsCreateRepositoryPackageFrm_Message9 = 'Files successfully sent. Thank you for submitting packages!' + sLineBreak + 'Your request will be processed in 24 hours.';
-  rsCreateRepositoryPackageFrm_Message10 = 'Canceling upload. Please wait...';
+  rsCreateRepositoryPackageFrm_Message10 = 'Cancelling upload. Please wait...';
   rsCreateRepositoryPackageFrm_bHelp_Caption = 'Help';
   rsCreateRepositoryPackageFrm_bHelp_Hint = 'Open help';
   rsCreateRepositoryPackageFrm_bOptions_Caption = 'Options';
