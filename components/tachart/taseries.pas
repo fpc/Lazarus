@@ -1090,16 +1090,18 @@ begin
   UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
   // Show first and last bars fully.
   i := 0;
-  x := NearestXNumber(i, +1);
+  x := NearestXNumber(i, +1);       // --> x is in graph units
   if not IsNan(x) then begin
     BarOffsetWidth(x, i, ofs, w);
-    Result.a.X := Min(Result.a.X, x + ofs - w);
+    x := GraphToAxisX(x + ofs - w); // x is in graph units, Extent in axis units!
+    Result.a.X := Min(Result.a.X, x);
   end;
   i := Count - 1;
   x := NearestXNumber(i, -1);
   if not IsNan(x) then begin
     BarOffsetWidth(x, i, ofs, w);
-    Result.b.X := Max(Result.b.X, x + ofs + w);
+    x := GraphToAxisX(x + ofs + w);
+    Result.b.X := Max(Result.b.X, x);
   end;
 end;
 
