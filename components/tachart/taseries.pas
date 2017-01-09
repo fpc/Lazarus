@@ -1052,25 +1052,22 @@ begin
   scaled_depth := ADrawer.Scale(Depth);
 
   PrepareGraphPoints(ext2, true);
-  if IsRotated then
-    z := AxisToGraphX(ZeroLevel)
-  else
-    z := AxisToGraphY(ZeroLevel);
   SetLength(heights, Source.YCount + 1);
   for pointIndex := FLoBound to FUpBound do begin
-    p := FGraphPoints[pointIndex - FLoBound];
-    if IsRotated then
-      Exchange(p.X, p.Y);
+    p := Source[pointIndex]^.Point;
     if IsNan(p.X) then continue;
+    p.X := AxisToGraphX(p.X);
     BarOffsetWidth(p.X, pointIndex, ofs, w);
     p.X += ofs;
-    heights[0] := z;
-    heights[1] := NumberOr(p.Y, z);
+    heights[0] := ZeroLevel;
+    heights[1] := ZeroLevel + p.Y;
     for stackIndex := 1 to Source.YCount - 1 do begin
       y := Source[pointIndex]^.YList[stackIndex - 1];
       if not IsNan(y) then
         heights[stackIndex + 1] := heights[stackIndex] + y;
     end;
+    for stackIndex := 0 to High(heights) do
+      heights[stackindex] := AxisToGraphY(heights[stackindex]);
     for stackIndex := 0 to Source.YCount - 1 do
       BuildBar;
   end;
