@@ -1138,7 +1138,7 @@ var
   sp, p: TDoublePoint;
   ofs, w: Double;
   heights: TDoubleDynArray;
-  y, z: Double;
+  y: Double;
   stackindex: Integer;
 begin
   if FToolTarget = bttDatapoint then
@@ -1151,13 +1151,9 @@ begin
   AResults.FDist := Sqr(AParams.FRadius) + 1;
   AResults.FIndex := -1;
 
-  if IsRotated then
-    z := AxisToGraphX(ZeroLevel)
-  else
-    z := AxisToGraphY(ZeroLevel);
   SetLength(heights, Source.YCount + 1);
 
-  // clicked point in image coordinates
+  // clicked point in image units
   graphClickPt := ParentChart.ImageToGraph(AParams.FPoint);
   if IsRotated then
     Exchange(graphclickpt.X, graphclickpt.Y);
@@ -1167,16 +1163,22 @@ begin
     sp := Source[pointindex]^.Point;
     if IsNan(sp) then
       continue;
-    BarOffsetWidth(sp.X, pointindex, ofs, w);
+    sp.X := AxisToGraphX(sp.X);
+    BarOffsetWidth(sp.X, pointindex, ofs, w); // works with graph units
     sp.X := sp.X + ofs;
     if not InRange(graphClickPt.X, sp.X - w, sp.X + w) then
       continue;
-    heights[0] := z;
-    heights[1] := NumberOr(sp.Y, z);
+    // Calculate stacked bar levels (in axis units)
+    heights[0] := ZeroLevel;
+    heights[1] := NumberOr(sp.Y, ZeroLevel);
     for stackIndex := 1 to Source.YCount-1 do begin
       y := NumberOr(Source[pointindex]^.YList[stackIndex - 1], 0);
-      heights[stackIndex + 1] := heights[stacKindex] + y;
+      heights[stackIndex + 1] := heights[stackindex] + y;
     end;
+    // Convert heights to graph units
+    for stackIndex := 0 to High(heights) do
+      heights[stackIndex] := AxisToGraphY(heights[stackIndex]);
+    // Check if clicked pt is inside stacked bar
     for stackindex := 0 to High(heights)-1 do
       if ((heights[stackindex] < heights[stackindex + 1]) and
          InRange(graphClickPt.Y, heights[stackindex], heights[stackIndex + 1]))
@@ -1188,8 +1190,7 @@ begin
         AResults.FIndex := pointindex;
         AResults.FYIndex := stackIndex;
         AResults.FValue := DoublePoint(Source[pointindex]^.X, Source[pointindex]^.GetY(stackIndex));
-        if IsRotated then
-          Exchange(AResults.FValue.X, AResults.FValue.Y);
+        AResults.FValue := AxisToGraph(AResults.FValue);
         AResults.FImg := ParentChart.GraphToImage(AResults.FValue);
         Result := true;
         exit;
