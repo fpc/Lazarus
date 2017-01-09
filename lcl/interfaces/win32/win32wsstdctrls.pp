@@ -501,6 +501,13 @@ end;
 
 function GroupBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
+var
+  Info: PWin32WindowInfo;
+  DC: HDC;
+  Flags: Cardinal;
+  ARect: TRect;
+  WideBuffer: WideString;
+  GroupBox: TCustomGroupBox;
 begin
   // move groupbox specific code here
   case Msg of
@@ -516,6 +523,36 @@ begin
         // to redraw graphic controls on it (issue 0007877)
         if ThemeServices.ThemesAvailable then
           InvalidateRect(Window, nil, True);
+        Exit;
+      end;
+    WM_PAINT:
+      begin
+        Result := WindowProc(Window, Msg, WParam, LParam);
+        // bug in comctrl32.dll see Mantis #27491, we have to paint a grayed
+        // caption if groupbox is disabled
+        if ThemeServices.ThemesEnabled then
+        begin
+          Info := GetWin32WindowInfo(Window);
+          if Assigned(Info) and (Info^.WinControl is TCustomGroupBox)
+          and not TCustomGroupBox(Info^.WinControl).Enabled then
+          begin
+            GroupBox := TCustomGroupBox(Info^.WinControl);
+            DC := GetDC(Window);
+            SetBkColor(DC, GetSysColor(COLOR_BTNFACE));
+            SetTextColor(DC, GetSysColor(COLOR_GRAYTEXT));
+            SelectObject(DC, GroupBox.Font.Reference.Handle);
+            Flags := 0;
+            ARect := Classes.Rect(0, 0, 0, 0);
+            WideBuffer := UTF8ToUTF16(TCustomGroupBox(Info^.WinControl).Caption);
+            DrawTextW(DC, PWideChar(WideBuffer), Length(WideBuffer), ARect, Flags or DT_CALCRECT);
+            if GroupBox.BiDiMode = bdRightToLeft then
+              OffsetRect(ARect, GroupBox.Width - ARect.Right - 7, 0)
+            else
+              OffsetRect(ARect, 9, 0);
+            DrawTextW(DC, PWideChar(WideBuffer), Length(WideBuffer), ARect, Flags);
+            ReleaseDC(Window, DC);
+          end;
+        end;
         Exit;
       end;
   end;
