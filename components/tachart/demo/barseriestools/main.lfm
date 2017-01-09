@@ -50,24 +50,24 @@ object MainForm: TMainForm
         OnChange = CbHorizontalChange
         TabOrder = 0
       end
-      object CbStacked: TCheckBox
+      object Cb100Percent: TCheckBox
         AnchorSideLeft.Control = CbHorizontal
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = CbHorizontal
         Left = 95
         Height = 19
         Top = 0
-        Width = 61
+        Width = 48
         BorderSpacing.Left = 16
-        Caption = 'Stacked'
-        OnChange = CbStackedChange
+        Caption = '100%'
+        OnChange = Cb100PercentChange
         TabOrder = 1
       end
       object TargetPanel: TPanel
-        AnchorSideLeft.Control = CbStacked
+        AnchorSideLeft.Control = Cb100Percent
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = CbHorizontal
-        Left = 196
+        Left = 183
         Height = 21
         Top = 0
         Width = 203
@@ -148,7 +148,7 @@ object MainForm: TMainForm
           Alignment = calBottom
           AxisPen.Visible = True
           Marks.Format = '%2:s'
-          Marks.Source = ListChartSourceBLUE
+          Marks.Source = ListChartSourceLABELS
           Marks.Style = smsLabel
           Minors = <>
           ZPosition = 1
@@ -257,5 +257,9 @@ object MainForm: TMainForm
   object ListChartSourceBLUE: TListChartSource
     left = 120
     top = 144
+  end
+  object ListChartSourceLABELS: TListChartSource
+    left = 120
+    top = 216
   end
 end

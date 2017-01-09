@@ -24,9 +24,10 @@ type
     DataPointClickTool: TDataPointClickTool;
     DataPointHintTool: TDataPointHintTool;
     CbHorizontal: TCheckBox;
-    CbStacked: TCheckBox;
+    Cb100Percent: TCheckBox;
     LblToolTargets: TLabel;
     LblInfo: TLabel;
+    ListChartSourceLABELS: TListChartSource;
     ListChartSourceREDYELLOW: TListChartSource;
     ListChartSourceBLUE: TListChartSource;
     Log: TMemo;
@@ -45,7 +46,7 @@ type
     procedure DataPointHintToolHint(ATool: TDataPointHintTool;
       const APoint: TPoint; var AHint: String);
     procedure CbHorizontalChange(Sender: TObject);
-    procedure CbStackedChange(Sender: TObject);
+    procedure Cb100PercentChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ToolTargetChanged(Sender: TObject);
   private
@@ -75,18 +76,30 @@ begin
     TChartSeries(Chart.Series[0]).AxisIndexY := 1;
     TChartSeries(Chart.Series[1]).AxisIndexX := 0;
     TChartSeries(Chart.Series[1]).AxisIndexY := 1;
+    Chart.LeftAxis.Marks.Source := ListChartSourceLABELS;
+    Chart.LeftAxis.Marks.Style := smsLabel;
+    Chart.BottomAxis.Marks.Source := nil;
+    Chart.BottomAxis.Marks.Style := smsValue;
+    Chart.Margins.Left := 0;
+    Chart.Margins.Bottom := 4;
   end else
   begin
     TChartSeries(Chart.Series[0]).AxisIndexX := 1;
     TChartSeries(Chart.Series[0]).AxisIndexY := 0;
     TChartSeries(Chart.Series[1]).AxisIndexX := 1;
     TChartSeries(Chart.Series[1]).AxisIndexY := 0;
+    Chart.BottomAxis.Marks.Source := ListChartSourceLABELS;
+    Chart.BottomAxis.Marks.Style := smsLabel;
+    Chart.LeftAxis.Marks.Source := nil;
+    Chart.LeftAxis.Marks.Style := smsValue;
+    Chart.Margins.Bottom := 0;
+    Chart.Margins.Left := 4;
   end;
 end;
 
-procedure TMainForm.CbStackedChange(Sender: TObject);
+procedure TMainForm.Cb100PercentChange(Sender: TObject);
 begin
-  CalculatedChartSource.Percentage := CbStacked.Checked;
+  CalculatedChartSource.Percentage := Cb100Percent.Checked;
 end;
 
 procedure TMainForm.DataPointClickToolPointClick(ATool: TChartTool;
@@ -163,8 +176,9 @@ var
   i: Integer;
 begin
   for i:=0 to 5 do begin
-    ListChartSourceRedYellow.AddXYList(i, [random*50, random*60], char(ord('A') + i));
-    ListChartSourceBlue.Add(i, Random*80, char(ord('A') + i));
+    ListChartSourceRedYellow.AddXYList(i, [random*50, random*60]);
+    ListChartSourceBlue.Add(i, Random*80);
+    ListChartSourceLABELS.Add(i, i, char(ord('A') + i));
   end;
 end;
 
