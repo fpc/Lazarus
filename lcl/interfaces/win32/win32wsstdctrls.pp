@@ -1546,13 +1546,11 @@ begin
       begin
         TWin32ThemeServices(ThemeServices).PaintBorder(WindowInfo^.WinControl, True);
         Result := 0;
-      end
-      else
-        Result := WindowProc(Window, Msg, WParam, LParam);
+        Exit;
+      end;
     end;
-    else
-      Result := WindowProc(Window, Msg, WParam, LParam);
   end;
+  Result := WindowProc(Window, Msg, WParam, LParam);
 end;
 
 function StaticTextParentMsgHandler(const AWinControl: TWinControl; Window: HWnd;
