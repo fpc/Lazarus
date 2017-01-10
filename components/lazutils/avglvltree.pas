@@ -867,39 +867,31 @@ function TAvgLvlTree.AddAscendingSequence(Data: Pointer;
     for i:=1 to 1000 do
       LastNode:=Tree.AddAscendingSequence(TItem.Create(i),LastNode,Successor);
 }
-var InsertPos: TAvgLvlTreeNode;
-  InsertComp: integer;
+var
+  InsertPos: TAvgLvlTreeNode;
 begin
   Result:=NodeClass.Create;
   Result.Data:=Data;
-  inc(FCount);
   if (LastAdded<>nil) and (Compare(LastAdded.Data,Data)<=0)
   and ((Successor=nil) or (Compare(Data,Successor.Data)<=0)) then begin
-    // Data is between LastAdded and Successor -> insert here
-    Result.Parent:=LastAdded;
-    LastAdded.Right:=Result;
-    NodeAdded(Result);
-    BalanceAfterInsert(Result);
-  end else if fRoot<>nil then begin
-    // find an insert position
-    InsertPos:=FindInsertPos(Data);
-    InsertComp:=Compare(Data,InsertPos.Data);
-    Result.Parent:=InsertPos;
-    if InsertComp<0 then begin
-      // insert to the left
-      InsertPos.Left:=Result;
+    // Data is between LastAdded and Successor
+    inc(FCount);
+    if LastAdded.Right=nil then begin
+      Result.Parent:=LastAdded;
+      LastAdded.Right:=Result;
     end else begin
-      // insert to the right
-      InsertPos.Right:=Result;
+      InsertPos:=LastAdded.Right;
+      while InsertPos.Left<>nil do
+        InsertPos:=InsertPos.Left;
+      Result.Parent:=InsertPos;
+      InsertPos.Left:=Result;
     end;
     NodeAdded(Result);
     BalanceAfterInsert(Result);
-    Successor:=Result.Successor;
   end else begin
-    // first node
-    fRoot:=Result;
-    Successor:=nil;
-    NodeAdded(Result);
+    // normal Add
+    Add(Result);
+    Successor:=Result.Successor;
   end;
 end;
 
