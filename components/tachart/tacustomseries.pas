@@ -29,6 +29,7 @@ type
     FOptimizeX: Boolean;
     FPoint: TPoint;
     FRadius: Integer;
+    FTarget: TNearestPointTarget;
   end;
 
   TNearestPointResults = record
@@ -1256,12 +1257,16 @@ function TBasicPointSeries.GetNearestPoint(
   end;
 
 var
-  dist, i, lb, ub: Integer;
+  dist, i, j, lb, ub: Integer;
   pt: TPoint;
   sp: TDoublePoint;
+  tmpPt: TPoint;
+  tmpSP: TDoublePoint;
+  tmpDist: Integer;
 begin
   AResults.FDist := Sqr(AParams.FRadius) + 1;
   AResults.FIndex := -1;
+  AResults.FYIndex := 0;
   if AParams.FOptimizeX then
     Source.FindBounds(
       GetGrabBound(-AParams.FRadius),
@@ -1278,10 +1283,32 @@ begin
     // an integer overflow, so ADistFunc should use saturation arithmetics.
     pt := ParentChart.GraphToImage(AxisToGraph(sp));
     dist := AParams.FDistFunc(AParams.FPoint, pt);
+    case AParams.FTarget of
+      nptPoint: ;
+      nptPointList:
+        begin
+          tmpSp := sp;
+          for j := 0 to Source.YCount - 2 do begin
+            if FStacked then
+              tmpSp.Y += Source[i]^.YList[j] else
+              tmpSp.Y := Source[i]^.YList[j];
+            tmpPt := ParentChart.GraphToImage(AxisToGraph(tmpSp));
+            tmpDist := AParams.FDistFunc(AParams.FPoint, tmpPt);
+            if tmpDist < dist then begin
+              dist := tmpDist;
+              sp := tmpSp;
+              pt := tmpPt;
+              AResults.FYIndex := j + 1;    // FYIndex = 0 is the regular y
+            end;
+          end;
+        end;
+      nptInside:
+        // to be handled by descendants
+        exit;
+    end;
     if dist >= AResults.FDist then continue;
     AResults.FDist := dist;
     AResults.FIndex := i;
-    AResults.FYIndex := 0;  // to do: find yindex of stacked series
     AResults.FImg := pt;
     AResults.FValue := sp;
   end;
