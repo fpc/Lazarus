@@ -1534,6 +1534,11 @@ function StaticTextWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 var
   WindowInfo: PWin32WindowInfo;
+  StaticText: TCustomStaticText;
+  DC: HDC;
+  Flags: Cardinal;
+  ARect: TRect;
+  WideBuffer: WideString;
 begin
   // move static text specific code here
   case Msg of
@@ -1549,6 +1554,31 @@ begin
         Exit;
       end;
     end;
+    WM_PAINT:
+      begin
+        WindowInfo := GetWin32WindowInfo(Window);
+        if ThemeServices.ThemesEnabled and Assigned(WindowInfo) and (WindowInfo^.WinControl is TCustomStaticText)
+        and not TCustomStaticText(WindowInfo^.WinControl).Enabled then
+        begin
+          Result := WindowProc(Window, Msg, WParam, LParam);
+          StaticText := TCustomStaticText(WindowInfo^.WinControl);
+          DC := GetDC(Window);
+          SetBkColor(DC, GetSysColor(COLOR_BTNFACE));
+          SetTextColor(DC, GetSysColor(COLOR_GRAYTEXT));
+          SelectObject(DC, StaticText.Font.Reference.Handle);
+          Flags := 0;
+          ARect := Classes.Rect(0, 0, 0, 0);
+          WideBuffer := UTF8ToUTF16(TCustomGroupBox(WindowInfo^.WinControl).Caption);
+          DrawTextW(DC, PWideChar(WideBuffer), Length(WideBuffer), ARect, Flags or DT_CALCRECT);
+          if StaticText.BiDiMode = bdRightToLeft then
+            OffsetRect(ARect, StaticText.ClientWidth - ARect.Right, 0)
+          else
+            OffsetRect(ARect, 0, 0);
+          DrawTextW(DC, PWideChar(WideBuffer), Length(WideBuffer), ARect, Flags);
+          ReleaseDC(Window, DC);
+          Exit;
+        end;
+      end;
   end;
   Result := WindowProc(Window, Msg, WParam, LParam);
 end;
