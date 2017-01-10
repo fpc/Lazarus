@@ -990,6 +990,17 @@
       </element>
     <element name="TAvgLvlTree.GetEnumerator"><short>The default enumerator over the nodes from left to right, low to high</short>
       </element>
+    <element name="TAvgLvlTree.AddAscendingSequence"><short>Fast Add for adding a sequence of items.</short><descr> This is an optimized version of "Add" for adding an ascending sequence of nodes.
+  It uses the LastAdded and Successor to skip searching for an insert position.
+  For nodes with same value the order of the sequence is kept.
+
+  Usage:
+    LastNode:=nil; // TAvgLvlTreeNode
+    Successor:=nil; // TAvgLvlTreeNode
+    for i:=1 to 1000 do
+      LastNode:=Tree.AddAscendingSequence(TItem.Create(i),LastNode,Successor);
+</descr>
+      </element>
     </module>
     <!-- AvgLvlTree -->
   </package>

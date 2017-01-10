@@ -102,6 +102,8 @@ type
     // add, delete, remove, move
     procedure Add(ANode: TAvgLvlTreeNode);
     function Add(Data: Pointer): TAvgLvlTreeNode;
+    function AddAscendingSequence(Data: Pointer; LastAdded: TAvgLvlTreeNode;
+      var Successor: TAvgLvlTreeNode): TAvgLvlTreeNode;
     procedure Delete(ANode: TAvgLvlTreeNode);
     function Remove(Data: Pointer): boolean;
     function RemovePointer(Data: Pointer): boolean;
@@ -850,6 +852,55 @@ begin
   Result:=NodeClass.Create;
   Result.Data:=Data;
   Add(Result);
+end;
+
+function TAvgLvlTree.AddAscendingSequence(Data: Pointer;
+  LastAdded: TAvgLvlTreeNode; var Successor: TAvgLvlTreeNode): TAvgLvlTreeNode;
+{ This is an optimized version of "Add" for adding an ascending sequence of
+  nodes.
+  It uses the LastAdded and Successor to skip searching for an insert position.
+  For nodes with same value the order of the sequence is kept.
+
+  Usage:
+    LastNode:=nil; // TAvgLvlTreeNode
+    Successor:=nil; // TAvgLvlTreeNode
+    for i:=1 to 1000 do
+      LastNode:=Tree.AddAscendingSequence(TItem.Create(i),LastNode,Successor);
+}
+var InsertPos: TAvgLvlTreeNode;
+  InsertComp: integer;
+begin
+  Result:=NodeClass.Create;
+  Result.Data:=Data;
+  inc(FCount);
+  if (LastAdded<>nil) and (Compare(LastAdded.Data,Data)<=0)
+  and ((Successor=nil) or (Compare(Data,Successor.Data)<=0)) then begin
+    // Data is between LastAdded and Successor -> insert here
+    Result.Parent:=LastAdded;
+    LastAdded.Right:=Result;
+    NodeAdded(Result);
+    BalanceAfterInsert(Result);
+  end else if fRoot<>nil then begin
+    // find an insert position
+    InsertPos:=FindInsertPos(Data);
+    InsertComp:=Compare(Data,InsertPos.Data);
+    Result.Parent:=InsertPos;
+    if InsertComp<0 then begin
+      // insert to the left
+      InsertPos.Left:=Result;
+    end else begin
+      // insert to the right
+      InsertPos.Right:=Result;
+    end;
+    NodeAdded(Result);
+    BalanceAfterInsert(Result);
+    Successor:=Result.Successor;
+  end else begin
+    // first node
+    fRoot:=Result;
+    Successor:=nil;
+    NodeAdded(Result);
+  end;
 end;
 
 procedure TAvgLvlTree.Add(ANode: TAvgLvlTreeNode);
