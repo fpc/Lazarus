@@ -255,12 +255,14 @@ type
     function GetLabelDirection(AIndex: Integer): TLabelDirection;
     procedure SetMarkPositions(AValue: TLinearMarkPositions);
     procedure SetPointer(AValue: TSeriesPointer);
+    procedure SetStacked(AValue: Boolean);
     procedure SetUseReticule(AValue: Boolean);
   strict protected
     FGraphPoints: array of TDoublePoint;
     FLoBound: Integer;
     FMinXRange: Double;
     FPointer: TSeriesPointer;
+    FStacked: Boolean;
     FUpBound: Integer;
     FUseReticule: Boolean;
 
@@ -282,6 +284,7 @@ type
     procedure UpdateMinXRange;
 
     property Pointer: TSeriesPointer read FPointer write SetPointer;
+    property Stacked: Boolean read FStacked write SetStacked;
   protected
     procedure AfterAdd; override;
     procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
@@ -1355,6 +1358,13 @@ end;
 procedure TBasicPointSeries.SetPointer(AValue: TSeriesPointer);
 begin
   FPointer.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TBasicPointSeries.SetStacked(AValue: Boolean);
+begin
+  if FStacked = AValue then exit;
+  FStacked := AValue;
   UpdateParentChart;
 end;
 

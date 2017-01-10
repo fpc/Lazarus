@@ -137,7 +137,6 @@ type
     FAreaContourPen: TPen;
     FAreaLinesPen: TPen;
     FConnectType: TConnectType;
-    FStacked: Boolean;
     FUseZeroLevel: Boolean;
     FZeroLevel: Double;
 
@@ -147,7 +146,6 @@ type
     procedure SetAreaLinesPen(AValue: TPen);
     procedure SetConnectType(AValue: TConnectType);
     procedure SetSeriesColor(AValue: TColor);
-    procedure SetStacked(AValue: Boolean);
     procedure SetUseZeroLevel(AValue: Boolean);
     procedure SetZeroLevel(AValue: Double);
   protected
@@ -174,7 +172,7 @@ type
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clWhite;
     property Source;
-    property Stacked: Boolean read FStacked write SetStacked default true;
+    property Stacked default true;
     property Styles;
     property UseReticule;
     property UseZeroLevel: Boolean
@@ -197,7 +195,6 @@ type
     FLineType: TLineType;
     FOnDrawPointer: TSeriesPointerDrawEvent;
     FShowPoints: Boolean;
-    FStacked: Boolean;
 
     procedure DrawSingleLineInStack(ADrawer: IChartDrawer; AIndex: Integer);
     function GetShowLines: Boolean;
@@ -206,7 +203,6 @@ type
     procedure SetSeriesColor(AValue: TColor);
     procedure SetShowLines(Value: Boolean);
     procedure SetShowPoints(AValue: Boolean);
-    procedure SetStacked(AValue: Boolean);
   protected
     procedure AfterDrawPointer(
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); override;
@@ -236,8 +232,7 @@ type
       read GetShowLines write SetShowLines stored false default true;
     property ShowPoints: Boolean
       read FShowPoints write SetShowPoints default false;
-    property Stacked: Boolean
-      read FStacked write SetStacked default false;
+    property Stacked default false;
     property Source;
     property Styles;
     property UseReticule default true;
@@ -671,12 +666,6 @@ begin
   UpdateParentChart;
 end;
 
-procedure TLineSeries.SetStacked(AValue: Boolean);
-begin
-  if FStacked = AValue then exit;
-  FStacked := AValue;
-  UpdateParentChart;
-end;
 
 { TManhattanSeries }
 
@@ -1522,13 +1511,6 @@ end;
 procedure TAreaSeries.SetSeriesColor(AValue: TColor);
 begin
   FAreaBrush.Color := AValue;
-end;
-
-procedure TAreaSeries.SetStacked(AValue: Boolean);
-begin
-  if FStacked = AValue then exit;
-  FStacked := AValue;
-  UpdateParentChart;
 end;
 
 procedure TAreaSeries.SetUseZeroLevel(AValue: Boolean);
