@@ -24,8 +24,8 @@ uses
   Classes, consoletestrunner,
   testglobals, testunits, dom,
   {Unit needed to set the LCL version and widget set name}
-  LCLVersion, InterfaceBase, Interfaces, TestLazXML, TestAvgLvlTree,
-  TestLConvEncoding;
+  LCLVersion, InterfaceBase, LCLPlatformDef, Interfaces, TestLazXML,
+  TestAvgLvlTree, TestLConvEncoding;
   
 type
 

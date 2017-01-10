@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, strutils, fpcunit, testregistry, process, UTF8Process,
-  InterfaceBase, LazFileUtils, LazUTF8, FileUtil,
+  InterfaceBase, LCLPlatformDef, LazFileUtils, LazUTF8, FileUtil,
   TestGlobals;
 
 type

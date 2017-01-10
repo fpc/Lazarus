@@ -46,6 +46,7 @@ type
     Data: Pointer;
     function Successor: TAvgLvlTreeNode; // next right
     function Precessor: TAvgLvlTreeNode; // next left
+    procedure Clear;
     function TreeDepth: integer; // longest WAY down. e.g. only one node => 0 !
     procedure ConsistencyCheck(Tree: TAvgLvlTree); virtual;
     function GetCount: SizeInt;
@@ -91,13 +92,14 @@ type
     procedure SetCompares(const NewCompare: TListSortCompare;
                           const NewObjectCompare: TObjectSortCompare);
   public
-    constructor Create(OnCompareMethod: TListSortCompare);
-    constructor CreateObjectCompare(OnCompareMethod: TObjectSortCompare);
+    constructor Create(const OnCompareMethod: TListSortCompare);
+    constructor CreateObjectCompare(const OnCompareMethod: TObjectSortCompare);
     constructor Create;
     destructor Destroy; override;
     property OnCompare: TListSortCompare read FOnCompare write SetOnCompare;
     property OnObjectCompare: TObjectSortCompare read FOnObjectCompare write SetOnObjectCompare;
     property NodeClass: TAvgLvlTreeNodeClass read FNodeClass write FNodeClass; // used for new nodes
+    function NewNode: TAvgLvlTreeNode; virtual;
 
     // add, delete, remove, move
     procedure Add(ANode: TAvgLvlTreeNode);
@@ -122,9 +124,9 @@ type
     function Compare(Data1, Data2: Pointer): integer;
     function Find(Data: Pointer): TAvgLvlTreeNode; // O(log(n))
     function FindKey(Key: Pointer;
-                     OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode; // O(log(n))
+                     const OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode; // O(log(n))
     function FindNearestKey(Key: Pointer;
-                       OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode; // O(log(n))
+                       const OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode; // O(log(n))
     function FindSuccessor(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode; inline;
     function FindPrecessor(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode; inline;
     function FindLowest: TAvgLvlTreeNode; // O(log(n))
@@ -135,9 +137,9 @@ type
     function FindLeftMost(Data: Pointer): TAvgLvlTreeNode;
     function FindRightMost(Data: Pointer): TAvgLvlTreeNode;
     function FindLeftMostKey(Key: Pointer;
-                       OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
+                       const OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
     function FindRightMostKey(Key: Pointer;
-                       OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
+                       const OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
     function FindLeftMostSameKey(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
     function FindRightMostSameKey(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
 
@@ -849,7 +851,7 @@ end;
 
 function TAvgLvlTree.Add(Data: Pointer): TAvgLvlTreeNode;
 begin
-  Result:=NodeClass.Create;
+  Result:=NewNode;
   Result.Data:=Data;
   Add(Result);
 end;
@@ -870,7 +872,7 @@ function TAvgLvlTree.AddAscendingSequence(Data: Pointer;
 var
   InsertPos: TAvgLvlTreeNode;
 begin
-  Result:=NodeClass.Create;
+  Result:=NewNode;
   Result.Data:=Data;
   if (LastAdded<>nil) and (Compare(LastAdded.Data,Data)<=0)
   and ((Successor=nil) or (Compare(Data,Successor.Data)<=0)) then begin
@@ -893,6 +895,11 @@ begin
     Add(Result);
     Successor:=Result.Successor;
   end;
+end;
+
+function TAvgLvlTree.NewNode: TAvgLvlTreeNode;
+begin
+  Result:=NodeClass.Create;
 end;
 
 procedure TAvgLvlTree.Add(ANode: TAvgLvlTreeNode);
@@ -1171,14 +1178,15 @@ begin
   FCount:=0;
 end;
 
-constructor TAvgLvlTree.Create(OnCompareMethod: TListSortCompare);
+constructor TAvgLvlTree.Create(const OnCompareMethod: TListSortCompare);
 begin
   inherited Create;
   FOnCompare:=OnCompareMethod;
   Init;
 end;
 
-constructor TAvgLvlTree.CreateObjectCompare(OnCompareMethod: TObjectSortCompare);
+constructor TAvgLvlTree.CreateObjectCompare(
+  const OnCompareMethod: TObjectSortCompare);
 begin
   inherited Create;
   FOnObjectCompare:=OnCompareMethod;
@@ -1286,7 +1294,7 @@ begin
 end;
 
 function TAvgLvlTree.FindKey(Key: Pointer;
-  OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
+  const OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
 var Comp: integer;
 begin
   Result:=fRoot;
@@ -1302,7 +1310,7 @@ begin
 end;
 
 function TAvgLvlTree.FindNearestKey(Key: Pointer;
-  OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
+  const OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
 var Comp: integer;
 begin
   Result:=fRoot;
@@ -1324,7 +1332,7 @@ begin
 end;
 
 function TAvgLvlTree.FindLeftMostKey(Key: Pointer;
-  OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
+  const OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
 var
   LeftNode: TAvgLvlTreeNode;
 begin
@@ -1338,7 +1346,7 @@ begin
 end;
 
 function TAvgLvlTree.FindRightMostKey(Key: Pointer;
-  OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
+  const OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
 var
   RightNode: TAvgLvlTreeNode;
 begin
@@ -1537,11 +1545,11 @@ end;
 
 procedure TAvgLvlTree.FreeAndClear;
 
-  procedure FreeNode(ANode: TAvgLvlTreeNode);
+  procedure FreeNodeData(ANode: TAvgLvlTreeNode);
   begin
     if ANode=nil then exit;
-    FreeNode(ANode.Left);
-    FreeNode(ANode.Right);
+    FreeNodeData(ANode.Left);
+    FreeNodeData(ANode.Right);
     if ANode.Data<>nil then TObject(ANode.Data).Free;
     ANode.Data:=nil;
   end;
@@ -1549,7 +1557,7 @@ procedure TAvgLvlTree.FreeAndClear;
 // TAvgLvlTree.FreeAndClear
 begin
   // free all data
-  FreeNode(fRoot);
+  FreeNodeData(fRoot);
   // free all nodes
   Clear;
 end;
@@ -1603,7 +1611,7 @@ procedure TAvgLvlTree.Assign(aTree: TAvgLvlTree);
 
   procedure AssignNode(var MyNode: TAvgLvlTreeNode; OtherNode: TAvgLvlTreeNode);
   begin
-    MyNode:=NodeClass.Create;
+    MyNode:=NewNode;
     MyNode.Data:=OtherNode.Data;
     MyNode.Balance:=OtherNode.Balance;
     if OtherNode.Left<>nil then begin
@@ -1827,12 +1835,8 @@ procedure TAvgLvlTree.SwitchPositionWithSuccessor(aNode,
   Because ANode.Right<>nil the Successor is a child of ANode }
 var
   OldBalance: Integer;
-  OldParent: TAvgLvlTreeNode;
-  OldLeft: TAvgLvlTreeNode;
-  OldRight: TAvgLvlTreeNode;
-  OldSuccParent: TAvgLvlTreeNode;
-  OldSuccLeft: TAvgLvlTreeNode;
-  OldSuccRight: TAvgLvlTreeNode;
+  OldParent, OldLeft, OldRight,
+  OldSuccParent, OldSuccLeft, OldSuccRight: TAvgLvlTreeNode;
 begin
   OldBalance:=aNode.Balance;
   aNode.Balance:=aSuccessor.Balance;
@@ -1991,6 +1995,15 @@ begin
       Result:=Result.Parent;
     Result:=Result.Parent;
   end;
+end;
+
+procedure TAvgLvlTreeNode.Clear;
+begin
+  Parent:=nil;
+  Left:=nil;
+  Right:=nil;
+  Balance:=0;
+  Data:=nil;
 end;
 
 { TIndexedAVLTree }

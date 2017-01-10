@@ -95,6 +95,7 @@
       <Unit2>
         <Filename Value="bugtestcase.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="BugTestCase"/>
       </Unit2>
       <Unit3>
         <Filename Value="testglobals.pas"/>
@@ -123,6 +124,7 @@
       <Unit9>
         <Filename Value="lazutils\testavglvltree.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="TestAvgLvlTree"/>
       </Unit9>
       <Unit10>
         <Filename Value="lazutils\testlconvencoding.pas"/>
