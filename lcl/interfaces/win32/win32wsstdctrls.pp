@@ -546,7 +546,10 @@ begin
             WideBuffer := UTF8ToUTF16(TCustomGroupBox(Info^.WinControl).Caption);
             DrawTextW(DC, PWideChar(WideBuffer), Length(WideBuffer), ARect, Flags or DT_CALCRECT);
             if GroupBox.BiDiMode = bdRightToLeft then
-              OffsetRect(ARect, GroupBox.Width - ARect.Right - 7, 0)
+            begin
+              Flags := Flags or DT_RIGHT;
+              OffsetRect(ARect, GroupBox.Width - ARect.Right - 7, 0);
+            end
             else
               OffsetRect(ARect, 9, 0);
             DrawTextW(DC, PWideChar(WideBuffer), Length(WideBuffer), ARect, Flags);
@@ -1571,7 +1574,10 @@ begin
           WideBuffer := UTF8ToUTF16(TCustomGroupBox(WindowInfo^.WinControl).Caption);
           DrawTextW(DC, PWideChar(WideBuffer), Length(WideBuffer), ARect, Flags or DT_CALCRECT);
           if StaticText.BiDiMode = bdRightToLeft then
-            OffsetRect(ARect, StaticText.ClientWidth - ARect.Right, 0)
+          begin
+            Flags := Flags or DT_RIGHT;
+            OffsetRect(ARect, StaticText.ClientWidth - ARect.Right, 0);
+          end
           else
             OffsetRect(ARect, 0, 0);
           DrawTextW(DC, PWideChar(WideBuffer), Length(WideBuffer), ARect, Flags);
