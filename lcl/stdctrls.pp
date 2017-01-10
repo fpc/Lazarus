@@ -27,7 +27,7 @@ uses
   Classes, SysUtils, types,
   // LCL
   LCLStrConsts, LCLType, LCLProc, LCLIntf, LMessages, LResources, Graphics,
-  ActnList, Controls, Forms, Menus,
+  ActnList, Controls, Forms, Menus, Themes,
   // LazUtils
   TextStrings, ExtendedStrings, LazUTF8;
 

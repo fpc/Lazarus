@@ -465,11 +465,14 @@ begin
     LabelText := GetLabelText;
     OldFontColor := Font.Color;
     if not IsEnabled then
-    begin
-      Font.Color := clBtnHighlight;
-      TextRect(R, TextLeft + 1, TextTop + 1, LabelText, TR);
-      Font.Color := clBtnShadow;
-    end;
+      if ThemeServices.ThemesEnabled then
+        Font.Color := clGrayText
+      else
+      begin
+        Font.Color := clBtnHighlight;
+        TextRect(R, TextLeft + 1, TextTop + 1, LabelText, TR);
+        Font.Color := clBtnShadow;
+      end;
     TextRect(R, TextLeft, TextTop, LabelText, TR);
     Font.Color := OldFontColor;
   end;

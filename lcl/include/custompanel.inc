@@ -139,13 +139,16 @@ begin
     TS.Wordbreak := FWordWrap;
     TS.SingleLine := not FWordwrap;
     if not Enabled then
-    begin
-      Canvas.Font.Color := clBtnHighlight;
-      OffsetRect(ARect, 1, 1);
-      Canvas.TextRect(ARect, ARect.Left, ARect.Top, Caption, TS);
-      Canvas.Font.Color := clBtnShadow;
-      OffsetRect(ARect, -1, -1);
-    end
+      if ThemeServices.ThemesEnabled then
+        Canvas.Font.Color := clGrayText
+      else
+      begin
+        Canvas.Font.Color := clBtnHighlight;
+        OffsetRect(ARect, 1, 1);
+        Canvas.TextRect(ARect, ARect.Left, ARect.Top, Caption, TS);
+        Canvas.Font.Color := clBtnShadow;
+        OffsetRect(ARect, -1, -1);
+      end
     else
       Canvas.Font.Color := Font.Color;
 
