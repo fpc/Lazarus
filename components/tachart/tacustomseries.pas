@@ -175,14 +175,18 @@ type
     function  GetXMax: Double;
     function  GetXMin: Double;
     function  GetXValue(AIndex: Integer): Double;
+    function  GetXValues(AIndex, AXIndex: Integer): Double;
     function  GetYImgValue(AIndex: Integer): Integer;
     function  GetYMax: Double;
     function  GetYMin: Double;
     function  GetYValue(AIndex: Integer): Double;
+    function  GetYValues(AIndex, AYIndex: Integer): Double;
     procedure SetColor(AIndex: Integer; AColor: TColor); inline;
     procedure SetText(AIndex: Integer; AValue: String); inline;
     procedure SetXValue(AIndex: Integer; AValue: Double); inline;
+    procedure SetXValues(AIndex, AXIndex: Integer; AValue: Double);
     procedure SetYValue(AIndex: Integer; AValue: Double); inline;
+    procedure SetYValues(AIndex, AYIndex: Integer; AValue: Double);
   public
     function Add(
       AValue: Double;
@@ -217,7 +221,9 @@ type
     function MaxYValue: Double;
     function MinYValue: Double;
     property XValue[AIndex: Integer]: Double read GetXValue write SetXValue;
+    property XValues[AIndex, AXIndex: Integer]: Double read GetXValues write SetXValues;
     property YValue[AIndex: Integer]: Double read GetYValue write SetYValue;
+    property YValues[AIndex, AYIndex: Integer]: Double read GetYValues write SetYValues;
   published
     property Active default true;
     property Marks: TChartMarks read FMarks write SetMarks;
@@ -885,6 +891,14 @@ begin
   Result := Source[AIndex]^.X;
 end;
 
+function TChartSeries.GetXValues(AIndex, AXIndex: Integer): Double;
+begin
+  if AXIndex = 0 then
+    Result := Source[AIndex]^.X
+  else
+    Result := Source[AIndex]^.XList[AXIndex - 1];
+end;
+
 function TChartSeries.GetYImgValue(AIndex: Integer): Integer;
 begin
   Result := ParentChart.YGraphToImage(Source[AIndex]^.Y);
@@ -913,6 +927,14 @@ end;
 function TChartSeries.GetYValue(AIndex: Integer): Double;
 begin
   Result := Source[AIndex]^.Y;
+end;
+
+function TChartSeries.GetYValues(AIndex, AYIndex: Integer): Double;
+begin
+  if AYIndex = 0 then
+    Result := GetYValue(AIndex)
+  else
+    Result := Source[AIndex]^.YList[AYIndex - 1];
 end;
 
 function TChartSeries.IsEmpty: Boolean;
@@ -986,9 +1008,25 @@ begin
   ListSource.SetXValue(AIndex, AValue);
 end;
 
+procedure TChartSeries.SetXValues(AIndex, AXIndex: Integer; AValue: Double);
+begin
+  if AXIndex = 0 then
+    ListSource.SetXValue(AIndex, AValue)
+  else
+    ListSource.Item[AIndex]^.XList[AXIndex - 1] := AValue;
+end;
+
 procedure TChartSeries.SetYValue(AIndex: Integer; AValue: Double); inline;
 begin
   ListSource.SetYValue(AIndex, AValue);
+end;
+
+procedure TChartSeries.SetYValues(AIndex, AYIndex: Integer; AValue: Double);
+begin
+  if AYIndex = 0 then
+    ListSource.SetYValue(AIndex, AValue)
+  else
+    ListSource.Item[AIndex]^.YList[AYIndex - 1] := AValue;
 end;
 
 procedure TChartSeries.SourceChanged(ASender: TObject);
