@@ -6866,7 +6866,7 @@ var
 
   i: integer;
   PointArray: PGDKPoint;
-  DCOrigin: TPoint;
+  DCOrigin, P: TPoint;
 begin
   if not IsValidDC(DC) then Exit(False);
   
@@ -6879,9 +6879,11 @@ begin
   for i:=0 to NumPts-1 do
   begin
     if DevCtx.HasTransf then
-      Points[I] := DevCtx.TransfPointIndirect(Points[I]);
-    PointArray[i].x := Points[i].x + DCOrigin.X;
-    PointArray[i].y := Points[i].y + DCOrigin.Y;
+      P := DevCtx.TransfPointIndirect(Points[I])
+    else
+      P := Points[i];
+    PointArray[i].x := P.x + DCOrigin.X;
+    PointArray[i].y := P.y + DCOrigin.Y;
   end;
 
   // draw line
