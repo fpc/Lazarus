@@ -95,6 +95,12 @@ type
   TPointBoolArr = array [Boolean] of Integer;
   TDoublePointBoolArr = array [Boolean] of Double;
 
+  TNearestPointTarget = (
+    nptPoint,        // looking for nearest point at (x,y) only
+    nptPointList,    // ... and values in YList
+    nptInside        // depends on series type (like "inside bar", etc.)
+  );
+
   { TIntervalList }
 
   TIntervalList = class
