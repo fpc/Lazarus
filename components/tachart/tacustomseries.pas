@@ -271,8 +271,8 @@ type
     function NearestXNumber(var AIndex: Integer; ADir: Integer): Double;
     procedure PrepareGraphPoints(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
-    procedure UpdateGraphPoints(AIndex: Integer); overload; inline;
-    procedure UpdateGraphPoints(AIndex, ALo, AUp: Integer); overload;
+    procedure UpdateGraphPoints(AIndex: Integer; ACumulative: Boolean); overload; inline;
+    procedure UpdateGraphPoints(AIndex, ALo, AUp: Integer; ACumulative: Boolean); overload;
     procedure UpdateMinXRange;
 
     property Pointer: TSeriesPointer read FPointer write SetPointer;
@@ -1327,21 +1327,40 @@ begin
   UpdateParentChart;
 end;
 
-procedure TBasicPointSeries.UpdateGraphPoints(AIndex, ALo, AUp: Integer);
+procedure TBasicPointSeries.UpdateGraphPoints(AIndex, ALo, AUp: Integer;
+  ACumulative: Boolean);
 var
-  i: Integer;
+  i, j: Integer;
+  y: Double;
 begin
   if IsRotated then
     for i := ALo to AUp do
-      FGraphPoints[i - ALo].X += AxisToGraphY(Source[i]^.YList[AIndex])
+    begin
+      if ACumulative then begin
+        y := Source[i]^.Y;
+        for j := 0 to AIndex do
+          y += Source[i]^.YList[j];
+        FGraphPoints[i - ALo].X := AxisToGraphY(y);
+      end else
+        FGraphPoints[i - Alo].X := AxisToGraphY(Source[i]^.YList[AIndex]);
+    end
   else
     for i := ALo to AUp do
-      FGraphPoints[i - ALo].Y += AxisToGraphY(Source[i]^.YList[AIndex]);
+    begin
+      if ACumulative then begin
+        y := Source[i]^.Y;
+        for j := 0 to AIndex do
+          y += Source[i]^.YList[j];
+        FGraphPoints[i - ALo].Y := AxisToGraphY(y);
+      end else
+        FGraphPoints[i - Alo].Y := AxisToGraphY(Source[i]^.YList[AIndex]);
+    end;
 end;
 
-procedure TBasicPointSeries.UpdateGraphPoints(AIndex: Integer);
+procedure TBasicPointSeries.UpdateGraphPoints(AIndex: Integer;
+  ACumulative: Boolean);
 begin
-  UpdateGraphPoints(AIndex, FLoBound, FUpBound);
+  UpdateGraphPoints(AIndex, FLoBound, FUpBound, ACumulative);
 end;
 
 procedure TBasicPointSeries.UpdateMargins(

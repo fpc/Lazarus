@@ -137,6 +137,7 @@ type
     FAreaContourPen: TPen;
     FAreaLinesPen: TPen;
     FConnectType: TConnectType;
+    FStacked: Boolean;
     FUseZeroLevel: Boolean;
     FZeroLevel: Double;
 
@@ -146,6 +147,7 @@ type
     procedure SetAreaLinesPen(AValue: TPen);
     procedure SetConnectType(AValue: TConnectType);
     procedure SetSeriesColor(AValue: TColor);
+    procedure SetStacked(AValue: Boolean);
     procedure SetUseZeroLevel(AValue: Boolean);
     procedure SetZeroLevel(AValue: Double);
   protected
@@ -172,6 +174,7 @@ type
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clWhite;
     property Source;
+    property Stacked: Boolean read FStacked write SetStacked default true;
     property Styles;
     property UseReticule;
     property UseZeroLevel: Boolean
@@ -194,6 +197,7 @@ type
     FLineType: TLineType;
     FOnDrawPointer: TSeriesPointerDrawEvent;
     FShowPoints: Boolean;
+    FStacked: Boolean;
 
     procedure DrawSingleLineInStack(ADrawer: IChartDrawer; AIndex: Integer);
     function GetShowLines: Boolean;
@@ -202,6 +206,7 @@ type
     procedure SetSeriesColor(AValue: TColor);
     procedure SetShowLines(Value: Boolean);
     procedure SetShowPoints(AValue: Boolean);
+    procedure SetStacked(AValue: Boolean);
   protected
     procedure AfterDrawPointer(
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); override;
@@ -212,6 +217,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Draw(ADrawer: IChartDrawer); override;
+    function Extent: TDoubleRect; override;
   public
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -230,6 +236,8 @@ type
       read GetShowLines write SetShowLines stored false default true;
     property ShowPoints: Boolean
       read FShowPoints write SetShowPoints default false;
+    property Stacked: Boolean
+      read FStacked write SetStacked default false;
     property Source;
     property Styles;
     property UseReticule default true;
@@ -419,9 +427,17 @@ begin
   PrepareGraphPoints(ext, LineType <> ltFromOrigin);
   DrawSingleLineInStack(ADrawer, 0);
   for i := 0 to Source.YCount - 2 do begin
-    UpdateGraphPoints(i);
+    UpdateGraphPoints(i, FStacked);
     DrawSingleLineInStack(ADrawer, i + 1);
   end;
+end;
+
+function TLineSeries.Extent: TDoubleRect;
+begin
+  if FStacked then
+    Result := Source.ExtentCumulative
+  else
+    Result := Source.ExtentList;
 end;
 
 procedure TLineSeries.DrawSingleLineInStack(
@@ -652,6 +668,13 @@ procedure TLineSeries.SetShowPoints(AValue: Boolean);
 begin
   if ShowPoints = AValue then exit;
   FShowPoints := AValue;
+  UpdateParentChart;
+end;
+
+procedure TLineSeries.SetStacked(AValue: Boolean);
+begin
+  if FStacked = AValue then exit;
+  FStacked := AValue;
   UpdateParentChart;
 end;
 
@@ -1288,6 +1311,7 @@ begin
   FAreaContourPen.OnChange := @StyleChanged;
   FAreaLinesPen := TPen.Create;
   FAreaLinesPen.OnChange := @StyleChanged;
+  FStacked := true;
 end;
 
 destructor TAreaSeries.Destroy;
@@ -1347,9 +1371,7 @@ var
 
     for j := 0 to Source.YCount - 1 do begin
       if j > 0 then
-        UpdateGraphPoints(j - 1{, AStart, AEnd});
-        // The modification in above line fixes a drawing error reported in
-        // forum.lazarus.freepascal.org/index.php/topic,28025.msg174184
+        UpdateGraphPoints(j - 1, AStart, AEnd, FStacked);
       numPts := 0;
       a := ProjToRect(FGraphPoints[AStart], ext2);
       PushPoint(ProjToLine(a, z1));
@@ -1444,7 +1466,10 @@ end;
 
 function TAreaSeries.Extent: TDoubleRect;
 begin
-  Result := inherited Extent;
+  if FStacked then
+    Result := Source.ExtentCumulative
+  else
+    Result := Source.ExtentList;
   if not IsEmpty and UseZeroLevel then
     UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
 end;
@@ -1497,6 +1522,13 @@ end;
 procedure TAreaSeries.SetSeriesColor(AValue: TColor);
 begin
   FAreaBrush.Color := AValue;
+end;
+
+procedure TAreaSeries.SetStacked(AValue: Boolean);
+begin
+  if FStacked = AValue then exit;
+  FStacked := AValue;
+  UpdateParentChart;
 end;
 
 procedure TAreaSeries.SetUseZeroLevel(AValue: Boolean);
