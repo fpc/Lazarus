@@ -29,13 +29,14 @@ type
     FOptimizeX: Boolean;
     FPoint: TPoint;
     FRadius: Integer;
-    FTarget: TNearestPointTarget;
+    FTargets: TNearestPointTargets;
   end;
 
   TNearestPointResults = record
     FDist: Integer;
     FImg: TPoint;
     FIndex: Integer;        // Point index
+    FXIndex: Integer;       // Index to be used in Source.GetX()
     FYIndex: Integer;       // Index to be used in Source.GetY()
     FValue: TDoublePoint;
   end;
@@ -1275,6 +1276,7 @@ var
 begin
   AResults.FDist := Sqr(AParams.FRadius) + 1;
   AResults.FIndex := -1;
+  AResults.FXIndex := 0;
   AResults.FYIndex := 0;
   if AParams.FOptimizeX then
     Source.FindBounds(
@@ -1284,38 +1286,63 @@ begin
     lb := 0;
     ub := Count - 1;
   end;
+
   for i := lb to ub do begin
     sp := Source[i]^.Point;
-    if IsNan(sp) then continue;
+    if IsNan(sp) then
+      continue;
+
     // Since axis transformation may be non-linear, the distance should be
     // measured in screen coordinates. With high zoom ratios this may lead to
     // an integer overflow, so ADistFunc should use saturation arithmetics.
-    pt := ParentChart.GraphToImage(AxisToGraph(sp));
-    dist := AParams.FDistFunc(AParams.FPoint, pt);
-    case AParams.FTarget of
-      nptPoint: ;
-      nptPointList:
-        begin
-          tmpSp := sp;
-          for j := 0 to Source.YCount - 2 do begin
-            if FStacked then
-              tmpSp.Y += Source[i]^.YList[j] else
-              tmpSp.Y := Source[i]^.YList[j];
-            tmpPt := ParentChart.GraphToImage(AxisToGraph(tmpSp));
-            tmpDist := AParams.FDistFunc(AParams.FPoint, tmpPt);
-            if tmpDist < dist then begin
-              dist := tmpDist;
-              sp := tmpSp;
-              pt := tmpPt;
-              AResults.FYIndex := j + 1;    // FYIndex = 0 is the regular y
-            end;
-          end;
-        end;
-      nptInside:
-        // to be handled by descendants
-        exit;
+
+    // Find nearest point of datapoint at (x, y)
+    if (nptPoint in AParams.FTargets) then begin
+      pt := ParentChart.GraphToImage(AxisToGraph(sp));
+      dist := AParams.FDistFunc(AParams.FPoint, pt);
     end;
-    if dist >= AResults.FDist then continue;
+
+    // Find nearest point to additional y values (at x).
+    // In case of stacked data points check the stacked values.
+    if (nptYList in AParams.FTargets) then begin
+      tmpSp := sp;
+      for j := 0 to Source.YCount - 2 do begin
+        if FStacked then
+          tmpSp.Y += Source[i]^.YList[j] else
+          tmpSp.Y := Source[i]^.YList[j];
+        tmpPt := ParentChart.GraphToImage(AxisToGraph(tmpSp));
+        tmpDist := AParams.FDistFunc(AParams.FPoint, tmpPt);
+        if tmpDist < dist then begin
+          dist := tmpDist;
+          sp := tmpSp;
+          pt := tmpPt;
+          AResults.FYIndex := j + 1;    // FYIndex = 0 refers to the regular y
+        end;
+      end;
+    end;
+
+    // Find nearest point of additional x values (at y)
+    if (nptXList in AParams.FTargets) then begin
+      tmpSp := sp;
+      for j := 0 to Source.XCount - 2 do begin
+        tmpSp.X := Source[i]^.XList[j];
+        tmpPt := parentChart.GraphToImage(AxisToGraph(tmpSp));
+        tmpDist := AParams.FDistFunc(AParams.FPoint, tmpPt);
+        if tmpDist < dist then begin
+          dist := tmpDist;
+          sp := tmpSp;
+          pt := tmpPt;
+          AResults.FXIndex := j + 1;   // FXindex = 0 refers to the regular x
+        end;
+      end;
+    end;
+
+    // The case nptCustom is not handled here, it depends on the series type.
+    // TBarSeries, for example, checks whether AParams.FPoint is inside a bar.
+
+    if dist >= AResults.FDist then
+      continue;
+
     AResults.FDist := dist;
     AResults.FIndex := i;
     AResults.FImg := pt;

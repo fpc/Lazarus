@@ -403,7 +403,7 @@ type
     FDistanceMode: TChartDistanceMode;
     FGrabRadius: Integer;
     FMouseInsideOnly: Boolean;
-    FTarget: TNearestPointTarget;
+    FTargets: TNearestPointTargets;
     function GetAffectedSeries: String; inline;
     function GetIsSeriesAffected(AIndex: Integer): Boolean; inline;
     procedure SetAffectedSeries(AValue: String); inline;
@@ -416,8 +416,8 @@ type
     procedure FindNearestPoint(APoint: TPoint);
     property MouseInsideOnly: Boolean
       read FMouseInsideOnly write FMouseInsideOnly default false;
-    property Target: TNearestPointTarget
-      read FTarget write FTarget default nptPoint;
+    property Targets: TNearestPointTargets
+      read FTargets write FTargets default [nptPoint, nptXList, nptYList, nptCustom];
   public
     constructor Create(AOwner: TComponent); override;
   public
@@ -460,7 +460,7 @@ type
     property ActiveCursor default crSizeAll;
     property EscapeCancels default true;
     property KeepDistance: Boolean read FKeepDistance write FKeepDistance default false;
-    property Target;
+    property Targets;
     property OnDrag: TDataPointDragEvent read FOnDrag write FOnDrag;
     property OnDragStart: TDataPointDragEvent
       read FOnDragStart write FOnDragStart;
@@ -477,7 +477,7 @@ type
     procedure MouseUp(APoint: TPoint); override;
   published
     property ActiveCursor;
-    property Target;
+    property Targets;
     property OnPointClick: TChartToolEvent
       read FOnPointClick write FOnPointClick;
   end;
@@ -518,7 +518,7 @@ type
     procedure MouseUp(APoint: TPoint); override;
   published
     property ActiveCursor;
-    property Target;
+    property Targets;
     property OnHint: TChartToolHintEvent read FOnHint write FOnHint;
     property OnHintLocation: TChartToolHintLocationEvent
       read FOnHintLocation write FOnHintLocation;
@@ -581,7 +581,7 @@ type
     property Shape: TChartCrosshairShape
       read FShape write FShape default ccsCross;
     property Size: Integer read FSize write FSize default -1;
-    property Target;
+    property Targets;
   end;
 
   TReticuleTool = class(TChartTool)
@@ -1613,6 +1613,7 @@ begin
   SetPropDefaults(Self, ['GrabRadius']);
   FPointIndex := -1;
   FYIndex := 0;
+  FTargets := [nptPoint, nptXList, nptYList, nptCustom];  // check all targets
 end;
 
 procedure TDataPointTool.FindNearestPoint(APoint: TPoint);
@@ -1662,7 +1663,7 @@ begin
   p.FPoint := APoint;
   p.FRadius := GrabRadius;
   p.FOptimizeX := DistanceMode <> cdmOnlyY;
-  p.FTarget := Target;
+  p.FTargets := Targets;
   best.FDist := MaxInt;
   for s in CustomSeries(FChart, FAffectedSeries.AsBooleans(FChart.SeriesCount)) do
     if
