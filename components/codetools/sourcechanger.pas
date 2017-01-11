@@ -906,12 +906,18 @@ begin
 end;
 
 procedure TSourceChangeCache.ConsistencyCheck;
+{$IF FPC_FULLVERSION<30101}
 var
   CurResult: LongInt;
+{$ENDIF}
 begin
+  {$IF FPC_FULLVERSION<30101}
   CurResult:=FEntries.ConsistencyCheck;
   if CurResult<>0 then
     RaiseCatchableException(IntToStr(CurResult));
+  {$ELSE}
+  FEntries.ConsistencyCheck;
+  {$ENDIF}
   BeautifyCodeOptions.ConsistencyCheck;
 end;
 

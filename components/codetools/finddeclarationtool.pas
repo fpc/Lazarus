@@ -11670,12 +11670,20 @@ begin
     ANodeCache:=ANodeCache.Next;
   end;
   if FDependentCodeTools<>nil then begin
+    {$IF FPC_FULLVERSION<30101}
     if FDependentCodeTools.ConsistencyCheck<>0 then
       raise Exception.Create('');
+    {$ELSE}
+    FDependentCodeTools.ConsistencyCheck;
+    {$ENDIF}
   end;
   if FDependsOnCodeTools<>nil then begin
+    {$IF FPC_FULLVERSION<30101}
     if FDependsOnCodeTools.ConsistencyCheck<>0 then
       raise Exception.Create('');
+    {$ELSE}
+    FDependsOnCodeTools.ConsistencyCheck;
+    {$ENDIF}
   end;
 end;
 

@@ -5571,14 +5571,20 @@ begin
 end;
 
 procedure TDefineTree.ConsistencyCheck;
+{$IF FPC_FULLVERSION<30101}
 var
   CurResult: LongInt;
+{$ENDIF}
 begin
   if FFirstDefineTemplate<>nil then
     FFirstDefineTemplate.ConsistencyCheck;
+  {$IF FPC_FULLVERSION<30101}
   CurResult:=FCache.ConsistencyCheck;
   if CurResult<>0 then
     RaiseCatchableException(IntToStr(CurResult));
+  {$ELSE}
+  FCache.ConsistencyCheck;
+  {$ENDIF}
 end;
 
 procedure TDefineTree.CalcMemSize(Stats: TCTMemStats);

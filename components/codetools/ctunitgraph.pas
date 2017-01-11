@@ -267,10 +267,15 @@ var
   AVLNode: TAVLTreeNode;
   AnUnit: TUGUnit;
 begin
+  {$IF FPC_FULLVERSION<30101}
   if FFiles.ConsistencyCheck<>0 then
     raise Exception.Create('FFiles.ConsistencyCheck');
   if FQueuedFiles.ConsistencyCheck<>0 then
     raise Exception.Create('FStartFiles.ConsistencyCheck');
+  {$ELSE}
+  FFiles.ConsistencyCheck;
+  FQueuedFiles.ConsistencyCheck;
+  {$ENDIF}
 
   AVLNode:=FQueuedFiles.FindLowest;
   while AVLNode<>nil do begin
