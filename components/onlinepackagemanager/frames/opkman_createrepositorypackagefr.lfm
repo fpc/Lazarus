@@ -390,6 +390,7 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
         ParentShowHint = False
         ShowHint = True
         TabOrder = 1
+        Visible = False
       end
       object bSubmit: TButton
         Left = 248

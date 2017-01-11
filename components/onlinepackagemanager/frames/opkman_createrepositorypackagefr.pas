@@ -164,8 +164,9 @@ begin
   bCancel.Hint := rsCreateRepositoryPackageFrm_bCancel_Hint;
   bSubmit.Visible := ATyp = 0;
   cbJSONForUpdates.Visible := ATyp = 0;
-  pnB.Height := bCreate.Height + 1;
+  pnB.Height := bSubmit.Height + 1;
   pnB.Top := (pnButtons.Height - pnB.Height) div 2;
+  bCreate.Visible := ATyp = 1;
 
   FVSTPackages := TVirtualStringTree.Create(nil);
   with FVSTPackages do
