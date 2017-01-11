@@ -30,7 +30,7 @@ interface
 uses
   MacOSAll,
   Classes, SysUtils, DateUtils, Types, LCLType, LCLProc,
-  Controls, Forms, Graphics, Math, GraphType;
+  Controls, Forms, Graphics, Math, GraphType, StrUtils;
 
 const
   CleanPMRect: PMRect = (top: 0; left: 0; bottom: 0; right: 0);
@@ -72,7 +72,8 @@ function GetCarbonMsgKeyState: PtrInt;
 function GetCarbonShiftState: TShiftState;
 function ShiftStateToModifiers(const Shift: TShiftState): Byte;
 
-function FindCarbonFontID(const FontName: String): ATSUFontID;
+function FindCarbonFontID(const FontName: String): ATSUFontID; overload;
+function FindCarbonFontID(FontName: string; var Bold, Italic: Boolean): ATSUFontID; overload;
 function CarbonFontIDToFontName(ID: ATSUFontID): String;
 function FindQDFontFamilyID(const FontName: String; var Family: FontFamilyID): Boolean;
 
@@ -508,10 +509,10 @@ begin
 end;
 
 const
-  lclFontName      = kFontFamilyName;
+  lclFontName      = kFontFullName;
   lclFontPlatform  = kFontMacintoshPlatform;
-  lclFontScript    = kFontRomanScript;
-  lclFontLanguage  = kFontEnglishLanguage;
+  lclFontScript    = kFontNoScriptCode;
+  lclFontLanguage  = kFontNoLanguageCode;
 
 
 {------------------------------------------------------------------------------
@@ -537,6 +538,55 @@ begin
         lclFontLanguage, Result),
       'FindCarbonFontID', 'ATSUFindFontFromName');
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    FindCarbonFontID
+  Params:  FontName - The font name, UTF-8 encoded
+           Bold, Italic - Font style, cleared if the style was found
+  Returns: Carbon font ID of font with the specified name
+
+  Finds the font ID for the given font name.  The ATSU bold/italic styles
+  are manufactured, so if possible this will match the full font name including
+  styles. If a match is found it will clear Bold/Italic.
+ ------------------------------------------------------------------------------}
+function FindCarbonFontID(FontName: string; var Bold, Italic: Boolean): ATSUFontID;
+
+  function FindFont(const fn: string; code: FontNameCode; out ID: ATSUFontID): Boolean;
+  begin
+    Result := ATSUFindFontFromName(PChar(fn), Length(fn), code,
+      lclFontPlatform, lclFontScript, lclFontLanguage, ID) = noErr;
+    if not Result then
+      ID := 0;
+  end;
+
+const
+  SRegular = ' Regular';
+  SBold = ' Bold';
+  SItalic = ' Italic';
+  SOblique = ' Oblique';
+var
+  FamilyName: string;
+begin
+  if SameText(FontName, 'default') then
+    FontName := CarbonDefaultFont;
+  FamilyName := FontName;
+  if AnsiEndsStr(SRegular, FamilyName) then
+    SetLength(FamilyName, Length(FamilyName) - Length(SRegular));
+  if (Bold and Italic) and
+     (FindFont(FamilyName + SBold + SItalic, kFontFullName, Result) or
+      FindFont(FamilyName + SBold + SOblique, kFontFullName, Result)) then begin
+    Bold := False;
+    Italic := False;
+  end
+  else if Bold and FindFont(FamilyName + SBold, kFontFullName, Result) then
+    Bold := False
+  else if Italic and
+     (FindFont(FamilyName + SItalic, kFontFullName, Result) or
+      FindFont(FamilyName + SOblique, kFontFullName, Result)) then
+    Italic := False
+  else if not FindFont(FontName, kFontFullName, Result) then
+    FindFont(FontName, kFontFamilyName, Result)
 end;
 
 {------------------------------------------------------------------------------

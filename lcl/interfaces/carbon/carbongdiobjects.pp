@@ -1385,6 +1385,7 @@ var
   A: ATSUAttributeValuePtr;
   ID: ATSUFontID;
   H: Integer;
+  Bold, Italic: Boolean;
 const
   SSetAttrs = 'ATSUSetAttributes';
   SName = 'CreateStyle';
@@ -1396,7 +1397,9 @@ begin
   Result:=nil;
   OSError(ATSUCreateStyle(Result), Self, SName, SCreateStyle);
 
-  ID := FindCarbonFontID(AFaceName);
+  Bold := ALogFont.lfWeight > FW_NORMAL;
+  Italic := ALogFont.lfItalic > 0;
+  ID := FindCarbonFontID(AFaceName, Bold, Italic);
 
   if ID <> 0 then
   begin
@@ -1418,7 +1421,7 @@ begin
   OSError(ATSUSetAttributes(Result, 1, @Attr, @S, @A), Self, SName,
     SSetAttrs, 'kATSUSizeTag');
 
-  if ALogFont.lfWeight > FW_NORMAL then
+  if Bold then
   begin
     Attr := kATSUQDBoldfaceTag;
     B := True;
@@ -1428,7 +1431,7 @@ begin
       SSetAttrs, 'kATSUQDBoldfaceTag');
   end;
 
-  if ALogFont.lfItalic > 0 then
+  if Italic then
   begin
     Attr := kATSUQDItalicTag;
     B := True;

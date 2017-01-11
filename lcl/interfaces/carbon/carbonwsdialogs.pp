@@ -532,7 +532,11 @@ begin
     //DebugLn('Color: ' + DbgS(RGBColorToColor(Color)));
     FontDialog.Font.Color := RGBColorToColor(Color);
   end;
-  
+
+{ These styles don't work for most modern fonts, and can result in
+  a font being double-bolded now that carbonproc.pp::lclFontName uses
+  the full name (including style), rather than just the family name.
+
   if GetEventParameter(AEvent, kEventParamFMFontStyle, typeFMFontStyle,
     nil, SizeOf(Style), nil, @Style) = noErr then
   begin
@@ -545,7 +549,7 @@ begin
     if (Style and MacOSAll.underline) > 0 then
       FontDialog.Font.Style := FontDialog.Font.Style + [fsUnderline];
   end;
-  
+}
   // TODO: fsStrikeOut
     
   FontDialog.UserChoice := mrOK;
