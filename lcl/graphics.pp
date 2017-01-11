@@ -2032,6 +2032,8 @@ function CreateBitmapFromLazarusResource(AHandle: TLResource; AMinimumClass: TCu
 function CreateCompatibleBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean = False): Boolean;
 
 function CreateBitmapFromFPImage(Img: TFPCustomImage): TBitmap;
+function AllocPatternBitmap(colorBG, colorFG: TColor): TBitmap;
+
 
 var
   { Stores information about the current screen
@@ -2767,6 +2769,7 @@ end;
 {$I bitmap.inc}
 {$I tiffimage.inc}
 {$I gifimage.inc}
+{$I patternbitmap.inc}
 
 function CreateGraphicFromResourceName(Instance: THandle; const ResName: String): TGraphic;
 var
@@ -2836,11 +2839,13 @@ begin
   FontResourceCache:=TFontHandleCache.Create;
   PenResourceCache:=TPenHandleCache.Create;
   BrushResourceCache:=TBrushHandleCache.Create;
+  PatternBitmapCache := TPatternBitmapCache.Create;
 end;
 
 procedure InterfaceFinal;
 begin
   //debugln('Graphics.InterfaceFinal');
+  FreeAndNil(PatternBitmapCache);
   FreeAndNil(FontResourceCache);
   FreeAndNil(PenResourceCache);
   FreeAndNil(BrushResourceCache);

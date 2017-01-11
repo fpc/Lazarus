@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="7"/>
-    <Files Count="283">
+    <Files Count="284">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -1163,6 +1163,10 @@
         <Filename Value="industrialbase.pp"/>
         <UnitName Value="IndustrialBase"/>
       </Item283>
+      <Item284>
+        <Filename Value="include/patternbitmap.inc"/>
+        <Type Value="Include"/>
+      </Item284>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>

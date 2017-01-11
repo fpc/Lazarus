@@ -7218,6 +7218,7 @@ lcl/include/notebook.inc svneol=native#text/pascal
 lcl/include/page.inc svneol=native#text/pascal
 lcl/include/pagecontrol.inc svneol=native#text/pascal
 lcl/include/paintbox.inc svneol=native#text/pascal
+lcl/include/patternbitmap.inc svneol=native#text/plain
 lcl/include/pen.inc svneol=native#text/pascal
 lcl/include/picture.inc svneol=native#text/pascal
 lcl/include/pixmap.inc svneol=native#text/pascal
