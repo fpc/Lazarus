@@ -213,7 +213,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Draw(ADrawer: IChartDrawer); override;
-    function Extent: TDoubleRect; override;
   public
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -425,14 +424,6 @@ begin
     UpdateGraphPoints(i, FStacked);
     DrawSingleLineInStack(ADrawer, i + 1);
   end;
-end;
-
-function TLineSeries.Extent: TDoubleRect;
-begin
-  if FStacked then
-    Result := Source.ExtentCumulative
-  else
-    Result := Source.ExtentList;
 end;
 
 procedure TLineSeries.DrawSingleLineInStack(
@@ -1455,10 +1446,7 @@ end;
 
 function TAreaSeries.Extent: TDoubleRect;
 begin
-  if FStacked then
-    Result := Source.ExtentCumulative
-  else
-    Result := Source.ExtentList;
+  Result := inherited Extent;
   if not IsEmpty and UseZeroLevel then
     UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
 end;

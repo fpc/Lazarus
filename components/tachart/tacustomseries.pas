@@ -298,6 +298,7 @@ type
     destructor Destroy; override;
   public
     procedure Assign(ASource: TPersistent); override;
+    function Extent: TDoubleRect; override;
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
@@ -1174,6 +1175,14 @@ begin
       end;
     end;
   end;
+end;
+
+function TBasicPointSeries.Extent: TDoubleRect;
+begin
+  if FStacked then
+    Result := Source.ExtentCumulative
+  else
+    Result := Source.ExtentList;
 end;
 
 // Find an interval of x-values intersecting the extent.
