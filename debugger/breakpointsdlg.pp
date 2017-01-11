@@ -94,12 +94,13 @@ type
     popEnableAllSameSource: TMenuItem;
     popDeleteAllSameSource: TMenuItem;
     ToolBar1: TToolBar;
+    ToolButtonAdd: TToolButton;
     ToolButtonProperties: TToolButton;
-    ToolButton10: TToolButton;
+    ToolSep2: TToolButton;
     ToolButtonEnable: TToolButton;
     ToolButtonDisable: TToolButton;
     ToolButtonTrash: TToolButton;
-    ToolButton6: TToolButton;
+    ToolSep1: TToolButton;
     ToolButtonEnableAll: TToolButton;
     ToolButtonDisableAll: TToolButton;
     ToolButtonTrashAll: TToolButton;
@@ -330,6 +331,8 @@ begin
   ToolBar1.Images := IDEImages.Images_16;
   mnuPopup.Images := IDEImages.Images_16;
   lvBreakPoints.SmallImages := IDEImages.Images_16;
+
+  ToolButtonAdd.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
 
   actEnableSelected.Caption := lisDbgItemEnable;
   actEnableSelected.Hint    := lisDbgItemEnableHint;
