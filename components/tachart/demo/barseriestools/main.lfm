@@ -183,7 +183,6 @@ object MainForm: TMainForm
         BarWidthPercent = 40
         Source = CalculatedChartSource
         Styles = ChartStyles
-        ToolTarget = bttBar
       end
       object BarSeriesBLUE: TBarSeries
         Marks.Attachment = maEdge
@@ -199,7 +198,6 @@ object MainForm: TMainForm
         BarOffsetPercent = 20
         BarWidthPercent = 40
         Source = ListChartSourceBLUE
-        ToolTarget = bttBar
       end
     end
   end

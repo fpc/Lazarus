@@ -34,10 +34,7 @@ type
 
   TBarWidthStyle = (bwPercent, bwPercentMin);
 
-
   TBarSeries = class;
-
-  TBarToolTarget = (bttDatapoint, bttBar);
 
   TBeforeDrawBarEvent = procedure (
     ASender: TBarSeries; ACanvas: TCanvas; const ARect: TRect;
@@ -53,7 +50,6 @@ type
     FBarPen: TPen;
     FBarWidthPercent: Integer;
     FBarWidthStyle: TBarWidthStyle;
-    FToolTarget: TBarToolTarget;
     FOnBeforeDrawBar: TBeforeDrawBarEvent;
     FZeroLevel: Double;
 
@@ -101,8 +97,6 @@ type
       read GetSeriesColor write SetSeriesColor stored false default clRed;
     property Source;
     property Styles;
-    property ToolTarget: TBarToolTarget
-      read FToolTarget write FToolTarget default bttDataPoint;
     property UseReticule;
     property ZeroLevel: Double
       read FZeroLevel write SetZeroLevel stored IsZeroLevelStored;
@@ -961,6 +955,8 @@ begin
   FBarPen.OnChange := @StyleChanged;
   FBarPen.Color := clBlack;
   FBarBrush.Color := clRed;
+
+  FStacked := true;
 end;
 
 destructor TBarSeries.Destroy;
@@ -1143,15 +1139,16 @@ var
   y: Double;
   stackindex: Integer;
 begin
-  if FToolTarget = bttDatapoint then
-  begin
-    Result := inherited;
-    exit;
-  end;
-
   Result := false;
   AResults.FDist := Sqr(AParams.FRadius) + 1;
   AResults.FIndex := -1;
+  AResults.FXIndex := 0;
+  AResults.FYIndex := 0;
+
+  if not (nptCustom in AParams.FTargets) then begin
+    Result := inherited;
+    exit;
+  end;
 
   SetLength(heights, Source.YCount + 1);
 

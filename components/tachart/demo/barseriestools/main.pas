@@ -185,12 +185,12 @@ end;
 procedure TMainForm.ToolTargetChanged(Sender: TObject);
 begin
   if Sender = RbToolTargetDatapoint then begin
-    BarSeriesREDYELLOW.ToolTarget := bttDatapoint;
-    BarSeriesBLUE.ToolTarget := bttDataPoint;
+    DataPointClickTool.Targets := DataPointClickTool.Targets - [nptCustom];
+    DataPointHintTool.Targets := DatapointHintTool.Targets - [nptCustom];
   end else
   if Sender = RbToolTargetBar then begin
-    BarSeriesREDYELLOW.ToolTarget := bttBar;
-    BarSeriesBLUE.ToolTarget := bttBar;
+    DataPointClickTool.Targets := DataPointClickTool.Targets + [nptCustom];
+    DataPointHintTool.Targets := DatapointHintTool.Targets + [nptCustom];
   end;
 end;
 
