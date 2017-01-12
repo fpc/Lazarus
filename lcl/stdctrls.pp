@@ -316,6 +316,7 @@ type
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
     class function GetControlClassDefaultSize: TSize; override;
     procedure LMChanged(var Msg); message LM_CHANGED;
+    procedure CMWantSpecialKey(var Message: TCMWantSpecialKey); message CM_WANTSPECIALKEY;
     procedure Change; virtual;
     procedure Select; virtual;
     procedure DropDown; virtual;

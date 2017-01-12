@@ -1102,4 +1102,15 @@ begin
   end;
 end;
 
+procedure TCustomComboBox.CMWantSpecialKey(var Message: TCMWantSpecialKey);
+begin
+  {$ifdef darwin}
+  // don't allow LCL to handle arrow keys for edit controls
+  if Message.CharCode in [VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN] then
+    Message.Result := 1
+  else
+  {$endif}
+    inherited;
+end;
+
 // included by stdctrls.pp
