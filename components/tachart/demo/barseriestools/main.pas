@@ -122,7 +122,8 @@ begin
       ttl := TBarSeries(ser).Styles.Styles[yidx].Text;
     Log.Lines.Add(Format('"%s" clicked:', [ttl]));
     Log.Lines.Add(Format('    point #%d, x = %.1f (%s), y = %.1f',
-      [ idx, ser.GetXValue(idx), ser.Source[idx]^.Text, ser.Source[idx]^.GetY(yidx) ]
+      [ idx, ser.GetXValue(idx), ListChartSourceLABELS.Item[idx]^.Text,
+        ser.Source[idx]^.GetY(yidx) ]
     ));
     Log.SelStart := Length(Log.Lines.Text);
   end;
@@ -132,9 +133,6 @@ procedure TMainForm.DataPointDragToolDrag(ASender: TDataPointDragTool;
   var AGraphPoint: TDoublePoint);
 begin
   AGraphPoint.X := ASender.Origin.X;    // Keep x value fixed
-
-  // Optionally remove next line to see the difference...
-  AGraphPoint.Y := ASender.Origin.Y + (AGraphPoint.Y - FDragStart.Y);
 end;
 
 procedure TMainForm.DataPointDragToolDragStart(ASender: TDataPointDragTool;
@@ -163,7 +161,8 @@ begin
       ttl := TBarSeries(ser).Styles.Styles[yidx].Text;
     AHint := Format(
       'Mouse over "%s": point #%d, x value  %.1f (%s), y value %.1f',
-      [ ttl, idx, ser.GetXValue(idx), ser.Source[idx]^.Text, ser.Source[idx]^.GetY(yidx) ]
+      [ ttl, idx, ser.GetXValue(idx), ListChartSourceLABELS.Item[idx]^.Text,
+        ser.Source[idx]^.GetY(yidx) ]
     );
   end else
     AHint := '';
@@ -180,6 +179,7 @@ begin
     ListChartSourceBlue.Add(i, Random*80);
     ListChartSourceLABELS.Add(i, i, char(ord('A') + i));
   end;
+  CbHorizontalChange(nil);
 end;
 
 procedure TMainForm.ToolTargetChanged(Sender: TObject);

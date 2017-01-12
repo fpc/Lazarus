@@ -283,7 +283,7 @@ type
     procedure PrepareGraphPoints(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
     function ToolTargetDistance(const AParams: TNearestPointParams;
-      APoint: TDoublePoint; APointIndex: Integer): Integer; virtual;
+      AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; virtual;
     procedure UpdateGraphPoints(AIndex: Integer; ACumulative: Boolean); overload; inline;
     procedure UpdateGraphPoints(AIndex, ALo, AUp: Integer; ACumulative: Boolean); overload;
     procedure UpdateMinXRange;
@@ -1277,11 +1277,9 @@ function TBasicPointSeries.GetNearestPoint(
   end;
 
 var
-  dist, i, j, lb, ub: Integer;
-  sp: TDoublePoint;
-  tmpPt: TPoint;
-  tmpSP: TDoublePoint;
-  tmpDist: Integer;
+  dist, tmpDist, i, j, lb, ub: Integer;
+  sp, tmpSp: TDoublePoint;
+  pt, tmpPt: TDoublePoint;
 begin
   AResults.FDist := Sqr(AParams.FRadius) + 1;  // the dist func does not calc sqrt
   AResults.FIndex := -1;
@@ -1307,8 +1305,10 @@ begin
     // an integer overflow, so ADistFunc should use saturation arithmetics.
 
     // Find nearest point of datapoint at (x, y)
-    if (nptPoint in AParams.FTargets) then
-      dist := Min(dist, ToolTargetDistance(AParams, sp, i));
+    if (nptPoint in AParams.FTargets) then begin
+      pt := AxisToGraph(sp);
+      dist := Min(dist, ToolTargetDistance(AParams, pt, i, 0, 0));
+    end;
 
     // Find nearest point to additional y values (at x).
     // In case of stacked data points check the stacked values.
@@ -1318,10 +1318,12 @@ begin
         if FStacked then
           tmpSp.Y += Source[i]^.YList[j] else
           tmpSp.Y := Source[i]^.YList[j];
-        tmpDist := ToolTargetDistance(AParams, tmpSp, i);
+        tmpPt := AxisToGraph(tmpSp);
+        tmpDist := ToolTargetDistance(AParams, tmpPt, i, 0, j);
         if tmpDist < dist then begin
           dist := tmpDist;
           sp := tmpSp;
+          pt := tmpPt;
           AResults.FYIndex := j + 1;    // FYIndex = 0 refers to the regular y
         end;
       end;
@@ -1332,10 +1334,12 @@ begin
       tmpSp := sp;
       for j := 0 to Source.XCount - 2 do begin
         tmpSp.X := Source[i]^.XList[j];
-        tmpDist := ToolTargetDistance(AParams, tmpSp, i);
+        tmpPt := AxisToGraph(tmpSp);
+        tmpDist := ToolTargetDistance(AParams, tmpPt, i, j, 0);
         if tmpDist < dist then begin
           dist := tmpDist;
           sp := tmpSp;
+          pt := tmpPt;
           AResults.FXIndex := j + 1;   // FXindex = 0 refers to the regular x
         end;
       end;
@@ -1350,7 +1354,7 @@ begin
     AResults.FDist := dist;
     AResults.FIndex := i;
     AResults.FValue := sp;
-    AResults.FImg := ParentChart.GraphToImage(AxisToGraph(sp));
+    AResults.FImg := ParentChart.GraphToImage(pt);
     if dist = 0 then break;
   end;
   Result := AResults.FIndex >= 0;
@@ -1444,12 +1448,13 @@ begin
 end;
 
 function TBasicPointSeries.ToolTargetDistance(const AParams: TNearestPointParams;
-  APoint: TDoublePoint; APointIndex: Integer): Integer;
+  AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer;
 var
   pt: TPoint;
 begin
-  Unused(APointIndex);
-  pt := ParentChart.GraphToImage(AxisToGraph(APoint));
+  Unused(APointIdx);
+  Unused(AXIdx, AYIdx);
+  pt := ParentChart.GraphToImage(AGraphPt);
   Result := AParams.FDistFunc(AParams.FPoint, pt);
 end;
 

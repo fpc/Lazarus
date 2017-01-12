@@ -150,6 +150,8 @@ type
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
+    function ToolTargetDistance(const AParams: TNearestPointParams;
+      AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
   public
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
@@ -158,7 +160,8 @@ type
       AX, AOpen, AHigh, ALow, AClose: Double;
       ALabel: String = ''; AColor: TColor = clTAColor): Integer; inline;
     procedure Draw(ADrawer: IChartDrawer); override;
-    function Extent: TDoubleRect; override;
+    function GetNearestPoint(const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; override;
   published
     property CandlestickDownBrush: TBrush
       read FCandlestickDownBrush write SetCandlestickDownBrush;
@@ -783,6 +786,7 @@ end;
 constructor TOpenHighLowCloseSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FStacked := false;
   FCandlestickDownBrush := TBrush.Create;
   with FCandlestickDownBrush do begin
     Color := clRed;
@@ -849,14 +853,6 @@ procedure TOpenHighLowCloseSeries.Draw(ADrawer: IChartDrawer);
     ADrawer.Rectangle(r);
   end;
 
-  function GetGraphPointYIndex(AIndex, AYIndex: Integer): Double;
-  begin
-    if AYIndex = 0 then
-      Result := GetGraphPointY(AIndex)
-    else
-      Result := AxisToGraphY(Source[AIndex]^.YList[AYIndex - 1]);
-  end;
-
   procedure DrawOHLC(x, yopen, yhigh, ylow, yclose, tw: Double);
   begin
     DoLine(x, yhigh, x, ylow);
@@ -898,10 +894,10 @@ begin
 
   for i := FLoBound to FUpBound do begin
     x := GetGraphPointX(i);
-    yopen := GetGraphPointYIndex(i, YIndexOpen);
-    yhigh := GetGraphPointYIndex(i, YIndexHigh);
-    ylow := GetGraphPointYIndex(i, YIndexLow);
-    yclose := GetGraphPointYIndex(i, YIndexClose);
+    yopen := GetGraphPointY(i, YIndexOpen);
+    yhigh := GetGraphPointY(i, YIndexHigh);
+    ylow := GetGraphPointY(i, YIndexLow);
+    yclose := GetGraphPointY(i, YIndexClose);
     tw := GetXRange(x, i) * PERCENT * TickWidth;
 
     if (yopen <= yclose) then begin
@@ -924,14 +920,55 @@ begin
   end;
 end;
 
-function TOpenHighLowCloseSeries.Extent: TDoubleRect;
-begin
-  Result := Source.ExtentList;
-end;
-
 procedure TOpenHighLowCloseSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
   AItems.Add(TLegendItemOHLCLine.Create(Self, LegendTextSingle));
+end;
+
+function TOpenHighLowCloseSeries.GetNearestPoint(const AParams: TNearestPointParams;
+  out AResults: TNearestPointResults): Boolean;
+var
+  i: Integer;
+  graphClickPt: TDoublePoint;
+  x, yopen, yhigh, ylow, yclose, tw: Double;
+  R: TDoubleRect;
+begin
+  Result := false;
+  AResults.FDist := Sqr(AParams.FRadius) + 1;
+  AResults.FIndex := -1;
+  AResults.FXIndex := 0;
+  AResults.FYIndex := 0;
+
+  if not (nptCustom in AParams.FTargets) then begin
+    Result := inherited;
+    exit;
+  end;
+
+  graphClickPt := ParentChart.ImageToGraph(AParams.FPoint);
+  if IsRotated then
+    Exchange(graphclickpt.X, graphclickpt.Y);
+
+  // Iterate through all points of the series
+  for i := 0 to Count - 1 do begin
+    x := GetGraphPointX(i);
+    yopen := GetGraphPointY(i, YIndexOpen);
+    yhigh := GetGraphPointY(i, YIndexHigh);
+    ylow := GetGraphPointY(i, YIndexLow);
+    yclose := GetGraphPointY(i, YIndexClose);
+    tw := GetXRange(x, i) * PERCENT * TickWidth;
+    R.a := DoublePoint(x - tw, MinValue([yopen, yhigh, ylow, yclose]));
+    R.b := DoublePoint(x + tw, MaxValue([yopen, yhigh, ylow, yclose]));
+    if InRange(graphClickPt.X, R.a.x, R.b.x) and
+       InRange(graphClickPt.Y, R.a.Y, R.b.Y) then
+    begin
+      AResults.FDist := 0;
+      AResults.FIndex := i;
+      AResults.FValue := DoublePoint(x, yopen);
+      AResults.FImg := ParentChart.GraphToImage(AResults.FValue);
+      Result := true;
+      exit;
+    end;
+  end;
 end;
 
 function TOpenHighLowCloseSeries.GetSeriesColor: TColor;
@@ -1014,6 +1051,54 @@ begin
   if FYIndexOpen = AValue then exit;
   FYIndexOpen := AValue;
   UpdateParentChart;
+end;
+
+function TOpenHighLowCloseSeries.ToolTargetDistance(
+  const AParams: TNearestPointParams; AGraphPt: TDoublePoint;
+  APointIdx, AXIdx, AYIdx: Integer): Integer;
+
+  function DistanceToLine(x1, x2, y: Integer): Integer;
+  begin
+    if InRange(AParams.FPoint.X, x1, x2) then
+      Result := sqr(AParams.FPoint.Y - y)   // FDistFunc does not calc sqrt
+    else
+      Result := Min(
+        AParams.FDistFunc(AParams.FPoint, Point(x1, y)),
+        AParams.FDistFunc(AParams.FPoint, Point(x2, y))
+      );
+  end;
+
+var
+  x1, x2, w: Double;
+  p: TPoint;
+begin
+  Unused(AXIdx);
+
+  p := ParentChart.GraphToImage(AGraphPt);
+  w := GetXRange(AGraphPt.X, APointIdx) * PERCENT * TickWidth;
+  x1 := AGraphPt.X - w;
+  x2 := AGraphPt.X + w;
+
+  case FMode of
+    mOHLC:
+      with ParentChart do
+        if (AYIdx = YIndexOpen) or (AYIdx = YIndexClose) then
+          Result := DistanceToLine(XGraphToImage(x1), XGraphToImage(x2), p.y)
+        else if (AYIdx = YIndexHigh) or (AYIdx = YIndexLow) then
+          Result := AParams.FDistFunc(AParams.FPoint, p)
+        else
+         raise Exception.Create('TOpenHighLowCloseSeries.ToolTargetDistance: Illegal YIndex.');
+    mCandleStick:
+      with ParentChart do
+        if (AYIdx = YIndexOpen) then
+          Result := DistanceToLine(XGraphToImage(x1), p.x, p.y)
+        else if (AYIdx = YIndexClose) then
+          Result := DistanceToLine(p.x, XGraphToImage(x2), p.y)
+        else if (AYIdx = YIndexHigh) or (AYIdx = YIndexLow) then
+          Result := AParams.FDistFunc(AParams.FPoint, p)
+        else
+         raise Exception.Create('TOpenHighLowCloseSeries.ToolTargetDistance: Illegal YIndex.');
+  end;
 end;
 
 

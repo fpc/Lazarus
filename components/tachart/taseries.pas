@@ -65,7 +65,7 @@ type
   strict protected
     function GetLabelDataPoint(AIndex: Integer): TDoublePoint; override;
     function ToolTargetDistance(const AParams: TNearestPointParams;
-      APoint: TDoublePoint; APointIndex: Integer): Integer; override;
+      AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
   protected
     procedure BarOffsetWidth(
       AX: Double; AIndex: Integer; out AOffset, AWidth: Double);
@@ -1267,33 +1267,42 @@ begin
 end;
 
 function TBarSeries.ToolTargetDistance(const AParams: TNearestPointParams;
-  APoint: TDoublePoint; APointIndex: Integer): Integer;
+  AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer;
 var
-  spt: TDoublePoint;
-  tpt, pt1, pt2: TPoint;
+  sp1, sp2: TDoublePoint;
+  clickPt, pt1, pt2: TPoint;
   ofs, w: Double;
   dist1, dist2: Integer;
 begin
-  BarOffsetWidth(APoint.X, APointIndex, ofs, w);
-  spt := DoublePoint(APoint.X + ofs - w, APoint.Y);
-  pt1 := ParentChart.GraphToImage(AxisToGraph(spt));
+  Unused(APointIdx);
+  Unused(AXIdx, AYIdx);
 
-  spt := DoublePoint(APoint.X + ofs + w, APoint.Y);
-  pt2 := ParentChart.GraphToImage(AxisToGraph(spt));
+  clickPt := AParams.FPoint;
+  if IsRotated then begin
+    Exchange(clickPt.X, clickPt.Y);
+    Exchange(AGraphPt.X, AGraphPt.Y);
+  end;
 
-  tpt := AParams.FPoint;
+  BarOffsetWidth(AGraphPt.X, APointIdx, ofs, w);
+  sp1 := DoublePoint(AGraphPt.X + ofs - w, AGraphPt.Y);
+  sp2 := DoublePoint(AGraphPt.X + ofs + w, AGraphPt.Y);
+  if IsRotated then begin
+    Exchange(sp1.X, sp1.Y);
+    Exchange(sp2.X, sp2.Y);
+  end;
+  pt1 := ParentChart.GraphToImage(sp1);
+  pt2 := ParentChart.GraphToImage(sp2);
   if IsRotated then begin
     Exchange(pt1.X, pt1.Y);
     Exchange(pt2.X, pt2.Y);
-    Exchange(tpt.X, tpt.Y);
+    if pt1.X > pt2.X then Exchange(pt1.X, pt2.X);
   end;
-  if pt2.X < pt1.x then Exchange(pt2.X, pt1.X);
 
-  if InRange(tpt.X, pt1.x, pt2.x) then
-    Result := sqr(tpt.Y - pt1.Y)   // DistFunc does not calculate sqrt!
+  if InRange(clickPt.X, pt1.X, pt2.X) then
+    Result := sqr(clickPt.Y - pt1.Y)
   else begin
-    dist1 := AParams.FDistFunc(tpt, pt1);
-    dist2 := AParams.FDistFunc(tpt, pt2);
+    dist1 := AParams.FDistFunc(clickPt, pt1);
+    dist2 := AParams.FDistFunc(clickPt, pt2);
     Result := Min(dist1, dist2);
   end;
 end;

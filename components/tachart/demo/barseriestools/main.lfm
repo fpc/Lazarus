@@ -125,9 +125,9 @@ object MainForm: TMainForm
         Left = 8
         Height = 45
         Top = 29
-        Width = 415
+        Width = 472
         BorderSpacing.Top = 10
-        Caption = 'Left-Click  --> DataPointClickTool --> Log message'#13#10'CTRL --> DataPointHintTool --> Hint window'#13#10'Right-Drag --> DataPointDragTool --> change bar height ( for BLUE bars only!)'
+        Caption = 'Left-Click inside bar --> DataPointClickTool --> Log message'#13#10'CTRL inside bar --> DataPointHintTool --> Hint window'#13#10'Right-Drag of bar end --> DataPointDragTool --> change bar height ( for BLUE bars only!)'
         ParentColor = False
       end
     end
@@ -225,6 +225,7 @@ object MainForm: TMainForm
     object DataPointDragTool: TDataPointDragTool
       Shift = [ssRight]
       AffectedSeries = '1'
+      Targets = [nptPoint, nptXList, nptYList]
       OnDrag = DataPointDragToolDrag
       OnDragStart = DataPointDragToolDragStart
     end
