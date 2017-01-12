@@ -267,6 +267,7 @@ type
     FStacked: Boolean;
     FUpBound: Integer;
     FUseReticule: Boolean;
+    FOptimizeX: Boolean;
 
     procedure AfterDrawPointer(
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); virtual;
@@ -281,6 +282,8 @@ type
     function NearestXNumber(var AIndex: Integer; ADir: Integer): Double;
     procedure PrepareGraphPoints(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
+    function ToolTargetDistance(const AParams: TNearestPointParams;
+      APoint: TDoublePoint; APointIndex: Integer): Integer; virtual;
     procedure UpdateGraphPoints(AIndex: Integer; ACumulative: Boolean); overload; inline;
     procedure UpdateGraphPoints(AIndex, ALo, AUp: Integer; ACumulative: Boolean); overload;
     procedure UpdateMinXRange;
@@ -296,6 +299,7 @@ type
       read FOnGetPointerStyle write FOnGetPointerStyle;
 
   public
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
     procedure Assign(ASource: TPersistent); override;
@@ -1075,6 +1079,12 @@ begin
   inherited Assign(ASource);
 end;
 
+constructor TBasicPointSeries.Create(AOwner: TComponent);
+begin
+  inherited;
+  FOptimizeX := true;
+end;
+
 destructor TBasicPointSeries.Destroy;
 begin
   FreeAndNil(FPointer);
@@ -1268,17 +1278,16 @@ function TBasicPointSeries.GetNearestPoint(
 
 var
   dist, i, j, lb, ub: Integer;
-  pt: TPoint;
   sp: TDoublePoint;
   tmpPt: TPoint;
   tmpSP: TDoublePoint;
   tmpDist: Integer;
 begin
-  AResults.FDist := Sqr(AParams.FRadius) + 1;
+  AResults.FDist := Sqr(AParams.FRadius) + 1;  // the dist func does not calc sqrt
   AResults.FIndex := -1;
   AResults.FXIndex := 0;
   AResults.FYIndex := 0;
-  if AParams.FOptimizeX then
+  if FOptimizeX and AParams.FOptimizeX then
     Source.FindBounds(
       GetGrabBound(-AParams.FRadius),
       GetGrabBound( AParams.FRadius), lb, ub)
@@ -1287,6 +1296,7 @@ begin
     ub := Count - 1;
   end;
 
+  dist := AResults.FDist;
   for i := lb to ub do begin
     sp := Source[i]^.Point;
     if IsNan(sp) then
@@ -1297,41 +1307,35 @@ begin
     // an integer overflow, so ADistFunc should use saturation arithmetics.
 
     // Find nearest point of datapoint at (x, y)
-    if (nptPoint in AParams.FTargets) then begin
-      pt := ParentChart.GraphToImage(AxisToGraph(sp));
-      dist := AParams.FDistFunc(AParams.FPoint, pt);
-    end;
+    if (nptPoint in AParams.FTargets) then
+      dist := Min(dist, ToolTargetDistance(AParams, sp, i));
 
     // Find nearest point to additional y values (at x).
     // In case of stacked data points check the stacked values.
-    if (nptYList in AParams.FTargets) then begin
+    if (nptYList in AParams.FTargets) and (dist > 0) then begin
       tmpSp := sp;
       for j := 0 to Source.YCount - 2 do begin
         if FStacked then
           tmpSp.Y += Source[i]^.YList[j] else
           tmpSp.Y := Source[i]^.YList[j];
-        tmpPt := ParentChart.GraphToImage(AxisToGraph(tmpSp));
-        tmpDist := AParams.FDistFunc(AParams.FPoint, tmpPt);
+        tmpDist := ToolTargetDistance(AParams, tmpSp, i);
         if tmpDist < dist then begin
           dist := tmpDist;
           sp := tmpSp;
-          pt := tmpPt;
           AResults.FYIndex := j + 1;    // FYIndex = 0 refers to the regular y
         end;
       end;
     end;
 
     // Find nearest point of additional x values (at y)
-    if (nptXList in AParams.FTargets) then begin
+    if (nptXList in AParams.FTargets) and (dist > 0) then begin
       tmpSp := sp;
       for j := 0 to Source.XCount - 2 do begin
         tmpSp.X := Source[i]^.XList[j];
-        tmpPt := parentChart.GraphToImage(AxisToGraph(tmpSp));
-        tmpDist := AParams.FDistFunc(AParams.FPoint, tmpPt);
+        tmpDist := ToolTargetDistance(AParams, tmpSp, i);
         if tmpDist < dist then begin
           dist := tmpDist;
           sp := tmpSp;
-          pt := tmpPt;
           AResults.FXIndex := j + 1;   // FXindex = 0 refers to the regular x
         end;
       end;
@@ -1345,8 +1349,9 @@ begin
 
     AResults.FDist := dist;
     AResults.FIndex := i;
-    AResults.FImg := pt;
     AResults.FValue := sp;
+    AResults.FImg := ParentChart.GraphToImage(AxisToGraph(sp));
+    if dist = 0 then break;
   end;
   Result := AResults.FIndex >= 0;
 end;
@@ -1436,6 +1441,16 @@ begin
   if FUseReticule = AValue then exit;
   FUseReticule := AValue;
   UpdateParentChart;
+end;
+
+function TBasicPointSeries.ToolTargetDistance(const AParams: TNearestPointParams;
+  APoint: TDoublePoint; APointIndex: Integer): Integer;
+var
+  pt: TPoint;
+begin
+  Unused(APointIndex);
+  pt := ParentChart.GraphToImage(AxisToGraph(APoint));
+  Result := AParams.FDistFunc(AParams.FPoint, pt);
 end;
 
 procedure TBasicPointSeries.UpdateGraphPoints(AIndex, ALo, AUp: Integer;

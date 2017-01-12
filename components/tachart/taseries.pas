@@ -64,6 +64,8 @@ type
     procedure SetZeroLevel(AValue: Double);
   strict protected
     function GetLabelDataPoint(AIndex: Integer): TDoublePoint; override;
+    function ToolTargetDistance(const AParams: TNearestPointParams;
+      APoint: TDoublePoint; APointIndex: Integer): Integer; override;
   protected
     procedure BarOffsetWidth(
       AX: Double; AIndex: Integer; out AOffset, AWidth: Double);
@@ -957,6 +959,7 @@ begin
   FBarBrush.Color := clRed;
 
   FStacked := true;
+  FOptimizeX := false;
 end;
 
 destructor TBarSeries.Destroy;
@@ -1262,6 +1265,39 @@ begin
   FZeroLevel := AValue;
   UpdateParentChart;
 end;
+
+function TBarSeries.ToolTargetDistance(const AParams: TNearestPointParams;
+  APoint: TDoublePoint; APointIndex: Integer): Integer;
+var
+  spt: TDoublePoint;
+  tpt, pt1, pt2: TPoint;
+  ofs, w: Double;
+  dist1, dist2: Integer;
+begin
+  BarOffsetWidth(APoint.X, APointIndex, ofs, w);
+  spt := DoublePoint(APoint.X + ofs - w, APoint.Y);
+  pt1 := ParentChart.GraphToImage(AxisToGraph(spt));
+
+  spt := DoublePoint(APoint.X + ofs + w, APoint.Y);
+  pt2 := ParentChart.GraphToImage(AxisToGraph(spt));
+
+  tpt := AParams.FPoint;
+  if IsRotated then begin
+    Exchange(pt1.X, pt1.Y);
+    Exchange(pt2.X, pt2.Y);
+    Exchange(tpt.X, tpt.Y);
+  end;
+  if pt2.X < pt1.x then Exchange(pt2.X, pt1.X);
+
+  if InRange(tpt.X, pt1.x, pt2.x) then
+    Result := sqr(tpt.Y - pt1.Y)   // DistFunc does not calculate sqrt!
+  else begin
+    dist1 := AParams.FDistFunc(tpt, pt1);
+    dist2 := AParams.FDistFunc(tpt, pt2);
+    Result := Min(dist1, dist2);
+  end;
+end;
+
 
 { TAreaSeries }
 
