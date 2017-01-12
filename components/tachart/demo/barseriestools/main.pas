@@ -131,8 +131,14 @@ end;
 
 procedure TMainForm.DataPointDragToolDrag(ASender: TDataPointDragTool;
   var AGraphPoint: TDoublePoint);
+var
+  ser: TChartSeries;
 begin
-  AGraphPoint.X := ASender.Origin.X;    // Keep x value fixed
+  ser := TChartSeries(ASender.Series);
+  if ser.IsRotated then
+    AGraphPoint.Y := ASender.Origin.Y
+  else
+    AGraphPoint.X := ASender.Origin.X;    // Keep x value fixed
 end;
 
 procedure TMainForm.DataPointDragToolDragStart(ASender: TDataPointDragTool;
