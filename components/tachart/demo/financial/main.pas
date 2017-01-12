@@ -18,8 +18,10 @@ type
     ChartToolset1: TChartToolset;
     cbUpColor: TColorBox;
     cbDownColor: TColorBox;
-    DataPointHintTool: TDataPointHintTool;
+    DataPointHintTool_Details: TDataPointHintTool;
+    DataPointHintTool_All: TDataPointHintTool;
     FinancialChart: TChart;
+    Label1: TLabel;
     LblDown: TLabel;
     LblUp: TLabel;
     ohlcSeries: TOpenHighLowCloseSeries;
@@ -28,10 +30,12 @@ type
     procedure cbCandleStickSameColorChange(Sender: TObject);
     procedure cbSeriesTypeChange(Sender: TObject);
     procedure cbColorChange(Sender: TObject);
-    procedure DataPointHintToolHint(ATool: TDataPointHintTool;
+    procedure DataPointHintTool_AllHint(ATool: TDataPointHintTool;
       const APoint: TPoint; var AHint: String);
     procedure DataPointHintToolHintLocation(ATool: TDataPointHintTool;
       AHintSize: TSize; var APoint: TPoint);
+    procedure DataPointHintTool_DetailsHint(ATool: TDataPointHintTool;
+      const APoint: TPoint; var AHint: String);
     procedure FormCreate(Sender: TObject);
   private
     { private declarations }
@@ -127,7 +131,7 @@ end;
 
 { This event handler returns the text to be displayed as a mouse-over hint.
   We construct the text from the date, and the open, high, low, close values. }
-procedure TMainForm.DataPointHintToolHint(ATool: TDataPointHintTool;
+procedure TMainForm.DataPointHintTool_AllHint(ATool: TDataPointHintTool;
   const APoint: TPoint; var AHint: String);
 var
   ser: TOpenHighLowCloseSeries;
@@ -135,10 +139,38 @@ begin
   ser := ATool.Series as TOpenHighLowCloseSeries;
   AHint := AnsiToUTF8(Format('Date: %s'#13'  Open: %.2m'#13'  High: %.2m'#13'  Low: %.2m'#13'  Close: %.2m', [
     FormatDateTime('dddddd', StrToDate(ser.ListSource[ATool.PointIndex]^.Text)),
-    ser.ListSource[ATool.PointIndex]^.YList[0],
-    ser.ListSource[ATool.PointIndex]^.YList[2],
-    ser.ListSource[ATool.PointIndex]^.Y,
-    ser.ListSource[ATool.PointIndex]^.YList[1]
+    ser.ListSource[ATool.PointIndex]^.GetY(ser.YIndexOpen),
+    ser.ListSource[ATool.PointIndex]^.GetY(ser.YIndexHigh),
+    ser.ListSource[ATool.PointIndex]^.GetY(ser.YIndexHigh),
+    ser.ListSource[ATool.PointIndex]^.GetY(ser.YIndexClose)
+  ]));
+end;
+
+{ Similar to the method above. Displays only the date and the value clicked }
+procedure TMainForm.DataPointHintTool_DetailsHint(ATool: TDataPointHintTool;
+  const APoint: TPoint; var AHint: String);
+var
+  ser: TOpenHighLowCloseSeries;
+  x, y: Integer;
+  idx: Integer;
+  yidx: Integer;
+  ohlcName: String;
+begin
+  ser := ATool.Series as TOpenHighLowCloseSeries;
+  idx := ATool.PointIndex;
+  yidx := ATool.YIndex;
+  if yidx = ohlcSeries.YIndexClose then
+    ohlcName := 'Close'
+  else if yidx = ohlcSeries.YIndexHigh then
+    ohlcName := 'High'
+  else if yidx = ohlcSeries.YIndexLow then
+    ohlcName := 'Low'
+  else if yidx = ohlcSeries.YIndexOpen then
+    ohlcName := 'Open';
+  AHint := AnsiToUTF8(Format('Date: %s'#13'  %s: %.2m', [
+    FormatDateTime('dddddd', StrToDate(ser.ListSource[idx]^.Text)),
+    ohlcName,
+    ser.ListSource[idx]^.GetY(yidx)
   ]));
 end;
 
