@@ -88,6 +88,8 @@ type
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
+    function ToolTargetDistance(const AParams: TNearestPointParams;
+      AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
   public
     function AddXY(
       AX, AYLoWhisker, AYLoBox, AY, AYHiBox, AYHiWhisker: Double;
@@ -97,6 +99,8 @@ type
     destructor  Destroy; override;
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
+    function GetNearestPoint(const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; override;
   published
     property BoxBrush: TBrush read FBoxBrush write SetBoxBrush;
     property BoxPen: TPen read FBoxPen write SetBoxPen;
@@ -130,11 +134,11 @@ type
     FCandlestickUpBrush: TBrush;
     FDownLinePen: TOHLCDownPen;
     FLinePen: TPen;
-    FTickWidth: Cardinal;
-    FYIndexClose: Cardinal;
-    FYIndexHigh: Cardinal;
-    FYIndexLow: Cardinal;
-    FYIndexOpen: Cardinal;
+    FTickWidth: Integer;
+    FYIndexClose: Integer;
+    FYIndexHigh: Integer;
+    FYIndexLow: Integer;
+    FYIndexOpen: Integer;
     FMode: TOHLCMode;
     procedure SetCandlestickLinePen(AValue: TPen);
     procedure SetCandlestickDownBrush(AValue: TBrush);
@@ -142,11 +146,11 @@ type
     procedure SetDownLinePen(AValue: TOHLCDownPen);
     procedure SetLinePen(AValue: TPen);
     procedure SetOHLCMode(AValue: TOHLCMode);
-    procedure SetTickWidth(AValue: Cardinal);
-    procedure SetYIndexClose(AValue: Cardinal);
-    procedure SetYIndexHigh(AValue: Cardinal);
-    procedure SetYIndexLow(AValue: Cardinal);
-    procedure SetYIndexOpen(AValue: Cardinal);
+    procedure SetTickWidth(AValue: Integer);
+    procedure SetYIndexClose(AValue: Integer);
+    procedure SetYIndexHigh(AValue: Integer);
+    procedure SetYIndexLow(AValue: Integer);
+    procedure SetYIndexOpen(AValue: Integer);
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
@@ -173,15 +177,15 @@ type
     property DownLinePen: TOHLCDownPen read FDownLinePen write SetDownLinePen;
     property LinePen: TPen read FLinePen write SetLinePen;
     property Mode: TOHLCMode read FMode write SetOHLCMode;
-    property TickWidth: Cardinal
+    property TickWidth: integer
       read FTickWidth write SetTickWidth default DEF_OHLC_TICK_WIDTH;
-    property YIndexClose: Cardinal
+    property YIndexClose: integer
       read FYIndexClose write SetYIndexClose default DEF_YINDEX_CLOSE;
-    property YIndexHigh: Cardinal
+    property YIndexHigh: Integer
       read FYIndexHigh write SetYIndexHigh default DEF_YINDEX_HIGH;
-    property YIndexLow: Cardinal
+    property YIndexLow: Integer
       read FYIndexLow write SetYIndexLow default DEF_YINDEX_LOW;
-    property YIndexOpen: Cardinal
+    property YIndexOpen: Integer
       read FYIndexOpen write SetYIndexOpen default DEF_YINDEX_OPEN;
   published
     property AxisIndexX;
@@ -694,6 +698,70 @@ begin
   AItems.Add(TLegendItemBoxAndWhiskers.Create(Self, LegendTextSingle));
 end;
 
+function TBoxAndWhiskerSeries.GetNearestPoint(const AParams: TNearestPointParams;
+  out AResults: TNearestPointResults): Boolean;
+var
+  i, j: Integer;
+  graphClickPt: TDoublePoint;
+  xp, w, wb: Double;
+  yp: Array[0..4] of Double;
+  pImg: TPoint;
+  R: TDoubleRect;
+  xImg, dist: Integer;
+begin
+  Result := inherited;
+
+  if not (nptCustom in AParams.FTargets) then
+    exit;
+
+  if Result and (AResults.FDist = 0) then
+    exit;
+
+  graphClickPt := ParentChart.ImageToGraph(AParams.FPoint);
+  pImg := AParams.FPoint;
+  if IsRotated then begin
+    Exchange(graphclickpt.X, graphclickpt.Y);
+    Exchange(pImg.X, pImg.Y);
+  end;
+
+  // Iterate through all points of the series
+  for i := 0 to Count - 1 do begin
+    xp := GetGraphPointX(i);
+    for j := 0 to High(yp) do
+      yp[j] := GetGraphPointY(i, j);
+    case FWidthStyle of
+      bwsPercent    : w := GetXRange(xp, i) * PERCENT / 2;
+      bwsPercentMin : w := FMinXRange * PERCENT / 2;
+    end;
+    wb := w * BoxWidth;
+
+    dist := AResults.FDist;
+
+    // click inside box
+    R.a := DoublePoint(xp - wb, yp[1]);  // index 1 --> lower quartile
+    R.b := DoublePoint(xp + wb, yp[3]);  // index 3 --> upper quartile
+    if InRange(graphClickPt.X, R.a.x, R.b.x) and InRange(graphClickPt.Y, R.a.Y, R.b.Y)
+      then dist := 0;
+
+    // click on whisker line
+    xImg := IfThen(IsRotated, ParentChart.YGraphToImage(xp), ParentChart.XGraphToImage(xp));
+    if InRange(graphClickPt.Y, yp[0], yp[1]) or InRange(graphClickPt.Y, yp[3], yp[4])
+      then dist := sqr(pImg.X - xImg);
+
+    // Sufficiently close?
+    if dist < AResults.FDist then begin
+      AResults.FDist := dist;
+      AResults.FIndex := i;
+      AResults.FYIndex := 2;
+      AResults.FValue := DoublePoint(xp, yp[2]);
+      AResults.FImg := ParentChart.GraphToImage(AResults.FValue);
+      if dist = 0 then
+        break;
+    end;
+  end;
+  Result := AResults.FIndex > -1;
+end;
+
 function TBoxAndWhiskerSeries.GetSeriesColor: TColor;
 begin
   Result := BoxBrush.Color;
@@ -748,6 +816,50 @@ begin
   FWhiskersWidth := AValue;
   UpdateParentChart;
 end;
+
+function TBoxAndWhiskerSeries.ToolTargetDistance(
+  const AParams: TNearestPointParams; AGraphPt: TDoublePoint;
+  APointIdx, AXIdx, AYIdx: Integer): Integer;
+
+  function DistanceToLine(x1, x2, y: Integer): Integer;
+  begin
+    if InRange(AParams.FPoint.X, x1, x2) then
+      Result := sqr(AParams.FPoint.Y - y)   // FDistFunc does not calc sqrt
+    else
+      Result := Min(
+        AParams.FDistFunc(AParams.FPoint, Point(x1, y)),
+        AParams.FDistFunc(AParams.FPoint, Point(x2, y))
+      );
+  end;
+
+var
+  xw1, xw2, xb1, xb2,  w, wb, ww: Double;
+  p: TPoint;
+begin
+  Unused(AXIdx);
+
+  case FWidthStyle of
+    bwsPercent    : w := GetXRange(AGraphPt.X, APointIdx) * PERCENT / 2;
+    bwsPercentMin : w := FMinXRange * PERCENT / 2;
+  end;
+  wb := w * BoxWidth;
+  ww := w * WhiskersWidth;
+
+  p := ParentChart.GraphToImage(AGraphPt);
+  xw1 := AGraphPt.X - ww;
+  xw2 := AGraphPt.X + ww;
+  xb1 := AGraphPt.X - wb;
+  xb2 := AGraphPt.X + wb;
+
+  with ParentChart do
+    case AYIdx of
+      0, 4:  // Min, Max --> Whisker
+        Result := DistanceToLine(XGraphToImage(xw1), XGraphToImage(xw2), p.y);
+      1, 2, 3:  // Box lines
+        Result := DistancetoLine(XGraphToImage(xb1), XGraphToImage(xb2), p.y);
+    end;
+end;
+
 
 { TOpenHighLowCloseSeries }
 
@@ -1037,35 +1149,35 @@ begin
   UpdateParentChart;
 end;
 
-procedure TOpenHighLowCloseSeries.SetTickWidth(AValue: Cardinal);
+procedure TOpenHighLowCloseSeries.SetTickWidth(AValue: Integer);
 begin
   if FTickWidth = AValue then exit;
   FTickWidth := AValue;
   UpdateParentChart;
 end;
 
-procedure TOpenHighLowCloseSeries.SetYIndexClose(AValue: Cardinal);
+procedure TOpenHighLowCloseSeries.SetYIndexClose(AValue: Integer);
 begin
   if FYIndexClose = AValue then exit;
   FYIndexClose := AValue;
   UpdateParentChart;
 end;
 
-procedure TOpenHighLowCloseSeries.SetYIndexHigh(AValue: Cardinal);
+procedure TOpenHighLowCloseSeries.SetYIndexHigh(AValue: Integer);
 begin
   if FYIndexHigh = AValue then exit;
   FYIndexHigh := AValue;
   UpdateParentChart;
 end;
 
-procedure TOpenHighLowCloseSeries.SetYIndexLow(AValue: Cardinal);
+procedure TOpenHighLowCloseSeries.SetYIndexLow(AValue: Integer);
 begin
   if FYIndexLow = AValue then exit;
   FYIndexLow := AValue;
   UpdateParentChart;
 end;
 
-procedure TOpenHighLowCloseSeries.SetYIndexOpen(AValue: Cardinal);
+procedure TOpenHighLowCloseSeries.SetYIndexOpen(AValue: Integer);
 begin
   if FYIndexOpen = AValue then exit;
   FYIndexOpen := AValue;
