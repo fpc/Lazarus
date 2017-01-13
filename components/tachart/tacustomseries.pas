@@ -1074,6 +1074,7 @@ begin
       Self.FMarkPositions := MarkPositions;
       if Self.FPointer <> nil then
         Self.FPointer.Assign(Pointer);
+      Self.Stacked := Stacked;
       Self.FUseReticule := UseReticule;
     end;
   inherited Assign(ASource);

@@ -684,9 +684,9 @@ begin
   Result := Source.ExtentList;
   // Show first and last boxes fully.
   x := GetGraphPointX(0);
-  Result.a.X := Min(Result.a.X, x - ExtraWidth(0));
+  Result.a.X := Min(Result.a.X, GraphToAxisX(x - ExtraWidth(0)));
   x := GetGraphPointX(Count - 1);
-  Result.b.X := Max(Result.b.X, x + ExtraWidth(Count - 1));
+  Result.b.X := Max(Result.b.X, GraphToAxisX(x + ExtraWidth(Count - 1)));
 end;
 
 procedure TBoxAndWhiskerSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -927,14 +927,16 @@ var
   tw: Double;
 begin
   if Source.YCount < 4 then exit(EmptyExtent);
-  Result := Source.ExtentList;
+  Result := Source.ExtentList;                            // axis units
   // Show first and last open/close ticks and candle boxes fully.
-  x := GetGraphPointX(0);
+  x := GetGraphPointX(0);                                 // graph units
   tw := GetXRange(x, 0) * PERCENT * TickWidth;
-  Result.a.X := Min(Result.a.X, x - tw);
+  Result.a.X := Min(Result.a.X, GraphToAxisX(x - tw));    // axis units
+//  Result.a.X := Min(Result.a.X, x - tw);
   x := GetGraphPointX(Count - 1);
   tw := GetXRange(x, Count - 1) * PERCENT * TickWidth;
-  Result.b.X := Max(Result.b.X, x + tw);
+  Result.b.X := Max(Result.b.X, AxisToGraphX(x + tw));
+//  Result.b.X := Max(Result.b.X, x + tw);
 end;
 
 procedure TOpenHighLowCloseSeries.GetLegendItems(AItems: TChartLegendItems);
