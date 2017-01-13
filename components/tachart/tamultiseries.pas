@@ -160,6 +160,7 @@ type
       AX, AOpen, AHigh, ALow, AClose: Double;
       ALabel: String = ''; AColor: TColor = clTAColor): Integer; inline;
     procedure Draw(ADrawer: IChartDrawer); override;
+    function Extent: TDoubleRect; override;
     function GetNearestPoint(const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
   published
@@ -918,6 +919,22 @@ begin
       mCandleStick: DrawCandleStick(x, yopen, yhigh, ylow, yclose, tw);
     end;
   end;
+end;
+
+function TOpenHighLowCloseSeries.Extent: TDoubleRect;
+var
+  x: Double;
+  tw: Double;
+begin
+  if Source.YCount < 4 then exit(EmptyExtent);
+  Result := Source.ExtentList;
+  // Show first and last open/close ticks and candle boxes fully.
+  x := GetGraphPointX(0);
+  tw := GetXRange(x, 0) * PERCENT * TickWidth;
+  Result.a.X := Min(Result.a.X, x - tw);
+  x := GetGraphPointX(Count - 1);
+  tw := GetXRange(x, Count - 1) * PERCENT * TickWidth;
+  Result.b.X := Max(Result.b.X, x + tw);
 end;
 
 procedure TOpenHighLowCloseSeries.GetLegendItems(AItems: TChartLegendItems);
