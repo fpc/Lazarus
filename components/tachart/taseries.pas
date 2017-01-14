@@ -1041,7 +1041,7 @@ var
   end;
 
 var
-  z, ofs, y: Double;
+  ofs, y: Double;
 begin
   if IsEmpty then exit;
 
@@ -1136,7 +1136,7 @@ function TBarSeries.GetNearestPoint(const AParams: TNearestPointParams;
 var
   pointIndex: Integer;
   graphClickPt: TDoublePoint;
-  sp, p: TDoublePoint;
+  sp: TDoublePoint;
   ofs, w: Double;
   heights: TDoubleDynArray;
   y: Double;

@@ -1320,7 +1320,7 @@ begin
           tmpSp.Y += Source[i]^.YList[j] else
           tmpSp.Y := Source[i]^.YList[j];
         tmpPt := AxisToGraph(tmpSp);
-        tmpDist := ToolTargetDistance(AParams, tmpPt, i, 0, j);
+        tmpDist := ToolTargetDistance(AParams, tmpPt, i, 0, j + 1);
         if tmpDist < dist then begin
           dist := tmpDist;
           sp := tmpSp;
@@ -1336,7 +1336,7 @@ begin
       for j := 0 to Source.XCount - 2 do begin
         tmpSp.X := Source[i]^.XList[j];
         tmpPt := AxisToGraph(tmpSp);
-        tmpDist := ToolTargetDistance(AParams, tmpPt, i, j, 0);
+        tmpDist := ToolTargetDistance(AParams, tmpPt, i, j + 1, 0);
         if tmpDist < dist then begin
           dist := tmpDist;
           sp := tmpSp;

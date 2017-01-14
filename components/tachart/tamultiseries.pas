@@ -576,6 +576,7 @@ end;
 constructor TBoxAndWhiskerSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FOptimizeX := false;
   FBoxBrush := TBrush.Create;
   FBoxBrush.OnChange := @StyleChanged;
   FBoxPen := TPen.Create;
@@ -702,61 +703,66 @@ function TBoxAndWhiskerSeries.GetNearestPoint(const AParams: TNearestPointParams
   out AResults: TNearestPointResults): Boolean;
 var
   i, j: Integer;
-  graphClickPt: TDoublePoint;
-  xp, w, wb: Double;
-  yp: Array[0..4] of Double;
+  graphClickPt, pt: TDoublePoint;
+  x, w, wb: Double;
+  y: Array[0..4] of Double;
   pImg: TPoint;
   R: TDoubleRect;
   xImg, dist: Integer;
 begin
   Result := inherited;
 
+  if Result and ([nptPoint, nptYList] * AParams.FTargets = [nptPoint, nptYList]) then
+    exit;
   if not (nptCustom in AParams.FTargets) then
     exit;
 
-  if Result and (AResults.FDist = 0) then
-    exit;
-
-  graphClickPt := ParentChart.ImageToGraph(AParams.FPoint);
   pImg := AParams.FPoint;
+  graphClickPt := ParentChart.ImageToGraph(AParams.FPoint);
   if IsRotated then begin
     Exchange(graphclickpt.X, graphclickpt.Y);
-    Exchange(pImg.X, pImg.Y);
+    pImg := ParentChart.GraphToImage(graphclickPt);
   end;
 
   // Iterate through all points of the series
   for i := 0 to Count - 1 do begin
-    xp := GetGraphPointX(i);
-    for j := 0 to High(yp) do
-      yp[j] := GetGraphPointY(i, j);
+    x := GetGraphPointX(i);
+    for j := 0 to High(y) do
+      y[j] := GetGraphPointY(i, j);
     case FWidthStyle of
-      bwsPercent    : w := GetXRange(xp, i) * PERCENT / 2;
+      bwsPercent    : w := GetXRange(x, i) * PERCENT / 2;
       bwsPercentMin : w := FMinXRange * PERCENT / 2;
     end;
     wb := w * BoxWidth;
 
-    dist := AResults.FDist;
+    dist := MaxInt;
 
     // click inside box
-    R.a := DoublePoint(xp - wb, yp[1]);  // index 1 --> lower quartile
-    R.b := DoublePoint(xp + wb, yp[3]);  // index 3 --> upper quartile
-    if InRange(graphClickPt.X, R.a.x, R.b.x) and InRange(graphClickPt.Y, R.a.Y, R.b.Y)
-      then dist := 0;
+    R.a := DoublePoint(x - wb, y[1]);  // index 1 --> lower quartile
+    R.b := DoublePoint(x + wb, y[3]);  // index 3 --> upper quartile
+    if InRange(graphClickPt.X, R.a.x, R.b.x) and InRange(graphClickPt.Y, R.a.Y, R.b.Y) then
+    begin
+      dist := 0;
+      AResults.FYIndex := -1;
+   end;
 
     // click on whisker line
-    xImg := IfThen(IsRotated, ParentChart.YGraphToImage(xp), ParentChart.XGraphToImage(xp));
-    if InRange(graphClickPt.Y, yp[0], yp[1]) or InRange(graphClickPt.Y, yp[3], yp[4])
-      then dist := sqr(pImg.X - xImg);
+    xImg := ParentChart.XGraphToImage(x);
+    if InRange(graphClickPt.Y, y[0], y[1]) or InRange(graphClickPt.Y, y[3], y[4])
+    then begin
+      dist := sqr(pImg.X - xImg);
+      AResults.FYIndex := -1;
+    end;
 
     // Sufficiently close?
     if dist < AResults.FDist then begin
       AResults.FDist := dist;
       AResults.FIndex := i;
-      AResults.FYIndex := 2;
-      AResults.FValue := DoublePoint(xp, yp[2]);
-      AResults.FImg := ParentChart.GraphToImage(AResults.FValue);
-      if dist = 0 then
-        break;
+      pt := DoublePoint(x, y[2]);   // Median
+      AResults.FValue := pt;
+      if IsRotated then Exchange(pt.X, pt.Y);
+      AResults.FImg := ParentChart.GraphToImage(pt);
+      if dist = 0 then break;
     end;
   end;
   Result := AResults.FIndex > -1;
@@ -821,22 +827,33 @@ function TBoxAndWhiskerSeries.ToolTargetDistance(
   const AParams: TNearestPointParams; AGraphPt: TDoublePoint;
   APointIdx, AXIdx, AYIdx: Integer): Integer;
 
-  function DistanceToLine(x1, x2, y: Integer): Integer;
+  // All in image coordinates traansformed to have a horizontal x axis
+  function DistanceToLine(Pt: TPoint; x1, x2, y: Integer): Integer;
   begin
-    if InRange(AParams.FPoint.X, x1, x2) then
-      Result := sqr(AParams.FPoint.Y - y)   // FDistFunc does not calc sqrt
+    if InRange(Pt.X, x1, x2) then
+      Result := sqr(Pt.Y - y)   // FDistFunc does not calc sqrt
     else
       Result := Min(
-        AParams.FDistFunc(AParams.FPoint, Point(x1, y)),
-        AParams.FDistFunc(AParams.FPoint, Point(x2, y))
+        AParams.FDistFunc(Pt, Point(x1, y)),
+        AParams.FDistFunc(Pt, Point(x2, y))
       );
   end;
 
 var
-  xw1, xw2, xb1, xb2,  w, wb, ww: Double;
-  p: TPoint;
+  xw1, xw2, xb1, xb2, y: Integer;
+  w, wb, ww: Double;
+  clickPt: TPoint;
+  gp: TDoublePoint;
 begin
   Unused(AXIdx);
+
+  if IsRotated then begin
+    gp := ParentChart.ImageToGraph(AParams.FPoint);
+    Exchange(gp.X, gp.Y);
+    clickPt := ParentChart.GraphToImage(gp);
+    Exchange(AGraphPt.X, AGraphPt.Y);
+  end else
+    clickPt := AParams.FPoint;
 
   case FWidthStyle of
     bwsPercent    : w := GetXRange(AGraphPt.X, APointIdx) * PERCENT / 2;
@@ -845,19 +862,18 @@ begin
   wb := w * BoxWidth;
   ww := w * WhiskersWidth;
 
-  p := ParentChart.GraphToImage(AGraphPt);
-  xw1 := AGraphPt.X - ww;
-  xw2 := AGraphPt.X + ww;
-  xb1 := AGraphPt.X - wb;
-  xb2 := AGraphPt.X + wb;
+  xw1 := ParentChart.XGraphToImage(AGraphPt.X - ww);
+  xw2 := ParentChart.XGraphToImage(AGraphPt.X + ww);
+  xb1 := ParentChart.XGraphToImage(AGraphPt.X - wb);
+  xb2 := ParentChart.XGraphToImage(AGraphPt.X + wb);
+  y := ParentChart.YGraphToImage(AGraphPt.Y);
 
-  with ParentChart do
-    case AYIdx of
-      0, 4:  // Min, Max --> Whisker
-        Result := DistanceToLine(XGraphToImage(xw1), XGraphToImage(xw2), p.y);
-      1, 2, 3:  // Box lines
-        Result := DistancetoLine(XGraphToImage(xb1), XGraphToImage(xb2), p.y);
-    end;
+  case AYIdx of
+    0, 4:     // Min, Max --> Whisker
+      Result := DistanceToLine(clickPt, xw1, xw2, y);
+    1, 2, 3:  // Box lines
+      Result := DistancetoLine(clickPt, xb1, xb2, y);
+  end;
 end;
 
 
@@ -899,6 +915,7 @@ end;
 constructor TOpenHighLowCloseSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FOptimizeX := false;
   FStacked := false;
   FCandlestickDownBrush := TBrush.Create;
   with FCandlestickDownBrush do begin
@@ -1060,24 +1077,26 @@ function TOpenHighLowCloseSeries.GetNearestPoint(const AParams: TNearestPointPar
   out AResults: TNearestPointResults): Boolean;
 var
   i: Integer;
-  graphClickPt: TDoublePoint;
+  graphClickPt, p: TDoublePoint;
+  pImg: TPoint;
   x, yopen, yhigh, ylow, yclose, tw: Double;
+  xImg, dist: Integer;
   R: TDoubleRect;
 begin
-  Result := false;
-  AResults.FDist := Sqr(AParams.FRadius) + 1;
-  AResults.FIndex := -1;
-  AResults.FXIndex := 0;
-  AResults.FYIndex := 0;
+  Result := inherited;
 
-  if not (nptCustom in AParams.FTargets) then begin
-    Result := inherited;
+  if Result and ([nptPoint, nptYList] * AParams.FTargets = [nptPoint, nptYList]) then
     exit;
-  end;
+  if not (nptCustom in AParams.FTargets) then
+    exit;
 
   graphClickPt := ParentChart.ImageToGraph(AParams.FPoint);
-  if IsRotated then
+  pImg := AParams.FPoint;
+  if IsRotated then begin
+//    Exchange(pImg.X, pImg.Y);
     Exchange(graphclickpt.X, graphclickpt.Y);
+    pImg := ParentChart.GraphToImage(graphClickPt);
+  end;
 
   // Iterate through all points of the series
   for i := 0 to Count - 1 do begin
@@ -1087,19 +1106,39 @@ begin
     ylow := GetGraphPointY(i, YIndexLow);
     yclose := GetGraphPointY(i, YIndexClose);
     tw := GetXRange(x, i) * PERCENT * TickWidth;
-    R.a := DoublePoint(x - tw, MinValue([yopen, yhigh, ylow, yclose]));
-    R.b := DoublePoint(x + tw, MaxValue([yopen, yhigh, ylow, yclose]));
-    if InRange(graphClickPt.X, R.a.x, R.b.x) and
-       InRange(graphClickPt.Y, R.a.Y, R.b.Y) then
-    begin
-      AResults.FDist := 0;
+
+    dist := MaxInt;
+
+    // click on vertical line
+    if InRange(graphClickPt.Y, ylow, yhigh) then begin
+      xImg := ParentChart.XGraphToImage(x);
+      dist := sqr(pImg.X - xImg);
+      AResults.FYIndex := -1;
+    end;
+
+    // click on candle box
+    if FMode = mCandlestick then begin
+      R.a := DoublePoint(x - tw, Min(yopen, yclose));
+      R.b := DoublePoint(x + tw, Max(yopen, yclose));
+      if InRange(graphClickPt.X, R.a.x, R.b.x) and InRange(graphClickPt.Y, R.a.Y, R.b.Y) then
+      begin
+        dist := 0;
+        AResults.FYIndex := -1;
+      end;
+    end;
+
+    // Sufficiently close?
+    if dist < AResults.FDist then begin
+      AResults.FDist := dist;
       AResults.FIndex := i;
-      AResults.FValue := DoublePoint(x, yopen);
-      AResults.FImg := ParentChart.GraphToImage(AResults.FValue);
-      Result := true;
-      exit;
+      p := DoublePoint(x, yclose);   // "Close" value
+      AResults.FValue := p;
+      if IsRotated then Exchange(p.X, p.Y);
+      AResults.FImg := ParentChart.GraphToImage(p);
+      if dist = 0 then break;
     end;
   end;
+  Result := AResults.FIndex > -1;
 end;
 
 function TOpenHighLowCloseSeries.GetSeriesColor: TColor;
@@ -1188,47 +1227,59 @@ function TOpenHighLowCloseSeries.ToolTargetDistance(
   const AParams: TNearestPointParams; AGraphPt: TDoublePoint;
   APointIdx, AXIdx, AYIdx: Integer): Integer;
 
-  function DistanceToLine(x1, x2, y: Integer): Integer;
+  // All in image coordinates transformed to have a horizontal x axis
+  function DistanceToLine(Pt: TPoint; x1, x2, y: Integer): Integer;
   begin
-    if InRange(AParams.FPoint.X, x1, x2) then
-      Result := sqr(AParams.FPoint.Y - y)   // FDistFunc does not calc sqrt
+    if InRange(Pt.X, x1, x2) then     // FDistFunc does not calculate sqrt
+      Result := sqr(Pt.Y - y)
     else
       Result := Min(
-        AParams.FDistFunc(AParams.FPoint, Point(x1, y)),
-        AParams.FDistFunc(AParams.FPoint, Point(x2, y))
+        AParams.FDistFunc(Pt, Point(x1, y)),
+        AParams.FDistFunc(Pt, Point(x2, y))
       );
   end;
 
 var
-  x1, x2, w: Double;
-  p: TPoint;
+  x1, x2: Integer;
+  w: Double;
+  p, clickPt: TPoint;
+  gp: TDoublePoint;
 begin
   Unused(AXIdx);
 
-  p := ParentChart.GraphToImage(AGraphPt);
+  // Convert the "clicked" and "test" point to non-rotated axes
+  if IsRotated then begin
+    gp := ParentChart.ImageToGraph(AParams.FPoint);
+    Exchange(gp.X, gp.Y);
+    clickPt := ParentChart.GraphToImage(gp);
+    Exchange(AGraphPt.X, AGraphPt.Y);
+  end else
+    clickPt := AParams.FPoint;
+
   w := GetXRange(AGraphPt.X, APointIdx) * PERCENT * TickWidth;
-  x1 := AGraphPt.X - w;
-  x2 := AGraphPt.X + w;
+  x1 := ParentChart.XGraphToImage(AGraphPt.X - w);
+  x2 := ParentChart.XGraphToImage(AGraphPt.X + w);
+  p := ParentChart.GraphToImage(AGraphPt);
 
   case FMode of
     mOHLC:
       with ParentChart do
-        if (AYIdx = YIndexOpen) or (AYIdx = YIndexClose) then
-          Result := DistanceToLine(XGraphToImage(x1), XGraphToImage(x2), p.y)
+        if (AYIdx = YIndexOpen) then
+          Result := DistanceToLine(clickPt, x1, p.x, p.y)
+        else if (AYIdx = YIndexClose) then
+          Result := DistanceToLine(clickPt, p.x, x2, p.y)
         else if (AYIdx = YIndexHigh) or (AYIdx = YIndexLow) then
-          Result := AParams.FDistFunc(AParams.FPoint, p)
+          Result := AParams.FDistFunc(clickPt, p)
         else
-         raise Exception.Create('TOpenHighLowCloseSeries.ToolTargetDistance: Illegal YIndex.');
+          raise Exception.Create('TOpenHighLowCloseSeries.ToolTargetDistance: Illegal YIndex.');
     mCandleStick:
       with ParentChart do
-        if (AYIdx = YIndexOpen) then
-          Result := DistanceToLine(XGraphToImage(x1), p.x, p.y)
-        else if (AYIdx = YIndexClose) then
-          Result := DistanceToLine(p.x, XGraphToImage(x2), p.y)
+        if (AYIdx = YIndexOpen) or (AYIdx = YIndexClose) then
+          Result := DistanceToLine(clickPt, x1, x2, p.y)
         else if (AYIdx = YIndexHigh) or (AYIdx = YIndexLow) then
-          Result := AParams.FDistFunc(AParams.FPoint, p)
+          Result := AParams.FDistFunc(clickPt, p)
         else
-         raise Exception.Create('TOpenHighLowCloseSeries.ToolTargetDistance: Illegal YIndex.');
+          raise Exception.Create('TOpenHighLowCloseSeries.ToolTargetDistance: Illegal YIndex.');
   end;
 end;
 
