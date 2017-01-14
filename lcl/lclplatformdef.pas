@@ -31,7 +31,8 @@ type
     lpfpGUI,
     lpNoGUI,
     lpCocoa,
-    lpCustomDrawn
+    lpCustomDrawn,
+    lpMUI
     );
 
   TLCLPlatforms = set of TLCLPlatform;
@@ -52,7 +53,8 @@ const
     'fpgui',
     'nogui',
     'cocoa',
-    'customdrawn'
+    'customdrawn',
+    'mui'
     );
 
   LCLPlatformDisplayNames: array[TLCLPlatform] of string = (
@@ -67,7 +69,8 @@ const
     'fpGUI (alpha)',
     'NoGUI',
     'cocoa (alpha)',
-    'customdraw (alpha)'
+    'customdraw (alpha)',
+    'MUI'
     );
 
 var
@@ -78,6 +81,9 @@ var
     {$ENDIF}
     {$IFDEF darwin}{$DEFINE WidgetSetDefined}
     lpCarbon;
+    {$ENDIF}
+    {$IFDEF HASAMIGA}{$DEFINE WidgetSetDefined}
+    lpMUI;
     {$ENDIF}
     {$IFNDEF WidgetSetDefined}
     lpGtk2;

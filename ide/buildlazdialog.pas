@@ -1073,6 +1073,7 @@ begin
       Add('watcom');
       Add('netwlibc');
       Add('amiga');
+      Add('aros');
       Add('atari');
       Add('palmos');
       Add('gba');

@@ -270,9 +270,11 @@ implementation
 
 
 {$IfNdef MSWindows}
+{$ifNdef HASAMIGA}
 // to get more detailed error messages consider the os
 uses
   Unix, BaseUnix;
+{$EndIf}
 {$EndIf}
 
 function AddToRecentList(const s: string; RecentList: TStrings; Max: integer;
@@ -1430,7 +1432,7 @@ function BackupFileForWrite(const Filename, BackupFilename: string): boolean;
 var
   FHandle: THandle;
   Code: TCodeBuffer;
-  {$IFdef MSWindows}
+  {$IF defined(MSWindows) or defined(HASAMIGA)}
   OldAttr: Longint;
   {$ELSE}
   OldInfo: Stat;
@@ -1439,7 +1441,7 @@ begin
   Result := False;
 
   // store file attributes
-  {$IFdef MSWindows}
+  {$IF defined(MSWindows) or defined(HASAMIGA)}
   OldAttr := FileGetAttrUTF8(Filename);
   {$ELSE}
   if FpStat(Filename, OldInfo{%H-})<>0 then

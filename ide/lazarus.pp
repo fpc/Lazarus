@@ -41,6 +41,9 @@ uses
   {$IFDEF EnableRedirectStdErr}
   redirect_stderr,
   {$ENDIF}
+  {$IF defined(HASAMIGA) and not defined(DisableMultiThreading)}
+  athreads,
+  {$ENDIF}
   {$IF defined(UNIX) and not defined(DisableMultiThreading)}
   cthreads,
   {$ENDIF}

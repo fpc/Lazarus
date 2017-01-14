@@ -912,13 +912,19 @@ begin
   // creates an exception, that gdb catches:
   debugln(rsCreatingGdbCatchableError);
   DumpStack;
+  {$ifndef HASAMIGA} // On Amiga Division by 0 is not catchable, just crash
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
+  {$endif}
 end;
 
 procedure RaiseAndCatchException;
 begin
   try
+    {$ifndef HASAMIGA} // On Amiga Division by 0 is not catchable, just crash
     if (length(rsERRORInLCL) div (length(rsERRORInLCL) div 10000))=0 then ;
+    {$else}
+    DumpStack;
+    {$endif}
   except
   end;
 end;
@@ -3180,6 +3186,11 @@ initialization
   // To prevent crashes, replace it with the default system back trace function
   // that just outputs addresses and not source and line number
   BackTraceStrFunc := @SysBackTraceStr;
+  {$endif}
+  {$ifdef AROS}
+    {$if FPC_FULLVERSION>=30101}
+    EnableBackTraceStr;
+    {$endif}
   {$endif}
   InterfaceInitializationHandlers := TFPList.Create;
   InterfaceFinalizationHandlers := TFPList.Create;

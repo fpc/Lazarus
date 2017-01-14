@@ -2,7 +2,7 @@
 main=lcl
 
 [target]
-dirs=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn
+dirs=gtk gtk2 gtk3 win32 wince qt qt5 carbon fpgui nogui cocoa customdrawn mui
 
 [default]
 dir=$(LCL_PLATFORM)
@@ -18,8 +18,11 @@ LCL_PLATFORM=wince
 else
 ifeq ($(OS_TARGET),darwin)
 LCL_PLATFORM=carbon
+ifneq ($(findstring $(OS_TARGET),amiga aros morphos),)
+LCL_PLATFORM=mui
 else
 LCL_PLATFORM=gtk2
+endif
 endif
 endif
 endif
