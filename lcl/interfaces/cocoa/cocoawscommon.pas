@@ -712,7 +712,7 @@ begin
   MousePos := Event.locationInWindow;
   OffsetMousePos(MousePos);
 
-  Msg.Keys := CocoaModifiersToKeyState(Event.modifierFlags) or CocoaPressedMouseButtonsToKeyState(Event.pressedMouseButtons);
+  Msg.Keys := CocoaModifiersToKeyState(Event.modifierFlags) or CocoaPressedMouseButtonsToKeyState(NSEvent.pressedMouseButtons);
 
   Msg.XPos := Round(MousePos.X);
   Msg.YPos := Round(MousePos.Y);
