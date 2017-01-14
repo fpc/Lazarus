@@ -1357,8 +1357,10 @@ begin
   end else begin
     for i := 0 to Count - 1 do
       if GetVectorPoints(i, p1, p2) then begin
-        p1 := DoublePoint(AxisToGraphX(p1.X), AxisToGraphY(p1.Y));
-        p2 := DoublePoint(AxisToGraphX(p2.X), AxisToGraphY(p2.Y));
+        p1 := AxisToGraph(p1);
+        p2 := AxisToGraph(p2);
+        //p1 := DoublePoint(AxisToGraphX(p1.X), AxisToGraphY(p1.Y));
+        //p2 := DoublePoint(AxisToGraphX(p2.X), AxisToGraphY(p2.Y));
         lPen.Color := GetColor(i);
         DrawVector(ADrawer, p1, p2, lPen);
       end;
@@ -1422,13 +1424,16 @@ end;
 function TFieldSeries.GetNearestPoint(const AParams: TNearestPointParams;
   out AResults: TNearestPointResults): Boolean;
 var
-  dist, i: Integer;
+  dist, d, i, xidx, yidx: Integer;
   pt1, pt2: TPoint;
   sp1, sp2: TDoublePoint;
   R: TRect;
+  img: TPoint;
 begin
   AResults.FDist := Sqr(AParams.FRadius) + 1;
   AResults.FIndex := -1;
+  AResults.FXIndex := 0;
+  AResults.FYIndex := 0;
   for i := 0 to Count - 1 do begin
     if not GetVectorPoints(i, sp1, sp2) then
       Continue;
@@ -1438,16 +1443,44 @@ begin
     // At first we check if the point is in the rect spanned by the vector.
     R := Rect(pt1.x, pt1.y, pt2.x, pt2.y);
     NormalizeRect(R);
-    R.TopLeft := R.TopLeft - Point(AParams.FRadius, AParams.FRadius);
-    R.BottomRight := R.BottomRight + Point(AParams.FRadius, AParams.FRadius);
+    ExpandRect(R, Point(AParams.FRadius, AParams.FRadius));
     if not IsPointInRect(AParams.FPoint, R) then continue;
-    // Calculate distance of point from line
-    dist := PointLineDist(AParams.FPoint, pt1, pt2);
+
+    dist := MaxInt;
+    xidx := -1;
+    yidx := -1;
+    if (nptPoint in AParams.FTargets) then begin
+      dist := AParams.FDistFunc(AParams.FPoint, pt1);
+      xidx := 0;
+      yidx := 0;
+      img := pt1;
+    end;
+    if (AParams.FTargets * [nptXList, nptYList] <> []) then begin
+      d := AParams.FDistFunc(AParams.FPoint, pt2);
+      if d < dist then begin
+        dist := d;
+        xidx := 1;
+        yidx := 1;
+        img := pt2;
+      end;
+    end;
+    if (nptCustom in AParams.FTargets) then begin
+      d := PointLineDist(AParams.FPoint, pt1, pt2);  // distance of point from line
+      if d < dist then begin
+        dist := d;
+        xidx := -1;
+        yidx := -1;
+        img := ProjToLine(AParams.FPoint, pt1, pt2);
+      end;
+    end;
     if dist >= AParams.FRadius then continue;
+
     AResults.FDist := dist;
     AResults.FIndex := i;
-    AResults.FImg := (pt1 + pt2) div 2;
-    AResults.FValue := Source.Item[i]^.Point;
+    AResults.FXIndex := xidx;
+    AResults.FYIndex := yidx;
+    AResults.FImg := img;
+    AResults.FValue := Source[i]^.Point;
     break;
   end;
   Result := AResults.FIndex >= 0;

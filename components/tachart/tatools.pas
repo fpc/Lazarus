@@ -411,6 +411,7 @@ type
   strict protected
     FNearestGraphPoint: TDoublePoint;
     FPointIndex: Integer;
+    FXIndex: Integer;
     FYIndex: Integer;
     FSeries: TBasicChartSeries;
     procedure FindNearestPoint(APoint: TPoint);
@@ -426,6 +427,7 @@ type
     property NearestGraphPoint: TDoublePoint read FNearestGraphPoint;
     property PointIndex: Integer read FPointIndex;
     property Series: TBasicChartSeries read FSeries;
+    property XIndex: Integer read FXIndex;
     property YIndex: Integer read FYIndex;
   published
     property AffectedSeries: String
@@ -1676,6 +1678,7 @@ begin
   if best.FDist = MaxInt then exit;
   FSeries := bestS;
   FPointIndex := best.FIndex;
+  FXIndex := best.FXIndex;
   FYIndex := best.FYIndex;
   FNearestGraphPoint := FChart.ImageToGraph(best.FImg);
 end;
