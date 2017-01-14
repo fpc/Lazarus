@@ -2074,6 +2074,8 @@ end;
 
 function TTimeEdit.GetTime: TDateTime;
 begin
+  if DirectInput then
+    TryParseInput(Text, FTime);
   Result := FTime;
   if IsEmptyTime then begin
     if FDefaultNow then
