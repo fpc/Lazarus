@@ -471,7 +471,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    function TabIndexAtClientPos(ClientPos: TPoint): integer;
+    function TabIndexAtClientPos(ClientPos: TPoint): integer; deprecated 'Will be deleted in next major Lazarus release, use IndexOfPageAt';
     function TabRect(AIndex: Integer): TRect;
     function GetImageIndex(ThePageIndex: Integer): Integer; virtual;
     function IndexOf(APage: TPersistent): integer; virtual;
@@ -483,6 +483,7 @@ type
     function TabToPageIndex(AIndex: integer): integer;
     function PageToTabIndex(AIndex: integer): integer;
     function IndexOfTabAt(X, Y: Integer): Integer;
+    function IndexOfPageAt(X, Y: Integer): Integer;
   public
     procedure DoCloseTabClicked(APage: TCustomPage); virtual;
     property Images: TCustomImageList read FImages write SetImages;

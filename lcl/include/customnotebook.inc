@@ -365,27 +365,15 @@ end;
                NoteBook1.ScreenToClient(Mouse.CursorPos));
  ------------------------------------------------------------------------------}
 function TCustomTabControl.TabIndexAtClientPos(ClientPos: TPoint): integer;
-var
-  i, VisiblePageInd: Integer;
 begin
   if HandleAllocated then begin
-    Result:=TWSCustomTabControlClass(WidgetSetClass).GetTabIndexAtPos(Self, ClientPos);
+    Result := TWSCustomTabControlClass(WidgetSetClass).GetTabIndexAtPos(Self, ClientPos);
     // Result is the index in visible tabs because invisible tabs are removed
     //  from the native control. Calculate the real tab index here.
-    VisiblePageInd:=-1;
-    for i:=0 to PageCount-1 do begin
-      if Page[i].TabVisible then
-        Inc(VisiblePageInd)
-      else begin
-        if VisiblePageInd < Result then
-          Inc(Result)
-        else
-          Break;
-      end;
-    end;
+    Result := TabToPageIndex(Result);
   end
   else
-    Result:=-1;
+    Result := -1;
 end;
 
 function TCustomTabControl.TabRect(AIndex: Integer): TRect;
@@ -467,9 +455,35 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  function TCustomTabControl.IndexOfTabAt(X, Y: Integer): Integer;
+
+  Returns the index of the visible tab at the client position.
+  For example:
+    Index:=NoteBook1.IndexOfTabAt(
+               NoteBook1.ScreenToClient(Mouse.CursorPos));
+ ------------------------------------------------------------------------------}
 function TCustomTabControl.IndexOfTabAt(X, Y: Integer): Integer;
 begin
-  Result := TabIndexAtClientPos(Point(X, Y));
+  if HandleAllocated then
+    Result := TWSCustomTabControlClass(WidgetSetClass).GetTabIndexAtPos(Self, Point(X, Y))
+  else
+    Result := -1;
+end;
+
+{------------------------------------------------------------------------------
+  function TCustomTabControl.IndexOfPageAt(X, Y: Integer): Integer;
+
+  Returns the index of the page at the client position.
+  For example:
+    Index:=NoteBook1.IndexOfPageAt(
+               NoteBook1.ScreenToClient(Mouse.CursorPos));
+ ------------------------------------------------------------------------------}
+function TCustomTabControl.IndexOfPageAt(X, Y: Integer): Integer;
+begin
+  Result := IndexOfTabAt(X, Y);
+  if Result <> -1 then
+    Result := TabToPageIndex(Result);
 end;
 
 function TCustomTabControl.TabToPageIndex(AIndex: integer): integer;
