@@ -389,7 +389,7 @@ var
 begin
   if (Button = mbMiddle) then
   begin
-    TabIndex := ResultsNoteBook.TabIndexAtClientPos(Point(X,Y));
+    TabIndex := ResultsNoteBook.IndexOfPageAt(Point(X,Y));
     if TabIndex >= 0 then
       ResultsNoteBookClosetabclicked(ResultsNoteBook.Page[TabIndex]);
   end;

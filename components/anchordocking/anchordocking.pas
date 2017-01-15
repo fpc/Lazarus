@@ -5874,7 +5874,7 @@ begin
         // insert as last
         ADockObject.DropOnControl:=DockSite.Pages;
       end else begin
-        TabIndex:=DockSite.Pages.TabIndexAtClientPos(p);
+        TabIndex:=DockSite.Pages.IndexOfPageAt(p);
         if TabIndex>=0 then begin
           // insert in front of an existing
           ADockObject.DropOnControl:=DockSite.Pages.Page[TabIndex];
@@ -6248,7 +6248,7 @@ var
   Site: TAnchorDockHostSite;
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  ATabIndex := TabIndexAtClientPos(Point(X,Y));
+  ATabIndex := IndexOfPageAt(X, Y);
   if (Button = mbLeft) and DockMaster.AllowDragging and (ATabIndex >= 0) then
   begin
     APage:=Page[ATabIndex];
