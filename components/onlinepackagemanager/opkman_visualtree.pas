@@ -1219,6 +1219,8 @@ end;
 
 procedure TVisualTree.VSTChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
 begin
+  if FCheckingNodes then
+    Exit;
   if Assigned(FOnChecked) then
     FOnChecked(Self);
 end;

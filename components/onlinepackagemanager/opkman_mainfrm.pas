@@ -436,6 +436,7 @@ end;
 procedure TMainFrm.cbAllClick(Sender: TObject);
 begin
   VisualTree.CheckNodes(cbAll.Checked);
+  EnableDisableControls(True);
 end;
 
 procedure TMainFrm.cbFilterByChange(Sender: TObject);
