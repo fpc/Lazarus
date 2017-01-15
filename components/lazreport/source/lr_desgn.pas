@@ -4566,7 +4566,7 @@ end;
 procedure TfrDesignerForm.TabsEditDragOver(Sender, Source: TObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-  Accept:=(Source = FTabsPage) and (FTabsPage.IndexOfTabAt(X, Y) <> Tab1.TabIndex);
+  Accept:=(Source = FTabsPage) and (FTabsPage.IndexOfPageAt(X, Y) <> Tab1.TabIndex);
 end;
 
 procedure TfrDesignerForm.TabsEditDragDrop(Sender, Source: TObject; X,
@@ -4574,7 +4574,7 @@ procedure TfrDesignerForm.TabsEditDragDrop(Sender, Source: TObject; X,
 var
   NewIndex: Integer;
 begin
-  NewIndex:=FTabsPage.IndexOfTabAt(X, Y);
+  NewIndex:=FTabsPage.IndexOfPageAt(X, Y);
   //ShowMessageFmt('New index = %d', [NewIndex]);
   if (NewIndex>-1) and (NewIndex < CurReport.Pages.Count) then
   begin
