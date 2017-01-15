@@ -482,8 +482,10 @@ type
     function GetCapabilities: TNoteBookCapabilities; virtual;
     function TabToPageIndex(AIndex: integer): integer;
     function PageToTabIndex(AIndex: integer): integer;
-    function IndexOfTabAt(X, Y: Integer): Integer;
-    function IndexOfPageAt(X, Y: Integer): Integer;
+    function IndexOfTabAt(X, Y: Integer): Integer; overload;
+    function IndexOfTabAt(P: TPoint): Integer; overload;
+    function IndexOfPageAt(X, Y: Integer): Integer; overload;
+    function IndexOfPageAt(P: TPoint): Integer; overload;
   public
     procedure DoCloseTabClicked(APage: TCustomPage); virtual;
     property Images: TCustomImageList read FImages write SetImages;
