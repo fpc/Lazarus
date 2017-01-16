@@ -782,6 +782,7 @@ type
     function GetDefaultGlyphName: String; override;
     procedure ButtonClick; override;
     procedure EditDblClick; override;
+    procedure EditEditingDone; override;
     procedure SetDirectInput(AValue: Boolean); override;
     procedure SetText(AValue: TCaption); override;
     procedure SetDateMask; virtual;
@@ -2553,6 +2554,19 @@ begin
     ButtonClick;
 end;
 
+procedure TDateEdit.EditEditingDone;
+var
+  AText: String;
+begin
+  inherited EditingDone;
+  if DirectInput then
+  begin
+    AText := DateToText(GetDate);
+    if AText <> Text then //avoid unneccesary recalculation FDate
+      Text := AText;
+  end;
+end;
+
 procedure TDateEdit.SetDirectInput(AValue: Boolean);
 var
   Def: TDateTime;
@@ -2888,10 +2902,20 @@ begin
     Def := FDate;
   ADate := Trim(Text);
   //if not DirectInput then FDate matches the Text, so no need to parse it
-  if (ADate <> '') and DirectInput then
+  if {(ADate <> '') and} DirectInput then
   begin
-    Result := TextToDate(ADate, Def);
-    FDate := Result;
+    if (ADate = '') then
+    begin
+      if FDefaultToday then
+        Result := SysUtils.Date
+      else
+        Result := NullDate;
+    end
+    else
+    begin
+      Result := TextToDate(ADate, Def);
+      FDate := Result;
+    end;
   end
   else
     Result := Def;
