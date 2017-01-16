@@ -308,6 +308,8 @@ type
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
     procedure MovePoint(var AIndex: Integer; const ANewPos: TDoublePoint); override;
+    procedure MovePointEx(var AIndex: Integer; AXIndex, AYIndex: Integer;
+      const ANewPos: TDoublePoint); override;
     property MarkPositions: TLinearMarkPositions
       read FMarkPositions write SetMarkPositions default lmpOutside;
     property UseReticule: Boolean
@@ -1388,6 +1390,39 @@ begin
   with ListSource do begin
     AIndex := SetXValue(AIndex, p.X);
     SetYValue(AIndex, p.Y);
+  end;
+end;
+
+procedure TBasicPointSeries.MovePointEx(var AIndex: Integer;
+  AXIndex, AYIndex: Integer; const ANewPos: TDoublePoint);
+var
+  sp: TDoublePoint;
+  sum: Double;
+  j: Integer;
+begin
+  Unused(AXIndex);
+
+  if not InRange(AIndex, 0, Count - 1) then
+    exit;
+
+  sp := GraphToAxis(ANewPos);
+  case AYIndex of
+   -1: begin
+         ListSource.SetXValue(AIndex, sp.X);
+         ListSource.SetYValue(AIndex, sp.Y);
+       end;
+    0: begin
+         ListSource.SetYValue(AIndex, sp.Y);
+       end;
+    else
+      if FStacked then begin
+        sum := 0;
+        for j := 0 to AYIndex - 1 do
+          sum := sum + YValues[AIndex, j];
+        YValues[AIndex, AYIndex] := sp.Y - sum;
+      end else
+        YValues[AIndex, AYIndex] := sp.Y;
+      UpdateParentChart;
   end;
 end;
 

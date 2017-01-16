@@ -1,15 +1,15 @@
 object MainForm: TMainForm
-  Left = 280
+  Left = 676
   Height = 506
-  Top = 130
-  Width = 953
+  Top = 268
+  Width = 1035
   Caption = 'BarSeries & ChartTools Demo'
   ClientHeight = 506
-  ClientWidth = 953
+  ClientWidth = 1035
   OnCreate = FormCreate
   LCLVersion = '1.7'
   object LogSplitter: TSplitter
-    Left = 635
+    Left = 717
     Height = 506
     Top = 0
     Width = 5
@@ -20,23 +20,23 @@ object MainForm: TMainForm
     Left = 0
     Height = 506
     Top = 0
-    Width = 635
+    Width = 717
     Align = alClient
     BevelOuter = bvNone
     ClientHeight = 506
-    ClientWidth = 635
+    ClientWidth = 717
     TabOrder = 1
     object ToolInfoPanel: TPanel
       Left = 0
-      Height = 74
-      Top = 425
-      Width = 635
+      Height = 164
+      Top = 335
+      Width = 717
       Align = alBottom
       AutoSize = True
       BorderSpacing.Bottom = 7
       BevelOuter = bvNone
-      ClientHeight = 74
-      ClientWidth = 635
+      ClientHeight = 164
+      ClientWidth = 717
       TabOrder = 0
       object CbHorizontal: TCheckBox
         AnchorSideLeft.Control = ToolInfoPanel
@@ -68,14 +68,14 @@ object MainForm: TMainForm
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = CbHorizontal
         Left = 183
-        Height = 21
+        Height = 24
         Top = 0
         Width = 203
         Anchors = [akTop, akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 40
         BevelOuter = bvNone
-        ClientHeight = 21
+        ClientHeight = 24
         ClientWidth = 203
         TabOrder = 2
         object RbToolTargetDataPoint: TRadioButton
@@ -123,19 +123,19 @@ object MainForm: TMainForm
         AnchorSideTop.Control = CbHorizontal
         AnchorSideTop.Side = asrBottom
         Left = 8
-        Height = 45
+        Height = 135
         Top = 29
-        Width = 472
+        Width = 359
         BorderSpacing.Top = 10
-        Caption = 'Left-Click inside bar --> DataPointClickTool --> Log message'#13#10'CTRL inside bar --> DataPointHintTool --> Hint window'#13#10'Right-Drag of bar end --> DataPointDragTool --> change bar height ( for BLUE bars only!)'
+        Caption = 'if ToolTarget = Bar:'#13#10'  Left-Click inside bar  --> DataPointClickTool --> Log message'#13#10'  CTRL inside bar --> DataPointHintTool --> Hint window'#13#10#13#10'if ToolTarget = DataPoint:'#13#10'  Left-Click at bar end  --> DataPointClickTool --> Log message'#13#10'  CTRL inside at bar end --> DataPointHintTool --> Hint window'#13#10#13#10'Right-Drag of bar end --> DataPointDragTool --> change bar height'
         ParentColor = False
       end
     end
     object Chart: TChart
       Left = 0
-      Height = 425
+      Height = 335
       Top = 0
-      Width = 635
+      Width = 717
       AutoFocus = True
       AxisList = <      
         item
@@ -181,7 +181,7 @@ object MainForm: TMainForm
         BarBrush.Color = clRed
         BarOffsetPercent = -20
         BarWidthPercent = 40
-        Source = CalculatedChartSource
+        Source = ListChartSourceREDYELLOW
         Styles = ChartStyles
       end
       object BarSeriesBLUE: TBarSeries
@@ -202,7 +202,7 @@ object MainForm: TMainForm
     end
   end
   object Log: TMemo
-    Left = 648
+    Left = 730
     Height = 490
     Top = 8
     Width = 297
@@ -224,7 +224,6 @@ object MainForm: TMainForm
     end
     object DataPointDragTool: TDataPointDragTool
       Shift = [ssRight]
-      AffectedSeries = '1'
       Targets = [nptPoint, nptXList, nptYList]
       OnDrag = DataPointDragToolDrag
       OnDragStart = DataPointDragToolDragStart
@@ -245,6 +244,7 @@ object MainForm: TMainForm
   end
   object CalculatedChartSource: TCalculatedChartSource
     Origin = ListChartSourceREDYELLOW
+    Percentage = True
     left = 280
     top = 80
   end

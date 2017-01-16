@@ -1749,7 +1749,8 @@ begin
     if Toolset.FIsHandled then exit;
   end;
   if FKeepDistance then p := p - FDistance;
-  FSeries.MovePoint(FPointIndex, p);
+//  FSeries.MovePoint(FPointIndex, p);
+  FSeries.MovePointEx(FPointIndex, FXIndex, FYIndex, p);
   Handled;
 end;
 

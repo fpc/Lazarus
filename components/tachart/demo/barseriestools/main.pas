@@ -99,7 +99,11 @@ end;
 
 procedure TMainForm.Cb100PercentChange(Sender: TObject);
 begin
-  CalculatedChartSource.Percentage := Cb100Percent.Checked;
+  if Cb100Percent.Checked then
+    BarSeriesREDYELLOW.Source := CalculatedChartSource
+  else
+    BarSeriesREDYELLOW.Source := ListChartSourceREDYELLOW;
+//  CalculatedChartSource.Percentage := Cb100Percent.Checked;
 end;
 
 procedure TMainForm.DataPointClickToolPointClick(ATool: TChartTool;
