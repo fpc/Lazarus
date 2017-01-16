@@ -1,18 +1,20 @@
 object Form1: TForm1
   Left = 292
-  Height = 518
+  Height = 520
   Top = 152
-  Width = 554
+  Width = 599
+  AutoSize = True
   Caption = 'Form1'
-  ClientHeight = 518
-  ClientWidth = 554
+  ClientHeight = 520
+  ClientWidth = 599
+  Constraints.MinHeight = 520
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.7'
   object Chart1: TChart
     Left = 0
-    Height = 374
+    Height = 346
     Top = 0
-    Width = 554
+    Width = 599
     AutoFocus = True
     AxisList = <    
       item
@@ -42,7 +44,6 @@ object Form1: TForm1
     Toolset = ChartToolset1
     Align = alClient
     DoubleBuffered = True
-    ParentColor = False
     object Chart1FuncSeries1: TFuncSeries
       OnCalculate = Chart1FuncSeries1Calculate
       Pen.Color = clMaroon
@@ -69,20 +70,24 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Height = 126
-    Top = 374
-    Width = 554
+    Height = 156
+    Top = 346
+    Width = 599
     Align = alBottom
-    ClientHeight = 126
-    ClientWidth = 554
+    AutoSize = True
+    ClientHeight = 156
+    ClientWidth = 599
     TabOrder = 1
     object rgZoom: TRadioGroup
-      Left = 1
-      Height = 124
+      AnchorSideLeft.Control = Panel1
+      Left = 9
+      Height = 146
       Top = 1
-      Width = 255
-      Align = alLeft
+      Width = 252
       AutoFill = True
+      AutoSize = True
+      BorderSpacing.Left = 8
+      BorderSpacing.Bottom = 8
       Caption = ' Zooming '
       ChildSizing.LeftRightSpacing = 6
       ChildSizing.TopBottomSpacing = 6
@@ -92,8 +97,8 @@ object Form1: TForm1
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 106
-      ClientWidth = 251
+      ClientHeight = 126
+      ClientWidth = 248
       ItemIndex = 2
       Items.Strings = (
         'Drag to zoom'
@@ -105,9 +110,9 @@ object Form1: TForm1
       TabOrder = 0
       object cbFixedPoint: TCheckBox
         Left = 6
-        Height = 16
-        Top = 68
-        Width = 239
+        Height = 19
+        Top = 82
+        Width = 236
         Caption = 'Fixed point'
         Checked = True
         OnChange = cbFixedPointChange
@@ -116,21 +121,26 @@ object Form1: TForm1
       end
       object cbAnimate: TCheckBox
         Left = 6
-        Height = 16
-        Top = 84
-        Width = 239
+        Height = 19
+        Top = 101
+        Width = 236
         Caption = 'Animate'
         OnClick = cbAnimateClick
         TabOrder = 5
       end
     end
     object rgPan: TRadioGroup
-      Left = 256
-      Height = 124
+      AnchorSideLeft.Control = rgZoom
+      AnchorSideLeft.Side = asrBottom
+      Left = 271
+      Height = 146
       Top = 1
-      Width = 292
-      Align = alLeft
+      Width = 287
       AutoFill = True
+      AutoSize = True
+      BorderSpacing.Left = 10
+      BorderSpacing.Right = 8
+      BorderSpacing.Bottom = 8
       Caption = 'Panning'
       ChildSizing.LeftRightSpacing = 6
       ChildSizing.TopBottomSpacing = 6
@@ -140,8 +150,8 @@ object Form1: TForm1
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 106
-      ClientWidth = 288
+      ClientHeight = 126
+      ClientWidth = 283
       ItemIndex = 0
       Items.Strings = (
         'Right-drag in any direction'
@@ -158,8 +168,8 @@ object Form1: TForm1
   object Panel2: TPanel
     Left = 0
     Height = 18
-    Top = 500
-    Width = 554
+    Top = 502
+    Width = 599
     Align = alBottom
     Caption = 'Press Ctrl to display crosshairs, Alt-drag to move vertical lines'
     TabOrder = 2
