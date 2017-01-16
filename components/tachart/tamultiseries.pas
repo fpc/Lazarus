@@ -221,6 +221,8 @@ type
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetNearestPoint(const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
+    procedure MovePointEx(var AIndex: Integer; AXIndex, AYIndex: Integer;
+      const ANewPos: TDoublePoint); override;
     procedure NormalizeVectors(ALength: Double);
 
   published
@@ -1443,7 +1445,8 @@ begin
     // At first we check if the point is in the rect spanned by the vector.
     R := Rect(pt1.x, pt1.y, pt2.x, pt2.y);
     NormalizeRect(R);
-    ExpandRect(R, Point(AParams.FRadius, AParams.FRadius));
+    R.TopLeft := R.TopLeft - Point(AParams.FRadius, AParams.FRadius);
+    R.BottomRight := R.BottomRight + Point(AParams.FRadius, AParams.FRadius);
     if not IsPointInRect(AParams.FPoint, R) then continue;
 
     dist := MaxInt;
@@ -1464,7 +1467,8 @@ begin
         img := pt2;
       end;
     end;
-    if (nptCustom in AParams.FTargets) then begin
+    // give priority to end points
+    if (dist > AResults.FDist) and (nptCustom in AParams.FTargets) then begin
       d := PointLineDist(AParams.FPoint, pt1, pt2);  // distance of point from line
       if d < dist then begin
         dist := d;
@@ -1473,7 +1477,7 @@ begin
         img := ProjToLine(AParams.FPoint, pt1, pt2);
       end;
     end;
-    if dist >= AParams.FRadius then continue;
+    if dist >= AResults.FDist then continue;
 
     AResults.FDist := dist;
     AResults.FIndex := i;
@@ -1507,6 +1511,35 @@ begin
       AEndPt := DoublePoint(X + dx, Y + dy);
       Result := true;
     end;
+  end;
+end;
+
+procedure TFieldSeries.MovePointEx(var AIndex: Integer;
+  AXIndex, AYIndex: Integer; const ANewPos: TDoublePoint);
+var
+  np, p: TDoublePoint;
+begin
+  Unused(AXIndex);
+
+  if not InRange(AIndex, 0, Count - 1) then
+    exit;
+
+  p := DoublePoint(XValue[AIndex], YValue[AIndex]);
+  np := GraphToAxis(ANewPos);
+
+  ParentChart.DisableRedrawing;
+  try
+    case AYIndex of
+     -1: begin
+           ListSource.SetXValue(AIndex, np.X);
+           ListSource.SetYValue(AIndex, np.Y);
+         end;
+      0: SetVector(AIndex, (p - np) * 2);
+      1: SetVector(AIndex, (np - p) * 2);
+    end;
+  finally
+    ParentChart.EnableRedrawing;
+    UpdateParentChart;
   end;
 end;
 
