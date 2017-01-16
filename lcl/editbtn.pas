@@ -2993,7 +2993,11 @@ end;
 { TTimeEdit }
 
 function TTimeEdit.GetTime: TDateTime;
+var
+  TmpResult: TDateTime;
 begin
+  if DirectInput and TryParseInput(Text, TmpResult) then
+    FTime := TmpResult;
   Result := FTime;
   if IsEmptyTime then begin
     if FDefaultNow then
