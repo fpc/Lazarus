@@ -20,7 +20,7 @@
     <Description Value="Online package manger"/>
     <License Value="GPL"/>
     <Version Major="1"/>
-    <Files Count="20">
+    <Files Count="21">
       <Item1>
         <Filename Value="onlinepackagemanagerintf.pas"/>
         <HasRegisterProc Value="True"/>
@@ -107,6 +107,10 @@
         <Filename Value="opkman_uploader.pas"/>
         <UnitName Value="opkman_uploader"/>
       </Item20>
+      <Item21>
+        <Filename Value="opkman_repositories.pas"/>
+        <UnitName Value="opkman_repositories"/>
+      </Item21>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

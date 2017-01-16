@@ -47,18 +47,19 @@ type
     bOk: TButton;
     bRestore: TButton;
     bFilesAdd: TButton;
+    bOpen: TButton;
     cbProxy: TCheckBox;
     cbForceDownloadExtract: TCheckBox;
     cbDeleteZipAfterInstall: TCheckBox;
     cbCheckForUpdates: TComboBox;
     cbSelectProfile: TComboBox;
+    cbRemoteRepository: TComboBox;
     edLocalRepositoryUpdate: TDirectoryEdit;
     edLocalRepositoryPackages: TDirectoryEdit;
     edLocalRepositoryArchive: TDirectoryEdit;
     edProxyPassword: TEdit;
     edProxyServer: TEdit;
     edProxyUser: TEdit;
-    edRemoteRepository: TEdit;
     gbProxySettings: TGroupBox;
     lbFilterFiles: TLabel;
     lbFilterDirs: TLabel;
@@ -99,6 +100,7 @@ type
     procedure bFilesDeleteClick(Sender: TObject);
     procedure bFilesEditClick(Sender: TObject);
     procedure bOkClick(Sender: TObject);
+    procedure bOpenClick(Sender: TObject);
     procedure bRestoreClick(Sender: TObject);
     procedure cbProxyChange(Sender: TObject);
     procedure cbSelectProfileChange(Sender: TObject);
@@ -115,7 +117,7 @@ var
   OptionsFrm: TOptionsFrm;
 
 implementation
-uses opkman_options, opkman_common, opkman_const;
+uses opkman_options, opkman_common, opkman_const, opkman_repositories;
 {$R *.lfm}
 
 { TOptionsFrm }
@@ -124,10 +126,10 @@ procedure TOptionsFrm.bOkClick(Sender: TObject);
 var
   I: Integer;
 begin
-  if Trim(edRemoteRepository.Text)  = '' then
+  if Trim(cbRemoteRepository.Text)  = '' then
   begin
     MessageDlgEx(rsOptions_RemoteRepository_Information, mtInformation, [mbOk], Self);
-    edRemoteRepository.SetFocus;
+    cbRemoteRepository.SetFocus;
     Exit;
   end;
 
@@ -165,7 +167,9 @@ begin
     edLocalRepositoryUpdate.SetFocus;
     Exit;
   end;
-  Options.RemoteRepository := edRemoteRepository.Text;
+  if Options.RemoteRepositoryTmp.Count > 0 then
+    Options.RemoteRepository.Text := Options.RemoteRepositoryTmp.Text;
+  Options.ActiveRepositoryIndex := cbRemoteRepository.ItemIndex;
   Options.ForceDownloadAndExtract := cbForceDownloadExtract.Checked;
   Options.DeleteZipAfterInstall := cbDeleteZipAfterInstall.Checked;
   Options.CheckForUpdates := cbCheckForUpdates.ItemIndex;
@@ -198,6 +202,30 @@ begin
 
   Options.Save;
   ModalResult := mrOk;
+end;
+
+procedure TOptionsFrm.bOpenClick(Sender: TObject);
+var
+  I: Integer;
+begin
+  RepositoriesFrm := TRepositoriesFrm.Create(Self);
+  try
+    if RepositoriesFrm.ShowModal = mrOk then
+    begin
+      cbRemoteRepository.Clear;
+      for I := 0 to Options.RemoteRepositoryTmp.Count - 1 do
+        cbRemoteRepository.Items.Add(Options.RemoteRepositoryTmp.Strings[I]);
+      if Options.ActiveRepositoryIndex <= cbRemoteRepository.Items.Count - 1 then
+        cbRemoteRepository.ItemIndex := Options.ActiveRepositoryIndex
+      else
+      begin
+        cbRemoteRepository.ItemIndex := 0;
+        Options.ActiveRepositoryIndex := 0;
+      end;
+    end;
+  finally
+    RepositoriesFrm.Free;
+  end;
 end;
 
 function TOptionsFrm.GetSelectedText(AListBox: TListBox; var AIndex: Integer): String;
@@ -338,13 +366,19 @@ begin
 end;
 
 procedure TOptionsFrm.SetupControls(const AActivePageIndex: Integer = 0);
+var
+  I: Integer;
 begin
   Self.DoubleBuffered := True;
   Caption := rsOptions_FrmCaption;
   pgOptions.ActivePageIndex := AActivePageIndex;
   tsGeneral.Caption := rsOptions_tsGeneral_Caption;
   lbRemoteRepository.Caption := rsOptions_lbRemoteRepository_Caption;
-  edRemoteRepository.Text := Options.RemoteRepository;
+  Options.RemoteRepositoryTmp.Clear;
+  for I := 0 to Options.RemoteRepository.Count - 1 do
+    cbRemoteRepository.Items.Add(Options.RemoteRepository.Strings[I]);
+  cbRemoteRepository.ItemIndex := Options.ActiveRepositoryIndex;
+
   cbForceDownloadExtract.Checked := Options.ForceDownloadAndExtract;
   cbDeleteZipAfterInstall.Checked := Options.DeleteZipAfterInstall;
   cbForceDownloadExtract.Caption := rsOptions_cbForceDownloadExtract_Caption;

@@ -345,7 +345,7 @@ begin
       if SerializablePackages.Items[I].IsDownloadable then
       begin
         Inc(FCnt);
-        FFrom := Options.RemoteRepository + SerializablePackages.Items[I].RepositoryFileName;
+        FFrom := Options.RemoteRepository[Options.ActiveRepositoryIndex] + SerializablePackages.Items[I].RepositoryFileName;
         FTo := FDownloadTo + SerializablePackages.Items[I].RepositoryFileName;
         FCurSize := SerializablePackages.Items[I].RepositoryFileSize;
         DS := TDownloadStream.Create(TFileStream.Create(FTo, fmCreate));
@@ -499,7 +499,7 @@ end;
 
 procedure TThreadDownload.DownloadJSON(const ATimeOut: Integer = -1);
 begin
-  FRemoteJSONFile := Options.RemoteRepository + cRemoteJSONFile;
+  FRemoteJSONFile := Options.RemoteRepository[Options.ActiveRepositoryIndex] + cRemoteJSONFile;
   FDownloadType := dtJSON;
   FTimer := TThreadTimer.Create;
   FTimer.Interval := ATimeOut;

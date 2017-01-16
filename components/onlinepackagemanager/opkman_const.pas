@@ -33,6 +33,7 @@ uses
 
 const
   cRemoteRepository = 'http://packages.lazarus-ide.org/';
+  cRemoteRepositoryTitle = 'Lazarus Central Repository';
   cRemoteJSONFile = 'packagelist.json';
   cLocalRepository =  'onlinepackagemanager';
   cLocalRepositoryPackages = 'packages';
@@ -55,6 +56,7 @@ const
   cExtractDir = 'ExtractDir';
   cSubmitURL_Zip =  'aHR0cDovL2xhemFydXNvcG0uMDAwd2ViaG9zdGFwcC5jb20vemlwLnBocA==';
   cSubmitURL_JSON = 'aHR0cDovL2xhemFydXNvcG0uMDAwd2ViaG9zdGFwcC5jb20vanNvbi5waHA=';
+  cSep = '#@$%^';
 
 resourcestring
   //package manager
@@ -348,13 +350,25 @@ resourcestring
   rsCreateJSONForUpdatesFrm_Message4 = 'JSON for updates successfully created.';
   rsCreateJSONForUpdatesFrm_Error1 = 'Cannot create JSON for updates! Error message:';
 
-
   //categories form
   rsCategoriesFrm_Caption = 'List with categories';
   rsCategoriesFrm_lbMessage_Caption = 'Please select (check) one or more categories';
   rsCategoriesFrm_bYes_Caption = 'OK';
   rsCategoriesFrm_bCancel_Caption = 'Cancel';
 
+  //repositories
+  rsRepositories_Caption = 'Repositories';
+  rsRepositories_VST_HeaderColumn = 'Repository Address';
+  rsRepositories_bAdd_Caption = 'Add';
+  rsRepositories_bEdit_Caption = 'Edit';
+  rsRepositories_bDelete_Caption = 'Delete';
+  rsRepositories_bOk_Caption = 'OK';
+  rsRepositories_bCancel_Caption = 'Cancel';
+  rsRepositories_cbDefault_Caption = 'Set selected item as default repository';
+  rsRepositories_Confirmation0 = 'Delete selected repository "%s" ?';
+  rsRepositories_InputBox_Caption0 = 'Add repository';
+  rsRepositories_InputBox_Caption1 = 'Edit repository';
+  rsRepositories_InputBox_Text = 'Type the repository name:';
 
 implementation
 

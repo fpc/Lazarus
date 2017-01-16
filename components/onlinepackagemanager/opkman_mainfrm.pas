@@ -151,7 +151,7 @@ begin
   VisualTree.OnChecked := @DoOnChecked;
   SerializablePackages := TSerializablePackages.Create;
   SerializablePackages.OnProcessJSON := @DoOnProcessJSON;
-  PackageDownloader := TPackageDownloader.Create(Options.RemoteRepository);
+  PackageDownloader := TPackageDownloader.Create(Options.RemoteRepository[Options.ActiveRepositoryIndex]);
   PackageDownloader.OnJSONProgress := @DoOnJSONProgress;
   PackageDownloader.OnJSONDownloadCompleted := @DoOnJSONDownloadCompleted;
   Updates := TUpdates.Create(LocalRepositoryUpdatesFile);
@@ -363,7 +363,7 @@ begin
     OptionsFrm.SetupControls(AActivePageIndex);
     if OptionsFrm.ShowModal = mrOk then
     begin
-      tbRefresh.Enabled := Options.RemoteRepository <> '';
+      tbRefresh.Enabled := Trim(Options.RemoteRepository[Options.ActiveRepositoryIndex]) <> '';
       GetPackageList;
     end;
   finally
@@ -384,7 +384,7 @@ begin
   VisualTree.VST.Enabled := (AEnable) and (SerializablePackages.Count > 0);
   if edFilter.CanFocus then
     edFilter.SetFocus;
-  tbRefresh.Enabled := (AEnable) and (Trim(Options.RemoteRepository) <> '');
+  tbRefresh.Enabled := (AEnable) and (Trim(Options.RemoteRepository[Options.ActiveRepositoryIndex]) <> '');
   tbDownload.Enabled := (AEnable) and (SerializablePackages.Count > 0) and (VisualTree.VST.CheckedCount > 0);
   tbInstall.Enabled := (AEnable) and (SerializablePackages.Count > 0) and (VisualTree.VST.CheckedCount > 0);
   tbUpdate.Enabled :=  (AEnable) and (SerializablePackages.Count > 0) and (VisualTree.VST.CheckedCount > 0);

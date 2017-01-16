@@ -47,7 +47,9 @@ type
      FProxySettings: TProxySettings;
      FXML: TXMLConfig;
      FVersion: Integer;
-     FRemoteRepository: String;
+     FRemoteRepository: TStringList;
+     FRemoteRepositoryTmp: TStringList;
+     FActiveRepositoryIndex: Integer;
      FForceDownloadAndExtract: Boolean;
      FDeleteZipAfterInstall: Boolean;
      FCheckForUpdates: Integer;
@@ -67,7 +69,6 @@ type
      FUserProfile: Integer;
      FExcludedFiles: String;
      FExcludedFolders: String;
-     procedure SetRemoteRepository(const ARemoteRepository: String);
    public
      constructor Create(const AFileName: String);
      destructor Destroy; override;
@@ -77,7 +78,9 @@ type
      procedure CreateMissingPaths;
    published
      property Changed: Boolean read FChanged write FChanged;
-     property RemoteRepository: string read FRemoteRepository write SetRemoteRepository;
+     property RemoteRepository: TStringList read FRemoteRepository write FRemoteRepository;
+     property RemoteRepositoryTmp: TStringList read FRemoteRepositoryTmp write FRemoteRepositoryTmp;
+     property ActiveRepositoryIndex: Integer read FActiveRepositoryIndex write FActiveRepositoryIndex;
      property ForceDownloadAndExtract: Boolean read FForceDownloadAndExtract write FForceDownloadAndExtract;
      property DeleteZipAfterInstall: Boolean read FDeleteZipAfterInstall write FDeleteZipAfterInstall;
      property CheckForUpdates: Integer read FCheckForUpdates write FCheckForUpdates;
@@ -110,6 +113,8 @@ constructor TOptions.Create(const AFileName: String);
 var
   LocalRepo: String;
 begin
+  FRemoteRepository := TStringList.Create;
+  FRemoteRepositoryTmp := TStringList.Create;
   LocalRepo := AppendPathDelim(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath) + cLocalRepository);
   FLocalPackagesDefault := LocalRepo + AppendPathDelim(cLocalRepositoryPackages);
   FLocalArchiveDefault := LocalRepo + AppendPathDelim(cLocalRepositoryArchive);
@@ -139,6 +144,8 @@ destructor TOptions.Destroy;
 begin
   if FChanged then
     Save;
+  FRemoteRepository.Free;
+  FRemoteRepositoryTmp.Free;
   FXML.Free;
   inherited Destroy;
 end;
@@ -147,9 +154,10 @@ procedure TOptions.Load;
 begin
   FVersion := FXML.GetValue('Version/Value', 0);
   if FVersion = 0 then
-    FRemoteRepository := FXML.GetValue('RemoteRepository/Value', '')
+    FRemoteRepository.Text := FXML.GetValue('RemoteRepository/Value', '')
   else
-    FRemoteRepository := FXML.GetValue('General/RemoteRepository/Value', '');
+    FRemoteRepository.Text := FXML.GetValue('General/RemoteRepository/Value', '');
+  FActiveRepositoryIndex := FXML.GetValue('General/ActiveRepositoryIndex/Value', 0);
   FForceDownloadAndExtract := FXML.GetValue('General/ForceDownloadAndExtract/Value', True);
   FDeleteZipAfterInstall := FXML.GetValue('General/DeleteZipAfterInstall/Value', True);
   FLastDownloadDir := FXML.GetValue('General/LastDownloadDir/Value', '');
@@ -176,7 +184,8 @@ end;
 procedure TOptions.Save;
 begin
   FXML.SetDeleteValue('Version/Value', OpkVersion, 0);
-  FXML.SetDeleteValue('General/RemoteRepository/Value', FRemoteRepository, '');
+  FXML.SetDeleteValue('General/RemoteRepository/Value', FRemoteRepository.Text, '');
+  FXML.SetDeleteValue('General/ActiveRepositoryIndex/Value', FActiveRepositoryIndex, 0);
   FXML.SetDeleteValue('General/ForceDownloadAndExtract/Value', FForceDownloadAndExtract, True);
   FXML.SetDeleteValue('General/DeleteZipAfterInstall/Value', FDeleteZipAfterInstall, True);
   FXML.SetDeleteValue('General/LastDownloadDir/Value', FLastDownloadDir, '');
@@ -184,6 +193,7 @@ begin
   FXML.SetDeleteValue('General/LastPackageDirDst/Value', FLastPackageDirDst, '');
   FXML.SetDeleteValue('General/CheckForUpdates/Value', FCheckForUpdates, 0);
   FXML.SetDeleteExtendedValue('General/LastUpdate/Value', FLastUpdate, 0.0);
+
 
   FXML.SetDeleteValue('Proxy/Enabled/Value', FProxySettings.FEnabled, false);
   FXML.SetDeleteValue('Proxy/Server/Value', FProxySettings.FServer, '');
@@ -205,7 +215,8 @@ end;
 
 procedure TOptions.LoadDefault;
 begin
-  FRemoteRepository := cRemoteRepository;
+  FRemoteRepository.Add(cRemoteRepository);
+  FActiveRepositoryIndex := 0;
   FForceDownloadAndExtract := True;
   FDeleteZipAfterInstall := True;
   FCheckForUpdates := 0;
@@ -235,16 +246,6 @@ begin
     CreateDirUTF8(FLocalRepositoryArchive);
   if not DirectoryExists(FLocalRepositoryUpdate) then
     CreateDirUTF8(FLocalRepositoryUpdate);
-end;
-
-procedure TOptions.SetRemoteRepository(const ARemoteRepository: String);
-begin
-  if FRemoteRepository <> ARemoteRepository then
-  begin
-    FRemoteRepository := Trim(ARemoteRepository);
-    if FRemoteRepository[Length(FRemoteRepository)] <> '/' then
-      FRemoteRepository := FRemoteRepository + '/';
-  end;
 end;
 
 end.

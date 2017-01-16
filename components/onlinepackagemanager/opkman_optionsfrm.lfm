@@ -86,16 +86,6 @@ object OptionsFrm: TOptionsFrm
           Caption = 'Remote repository:'
           ParentColor = False
         end
-        object edRemoteRepository: TEdit
-          Left = 15
-          Height = 23
-          Top = 32
-          Width = 483
-          Anchors = [akTop, akLeft, akRight]
-          OnKeyPress = edRemoteRepositoryKeyPress
-          TabOrder = 0
-          Text = 'http://localhost/packages/'
-        end
         object cbForceDownloadExtract: TCheckBox
           Left = 15
           Height = 19
@@ -104,7 +94,7 @@ object OptionsFrm: TOptionsFrm
           Caption = ' Force download and extract of packages'
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 1
+          TabOrder = 0
         end
         object cbDeleteZipAfterInstall: TCheckBox
           Left = 15
@@ -114,7 +104,7 @@ object OptionsFrm: TOptionsFrm
           Caption = 'Delete downloaded zip files after installation/update'
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 2
+          TabOrder = 1
         end
         object lbUpdates: TLabel
           Left = 15
@@ -140,7 +130,7 @@ object OptionsFrm: TOptionsFrm
             'Never'
           )
           Style = csDropDownList
-          TabOrder = 3
+          TabOrder = 2
           Text = 'Every few minutes'
         end
         object lbLastUpdate: TLabel
@@ -150,6 +140,26 @@ object OptionsFrm: TOptionsFrm
           Width = 64
           Caption = 'Last update:'
           ParentColor = False
+        end
+        object bOpen: TButton
+          Left = 476
+          Height = 25
+          Top = 31
+          Width = 27
+          Anchors = [akTop, akRight]
+          Caption = '...'
+          OnClick = bOpenClick
+          TabOrder = 3
+        end
+        object cbRemoteRepository: TComboBox
+          Left = 16
+          Height = 23
+          Top = 32
+          Width = 457
+          Anchors = [akTop, akLeft, akRight]
+          ItemHeight = 15
+          Style = csDropDownList
+          TabOrder = 4
         end
       end
     end
@@ -595,6 +605,6 @@ object OptionsFrm: TOptionsFrm
   end
   object SDD: TSelectDirectoryDialog
     left = 448
-    top = 32
+    top = 112
   end
 end
