@@ -6,6 +6,7 @@
      ./runtests --format=plain --suite=TestUTF8Trim
      ./runtests --format=plain --suite=TestUTF8Pos
      ./runtests --format=plain --suite=TestFindInvalidUTF8
+     ./runtests --format=plain --suite=TestFindUnicodeToUTF8
      ./runtests --format=plain --suite=TestUTF8QuotedStr
 }
 unit TestLazUTF8;
@@ -27,6 +28,7 @@ type
     procedure TestUTF8Trim;
     procedure TestUTF8Pos;
     procedure TestFindInvalidUTF8;
+    procedure TestFindUnicodeToUTF8;
     procedure TestUTF8QuotedStr;
   end;
 
@@ -88,6 +90,7 @@ begin
   t(UnicodeToUTF8($ffff),-1,'unicode($ffff)');
   // 4 bytes UTF-8
   t(UnicodeToUTF8($10000),-1,'unicode($10000)');
+  t(UnicodeToUTF8($10900),-1,'unicode($10900)');
   t(UnicodeToUTF8($10ffff),-1,'unicode($10ffff)');
   t(#$c0#0,0,'invalid second byte of 2 byte');
   t(#$e0#0,0,'invalid second byte of 3 byte');
@@ -103,6 +106,37 @@ begin
   t(#$e0#$9f#$bf,0,'invalid: $7ff encoded as 3 byte');
   t(#$f0#$80#$80#$80,0,'invalid: 0 encoded as 4 byte');
   t(#$f0#$8f#$bf#$bf,0,'invalid: $ffff encoded as 4 byte');
+end;
+
+procedure TTestLazUTF8.TestFindUnicodeToUTF8;
+
+  procedure t(CodePoint: cardinal; Expected: string);
+  var
+    Actual: String;
+  begin
+    Actual:=LazUTF8.UnicodeToUTF8(CodePoint);
+    AssertEquals('CodePoint='+HexStr(CodePoint,8),
+      dbgMemRange(PChar(Expected),length(Expected)),
+      dbgMemRange(PChar(Actual),length(Actual)));
+  end;
+
+begin
+  t($0,#0);
+  t($1,#1);
+  t($20,' ');
+  t($7f,#$7f);
+  t($80,#$C2#$80);
+  t($7ff,#$DF#$BF);
+  t($800,#$E0#$A0#$80);
+  t($fff,#$E0#$BF#$BF);
+  t($1fff,#$E1#$BF#$BF);
+  t($3fff,#$E3#$BF#$BF);
+  t($7fff,#$E7#$BF#$BF);
+  t($ffff,#$EF#$BF#$BF);
+  t($1ffff,#$F0#$9F#$BF#$BF);
+  t($3ffff,#$F0#$BF#$BF#$BF);
+  t($7ffff,#$F1#$BF#$BF#$BF);
+  t($fffff,#$F3#$BF#$BF#$BF);
 end;
 
 procedure TTestLazUTF8.TestUTF8QuotedStr;
