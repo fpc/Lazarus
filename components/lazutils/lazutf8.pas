@@ -84,10 +84,10 @@ function UTF8LengthFast(p: PChar; ByteCount: PtrInt): PtrInt;
 
 // Functions dealing with unicode number U+xxx.
 function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal;
-function UnicodeToUTF8(CodePoint: cardinal): string;
-function UnicodeToUTF8(CodePoint: cardinal; Buf: PChar): integer;
-function UnicodeToUTF8SkipErrors(CodePoint: cardinal; Buf: PChar): integer;
-function UnicodeToUTF8Inline(CodePoint: cardinal; Buf: PChar): integer; inline;
+function UnicodeToUTF8(CodePoint: cardinal): string; // UTF32 to UTF8
+function UnicodeToUTF8(CodePoint: cardinal; Buf: PChar): integer; // UTF32 to UTF8
+function UnicodeToUTF8SkipErrors(CodePoint: cardinal; Buf: PChar): integer; // UTF32 to UTF8
+function UnicodeToUTF8Inline(CodePoint: cardinal; Buf: PChar): integer; inline; // UTF32 to UTF8
 function UTF8ToDoubleByteString(const s: string): string;
 function UTF8ToDoubleByte(UTF8Str: PChar; Len: PtrInt; DBStr: PByte): PtrInt;
 function UTF8FindNearestCharStart(UTF8Str: PChar; Len: SizeInt;

@@ -144,8 +144,9 @@ For speed reasons this function only checks for 1,2,3,4 byte encoding errors. Es
       </element>
       <!-- function Visibility: default -->
       <element name="UnicodeToUTF8">
-        <short>Encodes the given codepoint as an UTF-8 sequence of 1 to 4 bytes.</short>
-        <descr>It does not add a #0.</descr>
+        <short>Encodes the given code point as an UTF-8 sequence of 1 to 4 bytes.</short>
+        <descr>It does not add a #0.
+The code point is not encoded, aka in UTF32.</descr>
         <errors/>
         <seealso/>
       </element>
