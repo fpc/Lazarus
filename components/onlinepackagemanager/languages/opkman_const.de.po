@@ -384,6 +384,10 @@ msgstr ""
 "Das Aktualisieren eines Packages über einen externen Link ist nicht ohne Risiko!\n"
 "Machen Sie das nur, wenn Sie dem Package-Betreuer vertrauen. Fortfahren?\n"
 
+#: opkman_const.rsmainfrm_rsmessagechangingrepository
+msgid "Changing repository. Please wait..."
+msgstr ""
+
 #: opkman_const.rsmainfrm_rsmessagedownload
 msgid "Downloading package list. Please wait..."
 msgstr "Lade Package-Liste herunter. Bitte warten..."
@@ -819,14 +823,17 @@ msgid "Version"
 msgstr "Version"
 
 #: opkman_const.rsoptions_badd_caption
+msgctxt "opkman_const.rsoptions_badd_caption"
 msgid "Add"
 msgstr ""
 
 #: opkman_const.rsoptions_bdelete_caption
+msgctxt "opkman_const.rsoptions_bdelete_caption"
 msgid "Delete"
 msgstr ""
 
 #: opkman_const.rsoptions_bedit_caption
+msgctxt "opkman_const.rsoptions_bedit_caption"
 msgid "Edit"
 msgstr ""
 
@@ -1220,4 +1227,55 @@ msgstr "Kalkuliere. Bitte warten..."
 #: opkman_const.rsprogressfrm_lbspeed_caption
 msgid "Speed:"
 msgstr "Geschwindigkeit:"
+
+#: opkman_const.rsrepositories_badd_caption
+msgctxt "opkman_const.rsrepositories_badd_caption"
+msgid "Add"
+msgstr ""
+
+#: opkman_const.rsrepositories_bcancel_caption
+#, fuzzy
+msgctxt "opkman_const.rsrepositories_bcancel_caption"
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: opkman_const.rsrepositories_bdelete_caption
+msgctxt "opkman_const.rsrepositories_bdelete_caption"
+msgid "Delete"
+msgstr ""
+
+#: opkman_const.rsrepositories_bedit_caption
+msgctxt "opkman_const.rsrepositories_bedit_caption"
+msgid "Edit"
+msgstr ""
+
+#: opkman_const.rsrepositories_bok_caption
+#, fuzzy
+msgctxt "opkman_const.rsrepositories_bok_caption"
+msgid "OK"
+msgstr "OK"
+
+#: opkman_const.rsrepositories_caption
+msgid "Repositories"
+msgstr ""
+
+#: opkman_const.rsrepositories_confirmation0
+msgid "Delete selected repository \"%s\"?"
+msgstr ""
+
+#: opkman_const.rsrepositories_inputbox_caption0
+msgid "Add repository"
+msgstr ""
+
+#: opkman_const.rsrepositories_inputbox_caption1
+msgid "Edit repository"
+msgstr ""
+
+#: opkman_const.rsrepositories_inputbox_text
+msgid "Type the repository address:"
+msgstr ""
+
+#: opkman_const.rsrepositories_vst_headercolumn
+msgid "Repository Address"
+msgstr ""
 

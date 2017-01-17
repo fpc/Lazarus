@@ -355,6 +355,10 @@ msgstr ""
 "Обновление пакетов из внешнего источника рискованно!\n"
 "Проводите обновление только при доверии сопровождающему пакета. Продолжить?\n"
 
+#: opkman_const.rsmainfrm_rsmessagechangingrepository
+msgid "Changing repository. Please wait..."
+msgstr "Смена репозитория. Подождите..."
+
 #: opkman_const.rsmainfrm_rsmessagedownload
 msgid "Downloading package list. Please wait..."
 msgstr "Идёт загрузка списка пакетов. Подождите..."
@@ -784,14 +788,17 @@ msgid "Version"
 msgstr "Версия"
 
 #: opkman_const.rsoptions_badd_caption
+msgctxt "opkman_const.rsoptions_badd_caption"
 msgid "Add"
 msgstr "Добавить"
 
 #: opkman_const.rsoptions_bdelete_caption
+msgctxt "opkman_const.rsoptions_bdelete_caption"
 msgid "Delete"
 msgstr "Удалить"
 
 #: opkman_const.rsoptions_bedit_caption
+msgctxt "opkman_const.rsoptions_bedit_caption"
 msgid "Edit"
 msgstr "Правка"
 
@@ -1181,4 +1188,53 @@ msgstr "Ждите, идёт оценка..."
 #: opkman_const.rsprogressfrm_lbspeed_caption
 msgid "Speed:"
 msgstr "Скорость:"
+
+#: opkman_const.rsrepositories_badd_caption
+msgctxt "opkman_const.rsrepositories_badd_caption"
+msgid "Add"
+msgstr "Добавить"
+
+#: opkman_const.rsrepositories_bcancel_caption
+msgctxt "opkman_const.rsrepositories_bcancel_caption"
+msgid "Cancel"
+msgstr "Отмена"
+
+#: opkman_const.rsrepositories_bdelete_caption
+msgctxt "opkman_const.rsrepositories_bdelete_caption"
+msgid "Delete"
+msgstr "Удалить"
+
+#: opkman_const.rsrepositories_bedit_caption
+msgctxt "opkman_const.rsrepositories_bedit_caption"
+msgid "Edit"
+msgstr "Правка"
+
+#: opkman_const.rsrepositories_bok_caption
+msgctxt "opkman_const.rsrepositories_bok_caption"
+msgid "OK"
+msgstr "ОК"
+
+#: opkman_const.rsrepositories_caption
+msgid "Repositories"
+msgstr "Репозитории"
+
+#: opkman_const.rsrepositories_confirmation0
+msgid "Delete selected repository \"%s\"?"
+msgstr "Удалить выбранный репозиторий \"%s\"?"
+
+#: opkman_const.rsrepositories_inputbox_caption0
+msgid "Add repository"
+msgstr "Добавить репозиторий"
+
+#: opkman_const.rsrepositories_inputbox_caption1
+msgid "Edit repository"
+msgstr "Редактировать репозиторий"
+
+#: opkman_const.rsrepositories_inputbox_text
+msgid "Type the repository address:"
+msgstr "Введите адрес репозитория:"
+
+#: opkman_const.rsrepositories_vst_headercolumn
+msgid "Repository Address"
+msgstr "Адрес репозитория"
 

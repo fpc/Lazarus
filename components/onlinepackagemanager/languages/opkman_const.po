@@ -341,6 +341,10 @@ msgid ""
 "Only update if you trust the package maintainer. Continue?\n"
 msgstr ""
 
+#: opkman_const.rsmainfrm_rsmessagechangingrepository
+msgid "Changing repository. Please wait..."
+msgstr ""
+
 #: opkman_const.rsmainfrm_rsmessagedownload
 msgid "Downloading package list. Please wait..."
 msgstr ""
@@ -768,14 +772,17 @@ msgid "Version"
 msgstr ""
 
 #: opkman_const.rsoptions_badd_caption
+msgctxt "opkman_const.rsoptions_badd_caption"
 msgid "Add"
 msgstr ""
 
 #: opkman_const.rsoptions_bdelete_caption
+msgctxt "opkman_const.rsoptions_bdelete_caption"
 msgid "Delete"
 msgstr ""
 
 #: opkman_const.rsoptions_bedit_caption
+msgctxt "opkman_const.rsoptions_bedit_caption"
 msgid "Edit"
 msgstr ""
 
@@ -1164,5 +1171,54 @@ msgstr ""
 
 #: opkman_const.rsprogressfrm_lbspeed_caption
 msgid "Speed:"
+msgstr ""
+
+#: opkman_const.rsrepositories_badd_caption
+msgctxt "opkman_const.rsrepositories_badd_caption"
+msgid "Add"
+msgstr ""
+
+#: opkman_const.rsrepositories_bcancel_caption
+msgctxt "opkman_const.rsrepositories_bcancel_caption"
+msgid "Cancel"
+msgstr ""
+
+#: opkman_const.rsrepositories_bdelete_caption
+msgctxt "opkman_const.rsrepositories_bdelete_caption"
+msgid "Delete"
+msgstr ""
+
+#: opkman_const.rsrepositories_bedit_caption
+msgctxt "opkman_const.rsrepositories_bedit_caption"
+msgid "Edit"
+msgstr ""
+
+#: opkman_const.rsrepositories_bok_caption
+msgctxt "opkman_const.rsrepositories_bok_caption"
+msgid "OK"
+msgstr ""
+
+#: opkman_const.rsrepositories_caption
+msgid "Repositories"
+msgstr ""
+
+#: opkman_const.rsrepositories_confirmation0
+msgid "Delete selected repository \"%s\"?"
+msgstr ""
+
+#: opkman_const.rsrepositories_inputbox_caption0
+msgid "Add repository"
+msgstr ""
+
+#: opkman_const.rsrepositories_inputbox_caption1
+msgid "Edit repository"
+msgstr ""
+
+#: opkman_const.rsrepositories_inputbox_text
+msgid "Type the repository address:"
+msgstr ""
+
+#: opkman_const.rsrepositories_vst_headercolumn
+msgid "Repository Address"
 msgstr ""
 

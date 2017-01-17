@@ -365,8 +365,7 @@ resourcestring
   rsRepositories_bDelete_Caption = 'Delete';
   rsRepositories_bOk_Caption = 'OK';
   rsRepositories_bCancel_Caption = 'Cancel';
-  rsRepositories_cbDefault_Caption = 'Set selected item as default repository';
-  rsRepositories_Confirmation0 = 'Delete selected repository "%s" ?';
+  rsRepositories_Confirmation0 = 'Delete selected repository "%s"?';
   rsRepositories_InputBox_Caption0 = 'Add repository';
   rsRepositories_InputBox_Caption1 = 'Edit repository';
   rsRepositories_InputBox_Text = 'Type the repository address:';
