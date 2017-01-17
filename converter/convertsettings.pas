@@ -971,7 +971,8 @@ end;
 
 procedure TConvertSettingsForm.CancelButtonClick(Sender: TObject);
 begin
-  if Assigned(fCacheUnitsThread) then begin
+  if Assigned(fCacheUnitsThread) and fThreadStarted then
+  begin
     (fCacheUnitsThread as TCacheUnitsThread).Searcher.Stop;
     fCacheUnitsThread.WaitFor;
   end;
