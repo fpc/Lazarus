@@ -467,38 +467,48 @@ end;
 procedure TBubbleSeries.Draw(ADrawer: IChartDrawer);
 var
   i: Integer;
-  pt, d: TPoint;
   r: Double;
-  pi: PChartDataItem;
+  item: PChartDataItem;
+  pt1, pt2: TPoint;
+  gp, sp, sp1, sp2: TDoublePoint;
+  ext, gpR: TDoubleRect;
+  clipR: TRect;
 begin
   if Source.YCount < 2 then exit;
-  r := 0;
-  for i := 0 to Count - 1 do
-    if IsNaN(Source[i]^.YList[0]) then
-      continue
-    else
-      r := Max(Source[i]^.YList[0], r);
-  with ParentChart.CurrentExtent do
-    PrepareGraphPoints(DoubleRect(a.X - r, a.Y - r, b.X + r, b.Y + r), true);
+
   ADrawer.Pen := BubblePen;
   ADrawer.Brush := BubbleBrush;
-  for i := 0 to High(FGraphPoints) do begin
-    if IsNaN(FGraphPoints[i].X) or IsNaN(FGraphPoints[i].Y) then
-      Continue;
-    pt := ParentChart.GraphToImage(FGraphPoints[i]);
-    pi := Source[i + FLoBound];
-    r := pi^.YList[0];
-    if IsNaN(r) then
-      Continue;
-    d.X := ParentChart.XGraphToImage(r) - ParentChart.XGraphToImage(0);
-    d.Y := ParentChart.YGraphToImage(r) - ParentChart.YGraphToImage(0);
+  ext := ParentChart.CurrentExtent;
+
+  clipR.TopLeft := ParentChart.GraphToImage(ext.a);
+  clipR.BottomRight := ParentChart.GraphToImage(ext.b);
+  NormalizeRect(clipR);
+  ADrawer.ClippingStart(clipR);
+
+  for i := 0 to Count - 1 do begin
+    item := Source[i];
+    sp := item^.Point;
+    if TAChartUtils.IsNaN(sp) then
+      continue;
+    r := item^.YList[0];
+    if Math.IsNaN(r) then
+      continue;
+    sp1 := DoublePoint(sp.x - r, sp.y - r);
+    sp2 := DoublePoint(sp.x + r, sp.y + r);
+    gpR.a := AxisToGraph(sp1);
+    gpR.b := AxisToGraph(sp2);
+    if not RectIntersectsRectAlt(gpR, ext) then
+      continue;
+    pt1 := ParentChart.GraphToImage(gpR.a);
+    pt2 := ParentChart.GraphToImage(gpR.b);
     if bocPen in OverrideColor then
-      ADrawer.SetPenParams(BubblePen.Style, ColorDef(pi^.Color, BubblePen.Color));
+      ADrawer.SetPenParams(BubblePen.Style, ColorDef(item^.Color, BubblePen.Color));
     if bocBrush in OverrideColor then
-      ADrawer.SetBrushColor(ColorDef(pi^.Color, BubbleBrush.Color));
-    ADrawer.Ellipse(pt.X - d.X, pt.Y - d.Y, pt.X + d.X, pt.Y + d.Y);
+      ADrawer.SetBrushColor(ColorDef(item^.Color, BubbleBrush.Color));
+    ADrawer.Ellipse(pt1.x, pt1.y, pt2.x, pt2.y);
   end;
   DrawLabels(ADrawer);
+  ADrawer.ClippingStop;
 end;
 
 function TBubbleSeries.Extent: TDoubleRect;
