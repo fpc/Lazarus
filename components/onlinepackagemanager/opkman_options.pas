@@ -157,6 +157,8 @@ begin
     FRemoteRepository.Text := FXML.GetValue('RemoteRepository/Value', '')
   else
     FRemoteRepository.Text := FXML.GetValue('General/RemoteRepository/Value', '');
+  if Trim(FRemoteRepository.Text) = '' then
+    FRemoteRepository.Add(cRemoteRepository);
   FActiveRepositoryIndex := FXML.GetValue('General/ActiveRepositoryIndex/Value', 0);
   FForceDownloadAndExtract := FXML.GetValue('General/ForceDownloadAndExtract/Value', True);
   FDeleteZipAfterInstall := FXML.GetValue('General/DeleteZipAfterInstall/Value', True);
@@ -215,6 +217,8 @@ end;
 
 procedure TOptions.LoadDefault;
 begin
+  FRemoteRepository.Clear;
+  FRemoteRepositoryTmp.Clear;
   FRemoteRepository.Add(cRemoteRepository);
   FActiveRepositoryIndex := 0;
   FForceDownloadAndExtract := True;

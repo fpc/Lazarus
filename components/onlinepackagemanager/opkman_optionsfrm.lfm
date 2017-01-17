@@ -22,7 +22,7 @@ object OptionsFrm: TOptionsFrm
     BevelOuter = bvNone
     ClientHeight = 39
     ClientWidth = 525
-    TabOrder = 0
+    TabOrder = 1
     object bOk: TButton
       Left = 332
       Height = 25
@@ -61,19 +61,20 @@ object OptionsFrm: TOptionsFrm
     ActivePage = tsGeneral
     Align = alClient
     TabIndex = 0
-    TabOrder = 1
+    TabOrder = 0
     object tsGeneral: TTabSheet
       Caption = 'General'
       ClientHeight = 297
       ClientWidth = 517
       object pnGeneral: TPanel
         Left = 0
-        Height = 297
+        Height = 296
         Top = 0
         Width = 517
         Align = alClient
+        BorderSpacing.Bottom = 1
         BevelOuter = bvNone
-        ClientHeight = 297
+        ClientHeight = 296
         ClientWidth = 517
         Color = clBtnFace
         ParentColor = False
@@ -89,7 +90,7 @@ object OptionsFrm: TOptionsFrm
         object cbForceDownloadExtract: TCheckBox
           Left = 15
           Height = 19
-          Top = 70
+          Top = 75
           Width = 235
           Caption = ' Force download and extract of packages'
           ParentShowHint = False
@@ -115,9 +116,9 @@ object OptionsFrm: TOptionsFrm
           ParentColor = False
         end
         object cbCheckForUpdates: TComboBox
-          Left = 16
+          Left = 15
           Height = 23
-          Top = 168
+          Top = 170
           Width = 209
           ItemHeight = 15
           ItemIndex = 0
@@ -136,37 +137,51 @@ object OptionsFrm: TOptionsFrm
         object lbLastUpdate: TLabel
           Left = 240
           Height = 15
-          Top = 171
+          Top = 173
           Width = 64
           Caption = 'Last update:'
           ParentColor = False
         end
-        object bOpen: TButton
-          Left = 476
-          Height = 25
+        object pnRepositories: TPanel
+          Left = 15
+          Height = 26
           Top = 31
-          Width = 27
-          Anchors = [akTop, akRight]
-          Caption = '...'
-          OnClick = bOpenClick
-          TabOrder = 3
-        end
-        object cbRemoteRepository: TComboBox
-          Left = 16
-          Height = 23
-          Top = 32
-          Width = 457
+          Width = 489
           Anchors = [akTop, akLeft, akRight]
-          ItemHeight = 15
-          Style = csDropDownList
-          TabOrder = 4
+          AutoSize = True
+          BevelOuter = bvNone
+          ClientHeight = 26
+          ClientWidth = 489
+          TabOrder = 3
+          object cbRemoteRepository: TComboBox
+            Left = 1
+            Height = 23
+            Top = 1
+            Width = 456
+            Align = alClient
+            BorderSpacing.Around = 1
+            ItemHeight = 15
+            Style = csDropDownList
+            TabOrder = 0
+          end
+          object bOpen: TButton
+            Left = 458
+            Height = 25
+            Top = 0
+            Width = 31
+            Align = alRight
+            BorderSpacing.Bottom = 1
+            Caption = '...'
+            OnClick = bOpenClick
+            TabOrder = 1
+          end
         end
       end
     end
     object tsProxy: TTabSheet
       Caption = 'Proxy'
-      ClientHeight = 297
-      ClientWidth = 517
+      ClientHeight = 286
+      ClientWidth = 519
       object pnProxy: TPanel
         Left = 0
         Height = 297
@@ -273,8 +288,8 @@ object OptionsFrm: TOptionsFrm
     end
     object tsFolders: TTabSheet
       Caption = 'Folders'
-      ClientHeight = 297
-      ClientWidth = 517
+      ClientHeight = 286
+      ClientWidth = 519
       object pnFolders: TPanel
         Left = 0
         Height = 297
@@ -364,8 +379,8 @@ object OptionsFrm: TOptionsFrm
     end
     object tsProfiles: TTabSheet
       Caption = 'Profiles'
-      ClientHeight = 297
-      ClientWidth = 517
+      ClientHeight = 286
+      ClientWidth = 519
       object pnProfiles: TPanel
         Left = 0
         Height = 297
@@ -505,7 +520,7 @@ object OptionsFrm: TOptionsFrm
               Color = clBtnFace
               ItemHeight = 0
               ParentShowHint = False
-              ScrollWidth = 161
+              ScrollWidth = 179
               ShowHint = True
               Sorted = True
               TabOrder = 2
@@ -593,7 +608,7 @@ object OptionsFrm: TOptionsFrm
               Color = clBtnFace
               ItemHeight = 0
               ParentShowHint = False
-              ScrollWidth = 154
+              ScrollWidth = 159
               ShowHint = True
               Sorted = True
               TabOrder = 2

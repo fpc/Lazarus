@@ -45,15 +45,15 @@ type
     bFoldersDelete: TButton;
     bFoldersEdit: TButton;
     bOk: TButton;
+    bOpen: TButton;
     bRestore: TButton;
     bFilesAdd: TButton;
-    bOpen: TButton;
     cbProxy: TCheckBox;
     cbForceDownloadExtract: TCheckBox;
     cbDeleteZipAfterInstall: TCheckBox;
     cbCheckForUpdates: TComboBox;
-    cbSelectProfile: TComboBox;
     cbRemoteRepository: TComboBox;
+    cbSelectProfile: TComboBox;
     edLocalRepositoryUpdate: TDirectoryEdit;
     edLocalRepositoryPackages: TDirectoryEdit;
     edLocalRepositoryArchive: TDirectoryEdit;
@@ -76,6 +76,7 @@ type
     lbPassword: TLabel;
     lbExcludeFiles: TListBox;
     lbExcludeFolders: TListBox;
+    pnRepositories: TPanel;
     pnProfilesCaptionLeft: TPanel;
     pnProfilesCaptionLeft1: TPanel;
     pnProfilesLeftButtons: TPanel;

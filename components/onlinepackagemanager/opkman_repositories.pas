@@ -51,7 +51,7 @@ var
   RepositoriesFrm: TRepositoriesFrm;
 
 implementation
-uses opkman_const, opkman_common, opkman_options, opkman_optionsfrm;
+uses opkman_const, opkman_common, opkman_options;
 {$R *.lfm}
 
 type

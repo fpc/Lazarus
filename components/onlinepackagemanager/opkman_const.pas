@@ -41,7 +41,7 @@ const
   cLocalRepositoryUpdate = 'update';
   cLocalRepositoryConfig = 'config';
   cLocalRepositoryConfigFile = 'options.xml';
-  cLocalRepositoryUpdatesFile = 'updates.xml';
+  cLocalRepositoryUpdatesFile = 'updates_%s.xml';
   cExcludedFilesDef = '*.,*.a,*.o,*.ppu,*.compiled,*.bak,*.or,*.rsj,*.~,*.exe,*.dbg,*.zip,*.json';
   cExcludedFoldersDef = 'lib,backup,updates,compiled,.git,.svn';
   cHelpPage = 'http://wiki.freepascal.org/Online_Package_Manager';
@@ -174,6 +174,7 @@ resourcestring
   rsMainFrm_rsMessageNoPackage = 'No packages to show.';
   rsMainFrm_rsMessageParsingJSON = 'Parsing JSON. Please wait...';
   rsMainFrm_rsMessageDownload = 'Downloading package list. Please wait...';
+  rsMainFrm_rsMessageChangingRepository = 'Changing repository. Please wait...';
   rsMainFrm_rsMessageNoRepository0 = 'Remote package repository not configured.' + sLineBreak + 'Do you wish to configure it now?';
   rsMainFrm_rsMessageError0 = 'Cannot download package list. Error message:';
   rsMainFrm_rsMessageError1 = 'Invalid JSON file.';
@@ -368,7 +369,7 @@ resourcestring
   rsRepositories_Confirmation0 = 'Delete selected repository "%s" ?';
   rsRepositories_InputBox_Caption0 = 'Add repository';
   rsRepositories_InputBox_Caption1 = 'Edit repository';
-  rsRepositories_InputBox_Text = 'Type the repository name:';
+  rsRepositories_InputBox_Text = 'Type the repository address:';
 
 implementation
 

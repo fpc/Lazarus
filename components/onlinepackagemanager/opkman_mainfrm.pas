@@ -32,7 +32,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, contnrs,
   StdCtrls, ExtCtrls, Buttons, Menus, ComCtrls, IDECommands, LazFileUtils,
   LCLIntf, fpjson, opkman_VirtualTrees, opkman_downloader, opkman_installer,
-  PackageIntf, Clipbrd;
+  PackageIntf, Clipbrd, md5;
 
 type
 
@@ -111,7 +111,7 @@ type
     procedure EnableDisableControls(const AEnable: Boolean);
     procedure SetupMessage(const AMessage: String = '');
     procedure SetupControls;
-    procedure GetPackageList;
+    procedure GetPackageList(const ARepositoryHasChanged: Boolean = False);
     procedure DoOnChecking(Sender: TObject; const AIsAllChecked: Boolean);
     procedure DoOnChecked(Sender: TObject);
     procedure DoOnJSONProgress(Sender: TObject);
@@ -123,7 +123,8 @@ type
     function Extract(const ASrcDir, ADstDir: String; var ADoOpen: Boolean; const AIsUpdate: Boolean = False): TModalResult;
     function Install(var AInstallStatus: TInstallStatus; var ANeedToRebuild: Boolean): TModalResult;
     function UpdateP(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
-    procedure TerminateUpdates;
+    procedure StartUpdates;
+    procedure StopUpdates;
   public
     procedure ShowOptions(const AActivePageIndex: Integer = 0);
   end;
@@ -154,10 +155,7 @@ begin
   PackageDownloader := TPackageDownloader.Create(Options.RemoteRepository[Options.ActiveRepositoryIndex]);
   PackageDownloader.OnJSONProgress := @DoOnJSONProgress;
   PackageDownloader.OnJSONDownloadCompleted := @DoOnJSONDownloadCompleted;
-  Updates := TUpdates.Create(LocalRepositoryUpdatesFile);
-  Updates.OnUpdate := @DoOnUpdate;
-  Updates.StartUpdate;
-  Updates.PauseUpdate;
+  StartUpdates;
   InstallPackageList := TObjectList.Create(True);
   FHintTimeOut := Application.HintHidePause;
   Application.HintHidePause := 1000000;
@@ -166,7 +164,18 @@ begin
  {$ENDIF}
 end;
 
-procedure TMainFrm.TerminateUpdates;
+procedure TMainFrm.StartUpdates;
+var
+  FileName: String;
+begin
+  FileName := Format(LocalRepositoryUpdatesFile, [MD5Print(MD5String(Options.RemoteRepository[Options.ActiveRepositoryIndex]))]);
+  Updates := TUpdates.Create(FileName);
+  Updates.OnUpdate := @DoOnUpdate;
+  Updates.StartUpdate;
+  Updates.PauseUpdate;
+end;
+
+procedure TMainFrm.StopUpdates;
 begin
   if Assigned(Updates) then
   begin
@@ -178,7 +187,7 @@ end;
 
 procedure TMainFrm.FormDestroy(Sender: TObject);
 begin
-  TerminateUpdates;
+  StopUpdates;
   PackageDownloader.Free;
   SerializablePackages.Free;
   VisualTree.Free;
@@ -199,13 +208,22 @@ begin
   GetPackageList;
 end;
 
-procedure TMainFrm.GetPackageList;
+procedure TMainFrm.GetPackageList(const ARepositoryHasChanged: Boolean = False);
 begin
-  Updates.PauseUpdate;
   Caption := rsLazarusPackageManager;
+  EnableDisableControls(False);
   VisualTree.VST.Clear;
   VisualTree.VST.Invalidate;
-  EnableDisableControls(False);
+  if ARepositoryHasChanged then
+  begin
+    SetupMessage(rsMainFrm_rsMessageChangingRepository);
+    Sleep(1500);
+    StopUpdates;
+    SerializablePackages.Clear;
+    StartUpdates;
+  end
+  else
+    Updates.PauseUpdate;
   SetupMessage(rsMainFrm_rsMessageDownload);
   PackageDownloader.DownloadJSON(10000);
 end;
@@ -304,7 +322,6 @@ begin
   end;
 end;
 
-
 procedure TMainFrm.DoOnJSONDownloadCompleted(Sender: TObject; AJSON: TJSONStringType; AErrTyp: TErrorType; const AErrMsg: String = '');
 begin
   case AErrTyp of
@@ -357,14 +374,17 @@ begin
 end;
 
 procedure TMainFrm.ShowOptions(const AActivePageIndex: Integer = 0);
+var
+  OldIndex: Integer;
 begin
   OptionsFrm := TOptionsFrm.Create(MainFrm);
   try
     OptionsFrm.SetupControls(AActivePageIndex);
+    OldIndex := Options.ActiveRepositoryIndex;
     if OptionsFrm.ShowModal = mrOk then
     begin
       tbRefresh.Enabled := Trim(Options.RemoteRepository[Options.ActiveRepositoryIndex]) <> '';
-      GetPackageList;
+      GetPackageList(OldIndex <> Options.ActiveRepositoryIndex);
     end;
   finally
     OptionsFrm.Free;
