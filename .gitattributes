@@ -7731,6 +7731,7 @@ lcl/interfaces/gtk3/interfaces.pp svneol=native#text/plain
 lcl/interfaces/lcl.lpk svneol=native#text/plain
 lcl/interfaces/lcl.pas svneol=native#text/plain
 lcl/interfaces/mui/Makefile svneol=native#text/plain
+lcl/interfaces/mui/Makefile.compiled svneol=native#text/plain
 lcl/interfaces/mui/Makefile.fpc svneol=native#text/plain
 lcl/interfaces/mui/alllclintfunits.pas svneol=native#text/pascal
 lcl/interfaces/mui/interfaces.pp svneol=native#text/pascal
