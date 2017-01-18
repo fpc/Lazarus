@@ -278,7 +278,7 @@ begin
   StartPos:=length(AFilename)+1;
   while (StartPos>1)
   and not (AFilename[StartPos-1] in AllowDirectorySeparators)
-  {$IFDEF Windows}and (AFilename[StartPos-1]<>':'){$ENDIF}
+  {$IF defined(Windows) or defined(HASAMIGA)}and (AFilename[StartPos-1]<>':'){$ENDIF}
   do
     dec(StartPos);
   ExtPos:=length(AFilename);
@@ -1326,8 +1326,13 @@ begin
       {$if defined(unix) or defined(wince)}
       if (FileName[1] = PathDelim) then Result := PathDelim;
       {$else}
-      if (Len > 2) and (FileName[1] in ['a'..'z','A'..'Z']) and (FileName[2] = ':') and (FileName[3] in AllowDirectorySeparators) then
-        Result := UpperCase(Copy(FileName,1,3));
+        {$ifdef HASAMIGA}
+        if Pos(':', FileName) > 1 then
+          Result := Copy(FileName, 1, Pos(':', FileName));
+        {$else}
+        if (Len > 2) and (FileName[1] in ['a'..'z','A'..'Z']) and (FileName[2] = ':') and (FileName[3] in AllowDirectorySeparators) then
+          Result := UpperCase(Copy(FileName,1,3));
+        {$endif}
       {$endif}
     end;
   end;
