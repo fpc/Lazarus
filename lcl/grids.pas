@@ -1194,7 +1194,7 @@ type
 
     property OnAfterSelection: TOnSelectEvent read FOnAfterSelection write FOnAfterSelection;
     property OnBeforeSelection: TOnSelectEvent read FOnBeforeSelection write FOnBeforeSelection;
-    property OnCheckboxToggled: TToggledcheckboxEvent read FOnCheckboxToggled write FOnCheckboxToggled;
+    property OnCheckboxToggled: TToggledCheckboxEvent read FOnCheckboxToggled write FOnCheckboxToggled;
     property OnCompareCells: TOnCompareCells read FOnCompareCells write FOnCompareCells;
     property OnPrepareCanvas: TOnPrepareCanvasEvent read FOnPrepareCanvas write FOnPrepareCanvas;
     property OnDrawCell: TOnDrawCell read FOnDrawCell write FOnDrawCell;
@@ -1207,7 +1207,7 @@ type
     property OnTopLeftChanged: TNotifyEvent read FOnTopLeftChanged write FOnTopLeftChanged;
     property OnUserCheckboxBitmap: TUserCheckboxBitmapEvent read FOnUserCheckboxBitmap write FOnUserCheckboxBitmap;
     property OnValidateEntry: TValidateEntryEvent read FOnValidateEntry write FOnValidateEntry;
-    //Bidi functions
+    // Bidi functions
     function FlipRect(ARect: TRect): TRect;
     function FlipPoint(P: TPoint): TPoint;
     function FlipX(X: Integer): Integer;
@@ -1605,80 +1605,80 @@ type
   { TCustomStringGrid }
 
   TCustomStringGrid = class(TCustomDrawGrid)
-    private
-      FModified: boolean;
-      FColsMap,FRowsMap: TMap;
-      fOnCellProcess: TCellProcessEvent;
-      function  GetCols(index: Integer): TStrings;
-      function  GetObjects(ACol, ARow: Integer): TObject;
-      function  GetRows(index: Integer): TStrings;
-      procedure MapFree(var aMap: TMap);
-      function  MapGetColsRows(IsCols: boolean; Index:Integer; var AMap:TMap):TStrings;
-      procedure ReadCells(Reader: TReader);
-      procedure SetCols(index: Integer; const AValue: TStrings);
-      procedure SetObjects(ACol, ARow: Integer; AValue: TObject);
-      procedure SetRows(index: Integer; const AValue: TStrings);
-      procedure WriteCells(Writer: TWriter);
-      procedure CopyCellRectToClipboard(const R:TRect);
-    protected
-      procedure AssignTo(Dest: TPersistent); override;
-      procedure AutoAdjustColumn(aCol: Integer); override;
-      procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); override;
-      procedure DefineProperties(Filer: TFiler); override;
-      procedure DefineCellsProperty(Filer: TFiler); virtual;
-      function  DoCompareCells(Acol,ARow,Bcol,BRow: Integer): Integer; override;
-      procedure DoCopyToClipboard; override;
-      procedure DoCutToClipboard; override;
-      procedure DoPasteFromClipboard; override;
-      procedure DoCellProcess(aCol, aRow: Integer; processType: TCellProcessType; var aValue: string); virtual;
-      procedure DrawTextInCell(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); override;
-      procedure DrawCellAutonumbering(aCol,aRow: Integer; aRect: TRect; const aValue: string); override;
-      //procedure EditordoGetValue; override;
-      //procedure EditordoSetValue; override;
-      function  GetCells(ACol, ARow: Integer): string; override;
-      procedure GetCheckBoxState(const aCol, aRow:Integer; var aState:TCheckboxState); override;
-      function  GetEditText(aCol, aRow: Integer): string; override;
-      procedure LoadContent(cfg: TXMLConfig; Version: Integer); override;
-      procedure Loaded; override;
-      procedure SaveContent(cfg: TXMLConfig); override;
-      //procedure DrawInteriorCells; override;
-      //procedure SelectEditor; override;
-      procedure SelectionSetText(TheText: String);
-      procedure SetCells(ACol, ARow: Integer; const AValue: string); virtual;
-      procedure SetCheckboxState(const aCol, aRow:Integer; const aState: TCheckboxState); override;
-      procedure SetEditText(aCol, aRow: Longint; const aValue: string); override;
+  private
+    FModified: boolean;
+    FColsMap,FRowsMap: TMap;
+    fOnCellProcess: TCellProcessEvent;
+    function  GetCols(index: Integer): TStrings;
+    function  GetObjects(ACol, ARow: Integer): TObject;
+    function  GetRows(index: Integer): TStrings;
+    procedure MapFree(var aMap: TMap);
+    function  MapGetColsRows(IsCols: boolean; Index:Integer; var AMap:TMap):TStrings;
+    procedure ReadCells(Reader: TReader);
+    procedure SetCols(index: Integer; const AValue: TStrings);
+    procedure SetObjects(ACol, ARow: Integer; AValue: TObject);
+    procedure SetRows(index: Integer; const AValue: TStrings);
+    procedure WriteCells(Writer: TWriter);
+    procedure CopyCellRectToClipboard(const R:TRect);
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+    procedure AutoAdjustColumn(aCol: Integer); override;
+    procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); override;
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure DefineCellsProperty(Filer: TFiler); virtual;
+    function  DoCompareCells(Acol,ARow,Bcol,BRow: Integer): Integer; override;
+    procedure DoCopyToClipboard; override;
+    procedure DoCutToClipboard; override;
+    procedure DoPasteFromClipboard; override;
+    procedure DoCellProcess(aCol, aRow: Integer; processType: TCellProcessType; var aValue: string); virtual;
+    procedure DrawTextInCell(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); override;
+    procedure DrawCellAutonumbering(aCol,aRow: Integer; aRect: TRect; const aValue: string); override;
+    //procedure EditordoGetValue; override;
+    //procedure EditordoSetValue; override;
+    function  GetCells(ACol, ARow: Integer): string; override;
+    procedure GetCheckBoxState(const aCol, aRow:Integer; var aState:TCheckboxState); override;
+    function  GetEditText(aCol, aRow: Integer): string; override;
+    procedure LoadContent(cfg: TXMLConfig; Version: Integer); override;
+    procedure Loaded; override;
+    procedure SaveContent(cfg: TXMLConfig); override;
+    //procedure DrawInteriorCells; override;
+    //procedure SelectEditor; override;
+    procedure SelectionSetText(TheText: String);
+    procedure SetCells(ACol, ARow: Integer; const AValue: string); virtual;
+    procedure SetCheckboxState(const aCol, aRow:Integer; const aState: TCheckboxState); override;
+    procedure SetEditText(aCol, aRow: Longint; const aValue: string); override;
 
-      property Modified: boolean read FModified write FModified;
-      property OnCellProcess: TCellProcessEvent read fOnCellProcess write fOnCellProcess;
+    property Modified: boolean read FModified write FModified;
+    property OnCellProcess: TCellProcessEvent read fOnCellProcess write fOnCellProcess;
 
-    public
-      constructor Create(AOwner: TComponent); override;
-      destructor Destroy; override;
-      procedure AutoSizeColumn(aCol: Integer);
-      procedure AutoSizeColumns;
-      procedure Clean; overload;
-      procedure Clean(CleanOptions: TGridZoneSet); overload;
-      procedure Clean(aRect: TRect; CleanOptions: TGridZoneSet); overload;
-      procedure Clean(StartCol,StartRow,EndCol,EndRow: integer; CleanOptions: TGridZoneSet); overload;
-      procedure CopyToClipboard(AUseSelection: boolean = false);
-      procedure InsertRowWithValues(Index: Integer; Values: array of String);
-      procedure LoadFromCSVStream(AStream: TStream; ADelimiter: Char=',';
-        UseTitles: boolean=true; FromLine: Integer=0; SkipEmptyLines: Boolean=true);
-      procedure LoadFromCSVFile(AFilename: string; ADelimiter: Char=',';
-        UseTitles: boolean=true; FromLine: Integer=0; SkipEmptyLines: Boolean=true);
-      procedure SaveToCSVStream(AStream: TStream; ADelimiter: Char=',';
-        WriteTitles: boolean=true; VisibleColumnsOnly: boolean=false);
-      procedure SaveToCSVFile(AFileName: string; ADelimiter: Char=',';
-        WriteTitles: boolean=true; VisibleColumnsOnly: boolean=false);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure AutoSizeColumn(aCol: Integer);
+    procedure AutoSizeColumns;
+    procedure Clean; overload;
+    procedure Clean(CleanOptions: TGridZoneSet); overload;
+    procedure Clean(aRect: TRect; CleanOptions: TGridZoneSet); overload;
+    procedure Clean(StartCol,StartRow,EndCol,EndRow: integer; CleanOptions: TGridZoneSet); overload;
+    procedure CopyToClipboard(AUseSelection: boolean = false);
+    procedure InsertRowWithValues(Index: Integer; Values: array of String);
+    procedure LoadFromCSVStream(AStream: TStream; ADelimiter: Char=',';
+      UseTitles: boolean=true; FromLine: Integer=0; SkipEmptyLines: Boolean=true);
+    procedure LoadFromCSVFile(AFilename: string; ADelimiter: Char=',';
+      UseTitles: boolean=true; FromLine: Integer=0; SkipEmptyLines: Boolean=true);
+    procedure SaveToCSVStream(AStream: TStream; ADelimiter: Char=',';
+      WriteTitles: boolean=true; VisibleColumnsOnly: boolean=false);
+    procedure SaveToCSVFile(AFileName: string; ADelimiter: Char=',';
+      WriteTitles: boolean=true; VisibleColumnsOnly: boolean=false);
 
-      property Cells[ACol, ARow: Integer]: string read GetCells write SetCells;
-      property Cols[index: Integer]: TStrings read GetCols write SetCols;
-      property DefaultTextStyle;
-      property EditorMode;
-      property ExtendedSelect;
-      property Objects[ACol, ARow: Integer]: TObject read GetObjects write SetObjects;
-      property Rows[index: Integer]: TStrings read GetRows write SetRows;
-      property UseXORFeatures;
+    property Cells[ACol, ARow: Integer]: string read GetCells write SetCells;
+    property Cols[index: Integer]: TStrings read GetCols write SetCols;
+    property DefaultTextStyle;
+    property EditorMode;
+    property ExtendedSelect;
+    property Objects[ACol, ARow: Integer]: TObject read GetObjects write SetObjects;
+    property Rows[index: Integer]: TStrings read GetRows write SetRows;
+    property UseXORFeatures;
   end;
 
 
