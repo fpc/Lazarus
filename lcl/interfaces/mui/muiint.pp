@@ -166,7 +166,8 @@ begin
 end;
 
 var
-  AppTitle, FinalVers, Vers, CopyR, Comment, prgName, Author: string;
+  // MUI does not copy this values, so we keep them here
+  AppTitle, FinalVers, Vers, CopyR, Comment, PrgName, Author: string;
 
 procedure TMUIWidgetSet.DebugOutEvent(Sender: TObject;s: string; var Handled: Boolean);
 begin
@@ -195,16 +196,21 @@ var
    end;
 
 begin
+  // connect Debug log output
   DebugLogger.OnDbgOut := @DebugOutEvent;
   DebugLogger.OnDebugLn := @DebugOutLNEvent;
+  // Initial Application Values
   Vers := '';
   CopyR := '';
   Comment := '';
   Dollar := '$';
-  prgName := Application.title;
-  AppTitle := Application.title;
+  // Get the name from Application.Title, remove the Path Part
+  PrgName := ExtractFilename(Application.Title);
+  AppTitle := PrgName;
+  // Miu can't handle empty AppTitle, use Exename
   if AppTitle = '' then
     AppTitle := ExtractFilename(ParamStr(0));
+  // load Informations from resource
   Info := TVersionInfo.Create;
   try
     Info.Load(HINSTANCE);
@@ -214,17 +220,14 @@ begin
       for j := 0 to Info.StringFileInfo.Items[i].Count - 1 do
       begin
         if Info.StringFileInfo.Items[i].Keys[j] = 'LegalCopyright' then
-        begin
-          CopyR := Info.StringFileInfo.Items[i].Values[j];
-        end else
+          CopyR := Info.StringFileInfo.Items[i].Values[j]
+        else
         if Info.StringFileInfo.Items[i].Keys[j] = 'Comments' then
-        begin
-          Comment := Info.StringFileInfo.Items[i].Values[j];
-        end else
+          Comment := Info.StringFileInfo.Items[i].Values[j]
+        else
         if Info.StringFileInfo.Items[i].Keys[j] = 'CompanyName' then
-        begin
-          Author := Info.StringFileInfo.Items[i].Values[j];
-        end else
+          Author := Info.StringFileInfo.Items[i].Values[j]
+        else
         if Info.StringFileInfo.Items[i].Keys[j] = 'ProductName' then
         begin
           if Length(Trim(Info.StringFileInfo.Items[i].Values[j])) > 0  then
@@ -234,11 +237,15 @@ begin
     end;
   except
   end;
+  // end resource loading
   Info.Free;
+  // get the Icon (to use as Iconify Image), nil is no problem, MUI handle that and use the default
   ThisAppDiskIcon := GetDiskObject(PChar(ParamStr(0)));
+  // Version information as Standard AMIGA Version string
   FinalVers := Dollar + 'VER: ' + PrgName + ' ' + Vers + '('+{$I %DATE%}+')';
+  // Create the Application
   TagList.AddTags([
-    LongInt(MUIA_Application_Base), NativeUInt(PChar(AppTitle)),
+    NativeInt(MUIA_Application_Base), NativeUInt(PChar(AppTitle)),
     MUIA_Application_DiskObject, NativeUInt(ThisAppDiskIcon),
     MUIA_Application_Title, NativeUInt(PChar(AppTitle)),
     MUIA_Application_Version, NativeUInt(PChar(FinalVers)),
@@ -247,6 +254,9 @@ begin
     MUIA_Application_Author, NativeUInt(PChar(Author))
     ]);
   MUIApp := TMuiApplication.Create(TagList);
+  if not Assigned(MUIApp) or not Assigned(MUIApp.Obj) then
+    raise EInvalidOperation.Create('Unable to Create Application object.');
+  // same basic Screen info, no idea where to get that
   ScreenInfo.PixelsPerInchX := 72;
   ScreenInfo.PixelsPerInchY := 72;
   ScreenInfo.ColorDepth := 32;
