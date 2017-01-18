@@ -1001,6 +1001,8 @@
       LastNode:=Tree.AddAscendingSequence(TItem.Create(i),LastNode,Successor);
 </descr>
       </element>
+    <element name="TAvgLvlTree.OwnsObjects"><short>Enable to treat Node.Data as TObject and free on delete</short>
+      </element>
     </module>
     <!-- AvgLvlTree -->
   </package>

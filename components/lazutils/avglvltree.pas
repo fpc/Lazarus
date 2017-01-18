@@ -72,6 +72,8 @@ type
   { TAvgLvlTree }
 
   TAvgLvlTree = class
+  private
+    FOwnsObjects: boolean;
   protected
     fRoot: TAvgLvlTreeNode;
     FCount: SizeInt;
@@ -99,7 +101,9 @@ type
     property OnCompare: TListSortCompare read FOnCompare write SetOnCompare;
     property OnObjectCompare: TObjectSortCompare read FOnObjectCompare write SetOnObjectCompare;
     property NodeClass: TAvgLvlTreeNodeClass read FNodeClass write FNodeClass; // used for new nodes
-    function NewNode: TAvgLvlTreeNode; virtual;
+    function NewNode: TAvgLvlTreeNode; virtual;  // create a node, not connected, outside the tree
+    procedure DisposeNode(aNode: TAvgLvlTreeNode); virtual; // free a node, already disconnected from the tree
+    property OwnsObjects: boolean read FOwnsObjects write FOwnsObjects;
 
     // add, delete, remove, move
     procedure Add(ANode: TAvgLvlTreeNode);
@@ -926,6 +930,15 @@ begin
   Result:=NodeClass.Create;
 end;
 
+procedure TAvgLvlTree.DisposeNode(aNode: TAvgLvlTreeNode);
+begin
+  if OwnsObjects then begin
+    TObject(aNode.Data).Free;
+    aNode.Data := nil;
+  end;
+  aNode.Free;
+end;
+
 procedure TAvgLvlTree.Add(ANode: TAvgLvlTreeNode);
 // add a node. If there are already nodes with the same value it will be
 // inserted rightmost
@@ -1068,10 +1081,10 @@ begin
 end;
 
 procedure TAvgLvlTree.DeletingNode(aNode: TAvgLvlTreeNode);
-// called by Delete
+// called by Delete, before disconnecting from tree
 // Node.Left=nil or Node.Right=nil
 begin
-  // for descendants to override
+  // for user overrides
 end;
 
 procedure TAvgLvlTree.BalanceAfterInsert(ANode: TAvgLvlTreeNode);
@@ -1192,7 +1205,7 @@ procedure TAvgLvlTree.Clear;
       if ANode.Left<>nil then DeleteNode(ANode.Left);
       if ANode.Right<>nil then DeleteNode(ANode.Right);
     end;
-    ANode.Free;
+    DisposeNode(ANode);
   end;
 
 // Clear
@@ -1260,7 +1273,7 @@ begin
     fRoot:=Child;
   end;
   dec(FCount);
-  ANode.Free;
+  DisposeNode(ANode);
 end;
 
 function TAvgLvlTree.Remove(Data: Pointer): boolean;
@@ -1558,7 +1571,7 @@ procedure TAvgLvlTree.FreeAndClear;
     if ANode=nil then exit;
     FreeNodeData(ANode.Left);
     FreeNodeData(ANode.Right);
-    if ANode.Data<>nil then TObject(ANode.Data).Free;
+    TObject(ANode.Data).Free;
     ANode.Data:=nil;
   end;
 
@@ -1573,9 +1586,13 @@ end;
 procedure TAvgLvlTree.FreeAndDelete(ANode: TAvgLvlTreeNode);
 var OldData: TObject;
 begin
-  OldData:=TObject(ANode.Data);
-  Delete(ANode);
-  OldData.Free;
+  if OwnsObjects then
+    Delete(ANode)
+  else begin
+    OldData:=TObject(ANode.Data);
+    Delete(ANode);
+    OldData.Free;
+  end;
 end;
 
 function TAvgLvlTree.Equals(Obj: TObject): boolean;
