@@ -894,7 +894,7 @@ begin
     if not Assigned(SC) then
       Exit;
     ScrollInfo.nMin := SC.MinValue;
-    ScrollInfo.nMax := SC.MaxValue + SC.PageSize;
+    ScrollInfo.nMax := SC.MaxValue;
     ScrollInfo.nPage := SC.PageSize;
     ScrollInfo.nPos := SC.Position;
     Result := True;
@@ -1574,8 +1574,8 @@ begin
     begin
       if SC.MinValue <> ScrollInfo.nMin then
         SC.MinValue := ScrollInfo.nMin;
-      if SC.MaxValue <> (ScrollInfo.nMax) - ScrollInfo.nPage then
-        SC.MaxValue := (ScrollInfo.nMax) - ScrollInfo.nPage;
+      if SC.MaxValue <> ScrollInfo.nMax then
+        SC.MaxValue := ScrollInfo.nMax;
     end;
     if ((SIF_POS and ScrollInfo.fMask) <> 0) and (SC.Position <> ScrollInfo.nPos) then
       SC.Position := ScrollInfo.nPos;

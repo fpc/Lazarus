@@ -305,7 +305,7 @@ end;
 function TMUIScrollBar.GetPosition: Integer;
 begin
   Result := GetAttribute(MUIA_Prop_First) + FMinValue;
-  //DebugLn('LCL: GetPosition: ' + IntToStr(Result) + ' MinValue: ' + IntToStr(FMinValue));
+  //SysDebugLn('LCL: GetPosition: ' + IntToStr(Result) + ' MinValue: ' + IntToStr(FMinValue));
 end;
 
 procedure TMUIScrollBar.SetHoriz(AValue: Boolean);
@@ -317,12 +317,13 @@ procedure TMUIScrollBar.SetMaxValue(AValue: Integer);
 var
   Pos: Integer;
 begin
-  //debugln('set MaxValue ' + IntToStr(AValue));
+  //sysdebugln('set MaxValue ' + IntToStr(AValue));
   if (AValue = FMaxValue) or (AValue <= FMinValue) then
     Exit;
   Pos := Position;
   FMaxValue := AValue;
-  SetAttribute(MUIA_Prop_Entries, (AValue - FMinValue) + FPageSize);
+  SetAttribute(MUIA_Prop_Entries, FMaxValue - FMinValue);
+  SetAttribute(MUIA_Prop_Visible, FPageSize);
   Position := Pos;
 end;
 
@@ -332,10 +333,11 @@ var
 begin
   if AValue = FMinValue then
     Exit;
-  //debugln('set MinValue ' + IntToStr(AValue));
+  //sysdebugln('set MinValue ' + IntToStr(AValue));
   Pos := Position;
   FMinValue := AValue;
-  SetAttribute(MUIA_Prop_Entries, (FMaxValue - AValue) + FPageSize);
+  SetAttribute(MUIA_Prop_Entries, FMaxValue - FMinValue);
+  SetAttribute(MUIA_Prop_Visible, FPageSize);
   Position := Pos;
 end;
 
@@ -345,17 +347,17 @@ var
 begin
   if AValue = FPageSize then
     Exit;
-  //debugln('set page size ' + IntToStr(AValue));
+  //sysdebugln('set page size ' + IntToStr(AValue));
   Pos := Position;
   FPageSize := AValue;
-  SetAttribute(MUIA_Prop_Entries, (FMaxValue - FMinValue) + AValue);
-  SetAttribute(MUIA_Prop_Visible, AValue);
+  SetAttribute(MUIA_Prop_Entries, FMaxValue - FMinValue);
+  SetAttribute(MUIA_Prop_Visible, FPageSize);
   Position := Pos;
 end;
 
 procedure TMUIScrollBar.SetPosition(AValue: Integer);
 begin
-  //DebugLn('LCL: set to '+ IntToStr(AValue) + ' Position is ' + IntToStr(Position) + ' MinValue: ' + IntToStr(FMinValue));
+  //sysDebugLn('LCL: set to '+ IntToStr(AValue) + ' Position is ' + IntToStr(Position) + ' MinValue: ' + IntToStr(FMinValue)+ ' MaxValue: ' + IntToStr(FMaxValue));
   if AValue <> Position then
   begin
     SetAttribute(MUIA_Prop_First, AValue - FMinValue);

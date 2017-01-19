@@ -273,11 +273,13 @@ class function TMUIWSScrollBar.CreateHandle(const AWinControl: TWinControl; cons
 var
   MUIScrollbar: TMUIScrollbar;
   TagList: TATagList;
+  AScrollBar: TCustomScrollBar;
 begin
+  AScrollBar := TCustomScrollBar(AWinControl);
   TagList.AddTags([
-    MUIA_Prop_First, 0,
-    MUIA_Prop_Entries, 120,
-    MUIA_Prop_Visible, 20
+    MUIA_Prop_First, AScrollBar.Position,
+    MUIA_Prop_Entries, AScrollBar.Max - AScrollBar.Min,
+    MUIA_Prop_Visible, AScrollBar.PageSize
     ]);
   if TScrollbar(AWinControl).Kind = sbHorizontal then
     TagList.AddTags([MUIA_Group_Horiz, TagTrue])
