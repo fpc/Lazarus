@@ -83,7 +83,8 @@ function ProjToRect(
   const APt: TDoublePoint; const ARect: TDoubleRect): TDoublePoint;
 function RectIntersectsRect(
   var ARect: TDoubleRect; const AFixed: TDoubleRect): Boolean;
-function RectIntersectsRectAlt(R1, R2: TDoubleRect): Boolean;
+function RectIntersectsRectAlt(R1, R2: TDoubleRect): Boolean; overload;
+function RectIntersectsRectAlt(R1, R2: TRect): Boolean; overload;
 function RotatePoint(const APoint: TDoublePoint; AAngle: Double): TDoublePoint; overload;
 function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint; overload;
 function RotatePointX(AX, AAngle: Double): TPoint;
@@ -619,6 +620,13 @@ end;
 function RectIntersectsRectAlt(R1, R2: TDoubleRect): Boolean;
 begin
   Result := RectIntersectsRect(R1, R2);
+end;
+
+function RectIntersectsRectAlt(R1, R2: TRect): Boolean;
+var
+  R: TRect;
+begin
+  Result := IntersectRect(R, R1, R2);
 end;
 
 function RotatePoint(const APoint: TDoublePoint; AAngle: Double): TDoublePoint;

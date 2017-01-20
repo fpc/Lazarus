@@ -16,7 +16,7 @@ interface
 
 uses
   Classes, Graphics,
-  TAChartUtils, TATypes, TACustomSeries, TADrawUtils, TALegend;
+  TAChartUtils, TATypes, TACustomSource, TACustomSeries, TADrawUtils, TALegend;
 
 const
   DEF_BOX_WIDTH = 50;
@@ -29,9 +29,14 @@ const
 
 type
 
-  TBubbleRadiusTransform = (brtNone, brtX, brtY);
+  // TBubbleRadiusTransform = (brtNone, brtX, brtY); not used
   TBubbleOverrideColor = (bocBrush, bocPen);
   TBubbleOverrideColors = set of TBubbleOverrideColor;
+  TBubbleRadiusUnits = (
+    bruX,   // Circle with radius given in x axis units
+    bruY,   // Circle with radius given in y axis units
+    bruXY   // Ellipse
+  );
 
   { TBubbleSeries }
 
@@ -40,10 +45,13 @@ type
     FBubbleBrush: TBrush;
     FBubblePen: TPen;
     FOverrideColor: TBubbleOverrideColors;
+    FBubbleRadiusUnits: TBubbleRadiusUnits;
     procedure SetBubbleBrush(AValue: TBrush);
     procedure SetBubblePen(AValue: TPen);
+    procedure SetBubbleRadiusUnits(AValue: TBubbleRadiusUnits);
     procedure SetOverrideColor(AValue: TBubbleOverrideColors);
   protected
+    function GetBubbleRect(AItem: PChartDataItem; out ARect: TRect): Boolean;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
   public
@@ -51,8 +59,7 @@ type
       AColor: TColor = clTAColor): Integer; overload;
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
-    destructor  Destroy; override;
-
+    destructor Destroy; override;
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
   published
@@ -60,6 +67,8 @@ type
     property AxisIndexY;
     property BubbleBrush: TBrush read FBubbleBrush write SetBubbleBrush;
     property BubblePen: TPen read FBubblePen write SetBubblePen;
+    property BubbleRadiusUnits: TBubbleRadiusUnits read FBubbleRadiusUnits
+      write SetBubbleRadiusUnits default bruXY;
     property OverrideColor: TBubbleOverrideColors
       read FOverrideColor write SetOverrideColor default [];
     property Source;
@@ -237,7 +246,7 @@ implementation
 
 uses
   FPCanvas, Math, SysUtils,
-  TAChartStrConsts, TACustomSource, TAGeometry, TAGraph, TAMath;
+  TAChartStrConsts, TAGeometry, TAGraph, TAMath;
 
 type
 
@@ -455,6 +464,7 @@ begin
   FBubblePen.OnChange := @StyleChanged;
   FBubbleBrush := TBrush.Create;
   FBubbleBrush.OnChange := @StyleChanged;
+  FBubbleRadiusUnits := bruXY;
 end;
 
 destructor TBubbleSeries.Destroy;
@@ -467,19 +477,18 @@ end;
 procedure TBubbleSeries.Draw(ADrawer: IChartDrawer);
 var
   i: Integer;
-  r: Double;
+  rp: TDoublePoint;
   item: PChartDataItem;
-  pt1, pt2: TPoint;
-  gp, sp, sp1, sp2: TDoublePoint;
-  ext, gpR: TDoubleRect;
   clipR: TRect;
+  irect: TRect;
+  ext: TDoubleRect;
 begin
   if Source.YCount < 2 then exit;
 
   ADrawer.Pen := BubblePen;
   ADrawer.Brush := BubbleBrush;
-  ext := ParentChart.CurrentExtent;
 
+  ext := ParentChart.CurrentExtent;
   clipR.TopLeft := ParentChart.GraphToImage(ext.a);
   clipR.BottomRight := ParentChart.GraphToImage(ext.b);
   NormalizeRect(clipR);
@@ -487,25 +496,15 @@ begin
 
   for i := 0 to Count - 1 do begin
     item := Source[i];
-    sp := item^.Point;
-    if TAChartUtils.IsNaN(sp) then
+    if not GetBubbleRect(item, irect) then
       continue;
-    r := item^.YList[0];
-    if Math.IsNaN(r) then
+    if not RectIntersectsRectAlt(clipR, irect) then
       continue;
-    sp1 := DoublePoint(sp.x - r, sp.y - r);
-    sp2 := DoublePoint(sp.x + r, sp.y + r);
-    gpR.a := AxisToGraph(sp1);
-    gpR.b := AxisToGraph(sp2);
-    if not RectIntersectsRectAlt(gpR, ext) then
-      continue;
-    pt1 := ParentChart.GraphToImage(gpR.a);
-    pt2 := ParentChart.GraphToImage(gpR.b);
     if bocPen in OverrideColor then
       ADrawer.SetPenParams(BubblePen.Style, ColorDef(item^.Color, BubblePen.Color));
     if bocBrush in OverrideColor then
       ADrawer.SetBrushColor(ColorDef(item^.Color, BubbleBrush.Color));
-    ADrawer.Ellipse(pt1.x, pt1.y, pt2.x, pt2.y);
+    ADrawer.Ellipse(irect.Left, irect.Top, irect.Right, irect.Bottom);
   end;
   DrawLabels(ADrawer);
   ADrawer.ClippingStop;
@@ -515,18 +514,72 @@ function TBubbleSeries.Extent: TDoubleRect;
 var
   i: Integer;
   r: Double;
+  sp, gp, gq, rp: TDoublePoint;
+  item: PChartDataItem;
 begin
   Result := EmptyExtent;
-  if Source.YCount < 2 then exit;
-  for i := 0 to Count - 1 do
-    with Source[i]^ do begin
-      r := YList[0];
-      if IsNaN(X) or IsNaN(Y) or IsNaN(r) then continue;
-      Result.a.X := Min(Result.a.X, X - r);
-      Result.b.X := Max(Result.b.X, X + r);
-      Result.a.Y := Min(Result.a.Y, Y - r);
-      Result.b.Y := Max(Result.b.Y, Y + r);
-    end;
+  if Source.YCount < 2 then
+    exit;
+
+  for i := 0 to Count - 1 do begin
+    item := Source[i];
+    sp := item^.Point;
+    if TAChartUtils.IsNaN(sp) then
+      continue;
+    r := item^.YList[0];
+    if Math.IsNaN(r) then
+      continue;
+    rp := DoublePoint(r, r);
+    gp := AxisToGraph(sp);
+    gq := AxisToGraph(sp + rp);
+    rp := gq - gp;
+
+    Result.a.X := Min(Result.a.X, sp.x - rp.x);
+    Result.b.X := Max(Result.b.X, sp.x + rp.x);
+    Result.a.Y := Min(Result.a.Y, sp.y - rp.y);
+    Result.b.Y := Max(Result.b.Y, sp.y + rp.y);
+  end;
+end;
+
+function TBubbleSeries.GetBubbleRect(AItem: PChartDataItem; out ARect: TRect): Boolean;
+var
+  sp: TDoublePoint;    // source point in axis units
+  p: TPoint;           // bubble center in image units
+  q: TPoint;           // bubble center offset by 1 radius, in image units
+  r: Double;           // radius in axis units
+  ri: Integer;         // radius in image units
+begin
+  Result := false;
+  sp := AItem^.Point;
+  if TAChartUtils.IsNaN(sp) then
+    exit;
+  r := AItem^.YList[0];
+  if Math.IsNaN(r) then
+    exit;
+
+  case FBubbleRadiusUnits of
+    bruX:
+      begin
+        p := ParentChart.GraphToImage(AxisToGraph(sp));
+        q := ParentChart.GraphToImage(AxisToGraph(sp + DoublePoint(r, 0)));  // offset along x
+        if IsRotated then ri := q.y - p.y else ri := q.x - p.x;
+        ARect := Rect(p.x - ri, p.y - ri, p.x + ri, p.y + ri);
+      end;
+    bruY:
+      begin
+        p := ParentChart.GraphToImage(AxisToGraph(sp));
+        q := ParentChart.GraphToImage(AxisToGraph(sp + DoublePoint(0, r)));  // offset along y
+        if IsRotated then ri := q.x - p.x else ri := q.y - p.y;
+        ARect := Rect(p.x - ri, p.y - ri, p.x + ri, p.y + ri);
+      end;
+    bruXY:
+      begin
+        ARect.TopLeft := ParentChart.GraphToImage(AxisToGraph(DoublePoint(sp.x - r, sp.y - r)));
+        ARect.BottomRight := ParentChart.GraphToImage(AxisToGraph(DoublePoint(sp.x + r, sp.y + r)));
+      end;
+  end;
+  NormalizeRect(ARect);
+  Result := true;
 end;
 
 procedure TBubbleSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -550,6 +603,13 @@ procedure TBubbleSeries.SetBubblePen(AValue: TPen);
 begin
   if FBubblePen = AValue then exit;
   FBubblePen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TBubbleSeries.SetBubbleRadiusUnits(AValue: TBubbleRadiusUnits);
+begin
+  if FBubbleRadiusUnits = AValue then exit;
+  FBubbleRadiusUnits := AValue;
   UpdateParentChart;
 end;
 
