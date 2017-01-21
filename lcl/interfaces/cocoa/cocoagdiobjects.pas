@@ -49,7 +49,7 @@ type
     FGlobal: Boolean;
   public
     constructor Create(AGlobal: Boolean); virtual;
-    destructor Destroy; virtual;
+    destructor Destroy; override;
 
     class function UpdateRefs(ATarget: TCocoaGDIObject; ASource: TCocoaGDIObject): Boolean; static;
     procedure AddRef;
