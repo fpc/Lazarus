@@ -148,6 +148,48 @@ begin
     FHandleCreated(self);
 end;
 
+procedure TNoteBookStringsTabControl.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  if Assigned(Parent) and (Parent is TTabControl)
+  and Assigned(TTabControl(Parent).OnMouseDown) then
+    TTabControl(Parent).OnMouseDown(Parent, Button, Shift, X, Y);
+end;
+
+procedure TNoteBookStringsTabControl.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseMove(Shift, X, Y);
+  if Assigned(Parent) and (Parent is TTabControl)
+  and Assigned(TTabControl(Parent).OnMouseMove) then
+    TTabControl(Parent).OnMouseMove(Parent, Shift, X, Y);
+end;
+
+procedure TNoteBookStringsTabControl.MouseUp(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+  if Assigned(Parent) and (Parent is TTabControl)
+  and Assigned(TTabControl(Parent).OnMouseUp) then
+    TTabControl(Parent).OnMouseUp(Parent, Button, Shift, X, Y);
+end;
+
+procedure TNoteBookStringsTabControl.MouseEnter;
+begin
+  inherited MouseEnter;
+  if Assigned(Parent) and (Parent is TTabControl)
+  and Assigned(TTabControl(Parent).OnMouseEnter) then
+    TTabControl(Parent).OnMouseEnter(Parent);
+end;
+
+procedure TNoteBookStringsTabControl.MouseLeave;
+begin
+  inherited MouseLeave;
+  if Assigned(Parent) and (Parent is TTabControl)
+  and Assigned(TTabControl(Parent).OnMouseLeave) then
+    TTabControl(Parent).OnMouseLeave(Parent);
+end;
+
 class procedure TNoteBookStringsTabControl.WSRegisterClass;
 begin
   inherited WSRegisterClass;
@@ -741,6 +783,21 @@ end;
 function TTabControl.IndexOfTabAt(X, Y: Integer): Integer;
 begin
   Result:=TTabControlStrings(FTabs).IndexOfTabAt(X,Y);
+end;
+
+function TTabControl.IndexOfTabAt(P: TPoint): Integer;
+begin
+  Result:=TTabControlStrings(FTabs).IndexOfTabAt(P.x, P.y);
+end;
+
+function TTabControl.IndexOfPageAt(X, Y: Integer): Integer;
+begin
+  Result:=TTabControlStrings(FTabs).IndexOfTabAt(X,Y);
+end;
+
+function TTabControl.IndexOfPageAt(P: TPoint): Integer;
+begin
+  Result:=TTabControlStrings(FTabs).IndexOfTabAt(P.x, P.y);
 end;
 
 function TTabControl.GetHitTestInfoAt(X, Y: Integer): THitTests;
