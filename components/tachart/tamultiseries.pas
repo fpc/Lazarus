@@ -54,6 +54,8 @@ type
     function GetBubbleRect(AItem: PChartDataItem; out ARect: TRect): Boolean;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
+    function ToolTargetDistance(const AParams: TNearestPointParams;
+      AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
   public
     function AddXY(AX, AY, ARadius: Double; AXLabel: String = '';
       AColor: TColor = clTAColor): Integer; overload;
@@ -62,6 +64,10 @@ type
     destructor Destroy; override;
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
+    function GetNearestPoint(const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; override;
+    procedure MovePointEx(var AIndex: Integer; AXIndex, AYIndex: Integer;
+      const ANewPos: TDoublePoint); override;
   published
     property AxisIndexX;
     property AxisIndexY;
@@ -477,7 +483,6 @@ end;
 procedure TBubbleSeries.Draw(ADrawer: IChartDrawer);
 var
   i: Integer;
-  rp: TDoublePoint;
   item: PChartDataItem;
   clipR: TRect;
   irect: TRect;
@@ -511,6 +516,8 @@ begin
 end;
 
 function TBubbleSeries.Extent: TDoubleRect;
+// to do: this method is correct only for BubbleRadiusMode bruXY.
+// The radius calculation in case of bruX or bruY causes a crash.,,
 var
   i: Integer;
   r: Double;
@@ -587,9 +594,133 @@ begin
   GetLegendItemsRect(AItems, BubbleBrush);
 end;
 
+function TBubbleSeries.GetNearestPoint(const AParams: TNearestPointParams;
+  out AResults: TNearestPointResults): Boolean;
+var
+  i: Integer;
+  item: PChartDataItem;
+  iRect: TRect;
+  p: TPoint;
+  dperim: Integer;      // Distance of perimeter point from center of bubble
+  d, dist: Integer;
+  phi: Double;
+  rx, ry: Integer;
+  cosphi, sinphi: Double;
+begin
+  Result := inherited;
+
+  if Result then begin
+    if (AResults.FYIndex = 0) then
+      exit;
+    if (AResults.FYIndex = 1) then begin
+      item := Source[AResults.FIndex];
+      GetBubbleRect(item, iRect);
+      rx := (iRect.Right - iRect.Left) div 2;
+      ry := (iRect.Bottom - iRect.Top) div 2;
+      p := ParentChart.GraphToImage(AxisToGraph(item^.Point));
+      phi := -arctan2(AParams.FPoint.Y - p.y, AParams.FPoint.X - p.x);
+      SinCos(phi, sinphi, cosphi);
+      AResults.FImg := p + Point(round(rx * cosPhi), round(ry * sinPhi));
+      exit;
+    end;
+  end;
+
+  if (nptCustom in AParams.FTargets) then begin
+    dist := MaxInt;
+    for i := 0 to Count - 1 do begin
+      item := Source[i];
+      if not GetBubbleRect(item, irect) then
+        continue;
+      rx := (iRect.Right - iRect.Left) div 2;
+      ry := (iRect.Bottom - iRect.Top) div 2;
+      p := ParentChart.GraphToImage(AxisToGraph(item^.Point));
+      phi := -arctan2(AParams.FPoint.Y - p.y, AParams.FPoint.X - p.x);
+      SinCos(phi, sinphi, cosphi);
+      dperim := round(sqrt(sqr(rx * cosPhi) + sqr(ry * sinPhi)));
+      d := round(sqrt(PointDist(p, AParams.FPoint)));
+      if (d < dist) and (d < dperim + AParams.FRadius) then begin  // not quite exact...
+        dist := d;
+        AResults.FDist := d;
+        AResults.FIndex := i;
+        AResults.FYIndex := -1;
+        AResults.FValue := item^.Point;
+        AResults.FImg := AParams.FPoint;
+        if d = 0 then break;
+      end;
+    end;
+    if AResults.FIndex <> -1 then begin
+      AResults.FDist := sqr(AResults.FDist);  // we need sqr for comparison with other series
+      Result := true;
+    end;
+  end;
+end;
+
 function TBubbleSeries.GetSeriesColor: TColor;
 begin
   Result := FBubbleBrush.Color;
+end;
+
+procedure TBubbleSeries.MovePointEx(var AIndex: Integer;
+  AXIndex, AYIndex: Integer; const ANewPos: TDoublePoint);
+var
+  np: TDoublePoint;   // ANewPos, in axis units
+  sp: TDoublePoint;   // Orig data point (source point), in axis units
+  gp: TDoublePoint;   // Orig data point, in graph units
+  ip: TPoint;         // original data point, in image units
+  r: Double;          // radius, in axis units
+  inp: TPoint;        // NewPos in image units
+  rvec: TDoublePoint; // Rotated radius vector
+begin
+  ParentChart.DisableRedrawing;
+  ListSource.BeginUpdate;
+  try
+    case AYIndex of
+      -1,
+       0: begin
+            np := GraphToAxis(ANewPos);
+            ListSource.SetXValue(AIndex, np.X);
+            ListSource.SetYValue(AIndex, np.Y);
+          end;
+      1:  begin
+            sp := ListSource.Item[AIndex]^.Point;
+            gp := AxisToGraph(sp);
+            case FBubbleRadiusUnits of
+              bruX:
+                begin
+                  inp := ParentChart.GraphToImage(ANewPos);
+                  ip := ParentChart.GraphToImage(gp);
+                  // Distance data pt to ANewPos, in image units
+                  r := sqrt(sqr(ip.X - inp.X) + sqr(ip.Y - inp.Y));
+                  // Vector from bubble center to right bubble perimeter, in axis units
+                  rvec := GraphToAxis(ParentChart.ImageToGraph(Point(ip.x + round(r), ip.y))) - sp;
+                  // Radius of the circle
+                  r := abs(rvec.x);
+                end;
+              bruY:
+                begin
+                  // like bruX, but with y instead of x
+                  inp := ParentChart.GraphToImage(ANewPos);
+                  ip := ParentChart.GraphToImage(gp);
+                  r := sqrt(sqr(ip.X - inp.X) + sqr(ip.Y - inp.Y));
+                  rvec := GraphToAxis(ParentChart.ImageToGraph(Point(ip.x, ip.y + round(r)))) - sp;
+                  r := abs(rvec.y);
+                end;
+              bruXY:
+                begin
+                  // Blubble radius is the distance between data pt and mouse pt, in axis units
+                  np := GraphToAxis(ANewPos);
+                  rvec := np - sp;
+                  r := sqrt(sqr(rvec.x) + sqr(rvec.y));
+                end;
+            end;
+            ListSource.SetYList(AIndex, [r]);
+          end;
+    end;
+  finally
+    ListSource.EndUpdate;
+    ParentChart.EnableRedrawing;
+    UpdateParentChart;
+  end;
 end;
 
 procedure TBubbleSeries.SetBubbleBrush(AValue: TBrush);
@@ -619,6 +750,41 @@ begin
   FOverrideColor := AValue;
   UpdateParentChart;
 end;
+
+function TBubbleSeries.ToolTargetDistance(const AParams: TNearestPointParams;
+  AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer;
+var
+  item: PChartDataItem;
+  iRect: TRect;
+  rx, ry: Integer;
+  d, dPerim: Integer;
+  p: TPoint;
+  phi, sinPhi, cosPhi: Double;
+begin
+  if AYIdx = 0 then begin
+    Result := inherited;
+    exit;
+  end;
+
+  item := Source[APointIdx];
+  GetBubbleRect(item, iRect);
+  rx := (iRect.Right - iRect.Left) div 2;
+  ry := (iRect.Bottom - iRect.Top) div 2;
+  p := ParentChart.GraphToImage(AxisToGraph(item^.Point));
+  d := round(sqrt(PointDist(p, AParams.FPoint)));  // dist between data pt and clicked pt
+  phi := -arctan2(AParams.FPoint.Y - p.y, AParams.FPoint.X - p.x);
+  SinCos(phi, sinphi, cosphi);
+  dperim := round(sqrt((sqr(rx * cosPhi) + sqr(ry * sinPhi))));
+
+  if AYIdx = 1 then
+    Result := sqr(abs(d - dperim))
+  else begin
+    Result := PointDist(p, AParams.FPoint);
+    if sqrt(Result) > dperim then
+      Result := MaxInt;
+  end;
+end;
+
 
 { TBoxAndWhiskerSeries }
 
