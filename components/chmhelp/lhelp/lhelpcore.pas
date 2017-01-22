@@ -816,11 +816,7 @@ begin
   fOutputIPC := TSimpleIPCClient.Create(nil);
   fOutputIPC.ServerID := ServerName+'client';
   try
-    if fOutputIPC.ServerRunning
-{$IFDEF STALE_PIPE_WORKAROUND}
-      and not IPCPipeIsStale(fOutputIPC)
-{$ENDIF}
-    then
+    if fOutputIPC.ServerRunning then
       fOutputIPC.Active := True;
   except
     fOutputIPC.Active := False;
