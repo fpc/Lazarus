@@ -790,16 +790,6 @@ begin
   Result:=TTabControlStrings(FTabs).IndexOfTabAt(P.x, P.y);
 end;
 
-function TTabControl.IndexOfPageAt(X, Y: Integer): Integer;
-begin
-  Result:=TTabControlStrings(FTabs).IndexOfTabAt(X,Y);
-end;
-
-function TTabControl.IndexOfPageAt(P: TPoint): Integer;
-begin
-  Result:=TTabControlStrings(FTabs).IndexOfTabAt(P.x, P.y);
-end;
-
 function TTabControl.GetHitTestInfoAt(X, Y: Integer): THitTests;
 begin
   Result:=TTabControlStrings(FTabs).GetHitTestInfoAt(X,Y);

@@ -441,6 +441,10 @@ type
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure InternalSetPageIndex(AValue: Integer); // No OnChange
     procedure ShowControl(APage: TControl); override;
+    function IndexOfTabAt(X, Y: Integer): Integer; virtual; overload;
+    function IndexOfTabAt(P: TPoint): Integer; virtual; overload;
+    function IndexOfPageAt(X, Y: Integer): Integer; virtual; overload;
+    function IndexOfPageAt(P: TPoint): Integer; virtual; overload;
     procedure UpdateTabProperties; virtual;
     class function GetControlClassDefaultSize: TSize; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -482,10 +486,6 @@ type
     function GetCapabilities: TNoteBookCapabilities; virtual;
     function TabToPageIndex(AIndex: integer): integer;
     function PageToTabIndex(AIndex: integer): integer;
-    function IndexOfTabAt(X, Y: Integer): Integer; virtual; overload;
-    function IndexOfTabAt(P: TPoint): Integer; virtual; overload;
-    function IndexOfPageAt(X, Y: Integer): Integer; virtual; overload;
-    function IndexOfPageAt(P: TPoint): Integer; virtual; overload;
   public
     procedure DoCloseTabClicked(APage: TCustomPage); virtual;
     property Images: TCustomImageList read FImages write SetImages;
@@ -589,6 +589,10 @@ type
                           GoForward, CheckTabVisible: Boolean): TTabSheet;
     procedure SelectNextPage(GoForward: Boolean);
     procedure SelectNextPage(GoForward: Boolean; CheckTabVisible: Boolean);
+    function IndexOfTabAt(X, Y: Integer): Integer; override;
+    function IndexOfTabAt(P: TPoint): Integer; override;
+    function IndexOfPageAt(X, Y: Integer): Integer; override;
+    function IndexOfPageAt(P: TPoint): Integer; override;
     function AddTabSheet: TTabSheet;
     property ActivePageIndex: Integer read GetActivePageIndex
                                       write SetActivePageIndex;
@@ -839,8 +843,6 @@ type
     destructor Destroy; override;
     function IndexOfTabAt(X, Y: Integer): Integer; override;
     function IndexOfTabAt(P: TPoint): Integer; override;
-    function IndexOfPageAt(X, Y: Integer): Integer; override;
-    function IndexOfPageAt(P: TPoint): Integer; override;
     function GetHitTestInfoAt(X, Y: Integer): THitTests;
     function GetImageIndex(ATabIndex: Integer): Integer; override;
     function IndexOfTabWithCaption(const TabCaption: string): Integer;

@@ -165,6 +165,26 @@ begin
   if NextPage<>nil then ActivePage:=NextPage;
 end;
 
+function TPageControl.IndexOfTabAt(X, Y: Integer): Integer;
+begin
+  Result:=inherited IndexOfTabAt(X, Y);
+end;
+
+function TPageControl.IndexOfTabAt(P: TPoint): Integer;
+begin
+  Result:=inherited IndexOfTabAt(P);
+end;
+
+function TPageControl.IndexOfPageAt(X, Y: Integer): Integer;
+begin
+  Result:=inherited IndexOfPageAt(X, Y);
+end;
+
+function TPageControl.IndexOfPageAt(P: TPoint): Integer;
+begin
+  Result:=inherited IndexOfPageAt(P);
+end;
+
 // Convenience routine, to make the TPageControl more intuitive to use
 // A Lazarus addition
 function TPageControl.AddTabSheet: TTabSheet;
