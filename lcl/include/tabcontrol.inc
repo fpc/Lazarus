@@ -148,20 +148,45 @@ begin
     FHandleCreated(self);
 end;
 
+procedure TNoteBookStringsTabControl.DoStartDrag(var DragObject: TDragObject);
+begin
+  if (Parent is TTabControl) then
+  begin
+    if Assigned(TTabControl(Parent).OnStartDrag) then
+      TTabControl(Parent).OnStartDrag(Parent, DragObject);
+    if not Assigned(DragObject) then
+      DragObject := TDragControlObject.AutoCreate(Parent);
+  end;
+  inherited DoStartDrag(DragObject);
+end;
+
+procedure TNoteBookStringsTabControl.DragDrop(Source: TObject; X, Y: Integer);
+begin
+  inherited DragDrop(Source, X, Y);
+  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnDragDrop) then
+    TTabControl(Parent).OnDragDrop(Parent, Source, X, Y);
+end;
+
+procedure TNoteBookStringsTabControl.DragOver(Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+  inherited DragOver(Source, X, Y, State, Accept);
+  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnDragOver) then
+    TTabControl(Parent).OnDragOver(Parent, Source, X, Y, State, Accept);
+end;
+
 procedure TNoteBookStringsTabControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  if Assigned(Parent) and (Parent is TTabControl)
-  and Assigned(TTabControl(Parent).OnMouseDown) then
+  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnMouseDown) then
     TTabControl(Parent).OnMouseDown(Parent, Button, Shift, X, Y);
 end;
 
 procedure TNoteBookStringsTabControl.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
-  if Assigned(Parent) and (Parent is TTabControl)
-  and Assigned(TTabControl(Parent).OnMouseMove) then
+  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnMouseMove) then
     TTabControl(Parent).OnMouseMove(Parent, Shift, X, Y);
 end;
 
@@ -169,24 +194,21 @@ procedure TNoteBookStringsTabControl.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
-  if Assigned(Parent) and (Parent is TTabControl)
-  and Assigned(TTabControl(Parent).OnMouseUp) then
+  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnMouseUp) then
     TTabControl(Parent).OnMouseUp(Parent, Button, Shift, X, Y);
 end;
 
 procedure TNoteBookStringsTabControl.MouseEnter;
 begin
   inherited MouseEnter;
-  if Assigned(Parent) and (Parent is TTabControl)
-  and Assigned(TTabControl(Parent).OnMouseEnter) then
+  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnMouseEnter) then
     TTabControl(Parent).OnMouseEnter(Parent);
 end;
 
 procedure TNoteBookStringsTabControl.MouseLeave;
 begin
   inherited MouseLeave;
-  if Assigned(Parent) and (Parent is TTabControl)
-  and Assigned(TTabControl(Parent).OnMouseLeave) then
+  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnMouseLeave) then
     TTabControl(Parent).OnMouseLeave(Parent);
 end;
 
@@ -622,6 +644,12 @@ begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = Images) then
     Images := nil;
+end;
+
+procedure TTabControl.SetDragMode(Value: TDragMode);
+begin
+  inherited SetDragMode(Value);
+  TTabControlNoteBookStrings(FTabs).NoteBook.SetDragMode(Value);
 end;
 
 procedure TTabControl.SetTabIndex(Value: Integer);
