@@ -2,13 +2,13 @@ object TimePopupForm: TTimePopupForm
   Left = 376
   Height = 185
   Top = 246
-  Width = 253
+  Width = 294
   AutoSize = True
   BorderIcons = []
   BorderStyle = bsNone
   Caption = 'TimePopupForm'
   ClientHeight = 185
-  ClientWidth = 253
+  ClientWidth = 294
   OnClose = FormClose
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
@@ -19,13 +19,14 @@ object TimePopupForm: TTimePopupForm
     Left = 0
     Height = 185
     Top = 0
-    Width = 253
+    Width = 294
     Align = alClient
+    AutoSize = True
     BevelOuter = bvNone
     BorderWidth = 1
     BorderStyle = bsSingle
-    ClientHeight = 181
-    ClientWidth = 249
+    ClientHeight = 183
+    ClientWidth = 292
     Color = clWindow
     ParentColor = False
     TabOrder = 0
@@ -34,14 +35,14 @@ object TimePopupForm: TTimePopupForm
       Left = 1
       Height = 43
       Top = 1
-      Width = 252
+      Width = 290
       Align = alTop
       AutoFillColumns = True
       BorderStyle = bsNone
       Color = clBtnFace
       ColCount = 12
       Constraints.MinHeight = 42
-      Constraints.MinWidth = 252
+      Constraints.MinWidth = 280
       ExtendedSelect = False
       FixedCols = 0
       FixedRows = 0
@@ -54,18 +55,18 @@ object TimePopupForm: TTimePopupForm
       OnDblClick = GridsDblClick
       OnKeyDown = GridsKeyDown
       ColWidths = (
-        21
-        21
-        21
-        21
-        21
-        21
-        21
-        21
-        21
-        21
-        21
-        21
+        24
+        24
+        24
+        24
+        24
+        24
+        24
+        24
+        24
+        24
+        24
+        26
       )
       Cells = (
         24
@@ -147,12 +148,12 @@ object TimePopupForm: TTimePopupForm
       Left = 1
       Height = 59
       Top = 61
-      Width = 252
+      Width = 290
       Align = alTop
       AutoFillColumns = True
       BorderStyle = bsNone
       ColCount = 6
-      Constraints.MinWidth = 252
+      Constraints.MinWidth = 280
       FixedCols = 0
       FixedRows = 0
       Flat = True
@@ -165,12 +166,12 @@ object TimePopupForm: TTimePopupForm
       OnDblClick = GridsDblClick
       OnKeyDown = GridsKeyDown
       ColWidths = (
-        42
-        42
-        42
-        42
-        42
-        42
+        48
+        48
+        48
+        48
+        48
+        50
       )
       Cells = (
         12
@@ -216,7 +217,7 @@ object TimePopupForm: TTimePopupForm
       Left = 1
       Height = 10
       Top = 51
-      Width = 247
+      Width = 290
       Align = alTop
       BorderSpacing.Top = 7
       Shape = bsTopLine
@@ -230,7 +231,7 @@ object TimePopupForm: TTimePopupForm
       Height = 22
       Hint = 'Ctrl + >'
       Top = 125
-      Width = 93
+      Width = 136
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 5
       Caption = '>>'
