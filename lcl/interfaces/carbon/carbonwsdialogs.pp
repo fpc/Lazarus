@@ -523,7 +523,8 @@ begin
     nil, SizeOf(Size), nil, @Size) = noErr then
   begin
     //DebugLn('Size: ' + DbgS(RoundFixed(Size)));
-    FontDialog.Font.Size := RoundFixed(Size);
+    //API gives "size" which equals to LCL's height (LCL height has minus)
+    FontDialog.Font.Height := -RoundFixed(Size);
   end;
   
   if GetEventParameter(AEvent, kEventParamFontColor, typeFontColor,
