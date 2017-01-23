@@ -244,6 +244,27 @@ end;
 procedure FindPackages(const ADirName: String; APackageList: TStrings);
 var
   BaseDir, BasePath: String;
+  SLExcludedFolders: TStringList;
+
+  function IsAllowed(AName: String): Boolean;
+  var
+    I, P: Integer;
+  begin
+    Result := True;
+    P := 0;
+    for I := 1 to Length(AName) do
+      if AName[I] = DirectorySeparator then
+         P := I;
+    Delete(AName, 1, P);
+    for I := 0 to SLExcludedFolders.Count - 1 do
+    begin
+      if UpperCase(SLExcludedFolders.Strings[I]) = UpperCase(AName) then
+        begin
+          Result := False;
+          Break;
+        end;
+    end;
+  end;
 
   procedure FindFiles(const ADirName: String);
   var
@@ -256,7 +277,7 @@ var
     begin
       try
         repeat
-          if UpperCase(ExtractFileExt(SR.Name)) = UpperCase('.lpk') then
+          if (UpperCase(ExtractFileExt(SR.Name)) = UpperCase('.lpk')) and (IsAllowed(ExtractFileDir(Path))) then
           begin
             PackageData := TPackageData.Create;
             PackageData.FName := SR.Name;
@@ -296,7 +317,16 @@ begin
     BaseDir := ExtractFileName(Copy(ADirName, 1, Length(ADirName) - 1))
   else
     BaseDir := ExtractFileName(ADirName);
-  FindFiles(ADirName);
+
+  SLExcludedFolders := TStringList.Create;
+  try
+    SLExcludedFolders.Delimiter := ',';
+    SLExcludedFolders.StrictDelimiter := True;
+    SLExcludedFolders.DelimitedText := Options.ExcludedFolders;
+    FindFiles(ADirName);
+  finally
+    SLExcludedFolders.Free;
+  end;
 end;
 
 procedure FindAllFilesEx(const ADirName: String; AFileList: TStrings);
