@@ -1074,6 +1074,7 @@ type
     procedure PrepareCellHints(ACol, ARow: Integer); virtual;
     procedure ResetDefaultColWidths; virtual;
     procedure ResetEditor;
+    procedure ResetLastMove;
     procedure ResetOffset(chkCol, ChkRow: Boolean);
     procedure ResetSizes; virtual;
     procedure ResizeColumn(aCol, aWidth: Integer);
@@ -3779,6 +3780,12 @@ begin
     EditorShow(True);
 end;
 
+// Reset the last Row or Col movement
+procedure TCustomGrid.ResetLastMove;
+begin
+  FMoveLast:=Point(-1,-1);
+end;
+
 procedure TCustomGrid.ResetHotCell;
 begin
   with FGCache do begin
@@ -5623,7 +5630,7 @@ begin
 
     if (Abs(ClickMouse.X-X)>FDragDX) and (Cursor<>crMultiDrag) then begin
       ChangeCursor(crMultiDrag);
-      FMoveLast:=Point(-1,-1);
+      ResetLastMove;
     end;
 
     if (Cursor=crMultiDrag) and
@@ -5658,7 +5665,7 @@ begin
 
     if (Cursor<>crMultiDrag) and (Abs(ClickMouse.Y-Y)>FDragDX) then begin
       ChangeCursor(crMultiDrag);
-      FMoveLast:=Point(-1,-1);
+      ResetLastMove;
     end;
 
     if (Cursor=crMultiDrag)and
@@ -6223,7 +6230,7 @@ begin
           // ColMoving or Clicking
           if fGridState<>gsColMoving then begin
             fGridState:=gsColMoving;
-            FMoveLast:=Point(-1,-1);
+            ResetLastMove;
           end;
 
           if ((goHeaderPushedLook in Options) and
@@ -6240,7 +6247,7 @@ begin
       else begin
         // RowMoving or Clicking
         fGridState:=gsRowMoving;
-        FMoveLast:=Point(-1,-1);
+        ResetLastMove;
         if ((goHeaderPushedLook in Options) and
             (FGCache.HotGridZone in FHeaderPushZones)) then
           DoPushCell;

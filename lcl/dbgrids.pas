@@ -2643,6 +2643,7 @@ begin
               ClearSelection(true);
             if gz=gzFixedRows then begin
               fGridState:=gsRowMoving;
+              ResetLastMove;
               doMouseDown;
             end
             else
