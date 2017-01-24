@@ -2318,6 +2318,10 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomForm.Show;
 begin
+  if Scaled and (Monitor.PixelsPerInch<>PixelsPerInch) then
+    AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, Monitor.PixelsPerInch,
+      Width, MulDiv(Width, Monitor.PixelsPerInch, PixelsPerInch), True);
+
   Visible := True;
   BringToFront;
 end;
