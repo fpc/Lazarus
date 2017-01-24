@@ -198,7 +198,7 @@ end;
 
 function TSynEditMarkup.GetEnabled: Boolean;
 begin
-  Result := (FTempEnable = 0);
+  Result := FEnabled;
 end;
 
 function TSynEditMarkup.GetFGColor : TColor;
