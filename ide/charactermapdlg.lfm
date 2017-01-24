@@ -14,7 +14,7 @@ object CharacterMapDialog: TCharacterMapDialog
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.6.1.0'
+  LCLVersion = '1.6.3.0'
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 26
@@ -93,10 +93,10 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = pgUnicode
         AnchorSideBottom.Side = asrBottom
-        Left = 534
+        Left = 276
         Height = 23
         Top = 376
-        Width = 33
+        Width = 291
         Anchors = [akRight, akBottom]
         BorderSpacing.Around = 6
         DropDownCount = 25
