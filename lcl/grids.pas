@@ -71,9 +71,11 @@ const
   EO_IMPLEMENTED  =   $20;
 
 const
-  DEFCOLWIDTH     = 64;
-  DEFROWHEIGHT    = 20;
-  DEFBUTTONWIDTH  = 25;
+  DEFCOLWIDTH         = 64;
+  DEFROWHEIGHT        = 20;
+  DEFBUTTONWIDTH      = 25;
+  DEFIMAGEPADDING     = 2;
+  DEFAUTOADJPADDING   = 8;
 
 type
   EGridException = class(Exception);
@@ -830,6 +832,8 @@ type
     function  GetColumns: TGridColumns;
     function  GetEditorBorderStyle: TBorderStyle;
     function  GetBorderWidth: Integer;
+    function  GetTitleImageInfo(aColumnIndex:Integer; out aWidth, aHeight: Integer;
+                                  out ImgLayout: TButtonLayout): Integer;
     function  GetRowCount: Integer;
     function  GetRowHeights(Arow: Integer): Integer;
     function  GetSelectedRange(AIndex: Integer): TGridRect;
@@ -4037,25 +4041,19 @@ end;
 
 procedure TCustomGrid.DrawColumnTitleImage(
   var ARect: TRect; AColumnIndex: Integer);
-const
-  BORDER = 2;
 var
-  c: TGridColumn;
-  w, h, rw, rh: Integer;
+  w, h, rw, rh, ImgIndex: Integer;
   needStretch: Boolean;
   r: TRect;
+  imgLayout: TButtonLayout;
 begin
-  if TitleImageList = nil then exit;
-  c := ColumnFromGridColumn(AColumnIndex);
-  if
-    (c = nil) or
-    not InRange(c.Title.ImageIndex, 0, TitleImageList.Count - 1)
-  then
+
+  ImgIndex := GetTitleImageInfo(AColumnIndex, w, h, imgLayout);
+  if ImgIndex<0 then
     exit;
-  w := TitleImageList.Width;
-  h := TitleImageList.Height;
-  rw := ARect.Right - ARect.Left - BORDER * 2;
-  rh := ARect.Bottom - ARect.Top - BORDER * 2;
+
+  rw := ARect.Right - ARect.Left - DEFIMAGEPADDING * 2;
+  rh := ARect.Bottom - ARect.Top - DEFIMAGEPADDING * 2;
   if rw < w then begin
     w := rw;
     needStretch := true;
@@ -4064,37 +4062,38 @@ begin
     h := rh;
     needStretch := true;
   end;
-  case c.Title.ImageLayout of
+
+  case imgLayout of
     blGlyphRight, blGlyphLeft:
-      r.Top := ARect.Top + (rh - h) div 2 + BORDER;
+      r.Top := ARect.Top + (rh - h) div 2 + DEFIMAGEPADDING;
     blGlyphTop, blGlyphBottom:
-      r.Left := ARect.Left + (rw - w) div 2 + BORDER;
+      r.Left := ARect.Left + (rw - w) div 2 + DEFIMAGEPADDING;
   end;
-  case c.Title.ImageLayout of
+  case imgLayout of
     blGlyphRight: begin
-      Dec(ARect.Right, w + BORDER * 2);
-      r.Left := ARect.Right + BORDER;
+      Dec(ARect.Right, w + DEFIMAGEPADDING * 2);
+      r.Left := ARect.Right + DEFIMAGEPADDING;
     end;
     blGlyphLeft: begin
-      r.Left := ARect.Left + BORDER;
-      Inc(ARect.Left, w + BORDER * 2);
+      r.Left := ARect.Left + DEFIMAGEPADDING;
+      Inc(ARect.Left, w + DEFIMAGEPADDING * 2);
     end;
     blGlyphTop: begin
-      r.Top := ARect.Top + BORDER;
-      Inc(ARect.Top, w + BORDER * 2);
+      r.Top := ARect.Top + DEFIMAGEPADDING;
+      Inc(ARect.Top, w + DEFIMAGEPADDING * 2);
     end;
     blGlyphBottom: begin
-      Dec(ARect.Bottom, w + BORDER * 2);
-      r.Top := ARect.Bottom + BORDER;
+      Dec(ARect.Bottom, w + DEFIMAGEPADDING * 2);
+      r.Top := ARect.Bottom + DEFIMAGEPADDING;
     end;
   end;
   if needStretch then begin
     r.Right := r.Left + w;
     r.Bottom := r.Top + h;
-    TitleImageList.StretchDraw(Canvas, c.Title.ImageIndex, r);
+    TitleImageList.StretchDraw(Canvas, ImgIndex, r);
   end
   else
-    TitleImageList.Draw(Canvas, r.Left, r.Top, c.Title.ImageIndex);
+    TitleImageList.Draw(Canvas, r.Left, r.Top, ImgIndex);
 end;
 
 procedure TCustomGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
@@ -5159,6 +5158,25 @@ begin
     Result := 1
   else
     Result := 0
+end;
+
+function TCustomGrid.GetTitleImageInfo(aColumnIndex: Integer; out aWidth,
+  aHeight: Integer; out ImgLayout: TButtonLayout): Integer;
+var
+  c: TGridColumn;
+begin
+  result := -1;
+  if TitleImageList = nil then exit;
+  c := ColumnFromGridColumn(AColumnIndex);
+  if
+    (c = nil) or
+    not InRange(c.Title.ImageIndex, 0, TitleImageList.Count - 1)
+  then
+    exit;
+  aWidth := TitleImageList.Width;
+  aHeight := TitleImageList.Height;
+  imgLayout := c.Title.ImageLayout;
+  result := c.Title.ImageIndex;
 end;
 
 function TCustomGrid.GetImageForCheckBox(const aCol,aRow: Integer;
@@ -10604,16 +10622,23 @@ end;
 
 procedure TCustomStringGrid.AutoAdjustColumn(aCol: Integer);
 var
-  i,W: Integer;
+  i,W, imgWidth: Integer;
   Ts: TSize;
   TmpCanvas: TCanvas;
   C: TGridColumn;
   aRect: TRect;
   isMultiLine: Boolean;
   aText: string;
+  aLayout: TButtonLayout;
 begin
   if (aCol<0) or (aCol>ColCount-1) then
     Exit;
+
+  i := GetTitleImageInfo(aCol, imgWidth, w, aLayout);
+  if i>=0 then
+    Inc(imgWidth, 2*DEFIMAGEPADDING)
+  else
+    imgWidth := 0;
 
   tmpCanvas := GetWorkingCanvas(Canvas);
 
@@ -10656,10 +10681,11 @@ begin
       FreeWorkingCanvas(tmpCanvas);
   end;
 
+  W := W + imgWidth;
   if W=0 then
     W := DefaultColWidth
   else
-    W := W + 8;
+    W := W + DEFAUTOADJPADDING;
 
   ColWidths[aCol] := W;
 end;
