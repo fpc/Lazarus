@@ -6545,8 +6545,10 @@ begin
     if (goDblClickAutoSize in Options) then begin
       OldWidth := ColWidths[FSizing.Index];
       AutoAdjustColumn( FSizing.Index );
-      if OldWidth<>ColWidths[FSizing.Index] then
+      if OldWidth<>ColWidths[FSizing.Index] then begin
         ChangeCursor;
+        HeaderSized(True, FSizing.Index);
+      end;
     end {else
       DebugLn('Got Doubleclick on Col Resizing: AutoAdjust?');}
   end else
