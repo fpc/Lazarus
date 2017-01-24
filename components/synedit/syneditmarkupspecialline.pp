@@ -130,7 +130,7 @@ end;
 
 function TSynEditMarkupSpecialLine.RealEnabled: Boolean;
 begin
-  Result := Enabled and
+  Result := inherited and
     (Assigned(FOnSpecialLineMarkup) or Assigned(FOnSpecialLineColors) or
      HasLineHighlight
     );

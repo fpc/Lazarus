@@ -198,7 +198,7 @@ end;
 
 function TSynEditMarkup.GetEnabled: Boolean;
 begin
-  Result := FEnabled and (FTempEnable = 0);
+  Result := (FTempEnable = 0);
 end;
 
 function TSynEditMarkup.GetFGColor : TColor;
@@ -466,7 +466,7 @@ end;
 
 function TSynEditMarkup.RealEnabled: Boolean;
 begin
-  Result := Enabled and MarkupInfo.IsEnabled;
+  Result := (FTempEnable = 0) and Enabled and MarkupInfo.IsEnabled;
 end;
 
 procedure TSynEditMarkup.PrepareMarkupForRow(aRow: Integer);
