@@ -35,6 +35,8 @@ type
     MoreLessBtn: TBitBtn;
     procedure GridsDblClick(Sender: TObject);
     procedure GridsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure GridPrepareCanvas(sender: TObject; aCol, aRow: Integer;
+      aState: TGridDrawState);
     procedure MoreLessBtnClick(Sender: TObject);
   private
     FClosed: Boolean;
@@ -156,6 +158,17 @@ begin
     if Handled then
       Key := 0;
   end;
+end;
+
+procedure TTimePopupForm.GridPrepareCanvas(sender: TObject;
+  aCol, aRow: Integer; aState: TGridDrawState);
+var
+  ts: TTextStyle;
+begin
+  ts := (Sender as TStringGrid).Canvas.TextStyle;
+  ts.Layout := tlCenter;
+  ts.Alignment := taCenter;
+  (Sender as TStringGrid).Canvas.TextStyle := ts;
 end;
 
 procedure TTimePopupForm.MoreLessBtnClick(Sender: TObject);

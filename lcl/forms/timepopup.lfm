@@ -25,8 +25,8 @@ object TimePopupForm: TTimePopupForm
     BevelOuter = bvNone
     BorderWidth = 1
     BorderStyle = bsSingle
-    ClientHeight = 183
-    ClientWidth = 292
+    ClientHeight = 181
+    ClientWidth = 290
     Color = clWindow
     ParentColor = False
     TabOrder = 0
@@ -35,7 +35,7 @@ object TimePopupForm: TTimePopupForm
       Left = 1
       Height = 43
       Top = 1
-      Width = 290
+      Width = 288
       Align = alTop
       AutoFillColumns = True
       BorderStyle = bsNone
@@ -54,6 +54,7 @@ object TimePopupForm: TTimePopupForm
       UseXORFeatures = True
       OnDblClick = GridsDblClick
       OnKeyDown = GridsKeyDown
+      OnPrepareCanvas = GridPrepareCanvas
       ColWidths = (
         24
         24
@@ -66,7 +67,7 @@ object TimePopupForm: TTimePopupForm
         24
         24
         24
-        26
+        24
       )
       Cells = (
         24
@@ -148,7 +149,7 @@ object TimePopupForm: TTimePopupForm
       Left = 1
       Height = 59
       Top = 61
-      Width = 290
+      Width = 288
       Align = alTop
       AutoFillColumns = True
       BorderStyle = bsNone
@@ -165,13 +166,14 @@ object TimePopupForm: TTimePopupForm
       UseXORFeatures = True
       OnDblClick = GridsDblClick
       OnKeyDown = GridsKeyDown
+      OnPrepareCanvas = GridPrepareCanvas
       ColWidths = (
         48
         48
         48
         48
         48
-        50
+        48
       )
       Cells = (
         12
@@ -217,7 +219,7 @@ object TimePopupForm: TTimePopupForm
       Left = 1
       Height = 10
       Top = 51
-      Width = 290
+      Width = 288
       Align = alTop
       BorderSpacing.Top = 7
       Shape = bsTopLine
@@ -231,7 +233,7 @@ object TimePopupForm: TTimePopupForm
       Height = 22
       Hint = 'Ctrl + >'
       Top = 125
-      Width = 136
+      Width = 134
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 5
       Caption = '>>'
