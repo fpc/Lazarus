@@ -248,14 +248,9 @@ var
 
   function IsAllowed(AName: String): Boolean;
   var
-    I, P: Integer;
+    I: Integer;
   begin
     Result := True;
-    P := 0;
-    for I := 1 to Length(AName) do
-      if AName[I] = DirectorySeparator then
-         P := I;
-    Delete(AName, 1, P);
     for I := 0 to SLExcludedFolders.Count - 1 do
     begin
       if UpperCase(SLExcludedFolders.Strings[I]) = UpperCase(AName) then
@@ -277,7 +272,7 @@ var
     begin
       try
         repeat
-          if (UpperCase(ExtractFileExt(SR.Name)) = UpperCase('.lpk')) and (IsAllowed(ExtractFileDir(Path))) then
+          if (UpperCase(ExtractFileExt(SR.Name)) = UpperCase('.lpk')) then
           begin
             PackageData := TPackageData.Create;
             PackageData.FName := SR.Name;
@@ -303,7 +298,8 @@ var
       try
         repeat
           if ((SR.Attr and faDirectory) <> 0) and (SR.Name <> '.') and (SR.Name <> '..') then
-            FindFiles(Path + SR.Name);
+            if IsAllowed(SR.Name) then
+              FindFiles(Path + SR.Name);
         until FindNext(SR) <> 0;
       finally
         FindClose(SR);
