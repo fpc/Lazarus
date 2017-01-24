@@ -82,11 +82,12 @@ type
     FFirstCharacterColumnCache: Array of Byte;
     FEndLineCache: Array of Integer;
     FCacheCount,
-    FCacheCapacity: Integer;
+    FCacheCapacity,
+    FFoldColorInfosCount,
+    FFoldColorInfosCapacity: Integer;
 
     FDefaultGroup: integer;
     FFoldColorInfos: TMarkupFoldColorInfos;
-    FFoldColorInfosCount: Integer;
 
     Colors : array of TColor;
     FPreparedRow: integer;
@@ -95,6 +96,7 @@ type
     procedure DoMarkupParentCloseFoldAtRow(aRow: Integer);
     procedure SetDefaultGroup(AValue: integer);
     procedure SetCacheCount(pNewCount: Integer);
+    procedure SetFoldColorInfosCount(pNewCount: Integer);
     procedure InitCache;
     procedure ClearCache;
     property FirstCharacterColumn[index: Integer]: Byte read GetFirstCharacterColumn;
@@ -150,6 +152,7 @@ begin
   FDefaultGroup := 0;
   FFoldColorInfosCount := 0;
   SetLength(FFoldColorInfos, 50);
+  FFoldColorInfosCapacity := 50;
 
   FNestList := TLazSynEditNestedFoldsList.Create(Lines, FHighlighter);
   FNestList.ResetFilter;
@@ -298,7 +301,7 @@ var
         DebugLn('!!! TSynEditMarkupFoldColors.DoMarkupParentFoldAtRow: FEndLine-Array too small !!!');
       end;
     end;
-    inc(FFoldColorInfosCount);
+    SetFoldColorInfosCount(FFoldColorInfosCount + 1);
     with FFoldColorInfos[FFoldColorInfosCount - 1] do begin
 
       SrcNode:= ANode; //needed by close node
@@ -403,7 +406,7 @@ var
        FFoldColorInfos[j].Border := False
       end;
 
-    inc(FFoldColorInfosCount);
+    SetFoldColorInfosCount(FFoldColorInfosCount + 1);
     with FFoldColorInfos[FFoldColorInfosCount - 1] do begin
       Border := False;
       SrcNode:= ANode; //needed by close node
@@ -602,6 +605,18 @@ begin
     end;
   end;
   FCacheCount := pNewCount;
+end;
+
+procedure TSynEditMarkupFoldColors.SetFoldColorInfosCount(pNewCount: Integer);
+var
+  i: Integer;
+begin
+  if pNewCount > FFoldColorInfosCapacity then begin
+    // expand array
+    FFoldColorInfosCapacity := pNewCount + 49;
+    SetLength(FFoldColorInfos, FFoldColorInfosCapacity);
+  end;
+  FFoldColorInfosCount := pNewCount;
 end;
 
 procedure TSynEditMarkupFoldColors.InitCache;
