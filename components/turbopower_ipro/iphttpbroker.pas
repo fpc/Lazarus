@@ -132,7 +132,7 @@ begin
 {$IF FPC_FULLVERSION > 30000}or FClient.IsRedirect(FClient.ResponseStatusCode){$ENDIF};
     if Result then
     begin
-      FContentType := FClient.ResponseHeaders.Values['Content-Type'];
+      FContentType := AllTrimSpaces(FClient.ResponseHeaders.Values['Content-Type']);
       AContentType := FContentType;
     end;
   finally
