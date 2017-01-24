@@ -6752,9 +6752,9 @@ begin
       for i := RowCount - 1 downto 0 do
         RowHeights[i] := Round(RowHeights[i] * AYProportion);
 
-      DefaultColWidth := Round(DefaultColWidth * AXProportion);
-      if IsDefRowHeightStored then
-        DefaultRowHeight := Round(DefaultRowHeight * AYProportion);
+      FDefColWidth := Round(FDefColWidth * AXProportion);
+      FDefRowHeight := Round(FDefRowHeight * AYProportion);
+      Include(FGridFlags, gfDefRowHeightChanged);
     finally
       EndUpdate;
     end;
