@@ -1,22 +1,22 @@
 object TabOrderDialog: TTabOrderDialog
   Left = 349
-  Height = 374
+  Height = 419
   Top = 112
-  Width = 310
+  Width = 440
   ActiveControl = ItemTreeview
   Caption = 'TabOrderDialog'
-  ClientHeight = 374
-  ClientWidth = 310
+  ClientHeight = 419
+  ClientWidth = 440
   OnCreate = TabOrderDialogCREATE
   OnShow = FormShow
   LCLVersion = '1.7'
   Visible = True
   object ArrowUp: TSpeedButton
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 279
+    AnchorSideRight.Control = PanelSortByPosition
+    AnchorSideRight.Side = asrCenter
+    Left = 375
     Height = 25
-    Top = 120
+    Top = 91
     Width = 25
     Anchors = [akTop, akRight]
     BorderSpacing.Around = 6
@@ -25,11 +25,11 @@ object TabOrderDialog: TTabOrderDialog
     ParentShowHint = False
   end
   object ArrowDown: TSpeedButton
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 279
+    AnchorSideRight.Control = PanelSortByPosition
+    AnchorSideRight.Side = asrCenter
+    Left = 375
     Height = 25
-    Top = 176
+    Top = 147
     Width = 25
     Anchors = [akTop, akRight]
     BorderSpacing.Around = 6
@@ -40,12 +40,14 @@ object TabOrderDialog: TTabOrderDialog
   object ItemTreeview: TTreeView
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = PanelSortByPosition
     Left = 6
-    Height = 357
+    Height = 402
     Top = 6
-    Width = 267
+    Width = 330
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
+    ExpandSignSize = 11
     HideSelection = False
     ReadOnly = True
     RightClickSelect = True
@@ -54,19 +56,49 @@ object TabOrderDialog: TTabOrderDialog
     OnSelectionChanged = ItemTreeviewSelectionChanged
     Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
-  object SortByPositionButton: TBitBtn
+  object PanelSortByPosition: TPanel
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 279
-    Height = 25
-    Top = 232
-    Width = 25
+    Left = 342
+    Height = 58
+    Top = 192
+    Width = 93
     Anchors = [akTop, akRight]
-    BorderSpacing.Around = 6
-    GlyphShowMode = gsmAlways
-    OnClick = SortByPositionButtonClick
-    ParentShowHint = False
-    ShowHint = True
+    AutoSize = True
+    BorderSpacing.Around = 5
+    BevelOuter = bvLowered
+    ClientHeight = 58
+    ClientWidth = 93
     TabOrder = 1
+    object SortByPositionButton: TBitBtn
+      AnchorSideLeft.Control = PanelSortByPosition
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = PanelSortByPosition
+      Left = 34
+      Height = 25
+      Top = 4
+      Width = 25
+      BorderSpacing.Around = 3
+      GlyphShowMode = gsmAlways
+      OnClick = SortByPositionButtonClick
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+    end
+    object CheckBoxSortRecursivly: TCheckBox
+      AnchorSideLeft.Control = PanelSortByPosition
+      AnchorSideTop.Control = SortByPositionButton
+      AnchorSideTop.Side = asrBottom
+      Left = 4
+      Height = 22
+      Top = 32
+      Width = 85
+      BorderSpacing.Around = 3
+      Caption = 'recursively'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+    end
   end
 end

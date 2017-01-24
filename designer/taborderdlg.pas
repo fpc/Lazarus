@@ -32,8 +32,15 @@ unit TabOrderDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, Buttons, ComCtrls, IDEOptionDefs,
-  LCLType, LCLProc, PropEdits, IDEDialogs, LazarusIDEStrConsts, AvgLvlTree;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Dialogs, Buttons, ExtCtrls, StdCtrls, ComCtrls, LCLType, LCLProc,
+  // LazUtils
+  AvgLvlTree,
+  // IdeIntf
+  PropEdits, IDEDialogs,
+  //IDE
+  IDEOptionDefs, LazarusIDEStrConsts;
 
 type
 
@@ -42,6 +49,8 @@ type
   TTabOrderDialog = class(TForm)
     ArrowDown: TSpeedButton;
     ArrowUp: TSpeedButton;
+    CheckBoxSortRecursivly: TCheckBox;
+    PanelSortByPosition: TPanel;
     ItemTreeview: TTreeView;
     SortByPositionButton: TBitBtn;
     procedure ItemTreeviewSelectionChanged(Sender: TObject);
@@ -139,6 +148,7 @@ begin
   ArrowDown.Hint:=lisTabOrderDownHint;
   ArrowUp.Hint:=lisTabOrderUpHint;
   SortByPositionButton.Hint:=lisTabOrderSortHint;
+  CheckBoxSortRecursivly.Hint := lisTabOrderRecursionHint;
 end;
 
 procedure TTabOrderDialog.FormShow(Sender: TObject);
@@ -157,15 +167,48 @@ begin
 end;
 
 procedure TTabOrderDialog.SortByPositionButtonClick(Sender: TObject);
+
+  procedure SortControls(FirstItem: TTreeNode);
+  var
+    SortedNodes: TFPList;
+    I: Integer;
+    CurrItem: TTreeNode;
+  begin
+    if Assigned(FirstItem) then begin
+      SortedNodes := TFPList.Create;
+      try
+        CurrItem := FirstItem;
+        repeat
+          if CheckBoxSortRecursivly.Checked then
+            SortControls(CurrItem.GetFirstChild);
+
+          SortedNodes.Add(CurrItem);
+          CurrItem := CurrItem.GetNextSibling;
+        until CurrItem = nil;
+
+        SortedNodes.Sort(@SortNodeByControlPos);
+
+        for I := SortedNodes.Count - 1 downto 0 do
+        begin
+          CurrItem := TTreeNode(SortedNodes[I]);
+          CurrItem.MoveTo(FirstItem, naAddFirst);
+          TWinControl(CurrItem.Data).TabOrder := I;
+          CurrItem.Text := TWinControl(CurrItem.Data).Name + '   (' + IntToStr(I) + ')';
+        end;
+      finally
+        SortedNodes.Free;
+      end;
+    end;
+  end;
+
 var
-  FirstItem, CurrItem: TTreeNode;
-  SortedNodes: TFPList;
-  i: Integer;
+  FirstItem: TTreeNode;
 begin
   if (ItemTreeview.Selected <> nil) and (ItemTreeview.Selected.Parent <> nil) then
     FirstItem := ItemTreeview.Selected.Parent.GetFirstChild
   else
     FirstItem := ItemTreeview.Items.GetFirstNode;
+
   if IDEMessageDialog('', Format(lisTabOrderConfirmSort, [TControl(FirstItem.Data).Parent.Name]),
     mtConfirmation, mbOKCancel) <> mrOK then
   begin
@@ -173,25 +216,9 @@ begin
   end;
 
   ItemTreeview.BeginUpdate;
-  SortedNodes := TFPList.Create;
   try
-    CurrItem := FirstItem;
-    repeat
-      SortedNodes.Add(CurrItem);
-      CurrItem := CurrItem.GetNextSibling;
-    until CurrItem = nil;
-
-    SortedNodes.Sort(@SortNodeByControlPos);
-
-    for i := SortedNodes.Count - 1 downto 0 do
-    begin
-      CurrItem := TTreeNode(SortedNodes[i]);
-      CurrItem.MoveTo(FirstItem, naAddFirst);
-      TWinControl(CurrItem.Data).TabOrder := i;
-      CurrItem.Text := TWinControl(CurrItem.Data).Name + '   (' + IntToStr(i) + ')';
-    end;
+    SortControls(FirstItem);
   finally
-    SortedNodes.Free;
     ItemTreeview.EndUpdate;
   end;
   GlobalDesignHook.Modified(Self);
