@@ -10578,8 +10578,7 @@ var
     DoCellProcess(aCol, aRow, cpCopy, s);
     if (pos(#9, s)>0) or
        (pos(#10, s)>0) or
-       (pos(#13, s)>0) or
-       (pos('"', s)>0)
+       (pos(#13, s)>0)
     then
       result := AnsiQuotedStr(s, '"')
     else
