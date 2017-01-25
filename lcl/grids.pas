@@ -1807,7 +1807,7 @@ type
     property OnValidateEntry;
   end;
 
-procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor);
+procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor; DrawBits:Byte=BF_RECT);
 function  GetWorkingCanvas(const Canvas: TCanvas): TCanvas;
 procedure FreeWorkingCanvas(canvas: TCanvas);
 
@@ -1993,7 +1993,10 @@ begin
   AFont.Style:= TFontStyles(cfg.GetValue(AKey + '/style/value', 0));
 end;
 
-procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor);
+// Draws a dotted rectangle by drawing each enabled side. By default all sides are
+// enabled. The DrawBits parameter set sides to drawn, it has this layout: xxxxBRTL
+procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor;
+  DrawBits: Byte);
   procedure DrawVertLine(X1,Y1,Y2: integer);
   begin
     if Y2<Y1 then
@@ -2022,10 +2025,10 @@ procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor);
   end;
 begin
   with aRect do begin
-    DrawHorzLine(Left, Top, Right-1);
-    DrawVertLine(Right-1, Top, Bottom-1);
-    DrawHorzLine(Right-1, Bottom-1, Left);
-    DrawVertLine(Left, Bottom-1, Top);
+    if (DrawBits and BF_TOP = BF_TOP) then DrawHorzLine(Left, Top, Right-1);
+    if (DrawBits and BF_RIGHT = BF_RIGHT) then DrawVertLine(Right-1, Top, Bottom-1);
+    if (DrawBits and BF_BOTTOM = BF_BOTTOM) then DrawHorzLine(Right-1, Bottom-1, Left);
+    if (DrawBits and BF_LEFT = BF_LEFT) then DrawVertLine(Left, Bottom-1, Top);
   end;
 end;
 
@@ -10068,6 +10071,7 @@ procedure TCustomDrawGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
 var
   OldFocusColor: TColor;
   OldPenMode: TFPPenMode;
+  DrawBits: Byte;
 begin
   // Draw focused cell if we have the focus
   if DefaultDrawing and (Self.Focused or
@@ -10081,7 +10085,10 @@ begin
       OldPenMode:=Canvas.Pen.Mode;
       Canvas.Pen.Mode := pmXOR;
     end;
-    DrawRubberRect(Canvas, aRect, FFocusColor);
+    DrawBits := BF_RECT;
+    if (goRowSelect in Options) and ((fTopLeft.x<>FixedCols) or (FGCache.TLColOff<>0)) then
+      DrawBits := DrawBits and not BF_LEFT;
+    DrawRubberRect(Canvas, aRect, FFocusColor, DrawBits);
     if FUseXORFeatures then begin
       Canvas.Pen.Mode := OldPenMode;
       Canvas.RestoreHandleState;
