@@ -365,13 +365,6 @@ type
     nbcShowCloseButtons, nbcMultiLine, nbcPageListPopup, nbcShowAddTabButton,
     nbcTabsSizeable);
   TCTabControlCapabilities = set of TCTabControlCapability;
-  // Don't use anymore the old names of these types
-  // TNotebook is unrelated to CustomTabControl, so the types were renamed to
-  // better names
-  TNoteBookOption = TCTabControlOption deprecated;
-  TNoteBookOptions = TCTabControlOptions deprecated;
-  TNoteBookCapability = TCTabControlCapability deprecated;
-  TNoteBookCapabilities = TCTabControlCapabilities deprecated;
 
   TDrawTabEvent = procedure(Control: TCustomTabControl; TabIndex: Integer;
     const Rect: TRect; AActive: Boolean) of object;
@@ -486,7 +479,7 @@ type
     function CanChangePageIndex: boolean; virtual;
     function GetMinimumTabWidth: integer; virtual;
     function GetMinimumTabHeight: integer; virtual;
-    function GetCapabilities: TNoteBookCapabilities; virtual;
+    function GetCapabilities: TCTabControlCapabilities; virtual;
     function TabToPageIndex(AIndex: integer): integer;
     function PageToTabIndex(AIndex: integer): integer;
   public

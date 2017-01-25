@@ -313,7 +313,7 @@ begin
   gtk_widget_hide(PageWidget);
 end;
 
-class function TGtkWSCustomTabControl.GetCapabilities: TNotebookCapabilities;
+class function TGtkWSCustomTabControl.GetCapabilities: TCTabControlCapabilities;
 begin
   Result:=[nbcPageListPopup, nbcShowCloseButtons];
 end;

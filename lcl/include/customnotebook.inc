@@ -431,7 +431,7 @@ begin
   //debugln('TCustomTabControl.GetMinimumTabHeight A ',dbgs(Result));
 end;
 
-function TCustomTabControl.GetCapabilities: TNoteBookCapabilities;
+function TCustomTabControl.GetCapabilities: TCTabControlCapabilities;
 begin
   Result:=TWSCustomTabControlClass(WidgetSetClass).GetCapabilities;
 end;
