@@ -449,6 +449,12 @@ begin
   Result := AIndex;
   if csDesigning in ComponentState then
     exit; //all pages are visible
+
+  // it is possible to show pages without visible tabs, but then, no tab index
+  // can be sendet back, issue #21723
+  if not Page[AIndex].TabVisible then
+    exit(-1);
+
   for i := 0 to AIndex - 1 do begin
     if not Page[i].TabVisible then
       dec(Result); //exclude invisible page

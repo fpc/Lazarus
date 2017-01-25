@@ -553,6 +553,9 @@ begin
     Exit;
   if (AIndex < 0) or (AIndex > ATabControl.PageCount - 1) then
     exit;
+  ANewIndex:=ATabControl.PageToTabIndex(AIndex);
+  if (ANewIndex < 0) then
+    exit;
   GtkNotebook := {%H-}PGtkNoteBook(ATabControl.Handle);
   if gtk_notebook_get_current_page(GtkNotebook) <> AIndex then
   begin
