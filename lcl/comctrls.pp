@@ -361,7 +361,9 @@ type
     nboShowCloseButtons, nboMultiLine, nboHidePageListPopup,
     nboKeyboardTabSwitch, nboShowAddTabButton, nboDoChangeOnSetIndex);
   TCTabControlOptions = set of TCTabControlOption;
-  TCTabControlCapability = (nbcShowCloseButtons, nbcMultiLine, nbcPageListPopup, nbcShowAddTabButton);
+  TCTabControlCapability = (
+    nbcShowCloseButtons, nbcMultiLine, nbcPageListPopup, nbcShowAddTabButton,
+    nbcTabsSizeable);
   TCTabControlCapabilities = set of TCTabControlCapability;
   // Don't use anymore the old names of these types
   // TNotebook is unrelated to CustomTabControl, so the types were renamed to
@@ -401,6 +403,7 @@ type
     procedure DoSendPageIndex;
     procedure DoSendShowTabs;
     procedure DoSendTabPosition;
+    procedure DoSendTabSize;
     procedure DoImageListChange(Sender: TObject);
     function GetActivePage: String;
     function GetActivePageComponent: TCustomPage;
@@ -419,7 +422,9 @@ type
     procedure SetPageIndex(AValue: Integer);
     procedure SetPages(AValue: TStrings);
     procedure SetShowTabs(AValue: Boolean);
+    procedure SetTabHeight(AValue: Smallint);
     procedure SetTabPosition(tabPos: TTabPosition); virtual;
+    procedure SetTabWidth(AValue: Smallint);
     procedure ShowCurrentPage;
     procedure UpdateAllDesignerFlags;
     procedure UpdateDesignerFlags(APageIndex: integer);
@@ -467,9 +472,7 @@ type
     property ScrollOpposite: Boolean read FScrollOpposite write FScrollOpposite default False;
     property Style: TTabStyle read FStyle write SetStyle default tsTabs;
     property Tabs: TStrings read FAccess write SetPages;
-    property TabHeight: Smallint read FTabHeight write FTabHeight default 0;
     property TabIndex: Integer read FPageIndex write SetPageIndex default -1;
-    property TabWidth: Smallint read FTabWidth write FTabWidth default 0;
     property OnChange: TNotifyEvent read FOnPageChanged write FOnPageChanged;
     property OnDrawTab: TDrawTabEvent read FOnDrawTab write FOnDrawTab; deprecated 'Will be deleted in Lazarus 1.8';
   public
@@ -502,7 +505,9 @@ type
     //property PageList: TList read FPageList; - iff paged
     property Pages: TStrings read FAccess write SetPages;
     property ShowTabs: Boolean read FShowTabs write SetShowTabs default True;
+    property TabHeight: Smallint read FTabHeight write SetTabHeight default 0;
     property TabPosition: TTabPosition read FTabPosition write SetTabPosition default tpTop;
+    property TabWidth: Smallint read FTabWidth write SetTabWidth default 0;
   published
     property TabStop default true;
   end;
@@ -625,12 +630,12 @@ type
     property ShowHint;
     property ShowTabs;
     //property Style;
-    //property TabHeight;
+    property TabHeight;
     property TabIndex;
     property TabOrder;
     property TabPosition;
     property TabStop;
-    //property TabWidth;
+    property TabWidth;
     property Visible;
     property OnChange;
     property OnChanging;
@@ -676,8 +681,6 @@ type
     FRaggedRight: Boolean;
     FScrollOpposite: Boolean;
     FTabControl: TTabControl;
-    FTabHeight: Smallint;
-    FTabWidth: Smallint;
     FUpdateCount: integer;
   protected
     function GetTabIndex: integer; virtual; abstract;
@@ -688,9 +691,7 @@ type
     procedure SetOwnerDraw(const AValue: Boolean); virtual;
     procedure SetRaggedRight(const AValue: Boolean); virtual;
     procedure SetScrollOpposite(const AValue: Boolean); virtual;
-    procedure SetTabHeight(const AValue: Smallint); virtual;
     procedure SetTabIndex(const AValue: integer); virtual; abstract;
-    procedure SetTabWidth(const AValue: Smallint); virtual;
   public
     constructor Create(TheTabControl: TTabControl); virtual;
     function GetHitTestInfoAt(X, Y: Integer): THitTests; virtual;
@@ -716,8 +717,6 @@ type
     property RaggedRight: Boolean read FRaggedRight write SetRaggedRight;
     property ScrollOpposite: Boolean read FScrollOpposite
                                      write SetScrollOpposite;
-    property TabHeight: Smallint read FTabHeight write SetTabHeight;
-    property TabWidth: Smallint read FTabWidth write SetTabWidth;
   end;
 
   { TNoteBookStringsTabControl }
@@ -765,9 +764,7 @@ type
     procedure SetMultiLine(const AValue: Boolean); override;
     procedure SetTabIndex(const AValue: integer); override;
     procedure SetUpdateState(Updating: Boolean); override;
-    procedure SetTabHeight(const AValue: Smallint); override;
     procedure SetTabPosition(AValue: TTabPosition);
-    procedure SetTabWidth(const AValue: Smallint); override;
   public
     constructor Create(TheTabControl: TTabControl); override;
     destructor Destroy; override;
@@ -805,11 +802,9 @@ type
     function GetOwnerDraw: Boolean;
     function GetRaggedRight: Boolean;
     function GetScrollOpposite: Boolean;
-    function GetTabHeight: Smallint;
     function GetTabIndex: Integer;
     function GetTabRectWithBorder: TRect;
     function GetTabStop: Boolean;
-    function GetTabWidth: Smallint;
     procedure SetHotTrack(const AValue: Boolean);
     procedure SetImages(const AValue: TCustomImageList);
     procedure SetMultiLine(const AValue: Boolean);
@@ -818,11 +813,11 @@ type
     procedure SetRaggedRight(const AValue: Boolean);
     procedure SetScrollOpposite(const AValue: Boolean);
     procedure SetStyle(AValue: TTabStyle); override;
-    procedure SetTabHeight(const AValue: Smallint);
+    procedure SetTabHeight(AValue: Smallint);
     procedure SetTabPosition(AValue: TTabPosition); override;
     procedure SetTabs(const AValue: TStrings);
     procedure SetTabStop(const AValue: Boolean);
-    procedure SetTabWidth(const AValue: Smallint);
+    procedure SetTabWidth(AValue: Smallint);
   protected
     procedure SetOptions(const AValue: TCTabControlOptions); override;
     procedure AddRemovePageHandle(APage: TCustomPage); override;
@@ -873,12 +868,12 @@ type
     property ScrollOpposite: Boolean read GetScrollOpposite
                                      write SetScrollOpposite default False;
     property Style default tsTabs;
-    property TabHeight: Smallint read GetTabHeight write SetTabHeight default 0;
     property TabPosition default tpTop;
-    property TabWidth: Smallint read GetTabWidth write SetTabWidth default 0;
+    property TabHeight: Smallint read FTabHeight write SetTabHeight default 0;
     property TabIndex: Integer read GetTabIndex write SetTabIndex default -1;
     property Tabs: TStrings read FTabs write SetTabs;
     property TabStop: Boolean read GetTabStop write SetTabStop default true; // workaround, see #30305
+    property TabWidth: Smallint read FTabWidth write SetTabWidth default 0;
     //
     property Align;
     property Anchors;

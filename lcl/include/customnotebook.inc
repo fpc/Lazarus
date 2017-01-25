@@ -850,6 +850,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  TCustomTabControl SetTabHeight
+ ------------------------------------------------------------------------------}
+procedure TCustomTabControl.SetTabHeight(AValue: Smallint);
+begin
+  if FTabHeight = AValue then Exit;
+  if not (nbcTabsSizeable in GetCapabilities) then Exit;
+  FTabHeight := AValue;
+  DoSendTabSize;
+end;
+
+{------------------------------------------------------------------------------
   TCustomTabControl SetTabPosition
  ------------------------------------------------------------------------------}
 procedure TCustomTabControl.SetTabPosition(tabPos: TTabPosition);
@@ -857,6 +868,17 @@ begin
   if fTabPosition = tabPos then exit;
   fTabPosition := tabPos;
   DoSendTabPosition;
+end;
+
+{------------------------------------------------------------------------------
+  TCustomTabControl SetTabWidth
+ ------------------------------------------------------------------------------}
+procedure TCustomTabControl.SetTabWidth(AValue: Smallint);
+begin
+  if FTabWidth = AValue then Exit;
+  if not (nbcTabsSizeable in GetCapabilities) then Exit;
+  FTabWidth := AValue;
+  DoSendTabSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -1153,6 +1175,14 @@ procedure TCustomTabControl.DoSendTabPosition;
 begin
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   TWSCustomTabControlClass(WidgetSetClass).SetTabPosition(Self, FTabPosition);
+end;
+
+procedure TCustomTabControl.DoSendTabSize;
+begin
+  if not HandleAllocated or (csLoading in ComponentState) then exit;
+  TWSCustomTabControlClass(WidgetSetClass).SetTabSize(Self, FTabWidth, FTabHeight);
+  DoSendTabPosition;
+  Invalidate;
 end;
 
 procedure TCustomTabControl.DoImageListChange(Sender: TObject);

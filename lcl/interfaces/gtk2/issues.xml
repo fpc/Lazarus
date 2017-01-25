@@ -25,12 +25,24 @@
 		<issue name="TPageControl.MultiLine">
 			<short>MultiLine property is not supported</short>
 		</issue>
+		<issue name="TPageControl.TabHeight">
+			<short>Changing of default tab height is not supported</short>
+		</issue>
+		<issue name="TPageControl.TabWidth">
+			<short>Changing of default tab width is not supported</short>
+		</issue>
 		<issue name="TPrinter.FileName">
 			<short>The format of generated file is system dependant</short>
 			<descr>The content of file created by using this property depends of the printer backend used, for example when using CUPS (mainly under Unix type systems) it will be postscript while under Windows it will be in a printer unspecified format</descr>
 		</issue>
 		<issue name="TTabControl.MultiLine">
 			<short>MultiLine property is not supported</short>
+		</issue>
+		<issue name="TTabControl.TabHeight">
+			<short>Changing of default tab height is not supported</short>
+		</issue>
+		<issue name="TTabControl.TabWidth">
+			<short>Changing of default tab width is not supported</short>
 		</issue>
 		<issue name="TDateEdit.CalendarDisplaySettings.dsStartMon">	
 			<short>TDateEdit.CalendarDisplaySettings.dsStartMon is ignored in GTK+ since 2.4</short>

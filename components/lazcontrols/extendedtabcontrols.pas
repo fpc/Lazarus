@@ -642,7 +642,7 @@ begin
   case TabControl.TabPosition of
   tpTop,tpBottom:
     begin
-      NewHeight:=TabHeight;
+      NewHeight:=TabControl.TabHeight;
       if NewHeight<=0 then
         NewHeight:=NoteBook.GetMinimumTabHeight;
       NewHeight:=min(TabControl.ClientHeight,NewHeight);
@@ -682,7 +682,7 @@ begin
 
   tpLeft,tpRight:
     begin
-      NewWidth := TabWidth;
+      NewWidth := TabControl.TabWidth;
       if NewWidth<=0 then
         NewWidth:=NoteBook.GetMinimumTabWidth;
       NewWidth:=Min(TabControl.ClientWidth,NewWidth);

@@ -304,6 +304,8 @@ begin
       Flags := Flags or TabPositionFlags[TCustomTabControl(AWinControl).TabPosition];
       if nboMultiLine in TCustomTabControl(AWinControl).Options then
         Flags := Flags or TCS_MULTILINE;
+      if TCustomTabControl(AWinControl).TabWidth > 0 then
+        Flags := Flags or TCS_FIXEDWIDTH;
       pClassName := WC_TABCONTROL;
     end;
   end;
@@ -320,6 +322,10 @@ begin
     Params.WindowInfo^.ParentMsgHandler := @TabControlParentMsgHandler;
     Params.WindowInfo^.needParentPaint := false;
     Params.WindowInfo^.ClientOffsetProc := @TabControlClientOffset;
+
+    SendMessage(Result, TCM_SETITEMSIZE, 0, MakeLParam(
+      TCustomTabControl(AWinControl).TabWidth,
+      TCustomTabControl(AWinControl).TabHeight));
   end;
 end;
 
@@ -565,7 +571,7 @@ end;
 
 class function TWin32WSCustomTabControl.GetCapabilities: TCTabControlCapabilities;
 begin
-  Result:=[nbcMultiLine];
+  Result:=[nbcMultiLine, nbcTabsSizeable];
 end;
 
 class function TWin32WSCustomTabControl.GetDesignInteractive(
@@ -584,6 +590,17 @@ begin
   AIndex := Windows.SendMessage(AWinControl.Handle, TCM_HITTEST, 0, LPARAM(@hittestInfo));
   ACurIndex := SendMessage(AWinControl.Handle, TCM_GETCURSEL, 0, 0);
   Result := (AIndex <> -1) and (AIndex <> ACurIndex);
+end;
+
+class procedure TWin32WSCustomTabControl.SetTabSize(
+  const ATabControl: TCustomTabControl;
+  const ATabWidth, ATabHeight: integer);
+begin
+  if ATabControl is TTabControl then
+    exit;
+
+  Windows.SendMessage(ATabControl.Handle, TCM_SETITEMSIZE,
+    0, MakeLParam(ATabWidth, ATabHeight));
 end;
 
 class procedure TWin32WSCustomTabControl.SetImageList(
