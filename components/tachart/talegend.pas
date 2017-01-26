@@ -164,6 +164,7 @@ type
     FGridVertical: TChartLegendGridPen;
     FGroupFont: TFont;
     FGroupTitles: TStrings;
+    FInverted: Boolean;
     FItemFillOrder: TLegendItemFillOrder;
     FMarginX: TChartDistance;
     FMarginY: TChartDistance;
@@ -186,6 +187,7 @@ type
     procedure SetGridVertical(AValue: TChartLegendGridPen);
     procedure SetGroupFont(AValue: TFont);
     procedure SetGroupTitles(AValue: TStrings);
+    procedure SetInverted(AValue: Boolean);
     procedure SetItemFillOrder(AValue: TLegendItemFillOrder);
     procedure SetMargin(AValue: TChartDistance);
     procedure SetMarginX(AValue: TChartDistance);
@@ -222,6 +224,7 @@ type
       read FGridVertical write SetGridVertical;
     property GroupFont: TFont read FGroupFont write SetGroupFont;
     property GroupTitles: TStrings read FGroupTitles write SetGroupTitles;
+    property Inverted: Boolean read FInverted write SetInverted default false;
     property ItemFillOrder: TLegendItemFillOrder
       read FItemFillOrder write SetItemFillOrder default lfoColRow;
     property Margin: TChartDistance
@@ -303,6 +306,16 @@ begin
   Result := Sign(li1.GroupIndex - li2.GroupIndex);
   if Result = 0 then
     Result := Sign(li1.Order - li2.Order);
+end;
+
+function LegendItemCompare_Inverted(AItem1, AItem2: Pointer): Integer;
+var
+  li1: TLegendItem absolute AItem1;
+  li2: TLegendItem absolute AItem2;
+begin
+  Result := Sign(li1.GroupIndex - li2.GroupIndex);
+  if Result = 0 then
+    Result := Sign(li2.Order - li1.Order);
 end;
 
 { TLegendItemsEnumerator }
@@ -785,6 +798,13 @@ begin
   StyleChanged(Self);
 end;
 
+procedure TChartLegend.SetInverted(AValue: Boolean);
+begin
+  if FInverted = AValue then exit;
+  FInverted := AValue;
+  StyleChanged(Self);
+end;
+
 procedure TChartLegend.SetItemFillOrder(AValue: TLegendItemFillOrder);
 begin
   if FItemFillOrder = AValue then exit;
@@ -857,7 +877,10 @@ begin
       AItems[i].Order := j;
       j -= 1;
     end;
-  AItems.Sort(@LegendItemCompare);
+  if FInverted then
+    AItems.Sort(@LegendItemCompare_Inverted)
+  else
+    AItems.Sort(@LegendItemCompare);
 end;
 
 procedure TChartLegend.UpdateBidiMode;
