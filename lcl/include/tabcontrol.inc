@@ -367,7 +367,7 @@ end;
 
 function TTabControlNoteBookStrings.IndexOfTabAt(X, Y: Integer): Integer;
 begin
-  Result:=FNoteBook.TabIndexAtClientPos(Point(X, Y));
+  Result:=FNoteBook.IndexOfPageAt(X, Y);
 end;
 
 { TTabControl }

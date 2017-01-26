@@ -6531,7 +6531,7 @@ begin
   // Get the tab that was clicked
   if PopM.PopupComponent is TPageControl then begin
     PageCtrl:=TPageControl(PopM.PopupComponent);
-    PageI:=PageCtrl.TabIndexAtClientPos(PageCtrl.ScreenToClient(PopM.PopupPoint));
+    PageI:=PageCtrl.IndexOfPageAt(PageCtrl.ScreenToClient(PopM.PopupPoint));
     if (PageI>=0) and (PageI<PageCtrl.PageCount) then
       PageIndex := PageI  // Todo: This should be in MouseDown / or both, whichever is first
     else
@@ -6758,7 +6758,7 @@ var
   ASrcEdit: TSourceEditor;
 begin
   if (PageCount=0) or (HintInfo=nil) then exit;
-  TabIndex:=FNoteBook.TabIndexAtClientPos(FNotebook.ScreenToClient(Mouse.CursorPos));
+  TabIndex:=FNoteBook.IndexOfPageAt(FNotebook.ScreenToClient(Mouse.CursorPos));
   if TabIndex<0 then exit;
   ASrcEdit:=FindSourceEditorWithPageIndex(TabIndex);
   if ASrcEdit=nil then exit;
@@ -8357,7 +8357,7 @@ var
 begin
   if (Button = mbMiddle) then
   begin
-    TabIndex:=FNotebook.TabIndexAtClientPos(Point(X,Y));
+    TabIndex:=FNotebook.IndexOfPageAt(X, Y);
     if TabIndex>=0 then
       CloseClicked(NoteBookPage[TabIndex],
                    (GetKeyState(VK_CONTROL) < 0) and EditorOpts.CtrlMiddleTabClickClosesOthers);

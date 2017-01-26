@@ -443,16 +443,36 @@ end;
   function TCustomTabControl.IndexOfTabAt(X, Y: Integer): Integer;
 
   Returns the index of the visible tab at the client position.
+ ------------------------------------------------------------------------------}
+function TCustomTabControl.IndexOfTabAt(X, Y: Integer): Integer;
+begin
+  Result := IndexOfTabAt(Point(X, Y));
+end;
+
+{------------------------------------------------------------------------------
+  function TCustomTabControl.IndexOfTabAt(P: TPoint): Integer;
+
+  Returns the index of the visible tab at the client position.
   For example:
     Index:=NoteBook1.IndexOfTabAt(
                NoteBook1.ScreenToClient(Mouse.CursorPos));
  ------------------------------------------------------------------------------}
-function TCustomTabControl.IndexOfTabAt(X, Y: Integer): Integer;
+function TCustomTabControl.IndexOfTabAt(P: TPoint): Integer;
 begin
   if HandleAllocated then
-    Result := TWSCustomTabControlClass(WidgetSetClass).GetTabIndexAtPos(Self, Point(X, Y))
+    Result := TWSCustomTabControlClass(WidgetSetClass).GetTabIndexAtPos(Self, P)
   else
     Result := -1;
+end;
+
+{------------------------------------------------------------------------------
+  function TCustomTabControl.IndexOfPageAt(X, Y: Integer): Integer;
+
+  Returns the index of the page at the client position.
+ ------------------------------------------------------------------------------}
+function TCustomTabControl.IndexOfPageAt(X, Y: Integer): Integer;
+begin
+  Result := IndexOfPageAt(Point(X, Y));
 end;
 
 {------------------------------------------------------------------------------
@@ -463,9 +483,9 @@ end;
     Index:=NoteBook1.IndexOfPageAt(
                NoteBook1.ScreenToClient(Mouse.CursorPos));
  ------------------------------------------------------------------------------}
-function TCustomTabControl.IndexOfPageAt(X, Y: Integer): Integer;
+function TCustomTabControl.IndexOfPageAt(P: TPoint): Integer;
 begin
-  Result := IndexOfTabAt(X, Y);
+  Result := IndexOfTabAt(P);
   if Result <> -1 then
     Result := TabToPageIndex(Result);
 end;
