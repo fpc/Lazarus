@@ -1638,7 +1638,7 @@ procedure TDateEdit.EditEditingDone;
 var
   AText: String;
 begin
-  inherited EditingDone;
+  inherited EditEditingDone;
   if DirectInput then
   begin
     AText := DateToText(GetDate);
