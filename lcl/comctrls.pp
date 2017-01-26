@@ -724,6 +724,10 @@ type
   protected
     FHandelCreated: TNotifyEvent;
     procedure CreateHandle; override;
+    procedure DoStartDrag(var DragObject: TDragObject); override;
+    procedure DragDrop(Source: TObject; X, Y: Integer); override;
+    procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
+                       var Accept: Boolean); override;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
@@ -821,6 +825,7 @@ type
     procedure CreateWnd; override;
     procedure DestroyHandle; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure SetDragMode(Value: TDragMode); override;
     procedure SetTabIndex(Value: Integer); virtual;
     procedure UpdateTabImages;
     procedure ImageListChange(Sender: TObject);
