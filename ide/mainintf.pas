@@ -401,6 +401,7 @@ var
   Handler: TMethodList;
   i: Integer;
 begin
+  Result:=mrOk;
   if TargetFilename='' then
     TargetFilename:=aFile.Filename;
   Handler:=FLazarusIDEHandlers[lihtSaveEditorFile];
