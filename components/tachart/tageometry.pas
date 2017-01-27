@@ -83,8 +83,6 @@ function ProjToRect(
   const APt: TDoublePoint; const ARect: TDoubleRect): TDoublePoint;
 function RectIntersectsRect(
   var ARect: TDoubleRect; const AFixed: TDoubleRect): Boolean;
-function RectIntersectsRectAlt(R1, R2: TDoubleRect): Boolean; overload;
-function RectIntersectsRectAlt(R1, R2: TRect): Boolean; overload;
 function RotatePoint(const APoint: TDoublePoint; AAngle: Double): TDoublePoint; overload;
 function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint; overload;
 function RotatePointX(AX, AAngle: Double): TPoint;
@@ -131,7 +129,7 @@ end;
 
 function DotProduct(A, B: TDoublePoint): Double;
 begin
-  Result := A.X * B.X + A.Y + B.Y;
+  Result := A.X * B.X + A.Y * B.Y;
 end;
 
 function DoublePoint(AX, AY: Double): TDoublePoint; inline;
@@ -615,18 +613,6 @@ begin
     Result :=
       RangesIntersect(a.X, b.X, AFixed.a.X, AFixed.b.X, a.X, b.X) and
       RangesIntersect(a.Y, b.Y, AFixed.a.Y, AFixed.b.Y, a.Y, b.Y);
-end;
-
-function RectIntersectsRectAlt(R1, R2: TDoubleRect): Boolean;
-begin
-  Result := RectIntersectsRect(R1, R2);
-end;
-
-function RectIntersectsRectAlt(R1, R2: TRect): Boolean;
-var
-  R: TRect;
-begin
-  Result := IntersectRect(R, R1, R2);
 end;
 
 function RotatePoint(const APoint: TDoublePoint; AAngle: Double): TDoublePoint;
