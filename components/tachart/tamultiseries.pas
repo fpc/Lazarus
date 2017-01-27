@@ -486,7 +486,7 @@ var
   item: PChartDataItem;
   clipR: TRect;
   irect: TRect;
-  dummyR: TRect;
+  dummyR: TRect = (Left:0; Top:0; Right:0; Bottom:0);
   ext: TDoubleRect;
 begin
   if Source.YCount < 2 then exit;
@@ -504,7 +504,6 @@ begin
     item := Source[i];
     if not GetBubbleRect(item, irect) then
       continue;
-//    if not RectIntersectsRectAlt(clipR, irect) then
     if not IntersectRect(dummyR, clipR, irect) then
       continue;
     if bocPen in OverrideColor then
