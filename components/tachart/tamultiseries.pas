@@ -251,7 +251,7 @@ type
 implementation
 
 uses
-  FPCanvas, Math, SysUtils,
+  FPCanvas, Math, SysUtils, Types,
   TAChartStrConsts, TAGeometry, TAGraph, TAMath;
 
 type
@@ -486,6 +486,7 @@ var
   item: PChartDataItem;
   clipR: TRect;
   irect: TRect;
+  dummyR: TRect;
   ext: TDoubleRect;
 begin
   if Source.YCount < 2 then exit;
@@ -503,7 +504,8 @@ begin
     item := Source[i];
     if not GetBubbleRect(item, irect) then
       continue;
-    if not RectIntersectsRectAlt(clipR, irect) then
+//    if not RectIntersectsRectAlt(clipR, irect) then
+    if not IntersectRect(dummyR, clipR, irect) then
       continue;
     if bocPen in OverrideColor then
       ADrawer.SetPenParams(BubblePen.Style, ColorDef(item^.Color, BubblePen.Color));
@@ -671,6 +673,8 @@ var
   inp: TPoint;        // NewPos in image units
   rvec: TDoublePoint; // Rotated radius vector
 begin
+  Unused(AXIndex);
+
   ParentChart.DisableRedrawing;
   ListSource.BeginUpdate;
   try
