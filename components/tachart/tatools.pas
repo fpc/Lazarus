@@ -1728,6 +1728,7 @@ begin
   FindNearestPoint(APoint);
   if FSeries = nil then exit;
   FOrigin := NearestGraphPoint;
+  FSeries.DragOrigin := APoint;
   p := FChart.ImageToGraph(APoint);
   FDistance := p - FOrigin;
   if Assigned(OnDragStart) then begin

@@ -47,6 +47,7 @@ type
     FActive: Boolean;
     FChart: TChart;
     FDepth: TChartDistance;
+    FDragOrigin: TPoint;
     FShadow: TChartShadow;
     FTransparency: TChartTransparency;
     FZPosition: TChartDistance;
@@ -89,6 +90,7 @@ type
 
     property Active: Boolean read FActive write SetActive default true;
     property Depth: TChartDistance read FDepth write SetDepth default 0;
+    property DragOrigin: TPoint read FDragOrigin write FDragOrigin;
     property ParentChart: TChart read FChart;
     property Shadow: TChartShadow read FShadow write SetShadow;
     property Transparency: TChartTransparency
