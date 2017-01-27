@@ -348,6 +348,7 @@ function StrToFloatDefSep(const AStr: String): Double;
 // Call this to silence 'parameter is unused' hint
 procedure Unused(const A1);
 procedure Unused(const A1, A2);
+procedure Unused(const A1, A2, A3);
 
 procedure UpdateMinMax(AValue: Double; var AMin, AMax: Double); overload;
 procedure UpdateMinMax(AValue: Integer; var AMin, AMax: Integer); overload;
@@ -530,6 +531,10 @@ begin
 end;
 
 procedure Unused(const A1, A2);
+begin
+end;
+
+procedure Unused(const A1, A2, A3);
 begin
 end;
 {$POP}
