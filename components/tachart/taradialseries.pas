@@ -89,6 +89,10 @@ type
     procedure Assign(ASource: TPersistent); override;
     procedure Draw(ADrawer: IChartDrawer); override;
     function FindContainingSlice(const APoint: TPoint): Integer;
+    function GetNearestPoint(const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; override;
+    procedure MovePointEx(var AIndex: Integer; AXIndex, AYIndex: Integer;
+      const ANewPos: TDoublePoint); override;
 
     property EdgePen: TPen read FEdgePen write SetEdgePen;
     // Offset slices away from center based on X value.
@@ -333,6 +337,26 @@ begin
   end;
 end;
 
+function TCustomPieSeries.GetNearestPoint(const AParams: TNearestPointParams;
+  out AResults: TNearestPointResults): Boolean;
+var
+  idx: Integer;
+begin
+  Result := false;
+  AResults.FDist := Sqr(AParams.FRadius) + 1;
+  AResults.FIndex := -1;
+  AResults.FXIndex := 0;
+  AResults.FYIndex := 0;
+
+  idx := FindContainingSlice(AParams.FPoint);
+  if idx > -1 then begin
+    AResults.FDist := 0;
+    AResults.FIndex := idx;
+    AResults.FImg := AParams.FPoint;
+    Result := true;
+  end;
+end;
+
 procedure TCustomPieSeries.Measure(ADrawer: IChartDrawer);
 const
   MIN_RADIUS = 5;
@@ -356,6 +380,43 @@ begin
   else begin
     FRadius := FixedRadius;
     TryRadius(ADrawer);
+  end;
+end;
+
+procedure TCustomPieSeries.MovePointEx(var AIndex: Integer;
+  AXIndex, AYIndex: Integer; const ANewPos: TDoublePoint);
+const
+  SENS = 25;  // empirical sensitivity factor for dragging
+var
+  idx: Integer;
+  p: TPoint;
+  vslice, vdrag: TDoublePoint;
+  phi, dist: Double;
+begin
+  Unused(AIndex, AXIndex, AYIndex);
+
+  if FExploded then begin
+    p := ParentChart.GraphToImage(ANewPos);
+    idx := FindContainingSlice(p);
+    if idx > -1 then begin
+      // Center angle of slice (runs in counter-clockwise direction)
+      phi := FSlices[idx].CenterAngle;
+      // Radial slice vector (unit length)
+      vslice := DoublePoint(cos(phi), sin(phi));
+      // Direction vector of dragging
+      vdrag := ANewPos - ParentChart.ImageToGraph(FDragOrigin);
+      // Projection of dragging vector onto slice vector (length)
+      dist := DotProduct(vdrag, vslice);
+      // Add to distance parameter in source (x)
+      dist := Source.Item[idx]^.X + DotProduct(vdrag, vslice) / SENS;
+      if dist < 0 then dist := 0;  // Don't let value go negative
+      ListSource.BeginUpdate;
+      try
+        ListSource.SetXValue(idx, dist);
+      finally
+        ListSource.EndUpdate;
+      end;
+    end;
   end;
 end;
 
