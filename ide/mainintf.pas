@@ -61,7 +61,7 @@ uses
   {$ENDIF}
   Classes, typinfo,
   // LCL
-  LCLType, Buttons, Controls, Graphics, Dialogs, Forms,
+  LCLType, Buttons, Controls, Graphics, Dialogs, Forms, LCLProc,
   // Codetools
   CodeCache,
   // IDEIntf
@@ -191,6 +191,10 @@ type
 
     function ShowProgress(const SomeText: string;
                           Step, MaxStep: integer): boolean; override;
+
+    function CallSaveEditorFileHandler(Sender: TObject;
+      aFile: TLazProjectFile; SaveStep: TSaveEditorFileStep;
+      TargetFilename: string = ''): TModalResult;
   end;
 
 var
@@ -388,6 +392,23 @@ function TMainIDEInterface.ShowProgress(const SomeText: string; Step,
   MaxStep: integer): boolean;
 begin
   Result:=ProgressDlg.ShowProgress(SomeText,Step,MaxStep);
+end;
+
+function TMainIDEInterface.CallSaveEditorFileHandler(Sender: TObject;
+  aFile: TLazProjectFile; SaveStep: TSaveEditorFileStep; TargetFilename: string
+  ): TModalResult;
+var
+  Handler: TMethodList;
+  i: Integer;
+begin
+  if TargetFilename='' then
+    TargetFilename:=aFile.Filename;
+  Handler:=FLazarusIDEHandlers[lihtSaveEditorFile];
+  i := Handler.Count;
+  while Handler.NextDownIndex(i) do begin
+    Result:=TSaveEditorFileEvent(Handler[i])(Sender,aFile,SaveStep,TargetFilename);
+    if Result<>mrOk then exit;
+  end;
 end;
 
 { TFileDescPascalUnitWithForm }

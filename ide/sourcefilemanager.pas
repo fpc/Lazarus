@@ -2496,11 +2496,20 @@ begin
     TestFilename := MainBuildBoss.GetTestUnitFilename(AnUnitInfo);
     if TestFilename <> '' then
     begin
+      DestFilename := TestFilename;
+      // notify packages
+      Result:=MainIDEInterface.CallSaveEditorFileHandler(LazarusIDE,AnUnitInfo,
+                                                  sefsBeforeWrite,DestFilename);
+      if Result<>mrOk then exit;
+      // actual write
       //DebugLn(['TLazSourceFileManager.SaveEditorFile TestFilename="',TestFilename,'" Size=',AnUnitInfo.Source.SourceLength]);
-      Result := AnUnitInfo.WriteUnitSourceToFile(TestFilename);
+      Result := AnUnitInfo.WriteUnitSourceToFile(DestFilename);
       if Result <> mrOk then
         Exit;
-      DestFilename := TestFilename;
+      // notify packages
+      Result:=MainIDEInterface.CallSaveEditorFileHandler(LazarusIDE,AnUnitInfo,
+                                                   sefsAfterWrite,DestFilename);
+      if Result<>mrOk then exit;
     end
     else
       exit(mrCancel);
@@ -2509,10 +2518,19 @@ begin
     if AnUnitInfo.Modified or AnUnitInfo.NeedsSaveToDisk then
     begin
       // save source to file
+      DestFilename := AnUnitInfo.Filename;
+      // notify packages
+      Result:=MainIDEInterface.CallSaveEditorFileHandler(LazarusIDE,
+        AnUnitInfo,sefsBeforeWrite,DestFilename);
+      if Result<>mrOk then exit;
+      // actual write
       Result := AnUnitInfo.WriteUnitSource;
       if Result <> mrOK then
         exit;
-      DestFilename := AnUnitInfo.Filename;
+      // notify packages
+      Result:=MainIDEInterface.CallSaveEditorFileHandler(LazarusIDE,
+        AnUnitInfo,sefsAfterWrite,DestFilename);
+      if Result<>mrOk then exit;
     end;
   end;
 
@@ -5816,9 +5834,16 @@ begin
 
     // save file
     if not NewSource.IsVirtual then begin
+      // notify packages
+      Result:=MainIDEInterface.CallSaveEditorFileHandler(LazarusIDE,AnUnitInfo,sefsBeforeWrite);
+      if Result<>mrOk then exit;
+      // actual write
       Result:=AnUnitInfo.WriteUnitSource;
       if Result<>mrOk then exit;
       AnUnitInfo.Modified:=false;
+      // notify packages
+      Result:=MainIDEInterface.CallSaveEditorFileHandler(LazarusIDE,AnUnitInfo,sefsAfterWrite);
+      if Result<>mrOk then exit;
     end;
 
     // change lpks containing the file

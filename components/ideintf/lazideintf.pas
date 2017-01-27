@@ -214,6 +214,13 @@ type
       // Global options should be prependended, project options should be appended.
     ): boolean of object;
 
+  TSaveEditorFileStep = (
+    sefsBeforeWrite,
+    sefsAfterWrite
+    );
+  TSaveEditorFileEvent = function(Sender: TObject; aFile: TLazProjectFile;
+     SaveStep: TSaveEditorFileStep; TargetFilename: string): TModalResult of object;
+
   TShowDesignerFormOfSourceFunction = procedure(Sender: TObject; AEditor: TSourceEditorInterface;
                                  AComponentPaletteClassSelected: Boolean) of object;
   TGetFPCFrontEndPath = function(Sender: TObject;
@@ -223,6 +230,7 @@ type
   TLazarusIDEHandlerType = (
     lihtSavingAll, // called before IDE saves everything
     lihtSavedAll,  // called after IDE saved everything
+    lihtSaveEditorFile, // called when IDE saves an editor file to disk
     lihtIDERestoreWindows, // called when IDE is restoring the windows (before opening the first project)
     lihtIDEClose, // called when IDE is shutting down (after closequery, so no more interactivity)
     lihtProjectOpened,// called after IDE opened a project
@@ -438,6 +446,9 @@ type
     procedure AddHandlerOnSavedAll(const OnSaveAllEvent: TModalResultFunction;
                                    AsLast: boolean = false);
     procedure RemoveHandlerOnSavedAll(const OnSaveAllEvent: TModalResultFunction);
+    procedure AddHandlerOnSaveEditorFile(const OnSaveEditorFile: TSaveEditorFileEvent;
+                                    AsLast: boolean = false);
+    procedure RemoveHandlerOnSaveEditorFile(const OnSaveEditorFile: TSaveEditorFileEvent);
     procedure AddHandlerOnIDERestoreWindows(const OnIDERestoreWindowsEvent: TNotifyEvent;
                                    AsLast: boolean = false);
     procedure RemoveHandlerOnIDERestoreWindows(
@@ -628,11 +639,13 @@ function TLazIDEInterface.DoCallModalFunctionHandler(
 var
   i: Integer;
   CurResult: TModalResult;
+  Handler: TMethodList;
 begin
   Result:=mrOk;
-  i:=FLazarusIDEHandlers[HandlerType].Count;
-  while FLazarusIDEHandlers[HandlerType].NextDownIndex(i) do begin
-    CurResult:=TModalResultFunction(FLazarusIDEHandlers[HandlerType][i])(Self);
+  Handler:=FLazarusIDEHandlers[HandlerType];
+  i:=Handler.Count;
+  while Handler.NextDownIndex(i) do begin
+    CurResult:=TModalResultFunction(Handler[i])(Self);
     if CurResult=mrAbort then exit(mrAbort);
     if CurResult<>mrOk then Result:=mrCancel;
   end;
@@ -643,12 +656,14 @@ function TLazIDEInterface.DoCallProjectChangedHandler(
 var
   i: Integer;
   CurResult: TModalResult;
+  Handler: TMethodList;
 begin
   Result:=mrOk;
   LastActivatedWindows.Clear;               // IDE windows may change.
-  i:=FLazarusIDEHandlers[HandlerType].Count;
-  while FLazarusIDEHandlers[HandlerType].NextDownIndex(i) do begin
-    CurResult:=TLazProjectChangedFunction(FLazarusIDEHandlers[HandlerType][i])(Self,AProject);
+  Handler:=FLazarusIDEHandlers[HandlerType];
+  i:=Handler.Count;
+  while Handler.NextDownIndex(i) do begin
+    CurResult:=TLazProjectChangedFunction(Handler[i])(Self,AProject);
     if CurResult=mrAbort then exit(mrAbort);
     if CurResult<>mrOk then Result:=mrCancel;
   end;
@@ -658,12 +673,14 @@ function TLazIDEInterface.DoCallModalHandledHandler(
   HandlerType: TLazarusIDEHandlerType; var Handled: boolean): TModalResult;
 var
   i: longint;
+  Handler: TMethodList;
 begin
-  i:=FLazarusIDEHandlers[HandlerType].Count;
-  while FLazarusIDEHandlers[HandlerType].NextDownIndex(i) do
+  Handler:=FLazarusIDEHandlers[HandlerType];
+  i:=Handler.Count;
+  while Handler.NextDownIndex(i) do
   begin
     Handled:=false;
-    Result:=TModalHandledFunction(FLazarusIDEHandlers[HandlerType][i])(Self,Handled);
+    Result:=TModalHandledFunction(Handler[i])(Self,Handled);
     if Handled then exit;
   end;
   Result:=mrOk;
@@ -679,10 +696,12 @@ procedure TLazIDEInterface.DoCallShowDesignerFormOfSourceHandler(
   AEditor: TSourceEditorInterface; AComponentPaletteClassSelected: Boolean);
 var
   i: Integer;
+  Handler: TMethodList;
 begin
-  i := FLazarusIDEHandlers[HandlerType].Count;
-  while FLazarusIDEHandlers[HandlerType].NextDownIndex(i) do
-    TShowDesignerFormOfSourceFunction(FLazarusIDEHandlers[HandlerType][i])(Sender, AEditor,
+  Handler:=FLazarusIDEHandlers[HandlerType];
+  i := Handler.Count;
+  while Handler.NextDownIndex(i) do
+    TShowDesignerFormOfSourceFunction(Handler[i])(Sender, AEditor,
                                                  AComponentPaletteClassSelected);
 end;
 
@@ -763,6 +782,18 @@ procedure TLazIDEInterface.RemoveHandlerOnSavedAll(
   const OnSaveAllEvent: TModalResultFunction);
 begin
   RemoveHandler(lihtSavedAll,TMethod(OnSaveAllEvent));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnSaveEditorFile(
+  const OnSaveEditorFile: TSaveEditorFileEvent; AsLast: boolean);
+begin
+  AddHandler(lihtSaveEditorFile,TMethod(OnSaveEditorFile),AsLast);
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnSaveEditorFile(
+  const OnSaveEditorFile: TSaveEditorFileEvent);
+begin
+  RemoveHandler(lihtSaveEditorFile,TMethod(OnSaveEditorFile));
 end;
 
 procedure TLazIDEInterface.AddHandlerOnIDERestoreWindows(
