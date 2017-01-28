@@ -1938,6 +1938,10 @@ resourcestring
   dlgBracketMatchGroup = 'Matching bracket pairs';
   dlgPasExtKeywordsGroup = 'Extended Pascal Keyword Options';
   dlgPasKeywordsMatches = 'Matching Keywords';
+  dlgPasKeywordsMarkup = 'Markup (on caret)';
+  dlgPasKeywordsOutline = 'Outline';
+  dlgMarkupWordBracket = 'Word Brackets on caret (global)';
+  dlgMarkupOutline = 'Outline (global)';
   dlgPasExtKeywords = 'Highlight control statements as keywords';
   dlgPasStringKeywords = 'Highlight "String" keyword(s)';
   dlgPasStringKeywordsOptDefault = 'Default';

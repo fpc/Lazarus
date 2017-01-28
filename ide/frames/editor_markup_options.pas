@@ -46,6 +46,10 @@ type
     BracketCombo: TComboBox;
     BracketLabel: TLabel;
     BracketLink: TLabel;
+    cbMarkup: TCheckBox;
+    cbOutline: TCheckBox;
+    cbMarkupWordBracket: TCheckBox;
+    cbMarkupOutline: TCheckBox;
     chkKWGroups: TCheckListBox;
     chkExtPasKeywords: TCheckBox;
     divKeyWordGroups: TDividerBevel;
@@ -72,7 +76,11 @@ type
     procedure BracketLinkClick(Sender: TObject);
     procedure BracketLinkMouseEnter(Sender: TObject);
     procedure BracketLinkMouseLeave(Sender: TObject);
+    procedure cbMarkupChange(Sender: TObject);
+    procedure cbMarkupOutlineChange(Sender: TObject);
+    procedure cbMarkupWordBracketChange(Sender: TObject);
     procedure chkExtPasKeywordsChange(Sender: TObject);
+    procedure chkKWGroupsClick(Sender: TObject);
     procedure chkKWGroupsClickCheck(Sender: TObject);
     procedure chkKWGroupsKeyUp(Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState);
     procedure dropPasStringKeywordsChange(Sender: TObject);
@@ -87,10 +95,14 @@ type
   private
     { private declarations }
     FDialog: TAbstractOptionsEditorDialog;
+    FModeLock: Boolean;
     FCurHighlighter: TSrcIDEHighlighter;
     FCurFoldInfo: TEditorOptionsFoldRecord;
+    FUseMarkupWordBracket: Boolean;
+    FUseMarkupOutline: Boolean;
     function GetHighlighter(SynType: TLazSyntaxHighlighter;
       CreateIfNotExists: Boolean): TSrcIDEHighlighter;
+    procedure UpdateMarkupCheckBoxes;
 
   public
     function GetTitle: String; override;
@@ -165,32 +177,85 @@ begin
   (Sender as TLabel).Font.Color := clBlue;
 end;
 
+procedure TEditorMarkupOptionsFrame.cbMarkupChange(Sender: TObject);
+var
+  Hl: TSynCustomFoldHighlighter;
+  Modes: TSynCustomFoldConfigModes;
+  i: LongInt;
+begin
+  if FModeLock then exit;
+  if not (assigned(FCurHighlighter) and
+         (FCurHighlighter is TSynCustomFoldHighlighter)) then exit;
+
+  i := chkKWGroups.ItemIndex;
+  if i < 0 then exit;
+  i := PtrUInt(chkKWGroups.Items.Objects[i]);
+  i := FCurFoldInfo.Info^[i].Index;
+  Hl := TSynCustomFoldHighlighter(FCurHighlighter);
+
+  Modes := [fmMarkup];
+  if Sender = cbOutline then
+    Modes := [fmOutline];
+
+  if TCheckBox(Sender).Checked then
+    Hl.FoldConfig[i].Modes := Hl.FoldConfig[i].Modes + Modes
+  else
+    Hl.FoldConfig[i].Modes := Hl.FoldConfig[i].Modes - Modes;
+
+  chkKWGroups.Checked[chkKWGroups.ItemIndex] := cbMarkup.Checked or cbOutline.Checked;
+end;
+
+procedure TEditorMarkupOptionsFrame.cbMarkupOutlineChange(Sender: TObject);
+begin
+  FUseMarkupOutline := cbMarkupOutline.Checked;
+  LanguageComboBoxExit(nil);
+end;
+
+procedure TEditorMarkupOptionsFrame.cbMarkupWordBracketChange(Sender: TObject);
+begin
+  FUseMarkupWordBracket := cbMarkupWordBracket.Checked;
+  LanguageComboBoxExit(nil);
+end;
+
 procedure TEditorMarkupOptionsFrame.chkExtPasKeywordsChange(Sender: TObject);
 begin
   GeneralPage.PasExtendedKeywordsMode := chkExtPasKeywords.Checked;
   GeneralPage.UpdatePrevieEdits;
 end;
 
+procedure TEditorMarkupOptionsFrame.chkKWGroupsClick(Sender: TObject);
+begin
+  UpdateMarkupCheckBoxes;
+end;
+
 procedure TEditorMarkupOptionsFrame.chkKWGroupsClickCheck(Sender: TObject);
 var
-  i, j, idx: Integer;
+  i, j, idx, i1: Integer;
   Hl: TSynCustomFoldHighlighter;
+  FMask: TSynCustomFoldConfigModes;
 begin
   if not (assigned(FCurHighlighter) and
          (FCurHighlighter is TSynCustomFoldHighlighter)) then exit;
   Hl := TSynCustomFoldHighlighter(FCurHighlighter);
+  FMask := [fmMarkup, fmOutline];
+  if not FUseMarkupWordBracket then FMask := FMask - [fmMarkup];
+  if not FUseMarkupOutline then FMask := FMask - [fmOutline];
 
   j := 0;
-  for i := 0 to FCurFoldInfo.Count - 1 do begin
+  for i1 := 0 to chkKWGroups.Count - 1 do begin
+    i := PtrUInt(chkKWGroups.Items.Objects[i1]);
     idx := FCurFoldInfo.Info^[i].Index;
-    if fmMarkup in Hl.FoldConfig[idx].SupportedModes then begin
-      if chkKWGroups.Checked[j] then
-        Hl.FoldConfig[idx].Modes := Hl.FoldConfig[idx].Modes + [fmMarkup]
+    if Hl.FoldConfig[idx].SupportedModes * [fmMarkup, fmOutline] <> [] then begin
+      if not chkKWGroups.Checked[j] then
+        Hl.FoldConfig[idx].Modes := Hl.FoldConfig[idx].Modes - FMask
       else
-        Hl.FoldConfig[idx].Modes := Hl.FoldConfig[idx].Modes - [fmMarkup];
+      if Hl.FoldConfig[idx].Modes * FMask = [] then
+        Hl.FoldConfig[idx].Modes := Hl.FoldConfig[idx].Modes + FMask;
       inc(j);
     end;
   end;
+
+  UpdateMarkupCheckBoxes;
 end;
 
 procedure TEditorMarkupOptionsFrame.chkKWGroupsKeyUp(Sender: TObject; var Key: Word;
@@ -225,13 +290,13 @@ end;
 
 procedure TEditorMarkupOptionsFrame.LanguageComboBoxExit(Sender: TObject);
 var
-  ComboBox: TComboBox absolute Sender;
   tp: TLazSyntaxHighlighter;
   i, j: Integer;
   Hl: TSynCustomFoldHighlighter;
+  FMask: TSynCustomFoldConfigModes;
 begin
   tp := EditorOpts.HighlighterList
-          [EditorOpts.HighlighterList.FindByName(ComboBox.Text)].TheType;
+          [EditorOpts.HighlighterList.FindByName(LanguageComboBox.Text)].TheType;
   FCurHighlighter := GetHighlighter(tp, True);
   FCurFoldInfo := EditorOptionsFoldDefaults[tp];
 
@@ -240,14 +305,18 @@ begin
          (FCurHighlighter is TSynCustomFoldHighlighter)) then exit;
   Hl := TSynCustomFoldHighlighter(FCurHighlighter);
 
+  FMask := [fmMarkup, fmOutline];
+  if not FUseMarkupWordBracket then FMask := FMask - [fmMarkup];
+  if not FUseMarkupOutline then FMask := FMask - [fmOutline];
   for i := 0 to FCurFoldInfo.Count - 1 do begin
-    if Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].SupportedModes * [fmMarkup{, fmOutline}] <> [] then begin
+    if Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].SupportedModes * FMask <> [] then begin
       j := chkKWGroups.Items.Add(FCurFoldInfo.Info^[i].Name);
       chkKWGroups.Checked[j] :=
-        (Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Modes * [fmMarkup{, fmOutline}] <> []);
+        (Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Modes * FMask <> []);
       chkKWGroups.Items.Objects[j] := TObject({%H-}Pointer(PtrUInt(i)));
     end;
   end;
+  UpdateMarkupCheckBoxes;
 end;
 
 procedure TEditorMarkupOptionsFrame.LanguageComboBoxKeyDown(Sender: TObject;
@@ -282,6 +351,40 @@ function TEditorMarkupOptionsFrame.GetHighlighter(
   ): TSrcIDEHighlighter;
 begin
   Result := FoldPage.GetHighlighter(SynType, CreateIfNotExists);
+end;
+
+procedure TEditorMarkupOptionsFrame.UpdateMarkupCheckBoxes;
+var
+  i: LongInt;
+  FMask: TSynCustomFoldConfigModes;
+  Hl: TSynCustomFoldHighlighter;
+begin
+  if not (assigned(FCurHighlighter) and
+         (FCurHighlighter is TSynCustomFoldHighlighter)) then exit;
+  Hl := TSynCustomFoldHighlighter(FCurHighlighter);
+  FModeLock := True;
+  i := chkKWGroups.ItemIndex;
+  if i >= 0 then
+    i := PtrUInt(chkKWGroups.Items.Objects[i]);
+
+  if i >= 0 then begin
+    i := FCurFoldInfo.Info^[i].Index;
+    FMask := [fmMarkup, fmOutline];
+    if not FUseMarkupWordBracket then FMask := FMask - [fmMarkup];
+    if not FUseMarkupOutline then FMask := FMask - [fmOutline];
+
+    cbMarkup.Enabled := fmMarkup in Hl.FoldConfig[i].SupportedModes * FMask;
+    cbMarkup.Checked := fmMarkup in Hl.FoldConfig[i].Modes * FMask;
+    cbOutline.Enabled := fmOutline in Hl.FoldConfig[i].SupportedModes * FMask;
+    cbOutline.Checked := fmOutline in Hl.FoldConfig[i].Modes * FMask;
+  end else
+  begin
+    cbMarkup.Enabled  := false;
+    cbMarkup.Checked  := false;
+    cbOutline.Enabled := false;
+    cbOutline.Checked := false;
+  end;
+  FModeLock := False;
 end;
 
 function TEditorMarkupOptionsFrame.GetTitle: String;
@@ -322,6 +425,11 @@ begin
   LanguageLabel.Caption := dlgLang;
   divKeyWordGroups.Caption := dlgPasKeywordsMatches;
 
+  cbMarkup.Caption := dlgPasKeywordsMarkup;
+  cbOutline.Caption := dlgPasKeywordsOutline;
+  cbMarkupWordBracket.Caption := dlgMarkupWordBracket;
+  cbMarkupOutline.Caption := dlgMarkupOutline;
+
   with LanguageComboBox.Items do begin
     BeginUpdate;
     for i := 0 to EditorOpts.HighlighterList.Count - 1 do begin
@@ -350,11 +458,17 @@ begin
 
     chkExtPasKeywords.Checked := PasExtendedKeywordsMode;
     dropPasStringKeywords.ItemIndex := ord(PasStringKeywordMode);
+
+    FUseMarkupWordBracket := UseMarkupWordBracket;
+    FUseMarkupOutline := UseMarkupOutline;
   end;
   AutoDelayTrackBarChange(nil);
 
   LanguageComboBox.ItemIndex := 0;
   LanguageComboBoxExit(LanguageComboBox);
+  cbMarkupOutline.Checked := FUseMarkupOutline;
+  cbMarkupWordBracket.Checked := FUseMarkupWordBracket;
+  UpdateMarkupCheckBoxes;
 end;
 
 procedure TEditorMarkupOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -377,6 +491,9 @@ begin
 
     PasExtendedKeywordsMode := chkExtPasKeywords.Checked;
     PasStringKeywordMode := TSynPasStringMode(dropPasStringKeywords.ItemIndex);
+
+    UseMarkupWordBracket := FUseMarkupWordBracket;
+    UseMarkupOutline := FUseMarkupOutline;
   end;
 end;
 

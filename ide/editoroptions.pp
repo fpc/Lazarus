@@ -55,12 +55,13 @@ uses
   SynEditMarkupSpecialChar,
   SourceSynEditor,
   // SynEdit Highlighters
-  SynEditHighlighter, SynEditHighlighterFoldBase,
-  SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
-  SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
+  SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterCPP,
+  SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM, SynHighlighterPas,
+  SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
-  SynHighlighterJScript, SynHighlighterDiff, SynHighlighterBat, SynHighlighterIni,
-  SynHighlighterPo, SynHighlighterPike, SynPluginMultiCaret,
+  SynHighlighterJScript, SynHighlighterDiff, SynHighlighterBat,
+  SynHighlighterIni, SynHighlighterPo, SynHighlighterPike, SynPluginMultiCaret,
+  SynEditMarkupFoldColoring, SynEditMarkup,
   // codetools
   LinkScanner, CodeToolManager,
   // IDEIntf
@@ -1390,6 +1391,8 @@ type
 
     // Code Folding
     FUseCodeFolding: Boolean;
+    FUseMarkupWordBracket: Boolean;
+    FUseMarkupOutline: Boolean;
     FReverseFoldPopUpOrder: Boolean;
 
     // Multi window
@@ -1600,6 +1603,10 @@ type
     // Code Folding
     property UseCodeFolding: Boolean
         read FUseCodeFolding write FUseCodeFolding default True;
+    property UseMarkupWordBracket: Boolean
+        read FUseMarkupWordBracket write FUseMarkupWordBracket default True;
+    property UseMarkupOutline: Boolean
+        read FUseMarkupOutline write FUseMarkupOutline default True;
 
     // Multi window
     property MultiWinEditAccessOrder: TEditorOptionsEditAccessOrderList
@@ -4766,6 +4773,12 @@ begin
     FUseCodeFolding :=
       XMLConfig.GetValue(
       'EditorOptions/CodeFolding/UseCodeFolding', True);
+    FUseMarkupWordBracket :=
+      XMLConfig.GetValue(
+      'EditorOptions/CodeFolding/UseMarkupWordBracket', True);
+    FUseMarkupOutline :=
+      XMLConfig.GetValue(
+      'EditorOptions/CodeFolding/UseMarkupOutline', True);
 
     FUserMouseSettings.LoadFromXml(XMLConfig, 'EditorOptions/Mouse/',
                                   'EditorOptions/General/Editor/', FileVersion);
@@ -4952,6 +4965,10 @@ begin
     // Code Folding
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseCodeFolding',
         FUseCodeFolding, True);
+    XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseMarkupWordBracket',
+        FUseMarkupWordBracket, True);
+    XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseMarkupOutline',
+        FUseMarkupOutline, True);
 
     FUserMouseSettings.SaveToXml(XMLConfig, 'EditorOptions/Mouse/');
 
@@ -5269,8 +5286,13 @@ begin
         (* if ReadForOptions=True then Enabled appies only to fmFold,fmHide.
            This allows to store what selection was previously active *)
         if not ReadForOptions then begin
-          if not FoldHl.FoldConfig[idx].Enabled then
+          if (not FoldHl.FoldConfig[idx].Enabled) or (not FUseCodeFolding) then
             FoldHl.FoldConfig[idx].Modes := FoldHl.FoldConfig[idx].Modes - [fmFold, fmHide];
+          if (not FUseMarkupWordBracket) then
+            FoldHl.FoldConfig[idx].Modes := FoldHl.FoldConfig[idx].Modes - [fmMarkup];
+          if (not FUseMarkupOutline) then
+            FoldHl.FoldConfig[idx].Modes := FoldHl.FoldConfig[idx].Modes - [fmOutline];
+
           FoldHl.FoldConfig[idx].Enabled := FoldHl.FoldConfig[idx].Modes <> [];
         end;
       end;
@@ -5546,6 +5568,7 @@ var
   i: Integer;
   mw: TSourceSynEditMarkupHighlightAllMulti;
   TermsConf: TEditorUserDefinedWords;
+  Markup: TSynEditMarkup;
 begin
   // general options
   ASynEdit.BeginUpdate(False);
@@ -5714,6 +5737,10 @@ begin
       MarkCaret.IgnoreKeywords := FMarkupCurWordNoKeyword;
       MarkCaret.Trim := FMarkupCurWordTrim;
     end;
+
+    Markup := ASynEdit.MarkupByClass[TSynEditMarkupFoldColors];
+    if (Markup <> nil) then
+      Markup.Enabled := FUseMarkupOutline;
 
     AssignKeyMapTo(ASynEdit, SimilarEdit);
 

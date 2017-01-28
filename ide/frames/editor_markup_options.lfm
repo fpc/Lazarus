@@ -317,13 +317,14 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 156
-    Top = 330
+    Height = 150
+    Top = 380
     Width = 220
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Constraints.MinHeight = 150
     ItemHeight = 0
+    OnClick = chkKWGroupsClick
     OnClickCheck = chkKWGroupsClickCheck
     OnExit = chkKWGroupsClickCheck
     OnKeyUp = chkKWGroupsKeyUp
@@ -331,11 +332,11 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
   end
   object LanguageComboBox: TComboBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = divKeyWordGroups
+    AnchorSideTop.Control = cbMarkupOutline
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 301
+    Top = 351
     Width = 200
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -353,10 +354,64 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 212
     Height = 15
-    Top = 305
+    Top = 355
     Width = 80
     BorderSpacing.Left = 6
     Caption = 'LanguageLabel'
     ParentColor = False
+  end
+  object cbMarkup: TCheckBox
+    AnchorSideLeft.Control = chkKWGroups
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = chkKWGroups
+    Left = 232
+    Height = 19
+    Top = 380
+    Width = 74
+    BorderSpacing.Left = 6
+    Caption = 'cbMarkup'
+    OnChange = cbMarkupChange
+    TabOrder = 10
+  end
+  object cbOutline: TCheckBox
+    AnchorSideLeft.Control = chkKWGroups
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbMarkup
+    AnchorSideTop.Side = asrBottom
+    Left = 232
+    Height = 19
+    Top = 405
+    Width = 72
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'cbOutline'
+    OnChange = cbMarkupChange
+    TabOrder = 11
+  end
+  object cbMarkupWordBracket: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = divKeyWordGroups
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 301
+    Width = 142
+    BorderSpacing.Around = 6
+    Caption = 'cbMarkupWordBracket'
+    OnChange = cbMarkupWordBracketChange
+    TabOrder = 12
+  end
+  object cbMarkupOutline: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbMarkupWordBracket
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 326
+    Width = 113
+    BorderSpacing.Around = 6
+    Caption = 'cbMarkupOutline'
+    OnChange = cbMarkupOutlineChange
+    TabOrder = 13
   end
 end

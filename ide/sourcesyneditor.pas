@@ -59,9 +59,7 @@ uses
   SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterPas,
   SynEditMarkupHighAll, SynEditKeyCmds, SynEditMarkupIfDef, SynEditMiscProcs,
   SynPluginMultiCaret, SynEditPointClasses,
-  {$IFDEF SynWithOutlineMarkup}
   SynEditMarkupFoldColoring,
-  {$ENDIF}
   etSrcEditMarks, LazarusIDEStrConsts;
 
 type
@@ -1636,6 +1634,7 @@ begin
 
   inherited SetHighlighter(Value);
 
+//TSynEditMarkupFoldColors(MarkupByClass[TSynEditMarkupFoldColors]).Highlighter := Highlighter; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   if Highlighter is TSynPasSyn then
     FMarkupIfDef.Highlighter := TSynPasSyn(Highlighter)
   else
@@ -1657,10 +1656,8 @@ begin
 end;
 
 constructor TIDESynEditor.Create(AOwner: TComponent);
-{$IFDEF SynWithOutlineMarkup}
 var
   MarkupFoldColors: TSynEditMarkupFoldColors;
-{$ENDIF}
 begin
   inherited Create(AOwner);
   FUserWordsList := TFPList.Create;
@@ -1676,11 +1673,9 @@ begin
   FMarkupForGutterMark := TSynEditMarkupGutterMark.Create(Self, FWordBreaker);
   TSynEditMarkupManager(MarkupMgr).AddMarkUp(FMarkupForGutterMark);
 
-  {$IFDEF SynWithOutlineMarkup}
   MarkupFoldColors := TSynEditMarkupFoldColors.Create(Self);
   //MarkupFoldColors.DefaultGroup := 0;
   TSynEditMarkupManager(MarkupMgr).AddMarkUp(MarkupFoldColors);
-  {$ENDIF}
 
   FMarkupIfDef := TSourceSynEditMarkupIfDef.Create(Self);
   FMarkupIfDef.FoldView := TSynEditFoldedView(FoldedTextBuffer);
