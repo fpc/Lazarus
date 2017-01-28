@@ -291,14 +291,17 @@ end;
 
 procedure TCustomFileListBox.UpdateFileList;
 const
-  AttrNotNormal = faReadOnly or
+  FileTypeFilesOnly = [ftReadOnly, ftHidden, ftSystem, ftArchive, ftNormal];
+  {AttrNotNormal = faReadOnly or
                   faHidden{%H-} or
                   faSysFile{%H-} or
                   faVolumeID{%H-} or
-                  faDirectory or
-                  faArchive;
+                  faDirectory{ or
+                  faArchive};
+  }
 var
   Info: TSearchRec;
+  FileAttr: LongInt;
 
   function FileTypeToFileAttribute(FileType: TFileType): LongInt;
   const
@@ -327,19 +330,23 @@ begin
   Clear;
   if FileType <> [] then
   begin
+    FileAttr := FileTypeToFileAttribute(FileType);
     if FindFirstUTF8(
       IncludeTrailingPathDelimiter(FDirectory)+AllDirectoryEntriesMask,
-      FileTypeToFileAttribute(FileType), Info) = 0
+      FileAttr, Info) = 0
     then
       repeat
         if MatchesMaskList(Info.Name,Mask) then
         begin
-          if (ftNormal in FileType) or ((Info.Attr and AttrNotNormal) > 0) then
+          if (ftNormal in FileType) or ((Info.Attr and FileAttr {AttrNotNormal}) > 0) then
           begin
             if (Info.Attr and faDirectory) > 0 then
               Items.Add('['+Info.Name+']')
             else
-              Items.Add(Info.Name);
+            begin
+              if (FileType * FileTypeFilesOnly <> []) then //don't add files if no file attribute is specified
+                Items.Add(Info.Name);
+            end;
           end;
         end;
       until FindNextUTF8(Info) <> 0;
