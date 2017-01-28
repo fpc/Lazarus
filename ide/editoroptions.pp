@@ -1606,7 +1606,7 @@ type
     property UseMarkupWordBracket: Boolean
         read FUseMarkupWordBracket write FUseMarkupWordBracket default True;
     property UseMarkupOutline: Boolean
-        read FUseMarkupOutline write FUseMarkupOutline default True;
+        read FUseMarkupOutline write FUseMarkupOutline default False;
 
     // Multi window
     property MultiWinEditAccessOrder: TEditorOptionsEditAccessOrderList
@@ -4778,7 +4778,7 @@ begin
       'EditorOptions/CodeFolding/UseMarkupWordBracket', True);
     FUseMarkupOutline :=
       XMLConfig.GetValue(
-      'EditorOptions/CodeFolding/UseMarkupOutline', True);
+      'EditorOptions/CodeFolding/UseMarkupOutline', False);
 
     FUserMouseSettings.LoadFromXml(XMLConfig, 'EditorOptions/Mouse/',
                                   'EditorOptions/General/Editor/', FileVersion);
@@ -4968,7 +4968,7 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseMarkupWordBracket',
         FUseMarkupWordBracket, True);
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseMarkupOutline',
-        FUseMarkupOutline, True);
+        FUseMarkupOutline, False);
 
     FUserMouseSettings.SaveToXml(XMLConfig, 'EditorOptions/Mouse/');
 
