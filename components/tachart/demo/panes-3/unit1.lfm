@@ -1,0 +1,129 @@
+object Form1: TForm1
+  Left = 280
+  Height = 307
+  Top = 130
+  Width = 585
+  Caption = 'Form1'
+  ClientHeight = 307
+  ClientWidth = 585
+  LCLVersion = '1.7'
+  object Chart1: TChart
+    AnchorSideBottom.Control = CheckBox1
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 276
+    Top = 0
+    Width = 585
+    AxisList = <    
+      item
+        Grid.Visible = False
+        TickColor = clRed
+        AxisPen.Color = clRed
+        AxisPen.Visible = True
+        Marks.LabelFont.Color = clRed
+        Minors = <>
+        Title.LabelFont.Color = clRed
+        Title.LabelFont.Orientation = 900
+        Title.Visible = True
+        Title.Caption = '1st y axis'
+        Transformations = ChartAxisTransformations1
+      end    
+      item
+        Alignment = calBottom
+        AxisPen.Visible = True
+        Minors = <>
+      end    
+      item
+        Grid.Visible = False
+        TickColor = clBlue
+        AxisPen.Color = clBlue
+        AxisPen.Visible = True
+        Marks.LabelFont.Color = clBlue
+        Minors = <>
+        Title.LabelFont.Color = clBlue
+        Title.LabelFont.Orientation = 900
+        Title.Visible = True
+        Title.Caption = '2nd y axis'
+        Transformations = ChartAxisTransformations2
+      end>
+    BackColor = clWhite
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Frame.Visible = False
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    object Chart1LineSeries1: TLineSeries
+      AxisIndexX = 1
+      AxisIndexY = 0
+      LinePen.Color = clRed
+      Source = RandomChartSource1
+    end
+    object Chart1LineSeries2: TLineSeries
+      AxisIndexX = 1
+      AxisIndexY = 2
+      LinePen.Color = clBlue
+      Source = RandomChartSource2
+    end
+  end
+  object CheckBox1: TCheckBox
+    Left = 6
+    Height = 19
+    Top = 282
+    Width = 116
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'y axes at data only'
+    OnChange = CheckBox1Change
+    TabOrder = 1
+  end
+  object CheckBox2: TCheckBox
+    AnchorSideLeft.Control = CheckBox1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = CheckBox1
+    Left = 138
+    Height = 19
+    Top = 282
+    Width = 66
+    BorderSpacing.Left = 16
+    Caption = 'Grouped'
+    OnChange = CheckBox2Change
+    TabOrder = 2
+  end
+  object ChartAxisTransformations1: TChartAxisTransformations
+    left = 96
+    top = 112
+    object ChartAxisTransformations1AutoScaleAxisTransform1: TAutoScaleAxisTransform
+    end
+  end
+  object ChartAxisTransformations2: TChartAxisTransformations
+    left = 440
+    top = 112
+    object ChartAxisTransformations2AutoScaleAxisTransform1: TAutoScaleAxisTransform
+      MaxValue = 2
+      MinValue = 1
+    end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 10
+    RandSeed = 1004835833
+    XMax = 1
+    XMin = 0
+    YMax = 1
+    YMin = 0
+    left = 96
+    top = 176
+  end
+  object RandomChartSource2: TRandomChartSource
+    PointsNumber = 5
+    RandSeed = 1004914276
+    XMax = 1
+    XMin = 0
+    YMax = 1000
+    YMin = -1000
+    left = 440
+    top = 176
+  end
+end
