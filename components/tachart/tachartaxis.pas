@@ -585,6 +585,9 @@ begin
     // FIXME: Intersect axisMin/Max with the union of series extents.
     // wp: - I think this is fixed in what follows...
     GetChart.Notify(CMD_QUERY_SERIESEXTENT, self, nil, rng{%H-});
+    // Safe-guard against series having no AxisIndexX/AxisIndexY
+    if IsInfinite(rng.FStart) then rng.FStart := axisMin;
+    if IsInfinite(-rng.FEnd) then rng.FEnd := axisMax;
     UpdateBounds(rng.FStart, rng.FEnd);
     d.FMin := rng.FStart;
     d.FMax := rng.FEnd;
