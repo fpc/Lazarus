@@ -1730,6 +1730,7 @@ var
 { end local procedures }
 
 begin
+  fMarkupManager.BeginMarkup;
   FTokenBreaker.Prepare(DisplayView, FTheLinesView, FMarkupManager, FirstCol, LastCol);
   FTokenBreaker.ForegroundColor := ForegroundColor;
   FTokenBreaker.BackgroundColor := BackgroundColor;

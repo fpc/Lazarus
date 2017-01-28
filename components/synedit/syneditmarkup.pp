@@ -101,6 +101,7 @@ type
     destructor Destroy; override;
     Procedure PrepareMarkupForRow(aRow : Integer); virtual;
     Procedure FinishMarkupForRow(aRow : Integer); virtual;
+    Procedure BeginMarkup; virtual;
     Procedure EndMarkup; virtual;
     Function  GetMarkupAttributeAtRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
@@ -167,6 +168,7 @@ type
 
     Procedure PrepareMarkupForRow(aRow : Integer); override;
     Procedure FinishMarkupForRow(aRow : Integer); override;
+    Procedure BeginMarkup; virtual;
     Procedure EndMarkup; override;
     Function  GetMarkupAttributeAtRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
@@ -422,6 +424,10 @@ procedure TSynEditMarkup.FinishMarkupForRow(aRow: Integer);
 begin
 end;
 
+procedure TSynEditMarkup.BeginMarkup;
+begin
+end;
+
 procedure TSynEditMarkup.EndMarkup;
 begin
 end;
@@ -547,6 +553,15 @@ begin
   for i := 0 to fMarkUpList.Count-1 do
     if TSynEditMarkup(fMarkUpList[i]).RealEnabled then
       TSynEditMarkup(fMarkUpList[i]).FinishMarkupForRow(aRow);
+end;
+
+procedure TSynEditMarkupManager.BeginMarkup;
+var
+  i : integer;
+begin
+  for i := 0 to fMarkUpList.Count-1 do
+    if TSynEditMarkup(fMarkUpList[i]).RealEnabled then
+      TSynEditMarkup(fMarkUpList[i]).BeginMarkup;
 end;
 
 procedure TSynEditMarkupManager.EndMarkup;
