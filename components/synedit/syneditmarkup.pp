@@ -73,6 +73,7 @@ type
     procedure SetLinesInWindow(const AValue : Integer); virtual;
     procedure SetCaret(const AValue : TSynEditCaret); virtual;
 
+    function  IsTempDisabled: boolean;
     procedure DoEnabledChanged(Sender: TObject); virtual;
     procedure DoCaretChanged(Sender: TObject); virtual;
     procedure DoTopLineChanged(OldTopLine : Integer); virtual;
@@ -282,6 +283,11 @@ begin
   FCaret := AValue;
   if r and (FCaret <> nil) then
     FCaret.AddChangeHandler(@DoCaretChanged);
+end;
+
+function TSynEditMarkup.IsTempDisabled: boolean;
+begin
+  Result := FTempEnable > 0;
 end;
 
 procedure TSynEditMarkup.DoEnabledChanged(Sender: TObject);

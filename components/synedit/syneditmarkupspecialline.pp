@@ -130,7 +130,7 @@ end;
 
 function TSynEditMarkupSpecialLine.RealEnabled: Boolean;
 begin
-  Result := inherited and
+  Result := Enabled and (not IsTempDisabled) and
     (Assigned(FOnSpecialLineMarkup) or Assigned(FOnSpecialLineColors) or
      HasLineHighlight
     );
@@ -190,6 +190,7 @@ begin
       MarkupInfo.Assign(FMarkupLineHighlightInfo);
     end;
   end;
+debugln(['prepare', FSpecialLine, MarkupInfo.Background]);
 end;
 
 function TSynEditMarkupSpecialLine.GetMarkupAttributeAtRowCol(const aRow: Integer;

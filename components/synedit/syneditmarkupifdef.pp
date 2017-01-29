@@ -779,7 +779,7 @@ end;
 
 function TSynEditMarkupIfDefBase.RealEnabled: Boolean;
 begin
-  Result := inherited and HasEnabledMarkup;
+  Result := Enabled and (not IsTempDisabled) and HasEnabledMarkup;
 end;
 
 { TSynRefCountedDictIfDef }
