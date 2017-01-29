@@ -11,8 +11,8 @@
 
   A copy of the GNU General Public License is available on the WorldWide Web
   at <http://www.gnu.org/copyleft/gpl.html>. You can alsoobtain it by writing
-  to the Free Software Foundation,Inc., 59 Temple Place - Suite 330, Boston,
-  MA 02111-1307, USA.
+  to the Free Software Foundation,Inc., 51 Franklin Street - Fifth Floor,
+  Boston, MA 02110-1335, USA.
 
   ---------------------------------------------------------------------------
   Abstract:
