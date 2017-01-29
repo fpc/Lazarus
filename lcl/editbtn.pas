@@ -1074,6 +1074,7 @@ begin
   inherited Create(AOwner);
   FButtonOnlyWhenFocused := False;
   FocusOnButtonClick := False;
+  Edit.TabStop := False;
 
   SetInitialBounds(0, 0, GetControlClassDefaultSize.CX, GetControlClassDefaultSize.CY);
 
