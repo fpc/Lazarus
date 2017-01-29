@@ -293,12 +293,11 @@ procedure TCustomFileListBox.UpdateFileList;
 const
   FileTypeFilesOnly = [ftReadOnly, ftHidden, ftSystem, ftArchive, ftNormal];
   {AttrNotNormal = faReadOnly or
-                  faHidden{%H-} or
-                  faSysFile{%H-} or
-                  faVolumeID{%H-} or
-                  faDirectory{ or
-                  faArchive};
-  }
+                  faHidden or
+                  faSysFile or
+                  faVolumeID or
+                  faDirectory or
+                  faArchive  }
 var
   Info: TSearchRec;
   FileAttr: LongInt;
