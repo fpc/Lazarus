@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-12-10 17:06+0100\n"
+"PO-Revision-Date: 2017-01-29 16:50+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -5534,12 +5534,12 @@ msgstr "Dateiänderungen eher über den Inhalt als über den Zeitstempel ermitte
 
 #: lazarusidestrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
 msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
-msgstr ""
+msgstr ". Prüfen, ob Package %s die %s.ppu erzeugt, nichts prüfen löscht diese Datei und prüft, daß keine zwei Packages Zugriff auf die Unit-Quellen haben."
 
 #: lazarusidestrconsts.lischeckifpackageisinthedependencies
 msgctxt "lazarusidestrconsts.lischeckifpackageisinthedependencies"
 msgid ". Check if package %s is in the dependencies"
-msgstr ""
+msgstr ". Prüfen, ob Package %s in den Abhängigkeiten ist"
 
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
@@ -5552,7 +5552,7 @@ msgstr "Einstellungen prüfen"
 #: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
 msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme"
 msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
-msgstr ""
+msgstr ". Den Suchpfad von Package %s prüfen, eine saubere Neuerstellung versuchen, die uses-Abschnitte (implementation) prüfen."
 
 #: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
 msgid "Check the next token in source and add a semicolon if needed."
@@ -5896,7 +5896,7 @@ msgstr "Code-Browser"
 
 #: lazarusidestrconsts.liscodecreationdialogcaption
 msgid "Code creation options"
-msgstr ""
+msgstr "Codeerzeugungseinstellungen"
 
 #: lazarusidestrconsts.liscodecreationdialogclasssection
 msgid "Class section"
@@ -6574,7 +6574,7 @@ msgstr "Kompilieren"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
-msgstr ""
+msgstr "Kompilieren Sie mit -vd für weitere Details. Prüfen Sie auf Duplikate."
 
 #: lazarusidestrconsts.liscompiling
 msgid "%s (compiling ...)"
@@ -6799,7 +6799,7 @@ msgstr "Package %s als Abhängigkeit hinzugefügt."
 
 #: lazarusidestrconsts.lisconvdelphiaddedunittousessection
 msgid "Added unit \"%s\" to uses section."
-msgstr ""
+msgstr "Unit \"%s\" zum uses-Abschnitt hinzugefügt."
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -6824,7 +6824,7 @@ msgstr "Konvertierung abgebrochen."
 
 #: lazarusidestrconsts.lisconvdelphiconversionready
 msgid "Conversion Ready."
-msgstr ""
+msgstr "Umwandlung ist fertig."
 
 #: lazarusidestrconsts.lisconvdelphiconversiontook
 msgid "Conversion took: %s"
@@ -6844,11 +6844,11 @@ msgstr "Delphi-Unit konvertieren"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingfoundunits
 msgid "*** Converting unit files found during conversion ***"
-msgstr ""
+msgstr "*** Wandle die während der Umwandlung gefundenen Unit-Dateien um ***"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingprojpackunits
 msgid "*** Converting unit files belonging to project/package ***"
-msgstr ""
+msgstr "*** Wandle zum Projekt/Package gehörende Unit-Dateien um ***"
 
 #: lazarusidestrconsts.lisconvdelphierror
 msgid "Error=\"%s\""
@@ -6856,7 +6856,7 @@ msgstr "Fehler=\"%s\""
 
 #: lazarusidestrconsts.lisconvdelphiexceptionduringconversion
 msgid "Exception happened during unit conversion. Continuing with form files of already converted units..."
-msgstr ""
+msgstr "Eine Ausnahme ist während der Unitumwandlung aufgetreten. Setze mit Formular-Dateien bereits umgewandelter Units fort..."
 
 #: lazarusidestrconsts.lisconvdelphifailedconvertingunit
 msgid "Failed converting unit"
@@ -6900,7 +6900,7 @@ msgstr "Unit %s aus Projekt entfernt"
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitfromusessection
 msgid "Removed unit \"%s\" from uses section."
-msgstr ""
+msgstr "Unit \"%s\" aus dem uses-Abschnitt entfernt."
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Fixing used units and Repairing form files ***"
@@ -6949,7 +6949,7 @@ msgstr "Kodierung von Projekten/Packages umwandeln"
 
 #: lazarusidestrconsts.lisconvertotherhint
 msgid "Other options affecting the conversion"
-msgstr ""
+msgstr "Andere Einstellungen beeinflussen die Umwandlung."
 
 #: lazarusidestrconsts.lisconvertprojectorpackage
 msgid "Convert project or package"
@@ -7154,11 +7154,11 @@ msgstr "Allgemeine Coolbar-Einstellungen"
 
 #: lazarusidestrconsts.liscoolbargrabstyle
 msgid "Toolbars grab style"
-msgstr ""
+msgstr "Symbolleisten-Griffstil"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem0
 msgid "Simple"
-msgstr ""
+msgstr "Einfach"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem1
 msgctxt "lazarusidestrconsts.liscoolbargrabstyleitem1"
@@ -7167,15 +7167,15 @@ msgstr "Doppelt"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem2
 msgid "HorLines"
-msgstr ""
+msgstr "Horizontale Linien"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem3
 msgid "VerLines"
-msgstr ""
+msgstr "Vertikale Linien"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem4
 msgid "Gripper"
-msgstr ""
+msgstr "Greifer"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem5
 msgctxt "lazarusidestrconsts.liscoolbargrabstyleitem5"
@@ -7184,7 +7184,7 @@ msgstr "Schaltfläche"
 
 #: lazarusidestrconsts.liscoolbargrabwidth
 msgid "Grab width"
-msgstr ""
+msgstr "Griffbreite"
 
 #: lazarusidestrconsts.liscoolbaridemainmenu
 msgid "IDE Main Menu"
@@ -8035,7 +8035,7 @@ msgstr "Delphi-kompatible Ressourcen. Empfohlen."
 
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
-msgstr ""
+msgstr "\"Entwicklungszeit\"-Packages fügen Komponenten und Menüeinträge zur IDE hinzu. Sie können von Projekten benutzt werden, aber nicht in das Projekt kompiliert werden. Der Compiler wird keine Units dieses Packages finden, während das Projekt kompiliert wird."
 
 #: lazarusidestrconsts.lisdesktops
 msgid "Desktops ..."
@@ -8320,11 +8320,11 @@ msgstr "Hinunter"
 
 #: lazarusidestrconsts.lisdowngrade
 msgid "Downgrade"
-msgstr ""
+msgstr "Zurücksetzen"
 
 #: lazarusidestrconsts.lisdowngradeconfiguration
 msgid "Downgrade configuration"
-msgstr ""
+msgstr "Konfiguration zurücksetzen"
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
@@ -9406,7 +9406,7 @@ msgstr "Form"
 
 #: lazarusidestrconsts.lisformacosdarwin
 msgid "For macOS (Darwin)"
-msgstr ""
+msgstr "Für macOS (Darwin)"
 
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
@@ -9555,7 +9555,7 @@ msgstr "Umbenennung"
 
 #: lazarusidestrconsts.lisfrisearch
 msgid "Search"
-msgstr ""
+msgstr "Suche"
 
 #: lazarusidestrconsts.lisfrisearchincommentstoo
 msgid "Search in comments too"
@@ -11209,7 +11209,7 @@ msgstr "Zeigt einen Bestätigungsdialog beim Erstellen aus dem Werkzeuge-Menü h
 
 #: lazarusidestrconsts.lislazbuildshowoptionsanddefinesforcommandline
 msgid "Show options and defines for command line"
-msgstr ""
+msgstr "Zeige Einstellungen und Definitionen für die Kommandzeile"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -11559,7 +11559,7 @@ msgstr "Strings mit gleichen Werten:"
 
 #: lazarusidestrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
 msgid "Make sure all ppu files of a package are in its output directory."
-msgstr ""
+msgstr "Stellen Sie sicher, daß alle .ppu-Dateien eines Packages sich in dessem Ausgabeverzeichnis befinden."
 
 #: lazarusidestrconsts.lismanagesourceeditors
 msgid "Manage Source Editors ..."
@@ -12519,11 +12519,11 @@ msgstr "Zum vorherigen Fehler springen"
 
 #: lazarusidestrconsts.lismenujumptoprocedurebegin
 msgid "Jump to Procedure begin"
-msgstr ""
+msgstr "Zum Prozedurbeginn springen"
 
 #: lazarusidestrconsts.lismenujumptoprocedureheader
 msgid "Jump to Procedure header"
-msgstr ""
+msgstr "Zum Prozedurkopf springen"
 
 #: lazarusidestrconsts.lismenulowercaseselection
 msgid "Lowercase Selection"
@@ -17253,7 +17253,7 @@ msgstr "Alle Komponenten auf dem Formular/Datamodul müssen einen eindeutigen Na
 
 #: lazarusidestrconsts.listheconfigurationwillbedowngradedconverted
 msgid "The configuration will be downgraded/converted."
-msgstr ""
+msgstr "Die Konfiguration wird zurückgesetzt/umgewandelt."
 
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
 msgid "The %s contains a nonexistent directory:%s%s"
@@ -21014,4 +21014,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
