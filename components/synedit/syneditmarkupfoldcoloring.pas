@@ -112,6 +112,7 @@ type
   public
     constructor Create(ASynEdit : TSynEditBase);
     destructor Destroy; override;
+    procedure BeginMarkup; override;
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
                                         const {%H-}AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
@@ -121,7 +122,6 @@ type
                                          out   ANextPhys, ANextLog: Integer); override;
 
     procedure PrepareMarkupForRow(aRow : Integer); override;
-    procedure EndMarkup; override;
     property DefaultGroup : integer read FDefaultGroup write SetDefaultGroup;
   end;
 
@@ -192,6 +192,17 @@ begin
   end;
   FreeAndNil(FNestList);
   inherited Destroy;
+end;
+
+procedure TSynEditMarkupFoldColors.BeginMarkup;
+begin
+  {$IFDEF SynEditMarkupFoldColoringDebug}
+  //DebugLn('BeginMarkup');
+  {$ENDIF}
+  inherited BeginMarkup;
+  if not Assigned(FHighlighter) then
+    exit;
+  FNestList.Clear; // for next markup start
 end;
 
 function TSynEditMarkupFoldColors.GetMarkupAttributeAtRowCol(
@@ -573,16 +584,6 @@ begin
   end;
 end;
 
-procedure TSynEditMarkupFoldColors.EndMarkup;
-begin
-  {$IFDEF SynEditMarkupFoldColoringDebug}
-  //DebugLn('EndMarkup');
-  {$ENDIF}
-  inherited EndMarkup;
-  if not Assigned(FHighlighter) then exit;
-  FNestList.Clear; // for next markup start
-end;
-
 procedure TSynEditMarkupFoldColors.SetDefaultGroup(AValue: integer);
 begin
   if FDefaultGroup = AValue then Exit;
@@ -696,6 +697,8 @@ begin
   if FHighlighter.NeedScan then
     exit;
 
+  FNestList.Clear;
+
   if EndLine < 0 then
     EndLine := StartLine
   else
@@ -778,7 +781,6 @@ begin
     InvalidateSynLines(EndLine + 1 , lEndLine);
   end;
 
-  FNestList.Clear;
 end;
 
 procedure TSynEditMarkupFoldColors.SetLines(const AValue: TSynEditStrings);
@@ -867,9 +869,6 @@ procedure TSynEditMarkupFoldColors.HighlightChanged(Sender: TSynEditStrings;
 var
   newHighlighter: TSynCustomHighlighter;
 begin
-  if not Enabled then
-    exit;
-
   {$IFDEF SynEditMarkupFoldColoringDebug}
   DebugLn('   HighlightChanged: aIndex=%d aCount=%d', [aIndex, aCount]);
   {$ENDIF}
@@ -889,6 +888,9 @@ begin
   FHighlighter := TSynCustomFoldHighlighter(newHighlighter);
 
   FNestList.HighLighter := FHighlighter;
+
+  if not Enabled then
+    exit;
 
   ClearCache;
 end;
@@ -921,6 +923,8 @@ begin
       ClearCache;
     end;
   end;
+  if Assigned(Lines) then
+    InvalidateSynLines(0, Lines.Count - 1);
 end;
 
 end.
