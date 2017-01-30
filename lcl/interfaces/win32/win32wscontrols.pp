@@ -544,7 +544,12 @@ var
 begin
   SavedDC := SaveDC(ADC);
   MoveWindowOrgEx(ADC, X, Y);
-  PrintWindow(AWinControl.Handle, ADC, 0);
+  if (Windowsversion < wv7)
+  or ((Windowsversion = wv7) and not ThemeServices.ThemesEnabled) then
+    SendMessage(AWinControl.Handle, WM_PRINT, WParam(ADC),
+      PRF_CHECKVISIBLE or PRF_CHILDREN or PRF_CLIENT or PRF_NONCLIENT or PRF_OWNED)
+  else
+    PrintWindow(AWinControl.Handle, ADC, 0);
   RestoreDC(ADC, SavedDC);
 end;
 
