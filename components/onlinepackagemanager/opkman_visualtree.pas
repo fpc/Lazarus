@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, Graphics, Menus, Dialogs, Forms, LCLIntf, contnrs,
-  PackageIntf, Buttons, Math, opkman_VirtualTrees, opkman_common,
+  PackageIntf, Buttons, Math, dateutils, opkman_VirtualTrees, opkman_common,
   opkman_serializablepackages;
 
 
@@ -247,6 +247,7 @@ begin
      TreeOptions.MiscOptions := [toCheckSupport, toFullRepaintOnResize, toInitOnSave, toWheelPanning];
      TreeOptions.PaintOptions := [toHideFocusRect, toAlwaysHideSelection, toPopupMode, toShowButtons, toShowDropmark, toShowRoot, toThemeAware];
      TreeOptions.SelectionOptions := [toFullRowSelect, toRightClickSelect];
+     TreeOptions.StringOptions := [toShowStaticText];
      TreeOptions.AutoOptions := [toAutoTristateTracking];
      OnBeforeCellPaint := @VSTBeforeCellPaint;
      OnChecking := @VSTChecking;
@@ -322,6 +323,7 @@ begin
        Data^.HasUpdate := SerializablePackages.Items[I].HasUpdate;
        Data^.DisableInOPM := SerializablePackages.Items[I].DisableInOPM;
        Data^.Rating := SerializablePackages.Items[I].Rating;
+       Data^.RepositoryDate := SerializablePackages.Items[I].RepositoryDate;
        FVST.IsDisabled[Node] := Data^.DisableInOPM;
        Data^.DataType := 1;
        for J := 0 to SerializablePackages.Items[I].PackageFiles.Count - 1 do
@@ -1346,7 +1348,16 @@ var
 begin
   Data := FVST.GetNodeData(Node);
   if Column = 0 then
-    ImageIndex := Data^.DataType
+  begin
+    case Data^.DataType of
+      1: if DaysBetween(Now, Data^.RepositoryDate) <= 31 then
+           ImageIndex := 25
+         else
+           ImageIndex := 1;
+      else
+        ImageIndex := Data^.DataType
+    end;
+  end;
 end;
 
 function TVisualTree.GetDisplayString(const AStr: String): String;
@@ -1374,134 +1385,149 @@ var
   Data: PData;
 begin
   Data := FVST.GetNodeData(Node);
-  if Column = 0 then
+  if TextType = ttStatic then
   begin
-    case Data^.DataType of
-      0: CellText := Data^.Repository;
-      1: if Trim(Data^.PackageDisplayName) = '' then
-           CellText := Data^.PackageName
-         else
-           CellText := Data^.PackageDisplayName;
-      2: CellText := Data^.PackageFileName;
-      3: CellText := rsMainFrm_VSTText_Description;
-      4: CellText := rsMainFrm_VSTText_Author;
-      5: CellText := rsMainFrm_VSTText_LazCompatibility;
-      6: CellText := rsMainFrm_VSTText_FPCCompatibility;
-      7: CellText := rsMainFrm_VSTText_SupportedWidgetsets;
-      8: CellText := rsMainFrm_VSTText_Packagetype;
-      9: CellText := rsMainFrm_VSTText_License;
-     10: CellText := rsMainFrm_VSTText_Dependecies;
-     11: CellText := rsMainFrm_VSTText_PackageInfo;
-     12: CellText := rsMainFrm_VSTText_Category;
-     13: CellText := rsMainFrm_VSTText_RepositoryFilename;
-     14: CellText := rsMainFrm_VSTText_RepositoryFileSize;
-     15: CellText := rsMainFrm_VSTText_RepositoryFileHash;
-     16: CellText := rsMainFrm_VSTText_RepositoryFileDate;
-     17: CellText := rsMainFrm_VSTText_HomePageURL;
-     18: CellText := rsMainFrm_VSTText_DownloadURL;
-     19: CellText := rsMainFrm_VSTText_SVNURL;
-    end;
-  end
-  else if Column = 1 then
-  begin
-    case Data^.DataType of
-      1: case Data^.InstallState of
-          //0: CellText := rsMainFrm_VSTText_Install0;
-          1: CellText := rsMainFrm_VSTText_Install1;
-          2: CellText := rsMainFrm_VSTText_Install2;
-      end;
-      2: begin
-           if Data^.InstalledVersion <> '' then
-             CellText := Data^.InstalledVersion
-           else
-             CellText := '-';
-         end
+    if Column = 0 then
+    begin
+      if DaysBetween(Now, Data^.RepositoryDate) <= 31 then
+        CellText := '- ' + FormatDateTime('YYYY.MM.DD', Data^.RepositoryDate)
       else
         CellText := '';
     end
-  end
-  else if Column = 2 then
-  begin
-    if Data^.DataType = 2 then
-      CellText := Data^.Version
     else
       CellText := '';
   end
-  else if Column = 3 then
+  else if TextType = ttNormal then
   begin
-    case Data^.DataType of
-      1: if Data^.HasUpdate then
-           CellText := 'NEW';
-      2: begin
-           if (Data^.InstalledVersion <> '') and (Data^.UpdateVersion <> '') then
-             CellText := Data^.UpdateVersion
+    if Column = 0 then
+    begin
+      case Data^.DataType of
+        0: CellText := Data^.Repository;
+        1: if Trim(Data^.PackageDisplayName) = '' then
+             CellText := Data^.PackageName
            else
-             CellText := '-';
-         end
+             CellText := Data^.PackageDisplayName;
+        2: CellText := Data^.PackageFileName;
+        3: CellText := rsMainFrm_VSTText_Description;
+        4: CellText := rsMainFrm_VSTText_Author;
+        5: CellText := rsMainFrm_VSTText_LazCompatibility;
+        6: CellText := rsMainFrm_VSTText_FPCCompatibility;
+        7: CellText := rsMainFrm_VSTText_SupportedWidgetsets;
+        8: CellText := rsMainFrm_VSTText_Packagetype;
+        9: CellText := rsMainFrm_VSTText_License;
+       10: CellText := rsMainFrm_VSTText_Dependecies;
+       11: CellText := rsMainFrm_VSTText_PackageInfo;
+       12: CellText := rsMainFrm_VSTText_Category;
+       13: CellText := rsMainFrm_VSTText_RepositoryFilename;
+       14: CellText := rsMainFrm_VSTText_RepositoryFileSize;
+       15: CellText := rsMainFrm_VSTText_RepositoryFileHash;
+       16: CellText := rsMainFrm_VSTText_RepositoryFileDate;
+       17: CellText := rsMainFrm_VSTText_HomePageURL;
+       18: CellText := rsMainFrm_VSTText_DownloadURL;
+       19: CellText := rsMainFrm_VSTText_SVNURL;
+      end;
+    end
+    else if Column = 1 then
+    begin
+      case Data^.DataType of
+        1: case Data^.InstallState of
+            //0: CellText := rsMainFrm_VSTText_Install0;
+            1: CellText := rsMainFrm_VSTText_Install1;
+            2: CellText := rsMainFrm_VSTText_Install2;
+        end;
+        2: begin
+             if Data^.InstalledVersion <> '' then
+               CellText := Data^.InstalledVersion
+             else
+               CellText := '-';
+           end
+        else
+          CellText := '';
+      end
+    end
+    else if Column = 2 then
+    begin
+      if Data^.DataType = 2 then
+        CellText := Data^.Version
       else
         CellText := '';
     end
-  end
-  else if Column = 4 then
-  begin
-    case Data^.DataType of
-      0: CellText := '';
-      1: CellText := '';
-      2: case Ord(Data^.PackageState) of
-           0: CellText := rsMainFrm_VSTText_PackageState0;
-           1: CellText := rsMainFrm_VSTText_PackageState1;
-           2: CellText := rsMainFrm_VSTText_PackageState2;
-           3: begin
-                if not Data^.HasUpdate then
-                begin
-                  if (Data^.UpdateVersion = '') then
+    else if Column = 3 then
+    begin
+      case Data^.DataType of
+        1: if Data^.HasUpdate then
+             CellText := 'NEW';
+        2: begin
+             if (Data^.InstalledVersion <> '') and (Data^.UpdateVersion <> '') then
+               CellText := Data^.UpdateVersion
+             else
+               CellText := '-';
+           end
+        else
+          CellText := '';
+      end
+    end
+    else if Column = 4 then
+    begin
+      case Data^.DataType of
+        0: CellText := '';
+        1: CellText := '';
+        2: case Ord(Data^.PackageState) of
+             0: CellText := rsMainFrm_VSTText_PackageState0;
+             1: CellText := rsMainFrm_VSTText_PackageState1;
+             2: CellText := rsMainFrm_VSTText_PackageState2;
+             3: begin
+                  if not Data^.HasUpdate then
                   begin
-                    if Data^.InstalledVersion >= Data^.Version then
-                      CellText := rsMainFrm_VSTText_PackageState4
+                    if (Data^.UpdateVersion = '') then
+                    begin
+                      if Data^.InstalledVersion >= Data^.Version then
+                        CellText := rsMainFrm_VSTText_PackageState4
+                      else
+                        CellText := rsMainFrm_VSTText_PackageState5
+                    end
                     else
-                      CellText := rsMainFrm_VSTText_PackageState5
+                    begin
+                      if (Data^.InstalledVersion >= Data^.UpdateVersion) then
+                        CellText := rsMainFrm_VSTText_PackageState4
+                      else
+                        CellText := rsMainFrm_VSTText_PackageState6
+                    end;
                   end
                   else
-                  begin
-                    if (Data^.InstalledVersion >= Data^.UpdateVersion) then
-                      CellText := rsMainFrm_VSTText_PackageState4
-                    else
-                      CellText := rsMainFrm_VSTText_PackageState6
-                  end;
-                end
-                else
-                  CellText := rsMainFrm_VSTText_PackageState6;
-                Data^.IsUpdated := CellText = rsMainFrm_VSTText_PackageState4;
-              end;
-         end;
-      3: CellText := GetDisplayString(Data^.Description);
-      4: CellText := Data^.Author;
-      5: CellText := Data^.LazCompatibility;
-      6: CellText := Data^.FPCCompatibility;
-      7: CellText := Data^.SupportedWidgetSet;
-      8: case Data^.PackageType of
-           ptRunAndDesignTime: CellText := rsMainFrm_VSTText_PackageType0;
-           ptDesignTime:       CellText := rsMainFrm_VSTText_PackageType1;
-           ptRunTime:          CellText := rsMainFrm_VSTText_PackageType2;
-           ptRunTimeOnly:      CellText := rsMainFrm_VSTText_PackageType3;
-         end;
-      9: CellText := GetDisplayString(Data^.License);
-     10: CellText := Data^.Dependencies;
-     11: CellText := '';
-     12: CellText := TranslateCategories(Data^.Category);
-     13: CellText := Data^.RepositoryFileName;
-     14: CellText := FormatSize(Data^.RepositoryFileSize);
-     15: CellText := Data^.RepositoryFileHash;
-     16: CellText := FormatDateTime('YYYY.MM.DD', Data^.RepositoryDate);
-     17: CellText := Data^.HomePageURL;
-     18: CellText := Data^.DownloadURL;
-     19: CellText := Data^.SVNURL;
-    end;
-  end
-  else if Column = 5 then
-  begin
-    CellText := '';
-  end
+                    CellText := rsMainFrm_VSTText_PackageState6;
+                  Data^.IsUpdated := CellText = rsMainFrm_VSTText_PackageState4;
+                end;
+           end;
+        3: CellText := GetDisplayString(Data^.Description);
+        4: CellText := Data^.Author;
+        5: CellText := Data^.LazCompatibility;
+        6: CellText := Data^.FPCCompatibility;
+        7: CellText := Data^.SupportedWidgetSet;
+        8: case Data^.PackageType of
+             ptRunAndDesignTime: CellText := rsMainFrm_VSTText_PackageType0;
+             ptDesignTime:       CellText := rsMainFrm_VSTText_PackageType1;
+             ptRunTime:          CellText := rsMainFrm_VSTText_PackageType2;
+             ptRunTimeOnly:      CellText := rsMainFrm_VSTText_PackageType3;
+           end;
+        9: CellText := GetDisplayString(Data^.License);
+       10: CellText := Data^.Dependencies;
+       11: CellText := '';
+       12: CellText := TranslateCategories(Data^.Category);
+       13: CellText := Data^.RepositoryFileName;
+       14: CellText := FormatSize(Data^.RepositoryFileSize);
+       15: CellText := Data^.RepositoryFileHash;
+       16: CellText := FormatDateTime('YYYY.MM.DD', Data^.RepositoryDate);
+       17: CellText := Data^.HomePageURL;
+       18: CellText := Data^.DownloadURL;
+       19: CellText := Data^.SVNURL;
+      end;
+    end
+    else if Column = 5 then
+    begin
+      CellText := '';
+    end
+  end;
 end;
 
 procedure TVisualTree.VSTHeaderClick(Sender: TVTHeader; Column: TColumnIndex;
@@ -1539,66 +1565,80 @@ var
   Data: PData;
 begin
   Data := FVST.GetNodeData(Node);
-  case column of
-    2: begin
-         if Data^.DataType = 2 then
-         begin
-           if (Data^.InstalledVersion = '') or ((Data^.InstalledVersion <> '') and (Data^.InstalledVersion < Data^.Version)) then
-             TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold]
-           else
-             TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
-         end;
-         if Node <> Sender.FocusedNode then
-           TargetCanvas.Font.Color := clBlack
-         else
-           TargetCanvas.Font.Color := clWhite;
-       end;
-    3: begin
-         case Data^.DataType of
-           1: TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold];
-           2: if Data^.HasUpdate then
-                TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold]
-              else
-                TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
-         end;
-         if Node <> Sender.FocusedNode then
-           TargetCanvas.Font.Color := clBlack
-         else
-           TargetCanvas.Font.Color := clWhite;
-       end;
-    4: begin
-         if (FHoverNode = Node) and (FHoverColumn = Column) and ((Data^.DataType = 17) or (Data^.DataType = 18)) then
-         begin
-           TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsUnderline];
-           if  Node <> Sender.FocusedNode then
-             TargetCanvas.Font.Color := clBlue
-           else
-             TargetCanvas.Font.Color := clWhite;
-         end
-         else if (Data^.DataType = 2) and (Data^.IsUpdated) then
-         begin
-           TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold];
-           if  Node <> Sender.FocusedNode then
-             TargetCanvas.Font.Color := clGreen
-           else
-             TargetCanvas.Font.Color := clWhite;
-         end
-         else
-         begin
-           if  Node <> Sender.FocusedNode then
+  if TextType = ttStatic then
+  begin
+    if Column = 0 then
+    begin
+      if DaysBetween(Now, Data^.RepositoryDate) <= 31 then
+      begin
+        TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
+        TargetCanvas.Font.Color := clBlack;
+      end
+    end
+  end
+  else if TextType = ttNormal then
+  begin
+    case column of
+      2: begin
+           if Data^.DataType = 2 then
+           begin
+             if (Data^.InstalledVersion = '') or ((Data^.InstalledVersion <> '') and (Data^.InstalledVersion < Data^.Version)) then
+               TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold]
+             else
+               TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
+           end;
+           if Node <> Sender.FocusedNode then
              TargetCanvas.Font.Color := clBlack
            else
              TargetCanvas.Font.Color := clWhite;
          end;
-       end
-    else
-      begin
-        if  Node <> Sender.FocusedNode then
-          TargetCanvas.Font.Color := FVST.Font.Color
-        else
-          TargetCanvas.Font.Color := clWhite;
-      end;
-  end;
+      3: begin
+           case Data^.DataType of
+             1: TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold];
+             2: if Data^.HasUpdate then
+                  TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold]
+                else
+                  TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
+           end;
+           if Node <> Sender.FocusedNode then
+             TargetCanvas.Font.Color := clBlack
+           else
+             TargetCanvas.Font.Color := clWhite;
+         end;
+      4: begin
+           if (FHoverNode = Node) and (FHoverColumn = Column) and ((Data^.DataType = 17) or (Data^.DataType = 18)) then
+           begin
+             TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsUnderline];
+             if  Node <> Sender.FocusedNode then
+               TargetCanvas.Font.Color := clBlue
+             else
+               TargetCanvas.Font.Color := clWhite;
+           end
+           else if (Data^.DataType = 2) and (Data^.IsUpdated) then
+           begin
+             TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold];
+             if  Node <> Sender.FocusedNode then
+               TargetCanvas.Font.Color := clGreen
+             else
+               TargetCanvas.Font.Color := clWhite;
+           end
+           else
+           begin
+             if  Node <> Sender.FocusedNode then
+               TargetCanvas.Font.Color := clBlack
+             else
+               TargetCanvas.Font.Color := clWhite;
+           end;
+         end
+      else
+        begin
+          if  Node <> Sender.FocusedNode then
+            TargetCanvas.Font.Color := FVST.Font.Color
+          else
+            TargetCanvas.Font.Color := clWhite;
+        end;
+    end;
+  end
 end;
 
 procedure TVisualTree.VSTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);

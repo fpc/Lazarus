@@ -44,10 +44,13 @@ type
     cbPackageType: TComboBox;
     imTBDis: TImageList;
     MenuItem1: TMenuItem;
+    miSaveToFile: TMenuItem;
+    miJSONSort: TMenuItem;
     miResetRating: TMenuItem;
     miCopyToClpBrd: TMenuItem;
     miCreateRepository: TMenuItem;
     miCreateRepositoryPackage: TMenuItem;
+    SD: TSaveDialog;
     tbCleanUp1: TToolButton;
     tbOptions: TToolButton;
     cbAll: TCheckBox;
@@ -82,7 +85,9 @@ type
     procedure miCopyToClpBrdClick(Sender: TObject);
     procedure miCreateRepositoryClick(Sender: TObject);
     procedure miCreateRepositoryPackageClick(Sender: TObject);
+    procedure miJSONSortClick(Sender: TObject);
     procedure miResetRatingClick(Sender: TObject);
+    procedure miSaveToFileClick(Sender: TObject);
     procedure pnToolBarResize(Sender: TObject);
     procedure tbCleanUpClick(Sender: TObject);
     procedure tbDownloadClick(Sender: TObject);
@@ -917,6 +922,42 @@ begin
     mJSON.SendToBack;
     mJSON.Visible := False;
     EnableDisableControls(True);
+  end;
+end;
+
+procedure TMainFrm.miJSONSortClick(Sender: TObject);
+var
+  JSON: TJSONStringType;
+begin
+  JSON := '';
+  SerializablePackages.Sort;
+  SerializablePackages.PackagesToJSON(JSON);
+  mJSON.Lines.BeginUpdate;
+  try
+    mJSON.Clear;
+    mJSON.Text := JSON;
+  finally
+    mJSON.Lines.EndUpdate;
+  end;
+end;
+
+procedure TMainFrm.miSaveToFileClick(Sender: TObject);
+var
+  JSON: TJSONStringType;
+  Ms: TMemoryStream;
+begin
+  if SD.Execute then
+  begin
+    JSON := '';
+    SerializablePackages.PackagesToJSON(JSON);
+    Ms := TMemoryStream.Create;
+    try
+      Ms.Write(Pointer(JSON)^, Length(JSON));
+      Ms.Position := 0;
+      Ms.SaveToFile(SD.FileName);
+    finally
+      Ms.Free;
+    end;
   end;
 end;
 

@@ -291,6 +291,7 @@ type
     function IsInstalledVersionOk(PackageDependency: TPackageDependency; InstalledVersion: String): Boolean;
     function GetPackageInstallState(const APackage: TPackage): Integer; overload;
     procedure DeleteDownloadedZipFiles;
+    procedure Sort;
   public
     property Count: Integer read GetCount;
     property DownloadCount: Integer read GetDownloadCount;
@@ -1439,6 +1440,19 @@ begin
   end;
 end;
 
+function SortByName(Item1, Item2: TCollectionItem): Integer;
+var
+  Package1, Package2: TPackage;
+begin
+  Package1 := TPackage(Item1);
+  Package2 := TPackage(Item2);
+  Result := CompareText(Package1.FDisplayName, Package2.FDisplayName);
+end;
+
+procedure TSerializablePackages.Sort;
+begin
+  FPackages.Sort(@SortByName);
+end;
 
 function TSerializablePackages.IsDependencyOk(PackageDependency: TPackageDependency;
   DependencyPackage: TPackageFile): Boolean;

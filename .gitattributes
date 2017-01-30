@@ -3262,6 +3262,7 @@ components/onlinepackagemanager/images/Tree_Buttons/Database.png -text svneol=un
 components/onlinepackagemanager/images/Tree_Buttons/Error.png -text svneol=unset#image/png
 components/onlinepackagemanager/images/Tree_Buttons/FileVersion.png -text svneol=unset#image/png
 components/onlinepackagemanager/images/Tree_Buttons/Info.png -text svneol=unset#image/png
+components/onlinepackagemanager/images/Tree_Buttons/New_Package.png -text svneol=unset#image/png
 components/onlinepackagemanager/images/Tree_Buttons/Ok.png -text svneol=unset#image/png
 components/onlinepackagemanager/images/Tree_Buttons/Refresh.png -text svneol=unset#image/png
 components/onlinepackagemanager/images/Tree_Buttons/Refresh1.png -text svneol=unset#image/png
