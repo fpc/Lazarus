@@ -44,6 +44,12 @@ type
     cbPackageType: TComboBox;
     imTBDis: TImageList;
     MenuItem1: TMenuItem;
+    miDateDsc: TMenuItem;
+    miDateAsc: TMenuItem;
+    miNameDsc: TMenuItem;
+    miNameAsc: TMenuItem;
+    miByDate: TMenuItem;
+    miByName: TMenuItem;
     miSaveToFile: TMenuItem;
     miJSONSort: TMenuItem;
     miResetRating: TMenuItem;
@@ -85,7 +91,7 @@ type
     procedure miCopyToClpBrdClick(Sender: TObject);
     procedure miCreateRepositoryClick(Sender: TObject);
     procedure miCreateRepositoryPackageClick(Sender: TObject);
-    procedure miJSONSortClick(Sender: TObject);
+    procedure miNameAscClick(Sender: TObject);
     procedure miResetRatingClick(Sender: TObject);
     procedure miSaveToFileClick(Sender: TObject);
     procedure pnToolBarResize(Sender: TObject);
@@ -913,6 +919,7 @@ procedure TMainFrm.miJSONShowClick(Sender: TObject);
 begin
   if not mJSON.Visible then
   begin
+    StopUpdates;
     EnableDisableControls(False);
     mJSON.Visible := True;
     mJSON.BringToFront;
@@ -922,15 +929,21 @@ begin
     mJSON.SendToBack;
     mJSON.Visible := False;
     EnableDisableControls(True);
+    StartUpdates;
   end;
 end;
 
-procedure TMainFrm.miJSONSortClick(Sender: TObject);
+procedure TMainFrm.miNameAscClick(Sender: TObject);
 var
   JSON: TJSONStringType;
 begin
   JSON := '';
-  SerializablePackages.Sort;
+  case (Sender as TMenuItem).Tag of
+    0: SerializablePackages.Sort(stName, soAscendent);
+    1: SerializablePackages.Sort(stName, soDescendent);
+    2: SerializablePackages.Sort(stDate, soAscendent);
+    3: SerializablePackages.Sort(stDate, soDescendent);
+  end;
   SerializablePackages.PackagesToJSON(JSON);
   mJSON.Lines.BeginUpdate;
   try
@@ -1023,6 +1036,14 @@ begin
   miCreateRepository.Caption := rsMainFrm_miCreateJSONForUpdates;
   miJSONShow.Caption := rsMainFrm_miJSONShow;
   miJSONHide.Caption := rsMainFrm_miJSONHide;
+  miJSONSort.Caption := rsMainFrm_miJSONSort;
+  miByName.Caption := rsMainFrm_miByName;
+  miNameAsc.Caption := rsMainFrm_miAscendent;
+  miNameDsc.Caption := rsMainFrm_miDescendent;
+  miByDate.Caption := rsMainFrm_miByDate;
+  miDateAsc.Caption := rsMainFrm_miAscendent;
+  miDateDsc.Caption := rsMainFrm_miDescendent;
+  miSaveToFile.Caption := rsMainFrm_miSaveToFile;
   miCopyToClpBrd.Caption := rsMainFrm_miCopyToClpBrd;
   miResetRating.Caption := rsMainFrm_miResetRating;
 

@@ -163,6 +163,12 @@ resourcestring
   rsMainFrm_miCreateJSONForUpdates = 'Create JSON for updates';
   rsMainFrm_miJSONShow =  'Show JSON';
   rsMainFrm_miJSONHide = 'Hide JSON';
+  rsMainFrm_miJSONSort = 'Sort';
+  rsMainFrm_miByName = 'By name';
+  rsMainFrm_miByDate = 'By date';
+  rsMainFrm_miAscendent = 'Ascendent';
+  rsMainFrm_miDescendent = 'Descendent';
+  rsMainFrm_miSaveToFile = 'Save to file';
   rsMainFrm_miCopyToClpBrd = 'Copy to clipboard';
   rsMainFrm_miResetRating = 'Reset rating';
   rsMainFrm_PackagenameAlreadyExists = 'A package with the same name already exists!';

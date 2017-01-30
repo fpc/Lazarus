@@ -526,8 +526,32 @@ object MainFrm: TMainFrm
       OnClick = miJSONShowClick
     end
     object miJSONSort: TMenuItem
-      Caption = 'Sort by name'
-      OnClick = miJSONSortClick
+      Caption = 'Sort'
+      object miByName: TMenuItem
+        Caption = 'By name'
+        object miNameAsc: TMenuItem
+          Caption = 'Ascendent'
+          OnClick = miNameAscClick
+        end
+        object miNameDsc: TMenuItem
+          Tag = 1
+          Caption = 'Descendent'
+          OnClick = miNameAscClick
+        end
+      end
+      object miByDate: TMenuItem
+        Caption = 'By date'
+        object miDateAsc: TMenuItem
+          Tag = 2
+          Caption = 'Ascendent'
+          OnClick = miNameAscClick
+        end
+        object miDateDsc: TMenuItem
+          Tag = 3
+          Caption = 'Descendent'
+          OnClick = miNameAscClick
+        end
+      end
     end
     object miSaveToFile: TMenuItem
       Caption = 'Save to file'

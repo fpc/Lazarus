@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Variants, fpjson, jsonparser, md5, contnrs,
-  PackageIntf, Laz2_XMLCfg, LazFileUtils;
+  PackageIntf, Laz2_XMLCfg, LazFileUtils, dateutils;
 
 
 type
@@ -59,6 +59,11 @@ type
   TPackageStates = set of TPackageState;
 
   TChangeType = (ctAdd, ctRemove);
+
+  TSortType = (stName, stDate);
+
+  TSortOrder = (soAscendent, soDescendent);
+
   { TPackageVersion }
 
    TPackageVersion = class(TPersistent)
@@ -291,7 +296,7 @@ type
     function IsInstalledVersionOk(PackageDependency: TPackageDependency; InstalledVersion: String): Boolean;
     function GetPackageInstallState(const APackage: TPackage): Integer; overload;
     procedure DeleteDownloadedZipFiles;
-    procedure Sort;
+    procedure Sort(const ASortType: TSortType; const ASortOrder: TSortOrder);
   public
     property Count: Integer read GetCount;
     property DownloadCount: Integer read GetDownloadCount;
@@ -1440,7 +1445,7 @@ begin
   end;
 end;
 
-function SortByName(Item1, Item2: TCollectionItem): Integer;
+function SortByNameAsc(Item1, Item2: TCollectionItem): Integer;
 var
   Package1, Package2: TPackage;
 begin
@@ -1449,9 +1454,48 @@ begin
   Result := CompareText(Package1.FDisplayName, Package2.FDisplayName);
 end;
 
-procedure TSerializablePackages.Sort;
+function SortByNameDsc(Item1, Item2: TCollectionItem): Integer;
+var
+  Package1, Package2: TPackage;
 begin
-  FPackages.Sort(@SortByName);
+  Package1 := TPackage(Item1);
+  Package2 := TPackage(Item2);
+  Result := CompareText(Package2.FDisplayName, Package1.FDisplayName);
+end;
+
+function SortByDateAsc(Item1, Item2: TCollectionItem): Integer;
+var
+  Package1, Package2: TPackage;
+begin
+  Package1 := TPackage(Item1);
+  Package2 := TPackage(Item2);
+  Result := CompareDate(Package1.RepositoryDate, Package2.RepositoryDate);
+end;
+
+function SortByDateDsc(Item1, Item2: TCollectionItem): Integer;
+var
+  Package1, Package2: TPackage;
+begin
+  Package1 := TPackage(Item1);
+  Package2 := TPackage(Item2);
+  Result := CompareDate(Package2.RepositoryDate, Package1.RepositoryDate);
+end;
+
+procedure TSerializablePackages.Sort(const ASortType: TSortType;
+  const ASortOrder: TSortOrder);
+begin
+  case ASortType of
+    stName:
+      if ASortOrder = soAscendent then
+        FPackages.Sort(@SortByNameAsc)
+      else if ASortOrder = soDescendent then
+        FPackages.Sort(@SortByNameDsc);
+    stDate:
+      if ASortOrder = soAscendent then
+        FPackages.Sort(@SortByDateAsc)
+      else if ASortOrder = soDescendent then
+        FPackages.Sort(@SortByDateDsc)
+  end;
 end;
 
 function TSerializablePackages.IsDependencyOk(PackageDependency: TPackageDependency;
