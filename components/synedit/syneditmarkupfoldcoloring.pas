@@ -132,6 +132,7 @@ uses
   SynEditMiscProcs,
   {$IFDEF SynEditMarkupFoldColoringDebug}
   SynHighlighterPas,
+  strutils,
   {$endif}
   Dialogs;
 
@@ -362,6 +363,9 @@ begin
   i := 0;
   while i < NestCount do begin
     TmpNode := FNestList.HLNode[i];
+    {$IFDEF SynEditMarkupFoldColoringDebug}
+    //DebugLn('  O: %s %s %s', [IfThen(sfaOutline in TmpNode.FoldAction, 'X', '-'), IfThen(sfaClose in TmpNode.FoldAction, 'C ', IfThen(sfaOpen in TmpNode.FoldAction, 'O ', '??')),FoldTypeToStr(TmpNode.FoldType)]);
+    {$ENDIF}
     if (sfaOutline in TmpNode.FoldAction)
     and not (sfaInvalid in TmpNode.FoldAction) then
       //avoid bug of IncludeOpeningOnLine := False;
@@ -418,16 +422,22 @@ var
   var x,j : integer;
   begin
     x  := ANode.LogXStart + 1;
-    if ANode.LogXStart < ANode.LogXEnd then
-    for j := 0 to FFoldColorInfosCount - 1 do
-      if (FFoldColorInfos[j].X = x)
-      and (FFoldColorInfos[j].Border)
-      and (FFoldColorInfos[j].SrcNode.FoldType = ANode.FoldType )
-      and (FFoldColorInfos[j].SrcNode.FoldLvlEnd = ANode.FoldLvlStart )
-      then begin
-       FFoldColorInfos[j].X2 := ANode.LogXEnd + 1;
-       FFoldColorInfos[j].Border := False
-      end;
+    if ANode.LogXStart < ANode.LogXEnd then begin
+      {$IFDEF SynEditMarkupFoldColoringDebug}
+      //DebugLn('    %d < %d', [ANode.LogXStart, ANode.LogXEnd]);
+      {$ENDIF}
+      for j := 0 to FFoldColorInfosCount - 1 do
+        if (FFoldColorInfos[j].X = x)
+        and (FFoldColorInfos[j].Border)
+        and (FFoldColorInfos[j].SrcNode.FoldType = ANode.FoldType )
+        and (FFoldColorInfos[j].SrcNode.FoldLvlEnd = ANode.FoldLvlStart ) then begin
+          {$IFDEF SynEditMarkupFoldColoringDebug}
+          //DebugLn('      X2: %d->%d', [FFoldColorInfos[j].X2, ANode.LogXEnd + 1]);
+          {$ENDIF}
+          FFoldColorInfos[j].X2 := ANode.LogXEnd + 1;
+          FFoldColorInfos[j].Border := False
+        end;
+    end;
 
     SetFoldColorInfosCount(FFoldColorInfosCount + 1);
     with FFoldColorInfos[FFoldColorInfosCount - 1] do begin
@@ -467,6 +477,11 @@ begin
     repeat
       TmpNode := NodeList[i];
 
+      {$IFDEF SynEditMarkupFoldColoringDebug}
+      //if not (sfaInvalid in TmpNode.FoldAction) then
+      //  DebugLn('  C: %s %s', [IfThen(sfaClose in TmpNode.FoldAction, 'C ', IfThen(sfaOpen in TmpNode.FoldAction, 'O ', '??')),FoldTypeToStr(TmpNode.FoldType)]);
+      {$ENDIF}
+
       if not (sfaInvalid in TmpNode.FoldAction)
       and (sfaOutline in TmpNode.FoldAction) then begin
         if sfaOpen in TmpNode.FoldAction then begin
@@ -482,6 +497,10 @@ begin
           // inc(lvl);
 
           AddHighlight(TmpNode);
+          {$IFDEF SynEditMarkupFoldColoringDebug}
+          //with FFoldColorInfos[FFoldColorInfosCount - 1] do
+          //  DebugLn('    %d-%d', [x, x2]);
+          {$ENDIF}
 
           //if (FFoldColorInfosCount - 1 > 0)
           //and (FFoldColorInfos[FFoldColorInfosCount - 1].X = FFoldColorInfos[FFoldColorInfosCount - 2].X) then
@@ -527,6 +546,10 @@ begin
           end;
           if Found then begin
             AddHighlight(TmpNode);
+            {$IFDEF SynEditMarkupFoldColoringDebug}
+            //with FFoldColorInfos[FFoldColorInfosCount - 1] do
+            //  DebugLn('    %d-%d', [x, x2]);
+            {$ENDIF}
             with FFoldColorInfos[FFoldColorInfosCount - 1] do begin
               LevelBefore := lvlB;
               LevelAfter  := lvlA;
@@ -569,6 +592,12 @@ begin
 
   DoMarkupParentFoldAtRow(aRow);
   DoMarkupParentCloseFoldAtRow(aRow);
+
+  {$IFDEF SynEditMarkupFoldColoringDebug}
+  for i := 0 to FFoldColorInfosCount - 1 do with FFoldColorInfos[i] do begin
+    DebugLn('  %.5d %.2d-%.2d: %d - %s %s', [y, x, X2, ColorIdx, IfThen(sfaClose in SrcNode.FoldAction, 'C ', IfThen(sfaOpen in SrcNode.FoldAction, 'O ', '??')),FoldTypeToStr(SrcNode.FoldType)]);
+  end;
+  {$ENDIF}
 
   // delete parents with bigger x
   // to keep out mis indented blocks
@@ -713,14 +742,14 @@ begin
   {$IFDEF SynEditMarkupFoldColoringDebug}
   //DebugLn('   Nodes at Start:');
   //for i := 0 to length(lStartNestList) - 1 do with lStartNestList[i] do
-  //  DebugLn('      x=%.03d l=%.5d %s %s %s %s lvl=%d/%d endline=%d (cache) -> %d (HL)', [LogXStart, ToPos(LineIndex), IfThen(sfaOpen in FoldAction, 'O', IfThen(sfaClose in FoldAction, 'C', ' ')), IfThen(sfaOutlineKeepLevel{OnSameLine} in FoldAction ,'K', ' '), IfThen(sfaOutlineForceIndent in FoldAction, '+', IfThen(sfaOutlineMergeParent in FoldAction, '-', ' ')) ,FoldTypeToStr(FoldType), FoldLvlStart, FoldLvlEnd, FEndLine[LineIndex], ToPos(FHighlighter.FoldEndLine(LineIndex, 0))]);
+  //  DebugLn('      x=%.03d l=%.5d %s %s %s %s lvl=%d/%d endline=%d (cache) -> %d (HL)', [LogXStart, ToPos(LineIndex), IfThen(sfaOpen in FoldAction, 'O', IfThen(sfaClose in FoldAction, 'C', ' ')), IfThen(sfaOutlineKeepLevel{OnSameLine} in FoldAction ,'K', ' '), IfThen(sfaOutlineForceIndent in FoldAction, '+', IfThen(sfaOutlineMergeParent in FoldAction, '-', ' ')) ,FoldTypeToStr(FoldType), FoldLvlStart, FoldLvlEnd, ToPos(NodeIndex), ToPos(FHighlighter.FoldEndLine(LineIndex, 0))]);
   {$ENDIF}
 
   FillNestList(lEndNestList, EndLine + 1, FNestList);
   {$IFDEF SynEditMarkupFoldColoringDebug}
   //DebugLn('   Nodes at End:');
   //for i := 0 to length(lEndNestList) - 1 do with lEndNestList[i] do
-  //  DebugLn('      x=%.03d l=%.5d %s %s %s %s lvl=%d/%d endline=%d (cache) -> %d (HL)', [LogXStart, ToPos(LineIndex), IfThen(sfaOpen in FoldAction, 'O', IfThen(sfaClose in FoldAction, 'C', ' ')), IfThen(sfaOutlineKeepLevel{OnSameLine} in FoldAction ,'K', ' '), IfThen(sfaOutlineForceIndent in FoldAction, '+', IfThen(sfaOutlineMergeParent in FoldAction, '-', ' ')) ,FoldTypeToStr(FoldType), FoldLvlStart, FoldLvlEnd, FEndLine[LineIndex], ToPos(FHighlighter.FoldEndLine(LineIndex, 0))]);
+  //  DebugLn('      x=%.03d l=%.5d %s %s %s %s lvl=%d/%d endline=%d (cache) -> %d (HL)', [LogXStart, ToPos(LineIndex), IfThen(sfaOpen in FoldAction, 'O', IfThen(sfaClose in FoldAction, 'C', ' ')), IfThen(sfaOutlineKeepLevel{OnSameLine} in FoldAction ,'K', ' '), IfThen(sfaOutlineForceIndent in FoldAction, '+', IfThen(sfaOutlineMergeParent in FoldAction, '-', ' ')) ,FoldTypeToStr(FoldType), FoldLvlStart, FoldLvlEnd, ToPos(NodeIndex), ToPos(FHighlighter.FoldEndLine(LineIndex, 0))]);
   {$ENDIF}
 
   // delete all nodes in lEndNodeList which where active at StartLine
@@ -746,7 +775,7 @@ begin
     {$IFDEF SynEditMarkupFoldColoringDebug}
     //DebugLn('   Remaining Nodes:');
     //for i := 0 to length(lEndNestList) - 1 do with lEndNestList[i] do
-    //  DebugLn('      x=%.03d l=%.5d %s %s %s %s lvl=%d/%d endline=%d (cache) -> %d (HL)', [LogXStart, ToPos(LineIndex), IfThen(sfaOpen in FoldAction, 'O', IfThen(sfaClose in FoldAction, 'C', ' ')), IfThen(sfaOutlineKeepLevel{OnSameLine} in FoldAction ,'K', ' '), IfThen(sfaOutlineForceIndent in FoldAction, '+', IfThen(sfaOutlineMergeParent in FoldAction, '-', ' ')) ,FoldTypeToStr(FoldType), FoldLvlStart, FoldLvlEnd, FEndLine[LineIndex], ToPos(FHighlighter.FoldEndLine(LineIndex, 0))]);
+    //  DebugLn('      x=%.03d l=%.5d %s %s %s %s lvl=%d/%d endline=%d (cache) -> %d (HL)', [LogXStart, ToPos(LineIndex), IfThen(sfaOpen in FoldAction, 'O', IfThen(sfaClose in FoldAction, 'C', ' ')), IfThen(sfaOutlineKeepLevel{OnSameLine} in FoldAction ,'K', ' '), IfThen(sfaOutlineForceIndent in FoldAction, '+', IfThen(sfaOutlineMergeParent in FoldAction, '-', ' ')) ,FoldTypeToStr(FoldType), FoldLvlStart, FoldLvlEnd, ToPos(NodeIndex), ToPos(FHighlighter.FoldEndLine(LineIndex, 0))]);
     {$ENDIF}
     // does position of first character change for remaining node?
     if FirstCharacterColumn[lEndNestList[0].LineIndex] <> FFirstCharacterColumnCache[lEndNestList[0].LineIndex] then
@@ -763,7 +792,7 @@ begin
         lEndLine := Max(lEndLine, Max(l, FEndLineCache[LineIndex]));
         FEndLineCache[LineIndex] := l;
         {$IFDEF SynEditMarkupFoldColoringDebug}
-        //DebugLn('   ** x=%.03d l=%.5d %s %s %s %s lvl=%d/%d endline=%d -> %d', [LogXStart, ToPos(LineIndex), IfThen(sfaOpen in FoldAction, 'O', IfThen(sfaClose in FoldAction, 'C', ' ')), IfThen(sfaOutlineKeepLevel{OnSameLine} in FoldAction ,'K', ' '), IfThen(sfaOutlineForceIndent in FoldAction, '+', IfThen(sfaOutlineMergeParent in FoldAction, '-', ' ')) ,FoldTypeToStr(FoldType), FoldLvlStart, FoldLvlEnd, FEndLine[LineIndex], ToPos(FHighlighter.FoldEndLine(LineIndex, 0))]);
+        //DebugLn('   ** x=%.03d l=%.5d %s %s %s %s lvl=%d/%d endline=%d -> %d', [LogXStart, ToPos(LineIndex), IfThen(sfaOpen in FoldAction, 'O', IfThen(sfaClose in FoldAction, 'C', ' ')), IfThen(sfaOutlineKeepLevel{OnSameLine} in FoldAction ,'K', ' '), IfThen(sfaOutlineForceIndent in FoldAction, '+', IfThen(sfaOutlineMergeParent in FoldAction, '-', ' ')) ,FoldTypeToStr(FoldType), FoldLvlStart, FoldLvlEnd, ToPos(NodeIndex), ToPos(FHighlighter.FoldEndLine(LineIndex, 0))]);
         {$ENDIF}
       end;
     end;
