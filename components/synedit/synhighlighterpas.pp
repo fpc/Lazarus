@@ -1509,7 +1509,7 @@ function TSynPasSyn.Func73: TtkTokenKind;
 begin
   if KeyComp('Except') then begin
     Result := tkKey;
-    while (TopPascalCodeFoldBlockType in [cfbtIfThen,cfbtIfElse]) do // no semicolon before except
+    while (TopPascalCodeFoldBlockType in [cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfThen,cfbtIfElse]) do // no semicolon before except
       EndPascalCodeFoldBlock(True);
     SmartCloseBeginEndBlocks(cfbtTry);
     if TopPascalCodeFoldBlockType = cfbtTry then
@@ -1535,7 +1535,7 @@ function TSynPasSyn.Func76: TtkTokenKind;
 begin
   if KeyComp('Until') then begin
     Result := tkKey;
-    while (TopPascalCodeFoldBlockType in [cfbtIfThen,cfbtIfElse]) do  // no semicolon before until
+    while (TopPascalCodeFoldBlockType in [cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfThen,cfbtIfElse]) do  // no semicolon before until
       EndPascalCodeFoldBlock(True);
     SmartCloseBeginEndBlocks(cfbtRepeat);
     if TopPascalCodeFoldBlockType = cfbtRepeat then EndPascalCodeFoldBlock;
@@ -1547,7 +1547,7 @@ function TSynPasSyn.Func79: TtkTokenKind;
 begin
   if KeyComp('Finally') then begin
     Result := tkKey;
-    while (TopPascalCodeFoldBlockType in [cfbtIfThen,cfbtIfElse]) do  // no semicolon before finally
+    while (TopPascalCodeFoldBlockType in [cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfThen,cfbtIfElse]) do  // no semicolon before finally
       EndPascalCodeFoldBlock(True);
     SmartCloseBeginEndBlocks(cfbtTry);
     if TopPascalCodeFoldBlockType = cfbtTry then
