@@ -129,6 +129,7 @@ type
     cfbtForDo,
     cfbtWhileDo,
     cfbtWithDo,
+    cfbtIfElse,
     // Internal type / not configurable
     cfbtCaseElse,     // "else" in case can have multiply statements
     cfbtPackage,
@@ -139,7 +140,7 @@ type
 
 
 const
-  cfbtLastPublic = cfbtWithDo;
+  cfbtLastPublic = cfbtIfElse;
   cfbtFirstPrivate = cfbtCaseElse;
 
   CountPascalCodeFoldBlockOffset =
@@ -168,7 +169,7 @@ const
 
   PascalStatementBlocks = TPascalCodeFoldBlockTypes(
     [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtTry, cfbtExcept, cfbtRepeat,
-     cfbtCaseElse, cfbtIfThen, cfbtForDo,cfbtWhileDo,cfbtWithDo ]);
+     cfbtCaseElse, cfbtIfThen, cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfElse ]);
 
   cfbtEssential = TPascalCodeFoldBlockTypes([
     cfbtClass, cfbtClassSection, cfbtRecord,
@@ -211,6 +212,7 @@ const
       cfbtForDo,
       cfbtWhileDo,
       cfbtWithDo,
+      cfbtIfElse,
       // Internal type / not configurable
       cfbtCaseElse,
       cfbtPackage,
@@ -675,6 +677,11 @@ var
   IsUnderScoreOrNumberChar: array[char] of Boolean;
   IsLetterChar: array[char] of Boolean;
 
+function dbgs(FoldType: TPascalCodeFoldBlockType): String; overload;
+begin
+  WriteStr(Result, FoldType);
+end;
+
 procedure MakeIdentTable;
 var
   I, J: Char;
@@ -974,7 +981,7 @@ begin
       // there may be more than on block ending here
       tfb := TopPascalCodeFoldBlockType;
       fStringLen:=0;
-      while (tfb in [cfbtIfThen,cfbtForDo,cfbtWhileDo,cfbtWithDo]) do begin // no semicolon before end
+      while (tfb in [cfbtIfThen,cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfElse]) do begin // no semicolon before end
         EndPascalCodeFoldBlock(True);
         tfb := TopPascalCodeFoldBlockType;
       end;
@@ -1007,7 +1014,7 @@ begin
         if TopPascalCodeFoldBlockType = cfbtProgram then
           EndPascalCodeFoldBlock;
         fStringLen:=0;
-        while (TopPascalCodeFoldBlockType in [{cfbtIfThen,}cfbtForDo,cfbtWhileDo,cfbtWithDo]) do begin // no semicolon after end
+        while (TopPascalCodeFoldBlockType in [{cfbtIfThen,}cfbtIfElse,cfbtForDo,cfbtWhileDo,cfbtWithDo]) do begin // no semicolon after end
           EndPascalCodeFoldBlock(True);
         end;
         fStringLen := sl;
@@ -1173,13 +1180,19 @@ function TSynPasSyn.Func41: TtkTokenKind;
 begin
   if KeyComp('Else') then begin
     Result := tkKey;
-    if (TopPascalCodeFoldBlockType = cfbtIfThen) then
-      EndPascalCodeFoldBlock
-    else
+    // close all parent "else" and "do" // there can only be one else
+    while (TopPascalCodeFoldBlockType in [cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfElse]) do begin
+      //DebugLn('    Ending: %s', [dbgs(TopPascalCodeFoldBlockType)]);
+      EndPascalCodeFoldBlockLastLine;
+    end;
+    if (TopPascalCodeFoldBlockType in [cfbtIfThen]) then begin
+      EndPascalCodeFoldBlock;
+      StartPascalCodeFoldBlock(cfbtIfElse);
+    end else
     if TopPascalCodeFoldBlockType = cfbtCase then begin
       FTokenIsCaseLabel := True;
       StartPascalCodeFoldBlock(cfbtCaseElse);
-    end;
+    end
   end
   else if KeyComp('Var') then begin
     if (PasCodeFoldRange.BracketNestLevel = 0) and
@@ -1496,7 +1509,7 @@ function TSynPasSyn.Func73: TtkTokenKind;
 begin
   if KeyComp('Except') then begin
     Result := tkKey;
-    while (TopPascalCodeFoldBlockType = cfbtIfThen) do // no semicolon before except
+    while (TopPascalCodeFoldBlockType in [cfbtIfThen,cfbtIfElse]) do // no semicolon before except
       EndPascalCodeFoldBlock(True);
     SmartCloseBeginEndBlocks(cfbtTry);
     if TopPascalCodeFoldBlockType = cfbtTry then
@@ -1522,7 +1535,7 @@ function TSynPasSyn.Func76: TtkTokenKind;
 begin
   if KeyComp('Until') then begin
     Result := tkKey;
-    while (TopPascalCodeFoldBlockType = cfbtIfThen) do  // no semicolon before until
+    while (TopPascalCodeFoldBlockType in [cfbtIfThen,cfbtIfElse]) do  // no semicolon before until
       EndPascalCodeFoldBlock(True);
     SmartCloseBeginEndBlocks(cfbtRepeat);
     if TopPascalCodeFoldBlockType = cfbtRepeat then EndPascalCodeFoldBlock;
@@ -1534,7 +1547,7 @@ function TSynPasSyn.Func79: TtkTokenKind;
 begin
   if KeyComp('Finally') then begin
     Result := tkKey;
-    while (TopPascalCodeFoldBlockType = cfbtIfThen) do  // no semicolon before finally
+    while (TopPascalCodeFoldBlockType in [cfbtIfThen,cfbtIfElse]) do  // no semicolon before finally
       EndPascalCodeFoldBlock(True);
     SmartCloseBeginEndBlocks(cfbtTry);
     if TopPascalCodeFoldBlockType = cfbtTry then
@@ -1987,8 +2000,11 @@ function TSynPasSyn.Func122: TtkTokenKind;
 begin
   if KeyComp('Otherwise') then begin
     Result := tkKey;
-    while (TopPascalCodeFoldBlockType = cfbtIfThen) do
-      EndPascalCodeFoldBlock(True);
+    //DebugLn('  ### Otherwise');
+    while (TopPascalCodeFoldBlockType in [cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfThen,cfbtIfElse]) do begin
+      //DebugLn('    Ending: %s', [dbgs(TopPascalCodeFoldBlockType)]);
+      EndPascalCodeFoldBlockLastLine;
+    end;
     if TopPascalCodeFoldBlockType = cfbtCase then begin
       StartPascalCodeFoldBlock(cfbtCaseElse);
       FTokenIsCaseLabel := True;
@@ -2978,7 +2994,7 @@ begin
     EndPascalCodeFoldBlock(True);
 
   fStringLen:=0;
-  while (tfb in [cfbtIfThen,cfbtForDo,cfbtWhileDo,cfbtWithDo]) do begin
+  while (tfb in [cfbtIfThen,cfbtIfElse,cfbtForDo,cfbtWhileDo,cfbtWithDo]) do begin
     EndPascalCodeFoldBlock(True);
     tfb := TopPascalCodeFoldBlockType;
   end;
@@ -3633,8 +3649,15 @@ begin
   aActions := aActions + [sfaMultiLine];
 
   if (not FinishingABlock) and  (ABlockType <> nil) then begin
-    if (PasBlockType in [cfbtIfThen,cfbtForDo,cfbtWhileDo,cfbtWithDo]) then
+    if (PasBlockType in [cfbtIfThen,cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfElse]) then
+      //Include( aActions, sfaOutlineKeepLevelOnSameLine);
       Include( aActions, sfaOutlineKeepLevel);
+
+    //if (PasBlockType in [cfbtIfElse]) then
+    //  Include( aActions, sfaOutlineMergeLevelOnWrongCol);
+
+    if (PasBlockType in [cfbtClassSection]) then
+      Include( aActions, sfaOutlineMergeParent);
 
     if (PasBlockType in [cfbtProcedure]) then
       aActions := aActions + [sfaOutlineKeepLevel,sfaOutlineNoColor];
@@ -4101,7 +4124,7 @@ begin
   case TPascalCodeFoldBlockType(Index) of
     cfbtRegion, cfbtNestedComment, cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment:
       m := [fmFold, fmHide] + m;
-    cfbtIfThen, cfbtForDo, cfbtWhileDo, cfbtWithDo:
+    cfbtIfThen, cfbtForDo, cfbtWhileDo, cfbtWithDo, cfbtIfElse:
       m := m;
     cfbtFirstPrivate..high(TPascalCodeFoldBlockType):
       m := [];
@@ -4122,7 +4145,7 @@ begin
 
   m := Result.SupportedModes;
 
-  if (TPascalCodeFoldBlockType(Index) in [cfbtIfThen, cfbtForDo, cfbtWhileDo, cfbtWithDo]) then
+  if (TPascalCodeFoldBlockType(Index) in [cfbtIfThen, cfbtForDo, cfbtWhileDo, cfbtWithDo, cfbtIfElse]) then
     m := [];
   if TPascalCodeFoldBlockType(Index) in [cfbtSlashComment] then
     Result.Modes := [fmFold, fmHide] + m
