@@ -5295,6 +5295,12 @@ begin
 
           FoldHl.FoldConfig[idx].Enabled := FoldHl.FoldConfig[idx].Modes <> [];
         end;
+
+        if (FoldHl is TSynPasSyn) and (idx = ord(cfbtIfThen)) then begin
+          FoldHl.FoldConfig[ord(cfbtIfElse)].Modes := FoldHl.FoldConfig[idx].Modes * [fmOutline];
+          FoldHl.FoldConfig[ord(cfbtIfElse)].Enabled := FoldHl.FoldConfig[idx].Enabled and (FoldHl.FoldConfig[ord(cfbtIfElse)].Modes <> []);
+        end;
+
       end;
     finally
       DefHl.Free;
