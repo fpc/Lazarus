@@ -190,7 +190,6 @@ begin
       MarkupInfo.Assign(FMarkupLineHighlightInfo);
     end;
   end;
-debugln(['prepare', FSpecialLine, MarkupInfo.Background]);
 end;
 
 function TSynEditMarkupSpecialLine.GetMarkupAttributeAtRowCol(const aRow: Integer;
