@@ -1570,10 +1570,11 @@ begin
     if Column = 0 then
     begin
       if DaysBetween(Now, Data^.RepositoryDate) <= 31 then
-      begin
         TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
-        TargetCanvas.Font.Color := clBlack;
-      end
+      if Node <> Sender.FocusedNode then
+        TargetCanvas.Font.Color := clBlack
+      else
+        TargetCanvas.Font.Color := clWhite;
     end
   end
   else if TextType = ttNormal then
