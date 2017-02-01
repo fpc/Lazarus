@@ -477,12 +477,15 @@ var
 begin
   Skip := False;
   UserDropDown := ((Shift *[ssAlt] = [ssAlt]) and (Key = VK_DOWN));
-  PreventDropDown := Key in [VK_TAB, VK_RETURN, VK_ESCAPE, VK_SHIFT, VK_MENU];
+  PreventDropDown := Key in [VK_TAB, VK_RETURN, VK_ESCAPE];
   if PreventDropDown then
   begin
     if DroppedDown then Key := VK_UNKNOWN; //prevent execution of DefaultAction (Delphi compatibility)
     DroppedDown := False;
   end;
+  // if AutoDropDown then don't close DropDown, like in Delphi, issue #31247
+  if AutoDropDown then
+    PreventDropDown := PreventDropDown or (Key in [VK_SHIFT, VK_MENU]);
   if AutoDropDown or UserDropDown or FReturnArrowState then
   begin
     if PreventDropDown then
