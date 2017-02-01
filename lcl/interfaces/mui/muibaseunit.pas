@@ -728,6 +728,8 @@ begin
   //SysDebugln(self.classname + 'create Type '+  IntToStr(ObjType));
   //writeln(self.classname, ' create obj ', ObjType);
   FObject := MUI_MakeObjectA(ObjType, Params.GetParamPointer);
+  if not Assigned(FObject) then
+    raise EInvalidOperation.Create(Self.Classname + ': Unable to Create Object Type: ' + IntToStr(ObjType));
   InstallHooks;
   //writeln('create obj: ',self.classname,' addr:', inttoHex(Cardinal(FObject),8));
 end;
@@ -740,6 +742,8 @@ begin
   //SysDebugln(self.classname + 'create class ' + AClassName);
   //Tags.DebugPrint;
   FObject := MUI_NewObjectA(AClassName, Tags.GetTagPointer);
+  if not Assigned(FObject) then
+    raise EInvalidOperation.Create(Self.Classname + ': Unable to Create Object Class: ' + AClassName);
   //writeln('    ----- ');
   InstallHooks;
   //writeln('create class: ',self.classname,' addr:', inttoHex(Cardinal(FObject),8));
@@ -754,6 +758,8 @@ begin
   //SysDebugln(self.classname + 'create Class Type $' + HexStr(AClassType));
   //writeln(self.classname, ' create type');
   FObject := NewObjectA(AClassType, nil, Tags.GetTagPointer);
+  if not Assigned(FObject) then
+    raise EInvalidOperation.Create(Self.Classname + ': Unable to own Create Object Class');
   if Assigned(FObject) then
     Pointer(INST_DATA(AClassType, Pointer(FObject))^) := Self;
   InstallHooks;
