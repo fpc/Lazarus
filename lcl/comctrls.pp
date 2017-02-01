@@ -1793,6 +1793,7 @@ type
     property Anchors;
     property BorderSpacing;
     property BorderWidth;
+    property Color;
     property Constraints;
     property DragCursor;
     property DragKind;
@@ -1818,6 +1819,7 @@ type
     property OnStartDock;
     property OnStartDrag;
     property Orientation;
+    property ParentColor;
     property ParentShowHint;
     property PopupMenu;
     property Position;
