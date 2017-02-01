@@ -457,12 +457,12 @@ const
   DRAW_STRINGS: array [TSeriesPointerStyle] of String = (
     // psNone, psRectangle, psCircle, psCross, psDiagCross, psStar,
     // psLowBracket, psHighBracket, psLeftBracket, psRightBracket, psDiamond,
-    // psTriangle, psLeftTriangle, psRightTriangle, psVertBar, psHorBar, psPoint
-    // pwDownTriangle, psHexagon, psFullStar
-    '', '17931', '', '28 46', '19 73', '28 46 19 73',
+    // psTriangle, psLeftTriangle, psRightTriangle, psVertBar, psHorBar,
+    // psPoint, pwDownTriangle, psHexagon, psFullStar
+    '', '17931', '', '28 46', '19 73', '', //28 46 19 73',
     '41236', '47896', '87412', '89632', '84268',
-    '1831', '8428', '8628', '82', '46', '',
-    '7927', '', '');
+    '1831', '8428', '8628', '82', '46',
+    '', '7927', '', '');
 begin
   ADrawer.Brush := Brush;
   if (ocBrush in OverrideColor) and (AColor <> clTAColor) then
@@ -478,6 +478,11 @@ begin
                   ACenter.X - ASize.X, ACenter.Y - ASize.Y,
                   ACenter.X + ASize.X + 1, ACenter.Y + ASize.Y + 1);
     psHexagon : DrawPolygon(psHexagon);
+    psStar    : begin
+                  DrawByString(DRAW_STRINGS[psCross] + ' ');
+                  ASize := Point(ASize.X * 7 div 10, ASize.Y * 7 div 10);
+                  DrawByString(DRAW_STRINGS[psDiagCross] + ' ');
+                end;
     psFullStar: DrawPolygon(psFullStar);
     else        DrawByString(DRAW_STRINGS[Style] + ' ');
   end;
