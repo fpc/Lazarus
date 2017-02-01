@@ -1923,11 +1923,13 @@ type
 
   TUpDown = class(TCustomUpDown)
   published
+    property Align;
     property AlignButton;
     property Anchors;
     property ArrowKeys;
     property Associate;
     property BorderSpacing;
+    property Color;
     property Constraints;
     property Enabled;
     property Hint;
@@ -1950,6 +1952,7 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property Orientation;
+    property ParentColor;
     property ParentShowHint;
     property PopupMenu;
     property Position;
