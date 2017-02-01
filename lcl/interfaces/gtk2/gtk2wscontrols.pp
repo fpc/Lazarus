@@ -723,9 +723,14 @@ begin
         AHints := GDK_HINT_POS or GDK_HINT_BASE_SIZE;
         if (AForm.Constraints.MinHeight > 0) or (AForm.Constraints.MinWidth > 0) then
           AHints := AHints or GDK_HINT_MIN_SIZE;
-        if (AForm.Constraints.MaxHeight > 0) or (AForm.Constraints.MaxWidth > 0) then
+        if (AForm.Constraints.MaxHeight > 0) or (AForm.Constraints.MaxWidth > 0) then begin
           AHints := AHints or GDK_HINT_MAX_SIZE;
-
+          { Work around for only one maximum specified; see TGtk2WSWinControl.ConstraintsChange }
+          if AForm.Constraints.MaxHeight = 0 then
+            Geometry.max_height := 32767;
+          if AForm.Constraints.MaxWidth = 0 then
+            Geometry.max_width := 32767;
+        end;
         {$IFDEF HASX}
         if (AHints and GDK_HINT_MIN_SIZE = 0) and (AHints and GDK_HINT_MAX_SIZE = 0) and
           (Gtk2WidgetSet.GetWindowManager = 'openbox') then
