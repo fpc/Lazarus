@@ -270,6 +270,7 @@ type
     FCanvas: TCanvas;
     FDropDownCount: Integer;
     FDroppedDown: boolean;
+    FDroppingDown: Boolean;
     FItemHeight: integer;
     FItemIndex: integer;
     FItemWidth: integer;
@@ -377,6 +378,7 @@ type
     procedure ClearSelection; //override;
     property CharCase: TEditCharCase read FCharCase write SetCharCase default ecNormal;
     property DroppedDown: Boolean read GetDroppedDown write SetDroppedDown;
+    property DroppingDown: Boolean read FDroppingDown write FDroppingDown;
     procedure SelectAll;
     property AutoComplete: boolean
       read GetAutoComplete write SetAutoComplete default False;

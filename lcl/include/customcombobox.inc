@@ -475,6 +475,7 @@ procedure TCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
 var
   Skip, UserDropDown, PreventDropDown: Boolean;
 begin
+  FDroppingDown := False;
   Skip := False;
   UserDropDown := ((Shift *[ssAlt] = [ssAlt]) and (Key = VK_DOWN));
   PreventDropDown := Key in [VK_TAB, VK_RETURN, VK_ESCAPE];
@@ -485,7 +486,10 @@ begin
   end;
   // if AutoDropDown then don't close DropDown, like in Delphi, issue #31247
   if AutoDropDown then
-    PreventDropDown := PreventDropDown or (Key in [VK_SHIFT, VK_MENU]) or (ssAlt in Shift);
+    PreventDropDown := PreventDropDown or (ssAlt in Shift)
+                       or (Key in [VK_UNKNOWN..VK_MODECHANGE, VK_END..VK_LEFT,
+                                   VK_RIGHT, VK_SELECT..VK_HELP,
+                                   VK_LWIN..VK_SLEEP, VK_F1..VK_UNDEFINED]);
   if AutoDropDown or UserDropDown or FReturnArrowState then
   begin
     if PreventDropDown then
@@ -504,7 +508,7 @@ begin
         FReturnArrowState := True;
         Skip := True;
       end;
-      DroppedDown := True;
+      FDroppingDown := True;
       if UserDropDown then
         Skip := True;
     end;
@@ -520,6 +524,11 @@ var
   iSelStart: Integer; // char position
   sCompleteText, sPrefixText, sResultText: string;
 begin
+  if DroppingDown then
+  begin
+    FDroppingDown := False;
+    DroppedDown := True;
+  end;
   inherited KeyUp(Key, Shift);
   //SelectAll when hitting return key for AutoSelect feature
   if (Key = VK_RETURN) then
@@ -785,6 +794,7 @@ begin
   FItemWidth := 0;
   FMaxLength := 0;
   FDropDownCount := 8;
+  FDroppingDown := False;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   ArrowKeysTraverseList := True;
