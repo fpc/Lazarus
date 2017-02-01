@@ -381,7 +381,7 @@ end;
 
 class function TQtWSCustomTabControl.GetCapabilities: TCTabControlCapabilities;
 begin
-  Result := [nbcShowCloseButtons];
+  Result := [nbcShowCloseButtons, nbcTabsSizeable];
 end;
 
 class function TQtWSCustomTabControl.GetDesignInteractive(
@@ -488,6 +488,33 @@ class procedure TQtWSCustomTabControl.SetTabPosition(
   const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition);
 begin
   TQtTabWidget(ATabControl.Handle).SetTabPosition(QTabWidgetTabPositionMap[ATabPosition]);
+end;
+
+class procedure TQtWSCustomTabControl.SetTabSize(
+  const ATabControl: TCustomTabControl; const ATabWidth, ATabHeight: integer);
+var
+  ASize, ANewSize: TSize;
+  WS: WideString;
+begin
+  if not WSCheckHandleAllocated(ATabControl, 'SetTabSize') then
+    Exit;
+  ASize.cx := -1;
+  ASize.cy := -1;
+  ANewSize := ASize;
+  if ATabWidth > 0 then
+    ANewSize.cx := ATabWidth;
+  if ATabHeight > 0 then
+    ANewSize.cy := ATabHeight;
+  if (ATabWidth = 0) and (ATabHeight = 0) then
+    WS := ''
+  else
+  begin
+    if ATabControl.TabPosition in [tpLeft, tpRight] then
+      WS := {%H-}Format('QTabBar::tab { height: %dpx; width: %dpx; }',[ANewSize.cx, ANewSize.cy])
+    else
+      WS := {%H-}Format('QTabBar::tab { height: %dpx; width: %dpx; }',[ANewSize.cy, ANewSize.cx]);
+  end;
+  QWidget_setStyleSheet(TQtTabWidget(ATabControl.Handle).Widget, @WS);
 end;
 
 class procedure TQtWSCustomTabControl.ShowTabs(const ATabControl: TCustomTabControl;

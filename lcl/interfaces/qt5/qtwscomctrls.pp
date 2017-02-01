@@ -72,6 +72,7 @@ type
     class procedure SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer); override;
     class procedure SetTabCaption(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const AText: string); override;
     class procedure SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition); override;
+    class procedure SetTabSize(const ATabControl: TCustomTabControl; const ATabWidth, ATabHeight: integer); override;
     class procedure ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean); override;
     class procedure UpdateProperties(const ATabControl: TCustomTabControl); override;
   end;
