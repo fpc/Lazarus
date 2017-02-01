@@ -24,20 +24,8 @@
 		<issue name="TPageControl.MultiLine">
 			<short>MultiLine property is not supported</short>
 		</issue>
-		<issue name="TPageControl.TabHeight">
-			<short>Changing of default tab height is not supported</short>
-		</issue>
-		<issue name="TPageControl.TabWidth">
-			<short>Changing of default tab width is not supported</short>
-		</issue>
 		<issue name="TTabControl.MultiLine">
 			<short>MultiLine property is not supported</short>
-		</issue>
-		<issue name="TTabControl.TabHeight">
-			<short>Changing of default tab height is not supported</short>
-		</issue>
-		<issue name="TTabControl.TabWidth">
-			<short>Changing of default tab width is not supported</short>
 		</issue>
 		<issue name="TListBox.Columns">
 			<short>Multiple columns is not supported</short>
