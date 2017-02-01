@@ -2695,10 +2695,12 @@ type
     property Align;
     property Anchors;
     property BorderSpacing;
+    property Color;
     property Constraints;
     property DragCursor;
     property DragMode;
     property Enabled;
+    property Font;
     property Frequency;
     property Hint;
     property LineSize;
@@ -2729,6 +2731,8 @@ type
     property OnUTF8KeyPress;
     property Orientation;
     property PageSize;
+    property ParentColor;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property Position;
