@@ -1082,9 +1082,23 @@ end;
 
 class procedure TWin32WSCustomComboBox.SetDroppedDown(
   const ACustomComboBox: TCustomComboBox; ADroppedDown: Boolean);
+var
+  aSelStart, aSelLength: Integer;
+  aText: string;
 begin
   if WSCheckHandleAllocated(ACustomComboBox, 'TWin32WSCustomComboBox.SetDroppedDown') then
+  begin
+    if not GetText(ACustomComboBox, aText) then
+      aText := ACustomComboBox.Text;
+    aSelStart := GetSelStart(ACustomComboBox);
+    aSelLength := GetSelLength(ACustomComboBox);
+
     SendMessage(ACustomComboBox.Handle, CB_SHOWDROPDOWN, WPARAM(ADroppedDown), 0);
+
+    SetText(ACustomComboBox, aText);
+    SetSelStart(ACustomComboBox, aSelStart);
+    SetSelLength(ACustomComboBox, aSelLength);
+  end;
 end;
 
 class procedure TWin32WSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);
