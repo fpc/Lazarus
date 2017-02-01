@@ -207,6 +207,7 @@ Type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
 
+    property Align;
     property Anchors;
     property AutoSize;
     property BiDiMode;
