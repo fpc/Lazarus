@@ -485,7 +485,7 @@ begin
   end;
   // if AutoDropDown then don't close DropDown, like in Delphi, issue #31247
   if AutoDropDown then
-    PreventDropDown := PreventDropDown or (Key in [VK_SHIFT, VK_MENU]);
+    PreventDropDown := PreventDropDown or (Key in [VK_SHIFT, VK_MENU]) or (ssAlt in Shift);
   if AutoDropDown or UserDropDown or FReturnArrowState then
   begin
     if PreventDropDown then
