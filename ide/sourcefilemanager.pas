@@ -1227,6 +1227,8 @@ begin
   end;
 
   // check if symlink and ask user if the real file should be opened instead
+  // Note that compiler never resolves symlinks, so files in the compiler
+  // search path must not be resolved.
   if FilenameIsAbsolute(FFileName) then begin
     s:=CodeToolBoss.GetCompleteSrcPathForDirectory('');
     if SearchDirectoryInSearchPath(s,ExtractFilePath(FFileName))<1 then
