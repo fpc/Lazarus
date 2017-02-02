@@ -64,7 +64,7 @@ const
   DefaultOITypeKinds = [
     tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet,{ tkMethod,}
     tkSString, tkLString, tkAString, tkWString, tkVariant,
-    {tkArray, tkRecord, tkInterface,} tkClass, tkObject, tkWChar, tkBool,
+    {tkArray, tkRecord,} tkInterface, tkClass, tkObject, tkWChar, tkBool,
     tkInt64, tkQWord, tkUString, tkUChar];
 type
   EObjectInspectorException = class(Exception);

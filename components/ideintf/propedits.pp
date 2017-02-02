@@ -740,6 +740,7 @@ type
     function AllEqual: Boolean; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: string); override;
+    function GetValue: AnsiString; override;
   end;
 
   { TNoteBookActiveControlPropertyEditor }
@@ -2035,7 +2036,7 @@ const
     TPropertyEditor,           // tkVariant
     nil,                       // tkArray
     nil,                       // tkRecord
-    nil,                       // tkInterface
+    TInterfacePropertyEditor,  // tkInterface
     TClassPropertyEditor,      // tkClass
     nil,                       // tkObject
     TPropertyEditor,           // tkWChar
@@ -4984,17 +4985,18 @@ end;
 function TInterfacePropertyEditor.AllEqual: Boolean;
 var
   I: Integer;
-  Intf: IInterface;
+  Component: TComponent;
 begin
   Result := False;
-  Intf := GetIntfValue;
+  Component := GetComponentReference;
   if PropCount > 1 then
     for I := 1 to PropCount - 1 do
-      if GetIntfValueAt(I) <> Intf then
+      if GetComponent(GetIntfValueAt(I)) <> Component then
         Exit;
-  if not Assigned(Intf) then
-    Exit;
-  Result := csDesigning in GetComponent(Intf).ComponentState;
+  if Assigned(Component) then
+    Result := csDesigning in Component.ComponentState
+  else
+    Result := True;
 end;
 
 function TInterfacePropertyEditor.GetComponent(const AInterface: IInterface): TComponent;
@@ -5075,12 +5077,27 @@ begin
       Component := PropertyHook.GetComponent(NewValue);
       if not Assigned(Component) or not Supports(Component, GetTypeData(GetPropType)^.GUID) then
         raise EPropertyError.Create(oisInvalidPropertyValue);
+      Intf := Component;
     end
     else
       Intf := nil;
   end;
-  // ToDo: Intf is either Nil or uninitialized. JuMa
   SetIntfValue(Intf);
+end;
+
+function TInterfacePropertyEditor.GetValue: AnsiString;
+var
+  Component: TComponent;
+begin
+  Result := '';
+  Component := GetComponentReference;
+  if Assigned(Component) then begin
+    if Assigned(PropertyHook) then
+      Result := PropertyHook.GetComponentName(Component)
+    else
+      Result := Component.Name;
+  end else
+    Result := inherited GetValue;
 end;
 
 { TComponentNamePropertyEditor }
