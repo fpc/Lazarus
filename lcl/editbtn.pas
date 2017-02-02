@@ -687,6 +687,9 @@ type
       property OnAcceptTime: TAcceptTimeEvent read FOnAcceptTime write FOnAcceptTime;
       property OnCustomTime: TCustomTimeEvent read FOnCustomTime write FOnCustomTime;
       property ReadOnly;
+      property ButtonCaption;
+      property ButtonCursor;
+      property ButtonHint;
       property ButtonOnlyWhenFocused;
       property ButtonWidth;
       property Action;
