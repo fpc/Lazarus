@@ -118,6 +118,8 @@ type
     property Anchors;
     property AutoSize;
     property BorderSpacing;
+    property Constraints;
+    property Enabled;
     property OKButton;
     property HelpButton;
     property CloseButton;
