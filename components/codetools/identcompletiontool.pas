@@ -2786,8 +2786,8 @@ begin
                 CurrentIdentifierList.ContextFlags+[ilcfIsExpression, ilcfDontAllowProcedures];
             end;
             // check if procedure is allowed
-            if (CurPos.Flag in [cafComma, cafRoundBracketOpen, cafEdgedBracketOpen, cafEqual, cafOtherOperator])
-            or ((Scanner.CompilerMode<>cmDelphi) and (CurPos.Flag = cafAssignment)) // "MyEvent := MyProc;" is supported only in Delphi mode
+            if (CurPos.Flag in [cafEdgedBracketOpen, cafEqual, cafOtherOperator])
+            or ((Scanner.CompilerMode<>cmDelphi) and (CurPos.Flag in [cafAssignment, cafComma, cafRoundBracketOpen])) // "MyEvent := MyProc;" and "o.Test(MyProc)" is supported only in Delphi mode
             then
               CurrentIdentifierList.ContextFlags:=
                 CurrentIdentifierList.ContextFlags+[ilcfDontAllowProcedures];
