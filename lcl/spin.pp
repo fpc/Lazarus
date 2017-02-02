@@ -110,6 +110,7 @@ type
     property OnMouseWheelUp;
     property OnResize;
     property OnUTF8KeyPress;
+    property ParentColor;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -183,6 +184,7 @@ type
     property OnMouseWheelUp;
     property OnResize;
     property OnUTF8KeyPress;
+    property ParentColor;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
