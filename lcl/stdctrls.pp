@@ -1064,6 +1064,7 @@ type
     property DragCursor;
     property DragKind;
     property DragMode;
+    property Enabled;
     property FocusControl;
     property Font;
     property OnChangeBounds;
@@ -1086,6 +1087,8 @@ type
     property ParentBidiMode;
     property ParentFont;
     property ParentColor;
+    property ParentShowHint;
+    property PopupMenu;
     property ShowAccelChar;
     property ShowHint;
     property TabOrder;
