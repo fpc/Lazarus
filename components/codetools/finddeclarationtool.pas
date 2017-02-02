@@ -8418,6 +8418,12 @@ var
     ReadNextAtom;
     if UpAtomIs('INHERITED') then
       ReadNextAtom;
+    if UpAtomIs('ARRAY') then
+    begin
+      ReadNextAtom;
+      if UpAtomIs('OF') then
+        ReadNextAtom;
+    end;
     FirstIdentifier:=true;
     if not (CurPos.Flag in AllCommonAtomWords) then exit;
     AtomIsIdentifierE;
@@ -9841,7 +9847,9 @@ begin
   {$ENDIF}
   if (AtomIsIdentifier)
   or (CurPos.Flag=cafRoundBracketOpen)
-  or UpAtomIs('INHERITED') then begin
+  or UpAtomIs('INHERITED')
+  or UpAtomIs('ARRAY')
+  then begin
     // read variable
     SubStartPos:=CurPos.StartPos;
     EndPos:=FindEndOfTerm(SubStartPos,false,true);
