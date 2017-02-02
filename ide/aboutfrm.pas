@@ -189,7 +189,7 @@ begin
     Format(lisAboutLazarusMsg,[DoubleLineEnding,DoubleLineEnding,DoubleLineEnding]);
 
   OfficialLabel.Caption := lisAboutOfficial;
-  OfficialURLLabel.Caption := 'http://lazarus.freepascal.org';
+  OfficialURLLabel.Caption := 'http://www.lazarus-ide.org';
   DocumentationLabel.Caption := lisAboutDocumentation;
   DocumentationURLLabel.Caption := 'http://wiki.lazarus.freepascal.org';
 
