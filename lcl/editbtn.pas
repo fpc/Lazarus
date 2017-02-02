@@ -569,6 +569,7 @@ type
     procedure SetDirectInput(AValue: Boolean); override;
     procedure RealSetText(const AValue: TCaption); override;
     procedure SetDateMask; virtual;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     function GetDateFormat: string;
@@ -1653,9 +1654,11 @@ var
   Def: TDateTime;
 begin
   inherited SetDirectInput(AValue);
-  //Synchronize FDate and force valid text
+  //Synchronize FDate
   FDate := TextToDate(Text, NullDate);
-  SetDate(FDate);
+  //Force a valid date in the control, but not if Text was empty in designmode
+  if not ((csDesigning in ComponentState) and FDefaultToday and (FDate = NullDate)) then
+    SetDate(FDate);
 end;
 
 procedure TDateEdit.RealSetText(const AValue: TCaption);
@@ -1707,6 +1710,14 @@ begin
   D:=GetDate;
   EditMask:=S;
   SetDate(D);
+end;
+
+procedure TDateEdit.Loaded;
+begin
+  inherited Loaded;
+  //Forces a valid Text in the control
+  if not (csDesigning in ComponentState) then
+    SetDate(FDate);
 end;
 
 Function ParseDate(S : String; Order : TDateOrder; Def: TDateTime) : TDateTime;
