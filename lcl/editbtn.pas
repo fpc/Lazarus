@@ -379,6 +379,7 @@ type
     property ButtonHint;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
+    property Constraints;
     property DirectInput;
     property Glyph;
     property NumGlyphs;
@@ -474,6 +475,7 @@ type
     property ButtonHint;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
+    property Constraints;
     property DirectInput;
     property Glyph;
     property NumGlyphs;
@@ -789,6 +791,7 @@ type
     property ButtonHint;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
+    property Constraints;
     property DialogPosition: TPosition read FDialogPosition write FDialogPosition default poScreenCenter;
     property DialogTop: Integer read FDialogTop write FDialogTop;
     property DialogLeft: Integer read FDialogLeft write FDialogLeft;
