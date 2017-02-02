@@ -2929,7 +2929,11 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenFile;
-    OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
+
+    OpenDialog.Options:=OpenDialog.Options+[
+      ofAllowMultiSelect,
+      ofNoDereferenceLinks // Note: do not always resolve symlinked files, some links are resolved later
+      ];
 
     // set InitialDir to
     GetCurrentUnit(ASrcEdit,AnUnitInfo);
