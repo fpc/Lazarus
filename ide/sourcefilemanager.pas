@@ -1095,15 +1095,19 @@ begin
         // either this is a lazarus project or it is not yet a lazarus project ;)
         LPIFilename:=ChangeFileExt(FFilename,'.lpi');
         if FileExistsCached(LPIFilename) then begin
-          if IDEQuestionDialog(lisProjectInfoFileDetected,
+          case IDEQuestionDialog(lisProjectInfoFileDetected,
             Format(lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP,
                    [FFilename]), mtConfirmation,
-              [mrOk, lisOpenProject2, mrCancel, lisOpenTheFileAsNormalSource])=mrOk then
-          begin
-            Result:=MainIDE.DoOpenProjectFile(LPIFilename,[ofAddToRecent]);
-            if Result = mrOK then
-              Result := mrIgnore;
-            exit;
+              [mrOk, lisOpenProject2, mrAbort, lisOpenTheFileAsNormalSource])
+          of
+            mrOk:
+            begin
+              Result:=MainIDE.DoOpenProjectFile(LPIFilename,[ofAddToRecent]);
+              if Result = mrOK then
+                Result := mrIgnore;
+              exit;
+            end;
+            mrCancel: Exit;
           end;
         end else begin
           AText:=Format(lisTheFileSeemsToBeAProgramCloseCurrentProject,
