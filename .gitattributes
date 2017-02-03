@@ -4393,6 +4393,7 @@ components/tachart/icons/tdbchartsource.png -text svneol=unset#images/png
 components/tachart/icons/tintervalchartsource.png -text svneol=unset#images/png
 components/tachart/icons/tlistchartsource.png -text svneol=unset#images/png
 components/tachart/icons/trandomchartsource.png -text svneol=unset#images/png
+components/tachart/icons/tseriespointerstylecombobox.png -text
 components/tachart/icons/tuserdefinedchartsource.png -text svneol=unset#images/png
 components/tachart/languages/tachartstrconsts.de.po svneol=native#text/plain
 components/tachart/languages/tachartstrconsts.fi.po svneol=native#text/plain
@@ -4413,6 +4414,7 @@ components/tachart/tachartaxis.pas svneol=native#text/pascal
 components/tachart/tachartaxisutils.pas svneol=native#text/pascal
 components/tachart/tachartbgra.lpk svneol=native#text/pascal
 components/tachart/tachartbgra.pas svneol=native#text/pascal
+components/tachart/tachartcombos.pas svneol=native#text/plain
 components/tachart/tachartextentlink.pas svneol=native#text/pascal
 components/tachart/tachartfpvectorial.lpk svneol=native#text/plain
 components/tachart/tachartfpvectorial.pas svneol=native#text/pascal

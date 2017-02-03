@@ -63,6 +63,10 @@ msgstr "Séries de B-Splines"
 msgid "Bubble series"
 msgstr "Séries de bulles"
 
+#: tachartstrconsts.rscirclesymbol
+msgid "Circle"
+msgstr ""
+
 #: tachartstrconsts.rscolormapseries
 msgid "Color map series"
 msgstr "Séries de cartes de couleur"
@@ -70,6 +74,10 @@ msgstr "Séries de cartes de couleur"
 #: tachartstrconsts.rsconstantline
 msgid "Constant line"
 msgstr "Ligne constante"
+
+#: tachartstrconsts.rscrosssymbol
+msgid "Plus"
+msgstr ""
 
 #: tachartstrconsts.rscubicsplineseries
 msgid "Cubic spline series"
@@ -99,20 +107,48 @@ msgstr "Indicateur de point de données"
 msgid "Delete"
 msgstr "Supprimer"
 
+#: tachartstrconsts.rsdiagcrosssymbol
+msgid "Cross"
+msgstr ""
+
+#: tachartstrconsts.rsdiamondsymbol
+msgid "Diamond"
+msgstr ""
+
 #: tachartstrconsts.rsdistancemeasurement
 msgid "Distance measurement"
 msgstr "Mesure des distances"
+
+#: tachartstrconsts.rsdowntrianglesymbol
+msgid "Down triangle"
+msgstr ""
 
 #: tachartstrconsts.rsfieldseries
 msgid "Vector field series"
 msgstr "Séries de champs vectoriels"
 
+#: tachartstrconsts.rsfullstarsymbol
+msgid "Star (full)"
+msgstr ""
+
 #: tachartstrconsts.rsfunctionseries
 msgid "Function series"
 msgstr "Séries de fonctions"
 
+#: tachartstrconsts.rshexagonsymbol
+msgid "Hexagon"
+msgstr ""
+
 #: tachartstrconsts.rshidden
 msgid "hidden"
+msgstr ""
+
+#: tachartstrconsts.rshighbracketsymbol
+msgid "High bracket"
+msgstr ""
+
+#: tachartstrconsts.rshorbarsymbol
+msgid "Horizontal bar"
 msgstr ""
 
 #: tachartstrconsts.rsinvalidlogbase
@@ -131,6 +167,14 @@ msgstr "Séries de moindres carrés ajustés"
 msgid "Left"
 msgstr ""
 
+#: tachartstrconsts.rsleftbracketsymbol
+msgid "Left bracket"
+msgstr ""
+
+#: tachartstrconsts.rslefttrianglesymbol
+msgid "Left triangle"
+msgstr ""
+
 #: tachartstrconsts.rslinear
 msgid "Linear"
 msgstr "Linéaire"
@@ -143,6 +187,10 @@ msgstr "Séries de lignes"
 msgid "Logarithmic"
 msgstr "Logarithmique"
 
+#: tachartstrconsts.rslowbracketsymbol
+msgid "Low bracket"
+msgstr ""
+
 #: tachartstrconsts.rsmanhattanplotseries
 msgid "Manhattan plot series"
 msgstr "Séries de points de Manhattan"
@@ -154,6 +202,10 @@ msgstr "Bas"
 #: tachartstrconsts.rsmoveup
 msgid "Up"
 msgstr "Haut"
+
+#: tachartstrconsts.rsnosymbol
+msgid "(none)"
+msgstr ""
 
 #: tachartstrconsts.rsopenhighlowcloseseries
 msgid "Open-high-low-close series"
@@ -179,16 +231,44 @@ msgstr "Séries de courbes paramétriques"
 msgid "Pie series"
 msgstr "Séries de camemberts"
 
+#: tachartstrconsts.rspointsymbol
+msgid "Point"
+msgstr ""
+
 #: tachartstrconsts.rspolarseries
 msgid "Polar series"
 msgstr "Séries polaires"
+
+#: tachartstrconsts.rsrectanglesymbol
+msgid "Rectangle"
+msgstr ""
 
 #: tachartstrconsts.rsright
 msgid "Right"
 msgstr ""
 
+#: tachartstrconsts.rsrightbracketsymbol
+msgid "Right bracket"
+msgstr ""
+
+#: tachartstrconsts.rsrighttrianglesymbol
+msgid "Right triangle"
+msgstr ""
+
+#: tachartstrconsts.rsstarsymbol
+msgid "Star (lines)"
+msgstr ""
+
 #: tachartstrconsts.rstop
 msgid "Top"
+msgstr ""
+
+#: tachartstrconsts.rstrianglesymbol
+msgid "Triangle"
+msgstr ""
+
+#: tachartstrconsts.rsunknownstyle
+msgid "Unknown Style %s"
 msgstr ""
 
 #: tachartstrconsts.rsuserdefined
@@ -204,6 +284,10 @@ msgstr "Défini par l'utilisateur"
 #: tachartstrconsts.rsuserdrawnseries
 msgid "User-drawn series"
 msgstr "Séries personnalisées"
+
+#: tachartstrconsts.rsvertbarsymbol
+msgid "Vertical bar"
+msgstr ""
 
 #: tachartstrconsts.rszoombyclick
 msgid "Zoom by click"

@@ -53,12 +53,20 @@ msgstr ""
 msgid "Bubble series"
 msgstr ""
 
+#: tachartstrconsts.rscirclesymbol
+msgid "Circle"
+msgstr ""
+
 #: tachartstrconsts.rscolormapseries
 msgid "Color map series"
 msgstr ""
 
 #: tachartstrconsts.rsconstantline
 msgid "Constant line"
+msgstr ""
+
+#: tachartstrconsts.rscrosssymbol
+msgid "Plus"
 msgstr ""
 
 #: tachartstrconsts.rscubicsplineseries
@@ -89,20 +97,48 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+#: tachartstrconsts.rsdiagcrosssymbol
+msgid "Cross"
+msgstr ""
+
+#: tachartstrconsts.rsdiamondsymbol
+msgid "Diamond"
+msgstr ""
+
 #: tachartstrconsts.rsdistancemeasurement
 msgid "Distance measurement"
+msgstr ""
+
+#: tachartstrconsts.rsdowntrianglesymbol
+msgid "Down triangle"
 msgstr ""
 
 #: tachartstrconsts.rsfieldseries
 msgid "Vector field series"
 msgstr ""
 
+#: tachartstrconsts.rsfullstarsymbol
+msgid "Star (full)"
+msgstr ""
+
 #: tachartstrconsts.rsfunctionseries
 msgid "Function series"
 msgstr ""
 
+#: tachartstrconsts.rshexagonsymbol
+msgid "Hexagon"
+msgstr ""
+
 #: tachartstrconsts.rshidden
 msgid "hidden"
+msgstr ""
+
+#: tachartstrconsts.rshighbracketsymbol
+msgid "High bracket"
+msgstr ""
+
+#: tachartstrconsts.rshorbarsymbol
+msgid "Horizontal bar"
 msgstr ""
 
 #: tachartstrconsts.rsinvalidlogbase
@@ -121,6 +157,14 @@ msgstr ""
 msgid "Left"
 msgstr ""
 
+#: tachartstrconsts.rsleftbracketsymbol
+msgid "Left bracket"
+msgstr ""
+
+#: tachartstrconsts.rslefttrianglesymbol
+msgid "Left triangle"
+msgstr ""
+
 #: tachartstrconsts.rslinear
 msgid "Linear"
 msgstr ""
@@ -133,6 +177,10 @@ msgstr ""
 msgid "Logarithmic"
 msgstr ""
 
+#: tachartstrconsts.rslowbracketsymbol
+msgid "Low bracket"
+msgstr ""
+
 #: tachartstrconsts.rsmanhattanplotseries
 msgid "Manhattan plot series"
 msgstr ""
@@ -143,6 +191,10 @@ msgstr ""
 
 #: tachartstrconsts.rsmoveup
 msgid "Up"
+msgstr ""
+
+#: tachartstrconsts.rsnosymbol
+msgid "(none)"
 msgstr ""
 
 #: tachartstrconsts.rsopenhighlowcloseseries
@@ -169,16 +221,44 @@ msgstr ""
 msgid "Pie series"
 msgstr ""
 
+#: tachartstrconsts.rspointsymbol
+msgid "Point"
+msgstr ""
+
 #: tachartstrconsts.rspolarseries
 msgid "Polar series"
+msgstr ""
+
+#: tachartstrconsts.rsrectanglesymbol
+msgid "Rectangle"
 msgstr ""
 
 #: tachartstrconsts.rsright
 msgid "Right"
 msgstr ""
 
+#: tachartstrconsts.rsrightbracketsymbol
+msgid "Right bracket"
+msgstr ""
+
+#: tachartstrconsts.rsrighttrianglesymbol
+msgid "Right triangle"
+msgstr ""
+
+#: tachartstrconsts.rsstarsymbol
+msgid "Star (lines)"
+msgstr ""
+
 #: tachartstrconsts.rstop
 msgid "Top"
+msgstr ""
+
+#: tachartstrconsts.rstrianglesymbol
+msgid "Triangle"
+msgstr ""
+
+#: tachartstrconsts.rsunknownstyle
+msgid "Unknown Style %s"
 msgstr ""
 
 #: tachartstrconsts.rsuserdefined
@@ -193,6 +273,10 @@ msgstr ""
 
 #: tachartstrconsts.rsuserdrawnseries
 msgid "User-drawn series"
+msgstr ""
+
+#: tachartstrconsts.rsvertbarsymbol
+msgid "Vertical bar"
 msgstr ""
 
 #: tachartstrconsts.rszoombyclick

@@ -53,6 +53,10 @@ msgstr "B-käyrä kuvaaja"
 msgid "Bubble series"
 msgstr "Kuplakuvaaja"
 
+#: tachartstrconsts.rscirclesymbol
+msgid "Circle"
+msgstr ""
+
 #: tachartstrconsts.rscolormapseries
 msgid "Color map series"
 msgstr "Värikarttakuvaaja"
@@ -60,6 +64,10 @@ msgstr "Värikarttakuvaaja"
 #: tachartstrconsts.rsconstantline
 msgid "Constant line"
 msgstr "Kiinteä viiva"
+
+#: tachartstrconsts.rscrosssymbol
+msgid "Plus"
+msgstr ""
 
 #: tachartstrconsts.rscubicsplineseries
 msgid "Cubic spline series"
@@ -89,20 +97,48 @@ msgstr "Datapisteen vihje"
 msgid "Delete"
 msgstr "Poista"
 
+#: tachartstrconsts.rsdiagcrosssymbol
+msgid "Cross"
+msgstr ""
+
+#: tachartstrconsts.rsdiamondsymbol
+msgid "Diamond"
+msgstr ""
+
 #: tachartstrconsts.rsdistancemeasurement
 msgid "Distance measurement"
 msgstr "Etäisyysmittaus"
 
+#: tachartstrconsts.rsdowntrianglesymbol
+msgid "Down triangle"
+msgstr ""
+
 #: tachartstrconsts.rsfieldseries
 msgid "Vector field series"
+msgstr ""
+
+#: tachartstrconsts.rsfullstarsymbol
+msgid "Star (full)"
 msgstr ""
 
 #: tachartstrconsts.rsfunctionseries
 msgid "Function series"
 msgstr "Funktiokuvaaja"
 
+#: tachartstrconsts.rshexagonsymbol
+msgid "Hexagon"
+msgstr ""
+
 #: tachartstrconsts.rshidden
 msgid "hidden"
+msgstr ""
+
+#: tachartstrconsts.rshighbracketsymbol
+msgid "High bracket"
+msgstr ""
+
+#: tachartstrconsts.rshorbarsymbol
+msgid "Horizontal bar"
 msgstr ""
 
 #: tachartstrconsts.rsinvalidlogbase
@@ -121,6 +157,14 @@ msgstr "Pienimpään neliösummaan sopiva kuvaaja"
 msgid "Left"
 msgstr ""
 
+#: tachartstrconsts.rsleftbracketsymbol
+msgid "Left bracket"
+msgstr ""
+
+#: tachartstrconsts.rslefttrianglesymbol
+msgid "Left triangle"
+msgstr ""
+
 #: tachartstrconsts.rslinear
 msgid "Linear"
 msgstr "Lineaarinen"
@@ -133,6 +177,10 @@ msgstr "Viivakuvaaja"
 msgid "Logarithmic"
 msgstr "Logaritminen"
 
+#: tachartstrconsts.rslowbracketsymbol
+msgid "Low bracket"
+msgstr ""
+
 #: tachartstrconsts.rsmanhattanplotseries
 msgid "Manhattan plot series"
 msgstr "Manhattan-kuvaaja"
@@ -144,6 +192,10 @@ msgstr "Alas"
 #: tachartstrconsts.rsmoveup
 msgid "Up"
 msgstr "Ylös"
+
+#: tachartstrconsts.rsnosymbol
+msgid "(none)"
+msgstr ""
 
 #: tachartstrconsts.rsopenhighlowcloseseries
 msgid "Open-high-low-close series"
@@ -169,16 +221,44 @@ msgstr ""
 msgid "Pie series"
 msgstr "Piirakkakuvaaja"
 
+#: tachartstrconsts.rspointsymbol
+msgid "Point"
+msgstr ""
+
 #: tachartstrconsts.rspolarseries
 msgid "Polar series"
 msgstr "Napakuvaaja"
+
+#: tachartstrconsts.rsrectanglesymbol
+msgid "Rectangle"
+msgstr ""
 
 #: tachartstrconsts.rsright
 msgid "Right"
 msgstr ""
 
+#: tachartstrconsts.rsrightbracketsymbol
+msgid "Right bracket"
+msgstr ""
+
+#: tachartstrconsts.rsrighttrianglesymbol
+msgid "Right triangle"
+msgstr ""
+
+#: tachartstrconsts.rsstarsymbol
+msgid "Star (lines)"
+msgstr ""
+
 #: tachartstrconsts.rstop
 msgid "Top"
+msgstr ""
+
+#: tachartstrconsts.rstrianglesymbol
+msgid "Triangle"
+msgstr ""
+
+#: tachartstrconsts.rsunknownstyle
+msgid "Unknown Style %s"
 msgstr ""
 
 #: tachartstrconsts.rsuserdefined
@@ -195,6 +275,10 @@ msgstr "Käyttäjän määrittelemä"
 #: tachartstrconsts.rsuserdrawnseries
 msgid "User-drawn series"
 msgstr "Käyttäjän piirtämä kuvaaja"
+
+#: tachartstrconsts.rsvertbarsymbol
+msgid "Vertical bar"
+msgstr ""
 
 #: tachartstrconsts.rszoombyclick
 msgid "Zoom by click"

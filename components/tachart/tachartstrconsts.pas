@@ -78,6 +78,29 @@ resourcestring
   // ChartUtils
   tasFailedSubcomponentRename = 'Failed to rename components: %s';
 
+  // ChartCombos
+  rsUnknownStyle = 'Unknown Style %s';
+  rsRectangleSymbol = 'Rectangle';
+  rsCircleSymbol = 'Circle';
+  rsTriangleSymbol = 'Triangle';
+  rsCrossSymbol = 'Plus';
+  rsDiagCrossSymbol = 'Cross';
+  rsStarSymbol = 'Star (lines)';
+  rsLowBracketSymbol = 'Low bracket';
+  rsHighBracketSymbol = 'High bracket';
+  rsLeftBracketSymbol = 'Left bracket';
+  rsRightBracketSymbol = 'Right bracket';
+  rsDiamondSymbol = 'Diamond';
+  rsHexagonSymbol = 'Hexagon';
+  rsFullStarSymbol = 'Star (full)';
+  rsLeftTriangleSymbol = 'Left triangle';
+  rsRightTriangleSymbol = 'Right triangle';
+  rsDownTriangleSymbol = 'Down triangle';
+  rsVertBarSymbol = 'Vertical bar';
+  rsHorBarSymbol = 'Horizontal bar';
+  rsPointSymbol = 'Point';
+  rsNoSymbol = '(none)';
+
 
 implementation
 
