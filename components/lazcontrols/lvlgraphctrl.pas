@@ -2639,6 +2639,8 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange:=@ImageListChange;
   ShowHint:=true;
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
 end;
 
 destructor TCustomLvlGraphControl.Destroy;
