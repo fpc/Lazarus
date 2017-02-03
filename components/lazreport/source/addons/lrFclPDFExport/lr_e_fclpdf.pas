@@ -372,7 +372,7 @@ end;
 begin
   if gTTFontCache.Count = 0 then
   begin
-    gTTFontCache.BuildFontFacheIgnoresErrors:=true;
+    gTTFontCache.BuildFontCacheIgnoresErrors:=true;
     CreateFontDirList;
     gTTFontCache.BuildFontCache;
   end;
