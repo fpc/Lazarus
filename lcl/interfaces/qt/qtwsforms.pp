@@ -1044,12 +1044,6 @@ begin
   AWidget := TQtHintWindow(AWinControl.Handle);
 
   AWidget.BeginUpdate;
-
-  if AWinControl.HandleObjectShouldBeVisible then
-  begin
-    if QApplication_activeModalWidget <> nil then
-      QWidget_setWindowModality(AWidget.Widget, QtWindowModal);
-  end;
   AWidget.setVisible(AWinControl.HandleObjectShouldBeVisible);
   AWidget.EndUpdate;
 end;

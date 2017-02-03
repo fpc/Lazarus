@@ -18095,6 +18095,9 @@ begin
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
+  if QApplication_activeModalWidget <> nil then
+    Parent := QApplication_activeModalWidget
+  else
     Parent := nil;
   Result := QWidget_create(Parent, QtToolTip);
   FDeleteLater := True;
