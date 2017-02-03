@@ -4146,8 +4146,6 @@ var
   ClipArea: Trect;
 
   procedure DoDrawCell;
-  var
-    Rgn: HRGN;
   begin
     with FGCache do begin
       if (aCol=HotCell.x) and (aRow=HotCell.y) and not IsPushCellActive() then begin
@@ -4161,10 +4159,8 @@ var
 
     Canvas.SaveHandleState;
     try
-      Rgn := CreateRectRgn(R.Left, R.Top, R.Right, R.Bottom);
-      SelectClipRgn(Canvas.Handle, Rgn);
+      InterSectClipRect(Canvas.Handle, R.Left, R.Top, R.Right, R.Bottom);
       DrawCell(aCol, aRow, R, gds);
-      DeleteObject(Rgn);
     finally
       Canvas.RestoreHandleState;
     end;
