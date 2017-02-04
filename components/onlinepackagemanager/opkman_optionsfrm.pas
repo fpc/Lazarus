@@ -106,6 +106,7 @@ type
     procedure cbProxyChange(Sender: TObject);
     procedure cbSelectProfileChange(Sender: TObject);
     procedure edRemoteRepositoryKeyPress(Sender: TObject; var Key: char);
+    procedure FormKeyPress(Sender: TObject; var Key: char);
     procedure pnProfilesMainResize(Sender: TObject);
     procedure pnProfilesTopResize(Sender: TObject);
   private
@@ -366,6 +367,12 @@ begin
     bOkClick(bOk);
 end;
 
+procedure TOptionsFrm.FormKeyPress(Sender: TObject; var Key: char);
+begin
+  if Key = #27 then
+    Close;
+end;
+
 procedure TOptionsFrm.SetupControls(const AActivePageIndex: Integer = 0);
 var
   I: Integer;
@@ -376,6 +383,7 @@ begin
   tsGeneral.Caption := rsOptions_tsGeneral_Caption;
   lbRemoteRepository.Caption := rsOptions_lbRemoteRepository_Caption;
   Options.RemoteRepositoryTmp.Clear;
+  cbRemoteRepository.Clear;
   for I := 0 to Options.RemoteRepository.Count - 1 do
     cbRemoteRepository.Items.Add(Options.RemoteRepository.Strings[I]);
   cbRemoteRepository.ItemIndex := Options.ActiveRepositoryIndex;

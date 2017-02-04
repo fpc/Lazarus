@@ -10,6 +10,8 @@ object OptionsFrm: TOptionsFrm
   Color = clBtnFace
   Constraints.MinHeight = 300
   Constraints.MinWidth = 475
+  KeyPreview = True
+  OnKeyPress = FormKeyPress
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
   LCLVersion = '1.7'

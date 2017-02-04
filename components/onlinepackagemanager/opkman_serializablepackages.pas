@@ -1001,6 +1001,7 @@ var
   PackageFile: TPackageFile;
   PackageFileObject: TJSONObject;
   I: Integer;
+  PackageRelativePath: String;
 begin
   Result := True;
   try
@@ -1014,7 +1015,13 @@ begin
       PackageFileObject.Add('Description', PackageFile.Description);
       PackageFileObject.Add('Author', PackageFile.Author);
       PackageFileObject.Add('License', PackageFile.License);
-      PackageFileObject.Add('RelativeFilePath', PackageFile.PackageRelativePath);
+      PackageRelativePath := PackageFile.PackageRelativePath;
+      if Trim(PackageRelativePath) <> '' then
+      begin
+        PackageRelativePath := AppendPathDelim(PackageRelativePath);
+        PackageRelativePath := StringReplace(PackageRelativePath, PathDelim, '\/', [rfReplaceAll]);
+      end;
+      PackageFileObject.Add('RelativeFilePath', PackageRelativePath);
       PackageFileObject.Add('VersionAsString', PackageFile.VersionAsString);
       PackageFileObject.Add('LazCompatibility', PackageFile.LazCompatibility);
       PackageFileObject.Add('FPCCompatibility', PackageFile.FPCCompatibility);
@@ -1209,6 +1216,8 @@ end;
 
 function TSerializablePackages.PackageDataToJSON(APackage: TPackage;
  var APackageData: TJSONObject): Boolean;
+var
+  PackageBaseDir: String;
 begin
   //need to change
   Result := True;
@@ -1221,7 +1230,13 @@ begin
     APackageData.Add('RepositoryFileSize', TPackage(APackage).RepositoryFileSize);
     APackageData.Add('RepositoryFileHash', TPackage(APackage).RepositoryFileHash);
     APackageData.Add('RepositoryDate', TPackage(APackage).RepositoryDate);
-    APackageData.Add('PackageBaseDir', TPackage(APackage).PackageBaseDir);
+    PackageBaseDir := TPackage(APackage).PackageBaseDir;
+    if Trim(PackageBaseDir) <> '' then
+    begin
+      PackageBaseDir := AppendPathDelim(PackageBaseDir);
+      PackageBaseDir := StringReplace(PackageBaseDir, PathDelim, '\/', [rfReplaceAll]);
+    end;
+    APackageData.Add('PackageBaseDir', PackageBaseDir);
     APackageData.Add('HomePageURL', TPackage(APackage).HomePageURL);
     APackageData.Add('DownloadURL', TPackage(APackage).DownloadURL);
     APackageData.Add('SVNURL', TPackage(APackage).SVNURL);

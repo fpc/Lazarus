@@ -956,7 +956,7 @@ begin
       Package.RepositoryFileSize := FileUtil.FileSize(FPackageFile);
       Package.RepositoryFileHash := MD5Print(MD5File(FPackageFile));
       Package.RepositoryDate := Trunc(now);
-      Package.PackageBaseDir := RootData^.FPackageBaseDir + '\/';
+      Package.PackageBaseDir := RootData^.FPackageBaseDir;
       Package.DisplayName := RootData^.FDisplayName;
       Package.HomePageURL := RootData^.FHomePageURL;
       Package.DownloadURL := RootData^.FDownloadURL;
@@ -970,11 +970,6 @@ begin
           PackageFile := TPackageFile(Package.PackageFiles.Add);
           PackageFile.Name := Data^.FName;
           PackageFile.PackageRelativePath := Data^.FPackageRelativePath;
-          if Trim(PackageFile.PackageRelativePath) <> '' then
-          begin
-            PackageFile.PackageRelativePath := AppendPathDelim(PackageFile.PackageRelativePath);
-            PackageFile.PackageRelativePath := StringReplace(PackageFile.PackageRelativePath, PathDelim, '\/', [rfReplaceAll]);
-          end;
           PackageFile.Version := TPackageVersion.Create;
           PackageFile.Version.AsString := Data^.FVersionAsString;
           PackageFile.Description := Data^.FDescription;

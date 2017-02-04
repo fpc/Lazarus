@@ -16,6 +16,7 @@ type
     bOk: TButton;
     mDetails: TMemo;
     pnButtons: TPanel;
+    procedure FormKeyPress(Sender: TObject; var Key: char);
   private
 
   public
@@ -28,6 +29,14 @@ var
 implementation
 
 {$R *.lfm}
+
+{ TPackageDetailsFrm }
+
+procedure TPackageDetailsFrm.FormKeyPress(Sender: TObject; var Key: char);
+begin
+  if Key = #27 then
+    Close;
+end;
 
 end.
 
