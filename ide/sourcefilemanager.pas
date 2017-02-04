@@ -1107,7 +1107,7 @@ begin
                 Result := mrIgnore;
               exit;
             end;
-            mrCancel: Exit;
+            mrCancel: Exit(mrCancel);
           end;
         end else begin
           AText:=Format(lisTheFileSeemsToBeAProgramCloseCurrentProject,
