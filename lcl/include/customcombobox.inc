@@ -80,6 +80,7 @@ begin
   end;
   // and use the internal list
   FItems := NewStrings;
+  TStringList(FItems).Sorted := Sorted;
 
   inherited DestroyWnd;
 end;
