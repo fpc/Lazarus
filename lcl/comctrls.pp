@@ -1799,6 +1799,7 @@ type
     property DragKind;
     property DragMode;
     property Enabled;
+    property Font;
     property Hint;
     property Max;
     property Min;
@@ -1820,6 +1821,7 @@ type
     property OnStartDrag;
     property Orientation;
     property ParentColor;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property Position;
