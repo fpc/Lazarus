@@ -59,6 +59,7 @@ type
     property BorderSpacing;
     property Color;
     property Constraints;
+    property Enabled;
     property Hint;
     property OnChangeBounds;
     property OnClick;
