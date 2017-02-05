@@ -113,6 +113,8 @@ type
     procedure VSTPackageDataGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
       {%H-}Kind: TVTImageKind; Column: TColumnIndex; var {%H-}Ghosted: Boolean;
       var ImageIndex: Integer);
+    procedure VSTCompareNodes(Sender: TBaseVirtualTree; Node1,
+      Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure VSTPackageDataFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure DoOnZippError(Sender: TObject; AZipFile: String; const AErrMsg: String);
     procedure DoOnZipCompleted(Sender: TObject);
@@ -166,7 +168,7 @@ begin
   cbJSONForUpdates.Visible := ATyp = 0;
   pnB.Height := bSubmit.Height + 1;
   pnB.Top := (pnButtons.Height - pnB.Height) div 2;
-  bCreate.Visible := ATyp = 1;
+  bCreate.Visible := ATyp = 0;
 
   FVSTPackages := TVirtualStringTree.Create(nil);
   with FVSTPackages do
@@ -430,6 +432,7 @@ begin
         RootData^.FHomePageURL := '';
         RootData^.FDownloadURL := '';
         RootData^.FSVNURL := '';
+        RootData^.FDataType := 0;
         FPackageName := RootData^.FName;
         for I := 0 to PackageList.Count - 1 do
         begin
@@ -446,6 +449,7 @@ begin
           Data^.FLazCompatibility := '1.6, Trunk';
           Data^.FFPCCompatibility := '2.6.4, 3.0.0';
           Data^.FSupportedWidgetSet := 'win32/64, gtk2, carbon';
+          Data^.FDataType := 1;
         end;
         FVSTPackages.FullExpand;
         RootNode := FVSTPackages.GetFirst;
@@ -455,6 +459,7 @@ begin
           FVSTPackages.Selected[RootNode] := True;
           CanGo := True;
         end;
+        FVSTPackages.SortTree(0, opkman_VirtualTrees.sdAscending);
       end
       else
         MessageDlgEx(rsCreateRepositoryPackageFrm_NoPackage, mtInformation, [mbOk], TForm(Self.Parent));
@@ -810,6 +815,25 @@ begin
   begin
     Data := FVSTPackageData.GetNodeData(Node);
     ImageIndex := Data^.FDataType;
+  end;
+end;
+
+procedure TCreateRepositoryPackagefr.VSTCompareNodes(Sender: TBaseVirtualTree;
+  Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
+var
+  Data1: PData;
+  Data2: PData;
+begin
+  Data1 := Sender.GetNodeData(Node1);
+  Data2 := Sender.GetNodeData(Node2);
+  if Column = 0 then
+  begin
+    if (Data1^.FDataType = 1) and (Data1^.FDataType = 1) then
+       Result := CompareText(Data1^.FName, Data2^.FName);
+     if (Data1^.FDataType < Data2^.FDataType) then
+       Result := 0
+     else if (Data1^.FDataType > Data2^.FDataType) then
+       Result := 1
   end;
 end;
 

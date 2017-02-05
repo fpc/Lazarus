@@ -1045,7 +1045,7 @@ var
 begin
   FileName := Options.LocalRepositoryArchive + APackage.RepositoryFileName;
   Result := (FileExistsUTF8(FileName)) and
-            (MD5Print(MD5File(FileName)) = APackage.RepositoryFileHash) and
+//            (MD5Print(MD5File(FileName)) = APackage.RepositoryFileHash) and
             (FileUtil.FileSize(FileName) = APackage.RepositoryFileSize);
 end;
 
