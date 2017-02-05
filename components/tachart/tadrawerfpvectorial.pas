@@ -331,10 +331,7 @@ begin
 end;
 
 procedure TFPVectorialDrawer.SetFont(AFont: TFPCustomFont);
-var
-  angle: Integer;
 begin
-  angle := AFont.Orientation;
   FFont.Name := AFont.Name;
   FFont.Size := IfThen(AFont.Size = 0, 10, AFont.Size);
   FFont.Color := AFont.FPColor;

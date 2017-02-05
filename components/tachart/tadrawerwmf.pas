@@ -346,7 +346,6 @@ procedure TMetafile.CopyToClipboard;
 // http://www.olivierlanglois.net/metafile-clipboard.html
 var
   Format: Word;
-  Data: THandle;
 begin
   if FImageHandle = 0 then exit;
 
@@ -354,7 +353,7 @@ begin
   try
     EmptyClipboard;
     Format := CF_ENHMETAFILE;
-    SetClipboardData(Format, FImageHandle); //Data);
+    SetClipboardData(Format, FImageHandle);
   finally
     CloseClipboard;
   end;
