@@ -1291,8 +1291,8 @@ begin
   else
     Context := ctx;
 
-  ctx.saveGraphicsState;
-  ctx.setCurrentContext(Context);
+  NSGraphicsContext.saveGraphicsState;
+  NSGraphicsContext.setCurrentContext(Context);
   ctx.setShouldAntialias(FFont.Antialiased);
   Range := FLayout.glyphRangeForTextContainer(FTextContainer);
   Pt.x := X;
@@ -1315,7 +1315,7 @@ begin
   if FillBackground then
     FLayout.drawBackgroundForGlyphRange_atPoint(Range, Pt);
   FLayout.drawGlyphsForGlyphRange_atPoint(Range, Pt);
-  ctx.restoreGraphicsState;
+  NSGraphicsContext.restoreGraphicsState;
 end;
 
 { TCocoaContext }
@@ -1583,7 +1583,9 @@ begin
   if FSavedDCList = nil then
     FSavedDCList := TFPObjectList.Create(True);
 
-  ctx.saveGraphicsState;
+  NSGraphicsContext.saveGraphicsState;
+
+  //ctx.saveGraphicsState;
   Result := FSavedDCList.Add(SaveDCData) + 1;
 
   if FClipped then
@@ -1603,12 +1605,12 @@ begin
 
   while FSavedDCList.Count > ASavedDC do
   begin
-    ctx.restoreGraphicsState;
+    NSGraphicsContext.restoreGraphicsState;
     RestoreDCData(TCocoaDCData(FSavedDCList.Count - 1));
     FSavedDCList.Delete(FSavedDCList.Count - 1);
   end;
 
-  ctx.restoreGraphicsState;
+  NSGraphicsContext.restoreGraphicsState;
   RestoreDCData(TCocoaDCData(FSavedDCList[ASavedDC - 1]));
   FSavedDCList.Delete(ASavedDC - 1);
   Result := True;
@@ -2041,7 +2043,7 @@ function TCocoaContext.DrawImageRep(dstRect: NSRect; const srcRect: NSRect;
 var
   Context: NSGraphicsContext;
 begin
-  ctx.saveGraphicsState;
+  NSGraphicsContext.saveGraphicsState;
   try
     // we flip the context on it initialization (see InitDraw) so to draw
     // a bitmap correctly we need to create a flipped context and to draw onto it
@@ -2050,12 +2052,12 @@ begin
       Context := NSGraphicsContext.graphicsContextWithGraphicsPort_flipped(ctx.graphicsPort, True)
     else
       Context := ctx;
-    ctx.setCurrentContext(Context);
+    NSGraphicsContext.setCurrentContext(Context);
     Result := ImageRep.drawInRect_fromRect_operation_fraction_respectFlipped_hints(
       dstRect, srcRect, NSCompositeSourceOver, 1.0, True, nil
       );
   finally
-    ctx.restoreGraphicsState;
+    NSGraphicsContext.restoreGraphicsState;
   end;
   AttachedBitmap_SetModified();
 end;
@@ -2081,7 +2083,7 @@ begin
     CGContextTranslateCTM(CGContext, 0, -SrcHeight);
     CGContextClipToMask(CGContext, ImgRect, MskImage );
 
-    ctx.setCurrentContext(ctx);
+    NSGraphicsContext.setCurrentContext(ctx);
     Result := bmp.ImageRep.drawInRect_fromRect_operation_fraction_respectFlipped_hints(
       GetNSRect(X, -Y, Width, Height), GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), NSCompositeSourceOver, 1.0, True, nil );
 
