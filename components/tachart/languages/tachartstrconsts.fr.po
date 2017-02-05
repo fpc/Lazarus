@@ -55,9 +55,50 @@ msgstr ""
 msgid "Box-and-whiskers series"
 msgstr "Séries de boîtes à moustaches"
 
+#: tachartstrconsts.rsbsbdiagonal
+msgid "backward-diagonal hatch"
+msgstr ""
+
+#: tachartstrconsts.rsbsclear
+msgctxt "tachartstrconsts.rsbsclear"
+msgid "clear fill"
+msgstr ""
+
+#: tachartstrconsts.rsbscross
+msgid "crossed"
+msgstr ""
+
+#: tachartstrconsts.rsbsdiagcross
+msgid "diagonally crossed"
+msgstr ""
+
+#: tachartstrconsts.rsbsfdiagonal
+msgid "forward-diagonal hatch"
+msgstr ""
+
+#: tachartstrconsts.rsbshorizontal
+msgid "horizontally hatched"
+msgstr ""
+
+#: tachartstrconsts.rsbsimage
+msgid "image fill"
+msgstr ""
+
+#: tachartstrconsts.rsbspattern
+msgid "pattern fill"
+msgstr ""
+
 #: tachartstrconsts.rsbsplineseries
 msgid "B-Spline series"
 msgstr "Séries de B-Splines"
+
+#: tachartstrconsts.rsbssolid
+msgid "solid fill"
+msgstr ""
+
+#: tachartstrconsts.rsbsvertical
+msgid "vertically hatched"
+msgstr ""
 
 #: tachartstrconsts.rsbubbleseries
 msgid "Bubble series"
@@ -238,6 +279,39 @@ msgstr ""
 #: tachartstrconsts.rspolarseries
 msgid "Polar series"
 msgstr "Séries polaires"
+
+#: tachartstrconsts.rspsclear
+msgctxt "tachartstrconsts.rspsclear"
+msgid "clear line"
+msgstr ""
+
+#: tachartstrconsts.rspsdash
+msgid "dashed line"
+msgstr ""
+
+#: tachartstrconsts.rspsdashdot
+msgid "dash-dot"
+msgstr ""
+
+#: tachartstrconsts.rspsdashdotdot
+msgid "dash-dot-dot"
+msgstr ""
+
+#: tachartstrconsts.rspsdot
+msgid "dotted line"
+msgstr ""
+
+#: tachartstrconsts.rspsinsideframe
+msgid "solid (inside frame)"
+msgstr ""
+
+#: tachartstrconsts.rspspattern
+msgid "patterned line"
+msgstr ""
+
+#: tachartstrconsts.rspssolid
+msgid "solid line"
+msgstr ""
 
 #: tachartstrconsts.rsrectanglesymbol
 msgid "Rectangle"

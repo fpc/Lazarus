@@ -4379,6 +4379,7 @@ components/tachart/icons/makeicons.bat svneol=native#text/plain
 components/tachart/icons/tcalculatedchartsource.png -text svneol=unset#images/png
 components/tachart/icons/tchart.png -text svneol=unset#images/png
 components/tachart/icons/tchartaxistransformations.png -text svneol=unset#images/png
+components/tachart/icons/tchartcombobox.png -text
 components/tachart/icons/tchartextentlink.png -text svneol=unset#images/png
 components/tachart/icons/tchartguiconnectorbgra.png -text svneol=unset#images/png
 components/tachart/icons/tchartimagelist.png -text svneol=unset#images/png
@@ -4393,7 +4394,6 @@ components/tachart/icons/tdbchartsource.png -text svneol=unset#images/png
 components/tachart/icons/tintervalchartsource.png -text svneol=unset#images/png
 components/tachart/icons/tlistchartsource.png -text svneol=unset#images/png
 components/tachart/icons/trandomchartsource.png -text svneol=unset#images/png
-components/tachart/icons/tseriespointerstylecombobox.png -text
 components/tachart/icons/tuserdefinedchartsource.png -text svneol=unset#images/png
 components/tachart/languages/tachartstrconsts.de.po svneol=native#text/plain
 components/tachart/languages/tachartstrconsts.fi.po svneol=native#text/plain

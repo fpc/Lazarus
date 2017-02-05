@@ -57,9 +57,50 @@ msgstr "Unten"
 msgid "Box-and-whiskers series"
 msgstr "Box-und-Whisker-Plot"
 
+#: tachartstrconsts.rsbsbdiagonal
+msgid "backward-diagonal hatch"
+msgstr "rückwärts diagonal"
+
+#: tachartstrconsts.rsbsclear
+msgctxt "tachartstrconsts.rsbsclear"
+msgid "clear fill"
+msgstr "ohne Füllung"
+
+#: tachartstrconsts.rsbscross
+msgid "crossed"
+msgstr "gekreuzt"
+
+#: tachartstrconsts.rsbsdiagcross
+msgid "diagonally crossed"
+msgstr "diagonal gekreuzt"
+
+#: tachartstrconsts.rsbsfdiagonal
+msgid "forward-diagonal hatch"
+msgstr "vorwärts diagonal"
+
+#: tachartstrconsts.rsbshorizontal
+msgid "horizontally hatched"
+msgstr "horizontal schraffiert"
+
+#: tachartstrconsts.rsbsimage
+msgid "image fill"
+msgstr "Bildfüllung"
+
+#: tachartstrconsts.rsbspattern
+msgid "pattern fill"
+msgstr "Musterfüllung"
+
 #: tachartstrconsts.rsbsplineseries
 msgid "B-Spline series"
 msgstr "B-Spline"
+
+#: tachartstrconsts.rsbssolid
+msgid "solid fill"
+msgstr "ganzflächig gefüllt"
+
+#: tachartstrconsts.rsbsvertical
+msgid "vertically hatched"
+msgstr "vertikal schraffiert"
 
 #: tachartstrconsts.rsbubbleseries
 msgid "Bubble series"
@@ -240,6 +281,39 @@ msgstr "Punkt"
 #: tachartstrconsts.rspolarseries
 msgid "Polar series"
 msgstr "Polar-Diagramm"
+
+#: tachartstrconsts.rspsclear
+msgctxt "tachartstrconsts.rspsclear"
+msgid "clear line"
+msgstr "keine Linie"
+
+#: tachartstrconsts.rspsdash
+msgid "dashed line"
+msgstr "gestrichelt"
+
+#: tachartstrconsts.rspsdashdot
+msgid "dash-dot"
+msgstr "strich-punkt"
+
+#: tachartstrconsts.rspsdashdotdot
+msgid "dash-dot-dot"
+msgstr "strich-punkt-punkt"
+
+#: tachartstrconsts.rspsdot
+msgid "dotted line"
+msgstr "gepunktelt"
+
+#: tachartstrconsts.rspsinsideframe
+msgid "solid (inside frame)"
+msgstr "ganzflächig (innerhalb)"
+
+#: tachartstrconsts.rspspattern
+msgid "patterned line"
+msgstr "gemustert"
+
+#: tachartstrconsts.rspssolid
+msgid "solid line"
+msgstr "durchgezogen"
 
 #: tachartstrconsts.rsrectanglesymbol
 msgid "Rectangle"

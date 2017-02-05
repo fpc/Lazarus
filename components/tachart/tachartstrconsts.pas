@@ -101,6 +101,25 @@ resourcestring
   rsPointSymbol = 'Point';
   rsNoSymbol = '(none)';
 
+  rsPSSolid = 'solid line';
+  rsPSDash = 'dashed line';
+  rsPSDot = 'dotted line';
+  rsPSDashDot = 'dash-dot';
+  rsPSDashDotDot = 'dash-dot-dot';
+  rsPSInsideFrame = 'solid (inside frame)';
+  rsPSPattern = 'patterned line';
+  rsPSClear = 'clear line';
+
+  rsBSSolid = 'solid fill';
+  rsBSHorizontal = 'horizontally hatched';
+  rsBSVertical = 'vertically hatched';
+  rsBSFDiagonal = 'forward-diagonal hatch';
+  rsBSBDiagonal = 'backward-diagonal hatch';
+  rsBSCross = 'crossed';
+  rsBSDiagCross = 'diagonally crossed';
+  rsBSClear = 'clear fill';
+  rsBSImage = 'image fill';
+  rsBSPattern = 'pattern fill';
 
 implementation
 
