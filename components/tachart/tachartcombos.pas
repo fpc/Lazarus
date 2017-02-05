@@ -327,7 +327,7 @@ begin
   if AIndex = -1 then
     Result := psNone
   else
-    Result := TSeriesPointerStyle(Items.Objects[AIndex]);
+    Result := TSeriesPointerStyle(PtrInt(Items.Objects[AIndex]));
 end;
 
 { Is overridden to prevent loss of default selected pointer style when
