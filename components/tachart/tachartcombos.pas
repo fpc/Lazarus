@@ -1075,7 +1075,7 @@ end;
 
 procedure TChartComboBox.SetSelectedPenWidth(const AValue: Integer);
 begin
-  ItemIndex := EnsureRange(FPenWidth - 1, 0, Items.Count - 1);
+  ItemIndex := EnsureRange(AValue - 1, 0, Items.Count - 1);
 end;
 
 procedure TChartCombobox.SetSelectedPointerStyle(const AValue: TSeriesPointerStyle);
