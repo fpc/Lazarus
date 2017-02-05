@@ -190,16 +190,12 @@ uses
 // the implementation of the extra LCL interface methods
 {$I cocoalclintf.inc}
 
-var
-  AppReleasePool: NSAutoReleasePool;
-
 initialization
 //  {$I Cocoaimages.lrs}
-  AppReleasePool := NSAutoreleasePool.alloc.init;
+
   InternalInit;
 
 finalization
   InternalFinal;
-  AppReleasePool.release;
 
 end.
