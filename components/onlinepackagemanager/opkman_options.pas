@@ -54,6 +54,7 @@ type
      FDeleteZipAfterInstall: Boolean;
      FCheckForUpdates: Integer;
      FLastUpdate: TDateTime;
+     FDaysToShowNewPackages: Integer;
      FChanged: Boolean;
      FLastDownloadDir: String;
      FLastPackageDirSrc: String;
@@ -85,6 +86,7 @@ type
      property DeleteZipAfterInstall: Boolean read FDeleteZipAfterInstall write FDeleteZipAfterInstall;
      property CheckForUpdates: Integer read FCheckForUpdates write FCheckForUpdates;
      property LastUpdate: TDateTime read FLastUpdate write FLastUpdate;
+     property DaysToShowNewPackages: Integer read FDaysToShowNewPackages write FDaysToShowNewPackages;
      property UserProfile: Integer read FUserProfile write FUserProfile;
      property LastDownloadDir: String read FLastDownloadDir write FLastDownloadDir;
      property LastPackagedirSrc: String read FLastPackageDirSrc write FLastPackageDirSrc;
@@ -167,6 +169,7 @@ begin
   FLastPackageDirDst := FXML.GetValue('General/LastPackageDirDst/Value', '');
   FCheckForUpdates := FXML.GetValue('General/CheckForUpdates/Value', 0);
   FLastUpdate := FXML.GetExtendedValue('General/LastUpdate/Value', 0.0);
+  FDaysToShowNewPackages := FXML.GetValue('General/DaysToShowNewPackages/Value', 31);
 
   FProxySettings.FEnabled := FXML.GetValue('Proxy/Enabled/Value', False);
   FProxySettings.FServer := FXML.GetValue('Proxy/Server/Value', '');
@@ -195,7 +198,7 @@ begin
   FXML.SetDeleteValue('General/LastPackageDirDst/Value', FLastPackageDirDst, '');
   FXML.SetDeleteValue('General/CheckForUpdates/Value', FCheckForUpdates, 0);
   FXML.SetDeleteExtendedValue('General/LastUpdate/Value', FLastUpdate, 0.0);
-
+  FXML.SetDeleteValue('General/DaysToShowNewPackages/Value', FDaysToShowNewPackages, 31);
 
   FXML.SetDeleteValue('Proxy/Enabled/Value', FProxySettings.FEnabled, false);
   FXML.SetDeleteValue('Proxy/Server/Value', FProxySettings.FServer, '');
@@ -225,6 +228,7 @@ begin
   FDeleteZipAfterInstall := True;
   FCheckForUpdates := 0;
   FLastUpdate := 0.0;
+  FDaysToShowNewPackages := 31;
 
   FProxySettings.FEnabled := False;
   FProxySettings.FServer := '';

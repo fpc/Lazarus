@@ -71,6 +71,7 @@ type
     lbRemoteRepository: TLabel;
     lbServer: TLabel;
     lbLocalRepositoryPackages: TLabel;
+    lbDaysToShowNewPackages: TLabel;
     lbUserName: TLabel;
     lbPort: TLabel;
     lbPassword: TLabel;
@@ -93,6 +94,8 @@ type
     pnProfilesLeft: TPanel;
     SDD: TSelectDirectoryDialog;
     seProxyPort: TSpinEdit;
+    spDaysToShowNewPackages: TSpinEdit;
+    SpinEdit1: TSpinEdit;
     tsFolders: TTabSheet;
     tsProfiles: TTabSheet;
     tsGeneral: TTabSheet;
@@ -175,6 +178,7 @@ begin
   Options.ForceDownloadAndExtract := cbForceDownloadExtract.Checked;
   Options.DeleteZipAfterInstall := cbDeleteZipAfterInstall.Checked;
   Options.CheckForUpdates := cbCheckForUpdates.ItemIndex;
+  Options.DaysToShowNewPackages := spDaysToShowNewPackages.Value;
 
   Options.ProxyEnabled := cbProxy.Checked;
   Options.ProxyServer := edProxyServer.Text;
@@ -307,7 +311,6 @@ begin
   end;
 end;
 
-
 procedure TOptionsFrm.bFilesDeleteClick(Sender: TObject);
 var
   MsgConf: String;
@@ -387,7 +390,6 @@ begin
   for I := 0 to Options.RemoteRepository.Count - 1 do
     cbRemoteRepository.Items.Add(Options.RemoteRepository.Strings[I]);
   cbRemoteRepository.ItemIndex := Options.ActiveRepositoryIndex;
-
   cbForceDownloadExtract.Checked := Options.ForceDownloadAndExtract;
   cbDeleteZipAfterInstall.Checked := Options.DeleteZipAfterInstall;
   cbForceDownloadExtract.Caption := rsOptions_cbForceDownloadExtract_Caption;
@@ -407,6 +409,9 @@ begin
     lbLastUpdate.Caption := rsOptions_lbLastUpdate_Caption + rsOptions_LastUpdate_Never
   else
     lbLastUpdate.Caption := rsOptions_lbLastUpdate_Caption + FormatDateTime('YYYY.MM.DD  hh:mm:ss', Options.LastUpdate);
+  lbDaysToShowNewPackages.Caption := rsOptions_lbDaysToShowNewPackages_Caption;
+  spDaysToShowNewPackages.Value := Options.DaysToShowNewPackages;
+
   tsProxy.Caption := rsOptions_tsProxy_Caption;
   cbProxy.Caption := rsOptions_cbProxy_Caption;
   gbProxySettings.Caption := rsOptions_gbProxySettings_Caption;

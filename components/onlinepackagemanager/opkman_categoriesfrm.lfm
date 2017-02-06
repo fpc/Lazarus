@@ -7,6 +7,7 @@ object CategoriesFrm: TCategoriesFrm
   Caption = 'CategoriesFrm'
   ClientHeight = 383
   ClientWidth = 345
+  Color = clBtnFace
   KeyPreview = True
   OnClose = FormClose
   OnCreate = FormCreate

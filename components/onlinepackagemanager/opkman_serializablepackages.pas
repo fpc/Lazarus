@@ -31,7 +31,7 @@ unit opkman_serializablepackages;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Variants, fpjson, jsonparser, md5, contnrs,
+  Classes, SysUtils, FileUtil, Variants, fpjson, jsonparser, contnrs,
   PackageIntf, Laz2_XMLCfg, LazFileUtils, dateutils;
 
 

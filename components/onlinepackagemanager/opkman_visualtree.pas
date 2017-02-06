@@ -1350,7 +1350,7 @@ begin
   if Column = 0 then
   begin
     case Data^.DataType of
-      1: if DaysBetween(Now, Data^.RepositoryDate) <= 31 then
+      1: if (Options.DaysToShowNewPackages > 0) and (DaysBetween(Now, Data^.RepositoryDate) <= Options.DaysToShowNewPackages) then
            ImageIndex := 25
          else
            ImageIndex := 1;
@@ -1389,7 +1389,7 @@ begin
   begin
     if Column = 0 then
     begin
-      if DaysBetween(Now, Data^.RepositoryDate) <= 31 then
+      if (Options.DaysToShowNewPackages > 0) and (DaysBetween(Now, Data^.RepositoryDate) <= Options.DaysToShowNewPackages) then
         CellText := '- ' + FormatDateTime('YYYY.MM.DD', Data^.RepositoryDate)
       else
         CellText := '';
@@ -1569,7 +1569,7 @@ begin
   begin
     if Column = 0 then
     begin
-      if DaysBetween(Now, Data^.RepositoryDate) <= 31 then
+      if (Options.DaysToShowNewPackages > 0) and (DaysBetween(Now, Data^.RepositoryDate) <= Options.DaysToShowNewPackages) then
         TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
       if Node <> Sender.FocusedNode then
         TargetCanvas.Font.Color := clBlack

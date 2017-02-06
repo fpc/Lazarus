@@ -178,12 +178,31 @@ object OptionsFrm: TOptionsFrm
             TabOrder = 1
           end
         end
+        object spDaysToShowNewPackages: TSpinEdit
+          Left = 224
+          Height = 23
+          Top = 224
+          Width = 76
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          AutoSize = False
+          MaxValue = 365
+          TabOrder = 4
+          Value = 31
+        end
+        object lbDaysToShowNewPackages: TLabel
+          Left = 16
+          Height = 15
+          Top = 227
+          Width = 204
+          Caption = 'Show newly added packages for(days):'
+          ParentColor = False
+        end
       end
     end
     object tsProxy: TTabSheet
       Caption = 'Proxy'
-      ClientHeight = 286
-      ClientWidth = 519
+      ClientHeight = 297
+      ClientWidth = 517
       object pnProxy: TPanel
         Left = 0
         Height = 297
@@ -619,6 +638,13 @@ object OptionsFrm: TOptionsFrm
         end
       end
     end
+  end
+  object SpinEdit1: TSpinEdit
+    Left = 74
+    Height = 23
+    Top = 7
+    Width = 50
+    TabOrder = 2
   end
   object SDD: TSelectDirectoryDialog
     left = 448
