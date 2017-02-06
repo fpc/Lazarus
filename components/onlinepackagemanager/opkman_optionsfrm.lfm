@@ -178,17 +178,6 @@ object OptionsFrm: TOptionsFrm
             TabOrder = 1
           end
         end
-        object spDaysToShowNewPackages: TSpinEdit
-          Left = 224
-          Height = 23
-          Top = 224
-          Width = 76
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          AutoSize = False
-          MaxValue = 365
-          TabOrder = 4
-          Value = 31
-        end
         object lbDaysToShowNewPackages: TLabel
           Left = 16
           Height = 15
@@ -196,6 +185,17 @@ object OptionsFrm: TOptionsFrm
           Width = 204
           Caption = 'Show newly added packages for(days):'
           ParentColor = False
+        end
+        object spDaysToShowNewPackages: TSpinEdit
+          Left = 228
+          Height = 24
+          Top = 224
+          Width = 76
+          AutoSize = False
+          BorderSpacing.Around = 1
+          MaxValue = 365
+          TabOrder = 4
+          Value = 31
         end
       end
     end
@@ -268,7 +268,7 @@ object OptionsFrm: TOptionsFrm
             Text = 'username'
           end
           object lbPort: TLabel
-            Left = 318
+            Left = 317
             Height = 15
             Top = 3
             Width = 22
@@ -295,13 +295,13 @@ object OptionsFrm: TOptionsFrm
             Text = 'password'
           end
           object seProxyPort: TSpinEdit
-            Left = 318
-            Height = 23
+            Left = 319
+            Height = 24
             Top = 22
-            Width = 76
-            Anchors = [akTop, akLeft, akRight, akBottom]
+            Width = 75
             AutoSize = False
-            MaxValue = 65535
+            BorderSpacing.Around = 1
+            MaxValue = 65635
             TabOrder = 3
           end
         end
@@ -309,8 +309,8 @@ object OptionsFrm: TOptionsFrm
     end
     object tsFolders: TTabSheet
       Caption = 'Folders'
-      ClientHeight = 286
-      ClientWidth = 519
+      ClientHeight = 297
+      ClientWidth = 517
       object pnFolders: TPanel
         Left = 0
         Height = 297
@@ -400,8 +400,8 @@ object OptionsFrm: TOptionsFrm
     end
     object tsProfiles: TTabSheet
       Caption = 'Profiles'
-      ClientHeight = 286
-      ClientWidth = 519
+      ClientHeight = 297
+      ClientWidth = 517
       object pnProfiles: TPanel
         Left = 0
         Height = 297
@@ -638,13 +638,6 @@ object OptionsFrm: TOptionsFrm
         end
       end
     end
-  end
-  object SpinEdit1: TSpinEdit
-    Left = 74
-    Height = 23
-    Top = 7
-    Width = 50
-    TabOrder = 2
   end
   object SDD: TSelectDirectoryDialog
     left = 448
