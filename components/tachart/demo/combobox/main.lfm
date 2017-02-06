@@ -1,0 +1,949 @@
+object Form1: TForm1
+  Left = 280
+  Height = 444
+  Top = 130
+  Width = 803
+  Caption = 'Form1'
+  ClientHeight = 444
+  ClientWidth = 803
+  OnShow = FormShow
+  LCLVersion = '1.7'
+  object Chart1: TChart
+    Left = 4
+    Height = 436
+    Top = 4
+    Width = 463
+    AxisList = <    
+      item
+        Grid.Color = clSilver
+        Grid.Style = psSolid
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+      end    
+      item
+        Grid.Color = clSilver
+        Grid.Style = psSolid
+        Grid.Visible = False
+        Alignment = calBottom
+        AxisPen.Visible = True
+        Minors = <>
+        ZPosition = 10
+      end>
+    BackColor = clWhite
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Margins.Bottom = 0
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Toolset = ChartToolset1
+    Align = alClient
+    BorderSpacing.Left = 4
+    BorderSpacing.Top = 4
+    BorderSpacing.Bottom = 4
+    Color = clWhite
+    object Chart1LineSeries1: TLineSeries
+      Title = 'Line'
+      ZPosition = 1
+      LinePen.Color = clBlue
+      Pointer.Brush.Color = clSkyBlue
+      ShowPoints = True
+      Source = RandomChartSource1
+    end
+    object Chart1BarSeries1: TBarSeries
+      Title = 'Bar'
+      ZPosition = 2
+      BarBrush.Color = clRed
+      Source = RandomChartSource2
+    end
+    object Chart1AreaSeries1: TAreaSeries
+      Title = 'Area'
+      ZPosition = 3
+      AreaBrush.Color = clYellow
+      Source = RandomChartSource3
+    end
+  end
+  object Panel1: TPanel
+    Left = 584
+    Height = 444
+    Top = 0
+    Width = 219
+    Align = alRight
+    BevelOuter = bvNone
+    ClientHeight = 444
+    ClientWidth = 219
+    TabOrder = 1
+    object LblSeries: TLabel
+      Left = 4
+      Height = 21
+      Top = 30
+      Width = 215
+      Align = alTop
+      BorderSpacing.Left = 4
+      BorderSpacing.Top = 4
+      Caption = 'LblSeries'
+      Font.Height = -16
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object CbShow: TCheckBox
+      Left = 4
+      Height = 19
+      Top = 55
+      Width = 215
+      Align = alTop
+      BorderSpacing.Left = 4
+      BorderSpacing.Top = 4
+      Caption = 'Show'
+      Checked = True
+      OnChange = CbShowChange
+      State = cbChecked
+      TabOrder = 0
+    end
+    object Notebook1: TNotebook
+      Left = 0
+      Height = 366
+      Top = 78
+      Width = 219
+      PageIndex = 0
+      Align = alClient
+      BorderSpacing.Top = 4
+      TabOrder = 1
+      object Page1: TPage
+        object GbLineSerLines: TGroupBox
+          Left = 0
+          Height = 116
+          Top = 159
+          Width = 211
+          Align = alTop
+          AutoSize = True
+          BorderSpacing.Top = 8
+          BorderSpacing.Right = 8
+          Caption = 'Lines'
+          ClientHeight = 96
+          ClientWidth = 207
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 1
+          object CbLineSerLinePenStyle: TChartComboBox
+            AnchorSideTop.Control = GbLineSerLines
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 4
+            Width = 118
+            PenPattern = '1|1'
+            PointerStyle = psNone
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 4
+            ItemHeight = 16
+            ItemIndex = 0
+            ParentFont = False
+            TabOrder = 0
+            OnChange = CbLineSerLinePenStyleChange
+          end
+          object CbLineSerLinePenWidth: TChartComboBox
+            AnchorSideLeft.Control = CbLineSerLinePenStyle
+            AnchorSideTop.Control = CbLineSerLinePenStyle
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = CbLineSerLinePenStyle
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 34
+            Width = 118
+            Mode = ccmPenWidth
+            PenPattern = '1|1'
+            PointerStyle = psNone
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 8
+            ItemHeight = 16
+            ItemIndex = 0
+            ParentFont = False
+            TabOrder = 1
+            OnChange = CbLineSerLinePenWidthChange
+          end
+          object Label1: TLabel
+            AnchorSideLeft.Control = GbLineSerLines
+            AnchorSideTop.Control = CbLineSerLinePenStyle
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 8
+            Width = 47
+            BorderSpacing.Left = 8
+            Caption = 'Pen style'
+            ParentColor = False
+            ParentFont = False
+          end
+          object Label2: TLabel
+            AnchorSideLeft.Control = Label1
+            AnchorSideTop.Control = CbLineSerLinePenWidth
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 38
+            Width = 53
+            Caption = 'Pen width'
+            ParentColor = False
+            ParentFont = False
+          end
+          object CbLineSerPenColor: TColorBox
+            AnchorSideLeft.Control = CbLineSerLinePenWidth
+            AnchorSideTop.Control = CbLineSerLinePenWidth
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = CbLineSerLinePenWidth
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 64
+            Width = 118
+            Selected = 394758
+            Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 8
+            BorderSpacing.Bottom = 10
+            ItemHeight = 16
+            OnChange = CbLineSerPenColorChange
+            ParentFont = False
+            TabOrder = 2
+          end
+          object Label4: TLabel
+            AnchorSideLeft.Control = Label1
+            AnchorSideTop.Control = CbLineSerPenColor
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 68
+            Width = 50
+            Caption = 'Pen color'
+            ParentColor = False
+            ParentFont = False
+          end
+          object CbShowLines: TCheckBox
+            Left = 149
+            Height = 19
+            Top = -18
+            Width = 49
+            Alignment = taLeftJustify
+            Anchors = []
+            Caption = 'Show'
+            Checked = True
+            OnChange = CbShowLinesChange
+            ParentFont = False
+            State = cbChecked
+            TabOrder = 3
+          end
+        end
+        object GbLineSerPointer: TGroupBox
+          Left = 0
+          Height = 147
+          Top = 4
+          Width = 211
+          Align = alTop
+          AutoSize = True
+          BorderSpacing.Top = 4
+          BorderSpacing.Right = 8
+          Caption = 'Pointer symbol'
+          ClientHeight = 127
+          ClientWidth = 207
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 0
+          object CbLineSerPointerStyle: TChartComboBox
+            AnchorSideTop.Control = GbLineSerPointer
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 4
+            Width = 118
+            Mode = ccmPointerStyle
+            PenPattern = '1|1'
+            PointerStyle = psNone
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 4
+            ItemHeight = 16
+            ItemIndex = 0
+            ParentFont = False
+            TabOrder = 0
+            OnChange = CbLineSerPointerStyleChange
+          end
+          object Label5: TLabel
+            AnchorSideLeft.Control = GbLineSerPointer
+            AnchorSideTop.Control = CbLineSerPointerStyle
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 8
+            Width = 40
+            BorderSpacing.Left = 8
+            Caption = 'Symbol'
+            ParentColor = False
+            ParentFont = False
+          end
+          object Label3: TLabel
+            AnchorSideLeft.Control = Label5
+            AnchorSideTop.Control = CbLineSerPointerBrushColor
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 38
+            Width = 45
+            Caption = 'Fill color'
+            ParentColor = False
+            ParentFont = False
+          end
+          object Label6: TLabel
+            AnchorSideLeft.Control = Label5
+            AnchorSideTop.Control = CbLineSerPointerBorderColor
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 68
+            Width = 65
+            Caption = 'Border color'
+            ParentColor = False
+            ParentFont = False
+          end
+          object CbLineSerPointerBorderColor: TColorBox
+            AnchorSideLeft.Control = CbLineSerPointerBrushColor
+            AnchorSideTop.Control = CbLineSerPointerBrushColor
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = CbLineSerPointerBrushColor
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 64
+            Width = 118
+            Selected = 263172
+            Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 8
+            ItemHeight = 16
+            OnChange = CbLineSerPointerBorderColorChange
+            ParentFont = False
+            TabOrder = 2
+          end
+          object CbLineSerPointerBrushColor: TColorBox
+            AnchorSideLeft.Control = CbLineSerPointerStyle
+            AnchorSideTop.Control = CbLineSerPointerStyle
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = CbLineSerPointerStyle
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 34
+            Width = 118
+            Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 8
+            ItemHeight = 16
+            OnChange = CbLineSerPointerBrushColorChange
+            ParentFont = False
+            TabOrder = 1
+          end
+          object EdLineSerPointerSize: TSpinEdit
+            AnchorSideLeft.Control = CbLineSerPointerBorderColor
+            AnchorSideTop.Control = CbLineSerPointerBorderColor
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 23
+            Top = 94
+            Width = 62
+            Alignment = taRightJustify
+            BorderSpacing.Top = 8
+            BorderSpacing.Bottom = 10
+            OnChange = EdLineSerPointerSizeChange
+            ParentFont = False
+            TabOrder = 3
+            Value = 4
+          end
+          object Label7: TLabel
+            AnchorSideLeft.Control = Label5
+            AnchorSideTop.Control = EdLineSerPointerSize
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 98
+            Width = 20
+            Caption = 'Size'
+            ParentColor = False
+            ParentFont = False
+          end
+          object CbShowPoints: TCheckBox
+            Left = 148
+            Height = 19
+            Top = -18
+            Width = 49
+            Alignment = taLeftJustify
+            Anchors = []
+            Caption = 'Show'
+            Checked = True
+            OnChange = CbShowPointsChange
+            ParentFont = False
+            State = cbChecked
+            TabOrder = 4
+          end
+        end
+      end
+      object Page2: TPage
+        object GbBarSerPen: TGroupBox
+          Left = 0
+          Height = 116
+          Top = 90
+          Width = 211
+          Align = alTop
+          AutoSize = True
+          BorderSpacing.Top = 8
+          BorderSpacing.Right = 8
+          Caption = 'Bar border'
+          ClientHeight = 96
+          ClientWidth = 207
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 1
+          object CbBarSerPenStyle: TChartComboBox
+            AnchorSideTop.Control = GbBarSerPen
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 4
+            Width = 118
+            PenPattern = '1|1'
+            PointerStyle = psNone
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 4
+            ItemHeight = 16
+            ItemIndex = 0
+            ParentFont = False
+            TabOrder = 0
+            OnChange = CbBarSerPenStyleChange
+          end
+          object CbBarSerPenWidth: TChartComboBox
+            AnchorSideTop.Control = CbBarSerPenStyle
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 34
+            Width = 118
+            Mode = ccmPenWidth
+            PenPattern = '1|1'
+            PointerStyle = psNone
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 8
+            ItemHeight = 16
+            ItemIndex = 0
+            ParentFont = False
+            TabOrder = 1
+            OnChange = CbBarSerPenWidthChange
+          end
+          object Label8: TLabel
+            AnchorSideLeft.Control = GbBarSerPen
+            AnchorSideTop.Control = CbBarSerPenStyle
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 8
+            Width = 47
+            BorderSpacing.Left = 8
+            Caption = 'Pen style'
+            ParentColor = False
+            ParentFont = False
+          end
+          object Label9: TLabel
+            AnchorSideLeft.Control = Label8
+            AnchorSideTop.Control = CbBarSerPenWidth
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 38
+            Width = 53
+            Caption = 'Pen width'
+            ParentColor = False
+            ParentFont = False
+          end
+          object CbBarSerPenColor: TColorBox
+            AnchorSideTop.Control = CbBarSerPenWidth
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 64
+            Width = 118
+            DefaultColorColor = 460551
+            Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 8
+            BorderSpacing.Bottom = 10
+            ItemHeight = 16
+            OnChange = CbBarSerPenColorChange
+            ParentFont = False
+            TabOrder = 2
+          end
+          object Label10: TLabel
+            AnchorSideLeft.Control = Label8
+            AnchorSideTop.Control = CbBarSerPenColor
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 68
+            Width = 50
+            Caption = 'Pen color'
+            ParentColor = False
+            ParentFont = False
+          end
+        end
+        object GbBarSerBrush: TGroupBox
+          Left = 0
+          Height = 82
+          Top = 0
+          Width = 211
+          Align = alTop
+          AutoSize = True
+          BorderSpacing.Right = 8
+          Caption = 'Bar'
+          ClientHeight = 62
+          ClientWidth = 207
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 0
+          object Label12: TLabel
+            AnchorSideLeft.Control = GbBarSerBrush
+            AnchorSideTop.Control = CbBarSerBrushColor
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 4
+            Width = 45
+            BorderSpacing.Left = 8
+            Caption = 'Fill color'
+            ParentColor = False
+            ParentFont = False
+          end
+          object CbBarSerBrushColor: TColorBox
+            AnchorSideTop.Control = GbBarSerBrush
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 0
+            Width = 118
+            DefaultColorColor = 263172
+            Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+            Anchors = [akTop, akRight]
+            ItemHeight = 16
+            OnChange = CbBarSerBrushColorChange
+            ParentFont = False
+            TabOrder = 0
+          end
+          object Label14: TLabel
+            AnchorSideLeft.Control = Label12
+            AnchorSideTop.Control = CbBarSerBrushStyle
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 34
+            Width = 56
+            Caption = 'Fill pattern'
+            ParentColor = False
+            ParentFont = False
+          end
+          object CbBarSerBrushStyle: TChartComboBox
+            AnchorSideTop.Control = CbBarSerBrushColor
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 30
+            Width = 118
+            Mode = ccmBrushStyle
+            PenPattern = '1|1'
+            PointerStyle = psNone
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 8
+            BorderSpacing.Bottom = 10
+            ItemHeight = 16
+            ItemIndex = 0
+            ParentFont = False
+            TabOrder = 1
+            OnChange = CbBarSerBrushStyleChange
+          end
+        end
+      end
+      object Page3: TPage
+        object GbBarSerBrush1: TGroupBox
+          Left = 0
+          Height = 82
+          Top = 4
+          Width = 211
+          Align = alTop
+          AutoSize = True
+          BorderSpacing.Top = 4
+          BorderSpacing.Right = 8
+          Caption = 'Area fill'
+          ClientHeight = 62
+          ClientWidth = 207
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 0
+          object Label13: TLabel
+            AnchorSideLeft.Control = GbBarSerBrush1
+            AnchorSideTop.Control = CbAreaSerBrushColor
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 4
+            Width = 45
+            BorderSpacing.Left = 8
+            Caption = 'Fill color'
+            ParentColor = False
+            ParentFont = False
+          end
+          object CbAreaSerBrushColor: TColorBox
+            AnchorSideTop.Control = GbBarSerBrush1
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 0
+            Width = 118
+            Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+            Anchors = [akTop, akRight]
+            ItemHeight = 16
+            OnChange = CbAreaSerBrushColorChange
+            ParentFont = False
+            TabOrder = 0
+          end
+          object Label15: TLabel
+            AnchorSideLeft.Control = Label13
+            AnchorSideTop.Control = CbAreaSerBrushStyle
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 34
+            Width = 56
+            Caption = 'Fill pattern'
+            ParentColor = False
+            ParentFont = False
+          end
+          object CbAreaSerBrushStyle: TChartComboBox
+            AnchorSideTop.Control = CbAreaSerBrushColor
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 30
+            Width = 118
+            Mode = ccmBrushStyle
+            PenPattern = '1|1'
+            PointerStyle = psNone
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 8
+            BorderSpacing.Bottom = 10
+            ItemHeight = 16
+            ItemIndex = 0
+            ParentFont = False
+            TabOrder = 1
+            OnChange = CbAreaSerBrushStyleChange
+          end
+        end
+        object GbBarSerPen1: TGroupBox
+          Left = 0
+          Height = 116
+          Top = 94
+          Width = 211
+          Align = alTop
+          AutoSize = True
+          BorderSpacing.Top = 8
+          BorderSpacing.Right = 8
+          Caption = 'Area contour'
+          ClientHeight = 96
+          ClientWidth = 207
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 1
+          object CbAreaSerContourStyle: TChartComboBox
+            AnchorSideTop.Control = GbBarSerPen1
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 4
+            Width = 118
+            PenPattern = '1|1'
+            PointerStyle = psNone
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 4
+            ItemHeight = 16
+            ItemIndex = 0
+            ParentFont = False
+            TabOrder = 0
+            OnChange = CbAreaSerContourStyleChange
+          end
+          object CbAreaSerContourWidth: TChartComboBox
+            AnchorSideTop.Control = CbAreaSerContourStyle
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 34
+            Width = 118
+            Mode = ccmPenWidth
+            PenPattern = '1|1'
+            PointerStyle = psNone
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 8
+            ItemHeight = 16
+            ItemIndex = 0
+            ParentFont = False
+            TabOrder = 1
+            OnChange = CbAreaSerContourWidthChange
+          end
+          object Label11: TLabel
+            AnchorSideLeft.Control = GbBarSerPen1
+            AnchorSideTop.Control = CbAreaSerContourStyle
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 8
+            Width = 47
+            BorderSpacing.Left = 8
+            Caption = 'Pen style'
+            ParentColor = False
+            ParentFont = False
+          end
+          object Label16: TLabel
+            AnchorSideLeft.Control = Label11
+            AnchorSideTop.Control = CbAreaSerContourWidth
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 38
+            Width = 53
+            Caption = 'Pen width'
+            ParentColor = False
+            ParentFont = False
+          end
+          object CbAreaSerContourColor: TColorBox
+            AnchorSideTop.Control = CbAreaSerContourWidth
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 64
+            Width = 118
+            Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 8
+            BorderSpacing.Bottom = 10
+            ItemHeight = 16
+            OnChange = CbAreaSerContourColorChange
+            ParentFont = False
+            TabOrder = 2
+          end
+          object Label17: TLabel
+            AnchorSideLeft.Control = Label11
+            AnchorSideTop.Control = CbAreaSerContourColor
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 68
+            Width = 50
+            Caption = 'Pen color'
+            ParentColor = False
+            ParentFont = False
+          end
+        end
+        object GbBarSerPen2: TGroupBox
+          Left = 0
+          Height = 116
+          Top = 218
+          Width = 211
+          Align = alTop
+          AutoSize = True
+          BorderSpacing.Top = 8
+          BorderSpacing.Right = 8
+          Caption = 'Area drop lines'
+          ClientHeight = 96
+          ClientWidth = 207
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 2
+          object CbAreaSerLinesStyle: TChartComboBox
+            AnchorSideTop.Control = GbBarSerPen2
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 4
+            Width = 118
+            PenPattern = '1|1'
+            PointerStyle = psNone
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 4
+            ItemHeight = 16
+            ItemIndex = 0
+            ParentFont = False
+            TabOrder = 0
+            OnChange = CbAreaSerLinesStyleChange
+          end
+          object CbAreaSerLinesWidth: TChartComboBox
+            AnchorSideTop.Control = CbAreaSerLinesStyle
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 34
+            Width = 118
+            Mode = ccmPenWidth
+            PenPattern = '1|1'
+            PointerStyle = psNone
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 8
+            ItemHeight = 16
+            ItemIndex = 0
+            ParentFont = False
+            TabOrder = 1
+            OnChange = CbAreaSerLinesWidthChange
+          end
+          object Label18: TLabel
+            AnchorSideLeft.Control = GbBarSerPen2
+            AnchorSideTop.Control = CbAreaSerLinesStyle
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 8
+            Width = 47
+            BorderSpacing.Left = 8
+            Caption = 'Pen style'
+            ParentColor = False
+            ParentFont = False
+          end
+          object Label19: TLabel
+            AnchorSideLeft.Control = Label18
+            AnchorSideTop.Control = CbAreaSerLinesWidth
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 38
+            Width = 53
+            Caption = 'Pen width'
+            ParentColor = False
+            ParentFont = False
+          end
+          object CbAreaSerLinesColor: TColorBox
+            AnchorSideTop.Control = CbAreaSerLinesWidth
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Side = asrBottom
+            Left = 80
+            Height = 22
+            Top = 64
+            Width = 118
+            Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 8
+            BorderSpacing.Bottom = 10
+            ItemHeight = 16
+            OnChange = CbAreaSerLinesColorChange
+            ParentFont = False
+            TabOrder = 2
+          end
+          object Label20: TLabel
+            AnchorSideLeft.Control = Label18
+            AnchorSideTop.Control = CbAreaSerLinesColor
+            AnchorSideTop.Side = asrCenter
+            Left = 8
+            Height = 15
+            Top = 68
+            Width = 50
+            Caption = 'Pen color'
+            ParentColor = False
+            ParentFont = False
+          end
+        end
+      end
+    end
+    object Label21: TLabel
+      Left = 4
+      Height = 15
+      Top = 4
+      Width = 211
+      Align = alTop
+      BorderSpacing.Around = 4
+      Caption = 'Select the series to be modified'
+      ParentColor = False
+    end
+    object Bevel2: TBevel
+      Left = 4
+      Height = 3
+      Top = 23
+      Width = 211
+      Align = alTop
+      BorderSpacing.Left = 4
+      BorderSpacing.Right = 4
+      Shape = bsBottomLine
+    end
+  end
+  object ChartListbox1: TChartListbox
+    Left = 467
+    Height = 436
+    Top = 4
+    Width = 112
+    Chart = Chart1
+    Align = alRight
+    BorderSpacing.Top = 4
+    BorderSpacing.Bottom = 4
+    BorderStyle = bsNone
+    ItemHeight = 0
+    OnClick = ChartListbox1Click
+    TabOrder = 2
+  end
+  object Splitter1: TSplitter
+    Left = 579
+    Height = 444
+    Top = 0
+    Width = 5
+    Align = alRight
+    ResizeAnchor = akRight
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 10
+    RandSeed = 1021051994
+    XMax = 10
+    XMin = 0
+    YMax = 12
+    YMin = 8
+    left = 108
+    top = 37
+  end
+  object RandomChartSource2: TRandomChartSource
+    PointsNumber = 6
+    RandSeed = 1021110653
+    XMax = 10
+    XMin = 0
+    YMax = 8
+    YMin = 5
+    left = 108
+    top = 96
+  end
+  object RandomChartSource3: TRandomChartSource
+    PointsNumber = 8
+    RandSeed = 1021188201
+    XMax = 10
+    XMin = 0
+    YMax = 4
+    YMin = 0
+    left = 108
+    top = 152
+  end
+  object ChartToolset1: TChartToolset
+    left = 329
+    top = 98
+    object ChartToolset1DataPointClickTool1: TDataPointClickTool
+      Shift = [ssLeft]
+      GrabRadius = 16
+      OnPointClick = ChartToolset1DataPointClickTool1PointClick
+    end
+  end
+end
