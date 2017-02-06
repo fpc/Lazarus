@@ -280,6 +280,7 @@ var
   s: String;
   MsgResult: TModalResult;
 begin
+  ComponentModified:=false;
   ListOfPInstancePropInfo:=nil;
   try
     // find all dangling events
@@ -323,14 +324,14 @@ begin
       Format(lisTheFollowingMethodsUsedByAreNotInTheSourceRemoveTh, [DbgSName(
         RootComponent), LineEnding, PascalBuffer.Filename, LineEnding+LineEnding, s, LineEnding])
        ,mtConfirmation,
-       [mrYes, lisRemoveThem, mrIgnore, lisKeepThemAndContinue, mrCancel]);
+       [mrYes, lisRemoveThem, mrIgnore, lisKeepThemAndContinue, mrAbort]);
      if MsgResult=mrYes then begin
        ClearDanglingEvents(ListOfPInstancePropInfo);
        ComponentModified:=true;
      end else if MsgResult=mrIgnore then
        exit(mrOk)
      else
-       exit(mrCancel);
+       exit(mrAbort);
   finally
     FreeListOfPInstancePropInfo(ListOfPInstancePropInfo);
   end;
