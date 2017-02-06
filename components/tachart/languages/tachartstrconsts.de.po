@@ -62,8 +62,10 @@ msgid "backward-diagonal hatch"
 msgstr "rückwärts diagonal"
 
 #: tachartstrconsts.rsbsclear
+#, fuzzy
+#| msgid "clear fill"
 msgctxt "tachartstrconsts.rsbsclear"
-msgid "clear fill"
+msgid "no fill"
 msgstr "ohne Füllung"
 
 #: tachartstrconsts.rsbscross
@@ -283,8 +285,10 @@ msgid "Polar series"
 msgstr "Polar-Diagramm"
 
 #: tachartstrconsts.rspsclear
+#, fuzzy
+#| msgid "clear line"
 msgctxt "tachartstrconsts.rspsclear"
-msgid "clear line"
+msgid "no line"
 msgstr "keine Linie"
 
 #: tachartstrconsts.rspsdash
@@ -392,3 +396,4 @@ msgstr "Fehler beim Umbenennen von Komponenten: %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Werkzeuge bearbeiten"
+

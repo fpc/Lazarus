@@ -11,96 +11,6 @@ const
   DEFAULT_DROPDOWN_COUNT = 24;
 
 type
-(*
-  TSeriesPointerStyleCombobox = class(TCustomCombobox)
-  private
-    FSelected : TSeriesPointerStyle;
-    FSymbolBordercolor : TColor;
-    FSymbolFillColor : TColor;
-    FShowNames : boolean;
-    FAlignment : TAlignment;
-    FBitmaps: array[TSeriespointerStyle] of TBitmap;
-    procedure SetAlignment(Value:TAlignment);
-    procedure SetSelected(AValue: TSeriesPointerStyle);
-    procedure SetShowNames(AValue: boolean);
-    procedure SetSymbolBorderColor(AValue: TColor);
-    procedure SetSymbolFillColor(AValue: TColor);
-  protected
-    procedure CreateBitmaps(AWidth, AHeight: Integer);
-    procedure DrawItem(AIndex: Integer; ARect: TRect; AState: TOwnerDrawState); override;
-    procedure DestroyBitmaps;
-    procedure GetItems; override;
-    function GetSymbol(AIndex: Integer): TSeriesPointerStyle; inline;
-    procedure RealSetText(const AValue: TCaption); override;
-    procedure SetItemIndex(const AValue: Integer); override;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  published
-    // new properties
-    property Selected : TSeriesPointerStyle read FSelected write SetSelected default DEFAULT_POINTER_STYLE;
-    property ShowNames : boolean read FShowNames write SetShowNames default true;
-    property SymbolBorderColor : TColor read FSymbolBorderColor write SetSymbolBorderColor default clBlack;
-    property SymbolFillColor : TColor read FSymbolFillColor write SetSymbolFillColor default clWhite;
-    property Alignment : TAlignment read FAlignment write SetAlignment default taLeftJustify;
-
-    // inherited
-    property Align;
-    property Anchors;
-    property BiDiMode;
-    property BorderSpacing;
-    property Constraints;
-    property DragKind;
-    property ParentBiDiMode;
-    property AutoDropDown default False;
-    property CharCase;
-    property Color;
-    property DragMode;
-    property DragCursor;
-    property DropDownCount default DEFAULT_DROPDOWN_COUNT;
-    property Enabled;
-    property Font;
-    property ItemHeight;
-    property ItemWidth;
-    property Left;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Top;
-    property Visible;
-    property Width;
-    property OnChange;
-    property OnClick;
-    property OnCloseUp;
-    property OnContextPopup;
-    property OnDblClick;
-    property OnEnter;
-    property OnExit;
-    property OnKeyDown;
-    property OnKeyPress;
-    property OnKeyUp;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnDropDown;
-    property OnEndDrag;
-    property OnEndDock;
-    property OnMouseEnter;
-    property OnMouseLeave;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnMouseWheel;
-    property OnMouseWheelDown;
-    property OnMouseWheelUp;
-    property OnSelect;
-    property OnStartDock;
-    property OnStartDrag;
-    property OnUTF8KeyPress;
-  end;
-                    *)
   TChartComboMode = (ccmPointerStyle, ccmPenStyle, ccmPenWidth, ccmBrushStyle);
 
   TChartComboBox = class(TCustomComboBox)
@@ -135,6 +45,7 @@ type
       procedure SetShowNames(const AValue: Boolean);
       procedure SetSymbolWidth(const AValue: Integer);
     protected
+      procedure Change; override;
       procedure CreateBitmaps(AWidth, AHeight: Integer);
       procedure DestroyBitmaps;
       procedure DrawItem(AIndex: Integer; ARect: TRect; AState: TOwnerDrawState); override;
@@ -151,8 +62,6 @@ type
     public
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
-      procedure ApplyToPen(APen: TPen);
-      procedure ExtractFromPen(APen: TPen);
       procedure SetPenPattern(APen: TPen); overload;
     published
       property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
@@ -171,16 +80,9 @@ type
 
       property Align;
       property Anchors;
-//      property ArrowKeysTraverseList;
-//      property AutoComplete;
-//      property AutoCompleteText;
       property AutoDropDown;
-//      property AutoSelect;
-//      property AutoSize;// Note: windows has a fixed height in some styles
       property BidiMode;
       property BorderSpacing;
-//      property BorderStyle;
-//      property CharCase;
       property Color;
       property Constraints;
       property Cursor;
@@ -192,16 +94,13 @@ type
       property Font;
       property ItemHeight;
       property ItemIndex;
-     // property Items;
       property ItemWidth;
       property Left;
-     // property MaxLength;
       property ParentBidiMode;
       property ParentColor;
       property ParentFont;
       property ParentShowHint;
       property PopupMenu;
-//      property ReadOnly;
       property ShowHint;
       property TabOrder;
       property TabStop;
@@ -223,7 +122,6 @@ type
       property OnEditingDone;
       property OnEnter;
       property OnExit;
-//      property OnGetItems;
       property OnKeyDown;
       property OnKeyPress;
       property OnKeyUp;
@@ -600,6 +498,7 @@ begin
   FSymbolWidth := DEFAULT_SYMBOL_WIDTH;
   PopulatePenStyles;
   SetSelectedPenStyle(FPenStyle);
+  GetItems;
 end;
 
 destructor TChartCombobox.Destroy;
@@ -608,15 +507,10 @@ begin
   inherited;
 end;
 
-procedure TChartComboBox.ApplyToPen(APen: TPen);
+procedure TChartCombobox.Change;
 begin
-  if Assigned(APen) then begin
-    APen.Style := FPenStyle;
-    APen.Color := FPenColor;
-    APen.Cosmetic := FCosmetic;
-    APen.SetPattern(FPenPattern);
-    APen.Width := FPenWidth;
-  end;
+  SetItemIndex(ItemIndex);
+  inherited;
 end;
 
 procedure TChartCombobox.CreateBitmaps(AWidth, AHeight: Integer);
@@ -786,17 +680,6 @@ begin
       end;
       Canvas.TextRect(ARect, ARect.Left, ARect.Top, txt, ts);
     end;
-  end;
-end;
-
-procedure TChartComboBox.ExtractFromPen(APen: TPen);
-begin
-  if Assigned(APen) then begin
-    FCosmetic := APen.Cosmetic;
-    FPenPattern := APen.GetPattern;
-    FPenColor := APen.Color;
-    FPenStyle := APen.Style;
-    FPenWidth := APen.Width;
   end;
 end;
 

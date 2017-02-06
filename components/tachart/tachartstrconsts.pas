@@ -108,7 +108,7 @@ resourcestring
   rsPSDashDotDot = 'dash-dot-dot';
   rsPSInsideFrame = 'solid (inside frame)';
   rsPSPattern = 'patterned line';
-  rsPSClear = 'clear line';
+  rsPSClear = 'no line';
 
   rsBSSolid = 'solid fill';
   rsBSHorizontal = 'horizontally hatched';
@@ -117,7 +117,7 @@ resourcestring
   rsBSBDiagonal = 'backward-diagonal hatch';
   rsBSCross = 'crossed';
   rsBSDiagCross = 'diagonally crossed';
-  rsBSClear = 'clear fill';
+  rsBSClear = 'no fill';
   rsBSImage = 'image fill';
   rsBSPattern = 'pattern fill';
 

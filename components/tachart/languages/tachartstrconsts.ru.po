@@ -61,7 +61,7 @@ msgstr ""
 
 #: tachartstrconsts.rsbsclear
 msgctxt "tachartstrconsts.rsbsclear"
-msgid "clear fill"
+msgid "no fill"
 msgstr ""
 
 #: tachartstrconsts.rsbscross
@@ -282,7 +282,7 @@ msgstr "Лепестковая диаграмма"
 
 #: tachartstrconsts.rspsclear
 msgctxt "tachartstrconsts.rspsclear"
-msgid "clear line"
+msgid "no line"
 msgstr ""
 
 #: tachartstrconsts.rspsdash
