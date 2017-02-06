@@ -217,7 +217,7 @@ begin
   ImportButton.Caption:=lisImportList;
   UninstallButton.Caption:=lisUninstallSelection;
   UninstallButton.LoadGlyphFromResourceName(HInstance, 'arrow_right');
-  InstallPkgGroupBox.Caption:=lisPkgsInstalled;
+  InstallPkgGroupBox.Caption:=lisPckEditInstall;
   AddToInstallButton.Caption:=lisInstallSelection;
   AddToInstallButton.LoadGlyphFromResourceName(HInstance, 'arrow_left');
   PkgInfoGroupBox.Caption := lisPackageInfo;
