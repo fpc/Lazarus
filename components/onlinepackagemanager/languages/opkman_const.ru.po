@@ -302,6 +302,18 @@ msgstr "Введите текст фильтра"
 msgid "Filter by:"
 msgstr "Фильтрация:"
 
+#: opkman_const.rsmainfrm_miascendent
+msgid "Ascendent"
+msgstr "По возрастанию"
+
+#: opkman_const.rsmainfrm_mibydate
+msgid "By date"
+msgstr "По дате"
+
+#: opkman_const.rsmainfrm_mibyname
+msgid "By name"
+msgstr "По имени"
+
 #: opkman_const.rsmainfrm_micopytoclpbrd
 msgid "Copy to clipboard"
 msgstr "Копировать в буфер обмена"
@@ -315,6 +327,10 @@ msgctxt "opkman_const.rsmainfrm_micreaterepositorypackage"
 msgid "Create repository package"
 msgstr "Создать пакет для репозитория"
 
+#: opkman_const.rsmainfrm_midescendent
+msgid "Descendent"
+msgstr "По убыванию"
+
 #: opkman_const.rsmainfrm_mijsonhide
 msgid "Hide JSON"
 msgstr "Скрыть JSON"
@@ -323,9 +339,17 @@ msgstr "Скрыть JSON"
 msgid "Show JSON"
 msgstr "Показать JSON"
 
+#: opkman_const.rsmainfrm_mijsonsort
+msgid "Sort"
+msgstr "Сортировать"
+
 #: opkman_const.rsmainfrm_miresetrating
 msgid "Reset rating"
 msgstr "Сбросить рейтинг"
+
+#: opkman_const.rsmainfrm_misavetofile
+msgid "Save to file"
+msgstr "Сохранить в файл"
 
 #: opkman_const.rsmainfrm_packagealreadydownloaded
 msgid "The following repository packages already exist in the target folder. Continue?"
@@ -922,6 +946,10 @@ msgstr "не проводилось"
 #: opkman_const.rsoptions_lbcheckforupdates_caption
 msgid "Check for package updates"
 msgstr "Проверять наличие обновлений пакетов"
+
+#: opkman_const.rsoptions_lbdaystoshownewpackages_caption
+msgid "Show different icon for newly added packages for (days):"
+msgstr "Другой значок для вновь добавленных пакетов в течение (дней):"
 
 #: opkman_const.rsoptions_lbexcludefiles_hint
 msgctxt "opkman_const.rsoptions_lbexcludefiles_hint"

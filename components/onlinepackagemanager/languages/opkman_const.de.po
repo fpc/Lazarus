@@ -300,6 +300,18 @@ msgstr "Filtertext eingeben"
 msgid "Filter by:"
 msgstr "Gefiltert nach:"
 
+#: opkman_const.rsmainfrm_miascendent
+msgid "Ascendent"
+msgstr ""
+
+#: opkman_const.rsmainfrm_mibydate
+msgid "By date"
+msgstr ""
+
+#: opkman_const.rsmainfrm_mibyname
+msgid "By name"
+msgstr ""
+
 #: opkman_const.rsmainfrm_micopytoclpbrd
 msgid "Copy to clipboard"
 msgstr "In Zwischenablage kopieren"
@@ -313,6 +325,10 @@ msgctxt "opkman_const.rsmainfrm_micreaterepositorypackage"
 msgid "Create repository package"
 msgstr "Erzeuge Repository-Package"
 
+#: opkman_const.rsmainfrm_midescendent
+msgid "Descendent"
+msgstr ""
+
 #: opkman_const.rsmainfrm_mijsonhide
 msgid "Hide JSON"
 msgstr "JSON verbergen"
@@ -321,9 +337,17 @@ msgstr "JSON verbergen"
 msgid "Show JSON"
 msgstr "JSON zeigen"
 
+#: opkman_const.rsmainfrm_mijsonsort
+msgid "Sort"
+msgstr ""
+
 #: opkman_const.rsmainfrm_miresetrating
 msgid "Reset rating"
 msgstr "Bewertung zurücksetzen"
+
+#: opkman_const.rsmainfrm_misavetofile
+msgid "Save to file"
+msgstr ""
 
 #: opkman_const.rsmainfrm_packagealreadydownloaded
 msgid "The following repository packages already exist in the target folder. Continue?"
@@ -919,6 +943,10 @@ msgstr "Niemals"
 msgid "Check for package updates"
 msgstr "Nach Package-Updates suchen"
 
+#: opkman_const.rsoptions_lbdaystoshownewpackages_caption
+msgid "Show different icon for newly added packages for (days):"
+msgstr ""
+
 #: opkman_const.rsoptions_lbexcludefiles_hint
 msgctxt "opkman_const.rsoptions_lbexcludefiles_hint"
 msgid "These files will be excluded from repository packages (see: \"Create repository package\")"
@@ -1233,3 +1261,4 @@ msgstr "Geben Sie die Repository-Adresse ein"
 #: opkman_const.rsrepositories_vst_headercolumn
 msgid "Repository Address"
 msgstr "Repository-Adresse"
+

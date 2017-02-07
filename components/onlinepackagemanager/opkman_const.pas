@@ -271,7 +271,7 @@ resourcestring
   rsOptions_cbCheckForUpdates_Item5 = 'Never';
   rsOptions_lbLastUpdate_Caption = 'Last update: ';
   rsOptions_LastUpdate_Never = 'never';
-  rsOptions_lbDaysToShowNewPackages_Caption = 'Show different icon for newly added packages for(days):';
+  rsOptions_lbDaysToShowNewPackages_Caption = 'Show different icon for newly added packages for (days):';
   rsOptions_lbFilterFiles_Caption = 'Excluded files (packages)';
   rsOptions_lbFilterDirs_Caption = 'Excluded folders (packages)';
   rsOptions_bAdd_Caption = 'Add';

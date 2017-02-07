@@ -326,6 +326,18 @@ msgstr "Texto de filtro de tipo"
 msgid "Filter by:"
 msgstr "Filtrar por:"
 
+#: opkman_const.rsmainfrm_miascendent
+msgid "Ascendent"
+msgstr ""
+
+#: opkman_const.rsmainfrm_mibydate
+msgid "By date"
+msgstr ""
+
+#: opkman_const.rsmainfrm_mibyname
+msgid "By name"
+msgstr ""
+
 #: opkman_const.rsmainfrm_micopytoclpbrd
 msgid "Copy to clipboard"
 msgstr ""
@@ -339,6 +351,10 @@ msgctxt "opkman_const.rsmainfrm_micreaterepositorypackage"
 msgid "Create repository package"
 msgstr "Crear paquete del repositorio"
 
+#: opkman_const.rsmainfrm_midescendent
+msgid "Descendent"
+msgstr ""
+
 #: opkman_const.rsmainfrm_mijsonhide
 msgid "Hide JSON"
 msgstr "Ocultar JSON"
@@ -347,8 +363,16 @@ msgstr "Ocultar JSON"
 msgid "Show JSON"
 msgstr "Mostrar JSON"
 
+#: opkman_const.rsmainfrm_mijsonsort
+msgid "Sort"
+msgstr ""
+
 #: opkman_const.rsmainfrm_miresetrating
 msgid "Reset rating"
+msgstr ""
+
+#: opkman_const.rsmainfrm_misavetofile
+msgid "Save to file"
 msgstr ""
 
 #: opkman_const.rsmainfrm_packagealreadydownloaded
@@ -971,6 +995,10 @@ msgstr ""
 
 #: opkman_const.rsoptions_lbcheckforupdates_caption
 msgid "Check for package updates"
+msgstr ""
+
+#: opkman_const.rsoptions_lbdaystoshownewpackages_caption
+msgid "Show different icon for newly added packages for (days):"
 msgstr ""
 
 #: opkman_const.rsoptions_lbexcludefiles_hint
