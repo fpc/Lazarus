@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-10-13 08:51+0200\n"
+"PO-Revision-Date: 2017-02-06 11:11+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 1.8.11\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
@@ -150,7 +150,7 @@ msgstr "Réinitialiser le zoom"
 
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
-msgstr "Cette page ne rend pas compte de vos paramètres courants. Voyez la page avancée. Utilisez cette page pour réinitialiser les modifications avancées."
+msgstr "Cette page ne rend pas compte de vos paramètres en cours. Voyez la page avancée. Utilisez cette page pour réinitialiser les modifications avancées"
 
 #: lazarusidestrconsts.dlfmousesimplegenericsect
 msgctxt "lazarusidestrconsts.dlfmousesimplegenericsect"
@@ -159,15 +159,15 @@ msgstr "Général"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
 msgid "Standard, All actions (breakpoint, fold) on mouse down"
-msgstr "Standard, toutes les actions (point d'arrêt, pliage) sur clic"
+msgstr "Standard -  toutes les actions (point d'arrêt, pliage) sur clic"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftup
 msgid "Extended, Actions (breakpoint, fold) on mouse up. Selection on mouse down and move"
-msgstr "Étendu, actions (point d'arrêt, pliage) sur fin de clic. Sélection sur clic et déplacement"
+msgstr "Étendu - actions (point d'arrêt, pliage) sur fin de clic. Sélection sur clic et déplacement"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftupright
 msgid "Extended, Actions, right gutter half only"
-msgstr "Étendu, actions, seulement sur la moitié de gouttière à droite"
+msgstr "Étendu - actions, seulement sur la moitié de gouttière à droite"
 
 #: lazarusidestrconsts.dlfmousesimplegutterlines
 msgid "Use line numbers to select lines"
@@ -330,7 +330,7 @@ msgstr "Molette Maj"
 
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
-msgstr "Vous avez des modifications non enregistrées. L'utilisation de cette page annulera les modifications apportées à la page avancée."
+msgstr "Vous avez des modifications non enregistrées. L'utilisation de cette page annulera les modifications apportées à la page avancée"
 
 #: lazarusidestrconsts.dlfmousesimplewheelhsrolldef
 msgid "Scroll horizontal (System speed)"
@@ -400,7 +400,7 @@ msgstr "actif"
 
 #: lazarusidestrconsts.dlgaddassignmentoperator
 msgid "Add assignment operator :="
-msgstr "Ajouter l'opérateur d'affectation :="
+msgstr "Ajouter l'opérateur d'affectation \":=\""
 
 #: lazarusidestrconsts.dlgaddhiattrbracketmatch
 msgid "Brackets highlight"
@@ -485,7 +485,7 @@ msgstr "Incrémentales (autres)"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
 msgid "Highlight current word"
-msgstr "Mettre en surbrillance le mot courant"
+msgstr "Mettre en surbrillance le mot en cours"
 
 #: lazarusidestrconsts.dlgaddhiattrincrementalsearch
 msgid "Incremental search"
@@ -873,7 +873,7 @@ msgstr "Utiliser les chaînes \"Ansi\""
 
 #: lazarusidestrconsts.dlgcoasmstyle
 msgid "Assembler style"
-msgstr "Style d'assembleur"
+msgstr "Style de type assembleur"
 
 #: lazarusidestrconsts.dlgcocfgcmpmessages
 msgctxt "lazarusidestrconsts.dlgcocfgcmpmessages"
@@ -928,7 +928,7 @@ msgstr "Inverser l'ordre de pliage dans le menu surgissant"
 
 #: lazarusidestrconsts.dlgcogdb
 msgid "Generate debugging info for GDB (slower / increases exe-size)"
-msgstr "Générer les informations de débogage pour \"GDB\" (ralentit et augmente la taille de l'exécutable)"
+msgstr "Générer les informations de débogage pour \"gdb\" (ralentit et augmente la taille de l'exécutable)"
 
 #: lazarusidestrconsts.dlgcoheaptrc
 msgid "Use Heaptrc unit (check for mem-leaks)"
@@ -940,7 +940,7 @@ msgstr "Inclure les fichiers (\"-Fi\") :"
 
 #: lazarusidestrconsts.dlgcoinfoforgdb
 msgid "Info for GDB"
-msgstr "Informations concernant \"GDB\""
+msgstr "Informations concernant \"gdb\""
 
 #: lazarusidestrconsts.dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -953,7 +953,7 @@ msgstr "Édition des liens"
 #: lazarusidestrconsts.dlgcoloadsavehint
 msgctxt "lazarusidestrconsts.dlgcoloadsavehint"
 msgid "Compiler options can be saved to an XML file."
-msgstr "Les options du compilateur peuvent être sauvées dans un fichier XML."
+msgstr "Les options du compilateur peuvent être enregistrées dans un fichier XML."
 
 #: lazarusidestrconsts.dlgcolor
 msgid "Color"
@@ -990,7 +990,7 @@ msgstr "Préfixer les commentaires lors d'un passage à la ligne"
 
 #: lazarusidestrconsts.dlgcommentcontinuematch
 msgid "Match current line"
-msgstr "Correspondre à la ligne courante"
+msgstr "Correspondre à la ligne en cours"
 
 #: lazarusidestrconsts.dlgcommentcontinuematchasterisk
 msgid "Match text including \"*\" of token \"(*\""
@@ -1261,7 +1261,7 @@ msgstr "%d bureau(x) importé(s) avec succès depuis \"%s\""
 
 #: lazarusidestrconsts.dlgdifferentvaluebackgroundcolor
 msgid "Different values background"
-msgstr "Valeur différente d'arrière-plan"
+msgstr "Différentes valeurs d'arrière-plan"
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -1888,11 +1888,11 @@ msgstr "Avant-plan"
 
 #: lazarusidestrconsts.dlgformtitlebarchangesobjectinspector
 msgid "Change Object Inspector contents on clicking form title bar"
-msgstr ""
+msgstr "Changer le contenu de l'inspecteur d'objets en cliquant sur la barre de titre de la fiche"
 
 #: lazarusidestrconsts.dlgformtitlebarchangesobjectinspectorhint
 msgid "Show a form's properties in Object Inspector by clicking on its title bar."
-msgstr ""
+msgstr "Montrer les propriétés de la fiche dans l'inspecteur d'objets en cliquant sur sa barre de titre."
 
 #: lazarusidestrconsts.dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
@@ -2168,10 +2168,8 @@ msgid "Interface"
 msgstr "Interface"
 
 #: lazarusidestrconsts.dlginsertmethods
-#, fuzzy
-#| msgid "Insert methods"
 msgid "Insert method implementations"
-msgstr "Insérer les méthodes"
+msgstr "Insérer les implémentations de méthodes"
 
 #: lazarusidestrconsts.dlginsertsection
 msgid "Insert into Uses section of"
@@ -3016,23 +3014,23 @@ msgstr "Icône par &défaut"
 
 #: lazarusidestrconsts.dlgpodpiawareness
 msgid "DPI awareness"
-msgstr ""
+msgstr "Prise en compte du DPI"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoff
 msgid "off"
-msgstr ""
+msgstr "Désactivé"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldoffnewpermonitor
 msgid "Vista-8: off, 8.1+: per monitor"
-msgstr ""
+msgstr "Vista-8 : désactivé, 8.1+ : par moniteur"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitor
 msgid "Vista-8: on, 8.1+: per monitor"
-msgstr ""
+msgstr "Vista-8 : activé, 8.1+ : par moniteur"
 
 #: lazarusidestrconsts.dlgpodpiawarenesson
 msgid "on"
-msgstr ""
+msgstr "Activé"
 
 #: lazarusidestrconsts.dlgpoexecutionlevel
 msgid "Execution Level"
@@ -3090,7 +3088,7 @@ msgstr "Session"
 
 #: lazarusidestrconsts.dlgpotextfields
 msgid "Text fields"
-msgstr ""
+msgstr "Champs de texte"
 
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
@@ -3105,10 +3103,8 @@ msgid "Use Application Bundle for running and debugging"
 msgstr "Utiliser l'ensemble application pour exécuter et déboguer"
 
 #: lazarusidestrconsts.dlgpousemanifest
-#, fuzzy
-#| msgid "Use manifest file to enable themes"
 msgid "Use manifest resource (and enable themes)"
-msgstr "Utiliser le fichier \"manifest\" pour autoriser les thèmes"
+msgstr "Utiliser les ressources \"manifest\" (et autoriser les thèmes)"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
@@ -4545,7 +4541,7 @@ msgstr "Ancrer la droite à la droite du frère. Utilisez \"BorderSpacing\" pour
 
 #: lazarusidestrconsts.lisanchorsof
 msgid "Anchors of %s"
-msgstr ""
+msgstr "Ancres de %s"
 
 #: lazarusidestrconsts.lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
@@ -4626,7 +4622,7 @@ msgstr "Ajuster automatiquement la hauteur de la fenêtre principale de l'EDI"
 
 #: lazarusidestrconsts.lisautoadjustideheightfullcomponentpalette
 msgid "Show complete component palette"
-msgstr "Montrer la palette des composants entière"
+msgstr "Montrer la totalité de la palette des composants"
 
 #: lazarusidestrconsts.lisautoadjustideheightfullcomponentpalettehint
 msgid "If component palette spans over more lines, show them all and not only one."
@@ -4667,7 +4663,7 @@ msgstr "Convertir automatiquement les fichiers \".lfm\" en fichiers de ressource
 
 #: lazarusidestrconsts.lisautomaticallyignoreforselection
 msgid "do not complete selection"
-msgstr "ne pas continuer la sélection"
+msgstr "ne pas terminer la sélection"
 
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
@@ -4803,10 +4799,8 @@ msgid "Bottoms"
 msgstr "Bas"
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
-#, fuzzy
-#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
-msgstr "Il s'agit du contrôle frère auquel le côté inférieur est ancré. Le laisser vide pour le parent."
+msgstr "Il s'agit du contrôle frère auquel le côté inférieur est ancré. Le laisser vide pour l'ancrer au parent comme le ferait Delphi (\"BorderSpacing\" et \"ReferenceSide\" n'importent pas)."
 
 #: lazarusidestrconsts.lisbottomspaceequally
 msgid "Bottom space equally"
@@ -5579,7 +5573,7 @@ msgstr ". Vérifier le chemin de recherche du paquet %s ; essayer une reconstruc
 
 #: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
 msgid "Check the next token in source and add a semicolon if needed."
-msgstr ""
+msgstr "Vérifier l'élément suivant dans le code source et ajouter un point-virgule si nécessaire."
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
@@ -6822,7 +6816,7 @@ msgstr "Paquet %s ajouté en tant que dépendance."
 
 #: lazarusidestrconsts.lisconvdelphiaddedunittousessection
 msgid "Added unit \"%s\" to uses section."
-msgstr ""
+msgstr "Unité \"%s\" ajoutée à la clause \"uses\"."
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -6923,7 +6917,7 @@ msgstr "Omission de l'unité %s du projet"
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitfromusessection
 msgid "Removed unit \"%s\" from uses section."
-msgstr ""
+msgstr "Unité \"%s\" retirée de la section \"uses\"."
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Fixing used units and Repairing form files ***"
@@ -7925,7 +7919,7 @@ msgstr "Valeur par défaut"
 
 #: lazarusidestrconsts.lisdefaultclassvisibilitysectionofnewmethodsforexampl
 msgid "Default class visibility section of new methods. For example code completion on OnShow:="
-msgstr ""
+msgstr "Section de visibilité de classe par défaut des nouvelles méthodes. Par exemple, complétion de code pour \"OnShow:=\""
 
 #: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
 msgid "The default is ComboBox with \"True\" and \"False\" selections"
@@ -7937,7 +7931,7 @@ msgstr "(par défaut)"
 
 #: lazarusidestrconsts.lisdefaultsectionofmethods
 msgid "Default section of methods"
-msgstr ""
+msgstr "Section par défaut des méthodes"
 
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
@@ -9429,7 +9423,7 @@ msgstr "Fiche"
 
 #: lazarusidestrconsts.lisformacosdarwin
 msgid "For macOS (Darwin)"
-msgstr ""
+msgstr "Pour macOS (Darwin)"
 
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
@@ -10258,7 +10252,7 @@ msgstr "Insérer un nom de procédure"
 
 #: lazarusidestrconsts.lisinsertsemicolonifneeded
 msgid "Insert semicolon if needed"
-msgstr ""
+msgstr "Insérer un point-virgule si nécessaire"
 
 #: lazarusidestrconsts.lisinserttime
 msgid "insert time"
@@ -10533,7 +10527,7 @@ msgstr "Préserver le nom"
 
 #: lazarusidestrconsts.liskeepopen
 msgid "Keep open"
-msgstr ""
+msgstr "Maintenir ouvert"
 
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
@@ -11347,10 +11341,8 @@ msgid "Left anchoring"
 msgstr "Ancrage à gauche"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
-#, fuzzy
-#| msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
-msgstr "Il s'agit du contrôle auquel le côté gauche est ancré. Le laisser vide pour le parent."
+msgstr "Il s'agit du contrôle frère auquel le côté gauche est ancré. Le laisser vide pour l'ancrer au parent comme le ferait Delphi (\"BorderSpacing\" et \"ReferenceSide\" n'importent pas)."
 
 #: lazarusidestrconsts.lisleftsides
 msgid "Left sides"
@@ -13402,7 +13394,7 @@ msgstr "(valait \"%s\")"
 
 #: lazarusidestrconsts.lismmwidgetsetavailableforlclproject
 msgid "WidgetSet change is available only for LCL projects"
-msgstr ""
+msgstr "Le changement d'ensemble graphique (WidgetSet) n'est possible qu'avec les projets LCL"
 
 #: lazarusidestrconsts.lismode
 msgid ", Mode: %s"
@@ -13660,11 +13652,11 @@ msgstr "Nouveau nom de macro"
 
 #: lazarusidestrconsts.lisnewmethodimplementationsareinsertedbetweenexisting
 msgid "New method implementations are inserted between existing methods of this class. Either alphabetically, or as last, or in declaration order."
-msgstr ""
+msgstr "Les implémentations des nouvelles méthodes sont insérées entre les méthodes existantes de cette classe, soit par ordre alphabétique, soit à la fin, ou encore par ordre des déclarations."
 
 #: lazarusidestrconsts.lisnewmethodsandmembersareinsertedalphabeticallyoradd
 msgid "New method and member declarations in the class..end sections are inserted alphabetically or added last."
-msgstr ""
+msgstr "Les nouvelles méthodes et déclarations de membres dans les section class...end sont insérées par ordre alphabétique ou à la fin."
 
 #: lazarusidestrconsts.lisnewpage
 msgid "New page"
@@ -13980,7 +13972,7 @@ msgstr "En cas de saut de ligne (à savoir touche \"Entrée\")"
 
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
-msgstr ""
+msgstr "seulement 32 bits"
 
 #: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
 msgid "Only available on Windows. Run the tool hidden."
@@ -16312,19 +16304,6 @@ msgid "Result:"
 msgstr "Résultat :"
 
 #: lazarusidestrconsts.lisreturnparameterindexedword
-#, fuzzy
-#| msgid ""
-#| "Return parameter-indexed word from the current line preceding cursor position.\n"
-#| "\n"
-#| "Words in a line are numbered 1,2,3,... from left to right, but the last word\n"
-#| "which is always a macro command to be expanded has number 0, thus $PrevWord(0)\n"
-#| "is always the current macro.\n"
-#| "\n"
-#| "Example line:\n"
-#| "i 0 count-1 forb|\n"
-#| "Here $PrevWord(0)=forb, $PrevWord(1)=i, $PrevWord(2)=0, $PrevWord(3)=count-1\n"
-#| "\n"
-#| "In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an importaint operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used to detect words for this macro: [\\w\\-+*\\(\\)\\[\\].^@]+\n"
 msgid ""
 "Return parameter-indexed word from the current line preceding cursor position.\n"
 "\n"
@@ -16338,7 +16317,7 @@ msgid ""
 "\n"
 "In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an important operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used to detect words for this macro: [\\w\\-+*\\(\\)\\[\\].^@]+\n"
 msgstr ""
-"Retourne le mot indexé selon le paramètre d'index à partir de la ligne courante précdant la position du curseur.\n"
+"Retourne le mot indexé selon le paramètre à partir de la ligne courante précédant la position du curseur.\n"
 "\n"
 "Les mots d'une ligne sont numérotés à partir de 1, de la gauche vers la droite, mais le dernier mot,\n"
 "qui est toujours une commande de macro à étendre, porte le numéro 0. Ainsi, $PrevWord(0)\n"
@@ -16348,7 +16327,7 @@ msgstr ""
 "i 0 count-1 forb|\n"
 "Ici, $PrevWord(0)=forb, $PrevWord(1)=i, $PrevWord(2)=0, $PrevWord(3)=count-1\n"
 "\n"
-"A la fin de votre modèle, utilisez $PrevWord(-1) qui ne donnera qu'une chaîne vide, mais qui opèrera à un nettoyage important de tous les $PrevWords trouvés. En bonus, voici une expression régulière utilisée afin de détecter les mots pour cette macro : [\\w\\-+*\\(\\)\\[\\].^@]+\n"
+"A la fin de votre modèle, utilisez $PrevWord(-1) qui ne donnera qu'une chaîne vide, mais qui opèrera un nettoyage important de tous les $PrevWords trouvés. En bonus, voici une expression régulière utilisée afin de détecter les mots pour cette macro : [\\w\\-+*\\(\\)\\[\\].^@]+\n"
 
 #: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
 msgid ""
@@ -16380,10 +16359,8 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr "L'espace de bordure droit. Cette valeur est ajoutée à la base de l'espace de bordure et employée pour l'espace à droite du contrôle."
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
-#, fuzzy
-#| msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
-msgstr "C'est le contrôle frère auquel le côté droit est ancré. A laisser vide pour le parent."
+msgstr "C'est le contrôle frère auquel le côté droit est ancré. Le laisser vide pour l'ancrer au parent comme le ferait Delphi (\"BorderSpacing\" et \"ReferenceSide\" n'importent pas)."
 
 #: lazarusidestrconsts.lisrightsides
 msgid "Right sides"
@@ -18026,10 +18003,8 @@ msgid "Tops"
 msgstr "Hauts"
 
 #: lazarusidestrconsts.listopsiblingcomboboxhint
-#, fuzzy
-#| msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
-msgstr "Il s'agit du contrôle frère auquel le côté supérieur est ancré. A laisser vide pour le parent."
+msgstr "Il s'agit du contrôle frère auquel le côté supérieur est ancré. Le laisser vide pour l'ancrer au parent comme le ferait Delphi (\"BorderSpacing\" et \"ReferenceSide\" n'importent pas)."
 
 #: lazarusidestrconsts.listopspaceequally
 msgid "Top space equally"
@@ -18439,7 +18414,7 @@ msgstr "Impossible de charger le paquet \"%s\""
 
 #: lazarusidestrconsts.lisunabletoloadthecomponentclassbecauseitdependsonits
 msgid "Unable to load the component class \"%s\", because it depends on itself."
-msgstr "Impossible de charger la classe de composant \"%s\", parce qu'elle dépend d'elle-même."
+msgstr "Impossible de charger la classe de composant \"%s\" parce qu'elle dépend d'elle-même."
 
 #: lazarusidestrconsts.lisunabletoopen
 msgid "Unable to open \"%s\""

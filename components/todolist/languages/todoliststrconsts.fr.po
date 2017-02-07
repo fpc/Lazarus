@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.11\n"
 
 #: todoliststrconsts.dlgfiltercsv
 msgid "CSV files"
@@ -25,15 +25,15 @@ msgstr "Insérer une macro"
 
 #: todoliststrconsts.lisoptions
 msgid "Options"
-msgstr ""
+msgstr "Options"
 
 #: todoliststrconsts.lispackages
 msgid "Packages"
-msgstr ""
+msgstr "Paquets"
 
 #: todoliststrconsts.lispackageshint
 msgid "Extends \"%s\" and \"%s\" options by units from used packages"
-msgstr ""
+msgstr "Étendre \"%s\" et les options \"%s\" par unités à partir de paquets utilisés "
 
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
@@ -41,12 +41,12 @@ msgstr "Texte"
 
 #: todoliststrconsts.lissourceeditor
 msgid "Editor"
-msgstr ""
+msgstr "Éditeur"
 
 #: todoliststrconsts.lissourceeditorhint
 msgctxt "todoliststrconsts.lissourceeditorhint"
 msgid "Add units in source editor"
-msgstr ""
+msgstr "Ajouter les unités de l'éditeur de source"
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
@@ -78,11 +78,11 @@ msgstr "Pense-bête"
 
 #: todoliststrconsts.listodolisted
 msgid "Listed"
-msgstr ""
+msgstr "Listé"
 
 #: todoliststrconsts.listodolistedhint
 msgid "Add units listed in project inspector/package editor"
-msgstr ""
+msgstr "Ajouter les unités listées dans l'inspecteur de projet/l'éditeur de paquet"
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
@@ -106,11 +106,11 @@ msgstr "Priorité"
 
 #: todoliststrconsts.listodoused
 msgid "Used"
-msgstr ""
+msgstr "Utilisé"
 
 #: todoliststrconsts.listodousedhint
 msgid "Add units used by main source file"
-msgstr ""
+msgstr "Ajouter les unités utilisées dans le fichier source principal"
 
 #: todoliststrconsts.listtodolcategory
 msgid "Category"
