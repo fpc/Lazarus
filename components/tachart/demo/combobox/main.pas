@@ -124,7 +124,7 @@ implementation
 {$R *.lfm}
 
 uses
-  TACustomSeries;
+  FPCanvas, TACustomSeries;
 
 
 { TAreaSeries }
@@ -143,6 +143,9 @@ var
 begin
   ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TAreaSeries;
   ser.AreaBrush.Style := CbAreaSerBrushStyle.BrushStyle;
+  if CbAreaSerBrushStyle.BrushStyle = bsImage then
+    // Must be AFTER assigning Brush.Style.
+    ser.AreaBrush.Bitmap := CbAreaSerBrushStyle.BrushBitmap;
 end;
 
 procedure TForm1.CbAreaSerContourColorChange(Sender: TObject);
@@ -210,6 +213,9 @@ var
 begin
   ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TBarSeries;
   ser.BarBrush.Style := CbBarSerBrushStyle.BrushStyle;
+  if CbBarSerBrushStyle.BrushStyle = bsImage then
+    // Must be AFTER assigning Brush.Style.
+    ser.BarBrush.Bitmap := CbBarSerBrushStyle.BrushBitmap;
 end;
 
 procedure TForm1.CbBarSerPenStyleChange(Sender: TObject);
@@ -376,7 +382,22 @@ begin
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
+var
+  bmp: TBitmap;
 begin
+  // Prepare the application's icon as a brush fill picture
+  bmp := TBitmap.Create;
+  try
+    bmp.SetSize(Application.Icon.Width, Application.Icon.Height);
+    bmp.Canvas.FillRect(0, 0, bmp.Width, bmp.Height);
+    bmp.Transparent := true;
+    bmp.canvas.Draw(0, 0, Application.Icon);
+    CbBarSerBrushStyle.BrushBitmap.Assign(bmp);
+    CbAreaSerBrushStyle.BrushBitmap.Assign(bmp);
+  finally
+    bmp.Free;
+  end;
+
   ChartListbox1.ItemIndex := 0;
   ChartListbox1Click(nil);
 end;
