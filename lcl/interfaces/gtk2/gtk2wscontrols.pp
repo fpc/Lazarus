@@ -95,6 +95,7 @@ type
     class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, {%H-}UseRightToLeftReading, {%H-}UseRightToLeftScrollBar : Boolean); override;
 
     class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
+    class procedure Repaint(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
     class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
@@ -1143,6 +1144,13 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'PaintTo') then
     Exit;
   PaintWidget(GetFixedWidget({%H-}PGtkWidget(AWinControl.Handle)));
+end;
+
+class procedure TGtk2WSWinControl.Repaint(const AWinControl: TWinControl);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'Repaint')
+  then Exit;
+  gtk_widget_queue_draw({%H-}PGtkWidget(AWinControl.Handle));
 end;
 
 { TGtk2WSBaseScrollingWinControl }
