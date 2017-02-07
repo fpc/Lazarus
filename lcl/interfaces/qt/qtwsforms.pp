@@ -590,6 +590,13 @@ begin
 
   {$IFDEF HASX11}
 
+  // make qt interface snappy.
+  if Assigned(Application) and not Application.Terminated then
+  begin
+    if AWinControl.HandleObjectShouldBeVisible or (fsModal in TCustomForm(AWinControl).FormState) then
+      QCoreApplication_processEvents(QEventLoopExcludeUserInputEvents);
+  end;
+
   if (Application.TaskBarBehavior = tbSingleButton) or
     (TForm(AWinControl).ShowInTaskBar <> stDefault) then
       SetShowInTaskbar(TForm(AWinControl), TForm(AWinControl).ShowInTaskBar);

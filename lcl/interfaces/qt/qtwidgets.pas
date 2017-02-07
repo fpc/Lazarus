@@ -19823,6 +19823,11 @@ begin
       QVariant_destroy(v);
     end;
   end;
+  {$IFDEF HASX11}
+  // make qt interface snappy.
+  if Assigned(Application) and not Application.Terminated then
+    QCoreApplication_processEvents(QEventLoopExcludeUserInputEvents);
+  {$ENDIF}
 end;
 
 end.
