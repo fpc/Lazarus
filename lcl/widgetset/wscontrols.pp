@@ -134,6 +134,7 @@ type
     class procedure DefaultWndHandler(const AWinControl: TWinControl; var AMessage); virtual;
     class procedure Invalidate(const AWinControl: TWinControl); virtual;
     class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); virtual;
+    class procedure Repaint(const AWinControl: TWinControl); virtual;
     class procedure ShowHide(const AWinControl: TWinControl); virtual; //TODO: rename to SetVisible(control, visible)
     class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); virtual;
   end;
@@ -333,6 +334,12 @@ class procedure TWSWinControl.PaintTo(const AWinControl: TWinControl; ADC: HDC;
   X, Y: Integer);
 begin
 
+end;
+
+class procedure TWSWinControl.Repaint(const AWinControl: TWinControl);
+begin
+  AWinControl.Invalidate;
+  AWinControl.Update;
 end;
 
 class procedure TWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);

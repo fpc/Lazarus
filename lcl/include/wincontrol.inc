@@ -6088,8 +6088,7 @@ begin
   if csDesigning in ComponentState then
     DebugLn('TWinControl.Repaint A ',Name,':',ClassName);
   {$ENDIF}
-  Invalidate;
-  Update;
+  TWSWinControlClass(WidgetSetClass).Repaint(Self);
 end;
 
 {------------------------------------------------------------------------------
