@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-01-08 23:53+0300\n"
+"PO-Revision-Date: 2017-02-08 01:27+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2308,6 +2308,10 @@ msgstr "Маркер"
 msgid "Highlight of Word under Caret"
 msgstr "Подсветка текущего слова под курсором"
 
+#: lazarusidestrconsts.dlgmarkupoutline
+msgid "Outline (global)"
+msgstr "Отображать контур блока (глобально)"
+
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
 msgid "User defined markup"
@@ -2410,6 +2414,10 @@ msgstr "Параметры клавиш"
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain
 msgid "Main settings"
 msgstr "Основные параметры"
+
+#: lazarusidestrconsts.dlgmarkupwordbracket
+msgid "Word Brackets on caret (global)"
+msgstr "Подсвечивать операторные скобки при установке курсора (глобально)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match word boundaries for words up to this length:"
@@ -2941,9 +2949,17 @@ msgstr "Подсвечивать операторы управления как 
 msgid "Extended Pascal Keyword Options"
 msgstr "Расширенные параметры ключевых слов Паскаля"
 
+#: lazarusidestrconsts.dlgpaskeywordsmarkup
+msgid "Markup (on caret)"
+msgstr "Подсвечивать при установке курсора"
+
 #: lazarusidestrconsts.dlgpaskeywordsmatches
 msgid "Matching Keywords"
 msgstr "Связанные ключевые слова"
+
+#: lazarusidestrconsts.dlgpaskeywordsoutline
+msgid "Outline"
+msgstr "Отображать контур"
 
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass options to linker with \"-k\", delimiter is space"
@@ -9602,7 +9618,7 @@ msgid ""
 "\n"
 "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
 "\n"
-"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgstr ""
 "<одна строка с наименованием Программы и кратким описанием ее назначения>\n"
 "\n"
@@ -9612,7 +9628,7 @@ msgstr ""
 "\n"
 "Мы распространяем эту программу в надежде на то, что она будет вам полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЁ НИКАКИХ ГАРАНТИЙ, в том числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной информации ознакомьтесь со Стандартной Общественной Лицензией GNU. \n"
 "\n"
-"Копия Стандартной Общественной Лицензии GNU доступна в Интернете по адресу <http://www.gnu.org/copyleft/gpl.html>. Вы также можете получить экземпляр в Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"Копия Стандартной Общественной Лицензии GNU доступна в Интернете по адресу <http://www.gnu.org/copyleft/gpl.html>. Вы также можете получить экземпляр в Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
@@ -11356,7 +11372,7 @@ msgid ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgstr ""
 "<одна строка с наименованием Библиотеки и кратким описанием её назначения>\n"
 "\n"
@@ -11366,7 +11382,7 @@ msgstr ""
 "\n"
 "Мы распространяем эту библиотеку в надежде на то, что она будет вам полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной информации ознакомьтесь со Стандартной Общественной Лицензией Ограниченного Применений GNU. \n"
 "\n"
-"Вместе с данной библиотекой вы должны были получить экземпляр Стандартной Общественной Лицензии Ограниченного Применения GNU. Если вы его не получили, сообщите об этом в Free Software Foundation, Inc., 59 Temple Place — Suite 330, Boston, MA 02111-1307, USA.\n"
+"Вместе с данной библиотекой вы должны были получить экземпляр Стандартной Общественной Лицензии Ограниченного Применения GNU. Если вы его не получили, сообщите об этом в Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
@@ -13366,7 +13382,7 @@ msgid ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgstr ""
 "<одна строка с наименованием Библиотеки и кратким описанием её назначения>\n"
 "\n"
@@ -13378,7 +13394,7 @@ msgstr ""
 "\n"
 "Мы распространяем эту библиотеку в надежде на то, что она будет вам полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной информации ознакомьтесь со Стандартной Общественной Лицензией Ограниченного Применений GNU. \n"
 "\n"
-"Вместе с данной библиотекой вы должны были получить экземпляр Стандартной Общественной Лицензии Ограниченного Применения GNU. Если вы его не получили, сообщите об этом в Free Software Foundation, Inc., 59 Temple Place — Suite 330, Boston, MA 02111-1307, USA.\n"
+"Вместе с данной библиотекой вы должны были получить экземпляр Стандартной Общественной Лицензии Ограниченного Применения GNU. Если вы его не получили, сообщите об этом в Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 
 #: lazarusidestrconsts.lismodify
 msgid "&Modify"
@@ -17173,6 +17189,14 @@ msgstr "Переместить выбранный компонент вниз в
 #: lazarusidestrconsts.listaborderof
 msgid "Tab Order of %s"
 msgstr "Порядок перехода для %s"
+
+#: lazarusidestrconsts.listaborderrecursionhint
+msgid "Calculate tab order recursively for child controls"
+msgstr "Вычислить порядок перехода рекурсивно для дочерних компонентов"
+
+#: lazarusidestrconsts.listaborderrecursively
+msgid "recursively"
+msgstr "рекурсивно"
 
 #: lazarusidestrconsts.listabordersorthint
 msgid "Calculate tab order for controls by their X- and Y- positions"

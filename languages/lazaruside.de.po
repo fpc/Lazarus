@@ -2306,6 +2306,10 @@ msgstr "Markierungsfarbe"
 msgid "Highlight of Word under Caret"
 msgstr "Wort unter Cursor hervorheben"
 
+#: lazarusidestrconsts.dlgmarkupoutline
+msgid "Outline (global)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
 msgid "User defined markup"
@@ -2408,6 +2412,10 @@ msgstr "Tasteneinstellungen"
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain
 msgid "Main settings"
 msgstr "Haupteinstellungen"
+
+#: lazarusidestrconsts.dlgmarkupwordbracket
+msgid "Word Brackets on caret (global)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match word boundaries for words up to this length:"
@@ -2939,9 +2947,17 @@ msgstr "Steueranweisungen wie Schlüsselworte hervorheben"
 msgid "Extended Pascal Keyword Options"
 msgstr "Erweiterte Pascal-Schlüsselwort-Einstellungen"
 
+#: lazarusidestrconsts.dlgpaskeywordsmarkup
+msgid "Markup (on caret)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpaskeywordsmatches
 msgid "Matching Keywords"
 msgstr "Passende Schlüsselwörter"
+
+#: lazarusidestrconsts.dlgpaskeywordsoutline
+msgid "Outline"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass options to linker with \"-k\", delimiter is space"
@@ -9596,6 +9612,17 @@ msgid "Goto selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice
+#, fuzzy
+#| msgid ""
+#| "<description>\n"
+#| "\n"
+#| "Copyright (C) <year> <name of author> <contact>\n"
+#| "\n"
+#| "This source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n"
+#| "\n"
+#| "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
+#| "\n"
+#| "A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -9605,7 +9632,7 @@ msgid ""
 "\n"
 "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
 "\n"
-"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgstr ""
 "<Beschreibung>\n"
 "\n"
@@ -11326,6 +11353,17 @@ msgid "LFM is ok"
 msgstr "LFM ist ok"
 
 #: lazarusidestrconsts.lislgplnotice
+#, fuzzy
+#| msgid ""
+#| "<description>\n"
+#| "\n"
+#| "Copyright (C) <year> <name of author> <contact>\n"
+#| "\n"
+#| "This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n"
+#| "\n"
+#| "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
+#| "\n"
+#| "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -11335,7 +11373,7 @@ msgid ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgstr ""
 "<Beschreibung>\n"
 "\n"
@@ -13320,6 +13358,19 @@ msgid ", Mode: %s"
 msgstr ", Modus: %s"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
+#, fuzzy
+#| msgid ""
+#| "<description>\n"
+#| "\n"
+#| "Copyright (C) <year> <name of author> <contact>\n"
+#| "\n"
+#| "This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:\n"
+#| "\n"
+#| "As a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.\n"
+#| "\n"
+#| "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
+#| "\n"
+#| "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -13331,7 +13382,7 @@ msgid ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgstr ""
 "<Beschreibung>\n"
 "\n"
@@ -17129,6 +17180,14 @@ msgstr "Bewegt das gewählte Steuerelement in der Tabulatorreihenfolge nach unte
 #: lazarusidestrconsts.listaborderof
 msgid "Tab Order of %s"
 msgstr "Tabulatorreihenfolge von %s"
+
+#: lazarusidestrconsts.listaborderrecursionhint
+msgid "Calculate tab order recursively for child controls"
+msgstr ""
+
+#: lazarusidestrconsts.listaborderrecursively
+msgid "recursively"
+msgstr ""
 
 #: lazarusidestrconsts.listabordersorthint
 msgid "Calculate tab order for controls by their X- and Y- positions"
@@ -21014,3 +21073,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+

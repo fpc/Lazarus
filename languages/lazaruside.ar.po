@@ -2314,6 +2314,10 @@ msgstr ""
 msgid "Highlight of Word under Caret"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmarkupoutline
+msgid "Outline (global)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgid "User defined markup"
 msgstr ""
@@ -2414,6 +2418,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain
 msgid "Main settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupwordbracket
+msgid "Word Brackets on caret (global)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
@@ -2944,8 +2952,16 @@ msgstr ""
 msgid "Extended Pascal Keyword Options"
 msgstr ""
 
+#: lazarusidestrconsts.dlgpaskeywordsmarkup
+msgid "Markup (on caret)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpaskeywordsmatches
 msgid "Matching Keywords"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpaskeywordsoutline
+msgid "Outline"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker
@@ -9626,7 +9642,7 @@ msgid ""
 "\n"
 "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
 "\n"
-"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgstr ""
 
 #: lazarusidestrconsts.lisgroup
@@ -11349,7 +11365,7 @@ msgid ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgstr ""
 
 #: lazarusidestrconsts.lislibrarypath
@@ -13345,7 +13361,7 @@ msgid ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgstr ""
 
 #: lazarusidestrconsts.lismodify
@@ -17134,6 +17150,14 @@ msgstr ""
 
 #: lazarusidestrconsts.listaborderof
 msgid "Tab Order of %s"
+msgstr ""
+
+#: lazarusidestrconsts.listaborderrecursionhint
+msgid "Calculate tab order recursively for child controls"
+msgstr ""
+
+#: lazarusidestrconsts.listaborderrecursively
+msgid "recursively"
 msgstr ""
 
 #: lazarusidestrconsts.listabordersorthint

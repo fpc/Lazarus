@@ -2347,6 +2347,10 @@ msgstr "Cor dos marcadores"
 msgid "Highlight of Word under Caret"
 msgstr "Realce da palavra sob o cursor texto"
 
+#: lazarusidestrconsts.dlgmarkupoutline
+msgid "Outline (global)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
 msgid "User defined markup"
@@ -2449,6 +2453,10 @@ msgstr "Definições chave"
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain
 msgid "Main settings"
 msgstr "Definições principais"
+
+#: lazarusidestrconsts.dlgmarkupwordbracket
+msgid "Word Brackets on caret (global)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match word boundaries for words up to this length:"
@@ -2986,8 +2994,16 @@ msgstr "Realçar declarações de controle como palavras-chave"
 msgid "Extended Pascal Keyword Options"
 msgstr "Opções de palavras-chave Pascal Extendido"
 
+#: lazarusidestrconsts.dlgpaskeywordsmarkup
+msgid "Markup (on caret)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpaskeywordsmatches
 msgid "Matching Keywords"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpaskeywordsoutline
+msgid "Outline"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker
@@ -9833,6 +9849,16 @@ msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice
 #, fuzzy,badformat
+#| msgid ""
+#| "<description>\n"
+#| "\n"
+#| "Copyright (C) <year> <name of author> <contact>\n"
+#| "\n"
+#| "This source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n"
+#| "\n"
+#| "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
+#| "\n"
+#| "A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -9842,7 +9868,7 @@ msgid ""
 "\n"
 "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
 "\n"
-"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEstes fontes são software livre; você pode redistribuir e/ou modificá-los sob os termos da GNU Library General Public License como publicada pela Free Software Foundation; ou a versão 2 da Licença, ou (a sua escolha) qualquer versão posterior. %sEste código é distribuído na esperança de que seja útil, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE ou ADEQUAÇÃO A UMA FINALIDADE PARTICULAR. Veja a licença GNU General Public License para maiores detalhes.%sVocê deve ter recebido uma cópia da licença GNU Library General Public License juntamente com esta biblioteca; senão, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lisgroup
@@ -11637,6 +11663,16 @@ msgstr "LFM está ok"
 
 #: lazarusidestrconsts.lislgplnotice
 #, fuzzy,badformat
+#| msgid ""
+#| "<description>\n"
+#| "\n"
+#| "Copyright (C) <year> <name of author> <contact>\n"
+#| "\n"
+#| "This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n"
+#| "\n"
+#| "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
+#| "\n"
+#| "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -11646,7 +11682,7 @@ msgid ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la sob os termos da GNU Library General Public License como publicada pela Free Software Foundation; ou a versão 2 da Licença, ou (a sua escolha) qualquer versão posterior. %sEste programa é distribuido na esperanca de que seja útil, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE ou ADEQUAÇÃO A UMA FINALIDADE PARTICULAR. Veja a licença GNU General Public License para maiores detalhes.%sVocê deve ter recebido uma cópia da licença GNU Library General Public License juntamente com esta biblioteca; senão, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lislibrarypath
@@ -13632,6 +13668,18 @@ msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 #, fuzzy,badformat
+#| msgid ""
+#| "<description>\n"
+#| "\n"
+#| "Copyright (C) <year> <name of author> <contact>\n"
+#| "\n"
+#| "This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:\n"
+#| "\n"
+#| "As a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.\n"
+#| "\n"
+#| "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
+#| "\n"
+#| "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -13643,7 +13691,7 @@ msgid ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca é software livre; você pode redistribuí-la e/ou moficá-la sob os termos da licença GNU Library General Public License como publicada pela Free Software Foundation; ou a versão 2 da Licença, ou (a sua escolha) qualquer versão posterior com as seguintes modificações:%sComo uma exceção especial, os detentores do copyright desta biblioteca dão permissão para usá-la com módulos independentes para produzir um executável, independentemente dos termos de licença destes módulos independentes, e copiar e distribuir o executável resultante sob os termos de sua escolha, desde que você encontre, para cada módulo independente vinculado, os termos e condições da licença daquele módulo. Um módulo independente e um módulo que não é derivado ou baseado nesta biblioteca. Se você modificar esta biblioteca você deve estender esta exceção a sua versão da biblioteca, mas não é obrigado a fazer isto. Se você não quiser fazer isto, elimine o estatuto desta exceção da sua versão.%sEste programa é distribuido na esperança de que seja útil, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE ou ADEQUAÇÃO A UMA FINALIDADE PARTICULAR. Veja a licença GNU General Public License para maiores detalhes.%sVocê deve ter recebido uma cópia da licença GNU Library General Public License juntamente com esta biblioteca; senão, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lismodify
@@ -17595,6 +17643,14 @@ msgstr "Mover o controle selecionado abaixo na ordem de tabulação"
 #: lazarusidestrconsts.listaborderof
 msgid "Tab Order of %s"
 msgstr "Ordem tabulação de %s"
+
+#: lazarusidestrconsts.listaborderrecursionhint
+msgid "Calculate tab order recursively for child controls"
+msgstr ""
+
+#: lazarusidestrconsts.listaborderrecursively
+msgid "recursively"
+msgstr ""
 
 #: lazarusidestrconsts.listabordersorthint
 msgid "Calculate tab order for controls by their X- and Y- positions"
