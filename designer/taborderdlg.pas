@@ -148,6 +148,7 @@ begin
   ArrowDown.Hint:=lisTabOrderDownHint;
   ArrowUp.Hint:=lisTabOrderUpHint;
   SortByPositionButton.Hint:=lisTabOrderSortHint;
+  CheckBoxSortRecursivly.Caption := lisTabOrderRecursively;
   CheckBoxSortRecursivly.Hint := lisTabOrderRecursionHint;
 end;
 
