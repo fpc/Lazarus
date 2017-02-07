@@ -294,7 +294,8 @@ begin
   Result := False;
   if not WSCheckHandleAllocated(AWincontrol, 'GetText') then
     Exit;
-
+  if not QtWidgetSet.IsValidHandle(AWinControl.Handle) then
+    exit;
   Result := not TQtWidget(AWinControl.Handle).getTextStatic;
   if Result then
     AText := UTF16ToUTF8(TQtWidget(AWinControl.Handle).getText);
