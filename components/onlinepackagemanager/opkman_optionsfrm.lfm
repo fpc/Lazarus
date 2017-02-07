@@ -188,11 +188,9 @@ object OptionsFrm: TOptionsFrm
         end
         object spDaysToShowNewPackages: TSpinEdit
           Left = 228
-          Height = 24
+          Height = 23
           Top = 224
           Width = 76
-          AutoSize = False
-          BorderSpacing.Around = 1
           MaxValue = 365
           TabOrder = 4
           Value = 31
@@ -225,7 +223,7 @@ object OptionsFrm: TOptionsFrm
           TabOrder = 0
         end
         object gbProxySettings: TGroupBox
-          Left = 15
+          Left = 16
           Height = 176
           Top = 48
           Width = 411
@@ -295,12 +293,10 @@ object OptionsFrm: TOptionsFrm
             Text = 'password'
           end
           object seProxyPort: TSpinEdit
-            Left = 319
-            Height = 24
-            Top = 22
+            Left = 317
+            Height = 23
+            Top = 24
             Width = 75
-            AutoSize = False
-            BorderSpacing.Around = 1
             MaxValue = 65635
             TabOrder = 3
           end
@@ -541,7 +537,6 @@ object OptionsFrm: TOptionsFrm
               Color = clBtnFace
               ItemHeight = 0
               ParentShowHint = False
-              ScrollWidth = 179
               ShowHint = True
               Sorted = True
               TabOrder = 2
@@ -629,7 +624,6 @@ object OptionsFrm: TOptionsFrm
               Color = clBtnFace
               ItemHeight = 0
               ParentShowHint = False
-              ScrollWidth = 159
               ShowHint = True
               Sorted = True
               TabOrder = 2

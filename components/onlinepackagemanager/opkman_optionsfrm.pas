@@ -410,8 +410,7 @@ begin
     lbLastUpdate.Caption := rsOptions_lbLastUpdate_Caption + FormatDateTime('YYYY.MM.DD  hh:mm:ss', Options.LastUpdate);
   lbDaysToShowNewPackages.Caption := rsOptions_lbDaysToShowNewPackages_Caption;
   spDaysToShowNewPackages.Value := Options.DaysToShowNewPackages;
-  spDaysToShowNewPackages.Height := cbCheckForUpdates.Height;
-  spDaysToShowNewPackages.Top := lbDaysToShowNewPackages.Top - ((spDaysToShowNewPackages.Height - lbDaysToShowNewPackages.Height) div 2);
+  spDaysToShowNewPackages.Top := lbDaysToShowNewPackages.Top + 1 + (lbDaysToShowNewPackages.Height - spDaysToShowNewPackages.Height) div 2;
   spDaysToShowNewPackages.Left := lbDaysToShowNewPackages.Left + lbDaysToShowNewPackages.Canvas.GetTextWidth(lbDaysToShowNewPackages.Caption) + 10;
 
   tsProxy.Caption := rsOptions_tsProxy_Caption;
@@ -425,8 +424,7 @@ begin
   gbProxySettings.Enabled := Options.ProxyEnabled;
   edProxyServer.Text := Options.ProxyServer;
   seProxyPort.Value := Options.ProxyPort;
-  seProxyPort.Height := edProxyServer.Height;
-  seProxyPort.Top := edProxyServer.Top;
+  seProxyPort.Top := edProxyServer.Top + (edProxyServer.Height - seProxyPort.Height) div 2;
   edProxyUser.Text := Options.ProxyUser;
   edProxyPassword.Text := Options.ProxyPassword;
 
