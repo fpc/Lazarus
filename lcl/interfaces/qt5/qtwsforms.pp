@@ -256,6 +256,8 @@ var
   w: TQtWidget;
 begin
   w := TQtWidget(AWinControl.Handle);
+  if not QtWidgetSet.IsValidHandle(HWND(w)) then
+    exit;
   {forms which have another widget as parent
    eg.form inside tabpage or mdichilds
    can segfault without hiding before release.
