@@ -88,6 +88,7 @@ type
 
     class procedure ConstraintsChange(const AWinControl: TWinControl); override;
     class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
+    class procedure Repaint(const AWinControl: TWinControl); override;
     class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
@@ -434,6 +435,13 @@ begin
   finally
     Pixmap.Free;
   end;
+end;
+
+class procedure TQtWSWinControl.Repaint(const AWinControl: TWinControl);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'Repaint') then
+    Exit;
+  TQtWidget(AWinControl.Handle).Repaint;
 end;
 
 class procedure TQtWSWinControl.ScrollBy(const AWinControl: TWinControl;
