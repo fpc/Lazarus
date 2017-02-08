@@ -136,6 +136,60 @@ var
   {$ENDIF}
   dx, dy: integer;
   APalette: QPaletteH;
+
+  procedure DrawSplitterInternal;
+  var
+    part: integer;
+    lx, ly, d, lt: Integer;
+    r1: TRect;
+    ALCLColor, ALCLColor2: TColor;
+    AQtColor: QColorH;
+    AColor: TQColor;
+    APalette: QPaletteH;
+    AColorRef: TColorRef;
+  begin
+    r1 := ARect;
+    APalette := QPalette_create;
+    try
+      QStyleOption_palette(opt, APalette);
+      AQtColor := QColor_create(QBrush_color(QPalette_background(APalette)));
+      QColor_darker(AQtColor, @AColor, 200);
+      TQColorToColorRef(AColor, AColorRef);
+      ALCLColor := RGBToColor(Red(AColorRef), Green(AColorRef), Blue(AColorRef));
+      QColor_lighter(AQtColor, @AColor, 128);
+      TQColorToColorRef(AColor, AColorRef);
+      ALCLColor2 := RGBToColor(Red(AColorRef), Green(AColorRef), Blue(AColorRef));
+      if StyleState and QStyleState_Horizontal = 0 then
+      begin
+        part := ((r1.Right - r1.Left) div 5) * 2;
+        lx := r1.left + 2 + part;
+        d := (r1.Bottom - r1.Top - 2) div 2;
+        lt := r1.Top + d + 1;
+        while lx < r1.Right - part do
+        begin
+          QtWidgetSet.DCSetPixel(DC, lx, lt, ALCLColor);
+          QtWidgetSet.DCSetPixel(DC, lx, lt - 1, ALCLColor2);
+          lx := lx + 4;
+        end;
+      end else
+      begin
+        part := ((r1.Bottom - r1.Top) div 5) * 2;
+        ly := r1.Bottom - 2 - part;
+        d := (r1.Right - r1.Left - 2) div 2;
+        lt := r1.Left + d + 1;
+        while ly > r1.Top + part do
+        begin
+          QtWidgetSet.DCSetPixel(DC, lt, ly, ALCLColor);
+          QtWidgetSet.DCSetPixel(DC, lt, ly - 1, ALCLColor2);
+          ly := ly - 4;
+        end;
+      end;
+    finally
+      QPalette_destroy(APalette);
+      QColor_destroy(AQtColor);
+    end;
+  end;
+
 begin
   if (Context <> nil) and not IsRectEmpty(R) then
   begin
@@ -262,8 +316,16 @@ begin
           OffsetRect(ARect, -dx, -dy);
           QStyleOption_setRect(opt, @ARect);
 
-          QStyle_drawControl(Style, Element.ControlElement, opt, Context.Widget, Context.Parent);
+          // issue #27182 qt does not implement splitter grabber in some themes.
+          if (Element.ControlElement = QStyleCE_Splitter) and
+            ( (GetStyleName = 'windows') or (GetStyleName = 'breeze')
+              {$IFDEF MSWINDOWS} or true {$ENDIF}) then
+            drawSplitterInternal
+          else
+            QStyle_drawControl(Style, Element.ControlElement, opt, Context.Widget, Context.Parent);
+
           Context.translate(-dx, -dy);
+
           QStyleOption_Destroy(opt);
         end;
         qdvComplexControl:
