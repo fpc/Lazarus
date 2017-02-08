@@ -40,13 +40,13 @@ type
     CbBarSerBrushStyle: TChartComboBox;
     ChartListbox1: TChartListbox;
     CbShow: TCheckBox;
-    CbLineSerPenColor: TColorBox;
+    CbLineSerLinePenColor: TColorBox;
     ChartToolset1: TChartToolset;
     ChartToolset1DataPointClickTool1: TDataPointClickTool;
     CbShowPoints: TCheckBox;
-    GbBarSerBrush1: TGroupBox;
-    GbBarSerPen1: TGroupBox;
-    GbBarSerPen2: TGroupBox;
+    GbAreaSerBrush: TGroupBox;
+    GbAreaSerContour: TGroupBox;
+    GbAreaSerLines: TGroupBox;
     GbLineSerLines: TGroupBox;
     GbBarSerPen: TGroupBox;
     GbLineSerPointer: TGroupBox;
@@ -83,34 +83,20 @@ type
     RandomChartSource3: TRandomChartSource;
     EdLineSerPointerSize: TSpinEdit;
     Splitter1: TSplitter;
-    procedure CbAreaSerBrushColorChange(Sender: TObject);
-    procedure CbAreaSerBrushStyleChange(Sender: TObject);
-    procedure CbAreaSerContourColorChange(Sender: TObject);
-    procedure CbAreaSerContourStyleChange(Sender: TObject);
-    procedure CbAreaSerContourWidthChange(Sender: TObject);
-    procedure CbAreaSerLinesColorChange(Sender: TObject);
-    procedure CbAreaSerLinesStyleChange(Sender: TObject);
-    procedure CbAreaSerLinesWidthChange(Sender: TObject);
-    procedure CbBarSerBrushColorChange(Sender: TObject);
-    procedure CbBarSerBrushStyleChange(Sender: TObject);
-    procedure CbBarSerPenStyleChange(Sender: TObject);
-    procedure CbBarSerPenWidthChange(Sender: TObject);
-    procedure CbBarSerPenColorChange(Sender: TObject);
-    procedure CbLineSerPointerBorderColorChange(Sender: TObject);
-    procedure CbLineSerLinePenStyleChange(Sender: TObject);
-    procedure CbLineSerLinePenWidthChange(Sender: TObject);
-    procedure CbLineSerPenColorChange(Sender: TObject);
-    procedure CbLineSerPointerBrushColorChange(Sender: TObject);
-    procedure CbLineSerPointerStyleChange(Sender: TObject);
+    procedure AreaBrushChange(Sender: TObject);
+    procedure AreaContourChange(Sender: TObject);
+    procedure AreaLinesChange(Sender: TObject);
+    procedure BarBrushChange(Sender: TObject);
+    procedure BarPenChange(Sender: TObject);
+    procedure LinePenChange(Sender: TObject);
+    procedure LinePointerChange(Sender: TObject);
     procedure CbShowChange(Sender: TObject);
-    procedure CbShowLinesChange(Sender: TObject);
-    procedure CbShowPointsChange(Sender: TObject);
     procedure ChartListbox1Click(Sender: TObject);
     procedure ChartToolset1DataPointClickTool1PointClick(ATool: TChartTool;
       APoint: TPoint);
-    procedure EdLineSerPointerSizeChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
+    FLockChanges: Integer;
 
   public
 
@@ -124,174 +110,115 @@ implementation
 {$R *.lfm}
 
 uses
-  FPCanvas, TACustomSeries;
+  FPCanvas, TAChartUtils, TACustomSeries;
 
 
 { TAreaSeries }
 
-procedure TForm1.CbAreaSerBrushColorChange(Sender: TObject);
+procedure TForm1.AreaBrushChange(Sender: TObject);
 var
   ser: TAreaSeries;
 begin
+  if FLockChanges > 0 then
+    exit;
   ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TAreaSeries;
   ser.AreaBrush.Color := CbAreaSerBrushColor.Selected;
-end;
-
-procedure TForm1.CbAreaSerBrushStyleChange(Sender: TObject);
-var
-  ser: TAreaSeries;
-begin
-  ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TAreaSeries;
-  ser.AreaBrush.Style := CbAreaSerBrushStyle.BrushStyle;
-  if CbAreaSerBrushStyle.BrushStyle = bsImage then
-    // Must be AFTER assigning Brush.Style.
+  ser.AreaBrush.Style := CbAreaserBrushStyle.BrushStyle;
+  if CbAreaSerBrushStyle.BrushStyle in [bsImage, bsPattern] then
+    // Must be AFTER assigning brush style because that sets Brush.Bitmap to nil
     ser.AreaBrush.Bitmap := CbAreaSerBrushStyle.BrushBitmap;
 end;
 
-procedure TForm1.CbAreaSerContourColorChange(Sender: TObject);
+procedure TForm1.AreaContourChange(Sender: TObject);
 var
   ser: TAreaSeries;
 begin
+  if FLockChanges > 0 then
+    exit;
   ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TAreaSeries;
   ser.AreaContourPen.Color := CbAreaSerContourColor.Selected;
-end;
-
-procedure TForm1.CbAreaSerContourStyleChange(Sender: TObject);
-var
-  ser: TAreaSeries;
-begin
-  ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TAreaSeries;
-  ser.AreaContourPen.Style := CbAreaSerContourStyle.PenStyle;
-end;
-
-procedure TForm1.CbAreaSerContourWidthChange(Sender: TObject);
-var
-  ser: TAreaSeries;
-begin
-  ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TAreaSeries;
   ser.AreaContourPen.Width := CbAreaSerContourWidth.PenWidth;
+  ser.AreaContourPen.Style := CbAreaSerContourStyle.PenStyle;
+  if ser.AreaContourPen.Style = psPattern then
+    CbAreaSerContourStyle.SetPenPattern(ser.AreaContourPen);
 end;
 
-procedure TForm1.CbAreaSerLinesColorChange(Sender: TObject);
+procedure TForm1.AreaLinesChange(Sender: TObject);
 var
   ser: TAreaSeries;
 begin
+  if FLockChanges > 0 then
+    exit;
   ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TAreaSeries;
   ser.AreaLinesPen.Color := CbAreaSerLinesColor.Selected;
-end;
-
-procedure TForm1.CbAreaSerLinesStyleChange(Sender: TObject);
-var
-  ser: TAreaSeries;
-begin
-  ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TAreaSeries;
-  ser.AreaLinesPen.Style := CbAreaSerLinesStyle.PenStyle;
-end;
-
-procedure TForm1.CbAreaSerLinesWidthChange(Sender: TObject);
-var
-  ser: TAreaSeries;
-begin
   ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TAreaSeries;
   ser.AreaLinesPen.Width := CbAreaSerLinesWidth.PenWidth;
+  ser.AreaLinesPen.Style := CbAreaSerLinesStyle.PenStyle;
+  if ser.AreaLinesPen.Style = psPattern then
+    CbAreaSerLinesStyle.SetPenPattern(ser.AreaLinesPen);
 end;
 
 
 { TBarSeries }
 
-procedure TForm1.CbBarSerBrushColorChange(Sender: TObject);
+procedure TForm1.BarBrushChange(Sender: TObject);
 var
-  ser: TBarSeries;
+  ser: TbarSeries;
 begin
+  if FLockChanges > 0 then
+    exit;
   ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TBarSeries;
   ser.BarBrush.Color := CbBarSerBrushColor.Selected;
-end;
-
-procedure TForm1.CbBarSerBrushStyleChange(Sender: TObject);
-var
-  ser: TBarSeries;
-begin
-  ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TBarSeries;
   ser.BarBrush.Style := CbBarSerBrushStyle.BrushStyle;
-  if CbBarSerBrushStyle.BrushStyle = bsImage then
-    // Must be AFTER assigning Brush.Style.
+  if CbBarSerBrushStyle.BrushStyle in [bsImage, bsPattern] then
+    // Must be AFTER assigning brush style
     ser.BarBrush.Bitmap := CbBarSerBrushStyle.BrushBitmap;
 end;
 
-procedure TForm1.CbBarSerPenStyleChange(Sender: TObject);
+procedure TForm1.BarPenChange(Sender: TObject);
 var
   ser: TBarSeries;
 begin
+  if FLockChanges > 0 then
+    exit;
   ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TBarSeries;
-  ser.BarPen.Style := CbBarSerPenStyle.PenStyle;
-end;
-
-procedure TForm1.CbBarSerPenWidthChange(Sender: TObject);
-var
-  ser: TBarSeries;
-begin
-  ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TBarSeries;
+  ser.BarPen.Color := CbBarSerPenColor.Selected;
   ser.BarPen.Width := CbBarSerPenWidth.PenWidth;
+  ser.BarPen.Style := CbBarSerPenStyle.PenStyle;
+  if ser.BarPen.Style = psPattern then
+    CbBarSerPenStyle.SetPenPattern(ser.BarPen);
 end;
 
 { Line series }
 
-procedure TForm1.CbLineSerLinePenStyleChange(Sender: TObject);
+procedure TForm1.LinePenChange(Sender: TObject);
 var
   ser: TLineSeries;
 begin
+  if FLockChanges > 0 then
+    exit;
   ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TLineSeries;
-  CbLineSerLinePenStyle.SetPenPattern(ser.LinePen);
-  ser.LinePen.Cosmetic := CbLineSerLinePenStyle.Cosmetic;
-  ser.LinePen.Style := CbLineSerLinePenStyle.PenStyle;
-end;
-
-procedure TForm1.CbLineSerLinePenWidthChange(Sender: TObject);
-var
-  ser: TLineSeries;
-begin
-  ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TLineSeries;
+  ser.LinePen.Color := CbLineSerLinePenColor.Selected;
   ser.LinePen.Width := CbLineSerLinePenWidth.PenWidth;
+  ser.LinePen.Style := CbLineSerLinePenStyle.PenStyle;
+  if ser.LinePen.Style = psPattern then
+    CbLineSerLinePenStyle.SetPenPattern(ser.LinePen);
+  ser.ShowLines := cbShowLines.Checked;
 end;
 
-procedure TForm1.CbBarSerPenColorChange(Sender: TObject);
-var
-  ser: TBarSeries;
-begin
-  ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TBarSeries;
-  ser.BarPen.Color := CbBarSerPenColor.Selected;
-end;
-
-procedure TForm1.CbLineSerPenColorChange(Sender: TObject);
+procedure TForm1.LinePointerChange(Sender: TObject);
 var
   ser: TLineSeries;
 begin
-  ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TLineSeries;
-  ser.LinePen.Color := CbLineSerPenColor.Selected;
-end;
-
-procedure TForm1.CbLineSerPointerBorderColorChange(Sender: TObject);
-var
-  ser: TLineSeries;
-begin
+  if FLockChanges > 0 then
+    exit;
   ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TLineSeries;
   ser.Pointer.Pen.Color := CbLineSerPointerBorderColor.Selected;
-end;
-
-procedure TForm1.CbLineSerPointerBrushColorChange(Sender: TObject);
-var
-  ser: TLineSeries;
-begin
-  ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TLineSeries;
   ser.Pointer.Brush.Color := CbLineSerPointerBrushColor.Selected;
-end;
-
-procedure TForm1.CbLineSerPointerStyleChange(Sender: TObject);
-var
-  ser: TLineSeries;
-begin
-  ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TLineSeries;
   ser.Pointer.Style := CbLineSerPointerStyle.PointerStyle;
+  ser.Pointer.HorizSize := EdLineSerPointerSize.Value;
+  ser.Pointer.VertSize := EdLineSerPointerSize.Value;
+  ser.ShowPoints := CbShowPoints.Checked;
 end;
 
 
@@ -305,22 +232,6 @@ begin
   ser.Active := CbShow.Checked;
 end;
 
-procedure TForm1.CbShowLinesChange(Sender: TObject);
-var
-  ser: TLineSeries;
-begin
-  ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TLineSeries;
-  ser.ShowLines := CbShowLines.Checked;
-end;
-
-procedure TForm1.CbShowPointsChange(Sender: TObject);
-var
-  ser: TLineSeries;
-begin
-  ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TLineSeries;
-  ser.ShowPoints := CbShowPoints.Checked;
-end;
-
 procedure TForm1.ChartListbox1Click(Sender: TObject);
 var
   ser: TCustomChartSeries;
@@ -328,26 +239,34 @@ begin
   ser := ChartListbox1.Series[ChartListbox1.ItemIndex];
   if ser is TLineSeries then begin
     Notebook1.PageIndex := 0;
+    CbShowLines.Checked := TLineSeries(ser).ShowLines;
     CbLineSerLinePenStyle.SetPenPattern(TLineSeries(ser).LinePen);
-    CbLineSerLinePenstyle.Cosmetic := TLineSeries(ser).LinePen.Cosmetic;
+    CbLineSerLinePenStyle.Cosmetic := TLineSeries(ser).LinePen.Cosmetic;
     CbLineSerLinePenStyle.PenStyle := TLineSeries(ser).LinePen.Style;
     CbLineSerLinePenWidth.PenWidth := TLineSeries(ser).LinePen.Width;
-    CbLineSerPenColor.Selected := TLineSeries(ser).LinePen.Color;
+    CbLineSerLinePenColor.Selected := TLineSeries(ser).LinePen.Color;
+
+    inc(FLockChanges);
+    CbShowPoints.Checked := TLineSeries(ser).ShowPoints;
+    EdLineSerPointerSize.Value := TLineSeries(ser).Pointer.HorizSize;
     CbLineSerPointerStyle.PointerStyle := TLineSeries(ser).Pointer.Style;
     CbLineSerPointerBorderColor.Selected := TLineSeries(ser).Pointer.Pen.Color;
     CblineSerPointerBrushColor.Selected := TLineSeries(ser).Pointer.Brush.Color;
-    EdLineSerPointerSize.Value := TLineSeries(ser).Pointer.HorizSize;
+    dec(FLockChanges);  // Not clear why this is necessary - should work without it
+ //   LinePointerChange(nil);
   end
-  else if ser is TBarSeries then begin
+  else
+  if ser is TBarSeries then begin
     Notebook1.PageIndex := 1;
     CbBarSerPenStyle.PenStyle := TBarSeries(ser).BarPen.Style;
     CbBarSerPenWidth.PenWidth := TBarseries(ser).BarPen.Width;
     CbBarSerPenColor.Selected := TBarSeries(ser).BarPen.Color;
     CbBarSerBrushColor.Selected := TBarSeries(ser).BarBrush.Color;
     CbBarSerBrushStyle.BrushStyle := TBarSeries(ser).BarBrush.Style;
-  end else if ser is TAreaSeries then begin
+  end
+  else if ser is TAreaSeries then begin
     Notebook1.PageIndex := 2;
-    CbAreaSerBrushColor.Selected := TAreaseries(ser).AreaBrush.Color;
+    CbAreaSerBrushColor.Selected := TAreaSeries(ser).AreaBrush.Color;
     CbAreaSerBrushStyle.BrushStyle := TAreaSeries(ser).AreaBrush.Style;
     CbAreaSerContourStyle.PenStyle := TAreaSeries(ser).AreaContourPen.Style;
     CbAreaSerContourWidth.PenWidth := TAreaSeries(ser).AreaContourPen.Width;
@@ -365,6 +284,7 @@ procedure TForm1.ChartToolset1DataPointClickTool1PointClick(ATool: TChartTool;
 var
   ser: TChartSeries;
 begin
+  Unused(APoint);
   ser := TChartSeries(TDataPointClickTool(ATool).Series);
   if ser <> nil then begin
     ChartListbox1.ItemIndex := ChartListbox1.FindSeriesIndex(ser);
@@ -372,16 +292,9 @@ begin
   end;
 end;
 
-procedure TForm1.EdLineSerPointerSizeChange(Sender: TObject);
-var
-  ser: TLineSeries;
-begin
-  ser := ChartListbox1.Series[ChartListbox1.ItemIndex] as TLineSeries;
-  ser.Pointer.HorizSize := EdLineSerPointerSize.Value;
-  ser.Pointer.VertSize := EdLineSerPointerSize.Value;
-end;
-
 procedure TForm1.FormShow(Sender: TObject);
+const
+  DEFAULT_PATTERN = '2|1|1|1|1|1|1|1';
 var
   bmp: TBitmap;
 begin
@@ -397,6 +310,25 @@ begin
   finally
     bmp.Free;
   end;
+  {
+  bmp := TBitmap.Create;
+  try
+    bmp.SetSize(2, 2);
+    bmp.Canvas.Pixels[0, 0] := clWhite;
+    bmp.Canvas.Pixels[1, 0] := clBlack;
+    bmp.Canvas.Pixels[0, 1] := clBlack;
+    bmp.Canvas.Pixels[1, 1] := clWhite;
+  finally
+    CbBarSerBrushStyle.BrushBitmap.Assign(bmp);
+    CbAreaserBrushStyle.BrushBitmap.Assign(bmp);
+  end;
+  }
+
+  // Prepare user-defined line pattern
+  CbLineSerLinePenStyle.PenPattern := DEFAULT_PATTERN;
+  CbBarSerPenStyle.PenPattern := DEFAULT_PATTERN;
+  CbAreaSerLinesStyle.PenPattern := DEFAULT_PATTERN;
+  CbAreaSerContourStyle.PenPattern := DEFAULT_PATTERN;
 
   ChartListbox1.ItemIndex := 0;
   ChartListbox1Click(nil);

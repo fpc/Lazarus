@@ -5,14 +5,22 @@ interface
 uses
   SysUtils, Graphics, Classes, Controls, StdCtrls, TATypes, TAGraph;
 
+type
+  TChartComboMode = (ccmPointerStyle, ccmPenStyle, ccmPenWidth, ccmBrushStyle);
+
+  TChartComboOptions = set of (
+    ccoNames,           // Show item names in combo
+    ccoPatternBrush,    // Include bsPattern item in brush style mode
+    ccoImageBrush,      // Include bsImage item in brush style mode
+    ccoPatternPen);     // Include psPattern item in pen style mode
+
 const
   DEFAULT_POINTER_STYLE = psCircle;
   DEFAULT_SYMBOL_WIDTH = 40;
   DEFAULT_DROPDOWN_COUNT = 24;
+  DEFAULT_OPTIONS = [ccoNames, ccoPatternBrush, ccoPatternPen];
 
 type
-  TChartComboMode = (ccmPointerStyle, ccmPenStyle, ccmPenWidth, ccmBrushStyle);
-
   TChartComboBox = class(TCustomComboBox)
     private
       FAlignment: TAlignment;
@@ -29,7 +37,7 @@ type
       FCosmetic: Boolean;
       FLockItemIndex: Integer;
       FMode: TChartComboMode;
-      FShowNames: Boolean;
+      FOptions: TChartComboOptions;
       FSymbolWidth: Integer;
       function GetPenPattern: String;
       procedure SetAlignment(const AValue: TAlignment);
@@ -38,13 +46,13 @@ type
       procedure SetCosmetic(const AValue: Boolean);
       procedure SetMaxPenWidth(const AValue: Integer);
       procedure SetMode(const AValue: TChartComboMode);
+      procedure SetOptions(const AValue: TChartComboOptions);
       procedure SetPenColor(const AValue: TColor);
       procedure SetPenPattern(const AValue: String); overload;
       procedure SetSelectedBrushStyle(const AValue: TBrushStyle);
       procedure SetSelectedPenStyle(const AValue: TPenStyle);
       procedure SetSelectedPenWidth(const AValue: Integer);
       procedure SetSelectedPointerStyle(const AValue: TSeriesPointerStyle);
-      procedure SetShowNames(const AValue: Boolean);
       procedure SetSymbolWidth(const AValue: Integer);
     protected
       procedure Change; override;
@@ -73,12 +81,13 @@ type
       property Cosmetic: Boolean read FCosmetic write SetCosmetic default true;
       property MaxPenWidth: Integer read FMaxPenWidth write SetMaxPenWidth default 5;
       property Mode: TChartComboMode read FMode write SetMode default ccmPenStyle;
+      property Options: TChartComboOptions read FOptions write SetOptions default DEFAULT_OPTIONS;
       property PenPattern: string read GetPenPattern write SetPenPattern;
       property PenColor: TColor read FPenColor write SetPenColor default clBlack;
       property PenStyle: TPenStyle read FPenStyle write SetSelectedPenStyle default psSolid;
       property PenWidth: Integer read FPenWidth write SetSelectedPenWidth default 1;
       property PointerStyle: TSeriesPointerStyle read FPointerStyle write SetSelectedPointerStyle default DEFAULT_POINTER_STYLE;
-      property ShowNames: Boolean read FShowNames write SetShowNames default true;
+//      property ShowNames: Boolean read FShowNames write SetShowNames default true;
       property SymbolWidth: Integer read FSymbolWidth write SetSymbolWidth default DEFAULT_SYMBOL_WIDTH;
 
       property Align;
@@ -213,270 +222,6 @@ begin
   end;
 end;
 
-                            (*
-{ TSeriesPointerStyleCombobox }
-
-constructor TSeriesPointerStyleCombobox.Create(AOwner:TComponent);
-begin
-  inherited Create(AOwner);
-  Style := csOwnerDrawFixed;
-  DropdownCount := DEFAULT_DROPDOWN_COUNT;
-  ReadOnly := true;
-  FSymbolBorderColor := clBlack;
-  FSymbolFillColor := clWhite;
-  FShowNames := true;
-  FAlignment := taLeftJustify;
-  FSelected := DEFAULT_POINTER_STYLE;
-  GetItems;
-  Caption := GetSymbolName(FSelected);
-end;
-
-destructor TSeriesPointerStyleCombobox.Destroy;
-begin
-  DestroyBitmaps;
-  inherited;
-end;
-
-procedure TSeriesPointerStyleCombobox.CreateBitmaps(AWidth, AHeight: Integer);
-var
-  ps: TSeriesPointerStyle;
-  chart: TChart;
-  id: IChartDrawer;
-  series: TLineSeries;
-  legItems: TChartLegendItems;
-begin
-  DestroyBitmaps;
-
-  chart := TChart.Create(nil);
-  try
-    for ps in TSeriesPointerStyle do begin
-      FBitmaps[ps] := TBitmap.Create;
-      FBitmaps[ps].Transparent := true;
-      FBitmaps[ps].TransparentColor := RgbToColor(254,254,254);
-      FBitmaps[ps].SetSize(AWidth, AHeight);
-      FBitmaps[ps].Canvas.Brush.Color := FBitmaps[ps].TransparentColor;
-      FBitmaps[ps].Canvas.FillRect(0, 0, AWidth, AHeight);
-
-      series := TLineSeries.Create(chart);
-      try
-        with series do begin
-          Pointer.Style := ps;
-          Pointer.Brush.Color := FSymbolFillColor;
-          Pointer.Pen.Color := FSymbolBorderColor;
-          Pointer.HorizSize := Min(AWidth, AHeight);
-          Pointer.VertSize := Pointer.HorizSize;
-          ShowPoints := true;
-          LineType := ltNone;
-        end;
-        chart.AddSeries(series);
-        legitems := TChartLegendItems.Create;
-        try
-          series.GetSingleLegendItem(legItems);
-          id := TCanvasDrawer.Create(FBitmaps[ps].Canvas);
-          id.Pen := Chart.Legend.SymbolFrame;
-          legItems[0].Draw(id, Rect(0, 0, AWidth-1, AHeight-1));
-        finally
-          legitems.Free;
-        end;
-      finally
-        series.Free;
-      end;
-    end;
-  finally
-    chart.Free;
-  end;
-end;
-
-procedure TSeriesPointerStyleCombobox.DestroyBitmaps;
-var
-  ps: TSeriesPointerStyle;
-begin
-  for ps in TSeriesPointerStyle do
-    FreeAndNil(FBitmaps[ps]);
-end;
-
-procedure TSeriesPointerStyleCombobox.DrawItem(AIndex: Integer; ARect: TRect;
-  AState: TOwnerDrawState);
-const
-  MARGIN = 2;
-var
-  symRect: TRect;
-  symheight : integer;
-  symwidth: Integer;
-  txt: string;
-  ps: TSeriesPointerStyle;
-  ts: TTextStyle;
-  alignmnt: TAlignment;
-begin
-  SymRect := ARect;
-  inc(SymRect.Top, MARGIN);
-  dec(SymRect.Bottom, MARGIN);
-  symheight := SymRect.Bottom - SymRect.Top;
-  symwidth := symheight * 6 div 4; // see: TLegendItemLinePointer.Draw in TALagend
-  if (BiDiMode <> bdLeftToRight) then
-    case FAlignment of
-      taLeftJustify : alignmnt := taRightJustify;
-      taCenter      : alignmnt := taCenter;
-      taRightJustify: alignmnt := taLeftJustify
-    end
-  else
-    alignmnt := FAlignment;
-  case alignmnt of
-    taLeftJustify  : ;
-    taCenter       : SymRect.Left := (ARect.Left + ARect.Right - symwidth) div 2;
-    taRightJustify : SymRect.Left := ARect.Right - MARGIN - symwidth;
-  end;
-  SymRect.Right := SymRect.Left + symwidth;
-
-  with Canvas do begin
-    if odSelected in AState then begin
-      Brush.Color := clHighlight;
-      Font.Color := clHighlightText;
-    end else begin
-      Brush.Color := Color;
-      Font.Color := clWindowText;
-    end;
-    Brush.Style := bsSolid;
-    FillRect(ARect);
-
-    // Create bitmaps of pointer symbols if they are nil, or if height has changed
-    if (FBitmaps[psCircle] = nil) or (FBitmaps[psCircle].Height <> symheight)
-      then CreateBitmaps(symwidth, symheight);
-
-    Pen.Color := FSymbolBorderColor;
-    Pen.Style := psSolid;
-    Pen.Width := 1;
-    Brush.Color := FSymbolFillColor;
-    ps := GetSymbol(AIndex);
-    Canvas.Draw(SymRect.Left, SymRect.Top, FBitmaps[ps]);
-
-    if FShowNames and (alignmnt <> taCenter) then begin   // Note: No text output for taCenter!
-      txt := Items[AIndex];
-      case alignmnt of
-        taLeftJustify  : ARect.Left := SymRect.Right + 2 * MARGIN;
-        taRightJustify : ARect.Left := SymRect.Left - 2 * MARGIN - Canvas.TextWidth(txt);
-      end;
-      ts := Canvas.TextStyle;
-      ts.Layout := tlCenter;
-      ts.Opaque := false;
-      ts.EndEllipsis := true;
-      TextRect(ARect, ARect.Left, ARect.Top, txt, ts);
-    end;
-  end;
-end;
-
-procedure TSeriesPointerStyleCombobox.GetItems;
-const
-  // Arrange symbols in "nice" order
-  LIST: array[0..19] of TSeriesPointerStyle = (
-    psNone, psRectangle, psCircle, psDiamond,
-    psTriangle, psDownTriangle, psLeftTriangle, psRightTriangle,
-    psHexagon, psFullStar,
-    psStar, psCross, psDiagCross,
-    psLowBracket, psHighBracket, psLeftBracket, psRightBracket,
-    psHorBar, psVertBar, psPoint);
-var
-  ps: TSeriesPointerStyle;
-  s: String;
-  i: Integer;
-  sel: TSeriesPointerStyle;
-  styleItems: TStrings;
-begin
-  if inherited Items.Count > 0 then
-    exit;
-
-  sel := FSelected;
-  styleItems := TStringList.Create;
-  try
-    for i:=0 to High(LIST) do begin
-      ps := LIST[i];
-      s := GetSymbolName(ps);
-      if s <> '' then
-        styleItems.AddObject(s, TObject(PtrInt(ps)));
-    end;
-    inherited Items.Assign(styleitems);
-  finally
-    styleItems.Free;
-    SetSelected(sel);
-  end;
-end;
-
-function TSeriesPointerStyleCombobox.GetSymbol(AIndex: Integer): TSeriesPointerStyle;
-begin
-  if AIndex = -1 then
-    Result := psNone
-  else
-    Result := TSeriesPointerStyle(PtrInt(Items.Objects[AIndex]));
-end;
-
-{ Is overridden to prevent loss of default selected pointer style when
-  combo is added to a form in designer. }
-procedure TSeriesPointerStyleCombobox.RealSetText(const AValue: TCaption);
-var
-  sel: TSeriesPointerStyle;
-begin
-  sel := FSelected;
-  inherited RealSetText(AValue);
-  SetSelected(sel);
-end;
-
-procedure TSeriesPointerStyleCombobox.SetAlignment(Value:TAlignment);
-begin
-  if Value <> FAlignment then begin
-    FAlignment := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TSeriesPointerStyleCombobox.SetItemIndex(const AValue: Integer);
-begin
-  FSelected := GetSymbol(AValue);
-  if AValue = inherited ItemIndex then exit;
-  inherited SetItemIndex(AValue);
-end;
-
-procedure TSeriesPointerStyleCombobox.SetSelected(AValue:TSeriesPointerStyle);
-var
-  i : integer;
-begin
-  for i := 0 to Items.Count-1 do begin
-    if GetSymbol(i) = AValue then begin
-      FSelected := AValue;
-      ItemIndex := i;
-      Invalidate;
-      exit;
-    end;
-  end;
-  ItemIndex := -1;
-  FSelected := psNone;
-end;
-
-procedure TSeriesPointerStyleCombobox.SetShowNames(AValue: boolean);
-begin
-  if (FShowNames <> AValue) then begin
-    FShowNames := AValue;
-    Invalidate;
-  end;
-end;
-
-procedure TSeriesPointerStyleCombobox.SetSymbolBorderColor(AValue: TColor);
-begin
-  if FSymbolBorderColor <> AValue then begin
-    FSymbolBorderColor := AValue;
-    DestroyBitmaps;
-    Invalidate;
-  end;
-end;
-
-procedure TSeriesPointerStyleCombobox.SetSymbolFillColor(AValue: TColor);
-begin
-  if FSymbolFillColor <> AValue then begin
-    FSymbolFillColor := AValue;
-    DestroyBitmaps;
-    Invalidate;
-  end;
-end;
-               *)
 
 { TChartComboBox }
 
@@ -498,7 +243,7 @@ begin
   FPenStyle := psSolid;
   FPenWidth := 1;
   FMaxPenWidth := 5;
-  FShowNames := true;
+  FOptions := DEFAULT_OPTIONS;
   FSymbolWidth := DEFAULT_SYMBOL_WIDTH;
   PopulatePenStyles;
   SetSelectedPenStyle(FPenStyle);
@@ -634,7 +379,7 @@ begin
           end;
           Canvas.Brush.Color := FBrushColor;
           Canvas.Brush.Style := bs;
-          if bs = bsImage then
+          if (bs = bsImage) or (bs = bsPattern) then
             Canvas.Brush.Bitmap := FBrushBitmap; // AFTER assigning Brush.Style!
           Canvas.Pen.Color := clBlack;
           Canvas.Pen.Style := psSolid;
@@ -668,7 +413,7 @@ begin
         end;
     end;
 
-    if FShowNames and (FAlignment <> taCenter) then begin
+    if (ccoNames in FOptions) and (FAlignment <> taCenter) then begin
       ts := Canvas.TextStyle;
       ts.Layout := tlCenter;
       ts.Opaque := false;
@@ -708,7 +453,8 @@ begin
   if AIndex < 0 then
     Result := psSolid
   else
-    Result := TPenStyle(AIndex);
+//    Result := TPenStyle(AIndex);
+    Result := TPenStyle(PtrInt(Items.Objects[AIndex]));
 end;
 
 function TChartComboBox.GetPenWidth(const AIndex: Integer): Integer;
@@ -732,8 +478,13 @@ begin
   Items.BeginUpdate;
   try
     Items.Clear;
-    for bs in TBrushStyle do
+    for bs in TBrushStyle do begin
+      if (bs = bsPattern) and not (ccoPatternBrush in FOptions) then
+        Continue;
+      if (bs = bsImage) and not (ccoImageBrush in FOptions) then
+        Continue;
       Items.Add(GetBrushStylename(bs));
+    end;
   finally
     Items.EndUpdate;
     dec(FLockItemIndex);
@@ -748,8 +499,11 @@ begin
   Items.BeginUpdate;
   try
     Items.Clear;
-    for ps in TPenStyle do
-      Items.Add(GetPenStyleName(ps));
+    for ps in TPenStyle do begin
+      if (ps = psPattern) and not (ccoPatternPen in FOptions) then
+        Continue;
+      Items.AddObject(GetPenStyleName(ps), TObject(PtrInt(ps)));
+    end;
   finally
     Items.EndUpdate;
     dec(FLockItemIndex);
@@ -916,6 +670,19 @@ begin
   end;
 end;
 
+procedure TChartComboBox.SetOptions(const AValue: TChartComboOptions);
+begin
+  if FOptions = AValue then exit;
+  FOptions := AValue;
+  case FMode of
+    ccmBrushStyle   : PopulateBrushStyles;
+    ccmPenStyle     : PopulatePenStyles;
+    ccmPenWidth     : PopulatePenWidths;
+    ccmPointerStyle : PopulatePointerStyles;
+  end;
+  Invalidate;
+end;
+
 procedure TChartComboBox.SetPenPattern(const AValue: String);
 var
   L: TStrings;
@@ -959,8 +726,15 @@ begin
 end;
 
 procedure TChartComboBox.SetSelectedPenStyle(const AValue: TPenStyle);
+var
+  i: Integer;
 begin
-  ItemIndex := EnsureRange(ord(AValue), 0, Items.Count - 1);
+  for i := 0 to Items.Count - 1 do
+    if GetPenStyle(i) = AValue then begin
+      ItemIndex := i;
+      exit;
+    end;
+  ItemIndex := -1;
 end;
 
 procedure TChartComboBox.SetSelectedPenWidth(const AValue: Integer);
@@ -982,13 +756,6 @@ begin
   end;
   ItemIndex := -1;
   FPointerStyle := psNone;
-end;
-
-procedure TChartComboBox.SetShowNames(const AValue: Boolean);
-begin
-  if FShowNames = AValue then exit;
-  FShowNames := AValue;
-  Invalidate;
 end;
 
 procedure TChartComboBox.SetSymbolWidth(const AValue: Integer);
