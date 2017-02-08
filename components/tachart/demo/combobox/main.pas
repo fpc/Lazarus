@@ -88,6 +88,7 @@ type
     procedure AreaLinesChange(Sender: TObject);
     procedure BarBrushChange(Sender: TObject);
     procedure BarPenChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure LinePenChange(Sender: TObject);
     procedure LinePointerChange(Sender: TObject);
     procedure CbShowChange(Sender: TObject);
@@ -290,6 +291,15 @@ begin
     ChartListbox1.ItemIndex := ChartListbox1.FindSeriesIndex(ser);
     ChartListbox1Click(nil);
   end;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i:=0 to ComponentCount - 1 do
+    if Components[i] is TCustomCombobox then
+      TCustomCombobox(Components[i]).DropDownCount := DEFAULT_DROPDOWN_COUNT;
 end;
 
 procedure TForm1.FormShow(Sender: TObject);

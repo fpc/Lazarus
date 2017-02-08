@@ -6,6 +6,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 444
   ClientWidth = 803
+  OnCreate = FormCreate
   OnShow = FormShow
   LCLVersion = '1.7'
   object Chart1: TChart
@@ -206,8 +207,7 @@ object Form1: TForm1
             Height = 22
             Top = 74
             Width = 118
-            Selected = 394758
-            Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+            Style = [cbStandardColors, cbExtendedColors, cbCustomColor, cbPrettyNames]
             Anchors = [akTop, akRight]
             BorderSpacing.Top = 8
             BorderSpacing.Bottom = 10
@@ -325,8 +325,7 @@ object Form1: TForm1
             Height = 22
             Top = 74
             Width = 118
-            Selected = 263172
-            Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+            Style = [cbStandardColors, cbExtendedColors, cbCustomColor, cbPrettyNames]
             Anchors = [akTop, akRight]
             BorderSpacing.Top = 8
             ItemHeight = 16
@@ -344,7 +343,7 @@ object Form1: TForm1
             Height = 22
             Top = 44
             Width = 118
-            Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+            Style = [cbStandardColors, cbExtendedColors, cbCustomColor, cbPrettyNames]
             Anchors = [akTop, akRight]
             BorderSpacing.Top = 8
             ItemHeight = 16
@@ -483,7 +482,7 @@ object Form1: TForm1
             Top = 60
             Width = 118
             DefaultColorColor = 460551
-            Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+            Style = [cbStandardColors, cbExtendedColors, cbCustomColor, cbPrettyNames]
             Anchors = [akTop, akRight]
             BorderSpacing.Top = 8
             BorderSpacing.Bottom = 10
@@ -542,7 +541,7 @@ object Form1: TForm1
             Top = 30
             Width = 118
             DefaultColorColor = 263172
-            Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+            Style = [cbStandardColors, cbExtendedColors, cbCustomColor, cbPrettyNames]
             Anchors = [akTop, akRight]
             BorderSpacing.Top = 8
             BorderSpacing.Bottom = 10
@@ -619,7 +618,7 @@ object Form1: TForm1
             Height = 22
             Top = 30
             Width = 118
-            Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+            Style = [cbStandardColors, cbExtendedColors, cbCustomColor, cbPrettyNames]
             Anchors = [akTop, akRight]
             BorderSpacing.Top = 8
             BorderSpacing.Bottom = 10
@@ -741,7 +740,7 @@ object Form1: TForm1
             Height = 22
             Top = 60
             Width = 118
-            Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+            Style = [cbStandardColors, cbExtendedColors, cbCustomColor, cbPrettyNames]
             Anchors = [akTop, akRight]
             BorderSpacing.Top = 8
             BorderSpacing.Bottom = 10
@@ -846,7 +845,7 @@ object Form1: TForm1
             Height = 22
             Top = 60
             Width = 118
-            Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+            Style = [cbStandardColors, cbExtendedColors, cbCustomColor, cbPrettyNames]
             Anchors = [akTop, akRight]
             BorderSpacing.Top = 8
             BorderSpacing.Bottom = 10
