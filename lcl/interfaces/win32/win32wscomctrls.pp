@@ -26,7 +26,7 @@ uses
   CommCtrl, Windows, Classes, SysUtils, Math, Win32Extra,
   // LCL
   ComCtrls, LCLType, Controls, Graphics, Themes,
-  ImgList, StdCtrls, Forms, LCLIntf,
+  ImgList, StdCtrls, Forms, LCLIntf, LCLProc,
   LMessages, LazUTF8, LCLMessageGlue, InterfaceBase,
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
