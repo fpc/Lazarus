@@ -3426,7 +3426,7 @@ msgstr "Bezig met zoeken ..."
 
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
-msgstr "Paden:"
+msgstr "Paden"
 
 #: lazarusidestrconsts.dlgsearchscope
 msgid "Search scope"
