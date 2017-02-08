@@ -294,12 +294,19 @@ var
   Parent: HWND;
   PreferredSizeStatusBar: HWND;
   R: TRect;
+  AErrorCode: Cardinal;
 begin
   Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
   Parent := TWin32WidgetSet(WidgetSet).AppHandle;
   PreferredSizeStatusBar := CreateWindowExW(0, STATUSCLASSNAMEW,
     nil, Flags,
     0, 0, 0, 0, Parent, 0, HInstance, nil);
+  if PreferredSizeStatusBar = 0 then
+  begin
+    AErrorCode := GetLastError;
+    DebugLn(['Failed to create win32 control, error: ', AErrorCode, ' : ', GetLastErrorText(AErrorCode)]);
+    raise Exception.Create('Failed to create win32 control, error: ' + IntToStr(AErrorCode) + ' : ' + GetLastErrorText(AErrorCode));
+  end;
   GetWindowRect(PreferredSizeStatusBar, R);
   PreferredStatusBarHeight := R.Bottom - R.Top;
   DestroyWindow(PreferredSizeStatusBar);
