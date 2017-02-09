@@ -44,6 +44,7 @@ type
     property Font;
     property Glyph;
     property Name stored True;
+    property PopupMenu;
     property ShowHint;
     property OnClick;
   end;
