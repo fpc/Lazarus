@@ -49,7 +49,7 @@ interface
 
 
 uses
-  Classes, SysUtils, LCLProc, dynlibs,
+  Classes, SysUtils, dynlibs,
   {$ifdef UseLibC}
   {$IFDEF darwin}
   miniCupsLibc
@@ -1204,7 +1204,7 @@ begin
     
     if CupsLibHandle = nilhandle then
     begin
-      debugln('InitializeCups load cups lib failed');
+      //debugln('InitializeCups load cups lib failed');
       RefCount := 0;
       raise EInOutError.Create('Can not load cups library');
     end;

@@ -55,6 +55,7 @@
       </Item5>
       <Item6>
         <Filename Value="unix\cupsdyn.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cupsdyn"/>
       </Item6>
       <Item7>
