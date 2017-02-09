@@ -2198,9 +2198,16 @@ var
   end;
 
   function BlackListIMModule: boolean;
+  const
+    cBlackList = 'scim-bridge';
+    //to fix issue with duplicated chars:
+    //cBlackList = 'scim-bridge,scim,xim';
+  var
+    sVar: string;
   begin
     {$IFDEF UNIX}
-    Result := g_getenv('GTK_IM_MODULE') = 'scim-bridge';
+    sVar := g_getenv('GTK_IM_MODULE');
+    Result := Pos(','+sVar+',', ','+cBlackList+',')>0;
     {$ELSE}
     Result := False;
     {$ENDIF}
