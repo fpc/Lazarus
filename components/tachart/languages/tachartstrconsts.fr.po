@@ -345,10 +345,6 @@ msgstr "Haut"
 msgid "Triangle"
 msgstr "Triangle"
 
-#: tachartstrconsts.rsunknownstyle
-msgid "Unknown Style %s"
-msgstr "Style inconnu %s"
-
 #: tachartstrconsts.rsuserdefined
 msgctxt "tachartstrconsts.rsuserdefined"
 msgid "User-defined"

@@ -347,10 +347,6 @@ msgstr "Oben"
 msgid "Triangle"
 msgstr "Dreieck"
 
-#: tachartstrconsts.rsunknownstyle
-msgid "Unknown Style %s"
-msgstr "Unbekanntes Symbol %s"
-
 #: tachartstrconsts.rsuserdefined
 msgctxt "tachartstrconsts.rsuserdefined"
 msgid "User-defined"

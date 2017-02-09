@@ -341,10 +341,6 @@ msgstr "Felülre"
 msgid "Triangle"
 msgstr ""
 
-#: tachartstrconsts.rsunknownstyle
-msgid "Unknown Style %s"
-msgstr ""
-
 #: tachartstrconsts.rsuserdefined
 msgctxt "tachartstrconsts.rsuserdefined"
 msgid "User-defined"

@@ -79,7 +79,6 @@ resourcestring
   tasFailedSubcomponentRename = 'Failed to rename components: %s';
 
   // ChartCombos
-  rsUnknownStyle = 'Unknown Style %s';
   rsRectangleSymbol = 'Rectangle';
   rsCircleSymbol = 'Circle';
   rsTriangleSymbol = 'Triangle';
