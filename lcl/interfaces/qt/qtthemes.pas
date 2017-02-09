@@ -139,50 +139,66 @@ var
 
   procedure DrawSplitterInternal;
   var
-    part: integer;
-    lx, ly, d, lt: Integer;
+    lx, ly, d, lt, i: Integer;
     r1: TRect;
-    ALCLColor, ALCLColor2: TColor;
     AQtColor: QColorH;
-    AColor: TQColor;
+    ADarkColor, ALightColor: TQColor;
     APalette: QPaletteH;
-    AColorRef: TColorRef;
+    NumDots: integer;
+    APen: QPenH;
   begin
     r1 := ARect;
+    NumDots := 10;
     APalette := QPalette_create;
     try
       QStyleOption_palette(opt, APalette);
       AQtColor := QColor_create(QBrush_color(QPalette_background(APalette)));
-      QColor_darker(AQtColor, @AColor, 200);
-      TQColorToColorRef(AColor, AColorRef);
-      ALCLColor := RGBToColor(Red(AColorRef), Green(AColorRef), Blue(AColorRef));
-      QColor_lighter(AQtColor, @AColor, 128);
-      TQColorToColorRef(AColor, AColorRef);
-      ALCLColor2 := RGBToColor(Red(AColorRef), Green(AColorRef), Blue(AColorRef));
+
+      QColor_darker(AQtColor, @ADarkColor);
+      QColor_lighter(AQtColor, @ALightColor);
+
       if StyleState and QStyleState_Horizontal = 0 then
       begin
-        part := ((r1.Right - r1.Left) div 5) * 2;
-        lx := r1.left + 2 + part;
+        if (r1.Right - r1.Left) <= (NumDots * 2) then
+          NumDots := (r1.Right - r1.Left) div 2;
+        lx := ((r1.Right - r1.Left) div 2) - (NumDots * 2);
         d := (r1.Bottom - r1.Top - 2) div 2;
         lt := r1.Top + d + 1;
-        while lx < r1.Right - part do
+        APen := QPen_create(QPainter_pen(Context.Widget));
+        for i := 0 to NumDots - 1 do
         begin
-          QtWidgetSet.DCSetPixel(DC, lx, lt, ALCLColor);
-          QtWidgetSet.DCSetPixel(DC, lx, lt - 1, ALCLColor2);
+          QPen_setColor(APen, PQColor(@ALightColor));
+          QPainter_setPen(Context.Widget, APen);
+          QPainter_drawPoint(Context.Widget, lx, lt);
+          QPen_setColor(APen, PQColor(@ADarkColor));
+          QPainter_setPen(Context.Widget, APen);
+          QPainter_drawPoint(Context.Widget, lx + 1, lt);
+          QPainter_drawPoint(Context.Widget, lx, lt + 1);
+          QPainter_drawPoint(Context.Widget, lx + 1, lt + 1);
           lx := lx + 4;
         end;
+        QPen_destroy(APen);
       end else
       begin
-        part := ((r1.Bottom - r1.Top) div 5) * 2;
-        ly := r1.Bottom - 2 - part;
+        if (r1.Bottom - r1.Top) <= (NumDots * 2) then
+          NumDots := (r1.Bottom - r1.Top) div 2;
+        ly := ((r1.Bottom - r1.Top) div 2) - (NumDots * 2);
         d := (r1.Right - r1.Left - 2) div 2;
         lt := r1.Left + d + 1;
-        while ly > r1.Top + part do
+        APen := QPen_create(QPainter_pen(Context.Widget));
+        for i := 0 to NumDots - 1 do
         begin
-          QtWidgetSet.DCSetPixel(DC, lt, ly, ALCLColor);
-          QtWidgetSet.DCSetPixel(DC, lt, ly - 1, ALCLColor2);
+          QPen_setColor(APen, PQColor(@ALightColor));
+          QPainter_setPen(Context.Widget, APen);
+          QPainter_drawPoint(Context.Widget, lt, ly);
+          QPen_setColor(APen, PQColor(@ADarkColor));
+          QPainter_setPen(Context.Widget, APen);
+          QPainter_drawPoint(Context.Widget, lt + 1, ly);
+          QPainter_drawPoint(Context.Widget, lt, ly + 1);
+          QPainter_drawPoint(Context.Widget, lt + 1, ly + 1);
           ly := ly - 4;
         end;
+        QPen_destroy(APen);
       end;
     finally
       QPalette_destroy(APalette);
