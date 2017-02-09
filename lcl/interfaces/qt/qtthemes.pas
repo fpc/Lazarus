@@ -182,7 +182,7 @@ var
       begin
         if (r1.Bottom - r1.Top) <= (NumDots * 2) then
           NumDots := (r1.Bottom - r1.Top) div 2;
-        ly := ((r1.Bottom - r1.Top) div 2) - (NumDots * 2);
+        ly := ((r1.Bottom - r1.Top) div 2) + (NumDots * 2);
         d := (r1.Right - r1.Left - 2) div 2;
         lt := r1.Left + d + 1;
         APen := QPen_create(QPainter_pen(Context.Widget));
