@@ -428,12 +428,13 @@ begin
 
   // simplified because of issue #29670
   // allow insert invalid index like others do
-  if Index >= FStringlist.Count then
+  if Index >= FStringList.Count then
     Index := FStringList.Add(S)
   else
     FStringList.Insert(Index, S);
   W := GetUTF8String(S);
   TQtTextEdit(FOwner.Handle).insertLine(Index, W);
+  FTextChanged := False; // FStringList is already updated, no need to update from WS.
 end;
 
 procedure TQtMemoStrings.LoadFromFile(const FileName: string);
