@@ -594,7 +594,7 @@ begin
   if Assigned(Application) and not Application.Terminated then
   begin
     if AWinControl.HandleObjectShouldBeVisible or (fsModal in TCustomForm(AWinControl).FormState) then
-      QCoreApplication_processEvents(QEventLoopExcludeUserInputEvents);
+      QCoreApplication_processEvents(QEventLoopAllEvents);
   end;
 
   if (Application.TaskBarBehavior = tbSingleButton) or

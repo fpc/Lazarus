@@ -583,8 +583,9 @@ begin
   Widget.EndUpdate;
 
   {$IFDEF HASX11}
-  if AWinControl.HandleObjectShouldBeVisible then
-    QCoreApplication_processEvents(QEventLoopExcludeUserInputEvents);
+  if AWinControl.HandleObjectShouldBeVisible or
+    (fsModal in TCustomForm(AWinControl).FormState) then
+    QCoreApplication_processEvents(QEventLoopAllEvents);
 
   if (Application.TaskBarBehavior = tbSingleButton) or
     (TForm(AWinControl).ShowInTaskBar <> stDefault) then
