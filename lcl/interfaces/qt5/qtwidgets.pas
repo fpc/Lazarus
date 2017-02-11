@@ -16350,6 +16350,21 @@ begin
   case QEvent_type(Event) of
     LCLQt_PopupMenuTriggered:
       begin
+        {$IFDEF HASX11}
+        // make interface snappy after menuitem triggers
+        if Assigned(Application) and not Application.Terminated then
+        begin
+          if QApplication_activePopupWidget = nil then
+          begin
+            if QApplication_activeModalWidget <> nil then
+              QWidget_repaint(QApplication_activeModalWidget)
+            else
+            if QApplication_activeWindow <> nil then
+              QWidget_repaint(QApplication_activeWindow);
+            QCoreApplication_processEvents(QEventLoopAllEvents);
+          end;
+        end;
+        {$ENDIF}
         FillChar(Msg{%H-}, SizeOf(Msg), 0);
         Msg.msg := LM_ACTIVATE;
         if MenuItemEnabled then
