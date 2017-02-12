@@ -136,6 +136,75 @@ var
   {$ENDIF}
   dx, dy: integer;
   APalette: QPaletteH;
+
+  procedure DrawSplitterInternal;
+  var
+    lx, ly, d, lt, i: Integer;
+    r1: TRect;
+    AQtColor: QColorH;
+    ADarkColor, ALightColor: TQColor;
+    APalette: QPaletteH;
+    NumDots: integer;
+    APen: QPenH;
+  begin
+    r1 := ARect;
+    NumDots := 10;
+    APalette := QPalette_create;
+    try
+      QStyleOption_palette(opt, APalette);
+      AQtColor := QColor_create(QBrush_color(QPalette_background(APalette)));
+
+      QColor_darker(AQtColor, @ADarkColor);
+      QColor_lighter(AQtColor, @ALightColor);
+
+      if StyleState and QStyleState_Horizontal = 0 then
+      begin
+        if (r1.Right - r1.Left) <= (NumDots * 2) then
+          NumDots := (r1.Right - r1.Left) div 2;
+        lx := ((r1.Right - r1.Left) div 2) - (NumDots * 2);
+        d := (r1.Bottom - r1.Top - 2) div 2;
+        lt := r1.Top + d + 1;
+        APen := QPen_create(QPainter_pen(Context.Widget));
+        for i := 0 to NumDots - 1 do
+        begin
+          QPen_setColor(APen, PQColor(@ALightColor));
+          QPainter_setPen(Context.Widget, APen);
+          QPainter_drawPoint(Context.Widget, lx, lt);
+          QPen_setColor(APen, PQColor(@ADarkColor));
+          QPainter_setPen(Context.Widget, APen);
+          QPainter_drawPoint(Context.Widget, lx + 1, lt);
+          QPainter_drawPoint(Context.Widget, lx, lt + 1);
+          QPainter_drawPoint(Context.Widget, lx + 1, lt + 1);
+          lx := lx + 4;
+        end;
+        QPen_destroy(APen);
+      end else
+      begin
+        if (r1.Bottom - r1.Top) <= (NumDots * 2) then
+          NumDots := (r1.Bottom - r1.Top) div 2;
+        ly := ((r1.Bottom - r1.Top) div 2) + (NumDots * 2);
+        d := (r1.Right - r1.Left - 2) div 2;
+        lt := r1.Left + d + 1;
+        APen := QPen_create(QPainter_pen(Context.Widget));
+        for i := 0 to NumDots - 1 do
+        begin
+          QPen_setColor(APen, PQColor(@ALightColor));
+          QPainter_setPen(Context.Widget, APen);
+          QPainter_drawPoint(Context.Widget, lt, ly);
+          QPen_setColor(APen, PQColor(@ADarkColor));
+          QPainter_setPen(Context.Widget, APen);
+          QPainter_drawPoint(Context.Widget, lt + 1, ly);
+          QPainter_drawPoint(Context.Widget, lt, ly + 1);
+          QPainter_drawPoint(Context.Widget, lt + 1, ly + 1);
+          ly := ly - 4;
+        end;
+        QPen_destroy(APen);
+      end;
+    finally
+      QPalette_destroy(APalette);
+      QColor_destroy(AQtColor);
+    end;
+  end;
 begin
   if (Context <> nil) and not IsRectEmpty(R) then
   begin
@@ -262,7 +331,14 @@ begin
           OffsetRect(ARect, -dx, -dy);
           QStyleOption_setRect(opt, @ARect);
 
-          QStyle_drawControl(Style, Element.ControlElement, opt, Context.Widget, Context.Parent);
+          // issue #27182 qt5 does not implement splitter grabber in some themes.
+          if (Element.ControlElement = QStyleCE_Splitter) and
+            ( (GetStyleName = 'windows') or (GetStyleName = 'breeze')
+              {$IFDEF MSWINDOWS} or true {$ENDIF}) then
+            drawSplitterInternal
+          else
+            QStyle_drawControl(Style, Element.ControlElement, opt, Context.Widget, Context.Parent);
+
           Context.translate(-dx, -dy);
           QStyleOption_Destroy(opt);
         end;
