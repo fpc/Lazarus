@@ -19841,7 +19841,7 @@ begin
   {$IFDEF HASX11}
   // make qt interface snappy.
   if Assigned(Application) and not Application.Terminated then
-    QCoreApplication_processEvents(QEventLoopExcludeUserInputEvents);
+    QCoreApplication_processEvents(QEventLoopAllEvents);
   {$ENDIF}
 end;
 
