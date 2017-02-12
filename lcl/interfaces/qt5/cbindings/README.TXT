@@ -33,7 +33,15 @@ Windows Note:
 Verify the QTDIR,QMAKESPEC environment variables.
 e.g. QMAKESPEC=win32-g++ and that make -v
 and gcc -v produce the expected result.
+Be sure that mingw32 shipped with Qt5 is in PATH,
+so bindings are built with correct mingw32 version.
+eg. for Qt-5.6.1 you can set all paths in cmd and 
+build bindings.
 
+set PATH=C:\Qt5Directory\Tools\mingw492_32\bin;C:\Qt5Directory\5.6\mingw49_32\bin;%PATH%
+qmake -query
+qmake
+mingw32-make
 
 
 
