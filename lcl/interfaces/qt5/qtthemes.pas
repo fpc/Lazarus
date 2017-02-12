@@ -865,15 +865,13 @@ begin
         inc(Result.cx);
         inc(Result.cy);
       end;
-    {$IFDEF LINUX} // fix tbsButtonDrop arrow outside button bounds
     teToolBar:
-      if (Details.Part = TP_DROPDOWNBUTTON) then
+      if (Details.Part = TP_DROPDOWNBUTTON) or (Details.Part = TP_SPLITBUTTONDROPDOWN) then
       begin
         Result.cy := -1;
-        Result.cx := 14;
+        Result.cx := QStyle_pixelMetric(Style, QStylePM_MenuButtonIndicator, nil, nil);
       end else
         Result := inherited;
-    {$ENDIF}
     else
       Result := inherited;
   end;
