@@ -69,8 +69,14 @@ type
     r,g,b : word; 
     Pad : word;
    end;
- 
-  QtHandle = integer;
+
+  {$IFDEF DARWIN}
+  {void*}
+  QtHandle = PtrUInt;
+  {$ELSE}
+  {unsigned long on x11, dword on windows}
+  QtHandle = LongWord;
+  {$ENDIF}
   PQReal = ^QReal;
   {$ifdef CPUARM}
     QReal = single;
