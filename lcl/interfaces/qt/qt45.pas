@@ -80,8 +80,14 @@ type
     r,g,b : word; 
     Pad : word;
    end;
- 
-  QtHandle = integer;
+
+  {$IFDEF DARWIN}
+  {void*}
+  QtHandle = PtrUInt;
+  {$ELSE}
+  {unsigned long on x11, dword on windows}
+  QtHandle = LongWord;
+  {$ENDIF}
   PQReal = ^QReal;
   {$ifdef CPUARM}
     QReal = single;
@@ -5143,7 +5149,7 @@ procedure QCursor_setPos(p: PQtPoint); cdecl; external Qt4PasLib name 'QCursor_s
 function QCursor_handle(handle: QCursorH): QtHANDLE; cdecl; external Qt4PasLib name 'QCursor_handle';
 {$endif}
 {$ifdef BINUX }
-function QCursor_create(cursor: QtHANDLE): QCursorH; cdecl; external Qt4PasLib name 'QCursor_create6';
+function QCursor_create6(cursor: QtHANDLE): QCursorH; cdecl; external Qt4PasLib name 'QCursor_create6';
 function QCursor_x11Screen(): Integer; cdecl; external Qt4PasLib name 'QCursor_x11Screen';
 {$endif}
 {$ifdef MSWINDOWS }
