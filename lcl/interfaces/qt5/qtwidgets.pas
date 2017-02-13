@@ -2125,7 +2125,10 @@ begin
         setFocusPolicy(QtClickFocus);
     end;
     if LCLObject.Perform(LM_NCHITTEST, 0, 0)=HTTRANSPARENT then
+    begin
       setAttribute(QtWA_TransparentForMouseEvents);
+      setWindowFlags(windowFlags or QtWindowTransparentForInput);
+    end;
   end;
 
   if (csDesigning in LCLObject.ComponentState) and not
@@ -3532,83 +3535,9 @@ var
   SaveWidget: QWidgetH;
   LazButton: Byte;
   LazPos: TPoint;
-
-  function isTransparentForMouse: boolean;
-  begin
-    Result := testAttribute(QtWA_TransparentForMouseEvents) and
-      (Self is TQtMainWindow) and not TQtMainWindow(Self).IsMdiChild;
-  end;
-
-  function HandleTransparentForMouse: boolean;
-  var
-    AWidgetAt: QWidgetH;
-    AMouseEvent, ANewEvent: QMouseEventH;
-    AWnd: HWND;
-    AContextEvent: QContextMenuEventH;
-    AMousePos, APos: TQtPoint;
-    AEventOk: boolean;
-  begin
-    Result := False;
-    {issue #30232}
-    if isTransparentForMouse then
-    begin
-      Result := True;
-      AMouseEvent := QMouseEventH(Event);
-      QMouseEvent_globalPos(AMouseEvent, @AMousePos);
-      AWidgetAt := QApplication_widgetAt(@AMousePos);
-      {TODO: check what happens if pure form is transparent for mouse events.}
-      if AWidgetAt = nil then
-        AWidgetAt := QApplication_activeModalWidget;
-      if AWidgetAt = nil then
-        AWidgetAt := QApplication_activeWindow;
-
-      QMouseEvent_pos(AMouseEvent, @APos);
-
-      if AWidgetAt <> nil then
-        QWidget_mapFromGlobal(AWidgetAt, @APos, @AMousePos);
-
-      ANewEvent := QMouseEvent_create(QEvent_type(Event), @APos,
-        @AMousePos, QMouseEvent_button(AMouseEvent),
-          QMouseEvent_buttons(AMouseEvent), QInputEvent_modifiers(QInputEventH(Event)));
-      QEvent_accept(Event);
-      AEventOk := QCoreApplication_sendEvent(AWidgetAt, ANewEvent);
-      QEvent_destroy(ANewEvent);
-
-      if AEventOk and Assigned(AWidgetAt) then
-      begin
-        AWnd := HwndFromWidgetH(AWidgetAt);
-
-        if (QWidget_focusPolicy(AWidgetAt) > QtNoFocus) and QWidget_isVisible(AWidgetAt) and
-          QWidget_isEnabled(AWidgetAt) then
-            QWidget_setFocus(AWidgetAt);
-
-        if (AWnd <> 0) and Assigned(TQtWidget(AWnd).LCLObject) then
-        begin
-          if (QEvent_type(Event) <> QEventMouseButtonRelease) and
-            (QMouseEvent_button(QMouseEventH(Event)) = QtRightButton) then
-          begin
-            AContextEvent := QContextMenuEvent_create(QContextMenuEventMouse, @APos, @AMousePos,
-              QInputEvent_modifiers(QInputEventH(Event)));
-            QCoreApplication_sendEvent(AWidgetAt, AContextEvent);
-            QEvent_destroy(AContextEvent);
-          end;
-          if ((Sender <> nil) and not QWidget_isVisible(QWidgetH(Sender))) or (Sender = nil) then
-          begin
-            ANewEvent := QMouseEvent_create(QEventMouseButtonRelease, @APos,
-              @AMousePos, QMouseEvent_button(AMouseEvent),
-                QMouseEvent_buttons(AMouseEvent), QInputEvent_modifiers(QInputEventH(Event)));
-            QEvent_accept(Event);
-            QCoreApplication_sendEvent(AWidgetAt, ANewEvent);
-            QEvent_destroy(ANewEvent);
-          end;
-        end;
-      end;
-      exit;
-    end;
-  end;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtWidget.SlotMouse');
+  WriteLn('TQtWidget.SlotMouse ',DbgSName(Self));
   {$endif}
 
   Result := False; // allow qt to handle message
@@ -3688,14 +3617,8 @@ begin
       // Check if our objects exists since LCL can destroy object during
       // mouse events...
       if CanSendLCLMessage and (Sender <> nil) then
-      begin
-        if isTransparentForMouse then
-        begin
-          HandleTransparentForMouse;
-          SetNoMousePropagation(QWidgetH(Sender), False);
-        end else
-          SetNoMousePropagation(QWidgetH(Sender), True);
-      end else
+        SetNoMousePropagation(QWidgetH(Sender), True)
+      else
         exit(True);
     end;
     QEventMouseButtonRelease:
@@ -3719,14 +3642,8 @@ begin
       // Check if our objects exists since LCL can destroy object during
       // mouse events...
       if CanSendLCLMessage and (Sender <> nil) then
-      begin
-        if isTransparentForMouse then
-        begin
-          HandleTransparentForMouse;
-          SetNoMousePropagation(QWidgetH(Sender), False);
-        end else
-          SetNoMousePropagation(QWidgetH(Sender), True);
-      end else
+        SetNoMousePropagation(QWidgetH(Sender), True)
+      else
         exit(True);
 
       { Clicking on buttons operates differently, because QEventMouseButtonRelease
