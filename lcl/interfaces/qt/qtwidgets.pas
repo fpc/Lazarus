@@ -3579,10 +3579,10 @@ var
           QWidget_isEnabled(AWidgetAt) then
             QWidget_setFocus(AWidgetAt, QtMouseFocusReason);
         AWnd := HwndFromWidgetH(AWidgetAt);
-        if (AWnd <> 0) and Assigned(TQtWidget(AWnd).LCLObject) then
+        if (AWnd <> 0) and Assigned(TQtWidget(AWnd).LCLObject) and
+          (QEvent_type(Event) <> QEventMouseButtonRelease) then
         begin
-          if (QEvent_type(Event) <> QEventMouseButtonRelease) and
-            (QMouseEvent_button(QMouseEventH(Event)) = QtRightButton) then
+          if (QMouseEvent_button(QMouseEventH(Event)) = QtRightButton) then
           begin
             AContextEvent := QContextMenuEvent_create(QContextMenuEventMouse, @APos, QMouseEvent_globalPos(AMouseEvent),
               QInputEvent_modifiers(QInputEventH(Event)));
