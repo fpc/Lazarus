@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2017-02-06 10:19+0100\n"
+"PO-Revision-Date: 2017-02-10 11:55+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
@@ -60,11 +60,9 @@ msgid "backward-diagonal hatch"
 msgstr "hachure selon une diagonale en arrière"
 
 #: tachartstrconsts.rsbsclear
-#, fuzzy
-#| msgid "clear fill"
 msgctxt "tachartstrconsts.rsbsclear"
 msgid "no fill"
-msgstr "remplissage effacé"
+msgstr "pas de remplissage"
 
 #: tachartstrconsts.rsbscross
 msgid "crossed"
@@ -283,11 +281,9 @@ msgid "Polar series"
 msgstr "Séries polaires"
 
 #: tachartstrconsts.rspsclear
-#, fuzzy
-#| msgid "clear line"
 msgctxt "tachartstrconsts.rspsclear"
 msgid "no line"
-msgstr "ligne effacée"
+msgstr "pas de Ligne"
 
 #: tachartstrconsts.rspsdash
 msgid "dashed line"

@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2017-02-06 11:11+0100\n"
-"PO-Revision-Date: 2017-02-06 14:05+0100\n"
+"PO-Revision-Date: 2017-02-10 11:58+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -305,15 +305,15 @@ msgstr "Filtre :"
 
 #: opkman_const.rsmainfrm_miascendent
 msgid "Ascendent"
-msgstr ""
+msgstr "Ascendant"
 
 #: opkman_const.rsmainfrm_mibydate
 msgid "By date"
-msgstr ""
+msgstr "Par date"
 
 #: opkman_const.rsmainfrm_mibyname
 msgid "By name"
-msgstr ""
+msgstr "Par nom"
 
 #: opkman_const.rsmainfrm_micopytoclpbrd
 msgid "Copy to clipboard"
@@ -330,7 +330,7 @@ msgstr "Créer un paquet de dépôt"
 
 #: opkman_const.rsmainfrm_midescendent
 msgid "Descendent"
-msgstr ""
+msgstr "Descendant"
 
 #: opkman_const.rsmainfrm_mijsonhide
 msgid "Hide JSON"
@@ -342,7 +342,7 @@ msgstr "Montrer le JSON"
 
 #: opkman_const.rsmainfrm_mijsonsort
 msgid "Sort"
-msgstr ""
+msgstr "Trier"
 
 #: opkman_const.rsmainfrm_miresetrating
 msgid "Reset rating"
@@ -350,7 +350,7 @@ msgstr "Réinitialiser l'évaluation"
 
 #: opkman_const.rsmainfrm_misavetofile
 msgid "Save to file"
-msgstr ""
+msgstr "Enregistrer dans un fichier"
 
 #: opkman_const.rsmainfrm_packagealreadydownloaded
 msgid "The following repository packages already exist in the target folder. Continue?"
@@ -950,7 +950,7 @@ msgstr "Vérifier les mises à jour des paquets"
 
 #: opkman_const.rsoptions_lbdaystoshownewpackages_caption
 msgid "Show different icon for newly added packages for (days):"
-msgstr ""
+msgstr "Afficher une icône différente pour les paquets nouvellement ajoutés depuis (jours) :"
 
 #: opkman_const.rsoptions_lbexcludefiles_hint
 msgctxt "opkman_const.rsoptions_lbexcludefiles_hint"

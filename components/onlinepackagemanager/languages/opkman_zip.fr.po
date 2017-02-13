@@ -1,0 +1,65 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2017-02-10 11:11+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.8.11\n"
+
+#: opkman_zip.serrbufsizechange
+msgid "Changing buffer size is not allowed while (un)zipping."
+msgstr "La modification de la taille du buffer n'est pas autorisée pendant la compression ou la décompression."
+
+#: opkman_zip.serrcorruptzip
+msgid "Corrupt ZIP file %s."
+msgstr "Le fichier ZIP \"%s\" est corrompu."
+
+#: opkman_zip.serrfilechange
+msgid "Changing output file name is not allowed while (un)zipping."
+msgstr "La modification du nom du fichier de sortie n'est pas autorisée pendant la compression ou la décompression."
+
+#: opkman_zip.serrfiledoesnotexist
+msgid "File \"%s\" does not exist."
+msgstr "Le fichier \"%s\" n'existe pas."
+
+#: opkman_zip.serrinvalidcrc
+msgid "Invalid CRC checksum while unzipping %s."
+msgstr "CRC incorrect lors de la décompression de \"%s\"."
+
+#: opkman_zip.serrmaxentries
+msgid "Encountered %d file entries; maximum supported is %d."
+msgstr "%d entrées de fichiers trouvées ; le maximum est de %d."
+
+#: opkman_zip.serrmissingarchivename
+msgid "Missing archive filename in streamed entry %d."
+msgstr "Le nom du fichier d'archive est manquant pour l'entrée %d."
+
+#: opkman_zip.serrmissingfilename
+msgid "Missing filename in entry %d."
+msgstr "Nom de fichier manquant pour l'entrée %d."
+
+#: opkman_zip.serrnofilename
+msgid "No archive filename for examine operation."
+msgstr "Pas de fichier d'archive pour l'opération."
+
+#: opkman_zip.serrnostream
+msgid "No stream is opened."
+msgstr "Aucun flux n'est ouvert."
+
+#: opkman_zip.serrpostoolarge
+msgid "Position/offset %d is larger than maximum supported %d."
+msgstr "La position ou le décalage %d est plus grand que le maximum supporté %d."
+
+#: opkman_zip.serrunsupportedcompressionformat
+msgid "Unsupported compression format %d."
+msgstr "Le format de compression n'est pas supporté : %d."
+
+#: opkman_zip.serrunsupportedmultiplediskscd
+msgid "A central directory split over multiple disks is unsupported."
+msgstr "Un répertoire central réparti sur plusieurs disques n'est pas supporté."
+
