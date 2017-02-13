@@ -9725,8 +9725,7 @@ begin
   if CodeToolBoss.JumpToMethod(ActiveUnitInfo.Source,
     LogCaret.X,LogCaret.Y,NewSource,NewX,NewY,NewTopLine,RevertableJump) then
   begin
-    Flags := [jfFocusEditor];
-    if not RevertableJump then include(Flags, jfAddJumpPoint);
+    Flags := [jfFocusEditor, jfAddJumpPoint];
     DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
       NewSource, NewX, NewY, NewTopLine, Flags);
   end else begin
