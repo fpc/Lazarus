@@ -3573,15 +3573,14 @@ var
       QEvent_accept(Event);
       AEventOk := QCoreApplication_sendEvent(AWidgetAt, ANewEvent);
       QEvent_destroy(ANewEvent);
+
       if AEventOk and Assigned(AWidgetAt) then
       begin
         AWnd := HwndFromWidgetH(AWidgetAt);
-        if (AWnd <> 0) and (TQtWidget(AWnd) is TQtAbstractScrollArea) then
-          AWidgetAt := TQtAbstractScrollArea(AWnd).viewportWidget;
 
         if (QWidget_focusPolicy(AWidgetAt) > QtNoFocus) and QWidget_isVisible(AWidgetAt) and
           QWidget_isEnabled(AWidgetAt) then
-          QWidget_setFocus(AWidgetAt, QtMouseFocusReason);
+            QWidget_setFocus(AWidgetAt);
 
         if (AWnd <> 0) and Assigned(TQtWidget(AWnd).LCLObject) then
         begin
