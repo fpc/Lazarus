@@ -3599,13 +3599,18 @@ procedure TDTSpeedButton.Paint;
   var
     Details: TThemedElementDetails;
     ArrowState: TThemedToolBar;
+    ASize: TSize;
+    ARect: TRect;
   begin
     if Enabled then
       ArrowState := ttbSplitButtonDropDownNormal
     else
       ArrowState := ttbSplitButtonDropDownDisabled;
     Details := ThemeServices.GetElementDetails(ArrowState);
-    ThemeServices.DrawElement(Canvas.Handle, Details, DropDownButtonRect);
+    ASize := ThemeServices.GetDetailSize(Details);
+    ARect := DropDownButtonRect;
+    InflateRect(ARect, -(ARect.Right-ARect.Left-ASize.cx) div 2, 0);
+    ThemeServices.DrawElement(Canvas.Handle, Details, ARect);
   end;
 const
   ArrowColor = TColor($8D665A);
