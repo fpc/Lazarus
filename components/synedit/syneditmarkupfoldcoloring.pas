@@ -176,12 +176,13 @@ begin
   MarkupInfo.StyleMask := [];
   MarkupInfo.FrameEdges:= sfeLeft;
 
-  SetLength(Colors, 5);
+  SetLength(Colors, 6);
   Colors[0] := clRed;
   Colors[1] := $000098F7; //orange
   Colors[2] := $0022CC40; //green
-  Colors[3] := $00FF682A; //blue
-  Colors[4] := $00CF00C4; //purple
+  Colors[3] := $00CCCC00;   //cyan
+  Colors[4] := $00FF682A; //blue
+  Colors[5] := $00CF00C4; //purple
 end;
 
 destructor TSynEditMarkupFoldColors.Destroy;
@@ -379,22 +380,22 @@ begin
           inc(lvl)
         else if ( sfaOutlineMergeParent in TmpNode.FoldAction) then
           dec(lvl);
-        //if (FLastNode.LineIndex >= 0)
-        //and (sfaOutlineKeepLevelOnSameLine in FLastNode.FoldAction)
-        //and (FLastNode.LineIndex < TmpNode.LineIndex) then
-        // inc(lvl);
+        if (FLastNode.LineIndex >= 0)
+        and (sfaOutlineKeepLevel in FLastNode.FoldAction)
+        and (FLastNode.LineIndex < TmpNode.LineIndex) then
+         inc(lvl);
 
         AddVerticalLine(TmpNode, i);
 
-        //if (FFoldColorInfosCount - 1 > 0)
-        //and (FFoldColorInfos[FFoldColorInfosCount - 1].X = FFoldColorInfos[FFoldColorInfosCount - 2].X) then begin
-        //  // if child is on same x-pos keep level
-        //  if sfaOutlineMergeLevelOnWrongCol in FFoldColorInfos[FFoldColorInfosCount - 1].SrcNode.FoldAction then begin
-        //    lvl := FFoldColorInfos[FFoldColorInfosCount - 2].Level;
-        //    FFoldColorInfos[FFoldColorInfosCount - 1].Level := lvl;
-        //    FFoldColorInfos[FFoldColorInfosCount - 1].ColorIdx := Max(0, lvl) mod (length(Colors));
-        //  end;
-        //end;
+        if (FFoldColorInfosCount - 1 > 0)
+        and (FFoldColorInfos[FFoldColorInfosCount - 1].X = FFoldColorInfos[FFoldColorInfosCount - 2].X) then begin
+          // if child is on same x-pos keep level
+          if sfaOutlineKeepLevel in FFoldColorInfos[FFoldColorInfosCount - 2].SrcNode.FoldAction then begin
+            lvl := FFoldColorInfos[FFoldColorInfosCount - 2].Level;
+            FFoldColorInfos[FFoldColorInfosCount - 1].Level := lvl;
+            FFoldColorInfos[FFoldColorInfosCount - 1].ColorIdx := Max(0, lvl) mod (length(Colors));
+          end;
+        end;
 
         if not (sfaOutlineKeepLevel in TmpNode.FoldAction)
         {and not (sfaOutlineKeepLevelOnSameLine in TmpNode.FoldAction)} then
@@ -483,8 +484,8 @@ begin
       TmpNode := NodeList[i];
 
       {$IFDEF SynEditMarkupFoldColoringDebug}
-      //if not (sfaInvalid in TmpNode.FoldAction) then
-      //  DebugLn('  C: %s %s', [IfThen(sfaClose in TmpNode.FoldAction, 'C ', IfThen(sfaOpen in TmpNode.FoldAction, 'O ', '??')),FoldTypeToStr(TmpNode.FoldType)]);
+      if not (sfaInvalid in TmpNode.FoldAction) then
+        DebugLn('  C: %s %s %s', [IfThen(sfaOutline in TmpNode.FoldAction, 'X', '-'), IfThen(sfaClose in TmpNode.FoldAction, 'C ', IfThen(sfaOpen in TmpNode.FoldAction, 'O ', '??')),FoldTypeToStr(TmpNode.FoldType)]);
       {$ENDIF}
 
       if not (sfaInvalid in TmpNode.FoldAction)
@@ -496,28 +497,24 @@ begin
             inc(lvl)
           else if ( sfaOutlineMergeParent in TmpNode.FoldAction) then
             dec(lvl);
-          //if (FLastNode.LineIndex >= 0)
-          //and (sfaOutlineKeepLevelOnSameLine in FLastNode.FoldAction)
-          //and (FLastNode.LineIndex < TmpNode.LineIndex) then
-          // inc(lvl);
+          if (FLastNode.LineIndex >= 0)
+          and (sfaOutlineKeepLevel in FLastNode.FoldAction)
+          and (FLastNode.LineIndex < TmpNode.LineIndex) then
+           inc(lvl);
 
           AddHighlight(TmpNode);
-          {$IFDEF SynEditMarkupFoldColoringDebug}
-          //with FFoldColorInfos[FFoldColorInfosCount - 1] do
-          //  DebugLn('    %d-%d', [x, x2]);
-          {$ENDIF}
 
-          //if (FFoldColorInfosCount - 1 > 0)
-          //and (FFoldColorInfos[FFoldColorInfosCount - 1].X = FFoldColorInfos[FFoldColorInfosCount - 2].X) then
-          //begin
-          //  // if child is on same x-pos keep level
-          //  if (sfaClose in FFoldColorInfos[FFoldColorInfosCount - 1].SrcNode.FoldAction)
-          //  or (sfaOutlineMergeLevelOnWrongCol in FFoldColorInfos[FFoldColorInfosCount - 1].SrcNode.FoldAction) then begin
-          //    lvl := FFoldColorInfos[FFoldColorInfosCount - 2].Level;
-          //    FFoldColorInfos[FFoldColorInfosCount - 1].Level := lvl;
-          //    FFoldColorInfos[FFoldColorInfosCount - 1].ColorIdx := Max(0, lvl) mod (length(Colors));
-          //  end;
-          //end;
+          if (FFoldColorInfosCount - 1 > 0)
+          and (FFoldColorInfos[FFoldColorInfosCount - 1].X = FFoldColorInfos[FFoldColorInfosCount - 2].X) then
+          begin
+            // if child is on same x-pos keep level
+            if (sfaClose in FFoldColorInfos[FFoldColorInfosCount - 1].SrcNode.FoldAction)
+            or (sfaOutlineKeepLevel in FFoldColorInfos[FFoldColorInfosCount - 2].SrcNode.FoldAction) then begin
+              lvl := FFoldColorInfos[FFoldColorInfosCount - 2].Level;
+              FFoldColorInfos[FFoldColorInfosCount - 1].Level := lvl;
+              FFoldColorInfos[FFoldColorInfosCount - 1].ColorIdx := Max(0, lvl) mod (length(Colors));
+            end;
+          end;
 
           if not (sfaOutlineKeepLevel in TmpNode.FoldAction)
           {and not (sfaOutlineKeepLevelOnSameLine in TmpNode.FoldAction)} then
@@ -551,10 +548,6 @@ begin
           end;
           if Found then begin
             AddHighlight(TmpNode);
-            {$IFDEF SynEditMarkupFoldColoringDebug}
-            //with FFoldColorInfos[FFoldColorInfosCount - 1] do
-            //  DebugLn('    %d-%d', [x, x2]);
-            {$ENDIF}
             with FFoldColorInfos[FFoldColorInfosCount - 1] do begin
               LevelBefore := lvlB;
               LevelAfter  := lvlA;
