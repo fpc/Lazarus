@@ -341,23 +341,21 @@ begin
         AddToken(lTmpStr);
         lTmpStr := lCurChar;
       end
+      // Check for a break, from letter to number
+      // Note: But don't forget that we need to support 3.799e-4 !!
+      // So e is not a valid letter for commands here
+      // Note 2: Letters don't need space between them as in "zm"
+      else if (lCurChar in ListOfCommandLetters) then
+      begin
+        if Length(lTmpStr) > 0 then
+        begin
+          AddToken(lTmpStr);
+        end;
+        AddToken(lCurChar);
+        lTmpStr := '';
+      end
       else
       begin
-        // Check for a break, from letter to number
-        // But don't forget that we need to support 3.799e-4 !!
-        // So e is not a valid letter for commands here
-        if (Length(lTmpStr) >= 1) then
-        begin
-          lFirstTmpStrChar := lTmpStr[1];
-          if ((lFirstTmpStrChar in ListOfCommandLetters) and not (lCurChar  in ListOfCommandLetters)) or
-             (not (lFirstTmpStrChar in ListOfCommandLetters) and (lCurChar  in ListOfCommandLetters)) then
-          begin
-            AddToken(lTmpStr);
-            lTmpStr := '';
-            Continue;
-          end;
-        end;
-
         lTmpStr := lTmpStr + lCurChar;
       end;
 

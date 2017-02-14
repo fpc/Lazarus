@@ -5127,6 +5127,7 @@ begin
     // (2) draw border, take care of the segments with modified pen
     ADest.Brush.Style := bsClear;               // We will paint no background
     ApplyPenToCanvas(ADest, ARenderInfo, Pen);  // Restore pen
+    ADest.Pen.Style := psSolid;
 
     PrepareForSequentialReading;
     for j := 0 to Len - 1 do
