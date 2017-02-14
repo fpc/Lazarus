@@ -439,18 +439,23 @@ var
         end;
     end;
 
-    SetFoldColorInfosCount(FFoldColorInfosCount + 1);
-    with FFoldColorInfos[FFoldColorInfosCount - 1] do begin
-      Border := False;
-      SrcNode:= ANode; //needed by close node
-      Y  := ANode.LineIndex + 1;
-      X  := ANode.LogXStart + 1;
-      X2 := ANode.LogXEnd + 1;
-      Level := lvl;
-      if not (sfaOutlineNocolor in ANode.FoldAction) then
-         ColorIdx := Max(0, lvl) mod (length(Colors))
-      else
-         ColorIdx := -1;
+
+    // ignore implicit close nodes at end of line, especially if line is empty
+    // or at least has less characters as vertical line is on
+    if not(sfaCloseForNextLine in ANode.FoldAction) then begin
+      SetFoldColorInfosCount(FFoldColorInfosCount + 1);
+      with FFoldColorInfos[FFoldColorInfosCount - 1] do begin
+        Border := False;
+        SrcNode:= ANode; //needed by close node
+        Y  := ANode.LineIndex + 1;
+        X  := ANode.LogXStart + 1;
+        X2 := ANode.LogXEnd + 1;
+        Level := lvl;
+        if not (sfaOutlineNocolor in ANode.FoldAction) then
+           ColorIdx := Max(0, lvl) mod (length(Colors))
+        else
+           ColorIdx := -1;
+      end;
     end;
   end;
 
