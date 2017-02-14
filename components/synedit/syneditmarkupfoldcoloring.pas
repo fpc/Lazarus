@@ -958,7 +958,7 @@ begin
     end;
   end;
   if Assigned(Lines) then
-    InvalidateSynLines(0, Lines.Count - 1);
+    InvalidateSynLines(1, Lines.Count);
 end;
 
 end.
