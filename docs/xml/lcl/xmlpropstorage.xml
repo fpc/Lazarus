@@ -360,7 +360,7 @@
 
 <!-- property Visibility: published -->
 <element name="TXMLPropStorage.FileName">
-<short/>
+<short>Name of the file where the property data is saved in XML format.</short>
 <descr>
 </descr>
 <seealso>

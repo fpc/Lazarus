@@ -320,7 +320,7 @@
 
 <!-- property Visibility: published -->
 <element name="TIniPropStorage.IniFileName">
-<short/>
+<short>Name of the file where the property data is saved in INI-format.</short>
 <descr>
 </descr>
 <seealso>

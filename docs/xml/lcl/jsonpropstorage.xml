@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+<package name="LCLBase">
+<module name="JSONPropStorage">
+<element name="TJSONPropStorage"/>
+<element name="TJSONPropStorage.JSONFileName">
+<short>Name of the file where the property data is saved in JSON format.</short>
+</element>
+</module>
+</package>
+</fpdoc-descriptions>
+

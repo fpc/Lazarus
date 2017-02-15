@@ -5140,6 +5140,7 @@ docs/xml/lcl/interfaces/gtk/gtkwstoolwin.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/interfaces/gtk/interfaces.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/interfaces/win32/win32int.xml svneol=native#text/xml
 docs/xml/lcl/intfgraphics.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/jsonpropstorage.xml svneol=native#text/plain
 docs/xml/lcl/lazcanvas.xml svneol=native#text/plain
 docs/xml/lcl/lazconfigstorage.xml svneol=native#text/plain
 docs/xml/lcl/lazdeviceapis.xml svneol=native#text/plain
