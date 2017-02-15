@@ -32,6 +32,8 @@ type
       FrameColor: TColor;
       Radius: Single;
       Corners: TCornerSet;
+      GradientColor: TColor;
+      GradientDirection: TGradientDirection;
     end;
 
     TfrTNPDFExport = class(TComponent) // fake component
@@ -108,6 +110,8 @@ begin
       with TPRRect(CreateShape(TPRRect)) do begin
         Radius := Data.Radius;
         SquaredCorners := TPdfCorners(Data.Corners);
+        GradientColor := Data.GradientColor;
+        GradientDirection := Data.GradientDirection;
       end;
 
     frstTriangle:
@@ -375,7 +379,7 @@ var
   SWidth: Integer;
 begin
 
-  if view.ShowGradian then
+  if view.ShowGradian and (View.GradianStyle in [gsElliptic, gsHorizCenter, gsVertCenter, gsRectangle]) then
     // not supported yet
     DefaultShowView(View, x, y, h, w)
 
@@ -390,14 +394,24 @@ begin
     Data.Corners:=View.SquaredCorners;
 
     // draw shadow
-    Data.ShapeType := frstRoundRect;
-    Data.FillColor := ColorToRGB(View.ShadowColor);
-    Data.FrameColor := Data.FillColor; //ColorToRGB(View.FrameColor);
-    Data.FrameWidth := 0;
-    Data.FrameStyle := frsSolid;
-    SWidth := trunc(View.ShadowWidth * PDFEscx + 0.5);
-    if View.ShadowWidth>0 then
-      AddShape(Data, x + SWidth, y + SWidth, h - SWidth, w - SWidth);
+    if View.ShowGradian then
+    begin
+      Data.GradientColor := View.ShadowColor;
+      case View.GradianStyle of
+        gsVertical:   Data.GradientDirection := gdVertical;
+        gsHorizontal: Data.GradientDirection := gdHorizontal;
+      end;
+    end else
+    begin
+      Data.ShapeType := frstRoundRect;
+      Data.FillColor := ColorToRGB(View.ShadowColor);
+      Data.FrameColor := Data.FillColor; //ColorToRGB(View.FrameColor);
+      Data.FrameWidth := 0;
+      Data.FrameStyle := frsSolid;
+      SWidth := trunc(View.ShadowWidth * PDFEscx + 0.5);
+      if View.ShadowWidth>0 then
+        AddShape(Data, x + SWidth, y + SWidth, h - SWidth, w - SWidth);
+    end;
 
     // draw roundrect
     Data.ShapeType := frstRoundRect;
