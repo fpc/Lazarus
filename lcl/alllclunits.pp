@@ -27,7 +27,7 @@ uses
   LazDeviceApis, LDockTree, LazFreeTypeIntfDrawer, CustomDrawn_WinXP, 
   CustomDrawn_Android, Arrow, EditBtn, ComboEx, DBExtCtrls, CustomDrawn_Mac, 
   CalcForm, LCLTranslator, GroupedEdit, LCLTaskDialog, WSLazDeviceAPIS, 
-  LCLPlatformDef, IndustrialBase, LazarusPackageIntf;
+  LCLPlatformDef, IndustrialBase, JSONPropStorage, LazarusPackageIntf;
 
 implementation
 

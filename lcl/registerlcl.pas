@@ -13,7 +13,7 @@ uses
   LazarusPackageIntf, Menus, Buttons, StdCtrls, ExtCtrls, ComCtrls, MaskEdit,
   CheckLst, Forms, Grids, Controls, Dialogs, Spin, Arrow, Calendar,
   PairSplitter, ExtDlgs, StdActns, DbCtrls, DbExtCtrls, DBGrids, DBActns, EditBtn,
-  ActnList, FileCtrl, Graphics, XMLPropStorage, IniPropStorage,
+  ActnList, FileCtrl, Graphics, XMLPropStorage, IniPropStorage, JSONPropStorage,
   ColorBox, ButtonPanel, LResources, LazHelpHTML, PopupNotifier, AsyncProcess,
   UTF8Process, ShellCtrls, ValEdit, ComboEx;
 
@@ -61,6 +61,7 @@ begin
   RegisterUnit('ShellCtrls', @ShellCtrls.Register);
   RegisterUnit('XMLPropStorage',@XMLPropStorage.Register);
   RegisterUnit('IniPropStorage',@IniPropStorage.Register);
+  RegisterUnit('JSONPropStorage',@JSONPropStorage.Register);
 end;
 
 procedure RegisterLCLBase;

@@ -6,7 +6,7 @@
    This file was generated on 14-10-16
 }
 
-{$ifndef ALLPACKAGES} 
+{$ifndef ALLPACKAGES}
 {$mode objfpc}{$H+}
 program fpmake;
 
@@ -72,6 +72,7 @@ begin
     t.Dependencies.AddUnit('inipropstorage');
     t.Dependencies.AddUnit('interfacebase');
     t.Dependencies.AddUnit('intfgraphics');
+    t.Dependencies.AddUnit('jsonpropstorage');
     t.Dependencies.AddUnit('lazhelphtml');
     t.Dependencies.AddUnit('lazhelpintf');
     t.Dependencies.AddUnit('lclclasses');
@@ -186,6 +187,7 @@ begin
     T:=P.Targets.AddUnit('inipropstorage.pas');
     T:=P.Targets.AddUnit('interfacebase.pp');
     T:=P.Targets.AddUnit('intfgraphics.pas');
+    T:=P.Targets.AddUnit('jsonpropstorage.pas');
     T:=P.Targets.AddUnit('lazhelphtml.pas');
     T:=P.Targets.AddUnit('lazhelpintf.pas');
     T:=P.Targets.AddUnit('lclclasses.pp');
@@ -275,7 +277,7 @@ begin
     // copy the compiled file, so the IDE knows how the package was compiled
     P.InstallFiles.Add('LCLBase.compiled',AllOSes,'$(unitinstalldir)');
 
-    // Added manually 
+    // Added manually
     P.InstallFiles.Add('cursors.res', '$(unitinstalldir)');
     P.InstallFiles.Add('btn_icons.res', '$(unitinstalldir)');
     P.InstallFiles.Add('dialog_icons.res', '$(unitinstalldir)');

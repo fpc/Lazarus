@@ -63,6 +63,7 @@ components/tidletimer.png
 components/timage.png
 components/timagelist.png
 components/tinipropstorage.png
+components/tjsonpropstorage.png
 components/tlabel.png
 components/tlabelededit.png
 components/tlazcomponentqueue.png

@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="7"/>
-    <Files Count="284">
+    <Files Count="285">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -1167,6 +1167,10 @@
         <Filename Value="include/patternbitmap.inc"/>
         <Type Value="Include"/>
       </Item284>
+      <Item285>
+        <Filename Value="jsonpropstorage.pas"/>
+        <UnitName Value="JSONPropStorage"/>
+      </Item285>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>

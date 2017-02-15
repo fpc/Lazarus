@@ -6550,6 +6550,7 @@ images/components/tidletimer.png -text svneol=unset#image/png
 images/components/timage.png -text svneol=unset#image/png
 images/components/timagelist.png -text svneol=unset#image/png
 images/components/tinipropstorage.png -text svneol=unset#image/png
+images/components/tjsonpropstorage.png -text svneol=unset#image/png
 images/components/tlabel.png -text svneol=unset#image/png
 images/components/tlabelededit.png -text svneol=unset#image/png
 images/components/tlazcomponentqueue.png -text svneol=unset#image/png
