@@ -8640,6 +8640,7 @@ lcl/interfaces/wince/wincewsspin.pp svneol=native#text/plain
 lcl/interfaces/wince/wincewsstdctrls.pp svneol=native#text/plain
 lcl/interfaces/wince/winext.pas svneol=native#text/plain
 lcl/intfgraphics.pas svneol=native#text/pascal
+lcl/jsonpropstorage.pas svneol=native#text/plain
 lcl/languages/README.txt svneol=native#text/plain
 lcl/languages/lclstrconsts.ca.po svneol=native#text/plain
 lcl/languages/lclstrconsts.cs.po svneol=native#text/plain
