@@ -504,14 +504,6 @@ type
 
 { TTaskDialog }
 
-const
-  tdiNone = 0;
-  tdiWarning = 1;
-  tdiError = 2;
-  tdiInformation = 3;
-  tdiShield = 4;
-  tdiQuestion = 5;
-
 type
   TCustomTaskDialog = class;
 
@@ -530,7 +522,7 @@ type
 
   TTaskDlgClickEvent = procedure(Sender: TObject; ModalResult: TModalResult; var CanClose: Boolean) of object;
 
-  TTaskDialogIcon = Low(Integer)..High(Integer);
+  TTaskDialogIcon = (tdiNone, tdiWarning, tdiError, tdiInformation, tdiShield, tdiQuestion);
 
   TTaskDialogButtons = class;
 
