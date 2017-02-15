@@ -528,21 +528,21 @@ type
 
   TTaskDialogBaseButtonItem = class(TCollectionItem)
   private
-    FCaption: string;
+    FCaption: TTranslateString;
     FClient: TCustomTaskDialog;
     FModalResult: TModalResult;
     function GetDefault: Boolean;
-    procedure SetCaption(const ACaption: string);
+    procedure SetCaption(const ACaption: TTranslateString);
     procedure SetDefault(const Value: Boolean);
   protected
     property Client: TCustomTaskDialog read FClient;
-    function GetDisplayName: string; override;
+    function GetDisplayName: TTranslateString; override;
     function TaskButtonCollection: TTaskDialogButtons;
   public
     constructor Create(ACollection: TCollection); override;
     property ModalResult: TModalResult read FModalResult write FModalResult;
   published
-    property Caption: string read FCaption write SetCaption;
+    property Caption: TTranslateString read FCaption write SetCaption;
     property Default: Boolean read GetDefault write SetDefault default False;
   end;
 
@@ -587,21 +587,21 @@ type
   private
     FButton: TTaskDialogButtonItem;
     FButtons: TTaskDialogButtons;
-    FCaption: string;
+    FCaption: TTranslateString;
     FCommonButtons: TTaskDialogCommonButtons;
     FDefaultButton: TTaskDialogCommonButton;
-    FExpandButtonCaption: string;
-    FExpandedText: string;
+    FExpandButtonCaption: TTranslateString;
+    FExpandedText: TTranslateString;
     FFlags: TTaskDialogFlags;
     FFooterIcon: TTaskDialogIcon;
-    FFooterText: string;
+    FFooterText: TTranslateString;
     FMainIcon: TTaskDialogIcon;
     FModalResult: TModalResult;
     FRadioButton: TTaskDialogRadioButtonItem;
     FRadioButtons: TTaskDialogButtons;
-    FText: string;
-    FTitle: string;
-    FVerificationText: string;
+    FText: TTranslateString;
+    FTitle: TTranslateString;
+    FVerificationText: TTranslateString;
     FOnButtonClicked: TTaskDlgClickEvent;
     procedure DoOnButtonClickedHandler(Sender: PTaskDialog; AButtonID: integer;
       var ACanClose: Boolean);
@@ -618,21 +618,21 @@ type
     function Execute(ParentWnd: HWND): Boolean; overload; dynamic;
     property Button: TTaskDialogButtonItem read FButton write FButton;
     property Buttons: TTaskDialogButtons read FButtons write SetButtons;
-    property Caption: string read FCaption write FCaption;
+    property Caption: TTranslateString read FCaption write FCaption;
     property CommonButtons: TTaskDialogCommonButtons read FCommonButtons write FCommonButtons default [tcbOk, tcbCancel];
     property DefaultButton: TTaskDialogCommonButton read FDefaultButton write FDefaultButton default tcbOk;
-    property ExpandButtonCaption: string read FExpandButtonCaption write FExpandButtonCaption;
-    property ExpandedText: string read FExpandedText write FExpandedText;
+    property ExpandButtonCaption: TTranslateString read FExpandButtonCaption write FExpandButtonCaption;
+    property ExpandedText: TTranslateString read FExpandedText write FExpandedText;
     property Flags: TTaskDialogFlags read FFlags write FFlags default [tfAllowDialogCancellation];
     property FooterIcon: TTaskDialogIcon read FFooterIcon write FFooterIcon default tdiNone;
-    property FooterText: string read FFooterText write FFooterText;
+    property FooterText: TTranslateString read FFooterText write FFooterText;
     property MainIcon: TTaskDialogIcon read FMainIcon write FMainIcon default tdiInformation;
     property ModalResult: TModalResult read FModalResult write FModalResult;
     property RadioButton: TTaskDialogRadioButtonItem read FRadioButton;
     property RadioButtons: TTaskDialogButtons read FRadioButtons write SetRadioButtons;
-    property Text: string read FText write FText;
-    property Title: string read FTitle write FTitle;
-    property VerificationText: string read FVerificationText write FVerificationText;
+    property Text: TTranslateString read FText write FText;
+    property Title: TTranslateString read FTitle write FTitle;
+    property VerificationText: TTranslateString read FVerificationText write FVerificationText;
     property OnButtonClicked: TTaskDlgClickEvent read FOnButtonClicked write FOnButtonClicked;
   end;
 
