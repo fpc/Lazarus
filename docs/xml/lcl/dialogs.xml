@@ -3179,21 +3179,21 @@ If a valid directory is given, the selected directory in the tree will be set to
       </element><element name="TTaskDialog.MainIcon"><short>Icon for the main info in dialog.</short>
       </element><element name="TTaskDialog.RadioButtons"><short>Collection of items that describe radio-buttons, they show in the lower part.</short>
       </element>
-    <element name="TTaskDialogFlag.tfEnableHyperlinks"><short>Allow to underline URLs in texts, and to click them.</short>
-      </element><element name="TTaskDialogFlag.tfUseHiconMain"><short>Allow to load main icon from app resources.</short>
-      </element><element name="TTaskDialogFlag.tfAllowDialogCancellation"><short>Allow to cancel dialog by Esc key, or Alt+F4 (ie OS default hotkey).</short>
+    <element name="TTaskDialogFlag.tfEnableHyperlinks"><short>Allow HTML-like hyperlinks in the dialog (in Text, Footer, and ExpandedText) using HTML tag "a href=...".</short>
+      </element><element name="TTaskDialogFlag.tfUseHiconMain"><short>Use custom main icon with CustomMainIcon property.</short>
+      </element><element name="TTaskDialogFlag.tfAllowDialogCancellation"><short>Allow canceling the dialog by Esc key, or Alt+F4 (ie OS default hotkey).</short>
       </element><element name="TTaskDialogFlag.tfVerificationFlagChecked"><short>Bottom check-box (verification) shows in the checked state.</short>
-      </element><element name="TTaskDialogFlag.tfCanBeMinimized"><short>Allow to minimize dialog.</short>
-      </element><element name="TTaskDialogFlag.tfRtlLayout"><short>Allow to use Right-to-Left layout for texts.</short>
+      </element><element name="TTaskDialogFlag.tfCanBeMinimized"><short>Allow minimizing the dialog.</short>
+      </element><element name="TTaskDialogFlag.tfRtlLayout"><short>Use Right-to-Left layout for texts.</short>
       </element><element name="TTaskDialogFlag.tfShowProgressBar"><short>Show additional progress-bar.</short>
-      </element><element name="TTaskDialogFlag.tfExpandedByDefault"><short>Dialog shows in the "expanded" state, more controls are visible.</short>
-      </element><element name="TTaskDialogFlag.tfExpandFooterArea"><short>Footer area shows fully visible.</short>
-      </element><element name="TTaskDialogFlag.tfNoDefaultRadioButton"><short>Don't set any of radio-buttons as default (for Enter key).</short>
+      </element><element name="TTaskDialogFlag.tfExpandedByDefault"><short>Initially show ExpandedText. Else show the button, which shows ExpandedText.</short>
+      </element><element name="TTaskDialogFlag.tfExpandFooterArea"><short>Show ExpandedText in the footer, instead of near the main text.</short>
+      </element><element name="TTaskDialogFlag.tfNoDefaultRadioButton"><short>Don't check any of radio-buttons.</short>
       </element><element name="TTaskDialogFlag.tfShowMarqueeProgressBar"><short>Show additional progress-bar, in the marquee style, never ending progress.</short>
-      </element><element name="TTaskDialogFlag.tfUseHiconFooter"><short>Allow to load icon for footer, from app resources.</short>
+      </element><element name="TTaskDialogFlag.tfUseHiconFooter"><short>Use custom footer icon with CustomFooterIcon property.</short>
       </element><element name="TTaskDialogFlag.tfUseCommandLinks"><short>Custom buttons will be shown as big buttons in the middle of the dialog; and text after "\n", in caption, will be shown as hint.</short>
-      </element><element name="TTaskDialogFlag.tfUseCommandLinksNoIcon"><short>For custom buttons, in the "command links" mode, also show default icon.</short>
-      </element><element name="TTaskDialogFlag.tfCallbackTimer"><short>Use timer that activates some choice, after some number of seconds.</short>
+      </element><element name="TTaskDialogFlag.tfUseCommandLinksNoIcon"><short>Don't show glyphs for custom buttons in the "command links" mode.</short>
+      </element><element name="TTaskDialogFlag.tfCallbackTimer"><short>Execute the timer callback event every 200 milliseconds.</short>
       </element><element name="TTaskDialogFlag.tfPositionRelativeToWindow"><short>Form position will be poOwnerFormCenter, instead of poScreenCenter.</short>
       </element>
     </module>
