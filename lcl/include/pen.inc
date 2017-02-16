@@ -259,6 +259,7 @@ begin
     Cosmetic := APen.Cosmetic;
     JoinStyle := APen.JoinStyle;
     EndCap := APen.EndCap;
+    SetPattern(APen.GetPattern);
   end
   else
     inherited Assign(Source);
