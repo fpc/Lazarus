@@ -595,6 +595,7 @@ type
     property ButtonHint;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
+    property Constraints;
     property DirectInput;
     // property Glyph;
     property NumGlyphs;
@@ -689,6 +690,7 @@ type
     property ButtonHint;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
+    property Constraints;
     property DirectInput;
     // property Glyph;
     property NumGlyphs;
@@ -1006,6 +1008,7 @@ type
     property ButtonHint;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
+    property Constraints;
     property DirectInput;
     // property Glyph;
     property NumGlyphs;
