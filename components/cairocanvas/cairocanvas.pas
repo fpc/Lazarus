@@ -38,7 +38,7 @@ type
     procedure UpdatePangoLayout(Layout: PPangoLayout);
     {$endif}
     procedure SelectFontEx(AStyle: TFontStyles; const AName: string;
-      ASize: double);
+      ASize: double; aPitch: TFontPitch);
     function SX(x: double): double;
     function SY(y: double): double;
     function SX2(x: double): double;
@@ -934,16 +934,17 @@ end;
 procedure TCairoPrinterCanvas.SelectFont;
 begin
   RequiredState([csHandleValid]);
-  SelectFontEx(Font.Style, Font.Name, abs(Font.Size));
+  SelectFontEx(Font.Style, Font.Name, abs(Font.Size), Font.Pitch);
   SetSourceColor(Font.Color);
 end;
 
-procedure TCairoPrinterCanvas.SelectFontEx(AStyle: TFontStyles; const AName: string; ASize: double);
+procedure TCairoPrinterCanvas.SelectFontEx(AStyle: TFontStyles;
+  const AName: string; ASize: double; aPitch: TFontPitch);
 var
   slant: cairo_font_slant_t;
   weight: cairo_font_weight_t;
   {$ifdef pangocairo}
-  S: string;
+  S, aFontName: string;
   {$endif}
 begin
   if fsBold in Font.Style then
@@ -955,7 +956,16 @@ begin
   else
     slant := CAIRO_FONT_SLANT_NORMAL;
   {$ifdef pangocairo}
-  S := format('%s %s %dpx',[AName, StylesToStr(AStyle), round(ASize)]);
+  if ASize<0.001 then
+    ASize := 10.0;
+  aFontName := AName;
+  if (aFontName='') or SameText(aFontName, 'default') then begin
+    if aPitch=fpFixed then
+      aFontName := 'monospace'
+    else
+      aFontName := 'sans-serif';
+  end;
+  S := format('%s %s %dpx',[aFontName, StylesToStr(AStyle), round(ASize)]);
   if (fFontDesc=nil) or (S<>fFontDescStr) then
   begin
     if fFontDesc<>nil then
@@ -1148,7 +1158,7 @@ begin
 
     if Style.SystemFont and Assigned(OnGetSystemFont) then begin
       fd := GetFontData(OnGetSystemFont());
-      SelectFontEx(fd.Style, fd.Name, fd.Height);
+      SelectFontEx(fd.Style, fd.Name, fd.Height, fd.Pitch);
       SetSourceColor(clWindowText);
     end else
       SelectFont;
