@@ -6734,7 +6734,7 @@ begin
   EditorSetValue;
   if ParentChanged then
     Editor.Parent:=Self;
-  if FEditor=FStringEditor then
+  if (FEditor = FStringEditor) or (FEditor = FButtonStringEditor) then
   begin
     if FCol-FFixedCols<Columns.Count then
       FStringEditor.Alignment:=Columns[FCol-FFixedCols].Alignment
