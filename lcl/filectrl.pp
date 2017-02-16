@@ -87,10 +87,12 @@ Type
     property BiDiMode;
     property BorderSpacing;
     property BorderStyle;
+    property Color;
     property Constraints;
     property Directory;
     property DragCursor;
     property DragMode;
+    property Enabled;
     property ExtendedSelect;
     property FileType;
     property Font;
@@ -124,6 +126,7 @@ Type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentBiDiMode;
+    property ParentColor;
     property ParentShowHint;
     property ParentFont;
     property PopupMenu;

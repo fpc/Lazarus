@@ -482,6 +482,7 @@ type
     property ButtonHint;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
+    property Constraints;
     property DirectInput;
     property NumGlyphs;
     property Flat;

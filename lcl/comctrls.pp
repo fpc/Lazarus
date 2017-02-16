@@ -1800,6 +1800,7 @@ type
     property DragKind;
     property DragMode;
     property Enabled;
+    property Font;
     property Hint;
     property Max;
     property Min;
@@ -1820,6 +1821,7 @@ type
     property OnStartDock;
     property OnStartDrag;
     property Orientation;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property Position;
