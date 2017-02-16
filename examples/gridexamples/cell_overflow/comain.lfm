@@ -1,0 +1,32 @@
+object MainForm: TMainForm
+  Left = 271
+  Height = 294
+  Top = 237
+  Width = 530
+  Caption = 'Extended StringGrid'
+  ClientHeight = 294
+  ClientWidth = 530
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.7'
+  object StringGrid: TStringGrid
+    Left = 0
+    Height = 271
+    Top = 0
+    Width = 530
+    Align = alClient
+    ColCount = 8
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goThumbTracking, goSmoothScroll]
+    RowCount = 10
+    TabOrder = 0
+    OnClick = StringGridClick
+    OnPrepareCanvas = StringGridPrepareCanvas
+  end
+  object StatusBar: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 271
+    Width = 530
+    Panels = <>
+  end
+end
