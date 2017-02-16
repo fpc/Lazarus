@@ -348,7 +348,7 @@ end;
 
 function GetLocaleStr(aLocaleID, aLCType: Longint; const Def: string): String;
 var
-  L: Integer;
+  L, ResultLen: Integer;
   Buf: array[0..255] of WideChar;
 begin
   L := GetLocaleInfoW(aLocaleID, aLCType, Buf, SizeOf(Buf));
@@ -358,7 +358,14 @@ begin
     {$IF FPC_FULLVERSION >= 30000}
     widestringmanager.Wide2AnsiMoveProc(PWideChar(@Buf[0]),Result,CP_UTF8,L-1);
     {$ELSE}
-    widestringmanager.Wide2AnsiMoveProc(PWideChar(@Buf[0]),Result,CP_UTF8);
+    ResultLen:=WideCharToMultiByte(CP_UTF8,0,PWideChar(@Buf[0]),L-1,nil,0,nil,nil);
+    if ResultLen > 0 then
+    begin
+      SetLength(Result,ResultLen);
+      WideCharToMultiByte(CP_UTF8,0,PWideChar(@Buf[0]),L-1,@result[1],ResultLen,nil,nil)
+    end
+    else
+      Result:=Def;
     {$ENDIF}
   end
   else
