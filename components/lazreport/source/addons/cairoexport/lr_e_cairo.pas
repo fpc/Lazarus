@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, types, LResources, LCLProc, Forms, Controls, Graphics, Dialogs,
-  Barcode, lr_class, lr_barc, lr_rrect, lr_shape, Cairo, CairoCanvas, CairoPrinter;
+  Barcode, lr_class, lr_barc, lr_rrect, lr_shape, Cairo, CairoCanvas, CairoPrinter,
+  lr_chbox;
 
 type
   TShapeData = record
@@ -79,6 +80,18 @@ type
     property Backend: TlrCairoBackend read fBackend write fBackend;
   end;
 
+  { TlrCairoPDFExportFilter }
+
+  TlrCairoPDFExportFilter = class(TlrCairoExportFilter)
+    constructor Create(AStream: TStream); override;
+  end;
+
+  { TlrCairoPSExportFilter }
+
+  TlrCairoPSExportFilter = class(TlrCairoExportFilter)
+    constructor Create(AStream: TStream); override;
+  end;
+
 implementation
 uses LR_Utils;
 
@@ -96,6 +109,22 @@ function cairo_surface_set_mime_data(surface:Pcairo_surface_t; mime_type:Pchar; 
 function rtrunc(value: extended): Integer;
 begin
   result := trunc(value + 0.5);
+end;
+
+{ TlrCairoPSExportFilter }
+
+constructor TlrCairoPSExportFilter.Create(AStream: TStream);
+begin
+  inherited Create(AStream);
+  Backend := cePS;
+end;
+
+{ TlrCairoPDFExportFilter }
+
+constructor TlrCairoPDFExportFilter.Create(AStream: TStream);
+begin
+  inherited Create(AStream);
+  Backend := cePDF;
 end;
 
 { TlrCairoExportFilter }
@@ -538,6 +567,11 @@ var
 begin
 
   picture := View.Picture;
+  if Picture.Graphic=nil then
+  begin
+    DebugLn('WARNING: tried to export an empty image (%s)',[View.Name]);
+    exit;
+  end;
   picw := Picture.Graphic.Width;
   pich := Picture.Graphic.Height;
 
@@ -719,7 +753,7 @@ procedure TlrCairoExportFilter.OnText(X, Y: Integer; const Text: string;
   View: TfrView);
 var
   nx, ny, gapx, gapy, sgapx, sgapy: Integer;
-  aStyle: TTextStyle;
+  aStyle, oldStyle: TTextStyle;
   R: TRect;
 begin
 
@@ -747,11 +781,27 @@ begin
   //fCairoPrinter.Canvas.ClipRect := DataRect;
   //fCairoPrinter.Canvas.Clipping := true;
 
-  aStyle := fCairoPrinter.Canvas.TextStyle;
-  aStyle.Alignment:=TfrMemoView_(View).Alignment;
+  oldStyle := fCairoPrinter.Canvas.TextStyle;
+  aStyle := oldStyle;
   aStyle.Clipping:=false;  // NOTE: there are some interaction between this and roundrect
   aStyle.Layout:=tlTop;    //       background painting, set to false for the moment
-  aStyle.Wordbreak:= TfrMemoView_(View).WordWrap;
+  if View is TfrMemoView then
+  begin
+    aStyle.Alignment:=TfrMemoView_(View).Alignment;
+    aStyle.Wordbreak:= TfrMemoView_(View).WordWrap;
+  end else
+  if View is TfrCheckBoxView then
+  begin
+    aStyle.Alignment:=taCenter;
+    aStyle.WordBreak:=false;
+    aStyle.Layout:=tlCenter;
+    fCairoPrinter.Canvas.Font.Size := 10;
+    fCairoPrinter.Canvas.Font.Style := fCairoPrinter.Canvas.Font.Style + [fsBold];
+  end else
+  begin
+    aStyle.Alignment:=taLeftJustify;
+    aStyle.WordBreak:=false;
+  end;
 
   gapx := trunc(View.FrameWidth / 2 + 0.5);
   gapy := trunc(View.FrameWidth / 4 + 0.5);
@@ -762,24 +812,29 @@ begin
   R := DataRect;
   InflateRect(R, -sgapx, -sgapy);
 
-  fCairoPrinter.Canvas.Font := TfrMemoView_(View).Font;
-  fCairoPrinter.Canvas.Font.Orientation := (View as TfrMemoView).Angle * 10;
-
-  if fCairoPrinter.Canvas.Font.Orientation<>0 then
-    fCairoPrinter.Canvas.TextRect(R, nx, R.Bottom, Text, aStyle)
-  else
+  if View is TfrMemoView then
   begin
-    if TfrMemoView_(View).Justify and not TfrMemoView_(View).LastLine then
-      CanvasTextRectJustify(fCairoPrinter.Canvas, R, nx, R.Right, ny, Text, true)
+    fCairoPrinter.Canvas.Font := TfrMemoView_(View).Font;
+    fCairoPrinter.Canvas.Font.Orientation := (View as TfrMemoView).Angle * 10;
+
+    if fCairoPrinter.Canvas.Font.Orientation<>0 then
+      fCairoPrinter.Canvas.TextRect(R, nx, R.Bottom, Text, aStyle)
     else
-      fCairoPrinter.Canvas.TextRect(R, {R.Left} nx, ny, Text, aStyle);
-  end;
+    begin
+      if TfrMemoView_(View).Justify and not TfrMemoView_(View).LastLine then
+        CanvasTextRectJustify(fCairoPrinter.Canvas, R, nx, R.Right, ny, Text, true)
+      else
+        fCairoPrinter.Canvas.TextRect(R, {R.Left} nx, ny, Text, aStyle);
+    end;
+  end else
+    fCairoPrinter.Canvas.TextRect(R, {R.Left} nx, ny, Text, aStyle);
 
   // restore previous clipping
   //if OldClipping then
   //  fCairoPrinter.Canvas.ClipRect := OldClipRect
   //else
   //  fCairoPrinter.Canvas.Clipping := false;
+  fCairoPrinter.Canvas.TextStyle := oldStyle;
 end;
 
 procedure TlrCairoExportFilter.OnData(x, y: Integer; View: TfrView);
@@ -821,7 +876,7 @@ begin
 end;
 
 initialization
-    frRegisterExportFilter(TlrCairoExportFilter, 'Cairo PDF (*.pdf)', '*.pdf');
-    frRegisterExportFilter(TlrCairoExportFilter, 'Cairo Postscript (*.ps)', '*.ps');
+    frRegisterExportFilter(TlrCairoPDFExportFilter, 'Cairo PDF (*.pdf)', '*.pdf');
+    frRegisterExportFilter(TlrCairoPSExportFilter, 'Cairo Postscript (*.ps)', '*.ps');
 
 end.

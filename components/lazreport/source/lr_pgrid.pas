@@ -42,6 +42,7 @@ type
     FDBGrid               : TCustomDBGrid;
     FOnGetValue: TDetailEvent;
     FOnSetUpColumn: TSetupColumnEvent;
+    FPrinterIndex         : Integer;
     FReport               : TfrReport;
     FReportDataSet        : TfrDBDataSet;
     FColumnDataSet        : TfrUserDataSet;
@@ -79,6 +80,7 @@ type
     property TitleFont : TFont read FTitleFont write SetTitleFont;
     property Caption: String read FCaption write FCaption;
     property Template: string read FTemplate write FTemplate;
+    property PrinterIndex: Integer read FPrinterIndex write FPrinterIndex;
     property ShowCaption: Boolean read FShowCaption write FShowCaption;
     property ShowHeaderOnAllPage : boolean read fShowHdOnAllPage write fShowHdOnAllPage default True;
     property ShowProgress : Boolean read fShowProgress write fShowProgress default false;
@@ -105,6 +107,7 @@ begin
   FCaption := 'Grid';
   FShowCaption := True;
   fShowProgress:=False;
+  FPrinterIndex := -1;
 end;
 
 destructor TfrPrintGrid.Destroy;
@@ -362,6 +365,12 @@ begin
     FDataSet.DisableControls;
     BM:=FDataSet.GetBookmark;
     try
+      if (FPrinterIndex <> -1) then
+       begin
+         FReport.ChangePrinter(Printer.PrinterIndex, FPrinterIndex);
+         FReport.PrepareReport;
+       end;
+
       FReport.ShowReport;
     finally
       FDataSet.GotoBookmark(BM);
