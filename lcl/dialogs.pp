@@ -520,7 +520,7 @@ type
   TTaskDialogCommonButton = (tcbOk, tcbYes, tcbNo, tcbCancel, tcbRetry, tcbClose);
   TTaskDialogCommonButtons = set of TTaskDialogCommonButton;
 
-  TTaskDlgClickEvent = procedure(Sender: TObject; ModalResult: TModalResult; var CanClose: Boolean) of object;
+  TTaskDlgClickEvent = procedure(Sender: TObject; AModalResult: TModalResult; var ACanClose: Boolean) of object;
 
   TTaskDialogIcon = (tdiNone, tdiWarning, tdiError, tdiInformation, tdiShield, tdiQuestion);
 
@@ -610,7 +610,7 @@ type
     function ButtonIDToModalResult(const AButtonID: Integer): TModalResult;
   protected
     function DoExecute(ParentWnd: HWND): Boolean; dynamic;
-    procedure DoOnButtonClicked(AModalResult: Integer; var CanClose: Boolean); dynamic;
+    procedure DoOnButtonClicked(AModalResult: Integer; var ACanClose: Boolean); dynamic;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

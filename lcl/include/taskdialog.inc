@@ -239,10 +239,10 @@ begin
 end;
 
 procedure TCustomTaskDialog.DoOnButtonClicked(AModalResult: Integer;
-  var CanClose: Boolean);
+  var ACanClose: Boolean);
 begin
   if Assigned(FOnButtonClicked) then
-    FOnButtonClicked(Self, AModalResult, CanClose);
+    FOnButtonClicked(Self, AModalResult, ACanClose);
 end;
 
 procedure TCustomTaskDialog.DoOnButtonClickedHandler(Sender: PTaskDialog;
