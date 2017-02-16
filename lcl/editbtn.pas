@@ -786,6 +786,7 @@ type
     procedure SetDirectInput(AValue: Boolean); override;
     procedure SetText(AValue: TCaption); override;
     procedure SetDateMask; virtual;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     function GetDateFormat: string;
@@ -905,6 +906,9 @@ type
       property OnAcceptTime: TAcceptTimeEvent read FOnAcceptTime write FOnAcceptTime;
       property OnCustomTime: TCustomTimeEvent read FOnCustomTime write FOnCustomTime;
       property ReadOnly;
+      property ButtonCaption;
+      property ButtonCursor;
+      property ButtonHint;
       property ButtonOnlyWhenFocused;
       property ButtonWidth;
       property Action;
@@ -2558,7 +2562,7 @@ procedure TDateEdit.EditEditingDone;
 var
   AText: String;
 begin
-  inherited EditingDone;
+  inherited EditEditingDone;
   if DirectInput then
   begin
     AText := DateToText(GetDate);
@@ -2572,9 +2576,11 @@ var
   Def: TDateTime;
 begin
   inherited SetDirectInput(AValue);
-  //Synchronize FDate and force valid text
+  //Synchronize FDate
   FDate := TextToDate(Text, NullDate);
-  SetDate(FDate);
+  //Force a valid date in the control, but not if Text was empty in designmode
+  if not ((csDesigning in ComponentState) and FDefaultToday and (FDate = NullDate)) then
+    SetDate(FDate);
 end;
 
 procedure TDateEdit.SetText(AValue: TCaption);
@@ -2626,6 +2632,14 @@ begin
   D:=GetDate;
   EditMask:=S;
   SetDate(D);
+end;
+
+procedure TDateEdit.Loaded;
+begin
+  inherited Loaded;
+  //Forces a valid Text in the control
+  if not (csDesigning in ComponentState) then
+    SetDate(FDate);
 end;
 
 Function ParseDate(S : String; Order : TDateOrder; Def: TDateTime) : TDateTime;
