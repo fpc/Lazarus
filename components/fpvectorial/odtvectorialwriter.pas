@@ -95,6 +95,8 @@ type
     FAutomaticStyleID : Integer;
     FContentAutomaticStyles : string; // built during writedocument, used during writedocument
 
+    FRasterImageFileNames:TStringList;
+
     FList_StyleCrossRef : TListStyle_StyleList;
 
     FNewPageSequence : Boolean;
@@ -125,6 +127,10 @@ type
     procedure WriteField(AEntity: TvField; AParagraph: TvParagraph;
       ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
     procedure WriteList(AEntity: TvList; ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
+
+    procedure WriteRasterImage(AEntity:TvRasterImage; AParagraph: TvParagraph;
+      ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
+
     // Routines to write parts of those files
     function WriteStylesXMLAsString: string;
     //
@@ -139,7 +145,7 @@ type
 implementation
 
 uses
-  htmlelements;
+  htmlelements, FPWritePNG, Math;
 
 const
   { OpenDocument general XML constants }
@@ -318,17 +324,28 @@ begin
 end;
 
 procedure TvODTVectorialWriter.WriteMetaInfManifest;
+var
+  i:integer;
 begin
   FMetaInfManifest :=
    XML_HEADER + LineEnding +
    '<manifest:manifest xmlns:manifest="' + SCHEMAS_XMLNS_MANIFEST + '"  manifest:version="1.2">' + LineEnding +
-   '  <manifest:file-entry manifest:full-path="/" manifest:media-type="application/vnd.oasis.opendocument.text" />' + LineEnding + // manifest:version="1.2"
+   '  <manifest:file-entry manifest:full-path="/" manifest:media-type="application/vnd.oasis.opendocument.text" />' + LineEnding; // manifest:version="1.2"
+
+  for i:= 0 to FRasterImageFileNames.Count-1 do
+  begin
+    FMetaInfManifest := FMetaInfManifest+
+    '  <manifest:file-entry manifest:media-type="image/png" manifest:full-path="'+FRasterImageFileNames[i]+'" />' + LineEnding;
+  end;
+
+  FMetaInfManifest := FMetaInfManifest+
    '  <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="content.xml" />' + LineEnding +
    '  <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="styles.xml" />' + LineEnding +
    '  <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="meta.xml" />' + LineEnding +
    '  <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="settings.xml" />' + LineEnding +
    '  <manifest:file-entry manifest:full-path="manifest.rdf" manifest:media-type="application/rdf+xml"/>' + LineEnding +
    '</manifest:manifest>';
+
 end;
 
 procedure TvODTVectorialWriter.WriteManifestRDF;
@@ -1100,6 +1117,8 @@ begin
       WriteTextSpan(TvText(lCurEntity), AEntity, ACurPage, AData)
     else if (lCurEntity is TvField) then
       WriteField(TvField(lCurEntity), AEntity, ACurPage, AData)
+    else if (lCurEntity is TvRasterImage) then
+      WriteRasterImage(TvRasterImage(lCurEntity), AEntity, ACurPage, AData)
     else
       raise exception.create('TvParagraph subentity '+lCurEntity.ClassName+' not handled');
   end;
@@ -1680,6 +1699,34 @@ begin
     '    </text:list>' + LineEnding;
 end;
 
+procedure TvODTVectorialWriter.WriteRasterImage(AEntity: TvRasterImage;  AParagraph: TvParagraph;
+  ACurPage: TvTextPageSequence;  AData: TvVectorialDocument);
+var
+  FRasterImageName:string;
+  FRasterImageHeight:double;
+  FRasterImageWidth:double;
+begin
+  if AEntity.RasterImage=nil then
+    Exit;
+
+  if IsZero(AEntity.Height) then
+    FRasterImageHeight:=RoundTo((AEntity.RasterImage.Height*2.54)/96,-3) // default 96 dpi of document, unit used cm
+  else
+    FRasterImageHeight:=AEntity.Height;
+
+  if IsZero(AEntity.Width) then
+    FRasterImageWidth:=RoundTo((AEntity.RasterImage.Width*2.54)/96,-3) // default 96 dpi of document, unit used cm
+  else
+    FRasterImageWidth:=AEntity.Width;
+
+  FRasterImageName:='Pictures/'+IntTostr(FRasterImageFileNames.Count+1)+'.png';
+  FContent:=FContent+'<draw:frame draw:name="Image'+IntTostr(FRasterImageFileNames.Count+1)+'" svg:width="'+FloatToODTText(FRasterImageWidth)+'cm" svg:height="'+FloatToODTText(FRasterImageHeight)+'cm" text:anchor-type="as-char" draw:z-index="2">';
+  FContent:=FContent+'<draw:image xlink:href="'+FRasterImageName+'" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>';
+  FContent:=FContent+'</draw:frame>';
+
+  FRasterImageFileNames.AddObject(FRasterImageName,AEntity);
+end;
+
 function TvODTVectorialWriter.WriteStylesXMLAsString: string;
 begin
 
@@ -1700,10 +1747,13 @@ begin
   FList_StyleCrossRef.Writer := Self;
 
   FDateCount := 0;
+
+  FRasterImageFileNames:=TStringList.Create;
 end;
 
 destructor TvODTVectorialWriter.Destroy;
 begin
+  FRasterImageFileNames.Free;
   FList_StyleCrossRef.Free;
 
   inherited Destroy;
@@ -1732,13 +1782,15 @@ var
   // Streams with the contents of files
   FSMeta, FSSettings, FSStyles, FSContent, FSMimetype: TStringStream;
   FSMetaInfManifest, FSManifestRDF: TStringStream;
+  FSRasterImage:TMemoryStream;
+  i:integer;
+  WriterPNG:TFPWriterPNG;
+  FRasterImageStreamList:TFPList;
 begin
   FList_StyleCrossRef.Data := AData;
 
   { Fill the strings with the contents of the files }
-
   WriteMimetype();
-  WriteMetaInfManifest();
   WriteManifestRDF();
   WriteMeta();
   WriteSettings();
@@ -1746,6 +1798,7 @@ begin
   // built up during WriteDocument...
   WriteDocument(AData);
   WriteStyles(AData);
+  WriteMetaInfManifest();
 
   { Write the data to streams }
 
@@ -1757,8 +1810,13 @@ begin
   FSMetaInfManifest := TStringStream.Create(FMetaInfManifest);
   FSManifestRDF := TStringStream.Create(FManifestRDF);
 
-  { Now compress the files }
 
+  FRasterImageStreamList:=nil;
+
+  WriterPNG:=TFPWriterPNG.Create;
+  WriterPNG.UseAlpha:=true;
+
+  { Now compress the files }
   FZip := TZipper.Create;
   try
     // MimeType must be first file, and should be uncompressed
@@ -1773,8 +1831,25 @@ begin
     FZip.Entries.AddFileEntry(FSMetaInfManifest, OPENDOC_PATH_METAINF_MANIFEST);
     FZip.Entries.AddFileEntry(FSManifestRDF, OPENDOC_PATH_MANIFESTRDF);
 
+    FRasterImageStreamList:=TFPList.Create;
+
+    for i:=0 to FRasterImageFileNames.Count-1 do
+    begin
+      FSRasterImage:=TMemoryStream.Create;
+      TvRasterImage(FRasterImageFileNames.Objects[i]).RasterImage.SaveToStream(FSRasterImage,WriterPNG);
+      FRasterImageStreamList.Add(FSRasterImage);
+      FSRasterImage.Seek(0,soFromBeginning);
+      FZip.Entries.AddFileEntry(FSRasterImage, FRasterImageFileNames[i]);
+    end;
+
     FZip.SaveToStream(AStream);
   finally
+    if FRasterImageStreamList<> nil then
+    begin
+      for i:=0 to FRasterImageStreamList.Count-1 do
+        TvRasterImage(FRasterImageStreamList[i]).Free;
+      FRasterImageStreamList.Free;
+    end;
     FZip.Free;
     FSMeta.Free;
     FSSettings.Free;
@@ -1783,6 +1858,7 @@ begin
     FSMimetype.Free;
     FSMetaInfManifest.Free;
     FSManifestRDF.Free;
+    WriterPNG.Free;
   end;
 end;
 
