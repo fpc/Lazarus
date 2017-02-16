@@ -33,7 +33,7 @@ unit OpenGLContext;
   {$ENDIF}
 {$ENDIF}
 {$IFDEF LCLGTK2}
-  {$IFDEF Linux}
+  {$IF defined(Linux) or defined(FreeBSD)}
     {$DEFINE UseGtk2GLX}
     {$DEFINE UsesModernGL}
     {$DEFINE HasRGBA}
