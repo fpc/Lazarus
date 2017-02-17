@@ -426,22 +426,26 @@ begin
   if LDefaultFont<>nil then
     Exit(LDefaultFont);
   LDefaultFont := TFont.Create;
+  LDefaultFont.Name := 'default';
   LDefaultFont.Style := [];
+  LDefaultFont.Size := 10;
+  Result := LDefaultFont;
+
+  {$IFDEF WINDOWS}
   if Screen.Fonts.IndexOf('Calibri')>=0 then begin
     LDefaultFont.Size := 11;
     LDefaultFont.Name := 'Calibri';
   end else begin
     if Screen.Fonts.IndexOf('Tahoma')>=0 then
-      LDefaultFont.Name := 'Tahoma' else
+      LDefaultFont.Name := 'Tahoma'
+    else
       LDefaultFont.Name := 'Arial';
-
-    {$IFDEF DARWIN}
-    LDefaultFont.Size := 13;
-    {$ELSE}
-    LDefaultFont.Size := 10;
-    {$ENDIF}
   end;
-  Result := LDefaultFont;
+  {$ENDIF}
+
+  {$IFDEF DARWIN}
+  LDefaultFont.Size := 13;
+  {$ENDIF}
 end;
 
 const
