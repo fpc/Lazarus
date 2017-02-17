@@ -2226,6 +2226,7 @@ begin
           DoAutoCheck;
         end;
 
+        FCorrectedDTP := dtpAMPM;
       end;
 
     finally
