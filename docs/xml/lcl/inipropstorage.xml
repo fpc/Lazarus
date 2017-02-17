@@ -1,378 +1,326 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lcl">
+  <package name="lcl">
 
-<!--
-  ====================================================================
-    IniPropStorage
-  ====================================================================
--->
+    <!--
+      ====================================================================
+      IniPropStorage
+      ====================================================================
+    -->
 
-<module name="IniPropStorage">
-<short/>
-<descr>
-</descr>
+    <module name="IniPropStorage">
+      <short>Contains a component that stores Form Session Properties in INI format.</short>
+      <descr>
+        <p>In this unit you can find an implementation of a name/value pair storage container in INI format.</p>
+        <p>This container will get the Form's Session Properties that you setup in <link id="#LCL.Forms.TForm">TForm.SessionProperties</link> and read/write them on the file you specify on <link id="#LCL.IniPropStorage.TINIPropStorage.INIFileName">TINIPropStorage.INIFileName</link>.</p>
+      </descr>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- Classes -->
 
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- SysUtils -->
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Forms">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="IniFiles">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- IniFiles -->
 
-<!-- unresolved type reference Visibility: default -->
-<element name="IniFiles">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LazUTF8">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- LazUTF8 -->
 
-<!-- unresolved type reference Visibility: default -->
-<element name="PropertyStorage">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Forms">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- Forms -->
 
-<!-- "class of" type Visibility: default -->
-<element name="TIniFileClass">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- "class of" type Visibility: default -->
+      <element name="TIniFileClass">
+        <short>Class of <link id="#fcl.IniFiles.TCustomIniFile">TCustomIniFile</link></short>
+        <descr />
+        <seealso />
+      </element> <!-- "class of" TIniFileClass -->
 
-<!-- object Visibility: default -->
-<element name="TCustomIniPropStorage">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- object Visibility: default -->
+      <element name="TCustomIniPropStorage">
+        <short>Implements the base class for the INI Form's Session Properties.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- object TCustomIniPropStorage -->
 
-<!-- variable Visibility: private -->
-<element name="TCustomIniPropStorage.FCount">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomIniPropStorage.FCount">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- variable TCustomIniPropStorage.FCount -->
 
-<!-- variable Visibility: private -->
-<element name="TCustomIniPropStorage.FReadOnly">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomIniPropStorage.FReadOnly">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- variable TCustomIniPropStorage.FReadOnly -->
 
-<!-- variable Visibility: private -->
-<element name="TCustomIniPropStorage.FIniFile">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomIniPropStorage.FIniFile">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- variable TCustomIniPropStorage.FIniFile -->
 
-<!-- variable Visibility: private -->
-<element name="TCustomIniPropStorage.FIniFileName">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomIniPropStorage.FIniFileName">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- variable TCustomIniPropStorage.FIniFileName -->
 
-<!-- variable Visibility: private -->
-<element name="TCustomIniPropStorage.FIniSection">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomIniPropStorage.FIniSection">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- variable TCustomIniPropStorage.FIniSection -->
 
-<!-- function Visibility: protected -->
-<element name="TCustomIniPropStorage.IniFileClass">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomIniPropStorage.IniFileClass">
+        <short>Returns the class <link id="#fcl.IniFiles.TIniFile">TIniFile</link></short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- function TCustomIniPropStorage.IniFileClass -->
 
-<!-- function result Visibility: default -->
-<element name="TCustomIniPropStorage.IniFileClass.Result">
-<short/>
-</element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIniPropStorage.IniFileClass.Result">
+        <short>The class <link id="#fcl.IniFiles.TIniFile">TIniFile</link></short>
+      </element> <!-- function result TCustomIniPropStorage.IniFileClass.Result -->
 
-<!-- procedure Visibility: protected -->
-<element name="TCustomIniPropStorage.StorageNeeded">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomIniPropStorage.GetIniFileName">
+        <short>Getter for the property <link id="#LCL.IniPropStorage.TCustomIniPropStorage.IniFileName">TCustomIniPropStorage.IniFileName</link>.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- function TCustomIniPropStorage.GetIniFileName -->
 
-<!-- argument Visibility: default -->
-<element name="TCustomIniPropStorage.StorageNeeded.ReadOnly">
-<short/>
-</element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIniPropStorage.GetIniFileName.Result">
+        <short>The current value of the property <link id="#LCL.IniPropStorage.TCustomIniPropStorage.IniFileName">TCustomIniPropStorage.IniFileName</link>.</short>
+      </element> <!-- function result TCustomIniPropStorage.GetIniFileName.Result -->
 
-<!-- procedure Visibility: protected -->
-<element name="TCustomIniPropStorage.FreeStorage">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomIniPropStorage.RootSection">
+        <short>Returns the name of the RootSection.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- function TCustomIniPropStorage.RootSection -->
 
-<!-- function Visibility: protected -->
-<element name="TCustomIniPropStorage.GetIniFileName">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIniPropStorage.RootSection.Result">
+        <short>The current value of RootSection.</short>
+      </element> <!-- function result TCustomIniPropStorage.RootSection.Result -->
 
-<!-- function result Visibility: default -->
-<element name="TCustomIniPropStorage.GetIniFileName.Result">
-<short/>
-</element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomIniPropStorage.IniFile">
+        <short>Property to access the <link id="#fcl.IniFiles.TCustomIniFile">TCustomIniFile</link> instance.</short>
+        <descr />
+        <seealso />
+      </element> <!-- property TCustomIniPropStorage.IniFile -->
 
-<!-- function Visibility: protected -->
-<element name="TCustomIniPropStorage.RootSection">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomIniPropStorage.StorageNeeded">
+        <short>Aks the underlying storage object for an entry</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- procedure TCustomIniPropStorage.StorageNeeded -->
 
-<!-- function result Visibility: default -->
-<element name="TCustomIniPropStorage.RootSection.Result">
-<short/>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIniPropStorage.StorageNeeded.ReadOnly">
+        <short>If the item is read-only.</short>
+      </element> <!-- argument TCustomIniPropStorage.StorageNeeded.ReadOnly -->
 
-<!-- property Visibility: protected -->
-<element name="TCustomIniPropStorage.IniFile">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomIniPropStorage.FreeStorage">
+        <short>Frees an entry from the underlying storage object.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- procedure TCustomIniPropStorage.FreeStorage -->
 
-<!-- function Visibility: public -->
-<element name="TCustomIniPropStorage.DoReadString">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- function Visibility: public -->
+      <element name="TCustomIniPropStorage.DoReadString">
+        <short>Implements the actual reading of a value from the underlying storage container.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- function TCustomIniPropStorage.DoReadString -->
 
-<!-- function result Visibility: default -->
-<element name="TCustomIniPropStorage.DoReadString.Result">
-<short/>
-</element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIniPropStorage.DoReadString.Result">
+        <short>The value of the section/ident requested.</short>
+      </element> <!-- function result TCustomIniPropStorage.DoReadString.Result -->
 
-<!-- argument Visibility: default -->
-<element name="TCustomIniPropStorage.DoReadString.Section">
-<short/>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIniPropStorage.DoReadString.Section">
+        <short>The section to be read.</short>
+      </element> <!-- argument TCustomIniPropStorage.DoReadString.Section -->
 
-<!-- argument Visibility: default -->
-<element name="TCustomIniPropStorage.DoReadString.Ident">
-<short/>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIniPropStorage.DoReadString.Ident">
+        <short>The ident to be read.</short>
+      </element> <!-- argument TCustomIniPropStorage.DoReadString.Ident -->
 
-<!-- argument Visibility: default -->
-<element name="TCustomIniPropStorage.DoReadString.Default">
-<short/>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIniPropStorage.DoReadString.Default">
+        <short>If has no value then return this as default.</short>
+      </element> <!-- argument TCustomIniPropStorage.DoReadString.Default -->
 
-<!-- procedure Visibility: public -->
-<element name="TCustomIniPropStorage.DoWriteString">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomIniPropStorage.DoWriteString">
+        <short>Implements the actual writing of a value from the underlying storage container.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- procedure TCustomIniPropStorage.DoWriteString -->
 
-<!-- argument Visibility: default -->
-<element name="TCustomIniPropStorage.DoWriteString.Section">
-<short/>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIniPropStorage.DoWriteString.Section">
+        <short>The section to be written.</short>
+      </element> <!-- argument TCustomIniPropStorage.DoWriteString.Section -->
 
-<!-- argument Visibility: default -->
-<element name="TCustomIniPropStorage.DoWriteString.Ident">
-<short/>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIniPropStorage.DoWriteString.Ident">
+        <short>The ident to be written.</short>
+      </element> <!-- argument TCustomIniPropStorage.DoWriteString.Ident -->
 
-<!-- argument Visibility: default -->
-<element name="TCustomIniPropStorage.DoWriteString.Value">
-<short/>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIniPropStorage.DoWriteString.Value">
+        <short>The value to be written.</short>
+      </element> <!-- argument TCustomIniPropStorage.DoWriteString.Value -->
 
-<!-- procedure Visibility: public -->
-<element name="TCustomIniPropStorage.DoEraseSections">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomIniPropStorage.DoEraseSections">
+        <short>Erases a section from the underlying storage container.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- procedure TCustomIniPropStorage.DoEraseSections -->
 
-<!-- argument Visibility: default -->
-<element name="TCustomIniPropStorage.DoEraseSections.ARootSection">
-<short/>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIniPropStorage.DoEraseSections.ARootSection">
+        <short>The path to the section that will be erased.</short>
+      </element> <!-- argument TCustomIniPropStorage.DoEraseSections.ARootSection -->
 
-<!-- property Visibility: public -->
-<element name="TCustomIniPropStorage.IniFileName">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: public -->
+      <element name="TCustomIniPropStorage.IniFileName">
+        <short>Name of the file where the property data is saved in INI format.</short>
+        <descr />
+        <seealso />
+      </element> <!-- property TCustomIniPropStorage.IniFileName -->
 
-<!-- property Visibility: public -->
-<element name="TCustomIniPropStorage.IniSection">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: public -->
+      <element name="TCustomIniPropStorage.IniSection">
+        <short>The section on the INI file where values are to be kept.</short>
+        <descr />
+        <seealso />
+      </element> <!-- property TCustomIniPropStorage.IniSection -->
 
-<!-- object Visibility: default -->
-<element name="TIniPropStorage">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- object Visibility: default -->
+      <element name="TIniPropStorage">
+        <short>Implements the final class for the INI Form Session Properties storage.</short>
+        <descr />
+        <errors />
+        <seealso>
+          <link id="#LCL.Forms.TForm">TForm.SessionProperties</link>
+          <link id="#LCL.JSONPropStorage.TJSONPropStorage">TJSONPropStorage</link>
+          <link id="#LCL.XMLPropStorage.TXMLPropStorage">TXMLPropStorage</link>
+        </seealso>
+      </element> <!-- object TIniPropStorage -->
 
-<!-- property Visibility: published -->
-<element name="TIniPropStorage.StoredValues">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TIniPropStorage.StoredValues" link="#LCL.PropertyStorage.TCustomPropertyStorage.StoredValues">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- property TIniPropStorage.StoredValues -->
 
-<!-- property Visibility: published -->
-<element name="TIniPropStorage.IniFileName">
-<short>Name of the file where the property data is saved in INI-format.</short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TIniPropStorage.IniFileName" link="#LCL.IniPropStorage.TCustomIniPropStorage.IniFileName">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- property TIniPropStorage.IniFileName -->
 
-<!-- property Visibility: published -->
-<element name="TIniPropStorage.IniSection">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TIniPropStorage.IniSection" link="#LCL.IniPropStorage.TCustomIniPropStorage.IniSection">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- property TIniPropStorage.IniSection -->
 
-<!-- property Visibility: published -->
-<element name="TIniPropStorage.Active">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TIniPropStorage.Active" link="#LCL.PropertyStorage.TCustomPropertyStorage.Active">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- property TIniPropStorage.Active -->
 
-<!-- property Visibility: published -->
-<element name="TIniPropStorage.OnSaveProperties">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TIniPropStorage.OnSavingProperties" link="#LCL.PropertyStorage.TCustomPropertyStorage.OnSavingProperties">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- property TIniPropStorage.OnSavingProperties -->
 
-<!-- property Visibility: published -->
-<element name="TIniPropStorage.OnRestoreProperties">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TIniPropStorage.OnSaveProperties" link="#LCL.PropertyStorage.TCustomPropertyStorage.OnSaveProperties">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- property TIniPropStorage.OnSaveProperties -->
 
-<!-- procedure Visibility: default -->
-<element name="Register">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-</module> <!-- IniPropStorage -->
-</package>
+      <!-- property Visibility: published -->
+      <element name="TIniPropStorage.OnRestoringProperties" link="#LCL.PropertyStorage.TCustomPropertyStorage.OnRestoringProperties">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- property TIniPropStorage.OnRestoringProperties -->
+
+      <!-- property Visibility: published -->
+      <element name="TIniPropStorage.OnRestoreProperties" link="#LCL.PropertyStorage.TCustomPropertyStorage.OnRestoreProperties">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- property TIniPropStorage.OnRestoreProperties -->
+
+      <!-- procedure Visibility: default -->
+      <element name="Register">
+        <short>Registers <link id="#LCL.IniPropStorage.TIniPropStorage">TIniPropStorage</link> on the 'Misc' tab of the component pallete.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- procedure Register -->
+
+    </module> <!-- module IniPropStorage -->
+  </package> <!-- package lcl -->
 </fpdoc-descriptions>

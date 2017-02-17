@@ -1,12 +1,374 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="LCLBase">
-<module name="JSONPropStorage">
-<element name="TJSONPropStorage"/>
-<element name="TJSONPropStorage.JSONFileName">
-<short>Name of the file where the property data is saved in JSON format.</short>
-</element>
-</module>
-</package>
-</fpdoc-descriptions>
+  <package name="lcl">
 
+    <!--
+      ====================================================================
+      JSONPropStorage
+      ====================================================================
+    -->
+
+    <module name="JSONPropStorage">
+      <short>Contains a component that stores Form Session Properties in JSON format.</short>
+      <descr>
+        <p>In this unit you can find an implementation of a name/value pair storage container in JSON format.</p>
+        <p>This container will get the Form's Session Properties that you setup in <link id="#LCL.Forms.TForm">TForm.SessionProperties</link> and read/write them on the file you specify on <link id="#LCL.JsonPropStorage.TJSONPropStorage.JSONFileName">TJSONPropStorage.JSONFileName</link>.</p>
+      </descr>
+
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- unit Classes -->
+
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- unit SysUtils -->
+
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Forms">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- unit Forms -->
+
+      <!-- unresolved type reference Visibility: default -->
+      <element name="JSONConf">
+        <short>This unit contains the implementation of a path/value pair generic container in JSON format. See package: <url href="http://wiki.freepascal.org/fcl-json">fcl-json</url>.</short>
+        <descr />
+        <seealso />
+      </element> <!-- unit JSONConf -->
+
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LazUTF8">
+        <short />
+        <descr />
+        <seealso />
+      </element> <!-- unit LazUTF8 -->
+
+      <!-- object Visibility: default -->
+      <element name="TCustomJSONPropStorage">
+        <short>Implements the base class for the JSON Form's Session Properties Storage.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- object TCustomJSONPropStorage -->
+
+      <!-- variable Visibility: private -->
+      <element name="TCustomJSONPropStorage.FCount">
+        <short />
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- variable TCustomJSONPropStorage.FCount -->
+
+      <!-- variable Visibility: private -->
+      <element name="TCustomJSONPropStorage.FJSONFileName">
+        <short />
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- variable TCustomJSONPropStorage.FJSONFileName -->
+
+      <!-- variable Visibility: private -->
+      <element name="TCustomJSONPropStorage.FRootObjectPath">
+        <short />
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- variable TCustomJSONPropStorage.FRootObjectPath -->
+
+      <!-- variable Visibility: private -->
+      <element name="TCustomJSONPropStorage.FJSONConf">
+        <short />
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- variable TCustomJSONPropStorage.FJSONConf -->
+
+      <!-- variable Visibility: private -->
+      <element name="TCustomJSONPropStorage.FFormatted">
+        <short />
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- variable TCustomJSONPropStorage.FFormatted -->
+
+      <!-- function Visibility: protected -->
+      <element name="TCustomJSONPropStorage.GetJSONFileName">
+        <short>Getter for the property <link id="#LCL.JsonPropStorage.TCustomJSONPropStorage.JSONFileName">TCustomJSONPropStorage.JSONFileName</link>.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- function TCustomJSONPropStorage.GetJSONFileName -->
+
+      <!-- function result Visibility: default -->
+      <element name="TCustomJSONPropStorage.GetJSONFileName.Result">
+        <short>The current value of the property <link id="#LCL.JsonPropStorage.TCustomJSONPropStorage.JSONFileName">TCustomJSONPropStorage.JSONFileName</link>.</short>
+      </element> <!-- function result TCustomJSONPropStorage.GetJSONFileName.Result -->
+
+      <!-- function Visibility: protected -->
+      <element name="TCustomJSONPropStorage.RootSection">
+        <short>Returns the name of the RootSection.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- function TCustomJSONPropStorage.RootSection -->
+
+      <!-- function result Visibility: default -->
+      <element name="TCustomJSONPropStorage.RootSection.Result">
+        <short>The current value of RootSection.</short>
+      </element> <!-- function result TCustomJSONPropStorage.RootSection.Result -->
+
+      <!-- function Visibility: protected -->
+      <element name="TCustomJSONPropStorage.GetFormatted">
+        <short>Getter for the property <link id="#LCL.JsonPropStorage.TCustomJSONPropStorage.Formatted">TCustomJSONPropStorage.Formatted</link>.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- function TCustomJSONPropStorage.GetFormatted -->
+
+      <!-- function result Visibility: default -->
+      <element name="TCustomJSONPropStorage.GetFormatted.Result">
+        <short>The current value of <link id="#LCL.JsonPropStorage.TCustomJSONPropStorage.Formatted">TCustomJSONPropStorage.Formatted</link>.</short>
+      </element> <!-- function result TCustomJSONPropStorage.GetFormatted.Result -->
+
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomJSONPropStorage.SetFormatted">
+        <short>Setter for the property <link id="#LCL.JsonPropStorage.TCustomJSONPropStorage.Formatted">TCustomJSONPropStorage.Formatted</link>.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- procedure TCustomJSONPropStorage.SetFormatted -->
+
+      <!-- argument Visibility: default -->
+      <element name="TCustomJSONPropStorage.SetFormatted.Value">
+        <short>A <var>Boolean</var> value to set the property <link id="#LCL.JsonPropStorage.TCustomJSONPropStorage.Formatted">TCustomJSONPropStorage.Formatted</link></short>
+      </element> <!-- argument TCustomJSONPropStorage.SetFormatted.Value -->
+
+      <!-- function Visibility: protected -->
+      <element name="TCustomJSONPropStorage.FixPath">
+        <short>Turns '.' notation into '/' notation for the xpath-ish <url href="http://wiki.freepascal.org/fcl-json">JSONConf</url> underlayer.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- function TCustomJSONPropStorage.FixPath -->
+
+      <!-- argument Visibility: default -->
+      <element name="TCustomJSONPropStorage.FixPath.aPath">
+        <short>The path to be fixed.</short>
+      </element> <!-- argument TCustomJSONPropStorage.FixPath.aPath -->
+
+      <!-- function result Visibility: default -->
+      <element name="TCustomJSONPropStorage.FixPath.Result">
+        <short>The fixed path is returned with '.' replaced by '/'.</short>
+      </element> <!-- function result TCustomJSONPropStorage.FixPath.Result -->
+
+      <!-- property Visibility: protected -->
+      <element name="TCustomJSONPropStorage.JSONConf">
+        <short>Instance of the object that implements a generic path/value pair storage.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- property TCustomJSONPropStorage.JSONConf -->
+
+      <!-- procedure Visibility: public -->
+      <element name="TCustomJSONPropStorage.StorageNeeded">
+        <short>Aks the underlying storage object for an entry</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- procedure TCustomJSONPropStorage.StorageNeeded -->
+
+      <!-- argument Visibility: default -->
+      <element name="TCustomJSONPropStorage.StorageNeeded.ReadOnly">
+        <short>If the item is read-only.</short>
+      </element> <!-- argument TCustomJSONPropStorage.StorageNeeded.ReadOnly -->
+
+      <!-- procedure Visibility: public -->
+      <element name="TCustomJSONPropStorage.FreeStorage">
+        <short>Frees an entry from the underlying storage object.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- procedure TCustomJSONPropStorage.FreeStorage -->
+
+      <!-- function Visibility: public -->
+      <element name="TCustomJSONPropStorage.DoReadString">
+        <short>Implements the actual reading of a value from the underlying storage container.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- fucntion TCustomJSONPropStorage.DoReadString -->
+
+      <!-- argument Visibility: default -->
+      <element name="TCustomJSONPropStorage.DoReadString.Section">
+        <short>The section to be read.</short>
+      </element> <!-- argument TCustomJSONPropStorage.DoReadString.Section -->
+
+      <!-- argument Visibility: default -->
+      <element name="TCustomJSONPropStorage.DoReadString.Ident">
+        <short>The ident to be read.</short>
+      </element> <!-- argument TCustomJSONPropStorage.StorageNeeded.Ident -->
+
+      <!-- argument Visibility: default -->
+      <element name="TCustomJSONPropStorage.DoReadString.Default">
+        <short>If has no value then return this as default.</short>
+      </element> <!-- argument TCustomJSONPropStorage.DoReadString.Default -->
+
+      <!-- function result Visibility: default -->
+      <element name="TCustomJSONPropStorage.DoReadString.Result">
+        <short>The value of the section/ident requested.</short>
+      </element> <!-- function result TCustomJSONPropStorage.DoReadString.Result -->
+
+      <!-- procedure Visibility: public -->
+      <element name="TCustomJSONPropStorage.DoWriteString">
+        <short>Implements the actual writing of a value from the underlying storage container.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- procedure TCustomJSONPropStorage.DoWriteString -->
+
+      <!-- argument Visibility: default -->
+      <element name="TCustomJSONPropStorage.DoWriteString.Section">
+        <short>The section to be written.</short>
+      </element> <!-- argument TCustomJSONPropStorage.DoWriteString.Section -->
+
+      <!-- argument Visibility: default -->
+      <element name="TCustomJSONPropStorage.DoWriteString.Ident">
+        <short>The ident to be written.</short>
+      </element> <!-- argument TCustomJSONPropStorage.DoWriteString.Ident -->
+
+      <!-- argument Visibility: default -->
+      <element name="TCustomJSONPropStorage.DoWriteString.Value">
+        <short>The value to be written.</short>
+      </element> <!-- argument TCustomJSONPropStorage.DoWriteString.Value -->
+
+      <!-- procedure Visibility: public -->
+      <element name="TCustomJSONPropStorage.DoEraseSections">
+        <short>Erases a section from the underlying storage container.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- procedure TCustomJSONPropStorage.DoEraseSections -->
+
+      <!-- argument Visibility: default -->
+      <element name="TCustomJSONPropStorage.DoEraseSections.ARootObjectPath">
+        <short>The path to the section that will be erased.</short>
+      </element> <!-- argument TCustomJSONPropStorage.DoEraseSections.ARootObjectPath -->
+
+      <!-- property Visibility: public -->
+      <element name="TCustomJSONPropStorage.JSONFileName">
+        <short>Name of the file where the property data is saved in JSON format.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- property TCustomJSONPropStorage.JSONFileName -->
+
+      <!-- property Visibility: public -->
+      <element name="TCustomJSONPropStorage.RootObjectPath">
+        <short>Name of the root object path on your JSON file.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- property TCustomJSONPropStorage.RootObjectPath -->
+
+      <!-- property Visibility: public -->
+      <element name="TCustomJSONPropStorage.Formatted">
+        <short>This determines if the JSON is to be formatted or not.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- property TCustomJSONPropStorage.Formatted -->
+
+      <!-- object Visibility: default -->
+      <element name="TJSONPropStorage">
+        <short>Implements the final class for the JSON Form Session Properties storage.</short>
+        <descr />
+        <errors />
+        <seealso>
+          <link id="#LCL.Forms.TForm">TForm.SessionProperties</link>
+          <link id="#LCL.INIPropStorage.TINIPropStorage">TINIPropStorage</link>
+          <link id="#LCL.XMLPropStorage.TXMLPropStorage">TXMLPropStorage</link>
+        </seealso>
+      </element> <!-- object TJSONPropStorage -->
+
+      <!-- property Visibility: published -->
+      <element name="TJSONPropStorage.StoredValues" link="#LCL.PropertyStorage.TCustomPropertyStorage.StoredValues">
+        <short />
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- property TJSONPropStorage.StoredValues -->
+
+      <!-- property Visibility: published -->
+      <element name="TJSONPropStorage.JSONFileName" link="#LCL.JsonPropStorage.TCustomJSONPropStorage.JSONFileName">
+        <short />
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- property TJSONPropStorage.JSONFileName -->
+
+      <!-- property Visibility: published -->
+      <element name="TJSONPropStorage.Formatted" link="#LCL.JsonPropStorage.TCustomJSONPropStorage.Formatted">
+        <short />
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- property TJSONPropStorage.StoredValues -->
+
+      <!-- property Visibility: published -->
+      <element name="TJSONPropStorage.Active" link="#LCL.PropertyStorage.TCustomPropertyStorage.Active">
+        <short>This determines if the object is active or not.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- property TJSONPropStorage.Active -->
+
+      <!-- property Visibility: published -->
+      <element name="TJSONPropStorage.OnSavingProperties" link="#LCL.PropertyStorage.TCustomPropertyStorage.OnSavingProperties">
+        <short>Called before saving the properties.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- property TJSONPropStorage.OnSavingProperties -->
+
+      <!-- property Visibility: published -->
+      <element name="TJSONPropStorage.OnSaveProperties" link="#LCL.PropertyStorage.TCustomPropertyStorage.OnSaveProperties">
+        <short>Called after saving the properties.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- property TJSONPropStorage.OnSaveProperties -->
+
+      <!-- property Visibility: published -->
+      <element name="TJSONPropStorage.OnRestoringProperties" link="#LCL.PropertyStorage.TCustomPropertyStorage.OnRestoringProperties">
+        <short>Called before restoring the properties.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- property TJSONPropStorage.OnRestoringProperties -->
+
+      <!-- property Visibility: published -->
+      <element name="TJSONPropStorage.OnRestoreProperties" link="#LCL.PropertyStorage.TCustomPropertyStorage.OnRestoreProperties">
+        <short>Called after restoring the properties.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- property TJSONPropStorage.OnRestoreProperties -->
+
+      <!-- procedure Visibility: default -->
+      <element name="Register">
+        <short>Registers <link id="#LCL.JsonPropStorage.TJSONPropStorage">TJSONPropStorage</link> on the 'Misc' tab of the component pallete.</short>
+        <descr />
+        <errors />
+        <seealso />
+      </element> <!-- procedure Register -->
+
+    </module> <!-- module JSONPropStorage -->
+  </package> <!-- package lcl -->
+</fpdoc-descriptions>
