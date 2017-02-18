@@ -3383,6 +3383,8 @@ type
     procedure UpdateScrollbars;
     procedure UpdateTooltip(X, Y: integer);
     procedure InternalSelectionChanged;
+    function AllowMultiSelectWithCtrl(AState: TShiftState): Boolean;
+    function AllowMultiSelectWithShift(AState: TShiftState): Boolean;
   protected
     FChangeTimer: TTimer;
     FEditor: TEdit;
