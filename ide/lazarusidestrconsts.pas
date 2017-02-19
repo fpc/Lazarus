@@ -1520,7 +1520,7 @@ resourcestring
 
   dlgOIMiscellaneous = 'Miscellaneous';
   dlgOISpeedSettings = 'Speed settings';
-  dlgOIItemHeight = 'Item height';
+  dlgOIItemHeight = 'Item height (0 = auto)';
   dlgHeightOfOnePropertyInGrid = 'Height of one property in the grid.';
   dlgOIUseDefaultLazarusSettings = 'Use default Lazarus settings';
   dlgOIUseDefaultDelphiSettings = 'Use default Delphi settings';

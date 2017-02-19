@@ -463,6 +463,7 @@ type
 
     function GetRowByPath(const PropPath: string): TOIPropertyGridRow;
     function GridHeight: integer;
+    function RealDefaultItemHeight: integer;
     function MouseToIndex(y: integer; MustExist: boolean):integer;
     function PropertyPath(Index: integer):string;
     function PropertyPath(Row: TOIPropertyGridRow):string;
@@ -503,7 +504,7 @@ type
     property CurrentEditValue: string read GetCurrentEditValue
                                       write SetCurrentEditValue;
     property DefaultItemHeight:integer read FDefaultItemHeight
-                                       write FDefaultItemHeight default 22;
+                                       write FDefaultItemHeight default 0;
     property DrawHorzGridLines: Boolean read FDrawHorzGridLines write
       SetDrawHorzGridLines default True;
     property ExpandedProperties: TStringList read FExpandedProperties
@@ -684,6 +685,7 @@ type
     procedure DoUpdateRestricted;
     procedure DoViewRestricted;
     procedure PropFilterEditAfterFilter(Sender: TObject);
+    procedure PropFilterEditResize(Sender: TObject);
     procedure NoteBookPageChange(Sender: TObject);
   private
     FAutoShow: Boolean;
@@ -1112,10 +1114,7 @@ begin
   FHintManager := THintWindowManager.Create;
   FActiveRowBmp := CreateBitmapFromResourceName(HInstance, 'pg_active_row');
 
-  if DefItemHeight<3 then
-    FDefaultItemHeight:=ValueComboBox.Height-3
-  else
-    FDefaultItemHeight:=DefItemHeight;
+  FDefaultItemHeight:=DefItemHeight;
 
   BuildPropertyList;
 end;
@@ -1273,11 +1272,11 @@ begin
     SB_TOP:        TopY := 0;
     SB_BOTTOM:     TopY := TopMax;
       // Scrolls one line up / down
-    SB_LINEDOWN:   TopY := TopY + DefaultItemHeight div 2;
-    SB_LINEUP:     TopY := TopY - DefaultItemHeight div 2;
+    SB_LINEDOWN:   TopY := TopY + RealDefaultItemHeight div 2;
+    SB_LINEUP:     TopY := TopY - RealDefaultItemHeight div 2;
       // Scrolls one page of lines up / down
-    SB_PAGEDOWN:   TopY := TopY + ClientHeight - DefaultItemHeight;
-    SB_PAGEUP:     TopY := TopY - ClientHeight + DefaultItemHeight;
+    SB_PAGEDOWN:   TopY := TopY + ClientHeight - RealDefaultItemHeight;
+    SB_PAGEUP:     TopY := TopY - ClientHeight + RealDefaultItemHeight;
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION,
     SB_THUMBTRACK: TopY := Msg.Pos;
@@ -1291,11 +1290,11 @@ procedure TOICustomPropertyGrid.OnGridMouseWheel(Sender: TObject; Shift: TShiftS
 begin
   if Mouse.WheelScrollLines=-1 then
     // -1 : scroll by page
-    TopY := TopY - (WheelDelta * (ClientHeight - DefaultItemHeight)) div 120
+    TopY := TopY - (WheelDelta * (ClientHeight - RealDefaultItemHeight)) div 120
   else
     // scrolling one line -> scroll half an item, see SB_LINEDOWN and SB_LINEUP
     // handler in WMVScroll
-    TopY := TopY - (WheelDelta * Mouse.WheelScrollLines*DefaultItemHeight) div 240;
+    TopY := TopY - (WheelDelta * Mouse.WheelScrollLines*RealDefaultItemHeight) div 240;
   Handled := True;
 end;
 
@@ -1417,6 +1416,13 @@ begin
     Result:=Row.Name+'.'+Result;
     Row:=Row.Parent;
   end;
+end;
+
+function TOICustomPropertyGrid.RealDefaultItemHeight: integer;
+begin
+  Result := FDefaultItemHeight;
+  if (Result<=0) then
+    Result := MulDiv(22, Screen.PixelsPerInch, 96);
 end;
 
 function TOICustomPropertyGrid.GetRowByPath(const PropPath: string): TOIPropertyGridRow;
@@ -2181,7 +2187,7 @@ begin
   Result:=true;
 end;
 
-function TOICustomPropertyGrid.MouseToIndex(Y: integer; MustExist: boolean
+function TOICustomPropertyGrid.MouseToIndex(y: integer; MustExist: boolean
   ): integer;
 var l,r,m:integer;
 begin
@@ -2997,6 +3003,9 @@ var
   IconX: integer;
   DrawState: TPropEditDrawState;
 begin
+  {$IFDEF LCLScaleForms}
+  IconX := 555;
+  {$ENDIF}
   CurRow := Rows[ARow];
   FullRect := RowRect(ARow);
   NameRect := FullRect;
@@ -3636,7 +3645,7 @@ begin
   GetLvl;
   FName:=FEditor.GetName;
   FTop:=0;
-  FHeight:=FTree.DefaultItemHeight;
+  FHeight:=FTree.RealDefaultItemHeight;
   FIndex:=-1;
   LastPaintedValue:='';
   FWidgetSets := WidgetSets;
@@ -3777,7 +3786,7 @@ end;
 
 procedure TOIPropertyGridRow.MeasureHeight(ACanvas: TCanvas);
 begin
-  FHeight:=FTree.DefaultItemHeight;
+  FHeight:=FTree.RealDefaultItemHeight;
   Editor.PropMeasureHeight(Name,ACanvas,FHeight);
 end;
 
@@ -3884,7 +3893,7 @@ begin
   FHeight:=400;
   for p:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
     FGridSplitterX[p]:=110;
-  FDefaultItemHeight:=22;
+  FDefaultItemHeight:=0;
   FShowComponentTree:=true;
   FComponentTreeHeight:=160;
   FInfoBoxHeight:=80;
@@ -3940,8 +3949,7 @@ begin
       if FGridSplitterX[Page]<10 then
         FGridSplitterX[Page]:=10;
 
-    FDefaultItemHeight:=ConfigStore.GetValue(Path+'Bounds/DefaultItemHeight',22);
-    if FDefaultItemHeight<0 then FDefaultItemHeight:=22;
+    FDefaultItemHeight:=ConfigStore.GetValue(Path+'Bounds/DefaultItemHeight',0);
     FShowComponentTree:=ConfigStore.GetValue(Path+'ComponentTree/Show/Value',True);
     FComponentTreeHeight:=ConfigStore.GetValue(Path+'ComponentTree/Height/Value',160);
 
@@ -3996,7 +4004,7 @@ begin
     for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
       ConfigStore.SetDeleteValue(Path+'Bounds/'+DefaultOIPageNames[Page]+'/SplitterX',
                                  FGridSplitterX[Page],110);
-    ConfigStore.SetDeleteValue(Path+'Bounds/DefaultItemHeight',FDefaultItemHeight,22);
+    ConfigStore.SetDeleteValue(Path+'Bounds/DefaultItemHeight',FDefaultItemHeight,0);
     ConfigStore.SetDeleteValue(Path+'ComponentTree/Show/Value',FShowComponentTree,True);
     ConfigStore.SetDeleteValue(Path+'ComponentTree/Height/Value',FComponentTreeHeight,160);
 
@@ -4174,7 +4182,7 @@ begin
   FPropertyEditorHook := nil;
   FSelection := TPersistentSelectionList.Create;
   FAutoShow := True;
-  FDefaultItemHeight := 22;
+  FDefaultItemHeight := 0;
   ComponentPanelHeight := 160;
   FShowComponentTree := True;
   FShowFavorites := False;
@@ -4334,10 +4342,9 @@ begin
   with FilterLabel1 do
   begin
     Parent := PropertyPanel;
-    Left := 5;
-    Height := 15;
-    Top := 7;
-    Width := 53;
+    Left := ScaleCoord96(5);
+    Top := ScaleCoord96(7);
+    Width := ScaleCoord96(53);
     Caption := oisBtnProperties;
     FocusControl := PropFilterEdit;
   end;
@@ -4349,17 +4356,17 @@ begin
     AnchorSideLeft.Side := asrBottom;
     AnchorSideTop.Control := FilterLabel1;
     AnchorSideTop.Side := asrCenter;
-    Left := 61;
-    Height := 23;
-    Top := 3;
+    Left := ScaleCoord96(61);
+    Top := ScaleCoord96(3);
     Width := PropertyPanel.Width - ( Left + 3);
     AutoSelect := False;
     AutoSize:=False;
-    ButtonWidth := 23;
+    ButtonWidth := ScaleCoord96(23);
     Anchors := [akTop, akLeft, akRight];
     BorderSpacing.Left := 5;
     TabOrder := 0;
     OnAfterFilter := @PropFilterEditAfterFilter;
+    OnResize := @PropFilterEditResize;
   end;
 
   CreateNoteBook;
@@ -4381,6 +4388,11 @@ begin
   GetActivePropertyGrid.PropNameFilter := PropFilterEdit.Filter;
   RebuildPropertyLists;
   PropFilterEdit.SetFocus;
+end;
+
+procedure TObjectInspectorDlg.PropFilterEditResize(Sender: TObject);
+begin
+  NoteBook.BorderSpacing.Top := PropFilterEdit.BoundsRect.Bottom + 2;
 end;
 
 procedure TObjectInspectorDlg.NoteBookPageChange(Sender: TObject);
@@ -4455,8 +4467,6 @@ begin
   NewValue:=AValue;
   if NewValue<0 then
     NewValue:=0
-  else if NewValue=0 then
-    NewValue:=22
   else if (NewValue>0) and (NewValue<10) then
     NewValue:=10
   else if NewValue>100 then NewValue:=100;
@@ -5393,8 +5403,8 @@ begin
   begin
     Name := 'NoteBook';
     Parent := PropertyPanel;
+    PropFilterEditResize(nil);
     Align := alClient;
-    BorderSpacing.Top := 29;
     PopupMenu := MainPopupMenu;
     OnChange := @NoteBookPageChange;
   end;
