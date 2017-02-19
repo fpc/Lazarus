@@ -244,7 +244,7 @@ type
     procedure Loaded; override;
     procedure Reset; virtual;
     procedure SetAutoSize(AValue: Boolean); override;
-    procedure SetColor(AValue: TColor); override;
+    procedure SetColor(AValue: TColor); reintroduce;
     procedure SetCursor(AValue: TCursor); override;
     procedure ShouldAutoAdjust(var AWidth, AHeight: Boolean); override;
 
@@ -255,7 +255,6 @@ type
     property BuddyCursor: TCursor read GetBuddyCursor write SetBuddyCursor default crDefault;
     property BuddyHint: TTranslateString read GetBuddyHint write SetBuddyHint;
     property BuddyWidth: Integer read GetBuddyWidth write SetBuddyWidth;
-    property Color: TColor read GetColor write SetColor stored True default {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
     property DirectInput : Boolean read GetDirectInput write SetDirectInput default True;
     property BaseEditor: TGEEdit read FEdit;
     property EditMask: String read GetEditMask write SetEditMask;
@@ -290,6 +289,7 @@ type
     property CanUndo: Boolean read GetCanUndo;
     property CaretPos: TPoint read GetCaretPos write SetCaretPos;
     property CharCase: TEditCharCase read GetCharCase write SetCharCase default ecNormal;
+    property Color: TColor read GetColor write SetColor stored True default {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
     property ParentColor: Boolean read GetParentColor write SetParentColor default False;
     property EchoMode: TEchoMode read GetEchoMode write SetEchoMode default emNormal;
     property HideSelection: Boolean read GetHideSelection write SetHideSelection default False;
