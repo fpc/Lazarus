@@ -202,17 +202,13 @@ type
     fFilter: string;
     fIdleConnected: Boolean;
     fSortData: Boolean;             // Data needs to be sorted.
-    fUseFormActivate: Boolean;
     fIsFirstSetFormActivate: Boolean;
-    fJustActivated: Boolean;
-    fParentForm: TForm;
     fOnAfterFilter: TNotifyEvent;
+    function GetUseFormActivate: Boolean;
     procedure SetFilter(const AValue: string);
     procedure SetIdleConnected(const AValue: Boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure SetUseFormActivate(AValue: Boolean);
-    procedure FormActivate(Sender: TObject); // Connects to owning form.
-    procedure FormDeactivate(Sender: TObject);
     function IsTextHintStored: Boolean;
   protected
     fNeedUpdate: Boolean;
@@ -227,8 +223,6 @@ type
       const ItemData: Pointer): Boolean; virtual;
     procedure EditKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure EditChange; override;
-    procedure EditEnter; override;
-    procedure EditExit; override;
     procedure ButtonClick; override;
     procedure SortAndFilter; virtual; abstract;
     procedure ApplyFilter(Immediately: Boolean = False);
@@ -260,7 +254,7 @@ type
       deprecated 'Use OnFilterItemEx with a caption parameter instead.';
     property OnFilterItemEx: TFilterItemExEvent read fOnFilterItemEx write fOnFilterItemEx;
     property OnCheckItem: TCheckItemEvent read fOnCheckItem write fOnCheckItem;
-    property UseFormActivate: Boolean read fUseFormActivate write SetUseFormActivate default False;
+    property UseFormActivate: Boolean read GetUseFormActivate write SetUseFormActivate stored False; deprecated 'Will be removed after 1.8 release.';
     // TEditButton properties.
     property ButtonCaption;
     property ButtonCursor;
@@ -1155,66 +1149,16 @@ begin
 end;
 
 procedure TCustomControlFilterEdit.SetUseFormActivate(AValue: Boolean);
-var
-  c: TWinControl;
 begin
-  if fUseFormActivate=AValue then Exit;
-  fUseFormActivate:=AValue;
-  c:=Parent;
-  // Find the parent form
-  while Assigned(c) and not (c is TForm) do
-    c:=c.Parent;
-  // Found: set or remove Activate and Deactivate handlers
-  if c is TForm then begin
-    fParentForm:=TForm(c);
-    if AValue then begin          // Set handlers
-      if fIsFirstSetFormActivate then begin
-        if Assigned(fParentForm.OnActivate) or Assigned(fParentForm.OnDeactivate) then
-          raise Exception.Create('TCustomControlFilterEdit.SetUseFormActivate:'+
-                                 ' OnActivate handler already set in parent form');
-        fIsFirstSetFormActivate:=False;
-      end;
-      fParentForm.OnActivate:=@FormActivate;
-      fParentForm.OnDeactivate:=@FormDeactivate;
-    end
-    else begin                    // Remove handlers
-      fParentForm.OnActivate:=nil;
-      fParentForm.OnDeactivate:=nil;
-    end;
-  end
-  else
-    raise Exception.Create('TCustomControlFilterEdit.SetUseFormActivate: This control'+
-              ' has no TForm in the parent chain. You should disable UseFormActivate.');
-end;
-
-procedure TCustomControlFilterEdit.FormActivate(Sender: TObject);
-begin
-  fJustActivated := (fParentForm.ActiveControl=Self.Edit) or Focused or Edit.Focused;
-  if fJustActivated then
-    Edit.DoEnter;
-end;
-
-procedure TCustomControlFilterEdit.FormDeactivate(Sender: TObject);
-begin
-  fJustActivated:=False;
+  // Remove after 1.8
 end;
 
 procedure TCustomControlFilterEdit.SetFilter(const AValue: string);
-var
-  NewValue: String;
-  UseHintText: Boolean;
 begin
-  UseHintText := (TextHint<>'') and (AValue=TextHint);
-  if UseHintText then
-    NewValue:=''
-  else
-    NewValue:=AValue;
-  Button.Enabled:=NewValue<>'';
-  if (not UseHintText) or Focused or fJustActivated or (csDesigning in ComponentState)
-  then
-    Text:=NewValue;
-  if fFilter=NewValue then exit;
-  fFilter:=NewValue;
+  if Text=AValue then
+    Exit;
+
+  Text:=AValue;
   ApplyFilter;
 end;
 
@@ -1266,22 +1210,8 @@ begin
   inherited;
 end;
 
-procedure TCustomControlFilterEdit.EditEnter;
-begin
-//  inherited;
-  fJustActivated:=False;
-end;
-
-procedure TCustomControlFilterEdit.EditExit;
-begin
-  fJustActivated:=False;
-  Filter:=Text;
-//  inherited;
-end;
-
 procedure TCustomControlFilterEdit.ButtonClick;
 begin
-  fJustActivated:=False;
   Text:='';
   Filter:='';
   if FocusOnButtonClick then Edit.SetFocus; //don't SelectAll here
@@ -1334,6 +1264,11 @@ end;
 function TCustomControlFilterEdit.GetDefaultGlyphName: String;
 begin
   Result := ResBtnListFilter;
+end;
+
+function TCustomControlFilterEdit.GetUseFormActivate: Boolean;
+begin
+  Result := False;
 end;
 
 { TFileNameEdit }
