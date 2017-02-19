@@ -2696,10 +2696,45 @@ end;
 
 procedure TTreeNodes.MultiSelect(Node: TTreeNode; ClearWholeSelection: Boolean);
 var
+  bGoNext, bOnlySiblings, bOnlyVisible: Boolean;
+  //
+  procedure _TakeNext(var N: TTreeNode);
+  begin
+    if bGoNext then
+    begin
+      if bOnlySiblings and bOnlyVisible then
+        N := N.GetNextVisibleSibling
+      else
+      if bOnlySiblings and not bOnlyVisible then
+        N := N.GetNextSibling
+      else
+      if not bOnlySiblings and bOnlyVisible then
+        N := N.GetNextVisible
+      else
+        N := N.GetNext;
+    end
+    else
+    begin
+      if bOnlySiblings and bOnlyVisible then
+        N := N.GetPrevVisibleSibling
+      else
+      if bOnlySiblings and not bOnlyVisible then
+        N := N.GetPrevSibling
+      else
+      if not bOnlySiblings and bOnlyVisible then
+        N := N.GetPrevVisible
+      else
+        N := N.GetPrev;
+    end;
+  end;
+  //
+var
   I, FirstNode, LastNode: TTreeNode;
-  GetNext: Boolean;
 begin
   if Owner<>nil then Owner.LockSelectionChangeEvent;
+  bOnlySiblings := Assigned(Owner) and (msSiblingOnly in Owner.MultiSelectStyle);
+  bOnlyVisible := Assigned(Owner) and (msVisibleOnly in Owner.MultiSelectStyle);
+
   try
     if FStartMultiSelected=nil then
     begin
@@ -2717,15 +2752,12 @@ begin
       if Assigned(FLastMultiSelected) then
       begin
         LastNode := FLastMultiSelected;
-        GetNext := (FirstNode.Index <= LastNode.Index);
+        bGoNext := (FirstNode.Index <= LastNode.Index);
         I := FirstNode;
         I.MultiSelected:=False;
         while (I<>LastNode) do
         begin
-          if GetNext then
-            I:=I.GetNextSibling
-          else
-            I:=I.GetPrevSibling;
+          _TakeNext(I);
           if I=nil then Break;
           I.MultiSelected:=False;
         end;
@@ -2735,15 +2767,12 @@ begin
     end;
 
     //select again
-    GetNext := (FirstNode.Index <= Node.Index);
+    bGoNext := (FirstNode.Index <= Node.Index);
     I := FirstNode;
     I.Selected:=True;
     while (I<>Node) do
     begin
-      if GetNext then
-        I:=I.GetNextSibling
-      else
-        I:=I.GetPrevSibling;
+      _TakeNext(I);
       if I=nil then Break;
       I.Selected:=True;
     end;
