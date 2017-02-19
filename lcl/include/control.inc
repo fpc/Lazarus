@@ -3010,13 +3010,6 @@ begin
       end;
     end;
 
-    // Give a shake at the autosize to recalculate font sizes for example
-    if (not AAWidth or not AAHeight) and AutoSize then
-    begin
-      if AutoSize then AdjustSize();
-      NewWidth := Width;
-      NewHeight := Height;
-    end;
     if AAWidth then
       NewWidth := Round(Width * AXProportion);
     if AAHeight then
