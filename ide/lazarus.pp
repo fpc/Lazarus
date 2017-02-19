@@ -97,6 +97,7 @@ begin
   
   LazarusRevisionStr:=RevisionStr;
   Application.Title:='Lazarus';
+  Application.Scaled := True;
   OnGetApplicationName:=@GetLazarusApplicationName;
 
   {$IFDEF Windows}
