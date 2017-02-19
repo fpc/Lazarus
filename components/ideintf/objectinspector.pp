@@ -3003,9 +3003,6 @@ var
   IconX: integer;
   DrawState: TPropEditDrawState;
 begin
-  {$IFDEF LCLScaleForms}
-  IconX := 555;
-  {$ENDIF}
   CurRow := Rows[ARow];
   FullRect := RowRect(ARow);
   NameRect := FullRect;
