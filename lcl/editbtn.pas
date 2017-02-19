@@ -1155,10 +1155,10 @@ end;
 
 procedure TCustomControlFilterEdit.SetFilter(const AValue: string);
 begin
-  if Text=AValue then
+  Button.Enabled:=AValue<>'';
+  if fFilter=AValue then
     Exit;
-
-  Text:=AValue;
+  fFilter:=AValue;
   ApplyFilter;
 end;
 
