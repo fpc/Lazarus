@@ -237,6 +237,7 @@ begin
   AppSettingsGroupBox.Caption := dlgApplicationSettings;
   TitleLabel.Caption := dlgPOTitle;
   TitleEdit.Text := '';
+  UseLCLScalingCheckBox.Caption := dlgPOUseLCLScaling;
   UseLCLScalingCheckBox.Checked := False;
   UseAppBundleCheckBox.Caption := dlgPOUseAppBundle;
   UseAppBundleCheckBox.Checked := False;

@@ -2580,6 +2580,7 @@ resourcestring
   dlgPOTitle = 'Title:';
   lisHint = 'Hint';
   lisNote = 'Note';
+  dlgPOUseLCLScaling = 'Use LCL scaling (Hi-DPI)';
   lisTheContainsAStarCharacterLazarusUsesThisAsNormalCh = 'The %s contains a '
     +'star * character.%sLazarus uses this as normal character and does not '
     +'expand this as file mask.';
