@@ -2002,6 +2002,7 @@ type
     procedure DoSendBoundsToInterface; virtual; // called by RealizeBounds
     procedure RealizeBounds; virtual;// checks for changes and calls DoSendBoundsToInterface
     procedure RealizeBoundsRecursive; // called by DoAllAutoSize
+    procedure InvalidateBoundsRealized;
     procedure CreateSubClass(var Params: TCreateParams; ControlClassName: PChar);
     procedure DoConstraintsChange(Sender: TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;

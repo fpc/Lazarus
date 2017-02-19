@@ -7846,6 +7846,11 @@ begin
   inc(FBoundsLockCount);
 end;
 
+procedure TWinControl.InvalidateBoundsRealized;
+begin
+  FBoundsRealized := Rect(0, 0, 0, 0);
+end;
+
 {------------------------------------------------------------------------------
   Method: TControl.EndUpdateBounds
   Params:  None

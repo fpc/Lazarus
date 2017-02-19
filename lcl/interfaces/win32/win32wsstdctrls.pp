@@ -58,6 +58,7 @@ type
     class procedure GetPreferredSize(const AWinControl: TWinControl;
           var PreferredWidth, PreferredHeight: integer;
           WithThemeSpace: Boolean); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
   end;
 
   { TWin32WSGroupBox }
@@ -344,6 +345,9 @@ const
 
 {$I win32memostrings.inc}
 
+type
+  TWinControlAccess = class(TWinControl);
+
 {------------------------------------------------------------------------------
  Function: ComboBoxWindowProc
  Params: Window - The window that receives a message
@@ -610,6 +614,20 @@ class procedure TWin32WSCustomGroupBox.SetBiDiMode(
   UseRightToLeftReading, UseRightToLeftScrollBar : Boolean);
 begin
   RecreateWnd(AWinControl);
+end;
+
+class procedure TWin32WSCustomGroupBox.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+var
+  I: Integer;
+begin
+  TWin32WSWinControl.SetFont(AWinControl, AFont);
+
+  TWinControlAccess(AWinControl).InvalidateBoundsRealized;
+  for I := 0 to AWinControl.ControlCount-1 do
+    if AWinControl.Controls[I] is TWinControl then
+      TWinControlAccess(AWinControl.Controls[I]).InvalidateBoundsRealized;
+  TWinControlAccess(AWinControl).RealizeBoundsRecursive;
 end;
 
 class procedure TWin32WSCustomGroupBox.SetText(const AWinControl: TWinControl;
