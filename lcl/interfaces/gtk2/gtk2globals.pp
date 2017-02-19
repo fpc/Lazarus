@@ -73,19 +73,6 @@ var
 
 var
   Styles : TStrings;
-
-const
-  //(bsNone, bsSingle, bsSizeable, bsDialog, bsToolWindow, bsSizeToolWin);
-  GtkWindowTypeHints: array[TFormBorderStyle] of TGdkWindowTypeHint = (
-    GDK_WINDOW_TYPE_HINT_NOTIFICATION,
-    GDK_WINDOW_TYPE_HINT_NORMAL,
-    GDK_WINDOW_TYPE_HINT_NORMAL,
-    GDK_WINDOW_TYPE_HINT_DIALOG,
-    GDK_WINDOW_TYPE_HINT_UTILITY,
-    GDK_WINDOW_TYPE_HINT_UTILITY
-    );
-
-var
   DefaultPangoLayout: PPangoLayout = nil;
 
 const
