@@ -4962,6 +4962,45 @@ var
       end;// delete title
   end;
 
+  function GetScaled: Boolean;
+  begin
+    Result := False;
+    if (AProject = nil) or (AProject.MainUnitID < 0) then
+      Exit;
+    CodeToolBoss.GetApplicationScaledStatement(AProject.MainUnitInfo.Source, Result);
+  end;
+
+  function SetScaled: Boolean;
+  var
+    OldScaled, NewScaled: Boolean;
+  begin
+    Result := True;
+    if (AProject.MainUnitID < 0) then
+      Exit;
+    OldScaled := GetScaled;
+
+    NewScaled:=AProject.Scaled;
+    if (OldScaled <> NewScaled) and NewScaled then
+      if not CodeToolBoss.SetApplicationScaledStatement(AProject.MainUnitInfo.Source, NewScaled) then
+      begin
+        IDEMessageDialog(lisProjOptsError,
+          Format(lisUnableToChangeProjectScaledInSource, [LineEnding, CodeToolBoss.ErrorMessage]),
+          mtWarning, [mbOk]);
+        Result := False;
+        Exit;
+      end;// set Application.Scaled:= statement
+
+    if OldScaled and not NewScaled then
+      if not CodeToolBoss.RemoveApplicationScaledStatement(AProject.MainUnitInfo.Source) then
+      begin
+        IDEMessageDialog(lisProjOptsError,
+          Format(lisUnableToRemoveProjectScaledFromSource, [LineEnding, CodeToolBoss.ErrorMessage]),
+          mtWarning, [mbOk]);
+        Result := False;
+        Exit;
+      end;// delete Scaled
+  end;
+
   function SetAutoCreateForms: boolean;
   var
     i: integer;
@@ -5011,6 +5050,7 @@ begin
   end
   else begin
     SetTitle;
+    SetScaled;
     SetAutoCreateForms;
     // extend include path
     AProject.AutoAddOutputDirToIncPath;

@@ -3856,7 +3856,11 @@ resourcestring
     +'source.%s%s';
   lisUnableToRemoveProjectTitleFromSource = 'Unable to remove project title '
     +'from source.%s%s';
-  
+  lisUnableToChangeProjectScaledInSource = 'Unable to change project scaled in '
+    +'source.%s%s';
+  lisUnableToRemoveProjectScaledFromSource = 'Unable to remove project scaled '
+    +'from source.%s%s';
+
   // path edit dialog
   lisPathEditSearchPaths = 'Search paths:';
   lisPckSearchPathsForFpdocXmlFilesMultiplePathsMustBeSepa = 'Search paths for'

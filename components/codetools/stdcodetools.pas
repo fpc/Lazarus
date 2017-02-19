@@ -85,6 +85,12 @@ type
       ReadOnlyOneBlock: boolean): boolean;
     function ReadForwardTilAnyBracketClose: boolean;
     function ReadBackwardTilAnyBracketClose: boolean;
+    function FindApplicationStatement(const APropertyUpCase: string;
+          out StartPos, ConstStartPos, EndPos: integer): boolean;
+    function SetApplicationStatement(const APropertyName, NewCode: string;
+          SourceChangeCache: TSourceChangeCache): boolean;
+    function RemoveApplicationStatement(const APropertyUpCase: string;
+          SourceChangeCache: TSourceChangeCache): boolean;
   public
     // explore the code
     function Explore(WithStatements: boolean; Range: TLinkScannerRange): boolean;
@@ -195,6 +201,16 @@ type
     function SetApplicationTitleStatement(const NewTitle: string;
           SourceChangeCache: TSourceChangeCache): boolean;
     function RemoveApplicationTitleStatement(
+          SourceChangeCache: TSourceChangeCache): boolean;
+
+    // Application.Scaled:=<boolean const> statements
+    function FindApplicationScaledStatement(out StartPos, BooleanConstStartPos,
+          EndPos: integer): boolean;
+    function GetApplicationScaledStatement(BooleanConstStartPos, EndPos: integer;
+          var AScaled: boolean): boolean;
+    function SetApplicationScaledStatement(const NewScaled: boolean;
+          SourceChangeCache: TSourceChangeCache): boolean;
+    function RemoveApplicationScaledStatement(
           SourceChangeCache: TSourceChangeCache): boolean;
 
     // forms
@@ -2996,42 +3012,57 @@ begin
   Result:= Result and SourceChangeCache.Apply;
 end;
 
-function TStandardCodeTool.FindApplicationTitleStatement(out StartPos,
-  StringConstStartPos, EndPos: integer): boolean;
+function TStandardCodeTool.SetApplicationScaledStatement(
+  const NewScaled: boolean; SourceChangeCache: TSourceChangeCache): boolean;
+begin
+  Result := SetApplicationStatement('Scaled', BoolToStr(NewScaled, True), SourceChangeCache);
+end;
+
+function TStandardCodeTool.SetApplicationStatement(const APropertyName,
+  NewCode: string; SourceChangeCache: TSourceChangeCache): boolean;
 var
+  StartPos, ConstStartPos, EndPos: integer;
+  OldExists: Boolean;
+  NewStatement: String;
+  Indent: Integer;
   MainBeginNode: TCodeTreeNode;
-  Position: Integer;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
-  StartPos:=-1;
-  StringConstStartPos:=-1;
-  EndPos:=-1;
-  BuildTree(lsrEnd);
-  MainBeginNode:=FindMainBeginEndNode;
-  if MainBeginNode=nil then exit;
-  Position:=MainBeginNode.StartPos;
-  if Position<1 then exit;
-  MoveCursorToCleanPos(Position);
-  repeat
+  // search old Application.XYZ:= statement
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
+  OldExists:=FindApplicationStatement(UpperCase(APropertyName), StartPos,ConstStartPos,EndPos);
+  if ConstStartPos=0 then ;
+  if OldExists then begin
+    // replace old statement
+    Indent:=0;
+    Indent:=Beauty.GetLineIndent(Src,StartPos)
+  end else begin
+    // insert as first line in program begin..end block
+    MainBeginNode:=FindMainBeginEndNode;
+    if MainBeginNode=nil then exit;
+    MoveCursorToNodeStart(MainBeginNode);
     ReadNextAtom;
-    if UpAtomIs('APPLICATION') then begin
-      StartPos:=CurPos.StartPos;
-      if ReadNextAtomIsChar('.') and ReadNextUpAtomIs('TITLE')
-      and ReadNextUpAtomIs(':=') then begin
-        // read till semicolon or end
-        repeat
-          ReadNextAtom;
-          if StringConstStartPos<1 then
-            StringConstStartPos:=CurPos.StartPos;
-          EndPos:=CurPos.EndPos;
-          if CurPos.Flag in [cafEnd,cafSemicolon] then begin
-            Result:=true;
-            exit;
-          end;
-        until CurPos.StartPos>SrcLen;
-      end;
-    end;
-  until (CurPos.StartPos>SrcLen);
+    StartPos:=CurPos.EndPos;
+    EndPos:=StartPos;
+    Indent:=Beauty.GetLineIndent(Src,StartPos)+Beauty.Indent;
+  end;
+  // create statement
+  NewStatement:='Application.'+APropertyName+':='+NewCode+';';
+  NewStatement:=Beauty.BeautifyStatement(NewStatement,Indent);
+  SourceChangeCache.MainScanner:=Scanner;
+  if not SourceChangeCache.Replace(gtNewLine,gtNewLine,StartPos,EndPos,
+                                   NewStatement)
+  then
+    exit;
+  if not SourceChangeCache.Apply then exit;
+  Result:=true;
+end;
+
+function TStandardCodeTool.FindApplicationTitleStatement(out StartPos,
+  StringConstStartPos, EndPos: integer): boolean;
+begin
+  Result := FindApplicationStatement('TITLE', StartPos, StringConstStartPos, EndPos);
 end;
 
 function TStandardCodeTool.GetApplicationTitleStatement(StringConstStartPos,
@@ -3052,68 +3083,14 @@ end;
 
 function TStandardCodeTool.SetApplicationTitleStatement(const NewTitle: string;
   SourceChangeCache: TSourceChangeCache): boolean;
-var
-  StartPos, StringConstStartPos, EndPos: integer;
-  OldExists: Boolean;
-  NewStatement: String;
-  Indent: Integer;
-  MainBeginNode: TCodeTreeNode;
-  Beauty: TBeautifyCodeOptions;
 begin
-  Result:=false;
-  // search old Application.Title:= statement
-  Beauty:=SourceChangeCache.BeautifyCodeOptions;
-  OldExists:=FindApplicationTitleStatement(StartPos,StringConstStartPos,EndPos);
-  if StringConstStartPos=0 then ;
-  if OldExists then begin
-    // replace old statement
-    Indent:=0;
-    Indent:=Beauty.GetLineIndent(Src,StartPos)
-  end else begin
-    // insert as first line in program begin..end block
-    MainBeginNode:=FindMainBeginEndNode;
-    if MainBeginNode=nil then exit;
-    MoveCursorToNodeStart(MainBeginNode);
-    ReadNextAtom;
-    StartPos:=CurPos.EndPos;
-    EndPos:=StartPos;
-    Indent:=Beauty.GetLineIndent(Src,StartPos)+Beauty.Indent;
-  end;
-  // create statement
-  NewStatement:='Application.Title:='+StringToPascalConst(NewTitle)+';';
-  NewStatement:=Beauty.BeautifyStatement(NewStatement,Indent);
-  SourceChangeCache.MainScanner:=Scanner;
-  if not SourceChangeCache.Replace(gtNewLine,gtNewLine,StartPos,EndPos,
-                                   NewStatement)
-  then
-    exit;
-  if not SourceChangeCache.Apply then exit;
-  Result:=true;
+  Result := SetApplicationStatement('Title', StringToPascalConst(NewTitle), SourceChangeCache);
 end;
 
 function TStandardCodeTool.RemoveApplicationTitleStatement(
   SourceChangeCache: TSourceChangeCache): boolean;
-var
-  StartPos, StringConstStartPos, EndPos: integer;
-  OldExists: Boolean;
-  FromPos: Integer;
-  ToPos: Integer;
 begin
-  Result:=false;
-  // search old Application.Title:= statement
-  OldExists:=FindApplicationTitleStatement(StartPos,StringConstStartPos,EndPos);
-  if not OldExists then begin
-    Result:=true;
-    exit;
-  end;
-  if StringConstStartPos=0 then ;
-  // -> delete whole line
-  FromPos:=FindLineEndOrCodeInFrontOfPosition(StartPos);
-  ToPos:=FindLineEndOrCodeAfterPosition(EndPos);
-  SourceChangeCache.MainScanner:=Scanner;
-  if not SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'') then exit;
-  if not SourceChangeCache.Apply then exit;
-  Result:=true;
+  Result := RemoveApplicationStatement('TITLE', SourceChangeCache);
 end;
 
 function TStandardCodeTool.RenameForm(const OldFormName,
@@ -3771,6 +3748,51 @@ begin
   Result:=true;
 end;
 
+function TStandardCodeTool.FindApplicationScaledStatement(out StartPos,
+  BooleanConstStartPos, EndPos: integer): boolean;
+begin
+  Result := FindApplicationStatement('SCALED', StartPos, BooleanConstStartPos, EndPos);
+end;
+
+function TStandardCodeTool.FindApplicationStatement(
+  const APropertyUpCase: string; out StartPos, ConstStartPos, EndPos: integer
+  ): boolean;
+var
+  MainBeginNode: TCodeTreeNode;
+  Position: Integer;
+begin
+  Result:=false;
+  StartPos:=-1;
+  ConstStartPos:=-1;
+  EndPos:=-1;
+  BuildTree(lsrEnd);
+  MainBeginNode:=FindMainBeginEndNode;
+  if MainBeginNode=nil then exit;
+  Position:=MainBeginNode.StartPos;
+  if Position<1 then exit;
+  MoveCursorToCleanPos(Position);
+  repeat
+    ReadNextAtom;
+    if UpAtomIs('APPLICATION') then begin
+      StartPos:=CurPos.StartPos;
+      if ReadNextAtomIsChar('.') and ReadNextUpAtomIs(APropertyUpCase)
+      and ReadNextUpAtomIs(':=') then begin
+        // read till semicolon or end
+        repeat
+          ReadNextAtom;
+          if ConstStartPos<1 then
+            ConstStartPos:=CurPos.StartPos;
+          EndPos:=CurPos.EndPos;
+          if CurPos.Flag in [cafEnd,cafSemicolon] then begin
+            Result:=true;
+            exit;
+          end;
+        until CurPos.StartPos>SrcLen;
+      end;
+    end;
+  until (CurPos.StartPos>SrcLen);
+end;
+
 function TStandardCodeTool.GatherResourceStringSections(
   const CursorPos: TCodeXYPosition; PositionList: TCodeXYPositions): boolean;
   
@@ -4278,6 +4300,28 @@ begin
       CompareStringConst(ANode);
     end;
     ANode:=ANode.NextBrother;
+  end;
+end;
+
+function TStandardCodeTool.GetApplicationScaledStatement(BooleanConstStartPos,
+  EndPos: integer; var AScaled: boolean): boolean;
+var
+  FormatBooleanParams: string;
+begin
+  Result:=false;
+  AScaled:=false;
+  if (BooleanConstStartPos<1) or (BooleanConstStartPos>SrcLen) then exit;
+  MoveCursorToCleanPos(BooleanConstStartPos);
+  ReadNextAtom;
+  if UpAtomIs('TRUE') then
+  begin
+    AScaled := True;
+    Result := True;
+  end;
+  if UpAtomIs('FALSE') then
+  begin
+    AScaled := False;
+    Result := True;
   end;
 end;
 
@@ -6939,6 +6983,38 @@ begin
     end;
     ReadNextAtom;
   end;
+end;
+
+function TStandardCodeTool.RemoveApplicationScaledStatement(
+  SourceChangeCache: TSourceChangeCache): boolean;
+begin
+  Result := RemoveApplicationStatement('SCALED', SourceChangeCache);
+end;
+
+function TStandardCodeTool.RemoveApplicationStatement(
+  const APropertyUpCase: string; SourceChangeCache: TSourceChangeCache
+  ): boolean;
+var
+  StartPos, ConstStartPos, EndPos: integer;
+  OldExists: Boolean;
+  FromPos: Integer;
+  ToPos: Integer;
+begin
+  Result:=false;
+  // search old Application.XYZ:= statement
+  OldExists:=FindApplicationStatement(APropertyUpCase,StartPos,ConstStartPos,EndPos);
+  if not OldExists then begin
+    Result:=true;
+    exit;
+  end;
+  if ConstStartPos=0 then ;
+  // -> delete whole line
+  FromPos:=FindLineEndOrCodeInFrontOfPosition(StartPos);
+  ToPos:=FindLineEndOrCodeAfterPosition(EndPos);
+  SourceChangeCache.MainScanner:=Scanner;
+  if not SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'') then exit;
+  if not SourceChangeCache.Apply then exit;
+  Result:=true;
 end;
 
 function TStandardCodeTool.ReadForwardTilAnyBracketClose: boolean;

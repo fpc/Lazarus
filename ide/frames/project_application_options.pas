@@ -16,6 +16,7 @@ type
 
   TProjectApplicationOptionsFrame = class(TAbstractIDEOptionsEditor)
     AppSettingsGroupBox: TGroupBox;
+    UseLCLScalingCheckBox: TCheckBox;
     TextFieldButton: TButton;
     CreateAppBundleButton: TBitBtn;
     DefaultIconButton: TButton;
@@ -236,6 +237,7 @@ begin
   AppSettingsGroupBox.Caption := dlgApplicationSettings;
   TitleLabel.Caption := dlgPOTitle;
   TitleEdit.Text := '';
+  UseLCLScalingCheckBox.Checked := False;
   UseAppBundleCheckBox.Caption := dlgPOUseAppBundle;
   UseAppBundleCheckBox.Checked := False;
 
@@ -288,6 +290,7 @@ begin
   with FProject do
   begin
     TitleEdit.Text := Title;
+    UseLCLScalingCheckBox.Checked := Scaled;
     UseAppBundleCheckBox.Checked := UseAppBundle;
     with ProjResources.XPManifest do
     begin
@@ -319,6 +322,7 @@ begin
   with (AOptions as TProjectIDEOptions).Project {AOptions as TProject} do
   begin
     Title := TitleEdit.Text;
+    Scaled := UseLCLScalingCheckBox.Checked;
     if fIconChanged then
     begin
       AStream := GetIconAsStream;

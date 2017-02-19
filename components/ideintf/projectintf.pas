@@ -424,6 +424,7 @@ type
     FExecutableType: TProjectExecutableType;
     FFPDocPackageName: string;
     FProjectSessionFile: string;
+    FScaled: Boolean;
     FSessionModified: boolean;
     FTitle: String;
     FSessionStorage: TProjectSessionStorage;
@@ -433,6 +434,7 @@ type
     procedure SetCleanSourcesFileMask(const AValue: string);
     procedure SetFPDocPackageName(AValue: string);
     procedure SetFPDocPaths(const AValue: string);
+    procedure SetScaled(const AScaled: Boolean);
     procedure SetUseAppBundle(AValue: Boolean);
   protected
     FChangeStamp: integer;
@@ -492,6 +494,7 @@ type
     property MainFileID: Integer read GetMainFileID write SetMainFileID;
     property MainFile: TLazProjectFile read GetMainFile;
     property Title: String read FTitle write SetTitle;
+    property Scaled: Boolean read FScaled write SetScaled;
     property Flags: TProjectFlags read FFlags write SetFlags;
     property ExecutableType: TProjectExecutableType read FExecutableType
                  write SetExecutableType;// read from MainFile, not saved to lpi
@@ -1231,6 +1234,13 @@ begin
   if FProjectSessionFile=AValue then exit;
   FProjectSessionFile:=AValue;
   SessionModified:=true;
+end;
+
+procedure TLazProject.SetScaled(const AScaled: Boolean);
+begin
+  if FScaled = aScaled then Exit;
+  FScaled := aScaled;
+  Modified:=true;
 end;
 
 procedure TLazProject.SetFPDocPaths(const AValue: string);

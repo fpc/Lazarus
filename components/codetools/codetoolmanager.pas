@@ -767,6 +767,13 @@ type
           const NewTitle: string): boolean;
     function RemoveApplicationTitleStatement(Code: TCodeBuffer): boolean;
 
+    // Application.Scaled:= statements in program source
+    function GetApplicationScaledStatement(Code: TCodeBuffer;
+          var AScaled: Boolean): boolean;
+    function SetApplicationScaledStatement(Code: TCodeBuffer;
+          const NewScaled: Boolean): boolean;
+    function RemoveApplicationScaledStatement(Code: TCodeBuffer): boolean;
+
     // forms
     // Hint: to find the class use FindDeclarationInInterface
     function RenameForm(Code: TCodeBuffer;
@@ -2347,6 +2354,27 @@ begin
     Result := FCurCodeTool.GatherAvailableUnitNames(CursorPos, IdentifierList);
   except
     on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.GetApplicationScaledStatement(Code: TCodeBuffer;
+  var AScaled: Boolean): boolean;
+var
+  StartPos, BooleanConstStartPos, EndPos: integer;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.GetApplicationScaledStatement A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindApplicationScaledStatement(StartPos,
+                                                    BooleanConstStartPos,EndPos);
+
+    Result:=FCurCodeTool.GetApplicationScaledStatement(BooleanConstStartPos,
+                                                      EndPos,AScaled);
+  except
+    on e: Exception do Result:=HandleException(e);
   end;
 end;
 
@@ -4367,6 +4395,21 @@ begin
   end;
 end;
 
+function TCodeToolManager.RemoveApplicationScaledStatement(Code: TCodeBuffer
+  ): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.RemoveApplicationScaledStatement A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.RemoveApplicationScaledStatement(SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
 function TCodeToolManager.FindAliasDefinitions(Code: TCodeBuffer; out
   TreeOfCodeTreeNodeExt: TAVLTree; OnlyWrongType: boolean): boolean;
 begin
@@ -5399,6 +5442,22 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.SetAllCreateFromStatements(List,SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.SetApplicationScaledStatement(Code: TCodeBuffer;
+  const NewScaled: Boolean): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.SetApplicationScaledStatement A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.SetApplicationScaledStatement(NewScaled,
+                                                      SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;

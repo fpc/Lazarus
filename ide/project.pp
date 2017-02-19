@@ -2882,6 +2882,7 @@ begin
   //   automatically fixes broken lpi files.
   FNewMainUnitID := FXMLConfig.GetValue(Path+'General/MainUnit/Value', 0);
   Title := FXMLConfig.GetValue(Path+'General/Title/Value', '');
+  Scaled := FXMLConfig.GetValue(Path+'General/Scaled/Value', False);
   AutoCreateForms := FXMLConfig.GetValue(Path+'General/AutoCreateForms/Value', true);
 
   // fpdoc
@@ -3196,6 +3197,7 @@ begin
   FXMLConfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
                            AutoCreateForms,true);
   FXMLConfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
+  FXMLConfig.SetDeleteValue(Path+'General/Scaled/Value', Scaled,False);
   FXMLConfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
 
   // fpdoc

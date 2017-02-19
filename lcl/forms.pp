@@ -256,8 +256,6 @@ type
   end;
 
   TCustomDesignControl = class(TScrollingWinControl)
-  private const
-    DefaultScaled = {$IFDEF LCLScaleForms}True{$ELSE}False{$ENDIF};
   private
     FScaled: Boolean;
     FDesignTimePPI: Integer;
@@ -276,7 +274,7 @@ type
     property DesignTimeDPI: Integer read FDesignTimePPI write SetDesignTimePPI stored False; deprecated 'Use DesignTimePPI instead. DesignTimeDPI will be removed in 1.8';
     property DesignTimePPI: Integer read FDesignTimePPI write SetDesignTimePPI default 96;
     property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch stored False;
-    property Scaled: Boolean read FScaled write SetScaled default DefaultScaled;
+    property Scaled: Boolean read FScaled write SetScaled default True;
   end;
 
 
@@ -1340,6 +1338,7 @@ type
     FOnMessageDialogFinished: TModalDialogFinished;
     FOnModalBegin: TNotifyEvent;
     FOnModalEnd: TNotifyEvent;
+    FScaled: Boolean;
     FShowButtonGlyphs: TApplicationShowGlyphs;
     FShowMenuGlyphs: TApplicationShowGlyphs;
     FSmallIconHandle: HICON;
@@ -1604,6 +1603,7 @@ type
     property ShowHint: Boolean read FShowHint write SetShowHint;
     property ShowMainForm: Boolean read FShowMainForm write FShowMainForm default True;
     property Title: String read GetTitle write SetTitle;
+    property Scaled: Boolean read FScaled write FScaled;
   end;
 
 const
