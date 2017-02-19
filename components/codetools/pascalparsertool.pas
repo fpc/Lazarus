@@ -332,7 +332,7 @@ begin
   if IsOperator then begin
     AtomIsCustomOperator(true,true,true);
     IsFunction:=not (UpAtomIs('INITIALIZE') or UpAtomIs('FINALIZE')
-                  or UpAtomIs('COPY') or UpAtomIs('CLONE'));
+                  or UpAtomIs('ADDREF') or UpAtomIs('COPY'));
   end else
     AtomIsIdentifierSaveE;
 end;
