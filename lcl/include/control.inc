@@ -2982,7 +2982,8 @@ begin
 
     if (Align=alNone) and (akLeft in Anchors) then
       NewLeft := Round(NewLeft * AXProportion);
-    if (Align=alNone) and (akRight in Anchors) and (Parent<>nil) then
+    if (Align=alNone) and (akRight in Anchors) and (Parent<>nil)
+    and (AnchorSideRight.Control=nil) then
     begin
       if not(akLeft in Anchors) then
       begin
@@ -2997,7 +2998,8 @@ begin
 
     if (Align=alNone) and (akTop in Anchors) then
       NewTop := Round(NewTop * AYProportion);
-    if (Align=alNone) and (akBottom in Anchors) and (Parent<>nil) then
+    if (Align=alNone) and (akBottom in Anchors) and (Parent<>nil)
+    and (AnchorSideBottom.Control=nil) then
     begin
       if not(akTop in Anchors) then
       begin
