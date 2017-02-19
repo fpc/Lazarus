@@ -3022,11 +3022,6 @@ begin
     if AAHeight then
       NewHeight := Round(Height * AYProportion);
 
-    if Anchors*[akLeft, akRight] = [akRight] then
-      NewLeft := NewLeft+Width-NewWidth;
-    if Anchors*[akTop, akBottom] = [akBottom] then
-      NewTop := NewTop+Height-NewHeight;
-
     if AAWidth then
     begin
       if akRight in Anchors then
