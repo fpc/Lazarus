@@ -15,7 +15,7 @@ constructor TCustomDesignControl.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 
-  FScaled := DefaultScaled;
+  FScaled := True;
   FDesignTimePPI := 96;
   FPixelsPerInch := FDesignTimePPI;
 end;
