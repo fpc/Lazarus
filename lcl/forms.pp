@@ -266,7 +266,7 @@ type
     procedure SetScaled(const AScaled: Boolean); virtual;
 
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy; const AFromDPI,
-      AToDPI, AOldFormWidth, ANewFormWidth: Integer; const AScale0Fonts: Boolean); override;
+      AToDPI, AOldFormWidth, ANewFormWidth: Integer); override;
     procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -549,8 +549,7 @@ type
     procedure CreateWnd; override;
     procedure Deactivate; virtual;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-      const AXProportion, AYProportion: Double;
-      const AScale0Fonts: Boolean); override;
+      const AXProportion, AYProportion: Double; const AToDPI: Integer); override;
     procedure DoClose(var CloseAction: TCloseAction); virtual;
     procedure DoCreate; virtual;
     procedure DoDestroy; virtual;
@@ -665,7 +664,7 @@ type
     function GetMDIChildren(AIndex: Integer): TCustomForm; virtual;
     function MDIChildCount: Integer; virtual;
   public
-    procedure AutoScale(const AScale0Fonts: Boolean); // set scaled to True and AutoAdjustLayout to current monitor PPI
+    procedure AutoScale; // set scaled to True and AutoAdjustLayout to current monitor PPI
   public
     // drag and dock
     procedure Dock(NewDockSite: TWinControl; ARect: TRect); override;

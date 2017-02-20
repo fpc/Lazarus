@@ -896,6 +896,19 @@ procedure TControl.ExecuteDefaultAction;
 begin
 end;
 
+procedure TControl.FixDesignFontsPPI(const ADesignTimePPI: Integer);
+begin
+  // Problem: Font.PixelsPerInch isn't saved in the LFM, therefore the
+  // design-time font PPI is different from the one that is loaded on target
+  // machine, which results in different font scaling.
+  // DoFixDesignFont restores the corrent design-time font PPI so that it can
+  // be used for LCL HighDPI scaling.
+
+  DoFixDesignFontPPI(Font, ADesignTimePPI);
+
+  // override this function - list all custom fonts in the overriden procedure
+end;
+
 procedure TControl.ExecuteCancelAction;
 begin
 end;
@@ -1470,6 +1483,22 @@ begin
   DebugLn('TControl.DoEndDrag ',Name,':',ClassName,' XY=',IntToStr(X),',',IntToStr(Y));
   {$ENDIF}
   if Assigned(FOnEndDrag) then FOnEndDrag(Self,Target,X,Y);
+end;
+
+{------------------------------------------------------------------------------
+       TControl.DoFixDesignFontPPI
+------------------------------------------------------------------------------}
+class procedure TControl.DoFixDesignFontPPI(const AFont: TFont;
+  const ADesignTimePPI: Integer);
+var
+  H: Integer;
+begin
+  if AFont.PixelsPerInch <> ADesignTimePPI then
+  begin
+    H := AFont.Height;
+    AFont.Height := MulDiv(H, AFont.PixelsPerInch, ADesignTimePPI);
+    AFont.PixelsPerInch := ADesignTimePPI;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2947,18 +2976,13 @@ begin
 end;
 
 procedure TControl.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-  const AXProportion, AYProportion: Double; const AScale0Fonts: Boolean);
+  const AXProportion, AYProportion: Double; const AToDPI: Integer);
 var
   AAWidth, AAHeight: Boolean;
   NewLeft, NewTop, NewWidth, NewHeight, NewRight, NewBottom, OldWidth, OldHeight: Integer;
 begin
-  if (AScale0Fonts or (Font.Height<>0)) and (not ParentFont or (Parent=nil)) then
-  begin
-    if Font.Size<>0 then
-      Font.Size := Round(Font.Size*AYProportion)
-    else
-      Font.Height := Round(GetFontData(Font.Reference.Handle).Height*AYProportion);
-  end;
+  if not ParentFont or (Parent=nil) then
+    Font.PixelsPerInch := AToDPI;
 
   // Apply the changes
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
@@ -3960,8 +3984,7 @@ begin
 end;
 
 procedure TControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
-  const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer;
-  const AScale0Fonts: Boolean);
+  const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer);
 var
   lXProportion, lYProportion: Double;
   lMode: TLayoutAdjustmentPolicy;
@@ -3985,7 +4008,7 @@ begin
   if AFromDPI > 0 then lYProportion := AToDPI / AFromDPI
   else lYProportion := 1.0;
 
-  DoAutoAdjustLayout(lMode, lXProportion, lYProportion, AScale0Fonts);
+  DoAutoAdjustLayout(lMode, lXProportion, lYProportion, AToDPI);
 end;
 
 // Auto-adjust the layout of controls.

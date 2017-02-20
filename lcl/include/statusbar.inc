@@ -148,11 +148,11 @@ begin
 end;
 
 procedure TStatusBar.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-  const AXProportion, AYProportion: Double; const AScale0Fonts: Boolean);
+  const AXProportion, AYProportion: Double; const AToDPI: Integer);
 var
   I: Integer;
 begin
-  inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion, AScale0Fonts);
+  inherited;
 
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin

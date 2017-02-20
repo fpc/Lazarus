@@ -21,20 +21,28 @@ begin
 end;
 
 procedure TCustomDesignControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
-  const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer;
-  const AScale0Fonts: Boolean);
+  const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer);
 begin
-  inherited AutoAdjustLayout(AMode, AFromDPI, AToDPI, AOldFormWidth,
-    ANewFormWidth, AScale0Fonts);
+  inherited;
 
   FPixelsPerInch := AToDPI;
 end;
 
 procedure TCustomDesignControl.Loaded;
+var
+  I: Integer;
 begin
   inherited Loaded;
 
   FPixelsPerInch := FDesignTimePPI;
+
+  if Application.Scaled and Scaled then
+  begin
+    FixDesignFontsPPI(FDesignTimePPI);
+    for I := 0 to ComponentCount-1 do
+      if Components[I] is TControl then
+        TControl(Components[I]).FixDesignFontsPPI(FDesignTimePPI);
+  end;
 end;
 
 procedure TCustomDesignControl.SetDesignTimePPI(const ADesignTimePPI: Integer);

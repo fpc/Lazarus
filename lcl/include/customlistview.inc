@@ -611,13 +611,14 @@ begin
       FOnSelectItem(Self, AItem, ASelected);
 end;
 
-procedure TCustomListView.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-  const AXProportion, AYProportion: Double; const AScale0Fonts: Boolean);
+procedure TCustomListView.DoAutoAdjustLayout(
+  const AMode: TLayoutAdjustmentPolicy; const AXProportion,
+  AYProportion: Double; const AToDPI: Integer);
 var
   i: Integer;
   C: TListColumn;
 begin
-  inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion, AScale0Fonts);
+  inherited;
 
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
