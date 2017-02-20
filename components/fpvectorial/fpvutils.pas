@@ -51,6 +51,7 @@ function CoordToCanvasX(ACoord: Double; ADestX: Integer; AMulX: Double): Integer
 function CoordToCanvasY(ACoord: Double; ADestY: Integer; AMulY: Double): Integer; inline;
 // Other routines
 function SeparateString(AString: string; ASeparator: char): T10Strings;
+procedure SeparateStringInTwo(AString: string; ASeparator: char; out AStart, AEnd: string);
 function Make3DPoint(AX, AY, AZ: Double): T3DPoint; overload; inline;
 function Make3DPoint(AX, AY: Double): T3DPoint; overload; inline;
 function Point2D(AX, AY: Double): T2DPoint; inline;
@@ -260,6 +261,16 @@ function Point2D(AX, AY: Double): T2DPoint;
 begin
   Result.X := AX;
   Result.Y := AY;
+end;
+
+procedure SeparateStringInTwo(AString: string; ASeparator: char; out AStart,
+  AEnd: string);
+var
+  lPosSep: SizeInt;
+begin
+  lPosSep := Pos(ASeparator, AString);
+  AStart := Copy(AString, 0, lPosSep-1);
+  AEnd := Copy(AString, lPosSep+1, Length(AString));
 end;
 
 function Make3DPoint(AX, AY, AZ: Double): T3DPoint;

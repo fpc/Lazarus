@@ -69,13 +69,15 @@ type
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
+  TvSVGVectorialReader = class;
+
   { TSVG_CSS_Style }
 
   TSVG_CSS_Style = class(TvStyle)
   public
     CSSName, CSSData: string;
     function MatchesClass(AClassName: string): Boolean;
-    procedure ParseCSSData();
+    procedure ParseCSSData(AReader: TvSVGVectorialReader);
   end;
 
   { TSVGPathTokenizer }
@@ -125,8 +127,8 @@ type
       ADestEntity: TvEntityWithPen; ADestStyle: TvStyle = nil;
       AUseFillAsPen: Boolean = False): TvSetPenBrushAndFontElements;
     function ReadSVGStyleToStyleLists(AValue: string; AStyleKeys, AStyleValues: TStringList): TvSetPenBrushAndFontElements;
-    function ReadSVGPenStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
-    function ReadSVGBrushStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush): TvSetPenBrushAndFontElements;
+    function ReadSVGPenStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen; ADestStyle: TvStyle = nil): TvSetPenBrushAndFontElements;
+    function ReadSVGBrushStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush; ADestStyle: TvStyle = nil): TvSetPenBrushAndFontElements;
     function ReadSVGFontStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenBrushAndFont; ADestStyle: TvStyle = nil): TvSetPenBrushAndFontElements;
     procedure ReadSVGGeneralStyleWithKeyAndValue(AData: TvVectorialPage;
         AKey, AValue: string; ADestEntity: TvEntity);
@@ -217,7 +219,7 @@ var
   lNameModified: string;
 begin
   lNameModified := '.' + AClassName;
-  Result := (lNameModified = AClassName);
+  Result := (lNameModified = CSSName);
 end;
 
 {
@@ -231,22 +233,9 @@ end;
   .fil0 {fill:#EEEED4}
  ]]>
 }
-procedure TSVG_CSS_Style.ParseCSSData;
-var
-  lSplitter: TStringList;
-  i: Integer;
+procedure TSVG_CSS_Style.ParseCSSData(AReader: TvSVGVectorialReader);
 begin
-  lSplitter: TStringList.Create;
-  try
-    lSplitter.Delimiter := ';';
-    lSplitter.DelimitedText := CSSData;
-    for i := 0 to lSplitter.Count-1 do
-    begin
-
-    end;
-  finally
-    lSplitter.Free;
-  end;
+  SetElements += AReader.ReadSVGStyle(nil, CSSData, nil, Self, False);
 end;
 
 { TSVGTextSpanStyle }
@@ -843,7 +832,7 @@ function TvSVGVectorialReader.ReadSVGStyle(AData: TvVectorialPage; AValue: strin
 var
   lStr, lStyleKeyStr, lStyleValueStr: String;
   lStrings: TStringList;
-  i, lPosEqual: Integer;
+  i: Integer;
 begin
   Result := [];
   if AValue = '' then Exit;
@@ -857,10 +846,8 @@ begin
     for i := 0 to lStrings.Count-1 do
     begin
       lStr := lStrings.Strings[i];
-      lPosEqual := Pos(':', lStr);
-      lStyleKeyStr := Copy(lStr, 0, lPosEqual-1);
+      SeparateStringInTwo(lStr, ':', lStyleKeyStr, lStyleValueStr);
       lStyleKeyStr := LowerCase(Trim(lStyleKeyStr));
-      lStyleValueStr := Copy(lStr, lPosEqual+1, Length(lStr));
       lStyleValueStr := Trim(lStyleValueStr);
       if ADestEntity <> nil then
       begin
@@ -875,11 +862,12 @@ begin
       end;
       if ADestStyle <> nil then
       begin
-        {ReadSVGPenStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
-        ReadSVGGeneralStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
-        Result := Result + ReadSVGPenStyleWithKeyAndValue('stroke', lStyleValueStr, ADestEntity)}
-        Result := Result + ReadSVGFontStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, nil, ADestStyle);
-        //Result := Result + ReadSVGBrushStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity as TvEntityWithPenAndBrush);
+        Result += ReadSVGPenStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, nil, ADestStyle);
+        //Result += ReadSVGGeneralStyleWithKeyAndValue(AData, lStyleKeyStr, lStyleValueStr, nil, ADestStyle);
+        if AUseFillAsPen and (lStyleKeyStr = 'fill') then
+          Result += ReadSVGPenStyleWithKeyAndValue('stroke', lStyleValueStr, nil, ADestStyle);
+        Result += ReadSVGFontStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, nil, ADestStyle);
+        Result += ReadSVGBrushStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, nil, ADestStyle);
       end;
     end;
   finally
@@ -893,7 +881,7 @@ function TvSVGVectorialReader.ReadSVGStyleToStyleLists(AValue: string;
 var
   lStr, lStyleKeyStr, lStyleValueStr: String;
   lStrings: TStringList;
-  i, lPosEqual: Integer;
+  i: Integer;
 begin
   Result := [];
   if AValue = '' then Exit;
@@ -906,9 +894,7 @@ begin
     for i := 0 to lStrings.Count-1 do
     begin
       lStr := lStrings.Strings[i];
-      lPosEqual := Pos(':', lStr);
-      lStyleKeyStr := Copy(lStr, 0, lPosEqual-1);
-      lStyleValueStr := Copy(lStr, lPosEqual+1, Length(lStr));
+      SeparateStringInTwo(lStr, ':', lStyleKeyStr, lStyleValueStr);
       AStyleKeys.Add(lStyleKeyStr);
       AStyleValues.Add(lStyleValueStr);
     end;
@@ -918,33 +904,58 @@ begin
 end;
 
 function TvSVGVectorialReader.ReadSVGPenStyleWithKeyAndValue(AKey,
-  AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
+  AValue: string; ADestEntity: TvEntityWithPen; ADestStyle: TvStyle = nil): TvSetPenBrushAndFontElements;
 var
   OldAlpha: Word;
+  lValueInt: Int64;
 begin
   Result := [];
   if AKey = 'stroke' then
   begin
     // We store and restore the old alpha to support the "-opacity" element
-    OldAlpha := ADestEntity.Pen.Color.Alpha;
-    if ADestEntity.Pen.Style = psClear then ADestEntity.Pen.Style := psSolid;
+    if ADestEntity <> nil then
+    begin
+      OldAlpha := ADestEntity.Pen.Color.Alpha;
+      if ADestEntity.Pen.Style = psClear then ADestEntity.Pen.Style := psSolid;
+    end;
+    if ADestStyle <> nil then
+    begin
+      OldAlpha := ADestStyle.Pen.Color.Alpha;
+      if ADestStyle.Pen.Style = psClear then ADestStyle.Pen.Style := psSolid;
+    end;
 
-    if AValue = 'none'  then ADestEntity.Pen.Style := fpcanvas.psClear
+    if AValue = 'none'  then
+    begin
+      if ADestEntity <> nil then ADestEntity.Pen.Style := fpcanvas.psClear;
+      if ADestStyle <> nil then ADestStyle.Pen.Style := fpcanvas.psClear;
+    end
     else
     begin
-      ADestEntity.Pen.Color := ReadSVGColor(AValue);
-      ADestEntity.Pen.Color.Alpha := OldAlpha;
+      if ADestEntity <> nil then
+      begin
+        ADestEntity.Pen.Color := ReadSVGColor(AValue);
+        ADestEntity.Pen.Color.Alpha := OldAlpha;
+      end;
+      if ADestStyle <> nil then
+      begin
+        ADestStyle.Pen.Color := ReadSVGColor(AValue);
+        ADestStyle.Pen.Color.Alpha := OldAlpha;
+      end;
     end;
     Result := Result + [spbfPenColor, spbfPenStyle];
   end
   else if AKey = 'stroke-width' then
   begin
-    ADestEntity.Pen.Width := Round(StringWithUnitToFloat(AValue, sckXSize));
+    lValueInt := Round(StringWithUnitToFloat(AValue, sckXSize));
+    if ADestEntity <> nil then ADestEntity.Pen.Width := lValueInt;
+    if ADestStyle <> nil then ADestStyle.Pen.Width := lValueInt;
     Result := Result + [spbfPenWidth];
   end
   else if AKey = 'stroke-opacity' then
   begin
-    ADestEntity.Pen.Color.Alpha := Round(StrToFloat(AValue, FPointSeparator)*$FFFF);
+    lValueInt := Round(StrToFloat(AValue, FPointSeparator)*$FFFF);
+    if ADestEntity <> nil then ADestEntity.Pen.Color.Alpha := lValueInt;
+    if ADestStyle <> nil then ADestStyle.Pen.Color.Alpha := lValueInt;
   end
   else if AKey = 'stroke-linecap' then
   begin
@@ -959,7 +970,7 @@ begin
 end;
 
 function TvSVGVectorialReader.ReadSVGBrushStyleWithKeyAndValue(AKey,
-  AValue: string; ADestEntity: TvEntityWithPenAndBrush): TvSetPenBrushAndFontElements;
+  AValue: string; ADestEntity: TvEntityWithPenAndBrush; ADestStyle: TvStyle = nil): TvSetPenBrushAndFontElements;
 var
   OldAlpha: Word;
   Len: Integer;
@@ -987,14 +998,34 @@ begin
     end;
 
     // We store and restore the old alpha to support the "-opacity" element
-    OldAlpha := ADestEntity.Brush.Color.Alpha;
-    if ADestEntity.Brush.Style = bsClear then ADestEntity.Brush.Style := bsSolid;
+    if ADestEntity <> nil then
+    begin
+      OldAlpha := ADestEntity.Brush.Color.Alpha;
+      if ADestEntity.Brush.Style = bsClear then ADestEntity.Brush.Style := bsSolid;
+    end;
+    if ADestStyle <> nil then
+    begin
+      OldAlpha := ADestStyle.Brush.Color.Alpha;
+      if ADestStyle.Brush.Style = bsClear then ADestStyle.Brush.Style := bsSolid;
+    end;
 
-    if AValue = 'none'  then ADestEntity.Brush.Style := fpcanvas.bsClear
+    if AValue = 'none'  then
+    begin
+      if ADestEntity <> nil then ADestEntity.Brush.Style := fpcanvas.bsClear;
+      if ADestStyle <> nil then ADestStyle.Brush.Style := fpcanvas.bsClear;
+    end
     else
     begin
-      ADestEntity.Brush.Color := ReadSVGColor(AValue);
-      ADestEntity.Brush.Color.Alpha := OldAlpha;
+      if ADestEntity <> nil then
+      begin
+        ADestEntity.Brush.Color := ReadSVGColor(AValue);
+        ADestEntity.Brush.Color.Alpha := OldAlpha;
+      end;
+      if ADestStyle <> nil then
+      begin
+        ADestStyle.Brush.Color := ReadSVGColor(AValue);
+        ADestStyle.Brush.Color.Alpha := OldAlpha;
+      end;
     end;
 
     Result := Result + [spbfBrushColor, spbfBrushStyle];
@@ -1303,8 +1334,25 @@ end;
 
 procedure TvSVGVectorialReader.ApplyCSSClass(AData: TvVectorialPage;
   AValue: string; ADestEntity: TvEntityWithPen);
+var
+  i, j: Integer;
+  lCurStyle: TSVG_CSS_Style;
+  lAllClasses: T10Strings;
 begin
-
+  lAllClasses := SeparateString(AValue, ' ');
+  for i := 0 to High(lAllClasses)-1 do
+  begin
+    if lAllClasses[i] = '' then Break;
+    for j := 0 to FCSSDefs.Count-1 do
+    begin
+      lCurStyle := TSVG_CSS_Style(FCSSDefs.Items[j]);
+      if lCurStyle.MatchesClass(lAllClasses[i]) then
+      begin
+        lCurStyle.ApplyIntoEntity(ADestEntity);
+        Break;
+      end;
+    end;
+  end;
 end;
 
 function TvSVGVectorialReader.IsEntityStyleField(AFieldName: string): Boolean;
@@ -1483,7 +1531,7 @@ begin
         lCurStyle.CSSName := Trim(lCurName);
         lCurStyle.CSSData := Trim(lCurData);
         FCSSDefs.Add(lCurStyle);
-        lCurStyle.ParseCSSData();
+        lCurStyle.ParseCSSData(Self);
         lParserState := 0;
         lCurName := '';
         lCurData := '';
