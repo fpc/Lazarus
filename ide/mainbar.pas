@@ -710,7 +710,7 @@ begin
     CoolBand.FixedSize := True;
     IDECoolBar.ToolBars[I].UseCurrentOptions;
   end;
-  CoolBar.AutoAdjustLayout(lapAutoAdjustForDPI, 96, PixelsPerInch, 0, 0, False);
+  CoolBar.AutoAdjustLayout(lapAutoAdjustForDPI, 96, PixelsPerInch, 0, 0);
   CoolBar.AutosizeBands;
 
   CoolBar.Visible := CoolBarOpts.Visible;

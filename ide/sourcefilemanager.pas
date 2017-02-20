@@ -6418,7 +6418,7 @@ begin
         begin
           DsgControl := TCustomDesignControl(NewComponent);
           if Project1.Scaled and DsgControl.Scaled and (DsgControl.DesignTimePPI<>Screen.PixelsPerInch) then
-            DsgControl.AutoAdjustLayout(lapAutoAdjustForDPI, DsgControl.DesignTimePPI, Screen.PixelsPerInch, 0, 0, False);
+            DsgControl.AutoAdjustLayout(lapAutoAdjustForDPI, DsgControl.DesignTimePPI, Screen.PixelsPerInch, 0, 0);
           DsgControl.DesignTimePPI := Screen.PixelsPerInch;
           DsgControl.PixelsPerInch := Screen.PixelsPerInch;
         end;
