@@ -69,6 +69,15 @@ type
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
+  { TSVG_CSS_Style }
+
+  TSVG_CSS_Style = class(TvStyle)
+  public
+    CSSName, CSSData: string;
+    function MatchesClass(AClassName: string): Boolean;
+    procedure ParseCSSData();
+  end;
+
   { TSVGPathTokenizer }
 
   TSVGPathTokenizer = class
@@ -102,6 +111,7 @@ type
     ViewBox_Left, ViewBox_Top, ViewBox_Width, ViewBox_Height, Page_Width, Page_Height: Double;
     // Defs section
     FBrushDefs: TFPList; // of TvEntityWithPenAndBrush;
+    FCSSDefs: TFPList; // of TSVG_CSS_Style;
     // debug symbols
     FPathNumber: Integer;
     // Path support for multiple polygons
@@ -124,9 +134,15 @@ type
     procedure ApplyLayerStyles(AData: TvVectorialPage; ADestEntity: TvEntity);
     function ReadSpaceSeparatedFloats(AInput: string; AOtherSeparators: string): TDoubleArray;
     procedure ReadSVGTransformationMatrix(AMatrix: string; out AA, AB, AC, AD, AE, AF: Double);
+    procedure ApplyCSSClass(AData: TvVectorialPage; AValue: string;
+      ADestEntity: TvEntityWithPen);
+    function IsEntityStyleField(AFieldName: string): Boolean;
+    function ReadEntityStyleField(AData: TvVectorialPage; AFieldName, AFieldValue: string; ADestEntity: TvEntityWithPen; ADestStyle: TvStyle = nil;
+      AUseFillAsPen: Boolean = False): TvSetPenBrushAndFontElements;
     //
     function GetTextContentFromNode(ANode: TDOMNode): string;
     procedure ReadDefs_LinearGradient(ADest: TvEntityWithPenAndBrush; ANode: TDOMNode; AData: TvVectorialPage);
+    procedure ReadDefs_CSS(ANode: TDOMNode);
     procedure ReadDefsFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     //
     function ReadEntityFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
@@ -193,6 +209,45 @@ const
 
   FLOAT_POINTS_PER_PIXEL = 0.75; // For conversion
   FLOAT_PIXEL_PER_POINT = 1 / FLOAT_POINTS_PER_PIXEL; // For conversion
+
+{ TSVG_CSS_Style }
+
+function TSVG_CSS_Style.MatchesClass(AClassName: string): Boolean;
+var
+  lNameModified: string;
+begin
+  lNameModified := '.' + AClassName;
+  Result := (lNameModified = AClassName);
+end;
+
+{
+<style type="text/css">
+ <![CDATA[
+  .strr3 {stroke:#C7C7A2;stroke-width:0.793701}
+  .str1 {stroke:#8C8C60;stroke-width:1.70079}
+  .strr2 {stroke:#636347;stroke-width:2.26772}
+  .str0 {stroke:#2B2A29;stroke-width:3.9685}
+  .fil1 {fill:none}
+  .fil0 {fill:#EEEED4}
+ ]]>
+}
+procedure TSVG_CSS_Style.ParseCSSData;
+var
+  lSplitter: TStringList;
+  i: Integer;
+begin
+  lSplitter: TStringList.Create;
+  try
+    lSplitter.Delimiter := ';';
+    lSplitter.DelimitedText := CSSData;
+    for i := 0 to lSplitter.Count-1 do
+    begin
+
+    end;
+  finally
+    lSplitter.Free;
+  end;
+end;
 
 { TSVGTextSpanStyle }
 
@@ -1246,6 +1301,34 @@ begin
   AF := lMatrixElements[5];
 end;
 
+procedure TvSVGVectorialReader.ApplyCSSClass(AData: TvVectorialPage;
+  AValue: string; ADestEntity: TvEntityWithPen);
+begin
+
+end;
+
+function TvSVGVectorialReader.IsEntityStyleField(AFieldName: string): Boolean;
+begin
+  Result := (AFieldName = 'style') or (AFieldName = 'class') or
+    IsAttributeFromStyle(AFieldName);
+end;
+
+function TvSVGVectorialReader.ReadEntityStyleField(AData: TvVectorialPage;
+  AFieldName, AFieldValue: string; ADestEntity: TvEntityWithPen;
+  ADestStyle: TvStyle; AUseFillAsPen: Boolean): TvSetPenBrushAndFontElements;
+begin
+  case AFieldName of
+  'style': Result := ReadSVGStyle(AData, AFieldValue, ADestEntity, ADestStyle,
+             AUseFillAsPen);
+  'class': ApplyCSSClass(AData, AFieldValue, ADestEntity);
+  else
+    ReadSVGPenStyleWithKeyAndValue(AFieldName, AFieldValue, ADestEntity);
+    if ADestEntity is TvEntityWithPenAndBrush then
+      ReadSVGBrushStyleWithKeyAndValue(AFieldName, AFieldValue, TvEntityWithPenAndBrush(ADestEntity));
+    ReadSVGGeneralStyleWithKeyAndValue(AData, AFieldName, AFieldValue, ADestEntity);
+  end;
+end;
+
 function TvSVGVectorialReader.GetTextContentFromNode(ANode: TDOMNode): string;
 var
   i: Integer;
@@ -1371,13 +1454,53 @@ begin
   end;
 end;
 
+procedure TvSVGVectorialReader.ReadDefs_CSS(ANode: TDOMNode);
+var
+  lContent, lCurName, lCurData: string;
+  lCurChar: AnsiChar;
+  i, lParserState: Integer;
+  lCurStyle: TSVG_CSS_Style;
+begin
+  lContent := Trim(ANode.TextContent);
+  lContent := StringReplace(lContent, '<![CDATA[', '', []);
+  lContent := StringReplace(lContent, ']]>', '', []);
+  lContent := Trim(lContent);
+  lParserState := 0;
+  for i := 1 to Length(lContent) do
+  begin
+    lCurChar := lContent[i];
+    case lParserState of
+    0: // filling class name
+    begin
+      if lCurChar = '{' then lParserState := 1
+      else lCurName += lCurChar;
+    end;
+    1: // filling class data
+    begin
+      if lCurChar = '}' then
+      begin
+        lCurStyle := TSVG_CSS_Style.Create;
+        lCurStyle.CSSName := Trim(lCurName);
+        lCurStyle.CSSData := Trim(lCurData);
+        FCSSDefs.Add(lCurStyle);
+        lCurStyle.ParseCSSData();
+        lParserState := 0;
+        lCurName := '';
+        lCurData := '';
+      end
+      else lCurData += lCurChar;
+    end;
+    end;
+  end;
+end;
+
 procedure TvSVGVectorialReader.ReadDefsFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
   lEntityName: DOMString;
   lBlock: TvBlock;
   lPreviousLayer: TvEntityWithSubEntities;
-  lAttrName, lAttrValue, lNodeName: DOMString;
+  lAttrName, lAttrValue, lNodeName, lEntityValue: DOMString;
   lLayerName: String;
   i, len: Integer;
   lCurNode, lCurSubNode: TDOMNode;
@@ -1389,6 +1512,7 @@ begin
   while Assigned(lCurNode) do
   begin
     lEntityName := LowerCase(lCurNode.NodeName);
+    lEntityValue := lCurNode.NodeValue;
     case lEntityName of
       'radialgradient':
       begin
@@ -1504,6 +1628,19 @@ begin
           AData.AddEntity(lCurEntity);
         //
         AData.SetCurrentLayer(lPreviousLayer);
+      end;
+      // CSS styles
+      'style':
+      begin
+        for i := 0 to lCurNode.Attributes.Length - 1 do
+        begin
+          lAttrName := LowerCase(lCurNode.Attributes.Item[i].NodeName);
+          lAttrValue := lCurNode.Attributes.Item[i].NodeValue;
+          if (lAttrName = 'type') and (lAttrValue = 'text/css') then
+          begin
+            ReadDefs_CSS(lCurNode);
+          end;
+        end;
       end;
     end;
 
@@ -2567,7 +2704,7 @@ function TvSVGVectorialReader.ReadPolyFromNode(ANode: TDOMNode;
 var
   lPointsStr: string = '';
   i: Integer;
-  lNodeName: DOMString;
+  lNodeName, lNodeValue: DOMString;
   lPath: TPath;
   lIsPolygon: Boolean = False;
 begin
@@ -2597,19 +2734,11 @@ begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
     if lNodeName = 'id' then
-      lPath.Name := ANode.Attributes.Item[i].NodeValue
-    else if lNodeName = 'style' then
-      ReadSVGStyle(AData, ANode.Attributes.Item[i].NodeValue, lPath)
-    else if IsAttributeFromStyle(lNodeName) then
-    begin
-      ReadSVGPenStyleWithKeyAndValue(lNodeName,
-        ANode.Attributes.Item[i].NodeValue, lPath);
-      ReadSVGBrushStyleWithKeyAndValue(lNodeName,
-        ANode.Attributes.Item[i].NodeValue, lPath);
-      ReadSVGGeneralStyleWithKeyAndValue(AData, lNodeName,
-        ANode.Attributes.Item[i].NodeValue, lPath);
-    end;
+      lPath.Name := lNodeValue
+    else if IsEntityStyleField(lNodeName) then
+      ReadEntityStyleField(AData, lNodeName, lNodeValue, lPath);
   end;
 end;
 
@@ -3351,18 +3480,20 @@ begin
   FLayerStylesKeys := TFPList.Create;
   FLayerStylesValues := TFPList.Create;
   FBrushDefs := TFPList.Create;
+  FCSSDefs := TFPList.Create;
 end;
 
 destructor TvSVGVectorialReader.Destroy;
 var
   i: Integer;
 begin
+  FSVGPathTokenizer.Free;
   FLayerStylesKeys.Free;
   FLayerStylesValues.Free;
-
   for i:=FBrushDefs.Count-1 downto 0 do TObject(FBrushDefs[i]).Free;
   FBrushDefs.Free;
-  FSVGPathTokenizer.Free;
+  for i:=FCSSDefs.Count-1 downto 0 do TObject(FCSSDefs[i]).Free;
+  FCSSDefs.Free;
 
   inherited Destroy;
 end;
