@@ -528,6 +528,7 @@ type
     procedure SetData(const FontData: TFontData);
     procedure SetHandle(const Value: HFONT);
     procedure ReferenceNeeded;
+    procedure SetPixelsPerInch(const APixelsPerInch: Integer);
   protected
     function GetCharSet: TFontCharSet;
     function GetHeight: Integer;
@@ -568,7 +569,7 @@ type
     property IsMonoSpace: boolean read GetIsMonoSpace;
     procedure SetDefault;
     property CanUTF8: boolean read GetCanUTF8; deprecated;
-    property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch;
+    property PixelsPerInch: Integer read FPixelsPerInch write SetPixelsPerInch;
     property Reference: TWSFontReference read GetReference;
   published
     property CharSet: TFontCharSet read GetCharSet write SetCharSet default DEFAULT_CHARSET;

@@ -850,6 +850,19 @@ Begin
   end;
 end;
 
+procedure TFont.SetPixelsPerInch(const APixelsPerInch: Integer);
+var
+  OldPPI: Integer;
+begin
+  if FPixelsPerInch = APixelsPerInch then Exit;
+  OldPPI := FPixelsPerInch;
+  FPixelsPerInch := APixelsPerInch;
+
+  // the Height value is not correct anymore -> force recalculate it
+  if Height<>0 then
+    Height := MulDiv(Height, APixelsPerInch, OldPPI);
+end;
+
 {------------------------------------------------------------------------------
   Method: TFont.SetHeight
   Params: Value: the new value
