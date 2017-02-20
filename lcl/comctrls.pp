@@ -159,7 +159,7 @@ type
     procedure LMDrawItem(var Message: TLMDrawItems); message LM_DRAWITEM;
 
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-      const AXProportion, AYProportion: Double; const AToDPI: Integer); override;
+      const AXProportion, AYProportion: Double); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -1490,7 +1490,7 @@ type
     procedure DoItemChecked(AItem: TListItem);
     procedure DoSelectItem(AItem: TListItem; ASelected: Boolean); virtual;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-      const AXProportion, AYProportion: Double; const AToDPI: Integer); override;
+      const AXProportion, AYProportion: Double); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
 
     procedure DoEndEdit(AItem: TListItem; const AValue: String); virtual;
@@ -2252,7 +2252,7 @@ type
                          Simulate: boolean): Boolean;
     procedure CNDropDownClosed(var Message: TLMessage); message CN_DROPDOWNCLOSED;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-      const AXProportion, AYProportion: Double; const AToDPI: Integer); override;
+      const AXProportion, AYProportion: Double); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;

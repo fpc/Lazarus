@@ -549,7 +549,7 @@ type
     procedure CreateWnd; override;
     procedure Deactivate; virtual;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-      const AXProportion, AYProportion: Double; const AToDPI: Integer); override;
+      const AXProportion, AYProportion: Double); override;
     procedure DoClose(var CloseAction: TCloseAction); virtual;
     procedure DoCreate; virtual;
     procedure DoDestroy; virtual;

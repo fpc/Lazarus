@@ -2976,13 +2976,13 @@ begin
 end;
 
 procedure TControl.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-  const AXProportion, AYProportion: Double; const AToDPI: Integer);
+  const AXProportion, AYProportion: Double);
 var
   AAWidth, AAHeight: Boolean;
   NewLeft, NewTop, NewWidth, NewHeight, NewRight, NewBottom, OldWidth, OldHeight: Integer;
 begin
   if not ParentFont or (Parent=nil) then
-    Font.PixelsPerInch := AToDPI;
+    Font.PixelsPerInch := Round(Font.PixelsPerInch*AYProportion);
 
   // Apply the changes
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
@@ -4008,7 +4008,7 @@ begin
   if AFromDPI > 0 then lYProportion := AToDPI / AFromDPI
   else lYProportion := 1.0;
 
-  DoAutoAdjustLayout(lMode, lXProportion, lYProportion, AToDPI);
+  DoAutoAdjustLayout(lMode, lXProportion, lYProportion);
 end;
 
 // Auto-adjust the layout of controls.

@@ -470,8 +470,8 @@ begin
 end;
 
 procedure TCustomListBox.DoAutoAdjustLayout(
-  const AMode: TLayoutAdjustmentPolicy; const AXProportion,
-  AYProportion: Double; const AToDPI: Integer);
+  const AMode: TLayoutAdjustmentPolicy; const AXProportion, AYProportion: Double
+  );
 begin
   inherited;
 

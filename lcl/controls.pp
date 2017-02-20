@@ -1419,7 +1419,7 @@ type
     class function GetControlClassDefaultSize: TSize; virtual;
     function ColorIsStored: boolean; virtual;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-      const AXProportion, AYProportion: Double; const AToDPI: Integer); virtual;
+      const AXProportion, AYProportion: Double); virtual;
     class procedure DoFixDesignFontPPI(const AFont: TFont; const ADesignTimePPI: Integer);
   protected
     // actions

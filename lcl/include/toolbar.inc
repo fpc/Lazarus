@@ -342,7 +342,7 @@ begin
 end;
 
 procedure TToolBar.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-  const AXProportion, AYProportion: Double; const AToDPI: Integer);
+  const AXProportion, AYProportion: Double);
 begin
   inherited;
 

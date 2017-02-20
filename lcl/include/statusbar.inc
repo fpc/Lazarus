@@ -148,7 +148,7 @@ begin
 end;
 
 procedure TStatusBar.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-  const AXProportion, AYProportion: Double; const AToDPI: Integer);
+  const AXProportion, AYProportion: Double);
 var
   I: Integer;
 begin

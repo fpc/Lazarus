@@ -612,8 +612,8 @@ begin
 end;
 
 procedure TCustomListView.DoAutoAdjustLayout(
-  const AMode: TLayoutAdjustmentPolicy; const AXProportion,
-  AYProportion: Double; const AToDPI: Integer);
+  const AMode: TLayoutAdjustmentPolicy; const AXProportion, AYProportion: Double
+  );
 var
   i: Integer;
   C: TListColumn;

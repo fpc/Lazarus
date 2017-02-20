@@ -1568,7 +1568,7 @@ begin
 end;
 
 procedure TCustomForm.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-  const AXProportion, AYProportion: Double; const AToDPI: Integer);
+  const AXProportion, AYProportion: Double);
 var
   NewWidth, NewHeight, OldWidth, OldHeight: Integer;
 begin
@@ -1579,7 +1579,7 @@ begin
   end;
 
   if not ParentFont or (Parent=nil) then
-    Font.PixelsPerInch := AToDPI;
+    Font.PixelsPerInch := Round(Font.PixelsPerInch*AYProportion);
 
   // Apply the changes
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
