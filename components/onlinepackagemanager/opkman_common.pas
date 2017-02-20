@@ -43,7 +43,7 @@ type
   end;
 
 const
-  MaxCategories = 27;
+  MaxCategories = 28;
   Categories: array[0..MaxCategories - 1] of String = (
     rsMainFrm_VSTText_PackageCategory0,
     rsMainFrm_VSTText_PackageCategory1,
@@ -71,8 +71,8 @@ const
     rsMainFrm_VSTText_PackageCategory23,
     rsMainFrm_VSTText_PackageCategory24,
     rsMainFrm_VSTText_PackageCategory25,
-    rsMainFrm_VSTText_PackageCategory26);
-
+    rsMainFrm_VSTText_PackageCategory26,
+    rsMainFrm_VSTText_PackageCategory27);
   //needed for localized filter, since the JSON contains only english text
   CategoriesEng: array[0..MaxCategories - 1] of String = (
     'Charts and Graphs',
@@ -101,7 +101,8 @@ const
     'Sizers and Scrollers',
     'System',
     'Tabbed Components',
-    'Other');
+    'Other',
+    'Games and Game Engines');
 
 var
   LocalRepositoryConfigFile: String;

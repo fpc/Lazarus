@@ -80,6 +80,7 @@ type
   TData = record
     FName: string[100];
     FImageIndex: Integer;
+    FType: Integer;
   end;
 
 { TCategoriesFrm }
@@ -208,7 +209,14 @@ begin
   Data1 := Sender.GetNodeData(Node1);
   Data2 := Sender.GetNodeData(Node2);
   if Column = 0 then
-    Result := CompareText(Data1^.FName, Data2^.FName);
+  begin
+    if Data1^.FType = Data2^.FType then
+      Result := CompareText(Data1^.FName, Data2^.FName)
+    else if Data1^.FType > Data2^.FType then
+      Result := 1
+    else if Data1^.FType < Data2^.FType then
+      Result := -1
+  end;
 end;
 
 procedure TCategoriesFrm.VSTFreeNode(Sender: TBaseVirtualTree;
@@ -267,7 +275,12 @@ begin
     Data := FVST.GetNodeData(Node);
     Data^.FName := Categories[I];
     Data^.FImageIndex := -1;
+    if UpperCase(CategoriesEng[I]) = 'OTHER' then
+      Data^.FType := 1
+    else
+      Data^.FType := 0;
   end;
+  FVST.SortTree(0, opkman_VirtualTrees.sdAscending);
 
   SL := TStringList.Create;
   try

@@ -133,6 +133,7 @@ resourcestring
   rsMainFrm_VSTText_PackageCategory24 = 'System';
   rsMainFrm_VSTText_PackageCategory25 = 'Tabbed Components';
   rsMainFrm_VSTText_PackageCategory26 = 'Other';
+  rsMainFrm_VSTText_PackageCategory27 = 'Games and Game Engines';
   rsMainFrm_VSTText_Desc = 'Description for package';
   rsMainFrm_VSTText_Lic = 'License info for package';
   rsMainFrm_cbAll_Caption = 'All/None';
