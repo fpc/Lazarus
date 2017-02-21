@@ -25,7 +25,7 @@ unit IDEImagesIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, ImgList, Controls, Graphics, LResources;
+  Classes, SysUtils, LCLProc, LCLType, ImgList, Controls, Graphics, LResources;
 
 type
 
@@ -46,6 +46,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+
+    function GetScalePercent: Integer;
 
     function GetImageIndex(ImageSize: Integer; ImageName: String): Integer;
     function LoadImage(ImageSize: Integer; ImageName: String): Integer;
@@ -69,8 +71,8 @@ begin
   if FImages_12 = nil then
   begin
     FImages_12 := TImageList.Create(nil);
-    FImages_12.Width := 12;
-    FImages_12.Height := 12;
+    FImages_12.Width := MulDiv(12, GetScalePercent, 100);
+    FImages_12.Height := FImages_12.Width;
   end;
   Result := FImages_12;
 end;
@@ -80,8 +82,8 @@ begin
   if FImages_16 = nil then
   begin
     FImages_16 := TImageList.Create(nil);
-    FImages_16.Width := 16;
-    FImages_16.Height := 16;
+    FImages_16.Width := MulDiv(16, GetScalePercent, 100);
+    FImages_16.Height := FImages_16.Width;
   end;
   Result := FImages_16;
 end;
@@ -91,10 +93,21 @@ begin
   if FImages_24 = nil then
   begin
     FImages_24 := TImageList.Create(nil);
-    FImages_24.Width := 24;
-    FImages_24.Height := 24;
+    FImages_24.Width := MulDiv(24, GetScalePercent, 100);
+    FImages_24.Height := FImages_24.Width;
   end;
   Result := FImages_24;
+end;
+
+function TIDEImages.GetScalePercent: Integer;
+begin
+  if ScreenInfo.PixelsPerInchX <= 120 then
+    Result := 100 // 100-125% (96-120 DPI): no scaling
+  else
+  if ScreenInfo.PixelsPerInchX <= 168 then
+    Result := 150 // 126%-175% (144-168 DPI): 150% scaling
+  else
+    Result := 200; // 200%: 200% scaling
 end;
 
 constructor TIDEImages.Create;
@@ -143,6 +156,52 @@ begin
 end;
 
 function TIDEImages.LoadImage(ImageSize: Integer; ImageName: String): Integer;
+  function _AddBitmap(AList: TCustomImageList; AGrp: TGraphic): Integer;
+  begin
+    if AGrp is TCustomBitmap then
+      Result := AList.Add(TCustomBitmap(AGrp), nil)
+    else
+      Result := AList.AddIcon(AGrp as TCustomIcon);
+  end;
+  function _LoadImage(AList: TCustomImageList): Integer;
+  var
+    Grp: TGraphic;
+    Bmp: TBitmap;
+    ScalePercent: Integer;
+  begin
+    ScalePercent := GetScalePercent;
+
+    Grp := nil;
+    try
+      if ScalePercent<>100 then
+      begin
+        Grp := CreateGraphicFromResourceName(HInstance, ImageName+'_'+IntToStr(ScalePercent));
+        if Grp<>nil then
+          Exit(_AddBitmap(AList, Grp));
+      end;
+
+      Grp := CreateGraphicFromResourceName(HInstance, ImageName);
+      if ScalePercent<>100 then
+      begin
+        Bmp := TBitmap.Create;
+        try
+          Bmp.PixelFormat := pf32bit;
+          Bmp.SetSize(AList.Width, AList.Height);
+          Bmp.Canvas.Brush.Color := TColor($FFFFFFFF);
+          Bmp.Canvas.FillRect(Bmp.Canvas.ClipRect);
+          Bmp.Canvas.StretchDraw(
+            Rect(0, 0, MulDiv(Grp.Width, ScalePercent, 100), MulDiv(Grp.Height, ScalePercent, 100)),
+            Grp);
+          Result := _AddBitmap(AList, Bmp);
+        finally
+          Bmp.Free;
+        end;
+      end else
+        Result := _AddBitmap(AList, Grp);
+    finally
+      Grp.Free;
+    end;
+  end;
 var
   List: TCustomImageList;
   Names: TStringList;
@@ -170,7 +229,7 @@ begin
     Exit;
   end;
   try
-    Result := List.AddResourceName(HInstance, ImageName);
+    Result := _LoadImage(List);
   except
     on E: Exception do begin
       DebugLn('While loading IDEImages: ' + e.Message);
