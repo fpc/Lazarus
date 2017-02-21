@@ -21,11 +21,11 @@ begin
 end;
 
 procedure TCustomDesignControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
-  const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer);
+  const AFromPPI, AToPPI, AOldFormWidth, ANewFormWidth: Integer);
 begin
   inherited;
 
-  FPixelsPerInch := AToDPI;
+  FPixelsPerInch := AToPPI;
 end;
 
 procedure TCustomDesignControl.Loaded;

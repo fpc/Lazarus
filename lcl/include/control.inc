@@ -4006,7 +4006,7 @@ begin
 end;
 
 procedure TControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
-  const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer);
+  const AFromPPI, AToPPI, AOldFormWidth, ANewFormWidth: Integer);
 var
   lXProportion, lYProportion: Double;
   lMode: TLayoutAdjustmentPolicy;
@@ -4023,11 +4023,11 @@ begin
   end
   else if lMode = lapAutoAdjustForDPI then
   begin
-    if AFromDPI > 0 then lXProportion := AToDPI / AFromDPI;
+    if AFromPPI > 0 then lXProportion := AToPPI / AFromPPI;
   end;
 
   // y-axis adjustment proportion
-  if AFromDPI > 0 then lYProportion := AToDPI / AFromDPI
+  if AFromPPI > 0 then lYProportion := AToPPI / AFromPPI
   else lYProportion := 1.0;
 
   DoAutoAdjustLayout(lMode, lXProportion, lYProportion);

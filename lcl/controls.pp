@@ -1540,7 +1540,7 @@ type
   public
     // LCL Scaling (High-DPI)
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
-      const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer); virtual;
+      const AFromPPI, AToPPI, AOldFormWidth, ANewFormWidth: Integer); virtual;
     procedure ShouldAutoAdjust(var AWidth, AHeight: Boolean); virtual;
     procedure FixDesignFontsPPI(const ADesignTimePPI: Integer); virtual;
     procedure ScaleFontsPPI(const AProportion: Double); virtual;
@@ -2214,8 +2214,8 @@ type
     procedure ScrollBy_WS(DeltaX, DeltaY: Integer);
     procedure ScrollBy(DeltaX, DeltaY: Integer); virtual;
     procedure WriteLayoutDebugReport(const Prefix: string); override;
-    procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy; const AFromDPI,
-      AToDPI, AOldFormWidth, ANewFormWidth: Integer); override;
+    procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy; const AFromPPI,
+      AToPPI, AOldFormWidth, ANewFormWidth: Integer); override;
   public
     constructor Create(TheOwner: TComponent);override;
     constructor CreateParented(AParentWindow: HWND);
