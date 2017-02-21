@@ -171,7 +171,7 @@ begin
   if ThemesEnabled then
   begin
     if (Details.Element = teToolBar) and (Details.Part = TP_SPLITBUTTONDROPDOWN) then
-       Result.cx := 12
+       Result.cx := MulDiv(12, ScreenInfo.PixelsPerInchX, 96)
     else
     if ((Details.Element = teTreeview) and (Details.Part in [TVP_GLYPH, TVP_HOTGLYPH])) or
        ((Details.Element = teWindow) and (Details.Part in [WP_SMALLCLOSEBUTTON])) then
@@ -180,10 +180,18 @@ begin
       GetThemePartSize(GetTheme(Details.Element), 0, Details.Part, Details.State, @R, TS_TRUE, Result);
     end
     else
+    begin
       Result := inherited GetDetailSize(Details);
+      Result.cx := MulDiv(Result.cx, ScreenInfo.PixelsPerInchX, 96);
+      Result.cy := MulDiv(Result.cy, ScreenInfo.PixelsPerInchY, 96);
+    end;
   end
   else
+  begin
     Result := inherited GetDetailSize(Details);
+    Result.cx := MulDiv(Result.cx, ScreenInfo.PixelsPerInchX, 96);
+    Result.cy := MulDiv(Result.cy, ScreenInfo.PixelsPerInchY, 96);
+  end;
 end;
 
 function TWin32ThemeServices.GetDetailRegion(DC: HDC;
