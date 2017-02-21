@@ -73,7 +73,13 @@ end;
 
 procedure TGraphicControl.FontChanged(Sender: TObject);
 begin
-  Canvas.Font:=Font;
+  Canvas.Font.BeginUpdate;
+  try
+    Canvas.Font.PixelsPerInch := Font.PixelsPerInch;
+    Canvas.Font := Font;
+  finally
+    Canvas.Font.EndUpdate;
+  end;
   inherited FontChanged(Sender);
 end;
 
