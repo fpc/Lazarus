@@ -351,8 +351,6 @@ begin
     BeginUpdate;
     try
       SetButtonSize(Round(ButtonWidth * AXProportion), Round(ButtonHeight * AYProportion));
-      FThemeButtonDropWidth := Round(FThemeButtonDropWidth * AXProportion);
-      FThemeDropDownWidth := Round(FThemeDropDownWidth * AXProportion);
       if DropDownWidth<>cDropDownWidth then
         DropDownWidth := Round(DropDownWidth * AXProportion);
       FToolBarFlags := FToolBarFlags + [tbfUpdateVisibleBarNeeded];
@@ -451,7 +449,7 @@ end;
 function TToolBar.GetRealDropDownWidth: Integer;
 begin
   if FDropDownWidth < 0 then
-    Result := FThemeDropDownWidth
+    Result := MulDiv(FThemeDropDownWidth, Font.PixelsPerInch, Screen.PixelsPerInch)
   else
     Result := FDropDownWidth;
 end;
@@ -459,7 +457,7 @@ end;
 function TToolBar.GetRealButtonDropWidth: Integer;
 begin
   if FDropDownWidth < 0 then
-    Result := FThemeButtonDropWidth
+    Result := MulDiv(FThemeButtonDropWidth, Font.PixelsPerInch, Screen.PixelsPerInch)
   else
     Result := FDropDownWidth+FThemeButtonDropWidth-FThemeDropDownWidth;
 end;
