@@ -3251,7 +3251,7 @@ type
     FEditingItem: TTreeNode;
     FExpandSignType: TTreeViewExpandSignType;
     FExpandSignSize: integer;
-    FRealExpandSignSize: integer;
+    FThemeExpandSignSize: integer;
     FDefItemHeight: integer;
     FDragImage: TDragImageList;
     FDragNode: TTreeNode;
@@ -3324,6 +3324,7 @@ type
     function GetKeepCollapsedNodes: boolean;
     function GetMultiSelect: Boolean;
     function GetReadOnly: boolean;
+    function GetRealExpandSignSize: integer;
     function GetRightClickSelect: boolean;
     function GetRowSelect: boolean;
     function GetSelection: TTreeNode;
@@ -3377,7 +3378,6 @@ type
     procedure SetTopItem(Value: TTreeNode);
     procedure UpdateAllTops;
     procedure UpdateBottomItem;
-    procedure UpdateRealExpandSignSize;
     procedure UpdateMaxLvl;
     procedure UpdateMaxRight;
     procedure UpdateTopItem;
@@ -3408,7 +3408,6 @@ type
       Stage: TCustomDrawStage): Boolean; virtual;
     function CustomDrawItem(Node: TTreeNode; State: TCustomDrawState;
       Stage: TCustomDrawStage; var PaintImages: Boolean): Boolean; virtual;
-    procedure FontChanged(Sender: TObject); override;
     function GetDragImages: TDragImageList; override;
     function GetMaxLvl: integer;
     function GetMaxScrollLeft: integer;
