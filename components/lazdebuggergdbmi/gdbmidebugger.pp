@@ -4988,6 +4988,14 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       if TargetInfo^.TargetPID <> 0 then exit;
     end;
 
+    // gdb server
+    if ExecuteCommand('info proc', [], R, [cfCheckState]) and (R.State <> dsError)
+    then begin
+      s := GetPart(['process '], [#10,#13#10], R.Values, True);
+      TargetInfo^.TargetPID := StrToIntDef(s, 0);
+      if TargetInfo^.TargetPID <> 0 then exit;
+    end;
+
     // apple / MacPort 7.1 / 32 bit dwarf
     if ExecuteCommand('info threads', [], R, [cfCheckState]) and (R.State <> dsError)
     then begin
@@ -4996,7 +5004,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       if TargetInfo^.TargetPID <> 0 then exit;
 
       // returned by gdb server (maybe others)
-      s := GetPart(['Thread '], [' '], R.Values, True);
+      s := GetPart(['Thread '], [' ', '.'], R.Values, True);
       TargetInfo^.TargetPID := StrToIntDef(s, 0);
       if TargetInfo^.TargetPID <> 0 then exit;
     end;
