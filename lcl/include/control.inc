@@ -1509,8 +1509,13 @@ begin
   if AFont.PixelsPerInch <> ADesignTimePPI then
   begin
     H := AFont.Height;
-    AFont.Height := MulDiv(H, AFont.PixelsPerInch, ADesignTimePPI);
-    AFont.PixelsPerInch := ADesignTimePPI;
+    AFont.BeginUpdate;
+    try
+      AFont.Height := MulDiv(H, AFont.PixelsPerInch, ADesignTimePPI);
+      AFont.PixelsPerInch := ADesignTimePPI;
+    finally
+      AFont.EndUpdate;
+    end;
   end;
 end;
 
