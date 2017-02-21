@@ -3206,7 +3206,7 @@ begin
 //  FBackgroundColor := clWindow;
   FDefItemHeight := DefaultTreeNodeHeight;
   FExpandSignType := tvestTheme;
-  UpdateExpandSignSize;
+  FExpandSignSize := -1;
   FTreeNodes := CreateNodes;
   BorderStyle := bsSingle;
   BorderWidth := 0;
@@ -3236,6 +3236,7 @@ begin
   AccessibleDescription := rsTTreeViewAccessibilityDescription;
   AccessibleRole := larTreeView;
   FAccessibilityOn := WidgetSet.GetLCLCapability(lcAccessibilitySupport) = LCL_CAPABILITY_YES;
+  UpdateRealExpandSignSize;
 end;
 
 destructor TCustomTreeView.Destroy;
@@ -4407,17 +4408,20 @@ begin
   Result:=(tvoToolTips in FOptions);
 end;
 
-procedure TCustomTreeView.UpdateExpandSignSize;
+procedure TCustomTreeView.UpdateRealExpandSignSize;
 var
   Details: TThemedElementDetails;
 begin
+  if FExpandSignSize>=0 then
+    FRealExpandSignSize := FExpandSignSize
+  else
   if ExpandSignType = tvestTheme then
   begin
     Details := ThemeServices.GetElementDetails(ttGlyphOpened);
-    FExpandSignSize := ThemeServices.GetDetailSize(Details).cx;
+    FRealExpandSignSize := MulDiv(ThemeServices.GetDetailSize(Details).cx, Font.PixelsPerInch, Screen.PixelsPerInch);
   end
   else
-    FExpandSignSize := DefaultTreeNodeExpandSignSize;
+    FRealExpandSignSize := DefaultTreeNodeExpandSignSize;
 end;
 
 procedure TCustomTreeView.SetExpandSignType(Value: TTreeViewExpandSignType);
@@ -4425,7 +4429,7 @@ begin
   if Value <> FExpandSignType then
   begin
     FExpandSignType := Value;
-    UpdateExpandSignSize;
+    UpdateRealExpandSignSize;
     Invalidate;
   end;
 end;
@@ -4512,6 +4516,13 @@ begin
       Value.DropTarget := True;
     {else
       TreeView_SelectDropTarget(Handle, nil);}
+end;
+
+procedure TCustomTreeView.SetExpandSignSize(const AExpandSignSize: integer);
+begin
+  if FExpandSignSize = AExpandSignSize then Exit;
+  FExpandSignSize := AExpandSignSize;
+  UpdateRealExpandSignSize;
 end;
 
 function TCustomTreeView.IsEditing: Boolean;
@@ -4813,7 +4824,7 @@ var
         begin
           // draw horizontal line
           if HasExpandSign then
-            DrawHorzLine(VertMid, CurMid + FExpandSignSize div 2, Result + Indent)
+            DrawHorzLine(VertMid, CurMid + FRealExpandSignSize div 2, Result + Indent)
           else
             DrawHorzLine(VertMid, CurMid, Result + Indent);
         end;
@@ -4824,11 +4835,11 @@ var
           if (CurNode = Node) and HasExpandSign then
           begin
             if (Node.Parent = nil) and (Node.GetPrevSibling = nil) then
-              DrawVertLine(CurMid, VertMid + FExpandSignSize div 2, NodeRect.Bottom)
+              DrawVertLine(CurMid, VertMid + FRealExpandSignSize div 2, NodeRect.Bottom)
             else
             begin
               DrawVertLine(CurMid, NodeRect.Top, VertMid);
-              DrawVertLine(CurMid, VertMid + FExpandSignSize div 2 + VertDelta, NodeRect.Bottom);
+              DrawVertLine(CurMid, VertMid + FRealExpandSignSize div 2 + VertDelta, NodeRect.Bottom);
             end;
           end
           else
@@ -4845,7 +4856,7 @@ var
             if ((InsertMarkNode = Node) and (InsertMarkType = tvimAsNextSibling)) then
             begin
               DrawVertLine(CurMid, NodeRect.Top, VertMid);
-              DrawVertLine(CurMid, VertMid + FExpandSignSize div 2, NodeRect.Bottom - 1);
+              DrawVertLine(CurMid, VertMid + FRealExpandSignSize div 2, NodeRect.Bottom - 1);
             end
             else
               DrawVertLine(CurMid, NodeRect.Top, VertMid);
@@ -4882,13 +4893,13 @@ var
   const
     cShiftHorzArrow = 2; //paint horz arrow N pixels upper than MidY
   begin
-    HalfSize := FExpandSignSize div 2;
-    if not Odd(FExpandSignSize) then
+    HalfSize := FRealExpandSignSize div 2;
+    if not Odd(FRealExpandSignSize) then
       Dec(HalfSize);
     ALeft := MidX - HalfSize;
     ATop := MidY - HalfSize;
-    ARight := ALeft + FExpandSignSize;
-    ABottom := ATop + FExpandSignSize;
+    ARight := ALeft + FRealExpandSignSize;
+    ABottom := ATop + FRealExpandSignSize;
 
     if Assigned(FOnCustomDrawArrow) then
     begin
@@ -5275,6 +5286,13 @@ end;
 procedure TCustomTreeView.Expand(Node: TTreeNode);
 begin
   if Assigned(FOnExpanded) then FOnExpanded(Self, Node);
+end;
+
+procedure TCustomTreeView.FontChanged(Sender: TObject);
+begin
+  UpdateRealExpandSignSize;
+
+  inherited FontChanged(Sender);
 end;
 
 function TCustomTreeView.CanExpand(Node: TTreeNode): Boolean;
@@ -5968,8 +5986,8 @@ var OldMaxRight, OldLastTop, OldMaxLvl: integer;
 begin
   if Canvas=nil then
     RaiseGDBException('Canvas=nil');
-  if (FExpandSignSize<0) then
-    RaiseGDBException('FExpandSignSize='+IntToStr(FExpandSignSize));
+  if (FRealExpandSignSize<0) then
+    RaiseGDBException('FRealExpandSignSize='+IntToStr(FRealExpandSignSize));
   if FDefItemHeight<0 then
     RaiseGDBException('FDefItemHeight='+IntToStr(FDefItemHeight));
   if FIndent<0 then

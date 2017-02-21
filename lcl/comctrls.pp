@@ -3251,6 +3251,7 @@ type
     FEditingItem: TTreeNode;
     FExpandSignType: TTreeViewExpandSignType;
     FExpandSignSize: integer;
+    FRealExpandSignSize: integer;
     FDefItemHeight: integer;
     FDragImage: TDragImageList;
     FDragNode: TTreeNode;
@@ -3376,7 +3377,7 @@ type
     procedure SetTopItem(Value: TTreeNode);
     procedure UpdateAllTops;
     procedure UpdateBottomItem;
-    procedure UpdateExpandSignSize;
+    procedure UpdateRealExpandSignSize;
     procedure UpdateMaxLvl;
     procedure UpdateMaxRight;
     procedure UpdateTopItem;
@@ -3385,6 +3386,7 @@ type
     procedure InternalSelectionChanged;
     function AllowMultiSelectWithCtrl(AState: TShiftState): Boolean;
     function AllowMultiSelectWithShift(AState: TShiftState): Boolean;
+    procedure SetExpandSignSize(const AExpandSignSize: integer);
   protected
     FChangeTimer: TTimer;
     FEditor: TEdit;
@@ -3406,6 +3408,7 @@ type
       Stage: TCustomDrawStage): Boolean; virtual;
     function CustomDrawItem(Node: TTreeNode; State: TCustomDrawState;
       Stage: TCustomDrawStage; var PaintImages: Boolean): Boolean; virtual;
+    procedure FontChanged(Sender: TObject); override;
     function GetDragImages: TDragImageList; override;
     function GetMaxLvl: integer;
     function GetMaxScrollLeft: integer;
@@ -3571,7 +3574,7 @@ type
     property DefaultItemHeight: integer read FDefItemHeight write SetDefaultItemHeight default DefaultTreeNodeHeight;
     property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;
     property ExpandSignColor: TColor read FExpandSignColor write FExpandSignColor default clWindowFrame;
-    property ExpandSignSize: integer read FExpandSignSize write FExpandSignSize default DefaultTreeNodeExpandSignSize;
+    property ExpandSignSize: integer read FExpandSignSize write SetExpandSignSize default -1; // use -1 for default
     property ExpandSignType: TTreeViewExpandSignType
       read FExpandSignType write SetExpandSignType default tvestTheme;
     property Images: TCustomImageList read FImages write SetImages;
