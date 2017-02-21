@@ -57,3 +57,9 @@ You can download Tango icons from https://packages.debian.org/sid/tango-icon-the
 Use supplied ready-to-go PNGs in the needed resolution.
 
 Please note that policy for LCL images is different (more strict). See lcl/images/README.txt for info about LCL icon policy.
+
+HIGH-DPI ICONS
+--------------
+
+Every icon can have its 150% and 200% version. For a 16px, the sizes are: 24px and 32px respectively.
+To use a high-DPI icon, register the icon with the suffix "_150" (150%) or "_200" (200%). See e.g. actions/laz_save_150.png
