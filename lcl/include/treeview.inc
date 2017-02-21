@@ -3208,7 +3208,7 @@ begin
 //  FBackgroundColor := clWindow;
   FDefItemHeight := DefaultTreeNodeHeight;
   FExpandSignType := tvestTheme;
-  FExpandSignSize := -1;
+  FExpandSignSize := 0;
   Details := ThemeServices.GetElementDetails(ttGlyphOpened);
   FThemeExpandSignSize := ThemeServices.GetDetailSize(Details).cx;
   FTreeNodes := CreateNodes;
@@ -4487,7 +4487,7 @@ end;
 
 function TCustomTreeView.GetRealExpandSignSize: integer;
 begin
-  if FExpandSignSize>=0 then
+  if FExpandSignSize>0 then
     Result := FExpandSignSize
   else
   if ExpandSignType = tvestTheme then
