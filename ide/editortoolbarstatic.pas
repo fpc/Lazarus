@@ -204,7 +204,7 @@ begin
   // Toolbar must be created with Align = alTop, then initial positioning of buttons is correct.
   FToolBar := TToolbar.Create(FWindow);
   FToolBar.Parent   := FWindow;
-  FToolBar.Height   := 26;
+  FToolBar.AutoSize := True;
   FToolBar.Align    := alTop;
   FToolBar.Flat     := True;
   FToolBar.Images   := IDEImages.Images_16;
