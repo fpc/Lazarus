@@ -575,8 +575,6 @@ begin
   // we have no resource => must be constructed using CreateNew
   inherited CreateNew(AOwner, 1);
   FItemList := TStringList.Create;
-  BorderStyle := bsNone;
-  FormStyle := fsSystemStayOnTop;
   Scroll := TScrollBar.Create(self);
   Scroll.Kind := sbVertical;
   Scroll.OnChange := @ScrollChange;
@@ -642,6 +640,9 @@ begin
   ShowHint := False;
   EndFormUpdate;
   FResizeLock := 0;
+
+  BorderStyle := bsNone;
+  FormStyle := fsSystemStayOnTop;
 end;
 
 procedure TSynBaseCompletionForm.Deactivate;
@@ -1148,7 +1149,8 @@ begin
     GetTextMetrics(Canvas.Handle, TextMetric);
     FFontHeight := TextMetric.tmHeight+2;
     SetNblinesInWindow(FNbLinesInWindow);
-    SizeDrag.Height := Max(7, FFontHeight * 2 div 3);
+    if SizeDrag<>nil then
+      SizeDrag.Height := Max(7, FFontHeight * 2 div 3);
   finally
     dec(FResizeLock);
   end;
