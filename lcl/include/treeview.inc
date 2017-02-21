@@ -5124,7 +5124,7 @@ var
   PaintImages: boolean;
   OverlayIndex: Integer;
 begin
-  RealExpandSignSize := RealExpandSignSize;
+  RealExpandSignSize := GetRealExpandSignSize;
   NodeRect := Node.DisplayRect(False);
   if (NodeRect.Bottom < 0) or (NodeRect.Top >= ClientHeight) then
     Exit;
