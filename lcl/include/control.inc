@@ -796,6 +796,14 @@ begin
   Result := MulDiv(ASize, ParentForm.DesignTimePPI, ParentForm.PixelsPerInch);
 end;
 
+procedure TControl.ScaleFontsPPI(const AProportion: Double);
+begin
+  // Problem: all fonts have to be scaled.
+  // Override this function - list all custom fonts in the overriden procedure
+
+  DoScaleFontPPI(Font, AProportion);
+end;
+
 {------------------------------------------------------------------------------
        TControl.ChangeScale
 
@@ -903,10 +911,9 @@ begin
   // machine, which results in different font scaling.
   // DoFixDesignFont restores the corrent design-time font PPI so that it can
   // be used for LCL HighDPI scaling.
+  // Override this function - list all custom fonts in the overriden procedure
 
   DoFixDesignFontPPI(Font, ADesignTimePPI);
-
-  // override this function - list all custom fonts in the overriden procedure
 end;
 
 procedure TControl.ExecuteCancelAction;
@@ -1189,7 +1196,13 @@ begin
 
   if FParentFont then
   begin
-    Font := FParent.Font;
+    Font.BeginUpdate;
+    try
+      Font.PixelsPerInch := FParent.Font.PixelsPerInch; // PixelsPerInch isn't assigned
+      Font := FParent.Font;
+    finally
+      Font.EndUpdate;
+    end;
     FParentFont := True;
   end;
   //call here for compatibility with older LCL code
@@ -1859,6 +1872,16 @@ procedure TControl.DoOnShowHint(HintInfo: PHintInfo);
 begin
   if Assigned(OnShowHint) then
     OnShowHint(Self,HintInfo);
+end;
+
+class procedure TControl.DoScaleFontPPI(const AFont: TFont;
+  const AProportion: Double);
+begin
+  AFont.PixelsPerInch := Round(AFont.PixelsPerInch*AProportion);
+  // If AFont.PixelsPerInch is different from "Screen.PixelsPerInch" (=GetDeviceCaps(DC, LOGPIXELSX)
+  // then the font doesn't scale -> we have to assign a nonzero height value.
+  if AFont.Height=0 then
+    AFont.Height := Round(GetFontData(AFont.Reference.Handle).Height*AProportion);
 end;
 
 function TControl.IsAParentAligning: boolean;
@@ -2981,12 +3004,11 @@ var
   AAWidth, AAHeight: Boolean;
   NewLeft, NewTop, NewWidth, NewHeight, NewRight, NewBottom, OldWidth, OldHeight: Integer;
 begin
-  if not ParentFont or (Parent=nil) then
-    Font.PixelsPerInch := Round(Font.PixelsPerInch*AYProportion);
-
   // Apply the changes
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
+    if not ParentFont or (Parent=nil) then
+      ScaleFontsPPI(AYProportion);
 
     // Dimensions
     AAWidth := False;

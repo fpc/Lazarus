@@ -1578,12 +1578,12 @@ begin
     Exit;
   end;
 
-  if not ParentFont or (Parent=nil) then
-    Font.PixelsPerInch := Round(Font.PixelsPerInch*AYProportion);
-
   // Apply the changes
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
+    if not ParentFont or (Parent=nil) then
+      ScaleFontsPPI(AYProportion);
+
     BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
     Constraints.AutoAdjustLayout(AXProportion, AYProportion);
 
