@@ -1,0 +1,117 @@
+object MainForm: TMainForm
+  Left = 356
+  Height = 387
+  Top = 274
+  Width = 781
+  Caption = 'MainForm'
+  ClientHeight = 387
+  ClientWidth = 781
+  OnCreate = FormCreate
+  LCLVersion = '1.7'
+  object BtnAdd: TButton
+    AnchorSideLeft.Control = CbPlotTypes
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 204
+    Height = 25
+    Hint = 'Add selected series type to chart'
+    Top = 8
+    Width = 75
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 8
+    Caption = 'Add'
+    OnClick = BtnAddClick
+    TabOrder = 1
+  end
+  object Chart: TChart
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Bevel1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 4
+    Height = 335
+    Top = 44
+    Width = 773
+    AxisList = <    
+      item
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+      end    
+      item
+        Alignment = calBottom
+        Minors = <>
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 4
+    BorderSpacing.Right = 4
+    BorderSpacing.Bottom = 8
+  end
+  object CbPlotTypes: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = BtnAdd
+    AnchorSideTop.Side = asrCenter
+    Left = 8
+    Height = 23
+    Hint = 'Select series type'
+    Top = 9
+    Width = 188
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 8
+    DropDownCount = 32
+    ItemHeight = 15
+    ItemIndex = 1
+    Items.Strings = (
+      'Symbols only'
+      'Symbols + line segments'
+      'Symbols + cubic spline'
+      'Symbols + BSpline'
+      'Symbols + linear fit'
+      'Symbols + parabolic fit'
+      'Area'
+    )
+    Style = csDropDownList
+    TabOrder = 0
+    Text = 'Symbols + line segments'
+  end
+  object BtnClear: TButton
+    AnchorSideLeft.Control = BtnAdd
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = BtnAdd
+    AnchorSideTop.Side = asrCenter
+    Left = 287
+    Height = 25
+    Hint = 'Clear all series from chart'
+    Top = 8
+    Width = 75
+    BorderSpacing.Left = 8
+    Caption = 'Clear'
+    OnClick = BtnClearClick
+    TabOrder = 2
+  end
+  object Bevel1: TBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = BtnAdd
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 3
+    Top = 41
+    Width = 765
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 8
+    BorderSpacing.Right = 8
+    Shape = bsTopLine
+  end
+end
