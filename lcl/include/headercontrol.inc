@@ -412,9 +412,32 @@ begin
       Images, Section.ImageIndex);
     inc(ContentRect.Left, Images.Width + 2);
   end;
-  
+
   if Section.Text <> '' then
     ThemeServices.DrawText(Canvas, Details, Section.Text, ContentRect, AlignmentMap[Section.Alignment] or DT_VCENTER or DT_SINGLELINE, 0);
+end;
+
+procedure TCustomHeaderControl.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+  const AXProportion, AYProportion: Double);
+var
+  I: integer;
+  Sect: THeaderSection;
+begin
+  inherited;
+
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+  begin
+    Sections.BeginUpdate;
+    try
+      for I := 0 to Sections.Count-1 do
+      begin
+        Sect := Sections.Items[I];
+        Sect.Width := Round(Sect.Width*AXProportion);
+      end;
+    finally
+      Sections.EndUpdate;
+    end;
+  end;
 end;
 
 procedure TCustomHeaderControl.ChangeScale(M, D: Integer);

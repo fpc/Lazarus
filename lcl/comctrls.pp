@@ -3874,6 +3874,8 @@ type
       X, Y: Integer); override;
     procedure UpdateState;
     class function GetControlClassDefaultSize: TSize; override;
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double); override;
   public
     property SectionFromOriginalIndex[OriginalIndex: Integer]: THeaderSection read GetSectionFromOriginalIndex;
 
