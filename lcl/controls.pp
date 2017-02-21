@@ -1420,8 +1420,8 @@ type
     function ColorIsStored: boolean; virtual;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double); virtual;
-    class procedure DoFixDesignFontPPI(const AFont: TFont; const ADesignTimePPI: Integer);
-    class procedure DoScaleFontPPI(const AFont: TFont; const AProportion: Double);
+    procedure DoFixDesignFontPPI(const AFont: TFont; const ADesignTimePPI: Integer);
+    procedure DoScaleFontPPI(const AFont: TFont; const AProportion: Double);
   protected
     // actions
     function GetActionLinkClass: TControlActionLinkClass; virtual;

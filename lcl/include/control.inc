@@ -1501,7 +1501,7 @@ end;
 {------------------------------------------------------------------------------
        TControl.DoFixDesignFontPPI
 ------------------------------------------------------------------------------}
-class procedure TControl.DoFixDesignFontPPI(const AFont: TFont;
+procedure TControl.DoFixDesignFontPPI(const AFont: TFont;
   const ADesignTimePPI: Integer);
 var
   H: Integer;
@@ -1874,7 +1874,7 @@ begin
     OnShowHint(Self,HintInfo);
 end;
 
-class procedure TControl.DoScaleFontPPI(const AFont: TFont;
+procedure TControl.DoScaleFontPPI(const AFont: TFont;
   const AProportion: Double);
 begin
   // If AFont.PixelsPerInch is different from "Screen.PixelsPerInch" (=GetDeviceCaps(DC, LOGPIXELSX))
