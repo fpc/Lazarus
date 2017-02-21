@@ -523,6 +523,7 @@ begin
     calc := @DoCalcIdentity
   else
     exit;
+  ADrawer.SetBrushParams(bsClear, clTAColor);
   ADrawer.Pen := Pen;
   with TDrawFuncHelper.Create(Self, DomainExclusions, calc, Step) do
     try
@@ -669,6 +670,7 @@ begin
     calc := @DoCalcIdentity
   else
     exit;
+  ADrawer.SetBrushParams(bsClear, clTAColor);
   ADrawer.Pen := Pen;
 
   t := ParamMin;
@@ -939,6 +941,7 @@ begin
   InternalPrepareGraphPoints;
 
   SetLength(p, Degree + 1);
+  ADrawer.SetBrushParams(bsClear, clTAColor);
   ADrawer.Pen := Pen;
   while NextNumberSeq(FGraphPoints, splineStart, splineEnd) do begin
     ADrawer.MoveTo(ParentChart.GraphToImage(FGraphPoints[splineStart]));
@@ -1143,6 +1146,7 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
 
   procedure DrawSpline(ASpline: TSpline);
   begin
+    ADrawer.SetBrushParams(bsClear, clTAColor);
     if ASpline.FIsUnorderedX then begin
       if not IsUnorderedVisible then exit;
       ADrawer.Pen := BadDataPen;
@@ -1423,6 +1427,7 @@ begin
   if IsEmpty then exit;
   ExecFit;
   if State <> fpsValid then exit;
+  ADrawer.SetBrushParams(bsClear, clTAColor);
   ADrawer.Pen := Pen;
   de := PrepareIntervals;
   try
