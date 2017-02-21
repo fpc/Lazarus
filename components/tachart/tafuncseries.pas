@@ -312,6 +312,7 @@ type
     property ParamCount: Integer
       read GetParamCount write SetParamCount default DEF_FIT_PARAM_COUNT;
     property Pen: TChartPen read FPen write SetPen;
+    property Pointer;
     property Source;
     property Step: TFuncSeriesStep read FStep write SetStep default DEF_FIT_STEP;
     property OnCalcGoodnessOfFit: TCalcGoodnessOfFitEvent
@@ -1400,6 +1401,7 @@ begin
   FFitEquation := fePolynomial;
   FFitRange := TFitSeriesRange.Create(Self);
   FDrawFitRangeOnly := true;
+  FPointer := TSeriesPointer.Create(ParentChart);
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;
   FStep := DEF_FIT_STEP;
@@ -1424,12 +1426,15 @@ begin
   ADrawer.Pen := Pen;
   de := PrepareIntervals;
   try
+    PrepareGraphPoints(FChart.CurrentExtent, true);
     with TDrawFuncHelper.Create(Self, de, @Calculate, Step) do
       try
         DrawFunction(ADrawer);
       finally
         Free;
       end;
+    DrawLabels(ADrawer);
+    DrawPointers(ADrawer);
   finally
     de.Free;
   end;
@@ -1523,13 +1528,25 @@ end;
 
 procedure TFitSeries.GetLegendItems(AItems: TChartLegendItems);
 var
+  cp: TChartPen;
+  p: TSeriesPointer;
   t: String;
 begin
+  if FPen.Visible and (FPen.Style <> psClear) then
+    cp := FPen
+  else
+    cp := nil;
+
+  if FPointer.Visible then
+    p := FPointer
+  else
+    p := nil;
+
   if Legend.Format = '' then
     t := Title
   else
     t := Format(Legend.Format, [Title, Index, EquationText.NumFormat('%f').Get]);
-  AItems.Add(TLegendItemLine.Create(Pen, t));
+  AItems.Add(TLegendItemLinePointer.Create(cp, p, t));
 end;
 
 function TFitSeries.GetNearestPoint(
