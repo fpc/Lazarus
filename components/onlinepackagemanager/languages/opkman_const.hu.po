@@ -725,6 +725,10 @@ msgstr "Táblás komponensek"
 msgid "Other"
 msgstr "Egyéb"
 
+#: opkman_const.rsmainfrm_vsttext_packagecategory27
+msgid "Games and Game Engines"
+msgstr ""
+
 #: opkman_const.rsmainfrm_vsttext_packagecategory3
 msgid "Date and Time"
 msgstr "Dátum és idő"

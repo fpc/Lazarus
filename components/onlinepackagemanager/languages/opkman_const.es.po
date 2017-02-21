@@ -739,6 +739,10 @@ msgstr "Componentes Tabuladores"
 msgid "Other"
 msgstr "Otros"
 
+#: opkman_const.rsmainfrm_vsttext_packagecategory27
+msgid "Games and Game Engines"
+msgstr ""
+
 #: opkman_const.rsmainfrm_vsttext_packagecategory3
 msgid "Date and Time"
 msgstr "Fecha y Hora"

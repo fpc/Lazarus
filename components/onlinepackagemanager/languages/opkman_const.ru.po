@@ -693,6 +693,10 @@ msgstr "Компоненты со вкладками"
 msgid "Other"
 msgstr "Прочее"
 
+#: opkman_const.rsmainfrm_vsttext_packagecategory27
+msgid "Games and Game Engines"
+msgstr "Игровые движки и игры"
+
 #: opkman_const.rsmainfrm_vsttext_packagecategory3
 msgid "Date and Time"
 msgstr "Дата и время"
