@@ -2896,7 +2896,9 @@ msgid "Object Inspector"
 msgstr "Inspektor objektů"
 
 #: lazarusidestrconsts.dlgoiitemheight
-msgid "Item height"
+#, fuzzy
+#| msgid "Item height"
+msgid "Item height (0 = auto)"
 msgstr "Výška položky"
 
 #: lazarusidestrconsts.dlgoimiscellaneous
@@ -3107,6 +3109,10 @@ msgstr "UI přístup (uiAccess)"
 #: lazarusidestrconsts.dlgpouseappbundle
 msgid "Use Application Bundle for running and debugging"
 msgstr "Použít aplikační balík pro spuštění a ladění"
+
+#: lazarusidestrconsts.dlgpouselclscaling
+msgid "Use LCL scaling (Hi-DPI)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpousemanifest
 #, fuzzy
@@ -18333,6 +18339,10 @@ msgstr "Nelze zálohovat soubor \"%s\" do \"%s\"!"
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%sNelze změnit jméno třídy %s na %s"
 
+#: lazarusidestrconsts.lisunabletochangeprojectscaledinsource
+msgid "Unable to change project scaled in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
 msgid "Unable to change project title in source.%s%s"
 msgstr "Nelze změnit titulek projektu ve zdrojích.%s%s"
@@ -18513,6 +18523,10 @@ msgstr "Nelze číst informační soubor projektu%s\"%s\"."
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file \"%s\"!"
 msgstr "Nelze odstranit starý záložní soubor \"%s\"!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojectscaledfromsource
+msgid "Unable to remove project scaled from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
 msgid "Unable to remove project title from source.%s%s"

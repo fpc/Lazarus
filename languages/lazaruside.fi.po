@@ -2858,7 +2858,9 @@ msgid "Object Inspector"
 msgstr "Komponenttimuokkain"
 
 #: lazarusidestrconsts.dlgoiitemheight
-msgid "Item height"
+#, fuzzy
+#| msgid "Item height"
+msgid "Item height (0 = auto)"
 msgstr "Rivin korkeus"
 
 #: lazarusidestrconsts.dlgoimiscellaneous
@@ -3069,6 +3071,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgpouseappbundle
 msgid "Use Application Bundle for running and debugging"
 msgstr "Käytä \"Application Bundle\" ajoon ja virheiden jäljitykseen"
+
+#: lazarusidestrconsts.dlgpouselclscaling
+msgid "Use LCL scaling (Hi-DPI)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpousemanifest
 msgid "Use manifest resource (and enable themes)"
@@ -18072,6 +18078,10 @@ msgstr "Ei voida tehdä varmuuskopiota tiedostosta \"%s\" tiedostoon \"%s\"!"
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%sEi voida muuttaa luokkaa %s luokaksi %s"
 
+#: lazarusidestrconsts.lisunabletochangeprojectscaledinsource
+msgid "Unable to change project scaled in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
 msgid "Unable to change project title in source.%s%s"
 msgstr "Ei voida muuttaa projektin otsikkoa lähdekoodissa.%s%s"
@@ -18251,6 +18261,10 @@ msgstr "Projektin lukeminen ei onnistu tiedostoon%s\"%s\"."
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file \"%s\"!"
 msgstr "Vanhan varmuuskopion \"%s\" poisto ei onnistu!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojectscaledfromsource
+msgid "Unable to remove project scaled from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
 msgid "Unable to remove project title from source.%s%s"

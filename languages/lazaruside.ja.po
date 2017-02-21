@@ -2921,7 +2921,9 @@ msgid "Object Inspector"
 msgstr "オブジェクトインスペクタ"
 
 #: lazarusidestrconsts.dlgoiitemheight
-msgid "Item height"
+#, fuzzy
+#| msgid "Item height"
+msgid "Item height (0 = auto)"
 msgstr "アイテムの高さ"
 
 #: lazarusidestrconsts.dlgoimiscellaneous
@@ -3134,6 +3136,10 @@ msgstr "UIアクセス(uiAccess)"
 #| msgid "Use Application Bundle for running and debugging (Darwin only)"
 msgid "Use Application Bundle for running and debugging"
 msgstr "アプリケーションバンドルを実行およびデバッグに用いる（darwinのみ）"
+
+#: lazarusidestrconsts.dlgpouselclscaling
+msgid "Use LCL scaling (Hi-DPI)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpousemanifest
 #, fuzzy
@@ -18749,6 +18755,10 @@ msgstr "%s%s%sを%s%s%sにバックアップできません!"
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%s %sのクラスを%sへ変更できません"
 
+#: lazarusidestrconsts.lisunabletochangeprojectscaledinsource
+msgid "Unable to change project scaled in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
 msgid "Unable to change project title in source.%s%s"
 msgstr "ソース内のプロジェクトタイトルを変更できません。%s%s"
@@ -18969,6 +18979,10 @@ msgstr "プロジェクト情報ファイル%s%s%s%sを読み込みできませ�
 #| msgid "Unable to remove old backup file %s%s%s!"
 msgid "Unable to remove old backup file \"%s\"!"
 msgstr "古いバックアップファイル%s%s%sを削除できません！"
+
+#: lazarusidestrconsts.lisunabletoremoveprojectscaledfromsource
+msgid "Unable to remove project scaled from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
 msgid "Unable to remove project title from source.%s%s"

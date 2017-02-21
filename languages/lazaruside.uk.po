@@ -2892,7 +2892,9 @@ msgid "Object Inspector"
 msgstr "Інспектор об'єктів"
 
 #: lazarusidestrconsts.dlgoiitemheight
-msgid "Item height"
+#, fuzzy
+#| msgid "Item height"
+msgid "Item height (0 = auto)"
 msgstr "Висота елемента"
 
 #: lazarusidestrconsts.dlgoimiscellaneous
@@ -3103,6 +3105,10 @@ msgstr "Доступ UI (uiAccess)"
 #: lazarusidestrconsts.dlgpouseappbundle
 msgid "Use Application Bundle for running and debugging"
 msgstr "Використовувати пакет застосунків для запуску і зневадження"
+
+#: lazarusidestrconsts.dlgpouselclscaling
+msgid "Use LCL scaling (Hi-DPI)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpousemanifest
 #, fuzzy
@@ -18346,6 +18352,10 @@ msgstr "Неможливо зберегти резервний файл \"%s\" �
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%sНеможливо змінити клас %s на  %s"
 
+#: lazarusidestrconsts.lisunabletochangeprojectscaledinsource
+msgid "Unable to change project scaled in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
 msgid "Unable to change project title in source.%s%s"
 msgstr "Неможливо змінити заголовок проекту у джерелі.%s%s"
@@ -18526,6 +18536,10 @@ msgstr "Неможливо прочитати файл інформації пр
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file \"%s\"!"
 msgstr "Неможливо стерти старий резервний файл \"%s\"!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojectscaledfromsource
+msgid "Unable to remove project scaled from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
 msgid "Unable to remove project title from source.%s%s"

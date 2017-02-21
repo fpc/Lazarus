@@ -2968,7 +2968,9 @@ msgid "Object Inspector"
 msgstr "对象查看器"
 
 #: lazarusidestrconsts.dlgoiitemheight
-msgid "Item height"
+#, fuzzy
+#| msgid "Item height"
+msgid "Item height (0 = auto)"
 msgstr "标签高度"
 
 #: lazarusidestrconsts.dlgoimiscellaneous
@@ -3183,6 +3185,10 @@ msgstr ""
 #| msgid "Use Application Bundle for running and debugging (Darwin only)"
 msgid "Use Application Bundle for running and debugging"
 msgstr "用程序包运行或调试(仅darwin)"
+
+#: lazarusidestrconsts.dlgpouselclscaling
+msgid "Use LCL scaling (Hi-DPI)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpousemanifest
 #, fuzzy
@@ -18970,6 +18976,10 @@ msgstr "无法备份文件 %s%s%s 到 %s%s%s!"
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%s无法更改类 %s to %s"
 
+#: lazarusidestrconsts.lisunabletochangeprojectscaledinsource
+msgid "Unable to change project scaled in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
 msgid "Unable to change project title in source.%s%s"
 msgstr ""
@@ -19182,6 +19192,10 @@ msgstr ""
 #| msgid "Unable to remove old backup file %s%s%s!"
 msgid "Unable to remove old backup file \"%s\"!"
 msgstr "无法重命名备份文件 %s%s%s!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojectscaledfromsource
+msgid "Unable to remove project scaled from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
 msgid "Unable to remove project title from source.%s%s"

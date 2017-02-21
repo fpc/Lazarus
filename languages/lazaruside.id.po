@@ -2980,7 +2980,9 @@ msgid "Object Inspector"
 msgstr ""
 
 #: lazarusidestrconsts.dlgoiitemheight
-msgid "Item height"
+#, fuzzy
+#| msgid "Item height"
+msgid "Item height (0 = auto)"
 msgstr "Tinggi item"
 
 #: lazarusidestrconsts.dlgoimiscellaneous
@@ -3197,6 +3199,10 @@ msgstr ""
 #| msgid "Use Application Bundle for running and debugging (Darwin only)"
 msgid "Use Application Bundle for running and debugging"
 msgstr "Gunakan Bundel Aplikasi untuk menjalankan dan debugging (hanya darwin)"
+
+#: lazarusidestrconsts.dlgpouselclscaling
+msgid "Use LCL scaling (Hi-DPI)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpousemanifest
 #, fuzzy
@@ -19102,6 +19108,10 @@ msgstr "Tidak bisa mem-backup file %s%s%s to %s%s%s!"
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%sTidak bisa mengubah kelas dari %s ke %s"
 
+#: lazarusidestrconsts.lisunabletochangeprojectscaledinsource
+msgid "Unable to change project scaled in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
 msgid "Unable to change project title in source.%s%s"
 msgstr ""
@@ -19310,6 +19320,10 @@ msgstr ""
 #| msgid "Unable to remove old backup file %s%s%s!"
 msgid "Unable to remove old backup file \"%s\"!"
 msgstr "Tidak bisa menghapus file backup lama %s%s%s!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojectscaledfromsource
+msgid "Unable to remove project scaled from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
 msgid "Unable to remove project title from source.%s%s"

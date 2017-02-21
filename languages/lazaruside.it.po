@@ -2927,7 +2927,9 @@ msgid "Object Inspector"
 msgstr "Analizzatore oggetti"
 
 #: lazarusidestrconsts.dlgoiitemheight
-msgid "Item height"
+#, fuzzy
+#| msgid "Item height"
+msgid "Item height (0 = auto)"
 msgstr "Altezza dell'oggetto"
 
 #: lazarusidestrconsts.dlgoimiscellaneous
@@ -3138,6 +3140,10 @@ msgstr "UI Access (uiAccess)"
 #| msgid "Use Application Bundle for running and debugging (Darwin only)"
 msgid "Use Application Bundle for running and debugging"
 msgstr "Usa Application Bundle per esecuzione e debug (solo Darwin)"
+
+#: lazarusidestrconsts.dlgpouselclscaling
+msgid "Use LCL scaling (Hi-DPI)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpousemanifest
 #, fuzzy
@@ -18402,6 +18408,10 @@ msgstr "Backup del file \"%s\" in \"%s\" impossibile!"
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%sImpossibile cambiare classe da %s a %s"
 
+#: lazarusidestrconsts.lisunabletochangeprojectscaledinsource
+msgid "Unable to change project scaled in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
 msgid "Unable to change project title in source.%s%s"
 msgstr "Unable to change project title in source.%s%s"
@@ -18582,6 +18592,10 @@ msgstr "Impossibile leggere il file di informazioni di progetto %s\"%s\"."
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file \"%s\"!"
 msgstr "Impossibile rimuovere il vecchio file di backup \"%s\"!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojectscaledfromsource
+msgid "Unable to remove project scaled from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
 msgid "Unable to remove project title from source.%s%s"

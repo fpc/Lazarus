@@ -2888,7 +2888,9 @@ msgid "Object Inspector"
 msgstr "Objektum felügyelő"
 
 #: lazarusidestrconsts.dlgoiitemheight
-msgid "Item height"
+#, fuzzy
+#| msgid "Item height"
+msgid "Item height (0 = auto)"
 msgstr "Elem magassága"
 
 #: lazarusidestrconsts.dlgoimiscellaneous
@@ -3099,6 +3101,10 @@ msgstr "UI Access (uiAccess)"
 #: lazarusidestrconsts.dlgpouseappbundle
 msgid "Use Application Bundle for running and debugging"
 msgstr "Alkalmazásköteg használata futtatáshoz és hibakereséshez"
+
+#: lazarusidestrconsts.dlgpouselclscaling
+msgid "Use LCL scaling (Hi-DPI)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpousemanifest
 #, fuzzy
@@ -18281,6 +18287,10 @@ msgstr "Nem készíthető biztonsági mentés erről: \"%s\" ide: \"%s\"!"
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%sA(z) %s osztálya nem módosítható erre: %s"
 
+#: lazarusidestrconsts.lisunabletochangeprojectscaledinsource
+msgid "Unable to change project scaled in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
 msgid "Unable to change project title in source.%s%s"
 msgstr "Nem változtatható meg a projekt címe a forrásban.%s%s"
@@ -18461,6 +18471,10 @@ msgstr "Nem olvasható a projekt infó fájlja:%s\"%s\"."
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file \"%s\"!"
 msgstr "Nem törölhető a régi biztonsági mentés fájl: \"%s\"!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojectscaledfromsource
+msgid "Unable to remove project scaled from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
 msgid "Unable to remove project title from source.%s%s"

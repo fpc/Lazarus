@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-02-08 01:27+0300\n"
+"PO-Revision-Date: 2017-02-22 01:27+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2877,11 +2877,11 @@ msgstr "Положение заголовков вкладок редактор�
 
 #: lazarusidestrconsts.dlgnotsplitlineafter
 msgid "Do not split line after"
-msgstr "Не разрывать строку после:"
+msgstr "Не разрывать строку после"
 
 #: lazarusidestrconsts.dlgnotsplitlinefront
 msgid "Do not split line in front of"
-msgstr "Не разрывать строку перед:"
+msgstr "Не разрывать строку перед"
 
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
@@ -2889,8 +2889,8 @@ msgid "Object Inspector"
 msgstr "Инспектор объектов"
 
 #: lazarusidestrconsts.dlgoiitemheight
-msgid "Item height"
-msgstr "Высота элемента"
+msgid "Item height (0 = auto)"
+msgstr "Высота элемента (0 = выбрать автоматически)"
 
 #: lazarusidestrconsts.dlgoimiscellaneous
 msgctxt "lazarusidestrconsts.dlgoimiscellaneous"
@@ -3100,6 +3100,10 @@ msgstr "Доступ к интерфейсу пользователя (uiAccess)
 #: lazarusidestrconsts.dlgpouseappbundle
 msgid "Use Application Bundle for running and debugging"
 msgstr "Использовать Application Bundle для запуска и отладки"
+
+#: lazarusidestrconsts.dlgpouselclscaling
+msgid "Use LCL scaling (Hi-DPI)"
+msgstr "Использовать масштабирование LCL (Hi-DPI)"
 
 #: lazarusidestrconsts.dlgpousemanifest
 msgid "Use manifest resource (and enable themes)"
@@ -18236,6 +18240,10 @@ msgstr "Для файла \"%s\" невозможно создать резер�
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%sНевозможно изменить класс %s на %s"
 
+#: lazarusidestrconsts.lisunabletochangeprojectscaledinsource
+msgid "Unable to change project scaled in source.%s%s"
+msgstr "Невозможно изменить свойство Scaled проекта в исходном коде.%s%s"
+
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
 msgid "Unable to change project title in source.%s%s"
 msgstr "Невозможно изменить заголовок проекта в исходном коде.%s%s"
@@ -18416,6 +18424,10 @@ msgstr "Невозможно прочитать файл сведений о п�
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file \"%s\"!"
 msgstr "Невозможно удалить старый файл резервной копии \"%s\"!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojectscaledfromsource
+msgid "Unable to remove project scaled from source.%s%s"
+msgstr "Невозможно удалить свойство Scaled проекта из исходного кода.%s%s"
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
 msgid "Unable to remove project title from source.%s%s"

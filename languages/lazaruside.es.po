@@ -2919,7 +2919,9 @@ msgid "Object Inspector"
 msgstr "Inspector de Objetos"
 
 #: lazarusidestrconsts.dlgoiitemheight
-msgid "Item height"
+#, fuzzy
+#| msgid "Item height"
+msgid "Item height (0 = auto)"
 msgstr "Altura de elemento"
 
 #: lazarusidestrconsts.dlgoimiscellaneous
@@ -3128,6 +3130,10 @@ msgstr "Acceso UI (uiAccess)"
 #: lazarusidestrconsts.dlgpouseappbundle
 msgid "Use Application Bundle for running and debugging"
 msgstr "Use el envoltorio de la aplicación para ejecución y depuración"
+
+#: lazarusidestrconsts.dlgpouselclscaling
+msgid "Use LCL scaling (Hi-DPI)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpousemanifest
 #, fuzzy
@@ -18383,6 +18389,10 @@ msgstr "¡No se ha podido hacer copia de seguridad del archivo \"%s\" a \"%s\"!"
 msgid "%s%sUnable to change class of %s to %s"
 msgstr "%s%sNo se ha podido cambiar clase de %s a %s"
 
+#: lazarusidestrconsts.lisunabletochangeprojectscaledinsource
+msgid "Unable to change project scaled in source.%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
 msgid "Unable to change project title in source.%s%s"
 msgstr "No se puede cambiar el título del proyecto en la fuente.%s%s"
@@ -18563,6 +18573,10 @@ msgstr "No se puede leer el archivo de información del proyecto\"%s\"%s."
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file \"%s\"!"
 msgstr "¡No se ha podido eliminar el archivo de copia de seguridad antiguo \"%s\"!"
+
+#: lazarusidestrconsts.lisunabletoremoveprojectscaledfromsource
+msgid "Unable to remove project scaled from source.%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
 msgid "Unable to remove project title from source.%s%s"
