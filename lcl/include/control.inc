@@ -1877,11 +1877,11 @@ end;
 class procedure TControl.DoScaleFontPPI(const AFont: TFont;
   const AProportion: Double);
 begin
-  AFont.PixelsPerInch := Round(AFont.PixelsPerInch*AProportion);
-  // If AFont.PixelsPerInch is different from "Screen.PixelsPerInch" (=GetDeviceCaps(DC, LOGPIXELSX)
+  // If AFont.PixelsPerInch is different from "Screen.PixelsPerInch" (=GetDeviceCaps(DC, LOGPIXELSX))
   // then the font doesn't scale -> we have to assign a nonzero height value.
   if AFont.Height=0 then
-    AFont.Height := Round(GetFontData(AFont.Reference.Handle).Height*AProportion);
+    AFont.Height := MulDiv(GetFontData(AFont.Reference.Handle).Height, AFont.PixelsPerInch, Screen.PixelsPerInch);
+  AFont.PixelsPerInch := Round(AFont.PixelsPerInch*AProportion);
 end;
 
 function TControl.IsAParentAligning: boolean;
