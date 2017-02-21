@@ -2206,7 +2206,7 @@ type
     procedure SetButtonHeight(const AValue: Integer);
     procedure SetButtonWidth(const AValue: Integer);
     procedure SetDisabledImages(const AValue: TCustomImageList);
-    procedure SetDropDownWidth(const aDropDownWidth: Integer);
+    procedure SetDropDownWidth(const ADropDownWidth: Integer);
     procedure SetFlat(const AValue: Boolean);
     procedure SetHotImages(const AValue: TCustomImageList);
     procedure SetImages(const AValue: TCustomImageList);
@@ -2226,7 +2226,6 @@ type
   protected const
     cDefButtonWidth = 23;
     cDefButtonHeight = 22;
-    cDropDownWidth = -1;
   protected
     FPrevVertical: Boolean;
     function IsVertical: Boolean; virtual;
@@ -2263,6 +2262,8 @@ type
     function CanFocus: Boolean; override;
     function GetRealDropDownWidth: Integer;
     function GetRealButtonDropWidth: Integer;
+    function GetRealButtonWidth: Integer;
+    function GetRealButtonHeight: Integer;
   public
     property ButtonCount: Integer read GetButtonCount;
     property Buttons[Index: Integer]: TToolButton read GetButton;
@@ -2274,8 +2275,8 @@ type
     property AutoSize;
     property BorderSpacing;
     property BorderWidth;
-    property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default cDefButtonHeight;
-    property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default cDefButtonWidth;
+    property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 0;
+    property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 0;
     property Caption;
     property ChildSizing;
     property Constraints;
@@ -2285,7 +2286,7 @@ type
     property DragCursor;
     property DragKind;
     property DragMode;
-    property DropDownWidth: Integer read FDropDownWidth write SetDropDownWidth default cDropDownWidth;
+    property DropDownWidth: Integer read FDropDownWidth write SetDropDownWidth default 0;
     property EdgeBorders default [ebTop];
     property EdgeInner;
     property EdgeOuter;
