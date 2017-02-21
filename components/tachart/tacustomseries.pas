@@ -205,9 +205,11 @@ type
       AXLabel: String = ''; AColor: TColor = clTAColor): Integer; overload;
     function AddY(
       AY: Double; ALabel: String = ''; AColor: TColor = clTAColor): Integer; inline;
+    procedure BeginUpdate;
     procedure Clear; virtual;
     function Count: Integer; inline;
     procedure Delete(AIndex: Integer); virtual;
+    procedure EndUpdate;
     function Extent: TDoubleRect; virtual;
     function FormattedMark(
       AIndex: Integer; AFormat: String = ''; AYIndex: Integer = 0): String;
@@ -730,6 +732,11 @@ begin
   Source.BeforeDraw;
 end;
 
+procedure TChartSeries.BeginUpdate;
+begin
+  ListSource.BeginUpdate;
+end;
+
 procedure TChartSeries.Clear;
 begin
   ListSource.Clear;
@@ -771,6 +778,12 @@ begin
   FreeAndNil(FMarks);
   FreeAndNil(FStylesListener);
   inherited;
+end;
+
+procedure TChartSeries.EndUpdate;
+begin
+  ListSource.EndUpdate;
+  UpdateParentChart;
 end;
 
 function TChartSeries.Extent: TDoubleRect;

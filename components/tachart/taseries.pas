@@ -209,9 +209,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Draw(ADrawer: IChartDrawer); override;
-  public
-    procedure BeginUpdate;
-    procedure EndUpdate;
   published
     property AxisIndexX;
     property AxisIndexY;
@@ -376,11 +373,6 @@ begin
       Self.FShowPoints := FShowPoints;
     end;
   inherited Assign(ASource);
-end;
-
-procedure TLineSeries.BeginUpdate;
-begin
-  ListSource.BeginUpdate;
 end;
 
 constructor TLineSeries.Create(AOwner: TComponent);
@@ -566,12 +558,6 @@ begin
   DrawLabels(ADrawer);
   if ShowPoints then
     DrawPointers(ADrawer);
-end;
-
-procedure TLineSeries.EndUpdate;
-begin
-  ListSource.EndUpdate;
-  UpdateParentChart;
 end;
 
 procedure TLineSeries.GetLegendItems(AItems: TChartLegendItems);
