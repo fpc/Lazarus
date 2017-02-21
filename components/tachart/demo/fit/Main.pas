@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Spin, Buttons, TAGraph, TASeries, TASources,
-  TAFuncSeries, TATransformations;
+  StdCtrls, Spin, Buttons,
+  TAGraph, TASources, TAFuncSeries, TATransformations;
 
 type
 
@@ -18,7 +18,6 @@ type
     Chart: TChart;
     cbDrawFitRangeOnly: TCheckBox;
     FitSeries: TFitSeries;
-    DataSeries: TLineSeries;
     cbFitRangeUseMin:TCheckBox;
     cbFitRangeUseMax:TCheckBox;
     cbFitEquation: TComboBox;
@@ -199,21 +198,21 @@ begin
   ymin := MinValue(yarr);
   ymax := MaxValue(yarr);
   maxNoise := edNoiseY.Value * (ymax - ymin) * 0.01;
-  DataSeries.BeginUpdate;
+  FitSeries.BeginUpdate;
   try
-    DataSeries.Clear;
+    FitSeries.Clear;
     for i := 0 to High(xarr) do begin
       x := xarr[i];
       y := yarr[i] + maxNoise * (Random - 0.5);
       if TFitEquation(cbTestFunction.ItemIndex) = feExp then
         // Make sure that the noise generation does not produce negative
         // values for the exponential data set.
-        while y < 0 do
+        while y <= 0 do
           y := yarr[i] + maxNoise * (Random - 0.5);
-      DataSeries.AddXY(x, y);
+      FitSeries.AddXY(x, y);
     end;
   finally
-    DataSeries.EndUpdate;
+    FitSeries.EndUpdate;
   end;
 end;
 
