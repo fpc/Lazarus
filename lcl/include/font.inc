@@ -861,6 +861,7 @@ begin
   // the Height value is not correct anymore -> force recalculate it
   if Height<>0 then
     Height := MulDiv(Height, APixelsPerInch, OldPPI);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
