@@ -743,6 +743,8 @@ end;
 procedure TCustomCoolBar.DoFontChanged;
 var i: Integer;
 begin
+  if not Canvas.HandleAllocated then
+    Exit;
   FTextHeight := Canvas.TextHeight('Žy|');
   for i := 0 to FBands.Count-1 do
     FBands[i].CalcTextWidth;
