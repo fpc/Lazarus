@@ -47,7 +47,6 @@ object TabOrderDialog: TTabOrderDialog
     Width = 330
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    ExpandSignSize = 11
     HideSelection = False
     ReadOnly = True
     RightClickSelect = True
