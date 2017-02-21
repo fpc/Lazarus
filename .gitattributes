@@ -6395,6 +6395,7 @@ images/actions/laz_open.png -text svneol=unset#image/png
 images/actions/laz_openunit.png -text
 images/actions/laz_refresh.png -text svneol=unset#image/png
 images/actions/laz_save.png -text svneol=unset#image/png
+images/actions/laz_save_150.png -text
 images/actions/laz_set_color_default.png -text svneol=unset#image/png
 images/actions/laz_set_colors_default.png -text svneol=unset#image/png
 images/actions/laz_tick.png -text svneol=unset#image/png

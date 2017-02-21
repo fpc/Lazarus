@@ -15,6 +15,7 @@ actions/laz_open.png
 actions/laz_openunit.png
 actions/laz_refresh.png
 actions/laz_save.png
+actions/laz_save_150.png
 actions/laz_set_color_default.png
 actions/laz_set_colors_default.png
 actions/laz_wand.png
