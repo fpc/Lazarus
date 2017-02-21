@@ -213,6 +213,8 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
 
     Details := ThemeServices.GetElementDetails(ThemeStateMap[CheckListBox.State[Data^.ItemID], Enabled]);
     sz := ThemeServices.GetDetailSize(Details);
+    sz.cx := MulDiv(sz.cx, CheckListBox.Font.PixelsPerInch, ScreenInfo.PixelsPerInchX);
+    sz.cy := MulDiv(sz.cy, CheckListBox.Font.PixelsPerInch, ScreenInfo.PixelsPerInchY);
     ARect := Bounds((ARect.Left + ARect.Right - sz.cx) div 2, (ARect.Top + ARect.Bottom - sz.cy) div 2,
       sz.cx, sz.cy);
     OffsetRect(ARect, 1, 1);
