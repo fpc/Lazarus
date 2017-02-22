@@ -26,6 +26,8 @@ if LCLWidgetType+''='' then begin
       LCLWidgetType := 'wince'
     else if TargetOS='darwin' then
       LCLWidgetType := 'carbon'
+    else if (TargetOS='amiga') or (TargetOS='aros') or (TargetOS='morphos') then
+      LCLWidgetType := 'mui'
     else
       LCLWidgetType:='gtk2';
   end;
@@ -89,7 +91,7 @@ end;"/>
         <Item1>
           <Identifier Value="LCLWidgetType"/>
           <Description Value="gtk3"/>
-          <Values Count="12">
+          <Values Count="13">
             <Item1 Value="gtk"/>
             <Item2 Value="gtk2"/>
             <Item3 Value="qt"/>
@@ -102,8 +104,9 @@ end;"/>
             <Item10 Value="cocoa"/>
             <Item11 Value="customdrawn"/>
             <Item12 Value="gtk3"/>
+            <Item13 Value="mui"/>
           </Values>
-          <ValueDescriptions Count="12"/>
+          <ValueDescriptions Count="13"/>
         </Item1>
         <Item2>
           <Identifier Value="fpGUIPlatform"/>

@@ -106,7 +106,7 @@ const
   VirtualTempDir='TEMPORARYDIRECTORY';
   
   // FPC operating systems and processor types
-  FPCOperatingSystemNames: array[1..34] of shortstring =(
+  FPCOperatingSystemNames: array[1..35] of shortstring =(
      'linux',
      'win32','win64','wince',
      'darwin','macos',
@@ -114,6 +114,7 @@ const
      'aix',
      'amiga',
      'android',
+     'aros',
      'atari',
      'beos',
      'embedded',
@@ -137,10 +138,11 @@ const
      'wdosx',
      'wii'
     );
-  FPCOperatingSystemCaptions: array[1..34] of shortstring =(
+  FPCOperatingSystemCaptions: array[1..35] of shortstring =(
      'AIX',
      'Amiga',
      'Android',
+     'AROS',
      'Atari',
      'Beos',
      'Darwin',
@@ -198,7 +200,7 @@ const
     'FPC', 'ObjFPC', 'Delphi', 'TP', 'MacPas', 'ISO'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..75] of shortstring = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..81] of shortstring = (
     'i386-linux-gtk',
     'i386-linux-gtk2',
     'i386-linux-qt',
@@ -239,12 +241,16 @@ const
     'i386-haiku-qt',
     'i386-haiku-qt5',
     'i386-haiku-nogui',
+    'i386-aros-mui',
+    'i386-aros-nogui',
     'powerpc-darwin-gtk',
     'powerpc-darwin-gtk2',
     'powerpc-darwin-carbon',
     'powerpc-linux-gtk',
     'powerpc-linux-gtk2',
     'powerpc-linux-nogui',
+    'powerpc-morphos-mui',
+    'powerpc-morphos-nogui',
     'sparc-linux-gtk',
     'sparc-linux-gtk2',
     'sparc-linux-nogui',
@@ -273,7 +279,9 @@ const
     'x86_64-linux-nogui',
     'x86_64-win64-win32',
     'x86_64-win64-fpgui',
-    'x86_64-win64-nogui'
+    'x86_64-win64-nogui',
+    'm68k-amiga-mui',
+    'm68k-amiga-nogui'
     );
 
 type
@@ -3501,13 +3509,26 @@ procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
     aList.Add('AVR51');
     aList.Add('AVR6');
   end;
+  
+  procedure M68k;
+  begin
+    aList.Add('68000');
+    aList.Add('68020');
+    aList.Add('68040');
+    aList.Add('68060');
+    aList.Add('ISAA');
+    aList.Add('ISAA+');
+    aList.Add('ISAB');
+    aList.Add('ISAC');
+    aList.Add('CFV4');
+  end;
 
 begin
   case TargetCPU of
     'arm'    : Arm;
     'avr'    : AVR;
     'i386'   : Intel_i386;
-    'm68k'   : ;
+    'm68k'   : M68k;
     'powerpc': PowerPC;
     'sparc'  : Sparc;
     'x86_64' : Intel_x86_64;
