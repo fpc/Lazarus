@@ -16,14 +16,17 @@ type
 
   TProjectApplicationOptionsFrame = class(TAbstractIDEOptionsEditor)
     AppSettingsGroupBox: TGroupBox;
+    DarwinDividerBevel: TDividerBevel;
+    NameEdit: TEdit;
+    DescriptionEdit: TEdit;
+    NameLabel: TLabel;
+    DescriptionLabel: TLabel;
     UseLCLScalingCheckBox: TCheckBox;
-    TextFieldButton: TButton;
     CreateAppBundleButton: TBitBtn;
     DefaultIconButton: TButton;
     DpiAwareLabel: TLabel;
     DpiAwareComboBox: TComboBox;
     WindowsDividerBevel: TDividerBevel;
-    DarwinDividerBevel: TDividerBevel;
     UIAccessCheckBox: TCheckBox;
     ExecutionLevelComboBox: TComboBox;
     ClearIconButton: TBitBtn;
@@ -48,11 +51,11 @@ type
     procedure IconTrackChange(Sender: TObject);
     procedure LoadIconButtonClick(Sender: TObject);
     procedure SaveIconButtonClick(Sender: TObject);
-    procedure TextFieldButtonClick(Sender: TObject);
     procedure UseXPManifestCheckBoxChange(Sender: TObject);
   private
     FProject: TProject;
     fIconChanged: boolean;
+    procedure EnableManifest(aEnable: Boolean);
     procedure SetIconFromStream(Value: TStream);
     function GetIconAsStream: TStream;
   public
@@ -174,30 +177,20 @@ begin
     IconImage.Picture.SaveToFile(SavePictureDialog1.FileName);
 end;
 
-procedure TProjectApplicationOptionsFrame.TextFieldButtonClick(Sender: TObject);
-var
-  Caps, Values: array[0..1] of string;
+procedure TProjectApplicationOptionsFrame.EnableManifest(aEnable: Boolean);
 begin
-  Caps[0] := lisName;
-  Caps[1] := lisCodeHelpDescrTag;
-  Values[0] := FProject.ProjResources.XPManifest.TextName;
-  Values[1] := FProject.ProjResources.XPManifest.TextDesc;
-
-  if InputQuery(TextFieldButton.Caption, Caps, Values) then
-  begin
-    FProject.ProjResources.XPManifest.TextName := Values[0];
-    FProject.ProjResources.XPManifest.TextDesc := Values[1];
-  end;
+  DpiAwareLabel.Enabled := aEnable;
+  DpiAwareComboBox.Enabled := aEnable;
+  ExecutionLevelLabel.Enabled := aEnable;
+  ExecutionLevelComboBox.Enabled := aEnable;
+  UIAccessCheckBox.Enabled := aEnable;
+  NameEdit.Enabled := aEnable;
+  DescriptionEdit.Enabled := aEnable;
 end;
 
 procedure TProjectApplicationOptionsFrame.UseXPManifestCheckBoxChange(Sender: TObject);
 begin
-  DpiAwareLabel.Enabled := UseXPManifestCheckBox.Checked;
-  DpiAwareComboBox.Enabled := UseXPManifestCheckBox.Checked;
-  ExecutionLevelLabel.Enabled := UseXPManifestCheckBox.Checked;
-  ExecutionLevelComboBox.Enabled := UseXPManifestCheckBox.Checked;
-  UIAccessCheckBox.Enabled := UseXPManifestCheckBox.Checked;
-  TextFieldButton.Enabled := UseXPManifestCheckBox.Checked;
+  EnableManifest(UseXPManifestCheckBox.Checked);
 end;
 
 procedure TProjectApplicationOptionsFrame.SetIconFromStream(Value: TStream);
@@ -258,7 +251,8 @@ begin
   for DpiLevel in TXPManifestDpiAware do
     DpiAwareComboBox.Items.Add(DpiLevelNames[DpiLevel] + ' (' + ManifestDpiAwareValues[DpiLevel] + ')');
   UIAccessCheckBox.Caption := dlgPOUIAccess;
-  TextFieldButton.Caption := dlgPOTextFields;
+  NameLabel.Caption := lisName;
+  DescriptionLabel.Caption := lisCodeHelpDescrTag;
 
   // Darwin specific, Application Bundle
   DarwinDividerBevel.Caption := lisForMacOSDarwin;
@@ -293,26 +287,25 @@ begin
     TitleEdit.Text := Title;
     UseLCLScalingCheckBox.Checked := Scaled;
     UseAppBundleCheckBox.Checked := UseAppBundle;
+    // Manifest
     with ProjResources.XPManifest do
     begin
       UseXPManifestCheckBox.Checked := UseManifest;
       DpiAwareComboBox.ItemIndex := Ord(DpiAware);
       ExecutionLevelComboBox.ItemIndex := Ord(ExecutionLevel);
       UIAccessCheckBox.Checked := UIAccess;
+      NameEdit.Text := TextName;
+      DescriptionEdit.Text := TextDesc;
     end;
-    DpiAwareLabel.Enabled := UseXPManifestCheckBox.Checked;
-    DpiAwareComboBox.Enabled := UseXPManifestCheckBox.Checked;
-    ExecutionLevelLabel.Enabled := UseXPManifestCheckBox.Checked;
-    ExecutionLevelComboBox.Enabled := UseXPManifestCheckBox.Checked;
-    UIAccessCheckBox.Enabled := UseXPManifestCheckBox.Checked;
-    TextFieldButton.Enabled := UseXPManifestCheckBox.Checked;
+    EnableManifest(UseXPManifestCheckBox.Checked);
+    // Icon
     AStream := TProjectIcon(ProjResources[TProjectIcon]).GetStream;
     try
       SetIconFromStream(AStream);
     finally
       AStream.Free;
     end;
-    fIconChanged:=false;
+    fIconChanged := False;
   end;
 end;
 
@@ -320,7 +313,7 @@ procedure TProjectApplicationOptionsFrame.WriteSettings(AOptions: TAbstractIDEOp
 var
   AStream: TStream;
 begin
-  with (AOptions as TProjectIDEOptions).Project {AOptions as TProject} do
+  with (AOptions as TProjectIDEOptions).Project do
   begin
     Title := TitleEdit.Text;
     Scaled := UseLCLScalingCheckBox.Checked;
@@ -340,6 +333,8 @@ begin
       DpiAware := TXPManifestDpiAware(DpiAwareComboBox.ItemIndex);
       ExecutionLevel := TXPManifestExecutionLevel(ExecutionLevelComboBox.ItemIndex);
       UIAccess := UIAccessCheckBox.Checked;
+      TextName := NameEdit.Text;
+      TextDesc := DescriptionEdit.Text;
     end;
   end;
 end;
