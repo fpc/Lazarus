@@ -443,9 +443,9 @@ begin
 
           {take care of pasted data since it does not return proper cursor pos.}
           // issue #7243
-          if g_object_get_data(PGObject(Widget),'lcl-delay-cm_textchaged') <> nil then
+          if g_object_get_data(PGObject(Widget),'lcl-delay-cm_textchanged') <> nil then
           begin
-            g_object_set_data(PGObject(Widget),'lcl-delay-cm_textchaged',nil);
+            g_object_set_data(PGObject(Widget),'lcl-delay-cm_textchanged',nil);
             g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',Widget);
             g_idle_add(@GtkEntryDelayCursorPos, Widget);
             exit;
@@ -2729,9 +2729,9 @@ begin
   if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
   begin
     Info := GetWidgetInfo(Widget, False);
-    Include(Info^.Flags, wwiInvalidEvent);
+    //Include(Info^.Flags, wwiInvalidEvent);
     // happy end is inside gtkchanged_editbox() above.
-    g_object_set_data(PGObject(Widget),'lcl-delay-cm_textchaged', data);
+    g_object_set_data(PGObject(Widget),'lcl-delay-cm_textchanged', data);
   end;
   Mess.msg := LM_PASTE;
   Result:= DeliverMessage(Data, Mess) = 0;
