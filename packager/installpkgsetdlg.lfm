@@ -15,7 +15,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   OnResize = InstallPkgSetDialogResize
   OnShow = InstallPkgSetDialogShow
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.7'
   object InstallPkgGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = NoteLabel
@@ -103,7 +103,6 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 3
-      Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
       TabOrder = 0
