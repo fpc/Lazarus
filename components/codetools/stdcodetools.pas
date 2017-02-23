@@ -4305,14 +4305,13 @@ end;
 
 function TStandardCodeTool.GetApplicationScaledStatement(BooleanConstStartPos,
   EndPos: integer; var AScaled: boolean): boolean;
-var
-  FormatBooleanParams: string;
 begin
   Result:=false;
   AScaled:=false;
   if (BooleanConstStartPos<1) or (BooleanConstStartPos>SrcLen) then exit;
   MoveCursorToCleanPos(BooleanConstStartPos);
   ReadNextAtom;
+  if (EndPos>0) and (CurPos.EndPos>EndPos) then exit;
   if UpAtomIs('TRUE') then
   begin
     AScaled := True;
