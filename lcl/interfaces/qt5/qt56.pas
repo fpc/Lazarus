@@ -833,6 +833,14 @@ type
     QtAA_SynthesizeTouchForUnhandledMouseEvents = 11,
     QtAA_SynthesizeMouseForUnhandledTouchEvents = 12,
     QtAA_UseHighDpiPixmaps = 13,
+    QtAA_ForceRasterWidgets = 14,
+    QtAA_UseDesktopOpenGL = 15,
+    QtAA_UseOpenGLES = 16,
+    QtAA_UseSoftwareOpenGL = 17,
+    QtAA_ShareOpenGLContexts = 18,
+    QtAA_SetPalette = 19,
+    QtAA_EnableHighDpiScaling = 20,
+    QtAA_DisableHighDpiScaling = 21,
     QtAA_AttributeCount );
 
 type
