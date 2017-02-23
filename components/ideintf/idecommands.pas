@@ -509,7 +509,7 @@ type
   end;
   PIDEShortCut = ^TIDEShortCut;
 
-  { TIDECommandCategory - list of TKeyCommandRelation
+  { TIDECommandCategory - list of TKeyCommandRelation/TIDECommand
     TIDECommandCategory is used to divide the commands in handy packets }
     
   TIDECommandCategory = class(TList)
