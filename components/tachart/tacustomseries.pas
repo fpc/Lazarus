@@ -1120,7 +1120,11 @@ var
     center: TPoint;
   begin
     if AText = '' then exit;
-    center := ADataPoint + OFFSETS[ADir] * Marks.CenterOffset(ADrawer, AText);
+
+    if Marks.RotationCenter = rcCenter then
+      center := ADataPoint + OFFSETS[ADir] * Marks.CenterOffset(ADrawer, AText)
+    else
+      center := ADataPoint + OFFSETS[ADir] * Marks.CenterHeightOffset(ADrawer, AText);
     Marks.DrawLabel(ADrawer, ADataPoint, center, AText, prevLabelPoly);
   end;
 

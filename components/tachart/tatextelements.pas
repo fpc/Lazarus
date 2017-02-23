@@ -40,6 +40,8 @@ type
   TChartLabelShape = (
     clsRectangle, clsEllipse, clsRoundRect, clsRoundSide, clsUserDefined);
 
+  TChartTextRotationCenter = (rcCenter, rcEdge, rcLeft, rcRight);
+
   TChartTextElement = class;
 
   TChartGetShapeEvent = procedure (
@@ -60,14 +62,18 @@ type
     procedure SetMargins(AValue: TChartLabelMargins);
     procedure SetOnGetShape(AValue: TChartGetShapeEvent);
     procedure SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
+    procedure SetRotationCenter(AValue: TChartTextRotationCenter);
     procedure SetShape(AValue: TChartLabelShape);
   strict protected
     FAlignment: TAlignment;
+    FInsideDir: TDoublePoint;
+    FRotationCenter: TChartTextRotationCenter;
     procedure ApplyLabelFont(ADrawer: IChartDrawer); virtual;
     procedure DrawLink(
       ADrawer: IChartDrawer; ADataPoint, ALabelCenter: TPoint); virtual;
     function GetBoundingBox(
       ADrawer: IChartDrawer; const ATextSize: TPoint): TRect;
+    function GetTextShiftNeeded: Boolean;
     function IsMarginRequired: Boolean;
   strict protected
     function GetFrame: TChartPen; virtual; abstract;
@@ -75,6 +81,8 @@ type
     function GetLabelBrush: TBrush; virtual; abstract;
     function GetLabelFont: TFont; virtual; abstract;
     function GetLinkPen: TChartPen; virtual;
+    property RotationCenter: TChartTextRotationCenter
+      read FRotationCenter write SetRotationCenter default rcCenter;
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
@@ -86,6 +94,8 @@ type
     function GetLabelPolygon(
       ADrawer: IChartDrawer; ASize: TPoint): TPointArray;
     function MeasureLabel(ADrawer: IChartDrawer; const AText: String): TSize;
+    function MeasureLabelHeight(ADrawer: IChartDrawer; const AText: String): TSize;
+    procedure SetInsideDir(dx, dy: Double);
   public
     property CalloutAngle: Cardinal
       read FCalloutAngle write SetCalloutAngle default 0;
@@ -203,6 +213,7 @@ type
     destructor Destroy; override;
   public
     procedure Assign(ASource: TPersistent); override;
+    function CenterHeightOffset(ADrawer: IChartDrawer; const AText: String): TSize;
     function CenterOffset(ADrawer: IChartDrawer; const AText: String): TSize;
     function IsMarkLabelsVisible: Boolean;
     procedure SetAdditionalAngle(AAngle: Double);
@@ -265,6 +276,7 @@ type
     property LinkDistance;
     property LinkPen;
     property OverlapPolicy;
+    property RotationCenter;
     property Style default smsNone;
     property YIndex;
   end;
@@ -288,6 +300,7 @@ begin
       Self.FMargins.Assign(FMargins);
       Self.FOverlapPolicy := FOverlapPolicy;
       Self.FShape := FShape;
+      Self.FInsideDir := FInsideDir;
     end;
   inherited Assign(ASource);
 end;
@@ -311,7 +324,7 @@ procedure TChartTextElement.DrawLabel(
   const AText: String; var APrevLabelPoly: TPointArray);
 var
   labelPoly: TPointArray;
-  ptText: TPoint;
+  ptText, P: TPoint;
   i, w: Integer;
 begin
   ApplyLabelFont(ADrawer);
@@ -324,8 +337,7 @@ begin
     labelPoly := MakeCallout(
       labelPoly, ALabelCenter, ADataPoint, OrientToRad(CalloutAngle));
 
-  if
-    (OverlapPolicy = opHideNeighbour) and
+  if (OverlapPolicy = opHideNeighbour) and
     IsPolygonIntersectsPolygon(APrevLabelPoly, labelPoly)
   then
     exit;
@@ -344,7 +356,18 @@ begin
     ADrawer.Polygon(labelPoly, 0, Length(labelPoly));
   end;
 
-  ptText := RotatePoint(-ptText div 2, GetLabelAngle) + ALabelCenter;
+  case FRotationCenter of
+    rcCenter: P := -ptText div 2;
+    rcEdge,
+    rcLeft  : begin
+                P := Point(0, -ptText.y div 2);
+                if (FRotationCenter = rcEdge) and GetTextShiftNeeded then
+                  P.x := -ptText.x;
+              end;
+    rcRight : P := Point(-ptText.x, -ptText.y div 2);
+  end;
+  ptText := RotatePoint(P, GetLabelAngle) + ALabelCenter;
+
   ADrawer.TextOut.Pos(ptText).Alignment(Alignment).Width(w).Text(AText).Done;
   if not Clipped then
     ADrawer.ClippingStart;
@@ -368,6 +391,18 @@ function TChartTextElement.GetBoundingBox(
 begin
   Result := ZeroRect;
   InflateRect(Result, ATextSize.X div 2, ATextSize.Y div 2);
+
+  case FRotationCenter of
+    rcCenter : ;
+    rcLeft,
+    rcEdge   : begin
+                 OffsetRect(Result, ATextSize.x div 2, 0);
+                 if (FRotationCenter = rcEdge) and GetTextShiftNeeded then
+                   OffsetRect(Result, -ATextSize.x, 0);
+               end;
+    rcRight  : OffsetRect(Result, -ATextSize.x div 2, 0);
+  end;
+
   if IsMarginRequired then
     Margins.ExpandRectScaled(ADrawer, Result);
 end;
@@ -413,6 +448,14 @@ begin
   Result := nil;
 end;
 
+function TChartTextElement.GetTextShiftNeeded: Boolean;
+var
+  textdir: TDoublePoint;
+begin
+  SinCos(-GetLabelAngle, textdir.y, textdir.x);
+  Result := DotProduct(textdir, FInsideDir) > 0;
+end;
+
 function TChartTextElement.IsMarginRequired: Boolean;
 begin
   Result := (GetLabelBrush.Style <> bsClear) or GetFrame.EffVisible;
@@ -424,6 +467,19 @@ begin
   ApplyLabelFont(ADrawer);
   with GetBoundingBox(ADrawer, ADrawer.TextExtent(AText)) do
     Result := MeasureRotatedRect(Point(Right - Left, Bottom - Top), GetLabelAngle);
+end;
+
+function TChartTextElement.MeasureLabelHeight(
+  ADrawer: IChartDrawer; const AText: String): TSize;
+var
+  R: TRect;
+begin
+  ApplyLabelFont(ADrawer);
+  R := Rect(0, 0, 0, ADrawer.TextExtent(AText).y);
+  OffsetRect(R, 0, -(R.Bottom - R.Top) div 2);
+  if IsMarginRequired then
+    Margins.ExpandRectScaled(ADrawer, R);
+  Result := MeasureRotatedRect(Point(R.Right - R.Left, R.Bottom - R.Top), GetLabelAngle);
 end;
 
 procedure TChartTextElement.SetAlignment(AValue: TAlignment);
@@ -454,6 +510,11 @@ begin
   StyleChanged(Self);
 end;
 
+procedure TChartTextElement.SetInsideDir(dx, dy: Double);
+begin
+  FInsideDir := DoublePoint(dx, dy);
+end;
+
 procedure TChartTextElement.SetOnGetShape(AValue: TChartGetShapeEvent);
 begin
   if TMethod(FOnGetShape) = TMethod(AValue) then exit;
@@ -465,6 +526,13 @@ procedure TChartTextElement.SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
 begin
   if FOverlapPolicy = AValue then exit;
   FOverlapPolicy := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartTextElement.SetRotationCenter(AValue: TChartTextRotationCenter);
+begin
+  if FRotationCenter = AValue then exit;
+  FRotationCenter := AValue;
   StyleChanged(Self);
 end;
 
@@ -622,6 +690,15 @@ begin
       Self.FYIndex := FYIndex;
     end;
   inherited Assign(ASource);
+end;
+
+function TGenericChartMarks.CenterHeightOffset(
+  ADrawer: IChartDrawer; const AText: String): TSize;
+var
+  d: Integer;
+begin
+  d := ADrawer.Scale(Distance);
+  Result := Size(d, d) + MeasureLabelHeight(ADrawer, AText) div 2;
 end;
 
 function TGenericChartMarks.CenterOffset(

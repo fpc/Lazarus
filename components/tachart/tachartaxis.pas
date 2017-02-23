@@ -427,7 +427,6 @@ begin
       Self.FTransformations := Transformations;
       Self.FZPosition := ZPosition;
       Self.FMarginsForMarks := MarginsForMarks;
-
       Self.FOnMarkToText := OnMarkToText;
     end;
   inherited Assign(ASource);
@@ -446,6 +445,7 @@ begin
   TickLength := DEF_TICK_LENGTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
   FMarginsForMarks := true;
+  FMarks.SetInsideDir(1, 0);
 end;
 
 destructor TChartAxis.Destroy;
@@ -604,6 +604,7 @@ begin
     FMaxForMarks := Max(FMaxForMarks, GetTransform.AxisToGraph(d.FMax));
     EnsureOrder(FValueMin, FValueMax);
     EnsureOrder(FMinForMarks, FMaxForMarks);
+    FRotationCenter := Marks.RotationCenter;
   end;
 
   if Assigned(FOnMarkToText) then
@@ -826,12 +827,21 @@ begin
   FHelper.FAtDataOnly := AtDataOnly;
   FHelper.FMaxForMarks := NegInfinity;
   FHelper.FMinForMarks := SafeInfinity;
+  FHelper.FRotationCenter := Marks.RotationCenter;
 end;
 
 procedure TChartAxis.SetAlignment(AValue: TChartAxisAlignment);
 begin
   if FAlignment = AValue then exit;
   FAlignment := AValue;
+  // Define the "inside" direction of an axis such that rotated labels with
+  // rotation center at the text start or end never reach into the chart.
+  case FAlignment of
+    calBottom: FMarks.SetInsideDir(0, +1);
+    calTop   : FMarks.SetInsideDir(0, -1);
+    calLeft  : FMarks.SetInsideDir(+1, 0);
+    calRight : FMarks.SetInsideDir(-1, 0);
+  end;
   StyleChanged(Self);
 end;
 

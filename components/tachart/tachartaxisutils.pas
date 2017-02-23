@@ -134,6 +134,7 @@ type
     property LabelBrush;
     property OverlapPolicy;
     property Range: TChartRange read FRange write SetRange;
+    property RotationCenter;
     property Source: TCustomChartSource read FSource write SetSource;
     property Stripes;
     property Style default smsValue;
@@ -223,6 +224,7 @@ type
     FValueMin: Double;
     FMaxForMarks: Double;
     FMinForMarks: Double;
+    FRotationCenter: TChartTextRotationCenter;
     FZOffset: TPoint;
 
     procedure BeginDrawing; virtual;
@@ -310,6 +312,7 @@ begin
   Result.FValueMin := FValueMin;
   Result.FMinForMarks := FMinForMarks;
   Result.FMaxForMarks := FMaxForMarks;
+  Result.FRotationCenter := FRotationCenter;
   Result.FZOffset := FZOffset;
 end;
 
@@ -321,8 +324,7 @@ end;
 procedure TAxisDrawHelper.DrawLabel(ALabelCenter: TPoint; const AText: String);
 begin
   ALabelCenter += FZOffset;
-  FAxis.Marks.DrawLabel(
-    FDrawer, ALabelCenter, ALabelCenter, AText, FPrevLabelPoly);
+  FAxis.Marks.DrawLabel(FDrawer, ALabelCenter, ALabelCenter, AText, FPrevLabelPoly);
 end;
 
 procedure TAxisDrawHelper.DrawMark(
@@ -426,7 +428,10 @@ procedure TAxisDrawHelperX.DrawLabelAndTick(
 var
   d, up, down: Integer;
 begin
-  d := FScaledTickLength + FAxis.Marks.CenterOffset(FDrawer, AText).cy;
+  if FRotationCenter = rcCenter then
+    d := FScaledTickLength + FAxis.Marks.CenterOffset(FDrawer, AText).cy
+  else
+    d := FScaledTickLength + FAxis.Marks.CenterHeightOffset(FDrawer, AText).cy;
   up := FScaledTickInnerLength;
   down := FScaledTickLength;
   if FAxis.Alignment = calTop then begin
@@ -492,7 +497,10 @@ procedure TAxisDrawHelperY.DrawLabelAndTick(
 var
   d, left, right: Integer;
 begin
-  d := FScaledTickLength + FAxis.Marks.CenterOffset(FDrawer, AText).cx;
+  if FRotationCenter = rcCenter then
+    d := FScaledTickLength + FAxis.Marks.CenterOffset(FDrawer, AText).cx
+  else
+    d := FScaledTickLength + FAxis.Marks.CenterHeightOffset(FDrawer, AText).cx;
   left := FScaledTickInnerLength;
   right := FScaledTickLength;
   if FAxis.Alignment = calLeft then begin
