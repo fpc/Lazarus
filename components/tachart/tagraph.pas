@@ -576,7 +576,8 @@ begin
   if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(OnBeforeDrawBackground) then
     OnBeforeDrawBackground(Self, ic.Canvas, ARect, defaultDrawing);
   if defaultDrawing then
-    ADrawer.Rectangle(ARect);
+    ADrawer.FillRect(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
+//    ADrawer.Rectangle(ARect);
   if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(OnAfterDrawBackground) then
     OnAfterDrawBackground(Self, ic.Canvas, ARect);
 end;
