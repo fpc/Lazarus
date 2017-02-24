@@ -3811,8 +3811,6 @@ begin
   OldHeight:=Height;
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
   // adapt Clientrect
-  if ClassName='TTabSheet' then
-    AWidth := AWidth;
   if not(cfLoading in FControlFlags)
   or (cfWidthLoaded in FControlFlags) then // adapt only if Width is valid
     inc(FClientWidth,Width-OldWidth);
