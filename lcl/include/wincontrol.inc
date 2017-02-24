@@ -3811,9 +3811,15 @@ begin
   OldHeight:=Height;
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
   // adapt Clientrect
-  inc(FClientWidth,Width-OldWidth);
+  if ClassName='TTabSheet' then
+    AWidth := AWidth;
+  if not(cfLoading in FControlFlags)
+  or (cfWidthLoaded in FControlFlags) then // adapt only if Width is valid
+    inc(FClientWidth,Width-OldWidth);
+  if not(cfLoading in FControlFlags)
+  or (cfHeightLoaded in FControlFlags) then // adapt only if Height is valid
+    inc(FClientHeight,Height-OldHeight);
   if FClientWidth<0 then FClientWidth:=0;
-  inc(FClientHeight,Height-OldHeight);
   if FClientHeight<0 then FClientHeight:=0;
   Exclude(FWinControlFlags,wcfAdjustedLogicalClientRectValid);
 end;
