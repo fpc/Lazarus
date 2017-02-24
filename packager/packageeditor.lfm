@@ -251,7 +251,6 @@ object PackageEditorForm: TPackageEditorForm
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 11
-      Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
       TabOrder = 0

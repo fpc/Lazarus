@@ -114,7 +114,6 @@ object UseUnitDialog: TUseUnitDialog
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
-    Font.Color = clBtnShadow
     MaxLength = 0
     ParentFont = False
     TabOrder = 0
