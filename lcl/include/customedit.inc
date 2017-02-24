@@ -491,6 +491,20 @@ begin
     inherited WMChar(Message);
 end;
 
+procedure TCustomEdit.WMKillFocus(var Message: TLMKillFocus);
+begin
+  inherited WMKillFocus(Message);
+
+  if CanShowEmulatedTextHint then ShowEmulatedTextHint;
+end;
+
+procedure TCustomEdit.WMSetFocus(var Message: TLMSetFocus);
+begin
+  if FEmulatedTextHintStatus=thsShowing then HideEmulatedTextHint;
+
+  inherited WMSetFocus(Message);
+end;
+
 procedure TCustomEdit.WndProc(var Message: TLMessage);
 begin
   if not((Message.msg=CM_TEXTCHANGED) and (FEmulatedTextHintStatus<>thsHidden)) then //eat CM_TEXTCHANGED
@@ -601,7 +615,6 @@ end;
 
 procedure TCustomEdit.DoEnter;
 begin
-  if FEmulatedTextHintStatus=thsShowing then HideEmulatedTextHint;
   //AutoSelect when DoEnter is fired by keyboard
   if (FAutoSelect and not (csLButtonDown in ControlState)) then
   begin
@@ -615,7 +628,6 @@ procedure TCustomEdit.DoExit;
 begin
   FAutoSelected := False;
   inherited DoExit;
-  if CanShowEmulatedTextHint then ShowEmulatedTextHint;
 end;
 
 procedure TCustomEdit.FontChanged(Sender: TObject);
