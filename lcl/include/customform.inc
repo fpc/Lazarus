@@ -511,7 +511,7 @@ begin
     Exit;
   end;
 
-  if PixelsPerInch<>Monitor.PixelsPerInch then
+  if Application.Scaled and (PixelsPerInch<>Monitor.PixelsPerInch) then
     AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, Monitor.PixelsPerInch,
       MulDiv(Width, Monitor.PixelsPerInch, PixelsPerInch),
       MulDiv(Height, Monitor.PixelsPerInch, PixelsPerInch));
@@ -2293,7 +2293,7 @@ begin
   if Parent=nil then
   begin
     NewDpi := hi(Msg.wParam);
-    if Scaled and (NewDpi<>PixelsPerInch) then
+    if Application.Scaled and Scaled and (NewDpi<>PixelsPerInch) then
       AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, NewDpi,
         Width, MulDiv(Width, NewDpi, PixelsPerInch));
   end;
@@ -2312,7 +2312,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomForm.Show;
 begin
-  if Scaled and (Monitor.PixelsPerInch<>PixelsPerInch) then
+  if Application.Scaled and Scaled and (Monitor.PixelsPerInch<>PixelsPerInch) then
     AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, Monitor.PixelsPerInch,
       Width, MulDiv(Width, Monitor.PixelsPerInch, PixelsPerInch));
 
