@@ -908,7 +908,7 @@ var
             QMdiSubWindowH(AMainWin.Widget);
       end else
       begin
-        Result := QWidget_isActiveWindow(AMainWin.Widget);
+        Result := True; // issue #31440 QWidget_isActiveWindow(AMainWin.Widget);
       end;
       if (AMainWin <> AWidget) and not Supports(AWidget, IQtEdit, QtEdit) then
         Result := True;
