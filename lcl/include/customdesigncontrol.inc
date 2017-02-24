@@ -26,7 +26,8 @@ procedure TCustomDesignControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
 begin
   inherited;
 
-  FPixelsPerInch := AToPPI;
+  if AMode = lapAutoAdjustForDPI then
+    FPixelsPerInch := AToPPI;
 end;
 
 procedure TCustomDesignControl.Loaded;
