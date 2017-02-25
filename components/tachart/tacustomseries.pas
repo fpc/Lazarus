@@ -1425,10 +1425,11 @@ begin
   sp := GraphToAxis(ANewPos);
   case AYIndex of
    -1: begin
-         ListSource.SetXValue(AIndex, sp.X);
-         ListSource.SetYValue(AIndex, sp.Y);
+        // ListSource.SetXValue(AIndex, sp.X);
+        // ListSource.SetYValue(AIndex, sp.Y);
        end;
     0: begin
+         ListSource.SetXValue(AIndex, sp.X);
          ListSource.SetYValue(AIndex, sp.Y);
        end;
     else
