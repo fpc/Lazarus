@@ -67,6 +67,7 @@ procedure GetFormatSettingsUTF8;
 procedure GetLocaleFormatSettingsUTF8(LCID: Integer; var aFormatSettings: TFormatSettings);
 {$endif}
 
+Function GetEnvironmentVariableCountUTF8: Integer;
 function GetEnvironmentStringUTF8(Index: Integer): string;
 function GetEnvironmentVariableUTF8(const EnvVar: string): String;
 function SysErrorMessageUTF8(ErrorCode: Integer): String;
@@ -349,15 +350,27 @@ begin
   {$ENDIF}
 end;
 
+function GetEnvironmentVariableCountUTF8: Integer;
+begin
+  {$IF defined(FPC_RTL_UNICODE) or not defined(Windows)}
+  Result:=SysUtils.GetEnvironmentVariableCount;
+  {$ELSE}
+  Result:=GetGetEnvironmentVariableCountWide;
+  {$ENDIF}
+end;
+
 function GetEnvironmentStringUTF8(Index: Integer): string;
 begin
   {$IFDEF FPC_RTL_UNICODE}
   Result:=UTF16ToUTF8(SysUtils.GetEnvironmentString(Index));
   {$ELSE}
-  // on Windows SysUtils.GetEnvironmentString returns OEM encoded string
-  // so ConsoleToUTF8 function should be used!
-  // RTL issue: http://bugs.freepascal.org/view.php?id=15233
-  Result:=ConsoleToUTF8(SysUtils.GetEnvironmentString(Index));
+    {$IFDEF Windows}
+    Result:=UTF16ToUTF8(GetEnvironmentStringWide(Index));
+    {$ELSE}
+    // by default the environment is in console encoding
+    // see also RTL issue: http://bugs.freepascal.org/view.php?id=15233
+    Result:=ConsoleToUTF8(SysUtils.GetEnvironmentString(Index));
+    {$ENDIF}
   {$ENDIF}
 end;
 
@@ -366,10 +379,13 @@ begin
   {$IFDEF FPC_RTL_UNICODE}
   Result:=UTF16ToUTF8(SysUtils.GetEnvironmentVariable(UTF8ToUTF16(EnvVar)));
   {$ELSE}
-  // on Windows SysUtils.GetEnvironmentString returns OEM encoded string
-  // so ConsoleToUTF8 function should be used!
-  // RTL issue: http://bugs.freepascal.org/view.php?id=15233
-  Result:=ConsoleToUTF8(SysUtils.GetEnvironmentVariable(UTF8ToSys(EnvVar)));
+    {$IFDEF Windows}
+    Result:=UTF16ToUTF8(GetEnvironmentVariableWide(EnvVar));
+    {$ELSE}
+    // by default the environment is in console encoding
+    // RTL issue: http://bugs.freepascal.org/view.php?id=15233
+    Result:=ConsoleToUTF8(SysUtils.GetEnvironmentVariable(UTF8ToSys(EnvVar)));
+    {$ENDIF}
   {$ENDIF}
 end;
 

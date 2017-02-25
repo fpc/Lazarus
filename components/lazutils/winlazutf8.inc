@@ -222,6 +222,71 @@ begin
   end;
 end;
 
+function GetGetEnvironmentVariableCountWide: integer;
+var
+  hp,p : PWideChar;
+begin
+  Result:=0;
+  p:=GetEnvironmentStringsW;
+  if p=nil then exit;
+  hp:=p;
+  while hp^<>#0 do
+  begin
+    Inc(Result);
+    hp:=hp+strlen(hp)+1;
+  end;
+  FreeEnvironmentStringsW(p);
+end;
+
+function GetEnvironmentStringWide(Index: Integer): UnicodeString;
+var
+  hp,p : PWideChar;
+begin
+  Result:='';
+  p:=GetEnvironmentStringsW;
+  if p=nil then exit;
+  hp:=p;
+  while (hp^<>#0) and (Index>1) do
+  begin
+    Dec(Index);
+    hp:=hp+strlen(hp)+1;
+  end;
+  if (hp^<>#0) then
+    Result:=hp;
+  FreeEnvironmentStringsW(p);
+end;
+
+function GetEnvironmentVariableWide(const EnvVar: string): UnicodeString;
+{$IF FPC_FULLVERSION>=30000}
+begin
+  Result:=GetEnvironmentVariable(UTF8ToUTF16(EnvVar));
+end;
+{$ELSE}
+var
+  s, upperenv : Unicodestring;
+  i : longint;
+  hp,p : pwidechar;
+begin
+  Result:='';
+  p:=GetEnvironmentStringsW;
+  hp:=p;
+  upperenv:=uppercase(envvar);
+  while hp^<>#0 do
+  begin
+    s:=hp;
+    i:=pos('=',s);
+    if uppercase(copy(s,1,i-1))=upperenv then
+    begin
+      Result:=copy(s,i+1,length(s)-i);
+      break;
+    end;
+    { next string entry}
+    hp:=hp+strlen(hp)+1;
+  end;
+  FreeEnvironmentStringsW(p);
+end;
+{$ENDIF}
+
 //*************** END WideString impementations
 
 {$ifdef WinCE}
@@ -356,7 +421,10 @@ end;
 
 function GetLocaleStr(aLocaleID, aLCType: Longint; const Def: string): String;
 var
-  L, ResultLen: Integer;
+  L: Integer;
+  {$IF FPC_FULLVERSION < 30000}
+  ResultLen: Integer;
+  {$ENDIF}
   Buf: array[0..255] of WideChar;
 begin
   L := GetLocaleInfoW(aLocaleID, aLCType, Buf, SizeOf(Buf));

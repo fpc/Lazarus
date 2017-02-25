@@ -748,6 +748,15 @@ Null characters #0 are treated as normal characters.</descr>
       </element>
     <element name="UTF8CompareStrCollated"><short>Compare two strings using language specific sorting</short>
       </element>
+    <element name="GetEnvironmentVariableCountUTF8"><short>Returns the number of system environment variables.</short><descr>Use together with GetEnvironmentStringUTF8.</descr>
+      </element><element name="GetEnvironmentStringUTF8"><short>Returns a system environment string.</short><descr>The index is 1 to GetEnvironmentVariableCountUTF8.
+On Unix and Windows the string often has the form 'name=value'.
+Beware that Windows knows some special formats, e.g. '=C:=SomePath'.
+
+Use GetEnvironmentVariableUTF8 to lookup environment values by name.</descr>
+      </element><element name="GetEnvironmentVariableUTF8"><short>Returns the value of a system environment variable.</short><descr>Returns the value of a environment string of the form 'EnvVar=value'.
+See GetEnvironmentStringUTF8 to retrieve the whole list of environment strings.</descr>
+      </element>
     </module>
     <!-- LazUTF8 -->
   </package>
