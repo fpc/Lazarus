@@ -10,6 +10,8 @@ uses
   Forms, Main, MemDSLaz, TAChartLazarusPkg
   { you can add units after this };
 
+{$R *.res}
+
 begin
   Application.Title := 'Chart db-aware demo';
   Application.Initialize;

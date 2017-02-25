@@ -5,7 +5,7 @@ unit Main;
 interface
 
 uses
-  ComCtrls, db, DBGrids, memds, Forms, TADbSource, TAGraph, TASeries;
+  ComCtrls, db, DBGrids, memds, Forms, TADbSource, TAGraph, TASeries, Classes;
 
 type
 
@@ -21,6 +21,7 @@ type
     MemDataset1: TMemDataset;
     ToolBar1: TToolBar;
     tbCopy: TToolButton;
+    procedure FormCreate(Sender: TObject);
     procedure tbCopyClick(Sender: TObject);
   end;
 
@@ -32,6 +33,24 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
+
+{ Add dummy data to start with }
+procedure TForm1.FormCreate(Sender: TObject);
+const
+  N = 3;
+var
+  i: Integer;
+  Fx, Fy: TField;
+begin
+  Fx := MemDataset1.FieldByName('X');
+  Fy := MemDataset1.FieldByName('Y');
+  for i:= 1 to N do begin
+    MemDataset1.Append;
+    Fx.AsInteger := i;
+    Fy.AsFloat := Random;
+    MemDataset1.Post;
+  end;
+end;
 
 procedure TForm1.tbCopyClick(Sender: TObject);
 begin
