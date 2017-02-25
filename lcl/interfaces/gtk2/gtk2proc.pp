@@ -157,7 +157,7 @@ function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
                           data: gPointer): GBoolean; cdecl;
 function gtkMouseBtnPressAfter(widget: PGtkWidget; event: pgdkEventButton;
                                data: gPointer): GBoolean; cdecl;
-function ControlGetsMouseUpBefore(AControl: TControl): boolean;
+function ControlGetsMouseUpBefore({%H-}AControl: TControl): boolean;
 function DeliverMouseUpMessage(widget: PGtkWidget; event: pgdkEventButton;
                                 AWinControl: TWinControl): boolean;
 function gtkMouseBtnRelease(widget: PGtkWidget; event: pgdkEventButton;

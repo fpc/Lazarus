@@ -1048,7 +1048,7 @@ begin
 
   bVisible := AWinControl.HandleObjectShouldBeVisible;
   if bVisible then
-    gtk_window_set_type_hint(PGtkWindow(AWinControl.Handle), GDK_WINDOW_TYPE_HINT_TOOLTIP);
+    gtk_window_set_type_hint({%H-}PGtkWindow(AWinControl.Handle), GDK_WINDOW_TYPE_HINT_TOOLTIP);
   Gtk2WidgetSet.SetVisible(AWinControl, bVisible);
   InvalidateLastWFPResult(AWinControl, AWinControl.BoundsRect);
 end;

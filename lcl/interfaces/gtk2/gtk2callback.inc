@@ -2721,14 +2721,14 @@ end;
 function gtkPasteFromClip( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
-  Info: PWidgetInfo;
+  //Info: PWidgetInfo;
 begin
   EventTrace('Paste from clip', data);
 
   // we must update cursor pos with delay otherwise selStart is wrong.issue #7243
   if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
   begin
-    Info := GetWidgetInfo(Widget, False);
+    //Info := GetWidgetInfo(Widget, False);
     //Include(Info^.Flags, wwiInvalidEvent);
     // happy end is inside gtkchanged_editbox() above.
     g_object_set_data(PGObject(Widget),'lcl-delay-cm_textchanged', data);

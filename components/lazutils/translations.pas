@@ -572,7 +572,7 @@ begin
   end;
 end;
 
-function Translate (Name,Value : AnsiString; Hash : Longint; arg:pointer) : AnsiString;
+function Translate (Name,Value : AnsiString; {%H-}Hash : Longint; arg:pointer) : AnsiString;
 var
   po: TPOFile;
 begin
