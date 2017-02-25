@@ -7,7 +7,7 @@ Source: %{name}-%{version}-%{release}.source.tar.gz
 Summary: FreePascal sources
 Packager: Mattias Gaertner (mattias@freepascal.org)
 URL: http://www.freepascal.org/
-BuildRoot: %{_tmppath}/fpc-src-build%{version}
+BuildRoot: %{_tmppath}/%{name}-build%{version}
 
 %define fpcsrcdir %{_datadir}/fpcsrc
 %define destdir %{buildroot}%{fpcsrcdir}/%{version}
