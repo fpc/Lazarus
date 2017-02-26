@@ -2014,7 +2014,7 @@ begin
   if EffectiveDrawingMode = tdmXor then begin
     FChart.Drawer.SetXor(true);
     DoDraw;
-    FChart.Drawer.SetXor(false);
+    if Assigned(FChart) then FChart.Drawer.SetXor(false);
   end;
 end;
 
