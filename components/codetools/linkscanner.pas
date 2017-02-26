@@ -157,8 +157,7 @@ type
     cmTP,
     cmOBJFPC,
     cmMacPas,
-    cmISO,
-    cmPas2Js
+    cmISO
     );
   { TCompilerModeSwitch - see fpc/compiler/globtype.pas  tmodeswitch }
   TCompilerModeSwitch = (
@@ -230,11 +229,7 @@ const
      cmsISOLike_unary_minus,cmsDefault_inline],
     // cmISO
     [cmsTp_procvar,cmsDuplicate_names,cmsNestedProcVars,cmsNonLocalGoto,
-     cmsISOLike_unary_minus],
-    // cmPas2Js
-    [cmsNested_comment,cmsRepeat_forward,
-     cmsInitfinal,cmsHintdirective,cmsProperty,cmsDefault_inline,
-     cmsResult]
+     cmsISOLike_unary_minus]
     );
 
 type
@@ -766,8 +761,7 @@ const
     'TP',
     'OBJFPC',
     'MACPAS',
-    'ISO',
-    'PAS2JS'
+    'ISO'
     );
 
   // upper case (see fpc/compiler/globtype.pas  modeswitchstr )

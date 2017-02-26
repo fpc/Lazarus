@@ -2858,7 +2858,7 @@ begin
       if (Src[CurPos.StartPos-1]='@') then begin
         // allow anything behind @
       end else if (CurPos.Flag=cafWord) then begin
-        if Scanner.CompilerMode=cmPas2Js then begin
+        if Scanner.Values.IsDefined('pas2js') then begin
           if UnexpectedKeyWordInAsmPas2JSBlock.DoIdentifier(@Src[CurPos.StartPos]) then
             SaveRaiseUnexpectedKeyWordInBeginEndBlock;
         end else if UnexpectedKeyWordInAsmBlock.DoIdentifier(@Src[CurPos.StartPos]) then
