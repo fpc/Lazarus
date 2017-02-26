@@ -50,6 +50,7 @@ type
     FAxisIndexX: TChartAxisIndex;
     FAxisIndexY: TChartAxisIndex;
     FLegend: TChartSeriesLegend;
+    FToolTargets: TNearestPointTargets;
     FTitle: String;
     procedure SetAxisIndexX(AValue: TChartAxisIndex);
     procedure SetAxisIndexY(AValue: TChartAxisIndex);
@@ -83,6 +84,8 @@ type
     function LegendTextStyle(AStyle: TChartStyle): String;
     procedure SetIndex(AValue: Integer); override;
     function TitleIsStored: Boolean; virtual;
+    property ToolTargets: TNearestPointTargets
+      read FToolTargets write FToolTargets default [nptPoint];
 
   public
     function AxisToGraph(const APoint: TDoublePoint): TDoublePoint; inline;
@@ -314,6 +317,7 @@ type
       const ANewPos: TDoublePoint); override;
     property MarkPositions: TLinearMarkPositions
       read FMarkPositions write SetMarkPositions default lmpOutside;
+    property ToolTargets default [nptPoint, nptYList];
     property UseReticule: Boolean
       read FUseReticule write SetUseReticule default false;
     property ExtentPointIndexFirst: Integer read FLoBound;
@@ -354,6 +358,7 @@ begin
       Self.FAxisIndexY := FAxisIndexY;
       Self.Legend := FLegend;
       Self.FTitle := FTitle;
+      Self.FToolTargets := FToolTargets;
     end;
   inherited Assign(ASource);
 end;
@@ -383,6 +388,7 @@ begin
   FAxisIndexX := DEF_AXIS_INDEX;
   FAxisIndexY := DEF_AXIS_INDEX;
   FLegend := TChartSeriesLegend.Create(FChart);
+  FToolTargets := [nptPoint];
   FShadow := TChartShadow.Create(FChart);
 end;
 
@@ -1099,6 +1105,7 @@ constructor TBasicPointSeries.Create(AOwner: TComponent);
 begin
   inherited;
   FOptimizeX := true;
+  ToolTargets := [nptPoint, nptYList];
 end;
 
 destructor TBasicPointSeries.Destroy;
@@ -1325,14 +1332,16 @@ begin
     // an integer overflow, so ADistFunc should use saturation arithmetics.
 
     // Find nearest point of datapoint at (x, y)
-    if (nptPoint in AParams.FTargets) then begin
+    if (nptPoint in AParams.FTargets) and (nptPoint in ToolTargets) then
+    begin
       pt := AxisToGraph(sp);
       dist := Min(dist, ToolTargetDistance(AParams, pt, i, 0, 0));
     end;
 
     // Find nearest point to additional y values (at x).
     // In case of stacked data points check the stacked values.
-    if (nptYList in AParams.FTargets) and (dist > 0) then begin
+    if (dist > 0) and (nptYList in AParams.FTargets) and (nptYList in ToolTargets)
+    then begin
       tmpSp := sp;
       for j := 0 to Source.YCount - 2 do begin
         if FStacked then
@@ -1350,7 +1359,8 @@ begin
     end;
 
     // Find nearest point of additional x values (at y)
-    if (nptXList in AParams.FTargets) and (dist > 0) then begin
+    if (dist > 0) and (nptXList in AParams.FTargets) and (nptXList in ToolTargets)
+    then begin
       tmpSp := sp;
       for j := 0 to Source.XCount - 2 do begin
         tmpSp.X := Source[i]^.XList[j];

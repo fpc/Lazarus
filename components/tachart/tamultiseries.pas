@@ -78,6 +78,7 @@ type
     property OverrideColor: TBubbleOverrideColors
       read FOverrideColor write SetOverrideColor default [];
     property Source;
+    property ToolTargets default [nptPoint, nptYList, nptCustom];
   end;
 
   TBoxAndWhiskerSeriesLegendDir = (bwlHorizontal, bwlVertical, bwlAuto);
@@ -124,6 +125,7 @@ type
     property LegendDirection: TBoxAndWhiskerSeriesLegendDir
       read FLegendDirection write SetLegendDirection default bwlHorizontal;
     property MedianPen: TPen read FMedianPen write SetMedianPen;
+    property ToolTargets default [nptPoint, nptYList, nptCustom];
     property WidthStyle: TBoxAndWhiskerSeriesWidthStyle
       read FWidthStyle write FWidthStyle default bwsPercent;
     property WhiskersPen: TPen read FWhiskersPen write SetWhiskersPen;
@@ -194,6 +196,7 @@ type
     property Mode: TOHLCMode read FMode write SetOHLCMode;
     property TickWidth: integer
       read FTickWidth write SetTickWidth default DEF_OHLC_TICK_WIDTH;
+    property ToolTargets default [nptPoint, nptYList, nptCustom];
     property YIndexClose: integer
       read FYIndexClose write SetYIndexClose default DEF_YINDEX_CLOSE;
     property YIndexHigh: Integer
@@ -246,6 +249,7 @@ type
     property AxisIndexY;
     property Pen: TPen read FPen write SetPen;
     property Source;
+    property ToolTargets default [nptPoint, nptXList, nptYList, nptCustom];
   end;
 
 implementation
@@ -466,6 +470,7 @@ end;
 constructor TBubbleSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ToolTargets := [nptPoint, nptYList, nptCustom];
   FBubblePen := TPen.Create;
   FBubblePen.OnChange := @StyleChanged;
   FBubbleBrush := TBrush.Create;
@@ -610,9 +615,11 @@ var
 begin
   Result := inherited;
 
-  if Result then begin
+  if Result and (nptPoint in AParams.FTargets) and (nptPoint in ToolTargets) then
     if (AResults.FYIndex = 0) then
       exit;
+
+  if Result and (nptPoint in AParams.FTargets) and (nptPoint in ToolTargets) then
     if (AResults.FYIndex = 1) then begin
       item := Source[AResults.FIndex];
       GetBubbleRect(item, iRect);
@@ -624,9 +631,8 @@ begin
       AResults.FImg := p + Point(round(rx * cosPhi), round(ry * sinPhi));
       exit;
     end;
-  end;
 
-  if (nptCustom in AParams.FTargets) then begin
+  if (nptCustom in AParams.FTargets) and (nptCustom in ToolTargets) then begin
     dist := MaxInt;
     for i := 0 to Count - 1 do begin
       item := Source[i];
@@ -817,6 +823,7 @@ end;
 constructor TBoxAndWhiskerSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ToolTargets := [nptPoint, nptYList, nptCustom];
   FOptimizeX := false;
   FBoxBrush := TBrush.Create;
   FBoxBrush.OnChange := @StyleChanged;
@@ -953,9 +960,15 @@ var
 begin
   Result := inherited;
 
-  if Result and ([nptPoint, nptYList] * AParams.FTargets = [nptPoint, nptYList]) then
-    exit;
-  if not (nptCustom in AParams.FTargets) then
+  if Result then begin
+    if (nptPoint in AParams.FTargets) and (nptPoint in ToolTargets) then
+      exit;
+    if (nptYList in AParams.FTargets) and (nptYList in ToolTargets) then
+      exit;
+  end;
+
+  if not ((nptCustom in AParams.FTargets) and (nptCustom in ToolTargets))
+  then
     exit;
 
   pImg := AParams.FPoint;
@@ -1156,6 +1169,7 @@ end;
 constructor TOpenHighLowCloseSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ToolTargets := [nptPoint, nptYList, nptCustom];
   FOptimizeX := false;
   FStacked := false;
   FCandlestickDownBrush := TBrush.Create;
@@ -1326,9 +1340,14 @@ var
 begin
   Result := inherited;
 
-  if Result and ([nptPoint, nptYList] * AParams.FTargets = [nptPoint, nptYList]) then
-    exit;
-  if not (nptCustom in AParams.FTargets) then
+  if Result then begin
+    if (nptPoint in AParams.FTargets) and (nptPoint in ToolTargets) then
+      exit;
+    if (nptYList in AParams.FTargets) and (nptYList in ToolTargets) then
+      exit;
+  end;
+  if not ((nptCustom in AParams.FTargets) and (nptCustom in ToolTargets))
+  then
     exit;
 
   graphClickPt := ParentChart.ImageToGraph(AParams.FPoint);
@@ -1530,6 +1549,7 @@ end;
 constructor TFieldSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ToolTargets := [nptPoint, nptXList, nptYList, nptCustom];
   ListSource.XCount := 2;
   ListSource.YCount := 2;
   FArrow := TChartArrow.Create(ParentChart);
@@ -1691,13 +1711,16 @@ begin
     dist := MaxInt;
     xidx := -1;
     yidx := -1;
-    if (nptPoint in AParams.FTargets) then begin
+    if (nptPoint in AParams.FTargets) and (nptPoint in ToolTargets) then begin
       dist := AParams.FDistFunc(AParams.FPoint, pt1);
       xidx := 0;
       yidx := 0;
       img := pt1;
     end;
-    if (AParams.FTargets * [nptXList, nptYList] <> []) then begin
+
+    if (AParams.FTargets * [nptXList, nptYList] <> []) and
+       (ToolTargets * [nptXList, nptYList] <> [])
+    then begin
       d := AParams.FDistFunc(AParams.FPoint, pt2);
       if d < dist then begin
         dist := d;
@@ -1707,7 +1730,10 @@ begin
       end;
     end;
     // give priority to end points
-    if (dist > AResults.FDist) and (nptCustom in AParams.FTargets) then begin
+    if (dist > AResults.FDist) and
+       (nptCustom in AParams.FTargets) and
+       (nptCustom in ToolTargets)
+    then begin
       d := PointLineDist(AParams.FPoint, pt1, pt2);  // distance of point from line
       if d < dist then begin
         dist := d;
