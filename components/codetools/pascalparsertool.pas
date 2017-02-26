@@ -2835,7 +2835,6 @@ begin
   BlockStartPos:=CurPos.StartPos;
   repeat
     ReadNextAtom;
-    //debugln(['TPascalParserTool.ReadTilBlockEnd next=',GetAtom]);
     if (CurPos.StartPos>SrcLen) then
       SaveRaiseExceptionWithBlockStartHint(ctsUnexpectedEndOfSource);
       
@@ -2855,6 +2854,16 @@ begin
         UndoReadNextAtom;
         break;
       end;
+    end else if BlockType=ebtAsm then begin
+      if (Src[CurPos.StartPos-1]='@') then begin
+        // allow anything behind @
+      end else if (CurPos.Flag=cafWord) then begin
+        if Scanner.CompilerMode=cmPas2Js then begin
+          if UnexpectedKeyWordInAsmPas2JSBlock.DoIdentifier(@Src[CurPos.StartPos]) then
+            SaveRaiseUnexpectedKeyWordInBeginEndBlock;
+        end else if UnexpectedKeyWordInAsmBlock.DoIdentifier(@Src[CurPos.StartPos]) then
+          SaveRaiseUnexpectedKeyWordInBeginEndBlock;
+      end;
     end else if CurPos.Flag=cafSemicolon then begin
       // ;
       if BlockType=ebtIf then begin
@@ -2863,13 +2872,9 @@ begin
       end;
     end else if CurPos.Flag<>cafWord then begin
       continue;
-    end else if (BlockType=ebtAsm) and (Src[CurPos.StartPos-1]='@') then begin
-      // allow anything behind @
     end else if BlockStatementStartKeyWordFuncList.DoIdentifier(@Src[CurPos.StartPos])
     then begin
-      if BlockType=ebtAsm then begin
-        SaveRaiseUnexpectedKeyWordInAsmBlock;
-      end else if (BlockType<>ebtRecord) then begin
+      if (BlockType<>ebtRecord) then begin
         ReadTilBlockEnd(false,CreateNodes);
         if (BlockType=ebtIf) and (CurPos.Flag in [cafSemicolon]) then
           break;
@@ -2918,15 +2923,9 @@ begin
     end else begin
       // check for unexpected keywords
       case BlockType of
-      
       ebtBegin,ebtTry,ebtIf,ebtCase,ebtRepeat:
         if UnexpectedKeyWordInBeginBlock.DoIdentifier(@Src[CurPos.StartPos]) then
           SaveRaiseUnexpectedKeyWordInBeginEndBlock;
-          
-      ebtAsm:
-        if UnexpectedKeyWordInAsmBlock.DoIdentifier(@Src[CurPos.StartPos]) then
-          SaveRaiseUnexpectedKeyWordInBeginEndBlock;
-
       end;
     end;
   until false;

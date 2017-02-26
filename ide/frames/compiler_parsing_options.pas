@@ -34,12 +34,13 @@ implementation
 const
   // CompilerMode names to be shown after -M...
   CompilerModesPretty: array[TCompilerMode] of shortstring = (
-      'fpc', 'Delphi', 'DelphiUnicode', 'gpc', 'tp', 'ObjFPC', 'MacPas', 'iso'
+      'fpc', 'Delphi', 'DelphiUnicode', 'gpc', 'tp', 'ObjFPC', 'MacPas', 'iso', 'pas2js'
     );
   // CompilerMode descriptions.
   CompilerModesDescr: array[TCompilerMode] of shortstring = (
       'Free Pascal', 'Delphi', 'Delphi Unicode', 'GNU Pascal', 'Turbo Pascal',
-      'Object Pascal', 'Mac Pascal', 'ISO/IEC 7185 Pascal'
+      'Object Pascal', 'Mac Pascal', 'ISO/IEC 7185 Pascal',
+      'Pas2JS - Pascal to JavaScript transpiler'
     );
 
 function SyntaxModeToCaption(const ModeStr: string): string;

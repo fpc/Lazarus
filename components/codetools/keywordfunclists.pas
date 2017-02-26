@@ -157,6 +157,7 @@ var
   WordIsPredefinedDelphiIdentifier,
   UnexpectedKeyWordInBeginBlock,
   UnexpectedKeyWordInAsmBlock,
+  UnexpectedKeyWordInAsmPas2JSBlock,
   UnexpectedKeyWordInBrackets
     : TKeyWordFunctionList;
   UpChars: array[char] of char;
@@ -1417,6 +1418,16 @@ begin
     Add('THREADVAR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('UNIT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('VAR',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+
+  UnexpectedKeyWordInAsmPas2JSBlock:=TKeyWordFunctionList.Create('UnexpectedKeyWordInAsmPas2JSBlock');
+  KeyWordLists.Add(UnexpectedKeyWordInAsmPas2JSBlock);
+  with UnexpectedKeyWordInAsmBlock do begin
+    Add('ASSEMBLER',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BEGIN',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FINALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INITIALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PROCEDURE',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
   UnexpectedKeyWordInBrackets:=TKeyWordFunctionList.Create('UnexpectedKeyWordInBrackets');
