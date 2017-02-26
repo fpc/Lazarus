@@ -9827,6 +9827,7 @@ tools/install/linux/environmentoptions.xml svneol=native#text/plain
 tools/install/macosx/License.html svneol=native#text/plain
 tools/install/macosx/README.txt svneol=native#text/plain
 tools/install/macosx/ReadMe.html svneol=native#text/plain
+tools/install/macosx/create_fpc-src_dmg.sh svneol=native#text/plain
 tools/install/macosx/create_lazarus_dmg.sh svneol=native#text/plain
 tools/install/macosx/environmentoptions.xml svneol=native#text/plain
 tools/install/macosx/fpc-release.packproj.template svneol=native#text/plain
