@@ -562,10 +562,12 @@ begin
   AllowDropFiles:=true;
   Scaled:=true;
   OnDropFiles:=@MainIDEBarDropFiles;
+  {$IFNDEF LCLGtk2}
   try
     Icon.LoadFromResourceName(HInstance, 'WIN_MAIN');
   except
   end;
+  {$ENDIF}
 end;
 
 procedure TMainIDEBar.HideIDE;

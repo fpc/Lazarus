@@ -6291,10 +6291,12 @@ begin
 
   FStopBtnIdx := IDEImages.LoadImage(16, 'menu_stop');
 
+  {$IFNDEF LCLGtk2}
   try
     Icon.LoadFromResourceName(HInstance, 'WIN_SOURCEEDITOR');
   except
   end;
+  {$ENDIF}
 end;
 
 destructor TSourceNotebook.Destroy;

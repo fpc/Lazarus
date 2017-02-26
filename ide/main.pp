@@ -11889,10 +11889,12 @@ begin
   if FormEditor1<>nil then
     FormEditor1.Obj_Inspector := ObjectInspector1;
 
+  {$IFNDEF LCLGtk2}
   try
     ObjectInspector1.Icon.LoadFromResourceName(HInstance, 'WIN_OBJECTINSPECTOR');
   except
   end;
+  {$ENDIF}
 end;
 
 procedure TMainIDE.HandleApplicationUserInput(Sender: TObject; Msg: Cardinal);

@@ -99,10 +99,12 @@ begin
   Name := NonModalIDEWindowNames[nmiwMessagesViewName];
   IDEMessagesWindow:=Self;
   Caption:=lisMenuViewMessages;
+  {$IFNDEF LCLGtk2}
   try
     Icon.LoadFromResourceName(HInstance, 'WIN_MESSAGES');
   except
   end;
+  {$ENDIF}
   MessagesFrame1.MessagesCtrl.OnOpenMessage:=@OnOpenMessage;
   MessagesFrame1.MessagesCtrl.OnOptionsChanged:=@OnMsgCtrlOptsChanged;
 
