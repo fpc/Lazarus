@@ -811,11 +811,13 @@ end;
 function TScreen.GetHintFont: TFont;
 begin
   if (FHintFont = nil) then
-    FHintFont := TFont.Create;
-  if not WidgetSet.InitStockFont(FHintFont, sfHint) then
   begin
-    FHintFont.FontData := DefFontData;
-    FHintFont.Color := clInfoText;
+    FHintFont := TFont.Create;
+    if not WidgetSet.InitStockFont(FHintFont, sfHint) then
+    begin
+      FHintFont.FontData := DefFontData;
+      FHintFont.Color := clInfoText;
+    end;
   end;
   Result := FHintFont;
 end;
