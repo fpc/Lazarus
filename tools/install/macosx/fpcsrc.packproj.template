@@ -28,7 +28,7 @@
 							<key>Mode</key>
 							<integer>1</integer>
 							<key>Path</key>
-							<string>_FPCSRCDIR_/install/macosx/resources/License.txt</string>
+							<string>_FPCSRCDIR_/../install/macosx/resources/License.txt</string>
 							<key>Path Type</key>
 							<integer>1</integer>
 						</dict>
@@ -40,7 +40,7 @@
 							<key>Mode</key>
 							<integer>0</integer>
 							<key>Path</key>
-							<string>_FPCSRCDIR_/install/macosx/resources/ReadMe.txt</string>
+							<string>_FPCSRCDIR_/../install/macosx/resources/ReadMe.txt</string>
 							<key>Path Type</key>
 							<integer>1</integer>
 						</dict>

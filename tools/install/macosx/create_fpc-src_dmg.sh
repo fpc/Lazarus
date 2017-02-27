@@ -66,6 +66,16 @@ if [ ! -d "$FPCSrcDir/compiler" ]; then
     echo "missing fpcdir svn $FPCSrcDir/compiler"
     exit 1
 fi
+LicenseFile="$FPCSrcDir/../install/macosx/resources/License.txt"
+if [ ! -f "$LicenseFile" ]; then
+  echo "missing $LicenseFile"
+  exit 1
+fi
+ReadMeFile="$FPCSrcDir/../install/macosx/resources/ReadMe.txt"
+if [ ! -f "$ReadMeFile" ]; then
+  echo "missing $ReadMeFile"
+  exit 1
+fi
 
 SVN=$(which svn)
 if [ ! -e "$SVN" ]; then
@@ -151,8 +161,10 @@ fi
 cat $PACKPROJTEMPLATE | sed \
   -e "s|_FPCVERSION_|$FPCVersion|g" \
   -e "s|_DATESTAMP_|$DATESTAMP|g" \
+  -e "s|_FPCSRCDIR_|$FPCSrcDir|g" \
   -e "s/_FPCMAJORVERSION_/$FPCMAJORVERSION/g" \
   -e "s/_FPCMINORVERSION_/$FPCMINORVERSION/g" \
+  -e "s/_FPCFULLVERSION_/$FPCVersion/g" \
   > $PACKPROJ
 
 # build package
