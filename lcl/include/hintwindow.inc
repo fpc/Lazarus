@@ -27,7 +27,7 @@ begin
   fCompStyle := csHintWindow;
   Parent := nil;
   Color := clInfoBk;
-  Canvas.Font := Screen.HintFont;
+  Font := Screen.HintFont;
   Canvas.Brush.Style := bsClear;
   FAlignment := taLeftJustify;
   BorderStyle := bsNone;
