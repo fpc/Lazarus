@@ -4842,6 +4842,69 @@ begin
   CritSection:=TCriticalSection(ACritSec);
 end;
 
+function TQtWidgetSet.InitStockFont(AFont: TObject; AStockFont: TStockFont
+  ): Boolean;
+var
+  Font: TFont absolute AFont;
+  AMenu: QMenuH;
+  QtFont: QFontH;
+  AName: WideString;
+begin
+  Result := False;
+  exit; // exit for now since there''s bug with THintWindow.Font
+  if AStockFont = sfMenu then
+  begin
+    AName := 'MenuTitle';
+    AMenu := QMenu_create(@AName, nil);
+    try
+      QtFont := QWidget_font(AMenu);
+      QFont_family(QtFont, @AName);
+      Font.Name := UTF16ToUTF8(AName);
+      if QFont_pointSize(QtFont) > 0 then
+        Font.Size := QFont_pointSize(QtFont)
+      else
+        Font.Height := QFont_pixelSize(QtFont);
+      if QFont_bold(QtFont) then
+        Font.Style := Font.Style + [fsBold];
+      if QFont_italic(QtFont) then
+        Font.Style := Font.Style + [fsItalic];
+      if QFont_underline(QtFont) then
+        Font.Style := Font.Style + [fsUnderline];
+      if QFont_strikeOut(QtFont) then
+        Font.Style := Font.Style + [fsStrikeOut];
+      Result := True;
+    finally
+      QWidget_destroy(AMenu);
+    end;
+  end else
+  begin
+    QtFont := QFont_create;
+    try
+      if AStockFont = sfHint then
+        QToolTip_font(QtFont)
+      else
+        QApplication_font(QtFont);
+      QFont_family(QtFont, @AName);
+      Font.Name := UTF16ToUTF8(AName);
+      if QFont_pointSize(QtFont) > 0 then
+        Font.Size := QFont_pointSize(QtFont)
+      else
+        Font.Height := QFont_pixelSize(QtFont);
+      if QFont_bold(QtFont) then
+        Font.Style := Font.Style + [fsBold];
+      if QFont_italic(QtFont) then
+        Font.Style := Font.Style + [fsItalic];
+      if QFont_underline(QtFont) then
+        Font.Style := Font.Style + [fsUnderline];
+      if QFont_strikeOut(QtFont) then
+        Font.Style := Font.Style + [fsStrikeOut];
+      Result := True;
+    finally
+      QFont_destroy(QtFont);
+    end;
+  end;
+end;
+
 function TQtWidgetSet.IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer;
 var
   QtDC: TQtDeviceContext absolute dc;
