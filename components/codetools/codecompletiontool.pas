@@ -8658,7 +8658,8 @@ function TCodeCompletionCodeTool.CreateMissingClassProcBodies(
 const
   ProcAttrDefToBody = [phpWithStart,
                phpAddClassname,phpWithVarModifiers,
-               phpWithParameterNames,phpWithResultType,phpWithCallingSpecs];
+               phpWithParameterNames,phpWithResultType,
+               phpWithCallingSpecs,phpWithAssembler];
 var
   TheClassName: string;
   Beauty: TBeautifyCodeOptions;
