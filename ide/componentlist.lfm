@@ -1,7 +1,7 @@
 object ComponentListForm: TComponentListForm
-  Left = 560
+  Left = 467
   Height = 467
-  Top = 216
+  Top = 200
   Width = 300
   Caption = 'Components'
   ClientHeight = 467
@@ -43,7 +43,7 @@ object ComponentListForm: TComponentListForm
           Top = 2
           Width = 288
           Align = alClient
-          DefaultItemHeight = 26
+          DefaultItemHeight = 24
           Images = imListPalette
           Indent = 25
           ReadOnly = True
@@ -56,32 +56,32 @@ object ComponentListForm: TComponentListForm
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
           OnSelectionChanged = ListTreeSelectionChanged
-          Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoToolTips]
+          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoToolTips]
         end
       end
     end
     object TabSheetPaletteTree: TTabSheet
       Caption = 'Palette'
-      ClientHeight = 361
-      ClientWidth = 296
+      ClientHeight = 369
+      ClientWidth = 292
       object pnPaletteTree: TPanel
         Left = 0
-        Height = 375
+        Height = 369
         Top = 0
-        Width = 296
+        Width = 292
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 5
-        ClientHeight = 375
-        ClientWidth = 296
+        ClientHeight = 369
+        ClientWidth = 292
         TabOrder = 0
         object PalletteTree: TTreeView
           Left = 5
-          Height = 365
+          Height = 359
           Top = 5
-          Width = 286
+          Width = 282
           Align = alClient
-          DefaultItemHeight = 26
+          DefaultItemHeight = 24
           Images = imListPalette
           PopupMenu = pmCollapseExpand
           ReadOnly = True
@@ -93,32 +93,32 @@ object ComponentListForm: TComponentListForm
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
           OnSelectionChanged = ListTreeSelectionChanged
-          Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowRoot, tvoToolTips]
+          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowRoot, tvoToolTips]
         end
       end
     end
     object TabSheetInheritance: TTabSheet
       Caption = 'Inheritance'
-      ClientHeight = 361
-      ClientWidth = 296
+      ClientHeight = 369
+      ClientWidth = 292
       object Panel6: TPanel
         Left = 0
-        Height = 375
+        Height = 369
         Top = 0
-        Width = 296
+        Width = 292
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 5
-        ClientHeight = 375
-        ClientWidth = 296
+        ClientHeight = 369
+        ClientWidth = 292
         TabOrder = 0
         object InheritanceTree: TTreeView
           Left = 5
-          Height = 365
+          Height = 359
           Top = 5
-          Width = 286
+          Width = 282
           Align = alClient
-          DefaultItemHeight = 26
+          DefaultItemHeight = 24
           Images = imListPalette
           Indent = 20
           PopupMenu = pmCollapseExpand
@@ -130,7 +130,7 @@ object ComponentListForm: TComponentListForm
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
           OnSelectionChanged = ListTreeSelectionChanged
-          Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
         end
       end
     end
@@ -212,13 +212,13 @@ object ComponentListForm: TComponentListForm
   object imListPalette: TImageList
     Height = 24
     Width = 24
-    left = 56
-    top = 112
+    Left = 56
+    Top = 112
   end
   object pmCollapseExpand: TPopupMenu
     OnPopup = pmCollapseExpandPopup
-    left = 160
-    top = 112
+    Left = 160
+    Top = 112
     object miExpand: TMenuItem
       Caption = 'Expand'
       OnClick = miExpandClick
@@ -242,14 +242,14 @@ object ComponentListForm: TComponentListForm
   object imInheritance: TImageList
     Height = 24
     Width = 24
-    left = 56
-    top = 168
+    Left = 56
+    Top = 168
   end
   object tmDeselect: TTimer
     Enabled = False
     Interval = 100
     OnTimer = tmDeselectTimer
-    left = 155
-    top = 172
+    Left = 155
+    Top = 172
   end
 end

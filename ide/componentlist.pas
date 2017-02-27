@@ -136,10 +136,10 @@ begin
   OKButton.Caption := lisUse;
   chbKeepOpen.Caption := lisKeepOpen;
 
-  imListPalette.Width  := ComponentPaletteImageWidth;
-  imListPalette.Height := ComponentPaletteImageHeight;
-  imInheritance.Width  := ComponentPaletteImageWidth;
-  imInheritance.Height := ComponentPaletteImageHeight;
+  imListPalette.Width  := MulDiv(ComponentPaletteImageWidth, TIDEImages.GetScalePercent, 100);
+  imListPalette.Height := MulDiv(ComponentPaletteImageHeight, TIDEImages.GetScalePercent, 100);
+  imInheritance.Width  := MulDiv(ComponentPaletteImageWidth, TIDEImages.GetScalePercent, 100);
+  imInheritance.Height := MulDiv(ComponentPaletteImageHeight, TIDEImages.GetScalePercent, 100);
 
   ListTree.Images := imListPalette;
   PalletteTree.Images := imListPalette;
@@ -323,6 +323,8 @@ var
   ClssName: string;
   i, Ind: Integer;
   CurIcon: TCustomBitmap;
+  ScaledIcon: TGraphic;
+  NewScaledIcon: Boolean;
 begin
   PalList := TStringList.Create;
   try
@@ -357,8 +359,14 @@ begin
             CurIcon := nil;
           if Assigned(CurIcon) then
           begin
-            Node.ImageIndex := imInheritance.Add(CurIcon, nil);
-            Node.SelectedIndex := Node.ImageIndex;
+            ScaledIcon := TIDEImages.ScaleImage(CurIcon, NewScaledIcon, imInheritance.Width, imInheritance.Height);
+            try
+              Node.ImageIndex := imInheritance.Add(ScaledIcon as TCustomBitmap, nil);
+              Node.SelectedIndex := Node.ImageIndex;
+            finally
+              if NewScaledIcon then
+                ScaledIcon.Free;
+            end;
           end;
         end;
         FClassList.AddObject(ClssName, Node);
@@ -380,6 +388,8 @@ var
   APaletteNode: TTreeNode;
   i, j: Integer;
   CurIcon: TCustomBitmap;
+  NewScaledIcon: Boolean;
+  ScaledIcon: TGraphic;
 begin
   if [csDestroying,csLoading]*ComponentState<>[] then exit;
   Screen.Cursor := crHourGlass;
@@ -416,10 +426,16 @@ begin
           CurIcon := nil;
         if Assigned(CurIcon) then
         begin
-          AListNode.ImageIndex := imListPalette.Add(CurIcon, nil);
-          AListNode.SelectedIndex := AListNode.ImageIndex;
-          APaletteNode.ImageIndex := AListNode.ImageIndex;
-          APaletteNode.SelectedIndex := AListNode.ImageIndex;
+          ScaledIcon := TIDEImages.ScaleImage(CurIcon, NewScaledIcon, imListPalette.Width, imListPalette.Height);
+          try
+            AListNode.ImageIndex := imListPalette.Add(ScaledIcon as TCustomBitmap, nil);
+            AListNode.SelectedIndex := AListNode.ImageIndex;
+            APaletteNode.ImageIndex := AListNode.ImageIndex;
+            APaletteNode.SelectedIndex := AListNode.ImageIndex;
+          finally
+            if NewScaledIcon then
+              ScaledIcon.Free;
+          end;
         end;
         // Component inheritence item
         DoComponentInheritence(Comp);
