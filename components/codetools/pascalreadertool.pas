@@ -745,29 +745,25 @@ begin
   if CurPos.Flag=cafSemicolon then
     ExtractNextAtom(not (phpWithoutSemicolon in Attr),Attr);
   // read specifiers
-  if [phpWithCallingSpecs,phpWithProcModifiers]*Attr<>[] then begin
+  if [phpWithCallingSpecs,phpWithProcModifiers,phpWithAssembler]*Attr<>[] then begin
     if ProcNode.FirstChild<>nil then
       EndPos:=ProcNode.FirstChild.EndPos
     else
       EndPos:=SrcLen+1;
     while (CurPos.StartPos<EndPos) do begin
-      if CurPos.Flag=cafSemicolon then begin
-        ExtractNextAtom(phpWithProcModifiers in Attr,Attr);
-      end else begin
+      if CurPos.Flag=cafWord then begin
         if IsKeyWordCallingConvention.DoIdentifier(@Src[CurPos.StartPos])
+        or ((phpWithAssembler in Attr) and UpAtomIs('ASSEMBLER'))
         then begin
-          ExtractNextAtom([phpWithCallingSpecs,phpWithProcModifiers]*Attr<>[],
-                          Attr);
+          ExtractNextAtom(true,Attr);
           if not (phpWithProcModifiers in Attr) then
             ExtractMemStream.Write(SemiColon,1);
-        end
-        else if (CurPos.Flag=cafEdgedBracketOpen) then begin
-          ReadTilBracketClose(false);
-          ExtractNextAtom(phpWithProcModifiers in Attr,Attr);
-        end else begin
-          ExtractNextAtom(phpWithProcModifiers in Attr,Attr);
+          continue;
         end;
+      end else if (CurPos.Flag=cafEdgedBracketOpen) then begin
+        ReadTilBracketClose(false);
       end;
+      ExtractNextAtom(phpWithProcModifiers in Attr,Attr);
     end;
   end;
 

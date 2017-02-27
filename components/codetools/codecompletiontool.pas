@@ -1797,7 +1797,7 @@ begin
       ProcCode:=ExtractProcHead(CurProcNode,[phpWithStart,
                   phpWithoutClassKeyword,
                   phpWithVarModifiers,phpWithParameterNames,phpWithResultType,
-                  phpWithCallingSpecs,phpDoNotAddSemicolon]);
+                  phpWithCallingSpecs,phpWithAssembler,phpDoNotAddSemicolon]);
       if ProcCode='' then
         RaiseException('CompleteForwardProcs: unable to parse forward proc node');
       if ProcCode[length(ProcCode)]<>';' then begin

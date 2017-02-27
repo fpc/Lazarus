@@ -66,6 +66,7 @@ type
     phpWithOfObject,       // extract 'of object'
     phpWithCallingSpecs,   // extract cdecl; extdecl; popstack;
     phpWithProcModifiers,  // extract forward; alias; external; ...
+    phpWithAssembler,      // extract proc modifier assembler
     phpWithComments,       // extract comments and spaces
     phpInUpperCase,        // turn to uppercase
     phpCommentsToSpace,    // replace comments with a single space

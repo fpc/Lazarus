@@ -1738,11 +1738,25 @@ end;
 
 function TBeautifyCodeOptions.BeautifyProc(const AProcCode: string;
   IndentSize: integer; AddBeginEnd: boolean): string;
+var
+  p, CurAtomStart: PChar;
+  Start: String;
 begin
   Result:=BeautifyStatement(AProcCode,IndentSize);
   if AddBeginEnd then begin
+    Start:='begin';
+    p:=PChar(AProcCode);
+    repeat
+      ReadRawNextPascalAtom(p,CurAtomStart,nil,NestedComments);
+      if p=CurAtomStart then break;
+      if CompareIdentifiers(p,'assembler')=0 then begin
+        Start:='asm';
+        break;
+      end;
+    until false;
+
     AddAtom(Result,LineEnd+GetIndentStr(IndentSize));
-    AddAtom(Result,'begin');
+    AddAtom(Result,Start);
     AddAtom(Result,LineEnd+LineEnd+GetIndentStr(IndentSize));
     AddAtom(Result,'end;');
   end;
