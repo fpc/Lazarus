@@ -47,11 +47,13 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    function GetScalePercent: Integer;
+    class function GetScalePercent: Integer;
+    class function ScaleImage(const AImage: TGraphic; out ANewInstance: Boolean;
+      TargetWidth, TargetHeight: Integer): TGraphic;
 
     function GetImageIndex(ImageSize: Integer; ImageName: String): Integer;
     function LoadImage(ImageSize: Integer; ImageName: String): Integer;
-    
+
     property Images_12: TCustomImageList read GetImages_12;
     property Images_16: TCustomImageList read GetImages_16;
     property Images_24: TCustomImageList read GetImages_24;
@@ -99,7 +101,7 @@ begin
   Result := FImages_24;
 end;
 
-function TIDEImages.GetScalePercent: Integer;
+class function TIDEImages.GetScalePercent: Integer;
 begin
   if ScreenInfo.PixelsPerInchX <= 120 then
     Result := 100 // 100-125% (96-120 DPI): no scaling
@@ -165,8 +167,8 @@ function TIDEImages.LoadImage(ImageSize: Integer; ImageName: String): Integer;
   end;
   function _LoadImage(AList: TCustomImageList): Integer;
   var
-    Grp: TGraphic;
-    Bmp: TBitmap;
+    Grp, GrpScaled: TGraphic;
+    GrpScaledNewInstance: Boolean;
     ScalePercent: Integer;
   begin
     ScalePercent := GetScalePercent;
@@ -181,28 +183,13 @@ function TIDEImages.LoadImage(ImageSize: Integer; ImageName: String): Integer;
       end;
 
       Grp := CreateGraphicFromResourceName(HInstance, ImageName);
-      if ScalePercent<>100 then
-      begin
-        Bmp := TBitmap.Create;
-        try
-          {$IFDEF LCLGtk2}
-          Bmp.PixelFormat := pf24bit;
-          Bmp.Canvas.Brush.Color := clBtnFace;
-          {$ELSE}
-          Bmp.PixelFormat := pf32bit;
-          Bmp.Canvas.Brush.Color := TColor($FFFFFFFF);
-          {$ENDIF}
-          Bmp.SetSize(AList.Width, AList.Height);
-          Bmp.Canvas.FillRect(Bmp.Canvas.ClipRect);
-          Bmp.Canvas.StretchDraw(
-            Rect(0, 0, MulDiv(Grp.Width, ScalePercent, 100), MulDiv(Grp.Height, ScalePercent, 100)),
-            Grp);
-          Result := _AddBitmap(AList, Bmp);
-        finally
-          Bmp.Free;
-        end;
-      end else
-        Result := _AddBitmap(AList, Grp);
+      GrpScaled := ScaleImage(Grp, GrpScaledNewInstance, AList.Width, AList.Height);
+      try
+        Result := _AddBitmap(AList, GrpScaled);
+      finally
+        if GrpScaledNewInstance then
+          GrpScaled.Free;
+      end;
     finally
       Grp.Free;
     end;
@@ -242,6 +229,40 @@ begin
     end;
   end;
   Names.AddObject(ImageName, TObject(PtrInt(Result)));
+end;
+
+class function TIDEImages.ScaleImage(const AImage: TGraphic; out
+  ANewInstance: Boolean; TargetWidth, TargetHeight: Integer): TGraphic;
+var
+  ScalePercent: Integer;
+  Bmp: TBitmap;
+begin
+  ANewInstance := False;
+  ScalePercent := GetScalePercent;
+  if ScalePercent=100 then
+    Exit(AImage);
+
+  Bmp := TBitmap.Create;
+  try
+    Result := Bmp;
+    ANewInstance := True;
+    {$IFDEF LCLGtk2}
+    Bmp.PixelFormat := pf24bit;
+    Bmp.Canvas.Brush.Color := clBtnFace;
+    {$ELSE}
+    Bmp.PixelFormat := pf32bit;
+    Bmp.Canvas.Brush.Color := TColor($FFFFFFFF);
+    {$ENDIF}
+    Bmp.SetSize(TargetWidth, TargetHeight);
+    Bmp.Canvas.FillRect(Bmp.Canvas.ClipRect);
+    Bmp.Canvas.StretchDraw(
+      Rect(0, 0, MulDiv(AImage.Width, ScalePercent, 100), MulDiv(AImage.Height, ScalePercent, 100)),
+      AImage);
+  except
+    FreeAndNil(Result);
+    ANewInstance := False;
+    raise;
+  end;
 end;
 
 function IDEImages: TIDEImages;
