@@ -185,9 +185,14 @@ function TIDEImages.LoadImage(ImageSize: Integer; ImageName: String): Integer;
       begin
         Bmp := TBitmap.Create;
         try
+          {$IFDEF LCLGtk2}
+          Bmp.PixelFormat := pf24bit;
+          Bmp.Canvas.Brush.Color := clBtnFace;
+          {$ELSE}
           Bmp.PixelFormat := pf32bit;
-          Bmp.SetSize(AList.Width, AList.Height);
           Bmp.Canvas.Brush.Color := TColor($FFFFFFFF);
+          {$ENDIF}
+          Bmp.SetSize(AList.Width, AList.Height);
           Bmp.Canvas.FillRect(Bmp.Canvas.ClipRect);
           Bmp.Canvas.StretchDraw(
             Rect(0, 0, MulDiv(Grp.Width, ScalePercent, 100), MulDiv(Grp.Height, ScalePercent, 100)),
