@@ -130,6 +130,8 @@ type
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure SourceChanged(ASender: TObject); override;
+    function ToolTargetDistance(const AParams: TNearestPointParams;
+      AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer;
   public
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
@@ -137,6 +139,12 @@ type
   public
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
+    function GetNearestPoint(
+      const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; override;
+    procedure MovePoint(var AIndex: Integer; const ANewPos: TDoublePoint); override;
+    procedure MovePointEx(var AIndex: Integer; AXIndex, AYIndex: Integer;
+        const ANewPos: TDoublePoint); override;
   published
     property CloseCircle: Boolean
       read FCloseCircle write SetCloseCircle default false;
@@ -669,6 +677,40 @@ begin
   AItems.Add(TLegendItemLine.Create(LinePen, LegendTextSingle));
 end;
 
+function TPolarSeries.GetNearestPoint(const AParams: TNearestPointParams;
+  out AResults: TNearestPointResults): Boolean;
+var
+  dist: Integer;
+  gp: TDoublePoint;
+  i: Integer;
+begin
+  AResults.FDist := Sqr(AParams.FRadius) + 1;  // the dist func does not calc sqrt
+  AResults.FIndex := -1;
+  AResults.FXIndex := 0;
+  AResults.FYIndex := 0;
+
+  dist := AResults.FDist;
+  for i := 0 to Count - 1 do begin
+    gp := GraphPoint(i);
+    if IsNan(gp) then
+      continue;
+    // Find nearest point of datapoint at (x, y)
+    if (nptPoint in AParams.FTargets) and (nptPoint in ToolTargets) then
+    begin
+      dist := Min(dist, ToolTargetDistance(AParams, gp, i, 0, 0));
+    end;
+    if dist >= AResults.FDist then
+      continue;
+
+    AResults.FDist := dist;
+    AResults.FIndex := i;
+    AResults.FValue := DoublePoint(gp.y*cos(gp.x), gp.y*sin(gp.x)); //gp;
+    AResults.FImg := ParentChart.GraphToImage(gp);
+    if dist = 0 then break;
+  end;
+  Result := AResults.FIndex >= 0;
+end;
+
 function TPolarSeries.GraphPoint(AIndex: Integer): TDoublePoint;
 begin
   with Source[AIndex]^, FAngleCache[AIndex] do
@@ -683,6 +725,30 @@ end;
 function TPolarSeries.IsOriginYStored: Boolean;
 begin
   Result := OriginY <> 0;
+end;
+
+{ ANewPos is in cartesioan coordinates. Convert to polar coordinates and store
+ in ListSource }
+procedure TPolarSeries.MovePoint(var AIndex: Integer;
+  const ANewPos: TDoublePoint);
+var
+  p: TDoublePoint;
+  r, phi: Double;
+begin
+  if not InRange(AIndex, 0, Count - 1) then exit;
+  p := GraphToAxis(ANewPos);
+  r := Sqrt(sqr(p.x) + sqr(p.y));
+  phi := arctan2(p.y, p.x);
+  with ListSource do begin
+    AIndex := SetXValue(AIndex, phi);
+    SetYValue(AIndex, r);
+  end;
+end;
+
+procedure TPolarSeries.MovePointEx(var AIndex: Integer;
+  AXIndex, AYIndex: Integer; const ANewPos: TDoublePoint);
+begin
+  MovePoint(AIndex, ANewPos);
 end;
 
 procedure TPolarSeries.PrepareAngleCache;
@@ -730,6 +796,17 @@ procedure TPolarSeries.SourceChanged(ASender: TObject);
 begin
   FAngleCache := nil;
   inherited;
+end;
+
+function TPolarSeries.ToolTargetDistance(const AParams: TNearestPointParams;
+  AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer;
+var
+  pt: TPoint;
+begin
+  Unused(APointIdx);
+  Unused(AXIdx, AYIdx);
+  pt := ParentChart.GraphToImage(AGraphPt);
+  Result := AParams.FDistFunc(AParams.FPoint, pt);
 end;
 
 initialization
