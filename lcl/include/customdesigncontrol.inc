@@ -31,8 +31,17 @@ begin
 end;
 
 procedure TCustomDesignControl.Loaded;
-var
-  I: Integer;
+  procedure FixChildren(const AParent: TWinControl);
+  var
+    I: Integer;
+  begin
+    for I := 0 to AParent.ControlCount-1 do
+    begin
+      AParent.Controls[I].FixDesignFontsPPI(FDesignTimePPI);
+      if AParent.Controls[I] is TWinControl then
+        FixChildren(TWinControl(AParent.Controls[I]));
+    end;
+  end;
 begin
   inherited Loaded;
 
@@ -41,9 +50,7 @@ begin
   if Application.Scaled and Scaled then
   begin
     FixDesignFontsPPI(FDesignTimePPI);
-    for I := 0 to ComponentCount-1 do
-      if Components[I] is TControl then
-        TControl(Components[I]).FixDesignFontsPPI(FDesignTimePPI);
+    FixChildren(Self);
   end;
 end;
 

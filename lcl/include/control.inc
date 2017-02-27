@@ -913,7 +913,8 @@ begin
   // be used for LCL HighDPI scaling.
   // Override this function - list all custom fonts in the overriden procedure
 
-  DoFixDesignFontPPI(Font, ADesignTimePPI);
+  if not ParentFont then
+    DoFixDesignFontPPI(Font, ADesignTimePPI);
 end;
 
 procedure TControl.ExecuteCancelAction;
