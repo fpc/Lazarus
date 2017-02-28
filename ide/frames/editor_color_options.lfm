@@ -1102,14 +1102,14 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       Top = 0
       DropdownMenu = LanguageMenu
       OnClick = LanguageButtonClick
-      Style = tbsDropDown
+      Style = tbsButtonDrop
     end
     object ColorSchemeButton: TToolButton
       Left = 64
       Top = 0
       DropdownMenu = ColorSchemeMenu
       OnClick = ColorSchemeButtonClick
-      Style = tbsDropDown
+      Style = tbsButtonDrop
     end
     object FileExtensionsComboBox: TComboBox
       AnchorSideTop.Side = asrBottom
@@ -1153,15 +1153,15 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     DefaultExt = '.xml'
     Filter = 'xml|*.xml'
     Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
-    left = 568
-    top = 56
+    Left = 568
+    Top = 56
   end
   object LanguageMenu: TPopupMenu
-    left = 568
-    top = 104
+    Left = 568
+    Top = 104
   end
   object ColorSchemeMenu: TPopupMenu
-    left = 568
-    top = 160
+    Left = 568
+    Top = 160
   end
 end
