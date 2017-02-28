@@ -323,7 +323,7 @@
 
       <!-- property Visibility: published -->
       <element name="TJSONPropStorage.Active" link="#LCL.PropertyStorage.TCustomPropertyStorage.Active">
-        <short>This determines if the object is active or not.</short>
+        <short />
         <descr />
         <errors />
         <seealso />
@@ -331,7 +331,7 @@
 
       <!-- property Visibility: published -->
       <element name="TJSONPropStorage.OnSavingProperties" link="#LCL.PropertyStorage.TCustomPropertyStorage.OnSavingProperties">
-        <short>Called before saving the properties.</short>
+        <short />
         <descr />
         <errors />
         <seealso />
@@ -339,7 +339,7 @@
 
       <!-- property Visibility: published -->
       <element name="TJSONPropStorage.OnSaveProperties" link="#LCL.PropertyStorage.TCustomPropertyStorage.OnSaveProperties">
-        <short>Called after saving the properties.</short>
+        <short />
         <descr />
         <errors />
         <seealso />
@@ -347,7 +347,7 @@
 
       <!-- property Visibility: published -->
       <element name="TJSONPropStorage.OnRestoringProperties" link="#LCL.PropertyStorage.TCustomPropertyStorage.OnRestoringProperties">
-        <short>Called before restoring the properties.</short>
+        <short />
         <descr />
         <errors />
         <seealso />
@@ -355,7 +355,7 @@
 
       <!-- property Visibility: published -->
       <element name="TJSONPropStorage.OnRestoreProperties" link="#LCL.PropertyStorage.TCustomPropertyStorage.OnRestoreProperties">
-        <short>Called after restoring the properties.</short>
+        <short />
         <descr />
         <errors />
         <seealso />

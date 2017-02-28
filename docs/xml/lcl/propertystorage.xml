@@ -873,7 +873,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.Active">
-        <short/>
+        <short>This determines if the object is active or not.</short>
         <descr/>
         <seealso/>
       <notes><note>?</note>
@@ -889,7 +889,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.OnSavingProperties">
-        <short>Handler called at the begin of Save.</short>
+        <short>Handler called at the beginning of Save.</short>
         <descr>
         </descr>
         <seealso>
@@ -907,7 +907,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.OnRestoringProperties">
-        <short>Handler called at the begin of Restore.</short>
+        <short>Handler called at the beginning of Restore.</short>
         <descr>
         </descr>
         <seealso>
