@@ -8,17 +8,17 @@
 # This will setup a fpc-src package in ~/tmp/buildfpcsrc
 # run 'freeze' of Iceberg and create the dmg.
 #
-# To edit the Iceberg configuration 'lazarus.packproj', run
+# To edit the Iceberg configuration 'fpcsrcq.packproj', run
 #   ./create_fpc-src_dmg.sh edit
 # This will create ~/tmp/buildfpcsrc/fpcsrc.packproj. Open the file with Iceberg.
 # When changed, save the file. Copy it back to the lazarus sources:
 # cp ~/tmp/buildfpcsrc/fpcsrc.packproj <lazarus>/tools/install/macosx/fpcsrc_release.packproj.template
 #
 # The script will replace the following in the fpcsrc.packproj:
-#   _FPCVERSION_ with $FPCVersion
 #   _DATESTAMP_ with $DATESTAMP
-#   18273645 with $LAZMAJORVERSION
-#   45362718 with $LAZMINORVERSION
+#   _FPCFULLVERSION_ with $FPCVersion
+#   _FPCMAJORVERSION_ with $FPCMAJORVERSION
+#   _FPCMINORVERSION_ with $FPCMINORVERSION
 
 set -e
 set -x
@@ -39,6 +39,7 @@ while [ $# -gt 0 ]; do
   *)
     if [ -n "$FPCSrcDir" ]; then
         echo "unknown parameter $1"
+	echo "Usage: ./create_fpc-src_dmg.sh [edit] <fpc-src-dir>"
         exit 1
     fi
 
@@ -49,7 +50,7 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "$FPCSrcDir" ]; then
-    echo "Usage: ./create_fpc-src_dmg.sh [edit] fpc-src-dir"
+    echo "Usage: ./create_fpc-src_dmg.sh [edit] <fpc-src-dir>"
     exit 1
 fi
 if [ -d "$FPCSrcDir" ]; then
@@ -115,7 +116,7 @@ FPCMINORVERSION=$(echo $FPCVersion | sed -e 's/[^.]*\.//' -e 's/\.//g'  | tr -d 
 
 BUILDDIR=~/tmp/buildfpcsrc
 ROOTDIR=$BUILDDIR/Root
-FPCBUILDDIR=$ROOTDIR/Developer/fpcsrc
+FPCBUILDDIR=$BUILDDIR/fpcsrc
 DATESTAMP=$(date +%Y%m%d)
 TEMPLATEDIR=$(pwd)
 PACKPROJTEMPLATE=$TEMPLATEDIR/fpcsrc.packproj.template
@@ -123,7 +124,10 @@ PACKPROJ=$BUILDDIR/fpcsrc.packproj
 
 # copy sources
 rm -rf $BUILDDIR
-mkdir -p $ROOTDIR/Developer
+mkdir -p $BUILDDIR
+# Quick test:
+#cp -a $FPCSrcDir/compiler $FPCBUILDDIR/
+# real 
 $SVN export $FPCSrcDir $FPCBUILDDIR
 
 find $BUILDDIR -name '.svn' -exec rm -rf {} \; || true
@@ -159,7 +163,6 @@ if [ -n "$EditMode" ]; then
 fi
 
 cat $PACKPROJTEMPLATE | sed \
-  -e "s|_FPCVERSION_|$FPCVersion|g" \
   -e "s|_DATESTAMP_|$DATESTAMP|g" \
   -e "s|_FPCSRCDIR_|$FPCSrcDir|g" \
   -e "s/_FPCMAJORVERSION_/$FPCMAJORVERSION/g" \
@@ -174,7 +177,7 @@ $FREEZE -v $PACKPROJ
 DMGFILE=~/tmp/fpc-src-$FPCVersion-$DATESTAMP-$FPCARCH-macosx.dmg
 rm -rf $DMGFILE
 
-$HDIUTIL create -anyowners -volname lazarus-$FPCVersion \
+$HDIUTIL create -anyowners -volname fpcsrc-$FPCVersion \
   -imagekey zlib-level=9 -format UDZO -srcfolder $BUILDDIR/build $DMGFILE
 
 set +x

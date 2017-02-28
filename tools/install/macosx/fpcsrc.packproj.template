@@ -52,7 +52,9 @@
 							<key>Mode</key>
 							<integer>0</integer>
 							<key>Path</key>
-							<string/>
+							<string></string>
+							<key>Path Type</key>
+							<integer>2</integer>
 						</dict>
 					</dict>
 				</dict>
@@ -323,7 +325,7 @@
 														<key>GID</key>
 														<integer>0</integer>
 														<key>Path</key>
-														<string>./fpcsrc</string>
+														<string>fpcsrc</string>
 														<key>Path Type</key>
 														<integer>2</integer>
 														<key>Privileges</key>
