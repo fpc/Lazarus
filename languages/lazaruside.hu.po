@@ -2309,7 +2309,7 @@ msgstr "Szó kiemelése a kurzor alatt"
 
 #: lazarusidestrconsts.dlgmarkupoutline
 msgid "Outline (global)"
-msgstr ""
+msgstr "Körvonal (globális)"
 
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
@@ -2416,7 +2416,7 @@ msgstr "Elsődleges beállítások"
 
 #: lazarusidestrconsts.dlgmarkupwordbracket
 msgid "Word Brackets on caret (global)"
-msgstr ""
+msgstr "Szó-zárójelek a kurzornál (globális)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match word boundaries for words up to this length:"
@@ -2888,10 +2888,8 @@ msgid "Object Inspector"
 msgstr "Objektum felügyelő"
 
 #: lazarusidestrconsts.dlgoiitemheight
-#, fuzzy
-#| msgid "Item height"
 msgid "Item height (0 = auto)"
-msgstr "Elem magassága"
+msgstr "Elem magassága (0 = automatikus)"
 
 #: lazarusidestrconsts.dlgoimiscellaneous
 msgctxt "lazarusidestrconsts.dlgoimiscellaneous"
@@ -2952,7 +2950,7 @@ msgstr "Kibővített pascal kulcsszó beállítások"
 
 #: lazarusidestrconsts.dlgpaskeywordsmarkup
 msgid "Markup (on caret)"
-msgstr ""
+msgstr "Kiemelés (a kurzornál)"
 
 #: lazarusidestrconsts.dlgpaskeywordsmatches
 msgid "Matching Keywords"
@@ -2960,7 +2958,7 @@ msgstr "Összetartozó kulcsszavak"
 
 #: lazarusidestrconsts.dlgpaskeywordsoutline
 msgid "Outline"
-msgstr ""
+msgstr "Körvonal"
 
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass options to linker with \"-k\", delimiter is space"
@@ -3100,13 +3098,11 @@ msgstr "Alkalmazásköteg használata futtatáshoz és hibakereséshez"
 
 #: lazarusidestrconsts.dlgpouselclscaling
 msgid "Use LCL scaling (Hi-DPI)"
-msgstr ""
+msgstr "LCL méretezés használata (Hi-DPI)"
 
 #: lazarusidestrconsts.dlgpousemanifest
-#, fuzzy
-#| msgid "Use manifest file to enable themes"
 msgid "Use manifest resource (and enable themes)"
-msgstr "Témák engedélyezése jegyzékfájl használatával"
+msgstr "Jegyzékfájl használata (és témák engedélyezése)"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
@@ -4366,7 +4362,7 @@ msgstr "Hozzáadás a unit keresési útvonalakhoz?"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
-msgstr "Unit felület hozzáadása"
+msgstr "Az \"interfaces\" unit hozzáadása"
 
 #: lazarusidestrconsts.lisaddunitnotrecommended
 msgid "Add unit (not recommended)"
@@ -4543,7 +4539,7 @@ msgstr "Jobb szél horgonyzása a testvér jobb széléhez. A BorderSpacing hasz
 
 #: lazarusidestrconsts.lisanchorsof
 msgid "Anchors of %s"
-msgstr ""
+msgstr "%s horgonyai"
 
 #: lazarusidestrconsts.lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
@@ -4801,10 +4797,8 @@ msgid "Bottoms"
 msgstr "Alsó oldalak egy vonalban"
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
-#, fuzzy
-#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
-msgstr "Ez az a társvezérlő, amelyikhez az alsó oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen."
+msgstr "Ez az a társvezérlő, amelyikhez az alsó oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen Delphi stílusban (a BorderSpacing és a ReferenceSide értéke nem számít)."
 
 #: lazarusidestrconsts.lisbottomspaceequally
 msgid "Bottom space equally"
@@ -6820,7 +6814,7 @@ msgstr "A(z) %s csomag hozzáadva függőségként."
 
 #: lazarusidestrconsts.lisconvdelphiaddedunittousessection
 msgid "Added unit \"%s\" to uses section."
-msgstr ""
+msgstr "A(z) \"%s\" unit hozzá lett adva a uses szakaszhoz."
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -6921,7 +6915,7 @@ msgstr "A(z) %s unit kihagyva a projektből"
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitfromusessection
 msgid "Removed unit \"%s\" from uses section."
-msgstr ""
+msgstr "A(z) \"%s\" unit el lett távolítva a uses szakaszból."
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Fixing used units and Repairing form files ***"
@@ -9427,7 +9421,7 @@ msgstr "Form"
 
 #: lazarusidestrconsts.lisformacosdarwin
 msgid "For macOS (Darwin)"
-msgstr ""
+msgstr "macOS esetén (Darwin)"
 
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
@@ -9617,17 +9611,6 @@ msgid "Goto selected"
 msgstr "Ugrás a kijelöltre"
 
 #: lazarusidestrconsts.lisgplnotice
-#, fuzzy
-#| msgid ""
-#| "<description>\n"
-#| "\n"
-#| "Copyright (C) <year> <name of author> <contact>\n"
-#| "\n"
-#| "This source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n"
-#| "\n"
-#| "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
-#| "\n"
-#| "A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -9647,7 +9630,7 @@ msgstr ""
 "\n"
 "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
 "\n"
-"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
@@ -11344,10 +11327,8 @@ msgid "Left anchoring"
 msgstr "Bal oldal horgonyozása"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
-#, fuzzy
-#| msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
-msgstr "Ez az a társvezérlő, amelyikhez a bal oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen."
+msgstr "Ez az a társvezérlő, amelyikhez a bal oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen Delphi stílusban (a BorderSpacing és a ReferenceSide értéke nem számít)."
 
 #: lazarusidestrconsts.lisleftsides
 msgid "Left sides"
@@ -11383,17 +11364,6 @@ msgid "LFM is ok"
 msgstr "LFM rendben"
 
 #: lazarusidestrconsts.lislgplnotice
-#, fuzzy
-#| msgid ""
-#| "<description>\n"
-#| "\n"
-#| "Copyright (C) <year> <name of author> <contact>\n"
-#| "\n"
-#| "This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n"
-#| "\n"
-#| "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
-#| "\n"
-#| "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -11413,7 +11383,7 @@ msgstr ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
@@ -12656,7 +12626,7 @@ msgstr "&OK"
 
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
-msgstr "Online súgó"
+msgstr "Hálózati súgó"
 
 #: lazarusidestrconsts.lismenuopen
 msgid "&Open ..."
@@ -12731,7 +12701,7 @@ msgstr "&Projekt"
 
 #: lazarusidestrconsts.lismenuprojectinspector
 msgid "Project Inspector"
-msgstr "Projekt felügyelő"
+msgstr "Projektfelügyelő"
 
 #: lazarusidestrconsts.lismenuprojectoptions
 msgid "Project Options ..."
@@ -13402,19 +13372,6 @@ msgid ", Mode: %s"
 msgstr ", Mód: %s"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
-#, fuzzy
-#| msgid ""
-#| "<description>\n"
-#| "\n"
-#| "Copyright (C) <year> <name of author> <contact>\n"
-#| "\n"
-#| "This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:\n"
-#| "\n"
-#| "As a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.\n"
-#| "\n"
-#| "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
-#| "\n"
-#| "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -13437,7 +13394,7 @@ msgstr ""
 "As a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 
 #: lazarusidestrconsts.lismodify
 msgid "&Modify"
@@ -13869,7 +13826,7 @@ msgstr " a(z) %s csomagban"
 
 #: lazarusidestrconsts.lisoftheprojectinspector
 msgid " of the Project Inspector"
-msgstr " a Projekt felügyelőben"
+msgstr " a Projektfelügyelőben"
 
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
@@ -15225,7 +15182,7 @@ msgstr "A(z) \"%s\" csomag meg lett jelölve telepítésre.%sJelenleg csak stati
 
 #: lazarusidestrconsts.lispkgmangtheprojectrequiresthepackagebutitwasnotfound
 msgid "The project requires the package \"%s\".%sBut it was not found. See Project -> Project Inspector."
-msgstr "A projekthez szükséges a(z)\"%s\" csomag.%sDe ez nem található. Ellenőrizze a Projekt -> Projekt felügyelőben."
+msgstr "A projekthez szükséges a(z)\"%s\" csomag.%sDe ez nem található. Ellenőrizze a Projekt -> Projektfelügyelőben."
 
 #: lazarusidestrconsts.lispkgmangtherearetwounitswiththesamename1from2from
 msgid "There are two units with the same name:%s1. \"%s\" from %s%s2. \"%s\" from %s"
@@ -15870,7 +15827,7 @@ msgstr "Törli a függőséget: %s?"
 
 #: lazarusidestrconsts.lisprojinspprojectinspector
 msgid "Project Inspector - %s"
-msgstr "Projekt felügyelő - %s"
+msgstr "Projektfelügyelő - %s"
 
 #: lazarusidestrconsts.lisprojinspremovedrequiredpackages
 msgctxt "lazarusidestrconsts.lisprojinspremovedrequiredpackages"
@@ -16358,10 +16315,8 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr "Jobb oldali keret-térköz. Ez az érték hozzáadódik az alap oldaltérközhöz és a vezérlő jobb oldalára vonatkozik."
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
-#, fuzzy
-#| msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
-msgstr "Ez az a társvezérlő, amelyikhez a jobb oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen."
+msgstr "Ez az a társvezérlő, amelyikhez a jobb oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen Delphi stílusban (a BorderSpacing és a ReferenceSide értéke nem számít)."
 
 #: lazarusidestrconsts.lisrightsides
 msgid "Right sides"
@@ -16653,7 +16608,7 @@ msgstr "Nézze meg az üzeneteket."
 
 #: lazarusidestrconsts.lisseeprojectprojectinspector
 msgid "%sSee Project -> Project Inspector"
-msgstr "%sLásd Projekt -> Projekt felügyelő"
+msgstr "%sLásd Projekt -> Projektfelügyelő"
 
 #: lazarusidestrconsts.lisselectahelpitem
 msgid "Select a help item:"
@@ -17112,7 +17067,7 @@ msgstr "Leállítja a hibakeresést?"
 
 #: lazarusidestrconsts.lisstoponexception
 msgid "Stop on exception"
-msgstr "Kivételen esetén leállítás"
+msgstr "Kivételek esetén leállítás"
 
 #: lazarusidestrconsts.lisstopthedebugging
 msgid "Stop the debugging?"
@@ -17229,7 +17184,7 @@ msgstr "Rendezze \"%s\" gyermekeinek Tab sorrendjét azok helyzete alapján"
 
 #: lazarusidestrconsts.listaborderdownhint
 msgid "Move the selected control down in tab order"
-msgstr "A kijelölt vezérlő mozgatása lefelé a Tab-sorrendben"
+msgstr "A kijelölt vezérlő mozgatása lefelé a Tab sorrendben"
 
 #: lazarusidestrconsts.listaborderof
 msgid "Tab Order of %s"
@@ -17237,11 +17192,11 @@ msgstr "%s Tab sorrendje"
 
 #: lazarusidestrconsts.listaborderrecursionhint
 msgid "Calculate tab order recursively for child controls"
-msgstr ""
+msgstr "Tab sorrend újraszámítása rekurzívan a gyermek vezérlők számára"
 
 #: lazarusidestrconsts.listaborderrecursively
 msgid "recursively"
-msgstr ""
+msgstr "Rekurzívan"
 
 #: lazarusidestrconsts.listabordersorthint
 msgid "Calculate tab order for controls by their X- and Y- positions"
@@ -17618,7 +17573,7 @@ msgstr "A projekt fordítóbeállításai és a direktívák a fő forrásban el
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
-msgstr "A projekt nem használja az LCL unit felületeket, amelyekre szükség van az LCLBase-hez.%sKülönös összefűzési hibák jelentkeznek majd az LCL felületek nélküli használatkor."
+msgstr "A projekt nem használja az LCL \"interfaces\" unit-ját, amelyre szükség van az LCLBase-hez.%sKülönös összefűzési hibák jelentkeznek az LCL \"interfaces\" unit nélküli használatkor."
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."
@@ -18004,10 +17959,8 @@ msgid "Tops"
 msgstr "Felső oldalak egy vonalban"
 
 #: lazarusidestrconsts.listopsiblingcomboboxhint
-#, fuzzy
-#| msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
-msgstr "Ez az a társvezérlő, amelyikhez a felső oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen."
+msgstr "Ez az a társvezérlő, amelyikhez a felső oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen Delphi stílusban (a BorderSpacing és a ReferenceSide értéke nem számít)."
 
 #: lazarusidestrconsts.listopspaceequally
 msgid "Top space equally"
@@ -18285,7 +18238,7 @@ msgstr "%s%sA(z) %s osztálya nem módosítható erre: %s"
 
 #: lazarusidestrconsts.lisunabletochangeprojectscaledinsource
 msgid "Unable to change project scaled in source.%s%s"
-msgstr ""
+msgstr "Nem változtatható meg a projekt méretezése a forrásban.%s%s"
 
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
 msgid "Unable to change project title in source.%s%s"
@@ -18470,7 +18423,7 @@ msgstr "Nem törölhető a régi biztonsági mentés fájl: \"%s\"!"
 
 #: lazarusidestrconsts.lisunabletoremoveprojectscaledfromsource
 msgid "Unable to remove project scaled from source.%s%s"
-msgstr ""
+msgstr "Nem lehet eltávolítani a projekt méretezését a forrásból.%s%s"
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
 msgid "Unable to remove project title from source.%s%s"
@@ -19082,11 +19035,11 @@ msgstr "Igen"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"
-msgstr "Ez letiltható az egyes form-ok esetén a csomagkezelőben"
+msgstr "Ez letiltható az egyes form-ok esetén a Csomagszerkesztőben"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
 msgid "You can disable this for individual forms via the popup menu in the project inspector"
-msgstr "Ez letiltható az egyes form-ok esetén a helyi menüben vagy a Projekt felügyelőben"
+msgstr "Ez letiltható az egyes form-ok esetén a helyi menüben vagy a Projektfelügyelőben"
 
 #: lazarusidestrconsts.lisyoucandownloadfpcandthefpcsourcesfromhttpsourcefor
 msgid "You can download FPC and the FPC sources from http://sourceforge.net/projects/lazarus/?source=directory"

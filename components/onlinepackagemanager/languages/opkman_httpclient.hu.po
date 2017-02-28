@@ -20,8 +20,6 @@ msgid "Chunk too big"
 msgstr "Túl nagy adatblokk"
 
 #: opkman_httpclient.serrinvalidprotocol
-#, fuzzy
-#| msgid "Invalid protocol : \"%s\""
 msgid "Invalid protocol: \"%s\""
 msgstr "Érvénytelen protokoll: \"%s\""
 
@@ -34,8 +32,6 @@ msgid "Invalid response status code: %s"
 msgstr "Érvénytelen állapotkód a válaszban: %s"
 
 #: opkman_httpclient.serrmaxredirectsreached
-#, fuzzy
-#| msgid "Maximum allowed redirects reached : %d"
 msgid "Maximum allowed redirects reached: %d"
 msgstr "A megengedett átirányítások száma elérve: %d"
 

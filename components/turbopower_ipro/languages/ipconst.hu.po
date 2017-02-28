@@ -65,7 +65,7 @@ msgstr "HEAD: (%s) FAILED"
 
 #: ipconst.httpnoheaderdata
 msgid "No Header Data for Entity"
-msgstr ""
+msgstr "Nincs fejlécadat az elemhez"
 
 #: ipconst.httppost
 msgid "POST: (%s)"
@@ -77,7 +77,7 @@ msgstr "POST: (%s) FAILED"
 
 #: ipconst.httpprogress
 msgid "Progress Made: (%s), %s bytes received"
-msgstr ""
+msgstr "Folyamat állapota: (%s), %s bájt fogadva"
 
 #: ipconst.httpsizemismatch
 msgid "Download: (%s), Size Mismatch expecting %s , got %s"
@@ -97,7 +97,7 @@ msgstr "A kérés típusa ismeretlen: \"%s\""
 
 #: ipconst.saccessprocerr
 msgid "Win32 error loading '%s' pointer: %s"
-msgstr ""
+msgstr "Win32 hiba a(z) '%s' mutató betöltése közben: %s"
 
 #: ipconst.sactiveerr
 msgid "Cannot set property on an active socket"
@@ -1302,7 +1302,7 @@ msgstr "Tömörítési eljárás: %d"
 
 #: ipconst.spngdefilterpass
 msgid "Unfiltering Pass %d  Size: %dx%d  From: %dx%d"
-msgstr ""
+msgstr "Kiszűrés-menet: %d  Méret: %dx%d  Forrás: %dx%d"
 
 #: ipconst.spngeffectivefilter
 msgid "Effective filter is %s"
@@ -1577,15 +1577,15 @@ msgstr "Minden eszköz csatlakoztatva"
 
 #: ipconst.srasauthack
 msgid "Authenticate acknowledged"
-msgstr ""
+msgstr "Hitelesség elismerve"
 
 #: ipconst.srasauthcallback
 msgid "Authenticate callback"
-msgstr ""
+msgstr "Hitelesítési visszahívás"
 
 #: ipconst.srasauthchangepassword
 msgid "Authenticate change password"
-msgstr ""
+msgstr "Jelszóváltoztatás hitelesítése"
 
 #: ipconst.srasauthenticate
 msgid "Authenticate"
@@ -1597,15 +1597,15 @@ msgstr "Hitelesítve"
 
 #: ipconst.srasauthlinkspeed
 msgid "Authenticate link speed"
-msgstr ""
+msgstr "Kapcsolat sebességének hitelesítése"
 
 #: ipconst.srasauthnotify
 msgid "Authenticate notify"
-msgstr ""
+msgstr "Hitelesítési értesítés"
 
 #: ipconst.srasauthproject
 msgid "Authenticate project"
-msgstr ""
+msgstr "Projekt hitelesítése"
 
 #: ipconst.srasauthretry
 msgid "Authenticate retry"
@@ -1686,11 +1686,11 @@ msgstr "Hitelesítés kezdése"
 
 #: ipconst.srassubentryconnected
 msgid "Sub-entry connected"
-msgstr ""
+msgstr "Alárendelt bejegyzés csatlakoztatva"
 
 #: ipconst.srassubentrydisconnected
 msgid "Sub-entry disconnected"
-msgstr ""
+msgstr "Alárendelt bejegyzés leválasztva"
 
 #: ipconst.sraswaitforcallback
 msgid "Wait for callback"
@@ -1726,7 +1726,7 @@ msgstr "Lemezen lévő fájl pozicionálása: "
 
 #: ipconst.sslnopremastersecret
 msgid "No pre-master secret."
-msgstr ""
+msgstr "Nincs előzetes mesterkulcs."
 
 #: ipconst.ssmtpresponse02
 msgid "Success, "
@@ -2548,15 +2548,15 @@ msgstr "Elutasítva adminisztratív okok miatt - rossz hitelesítő adatok"
 
 #: ipconst.swsa_qos_receivers
 msgid "At least one Reserve has arrived"
-msgstr ""
+msgstr "Legalább egy tartalék megérkezett"
 
 #: ipconst.swsa_qos_request_confirmed
 msgid "Reserve has been confirmed"
-msgstr ""
+msgstr "A tartalék megerősítve"
 
 #: ipconst.swsa_qos_senders
 msgid "At least one Path has arrived"
-msgstr ""
+msgstr "Legalább egy útvonal megérkezett"
 
 #: ipconst.swsa_qos_traffic_ctrl_error
 msgid "Problem with some part of the flowspec"

@@ -25,15 +25,15 @@ msgstr "Makró beszúrása"
 
 #: todoliststrconsts.lisoptions
 msgid "Options"
-msgstr ""
+msgstr "Beállítások"
 
 #: todoliststrconsts.lispackages
 msgid "Packages"
-msgstr ""
+msgstr "Csomagok"
 
 #: todoliststrconsts.lispackageshint
 msgid "Extends \"%s\" and \"%s\" options by units from used packages"
-msgstr ""
+msgstr "Kibővíti a \"%s\" és a \"%s\" lehetőségeket a használt csomagok unit-jaival"
 
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
@@ -41,12 +41,12 @@ msgstr "Szöveg"
 
 #: todoliststrconsts.lissourceeditor
 msgid "Editor"
-msgstr ""
+msgstr "Szerkesztő"
 
 #: todoliststrconsts.lissourceeditorhint
 msgctxt "todoliststrconsts.lissourceeditorhint"
 msgid "Add units in source editor"
-msgstr ""
+msgstr "A forráskódszerkesztőben megnyitott unit-ok hozzáadása"
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
@@ -78,11 +78,11 @@ msgstr "ToDo lista"
 
 #: todoliststrconsts.listodolisted
 msgid "Listed"
-msgstr ""
+msgstr "Listázott"
 
 #: todoliststrconsts.listodolistedhint
 msgid "Add units listed in project inspector/package editor"
-msgstr ""
+msgstr "A Projektfelügyelőben / Csomagszerkesztőben listázott unit-ok hozzáadása"
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
@@ -106,11 +106,11 @@ msgstr "Prioritás"
 
 #: todoliststrconsts.listodoused
 msgid "Used"
-msgstr ""
+msgstr "Használt"
 
 #: todoliststrconsts.listodousedhint
 msgid "Add units used by main source file"
-msgstr ""
+msgstr "A főprogramban használt unit-ok hozzáadása"
 
 #: todoliststrconsts.listtodolcategory
 msgid "Category"

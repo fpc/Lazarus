@@ -83,12 +83,12 @@ msgstr "A(z) %s nem futtatható"
 #: lazutilsstrconsts.lrslistindexexceedsbounds
 msgctxt "lazutilsstrconsts.lrslistindexexceedsbounds"
 msgid "List index exceeds bounds (%d)"
-msgstr ""
+msgstr "A lista indexe a határon kívülre esik (%d)"
 
 #: lazutilsstrconsts.lrslistmustbeempty
 msgctxt "lazutilsstrconsts.lrslistmustbeempty"
 msgid "List must be empty"
-msgstr ""
+msgstr "A listának üresnek kell lennie"
 
 #: lazutilsstrconsts.lrsmodified
 msgctxt "lazutilsstrconsts.lrsmodified"

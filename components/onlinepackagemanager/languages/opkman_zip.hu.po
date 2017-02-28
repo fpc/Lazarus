@@ -56,8 +56,6 @@ msgid "Position/offset %d is larger than maximum supported %d."
 msgstr "A pozíció (%d) nagyobb mint a támogatott legnagyobb: %d"
 
 #: opkman_zip.serrunsupportedcompressionformat
-#, fuzzy
-#| msgid "Unsupported compression format %d"
 msgid "Unsupported compression format %d."
 msgstr "Nem támogatott tömörítési formátum: %d"
 

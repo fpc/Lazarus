@@ -364,7 +364,7 @@ msgstr "'%s' osztályú vezérlőnek nem lehet gyermeke egy '%s' osztályú vez�
 
 #: lclstrconsts.rscontrolhasnoparentformorframe
 msgid "Control '%s' has no parent form or frame"
-msgstr ""
+msgstr "A(z) '%s' vezérlőnek nincs szülő kerete vagy form-ja"
 
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
@@ -1331,7 +1331,7 @@ msgstr "Nem lehet letiltott vagy láthatatlan ablakot előtérbe hozni"
 
 #: lclstrconsts.scannotsetdesigntimeppi
 msgid "Cannot set design time PPI."
-msgstr ""
+msgstr "A PPI értéke nem változtatható meg tervezés közben."
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"

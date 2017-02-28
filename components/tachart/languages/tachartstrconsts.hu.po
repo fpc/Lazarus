@@ -57,36 +57,36 @@ msgstr "Bajszos dobozok"
 
 #: tachartstrconsts.rsbsbdiagonal
 msgid "backward-diagonal hatch"
-msgstr ""
+msgstr "Visszafelé-átlós vonalazás"
 
 #: tachartstrconsts.rsbsclear
 msgctxt "tachartstrconsts.rsbsclear"
 msgid "no fill"
-msgstr ""
+msgstr "Nincs kitöltés"
 
 #: tachartstrconsts.rsbscross
 msgid "crossed"
-msgstr ""
+msgstr "Négyzetháló"
 
 #: tachartstrconsts.rsbsdiagcross
 msgid "diagonally crossed"
-msgstr ""
+msgstr "Átlós négyzetháló"
 
 #: tachartstrconsts.rsbsfdiagonal
 msgid "forward-diagonal hatch"
-msgstr ""
+msgstr "Előre-átlós vonalazás"
 
 #: tachartstrconsts.rsbshorizontal
 msgid "horizontally hatched"
-msgstr ""
+msgstr "Vízszintes vonalazás"
 
 #: tachartstrconsts.rsbsimage
 msgid "image fill"
-msgstr ""
+msgstr "Kitöltés képpel"
 
 #: tachartstrconsts.rsbspattern
 msgid "pattern fill"
-msgstr ""
+msgstr "Kitöltés mintával"
 
 #: tachartstrconsts.rsbsplineseries
 msgid "B-Spline series"
@@ -94,11 +94,11 @@ msgstr "B-Spline"
 
 #: tachartstrconsts.rsbssolid
 msgid "solid fill"
-msgstr ""
+msgstr "Egyszerű kitöltés"
 
 #: tachartstrconsts.rsbsvertical
 msgid "vertically hatched"
-msgstr ""
+msgstr "Függőleges vonalazás"
 
 #: tachartstrconsts.rsbubbleseries
 msgid "Bubble series"
@@ -106,7 +106,7 @@ msgstr "Buborékok"
 
 #: tachartstrconsts.rscirclesymbol
 msgid "Circle"
-msgstr ""
+msgstr "Kör"
 
 #: tachartstrconsts.rscolormapseries
 msgid "Color map series"
@@ -118,7 +118,7 @@ msgstr "Állandó vonal"
 
 #: tachartstrconsts.rscrosssymbol
 msgid "Plus"
-msgstr ""
+msgstr "Plusz"
 
 #: tachartstrconsts.rscubicsplineseries
 msgid "Cubic spline series"
@@ -150,11 +150,11 @@ msgstr "Törlés"
 
 #: tachartstrconsts.rsdiagcrosssymbol
 msgid "Cross"
-msgstr ""
+msgstr "Kereszt"
 
 #: tachartstrconsts.rsdiamondsymbol
 msgid "Diamond"
-msgstr ""
+msgstr "Gyémánt"
 
 #: tachartstrconsts.rsdistancemeasurement
 msgid "Distance measurement"
@@ -162,7 +162,7 @@ msgstr "Távolságmérés"
 
 #: tachartstrconsts.rsdowntrianglesymbol
 msgid "Down triangle"
-msgstr ""
+msgstr "Háromszög (le)"
 
 #: tachartstrconsts.rsfieldseries
 msgid "Vector field series"
@@ -170,7 +170,7 @@ msgstr "Vektormezők"
 
 #: tachartstrconsts.rsfullstarsymbol
 msgid "Star (full)"
-msgstr ""
+msgstr "Csillag (teljes)"
 
 #: tachartstrconsts.rsfunctionseries
 msgid "Function series"
@@ -178,7 +178,7 @@ msgstr "Függvény"
 
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
-msgstr ""
+msgstr "Hatszög"
 
 #: tachartstrconsts.rshidden
 msgid "hidden"
@@ -186,11 +186,11 @@ msgstr "rejtett"
 
 #: tachartstrconsts.rshighbracketsymbol
 msgid "High bracket"
-msgstr ""
+msgstr "Zárójel (felső)"
 
 #: tachartstrconsts.rshorbarsymbol
 msgid "Horizontal bar"
-msgstr ""
+msgstr "Vízszintes vonal"
 
 #: tachartstrconsts.rsinvalidlogbase
 msgid "Logarithm base must be > 0 and <> 1."
@@ -210,11 +210,11 @@ msgstr "Balra"
 
 #: tachartstrconsts.rsleftbracketsymbol
 msgid "Left bracket"
-msgstr ""
+msgstr "Zárójel (bal)"
 
 #: tachartstrconsts.rslefttrianglesymbol
 msgid "Left triangle"
-msgstr ""
+msgstr "Háromszög (balra)"
 
 #: tachartstrconsts.rslinear
 msgid "Linear"
@@ -230,7 +230,7 @@ msgstr "Logaritmikus"
 
 #: tachartstrconsts.rslowbracketsymbol
 msgid "Low bracket"
-msgstr ""
+msgstr "Zárójel (alsó)"
 
 #: tachartstrconsts.rsmanhattanplotseries
 msgid "Manhattan plot series"
@@ -246,7 +246,7 @@ msgstr "Fel"
 
 #: tachartstrconsts.rsnosymbol
 msgid "(none)"
-msgstr ""
+msgstr "(semmi)"
 
 #: tachartstrconsts.rsopenhighlowcloseseries
 msgid "Open-high-low-close series"
@@ -274,7 +274,7 @@ msgstr "Tortaszeletek"
 
 #: tachartstrconsts.rspointsymbol
 msgid "Point"
-msgstr ""
+msgstr "Pont"
 
 #: tachartstrconsts.rspolarseries
 msgid "Polar series"
@@ -283,39 +283,39 @@ msgstr "Polár"
 #: tachartstrconsts.rspsclear
 msgctxt "tachartstrconsts.rspsclear"
 msgid "no line"
-msgstr ""
+msgstr "Nincs vonal"
 
 #: tachartstrconsts.rspsdash
 msgid "dashed line"
-msgstr ""
+msgstr "Szaggatott vonal"
 
 #: tachartstrconsts.rspsdashdot
 msgid "dash-dot"
-msgstr ""
+msgstr "Szakasz, pont"
 
 #: tachartstrconsts.rspsdashdotdot
 msgid "dash-dot-dot"
-msgstr ""
+msgstr "Szakasz, pont, pont"
 
 #: tachartstrconsts.rspsdot
 msgid "dotted line"
-msgstr ""
+msgstr "Pontozott vonal"
 
 #: tachartstrconsts.rspsinsideframe
 msgid "solid (inside frame)"
-msgstr ""
+msgstr "Egyszerű (keretben)"
 
 #: tachartstrconsts.rspspattern
 msgid "patterned line"
-msgstr ""
+msgstr "Mintázott vonal"
 
 #: tachartstrconsts.rspssolid
 msgid "solid line"
-msgstr ""
+msgstr "Egyszerű vonal"
 
 #: tachartstrconsts.rsrectanglesymbol
 msgid "Rectangle"
-msgstr ""
+msgstr "Téglalap"
 
 #: tachartstrconsts.rsright
 msgid "Right"
@@ -323,15 +323,15 @@ msgstr "Jobbra"
 
 #: tachartstrconsts.rsrightbracketsymbol
 msgid "Right bracket"
-msgstr ""
+msgstr "Zárójel (jobb)"
 
 #: tachartstrconsts.rsrighttrianglesymbol
 msgid "Right triangle"
-msgstr ""
+msgstr "Háromszög (jobbra)"
 
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"
-msgstr ""
+msgstr "Csillag (vonalak)"
 
 #: tachartstrconsts.rstop
 msgid "Top"
@@ -339,7 +339,7 @@ msgstr "Felülre"
 
 #: tachartstrconsts.rstrianglesymbol
 msgid "Triangle"
-msgstr ""
+msgstr "Háromszög"
 
 #: tachartstrconsts.rsuserdefined
 msgctxt "tachartstrconsts.rsuserdefined"
@@ -357,7 +357,7 @@ msgstr "Felhasználó által rajzolva"
 
 #: tachartstrconsts.rsvertbarsymbol
 msgid "Vertical bar"
-msgstr ""
+msgstr "Függőleges vonal"
 
 #: tachartstrconsts.rszoombyclick
 msgid "Zoom by click"
