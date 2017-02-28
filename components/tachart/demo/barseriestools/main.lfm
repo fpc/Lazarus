@@ -224,9 +224,9 @@ object MainForm: TMainForm
     end
     object DataPointDragTool: TDataPointDragTool
       Shift = [ssRight]
+      OnBeforeMouseDown = DataPointDragToolBeforeMouseDown
       Targets = [nptPoint, nptXList, nptYList]
       OnDrag = DataPointDragToolDrag
-      OnDragStart = DataPointDragToolDragStart
     end
   end
   object ChartStyles: TChartStyles

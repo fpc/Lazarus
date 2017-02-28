@@ -39,9 +39,9 @@ type
     LogSplitter: TSplitter;
     procedure DataPointClickToolPointClick(ATool: TChartTool;
       APoint: TPoint);
+    procedure DataPointDragToolBeforeMouseDown(ATool: TChartTool; APoint: TPoint
+      );
     procedure DataPointDragToolDrag(ASender: TDataPointDragTool;
-      var AGraphPoint: TDoublePoint);
-    procedure DataPointDragToolDragStart(ASender: TDataPointDragTool;
       var AGraphPoint: TDoublePoint);
     procedure DataPointHintToolHint(ATool: TDataPointHintTool;
       const APoint: TPoint; var AHint: String);
@@ -49,8 +49,8 @@ type
     procedure Cb100PercentChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ToolTargetChanged(Sender: TObject);
+
   private
-    FDragStart: TDoublePoint;
 
   public
 
@@ -66,8 +66,10 @@ implementation
 uses
   LCLType;
 
+
 { TMainForm }
 
+{ Flip x and y axes of the chart }
 procedure TMainForm.CbHorizontalChange(Sender: TObject);
 begin
   if CbHorizontal.Checked then
@@ -97,15 +99,17 @@ begin
   end;
 end;
 
+{ Normalize the stacked bars to 100% }
 procedure TMainForm.Cb100PercentChange(Sender: TObject);
 begin
   if Cb100Percent.Checked then
     BarSeriesREDYELLOW.Source := CalculatedChartSource
   else
     BarSeriesREDYELLOW.Source := ListChartSourceREDYELLOW;
-//  CalculatedChartSource.Percentage := Cb100Percent.Checked;
 end;
 
+{ Every click detected by the DatapointClickTool creates an entry in the
+  log memo }
 procedure TMainForm.DataPointClickToolPointClick(ATool: TChartTool;
   APoint: TPoint);
 var
@@ -133,6 +137,18 @@ begin
   end;
 end;
 
+{ Prevent an exception if the DragTool wants to change the non-editable
+  calculated chart source }
+procedure TMainForm.DataPointDragToolBeforeMouseDown(ATool: TChartTool;
+  APoint: TPoint);
+begin
+  if Cb100Percent.Checked then begin
+    ShowMessage('Please uncheck the 100% checkbox.');
+    ATool.Handled;
+  end;
+end;
+
+{ Make sure to keep x value fixed (or y value, if series is rotated) }
 procedure TMainForm.DataPointDragToolDrag(ASender: TDataPointDragTool;
   var AGraphPoint: TDoublePoint);
 var
@@ -142,15 +158,10 @@ begin
   if ser.IsRotated then
     AGraphPoint.Y := ASender.Origin.Y
   else
-    AGraphPoint.X := ASender.Origin.X;    // Keep x value fixed
+    AGraphPoint.X := ASender.Origin.X;
 end;
 
-procedure TMainForm.DataPointDragToolDragStart(ASender: TDataPointDragTool;
-  var AGraphPoint: TDoublePoint);
-begin
-  FDragStart := AGraphPoint;
-end;
-
+{ Prepare the text for the hint popup window of the DataPointHintTool }
 procedure TMainForm.DataPointHintToolHint(ATool: TDataPointHintTool;
   const APoint: TPoint; var AHint: String);
 var
@@ -166,9 +177,9 @@ begin
   end;
 
   if ser <> nil then begin
-    ttl := ser.Title;
     if yidx > 0 then
-      ttl := TBarSeries(ser).Styles.Styles[yidx].Text;
+      ttl := TBarSeries(ser).Styles.Styles[yidx].Text else
+      ttl := ser.Title;
     AHint := Format(
       'Mouse over "%s": point #%d, x value  %.1f (%s), y value %.1f',
       [ ttl, idx, ser.GetXValue(idx), ListChartSourceLABELS.Item[idx]^.Text,
@@ -192,6 +203,8 @@ begin
   CbHorizontalChange(nil);
 end;
 
+{ Change the clicking behavior of the click and hint tools by modifying their
+  Targets. }
 procedure TMainForm.ToolTargetChanged(Sender: TObject);
 begin
   if Sender = RbToolTargetDatapoint then begin
