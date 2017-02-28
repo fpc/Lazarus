@@ -149,6 +149,8 @@ type
 
     function Calculate(AX: Double): Double;
     procedure Draw(ADrawer: IChartDrawer); override;
+    function GetNearestPoint(const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; override;
   published
     property Active default true;
     property AxisIndexX;
@@ -164,6 +166,7 @@ type
     property Pointer;
     property Step: TFuncSeriesStep
       read FStep write SetStep default DEF_SPLINE_STEP;
+    property ToolTargets default [nptPoint, nptCustom];
     property OnCustomDrawPointer;
     property OnGetPointerStyle;
   end;
@@ -235,6 +238,7 @@ type
     property ShowInLegend;
     property Source;
     property Title;
+    property ToolTargets default [nptPoint, nptCustom];
     property ZPosition;
     property OnCustomDrawPointer;
     property OnGetPointerStyle;
@@ -314,6 +318,7 @@ type
     property Pen: TChartPen read FPen write SetPen;
     property Pointer;
     property Source;
+    property ToolTargets default [nptPoint, nptCustom];
     property Step: TFuncSeriesStep read FStep write SetStep default DEF_FIT_STEP;
     property OnCalcGoodnessOfFit: TCalcGoodnessOfFitEvent
       read FOnCalcGoodnessOfFit write FOnCalcGoodnessOfFit;
@@ -868,6 +873,7 @@ end;
 constructor TBSplineSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ToolTargets := [nptPoint, nptCustom];
   FDegree := DEF_SPLINE_DEGREE;
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;
@@ -968,6 +974,49 @@ begin
     p := nil;
 
   AItems.Add(TLegendItemLinePointer.Create(cp, p, LegendTextSingle));
+end;
+
+function TBSplineSeries.GetNearestPoint(
+  const AParams: TNearestPointParams;
+  out AResults: TNearestPointResults): Boolean;
+var
+  x, y: Double;
+begin
+  Result := inherited GetNearestPoint(AParams, AResults);
+
+  if (not Result) and (nptCustom in ToolTargets) and (nptCustom in AParams.FTargets)
+  then begin
+    x := GraphToAxisX(ParentChart.XImageToGraph(AParams.FPoint.X));
+    y := Calculate(x);
+    AResults.FValue := DoublePoint(x, y);
+    AResults.FImg := AParams.FPoint;
+    AResults.FIndex := -1;
+    AResults.FXIndex := -1;
+    AResults.FYIndex := -1;
+
+    AResults.FDist := 0;
+    Result := not IsNaN(y);
+  end;
+
+  (*
+  if not Result then
+    for s in FSplines do begin
+      if s.IsFewPoints or (s.FIsUnorderedX and not IsUnorderedVisible) then
+        continue;
+      with TDrawFuncHelper.Create(Self, s.FIntervals, @s.Calculate, Step) do
+        try
+          if not GetNearestPoint(AParams, r) or
+             Result and (AResults.FDist <= r.FDist)
+          then
+            continue;
+          AResults := r;
+          AResults.FYIndex := -1;
+          Result := true;
+        finally
+          Free;
+        end;
+    end;
+    *)
 end;
 
 procedure TBSplineSeries.InternalPrepareGraphPoints;
@@ -1108,6 +1157,7 @@ end;
 constructor TCubicSplineSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ToolTargets := [nptPoint, nptCustom];
   FBadDataPen := TBadDataChartPen.Create;
   FBadDataPen.OnChange := @StyleChanged;
   FPen := TChartPen.Create;
@@ -1237,22 +1287,24 @@ var
   r: TNearestPointResults;
 begin
   Result := inherited GetNearestPoint(AParams, AResults);
-  for s in FSplines do begin
-    if s.IsFewPoints or (s.FIsUnorderedX and not IsUnorderedVisible) then
-      continue;
-    with TDrawFuncHelper.Create(Self, s.FIntervals, @s.Calculate, Step) do
-      try
-        if
-          not GetNearestPoint(AParams, r) or
-          Result and (AResults.FDist <= r.FDist)
-        then
-          continue;
-        AResults := r;
-        Result := true;
-      finally
-        Free;
-      end;
-  end;
+  if (not Result) and (nptCustom in ToolTargets) and (nptCustom in AParams.FTargets)
+  then
+    for s in FSplines do begin
+      if s.IsFewPoints or (s.FIsUnorderedX and not IsUnorderedVisible) then
+        continue;
+      with TDrawFuncHelper.Create(Self, s.FIntervals, @s.Calculate, Step) do
+        try
+          if not GetNearestPoint(AParams, r) or
+             Result and (AResults.FDist <= r.FDist)
+          then
+            continue;
+          AResults := r;
+          AResults.FYIndex := -1;
+          Result := true;
+        finally
+          Free;
+        end;
+    end;
 end;
 
 function TCubicSplineSeries.IsFewPointsVisible: Boolean;
@@ -1402,6 +1454,7 @@ end;
 constructor TFitSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ToolTargets := [nptPoint, nptCustom];
   FFitEquation := fePolynomial;
   FFitRange := TFitSeriesRange.Create(Self);
   FDrawFitRangeOnly := true;
@@ -1559,20 +1612,23 @@ function TFitSeries.GetNearestPoint(
 var
   de : TIntervalList;
 begin
-  Result := false;
-  AResults.FIndex := -1;
-  ExecFit;
-  if State <> fpsValid then exit;
-  de := PrepareIntervals;
-  try
-    with TDrawFuncHelper.Create(Self, de, @Calculate, Step) do
-      try
-        Result := GetNearestPoint(AParams, AResults);
-      finally
-        Free;
-      end;
-  finally
-    de.Free;
+  Result := inherited GetNearestPoint(AParams, AResults);
+  if (not Result) and (nptCustom in ToolTargets) and (nptCustom in AParams.FTargets)
+  then begin
+    ExecFit;
+    if State <> fpsValid then exit(false);
+    de := PrepareIntervals;
+    try
+      with TDrawFuncHelper.Create(Self, de, @Calculate, Step) do
+        try
+          Result := GetNearestPoint(AParams, AResults);
+          if Result then AResults.FYIndex := -1;
+        finally
+          Free;
+        end;
+    finally
+      de.Free;
+    end;
   end;
 end;
 

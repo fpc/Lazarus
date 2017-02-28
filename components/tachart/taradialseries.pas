@@ -699,10 +699,13 @@ var
   gp: TDoublePoint;
   i: Integer;
 begin
+  Result := false;
   AResults.FDist := Sqr(AParams.FRadius) + 1;  // the dist func does not calc sqrt
   AResults.FIndex := -1;
   AResults.FXIndex := 0;
   AResults.FYIndex := 0;
+  if Length(FAngleCache) = 0 then
+    exit;
 
   dist := AResults.FDist;
   for i := 0 to Count - 1 do begin
@@ -719,7 +722,7 @@ begin
 
     AResults.FDist := dist;
     AResults.FIndex := i;
-    AResults.FValue := DoublePoint(gp.y*cos(gp.x), gp.y*sin(gp.x)); //gp;
+    AResults.FValue := DoublePoint(gp.y*cos(gp.x), gp.y*sin(gp.x));
     AResults.FImg := ParentChart.GraphToImage(gp);
     if dist = 0 then break;
   end;
@@ -751,7 +754,7 @@ var
   r, phi: Double;
 begin
   if not InRange(AIndex, 0, Count - 1) then exit;
-  p := GraphToAxis(ANewPos) - DoublePoint(OriginX, OriginY);
+  p := ANewPos - DoublePoint(OriginX, OriginY);
   r := Sqrt(sqr(p.x) + sqr(p.y));
   phi := arctan2(p.y, p.x);
   with ListSource do begin
