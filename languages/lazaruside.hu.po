@@ -4300,7 +4300,7 @@ msgstr "Hozzáadás a unit keresési útvonalakhoz?"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
-msgstr "Unit felület hozzáadása"
+msgstr "Az \"interfaces\" unit hozzáadása"
 
 #: lazarusidestrconsts.lisaddunitnotrecommended
 msgid "Add unit (not recommended)"
@@ -11950,7 +11950,7 @@ msgstr "&OK"
 
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
-msgstr "Online súgó"
+msgstr "Hálózati súgó"
 
 #: lazarusidestrconsts.lismenuopen
 msgid "&Open ..."
@@ -12016,7 +12016,7 @@ msgstr "&Projekt"
 
 #: lazarusidestrconsts.lismenuprojectinspector
 msgid "Project Inspector"
-msgstr "Projekt felügyelő"
+msgstr "Projektfelügyelő"
 
 #: lazarusidestrconsts.lismenuprojectoptions
 msgid "Project Options ..."
@@ -13082,7 +13082,7 @@ msgstr " a(z) %s csomagban"
 
 #: lazarusidestrconsts.lisoftheprojectinspector
 msgid " of the Project Inspector"
-msgstr " a Projekt felügyelőben"
+msgstr " a Projektfelügyelőben"
 
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
@@ -14413,7 +14413,7 @@ msgstr "A(z) \"%s\" csomag meg lett jelölve telepítésre.%sJelenleg csak stati
 
 #: lazarusidestrconsts.lispkgmangtheprojectrequiresthepackagebutitwasnotfound
 msgid "The project requires the package \"%s\".%sBut it was not found. See Project -> Project Inspector."
-msgstr "A projekthez szükséges a(z)\"%s\" csomag.%sDe ez nem található. Ellenőrizze a Projekt -> Projekt felügyelőben."
+msgstr "A projekthez szükséges a(z)\"%s\" csomag.%sDe ez nem található. Ellenőrizze a Projekt -> Projektfelügyelőben."
 
 #: lazarusidestrconsts.lispkgmangtherearetwounitswiththesamename1from2from
 msgid "There are two units with the same name:%s1. \"%s\" from %s%s2. \"%s\" from %s"
@@ -15066,7 +15066,7 @@ msgstr "Törli a függőséget: %s?"
 
 #: lazarusidestrconsts.lisprojinspprojectinspector
 msgid "Project Inspector - %s"
-msgstr "Projekt felügyelő - %s"
+msgstr "Projektfelügyelő - %s"
 
 #: lazarusidestrconsts.lisprojinspremovedrequiredpackages
 msgctxt "lazarusidestrconsts.lisprojinspremovedrequiredpackages"
@@ -15808,7 +15808,7 @@ msgstr "Nézze meg az üzeneteket."
 
 #: lazarusidestrconsts.lisseeprojectprojectinspector
 msgid "%sSee Project -> Project Inspector"
-msgstr "%sLásd Projekt -> Projekt felügyelő"
+msgstr "%sLásd Projekt -> Projektfelügyelő"
 
 #: lazarusidestrconsts.lisselectahelpitem
 msgid "Select a help item:"
@@ -16761,7 +16761,7 @@ msgstr "A projekt fordítóbeállításai és a direktívák a fő forrásban el
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
-msgstr "A projekt nem használja az LCL unit felületeket, amelyekre szükség van az LCLBase-hez.%sKülönös összefűzési hibák jelentkeznek majd az LCL felületek nélküli használatkor."
+msgstr "A projekt nem használja az LCL \"interfaces\" unit-ját, amelyre szükség van az LCLBase-hez.%sKülönös összefűzési hibák jelentkeznek az LCL \"interfaces\" unit nélküli használatkor."
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."
@@ -18220,11 +18220,11 @@ msgstr "Igen"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"
-msgstr "Ez letiltható az egyes form-ok esetén a csomagkezelőben"
+msgstr "Ez letiltható az egyes form-ok esetén a Csomagszerkesztőben"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
 msgid "You can disable this for individual forms via the popup menu in the project inspector"
-msgstr "Ez letiltható az egyes form-ok esetén a helyi menüben vagy a Projekt felügyelőben"
+msgstr "Ez letiltható az egyes form-ok esetén a helyi menüben vagy a Projektfelügyelőben"
 
 #: lazarusidestrconsts.lisyoucandownloadfpcandthefpcsourcesfromhttpsourcefor
 msgid "You can download FPC and the FPC sources from http://sourceforge.net/projects/lazarus/?source=directory"
