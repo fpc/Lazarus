@@ -80,6 +80,7 @@ var
   TmpVisible: Boolean;
 begin
   Inc(FCurPage);
+  FBmp.Clear;
   FBmp.SetSize(Round(CurReport.EMFPages[FCurPage - 1]^.PrnInfo.Pgw * FZoom),
     Round(CurReport.EMFPages[FCurPage - 1]^.PrnInfo.Pgh * FZoom));
   FBmp.Canvas.Brush.Color := FColor;
