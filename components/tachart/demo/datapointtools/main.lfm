@@ -1,0 +1,335 @@
+object MainForm: TMainForm
+  Left = 280
+  Height = 488
+  Top = 130
+  Width = 637
+  Caption = 'Datapoint Tools Demo'
+  ClientHeight = 488
+  ClientWidth = 637
+  OnCreate = FormCreate
+  LCLVersion = '1.7'
+  object TabControl: TTabControl
+    Left = 0
+    Height = 347
+    Top = 0
+    Width = 637
+    MultiLine = True
+    OnChange = TabControlChange
+    TabIndex = 9
+    Tabs.Strings = (
+      'Line series'
+      'Bar series'
+      'Area series'
+      'Polar series'
+      'Cubic spline series'
+      'BSpline series'
+      'Fit series'
+      'Open-High-Low-Close series'
+      'Box-Whisker series'
+      'Bubble series'
+      'Field series'
+      'Function series'
+      'Constant line'
+    )
+    Align = alClient
+    TabOrder = 0
+    object Chart: TChart
+      Left = 2
+      Height = 302
+      Top = 43
+      Width = 633
+      AutoFocus = True
+      AxisList = <      
+        item
+          Minors = <>
+          Range.Max = 10
+          Range.UseMax = True
+          Range.UseMin = True
+          Title.LabelFont.Orientation = 900
+        end      
+        item
+          Intervals.MaxLength = 80
+          Intervals.MinLength = 30
+          Alignment = calBottom
+          Minors = <>
+        end>
+      Foot.Brush.Color = clBtnFace
+      Foot.Font.Color = clBlue
+      Legend.Visible = True
+      Title.Brush.Color = clBtnFace
+      Title.Brush.Style = bsClear
+      Title.Font.Color = clBlue
+      Title.Text.Strings = (
+        'Datapoint tools demo'
+      )
+      Title.Visible = True
+      Toolset = Toolset
+      Align = alClient
+      Color = clDefault
+      object LineSeries: TLineSeries
+        Legend.Multiplicity = lmStyle
+        Active = False
+        Title = 'Line series'
+        Pointer.Style = psCircle
+        ShowPoints = True
+        Stacked = True
+        Source = ListChartSource
+        Styles = ChartStyles
+      end
+      object BarSeries: TBarSeries
+        Legend.Multiplicity = lmStyle
+        Active = False
+        Title = 'Bar series'
+        BarBrush.Color = clRed
+        BarWidthStyle = bwPercentMin
+        Source = ListChartSource
+        Styles = ChartStyles
+      end
+      object AreaSeries: TAreaSeries
+        Legend.Multiplicity = lmStyle
+        Active = False
+        Title = 'Area series'
+        AreaLinesPen.Style = psClear
+        Source = ListChartSource
+        Styles = ChartStyles
+      end
+      object PolarSeries: TPolarSeries
+        Active = False
+        Title = 'Polar series'
+        LinePen.Color = clRed
+        Pointer.HorizSize = 5
+        Pointer.Style = psDiamond
+        Pointer.VertSize = 5
+        ShowPoints = True
+        Source = ListChartSource
+      end
+      object CubicSplineSeries: TCubicSplineSeries
+        Active = False
+        Title = 'Cubic spline series'
+        Pointer.Brush.Color = clRed
+        Pointer.HorizSize = 6
+        Pointer.Style = psFullStar
+        Pointer.VertSize = 6
+        Source = ListChartSource
+        Pen.Color = clRed
+      end
+      object BSplineSeries: TBSplineSeries
+        Active = False
+        Title = 'BSpline series'
+        Source = ListChartSource
+        Pen.Color = clGreen
+        Pointer.Brush.Color = clGreen
+        Pointer.HorizSize = 7
+        Pointer.Style = psHexagon
+        Pointer.VertSize = 7
+      end
+      object OHLCSeries: TOpenHighLowCloseSeries
+        Active = False
+        Title = 'OHLC series'
+        CandlestickDownBrush.Color = clRed
+        CandlestickLinePen.Width = 2
+        CandlestickUpBrush.Color = clGreen
+        DownLinePen.Color = clRed
+        DownLinePen.Width = 2
+        LinePen.Color = clGreen
+        LinePen.Width = 2
+        Mode = mOHLC
+      end
+      object BoxWhiskerSeries: TBoxAndWhiskerSeries
+        Active = False
+        Title = 'Box-and-whisker series'
+        BoxBrush.Color = clSkyBlue
+        WidthStyle = bwsPercentMin
+      end
+      object BubbleSeries: TBubbleSeries
+        Active = False
+        Title = 'Bubble series'
+        BubbleBrush.Color = clSkyBlue
+      end
+      object ConstantLineSeries: TConstantLine
+        Active = False
+        Pen.Color = clFuchsia
+        Position = 4.5
+        Title = 'Constant line'
+      end
+      object FuncSeries: TFuncSeries
+        Active = False
+        Extent.UseXMax = True
+        Extent.UseXMin = True
+        Extent.XMax = 10
+        Title = 'Function series'
+        OnCalculate = FuncSeriesCalculate
+        Pen.Color = clBlue
+      end
+      object FieldSeries: TFieldSeries
+        Active = False
+        Title = 'Field series'
+        Arrow.Length = 20
+        Arrow.Visible = True
+        Arrow.Width = 10
+        Pen.Color = clGreen
+      end
+      object FitSeries: TFitSeries
+        Active = False
+        Title = 'Fit series'
+        FitEquation = feLinear
+        ParamCount = 2
+        Pen.Color = clBlue
+        Pointer.Brush.Color = 16750487
+        Pointer.HorizSize = 5
+        Pointer.Style = psCircle
+        Pointer.VertSize = 5
+      end
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 141
+    Top = 347
+    Width = 637
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 141
+    ClientWidth = 637
+    TabOrder = 1
+    object CbDragXY: TCheckBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      Left = 8
+      Height = 19
+      Top = 8
+      Width = 113
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 8
+      BorderSpacing.Bottom = 8
+      Caption = 'Drag both x and y'
+      Checked = True
+      OnChange = CbDragXYChange
+      State = cbChecked
+      TabOrder = 0
+    end
+    object DatapointInfo: TLabel
+      AnchorSideLeft.Control = CbDragXY
+      AnchorSideLeft.Side = asrBottom
+      Left = 145
+      Height = 15
+      Top = 11
+      Width = 73
+      BorderSpacing.Left = 24
+      Caption = 'DatapointInfo'
+      ParentColor = False
+    end
+    object LblNOTE: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Label2
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 8
+      Height = 15
+      Top = 118
+      Width = 621
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 8
+      BorderSpacing.Right = 8
+      BorderSpacing.Bottom = 8
+      Caption = 'lblNOTE'
+      ParentColor = False
+      WordWrap = True
+    end
+    object Label2: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = CbDragXY
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 8
+      Height = 75
+      Top = 35
+      Width = 621
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 8
+      BorderSpacing.Right = 8
+      BorderSpacing.Bottom = 8
+      Caption = 'USAGE:'#13#10'Drag a datapoint with the left mouse button.'#13#10'Press CTRL for crosshair cursor, see a datapoint info below the chart.'#13#10'Press SHIFT to see a hint window with the datapoint info.'#13#10'CTRL+Left-click to see the hint windows in a message box.'
+      ParentColor = False
+    end
+    object CbCandleStick: TCheckBox
+      AnchorSideLeft.Control = DatapointInfo
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CbDragXY
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 545
+      Height = 19
+      Top = 8
+      Width = 84
+      Anchors = [akTop, akRight]
+      BorderSpacing.Left = 24
+      BorderSpacing.Right = 8
+      Caption = 'Candle stick'
+      OnChange = CbCandleStickChange
+      TabOrder = 1
+      Visible = False
+    end
+  end
+  object Toolset: TChartToolset
+    left = 256
+    top = 72
+    object BubbleSeriesDatapointDragTool: TDataPointDragTool
+      Shift = [ssLeft]
+      AffectedSeries = '8'
+      GrabRadius = 12
+    end
+    object FieldSeriesDatapointDragTool: TDataPointDragTool
+      Shift = [ssLeft]
+      GrabRadius = 12
+    end
+    object DataPointDragTool: TDataPointDragTool
+      Shift = [ssLeft]
+      AffectedSeries = '0,1,2,3,4,5,6,7'
+      GrabRadius = 12
+      Targets = [nptPoint, nptXList, nptYList]
+      OnDrag = DataPointDragToolDragXY
+    end
+    object ClickTool: TDataPointClickTool
+      Shift = [ssCtrl, ssLeft]
+      GrabRadius = 12
+      OnPointClick = ClickToolPointClick
+    end
+    object HintTool: TDataPointHintTool
+      Shift = [ssShift]
+      GrabRadius = 12
+      OnHint = HintToolHint
+    end
+    object CrosshairTool: TDataPointCrosshairTool
+      Shift = [ssCtrl]
+      OnAfterKeyUp = CrosshairToolAfterKeyUp
+      OnAfterMouseUp = CrosshairToolAfterMouseUp
+      GrabRadius = 12
+      OnDraw = CrosshairToolDraw
+      Size = 12
+    end
+  end
+  object ChartStyles: TChartStyles
+    Styles = <    
+      item
+        Brush.Color = clRed
+        Pen.Color = clRed
+        Text = 'Red'
+      end    
+      item
+        Brush.Color = clBlue
+        Pen.Color = clBlue
+        Text = 'Blue'
+      end>
+    left = 256
+    top = 144
+  end
+  object ListChartSource: TListChartSource
+    YCount = 2
+    left = 112
+    top = 72
+  end
+end
