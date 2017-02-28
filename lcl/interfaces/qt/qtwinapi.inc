@@ -4851,7 +4851,6 @@ var
   AName: WideString;
 begin
   Result := False;
-  exit; // exit for now since there''s bug with THintWindow.Font
   if AStockFont = sfMenu then
   begin
     AName := 'MenuTitle';
@@ -4872,6 +4871,7 @@ begin
         Font.Style := Font.Style + [fsUnderline];
       if QFont_strikeOut(QtFont) then
         Font.Style := Font.Style + [fsStrikeOut];
+      Font.Color := clMenuText;
       Result := True;
     finally
       QWidget_destroy(AMenu);
@@ -4898,6 +4898,11 @@ begin
         Font.Style := Font.Style + [fsUnderline];
       if QFont_strikeOut(QtFont) then
         Font.Style := Font.Style + [fsStrikeOut];
+
+      {comment font.color for check if hintfont works correct}
+      if AStockFont = sfHint then
+        Font.Color := clInfoText;
+
       Result := True;
     finally
       QFont_destroy(QtFont);
