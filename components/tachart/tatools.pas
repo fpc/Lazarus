@@ -1832,7 +1832,7 @@ procedure TDataPointHintTool.MouseMove(APoint: TPoint);
 
   function GetHintText: String;
   begin
-    if UseDefaultHintText then begin
+    if UseDefaultHintText and (PointIndex > -1) then begin
       if Series is TChartSeries then
         Result := (Series as TChartSeries).FormattedMark(PointIndex)
       else
