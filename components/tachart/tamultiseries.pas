@@ -619,14 +619,14 @@ begin
     if (AResults.FYIndex = 0) then
       exit;
 
-  if Result and (nptPoint in AParams.FTargets) and (nptPoint in ToolTargets) then
+  if Result and (nptYList in AParams.FTargets) and (nptYList in ToolTargets) then
     if (AResults.FYIndex = 1) then begin
       item := Source[AResults.FIndex];
       GetBubbleRect(item, iRect);
       rx := (iRect.Right - iRect.Left) div 2;
       ry := (iRect.Bottom - iRect.Top) div 2;
       p := ParentChart.GraphToImage(AxisToGraph(item^.Point));
-      phi := -arctan2(AParams.FPoint.Y - p.y, AParams.FPoint.X - p.x);
+      phi := arctan2(AParams.FPoint.Y - p.y, AParams.FPoint.X - p.x);
       SinCos(phi, sinphi, cosphi);
       AResults.FImg := p + Point(round(rx * cosPhi), round(ry * sinPhi));
       exit;
