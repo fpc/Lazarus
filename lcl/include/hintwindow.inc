@@ -265,12 +265,19 @@ function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String;
 var
   Flags: Cardinal;
   uh: HDC;
+  Mon: TMonitor;
 begin
+  Mon := Screen.MonitorFromPoint(Point(Left, Top)); // don't use Monitor property - it returns wrong monitor for invisible windows.
+  if Mon=nil then
+    Mon := Screen.Monitors[0];
+  if Application.Scaled and Scaled and (Mon<>nil) and (PixelsPerInch<>Mon.PixelsPerInch) then
+    AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, Mon.PixelsPerInch, 0, 0);
+
   if AHint = '' then
     Exit(Rect(0, 0, 0, 0));
   if MaxWidth <= 0 then
-    MaxWidth := Screen.Width - 4 * HintBorderWidth;
-  Result := Rect(0, 0, MaxWidth, Screen.Height - 4 * HintBorderWidth);
+    MaxWidth := Mon.Width - 4 * HintBorderWidth;
+  Result := Rect(0, 0, MaxWidth, Mon.Height - 4 * HintBorderWidth);
   Flags := DT_CALCRECT or DT_NOPREFIX or DT_WORDBREAK;
   if UseRightToLeftAlignment then Flags := Flags or DT_RTLREADING;
   uh := Canvas.GetUpdatedHandle([csFontValid]);
