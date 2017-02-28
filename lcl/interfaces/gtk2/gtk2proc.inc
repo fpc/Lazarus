@@ -6509,7 +6509,6 @@ var
     LCLHeight:=LCLControl.Height;
     WidthHeightChanged:=(LCLWidth<>GtkWidth) or (LCLHeight<>GtkHeight);
     if LCLControl.ClientRectNeedsInterfaceUpdate then begin
-      WidthHeightChanged:=true;
       //DebugLn(['UpdateLCLSize InvalidateClientRectCache ',DbgSName(LCLControl)]);
       LCLControl.InvalidateClientRectCache(false);
     end;
