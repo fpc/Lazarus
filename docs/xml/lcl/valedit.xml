@@ -144,13 +144,12 @@
 
 <!-- class Visibility: default -->
 <element name="TValueListEditor">
-<short/>
-<descr>
-</descr>
+<short>A visual component for editing Key-Value pairs.</short>
+<descr>Displays a two column grid where the first column is read only, listing the key names. The second column is for editing the associated values. The value colunm supports masks, combobox selection and popup-dialog though an ellipse-button.</descr>
 <errors>
 </errors>
-<seealso>
-</seealso>
+<seealso><link id="#LCL.Grids.TStringGrid">TStringGrid</link>
+        </seealso>
 </element>
 
 <!-- variable Visibility: private -->
@@ -750,7 +749,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.AlternateColor">
+<element name="TValueListEditor.AlternateColor" link="#LCLBase.Grids.TCustomGrid.AlternateColor">
 <short/>
 <descr>
 </descr>
@@ -759,7 +758,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.Anchors">
+<element name="TValueListEditor.Anchors" link="#LCLBase.Controls.TControl.Anchors">
 <short/>
 <descr>
 </descr>
@@ -768,7 +767,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.AutoAdvance">
+<element name="TValueListEditor.AutoAdvance" link="#LCLBase.Grids.TCustomGrid.AutoAdvance">
 <short/>
 <descr>
 </descr>
@@ -777,7 +776,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.AutoEdit">
+<element name="TValueListEditor.AutoEdit" link="#LCLBase.Grids.TCustomGrid.AutoEdit">
 <short/>
 <descr>
 </descr>
@@ -795,7 +794,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.BiDiMode">
+<element name="TValueListEditor.BiDiMode" link="#LCLBase.Controls.TControl.BiDiMode">
 <short/>
 <descr>
 </descr>
@@ -804,7 +803,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.BorderSpacing">
+<element name="TValueListEditor.BorderSpacing" link="#LCLBase.Controls.TControl.BorderSpacing">
 <short/>
 <descr>
 </descr>
@@ -813,7 +812,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.BorderStyle">
+<element name="TValueListEditor.BorderStyle" link="#LCLBase.Controls.TWinControl.BorderStyle">
 <short/>
 <descr>
 </descr>
@@ -822,7 +821,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.Color">
+<element name="TValueListEditor.Color" link="#LCLBase.Controls.TControl.Color">
 <short/>
 <descr>
 </descr>
@@ -831,7 +830,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.Constraints">
+<element name="TValueListEditor.Constraints" link="#LCLBase.Controls.TControl.Constraints">
 <short/>
 <descr>
 </descr>
@@ -840,7 +839,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.DefaultColWidth">
+<element name="TValueListEditor.DefaultColWidth" link="#LCLBase.Grids.TCustomGrid.DefaultColWidth">
 <short/>
 <descr>
 </descr>
@@ -849,7 +848,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.DefaultDrawing">
+<element name="TValueListEditor.DefaultDrawing" link="#LCLBase.Grids.TCustomGrid.DefaultDrawing">
 <short/>
 <descr>
 </descr>
@@ -858,7 +857,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.DefaultRowHeight">
+<element name="TValueListEditor.DefaultRowHeight" link="#LCLBase.Grids.TCustomGrid.DefaultRowHeight">
 <short/>
 <descr>
 </descr>
@@ -867,7 +866,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.DragCursor">
+<element name="TValueListEditor.DragCursor" link="#LCLBase.Controls.TControl.DragCursor">
 <short/>
 <descr>
 </descr>
@@ -876,7 +875,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.DragKind">
+<element name="TValueListEditor.DragKind" link="#LCLBase.Controls.TControl.DragKind">
 <short/>
 <descr>
 </descr>
@@ -885,7 +884,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.DragMode">
+<element name="TValueListEditor.DragMode" link="#LCLBase.Controls.TControl.DragMode">
 <short/>
 <descr>
 </descr>
@@ -894,7 +893,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.Enabled">
+<element name="TValueListEditor.Enabled" link="#LCLBase.Controls.TControl.Enabled">
 <short/>
 <descr>
 </descr>
@@ -903,7 +902,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.ExtendedSelect">
+<element name="TValueListEditor.ExtendedSelect" link="#LCLBase.Grids.TCustomGrid.ExtendedSelect">
 <short/>
 <descr>
 </descr>
@@ -912,7 +911,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.FixedColor">
+<element name="TValueListEditor.FixedColor" link="#LCLBase.Grids.TCustomGrid.FixedColor">
 <short/>
 <descr>
 </descr>
@@ -921,7 +920,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.FixedCols">
+<element name="TValueListEditor.FixedCols" link="#LCLBase.Grids.TCustomGrid.FixedCols">
 <short/>
 <descr>
 </descr>
@@ -939,7 +938,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.Flat">
+<element name="TValueListEditor.Flat" link="#LCLBase.Grids.TCustomGrid.Flat">
 <short/>
 <descr>
 </descr>
@@ -948,7 +947,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.Font">
+<element name="TValueListEditor.Font" link="#LCLBase.Controls.TControl.Font">
 <short/>
 <descr>
 </descr>
@@ -957,7 +956,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.GridLineWidth">
+<element name="TValueListEditor.GridLineWidth" link="#LCLBase.Grids.TCustomGrid.GridLineWidth">
 <short/>
 <descr>
 </descr>
@@ -966,7 +965,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.HeaderHotZones">
+<element name="TValueListEditor.HeaderHotZones" link="#LCLBase.Grids.TCustomGrid.HeaderHotZones">
 <short/>
 <descr>
 </descr>
@@ -975,7 +974,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.HeaderPushZones">
+<element name="TValueListEditor.HeaderPushZones" link="#LCLBase.Grids.TCustomGrid.HeaderPushZones">
 <short/>
 <descr>
 </descr>
@@ -993,7 +992,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.ParentBiDiMode">
+<element name="TValueListEditor.ParentBiDiMode" link="#LCLBase.Controls.TControl.ParentBiDiMode">
 <short/>
 <descr>
 </descr>
@@ -1002,7 +1001,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.ParentColor">
+<element name="TValueListEditor.ParentColor" link="#LCLBase.Controls.TControl.ParentColor">
 <short/>
 <descr>
 </descr>
@@ -1011,7 +1010,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.ParentFont">
+<element name="TValueListEditor.ParentFont" link="#LCLBase.Controls.TControl.ParentFont">
 <short/>
 <descr>
 </descr>
@@ -1020,7 +1019,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.ParentShowHint">
+<element name="TValueListEditor.ParentShowHint" link="#LCLBase.Controls.TControl.ParentShowHint">
 <short/>
 <descr>
 </descr>
@@ -1029,7 +1028,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.PopupMenu">
+<element name="TValueListEditor.PopupMenu" link="#LCLBase.Controls.TControl.PopupMenu">
 <short/>
 <descr>
 </descr>
@@ -1038,7 +1037,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.RowCount">
+<element name="TValueListEditor.RowCount" link="#LCLBase.Grids.TCustomGrid.RowCount">
 <short/>
 <descr>
 </descr>
@@ -1047,7 +1046,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.ScrollBars">
+<element name="TValueListEditor.ScrollBars" link="#LCLBase.Grids.TCustomGrid.ScrollBars">
 <short/>
 <descr>
 </descr>
@@ -1056,7 +1055,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.ShowHint">
+<element name="TValueListEditor.ShowHint" link="#LCLBase.Controls.TControl.ShowHint">
 <short/>
 <descr>
 </descr>
@@ -1065,7 +1064,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.TabOrder">
+<element name="TValueListEditor.TabOrder" link="#LCLBase.Controls.TWinControl.TabOrder">
 <short/>
 <descr>
 </descr>
@@ -1074,7 +1073,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.TabStop">
+<element name="TValueListEditor.TabStop" link="#LCLBase.Controls.TWinControl.TabStop">
 <short/>
 <descr>
 </descr>
@@ -1083,7 +1082,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.TitleFont">
+<element name="TValueListEditor.TitleFont" link="#LCLBase.Grids.TCustomGrid.TitleFont">
 <short/>
 <descr>
 </descr>
@@ -1092,7 +1091,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.TitleImageList">
+<element name="TValueListEditor.TitleImageList" link="#LCLBase.Grids.TCustomGrid.TitleImageList">
 <short/>
 <descr>
 </descr>
@@ -1101,7 +1100,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.TitleStyle">
+<element name="TValueListEditor.TitleStyle" link="#LCLBase.Grids.TCustomGrid.TitleStyle">
 <short/>
 <descr>
 </descr>
@@ -1110,7 +1109,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.UseXORFeatures">
+<element name="TValueListEditor.UseXORFeatures" link="#LCLBase.Grids.TCustomGrid.UseXORFeatures">
 <short/>
 <descr>
 </descr>
@@ -1119,7 +1118,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.Visible">
+<element name="TValueListEditor.Visible" link="#LCLBase.Controls.TControl.Visible">
 <short/>
 <descr>
 </descr>
@@ -1128,7 +1127,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.VisibleColCount">
+<element name="TValueListEditor.VisibleColCount" link="#LCLBase.Grids.TCustomGrid.VisibleColCount">
 <short/>
 <descr>
 </descr>
@@ -1137,7 +1136,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TValueListEditor.VisibleRowCount">
+<element name="TValueListEditor.VisibleRowCount" link="#LCLBase.Grids.TCustomGrid.VisibleRowCount">
 <short/>
 <descr>
 </descr>
