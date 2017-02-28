@@ -197,7 +197,6 @@ type
       FIntervals: TIntervalList;
       FIsUnorderedX: Boolean;
       FStartIndex: Integer;
-
       destructor Destroy; override;
       function Calculate(AX: Double): Double;
       function IsFewPoints: Boolean; inline;
@@ -997,26 +996,6 @@ begin
     AResults.FDist := 0;
     Result := not IsNaN(y);
   end;
-
-  (*
-  if not Result then
-    for s in FSplines do begin
-      if s.IsFewPoints or (s.FIsUnorderedX and not IsUnorderedVisible) then
-        continue;
-      with TDrawFuncHelper.Create(Self, s.FIntervals, @s.Calculate, Step) do
-        try
-          if not GetNearestPoint(AParams, r) or
-             Result and (AResults.FDist <= r.FDist)
-          then
-            continue;
-          AResults := r;
-          AResults.FYIndex := -1;
-          Result := true;
-        finally
-          Free;
-        end;
-    end;
-    *)
 end;
 
 procedure TBSplineSeries.InternalPrepareGraphPoints;
