@@ -895,6 +895,12 @@ type
     procedure SetColor(Value: TColor); override;
     function UseBGThemes: Boolean;
     function UseFGThemes: Boolean;
+  private class var
+    FSysHintFont: TFont;
+  protected
+    class function SysHintFont: TFont;
+  public
+    class destructor Destroy;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

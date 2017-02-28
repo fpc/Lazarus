@@ -20,6 +20,11 @@
 const
   HintBorderWidth = 2;
 
+class destructor THintWindow.Destroy;
+begin
+  FreeAndNil(FSysHintFont);
+end;
+
 constructor THintWindow.Create(AOwner: TComponent);
 begin
   // THintWindow has no resource => must be constructed using CreateNew
@@ -61,6 +66,20 @@ begin
   // Add border
   inc(FHintRect.Right, 4 * HintBorderWidth);
   inc(FHintRect.Bottom, 4 * HintBorderWidth);
+end;
+
+class function THintWindow.SysHintFont: TFont;
+begin
+  if (FSysHintFont = nil) then
+  begin
+    FSysHintFont := TFont.Create;
+    if not WidgetSet.InitStockFont(FSysHintFont, sfHint) then
+    begin
+      FSysHintFont.FontData := DefFontData;
+      FSysHintFont.Color := clInfoText;
+    end;
+  end;
+  Result := FSysHintFont;
 end;
 
 class procedure THintWindow.WSRegisterClass;
@@ -108,7 +127,7 @@ end;
 
 function THintWindow.UseFGThemes: Boolean;
 begin
-  Result := (Font.Size = 0) and (Font.Name = '') and (Font.Color = clInfoText);
+  Result := Font.IsEqual(SysHintFont);
 end;
 
 procedure THintWindow.SetColor(Value: TColor);
