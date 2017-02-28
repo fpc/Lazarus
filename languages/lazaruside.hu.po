@@ -3086,10 +3086,6 @@ msgstr "Ikon mentése"
 msgid "Session"
 msgstr "Munkamenet"
 
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Megnevezés:"

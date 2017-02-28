@@ -3056,10 +3056,6 @@ msgstr "&Tallenna kuvake"
 msgid "Session"
 msgstr "Istunto"
 
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr "Teksti-kentät"
-
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Nimi:"

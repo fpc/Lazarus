@@ -3234,10 +3234,6 @@ msgstr "Zapisz ikonę"
 msgid "Session"
 msgstr "Sesja"
 
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Nazwa:"

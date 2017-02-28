@@ -3085,10 +3085,6 @@ msgstr "Symbol &speichern"
 msgid "Session"
 msgstr "Sitzung"
 
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr "Textfelder"
-
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Titel:"

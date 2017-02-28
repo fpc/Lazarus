@@ -3119,10 +3119,6 @@ msgstr "アイコンを保存(&S)"
 msgid "Session"
 msgstr "セッション"
 
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "タイトル："

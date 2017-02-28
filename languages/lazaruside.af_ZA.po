@@ -3082,10 +3082,6 @@ msgstr ""
 msgid "Session"
 msgstr ""
 
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr ""

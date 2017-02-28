@@ -3201,10 +3201,6 @@ msgstr "Uložiť ikonu"
 msgid "Session"
 msgstr "Relácia"
 
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Titulok:"

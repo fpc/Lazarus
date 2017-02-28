@@ -3168,10 +3168,6 @@ msgstr "保存图标(&S)"
 msgid "Session"
 msgstr "会话"
 
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "标题:"

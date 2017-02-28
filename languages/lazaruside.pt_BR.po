@@ -3132,10 +3132,6 @@ msgstr "&Salvar ícone"
 msgid "Session"
 msgstr "Sessão"
 
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Título:"

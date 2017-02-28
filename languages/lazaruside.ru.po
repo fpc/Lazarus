@@ -3085,10 +3085,6 @@ msgstr "Сох&ранить значок"
 msgid "Session"
 msgstr "Сеанс работы"
 
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr "Текстовые поля"
-
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Заголовок:"

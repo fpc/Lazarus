@@ -3090,10 +3090,6 @@ msgstr "&Зберегти значок"
 msgid "Session"
 msgstr "Сесія"
 
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Заголовок:"

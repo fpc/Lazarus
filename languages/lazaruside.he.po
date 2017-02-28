@@ -3247,10 +3247,6 @@ msgstr "שמור סמל"
 msgid "Session"
 msgstr "הפעלה"
 
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "כותרת:"

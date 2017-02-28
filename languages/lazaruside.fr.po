@@ -3088,10 +3088,6 @@ msgstr "&Enregistrer l'icône"
 msgid "Session"
 msgstr "Session"
 
-#: lazarusidestrconsts.dlgpotextfields
-msgid "Text fields"
-msgstr "Champs de texte"
-
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Titre :"
