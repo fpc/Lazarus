@@ -114,7 +114,6 @@ object ProjectInspectorForm: TProjectInspectorForm
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 3
-      Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
       TabOrder = 0
