@@ -190,12 +190,12 @@ begin
   if APackage.Modified then AddState(lisOIPmodified);
   if APackage.Missing then AddState(lisOIPmissing);
   case APackage.Installed of
-  pitStatic: AddState(lisOIPinstalledStatic);
-  pitDynamic: AddState(lisOIPinstalledDynamic);
+    pitStatic: AddState(lisOIPinstalledStatic);
+    pitDynamic: AddState(lisOIPinstalledDynamic);
   end;
   case APackage.AutoInstall of
-  pitStatic: AddState(lisOIPautoInstallStatic);
-  pitDynamic: AddState(lisOIPautoInstallDynamic);
+    pitStatic: AddState(lisOIPautoInstallStatic);
+    pitDynamic: AddState(lisOIPautoInstallDynamic);
   end;
   if APackage.ReadOnly then AddState(lisOIPreadonly);
 end;
@@ -204,14 +204,15 @@ procedure TOpenLoadedPackagesDlg.UpdatePackageList;
 
   procedure UpdateOnePackage(aPkg: TLazPackage);
   var
-    Data: TListViewDataItem;
+    ListItem: TListViewDataItem;
   begin
-    Data.Data := nil;
-    SetLength(Data.StringArray, 3);
-    Data.StringArray[0] := aPkg.Name;
-    Data.StringArray[1] := aPkg.Version.AsString;
-    Data.StringArray[2] := PkgStateToString(aPkg);
-    FilterEdit.Items.Add(Data);
+    //ListItem.Initialize(3);
+    ListItem.Data := Nil;
+    SetLength(ListItem.StringArray, 3);
+    ListItem.StringArray[0] := aPkg.Name;
+    ListItem.StringArray[1] := aPkg.Version.AsString;
+    ListItem.StringArray[2] := PkgStateToString(aPkg);
+    FilterEdit.Items.Add(ListItem);
   end;
 
 var

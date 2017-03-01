@@ -25,10 +25,13 @@ type
   //TImageIndexEvent = function (Str: String; Data: TObject;
   //                             var IsEnabled: Boolean): Integer of object;
   TStringArray = array of string;
+
+  { TListViewDataItem }
+
   TListViewDataItem = record
     Data: Pointer;
     StringArray: TStringArray;
-
+    //constructor Initialize(ColumnCount: integer);   Does not work. Why?
     class operator =(a,b : TListViewDataItem) : Boolean;
   end;
   TListViewDataList = specialize TFPGList<TListViewDataItem>;
@@ -82,7 +85,13 @@ var
 implementation
 
 { TListViewDataItem }
-
+{
+constructor TListViewDataItem.Initialize(ColumnCount: integer);
+begin
+  Data := Nil;
+  SetLength(StringArray, ColumnCount);
+end;
+}
 class operator TListViewDataItem. = (a, b: TListViewDataItem): Boolean;
 begin
   Result := (a.Data=b.Data) and (a.StringArray=b.StringArray);

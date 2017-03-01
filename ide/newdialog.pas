@@ -39,10 +39,18 @@ unit NewDialog;
 interface
 
 uses
-  Buttons, SysUtils, Classes, ComCtrls, Controls, Dialogs,
-  Forms, StdCtrls, ExtCtrls, FileProcs, ButtonPanel,
-  IDEWindowIntf, IDEImagesIntf, NewItemIntf, PackageIntf, ProjectIntf,
-  LazIDEIntf, IDEHelpIntf, IDEDialogs, LazUTF8,
+  SysUtils, Classes,
+  // LCL
+  ComCtrls, Controls, Dialogs, Forms, StdCtrls, ExtCtrls,
+  ButtonPanel, ListViewFilterEdit,
+  // LazUtils
+  LazUTF8,
+  // CodeTools
+  FileProcs,
+  // IdeIntf
+  IDEWindowIntf, IDEImagesIntf, NewItemIntf, ProjectIntf,
+  LazIDEIntf, IDEHelpIntf, IDEDialogs,
+  // IDE
   InputHistory, LazarusIDEStrConsts, Project, MainIntf;
 
 type
@@ -123,6 +131,7 @@ type
     DescriptionLabel: TLabel;
     ItemsTreeView: TTreeView;
     InheritableComponentsListView: TListView;
+    CompFilterEdit: TListViewFilterEdit;
     Panel1: TPanel;
     Splitter1: TSplitter;
     procedure HelpButtonClick(Sender: TObject);
@@ -244,7 +253,7 @@ procedure TNewOtherDialog.FillProjectInheritableItemsList;
 var
   aComponentList: TStringList;
   i: integer;
-  alistItem: TListItem;
+  ListItem: TListViewDataItem;
   AnUnitInfo: TUnitInfo;
 Begin
   try
@@ -256,24 +265,25 @@ Begin
       if (not Project1.Units[i].IsPartOfProject)
       or (not FilenameIsPascalUnit(Project1.Units[i].Filename)) then
         continue;
-
       if Project1.Units[i].ComponentName<>'' then
         aComponentList.AddObject(Project1.Units[i].ComponentName, Project1.Units[i]);
     end;
-
     // Sort lists (by component name)
     aComponentList.Sort;
 
     // Populate components listview, keeping references to each UnitInfo
     for i := 0 to aComponentList.Count-1 do
     begin
-      alistItem := InheritableComponentsListView.Items.Add;
-      alistItem.Caption := aComponentList[i];
-      AnUnitInfo:=TUnitInfo(aComponentList.Objects[i]);
-      alistItem.SubItems.Add(AnUnitInfo.ShortFilename);
-      aListItem.Data := aComponentList.Objects[i];
+      AnUnitInfo := TUnitInfo(aComponentList.Objects[i]);
+      //ListItem.Initialize(2);
+      ListItem.Data := Nil;
+      SetLength(ListItem.StringArray, 2);
+      ListItem.StringArray[0] := aComponentList[i];
+      ListItem.StringArray[1] := AnUnitInfo.ShortFilename;
+      ListItem.Data := aComponentList.Objects[i];
+      CompFilterEdit.Items.Add(ListItem);
     end;
-
+    CompFilterEdit.InvalidateFilter;
   finally
     aComponentList.Free;
   end;
@@ -361,10 +371,10 @@ begin
         if TNewItemProjectFile(aNewItemTemplate).Descriptor is TFileDescInheritedComponent
         then begin
           InheritableComponentsListView.Visible := true;
-          InheritableComponentsListView.Height:=InheritableComponentsListView.Parent.ClientHeight-50;
-          if InheritableComponentsListView.Items.Count>0 then
-            InheritableComponentsListView.Selected := InheritableComponentsListView.Items[0];
-        end
+          //InheritableComponentsListView.Height:=InheritableComponentsListView.Parent.ClientHeight-50;
+          //if InheritableComponentsListView.Items.Count>0 then
+          //  InheritableComponentsListView.Selected := InheritableComponentsListView.Items[0];
+        end;
       end;
     end;
   end
@@ -396,6 +406,7 @@ begin
   SetupComponents;
   FillItemsTree(AOnlyModules);
   FillProjectInheritableItemsList;
+  CompFilterEdit.Clear;
   InheritableComponentsListView.Visible := false;
   IDEDialogLayoutList.ApplyLayout(Self, 570, 400);
 

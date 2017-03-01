@@ -3,18 +3,17 @@ object OpenLoadedPackagesDlg: TOpenLoadedPackagesDlg
   Height = 501
   Top = 151
   Width = 446
-  ActiveControl = FilterEdit
   Caption = 'OpenLoadedPackagesDlg'
   ClientHeight = 501
   ClientWidth = 446
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.7'
   object HintMemo: TMemo
     Left = 3
     Height = 121
-    Top = 332
+    Top = 333
     Width = 440
     Align = alBottom
     BorderSpacing.Left = 3
@@ -33,8 +32,8 @@ object OpenLoadedPackagesDlg: TOpenLoadedPackagesDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Splitter1
     Left = 3
-    Height = 300
-    Top = 27
+    Height = 294
+    Top = 34
     Width = 440
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 3
@@ -55,15 +54,15 @@ object OpenLoadedPackagesDlg: TOpenLoadedPackagesDlg
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 327
+    Top = 328
     Width = 446
     Align = alBottom
     ResizeAnchor = akBottom
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 36
-    Top = 459
+    Height = 35
+    Top = 460
     Width = 434
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -80,7 +79,7 @@ object OpenLoadedPackagesDlg: TOpenLoadedPackagesDlg
   end
   object FilterEdit: TListViewFilterEdit
     Left = 3
-    Height = 21
+    Height = 28
     Top = 3
     Width = 147
     ButtonWidth = 23
