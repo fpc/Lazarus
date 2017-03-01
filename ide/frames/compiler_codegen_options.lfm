@@ -23,7 +23,7 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
     Caption = 'grpUnitStyle'
     ClientHeight = 57
     ClientWidth = 142
-    TabOrder = 0
+    TabOrder = 2
     object chkSmartLinkUnit: TCheckBox
       Left = 6
       Height = 24
@@ -70,7 +70,7 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
     ChildSizing.TopBottomSpacing = 6
     ClientHeight = 63
     ClientWidth = 444
-    TabOrder = 1
+    TabOrder = 3
     object edtHeapSize: TEdit
       AnchorSideLeft.Control = lbHeapSize
       AnchorSideLeft.Side = asrBottom
@@ -144,7 +144,7 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
     ChildSizing.VerticalSpacing = 2
     ClientHeight = 134
     ClientWidth = 597
-    TabOrder = 2
+    TabOrder = 0
     object radOptLevelNone: TRadioButton
       AnchorSideLeft.Control = grpOptimizationLevels
       AnchorSideTop.Control = grpOptimizationLevels
@@ -219,7 +219,7 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
     Caption = 'grpLinking'
     ClientHeight = 81
     ClientWidth = 597
-    TabOrder = 3
+    TabOrder = 4
     object chkLinkSmart: TCheckBox
       Left = 6
       Height = 24
@@ -274,7 +274,7 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
     Caption = 'grpOptimizations'
     ClientHeight = 30
     ClientWidth = 597
-    TabOrder = 4
+    TabOrder = 1
     object chkOptSmaller: TCheckBox
       AnchorSideLeft.Control = grpOptimizations
       AnchorSideTop.Control = grpOptimizations
