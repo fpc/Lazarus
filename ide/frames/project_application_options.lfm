@@ -76,7 +76,7 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       Width = 176
       BorderSpacing.Top = 3
       Caption = 'UseAppBundleCheckBox'
-      TabOrder = 12
+      TabOrder = 14
     end
     object UseXPManifestCheckBox: TCheckBox
       AnchorSideLeft.Control = TitleLabel
@@ -262,7 +262,7 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       BorderSpacing.Bottom = 6
       Caption = 'CreateAppBundleButton'
       OnClick = CreateAppBundleButtonClick
-      TabOrder = 13
+      TabOrder = 15
     end
     object DpiAwareLabel: TLabel
       AnchorSideLeft.Control = UseXPManifestCheckBox
@@ -356,7 +356,7 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       Width = 296
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 3
-      TabOrder = 14
+      TabOrder = 12
       Text = 'NameEdit'
     end
     object DescriptionEdit: TEdit
@@ -371,7 +371,7 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       Width = 296
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 3
-      TabOrder = 15
+      TabOrder = 13
       Text = 'DescriptionEdit'
     end
   end
