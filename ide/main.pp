@@ -5187,18 +5187,39 @@ var
   UnitFilenames: TStrings;
   ComponentNameToUnitFilename: TStringToStringTree;
 
-  procedure AddFile(List: TStrings; aFilename: string);
+  procedure AddFile(aFilename: string);
   var
     i: Integer;
   begin
-    for i:=0 to List.Count-1 do
-      if CompareFilenames(List[i],aFilename)=0 then exit;
-    List.Add(aFilename);
+    for i:=0 to UnitFilenames.Count-1 do
+      if CompareFilenames(UnitFilenames[i],aFilename)=0 then exit;
+    UnitFilenames.Add(aFilename);
+  end;
+
+  procedure SearchFromSource(aUnitInfo: TUnitInfo);
+  var
+    CurUnitFilenames: TStrings;
+    CTResult: Boolean;
+    i: Integer;
+  begin
+    CurUnitFilenames:=nil;
+    try
+      CTResult:=CodeToolBoss.FindUsedUnitFiles(aUnitInfo.Source, CurUnitFilenames);
+      if not CTResult then begin
+        DebugLn(['Error: (lazarus) [TMainIDE.DoFixupComponentReferences.FindUsedUnits] failed parsing ',
+                 aUnitInfo.Filename]);
+        // ignore the error. This was just a fallback search.
+      end;
+      if (CurUnitFilenames<>nil) then
+        for i:=0 to CurUnitFilenames.Count-1 do
+          AddFile(CurUnitFilenames[i]);
+    finally
+      CurUnitFilenames.Free;
+    end;
   end;
 
   procedure FindUsedUnits;
   var
-    CurUnitFilenames: TStrings;
     i: Integer;
     UnitFilename: string;
     LFMFilename: String;
@@ -5207,49 +5228,20 @@ var
     LFMComponentName: String;
     LFMClassName: String;
     ModalResult: TModalResult;
-    CTResult: Boolean;
   begin
     if UnitFilenames<>nil then exit;
     UnitFilenames:=TStringList.Create;
     ComponentNameToUnitFilename:=TStringToStringTree.Create(false);
 
     // search in the used units of RootUnitInfo
-    CurUnitFilenames:=nil;
-    try
-      CTResult:=CodeToolBoss.FindUsedUnitFiles(RootUnitInfo.Source,CurUnitFilenames);
-      if not CTResult then begin
-        DebugLn(['Error: (lazarus) [TMainIDE.DoFixupComponentReferences.FindUsedUnits] failed parsing ',RootUnitInfo.Filename]);
-        // ignore the error. This was just a fallback search.
-      end;
-      if (CurUnitFilenames<>nil) then begin
-        for i:=0 to CurUnitFilenames.Count-1 do
-          AddFile(UnitFilenames,CurUnitFilenames[i]);
-      end;
-    finally
-      CurUnitFilenames.Free;
-    end;
-
+    SearchFromSource(RootUnitInfo);
     // search in the used units of the .lpr file
     if RootUnitInfo.IsPartOfProject
     and (Project1.MainUnitInfo<>nil)
     and (Project1.MainUnitInfo.Source<>nil)
-    and (pfMainUnitIsPascalSource in Project1.Flags) then begin
-      CurUnitFilenames:=nil;
-      try
-        CTResult:=CodeToolBoss.FindUsedUnitFiles(Project1.MainUnitInfo.Source,
-          CurUnitFilenames);
-        if not CTResult then begin
-          DebugLn(['Error: (lazarus) [TMainIDE.DoFixupComponentReferences.FindUsedUnits] failed parsing ',Project1.MainUnitInfo.Filename]);
-          // ignore the error. This was just a fallback search.
-        end;
-        if (CurUnitFilenames<>nil) then begin
-          for i:=0 to CurUnitFilenames.Count-1 do
-            AddFile(UnitFilenames,CurUnitFilenames[i]);
-        end;
-      finally
-        CurUnitFilenames.Free;
-      end;
-    end;
+    and (pfMainUnitIsPascalSource in Project1.Flags)
+    then
+      SearchFromSource(Project1.MainUnitInfo);
 
     // parse once all available component names in all .lfm files
     for i:=0 to UnitFilenames.Count-1 do begin
