@@ -155,6 +155,8 @@ type
     property Pointer;
     property ShowPoints: Boolean read FShowPoints write SetShowPoints default false;
     property Source;
+    property OnCustomDrawPointer;
+    property OnGetPointerStyle;
   end;
 
 implementation

@@ -321,8 +321,10 @@ type
     property Step: TFuncSeriesStep read FStep write SetStep default DEF_FIT_STEP;
     property OnCalcGoodnessOfFit: TCalcGoodnessOfFitEvent
       read FOnCalcGoodnessOfFit write FOnCalcGoodnessOfFit;
+    property OnCustomDrawPointer;
     property OnFitComplete: TNotifyEvent
       read FOnFitComplete write FOnFitComplete;
+    property OnGetPointerStyle;
   end;
 
   TFuncCalculate3DEvent =
