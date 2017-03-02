@@ -15,7 +15,7 @@ object MainForm: TMainForm
     Width = 637
     MultiLine = True
     OnChange = TabControlChange
-    TabIndex = 9
+    TabIndex = 0
     Tabs.Strings = (
       'Line series'
       'Bar series'

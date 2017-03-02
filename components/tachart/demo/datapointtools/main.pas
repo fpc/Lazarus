@@ -5,9 +5,10 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, TAGraph, TASeries, TATools, TAStyles, TASources,
-  Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls, StdCtrls,
-  TAChartUtils, TAMultiSeries, TARadialSeries, TAFuncSeries, Types;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
+  ExtCtrls, StdCtrls, Types,
+  TAGraph, TASeries, TATools, TAStyles, TASources,  TAChartUtils, TAMultiSeries,
+  TARadialSeries, TAFuncSeries, TACustomSeries, TADrawUtils;
 
 type
 
@@ -74,9 +75,6 @@ implementation
 
 {$R *.lfm}
 
-uses
-  TACustomSeries;
-
 { TMainForm }
 
 procedure TMainForm.CbCandleStickChange(Sender: TObject);
@@ -135,7 +133,7 @@ procedure TMainForm.DataPointDragToolDragXY(ASender: TDataPointDragTool;
 var
   ser: TChartSeries;
 begin
-  if ASender.YIndex > 0 then begin
+  if (ASender.YIndex > 0) and (ASender.Series is TChartSeries) then begin
     ser := TChartSeries(ASender.Series);
     ser.XValue[ASender.PointIndex] := AGraphPoint.X;
   end;
@@ -317,11 +315,15 @@ begin
     if BarSeries.Active then
       s := s + LineEnding + 'Grab the bars at their upper ends.';
   end else
-  if FieldSeries.Active then begin
+  if FieldSeries.Active then
     s := 'Rotate an arrow by grabbing it at its ends.' + LineEnding +
       'Shift it by grabbing it in the middle.' + LineEnding +
-      'The checkbox "Drag both x and y" is not operating here.';
-  end;
+      'The checkbox "Drag both x and y" is not operating here.'
+  else
+  if BubbleSeries.Active then
+    s := 'Grab a bubble at its perimeter to change the radius.' + LineEnding +
+      'Grab it in the center to change its location.' + LineEnding +
+      'Overlapping bubbles may be detected erroneously.';
   if s <> '' then
     LblNOTE.Caption := 'NOTE:' + LineEnding + s;
   LblNote.Visible := (s <> '');
