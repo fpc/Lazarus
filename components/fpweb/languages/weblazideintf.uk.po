@@ -1,13 +1,17 @@
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2017-03-01 19:56+0200\n"
+"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
 
 #: weblazideintf.rsapachemodule
 msgid "Apache Module"
@@ -59,35 +63,35 @@ msgstr "Веб-модуль HTML%sМодуль даних веб для ство
 
 #: weblazideintf.rshttpappli
 msgid "HTTP server Application"
-msgstr ""
+msgstr "Застосунок сервера HTTP"
 
 #: weblazideintf.rshttpappli2
 msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
-msgstr ""
+msgstr "Застосунок сервера HTTP. Повна програма HTTP-сервера на Free Pascal з використанням веб-модулів. Сирці програми автоматично підтримуються Lazarus."
 
 #: weblazideintf.rswebdataprovi
 msgid "Web DataProvider Module"
-msgstr ""
+msgstr "Модуль Web DataProvider"
 
 #: weblazideintf.rswebdataprovi2
 msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
-msgstr ""
+msgstr "Модуль WEB DataProvider%sМодуль даних для керування запитами даних для WEB (HTTP) застосунків, які використовують компоненити WebDataProvider."
 
 #: weblazideintf.rswebextdirect
 msgid "Web Ext.Direct Module"
-msgstr ""
+msgstr "Модуль Web Ext.Direct"
 
 #: weblazideintf.rswebextdirect2
 msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
-msgstr ""
+msgstr "Модуль WEB Ext.Direct%sМодуль даних для керування запитами Ext.Direct у WEB (HTTP)-застосунках, які використовують компоненти TJSONRPCHandler."
 
 #: weblazideintf.rswebjsonrpcmo
 msgid "Web JSON-RPC Module"
-msgstr ""
+msgstr "Модуль Web JSON-RPC"
 
 #: weblazideintf.rswebjsonrpcmo2
 msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
-msgstr ""
+msgstr "Модуль WEB JSON-RPC%sМодуль даних для керування запитами JSON-RPC у WEB (HTTP)-застосунках, які використовують компоненти TJSONRPCHandler."
 
 #: weblazideintf.rswebmodule
 msgid "Web Module"

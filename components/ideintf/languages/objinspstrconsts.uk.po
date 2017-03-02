@@ -1,16 +1,17 @@
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-23 09:55+0300\n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2017-02-09 02:16+0200\n"
+"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Virtaal 0.7.1\n"
+"X-Generator: Lokalize 1.5\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -112,7 +113,7 @@ msgstr "Редактор CheckListBox"
 
 #: objinspstrconsts.clbdeletehint
 msgid "Delete the Item"
-msgstr "Видалити Елемент"
+msgstr "Видалити елемент"
 
 #: objinspstrconsts.clbdeletequest
 msgid "Delete the Item %d \"%s\"?"
@@ -134,15 +135,15 @@ msgstr "Вверх"
 
 #: objinspstrconsts.dceaddfields
 msgid "Add Fields"
-msgstr ""
+msgstr "Додати поля"
 
 #: objinspstrconsts.dcecolumneditor
 msgid "DBGrid Columns Editor"
-msgstr ""
+msgstr "Редактор стовпчиків DBGrid"
 
 #: objinspstrconsts.dcedeleteall
 msgid "Delete All"
-msgstr ""
+msgstr "Видалити все"
 
 #: objinspstrconsts.dcefetchlabels
 msgid "Fetch Labels"
@@ -150,15 +151,15 @@ msgstr ""
 
 #: objinspstrconsts.dceoktodelete
 msgid "This will delete all columns. Continue?"
-msgstr ""
+msgstr "Буде видалено всі стовпчики. Продовжити?"
 
 #: objinspstrconsts.dcewillreplacecontinue
 msgid "This will replace all captions from dataset. Continue?"
-msgstr ""
+msgstr "Заголовки буде замінено з набору даних. Продовжити?"
 
 #: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
 msgid "Unable to retrieve fields definition from dataset."
-msgstr ""
+msgstr "З набору даних не вдалось отримати визначення полів."
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
@@ -183,7 +184,7 @@ msgstr "На&бір даних:"
 
 #: objinspstrconsts.fesfetitle
 msgid "Edit Fields ..."
-msgstr "Змінити Поля ..."
+msgstr "Змінити поля ..."
 
 #: objinspstrconsts.fesfieldcantbec
 msgid "Field %s cannot be created!"
@@ -195,7 +196,7 @@ msgstr "Властивості поля"
 
 #: objinspstrconsts.fesfieldtype
 msgid "Field Type"
-msgstr "Тип Поля"
+msgstr "Тип поля"
 
 #: objinspstrconsts.fesfltitle
 msgid "FieldDefs"
@@ -241,11 +242,11 @@ msgstr "Гаразд"
 
 #: objinspstrconsts.fespersistentcompname
 msgid "Co&mponent Name:"
-msgstr "І&м'я Компоненту:"
+msgstr "Назва ко&мпонента:"
 
 #: objinspstrconsts.fesresultfield
 msgid "&Result Fields:"
-msgstr "&Поля Результату:"
+msgstr "&Поля результату:"
 
 #: objinspstrconsts.fessize
 msgid "&Size:"
@@ -262,7 +263,7 @@ msgstr "Додати"
 
 #: objinspstrconsts.itcssearchandreplace
 msgid "Search and replace"
-msgstr ""
+msgstr "Пошук і заміна"
 
 #: objinspstrconsts.liisaddvalue
 msgid "Add value"
@@ -294,7 +295,7 @@ msgstr "Вказати значення"
 
 #: objinspstrconsts.lisunabletofindparserfortool
 msgid "Unable to find parser for tool \"%s\""
-msgstr ""
+msgstr "Не вдалось знайти парсер для засобу \"%s\""
 
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
@@ -366,7 +367,6 @@ msgid "ActionList Editor"
 msgstr "Редактор списку дій"
 
 #: objinspstrconsts.oisadd
-#, fuzzy
 msgctxt "objinspstrconsts.oisadd"
 msgid "Add"
 msgstr "Додати"
@@ -384,10 +384,9 @@ msgid "Add fields from FieldDefs"
 msgstr "Додати поля з FieldDefs"
 
 #: objinspstrconsts.oisaddpage
-#, fuzzy
 msgctxt "objinspstrconsts.oisaddpage"
 msgid "Add Page"
-msgstr "Нова сторінка"
+msgstr "Додати сторінку"
 
 #: objinspstrconsts.oisaddtofavorites
 msgid "Add to Favorites"
@@ -407,11 +406,11 @@ msgstr "Boolean"
 
 #: objinspstrconsts.oisbtncomponents
 msgid "Co&mponents"
-msgstr ""
+msgstr "&Компоненти"
 
 #: objinspstrconsts.oisbtnproperties
 msgid "&Properties"
-msgstr ""
+msgstr "&Властивості"
 
 #: objinspstrconsts.oiscadd
 msgid "&Add"
@@ -432,11 +431,11 @@ msgstr "Видалити?"
 
 #: objinspstrconsts.oischangeclass
 msgid "Change Class ..."
-msgstr ""
+msgstr "Змінити клас ..."
 
 #: objinspstrconsts.oischangeparent
 msgid "Change Parent"
-msgstr ""
+msgstr "Змінити предка"
 
 #: objinspstrconsts.oischar
 msgid "Char"
@@ -459,10 +458,8 @@ msgid "Clear picture"
 msgstr "Очистити зображення"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy,badformat
-#| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
-msgstr "Назва компонету %s%s%s є неправильним ідентифікатором"
+msgstr "Назва компонента \"%s\" є неправильним ідентифікатором"
 
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
@@ -491,11 +488,11 @@ msgstr "Створити нове поле і додати його в пото�
 
 #: objinspstrconsts.oiscurrentparent
 msgid "Current parent"
-msgstr ""
+msgstr "Поточний предок"
 
 #: objinspstrconsts.oiscurrentparents
 msgid "Current parents"
-msgstr ""
+msgstr "Поточні предки"
 
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
@@ -513,14 +510,12 @@ msgid "&Delete"
 msgstr "&Видалити"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy,badformat
-#| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
-msgstr "Видалити елемент %s%s%s?"
+msgstr "Видалити елемент \"%s\"?"
 
 #: objinspstrconsts.oisdeletepagequestion
 msgid "Do you want to delete the page?"
-msgstr ""
+msgstr "Справді бажаєте видалити сторінку?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
@@ -547,10 +542,8 @@ msgid "Error loading image"
 msgstr "Помилка завантаження зображення"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy,badformat
-#| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
-msgstr "Помилка завантаження зображення %s%s%s:%s%s"
+msgstr "Помилка завантаження зображення \"%s\":%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 msgid "Error while deleting action:%s%s"
@@ -582,19 +575,19 @@ msgstr "Редактор I&mageList ..."
 
 #: objinspstrconsts.oisincompatibleidentifier
 msgid "Incompatible Identifier"
-msgstr "Несумісний Ідентифікатор"
+msgstr "Несумісний ідентифікатор"
 
 #: objinspstrconsts.oisincompatiblemethod
 msgid "Incompatible Method"
-msgstr "Несумісний Метод"
+msgstr "Несумісний метод"
 
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
-msgstr "Маска Введення"
+msgstr "Маска введення:"
 
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
-msgstr ""
+msgstr "Назва сторінки, що вставляється"
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
@@ -613,10 +606,8 @@ msgid "Invalid property value"
 msgstr "Неправильна величина властивості"
 
 #: objinspstrconsts.oisisnotavalidmethodname
-#, fuzzy,badformat
-#| msgid "%s%s%s is not a valid method name."
 msgid "\"%s\" is not a valid method name."
-msgstr "%s%s%s не є правильною назвою методу."
+msgstr "\"%s\" не є правильною назвою методу."
 
 #: objinspstrconsts.oisitemsselected
 msgid "%u items selected"
@@ -648,11 +639,11 @@ msgstr "Метод"
 
 #: objinspstrconsts.oismixed
 msgid "(Mixed)"
-msgstr ""
+msgstr "(Змішано)"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
-msgstr "Перемістити &Вниз"
+msgstr "Перемістити &вниз"
 
 #: objinspstrconsts.oismovedownhint
 msgid "Move field down"
@@ -661,7 +652,7 @@ msgstr "Перемістити поле вниз"
 #: objinspstrconsts.oismoveup
 msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
-msgstr "Перемістити Вв&ерх"
+msgstr "Перемістити вг&ору"
 
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
@@ -701,27 +692,27 @@ msgstr "Параметри"
 
 #: objinspstrconsts.oisorderbackone
 msgid "Back One"
-msgstr "На один Назад"
+msgstr "На один назад"
 
 #: objinspstrconsts.oisorderforwardone
 msgid "Forward One"
-msgstr "На один Вперед"
+msgstr "На один вперед"
 
 #: objinspstrconsts.oisordermovetoback
 msgid "Move to Back"
-msgstr "Помістити Ззаду"
+msgstr "Помістити ззаду"
 
 #: objinspstrconsts.oisordermovetofront
 msgid "Move to Front"
-msgstr "Помістити Спереду"
+msgstr "Помістити спереду"
 
 #: objinspstrconsts.oispages
 msgid "Pages"
-msgstr ""
+msgstr "Сторінки"
 
 #: objinspstrconsts.oispageseditordialog
 msgid "Pages Editor"
-msgstr ""
+msgstr "Редактор сторінок"
 
 #: objinspstrconsts.oispastecomponents
 msgctxt "objinspstrconsts.oispastecomponents"
@@ -742,7 +733,7 @@ msgstr "Зберегти зображення як"
 
 #: objinspstrconsts.oispressakey
 msgid "Press a key ..."
-msgstr ""
+msgstr "Натисніть клавішу ..."
 
 #: objinspstrconsts.oisproperties
 msgid "Properties"
@@ -758,15 +749,15 @@ msgstr "Запис"
 
 #: objinspstrconsts.oisremovefromfavorites
 msgid "Remove from Favorites"
-msgstr "Прибрати з Улюблених"
+msgstr "Прибрати з улюблених"
 
 #: objinspstrconsts.oisrename
 msgid "Rename"
-msgstr ""
+msgstr "Перейменувати"
 
 #: objinspstrconsts.oisrenamepage
 msgid "Rename Page"
-msgstr ""
+msgstr "Перейменувати сторінку"
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"
@@ -774,11 +765,11 @@ msgstr "Обмежені"
 
 #: objinspstrconsts.oisreverttoinherited
 msgid "Revert to inherited"
-msgstr ""
+msgstr "Повернутись до успадкованого"
 
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
-msgstr "Приклади Масок:"
+msgstr "Приклади масок:"
 
 #: objinspstrconsts.oissave
 msgid "&Save"
@@ -786,7 +777,7 @@ msgstr "&Зберегти"
 
 #: objinspstrconsts.oissaveliteralcharacters
 msgid "Save Literal Characters"
-msgstr "Зберегти Літеральні Символи"
+msgstr "Зберегти літеральні символи"
 
 #: objinspstrconsts.oissavepicture
 msgid "Save picture"
@@ -802,19 +793,19 @@ msgstr "Ви&брати все"
 
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
-msgstr "Вибрати Всі Поля"
+msgstr "Вибрати всі поля"
 
 #: objinspstrconsts.oisselectedcontrol
 msgid "Selected control"
-msgstr ""
+msgstr "Вибраний елемент керування"
 
 #: objinspstrconsts.oisselectedcontrols
 msgid "Selected controls"
-msgstr ""
+msgstr "Вибрані елементи керування"
 
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
-msgstr ""
+msgstr "&Вибрані властивості"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -826,19 +817,19 @@ msgstr "Встановити"
 
 #: objinspstrconsts.oissetmaxconstraints
 msgid "Set MaxHeight=%d, MaxWidth=%d"
-msgstr ""
+msgstr "Встановити MaxHeight=%d, MaxWidth=%d"
 
 #: objinspstrconsts.oissetmaxconstraintshint
 msgid "Use current size as Max Constraints"
-msgstr ""
+msgstr "Використати поточні розміри як максимальні"
 
 #: objinspstrconsts.oissetminconstraints
 msgid "Set MinHeight=%d, MinWidth=%d"
-msgstr ""
+msgstr "Встановити MinHeight=%d, MinWidth=%d"
 
 #: objinspstrconsts.oissetminconstraintshint
 msgid "Use current size as Min Constraints"
-msgstr ""
+msgstr "Використати поточні розміри як мінімальні"
 
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
@@ -846,27 +837,27 @@ msgstr "Встановити за замовчуванням: %s"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr ""
+msgstr "Встановити типове значення властивості"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
-msgstr ""
+msgstr "Показати класи"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
-msgstr "Показати Дерево Компонентів"
+msgstr "Показати Дерево компонентів"
 
 #: objinspstrconsts.oisshowhints
 msgid "Show Hints"
-msgstr "Показати Поради"
+msgstr "Показати поради"
 
 #: objinspstrconsts.oisshowinfobox
 msgid "Show Information Box"
-msgstr ""
+msgstr "Показати панель інформації"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
-msgstr ""
+msgstr "Показати рядок стану"
 
 #: objinspstrconsts.oissort
 msgid "Sort"
@@ -890,7 +881,7 @@ msgstr "Редактор рядків"
 
 #: objinspstrconsts.oistdactcolorselect1headline
 msgid "Select &Color ..."
-msgstr "&Обрати Колір ..."
+msgstr "&Обрати колір ..."
 
 #: objinspstrconsts.oistdactcolorselecthint
 msgid "Color Select"
@@ -1039,7 +1030,7 @@ msgstr "Вставити"
 
 #: objinspstrconsts.oistdacteditselectallheadline
 msgid "Select &All"
-msgstr "&Зберегти Все"
+msgstr "&Зберегти все"
 
 #: objinspstrconsts.oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -1047,7 +1038,7 @@ msgstr "Ctrl+A"
 
 #: objinspstrconsts.oistdacteditselectallshorthint
 msgid "Select All"
-msgstr "Обрати Все"
+msgstr "Вбрати все"
 
 #: objinspstrconsts.oistdacteditundoheadline
 msgid "&Undo"
@@ -1101,11 +1092,11 @@ msgstr "Зберегти як"
 
 #: objinspstrconsts.oistdactfonteditheadline
 msgid "Select &Font ..."
-msgstr "&Обрати Шрифт ..."
+msgstr "&Вибрати Шрифт ..."
 
 #: objinspstrconsts.oistdactfontedithint
 msgid "Font Select"
-msgstr "Обрати шрифт"
+msgstr "Вибрати шрифт"
 
 #: objinspstrconsts.oistdacthelpcontentsheadline
 msgid "&Contents"
@@ -1113,7 +1104,7 @@ msgstr "&Зміст"
 
 #: objinspstrconsts.oistdacthelpcontentshint
 msgid "Help Contents"
-msgstr "Допомога Зміст"
+msgstr "Допомога щодо змісту"
 
 #: objinspstrconsts.oistdacthelphelphelpheadline
 msgid "&Help on Help"
@@ -1125,7 +1116,7 @@ msgstr "Довідка про допомогу"
 
 #: objinspstrconsts.oistdacthelptopicsearchheadline
 msgid "&Topic Search"
-msgstr "&Зміст Шукати"
+msgstr "Шукати в &змісті"
 
 #: objinspstrconsts.oistdacthelptopicsearchhint
 msgid "Topic Search"
@@ -1133,7 +1124,7 @@ msgstr "Пошук по змісту"
 
 #: objinspstrconsts.oistdactsearchfindfirstheadline
 msgid "F&ind First"
-msgstr "З&найти Перше"
+msgstr "З&найти перше"
 
 #: objinspstrconsts.oistdactsearchfindfirsthint
 msgid "Find first"
@@ -1149,7 +1140,7 @@ msgstr "Знайти"
 
 #: objinspstrconsts.oistdactsearchfindnextheadline
 msgid "Find &Next"
-msgstr "Знайти &Далі"
+msgstr "Знайти &далі"
 
 #: objinspstrconsts.oistdactsearchfindnexthint
 msgid "Find next"
@@ -1180,28 +1171,20 @@ msgid "Test Input"
 msgstr "Тестове Введення"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-#, fuzzy,badformat
-#| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Ідентифікатор %s%s%s не є методом.%sНатисніть Скасувати для повернення,%sнатисніть Ігнорувати для прммусового виконання."
+msgstr "Ідентифікатор \"%s\" не є методом.%sНатисніть Скасувати для повернення,%sнатисніть Знехтувати для примусового виконання."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-#, fuzzy,badformat
-#| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Метод %s%s%s несумісний з цією подією (%s).%sНатисніть Скасувати для повернення,%sнатисніть Ігнорувати для прммусового виконання."
+msgstr "Метод \"%s\" несумісний з цією подією (%s).%sНатисніть Скасувати для повернення,%sнатисніть Знехтувати для примусового виконання."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-#, fuzzy,badformat
-#| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Метод %s%s%s не опублікований.%sНатисніть Скасувати для повернення,%sнатисніть Ігнорувати для прммусового виконання."
+msgstr "Метод \"%s\" не опублікований.%sНатисніть Скасувати для повернення,%sнатисніть Знехтувати для примусового виконання."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
-#, fuzzy,badformat
-#| msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
-msgstr "Не можу змінити предка компоненту %s%s%s на нового предка %s%s%s.%s%s"
+msgstr "Не можу змінити предка елемента керування \"%s\" на нового предка \"%s\".%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
@@ -1275,11 +1258,11 @@ msgstr "Заголовок"
 
 #: objinspstrconsts.rscdcolumneditor
 msgid "Column Editor"
-msgstr "Редактор Колонок"
+msgstr "Редактор колонок"
 
 #: objinspstrconsts.rscdinvalidnumericvalue
 msgid "Invalid numeric Value"
-msgstr "Невірне числове Значення"
+msgstr "Невірне числове значення"
 
 #: objinspstrconsts.rscdleft
 msgctxt "objinspstrconsts.rscdleft"
@@ -1314,7 +1297,7 @@ msgstr "Ширина"
 
 #: objinspstrconsts.sccshceditsections
 msgid "Sections Editor ..."
-msgstr "Редактор Секцій ..."
+msgstr "Редактор секцій ..."
 
 #: objinspstrconsts.sccsiledtadd
 msgid "&Add ..."
@@ -1357,17 +1340,17 @@ msgstr "Зображення"
 
 #: objinspstrconsts.sccsiledtgrprcaption
 msgid "Selected Image"
-msgstr "Вибране Зображення"
+msgstr "Вибране зображення"
 
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move D&own"
-msgstr "Перемістити В&низ"
+msgstr "Перемістити в&низ"
 
 #: objinspstrconsts.sccsiledtmoveup
 msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move &Up"
-msgstr "Перемістити В&гору"
+msgstr "Перемістити в&гору"
 
 #: objinspstrconsts.sccsiledtnone
 msgid "None"
@@ -1375,11 +1358,11 @@ msgstr "Немає"
 
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
-msgstr "Додати Зображення"
+msgstr "Додати зображення"
 
 #: objinspstrconsts.sccsiledtopendialogn
 msgid "New Image"
-msgstr ""
+msgstr "Нове зображення"
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
@@ -1387,7 +1370,7 @@ msgstr "Прозорий колір:"
 
 #: objinspstrconsts.sccsiledtreplace
 msgid "&Replace ..."
-msgstr ""
+msgstr "За&мінити ..."
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
@@ -1396,11 +1379,11 @@ msgstr "&Зберегти ..."
 
 #: objinspstrconsts.sccsiledtsaveall
 msgid "Save All ..."
-msgstr "Зберегти Все ..."
+msgstr "Зберегти все ..."
 
 #: objinspstrconsts.sccsiledtsavedialog
 msgid "Save Image"
-msgstr "Зберегти Зображення"
+msgstr "Зберегти зображення"
 
 #: objinspstrconsts.sccsiledtstretch
 msgid "Stretch"
@@ -1408,12 +1391,12 @@ msgstr "Розтягнути"
 
 #: objinspstrconsts.sccslvcoledt
 msgid "Edit Columns ..."
-msgstr "Редагувати Колонки ..."
+msgstr "Редагувати колонки ..."
 
 #: objinspstrconsts.sccslvedt
 msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items ..."
-msgstr "Редагувати Елементи ..."
+msgstr "Редагувати елементи ..."
 
 #: objinspstrconsts.sccslvedtapply
 msgctxt "objinspstrconsts.sccslvedtapply"
@@ -1422,7 +1405,7 @@ msgstr "Застосувати"
 
 #: objinspstrconsts.sccslvedtcaption
 msgid "ListView Items Editor"
-msgstr "Редактор Елементів ListView"
+msgstr "Редактор елементів ListView"
 
 #: objinspstrconsts.sccslvedtdelete
 msgctxt "objinspstrconsts.sccslvedtdelete"
@@ -1437,7 +1420,7 @@ msgstr "Елементи"
 #: objinspstrconsts.sccslvedtgrprcaption
 msgctxt "objinspstrconsts.sccslvedtgrprcaption"
 msgid "Item Properties"
-msgstr "Властивості Елементу"
+msgstr "Властивості елемента"
 
 #: objinspstrconsts.sccslvedtitem
 msgctxt "objinspstrconsts.sccslvedtitem"
@@ -1451,30 +1434,30 @@ msgstr "Заголовок:"
 #: objinspstrconsts.sccslvedtlabelimageindex
 msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
 msgid "Image Index:"
-msgstr "Індекс Зображення:"
+msgstr "Індекс зображення:"
 
 #: objinspstrconsts.sccslvedtlabelstateindex
 msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
 msgid "State Index:"
-msgstr "Індекс Стану:"
+msgstr "Індекс стану:"
 
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
 msgid "New Item"
-msgstr "Новий Елемент"
+msgstr "Новий елемент"
 
 #: objinspstrconsts.sccslvedtnewsubitem
 msgctxt "objinspstrconsts.sccslvedtnewsubitem"
 msgid "New SubItem"
-msgstr "Новий Піделемент"
+msgstr "Новий піделемент"
 
 #: objinspstrconsts.sccsmaskeditor
 msgid "Edit Mask Editor ..."
-msgstr "Змінити Редактор Маски ..."
+msgstr "Змінити редактор маски ..."
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
-msgstr "Редактор Панелей ..."
+msgstr "Редактор панелей ..."
 
 #: objinspstrconsts.sccssgedt
 msgid "Edit StringGrid ..."
@@ -1503,7 +1486,7 @@ msgstr "Завантажити ..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
 msgid "Move Rows/Cols"
-msgstr "Перемістити Рядки/Колонки"
+msgstr "Перемістити рядки/колонки"
 
 #: objinspstrconsts.sccssgedtopendialog
 msgctxt "objinspstrconsts.sccssgedtopendialog"
@@ -1523,7 +1506,7 @@ msgstr "Зберегти"
 #: objinspstrconsts.sccstredt
 msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items ..."
-msgstr "Редагувати Поля ..."
+msgstr "Редагувати поля ..."
 
 #: objinspstrconsts.sccstredtapply
 msgctxt "objinspstrconsts.sccstredtapply"
@@ -1532,7 +1515,7 @@ msgstr "Застосувати"
 
 #: objinspstrconsts.sccstredtcaption
 msgid "TreeView Items Editor"
-msgstr "Редактор Елементів TreeView"
+msgstr "Редактор елементів TreeView"
 
 #: objinspstrconsts.sccstredtdelete
 msgctxt "objinspstrconsts.sccstredtdelete"
@@ -1547,7 +1530,7 @@ msgstr "Елементи"
 #: objinspstrconsts.sccstredtgrprcaption
 msgctxt "objinspstrconsts.sccstredtgrprcaption"
 msgid "Item Properties"
-msgstr "Властивості Елементу"
+msgstr "Властивості елемента"
 
 #: objinspstrconsts.sccstredtitem
 msgctxt "objinspstrconsts.sccstredtitem"
@@ -1566,7 +1549,7 @@ msgstr "Вибраний індекс:"
 #: objinspstrconsts.sccstredtlabelstateindex
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index:"
-msgstr "Індекс Стану:"
+msgstr "Індекс стану:"
 
 #: objinspstrconsts.sccstredtlabeltext
 msgid "Text:"
@@ -1579,12 +1562,12 @@ msgstr "Завантажити"
 #: objinspstrconsts.sccstredtnewitem
 msgctxt "objinspstrconsts.sccstredtnewitem"
 msgid "New Item"
-msgstr "Новий Елемент"
+msgstr "Новий елемент"
 
 #: objinspstrconsts.sccstredtnewsubitem
 msgctxt "objinspstrconsts.sccstredtnewsubitem"
 msgid "New SubItem"
-msgstr "Новий Піделемент"
+msgstr "Новий піделемент"
 
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
@@ -1611,11 +1594,11 @@ msgstr "Додати як один"
 
 #: objinspstrconsts.s_confirm_clear
 msgid "Are you sure to clear image list?"
-msgstr ""
+msgstr "Справді очистити список зображень?"
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"
-msgstr "Розбити Зображення"
+msgstr "Розбити зображення"
 
 #: objinspstrconsts.s_suggestsplitimage
 msgid "Do you want to split the image?"

@@ -1,16 +1,17 @@
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-23 10:26+0300\n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2017-03-01 19:34+0200\n"
+"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Virtaal 0.7.1\n"
+"X-Generator: Lokalize 1.5\n"
 
 #: svnclasses.rsaction
 msgid "Action"
@@ -38,7 +39,7 @@ msgstr "Повідомлення комміту"
 
 #: svnclasses.rscommitmsghistory
 msgid "Commit Message History"
-msgstr "Історія Повідомлень"
+msgstr "Історія повідомлень"
 
 #: svnclasses.rscommitrevision
 msgid "Commit revision"
@@ -166,7 +167,7 @@ msgstr "Статус властивості"
 
 #: svnclasses.rsrefresh
 msgid "Refresh"
-msgstr ""
+msgstr "Оновити"
 
 #: svnclasses.rsremove
 msgid "Remove from version control (keep local)"

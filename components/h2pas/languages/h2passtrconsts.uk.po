@@ -1,73 +1,77 @@
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-06-01 11:50+0200\n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2017-02-10 14:46+0200\n"
+"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
 
 #: h2passtrconsts.h2padd
 msgid "&Add"
-msgstr ""
+msgstr "&Додати"
 
 #: h2passtrconsts.h2paddacopy
 msgid "Add a copy"
-msgstr ""
+msgstr "Додати копію"
 
 #: h2passtrconsts.h2paddfromclipboard
 msgid "Add from clipboard"
-msgstr ""
+msgstr "Додати з буфера обміну"
 
 #: h2passtrconsts.h2paddhfiles
 msgid "Add .h files ..."
-msgstr ""
+msgstr "Додати файли .h ..."
 
 #: h2passtrconsts.h2paddhfiles2
 msgid "Add *.h files ..."
-msgstr ""
+msgstr "Додати файли *.h ..."
 
 #: h2passtrconsts.h2paddhfiles3
 msgid "Add .h files?"
-msgstr ""
+msgstr "Додати файли .h?"
 
 #: h2passtrconsts.h2paddincludedhfiles
 msgid "Add included .h files"
-msgstr ""
+msgstr "Додати включені файли .h"
 
 #: h2passtrconsts.h2paddmissingbracketsaroundmacrovalues
 msgid "Add missing brackets around macro values"
-msgstr ""
+msgstr "Додати відсутні дужки навколо макрозначень"
 
 #: h2passtrconsts.h2paddmissingh2pasifdefsforfunctionbodies
 msgid "Add missing H2Pas IFDEFs for function bodies"
-msgstr ""
+msgstr "Додати відсутні H2Pas IFDEF до тіл функцій"
 
 #: h2passtrconsts.h2paddmissingpointertypeslikepppchar
 msgid "Add missing pointer types like PPPChar"
-msgstr ""
+msgstr "Додати відсутні типи вказівників на зразок PPPChar"
 
 #: h2passtrconsts.h2paddnewtool
 msgid "Add new tool"
-msgstr ""
+msgstr "Додати новий засіб"
 
 #: h2passtrconsts.h2paddsearchandreplacetoolbeforeh2pas
 msgid "Add \"search and replace\" tool before H2Pas"
-msgstr ""
+msgstr "Додати засіб \"пошук і заміна\" перед H2Pas"
 
 #: h2passtrconsts.h2paddthesehfilestoh2pasproject
 msgid "Add these .h files to H2Pas project?%s%s%s"
-msgstr ""
+msgstr "Додати ці файли .h до проекту H2Pas?%s%s%s"
 
 #: h2passtrconsts.h2paddunitstousessection
 msgid "Add units to uses section"
-msgstr ""
+msgstr "Додати модулі до секції uses"
 
 #: h2passtrconsts.h2pafterh2pas
 msgid "After H2Pas"
-msgstr ""
+msgstr "Після H2Pas"
 
 #: h2passtrconsts.h2pambiguousmerges
 msgid "Ambiguous merges:%s%s"
@@ -75,19 +79,19 @@ msgstr ""
 
 #: h2passtrconsts.h2pbeforeh2pas
 msgid "Before H2Pas"
-msgstr ""
+msgstr "Перед H2Pas"
 
 #: h2passtrconsts.h2pcancel
 msgid "Cancel"
-msgstr ""
+msgstr "Скасувати"
 
 #: h2passtrconsts.h2pcancel2
 msgid "&Cancel"
-msgstr ""
+msgstr "&Скасувати"
 
 #: h2passtrconsts.h2pccompactoutputmodelessspacesandemptylines
 msgid "-c  Compact outputmode, less spaces and empty lines"
-msgstr ""
+msgstr "-c  Компактне виведення, менше пропусків і порожніх рядків"
 
 #: h2passtrconsts.h2pcheaderfileconverter
 msgid "C header file converter"
@@ -95,55 +99,55 @@ msgstr "Конвертер файлів заголовків C"
 
 #: h2passtrconsts.h2pcheaderfilehhallfiles
 msgid "C header file (*.h)|*.h|All files (*.*)|%s"
-msgstr ""
+msgstr "Файл заголовків C (*.h)|*.h|Всі файли (*.*)|%s"
 
 #: h2passtrconsts.h2pcheaderfilenotfound
 msgid "C header file \"%s\" not found"
-msgstr ""
+msgstr "Файл заголовків C \"%s\" не знайдено"
 
 #: h2passtrconsts.h2pcheaderfiles
 msgid "C header files"
-msgstr ""
+msgstr "Файл заголовків C"
 
 #: h2passtrconsts.h2pclose
 msgid "&Close"
-msgstr ""
+msgstr "&Закрити"
 
 #: h2passtrconsts.h2pcommentfunctionsthataretoocomplexforh2pas
 msgid "Comment functions that are too complex for H2Pas"
-msgstr ""
+msgstr "Закоментувати функції, що є занадто складними для H2Pas"
 
 #: h2passtrconsts.h2pcommentmacrosthataretoocomplexforh2pas
 msgid "Comment macros that are too complex for H2Pas"
-msgstr ""
+msgstr "Закоментувати макроси, що є занадто складними для H2Pas"
 
 #: h2passtrconsts.h2pconfirmdelete
 msgid "Confirm delete"
-msgstr ""
+msgstr "Підтвердити видалення"
 
 #: h2passtrconsts.h2pconfirmremoval
 msgid "Confirm removal"
-msgstr ""
+msgstr "Підтвердити вилучення"
 
 #: h2passtrconsts.h2pconversionsafterrunningh2pas
 msgid "Conversions after running H2Pas"
-msgstr ""
+msgstr "Перетворення після запуску H2Pas"
 
 #: h2passtrconsts.h2pconversionsbeforerunningh2pas
 msgid "Conversions before running H2Pas"
-msgstr ""
+msgstr "Перетворення перед запуском H2Pas"
 
 #: h2passtrconsts.h2pconvertfunctiontypestopointers
 msgid "Convert function types to pointers"
-msgstr ""
+msgstr "Перетворити типи-функції на вказівники"
 
 #: h2passtrconsts.h2pcopyingfilefailed
 msgid "Copying file failed"
-msgstr ""
+msgstr "Не вдалось скопіювати файл"
 
 #: h2passtrconsts.h2pcopytooltoclipboard
 msgid "Copy tool to clipboard"
-msgstr ""
+msgstr "Копіювати засіб у буфер"
 
 #: h2passtrconsts.h2pcreateunitsfromcheaderfiles
 msgid "Create units from C header files"
@@ -155,39 +159,39 @@ msgstr ""
 
 #: h2passtrconsts.h2pdelete
 msgid "Delete"
-msgstr ""
+msgstr "Видалити"
 
 #: h2passtrconsts.h2pdeleteselectedhfiles
 msgid "Delete selected .h files"
-msgstr ""
+msgstr "Видалити вибрані файли .h"
 
 #: h2passtrconsts.h2pdeletethesehfilesfromlist
 msgid "Delete these .h files from list?%s%s%s"
-msgstr ""
+msgstr "Видалити ці файли .h зі списку?%s%s%s"
 
 #: h2passtrconsts.h2pdeletetool
 msgid "Delete tool"
-msgstr ""
+msgstr "Видалити засіб"
 
 #: h2passtrconsts.h2pdeletionoffailed
 msgid "deletion of \"%s\" failed"
-msgstr ""
+msgstr "не вдалось видалити \"%s\""
 
 #: h2passtrconsts.h2pdisableallhfiles
 msgid "Disable all .h files"
-msgstr ""
+msgstr "Вимкнути всі файли .h"
 
 #: h2passtrconsts.h2pdiscardchangesandexit
 msgid "Discard changes and exit"
-msgstr ""
+msgstr "Скасувати зміни і вийти"
 
 #: h2passtrconsts.h2pdonotexit
 msgid "Do not exit"
-msgstr ""
+msgstr "Не виходити"
 
 #: h2passtrconsts.h2pdoyoureallywanttodelete
 msgid "Do you really want to delete \"%s\"?"
-msgstr ""
+msgstr "Справді видалити \"%s\"?"
 
 #: h2passtrconsts.h2pduseexternalforallprocedures
 msgid "-d  Use external; for all procedures"
@@ -203,11 +207,11 @@ msgstr ""
 
 #: h2passtrconsts.h2penableallhfiles
 msgid "Enable all .h files"
-msgstr ""
+msgstr "Ввімкнути всі файли .h"
 
 #: h2passtrconsts.h2perror
 msgid "Error"
-msgstr ""
+msgstr "Помилка"
 
 #: h2passtrconsts.h2perrorconvertingclipboardtexttotexttool
 msgid "Error converting clipboard text to text tool:%s%s"
@@ -219,39 +223,39 @@ msgstr ""
 
 #: h2passtrconsts.h2perrorfilenotfound2
 msgid "ERROR: file not found"
-msgstr ""
+msgstr "ПОМИЛКА: файл не знайдено"
 
 #: h2passtrconsts.h2perrorreadingglobalconfig
 msgid "Error reading global config:%s%s"
-msgstr ""
+msgstr "Помилка читання глобальної конфігурації:%s%s"
 
 #: h2passtrconsts.h2perrorreadingprojectfromfile
 msgid "Error reading project from file%s%s%s%s%s"
-msgstr ""
+msgstr "Помилка читання проекту з файлу%s%s%s%s%s"
 
 #: h2passtrconsts.h2perrorwritingglobalconfig
 msgid "Error writing global config:%s%s"
-msgstr ""
+msgstr "Помилка запису глобальної конфігурації:%s%s"
 
 #: h2passtrconsts.h2pfile
 msgid "File: %s"
-msgstr ""
+msgstr "Файл: %s"
 
 #: h2passtrconsts.h2pfileinformation
 msgid "File information"
-msgstr ""
+msgstr "Інформація про файл"
 
 #: h2passtrconsts.h2pfilenameofh2pasprogram
 msgid "Filename of H2Pas program"
-msgstr ""
+msgstr "Назва файлу програми H2Pas"
 
 #: h2passtrconsts.h2pfilenotfound
 msgid "File not found"
-msgstr ""
+msgstr "Файл не знайдено"
 
 #: h2passtrconsts.h2pfilenotfound2
 msgid "File not found: \"%s\""
-msgstr ""
+msgstr "Файл не знайдено: \"%s\""
 
 #: h2passtrconsts.h2pfindexplicittypesfailedreadingconstsection
 msgid "FindExplicitTypes FAILED reading const section"
@@ -287,19 +291,19 @@ msgstr "H2Pas ..."
 
 #: h2passtrconsts.h2ph2pasoptions
 msgid "H2Pas Options"
-msgstr ""
+msgstr "Параметри H2Pas"
 
 #: h2passtrconsts.h2ph2pasprogrampath
 msgid "H2Pas program path"
-msgstr ""
+msgstr "Шлях до програми H2Pas"
 
 #: h2passtrconsts.h2ph2pasproject
 msgid "H2Pas project"
-msgstr ""
+msgstr "Проект H2Pas"
 
 #: h2passtrconsts.h2ph2pasprojecth2ph2pallfiles
 msgid "H2Pas project (*.h2p)|*.h2p|All files (*.*)|%s"
-msgstr ""
+msgstr "Проект H2Pas (*.h2p)|*.h2p|Всі файли (*.*)|%s"
 
 #: h2passtrconsts.h2ph2pastool
 msgid "H2PasTool"
@@ -307,55 +311,55 @@ msgstr "H2PasTool"
 
 #: h2passtrconsts.h2picreateanincludefileinsteadofaunit
 msgid "-i  Create an include file instead of a unit"
-msgstr ""
+msgstr "-i  Створити файл, що включається, а не модуль"
 
 #: h2passtrconsts.h2pincludedby
 msgid "Included by:"
-msgstr ""
+msgstr "Включено:"
 
 #: h2passtrconsts.h2pincludedby2
 msgid "%s (included by %s)"
-msgstr ""
+msgstr "%s (включено %s)"
 
 #: h2passtrconsts.h2pincludes
 msgid "Includes:"
-msgstr ""
+msgstr "Включає:"
 
 #: h2passtrconsts.h2pinvalidclass
 msgid "Invalid class"
-msgstr ""
+msgstr "Неправильний клас"
 
 #: h2passtrconsts.h2pllibraryname
 msgid "-l Library name"
-msgstr ""
+msgstr "-l Назва бібліотеки"
 
 #: h2passtrconsts.h2pmergeallbutthis
 msgid "Merge all but this"
-msgstr ""
+msgstr "Злити всі, крім цього"
 
 #: h2passtrconsts.h2pmergedinto
 msgid "Merged into: %s"
-msgstr ""
+msgstr "Злито в: %s"
 
 #: h2passtrconsts.h2pmergefile
 msgid "Merge file"
-msgstr ""
+msgstr "Злити файли"
 
 #: h2passtrconsts.h2pmovedown
 msgid "Move down"
-msgstr ""
+msgstr "Пересунути вниз"
 
 #: h2passtrconsts.h2pmovefiledown
 msgid "Move file down"
-msgstr ""
+msgstr "Пересунути файл вниз"
 
 #: h2passtrconsts.h2pmovefileup
 msgid "Move file up"
-msgstr ""
+msgstr "Пересунути файл вгору"
 
 #: h2passtrconsts.h2pmoveup
 msgid "Move up"
-msgstr ""
+msgstr "Пересунути вгору"
 
 #: h2passtrconsts.h2pnewclearsettings
 msgid "New/Clear settings"
@@ -363,7 +367,7 @@ msgstr ""
 
 #: h2passtrconsts.h2pnofileselected
 msgid "No file selected."
-msgstr ""
+msgstr "Файл не вибрано."
 
 #: h2passtrconsts.h2pnotatcustomtextconvertertool
 msgid "not a TCustomTextConverterTool"
@@ -371,31 +375,31 @@ msgstr ""
 
 #: h2passtrconsts.h2pnothingtodo
 msgid "Nothing to do"
-msgstr ""
+msgstr "Нічого робити"
 
 #: h2passtrconsts.h2popenlastsettingsonstart
 msgid "Open last settings on start"
-msgstr ""
+msgstr "При старті відкрити останні налаштування"
 
 #: h2passtrconsts.h2popenprojecth2p
 msgid "Open project (*.h2p) ..."
-msgstr ""
+msgstr "Відкрити проект (*.h2p) ..."
 
 #: h2passtrconsts.h2popensettings
 msgid "&Open Settings"
-msgstr ""
+msgstr "&Відкрити налаштування"
 
 #: h2passtrconsts.h2poptions
 msgid "Options"
-msgstr ""
+msgstr "Параметри"
 
 #: h2passtrconsts.h2poutput
 msgid "Output: %s"
-msgstr ""
+msgstr "Виведення: %s"
 
 #: h2passtrconsts.h2poutputdirectory
 msgid "Output directory"
-msgstr ""
+msgstr "Вихідна тека"
 
 #: h2passtrconsts.h2poutputextensionofnewfile
 msgid "Output extension of new file"
@@ -403,7 +407,7 @@ msgstr ""
 
 #: h2passtrconsts.h2poverwrite
 msgid "Overwrite"
-msgstr ""
+msgstr "Переписати"
 
 #: h2passtrconsts.h2ppleaseenableatleastonecheaderfilethatisnotmerged
 msgid "Please enable at least one c header file that is not merged."
@@ -431,7 +435,7 @@ msgstr ""
 
 #: h2passtrconsts.h2preaderror
 msgid "Read error"
-msgstr ""
+msgstr "Помилка читання"
 
 #: h2passtrconsts.h2preducecompilerdirectivesinpascalfileshortensexpres
 msgid "Reduce compiler directives in pascal file%sShortens expressions in $IF directives%sand removes unneeded $IFDEF and $DEFINE directives."
@@ -439,11 +443,11 @@ msgstr ""
 
 #: h2passtrconsts.h2premoveallfiles
 msgid "Remove all files"
-msgstr ""
+msgstr "Видалити всі файли"
 
 #: h2passtrconsts.h2premoveallincludedirectives
 msgid "Remove all include directives"
-msgstr ""
+msgstr "Вилучити всі директиви include"
 
 #: h2passtrconsts.h2premovecexternclines
 msgid "Remove C++ 'extern \"C\"' lines"
@@ -451,15 +455,15 @@ msgstr ""
 
 #: h2passtrconsts.h2premovedoublesemicolons
 msgid "Remove double semicolons"
-msgstr ""
+msgstr "Вилучити подвійні крапки з комою"
 
 #: h2passtrconsts.h2premoveemptycmacros
 msgid "Remove empty C macros"
-msgstr ""
+msgstr "Вилучити порожні макроси C"
 
 #: h2passtrconsts.h2premoveemptytypevarconstsections
 msgid "Remove empty type/var/const sections"
-msgstr ""
+msgstr "Вилучити порожні розділи type/var/const"
 
 #: h2passtrconsts.h2premoveredefinedpointertypes
 msgid "Remove redefined pointer types"
@@ -475,7 +479,7 @@ msgstr ""
 
 #: h2passtrconsts.h2preplacefile
 msgid "Replace file?"
-msgstr ""
+msgstr "Замінити файл?"
 
 #: h2passtrconsts.h2preplaceimplicittypesforexampleprocedureprocnameaar
 msgid "Replace implicit types%sFor example:%s    procedure ProcName(a: array[0..2] of char)%s  is replaced with%s    procedure ProcName(a: Tarray_0to2_of_char)%s  and a new type is added%s    Tarray_0to2_of_char = array[0..2] of char"
@@ -487,79 +491,79 @@ msgstr ""
 
 #: h2passtrconsts.h2preplacesimplefunctionswithconstants
 msgid "Replace simple functions with constants"
-msgstr ""
+msgstr "Замінити прості функції константами"
 
 #: h2passtrconsts.h2preplacesimplefunctionswithtypecasts
 msgid "Replace simple functions with type casts"
-msgstr ""
+msgstr "Замінити прості функції оголошеннями типів"
 
 #: h2passtrconsts.h2preplaceunitfilenamewithunitname
 msgid "Replace \"unit filename;\" with \"unit name;\""
-msgstr ""
+msgstr "Замінити \"unit filename;\" на \"unit name;\""
 
 #: h2passtrconsts.h2preplacewith
 msgid "Replace [] with *"
-msgstr ""
+msgstr "Замінити [] на *"
 
 #: h2passtrconsts.h2preplacingofnullwithnilfailed
 msgid "replacing of NULL with nil failed"
-msgstr ""
+msgstr "не вдалось замінити NULL на nil"
 
 #: h2passtrconsts.h2prunh2pas
 msgid "Run H2Pas"
-msgstr ""
+msgstr "Запустити H2Pas"
 
 #: h2passtrconsts.h2prunh2pasandcompile
 msgid "Run H2Pas and compile"
-msgstr ""
+msgstr "Запустити H2Pas і скомпілювати"
 
 #: h2passtrconsts.h2psaveandexit
 msgid "Save and exit"
-msgstr ""
+msgstr "Зберегти і вийти"
 
 #: h2passtrconsts.h2psavechanges
 msgid "Save changes?"
-msgstr ""
+msgstr "Зберегти зміни?"
 
 #: h2passtrconsts.h2psaveprojectash2p
 msgid "Save project as ... (*.h2p)"
-msgstr ""
+msgstr "Зберегти проект як ... (*.h2p)"
 
 #: h2passtrconsts.h2psavesettings
 msgid "&Save Settings"
-msgstr ""
+msgstr "&Зберегти налаштування"
 
 #: h2passtrconsts.h2psavesettings2
 msgid "Save settings?"
-msgstr ""
+msgstr "Зберегти налаштування?"
 
 #: h2passtrconsts.h2psavesettingsas
 msgid "Save settings as ..."
-msgstr ""
+msgstr "Зберегти налаштування як ..."
 
 #: h2passtrconsts.h2pselectaclass
 msgid "&Select a class"
-msgstr ""
+msgstr "&Виберіть клас"
 
 #: h2passtrconsts.h2psettings
 msgid "Settings"
-msgstr ""
+msgstr "Налаштування"
 
 #: h2passtrconsts.h2psstripcomments
 msgid "-s  Strip comments"
-msgstr ""
+msgstr "-s  Прибрати коментарі"
 
 #: h2passtrconsts.h2psstripcommentsandinfo
 msgid "-S  Strip comments and info"
-msgstr ""
+msgstr "-S  Прибрати коментарі та інформацію"
 
 #: h2passtrconsts.h2ptaddtousessectionexecutefileisnotpascal
 msgid "TAddToUsesSection.Execute file is not pascal: "
-msgstr ""
+msgstr "TAddToUsesSection.Execute файл не на Паскалі: "
 
 #: h2passtrconsts.h2ptaddtousessectionexecuteinvalidunitname
 msgid "TAddToUsesSection.Execute invalid unitname \"%s\""
-msgstr ""
+msgstr "TAddToUsesSection.Execute неправильна назва модуля \"%s\""
 
 #: h2passtrconsts.h2ptextconversiontoolseditor
 msgid "Text conversion tools editor"
@@ -567,19 +571,19 @@ msgstr ""
 
 #: h2passtrconsts.h2pth2pasdialogh2pasoptionscheckgroupitemclickunknown
 msgid "TH2PasDialog.h2pasOptionsCheckGroupItemClick: Unknown option %s"
-msgstr ""
+msgstr "TH2PasDialog.h2pasOptionsCheckGroupItemClick: Невідомий параметр %s"
 
 #: h2passtrconsts.h2pthefilealreadyexists
 msgid "The file \"%s\"%salready exists."
-msgstr ""
+msgstr "Файл \"%s\"%sвже існує."
 
 #: h2passtrconsts.h2ptools
 msgid "Tools:"
-msgstr ""
+msgstr "Засоби:"
 
 #: h2passtrconsts.h2ptposth2pastoolsexecuteaddtousessectioninvalidunitn
 msgid "TPostH2PasTools.Execute.AddToUsesSection invalid unitname \"%s\""
-msgstr ""
+msgstr "TPostH2PasTools.Execute.AddToUsesSection Неправильна назва модуля \"%s\""
 
 #: h2passtrconsts.h2ptprependtypedeftypeswitht
 msgid "-t  Prepend  typedef  types with T"
@@ -591,19 +595,19 @@ msgstr ""
 
 #: h2passtrconsts.h2punabletocopyfileto
 msgid "Unable to copy file \"%s\"%sto \"%s\""
-msgstr ""
+msgstr "Неможливо скопіювати файл \"%s\"%sу \"%s\""
 
 #: h2passtrconsts.h2punabletomergefileinto
 msgid "Unable to merge file \"%s\" into \"%s\""
-msgstr ""
+msgstr "Неможливо злити файл \"%s\" з \"%s\""
 
 #: h2passtrconsts.h2pvreplacepointerparametersbyvar
 msgid "-v  Replace pointer parameters by  var"
-msgstr ""
+msgstr "-v Замінити параметри вказівника на var"
 
 #: h2passtrconsts.h2pwarning
 msgid "Warning"
-msgstr ""
+msgstr "Попередження"
 
 #: h2passtrconsts.h2pwarningthefilewillbemergedintomultiplefiles
 msgid "%sWarning: the file \"%s\"%swill be merged into multiple files:%s"
@@ -611,11 +615,11 @@ msgstr ""
 
 #: h2passtrconsts.h2pwhandlespecialwin32macros
 msgid "-w  Handle special win32 macros"
-msgstr ""
+msgstr "-w  Керування спеціальними макросами win32"
 
 #: h2passtrconsts.h2pwriteerror
 msgid "Write error"
-msgstr ""
+msgstr "Помилка запису"
 
 #: h2passtrconsts.h2pxhandlesys__trapofthepalmosheaderfiles
 msgid "-x  Handle SYS__TRAP of the PalmOS header files"

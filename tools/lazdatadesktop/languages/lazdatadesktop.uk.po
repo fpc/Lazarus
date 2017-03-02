@@ -1,16 +1,17 @@
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-23 09:35+0300\n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2017-01-10 00:51+0200\n"
+"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Virtaal 0.7.1\n"
+"X-Generator: Lokalize 1.5\n"
 
 #: lazdatadeskstr.eoaddterminator
 msgid "Add terminator"
@@ -42,7 +43,7 @@ msgstr "Префікс OLD в параметрах where"
 
 #: lazdatadeskstr.sabortscript
 msgid "Abort the script"
-msgstr ""
+msgstr "Перервати сценарій"
 
 #: lazdatadeskstr.sclose
 msgid "Close result"
@@ -130,17 +131,19 @@ msgstr "Двигун"
 
 #: lazdatadeskstr.serrcommitnotsupported
 msgid "COMMIT Not supported yet"
-msgstr ""
+msgstr "COMMIT ще не підтримується"
 
 #: lazdatadeskstr.serrinscript
 msgid "Error in SQL script"
-msgstr ""
+msgstr "Помилка у сценарії SQL"
 
 #: lazdatadeskstr.serrinscriptchoice
 msgid ""
 "An error occurred in the SQL script.\n"
 "How would you like to continue ?\n"
 msgstr ""
+"У сценарії SQL трапилась помилка.\n"
+"Як бажаєте продовжити ?\n"
 
 #: lazdatadeskstr.serrnoengine
 msgid "No database engine !"
@@ -148,7 +151,7 @@ msgstr "Відсутній двигун бази даних!"
 
 #: lazdatadeskstr.serrorexecutingsql
 msgid "Error executing SQL statement:"
-msgstr ""
+msgstr "Помилка при виконанні інструкції SQL:"
 
 #: lazdatadeskstr.serrselectfields
 msgid "No fields selected. Please select some fields"
@@ -160,7 +163,7 @@ msgstr "Не вибрано жодної таблиці. Виберіть пев
 
 #: lazdatadeskstr.serrunknowndirective
 msgid "Unknown directive: %s (args: %s)"
-msgstr ""
+msgstr "Невідома директива: %s (args: %s)"
 
 #: lazdatadeskstr.serrunknowntype
 msgid "Unknown object type: %d"
@@ -172,15 +175,15 @@ msgstr "Виконати SQL"
 
 #: lazdatadeskstr.sexecutingsqlstatement
 msgid "%s : Executing SQL statement:"
-msgstr ""
+msgstr "%s : Виконання інструкції SQL:"
 
 #: lazdatadeskstr.sexecutingsqlstatementcount
 msgid "%s : Executing script SQL statement nr. %d:"
-msgstr ""
+msgstr "%s : Виконання інструкції сценарію SQL номер %d:"
 
 #: lazdatadeskstr.sexecutiontime
 msgid "Execution time: %s"
-msgstr ""
+msgstr "Час виконання: %s"
 
 #: lazdatadeskstr.sexport
 msgid "Export data"
@@ -227,8 +230,6 @@ msgid "Save SQL statement to file"
 msgstr "Зберегти інструкцію SQL в файл"
 
 #: lazdatadeskstr.simportdictinto
-#, fuzzy
-#| msgid "Import datadictionary"
 msgid "Import data dictionary"
 msgstr "Імпортувати словник даних"
 
@@ -394,8 +395,6 @@ msgid "Open"
 msgstr "Відкрити"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadicth
-#, fuzzy
-#| msgid "Open selected recent datadictionary"
 msgid "Open selected recent data dictionary"
 msgstr "Відкрити вибраний недавній словник даних"
 
@@ -416,8 +415,6 @@ msgid "Save &as"
 msgstr "Зберегти &як"
 
 #: lazdatadeskstr.sld_actionsaveash
-#, fuzzy
-#| msgid "Save datadictionary as"
 msgid "Save data dictionary as"
 msgstr "Зберегти словник даних як"
 
@@ -458,13 +455,11 @@ msgstr "З'єднання"
 
 #: lazdatadeskstr.sld_connectionsdictionaries
 msgid "Connections/Dictionaries"
-msgstr ""
+msgstr "З’єднання/Словники"
 
 #: lazdatadeskstr.sld_connecttoadatabase
-#, fuzzy,badformat
-#| msgid "Connect to a database"
 msgid "Connect to a database of type %s"
-msgstr "При'єднатись до бази даних"
+msgstr "З'єднатися з базою даних типу %s"
 
 #: lazdatadeskstr.sld_createfulltablecreationsql
 msgid "Create full table creation SQL"
@@ -490,7 +485,7 @@ msgstr "Словники"
 
 #: lazdatadeskstr.sld_firststart
 msgid "First start of database desktop"
-msgstr ""
+msgstr "Перший запуск стільниці бази даних"
 
 #: lazdatadeskstr.sld_fromconnection
 msgid "From connection"
@@ -509,8 +504,6 @@ msgid "Host"
 msgstr "Хост"
 
 #: lazdatadeskstr.sld_importupdatedatadictionary
-#, fuzzy
-#| msgid "Import/Update datadictionary"
 msgid "Import/Update data dictionary"
 msgstr "Імпорт/Оновлення словника даних"
 
@@ -532,7 +525,7 @@ msgstr "Робочий стіл Бази даних Lazarus"
 
 #: lazdatadeskstr.sld_legacyview
 msgid "Legacy List View"
-msgstr ""
+msgstr "Традиційний вигляд списку"
 
 #: lazdatadeskstr.sld_linelength
 msgid "Line Length"
@@ -564,11 +557,9 @@ msgid "&OK"
 msgstr "&OK"
 
 #: lazdatadeskstr.sld_opendatadictionaryfilter
-#, fuzzy
-#| msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
 msgctxt "lazdatadeskstr.sld_opendatadictionaryfilter"
 msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
-msgstr "Файли словників даних|*.fpd|Файли Ini|*.ini|Всі файли|*.*"
+msgstr "Файли словників даних(fdd)|*.fdd|Файли Ini|*.ini|Всі файли|*.*"
 
 #: lazdatadeskstr.sld_opendatadictionarytitle
 msgid "Open data dictionary"
@@ -597,11 +588,9 @@ msgid "Last used on"
 msgstr "Останнє використання"
 
 #: lazdatadeskstr.sld_savefileasfilter
-#, fuzzy
-#| msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
 msgctxt "lazdatadeskstr.sld_savefileasfilter"
 msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
-msgstr "Файли словників даних|*.fpd|Файли Ini|*.ini|Всі файли|*.*"
+msgstr "Файли словників даних(fdd)|*.fdd|Файли Ini|*.ini|Всі файли|*.*"
 
 #: lazdatadeskstr.sld_savefileastitle
 msgid "Save file as"
@@ -633,19 +622,19 @@ msgstr "-"
 
 #: lazdatadeskstr.sld_startempty
 msgid "Thanks, I know what to do"
-msgstr ""
+msgstr "Дякую, я знаю, що робити"
 
 #: lazdatadeskstr.sld_startnewconnection
 msgid "Create new connection"
-msgstr ""
+msgstr "Створити нове з'єднання"
 
 #: lazdatadeskstr.sld_startnewdict
 msgid "Start new dictionary"
-msgstr ""
+msgstr "Почати новий словник"
 
 #: lazdatadeskstr.sld_succesconnecting
 msgid "Connection established successfully!"
-msgstr ""
+msgstr "З'єднання встановлено успішно!"
 
 #: lazdatadeskstr.sld_table
 msgid "Ta&ble"
@@ -657,11 +646,11 @@ msgstr "Таблиці і &Поля"
 
 #: lazdatadeskstr.sld_testconnection
 msgid "Test connection"
-msgstr ""
+msgstr "Перевірити з'єднання"
 
 #: lazdatadeskstr.sld_unknowntype
 msgid "Unknown type"
-msgstr ""
+msgstr "Невідомий тип"
 
 #: lazdatadeskstr.sld_update
 msgid "&Update"
@@ -677,7 +666,7 @@ msgstr "Ім'я користувача"
 
 #: lazdatadeskstr.sld_view
 msgid "View"
-msgstr ""
+msgstr "Перегляд"
 
 #: lazdatadeskstr.sload
 msgid "Load SQL"
@@ -696,10 +685,8 @@ msgid "New connection"
 msgstr "Нове з'єднання"
 
 #: lazdatadeskstr.snewdictionary
-#, fuzzy
-#| msgid "New database"
 msgid "New data dictionary"
-msgstr "Нова база даних"
+msgstr "Новий словник даних"
 
 #: lazdatadeskstr.snewdomain
 msgid "Create new domain"
@@ -763,8 +750,6 @@ msgid "Database"
 msgstr "База даних"
 
 #: lazdatadeskstr.snodedatadictionary
-#, fuzzy
-#| msgid "Datadictionary"
 msgid "Data dictionary"
 msgstr "Словник даних"
 
@@ -822,6 +807,8 @@ msgid ""
 "No connections or data dictionaries were found.\n"
 " Start by creating a new connection or data dictionary.\n"
 msgstr ""
+"З'єднань або словників даних не знайдено.\n"
+" Почніть зі створення з'єднання або словника даних.\n"
 
 #: lazdatadeskstr.squery
 msgid "Run query"
@@ -829,21 +816,19 @@ msgstr "Виконати запит"
 
 #: lazdatadeskstr.sreadyforsql
 msgid "Ready to execute SQL statements"
-msgstr ""
+msgstr "Готовий виконувати інструкції SQL"
 
 #: lazdatadeskstr.srecordsfetched
 msgid "Records fetched: %d"
-msgstr ""
+msgstr "Вибрано записів: %d"
 
 #: lazdatadeskstr.sretrystatement
 msgid "Retry the statement"
-msgstr ""
+msgstr "Повторити інструкцію"
 
 #: lazdatadeskstr.srowsaffected
-#, fuzzy
-#| msgid "Query executed succesfully: %d rows affected."
 msgid "Query executed successfully: %d rows affected."
-msgstr "Запит виконаний успішно: %d рядків змінено."
+msgstr "Запит виконано успішно: %d рядків змінено."
 
 #: lazdatadeskstr.ssave
 msgid "Save SQL"
@@ -855,15 +840,15 @@ msgstr "Зберегти зміни"
 
 #: lazdatadeskstr.sscriptaborted
 msgid "Script was aborted after %d statements"
-msgstr ""
+msgstr "Сценарій перервано після %d інструкцій"
 
 #: lazdatadeskstr.sscriptcompleted
 msgid "Executed %d statements from script"
-msgstr ""
+msgstr "Виконано %d інструкцій сценарію"
 
 #: lazdatadeskstr.sscripterrorcount
 msgid "%d script statements resulted in errors"
-msgstr ""
+msgstr "%d інструкцій сценарію завершено з помилками"
 
 #: lazdatadeskstr.sselectdbfdir
 msgid "Select a directory with DBF files"
@@ -879,11 +864,11 @@ msgstr "Послідовність"
 
 #: lazdatadeskstr.ssqlerrorcode
 msgid "SQL Error code: %d"
-msgstr ""
+msgstr "Код помилки SQL: %d"
 
 #: lazdatadeskstr.ssqlexecutedok
 msgid "%s : Statement executed succesfully."
-msgstr ""
+msgstr "%s : Інструкцію виконано успішно."
 
 #: lazdatadeskstr.ssqlfilters
 msgid "SQL files|*.sql|All files|*.*"
@@ -891,15 +876,15 @@ msgstr "Файли SQL|*.sql|Всі файли|*.*"
 
 #: lazdatadeskstr.ssqlstatus
 msgid "SQL State: %s"
-msgstr ""
+msgstr "Стан SQL: %s"
 
 #: lazdatadeskstr.sstopnoerror
 msgid "Continue, ignore all errors"
-msgstr ""
+msgstr "Продовжити, знехтувавши всі помилки"
 
 #: lazdatadeskstr.sstoponnexterror
 msgid "Continue, stop on the next error"
-msgstr ""
+msgstr "Продовжити, зупинитись на наступній помилці"
 
 #: lazdatadeskstr.stable
 msgid "Table"

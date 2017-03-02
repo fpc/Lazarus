@@ -1,16 +1,16 @@
-# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016.
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-05-02 11:07+0200\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2017-03-01 19:22+0200\n"
+"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.4\n"
+"X-Generator: Lokalize 1.5\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
@@ -32,7 +32,7 @@ msgstr "Деякі групи в списку ввімкнення/вимкне�
 
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
-msgstr "Попередньо визначена користувачем схема"
+msgstr "Попередньо визначена схема"
 
 #: lazarusidestrconsts.dlfmouseresetall
 msgid "Reset all settings"
@@ -1002,11 +1002,11 @@ msgstr "Відповідність цілому рядку"
 
 #: lazarusidestrconsts.dlgcommentcontinuematchtext
 msgid "Match text after token \"%s\""
-msgstr "Відповідність тексту після позначки \"%s\""
+msgstr "Відповідність тексту після елемента \"%s\""
 
 #: lazarusidestrconsts.dlgcommentcontinuematchtoken
 msgid "Match text including token \"%s\""
-msgstr "Відповідність тексту включно з позначкою \"%s\""
+msgstr "Відповідність тексту включно з елементом \"%s\""
 
 #: lazarusidestrconsts.dlgcommentcontinueprefix
 msgid "Prefix new line"
@@ -1888,11 +1888,11 @@ msgstr "Колір переднього плану"
 
 #: lazarusidestrconsts.dlgformtitlebarchangesobjectinspector
 msgid "Change Object Inspector contents on clicking form title bar"
-msgstr ""
+msgstr "Змінювати вміст Інспектора об'єктів при клацанні заголовка форми"
 
 #: lazarusidestrconsts.dlgformtitlebarchangesobjectinspectorhint
 msgid "Show a form's properties in Object Inspector by clicking on its title bar."
-msgstr ""
+msgstr "Показувати в Інспекторі об'єктів властивості форми при клацанні її заголовка."
 
 #: lazarusidestrconsts.dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
@@ -2113,7 +2113,7 @@ msgstr "Неактивний код $IFDEF"
 
 #: lazarusidestrconsts.dlgifdefblocktmpactive
 msgid "Included mixed state $IFDEF code"
-msgstr ""
+msgstr "Умовно активний код, що підключається в $IFDEF"
 
 #: lazarusidestrconsts.dlgifdefnodeactive
 msgid "Active $IFDEF node"
@@ -2125,7 +2125,7 @@ msgstr "Неактивний вузол $IFDEF"
 
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
-msgstr ""
+msgstr "Включений умовно активний вузол $IFDEF"
 
 #: lazarusidestrconsts.dlgimportdesktopexists
 msgid ""
@@ -2168,10 +2168,8 @@ msgid "Interface"
 msgstr "Інтерфейс"
 
 #: lazarusidestrconsts.dlginsertmethods
-#, fuzzy
-#| msgid "Insert methods"
 msgid "Insert method implementations"
-msgstr "Вставляти методи"
+msgstr "Вставити реалізацію методів"
 
 #: lazarusidestrconsts.dlginsertsection
 msgid "Insert into Uses section of"
@@ -2284,7 +2282,7 @@ msgstr "Показати форми проекту"
 
 #: lazarusidestrconsts.dlgmainviewframes
 msgid "View Project Frames"
-msgstr "Показати каркаси проекту"
+msgstr "Показати фрейми проекту"
 
 #: lazarusidestrconsts.dlgmainviewunits
 msgctxt "lazarusidestrconsts.dlgmainviewunits"
@@ -2687,11 +2685,11 @@ msgstr "Розгорнуто [-]"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlineoverview
 msgid "Overview"
-msgstr ""
+msgstr "Огляд"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlineoverviewmarks
 msgid "Overview Mark"
-msgstr ""
+msgstr "Мітка огляду"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlines
 msgid "Line Numbers"
@@ -2709,7 +2707,7 @@ msgstr "Виділення"
 
 #: lazarusidestrconsts.dlgmouseoptopt2label
 msgid "Opt"
-msgstr ""
+msgstr "Опц"
 
 #: lazarusidestrconsts.dlgmouseoptotheract
 msgid "Other actions using the same button"
@@ -2892,10 +2890,8 @@ msgid "Object Inspector"
 msgstr "Інспектор об'єктів"
 
 #: lazarusidestrconsts.dlgoiitemheight
-#, fuzzy
-#| msgid "Item height"
 msgid "Item height (0 = auto)"
-msgstr "Висота елемента"
+msgstr "Висота елемента (0 = автоматично)"
 
 #: lazarusidestrconsts.dlgoimiscellaneous
 msgctxt "lazarusidestrconsts.dlgoimiscellaneous"
@@ -3022,19 +3018,19 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgpodpiawarenessoff
 msgid "off"
-msgstr ""
+msgstr "вимкнути"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldoffnewpermonitor
 msgid "Vista-8: off, 8.1+: per monitor"
-msgstr ""
+msgstr "Vista-8: вимкн., 8.1+: на монітор"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitor
 msgid "Vista-8: on, 8.1+: per monitor"
-msgstr ""
+msgstr "Vista-8: увімкн., 8.1+: на монітор"
 
 #: lazarusidestrconsts.dlgpodpiawarenesson
 msgid "on"
-msgstr ""
+msgstr "увімкнути"
 
 #: lazarusidestrconsts.dlgpoexecutionlevel
 msgid "Execution Level"
@@ -3107,10 +3103,8 @@ msgid "Use LCL scaling (Hi-DPI)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpousemanifest
-#, fuzzy
-#| msgid "Use manifest file to enable themes"
 msgid "Use manifest resource (and enable themes)"
-msgstr "Використовувати manifest-файл для увімкнення тем"
+msgstr "Використати manifest-ресурс (і увімкнути теми)"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
@@ -4515,15 +4509,15 @@ msgstr "Знайдено двозначний модуль"
 
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
-msgstr "Якорити нижній бік до нижньої сторони брата. Використовуйте BorderSpacing щоб задати відстань. BorderSpacing брата ігнорується."
+msgstr "Якорити нижній край до нижнього краю брата. Використовуйте BorderSpacing, щоб задати відстань. BorderSpacing брата ігнорується."
 
 #: lazarusidestrconsts.lisanchorbottomtotopside
 msgid "Anchor bottom side to top side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
-msgstr "Якорити нижній бік до верхньої сторони брата. Відстань задається властивостями BorderSpacing цього елемента і брата."
+msgstr "Якорити нижній край до верхнього краю брата. Відстань задається властивостями BorderSpacing цього елемента і брата."
 
 #: lazarusidestrconsts.lisanchoreditornocontrolselected
 msgid "Anchor Editor - no control selected"
-msgstr "Редактор Якорів - не вибраний елемент керування"
+msgstr "Редактор якорів - не вибрано елемент керування"
 
 #: lazarusidestrconsts.lisanchorenabledhint
 msgid "Enabled = Include %s in Anchors"
@@ -4531,23 +4525,23 @@ msgstr "Ввімкнено = Включити %s в якорі"
 
 #: lazarusidestrconsts.lisanchorlefttoleftside
 msgid "Anchor left side to left side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
-msgstr "Якорити лівий бік до лівої сторони брата. Використовуйте BorderSpacing щоб задати відстань. BorderSpacing брата ігнорується."
+msgstr "Якорити лівий край до лівого краю брата. Використовуйте BorderSpacing щоб задати відстань. BorderSpacing брата ігнорується."
 
 #: lazarusidestrconsts.lisanchorlefttorightside
 msgid "Anchor left side to right side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
-msgstr "Якорити лівий бік до правої сторони брата. Відстань задається властивостями BorderSpacing цього елемента і брата."
+msgstr "Якорити лівий край до правого краю брата. Відстань задається властивостями BorderSpacing цього елемента і брата."
 
 #: lazarusidestrconsts.lisanchorrighttoleftside
 msgid "Anchor right side to left side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
-msgstr "Якорити правий бік до лівої сторони брата. Відстань задається властивостями BorderSpacing цього елемента і брата."
+msgstr "Якорити правий край до лівого краю брата. Відстань задається властивостями BorderSpacing цього елемента і брата."
 
 #: lazarusidestrconsts.lisanchorrighttorightside
 msgid "Anchor right side to right side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
-msgstr "Якорити правий бік до правої сторони брата. Використовуйте BorderSpacing щоб задати відстань. BorderSpacing брата ігнорується."
+msgstr "Якорити правий край до правого краю брата. Використовуйте BorderSpacing щоб задати відстань. BorderSpacing брата ігнорується."
 
 #: lazarusidestrconsts.lisanchorsof
 msgid "Anchors of %s"
-msgstr ""
+msgstr "Якорі %s"
 
 #: lazarusidestrconsts.lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
@@ -4555,11 +4549,11 @@ msgstr "Якорі вибраних елементів керування"
 
 #: lazarusidestrconsts.lisanchortoptobottomside
 msgid "Anchor top side to bottom side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
-msgstr "Якорити верхній бік до нижньої сторони брата. Відстань задається властивостями BorderSpacing цього елемента і брата."
+msgstr "Якорити верхній край до нижнього краю брата. Відстань задається властивостями BorderSpacing цього елемента і брата."
 
 #: lazarusidestrconsts.lisanchortoptotopside
 msgid "Anchor top side to top side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
-msgstr "Якорити верхній бік до верхньої сторони брата. Використовуйте BorderSpacing щоб задати відстань. BorderSpacing брата ігнорується."
+msgstr "Якорити верхній край до верхнього краю брата. Використовуйте BorderSpacing щоб задати відстань. BorderSpacing брата ігнорується."
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
@@ -4805,10 +4799,8 @@ msgid "Bottoms"
 msgstr "Нижні"
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
-#, fuzzy
-#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
-msgstr "Це елемент керування одного рівня, за яким фіксується нижня сторона. Залишити порожнім для батьківського."
+msgstr "Це елемент керування одного рівня, за яким фіксується нижня сторона. Залишити порожнім для фіксації за батьківським,як у Delphi (BorderSpacing і ReferenceSide не враховуються)."
 
 #: lazarusidestrconsts.lisbottomspaceequally
 msgid "Bottom space equally"
@@ -5008,15 +5000,15 @@ msgstr "Не вдалось знайти модуль %s"
 
 #: lazarusidestrconsts.liscannotopenform
 msgid "Cannot open form \"%s\"."
-msgstr ""
+msgstr "Не вдалось відкрити форму \"%s\"."
 
 #: lazarusidestrconsts.liscannotsaveform
 msgid "Cannot save form \"%s\"."
-msgstr ""
+msgstr "Не вдалось зберегти форму \"%s\"."
 
 #: lazarusidestrconsts.liscannotsubstitutemacros
 msgid "Cannot substitute macro \"%s\"."
-msgstr ""
+msgstr "Неможливо підставити макрос \"%s\"."
 
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
@@ -5567,10 +5559,8 @@ msgid ". Check if package %s is in the dependencies"
 msgstr ". Перевірте, чи є пакунок %s у списку залежностей"
 
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
-#, fuzzy
-#| msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\""
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
-msgstr "перевіряти, чи наступний елемент у джерелі є end і, якщо ні, то повернути кінецьрядка + end; + кінецьрядка"
+msgstr "Перевіряти, чи наступний елемент у джерелі є \"end\" і, якщо ні, то повернути \"КінецьРядка + end; + КінецьРядка\"."
 
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
@@ -5583,7 +5573,7 @@ msgstr ". Перевірте список шляхів пошуку пакунк
 
 #: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
 msgid "Check the next token in source and add a semicolon if needed."
-msgstr ""
+msgstr "Перевірити наступний елемент у джерелі і, за потреби, додати крапку з комою."
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
@@ -6100,7 +6090,7 @@ msgstr "Помилка"
 
 #: lazarusidestrconsts.liscodetempltoken
 msgid "Token:"
-msgstr "Мітка:"
+msgstr "Елемент:"
 
 #: lazarusidestrconsts.liscodetoolsdefsaction
 msgid "Action: %s"
@@ -6171,9 +6161,8 @@ msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor 
 msgstr "Головна тека %s, %sде Borland встановив всі коди %s. %sНаприклад: C:/Programme/Borland/Delphi%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectoryforproject
-#, fuzzy,badformat
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
-msgstr "Головна тека %s, %sде Borland встановив всі сирці %s, використані проектом %s.%sНаприклад: C:/Programme/Borland/Delphi%s"
+msgstr "Головна тека %s,%sде Borland встановив всі сирці %s,%sвикористані проектом %s.%sНаприклад: C:/Programme/Borland/Delphi%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsdescription
 msgid "Description:"
@@ -6419,9 +6408,8 @@ msgid "Value as Text"
 msgstr "Значення як текст"
 
 #: lazarusidestrconsts.liscodetoolsdefsvalueisinvalid
-#, fuzzy,badformat
 msgid "%s:%svalue \"%s\" is invalid."
-msgstr "%s:%значення \"%s\" є неправильним."
+msgstr "%s:%sзначення \"%s\" є неправильним."
 
 #: lazarusidestrconsts.liscodetoolsdefsvariable
 msgid "Variable:"
@@ -6828,7 +6816,7 @@ msgstr "Пакунок %s додано як залежність."
 
 #: lazarusidestrconsts.lisconvdelphiaddedunittousessection
 msgid "Added unit \"%s\" to uses section."
-msgstr ""
+msgstr "До розділу uses додано модуль \"%s\"."
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -6929,7 +6917,7 @@ msgstr "Знехтуваний модуль %s з проекту"
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitfromusessection
 msgid "Removed unit \"%s\" from uses section."
-msgstr ""
+msgstr "Модуль \"%s\" вилучено з розділу uses."
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Fixing used units and Repairing form files ***"
@@ -7931,7 +7919,7 @@ msgstr "Типовий"
 
 #: lazarusidestrconsts.lisdefaultclassvisibilitysectionofnewmethodsforexampl
 msgid "Default class visibility section of new methods. For example code completion on OnShow:="
-msgstr ""
+msgstr "Типовий розділ видимості класу нового методу. Наприклад, завершення коду для OnShow:="
 
 #: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
 msgid "The default is ComboBox with \"True\" and \"False\" selections"
@@ -7943,7 +7931,7 @@ msgstr "(типово)"
 
 #: lazarusidestrconsts.lisdefaultsectionofmethods
 msgid "Default section of methods"
-msgstr ""
+msgstr "Типовий розділ методів"
 
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
@@ -8575,16 +8563,12 @@ msgid "Program Filename:"
 msgstr "Назва файлу програми:"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
-#, fuzzy
-#| msgid "Scan output for Free Pascal Compiler messages"
 msgid "Scan output for FPC messages"
 msgstr "Пошук повідомлень компілятора FreePascal у виведенні"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputformakemessages
-#, fuzzy
-#| msgid "Scan output for make messages"
 msgid "Scan output for \"make\" messages"
-msgstr "Пошук повідомлень make в виведенні"
+msgstr "Пошук повідомлень make у виведенні"
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
@@ -8690,10 +8674,8 @@ msgid "Enable Macros"
 msgstr "Макрос доступний"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
-#, fuzzy
-#| msgid "Enable = replace whole identifier, Disable = replace prefix"
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
-msgstr "Ввімк = замінити цілий ідентифікатор, Вимк = замінити префікс"
+msgstr "Ввімк = натискання Enter замінює цілий ідентифікатор, а Shift+Enter замінює префікс; Вимк = натискання Enter замінює префікс, а Shift+Enter замінює цілий ідентифікатор"
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
@@ -8842,7 +8824,7 @@ msgstr "Помилка відкриття компонента"
 
 #: lazarusidestrconsts.liserroropeningform
 msgid "Error opening form"
-msgstr ""
+msgstr "Помилка відкривання форми"
 
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
@@ -8875,7 +8857,7 @@ msgstr ", Помилок: %s"
 
 #: lazarusidestrconsts.liserrorsavingform
 msgid "Error saving form"
-msgstr ""
+msgstr "Помилка збереження форми"
 
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
@@ -9441,7 +9423,7 @@ msgstr "Форма"
 
 #: lazarusidestrconsts.lisformacosdarwin
 msgid "For macOS (Darwin)"
-msgstr ""
+msgstr "Для macOS (Darwin)"
 
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
@@ -9616,7 +9598,7 @@ msgstr "взяти слово в поточній позиції"
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition2
 msgid "Get word at current cursor position."
-msgstr ""
+msgstr "Взяти слово у поточній позиції курсора."
 
 #: lazarusidestrconsts.lisglobalsettings
 msgid "Global settings"
@@ -9631,17 +9613,6 @@ msgid "Goto selected"
 msgstr "Перейти до вибраного"
 
 #: lazarusidestrconsts.lisgplnotice
-#, fuzzy
-#| msgid ""
-#| "<description>\n"
-#| "\n"
-#| "Copyright (C) <year> <name of author> <contact>\n"
-#| "\n"
-#| "This source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n"
-#| "\n"
-#| "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
-#| "\n"
-#| "A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -9656,11 +9627,12 @@ msgstr ""
 "<description>\n"
 "\n"
 "Copyright (C) <year> <name of author> <contact>\n"
+"\n"
 "Ці сирці є відкритим програмним забезпеченням; ви можете поширювати їх та змінювати на умовах ліцензії GNU GPL v2 або (на ваш розсуд) новішої версії, що видана Free Software Foundation. \n"
 "\n"
-"Ці сирці поширюються з надією бути корисними БЕЗ БУДЬ-ЯКИХ ГАРАНТІЙ, зокрема не гарантується їх придатність до певної мети. Докладнішу інформацію дивіться у ліцензії GNU GPL. \n"
+"Цей код поширюється з надією, що він буде корисними, але БЕЗ БУДЬ-ЯКИХ ГАРАНТІЙ, зокрема не гарантується його придатність для певної мети. Докладнішу інформацію дивіться у ліцензії GNU GPL. \n"
 "\n"
-"Копія ліцензії може бути знайдена у Всесвітній мережі за адресою <http://www.gnu.org/copyleft/gpl.html>. Ви також можете отримати її написавши листа до Free Software Foundation, Inc. за адресою 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.\n"
+"Копія ліцензії доступна у Всесвітній мережі за адресою <http://www.gnu.org/copyleft/gpl.html>. Ви також можете отримати її, написавши листа до Free Software Foundation, Inc. за адресою 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
@@ -9760,7 +9732,6 @@ msgid "Hide Search"
 msgstr "Приховати засіб пошуку"
 
 #: lazarusidestrconsts.lishidewindow
-#, fuzzy
 msgctxt "lazarusidestrconsts.lishidewindow"
 msgid "Hide window"
 msgstr "Сховати вікно"
@@ -9889,7 +9860,7 @@ msgstr "Під час встановлення/видалення пакункі
 
 #: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
-msgstr ""
+msgstr "Ласкаво просимо до Lazarus.%0:sЗнайдені налаштування ІСР використовувались іншим примірником Lazarus.%0:sДва або більше примірників Lazarus не повинні мати спільну конфігурацію. Це може спричинити конфлікти і неможливість використання Lazarus.%0:s%0:sЯкщо ви маєте лише один примірник і скопіювали або перемістили виконуваний файл Lazarus, налаштування можна оновити.%0:s%1:s%0:s%0:sВиберіть:%0:s%0:s* Оновити дані: Використовувати цю конфігурацію і оновити її для подальшого використання. Старий примірник Lazarus більше не буде її використовувати.%0:s* Знехтувати: Використовувати цю конфігурацію, але попереджувати надалі. Це може спричинити конфлікти з іншими примірниками Lazarus.%0:s* Перервати: Завершити роботу. Проблему можна буде виправити, запустивши Lazarus з правильною конфігурацією.%0:s%0:sДодаткова інформація:%0:sЦя конфігурація знаходиться у: %2:s%0:sВона належить примірнику Lazarus у: %3:s%0:sПоточний примірник ІСР запущено з: %4:s%0:s"
 
 #: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
 msgid "Creating Makefile for package %s"
@@ -10177,16 +10148,12 @@ msgid "insert date and time"
 msgstr "Вставити дату і час"
 
 #: lazarusidestrconsts.lisinsertdateandtimeoptionalformatstring
-#, fuzzy
-#| msgid "Insert date and time. Optional: format string"
 msgid "Insert date and time. Optional: format string."
-msgstr "Вставити дату і час. Можливо: форматування рядка"
+msgstr "Вставити дату і час. Можливо: рядок формату."
 
 #: lazarusidestrconsts.lisinsertdateoptionalformatstring
-#, fuzzy
-#| msgid "Insert date. Optional: format string"
 msgid "Insert date. Optional: format string."
-msgstr "Вставити дату. Можливо: форматування рядка"
+msgstr "Вставити дату. Можливо: рядок формату."
 
 #: lazarusidestrconsts.lisinsertendifneeded
 msgid "insert end if needed"
@@ -10220,6 +10187,31 @@ msgid ""
 "WithoutBrackets,    // skip start- and end-bracket of parameter list\n"
 "WithoutSemicolon,   // skip semicolon at end\n"
 msgstr ""
+"Вставити заголовок поточної процедури.\n"
+"\n"
+"Необов'язкові параметри (відокремлені комою):\n"
+"WithStart,          // ключове слово процедури, напр. 'function', 'class procedure'\n"
+"WithoutClassKeyword,// без ключового слова 'class'\n"
+"AddClassName,       // видобути/додати назву класу.\n"
+"WithoutClassName,   // пропустити назву класу\n"
+"WithoutName,        // пропустити назву функції\n"
+"WithoutParamList,   // пропустити список параметрів\n"
+"WithVarModifiers,   // видобути 'var', 'out', 'const'\n"
+"WithParameterNames, // видобути назви параметрів\n"
+"WithoutParamTypes,  // пропустити двокрапки, типи параметрів і типові значення\n"
+"WithDefaultValues,  // видобути типові значення\n"
+"WithResultType,     // видобути двокрапку + тип результату\n"
+"WithOfObject,       // видобути 'of object'\n"
+"WithCallingSpecs,   // видобути cdecl; inline;\n"
+"WithProcModifiers,  // видобути forward; alias; external;\n"
+"WithComments,       // видобути коментарі і пропуски\n"
+"InUpperCase,        // перевести в верхній регістр\n"
+"CommentsToSpace,    // замінити коментарі одиничними пропусками\n"
+"                      //  (типовим є опускання зайвих пропусків,\n"
+"                      //    напр. 'Do   ;' зазвичай стає 'Do;'\n"
+"                      //    а з цим параметром отримаєте 'Do ;')\n"
+"WithoutBrackets,    // опустити початкову і кінцеву дужки списку параметрів\n"
+"WithoutSemicolon,   // опустити крапку з комою в кінці\n"
 
 #: lazarusidestrconsts.lisinsertmacro
 msgctxt "lazarusidestrconsts.lisinsertmacro"
@@ -10227,10 +10219,8 @@ msgid "Insert Macro"
 msgstr "Вставити макрос"
 
 #: lazarusidestrconsts.lisinsertnameofcurrentprocedure
-#, fuzzy
-#| msgid "Insert name of current procedure"
 msgid "Insert name of current procedure."
-msgstr "Вставити назву поточної процедури"
+msgstr "Вставити назву поточної процедури."
 
 #: lazarusidestrconsts.lisinsertprintshorttag
 msgid "Insert PrintShort tag"
@@ -10250,17 +10240,15 @@ msgstr "вставити назву процедури"
 
 #: lazarusidestrconsts.lisinsertsemicolonifneeded
 msgid "Insert semicolon if needed"
-msgstr ""
+msgstr "Вставити за потреби крапку з комою"
 
 #: lazarusidestrconsts.lisinserttime
 msgid "insert time"
 msgstr "вставити час"
 
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
-#, fuzzy
-#| msgid "Insert time. Optional: format string"
 msgid "Insert time. Optional: format string."
-msgstr "Вставити час. Можливо: форматування рядка"
+msgstr "Вставити час. Можливо: рядок формату."
 
 #: lazarusidestrconsts.lisinserturltag
 msgid "Insert url tag"
@@ -10527,7 +10515,7 @@ msgstr "Залишати назву"
 
 #: lazarusidestrconsts.liskeepopen
 msgid "Keep open"
-msgstr ""
+msgstr "Залишити відкритим"
 
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
@@ -10692,64 +10680,44 @@ msgid "Find Incremental"
 msgstr "Знайти за зростанням"
 
 #: lazarusidestrconsts.liskmgotomarker0
-#, fuzzy
-#| msgid "Go to marker 0"
 msgid "Go to bookmark 0"
-msgstr "Перейти до маркера 0"
+msgstr "Перейти до закладки 0"
 
 #: lazarusidestrconsts.liskmgotomarker1
-#, fuzzy
-#| msgid "Go to marker 1"
 msgid "Go to bookmark 1"
-msgstr "Перейти до маркера 1"
+msgstr "Перейти до закладки 1"
 
 #: lazarusidestrconsts.liskmgotomarker2
-#, fuzzy
-#| msgid "Go to marker 2"
 msgid "Go to bookmark 2"
-msgstr "Перейти до маркера 2"
+msgstr "Перейти до закладки 2"
 
 #: lazarusidestrconsts.liskmgotomarker3
-#, fuzzy
-#| msgid "Go to marker 3"
 msgid "Go to bookmark 3"
-msgstr "Перейти до маркера 3"
+msgstr "Перейти до закладки 3"
 
 #: lazarusidestrconsts.liskmgotomarker4
-#, fuzzy
-#| msgid "Go to marker 4"
 msgid "Go to bookmark 4"
-msgstr "Перейти до маркера 4"
+msgstr "Перейти до закладки 4"
 
 #: lazarusidestrconsts.liskmgotomarker5
-#, fuzzy
-#| msgid "Go to marker 5"
 msgid "Go to bookmark 5"
-msgstr "Перейти до маркера 5"
+msgstr "Перейти до закладки 5"
 
 #: lazarusidestrconsts.liskmgotomarker6
-#, fuzzy
-#| msgid "Go to marker 6"
 msgid "Go to bookmark 6"
-msgstr "Перейти до маркера 6"
+msgstr "Перейти до закладки 6"
 
 #: lazarusidestrconsts.liskmgotomarker7
-#, fuzzy
-#| msgid "Go to marker 7"
 msgid "Go to bookmark 7"
-msgstr "Перейти до маркера 7"
+msgstr "Перейти до закладки 7"
 
 #: lazarusidestrconsts.liskmgotomarker8
-#, fuzzy
-#| msgid "Go to marker 8"
 msgid "Go to bookmark 8"
-msgstr "Перейти до маркера 8"
+msgstr "Перейти до закладки 8"
 
 #: lazarusidestrconsts.liskmgotomarker9
-#, fuzzy
-#| msgid "Go to marker 9"
 msgid "Go to bookmark 9"
-msgstr "Перейти до маркера 9"
+msgstr "Перейти до закладки 9"
 
 #: lazarusidestrconsts.liskmgotosourceeditor1
 msgid "Go to source editor 1"
@@ -10919,64 +10887,44 @@ msgid "Set free Bookmark"
 msgstr "Встановити Закладку на дереві"
 
 #: lazarusidestrconsts.liskmsetmarker0
-#, fuzzy
-#| msgid "Set marker 0"
 msgid "Set bookmark 0"
-msgstr "Встановити маркер 0"
+msgstr "Встановити закладку 0"
 
 #: lazarusidestrconsts.liskmsetmarker1
-#, fuzzy
-#| msgid "Set marker 1"
 msgid "Set bookmark 1"
-msgstr "Встановити маркер 1"
+msgstr "Встановити закладку 1"
 
 #: lazarusidestrconsts.liskmsetmarker2
-#, fuzzy
-#| msgid "Set marker 2"
 msgid "Set bookmark 2"
-msgstr "Встановити маркер 2"
+msgstr "Встановити закладку 2"
 
 #: lazarusidestrconsts.liskmsetmarker3
-#, fuzzy
-#| msgid "Set marker 3"
 msgid "Set bookmark 3"
-msgstr "Встановити маркер 3"
+msgstr "Встановити закладку 3"
 
 #: lazarusidestrconsts.liskmsetmarker4
-#, fuzzy
-#| msgid "Set marker 4"
 msgid "Set bookmark 4"
-msgstr "Встановити маркер 4"
+msgstr "Встановити закладку 4"
 
 #: lazarusidestrconsts.liskmsetmarker5
-#, fuzzy
-#| msgid "Set marker 5"
 msgid "Set bookmark 5"
-msgstr "Встановити маркер 5"
+msgstr "Встановити закладку 5"
 
 #: lazarusidestrconsts.liskmsetmarker6
-#, fuzzy
-#| msgid "Set marker 6"
 msgid "Set bookmark 6"
-msgstr "Встановити маркер 6"
+msgstr "Встановити закладку 6"
 
 #: lazarusidestrconsts.liskmsetmarker7
-#, fuzzy
-#| msgid "Set marker 7"
 msgid "Set bookmark 7"
-msgstr "Встановити маркер 7"
+msgstr "Встановити закладку 7"
 
 #: lazarusidestrconsts.liskmsetmarker8
-#, fuzzy
-#| msgid "Set marker 8"
 msgid "Set bookmark 8"
-msgstr "Встановити маркер 8"
+msgstr "Встановити закладку 8"
 
 #: lazarusidestrconsts.liskmsetmarker9
-#, fuzzy
-#| msgid "Set marker 9"
 msgid "Set bookmark 9"
-msgstr "Встановити маркер 9"
+msgstr "Встановити закладку 9"
 
 #: lazarusidestrconsts.liskmstopprogram
 msgid "Stop Program"
@@ -10987,64 +10935,44 @@ msgid "Toggle between Unit and Form"
 msgstr "Перемкнути між модулем і формою"
 
 #: lazarusidestrconsts.liskmtogglemarker0
-#, fuzzy
-#| msgid "Toggle marker 0"
 msgid "Toggle bookmark 0"
-msgstr "Перемкнути маркер 0"
+msgstr "Перемкнути закладку 0"
 
 #: lazarusidestrconsts.liskmtogglemarker1
-#, fuzzy
-#| msgid "Toggle marker 1"
 msgid "Toggle bookmark 1"
-msgstr "Перемкнути маркер 1"
+msgstr "Перемкнути закладку 1"
 
 #: lazarusidestrconsts.liskmtogglemarker2
-#, fuzzy
-#| msgid "Toggle marker 2"
 msgid "Toggle bookmark 2"
-msgstr "Перемкнути маркер 2"
+msgstr "Перемкнути закладку 2"
 
 #: lazarusidestrconsts.liskmtogglemarker3
-#, fuzzy
-#| msgid "Toggle marker 3"
 msgid "Toggle bookmark 3"
-msgstr "Перемкнути маркер 3"
+msgstr "Перемкнути закладку 3"
 
 #: lazarusidestrconsts.liskmtogglemarker4
-#, fuzzy
-#| msgid "Toggle marker 4"
 msgid "Toggle bookmark 4"
-msgstr "Перемкнути маркер 4"
+msgstr "Перемкнути закладку 4"
 
 #: lazarusidestrconsts.liskmtogglemarker5
-#, fuzzy
-#| msgid "Toggle marker 5"
 msgid "Toggle bookmark 5"
-msgstr "Перемкнути маркер 5"
+msgstr "Перемкнути закладку 5"
 
 #: lazarusidestrconsts.liskmtogglemarker6
-#, fuzzy
-#| msgid "Toggle marker 6"
 msgid "Toggle bookmark 6"
-msgstr "Перемкнути маркер 6"
+msgstr "Перемкнути закладку 6"
 
 #: lazarusidestrconsts.liskmtogglemarker7
-#, fuzzy
-#| msgid "Toggle marker 7"
 msgid "Toggle bookmark 7"
-msgstr "Перемкнути маркер 7"
+msgstr "Перемкнути закладку 7"
 
 #: lazarusidestrconsts.liskmtogglemarker8
-#, fuzzy
-#| msgid "Toggle marker 8"
 msgid "Toggle bookmark 8"
-msgstr "Перемкнути маркер 8"
+msgstr "Перемкнути закладку 8"
 
 #: lazarusidestrconsts.liskmtogglemarker9
-#, fuzzy
-#| msgid "Toggle marker 9"
 msgid "Toggle bookmark 9"
-msgstr "Перемкнути маркер 9"
+msgstr "Перемкнути закладку 9"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
 msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
@@ -11401,10 +11329,8 @@ msgid "Left anchoring"
 msgstr "Ліве якорювання"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
-#, fuzzy
-#| msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
-msgstr "Це список елементів одного рівня для якого ліва сторона зафіксована. Залишити порожнім для батьківського."
+msgstr "Це елемент керування одного рівня, за яким зафіксовано лівий край. Залишити порожнім для фіксації за батьківським, як у Delphi (BorderSpacing і ReferenceSide не враховуються)."
 
 #: lazarusidestrconsts.lisleftsides
 msgid "Left sides"
@@ -11440,17 +11366,6 @@ msgid "LFM is ok"
 msgstr "LFM справний"
 
 #: lazarusidestrconsts.lislgplnotice
-#, fuzzy
-#| msgid ""
-#| "<description>\n"
-#| "\n"
-#| "Copyright (C) <year> <name of author> <contact>\n"
-#| "\n"
-#| "This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n"
-#| "\n"
-#| "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
-#| "\n"
-#| "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -11466,11 +11381,11 @@ msgstr ""
 "\n"
 "Copyright (C) <year> <name of author> <contact>\n"
 "\n"
-"Ця бібліотека є відкритим програмним забезпеченням; ви можете поширювати її та змінювати на умовах ліцензії GNU Library General Public License v2 або (на ваш розсуд) новішої версії, що видана Free Software Foundation. \n"
+"Ця бібліотека є вільним програмним забезпеченням; ви можете поширювати її та змінювати на умовах ліцензії GNU Library General Public License v2 або (на ваш розсуд) новішої версії, що видана Free Software Foundation. \n"
 "\n"
-"Ця програма поширюється з надією бути корисною БЕЗ БУДЬ-ЯКИХ ГАРАНТІЙ, зокрема не гарантується її придатність до певної мети. Докладнішу інформацію дивіться у ліцензії GNU LGPL. \n"
+"Ця програма поширюється з надією, що вона буде корисною, але БЕЗ БУДЬ-ЯКИХ ГАРАНТІЙ, зокрема не гарантується її придатність для певної мети. Докладнішу інформацію дивіться в ліцензії GNU LGPL. \n"
 "\n"
-"Ви повинні були отримати копію ліцензії GNU LGPL разом з бібліотекою; якщо ви її не отримали, напишіть листа до Free Software Foundation, Inc. за адресою 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.\n"
+"Ви повинні були отримати копію ліцензії GNU LGPL разом з бібліотекою; якщо ви її не отримали, напишіть листа до Free Software Foundation, Inc. за адресою 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
@@ -11542,7 +11457,7 @@ msgstr "Стек викликів журналу"
 
 #: lazarusidestrconsts.lislogcallstacklimit
 msgid "(frames limit. 0 - no limits)"
-msgstr "(межа кадрів. 0 - необмежено)"
+msgstr "(межа фреймів. 0 - необмежено)"
 
 #: lazarusidestrconsts.lislogevalexpression
 msgctxt "lazarusidestrconsts.lislogevalexpression"
@@ -11558,10 +11473,8 @@ msgid "lowercase string"
 msgstr "рядок в нижньому регістрі"
 
 #: lazarusidestrconsts.lislowercasestringgivenasparameter
-#, fuzzy
-#| msgid "Lowercase string given as parameter"
 msgid "Lowercase string given as parameter."
-msgstr "МАЛИЙ рядок поданий як параметр"
+msgstr "Рядок у нижньому регістрі, поданий як параметр"
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 msgid "lpk has vanished on disk. Using as alternative%s"
@@ -12756,7 +12669,7 @@ msgstr "Відкрити недавній проект"
 
 #: lazarusidestrconsts.lismenuopenunit
 msgid "Open Unit ..."
-msgstr ""
+msgstr "Відкрити модуль ..."
 
 #: lazarusidestrconsts.lismenupackage
 msgid "Pa&ckage"
@@ -12771,7 +12684,6 @@ msgid "Package Links ..."
 msgstr "Зв'язки пакунка ..."
 
 #: lazarusidestrconsts.lismenupastefromclipboard
-#, fuzzy
 msgctxt "lazarusidestrconsts.lismenupastefromclipboard"
 msgid "Paste from clipboard"
 msgstr "Вставити з буфера обміну"
@@ -12833,7 +12745,7 @@ msgstr "Повідомити про ваду"
 
 #: lazarusidestrconsts.lismenuresaveformswithi18n
 msgid "Resave forms with enabled i18n"
-msgstr ""
+msgstr "Перезаписати форми з увімкненою інтернаціоналізацією"
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC Source Directory"
@@ -13281,6 +13193,15 @@ msgid ""
 "\n"
 "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
 msgstr ""
+"<description>\n"
+"\n"
+"© <year> <copyright holders>\n"
+"\n"
+"Дана ліцензія дозволяє особам, які мають копію даного програмного забезпечення та супутньої документації (надалі іменуються «Програмне Забезпечення»), безоплатно використовувати Програмне Забезпечення без обмежень, включаючи необмежене право на використання, копіювання, змінення, додавання, публікування, розповсюдження, ліцензування та/або продаж копій Програмного Забезпечення, а також і особам, яким надається дане Програмне Забезпечення, при дотриманні таких умов:\n"
+"\n"
+"Зазначене вище повідомлення про авторське право і дані умови повинні бути включені в усі копії або значущі частини Програмного Забезпечення.\n"
+"\n"
+"ПРОГРАМНЕ ЗАБЕЗПЕЧЕННЯ НАДАЄТЬСЯ «ЯК Є», БЕЗ ЖОДНИХ ГАРАНТІЙ, ПРЯМО ПЕРЕДБАЧЕНИХ АБО ТАКИХ, ЩО МАЮТЬСЯ НА УВАЗІ, ЗОКРЕМА, АЛЕ НЕ ОБМЕЖУЮЧИСЬ ГАРАНТІЯМИ ТОВАРНОЇ ПРИДАТНОСТІ, ВІДПОВІДНОСТІ ЙОГО ПЕВНОМУ ПРИЗНАЧЕННЮ І ВІДСУТНОСТІ ПОРУШЕНЬ ПРАВ. НІ В ЯКОМУ РАЗІ АВТОРИ АБО ПРАВОВЛАСНИКИ НЕ БУДУТЬ НЕСТИ ВІДПОВІДАЛЬНІСТЬ ЗА БУДЬ-ЯКИМИ ЗАЯВАМИ ПРО ВІДШКОДУВАННЯ ВТРАТ, ЗБИТКІВ АБО ІНШИМИ ВИМОГАМИ ПРО ПОРУШЕННЯ УМОВ ЧИННИХ КОНТРАКТІВ, ДЕЛІКТІВ ЧИ ІНШОГО, ЩО ВИНИКЛИ ЧЕРЕЗ АБО ПОВ'ЯЗАНІ З ПРОГРАМНИМ ЗАБЕЗПЕЧЕННЯМ АБО ВИКОРИСТАННЯМ ПРОГРАМНОГО ЗАБЕЗПЕЧЕННЯ АБО ІНШИМИ ДІЯМИ З ПРОГРАМНИМ ЗАБЕЗПЕЧЕННЯМ.\n"
 
 #: lazarusidestrconsts.lismmadditionsandoverrides
 msgid "Additions and Overrides"
@@ -13446,26 +13367,13 @@ msgstr "(було \"%s\")"
 
 #: lazarusidestrconsts.lismmwidgetsetavailableforlclproject
 msgid "WidgetSet change is available only for LCL projects"
-msgstr ""
+msgstr "Зміна WidgetSet доступна лише для LCL"
 
 #: lazarusidestrconsts.lismode
 msgid ", Mode: %s"
 msgstr ", Режим: %s"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
-#, fuzzy
-#| msgid ""
-#| "<description>\n"
-#| "\n"
-#| "Copyright (C) <year> <name of author> <contact>\n"
-#| "\n"
-#| "This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:\n"
-#| "\n"
-#| "As a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.\n"
-#| "\n"
-#| "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
-#| "\n"
-#| "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -13483,13 +13391,13 @@ msgstr ""
 "\n"
 "Copyright (C) <year> <name of author> <contact>\n"
 "\n"
-"Ця бібліотека є відкритим програмним забезпеченням; ви можете поширювати її та змінювати на умовах ліцензії GNU Library General Public License v2 або (на ваш розсуд) новішої версії, що видана Free Software Foundation з наступними змінами: \n"
+"Ця бібліотека є вільним програмним забезпеченням; ви можете поширювати її та змінювати на умовах ліцензії GNU Library General Public License v2 або (на ваш розсуд) новішої версії, що видана Free Software Foundation з такими змінами: \n"
 "\n"
-"Як спеціальне виключення, власники авторських прав на цю бібліотеку дають вам дозвіл компонувати цю бібліотеку з незалежними модулями для створення виконуваних файлів, незалежно від умов ліцензії цих незалежних модулів, а також копіювати і поширювати отриманий виконуваний файл відповідно до умов на ваш вибір, за умови, що ви виконаєте для кожного пов'язаного незалежного модуля умови ліцензії цього модуля. Незалежний модуль це модуль, який не отриманий з або на основі цієї бібліотеки. Якщо ви зміните цю бібліотеку, ви можете розширити цей виняток для вашої версії бібліотеки, але ви не зобов'язані це робити. Якщо ви не хочете це робити, видаліть цей виняток з вашої версії.\n"
+"Як особливий виняток, власники авторських прав на цю бібліотеку дають вам дозвіл компонувати цю бібліотеку з незалежними модулями для створення виконуваних файлів, незалежно від умов ліцензії цих незалежних модулів, а також копіювати і поширювати отриманий виконуваний файл відповідно до умов на ваш вибір, за умови, що ви виконаєте для кожного пов'язаного незалежного модуля умови ліцензії цього модуля. Незалежний модуль - це модуль, який не отриманий з або на основі цієї бібліотеки. Якщо ви зміните цю бібліотеку, ви можете розширити цей виняток для вашої версії бібліотеки, але ви не зобов'язані це робити. Якщо ви не хочете це робити, видаліть цей виняток з вашої версії.\n"
 "\n"
-"Цей код поширюється з надією бути корисним БЕЗ БУДЬ-ЯКИХ ГАРАНТІЙ, зокрема не гарантується його придатність до певної мети. Докладнішу інформацію дивіться у ліцензії GNU LGPL. \n"
+"Ця програма поширюється з надією, що вона буде корисною, але БЕЗ БУДЬ-ЯКИХ ГАРАНТІЙ, зокрема не гарантується її придатність для певної мети. Докладнішу інформацію дивіться в ліцензії GNU LGPL. \n"
 "\n"
-"Ви повинні були отримати копію ліцензії GNU LGPL з цією бібліотекою; якщо ви її не отримали, напишіть листа до Free Software Foundation, Inc. за адресою 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.\n"
+"Ви повинні були отримати копію ліцензії GNU LGPL з цією бібліотекою; якщо ви її не отримали, напишіть листа до Free Software Foundation, Inc. за адресою 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 
 #: lazarusidestrconsts.lismodify
 msgid "&Modify"
@@ -13559,7 +13467,7 @@ msgstr "Переміщення цих модулів зіпсує їхні се�
 
 #: lazarusidestrconsts.lismpcstyle
 msgid "C style: \" => \\\""
-msgstr ""
+msgstr "Стиль C: \" => \\\""
 
 #: lazarusidestrconsts.lismpescapequotes
 msgid "Escape &quotes"
@@ -13572,23 +13480,23 @@ msgstr ""
 
 #: lazarusidestrconsts.lismppascalstyle
 msgid "Pascal style: ' => ''"
-msgstr ""
+msgstr "Стиль Pascal: ' => ''"
 
 #: lazarusidestrconsts.lismppasteoptions
 msgid "Paste &options"
-msgstr ""
+msgstr "Параметри &вставки"
 
 #: lazarusidestrconsts.lismppreview
 msgid "&Preview"
-msgstr ""
+msgstr "&Попередній перегляд"
 
 #: lazarusidestrconsts.lismptextaftereachline
 msgid "Text &after each line"
-msgstr ""
+msgstr "Текст п&ісля кожним рядком"
 
 #: lazarusidestrconsts.lismptextbeforeeachline
 msgid "Text &before each line"
-msgstr ""
+msgstr "Текст п&еред кожним рядком"
 
 #: lazarusidestrconsts.lismptrimclipboardcontents
 msgid "&Trim clipboard contents"
@@ -13703,11 +13611,11 @@ msgstr "Нова назва макросу"
 
 #: lazarusidestrconsts.lisnewmethodimplementationsareinsertedbetweenexisting
 msgid "New method implementations are inserted between existing methods of this class. Either alphabetically, or as last, or in declaration order."
-msgstr ""
+msgstr "Реалізації нових методів вставлено між наявними методами цього класу. За алфавітом, в кінці або в порядку оголошення."
 
 #: lazarusidestrconsts.lisnewmethodsandmembersareinsertedalphabeticallyoradd
 msgid "New method and member declarations in the class..end sections are inserted alphabetically or added last."
-msgstr ""
+msgstr "Оголошення нових методів і членів у розділах class..end вставляються за алфавітом чи в кінці."
 
 #: lazarusidestrconsts.lisnewpage
 msgid "New page"
@@ -14023,15 +13931,15 @@ msgstr "При розриві рядка (тобто при натисканні
 
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
-msgstr ""
+msgstr "лише 32біт"
 
 #: lazarusidestrconsts.lisonlyavailableonwindowsrunthetoolhidden
 msgid "Only available on Windows. Run the tool hidden."
-msgstr ""
+msgstr "Лише для Windows. Запускати прихованим."
 
 #: lazarusidestrconsts.lisonlyavailableonwindowsruntoolinanewconsole
 msgid "Only available on Windows. Run tool in a new console."
-msgstr ""
+msgstr "Лише для Windows. Запускати у новій консолі."
 
 #: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
 msgid "Only messages fitting this regular expression:"
@@ -14142,7 +14050,7 @@ msgstr "Відкрити діалог параметрів"
 
 #: lazarusidestrconsts.lisopenunit
 msgid "Open Unit"
-msgstr ""
+msgstr "Відкрити модуль"
 
 #: lazarusidestrconsts.lisopenurl
 msgid "Open URL"
@@ -14163,7 +14071,7 @@ msgstr "Опції змінені, перезбираю начисто з -B"
 
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
-msgstr ""
+msgstr "проігноровано"
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -14288,7 +14196,7 @@ msgstr ", проаналізовано "
 
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
-msgstr ""
+msgstr "парсер \"%s\": %s"
 
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
@@ -14304,11 +14212,9 @@ msgid "paste clipboard"
 msgstr "вставити буфер обміну"
 
 #: lazarusidestrconsts.lispastefromclipboard
-#, fuzzy
-#| msgid "Paste from clipboard"
 msgctxt "lazarusidestrconsts.lispastefromclipboard"
 msgid "Paste from clipboard."
-msgstr "Вставити з буфера обміну"
+msgstr "Вставити з буфера обміну."
 
 #: lazarusidestrconsts.lispastelcolors
 msgid "Pastel Colors"
@@ -15250,10 +15156,8 @@ msgid "The package %s is a runtime only package.%sRuntime only packages cannot b
 msgstr "Пакунок %s є пакунком тільки часу виконання.%sТакі пакунки не можуть бути встановлені в ІСР."
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
-#, fuzzy,badformat
-#| msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
 msgid "The package \"%s\" is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package or by removing dependencies."
-msgstr "Пакунок \"%s\" компілюється автоматично, а його вихідна тека -  \"%s\", яка знаходиться в типовому шляху пошуку модулів компілятора. Пакунок використовує інші пакунки, які також використовують типовий шлях пошуку модулів компілятора. Це створює нескінченний цикл.%sВи можете вирішити цю проблему,%sвидаливши шлях з конфігурації компілятора (напр. fpc.cfg),%sабо вимкнувши автооновлення цього пакунка,%sабо видаливши залежності."
+msgstr "Пакунок \"%s\" компілюється автоматично, а його вихідна тека -  \"%s\", яка знаходиться в типовому шляху пошуку модулів компілятора. Пакунок використовує інші пакунки, які також використовують типовий шлях пошуку модулів компілятора. Це створює нескінченний цикл.%sВи можете вирішити цю проблему, видаливши шлях з конфігурації компілятора (напр. fpc.cfg),%sабо вимкнувши автооновлення цього пакунка, або видаливши залежності."
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
 msgid "The package \"%s\" is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
@@ -15657,10 +15561,8 @@ msgid "Private Method"
 msgstr "Приватний метод"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-#, fuzzy,badformat
-#| msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
 msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
-msgstr "Можливо, потрібно встановити деякі пакунки перед тим, як продовжувати.%s%sПопередження:%sПроект використовує такі пакунки часу розробки, які можуть знадобитись для відкриття форми у дизайнері. Якщо Ви продовжите, ви можете отримати помилки через відсутність компонентів і завантаження форми, найпевніше, призведе до неприємних результатів.%sРекомендується скасувати та спочатку встановити ці пакунки."
+msgstr "Можливо, потрібно встановити деякі пакунки перед тим, як продовжувати.%sПопередження:%sПроект використовує такі пакунки часу розробки, які можуть знадобитись для відкриття форми у дизайнері. Якщо Ви продовжите, ви можете отримати помилки через відсутність компонентів і завантаження форми, найпевніше, призведе до неприємних результатів.%sРекомендується скасувати та спочатку встановити ці пакунки."
 
 #: lazarusidestrconsts.lisprocedure
 msgctxt "lazarusidestrconsts.lisprocedure"
@@ -15760,10 +15662,8 @@ msgid "The unit name \"%s\" already exists in the project%swith file: \"%s\"."
 msgstr "Назва модуля \"%s\" вже існує у проекті%sу файлі: \"%s\"."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheselection
-#, fuzzy,badformat
-#| msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
-msgstr "Назва модуля \"%s\" вже є у вибраному%sу файлі: %s%s%s."
+msgstr "Назва модуля \"%s\" вже є у вибраному%sу файлі: \"%s\"."
 
 #: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
 msgid "The unit name \"%s\" is not a valid Pascal identifier."
@@ -16378,18 +16278,16 @@ msgid ""
 msgstr ""
 
 #: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
-#, fuzzy
-#| msgid ""
-#| "returns list of all values of case variable in front of variable\n"
-#| "\n"
-#| "Optional Parameters (comma separated):\n"
-#| "WithoutExtraIndent    // the case list will be generated without extra indentation\n"
 msgid ""
 "Return the list of all values of case variable in front of variable.\n"
 "\n"
 "Optional Parameters (comma separated):\n"
 "WithoutExtraIndent    // the case list will be generated without extra indentation\n"
-msgstr "повертає список значень змінних case перед змінною"
+msgstr ""
+"Повертає список всіх значень змінної case перед змінною.\n"
+"\n"
+"Необов'язкові параметри (відокремлюють комою):\n"
+"WithoutExtraIndent    // список case буде створено без додаткових відступів\n"
 
 #: lazarusidestrconsts.lisrevertfailed
 msgid "Revert failed"
@@ -16406,13 +16304,11 @@ msgstr "Праве якорювання"
 
 #: lazarusidestrconsts.lisrightborderspacespinedithint
 msgid "Right borderspace. This value is added to base borderspace and used for the space right to the control."
-msgstr "Правий бордюр. Значення додається до базового бордюру і використовується для відступу справа від контролю."
+msgstr "Правий бордюр. Значення додається до базового бордюру і використовується для відступу справа від елемента керування."
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
-#, fuzzy
-#| msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
-msgstr "Це список контролів одного рівня для якого права сторона зафіксована. Залишити порожнім для батьківського."
+msgstr "Це елемент керування одного рівня, за яким зафіксовано правий край. Залишити порожнім для фіксації за батьківським, як у Delphi (BorderSpacing і ReferenceSide не враховуються)."
 
 #: lazarusidestrconsts.lisrightsides
 msgid "Right sides"
@@ -16420,7 +16316,7 @@ msgstr "Праві краї"
 
 #: lazarusidestrconsts.lisrightspaceequally
 msgid "Right space equally"
-msgstr "По правому краю"
+msgstr "За правим краєм"
 
 #: lazarusidestrconsts.lisroot
 msgid "Root"
@@ -16841,7 +16737,7 @@ msgstr "Показати дерево компонентів"
 
 #: lazarusidestrconsts.lisshowconsole
 msgid "Show console"
-msgstr ""
+msgstr "Показати консоль"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -17088,7 +16984,7 @@ msgstr "Точка зупинки &джерела ..."
 #, fuzzy,badformat
 #| msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
 msgid "Source directory \"%s\"%sand destination directory \"%s\"%sare the same. Maybe you misunderstand this feature.%sIt will clean/recreate the destination directory and copy the package/project into it."
-msgstr "Початкова тека \"%s\"%s і тека призачення \"%s\"%s збігаються. Може ви не зрозуміли осболивості.%sЦе очистить/перестворить цільову теку%sі скопіює до неї пакунок/проект."
+msgstr "Початкова тека \"%s\"%s і тека призачення \"%s\"%s збігаються. Може ви не зрозуміли особливості.%sЦе очистить/перестворить цільову теку%sі скопіює до неї пакунок/проект."
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory \"%s\" does not exist."
@@ -17290,11 +17186,11 @@ msgstr "Таб-порядок %s"
 
 #: lazarusidestrconsts.listaborderrecursionhint
 msgid "Calculate tab order recursively for child controls"
-msgstr ""
+msgstr "Розраховувати порядок за tab для дочірніх елементів керування рекурсивно"
 
 #: lazarusidestrconsts.listaborderrecursively
 msgid "recursively"
-msgstr ""
+msgstr "рекурсивно"
 
 #: lazarusidestrconsts.listabordersorthint
 msgid "Calculate tab order for controls by their X- and Y- positions"
@@ -17354,8 +17250,6 @@ msgid "Editable Cell"
 msgstr "Редагована комірка"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
-#, fuzzy
-#| msgid "Insert an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync\" has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
 msgid "Insert an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit).%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\".%0:sThe quotes are optional.%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too.%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked (the 3rd refers to \"2\").%0:s%0:s\"Sync\" can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync\" has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")."
 msgstr "Вставляє редаговану комірку. По комірках можна переміщатися за допомогою клавіші tab.%0:sМакрос \"param\" приймає список розділених комами аргументів.%0:sПерший аргумент є типовим значенням.%0:sДругий аргумент (необов'язковий) може бути використаний щоб пов'язати комірку з іншою (синхронна зміна)%0:s%0:s а param(\"foo\") do param(foo);%0:sВставляє 2 незалежних комірки, з типовим текстом \"foo\"%0:sЛапки необов'язковіl%0:s%0:s  Якщо param(\"foo\") > 0 та param(\"foo\",sync=1) < 99 тоді%0:sВставляє 2 пов'язані комірки, редагування однієї змінить іншу також%0:sЗначення \"1\" вказує позицію іншого \"param()\", так що якщо є ще параметри:%0:s  якщо param(\"bar\") та param(foo) > 0 і param(foo,sync=2) < 99 тоді%0:s2-га і третя пов'язуються. (3-тя вказує на \"2\") %0:s%0:s\"синх може бути скорочений до \"s\":%0:s  якщо param(\"foo\") > 0 та param(\"foo\",s=1) < 99 тоді%0:s%0:s  якщо param(\"bar\") та param(\"foo\") > 0 і param(\"foo\",sync) < 99 тоді%0:sДругий і третій пов'язуються.%0:sЗауважте: \"Синх не має позиції і не має \"=\", тому він синхронізує з попередньою коміркою з тим самим типовим текстом (тут це \"foo\")"
 
@@ -17404,10 +17298,8 @@ msgid "The component editor of class \"%s\" has created the error:%s\"%s\""
 msgstr "Редактор компонента для класу \"%s\" викликав помилку:%s\"%s\""
 
 #: lazarusidestrconsts.listhecomponenteditorofclassinvokedwithverbhascreated
-#, fuzzy,badformat
-#| msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
 msgid "The component editor of class \"%s\"%sinvoked with verb #%s \"%s\"%shas created the error:%s\"%s\""
-msgstr "Редактор компонента для класу \"%s\"що пов'язаний зі словом #%s \"%s\"викликав помилку:%s\"%s\""
+msgstr "Редактор компонента для класу \"%s\",%sщо пов'язаний зі словом #%s \"%s\"%sвикликав помилку:%s\"%s\""
 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
@@ -17438,10 +17330,8 @@ msgid "The current FPC has no config file. It will probably miss some units. Che
 msgstr "Поточний FPC не має файлу налаштувань. Ймовірно, компілятор не зможе знайти ряд модулів. Перевірте, що fpc правильно встановлено."
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-#, fuzzy,badformat
-#| msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
 msgid "The debugger \"%s\"%sdoes not exist or is not executable.%sSee Tools -> Options -> Debugger options"
-msgstr "Зневаджувач %s%s%s%sне існує або не є виконуваним.%s%sДив. Інструменти -> Параметри -> Параметри зневаджувача"
+msgstr "Зневаджувач \"%s\"%sвідсутній або не є виконуваним.%sДив. Інструменти -> Параметри -> Параметри зневаджувача"
 
 #: lazarusidestrconsts.listhedebuggerexecutabletypicallyhasthenamepleasegive
 msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
@@ -17552,10 +17442,10 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr "Ідентифікатор є модулем. Для його перейменування використайте функцію Файл - Зберегти як."
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
-msgstr "Клавіша %s%sвже призначена для %s.%sВидалити стару асоціацію і призначити клавішу для нової функції%s%s?"
+msgstr "Клавіша %sвже призначена для %s%s.%s%sВидалити старе призначення і призначити клавішу для нової функції%s%s?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
 msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%sSee Project -> Project Options -> Application for settings."
@@ -17670,10 +17560,8 @@ msgid "The path of \"make\" is not correct: \"%s\""
 msgstr "Шлях \"make\" є неправильним: \"%s\""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-#, fuzzy,badformat
-#| msgid "The program %smake%s was not found.%sThis tool is needed to build Lazarus.%s"
 msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
-msgstr "Програму %smake%s не знайдено.%sЦей інструмент потрібен, щоб зібрати Lazarus."
+msgstr "Програму \"make\" не знайдено.%sЦей засіб потрібен, щоб зібрати Lazarus."
 
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
@@ -18069,10 +17957,8 @@ msgid "Tops"
 msgstr "Вершини"
 
 #: lazarusidestrconsts.listopsiblingcomboboxhint
-#, fuzzy
-#| msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
-msgstr "Це список контролів одного рівня для якого верхня сторона зафіксована. Залишити порожнім для батьківського."
+msgstr "Це елемент керування одного рівня, за яким зафіксовано верхній край. Залишити порожнім для фіксації за батьківським, як у Delphi (BorderSpacing і ReferenceSide не враховуються)."
 
 #: lazarusidestrconsts.listopspaceequally
 msgid "Top space equally"
@@ -18761,10 +18647,8 @@ msgid "uppercase string"
 msgstr "рядок в верхньому регістрі"
 
 #: lazarusidestrconsts.lisuppercasestringgivenasparameter
-#, fuzzy
-#| msgid "Uppercase string given as parameter"
 msgid "Uppercase string given as parameter."
-msgstr "ВЕЛИКИЙ рядок поданий як параметр"
+msgstr "Рядок у верхньому регістрі, поданий як параметр"
 
 #: lazarusidestrconsts.lisurlonwikithebaseurlis
 msgid "URL on wiki (the base url is %s)"
@@ -19037,7 +18921,7 @@ msgstr "Якщо ввімкнено поточні налаштування зб
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
 msgid "When there is only one possible completion item use it immediately, without showing the completion box"
-msgstr ""
+msgstr "Якщо є лише один варіант завершення, застосовувати його негайно, не показуючи вікна автозавершення"
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
@@ -19582,10 +19466,8 @@ msgid "Macros"
 msgstr "Макроси"
 
 #: lazarusidestrconsts.srkmcatmarker
-#, fuzzy
-#| msgid "Text marker commands"
 msgid "Text bookmark commands"
-msgstr "Команди маркера тексту"
+msgstr "Команди закладок"
 
 #: lazarusidestrconsts.srkmcatmulticaret
 msgid "Multi caret commands"
@@ -20016,10 +19898,8 @@ msgid "Go to Line Number"
 msgstr "Перейти до номера рядка"
 
 #: lazarusidestrconsts.srkmecgotomarker
-#, fuzzy
-#| msgid "Go to Marker %d"
 msgid "Go to bookmark %d"
-msgstr "Перейти до маркера %d"
+msgstr "Перейти до закладки %d"
 
 #: lazarusidestrconsts.srkmecgotoxy
 msgid "Goto XY"
@@ -20526,10 +20406,8 @@ msgid "Set a free Bookmark"
 msgstr "Задати вільну закладку"
 
 #: lazarusidestrconsts.srkmecsetmarker
-#, fuzzy
-#| msgid "Set Marker %d"
 msgid "Set bookmark %d"
-msgstr "Встановити позначку %d"
+msgstr "Встановити закладку %d"
 
 #: lazarusidestrconsts.srkmecshifttab
 msgid "Shift Tab"
@@ -20755,10 +20633,8 @@ msgid "View local variables"
 msgstr "Переглядання локальних змінних"
 
 #: lazarusidestrconsts.srkmectogglemarker
-#, fuzzy
-#| msgid "Toggle Marker %d"
 msgid "Toggle bookmark %d"
-msgstr "Перемкнути маркер %d"
+msgstr "Перемкнути закладку %d"
 
 #: lazarusidestrconsts.srkmectogglemarkupword
 msgid "Toggle Current-Word highlight"

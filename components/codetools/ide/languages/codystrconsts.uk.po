@@ -1,38 +1,38 @@
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2016-11-14 00:51+0200\n"
+"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
 
 #: codystrconsts.crsaddassignmethod
-#, fuzzy
-#| msgid "Add Assign method"
 msgid "Add Assign Method"
 msgstr "Додати метод Assign"
 
 #: codystrconsts.crsaddassignmethod2
-#, fuzzy
-#| msgid "Add Assign method ..."
 msgid "Add Assign Method ..."
 msgstr "Додати метод Assign ..."
 
 #: codystrconsts.crsaddawithblock
 msgid "Add a \"With\" Block"
-msgstr ""
+msgstr "Додати блок \"With\""
 
 #: codystrconsts.crsaddunittoimplementationusessection
 msgctxt "codystrconsts.crsaddunittoimplementationusessection"
 msgid "Add unit to implementation uses section"
-msgstr ""
+msgstr "Додати модуль до секції uses в implementation"
 
 #: codystrconsts.crsaddwithblock
 msgid "Add \"With\" Block"
-msgstr ""
+msgstr "Додати блок \"With\""
 
 #: codystrconsts.crsalreadydefined
 msgid "Already defined"
@@ -44,15 +44,15 @@ msgstr "Вже визначений в %s"
 
 #: codystrconsts.crsandmoreidentifiers
 msgid "... and %s more identifiers"
-msgstr ""
+msgstr "... і ще %s ідентифікатор(ів)"
 
 #: codystrconsts.crsany
 msgid "Any"
-msgstr ""
+msgstr "Будь-який"
 
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
 msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
-msgstr ""
+msgstr "Вікно для ІСР Lazarus. Його можна прикріпити, як Оглядач коду або Редактор FPDoc. Також буде створено елемент у меню Перегляд і сполучення клавіш."
 
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
@@ -164,7 +164,7 @@ msgstr "%s, записаний властивістю %s"
 
 #: codystrconsts.crscheetaheditor
 msgid "Cheetah Editor"
-msgstr ""
+msgstr "Гепардовий редактор"
 
 #: codystrconsts.crsclose
 msgid "&Close"
@@ -172,11 +172,11 @@ msgstr "&Закрити"
 
 #: codystrconsts.crscloseotherpackageandopennew
 msgid "Close other package and open new"
-msgstr ""
+msgstr "Закрити інший пакунок і створити новий"
 
 #: codystrconsts.crscodebuffers
 msgid "CodeBuffers"
-msgstr ""
+msgstr "Буфери коду"
 
 #: codystrconsts.crscodenodeinformation
 msgid "Code Node Information"
@@ -184,11 +184,11 @@ msgstr "Інформація про Вузол Коду"
 
 #: codystrconsts.crscodyfindoverloads
 msgid "Cody - Find Overloads"
-msgstr ""
+msgstr "Cody - Знайти перевантажені"
 
 #: codystrconsts.crscodyidentifierdictionary
 msgid "Identifier Dictionary"
-msgstr ""
+msgstr "Словник ідентифікаторів"
 
 #: codystrconsts.crscogeneral
 msgctxt "codystrconsts.crscogeneral"
@@ -197,33 +197,31 @@ msgstr "Загальні"
 
 #: codystrconsts.crscompatibility
 msgid "Compatibility"
-msgstr ""
+msgstr "Сумісність"
 
 #: codystrconsts.crscompatible
 msgid "compatible"
-msgstr ""
+msgstr "сумісний"
 
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
-msgstr ""
+msgstr "Налаштувати нове вікно ІСР"
 
 #: codystrconsts.crscontains
 msgid "Contains"
-msgstr ""
+msgstr "Містить"
 
 #: codystrconsts.crscontinue
 msgid "Continue"
-msgstr ""
+msgstr "Продовжити"
 
 #: codystrconsts.crscopydeclarationtoclipboard
-#, fuzzy
-#| msgid "Copy declaration to clipboard"
 msgid "Copy declaration to Clipboard"
 msgstr "Копіювати оголошення в буфер"
 
 #: codystrconsts.crscount
 msgid "Count"
-msgstr ""
+msgstr "Кількість"
 
 #: codystrconsts.crscousespath
 msgctxt "codystrconsts.crscousespath"
@@ -247,10 +245,8 @@ msgid "Select file to insert at cursor"
 msgstr "Вибір файлу для вставки в місці курсора"
 
 #: codystrconsts.crscutdeclarationtoclipboard
-#, fuzzy
-#| msgid "Cut declaration to clipboard"
 msgid "Cut declaration to Clipboard"
-msgstr "ВИрізати оголошення в буфер"
+msgstr "Вирізати оголошення в буфер"
 
 #: codystrconsts.crscuthefileseemstobeabinaryproceed
 msgid "The file seems to be a binary. Proceed?"
@@ -286,15 +282,15 @@ msgstr "Оголосити змінну \"%s\""
 
 #: codystrconsts.crsdeletepackage
 msgid "Delete package?"
-msgstr ""
+msgstr "Видалити пакунок?"
 
 #: codystrconsts.crsdeleteunit
 msgid "Delete unit?"
-msgstr ""
+msgstr "Видалити модуль?"
 
 #: codystrconsts.crsdistance
 msgid "Distance"
-msgstr ""
+msgstr "Відстань"
 
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
@@ -302,33 +298,31 @@ msgstr "\"%s\" це ключове слово."
 
 #: codystrconsts.crserror
 msgid "Error: %s"
-msgstr ""
+msgstr "Помилка: %s"
 
 #: codystrconsts.crserrorcursorisnotinaprojectunit
 msgid "Error: cursor is not in a project unit"
-msgstr ""
+msgstr "Помилка: курсор знаходиться не в модулі проекту"
 
 #: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
 msgid "Error: Need source editor at procedure call or declaration"
-msgstr ""
+msgstr "Помилка: курсор в редакторі слід встановити на виклику або оголошенні процедури"
 
 #: codystrconsts.crsexact
 msgid "exact"
-msgstr ""
+msgstr "точна відповідність"
 
 #: codystrconsts.crsexplodeawithblock
-#, fuzzy
-#| msgid "Explode a \"With\" block"
 msgid "Explode a \"With\" Block"
 msgstr "Зруйнувати блок \"With\""
 
 #: codystrconsts.crsexpression
 msgid "Expression"
-msgstr ""
+msgstr "Вираз"
 
 #: codystrconsts.crsextendunitpath
 msgid "Extend unit path"
-msgstr ""
+msgstr "Розширити шлях до модулів"
 
 #: codystrconsts.crsfile
 msgid "File"
@@ -336,35 +330,35 @@ msgstr "Файл"
 
 #: codystrconsts.crsfiledoesnotexistanymore
 msgid "File \"%s\" does not exist anymore."
-msgstr ""
+msgstr "Файл \"%s\" більше не існує."
 
 #: codystrconsts.crsfilenotfound
 msgid "File not found"
-msgstr ""
+msgstr "Файл не знайдено"
 
 #: codystrconsts.crsfilereaderror
 msgid "File read error"
-msgstr ""
+msgstr "Помилка читання файлу"
 
 #: codystrconsts.crsfilter
 msgid "(Filter)"
-msgstr ""
+msgstr "(Фільтр)"
 
 #: codystrconsts.crsfilter2
 msgid "Filter"
-msgstr ""
+msgstr "Фільтр"
 
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
-msgstr ""
+msgstr "Знайти рядок зворотного трасування GDB"
 
 #: codystrconsts.crsfindproceduremethodoverloads
 msgid "Find Procedure/Method Overloads"
-msgstr ""
+msgstr "Знайти перевантаження процедури/методу"
 
 #: codystrconsts.crsfindsourceofgdbbacktrace
 msgid "Find source of GDB backtrace"
-msgstr ""
+msgstr "Знайти джерело зворотного трасування GDB"
 
 #: codystrconsts.crsflags
 msgid "Flags"
@@ -372,7 +366,7 @@ msgstr "Прапорці"
 
 #: codystrconsts.crsfpcunitwithoutppu
 msgid "FPC unit without ppu"
-msgstr ""
+msgstr "Модуль FPC без ppu"
 
 #: codystrconsts.crsframeworks
 msgid "Frameworks"
@@ -388,48 +382,48 @@ msgstr "&Довідка"
 
 #: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
 msgid "Hide abstract methods and methods of class interfaces"
-msgstr ""
+msgstr "Призовати абстрактні методи і методи інтерфейсів класу"
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
-msgstr ""
+msgstr "Приховати модулі з інших проектів"
 
 #: codystrconsts.crsideintegration
 msgid "IDE Integration"
-msgstr ""
+msgstr "Інтегрування в ІСР"
 
 #: codystrconsts.crsidentifiernotfound
 msgid "Identifier not found"
-msgstr ""
+msgstr "Ідентифікатор не знайдено"
 
 #: codystrconsts.crsidentifiernotfoundinunit
 msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
-msgstr ""
+msgstr "Ідентифікатор \"%s\" у модулі \"%s\" не знайдено. Можливо він не існує для даної платформи або був вилучений/перейменований."
 
 #: codystrconsts.crsidewindowdockable
 msgid "IDE window, dockable"
-msgstr ""
+msgstr "Вікно ІСР, прикріплюване"
 
 #: codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne
 msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
 msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
-msgstr ""
+msgstr "Якщо ідентифікатор додано до розділу implementation і потрібно додати необхідний модуль, додайте до розділу uses в implementation"
 
 #: codystrconsts.crsifuncheckedlistalsoprocedureswithsamenameandincomp
 msgid "If unchecked list also procedures with same name and incompatible parameter lists."
-msgstr ""
+msgstr "Якщо не позначено, показує також процедури з такими ж назвами і несумісними списками параметрів."
 
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
-msgstr ""
+msgstr "Неможлива залежність"
 
 #: codystrconsts.crsin
 msgid "in \"%s\""
-msgstr ""
+msgstr "в \"%s\""
 
 #: codystrconsts.crsincompatible
 msgid "incompatible"
-msgstr ""
+msgstr "несумісний"
 
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
@@ -441,13 +435,11 @@ msgstr "В інтерфейсі"
 
 #: codystrconsts.crsinsertcallinherited
 msgid "Insert Call Inherited"
-msgstr ""
+msgstr "Вставить виклик успадкованого"
 
 #: codystrconsts.crsinsertfileatcursor
-#, fuzzy
-#| msgid "Insert File at Cursor ..."
 msgid "Insert File Contents at Cursor ..."
-msgstr "Вставити файл під курсором ..."
+msgstr "Вставити вміст файлу у позицію курсора ..."
 
 #: codystrconsts.crsinsertint64idyyyyddmmhhnnss
 msgid "Insert int64 ID YYYYDDMMhhnnss"
@@ -455,15 +447,15 @@ msgstr ""
 
 #: codystrconsts.crsjump
 msgid "Jump"
-msgstr ""
+msgstr "Перейти"
 
 #: codystrconsts.crsjumpto
 msgid "&Jump to"
-msgstr ""
+msgstr "&Перейти до"
 
 #: codystrconsts.crsjumpto2
 msgid "Jump to"
-msgstr ""
+msgstr "Перейти до"
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -475,11 +467,11 @@ msgstr "Зв'язані файли"
 
 #: codystrconsts.crslinks
 msgid "Links"
-msgstr ""
+msgstr "Зв'язки"
 
 #: codystrconsts.crsloaddictionaryafter
 msgid "Load dictionary after %s"
-msgstr ""
+msgstr "Завантажити словник після %s"
 
 #: codystrconsts.crslocalvariableof
 msgid "Local variable of %s"
@@ -499,11 +491,11 @@ msgstr "%s членів %s %s"
 
 #: codystrconsts.crsmenuitemcaption
 msgid "Menu item caption:"
-msgstr ""
+msgstr "Підпис елемента меню:"
 
 #: codystrconsts.crsminutes
 msgid "%s minutes"
-msgstr ""
+msgstr "%s хвилин"
 
 #: codystrconsts.crsmissing
 msgid "missing ..."
@@ -511,15 +503,15 @@ msgstr "відсутній ..."
 
 #: codystrconsts.crsname
 msgid "Name"
-msgstr ""
+msgstr "Назва"
 
 #: codystrconsts.crsnoneselected
 msgid "none selected"
-msgstr ""
+msgstr "нічого не вибрано"
 
 #: codystrconsts.crsnooverloadsfoundinprojectunits
 msgid "no overloads found in project units"
-msgstr ""
+msgstr "у модулях проекту перевантажень не знайдено"
 
 #: codystrconsts.crsnoproject
 msgid "No project"
@@ -527,7 +519,7 @@ msgstr "Немає проекту"
 
 #: codystrconsts.crsnotethenameoftheformmustbeavalidpascalidentifieran
 msgid "Note: The name of the form must be a valid pascal identifier and unique across the whole IDE, which includes all packages. Prepend the name with an abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are already used by the IDE itself."
-msgstr ""
+msgstr "Примітка: назва форми має бути коректним ідентифікатором Паскаля і унікальною у всьому ІСР, включно з пакетами. Додавайте до початку назви скорочення назви пакета. Префікси \"IDE\", \"Laz\", \"Pkg\" вже використовуються в самому ІСР."
 
 #: codystrconsts.crsnounitselected
 msgid "No unit selected"
@@ -539,19 +531,19 @@ msgstr "На буфер обміну"
 
 #: codystrconsts.crsonlydescendantsof
 msgid "Only descendants of %s"
-msgstr ""
+msgstr "Тільки нащадки %s"
 
 #: codystrconsts.crsonlymethods
 msgid "Only methods"
-msgstr ""
+msgstr "Лише методи"
 
 #: codystrconsts.crsonlynonmethods
 msgid "Only non methods"
-msgstr ""
+msgstr "Лише не методи"
 
 #: codystrconsts.crsonlyprocedureswithcompatibleparameters
 msgid "Only procedures with compatible parameters"
-msgstr ""
+msgstr "Лише процедури з сумісними параметрами"
 
 #: codystrconsts.crsoptions
 msgid "Options"
@@ -575,31 +567,31 @@ msgstr "Пакунок"
 
 #: codystrconsts.crspackage2
 msgid "Package: %s"
-msgstr ""
+msgstr "Пакунок: %s"
 
 #: codystrconsts.crspackagenotfound
 msgid "Package not found"
-msgstr ""
+msgstr "Пакунок не знайдено"
 
 #: codystrconsts.crspackagenotfounditshouldbein
 msgid "Package \"%s\" not found. It should be in \"%s\"."
-msgstr ""
+msgstr "Пакунок \"%s\" не знайдено. Він повинен бути в \"%s\"."
 
 #: codystrconsts.crspackagesunitsidentifiersfile
 msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
-msgstr ""
+msgstr "Пакунків: %s, модулів: %s, ідентифікаторів: %s%sБаза даних: %s"
 
 #: codystrconsts.crspackagewithsamename
 msgid "Package with same name"
-msgstr ""
+msgstr "Пакунок з такою ж назвою"
 
 #: codystrconsts.crsparseerror
 msgid "Parse error"
-msgstr ""
+msgstr "Помилка розбору"
 
 #: codystrconsts.crspastelinesofagdbbacktrace
 msgid "Paste lines of a gdb backtrace:"
-msgstr ""
+msgstr "Вставити рядки стеку викликів GDB:"
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
@@ -615,11 +607,11 @@ msgstr "Встановіть курсор редактора початково�
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditor
 msgid "Please select some code in the Source Editor."
-msgstr ""
+msgstr "Виберіть якийсь код у Редакторі коду"
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
 msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
-msgstr ""
+msgstr "Виберіть у Редакторі коду якийсь код для нового блоку \"With\". Кандидатів для виразу with не знайдено."
 
 #: codystrconsts.crspleasespecifyalocation
 msgid "Please specify a location"
@@ -646,8 +638,6 @@ msgid "Project has no main source file."
 msgstr "Проект не має основного файлу з кодом."
 
 #: codystrconsts.crsprojectoutput
-#, fuzzy
-#| msgid "Project output"
 msgid "Project Output"
 msgstr "Вивід проекту"
 
@@ -665,11 +655,11 @@ msgstr "Опублікований"
 
 #: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
 msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
-msgstr ""
+msgstr "Справді видалити пакунок з бази даних?%sПримітка: Сирці і конфігурація не зміняться.%s%s\"%s\""
 
 #: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
 msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
-msgstr ""
+msgstr "Справді видалити модуль з бази даних?%sПримітка: Сирці і конфігурація не зміняться.%s%sмодуль: \"%s\""
 
 #: codystrconsts.crsrefresh
 msgid "Refresh"
@@ -677,7 +667,7 @@ msgstr "Оновити"
 
 #: codystrconsts.crsrelations
 msgid "Relations:"
-msgstr ""
+msgstr "Зв’язки"
 
 #: codystrconsts.crsreport
 msgid "Report"
@@ -685,23 +675,23 @@ msgstr "Звіт"
 
 #: codystrconsts.crssavedictionaryevery
 msgid "Save dictionary every %s"
-msgstr ""
+msgstr "Зберігати словник кожні %s"
 
 #: codystrconsts.crssavedictionarynow
 msgid "Save dictionary now"
-msgstr ""
+msgstr "Зберегти словник зараз"
 
 #: codystrconsts.crssavetofile
 msgid "Save to file %s"
-msgstr ""
+msgstr "Зберегти у файл %s"
 
 #: codystrconsts.crsscanning
 msgid "Scanning ..."
-msgstr ""
+msgstr "Триває пошук ..."
 
 #: codystrconsts.crsscanningsunits
 msgid "Scanning: %s units ..."
-msgstr ""
+msgstr "Триває пошук: %s модулів ..."
 
 #: codystrconsts.crssearching
 msgid "searching ..."
@@ -709,39 +699,35 @@ msgstr "пошук ..."
 
 #: codystrconsts.crsseconds
 msgid "%s seconds"
-msgstr ""
+msgstr "%s секунд"
 
 #: codystrconsts.crsselectexpression
 msgid "Select expression"
-msgstr ""
+msgstr "Виберіть вираз"
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
-#, fuzzy
-#| msgid "Show CodeTools node info ..."
 msgid "Show CodeTools Node Info ..."
-msgstr "Показати інфо про вузол CodeTools ..."
+msgstr "Показати дані про вузол CodeTools ..."
 
 #: codystrconsts.crsshowcodydict
 msgid "Show Cody Dictionary for \"%s\""
-msgstr ""
+msgstr "Показати словник Cody для \"%s\""
 
 #: codystrconsts.crsshowonlyidentifierscontainingfiltertext
 msgid "Show only identifiers containing filter text"
-msgstr ""
+msgstr "Показати лише ідентифікатори, які містять текст фільтру"
 
 #: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
 msgid "Show only identifiers starting with filter text"
-msgstr ""
+msgstr "Показати лише ідентифікатори, які починаються текстом фільтру"
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."
-msgstr ""
+msgstr "Показати словник модулів/ідентифікаторів ..."
 
 #: codystrconsts.crsshowusedppufiles
-#, fuzzy
-#| msgid "Show used .ppu files ..."
 msgid "Show Used .ppu Files ..."
-msgstr "Показати використовувані .ppu файли ..."
+msgstr "Показати використовувані файли .ppu ..."
 
 #: codystrconsts.crssizeofofile
 msgid "Size of .o file"
@@ -757,35 +743,36 @@ msgstr "Вихідний код: %s"
 
 #: codystrconsts.crsstarts
 msgid "Starts"
-msgstr ""
+msgstr "Починаються"
 
 #: codystrconsts.crsthedictionaryisloadedondemandorafterthistime
 msgid "The dictionary is loaded on demand or after this time"
-msgstr ""
+msgstr "Словник завантажується за потребою або через такий час"
 
 #: codystrconsts.crsthedictionaryissavedinintervals
 msgid "The dictionary is saved in intervals"
-msgstr ""
+msgstr "Словник зберігається з зазначеним інтервалом часу"
 
 #: codystrconsts.crstheidentifierisalreadydefined
 msgid "The identifier \"%s\" is already defined."
 msgstr "Ідентифікатор \"%s\" вже визначений."
 
 #: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
+#, fuzzy,badformat
 msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
-msgstr ""
+msgstr "Пакет з такою назвою вже завантажено.% SВідкритий пакет:% s% sНовий пакет:% s% sМоже бути завантажений тільки один такий пакет."
 
 #: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
 msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
-msgstr ""
+msgstr "Цільовий модуль має таку ж назву, як поточний модуль.%s Free Pascal цього не підтримує."
 
 #: codystrconsts.crstheunitispartofitcannotuseanotherpackagewiththesam
 msgid "The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the same name:%s\"%s\""
-msgstr ""
+msgstr "Модуль \"%s\"%sє частиною \"%s\".%sВін не може використовувати інший пакунок з такою ж назвою:%s\"%s\""
 
 #: codystrconsts.crsthisunitislocatedinthefreepascalsourcesbutnoppufil
 msgid "This unit is located in the Free Pascal sources, but no ppu file is installed. Maybe this unit is not available for this target platform."
-msgstr ""
+msgstr "Модуль знаходиться в сирцях Free Pascal, але ppu-file не встановлено. Можливо цей модуль не доступний для даної цільової платформи."
 
 #: codystrconsts.crstotal
 msgid "Total"
@@ -796,16 +783,18 @@ msgid "Type"
 msgstr "Тип"
 
 #: codystrconsts.crsunabletodelete
+#, fuzzy,badformat
 msgid "Unable to delete \"%s\""
-msgstr ""
+msgstr "Неможливо видалити \"s\""
 
 #: codystrconsts.crsunabletoreadfile
 msgid "Unable to read file \"%s\"."
-msgstr ""
+msgstr "Неможливо прочитати файл \"%s\"."
 
 #: codystrconsts.crsunabletorenameto
+#, fuzzy,badformat
 msgid "unable to rename \"%s\" to \"%s\""
-msgstr ""
+msgstr "неможливо змінити назву файлу \"s\" на \"%s\""
 
 #: codystrconsts.crsunit
 msgid "Unit"
@@ -817,11 +806,11 @@ msgstr "Модуль: %s"
 
 #: codystrconsts.crsunitidentifierdictionary
 msgid "Unit / Identifier Dictionary"
-msgstr ""
+msgstr "Словник модулів/ідентифікаторів"
 
 #: codystrconsts.crsunitnameclash
 msgid "Unit name clash"
-msgstr ""
+msgstr "Конфлікт назв модулів"
 
 #: codystrconsts.crsunitobjectfiles
 msgid "Unit object files"
@@ -837,7 +826,7 @@ msgstr "Спільні бібліотеки модулів"
 
 #: codystrconsts.crsunitss
 msgid "Units: %s"
-msgstr ""
+msgstr "Модулі: %s"
 
 #: codystrconsts.crsunitstaticlibraries
 msgid "Unit static libraries"
@@ -849,15 +838,13 @@ msgstr "Використовується"
 
 #: codystrconsts.crsuseidentifier
 msgid "&Use identifier"
-msgstr ""
+msgstr "&Використати ідентифікатор"
 
 #: codystrconsts.crsuses
 msgid "Uses"
 msgstr "Використовує"
 
 #: codystrconsts.crsvirtualunit
-#, fuzzy
-#| msgid "Virtual unit"
 msgid "Virtual Unit"
 msgstr "Віртуальний модуль"
 

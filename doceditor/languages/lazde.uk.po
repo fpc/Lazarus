@@ -1,16 +1,17 @@
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-23 09:58+0300\n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2017-01-10 00:23+0200\n"
+"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Virtaal 0.7.1\n"
+"X-Generator: Lokalize 1.5\n"
 
 #: lazdemsg.saboutformcaption
 msgid "About this application"
@@ -22,7 +23,7 @@ msgstr "&Додати"
 
 #: lazdemsg.saddall
 msgid "Add All"
-msgstr "Додати Всі"
+msgstr "Додати всі"
 
 #: lazdemsg.sadddescriptionfile
 msgid "Select a new description file"
@@ -30,7 +31,7 @@ msgstr "Виберіть новий файл опису"
 
 #: lazdemsg.sadditionalparams
 msgid "Additional parameters for fpdoc"
-msgstr ""
+msgstr "Додаткові параметри для fpdoc"
 
 #: lazdemsg.sbuild
 msgctxt "lazdemsg.sbuild"
@@ -167,8 +168,6 @@ msgid " in package "
 msgstr " в пакунку "
 
 #: lazdemsg.sfortopic
-#, fuzzy
-#| msgid " in topic"
 msgid " in topic "
 msgstr " в темі "
 
@@ -236,7 +235,7 @@ msgstr "Змінна"
 #: lazdemsg.shintinsertbulletedlist
 msgctxt "lazdemsg.shintinsertbulletedlist"
 msgid "Insert bulleted list"
-msgstr ""
+msgstr "Вставити маркований список"
 
 #: lazdemsg.shintinsertelement
 msgctxt "lazdemsg.shintinsertelement"
@@ -256,7 +255,7 @@ msgstr "Новий модуль"
 #: lazdemsg.shintinsertnumberedlist
 msgctxt "lazdemsg.shintinsertnumberedlist"
 msgid "Insert numbered list"
-msgstr ""
+msgstr "Вставити нумерований список"
 
 #: lazdemsg.shintinsertpackage
 msgctxt "lazdemsg.shintinsertpackage"
@@ -278,8 +277,6 @@ msgid "New topic"
 msgstr "Нова тема"
 
 #: lazdemsg.shintmenunewfromfile
-#, fuzzy
-#| msgid "New from file..."
 msgid "New from file ..."
 msgstr "Новий з файлу..."
 
@@ -311,11 +308,11 @@ msgstr "Імпорт файлу вмісту"
 #: lazdemsg.sinsertbulletedlist
 msgctxt "lazdemsg.sinsertbulletedlist"
 msgid "Insert bulleted list"
-msgstr ""
+msgstr "Вставити маркований список"
 
 #: lazdemsg.sinsertexamplecode
 msgid "Insert example code"
-msgstr ""
+msgstr "Вставити зразок коду"
 
 #: lazdemsg.sinsertlink
 msgctxt "lazdemsg.sinsertlink"
@@ -325,7 +322,7 @@ msgstr "Вставити посилання"
 #: lazdemsg.sinsertnumberedlist
 msgctxt "lazdemsg.sinsertnumberedlist"
 msgid "Insert numbered list"
-msgstr ""
+msgstr "Вставити нумерований список"
 
 #: lazdemsg.sinsertprintshortlink
 msgid "Insert short description link"
@@ -338,11 +335,11 @@ msgstr "Вставити таблицю"
 
 #: lazdemsg.sitemscount
 msgid "Items count"
-msgstr ""
+msgstr "Кількість елементів"
 
 #: lazdemsg.slazdoceditor
 msgid "Lazarus Documentation Editor"
-msgstr "Редактор Документації Lazarus"
+msgstr "Редактор документації Lazarus"
 
 #: lazdemsg.slinksto
 msgid " links to "
@@ -350,11 +347,11 @@ msgstr " вказує на "
 
 #: lazdemsg.slinktarget
 msgid "Link target"
-msgstr ""
+msgstr "Ціль посилання"
 
 #: lazdemsg.slinktext
 msgid "Link text"
-msgstr ""
+msgstr "Текст посилання"
 
 #: lazdemsg.sload
 msgid "&Load"
@@ -370,7 +367,7 @@ msgstr "Позначити виділення %s"
 
 #: lazdemsg.smenucollapseall
 msgid "Collapse All"
-msgstr "Згорнути Все"
+msgstr "Згорнути все"
 
 #: lazdemsg.smenudelete
 msgctxt "lazdemsg.smenudelete"
@@ -379,7 +376,7 @@ msgstr "Видалити"
 
 #: lazdemsg.smenuexpandall
 msgid "Expand All"
-msgstr "Розгорнути Все"
+msgstr "Розгорнути все"
 
 #: lazdemsg.smenuextra
 msgid "&Extra"
@@ -475,8 +472,6 @@ msgid "&Help"
 msgstr "&Довідка"
 
 #: lazdemsg.smenuhelpabout
-#, fuzzy
-#| msgid "&About..."
 msgid "&About ..."
 msgstr "&Про..."
 
@@ -486,7 +481,7 @@ msgstr "Вс&тавити"
 
 #: lazdemsg.smenuinsertbulletedlist
 msgid "Bulleted list"
-msgstr ""
+msgstr "Маркований список"
 
 #: lazdemsg.smenuinsertelement
 msgid "&Element"
@@ -498,7 +493,7 @@ msgstr "&Посилання"
 
 #: lazdemsg.smenuinsertlist
 msgid "List"
-msgstr ""
+msgstr "Список"
 
 #: lazdemsg.smenuinsertmodule
 msgid "&Module"
@@ -506,7 +501,7 @@ msgstr "&Модуль"
 
 #: lazdemsg.smenuinsertnumberedlist
 msgid "Numbered list"
-msgstr ""
+msgstr "Нумерований список"
 
 #: lazdemsg.smenuinsertpackage
 msgctxt "lazdemsg.smenuinsertpackage"
@@ -576,7 +571,7 @@ msgstr "Нова тема"
 
 #: lazdemsg.snodename
 msgid "Node name"
-msgstr ""
+msgstr "Назва вузла"
 
 #: lazdemsg.snoelement
 msgid "No element selected"
@@ -600,7 +595,7 @@ msgstr "Розширення за замовчуванням"
 
 #: lazdemsg.soptdlgdesktop
 msgid "Desktop"
-msgstr "Робочий Стіл"
+msgstr "Стільниця"
 
 #: lazdemsg.soptdlgfpdocprogram
 msgid "fpdoc program"
@@ -678,7 +673,7 @@ msgstr "&Зберегти"
 
 #: lazdemsg.ssavebeforebuildquestion
 msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
-msgstr ""
+msgstr "Є незбережені зміни в \"%s\".%sЇх слід зберегти, щоб вони були видимі у побудованій документації. Зберегти?"
 
 #: lazdemsg.sseealso
 msgid "See Also"
@@ -693,10 +688,8 @@ msgid "Select output file name"
 msgstr "Вибрати ім'я файлу на виході"
 
 #: lazdemsg.sselectsometext
-#, fuzzy
-#| msgid "Select some text"
 msgid "Select some text."
-msgstr "Вибрати певний текст"
+msgstr "Виберіть якийсь текст."
 
 #: lazdemsg.sshortdescription
 msgid "Short"
@@ -724,15 +717,15 @@ msgstr "Початковий елемент \"%s\" не знайдено"
 
 #: lazdemsg.stablecols
 msgid "Columns"
-msgstr ""
+msgstr "Стовпчики"
 
 #: lazdemsg.stableheader
 msgid "Use header row"
-msgstr ""
+msgstr "Використати рядок заголовків"
 
 #: lazdemsg.stablerows
 msgid "Rows"
-msgstr ""
+msgstr "Рядки"
 
 #: lazdemsg.stargetos
 msgid "Target OS"

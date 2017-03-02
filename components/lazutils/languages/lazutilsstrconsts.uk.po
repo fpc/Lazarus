@@ -1,12 +1,16 @@
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2012-04-23 10:30+0300\n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"PO-Revision-Date: 2017-03-01 19:47+0200\n"
+"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language: uk\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Virtaal 0.7.1\n"
+"X-Generator: Lokalize 1.5\n"
+"Project-Id-Version: \n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
@@ -34,27 +38,27 @@ msgstr ""
 
 #: lazutilsstrconsts.lrscannotexecute
 msgid "can not execute %s"
-msgstr ""
+msgstr "неможливо виконати %s"
 
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"
-msgstr ""
+msgstr "Неправильне число аргументів функції"
 
 #: lazutilsstrconsts.lrsevalunknownfunction
 msgid "Unknown function: \"%s\""
-msgstr ""
+msgstr "Невідома функція: \"%s\""
 
 #: lazutilsstrconsts.lrsevalunknownvariable
 msgid "Unknown variable: \"%s\""
-msgstr ""
+msgstr "Невідома змінна: \"%s\""
 
 #: lazutilsstrconsts.lrsfiledoesnotexist
 msgid "file \"%s\" does not exist"
-msgstr ""
+msgstr "файл \"%s\" не знайдено"
 
 #: lazutilsstrconsts.lrsfileisadirectoryandnotanexecutable
 msgid "file \"%s\" is a directory and not an executable"
-msgstr ""
+msgstr "файл \"%s\" є текою, а не виконуваним файлом"
 
 #: lazutilsstrconsts.lrshasacircularsymboliclink
 msgid "%s has a circular symbolic link"
@@ -71,21 +75,21 @@ msgstr "Невірний набір символів по масці \"%s\"!"
 
 #: lazutilsstrconsts.lrsisnotasymboliclink
 msgid "%s is not a symbolic link"
-msgstr ""
+msgstr "%s не є символьним посиланням"
 
 #: lazutilsstrconsts.lrsisnotexecutable
 msgid "%s is not executable"
-msgstr ""
+msgstr "%s не є виконуваним"
 
 #: lazutilsstrconsts.lrslistindexexceedsbounds
 msgctxt "lazutilsstrconsts.lrslistindexexceedsbounds"
 msgid "List index exceeds bounds (%d)"
-msgstr ""
+msgstr "Індекс списку виходить за межі (%d)"
 
 #: lazutilsstrconsts.lrslistmustbeempty
 msgctxt "lazutilsstrconsts.lrslistmustbeempty"
 msgid "List must be empty"
-msgstr ""
+msgstr "Список має бути порожнім"
 
 #: lazutilsstrconsts.lrsmodified
 msgctxt "lazutilsstrconsts.lrsmodified"
@@ -98,7 +102,7 @@ msgstr ""
 
 #: lazutilsstrconsts.lrsnumber
 msgid "number"
-msgstr ""
+msgstr "число"
 
 #: lazutilsstrconsts.lrsparserbadaxisname
 msgid "Invalid axis name"
@@ -110,15 +114,15 @@ msgstr ""
 
 #: lazutilsstrconsts.lrsparserexpectedleftbracket
 msgid "Expected \"(\""
-msgstr ""
+msgstr "Очікується \"(\""
 
 #: lazutilsstrconsts.lrsparserexpectedrightbracket
 msgid "Expected \")\""
-msgstr ""
+msgstr "Очікується \")\""
 
 #: lazutilsstrconsts.lrsparserexpectedrightsquarebracket
 msgid "Expected \"]\" after predicate"
-msgstr ""
+msgstr "Очікується \"]\" після предиката"
 
 #: lazutilsstrconsts.lrsparsergarbageafterexpression
 msgid "Unrecognized input after expression"
@@ -134,19 +138,19 @@ msgstr ""
 
 #: lazutilsstrconsts.lrsprogramfilenotfound
 msgid "program file not found %s"
-msgstr ""
+msgstr "файл програми %s не знайдено"
 
 #: lazutilsstrconsts.lrsreadaccessdeniedfor
 msgid "read access denied for %s"
-msgstr ""
+msgstr "необхідний доступ для читання до %s"
 
 #: lazutilsstrconsts.lrsscannerexpectedvarname
 msgid "Expected variable name after \"$\""
-msgstr ""
+msgstr "Після \"$\" очікується назва змінної"
 
 #: lazutilsstrconsts.lrsscannerinvalidchar
 msgid "Invalid character"
-msgstr ""
+msgstr "Неправильний символ"
 
 #: lazutilsstrconsts.lrsscannermalformedqname
 msgid "Expected \"*\" or local part after colon"
@@ -154,7 +158,7 @@ msgstr ""
 
 #: lazutilsstrconsts.lrsscannerunclosedstring
 msgid "String literal was not closed"
-msgstr ""
+msgstr "Не закритий рядковий літерал"
 
 #: lazutilsstrconsts.lrssize
 msgctxt "lazutilsstrconsts.lrssize"
@@ -167,9 +171,9 @@ msgstr ""
 
 #: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
 msgid "Unable to create config directory \"%s\""
-msgstr ""
+msgstr "Не вдалось створити теку конфігурації \"%s\""
 
 #: lazutilsstrconsts.lrsvarnoconversion
 msgid "Conversion from %s to %s not possible"
-msgstr ""
+msgstr "Перетворення з %s до %s неможливе"
 

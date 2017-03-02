@@ -1,18 +1,20 @@
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2012-04-23 11:40+0300\n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"PO-Revision-Date: 2017-03-01 20:20+0200\n"
+"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language: uk\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Virtaal 0.7.1\n"
+"X-Generator: Lokalize 1.5\n"
+"Project-Id-Version: \n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
 
 #: pocheckerconsts.rspochecker
-#, fuzzy
-#| msgid "PO File Checker"
 msgid "Check PO Files ..."
-msgstr "Перевірка PO Файлів"
+msgstr "Перевірка PO-файлів ..."
 
 #: pocheckerconsts.rs_lang_af_za
 msgid "Afrikaans"
@@ -108,7 +110,7 @@ msgstr ""
 
 #: pocheckerconsts.rs_lang_uk
 msgid "Ukrainian"
-msgstr ""
+msgstr "Українська"
 
 #: pocheckerconsts.rs_lang_zh_cn
 msgid "Chinese, simplified"
@@ -116,7 +118,7 @@ msgstr ""
 
 #: pocheckerconsts.salllanguages
 msgid "All Languages"
-msgstr ""
+msgstr "Всі мови"
 
 #: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
 msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
@@ -144,11 +146,11 @@ msgstr "Перевірити кількість елементів"
 
 #: pocheckerconsts.scheckstatistics
 msgid "Check percentage of (un)translated and fuzzy strings"
-msgstr ""
+msgstr "Перевірити відсоток (не)перекладених і неточних рядків"
 
 #: pocheckerconsts.sclearlistbox
 msgid "Clear"
-msgstr ""
+msgstr "Очистити"
 
 #: pocheckerconsts.scopycaption
 msgid "Copy to clipboard"
@@ -160,7 +162,7 @@ msgstr ""
 
 #: pocheckerconsts.scurrenttest
 msgid "Test: %s on %s"
-msgstr ""
+msgstr "Тест: %s з %s"
 
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
@@ -197,14 +199,16 @@ msgid ""
 "The following non-existent files were removed from the list:\n"
 "%s\n"
 msgstr ""
+"Такі відсутні файли були вилучені зі списку:\n"
+"%s\n"
 
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
-msgstr ""
+msgstr "Неповні рядки (всього: %s)"
 
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
-msgstr ""
+msgstr "Графічний підсумок"
 
 #: pocheckerconsts.sguipofilecheckingtool
 msgid "GUI Po-file checking tool"
@@ -216,13 +220,11 @@ msgstr "Ідентифікатор [%s] не знайдений в %s"
 
 #: pocheckerconsts.signorefuzzytranslations
 msgid "Ignore translated strings marked as \"fuzzy\""
-msgstr ""
+msgstr "Знехтувати перекладені рядки, позначені як неточні"
 
 #: pocheckerconsts.sincompatibleformatargs
-#, fuzzy
-#| msgid "[Line: %d] Incompatible format() arguments for:"
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
-msgstr "[Рядок: %d] Несумісні аргументи format() для:"
+msgstr "[Рядок: %d] Несумісні і/або неправильні аргументи format() для:"
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -242,7 +244,7 @@ msgstr "Помилки не знайдені"
 
 #: pocheckerconsts.snofileslefttocheck
 msgid "There are no files left to check."
-msgstr ""
+msgstr "Не залишилось файлів для перевірки."
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."
@@ -250,7 +252,7 @@ msgstr "Не вибрано жодного тесту."
 
 #: pocheckerconsts.snotetranslationisfuzzy
 msgid "Note: translation is fuzzy"
-msgstr ""
+msgstr "Примітка: переклад неточний"
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
@@ -273,6 +275,8 @@ msgid ""
 "Unable to open file:\n"
 "\"%s\"\n"
 msgstr ""
+"Не вдалось відкрити файл:\n"
+"\"%s\"\n"
 
 #: pocheckerconsts.sopenfailexternal
 msgid ""
@@ -281,18 +285,22 @@ msgid ""
 "in external editor\n"
 "\"%s\"\n"
 msgstr ""
+"Не вдалось відкрити файл\n"
+"\"%s\"\n"
+"у зовнішньому редакторі\n"
+"\"%s\"\n"
 
 #: pocheckerconsts.sopenfileinexternaleditor
 msgid "Open file in external editor"
-msgstr ""
+msgstr "Відкрити файл у зовнішньому редакторі"
 
 #: pocheckerconsts.sopenfileinideeditor
 msgid "Open file in IDE editor"
-msgstr ""
+msgstr "Відкрити файл у редакторі ІСР"
 
 #: pocheckerconsts.sopenfileinsystempoeditor
 msgid "Open file in system PO editor"
-msgstr ""
+msgstr "Відкрити файл у системному редакторі PO"
 
 #: pocheckerconsts.soriginal
 msgid "Original"
@@ -300,15 +308,15 @@ msgstr "Оригінал"
 
 #: pocheckerconsts.spercfuzzy
 msgid "%s: %5.1f%% fuzzy strings."
-msgstr ""
+msgstr "%s: %5.1f%% неточних рядків."
 
 #: pocheckerconsts.sperctranslated
 msgid "%s: %5.1f%% translated strings."
-msgstr ""
+msgstr "%s: %5.1f%% перекладених рядків."
 
 #: pocheckerconsts.spercuntranslated
 msgid "%s: %5.1f%% untranslated strings."
-msgstr ""
+msgstr "%s: %5.1f%% неперекладених рядків."
 
 #: pocheckerconsts.sprocessingtranslationfamily
 msgid "Processing translation family..."
@@ -348,19 +356,19 @@ msgstr ""
 
 #: pocheckerconsts.sscandir
 msgid "Scan a folder"
-msgstr ""
+msgstr "Сканувати теку"
 
 #: pocheckerconsts.sscanninginprogress
 msgid "Scanning in progress, please wait ..."
-msgstr ""
+msgstr "Триває сканування, чекайте ..."
 
 #: pocheckerconsts.sselectalllistbox
 msgid "Select all files"
-msgstr ""
+msgstr "Вибрати всі файли"
 
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
-msgstr ""
+msgstr "Вибрати &всі"
 
 #: pocheckerconsts.sselectbasictests
 msgid "Select &Basic"
@@ -372,7 +380,7 @@ msgstr "Вибрати типи тестів"
 
 #: pocheckerconsts.sshowstatgraph
 msgid "Show statistics graph"
-msgstr ""
+msgstr "Показати статистичний графік"
 
 #: pocheckerconsts.sstathint
 msgid ""
@@ -381,32 +389,34 @@ msgid ""
 "Fuzzy: %d (%.1f%%)\n"
 "Errors in selected tests: %d\n"
 msgstr ""
+"Перекладено: %d (%.1f%%)\n"
+"Не перекладено: %d (%.1f%%)\n"
+"Неточних: %d (%.1f%%)\n"
+"Помилок у вибраних тестах: %d\n"
 
 #: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
 msgid "The following %s missing master .po file(s) were removed from the list:"
-msgstr ""
+msgstr "Такі %s відсутні головні файли .po були вилучені зі списку:"
 
 #: pocheckerconsts.sthefollowingorphanedpofilesfound
 msgid "The following %s orphaned .po file(s) found:"
-msgstr ""
+msgstr "Знайдено такі %s загублених файлів .po:"
 
 #: pocheckerconsts.stotalerrors
-#, fuzzy
-#| msgid "Total errors / warnings found: %d"
 msgid "Total errors found: %d"
-msgstr "Знайдено всього помилок / попереджень: %d"
+msgstr "Знайдено помилок: %d"
 
 #: pocheckerconsts.stotalfuzzystrings
 msgid "Total fuzzy strings: %s"
-msgstr ""
+msgstr "Всього неточних рядків: %s"
 
 #: pocheckerconsts.stotaltranslatedstrings
 msgid "Total translated strings: %s (%.1f%%)"
-msgstr ""
+msgstr "Всього перекладених рядків: %s (%.1f%%)"
 
 #: pocheckerconsts.stotaluntranslatedstrings
 msgid "Total untranslated strings: %s"
-msgstr ""
+msgstr "Всього неперекладених рядків: %s"
 
 #: pocheckerconsts.stotalwarnings
 msgid "Total warnings found: %d"
@@ -414,7 +424,7 @@ msgstr "Знайдено всього попереджень: %d"
 
 #: pocheckerconsts.stranslatedstringstotal
 msgid "Translated strings (total: %s [%.1f%%])"
-msgstr ""
+msgstr "Перекладених рядків (всього: %s [%.1f%%])"
 
 #: pocheckerconsts.stranslation
 msgid "Translation"
