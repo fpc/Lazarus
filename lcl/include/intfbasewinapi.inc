@@ -1132,15 +1132,17 @@ var
 begin
   // First obtain the size information which duplicates GetTextExtentPoint
   Result := GetTextExtentPoint(DC,Str,Count,Size);
-  // Now calculate MaxCount and PartialWidths
+
+  if MaxCount <> nil then
+    MaxCount^ := 0;
+
   lPasStr := StrPas(Str);
+
   if (Str = nil) or (Count <= 0) or (lPasStr = '') then
-  begin
-    Result := False;
-    if MaxCount <> nil then
-      MaxCount^ := 0;
-    exit;
-  end;
+    exit(False);
+
+
+  // Now calculate MaxCount and PartialWidths
   lPasStrLen := UTF8Length(lPasStr);
   for i := 1 to lPasStrLen do
   begin
