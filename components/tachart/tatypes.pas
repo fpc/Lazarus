@@ -119,10 +119,10 @@ type
   public
     procedure Assign(Source: TPersistent); override;
 
-    procedure Draw(ADrawer: IChartDrawer; ACenter: TPoint; AColor: TColor);
-    procedure DrawSize(
-      ADrawer: IChartDrawer; ACenter, ASize: TPoint; AColor: TColor;
-      AAngle: Double = 0.0);
+    procedure Draw(ADrawer: IChartDrawer; ACenter: TPoint; AColor: TColor;
+      ABrushAlreadySet: Boolean = false);
+    procedure DrawSize(ADrawer: IChartDrawer; ACenter, ASize: TPoint;
+      AColor: TColor; AAngle: Double = 0.0; ABrushAlreadySet: Boolean = false);
   published
     property Brush: TBrush read FBrush write SetBrush;
     property HorizSize: Integer read FHorizSize write SetHorizSize default DEF_POINTER_SIZE;
@@ -378,18 +378,24 @@ begin
   inherited;
 end;
 
-procedure TSeriesPointer.Draw(
-  ADrawer: IChartDrawer; ACenter: TPoint; AColor: TColor);
+{ Draws the pointer.
+  If ABrushAlreadySet is true then the method assumes that the brush already has
+  been set by the calling routine and does not change it any further (needed
+  for applying ChartStyle brush). }
+procedure TSeriesPointer.Draw(ADrawer: IChartDrawer; ACenter: TPoint;
+  AColor: TColor; ABrushAlreadySet: Boolean = false);
 begin
   DrawSize(ADrawer,
     ACenter,
     Point(ADrawer.Scale(HorizSize), ADrawer.Scale(VertSize)),
-    AColor
+    AColor,
+    0,
+    ABrushAlreadySet
   );
 end;
 
 procedure TSeriesPointer.DrawSize(ADrawer: IChartDrawer;
-  ACenter, ASize: TPoint; AColor: TColor; AAngle: Double);
+  ACenter, ASize: TPoint; AColor: TColor; AAngle: Double; ABrushAlreadySet: Boolean);
 
   function PointByIndex(AIndex: Char): TPoint; inline;
   // 7--8--9
@@ -464,9 +470,12 @@ const
     '1831', '8428', '8628', '82', '46',
     '', '7927', '', '');
 begin
-  ADrawer.Brush := Brush;
-  if (ocBrush in OverrideColor) and (AColor <> clTAColor) then
-    ADrawer.BrushColor := AColor;
+  if not ABrushAlreadySet then begin
+    ADrawer.Brush := Brush;
+    if (ocBrush in OverrideColor) and (AColor <> clTAColor) then
+      ADrawer.BrushColor := AColor;
+  end;
+
   ADrawer.Pen := Pen;
   if (ocPen in OverrideColor) and (AColor <> clTAColor) then
     ADrawer.SetPenParams(Pen.Style, AColor);

@@ -89,9 +89,13 @@ type
   TLegendItemLinePointer = class(TLegendItemLine)
   strict protected
     FPointer: TSeriesPointer;
+    FBrush: TBrush;
+    FPresetBrush: Boolean;
   public
     constructor Create(
       APen: TPen; APointer: TSeriesPointer; const AText: String);
+    constructor CreateWithBrush(
+      APen: TPen; ABrush: TBrush; APointer: TSeriesPointer; const AText: String);
     procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
   end;
 
@@ -442,6 +446,14 @@ begin
   FPointer := APointer;
 end;
 
+constructor TLegendItemLinePointer.CreateWithBrush(
+  APen: TPen; ABrush: TBrush; APointer: TSeriesPointer; const AText: String);
+begin
+  Create(APen, APointer, AText);
+  FBrush := ABrush;
+  FPresetBrush := true;
+end;
+
 procedure TLegendItemLinePointer.Draw(
   ADrawer: IChartDrawer; const ARect: TRect);
 var
@@ -453,7 +465,9 @@ begin
   // Max width slightly narrower then ARect to leave place for the line.
   sz.X := Min(ADrawer.Scale(FPointer.HorizSize), (ARect.Right - ARect.Left) div 3);
   sz.Y := Min(ADrawer.Scale(FPointer.VertSize), (ARect.Bottom - ARect.Top) div 2);
-  FPointer.DrawSize(ADrawer, c, sz, Color);
+  if FPresetBrush then
+    ADrawer.SetBrush(FBrush);
+  FPointer.DrawSize(ADrawer, c, sz, Color, 0.0, FPresetBrush);
 end;
 
 { TLegendItemBrushRect }

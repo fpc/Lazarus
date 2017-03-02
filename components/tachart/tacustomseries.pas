@@ -277,7 +277,7 @@ type
     procedure AfterDrawPointer(
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); virtual;
     procedure DrawLabels(ADrawer: IChartDrawer);
-    procedure DrawPointers(ADrawer: IChartDrawer);
+    procedure DrawPointers(ADrawer: IChartDrawer; AStyleIndex: Integer = 0);
     procedure FindExtentInterval(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
     function GetLabelDataPoint(AIndex: Integer): TDoublePoint; virtual;
@@ -1182,12 +1182,17 @@ begin
   end;
 end;
 
-procedure TBasicPointSeries.DrawPointers(ADrawer: IChartDrawer);
+{ Draws the pointers of the series.
+  If ChartStyles are attached to the series then the pointer brush is determined
+  by the style with the specified index. }
+procedure TBasicPointSeries.DrawPointers(ADrawer: IChartDrawer;
+  AStyleIndex: Integer = 0);
 var
   i: Integer;
   p: TDoublePoint;
   ai: TPoint;
   ps, saved_ps: TSeriesPointerStyle;
+  brushAlreadySet: boolean;
 begin
   Assert(Pointer <> nil, 'Series pointer');
   if not Pointer.Visible then exit;
@@ -1205,7 +1210,12 @@ begin
         Pointer.SetOwner(nil);   // avoid recursion
         Pointer.Style := ps;
       end;
-      Pointer.Draw(ADrawer, ai, Source[i]^.Color);
+      brushAlreadySet := (Styles <> nil) and
+        (AStyleIndex < Styles.Styles.Count) and
+        Styles.Styles[AStyleIndex].UseBrush;
+      if brushAlreadySet then
+        Styles.Apply(ADrawer, AStyleIndex);
+      Pointer.Draw(ADrawer, ai, Source[i]^.Color, brushAlreadySet);
       AfterDrawPointer(ADrawer, i, ai);
       if Assigned(FOnGetPointerStyle) then begin
         Pointer.Style := saved_ps;

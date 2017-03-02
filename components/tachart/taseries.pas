@@ -560,7 +560,7 @@ begin
   DrawLines;
   DrawLabels(ADrawer);
   if ShowPoints then
-    DrawPointers(ADrawer);
+    DrawPointers(ADrawer, AIndex);
 end;
 
 procedure TLineSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -591,9 +591,11 @@ begin
     lmStyle:
       if Styles <> nil then
         for s in Styles.Styles do
-          AItems.Add(TLegendItemLinePointer.Create(
+          AItems.Add(TLegendItemLinePointer.CreateWithBrush(
             IfThen((lp <> nil) and s.UsePen, s.Pen, lp) as TPen,
-            p, LegendTextStyle(s)
+            IfThen(s.UseBrush, s.Brush, p.Brush) as TBrush,
+            p,
+            LegendTextStyle(s)
           ));
   end;
 end;
