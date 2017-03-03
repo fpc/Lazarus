@@ -1314,6 +1314,7 @@ begin
   Options.SrcPath:=CleanProjectSearchPath(Options.SrcPath);
   if Options.UnitOutputDirectory='' then
     Options.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
+  Options.TargetFilename:=''; // This may have a wrong value from default compiler options.
 
   if fSettings.DelphiDefine then begin
     // "Borland" and "Ver150" are defined by Delphi7.
