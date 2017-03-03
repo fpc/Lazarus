@@ -524,11 +524,11 @@ function TSourceEditorTabCommandsStamp.Changed(ASrcEdit: TSourceEditor): Boolean
 begin
   Result := not(
         (FSrcEdit = ASrcEdit)
-    and (ASrcEdit <> nil)
-    and (FSrcEditLocked = ASrcEdit.IsLocked)
-    and (FSourceNotebook = ASrcEdit.SourceNotebook)
-    and (FPageIndex = ASrcEdit.SourceNotebook.PageIndex)
-    and (FPageCount = ASrcEdit.SourceNotebook.PageCount)
+    and ((ASrcEdit = nil) or (
+            (FSrcEditLocked = ASrcEdit.IsLocked)
+        and (FSourceNotebook = ASrcEdit.SourceNotebook)
+        and (FPageIndex = ASrcEdit.SourceNotebook.PageIndex)
+        and (FPageCount = ASrcEdit.SourceNotebook.PageCount)))
     );
 
   if not Result then Exit;
@@ -550,10 +550,10 @@ function TSourceEditorCommandsStamp.Changed(ASrcEdit: TSourceEditor;
 begin
   Result := not(
         (FSrcEdit = ASrcEdit)
-    and (ASrcEdit <> nil)
-    and (FDisplayState = ADisplayState)
-    and (FEditorComponentStamp = ASrcEdit.EditorComponent.ChangeStamp)
-    and (FEditorCaretStamp = ASrcEdit.EditorComponent.CaretStamp)
+    and ((ASrcEdit = nil) or (
+            (FDisplayState = ADisplayState)
+        and (FEditorComponentStamp = ASrcEdit.EditorComponent.ChangeStamp)
+        and (FEditorCaretStamp = ASrcEdit.EditorComponent.CaretStamp)))
     );
 
   if not Result then Exit;
