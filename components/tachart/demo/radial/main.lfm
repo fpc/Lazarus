@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 433
   ClientWidth = 566
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.7'
   object PageControl1: TPageControl
     Left = 0
     Height = 433
@@ -19,11 +19,11 @@ object Form1: TForm1
     TabOrder = 0
     object tsPie: TTabSheet
       Caption = 'Pie'
-      ClientHeight = 407
+      ClientHeight = 405
       ClientWidth = 558
       object ChartPie: TChart
         Left = 0
-        Height = 348
+        Height = 346
         Top = 59
         Width = 558
         AxisList = <        
@@ -46,7 +46,7 @@ object Form1: TForm1
         )
         Toolset = ChartToolset1
         Align = alClient
-        ParentColor = False
+        Color = clDefault
         OnMouseDown = ChartPieMouseDown
         object ChartPiePieSeries1: TPieSeries
           Marks.Distance = 40
@@ -69,7 +69,7 @@ object Form1: TForm1
         TabOrder = 1
         object seWords: TSpinEdit
           Left = 488
-          Height = 21
+          Height = 23
           Top = 6
           Width = 58
           Anchors = [akTop, akRight]
@@ -78,17 +78,17 @@ object Form1: TForm1
           TabOrder = 0
         end
         object lblWords: TLabel
-          Left = 425
-          Height = 13
+          Left = 419
+          Height = 15
           Top = 10
-          Width = 57
+          Width = 63
           Anchors = [akTop, akRight]
           Caption = 'Label words'
           ParentColor = False
         end
         object seLabelAngle: TSpinEdit
           Left = 360
-          Height = 21
+          Height = 23
           Top = 6
           Width = 50
           Anchors = [akTop, akRight]
@@ -99,19 +99,19 @@ object Form1: TForm1
           TabOrder = 1
         end
         object lblLabelAngle: TLabel
-          Left = 297
-          Height = 13
+          Left = 291
+          Height = 15
           Top = 10
-          Width = 54
+          Width = 60
           Anchors = [akTop, akRight]
           Caption = 'Label angle'
           ParentColor = False
         end
         object cbRotate: TCheckBox
-          Left = 463
-          Height = 17
+          Left = 459
+          Height = 19
           Top = 30
-          Width = 83
+          Width = 87
           Anchors = [akTop, akRight]
           Caption = 'Rotate labels'
           OnChange = cbRotateChange
@@ -119,10 +119,10 @@ object Form1: TForm1
         end
         object cbMarkPositions: TComboBox
           Left = 310
-          Height = 21
+          Height = 23
           Top = 30
           Width = 100
-          ItemHeight = 13
+          ItemHeight = 15
           ItemIndex = 0
           Items.Strings = (
             'Around'
@@ -138,13 +138,13 @@ object Form1: TForm1
     end
     object tsPolar: TTabSheet
       Caption = 'Polar'
-      ClientHeight = 407
+      ClientHeight = 405
       ClientWidth = 558
       object ChartPolar: TChart
         Left = 0
-        Height = 407
+        Height = 405
         Top = 0
-        Width = 448
+        Width = 420
         AxisList = <        
           item
             Minors = <>
@@ -162,35 +162,110 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
-        ParentColor = False
+        Color = clDefault
         object ChartPolarSeries1: TPolarSeries
-          CloseCircle = True
+          Brush.Color = 14145495
           OriginX = -5
+          Pointer.HorizSize = 6
+          Pointer.Style = psDiamond
+          Pointer.VertSize = 6
+          Pointer.Visible = False
+          ShowPoints = False
           Source = RandomChartSource1
         end
         object ChartPolarSeries2: TPolarSeries
+          Brush.Color = 12303359
           LinePen.Color = clRed
           OriginY = 5
+          Pointer.Brush.Color = clRed
+          Pointer.Style = psCircle
+          Pointer.Visible = False
+          ShowPoints = False
           Source = RandomChartSource1
         end
       end
       object pnlPolar: TPanel
-        Left = 448
-        Height = 407
+        Left = 420
+        Height = 405
         Top = 0
-        Width = 110
+        Width = 138
         Align = alRight
-        ClientHeight = 407
-        ClientWidth = 110
+        AutoSize = True
+        ClientHeight = 405
+        ClientWidth = 138
         TabOrder = 1
         object cbCloseCircle: TCheckBox
-          Left = 14
-          Height = 17
-          Top = 12
-          Width = 52
+          AnchorSideLeft.Control = pnlPolar
+          AnchorSideTop.Control = pnlPolar
+          Left = 9
+          Height = 19
+          Top = 9
+          Width = 56
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 8
+          BorderSpacing.Bottom = 8
           Caption = 'Closed'
           OnChange = cbCloseCircleChange
           TabOrder = 0
+        end
+        object cbShowPoints: TCheckBox
+          AnchorSideLeft.Control = pnlPolar
+          AnchorSideTop.Control = cbCloseCircle
+          AnchorSideTop.Side = asrBottom
+          Left = 9
+          Height = 19
+          Top = 36
+          Width = 85
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 8
+          BorderSpacing.Right = 8
+          Caption = 'Show points'
+          OnChange = cbShowPointsChange
+          TabOrder = 1
+        end
+        object cbFilled: TCheckBox
+          AnchorSideLeft.Control = pnlPolar
+          AnchorSideTop.Control = cbShowPoints
+          AnchorSideTop.Side = asrBottom
+          Left = 9
+          Height = 19
+          Top = 63
+          Width = 48
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 8
+          Caption = 'Filled'
+          OnChange = cbFilledChange
+          TabOrder = 2
+        end
+        object sbTransparency: TScrollBar
+          AnchorSideLeft.Control = pnlPolar
+          AnchorSideTop.Control = lblTransparency
+          AnchorSideTop.Side = asrBottom
+          Left = 9
+          Height = 17
+          Top = 117
+          Width = 120
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 4
+          BorderSpacing.Right = 8
+          Max = 255
+          PageSize = 0
+          TabOrder = 3
+          OnChange = sbTransparencyChange
+        end
+        object lblTransparency: TLabel
+          AnchorSideLeft.Control = pnlPolar
+          AnchorSideTop.Control = cbFilled
+          AnchorSideTop.Side = asrBottom
+          Left = 9
+          Height = 15
+          Top = 98
+          Width = 87
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 16
+          Caption = 'Transparency (0)'
+          FocusControl = sbTransparency
+          ParentColor = False
         end
       end
     end
@@ -208,12 +283,12 @@ object Form1: TForm1
       '0|3|?|'
       '0|5|?|'
     )
-    left = 440
-    top = 136
+    left = 488
+    top = 296
   end
   object ChartToolset1: TChartToolset
-    left = 440
-    top = 80
+    left = 488
+    top = 240
   end
   object RandomChartSource1: TRandomChartSource
     PointsNumber = 15
@@ -223,7 +298,7 @@ object Form1: TForm1
     YCount = 2
     YMax = 10
     YMin = 2
-    left = 440
-    top = 196
+    left = 488
+    top = 356
   end
 end

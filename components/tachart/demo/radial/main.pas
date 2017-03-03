@@ -23,6 +23,9 @@ type
     cbRotate: TCheckBox;
     cbMarkPositions: TComboBox;
     cbCloseCircle: TCheckBox;
+    cbShowPoints: TCheckBox;
+    cbFilled: TCheckBox;
+    lblTransparency: TLabel;
     lblWords: TLabel;
     lblLabelAngle: TLabel;
     ListChartSource1: TListChartSource;
@@ -30,15 +33,19 @@ type
     Panel1: TPanel;
     pnlPolar: TPanel;
     RandomChartSource1: TRandomChartSource;
+    sbTransparency: TScrollBar;
     seWords: TSpinEdit;
     seLabelAngle: TSpinEdit;
     tsPolar: TTabSheet;
     tsPie: TTabSheet;
     procedure cbCloseCircleChange(Sender: TObject);
+    procedure cbFilledChange(Sender: TObject);
     procedure cbMarkPositionsChange(Sender: TObject);
     procedure cbRotateChange(Sender: TObject);
     procedure ChartPieMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure cbShowPointsChange(Sender: TObject);
+    procedure sbTransparencyChange(Sender: TObject);
     procedure seWordsChange(Sender: TObject);
     procedure seLabelAngleChange(Sender: TObject);
   end;
@@ -58,6 +65,12 @@ begin
   ChartPolarSeries2.CloseCircle := cbCloseCircle.Checked;
 end;
 
+procedure TForm1.cbFilledChange(Sender: TObject);
+begin
+  ChartPolarSeries1.Filled := cbFilled.Checked;
+  ChartPolarSeries2.Filled := cbFilled.Checked;
+end;
+
 procedure TForm1.cbMarkPositionsChange(Sender: TObject);
 begin
   ChartPiePieSeries1.MarkPositions :=
@@ -69,6 +82,12 @@ begin
   ChartPiePieSeries1.RotateLabels := cbRotate.Checked;
 end;
 
+procedure TForm1.cbShowPointsChange(Sender: TObject);
+begin
+  ChartPolarSeries1.ShowPoints := cbShowPoints.Checked;
+  ChartPolarSeries2.ShowPoints := cbShowPoints.Checked;
+end;
+
 procedure TForm1.ChartPieMouseDown(
   Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
@@ -78,6 +97,18 @@ begin
   if i < 0 then exit;
   ListChartSource1.SetXValue(i, 0.2 - ListChartSource1[i]^.X);
   ChartPie.Invalidate;
+end;
+
+procedure TForm1.sbTransparencyChange(Sender: TObject);
+begin
+  ChartPolarSeries1.Transparency := sbTransparency.Position;
+  ChartPolarSeries2.Transparency := sbTransparency.Position;
+  lblTransparency.Caption := 'Transparency (' + IntToStr(sbTransparency.Position) + ')';
+end;
+
+procedure TForm1.seLabelAngleChange(Sender: TObject);
+begin
+  ChartPiePieSeries1.Marks.LabelFont.Orientation := seLabelAngle.Value * 10;
 end;
 
 procedure TForm1.seWordsChange(Sender: TObject);
@@ -112,11 +143,6 @@ begin
     r.Free;
   end;
   ChartPie.Invalidate;
-end;
-
-procedure TForm1.seLabelAngleChange(Sender: TObject);
-begin
-  ChartPiePieSeries1.Marks.LabelFont.Orientation := seLabelAngle.Value * 10;
 end;
 
 end.
