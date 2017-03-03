@@ -113,14 +113,18 @@ type
 
   TPolarSeries = class(TBasicPointSeries)
   strict private
+    FBrush: TBrush;
     FCloseCircle: Boolean;
+    FFilled: Boolean;
     FLinePen: TPen;
     FOriginX: Double;
     FOriginY: Double;
     FShowPoints: Boolean;
     function IsOriginXStored: Boolean;
     function IsOriginYStored: Boolean;
+    procedure SetBrush(AValue: TBrush);
     procedure SetCloseCircle(AValue: Boolean);
+    procedure SetFilled(AValue: Boolean);
     procedure SetLinePen(AValue: TPen);
     procedure SetOriginX(AValue: Double);
     procedure SetOriginY(AValue: Double);
@@ -147,13 +151,14 @@ type
     procedure MovePointEx(var AIndex: Integer; AXIndex, AYIndex: Integer;
         const ANewPos: TDoublePoint); override;
   published
-    property CloseCircle: Boolean
-      read FCloseCircle write SetCloseCircle default false;
+    property Brush: TBrush read FBrush write SetBrush;
+    property CloseCircle: Boolean read FCloseCircle write SetCloseCircle default false;
+    property Filled: Boolean read FFilled write SetFilled default false;
     property LinePen: TPen read FLinePen write SetLinePen;
     property OriginX: Double read FOriginX write SetOriginX stored IsOriginXStored;
     property OriginY: Double read FOriginY write SetOriginY stored IsOriginYStored;
     property Pointer;
-    property ShowPoints: Boolean read FShowPoints write SetShowPoints; // default false;
+    property ShowPoints: Boolean read FShowPoints write SetShowPoints;
     property Source;
     property OnCustomDrawPointer;
     property OnGetPointerStyle;
@@ -611,6 +616,7 @@ procedure TPolarSeries.Assign(ASource: TPersistent);
 begin
   if ASource is TPolarSeries then
     with TPolarSeries(ASource) do begin
+      Self.Brush := FBrush;
       Self.LinePen := FLinePen;
       Self.FOriginX := FOriginX;
       Self.FOriginY := FOriginY;
@@ -623,15 +629,20 @@ constructor TPolarSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
+  FBrush := TBrush.Create;
+  FBrush.OnChange := @StyleChanged;
   FLinePen := TPen.Create;
   FLinePen.OnChange := @StyleChanged;
   FPointer := TSeriesPointer.Create(FChart);
+  FFilled := true;      // needed for SetFilled to execute its code
   FShowPoints := true;  // needed for SetShowPoints to execute its code
+  SetFilled(false);
   SetShowPoints(false);
 end;
 
 destructor TPolarSeries.Destroy;
 begin
+  FreeAndNil(FBrush);
   FreeAndNil(FLinePen);
   inherited;
 end;
@@ -644,19 +655,35 @@ var
   gp: TDoublePoint;
   firstPoint, lastPoint: TPoint;
   firstPointSet: Boolean = false;
+  originPt: TPoint;
+  fill: Boolean;
+  isClosed: Boolean;
+
+  procedure DoDraw;
+  begin
+    if cnt = 0 then
+      exit;
+    if fill then begin
+      pts[cnt] := originPt;
+      ADrawer.Brush := FBrush;
+      ADrawer.SetPenParams(psClear, clBlack);
+      ADrawer.Polygon(pts, 0, cnt + 1);
+    end;
+    ADrawer.Pen := LinePen;
+    ADrawer.PolyLine(pts, 0, cnt);
+  end;
+
 begin
   PrepareGraphPoints;
-
-  SetLength(pts, Count);
-  ADrawer.Pen := LinePen;
+  originPt := ParentChart.GraphToImage(DoublePoint(OriginX, OriginY));
+  fill := FFilled and (FBrush.Style <> bsClear);
+  SetLength(pts, Count + 1);  // +1 for origin
   for i := 0 to Count - 1 do begin
     gp := GraphPoint(i);
-    if IsNan(gp) then begin
-      if cnt > 0 then
-        ADrawer.Polyline(pts, 0, cnt);
+    if IsNaN(gp) then begin
+      DoDraw;
       cnt := 0;
-    end
-    else begin
+    end else begin
       lastPoint := FChart.GraphToImage(gp);
       pts[cnt] := lastPoint;
       cnt += 1;
@@ -666,10 +693,14 @@ begin
       end;
     end;
   end;
-  if cnt > 0 then
-    ADrawer.Polyline(pts, 0, cnt);
-  if firstPointSet and CloseCircle then
-    ADrawer.Line(lastPoint, firstPoint);
+  DoDraw;
+  if firstPointSet and CloseCircle then begin
+    SetLength(pts, 3);
+    pts[0] := lastPoint;
+    pts[1] := firstPoint;
+    cnt := 2;
+    DoDraw;
+  end;
 
   DrawPointers(ADrawer);
 end;
@@ -798,6 +829,13 @@ begin
     FGraphPoints[i] := GraphPoint(i);
 end;
 
+procedure TPolarSeries.SetBrush(AValue: TBrush);
+begin
+  if FBrush = AValue then exit;
+  FBrush.Assign(AValue);
+  UpdateParentChart;
+end;
+
 procedure TPolarSeries.SetCloseCircle(AValue: Boolean);
 begin
   if FCloseCircle = AValue then exit;
@@ -805,10 +843,18 @@ begin
   UpdateParentChart;
 end;
 
+procedure TPolarSeries.SetFilled(AValue: Boolean);
+begin
+  if FFilled = AValue then exit;
+  FFilled := AValue;
+  UpdateParentChart;
+end;
+
 procedure TPolarSeries.SetLinePen(AValue: TPen);
 begin
   if FLinePen = AValue then exit;
   FLinePen.Assign(AValue);
+  UpdateParentChart;
 end;
 
 procedure TPolarSeries.SetOriginX(AValue: Double);
