@@ -1055,7 +1055,7 @@ begin
     BarOffsetWidth(p.X, pointIndex, ofs, w);
     p.X += ofs;
     heights[0] := ZeroLevel;
-    heights[1] := ZeroLevel + p.Y;
+    heights[1] := NumberOr(p.Y, ZeroLevel);
     for stackIndex := 1 to Source.YCount - 1 do begin
       y := Source[pointIndex]^.YList[stackIndex - 1];
       if not IsNan(y) then
