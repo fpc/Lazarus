@@ -135,6 +135,8 @@ type
     Panel1: TPanel;
     Splitter1: TSplitter;
     procedure HelpButtonClick(Sender: TObject);
+    procedure InheritableComponentsListViewSelectItem(Sender: TObject;
+      Item: TListItem; Selected: Boolean);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
   private
@@ -168,7 +170,7 @@ var
 begin
   NewItem := nil;
   NewOtherDialog := TNewOtherDialog.Create(nil, AOnlyModules);
-  Result  := NewOtherDialog.ShowModal;
+  Result := NewOtherDialog.ShowModal;
   if Result = mrOk then
     NewItem := NewOtherDialog.NewItem;
   IDEDialogLayoutList.SaveLayout(NewOtherDialog);
@@ -325,10 +327,24 @@ begin
 end;
 
 procedure TNewOtherDialog.ItemsTreeViewSelectionChanged(Sender: TObject);
+var
+  Node: TTreeNode;
 begin
-  ButtonPanel.OKButton.Enabled := (ItemsTreeView.Selected <> nil) and
-    (TObject(ItemsTreeView.Selected.Data) is TNewIDEItemTemplate);
+  Node := ItemsTreeView.Selected;
+  // For inherited comps OKButton is enabled also later when a ListView item is selected.
+  if Assigned(Node) and (TObject(Node.Data) is TNewItemProjectFile) and
+      (TNewItemProjectFile(Node.Data).Descriptor is TFileDescInheritedComponent)
+  then
+    ButtonPanel.OKButton.Enabled := Assigned(InheritableComponentsListView.Selected)
+  else
+    ButtonPanel.OKButton.Enabled := Assigned(Node) and (TObject(Node.Data) is TNewIDEItemTemplate);
   UpdateDescription;
+end;
+
+procedure TNewOtherDialog.InheritableComponentsListViewSelectItem(
+  Sender: TObject; Item: TListItem; Selected: Boolean);
+begin
+  ButtonPanel.OKButton.Enabled := Assigned((Sender as TListView).Selected);
 end;
 
 procedure TNewOtherDialog.HelpButtonClick(Sender: TObject);
@@ -357,6 +373,7 @@ var
   aNewItemTemplate: TNewIDEItemTemplate;
 begin
   ANode := ItemsTreeView.Selected;
+  CompFilterEdit.Visible := false;
   InheritableComponentsListView.Visible := false;
   if (ANode <> nil) and (ANode.Data <> nil) then
   begin
@@ -370,10 +387,8 @@ begin
       begin
         if TNewItemProjectFile(aNewItemTemplate).Descriptor is TFileDescInheritedComponent
         then begin
+          CompFilterEdit.Visible := true;
           InheritableComponentsListView.Visible := true;
-          //InheritableComponentsListView.Height:=InheritableComponentsListView.Parent.ClientHeight-50;
-          //if InheritableComponentsListView.Items.Count>0 then
-          //  InheritableComponentsListView.Selected := InheritableComponentsListView.Items[0];
         end;
       end;
     end;
@@ -406,7 +421,7 @@ begin
   SetupComponents;
   FillItemsTree(AOnlyModules);
   FillProjectInheritableItemsList;
-  CompFilterEdit.Clear;
+  CompFilterEdit.Visible := false;
   InheritableComponentsListView.Visible := false;
   IDEDialogLayoutList.ApplyLayout(Self, 570, 400);
 

@@ -83,6 +83,7 @@ object NewOtherDialog: TNewOtherDialog
         SortType = stText
         TabOrder = 1
         ViewStyle = vsReport
+        OnSelectItem = InheritableComponentsListViewSelectItem
       end
       object CompFilterEdit: TListViewFilterEdit
         AnchorSideTop.Control = DescriptionLabel
@@ -96,8 +97,8 @@ object NewOtherDialog: TNewOtherDialog
         Anchors = [akTop, akLeft, akRight]
         MaxLength = 0
         TabOrder = 0
-        Text = 'listviewfilteredit1'
         FilteredListview = InheritableComponentsListView
+        ByAllFields = True
       end
     end
     object Splitter1: TSplitter
