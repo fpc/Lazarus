@@ -153,7 +153,7 @@ type
     property OriginX: Double read FOriginX write SetOriginX stored IsOriginXStored;
     property OriginY: Double read FOriginY write SetOriginY stored IsOriginYStored;
     property Pointer;
-    property ShowPoints: Boolean read FShowPoints write SetShowPoints default false;
+    property ShowPoints: Boolean read FShowPoints write SetShowPoints; // default false;
     property Source;
     property OnCustomDrawPointer;
     property OnGetPointerStyle;
@@ -626,6 +626,8 @@ begin
   FLinePen := TPen.Create;
   FLinePen.OnChange := @StyleChanged;
   FPointer := TSeriesPointer.Create(FChart);
+  FShowPoints := true;  // needed for SetShowPoints to execute its code
+  SetShowPoints(false);
 end;
 
 destructor TPolarSeries.Destroy;
