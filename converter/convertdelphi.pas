@@ -1275,7 +1275,7 @@ begin
     end;
   except
     on E: Exception do begin
-      DebugLn('ExtractOptionsFromDOF failed reading "'+CFGFilename+'" '+E.Message);
+      DebugLn('ExtractOptionsFromCFG failed reading "'+CFGFilename+'" '+E.Message);
     end;
   end;
   Result:=mrOK;
@@ -1312,6 +1312,9 @@ begin
   Options.Libraries:=CleanProjectSearchPath(Options.Libraries);
   Options.ObjectPath:=CleanProjectSearchPath(Options.ObjectPath);
   Options.SrcPath:=CleanProjectSearchPath(Options.SrcPath);
+  if Options.UnitOutputDirectory='' then
+    Options.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
+
   if fSettings.DelphiDefine then begin
     // "Borland" and "Ver150" are defined by Delphi7.
     // "Delphi7" and "Compiler6_Up" are defined by Jedi library based on other settings.
