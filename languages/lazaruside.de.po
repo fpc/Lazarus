@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-01-29 16:50+0100\n"
+"PO-Revision-Date: 2017-03-04 16:45+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1105,7 +1105,7 @@ msgstr "Verschiebbar"
 
 #: lazarusidestrconsts.dlgcosetasdefault
 msgid "Set compiler options as default"
-msgstr " Diese Compilereinst. als Vorgabe"
+msgstr "Diese Compilereinst. als Vorgabe"
 
 #: lazarusidestrconsts.dlgcoshowerr
 msgid "Show errors"
@@ -2098,7 +2098,7 @@ msgstr "Bezeichnerrichtlinie"
 
 #: lazarusidestrconsts.dlgideoptions
 msgid "IDE Options"
-msgstr "IDE Einstellungen"
+msgstr "IDE-Einstellungen"
 
 #: lazarusidestrconsts.dlgifdefblockactive
 msgid "Active $IFDEF code"
@@ -2887,10 +2887,8 @@ msgid "Object Inspector"
 msgstr "Objektinspektor"
 
 #: lazarusidestrconsts.dlgoiitemheight
-#, fuzzy
-#| msgid "Item height"
 msgid "Item height (0 = auto)"
-msgstr "Höhe des Eintrags"
+msgstr "Höhe des Eintrags (0 = automatisch)"
 
 #: lazarusidestrconsts.dlgoimiscellaneous
 msgctxt "lazarusidestrconsts.dlgoimiscellaneous"
@@ -3099,7 +3097,7 @@ msgstr "Anwendungs-Bundle für Start und Debug verwenden"
 
 #: lazarusidestrconsts.dlgpouselclscaling
 msgid "Use LCL scaling (Hi-DPI)"
-msgstr ""
+msgstr "LCL-Skalierung verwenden (Hi-DPI)"
 
 #: lazarusidestrconsts.dlgpousemanifest
 msgid "Use manifest resource (and enable themes)"
@@ -5252,7 +5250,7 @@ msgstr "Zählung der geschachtelten Prozeduren als »viele« behandeln"
 
 #: lazarusidestrconsts.liscenteralostwindow
 msgid "Center a lost window"
-msgstr "Fenster zentrieren"
+msgstr "Verschwundenes Fenster zentrieren"
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
 msgid "Center control horizontally relative to the given sibling. BorderSpacing is ignored."
@@ -8769,7 +8767,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liserrorinthesearchpathforincludefiles
 msgid "Error in the search path for \"Include files\":"
-msgstr "Fehler im Suchpfad für \"Include files\":"
+msgstr "Fehler im Suchpfad für \"Include-Dateien\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforlibraries
 msgid "Error in the search path for \"Libraries\":"
@@ -8789,7 +8787,7 @@ msgstr "Fehler im Suchpfad für \"Other unit files\":"
 
 #: lazarusidestrconsts.liserrorintheunitoutputdirectory
 msgid "Error in the \"unit output directory\":"
-msgstr "Fehler im \"unit output directory\":"
+msgstr "Fehler im \"Unit-Ausgabeverzeichnis\":"
 
 #: lazarusidestrconsts.liserrorinvalidbuildmode
 msgid "Error: (lazarus) invalid build mode \"%s\""
@@ -10169,7 +10167,7 @@ msgstr "Datum einfügen. Optional: Formatstring"
 
 #: lazarusidestrconsts.lisinsertendifneeded
 msgid "insert end if needed"
-msgstr "End bei Bedarf einfügen"
+msgstr "end bei Bedarf einfügen"
 
 #: lazarusidestrconsts.lisinsertheaderofcurrentprocedure
 msgid ""
@@ -10409,7 +10407,7 @@ msgstr "Ungültiger Pascal-Bezeichner"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid Pascal identifier."
-msgstr "Der Name »%s« ist kein gültiger Pascal-Bezeichner."
+msgstr "Der Name \"%s\" ist kein gültiger Pascal-Bezeichner."
 
 #: lazarusidestrconsts.lisinvalidprocname
 msgid "Invalid proc name"
@@ -10768,11 +10766,11 @@ msgstr "Lazarus (Voreinstellung)"
 
 #: lazarusidestrconsts.liskmmacosxapple
 msgid "Mac OS X (Apple style)"
-msgstr "OS X (Apple-Stil)"
+msgstr "Mac OS X (Apple-Stil)"
 
 #: lazarusidestrconsts.liskmmacosxlaz
 msgid "Mac OS X (Lazarus style)"
-msgstr "OS X (Lazarus-Stil)"
+msgstr "Mac OS X (Lazarus-Stil)"
 
 #: lazarusidestrconsts.liskmnewpackage
 msgid "New package"
@@ -17189,7 +17187,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listaborderrecursively
 msgid "recursively"
-msgstr ""
+msgstr "rekursiv"
 
 #: lazarusidestrconsts.listabordersorthint
 msgid "Calculate tab order for controls by their X- and Y- positions"
@@ -21083,4 +21081,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
