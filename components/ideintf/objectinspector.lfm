@@ -70,7 +70,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
     end
   end
   object MainPopupMenu: TPopupMenu
-    OnPopup = OnMainPopupMenuPopup
+    OnPopup = MainPopupMenuPopup
     OnClose = MainPopupMenuClose
     left = 32
     top = 64

@@ -400,102 +400,99 @@ type
     procedure UpdateProjectCommands(Sender: TObject);
     procedure UpdatePackageCommands(Sender: TObject);
     // see pkgmanager.pas
-
-    procedure ToolBarOptionsClick(Sender: TObject);
   private
     fBuilder: TLazarusBuilder;
     fOIActivateLastRow: Boolean;
     function DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
     procedure ProjectOptionsHelper(AFilter: array of TAbstractIDEOptionsClass);
-    // Global IDE events
-    procedure HandleProcessIDECommand(Sender: TObject; Command: word;
-                                  var Handled: boolean);
-    procedure HandleExecuteIDEShortCut(Sender: TObject;
-                       var Key: word; Shift: TShiftState;
-                       IDEWindowClass: TCustomFormClass);
-    function HandleExecuteIDECommand(Sender: TObject; Command: word): boolean;
-    function HandleSelectDirectory(const Title, InitialDir: string): string;
-    procedure HandleInitIDEFileDialog(AFileDialog: TFileDialog);
-    procedure HandleStoreIDEFileDialog(AFileDialog: TFileDialog);
-    function HandleIDEMessageDialog(const aCaption, aMsg: string;
+    // Global IDE event handlers
+    procedure ProcessIDECommand(Sender: TObject; Command: word; var Handled: boolean);
+    procedure ExecuteIDEShortCutHandler(Sender: TObject; var Key: word;
+                           Shift: TShiftState; IDEWindowClass: TCustomFormClass);
+    function ExecuteIDECommandHandler(Sender: TObject; Command: word): boolean;
+    function SelectDirectoryHandler(const Title, InitialDir: string): string;
+    procedure InitIDEFileDialogHandler(AFileDialog: TFileDialog);
+    procedure StoreIDEFileDialogHandler(AFileDialog: TFileDialog);
+    function IDEMessageDialogHandler(const aCaption, aMsg: string;
                                 DlgType: TMsgDlgType; Buttons: TMsgDlgButtons;
                                 const HelpKeyword: string): Integer;
-    function HandleIDEQuestionDialog(const aCaption, aMsg: string;
+    function IDEQuestionDialogHandler(const aCaption, aMsg: string;
                                  DlgType: TMsgDlgType; Buttons: array of const;
                                  const HelpKeyword: string): Integer;
-    procedure HandleLayoutChanged(Sender: TObject);
+    procedure LayoutChangeHandler(Sender: TObject);
+    procedure ToolBarOptionsClick(Sender: TObject);
   public
-    // Environment options dialog events
-    procedure DoLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
-    procedure DoSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
+    // Environment options dialog event handlers
     function DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
       ACaption: String; AOptionsFilter: array of TAbstractIDEOptionsClass;
       ASettings: TIDEOptionsEditorSettings): Boolean; override;
-
-    procedure DoEnvironmentOptionsBeforeRead(Sender: TObject);
-    procedure DoEnvironmentOptionsBeforeWrite(Sender: TObject; Restore: boolean);
-    procedure DoEnvironmentOptionsAfterWrite(Sender: TObject; Restore: boolean);
-    procedure DoEditorOptionsBeforeRead(Sender: TObject);
-    procedure DoEditorOptionsAfterWrite(Sender: TObject; Restore: boolean);
-    procedure DoCodetoolsOptionsAfterWrite(Sender: TObject; Restore: boolean);
-    procedure DoCodeExplorerOptionsAfterWrite(Sender: TObject; Restore: boolean);
-    procedure DoProjectOptionsBeforeRead(Sender: TObject);
-    procedure DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
-    procedure OnCompilerOptionsDialogTest(Sender: TObject);
+  private
+    procedure IDEOptionsLoader(Sender: TObject; AOptions: TAbstractIDEOptions);
+    procedure IDEOptionsSaver(Sender: TObject; AOptions: TAbstractIDEOptions);
+    procedure EnvironmentOptionsBeforeRead(Sender: TObject);
+    procedure EnvironmentOptionsBeforeWrite(Sender: TObject; Restore: boolean);
+    procedure EnvironmentOptionsAfterWrite(Sender: TObject; Restore: boolean);
+    procedure EditorOptionsBeforeRead(Sender: TObject);
+    procedure EditorOptionsAfterWrite(Sender: TObject; Restore: boolean);
+    procedure CodetoolsOptionsAfterWrite(Sender: TObject; Restore: boolean);
+    procedure CodeExplorerOptionsAfterWrite(Sender: TObject; Restore: boolean);
+    procedure ProjectOptionsBeforeRead(Sender: TObject);
+    procedure ProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
+    procedure CompilerOptionsDialogTest(Sender: TObject);
     function DoTestCompilerSettings(TheCompilerOptions: TCompilerOptions): TModalResult;
-    function OnCheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions): TModalResult;
+    function CheckForNewUnit(CompOpts: TLazCompilerOptions): TModalResult;
 
-    // ComponentPalette events
+    // ComponentPalette event handlers
     procedure ComponentPaletteClassSelected(Sender: TObject);
-    // Copied from CodeTyphon
+  public
+    // This is copied from CodeTyphon
     procedure SelComponentPageButtonMouseDown(Sender: TObject;
       {%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer); override;
     procedure SelComponentPageButtonClick(Sender: TObject); override;
 
-    // SourceNotebook events
-    procedure OnSrcNoteBookActivated(Sender: TObject);
-    procedure OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint; ATopLine: integer;
+  private
+    // SourceNotebook event handlers
+    procedure SrcNoteBookActivated(Sender: TObject);
+    procedure SrcNoteBookAddJumpPoint(ACaretXY: TPoint; ATopLine: integer;
       AEditor: TSourceEditor; DeleteForwardHistory: boolean);
-    procedure OnSrcNoteBookClickLink(Sender: TObject;
+    procedure SrcNoteBookClickLink(Sender: TObject;
       {%H-}Button: TMouseButton; {%H-}Shift: TShiftstate; X, Y: Integer);
-    procedure OnSrcNoteBookMouseLink(
-      Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
-    procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
-    procedure OnSrcNotebookEditorActived(Sender: TObject);
-    procedure OnSrcNotebookEditorPlaceBookmark(Sender: TObject; var Mark: TSynEditMark);
-    procedure OnSrcNotebookEditorClearBookmark(Sender: TObject; var Mark: TSynEditMark);
-    procedure OnSrcNotebookEditorClearBookmarkId(Sender: TObject; ID: Integer);
-    procedure OnSrcNotebookEditorDoSetBookmark(Sender: TObject; ID: Integer; Toggle: Boolean);
-    procedure OnSrcNotebookEditorDoGotoBookmark(Sender: TObject; ID: Integer; Backward: Boolean);
-    procedure OnSrcNotebookEditorChanged(Sender: TObject);
-    procedure OnSrcNotebookEditorMoved(Sender: TObject);
-    procedure OnSrcNotebookEditorClosed(Sender: TObject);
-    procedure OnSrcNotebookCurCodeBufferChanged(Sender: TObject);
-    procedure OnSrcNotebookFileNew(Sender: TObject);
-    procedure OnSrcNotebookFileOpen(Sender: TObject);
-    procedure OnSrcNotebookFileOpenAtCursor(Sender: TObject);
-    procedure OnSrcNotebookFileSave(Sender: TObject);
-    procedure OnSrcNotebookFileSaveAs(Sender: TObject);
-    procedure OnSrcNotebookFileClose(Sender: TObject; InvertedClose: boolean);
-    procedure OnSrcNotebookFindDeclaration(Sender: TObject);
-    procedure OnSrcNotebookInitIdentCompletion(Sender: TObject;
+    procedure SrcNoteBookMouseLink(Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
+    procedure SrcNotebookDeleteLastJumPoint(Sender: TObject);
+    procedure SrcNotebookEditorActived(Sender: TObject);
+    procedure SrcNotebookEditorPlaceBookmark(Sender: TObject; var Mark: TSynEditMark);
+    procedure SrcNotebookEditorClearBookmark(Sender: TObject; var Mark: TSynEditMark);
+    procedure SrcNotebookEditorClearBookmarkId(Sender: TObject; ID: Integer);
+    procedure SrcNotebookEditorDoSetBookmark(Sender: TObject; ID: Integer; Toggle: Boolean);
+    procedure SrcNotebookEditorDoGotoBookmark(Sender: TObject; ID: Integer; Backward: Boolean);
+    procedure SrcNotebookEditorChanged(Sender: TObject);
+    procedure SrcNotebookEditorMoved(Sender: TObject);
+    procedure SrcNotebookEditorClosed(Sender: TObject);
+    procedure SrcNotebookCurCodeBufferChanged(Sender: TObject);
+    procedure SrcNotebookFileNew(Sender: TObject);
+    procedure SrcNotebookFileOpen(Sender: TObject);
+    procedure SrcNotebookFileOpenAtCursor(Sender: TObject);
+    procedure SrcNotebookFileSave(Sender: TObject);
+    procedure SrcNotebookFileSaveAs(Sender: TObject);
+    procedure SrcNotebookFileClose(Sender: TObject; InvertedClose: boolean);
+    procedure SrcNotebookFindDeclaration(Sender: TObject);
+    procedure SrcNotebookInitIdentCompletion(Sender: TObject;
       JumpToError: boolean; out Handled, Abort: boolean);
-    procedure OnSrcNotebookShowCodeContext(JumpToError: boolean;
-                                           out Abort: boolean);
-    procedure OnSrcNotebookJumpToHistoryPoint(out NewCaretXY: TPoint;
+    procedure SrcNotebookShowCodeContext(JumpToError: boolean; out Abort: boolean);
+    procedure SrcNotebookJumpToHistoryPoint(out NewCaretXY: TPoint;
       out NewTopLine: integer; out DestEditor: TSourceEditor; JumpAction: TJumpHistoryAction);
-    procedure OnSrcNotebookReadOnlyChanged(Sender: TObject);
-    procedure OnSrcNotebookSaveAll(Sender: TObject);
-    procedure OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
+    procedure SrcNotebookReadOnlyChanged(Sender: TObject);
+    procedure SrcNotebookSaveAll(Sender: TObject);
+    procedure SrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
                                            CaretPos: TPoint; AutoShown: Boolean);
-    procedure OnSrcNoteBookShowUnitInfo(Sender: TObject);
-    procedure OnSrcNotebookToggleFormUnit(Sender: TObject);
-    procedure OnSrcNotebookToggleObjectInsp(Sender: TObject);
-    procedure OnSrcNotebookViewJumpHistory(Sender: TObject);
-    procedure OnSrcNoteBookPopupMenu(const AddMenuItemProc: TAddMenuItemProc);
-    procedure OnSrcNoteBookCloseQuery(Sender: TObject; var CloseAction: TCloseAction);
+    procedure SrcNoteBookShowUnitInfo(Sender: TObject);
+    procedure SrcNotebookToggleFormUnit(Sender: TObject);
+    procedure SrcNotebookToggleObjectInsp(Sender: TObject);
+    procedure SrcNotebookViewJumpHistory(Sender: TObject);
+    procedure SrcNoteBookPopupMenu(const AddMenuItemProc: TAddMenuItemProc);
+    procedure SrcNoteBookCloseQuery(Sender: TObject; var CloseAction: TCloseAction);
 
-    // ObjectInspector + PropertyEditorHook events
+    // ObjectInspector + PropertyEditorHook event handlers
     procedure CreateObjectInspector(aDisableAutoSize: boolean);
     procedure OIOnSelectPersistents(Sender: TObject);
     procedure OIOnShowOptions(Sender: TObject);
@@ -510,111 +507,109 @@ type
     function OIOnPropertyHint(Sender: TObject; PointedRow: TOIPropertyGridRow;
        out AHint: string): boolean;
     procedure OIOnUpdateRestricted(Sender: TObject);
-    function OnPropHookGetMethodName(const Method: TMethod; PropOwner: TObject;
+    function PropHookGetMethodName(const Method: TMethod; PropOwner: TObject;
       OrigLookupRoot: TPersistent): String;
-    procedure OnPropHookGetMethods(TypeData: PTypeData; Proc:TGetStrProc);
-    procedure OnPropHookGetCompatibleMethods(InstProp: PInstProp;
-                                             const Proc:TGetStrProc);
-    function OnPropHookCompatibleMethodExists(const AMethodName: String;
+    procedure PropHookGetMethods(TypeData: PTypeData; Proc:TGetStrProc);
+    procedure PropHookGetCompatibleMethods(InstProp: PInstProp;
+                                           const Proc:TGetStrProc);
+    function PropHookCompatibleMethodExists(const AMethodName: String;
                                     InstProp: PInstProp;
                                     var MethodIsCompatible, MethodIsPublished,
                                     IdentIsMethod: boolean): boolean;
-    function OnPropHookMethodExists(const AMethodName: String;
-                                    TypeData: PTypeData;
-                                    var MethodIsCompatible, MethodIsPublished,
-                                    IdentIsMethod: boolean): boolean;
-    function OnPropHookCreateMethod(const AMethodName:ShortString;
-                                    ATypeInfo:PTypeInfo;
-                                    APersistent: TPersistent;
-                                    const APropertyPath: string): TMethod;
-    procedure OnPropHookShowMethod(const AMethodName: String);
-    procedure OnPropHookRenameMethod(const CurName, NewName: String);
-    function OnPropHookBeforeAddPersistent(Sender: TObject;
-                                           APersistentClass: TPersistentClass;
-                                           AParent: TPersistent): boolean;
-    procedure OnPropHookComponentRenamed(AComponent: TComponent);
-    procedure OnPropHookModified(Sender: TObject; PropName: ShortString);
-    procedure OnPropHookPersistentAdded(APersistent: TPersistent;
-                                        Select: boolean);
-    procedure OnPropHookPersistentDeleting(APersistent: TPersistent);
-    procedure OnPropHookDeletePersistent(var APersistent: TPersistent);
-    procedure OnPropHookObjectPropertyChanged(Sender: TObject;
-                                              NewObject: TPersistent);
-    procedure OnPropHookAddDependency(const AClass: TClass;
-                                      const AnUnitName: shortstring);
-    procedure OnPropHookGetComponentNames(TypeData: PTypeData;
-                                          Proc: TGetStrProc);
-    function OnPropHookGetComponent(const ComponentPath: String): TComponent;
+    function PropHookMethodExists(const AMethodName: String;
+                                  TypeData: PTypeData;
+                                  var MethodIsCompatible, MethodIsPublished,
+                                  IdentIsMethod: boolean): boolean;
+    function PropHookCreateMethod(const AMethodName:ShortString;
+                                  ATypeInfo:PTypeInfo;
+                                  APersistent: TPersistent;
+                                  const APropertyPath: string): TMethod;
+    procedure PropHookShowMethod(const AMethodName: String);
+    procedure PropHookRenameMethod(const CurName, NewName: String);
+    function PropHookBeforeAddPersistent(Sender: TObject;
+                                         APersistentClass: TPersistentClass;
+                                         AParent: TPersistent): boolean;
+    procedure PropHookComponentRenamed(AComponent: TComponent);
+    procedure PropHookModified(Sender: TObject; PropName: ShortString);
+    procedure PropHookPersistentAdded(APersistent: TPersistent;
+                                      Select: boolean);
+    procedure PropHookPersistentDeleting(APersistent: TPersistent);
+    procedure PropHookDeletePersistent(var APersistent: TPersistent);
+    procedure PropHookObjectPropertyChanged(Sender: TObject;
+                                            NewObject: TPersistent);
+    procedure PropHookAddDependency(const AClass: TClass;
+                                    const AnUnitName: shortstring);
+    procedure PropHookGetComponentNames(TypeData: PTypeData;
+                                        Proc: TGetStrProc);
+    function PropHookGetComponent(const ComponentPath: String): TComponent;
 
-    // designer events
-    procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
+    // designer event handlers
+    procedure DesignerGetSelectedComponentClass(Sender: TObject;
                                  var RegisteredComponent: TRegisteredComponent);
-    procedure OnDesignerComponentAdded(Sender: TObject; AComponent: TComponent;
+    procedure DesignerComponentAdded(Sender: TObject; AComponent: TComponent;
                                      ARegisteredComponent: TRegisteredComponent);
-    procedure OnDesignerSetDesigning(Sender: TObject; Component: TComponent;
-                                     Value: boolean);
-    procedure OnDesignerShowOptions(Sender: TObject);
-    procedure OnDesignerPasteComponents(Sender: TObject; LookupRoot: TComponent;
+    procedure DesignerSetDesigning(Sender: TObject; Component: TComponent; Value: boolean);
+    procedure DesignerShowOptions(Sender: TObject);
+    procedure DesignerPasteComponents(Sender: TObject; LookupRoot: TComponent;
                             TxtCompStream: TStream; ParentControl: TWinControl;
                             var NewComponents: TFPList);
-    procedure OnDesignerPastedComponents(Sender: TObject; LookupRoot: TComponent);
-    procedure OnDesignerPropertiesChanged(Sender: TObject);
-    procedure OnDesignerPersistentDeleted(Sender: TObject; APersistent: TPersistent);
-    procedure OnDesignerModified(Sender: TObject);
-    procedure OnDesignerActivated(Sender: TObject);
-    procedure OnDesignerCloseQuery(Sender: TObject);
-    procedure OnDesignerRenameComponent(ADesigner: TDesigner;
+    procedure DesignerPastedComponents(Sender: TObject; LookupRoot: TComponent);
+    procedure DesignerPropertiesChanged(Sender: TObject);
+    procedure DesignerPersistentDeleted(Sender: TObject; APersistent: TPersistent);
+    procedure DesignerModified(Sender: TObject);
+    procedure DesignerActivated(Sender: TObject);
+    procedure DesignerCloseQuery(Sender: TObject);
+    procedure DesignerRenameComponent(ADesigner: TDesigner;
                                  AComponent: TComponent; const NewName: string);
-    procedure OnDesignerViewLFM(Sender: TObject);
-    procedure OnDesignerSaveAsXML(Sender: TObject);
-    procedure OnDesignerShowObjectInspector(Sender: TObject);
-    procedure OnDesignerShowAnchorEditor(Sender: TObject);
-    procedure OnDesignerShowTabOrderEditor(Sender: TObject);
-    procedure OnDesignerChangeParent(Sender: TObject);
+    procedure DesignerViewLFM(Sender: TObject);
+    procedure DesignerSaveAsXML(Sender: TObject);
+    procedure DesignerShowObjectInspector(Sender: TObject);
+    procedure DesignerShowAnchorEditor(Sender: TObject);
+    procedure DesignerShowTabOrderEditor(Sender: TObject);
+    procedure DesignerChangeParent(Sender: TObject);
 
-    // control selection
-    procedure OnControlSelectionChanged(Sender: TObject; ForceUpdate: Boolean);
-    procedure OnControlSelectionPropsChanged(Sender: TObject);
-    procedure OnControlSelectionFormChanged(Sender: TObject; OldForm,
-                                            NewForm: TCustomForm);
-    procedure OnGetDesignerSelection(const ASelection: TPersistentSelectionList);
+    // control selection event handlers
+    procedure ControlSelectionChanged(Sender: TObject; ForceUpdate: Boolean);
+    procedure ControlSelectionPropsChanged(Sender: TObject);
+    procedure ControlSelectionFormChanged(Sender: TObject; OldForm, NewForm: TCustomForm);
+    procedure GetDesignerSelection(const ASelection: TPersistentSelectionList);
 
-    // project inspector
+    // project inspector event handlers
     function ProjInspectorAddUnitToProject(Sender: TObject;
                                            AnUnitInfo: TUnitInfo): TModalresult;
     function ProjInspectorRemoveFile(Sender: TObject;
                                      AnUnitInfo: TUnitInfo): TModalresult;
 
-    // code explorer events
-    procedure OnCodeExplorerGetDirectivesTree(Sender: TObject;
-                                          var ADirectivesTool: TDirectivesTool);
-    procedure OnCodeExplorerJumpToCode(Sender: TObject; const Filename: string;
-                                       const Caret: TPoint; TopLine: integer);
-    procedure OnCodeExplorerShowOptions(Sender: TObject);
+    // code explorer event handlers
+    procedure CodeExplorerGetDirectivesTree(Sender: TObject;
+                                            var ADirectivesTool: TDirectivesTool);
+    procedure CodeExplorerJumpToCode(Sender: TObject; const Filename: string;
+                                     const Caret: TPoint; TopLine: integer);
+    procedure CodeExplorerShowOptions(Sender: TObject);
 
-    // CodeToolBoss events
-    procedure OnCodeToolNeedsExternalChanges(Manager: TCodeToolManager;
+    // CodeToolBoss event handlers
+    procedure CodeToolNeedsExternalChanges(Manager: TCodeToolManager;
+                                           var Abort: boolean);
+    procedure BeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
                                              var Abort: boolean);
-    procedure OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
-                                    var Abort: boolean);
-    procedure OnAfterCodeToolBossApplyChanges(Manager: TCodeToolManager);
-    function OnCodeToolBossSearchUsedUnit(const SrcFilename: string;
+    procedure AfterCodeToolBossApplyChanges(Manager: TCodeToolManager);
+    function CodeToolBossSearchUsedUnit(const SrcFilename: string;
                      const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
     procedure CodeToolBossGetVirtualDirectoryAlias(Sender: TObject;
                                                    var RealDir: string);
     procedure CodeToolBossGetVirtualDirectoryDefines(DefTree: TDefineTree;
                                                      DirDef: TDirectoryDefines);
-    procedure OnCodeToolBossFindDefineProperty(Sender: TObject;
+    procedure CodeToolBossFindDefineProperty(Sender: TObject;
                const PersistentClassName, AncestorClassName, Identifier: string;
                var IsDefined: boolean);
-    procedure OnCodeBufferDecodeLoaded({%H-}Code: TCodeBuffer;
+    procedure CodeBufferDecodeLoaded({%H-}Code: TCodeBuffer;
          const Filename: string; var Source, DiskEncoding, MemEncoding: string);
-    procedure OnCodeBufferEncodeSaving(Code: TCodeBuffer;
-                                    const Filename: string; var Source: string);
-    function OnCodeToolBossGetMethodName(const Method: TMethod;
-                                         PropOwner: TObject): String;
+    procedure CodeBufferEncodeSaving(Code: TCodeBuffer;
+                                     const Filename: string; var Source: string);
+    function CodeToolBossGetMethodName(const Method: TMethod;
+                                       PropOwner: TObject): String;
     procedure CodeToolBossPrepareTree(Sender: TObject);
-    procedure OnCodeToolBossGetIndenterExamples(Sender: TObject;
+    procedure CodeToolBossGetIndenterExamples(Sender: TObject;
                 Code: TCodeBuffer; Step: integer; // starting at 0
                 var CodeBuffers: TFPList; // stopping when CodeBuffers=nil
                 var ExpandedFilenames: TStrings
@@ -623,24 +618,24 @@ type
       SrcType: TCodeTreeNodeDesc; const SrcName: string; out SrcFilename: string);
 
     function CTMacroFunctionProject(Data: Pointer): boolean;
-    procedure OnCompilerParseStampIncreased;
+    procedure CompilerParseStampIncHandler;
     procedure CodeToolBossScannerInit({%H-}Self: TCodeToolManager;
       Scanner: TLinkScanner);
 
-    // SearchResultsView events
+    // SearchResultsView event handlers
     procedure SearchResultsViewSelectionChanged({%H-}sender: TObject);
 
-    // JumpHistoryView events
+    // JumpHistoryView event handlers
     procedure JumpHistoryViewSelectionChanged({%H-}sender: TObject);
 
-    // External Tools events
+    // External Tools event handlers
     procedure FPCMsgFilePoolLoadFile(aFilename: string; out s: string);
 
-    procedure OnGetLayout(Sender: TObject; aFormName: string;
+    procedure GetLayoutHandler(Sender: TObject; aFormName: string;
             out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
   private
     FUserInputSinceLastIdle: boolean;
-    FDesignerToBeFreed: TFilenameToStringTree; // form file names to be freed OnIdle.
+    FDesignerToBeFreed: TFilenameToStringTree; // form file names to be freed on idle.
     fNeedSaveEnvironment: boolean;
     FRemoteControlTimer: TTimer;
     FRemoteControlFileAge: integer;
@@ -1206,9 +1201,9 @@ begin
   with EnvironmentOptions do
   begin
     EnvOptsCfgExisted := FileExistsCached(GetDefaultConfigFilename);
-    OnBeforeRead := @DoEnvironmentOptionsBeforeRead;
-    OnBeforeWrite := @DoEnvironmentOptionsBeforeWrite;
-    OnAfterWrite := @DoEnvironmentOptionsAfterWrite;
+    OnBeforeRead := @EnvironmentOptionsBeforeRead;
+    OnBeforeWrite := @EnvironmentOptionsBeforeWrite;
+    OnAfterWrite := @EnvironmentOptionsAfterWrite;
     CreateConfig;
     Load(false);
   end;
@@ -1323,8 +1318,8 @@ begin
 
   EditorOpts := TEditorOptions.Create;
   IDEEditorOptions := EditorOpts;
-  EditorOpts.OnBeforeRead := @DoEditorOptionsBeforeRead;
-  EditorOpts.OnAfterWrite := @DoEditorOptionsAfterWrite;
+  EditorOpts.OnBeforeRead := @EditorOptionsBeforeRead;
+  EditorOpts.OnAfterWrite := @EditorOptionsAfterWrite;
   SetupIDECommands;
   // Only after EditorOpts.KeyMap.DefineCommandCategories; in SetupIDECommands
   IDECommandList.CreateCategory(nil, EditorUserDefinedWordsKeyCatName,
@@ -1343,13 +1338,13 @@ begin
   CodeToolsOpts := TCodeToolsOptions.Create;
   with CodeToolsOpts do
   begin
-    OnAfterWrite := @DoCodetoolsOptionsAfterWrite;
+    OnAfterWrite := @CodetoolsOptionsAfterWrite;
     SetLazarusDefaultFilename;
     Load;
   end;
 
   CodeExplorerOptions := TCodeExplorerOptions.Create;
-  CodeExplorerOptions.OnAfterWrite := @DoCodeExplorerOptionsAfterWrite;
+  CodeExplorerOptions.OnAfterWrite := @CodeExplorerOptionsAfterWrite;
   CodeExplorerOptions.Load;
 
   DebuggerOptions := TDebuggerOptions.Create;
@@ -1537,7 +1532,7 @@ begin
   DebugBoss:=TDebugManager.Create(nil);
   DebugBossManager:=DebugBoss;
   DebugBoss.ConnectMainBarEvents;
-  DebuggerDlg.OnProcessCommand := @HandleProcessIDECommand;
+  DebuggerDlg.OnProcessCommand := @ProcessIDECommand;
 
   PkgMngr:=TPkgManager.Create(nil);
   PkgBoss:=PkgMngr;
@@ -1591,7 +1586,7 @@ begin
   Screen.AddHandlerActiveFormChanged(@HandleScreenChangedForm);
   Screen.AddHandlerActiveControlChanged(@HandleScreenChangedControl);
   IDEComponentPalette.OnClassSelected := @ComponentPaletteClassSelected;
-  IDEWindowCreators.AddLayoutChangedHandler(@HandleLayoutChanged);
+  IDEWindowCreators.AddLayoutChangedHandler(@LayoutChangeHandler);
   SetupIDEWindowsLayout;
   RestoreIDEWindows;
   MainIDEBar.SetupHints;
@@ -1781,7 +1776,7 @@ end;
 
 procedure TMainIDE.OIRemainingKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  HandleExecuteIDEShortCut(Sender,Key,Shift,nil);
+  ExecuteIDEShortCutHandler(Sender,Key,Shift,nil);
 end;
 
 procedure TMainIDE.OIOnAddToFavorites(Sender: TObject);
@@ -1842,7 +1837,7 @@ begin
     (Sender as TObjectInspectorDlg).RestrictedProps := GetRestrictedProperties;
 end;
 
-function TMainIDE.OnPropHookGetMethodName(const Method: TMethod; PropOwner: TObject;
+function TMainIDE.PropHookGetMethodName(const Method: TMethod; PropOwner: TObject;
   OrigLookupRoot: TPersistent): String;
 // OrigLookupRoot can be different from the PropOwner's LookupRoot when we refer
 //  to an object (eg. TAction) in another form / unit.
@@ -1878,7 +1873,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TMainIDE.OnPropHookGetMethods(TypeData: PTypeData; Proc: TGetStrProc);
+procedure TMainIDE.PropHookGetMethods(TypeData: PTypeData; Proc: TGetStrProc);
 var 
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -1897,7 +1892,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnPropHookGetCompatibleMethods(InstProp: PInstProp;
+procedure TMainIDE.PropHookGetCompatibleMethods(InstProp: PInstProp;
   const Proc: TGetStrProc);
 var
   ActiveSrcEdit: TSourceEditor;
@@ -1924,7 +1919,7 @@ begin
     DoJumpToCodeToolBossError;
 end;
 
-function TMainIDE.OnPropHookCompatibleMethodExists(const AMethodName: String;
+function TMainIDE.PropHookCompatibleMethodExists(const AMethodName: String;
   InstProp: PInstProp; var MethodIsCompatible, MethodIsPublished,
   IdentIsMethod: boolean): boolean;
 var
@@ -2061,13 +2056,13 @@ end;
 {------------------------------------------------------------------------------}
 procedure TMainIDE.SetupDialogs;
 begin
-  LazIDESelectDirectory:=@HandleSelectDirectory;
-  InitIDEFileDialog:=@HandleInitIDEFileDialog;
-  StoreIDEFileDialog:=@HandleStoreIDEFileDialog;
-  IDEMessageDialog:=@HandleIDEMessageDialog;
-  IDEQuestionDialog:=@HandleIDEQuestionDialog;
-  TestCompilerOptions:=@OnCompilerOptionsDialogTest;
-  CheckCompOptsAndMainSrcForNewUnitEvent:=@OnCheckCompOptsAndMainSrcForNewUnit;
+  LazIDESelectDirectory:=@SelectDirectoryHandler;
+  InitIDEFileDialog:=@InitIDEFileDialogHandler;
+  StoreIDEFileDialog:=@StoreIDEFileDialogHandler;
+  IDEMessageDialog:=@IDEMessageDialogHandler;
+  IDEQuestionDialog:=@IDEQuestionDialogHandler;
+  TestCompilerOptions:=@CompilerOptionsDialogTest;
+  CheckCompOptsAndMainSrcForNewUnitEvent:=@CheckForNewUnit;
 end;
 
 procedure TMainIDE.SetupObjectInspector;
@@ -2075,7 +2070,7 @@ begin
   IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspectorDlg);
 
   IDEWindowCreators.Add(DefaultObjectInspectorName,nil,@CreateIDEWindow,
-   '0','120','+230','-120','',alNone,false,@OnGetLayout);
+   '0','120','+230','-120','',alNone,false,@GetLayoutHandler);
 
   ShowAnchorDesigner:=@mnuViewAnchorEditorClicked;
   ShowTabOrderEditor:=@mnuViewTabOrderClicked;
@@ -2085,23 +2080,23 @@ procedure TMainIDE.SetupFormEditor;
 begin
   GlobalDesignHook:=TPropertyEditorHook.Create(nil);
   GlobalDesignHook.GetPrivateDirectory:=AppendPathDelim(GetPrimaryConfigPath);
-  GlobalDesignHook.AddHandlerGetMethodName(@OnPropHookGetMethodName);
-  GlobalDesignHook.AddHandlerGetCompatibleMethods(@OnPropHookGetCompatibleMethods);
-  GlobalDesignHook.AddHandlerGetMethods(@OnPropHookGetMethods);
-  GlobalDesignHook.AddHandlerCompatibleMethodExists(@OnPropHookCompatibleMethodExists);
-  GlobalDesignHook.AddHandlerMethodExists(@OnPropHookMethodExists);
-  GlobalDesignHook.AddHandlerCreateMethod(@OnPropHookCreateMethod);
-  GlobalDesignHook.AddHandlerShowMethod(@OnPropHookShowMethod);
-  GlobalDesignHook.AddHandlerRenameMethod(@OnPropHookRenameMethod);
-  GlobalDesignHook.AddHandlerBeforeAddPersistent(@OnPropHookBeforeAddPersistent);
-  GlobalDesignHook.AddHandlerComponentRenamed(@OnPropHookComponentRenamed);
-  GlobalDesignHook.AddHandlerModified(@OnPropHookModified);
-  GlobalDesignHook.AddHandlerPersistentAdded(@OnPropHookPersistentAdded);
-  GlobalDesignHook.AddHandlerPersistentDeleting(@OnPropHookPersistentDeleting);
-  GlobalDesignHook.AddHandlerDeletePersistent(@OnPropHookDeletePersistent);
-  GlobalDesignHook.AddHandlerObjectPropertyChanged(@OnPropHookObjectPropertyChanged);
-  GlobalDesignHook.AddHandlerGetComponentNames(@OnPropHookGetComponentNames);
-  GlobalDesignHook.AddHandlerGetComponent(@OnPropHookGetComponent);
+  GlobalDesignHook.AddHandlerGetMethodName(@PropHookGetMethodName);
+  GlobalDesignHook.AddHandlerGetCompatibleMethods(@PropHookGetCompatibleMethods);
+  GlobalDesignHook.AddHandlerGetMethods(@PropHookGetMethods);
+  GlobalDesignHook.AddHandlerCompatibleMethodExists(@PropHookCompatibleMethodExists);
+  GlobalDesignHook.AddHandlerMethodExists(@PropHookMethodExists);
+  GlobalDesignHook.AddHandlerCreateMethod(@PropHookCreateMethod);
+  GlobalDesignHook.AddHandlerShowMethod(@PropHookShowMethod);
+  GlobalDesignHook.AddHandlerRenameMethod(@PropHookRenameMethod);
+  GlobalDesignHook.AddHandlerBeforeAddPersistent(@PropHookBeforeAddPersistent);
+  GlobalDesignHook.AddHandlerComponentRenamed(@PropHookComponentRenamed);
+  GlobalDesignHook.AddHandlerModified(@PropHookModified);
+  GlobalDesignHook.AddHandlerPersistentAdded(@PropHookPersistentAdded);
+  GlobalDesignHook.AddHandlerPersistentDeleting(@PropHookPersistentDeleting);
+  GlobalDesignHook.AddHandlerDeletePersistent(@PropHookDeletePersistent);
+  GlobalDesignHook.AddHandlerObjectPropertyChanged(@PropHookObjectPropertyChanged);
+  GlobalDesignHook.AddHandlerGetComponentNames(@PropHookGetComponentNames);
+  GlobalDesignHook.AddHandlerGetComponent(@PropHookGetComponent);
 
   CreateFormEditor;
   FormEditor1.Obj_Inspector := ObjectInspector1;
@@ -2111,36 +2106,36 @@ end;
 procedure TMainIDE.SetupSourceNotebook;
 begin
   TSourceEditorManager.Create(OwningComponent);
-  SourceEditorManager.RegisterChangeEvent(semWindowFocused, @OnSrcNoteBookActivated);
-  SourceEditorManager.OnAddJumpPoint := @OnSrcNoteBookAddJumpPoint;
-  SourceEditorManager.OnCloseClicked := @OnSrcNotebookFileClose;
-  SourceEditorManager.OnClickLink := @OnSrcNoteBookClickLink;
-  SourceEditorManager.OnMouseLink := @OnSrcNoteBookMouseLink;
-  SourceEditorManager.OnCurrentCodeBufferChanged:=@OnSrcNotebookCurCodeBufferChanged;
-  SourceEditorManager.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
-  SourceEditorManager.RegisterChangeEvent(semEditorActivate, @OnSrcNotebookEditorActived);
-  SourceEditorManager.RegisterChangeEvent(semEditorStatus, @OnSrcNotebookEditorChanged);
-  SourceEditorManager.OnEditorMoved := @OnSrcNotebookEditorMoved;
-  SourceEditorManager.RegisterChangeEvent(semEditorDestroy, @OnSrcNotebookEditorClosed);
-  SourceEditorManager.OnPlaceBookmark := @OnSrcNotebookEditorPlaceBookmark;
-  SourceEditorManager.OnClearBookmark := @OnSrcNotebookEditorClearBookmark;
-  SourceEditorManager.OnClearBookmarkId := @OnSrcNotebookEditorClearBookmarkId;
-  SourceEditorManager.OnSetBookmark := @OnSrcNotebookEditorDoSetBookmark;
-  SourceEditorManager.OnGotoBookmark := @OnSrcNotebookEditorDoGotoBookmark;
-  SourceEditorManager.OnFindDeclarationClicked := @OnSrcNotebookFindDeclaration;
-  SourceEditorManager.OnInitIdentCompletion :=@OnSrcNotebookInitIdentCompletion;
-  SourceEditorManager.OnShowCodeContext :=@OnSrcNotebookShowCodeContext;
-  SourceEditorManager.OnJumpToHistoryPoint := @OnSrcNotebookJumpToHistoryPoint;
-  SourceEditorManager.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
-  SourceEditorManager.OnProcessUserCommand := @HandleProcessIDECommand;
-  SourceEditorManager.OnReadOnlyChanged := @OnSrcNotebookReadOnlyChanged;
-  SourceEditorManager.OnShowHintForSource := @OnSrcNotebookShowHintForSource;
-  SourceEditorManager.OnShowUnitInfo := @OnSrcNoteBookShowUnitInfo;
-  SourceEditorManager.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
-  SourceEditorManager.OnToggleObjectInspClicked:= @OnSrcNotebookToggleObjectInsp;
-  SourceEditorManager.OnViewJumpHistory := @OnSrcNotebookViewJumpHistory;
-  SourceEditorManager.OnPopupMenu := @OnSrcNoteBookPopupMenu;
-  SourceEditorManager.OnNoteBookCloseQuery := @OnSrcNoteBookCloseQuery;
+  SourceEditorManager.RegisterChangeEvent(semWindowFocused, @SrcNoteBookActivated);
+  SourceEditorManager.OnAddJumpPoint := @SrcNoteBookAddJumpPoint;
+  SourceEditorManager.OnCloseClicked := @SrcNotebookFileClose;
+  SourceEditorManager.OnClickLink := @SrcNoteBookClickLink;
+  SourceEditorManager.OnMouseLink := @SrcNoteBookMouseLink;
+  SourceEditorManager.OnCurrentCodeBufferChanged:=@SrcNotebookCurCodeBufferChanged;
+  SourceEditorManager.OnDeleteLastJumpPoint := @SrcNotebookDeleteLastJumPoint;
+  SourceEditorManager.RegisterChangeEvent(semEditorActivate, @SrcNotebookEditorActived);
+  SourceEditorManager.RegisterChangeEvent(semEditorStatus, @SrcNotebookEditorChanged);
+  SourceEditorManager.OnEditorMoved := @SrcNotebookEditorMoved;
+  SourceEditorManager.RegisterChangeEvent(semEditorDestroy, @SrcNotebookEditorClosed);
+  SourceEditorManager.OnPlaceBookmark := @SrcNotebookEditorPlaceBookmark;
+  SourceEditorManager.OnClearBookmark := @SrcNotebookEditorClearBookmark;
+  SourceEditorManager.OnClearBookmarkId := @SrcNotebookEditorClearBookmarkId;
+  SourceEditorManager.OnSetBookmark := @SrcNotebookEditorDoSetBookmark;
+  SourceEditorManager.OnGotoBookmark := @SrcNotebookEditorDoGotoBookmark;
+  SourceEditorManager.OnFindDeclarationClicked := @SrcNotebookFindDeclaration;
+  SourceEditorManager.OnInitIdentCompletion :=@SrcNotebookInitIdentCompletion;
+  SourceEditorManager.OnShowCodeContext :=@SrcNotebookShowCodeContext;
+  SourceEditorManager.OnJumpToHistoryPoint := @SrcNotebookJumpToHistoryPoint;
+  SourceEditorManager.OnOpenFileAtCursorClicked := @SrcNotebookFileOpenAtCursor;
+  SourceEditorManager.OnProcessUserCommand := @ProcessIDECommand;
+  SourceEditorManager.OnReadOnlyChanged := @SrcNotebookReadOnlyChanged;
+  SourceEditorManager.OnShowHintForSource := @SrcNotebookShowHintForSource;
+  SourceEditorManager.OnShowUnitInfo := @SrcNoteBookShowUnitInfo;
+  SourceEditorManager.OnToggleFormUnitClicked := @SrcNotebookToggleFormUnit;
+  SourceEditorManager.OnToggleObjectInspClicked:= @SrcNotebookToggleObjectInsp;
+  SourceEditorManager.OnViewJumpHistory := @SrcNotebookViewJumpHistory;
+  SourceEditorManager.OnPopupMenu := @SrcNoteBookPopupMenu;
+  SourceEditorManager.OnNoteBookCloseQuery := @SrcNoteBookCloseQuery;
   SourceEditorManager.OnPackageForSourceEditor := @PkgBoss.GetPackageOfSourceEditor;
   DebugBoss.ConnectSourceNotebookEvents;
 
@@ -2183,17 +2178,17 @@ end;
 procedure TMainIDE.SetupControlSelection;
 begin
   TheControlSelection:=TControlSelection.Create;
-  TheControlSelection.OnChange:=@OnControlSelectionChanged;
-  TheControlSelection.OnPropertiesChanged:=@OnControlSelectionPropsChanged;
-  TheControlSelection.OnSelectionFormChanged:=@OnControlSelectionFormChanged;
-  GlobalDesignHook.AddHandlerGetSelection(@OnGetDesignerSelection);
+  TheControlSelection.OnChange:=@ControlSelectionChanged;
+  TheControlSelection.OnPropertiesChanged:=@ControlSelectionPropsChanged;
+  TheControlSelection.OnSelectionFormChanged:=@ControlSelectionFormChanged;
+  GlobalDesignHook.AddHandlerGetSelection(@GetDesignerSelection);
 end;
 
 procedure TMainIDE.SetupIDECommands;
 begin
   IDECommandList:=EditorOpts.KeyMap;
-  IDECommands.OnExecuteIDECommand:=@HandleExecuteIDECommand;
-  IDECommands.OnExecuteIDEShortCut:=@HandleExecuteIDEShortCut;
+  IDECommands.OnExecuteIDECommand:=@ExecuteIDECommandHandler;
+  IDECommands.OnExecuteIDEShortCut:=@ExecuteIDEShortCutHandler;
   CreateStandardIDECommandScopes;
   IDECmdScopeSrcEdit.AddWindowClass(TSourceEditorWindowInterface);
   IDECmdScopeSrcEdit.AddWindowClass(nil);
@@ -2386,7 +2381,7 @@ procedure TMainIDE.SetupIDEWindowsLayout;
 begin
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwMessagesViewName],
     nil,@CreateIDEWindow,'250','75%','+70%','+100',
-    NonModalIDEWindowNames[nmiwSourceNoteBookName],alBottom,false,@OnGetLayout);
+    NonModalIDEWindowNames[nmiwSourceNoteBookName],alBottom,false,@GetLayoutHandler);
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwCodeExplorerName],
     nil,@CreateIDEWindow,'72%','120','+170','-200',
     NonModalIDEWindowNames[nmiwSourceNoteBookName],alRight);
@@ -3044,7 +3039,7 @@ end;
 
 procedure TMainIDE.mnuSetFreeBookmark(Sender: TObject);
 begin
-  OnSrcNotebookEditorDoSetBookmark(SourceEditorManager.SenderToEditor(Sender), -1, False);
+  SrcNotebookEditorDoSetBookmark(SourceEditorManager.SenderToEditor(Sender), -1, False);
 end;
 
 procedure TMainIDE.mnuSaveClicked(Sender: TObject);
@@ -3129,12 +3124,12 @@ begin
   ShowCleanDirectoryDialog(Project1.Directory,GlobalMacroList);
 end;
 
-procedure TMainIDE.OnSrcNotebookFileNew(Sender: TObject);
+procedure TMainIDE.SrcNotebookFileNew(Sender: TObject);
 begin
   mnuNewFormClicked(Sender);
 end;
 
-procedure TMainIDE.OnSrcNotebookFileClose(Sender: TObject; InvertedClose: boolean);
+procedure TMainIDE.SrcNotebookFileClose(Sender: TObject; InvertedClose: boolean);
 var
   PageIndex: LongInt;
   SrcNoteBook: TSourceNotebook;
@@ -3156,60 +3151,59 @@ begin
     mnuCloseClicked(Sender);         // close only the clicked source editor
 end;
 
-procedure TMainIDE.OnSrcNotebookFileOpen(Sender: TObject);
+procedure TMainIDE.SrcNotebookFileOpen(Sender: TObject);
 begin
   mnuOpenClicked(Sender);
 end;
 
-procedure TMainIDE.OnSrcNotebookFileOpenAtCursor(Sender: TObject);
+procedure TMainIDE.SrcNotebookFileOpenAtCursor(Sender: TObject);
 begin
   mnuOpenFileAtCursorClicked(Sender);
 end;
 
-procedure TMainIDE.OnSrcNotebookFileSave(Sender: TObject);
+procedure TMainIDE.SrcNotebookFileSave(Sender: TObject);
 begin
   mnuSaveClicked(Sender);
 end;
 
-procedure TMainIDE.OnSrcNotebookFileSaveAs(Sender: TObject);
+procedure TMainIDE.SrcNotebookFileSaveAs(Sender: TObject);
 begin
   mnuSaveAsClicked(Sender);
 end;
 
-procedure TMainIDE.OnSrcNotebookFindDeclaration(Sender: TObject);
+procedure TMainIDE.SrcNotebookFindDeclaration(Sender: TObject);
 begin
   mnuFindDeclarationClicked(Sender);
 end;
 
-procedure TMainIDE.OnSrcNotebookInitIdentCompletion(Sender: TObject;
+procedure TMainIDE.SrcNotebookInitIdentCompletion(Sender: TObject;
   JumpToError: boolean; out Handled, Abort: boolean);
 begin
   Handled:=true;
   Abort:=not DoInitIdentCompletion(JumpToError);
 end;
 
-procedure TMainIDE.OnSrcNotebookShowCodeContext(
-  JumpToError: boolean; out Abort: boolean);
+procedure TMainIDE.SrcNotebookShowCodeContext(JumpToError: boolean; out Abort: boolean);
 begin
   Abort:=not DoShowCodeContext(JumpToError);
 end;
 
-procedure TMainIDE.OnSrcNotebookSaveAll(Sender: TObject);
+procedure TMainIDE.SrcNotebookSaveAll(Sender: TObject);
 begin
   mnuSaveAllClicked(Sender);
 end;
 
-procedure TMainIDE.OnSrcNotebookToggleFormUnit(Sender: TObject);
+procedure TMainIDE.SrcNotebookToggleFormUnit(Sender: TObject);
 begin
   mnuToggleFormUnitClicked(Sender);
 end;
 
-procedure TMainIDE.OnSrcNotebookToggleObjectInsp(Sender: TObject);
+procedure TMainIDE.SrcNotebookToggleObjectInsp(Sender: TObject);
 begin
   mnuViewInspectorClicked(Sender);
 end;
 
-procedure TMainIDE.HandleProcessIDECommand(Sender: TObject;
+procedure TMainIDE.ProcessIDECommand(Sender: TObject;
   Command: word;  var Handled: boolean);
 
   function IsOnWindow(Wnd: TWinControl): boolean;
@@ -3363,13 +3357,13 @@ begin
   //DebugLn('TMainIDE.OnProcessIDECommand Handled=',dbgs(Handled),' Command=',dbgs(Command));
 end;
 
-function TMainIDE.HandleExecuteIDECommand(Sender: TObject; Command: word): boolean;
+function TMainIDE.ExecuteIDECommandHandler(Sender: TObject; Command: word): boolean;
 begin
   Result:=false;
-  HandleProcessIDECommand(Sender,Command,Result);
+  ProcessIDECommand(Sender,Command,Result);
 end;
 
-function TMainIDE.HandleSelectDirectory(const Title, InitialDir: string): string;
+function TMainIDE.SelectDirectoryHandler(const Title, InitialDir: string): string;
 var
   Dialog: TSelectDirectoryDialog;
   DummyResult: Boolean;
@@ -3392,33 +3386,32 @@ begin
   end;
 end;
 
-procedure TMainIDE.HandleInitIDEFileDialog(AFileDialog: TFileDialog);
+procedure TMainIDE.InitIDEFileDialogHandler(AFileDialog: TFileDialog);
 begin
   InputHistories.ApplyFileDialogSettings(AFileDialog);
 end;
 
-procedure TMainIDE.HandleStoreIDEFileDialog(AFileDialog: TFileDialog);
+procedure TMainIDE.StoreIDEFileDialogHandler(AFileDialog: TFileDialog);
 begin
   InputHistories.StoreFileDialogSettings(AFileDialog);
 end;
 
-function TMainIDE.HandleIDEMessageDialog(const aCaption, aMsg: string;
+function TMainIDE.IDEMessageDialogHandler(const aCaption, aMsg: string;
   DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; const HelpKeyword: string): Integer;
 begin
   Result:=MessageDlg{ !!! DO NOT REPLACE WITH IDEMessageDialog }
             (aCaption,aMsg,DlgType,Buttons,HelpKeyword);
 end;
 
-function TMainIDE.HandleIDEQuestionDialog(const aCaption, aMsg: string;
+function TMainIDE.IDEQuestionDialogHandler(const aCaption, aMsg: string;
   DlgType: TMsgDlgType; Buttons: array of const; const HelpKeyword: string): Integer;
 begin
   Result:=QuestionDlg{ !!! DO NOT REPLACE WITH IDEQuestionDialog }
             (aCaption,aMsg,DlgType,Buttons,HelpKeyword);
 end;
 
-procedure TMainIDE.HandleExecuteIDEShortCut(Sender: TObject; var Key: word;
-  Shift: TShiftState;
-  IDEWindowClass: TCustomFormClass);
+procedure TMainIDE.ExecuteIDEShortCutHandler(Sender: TObject; var Key: word;
+  Shift: TShiftState; IDEWindowClass: TCustomFormClass);
 var
   Command: Word;
   Handled: Boolean;
@@ -3427,12 +3420,12 @@ begin
   Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,IDEWindowClass);
   if (Command = ecNone) then exit;
   Handled := false;
-  HandleProcessIDECommand(Sender, Command, Handled);
+  ProcessIDECommand(Sender, Command, Handled);
   if Handled then
     Key := VK_UNKNOWN;
 end;
 
-procedure TMainIDE.OnSrcNoteBookClickLink(Sender: TObject;
+procedure TMainIDE.SrcNoteBookClickLink(Sender: TObject;
   Button: TMouseButton; Shift: TShiftstate; X, Y: Integer);
 var
   ActiveSrcEdit: TSourceEditor;
@@ -3444,7 +3437,7 @@ begin
     ActiveSrcEdit.EditorComponent.PixelsToLogicalPos(Point(X,Y)));
 end;
 
-procedure TMainIDE.OnSrcNoteBookShowUnitInfo(Sender: TObject);
+procedure TMainIDE.SrcNoteBookShowUnitInfo(Sender: TObject);
 begin
   DoViewUnitInfo;
 end;
@@ -3480,28 +3473,28 @@ begin
   {$ENDIF}
   with TDesigner(DesignerForm.Designer) do begin
     TheFormEditor := FormEditor1;
-    OnActivated:=@OnDesignerActivated;
-    OnCloseQuery:=@OnDesignerCloseQuery;
-    OnPersistentDeleted:=@OnDesignerPersistentDeleted;
+    OnActivated:=@DesignerActivated;
+    OnCloseQuery:=@DesignerCloseQuery;
+    OnPersistentDeleted:=@DesignerPersistentDeleted;
     OnGetNonVisualCompIcon:=
                  @TComponentPalette(IDEComponentPalette).OnGetNonVisualCompIcon;
-    OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
-    OnModified:=@OnDesignerModified;
-    OnPasteComponents:=@OnDesignerPasteComponents;
-    OnPastedComponents:=@OnDesignerPastedComponents;
-    OnProcessCommand:=@HandleProcessIDECommand;
-    OnPropertiesChanged:=@OnDesignerPropertiesChanged;
-    OnRenameComponent:=@OnDesignerRenameComponent;
-    OnSetDesigning:=@OnDesignerSetDesigning;
-    OnShowOptions:=@OnDesignerShowOptions;
-    OnComponentAdded:=@OnDesignerComponentAdded;
-    OnViewLFM:=@OnDesignerViewLFM;
-    OnSaveAsXML:=@OnDesignerSaveAsXML;
-    OnShowObjectInspector:=@OnDesignerShowObjectInspector;
+    OnGetSelectedComponentClass:=@DesignerGetSelectedComponentClass;
+    OnModified:=@DesignerModified;
+    OnPasteComponents:=@DesignerPasteComponents;
+    OnPastedComponents:=@DesignerPastedComponents;
+    OnProcessCommand:=@ProcessIDECommand;
+    OnPropertiesChanged:=@DesignerPropertiesChanged;
+    OnRenameComponent:=@DesignerRenameComponent;
+    OnSetDesigning:=@DesignerSetDesigning;
+    OnShowOptions:=@DesignerShowOptions;
+    OnComponentAdded:=@DesignerComponentAdded;
+    OnViewLFM:=@DesignerViewLFM;
+    OnSaveAsXML:=@DesignerSaveAsXML;
+    OnShowObjectInspector:=@DesignerShowObjectInspector;
     OnForwardKeyToObjectInspector:=@ForwardKeyToObjectInspector;
-    OnShowAnchorEditor:=@OnDesignerShowAnchorEditor;
-    OnShowTabOrderEditor:=@OnDesignerShowTabOrderEditor;
-    OnChangeParent:=@OnDesignerChangeParent;
+    OnShowAnchorEditor:=@DesignerShowAnchorEditor;
+    OnShowTabOrderEditor:=@DesignerShowTabOrderEditor;
+    OnChangeParent:=@DesignerChangeParent;
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
     ShowComponentCaptions:=EnvironmentOptions.ShowComponentCaptions;
   end;
@@ -4350,7 +4343,7 @@ var
   H: boolean;
 begin
   H:=false;
-  HandleProcessIDECommand(nil, ecAttach, H);
+  ProcessIDECommand(nil, ecAttach, H);
 end;
 
 procedure TMainIDE.mnuDetachDebuggerClicked(Sender: TObject);
@@ -4358,7 +4351,7 @@ var
   H: boolean;
 begin
   H:=false;
-  HandleProcessIDECommand(nil, ecDetach, H);
+  ProcessIDECommand(nil, ecDetach, H);
 end;
 
 procedure TMainIDE.mnuBuildFileClicked(Sender: TObject);
@@ -4679,7 +4672,7 @@ begin
     TheEnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);
 end;
 
-procedure TMainIDE.DoLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
+procedure TMainIDE.IDEOptionsLoader(Sender: TObject; AOptions: TAbstractIDEOptions);
 begin
   if ConsoleVerbosity>0 then
     DebugLn(['Hint: (lazarus) TMainIDE.OnLoadIDEOptions: ', AOptions.ClassName]);
@@ -4688,7 +4681,7 @@ begin
     LoadDesktopSettings(AOptions as TEnvironmentOptions);
 end;
 
-procedure TMainIDE.DoSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
+procedure TMainIDE.IDEOptionsSaver(Sender: TObject; AOptions: TAbstractIDEOptions);
 begin
   if ConsoleVerbosity>0 then
     DebugLn(['Hint: (lazarus) TMainIDE.OnSaveIDEOptions: ', AOptions.ClassName]);
@@ -4725,8 +4718,8 @@ begin
     IDEOptionsDialog.OptionsFilter := OptionsFilter;
     IDEOptionsDialog.Settings := ASettings;
     IDEOptionsDialog.OpenEditor(AEditor);
-    IDEOptionsDialog.OnLoadIDEOptionsHook:=@DoLoadIDEOptions;
-    IDEOptionsDialog.OnSaveIDEOptionsHook:=@DoSaveIDEOptions;
+    IDEOptionsDialog.OnLoadIDEOptionsHook:=@IDEOptionsLoader;
+    IDEOptionsDialog.OnSaveIDEOptionsHook:=@IDEOptionsSaver;
     IDEOptionsDialog.ReadAll;
     Result := IDEOptionsDialog.ShowModal = mrOk;
     IDEOptionsDialog.WriteAll(not Result);    // Restore if user cancelled.
@@ -4745,20 +4738,20 @@ begin
   end;
 end;
 
-procedure TMainIDE.DoEnvironmentOptionsBeforeRead(Sender: TObject);
+procedure TMainIDE.EnvironmentOptionsBeforeRead(Sender: TObject);
 begin
   // update EnvironmentOptions (save current window positions)
   SaveDesktopSettings(EnvironmentOptions);
 end;
 
-procedure TMainIDE.DoEnvironmentOptionsBeforeWrite(Sender: TObject; Restore: boolean);
+procedure TMainIDE.EnvironmentOptionsBeforeWrite(Sender: TObject; Restore: boolean);
 begin
   if Restore then exit;
   OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
   OldLanguage:=EnvironmentOptions.LanguageID;
 end;
 
-procedure TMainIDE.DoEnvironmentOptionsAfterWrite(Sender: TObject; Restore: boolean);
+procedure TMainIDE.EnvironmentOptionsAfterWrite(Sender: TObject; Restore: boolean);
 var
   MacroValueChanged,
   FPCSrcDirChanged, FPCCompilerChanged,
@@ -4861,14 +4854,14 @@ begin
   UpdateCaption;
 end;
 
-procedure TMainIDE.DoEditorOptionsBeforeRead(Sender: TObject);
+procedure TMainIDE.EditorOptionsBeforeRead(Sender: TObject);
 begin
   // update editor options?
   if Project1=nil then exit;
   Project1.UpdateAllCustomHighlighter;
 end;
 
-procedure TMainIDE.DoEditorOptionsAfterWrite(Sender: TObject; Restore: boolean);
+procedure TMainIDE.EditorOptionsAfterWrite(Sender: TObject; Restore: boolean);
 begin
   if Restore then exit;
   if Project1<>nil then
@@ -4884,20 +4877,20 @@ begin
   end;
 end;
 
-procedure TMainIDE.DoCodetoolsOptionsAfterWrite(Sender: TObject; Restore: boolean);
+procedure TMainIDE.CodetoolsOptionsAfterWrite(Sender: TObject; Restore: boolean);
 begin
   if Restore then exit;
   CodeToolsOpts.AssignTo(CodeToolBoss);
 end;
 
-procedure TMainIDE.DoCodeExplorerOptionsAfterWrite(Sender: TObject; Restore: boolean);
+procedure TMainIDE.CodeExplorerOptionsAfterWrite(Sender: TObject; Restore: boolean);
 begin
   if Restore then exit;
   if CodeExplorerView<>nil then
     CodeExplorerView.Refresh(true);
 end;
 
-procedure TMainIDE.DoProjectOptionsBeforeRead(Sender: TObject);
+procedure TMainIDE.ProjectOptionsBeforeRead(Sender: TObject);
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -4914,7 +4907,7 @@ begin
   AProject.UseAsDefault := False;
 end;
 
-procedure TMainIDE.DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
+procedure TMainIDE.ProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
 var
   AProject: TProject;
   aFilename: String;
@@ -5871,9 +5864,9 @@ begin
   begin
     IDEWindowCreators.CreateForm(CodeExplorerView,TCodeExplorerView,
        State=iwgfDisabled,OwningComponent);
-    CodeExplorerView.OnGetDirectivesTree:=@OnCodeExplorerGetDirectivesTree;
-    CodeExplorerView.OnJumpToCode:=@OnCodeExplorerJumpToCode;
-    CodeExplorerView.OnShowOptions:=@OnCodeExplorerShowOptions;
+    CodeExplorerView.OnGetDirectivesTree:=@CodeExplorerGetDirectivesTree;
+    CodeExplorerView.OnJumpToCode:=@CodeExplorerJumpToCode;
+    CodeExplorerView.OnShowOptions:=@CodeExplorerShowOptions;
   end else if State=iwgfDisabled then
     CodeExplorerView.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.DoShowCodeExplorer'){$ENDIF};
 
@@ -6199,8 +6192,8 @@ begin
   Result.OnSaveProjectInfo:=@OnSaveProjectInfoToXMLConfig;
   Result.OnSaveUnitSessionInfo:=@OnSaveProjectUnitSessionInfo;
   Result.OnChangeProjectInfoFile:=@OnProjectChangeInfoFile;
-  Result.IDEOptions.OnBeforeRead:=@DoProjectOptionsBeforeRead;
-  Result.IDEOptions.OnAfterWrite:=@DoProjectOptionsAfterWrite;
+  Result.IDEOptions.OnBeforeRead:=@ProjectOptionsBeforeRead;
+  Result.IDEOptions.OnAfterWrite:=@ProjectOptionsAfterWrite;
 end;
 
 function TMainIDE.DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
@@ -6531,8 +6524,7 @@ begin
   Result:=DoSaveProject([sfSaveToTestDir,sfCheckAmbiguousFiles]+Flags);
 end;
 
-function TMainIDE.DoTestCompilerSettings(
-  TheCompilerOptions: TCompilerOptions): TModalResult;
+function TMainIDE.DoTestCompilerSettings(TheCompilerOptions: TCompilerOptions): TModalResult;
 begin
   Result:=mrCancel;
   if (Project1=nil) or (ToolStatus<>itNone) then begin
@@ -7191,7 +7183,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.HandleLayoutChanged(Sender: TObject);
+procedure TMainIDE.LayoutChangeHandler(Sender: TObject);
 begin
   MainIDEBar.RefreshCoolbar;
   MainIDEBar.DoSetViewComponentPalette(EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible);
@@ -8834,13 +8826,13 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TMainIDE.OnDesignerGetSelectedComponentClass(Sender: TObject;
+procedure TMainIDE.DesignerGetSelectedComponentClass(Sender: TObject;
   var RegisteredComponent: TRegisteredComponent);
 begin
   RegisteredComponent:=IDEComponentPalette.Selected;
 end;
 
-procedure TMainIDE.OnDesignerComponentAdded(Sender: TObject;
+procedure TMainIDE.DesignerComponentAdded(Sender: TObject;
   AComponent: TComponent; ARegisteredComponent: TRegisteredComponent);
 begin
   TComponentPalette(IDEComponentPalette).DoAfterComponentAdded(TDesigner(Sender).LookupRoot,
@@ -8852,18 +8844,18 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnDesignerSetDesigning(Sender: TObject;
-  Component: TComponent;  Value: boolean);
+procedure TMainIDE.DesignerSetDesigning(Sender: TObject; Component: TComponent;
+  Value: boolean);
 begin
   SetDesigning(Component,Value);
 end;
 
-procedure TMainIDE.OnDesignerShowOptions(Sender: TObject);
+procedure TMainIDE.DesignerShowOptions(Sender: TObject);
 begin
   DoOpenIDEOptions(TFormEditorOptionsFrame);
 end;
 
-procedure TMainIDE.OnDesignerPasteComponents(Sender: TObject;
+procedure TMainIDE.DesignerPasteComponents(Sender: TObject;
   LookupRoot: TComponent; TxtCompStream: TStream; ParentControl: TWinControl;
   var NewComponents: TFPList);
 var
@@ -8929,18 +8921,18 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnDesignerPastedComponents(Sender: TObject; LookupRoot: TComponent);
+procedure TMainIDE.DesignerPastedComponents(Sender: TObject; LookupRoot: TComponent);
 begin
   DoFixupComponentReferences(LookupRoot,[]);
 end;
 
-procedure TMainIDE.OnDesignerPropertiesChanged(Sender: TObject);
+procedure TMainIDE.DesignerPropertiesChanged(Sender: TObject);
 begin
   if ObjectInspector1<>nil then
     ObjectInspector1.RefreshPropertyValues;
 end;
 
-procedure TMainIDE.OnDesignerPersistentDeleted(Sender: TObject; APersistent: TPersistent);
+procedure TMainIDE.DesignerPersistentDeleted(Sender: TObject; APersistent: TPersistent);
 // important: APersistent was freed, do not access its content, only the pointer
 begin
   if dfDestroyingForm in TDesigner(Sender).Flags then exit;
@@ -8949,7 +8941,7 @@ begin
     ObjectInspector1.FillComponentList;
 end;
 
-procedure TMainIDE.OnPropHookPersistentDeleting(APersistent: TPersistent);
+procedure TMainIDE.PropHookPersistentDeleting(APersistent: TPersistent);
 var
   ActiveForm: TCustomForm;
   ActiveUnitInfo: TUnitInfo;
@@ -8991,7 +8983,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnDesignerModified(Sender: TObject);
+procedure TMainIDE.DesignerModified(Sender: TObject);
 var
   SrcEdit: TSourceEditor;
   CurDesigner: TDesigner absolute Sender;
@@ -9016,7 +9008,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnControlSelectionChanged(Sender: TObject; ForceUpdate: Boolean);
+procedure TMainIDE.ControlSelectionChanged(Sender: TObject; ForceUpdate: Boolean);
 var
   NewSelection: TPersistentSelectionList;
   i: integer;
@@ -9037,7 +9029,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TMainIDE.OnControlSelectionPropsChanged(Sender: TObject);
+procedure TMainIDE.ControlSelectionPropsChanged(Sender: TObject);
 begin
   Assert(Assigned(TheControlSelection), 'TMainIDE.OnControlSelectionPropsChanged: TheControlSelection=Nil.');
   if (FormEditor1=nil) or (ObjectInspector1=nil) then exit;
@@ -9045,8 +9037,7 @@ begin
   ObjectInspector1.RefreshPropertyValues;
 end;
 
-procedure TMainIDE.OnControlSelectionFormChanged(Sender: TObject; OldForm,
-  NewForm: TCustomForm);
+procedure TMainIDE.ControlSelectionFormChanged(Sender: TObject; OldForm, NewForm: TCustomForm);
 begin
   Assert(Assigned(TheControlSelection), 'TMainIDE.OnControlSelectionFormChanged: TheControlSelection=Nil.');
   if FormEditor1=nil then exit;
@@ -9064,7 +9055,7 @@ begin
     MainIDEBar.UpdateIDEComponentPalette(true);
 end;
 
-procedure TMainIDE.OnGetDesignerSelection(const ASelection: TPersistentSelectionList);
+procedure TMainIDE.GetDesignerSelection(const ASelection: TPersistentSelectionList);
 begin
   if TheControlSelection=nil then exit;
   TheControlSelection.GetSelection(ASelection);
@@ -9072,7 +9063,7 @@ end;
 
 // -----------------------------------------------------------------------------
 
-procedure TMainIDE.OnCodeExplorerGetDirectivesTree(Sender: TObject;
+procedure TMainIDE.CodeExplorerGetDirectivesTree(Sender: TObject;
   var ADirectivesTool: TDirectivesTool);
 var
   ActiveUnitInfo: TUnitInfo;
@@ -9084,18 +9075,18 @@ begin
   CodeToolBoss.ExploreDirectives(ActiveUnitInfo.Source,ADirectivesTool);
 end;
 
-procedure TMainIDE.OnCodeExplorerJumpToCode(Sender: TObject;
+procedure TMainIDE.CodeExplorerJumpToCode(Sender: TObject;
   const Filename: string; const Caret: TPoint; TopLine: integer);
 begin
   DoJumpToSourcePosition(Filename,Caret.X,Caret.Y,TopLine,[jfAddJumpPoint, jfFocusEditor]);
 end;
 
-procedure TMainIDE.OnCodeExplorerShowOptions(Sender: TObject);
+procedure TMainIDE.CodeExplorerShowOptions(Sender: TObject);
 begin
   DoOpenIDEOptions(TCodeExplorerUpdateOptionsFrame);
 end;
 
-procedure TMainIDE.OnCodeToolNeedsExternalChanges(Manager: TCodeToolManager;
+procedure TMainIDE.CodeToolNeedsExternalChanges(Manager: TCodeToolManager;
   var Abort: boolean);
 var
   ActiveSrcEdit: TSourceEditor;
@@ -9121,8 +9112,8 @@ begin
   MainBuildBoss.LoadFPCDefinesCaches;
 
   CodeToolBoss.SourceCache.ExpirationTimeInDays:=365;
-  CodeToolBoss.SourceCache.OnEncodeSaving:=@OnCodeBufferEncodeSaving;
-  CodeToolBoss.SourceCache.OnDecodeLoaded:=@OnCodeBufferDecodeLoaded;
+  CodeToolBoss.SourceCache.OnEncodeSaving:=@CodeBufferEncodeSaving;
+  CodeToolBoss.SourceCache.OnDecodeLoaded:=@CodeBufferDecodeLoaded;
   CodeToolBoss.SourceCache.DefaultEncoding:=EncodingUTF8;
   CodeToolBoss.DefineTree.OnGetVirtualDirectoryAlias:=
     @CodeToolBossGetVirtualDirectoryAlias;
@@ -9160,20 +9151,20 @@ begin
   with CodeToolBoss do begin
     WriteExceptions:=true;
     CatchExceptions:=true;
-    OnGatherExternalChanges:=@OnCodeToolNeedsExternalChanges;
-    OnBeforeApplyChanges:=@OnBeforeCodeToolBossApplyChanges;
-    OnAfterApplyChanges:=@OnAfterCodeToolBossApplyChanges;
-    OnSearchUsedUnit:=@OnCodeToolBossSearchUsedUnit;
-    OnFindDefineProperty:=@OnCodeToolBossFindDefineProperty;
-    OnGetMethodName:=@OnCodeToolBossGetMethodName;
-    OnGetIndenterExamples:=@OnCodeToolBossGetIndenterExamples;
+    OnGatherExternalChanges:=@CodeToolNeedsExternalChanges;
+    OnBeforeApplyChanges:=@BeforeCodeToolBossApplyChanges;
+    OnAfterApplyChanges:=@AfterCodeToolBossApplyChanges;
+    OnSearchUsedUnit:=@CodeToolBossSearchUsedUnit;
+    OnFindDefineProperty:=@CodeToolBossFindDefineProperty;
+    OnGetMethodName:=@CodeToolBossGetMethodName;
+    OnGetIndenterExamples:=@CodeToolBossGetIndenterExamples;
     OnScannerInit:=@CodeToolBossScannerInit;
     OnFindFPCMangledSource:=@CodeToolBossFindFPCMangledSource;
   end;
 
   CodeToolsOpts.AssignGlobalDefineTemplatesToTree(CodeToolBoss.DefineTree);
 
-  CompilerParseStampIncreased:=@OnCompilerParseStampIncreased;
+  CompilerParseStampIncreased:=@CompilerParseStampIncHandler;
 
   {$IFDEF CheckNodeTool}
   // codetools consistency check
@@ -9191,7 +9182,7 @@ begin
                         [ctfSourceEditorNotNeeded]);
 end;
 
-procedure TMainIDE.OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
+procedure TMainIDE.BeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
   var Abort: boolean);
 // the CodeToolBoss built a list of Sources that will be modified
 // 1. open all of them in the source notebook
@@ -9229,7 +9220,7 @@ begin
   SourceEditorManager.LockAllEditorsInSourceChangeCache;
 end;
 
-procedure TMainIDE.OnAfterCodeToolBossApplyChanges(Manager: TCodeToolManager);
+procedure TMainIDE.AfterCodeToolBossApplyChanges(Manager: TCodeToolManager);
 var
   i: Integer;
   SrcBuf: TCodeBuffer;
@@ -9257,7 +9248,7 @@ begin
   SourceEditorManager.UnlockAllEditorsInSourceChangeCache;
 end;
 
-function TMainIDE.OnCodeToolBossSearchUsedUnit(const SrcFilename: string;
+function TMainIDE.CodeToolBossSearchUsedUnit(const SrcFilename: string;
   const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
 var
   AnUnitInfo: TUnitInfo;
@@ -9290,7 +9281,7 @@ begin
     Project1.GetVirtualDefines(DefTree,DirDef);
 end;
 
-procedure TMainIDE.OnCodeToolBossFindDefineProperty(Sender: TObject;
+procedure TMainIDE.CodeToolBossFindDefineProperty(Sender: TObject;
   const PersistentClassName, AncestorClassName, Identifier: string;
   var IsDefined: boolean);
 begin
@@ -9298,7 +9289,7 @@ begin
                                  Identifier,IsDefined);
 end;
 
-procedure TMainIDE.OnCodeBufferDecodeLoaded(Code: TCodeBuffer;
+procedure TMainIDE.CodeBufferDecodeLoaded(Code: TCodeBuffer;
   const Filename: string; var Source, DiskEncoding, MemEncoding: string);
 begin
   //DebugLn(['TMainIDE.OnCodeBufferDecodeLoaded Filename=',Filename,' Encoding=',GuessEncoding(Source)]);
@@ -9317,7 +9308,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnCodeBufferEncodeSaving(Code: TCodeBuffer;
+procedure TMainIDE.CodeBufferEncodeSaving(Code: TCodeBuffer;
   const Filename: string; var Source: string);
 var
   OldSource, NewSource, Msg: String;
@@ -9373,7 +9364,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnCodeToolBossGetIndenterExamples(Sender: TObject;
+procedure TMainIDE.CodeToolBossGetIndenterExamples(Sender: TObject;
   Code: TCodeBuffer; Step: integer; var CodeBuffers: TFPList;
   var ExpandedFilenames: TStrings);
 var
@@ -9449,7 +9440,7 @@ begin
     AddFile(CodeToolsOpts.IndentationFileName);
 end;
 
-function TMainIDE.OnCodeToolBossGetMethodName(const Method: TMethod; PropOwner: TObject): String;
+function TMainIDE.CodeToolBossGetMethodName(const Method: TMethod; PropOwner: TObject): String;
 var
   JITMethod: TJITMethod;
   LookupRoot: TPersistent;
@@ -9480,7 +9471,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TMainIDE.OnCompilerParseStampIncreased;
+procedure TMainIDE.CompilerParseStampIncHandler;
 begin
   if FIDECodeToolsDefines=ctdUpdating then exit;
   {$IFDEF VerboseAddProjPkg}
@@ -10692,7 +10683,7 @@ begin
     outProjectFileName := '';
 end;
 
-procedure TMainIDE.OnSrcNotebookEditorActived(Sender: TObject);
+procedure TMainIDE.SrcNotebookEditorActived(Sender: TObject);
 var
   ActiveUnitInfo: TUnitInfo;
   ASrcEdit: TSourceEditor;
@@ -10715,19 +10706,19 @@ begin
                                            or (ActiveUnitInfo.ComponentName<>'');
 end;
 
-procedure TMainIDE.OnSrcNotebookEditorPlaceBookmark(Sender: TObject; var Mark: TSynEditMark);
+procedure TMainIDE.SrcNotebookEditorPlaceBookmark(Sender: TObject; var Mark: TSynEditMark);
 begin
   Project1.UnitWithEditorComponent(TSourceEditor(Sender)).AddBookmark
     (Mark.Column, Mark.Line, Mark.BookmarkNumber);
 end;
 
-procedure TMainIDE.OnSrcNotebookEditorClearBookmark(Sender: TObject; var Mark: TSynEditMark);
+procedure TMainIDE.SrcNotebookEditorClearBookmark(Sender: TObject; var Mark: TSynEditMark);
 begin
   Project1.UnitWithEditorComponent(TSourceEditor(Sender)).DeleteBookmark
     (Mark.BookmarkNumber);
 end;
 
-procedure TMainIDE.OnSrcNotebookEditorClearBookmarkId(Sender: TObject;
+procedure TMainIDE.SrcNotebookEditorClearBookmarkId(Sender: TObject;
   ID: Integer);
 var
   i: Integer;
@@ -10760,7 +10751,7 @@ begin
   {$pop}
 end;
 
-procedure TMainIDE.OnSrcNotebookEditorDoSetBookmark(Sender: TObject; ID: Integer; Toggle: Boolean);
+procedure TMainIDE.SrcNotebookEditorDoSetBookmark(Sender: TObject; ID: Integer; Toggle: Boolean);
 var
   ActEdit, OldEdit: TSourceEditor;
   OldX, OldY: integer;
@@ -10798,7 +10789,7 @@ Begin
   {$pop}
 end;
 
-procedure TMainIDE.OnSrcNotebookEditorDoGotoBookmark(Sender: TObject; ID: Integer; Backward: Boolean);
+procedure TMainIDE.SrcNotebookEditorDoGotoBookmark(Sender: TObject; ID: Integer; Backward: Boolean);
 var
   CurWin, CurPage, CurLine: Integer;
 
@@ -10966,13 +10957,13 @@ begin
 end;
 
 //this is fired when the editor is focused, changed, ?.  Anything that causes the status change
-procedure TMainIDE.OnSrcNotebookEditorChanged(Sender: TObject);
+procedure TMainIDE.SrcNotebookEditorChanged(Sender: TObject);
 begin
   if SourceEditorManager.SourceEditorCount = 0 then Exit;
   UpdateSaveMenuItemsAndButtons(false);
 end;
 
-procedure TMainIDE.OnSrcNotebookEditorMoved(Sender: TObject);
+procedure TMainIDE.SrcNotebookEditorMoved(Sender: TObject);
 var
   p: TUnitEditorInfo;
   i: Integer;
@@ -11000,7 +10991,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnSrcNotebookEditorClosed(Sender: TObject);
+procedure TMainIDE.SrcNotebookEditorClosed(Sender: TObject);
 var
   SrcEditor: TSourceEditor;
   p: TUnitEditorInfo;
@@ -11011,13 +11002,13 @@ begin
     p.EditorComponent := nil; // Set EditorIndex := -1
 end;
 
-procedure TMainIDE.OnSrcNotebookCurCodeBufferChanged(Sender: TObject);
+procedure TMainIDE.SrcNotebookCurCodeBufferChanged(Sender: TObject);
 begin
   if CodeExplorerView<>nil then
     CodeExplorerView.CurrentCodeBufferChanged;
 end;
 
-procedure TMainIDE.OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
+procedure TMainIDE.SrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
   CaretPos: TPoint; AutoShown: Boolean);
 
   function CheckExpressionIsValid(var Expr: String): boolean;
@@ -11148,7 +11139,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnSrcNoteBookActivated(Sender: TObject);
+procedure TMainIDE.SrcNoteBookActivated(Sender: TObject);
 begin
   {$IFDEF VerboseIDEDisplayState}
   debugln(['TMainIDE.OnSrcNoteBookActivated']);
@@ -11156,7 +11147,7 @@ begin
   DisplayState:=dsSource;
 end;
 
-procedure TMainIDE.OnDesignerActivated(Sender: TObject);
+procedure TMainIDE.DesignerActivated(Sender: TObject);
 begin
   {$IFDEF VerboseIDEDisplayState}
   if DisplayState<>dsForm then begin
@@ -11177,7 +11168,7 @@ begin
   MainIDEBar.UpdateIDEComponentPalette(true);
 end;
 
-procedure TMainIDE.OnDesignerCloseQuery(Sender: TObject);
+procedure TMainIDE.DesignerCloseQuery(Sender: TObject);
 var
   ADesigner: TDesigner;
   ASrcEdit: TSourceEditor;
@@ -11205,7 +11196,7 @@ begin
   FDesignerToBeFreed[AnUnitInfo.Filename]:='1';
 end;
 
-procedure TMainIDE.OnDesignerRenameComponent(ADesigner: TDesigner;
+procedure TMainIDE.DesignerRenameComponent(ADesigner: TDesigner;
   AComponent: TComponent; const NewName: string);
 var
   ActiveSrcEdit: TSourceEditor;
@@ -11508,7 +11499,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnDesignerViewLFM(Sender: TObject);
+procedure TMainIDE.DesignerViewLFM(Sender: TObject);
 var
   ADesigner: TDesigner;
   ASrcEdit: TSourceEditor;
@@ -11519,7 +11510,7 @@ begin
   ADesigner:=TDesigner(Sender);
   GetDesignerUnit(ADesigner,ASrcEdit,AnUnitInfo);
   //debugln('TMainIDE.OnDesignerViewLFM ',AnUnitInfo.Filename);
-  OnDesignerCloseQuery(Sender);
+  DesignerCloseQuery(Sender);
   if AnUnitInfo.OpenEditorInfoCount > 0 then
     EditorInfo := AnUnitInfo.OpenEditorInfo[0]
   else
@@ -11531,7 +11522,7 @@ begin
   OpenEditorFile(LFMFilename, EditorInfo.PageIndex+1, EditorInfo.WindowID, nil, [], True);
 end;
 
-procedure TMainIDE.OnDesignerSaveAsXML(Sender: TObject);
+procedure TMainIDE.DesignerSaveAsXML(Sender: TObject);
 var
   SaveDialog: TSaveDialog;
   SaveAsFilename: String;
@@ -11587,29 +11578,29 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnDesignerShowObjectInspector(Sender: TObject);
+procedure TMainIDE.DesignerShowObjectInspector(Sender: TObject);
 begin
   DoBringToFrontFormOrInspector(True);
 end;
 
-procedure TMainIDE.OnDesignerShowAnchorEditor(Sender: TObject);
+procedure TMainIDE.DesignerShowAnchorEditor(Sender: TObject);
 begin
   DoViewAnchorEditor;
 end;
 
-procedure TMainIDE.OnDesignerShowTabOrderEditor(Sender: TObject);
+procedure TMainIDE.DesignerShowTabOrderEditor(Sender: TObject);
 begin
   DoViewTabOrderEditor;
 end;
 
-procedure TMainIDE.OnDesignerChangeParent(Sender: TObject);
+procedure TMainIDE.DesignerChangeParent(Sender: TObject);
 begin
   if ObjectInspector1=nil then
     CreateObjectInspector(false);
   ObjectInspector1.ChangeParent;
 end;
 
-procedure TMainIDE.OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint;
+procedure TMainIDE.SrcNoteBookAddJumpPoint(ACaretXY: TPoint;
   ATopLine: integer; AEditor: TSourceEditor; DeleteForwardHistory: boolean);
 {off $DEFINE VerboseJumpHistory}
 var
@@ -11640,12 +11631,12 @@ begin
   {$ENDIF}
 end;
 
-procedure TMainIDE.OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
+procedure TMainIDE.SrcNotebookDeleteLastJumPoint(Sender: TObject);
 begin
   Project1.JumpHistory.DeleteLast;
 end;
 
-procedure TMainIDE.OnSrcNotebookJumpToHistoryPoint(out NewCaretXY: TPoint; out
+procedure TMainIDE.SrcNotebookJumpToHistoryPoint(out NewCaretXY: TPoint; out
   NewTopLine: integer; out DestEditor: TSourceEditor;
   JumpAction: TJumpHistoryAction);
 { How the HistoryIndex works:
@@ -11760,8 +11751,8 @@ begin
   {$ENDIF}
 end;
 
-procedure TMainIDE.OnSrcNoteBookMouseLink(
-  Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
+procedure TMainIDE.SrcNoteBookMouseLink(Sender: TObject; X, Y: Integer;
+  var AllowMouseLink: Boolean);
 var
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
@@ -11785,7 +11776,7 @@ begin
     ActiveUnitInfo.Source,X,Y,NewSource,NewX,NewY,NewTopLine);
 end;
 
-procedure TMainIDE.OnSrcNotebookReadOnlyChanged(Sender: TObject);
+procedure TMainIDE.SrcNotebookReadOnlyChanged(Sender: TObject);
 var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -11794,17 +11785,17 @@ begin
   ActiveUnitInfo.UserReadOnly:=ActiveSourceEditor.ReadOnly;
 end;
 
-procedure TMainIDE.OnSrcNotebookViewJumpHistory(Sender: TObject);
+procedure TMainIDE.SrcNotebookViewJumpHistory(Sender: TObject);
 begin
   DoShowJumpHistory;
 end;
 
-procedure TMainIDE.OnSrcNoteBookPopupMenu(const AddMenuItemProc: TAddMenuItemProc);
+procedure TMainIDE.SrcNoteBookPopupMenu(const AddMenuItemProc: TAddMenuItemProc);
 begin
   PkgBoss.OnSourceEditorPopupMenu(AddMenuItemProc);
 end;
 
-procedure TMainIDE.OnSrcNoteBookCloseQuery(Sender: TObject; var CloseAction: TCloseAction);
+procedure TMainIDE.SrcNoteBookCloseQuery(Sender: TObject; var CloseAction: TCloseAction);
 var
   SrcNB: TSourceNotebook;
 begin
@@ -12265,12 +12256,12 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnCompilerOptionsDialogTest(Sender: TObject);
+procedure TMainIDE.CompilerOptionsDialogTest(Sender: TObject);
 begin
   DoTestCompilerSettings(Sender as TCompilerOptions);
 end;
 
-function TMainIDE.OnCheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions): TModalResult;
+function TMainIDE.CheckForNewUnit(CompOpts: TLazCompilerOptions): TModalResult;
 begin
   Result:=CheckCompOptsAndMainSrcForNewUnit(CompOpts);
 end;
@@ -12294,8 +12285,8 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnGetLayout(Sender: TObject; aFormName: string; out
-  aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
+procedure TMainIDE.GetLayoutHandler(Sender: TObject; aFormName: string;
+  out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
 var
   SrcEditWnd: TSourceNotebook;
   ScreenR: TRect;
@@ -12457,7 +12448,7 @@ begin
   Result:=GetProjectFileWithRootComponent(AComponent);
 end;
 
-function TMainIDE.OnPropHookMethodExists(const AMethodName: String; TypeData: PTypeData;
+function TMainIDE.PropHookMethodExists(const AMethodName: String; TypeData: PTypeData;
   var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean): boolean;
 var
   ActiveSrcEdit: TSourceEditor;
@@ -12480,7 +12471,7 @@ begin
   end;
 end;
 
-function TMainIDE.OnPropHookCreateMethod(const AMethodName: ShortString;
+function TMainIDE.PropHookCreateMethod(const AMethodName: ShortString;
   ATypeInfo: PTypeInfo;
   APersistent: TPersistent; const APropertyPath: string): TMethod;
 { APersistent is the instance that gets the new method, not the lookuproot.
@@ -12641,7 +12632,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnPropHookShowMethod(const AMethodName: String);
+procedure TMainIDE.PropHookShowMethod(const AMethodName: String);
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -12684,7 +12675,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnPropHookRenameMethod(const CurName, NewName: String);
+procedure TMainIDE.PropHookRenameMethod(const CurName, NewName: String);
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -12733,7 +12724,7 @@ begin
   end;
 end;
 
-function TMainIDE.OnPropHookBeforeAddPersistent(Sender: TObject;
+function TMainIDE.PropHookBeforeAddPersistent(Sender: TObject;
   APersistentClass: TPersistentClass; AParent: TPersistent): boolean;
 var
   ActiveSrcEdit: TSourceEditor;
@@ -12770,7 +12761,7 @@ begin
   Result:=true;
 end;
 
-procedure TMainIDE.OnPropHookComponentRenamed(AComponent: TComponent);
+procedure TMainIDE.PropHookComponentRenamed(AComponent: TComponent);
 begin
   FormEditor1.UpdateComponentName(AComponent);
   // Component can be renamed in designer and OI must be updated
@@ -12778,7 +12769,7 @@ begin
     ObjectInspector1.Update;
 end;
 
-procedure TMainIDE.OnPropHookModified(Sender: TObject; PropName: ShortString);
+procedure TMainIDE.PropHookModified(Sender: TObject; PropName: ShortString);
 begin
   // ToDo: Should designer be marked as modified with PropName?
   if ObjectInspector1=Nil then Exit;
@@ -12791,13 +12782,13 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  procedure TMainIDE.OnPropHookPersistentAdded(APersistent: TPersistent;
+  procedure TMainIDE.PropHookPersistentAdded(APersistent: TPersistent;
     Select: boolean);
 
   This handler is called whenever a new component was added to a designed form
   and should be added to form source
 -------------------------------------------------------------------------------}
-procedure TMainIDE.OnPropHookPersistentAdded(APersistent: TPersistent; Select: boolean);
+procedure TMainIDE.PropHookPersistentAdded(APersistent: TPersistent; Select: boolean);
 var
   RegComp: TRegisteredComponent;
   ADesigner: TDesigner;
@@ -12877,7 +12868,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TMainIDE.OnPropHookDeletePersistent(var APersistent: TPersistent);
+procedure TMainIDE.PropHookDeletePersistent(var APersistent: TPersistent);
 var
   ADesigner: TDesigner;
   AComponent: TComponent;
@@ -12895,7 +12886,7 @@ begin
   APersistent:=nil;
 end;
 
-procedure TMainIDE.OnPropHookObjectPropertyChanged(Sender: TObject;
+procedure TMainIDE.PropHookObjectPropertyChanged(Sender: TObject;
   NewObject: TPersistent);
 var
   AnUnitInfo: TUnitInfo;
@@ -12931,7 +12922,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnPropHookAddDependency(const AClass: TClass;
+procedure TMainIDE.PropHookAddDependency(const AClass: TClass;
   const AnUnitName: shortstring);
 // add a package dependency to the package/project of the currently active
 // designed component.
@@ -12965,12 +12956,12 @@ begin
   PkgBoss.AddDependencyToUnitOwners(AnUnitInfo.Filename,RequiredUnitName);
 end;
 
-procedure TMainIDE.OnPropHookGetComponentNames(TypeData: PTypeData; Proc: TGetStrProc);
+procedure TMainIDE.PropHookGetComponentNames(TypeData: PTypeData; Proc: TGetStrProc);
 begin
   PkgBoss.IterateComponentNames(GlobalDesignHook.LookupRoot,TypeData,Proc);
 end;
 
-function TMainIDE.OnPropHookGetComponent(const ComponentPath: String): TComponent;
+function TMainIDE.PropHookGetComponent(const ComponentPath: String): TComponent;
 begin
   Result:=PkgBoss.FindUsableComponent(GlobalDesignHook.LookupRoot,ComponentPath);
 end;
