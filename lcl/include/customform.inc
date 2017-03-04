@@ -1740,7 +1740,7 @@ procedure TCustomForm.UpdateActions;
     i: Integer;
     CurControl: TControl;
   begin
-    if not Container.Showing then exit;
+    if not Container.Showing or (csDesigning in Container.ComponentState) then exit;
     //DebugLn(['RecursiveInitiate ',DbgSName(Container)]);
     for i := 0 to Container.ControlCount - 1 do begin
       CurControl := Container.Controls[i];
