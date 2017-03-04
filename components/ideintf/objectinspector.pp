@@ -257,7 +257,7 @@ type
     oiqeShowValue
   );
 
-  TOIPropertyHint = function(Sender: TObject; PointedRow: TOIPropertyGridRow;
+  TOIPropertyHintEvent = function(Sender: TObject; PointedRow: TOIPropertyGridRow;
             out AHint: string): boolean of object;
 
   TOIEditorFilterEvent = procedure(Sender: TObject; aEditor: TPropertyEditor;
@@ -273,7 +273,7 @@ type
     FLayout: TOILayout;
     FOnEditorFilter: TOIEditorFilterEvent;
     FOnOIKeyDown: TKeyEvent;
-    FOnPropertyHint: TOIPropertyHint;
+    FOnPropertyHint: TOIPropertyHintEvent;
     FOnSelectionChange: TNotifyEvent;
     FReferencesColor: TColor;
     FReadOnlyColor: TColor;
@@ -516,7 +516,7 @@ type
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
-    property OnPropertyHint: TOIPropertyHint read FOnPropertyHint write FOnPropertyHint;
+    property OnPropertyHint: TOIPropertyHintEvent read FOnPropertyHint write FOnPropertyHint;
     property PropertyEditorHook: TPropertyEditorHook read FPropertyEditorHook
                                                     write SetPropertyEditorHook;
     property RowCount: integer read GetRowCount;
@@ -596,10 +596,11 @@ type
 
   //============================================================================
 
-  TOnAddAvailablePersistent = procedure(APersistent: TPersistent;
+  TAddAvailablePersistentEvent = procedure(APersistent: TPersistent;
     var Allowed: boolean) of object;
   //copy of TGetPersistentImageIndexEvent
-  TOnOINodeGetImageEvent = procedure(APersistent: TPersistent; var AImageIndex: integer) of object;
+  TOnOINodeGetImageEvent = procedure(APersistent: TPersistent;
+    var AImageIndex: integer) of object;
 
   TOIFlag = (
     oifRebuildPropListsNeeded
@@ -609,14 +610,30 @@ type
   { TObjectInspectorDlg }
 
   TObjectInspectorDlg = class(TForm)
-    PropertyPanel: TPanel;
-    FilterLabel1: TLabel;
-    PropFilterEdit: TListFilterEdit;
+    MainPopupMenu: TPopupMenu;
+    AvailPersistentComboBox: TComboBox;
     ComponentPanel: TPanel;
-    FilterLabel: TLabel;
+    CompFilterLabel: TLabel;
     CompFilterEdit: TTreeFilterEdit;
-    ComponentTree: TComponentTreeView;
-    // Menu items are created in constructor at run-time, not design time
+    StatusBar: TStatusBar;
+    procedure MainPopupMenuClose(Sender: TObject);
+    procedure OnMainPopupMenuPopup(Sender: TObject);
+    procedure AvailComboBoxCloseUp(Sender: TObject);
+  private
+    // These are created at run-time, no need for default published section.
+    PropertyPanel: TPanel;
+    PropFilterLabel: TLabel;
+    PropFilterEdit: TListFilterEdit;
+    RestrictedPanel: TPanel;
+    RestrictedInnerPanel: TPanel;
+    WidgetSetsRestrictedLabel: TLabel;
+    WidgetSetsRestrictedBox: TPaintBox;
+    ComponentRestrictedLabel: TLabel;
+    ComponentRestrictedBox: TPaintBox;
+    NoteBook: TPageControl;
+    Splitter1: TSplitter;
+    Splitter2: TSplitter;
+    // MenuItems
     AddToFavoritesPopupMenuItem: TMenuItem;
     ViewRestrictedPropertiesPopupMenuItem: TMenuItem;
     CopyPopupmenuItem: TMenuItem;
@@ -636,32 +653,59 @@ type
     ShowStatusBarPopupMenuItem: TMenuItem;
     ShowOptionsPopupMenuItem: TMenuItem;
     UndoPropertyPopupMenuItem: TMenuItem;
-    AvailPersistentComboBox: TComboBox;
-    InfoPanel: TPanel;
-    EventGrid: TOICustomPropertyGrid;
-    FavoriteGrid: TOICustomPropertyGrid;
-    RestrictedGrid: TOICustomPropertyGrid;
-    RestrictedPanel: TPanel;
-    RestrictedInnerPanel: TPanel;
-    WidgetSetsRestrictedLabel: TLabel;
-    WidgetSetsRestrictedBox: TPaintBox;
-    ComponentRestrictedLabel: TLabel;
-    ComponentRestrictedBox: TPaintBox;
-    MainPopupMenu: TPopupMenu;
-    NoteBook: TPageControl;
-    PropertyGrid: TOICustomPropertyGrid;
-    Splitter1: TSplitter;
-    Splitter2: TSplitter;
-    StatusBar: TStatusBar;
-    procedure AvailComboBoxCloseUp(Sender: TObject);
+    // Variables
+    FAutoShow: Boolean;
+    FCheckboxForBoolean: Boolean;
+    FComponentEditor: TBaseComponentEditor;
+    FDefaultItemHeight: integer;
+    FEnableHookGetSelection: boolean;
+    FFavorites: TOIFavoriteProperties;
+    FFilter: TTypeKinds;
+    FFlags: TOIFlags;
+    FInfoBoxHeight: integer;
+    FLastActiveRowName: String;
+    FPropertyEditorHook: TPropertyEditorHook;
+    FRefreshingSelectionCount: integer;
+    FRestricted: TOIRestrictedProperties;
+    FSelection: TPersistentSelectionList;
+    FSettingSelectionCount: integer;
+    FShowComponentTree: Boolean;
+    FShowFavorites: Boolean;
+    FShowInfoBox: Boolean;
+    FShowRestricted: Boolean;
+    FShowStatusBar: Boolean;
+    FStateOfHintsOnMainPopupMenu: Boolean;
+    FUpdateLock: integer;
+    FUpdatingAvailComboBox: Boolean;
+    // Events
+    FOnAddAvailablePersistent: TAddAvailablePersistentEvent;
+    FOnAddToFavorites: TNotifyEvent;
+    FOnAutoShow: TNotifyEvent;
+    FOnFindDeclarationOfProperty: TNotifyEvent;
+    FOnModified: TNotifyEvent;
+    FOnNodeGetImageIndex: TOnOINodeGetImageEvent;
+    FOnOIKeyDown: TKeyEvent;
+    FOnPropertyHint: TOIPropertyHintEvent;
+    FOnRemainingKeyDown: TKeyEvent;
+    FOnRemainingKeyUp: TKeyEvent;
+    FOnRemoveFromFavorites: TNotifyEvent;
+    FOnSelectionChange: TNotifyEvent;
+    FOnSelectPersistentsInOI: TNotifyEvent;
+    FOnShowOptions: TNotifyEvent;
+    FOnUpdateRestricted: TNotifyEvent;
+    FOnViewRestricted: TNotifyEvent;
+    // These event handlers are assigned at run-time, no need for default published section.
     procedure ComponentTreeDblClick(Sender: TObject);
     procedure ComponentTreeGetNodeImageIndex(APersistent: TPersistent; var AIndex: integer);
     procedure ComponentTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ComponentTreeSelectionChanged(Sender: TObject);
-    procedure MainPopupMenuClose(Sender: TObject);
     procedure OnGridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnGridDblClick(Sender: TObject);
+    procedure OnGridModified(Sender: TObject);
+    procedure OnGridSelectionChange(Sender: TObject);
+    function OnGridPropertyHint(Sender: TObject; PointedRow: TOIPropertyGridRow;
+      out AHint: string): boolean;
     procedure OnPropEditPopupClick(Sender: TObject);
     procedure OnAddToFavoritesPopupmenuItemClick(Sender: TObject);
     procedure OnRemoveFromFavoritesPopupmenuItemClick(Sender: TObject);
@@ -678,66 +722,31 @@ type
     procedure OnShowInfoBoxPopupMenuItemClick(Sender: TObject);
     procedure OnShowStatusBarPopupMenuItemClick(Sender: TObject);
     procedure OnShowOptionsPopupMenuItemClick(Sender: TObject);
-    procedure OnMainPopupMenuPopup(Sender: TObject);
     procedure RestrictedPageShow(Sender: TObject);
     procedure WidgetSetRestrictedPaint(Sender: TObject);
     procedure ComponentRestrictedPaint(Sender: TObject);
-    procedure DoUpdateRestricted;
-    procedure DoViewRestricted;
     procedure PropFilterEditAfterFilter(Sender: TObject);
     procedure PropFilterEditResize(Sender: TObject);
     procedure NoteBookPageChange(Sender: TObject);
-  private
-    FAutoShow: Boolean;
-    FCheckboxForBoolean: Boolean;
-    FComponentEditor: TBaseComponentEditor;
-    FDefaultItemHeight: integer;
-    FEnableHookGetSelection: boolean;
-    FFavorites: TOIFavoriteProperties;
-    FFilter: TTypeKinds;
-    FFlags: TOIFlags;
-    FInfoBoxHeight: integer;
-    FLastActiveRowName: String;
-    FOnAddAvailablePersistent: TOnAddAvailablePersistent;
-    FOnAddToFavorites: TNotifyEvent;
-    FOnAutoShow: TNotifyEvent;
-    FOnFindDeclarationOfProperty: TNotifyEvent;
-    FOnModified: TNotifyEvent;
-    FOnNodeGetImageIndex: TOnOINodeGetImageEvent;
-    FOnOIKeyDown: TKeyEvent;
-    FOnPropertyHint: TOIPropertyHint;
-    FOnRemainingKeyDown: TKeyEvent;
-    FOnRemainingKeyUp: TKeyEvent;
-    FOnRemoveFromFavorites: TNotifyEvent;
-    FOnSelectionChange: TNotifyEvent;
-    FOnSelectPersistentsInOI: TNotifyEvent;
-    FOnShowOptions: TNotifyEvent;
-    FOnUpdateRestricted: TNotifyEvent;
-    FOnViewRestricted: TNotifyEvent;
-    FPropertyEditorHook: TPropertyEditorHook;
-    FRefreshingSelectionCount: integer;
-    FRestricted: TOIRestrictedProperties;
-    FSelection: TPersistentSelectionList;
-    FSettingSelectionCount: integer;
-    FShowComponentTree: Boolean;
-    FShowFavorites: Boolean;
-    FShowInfoBox: Boolean;
-    FShowRestricted: Boolean;
-    FShowStatusBar: Boolean;
-    FStateOfHintsOnMainPopupMenu: Boolean;
-    FUpdateLock: integer;
-    FUpdatingAvailComboBox: Boolean;
-    function GetComponentPanelHeight: integer;
-    function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
-    function GetInfoBoxHeight: integer;
-    function GetParentCandidates: TFPList;
-    procedure CreateBottomSplitter;
-    procedure CreateTopSplitter;
-    procedure DefSelectionVisibleInDesigner;
     procedure DoChangeParentItemClick(Sender: TObject);
     procedure DoCollectionAddItem(Sender: TObject);
     procedure DoComponentEditorVerbMenuItemClick(Sender: TObject);
     procedure DoZOrderItemClick(Sender: TObject);
+    procedure TopSplitterMoved(Sender: TObject);
+
+    procedure DoModified(Sender: TObject);
+    // Methods
+    procedure DoUpdateRestricted;
+    procedure DoViewRestricted;
+    function GetComponentPanelHeight: integer;
+    function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
+    function GetInfoBoxHeight: integer;
+    function GetParentCandidates: TFPList;
+    function GetSelectedPersistent: TPersistent;
+    function GetComponentEditorForSelection: TBaseComponentEditor;
+    procedure CreateBottomSplitter;
+    procedure CreateTopSplitter;
+    procedure DefSelectionVisibleInDesigner;
     procedure RestrictedPaint(
       ABox: TPaintBox; const ARestrictions: TWidgetSetRestrictionsArray);
     procedure SetComponentEditor(const AValue: TBaseComponentEditor);
@@ -757,29 +766,29 @@ type
     procedure SetShowRestricted(const AValue: Boolean);
     procedure SetShowStatusBar(const AValue: Boolean);
     procedure ShowNextPage(Delta: integer);
-    procedure TopSplitterMoved(Sender: TObject);
-  protected
+
     function PersistentToString(APersistent: TPersistent): string;
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
     procedure HookLookupRootChange;
-    procedure OnGridModified(Sender: TObject);
-    procedure OnGridSelectionChange(Sender: TObject);
-    function OnGridPropertyHint(Sender: TObject; PointedRow: TOIPropertyGridRow;
-      out AHint: string): boolean;
     procedure FillPersistentComboBox;
     procedure SetAvailComboBoxText;
     procedure HookGetSelection(const ASelection: TPersistentSelectionList);
     procedure HookSetSelection(const ASelection: TPersistentSelectionList);
     procedure DestroyNoteBook;
     procedure CreateNoteBook;
+  protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure Resize; override;
-    procedure DoModified(Sender: TObject);
-    function GetSelectedPersistent: TPersistent;
-    function GetComponentEditorForSelection: TBaseComponentEditor;
-    property ComponentEditor: TBaseComponentEditor read FComponentEditor write SetComponentEditor;
   public
+    // These are created at run-time, no need for default published section.
+    ComponentTree: TComponentTreeView;
+    InfoPanel: TPanel;
+    EventGrid: TOICustomPropertyGrid;
+    FavoriteGrid: TOICustomPropertyGrid;
+    RestrictedGrid: TOICustomPropertyGrid;
+    PropertyGrid: TOICustomPropertyGrid;
+    //
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
     procedure RefreshSelection;
@@ -799,6 +808,7 @@ type
     procedure ActivateGrid(Grid: TOICustomPropertyGrid);
     procedure FocusGrid(Grid: TOICustomPropertyGrid = nil);
   public
+    property ComponentEditor: TBaseComponentEditor read FComponentEditor write SetComponentEditor;
     property ComponentPanelHeight: integer read GetComponentPanelHeight
                                           write SetComponentPanelHeight;
     property DefaultItemHeight: integer read FDefaultItemHeight
@@ -810,7 +820,19 @@ type
     property GridControl[Page: TObjectInspectorPage]: TOICustomPropertyGrid
                                                             read GetGridControl;
     property InfoBoxHeight: integer read GetInfoBoxHeight write SetInfoBoxHeight;
-    property OnAddAvailPersistent: TOnAddAvailablePersistent
+    property PropertyEditorHook: TPropertyEditorHook read FPropertyEditorHook
+                                                    write SetPropertyEditorHook;
+    property RestrictedProps: TOIRestrictedProperties read FRestricted write SetRestricted;
+    property Selection: TPersistentSelectionList read FSelection write SetSelection;
+    property AutoShow: Boolean read FAutoShow write FAutoShow;
+    property ShowComponentTree: Boolean read FShowComponentTree write SetShowComponentTree;
+    property ShowFavorites: Boolean read FShowFavorites write SetShowFavorites;
+    property ShowInfoBox: Boolean read FShowInfoBox write SetShowInfoBox;
+    property ShowRestricted: Boolean read FShowRestricted write SetShowRestricted;
+    property ShowStatusBar: Boolean read FShowStatusBar write SetShowStatusBar;
+    property LastActiveRowName: string read FLastActiveRowName;
+    // Events
+    property OnAddAvailPersistent: TAddAvailablePersistentEvent
                  read FOnAddAvailablePersistent write FOnAddAvailablePersistent;
     property OnAddToFavorites: TNotifyEvent read FOnAddToFavorites write FOnAddToFavorites;
     property OnAutoShow: TNotifyEvent read FOnAutoShow write FOnAutoShow;
@@ -818,7 +840,7 @@ type
                                                       write FOnFindDeclarationOfProperty;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
-    property OnPropertyHint: TOIPropertyHint read FOnPropertyHint write FOnPropertyHint;
+    property OnPropertyHint: TOIPropertyHintEvent read FOnPropertyHint write FOnPropertyHint;
     property OnRemainingKeyDown: TKeyEvent read FOnRemainingKeyDown
                                          write FOnRemainingKeyDown;
     property OnRemainingKeyUp: TKeyEvent read FOnRemainingKeyUp
@@ -834,17 +856,6 @@ type
     property OnViewRestricted: TNotifyEvent read FOnViewRestricted write FOnViewRestricted;
     property OnNodeGetImageIndex : TOnOINodeGetImageEvent read FOnNodeGetImageIndex
                                                          write FOnNodeGetImageIndex;
-    property PropertyEditorHook: TPropertyEditorHook read FPropertyEditorHook
-                                                    write SetPropertyEditorHook;
-    property RestrictedProps: TOIRestrictedProperties read FRestricted write SetRestricted;
-    property Selection: TPersistentSelectionList read FSelection write SetSelection;
-    property AutoShow: Boolean read FAutoShow write FAutoShow;
-    property ShowComponentTree: Boolean read FShowComponentTree write SetShowComponentTree;
-    property ShowFavorites: Boolean read FShowFavorites write SetShowFavorites;
-    property ShowInfoBox: Boolean read FShowInfoBox write SetShowInfoBox;
-    property ShowRestricted: Boolean read FShowRestricted write SetShowRestricted;
-    property ShowStatusBar: Boolean read FShowStatusBar write SetShowStatusBar;
-    property LastActiveRowName: string read FLastActiveRowName;
   end;
 
 const
@@ -4191,7 +4202,7 @@ begin
   FFilter := DefaultOITypeKinds;
 
   Caption := oisObjectInspector;
-  FilterLabel.Caption := oisBtnComponents;
+  CompFilterLabel.Caption := oisBtnComponents;
   MainPopupMenu.Images := IDEImages.Images_16;
 
   AddPopupMenuItem(AddToFavoritesPopupMenuItem,nil,'AddToFavoritePopupMenuItem',
@@ -4334,9 +4345,9 @@ begin
     Visible := True;
   end;
 
-  FilterLabel1 := TLabel.Create(self);
+  PropFilterLabel := TLabel.Create(self);
   PropFilterEdit:= TListFilterEdit.Create(self);
-  with FilterLabel1 do
+  with PropFilterLabel do
   begin
     Parent := PropertyPanel;
     Left := ScaleCoord96(5);
@@ -4349,9 +4360,9 @@ begin
   with PropFilterEdit do
   begin
     Parent := PropertyPanel;
-    AnchorSideLeft.Control := FilterLabel1;
+    AnchorSideLeft.Control := PropFilterLabel;
     AnchorSideLeft.Side := asrBottom;
-    AnchorSideTop.Control := FilterLabel1;
+    AnchorSideTop.Control := PropFilterLabel;
     AnchorSideTop.Side := asrCenter;
     Left := ScaleCoord96(61);
     Top := ScaleCoord96(3);
@@ -4373,7 +4384,7 @@ destructor TObjectInspectorDlg.Destroy;
 begin
   FreeAndNil(FSelection);
   FreeAndNil(FComponentEditor);
-  FreeAndNil(FilterLabel1);
+  FreeAndNil(PropFilterLabel);
   FreeAndNil(PropFilterEdit);
   FreeAndNil(PropertyPanel);  
   inherited Destroy;
