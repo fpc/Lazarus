@@ -309,7 +309,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TStatusPanel.SetIndex">
         <short>
-          <var>SetIndex</var> saves the old index value, checks that the supplied value is different then calls inherited method</short>
+          <var>SetIndex</var> saves the old index value, checks that the supplied value is different and then calls inherited method</short>
         <descr/>
         <errors/>
         <seealso>
@@ -450,7 +450,7 @@
       <!-- function Visibility: protected -->
       <element name="TStatusPanels.GetOwner">
         <short>
-          <var>GetOwner</var> returns a Status Bar, overriding the inherited method</short>
+          <var>GetOwner</var> returns a Status Bar overriding the inherited method</short>
         <descr/>
         <errors/>
         <seealso>
@@ -520,8 +520,8 @@
         <descr>
           <p>
             <var>TStatusBar</var> - a strip along the bottom of a form for displaying information on current status</p>
-          <p>The bar may consist of a single <var>SimplePanel</var>, in which case the displayed text is contained in <var>SimpleText</var>.</p>
-          <p>However if <var>SimplePanel</var> is false, then there can be multiple panels or sub-sections of the status bar, whose properties are described in <var>Panels</var>.</p>
+          <p>The bar may consist of a single <var>SimplePanel</var> in which case the displayed text is contained in <var>SimpleText</var>.</p>
+          <p>However if <var>SimplePanel</var> is false, then there can be multiple panels or sub-sections of the status bar whose properties are described in <var>Panels</var>.</p>
           <p>The property <var>SimpleText</var> can be assigned programatically to display the value of some variable, such as the position of the Splitter in the example</p>
         </descr>
         <example file="extctrls/statusbar.pas"/>
@@ -766,10 +766,10 @@
       <!-- property Visibility: published -->
       <element name="TStatusBar.SimplePanel">
         <short>
-          <var>SimplePanel </var>- boolean. Is there just one continuous panel, or several sub-panels?</short>
+          <var>SimplePanel </var>- boolean. Is there just one continuous panel or several sub-panels?</short>
         <descr>
           <p>
-            <var>SimplePanel </var>- boolean. Is there just one continuous panel, or several sub-panels?</p>
+            <var>SimplePanel </var>- boolean. Is there just one continuous panel or several sub-panels?</p>
           <p>If true, the value of <var>SimpleText</var> is displayed; if false, the contents of <var>Panels</var> is displayed. </p>
           <p>Contents can be adjusted with a stringlist editor that pops up when the ellipsis (...) next to <var>Panels</var> is selected and allows insertion of an arbitrary number of sub-panels with their own strings</p>
         </descr>
@@ -1355,7 +1355,7 @@
             <var>TTabControl</var> and 
             <var>TPageControl</var>
           </p>
-          <p>A tab control has a series of <var>Tabs</var>, and it may or may not contain pages.</p>
+          <p>A tab control has a series of <var>Tabs</var> and it may or may not contain pages.</p>
         </descr>
         <seealso>
           <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
@@ -2000,7 +2000,7 @@
         <descr>
           <p>The set of  <var>Options</var> for the Notebook: </p>
           <p>
-            <var>nboShowCloseButtons</var> (display a little CloseButton on the Tab next to the label, to allow the user to close that tab),</p>
+            <var>nboShowCloseButtons</var> (display a little CloseButton on the Tab next to the label to allow a user to close that tab),</p>
           <p>
             <var>nboMultiLine</var> (allows multi-line captions on the Tabs)</p>
         </descr>
@@ -2466,12 +2466,12 @@
       <!-- object Visibility: default -->
       <element name="TPageControl">
         <short>
-          <var>TPageControl</var> - provides a series of tabs along the edge of a multi-page component, to allow selection of one of the pages (TTabSheet) of the component.</short>
+          <var>TPageControl</var> - provides a series of tabs along the edge of a multi-page component to allow selection of one of the pages (TTabSheet) of the component.</short>
         <descr>
           <p>
-            <var>TPageControl</var> - provides a series of tabs along the edge of a multi-page component, to allow selection of one of the pages (<var>TTabSheet</var>) of the component.</p>
-          <p>To use <var>TPageControl</var>, select its icon from the Common Controls tab of the IDE Component Palette, and place it at the desired location on the Form.</p>
-          <p>Use the Form Designer and Object Inspector to adjust its shape, size, alignment, anchoring, docking and other properties, then select the object and right click with the mouse to bring up a pop-up menu whose frst item is 'AddPage'. After you have added as many pages as you need, the individual pages can be edited by selecting <var>ActivePage</var> in the Object Inspector, choosing the page required, and editing its properties. </p>
+            <var>TPageControl</var> - provides a series of tabs along the edge of a multi-page component to allow selection of one of the pages (<var>TTabSheet</var>) of the component.</p>
+          <p>To use <var>TPageControl</var>, select its icon from the Common Controls tab of the IDE Component Palette and place it at the desired location on the Form.</p>
+          <p>Use the Form Designer and Object Inspector to adjust its shape, size, alignment, anchoring, docking and other properties, then select the object and right click with the mouse to bring up a pop-up menu whose first item is 'AddPage'. After you have added as many pages as you need, the individual pages can be edited by selecting <var>ActivePage</var> in the Object Inspector choosing the page required and editing its properties. </p>
           <p>While a given page is selected, it is also possible to drop other controls (such as buttons, memo boxes etc) on to the page from the Component Palette.</p>
           <p>Inherits most of its properties from <link id="#lcl.ComCtrls.TCustomTabControl">TCustomTabControl</link>
           </p>
@@ -2670,7 +2670,7 @@
         <descr>
           <p>
             <var>ActivePage</var> - the currently selected active page (<var>TTabSheet</var>)</p>
-          <p>Note that this overrides the definition in <var>TCustomTabControl</var>, where <var>ActivePage</var> is defined as a String.</p>
+          <p>Note that this overrides the definition in <var>TCustomTabControl</var> where <var>ActivePage</var> is defined as a String.</p>
         </descr>
         <seealso/>
       </element>
@@ -3092,7 +3092,7 @@
       <!-- function Visibility: public -->
       <element name="TTabControlStrings.IndexOfTabAt">
         <short>
-          <var>IndexOfTabAt</var> - returns the Index value of the tab at the specified location, X, Y</short>
+          <var>IndexOfTabAt</var> - returns the Index value of the tab at the specified location X, Y</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3262,7 +3262,7 @@
       <!-- property Visibility: public -->
       <element name="TTabControlStrings.RaggedRight">
         <short>
-          <var>RaggedRight</var> - if True, strings are un-justified or un-aligned, with ragged right margin</short>
+          <var>RaggedRight</var> - if True, strings are un-justified or un-aligned with ragged right margin</short>
         <descr/>
         <seealso/>
       </element>
@@ -3630,7 +3630,7 @@
       <!-- procedure type Visibility: default -->
       <element name="TDrawTabEvent">
         <short>
-          <var>TDrawTabEvent</var> - generic event handling procedure for drawing a tab, with given index at the specified rectangle</short>
+          <var>TDrawTabEvent</var> - generic event handling procedure for drawing a tab with given index at the specified rectangle</short>
         <descr/>
         <seealso/>
       </element>
@@ -4201,7 +4201,7 @@
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.MultiSelect">
         <short>
-          <var>MultiSelect</var> - whether multiple Tabs are allowed to be selected at the same time (eg by pressing Shift or Ctrl while selecting)</short>
+          <var>MultiSelect</var> - whether multiple Tabs are allowed to be selected at the same time (e.g. by pressing Shift or Ctrl while selecting)</short>
         <descr/>
         <seealso/>
       </element>
@@ -4447,7 +4447,7 @@
           <p>
             <var>TTabControl</var> - a series of <var>Tabs</var> along the edge of a display area; selection of a <var>Tab</var> governs the contents of the <var>DisplayRect</var>
           </p>
-          <p>Use <var>TTabControl </var>by selecting its icon from the Common Controls tab of the IDE Component Palette and placing it at the desired location on the <var>Form</var>. Use the Form Designer and Object Inspector to adjust its shape, size, alignment, anchoring and other properties. Tabs can be aded or removed from the component by selecting it, then right-clicking with the mouse to get a pop-up menu whose first item is 'Add Tab'. Once created, the Tabs can be edited by selecting the <var>Tabs</var> entry in the Object Inspector, and selecting the ellipsis (...) which will cause a pop-up String editor to appear. The tabs can be given new captions, moved up and down the list, or removed altogether, as required.</p>
+          <p>Use <var>TTabControl </var>by selecting its icon from the Common Controls tab of the IDE Component Palette and placing it at the desired location on the <var>Form</var>. Use the Form Designer and Object Inspector to adjust its shape, size, alignment, anchoring and other properties. Tabs can be aded or removed from the component by selecting it, then right-clicking with the mouse to get a pop-up menu whose first item is 'Add Tab'. Once created, the Tabs can be edited by selecting the <var>Tabs</var> entry in the Object Inspector and selecting the ellipsis (...) which will cause a pop-up String editor to appear. The tabs can be given new captions, moved up and down the list or removed altogether as required.</p>
           <p>Each Tab has an Index (starting from 0) and this index can be used to specify an entry from <var>Images</var> for display in the <var>DisplayRect</var>.</p>
         </descr>
         <errors/>
@@ -4880,7 +4880,7 @@
       <!-- enumeration type Visibility: default -->
       <element name="TSortType">
         <short>
-          <var>TSortType</var> - enumerated type, a series of constants signifying that there is no sorting, or that sorting is according to data, test or both</short>
+          <var>TSortType</var> - enumerated type, a series of constants signifying that there is no sorting or that sorting is according to data, test or both</short>
         <descr/>
         <seealso/>
       </element>
@@ -4960,7 +4960,7 @@
           <var>TListItem</var> - the ancestor class for  the Items in <var>TCustomListView</var> and <var>TListView</var>
         </short>
         <descr>Most properties are inherited from ancestors, TPersistent and TObject
-</descr>
+        </descr>
         <seealso>
           <link id="#rtl.Classes.TPersistent">Classes.TPersistent</link>
           <link id="#rtl.Objects.TObject">Objects.TObject</link>
@@ -5788,7 +5788,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TListColumn.SetIndex">
         <short>
-          <var>SetIndex</var> - calls inherited method, and if this is a new index value, changes to the new column index</short>
+          <var>SetIndex</var> - calls inherited method and if this is a new index value, changes to the new column index</short>
         <descr/>
         <errors/>
         <seealso>
@@ -7175,9 +7175,9 @@
           <p>
             <var>LargeImages</var> - an ImageList to be used in association with the list of <var>Items</var>
           </p>
-          <p>A typical application might have two ImageLists: one of<var>LargeImages</var> and one of <var>SmallImages</var>, containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p>
-          <p>SmallImages could be displayed beside the text strings in the list view, and the programmer would supply code to ensure that when an item with its associated SmallImage was selected, the corresponding LargeImage would be displayed in another window.</p>
-          <p>A <var>TImageList</var> control needs to be selected and pasted on to the Form Designer, and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <var>TImageList</var> icon in the Form Designer. Then in the StringList editor for <var>Items</var> the correct <var>ImageIndex</var> must be allocated to each entry in the list.</p>
+          <p>A typical application might have two ImageLists: one of<var>LargeImages</var> and one of <var>SmallImages</var> containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p>
+          <p>SmallImages could be displayed beside the text strings in the list view and the programmer would supply code to ensure that when an item with its associated SmallImage was selected, the corresponding LargeImage would be displayed in another window.</p>
+          <p>A <var>TImageList</var> control needs to be selected and pasted on to the Form Designer and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <var>TImageList</var> icon in the Form Designer. Then in the StringList editor for <var>Items</var> the correct <var>ImageIndex</var> must be allocated to each entry in the list.</p>
         </descr>
       </element>
       <!-- property Visibility: protected -->
@@ -7202,7 +7202,7 @@
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ReadOnly">
         <short>
-          <var>ReadOnly</var> - determines if the list can only be read, and not written or deleted.</short>
+          <var>ReadOnly</var> - determines if the list can only be read and not written or deleted.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ScrolledLeft">
@@ -7242,9 +7242,9 @@
           <p>
             <var>SmallImages</var>  - an ImageList of small images (icons) to be used in association with the list of <var>Items</var>
           </p>
-          <p>A typical application might have two ImageLists: one of<var>LargeImages</var> and one of <var>SmallImages</var>, containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p>
-          <p>SmallImages could be displayed beside the text strings in the list view, and the programmer would supply code to ensure that when an item with its associated SmallImage was selected, the corresponding LargeImage would be displayed in another window.</p>
-          <p>A <var>TImageList</var> control needs to be selected and pasted on to the Form Designer, and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <var>TImageList</var> icon in the Form Designer. Then in the StringList editor for <var>Items</var> the correct <var>ImageIndex</var> must be allocated to each entry in the list.</p>
+          <p>A typical application might have two ImageLists: one of<var>LargeImages</var> and one of <var>SmallImages</var> containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p>
+          <p>SmallImages could be displayed beside the text strings in the list view and the programmer would supply code to ensure that when an item with its associated SmallImage was selected, the corresponding LargeImage would be displayed in another window.</p>
+          <p>A <var>TImageList</var> control needs to be selected and pasted on to the Form Designer and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <var>TImageList</var> icon in the Form Designer. Then in the StringList editor for <var>Items</var> the correct <var>ImageIndex</var> must be allocated to each entry in the list.</p>
         </descr>
       </element>
       <!-- property Visibility: protected -->
@@ -7401,15 +7401,15 @@
           <var>HotTrack</var> - the property whereby the item under the mouse pointer becomes emphasised</short>
         <descr>
           <p>
-            <var>HotTrack</var> is the name given to the feature whereby, as the mouse pointer moves over some graphic item (eg a tab, an entry in a list, a button or other control in a form), that item becomes emphasized in some way. </p>
+            <var>HotTrack</var> is the name given to the feature whereby, as the mouse pointer moves over some graphic item (e.g. a tab, an entry in a list, a button or other control in a form), that item becomes emphasized in some way. </p>
           <p>The default list of emphasis possibilities is given by the definition</p>
           <pre>TListHotTrackStyle = (htHandPoint, htUnderlineCold, htUnderlineHot)
-</pre>
+          </pre>
           <p>in other words</p>
           <ul>
             <li>it may be indicated by a hand pointer</li>
-            <li>it may be underlined even when Cold (ie the pointer has covered it and moved on, but the underlining remains)</li>
-            <li>it may be underlined when Hot (ie when the pointer is directly on the item)</li>
+            <li>it may be underlined even when Cold (i.e. the pointer has covered it and moved on but the underlining remains)</li>
+            <li>it may be underlined when Hot (i.e. when the pointer is directly on the item)</li>
           </ul>
           <p>This feature can be used in List Views and in TabControls</p>
         </descr>
@@ -7467,16 +7467,16 @@
       <!-- object Visibility: default -->
       <element name="TListView">
         <short>
-          <var>TListView </var> - a window showing a list of <var>Items</var>, which may or may not have associated icons</short>
+          <var>TListView </var> - a window showing a list of <var>Items</var> which may or may not have associated icons</short>
         <descr>
           <p>
-            <var>TListView </var>- a window showing a list of items, which may or may not have associated icons</p>
-          <p>At first, this control looks very like <link id="#lcl.StdCtrls.TListBox">TListBox</link>, but it has a much higher degree of complexity. It is capable of displaying Items in <var>Columns</var> of <var>Rows</var>, and it can have images associated with the list <var>Items</var>.</p>
+            <var>TListView </var>- a window showing a list of items which may or may not have associated icons</p>
+          <p>At first this control looks very like <link id="#lcl.StdCtrls.TListBox">TListBox</link> but it has a much higher degree of complexity. It is capable of displaying Items in <var>Columns</var> of <var>Rows</var> and it can have images associated with the list <var>Items</var>.</p>
           <p>The important information is held in <var>Items</var>, a string-list that can be created using the string-list editor obtained by right-clicking on the ListView in the Form Editor or by clicking on the ellipsis (...) next to the <var>Items</var> entry in the Object Inspector.</p>
           <p>A typical application might have two ImageLists: one of<var>LargeImages</var> and one of <var>SmallImages</var>, containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p>
           <p>
-            <var>SmallImages</var> (if assigned to a string-list) can be displayed beside the text strings in the list view, and the programmer would supply code to ensure that when an item with its associated Small Image was selected, the corresponding Large Image would be displayed in another window.</p>
-          <p>One or more <var>TImageList</var> controls need to be selected and pasted on to the Form Designer, and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <var>TImageList</var> icon in the Form Designer. The image list can be populated by reading from files. Then in the StringList editor for <var>Items</var> the correct <var>ImageIndex</var> must be allocated to each entry in the list.</p>
+            <var>SmallImages</var> (if assigned to a string-list) can be displayed beside the text strings in the list view and the programmer would supply code to ensure that when an item with its associated Small Image was selected, the corresponding Large Image would be displayed in another window.</p>
+          <p>One or more <var>TImageList</var> controls need to be selected and pasted on to the Form Designer and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <var>TImageList</var> icon in the Form Designer. The image list can be populated by reading from files. Then in the StringList editor for <var>Items</var> the correct <var>ImageIndex</var> must be allocated to each entry in the list.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
@@ -8011,7 +8011,7 @@
       <!-- property Visibility: public -->
       <element name="TCustomProgressBar.BarShowText">
         <short>
-          <var>BarShowText</var> - some widget sets allow text to be displayed on the bar to indicate its position (eg 32%)</short>
+          <var>BarShowText</var> - some widget sets allow text to be displayed on the bar to indicate its position (e.g. 32%)</short>
         <descr/>
         <seealso/>
       </element>
@@ -8020,7 +8020,7 @@
         <short>
           <var>TProgress Bar</var> - a bar that depicts what proportion of a process has been completed</short>
         <descr>
-          <var>TProgress Bar</var>: a control that appears at or near the bottom of form or window. It depicts the progress of a process, or what proportion of the process is complete. A series of coloured rectangles appears in the control, filling it from left to right or from top to bottom as the process progresses</descr>
+          <var>TProgress Bar</var>: a control that appears at or near the bottom of form or window. It depicts the progress of a process or what proportion of the process is complete. A series of coloured rectangles appears in the control filling it from left to right or from top to bottom as the process progresses</descr>
         <seealso>
           <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
         </seealso>
@@ -8309,14 +8309,14 @@
       <!-- object Visibility: default -->
       <element name="TCustomUpDown">
         <short>
-          <var>TCustomUpDown</var> - base class for <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar, but can also control a digital numeric display</short>
+          <var>TCustomUpDown</var> - base class for <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar but can also control a digital numeric display</short>
         <descr>
           <p>
-            <var>TCustomUpDown</var> - base class for <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar, but can also control a digital numeric display
+            <var>TCustomUpDown</var> - base class for <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar but can also control a digital numeric display
 </p>
           <p>The control definition itself does not specify the variable upon which the buttons operate. The application programmer is responsible for supplying an event handler for <var>OnClick</var> to determine which button has been selected (designated <var>btNext</var> or <var>btPrev</var>) and incrementing or decrementing the variable in the control with which the UpDown is associated. </p>
           <p>The amount by which the variable is changed is set by the integer property <var>Increment</var> with the optional multiplier <var>Thousands</var> (a boolean property).</p>
-          <p>For example the UpDown control may be used to move a slider up and down a scale by a specified amount for each click; alternatively, a number may be displayed in a text box, and clicking the buttons of the UpDown control may increment or decrement the number displayed by a specified amount.</p>
+          <p>For example the UpDown control may be used to move a slider up and down a scale by a specified amount for each click; alternatively a number may be displayed in a text box and clicking the buttons of the UpDown control may increment or decrement the number displayed by a specified amount.</p>
         </descr>
         <errors/>
         <seealso/>
@@ -8670,7 +8670,7 @@
       <!-- property Visibility: protected -->
       <element name="TCustomUpDown.ArrowKeys">
         <short>
-          <var>ArrowKeys</var> - if True, the control can be operated by the keyboard's arrow keys, which would simulate a click on the Next or Previous button</short>
+          <var>ArrowKeys</var> - if True, the control can be operated by the keyboard's arrow keys which would simulate a click on the Next or Previous button</short>
         <descr/>
         <seealso/>
       </element>
@@ -8739,7 +8739,7 @@
         <descr>
           <p>
             <var>OnClick</var> - special event handler for a click on up or down button</p>
-          <p>The event handler must determine whether the [next] or [prev] button was clicked, and therefore whether to increment or decrement the controlled variable and adjust the display</p>
+          <p>The event handler must determine whether the [next] or [prev] button was clicked and therefore whether to increment or decrement the controlled variable and adjust the display</p>
         </descr>
         <seealso/>
       </element>
@@ -8773,14 +8773,14 @@
       <!-- object Visibility: default -->
       <element name="TUpDown">
         <short>
-          <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar, but can also control a digital numeric display</short>
+          <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar but can also control a digital numeric display</short>
         <descr>
           <p>
-            <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar, but can also control a digital numeric display
+            <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar but can also control a digital numeric display
           </p>
           <p>The control definition itself does not specify the variable upon which the buttons operate. The application programmer is responsible for supplying an event handler for <var>OnClick</var> to determine which button has been selected (designated <var>btNext</var> or <var>btPrev</var>) and incrementing or decrementing the variable in the control with which the UpDown is associated. </p>
           <p>The amount by which the variable is changed is set by the integer property <var>Increment</var> with the optional multiplier <var>Thousands</var> (a boolean property).</p>
-          <p>For example the UpDown control may be used to move a slider up and down a scale by a specified amount for each click; alternatively, a number may be displayed in a text box, and clicking the buttons of the UpDown control may increment or decrement the number displayed by a specified amount.</p>
+          <p>For example the UpDown control may be used to move a slider up and down a scale by a specified amount for each click; alternatively a number may be displayed in a text box and clicking the buttons of the UpDown control may increment or decrement the number displayed by a specified amount.</p>
         </descr>
         <errors/>
         <seealso/>
@@ -9589,7 +9589,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TToolButton.RefreshControl">
         <short>
-          <var>RefreshControl</var> - refreshes the drawing of the tool, in case changes have been made</short>
+          <var>RefreshControl</var> - refreshes the drawing of the tool in case changes have been made</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9754,7 +9754,7 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Down">
-        <short>Is this button <var>Down</var> (ie has it been selected)? Default false</short>
+        <short>Is this button <var>Down</var> (i.e. has it been selected)? Default false</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.DragCursor" link="#LCL.Controls.TControl.DragCursor">
@@ -9779,7 +9779,7 @@
         <short>A <var>DropDownMenu</var> that appears when this button is selected</short>
         <descr>
           <p>A <var>DropDownMenu</var> that appears when this button is selected</p>
-          <p>It uses the same code as a <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>, and offers a series of additional menu choices.</p>
+          <p>It uses the same code as a <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link> and offers a series of additional menu choices.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
@@ -9793,7 +9793,7 @@
         <short>Is this button a member of a group? Default false</short>
         <descr>
           <p>Is this button a member of a group?</p>
-          <p>This would mean behaviour similar to the radio buttons in a <link id="#lcl.ExtCtrls.TRadioGroup">TRadioGroup</link>, where only one button in the group can be selected, or the check boxes in a <link id="#lcl.ExtCtrls.TCheckGroup">TCheckGroup</link> where more than one item can be selected but the members of the group interact in some way.</p>
+          <p>This would mean behaviour similar to the radio buttons in a <link id="#lcl.ExtCtrls.TRadioGroup">TRadioGroup</link> where only one button in the group can be selected, or the check boxes in a <link id="#lcl.ExtCtrls.TCheckGroup">TCheckGroup</link> where more than one item can be selected but the members of the group interact in some way.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
@@ -9816,14 +9816,14 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Marked">
-        <short>Is this button <var>Marked</var> (ie has it been selected)? Default false</short>
+        <short>Is this button <var>Marked</var> (i.e. has it been selected)? Default false</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.MenuItem">
         <short>The item on the Main Menu with which this tool button is associated</short>
         <descr>
           <p>The item on the Main Menu with which this tool button is associated</p>
-          <p>Typically, the buttons on the toolbar would each point to an entry on the menu action list, which could also be accessed by using the Main Menu</p>
+          <p>Typically the buttons on the toolbar would each point to an entry on the menu action list which could also be accessed by using the Main Menu</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
@@ -11370,7 +11370,7 @@
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.TickStyle">
         <short>
-          <var>TickStyle </var>- none, produced automatically, or calculated manually</short>
+          <var>TickStyle </var>- none, produced automatically or calculated manually</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TTrackBar">
@@ -11379,7 +11379,7 @@
         <descr>
           <p>
             <var>TTrackBar</var>: a device which allows the user to determine the value of a variable using a quasi-analog slider</p>
-          <p>The device looks like a slider-potentiometer control on a hi-fi amplifier, and consists of a slider which can be moved along a bar using the mouse. Tick marks can be displayed along one or both edges, giving an indication of the proportion of the maximum value of the controlled variable that is being selected.</p>
+          <p>The device looks like a slider-potentiometer control on a hi-fi amplifier and consists of a slider which can be moved along a bar using the mouse. Tick marks can be displayed along one or both edges, giving an indication of the proportion of the maximum value of the controlled variable that is being selected.</p>
           <p>The <var>Position</var> property indicates the distance along the bar that the slider has been placed, either by the program or by mouse capture and movement</p>
           <p>In the example, movement of the slider is detected and shown in the associated <link id="#lcl.ComCtrls.TProgressBar">TProgressBar</link>.</p>
         </descr>
@@ -11848,7 +11848,7 @@ Const
       <!-- procedure type Visibility: default -->
       <element name="TTVEditingEvent">
         <short>
-          <var>TTVEditingEvent</var> - generic event handling method for editing a specified node, if <var>AllowEdit</var> is True</short>
+          <var>TTVEditingEvent</var> - generic event handling method for editing a specified node if <var>AllowEdit</var> is True</short>
         <descr/>
         <seealso/>
       </element>
@@ -11886,7 +11886,7 @@ Const
       <!-- procedure type Visibility: default -->
       <element name="TTVExpandingEvent">
         <short>
-          <var>TTVExpandingEvent</var> - generic event handling method for expanding a tree node, if <var>AllowExpansion</var> is True</short>
+          <var>TTVExpandingEvent</var> - generic event handling method for expanding a tree node if <var>AllowExpansion</var> is True</short>
         <descr/>
         <seealso/>
       </element>
@@ -13079,7 +13079,7 @@ the comparision is case sensitive.
         <errors/>
         <seealso/>
         <short>
-          <var>DisplayExpandSignRight</var> - returns the position of the right edge of the expand sign (ie takes into account the width of the icon etc)</short>
+          <var>DisplayExpandSignRight</var> - returns the position of the right edge of the expand sign (i.e. takes into account the width of the icon etc)</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TTreeNode.DisplayExpandSignRight.Result">
@@ -13361,7 +13361,7 @@ the comparision is case sensitive.
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetNextVisible">
         <short>
-          <var>GetNextVisible</var> - returns the next visible (ie not hidden) node</short>
+          <var>GetNextVisible</var> - returns the next visible (i.e. not hidden) node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13590,7 +13590,7 @@ the comparision is case sensitive.
       <!-- property Visibility: public -->
       <element name="TTreeNode.AbsoluteIndex">
         <short>
-          <var>AbsoluteIndex</var> - the absolute index of the current node, ie without taking into account the level of ancestry</short>
+          <var>AbsoluteIndex</var> - the absolute index of the current node, i.e. without taking into account the level of ancestry</short>
         <descr/>
         <seealso/>
       </element>
@@ -13715,7 +13715,7 @@ the comparision is case sensitive.
       <!-- property Visibility: public -->
       <element name="TTreeNode.MultiSelected">
         <short>
-          <var>MultiSelected</var> - if True, several nodes have been selected simultaneously (eg using the Shift or Ctrl key while selecting)</short>
+          <var>MultiSelected</var> - if True, several nodes have been selected simultaneously (e.g. using the Shift or Ctrl key while selecting)</short>
         <descr/>
         <seealso/>
       </element>
@@ -14168,7 +14168,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- function Visibility: public -->
       <element name="TTreeNodes.Add">
         <short>
-          <var>Add</var> - adds a sibling node with specified text string, and returns the new node</short>
+          <var>Add</var> - adds a sibling node with specified text string and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14188,7 +14188,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- function Visibility: public -->
       <element name="TTreeNodes.AddChild">
         <short>
-          <var>AddChild</var> - adds a child node with specified text to the parent node, and returns the new node</short>
+          <var>AddChild</var> - adds a child node with specified text to the parent node and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14208,7 +14208,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- function Visibility: public -->
       <element name="TTreeNodes.AddChildFirst">
         <short>
-          <var>AddChildFirst</var> - adds a node with specified text as the first child of the parent node, and returns the new node</short>
+          <var>AddChildFirst</var> - adds a node with specified text as the first child of the parent node and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14252,7 +14252,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- function Visibility: public -->
       <element name="TTreeNodes.AddChildObjectFirst">
         <short>
-          <var>AddChildObjectFirst</var> - adds a node with specified text and data as the first child of the parent node, and returns the new node</short>
+          <var>AddChildObjectFirst</var> - adds a node with specified text and data as the first child of the parent node and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14478,7 +14478,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- function Visibility: public -->
       <element name="TTreeNodes.Insert">
         <short>
-          <var>Insert</var> a node with the specified text just before the specified Next node, and returns the new node</short>
+          <var>Insert</var> a node with the specified text just before the specified Next node and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14498,7 +14498,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- function Visibility: public -->
       <element name="TTreeNodes.InsertObject">
         <short>
-          <var>InsertObject</var> - inserts a new node with specified text and data just before the specified Next node, and returns the new node</short>
+          <var>InsertObject</var> - inserts a new node with specified text and data just before the specified Next node and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14522,7 +14522,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- function Visibility: public -->
       <element name="TTreeNodes.InsertBehind">
         <short>
-          <var>InsertBehind</var> - inserts a new node with specified text just behind specified Previous node, and returns the new node</short>
+          <var>InsertBehind</var> - inserts a new node with specified text just behind specified Previous node and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14542,7 +14542,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- function Visibility: public -->
       <element name="TTreeNodes.InsertObjectBehind">
         <short>
-          <var>InsertObjectBehind</var> - inserts a new node with specified text and data-pointer just behind specified Previous node, and returns the new node</short>
+          <var>InsertObjectBehind</var> - inserts a new node with specified text and data-pointer just behind specified Previous node and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14781,27 +14781,27 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTreeViewOption.tvoAllowMultiselect">
-        <short>Allow to select several tree-items, e.g. using Ctrl+click and Shift+click. Does the same as MultiSelect property.</short>
+        <short>Allow to select several tree-items, e.g. using Ctrl+click and Shift+click. Same as MultiSelect property.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTreeViewOption.tvoAutoExpand">
-        <short>When tree-item gets focus (by user or code), unfold tree to make this item visible.</short>
+        <short>Unfold a tree-item when user clicks it or an item activated by code. Same as AutoExpand property.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTreeViewOption.tvoAutoInsertMark">
-        <short>Allow to paint horizontal line, below tree-item under cursor, when mouse moves. Good for drag-drop.</short>
+        <short>Allow to paint a horizontal line below a tree-item under cursor when mouse moves. Good for drag-drop.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTreeViewOption.tvoAutoItemHeight">
-        <short>Detect height of tree-item, from current font and icons.</short>
+        <short>Detect height of a tree-item based on current font and icons.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTreeViewOption.tvoHideSelection">
-        <short>If control looses focus, then don't paint selection for selected tree-item. Same as HideSelection property.</short>
+        <short>If a control looses focus, then don't paint selection for selected tree-item. Same as HideSelection property.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTreeViewOption.tvoHotTrack">
-        <short>Additionally highlight/underline tree-item, when mouse is over it. Same as HotTrack property.</short>
+        <short>Additionally highlight/underline a tree-item when mouse is over it. Same as HotTrack property.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTreeViewOption.tvoKeepCollapsedNodes">
@@ -14809,35 +14809,35 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTreeViewOption.tvoReadOnly">
-        <short>Don't allow to change item captions, by clicking on items with a delay. Same as ReadOnly property.</short>
+        <short>Don't allow to change item captions by clicking on items with a delay. Same as ReadOnly property.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTreeViewOption.tvoRightClickSelect">
-        <short>Right-click also selects tree-item. Else it only calls PopupMenu. Same as RightClickSelect property.</short>
+        <short>Right-click also selects a tree-item. Otherwise it only calls PopupMenu. Same as RightClickSelect property.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTreeViewOption.tvoRowSelect">
-        <short>When tree-item is selected, paint selection background with full width. Same as RowSelect property.</short>
+        <short>When a tree-item is selected, paint selection background with full width. Same as RowSelect property.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTreeViewOption.tvoShowButtons">
-        <short>Show expand/collapse (fold/unfold) icons, at left side, for nodes with sub-nodes. Same as ShowButtons property.</short>
+        <short>Show expand/collapse (fold/unfold) icons at left side for nodes with sub-nodes. Same as ShowButtons property.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTreeViewOption.tvoShowLines">
-        <short>Show vertical lines, at left side, which paint tree structure for nested nodes. Same as ShowLines property.</short>
+        <short>Show vertical lines at left side which paint tree structure for nested nodes. Same as ShowLines property.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTreeViewOption.tvoShowRoot">
-        <short>Show root tree-item, which is always present in code, but may be hidden for user. Same as ShowRoot property.</short>
+        <short>Show the root tree-item which is always present in code but may be hidden for user. Same as ShowRoot property.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTreeViewOption.tvoShowSeparators">
-        <short>Show horizontal lines, below all tree-items.</short>
+        <short>Show horizontal lines below all tree-items.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTreeViewOption.tvoToolTips">
-        <short>Show tooltip (hint) for tree-item, when item is too long to fit by width, and mouse is over it. Same as ToolTips property.</short>
+        <short>Show tooltip (hint) for a tree-item when the item is too long to fit by width and mouse is over it. Same as ToolTips property.</short>
       </element>
       <!-- set type Visibility: default -->
       <element name="TTreeViewOptions">
@@ -16071,7 +16071,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.GetNodeAtInternalY">
         <short>
-          <var>GetNodeAtInternalY</var> - returns the node at the specified internal (ie relative) Y coordinate</short>
+          <var>GetNodeAtInternalY</var> - returns the node at the specified internal (i.e. relative) Y coordinate</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -16648,7 +16648,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
         
         <descr/>
         <seealso/>
-      <short>Unfold tree-item, when user clicks it, or item activated by code.</short>
+      <short>Unfold a tree-item when user clicks it or an item activated by code.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.BorderStyle" link="#LCL.Controls.TCustomControl.BorderStyle">
@@ -16661,7 +16661,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
         
         <descr/>
         <seealso/>
-      <short>If control looses focus, then don't paint selection for selected tree-item.</short>
+      <short>If a control looses focus, then don't paint selection for a selected tree-item.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.HotTrack">
@@ -16670,25 +16670,25 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
         <seealso>
           <link id="#lcl.ComCtrls.TCustomListview.HotTrack">TCustomListView.HotTrack</link>
         </seealso>
-      <short>Additionally highlight/underline tree-item, when mouse is over it.</short>
+      <short>Additionally a highlight/underline tree-item when mouse is over it.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.Images">
         
         <descr/>
         <seealso/>
-      <short>TImageList object, which holds icons for tree-items.</short>
+      <short>TImageList object which holds icons for tree-items.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.Indent">
         
         <descr/>
         <seealso/>
-      <short>Size in pixels, by which each nested branching level is to be indented.</short>
+      <short>Size in pixels by which each nested branching level is to be indented.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.Items">
-        <short>Collection of tree-items, which is the content of control. Has type TTreeNodes.</short>
+        <short>Collection of tree-items which is the content of control. Has type TTreeNodes.</short>
         <descr/>
         <seealso/>
       </element>
@@ -16823,7 +16823,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
         
         <descr/>
         <seealso/>
-      <short>Don't allow to change item captions, by mouse click with a delay.</short>
+      <short>Don't allow to change item captions by mouse click with a delay.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.RightClickSelect">
@@ -16837,7 +16837,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
         
         <descr/>
         <seealso/>
-      <short>When tree-item is selected, paint selection background with full width.</short>
+      <short>When a tree-item is selected, paint selection background with full width.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ScrolledLeft">
@@ -16858,21 +16858,21 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
         
         <descr/>
         <seealso/>
-      <short>Show expand/collapse (fold/unfold) icons, at left side, for nodes with sub-nodes.</short>
+      <short>Show expand/collapse (fold/unfold) icons at left side for nodes with sub-nodes.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ShowLines">
         
         <descr/>
         <seealso/>
-      <short>Show vertical lines, at left side, which paint tree structure for nested nodes.</short>
+      <short>Show vertical lines at left side. They paint the tree structure for nested nodes.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ShowRoot">
         
         <descr/>
         <seealso/>
-      <short>Show root tree-item, which is always present in code, but may be hidden for user.</short>
+      <short>Show the root tree-item which is always present in code but may be hidden for user.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ShowSeparators">
@@ -16885,21 +16885,21 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
         
         <descr/>
         <seealso/>
-      <short>Allow to show items sorted: by caption, by Data property, or both.</short>
+      <short>Allow to show items sorted: by caption, by Data property or both.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.StateImages">
         
         <descr/>
         <seealso/>
-      <short>TImageList object, which holds icons for tree-item states: normal item, selected item, etc.</short>
+      <short>TImageList object which holds icons for tree-item states: normal item, selected item, etc.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ToolTips">
         
         <descr/>
         <seealso/>
-      <short>Show tooltip (hint) for tree-item, when item is too long to fit by width, and mouse is over it.</short>
+      <short>Show tooltip (hint) for a tree-item when the item is too long to fit by width and mouse is over it.</short>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomTreeView.Create">
@@ -17094,7 +17094,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.FullCollapse">
         <short>
-          <var>FullCollapse</var> - method to collapse the treeview fully, ie show just the root</short>
+          <var>FullCollapse</var> - method to collapse the treeview fully and show just the root</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -17102,7 +17102,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.FullExpand">
         <short>
-          <var>FullExpand</var> - method to expand the treeview fully, and show all the branches</short>
+          <var>FullExpand</var> - method to expand the treeview fully and show all the branches</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -17332,14 +17332,14 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
         
         <descr/>
         <seealso/>
-      <short>Color used to paint vertical lines, at left side.</short>
+      <short>Color used to paint vertical lines at left side.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.ExpandSignColor">
         
         <descr/>
         <seealso/>
-      <short>Color used to paint expand/collapse (fold/unfold) symbol (ie, plus/minus symbol).</short>
+      <short>Color used to paint expand/collapse (fold/unfold) symbol (i.e. plus/minus symbol).</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTreeView.TabStop" link="#LCL.Controls.TWinControl.TabStop">
@@ -17999,7 +17999,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
           <p>
             <var>TCustomHeaderControl</var> - base class for <var>THeaderControl</var>, a header strip of user-designed sections which allow selection of pages or actions</p>
           <p>
-            <var>THeaderControl</var> offers a widget that could be placed along the edge of a <var>Panel</var> or <var>Form</var>, allowing a highly customised mechanism for selection. However, there are no intrinsically associated display areas, and it is the developer's responsibility to supply an index associated with the selection from the <var>THeaderControl</var> and determining what action is to occur or what is to be displayed in any attached Panel or Form.</p>
+            <var>THeaderControl</var> offers a widget that could be placed along the edge of a <var>Panel</var> or <var>Form</var> allowing a highly customised mechanism for selection. However there are no intrinsically associated display areas and it is the developer's responsibility to supply an index associated with the selection from the <var>THeaderControl</var> and determining what action is to occur or what is to be displayed in any attached Panel or Form.</p>
         </descr>
         <seealso>
           <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
@@ -18012,9 +18012,9 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
           <p>
             <var>THeaderControl</var>, a header strip of user-designed sections which allow selection of pages or actions</p>
           <p>
-            <var>THeaderControl</var> offers a widget that could be placed along the edge of a <var>Panel</var> or <var>Form</var>, allowing a highly customised mechanism for selection. However, there are no intrinsically associated display areas, and it is the developer's responsibility to supply an index associated with the selection from the <var>THeaderControl</var> and determine what action is to occur or what is to be displayed in any attached Panel or Form.</p>
-          <p>THeaderControl is used by selecting its icon from the Common Controls tab of the IDE Component Palette, and placing it on the Form in the desired position. It may be convenient to dock it with a <var>Form</var> or <var>Panel</var> whose properties it is to be used for controlling. </p>
-          <p>After size, position, docking, alignment, anchoring etc have been performed using the Object Inspector or Form Designer, the Sections of the Header can be created by selecting the control, right-clicking with the mouse and choosing 'Section Editor'. A Stringlist editor will pop up, with options to add, delete or move entries up or down the list. Each entry is given an Index which can be used in OnClick event handlers to determine the action to be taken when that section is selected at run-time.</p>
+            <var>THeaderControl</var> offers a widget that could be placed along the edge of a <var>Panel</var> or <var>Form</var> allowing a highly customised mechanism for selection. However there are no intrinsically associated display areas and it is the developer's responsibility to supply an index associated with the selection from the <var>THeaderControl</var> and determine what action is to occur or what is to be displayed in any attached Panel or Form.</p>
+          <p>THeaderControl is used by selecting its icon from the Common Controls tab of the IDE Component Palette and placing it on the Form in the desired position. It may be convenient to dock it with a <var>Form</var> or <var>Panel</var> whose properties it is to be used for controlling. </p>
+          <p>After size, position, docking, alignment, anchoring etc have been performed using the Object Inspector or Form Designer, the Sections of the Header can be created by selecting the control, right-clicking with the mouse and choosing 'Section Editor'. A Stringlist editor will pop up with options to add, delete or move entries up or down the list. Each entry is given an Index which can be used in OnClick event handlers to determine the action to be taken when that section is selected at run-time.</p>
         </descr>
         <seealso>
           <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
@@ -18058,7 +18058,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       </element>
       <element name="TCustomHeaderControl.Sections">
         <short>
-          <var>Sections</var> - the short segments of the header, separated by vertical bars, that function as the elementary selection units of the header</short>
+          <var>Sections</var> - the short segments of the header separated by vertical bars that function as the elementary selection units of the header</short>
       </element>
       <element name="TCustomHeaderControl.OnSectionDrag">
         <short>
@@ -18168,7 +18168,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       </element>
       <element name="THeaderSection.State">
         <short>
-          <var>State</var> - whether normal, hot (ie mouse hovers over it, ready to be selected) or pressed (selected)</short>
+          <var>State</var> - whether normal, hot (i.e. mouse hovers over it ready to be selected) or pressed (selected)</short>
       </element>
       <element name="THeaderSection.Alignment">
         <short>
@@ -18289,7 +18289,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       </element>
       <element name="TListItem.Checked">
         <short>
-          <var>Checked</var> - if True, a check mark is present beside the item, implying it has been selected</short>
+          <var>Checked</var> - if True, a check mark is present beside the item implying it has been selected</short>
       </element>
       <element name="TListItem.Left">
         <short>The position of the Left side of the list item</short>
@@ -18517,10 +18517,8 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
             <dt>&gt; 0</dt>
             <dd>if <var>Node1.Text&gt;Node2.Text</var>.</dd>
           </dl>
-          <p>The comparision takes into account Ansi characters, i.e. it takes
-care of strange accented characters. Contrary to AnsiCompareText,
-the comparision is case sensitive.
-</p>
+          <p>The comparision takes into account Ansi characters, i.e. it takes care of strange accented characters. Contrary to AnsiCompareText the comparision is case sensitive.
+          </p>
         </descr>
       </element>
       <element name="TTreeView.OnShowHint" link="#LCL.Controls.TControl.OnShowHint"/>
@@ -18591,7 +18589,7 @@ the comparision is case sensitive.
       </element>
       <element name="TTreeNodes.SortTopLevelNodes">
         <short>
-          <var>SortTopLevelNodes</var> - sorts the top level nodes, using the specified comparison method</short>
+          <var>SortTopLevelNodes</var> - sorts the top level nodes using the specified comparison method</short>
       </element>
       <element name="TTreeNodes.Item">
         <short>
@@ -18637,15 +18635,15 @@ the comparision is case sensitive.
       </element>
       <element name="TCustomListView.CustomDraw">
         <short>
-          <var>CustomDraw</var> - performs custom drawing in the given rectangle, and returns True if successful</short>
+          <var>CustomDraw</var> - performs custom drawing in the given rectangle and returns True if successful</short>
       </element>
       <element name="TCustomListView.CustomDrawItem">
         <short>
-          <var>CustomDrawItem</var> - custom draws the specified item, and returns True if successful</short>
+          <var>CustomDrawItem</var> - custom draws the specified item and returns True if successful</short>
       </element>
       <element name="TCustomListView.CustomDrawSubItem">
         <short>
-          <var>CustomDrawSubItem</var> - custom draws the specified subitem, returning True if successful</short>
+          <var>CustomDrawSubItem</var> - custom draws the specified subitem returning True if successful</short>
       </element>
       <element name="TCustomListView.IntfCustomDraw">
         <short>
@@ -18689,7 +18687,7 @@ the comparision is case sensitive.
       </element>
       <element name="TCustomTreeView.TreeLinePenStyle">
         
-      <short>Style of TPen, used to paint vertical lines, at left side.</short>
+      <short>Style of TPen, used to paint vertical lines at left side.</short>
       </element>
       <element name="TTreeView.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TTreeView.TreeLinePenStyle">
@@ -18795,11 +18793,11 @@ the comparision is case sensitive.
     <element name="TTreeView.ExpandSignSize">
       </element><element name="TTreeView.MultiSelect">
       </element><element name="TTreeView.MultiSelectStyle">
-      </element><element name="TMultiSelectStyles.msControlSelect"><short>Allow to select one additonal item, by Ctrl+click.</short>
-      </element><element name="TMultiSelectStyles.msShiftSelect"><short>Allow to select range of items (from previous current item, to clicked one), by Shift+click.</short>
-      </element><element name="TMultiSelectStyles.msVisibleOnly"><short>When selecting range with Shift+click, select only visible (unfolded) items.</short>
-      </element><element name="TMultiSelectStyles.msSiblingOnly"><short>When selecting range with Shift+click, touch only siblings of previous current item.</short>
-      </element><element name="TTreeViewOption.tvoNoDoubleClickExpand"><short>Don't expand (unfold) tree-item, by mouse double click.</short>
+      </element><element name="TMultiSelectStyles.msControlSelect"><short>Allow to select one additonal item by Ctrl+click.</short>
+      </element><element name="TMultiSelectStyles.msShiftSelect"><short>Allow to select a range of items (from previous current item to clicked one) by Shift+click.</short>
+      </element><element name="TMultiSelectStyles.msVisibleOnly"><short>When selecting a range with Shift+click, select only visible (unfolded) items.</short>
+      </element><element name="TMultiSelectStyles.msSiblingOnly"><short>When selecting a range with Shift+click, touch only siblings of previous current item.</short>
+      </element><element name="TTreeViewOption.tvoNoDoubleClickExpand"><short>Don't expand an (unfolded) tree-item by mouse double click.</short>
       </element><element name="TTreeViewOption.tvoThemedDraw"><short>Use OS themes to paint control elements.</short>
       </element><element name="TTreeView.SelectionFontColor">
       </element><element name="TTreeView.SelectionFontColorUsed">
