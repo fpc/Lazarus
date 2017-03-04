@@ -1793,7 +1793,8 @@ begin
   if AnUnitInfo.OpenEditorInfoCount=0 then exit;
   Result:=LazarusIDE.DoSaveEditorFile(AnUnitInfo.OpenEditorInfo[0].EditorComponent,
                                       [sfCheckAmbiguousFiles,sfQuietUnitCheck]);
-  if not fSettings.KeepFileOpen then
+  // The main form has UnitIndex = 1. Don't close it.
+  if (UnitIndex<>1) and not fSettings.KeepFileOpen then
     Result:=LazarusIDE.DoCloseEditorFile(AnUnitInfo.OpenEditorInfo[0].EditorComponent,
                                          [cfQuiet]);
 end;
