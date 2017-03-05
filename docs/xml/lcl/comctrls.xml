@@ -5854,61 +5854,55 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.Alignment">
-        <short>
-          <var>Alignment</var> - whether text is to be left or right justified or centered</short>
+        <short>Sets alignment of caption: text is left or right justified or centered.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.AutoSize">
-        <short>Whether <var>AutoSize</var> is to be operational</short>
+        <short>When other columns have fixed width, auto-calculate width of this column, to fill entire width.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.Caption">
-        <short>A text string or <var>Caption</var> (which may be translated) to be used at the top of the column</short>
+        <short>Caption text of column.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.ImageIndex">
-        <short>
-          <var>ImageIndex</var> - the index value of the image associated with he ListColumn</short>
+        <short>Index of icon, inside ImageList object for columns of Listview.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.MaxWidth">
-        <short>
-          <var>MaxWidth</var> - the maximum width for this column</short>
+        <short>Maximal width for this column.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.MinWidth">
-        <short>
-          <var>MinWidth</var> - the minimum permissable with for the column</short>
+        <short>Minimal width for this column.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.Tag">
-        <short>
-          <var>Tag</var> - a general purpose integer variable to be used in association with this column</short>
+        <short>Int value, to store some info for this column.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.Visible">
-        <short>
-          <var>Visible</var> - whether this column can be seen</short>
+        <short>Allow to show this column.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.Width">
-        <short>The <var>Width</var> of this column</short>
+        <short>Current width of column. May be calculcated auto, if AutoSize used.</short>
         <descr/>
         <seealso/>
       </element>
@@ -6350,15 +6344,15 @@
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TListHotTrackStyle.htHandPoint">
-        <short/>
+        <short>For current ListView item, show HandPoint mouse cursor.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TListHotTrackStyle.htUnderlineCold">
-        <short/>
+        <short>For current ListView item, show pale underline.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TListHotTrackStyle.htUnderlineHot">
-        <short/>
+        <short>For current ListView item, show bold underline.</short>
       </element>
       <!-- set type Visibility: default -->
       <element name="TListHotTrackStyles">
@@ -7112,53 +7106,41 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.AllocBy">
-        <short>
-          <var>AllocBy</var> - allocate the list by a value</short>
+        <short>When new items add to list, increase internal buffer capacity by this amount. Needed to not add to internal buffer by one.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.Columns">
-        <short>
-          <var>Columns </var>- define and change the columns of a ListView</short>
-        <descr>
-          <p>
-            <var>Columns</var> is a <var>TCollectionItem</var> and contains all information on the columns of a listview.</p>
-        </descr>
+        <short>Collection of items, which have properties of ListView columns (size, alignment, image index, etc).</short>
+        
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ColumnClick">
-        <short>
-          <var>ColumnClick </var> - determines if the <var>OnColumnClick</var>  event will be executed.</short>
-        <descr>
-          <p>The <var>ColumnClick</var> property of the ListView enables or disables the <var>OnColumnClick</var> Event. A call to <var>OnColumnClick</var> will only be done when a method has been assigned to the <var>OnColumnClick</var> event and <var>ColumnClick</var> is set to true (default).</p>
-        </descr>
+        <short>Enable to react to clicks on ListView header columns. And to call OnColumnClick event.</short>
+        
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.DefaultItemHeight">
-        <short>
-          <var>DefaultItemHeight</var> - sets or reads the default height for an item on the list</short>
+        <short>Default height of lines in ListView.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.HideSelection">
-        <short>
-          <var>HideSelection</var> - if True, the selected item is to be hidden</short>
+        <short>If control looses focus, don't paint selection background for selected item(s).</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.HoverTime">
-        <short>
-          <var>HoverTime</var> - the time for which the mouse must hover over the item before its help message is displayed</short>
+        <short>Time (in msec) for which the mouse cursor must hover over an item, before item's tooltip is shown.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.Items">
-        <short>
-          <var>Items</var> - the list of entries in the list. Held as a linked list with a cached index of the last accessed item</short>
+        <short>Collection of items in ListView.</short>
         <descr>
           <p>
             <var>Items</var> - the list of entries in the list. Held as a linked list with a cached index of the last accessed item</p>
@@ -7168,41 +7150,30 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.LargeImages">
-        <short>
-          <var>LargeImages</var>  - an ImageList to be used in association with the list of <var>Items</var>
-        </short>
-        <descr>
-          <p>
-            <var>LargeImages</var> - an ImageList to be used in association with the list of <var>Items</var>
-          </p>
-          <p>A typical application might have two ImageLists: one of<var>LargeImages</var> and one of <var>SmallImages</var> containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p>
-          <p>SmallImages could be displayed beside the text strings in the list view and the programmer would supply code to ensure that when an item with its associated SmallImage was selected, the corresponding LargeImage would be displayed in another window.</p>
-          <p>A <var>TImageList</var> control needs to be selected and pasted on to the Form Designer and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <var>TImageList</var> icon in the Form Designer. Then in the StringList editor for <var>Items</var> the correct <var>ImageIndex</var> must be allocated to each entry in the list.</p>
+        <short>ImageList object, which contains "big" icons for one if ListView layouts.</short>
+        <descr><p>A typical application might have two ImageLists: one of<var>LargeImages</var> and one of <var>SmallImages</var> containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p><p>SmallImages could be displayed beside the text strings in the list view and the programmer would supply code to ensure that when an item with its associated SmallImage was selected, the corresponding LargeImage would be displayed in another window.</p><p>A <var>TImageList</var> control needs to be selected and pasted on to the Form Designer and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <var>TImageList</var> icon in the Form Designer. Then in the StringList editor for <var>Items</var> the correct <var>ImageIndex</var> must be allocated to each entry in the list.</p>
         </descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.MultiSelect">
-        <short>
-          <var>MultiSelect</var> - enables the selection of more than one entry from <var>Items</var> - by pressing SHIFT or CTRL keys while selecting</short>
+        <short>Allow to select several Listview items at a time, using Ctrl+click (select one item more).</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OwnerData">
-        <short>
-          <var>OwnerData</var> - if True, the Owner's data are to be displayed</short>
+        
         <descr/>
         <seealso/>
+      <short>Use owner-data mode for ListView. It means, that ListView don't contain items, you must supply them using OnData* events.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OwnerDraw">
-        <short>
-          <var>OwnerDraw</var> - if True, the Owner's Draw method is to be used</short>
+        <short>Use owner-draw mode. It means that program must paint ListView items, using OnCustomDraw*, OnAdvancedCustomDraw* events.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ReadOnly">
-        <short>
-          <var>ReadOnly</var> - determines if the list can only be read and not written or deleted.</short>
+        <short>Don't allow user to change item captions, by click with a delay.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ScrolledLeft">
@@ -7218,94 +7189,74 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ScrollBars">
-        <short>
-          <var>ScrollBars</var> - the kind of scrollbars to be used: none, auto, horizontal or vertical</short>
+        <short>Kind of scrollbars in control: vertical, horizontal, none or both. Auto* mean that scrollbars hide automatically.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ShowColumnHeaders">
-        <short>
-          <var>ShowColumnHeaders</var> - whether headers for columns are to be displayed</short>
+        <short>Show header area in ListView, which shows captions of columns.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ShowWorkAreas">
-        <short>
-          <var>ShowWorkAreas</var> - if True, the work areas are to be displayed</short>
+        
         <descr/>
         <seealso/>
+      <short>Property WorkAreas sets work areas in ListView. This property allows to highlight each work area with its own color and show with own caption.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.SmallImages">
-        <short>
-          <var>SmallImages</var>  - an ImageList of small images (icons) to be used in association with the list of <var>Items</var>
-        </short>
-        <descr>
-          <p>
-            <var>SmallImages</var>  - an ImageList of small images (icons) to be used in association with the list of <var>Items</var>
-          </p>
-          <p>A typical application might have two ImageLists: one of<var>LargeImages</var> and one of <var>SmallImages</var> containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p>
-          <p>SmallImages could be displayed beside the text strings in the list view and the programmer would supply code to ensure that when an item with its associated SmallImage was selected, the corresponding LargeImage would be displayed in another window.</p>
-          <p>A <var>TImageList</var> control needs to be selected and pasted on to the Form Designer and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <var>TImageList</var> icon in the Form Designer. Then in the StringList editor for <var>Items</var> the correct <var>ImageIndex</var> must be allocated to each entry in the list.</p>
+        <short>ImageList object, which contains "small" icons for one if ListView layouts.</short>
+        <descr><p>A typical application might have two ImageLists: one of<var>LargeImages</var> and one of <var>SmallImages</var> containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p><p>SmallImages could be displayed beside the text strings in the list view and the programmer would supply code to ensure that when an item with its associated SmallImage was selected, the corresponding LargeImage would be displayed in another window.</p><p>A <var>TImageList</var> control needs to be selected and pasted on to the Form Designer and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <var>TImageList</var> icon in the Form Designer. Then in the StringList editor for <var>Items</var> the correct <var>ImageIndex</var> must be allocated to each entry in the list.</p>
         </descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.SortType">
-        <short>
-          <var>SortType</var> - whether to sort by text, by data, both or not at all</short>
+        <short>Sets sorting order for current sorting column: by text, by Data of items, both or none.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.SortColumn">
-        <short>
-          <var>SortColumn</var> - the column that is being sorted</short>
+        <short>Index of column, by which ListView was last sorted. -1 for none.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.StateImages">
-        <short>
-          <var>StateImages</var> - an imagelist of icons to demonstrate the state of a process or event</short>
+        <short>ImageList object, which contains "state" icons, for item states: selected, normal, etc.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ViewStyle">
-        <short>
-          <var>ViewStyle </var>- whether to view as a simple list, a list with large or small icons, or as a report</short>
+        <short>Sets one of ListView layouts: List (simple column), Report (few columns with full width), Icon (big icons), Small Icon (small icons, 16x16).</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OnChange">
-        <short>
-          <var>OnChange</var> - event handler for a change in the list</short>
+        <short>Called when content of list collection changes.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OnColumnClick">
-        <short>
-          <var>OnColumnClick</var> - event handler for clicking on a coulmn</short>
+        <short>Called when user clicks on column's header area.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OnCompare">
-        <short>
-          <var>OnCompare</var> - event handler for comparing list items</short>
+        <short>Called during sorting of list, by one of columns, to compare items.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OnDeletion">
-        <short>
-          <var>OnDeletion</var> - event handler for deleting a list item</short>
+        <short>Called when items are deleted by code.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OnInsert">
-        <short>
-          <var>OnInsert</var> - event handler for inserting list item</short>
+        <short>Called when items are inserted by code.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OnSelectItem">
-        <short>
-          <var>OnSelectItem</var> - event handler for list item selection</short>
+        <short>Called when items are selected or selection changes.</short>
         <descr/>
         <seealso/>
       </element>
@@ -7345,23 +7296,19 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.BoundingRect">
-        <short>
-          <var>BoundingRect</var> - the coordinates of the rectangle containing the ListView</short>
+        <short>Coordinates of the rectangle containing the ListView.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.Canvas">
-        <short>
-          <var>Canvas</var>  - defines the area on which all graphic material is drawn (Read-only)</short>
+        <short>TCanvas object, defines the area on which all graphic is drawn.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.Checkboxes">
-        <short>
-          <var>CheckBoxes</var> - determines if the ListView shows checkboxes beside the items on the list</short>
+        <short>Show the check-boxes column, at the side of usual lines. Allows to check/uncheck items.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.Column">
-        <short>
-          <var>Column </var>- reads the column information of the listview.</short>
+        <short>Property of ListView columns.</short>
         <descr>
           <p>This property can be used to read the information of a column.</p>
           <p>The column whose information is to be retrieved is determined by an index (AIndex). As with nearly all indexes, this index is 0 based. In column[0] the caption of the listitem is show, in subsequent column the subitems of the listitem are shown.</p>
@@ -7374,31 +7321,27 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.DropTarget">
-        <short>
-          <var>DropTarget </var> - location where an item from the list is to be dropped</short>
+        
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.FlatScrollBars">
-        <short>
-          <var>FlatScrollBars </var>- whether the scroll bars are to be displayed flat (default False)</short>
+        <short>Show ListView scrollbars in "flat" style (default off, not for all widgetsets).</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.FullDrag">
-        <short>
-          <var>FullDrag</var> - if True, the full object is dragged</short>
+        
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.GridLines">
-        <short>Whether <var>GridLines</var> are to be shown</short>
+        <short>Show 1-pixel lines, as a grid, between rows and columns.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.HotTrack">
-        <short>
-          <var>HotTrack</var> - the property whereby the item under the mouse pointer becomes emphasised</short>
+        <short>Allow to highlight/underline current ListView item, which is under mouse cursor.</short>
         <descr>
           <p>
             <var>HotTrack</var> is the name given to the feature whereby, as the mouse pointer moves over some graphic item (e.g. a tab, an entry in a list, a button or other control in a form), that item becomes emphasized in some way. </p>
@@ -7419,29 +7362,25 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.HotTrackStyles">
-        <short>The <var>HotTrackStyles</var> available for this control</short>
+        <short>More options for HotTrack property.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.ItemFocused">
-        <short>
-          <var>ItemFocused</var> - the item currently receiving focus</short>
+        <short>ListView item, which is shown as focused.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.RowSelect">
-        <short>
-          <var>RowSelect </var>- whether the user can select rows of items (across columns). Default false</short>
+        <short>In Report view, this allows to highlight entire selected row, until right edge of ListView.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.SelCount">
-        <short>
-          <var>SelCount </var>- the number of items selected</short>
+        <short>Number of currently selected items.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.Selected">
-        <short>
-          <var>Selected</var> - the current list item that has been selected</short>
+        <short>Listview item, which is 1st selected.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.TabStop" link="#LCL.Controls.TWinControl.TabStop">
@@ -7451,18 +7390,15 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.TopItem">
-        <short>
-          <var>TopItem</var> - the first item on the list</short>
+        <short>Listview item, which is shown at the top edge of ListView.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.ViewOrigin">
-        <short>
-          <var>ViewOrigin </var>- the top left coordinate for the current view</short>
+        <short>Coordinate of the left/top visible point in ListView, updates when Listview scrolls.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.VisibleRowCount">
-        <short>
-          <var>VisibleRowCount</var> - the number of rows visible in the current view (some items might have scrolled outside the window)</short>
+        <short>Number of rows, which is currenly shown with current Listview position/size/layout.</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TListView">
@@ -7510,13 +7446,13 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.Columns" link="#LCL.ComCtrls.TCustomListView.Columns">
+      <element name="TListView.Columns">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.ColumnClick" link="#LCL.ComCtrls.TCustomListView.ColumnClick">
+      <element name="TListView.ColumnClick">
         <short/>
         <descr/>
         <seealso/>
@@ -7540,19 +7476,19 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.Items" link="#LCL.ComCtrls.TCustomListView.Items">
+      <element name="TListView.Items">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.LargeImages" link="#LCL.ComCtrls.TCustomListView.LargeImages">
+      <element name="TListView.LargeImages">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.MultiSelect" link="#LCL.ComCtrls.TCustomListView.MultiSelect">
+      <element name="TListView.MultiSelect">
         <short/>
         <descr/>
         <seealso/>
@@ -7564,43 +7500,43 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.RowSelect" link="#LCL.ComCtrls.TCustomListView.RowSelect">
+      <element name="TListView.RowSelect">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.ScrollBars" link="#LCL.ComCtrls.TCustomListView.ScrollBars">
+      <element name="TListView.ScrollBars">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.ShowColumnHeaders" link="#LCL.ComCtrls.TCustomListView.ShowColumnHeaders">
+      <element name="TListView.ShowColumnHeaders">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.SmallImages" link="#LCL.ComCtrls.TCustomListView.SmallImages">
+      <element name="TListView.SmallImages">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.SortColumn" link="#LCL.ComCtrls.TCustomListView.SortColumn">
+      <element name="TListView.SortColumn">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.SortType" link="#LCL.ComCtrls.TCustomListView.SortType">
+      <element name="TListView.SortType">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.StateImages" link="#LCL.ComCtrls.TCustomListView.StateImages">
+      <element name="TListView.StateImages">
         <short/>
         <descr/>
         <seealso/>
@@ -7618,7 +7554,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.ViewStyle" link="#LCL.ComCtrls.TCustomListView.ViewStyle">
+      <element name="TListView.ViewStyle">
         <short/>
         <descr/>
         <seealso/>
@@ -7630,7 +7566,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnChange" link="#LCL.ComCtrls.TCustomListView.OnChange">
+      <element name="TListView.OnChange">
         <short/>
         <descr/>
         <seealso/>
@@ -7642,13 +7578,13 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnColumnClick" link="#LCL.ComCtrls.TCustomListView.OnColumnClick">
+      <element name="TListView.OnColumnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnCompare" link="#LCL.ComCtrls.TCustomListView.OnCompare">
+      <element name="TListView.OnCompare">
         <short/>
         <descr/>
         <seealso/>
@@ -7690,13 +7626,13 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnDeletion" link="#LCL.ComCtrls.TCustomListView.OnDeletion">
+      <element name="TListView.OnDeletion">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnSelectItem" link="#LCL.ComCtrls.TCustomListView.OnSelectItem">
+      <element name="TListView.OnSelectItem">
         <short/>
         <descr/>
         <seealso/>
@@ -18221,8 +18157,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <element name="TCustomListView.BeginAutoDrag" link="#LCL.Controls.TControl.BeginAutoDrag"/>
       <element name="TCustomListView.Loaded" link="#LCL.Controls.TWinControl.Loaded"/>
       <element name="TCustomListView.ToolTips">
-        <short>
-          <var>ToolTips</var> - whether Popup tool tips are to be shown</short>
+        <short>Automatically show hints (tooltips) for ListView items, when mouse is over items.</short>
       </element>
       <element name="TCustomListView.Clear">
         <short>
@@ -18307,22 +18242,21 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
         <short>
           <var>FindCaption</var> - returns the ListItem with the specified caption at the given starting place.</short>
       </element>
-      <element name="TListView.Checkboxes" link="#LCL.ComCtrls.TCustomListView.Checkboxes"/>
+      <element name="TListView.Checkboxes"/>
       <element name="TListView.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TListView.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="TListView.HideSelection">
-        <short>
-          <var>HideSelection</var> - render the selected items invisible</short>
+        
       </element>
       <element name="TListView.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
-      <element name="TListView.ReadOnly" link="#LCL.ComCtrls.TCustomListView.ReadOnly"/>
+      <element name="TListView.ReadOnly"/>
       <element name="TListView.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
       <element name="TListView.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
-      <element name="TListView.ToolTips" link="#LCL.ComCtrls.TCustomListView.ToolTips"/>
+      <element name="TListView.ToolTips"/>
       <element name="TListView.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
-      <element name="TListView.OnCustomDraw" link="#LCL.ComCtrls.TCustomListView.OnCustomDraw"/>
-      <element name="TListView.OnCustomDrawItem" link="#LCL.ComCtrls.TCustomListView.OnCustomDrawItem"/>
-      <element name="TListView.OnCustomDrawSubItem" link="#LCL.ComCtrls.TCustomListView.OnCustomDrawSubItem"/>
+      <element name="TListView.OnCustomDraw"/>
+      <element name="TListView.OnCustomDrawItem"/>
+      <element name="TListView.OnCustomDrawSubItem"/>
       <element name="TListView.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
       <element name="TListView.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
       <element name="TListView.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
@@ -18650,32 +18584,26 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
           <var>IntfCustomDraw</var> - uses the interface to perform custom drawing and returns a result of drawing</short>
       </element>
       <element name="TCustomListView.OnCustomDraw">
-        <short>
-          <var>OnCustomDraw</var> - event handler for custom drawing</short>
+        <short>Called for owner-draw mode.</short>
       </element>
       <element name="TCustomListView.OnCustomDrawItem">
-        <short>
-          <var>OnCustomDrawItem</var> - event handler for custom drawing an item</short>
+        <short>Called for owner-draw mode.</short>
       </element>
       <element name="TCustomListView.OnCustomDrawSubItem">
-        <short>
-          <var>OnCustomDrawSubItem</var> - event handler for custom drawing a subitem</short>
+        <short>Called for owner-draw mode.</short>
       </element>
       <element name="TCustomListView.OnAdvancedCustomDraw">
-        <short>
-          <var>OnAdvancedCustomDraw</var> - event handler for advanced custom drawing</short>
+        <short>Called for owner-draw mode.</short>
       </element>
       <element name="TCustomListView.OnAdvancedCustomDrawItem">
-        <short>
-          <var>OnAdvancedCustomDrawItem</var> - event handler for advanced custom drawing item</short>
+        <short>Called for owner-draw mode.</short>
       </element>
       <element name="TCustomListView.OnAdvancedCustomDrawSubItem">
-        <short>
-          <var>OnAdvancedCustomDrawSubItem</var> - event handler for advanced custom drawing subitem</short>
+        <short>Called for owner-draw mode.</short>
       </element>
-      <element name="TListView.OnAdvancedCustomDraw" link="#LCL.ComCtrls.TCustomListView.OnAdvancedCustomDraw"/>
-      <element name="TListView.OnAdvancedCustomDrawItem" link="#LCL.ComCtrls.TCustomListView.OnAdvancedCustomDrawItem"/>
-      <element name="TListView.OnAdvancedCustomDrawSubItem" link="#LCL.ComCtrls.TCustomListView.OnAdvancedCustomDrawSubItem"/>
+      <element name="TListView.OnAdvancedCustomDraw"/>
+      <element name="TListView.OnAdvancedCustomDrawItem"/>
+      <element name="TListView.OnAdvancedCustomDrawSubItem"/>
       <element name="TListView.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TTrackBar.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
       <element name="TTrackBar.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
@@ -18767,7 +18695,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
           <var>LMDrawItem</var> - LCL message handler for drawing the item on the current canvas</short>
       </element>
       <element name="TListView.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
-      <element name="TListView.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
+      <element name="TListView.ParentColor"/>
       <element name="TListView.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TCustomTreeView.DoMouseWheel" link="#LCL.Controls.TControl.DoMouseWheel"/>
       <element name="TStatusBar.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
@@ -18808,6 +18736,17 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       </element><element name="TCustomTreeView.MultiSelectStyle"><short>Additional options for MultiSelect property.</short>
       </element><element name="TCustomTreeView.SelectionFontColor"><short>Color used to paint text of selected item.</short>
       </element><element name="TCustomTreeView.SelectionFontColorUsed"><short>Allow to use property SelectionFontColor. If not used, that color is detected automatically.</short>
+      </element>
+    <element name="TCustomListView.AutoSort"><short>When user clicks ListView header's column, sort ListView by this column. After next click, sort in other order.</short>
+      </element><element name="TCustomListView.AutoWidthLastColumn"><short>For Report view. Resize last column, to fill entire ListView width.</short>
+      </element><element name="TCustomListView.SortDirection"><short>Sets sorting direction for current sorting column.</short>
+      </element>
+    <element name="TCustomListView.IconOptions"><short>Options for layouts, which show icons. Sets arrangement of icons, text-wrapping state.</short>
+      </element><element name="TCustomListView.LastSelected"><short>Listview item, which is last selected, in MultiSelect mode.</short>
+      </element><element name="TCustomListView.OnData"><short>Called for owner-data mode.</short>
+      </element><element name="TCustomListView.OnDataFind"><short>Called for owner-data mode.</short>
+      </element><element name="TCustomListView.OnDataHint"><short>Called for owner-data mode.</short>
+      </element><element name="TCustomListView.OnDataStateChange"><short>Called for owner-data mode.</short>
       </element>
     </module>
     <!-- ComCtrls -->

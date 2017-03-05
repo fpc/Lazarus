@@ -1517,8 +1517,8 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   protected
     property AllocBy: Integer read FAllocBy write SetAllocBy default 0;
-    property AutoSort: Boolean read FAutoSort write FAutoSort default True; // when we click header column sort automatically
-    property AutoWidthLastColumn: Boolean read FAutoWidthLastColumn write SetAutoWidthLastColumn default False; // resize last column to fit width of TListView
+    property AutoSort: Boolean read FAutoSort write FAutoSort default True;
+    property AutoWidthLastColumn: Boolean read FAutoWidthLastColumn write SetAutoWidthLastColumn default False;
     property ColumnClick: Boolean index Ord(lvpColumnClick) read GetProperty write SetProperty default True;
     property Columns: TListColumns read FColumns write SetColumns;
     property DefaultItemHeight: integer read FDefaultItemHeight write SetDefaultItemHeight;
@@ -1661,7 +1661,7 @@ type
     property LargeImages;
     property MultiSelect;
     property OwnerData;
-    property OwnerDraw; // should pass OnDrawItem only when ListStyle=vsReport and OwnerDraw=True
+    property OwnerDraw;
     property ParentColor default False;
     property ParentFont;
     property ParentShowHint;
