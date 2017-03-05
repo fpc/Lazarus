@@ -1644,19 +1644,13 @@ type
     property DragCursor;
     property DragKind;
     property DragMode;
-//    property DefaultItemHeight;
-//    property DropTarget;
     property Enabled;
-//    property FlatScrollBars;
     property Font;
-//    property FullDrag;
     property GridLines;
     property HideSelection;
-//    property HotTrack;
-//    property HotTrackStyles;
-//    property HoverTime;
     property IconOptions;
-//    property ItemIndex; shouldn't be published, see bug 16367
+    // ItemIndex shouldn't be published, see bug 16367
+
     property Items;
     property LargeImages;
     property MultiSelect;
@@ -1671,7 +1665,6 @@ type
     property ScrollBars;
     property ShowColumnHeaders;
     property ShowHint;
-//    property ShowWorkAreas;
     property SmallImages;
     property SortColumn;
     property SortDirection;
@@ -2281,7 +2274,6 @@ type
     property ChildSizing;
     property Constraints;
     property Color;
-    //property Customizable: Boolean read FCustomizable write SetCustomizable default False;
     property DisabledImages: TCustomImageList read FDisabledImages write SetDisabledImages;
     property DragCursor;
     property DragKind;
@@ -2294,12 +2286,10 @@ type
     property Flat: Boolean read FFlat write SetFlat default True;
     property Font;
     property Height default 32;
-    //property HideClippedButtons: Boolean read FHideClippedButtons write SetHideClippedButtons default False;
     property HotImages: TCustomImageList read FHotImages write SetHotImages;
     property Images: TCustomImageList read FImages write SetImages;
     property Indent: Integer read FIndent write SetIndent default 1;
     property List: Boolean read FList write SetList default False;
-    //property Menu: TMainMenu read FMenu write SetMenu;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -3610,7 +3600,6 @@ type
     property Anchors;
     property AutoExpand;
     property BorderSpacing;
-    //property BiDiMode;
     property BackgroundColor;
     property BorderStyle;
     property BorderWidth;
@@ -3631,7 +3620,6 @@ type
     property Indent;
     property MultiSelect;
     property MultiSelectStyle;
-    //property ParentBiDiMode;
     property ParentColor default False;
     property ParentFont;
     property ParentShowHint;
@@ -3677,7 +3665,6 @@ type
     property OnEdited;
     property OnEditing;
     property OnEditingEnd;
-    //property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -3700,7 +3687,6 @@ type
     property OnResize;
     property OnSelectionChanged;
     property OnShowHint;
-    //property OnStartDock;
     property OnStartDrag;
     property OnUTF8KeyPress;
     property Options;
