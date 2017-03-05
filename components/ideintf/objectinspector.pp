@@ -4345,8 +4345,8 @@ begin
     Visible := True;
   end;
 
-  PropFilterLabel := TLabel.Create(self);
-  PropFilterEdit:= TListFilterEdit.Create(self);
+  PropFilterLabel := TLabel.Create(Self);
+  PropFilterEdit:= TListFilterEdit.Create(Self);
   with PropFilterLabel do
   begin
     Parent := PropertyPanel;
@@ -4364,11 +4364,8 @@ begin
     AnchorSideLeft.Side := asrBottom;
     AnchorSideTop.Control := PropFilterLabel;
     AnchorSideTop.Side := asrCenter;
-    Left := ScaleCoord96(61);
-    Top := ScaleCoord96(3);
     Width := PropertyPanel.Width - ( Left + 3);
     AutoSelect := False;
-    AutoSize:=False;
     ButtonWidth := ScaleCoord96(23);
     Anchors := [akTop, akLeft, akRight];
     BorderSpacing.Left := 5;
