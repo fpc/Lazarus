@@ -1570,7 +1570,7 @@ end;
 procedure TCustomForm.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
   const AXProportion, AYProportion: Double);
 var
-  NewWidth, NewHeight, OldWidth, OldHeight: Integer;
+  NewWidth, NewHeight: Integer;
 begin
   if Assigned(Parent) then
   begin
@@ -1584,10 +1584,13 @@ begin
     if not ParentFont or (Parent=nil) then
       ScaleFontsPPI(AYProportion);
 
+    NewWidth := Round(Width*AXProportion);
+    NewHeight := Round(Height*AYProportion);
+
     BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
     Constraints.AutoAdjustLayout(AXProportion, AYProportion);
 
-    SetBounds(Left, Top, Round(Width*AXProportion), Round(Height*AYProportion));
+    SetBounds(Left, Top, NewWidth, NewHeight);
   end;
 end;
 
