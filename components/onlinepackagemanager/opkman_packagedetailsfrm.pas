@@ -28,8 +28,8 @@ unit opkman_packagedetailsfrm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls;
+  // LCL
+  Forms, StdCtrls, ExtCtrls;
 
 type
 

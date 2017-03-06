@@ -29,10 +29,20 @@ unit opkman_mainfrm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, contnrs,
-  StdCtrls, ExtCtrls, Buttons, Menus, ComCtrls, IDECommands, LazFileUtils,
-  LCLIntf, fpjson, opkman_VirtualTrees, opkman_downloader, opkman_installer,
-  PackageIntf, Clipbrd, md5;
+  Classes, SysUtils, contnrs, fpjson, md5,
+  // LCL
+  Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Buttons, Menus, ComCtrls, Clipbrd,
+  LCLIntf, LCLVersion,
+  // LazUtils
+  LazFileUtils,
+  // IdeIntf
+  IDECommands,
+  // OpkMan
+  opkman_VirtualTrees, opkman_downloader, opkman_installer,
+  opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common,
+  opkman_progressfrm, opkman_zipper, opkman_packagelistfrm, opkman_options,
+  opkman_optionsfrm, opkman_createrepositorypackage, opkman_updates,
+  opkman_createjsonforupdates;
 
 type
 
@@ -145,11 +155,6 @@ var
 
 implementation
 
-uses LCLVersion,
-     opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common,
-     opkman_progressfrm, opkman_zipper, opkman_packagelistfrm, opkman_options,
-     opkman_optionsfrm, opkman_createrepositorypackage, opkman_updates,
-     opkman_createjsonforupdates;
 {$R *.lfm}
 
 { TMainFrm }

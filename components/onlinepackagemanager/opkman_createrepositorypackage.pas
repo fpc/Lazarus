@@ -28,8 +28,10 @@ unit opkman_createrepositorypackage;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, opkman_createrepositorypackagefr, Forms,
-  Controls, Graphics, Dialogs, ExtCtrls;
+  // LCL
+  Forms,
+  // OpkMan
+  opkman_const, opkman_createrepositorypackagefr;
 
 type
 
@@ -50,7 +52,6 @@ var
 
 implementation
 
-uses opkman_const;
 {$R *.lfm}
 
 { TCreateRepositoryPackagesFrm }

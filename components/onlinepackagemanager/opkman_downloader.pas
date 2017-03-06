@@ -31,9 +31,10 @@ unit opkman_downloader;
 interface
 
 uses
-  Classes, SysUtils, fpjson, opkman_timer, opkman_common, opkman_serializablepackages,
+  Classes, SysUtils, fpjson,
+  // OpkMan
+  opkman_timer, opkman_common, opkman_serializablepackages, opkman_const, opkman_options,
   {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF};
-
 
 type
   TDownloadType = (dtJSON, dtPackage, dtUpdate);
@@ -181,8 +182,6 @@ var
   PackageDownloader: TPackageDownloader = nil;
 
 implementation
-
-uses opkman_const, opkman_options;
 
 { TDownloadStream }
 constructor TDownloadStream.Create(AStream: TStream);

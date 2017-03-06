@@ -29,7 +29,6 @@ interface
 uses
   Classes, SysUtils;
 
-
 type
    { TThreadTimer }
    TThreadTimer = class(TThread)

@@ -31,10 +31,12 @@ unit opkman_uploader;
 interface
 
 uses
- Classes, SysUtils, fpjson, base64, LazFileUtils,
+ Classes, SysUtils, base64,
+ // LazUtils
+ LazFileUtils,
+ // OpkMan
+ opkman_options, opkman_const,
  {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF};
-
-
 
 type
  TOnUploadProgress = procedure(Sender: TObject; AFileName: String) of object;
@@ -78,7 +80,6 @@ var
  Uploader: TUploader = nil;
 
 implementation
-uses opkman_options, opkman_const;
 
 { TUploader }
 

@@ -30,9 +30,12 @@ unit opkman_visualtree;
 interface
 
 uses
-  Classes, SysUtils, Controls, Graphics, Menus, Dialogs, Forms, LCLIntf, contnrs,
-  PackageIntf, Buttons, Math, dateutils, opkman_VirtualTrees, opkman_common,
-  opkman_serializablepackages;
+  Classes, SysUtils, contnrs, Math, dateutils,
+  // LCL
+  Controls, Graphics, Menus, Dialogs, Forms, LCLIntf, Buttons,
+  // OpkMan
+  opkman_VirtualTrees, opkman_common, opkman_serializablepackages, opkman_const,
+  opkman_options, opkman_packagedetailsfrm;
 
 
 type
@@ -161,7 +164,6 @@ var
   VisualTree: TVisualTree = nil;
 
 implementation
-uses opkman_const, opkman_options, opkman_packagedetailsfrm;
 
 { TVisualTree }
 

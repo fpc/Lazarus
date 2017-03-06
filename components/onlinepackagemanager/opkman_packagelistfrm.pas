@@ -26,8 +26,11 @@ unit opkman_packagelistfrm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, opkman_VirtualTrees;
+  SysUtils,
+  // LCL
+  Forms, Controls, Graphics, ExtCtrls, StdCtrls,
+  // OpkMan
+  opkman_VirtualTrees, opkman_const, opkman_serializablepackages;
 
 type
 
@@ -69,7 +72,6 @@ var
   PackageListFrm: TPackageListFrm;
 
 implementation
-uses opkman_const, opkman_serializablepackages;
 
 {$R *.lfm}
 

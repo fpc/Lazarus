@@ -28,9 +28,12 @@ unit opkman_createjsonforupdates;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, EditBtn, LCLIntf, MaskEdit, fpjson,
-  opkman_VirtualTrees, opkman_serializablepackages;
+  Classes, SysUtils, fpjson,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, LCLIntf,
+  // OpkMan
+  opkman_serializablepackages, opkman_const, opkman_common, opkman_updates,
+  opkman_VirtualTrees;
 
 type
 
@@ -75,7 +78,7 @@ var
   CreateJSONForUpdatesFrm: TCreateJSONForUpdatesFrm;
 
 implementation
-uses opkman_const, opkman_common, opkman_updates;
+
 {$R *.lfm}
 
 { TCreateJSONForUpdatesFrm }

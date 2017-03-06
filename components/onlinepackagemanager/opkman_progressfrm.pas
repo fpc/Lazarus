@@ -27,8 +27,12 @@ unit opkman_progressfrm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  StdCtrls, ExtCtrls, opkman_serializablepackages, opkman_installer, opkman_VirtualTrees;
+  SysUtils,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls, ExtCtrls,
+  // OpkMan
+  opkman_installer, opkman_common, opkman_const, opkman_downloader, opkman_zipper,
+  opkman_VirtualTrees;
 
 type
 
@@ -102,7 +106,7 @@ var
   ProgressFrm: TProgressFrm;
 
 implementation
-uses opkman_common, opkman_const, opkman_downloader, opkman_zipper;
+
 {$R *.lfm}
 
 { TProgressFrm }

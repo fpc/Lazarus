@@ -28,8 +28,11 @@ unit opkman_repositories;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Menus, opkman_VirtualTrees;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
+  // OpkMan
+  opkman_const, opkman_common, opkman_options, opkman_VirtualTrees;
 
 type
 
@@ -74,7 +77,7 @@ var
   RepositoriesFrm: TRepositoriesFrm;
 
 implementation
-uses opkman_const, opkman_common, opkman_options;
+
 {$R *.lfm}
 
 type

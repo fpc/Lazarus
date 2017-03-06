@@ -30,8 +30,12 @@ unit opkman_updates;
 interface
 
 uses
-  Classes, SysUtils, LazIDEIntf, Laz2_XMLCfg, LazFileUtils, fpjson, fpjsonrtti,
-  opkman_timer, opkman_serializablepackages, dateutils,
+  Classes, SysUtils, fpjson, fpjsonrtti, dateutils,
+  // LazUtils
+  Laz2_XMLCfg,
+  // OpkMan
+  opkman_timer, opkman_serializablepackages,
+  opkman_options, opkman_common,
   {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF};
 
 const
@@ -130,9 +134,6 @@ var
   Updates: TUpdates = nil;
 
 implementation
-
-uses opkman_options, opkman_common, opkman_const,
-     {$IFDEF FPC311}zipper{$ELSE}opkman_zip{$ENDIF};
 
 { TUpdatePackage }
 
@@ -403,9 +404,11 @@ begin
 end;
 
 procedure TUpdates.CheckForOpenSSL;
+{$IFDEF MSWINDOWS}
 var
   ZipFile: String;
   UnZipper: TUnZipper;
+{$ENDIF}
 begin
   {$IFDEF MSWINDOWS}
    FOpenSSLAvaialable := FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'libeay32.dll') and

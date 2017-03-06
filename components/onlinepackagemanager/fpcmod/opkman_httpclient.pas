@@ -489,7 +489,7 @@ procedure TFPCustomHTTPClient.SetIOTimeout(AValue: Integer);
 begin
   if AValue=FIOTimeout then exit;
   FIOTimeout:=AValue;
-  {$IFDEF FPC311}
+  {$IFDEF FPC302}
    if Assigned(FSocket) then
      FSocket.IOTimeout:=AValue;
   {$ENDIF}
@@ -596,7 +596,7 @@ begin
   G:=GetSocketHandler(UseSSL);    
   FSocket:=TInetSocket.Create(AHost,APort,G);
   try
-    {$IFDEF FPC311}
+    {$IFDEF FPC302}
     if FIOTimeout<>0 then
       FSocket.IOTimeout:=FIOTimeout;
     {$ENDIF}

@@ -31,8 +31,13 @@ unit opkman_serializablepackages;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Variants, fpjson, jsonparser, contnrs,
-  PackageIntf, Laz2_XMLCfg, LazFileUtils, dateutils;
+  Classes, SysUtils, Variants, contnrs, dateutils, fpjson, jsonparser,
+  // LazUtils
+  FileUtil, Laz2_XMLCfg, LazFileUtils,
+  // IdeIntf
+  PackageIntf,
+  // OpkMan
+  opkman_common, opkman_const, opkman_options;
 
 
 type
@@ -312,7 +317,6 @@ var
 
 
 implementation
-uses opkman_common, opkman_const, opkman_options;
 
 { TPackageVersion }
 

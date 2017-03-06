@@ -31,7 +31,11 @@ unit opkman_zipper;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazFileUtils, strutils, opkman_timer,
+  Classes, SysUtils, strutils,
+  // LazUtils
+  FileUtil, LazFileUtils,
+  // OpkMan
+  opkman_timer, opkman_serializablepackages, opkman_common,
   {$IFDEF FPC311}zipper{$ELSE}opkman_zip{$ENDIF};
 
 type
@@ -116,8 +120,6 @@ var
   PackageUnzipper: TPackageUnzipper = nil;
 
 implementation
-
-uses opkman_serializablepackages, opkman_common;
 
 { TPackageUnZipper }
 

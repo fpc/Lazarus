@@ -30,8 +30,13 @@ unit opkman_optionsfrm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, opkman_VirtualTrees, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, Spin, ComCtrls, Buttons, EditBtn, LazFileUtils, Math;
+  SysUtils, Math,
+  // LCL
+  Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Spin, ComCtrls, EditBtn,
+  // LazUtils
+  LazFileUtils,
+  // OpkMan
+  opkman_options, opkman_common, opkman_const, opkman_repositories;
 
 type
 
@@ -121,7 +126,7 @@ var
   OptionsFrm: TOptionsFrm;
 
 implementation
-uses opkman_options, opkman_common, opkman_const, opkman_repositories;
+
 {$R *.lfm}
 
 { TOptionsFrm }

@@ -29,8 +29,11 @@ unit opkman_common;
 interface
 
 uses
-  Classes, SysUtils, Dialogs, Forms, Controls, LazIDEIntf, LazFileUtils, contnrs,
-  opkman_const;
+  Classes, SysUtils, contnrs,
+  // LCL
+  Dialogs, Forms, Controls, LazIDEIntf, LazFileUtils,
+  // OpkMan
+  opkman_const, opkman_options;
 
 type
   TPackageAction = (paDownloadTo, paInstall, paUpdate);
@@ -122,7 +125,6 @@ procedure FindAllFilesEx(const ADirName: String; AFileList: TStrings);
 function FixProtocol(const AURL: String): String;
 
 implementation
-uses opkman_options;
 
 function MessageDlgEx(const AMsg: string; ADlgType: TMsgDlgType;
   AButtons: TMsgDlgButtons; AParent: TForm): TModalResult;

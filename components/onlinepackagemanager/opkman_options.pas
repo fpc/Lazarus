@@ -27,7 +27,13 @@ unit opkman_options;
 interface
 
 uses
-  Classes, SysUtils, LazIDEIntf, Laz2_XMLCfg, LazFileUtils;
+  Classes, SysUtils,
+  // LazUtils
+  Laz2_XMLCfg, LazFileUtils,
+  // IdeIntf
+  LazIDEIntf,
+  // OpkMan
+  opkman_const;
 
 const
   OpkVersion = 1;
@@ -107,7 +113,6 @@ var
   Options: TOptions = nil;
 
 implementation
-uses opkman_const;
 
 { TOptions }
 

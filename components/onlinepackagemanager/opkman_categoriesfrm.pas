@@ -28,8 +28,11 @@ unit opkman_categoriesfrm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, opkman_VirtualTrees;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Graphics, ExtCtrls, StdCtrls,
+  // OpkMan
+  opkman_const, opkman_common, opkman_VirtualTrees;
 
 type
 
@@ -72,7 +75,7 @@ var
   CategoriesFrm: TCategoriesFrm;
 
 implementation
-uses opkman_const, opkman_common;
+
 {$R *.lfm}
 
 type

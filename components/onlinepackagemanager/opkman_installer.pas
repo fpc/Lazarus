@@ -31,10 +31,13 @@ unit opkman_installer;
 interface
 
 uses
-  Classes, SysUtils, contnrs, Controls, Forms, PackageIntf, LCLVersion,
-  opkman_serializablepackages;
-
-
+  Classes, SysUtils, contnrs,
+  // LCL
+  Controls, LCLVersion,
+  // IdeIntf
+  PackageIntf,
+  // OpkMan
+  opkman_serializablepackages, opkman_const, opkman_common;
 
 type
   TInstallStatus = (isSuccess, isPartiallyFailed, isFailed);
@@ -86,7 +89,6 @@ var
 
 implementation
 
-uses opkman_const, opkman_common;
 { TPackageInstaller }
 
 constructor TPackageInstaller.Create;
