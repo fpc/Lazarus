@@ -3165,19 +3165,19 @@ If a valid directory is given, the selected directory in the tree will be set to
       </element>
     <element name="TTaskDialog.Buttons"><short>Collection of items that describe buttons in dialog. Additional to CommonButtons.</short>
       </element><element name="TTaskDialog.Caption"><short>Caption of dialog's form.</short>
-      </element><element name="TTaskDialog.Title"><short>Text that is shown above main info text, with big font and bold style.</short>
+      </element><element name="TTaskDialog.Title"><short>Header text that is shown on the top, with big font and bold style. Use "\n" for new lines.</short>
       </element><element name="TTaskDialog.VerificationText"><short>If not empty, dialog shows check-box with this caption, at the bottom.</short>
       </element>
-    <element name="TTaskDialog.Text"><short>Text that is shown as main information in the dialog.</short>
+    <element name="TTaskDialog.Text"><short>Text that is shown as main information in the dialog. Use "\n" for new lines.</short>
       </element><element name="TTaskDialog.DefaultButton"><short>Index of default button, from set of CommonButtons property.</short>
       </element><element name="TTaskDialog.CommonButtons"><short>Set of standard buttons in dialog: OK, Cancel, Yes etc. Additional to Buttons.</short>
       </element><element name="TTaskDialog.ExpandButtonCaption"><short>Dialog can have "expand button", with specified caption that shows additional info.</short>
-      </element><element name="TTaskDialog.ExpandedText"><short>Text that is shown, when "expand button" clicked, or dialog has expanded state.</short>
+      </element><element name="TTaskDialog.ExpandedText"><short>Text that is shown when dialog is expanded. Use "\n" for new lines.</short>
       </element><element name="TTaskDialog.Flags"><short>Set of advanced options for dialog.</short>
       </element><element name="TTaskDialog.FooterIcon"><short>Icon for the footer area, at the bottom.</short>
-      </element><element name="TTaskDialog.FooterText"><short>Text that shows in the footer area, at the bottom.</short>
+      </element><element name="TTaskDialog.FooterText"><short>Text that shows in the footer area, at the bottom. Use "\n" for new lines.</short>
       </element><element name="TTaskDialog.MainIcon"><short>Icon for the main info in dialog.</short>
-      </element><element name="TTaskDialog.RadioButtons"><short>Collection of items that describe radio-buttons, they show in the lower part.</short>
+      </element><element name="TTaskDialog.RadioButtons"><short>Collection of items that describe radio-buttons; they are shown in the lower part. Use "\n" to add info to buttons (shown in hint in emulated dialog, or in a new line in native Windows dialog.)</short>
       </element>
     <element name="TTaskDialogFlag.tfEnableHyperlinks"><short>Allow HTML-like hyperlinks in the dialog (in Text, Footer, and ExpandedText) using HTML tag "a href=...".</short>
       </element><element name="TTaskDialogFlag.tfUseHiconMain"><short>Use custom main icon with CustomMainIcon property.</short>
@@ -3186,12 +3186,12 @@ If a valid directory is given, the selected directory in the tree will be set to
       </element><element name="TTaskDialogFlag.tfCanBeMinimized"><short>Allow minimizing the dialog.</short>
       </element><element name="TTaskDialogFlag.tfRtlLayout"><short>Use Right-to-Left layout for texts.</short>
       </element><element name="TTaskDialogFlag.tfShowProgressBar"><short>Show additional progress-bar.</short>
-      </element><element name="TTaskDialogFlag.tfExpandedByDefault"><short>Initially show ExpandedText. Else show the button, which shows ExpandedText.</short>
+      </element><element name="TTaskDialogFlag.tfExpandedByDefault"><short>Initially show dialog in expanded state.</short>
       </element><element name="TTaskDialogFlag.tfExpandFooterArea"><short>Show ExpandedText in the footer, instead of near the main text.</short>
       </element><element name="TTaskDialogFlag.tfNoDefaultRadioButton"><short>Don't check any of radio-buttons.</short>
       </element><element name="TTaskDialogFlag.tfShowMarqueeProgressBar"><short>Show additional progress-bar, in the marquee style, never ending progress.</short>
       </element><element name="TTaskDialogFlag.tfUseHiconFooter"><short>Use custom footer icon with CustomFooterIcon property.</short>
-      </element><element name="TTaskDialogFlag.tfUseCommandLinks"><short>Custom buttons will be shown as big buttons in the middle of the dialog; and text after "\n", in caption, will be shown as hint.</short>
+      </element><element name="TTaskDialogFlag.tfUseCommandLinks"><short>Custom buttons will be shown as big buttons in the middle of the dialog. Use "\n" to add info to buttons (shown in hint in emulated dialog).</short>
       </element><element name="TTaskDialogFlag.tfUseCommandLinksNoIcon"><short>Don't show glyphs for custom buttons in the "command links" mode.</short>
       </element><element name="TTaskDialogFlag.tfCallbackTimer"><short>Execute the timer callback event every 200 milliseconds.</short>
       </element><element name="TTaskDialogFlag.tfPositionRelativeToWindow"><short>Form position will be poOwnerFormCenter, instead of poScreenCenter.</short>
