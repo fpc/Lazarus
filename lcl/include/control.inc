@@ -913,8 +913,7 @@ begin
   // be used for LCL HighDPI scaling.
   // Override this function - list all custom fonts in the overriden procedure
 
-  if not ParentFont then
-    DoFixDesignFontPPI(Font, ADesignTimePPI);
+  DoFixDesignFontPPI(Font, ADesignTimePPI);
 end;
 
 procedure TControl.ExecuteCancelAction;
@@ -1506,16 +1505,22 @@ procedure TControl.DoFixDesignFontPPI(const AFont: TFont;
   const ADesignTimePPI: Integer);
 var
   H: Integer;
+  OldParentFont: Boolean;
 begin
   if AFont.PixelsPerInch <> ADesignTimePPI then
   begin
-    H := AFont.Height;
-    AFont.BeginUpdate;
+    OldParentFont := ParentFont;
     try
-      AFont.Height := MulDiv(H, AFont.PixelsPerInch, ADesignTimePPI);
-      AFont.PixelsPerInch := ADesignTimePPI;
+      H := AFont.Height;
+      AFont.BeginUpdate;
+      try
+        AFont.Height := MulDiv(H, AFont.PixelsPerInch, ADesignTimePPI);
+        AFont.PixelsPerInch := ADesignTimePPI;
+      finally
+        AFont.EndUpdate;
+      end;
     finally
-      AFont.EndUpdate;
+      FParentFont := OldParentFont; // change ParentFont without triggering CM_PARENTFONTCHANGED
     end;
   end;
 end;
