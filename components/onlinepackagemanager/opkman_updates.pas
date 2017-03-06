@@ -32,11 +32,12 @@ interface
 uses
   Classes, SysUtils, fpjson, fpjsonrtti, dateutils,
   // LazUtils
-  Laz2_XMLCfg,
+  Laz2_XMLCfg, LazFileUtils,
   // OpkMan
   opkman_timer, opkman_serializablepackages,
-  opkman_options, opkman_common,
-  {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF};
+  opkman_options, opkman_common, opkman_const,
+  {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF},
+  {$IFDEF FPC311}zipper{$ELSE}opkman_zip{$ENDIF};
 
 const
   OpkVersion = 1;
