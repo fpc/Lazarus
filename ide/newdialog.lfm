@@ -60,13 +60,19 @@ object NewOtherDialog: TNewOtherDialog
         WordWrap = True
       end
       object InheritableComponentsListView: TListView
+        AnchorSideLeft.Control = DescriptionGroupBox
         AnchorSideTop.Control = CompFilterEdit
         AnchorSideTop.Side = asrBottom
         Left = 0
         Height = 304
         Top = 54
         Width = 419
+        AnchorSideRight.Control = DescriptionGroupBox
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = DescriptionGroupBox
+        AnchorSideBottom.Side = asrBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
         Columns = <        
           item
             Caption = 'Form'
@@ -86,8 +92,11 @@ object NewOtherDialog: TNewOtherDialog
         OnSelectItem = InheritableComponentsListViewSelectItem
       end
       object CompFilterEdit: TListViewFilterEdit
+        AnchorSideLeft.Control = DescriptionGroupBox
         AnchorSideTop.Control = DescriptionLabel
         AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = DescriptionGroupBox
+        AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 28
         Top = 26
@@ -95,6 +104,7 @@ object NewOtherDialog: TNewOtherDialog
         ButtonWidth = 23
         NumGlyphs = 1
         Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
         MaxLength = 0
         TabOrder = 0
         FilteredListview = InheritableComponentsListView
