@@ -26,10 +26,13 @@ unit opkman_zipper;
 
 {$mode objfpc}{$H+}
 
+{$INCLUDE opkman_fpcdef.inc}
+
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazFileUtils, strutils, opkman_timer, opkman_zip;
+  Classes, SysUtils, FileUtil, LazFileUtils, strutils, opkman_timer,
+  {$IFDEF FPC311}zipper{$ELSE}opkman_zip{$ENDIF};
 
 type
   TOnProgressEx = procedure(Sender : TObject; const ATotPos, ATotSize: Int64);
@@ -69,6 +72,7 @@ type
     procedure DoOnZipProgress;
     procedure DoOnZipError;
     procedure DoOnZipCompleted;
+    function GetZipSize(var AIsDirZipped: Boolean; var ABaseDir: String): Int64;
   protected
     procedure Execute; override;
   public
@@ -226,6 +230,42 @@ begin
   Sleep(5);
 end;
 
+function TPackageUnzipper.GetZipSize(var AIsDirZipped: Boolean; var ABaseDir: String): Int64;
+var
+  I: Integer;
+  Item: TFullZipFileEntry;
+  AllFiles: Boolean;
+  P: Integer;
+begin
+  FUnZipper.Examine;
+  AllFiles := (FUnZipper.Files.Count = 0);
+  Result := 0;
+  if FUnZipper.Entries.Count > 0 then
+  begin
+    P := Pos('/', TZipFileEntry(FUnZipper.Entries.Items[0]).ArchiveFileName);
+    if P = 0 then
+      P := Pos('\', TZipFileEntry(FUnZipper.Entries.Items[0]).ArchiveFileName);
+    if P <> 0 then
+      ABaseDir := Copy(TZipFileEntry(FUnZipper.Entries.Items[0]).ArchiveFileName, 1, P);
+  end;
+  for I := 0 to FUnZipper.Entries.Count-1 do
+  begin
+      Item := FUnZipper.Entries[i];
+      if AllFiles or (FUnZipper.Files.IndexOf(Item.ArchiveFileName)<>-1) then
+      begin
+        Result := Result + TZipFileEntry(Item).Size;
+        if AIsDirZipped then
+          if Pos(ABaseDir, Item.ArchiveFileName) = 0 then
+            AIsDirZipped := False;
+      end;
+  end;
+  if not AIsDirZipped then
+    ABaseDir := ''
+  else
+    ABaseDir := Copy(ABaseDir, 1, Length(ABaseDir) - 1);
+end;
+
+
 procedure TPackageUnzipper.StartUnZip(const ASrcDir, ADstDir: String;
   const AIsUpdate: Boolean);
 var
@@ -250,7 +290,7 @@ begin
         FUnZipper.Examine;
         IsDirZipped := True;
         BaseDir := '';
-        FTotSize := FTotSize + FUnZipper.GetZipSize(IsDirZipped, BaseDir);
+        FTotSize := FTotSize + GetZipSize(IsDirZipped, BaseDir);
         SerializablePackages.Items[I].IsDirZipped := IsDirZipped;
         if BaseDir <> '' then
           BaseDir := AppendPathDelim(BaseDir);
@@ -276,7 +316,7 @@ end;
 procedure TPackageUnzipper.StopUnZip;
 begin
   if Assigned(FUnZipper) then
-    FUnZipper.NeedToBreak := True;
+    FUnZipper.Terminate;
   if Assigned(FTimer) then
     FTimer.StopTimer;
   FNeedToBreak := True;
@@ -373,7 +413,7 @@ end;
 procedure TPackageZipper.StopZip;
 begin
   if Assigned(FZipper) then
-    FZipper.NeedToBreak := True;
+    FZipper.Terminate;
   FNeedToBreak := True;
   FStarted := False;
 end;

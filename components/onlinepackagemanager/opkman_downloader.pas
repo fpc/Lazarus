@@ -26,11 +26,14 @@ unit opkman_downloader;
 
 {$mode objfpc}{$H+}
 
+{$INCLUDE opkman_fpcdef.inc}
+
 interface
 
 uses
-  Classes, SysUtils, fpjson, opkman_httpclient, opkman_timer, opkman_common,
-  opkman_serializablepackages;
+  Classes, SysUtils, fpjson, opkman_timer, opkman_common, opkman_serializablepackages,
+  {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF};
+
 
 type
   TDownloadType = (dtJSON, dtPackage, dtUpdate);
@@ -270,7 +273,7 @@ procedure TThreadDownload.DoOnTimer(Sender: TObject);
 begin
   if FDownloadType = dtJSON then
   begin
-    FHTTPClient.NeedToBreak := True;
+    FHTTPClient.Terminate;
     FErrMsg := rsMainFrm_rsMessageError2;
     FErrTyp := etTimeOut;
     FTimer.StopTimer;
@@ -679,7 +682,7 @@ procedure TPackageDownloader.CancelDownloadPackages;
 begin
   if Assigned(FDownload) then
   begin
-    FDownload.FHTTPClient.NeedToBreak := True;
+    FDownload.FHTTPClient.Terminate;
     FDownload.FTimer.StopTimer;
     FDownload.NeedToBreak := True;
   end;
@@ -700,7 +703,7 @@ procedure TPackageDownloader.CancelUpdatePackages;
 begin
   if Assigned(FDownload) then
   begin
-    FDownload.FHTTPClient.NeedToBreak := True;
+    FDownload.FHTTPClient.Terminate;
     FDownload.FTimer.StopTimer;
     FDownload.NeedToBreak := True;
   end;

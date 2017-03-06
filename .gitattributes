@@ -3253,6 +3253,7 @@ components/onlinepackagemanager/opkman_createjsonforupdates.pas svneol=native#te
 components/onlinepackagemanager/opkman_createrepositorypackage.lfm svneol=native#text/plain
 components/onlinepackagemanager/opkman_createrepositorypackage.pas svneol=native#text/pascal
 components/onlinepackagemanager/opkman_downloader.pas svneol=native#text/pascal
+components/onlinepackagemanager/opkman_fpcdef.inc svneol=native#text/pascal
 components/onlinepackagemanager/opkman_installer.pas svneol=native#text/pascal
 components/onlinepackagemanager/opkman_mainfrm.lfm svneol=native#text/plain
 components/onlinepackagemanager/opkman_mainfrm.pas svneol=native#text/pascal

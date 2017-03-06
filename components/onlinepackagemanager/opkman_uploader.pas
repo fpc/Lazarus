@@ -26,12 +26,15 @@ unit opkman_uploader;
 
 {$mode objfpc}{$H+}
 
+{$INCLUDE opkman_fpcdef.inc}
+
 interface
 
 uses
- Classes, SysUtils, fpjson, base64, LazFileUtils, opkman_httpclient,
+ Classes, SysUtils, fpjson, base64, LazFileUtils,
+ {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF};
 
- dialogs;
+
 
 type
  TOnUploadProgress = procedure(Sender: TObject; AFileName: String) of object;
@@ -210,7 +213,7 @@ end;
 procedure TUploader.StopUpload;
 begin
   if Assigned(FHTTPClient) then
-    FHTTPClient.NeedToBreak := True;
+    FHTTPClient.Terminate;
   FNeedToBreak := True;
 end;
 

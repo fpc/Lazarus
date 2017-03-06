@@ -25,11 +25,14 @@ unit opkman_updates;
 
 {$mode objfpc}{$H+}
 
+{$INCLUDE opkman_fpcdef.inc}
+
 interface
 
 uses
   Classes, SysUtils, LazIDEIntf, Laz2_XMLCfg, LazFileUtils, fpjson, fpjsonrtti,
-  opkman_httpclient, opkman_timer, opkman_serializablepackages, dateutils;
+  opkman_timer, opkman_serializablepackages, dateutils,
+  {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF};
 
 const
   OpkVersion = 1;
@@ -128,7 +131,8 @@ var
 
 implementation
 
-uses opkman_options, opkman_common, opkman_const, opkman_zip;
+uses opkman_options, opkman_common, opkman_const,
+     {$IFDEF FPC311}zipper{$ELSE}opkman_zip{$ENDIF};
 
 { TUpdatePackage }
 
@@ -527,7 +531,7 @@ begin
               ResetPackageData(SerializablePackages.Items[I]);
           end
           else
-            FHTTPClient.NeedToBreak := True;
+            FHTTPClient.Terminate;
         end;
         if Assigned(FOnUpdate) and (not FNeedToBreak) and (not FPaused) then
           Synchronize(@DoOnUpdate);
@@ -561,7 +565,7 @@ begin
   Save;
   FTimer.StopTimer;
   FStarted := False;
-  FHTTPClient.NeedToBreak := True;
+  FHTTPClient.Terminate;
 end;
 
 procedure TUpdates.PauseUpdate;

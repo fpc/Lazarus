@@ -18,21 +18,10 @@ unit opkman_httpclient;
   Todo:
   * Proxy support ?
   ---------------------------------------------------------------------}
-{
-  TFPHTTPClient does not implement a timeout/aborting mechanism(2016.10.01), which
-  is useful when downloading a large file for example. opkman_httpclient and opkman_downloader
-  fix this issue.
-}
 
 {$mode objfpc}{$H+}
 
-{$IF FPC_VERSION = 3}
-  {$IF FPC_RELEASE > 0}
-   {$IF FPC_PATCH > 0}
-     {$DEFINE FPC311}
-    {$ENDIF}
-  {$ENDIF}
-{$ENDIF}
+{$INCLUDE opkman_fpcdef.inc}
 
 interface
 
@@ -83,6 +72,7 @@ Type
     FDataRead : Int64;
     FContentLength : Int64;
     FAllowRedirect: Boolean;
+    FKeepConnection: Boolean;
     FMaxRedirects: Byte;
     FOnDataReceived: TDataEvent;
     FOnHeaders: TNotifyEvent;
@@ -101,9 +91,9 @@ Type
     FServerHTTPVersion: String;
     FSocket : TInetSocket;
     FBuffer : Ansistring;
+    FTerminated: Boolean;
     FUserName: String;
     FOnGetSocketHandler : TGetSocketHandlerEvent;
-    FNeedToBreak: Boolean;
     FProxy : TProxyData;
     function CheckContentLength: Int64;
     function CheckTransferEncoding: string;
@@ -111,11 +101,26 @@ Type
     function GetProxy: TProxyData;
     Procedure ResetResponse;
     Procedure SetCookies(const AValue: TStrings);
+    procedure SetHTTPVersion(const AValue: String);
+    procedure SetKeepConnection(AValue: Boolean);
     procedure SetProxy(AValue: TProxyData);
     Procedure SetRequestHeaders(const AValue: TStrings);
     procedure SetIOTimeout(AValue: Integer);
+    Procedure ExtractHostPort(AURI: TURI; Out AHost: String; Out APort: Word);
+    Procedure CheckConnectionCloseHeader;
   protected
+
     Function NoContentAllowed(ACode : Integer) : Boolean;
+    // Peform a request, close connection.
+    Procedure DoNormalRequest(const AURI: TURI; const AMethod: string;
+      AStream: TStream; const AAllowedResponseCodes: array of Integer;
+      AHeadersOnly, AIsHttps: Boolean); virtual;
+    // Peform a request, try to keep connection.
+    Procedure DoKeepConnectionRequest(const AURI: TURI; const AMethod: string;
+      AStream: TStream; const AAllowedResponseCodes: array of Integer;
+      AHeadersOnly, AIsHttps: Boolean); virtual;
+    // Return True if FSocket is assigned
+    Function IsConnected: Boolean; virtual;
     // True if we need to use a proxy: ProxyData Assigned and Hostname Set
     Function ProxyActive : Boolean;
     // Override this if you want to create a custom instance of proxy.
@@ -127,19 +132,23 @@ Type
     // Construct server URL for use in request line.
     function GetServerURL(URI: TURI): String;
     // Read 1 line of response. Fills FBuffer
-    function ReadString: String;
+    function ReadString(out S: String): Boolean;
     // Check if response code is in AllowedResponseCodes. if not, an exception is raised.
     // If AllowRedirect is true, and the result is a Redirect status code, the result is also true
     // If the OnPassword event is set, then a 401 will also result in True.
     function CheckResponseCode(ACode: Integer;  const AllowedResponseCodes: array of Integer): Boolean; virtual;
     // Read response from server, and write any document to Stream.
-    Procedure ReadResponse(Stream: TStream;  const AllowedResponseCodes: array of Integer; HeadersOnly: Boolean = False); virtual;
+    Function ReadResponse(Stream: TStream;  const AllowedResponseCodes: array of Integer; HeadersOnly: Boolean = False): Boolean; virtual;
     // Read server response line and headers. Returns status code.
     Function ReadResponseHeaders : integer; virtual;
     // Allow header in request ? (currently checks only if non-empty and contains : token)
     function AllowHeader(var AHeader: String): Boolean; virtual;
+    // Return True if the "connection: close" header is present
+    Function HasConnectionClose: Boolean; virtual;
     // Connect to the server. Must initialize FSocket.
     Procedure ConnectToServer(const AHost: String; APort: Integer; UseSSL : Boolean=False); virtual;
+    // Re-connect to the server. Must reinitialize FSocket.
+    Procedure ReconnectToServer(const AHost: String; APort: Integer; UseSSL : Boolean=False); virtual;
     // Disconnect from server. Must free FSocket.
     Procedure DisconnectFromServer; virtual;
     // Run method AMethod, using request URL AURL. Write Response to Stream, and headers in ResponseHeaders.
@@ -160,13 +169,16 @@ Type
     Class Function IndexOfHeader(HTTPHeaders : TStrings; Const AHeader : String) : Integer;
     // Return value of header AHeader from httpheaders. Returns empty if it doesn't exist yet.
     Class Function GetHeader(HTTPHeaders : TStrings; Const AHeader : String) : String;
+    { Terminate the current request.
+      It will stop the client from trying to send and/or receive data after the current chunk is sent/received. }
+    Procedure Terminate;
     // Request Header management
     // Return index of header, -1 if not present.
     Function IndexOfHeader(Const AHeader : String) : Integer;
     // Add header, replacing an existing one if it exists.
     Procedure AddHeader(Const AHeader,AValue : String);
     // Return header value, empty if not present.
-    Function GetHeader(Const AHeader : String) : String;
+    Function  GetHeader(Const AHeader : String) : String;
     // General-purpose call. Handles redirect and authorization retry (OnPassword).
     Procedure HTTPMethod(Const AMethod,AURL : String; Stream : TStream; Const AllowedResponseCodes : Array of Integer); virtual;
     // Execute GET on server, store result in Stream, File, StringList or string
@@ -239,7 +251,7 @@ Type
     Procedure FormPost(const URL : string; FormData:  TStrings; const Response: TStrings);
     function FormPost(const URL, FormData: string): String;
     function FormPost(const URL: string; FormData : TStrings): String;
-    // Simple form
+    // Simple form 
     Class Procedure SimpleFormPost(const URL, FormData: string; const Response: TStream);
     Class Procedure SimpleFormPost(const URL : string; FormData:  TStrings; const Response: TStream);
     Class Procedure SimpleFormPost(const URL, FormData: string; const Response: TStrings);
@@ -256,6 +268,8 @@ Type
     Procedure StreamFormPost(const AURL: string; FormData: TStrings; const AFieldName, AFileName: string; const AStream: TStream; const Response: TStream);
     // Simple form of Posting a file
     Class Procedure SimpleFileFormPost(const AURL, AFieldName, AFileName: string; const Response: TStream);
+    // Has Terminate been called ?
+    Property Terminated : Boolean Read FTerminated;
   Protected
     // Timeouts
     Property IOTimeout : Integer read FIOTimeout write SetIOTimeout;
@@ -268,7 +282,8 @@ Type
     // Optional body to send (mainly in POST request)
     Property RequestBody : TStream read FRequestBody Write FRequestBody;
     // used HTTP version when constructing the request.
-    Property HTTPversion : String Read FHTTPVersion Write FHTTPVersion;
+    // Setting this to any other value than 1.1 will set KeepConnection to False.
+    Property HTTPversion : String Read FHTTPVersion Write SetHTTPVersion;
     // After request properties.
     // After request, this contains the headers sent by server.
     Property ResponseHeaders : TStrings Read FResponseHeaders;
@@ -292,6 +307,10 @@ Type
     // They also override any Authenticate: header in Requestheaders.
     Property UserName : String Read FUserName Write FUserName;
     Property Password : String Read FPassword Write FPassword;
+    // Is client connected?
+    Property Connected: Boolean read IsConnected;
+    // Keep-Alive support. Setting to true will set HTTPVersion to 1.1
+    Property KeepConnection: Boolean Read FKeepConnection Write SetKeepConnection;
     // If a request returns a 401, then the OnPassword event is fired.
     // It can modify the username/password and set RepeatRequest to true;
     Property OnPassword : TPasswordEvent Read FOnPassword Write FOnPassword;
@@ -301,12 +320,14 @@ Type
     Property OnHeaders : TNotifyEvent Read FOnHeaders Write FOnHeaders;
     // Called to create socket handler. If not set, or Nil is returned, a standard socket handler is created.
     Property OnGetSocketHandler : TGetSocketHandlerEvent Read FOnGetSocketHandler Write FOnGetSocketHandler;
-    Property NeedToBreak: Boolean read FNeedToBreak write FNeedToBreak;
+
   end;
 
 
   TFPHTTPClient = Class(TFPCustomHTTPClient)
   Published
+    Property KeepConnection;
+    Property Connected;
     Property IOTimeout;
     Property RequestHeaders;
     Property RequestBody;
@@ -326,7 +347,6 @@ Type
     Property OnHeaders;
     Property OnGetSocketHandler;
     Property Proxy;
-    Property NeedToBreak;
   end;
 
   EHTTPClient = Class(EHTTP);
@@ -335,19 +355,19 @@ Function EncodeURLElement(S : String) : String;
 Function DecodeURLElement(Const S : String) : String;
 
 implementation
-{$IFnDEF HASAMIGA}
+{$if not defined(hasamiga)}
 uses sslsockets;
-{$ENDIF}
+{$endif}
 
 resourcestring
-  SErrInvalidProtocol = 'Invalid protocol: "%s"';
+  SErrInvalidProtocol = 'Invalid protocol : "%s"';
   SErrReadingSocket = 'Error reading data from socket';
   SErrInvalidProtocolVersion = 'Invalid protocol version in response: "%s"';
   SErrInvalidStatusCode = 'Invalid response status code: %s';
   SErrUnexpectedResponse = 'Unexpected response status code: %d';
   SErrChunkTooBig = 'Chunk too big';
   SErrChunkLineEndMissing = 'Chunk line end missing';
-  SErrMaxRedirectsReached = 'Maximum allowed redirects reached: %d';
+  SErrMaxRedirectsReached = 'Maximum allowed redirects reached : %d';
   //SErrRedirectAborted = 'Redirect aborted.';
 
 Const
@@ -475,6 +495,11 @@ begin
   {$ENDIF}
 end;
 
+function TFPCustomHTTPClient.IsConnected: Boolean;
+begin
+  Result := Assigned(FSocket);
+end;
+
 function TFPCustomHTTPClient.NoContentAllowed(ACode: Integer): Boolean;
 begin
   Result:=((ACode div 100)=1) or ((ACode=204) or (ACode=304))
@@ -545,11 +570,11 @@ begin
   if Assigned(FonGetSocketHandler) then
     FOnGetSocketHandler(Self,UseSSL,Result);
   if (Result=Nil) then
-  {$IFnDEF HASAMIGA}
+  {$if not defined(HASAMIGA)}
     If UseSSL then
       Result:=TSSLSocketHandler.Create
     else
-  {$ENDIF}
+  {$endif}  
       Result:=TSocketHandler.Create;
 end;
 
@@ -561,23 +586,32 @@ Var
 
 
 begin
+  If IsConnected Then
+    DisconnectFromServer; // avoid memory leaks
   if (Aport=0) then
     if UseSSL then
       Aport:=443
     else
       Aport:=80;
-  G:=GetSocketHandler(UseSSL);
+  G:=GetSocketHandler(UseSSL);    
   FSocket:=TInetSocket.Create(AHost,APort,G);
   try
     {$IFDEF FPC311}
-    if FIOTimeout <> 0 then
-      FSocket.IOTimeout := FIOTimeout;
+    if FIOTimeout<>0 then
+      FSocket.IOTimeout:=FIOTimeout;
     {$ENDIF}
     FSocket.Connect;
   except
     FreeAndNil(FSocket);
     Raise;
   end;
+end;
+
+Procedure TFPCustomHTTPClient.ReconnectToServer(const AHost: String;
+  APort: Integer; UseSSL: Boolean);
+begin
+  DisconnectFromServer;
+  ConnectToServer(AHost, APort, UseSSL);
 end;
 
 procedure TFPCustomHTTPClient.DisconnectFromServer;
@@ -590,6 +624,11 @@ function TFPCustomHTTPClient.AllowHeader(var AHeader: String): Boolean;
 
 begin
   Result:=(AHeader<>'') and (Pos(':',AHeader)<>0);
+end;
+
+Function TFPCustomHTTPClient.HasConnectionClose: Boolean;
+begin
+  Result := CompareText(GetHeader('Connection'), 'close') = 0;
 end;
 
 procedure TFPCustomHTTPClient.SendRequest(const AMethod: String; URI: TURI);
@@ -626,6 +665,7 @@ begin
   S:=S+CRLF;
   If Assigned(RequestBody) and (IndexOfHeader('Content-Length')=-1) then
     AddHeader('Content-Length',IntToStr(RequestBody.Size));
+  CheckConnectionCloseHeader;
   For I:=0 to FRequestHeaders.Count-1 do
     begin
     l:=FRequestHeaders[i];
@@ -648,55 +688,60 @@ begin
   FSentCookies:=FCookies;
   FCookies:=Nil;
   S:=S+CRLF;
-  FSocket.WriteBuffer(S[1],Length(S));
-  If Assigned(FRequestBody) then
+  if not Terminated then
+    FSocket.WriteBuffer(S[1],Length(S));
+  If Assigned(FRequestBody) and not Terminated then
     FSocket.CopyFrom(FRequestBody,FRequestBody.Size);
 end;
 
-function TFPCustomHTTPClient.ReadString : String;
+function TFPCustomHTTPClient.ReadString(out S: String): Boolean;
 
-  Procedure FillBuffer;
+  Function FillBuffer: Boolean;
 
   Var
     R : Integer;
 
   begin
+    if Terminated then
+      Exit(False);
     SetLength(FBuffer,ReadBufLen);
     r:=FSocket.Read(FBuffer[1],ReadBufLen);
-    If r<0 then
+    If (r=0) or Terminated Then
+      Exit(False);
+    If (r<0) then
       Raise EHTTPClient.Create(SErrReadingSocket);
     if (r<ReadBuflen) then
       SetLength(FBuffer,r);
     FDataRead:=FDataRead+R;
     DoDataRead;
+    Result:=r>0;
   end;
 
 Var
-  CheckLF,Done : Boolean;
+  CheckLF: Boolean;
   P,L : integer;
 
 begin
-  Result:='';
-  Done:=False;
+  S:='';
+  Result:=False;
   CheckLF:=False;
   Repeat
-    if NeedToBreak then
-      Break;
     if Length(FBuffer)=0 then
-      FillBuffer;
+      if not FillBuffer then
+        Break;
     if Length(FBuffer)=0 then
-      Done:=True
+      Result:=True
     else if CheckLF then
       begin
       If (FBuffer[1]<>#10) then
-        Result:=Result+#13
+        S:=S+#13
       else
         begin
         System.Delete(FBuffer,1,1);
-        Done:=True;
+        Result:=True;
         end;
       end;
-    if not Done then
+    if not Result then
       begin
       P:=Pos(#13#10,FBuffer);
       If P=0 then
@@ -704,20 +749,21 @@ begin
         L:=Length(FBuffer);
         CheckLF:=FBuffer[L]=#13;
         if CheckLF then
-          Result:=Result+Copy(FBuffer,1,L-1)
+          S:=S+Copy(FBuffer,1,L-1)
         else
-          Result:=Result+FBuffer;
+          S:=S+FBuffer;
         FBuffer:='';
         end
       else
         begin
-        Result:=Result+Copy(FBuffer,1,P-1);
+        S:=S+Copy(FBuffer,1,P-1);
         System.Delete(FBuffer,1,P+1);
-        Done:=True;
+        Result:=True;
         end;
       end;
-  until Done;
+  until Result or Terminated;
 end;
+
 Function GetNextWord(Var S : String) : string;
 
 Const
@@ -770,15 +816,13 @@ function TFPCustomHTTPClient.ReadResponseHeaders: integer;
     P:=Pos(':',S);
     System.Delete(S,1,P);
     Repeat
-      if NeedToBreak then
-        Break;
       P:=Pos(';',S);
       If (P=0) then
         P:=Length(S)+1;
       C:=Trim(Copy(S,1,P-1));
       Cookies.Add(C);
       System.Delete(S,1,P);
-    Until (S='');
+    Until (S='') or Terminated;
   end;
 
 Const
@@ -788,20 +832,18 @@ Var
   StatusLine,S : String;
 
 begin
-  StatusLine:=ReadString;
+  if not ReadString(StatusLine) then
+    Exit(0);
   Result:=ParseStatusLine(StatusLine);
   Repeat
-    if NeedToBreak then
-      Break;
-    S:=ReadString;
-    if (S<>'') then
+    if ReadString(S) and (S<>'') then
       begin
       ResponseHeaders.Add(S);
       If (LowerCase(Copy(S,1,Length(SetCookie)))=SetCookie) then
         DoCookies(S);
       end
-  Until (S='');
-  If Assigned(FOnHeaders) then
+  Until (S='') or Terminated;
+  If Assigned(FOnHeaders) and not Terminated then
     FOnHeaders(Self);
 end;
 
@@ -902,14 +944,33 @@ begin
   GetCookies.Assign(AValue);
 end;
 
+procedure TFPCustomHTTPClient.SetHTTPVersion(const AValue: String);
+begin
+  if FHTTPVersion = AValue then Exit;
+  FHTTPVersion := AValue;
+  if (AValue<>'1.1') then
+    KeepConnection:=False;
+end;
+
+procedure TFPCustomHTTPClient.SetKeepConnection(AValue: Boolean);
+begin
+  if FKeepConnection=AValue then Exit;
+  FKeepConnection:=AValue;
+  if AValue then
+    HTTPVersion:='1.1'
+  else if IsConnected then
+    DisconnectFromServer;
+  CheckConnectionCloseHeader;
+end;
+
 procedure TFPCustomHTTPClient.SetProxy(AValue: TProxyData);
 begin
   if (AValue=FProxy) then exit;
   Proxy.Assign(AValue);
 end;
 
-procedure TFPCustomHTTPClient.ReadResponse(Stream: TStream;
-  const AllowedResponseCodes: array of Integer; HeadersOnly: Boolean);
+Function TFPCustomHTTPClient.ReadResponse(Stream: TStream;
+  const AllowedResponseCodes: array of Integer; HeadersOnly: Boolean): Boolean;
 
   Function Transfer(LB : Integer) : Integer;
 
@@ -944,6 +1005,9 @@ procedure TFPCustomHTTPClient.ReadResponse(Stream: TStream;
     function FetchData(out Cnt: integer): boolean;
 
     begin
+      Result:=False;
+      If Terminated then
+        exit;
       SetLength(FBuffer,ReadBuflen);
       Cnt:=FSocket.Read(FBuffer[1],length(FBuffer));
       If Cnt<0 then
@@ -984,31 +1048,28 @@ procedure TFPCustomHTTPClient.ReadResponse(Stream: TStream;
   begin
     BufPos:=1;
     repeat
-      if NeedToBreak then
-        Break;
       // read ChunkSize
       ChunkSize:=0;
       repeat
-        if NeedToBreak then
-          Break;
         if ReadData(@c,1)<1 then exit;
         case c of
         '0'..'9': ChunkSize:=ChunkSize*16+ord(c)-ord('0');
         'a'..'f': ChunkSize:=ChunkSize*16+ord(c)-ord('a')+10;
         'A'..'F': ChunkSize:=ChunkSize*16+ord(c)-ord('A')+10;
-        else break;
+        else
+          break;
         end;
         if ChunkSize>1000000 then
           Raise EHTTPClient.Create(SErrChunkTooBig);
-      until false;
+      until Terminated;
       // read till line end
-      while (c<>#10) do
+      while (c<>#10) and not Terminated do
         if ReadData(@c,1)<1 then exit;
       if ChunkSize=0 then exit;
       // read data
       repeat
-        if NeedToBreak then
-          Break;
+        if Terminated then
+          exit;
         l:=length(FBuffer)-BufPos+1;
         if l=0 then
           if not FetchData(l) then
@@ -1024,14 +1085,18 @@ procedure TFPCustomHTTPClient.ReadResponse(Stream: TStream;
           end;
       until ChunkSize=0;
       // read #13#10
-      if ReadData(@c,1)<1 then exit;
-      if c<>#13 then
-        Raise EHTTPClient.Create(SErrChunkLineEndMissing);
-      if ReadData(@c,1)<1 then exit;
-      if c<>#10 then
-        Raise EHTTPClient.Create(SErrChunkLineEndMissing);
-      // next chunk
-    until false;
+      if ReadData(@c,1)<1 then
+        exit;
+      if Not Terminated then
+        begin
+        if c<>#13 then
+          Raise EHTTPClient.Create(SErrChunkLineEndMissing);
+        if ReadData(@c,1)<1 then exit;
+        if c<>#10 then
+          Raise EHTTPClient.Create(SErrChunkLineEndMissing);
+        // next chunk
+        end;
+    until Terminated;
   end;
 
 Var
@@ -1043,6 +1108,9 @@ begin
   FContentLength:=0;
   SetLength(FBuffer,0);
   FResponseStatusCode:=ReadResponseHeaders;
+  Result := FResponseStatusCode > 0;
+  if not Result then
+    Exit;
   if not CheckResponseCode(FResponseStatusCode,AllowedResponseCodes) then
     Raise EHTTPClient.CreateFmt(SErrUnexpectedResponse,[ResponseStatusCode]);
   if HeadersOnly Or (AllowRedirect and IsRedirect(FResponseStatusCode)) then
@@ -1064,34 +1132,122 @@ begin
       // We cannot use copyfrom, it uses ReadBuffer, and this is dangerous with sockets
       L:=L-LB;
       Repeat
-        if NeedToBreak then
-          Break;
         LB:=ReadBufLen;
         If (LB>L) then
           LB:=L;
         R:=Transfer(LB);
         L:=L-R;
-      until (L=0) or (R=0);
+      until (L=0) or (R=0) or Terminated;
       end
     else if (L<0) and (Not NoContentAllowed(ResponseStatusCode)) then
       begin
       // No content-length, so we read till no more data available.
       Repeat
-        if NeedToBreak then
-          Break;
         R:=Transfer(ReadBufLen);
-      until (R=0);
+      until (R=0) or Terminated;
       end;
     end;
 end;
 
-procedure TFPCustomHTTPClient.DoMethod(const AMethod, AURL: String;
-  Stream: TStream; const AllowedResponseCodes: array of Integer);
+Procedure TFPCustomHTTPClient.ExtractHostPort(AURI: TURI; Out AHost: String;
+  Out APort: Word);
+Begin
+  if ProxyActive then
+    begin
+    AHost:=Proxy.Host;
+    APort:=Proxy.Port;
+    end
+  else
+    begin
+    AHost:=AURI.Host;
+    APort:=AURI.Port;
+    end;
+End;
+
+procedure TFPCustomHTTPClient.CheckConnectionCloseHeader;
 
 Var
-  URI : TURI;
-  P,CHost : String;
-  CPort : Word;
+  I : integer;
+  N,V : String;
+
+begin
+  V:=GetHeader('Connection');
+  If FKeepConnection Then
+    begin
+    I:=IndexOfHeader(FRequestHeaders,'Connection');
+    If i>-1 Then
+      begin
+      // It can be keep-alive, check value
+      FRequestHeaders.GetNameValue(I,N,V);
+      If CompareText(V,'close')=0  then
+        FRequestHeaders.Delete(i);
+      end
+    end
+  Else
+    AddHeader('Connection', 'close');
+end;
+
+Procedure TFPCustomHTTPClient.DoNormalRequest(const AURI: TURI;
+  const AMethod: string; AStream: TStream;
+  const AAllowedResponseCodes: array of Integer;
+  AHeadersOnly, AIsHttps: Boolean);
+
+Var
+  CHost: string;
+  CPort: Word;
+
+begin
+  ExtractHostPort(AURI, CHost, CPort);
+  ConnectToServer(CHost,CPort,AIsHttps);
+  Try
+    SendRequest(AMethod,AURI);
+    if not Terminated then
+      ReadResponse(AStream,AAllowedResponseCodes,AHeadersOnly);
+  Finally
+    DisconnectFromServer;
+  End;
+end;
+
+Procedure TFPCustomHTTPClient.DoKeepConnectionRequest(const AURI: TURI;
+  const AMethod: string; AStream: TStream;
+  const AAllowedResponseCodes: array of Integer;
+  AHeadersOnly, AIsHttps: Boolean);
+
+Var
+  T: Boolean;
+  CHost: string;
+  CPort: Word;
+
+begin
+  ExtractHostPort(AURI, CHost, CPort);
+  T := False;
+  Repeat
+    If Not IsConnected Then
+      ConnectToServer(CHost,CPort,AIsHttps);
+    Try
+      if not Terminated then
+        SendRequest(AMethod,AURI);
+      if not Terminated then
+        begin
+        T := ReadResponse(AStream,AAllowedResponseCodes,AHeadersOnly);
+        If Not T Then
+          ReconnectToServer(CHost,CPort,AIsHttps);
+        end;
+    Finally
+      // On terminate, we close the request
+      If HasConnectionClose or Terminated Then
+        DisconnectFromServer;
+    End;
+  Until T or Terminated;
+end;
+
+Procedure TFPCustomHTTPClient.DoMethod(Const AMethod, AURL: String;
+  Stream: TStream; Const AllowedResponseCodes: Array of Integer);
+
+Var
+  URI: TURI;
+  P: String;
+  IsHttps, HeadersOnly: Boolean;
 
 begin
   ResetResponse;
@@ -1099,23 +1255,12 @@ begin
   p:=LowerCase(URI.Protocol);
   If Not ((P='http') or (P='https')) then
    Raise EHTTPClient.CreateFmt(SErrInvalidProtocol,[URI.Protocol]);
-  if ProxyActive then
-    begin
-    CHost:=Proxy.Host;
-    CPort:=Proxy.Port;
-    end
+  IsHttps:=P='https';
+  HeadersOnly:=CompareText(AMethod,'HEAD')=0;
+  if FKeepConnection then
+    DoKeepConnectionRequest(URI,AMethod,Stream,AllowedResponseCodes,HeadersOnly,IsHttps)
   else
-    begin
-    CHost:=URI.Host;
-    CPort:=URI.Port;
-    end;
-  ConnectToServer(CHost,CPort,P='https');
-  try
-    SendRequest(AMethod,URI);
-    ReadResponse(Stream,AllowedResponseCodes,CompareText(AMethod,'HEAD')=0);
-  finally
-    DisconnectFromServer;
-  end;
+    DoNormalRequest(URI,AMethod,Stream,AllowedResponseCodes,HeadersOnly,IsHttps);
 end;
 
 constructor TFPCustomHTTPClient.Create(AOwner: TComponent);
@@ -1124,13 +1269,17 @@ begin
   // Infinite timeout on most platforms
   FIOTimeout:=0;
   FRequestHeaders:=TStringList.Create;
+  FRequestHeaders.NameValueSeparator:=':';
   FResponseHeaders:=TStringList.Create;
-  FHTTPVersion:='1.1';
+  FResponseHeaders.NameValueSeparator:=':';
+  HTTPVersion:='1.1';
   FMaxRedirects:=DefMaxRedirects;
 end;
 
 destructor TFPCustomHTTPClient.Destroy;
 begin
+  if IsConnected then
+    DisconnectFromServer;
   FreeAndNil(FProxy);
   FreeAndNil(FCookies);
   FreeAndNil(FSentCookies);
@@ -1184,6 +1333,11 @@ begin
     end;
 end;
 
+procedure TFPCustomHTTPClient.Terminate;
+begin
+  FTerminated:=True;
+end;
+
 procedure TFPCustomHTTPClient.ResetResponse;
 
 begin
@@ -1204,19 +1358,19 @@ Var
   RR : Boolean; // Repeat request ?
 
 begin
+  // Reset Terminated
+  FTerminated:=False;
   L:=AURL;
   RC:=0;
   RR:=False;
   M:=AMethod;
   Repeat
-    if FNeedToBreak then
-      Break;
     if Not AllowRedirect then
       DoMethod(M,L,Stream,AllowedResponseCodes)
     else
       begin
       DoMethod(M,L,Stream,AllowedResponseCodes);
-      if IsRedirect(FResponseStatusCode) then
+      if IsRedirect(FResponseStatusCode) and not Terminated then
         begin
         Inc(RC);
         if (RC>MaxRedirects) then
@@ -1242,8 +1396,8 @@ begin
         FOnPassword(Self,RR);
       end
     else
-      RR:=AllowRedirect and IsRedirect(FResponseStatusCode) and (L<>'')
-  until not RR;
+      RR:=AllowRedirect and IsRedirect(FResponseStatusCode) and (L<>'');
+  until Terminated or not RR ;
 end;
 
 procedure TFPCustomHTTPClient.Get(const AURL: String; Stream: TStream);
@@ -1310,7 +1464,7 @@ class procedure TFPCustomHTTPClient.SimpleGet(const AURL: String;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Get(AURL,Stream);
     finally
       Free;
@@ -1324,7 +1478,7 @@ class procedure TFPCustomHTTPClient.SimpleGet(const AURL: String;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Get(AURL,LocalFileName);
     finally
       Free;
@@ -1338,7 +1492,7 @@ class procedure TFPCustomHTTPClient.SimpleGet(const AURL: String;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Get(AURL,Response);
     finally
       Free;
@@ -1347,7 +1501,7 @@ end;
 
 
 class function TFPCustomHTTPClient.SimpleGet(const AURL: String): String;
-
+ 
 begin
   With Self.Create(nil) do
     try
@@ -1406,7 +1560,7 @@ class procedure TFPCustomHTTPClient.SimplePost(const URL: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Post(URL,Response);
     finally
       Free;
@@ -1420,7 +1574,7 @@ class procedure TFPCustomHTTPClient.SimplePost(const URL: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Post(URL,Response);
     finally
       Free;
@@ -1434,7 +1588,7 @@ class procedure TFPCustomHTTPClient.SimplePost(const URL: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Post(URL,LocalFileName);
     finally
       Free;
@@ -1447,7 +1601,7 @@ class function TFPCustomHTTPClient.SimplePost(const URL: string): String;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Result:=Post(URL);
     finally
       Free;
@@ -1498,7 +1652,7 @@ class procedure TFPCustomHTTPClient.SimplePut(const URL: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Put(URL,Response);
     finally
       Free;
@@ -1511,7 +1665,7 @@ class procedure TFPCustomHTTPClient.SimplePut(const URL: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Put(URL,Response);
     finally
       Free;
@@ -1524,7 +1678,7 @@ class procedure TFPCustomHTTPClient.SimplePut(const URL: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Put(URL,LocalFileName);
     finally
       Free;
@@ -1536,7 +1690,7 @@ class function TFPCustomHTTPClient.SimplePut(const URL: string): String;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Result:=Put(URL);
     finally
       Free;
@@ -1588,7 +1742,7 @@ class procedure TFPCustomHTTPClient.SimpleDelete(const URL: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Delete(URL,Response);
     finally
       Free;
@@ -1601,7 +1755,7 @@ class procedure TFPCustomHTTPClient.SimpleDelete(const URL: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Delete(URL,Response);
     finally
       Free;
@@ -1614,7 +1768,7 @@ class procedure TFPCustomHTTPClient.SimpleDelete(const URL: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Delete(URL,LocalFileName);
     finally
       Free;
@@ -1626,7 +1780,7 @@ class function TFPCustomHTTPClient.SimpleDelete(const URL: string): String;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Result:=Delete(URL);
     finally
       Free;
@@ -1678,7 +1832,7 @@ class procedure TFPCustomHTTPClient.SimpleOptions(const URL: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Options(URL,Response);
     finally
       Free;
@@ -1691,7 +1845,7 @@ class procedure TFPCustomHTTPClient.SimpleOptions(const URL: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Options(URL,Response);
     finally
       Free;
@@ -1704,7 +1858,7 @@ class procedure TFPCustomHTTPClient.SimpleOptions(const URL: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Options(URL,LocalFileName);
     finally
       Free;
@@ -1716,7 +1870,7 @@ class function TFPCustomHTTPClient.SimpleOptions(const URL: string): String;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Result:=Options(URL);
     finally
       Free;
@@ -1727,7 +1881,7 @@ class procedure TFPCustomHTTPClient.Head(AURL: String; Headers: TStrings);
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       HTTPMethod('HEAD', AURL, Nil, [200]);
       Headers.Assign(ResponseHeaders);
     Finally
@@ -1812,7 +1966,7 @@ class procedure TFPCustomHTTPClient.SimpleFormPost(const URL, FormData: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       FormPost(URL,FormData,Response);
     Finally
       Free;
@@ -1826,7 +1980,7 @@ class procedure TFPCustomHTTPClient.SimpleFormPost(const URL: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       FormPost(URL,FormData,Response);
     Finally
       Free;
@@ -1840,7 +1994,7 @@ class procedure TFPCustomHTTPClient.SimpleFormPost(const URL, FormData: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       FormPost(URL,FormData,Response);
     Finally
       Free;
@@ -1853,7 +2007,7 @@ class procedure TFPCustomHTTPClient.SimpleFormPost(const URL: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       FormPost(URL,FormData,Response);
     Finally
       Free;
@@ -1866,7 +2020,7 @@ class function TFPCustomHTTPClient.SimpleFormPost(const URL, FormData: string
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Result:=FormPost(URL,FormData);
     Finally
       Free;
@@ -1879,7 +2033,7 @@ class function TFPCustomHTTPClient.SimpleFormPost(const URL: string;
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       Result:=FormPost(URL,FormData);
     Finally
       Free;
@@ -1958,7 +2112,7 @@ class procedure TFPCustomHTTPClient.SimpleFileFormPost(const AURL, AFieldName,
 begin
   With Self.Create(nil) do
     try
-      RequestHeaders.Add('Connection: Close');
+      KeepConnection := False;
       FileFormPost(AURL,AFieldName,AFileName,Response);
     Finally
       Free;
