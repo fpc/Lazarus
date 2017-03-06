@@ -198,6 +198,8 @@ type
     // procedures for working with components and persistents
     function GetDesignControl(AControl: TControl): TControl;
     function DoDeleteSelectedPersistents: boolean;
+    procedure DoDeleteSelectedPersistentsAsync(Data: PtrInt);
+    procedure CutSelectionAsync(Data: PtrInt);
     procedure DoSelectAll;
     procedure DoDeletePersistent(APersistent: TPersistent; FreeIt: boolean);
     function GetSelectedComponentClass: TRegisteredComponent;
@@ -828,6 +830,7 @@ end;
 destructor TDesigner.Destroy;
 begin
   //debugln(['TDesigner.Destroy Self=',dbgs(Pointer(Self))]);
+  Application.RemoveAsyncCalls(Self);
   PopupMenuComponentEditor := nil;
   FreeAndNil(FDesignerPopupMenu);
   FreeAndNil(FHintWIndow);
@@ -1624,6 +1627,11 @@ end;
 function TDesigner.CutSelection: boolean;
 begin
   Result := DoCopySelectionToClipboard and DoDeleteSelectedPersistents;
+end;
+
+procedure TDesigner.CutSelectionAsync(Data: PtrInt);
+begin
+  CutSelection;
 end;
 
 function TDesigner.CanCopy: Boolean;
@@ -2953,6 +2961,11 @@ begin
   Result:=true;
 end;
 
+procedure TDesigner.DoDeleteSelectedPersistentsAsync(Data: PtrInt);
+begin
+  DoDeleteSelectedPersistents;
+end;
+
 procedure TDesigner.DoSelectAll;
 begin
   Selection.BeginUpdate;
@@ -3283,7 +3296,7 @@ end;
 
 procedure TDesigner.OnDeleteSelectionMenuClick(Sender: TObject);
 begin
-  DoDeleteSelectedPersistents;
+  Application.QueueAsyncCall(@DoDeleteSelectedPersistentsAsync, 0);
 end;
 
 procedure TDesigner.OnSelectAllMenuClick(Sender: TObject);
@@ -3345,7 +3358,7 @@ end;
 
 procedure TDesigner.OnCutMenuClick(Sender: TObject);
 begin
-  CutSelection;
+  Application.QueueAsyncCall(@CutSelectionAsync, 0);
 end;
 
 procedure TDesigner.OnPasteMenuClick(Sender: TObject);
