@@ -1581,16 +1581,21 @@ begin
   // Apply the changes
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
-    if not ParentFont or (Parent=nil) then
-      ScaleFontsPPI(AYProportion);
+    DisableAutoSizing;
+    try
+      if not ParentFont or (Parent=nil) then
+        ScaleFontsPPI(AYProportion);
 
-    NewWidth := Round(Width*AXProportion);
-    NewHeight := Round(Height*AYProportion);
+      NewWidth := Round(Width*AXProportion);
+      NewHeight := Round(Height*AYProportion);
 
-    BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
-    Constraints.AutoAdjustLayout(AXProportion, AYProportion);
+      BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
+      Constraints.AutoAdjustLayout(AXProportion, AYProportion);
 
-    SetBounds(Left, Top, NewWidth, NewHeight);
+      SetBounds(Left, Top, NewWidth, NewHeight);
+    finally
+      EnableAutoSizing;
+    end;
   end;
 end;
 

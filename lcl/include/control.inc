@@ -3008,77 +3008,82 @@ begin
   // Apply the changes
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
-    if not ParentFont or (Parent=nil) then
-      ScaleFontsPPI(AYProportion);
+    DisableAutoSizing;
+    try
+      if not ParentFont or (Parent=nil) then
+        ScaleFontsPPI(AYProportion);
 
-    // Dimensions
-    AAWidth := False;
-    AAHeight := False;
-    NewLeft := Left;
-    NewTop := Top;
-    NewWidth := Width;
-    NewHeight := Height;
-    OldWidth := Width;
-    OldHeight := Height;
+      // Dimensions
+      AAWidth := False;
+      AAHeight := False;
+      NewLeft := Left;
+      NewTop := Top;
+      NewWidth := Width;
+      NewHeight := Height;
+      OldWidth := Width;
+      OldHeight := Height;
 
-    ShouldAutoAdjust(AAWidth, AAHeight);
-    AAWidth := AAWidth and (Align in [alNone, alLeft, alRight])
-      and not((akLeft in Anchors) and (akRight in Anchors));
-    AAHeight := AAHeight and (Align in [alNone, alTop, alBottom])
-      and not((akTop in Anchors) and (akBottom in Anchors));
+      ShouldAutoAdjust(AAWidth, AAHeight);
+      AAWidth := AAWidth and (Align in [alNone, alLeft, alRight])
+        and not((akLeft in Anchors) and (akRight in Anchors));
+      AAHeight := AAHeight and (Align in [alNone, alTop, alBottom])
+        and not((akTop in Anchors) and (akBottom in Anchors));
 
-    if (Align=alNone) and (akLeft in Anchors) then
-      NewLeft := Round(NewLeft * AXProportion);
-    if (Align=alNone) and (akRight in Anchors) and (Parent<>nil)
-    and (AnchorSideRight.Control=nil) then
-    begin
-      if not(akLeft in Anchors) then
+      if (Align=alNone) and (akLeft in Anchors) then
+        NewLeft := Round(NewLeft * AXProportion);
+      if (Align=alNone) and (akRight in Anchors) and (Parent<>nil)
+      and (AnchorSideRight.Control=nil) then
       begin
-        NewRight := Round((Parent.ClientWidth-NewLeft-OldWidth) * AXProportion);
-        NewLeft := Parent.ClientWidth-NewRight-OldWidth
-      end else
-      begin
-        NewRight := Round((Parent.ClientWidth-Left-OldWidth) * AXProportion);
-        NewWidth := Parent.ClientWidth-NewLeft-NewRight;
+        if not(akLeft in Anchors) then
+        begin
+          NewRight := Round((Parent.ClientWidth-NewLeft-OldWidth) * AXProportion);
+          NewLeft := Parent.ClientWidth-NewRight-OldWidth
+        end else
+        begin
+          NewRight := Round((Parent.ClientWidth-Left-OldWidth) * AXProportion);
+          NewWidth := Parent.ClientWidth-NewLeft-NewRight;
+        end;
       end;
-    end;
 
-    if (Align=alNone) and (akTop in Anchors) then
-      NewTop := Round(NewTop * AYProportion);
-    if (Align=alNone) and (akBottom in Anchors) and (Parent<>nil)
-    and (AnchorSideBottom.Control=nil) then
-    begin
-      if not(akTop in Anchors) then
+      if (Align=alNone) and (akTop in Anchors) then
+        NewTop := Round(NewTop * AYProportion);
+      if (Align=alNone) and (akBottom in Anchors) and (Parent<>nil)
+      and (AnchorSideBottom.Control=nil) then
       begin
-        NewBottom := Round((Parent.ClientHeight-NewTop-OldHeight) * AYProportion);
-        NewTop := Parent.ClientHeight-NewBottom-OldHeight
-      end else
-      begin
-        NewBottom := Round((Parent.ClientHeight-Top-OldHeight) * AYProportion);
-        NewHeight := Parent.ClientHeight-NewTop-NewBottom;
+        if not(akTop in Anchors) then
+        begin
+          NewBottom := Round((Parent.ClientHeight-NewTop-OldHeight) * AYProportion);
+          NewTop := Parent.ClientHeight-NewBottom-OldHeight
+        end else
+        begin
+          NewBottom := Round((Parent.ClientHeight-Top-OldHeight) * AYProportion);
+          NewHeight := Parent.ClientHeight-NewTop-NewBottom;
+        end;
       end;
+
+      if AAWidth then
+        NewWidth := Round(Width * AXProportion);
+      if AAHeight then
+        NewHeight := Round(Height * AYProportion);
+
+      if AAWidth then
+      begin
+        if akRight in Anchors then
+          NewLeft := NewLeft-NewWidth+OldWidth;
+      end;
+      if AAHeight then
+      begin
+        if akBottom in Anchors then
+          NewTop := NewTop-NewHeight+OldHeight;
+      end;
+
+      BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
+      Constraints.AutoAdjustLayout(AXProportion, AYProportion);
+
+      SetBounds(NewLeft, NewTop, NewWidth, NewHeight);
+    finally
+      EnableAutoSizing;
     end;
-
-    if AAWidth then
-      NewWidth := Round(Width * AXProportion);
-    if AAHeight then
-      NewHeight := Round(Height * AYProportion);
-
-    if AAWidth then
-    begin
-      if akRight in Anchors then
-        NewLeft := NewLeft-NewWidth+OldWidth;
-    end;
-    if AAHeight then
-    begin
-      if akBottom in Anchors then
-        NewTop := NewTop-NewHeight+OldHeight;
-    end;
-
-    BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
-    Constraints.AutoAdjustLayout(AXProportion, AYProportion);
-
-    SetBounds(NewLeft, NewTop, NewWidth, NewHeight);
   end;
 end;
 

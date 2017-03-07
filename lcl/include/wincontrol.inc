@@ -3844,10 +3844,15 @@ procedure TWinControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
 var
   i: Integer;
 begin
-  for i:=0 to ControlCount-1 do
-    Controls[i].AutoAdjustLayout(AMode, AFromPPI, AToPPI, AOldFormWidth, ANewFormWidth);
+  DisableAutoSizing;
+  try
+    for i:=0 to ControlCount-1 do
+      Controls[i].AutoAdjustLayout(AMode, AFromPPI, AToPPI, AOldFormWidth, ANewFormWidth);
 
-  inherited;
+    inherited;
+  finally
+    EnableAutoSizing;
+  end;
 end;
 
 {------------------------------------------------------------------------------
