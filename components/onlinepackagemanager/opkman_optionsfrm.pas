@@ -44,15 +44,15 @@ type
 
   TOptionsFrm = class(TForm)
     bCancel: TButton;
-    bFoldersAdd: TButton;
-    bFilesEdit: TButton;
+    bFilesAdd: TButton;
     bFilesDelete: TButton;
+    bFilesEdit: TButton;
+    bFoldersAdd: TButton;
     bFoldersDelete: TButton;
     bFoldersEdit: TButton;
     bOk: TButton;
     bOpen: TButton;
     bRestore: TButton;
-    bFilesAdd: TButton;
     cbProxy: TCheckBox;
     cbForceDownloadExtract: TCheckBox;
     cbDeleteZipAfterInstall: TCheckBox;
@@ -66,8 +66,8 @@ type
     edProxyServer: TEdit;
     edProxyUser: TEdit;
     gbProxySettings: TGroupBox;
-    lbFilterFiles: TLabel;
     lbFilterDirs: TLabel;
+    lbFilterFiles: TLabel;
     lbLastUpdate: TLabel;
     lbSelectProfile: TLabel;
     lbUpdates: TLabel;
@@ -83,10 +83,6 @@ type
     lbExcludeFiles: TListBox;
     lbExcludeFolders: TListBox;
     pnRepositories: TPanel;
-    pnProfilesCaptionLeft: TPanel;
-    pnProfilesCaptionLeft1: TPanel;
-    pnProfilesLeftButtons: TPanel;
-    pnProfilesRightButtons: TPanel;
     pnProfilesRight: TPanel;
     pnProfilesTop: TPanel;
     pnProfiles: TPanel;
@@ -415,8 +411,8 @@ begin
     lbLastUpdate.Caption := rsOptions_lbLastUpdate_Caption + FormatDateTime('YYYY.MM.DD  hh:mm:ss', Options.LastUpdate);
   lbDaysToShowNewPackages.Caption := rsOptions_lbDaysToShowNewPackages_Caption;
   spDaysToShowNewPackages.Value := Options.DaysToShowNewPackages;
-  spDaysToShowNewPackages.Top := lbDaysToShowNewPackages.Top + 1 + (lbDaysToShowNewPackages.Height - spDaysToShowNewPackages.Height) div 2;
-  spDaysToShowNewPackages.Left := lbDaysToShowNewPackages.Left + lbDaysToShowNewPackages.Canvas.GetTextWidth(lbDaysToShowNewPackages.Caption) + 10;
+  //spDaysToShowNewPackages.Top := lbDaysToShowNewPackages.Top + 1 + (lbDaysToShowNewPackages.Height - spDaysToShowNewPackages.Height) div 2;
+  //spDaysToShowNewPackages.Left := lbDaysToShowNewPackages.Left + lbDaysToShowNewPackages.Canvas.GetTextWidth(lbDaysToShowNewPackages.Caption) + 10;
 
   tsProxy.Caption := rsOptions_tsProxy_Caption;
   cbProxy.Caption := rsOptions_cbProxy_Caption;
@@ -429,7 +425,7 @@ begin
   gbProxySettings.Enabled := Options.ProxyEnabled;
   edProxyServer.Text := Options.ProxyServer;
   seProxyPort.Value := Options.ProxyPort;
-  seProxyPort.Top := edProxyServer.Top + (edProxyServer.Height - seProxyPort.Height) div 2;
+  //seProxyPort.Top := edProxyServer.Top + (edProxyServer.Height - seProxyPort.Height) div 2;
   edProxyUser.Text := Options.ProxyUser;
   edProxyPassword.Text := Options.ProxyPassword;
 
@@ -480,7 +476,7 @@ end;
 
 procedure TOptionsFrm.pnProfilesTopResize(Sender: TObject);
 begin
-  cbSelectProfile.Left := lbSelectProfile.Left + lbSelectProfile.Width + 10;
+  //cbSelectProfile.Left := lbSelectProfile.Left + lbSelectProfile.Width + 10;
 end;
 
 end.
