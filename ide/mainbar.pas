@@ -419,36 +419,42 @@ begin
   if not Showing then Exit;
 
   //DebugLn(['TMainIDEBar.DoSetMainIDEHeight: IDEStarted=', LazarusIDE.IDEStarted]);
-  if Assigned(IDEDockMaster) then
-  begin
-    if EnvironmentOptions.Desktop.AutoAdjustIDEHeight then
+
+  DisableAutoSizing;
+  try
+    if Assigned(IDEDockMaster) then
     begin
-      if ANewHeight <= 0 then
-        ANewHeight := CalcMainIDEHeight;
-      IDEDockMaster.AdjustMainIDEWindowHeight(Self, True, ANewHeight)
-    end
-    else
-      IDEDockMaster.AdjustMainIDEWindowHeight(Self, False, 0);
-  end else
-  begin
-    if (AIDEIsMaximized or EnvironmentOptions.Desktop.AutoAdjustIDEHeight) then
-    begin
-      if ANewHeight <= 0 then
-        ANewHeight := CalcMainIDEHeight;
-      Inc(ANewHeight, CalcNonClientHeight);
-      if ANewHeight <> Constraints.MaxHeight then
+      if EnvironmentOptions.Desktop.AutoAdjustIDEHeight then
       begin
-        Constraints.MaxHeight := ANewHeight;
-        Constraints.MinHeight := ANewHeight;
-        ClientHeight := ANewHeight;
-      end else if ClientHeight <> ANewHeight then
-        ClientHeight := ANewHeight;
+        if ANewHeight <= 0 then
+          ANewHeight := CalcMainIDEHeight;
+        IDEDockMaster.AdjustMainIDEWindowHeight(Self, True, ANewHeight)
+      end
+      else
+        IDEDockMaster.AdjustMainIDEWindowHeight(Self, False, 0);
     end else
-    if Constraints.MaxHeight <> 0 then
     begin
-      Constraints.MaxHeight := 0;
-      Constraints.MinHeight := 0;
+      if (AIDEIsMaximized or EnvironmentOptions.Desktop.AutoAdjustIDEHeight) then
+      begin
+        if ANewHeight <= 0 then
+          ANewHeight := CalcMainIDEHeight;
+        Inc(ANewHeight, CalcNonClientHeight);
+        if ANewHeight <> Constraints.MaxHeight then
+        begin
+          Constraints.MaxHeight := ANewHeight;
+          Constraints.MinHeight := ANewHeight;
+          ClientHeight := ANewHeight;
+        end else if ClientHeight <> ANewHeight then
+          ClientHeight := ANewHeight;
+      end else
+      if Constraints.MaxHeight <> 0 then
+      begin
+        Constraints.MaxHeight := 0;
+        Constraints.MinHeight := 0;
+      end;
     end;
+  finally
+    EnableAutoSizing;
   end;
 end;
 
