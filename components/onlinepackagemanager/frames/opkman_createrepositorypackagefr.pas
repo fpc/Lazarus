@@ -5,10 +5,14 @@ unit opkman_createrepositorypackagefr;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, ExtCtrls, StdCtrls, Dialogs,
-  LazFileUtils, Graphics, Menus, Buttons, Laz2_XMLCfg, opkman_VirtualTrees,
-  md5, fpjson, LCLIntf, EditBtn, opkman_serializablepackages, opkman_zipper,
-  opkman_uploader;
+  Classes, SysUtils, md5, fpjson,
+  // LCL
+  Forms, Controls, ExtCtrls, StdCtrls, Dialogs, Graphics, Buttons, EditBtn,
+  LCLIntf,
+  // LazUtils
+  FileUtil, LazFileUtils, Laz2_XMLCfg,
+  // OpkMan
+  opkman_VirtualTrees, opkman_serializablepackages, opkman_zipper, opkman_uploader;
 
 type
   PData = ^TData;
@@ -1100,12 +1104,12 @@ begin
   ShowHideControls(2);
   EnableDisableControls(True);
   Uploader := nil;
-  if FileExistsUTF8(FPackageFile) then
-    DeleteFileUTF8(FPackageFile);
-  if FileExistsUTF8(FDestDir + FPackageName + '.json') then
-    DeleteFileUTF8(FDestDir + FPackageName + '.json');
-  if FileExistsUTF8(FDestDir + 'update_' + FPackageName + '.json') then
-    DeleteFileUTF8(FDestDir + 'update_' + FPackageName + '.json');
+  if FileExists(FPackageFile) then
+    DeleteFile(FPackageFile);
+  if FileExists(FDestDir + FPackageName + '.json') then
+    DeleteFile(FDestDir + FPackageName + '.json');
+  if FileExists(FDestDir + 'update_' + FPackageName + '.json') then
+    DeleteFile(FDestDir + 'update_' + FPackageName + '.json');
   MessageDlgEx(rsCreateRepositoryPackageFrm_Message9, mtInformation, [mbOk], TForm(Self.Parent));
   TForm(Self.Parent).ModalResult := mrOk;
   TForm(Self.Parent).Close;

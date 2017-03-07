@@ -31,7 +31,11 @@ interface
 uses
   Classes, SysUtils, contnrs,
   // LCL
-  Dialogs, Forms, Controls, LazIDEIntf, LazFileUtils,
+  Dialogs, Forms, Controls,
+  // LazUtils
+  LazFileUtils,
+  // IdeIntf
+  LazIDEIntf,
   // OpkMan
   opkman_const, opkman_options;
 
@@ -148,12 +152,12 @@ var
   LocalRepo, LocalRepoConfig: String;
 begin
   LocalRepo := AppendPathDelim(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath) + cLocalRepository);
-  if not DirectoryExistsUTF8(LocalRepo) then
-    CreateDirUTF8(LocalRepo);
+  if not DirectoryExists(LocalRepo) then
+    CreateDir(LocalRepo);
 
   LocalRepoConfig := AppendPathDelim(LocalRepo + cLocalRepositoryConfig);
   if not DirectoryExists(LocalRepoConfig) then
-    CreateDirUTF8(LocalRepoConfig);
+    CreateDir(LocalRepoConfig);
   LocalRepositoryConfigFile := LocalRepoConfig + cLocalRepositoryConfigFile;
   LocalRepositoryUpdatesFile := LocalRepoConfig + cLocalRepositoryUpdatesFile;
 end;

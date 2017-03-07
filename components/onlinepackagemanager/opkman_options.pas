@@ -128,7 +128,7 @@ begin
   FLocalUpdateDefault := LocalRepo + AppendPathDelim(cLocalRepositoryUpdate);
 
   FXML := TXMLConfig.Create(AFileName);
-  if FileExistsUTF8(AFileName) then
+  if FileExists(AFileName) then
   begin
     Load;
     if FLocalRepositoryPackages = '' then
@@ -254,11 +254,11 @@ end;
 procedure TOptions.CreateMissingPaths;
 begin
   if not DirectoryExists(FLocalRepositoryPackages) then
-    CreateDirUTF8(FLocalRepositoryPackages);
+    CreateDir(FLocalRepositoryPackages);
   if not DirectoryExists(FLocalRepositoryArchive) then
-    CreateDirUTF8(FLocalRepositoryArchive);
+    CreateDir(FLocalRepositoryArchive);
   if not DirectoryExists(FLocalRepositoryUpdate) then
-    CreateDirUTF8(FLocalRepositoryUpdate);
+    CreateDir(FLocalRepositoryUpdate);
 end;
 
 end.

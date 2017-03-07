@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, fpjson, fpjsonrtti, dateutils,
   // LazUtils
-  Laz2_XMLCfg, LazFileUtils,
+  Laz2_XMLCfg,
   // OpkMan
   opkman_timer, opkman_serializablepackages,
   opkman_options, opkman_common, opkman_const,
@@ -407,37 +407,38 @@ end;
 procedure TUpdates.CheckForOpenSSL;
 {$IFDEF MSWINDOWS}
 var
-  ZipFile: String;
+  ParamPath, libeaydll, ssleaydll, ZipFile: String;
   UnZipper: TUnZipper;
 {$ENDIF}
 begin
   {$IFDEF MSWINDOWS}
-   FOpenSSLAvailable := FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'libeay32.dll') and
-                         FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'ssleay32.dll');
-   if not FOpenSSLAvailable then
-   begin
-     ZipFile := ExtractFilePath(ParamStr(0)) + ExtractFileName(cOpenSSLURL);
-     try
-       FHTTPClient.Get(cOpenSSLURL, ZipFile);
-     except
-     end;
-     if FileExistsUTF8(ZipFile) then
-     begin
-       UnZipper := TUnZipper.Create;
-       try
-         try
-           UnZipper.FileName := ZipFile;
-           UnZipper.Examine;
-           UnZipper.UnZipAllFiles;
-         except
-         end;
-       finally
-         UnZipper.Free;
-       end;
-       DeleteFileUTF8(ZipFile);
-       FOpenSSLAvailable := FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'libeay32.dll') and
-                             FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'ssleay32.dll');
-     end;
+  ParamPath := ExtractFilePath(ParamStr(0));
+  libeaydll := ParamPath + 'libeay32.dll';
+  ssleaydll := ParamPath + 'ssleay32.dll';
+  FOpenSSLAvailable := FileExists(libeaydll) and FileExists(ssleaydll);
+  if not FOpenSSLAvailable then
+  begin
+    ZipFile := ParamPath + ExtractFileName(cOpenSSLURL);
+    try
+      FHTTPClient.Get(cOpenSSLURL, ZipFile);
+    except
+    end;
+    if FileExists(ZipFile) then
+    begin
+      UnZipper := TUnZipper.Create;
+      try
+        try
+          UnZipper.FileName := ZipFile;
+          UnZipper.Examine;
+          UnZipper.UnZipAllFiles;
+        except
+        end;
+      finally
+        UnZipper.Free;
+      end;
+      DeleteFile(ZipFile);
+      FOpenSSLAvailable := FileExists(libeaydll) and FileExists(ssleaydll);
+    end;
   end;
   {$ELSE}
   FOpenSSLAvailable := True;

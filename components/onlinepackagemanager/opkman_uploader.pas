@@ -32,8 +32,6 @@ interface
 
 uses
   Classes, SysUtils, base64,
-  // LazUtils
-  LazFileUtils,
   // OpkMan
   opkman_options, opkman_const,
   {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF};
@@ -138,7 +136,7 @@ var
   CanGo: Boolean;
 begin
   FFileName := ExtractFileName(FZip);
-  CanGo := FileExistsUTF8(FZip);
+  CanGo := FileExists(FZip);
   if CanGo then
   begin
     Synchronize(@DoOnUploadProgress);
@@ -153,7 +151,7 @@ begin
     Exit;
 
   FFileName := ExtractFileName(FJSON);
-  CanGo := FileExistsUTF8(FJSON);
+  CanGo := FileExists(FJSON);
   if CanGo then
   begin
     Synchronize(@DoOnUploadProgress);
@@ -171,7 +169,7 @@ begin
   if FJSONUpdate <> '' then
   begin
     FFileName := ExtractFileName(FJSONUpdate);
-    CanGo := FileExistsUTF8(FJSONUpdate);
+    CanGo := FileExists(FJSONUpdate);
     if CanGo then
     begin
       Synchronize(@DoOnUploadProgress);
