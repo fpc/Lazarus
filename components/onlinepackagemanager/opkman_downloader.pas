@@ -52,20 +52,20 @@ type
 
   { TDownloadStream }
 
-   TDownloadStream = class(TStream)
-   private
-     FOnWriteStream: TOnWriteStream;
-     FStream: TStream;
-   public
-     constructor Create(AStream: TStream);
-     destructor Destroy; override;
-     function Read(var Buffer; Count: LongInt): LongInt; override;
-     function Write(const Buffer; Count: LongInt): LongInt; override;
-     function Seek(Offset: LongInt; Origin: Word): LongInt; override;
-     procedure DoProgress;
-   published
-     property OnWriteStream: TOnWriteStream read FOnWriteStream write FOnWriteStream;
-   end;
+  TDownloadStream = class(TStream)
+  private
+    FOnWriteStream: TOnWriteStream;
+    FStream: TStream;
+  public
+    constructor Create(AStream: TStream);
+    destructor Destroy; override;
+    function Read(var Buffer; Count: LongInt): LongInt; override;
+    function Write(const Buffer; Count: LongInt): LongInt; override;
+    function Seek(Offset: LongInt; Origin: Word): LongInt; override;
+    procedure DoProgress;
+  published
+    property OnWriteStream: TOnWriteStream read FOnWriteStream write FOnWriteStream;
+  end;
 
   { TThreadDownload }
 
@@ -116,22 +116,22 @@ type
     procedure DoOnPackageUpdateProgress;
     procedure DoOnPackageUpdateCompleted;
   protected
-     procedure Execute; override;
+    procedure Execute; override;
   public
     constructor Create;
     destructor Destroy; override;
     procedure DownloadJSON(const ATimeOut: Integer = -1);
     procedure DownloadPackages(const ADownloadTo: String);
     procedure UpdatePackages(const ADownloadTo: String);
-   published
-     property OnJSONProgress: TNotifyEvent read FOnJSONProgress write FOnJSONProgress;
-     property OnJSONDownloadCompleted: TOnJSONDownloadCompleted read FOnJSONComplete write FOnJSONComplete;
-     property OnPackageDownloadCompleted: TOnPackageDownloadCompleted read FOnPackageDownloadCompleted write FOnPackageDownloadCompleted;
-     property OnPackageDownloadError: TOnPackageDownloadError read FOnPackageDownloadError write FOnPackageDownloadError;
-     property OnPackageDownloadProgress: TOnPackageDownloadProgress read FOnPackageDownloadProgress write FOnPackageDownloadProgress;
-     property OnPackageUpdateProgress: TOnPackageUpdateProgress read FOnPackageUpdateProgress write FOnPackageUpdateProgress;
-     property OnPackageUpdateCompleted: TOnPackageUpdateCompleted read FOnPackageUpdateCompleted write FOnPackageUpdateCompleted;
-     property NeedToBreak: Boolean read FNeedToBreak write FNeedToBreak;
+  published
+    property OnJSONProgress: TNotifyEvent read FOnJSONProgress write FOnJSONProgress;
+    property OnJSONDownloadCompleted: TOnJSONDownloadCompleted read FOnJSONComplete write FOnJSONComplete;
+    property OnPackageDownloadCompleted: TOnPackageDownloadCompleted read FOnPackageDownloadCompleted write FOnPackageDownloadCompleted;
+    property OnPackageDownloadError: TOnPackageDownloadError read FOnPackageDownloadError write FOnPackageDownloadError;
+    property OnPackageDownloadProgress: TOnPackageDownloadProgress read FOnPackageDownloadProgress write FOnPackageDownloadProgress;
+    property OnPackageUpdateProgress: TOnPackageUpdateProgress read FOnPackageUpdateProgress write FOnPackageUpdateProgress;
+    property OnPackageUpdateCompleted: TOnPackageUpdateCompleted read FOnPackageUpdateCompleted write FOnPackageUpdateCompleted;
+    property NeedToBreak: Boolean read FNeedToBreak write FNeedToBreak;
   end;
 
   { TPackageDownloader }

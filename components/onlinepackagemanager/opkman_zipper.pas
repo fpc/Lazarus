@@ -93,28 +93,28 @@ type
   { TPackageZipper }
 
   TPackageZipper = class(TThread)
-   private
-     FZipper: TZipper;
-     FSrcDir: String;
-     FZipFile: String;
-     FStarted: Boolean;
-     FNeedToBreak: Boolean;
-     FErrMsg: String;
-     FOnZipError: TOnZipError;
-     FOnZipCompleted: TOnZipCompleted;
-     procedure DoOnZipError;
-     procedure DoOnZipCompleted;
-   protected
-     procedure Execute; override;
-   public
-     constructor Create;
-     destructor Destroy; override;
-     procedure StartZip(const ASrcDir, AZipFile: String);
-     procedure StopZip;
-   published
-     property OnZipError: TOnZipError read FOnZipError write FOnZipError;
-     property OnZipCompleted: TOnZipCompleted read FOnZipCompleted write FOnZipCompleted;
-   end;
+  private
+    FZipper: TZipper;
+    FSrcDir: String;
+    FZipFile: String;
+    FStarted: Boolean;
+    FNeedToBreak: Boolean;
+    FErrMsg: String;
+    FOnZipError: TOnZipError;
+    FOnZipCompleted: TOnZipCompleted;
+    procedure DoOnZipError;
+    procedure DoOnZipCompleted;
+  protected
+    procedure Execute; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure StartZip(const ASrcDir, AZipFile: String);
+    procedure StopZip;
+  published
+    property OnZipError: TOnZipError read FOnZipError write FOnZipError;
+    property OnZipCompleted: TOnZipCompleted read FOnZipCompleted write FOnZipCompleted;
+  end;
 
 var
   PackageUnzipper: TPackageUnzipper = nil;

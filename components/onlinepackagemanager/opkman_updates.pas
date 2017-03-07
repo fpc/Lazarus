@@ -32,15 +32,12 @@ interface
 uses
   Classes, SysUtils, fpjson, fpjsonrtti, dateutils,
   // LazUtils
-  Laz2_XMLCfg,
+  Laz2_XMLCfg, LazFileUtils,
   // OpkMan
   opkman_timer, opkman_serializablepackages,
-  opkman_options, opkman_common,
-  {$IFDEF MSWINDOWS}
-    LazFileUtils, opkman_const,
-    {$IFDEF FPC311}zipper{$ELSE}opkman_zip{$ENDIF},
-  {$ENDIF}
-  {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF};
+  opkman_options, opkman_common, opkman_const,
+  {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF},
+  {$IFDEF FPC311}zipper{$ELSE}opkman_zip{$ENDIF};
 
 const
   OpkVersion = 1;
@@ -110,7 +107,7 @@ type
     FNeedToBreak: Boolean;
     FNeedToUpdate: Boolean;
     FBusyUpdating: Boolean;
-    FOpenSSLAvaialable: Boolean;
+    FOpenSSLAvailable: Boolean;
     FOnUpdate: TNotifyEvent;
     FPaused: Boolean;
     function GetUpdateInfo(const AURL: String; var AJSON: TJSONStringType): Boolean;
@@ -415,9 +412,9 @@ var
 {$ENDIF}
 begin
   {$IFDEF MSWINDOWS}
-   FOpenSSLAvaialable := FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'libeay32.dll') and
+   FOpenSSLAvailable := FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'libeay32.dll') and
                          FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'ssleay32.dll');
-   if not FOpenSSLAvaialable then
+   if not FOpenSSLAvailable then
    begin
      ZipFile := ExtractFilePath(ParamStr(0)) + ExtractFileName(cOpenSSLURL);
      try
@@ -438,12 +435,12 @@ begin
          UnZipper.Free;
        end;
        DeleteFileUTF8(ZipFile);
-       FOpenSSLAvaialable := FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'libeay32.dll') and
+       FOpenSSLAvailable := FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'libeay32.dll') and
                              FileExistsUTF8(ExtractFilePath(ParamStr(0)) + 'ssleay32.dll');
      end;
   end;
   {$ELSE}
-  FOpenSSLAvaialable := True;
+  FOpenSSLAvailable := True;
   {$ENDIF}
 end;
 
@@ -514,7 +511,7 @@ begin
   CheckForOpenSSL;
   while not Terminated do
   begin
-    if Assigned(SerializablePackages) and (FNeedToUpdate) and (not FBusyUpdating) and (not FPaused) and (FOpenSSLAvaialable) then
+    if Assigned(SerializablePackages) and (FNeedToUpdate) and (not FBusyUpdating) and (not FPaused) and (FOpenSSLAvailable) then
     begin
       Options.LastUpdate := Now;
       Options.Changed := True;
@@ -557,7 +554,7 @@ begin
   FPaused := False;
   if FStarted then
     Exit;
-  FOpenSSLAvaialable := False;
+  FOpenSSLAvailable := False;
   FStarted := True;
   FTimer := TThreadTimer.Create;
   FTimer.Interval := 5000;

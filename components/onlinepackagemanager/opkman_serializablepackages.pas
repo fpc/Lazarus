@@ -71,59 +71,59 @@ type
 
   { TPackageVersion }
 
-   TPackageVersion = class(TPersistent)
-   private
-     FMajor: Integer;
-     FMinor: Integer;
-     FRelease: Integer;
-     FBuild: Integer;
-     function GetAsString: String;
-     procedure SetAsString(const AValue: String);
-     function GetIsNullVersion: Boolean;
-   public
-     procedure SetDefaults;
-     procedure Assign(ASource: TPersistent); override;
-     function CompareVersion(AVersion: TPackageVersion): Integer;
-     function SameVersion(AVersion: TPackageVersion): Boolean;
-     property AsString: String read GetAsString write SetAsString;
-   published
-      property Major: Integer read FMajor write FMajor;
-      property Minor: Integer read FMinor write FMinor;
-      property Release: Integer read FRelease write FRelease;
-      property Build: Integer read FBuild write FBuild;
-      property IsNullVersion: Boolean read GetIsNullVersion;
-   end;
+  TPackageVersion = class(TPersistent)
+  private
+    FMajor: Integer;
+    FMinor: Integer;
+    FRelease: Integer;
+    FBuild: Integer;
+    function GetAsString: String;
+    procedure SetAsString(const AValue: String);
+    function GetIsNullVersion: Boolean;
+  public
+    procedure SetDefaults;
+    procedure Assign(ASource: TPersistent); override;
+    function CompareVersion(AVersion: TPackageVersion): Integer;
+    function SameVersion(AVersion: TPackageVersion): Boolean;
+    property AsString: String read GetAsString write SetAsString;
+  published
+    property Major: Integer read FMajor write FMajor;
+    property Minor: Integer read FMinor write FMinor;
+    property Release: Integer read FRelease write FRelease;
+    property Build: Integer read FBuild write FBuild;
+    property IsNullVersion: Boolean read GetIsNullVersion;
+  end;
 
-   { TPackageDependency }
+  { TPackageDependency }
 
-   TPackageDependency = class(TCollectionItem)
-   private
-     FMaxVersion: TPackageVersion;
-     FMinVersion: TPackageVersion;
-     FPackageFileName: String;
-     procedure SetMinVersion(const AValue: TPackageVersion);
-     procedure SetMaxVersion(const AValue: TPackageVersion);
-   public
-     procedure Assign(ASource: TPersistent); override;
-     constructor Create(ACollection: TCollection); override;
-     destructor Destroy; override;
-   published
-     property PackageFileName: String read FPackageFileName write FPackageFileName;
-     property MinVersion: TPackageVersion read FMinVersion write SetMinVersion;
-     property MaxVersion: TPackageVersion read FMaxVersion write SetMaxVersion;
-   end;
+  TPackageDependency = class(TCollectionItem)
+  private
+    FMaxVersion: TPackageVersion;
+    FMinVersion: TPackageVersion;
+    FPackageFileName: String;
+    procedure SetMinVersion(const AValue: TPackageVersion);
+    procedure SetMaxVersion(const AValue: TPackageVersion);
+  public
+    procedure Assign(ASource: TPersistent); override;
+    constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
+  published
+    property PackageFileName: String read FPackageFileName write FPackageFileName;
+    property MinVersion: TPackageVersion read FMinVersion write SetMinVersion;
+    property MaxVersion: TPackageVersion read FMaxVersion write SetMaxVersion;
+  end;
 
-   { TPackageDependencies }
+  { TPackageDependencies }
 
-   TPackageDependencies = class(TCollection)
-   private
-     function GetDependency(AIndex: Integer): TPackageDependency;
-     procedure SetDependency(AIndex: Integer; const AValue: TPackageDependency);
-   public
-     function GetDependenciesAsString(const AIsDisplayString: Boolean): String;
-     procedure SetDependenciesAsString(const AValue: String);
-     property Dependencies[AIndex: Integer]: TPackageDependency read GetDependency write SetDependency; default;
-   end;
+  TPackageDependencies = class(TCollection)
+  private
+    function GetDependency(AIndex: Integer): TPackageDependency;
+    procedure SetDependency(AIndex: Integer; const AValue: TPackageDependency);
+  public
+    function GetDependenciesAsString(const AIsDisplayString: Boolean): String;
+    procedure SetDependenciesAsString(const AValue: String);
+    property Dependencies[AIndex: Integer]: TPackageDependency read GetDependency write SetDependency; default;
+  end;
 
   { TPackageFile }
   TPackageFile = class(TCollectionItem)

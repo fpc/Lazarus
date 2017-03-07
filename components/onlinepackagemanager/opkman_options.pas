@@ -49,64 +49,64 @@ type
   end;
 
   TOptions = class
-   private
-     FProxySettings: TProxySettings;
-     FXML: TXMLConfig;
-     FVersion: Integer;
-     FRemoteRepository: TStringList;
-     FRemoteRepositoryTmp: TStringList;
-     FActiveRepositoryIndex: Integer;
-     FForceDownloadAndExtract: Boolean;
-     FDeleteZipAfterInstall: Boolean;
-     FCheckForUpdates: Integer;
-     FLastUpdate: TDateTime;
-     FDaysToShowNewPackages: Integer;
-     FChanged: Boolean;
-     FLastDownloadDir: String;
-     FLastPackageDirSrc: String;
-     FLastPackageDirDst: String;
-     // Default values for local repositories.
-     FLocalPackagesDefault: String;
-     FLocalArchiveDefault: String;
-     FLocalUpdateDefault: String;
-     // Actual local repositories.
-     FLocalRepositoryPackages: String;
-     FLocalRepositoryArchive: String;
-     FLocalRepositoryUpdate: String;
-     FUserProfile: Integer;
-     FExcludedFiles: String;
-     FExcludedFolders: String;
-   public
-     constructor Create(const AFileName: String);
-     destructor Destroy; override;
-     procedure Load;
-     procedure Save;
-     procedure LoadDefault;
-     procedure CreateMissingPaths;
-   published
-     property Changed: Boolean read FChanged write FChanged;
-     property RemoteRepository: TStringList read FRemoteRepository write FRemoteRepository;
-     property RemoteRepositoryTmp: TStringList read FRemoteRepositoryTmp write FRemoteRepositoryTmp;
-     property ActiveRepositoryIndex: Integer read FActiveRepositoryIndex write FActiveRepositoryIndex;
-     property ForceDownloadAndExtract: Boolean read FForceDownloadAndExtract write FForceDownloadAndExtract;
-     property DeleteZipAfterInstall: Boolean read FDeleteZipAfterInstall write FDeleteZipAfterInstall;
-     property CheckForUpdates: Integer read FCheckForUpdates write FCheckForUpdates;
-     property LastUpdate: TDateTime read FLastUpdate write FLastUpdate;
-     property DaysToShowNewPackages: Integer read FDaysToShowNewPackages write FDaysToShowNewPackages;
-     property UserProfile: Integer read FUserProfile write FUserProfile;
-     property LastDownloadDir: String read FLastDownloadDir write FLastDownloadDir;
-     property LastPackagedirSrc: String read FLastPackageDirSrc write FLastPackageDirSrc;
-     property LastPackagedirDst: String read FLastPackageDirDst write FLastPackageDirDst;
-     property ProxyEnabled: Boolean read FProxySettings.FEnabled write FProxySettings.FEnabled;
-     property ProxyServer: String read FProxySettings.FServer write FProxySettings.FServer;
-     property ProxyPort: Word read FProxySettings.FPort write FProxySettings.FPort;
-     property ProxyUser: String read FProxySettings.FUser write FProxySettings.FUser;
-     property ProxyPassword: String read FProxySettings.FPassword write FProxySettings.FPassword;
-     property LocalRepositoryPackages: String read FLocalRepositoryPackages write FLocalRepositoryPackages;
-     property LocalRepositoryArchive: String read FLocalRepositoryArchive write FLocalRepositoryArchive;
-     property LocalRepositoryUpdate: String read FLocalRepositoryUpdate write FLocalRepositoryUpdate;
-     property ExcludedFiles: String read FExcludedFiles write FExcludedFiles;
-     property ExcludedFolders: String read FExcludedFolders write FExcludedFolders;
+  private
+    FProxySettings: TProxySettings;
+    FXML: TXMLConfig;
+    FVersion: Integer;
+    FRemoteRepository: TStringList;
+    FRemoteRepositoryTmp: TStringList;
+    FActiveRepositoryIndex: Integer;
+    FForceDownloadAndExtract: Boolean;
+    FDeleteZipAfterInstall: Boolean;
+    FCheckForUpdates: Integer;
+    FLastUpdate: TDateTime;
+    FDaysToShowNewPackages: Integer;
+    FChanged: Boolean;
+    FLastDownloadDir: String;
+    FLastPackageDirSrc: String;
+    FLastPackageDirDst: String;
+    // Default values for local repositories.
+    FLocalPackagesDefault: String;
+    FLocalArchiveDefault: String;
+    FLocalUpdateDefault: String;
+    // Actual local repositories.
+    FLocalRepositoryPackages: String;
+    FLocalRepositoryArchive: String;
+    FLocalRepositoryUpdate: String;
+    FUserProfile: Integer;
+    FExcludedFiles: String;
+    FExcludedFolders: String;
+  public
+    constructor Create(const AFileName: String);
+    destructor Destroy; override;
+    procedure Load;
+    procedure Save;
+    procedure LoadDefault;
+    procedure CreateMissingPaths;
+  published
+    property Changed: Boolean read FChanged write FChanged;
+    property RemoteRepository: TStringList read FRemoteRepository write FRemoteRepository;
+    property RemoteRepositoryTmp: TStringList read FRemoteRepositoryTmp write FRemoteRepositoryTmp;
+    property ActiveRepositoryIndex: Integer read FActiveRepositoryIndex write FActiveRepositoryIndex;
+    property ForceDownloadAndExtract: Boolean read FForceDownloadAndExtract write FForceDownloadAndExtract;
+    property DeleteZipAfterInstall: Boolean read FDeleteZipAfterInstall write FDeleteZipAfterInstall;
+    property CheckForUpdates: Integer read FCheckForUpdates write FCheckForUpdates;
+    property LastUpdate: TDateTime read FLastUpdate write FLastUpdate;
+    property DaysToShowNewPackages: Integer read FDaysToShowNewPackages write FDaysToShowNewPackages;
+    property UserProfile: Integer read FUserProfile write FUserProfile;
+    property LastDownloadDir: String read FLastDownloadDir write FLastDownloadDir;
+    property LastPackagedirSrc: String read FLastPackageDirSrc write FLastPackageDirSrc;
+    property LastPackagedirDst: String read FLastPackageDirDst write FLastPackageDirDst;
+    property ProxyEnabled: Boolean read FProxySettings.FEnabled write FProxySettings.FEnabled;
+    property ProxyServer: String read FProxySettings.FServer write FProxySettings.FServer;
+    property ProxyPort: Word read FProxySettings.FPort write FProxySettings.FPort;
+    property ProxyUser: String read FProxySettings.FUser write FProxySettings.FUser;
+    property ProxyPassword: String read FProxySettings.FPassword write FProxySettings.FPassword;
+    property LocalRepositoryPackages: String read FLocalRepositoryPackages write FLocalRepositoryPackages;
+    property LocalRepositoryArchive: String read FLocalRepositoryArchive write FLocalRepositoryArchive;
+    property LocalRepositoryUpdate: String read FLocalRepositoryUpdate write FLocalRepositoryUpdate;
+    property ExcludedFiles: String read FExcludedFiles write FExcludedFiles;
+    property ExcludedFolders: String read FExcludedFolders write FExcludedFolders;
   end;
 
 var
