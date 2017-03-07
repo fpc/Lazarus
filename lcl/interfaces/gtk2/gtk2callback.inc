@@ -2037,11 +2037,6 @@ var
     MessI.Msg := CheckMouseButtonDownUp({%H-}TLCLIntfHandle(widget), AWinControl, LastMouse, EventXY, MouseButton, True);
     MessI.Keys := MessI.Keys or BtnKey;
     case LastMouse.ClickCount of
-      1:
-        case BtnKey of
-          MK_XBUTTON1: MessI.Keys:=MessI.Keys or (1 shl 16);
-          MK_XBUTTON2: MessI.Keys:=MessI.Keys or (2 shl 16);
-        end;
       2: MessI.Keys := MessI.Keys or MK_DOUBLECLICK;
       3: MessI.Keys := MessI.Keys or MK_TRIPLECLICK;
       4: MessI.Keys := MessI.Keys or MK_QUADCLICK;

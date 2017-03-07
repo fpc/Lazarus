@@ -2418,12 +2418,10 @@ procedure TControl.WMXButtonDown(var Message: TLMXButtonDown);
 var
   Btn: TMouseButton;
 begin
-  case (Message.Keys shr 16) and $FFFF of
-    1: Btn := mbExtra1;
-    2: Btn := mbExtra2;
-  else
-    Exit;
-  end;
+  if (Message.Keys and MK_XBUTTON1) <> 0 then Btn := mbExtra1
+  else if (Message.Keys and MK_XBUTTON2) <> 0 then Btn := mbExtra2
+  else Exit;
+
   if (csCaptureMouse in ControlStyle) and (Btn in CaptureMouseButtons) then
   begin
     {$IFDEF VerboseMouseCapture}
@@ -2500,12 +2498,10 @@ procedure TControl.WMXButtonDBLCLK(var Message: TLMXButtonDblClk);
 var
   Btn: TMouseButton;
 begin
-  case (Message.Keys shr 16) and $FFFF of
-    1: Btn := mbExtra1;
-    2: Btn := mbExtra2;
-  else
-    Exit;
-  end;
+  if (Message.Keys and MK_XBUTTON1) <> 0 then Btn := mbExtra1
+  else if (Message.Keys and MK_XBUTTON2) <> 0 then Btn := mbExtra2
+  else Exit;
+
   if (csCaptureMouse in ControlStyle) and (Btn in CaptureMouseButtons) then
   begin
     {$IFDEF VerboseMouseCapture}
@@ -2579,12 +2575,10 @@ procedure TControl.WMXButtonTripleCLK(var Message: TLMXButtonTripleClk);
 var
   Btn: TMouseButton;
 begin
-  case (Message.Keys shr 16) and $FFFF of
-    1: Btn := mbExtra1;
-    2: Btn := mbExtra2;
-  else
-    Exit;
-  end;
+  if (Message.Keys and MK_XBUTTON1) <> 0 then Btn := mbExtra1
+  else if (Message.Keys and MK_XBUTTON2) <> 0 then Btn := mbExtra2
+  else Exit;
+
   if (csCaptureMouse in ControlStyle) and (Btn in CaptureMouseButtons) then
   begin
     {$IFDEF VerboseMouseCapture}
@@ -2658,12 +2652,10 @@ procedure TControl.WMXButtonQuadCLK(var Message: TLMXButtonQuadClk);
 var
   Btn: TMouseButton;
 begin
-  case (Message.Keys shr 16) and $FFFF of
-    1: Btn := mbExtra1;
-    2: Btn := mbExtra2;
-  else
-    Exit;
-  end;
+  if (Message.Keys and MK_XBUTTON1) <> 0 then Btn := mbExtra1
+  else if (Message.Keys and MK_XBUTTON2) <> 0 then Btn := mbExtra2
+  else Exit;
+
   if (csCaptureMouse in ControlStyle) and (Btn in CaptureMouseButtons) then
   begin
     {$IFDEF VerboseMouseCapture}
@@ -2751,12 +2743,10 @@ procedure TControl.WMXButtonUp(var Message: TLMXButtonUp);
 var
   Btn: TMouseButton;
 begin
-  case (Message.Keys shr 16) and $FFFF of
-    1: Btn := mbExtra1;
-    2: Btn := mbExtra2;
-  else
-    Exit;
-  end;
+  if (Message.Keys and MK_XBUTTON1) <> 0 then Btn := mbExtra1
+  else if (Message.Keys and MK_XBUTTON2) <> 0 then Btn := mbExtra2
+  else Exit;
+
   if (csCaptureMouse in ControlStyle) and (Btn in CaptureMouseButtons) then
   begin
     {$IFDEF VerboseMouseCapture}
