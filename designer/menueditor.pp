@@ -56,8 +56,6 @@ type
     procedure SetVisibilitySizeAndPosition; override;
   end;
 
-  TShadowItemDisplayState = (dsNormal, dsSelected, dsDisabled);
-
   TMenuDesigner = class;
 
   { TShadowItem }
@@ -70,7 +68,6 @@ type
     FShadowMenu: TShadowMenu;
     FShowingBottomFake: boolean;
     FShowingRightFake: boolean;
-    FState: TShadowItemDisplayState;
     function GetBitmapLeftTop: TPoint;
     function GetBottomFake: TFake;
     function GetIconTopLeft: TPoint;
@@ -83,18 +80,12 @@ type
     function GetShowingRightFake: boolean;
     function GetSubImagesIconTopLeft: TPoint;
     procedure RecursiveHideChildren(aMI: TMenuItem);
-    procedure SetState(AValue: TShadowItemDisplayState);
   private
-    function GetHeight: integer;
-    function GetWidth: integer;
-    function HasChildBox(out aChildBox: TShadowBox): boolean;
+    function HasChildBox(out aChildBox: TShadowBoxBase): boolean;
     procedure HideChainFromRoot;
     procedure HideChildren;
     procedure ShowChainToRoot;
     procedure ShowChildBox;
-    procedure ShowDisabled;
-    procedure ShowNormal;
-    procedure ShowSelected;
   protected
     procedure DblClick; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -103,6 +94,8 @@ type
   public
     constructor CreateWithBoxAndItem(aSMenu: TShadowMenu; aParentBox: TShadowBox;
       aRealItem: TMenuItem);
+    function GetWidth: integer; override;
+  public
     property BottomFake: TFake read GetBottomFake write FBottomFake;
     property IsInMenuBar: boolean read GetIsInMenuBar;
     property IsMainMenu: boolean read GetIsMainMenu;
@@ -111,32 +104,26 @@ type
     property RightFake: TFake read GetRightFake write FRightFake;
     property ShowingBottomFake: boolean read GetShowingBottomFake write FShowingBottomFake;
     property ShowingRightFake: boolean read GetShowingRightFake write FShowingRightFake;
-    //property State: TShadowItemDisplayState read FState;
   end;
 
   { TShadowBox }
 
   TShadowBox = class(TShadowBoxBase)
   strict private
-    FParentBox: TShadowBox;
     FShadowMenu: TShadowMenu;
     FUpdating: boolean;
-    function GetIsMainMenu: boolean;
-    function GetIsMenuBar: boolean;
+    function GetIsMainMenu: boolean; override;
+    function GetIsMenuBar: boolean; override;
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure ShowAllUnSelected;
   private
-    function GetInnerDims: TPoint;
     procedure AddItemAndShadow(existingSI: TShadowItem; addBefore: boolean;
       isSeparator: boolean=False);
     procedure LocateShadows;
     procedure RemoveAllSeparators;
     procedure SelectPrevious(aSI: TShadowItem);
     procedure SelectSuccessor(aSI: TShadowItem);
-    property IsMainMenu: boolean read GetIsMainMenu;
-    property IsMenuBar: boolean read GetIsMenuBar;
-    property ParentBox: TShadowBox read FParentBox;
     property Updating: boolean read FUpdating;
   protected
     procedure Paint; override;
@@ -172,15 +159,12 @@ type
     FInitialising: boolean;
     FInitialSelectedMenuItem: TMenuItem;
     FItemsPopupMenu: TPopupMenu;
-    FMainCanvas: TCanvas;
     FRootBox: TShadowBox;
     FInPlaceEditor: TEdit;
     FEditedMenuItem: TMenuItem;
     procedure DeleteBox(aMI: TMenuItem);
     procedure DeleteItm(anItem: TMenuItem);
     function GetActionForEnum(anEnum: TPopEnum): TAction;
-    //function GetBoxContainingMenuItem(aMI: TMenuItem): TShadowBox;
-    function GetHighestLevelVisibleBox: TShadowBox;
     function GetMaxVisibleBoxDims(aSB: TShadowBox): TPoint;
     function GetMaxVisibleFakeDims: TPoint;
     function GetMenuBarCumWidthForItemIndex(anIndex: integer): integer;
@@ -221,12 +205,11 @@ type
     procedure SaveAsTemplate(Sender: TObject);
   private
     FDesigner: TMenuDesigner;
-    function GetStringWidth(const aText: string; isBold: boolean): integer;
     function GetMenuBarIconWidth(aMI: TMenuItem): integer;
     function OnClickIsAssigned(aMI: TMenuItem): boolean;
     procedure AddOnClick(Sender: TObject);
     procedure DeleteItem(Sender: TObject);
-    function GetBoxWithParentItem(aParentMI: TMenuItem): TShadowBox;
+    function GetBoxWithParentItem(aParentMI: TMenuItem): TShadowBoxBase;
     procedure HideFakes;
     procedure RemoveEmptyBox(aSB: TShadowBox);
     procedure SetSelectedShadow(const prevSelectedItem, curSelectedItem: TMenuItem; viaDesigner: boolean);
@@ -320,12 +303,12 @@ begin
 end;
 
 // utility functions
-
+{
 function ItemStateToStr(aState: TShadowItemDisplayState): string;
 begin
   Result:=GetEnumName(TypeInfo(TShadowItemDisplayState), Ord(aState));
 end;
-
+}
 function GetPreviousNonSepItem(aMI: TMenuItem): TMenuItem;
 var
   idx: integer;
@@ -437,14 +420,12 @@ begin
         Exit(False);
 end;
 
-function SortByItemMenuIndex(Item1, Item2: Pointer): Integer;
+function SortByItemMenuIndex(const Item1, Item2: TShadowItemBase): Integer;
 var
-  si1: TShadowItem absolute Item1;
-  si2: TShadowItem absolute Item2;
   i1, i2: integer;
 begin
-  i1:=si1.RealItem.MenuIndex;
-  i2:=si2.RealItem.MenuIndex;
+  i1:=Item1.RealItem.MenuIndex;
+  i2:=Item2.RealItem.MenuIndex;
   if (i1 > i2) then
     Result:=1
   else if (i2 > i1) then
@@ -453,14 +434,12 @@ begin
     Result:=0;
 end;
 
-function SortByBoxLevel(Item1, Item2: Pointer): Integer;
+function SortByBoxLevel(const Item1, Item2: TShadowBoxBase): Integer;
 var
-  sb1: TShadowBox absolute Item1;
-  sb2: TShadowBox absolute Item2;
   lvl1, lvl2: integer;
 begin
-  lvl1:=sb1.Level;
-  lvl2:=sb2.Level;
+  lvl1:=Item1.Level;
+  lvl2:=Item2.Level;
   if (lvl1 > lvl2) then
     Result:=1
   else if (lvl1 < lvl2) then
@@ -927,7 +906,7 @@ begin
       FreeAndNil(mi);
       FEditorDesigner.Modified;
 
-      if (box.ShadowCount = 0) then
+      if (box.ShadowList.Count = 0) then
       begin
         FBoxList.Remove(box);
         box.Parent:=nil;
@@ -953,11 +932,11 @@ var
 begin
   for i:=aMI.Count-1 downto 0 do
     DeleteBox(aMI.Items[i]);
-  sb:=GetParentBoxForMenuItem(aMI); //GetBoxContainingMenuItem(aMI);
+  sb:=GetParentBoxForMenuItem(aMI);
   Assert(sb<>nil,'TShadowMenu.DeleteBox: internal error');
   sb.Hide;
   sb.ShadowList.Remove(GetShadowForMenuItem(aMI));
-  if (sb.ShadowCount = 0) then
+  if (sb.ShadowList.Count = 0) then
   begin
     FBoxList.Remove(sb);
     sb.Parent:=nil;
@@ -982,7 +961,7 @@ end;
 
 procedure TShadowMenu.DeleteShadowAndItemAndChildren(anExistingSI: TShadowItem);
 var
-  firstBoxToDelete: TShadowBox;
+  firstBoxToDelete: TShadowBoxBase;
   mi: TMenuItem;
   i: integer;
 begin
@@ -1009,15 +988,6 @@ end;
 function TShadowMenu.GetSelectedShadowItem: TShadowItem;
 begin
   Result:=TShadowItem(GetShadowForMenuItem(FSelectedMenuItem));
-end;
-
-function TShadowMenu.GetStringWidth(const aText: string; isBold: boolean): integer;
-begin
-  if isBold then
-    FMainCanvas.Font.Style:=[fsBold]
-  else
-    FMainCanvas.Font.Style:=[];
-  Result:=FMainCanvas.TextWidth(aText);
 end;
 
 function TShadowMenu.GetMenuBarIconWidth(aMI: TMenuItem): integer;
@@ -1085,26 +1055,14 @@ begin
   FDesigner.FGui.UpdateStatistics;
 end;
 
-function TShadowMenu.GetBoxWithParentItem(aParentMI: TMenuItem): TShadowBox;
+function TShadowMenu.GetBoxWithParentItem(aParentMI: TMenuItem): TShadowBoxBase;
 var
-  p: pointer;
-  sb: TShadowBox absolute p;
+  sb: TShadowBoxBase;
 begin
   Assert(aParentMI<>nil,'TShadowMenu.GetBoxWithParentItem: parent item is nil');
-  for p in FBoxList do
+  for sb in FBoxList do
     if (sb.ParentMenuItem = aParentMI) then
       Exit(sb);
-  Result:=nil;
-end;
-
-function TShadowMenu.GetHighestLevelVisibleBox: TShadowBox;
-var
-  i: integer;
-begin
-  FBoxList.Sort(@SortByBoxLevel);
-  for i:=FBoxList.Count-1 downto 0 do
-    if TShadowBox(FBoxList[i]).Visible then
-      Exit(TShadowBox(FBoxList[i]));
   Result:=nil;
 end;
 
@@ -1336,21 +1294,19 @@ end;
 
 procedure TShadowMenu.UpdateBoxLocationsAndSizes;
 var
-  p: pointer;
-  sb: TShadowBox absolute p;
-  s: pointer;
-  si: TShadowItem absolute s;
+  sb: TShadowBoxBase;
+  si: TShadowItemBase;
   lft, w, idx: integer;
   pt: TPoint;
 begin
   FBoxList.Sort(@SortByBoxLevel);
-  for p in FBoxList do begin
+  for sb in FBoxList do begin
     if sb.IsMenuBar then
       begin
         sb.Align:=alTop;
         sb.Height:=MenuBar_Height;
         lft:=0;
-        for s in sb.ShadowList do begin
+        for si in sb.ShadowList do begin
           w:=si.GetWidth;
           si.SetBounds(lft, 0, w, MenuBar_Height);
           Inc(lft, w);
@@ -1379,7 +1335,7 @@ procedure TShadowMenu.RemoveEmptyBox(aSB: TShadowBox);
 var
   miToSelect: TMenuItem;
 begin
-  if (aSB.ShadowCount = 0) then begin
+  if (aSB.ShadowList.Count = 0) then begin
     miToSelect:=aSB.ParentMenuItem;
     FBoxList.Remove(aSB);
     aSB.Parent:=nil;
@@ -1517,8 +1473,7 @@ begin
   end;
 end;
 
-procedure TShadowMenu.OnObjectPropertyChanged(Sender: TObject;
-  NewObject: TPersistent);
+procedure TShadowMenu.OnObjectPropertyChanged(Sender: TObject; NewObject: TPersistent);
 var
   propertyEditor: TPropertyEditor absolute Sender;
   i: Integer;
@@ -1828,7 +1783,7 @@ begin
         ac.Caption:=Format(lisMenuEditorListShortcutsAndAccelerators,[FLookupRoot.Name]);
       end;
       popResolveShortcutConflicts: ac.Enabled:=
-        (FDesigner.Shortcuts.ShortcutList.InitialDuplicatesCount > 0);
+        (FDesigner.Shortcuts.ShortcutList.InitialDuplicates.Count > 0);
       popTemplates_:          ac.Enabled:=levelZero or FDesigner.TemplatesSaved;
       popSaveAsTemplate:      ac.Enabled:=levelZeroOr1;
       popAddFromTemplate:     ac.Enabled:=levelZero;
@@ -1921,11 +1876,10 @@ end;
 
 procedure TShadowMenu.HideBoxesAboveLevel(aLevel: integer);
 var
-  p: pointer;
-  sb: TShadowBox absolute p;
+  sb: TShadowBoxBase;
 begin
-  for p in FBoxList do
-    if (sb.Level > aLevel) then
+  for sb in FBoxList do
+    if sb.Level > aLevel then
       sb.Hide;
 end;
 
@@ -1949,10 +1903,9 @@ end;
 
 procedure TShadowBox.ShowAllUnSelected;
 var
-  p: pointer;
-  si: TShadowItem absolute p;
+  si: TShadowItemBase;
 begin
-  for p in FShadowList do
+  for si in FShadowList do
     si.ShowNormal;
 end;
 
@@ -2068,7 +2021,7 @@ begin
         end;
       end;
     end;
-    if (GetShadowCount = 0) then
+    if (ShadowList.Count = 0) then
       FShadowMenu.RemoveEmptyBox(Self)
     else begin
       FShadowMenu.UpdateBoxLocationsAndSizes;
@@ -2079,16 +2032,15 @@ end;
 
 procedure TShadowBox.LocateShadows;
 var
-  p: pointer;
-  si: TShadowItem absolute p;
+  si: TShadowItemBase;
   len, t, w, h: integer;
 begin
-  if (ShadowCount = 0) then
+  if (ShadowList.Count = 0) then
     Exit;
   FShadowList.Sort(@SortByItemMenuIndex);
   if IsMenuBar then begin
     len:=0;
-    for p in FShadowList do begin
+    for si in FShadowList do begin
       w:=si.GetWidth;
       si.SetBounds(len, 0, w, MenuBar_Height);
       Inc(len, w);
@@ -2097,26 +2049,11 @@ begin
   else begin
     w:=GetInnerDims.x;
     t:=1;
-    for p in FShadowList do begin
+    for si in FShadowList do begin
       h:=si.GetHeight;
       si.SetBounds(1, t, w, h);
       Inc(t, h);
     end;
-  end;
-end;
-
-function TShadowBox.GetInnerDims: TPoint;
-var
-  p: pointer;
-  si: TShadowItem absolute p;
-  w: integer;
-begin
-  FillChar(Result{%H-}, SizeOf(Result), 0);
-  for p in FShadowList do begin
-    Inc(Result.y, si.GetHeight);
-    w:=si.GetWidth;
-    if (Result.x < w) then
-      Result.x:=w;
   end;
 end;
 
@@ -2177,7 +2114,7 @@ begin
     Result:=w + Double_DropDown_Text_Offset + GetShortcutWidth;
 end;
 
-function TShadowItem.HasChildBox(out aChildBox: TShadowBox): boolean;
+function TShadowItem.HasChildBox(out aChildBox: TShadowBoxBase): boolean;
 begin
   aChildBox:=nil;
   Result:=(FRealItem.Count > 0);
@@ -2217,16 +2154,6 @@ procedure TShadowItem.DblClick;
 begin
   inherited DblClick;
   FShadowMenu.AddOnClick(nil);
-end;
-
-function TShadowItem.GetHeight: integer;
-begin
-  if FRealItem.IsInMenuBar then
-    Result:=MenuBar_Height
-  else if FRealItem.IsLine then
-    Result:=Separator_Height
-  else
-    Result:=DropDown_Height;
 end;
 
 function TShadowItem.GetIsInMenuBar: boolean;
@@ -2297,14 +2224,6 @@ end;
 function TShadowItem.GetShowingRightFake: boolean;
 begin
   Result:=(RightFake <> nil) and RightFake.Visible;
-end;
-
-procedure TShadowItem.SetState(AValue: TShadowItemDisplayState);
-begin
-  if (FState <> AValue) then begin
-    FState:=AValue;
-    Invalidate;
-  end;
 end;
 
 function TShadowItem.GetIconTopLeft: TPoint;
@@ -2671,33 +2590,9 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 end;
 
-procedure TShadowItem.ShowNormal;
-begin
-  if (FState <> dsNormal) then begin
-    FState:=dsNormal;
-    Invalidate;
-  end;
-end;
-
-procedure TShadowItem.ShowSelected;
-begin
-  if (FState <> dsSelected) then begin
-    FState:=dsSelected;
-    Invalidate;
-  end;
-end;
-
-procedure TShadowItem.ShowDisabled;
-begin
-  if (FState <> dsDisabled) then begin
-    FState:=dsDisabled;
-    Invalidate;
-  end;
-end;
-
 procedure TShadowItem.ShowChainToRoot;
 var
-  sb: TShadowBox;
+  sb: TShadowBoxBase;
 begin
   sb:=FParentBox;
   while (sb <> FShadowMenu.RootBox) do begin
@@ -2708,7 +2603,7 @@ end;
 
 procedure TShadowItem.HideChainFromRoot;
 var
-  sb: TShadowBox;
+  sb: TShadowBoxBase;
 begin
   sb:=FParentBox;
   while (sb <> FShadowMenu.RootBox) do begin
@@ -2719,7 +2614,7 @@ end;
 
 procedure TShadowItem.ShowChildBox;
 var
-  sb: TShadowBox;
+  sb: TShadowBoxBase;
 begin
   if HasChildBox(sb) then
     sb.Show;

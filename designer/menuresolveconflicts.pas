@@ -54,7 +54,7 @@ begin
   inherited CreateNew(Nil);
   FShortcuts:=aShortcuts;
   FShortcuts.ShortcutList.ScanContainerForShortcutsAndAccelerators;
-  FInitialConflictsCount:=FShortcuts.ShortcutList.InitialDuplicatesCount;
+  FInitialConflictsCount:=FShortcuts.ShortcutList.InitialDuplicates.Count;
   FShadowMenu:=aShadowMenu;
   FResolvedConflictsCount:=0;
   Position:=poScreenCenter;
@@ -65,7 +65,7 @@ begin
   FConflictsGroupBox:=TGroupBox.Create(Self);
   with FConflictsGroupBox do begin
     Caption:=Format(lisMenuEditorConflictsFoundInitiallyD,
-      [FShortcuts.ShortcutList.InitialDuplicatesCount]);
+      [FShortcuts.ShortcutList.InitialDuplicates.Count]);
     Align:=alTop;
     Top:=0;
     BorderSpacing.Around:=Margin;
@@ -166,12 +166,11 @@ var
   sUnique: string;
   sDup: string;
   infUnique: TSCInfo;
-  p: pointer;
-  infDup: TSCInfo absolute p;
+  infDup: TSCInfo;
 begin
   FConflictsListBox.OnSelectionChange:=nil;
   FConflictsListBox.Items.Clear;
-  for p in FShortcuts.ShortcutList.InitialDuplicates do begin
+  for infDup in FShortcuts.ShortcutList.InitialDuplicates do begin
     sDup:=Format(lisMenuEditorSInS, [ShortCutToText(infDup.Shortcut),
       infDup.ComponentName]);
     infUnique:=FShortcuts.ShortcutList.FindUniqueInfoForShortcut(infDup.Shortcut);
@@ -242,7 +241,7 @@ end;
 
 procedure TResolveConflictsDlg.InitialPopulateListBox;
 begin
-  if (FShortcuts.ShortcutList.InitialDuplicatesCount > 0) then begin
+  if (FShortcuts.ShortcutList.InitialDuplicates.Count > 0) then begin
     FResolvedConflictsCount:=0;
     FResolvedConflictsCountLabel.Caption:=Format(
       lisMenuEditorResolvedConflictsS, [IntToStr(FResolvedConflictsCount)]);
@@ -269,7 +268,7 @@ begin
   FConflictsListBox.ItemIndex:= -1;
   FButtonPanel.OKButton.Enabled:=False;
   FShortcuts.ShortcutList.ScanContainerForShortcutsAndAccelerators;
-  if (FShortcuts.ShortcutList.InitialDuplicatesCount > 0) then begin
+  if (FShortcuts.ShortcutList.InitialDuplicates.Count > 0) then begin
     CreateListboxItems;
     UpdateStatistics;
     FConflictsListBox.ItemIndex:=0;

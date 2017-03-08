@@ -5,7 +5,7 @@ unit MenuShortcuts;
 interface
 
 uses
-  Classes, SysUtils, strutils, types,
+  Classes, SysUtils, strutils, types, fgl,
   ActnList, ButtonPanel, Controls, Dialogs, StdCtrls, Menus,
   Forms, Graphics, LCLType, LCLIntf, LCLProc,
   // LazUtils
@@ -71,16 +71,17 @@ type
     property ToCompositeString: string read GetToCompositeString;
   end;
 
+  TSCInfoList = specialize TFPGList<TSCInfo>;
+
   { TSCList }
 
   TSCList = class(TObject)
   strict private
     FAcceleratorsInContainerCount: integer;
-    FInitialDuplicates: TFPList;
     FScanList: TStringList;
     FShortcutsInContainerCount: integer;
-    FUniqueList: TFPList;
-    function GetInitialDuplicatesCount: integer;
+    FInitialDuplicates: TSCInfoList;
+    FUniqueList: TSCInfoList;
     function GetScanListCompName(index: integer): string;
     function GetUniqueCount: integer;
   public
@@ -95,8 +96,7 @@ type
     procedure SortByComponentPropertyName;
     property AcceleratorsInContainerCount: integer read FAcceleratorsInContainerCount
                                                   write FAcceleratorsInContainerCount;
-    property InitialDuplicates: TFPList read FInitialDuplicates;
-    property InitialDuplicatesCount: integer read GetInitialDuplicatesCount;
+    property InitialDuplicates: TSCInfoList read FInitialDuplicates;
     property ScanList: TStringList read FScanList;
     property ScanListCompName[index: integer]: string read GetScanListCompName;
     property ShortcutsInContainerCount: integer read FShortcutsInContainerCount
@@ -490,27 +490,21 @@ begin
   Result:=Copy(aCommaText, Succ(p), Length(aCommaText)-p);
 end;
 
-function SortByShortcut(Item1, Item2: Pointer): Integer;
-var
-  inf1: TSCInfo absolute Item1;
-  inf2: TSCInfo absolute Item2;
+function SortByShortcut(const Item1, Item2: TSCInfo): Integer;
 begin
-  if (inf1.Shortcut > inf2.Shortcut) then
+  if (Item1.Shortcut > Item2.Shortcut) then
     Result:= +1
-  else if (inf1.Shortcut < inf2.Shortcut) then
+  else if (Item1.Shortcut < Item2.Shortcut) then
     Result:= -1
   else
     Result:=0;
 end;
 
-function SortFPListByComponentPropertyName(Item1, Item2: Pointer): Integer;
-var
-  inf1: TSCInfo absolute Item1;
-  inf2: TSCInfo absolute Item2;
+function SortFPListByComponentPropertyName(const Item1, Item2: TSCInfo): Integer;
 begin
-  if (inf1.ComponentName > inf2.ComponentName) then
+  if (Item1.ComponentName > Item2.ComponentName) then
     Result:= +1
-  else if (inf1.ComponentName < inf2.ComponentName) then
+  else if (Item1.ComponentName < Item2.ComponentName) then
     Result:= -1
   else
     Result:=0;
@@ -586,8 +580,8 @@ end;
 constructor TSCList.Create;
 begin
   FScanList:=TStringList.Create;
-  FUniqueList:=TFPList.Create;
-  FInitialDuplicates:=TFPList.Create;
+  FUniqueList:=TSCInfoList.Create;
+  FInitialDuplicates:=TSCInfoList.Create;
   ScanContainerForShortcutsAndAccelerators;
 end;
 
@@ -616,11 +610,6 @@ begin
                    [index]);
 end;
 
-function TSCList.GetInitialDuplicatesCount: integer;
-begin
-  Result:=FInitialDuplicates.Count;
-end;
-
 function TSCList.GetUniqueCount: integer;
 begin
   Result:=FUniqueList.Count;
@@ -639,10 +628,9 @@ end;
 
 function TSCList.UniqueListContainsShortcut(aSC: TShortCut): boolean;
 var
-  p: pointer;
-  inf: TSCInfo absolute p;
+  inf: TSCInfo;
 begin
-  for p in FUniqueList do
+  for inf in FUniqueList do
     if (inf.Shortcut = aSC) then
       Exit(True);
   Result:=False;
@@ -650,10 +638,9 @@ end;
 
 function TSCList.FindUniqueInfoForShortcut(aSC: TShortCut): TSCInfo;
 var
-  p: pointer;
-  inf: TSCInfo absolute p;
+  inf: TSCInfo;
 begin
-  for p in FUniqueList do
+  for inf in FUniqueList do
     if (inf.Shortcut = aSC) then
       Exit(inf);
   Result:=nil;
@@ -668,6 +655,13 @@ begin
   if (FUniqueList.Count > 0) then
     FUniqueList.Sort(@SortByShortcut);
 end;
+//menushortcuts.pas(667,44) Error: Incompatible type for arg no. 1:
+// Got "<address of function(const TSCInfo;const TSCInfo):LongInt;Register>",
+// expected "<procedure variable type of function(Pointer;Pointer):LongInt;Register>"
+
+//menushortcuts.pas(669,37) Error: Incompatible type for arg no. 1:
+// Got "<address of function(Pointer;Pointer):LongInt;Register>",
+// expected "TFPGList$1$crc13D57BB4.<procedure variable type of function(const TSCInfo;const TSCInfo):LongInt;Register>"
 
 procedure TSCList.ScanContainerForShortcutsOnly;
 begin
@@ -681,18 +675,18 @@ var
 begin
   FreeAndNil(FUniqueList);
   FreeAndNil(FInitialDuplicates);
-  FUniqueList:=TFPList.Create;
-  FInitialDuplicates:=TFPList.Create;
+  FUniqueList:=TSCInfoList.Create;
+  FInitialDuplicates:=TSCInfoList.Create;
   for i:=0 to FScanList.Count-1 do
     if UniqueListContainsShortcut(TSCInfo(FScanList.Objects[i]).Shortcut) then
-      FInitialDuplicates.Add(FScanList.Objects[i])
+      FInitialDuplicates.Add(FScanList.Objects[i] as TSCInfo)
     else
-      FUniqueList.Add(FScanList.Objects[i]);
+      FUniqueList.Add(FScanList.Objects[i] as TSCInfo);
   if (FInitialDuplicates.Count > 0) then begin
     FInitialDuplicates.Sort(@SortFPListByComponentPropertyName);
     for i:=FInitialDuplicates.Count-1 downto 1 do begin
-      inf2:=TSCInfo(FInitialDuplicates[i]);
-      inf1:=TSCInfo(FInitialDuplicates[i-1]);
+      inf2:=FInitialDuplicates[i];
+      inf1:=FInitialDuplicates[i-1];
       if (CompareText(inf2.ComponentName, inf1.ComponentName) = 0)
       and (inf2.Shortcut = inf1.Shortcut) then
         FInitialDuplicates.Delete(i);
@@ -1298,7 +1292,7 @@ procedure TMenuShortcuts.Initialize;
 begin
   FShortcutList.ClearAllLists;
   FShortcutList.ScanContainerForShortcutsAndAccelerators;
-  FShortcutConflictsCount:=FShortcutList.InitialDuplicatesCount;
+  FShortcutConflictsCount:=FShortcutList.InitialDuplicates.Count;
 end;
 
 procedure TMenuShortcuts.UpdateShortcutList(includeAccelerators: boolean);

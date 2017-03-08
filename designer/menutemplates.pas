@@ -5,7 +5,7 @@ unit MenuTemplates;
 interface
 
 uses
-  Classes, SysUtils, types,
+  Classes, SysUtils, types, fgl,
   Buttons, Controls, Dialogs, StdCtrls, ExtCtrls, Menus,
   ComCtrls, Forms, Graphics, Themes, LCLType, LCLIntf, LCLProc,
   // LazUtils
@@ -41,12 +41,13 @@ type
   end;
 
   TDialogMode = (dmInsert, dmSave, dmDelete);
+  TMenuTemplateList = specialize TFPGObjectList<TMenuTemplate>;
 
   { TMenuTemplates }
 
   TMenuTemplates = class(TObject)
   strict private
-    FTemplateList: TFPList;
+    FTemplateList: TMenuTemplateList;
     function GetDescription(index: integer): string;
     function GetMenu(index: integer): TMenuItem;
     function GetMenuCount: integer;
@@ -368,7 +369,7 @@ end;
 function TMenuTemplates.GetDescription(index: integer): string;
 begin
   CheckIndex(index);
-  Result:=TMenuTemplate(FTemplateList[index]).Description;
+  Result:=FTemplateList[index].Description;
 end;
 
 function TMenuTemplates.GetMenu(index: integer): TMenuItem;
@@ -378,7 +379,7 @@ var
   i: integer;
 begin
   CheckIndex(index);
-  mt:=TMenuTemplate(FTemplateList[index]);
+  mt:=FTemplateList[index];
   mi:=TMenuItem.Create(nil);
   mi.Caption:=mt.PrimaryItem;
   for i:=0 to mt.SubItemCount-1 do
@@ -399,13 +400,13 @@ end;
 function TMenuTemplates.GetMenuTemplate(index: integer): TMenuTemplate;
 begin
   CheckIndex(index);
-  Result:=TMenuTemplate(FTemplateList[index]);
+  Result:=FTemplateList[index];
 end;
 
 function TMenuTemplates.GetPrimaryItem(index: integer): string;
 begin
   CheckIndex(index);
-  Result:=TMenuTemplate(FTemplateList[index]).PrimaryItem;
+  Result:=FTemplateList[index].PrimaryItem;
 end;
 
 procedure TMenuTemplates.CheckIndex(anIndex: integer);
@@ -467,19 +468,14 @@ end;
 constructor TMenuTemplates.CreateForMode(aDialogMode: TDialogMode);
 begin
   inherited Create;
-  FTemplateList:=TFPList.Create;
+  FTemplateList:=TMenuTemplateList.Create;
   if (aDialogMode = dmInsert) then
     LoadDefaultTemplates;
   LoadSavedTemplates;
 end;
 
 destructor TMenuTemplates.Destroy;
-var
-  p: pointer;
-  mt: TMenuTemplate absolute p;
 begin
-  for p in FTemplateList do
-    mt.Free;
   FreeAndNil(FTemplateList);
   inherited Destroy;
 end;
