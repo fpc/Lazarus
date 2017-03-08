@@ -163,9 +163,9 @@ end;
 
 function RoundUp(Value, Divi:integer):integer;
 begin
-  if Value mod Divi=0 then
-   Result:=Value div Divi else
-   Result:=(Value div Divi)+1;
+  if Value mod Divi = 0 then
+    Result:=Value div Divi else
+    Result:=(Value div Divi)+1;
 end;
 
 procedure TCharacterMapDialog.cbCodePageSelect(Sender: TObject);
@@ -174,38 +174,38 @@ begin
 end;
 
 procedure TCharacterMapDialog.cbUniRangeSelect(Sender: TObject);
-var cnt, x, y :integer;
-S,E:Integer;
+var
+  cnt, x, y: integer;
+  S, E: integer;
 begin
- S:=UnicodeBlocks[cbUniRange.ItemIndex].S;
- E:=UnicodeBlocks[cbUniRange.ItemIndex].E;
- StringGrid2.Clear;
- StringGrid2.ColCount:=16;
- StringGrid2.RowCount:=RoundUp(E-S,16);
- cnt:=0;
- for y:=0 to StringGrid2.RowCount-1 do
-  for x:=0 to StringGrid2.ColCount-1 do
-  begin
-   if S+Cnt<=E then
-     StringGrid2.Cells[x,y]:=UnicodeToUTF8(S+Cnt);
-   inc(cnt);
-  end;
+  S:=UnicodeBlocks[cbUniRange.ItemIndex].S;
+  E:=UnicodeBlocks[cbUniRange.ItemIndex].E;
+  StringGrid2.Clear;
+  StringGrid2.ColCount:=16;
+  StringGrid2.RowCount:=RoundUp(E-S,16);
+  cnt:=0;
+  for y:=0 to StringGrid2.RowCount-1 do
+    for x:=0 to StringGrid2.ColCount-1 do
+    begin
+      if S+Cnt<=E then
+        StringGrid2.Cells[x,y]:=UnicodeToUTF8(S+Cnt);
+      inc(cnt);
+    end;
   StringGrid2.AutoSizeColumns;
 end;
 
-procedure TCharacterMapDialog.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TCharacterMapDialog.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key=VK_ESCAPE then
   begin
     Close;
     Key:= 0;
-    Exit
   end;
 end;
 
 procedure TCharacterMapDialog.FormShow(Sender: TObject);
-var i:integer;
+var
+  i:integer;
 begin
   StringGrid1.Font.Name := EditorOpts.EditorFont;
   StringGrid2.Font.Name := EditorOpts.EditorFont;
@@ -215,7 +215,8 @@ begin
   StringGrid1.AutoSizeColumns;
 
   cbUniRange.Items.Clear;
-  for i:=0 to MaxUnicodeBlocks do cbUniRange.Items.Add(UnicodeBlocks[i].PG);
+  for i:=0 to MaxUnicodeBlocks do
+    cbUniRange.Items.Add(UnicodeBlocks[i].PG);
   cbUniRange.ItemIndex:=0;
   cbUniRangeSelect(nil);
 end;
@@ -237,7 +238,8 @@ var
   sg: TStringGrid;
   s: string;
 begin
-  if Key = #13 then begin
+  if Key = #13 then
+  begin
     sg := Sender as TStringGrid;
     s := sg.Cells[sg.Col, sg.Row];
     if (s <> '') and (Assigned(OnInsertCharacter)) then
@@ -281,9 +283,7 @@ begin
     DoStatusGrid1(Col, Row);
   end
   else
-  begin
     CharInfoLabel.Caption := '-';
-  end;
 end;
 
 procedure TCharacterMapDialog.DoStatusGrid2(ACol, ARow: integer);
@@ -313,9 +313,7 @@ begin
     DoStatusGrid2(Col, Row);
   end
   else
-  begin
     CharInfoLabel.Caption := '-';
-  end;
 end;
 
 procedure TCharacterMapDialog.FillCharMap;
