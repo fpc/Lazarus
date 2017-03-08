@@ -517,6 +517,17 @@ object MainFrm: TMainFrm
       Caption = 'Reset rating'
       OnClick = miResetRatingClick
     end
+    object MenuItem2: TMenuItem
+      Caption = '-'
+    end
+    object miSaveChecks: TMenuItem
+      Caption = 'Save checks'
+      OnClick = miSaveChecksClick
+    end
+    object miLoadChecks: TMenuItem
+      Caption = 'Load checks'
+      OnClick = miLoadChecksClick
+    end
   end
   object pmMemo: TPopupMenu
     left = 144
@@ -3483,6 +3494,12 @@ object MainFrm: TMainFrm
     DefaultExt = '.*.json'
     Filter = '*.json|*.json'
     left = 248
+    top = 288
+  end
+  object OD: TOpenDialog
+    DefaultExt = '.*.opm'
+    Filter = '*.opm|*.opm'
+    left = 312
     top = 288
   end
 end

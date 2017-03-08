@@ -54,6 +54,9 @@ type
     cbPackageType: TComboBox;
     imTBDis: TImageList;
     MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    miLoadChecks: TMenuItem;
+    miSaveChecks: TMenuItem;
     miDateDsc: TMenuItem;
     miDateAsc: TMenuItem;
     miNameDsc: TMenuItem;
@@ -66,6 +69,7 @@ type
     miCopyToClpBrd: TMenuItem;
     miCreateRepository: TMenuItem;
     miCreateRepositoryPackage: TMenuItem;
+    OD: TOpenDialog;
     SD: TSaveDialog;
     tbCleanUp1: TToolButton;
     tbOptions: TToolButton;
@@ -101,8 +105,10 @@ type
     procedure miCopyToClpBrdClick(Sender: TObject);
     procedure miCreateRepositoryClick(Sender: TObject);
     procedure miCreateRepositoryPackageClick(Sender: TObject);
+    procedure miLoadChecksClick(Sender: TObject);
     procedure miNameAscClick(Sender: TObject);
     procedure miResetRatingClick(Sender: TObject);
+    procedure miSaveChecksClick(Sender: TObject);
     procedure miSaveToFileClick(Sender: TObject);
     procedure pnToolBarResize(Sender: TObject);
     procedure tbCleanUpClick(Sender: TObject);
@@ -914,6 +920,79 @@ begin
   end;
 end;
 
+procedure TMainFrm.miSaveChecksClick(Sender: TObject);
+var
+  Node: PVirtualNode;
+  Data: PData;
+  SL: TStringList;
+begin
+  SD.DefaultExt := '.*.opm';
+  SD.Filter := '*.opm|*.opm';
+
+  SL := TStringList.Create;
+  try
+    Node := VisualTree.VST.GetFirst;
+    while Node <> nil do
+    begin
+      if VisualTree.VST.CheckState[Node] = csCheckedNormal then
+      begin
+        Data := VisualTree.VST.GetNodeData(Node);
+        if (Data^.DataType = 2) then
+          SL.Add(Data^.PackageFileName);
+      end;
+      Node := VisualTree.VST.GetNext(Node);
+    end;
+    if Trim(SL.Text) = '' then
+      MessageDlgEx(rsMainFrm_rsMessageNothingChacked, mtInformation, [mbOk], Self)
+    else
+      if SD.Execute then
+      begin
+         SL.SaveToFile(SD.FileName);
+         MessageDlgEx(Format(rsMainFrm_resMessageChecksSaved, [IntToStr(SL.Count)]), mtInformation, [mbOk], Self)
+      end;
+  finally
+    SL.Free;
+  end;
+end;
+
+procedure TMainFrm.miLoadChecksClick(Sender: TObject);
+var
+  SL: TStringList;
+  I: Integer;
+  Node: PVirtualNode;
+  Data: PData;
+  CheckCount: Integer;
+begin
+  if OD.Execute then
+  begin
+    CheckCount := 0;
+    SL := TStringList.Create;
+    try
+      SL.LoadFromFile(OD.FileName);
+      for I := 0 to SL.Count - 1 do
+      begin
+        Node := VisualTree.VST.GetFirst;
+        while Node <> nil do
+        begin
+          Data := VisualTree.VST.GetNodeData(Node);
+          if UpperCase(Trim(Data^.PackageFileName)) = UpperCase(Trim(SL.Strings[I])) then
+          begin
+            VisualTree.VST.CheckState[Node] := csCheckedNormal;
+            Inc(CheckCount);
+            Break;
+          end;
+          Node := VisualTree.VST.GetNext(Node);
+        end;
+      end;
+    finally
+      SL.Free;
+    end;
+    if CheckCount > 0 then
+       MessageDlgEx(Format(rsMainFrm_resMessageChecksLoaded, [IntToStr(CheckCount)]), mtInformation, [mbOk], Self)
+  end;
+end;
+
+
 procedure TMainFrm.pnMainResize(Sender: TObject);
 begin
   pnMessage.Left := (pnMain.Width - pnMessage.Width) div 2;
@@ -964,6 +1043,8 @@ var
   JSON: TJSONStringType;
   Ms: TMemoryStream;
 begin
+  SD.DefaultExt := '.*.json';
+  SD.Filter := '*.json|*.json';
   if SD.Execute then
   begin
     JSON := '';
@@ -1051,6 +1132,8 @@ begin
   miSaveToFile.Caption := rsMainFrm_miSaveToFile;
   miCopyToClpBrd.Caption := rsMainFrm_miCopyToClpBrd;
   miResetRating.Caption := rsMainFrm_miResetRating;
+  miSaveChecks.Caption := rsMainFrm_miSaveChecks;
+  miLoadChecks.Caption := rsMainFrm_miLoadChecks;
 
   edFilter.Hint := rsMainFrm_edFilter_Hint;
   spClear.Hint := rsMainFrm_spClear_Hint;

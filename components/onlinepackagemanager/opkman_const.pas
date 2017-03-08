@@ -172,6 +172,8 @@ resourcestring
   rsMainFrm_miSaveToFile = 'Save to file';
   rsMainFrm_miCopyToClpBrd = 'Copy to clipboard';
   rsMainFrm_miResetRating = 'Reset rating';
+  rsMainFrm_miSaveChecks = 'Save checked packages';
+  rsMainFrm_miLoadChecks = 'Load checked packages';
   rsMainFrm_PackagenameAlreadyExists = 'A package with the same name already exists!';
   rsMainFrm_PackageAlreadyInstalled = 'The following packages are already installed. Continue anyway?';
   rsMainFrm_PackageAlreadyDownloaded = 'The following repository packages already exist in the target folder. Continue?';
@@ -183,6 +185,9 @@ resourcestring
   rsMainFrm_rsMessageDownload = 'Downloading package list. Please wait...';
   rsMainFrm_rsMessageChangingRepository = 'Changing repository. Please wait...';
   rsMainFrm_rsMessageNoRepository0 = 'Remote package repository not configured.' + sLineBreak + 'Do you wish to configure it now?';
+  rsMainFrm_rsMessageNothingChacked = 'Please check at least one package!';
+  rsMainFrm_resMessageChecksSaved = '%s packages successfully saved to file!';
+  rsMainFrm_resMessageChecksLoaded = '%s packages successfully loaded from file!';
   rsMainFrm_rsMessageError0 = 'Cannot download package list. Error message:';
   rsMainFrm_rsMessageError1 = 'Invalid JSON file.';
   rsMainFrm_rsMessageError2 = 'Remote server unreachable.';
