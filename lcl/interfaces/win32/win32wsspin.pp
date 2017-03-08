@@ -28,7 +28,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  CommCtrl, Windows, Win32Extra,
+  CommCtrl, Windows, Win32Extra, LCLMessageGlue,
   Spin, Controls, StdCtrls, LCLType, LMessages, Themes, Graphics, LazUTF8,
 ////////////////////////////////////////////////////
   WSSpin, WSLCLClasses, WSProc,
@@ -108,11 +108,31 @@ end;
 
 function SpinUpDownWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
+
+  function SendWheelToSpin(var LRes: LResult): Boolean;
+  var
+    lWindowInfo: PWin32WindowInfo;
+    LMessage: TLMessage;
+  begin
+    lWindowInfo := GetWin32WindowInfo(Window);
+    Result := (lWindowInfo<>nil) and (lWindowInfo^.AWinControl<>nil);
+    if Result then
+    begin
+      FillChar(LMessage, SizeOf(LMessage), 0);
+      LMessage.msg := Msg;
+      LMessage.wParam := WParam;
+      LMessage.lParam := LParam;
+      DeliverMessage(lWindowInfo^.AWinControl, LMessage);
+      LRes := LMessage.Result;
+      if LRes=0 then
+        LRes := CallDefaultWindowProc(lWindowInfo^.AWinControl.Handle, Msg, WParam, LParam);
+    end;
+  end;
+
 var
   DC: HDC;
   SRect: TRect;
   Brush: HBRUSH;
-  lWindowInfo: PWin32WindowInfo;
 begin
   case Msg of
     WM_PAINT,
@@ -141,9 +161,8 @@ begin
       end;
     WM_MOUSEWHEEL:
       begin
-        lWindowInfo := GetWin32WindowInfo(Window);
-        if (lWindowInfo<>nil) and (lWindowInfo^.AWinControl<>nil) then
-          Exit(CallDefaultWindowProc(lWindowInfo^.AWinControl.Handle, Msg, WParam, LParam));
+        if SendWheelToSpin(Result) then
+          Exit;
       end;
   end;
   Result := WindowProc(Window, Msg, WParam, LParam);
