@@ -2920,9 +2920,7 @@ begin
   if Utf8Length(AUtf8Char) <> 1 then Exit;
   L := Utf8Length(Result);
   if L < N then
-  begin
     Result := Utf8StringOfChar(AUtf8Char, N-l) + Result;
-  end;
 end;
 
 function Utf8AddCharR(AUtf8Char: String; const S: String; N: Integer): String;
@@ -2935,7 +2933,6 @@ begin
   if L < N then
     Result := Result + Utf8StringOfChar(AUtf8Char, N-l);
 end;
-
 
 function UTF8PadLeft(const S: String; const N: Integer; const AUtf8Char: String = #32): String;
 begin

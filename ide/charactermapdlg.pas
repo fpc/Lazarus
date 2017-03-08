@@ -164,7 +164,8 @@ end;
 function RoundUp(Value, Divi:integer):integer;
 begin
   if Value mod Divi = 0 then
-    Result:=Value div Divi else
+    Result:=Value div Divi
+  else
     Result:=(Value div Divi)+1;
 end;
 
