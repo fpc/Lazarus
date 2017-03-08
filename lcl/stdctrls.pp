@@ -325,6 +325,8 @@ type
     procedure SetItems(const Value: TStrings); virtual;
     procedure CloseUp; virtual;
     procedure AdjustDropDown; virtual;
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double); override;
 
     function GetItemCount: Integer; //override;
     function GetItemHeight: Integer; virtual;

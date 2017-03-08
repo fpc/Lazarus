@@ -85,6 +85,20 @@ begin
   inherited DestroyWnd;
 end;
 
+procedure TCustomComboBox.DoAutoAdjustLayout(
+  const AMode: TLayoutAdjustmentPolicy; const AXProportion, AYProportion: Double
+  );
+begin
+  inherited;
+
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+  begin
+    if (Style in [csOwnerDrawFixed, csOwnerDrawVariable])
+    and (FItemHeight > 0) then
+      ItemHeight := Round(ItemHeight * AYProportion);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   procedure TCustomComboBox.DrawItem(Index: Integer; Rect: TRect;
     State: TOwnerDrawState);
