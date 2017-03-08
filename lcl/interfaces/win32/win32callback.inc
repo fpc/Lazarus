@@ -1946,6 +1946,7 @@ var
   CharCodeNotEmpty: boolean;
   R: TRect;
   ACtl: TWinControl;
+  LMouseEvent: TTRACKMOUSEEVENT;
 {$IF NOT DECLARED(WM_DPICHANGED)} // WM_DPICHANGED was added in FPC 3.1.1
 const
   WM_DPICHANGED = $02E0;
@@ -1975,6 +1976,20 @@ begin
   end;
   if IgnoreKeyUp and (Msg = WM_KEYUP) then
     Exit(1);
+
+  case Msg of
+    WM_MOUSEFIRST..WM_MOUSELAST:
+    if Application.MouseControl<>lWinControl then
+    begin
+      // register for WM_MOUSELEAVE
+      FillChar(LMouseEvent, SizeOf(TTRACKMOUSEEVENT), 0);
+      LMouseEvent.cbSize := SizeOf(TTRACKMOUSEEVENT);
+      LMouseEvent.dwFlags := TME_LEAVE;
+      LMouseEvent.hwndTrack := Window;
+      LMouseEvent.dwHoverTime := HOVER_DEFAULT;
+      _TrackMouseEvent(@LMouseEvent);
+    end;
+  end;
 
   case Msg of
     WM_NULL:
@@ -2219,6 +2234,7 @@ begin
     begin
       NotifyUserInput := True;
       LMessage.Msg := LM_MOUSELEAVE;
+      Application.DoBeforeMouseMessage(nil);
     end;
     WM_MOUSEMOVE:  DoMsgMouseMove;
     WM_MOUSEWHEEL: if DoMsgMouseWheel(Result) then Exit;
