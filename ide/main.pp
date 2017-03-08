@@ -12297,7 +12297,7 @@ begin
     // place object inspector below main bar
     ScreenR:=IDEWindowCreators.GetScreenrectForDefaults;
     aBounds:=Rect(ScreenR.Left,
-       Min(MainIDEBar.Top+MainIDEBar.Height+25,200),230,
+       Min(MainIDEBar.Top+MainIDEBar.Height+25,200),ScreenR.Left+230,
        ScreenR.Bottom-ScreenR.Top-150);
     // do not dock object inspector, because this would hide the floating designers
   end

@@ -2033,14 +2033,14 @@ begin
 
   // left
   if Left='' then
-    DefBounds.Left:=AForm.Left
+    DefBounds.Left:=ScreenR.Left+AForm.Left
   else if Left[length(Left)]='%' then
     DefBounds.Left:=ScreenR.Left+ScreenW*StrToIntDef(copy(Left,1,length(Left)-1),0) div 100
   else
     DefBounds.Left:=ScreenR.Left+StrToIntDef(Left,0);
   // top
   if Top='' then
-    DefBounds.Top:=AForm.Top
+    DefBounds.Top:=ScreenR.Top+AForm.Top
   else if Top[length(Top)]='%' then
     DefBounds.Top:=ScreenR.Top+ScreenH*StrToIntDef(copy(Top,1,length(Top)-1),0) div 100
   else
