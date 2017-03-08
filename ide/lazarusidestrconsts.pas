@@ -52,10 +52,6 @@ resourcestring
   lisChange  = 'Change';
   lisDelete  = 'Delete';
   lisBtnDelete = '&Delete';
-  lisMenuEditorGroupIndexValueSS = 'GroupIndex value(s): %s';
-  lisMenuEditorNoRadioitemsInThisMenu = 'No radioitems in this menu';
-  lisMenuEditorSGroupIndexD = '%s.GroupIndex: %d';
-  lisMenuEditorSIsNotARadioitem = '%s is not a radioitem';
   lisRemove = 'Remove';
   lisBtnRemove = '&Remove';
   lisRename = 'Rename';
@@ -67,7 +63,6 @@ resourcestring
   lisDlgEdit = 'Edit ...';
   lisClear = 'Clear';
   lisOpen = 'Open';
-  lisOpenUnit = 'Open Unit';
   lisSave = 'Save';
   lisDlgSave = 'Save ...';
   lisSaveAs = 'Save As';
@@ -4872,7 +4867,9 @@ resourcestring
   lisMenuEditorShortcutItemsS = 'Shortcut items: %s';
   lisMenuEditorResolveSelectedConflict = 'Resolve selected conflict';
   lisMenuEditorResolveShortcutConflicts = '&Resolve shortcut conflicts ...';
-  lisMenuEditorRootMenu = 'Root menu';
+  lisMenuEditorGroupIndexValuesS = 'Values in use: %s';
+  lisMenuEditorGroupIndexD = 'GroupIndex: %d';
+  lisMenuEditorRadioItem = 'RadioItem';
   lisMenuEditorSavedTemplates = 'Saved templates';
   lisMenuEditorSaveMenuAsATemplate = '&Save menu as a template ...';
   lisMenuEditorSaveMenuAsTemplate = 'Save menu as template';
@@ -5977,6 +5974,7 @@ resourcestring
   dlgInsertInterface = 'Interface';
   dlgInsertImplementation = 'Implementation';
   dlgNoAvailableUnits = 'No available units to add.';
+  lisOpenUnit = 'Open Unit';
   lisInsteadOfCompilePackageCreateASimpleMakefile = 'Instead of compile '
     +'package create a simple Makefile.';
   lisOnlyRegisterTheLazarusPackageFilesLpkDoNotBuild = 'Only register the '

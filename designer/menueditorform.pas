@@ -59,7 +59,7 @@ type
     RadioGroupsLabel: TLabel;
     ShortcutItemsCountLabel: TLabel;
     StatisticsGroupBox: TGroupBox;
-    SubmenuGroupBox: TGroupBox;
+    RadioItemGroupBox: TGroupBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormHide(Sender: TObject);
@@ -242,6 +242,7 @@ begin
   Name:='MenuDesignerWindow';
   Caption:=lisMenuEditorMenuEditor;
   ButtonsGroupBox.Caption:=lisMenuEditorMenuItemActions;
+  RadioItemGroupBox.Caption:=lisMenuEditorRadioItem;
   FGUIEnabled:=False;
   LoadFixedButtonGlyphs;
   LoadVariableButtonGlyphs(True);
@@ -527,7 +528,8 @@ end;
 
 procedure TMenuDesignerForm.DisableGUI;
 begin
-  if FGUIEnabled then begin
+  if FGUIEnabled then
+  begin
     StatisticsGroupBox.Font.Style:=[];
     StatisticsGroupBox.Caption:=lisMenuEditorNoMenuSelected;
     CaptionedItemsCountLabel.Caption:=Format(lisMenuEditorCaptionedItemsS,[lisMenuEditorNA]);
@@ -639,44 +641,34 @@ begin
   StatisticsGroupBox.Invalidate;
 end;
 
+function JoinToString(aGroups: TByteArray): String;
+var
+  i: Integer;
+begin
+  for i:=0 to Length(aGroups)-1 do
+  begin
+    if i>0 then
+      Result:=Result+', ';
+    Result:=Result+IntToStr(aGroups[i]);
+  end;
+end;
+
 procedure TMenuDesignerForm.UpdateSubmenuGroupBox(selMI: TMenuItem;
   selBox: TShadowBoxBase; boxIsRoot: boolean);
+var
+  Groups: TByteArray;
 begin
-  if SubmenuGroupBox = nil then
-    Exit;
-
-  if (selMI = nil) then begin
-    SubmenuGroupBox.Caption:=lisMenuEditorNoMenuSelected;
-    RadioGroupsLabel.Caption:='';
-    GroupIndexLabel.Caption:='';
-  end
-  else begin
+  if Assigned(selMI) then
     selBox.LastRIValue:=selMI.RadioItem;
-    if boxIsRoot then
-      SubmenuGroupBox.Caption:=lisMenuEditorRootMenu
-    else SubmenuGroupBox.Caption:=Format(lisMenuEditorSSubmenu,[selBox.ParentMenuItem.Name]);
-
-    if selMI.RadioItem then begin
-      GroupIndexLabel.Caption:=Format(lisMenuEditorSGroupIndexD,
-                                      [selMI.Name, selMI.GroupIndex]);
-      GroupIndexLabel.Enabled:=True;
-    end
-    else begin
-      GroupIndexLabel.Caption:=Format(lisMenuEditorSIsNotARadioitem,
-                                      [selMI.Name]);
-      GroupIndexLabel.Enabled:=False;
-    end;
-
-    if selBox.HasRadioItems then begin
-      RadioGroupsLabel.Caption:=Format(lisMenuEditorGroupIndexValueSS,
-                                       [selBox.RadioGroupsString]);
-      RadioGroupsLabel.Enabled:=True;
-    end
-    else begin
-      RadioGroupsLabel.Caption:=lisMenuEditorNoRadioitemsInThisMenu;
-      RadioGroupsLabel.Enabled:=False;
-      RadioGroupsLabel.Invalidate; //for some reason this seems necessary
-    end;
+  RadioItemGroupBox.Visible:=Assigned(selMI) and selMI.RadioItem;
+  if RadioItemGroupBox.Visible then
+  begin
+    GroupIndexLabel.Caption:=Format(lisMenuEditorGroupIndexD, [selMI.GroupIndex]);
+    Groups:=selBox.RadioGroupValues;
+    RadioGroupsLabel.Visible:=Length(Groups)>1;
+    if RadioGroupsLabel.Visible then
+      RadioGroupsLabel.Caption:=Format(lisMenuEditorGroupIndexValuesS, [JoinToString(Groups)]);
+    RadioItemGroupBox.Visible:=True;
   end;
 end;
 

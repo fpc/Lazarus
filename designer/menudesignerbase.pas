@@ -15,6 +15,8 @@ uses
 
 type
 
+  TByteArray = Array of Byte;
+
   { TShadowItemBase }
 
   TShadowItemBase = class(TCustomControl)
@@ -32,8 +34,7 @@ type
 
   TShadowBoxBase = class(TCustomControl)
   private
-    function GetHasRadioItems: boolean;
-    function GetRadioGroupsString: string;
+    function GetRadioGroupValues: TByteArray;
   protected
     FLevel: integer;
     FLastRIValue: boolean;
@@ -49,8 +50,7 @@ type
     property ParentMenuItem: TMenuItem read FParentMenuItem;
     property ShadowList: TFPList read FShadowList;
     property ShadowCount: integer read GetShadowCount;
-    property HasRadioItems: boolean read GetHasRadioItems;
-    property RadioGroupsString: string read GetRadioGroupsString;
+    property RadioGroupValues: TByteArray read GetRadioGroupValues;
   end;
 
   { TShadowMenuBase }
@@ -141,18 +141,7 @@ begin
   inherited Destroy;
 end;
 
-function TShadowBoxBase.GetHasRadioItems: boolean;
-var
-  p: pointer;
-  si: TShadowItemBase absolute p;
-begin
-  for p in FShadowList do
-    if si.RealItem.RadioItem then
-      Exit(True);
-  Result:=False;
-end;
-
-function TShadowBoxBase.GetRadioGroupsString: string;
+function TShadowBoxBase.GetRadioGroupValues: TByteArray;
 var
   rgSet: set of byte = [];
   g: byte;
@@ -160,18 +149,19 @@ var
   si: TShadowItemBase absolute p;
   mi: TMenuItem;
 begin
-  Result:='';
-  for p in FShadowList do begin
+  SetLength(Result, 0);
+  for p in FShadowList do
+  begin
     mi:=si.RealItem;
     if mi.RadioItem then begin
       g:=mi.GroupIndex;
       if not (g in rgSet) then begin
         Include(rgSet, g);
-        AppendStr(Result, IntToStr(g) + ', ');
+        SetLength(Result, Length(Result)+1);
+        Result[Length(Result)-1] := g;
       end;
     end;
   end;
-  Delete(Result, Pred(Length(Result)), 2);
 end;
 
 function TShadowBoxBase.GetShadowCount: integer;
