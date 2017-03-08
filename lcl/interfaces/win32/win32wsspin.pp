@@ -112,6 +112,7 @@ var
   DC: HDC;
   SRect: TRect;
   Brush: HBRUSH;
+  lWindowInfo: PWin32WindowInfo;
 begin
   case Msg of
     WM_PAINT,
@@ -137,6 +138,12 @@ begin
         end;
         Result := 1;
         Exit;
+      end;
+    WM_MOUSEWHEEL:
+      begin
+        lWindowInfo := GetWin32WindowInfo(Window);
+        if (lWindowInfo<>nil) and (lWindowInfo^.AWinControl<>nil) then
+          Exit(CallDefaultWindowProc(lWindowInfo^.AWinControl.Handle, Msg, WParam, LParam));
       end;
   end;
   Result := WindowProc(Window, Msg, WParam, LParam);
