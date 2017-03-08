@@ -4301,6 +4301,10 @@ begin
     begin
       Msg := LM_SIZE;
       SizeType := 6; // force realign
+      if (FWidth  < Low(Word)) or (FWidth  > High(Word))
+      or (FHeight < Low(Word)) or (FHeight > High(Word)) then
+        raise Exception.CreateFmt('Size range overflow in %s.SendMoveSizeMessages:'
+                                 +' Width=%d, Height=%d.', [Name, FWidth, FHeight]);
       Width := FWidth;
       Height := FHeight;
       {$IFDEF CHECK_POSITION}
@@ -4317,8 +4321,12 @@ begin
     begin
       Msg:= LM_MOVE;
       MoveType:= 1;
-      XPos:= FLeft;
-      YPos:= FTop;
+      if (FLeft < Low(Smallint)) or (FLeft > High(Smallint))
+      or (FTop  < Low(Smallint)) or (FTop  > High(Smallint)) then
+        raise Exception.CreateFmt('Position range overflow in %s.SendMoveSizeMessages:'
+                                 +' Left=%d, Top=%d.', [Name, FLeft, FTop]);
+      XPos := FLeft;
+      YPos := FTop;
       {$IFDEF CHECK_POSITION}
       if CheckPosition(Self) then
       DebugLn(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' MoveMsg XPos=',Dbgs(XPos),' YPos=',Dbgs(YPos));
