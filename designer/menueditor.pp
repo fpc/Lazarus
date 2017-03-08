@@ -1585,7 +1585,7 @@ begin
   if FSelectedMenuItem = nil then
     Exit;
   comp:=GlobalDesignHook.GetComponent(FSelectedMenuItem.Name);
-  if (comp<>nil) and (comp is TMenuItem) then
+  if comp is TMenuItem then
   begin
     selBox:=SelectedShadowBox;
     if (selBox.LastRIValue <> mi.RadioItem) then
@@ -1597,8 +1597,7 @@ function TShadowMenu.OnClickIsAssigned(aMI: TMenuItem): boolean;
 begin
   if (aMI = nil) then
     Exit(False);
-  Result:=(FEditorDesigner.PropertyEditorHook.GetMethodName
-      (GetMethodProp(aMI, 'OnClick'), aMI) <> '');
+  Result:=(FEditorDesigner.PropertyEditorHook.GetMethodName(GetMethodProp(aMI, 'OnClick'), aMI) <> '');
 end;
 
 procedure TShadowMenu.Paint;
@@ -1611,18 +1610,18 @@ procedure TShadowMenu.SetParent(NewParent: TWinControl);
 begin
   inherited SetParent(NewParent);
   if (NewParent <> nil) and not (csDestroying in ComponentState) then
-    begin
-      Align:=alNone;
-      CreateShadowBoxesAndItems;
-      UpdateBoxLocationsAndSizes;
-      HideBoxesAboveLevel(0);
-      Application.ProcessMessages;
-      FInitialising:=True;
-      if (FInitialSelectedMenuItem <> nil) then begin
-        SetSelectedMenuItem(FInitialSelectedMenuItem, True, False);
-        UpdateActionsEnabledness;
-      end;
+  begin
+    Align:=alNone;
+    CreateShadowBoxesAndItems;
+    UpdateBoxLocationsAndSizes;
+    HideBoxesAboveLevel(0);
+    Application.ProcessMessages;
+    FInitialising:=True;
+    if (FInitialSelectedMenuItem <> nil) then begin
+      SetSelectedMenuItem(FInitialSelectedMenuItem, True, False);
+      UpdateActionsEnabledness;
     end;
+  end;
 end;
 
 procedure TShadowMenu.SetSelectedMenuItem(aMI: TMenuItem;

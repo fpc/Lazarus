@@ -501,21 +501,21 @@ var
   isPopupMenu: boolean;
 begin
   if not FGUIEnabled then
-    begin
-      StatisticsGroupBox.Font.Style:=[fsBold];
-      StatisticsGroupBox.Caption:=FEditedMenu.Name;
-      StatisticsGroupBox.Enabled:=True;
-      ButtonsGroupBox.Enabled:=not selectedIsNil;
-      if selectedIsNil then
-        Caption:=Format(lisMenuEditorEditingSSNoMenuItemSelected,
-          [TComponent(GlobalDesignHook.LookupRoot).Name, FEditedMenu.Name]);
-      isPopupMenu:=(FEditedMenu is TPopupMenu);
-      LoadVariableButtonGlyphs(not isPopupMenu);
-      if isPopupMenu then
-        ShowPopupAssignmentsInfo
-      else HidePopupAssignmentsInfo;
-      FGUIEnabled:=True;
-    end;
+  begin
+    StatisticsGroupBox.Font.Style:=[fsBold];
+    StatisticsGroupBox.Caption:=FEditedMenu.Name;
+    StatisticsGroupBox.Enabled:=True;
+    ButtonsGroupBox.Enabled:=not selectedIsNil;
+    if selectedIsNil then
+      Caption:=Format(lisMenuEditorEditingSSNoMenuItemSelected,
+        [TComponent(GlobalDesignHook.LookupRoot).Name, FEditedMenu.Name]);
+    isPopupMenu:=(FEditedMenu is TPopupMenu);
+    LoadVariableButtonGlyphs(not isPopupMenu);
+    if isPopupMenu then
+      ShowPopupAssignmentsInfo
+    else HidePopupAssignmentsInfo;
+    FGUIEnabled:=True;
+  end;
 end;
 
 procedure TMenuDesignerForm.InitializeStatisticVars;
