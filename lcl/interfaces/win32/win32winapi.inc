@@ -180,13 +180,6 @@ var
     ClientToScreen(Handle, Pos);
     SystemWParam := Windows.WParam(Longint(PointToSmallPointNoChecks(Pos)));
 
-    if Sender is TListView then
-    begin // we need this workaround to make TListView scroll -> forward WM_MOUSEWHEEL directly to it
-      MMessage^.Result := CallDefaultWindowProc(Handle, MMessage^.Msg, TLMessage(Message).WParam, TLMessage(Message).LParam);
-      // Windows handled it, so exit here.
-      if MMessage^.Result<>0 then exit;
-    end;
-
     // send scroll message
     FillChar(ScrollInfo, sizeof(ScrollInfo), #0);
     ScrollInfo.cbSize := sizeof(ScrollInfo);
@@ -234,8 +227,6 @@ var
 
       MMessage^.Result := Windows.SendMessage(Handle, ScrollMsg, SystemWParam, HWND(nil));
     end;
-    if (MMessage^.Result = 0) and (TControl(Sender).Parent <> nil) then
-      TControl(Sender).Parent.WindowProc(TLMessage(Message));
   end;
 
 begin

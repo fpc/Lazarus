@@ -33,7 +33,7 @@ uses
   // LCL
   LCLPlatformDef, InterfaceBase, LCLIntf, LclProc, LCLType, LMessages,
   Controls, Buttons, Forms, Dialogs, GraphMath, GraphType, StdCtrls,
-  Graphics, Menus, ComCtrls, Themes, Win32Def,
+  Graphics, Menus, ComCtrls, Themes, Win32Def, Spin,
   // LazUtils
   LazUTF8, Translations;
   {, Win32Debug}

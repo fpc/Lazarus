@@ -2488,6 +2488,17 @@ begin
       if PLMsg^.Result = 0 then
         WinProcess := True;
 
+    LM_MOUSEWHEEL:
+    begin
+      if (PLMsg^.Result = 0)
+      and (
+           (lWinControl is TCustomListView)
+        or (lWinControl is TCustomComboBox)
+        or (lWinControl is TCustomFloatSpinEdit))
+      then
+        WinProcess := True;
+    end;
+
     WM_SYSCOMMAND:
       WinProcess := WmSysCommandProcess;
 
@@ -2591,6 +2602,10 @@ begin
       end;
     end;
   end;
+
+  if (PLMsg^.msg = LM_MOUSEWHEEL) // send unhandled scroll messages to parent
+  and (PLMsg^.Result = 0) and (lWinControl<>nil) and (lWinControl.Parent <> nil) then
+    lWinControl.Parent.WindowProc(PLMsg^);
 
   // ignore WM_(SYS)CHAR message if LCL handled WM_(SYS)KEYDOWN
   if ((Msg = WM_KEYDOWN) or (Msg = WM_SYSKEYDOWN)) then
