@@ -7633,6 +7633,8 @@ begin
       Break;
     end;
   end;
+  FGCache.MaxTopLeft.x:=Max(FGCache.MaxTopLeft.x, FixedCols);
+  FGCache.MaxTopLeft.y:=Max(FGCache.MaxTopLeft.y, FixedRows);
 end;
 
 procedure TCustomGrid.CellClick(const aCol, aRow: Integer; const Button:TMouseButton);
