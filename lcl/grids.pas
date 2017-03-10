@@ -961,7 +961,6 @@ type
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double); override;
-    procedure DoOnChangeBounds; override;
     procedure DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
     procedure DoOPExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
     procedure DoOPInsertColRow(IsColumn: boolean; index: integer);
@@ -6778,47 +6777,6 @@ begin
       EndUpdate;
     end;
   end;
-end;
-
-procedure TCustomGrid.DoOnChangeBounds;
-var
-  PrevSpace: Integer;
-  NewTopLeft, AvailSpace: TPoint;
-begin
-  inherited DoOnChangeBounds;
-
-  FGridFlags := FGridFlags + [gfUpdatingSize];
-
-  AVailSpace.x := ClientWidth - FGCache.MaxClientXY.x;
-  AVailSpace.y := ClientHeight - FGCache.MaxClientXY.y;
-  NewTopLeft := FTopLeft;
-
-  while (AvailSpace.x>0) and (NewTopLeft.x>FixedCols) do begin
-    PrevSpace := GetColWidths(NewTopLeft.x-1);
-    if AvailSpace.x>(PrevSpace-FGCache.TLColOff) then
-      Dec(NewTopLeft.x, 1);
-    Dec(AvailSpace.x, PrevSpace);
-  end;
-
-  while (AvailSpace.y>0) and (NewTopLeft.y>FixedRows) do begin
-    PrevSpace := GetRowHeights(NewTopLeft.y-1);
-    if AvailSpace.y>PrevSpace then
-      Dec(NewTopLeft.y, 1);
-    Dec(AvailSpace.y, PrevSpace);
-  end;
-
-  if not PointIgual(FTopleft,NewTopLeft) then begin
-    FTopLeft := NewTopleft;
-    FGCache.TLColOff := 0;
-    FGCache.TLRowOff := 0;
-    if goSmoothScroll in options then begin
-      // TODO: adjust new TLColOff and TLRowOff
-    end;
-    DoTopLeftChange(True);
-  end else
-    VisualChange;
-
-  FGridFlags := FGridFlags - [gfUpdatingSize];
 end;
 
 procedure TCustomGrid.DoPasteFromClipboard;
