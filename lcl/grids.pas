@@ -4784,6 +4784,7 @@ begin
   if fTopLeft.y > FGCache.MaxTopLeft.y then
   begin
     fTopLeft.y := FGCache.MaxTopLeft.y;
+    FGCache.TLRowOff := FGCache.MaxTLOffset.y;
     TLChanged := True;
   end else
   if FTopLeft.y < FixedRows then
@@ -4794,6 +4795,7 @@ begin
   if fTopLeft.x > FGCache.MaxTopLeft.x then
   begin
     fTopLeft.x := FGCache.MaxTopLeft.x;
+    FGCache.TLColOff := FGCache.MaxTLOffset.x;
     TLChanged := True;
   end else
   if FTopLeft.x < FixedCols then
