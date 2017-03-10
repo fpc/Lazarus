@@ -961,6 +961,7 @@ type
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double); override;
+    procedure DoOnChangeBounds; override;
     procedure DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
     procedure DoOPExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
     procedure DoOPInsertColRow(IsColumn: boolean; index: integer);
@@ -6925,6 +6926,13 @@ begin
     Result := True; // handled, no further scrolling by the widgetset
   end;
   {$ifdef dbgScroll}DebugLn('doMouseWheelUP END');{$endif}
+end;
+
+procedure TCustomGrid.DoOnChangeBounds;
+begin
+  inherited DoOnChangeBounds;
+
+  VisualChange;
 end;
 
 procedure TCustomGrid.KeyDown(var Key: Word; Shift: TShiftState);
