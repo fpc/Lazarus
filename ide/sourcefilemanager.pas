@@ -53,7 +53,7 @@ uses
   ControlSelection, FormEditor, EmptyMethodsDlg, BaseDebugManager, TransferMacros,
   BuildManager, EditorMacroListViewer, FindRenameIdentifier, GenericCheckList,
   ViewUnit_Dlg, DiskDiffsDialog, InputHistory, CheckLFMDlg, PublishModule, etMessagesWnd,
-  ConvCodeTool, BasePkgManager, PackageDefs, PackageSystem;
+  ConvCodeTool, BasePkgManager, PackageDefs, PackageSystem, Designer;
 
 type
 
@@ -105,8 +105,13 @@ type
     FDisplayState: TDisplayState;
     FEditorComponentStamp: int64;
     FEditorCaretStamp: int64;
+
+    FDesigner: TDesigner;
+    FDesignerSelectionStamp: int64;
+    FDesignerStamp: int64;
   public
-    function Changed(ASrcEdit: TSourceEditor; ADisplayState: TDisplayState): Boolean;
+    function Changed(ASrcEdit: TSourceEditor; ADesigner: TDesigner;
+      ADisplayState: TDisplayState): Boolean;
   end;
 
   { TFileOpener }
@@ -546,24 +551,34 @@ end;
 { TSourceEditorCommandsStamp }
 
 function TSourceEditorCommandsStamp.Changed(ASrcEdit: TSourceEditor;
-  ADisplayState: TDisplayState): Boolean;
+  ADesigner: TDesigner; ADisplayState: TDisplayState): Boolean;
 begin
   Result := not(
         (FSrcEdit = ASrcEdit)
+    and (FDesigner = ADesigner)
+    and (FDisplayState = ADisplayState)
     and ((ASrcEdit = nil) or (
-            (FDisplayState = ADisplayState)
-        and (FEditorComponentStamp = ASrcEdit.EditorComponent.ChangeStamp)
+            (FEditorComponentStamp = ASrcEdit.EditorComponent.ChangeStamp)
         and (FEditorCaretStamp = ASrcEdit.EditorComponent.CaretStamp)))
+    and ((ADesigner = nil) or (
+            (FDesignerSelectionStamp = ADesigner.Selection.ChangeStamp)
+        and (FDesignerStamp = ADesigner.ChangeStamp)))
     );
 
   if not Result then Exit;
 
   FSrcEdit := ASrcEdit;
+  FDesigner := ADesigner;
   FDisplayState := ADisplayState;
   if ASrcEdit<>nil then
   begin
     FEditorComponentStamp := ASrcEdit.EditorComponent.ChangeStamp;
     FEditorCaretStamp := ASrcEdit.EditorComponent.CaretStamp;
+  end;
+  if ADesigner<>nil then
+  begin
+    FDesignerSelectionStamp := ADesigner.Selection.ChangeStamp;
+    FDesignerStamp := ADesigner.ChangeStamp;
   end;
 end;
 

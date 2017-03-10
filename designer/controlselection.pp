@@ -320,6 +320,7 @@ type
     FLookupRoot: TComponent;// component owning the selected components
     FStates: TControlSelStates;
     FUpdateLock: integer;
+    FChangeStamp: int64;
 
     function CompareBottom(Index1, Index2: integer): integer;
     function CompareHorCenter(Index1, Index2: integer): integer;
@@ -523,6 +524,7 @@ type
     property OnSelectionFormChanged: TOnSelectionFormChanged
       read FOnSelectionFormChanged write FOnSelectionFormChanged;
     property LookupRoot: TComponent read FLookupRoot;
+    property ChangeStamp: int64 read FChangeStamp;
   end;
 
 
@@ -2083,6 +2085,9 @@ begin
   else
   begin
     Exclude(FStates, cssChangedDuringLock);
+    {$push}{$R-}  // range check off
+    Inc(FChangeStamp);
+    {$pop}
     if Assigned(FOnChange) then
       FOnChange(Self, ForceUpdate);
   end;

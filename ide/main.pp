@@ -3661,7 +3661,8 @@ var
   CurWordAtCursor: string;
 begin
   GetCurrentUnit(ASrcEdit, AnUnitInfo);
-  if not UpdateEditorCommandsStamp.Changed(ASrcEdit, DisplayState) then
+  ActiveDesigner := GetActiveDesignerSkipMainBar;
+  if not UpdateEditorCommandsStamp.Changed(ASrcEdit, ActiveDesigner as TDesigner, DisplayState) then
     Exit;
 
   Editable := Assigned(ASrcEdit) and not ASrcEdit.ReadOnly;
@@ -3669,7 +3670,6 @@ begin
   SelEditable := Editable and SelAvail;
   SrcEditorActive := DisplayState = dsSource;
   DsgEditorActive := DisplayState = dsForm;
-  ActiveDesigner := GetActiveDesignerSkipMainBar;
 
   if ASrcEdit<>nil then
   begin
