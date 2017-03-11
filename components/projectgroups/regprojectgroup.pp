@@ -5,7 +5,7 @@ unit RegProjectGroup;
 interface
 
 uses
-  Classes, SysUtils, ProjectGroupIntf, MenuIntf, IDECommands,
+  Classes, SysUtils, ProjectGroupIntf, MenuIntf, IDECommands, ToolBarIntf,
   ProjectGroupStrConst, ProjectGroup, ProjectGroupEditor;
 
 procedure RegisterProjectGroupEditorMenuItems;
@@ -77,6 +77,7 @@ procedure Register;
   begin
     Cmd:=RegisterIDECommand(PGCmdCategory,Name,Caption,OnExecuteMethod);
     MenuCmd:=RegisterIDEMenuCommand(Section,Name,Caption,nil,nil,Cmd);
+    RegisterIDEButtonCommand(Cmd);
   end;
 
 begin
@@ -86,16 +87,16 @@ begin
   PGCmdCategory:=RegisterIDECommandCategory(nil,ProjectGroupCmdCategoryName,lisProjectGroups);
 
   RegisterMnuCmd(CmdNewProjectGroup,MnuCmdNewProjectGroup,itmProjectNewSection,
-    'NewProjectGroup',lisNewProjectGroupMenuC,@IDEProjectGroupManager.DoNewClick);
+    'New Project Group',lisNewProjectGroupMenuC,@IDEProjectGroupManager.DoNewClick);
   RegisterMnuCmd(CmdOpenProjectGroup,MnuCmdOpenProjectGroup,itmProjectOpenSection,
-    'OpenProjectGroup',lisOpenProjectGroup,@IDEProjectGroupManager.DoOpenClick);
+    'Open Project Group',lisOpenProjectGroup,@IDEProjectGroupManager.DoOpenClick);
   PGOpenRecentSubMenu:=RegisterIDESubMenu(itmProjectOpenSection,
-    'OpenRecentProjectGroup',lisOpenRecentProjectGroup);
+    'Open recent Project Group',lisOpenRecentProjectGroup);
   RegisterMnuCmd(CmdSaveProjectGroup,MnuCmdSaveProjectGroup,itmProjectSaveSection,
-    'SaveProjectGroup',lisSaveProjectGroup,@IDEProjectGroupManager.DoSaveClick);
+    'Save Project Group',lisSaveProjectGroup,@IDEProjectGroupManager.DoSaveClick);
   MnuCmdSaveProjectGroup.Enabled:=false;
   RegisterMnuCmd(CmdSaveProjectGroupAs,MnuCmdSaveProjectGroupAs,itmProjectSaveSection,
-    'SaveProjectGroupAs',lisSaveProjectGroupAs,@IDEProjectGroupManager.DoSaveAsClick);
+    'Save Project Group as',lisSaveProjectGroupAs,@IDEProjectGroupManager.DoSaveAsClick);
   MnuCmdSaveProjectGroupAs.Enabled:=false;
 
   RegisterProjectGroupEditorMenuItems;
