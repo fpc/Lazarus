@@ -1,7 +1,7 @@
 object CharacterMapDialog: TCharacterMapDialog
-  Left = 370
+  Left = 242
   Height = 477
-  Top = 128
+  Top = 126
   Width = 590
   BorderStyle = bsSizeToolWin
   Caption = 'CharacterMapDialog'
@@ -90,11 +90,11 @@ object CharacterMapDialog: TCharacterMapDialog
         OnSelectCell = UnicodeGridSelectCell
       end
       object cbUniRange: TComboBox
-        AnchorSideRight.Control = pgUnicode
-        AnchorSideRight.Side = asrBottom
+        AnchorSideTop.Control = UnicodeGrid
+        AnchorSideRight.Control = SortUniRangeListButton
         AnchorSideBottom.Control = pgUnicode
         AnchorSideBottom.Side = asrBottom
-        Left = 273
+        Left = 242
         Height = 21
         Top = 380
         Width = 291
@@ -110,13 +110,31 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideTop.Control = cbUniRange
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = cbUniRange
-        Left = 236
+        Left = 205
         Height = 13
         Top = 384
         Width = 31
         Anchors = [akTop, akRight]
         Caption = 'Range'
         ParentColor = False
+      end
+      object SortUniRangeListButton: TSpeedButton
+        AnchorSideTop.Control = cbUniRange
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = pgUnicode
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = pgUnicode
+        Left = 539
+        Height = 25
+        Top = 378
+        Width = 25
+        AllowAllUp = True
+        Anchors = [akTop, akRight]
+        BorderSpacing.Around = 6
+        GroupIndex = 1
+        OnClick = SortUniRangeListButtonClick
+        ShowHint = True
+        ParentShowHint = False
       end
     end
     object pgAnsi: TTabSheet
@@ -196,7 +214,7 @@ object CharacterMapDialog: TCharacterMapDialog
           'cp949 - Korean'
           'cp950 - Traditional Chinese'
           'macintosh - MAC Roman (Western Europe)'
-          'koi8 - Ukrainean, Cyrillic'
+          'koi8 - Ukrainian, Cyrillic'
           'iso88591 - ISO Latin-1 (Western Europe)'
           'iso88592 - ISO Latin-2 (Central and Eastern Europe)'
           'iso885915 - ISO Latin-9 (Western Europe)'

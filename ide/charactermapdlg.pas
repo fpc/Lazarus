@@ -53,6 +53,7 @@ type
     cbCodePage: TComboBox;
     AnsiCharInfoLabel: TLabel;
     cbUniRange: TComboBox;
+    SortUniRangeListButton: TSpeedButton;
     CodePageLabel: TLabel;
     RangeLabel: TLabel;
     UnicodeCharInfoLabel: TLabel;
@@ -67,6 +68,7 @@ type
     procedure HelpButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure SortUniRangeListButtonClick(Sender: TObject);
     procedure AnsiGridSelectCell(Sender: TObject; aCol, aRow: Integer;
       var {%H-}CanSelect: Boolean);
     procedure UnicodeGridSelectCell(Sender: TObject; aCol, aRow: Integer;
@@ -80,9 +82,14 @@ type
       Y: Integer);
   private
     FOnInsertCharacter: TOnInsertCharacterEvent;
+    FUnicodeBlockIndex: Integer;
     procedure DoStatusAnsiGrid(ACol, ARow: integer);
     procedure DoStatusUnicodeGrid(ACol, ARow: integer);
     procedure FillAnsiGrid;
+    procedure FillUnicodeGrid;
+    procedure FillUniRangeList(ASorted: Boolean);
+    function UnicodeBlockIndexByName(AName: String): Integer;
+    function UnicodeBlockSelected: Boolean;
     procedure SelectSystemCP;
   public
     property OnInsertCharacter: TOnInsertCharacterEvent read FOnInsertCharacter
@@ -97,6 +104,9 @@ var
 implementation
 
 {$R *.lfm}
+
+const
+  NOT_SELECTED=Low(UnicodeBlocks)-1;
 
 procedure ShowCharacterMap(AOnInsertChar: TOnInsertCharacterEvent);
 begin
@@ -113,6 +123,9 @@ procedure TCharacterMapDialog.FormCreate(Sender: TObject);
 begin
   Caption := lisCharacterMap;
   RangeLabel.Caption := lisRange;
+  SortUniRangeListButton.Flat:=True;
+  SortUniRangeListButton.Hint:=lisSortUnicodeRangeListAlphabetically;
+  SortUniRangeListButton.LoadGlyphFromResourceName(HInstance, 'pkg_sortalphabetically');
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CloseButton.Caption:=lisBtnClose;
 
@@ -175,24 +188,9 @@ begin
 end;
 
 procedure TCharacterMapDialog.cbUniRangeSelect(Sender: TObject);
-var
-  cnt, x, y: integer;
-  S, E: integer;
 begin
-  S:=UnicodeBlocks[cbUniRange.ItemIndex].S;
-  E:=UnicodeBlocks[cbUniRange.ItemIndex].E;
-  UnicodeGrid.Clear;
-  UnicodeGrid.ColCount:=16;
-  UnicodeGrid.RowCount:=RoundUp(E-S,16);
-  cnt:=0;
-  for y:=0 to UnicodeGrid.RowCount-1 do
-    for x:=0 to UnicodeGrid.ColCount-1 do
-    begin
-      if S+Cnt<=E then
-        UnicodeGrid.Cells[x,y]:=UnicodeToUTF8(S+Cnt);
-      inc(cnt);
-    end;
-  UnicodeGrid.AutoSizeColumns;
+  FUnicodeBlockIndex:=UnicodeBlockIndexByName(cbUniRange.Text);
+  FillUnicodeGrid;
 end;
 
 procedure TCharacterMapDialog.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -215,11 +213,14 @@ begin
 
   AnsiGrid.AutoSizeColumns;
 
-  cbUniRange.Items.Clear;
-  for i:=0 to MaxUnicodeBlocks do
-    cbUniRange.Items.Add(UnicodeBlocks[i].PG);
-  cbUniRange.ItemIndex:=0;
-  cbUniRangeSelect(nil);
+  FUnicodeBlockIndex:=NOT_SELECTED;
+  FillUniRangeList(SortUniRangeListButton.Down);
+  FillUnicodeGrid;
+end;
+
+procedure TCharacterMapDialog.SortUniRangeListButtonClick(Sender: TObject);
+begin
+  FillUniRangeList(SortUniRangeListButton.Down);
 end;
 
 procedure TCharacterMapDialog.AnsiGridSelectCell(Sender: TObject; aCol,
@@ -293,8 +294,8 @@ var
   tmp, tmp2: String;
   i: Integer;
 begin
-  if cbUniRange.ItemIndex<0 then exit;
-  S:=UnicodeBlocks[cbUniRange.ItemIndex].S+(ACol)+(ARow*16);
+  if not UnicodeBlockSelected then Exit;
+  S:=UnicodeBlocks[FUnicodeBlockIndex].S+(ACol)+(ARow*16);
   tmp:=UnicodeToUTF8(S);
   tmp2:='';
   for i:=1 to Length(tmp) do
@@ -335,6 +336,59 @@ begin
         AnsiGrid.Cells[C, R] := ConvertEncoding(Chr(Succ(R) * 16 + Pred(C)), cp, 'utf8');
     end;
   end;
+end;
+
+procedure TCharacterMapDialog.FillUnicodeGrid;
+var
+  cnt, x, y: integer;
+  S, E: integer;
+begin
+  UnicodeGrid.Clear;
+  if not UnicodeBlockSelected then
+    Exit;
+  S:=UnicodeBlocks[FUnicodeBlockIndex].S;
+  E:=UnicodeBlocks[FUnicodeBlockIndex].E;
+  UnicodeGrid.ColCount:=16;
+  UnicodeGrid.RowCount:=RoundUp(E-S,16);
+  cnt:=0;
+  for y:=0 to UnicodeGrid.RowCount-1 do
+    for x:=0 to UnicodeGrid.ColCount-1 do
+    begin
+      if S+Cnt<=E then
+        UnicodeGrid.Cells[x,y]:=UnicodeToUTF8(S+Cnt);
+      inc(cnt);
+    end;
+  UnicodeGrid.AutoSizeColumns;
+end;
+
+procedure TCharacterMapDialog.FillUniRangeList(ASorted: Boolean);
+var
+  BlockIdx: Integer;
+begin
+  cbUniRange.Items.Clear;
+  cbUniRange.Sorted:=ASorted;
+
+  for BlockIdx:=Low(UnicodeBlocks) to High(UnicodeBlocks) do
+    cbUniRange.Items.Append(UnicodeBlocks[BlockIdx].PG);
+
+  if not UnicodeBlockSelected then
+    FUnicodeBlockIndex:=Low(UnicodeBlocks);
+  cbUniRange.Text:=UnicodeBlocks[FUnicodeBlockIndex].PG;
+end;
+
+function TCharacterMapDialog.UnicodeBlockIndexByName(AName: String): Integer;
+var
+  BlockIdx: Integer;
+begin
+  for BlockIdx:=Low(UnicodeBlocks) to High(UnicodeBlocks) do
+    if UnicodeBlocks[BlockIdx].PG=AName then
+      Exit(BlockIdx);
+  Result:=NOT_SELECTED;
+end;
+
+function TCharacterMapDialog.UnicodeBlockSelected: Boolean;
+begin
+  Result:=(FUnicodeBlockIndex>=Low(UnicodeBlocks)) and (FUnicodeBlockIndex<=High(UnicodeBlocks));
 end;
 
 end.
