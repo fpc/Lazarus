@@ -18,7 +18,7 @@
       </Other>
     </CompilerOptions>
     <Description Value="IDEIntf - the interface units for the Lazarus IDE"/>
-    <License Value="Modified LPGL2"/>
+    <License Value="Modified LGPL2"/>
     <Version Major="1"/>
     <Files Count="81">
       <Item1>
