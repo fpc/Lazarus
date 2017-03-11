@@ -2,31 +2,34 @@ object NewOtherDialog: TNewOtherDialog
   Left = 281
   Height = 434
   Top = 191
-  Width = 774
+  Width = 950
   BorderIcons = [biSystemMenu]
   Caption = 'NewOtherDialog'
   ClientHeight = 434
-  ClientWidth = 774
+  ClientWidth = 950
+  OnClose = FormClose
+  OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '1.7'
   object Panel1: TPanel
     Left = 6
     Height = 389
     Top = 6
-    Width = 762
+    Width = 938
     Align = alClient
     BorderSpacing.Around = 6
     BevelOuter = bvNone
     ClientHeight = 389
-    ClientWidth = 762
+    ClientWidth = 938
     TabOrder = 0
     object ItemsTreeView: TTreeView
       Left = 0
       Height = 389
       Top = 0
-      Width = 328
+      Width = 504
       Align = alClient
       DefaultItemHeight = 16
+      ExpandSignSize = 10
       ReadOnly = True
       ScrollBars = ssAutoBoth
       TabOrder = 0
@@ -39,7 +42,7 @@ object NewOtherDialog: TNewOtherDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Owner
       AnchorSideRight.Control = Owner
-      Left = 333
+      Left = 509
       Height = 389
       Top = 0
       Width = 429
@@ -63,14 +66,14 @@ object NewOtherDialog: TNewOtherDialog
         AnchorSideLeft.Control = DescriptionGroupBox
         AnchorSideTop.Control = CompFilterEdit
         AnchorSideTop.Side = asrBottom
-        Left = 0
-        Height = 304
-        Top = 54
-        Width = 419
         AnchorSideRight.Control = DescriptionGroupBox
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = DescriptionGroupBox
         AnchorSideBottom.Side = asrBottom
+        Left = 6
+        Height = 297
+        Top = 60
+        Width = 413
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Columns = <        
@@ -112,7 +115,7 @@ object NewOtherDialog: TNewOtherDialog
       end
     end
     object Splitter1: TSplitter
-      Left = 328
+      Left = 504
       Height = 389
       Top = 0
       Width = 5
@@ -124,7 +127,7 @@ object NewOtherDialog: TNewOtherDialog
     Left = 6
     Height = 27
     Top = 401
-    Width = 762
+    Width = 938
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = OkButtonClick

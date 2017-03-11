@@ -134,6 +134,8 @@ type
     CompFilterEdit: TListViewFilterEdit;
     Panel1: TPanel;
     Splitter1: TSplitter;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure InheritableComponentsListViewSelectItem(Sender: TObject;
       Item: TListItem; Selected: Boolean);
@@ -350,6 +352,16 @@ end;
 procedure TNewOtherDialog.HelpButtonClick(Sender: TObject);
 begin
   LazarusHelp.ShowHelpForIDEControl(Self);
+end;
+
+procedure TNewOtherDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TNewOtherDialog.FormCreate(Sender: TObject);
+begin
+  IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
 procedure TNewOtherDialog.SetupComponents;
