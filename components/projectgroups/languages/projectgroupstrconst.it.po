@@ -224,6 +224,10 @@ msgstr ""
 msgid "Reload"
 msgstr "Ricarica"
 
+#: projectgroupstrconst.lisprojectgroups
+msgid "Project Groups"
+msgstr ""
+
 #: projectgroupstrconst.lisprojectgroupsaveascaption
 msgid "Save As ..."
 msgstr "Salva come ..."

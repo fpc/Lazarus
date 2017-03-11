@@ -5,10 +5,10 @@ unit RegProjectGroup;
 interface
 
 uses
-  Classes, SysUtils, ProjectGroupIntf, MenuIntf,
+  Classes, SysUtils, ProjectGroupIntf, MenuIntf, IDECommands,
   ProjectGroupStrConst, ProjectGroup, ProjectGroupEditor;
 
-procedure RegisterStandardProjectGroupMenuItems;
+procedure RegisterProjectGroupEditorMenuItems;
 procedure Register;
 
 implementation
@@ -16,43 +16,51 @@ implementation
 const
   ProjectGroupEditorMenuRootName = 'ProjectGroupEditorMenu';
 
-procedure RegisterStandardProjectGroupMenuItems;
-var
-  Section,Root : TIDEMenuSection;
-begin
-  Root:=RegisterIDEMenuRoot(ProjectGroupEditorMenuRootName);
-  ProjectGroupMenuRoot:=Root;
-  PGEditMenuSectionFiles:=RegisterIDEMenuSection(Root,'File');
+procedure RegisterProjectGroupEditorMenuItems;
 
-  Section:=RegisterIDEMenuSection(Root,'Compile');
-  PGEditMenuSectionCompile:=Section;
-  cmdTargetCompile:=RegisterIDEMenuCommand(Section,'TargetCompile',lisTargetCompile);
-  cmdTargetCompileClean:=RegisterIDEMenuCommand(Section,'TargetCompileClean',lisTargetCompileClean);
-  cmdTargetCompileFromHere:=RegisterIDEMenuCommand(Section,'TargetCompileFromHere',lisTargetCompileFromHere);
+  procedure RegisterMenuCmd(out MenuCmd: TIDEMenuCommand;
+    Section: TIDEMenuSection; const Name, Caption: string);
+  begin
+    MenuCmd:=RegisterIDEMenuCommand(Section,Name,Caption);
+  end;
+
+var
+  MnuRoot, MnuSection: TIDEMenuSection;
+begin
+  MnuRoot:=RegisterIDEMenuRoot(ProjectGroupEditorMenuRootName);
+  ProjectGroupEditorMenuRoot:=MnuRoot;
+
+  PGEditMenuSectionFiles:=RegisterIDEMenuSection(MnuRoot,'File');
+
+  MnuSection:=RegisterIDEMenuSection(MnuRoot,'Compile');
+  PGEditMenuSectionCompile:=MnuSection;
+  RegisterMenuCmd(MnuCmdTargetCompile,MnuSection,'TargetCompile',lisTargetCompile);
+  RegisterMenuCmd(MnuCmdTargetCompileClean,MnuSection,'TargetCompileClean',lisTargetCompileClean);
+  RegisterMenuCmd(MnuCmdTargetCompileFromHere,MnuSection,'TargetCompileFromHere',lisTargetCompileFromHere);
   // ToDo: clean ... -> clean up dialog
   // ToDo: set build mode of all projects
 
-  Section:=RegisterIDEMenuSection(Root,'AddRemove');
-  PGEditMenuSectionAddRemove:=Section;
-  cmdTargetAdd:=RegisterIDEMenuCommand(Section,'TargetAdd',lisTargetAdd);
-  cmdTargetRemove:=RegisterIDEMenuCommand(Section,'TargetRemove',lisTargetRemove);
+  MnuSection:=RegisterIDEMenuSection(MnuRoot,'AddRemove');
+  PGEditMenuSectionAddRemove:=MnuSection;
+  RegisterMenuCmd(MnuCmdTargetAdd,MnuSection,'TargetAdd',lisTargetAdd);
+  RegisterMenuCmd(MnuCmdTargetRemove,MnuSection,'TargetRemove',lisTargetRemove);
   // ToDo: re-add
 
-  Section:=RegisterIDEMenuSection(Root,'Use');
-  PGEditMenuSectionUse:=Section;
-  cmdTargetInstall:=RegisterIDEMenuCommand(Section,'TargetInstall',lisTargetInstall);// ToDo
-  cmdTargetUninstall:=RegisterIDEMenuCommand(Section,'TargetUninstall',lisTargetUninstall);// ToDo
-  cmdTargetEarlier:=RegisterIDEMenuCommand(Section,'TargetEarlier',lisTargetEarlier);// ToDo: Ctrl+Up
-  cmdTargetLater:=RegisterIDEMenuCommand(Section,'TargetLater',lisTargetLater);// ToDo: Ctrl+Down
-  cmdTargetActivate:=RegisterIDEMenuCommand(Section,'TargetActivate',lisTargetActivate);
-  cmdTargetOpen:=RegisterIDEMenuCommand(Section,'TargetOpen',lisTargetOpen);
-  cmdTargetRun:=RegisterIDEMenuCommand(Section,'TargetRun',lisTargetRun);
-  cmdTargetProperties:=RegisterIDEMenuCommand(Section,'TargetProperties',lisTargetProperties);
+  MnuSection:=RegisterIDEMenuSection(MnuRoot,'Use');
+  PGEditMenuSectionUse:=MnuSection;
+  RegisterMenuCmd(MnuCmdTargetInstall,MnuSection,'TargetInstall',lisTargetInstall);// ToDo
+  RegisterMenuCmd(MnuCmdTargetUninstall,MnuSection,'TargetUninstall',lisTargetUninstall);// ToDo
+  RegisterMenuCmd(MnuCmdTargetEarlier,MnuSection,'TargetEarlier',lisTargetEarlier);// ToDo: Ctrl+Up
+  RegisterMenuCmd(MnuCmdTargetLater,MnuSection,'TargetLater',lisTargetLater);// ToDo: Ctrl+Down
+  RegisterMenuCmd(MnuCmdTargetActivate,MnuSection,'TargetActivate',lisTargetActivate);
+  RegisterMenuCmd(MnuCmdTargetOpen,MnuSection,'TargetOpen',lisTargetOpen);
+  RegisterMenuCmd(MnuCmdTargetRun,MnuSection,'TargetRun',lisTargetRun);
+  RegisterMenuCmd(MnuCmdTargetProperties,MnuSection,'TargetProperties',lisTargetProperties);
 
-  Section:=RegisterIDEMenuSection(Root,'Misc');
-  PGEditMenuSectionMisc:=Section;
+  MnuSection:=RegisterIDEMenuSection(MnuRoot,'Misc');
+  PGEditMenuSectionMisc:=MnuSection;
 
-  cmdTargetCopyFilename:=RegisterIDEMenuCommand(Section,'CopyFilename',lisTargetCopyFilename);
+  RegisterMenuCmd(MnuCmdTargetCopyFilename,MnuSection,'CopyFilename',lisTargetCopyFilename);
   // ToDo: View source (project)
 
   // ToDo: find in files
@@ -62,23 +70,35 @@ begin
 end;
 
 procedure Register;
+
+  procedure RegisterMnuCmd(out Cmd: TIDECommand; out MenuCmd: TIDEMenuCommand;
+    Section: TIDEMenuSection; const Name, Caption: string;
+    const OnExecuteMethod: TNotifyEvent);
+  begin
+    Cmd:=RegisterIDECommand(PGCmdCategory,Name,Caption,OnExecuteMethod);
+    MenuCmd:=RegisterIDEMenuCommand(Section,Name,Caption,nil,nil,Cmd);
+  end;
+
 begin
-  RegisterStandardProjectGroupMenuItems;
   IDEProjectGroupManager:=TIDEProjectGroupManager.Create;
   IDEProjectGroupManager.Options.LoadSafe;
 
-  cmdCreateProjectGroup:=RegisterIDEMenuCommand(itmProjectNewSection,
+  PGCmdCategory:=RegisterIDECommandCategory(nil,ProjectGroupCmdCategoryName,lisProjectGroups);
+
+  RegisterMnuCmd(CmdNewProjectGroup,MnuCmdNewProjectGroup,itmProjectNewSection,
     'NewProjectGroup',lisNewProjectGroupMenuC,@IDEProjectGroupManager.DoNewClick);
-  cmdOpenProjectGroup:=RegisterIDEMenuCommand(itmProjectOpenSection,
+  RegisterMnuCmd(CmdOpenProjectGroup,MnuCmdOpenProjectGroup,itmProjectOpenSection,
     'OpenProjectGroup',lisOpenProjectGroup,@IDEProjectGroupManager.DoOpenClick);
-  OpenRecentProjectGroupSubMenu:=RegisterIDESubMenu(itmProjectOpenSection,
+  PGOpenRecentSubMenu:=RegisterIDESubMenu(itmProjectOpenSection,
     'OpenRecentProjectGroup',lisOpenRecentProjectGroup);
-  cmdSaveProjectGroup:=RegisterIDEMenuCommand(itmProjectSaveSection,
+  RegisterMnuCmd(CmdSaveProjectGroup,MnuCmdSaveProjectGroup,itmProjectSaveSection,
     'SaveProjectGroup',lisSaveProjectGroup,@IDEProjectGroupManager.DoSaveClick);
-  cmdSaveProjectGroup.Enabled:=false;
-  cmdSaveProjectGroupAs:=RegisterIDEMenuCommand(itmProjectSaveSection,
+  MnuCmdSaveProjectGroup.Enabled:=false;
+  RegisterMnuCmd(CmdSaveProjectGroupAs,MnuCmdSaveProjectGroupAs,itmProjectSaveSection,
     'SaveProjectGroupAs',lisSaveProjectGroupAs,@IDEProjectGroupManager.DoSaveAsClick);
-  cmdSaveProjectGroupAs.Enabled:=false;
+  MnuCmdSaveProjectGroupAs.Enabled:=false;
+
+  RegisterProjectGroupEditorMenuItems;
 
   IDEProjectGroupManager.UpdateRecentProjectGroupMenu;
 

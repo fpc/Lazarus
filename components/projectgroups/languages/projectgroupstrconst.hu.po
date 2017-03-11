@@ -234,6 +234,10 @@ msgstr ""
 msgid "Reload"
 msgstr "Újratöltés"
 
+#: projectgroupstrconst.lisprojectgroups
+msgid "Project Groups"
+msgstr ""
+
 #: projectgroupstrconst.lisprojectgroupsaveascaption
 msgid "Save As ..."
 msgstr "Mentés másként ..."

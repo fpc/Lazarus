@@ -210,35 +210,44 @@ var
 
   IDEProjectGroupManager: TIDEProjectGroupManager;
 
-  ProjectGroupMenuRoot: TIDEMenuSection = nil;
+  ProjectGroupEditorMenuRoot: TIDEMenuSection = nil;
     PGEditMenuSectionFiles, // e.g. sort files, clean up files
     PGEditMenuSectionAddRemove, // e.g. add unit, add dependency
     PGEditMenuSectionCompile, // e.g. build clean, create Makefile
     PGEditMenuSectionUse, // Target up/down
     PGEditMenuSectionMisc: TIDEMenuSection; // e.g. options
+  PGOpenRecentSubMenu: TIDEMenuSection;
 
+const
+  ProjectGroupCmdCategoryName = 'ProjectGroups';
 var
-  cmdOpenProjectGroup,
-  cmdSaveProjectGroup,
-  cmdSaveProjectGroupAs,
-  cmdCreateProjectGroup,
+  PGCmdCategory: TIDECommandCategory;
 
-  cmdTargetAdd,
-  cmdTargetRemove,
-  cmdTargetEarlier,
-  cmdTargetActivate,
-  cmdTargetLater,
-  cmdTargetCompile,
-  cmdTargetCompileClean,
-  cmdTargetCompileFromHere,
-  cmdTargetInstall,
-  cmdTargetOpen,
-  cmdTargetRun,
-  cmdTargetProperties,
-  cmdTargetUninstall,
-  cmdTargetCopyFilename: TIDEMenuCommand;
+  // IDE main bar menu items
+  CmdOpenProjectGroup: TIDECommand;
+  MnuCmdOpenProjectGroup: TIDEMenuCommand;
+  CmdSaveProjectGroup: TIDECommand;
+  MnuCmdSaveProjectGroup: TIDEMenuCommand;
+  CmdSaveProjectGroupAs: TIDECommand;
+  MnuCmdSaveProjectGroupAs: TIDEMenuCommand;
+  CmdNewProjectGroup: TIDECommand;
+  MnuCmdNewProjectGroup: TIDEMenuCommand;
 
-  OpenRecentProjectGroupSubMenu: TIDEMenuSection;
+  // editor menu items
+  MnuCmdTargetAdd,
+  MnuCmdTargetRemove,
+  MnuCmdTargetEarlier,
+  MnuCmdTargetActivate,
+  MnuCmdTargetLater,
+  MnuCmdTargetCompile,
+  MnuCmdTargetCompileClean,
+  MnuCmdTargetCompileFromHere,
+  MnuCmdTargetInstall,
+  MnuCmdTargetOpen,
+  MnuCmdTargetRun,
+  MnuCmdTargetProperties,
+  MnuCmdTargetUninstall,
+  MnuCmdTargetCopyFilename: TIDEMenuCommand;
 
 function LoadXML(aFilename: string; Quiet: boolean): TXMLConfig;
 function CreateXML(aFilename: string; Quiet: boolean): TXMLConfig;
@@ -470,17 +479,17 @@ begin
   i:=0;
   while i<Options.RecentProjectGroups.Count do begin
     aFilename:=Options.RecentProjectGroups[i];
-    if i<OpenRecentProjectGroupSubMenu.Count then begin
-      Item:=OpenRecentProjectGroupSubMenu[i];
+    if i<PGOpenRecentSubMenu.Count then begin
+      Item:=PGOpenRecentSubMenu[i];
       Item.Caption:=aFilename;
     end
     else begin
-      Item:=RegisterIDEMenuCommand(OpenRecentProjectGroupSubMenu,'OpenRecentProjectGroup'+IntToStr(i),aFilename,@DoOpenRecentClick);
+      Item:=RegisterIDEMenuCommand(PGOpenRecentSubMenu,'OpenRecentProjectGroup'+IntToStr(i),aFilename,@DoOpenRecentClick);
     end;
     inc(i);
   end;
-  while i<OpenRecentProjectGroupSubMenu.Count do
-    OpenRecentProjectGroupSubMenu[i].Free;
+  while i<PGOpenRecentSubMenu.Count do
+    PGOpenRecentSubMenu[i].Free;
 end;
 
 procedure TIDEProjectGroupManager.DoNewClick(Sender: TObject);
@@ -492,7 +501,7 @@ begin
     Exit;
   FreeAndNil(FProjectGroup);
   FProjectGroup:=TIDEProjectGroup.Create(nil);
-  cmdSaveProjectGroupAs.Enabled:=true;
+  MnuCmdSaveProjectGroupAs.Enabled:=true;
 
   // add current project
   AProject:=LazarusIDE.ActiveProject;
@@ -592,7 +601,7 @@ begin
   FProjectGroup.LoadFromFile(AOptions);
   if not (pgloSkipDialog in AOptions) then
     ShowProjectGroupEditor;
-  cmdSaveProjectGroupAs.Enabled:=true;
+  MnuCmdSaveProjectGroupAs.Enabled:=true;
 end;
 
 procedure TIDEProjectGroupManager.SaveProjectGroup;
