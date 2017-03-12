@@ -61,7 +61,7 @@ type
 
   { TCocoaMenuItem }
 
-  TCocoaMenuItem = objcclass(NSMenuItem)
+  TCocoaMenuItem = objcclass(NSMenuItem, NSMenuDelegateProtocol)
   public
     menuItemCallback: IMenuItemCallback;
     attachedAppleMenuItems: Boolean;
@@ -74,6 +74,7 @@ type
     function lclIsHandle: Boolean; override;
     procedure attachAppleMenuItems(); message 'attachAppleMenuItems';
     function validateMenuItem(menuItem: NSMenuItem): Boolean; override;
+    procedure menuNeedsUpdate(AMenu: NSMenu); message 'menuNeedsUpdate:';
   end;
 
   TCocoaMenuItem_HideApp = objcclass(NSMenuItem)
@@ -267,6 +268,11 @@ begin
   Result := FMenuItemTarget.Enabled;
 end;
 
+procedure TCocoaMenuItem.menuNeedsUpdate(AMenu: NSMenu);
+begin
+  menuItemCallback.ItemSelected;
+end;
+
 procedure TCocoaMenuItem_HideApp.lclItemSelected(sender: id);
 begin
   Application.Minimize;
@@ -369,6 +375,7 @@ begin
       DeleteAmpersands(s);
       ns := NSStringUtf8(pchar(s));
       Parent := TCocoaMenu.alloc.initWithTitle(ns);
+      Parent.setDelegate(TCocoaMenuItem(ParObj));
       NSMenuItem(ParObj).setSubmenu(Parent);
       ns.release;
     end
@@ -422,6 +429,7 @@ begin
     if AMenuItem.IsInMenuBar then
     begin
       ANSMenu := TCocoaMenu.alloc.initWithTitle(ns);
+      ANSMenu.setDelegate(TCocoaMenuItem(item));
       item.setSubmenu(ANSMenu);
     end;
 
