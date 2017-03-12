@@ -343,6 +343,7 @@ type
     property Font: TCocoaFont read FFont write SetFont;
     property BackgroundColor: TColor read FBackgroundColor write SetBackgoundColor;
     property ForegroundColor: TColor read FForegroundColor write SetForegoundColor;
+    property Layout: NSLayoutManager read FLayout;
   end;
 
   { TCocoaContext }

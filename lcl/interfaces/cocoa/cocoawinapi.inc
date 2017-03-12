@@ -534,7 +534,7 @@ begin
   Result := HFont(TCocoaFont.Create(LogFont, LongFontName));
 end;
 
-function Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
+class function TCocoaWidgetSet.Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
 var
   ARawImage: TRawImage;
   Desc: TRawImageDescription absolute ARawimage.Description;
@@ -548,7 +548,7 @@ var
 begin
   Result := nil;
 
-  if not RawImage_FromBitmap(ARawImage, HBITMAP(ABitmap), HBITMAP(AMask)) then
+  if not LCLIntf.RawImage_FromBitmap(ARawImage, HBITMAP(ABitmap), HBITMAP(AMask)) then
     Exit;
 
   ImgMaskHandle := 0;
@@ -578,7 +578,7 @@ begin
   end;
 
   try
-    if not RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, True) then Exit;
+    if not LCLIntf.RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, True) then Exit;
 
     Result := TCocoaBitmap(ImgHandle);
   finally

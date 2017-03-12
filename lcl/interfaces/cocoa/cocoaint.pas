@@ -161,6 +161,7 @@ type
     function RawImage_FromCocoaBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCocoaBitmap; ARect: PRect = nil): Boolean;
     function RawImage_DescriptionToBitmapType(ADesc: TRawImageDescription; out bmpType: TCocoaBitmapType): Boolean;
     function GetImagePixelData(AImage: CGImageRef; out bitmapByteCount: PtrUInt): Pointer;
+    class function Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
     property NSApp: NSApplication read FNSApp;
     property CurrentCursor: HCursor read FCurrentCursor write FCurrentCursor;
     property CaptureControl: HWND read FCaptureControl;
