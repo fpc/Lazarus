@@ -1116,10 +1116,13 @@ var
   AObject: TCocoaGDIObject;
   DIB: TDIBSection;
   Width, Height, RequiredSize, i: Integer;
+  Traits: NSFontTraitMask;
 
   APen: TCocoaPen absolute AObject;
   ALogPen: PLogPen absolute Buf;
   AExtLogPen: PExtLogPen absolute Buf;
+  AFont: TCocoaFont absolute AObject;
+  ALogFont: PLogFont absolute Buf;
 begin
   Result := 0;
 
@@ -1238,7 +1241,29 @@ begin
         ALogPen^.lopnColor := APen.ColorRef;
       end;
     end;
-  end
+  end;
+  if AObject is TCocoaFont then
+  begin
+    if Buf = nil then
+      Result := SizeOf(TLogFont)
+    else
+    if BufSize >= SizeOf(TLogFont) then
+    begin
+      Result := SizeOf(TLogFont);
+      FillChar(ALogFont^, SizeOf(ALogFont^), 0);
+      ALogFont^.lfFaceName := AFont.Name;
+      ALogFont^.lfHeight := AFont.Size;
+      Traits := NSFontManager.sharedFontManager.traitsOfFont(AFont.Font);
+      if (Traits and NSFontBoldTrait) <> 0 then
+        ALogFont^.lfWeight := FW_BOLD
+      else;
+        ALogFont^.lfWeight := FW_NORMAL;
+      if (Traits and NSFontItalicTrait) <> 0 then
+        ALogFont^.lfItalic := 1
+      else
+        ALogFont^.lfItalic := 0;
+    end;
+  end;
 end;
 
 function TCocoaWidgetSet.GetParent(Handle : HWND): HWND;
