@@ -850,11 +850,13 @@ type
     NumberFormatter: NSNumberFormatter;
     Spin: TCustomFloatSpinEdit;
     procedure dealloc; override;
+    procedure UpdateValueFromCocoa(); message 'UpdateValueFromCocoa';
     procedure UpdateControl(ASpinEdit: TCustomFloatSpinEdit); message 'UpdateControl:';
     procedure CreateSubcontrols(ASpinEdit: TCustomFloatSpinEdit; const AParams: TCreateParams); message 'CreateSubControls:AParams:';
     procedure PositionSubcontrols(const ALeft, ATop, AWidth, AHeight: Integer); message 'PositionSubcontrols:ATop:AWidth:AHeight:';
     procedure StepperChanged(sender: NSObject); message 'StepperChanged:';
     function GetFieldEditor: TCocoaFieldEditor; message 'GetFieldEditor';
+    procedure textDidEndEditing(notification: NSNotification); message 'textDidEndEditing:'; override;
     // NSTextFieldDelegateProtocol
     procedure controlTextDidChange(obj: NSNotification); override;
     // lcl
@@ -3932,6 +3934,18 @@ begin
   inherited dealloc;
 end;
 
+procedure TCocoaSpinEdit.UpdateValueFromCocoa();
+var
+  lValid: Boolean = False;
+  lValue: String;
+  lFloat: Double;
+begin
+  lValue := CocoaUtils.NSStringToString(stringValue());
+  lValid := SysUtils.TryStrToFloat(lValue, lFloat);
+  if lValid then
+     Spin.Value := lFloat;
+end;
+
 procedure TCocoaSpinEdit.UpdateControl(ASpinEdit: TCustomFloatSpinEdit);
 begin
   Stepper.setMaxValue(ASpinEdit.MaxValue);
@@ -4024,15 +4038,16 @@ begin
   end;
 end;
 
-procedure TCocoaSpinEdit.controlTextDidChange(obj: NSNotification);
-var
-  lValid: Boolean = False;
-  lValue: String;
-  lFloat: Double;
+procedure TCocoaSpinEdit.textDidEndEditing(notification: NSNotification);
 begin
-  lValue := CocoaUtils.NSStringToString(stringValue());
-  lValid := SysUtils.TryStrToFloat(lValue, lFloat);
-  Spin.Value := lFloat;
+  UpdateValueFromCocoa();
+  inherited textDidEndEditing(notification);
+end;
+
+procedure TCocoaSpinEdit.controlTextDidChange(obj: NSNotification);
+begin
+  // This was causing bug 31192
+  //UpdateValueFromCocoa();
 end;
 
 function TCocoaSpinEdit.acceptsFirstResponder: Boolean;
