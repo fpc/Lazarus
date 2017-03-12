@@ -280,7 +280,7 @@ end;
 
 {   IsValidIdent returns true if the first character of Ident is in:
     'A' to 'Z', 'a' to 'z' or '_' and the following characters are one of:
-    'A' to 'Z', 'a' to 'z', '0'..'9' or '_'    }
+    'A' to 'Z', 'a' to 'z', '0'..'9', '_' or '-'  }
 function IsValidNodeName(const Ident: string): boolean;
 var
   p: PChar;
