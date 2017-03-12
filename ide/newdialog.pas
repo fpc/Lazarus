@@ -134,11 +134,11 @@ type
     CompFilterEdit: TListViewFilterEdit;
     Panel1: TPanel;
     Splitter1: TSplitter;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure InheritableComponentsListViewSelectItem(Sender: TObject;
-      Item: TListItem; Selected: Boolean);
+      {%H-}Item: TListItem; {%H-}Selected: Boolean);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
   private

@@ -100,7 +100,8 @@ type
     procedure EndUpdate;
     function IsUpdate: Boolean;
     procedure UpdateStatistics;
-    procedure UpdateSubmenuGroupBox(selMI: TMenuItem; selBox: TShadowBoxBase; boxIsRoot:boolean);
+    procedure UpdateSubmenuGroupBox(selMI: TMenuItem; selBox: TShadowBoxBase;
+      boxIsRoot:boolean);
     procedure UpdateItemInfo(aMenu: TMenu; aMenuItem: TMenuItem;
       aShadowBox: TShadowBoxBase; aPropEditHook: TPropertyEditorHook);
     //property EditedMenu: TMenu read FEditedMenu;
@@ -645,6 +646,7 @@ function JoinToString(aGroups: TByteArray): String;
 var
   i: Integer;
 begin
+  Result:='';
   for i:=0 to Length(aGroups)-1 do
   begin
     if i>0 then

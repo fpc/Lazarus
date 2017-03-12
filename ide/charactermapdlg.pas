@@ -203,8 +203,6 @@ begin
 end;
 
 procedure TCharacterMapDialog.FormShow(Sender: TObject);
-var
-  i:integer;
 begin
   AnsiGrid.Font.Name := EditorOpts.EditorFont;
   UnicodeGrid.Font.Name := EditorOpts.EditorFont;

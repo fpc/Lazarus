@@ -198,8 +198,8 @@ type
     // procedures for working with components and persistents
     function GetDesignControl(AControl: TControl): TControl;
     function DoDeleteSelectedPersistents: boolean;
-    procedure DoDeleteSelectedPersistentsAsync(Data: PtrInt);
-    procedure CutSelectionAsync(Data: PtrInt);
+    procedure DoDeleteSelectedPersistentsAsync({%H-}Data: PtrInt);
+    procedure CutSelectionAsync({%H-}Data: PtrInt);
     procedure DoSelectAll;
     procedure DoDeletePersistent(APersistent: TPersistent; FreeIt: boolean);
     function GetSelectedComponentClass: TRegisteredComponent;

@@ -112,8 +112,6 @@ type
   strict private
     FShadowMenu: TShadowMenu;
     FUpdating: boolean;
-    function GetIsMainMenu: boolean; override;
-    function GetIsMenuBar: boolean; override;
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure ShowAllUnSelected;
@@ -126,6 +124,8 @@ type
     procedure SelectSuccessor(aSI: TShadowItem);
     property Updating: boolean read FUpdating;
   protected
+    function GetIsMainMenu: boolean; override;
+    function GetIsMenuBar: boolean; override;
     procedure Paint; override;
   public
     constructor CreateWithParentBox(aSMenu: TShadowMenu; aParentBox: TShadowBox;
