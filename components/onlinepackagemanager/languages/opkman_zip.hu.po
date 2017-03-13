@@ -19,6 +19,10 @@ msgstr "A puffer méretének megváltoztatása (ki)tömörítés közben nem leh
 msgid "Corrupt ZIP file %s."
 msgstr "Sérült ZIP fájl: %s"
 
+#: opkman_zip.serrencryptionnotsupported
+msgid "Cannot unzip item \"%s\" : encryption is not supported."
+msgstr ""
+
 #: opkman_zip.serrfilechange
 msgid "Changing output file name is not allowed while (un)zipping."
 msgstr "A kimeneti fájl nevének megváltoztatása (ki)tömörítés közben nem lehetséges."
@@ -51,12 +55,18 @@ msgstr "Nincs archívumfájlnév a művelethez."
 msgid "No stream is opened."
 msgstr "Nincs megnyitva adatfolyam."
 
+#: opkman_zip.serrpatchsetnotsupported
+msgid "Cannot unzip item \"%s\" : Patch sets are not supported."
+msgstr ""
+
 #: opkman_zip.serrpostoolarge
 msgid "Position/offset %d is larger than maximum supported %d."
 msgstr "A pozíció (%d) nagyobb mint a támogatott legnagyobb: %d"
 
 #: opkman_zip.serrunsupportedcompressionformat
-msgid "Unsupported compression format %d."
+#, fuzzy
+#| msgid "Unsupported compression format %d."
+msgid "Unsupported compression format %d"
 msgstr "Nem támogatott tömörítési formátum: %d"
 
 #: opkman_zip.serrunsupportedmultiplediskscd

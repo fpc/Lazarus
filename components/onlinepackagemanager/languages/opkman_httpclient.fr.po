@@ -20,7 +20,9 @@ msgid "Chunk too big"
 msgstr "Bloc trop important"
 
 #: opkman_httpclient.serrinvalidprotocol
-msgid "Invalid protocol: \"%s\""
+#, fuzzy
+#| msgid "Invalid protocol: \"%s\""
+msgid "Invalid protocol : \"%s\""
 msgstr "Protocole incorrect : \"%s\""
 
 #: opkman_httpclient.serrinvalidprotocolversion
@@ -32,7 +34,9 @@ msgid "Invalid response status code: %s"
 msgstr "Code de statut de réponse incorrect : %s"
 
 #: opkman_httpclient.serrmaxredirectsreached
-msgid "Maximum allowed redirects reached: %d"
+#, fuzzy
+#| msgid "Maximum allowed redirects reached: %d"
+msgid "Maximum allowed redirects reached : %d"
 msgstr "Nombre maximum de redirections autorisées atteint : %d"
 
 #: opkman_httpclient.serrreadingsocket

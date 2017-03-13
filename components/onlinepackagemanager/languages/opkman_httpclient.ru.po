@@ -20,7 +20,9 @@ msgid "Chunk too big"
 msgstr "Последовательность слишком длинная"
 
 #: opkman_httpclient.serrinvalidprotocol
-msgid "Invalid protocol: \"%s\""
+#, fuzzy
+#| msgid "Invalid protocol: \"%s\""
+msgid "Invalid protocol : \"%s\""
 msgstr "Некорректный протокол: \"%s\""
 
 #: opkman_httpclient.serrinvalidprotocolversion
@@ -32,7 +34,9 @@ msgid "Invalid response status code: %s"
 msgstr "Некорректный код состояния в ответе: %s"
 
 #: opkman_httpclient.serrmaxredirectsreached
-msgid "Maximum allowed redirects reached: %d"
+#, fuzzy
+#| msgid "Maximum allowed redirects reached: %d"
+msgid "Maximum allowed redirects reached : %d"
 msgstr "Достигнуто максимально разрешённое число перенаправлений: %d"
 
 #: opkman_httpclient.serrreadingsocket

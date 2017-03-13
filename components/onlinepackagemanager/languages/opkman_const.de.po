@@ -341,9 +341,17 @@ msgstr "JSON zeigen"
 msgid "Sort"
 msgstr ""
 
+#: opkman_const.rsmainfrm_miloadchecks
+msgid "Load checked packages"
+msgstr ""
+
 #: opkman_const.rsmainfrm_miresetrating
 msgid "Reset rating"
 msgstr "Bewertung zurücksetzen"
+
+#: opkman_const.rsmainfrm_misavechecks
+msgid "Save checked packages"
+msgstr ""
 
 #: opkman_const.rsmainfrm_misavetofile
 msgid "Save to file"
@@ -377,6 +385,14 @@ msgstr ""
 "Das Aktualisieren eines Packages über einen externen Link ist nicht ohne Risiko!\n"
 "Machen Sie das nur, wenn Sie dem Package-Betreuer vertrauen. Fortfahren?\n"
 
+#: opkman_const.rsmainfrm_resmessagechecksloaded
+msgid "%s packages successfully loaded from file!"
+msgstr ""
+
+#: opkman_const.rsmainfrm_resmessagecheckssaved
+msgid "%s packages successfully saved to file!"
+msgstr ""
+
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
 msgstr "Ändere Repository. Bitte warten..."
@@ -405,6 +421,10 @@ msgstr "Keine Packages zum Anzeigen."
 msgid ""
 "Remote package repository not configured.\n"
 "Do you wish to configure it now?\n"
+msgstr ""
+
+#: opkman_const.rsmainfrm_rsmessagenothingchacked
+msgid "Please check at least one package!"
 msgstr ""
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson

@@ -343,9 +343,17 @@ msgstr "JSON megjelenítése"
 msgid "Sort"
 msgstr "Rendezés"
 
+#: opkman_const.rsmainfrm_miloadchecks
+msgid "Load checked packages"
+msgstr ""
+
 #: opkman_const.rsmainfrm_miresetrating
 msgid "Reset rating"
 msgstr "Értékelés visszavonása"
+
+#: opkman_const.rsmainfrm_misavechecks
+msgid "Save checked packages"
+msgstr ""
 
 #: opkman_const.rsmainfrm_misavetofile
 msgid "Save to file"
@@ -379,6 +387,14 @@ msgstr ""
 "A külső hivatkozásról történő frissítés nem kockázatmentes!\n"
 "Csak akkor frissítsen ha megbízik a csomag karbantartójában. Folytatás?\n"
 
+#: opkman_const.rsmainfrm_resmessagechecksloaded
+msgid "%s packages successfully loaded from file!"
+msgstr ""
+
+#: opkman_const.rsmainfrm_resmessagecheckssaved
+msgid "%s packages successfully saved to file!"
+msgstr ""
+
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
 msgstr "Tároló váltása. Kist türelmet..."
@@ -410,6 +426,10 @@ msgid ""
 msgstr ""
 "A távoli csomagtároló nincs beállítva.\n"
 "Szeretné most beállítani?\n"
+
+#: opkman_const.rsmainfrm_rsmessagenothingchacked
+msgid "Please check at least one package!"
+msgstr ""
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson
 msgid "Parsing JSON. Please wait..."

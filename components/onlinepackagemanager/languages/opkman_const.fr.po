@@ -344,9 +344,17 @@ msgstr "Montrer le JSON"
 msgid "Sort"
 msgstr "Trier"
 
+#: opkman_const.rsmainfrm_miloadchecks
+msgid "Load checked packages"
+msgstr ""
+
 #: opkman_const.rsmainfrm_miresetrating
 msgid "Reset rating"
 msgstr "Réinitialiser l'évaluation"
+
+#: opkman_const.rsmainfrm_misavechecks
+msgid "Save checked packages"
+msgstr ""
 
 #: opkman_const.rsmainfrm_misavetofile
 msgid "Save to file"
@@ -380,6 +388,14 @@ msgstr ""
 "La mise à jour depuis un lien externe n'est pas sans risques !\n"
 "Ne procédez au téléchargement que si vous faites confiance au mainteneur. Voulez-vous continuer ?\n"
 
+#: opkman_const.rsmainfrm_resmessagechecksloaded
+msgid "%s packages successfully loaded from file!"
+msgstr ""
+
+#: opkman_const.rsmainfrm_resmessagecheckssaved
+msgid "%s packages successfully saved to file!"
+msgstr ""
+
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
 msgstr "Modification du dépôt. Veuillez patienter..."
@@ -411,6 +427,10 @@ msgid ""
 msgstr ""
 "Le dépôt des paquets n'est pas configuré.\n"
 "Voulez-vous le configurer maintenant ?\n"
+
+#: opkman_const.rsmainfrm_rsmessagenothingchacked
+msgid "Please check at least one package!"
+msgstr ""
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson
 msgid "Parsing JSON. Please wait..."

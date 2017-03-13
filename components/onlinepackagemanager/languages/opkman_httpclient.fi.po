@@ -11,8 +11,8 @@ msgstr ""
 
 #: opkman_httpclient.serrinvalidprotocol
 #, fuzzy
-#| msgid "Invalid protocol : \"%s\""
-msgid "Invalid protocol: \"%s\""
+#| msgid "Invalid protocol: \"%s\""
+msgid "Invalid protocol : \"%s\""
 msgstr "Väärä protokolla : \"%s\""
 
 #: opkman_httpclient.serrinvalidprotocolversion
@@ -24,7 +24,7 @@ msgid "Invalid response status code: %s"
 msgstr ""
 
 #: opkman_httpclient.serrmaxredirectsreached
-msgid "Maximum allowed redirects reached: %d"
+msgid "Maximum allowed redirects reached : %d"
 msgstr ""
 
 #: opkman_httpclient.serrreadingsocket

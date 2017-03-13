@@ -331,8 +331,16 @@ msgstr ""
 msgid "Sort"
 msgstr ""
 
+#: opkman_const.rsmainfrm_miloadchecks
+msgid "Load checked packages"
+msgstr ""
+
 #: opkman_const.rsmainfrm_miresetrating
 msgid "Reset rating"
+msgstr ""
+
+#: opkman_const.rsmainfrm_misavechecks
+msgid "Save checked packages"
 msgstr ""
 
 #: opkman_const.rsmainfrm_misavetofile
@@ -365,6 +373,14 @@ msgid ""
 "Only update if you trust the package maintainer. Continue?\n"
 msgstr ""
 
+#: opkman_const.rsmainfrm_resmessagechecksloaded
+msgid "%s packages successfully loaded from file!"
+msgstr ""
+
+#: opkman_const.rsmainfrm_resmessagecheckssaved
+msgid "%s packages successfully saved to file!"
+msgstr ""
+
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
 msgstr ""
@@ -393,6 +409,10 @@ msgstr ""
 msgid ""
 "Remote package repository not configured.\n"
 "Do you wish to configure it now?\n"
+msgstr ""
+
+#: opkman_const.rsmainfrm_rsmessagenothingchacked
+msgid "Please check at least one package!"
 msgstr ""
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson

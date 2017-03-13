@@ -343,9 +343,17 @@ msgstr "Показать JSON"
 msgid "Sort"
 msgstr "Сортировать"
 
+#: opkman_const.rsmainfrm_miloadchecks
+msgid "Load checked packages"
+msgstr ""
+
 #: opkman_const.rsmainfrm_miresetrating
 msgid "Reset rating"
 msgstr "Сбросить рейтинг"
+
+#: opkman_const.rsmainfrm_misavechecks
+msgid "Save checked packages"
+msgstr ""
 
 #: opkman_const.rsmainfrm_misavetofile
 msgid "Save to file"
@@ -379,6 +387,14 @@ msgstr ""
 "Обновление пакетов из внешнего источника рискованно!\n"
 "Проводите обновление только при доверии сопровождающему пакета. Продолжить?\n"
 
+#: opkman_const.rsmainfrm_resmessagechecksloaded
+msgid "%s packages successfully loaded from file!"
+msgstr ""
+
+#: opkman_const.rsmainfrm_resmessagecheckssaved
+msgid "%s packages successfully saved to file!"
+msgstr ""
+
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
 msgstr "Смена репозитория. Подождите..."
@@ -410,6 +426,10 @@ msgid ""
 msgstr ""
 "Удалённый репозиторий не настроен.\n"
 "Хотите сделать это сейчас?\n"
+
+#: opkman_const.rsmainfrm_rsmessagenothingchacked
+msgid "Please check at least one package!"
+msgstr ""
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson
 msgid "Parsing JSON. Please wait..."

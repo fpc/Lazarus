@@ -9,6 +9,10 @@ msgstr ""
 msgid "Corrupt ZIP file %s."
 msgstr ""
 
+#: opkman_zip.serrencryptionnotsupported
+msgid "Cannot unzip item \"%s\" : encryption is not supported."
+msgstr ""
+
 #: opkman_zip.serrfilechange
 msgid "Changing output file name is not allowed while (un)zipping."
 msgstr ""
@@ -41,12 +45,16 @@ msgstr ""
 msgid "No stream is opened."
 msgstr ""
 
+#: opkman_zip.serrpatchsetnotsupported
+msgid "Cannot unzip item \"%s\" : Patch sets are not supported."
+msgstr ""
+
 #: opkman_zip.serrpostoolarge
 msgid "Position/offset %d is larger than maximum supported %d."
 msgstr ""
 
 #: opkman_zip.serrunsupportedcompressionformat
-msgid "Unsupported compression format %d."
+msgid "Unsupported compression format %d"
 msgstr ""
 
 #: opkman_zip.serrunsupportedmultiplediskscd
