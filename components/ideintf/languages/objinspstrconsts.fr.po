@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-02-06 10:01+0100\n"
+"PO-Revision-Date: 2017-03-13 10:57+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 1.8.12\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -18,7 +18,7 @@ msgstr "(Tous)"
 
 #: objinspstrconsts.cactionlisteditordatabasecategory
 msgid "Database"
-msgstr "Base de données "
+msgstr "Base de données"
 
 #: objinspstrconsts.cactionlisteditordeleteaction
 msgctxt "objinspstrconsts.cactionlisteditordeleteaction"
@@ -889,7 +889,7 @@ msgstr "Choisir une couleur"
 #: objinspstrconsts.oistdactdatasetcancel1hint
 msgctxt "objinspstrconsts.oistdactdatasetcancel1hint"
 msgid "Cancel"
-msgstr "Annuler"
+msgstr "Annuler les modifications"
 
 #: objinspstrconsts.oistdactdatasetcancelheadline
 msgctxt "objinspstrconsts.oistdactdatasetcancelheadline"
@@ -904,7 +904,7 @@ msgstr "&Supprimer"
 #: objinspstrconsts.oistdactdatasetdeletehint
 msgctxt "objinspstrconsts.oistdactdatasetdeletehint"
 msgid "Delete"
-msgstr "Supprimer"
+msgstr "Supprimer l'enregistrement"
 
 #: objinspstrconsts.oistdactdataseteditheadline
 msgid "&Edit"
@@ -921,7 +921,7 @@ msgstr "&Premier"
 
 #: objinspstrconsts.oistdactdatasetfirsthint
 msgid "First"
-msgstr "Premier"
+msgstr "Premier enregistrement"
 
 #: objinspstrconsts.oistdactdatasetinsertheadline
 msgid "&Insert"
@@ -930,7 +930,7 @@ msgstr "&Insérer"
 #: objinspstrconsts.oistdactdatasetinserthint
 msgctxt "objinspstrconsts.oistdactdatasetinserthint"
 msgid "Insert"
-msgstr "Insérer"
+msgstr "Insérer un nouvel enregistrement"
 
 #: objinspstrconsts.oistdactdatasetlastheadline
 msgid "&Last"
@@ -938,7 +938,7 @@ msgstr "&Dernier"
 
 #: objinspstrconsts.oistdactdatasetlasthint
 msgid "Last"
-msgstr "Dernier"
+msgstr "Dernier enregistrement"
 
 #: objinspstrconsts.oistdactdatasetnextheadline
 msgid "&Next"
@@ -947,15 +947,15 @@ msgstr "&Suivant"
 #: objinspstrconsts.oistdactdatasetnexthint
 msgctxt "objinspstrconsts.oistdactdatasetnexthint"
 msgid "Next"
-msgstr "Suivant"
+msgstr "Enregistrement suivant"
 
 #: objinspstrconsts.oistdactdatasetpostheadline
 msgid "P&ost"
-msgstr "P&oster"
+msgstr "&Valider"
 
 #: objinspstrconsts.oistdactdatasetposthint
 msgid "Post"
-msgstr "Poster"
+msgstr "Valider les modifications"
 
 #: objinspstrconsts.oistdactdatasetpriorheadline
 msgid "&Prior"
@@ -964,7 +964,7 @@ msgstr "Précédent"
 #: objinspstrconsts.oistdactdatasetpriorhint
 msgctxt "objinspstrconsts.oistdactdatasetpriorhint"
 msgid "Prior"
-msgstr "Précédent"
+msgstr "Enregistrement précédent"
 
 #: objinspstrconsts.oistdactdatasetrefreshheadline
 msgid "&Refresh"
@@ -972,7 +972,7 @@ msgstr "&Rafraîchir"
 
 #: objinspstrconsts.oistdactdatasetrefreshhint
 msgid "Refresh"
-msgstr "Rafraîchir"
+msgstr "Rafraîchir les données"
 
 #: objinspstrconsts.oistdacteditcopyheadline
 msgctxt "objinspstrconsts.oistdacteditcopyheadline"
@@ -1143,7 +1143,7 @@ msgstr "Chercher l'occurrence &suivante"
 
 #: objinspstrconsts.oistdactsearchfindnexthint
 msgid "Find next"
-msgstr "Chercher l'occurence suivante"
+msgstr "Chercher l'occurrence suivante"
 
 #: objinspstrconsts.oistdactsearchfindnextshortcut
 msgid "F3"
@@ -1197,11 +1197,11 @@ msgstr "Inconnu"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
-msgstr "&Tout déselectionner"
+msgstr "&Tout désélectionner"
 
 #: objinspstrconsts.oisunselectallhint
 msgid "Unselect All"
-msgstr "Tout déselectionner"
+msgstr "Tout désélectionner"
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"
@@ -1593,7 +1593,7 @@ msgstr "Ajouter comme unique"
 
 #: objinspstrconsts.s_confirm_clear
 msgid "Are you sure to clear image list?"
-msgstr "Étes-vous sûr de vouloir effacer la liste d'images ?"
+msgstr "Êtes-vous sûr de vouloir effacer la liste d'images ?"
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"

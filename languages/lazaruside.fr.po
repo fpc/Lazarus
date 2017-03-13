@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-02-10 12:56+0100\n"
+"PO-Revision-Date: 2017-03-13 12:12+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 1.8.12\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
@@ -1026,7 +1026,7 @@ msgstr "Ne pas indenter le préfixe"
 
 #: lazarusidestrconsts.dlgcommentindentgroupoptions
 msgid "Comments"
-msgstr "Commmentaires"
+msgstr "Commentaires"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
 msgid "Extend, if matched or not matched"
@@ -2890,10 +2890,8 @@ msgid "Object Inspector"
 msgstr "Inspecteur d'objets"
 
 #: lazarusidestrconsts.dlgoiitemheight
-#, fuzzy
-#| msgid "Item height"
 msgid "Item height (0 = auto)"
-msgstr "Hauteur d'élément"
+msgstr "Hauteur d'élément (0 = automatique)"
 
 #: lazarusidestrconsts.dlgoimiscellaneous
 msgctxt "lazarusidestrconsts.dlgoimiscellaneous"
@@ -3102,7 +3100,7 @@ msgstr "Utiliser l'ensemble application pour exécuter et déboguer"
 
 #: lazarusidestrconsts.dlgpouselclscaling
 msgid "Use LCL scaling (Hi-DPI)"
-msgstr ""
+msgstr "Utiliser la mise à l'échelle LCL (Hi-DPI)"
 
 #: lazarusidestrconsts.dlgpousemanifest
 msgid "Use manifest resource (and enable themes)"
@@ -4208,7 +4206,7 @@ msgstr "À propos de Lazarus"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr "Licence : GPL/LGPL. Voir les sources Lazarus et Free Pascal pour les détails de la licence.%sLazarus est un Environnement de Développement Intégré (EDI) qui permet de créer des applications graphiques et en mode console avec Free Pascal. Ce dernier est un compilateur Pascal et Pascal Objet fonctionnant sous Windows, Linux, Mac OS X, FreeBSD et autres.%sLazarus est le chaînon manquant pour le développement d'applications multiplateformes dans un environnement proche de celui de Delphi, mais non limité à Windows. À l'image de Delphi, cet EDI est un outil de Développement Rapide d'Applications (ou \"RAD\" en anglais) doté d'un concepteur de fiches.%sComme le projet Lazarus est en pleine expansion, les nouveaux développeurs sont les bienvenus."
+msgstr "Licence : GPL/LGPL. Voir les sources Lazarus et Free Pascal pour les détails de la licence.%sLazarus est un Environnement de Développement Intégré (EDI) qui permet de créer des applications graphiques ou en mode console avec Free Pascal. Ce dernier est un compilateur Pascal et Pascal Objet fonctionnant sous Windows, Linux, Mac OS X, FreeBSD....%sLazarus est le chaînon manquant pour le développement d'applications multiplateformes dans un environnement proche de celui de Delphi, mais non limité à Windows. À l'image de Delphi, cet EDI est un outil de Développement Rapide d'Applications (ou \"RAD\" en anglais) doté d'un concepteur de fiches.%sComme le projet Lazarus est en pleine expansion, les nouveaux développeurs sont toujours les bienvenus."
 
 #: lazarusidestrconsts.lisaboutnocontributors
 msgid "Cannot find contributors list."
@@ -6863,7 +6861,7 @@ msgstr "Convertir une unité Delphi"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingfoundunits
 msgid "*** Converting unit files found during conversion ***"
-msgstr "*** Conversion des fichiers unités trouvés lors de la conversion ***"
+msgstr "*** Conversion des fichiers d'unités trouvés lors de la conversion ***"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingprojpackunits
 msgid "*** Converting unit files belonging to project/package ***"
@@ -7101,7 +7099,7 @@ msgstr "Unités à remplacer"
 
 #: lazarusidestrconsts.lisconvunknownprops
 msgid "Unknown properties"
-msgstr "Propriétées inconnues"
+msgstr "Propriétés inconnues"
 
 #: lazarusidestrconsts.lisconvuserselectedtoendconversion
 msgid "User selected to end conversion with file %s"
@@ -7730,7 +7728,7 @@ msgstr "Placer le point d'arrêt de toute façon"
 
 #: lazarusidestrconsts.lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
-msgstr "Il n'y a aucun débogueur d'indiqué.%sPlacer des points d'arrêts n'aura aucun effet jusqu'à ce qu'un débogueur soit configuré dans le dialogue des options du débogueur dans le menu."
+msgstr "Aucun débogueur n'a été spécifié.%sPlacer des points d'arrêts n'aura aucun effet jusqu'à ce qu'un débogueur soit configuré dans le dialogue des options du débogueur dans le menu."
 
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
@@ -7752,7 +7750,7 @@ msgstr "Débogueur"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
-msgstr "Erreur du débogueur%sLe débogueur est en état d'erreur%sEnregistrez votre travail immédiatement !%sCliquez sur \"Stop\" et espérez : nous ne répondons plus de rien !"
+msgstr "Erreur du débogueur.%sLe débogueur est en état d'erreur.%sEnregistrez votre travail immédiatement !%sCliquez sur \"Arrêter\" et croisez les doigts : nous ne répondons plus de rien !"
 
 #: lazarusidestrconsts.lisdebuggerfeedbackerror
 msgid "Debugger Error"
@@ -8330,7 +8328,7 @@ msgstr "Ne plus montrer ce message"
 
 #: lazarusidestrconsts.lisdonotwriteupdatedprojectinfoafterbuild
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
-msgstr "Ne pas écrire le fichier d'information du projet mis à jour après la construction. San sspécification, le numéro de construction sera incrémenté s'il est configuré."
+msgstr "Ne pas écrire le fichier d'information du projet mis à jour après la construction. Sans spécification, le numéro de construction sera incrémenté s'il est configuré."
 
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
@@ -9441,7 +9439,7 @@ msgstr "Version %s trouvée et %s attendue"
 
 #: lazarusidestrconsts.lisfpccfgismissing
 msgid "fpc.cfg is missing."
-msgstr "\"fpc.cfg\" manque."
+msgstr "\"fpc.cfg\" est absent."
 
 #: lazarusidestrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -10304,7 +10302,7 @@ msgstr "Montrer la colonne de visibilité"
 
 #: lazarusidestrconsts.lisinspectunavailable
 msgid "%s : unavailable"
-msgstr "%s : non diponible"
+msgstr "%s : non disponible"
 
 #: lazarusidestrconsts.lisinspectuseinstance
 msgid "Instance"
@@ -10345,7 +10343,7 @@ msgstr "Encodage insuffisant"
 
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
-msgstr "Intéractif"
+msgstr "Interactif"
 
 #: lazarusidestrconsts.lisinternalerror
 msgid "internal error: %s"
@@ -13145,11 +13143,11 @@ msgstr "Paquets manquants"
 
 #: lazarusidestrconsts.lismissingunitschoices
 msgid "Your choices are:"
-msgstr "Vous avez chosi :"
+msgstr "Vous devez choisir :"
 
 #: lazarusidestrconsts.lismissingunitscomment
 msgid "Comment Out"
-msgstr "Supprimer les commentaires"
+msgstr "Mettre en commentaires"
 
 #: lazarusidestrconsts.lismissingunitsfordelphi
 msgid "For Delphi only"
@@ -13157,7 +13155,7 @@ msgstr "Pour Delphi seulement"
 
 #: lazarusidestrconsts.lismissingunitsinfo1
 msgid "1) Comment out the selected units."
-msgstr "1) Commenter les unités sélectionnées."
+msgstr "1) Mettre en commentaires les unités sélectionnées."
 
 #: lazarusidestrconsts.lismissingunitsinfo1b
 msgid "1) Use the units only for Delphi."
@@ -13173,7 +13171,7 @@ msgstr "3) Abandonner maintenant, installer les paquets ou corriger les chemins 
 
 #: lazarusidestrconsts.lismissingunitssearch
 msgid "Search Unit Path"
-msgstr "Recherche de chemin de l'unité"
+msgstr "Recherche du chemin de l'unité"
 
 #: lazarusidestrconsts.lismissingunitsskip
 msgid "Skip this Unit"
@@ -14193,7 +14191,7 @@ msgstr "Panique"
 
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
-msgstr ", analysé "
+msgstr "- analysé "
 
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
@@ -14977,7 +14975,7 @@ msgstr "Fichier non enregistré"
 
 #: lazarusidestrconsts.lispkgmanginstallingthepackagewillautomaticallyinstallthepac
 msgid "Installing the package %s will automatically install the package:"
-msgstr "Intaller le paquet %s installera automatiquement le paquet :"
+msgstr "Installer le paquet %s installera automatiquement le paquet :"
 
 #: lazarusidestrconsts.lispkgmanginstallingthepackagewillautomaticallyinstallthepac2
 msgid "Installing the package %s will automatically install the packages:"
@@ -15514,7 +15512,7 @@ msgstr "Emplacements pour la sauvegarde des informations de session"
 
 #: lazarusidestrconsts.lisposavesessioninformationinhint
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
-msgstr "\".lpi\" est le fichier principal d'informations du projet ; \".lps\" est un fichier séparé seulement pour les données de la session."
+msgstr "\".lpi\" est le fichier principal d'informations du projet ; \".lps\" est un fichier séparé oour les seules données de la session."
 
 #: lazarusidestrconsts.lisposition
 msgid "Position"
@@ -15617,11 +15615,11 @@ msgstr "Version incorrecte"
 
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
-msgstr "Version maximale (optionnel) :"
+msgstr "Version maximale (optionnelle) :"
 
 #: lazarusidestrconsts.lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
-msgstr "Version minimale (optionnel) :"
+msgstr "Version minimale (optionnelle) :"
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"
@@ -17333,7 +17331,7 @@ msgstr "La configuration sera rétrogradée/convertie."
 
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
 msgid "The %s contains a nonexistent directory:%s%s"
-msgstr "Le %s contient un répertoire inexistant :%s%s"
+msgstr "\"%s\" contient un répertoire inexistant :%s%s"
 
 #: lazarusidestrconsts.listhecontainsastarcharacterlazarususesthisasnormalch
 msgid "The %s contains a star * character.%sLazarus uses this as normal character and does not expand this as file mask."
@@ -18246,7 +18244,7 @@ msgstr "%s%sImpossible de changer la classe de %s à %s"
 
 #: lazarusidestrconsts.lisunabletochangeprojectscaledinsource
 msgid "Unable to change project scaled in source.%s%s"
-msgstr ""
+msgstr "Impossible de modifier le projet mis à l'échelle dans le code source.%s%s"
 
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
 msgid "Unable to change project title in source.%s%s"
@@ -18431,7 +18429,7 @@ msgstr "Impossible de supprimer l'ancienne copie de sauvegarde \"%s\" !"
 
 #: lazarusidestrconsts.lisunabletoremoveprojectscaledfromsource
 msgid "Unable to remove project scaled from source.%s%s"
-msgstr ""
+msgstr "Impossible de supprimer le projet mis à l'échelle depuis le code source.%s%s"
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
 msgid "Unable to remove project title from source.%s%s"
@@ -18874,7 +18872,7 @@ msgstr "Lire"
 
 #: lazarusidestrconsts.liswatchkindreadwrite
 msgid "Read/Write"
-msgstr "Lire/Ecrire"
+msgstr "Lire/Écrire"
 
 #: lazarusidestrconsts.liswatchkindwrite
 msgid "Write"
@@ -18951,7 +18949,7 @@ msgstr "La fenêtre reste en avant-plan"
 
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "
-msgstr ", avec les inclusions "
+msgstr "- avec les inclusions "
 
 #: lazarusidestrconsts.liswithoutapropercompilerthecodebrowsingandcompilingw
 msgid "Without a proper compiler the code browsing and compiling will be disappointing."
@@ -19857,7 +19855,7 @@ msgstr "Chercher dans les fichiers"
 #: lazarusidestrconsts.srkmecfindnext
 msgctxt "lazarusidestrconsts.srkmecfindnext"
 msgid "Find Next"
-msgstr "Chercher l'occurence suivante"
+msgstr "Chercher l'occurrence suivante"
 
 #: lazarusidestrconsts.srkmecfindnextwordoccurrence
 msgid "Find Next Word Occurrence"
@@ -19873,7 +19871,7 @@ msgstr "Chercher les surcharges..."
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find Previous"
-msgstr "Chercher l'occurence précédente"
+msgstr "Chercher l'occurrence précédente"
 
 #: lazarusidestrconsts.srkmecfindprevwordoccurrence
 msgid "Find Previous Word Occurrence"
