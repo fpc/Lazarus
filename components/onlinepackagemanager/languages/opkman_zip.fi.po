@@ -10,7 +10,7 @@ msgid "Corrupt ZIP file %s."
 msgstr "Viottunut ZIP tiedosto %s."
 
 #: opkman_zip.serrencryptionnotsupported
-msgid "Cannot unzip item \"%s\" : encryption is not supported."
+msgid "Cannot unzip item \"%s\": encryption is not supported."
 msgstr ""
 
 #: opkman_zip.serrfilechange
@@ -46,7 +46,7 @@ msgid "No stream is opened."
 msgstr ""
 
 #: opkman_zip.serrpatchsetnotsupported
-msgid "Cannot unzip item \"%s\" : Patch sets are not supported."
+msgid "Cannot unzip item \"%s\": patch sets are not supported."
 msgstr ""
 
 #: opkman_zip.serrpostoolarge
@@ -55,8 +55,8 @@ msgstr ""
 
 #: opkman_zip.serrunsupportedcompressionformat
 #, fuzzy
-#| msgid "Unsupported compression format %d."
-msgid "Unsupported compression format %d"
+#| msgid "Unsupported compression format %d"
+msgid "Unsupported compression format %d."
 msgstr "Tukematon pakkausformaatti %d"
 
 #: opkman_zip.serrunsupportedmultiplediskscd

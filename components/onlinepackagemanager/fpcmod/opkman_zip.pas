@@ -597,7 +597,7 @@ ResourceString
   SErrFileChange = 'Changing output file name is not allowed while (un)zipping.';
   SErrInvalidCRC = 'Invalid CRC checksum while unzipping %s.';
   SErrCorruptZIP = 'Corrupt ZIP file %s.';
-  SErrUnsupportedCompressionFormat = 'Unsupported compression format %d';
+  SErrUnsupportedCompressionFormat = 'Unsupported compression format %d.';
   SErrUnsupportedMultipleDisksCD = 'A central directory split over multiple disks is unsupported.';
   SErrMaxEntries = 'Encountered %d file entries; maximum supported is %d.';
   SErrMissingFileName = 'Missing filename in entry %d.';
@@ -606,8 +606,8 @@ ResourceString
   SErrPosTooLarge = 'Position/offset %d is larger than maximum supported %d.';
   SErrNoFileName = 'No archive filename for examine operation.';
   SErrNoStream = 'No stream is opened.';
-  SErrEncryptionNotSupported = 'Cannot unzip item "%s" : encryption is not supported.';
-  SErrPatchSetNotSupported = 'Cannot unzip item "%s" : Patch sets are not supported.';
+  SErrEncryptionNotSupported = 'Cannot unzip item "%s": encryption is not supported.';
+  SErrPatchSetNotSupported = 'Cannot unzip item "%s": patch sets are not supported.';
 
 { ---------------------------------------------------------------------
     Auxiliary

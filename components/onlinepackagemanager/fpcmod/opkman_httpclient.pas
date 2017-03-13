@@ -360,14 +360,14 @@ uses sslsockets;
 {$endif}
 
 resourcestring
-  SErrInvalidProtocol = 'Invalid protocol : "%s"';
+  SErrInvalidProtocol = 'Invalid protocol: "%s"';
   SErrReadingSocket = 'Error reading data from socket';
   SErrInvalidProtocolVersion = 'Invalid protocol version in response: "%s"';
   SErrInvalidStatusCode = 'Invalid response status code: %s';
   SErrUnexpectedResponse = 'Unexpected response status code: %d';
   SErrChunkTooBig = 'Chunk too big';
   SErrChunkLineEndMissing = 'Chunk line end missing';
-  SErrMaxRedirectsReached = 'Maximum allowed redirects reached : %d';
+  SErrMaxRedirectsReached = 'Maximum allowed redirects reached: %d';
   //SErrRedirectAborted = 'Redirect aborted.';
 
 Const

@@ -345,7 +345,7 @@ msgstr "Сортировать"
 
 #: opkman_const.rsmainfrm_miloadchecks
 msgid "Load checked packages"
-msgstr ""
+msgstr "Загрузить отмеченные пакеты"
 
 #: opkman_const.rsmainfrm_miresetrating
 msgid "Reset rating"
@@ -353,7 +353,7 @@ msgstr "Сбросить рейтинг"
 
 #: opkman_const.rsmainfrm_misavechecks
 msgid "Save checked packages"
-msgstr ""
+msgstr "Сохранить отмеченные пакеты"
 
 #: opkman_const.rsmainfrm_misavetofile
 msgid "Save to file"
@@ -389,11 +389,11 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
 msgid "%s packages successfully loaded from file!"
-msgstr ""
+msgstr "Пакеты (%s шт.) успешно загружены из файла!"
 
 #: opkman_const.rsmainfrm_resmessagecheckssaved
 msgid "%s packages successfully saved to file!"
-msgstr ""
+msgstr "Пакеты (%s шт.) успешно сохранены в файл!"
 
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
@@ -429,7 +429,7 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_rsmessagenothingchacked
 msgid "Please check at least one package!"
-msgstr ""
+msgstr "Следует отметить хотя бы один пакет!"
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson
 msgid "Parsing JSON. Please wait..."
