@@ -12047,8 +12047,14 @@ msgstr "Obtenir de l'aide pour cet éditeur"
 msgid "&Grab key"
 msgstr "&Touche d'accroche"
 
+#: lazarusidestrconsts.lismenueditorgroupindexd
+msgid "GroupIndex: %d"
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
-msgid "GroupIndex value(s): %s"
+#, fuzzy
+#| msgid "GroupIndex value(s): %s"
+msgid "Values in use: %s"
 msgstr "Valeur(s) d'index de groupe : %s"
 
 #: lazarusidestrconsts.lismenueditorinadequatedescription
@@ -12149,10 +12155,6 @@ msgstr "<aucun>"
 msgid "<none>,<none>"
 msgstr "< aucun >, <aucun>"
 
-#: lazarusidestrconsts.lismenueditornoradioitemsinthismenu
-msgid "No radioitems in this menu"
-msgstr "Pas de \"radioitems\" dans ce menu"
-
 #: lazarusidestrconsts.lismenueditornoshortcutconflicts
 msgid "<no shortcut conflicts>"
 msgstr "<aucun conflit de raccourcis>"
@@ -12168,6 +12170,10 @@ msgstr "Ajout d'une icône depuis %s"
 #: lazarusidestrconsts.lismenueditorpopupassignmentss
 msgid "Popup assignments: %s"
 msgstr "Affectations de menus surgissants : %s"
+
+#: lazarusidestrconsts.lismenueditorradioitem
+msgid "RadioItem"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorremainingconflictss
 msgid "Remaining conflicts: %s"
@@ -12188,10 +12194,6 @@ msgstr "Résoudre le conflit sélectionné"
 #: lazarusidestrconsts.lismenueditorresolveshortcutconflicts
 msgid "&Resolve shortcut conflicts ..."
 msgstr "&Résoudre les conflits de raccourcis..."
-
-#: lazarusidestrconsts.lismenueditorrootmenu
-msgid "Root menu"
-msgstr "Menu racine"
 
 #: lazarusidestrconsts.lismenueditorsavedtemplates
 msgid "Saved templates"
@@ -12220,10 +12222,6 @@ msgstr "%s est en conflit avec %s"
 #: lazarusidestrconsts.lismenueditorseparators
 msgid "Se&parators"
 msgstr "Sé&parateurs"
-
-#: lazarusidestrconsts.lismenueditorsgroupindexd
-msgid "%s.GroupIndex: %d"
-msgstr "%sIndex de groupe : %d"
 
 #: lazarusidestrconsts.lismenueditorshortcutitemss
 msgid "Shortcut items: %s"
@@ -12280,10 +12278,6 @@ msgid ""
 msgstr ""
 "\"%s\" est déjà utilisé dans %s comme raccourci.\n"
 "Veuillez essayer un raccourci différent.\n"
-
-#: lazarusidestrconsts.lismenueditorsisnotaradioitem
-msgid "%s is not a radioitem"
-msgstr "%s n'est pas un \"radioitem\""
 
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
 msgid "Please expand: \"%s\" is not a sufficient Description"
@@ -16989,6 +16983,10 @@ msgstr "Trier la sélection"
 msgctxt "lazarusidestrconsts.lissortselwords"
 msgid "Words"
 msgstr "Mots"
+
+#: lazarusidestrconsts.lissortunicoderangelistalphabetically
+msgid "Sort Unicode range list alphabetically"
+msgstr ""
 
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"

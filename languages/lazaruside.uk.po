@@ -12043,8 +12043,14 @@ msgstr "Отримати довідку з користування цим ре�
 msgid "&Grab key"
 msgstr "&Захопити клавішу"
 
+#: lazarusidestrconsts.lismenueditorgroupindexd
+msgid "GroupIndex: %d"
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
-msgid "GroupIndex value(s): %s"
+#, fuzzy
+#| msgid "GroupIndex value(s): %s"
+msgid "Values in use: %s"
 msgstr "Значення GroupIndex: %s"
 
 #: lazarusidestrconsts.lismenueditorinadequatedescription
@@ -12145,10 +12151,6 @@ msgstr "<немає>"
 msgid "<none>,<none>"
 msgstr "<немає>,<немає>"
 
-#: lazarusidestrconsts.lismenueditornoradioitemsinthismenu
-msgid "No radioitems in this menu"
-msgstr "У цьому меню немає перемикачів"
-
 #: lazarusidestrconsts.lismenueditornoshortcutconflicts
 msgid "<no shortcut conflicts>"
 msgstr "<немає конфліктів сполучень>"
@@ -12164,6 +12166,10 @@ msgstr "Додати значок з %s"
 #: lazarusidestrconsts.lismenueditorpopupassignmentss
 msgid "Popup assignments: %s"
 msgstr "Присвоєнь зі спливного меню: %s"
+
+#: lazarusidestrconsts.lismenueditorradioitem
+msgid "RadioItem"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorremainingconflictss
 msgid "Remaining conflicts: %s"
@@ -12184,10 +12190,6 @@ msgstr "Розв'язати вибраний конфлікт"
 #: lazarusidestrconsts.lismenueditorresolveshortcutconflicts
 msgid "&Resolve shortcut conflicts ..."
 msgstr "&Розв'язати конфлікт сполучень ..."
-
-#: lazarusidestrconsts.lismenueditorrootmenu
-msgid "Root menu"
-msgstr "Кореневе меню"
 
 #: lazarusidestrconsts.lismenueditorsavedtemplates
 msgid "Saved templates"
@@ -12216,10 +12218,6 @@ msgstr "%s конфліктує з %s"
 #: lazarusidestrconsts.lismenueditorseparators
 msgid "Se&parators"
 msgstr "&Роздільники"
-
-#: lazarusidestrconsts.lismenueditorsgroupindexd
-msgid "%s.GroupIndex: %d"
-msgstr "%s.GroupIndex: %d"
 
 #: lazarusidestrconsts.lismenueditorshortcutitemss
 msgid "Shortcut items: %s"
@@ -12276,10 +12274,6 @@ msgid ""
 msgstr ""
 "Сполучення клавіш \"%s\" вже використовується у %s.\n"
 "Спробуйте інше.\n"
-
-#: lazarusidestrconsts.lismenueditorsisnotaradioitem
-msgid "%s is not a radioitem"
-msgstr "%s не є перемикачем"
 
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
 msgid "Please expand: \"%s\" is not a sufficient Description"
@@ -16971,6 +16965,10 @@ msgstr "Сортування вибраного"
 msgctxt "lazarusidestrconsts.lissortselwords"
 msgid "Words"
 msgstr "Слова"
+
+#: lazarusidestrconsts.lissortunicoderangelistalphabetically
+msgid "Sort Unicode range list alphabetically"
+msgstr ""
 
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"

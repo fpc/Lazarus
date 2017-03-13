@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-02-22 01:27+0300\n"
+"PO-Revision-Date: 2017-03-14 01:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -12040,9 +12040,13 @@ msgstr "Открыть справку для этого редактора"
 msgid "&Grab key"
 msgstr "&Захватить клавишу"
 
+#: lazarusidestrconsts.lismenueditorgroupindexd
+msgid "GroupIndex: %d"
+msgstr "GroupIndex: %d"
+
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
-msgid "GroupIndex value(s): %s"
-msgstr "Значения GroupIndex: %s"
+msgid "Values in use: %s"
+msgstr "Имеющиеся значения: %s"
 
 #: lazarusidestrconsts.lismenueditorinadequatedescription
 msgid "Inadequate Description"
@@ -12142,10 +12146,6 @@ msgstr "<нет>"
 msgid "<none>,<none>"
 msgstr "<нет>,<нет>"
 
-#: lazarusidestrconsts.lismenueditornoradioitemsinthismenu
-msgid "No radioitems in this menu"
-msgstr "Элементы-переключатели отсутствуют"
-
 #: lazarusidestrconsts.lismenueditornoshortcutconflicts
 msgid "<no shortcut conflicts>"
 msgstr "<конфликты комбинаций клавиш отсутствуют>"
@@ -12161,6 +12161,10 @@ msgstr "Добавить значок из %s"
 #: lazarusidestrconsts.lismenueditorpopupassignmentss
 msgid "Popup assignments: %s"
 msgstr "Присваиваний всплывающего меню: %s"
+
+#: lazarusidestrconsts.lismenueditorradioitem
+msgid "RadioItem"
+msgstr "Элемент-переключатель"
 
 #: lazarusidestrconsts.lismenueditorremainingconflictss
 msgid "Remaining conflicts: %s"
@@ -12181,10 +12185,6 @@ msgstr "Устранить выбранный конфликт"
 #: lazarusidestrconsts.lismenueditorresolveshortcutconflicts
 msgid "&Resolve shortcut conflicts ..."
 msgstr "&Устранить конфликты комбинаций клавиш ..."
-
-#: lazarusidestrconsts.lismenueditorrootmenu
-msgid "Root menu"
-msgstr "Меню верхнего уровня"
 
 #: lazarusidestrconsts.lismenueditorsavedtemplates
 msgid "Saved templates"
@@ -12213,10 +12213,6 @@ msgstr "%s конфликтует с %s"
 #: lazarusidestrconsts.lismenueditorseparators
 msgid "Se&parators"
 msgstr "&Разделители"
-
-#: lazarusidestrconsts.lismenueditorsgroupindexd
-msgid "%s.GroupIndex: %d"
-msgstr "%s.GroupIndex: %d"
 
 #: lazarusidestrconsts.lismenueditorshortcutitemss
 msgid "Shortcut items: %s"
@@ -12273,10 +12269,6 @@ msgid ""
 msgstr ""
 "Комбинация клавиш \"%s\" уже используется в %s.\n"
 "Попробуйте другую.\n"
-
-#: lazarusidestrconsts.lismenueditorsisnotaradioitem
-msgid "%s is not a radioitem"
-msgstr "%s не является элементом-переключателем"
 
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
 msgid "Please expand: \"%s\" is not a sufficient Description"
@@ -16979,6 +16971,10 @@ msgstr "Сортировать выделенное"
 msgctxt "lazarusidestrconsts.lissortselwords"
 msgid "Words"
 msgstr "Слова"
+
+#: lazarusidestrconsts.lissortunicoderangelistalphabetically
+msgid "Sort Unicode range list alphabetically"
+msgstr "Сортировать список диапазонов Unicode по алфавиту"
 
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"

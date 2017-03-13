@@ -12502,8 +12502,12 @@ msgstr ""
 msgid "&Grab key"
 msgstr ""
 
+#: lazarusidestrconsts.lismenueditorgroupindexd
+msgid "GroupIndex: %d"
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
-msgid "GroupIndex value(s): %s"
+msgid "Values in use: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorinadequatedescription
@@ -12604,10 +12608,6 @@ msgstr ""
 msgid "<none>,<none>"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditornoradioitemsinthismenu
-msgid "No radioitems in this menu"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditornoshortcutconflicts
 msgid "<no shortcut conflicts>"
 msgstr ""
@@ -12622,6 +12622,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorpopupassignmentss
 msgid "Popup assignments: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lismenueditorradioitem
+msgid "RadioItem"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorremainingconflictss
@@ -12642,10 +12646,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorresolveshortcutconflicts
 msgid "&Resolve shortcut conflicts ..."
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorrootmenu
-msgid "Root menu"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsavedtemplates
@@ -12674,10 +12674,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorseparators
 msgid "Se&parators"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorsgroupindexd
-msgid "%s.GroupIndex: %d"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutitemss
@@ -12732,10 +12728,6 @@ msgstr ""
 msgid ""
 "\"%s\" is already in use in %s as a shortcut.\n"
 "Try a different shortcut.\n"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorsisnotaradioitem
-msgid "%s is not a radioitem"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
@@ -17767,6 +17759,10 @@ msgstr "Urut pilihan"
 msgctxt "lazarusidestrconsts.lissortselwords"
 msgid "Words"
 msgstr "Kata"
+
+#: lazarusidestrconsts.lissortunicoderangelistalphabetically
+msgid "Sort Unicode range list alphabetically"
+msgstr ""
 
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"

@@ -12041,8 +12041,14 @@ msgstr "Hilfe für die Verwendung dieses Editors"
 msgid "&Grab key"
 msgstr ""
 
+#: lazarusidestrconsts.lismenueditorgroupindexd
+msgid "GroupIndex: %d"
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
-msgid "GroupIndex value(s): %s"
+#, fuzzy
+#| msgid "GroupIndex value(s): %s"
+msgid "Values in use: %s"
 msgstr "GroupIndex-Wert(e): %s"
 
 #: lazarusidestrconsts.lismenueditorinadequatedescription
@@ -12143,10 +12149,6 @@ msgstr "<keine>"
 msgid "<none>,<none>"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditornoradioitemsinthismenu
-msgid "No radioitems in this menu"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditornoshortcutconflicts
 msgid "<no shortcut conflicts>"
 msgstr "<keine Tastaturbefehl-Konflikte>"
@@ -12162,6 +12164,10 @@ msgstr ""
 #: lazarusidestrconsts.lismenueditorpopupassignmentss
 msgid "Popup assignments: %s"
 msgstr "Popup-Zuweisungen: %s"
+
+#: lazarusidestrconsts.lismenueditorradioitem
+msgid "RadioItem"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorremainingconflictss
 msgid "Remaining conflicts: %s"
@@ -12182,10 +12188,6 @@ msgstr "Gewählte Konflikte auflösen"
 #: lazarusidestrconsts.lismenueditorresolveshortcutconflicts
 msgid "&Resolve shortcut conflicts ..."
 msgstr "Tastaturbefehl-Konflikte ausflösen"
-
-#: lazarusidestrconsts.lismenueditorrootmenu
-msgid "Root menu"
-msgstr "Wurzel-Menü"
 
 #: lazarusidestrconsts.lismenueditorsavedtemplates
 msgid "Saved templates"
@@ -12214,10 +12216,6 @@ msgstr "%s ist im Konflikt mit %s"
 #: lazarusidestrconsts.lismenueditorseparators
 msgid "Se&parators"
 msgstr "Trennlinien"
-
-#: lazarusidestrconsts.lismenueditorsgroupindexd
-msgid "%s.GroupIndex: %d"
-msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutitemss
 msgid "Shortcut items: %s"
@@ -12271,10 +12269,6 @@ msgstr ""
 msgid ""
 "\"%s\" is already in use in %s as a shortcut.\n"
 "Try a different shortcut.\n"
-msgstr ""
-
-#: lazarusidestrconsts.lismenueditorsisnotaradioitem
-msgid "%s is not a radioitem"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
@@ -16971,6 +16965,10 @@ msgctxt "lazarusidestrconsts.lissortselwords"
 msgid "Words"
 msgstr "Worte"
 
+#: lazarusidestrconsts.lissortunicoderangelistalphabetically
+msgid "Sort Unicode range list alphabetically"
+msgstr ""
+
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"
 msgstr "Quelle und Ziel sind gleich:%s%s"
@@ -21081,3 +21079,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+

@@ -12041,8 +12041,14 @@ msgstr "Segítség ezen szerkesztő használatával kapcsolatban"
 msgid "&Grab key"
 msgstr "Bekérés"
 
+#: lazarusidestrconsts.lismenueditorgroupindexd
+msgid "GroupIndex: %d"
+msgstr ""
+
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
-msgid "GroupIndex value(s): %s"
+#, fuzzy
+#| msgid "GroupIndex value(s): %s"
+msgid "Values in use: %s"
 msgstr "Csoportok (GroupIndex): %s"
 
 #: lazarusidestrconsts.lismenueditorinadequatedescription
@@ -12143,10 +12149,6 @@ msgstr "<nincs>"
 msgid "<none>,<none>"
 msgstr "<nincs>,<nincs>"
 
-#: lazarusidestrconsts.lismenueditornoradioitemsinthismenu
-msgid "No radioitems in this menu"
-msgstr "Nem tartalmaz rádiógombot"
-
 #: lazarusidestrconsts.lismenueditornoshortcutconflicts
 msgid "<no shortcut conflicts>"
 msgstr "<nincsenek ütköző gyorsbillentyűk>"
@@ -12162,6 +12164,10 @@ msgstr "Ikon választása innen: %s"
 #: lazarusidestrconsts.lismenueditorpopupassignmentss
 msgid "Popup assignments: %s"
 msgstr "Felugró menü hozzárendelések: %s"
+
+#: lazarusidestrconsts.lismenueditorradioitem
+msgid "RadioItem"
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorremainingconflictss
 msgid "Remaining conflicts: %s"
@@ -12182,10 +12188,6 @@ msgstr "Kijelölt ütközés feloldása"
 #: lazarusidestrconsts.lismenueditorresolveshortcutconflicts
 msgid "&Resolve shortcut conflicts ..."
 msgstr "Gyorsbillentyűk ütközéseinek feloldása ..."
-
-#: lazarusidestrconsts.lismenueditorrootmenu
-msgid "Root menu"
-msgstr "Főmenü"
 
 #: lazarusidestrconsts.lismenueditorsavedtemplates
 msgid "Saved templates"
@@ -12214,10 +12216,6 @@ msgstr "A(z) %s ütközik a következővel: %s"
 #: lazarusidestrconsts.lismenueditorseparators
 msgid "Se&parators"
 msgstr "Elválasztók"
-
-#: lazarusidestrconsts.lismenueditorsgroupindexd
-msgid "%s.GroupIndex: %d"
-msgstr "%s.GroupIndex: %d"
 
 #: lazarusidestrconsts.lismenueditorshortcutitemss
 msgid "Shortcut items: %s"
@@ -12274,10 +12272,6 @@ msgid ""
 msgstr ""
 "A(z) \"%s\" már használatban van gyorsbillentyűként ebben: %s\n"
 "Másik gyorsbillentyűt kell választani.\n"
-
-#: lazarusidestrconsts.lismenueditorsisnotaradioitem
-msgid "%s is not a radioitem"
-msgstr "%s nem rádiógombos"
 
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
 msgid "Please expand: \"%s\" is not a sufficient Description"
@@ -16979,6 +16973,10 @@ msgstr "Kijelölés rendezése"
 msgctxt "lazarusidestrconsts.lissortselwords"
 msgid "Words"
 msgstr "Kifejezések"
+
+#: lazarusidestrconsts.lissortunicoderangelistalphabetically
+msgid "Sort Unicode range list alphabetically"
+msgstr ""
 
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"
