@@ -26,7 +26,7 @@ uses
   // libs
   MacOSAll, Classes, SysUtils,
   // LCL
-  Forms, Controls, Graphics, LCLType, LCLProc,
+  Forms, Controls, Graphics, LCLType, LCLProc, LCLIntf,
   // widgetset
   WSControls, WSLCLClasses,
   // LCL Carbon
@@ -317,10 +317,27 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSWinControl.SetCursor(const AWinControl: TWinControl;
   const ACursor: HCursor);
+var
+  HitControl: ControlRef;
+  TopWindow: WindowRef;
+  TopView: HIViewRef;
+  MousePos: HIPoint;
 begin
   if not CheckHandle(AWinControl, Self, 'SetCursor') then Exit;
 
   TCarbonWidget(AWinControl.Handle).SetCursor(ACursor);
+
+  if (Screen.Cursor <> crDefault) then Exit;
+
+  TopWindow := TCarbonWidget(AWinControl.Handle).GetTopParentWindow;
+  TopView := HIViewGetRoot(TopWindow);
+  HIGetMousePosition(kHICoordSpaceView, TopView, MousePos);
+  if OSError(
+     HIViewGetSubviewHit(TopView, MousePos, True, HitControl),
+     Self, 'TCarbonWSWinControl.SetCursor', 'GetSubviewHit') then Exit;
+
+  if HitControl =  TCarbonWidget(AWinControl.Handle).Widget then
+    LCLIntf.SetCursor(ACursor);
 end;
 
 {------------------------------------------------------------------------------
