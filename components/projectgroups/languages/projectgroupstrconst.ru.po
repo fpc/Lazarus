@@ -236,7 +236,7 @@ msgstr "Перезагрузить"
 
 #: projectgroupstrconst.lisprojectgroups
 msgid "Project Groups"
-msgstr ""
+msgstr "Группы проектов"
 
 #: projectgroupstrconst.lisprojectgroupsaveascaption
 msgid "Save As ..."
