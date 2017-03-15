@@ -7,8 +7,10 @@ interface
 
 uses
   Classes, SysUtils,
-  IDEProcs, CompilerOptions,
-  DefineTemplates, CodeToolManager, FileReferenceList;
+  // Codetools
+  DefineTemplates, CodeToolManager,
+  // IDE
+  CompilerOptions, FileReferenceList, IDEProcs;
 
 type
 

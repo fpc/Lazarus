@@ -25,7 +25,9 @@ unit ProjPackIntf;
 interface
 
 uses
-  Classes, SysUtils, IDEOptionsIntf, CompOptsIntf;
+  Classes, SysUtils,
+  // IdeIntf
+  IDEOptionsIntf, CompOptsIntf;
 
 type
 

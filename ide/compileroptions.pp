@@ -42,11 +42,14 @@ unit CompilerOptions;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, FileUtil, Laz2_XMLCfg, LazFileUtils,
-  AvgLvlTree, Laz2_DOM, LazUTF8,
-  InterfaceBase, Forms, Controls, LCLProc, ExprEval,
-  DefineTemplates, CodeToolsCfgScript, CodeToolManager, KeywordFuncLists,
-  BasicCodeTools,
+  Classes, SysUtils,
+  // LCL
+  InterfaceBase, Forms, Controls, LCLProc,
+  // LazUtils
+  FileUtil, LazFileUtils, LazUTF8, AvgLvlTree, Laz2_XMLCfg, Laz2_DOM,
+  // CodeTools
+  FileProcs, DefineTemplates, CodeToolsCfgScript, CodeToolManager,
+  KeywordFuncLists, BasicCodeTools,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, CompOptsIntf,
   IDEOptionsIntf,

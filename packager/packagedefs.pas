@@ -3142,8 +3142,7 @@ begin
     Result:=RemoveSearchPaths(Result,GetOutputDirectory);
 end;
 
-procedure TLazPackage.IterateComponentClasses(
-  Event: TIterateComponentClassesEvent;
+procedure TLazPackage.IterateComponentClasses(Event: TIterateComponentClassesEvent;
   WithUsedPackages: boolean);
 var
   Cnt: Integer;
@@ -3364,8 +3363,7 @@ begin
   Result:=GetDependencyWithIndex(FFirstUsedByDependency,pdlUsedBy,Index);
 end;
 
-function TLazPackage.FindUsedByDepPrefer(Ignore: TPkgDependency
-  ): TPkgDependency;
+function TLazPackage.FindUsedByDepPrefer(Ignore: TPkgDependency): TPkgDependency;
 begin
   Result:=FFirstUsedByDependency;
   while (Result<>nil) do begin

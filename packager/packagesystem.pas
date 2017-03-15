@@ -1440,8 +1440,7 @@ function TLazPackageGraph.FindPackageProvidingName(
   FirstDependency: TPkgDependency;
   const Name: string): TLazPackage;
   
-  function Search(ADependency: TPkgDependency; out Found: TLazPackage
-    ): boolean;
+  function Search(ADependency: TPkgDependency; out Found: TLazPackage): boolean;
   begin
     Found:=nil;
     while ADependency<>nil do begin
@@ -2315,8 +2314,7 @@ begin
                            lisPkgMangstaticPackagesConfigFile);
 end;
 
-function TLazPackageGraph.IsStaticBasePackage(PackageName: string
-  ): boolean;
+function TLazPackageGraph.IsStaticBasePackage(PackageName: string): boolean;
 begin
   PackageName:=lowercase(PackageName);
   Result:=(PackageName='fcl')

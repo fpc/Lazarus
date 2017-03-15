@@ -365,8 +365,7 @@ begin
   OkButton.Enabled:=true;
 end;
 
-procedure TFindUnitDialog.AddRequirement(
-  Item: TMissingUnit_QuickFix_AddRequirement);
+procedure TFindUnitDialog.AddRequirement(Item: TMissingUnit_QuickFix_AddRequirement);
 var
   AProject: TProject;
   APackage: TLazPackage;

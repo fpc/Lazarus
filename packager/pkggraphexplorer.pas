@@ -697,8 +697,7 @@ begin
   end;
 end;
 
-function TPkgGraphExplorerDlg.FindLvlGraphNodeWithText(const s: string
-  ): TLvlGraphNode;
+function TPkgGraphExplorerDlg.FindLvlGraphNodeWithText(const s: string): TLvlGraphNode;
 begin
   Result:=LvlGraphControl1.Graph.GetNode(s,false);
 end;

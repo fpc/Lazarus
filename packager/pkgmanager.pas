@@ -3840,7 +3840,6 @@ function TPkgManager.CheckUserSearchPaths(aCompilerOptions: TBaseCompilerOptions
   ): TModalResult;
 var
   aPackage: TLazPackage;
-  aProject: TProject;
   CurUnitPath: String;
   CurIncPath: String;
   CurSrcPath: String;
@@ -3965,12 +3964,10 @@ begin
   if aCompilerOptions.CompilerPath='' then exit; // not a normal Pascal project
 
   aPackage:=nil;
-  aProject:=nil;
   if aCompilerOptions.Owner is TLazPackage then
     aPackage:=TLazPackage(aCompilerOptions.Owner)
-  else if aCompilerOptions.Owner is TProject then
-    aProject:=TProject(aCompilerOptions.Owner);
-  if (aPackage=nil) and (aProject=nil) then exit;
+  else if not (aCompilerOptions.Owner is TProject) then
+    exit;
 
   CurUnitPath:=aCompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
   CurIncPath:=aCompilerOptions.ParsedOpts.GetParsedValue(pcosIncludePath);
