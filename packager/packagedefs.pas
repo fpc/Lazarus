@@ -65,8 +65,6 @@ type
     );
   TPackageUpdatePolicies = set of TPackageUpdatePolicy;
 
-  TIteratePackagesEvent =
-    procedure(APackage: TLazPackageID) of object;
   TGetAllRequiredPackagesEvent =
     procedure(APackage: TLazPackage; // if not nil then ignore FirstDependency and do not add APackage to Result
               FirstDependency: TPkgDependency;
@@ -255,15 +253,12 @@ type
                                 FileVersion: integer);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
       UsePathDelim: TPathDelimSwitch);
-    function IsMakingSense: boolean;
-    function IsCompatible(const Version: TPkgVersion): boolean;
-    function IsCompatible(const PkgName: string;
-      const Version: TPkgVersion): boolean;
+
     function Compare(Dependency2: TPkgDependency): integer;
     procedure Assign(Source: TPkgDependency);
     procedure Assign(Source: TLazPackageID);
     procedure ConsistencyCheck;
-    function IsCompatible(Pkg: TLazPackageID): boolean;
+    function IsCompatible(Pkg: TLazPackageID): boolean; overload;
     procedure MakeCompatible(const PkgName: string; const Version: TPkgVersion);
     function AsString(WithOwner: boolean = false; WithDefaults: boolean = false): string;
     // API for iterating dependencies.
@@ -868,17 +863,12 @@ function FindNextPkgDependencyNodeWithSameName(Node: TAVLTreeNode): TAVLTreeNode
 function GetDependencyOwnerAsString(Dependency: TPkgDependency): string;
 function GetDependencyOwnerDirectory(Dependency: TPkgDependency): string;
 
-function PackageFileNameIsValid(const AFilename: string): boolean;
-
 procedure PkgVersionLoadFromXMLConfig(Version: TPkgVersion;
   XMLConfig: TXMLConfig; const Path: string; FileVersion: integer);
 procedure PkgVersionSaveToXMLConfig(Version: TPkgVersion; XMLConfig: TXMLConfig;
   const Path: string);
 procedure PkgVersionLoadFromXMLConfig(Version: TPkgVersion;
   XMLConfig: TXMLConfig);
-
-function IsValidUnitName(AUnitName: String): Boolean; inline;
-function IsValidPkgName(APkgName: String): Boolean; inline;
 
 var
   Package1: TLazPackage; // don't use it - only for options dialog
@@ -887,18 +877,8 @@ function dbgs(p: TPackageUpdatePolicy): string; overload;
 function dbgs(p: TLazPackageType): string; overload;
 function PackagePathToStr(PathList: TFPList): string;
 
+
 implementation
-
-
-function IsValidUnitName(AUnitName: String): Boolean;
-begin
-  Result := IsDottedIdentifier(AUnitName);
-end;
-
-function IsValidPkgName(APkgName: String): Boolean;
-begin
-  Result := IsDottedIdentifier(APkgName);
-end;
 
 function PkgFileTypeIdentToType(const s: string): TPkgFileType;
 begin
@@ -1331,17 +1311,6 @@ function GetDependencyOwnerDirectory(Dependency: TPkgDependency): string;
 begin
   Result := '';
   OnGetDependencyOwnerDirectory(Dependency,Result);
-end;
-
-function PackageFileNameIsValid(const AFilename: string): boolean;
-var
-  PkgName: String;
-begin
-  Result:=false;
-  if CompareFileExt(AFilename,'.lpk',false)<>0 then exit;
-  PkgName:=ExtractFileNameOnly(AFilename);
-  if (PkgName='') or (not IsValidPkgName(PkgName)) then exit;
-  Result:=true;
 end;
 
 procedure PkgVersionLoadFromXMLConfig(Version: TPkgVersion;
@@ -1897,30 +1866,6 @@ begin
   XMLConfig.SetDeleteValue(Path+'DefaultFilename/Prefer',PreferDefaultFilename,false);
 end;
 
-function TPkgDependency.IsMakingSense: boolean;
-begin
-  Result:=IsValidPkgName(PackageName);
-  if Result
-  and (pdfMinVersion in FFlags) and (pdfMaxVersion in FFlags)
-  and (MinVersion.Compare(MaxVersion)>0) then
-    Result:=false;
-end;
-
-function TPkgDependency.IsCompatible(const Version: TPkgVersion): boolean;
-begin
-  if ((pdfMinVersion in FFlags) and (MinVersion.Compare(Version)>0))
-  or ((pdfMaxVersion in FFlags) and (MaxVersion.Compare(Version)<0)) then
-    Result:=false
-  else
-    Result:=true;
-end;
-
-function TPkgDependency.IsCompatible(const PkgName: string;
-  const Version: TPkgVersion): boolean;
-begin
-  Result:=(SysUtils.CompareText(PkgName,PackageName)=0) and IsCompatible(Version);
-end;
-
 function TPkgDependency.Compare(Dependency2: TPkgDependency): integer;
 begin
   Result:=SysUtils.CompareText(PackageName,Dependency2.PackageName);
@@ -1969,8 +1914,7 @@ begin
   if MaxVersion.Compare(Version)<0 then MaxVersion.Assign(Version);
 end;
 
-function TPkgDependency.AsString(WithOwner: boolean; WithDefaults: boolean
-  ): string;
+function TPkgDependency.AsString(WithOwner: boolean; WithDefaults: boolean): string;
 begin
   if Self=nil then
     exit('(nil)');
@@ -3054,9 +2998,7 @@ end;
 
 function TLazPackage.IsMakingSense: boolean;
 begin
-  Result:=false;
-  if not IsValidPkgName(Name) then exit;
-  Result:=true;
+  Result:=IsValidPkgName(Name);
 end;
 
 procedure TLazPackage.ShortenFilename(var ExpandedFilename: string; UseUp: boolean);

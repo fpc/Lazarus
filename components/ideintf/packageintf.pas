@@ -125,6 +125,8 @@ type
     property IDAsWord: string read GetIDAsWord;
   end;
 
+  TIteratePackagesEvent = procedure(APackage: TLazPackageID) of object;
+
   TPackageInstallType = (
     pitNope,
     pitStatic,
@@ -369,14 +371,18 @@ var
   PackageGraphInterface: TPackageGraphInterface; // must be set along with PackageSystem.PackageGraph
 
 
-procedure RegisterPackageDescriptor(PkgDesc: TPackageDescriptor);
 function PackageDescriptorStd: TPackageDescriptor;
-
 function PkgCompileFlagsToString(Flags: TPkgCompileFlags): string;
+procedure RegisterPackageDescriptor(PkgDesc: TPackageDescriptor);
 
 
 implementation
 
+
+function PackageDescriptorStd: TPackageDescriptor;
+begin
+  Result:=PackageDescriptors.FindByName(PkgDescNameStandard);
+end;
 
 function PkgCompileFlagsToString(Flags: TPkgCompileFlags): string;
 var
@@ -406,10 +412,6 @@ begin
   end;
 end;
 
-function PackageDescriptorStd: TPackageDescriptor;
-begin
-  Result:=PackageDescriptors.FindByName(PkgDescNameStandard);
-end;
 
 { TPackageGraphInterface }
 

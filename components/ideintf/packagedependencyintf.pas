@@ -5,7 +5,11 @@ unit PackageDependencyIntf;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils,
+  // LazUtils
+  LazFileUtils,
+  // IdeIntf
+  IDEUtils;
 
 type
 
@@ -63,6 +67,9 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear; virtual;
+    function IsMakingSense: boolean;
+    function IsCompatible(const Version: TPkgVersion): boolean; overload;
+    function IsCompatible(const PkgName: string; const Version: TPkgVersion): boolean; overload;
     // API for iterating dependencies.
     function NextUsedByDependency: TPkgDependencyBase; virtual; abstract;
     function PrevUsedByDependency: TPkgDependencyBase; virtual; abstract;
@@ -81,7 +88,33 @@ type
     property Removed: boolean read FRemoved write FRemoved;
   end;
 
+  function IsValidUnitName(AUnitName: String): Boolean; inline;
+  function IsValidPkgName(APkgName: String): Boolean; inline;
+  function PackageFileNameIsValid(const AFilename: string): boolean;
+
+
 implementation
+
+function IsValidUnitName(AUnitName: String): Boolean;
+begin
+  Result := LazIsValidIdent(AUnitName, True, True);
+end;
+
+function IsValidPkgName(APkgName: String): Boolean;
+begin
+  Result := LazIsValidIdent(APkgName, True, True);
+end;
+
+function PackageFileNameIsValid(const AFilename: string): boolean;
+var
+  PkgName: String;
+begin
+  Result:=false;
+  if CompareFileExt(AFilename,'.lpk',false)<>0 then exit;
+  PkgName:=ExtractFileNameOnly(AFilename);
+  if (PkgName='') or (not IsValidPkgName(PkgName)) then exit;
+  Result:=true;
+end;
 
 { TPkgVersion }
 
@@ -227,6 +260,29 @@ begin
   FFlags:=[];
   FMaxVersion.Clear;
   FMinVersion.Clear;
+end;
+
+function TPkgDependencyBase.IsMakingSense: boolean;
+begin
+  Result:=IsValidPkgName(PackageName);
+  if Result
+  and (pdfMinVersion in FFlags) and (pdfMaxVersion in FFlags)
+  and (MinVersion.Compare(MaxVersion)>0) then
+    Result:=false;
+end;
+
+function TPkgDependencyBase.IsCompatible(const Version: TPkgVersion): boolean;
+begin
+  if ((pdfMinVersion in FFlags) and (MinVersion.Compare(Version)>0))
+  or ((pdfMaxVersion in FFlags) and (MaxVersion.Compare(Version)<0)) then
+    Result:=false
+  else
+    Result:=true;
+end;
+
+function TPkgDependencyBase.IsCompatible(const PkgName: string; const Version: TPkgVersion): boolean;
+begin
+  Result:=(CompareText(PkgName,PackageName)=0) and IsCompatible(Version);
 end;
 
 end.

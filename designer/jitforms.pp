@@ -40,16 +40,22 @@ unit JITForms;
 
 { $DEFINE VerboseJITForms}
 
-
 interface
 
 uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, AvgLvlTree, BasicCodeTools, TypInfo, LCLProc, LResources,
-  Forms, Controls, LCLMemManager, LCLIntf, Dialogs,
-  PropEditUtils, PropEdits, UnitResources, IDEDialogs,
+  Classes, SysUtils, TypInfo,
+  // LCL
+  Forms, Controls, Dialogs, LResources, LCLMemManager, LCLIntf, LCLProc,
+  //LazUtils
+  AvgLvlTree,
+  // CodeTools
+  BasicCodeTools,
+  // IdeIntf
+  PackageDependencyIntf, PropEditUtils, PropEdits, UnitResources, IDEDialogs,
+  // IDE
   IDEProcs, PackageDefs, BasePkgManager, DesignerProcs;
 
 type

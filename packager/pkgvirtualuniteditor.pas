@@ -38,8 +38,15 @@ unit PkgVirtualUnitEditor;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs,
-  PackageDefs, FileUtil, LazFileUtils, LazarusIDEStrConsts;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Dialogs,
+  // LazUtils
+  FileUtil, LazFileUtils,
+  // IdeIntf
+  PackageDependencyIntf,
+  // IDE
+  PackageDefs, LazarusIDEStrConsts;
 
 function ShowEditVirtualPackageDialog(PkgFile: TPkgFile): TModalResult;
 

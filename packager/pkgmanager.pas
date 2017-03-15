@@ -56,9 +56,9 @@ uses
   CodeToolsConfig, CodeToolManager, CodeCache, CodeToolsStructs, BasicCodeTools,
   FileProcs, CodeTree,
   // IDE Interface
-  SrcEditorIntf, NewItemIntf, ProjPackIntf, ProjectIntf, PackageIntf, CompOptsIntf,
-  MenuIntf, IDEWindowIntf, IDEExternToolIntf, MacroIntf, LazIDEIntf, IDEMsgIntf,
-  ComponentReg, PropEdits, IDEDialogs, UnitResources,
+  NewItemIntf, ProjPackIntf, ProjectIntf, PackageIntf, PackageDependencyIntf,
+  CompOptsIntf, MenuIntf, IDEWindowIntf, IDEExternToolIntf, MacroIntf, LazIDEIntf,
+  IDEMsgIntf, SrcEditorIntf, ComponentReg, PropEdits, IDEDialogs, UnitResources,
   // IDE
   PkgRegisterBase, IDECmdLine, LazarusIDEStrConsts, IDEProcs, ObjectLists,
   DialogProcs, IDECommands, IDEOptionDefs, EnvironmentOpts, MiscOptions,

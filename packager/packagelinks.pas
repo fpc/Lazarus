@@ -144,7 +144,7 @@ type
     function FindLinkWithPkgNameInTree(LinkTree: TAvgLvlTree;
       const PkgName: string; IgnoreFiles: TFilenameToStringTree): TPackageLink;
     function FindLinkWithDependencyInTree(LinkTree: TAvgLvlTree;
-      Dependency: TPkgDependency; IgnoreFiles: TFilenameToStringTree): TPackageLink;
+      Dependency: TPkgDependencyID; IgnoreFiles: TFilenameToStringTree): TPackageLink;
     function FindLinkWithPackageIDInTree(LinkTree: TAvgLvlTree;
       APackageID: TLazPackageID): TPackageLink;
     function FindLinkWithLPKFilenameInTree(LinkTree: TAvgLvlTree;
@@ -176,13 +176,13 @@ type
     procedure WriteLinkTree(LinkTree: TAvgLvlTree);
     function FindLinkWithPkgName(const PkgName: string;
                                  IgnoreFiles: TFilenameToStringTree = nil): TPackageLink;
-    function FindLinkWithDependency(Dependency: TPkgDependency;
+    function FindLinkWithDependency(Dependency: TPkgDependencyID;
                                   IgnoreFiles: TFilenameToStringTree = nil): TPackageLink;
     function FindLinkWithPackageID(APackageID: TLazPackageID): TPackageLink;
     function FindLinkWithFilename(const PkgName, LPKFilename: string): TPackageLink;
     procedure IteratePackages(MustExist: boolean; Event: TIteratePackagesEvent;
                               Origins: TPkgLinkOrigins = AllPkgLinkOrigins);
-    function AddUserLink(APackage: TLazPackage): TPackageLink;
+    function AddUserLink(APackage: TIDEPackage): TPackageLink;
     function AddUserLink(const PkgFilename, PkgName: string): TPackageLink;// do not use this if package is open in IDE
     procedure RemoveUserLink(Link: TPackageLink);
     procedure RemoveUserLinks(APackageID: TLazPackageID);
@@ -1022,7 +1022,7 @@ begin
 end;
 
 function TPackageLinks.FindLinkWithDependencyInTree(LinkTree: TAvgLvlTree;
-  Dependency: TPkgDependency; IgnoreFiles: TFilenameToStringTree): TPackageLink;
+  Dependency: TPkgDependencyID; IgnoreFiles: TFilenameToStringTree): TPackageLink;
 var
   Link: TPackageLink;
   CurNode: TAvgLvlTreeNode;
@@ -1165,7 +1165,7 @@ begin
   Result:=GetNewerLink(UserLink,GlobalLink);
 end;
 
-function TPackageLinks.FindLinkWithDependency(Dependency: TPkgDependency;
+function TPackageLinks.FindLinkWithDependency(Dependency: TPkgDependencyID;
   IgnoreFiles: TFilenameToStringTree): TPackageLink;
 var
   UserLink, GlobalLink: TPackageLink;
@@ -1204,7 +1204,7 @@ begin
     IteratePackagesInTree(MustExist,FGlobalLinks,Event);
 end;
 
-function TPackageLinks.AddUserLink(APackage: TLazPackage): TPackageLink;
+function TPackageLinks.AddUserLink(APackage: TIDEPackage): TPackageLink;
 var
   OldLink: TPackageLink;
   NewLink: TPackageLink;
@@ -1244,8 +1244,7 @@ begin
   end;
 end;
 
-function TPackageLinks.AddUserLink(const PkgFilename, PkgName: string
-  ): TPackageLink;
+function TPackageLinks.AddUserLink(const PkgFilename, PkgName: string): TPackageLink;
 var
   OldLink: TPackageLink;
   NewLink: TPackageLink;

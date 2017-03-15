@@ -42,10 +42,10 @@ uses
   BasicCodeTools, CodeToolsStructs, CodeToolManager, FileProcs, DefineTemplates,
   CodeCache, CodeTree, FindDeclarationTool, KeywordFuncLists,
   // IdeIntf
-  IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, NewItemIntf,
-  CompOptsIntf, SrcEditorIntf, IDEWindowIntf, ProjectIntf, PackageIntf,
-  FormEditingIntf, IDEExternToolIntf, ObjectInspector, UnitResources, ComponentReg,
-  EditorSyntaxHighlighterDef,
+  IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, NewItemIntf, CompOptsIntf,
+  IDEWindowIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, FormEditingIntf,
+  IDEExternToolIntf, ObjectInspector, UnitResources, ComponentReg,
+  SrcEditorIntf, EditorSyntaxHighlighterDef,
   // IDE
   IDEProcs, DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog, NewProjectDlg,
   MainBase, MainBar, MainIntf, Project, ProjectDefs, ProjectInspector, CompilerOptions,
