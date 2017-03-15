@@ -24,11 +24,13 @@ type
     function GetBaseCompilerOptions: TBaseCompilerOptions;
     function GetDefineTemplates: TProjPackDefineTemplates;
     function GetSourceDirectories: TFileReferenceList;
+    function GetModified: boolean;
     //function GetOutputDirectory: string;  // Proj/Pack have different params.
     function NeedsDefineTemplates: boolean;
     procedure AddPackageDependency(const PackageName: string);
     //function FindDependencyByName(const PackageName: string): TPkgDependency;
     function RemoveNonExistingFiles(RemoveFromUsesSection: boolean = true): boolean;
+    procedure SetModified(const AValue: boolean);
 
     property IDAsString: string read GetIDAsString;
     property IDAsWord: string read GetIDAsWord;
