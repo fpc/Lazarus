@@ -35,7 +35,7 @@ uses
   // LazUtils
   FileUtil, Laz2_XMLCfg, LazFileUtils,
   // IdeIntf
-  PackageIntf,
+  PackageDependencyIntf, PackageIntf,
   // OpkMan
   opkman_common, opkman_const, opkman_options;
 
@@ -64,35 +64,19 @@ type
   TPackageStates = set of TPackageState;
 
   TChangeType = (ctAdd, ctRemove);
-
   TSortType = (stName, stDate);
-
   TSortOrder = (soAscendent, soDescendent);
 
-  { TPackageVersion }
-
-  TPackageVersion = class(TPersistent)
-  private
-    FMajor: Integer;
-    FMinor: Integer;
-    FRelease: Integer;
-    FBuild: Integer;
-    function GetAsString: String;
-    procedure SetAsString(const AValue: String);
-    function GetIsNullVersion: Boolean;
-  public
-    procedure SetDefaults;
-    procedure Assign(ASource: TPersistent); override;
-    function CompareVersion(AVersion: TPackageVersion): Integer;
-    function SameVersion(AVersion: TPackageVersion): Boolean;
-    property AsString: String read GetAsString write SetAsString;
+  {$M+}
+  TPackageVersion = class(TPkgVersion)
   published
-    property Major: Integer read FMajor write FMajor;
-    property Minor: Integer read FMinor write FMinor;
-    property Release: Integer read FRelease write FRelease;
-    property Build: Integer read FBuild write FBuild;
-    property IsNullVersion: Boolean read GetIsNullVersion;
+    property Major;
+    property Minor;
+    property Release;
+    property Build;
+    property IsNullVersion;
   end;
+  {$M-}
 
   { TPackageDependency }
 
@@ -318,89 +302,6 @@ var
 
 implementation
 
-{ TPackageVersion }
-
-function TPackageVersion.GetAsString: String;
-begin
-  Result := IntToStr(Major) + '.' + IntToStr(Minor) + '.' + IntToStr(Release) + '.' + IntToStr(Build);
-end;
-
-procedure TPackageVersion.SetAsString(const AValue: String);
-var
-  Version: String;
-  P, I: Integer;
-begin
-  SetDefaults;
-  if AValue = '' then
-    Exit;
-  I := 0;
-  Version := Trim(AValue) + '.';
-  repeat
-     Inc(I);
-     P := Pos('.', Version);
-     if P <> 0 then
-     begin
-       case I of
-         1: FMajor := StrToIntDef(Copy(Version, 1, P - 1), 0);
-         2: FMinor := StrToIntDef(Copy(Version, 1, P - 1), 0);
-         3: FRelease := StrToIntDef(Copy(Version, 1, P - 1), 0);
-         4: FBuild := StrToIntDef(Copy(Version, 1, P - 1), 0);
-       end;
-       Delete(Version, 1, P);
-     end;
-  until (Version = '') or (P = 0) or (I > 4);
-end;
-
-function TPackageVersion.GetIsNullVersion: Boolean;
-begin
-  Result := (FMajor = 0) and (FMinor = 0) and (FRelease = 0) and (FBuild = 0);
-end;
-
-procedure TPackageVersion.SetDefaults;
-begin
-  FMajor := 0;
-  FMinor := 0;
-  FRelease := 0;
-  FBuild := 0;
-end;
-
-procedure TPackageVersion.Assign(ASource: TPersistent);
-var
-  Source: TPackageVersion;
-begin
-  SetDefaults;
-  if ASource is TPackageVersion then
-  begin
-    Source := ASource as TPackageVersion;
-    Major := Source.Major;
-    Minor := Source.Minor;
-    Release := Source.Release;
-    Build := Source.Build;
-  end
-  else
-    inherited Assign(Source);
-end;
-
-function TPackageVersion.CompareVersion(AVersion: TPackageVersion): Integer;
-begin
-  Result := Major - AVersion.Major;
-  if (Result = 0) then
-  begin
-    Result := Minor - AVersion.Minor;
-    if (Result = 0) then
-    begin
-      Result := Release - AVersion.Release;
-      if (Result = 0) then
-        Result := Build - AVersion.Build;
-    end;
-  end;
-end;
-
-function TPackageVersion.SameVersion(AVersion: TPackageVersion): Boolean;
-begin
-  Result := CompareVersion(AVersion) = 0;
-end;
-
 { TPackageDependency }
 
 procedure TPackageDependency.SetMinVersion(const AValue: TPackageVersion);
@@ -576,7 +477,7 @@ end;
 constructor TPackageFile.Create;
 begin
   FVersion := TPackageVersion.Create;
-  FVersion.SetDefaults;
+  FVersion.Clear;
   PackageStates := [];
   FDependencies := TPackageDependencies.Create(TPackageDependency);
 end;
@@ -780,7 +681,7 @@ begin
     else
     begin
       D2 := ASL.Objects[J] as TPackageDependency;
-      if D1.MinVersion.CompareVersion(D2.MinVersion) > 0 then
+      if D1.MinVersion.Compare(D2.MinVersion) > 0 then
         D2.MinVersion.Assign(D1.MinVersion);
     end;
     if (ALevel >= 0) and (J = -1) Then
@@ -1527,12 +1428,12 @@ begin
   if PackageDependency.MinVersion.IsNullVersion then
     MinVerOk := True
   else
-    MinVerOk := PackageDependency.MinVersion.CompareVersion(DependencyPackage.Version) <= 0;
+    MinVerOk := PackageDependency.MinVersion.Compare(DependencyPackage.Version) <= 0;
 
   if PackageDependency.MaxVersion.IsNullVersion then
     MaxVerOk := True
   else
-    MaxVerOk := PackageDependency.MaxVersion.CompareVersion(DependencyPackage.Version) >= 0;
+    MaxVerOk := PackageDependency.MaxVersion.Compare(DependencyPackage.Version) >= 0;
 
   Result := (MinVerOk) and (MaxVerOk)
 end;

@@ -24,23 +24,36 @@ type
     );
 
   TPkgVersion = class
+  private
+    FMajor: integer;
+    FMinor: integer;
+    FRelease: integer;
+    FBuild: integer;
+    FValid: TPkgVersionValid;
+    FOnChange: TNotifyEvent;
+    function GetAsString: String;
+    procedure SetAsString(const AValue: String);
   public
-    Major: integer;
-    Minor: integer;
-    Release: integer;
-    Build: integer;
-    Valid: TPkgVersionValid;
-    OnChange: TNotifyEvent;
     procedure Clear;
     function Compare(Version2: TPkgVersion): integer;
     function CompareMask(ExactVersion: TPkgVersion): integer;
     procedure Assign(Source: TPkgVersion);
-    function AsString: string;
+    //function AsString: string;
     function AsWord: string;
+    function GetIsNullVersion: Boolean;
     function ReadString(const s: string): boolean;
     procedure SetValues(NewMajor, NewMinor, NewRelease, NewBuild: integer;
                         NewValid: TPkgVersionValid = pvtBuild);
     function VersionBound(v: integer): integer;
+  public
+    property AsString: String read GetAsString write SetAsString;
+    property Major: Integer read FMajor write FMajor;
+    property Minor: Integer read FMinor write FMinor;
+    property Release: Integer read FRelease write FRelease;
+    property Build: Integer read FBuild write FBuild;
+    property IsNullVersion: Boolean read GetIsNullVersion;
+    property Valid: TPkgVersionValid read FValid write FValid;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
   { PkgDependency flags }
@@ -125,51 +138,82 @@ end;
 
 function TPkgVersion.Compare(Version2: TPkgVersion): integer;
 begin
-  Result:=Major-Version2.Major;
+  Result:=FMajor-Version2.FMajor;
   if Result<>0 then exit;
-  Result:=Minor-Version2.Minor;
+  Result:=FMinor-Version2.FMinor;
   if Result<>0 then exit;
-  Result:=Release-Version2.Release;
+  Result:=FRelease-Version2.FRelease;
   if Result<>0 then exit;
-  Result:=Build-Version2.Build;
+  Result:=FBuild-Version2.FBuild;
 end;
 
 function TPkgVersion.CompareMask(ExactVersion: TPkgVersion): integer;
 begin
-  if Valid=pvtNone then exit(0);
-  Result:=Major-ExactVersion.Major;
+  if FValid=pvtNone then exit(0);
+  Result:=FMajor-ExactVersion.FMajor;
   if Result<>0 then exit;
-  if Valid=pvtMajor then exit;
-  Result:=Minor-ExactVersion.Minor;
+  if FValid=pvtMajor then exit;
+  Result:=FMinor-ExactVersion.FMinor;
   if Result<>0 then exit;
-  if Valid=pvtMinor then exit;
-  Result:=Release-ExactVersion.Release;
+  if FValid=pvtMinor then exit;
+  Result:=FRelease-ExactVersion.FRelease;
   if Result<>0 then exit;
-  if Valid=pvtRelease then exit;
-  Result:=Build-ExactVersion.Build;
+  if FValid=pvtRelease then exit;
+  Result:=FBuild-ExactVersion.FBuild;
 end;
 
 procedure TPkgVersion.Assign(Source: TPkgVersion);
 begin
-  SetValues(Source.Major,Source.Minor,Source.Release,Source.Build,Source.Valid);
+  SetValues(Source.FMajor,Source.FMinor,Source.FRelease,Source.FBuild,Source.FValid);
 end;
 
-function TPkgVersion.AsString: string;
+function TPkgVersion.GetAsString: String;
 begin
-  Result:=IntToStr(Major)+'.'+IntToStr(Minor);
-  if (Build<>0) then
-    Result:=Result+'.'+IntToStr(Release)+'.'+IntToStr(Build)
-  else if (Release<>0) then
-    Result:=Result+'.'+IntToStr(Release)
+  Result:=IntToStr(FMajor)+'.'+IntToStr(FMinor);
+  if (FBuild<>0) then
+    Result:=Result+'.'+IntToStr(FRelease)+'.'+IntToStr(FBuild)
+  else if (FRelease<>0) then
+    Result:=Result+'.'+IntToStr(FRelease)
+end;
+
+procedure TPkgVersion.SetAsString(const AValue: String);
+var
+  Version: String;
+  P, I, V: Integer;
+begin
+  Clear;
+  if AValue = '' then Exit;
+  I := 0;
+  Version := Trim(AValue) + '.';
+  repeat
+     Inc(I);
+     P := Pos('.', Version);
+     if P <> 0 then
+     begin
+       V := StrToIntDef(Copy(Version, 1, P-1), 0);
+       case I of
+         1: FMajor   := V;
+         2: FMinor   := V;
+         3: FRelease := V;
+         4: FBuild   := V;
+       end;
+       Delete(Version, 1, P);
+     end;
+  until (Version = '') or (P = 0) or (I > 4);
 end;
 
 function TPkgVersion.AsWord: string;
 begin
-  Result:=IntToStr(Major)+'_'+IntToStr(Minor);
-  if (Build<>0) then
-    Result:=Result+'_'+IntToStr(Release)+'_'+IntToStr(Build)
-  else if (Release<>0) then
-    Result:=Result+'_'+IntToStr(Release)
+  Result:=IntToStr(FMajor)+'_'+IntToStr(FMinor);
+  if (FBuild<>0) then
+    Result:=Result+'_'+IntToStr(FRelease)+'_'+IntToStr(FBuild)
+  else if (FRelease<>0) then
+    Result:=Result+'_'+IntToStr(FRelease)
+end;
+
+function TPkgVersion.GetIsNullVersion: Boolean;
+begin
+  Result := (FMajor = 0) and (FMinor = 0) and (FRelease = 0) and (FBuild = 0);
 end;
 
 function TPkgVersion.ReadString(const s: string): boolean;
@@ -215,14 +259,14 @@ begin
   NewMinor:=VersionBound(NewMinor);
   NewRelease:=VersionBound(NewRelease);
   NewBuild:=VersionBound(NewBuild);
-  if (NewMajor=Major) and (NewMinor=Minor) and (NewRelease=Release)
-  and (NewBuild=Build) and (NewValid=Valid) then exit;
-  Major:=NewMajor;
-  Minor:=NewMinor;
-  Release:=NewRelease;
-  Build:=NewBuild;
-  Valid:=NewValid;
-  if Assigned(OnChange) then OnChange(Self);
+  if (NewMajor=FMajor) and (NewMinor=FMinor) and (NewRelease=FRelease)
+  and (NewBuild=FBuild) and (NewValid=FValid) then exit;
+  FMajor:=NewMajor;
+  FMinor:=NewMinor;
+  FRelease:=NewRelease;
+  FBuild:=NewBuild;
+  FValid:=NewValid;
+  if Assigned(FOnChange) then FOnChange(Self);
 end;
 
 function TPkgVersion.VersionBound(v: integer): integer;
