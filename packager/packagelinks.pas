@@ -97,6 +97,8 @@ type
     FSavedChangeStamp: integer;
     fUpdateLock: integer;
     FStates: TPkgLinksStates;
+    function AddUserLinkSub(APackage: TIDEPackage; const PkgFilename,
+      PkgName: string): TPackageLink;
     function FindLeftMostNode(LinkTree: TAvgLvlTree; const PkgName: string): TAvgLvlTreeNode;
     function FindLinkWithPkgNameInTree(LinkTree: TAvgLvlTree;
       const PkgName: string; IgnoreFiles: TFilenameToStringTree): TLazPackageLink;
@@ -1164,6 +1166,8 @@ end;
 function TLazPackageLinks.AddOnlineLink(const PkgFilename, PkgName: string;
   PkgVersion: TPkgVersion): TPackageLink;
 begin
+  DebugLn(['TLazPackageLinks.AddOnlineLink: PkgFilename=', PkgFilename,
+           ', PkgName=', PkgName, ', PkgVersion=', PkgVersion.AsString]);
   // check if link already exists
   Result:=FindLinkWithFilename(PkgName,PkgFilename);
   if Assigned(Result) then
@@ -1192,11 +1196,35 @@ begin
   end;
 end;
 
+function TLazPackageLinks.AddUserLinkSub(APackage: TIDEPackage;
+  const PkgFilename, PkgName: string): TPackageLink;
+begin
+  Result:=TLazPackageLink.Create;
+  Result.Reference;
+  if Assigned(APackage) then
+    Result.AssignID(APackage)
+  else
+    Result.Name:=PkgName;
+  Result.LPKFilename:=PkgFilename;
+  if Result.IsMakingSense then
+  begin
+    FUserLinksSortID.Add(Result);
+    FUserLinksSortFile.Add(Result);
+    IncreaseChangeStamp;
+    Result.LastUsed:=Now;
+  end
+  else begin
+    Result.Release;
+    Result:=nil;
+  end;
+end;
+
 function TLazPackageLinks.AddUserLink(APackage: TIDEPackage): TPackageLink;
 var
   OldLink: TPackageLink;
   NewLink: TPackageLink;
 begin
+  DebugLn(['TLazPackageLinks.AddUserLink: APackage=', APackage.Filename]);
   BeginUpdate;
   try
     // check if link already exists
@@ -1213,20 +1241,7 @@ begin
       RemoveUserLinks(APackage);
     end;
     // add user link
-    NewLink:=TLazPackageLink.Create;
-    NewLink.Reference;
-    NewLink.AssignID(APackage);
-    NewLink.LPKFilename:=APackage.Filename;
-    if NewLink.IsMakingSense then begin
-      FUserLinksSortID.Add(NewLink);
-      FUserLinksSortFile.Add(NewLink);
-      IncreaseChangeStamp;
-    end else begin
-      NewLink.Release;
-      NewLink:=nil;
-    end;
-    Result:=NewLink;
-    Result.LastUsed:=Now;
+    Result := AddUserLinkSub(APackage, APackage.Filename, '');
   finally
     EndUpdate;
   end;
@@ -1234,11 +1249,11 @@ end;
 
 function TLazPackageLinks.AddUserLink(const PkgFilename, PkgName: string): TPackageLink;
 var
-  OldLink: TPackageLink;
   NewLink: TPackageLink;
   LPK: TXMLConfig;
   PkgVersion: TPkgVersion;
 begin
+  DebugLn(['TLazPackageLinks.AddUserLink: PkgFilename=', PkgFilename, ', PkgName=', PkgName]);
   PkgVersion:=TPkgVersion.Create;
   LPK:=nil;
   BeginUpdate;
@@ -1249,34 +1264,18 @@ begin
       PkgVersionLoadFromXMLConfig(PkgVersion,LPK);
 
     // check if link already exists
-    OldLink:=FindLinkWithFilename(PkgName,PkgFilename);
-    if (OldLink<>nil) then begin
-      // link exists
-      Result:=OldLink;
+    Result:=FindLinkWithFilename(PkgName,PkgFilename);
+    if Assigned(Result) then
+    begin
       Result.LastUsed:=Now;
       if LPK<>nil then
         Result.Version.Assign(PkgVersion);
       exit;
     end;
-
     // add user link
-    NewLink:=TLazPackageLink.Create;
-    NewLink.Reference;
-    NewLink.Name:=PkgName;
-    NewLink.LPKFilename:=PkgFilename;
-    if LPK<>nil then
-      NewLink.Version.Assign(PkgVersion);
-    if NewLink.IsMakingSense then begin
-      FUserLinksSortID.Add(NewLink);
-      FUserLinksSortFile.Add(NewLink);
-      IncreaseChangeStamp;
-    end else begin
-      NewLink.Release;
-      NewLink:=nil;
-    end;
-    Result:=NewLink;
-    if Result<>nil then
-      Result.LastUsed:=Now;
+    Result := AddUserLinkSub(Nil, PkgFilename, PkgName);
+    if Assigned(Result) and Assigned(LPK) then
+      Result.Version.Assign(PkgVersion);
   finally
     EndUpdate;
     PkgVersion.Free;
