@@ -32,11 +32,11 @@ uses
   Classes, SysUtils, contnrs, fpjson, md5,
   // LCL
   Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Buttons, Menus, ComCtrls, Clipbrd,
-  LCLIntf, LCLVersion,
+  LCLIntf, LCLVersion, LCLProc,
   // LazUtils
   LazFileUtils,
   // IdeIntf
-  IDECommands,
+  IDECommands, PackageLinkIntf,
   // OpkMan
   opkman_VirtualTrees, opkman_downloader, opkman_installer,
   opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common,
@@ -391,8 +391,24 @@ begin
 end;
 
 procedure TMainFrm.DoOnUpdate(Sender: TObject);
+var
+  I, J: Integer;
+  Package: TPackage;
+  PackageFile: TPackageFile;
 begin
   VisualTree.UpdatePackageUStatus;
+  // Pass the online package info as package links to IDE.
+  for I := 0 to SerializablePackages.Count - 1 do
+  begin
+    Package := SerializablePackages.Items[I];
+    for J := 0 to Package.PackageFiles.Count - 1 do
+    begin
+      PackageFile := TPackageFile(Package.PackageFiles.Items[J]);
+      //DebugLn(['OPM DoOnUpdate: Package.Name=', Package.Name,
+      //         ', Package.DisplayName=', Package.DisplayName]);
+      PkgLinks.AddOnlineLink(Package.DownloadZipURL, Package.Name, PackageFile.Version);
+    end;
+  end;
 end;
 
 procedure TMainFrm.ShowOptions(const AActivePageIndex: Integer = 0);

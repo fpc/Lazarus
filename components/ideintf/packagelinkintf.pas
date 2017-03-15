@@ -52,7 +52,7 @@ type
   protected
     FFileDate: TDateTime;
     FFileDateValid: boolean;
-    FFilename: string;
+    FFilename: string;         // Filename or URL
     FLPLFileDate: TDateTime;
     FLPLFilename: string;
     FOrigin: TPkgLinkOrigin;
@@ -67,7 +67,10 @@ type
   public
     property LPKFileDateValid: boolean read FFileDateValid write FFileDateValid;
     property LPKFileDate: TDateTime read FFileDate write FFileDate;
-    property LPKFilename: string read FFilename write SetFilename; // if relative it is relative to the LazarusDir
+    // if relative it is relative to the LazarusDir
+    property LPKFilename: string read FFilename write SetFilename;
+    // URL is also stored in FFilename.
+    property LPKUrl: string read FFilename write FFilename;
     property LPLFilename: string read FLPLFilename write FLPLFilename;
     property LPLFileDate: TDateTime read FLPLFileDate write FLPLFileDate;
     property Origin: TPkgLinkOrigin read FOrigin write FOrigin;
@@ -97,8 +100,21 @@ type
 var
   PkgLinks: TPackageLinks;
 
+function IsUrl(const AText: string): Boolean;
+
 
 implementation
+
+// This should be in FPC's StrUtils.
+function StartsStr(const ASubText, AText: string): Boolean;
+begin
+  Result := Copy(AText,1,Length(ASubText)) = ASubText;
+end;
+
+function IsUrl(const AText: string): Boolean;
+begin
+  Result := (AText='') or StartsStr('http://', AText) or StartsStr('https://', AText);
+end;
 
 { TPackageLink }
 

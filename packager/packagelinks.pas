@@ -115,6 +115,7 @@ type
     procedure SetQueueSaveUserLinks(AValue: boolean);
     procedure OnAsyncSaveUserLinks({%H-}Data: PtrInt);
     function GetNewerLink(Link1, Link2: TLazPackageLink): TLazPackageLink;
+    function GetNewestLink(Link1, Link2, Link3: TLazPackageLink): TLazPackageLink;
   public
     UserLinkLoadTime: longint;
     UserLinkLoadTimeValid: boolean;
@@ -267,8 +268,8 @@ end;
 function TLazPackageLink.GetEffectiveFilename: string;
 begin
   Result:=LPKFilename;
-  if (not FilenameIsAbsolute(Result)) then
-    Result:=TrimFilename(EnvironmentOptions.GetParsedLazarusDirectory+PathDelim+Result);
+  if IsUrl(Result) or FilenameIsAbsolute(Result) then Exit;
+  Result:=TrimFilename(EnvironmentOptions.GetParsedLazarusDirectory+PathDelim+Result);
 end;
 
 procedure TLazPackageLink.Reference;
@@ -315,6 +316,11 @@ begin
   else
     DbgOut(' Result=nil');
   debugln;}
+end;
+
+function TLazPackageLinks.GetNewestLink(Link1, Link2, Link3: TLazPackageLink): TLazPackageLink;
+begin
+  Result := GetNewerLink(GetNewerLink(Link1, Link2), Link3);
 end;
 
 function TLazPackageLinks.FindLeftMostNode(LinkTree: TAvgLvlTree;
@@ -1055,7 +1061,13 @@ begin
   while CurNode<>nil do begin
     Result:=TLazPackageLink(CurNode.Data);
     if CompareText(PkgName,Result.Name)<>0 then break;
-    if CompareFilenames(Result.GetEffectiveFilename,LPKFilename)=0 then exit;
+    // Treat URLs and filenames differently.
+    if IsUrl(LPKFilename) then begin
+      if LPKFilename = Result.LPKFilename then exit;
+    end
+    else begin
+      if CompareFilenames(Result.GetEffectiveFilename,LPKFilename)=0 then exit;
+    end;
     CurNode:=LinkTree.FindSuccessor(CurNode);
   end;
   Result:=nil;
@@ -1145,11 +1157,12 @@ end;
 
 function TLazPackageLinks.FindLinkWithFilename(const PkgName, LPKFilename: string): TPackageLink;
 var
-  UserLink, GlobalLink: TLazPackageLink;
+  UserLink, OnlineLink, GlobalLink: TLazPackageLink;
 begin
-  UserLink:=FindLinkWithLPKFilenameInTree(FUserLinksSortID,PkgName,LPKFilename);
+  UserLink  :=FindLinkWithLPKFilenameInTree(FUserLinksSortID,PkgName,LPKFilename);
+  OnlineLink:=FindLinkWithLPKFilenameInTree(FOnlineLinks,PkgName,LPKFilename);
   GlobalLink:=FindLinkWithLPKFilenameInTree(FGlobalLinks,PkgName,LPKFilename);
-  Result:=GetNewerLink(UserLink,GlobalLink);
+  Result:=GetNewestLink(UserLink, OnlineLink, GlobalLink);
 end;
 
 procedure TLazPackageLinks.IteratePackages(MustExist: boolean;
@@ -1181,9 +1194,9 @@ begin
   Result:=TLazPackageLink.Create;
   Result.Reference;
   Result.Name:=PkgName;
-  Result.LPKFilename:=PkgFilename;
+  Result.LPKUrl:=PkgFilename;    // Actually an URL
   Result.Origin:=ploOnline;
-  if Result.IsMakingSense then
+  if IsValidPkgName(Result.Name) {Result.IsMakingSense} then
   begin
     FOnlineLinks.Add(Result);
     IncreaseChangeStamp;

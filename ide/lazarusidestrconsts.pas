@@ -310,10 +310,10 @@ resourcestring
   lisCannotOpenForm = 'Cannot open form "%s".';
   lisConvert = 'Convert';
   lisPLDShowGlobalLinksIn = 'Show global links in ';
+  lisPLDShowOnlineLinks = 'Show online links ';
   lisPLDShowUserLinksIn = 'Show user links in ';
   lrsPLDLpkFileValid = 'lpk file valid (%s)';
   lrsPLDLpkFileInvalid = 'lpk file invalid (%s)';
-  lisPLDGlobal = 'Global';
   lisCTDefDefineTemplates = 'Define templates';
   lisMenuCloseAll = 'Close A&ll';
   lisMenuCloseEditorFile = '&Close Editor File';
@@ -2745,6 +2745,8 @@ resourcestring
   lisFRIinAllOpenPackagesAndProjects = 'in all open packages and projects';
   lisFRIRenameAllReferences = 'Rename all References';
   dlgGlobal = '&Global';
+  lisPLDGlobal = 'Global';
+  lisPLDOnline = 'Online';
   lisPLDUser = 'User';
   lrsPLDValid = 'valid';
   lrsPLDInvalid = 'invalid';
