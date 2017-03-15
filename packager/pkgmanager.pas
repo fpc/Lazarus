@@ -56,7 +56,7 @@ uses
   CodeToolsConfig, CodeToolManager, CodeCache, CodeToolsStructs, BasicCodeTools,
   FileProcs, CodeTree,
   // IDE Interface
-  NewItemIntf, ProjPackIntf, ProjectIntf, PackageIntf, PackageDependencyIntf,
+  NewItemIntf, ProjPackIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, PackageLinkIntf,
   CompOptsIntf, MenuIntf, IDEWindowIntf, IDEExternToolIntf, MacroIntf, LazIDEIntf,
   IDEMsgIntf, SrcEditorIntf, ComponentReg, PropEdits, IDEDialogs, UnitResources,
   // IDE
@@ -3247,7 +3247,7 @@ end;
 function TPkgManager.AddPackageToGraph(APackage: TLazPackage): TModalResult;
 var
   ConflictPkg: TLazPackage;
-  Link: TLazPackageLink;
+  Link: TPackageLink;
 begin
   // check Package Name
   if not IsValidPkgName(APackage.Name) then begin
@@ -3689,7 +3689,7 @@ function TPkgManager.DoSavePackage(APackage: TLazPackage;
   Flags: TPkgSaveFlags): TModalResult;
 var
   XMLConfig: TCodeBufXMLConfig;
-  PkgLink: TLazPackageLink;
+  PkgLink: TPackageLink;
   Code: TCodeBuffer;
 begin
   // do not save during compilation
@@ -4039,7 +4039,7 @@ var
 
   function ReloadPkg(APackage: TLazPackage): boolean;
   var
-    Link: TLazPackageLink;
+    Link: TPackageLink;
     MsgResult: TModalResult;
     Filename: String;
   begin

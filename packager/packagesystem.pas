@@ -41,20 +41,23 @@ interface
 {$DEFINE StopOnRegError}
 
 uses
-{$IFDEF IDE_MEM_CHECK}
+  {$IFDEF IDE_MEM_CHECK}
   MemCheck,
-{$ENDIF}
-  // FPC + LCL
-  Classes, SysUtils, strutils, Forms, Controls, Dialogs,
-  FileProcs, FileUtil, LCLProc, LazFileCache,
-  Laz2_XMLCfg, LazLogger, LazFileUtils, LazUTF8, laz2_XMLRead,
+  {$ENDIF}
+  // FPC
+  Classes, SysUtils, contnrs, strutils, AVL_Tree,
+  // LCL
+  Forms, Controls, Dialogs, LCLProc,
+  // LazUtils
+  FileUtil, LazFileCache, LazLogger, LazFileUtils, LazUTF8,
+  Laz2_XMLCfg, laz2_XMLRead, AvgLvlTree,
   // codetools
-  AVL_Tree, contnrs, DefineTemplates, CodeCache,
-  BasicCodeTools, CodeToolsStructs, NonPascalCodeTools, SourceChanger,
+  FileProcs, DefineTemplates, CodeCache,
+  BasicCodeTools, NonPascalCodeTools, SourceChanger, CodeToolsStructs,
   CodeToolManager, DirectoryCacher,
   // IDEIntf,
-  IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageDependencyIntf, PackageIntf,
-  CompOptsIntf, LazIDEIntf, MacroDefIntf, ProjectIntf, LazarusPackageIntf,
+  IDEExternToolIntf, IDEDialogs, IDEMsgIntf, CompOptsIntf, LazIDEIntf, MacroDefIntf,
+  ProjectIntf, PackageDependencyIntf, PackageLinkIntf, PackageIntf, LazarusPackageIntf,
   // IDE
   LazarusIDEStrConsts, IDECmdLine, EnvironmentOpts, IDEProcs, LazConf,
   TransferMacros, DialogProcs, IDETranslations, CompilerOptions, PackageLinks,
@@ -216,7 +219,7 @@ type
     procedure SetRegistrationPackage(const AValue: TLazPackage);
     procedure UpdateBrokenDependenciesToPackage(APackage: TLazPackage);
     function OpenDependencyWithPackageLink(Dependency: TPkgDependency;
-                       PkgLink: TLazPackageLink; ShowAbort: boolean): TModalResult;
+                       PkgLink: TPackageLink; ShowAbort: boolean): TModalResult;
     function DeleteAmbiguousFiles(const Filename: string): TModalResult;
     procedure AddMessage(TheUrgency: TMessageLineUrgency; const Msg, Filename: string);
     function OutputDirectoryIsWritable(APackage: TLazPackage; Directory: string;
@@ -922,8 +925,9 @@ begin
   EndUpdate;
 end;
 
-function TLazPackageGraph.OpenDependencyWithPackageLink(Dependency: TPkgDependency;
-  PkgLink: TLazPackageLink; ShowAbort: boolean): TModalResult;
+function TLazPackageGraph.OpenDependencyWithPackageLink(
+  Dependency: TPkgDependency; PkgLink: TPackageLink; ShowAbort: boolean
+  ): TModalResult;
 var
   AFilename: String;
   NewPackage: TLazPackage;
@@ -5535,9 +5539,9 @@ function TLazPackageGraph.OpenDependency(Dependency: TPkgDependency;
 
   procedure OpenFile(AFilename: string);
   var
-    PkgLink: TLazPackageLink;
+    PkgLink: TPackageLink;
   begin
-    PkgLink:=LazPackageLinks.AddUserLink(AFilename,Dependency.PackageName);
+    PkgLink:=LazPackageLinks.AddUserLink(AFilename, Dependency.PackageName);
     if (PkgLink<>nil) then begin
       PkgLink.Reference;
       try
@@ -5556,7 +5560,7 @@ var
   MsgResult: TModalResult;
   APackage: TLazPackage;
   PreferredFilename: string;
-  PkgLink: TLazPackageLink;
+  PkgLink: TPackageLink;
   IgnoreFiles: TFilenameToStringTree;
   i: Integer;
 begin
@@ -5601,7 +5605,7 @@ begin
         IgnoreFiles:=nil;
         try
           repeat
-            PkgLink:=LazPackageLinks.FindLinkWithDependency(Dependency,IgnoreFiles);
+            PkgLink:=LazPackageLinks.FindLinkWithDependencyWithIgnore(Dependency,IgnoreFiles);
             if (PkgLink=nil) then break;
             //debugln(['TLazPackageGraph.OpenDependency PkgLink=',PkgLink.GetEffectiveFilename,' global=',PkgLink.Origin=ploGlobal]);
             PkgLink.Reference;
@@ -5732,7 +5736,7 @@ var
 var
   Dependency: TPkgDependency;
   Version: TPkgVersion;
-  PkgLink: TLazPackageLink;
+  PkgLink: TPackageLink;
   Filename: String;
   BaseDir: String;
 begin
@@ -5761,7 +5765,7 @@ begin
       Result:='';
       BaseDir:=TrimFilename(APackage.Directory);
       repeat
-        PkgLink:=LazPackageLinks.FindLinkWithDependency(Dependency,IgnoreFiles);
+        PkgLink:=LazPackageLinks.FindLinkWithDependencyWithIgnore(Dependency,IgnoreFiles);
         if PkgLink=nil then break;
         Filename:=PkgLink.GetEffectiveFilename;
         if ParseLPK(Filename,Version) then begin
@@ -5790,7 +5794,7 @@ begin
 
     // nothing found via dependencies
     // search in links
-    PkgLink:=LazPackageLinks.FindLinkWithPkgName(APackage.Name,IgnoreFiles);
+    PkgLink:=LazPackageLinks.FindLinkWithPkgNameWithIgnore(APackage.Name,IgnoreFiles);
     if PkgLink<>nil then begin
       Result:=PkgLink.GetEffectiveFilename;
       exit;

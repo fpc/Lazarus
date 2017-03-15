@@ -20,7 +20,7 @@
     <Description Value="IDEIntf - the interface units for the Lazarus IDE"/>
     <License Value="Modified LGPL2"/>
     <Version Major="1"/>
-    <Files Count="82">
+    <Files Count="83">
       <Item1>
         <Filename Value="actionseditor.pas"/>
         <UnitName Value="ActionsEditor"/>
@@ -350,6 +350,10 @@
         <Filename Value="packagedependencyintf.pas"/>
         <UnitName Value="PackageDependencyIntf"/>
       </Item82>
+      <Item83>
+        <Filename Value="packagelinkintf.pas"/>
+        <UnitName Value="PackageLinkIntf"/>
+      </Item83>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

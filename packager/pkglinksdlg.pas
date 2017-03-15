@@ -37,9 +37,16 @@ unit PkgLinksDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls,
-  Buttons, Grids, ExtCtrls, ComCtrls, Menus, AvgLvlTree, LazUTF8,
-  FileProcs, LazFileUtils, LazFileCache, PackageIntf,
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, StdCtrls, Buttons, Grids, ExtCtrls, ComCtrls, Menus,
+  // Codetools
+  FileProcs,
+  // LazUtils
+  AvgLvlTree, LazUTF8, LazFileUtils, LazFileCache,
+  // IdeIntf
+  PackageLinkIntf, PackageIntf,
+  // IDE
   LazarusIDEStrConsts, PackageLinks, LPKCache;
 
 type
