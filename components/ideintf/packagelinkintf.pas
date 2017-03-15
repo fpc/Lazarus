@@ -34,6 +34,7 @@ type
 
   TPkgLinkOrigin = (
     ploGlobal,
+    ploOnline,
     ploUser
     );
   TPkgLinkOrigins = set of TPkgLinkOrigin;
@@ -84,6 +85,8 @@ type
     function FindLinkWithFilename(const PkgName, LPKFilename: string): TPackageLink; virtual; abstract;
     procedure IteratePackages(MustExist: boolean; Event: TIteratePackagesEvent;
       Origins: TPkgLinkOrigins = AllPkgLinkOrigins); virtual; abstract;
+    function AddOnlineLink(const PkgFilename, PkgName: string;
+      PkgVersion: TPkgVersion): TPackageLink; virtual; abstract;
     function AddUserLink(APackage: TIDEPackage): TPackageLink; virtual; abstract;
     // do not use this if package is open in IDE
     function AddUserLink(const PkgFilename, PkgName: string): TPackageLink; virtual; abstract;
