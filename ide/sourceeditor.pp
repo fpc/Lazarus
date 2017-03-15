@@ -1433,7 +1433,11 @@ begin
   if not (Sender is TIDESpecialCommand) then exit;
   if TIDESpecialCommand(Sender).Command = nil then exit;
   ActEdit := SourceEditorManager.ActiveEditor;
-  if ActEdit = nil then exit;
+  if ActEdit = nil then
+  begin
+    TIDESpecialCommand(Sender).Command.Execute(Sender);
+    exit;
+  end;
   r := TIDESpecialCommand(Sender).Command.OnExecuteProc = @ExecuteIdeMenuClick;
   if r then
     TIDESpecialCommand(Sender).Command.OnExecuteProc := nil;
