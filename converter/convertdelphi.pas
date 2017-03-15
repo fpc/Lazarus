@@ -43,7 +43,7 @@ uses
   LazIDEIntf, PackageIntf, ProjectIntf, IDEExternToolIntf, IDEOptionsIntf,
   // IDE
   IDEProcs, DialogProcs, CompilerOptions,
-  ProjPackBase, Project, ProjectDefs, PackageDefs, PackageSystem, PackageEditor,
+  ProjPackCommon, Project, ProjectDefs, PackageDefs, PackageSystem, PackageEditor,
   BasePkgManager, LazarusIDEStrConsts,
   // Converter
   ConverterTypes, ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg,

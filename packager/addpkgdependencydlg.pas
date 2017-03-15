@@ -13,7 +13,7 @@ uses
   // IDEIntf
   IDEWindowIntf, PackageIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, PackageDefs, PackageSystem, ProjPackBase, ProjPackChecks;
+  LazarusIDEStrConsts, PackageDefs, PackageSystem, ProjPackCommon, ProjPackChecks;
 
 type
 

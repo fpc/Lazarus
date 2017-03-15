@@ -63,7 +63,7 @@ uses
   CompOptsModes, ProjectResources, LazConf, W32Manifest, ProjectIcon,
   IDECmdLine, IDEProcs, CompilerOptions, RunParamsOpts, ModeMatrixOpts,
   TransferMacros, ProjectDefs, FileReferenceList, EditDefineTree,
-  LazarusIDEStrConsts, ProjPackBase, PackageDefs, PackageSystem;
+  LazarusIDEStrConsts, ProjPackCommon, PackageDefs, PackageSystem;
 
 type
   TUnitInfo = class;

@@ -49,7 +49,7 @@ uses
   PropEdits, LazIDEIntf, MacroIntf, MacroDefIntf, PackageIntf, IDEOptionsIntf,
   ProjPackIntf, IDEDialogs, ComponentReg,
   // IDE
-  EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, ProjPackBase,
+  EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, ProjPackCommon,
   LazarusIDEStrConsts, IDEProcs, TransferMacros, FileReferenceList, PublishModule;
 
 type

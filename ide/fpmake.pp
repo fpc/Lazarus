@@ -407,7 +407,7 @@ begin
     T:=P.Targets.AddUnit('../packager/missingpkgfilesdlg.pas');
     T:=P.Targets.AddUnit('../packager/openinstalledpkgdlg.pas');
     T:=P.Targets.AddUnit('../packager/packagedefs.pas');
-    T.Dependencies.AddUnit('projpackbase');
+    T.Dependencies.AddUnit('projpackcommon');
     T:=P.Targets.AddUnit('../packager/packageeditor.pas');
     T:=P.Targets.AddUnit('../packager/packagelinks.pas');
     T:=P.Targets.AddUnit('../packager/pkggraphexplorer.pas');
@@ -439,7 +439,7 @@ begin
     T:=P.Targets.AddUnit('lazarusidestrconsts.pas');
     T:=P.Targets.AddUnit('environmentopts.pp');
     T:=P.Targets.AddUnit('compileroptions.pp');
-    T:=P.Targets.AddUnit('../packager/projpackbase.pas');
+    T:=P.Targets.AddUnit('../packager/projpackcommon.pas');
     T.Dependencies.AddUnit('filereferencelist');
     T:=P.Targets.AddUnit('filereferencelist.pas');
 

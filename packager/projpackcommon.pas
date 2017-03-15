@@ -1,4 +1,4 @@
-unit ProjPackBase;
+unit ProjPackCommon;
 
 {$mode objfpc}{$H+}
 {.$INTERFACES CORBA}   // No reference counting for IProjPack. (does not work)

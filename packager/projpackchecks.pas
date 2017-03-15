@@ -13,7 +13,7 @@ uses
   // IDEIntf
   ComponentReg, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, IDEDefs, Project, PackageSystem, PackageDefs, ProjPackBase;
+  LazarusIDEStrConsts, IDEDefs, Project, PackageSystem, PackageDefs, ProjPackCommon;
 
 // Packages:
 type
