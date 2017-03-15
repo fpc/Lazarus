@@ -1409,7 +1409,7 @@ begin
     exit;
 
   if fNewMainUsesSectionUnits=nil then
-    fNewMainUsesSectionUnits:=TAVLTree.Create(TListSortCompare(@CompareIdentifiers));
+    fNewMainUsesSectionUnits:=TAVLTree.Create(TListSortCompare(@CompareDottedIdentifiers));
   //DebugLn(['TCodeCompletionCodeTool.AddNeededUnitToMainUsesSection AnUnitName="',AnUnitName,'"']);
   if fNewMainUsesSectionUnits.Find(AnUnitName)<>nil then exit;
   s:=GetIdentifier(AnUnitName);
@@ -8175,6 +8175,11 @@ begin
       RemoveNewMainUsesSectionUnit(@Src[CurPos.StartPos]);
       ReadNextAtom;
       if UpAtomIs('IN') then begin
+        ReadNextAtom;
+        ReadNextAtom;
+      end;
+      while AtomIsChar('.') do
+      begin
         ReadNextAtom;
         ReadNextAtom;
       end;
