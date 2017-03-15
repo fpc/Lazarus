@@ -22,7 +22,7 @@ uses
   ProjectIntf, ProjectResourcesIntf, PropEdits, PropEditUtils, SrcEditorIntf, 
   StatusBarPropEdit, StringsPropEditDlg, TextTools, TreeViewPropEdit, 
   UnitResources, ProjPackIntf, DBGridColumnsPropEditForm, ToolBarIntf, 
-  ChangeParentDlg, LazarusPackageIntf;
+  ChangeParentDlg, PackageDependencyIntf, LazarusPackageIntf;
 
 implementation
 

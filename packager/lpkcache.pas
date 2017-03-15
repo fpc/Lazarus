@@ -51,9 +51,14 @@ unit LPKCache;
 interface
 
 uses
-  Classes, SysUtils, PackageLinks, PackageDefs, PackageSystem, PackageIntf,
-  EnvironmentOpts, LCLProc, LazFileUtils, AvgLvlTree, Laz2_XMLCfg,
-  LazLoggerBase, LazMethodList;
+  Classes, SysUtils,
+  LCLProc,
+  // LazUtils
+  LazFileUtils, AvgLvlTree, Laz2_XMLCfg, LazLoggerBase, LazMethodList,
+  // IdeIntf
+  PackageDependencyIntf, PackageIntf,
+  // IDE
+  EnvironmentOpts, PackageLinks, PackageDefs, PackageSystem;
 
 type
   TLPKInfoState = (

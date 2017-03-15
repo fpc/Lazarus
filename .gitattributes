@@ -1869,6 +1869,7 @@ components/ideintf/objectinspector.lfm svneol=native#text/plain
 components/ideintf/objectinspector.pp svneol=native#text/pascal
 components/ideintf/objinspstrconsts.pas svneol=native#text/pascal
 components/ideintf/oifavoriteproperties.pas svneol=native#text/pascal
+components/ideintf/packagedependencyintf.pas svneol=native#text/pascal
 components/ideintf/packageintf.pas svneol=native#text/pascal
 components/ideintf/pagespropeditdlg.lfm svneol=native#text/plain
 components/ideintf/pagespropeditdlg.pas svneol=native#text/pascal

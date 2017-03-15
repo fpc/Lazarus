@@ -5,9 +5,13 @@ unit package_description_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Dialogs, Controls, StdCtrls, Spin, LCLProc,
-  PackageIntf, IDEOptionsIntf, LazarusIDEStrConsts, PackageDefs, PackageSystem,
-  BrokenDependenciesDlg;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, StdCtrls, Spin, LCLProc,
+  // IdeIntf
+  PackageDependencyIntf, IDEOptionsIntf,
+  // IDE
+  LazarusIDEStrConsts, PackageDefs, PackageSystem, BrokenDependenciesDlg;
 
 type
 

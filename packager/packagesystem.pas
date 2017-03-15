@@ -53,7 +53,7 @@ uses
   BasicCodeTools, CodeToolsStructs, NonPascalCodeTools, SourceChanger,
   CodeToolManager, DirectoryCacher,
   // IDEIntf,
-  IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
+  IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageDependencyIntf, PackageIntf,
   CompOptsIntf, LazIDEIntf, MacroDefIntf, ProjectIntf, LazarusPackageIntf,
   // IDE
   LazarusIDEStrConsts, IDECmdLine, EnvironmentOpts, IDEProcs, LazConf,

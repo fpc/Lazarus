@@ -41,14 +41,14 @@ uses
   LCLType, LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
   ExtCtrls, ComCtrls, ImgList, TreeFilterEdit,
   // Codetools
-  KeywordFuncLists, BasicCodeTools,
+  BasicCodeTools,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, AvgLvlTree, Laz2_XMLCfg,
+  LazFileUtils, AvgLvlTree, Laz2_XMLCfg,
   // IdeIntf
-  PackageIntf, IDEImagesIntf, IDEHelpIntf, IDEDialogs, IDEWindowIntf,
+  PackageDependencyIntf, PackageIntf, IDEImagesIntf, IDEHelpIntf, IDEDialogs, IDEWindowIntf,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
-  LazConf, IDEProcs, PackageDefs, PackageSystem, PackageLinks, LPKCache;
+  LazarusIDEStrConsts, InputHistory,
+  LazConf, PackageDefs, PackageSystem, LPKCache;
 
 type
   TOnCheckInstallPackageList =

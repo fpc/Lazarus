@@ -42,7 +42,7 @@ uses
   FileUtil, LazFileUtils, LazFileCache,
   // IDEIntf
   IDEImagesIntf, MenuIntf, LazIDEIntf, ProjectIntf, CodeToolsStructs,
-  FormEditingIntf, PackageIntf, IDEHelpIntf, IDEOptionsIntf,
+  FormEditingIntf, PackageDependencyIntf, PackageIntf, IDEHelpIntf, IDEOptionsIntf,
   NewItemIntf, IDEWindowIntf, IDEDialogs, ComponentReg,
   // IDE
   MainBase, IDEProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,

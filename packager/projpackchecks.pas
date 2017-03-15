@@ -11,7 +11,7 @@ uses
   // LazUtils
   FileUtil, LazFileUtils,
   // IDEIntf
-  ComponentReg, IDEDialogs,
+  PackageDependencyIntf, ComponentReg, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, IDEDefs, Project, PackageSystem, PackageDefs, ProjPackCommon;
 

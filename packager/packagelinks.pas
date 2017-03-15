@@ -39,10 +39,17 @@ unit PackageLinks;
 interface
 
 uses
-  Classes, SysUtils, Laz2_XMLCfg, FileProcs, LazFileCache,
-  CodeToolManager, CodeToolsStructs,
-  LCLProc, Forms, FileUtil, AvgLvlTree, lazutf8classes, LazFileUtils, MacroIntf,
-  PackageIntf, IDEProcs, EnvironmentOpts, PackageDefs, LazConf, IDECmdLine;
+  Classes, SysUtils,
+  // LCL
+  Forms, LCLProc,
+  // LazUtils
+  Laz2_XMLCfg, LazFileCache, AvgLvlTree, LazUTF8Classes, LazFileUtils, FileUtil,
+  // Codetools
+  FileProcs, CodeToolManager, CodeToolsStructs,
+  // IdeIntf
+  MacroIntf, PackageDependencyIntf, PackageIntf,
+  // IDE
+  IDEProcs, EnvironmentOpts, LazConf, IDECmdLine, PackageDefs;
   
 const
   PkgLinksFileVersion = 3;

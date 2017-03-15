@@ -11,7 +11,7 @@ uses
   // LazControls
   ListFilterEdit,
   // IDEIntf
-  IDEWindowIntf, PackageIntf, IDEDialogs,
+  IDEWindowIntf, PackageDependencyIntf, PackageIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, PackageDefs, PackageSystem, ProjPackCommon, ProjPackChecks;
 

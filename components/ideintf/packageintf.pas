@@ -16,8 +16,13 @@ unit PackageIntf;
 interface
 
 uses
-  Classes, SysUtils, contnrs, LCLProc, Forms, LazConfigStorage,
-  NewItemIntf, ProjPackIntf, IDEOptionsIntf;
+  Classes, SysUtils, contnrs,
+  // LCL
+  LCLProc, Forms,
+  // LazUtils
+  LazConfigStorage,
+  // IdeIntf
+  NewItemIntf, ProjPackIntf, PackageDependencyIntf;
   
 const
   PkgDescGroupName = 'Package';
@@ -42,36 +47,6 @@ const
   PkgFileRealUnitTypes = [pftUnit,pftMainUnit];
 
 type
-  { TPkgVersion }
-
-  TPkgVersionValid = (
-    pvtNone,
-    pvtMajor,
-    pvtMinor,
-    pvtRelease,
-    pvtBuild
-    );
-
-  TPkgVersion = class
-  public
-    Major: integer;
-    Minor: integer;
-    Release: integer;
-    Build: integer;
-    Valid: TPkgVersionValid;
-    OnChange: TNotifyEvent;
-    procedure Clear;
-    function Compare(Version2: TPkgVersion): integer;
-    function CompareMask(ExactVersion: TPkgVersion): integer;
-    procedure Assign(Source: TPkgVersion);
-    function AsString: string;
-    function AsWord: string;
-    function ReadString(const s: string): boolean;
-    procedure SetValues(NewMajor, NewMinor, NewRelease, NewBuild: integer;
-                        NewValid: TPkgVersionValid = pvtBuild);
-    function VersionBound(v: integer): integer;
-  end;
-
   TIDEPackage = class;
 
   { TLazPackageFile }
@@ -94,6 +69,32 @@ type
     property DisableI18NForLFM: boolean read FDisableI18NForLFM write SetDisableI18NForLFM;
     property FileType: TPkgFileType read FFileType write SetFileType;
     property InUses: boolean read GetInUses write SetInUses; // added to uses section of package
+  end;
+
+  { PkgDependency flags }
+
+  TLoadPackageResult = (
+    lprUndefined,
+    lprSuccess,
+    lprNotFound,
+    lprLoadError
+    );
+
+  { TPkgDependencyID }
+
+  TPkgDependencyID = class(TPkgDependencyBase)
+  private
+    procedure SetRequiredPackage(const AValue: TIDEPackage);
+  protected
+    FLoadPackageResult: TLoadPackageResult;
+    FRequiredPackage: TIDEPackage;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear; override;
+  public
+    property LoadPackageResult: TLoadPackageResult read FLoadPackageResult write FLoadPackageResult;
+    property RequiredIDEPackage: TIDEPackage read FRequiredPackage write SetRequiredPackage;
   end;
 
   { TLazPackageID }
@@ -135,9 +136,9 @@ type
   TIDEPackage = class(TLazPackageID)
   protected
     FAutoInstall: TPackageInstallType;
+    FChangeStamp: integer;
     FCustomOptions: TConfigStorage;
     FFilename: string;
-    FChangeStamp: integer;
     function GetDirectoryExpanded: string; virtual; abstract;
     function GetFileCount: integer; virtual; abstract;
     function GetPkgFiles(Index: integer): TLazPackageFile; virtual; abstract;
@@ -154,16 +155,18 @@ type
     constructor Create; override;
     destructor Destroy; override;
     procedure ClearCustomOptions;
+    // used by dependencies
+    procedure AddUsedByDependency(Dependency: TPkgDependencyBase); virtual; abstract;
+    procedure RemoveUsedByDependency(Dependency: TPkgDependencyBase); virtual; abstract;
   public
-    property AutoInstall: TPackageInstallType read FAutoInstall
-                                              write SetAutoInstall;
+    property AutoInstall: TPackageInstallType read FAutoInstall write SetAutoInstall;
     property Filename: string read FFilename write SetFilename;//the .lpk filename
-    property Modified: boolean read GetModified write SetModified;
-    property DirectoryExpanded: string read GetDirectoryExpanded;
-    property CustomOptions: TConfigStorage read FCustomOptions;
     property ChangeStamp: integer read FChangeStamp;
+    property CustomOptions: TConfigStorage read FCustomOptions;
+    property DirectoryExpanded: string read GetDirectoryExpanded;
     property FileCount: integer read GetFileCount;
     property Files[Index: integer]: TLazPackageFile read GetPkgFiles;
+    property Modified: boolean read GetModified write SetModified;
     property RemovedFilesCount: integer read GetRemovedCount;
     property RemovedFiles[Index: integer]: TLazPackageFile read GetRemovedPkgFiles;
   end;
@@ -474,123 +477,36 @@ begin
     FDescriptor:=TNewItemPackage(Source).Descriptor;
 end;
 
-{ TPkgVersion }
+{ TLazPackageID }
 
-procedure TPkgVersion.Clear;
+constructor TPkgDependencyID.Create;
 begin
-  SetValues(0,0,0,0,pvtBuild);
+  inherited Create;
 end;
 
-function TPkgVersion.Compare(Version2: TPkgVersion): integer;
+destructor TPkgDependencyID.Destroy;
 begin
-  Result:=Major-Version2.Major;
-  if Result<>0 then exit;
-  Result:=Minor-Version2.Minor;
-  if Result<>0 then exit;
-  Result:=Release-Version2.Release;
-  if Result<>0 then exit;
-  Result:=Build-Version2.Build;
+  RequiredIDEPackage:=nil;
+  inherited Destroy;
 end;
 
-function TPkgVersion.CompareMask(ExactVersion: TPkgVersion): integer;
+procedure TPkgDependencyID.Clear;
 begin
-  if Valid=pvtNone then exit(0);
-  Result:=Major-ExactVersion.Major;
-  if Result<>0 then exit;
-  if Valid=pvtMajor then exit;
-  Result:=Minor-ExactVersion.Minor;
-  if Result<>0 then exit;
-  if Valid=pvtMinor then exit;
-  Result:=Release-ExactVersion.Release;
-  if Result<>0 then exit;
-  if Valid=pvtRelease then exit;
-  Result:=Build-ExactVersion.Build;
+  inherited Clear;
+  RequiredIDEPackage:=nil;
 end;
 
-procedure TPkgVersion.Assign(Source: TPkgVersion);
-begin
-  SetValues(Source.Major,Source.Minor,Source.Release,Source.Build,Source.Valid);
-end;
+// Setters
 
-function TPkgVersion.AsString: string;
+procedure TPkgDependencyID.SetRequiredPackage(const AValue: TIDEPackage);
 begin
-  Result:=IntToStr(Major)+'.'+IntToStr(Minor);
-  if (Build<>0) then
-    Result:=Result+'.'+IntToStr(Release)+'.'+IntToStr(Build)
-  else if (Release<>0) then
-    Result:=Result+'.'+IntToStr(Release)
-end;
-
-function TPkgVersion.AsWord: string;
-begin
-  Result:=IntToStr(Major)+'_'+IntToStr(Minor);
-  if (Build<>0) then
-    Result:=Result+'_'+IntToStr(Release)+'_'+IntToStr(Build)
-  else if (Release<>0) then
-    Result:=Result+'_'+IntToStr(Release)
-end;
-
-function TPkgVersion.ReadString(const s: string): boolean;
-var
-  ints: array[1..4] of integer;
-  i: integer;
-  CurPos: Integer;
-  StartPos: Integer;
-  NewValid: TPkgVersionValid;
-begin
-  Result:=false;
-  CurPos:=1;
-  NewValid:=pvtNone;
-  for i:=1 to 4 do begin
-    ints[i]:=0;
-    if CurPos<length(s) then begin
-      if i>Low(ints) then begin
-        // read point
-        if s[CurPos]<>'.' then exit;
-        inc(CurPos);
-      end;
-      // read int
-      StartPos:=CurPos;
-      while (CurPos<=length(s)) and (i<=9999)
-      and (s[CurPos] in ['0'..'9']) do begin
-        ints[i]:=ints[i]*10+ord(s[CurPos])-ord('0');
-        inc(CurPos);
-      end;
-      if (StartPos=CurPos) then exit;
-      NewValid:=succ(NewValid);
-    end;
-  end;
-  if CurPos<=length(s) then exit;
-  SetValues(ints[1],ints[2],ints[3],ints[4],NewValid);
-
-  Result:=true;
-end;
-
-procedure TPkgVersion.SetValues(NewMajor, NewMinor, NewRelease,
-  NewBuild: integer; NewValid: TPkgVersionValid);
-begin
-  NewMajor:=VersionBound(NewMajor);
-  NewMinor:=VersionBound(NewMinor);
-  NewRelease:=VersionBound(NewRelease);
-  NewBuild:=VersionBound(NewBuild);
-  if (NewMajor=Major) and (NewMinor=Minor) and (NewRelease=Release)
-  and (NewBuild=Build) and (NewValid=Valid) then exit;
-  Major:=NewMajor;
-  Minor:=NewMinor;
-  Release:=NewRelease;
-  Build:=NewBuild;
-  Valid:=NewValid;
-  if Assigned(OnChange) then OnChange(Self);
-end;
-
-function TPkgVersion.VersionBound(v: integer): integer;
-begin
-  if v>9999 then
-    Result:=9999
-  else if v<0 then
-    Result:=0
-  else
-    Result:=v;
+  if FRequiredPackage=AValue then exit;
+  if FRequiredPackage<>nil then
+    FRequiredPackage.RemoveUsedByDependency(Self);
+  FLoadPackageResult:=lprUndefined;
+  FRequiredPackage:=AValue;
+  if FRequiredPackage<>nil then
+    FRequiredPackage.AddUsedByDependency(Self);
 end;
 
 { TLazPackageID }
