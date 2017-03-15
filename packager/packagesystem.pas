@@ -216,7 +216,7 @@ type
     procedure SetRegistrationPackage(const AValue: TLazPackage);
     procedure UpdateBrokenDependenciesToPackage(APackage: TLazPackage);
     function OpenDependencyWithPackageLink(Dependency: TPkgDependency;
-                       PkgLink: TPackageLink; ShowAbort: boolean): TModalResult;
+                       PkgLink: TLazPackageLink; ShowAbort: boolean): TModalResult;
     function DeleteAmbiguousFiles(const Filename: string): TModalResult;
     procedure AddMessage(TheUrgency: TMessageLineUrgency; const Msg, Filename: string);
     function OutputDirectoryIsWritable(APackage: TLazPackage; Directory: string;
@@ -922,9 +922,8 @@ begin
   EndUpdate;
 end;
 
-function TLazPackageGraph.OpenDependencyWithPackageLink(
-  Dependency: TPkgDependency; PkgLink: TPackageLink;
-  ShowAbort: boolean): TModalResult;
+function TLazPackageGraph.OpenDependencyWithPackageLink(Dependency: TPkgDependency;
+  PkgLink: TLazPackageLink; ShowAbort: boolean): TModalResult;
 var
   AFilename: String;
   NewPackage: TLazPackage;
@@ -1757,7 +1756,7 @@ begin
     // no package with same name open
     // -> try package links
     if fpfSearchInPkgLinks in Flags then
-      if PkgLinks.FindLinkWithDependency(Dependency)<>nil then exit;
+      if LazPackageLinks.FindLinkWithDependency(Dependency)<>nil then exit;
   end else begin
     // there is already a package with this name open, but the wrong version
   end;
@@ -5222,7 +5221,7 @@ var
   begin
     if not HaveUpdatedGlobalPkgLinks then
     begin
-      PkgLinks.UpdateGlobalLinks;
+      LazPackageLinks.UpdateGlobalLinks;
       HaveUpdatedGlobalPkgLinks:=true;
     end;
   end;
@@ -5536,14 +5535,14 @@ function TLazPackageGraph.OpenDependency(Dependency: TPkgDependency;
 
   procedure OpenFile(AFilename: string);
   var
-    PkgLink: TPackageLink;
+    PkgLink: TLazPackageLink;
   begin
-    PkgLink:=PkgLinks.AddUserLink(AFilename,Dependency.PackageName);
+    PkgLink:=LazPackageLinks.AddUserLink(AFilename,Dependency.PackageName);
     if (PkgLink<>nil) then begin
       PkgLink.Reference;
       try
         if OpenDependencyWithPackageLink(Dependency,PkgLink,false)<>mrOk then
-          PkgLinks.RemoveUserLink(PkgLink);
+          LazPackageLinks.RemoveUserLink(PkgLink);
       finally
         PkgLink.Release;
       end;
@@ -5557,7 +5556,7 @@ var
   MsgResult: TModalResult;
   APackage: TLazPackage;
   PreferredFilename: string;
-  PkgLink: TPackageLink;
+  PkgLink: TLazPackageLink;
   IgnoreFiles: TFilenameToStringTree;
   i: Integer;
 begin
@@ -5602,7 +5601,7 @@ begin
         IgnoreFiles:=nil;
         try
           repeat
-            PkgLink:=PkgLinks.FindLinkWithDependency(Dependency,IgnoreFiles);
+            PkgLink:=LazPackageLinks.FindLinkWithDependency(Dependency,IgnoreFiles);
             if (PkgLink=nil) then break;
             //debugln(['TLazPackageGraph.OpenDependency PkgLink=',PkgLink.GetEffectiveFilename,' global=',PkgLink.Origin=ploGlobal]);
             PkgLink.Reference;
@@ -5612,7 +5611,7 @@ begin
               if IgnoreFiles=nil then
                 IgnoreFiles:=TFilenameToStringTree.Create(false);
               IgnoreFiles[PkgLink.GetEffectiveFilename]:='1';
-              PkgLinks.RemoveUserLink(PkgLink);
+              LazPackageLinks.RemoveUserLink(PkgLink);
             finally
               PkgLink.Release;
             end;
@@ -5671,7 +5670,7 @@ begin
           then begin
             // the lazarus directory is not set
             debugln(['Note: (lazarus) The Lazarus directory is not set. Pass parameter --lazarusdir.']);
-          end else if not DirPathExistsCached(PkgLinks.GetGlobalLinkDirectory)
+          end else if not DirPathExistsCached(LazPackageLinks.GetGlobalLinkDirectory)
           then begin
             debugln(['Note: (lazarus) The lpl directory is missing. Check that the Lazarus (--lazarusdir) directory is correct.']);
           end;
@@ -5733,7 +5732,7 @@ var
 var
   Dependency: TPkgDependency;
   Version: TPkgVersion;
-  PkgLink: TPackageLink;
+  PkgLink: TLazPackageLink;
   Filename: String;
   BaseDir: String;
 begin
@@ -5762,7 +5761,7 @@ begin
       Result:='';
       BaseDir:=TrimFilename(APackage.Directory);
       repeat
-        PkgLink:=PkgLinks.FindLinkWithDependency(Dependency,IgnoreFiles);
+        PkgLink:=LazPackageLinks.FindLinkWithDependency(Dependency,IgnoreFiles);
         if PkgLink=nil then break;
         Filename:=PkgLink.GetEffectiveFilename;
         if ParseLPK(Filename,Version) then begin
@@ -5791,7 +5790,7 @@ begin
 
     // nothing found via dependencies
     // search in links
-    PkgLink:=PkgLinks.FindLinkWithPkgName(APackage.Name,IgnoreFiles);
+    PkgLink:=LazPackageLinks.FindLinkWithPkgName(APackage.Name,IgnoreFiles);
     if PkgLink<>nil then begin
       Result:=PkgLink.GetEffectiveFilename;
       exit;
@@ -5845,7 +5844,7 @@ begin
     end;
     AddPackage(BrokenPackage);
     //DebugLn('TLazPackageGraph.OpenInstalledDependency ',BrokenPackage.IDAsString,' ',dbgs(ord(BrokenPackage.AutoInstall)));
-    if (not Quiet) and DirPathExistsCached(PkgLinks.GetGlobalLinkDirectory)
+    if (not Quiet) and DirPathExistsCached(LazPackageLinks.GetGlobalLinkDirectory)
     then begin
       // tell the user
       CurResult:=IDEQuestionDialog(lisPkgSysPackageFileNotFound,
@@ -5950,7 +5949,7 @@ begin
   end;
   // iterate in package links
   if (fpfSearchInPkgLinks in Flags) then begin
-    PkgLinks.IteratePackages(fpfPkgLinkMustExist in Flags,Event);
+    LazPackageLinks.IteratePackages(fpfPkgLinkMustExist in Flags,Event);
   end;
 end;
 

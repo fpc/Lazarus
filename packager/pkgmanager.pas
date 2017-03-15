@@ -995,7 +995,7 @@ end;
 
 procedure TPkgManager.PackageGraphAddPackage(Pkg: TLazPackage);
 begin
-  if FileExistsUTF8(Pkg.FileName) then PkgLinks.AddUserLink(Pkg);
+  if FileExistsUTF8(Pkg.FileName) then LazPackageLinks.AddUserLink(Pkg);
   if PackageGraphExplorer<>nil then
     PackageGraphExplorer.UpdatePackageAdded(Pkg);
 end;
@@ -2915,8 +2915,8 @@ begin
   OnPackageFileLoaded:=@PackageFileLoaded;
 
   // package links
-  PkgLinks:=TPackageLinks.Create;
-  PkgLinks.UpdateAll;
+  LazPackageLinks:=TLazPackageLinks.Create;
+  LazPackageLinks.UpdateAll;
 
   // package graph
   PackageGraph:=TLazPackageGraph.Create;
@@ -2988,7 +2988,7 @@ begin
   FreeThenNil(PackageGraphExplorer);
   FreeThenNil(PackageEditors);
   FreeThenNil(PackageGraph);
-  FreeThenNil(PkgLinks);
+  FreeThenNil(LazPackageLinks);
   FreeThenNil(PackageDependencies);
   inherited Destroy;
 end;
@@ -3247,7 +3247,7 @@ end;
 function TPkgManager.AddPackageToGraph(APackage: TLazPackage): TModalResult;
 var
   ConflictPkg: TLazPackage;
-  Link: TPackageLink;
+  Link: TLazPackageLink;
 begin
   // check Package Name
   if not IsValidPkgName(APackage.Name) then begin
@@ -3291,11 +3291,11 @@ begin
 
   // save package file links
   //DebugLn(['TPkgManager.AddPackageToGraph ',APackage.Name]);
-  Link:=PkgLinks.AddUserLink(APackage);
+  Link:=LazPackageLinks.AddUserLink(APackage);
   if Link<>nil then
   begin
     //debugln(['Hint: (lazarus) TPkgManager.AddPackageToGraph LinkLastUsed=',DateToCfgStr(Link.LastUsed,DateTimeAsCfgStrFormat),' ',dbgs(Link.Origin)]);
-    PkgLinks.SaveUserLinks;
+    LazPackageLinks.SaveUserLinks;
   end;
 
   Result:=mrOk;
@@ -3316,7 +3316,7 @@ begin
       BrokenDependencies.Free;
     end;
   end;
-  PkgLinks.SaveUserLinks;
+  LazPackageLinks.SaveUserLinks;
 end;
 
 function TPkgManager.AddProjectDependency(AProject: TProject;
@@ -3665,7 +3665,7 @@ begin
   else
     Result:=mrOk;
 
-  PkgLinks.SaveUserLinks;
+  LazPackageLinks.SaveUserLinks;
 
   // the source editor highlighting depends on the compiler mode
   MainIDEInterface.UpdateHighlighters;
@@ -3689,7 +3689,7 @@ function TPkgManager.DoSavePackage(APackage: TLazPackage;
   Flags: TPkgSaveFlags): TModalResult;
 var
   XMLConfig: TCodeBufXMLConfig;
-  PkgLink: TPackageLink;
+  PkgLink: TLazPackageLink;
   Code: TCodeBuffer;
 begin
   // do not save during compilation
@@ -3744,11 +3744,11 @@ begin
       Result:=SaveXMLConfigToCodeBuffer(APackage.Filename,XMLConfig,Code,true);
       if Result<>mrOk then exit;
       APackage.LPKSource:=Code;
-      PkgLink:=PkgLinks.AddUserLink(APackage);
+      PkgLink:=LazPackageLinks.AddUserLink(APackage);
       if PkgLink<>nil then begin
         PkgLink.LPKFileDate:=FileDateToDateTimeDef(FileAgeUTF8(APackage.Filename));
         PkgLink.LPKFileDateValid:=true;
-        PkgLinks.SaveUserLinks;
+        LazPackageLinks.SaveUserLinks;
       end;
     finally
       XMLConfig.Free;
@@ -4039,7 +4039,7 @@ var
 
   function ReloadPkg(APackage: TLazPackage): boolean;
   var
-    Link: TPackageLink;
+    Link: TLazPackageLink;
     MsgResult: TModalResult;
     Filename: String;
   begin
@@ -4048,7 +4048,7 @@ var
     if not PkgInOldLazarusDir(APackage) then exit;
     // this package was from the old lazarus source directory
     // check if there is a package in the new version
-    Link:=PkgLinks.FindLinkWithPkgName(APackage.Name);
+    Link:=LazPackageLinks.FindLinkWithPkgName(APackage.Name);
     if Link<>nil then begin
       Filename:=TrimFilename(Link.LPKFilename);
       if not FilenameIsAbsolute(Filename) then
@@ -4072,10 +4072,11 @@ begin
   NewLazarusSrcDir:=EnvironmentOptions.GetParsedLazarusDirectory;
   FLastLazarusSrcDir:=NewLazarusSrcDir;
   if CompareFilenames(OldLazarusSrcDir,NewLazarusSrcDir)=0 then exit;
-  debugln(['Hint: (lazarus) [TPkgManager.LazarusSrcDirChanged] loading new lpl files from ',PkgLinks.GetGlobalLinkDirectory]);
-  if PkgLinks.IsUpdating then
-    debugln(['Warning: (lazarus) [TPkgManager.LazarusSrcDirChanged] inconsistency: pkglinks are locked']);
-  PkgLinks.UpdateGlobalLinks;
+  debugln(['Hint: (lazarus) [TPkgManager.LazarusSrcDirChanged] loading new lpl files from ',
+           LazPackageLinks.GetGlobalLinkDirectory]);
+  if LazPackageLinks.IsUpdating then
+    debugln(['Warning: (lazarus) [TPkgManager.LazarusSrcDirChanged] inconsistency: LazPackageLinks are locked']);
+  LazPackageLinks.UpdateGlobalLinks;
 
   VisitedPkgs:=TStringToStringTree.Create(false);
   ReloadPkgs:=TStringList.Create;

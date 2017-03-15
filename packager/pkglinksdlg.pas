@@ -46,7 +46,7 @@ type
 
   { TPkgLinkInfo }
 
-  TPkgLinkInfo = class(TPackageLink)
+  TPkgLinkInfo = class(TLazPackageLink)
   private
     FEffectiveFilename: string;
     FIsValid: boolean;
@@ -183,13 +183,13 @@ begin
         end;
       end else begin
         // delete user link
-        PkgLinks.RemoveUserLinks(Link);
+        LazPackageLinks.RemoveUserLinks(Link);
       end;
     end;
   end;
   RescanGlobalLinks;
   UpdatePackageList;
-  PkgLinks.SaveUserLinks;
+  LazPackageLinks.SaveUserLinks;
 end;
 
 procedure TPackageLinksDialog.FormDestroy(Sender: TObject);
@@ -276,11 +276,11 @@ begin
     FLinks:=TAvgLvlTree.Create(@ComparePackageLinks);
   if ShowGlobalLinksCheckBox.Checked then begin
     FCollectingOrigin:=ploGlobal;
-    PkgLinks.IteratePackages(false,@IteratePackages,[ploGlobal]);
+    LazPackageLinks.IteratePackages(false,@IteratePackages,[ploGlobal]);
   end;
   if ShowUserLinksCheckBox.Checked then begin
     FCollectingOrigin:=ploUser;
-    PkgLinks.IteratePackages(false,@IteratePackages,[ploUser]);
+    LazPackageLinks.IteratePackages(false,@IteratePackages,[ploUser]);
   end;
 
   // query additional information from lpk files
@@ -392,10 +392,10 @@ end;
 procedure TPackageLinksDialog.UpdateFacets;
 begin
   ShowGlobalLinksCheckBox.Caption:=lisPLDShowGlobalLinksIn
-     +PkgLinks.GetGlobalLinkDirectory+'*.lpl'
+     +LazPackageLinks.GetGlobalLinkDirectory+'*.lpl'
      +' ('+IntToStr(CountGlobalLinks)+')';
   ShowUserLinksCheckBox.Caption:=lisPLDShowUserLinksIn
-     +PkgLinks.GetUserLinkFile
+     +LazPackageLinks.GetUserLinkFile
      +' ('+IntToStr(CountUserLinks)+')';
   LPKFileValidCheckBox.Caption:=Format(lrsPLDLpkFileValid, [IntToStr(
     CountLPKValid)]);
@@ -405,7 +405,7 @@ end;
 
 procedure TPackageLinksDialog.RescanGlobalLinks;
 begin
-  PkgLinks.UpdateGlobalLinks;
+  LazPackageLinks.UpdateGlobalLinks;
 end;
 
 procedure TPackageLinksDialog.ClearLinks;
@@ -472,13 +472,13 @@ end;
 
 procedure TPkgLinkInfo.Assign(Source: TPersistent);
 var
-  Link: TPackageLink;
+  Link: TLazPackageLink;
 begin
   if Source is TLazPackageID then begin
     AssignID(TLazPackageID(Source));
     LPKInfo.Assign(Source);
-    if Source is TPackageLink then begin
-      Link:=TPackageLink(Source);
+    if Source is TLazPackageLink then begin
+      Link:=TLazPackageLink(Source);
       Origin:=Link.Origin;
       LPKFilename:=Link.LPKFilename;
       LPLFilename:=Link.LPLFilename;
